@@ -62,6 +62,7 @@ static gchar *quote_desc_strings[] = {
 	"%quoted_msg (%Q)",			N_("quoted message body"), /* quoted message */
 	"%msg_no_sig (%m)",			N_("message body without signature"), /* message with no signature */
 	"%quoted_msg_no_sig (%q)",	N_("quoted message body without signature"), /* quoted message with no signature */
+	"%tags",				N_("message tags"), /* message tags */
 	"%dict (%T)",				N_("current dictionary"), /* current dictionary */
 	"%cursor (%X)",				N_("cursor position"), /* X marks the cursor spot */
 	"%account_fullname (%af)",	N_("account property: your name"), /* full name in compose account */

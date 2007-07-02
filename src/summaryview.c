@@ -86,9 +86,11 @@
 #include "folderutils.h"
 #include "quicksearch.h"
 #include "partial_download.h"
+#include "tags.h"
 #include "timing.h"
 #include "gedit-print.h"
 #include "log.h"
+#include "edittags.h"
 #include "manual.h"
 
 #define SUMMARY_COL_MARK_WIDTH		10
@@ -183,7 +185,7 @@ static void summary_status_show		(SummaryView		*summaryview);
 static void summary_set_column_titles	(SummaryView		*summaryview);
 static void summary_set_ctree_from_list	(SummaryView		*summaryview,
 					 GSList			*mlist);
-static void summary_set_header		(SummaryView		*summaryview,
+static inline void summary_set_header	(SummaryView		*summaryview,
 					 gchar			*text[],
 					 MsgInfo		*msginfo);
 static void summary_display_msg		(SummaryView		*summaryview,
@@ -195,6 +197,11 @@ static void summary_display_msg_full	(SummaryView		*summaryview,
 static void summary_set_row_marks	(SummaryView		*summaryview,
 					 GtkCTreeNode		*row);
 
+static gboolean summary_set_row_tag	(SummaryView 		*summaryview, 
+					 GtkCTreeNode 		*row, 
+					 gboolean		 refresh,
+					 gboolean 		 set, 
+					 gint 			 id);
 /* message handling */
 static void summary_mark_row		(SummaryView		*summaryview,
 					 GtkCTreeNode		*row);
@@ -249,6 +256,14 @@ static void summary_colorlabel_menu_item_activate_item_cb
 					  (GtkMenuItem	*label_menu_item,
 					   gpointer	 data);
 static void summary_colorlabel_menu_create(SummaryView	*summaryview,
+					   gboolean  refresh);
+static void summary_tags_menu_item_activate_cb
+					  (GtkWidget	*widget,
+					   gpointer	 data);
+static void summary_tags_menu_item_activate_item_cb
+					  (GtkMenuItem	*label_menu_item,
+					   gpointer	 data);
+static void summary_tags_menu_create(SummaryView	*summaryview,
 					   gboolean  refresh);
 
 static GtkWidget *summary_ctree_create	(SummaryView	*summaryview);
@@ -334,6 +349,8 @@ static void summary_score_clicked	(GtkWidget		*button,
 					 SummaryView		*summaryview);
 static void summary_locked_clicked	(GtkWidget		*button,
 					 SummaryView		*summaryview);
+static void summary_tags_clicked	(GtkWidget		*button,
+					 SummaryView		*summaryview);
 
 static void summary_start_drag		(GtkWidget        *widget, 
 					 int button,
@@ -404,6 +421,9 @@ static gint summary_cmp_by_subject	(GtkCList		*clist,
 static gint summary_cmp_by_locked	(GtkCList 		*clist,
 				         gconstpointer 		 ptr1, 
 					 gconstpointer 		 ptr2);
+static gint summary_cmp_by_tags		(GtkCList 		*clist,
+				         gconstpointer 		 ptr1, 
+					 gconstpointer 		 ptr2);
 
 static void quicksearch_execute_cb	(QuickSearch    *quicksearch,
 					 gpointer	 data);
@@ -457,6 +477,7 @@ static GtkItemFactoryEntry summary_popup_entries[] =
 	{N_("/_Mark/Lock"),		NULL, summary_msgs_lock, 0, NULL},
 	{N_("/_Mark/Unlock"),		NULL, summary_msgs_unlock, 0, NULL},
 	{N_("/Color la_bel"),		NULL, NULL, 		0, NULL},
+	{N_("/Ta_gs"),			NULL, NULL, 		0, NULL},
 
 	{"/---",			NULL, NULL,		0, "<Separator>"},
 	{N_("/Add sender to address boo_k"),
@@ -502,6 +523,7 @@ static const gchar *const col_label[N_SUMMARY_COLS] = {
 	N_("#"),	/* S_COL_NUMBER  */
 	N_("Score"),	/* S_COL_SCORE   */
 	"",		/* S_COL_LOCKED	 */
+	N_("Tags"),	/* S_COL_TAGS	 */
 };
 
 void summary_freeze(SummaryView *summaryview)
@@ -924,6 +946,7 @@ void summary_init(SummaryView *summaryview)
 	summary_clear_list(summaryview);
 	summary_set_column_titles(summaryview);
 	summary_colorlabel_menu_create(summaryview, FALSE);
+	summary_tags_menu_create(summaryview, FALSE);
 	main_create_mailing_list_menu (summaryview->mainwin, NULL);	
 	summary_set_menu_sensitive(summaryview);
 
@@ -1552,6 +1575,7 @@ void summary_set_menu_sensitive(SummaryView *summaryview)
 		{"/Mark/Mark as spam"	  	, M_TARGET_EXIST|M_CAN_LEARN_SPAM},
 		{"/Mark/Mark as ham" 		, M_TARGET_EXIST|M_CAN_LEARN_SPAM},
 		{"/Color label"			, M_TARGET_EXIST},
+		{"/Tags"			, M_TARGET_EXIST},
 
 		{"/Add sender to address book"	, M_SINGLE_TARGET_EXIST},
 		{"/Create filter rule"		, M_SINGLE_TARGET_EXIST|M_UNLOCKED},
@@ -2424,7 +2448,8 @@ static void summary_set_column_titles(SummaryView *summaryview)
 		SORT_BY_SIZE,
 		SORT_BY_NUMBER,
 		SORT_BY_SCORE,
-		SORT_BY_LOCKED
+		SORT_BY_LOCKED,
+		SORT_BY_TAGS
 	};
 
 	for (pos = 0; pos < N_SUMMARY_COLS; pos++) {
@@ -2505,6 +2530,37 @@ static void summary_set_column_titles(SummaryView *summaryview)
 	}
 }
 
+void summary_reflect_tags_changes(SummaryView *summaryview)
+{
+	GtkMenuShell *menu;
+	GList *cur;
+	GtkCTreeNode *node;
+	GtkCTree *ctree = GTK_CTREE(summaryview->ctree);
+	gboolean froze = FALSE;
+	gboolean redisplay = FALSE;
+
+	/* re-create colorlabel submenu */
+	menu = GTK_MENU_SHELL(summaryview->tags_menu);
+	g_return_if_fail(menu != NULL);
+
+	/* clear items. get item pointers. */
+	for (cur = menu->children; cur != NULL && cur->data != NULL; cur = cur->next) {
+		gtk_menu_item_remove_submenu(GTK_MENU_ITEM(cur->data));
+	}
+	summary_tags_menu_create(summaryview, TRUE);
+
+	START_LONG_OPERATION(summaryview, TRUE);
+	for (node = GTK_CTREE_NODE(GTK_CLIST(ctree)->row_list); node != NULL;
+	     node = gtkut_ctree_node_next(ctree, node)) {
+		redisplay |= summary_set_row_tag(summaryview,
+					   node, TRUE, FALSE, 0);
+	}
+	END_LONG_OPERATION(summaryview);
+	if (redisplay)
+		summary_redisplay_msg(summaryview);
+}
+
+
 void summary_reflect_prefs(void)
 {
 	static gchar *last_font = NULL;
@@ -2583,6 +2639,9 @@ void summary_sort(SummaryView *summaryview,
 	case SORT_BY_LOCKED:
 		cmp_func = (GtkCListCompareFunc)summary_cmp_by_locked;
 		break;
+	case SORT_BY_TAGS:
+		cmp_func = (GtkCListCompareFunc)summary_cmp_by_tags;
+		break;
 	case SORT_BY_NONE:
 		break;
 	default:
@@ -2655,6 +2714,8 @@ static gboolean summary_insert_gnode_func(GtkCTree *ctree, guint depth, GNode *g
 		SET_TEXT(S_COL_FROM);
 	if (summaryview->col_state[summaryview->col_pos[S_COL_TO]].visible)
 		SET_TEXT(S_COL_TO);
+	if (summaryview->col_state[summaryview->col_pos[S_COL_TAGS]].visible)
+		SET_TEXT(S_COL_TAGS);
 
 #undef SET_TEXT
 
@@ -2816,14 +2877,14 @@ static gchar *summary_complete_address(const gchar *addr)
 	return res;
 }
 
-static void summary_set_header(SummaryView *summaryview, gchar *text[],
+static inline void summary_set_header(SummaryView *summaryview, gchar *text[],
 			       MsgInfo *msginfo)
 {
 	static gchar date_modified[80];
 	static gchar col_score[11];
-	static gchar buf[BUFFSIZE];
+	static gchar buf[BUFFSIZE], tmp1[BUFFSIZE], tmp2[BUFFSIZE], tmp3[BUFFSIZE];
 	gint *col_pos = summaryview->col_pos;
-	gchar *from_text = NULL, *to_text = NULL;
+	gchar *from_text = NULL, *to_text = NULL, *tags_text = NULL;
 	gboolean should_swap = FALSE;
 
 	text[col_pos[S_COL_FROM]]   = "";
@@ -2834,6 +2895,7 @@ static void summary_set_header(SummaryView *summaryview, gchar *text[],
 	text[col_pos[S_COL_MIME]]   = "";
 	text[col_pos[S_COL_LOCKED]] = "";
 	text[col_pos[S_COL_DATE]]   = "";
+	text[col_pos[S_COL_TAGS]]   = "";
 	if (summaryview->col_state[summaryview->col_pos[S_COL_NUMBER]].visible)
 		text[col_pos[S_COL_NUMBER]] = itos(msginfo->msgnum);
 	else
@@ -2849,6 +2911,19 @@ static void summary_set_header(SummaryView *summaryview, gchar *text[],
 		text[col_pos[S_COL_SCORE]] = itos_buf(col_score, msginfo->score);
 	else
 		text[col_pos[S_COL_SCORE]] = "";
+
+	if (summaryview->col_state[summaryview->col_pos[S_COL_TAGS]].visible) {
+		tags_text = procmsg_msginfo_get_tags_str(msginfo);
+		if (!tags_text) {
+			text[col_pos[S_COL_TAGS]] = "-";
+		} else {
+			strncpy2(tmp1, tags_text, sizeof(tmp1));
+			tmp1[sizeof(tmp1)-1]='\0';
+			g_free(tags_text);
+			text[col_pos[S_COL_TAGS]] = tmp1;
+		}
+	} else
+		text[col_pos[S_COL_TAGS]] = "";
 
 	/* slow! */
 	if (summaryview->col_state[summaryview->col_pos[S_COL_DATE]].visible) {
@@ -2883,7 +2958,6 @@ static void summary_set_header(SummaryView *summaryview, gchar *text[],
 				msginfo->fromname :
 				_("(No From)");
 	} else {
-		gchar buf[BUFFSIZE];
 		gchar *tmp = summary_complete_address(msginfo->from);
 		if (tmp) {
 			strncpy2(buf, tmp, sizeof(buf));
@@ -2906,15 +2980,14 @@ static void summary_set_header(SummaryView *summaryview, gchar *text[],
 	if (!should_swap) {
 		text[col_pos[S_COL_FROM]] = from_text;
 	} else {
-		gchar tmp[BUFFSIZE];
-		snprintf(tmp, BUFFSIZE-1, "--> %s", to_text);
-		tmp[BUFFSIZE-1]='\0';
-		text[col_pos[S_COL_FROM]] = tmp;
+		snprintf(tmp2, BUFFSIZE-1, "--> %s", to_text);
+		tmp2[BUFFSIZE-1]='\0';
+		text[col_pos[S_COL_FROM]] = tmp2;
 	}
 	
 	if (summaryview->simplify_subject_preg != NULL)
 		text[col_pos[S_COL_SUBJECT]] = msginfo->subject ? 
-			string_remove_match(buf, BUFFSIZE, msginfo->subject, 
+			string_remove_match(tmp3, BUFFSIZE, msginfo->subject, 
 					summaryview->simplify_subject_preg) : 
 			_("(No Subject)");
 	else 
@@ -5052,6 +5125,71 @@ void summary_set_colorlabel(SummaryView *summaryview, guint labelcolor,
 	END_LONG_OPERATION(summaryview);
 }
 
+static gboolean summary_set_row_tag(SummaryView *summaryview, GtkCTreeNode *row, gboolean refresh, gboolean set, gint id)
+{
+	GtkCTree *ctree = GTK_CTREE(summaryview->ctree);
+	MsgInfo *msginfo;
+	gchar *tags_str = NULL;
+	msginfo = gtk_ctree_node_get_row_data(ctree, row);
+	g_return_val_if_fail(msginfo, FALSE);
+
+	procmsg_msginfo_update_tags(msginfo, set, id);
+	
+	
+	if (summaryview->col_state[summaryview->col_pos[S_COL_TAGS]].visible) {
+		tags_str = procmsg_msginfo_get_tags_str(msginfo);
+		gtk_ctree_node_set_text(ctree, row, 
+				summaryview->col_pos[S_COL_TAGS],
+				tags_str?tags_str:"-");
+		g_free(tags_str);
+	}
+
+	summary_set_row_marks(summaryview, row);
+	if (row == summaryview->displayed) {
+		return TRUE;
+	}
+	return FALSE;
+}
+
+void summary_set_tag(SummaryView *summaryview, gint tag_id,
+			    GtkWidget *widget)
+{
+	GtkCTree *ctree = GTK_CTREE(summaryview->ctree);
+	GList *cur;
+	gboolean set = tag_id > 0;
+	gint real_id = set? tag_id:-tag_id;
+	gboolean froze = FALSE;
+	gboolean redisplay = FALSE;
+	START_LONG_OPERATION(summaryview, FALSE);
+	for (cur = GTK_CLIST(ctree)->selection; cur != NULL && cur->data != NULL; cur = cur->next) {
+		redisplay |= summary_set_row_tag(summaryview,
+					   GTK_CTREE_NODE(cur->data), FALSE, set, real_id);
+	}
+	END_LONG_OPERATION(summaryview);
+	if (redisplay)
+		summary_redisplay_msg(summaryview);
+}
+
+static void summary_tags_menu_item_activate_cb(GtkWidget *widget,
+						     gpointer data)
+{
+	gint id = GPOINTER_TO_INT(data);
+	gboolean set = gtk_check_menu_item_get_active(GTK_CHECK_MENU_ITEM(widget));
+	SummaryView *summaryview;
+
+	summaryview = g_object_get_data(G_OBJECT(widget), "summaryview");
+	g_return_if_fail(summaryview != NULL);
+
+	/* "dont_toggle" state set? */
+	if (g_object_get_data(G_OBJECT(summaryview->tags_menu),
+				"dont_toggle"))
+		return;
+
+	if (!set)
+		id = -id;
+	summary_set_tag(summaryview, id, NULL);
+}
+
 static void summary_colorlabel_menu_item_activate_item_cb(GtkMenuItem *menu_item,
 							  gpointer data)
 {
@@ -5169,6 +5307,151 @@ static void summary_colorlabel_menu_create(SummaryView *summaryview, gboolean re
 	summaryview->colorlabel_menu = menu;
 }
 
+static void summary_tags_menu_item_activate_item_cb(GtkMenuItem *menu_item,
+							  gpointer data)
+{
+	GtkMenuShell *menu;
+	GList *cur;
+	GList *sel;
+	GHashTable *menu_table = g_hash_table_new_full(
+					g_direct_hash,
+					g_direct_equal,
+					NULL, NULL);
+	SummaryView *summaryview = (SummaryView *)data;
+	g_return_if_fail(summaryview != NULL);
+
+	sel = GTK_CLIST(summaryview->ctree)->selection;
+	if (!sel) return;
+
+	menu = GTK_MENU_SHELL(summaryview->tags_menu);
+	g_return_if_fail(menu != NULL);
+
+	/* NOTE: don't return prematurely because we set the "dont_toggle"
+	 * state for check menu items */
+	g_object_set_data(G_OBJECT(menu), "dont_toggle",
+			  GINT_TO_POINTER(1));
+
+	/* clear items. get item pointers. */
+	for (cur = menu->children; cur != NULL && cur->data != NULL; cur = cur->next) {
+		if (GTK_IS_CHECK_MENU_ITEM(cur->data)) {
+			gint id = GPOINTER_TO_INT(g_object_get_data(G_OBJECT(cur->data),
+				"tag_id"));
+			gtk_check_menu_item_set_active
+				(GTK_CHECK_MENU_ITEM(cur->data), FALSE);
+				
+			g_hash_table_insert(menu_table, GINT_TO_POINTER(id), GTK_CHECK_MENU_ITEM(cur->data));
+		}
+	}
+
+	/* iterate all messages and set the state of the appropriate
+	 * items */
+	for (; sel != NULL; sel = sel->next) {
+		MsgInfo *msginfo;
+		GSList *tags = NULL;
+		gint id;
+		GtkCheckMenuItem *item;
+		msginfo = gtk_ctree_node_get_row_data
+			(GTK_CTREE(summaryview->ctree),
+			 GTK_CTREE_NODE(sel->data));
+		if (msginfo) {
+			tags =  msginfo->tags;
+			if (!tags)
+				continue;
+
+			for (; tags; tags = tags->next) {
+				id = GPOINTER_TO_INT(tags->data);
+				item = g_hash_table_lookup(menu_table, GINT_TO_POINTER(tags->data));
+				if (item && !item->active)
+					gtk_check_menu_item_set_active
+						(item, TRUE);
+			}
+		}
+	}
+
+	g_hash_table_destroy(menu_table);
+	/* reset "dont_toggle" state */
+	g_object_set_data(G_OBJECT(menu), "dont_toggle",
+			  GINT_TO_POINTER(0));
+
+}
+
+static void summary_tags_menu_item_new_tag_activate_cb(GtkWidget *widget,
+						     gpointer data)
+{
+	SummaryView *summaryview;
+	gint id;
+
+	summaryview = g_object_get_data(G_OBJECT(widget), "summaryview");
+	g_return_if_fail(summaryview != NULL);
+
+	/* "dont_toggle" state set? */
+	if (g_object_get_data(G_OBJECT(summaryview->tags_menu),
+				"dont_toggle"))
+		return;
+
+	id = prefs_tags_create_new(summaryview->mainwin);
+	if (id != -1) {
+		summary_set_tag(summaryview, id, NULL);
+		main_window_reflect_tags_changes(mainwindow_get_mainwindow());
+	}
+}
+
+static void summary_tags_menu_create(SummaryView *summaryview, gboolean refresh)
+{
+	GtkWidget *label_menuitem;
+	GtkWidget *menu;
+	GtkWidget *item;
+	GSList *cur = tags_get_list();
+	GSList *orig = cur;
+	gboolean existing_tags = FALSE;
+
+	label_menuitem = gtk_item_factory_get_item(summaryview->popupfactory,
+						   "/Tags");
+	g_signal_connect(G_OBJECT(label_menuitem), "activate",
+			 G_CALLBACK(summary_tags_menu_item_activate_item_cb),
+			   summaryview);
+
+	gtk_widget_show(label_menuitem);
+
+	menu = gtk_menu_new();
+
+	/* create tags menu items */
+	for (; cur; cur = cur->next) {
+		gint id = GPOINTER_TO_INT(cur->data);
+		const gchar *tag = tags_get_tag(id);
+
+		item = gtk_check_menu_item_new_with_label(tag);
+		gtk_menu_shell_append(GTK_MENU_SHELL(menu), item);
+		g_signal_connect(G_OBJECT(item), "activate",
+				 G_CALLBACK(summary_tags_menu_item_activate_cb),
+				 GINT_TO_POINTER(id));
+		g_object_set_data(G_OBJECT(item), "summaryview",
+				  summaryview);
+		g_object_set_data(G_OBJECT(item), "tag_id",
+				  GINT_TO_POINTER(id));
+		gtk_widget_show(item);
+		existing_tags = TRUE;
+	}
+	if (existing_tags) {
+		/* separator */
+		item = gtk_menu_item_new();
+		gtk_menu_shell_append(GTK_MENU_SHELL(menu), item);
+		gtk_widget_show(item);
+	}
+	item = gtk_menu_item_new_with_label(_("New tag..."));
+	gtk_menu_shell_append(GTK_MENU_SHELL(menu), item);
+	g_signal_connect(G_OBJECT(item), "activate",
+			 G_CALLBACK(summary_tags_menu_item_new_tag_activate_cb),
+			 NULL);
+	g_object_set_data(G_OBJECT(item), "summaryview",
+			  summaryview);
+	gtk_widget_show(item);
+	g_slist_free(orig);
+	gtk_widget_show(menu);
+	gtk_menu_item_set_submenu(GTK_MENU_ITEM(label_menuitem), menu);
+	summaryview->tags_menu = menu;
+}
+
 static gboolean summary_popup_menu(GtkWidget *widget, gpointer data)
 {
 	SummaryView *summaryview = (SummaryView *)data;
@@ -5239,6 +5522,8 @@ static GtkWidget *summary_ctree_create(SummaryView *summaryview)
 				   prefs_common.summary_col_size[S_COL_NUMBER]);
 	gtk_clist_set_column_width(GTK_CLIST(ctree), col_pos[S_COL_SCORE],
 				   prefs_common.summary_col_size[S_COL_SCORE]);
+	gtk_clist_set_column_width(GTK_CLIST(ctree), col_pos[S_COL_TAGS],
+				   prefs_common.summary_col_size[S_COL_TAGS]);
 
 	if (prefs_common.enable_dotted_lines) {
 		gtk_ctree_set_line_style(GTK_CTREE(ctree), GTK_CTREE_LINES_DOTTED);
@@ -5281,6 +5566,7 @@ static GtkWidget *summary_ctree_create(SummaryView *summaryview)
 	CLIST_BUTTON_SIGNAL_CONNECT(S_COL_SUBJECT, summary_subject_clicked);
 	CLIST_BUTTON_SIGNAL_CONNECT(S_COL_SCORE,   summary_score_clicked);
 	CLIST_BUTTON_SIGNAL_CONNECT(S_COL_LOCKED,  summary_locked_clicked);
+	CLIST_BUTTON_SIGNAL_CONNECT(S_COL_TAGS,    summary_tags_clicked);
 
 #undef CLIST_BUTTON_SIGNAL_CONNECT
 
@@ -5928,6 +6214,12 @@ static void summary_locked_clicked(GtkWidget *button,
 	summary_sort_by_column_click(summaryview, SORT_BY_LOCKED);
 }
 
+static void summary_tags_clicked(GtkWidget *button,
+				   SummaryView *summaryview)
+{
+	summary_sort_by_column_click(summaryview, SORT_BY_TAGS);
+}
+
 static void summary_start_drag(GtkWidget *widget, gint button, GdkEvent *event,
 			       SummaryView *summaryview)
 {
@@ -6161,6 +6453,28 @@ static gint summary_cmp_by_to(GtkCList *clist, gconstpointer ptr1,
 	
 	str1 = GTK_CELL_TEXT(r1->cell[sv->col_pos[S_COL_TO]])->text;
 	str2 = GTK_CELL_TEXT(r2->cell[sv->col_pos[S_COL_TO]])->text;
+
+	if (!str1)
+		return str2 != NULL;
+ 
+	if (!str2)
+ 		return -1;
+ 
+	return g_utf8_collate(str1, str2);
+}
+ 
+static gint summary_cmp_by_tags(GtkCList *clist, gconstpointer ptr1,
+				gconstpointer ptr2)
+{
+	const gchar *str1, *str2;
+	const GtkCListRow *r1 = (const GtkCListRow *) ptr1;
+	const GtkCListRow *r2 = (const GtkCListRow *) ptr2;
+	const SummaryView *sv = g_object_get_data(G_OBJECT(clist), "summaryview");
+	
+	g_return_val_if_fail(sv, -1);
+	
+	str1 = GTK_CELL_TEXT(r1->cell[sv->col_pos[S_COL_TAGS]])->text;
+	str2 = GTK_CELL_TEXT(r2->cell[sv->col_pos[S_COL_TAGS]])->text;
 
 	if (!str1)
 		return str2 != NULL;

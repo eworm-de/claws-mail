@@ -231,6 +231,8 @@ struct _MsgInfo
 	gint total_size;
 	gint planned_download;
 
+	GSList *tags;
+
 	MsgInfoExtraData *extradata;
 };
 
@@ -369,5 +371,7 @@ int procmsg_spam_learner_learn 	(MsgInfo *msginfo, GSList *msglist, gboolean spa
 gboolean procmsg_have_queued_mails_fast (void);
 gboolean procmsg_have_trashed_mails_fast (void);
 gboolean procmsg_is_sending(void);
-
+gchar *procmsg_msginfo_get_tags_str(MsgInfo *msginfo);
+void procmsg_msginfo_update_tags(MsgInfo *msginfo, gboolean set, gint id);
+void procmsg_msginfo_clear_tags(MsgInfo *msginfo);
 #endif /* __PROCMSG_H__ */

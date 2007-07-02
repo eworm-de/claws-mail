@@ -57,7 +57,8 @@ typedef enum
 	M_CAN_LEARN_SPAM      = 1 << 16,
 	M_ACTIONS_EXIST       = 1 << 17,
 	M_HAVE_QUEUED_MAILS   = 1 << 18,
-	M_WANT_SYNC	      = 1 << 19
+	M_WANT_SYNC	      = 1 << 19,
+	M_TAGS_EXIST	      = 1 << 20
 } SensitiveCond;
 
 typedef enum
@@ -129,6 +130,7 @@ struct _MainWindow
 	
 	GtkWidget 	*colorlabel_menu;
 	GtkWidget	*warning_btn;
+	GtkWidget 	*tags_menu;
 	
 #ifdef HAVE_LIBSM
 	gpointer smc_conn;
@@ -152,6 +154,7 @@ void main_window_reflect_prefs_all_real	(gboolean 	 pixmap_theme_changed);
 void main_window_reflect_prefs_all	(void);
 void main_window_reflect_prefs_all_now	(void);
 void main_window_reflect_prefs_custom_colors(MainWindow 	*mainwindow);
+void main_window_reflect_tags_changes(MainWindow 	*mainwindow);
 void main_window_set_summary_column	(void);
 void main_window_set_folder_column	(void);
 void main_window_set_account_menu	(GList		*account_list);

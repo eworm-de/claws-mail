@@ -68,6 +68,7 @@
 #include "base64.h"
 #include "inputdialog.h"
 #include "timing.h"
+#include "tags.h"
 
 static GdkColor quote_colors[3] = {
 	{(gulong)0, (gushort)0, (gushort)0, (gushort)0},
@@ -358,8 +359,19 @@ static void textview_create_tags(GtkTextView *text, TextView *textview)
 {
 	GtkTextBuffer *buffer;
 	GtkTextTag *tag, *qtag;
+	static GdkColor yellow, black;
+	static gboolean color_init = FALSE;
 	static PangoFontDescription *font_desc, *bold_font_desc;
 	
+	if (!color_init) {
+		gdk_color_parse("#f5f6be", &yellow);
+		gdk_color_parse("#000000", &black);
+		color_init = gdk_colormap_alloc_color(
+			gdk_colormap_get_system(), &yellow, FALSE, TRUE);
+		color_init &= gdk_colormap_alloc_color(
+			gdk_colormap_get_system(), &black, FALSE, TRUE);
+	}
+
 	if (!font_desc)
 		font_desc = pango_font_description_from_string
 			(NORMAL_FONT);
@@ -421,6 +433,16 @@ static void textview_create_tags(GtkTextView *text, TextView *textview)
 				"foreground-gdk", &quote_colors[2],
 				NULL);
 	}
+#if GTK_CHECK_VERSION(2, 8, 0)
+	gtk_text_buffer_create_tag(buffer, "tags",
+			"foreground-gdk", &black,
+			"paragraph-background-gdk", &yellow,
+			NULL);
+#else
+	gtk_text_buffer_create_tag(buffer, "tags",
+			"foreground-gdk", &emphasis_color,
+			NULL);
+#endif
 	gtk_text_buffer_create_tag(buffer, "emphasis",
 			"foreground-gdk", &emphasis_color,
 			NULL);
@@ -1856,6 +1878,57 @@ bail:
 }
 #endif
 
+static void textview_show_tags(TextView *textview)
+{
+	MsgInfo *msginfo = textview->messageview->msginfo;
+	GtkTextView *text = GTK_TEXT_VIEW(textview->text);
+	GtkTextBuffer *buffer = gtk_text_view_get_buffer(text);
+	GtkTextIter iter;
+	ClickableText *uri;
+	GSList *cur;
+	gboolean found_tag = FALSE;
+	
+	if (!msginfo->tags)
+		return;
+	
+	for (cur = msginfo->tags; cur; cur = cur->next) {
+		if (tags_get_tag(GPOINTER_TO_INT(cur->data)) != NULL) {
+			found_tag = TRUE;
+			break;
+		}
+	}
+	if (!found_tag) 
+		return;
+
+	gtk_text_buffer_get_end_iter (buffer, &iter);
+	gtk_text_buffer_insert_with_tags_by_name(buffer,
+		&iter, _("Tags: "), -1,
+		"header_title", "header", "tags", NULL);
+
+	for (cur = msginfo->tags; cur; cur = cur->next) {
+		uri = g_new0(ClickableText, 1);
+		uri->uri = g_strdup("");
+		uri->start = gtk_text_iter_get_offset(&iter);
+		gtk_text_buffer_insert_with_tags_by_name(buffer, &iter, 
+			tags_get_tag(GPOINTER_TO_INT(cur->data)), -1,
+			"link", "header", "tags", NULL);
+		uri->end = gtk_text_iter_get_offset(&iter);
+		uri->filename = g_strdup_printf("sc://search_tags:%s", tags_get_tag(GPOINTER_TO_INT(cur->data)));
+		uri->data = NULL;
+		textview->uri_list =
+			g_slist_prepend(textview->uri_list, uri);
+		if (cur->next)
+			gtk_text_buffer_insert_with_tags_by_name(buffer, &iter, ", ", 2,
+				"header", "tags", NULL);
+		else
+			gtk_text_buffer_insert_with_tags_by_name(buffer, &iter, " ", 1,
+				"header", "tags", NULL);
+	}
+
+	gtk_text_buffer_insert_with_tags_by_name(buffer, &iter, "\n", 1,
+		"header", "tags", NULL);
+}
+
 static void textview_show_header(TextView *textview, GPtrArray *headers)
 {
 	GtkTextView *text = GTK_TEXT_VIEW(textview->text);
@@ -1865,6 +1938,8 @@ static void textview_show_header(TextView *textview, GPtrArray *headers)
 	gint i;
 
 	g_return_if_fail(headers != NULL);
+
+	textview_show_tags(textview);
 
 	for (i = 0; i < headers->len; i++) {
 		header = g_ptr_array_index(headers, i);

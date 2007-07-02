@@ -1,3 +1,50 @@
+2007-07-02 [colin]	2.10.0cvs1
+
+	* src/Makefile.am
+	* src/compose.c
+	* src/edittags.c
+	* src/edittags.h
+	* src/filtering.c
+	* src/folder.c
+	* src/folder.h
+	* src/headerview.c
+	* src/headerview.h
+	* src/main.c
+	* src/mainwindow.c
+	* src/mainwindow.h
+	* src/manual.h
+	* src/matcher.c
+	* src/matcher.h
+	* src/matcher_parser_parse.y
+	* src/mimeview.c
+	* src/msgcache.c
+	* src/msgcache.h
+	* src/prefs_common.c
+	* src/prefs_common.h
+	* src/prefs_filtering_action.c
+	* src/prefs_matcher.c
+	* src/prefs_summary_column.c
+	* src/procmsg.c
+	* src/procmsg.h
+	* src/quote_fmt.c
+	* src/quote_fmt_lex.l
+	* src/quote_fmt_parse.y
+	* src/summaryview.c
+	* src/summaryview.h
+	* src/textview.c
+	* src/common/Makefile.am
+	* src/common/defs.h
+	* src/common/tags.c
+	* src/common/tags.h
+	* src/gtk/quicksearch.c
+	* src/gtk/quicksearch.h
+		Add Tags implementation. Tags are arbitrary labels
+		that can be applied to messages. It is possible 
+		to create, edit, remove tags; apply them to mails;
+		filter on tags or tag presence; apply or unset
+		tags via filtering actions; reference tags in
+		reply templates.
+
 2007-07-02 [paul]	2.10.0
 
 	* NEWS

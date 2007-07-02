@@ -150,6 +150,9 @@ enum {
 	CRITERIA_PARTIAL = 32,
 
 	CRITERIA_FOUND_IN_ADDRESSBOOK = 33,
+	
+	CRITERIA_TAG = 34,
+	CRITERIA_TAGGED = 35
 };
 
 /*!
@@ -199,6 +202,8 @@ static struct_criteria_text criteria_text [] = {
 	{ N_("Size exactly"), FALSE },
 	{ N_("Partially downloaded"), FALSE },
 	{ N_("Found in addressbook"), FALSE },
+	{ N_("Tags"), FALSE },
+	{ N_("Tagged"), FALSE },
 	{ NULL, FALSE }
 };
 
@@ -1020,6 +1025,12 @@ static gint prefs_matcher_get_criteria_from_matching(gint matching_id)
 	case MATCHCRITERIA_NOT_TO_AND_NOT_CC:
 	case MATCHCRITERIA_TO_OR_CC:
 		return CRITERIA_TO_OR_CC;
+	case MATCHCRITERIA_NOT_TAG:
+	case MATCHCRITERIA_TAG:
+		return CRITERIA_TAG;
+	case MATCHCRITERIA_NOT_TAGGED:
+	case MATCHCRITERIA_TAGGED:
+		return CRITERIA_TAGGED;
 	case MATCHCRITERIA_NOT_BODY_PART:
 	case MATCHCRITERIA_BODY_PART:
 		return CRITERIA_BODY_PART;
@@ -1104,6 +1115,10 @@ static gint prefs_matcher_get_matching_from_criteria(gint criteria_id)
 		return MATCHCRITERIA_CC;
 	case CRITERIA_TO_OR_CC:
 		return MATCHCRITERIA_TO_OR_CC;
+	case CRITERIA_TAG:
+		return MATCHCRITERIA_TAG;
+	case CRITERIA_TAGGED:
+		return MATCHCRITERIA_TAGGED;
 	case CRITERIA_NEWSGROUPS:
 		return MATCHCRITERIA_NEWSGROUPS;
 	case CRITERIA_INREPLYTO:
@@ -1186,6 +1201,10 @@ static gint prefs_matcher_not_criteria(gint matcher_criteria)
 		return MATCHCRITERIA_NOT_CC;
 	case MATCHCRITERIA_TO_OR_CC:
 		return MATCHCRITERIA_NOT_TO_AND_NOT_CC;
+	case MATCHCRITERIA_TAG:
+		return MATCHCRITERIA_NOT_TAG;
+	case MATCHCRITERIA_TAGGED:
+		return MATCHCRITERIA_NOT_TAGGED;
 	case MATCHCRITERIA_NEWSGROUPS:
 		return MATCHCRITERIA_NOT_NEWSGROUPS;
 	case MATCHCRITERIA_INREPLYTO:
@@ -1254,6 +1273,7 @@ static MatcherProp *prefs_matcher_dialog_to_matcher(void)
 	case CRITERIA_COLORLABEL:
 	case CRITERIA_IGNORE_THREAD:
 	case CRITERIA_FOUND_IN_ADDRESSBOOK:
+	case CRITERIA_TAGGED:
 		if (value_pred_flag == PREDICATE_FLAG_DISABLED)
 			criteria = prefs_matcher_not_criteria(criteria);
 		break;
@@ -1262,6 +1282,7 @@ static MatcherProp *prefs_matcher_dialog_to_matcher(void)
 	case CRITERIA_TO:
 	case CRITERIA_CC:
 	case CRITERIA_TO_OR_CC:
+	case CRITERIA_TAG:
 	case CRITERIA_NEWSGROUPS:
 	case CRITERIA_INREPLYTO:
 	case CRITERIA_REFERENCES:
@@ -1305,6 +1326,7 @@ static MatcherProp *prefs_matcher_dialog_to_matcher(void)
 	case CRITERIA_SPAM:
 	case CRITERIA_PARTIAL:
 	case CRITERIA_IGNORE_THREAD:
+	case CRITERIA_TAGGED:
 		break;
 
 	case CRITERIA_SUBJECT:
@@ -1312,6 +1334,7 @@ static MatcherProp *prefs_matcher_dialog_to_matcher(void)
 	case CRITERIA_TO:
 	case CRITERIA_CC:
 	case CRITERIA_TO_OR_CC:
+	case CRITERIA_TAG:
 	case CRITERIA_NEWSGROUPS:
 	case CRITERIA_INREPLYTO:
 	case CRITERIA_REFERENCES:
@@ -1655,6 +1678,7 @@ static void prefs_matcher_criteria_select(GtkList *list,
 	case CRITERIA_SPAM:
 	case CRITERIA_PARTIAL:
 	case CRITERIA_IGNORE_THREAD:
+	case CRITERIA_TAGGED:
 		prefs_matcher_disable_widget(matcher.header_combo);
 		prefs_matcher_disable_widget(matcher.header_label);
 		prefs_matcher_disable_widget(matcher.header_addr_combo);
@@ -1695,6 +1719,7 @@ static void prefs_matcher_criteria_select(GtkList *list,
 	case CRITERIA_TO:
 	case CRITERIA_CC:
 	case CRITERIA_TO_OR_CC:
+	case CRITERIA_TAG:
 	case CRITERIA_NEWSGROUPS:
 	case CRITERIA_INREPLYTO:
 	case CRITERIA_REFERENCES:
@@ -2087,6 +2112,8 @@ static gboolean prefs_matcher_selected(GtkTreeSelection *selector,
 	case MATCHCRITERIA_NOT_TO:
 	case MATCHCRITERIA_NOT_CC:
 	case MATCHCRITERIA_NOT_TO_AND_NOT_CC:
+	case MATCHCRITERIA_NOT_TAG:
+	case MATCHCRITERIA_NOT_TAGGED:
 	case MATCHCRITERIA_NOT_NEWSGROUPS:
 	case MATCHCRITERIA_NOT_INREPLYTO:
 	case MATCHCRITERIA_NOT_REFERENCES:
@@ -2109,6 +2136,7 @@ static gboolean prefs_matcher_selected(GtkTreeSelection *selector,
 	case MATCHCRITERIA_NOT_TO:
 	case MATCHCRITERIA_NOT_CC:
 	case MATCHCRITERIA_NOT_TO_AND_NOT_CC:
+	case MATCHCRITERIA_NOT_TAG:
 	case MATCHCRITERIA_NOT_NEWSGROUPS:
 	case MATCHCRITERIA_NOT_INREPLYTO:
 	case MATCHCRITERIA_NOT_REFERENCES:
@@ -2121,6 +2149,7 @@ static gboolean prefs_matcher_selected(GtkTreeSelection *selector,
 	case MATCHCRITERIA_TO:
 	case MATCHCRITERIA_CC:
 	case MATCHCRITERIA_TO_OR_CC:
+	case MATCHCRITERIA_TAG:
 	case MATCHCRITERIA_NEWSGROUPS:
 	case MATCHCRITERIA_INREPLYTO:
 	case MATCHCRITERIA_REFERENCES:

@@ -84,6 +84,7 @@ void folder_init		(Folder		*folder,
 
 static gchar *folder_item_get_cache_file	(FolderItem	*item);
 static gchar *folder_item_get_mark_file	(FolderItem	*item);
+static gchar *folder_item_get_tags_file	(FolderItem	*item);
 static gchar *folder_get_list_path	(void);
 static GNode *folder_get_xml_node	(Folder 	*folder);
 static Folder *folder_get_from_xml	(GNode 		*node);
@@ -2292,13 +2293,14 @@ void folder_clean_cache_memory(FolderItem *protected_item)
 
 static void folder_item_read_cache(FolderItem *item)
 {
-	gchar *cache_file, *mark_file;
+	gchar *cache_file, *mark_file, *tags_file;
 	START_TIMING("");
 	g_return_if_fail(item != NULL);
 
 	if (item->path != NULL) {
 	        cache_file = folder_item_get_cache_file(item);
 		mark_file = folder_item_get_mark_file(item);
+		tags_file = folder_item_get_tags_file(item);
 		item->cache = msgcache_read_cache(item, cache_file);
 		if (!item->cache) {
 			MsgInfoList *list, *cur;
@@ -2332,8 +2334,11 @@ static void folder_item_read_cache(FolderItem *item)
 		} else
 			msgcache_read_mark(item->cache, mark_file);
 
+		msgcache_read_tags(item->cache, tags_file);
+
 		g_free(cache_file);
 		g_free(mark_file);
+		g_free(tags_file);
 	} else {
 		item->cache = msgcache_new();
 	}
@@ -2343,7 +2348,7 @@ static void folder_item_read_cache(FolderItem *item)
 
 void folder_item_write_cache(FolderItem *item)
 {
-	gchar *cache_file, *mark_file;
+	gchar *cache_file, *mark_file, *tags_file;
 	FolderItemPrefs *prefs;
 	gint filemode = 0;
 	gchar *id;
@@ -2364,7 +2369,8 @@ void folder_item_write_cache(FolderItem *item)
 
 	cache_file = folder_item_get_cache_file(item);
 	mark_file = folder_item_get_mark_file(item);
-	if (msgcache_write(cache_file, mark_file, item->cache) < 0) {
+	tags_file = folder_item_get_tags_file(item);
+	if (msgcache_write(cache_file, mark_file, tags_file, item->cache) < 0) {
 		prefs = item->prefs;
     		if (prefs && prefs->enable_folder_chmod && prefs->folder_chmod) {
 			/* for cache file */
@@ -2383,6 +2389,7 @@ void folder_item_write_cache(FolderItem *item)
 
 	g_free(cache_file);
 	g_free(mark_file);
+	g_free(tags_file);
 }
 
 MsgInfo *folder_item_get_msginfo(FolderItem *item, gint num)
@@ -2697,6 +2704,11 @@ static void copy_msginfo_flags(MsgInfo *source, MsgInfo *dest)
 				  ~dest->flags.tmp_flags  & tmp_flags,
 				   dest->flags.perm_flags & ~perm_flags,
 				   dest->flags.tmp_flags  & ~tmp_flags);
+	
+	if (source && source->tags) {
+		g_slist_free(dest->tags);
+		dest->tags = g_slist_copy(source->tags);
+	}
 }
 
 static void add_msginfo_to_cache(FolderItem *item, MsgInfo *newmsginfo, MsgInfo *flagsource)
@@ -3482,6 +3494,38 @@ static gchar *folder_item_get_mark_file(FolderItem *item)
 	if (!is_file_exist(file) && is_file_exist(old_file))
 		move_file(old_file, file, FALSE);
 	g_free(old_file);
+	g_free(path);
+
+	return file;
+}
+
+static gchar *folder_item_get_tags_file(FolderItem *item)
+{
+	gchar *path;
+	gchar *identifier;
+	gchar *file;
+
+	/* we save tags files in rc_dir, because tagsrc is there too,
+	 * and storing tags directly in the mailboxes would give strange
+	 * result when using another Claws mailbox from another install
+	 * with different tags. */
+
+	g_return_val_if_fail(item != NULL, NULL);
+
+	identifier = folder_item_get_identifier(item);
+	g_return_val_if_fail(identifier != NULL, NULL);
+	
+	path = g_strconcat(get_rc_dir(), G_DIR_SEPARATOR_S,
+			   "tagsdb", G_DIR_SEPARATOR_S,
+			   identifier, NULL);
+	
+	g_free(identifier);
+			   
+	if (!is_dir_exist(path))
+		make_dir_hier(path);
+
+	file = g_strconcat(path, G_DIR_SEPARATOR_S, TAGS_FILE, NULL);
+	
 	g_free(path);
 
 	return file;

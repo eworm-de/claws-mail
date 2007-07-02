@@ -418,6 +418,8 @@ struct _PrefsCommon
 	gint templateswin_height;
 	gint actionswin_width;
 	gint actionswin_height;
+	gint tagswin_width;
+	gint tagswin_height;
 	gint addressbookwin_width;
 	gint addressbookwin_height;
 	gint addressbookeditpersonwin_width;

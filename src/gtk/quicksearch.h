@@ -27,7 +27,8 @@ typedef enum
 	QUICK_SEARCH_FROM,
 	QUICK_SEARCH_TO,
 	QUICK_SEARCH_EXTENDED,
-	QUICK_SEARCH_MIXED
+	QUICK_SEARCH_MIXED,
+	QUICK_SEARCH_TAG
 } QuickSearchType;
 
 typedef struct _QuickSearch QuickSearch;

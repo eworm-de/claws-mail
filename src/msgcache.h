@@ -37,8 +37,11 @@ MsgCache   	*msgcache_read_cache			(FolderItem *item,
 							 const gchar *cache_file);
 void	   	 msgcache_read_mark			(MsgCache *cache,
 							 const gchar *mark_file);
+void	   	 msgcache_read_tags			(MsgCache *cache,
+							 const gchar *tags_file);
 gint	   	 msgcache_write				(const gchar *cache_file,
 							 const gchar *mark_file,
+							 const gchar *tags_file,
 							 MsgCache *cache);
 void 	   	 msgcache_add_msg			(MsgCache *cache,
 							 MsgInfo *msginfo);

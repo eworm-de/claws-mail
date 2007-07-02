@@ -2399,6 +2399,15 @@ void mimeview_handle_cmd(MimeView *mimeview, const gchar *cmd, GdkEventButton *e
 	} else if (!strcmp(cmd, "sc://menu_attachment") && data != NULL) {
 		mimeview->spec_part = (MimeInfo *)data;
 		part_button_pressed(mimeview, event, (MimeInfo *)data);
+	} else if (!strncmp(cmd, "sc://search_tags:", strlen("sc://search_tags:"))) {
+		const gchar *tagname = cmd + strlen("sc://search_tags:");
+		gchar *buf = g_strdup_printf("tag matchcase \"%s\"", tagname);
+		gtk_toggle_button_set_active(
+				GTK_TOGGLE_BUTTON(mimeview->messageview->mainwin->summaryview->toggle_search), 
+				TRUE);
+		quicksearch_set(mimeview->messageview->mainwin->summaryview->quicksearch, 
+				QUICK_SEARCH_EXTENDED, buf);
+		g_free(buf);
 	}
 }
 

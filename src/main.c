@@ -97,6 +97,7 @@
 #include "imap_gtk.h"
 #include "news_gtk.h"
 #include "matcher.h"
+#include "tags.h"
 #ifdef HAVE_LIBETPAN
 #include "imap-thread.h"
 #endif
@@ -837,6 +838,7 @@ int main(int argc, char *argv[])
 	prefs_logging_init();
 	prefs_receive_init();
 	prefs_send_init();
+	tags_read_tags();
 #ifdef USE_ASPELL
 	gtkaspell_checkers_init();
 	prefs_spelling_init();
@@ -1204,6 +1206,7 @@ static void exit_claws(MainWindow *mainwin)
 	prefs_other_done();
 	prefs_receive_done();
 	prefs_send_done();
+	tags_write_tags();
 #ifdef USE_ASPELL       
 	prefs_spelling_done();
 	gtkaspell_checkers_quit();

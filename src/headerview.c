@@ -69,6 +69,7 @@ HeaderView *headerview_create(void)
 	GtkWidget *vbox;
 	GtkWidget *hbox1;
 	GtkWidget *hbox2;
+	GtkWidget *hbox3;
 	GtkWidget *from_header_label;
 	GtkWidget *from_body_label;
 	GtkWidget *to_header_label;
@@ -77,6 +78,8 @@ HeaderView *headerview_create(void)
 	GtkWidget *ng_body_label;
 	GtkWidget *subject_header_label;
 	GtkWidget *subject_body_label;
+	GtkWidget *tags_header_label;
+	GtkWidget *tags_body_label;
 
 	debug_print("Creating header view...\n");
 	headerview = g_new0(HeaderView, 1);
@@ -90,6 +93,8 @@ HeaderView *headerview_create(void)
 	gtk_box_pack_start(GTK_BOX(vbox), hbox1, FALSE, FALSE, 0);
 	hbox2 = gtk_hbox_new(FALSE, 4);
 	gtk_box_pack_start(GTK_BOX(vbox), hbox2, FALSE, FALSE, 0);
+	hbox3 = gtk_hbox_new(FALSE, 4);
+	gtk_box_pack_start(GTK_BOX(vbox), hbox3, FALSE, FALSE, 0);
 
 	from_header_label    = gtk_label_new(prefs_common_translated_header_name("From:"));
 	from_body_label      = gtk_label_new("");
@@ -99,16 +104,20 @@ HeaderView *headerview_create(void)
 	ng_body_label        = gtk_label_new("");
 	subject_header_label = gtk_label_new(prefs_common_translated_header_name("Subject:"));
 	subject_body_label   = gtk_label_new("");
+	tags_header_label = gtk_label_new(_("Tags:"));
+	tags_body_label   = gtk_label_new("");
 
 	gtk_label_set_selectable(GTK_LABEL(from_body_label), TRUE);
 	gtk_label_set_selectable(GTK_LABEL(to_body_label), TRUE);
 	gtk_label_set_selectable(GTK_LABEL(ng_body_label), TRUE);
 	gtk_label_set_selectable(GTK_LABEL(subject_body_label), TRUE);
+	gtk_label_set_selectable(GTK_LABEL(tags_body_label), TRUE);
 
 	GTK_WIDGET_UNSET_FLAGS(from_body_label, GTK_CAN_FOCUS);
 	GTK_WIDGET_UNSET_FLAGS(to_body_label, GTK_CAN_FOCUS);
 	GTK_WIDGET_UNSET_FLAGS(ng_body_label, GTK_CAN_FOCUS);
 	GTK_WIDGET_UNSET_FLAGS(subject_body_label, GTK_CAN_FOCUS);
+	GTK_WIDGET_UNSET_FLAGS(tags_body_label, GTK_CAN_FOCUS);
 
 	gtk_box_pack_start(GTK_BOX(hbox1), from_header_label, FALSE, FALSE, 0);
 	gtk_box_pack_start(GTK_BOX(hbox1), from_body_label, FALSE, FALSE, 0);
@@ -118,13 +127,17 @@ HeaderView *headerview_create(void)
 	gtk_box_pack_start(GTK_BOX(hbox1), ng_body_label, TRUE, TRUE, 0);
 	gtk_box_pack_start(GTK_BOX(hbox2), subject_header_label, FALSE, FALSE, 0);
 	gtk_box_pack_start(GTK_BOX(hbox2), subject_body_label, TRUE, TRUE, 0);
+	gtk_box_pack_start(GTK_BOX(hbox3), tags_header_label, FALSE, FALSE, 0);
+	gtk_box_pack_start(GTK_BOX(hbox3), tags_body_label, TRUE, TRUE, 0);
 
 	gtk_misc_set_alignment(GTK_MISC(to_body_label), 0, 0.5);
 	gtk_misc_set_alignment(GTK_MISC(ng_body_label), 0, 0.5);
 	gtk_misc_set_alignment(GTK_MISC(subject_body_label), 0, 0.5);
+	gtk_misc_set_alignment(GTK_MISC(tags_body_label), 0, 0.5);
 	gtk_label_set_ellipsize(GTK_LABEL(to_body_label), PANGO_ELLIPSIZE_END);
 	gtk_label_set_ellipsize(GTK_LABEL(ng_body_label), PANGO_ELLIPSIZE_END);
 	gtk_label_set_ellipsize(GTK_LABEL(subject_body_label), PANGO_ELLIPSIZE_END);
+	gtk_label_set_ellipsize(GTK_LABEL(tags_body_label), PANGO_ELLIPSIZE_END);
 
 	headerview->hbox = hbox;
 	headerview->from_header_label    = from_header_label;
@@ -135,6 +148,8 @@ HeaderView *headerview_create(void)
 	headerview->ng_body_label        = ng_body_label;
 	headerview->subject_header_label = subject_header_label;
 	headerview->subject_body_label   = subject_body_label;
+	headerview->tags_header_label = tags_header_label;
+	headerview->tags_body_label   = tags_body_label;
 	headerview->image = NULL;
 
 	gtk_widget_show_all(hbox);
@@ -158,12 +173,14 @@ void headerview_set_font(HeaderView *headerview)
 		gtk_widget_modify_font(headerview->to_header_label, boldfont);
 		gtk_widget_modify_font(headerview->ng_header_label, boldfont);
 		gtk_widget_modify_font(headerview->subject_header_label, boldfont);
+		gtk_widget_modify_font(headerview->tags_header_label, boldfont);
 		pango_font_description_free(boldfont);
 
 		gtk_widget_modify_font(headerview->from_body_label, normalfont);
 		gtk_widget_modify_font(headerview->to_body_label, normalfont);
 		gtk_widget_modify_font(headerview->ng_body_label, normalfont);
 		gtk_widget_modify_font(headerview->subject_body_label, normalfont);
+		gtk_widget_modify_font(headerview->tags_body_label, normalfont);
 		pango_font_description_free(normalfont);
 	}
 }
@@ -188,6 +205,8 @@ void headerview_init(HeaderView *headerview)
 
 void headerview_show(HeaderView *headerview, MsgInfo *msginfo)
 {
+	gchar *tags = procmsg_msginfo_get_tags_str(msginfo);
+
 	headerview_clear(headerview);
 
 	gtk_label_set_text(GTK_LABEL(headerview->from_body_label),
@@ -207,7 +226,13 @@ void headerview_show(HeaderView *headerview, MsgInfo *msginfo)
 	gtk_label_set_text(GTK_LABEL(headerview->subject_body_label),
 			   msginfo->subject ? msginfo->subject :
 			   _("(No Subject)"));
-
+	if (tags) {
+		gtk_label_set_text(GTK_LABEL(headerview->tags_body_label),
+				   tags);
+		gtk_widget_show(headerview->tags_header_label);
+		gtk_widget_show(headerview->tags_body_label);
+		g_free(tags);
+	}
 	if (!headerview_show_face(headerview, msginfo))
 		return;
 
@@ -296,10 +321,13 @@ void headerview_clear(HeaderView *headerview)
 	gtk_label_set_text(GTK_LABEL(headerview->to_body_label), "");
 	gtk_label_set_text(GTK_LABEL(headerview->ng_body_label), "");
 	gtk_label_set_text(GTK_LABEL(headerview->subject_body_label), "");
+	gtk_label_set_text(GTK_LABEL(headerview->tags_body_label), "");
 	gtk_widget_hide(headerview->to_header_label);
 	gtk_widget_hide(headerview->to_body_label);
 	gtk_widget_hide(headerview->ng_header_label);
 	gtk_widget_hide(headerview->ng_body_label);
+	gtk_widget_hide(headerview->tags_header_label);
+	gtk_widget_hide(headerview->tags_body_label);
 
 	if (headerview->image && GTK_WIDGET_VISIBLE(headerview->image)) {
 		gtk_widget_hide(headerview->image);

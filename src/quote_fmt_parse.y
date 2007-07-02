@@ -558,7 +558,7 @@ static gchar *quote_fmt_complete_address(const gchar *addr)
 %token SHOW_EOL SHOW_QUESTION_MARK SHOW_EXCLAMATION_MARK SHOW_PIPE SHOW_OPARENT SHOW_CPARENT
 %token SHOW_ACCOUNT_FULL_NAME SHOW_ACCOUNT_MAIL_ADDRESS SHOW_ACCOUNT_NAME SHOW_ACCOUNT_ORGANIZATION
 %token SHOW_ACCOUNT_DICT
-%token SHOW_DICT
+%token SHOW_DICT SHOW_TAGS
 %token SHOW_ADDRESSBOOK_COMPLETION_FOR_CC
 %token SHOW_ADDRESSBOOK_COMPLETION_FOR_FROM
 %token SHOW_ADDRESSBOOK_COMPLETION_FOR_TO
@@ -775,6 +775,14 @@ special:
 #ifdef USE_ASPELL
 		INSERT(default_dictionary);
 #endif
+	}
+	| SHOW_TAGS
+	{
+		gchar *tags = procmsg_msginfo_get_tags_str(msginfo);
+		if (tags) {
+			INSERT(tags);
+		}
+		g_free(tags);
 	}
 	| SHOW_BACKSLASH
 	{

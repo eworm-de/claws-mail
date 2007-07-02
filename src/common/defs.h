@@ -64,6 +64,7 @@
 #define MATCHER_RC		"matcherrc"
 #define MENU_RC			"menurc"
 #define RENDERER_RC		"rendererrc"
+#define TAGS_RC			"tagsrc"
 #define QUICKSEARCH_HISTORY	"quicksearch_history"
 #define SUMMARY_SEARCH_FROM_HISTORY	"summarysearch_from_history"
 #define SUMMARY_SEARCH_TO_HISTORY	"summarysearch_to_history"
@@ -96,8 +97,10 @@
 #define CACHE_FILE		".claws_cache"
 #define OLD_MARK_FILE		".sylpheed_mark"
 #define MARK_FILE		".claws_mark"
+#define TAGS_FILE		".claws_tags"
 #define CACHE_VERSION		24
 #define MARK_VERSION		2
+#define TAGS_VERSION		1
 
 #ifdef G_OS_WIN32
 #  define ACTIONS_RC		"actionswinrc"

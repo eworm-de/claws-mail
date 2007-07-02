@@ -9805,6 +9805,8 @@ static void compose_reply_from_messageview_real(MessageView *msgview, GSList *ms
 				}
 				tmp_msginfo->folder = orig_msginfo->folder;
 				tmp_msginfo->msgnum = orig_msginfo->msgnum; 
+				if (orig_msginfo->tags)
+					tmp_msginfo->tags = g_slist_copy(orig_msginfo->tags);
 			}
 		}
 	}

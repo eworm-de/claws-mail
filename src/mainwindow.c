@@ -61,6 +61,7 @@
 #include "procmsg.h"
 #include "import.h"
 #include "export.h"
+#include "edittags.h"
 #include "prefs_common.h"
 #include "prefs_actions.h"
 #include "prefs_filtering.h"
@@ -94,6 +95,7 @@
 #include "foldersort.h"
 #include "icon_legend.h"
 #include "colorlabel.h"
+#include "tags.h"
 #include "textview.h"
 #include "imap.h"
 #include "socket.h"
@@ -409,6 +411,9 @@ static void prefs_template_open_cb	(MainWindow	*mainwin,
 static void prefs_actions_open_cb	(MainWindow	*mainwin,
 					 guint		 action,
 					 GtkWidget	*widget);
+static void prefs_tags_open_cb		(MainWindow	*mainwin,
+					 guint		 action,
+					 GtkWidget	*widget);
 static void prefs_account_open_cb	(MainWindow	*mainwin,
 					 guint		 action,
 					 GtkWidget	*widget);
@@ -575,6 +580,8 @@ static GtkItemFactoryEntry mainwin_entries[] =
 	{N_("/_View/_Sort/by _To"),		NULL, sort_summary_cb, SORT_BY_TO, "/View/Sort/by number"},
 	{N_("/_View/_Sort/by S_ubject"),	NULL, sort_summary_cb, SORT_BY_SUBJECT, "/View/Sort/by number"},
 	{N_("/_View/_Sort/by _color label"),
+						NULL, sort_summary_cb, SORT_BY_TAGS, "/View/Sort/by number"},
+	{N_("/_View/_Sort/by tag"),
 						NULL, sort_summary_cb, SORT_BY_LABEL, "/View/Sort/by number"},
 	{N_("/_View/_Sort/by _mark"),		NULL, sort_summary_cb, SORT_BY_MARK, "/View/Sort/by number"},
 	{N_("/_View/_Sort/by _status"),		NULL, sort_summary_cb, SORT_BY_STATUS, "/View/Sort/by number"},
@@ -808,6 +815,7 @@ static GtkItemFactoryEntry mainwin_entries[] =
 	{N_("/_Message/_Mark/Lock"),		NULL, lock_msgs_cb, 0, NULL},
 	{N_("/_Message/_Mark/Unlock"),		NULL, unlock_msgs_cb, 0, NULL},
 	{N_("/_Message/Color la_bel"),		NULL, NULL, 	       0, NULL},
+	{N_("/_Message/T_ags"),			NULL, NULL, 	       0, NULL},
 	{N_("/_Message/---"),			NULL, NULL, 0, "<Separator>"},
 	{N_("/_Message/Re-_edit"),		NULL, reedit_cb, 0, NULL},
 
@@ -887,6 +895,8 @@ static GtkItemFactoryEntry mainwin_entries[] =
 						NULL, prefs_filtering_open_cb, 0, NULL},
 	{N_("/_Configuration/_Templates..."),	NULL, prefs_template_open_cb, 0, NULL},
 	{N_("/_Configuration/_Actions..."),	NULL, prefs_actions_open_cb, 0, NULL},
+	{N_("/_Configuration/Tag_s..."),	NULL, prefs_tags_open_cb, 0, NULL},
+	{N_("/_Configuration/---"),		NULL, NULL, 0, "<Separator>"},
 	{N_("/_Configuration/Plu_gins..."),  	NULL, plugins_open_cb, 0, NULL},
 
 	{N_("/_Help"),				NULL, NULL, 0, "<Branch>"},
@@ -976,6 +986,7 @@ static void mainwindow_colorlabel_menu_item_activate_item_cb(GtkMenuItem *menu_i
 	} else
 		g_warning("invalid number of color elements (%d)\n", n);
 
+	g_slist_free(sel);
 	/* reset "dont_toggle" state */
 	g_object_set_data(G_OBJECT(menu), "dont_toggle",
 			  GINT_TO_POINTER(0));
@@ -996,6 +1007,94 @@ static void mainwindow_colorlabel_menu_item_activate_cb(GtkWidget *widget,
 		return;
 
 	summary_set_colorlabel(mainwin->summaryview, color, NULL);
+}
+
+static void mainwindow_tags_menu_item_activate_item_cb(GtkMenuItem *menu_item,
+							  gpointer data)
+{
+	MainWindow *mainwin;
+	GtkMenuShell *menu;
+	GList *cur;
+	GSList *sel;
+	GHashTable *menu_table = g_hash_table_new_full(
+					g_direct_hash,
+					g_direct_equal,
+					NULL, NULL);
+
+	mainwin = (MainWindow *)data;
+	g_return_if_fail(mainwin != NULL);
+
+	sel = summary_get_selection(mainwin->summaryview);
+	if (!sel) return;
+
+	menu = GTK_MENU_SHELL(mainwin->tags_menu);
+	g_return_if_fail(menu != NULL);
+
+	/* NOTE: don't return prematurely because we set the "dont_toggle"
+	 * state for check menu items */
+	g_object_set_data(G_OBJECT(menu), "dont_toggle",
+			  GINT_TO_POINTER(1));
+
+	/* clear items. get item pointers. */
+	for (cur = menu->children; cur != NULL && cur->data != NULL; cur = cur->next) {
+		if (GTK_IS_CHECK_MENU_ITEM(cur->data)) {
+			gint id = GPOINTER_TO_INT(g_object_get_data(G_OBJECT(cur->data),
+				"tag_id"));
+			gtk_check_menu_item_set_active
+				(GTK_CHECK_MENU_ITEM(cur->data), FALSE);
+				
+			g_hash_table_insert(menu_table, GINT_TO_POINTER(id), GTK_CHECK_MENU_ITEM(cur->data));
+		}
+	}
+
+	/* iterate all messages and set the state of the appropriate
+	 * items */
+	for (; sel != NULL; sel = sel->next) {
+		MsgInfo *msginfo;
+		GSList *tags = NULL;
+		gint id;
+		GtkCheckMenuItem *item;
+		msginfo = (MsgInfo *)sel->data;
+		if (msginfo) {
+			tags =  msginfo->tags;
+			if (!tags)
+				continue;
+
+			for (; tags; tags = tags->next) {
+				id = GPOINTER_TO_INT(tags->data);
+				item = g_hash_table_lookup(menu_table, GINT_TO_POINTER(tags->data));
+				if (item && !item->active)
+					gtk_check_menu_item_set_active
+						(item, TRUE);
+			}
+		}
+	}
+
+	g_slist_free(sel);
+	g_hash_table_destroy(menu_table);
+	/* reset "dont_toggle" state */
+	g_object_set_data(G_OBJECT(menu), "dont_toggle",
+			  GINT_TO_POINTER(0));
+}
+
+static void mainwindow_tags_menu_item_activate_cb(GtkWidget *widget,
+						     gpointer data)
+{
+	gint id = GPOINTER_TO_INT(data);
+	gboolean set = gtk_check_menu_item_get_active(GTK_CHECK_MENU_ITEM(widget));
+	MainWindow *mainwin;
+
+	mainwin = g_object_get_data(G_OBJECT(widget), "mainwin");
+	g_return_if_fail(mainwin != NULL);
+
+	/* "dont_toggle" state set? */
+	if (g_object_get_data(G_OBJECT(mainwin->tags_menu),
+				"dont_toggle"))
+		return;
+
+	if (!set)
+		id = -id;
+	summary_set_tag(mainwin->summaryview, id, NULL);
 }
 
 static void mainwindow_colorlabel_menu_create(MainWindow *mainwin, gboolean refresh)
@@ -1056,6 +1155,82 @@ static void mainwindow_colorlabel_menu_create(MainWindow *mainwin, gboolean refr
 	gtk_widget_show(menu);
 	gtk_menu_item_set_submenu(GTK_MENU_ITEM(label_menuitem), menu);
 	mainwin->colorlabel_menu = menu;
+}
+
+static void mainwindow_tags_menu_item_new_tag_activate_cb(GtkWidget *widget,
+						     gpointer data)
+{
+	MainWindow *mainwin;
+	gint id;
+	mainwin = g_object_get_data(G_OBJECT(widget), "mainwin");
+	g_return_if_fail(mainwin != NULL);
+
+	/* "dont_toggle" state set? */
+	if (g_object_get_data(G_OBJECT(mainwin->tags_menu),
+				"dont_toggle"))
+		return;
+	
+	id = prefs_tags_create_new(mainwin);
+	if (id != -1) {
+		summary_set_tag(mainwin->summaryview, id, NULL);
+		main_window_reflect_tags_changes(mainwindow_get_mainwindow());
+	}
+}
+
+static void mainwindow_tags_menu_create(MainWindow *mainwin, gboolean refresh)
+{
+	GtkWidget *label_menuitem;
+	GtkWidget *menu;
+	GtkWidget *item;
+	GSList *cur = tags_get_list();
+	GSList *orig = cur;
+	gboolean existing_tags = FALSE;
+
+	label_menuitem = gtk_item_factory_get_item(mainwin->menu_factory,
+						   "/Message/Tags");
+	g_signal_connect(G_OBJECT(label_menuitem), "activate",
+			 G_CALLBACK(mainwindow_tags_menu_item_activate_item_cb),
+			   mainwin);
+
+	gtk_widget_show(label_menuitem);
+
+	menu = gtk_menu_new();
+
+	/* create tags menu items */
+	for (; cur; cur = cur->next) {
+		gint id = GPOINTER_TO_INT(cur->data);
+		const gchar *tag = tags_get_tag(id);
+
+		item = gtk_check_menu_item_new_with_label(tag);
+		gtk_menu_shell_append(GTK_MENU_SHELL(menu), item);
+		g_signal_connect(G_OBJECT(item), "activate",
+				 G_CALLBACK(mainwindow_tags_menu_item_activate_cb),
+				 GINT_TO_POINTER(id));
+		g_object_set_data(G_OBJECT(item), "mainwin",
+				  mainwin);
+		g_object_set_data(G_OBJECT(item), "tag_id",
+				  GINT_TO_POINTER(id));
+		gtk_widget_show(item);
+		existing_tags = TRUE;
+	}
+	if (existing_tags) {
+		/* separator */
+		item = gtk_menu_item_new();
+		gtk_menu_shell_append(GTK_MENU_SHELL(menu), item);
+		gtk_widget_show(item);
+	}
+	item = gtk_menu_item_new_with_label(_("New tag..."));
+	gtk_menu_shell_append(GTK_MENU_SHELL(menu), item);
+	g_signal_connect(G_OBJECT(item), "activate",
+			 G_CALLBACK(mainwindow_tags_menu_item_new_tag_activate_cb),
+			 NULL);
+	g_object_set_data(G_OBJECT(item), "mainwin",
+			  mainwin);
+	gtk_widget_show(item);
+	g_slist_free(orig);
+	gtk_widget_show(menu);
+	gtk_menu_item_set_submenu(GTK_MENU_ITEM(label_menuitem), menu);
+	mainwin->tags_menu = menu;
 }
 
 static gboolean warning_icon_pressed(GtkWidget *widget, GdkEventButton *evt,
@@ -1505,6 +1680,7 @@ MainWindow *main_window_create()
 		online_switch_clicked (GTK_BUTTON(online_switch), mainwin);
 
 	mainwindow_colorlabel_menu_create(mainwin, FALSE);
+	mainwindow_tags_menu_create(mainwin, FALSE);
 	
 	return mainwin;
 }
@@ -1659,6 +1835,24 @@ void main_window_reflect_prefs_custom_colors(MainWindow *mainwin)
 	}
 	mainwindow_colorlabel_menu_create(mainwin, TRUE);
 	summary_reflect_prefs_custom_colors(mainwin->summaryview);
+
+}
+
+void main_window_reflect_tags_changes(MainWindow *mainwin)
+{
+	GtkMenuShell *menu;
+	GList *cur;
+
+	/* re-create tags submenu */
+	menu = GTK_MENU_SHELL(mainwin->tags_menu);
+	g_return_if_fail(menu != NULL);
+
+	/* clear items. get item pointers. */
+	for (cur = menu->children; cur != NULL && cur->data != NULL; cur = cur->next) {
+		gtk_menu_item_remove_submenu(GTK_MENU_ITEM(cur->data));
+	}
+	mainwindow_tags_menu_create(mainwin, TRUE);
+	summary_reflect_tags_changes(mainwin->summaryview);
 
 }
 
@@ -2173,6 +2367,7 @@ SensitiveCond main_window_get_current_state(MainWindow *mainwin)
 	SummarySelection selection;
 	FolderItem *item = mainwin->summaryview->folder_item;
 	GList *account_list = account_get_list();
+	GSList *tmp;
 	
 	selection = summary_get_selection_type(mainwin->summaryview);
 
@@ -2209,6 +2404,11 @@ SensitiveCond main_window_get_current_state(MainWindow *mainwin)
 		state |= M_NOT_NEWS;
 	if (prefs_common.actions_list && g_slist_length(prefs_common.actions_list))
 		state |= M_ACTIONS_EXIST;
+
+	tmp = tags_get_list();
+	if (tmp && g_slist_length(tmp))
+		state |= M_TAGS_EXIST;
+	g_slist_free(tmp);
 
 	if (procmsg_have_queued_mails_fast() && !procmsg_is_sending())
 		state |= M_HAVE_QUEUED_MAILS;
@@ -2327,6 +2527,7 @@ void main_window_set_menu_sensitive(MainWindow *mainwin)
 		{"/Message/Mark/Lock"   	  , M_TARGET_EXIST},
 		{"/Message/Mark/Unlock"   	  , M_TARGET_EXIST},
 		{"/Message/Color label"		  , M_TARGET_EXIST},
+		{"/Message/Tags"		  , M_TARGET_EXIST},
 		{"/Message/Re-edit"               , M_HAVE_ACCOUNT|M_ALLOW_REEDIT},
 
 		{"/Tools/Add sender to address book"   , M_SINGLE_TARGET_EXIST},
@@ -3807,6 +4008,12 @@ static void prefs_actions_open_cb(MainWindow *mainwin, guint action,
 				  GtkWidget *widget)
 {
 	prefs_actions_open(mainwin);
+}
+
+static void prefs_tags_open_cb(MainWindow *mainwin, guint action,
+				  GtkWidget *widget)
+{
+	prefs_tags_open(mainwin);
 }
 #ifdef USE_OPENSSL
 static void ssl_manager_open_cb(MainWindow *mainwin, guint action,

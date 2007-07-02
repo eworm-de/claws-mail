@@ -457,6 +457,8 @@ static PrefParam param[] = {
 	 &prefs_common.summary_col_visible[S_COL_SCORE], P_BOOL, NULL, NULL, NULL},
 	{"summary_col_show_locked", "FALSE",
 	 &prefs_common.summary_col_visible[S_COL_LOCKED], P_BOOL, NULL, NULL, NULL},
+	{"summary_col_show_tags", "FALSE",
+	 &prefs_common.summary_col_visible[S_COL_TAGS], P_BOOL, NULL, NULL, NULL},
 
 	{"summary_col_pos_mark", "0",
 	  &prefs_common.summary_col_pos[S_COL_MARK], P_INT, NULL, NULL, NULL},
@@ -480,6 +482,8 @@ static PrefParam param[] = {
 	 &prefs_common.summary_col_pos[S_COL_LOCKED], P_INT, NULL, NULL, NULL},
 	{"summary_col_pos_to", "10",
 	  &prefs_common.summary_col_pos[S_COL_TO], P_INT, NULL, NULL, NULL},
+	{"summary_col_pos_tags", "11",
+	  &prefs_common.summary_col_pos[S_COL_TAGS], P_INT, NULL, NULL, NULL},
 
 	{"summary_col_size_mark", "10",
 	 &prefs_common.summary_col_size[S_COL_MARK], P_INT, NULL, NULL, NULL},
@@ -513,6 +517,8 @@ static PrefParam param[] = {
 	 &prefs_common.summary_col_size[S_COL_SCORE], P_INT, NULL, NULL, NULL},
 	{"summary_col_size_locked", "13",
 	 &prefs_common.summary_col_size[S_COL_LOCKED], P_INT, NULL, NULL, NULL},
+	{"summary_col_size_tags", "150",
+	 &prefs_common.summary_col_size[S_COL_TAGS], P_INT, NULL, NULL, NULL},
 
 	/* Widget size */
 	{"folderwin_x", "16", &prefs_common.folderwin_x, P_INT,
@@ -868,6 +874,11 @@ static PrefParam param[] = {
 	{"actionswin_width", "486", &prefs_common.actionswin_width, P_INT,
 	 NULL, NULL, NULL},
 	{"actionswin_height", "-1", &prefs_common.actionswin_height, P_INT,
+	 NULL, NULL, NULL},
+
+	{"tagswin_width", "486", &prefs_common.tagswin_width, P_INT,
+	 NULL, NULL, NULL},
+	{"tagswin_height", "-1", &prefs_common.tagswin_height, P_INT,
 	 NULL, NULL, NULL},
 
 	{"addressbookwin_width", "520", &prefs_common.addressbookwin_width, P_INT,

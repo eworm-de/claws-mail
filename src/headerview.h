@@ -39,6 +39,8 @@ struct _HeaderView
 	GtkWidget *ng_body_label;
 	GtkWidget *subject_header_label;
 	GtkWidget *subject_body_label;
+	GtkWidget *tags_header_label;
+	GtkWidget *tags_body_label;
 
 	GtkWidget *image;
 };

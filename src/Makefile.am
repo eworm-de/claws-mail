@@ -43,6 +43,7 @@ claws_mail_SOURCES = \
 	editjpilot.c \
 	editldap_basedn.c \
 	editldap.c \
+	edittags.c \
 	editvcard.c \
 	enriched.c \
 	exphtmldlg.c \
@@ -186,6 +187,7 @@ claws_mailinclude_HEADERS = \
 	editjpilot.h \
 	editldap_basedn.h \
 	editldap.h \
+	edittags.h \
 	editvcard.h \
 	enriched.h \
 	exphtmldlg.h \

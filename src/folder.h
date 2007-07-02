@@ -80,7 +80,8 @@ typedef enum
 	SORT_BY_STATUS,
 	SORT_BY_MIME,
 	SORT_BY_TO,
-	SORT_BY_LOCKED
+	SORT_BY_LOCKED,
+	SORT_BY_TAGS
 } FolderSortKey;
 
 typedef enum

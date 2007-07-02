@@ -76,6 +76,7 @@ static void quicksearch_set_running(QuickSearch *quicksearch, gboolean run);
 static void quicksearch_set_active(QuickSearch *quicksearch, gboolean active);
 static void quicksearch_reset_folder_items(QuickSearch *quicksearch, FolderItem *folder_item);
 static gchar *expand_search_string(const gchar *str);
+static gchar *expand_tag_search_string(const gchar *str);
 
 gboolean quicksearch_is_fast(QuickSearch *quicksearch)
 {
@@ -126,6 +127,16 @@ static void prepare_matcher(QuickSearch *quicksearch)
 
 			return;
 		}
+	} else if (prefs_common.summary_quicksearch_type == QUICK_SEARCH_TAG) {
+		char *newstr = expand_tag_search_string(search_string);
+		quicksearch->matcher_list = matcher_parser_get_cond(newstr, &quicksearch->is_fast);
+		g_free(newstr);
+	} else if (prefs_common.summary_quicksearch_type == QUICK_SEARCH_MIXED) {
+		char *newstr = expand_tag_search_string(search_string);
+		quicksearch->matcher_list = matcher_parser_get_cond(newstr, &quicksearch->is_fast);
+		g_free(newstr);
+		g_free(quicksearch->search_string);
+		quicksearch->search_string = g_strdup(search_string);
 	} else {
 		quicksearch->is_fast = TRUE;
 		g_free(quicksearch->search_string);
@@ -402,6 +413,8 @@ static gchar *search_descr_strings[] = {
 	"Sg #",  N_("messages whose size is greater than #"),
 	"Ss #",  N_("messages whose size is smaller than #"),
 	"t S",	 N_("messages which have been sent to S"),
+	"tg S",  N_("messages which tags contain S"),
+	"tagged",N_("messages which have tag(s)"),
 	"T",	 N_("marked messages"),
 	"U",	 N_("unread messages"),
 	"x S",	 N_("messages which contain S in References header"),
@@ -534,7 +547,12 @@ QuickSearch *quicksearch_new()
 			 G_CALLBACK(searchtype_changed),
 			 quicksearch);
 	MENUITEM_ADD (search_type, menuitem,
-			prefs_common_translated_header_name("From, To or Subject"), QUICK_SEARCH_MIXED);
+			prefs_common_translated_header_name("Tag"), QUICK_SEARCH_TAG);
+	g_signal_connect(G_OBJECT(menuitem), "activate",
+			 G_CALLBACK(searchtype_changed),
+			 quicksearch);
+	MENUITEM_ADD (search_type, menuitem,
+			_("From/To/Subject/Tag"), QUICK_SEARCH_MIXED);
 	g_signal_connect(G_OBJECT(menuitem), "activate",
 	                 G_CALLBACK(searchtype_changed),
 			 quicksearch);
@@ -888,6 +906,7 @@ gboolean quicksearch_match(QuickSearch *quicksearch, MsgInfo *msginfo)
 	quicksearch->matching = TRUE;
 	if (prefs_common.summary_quicksearch_type != QUICK_SEARCH_EXTENDED &&
 	    prefs_common.summary_quicksearch_type != QUICK_SEARCH_MIXED &&
+	    prefs_common.summary_quicksearch_type != QUICK_SEARCH_TAG &&
 	    quicksearch->search_string &&
             searched_header && strcasestr(searched_header, quicksearch->search_string) != NULL)
 		result = TRUE;
@@ -895,7 +914,9 @@ gboolean quicksearch_match(QuickSearch *quicksearch, MsgInfo *msginfo)
 		quicksearch->search_string && (
 		(msginfo->to && strcasestr(msginfo->to, quicksearch->search_string) != NULL) ||
 		(msginfo->from && strcasestr(msginfo->from, quicksearch->search_string) != NULL) ||
-		(msginfo->subject && strcasestr(msginfo->subject, quicksearch->search_string) != NULL)  ))
+		(msginfo->subject && strcasestr(msginfo->subject, quicksearch->search_string) != NULL) ||
+		((quicksearch->matcher_list != NULL) &&
+	         matcherlist_match(quicksearch->matcher_list, msginfo))  ))
 		result = TRUE;
 	else if ((quicksearch->matcher_list != NULL) &&
 	         matcherlist_match(quicksearch->matcher_list, msginfo))
@@ -958,6 +979,7 @@ static gchar *expand_search_string(const gchar *search_string)
 		{ "Sg",	"size_greater",			1,	FALSE,	FALSE },
 		{ "Ss",	"size_smaller",			1,	FALSE,	FALSE },
 		{ "t",	"to",				1,	TRUE,	TRUE  },
+		{ "tg", "tag",				1,	TRUE,	TRUE  },
 		{ "T",	"marked",			0,	FALSE,	FALSE },
 		{ "U",	"unread",			0,	FALSE,	FALSE },
 		{ "x",	"header \"References\"",	1,	TRUE,	TRUE  },
@@ -1086,6 +1108,30 @@ static gchar *expand_search_string(const gchar *search_string)
 
 	g_string_free(matcherstr, FALSE);
 	return returnstr;
+}
+
+static gchar *expand_tag_search_string(const gchar *search_string)
+{
+	gchar *newstr = NULL;
+	gchar **words = search_string ? g_strsplit(search_string, " ", -1):NULL;
+	gint i = 0;
+	while (words && words[i] && *words[i]) {
+		g_strstrip(words[i]);
+		if (!newstr) {
+			newstr = g_strdup_printf("tag regexpcase \"%s\"", words[i]);
+		} else {
+			gint o_len = strlen(newstr);
+			gint s_len = 18; /* strlen("|tag regexpcase \"\"") */
+			gint n_len = s_len + strlen(words[i]);
+			newstr = g_realloc(newstr,o_len+n_len+1);
+			strcpy(newstr+o_len, "|tag regexpcase \"");
+			strcpy(newstr+o_len+(s_len-1), words[i]);
+			strcpy(newstr+o_len+s_len, "\"");
+		}
+		i++;
+	}
+	g_strfreev(words);
+	return newstr;
 }
 
 static void quicksearch_set_running(QuickSearch *quicksearch, gboolean run)

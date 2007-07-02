@@ -45,6 +45,7 @@
 #include <ctype.h>
 #include "prefs_common.h"
 #include "log.h"
+#include "tags.h"
 
 /*!
  *\brief	Keyword lookup element
@@ -94,6 +95,10 @@ static const MatchParser matchparser_tab[] = {
 	{MATCHCRITERIA_NOT_CC, "~cc"},
 	{MATCHCRITERIA_TO_OR_CC, "to_or_cc"},
 	{MATCHCRITERIA_NOT_TO_AND_NOT_CC, "~to_or_cc"},
+	{MATCHCRITERIA_TAG, "tag"},
+	{MATCHCRITERIA_NOT_TAG, "~tag"},
+	{MATCHCRITERIA_TAGGED, "tagged"},
+	{MATCHCRITERIA_NOT_TAGGED, "~tagged"},
 	{MATCHCRITERIA_AGE_GREATER, "age_greater"},
 	{MATCHCRITERIA_AGE_LOWER, "age_lower"},
 	{MATCHCRITERIA_NEWSGROUPS, "newsgroups"},
@@ -155,7 +160,10 @@ static const MatchParser matchparser_tab[] = {
 	{MATCHACTION_STOP, "stop"},
 	{MATCHACTION_HIDE, "hide"},
 	{MATCHACTION_IGNORE, "ignore"},
-	{MATCHACTION_ADD_TO_ADDRESSBOOK, "add_to_addressbook"}
+	{MATCHACTION_ADD_TO_ADDRESSBOOK, "add_to_addressbook"},
+	{MATCHACTION_SET_TAG, "set_tag"},
+	{MATCHACTION_UNSET_TAG, "unset_tag"},
+	{MATCHACTION_CLEAR_TAGS, "clear_tags"},
 };
 
 enum {
@@ -501,6 +509,36 @@ static gboolean matcherprop_string_match(MatcherProp *prop, const gchar *str,
 }
 
 /*!
+ *\brief	Find out if a tag matches a condition
+ *
+ *\param	prop Matcher structure
+ *\param	msginfo message to check
+ *
+ *\return	gboolean TRUE if msginfo matches the condition in the 
+ *		matcher structure
+ */
+static gboolean matcherprop_tag_match(MatcherProp *prop, MsgInfo *msginfo,
+					 const gchar *debug_context)
+{
+	gboolean ret = FALSE;
+	GSList *cur;
+
+	if (msginfo == NULL || msginfo->tags == NULL)
+		return FALSE;
+
+	for (cur = msginfo->tags; cur; cur = cur->next) {
+		const gchar *str = tags_get_tag(GPOINTER_TO_INT(cur->data));
+		if (!str)
+			continue;
+		if (matcherprop_string_match(prop, str, debug_context)) {
+			ret = TRUE;
+			break;
+		}
+	}
+	return ret;
+}
+
+/*!
  *\brief	Find out if the string-ed list matches a condition
  *
  *\param	prop Matcher structure
@@ -831,6 +869,22 @@ gboolean matcherprop_match(MatcherProp *prop,
 		g_free(context1);
 		g_free(context2);
 		return ret;
+	}
+	case MATCHCRITERIA_TAG:
+	case MATCHCRITERIA_NOT_TAG:
+	{
+		gboolean ret;
+
+		ret = matcherprop_tag_match(prop, info, _("Tag"));
+		return (prop->criteria == MATCHCRITERIA_TAG)? ret : !ret;
+	}
+	case MATCHCRITERIA_TAGGED:
+	case MATCHCRITERIA_NOT_TAGGED:
+	{
+		gboolean ret;
+
+		ret = (info->tags != NULL);
+		return (prop->criteria == MATCHCRITERIA_TAGGED)? ret : !ret;
 	}
 	case MATCHCRITERIA_AGE_GREATER:
 	{
@@ -1604,6 +1658,10 @@ gboolean matcherlist_match(MatcherList *matchers, MsgInfo *info)
 		case MATCHCRITERIA_NOT_CC:
 		case MATCHCRITERIA_TO_OR_CC:
 		case MATCHCRITERIA_NOT_TO_AND_NOT_CC:
+		case MATCHCRITERIA_TAG:
+		case MATCHCRITERIA_NOT_TAG:
+		case MATCHCRITERIA_TAGGED:
+		case MATCHCRITERIA_NOT_TAGGED:
 		case MATCHCRITERIA_AGE_GREATER:
 		case MATCHCRITERIA_AGE_LOWER:
 		case MATCHCRITERIA_NEWSGROUPS:
@@ -1783,6 +1841,8 @@ gchar *matcherprop_to_string(MatcherProp *matcher)
 	case MATCHCRITERIA_NOT_PARTIAL:
 	case MATCHCRITERIA_IGNORE_THREAD:
 	case MATCHCRITERIA_NOT_IGNORE_THREAD:
+	case MATCHCRITERIA_TAGGED:
+	case MATCHCRITERIA_NOT_TAGGED:
 		return g_strdup(criteria_str);
 	case MATCHCRITERIA_TEST:
 	case MATCHCRITERIA_NOT_TEST:

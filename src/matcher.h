@@ -103,6 +103,8 @@ enum {
 	MC_(SIZE_SMALLER),
 	MC_(SIZE_EQUAL),
 	MC_(FOUND_IN_ADDRESSBOOK),MC_(NOT_FOUND_IN_ADDRESSBOOK),
+	MC_(TAG),MC_(NOT_TAG),
+	MC_(TAGGED),MC_(NOT_TAGGED),
 
 	/* match type */
 	MT_(MATCHCASE),
@@ -133,6 +135,9 @@ enum {
 	MA_(HIDE),
 	MA_(IGNORE),
 	MA_(ADD_TO_ADDRESSBOOK),
+	MA_(SET_TAG),
+	MA_(UNSET_TAG),
+	MA_(CLEAR_TAGS),
 	/* boolean operations */
 	MB_(OR),
 	MB_(AND)

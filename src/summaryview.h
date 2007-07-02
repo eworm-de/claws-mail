@@ -47,10 +47,11 @@ typedef enum
 	S_COL_SIZE,
 	S_COL_NUMBER,
 	S_COL_SCORE,
-	S_COL_LOCKED
+	S_COL_LOCKED,
+	S_COL_TAGS
 } SummaryColumnType;
 
-#define N_SUMMARY_COLS	11
+#define N_SUMMARY_COLS	12
 
 typedef enum
 {
@@ -109,6 +110,7 @@ struct _SummaryView
 	GtkWidget *quick_search_pixmap;
 	GtkWidget *popupmenu;
 	GtkWidget *colorlabel_menu;
+	GtkWidget *tags_menu;
 
 	GtkItemFactory *popupfactory;
 
@@ -290,6 +292,9 @@ void summary_select_thread	  (SummaryView		*summaryview,
 void summary_set_colorlabel	  (SummaryView		*summaryview,
 				   guint		 labelcolor,
 				   GtkWidget		*widget);
+void summary_set_tag		  (SummaryView		*summaryview,
+				   gint			 tag_id,
+				   GtkWidget		*widget);
 void summary_set_colorlabel_color (GtkCTree		*ctree,
 				   GtkCTreeNode		*node,
 				   guint		 labelcolor);
@@ -304,6 +309,7 @@ void summary_toggle_view_real	  (SummaryView	*summaryview);
 void summary_reflect_prefs_pixmap_theme
                                   (SummaryView *summaryview);
 void summary_reflect_prefs_custom_colors(SummaryView *summaryview);
+void summary_reflect_tags_changes(SummaryView *summaryview);
 void summary_harvest_address      (SummaryView *summaryview);
 void summary_set_prefs_from_folderitem
                                   (SummaryView *summaryview, FolderItem *item);

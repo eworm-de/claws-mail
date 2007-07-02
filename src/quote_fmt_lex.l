@@ -88,6 +88,7 @@ int line = -1;
 <S_NORMAL>("%s"|"%subject") /* subject */ return SHOW_SUBJECT;
 <S_NORMAL>("%t"|"%to") /* to */ return SHOW_TO;
 <S_NORMAL>("%T"|"%dict") /* current dictionary */ return SHOW_DICT;
+<S_NORMAL>("%tags") /* tags */ return SHOW_TAGS;
 <S_NORMAL>("%Q"|"%quoted_msg") /* quoted message */ return SHOW_QUOTED_MESSAGE;
 <S_NORMAL>("%q"|"%quoted_msg_no_sig") /* quoted message with no signature */ return SHOW_QUOTED_MESSAGE_NO_SIGNATURE;
 <S_NORMAL>("%af"|"%account_fullname") /* full name in compose account */ return SHOW_ACCOUNT_FULL_NAME;

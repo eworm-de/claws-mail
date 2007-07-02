@@ -336,6 +336,8 @@ int matcher_parserwrap(void)
 %token MATCHER_ADD_TO_ADDRESSBOOK
 %token MATCHER_STOP MATCHER_HIDE MATCHER_IGNORE
 %token MATCHER_SPAM MATCHER_NOT_SPAM
+%token MATCHER_TAG MATCHER_NOT_TAG MATCHER_SET_TAG MATCHER_UNSET_TAG
+%token MATCHER_TAGGED MATCHER_NOT_TAGGED MATCHER_CLEAR_TAGS
 
 %start file
 
@@ -848,6 +850,38 @@ MATCHER_ALL
 	expr = $3;
 	prop = matcherprop_new(criteria, NULL, match_type, expr, 0);
 }
+| MATCHER_TAG match_type MATCHER_STRING
+{
+	gint criteria = 0;
+	gchar *expr = NULL;
+
+	criteria = MATCHCRITERIA_TAG;
+	expr = $3;
+	prop = matcherprop_new(criteria, NULL, match_type, expr, 0);
+}
+| MATCHER_NOT_TAG match_type MATCHER_STRING
+{
+	gint criteria = 0;
+	gchar *expr = NULL;
+
+	criteria = MATCHCRITERIA_NOT_TAG;
+	expr = $3;
+	prop = matcherprop_new(criteria, NULL, match_type, expr, 0);
+}
+| MATCHER_TAGGED
+{
+	gint criteria = 0;
+
+	criteria = MATCHCRITERIA_TAGGED;
+	prop = matcherprop_new(criteria, NULL, 0, NULL, 0);
+}
+| MATCHER_NOT_TAGGED
+{
+	gint criteria = 0;
+
+	criteria = MATCHCRITERIA_NOT_TAGGED;
+	prop = matcherprop_new(criteria, NULL, 0, NULL, 0);
+}
 | MATCHER_AGE_GREATER MATCHER_INTEGER
 {
 	gint criteria = 0;
@@ -1115,6 +1149,31 @@ MATCHER_EXECUTE MATCHER_STRING
 	action_type = MATCHACTION_MOVE;
 	destination = $2;
 	action = filteringaction_new(action_type, 0, destination, 0, 0, NULL);
+}
+| MATCHER_SET_TAG MATCHER_STRING
+{
+	gchar *destination = NULL;
+	gint action_type = 0;
+
+	action_type = MATCHACTION_SET_TAG;
+	destination = $2;
+	action = filteringaction_new(action_type, 0, destination, 0, 0, NULL);
+}
+| MATCHER_UNSET_TAG MATCHER_STRING
+{
+	gchar *destination = NULL;
+	gint action_type = 0;
+
+	action_type = MATCHACTION_UNSET_TAG;
+	destination = $2;
+	action = filteringaction_new(action_type, 0, destination, 0, 0, NULL);
+}
+| MATCHER_CLEAR_TAGS
+{
+	gint action_type = 0;
+
+	action_type = MATCHACTION_CLEAR_TAGS;
+	action = filteringaction_new(action_type, 0, NULL, 0, 0, NULL);
 }
 | MATCHER_COPY MATCHER_STRING
 {

@@ -35,6 +35,7 @@ typedef enum
 #define MANUAL_ANCHOR_TEMPLATES		"adv_templates"
 #define MANUAL_ANCHOR_PROCESSING	"adv_processing"
 #define MANUAL_ANCHOR_PLUGINS		"adv_plugins"
+#define MANUAL_ANCHOR_TAGS		"adv_tags"
 
 gboolean manual_available	(ManualType type);
 void	 manual_open		(ManualType type, gchar *url_anchor);

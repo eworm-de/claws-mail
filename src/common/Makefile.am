@@ -32,6 +32,7 @@ libclawscommon_la_SOURCES = $(arch_sources) \
 	string_match.c \
 	stringtable.c \
 	claws.c \
+	tags.c \
 	template.c \
 	utils.c \
 	uuencode.c \
@@ -60,6 +61,7 @@ clawscommoninclude_HEADERS = $(arch_headers) \
 	string_match.h \
 	stringtable.h \
 	claws.h \
+	tags.h \
 	template.h \
 	timing.h \
 	utils.h \

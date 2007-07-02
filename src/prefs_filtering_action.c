@@ -47,7 +47,7 @@
 #include "folder.h"
 #include "description_window.h"
 #include "addr_compl.h"
-
+#include "tags.h"
 #include "matcher_parser.h"
 #include "colorlabel.h"
 
@@ -121,6 +121,9 @@ static struct FilteringAction_ {
 	GtkWidget *header_entry;
 	GtkWidget *addressbook_label;
 	GtkWidget *addressbook_btn;
+	GtkWidget *tags_label;
+	GtkWidget *tags_list;
+	GtkWidget *tags_combo;
 
 	gint current_action;
 } filtering_action;
@@ -145,6 +148,9 @@ typedef enum Action_ {
 	ACTION_COLOR,
 	ACTION_CHANGE_SCORE,
 	ACTION_SET_SCORE,
+	ACTION_SET_TAG,
+	ACTION_UNSET_TAG,
+	ACTION_CLEAR_TAGS,
 	ACTION_HIDE,
 	ACTION_IGNORE,
 	ACTION_ADD_TO_ADDRESSBOOK,
@@ -174,6 +180,9 @@ static struct {
 	{ N_("Color"),			ACTION_COLOR	},
 	{ N_("Change score"),		ACTION_CHANGE_SCORE},
 	{ N_("Set score"),		ACTION_SET_SCORE},
+	{ N_("Apply tag"),		ACTION_SET_TAG},
+	{ N_("Unset tag"),		ACTION_UNSET_TAG},
+	{ N_("Clear tags"),		ACTION_CLEAR_TAGS},
 	{ N_("Hide"),		        ACTION_HIDE	},
 	{ N_("Ignore thread"),	        ACTION_IGNORE	},
 	{ N_("Add to address book"),	ACTION_ADD_TO_ADDRESSBOOK	},
@@ -287,6 +296,9 @@ static void prefs_filtering_action_create(void)
 	GtkWidget *addressbook_btn;
 	GtkWidget *dest_entry;
 	GtkWidget *dest_btn;
+	GtkWidget *tags_label;
+	GtkWidget *tags_list;
+	GtkWidget *tags_combo;
         GList * cur;
 
 	GtkWidget *reg_hbox;
@@ -313,6 +325,7 @@ static void prefs_filtering_action_create(void)
 	static GdkGeometry geometry;
 
         GList * accounts;
+	GSList *tmp, *tags;
 
 	debug_print("Creating matcher configuration window...\n");
 
@@ -485,6 +498,11 @@ static void prefs_filtering_action_create(void)
 	gtk_misc_set_alignment(GTK_MISC(addressbook_label), 0, 0.5);
 	gtk_box_pack_start(GTK_BOX(hbox1), addressbook_label, FALSE, FALSE, 0);
 
+	tags_label = gtk_label_new (_("Tag"));
+	gtk_widget_show (tags_label);
+	gtk_misc_set_alignment (GTK_MISC (tags_label), 0, 0.5);
+	gtk_box_pack_start (GTK_BOX (hbox1), tags_label, FALSE, FALSE, 0);
+
 	dest_entry = gtk_entry_new ();
 	gtk_widget_set_size_request (dest_entry, 150, -1);
 	gtk_widget_show (dest_entry);
@@ -495,6 +513,31 @@ static void prefs_filtering_action_create(void)
 				 colorlabel_create_color_menu());
 	gtk_box_pack_start(GTK_BOX(hbox1), color_optmenu, TRUE, TRUE, 0);
 
+	tags_combo = gtk_combo_new ();
+	gtk_widget_set_size_request (tags_combo, 150, -1);
+	gtk_widget_show (tags_combo);
+
+	combo_items = NULL;
+	for (tmp = tags = tags_get_list() ; tmp != NULL;
+	     tmp = tmp->next) {
+		gchar *name = g_strdup(tags_get_tag(GPOINTER_TO_INT(tmp->data)));
+
+		combo_items = g_list_append(combo_items, (gpointer) name);
+	}
+
+	gtk_combo_set_popdown_strings(GTK_COMBO(tags_combo), combo_items);
+
+	for(cur = g_list_first(combo_items) ; cur != NULL ;
+	    cur = g_list_next(cur))
+		g_free(cur->data);
+	g_list_free(combo_items);
+	g_slist_free(tags);
+
+	gtk_box_pack_start (GTK_BOX (hbox1), tags_combo,
+			    TRUE, TRUE, 0);
+	tags_list = GTK_COMBO(tags_combo)->list;
+	gtk_entry_set_editable(GTK_ENTRY(GTK_COMBO(tags_combo)->entry),
+			       FALSE);
 	dest_btn = gtk_button_new_with_label (_("Select ..."));
 	gtk_widget_show (dest_btn);
 	gtk_box_pack_start (GTK_BOX (hbox1), dest_btn, FALSE, FALSE, 0);
@@ -605,6 +648,9 @@ static void prefs_filtering_action_create(void)
 	filtering_action.account_label = account_label;
 	filtering_action.account_list = account_list;
 	filtering_action.account_combo = account_combo;
+	filtering_action.tags_label = tags_label;
+	filtering_action.tags_list = tags_list;
+	filtering_action.tags_combo = tags_combo;
 	filtering_action.dest_entry = dest_entry;
 	filtering_action.dest_btn = dest_btn;
 	filtering_action.dest_label = dest_label;
@@ -773,6 +819,12 @@ static gint prefs_filtering_action_get_matching_from_action(Action action_id)
 	switch (action_id) {
 	case ACTION_MOVE:
 		return MATCHACTION_MOVE;
+	case ACTION_SET_TAG:
+		return MATCHACTION_SET_TAG;
+	case ACTION_UNSET_TAG:
+		return MATCHACTION_UNSET_TAG;
+	case ACTION_CLEAR_TAGS:
+		return MATCHACTION_CLEAR_TAGS;
 	case ACTION_COPY:
 		return MATCHACTION_COPY;
 	case ACTION_DELETE:
@@ -905,6 +957,16 @@ static FilteringAction * prefs_filtering_action_dialog_to_action(gboolean alert)
 			return NULL;
 		}
 		break;
+	case ACTION_SET_TAG:
+	case ACTION_UNSET_TAG:
+		destination = gtk_editable_get_chars(GTK_EDITABLE(GTK_COMBO(filtering_action.tags_combo)->entry), 0, -1);
+		if (*destination == '\0') {
+			if (alert)
+                                alertpanel_error(_("Tag name is empty."));
+			g_free(destination);
+			return NULL;
+		}
+		break;
 	case ACTION_STOP:
 	case ACTION_HIDE:
 	case ACTION_IGNORE:
@@ -917,6 +979,7 @@ static FilteringAction * prefs_filtering_action_dialog_to_action(gboolean alert)
         case ACTION_MARK_AS_UNREAD:
         case ACTION_MARK_AS_SPAM:
         case ACTION_MARK_AS_HAM:
+        case ACTION_CLEAR_TAGS:
 	default:
 		break;
 	}
@@ -949,6 +1012,7 @@ static void prefs_filtering_action_register_cb(void)
 	 * list items to be unselectable)
 	 * prefs_filtering_action_reset_dialog(); */
 	gtk_list_select_item(GTK_LIST(filtering_action.account_list), 0);
+	gtk_list_select_item(GTK_LIST(filtering_action.tags_list), 0);
 	gtk_entry_set_text(GTK_ENTRY(filtering_action.dest_entry), "");
 }
 
@@ -1259,6 +1323,10 @@ static void prefs_filtering_action_type_select(GtkList *list,
 		gtk_widget_set_sensitive(filtering_action.account_label, FALSE);
 		gtk_widget_show(filtering_action.account_combo);
 		gtk_widget_set_sensitive(filtering_action.account_combo, FALSE);
+		gtk_widget_hide(filtering_action.tags_label);
+		gtk_widget_set_sensitive(filtering_action.tags_label, FALSE);
+		gtk_widget_hide(filtering_action.tags_combo);
+		gtk_widget_set_sensitive(filtering_action.tags_combo, FALSE);
 		gtk_widget_show(filtering_action.dest_entry);
 		gtk_widget_set_sensitive(filtering_action.dest_entry, TRUE);
 		gtk_widget_show(filtering_action.dest_btn);
@@ -1284,6 +1352,10 @@ static void prefs_filtering_action_type_select(GtkList *list,
 		gtk_widget_set_sensitive(filtering_action.account_label, FALSE);
 		gtk_widget_show(filtering_action.account_combo);
 		gtk_widget_set_sensitive(filtering_action.account_combo, FALSE);
+		gtk_widget_hide(filtering_action.tags_label);
+		gtk_widget_set_sensitive(filtering_action.tags_label, FALSE);
+		gtk_widget_hide(filtering_action.tags_combo);
+		gtk_widget_set_sensitive(filtering_action.tags_combo, FALSE);
 		gtk_widget_show(filtering_action.dest_entry);
 		gtk_widget_set_sensitive(filtering_action.dest_entry, TRUE);
 		gtk_widget_show(filtering_action.dest_btn);
@@ -1309,6 +1381,10 @@ static void prefs_filtering_action_type_select(GtkList *list,
 		gtk_widget_set_sensitive(filtering_action.account_label, FALSE);
 		gtk_widget_show(filtering_action.account_combo);
 		gtk_widget_set_sensitive(filtering_action.account_combo, FALSE);
+		gtk_widget_hide(filtering_action.tags_label);
+		gtk_widget_set_sensitive(filtering_action.tags_label, FALSE);
+		gtk_widget_hide(filtering_action.tags_combo);
+		gtk_widget_set_sensitive(filtering_action.tags_combo, FALSE);
 		gtk_widget_show(filtering_action.dest_entry);
 		gtk_widget_set_sensitive(filtering_action.dest_entry, FALSE);
 		gtk_widget_show(filtering_action.dest_btn);
@@ -1340,10 +1416,15 @@ static void prefs_filtering_action_type_select(GtkList *list,
         case ACTION_STOP:
         case ACTION_HIDE:
 	case ACTION_IGNORE:
+	case ACTION_CLEAR_TAGS:
 		gtk_widget_show(filtering_action.account_label);
 		gtk_widget_set_sensitive(filtering_action.account_label, FALSE);
 		gtk_widget_show(filtering_action.account_combo);
 		gtk_widget_set_sensitive(filtering_action.account_combo, FALSE);
+		gtk_widget_hide(filtering_action.tags_label);
+		gtk_widget_set_sensitive(filtering_action.tags_label, FALSE);
+		gtk_widget_hide(filtering_action.tags_combo);
+		gtk_widget_set_sensitive(filtering_action.tags_combo, FALSE);
 		gtk_widget_show(filtering_action.dest_entry);
 		gtk_widget_set_sensitive(filtering_action.dest_entry, FALSE);
 		gtk_widget_show(filtering_action.dest_btn);
@@ -1369,6 +1450,10 @@ static void prefs_filtering_action_type_select(GtkList *list,
 		gtk_widget_set_sensitive(filtering_action.account_label, TRUE);
 		gtk_widget_show(filtering_action.account_combo);
 		gtk_widget_set_sensitive(filtering_action.account_combo, TRUE);
+		gtk_widget_hide(filtering_action.tags_label);
+		gtk_widget_set_sensitive(filtering_action.tags_label, FALSE);
+		gtk_widget_hide(filtering_action.tags_combo);
+		gtk_widget_set_sensitive(filtering_action.tags_combo, FALSE);
 		gtk_widget_show(filtering_action.dest_entry);
 		gtk_widget_set_sensitive(filtering_action.dest_entry, TRUE);
 		gtk_widget_show(filtering_action.dest_btn);
@@ -1394,6 +1479,10 @@ static void prefs_filtering_action_type_select(GtkList *list,
 		gtk_widget_set_sensitive(filtering_action.account_label, TRUE);
 		gtk_widget_show(filtering_action.account_combo);
 		gtk_widget_set_sensitive(filtering_action.account_combo, TRUE);
+		gtk_widget_hide(filtering_action.tags_label);
+		gtk_widget_set_sensitive(filtering_action.tags_label, FALSE);
+		gtk_widget_hide(filtering_action.tags_combo);
+		gtk_widget_set_sensitive(filtering_action.tags_combo, FALSE);
 		gtk_widget_show(filtering_action.dest_entry);
 		gtk_widget_set_sensitive(filtering_action.dest_entry, TRUE);
 		gtk_widget_show(filtering_action.dest_btn);
@@ -1419,6 +1508,10 @@ static void prefs_filtering_action_type_select(GtkList *list,
 		gtk_widget_set_sensitive(filtering_action.account_label, TRUE);
 		gtk_widget_show(filtering_action.account_combo);
 		gtk_widget_set_sensitive(filtering_action.account_combo, TRUE);
+		gtk_widget_hide(filtering_action.tags_label);
+		gtk_widget_set_sensitive(filtering_action.tags_label, FALSE);
+		gtk_widget_hide(filtering_action.tags_combo);
+		gtk_widget_set_sensitive(filtering_action.tags_combo, FALSE);
 		gtk_widget_show(filtering_action.dest_entry);
 		gtk_widget_set_sensitive(filtering_action.dest_entry, TRUE);
 		gtk_widget_show(filtering_action.dest_btn);
@@ -1444,6 +1537,10 @@ static void prefs_filtering_action_type_select(GtkList *list,
 		gtk_widget_set_sensitive(filtering_action.account_label, FALSE);
 		gtk_widget_show(filtering_action.account_combo);
 		gtk_widget_set_sensitive(filtering_action.account_combo, FALSE);
+		gtk_widget_hide(filtering_action.tags_label);
+		gtk_widget_set_sensitive(filtering_action.tags_label, FALSE);
+		gtk_widget_hide(filtering_action.tags_combo);
+		gtk_widget_set_sensitive(filtering_action.tags_combo, FALSE);
 		gtk_widget_show(filtering_action.dest_entry);
 		gtk_widget_set_sensitive(filtering_action.dest_entry, TRUE);
 		gtk_widget_hide(filtering_action.dest_btn);
@@ -1468,6 +1565,10 @@ static void prefs_filtering_action_type_select(GtkList *list,
 		gtk_widget_set_sensitive(filtering_action.account_label, FALSE);
 		gtk_widget_show(filtering_action.account_combo);
 		gtk_widget_set_sensitive(filtering_action.account_combo, FALSE);
+		gtk_widget_hide(filtering_action.tags_label);
+		gtk_widget_set_sensitive(filtering_action.tags_label, FALSE);
+		gtk_widget_hide(filtering_action.tags_combo);
+		gtk_widget_set_sensitive(filtering_action.tags_combo, FALSE);
 		gtk_widget_hide(filtering_action.dest_entry);
 		gtk_widget_hide(filtering_action.dest_btn);
 		gtk_widget_hide(filtering_action.dest_label);
@@ -1492,6 +1593,10 @@ static void prefs_filtering_action_type_select(GtkList *list,
 		gtk_widget_set_sensitive(filtering_action.account_label, FALSE);
 		gtk_widget_show(filtering_action.account_combo);
 		gtk_widget_set_sensitive(filtering_action.account_combo, FALSE);
+		gtk_widget_hide(filtering_action.tags_label);
+		gtk_widget_set_sensitive(filtering_action.tags_label, FALSE);
+		gtk_widget_hide(filtering_action.tags_combo);
+		gtk_widget_set_sensitive(filtering_action.tags_combo, FALSE);
 		gtk_widget_show(filtering_action.dest_entry);
 		gtk_widget_set_sensitive(filtering_action.dest_entry, TRUE);
 		gtk_widget_hide(filtering_action.dest_btn);
@@ -1516,6 +1621,10 @@ static void prefs_filtering_action_type_select(GtkList *list,
 		gtk_widget_set_sensitive(filtering_action.account_label, FALSE);
 		gtk_widget_hide(filtering_action.account_combo);
 		gtk_widget_set_sensitive(filtering_action.account_combo, FALSE);
+		gtk_widget_hide(filtering_action.tags_label);
+		gtk_widget_set_sensitive(filtering_action.tags_label, FALSE);
+		gtk_widget_hide(filtering_action.tags_combo);
+		gtk_widget_set_sensitive(filtering_action.tags_combo, FALSE);
 		gtk_widget_show(filtering_action.dest_entry);
 		gtk_widget_set_sensitive(filtering_action.dest_entry, TRUE);
 		gtk_widget_hide(filtering_action.dest_btn);
@@ -1535,6 +1644,36 @@ static void prefs_filtering_action_type_select(GtkList *list,
 		gtk_widget_show(filtering_action.addressbook_label);
 		gtk_widget_show(filtering_action.addressbook_btn);
 		gtk_widget_set_sensitive(filtering_action.addressbook_btn, TRUE);
+		break;
+	case ACTION_SET_TAG:
+	case ACTION_UNSET_TAG:
+		gtk_widget_show(filtering_action.account_label);
+		gtk_widget_set_sensitive(filtering_action.account_label, FALSE);
+		gtk_widget_show(filtering_action.account_combo);
+		gtk_widget_set_sensitive(filtering_action.account_combo, FALSE);
+		gtk_widget_show(filtering_action.tags_label);
+		gtk_widget_set_sensitive(filtering_action.tags_label, TRUE);
+		gtk_widget_show(filtering_action.tags_combo);
+		gtk_widget_set_sensitive(filtering_action.tags_combo, TRUE);
+		gtk_widget_hide(filtering_action.dest_entry);
+		gtk_widget_set_sensitive(filtering_action.dest_entry, FALSE);
+		gtk_widget_hide(filtering_action.dest_btn);
+		gtk_widget_set_sensitive(filtering_action.dest_btn, FALSE);
+		gtk_widget_hide(filtering_action.dest_label);
+		gtk_widget_hide(filtering_action.recip_label);
+		gtk_widget_set_sensitive(filtering_action.recip_label, TRUE);
+		gtk_widget_hide(filtering_action.exec_label);
+		gtk_widget_hide(filtering_action.exec_btn);
+		gtk_widget_hide(filtering_action.color_optmenu);
+		gtk_widget_hide(filtering_action.color_label);
+		gtk_widget_hide(filtering_action.score_label);
+		gtk_widget_hide(filtering_action.header_label);
+		gtk_widget_hide(filtering_action.header_combo);
+		gtk_widget_hide(filtering_action.header_entry);
+		gtk_widget_set_sensitive(filtering_action.header_entry, FALSE);
+		gtk_widget_hide(filtering_action.addressbook_label);
+		gtk_widget_hide(filtering_action.addressbook_btn);
+		gtk_widget_set_sensitive(filtering_action.addressbook_btn, FALSE);
 		break;
 	}
 }

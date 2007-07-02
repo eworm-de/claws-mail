@@ -39,6 +39,7 @@
 #include "procmsg.h"
 #include "codeconv.h"
 #include "timing.h"
+#include "tags.h"
 
 #ifdef HAVE_FWRITE_UNLOCKED
 #define SC_FWRITE fwrite_unlocked
@@ -818,6 +819,91 @@ void msgcache_read_mark(MsgCache *cache, const gchar *mark_file)
 	fclose(fp);
 }
 
+void msgcache_read_tags(MsgCache *cache, const gchar *tags_file)
+{
+	FILE *fp;
+	MsgInfo *msginfo;
+	guint32 num;
+	gint map_len = -1;
+	char *cache_data = NULL;
+	struct stat st;
+	
+	swapping = TRUE;
+
+	/* In case we can't open the mark file with MARK_VERSION, check if we can open it with the
+	 * swapped MARK_VERSION. As msgcache_open_data_file swaps it too, if this succeeds, 
+	 * it means it's the old version (not little-endian) on a big-endian machine. The code has
+	 * no effect on x86 as their file doesn't change. */
+
+	if ((fp = msgcache_open_data_file(tags_file, TAGS_VERSION, DATA_READ, NULL, 0)) == NULL) {
+		/* see if it isn't swapped ? */
+		if ((fp = msgcache_open_data_file(tags_file, bswap_32(TAGS_VERSION), DATA_READ, NULL, 0)) == NULL)
+			return;
+		else
+			swapping = FALSE; /* yay */
+	}
+	debug_print("reading %sswapped tags file.\n", swapping?"":"un");
+	
+	if (msgcache_use_mmap_read) {
+		if (fstat(fileno(fp), &st) >= 0)
+			map_len = st.st_size;
+		else
+			map_len = -1;
+		if (map_len > 0)
+			cache_data = mmap(NULL, map_len, PROT_READ, MAP_PRIVATE, fileno(fp), 0);
+	} else {
+		cache_data = NULL;
+	}
+	if (cache_data != NULL && cache_data != MAP_FAILED) {
+		int rem_len = map_len-ftell(fp);
+		char *walk_data = cache_data+ftell(fp);
+
+		while(rem_len > 0) {
+			gint id = -1;
+			GET_CACHE_DATA_INT(num);
+			msginfo = g_hash_table_lookup(cache->msgnum_table, &num);
+			if(msginfo) {
+				g_slist_free(msginfo->tags);
+				msginfo->tags = NULL;
+				do {
+					GET_CACHE_DATA_INT(id);
+					if (id > 0) {
+						msginfo->tags = g_slist_prepend(
+							msginfo->tags, 
+							GINT_TO_POINTER(id));
+					}
+				} while (id > 0);
+				msginfo->tags = g_slist_reverse(msginfo->tags);
+			}
+		}
+		munmap(cache_data, map_len);
+	} else {
+		while (fread(&num, sizeof(num), 1, fp) == 1) {
+			gint id = -1;
+			if (swapping)
+				num = bswap_32(num);
+			msginfo = g_hash_table_lookup(cache->msgnum_table, &num);
+			if(msginfo) {
+				g_slist_free(msginfo->tags);
+				msginfo->tags = NULL;
+				do {
+					if (fread(&id, sizeof(id), 1, fp) != 1) 
+						id = -1;
+					if (swapping)
+						id = bswap_32(id);
+					if (id > 0) {
+						msginfo->tags = g_slist_prepend(
+							msginfo->tags, 
+							GINT_TO_POINTER(id));
+					}
+				} while (id > 0);
+				msginfo->tags = g_slist_reverse(msginfo->tags);
+			}
+		}
+	}
+	fclose(fp);
+}
+
 static int msgcache_write_cache(MsgInfo *msginfo, FILE *fp)
 {
 	MsgTmpFlags flags = msginfo->flags.tmp_flags & MSG_CACHED_FLAG_MASK;
@@ -894,6 +980,23 @@ static int msgcache_write_flags(MsgInfo *msginfo, FILE *fp)
 	return w_err ? -1 : wrote;
 }
 
+static int msgcache_write_tags(MsgInfo *msginfo, FILE *fp)
+{
+	GSList *cur = msginfo->tags;
+	int w_err = 0, wrote = 0;
+
+	WRITE_CACHE_DATA_INT(msginfo->msgnum, fp);
+	for (; cur; cur = cur->next) {
+		gint id = GPOINTER_TO_INT(cur->data);
+		if (tags_get_tag(id) != NULL) {
+			WRITE_CACHE_DATA_INT(id, fp);
+		}
+	}
+	WRITE_CACHE_DATA_INT(-1, fp);
+
+	return w_err ? -1 : wrote;
+}
+
 static int msgcache_write_mmap_flags(MsgInfo *msginfo, char *walk_data)
 {
 	MsgPermFlags flags = msginfo->flags.perm_flags;
@@ -904,15 +1007,34 @@ static int msgcache_write_mmap_flags(MsgInfo *msginfo, char *walk_data)
 	return wrote;
 }
 
+static int msgcache_write_mmap_tags(MsgInfo *msginfo, char *walk_data)
+{
+	GSList *cur = msginfo->tags;
+	int wrote = 0;
+	
+	PUT_CACHE_DATA_INT(msginfo->msgnum);
+	for (; cur; cur = cur->next) {
+		gint id = GPOINTER_TO_INT(cur->data);
+		if (tags_get_tag(id) != NULL) {
+			PUT_CACHE_DATA_INT(id);
+		}
+	}
+	PUT_CACHE_DATA_INT(-1);
+	return wrote;
+}
+
 struct write_fps
 {
 	FILE *cache_fp;
 	FILE *mark_fp;
+	FILE *tags_fp;
 	char *cache_data;
 	char *mark_data;
+	char *tags_data;
 	int error;
 	guint cache_size;
 	guint mark_size;
+	guint tags_size;
 };
 
 static void msgcache_write_func(gpointer key, gpointer value, gpointer user_data)
@@ -934,6 +1056,11 @@ static void msgcache_write_func(gpointer key, gpointer value, gpointer user_data
 		write_fps->error = 1;
 	else
 		write_fps->mark_size += tmp;
+	tmp = msgcache_write_tags(msginfo, write_fps->tags_fp);
+	if (tmp < 0)
+		write_fps->error = 1;
+	else
+		write_fps->tags_size += tmp;
 }
 
 static void msgcache_write_mmap_func(gpointer key, gpointer value, gpointer user_data)
@@ -951,27 +1078,36 @@ static void msgcache_write_mmap_func(gpointer key, gpointer value, gpointer user
 	tmp = msgcache_write_mmap_flags(msginfo, write_fps->mark_data);
 	write_fps->mark_size += tmp;
 	write_fps->mark_data += tmp;
+	tmp = msgcache_write_mmap_tags(msginfo, write_fps->tags_data);
+	write_fps->tags_size += tmp;
+	write_fps->tags_data += tmp;
 }
 
-gint msgcache_write(const gchar *cache_file, const gchar *mark_file, MsgCache *cache)
+gint msgcache_write(const gchar *cache_file, const gchar *mark_file, const gchar *tags_file, MsgCache *cache)
 {
 	struct write_fps write_fps;
-	gchar *new_cache, *new_mark;
+	gchar *new_cache, *new_mark, *new_tags;
 	int w_err = 0, wrote = 0;
 	gint map_len = -1;
 	char *cache_data = NULL;
 	char *mark_data = NULL;
+	char *tags_data = NULL;
+
 	START_TIMING("");
 	g_return_val_if_fail(cache_file != NULL, -1);
 	g_return_val_if_fail(mark_file != NULL, -1);
+	g_return_val_if_fail(tags_file != NULL, -1);
 	g_return_val_if_fail(cache != NULL, -1);
 
 	new_cache = g_strconcat(cache_file, ".new", NULL);
 	new_mark  = g_strconcat(mark_file, ".new", NULL);
+	new_tags  = g_strconcat(tags_file, ".new", NULL);
 
 	write_fps.error = 0;
 	write_fps.cache_size = 0;
 	write_fps.mark_size = 0;
+	write_fps.tags_size = 0;
+
 	write_fps.cache_fp = msgcache_open_data_file(new_cache, CACHE_VERSION,
 		DATA_WRITE, NULL, 0);
 	if (write_fps.cache_fp == NULL) {
@@ -988,6 +1124,7 @@ gint msgcache_write(const gchar *cache_file, const gchar *mark_file, MsgCache *c
 		g_unlink(new_cache);
 		g_free(new_cache);
 		g_free(new_mark);
+		g_free(new_tags);
 		return -1;
 	}
 
@@ -998,6 +1135,20 @@ gint msgcache_write(const gchar *cache_file, const gchar *mark_file, MsgCache *c
 		g_unlink(new_cache);
 		g_free(new_cache);
 		g_free(new_mark);
+		g_free(new_tags);
+		return -1;
+	}
+
+	write_fps.tags_fp = msgcache_open_data_file(new_tags, TAGS_VERSION,
+		DATA_WRITE, NULL, 0);
+	if (write_fps.tags_fp == NULL) {
+		fclose(write_fps.cache_fp);
+		fclose(write_fps.mark_fp);
+		g_unlink(new_cache);
+		g_unlink(new_mark);
+		g_free(new_cache);
+		g_free(new_mark);
+		g_free(new_tags);
 		return -1;
 	}
 
@@ -1008,6 +1159,8 @@ gint msgcache_write(const gchar *cache_file, const gchar *mark_file, MsgCache *c
 
 	write_fps.cache_size = ftell(write_fps.cache_fp);
 	write_fps.mark_size = ftell(write_fps.mark_fp);
+	write_fps.tags_size = ftell(write_fps.tags_fp);
+
 	if (msgcache_use_mmap_write && cache->memusage > 0) {
 		map_len = cache->memusage;
 		if (ftruncate(fileno(write_fps.cache_fp), (off_t)map_len) == 0) {
@@ -1022,6 +1175,17 @@ gint msgcache_write(const gchar *cache_file, const gchar *mark_file, MsgCache *c
 			if (mark_data == NULL || mark_data == MAP_FAILED) {
 				munmap(cache_data, map_len);
 				cache_data = NULL;
+			} else {
+				if (ftruncate(fileno(write_fps.tags_fp), (off_t)map_len) == 0) {
+					tags_data = mmap(NULL, map_len, PROT_WRITE, MAP_SHARED, 
+						fileno(write_fps.tags_fp), 0);
+				} 
+				if (tags_data == NULL || tags_data == MAP_FAILED) {
+					munmap(cache_data, map_len);
+					cache_data = NULL;
+					munmap(mark_data, map_len);
+					mark_data = NULL;
+				} 
 			}
 		}
 	}
@@ -1029,49 +1193,61 @@ gint msgcache_write(const gchar *cache_file, const gchar *mark_file, MsgCache *c
 	if (cache_data != NULL && cache_data != MAP_FAILED) {
 		write_fps.cache_data = cache_data + ftell(write_fps.cache_fp);
 		write_fps.mark_data = mark_data + ftell(write_fps.mark_fp);
+		write_fps.tags_data = mark_data + ftell(write_fps.tags_fp);
 		g_hash_table_foreach(cache->msgnum_table, msgcache_write_mmap_func, (gpointer)&write_fps);
 		munmap(cache_data, map_len);
 		munmap(mark_data, map_len);
+		munmap(tags_data, map_len);
 		ftruncate(fileno(write_fps.cache_fp), write_fps.cache_size);
 		ftruncate(fileno(write_fps.mark_fp), write_fps.mark_size);
+		ftruncate(fileno(write_fps.tags_fp), write_fps.tags_size);
 	} else {
 #ifdef HAVE_FWRITE_UNLOCKED
 		flockfile(write_fps.cache_fp);
 		flockfile(write_fps.mark_fp);
+		flockfile(write_fps.tags_fp);
 #endif
 		g_hash_table_foreach(cache->msgnum_table, msgcache_write_func, (gpointer)&write_fps);
 #ifdef HAVE_FWRITE_UNLOCKED
 		funlockfile(write_fps.mark_fp);
 		funlockfile(write_fps.cache_fp);
+		funlockfile(write_fps.tags_fp);
 #endif
 	}
 	
 	fflush(write_fps.cache_fp);
 	fflush(write_fps.mark_fp);
+	fflush(write_fps.tags_fp);
 
 #if 0
 	fsync(fileno(write_fps.cache_fp));
 	fsync(fileno(write_fps.mark_fp));
+	fsync(fileno(write_fps.tags_fp));
 #endif
 
 	fclose(write_fps.cache_fp);
 	fclose(write_fps.mark_fp);
+	fclose(write_fps.tags_fp);
 
 
 	if (write_fps.error != 0) {
 		g_unlink(new_cache);
 		g_unlink(new_mark);
+		g_unlink(new_tags);
 		g_free(new_cache);
 		g_free(new_mark);
+		g_free(new_tags);
 		return -1;
 	} else {
 		move_file(new_cache, cache_file, TRUE);
 		move_file(new_mark, mark_file, TRUE);
+		move_file(new_tags, tags_file, TRUE);
 		cache->last_access = time(NULL);
 	}
 
 	g_free(new_cache);
 	g_free(new_mark);
+	g_free(new_tags);
 	debug_print("done.\n");
 	END_TIMING();
 	return 0;

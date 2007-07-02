@@ -45,6 +45,7 @@
 #include "mainwindow.h"
 #include "summaryview.h"
 #include "log.h"
+#include "tags.h"
 #include "timing.h"
 #include "inc.h"
 
@@ -1326,6 +1327,7 @@ void procmsg_msginfo_free(MsgInfo *msginfo)
 	}
 	slist_free_strings(msginfo->references);
 	g_slist_free(msginfo->references);
+	g_slist_free(msginfo->tags);
 
 	g_free(msginfo->plaintext_file);
 
@@ -1335,7 +1337,7 @@ void procmsg_msginfo_free(MsgInfo *msginfo)
 guint procmsg_msginfo_memusage(MsgInfo *msginfo)
 {
 	guint memusage = 0;
-	GSList *refs;
+	GSList *tmp;
 	
 	memusage += sizeof(MsgInfo);
 	if (msginfo->fromname)
@@ -1356,13 +1358,17 @@ guint procmsg_msginfo_memusage(MsgInfo *msginfo)
 		memusage += strlen(msginfo->msgid);
 	if (msginfo->inreplyto)
 		memusage += strlen(msginfo->inreplyto);
-	for (refs = msginfo->references; refs; refs=refs->next) {
-		gchar *r = (gchar *)refs->data;
-		memusage += r?strlen(r):0;
+
+	for (tmp = msginfo->references; tmp; tmp=tmp->next) {
+		gchar *r = (gchar *)tmp->data;
+		memusage += r?strlen(r):0 + sizeof(GSList);
 	}
 	if (msginfo->fromspace)
 		memusage += strlen(msginfo->fromspace);
 
+	for (tmp = msginfo->tags; tmp; tmp=tmp->next) {
+		memusage += sizeof(GSList);
+	}
 	if (msginfo->extradata) {
 		memusage += sizeof(MsgInfoExtraData);
 		if (msginfo->extradata->xface)
@@ -2355,4 +2361,54 @@ gboolean procmsg_have_trashed_mails_fast (void)
 	gboolean result = FALSE;
 	folder_func_to_all_folders(item_has_trashed_mails, &result);
 	return result;
+}
+
+gchar *procmsg_msginfo_get_tags_str(MsgInfo *msginfo)
+{
+	GSList *cur = NULL;
+	gchar *tags = NULL;
+	
+	if (!msginfo)
+		return NULL;
+
+	if (msginfo->tags == NULL)
+		return NULL;
+	for (cur = msginfo->tags; cur; cur = cur->next) {
+		const gchar *tag = tags_get_tag(GPOINTER_TO_INT(cur->data));
+		if (!tag)
+			continue;
+		if (!tags)
+			tags = g_strdup(tag);
+		else {
+			int olen = strlen(tags);
+			int nlen = olen + strlen(tag) + 2 /* strlen(", ") */;
+			tags = g_realloc(tags, nlen+1);
+			if (!tags)
+				return NULL;
+			strcpy(tags+olen, ", ");
+			strcpy(tags+olen+2, tag);
+			tags[nlen]='\0';
+		}
+	}
+	return tags;
+}
+
+void procmsg_msginfo_update_tags(MsgInfo *msginfo, gboolean set, gint id)
+{
+	if (!set) {
+		msginfo->tags = g_slist_remove(
+					msginfo->tags,
+					GINT_TO_POINTER(id));
+	} else {
+		if (!g_slist_find(msginfo->tags, GINT_TO_POINTER(id)))
+			msginfo->tags = g_slist_append(
+					msginfo->tags,
+					GINT_TO_POINTER(id));
+	}
+}
+
+void procmsg_msginfo_clear_tags(MsgInfo *msginfo)
+{
+	g_slist_free(msginfo->tags);
+	msginfo->tags = NULL;
 }
