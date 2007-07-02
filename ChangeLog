@@ -7,6 +7,7 @@
 		Add View/Sort/by Thread date
 		Fixes bug 1233, 'Capability to sort 
 		threads by most recent message'
+		Based on a patch by Paul Rolland
 
 2007-07-02 [colin]	2.10.0cvs1
 
