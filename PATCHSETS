@@ -2653,3 +2653,4 @@
 ( cvs diff -u -r 1.207.2.165 -r 1.207.2.166 src/folderview.c;  ) > 2.9.2cvs75.patchset
 ( cvs diff -u -r 1.1.2.1 -r 1.1.2.2 src/gtk/headers.h;  ) > 2.9.2cvs76.patchset
 ( cvs diff -u -r 1.100.2.50 -r 1.100.2.51 AUTHORS;  ) > 2.9.2cvs77.patchset
+( cvs diff -u -r 1.58.2.31 -r 1.58.2.32 po/de.po;  cvs diff -u -r 1.12.2.14 -r 1.12.2.15 po/en_GB.po;  cvs diff -u -r 1.60.2.44 -r 1.60.2.45 po/es.po;  cvs diff -u -r 1.42.2.31 -r 1.42.2.32 po/fr.po;  cvs diff -u -r 1.5.2.5 -r 1.5.2.6 po/hu.po;  cvs diff -u -r 1.50.2.25 -r 1.50.2.26 po/pt_BR.po;  cvs diff -u -r 1.17.2.14 -r 1.17.2.15 po/ru.po;  cvs diff -u -r 1.5.2.23 -r 1.5.2.24 po/zh_CN.po;  ) > 2.9.2cvs78.patchset

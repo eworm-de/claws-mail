@@ -7,10 +7,10 @@
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: claws-mail-2.7.0\n"
+"Project-Id-Version: claws-mail-2.9.2\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2006-09-30 18:55+0300\n"
-"PO-Revision-Date: 2006-11-16 12:55+0300\n"
+"PO-Revision-Date: 2007-03-09 20:49+0300\n"
 "Last-Translator: Pavlo Bohmat <bohm@ukr.net>\n"
 "Language-Team: Russian <ru@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -41,7 +41,7 @@ msgstr "Использование 'Получить почту' извлече�
 
 #: src/account.c:773
 msgid " _Set as default account "
-msgstr " _Сделать учётной записью по умолчанию "
+msgstr " _Сделать уч. записью по умолчанию "
 
 #: src/account.c:867
 msgid "Accounts with remote folders cannot be copied."
@@ -67,7 +67,7 @@ msgstr "Удалить учётную запись"
 
 #: src/account.c:1452
 msgid "Accounts List Default Column Name|D"
-msgstr ""
+msgstr "D"
 
 #: src/account.c:1458
 msgid "Default account"
@@ -75,7 +75,7 @@ msgstr "Учётная запись по умолчанию"
 
 #: src/account.c:1466
 msgid "Accounts List Get Column Name|G"
-msgstr ""
+msgstr "G"
 
 #: src/account.c:1472
 msgid "'Get Mail' retrieves mail from the checked accounts"
@@ -1166,7 +1166,7 @@ msgid "/_Message"
 msgstr "/_Сообщение"
 
 #: src/compose.c:521
-msgid "/_Message/_Send"
+msgid "/_Message/S_end"
 msgstr "/_Сообщение/_Отправить"
 
 #: src/compose.c:523
@@ -1832,7 +1832,7 @@ msgstr "Заголовок"
 
 #: src/compose.c:5938
 msgid "_Attachments"
-msgstr "_Вложенния"
+msgstr "_Вложения"
 
 #: src/compose.c:5942
 msgid "Othe_rs"
@@ -1928,8 +1928,8 @@ msgstr ""
 
 #: src/compose.c:7580
 #: src/messageview.c:718
-msgid "Sylpheed-Claws needs network access in order to send this email."
-msgstr "Sylphed-Claws требуется доступ к сети для отправки сообщения."
+msgid "Claws Mail needs network access in order to send this email."
+msgstr "Claws Mail требуется доступ к сети для отправки сообщения."
 
 #: src/compose.c:7605
 msgid "Could not queue message."
@@ -2025,8 +2025,8 @@ msgstr ""
 
 #: src/crash.c:142
 #, c-format
-msgid "Sylpheed-Claws process (%ld) received signal %ld"
-msgstr "Процесс Sylpheed-Claws (%ld) получен сигнал %ld"
+msgid "Claws Mail process (%ld) received signal %ld"
+msgstr "Процесс Claws Mail (%ld) получен сигнал %ld"
 
 #: src/crash.c:188
 msgid "Sylpheed-Claws has crashed"
@@ -3397,6 +3397,27 @@ msgstr "Зеленый"
 msgid "Brown"
 msgstr "Коричневый"
 
+msgid "Bright brown"
+msgstr "Светлокоричневый"
+
+msgid "Dark red"
+msgstr "Темнокрасный"
+
+msgid "Dark pink"
+msgstr "Темнорозовый"
+
+msgid "Steel blue"
+msgstr "Голубая сталь"
+
+msgid "Gold"
+msgstr "Золотой"
+
+msgid "Bright green"
+msgstr "Светлозеленый"
+
+msgid "Magenta"
+msgstr "Малиновый"
+
 #: src/gtk/foldersort.c:156
 msgid "Set folder order"
 msgstr "Порядок сортировки папок"
@@ -3423,7 +3444,7 @@ msgstr "Буфер исходного кода"
 
 #: src/gtk/gtksourceprintjob.c:281
 msgid "GtkTextBuffer object to print"
-msgstr ""
+msgstr "GtkТекстБуфер объект для печати"
 
 #: src/gtk/gtksourceprintjob.c:287
 msgid "Tabs Width"
@@ -3455,7 +3476,7 @@ msgstr "Шрифт"
 
 #: src/gtk/gtksourceprintjob.c:313
 msgid "GnomeFont name to use for the document text (deprecated)"
-msgstr ""
+msgstr "Имя ГномШрифта используемого для текстового документа (deprecated)"
 
 #: src/gtk/gtksourceprintjob.c:320
 msgid "Font Description"
@@ -3472,11 +3493,11 @@ msgstr "Число шрифтов"
 
 #: src/gtk/gtksourceprintjob.c:329
 msgid "GnomeFont name to use for the line numbers (deprecated)"
-msgstr ""
+msgstr "Имя ГномШрифта используемого для номеров строк (deprecated)"
 
 #: src/gtk/gtksourceprintjob.c:337
 msgid "Font description to use for the line numbers"
-msgstr ""
+msgstr "Описание шрифта используемого для номеров строк"
 
 #: src/gtk/gtksourceprintjob.c:344
 msgid "Print Line Numbers"
@@ -3484,7 +3505,7 @@ msgstr "Печать номеров строк"
 
 #: src/gtk/gtksourceprintjob.c:345
 msgid "Interval of printed line numbers (0 means no numbers)"
-msgstr ""
+msgstr "Интервал печати номеров строк (0 - без номеров)"
 
 #: src/gtk/gtksourceprintjob.c:352
 msgid "Print Header"
@@ -3508,7 +3529,7 @@ msgstr "Шрифт заголовков и сносок"
 
 #: src/gtk/gtksourceprintjob.c:369
 msgid "GnomeFont name to use for the header and footer (deprecated)"
-msgstr ""
+msgstr "Имя ГномШрифта используемого для заголовков и сносок (deprecated)"
 
 #: src/gtk/gtksourceprintjob.c:376
 msgid "Header and Footer Font Description"
@@ -3516,7 +3537,7 @@ msgstr "Описание шрифта заголовка и сноски"
 
 #: src/gtk/gtksourceprintjob.c:377
 msgid "Font to use for headers and footers (e.g. \"Monospace 10\")"
-msgstr ""
+msgstr "Шрифт используемый для заголовков и сносок (например: \"Monospace 10\")"
 
 #: src/gtk/gtkaspell.c:606
 msgid "No dictionary selected."
@@ -3723,6 +3744,9 @@ msgstr "Введите пароль"
 msgid "Remember this"
 msgstr "Запомнить"
 
+msgid "Logging"
+msgstr "Журналирование"
+
 #: src/gtk/logwindow.c:87
 msgid "Protocol log"
 msgstr "Журнал протокола"
@@ -3778,8 +3802,8 @@ msgid "Description"
 msgstr "Описание"
 
 #: src/gtk/pluginwindow.c:336
-msgid "More plugins are available from the Sylpheed-Claws website."
-msgstr "Больше модулей доступно на вебсайте Sylpheed-Claws."
+msgid "More plugins are available from the Claws Mail website."
+msgstr "Больше модулей доступно на вебсайте Claws Mail."
 
 #: src/gtk/pluginwindow.c:342
 #: src/prefs_themes.c:866
@@ -4529,6 +4553,8 @@ msgid ""
 "Destination folder is not set.\n"
 "Import mbox file to the inbox folder?"
 msgstr ""
+"Папка назначения не указана.\n"
+"Импортировать mbox-файл в папку 'входящие'?"
 
 #: src/import.c:237
 msgid "Can't find the destination folder."
@@ -4963,7 +4989,7 @@ msgstr ""
 
 #: src/main.c:536
 msgid "Claws Mail has been compiled with an older GTK+ library than is currently available. This will cause crashes. You need to recompile Claws Mail."
-msgstr ""
+msgstr "Claws Mail был скомпилирован с доступной старой библиотекой GTK+. Это будет вызывать крушения. Вы должны перекомпилировать Claws Mail."
 
 #: src/main.c:743
 msgid "Some plugin(s) failed to load. Check the Plugins configuration for more information."
@@ -5160,6 +5186,9 @@ msgstr "/_Файл/В_ыход"
 msgid "/_Edit/Select _thread"
 msgstr "/_Правка/Выделить _поток"
 
+msgid "/_Edit/_Delete thread"
+msgstr "/_Правка/_Удалить поток"
+
 #: src/mainwindow.c:523
 #: src/messageview.c:168
 msgid "/_Edit/_Find in current message..."
@@ -5232,6 +5261,24 @@ msgstr "/_Вид/Выбрать отображаемые столбцы/в сп�
 #: src/mainwindow.c:549
 msgid "/_View/Set displayed _columns/in _Message list..."
 msgstr "/_Вид/Выбрать отображаемые столбцы/в списке сообщений..."
+
+msgid "/_View/La_yout"
+msgstr "/_Вид/Расположение"
+
+msgid "/_View/Layout/_Standard"
+msgstr "/_Вид/Расположение/_Стандарт"
+
+msgid "/_View/Layout/_Three columns"
+msgstr "/_Вид/Расположение/_Три колонки"
+
+msgid "/_View/Layout/_Wide message"
+msgstr "/_Вид/Расположение/_Широкое сообщение"
+
+msgid "/_View/Layout/W_ide message list"
+msgstr "/_Вид/Расположение/Широкий список сообщений"
+
+msgid "/_View/Layout/S_mall screen"
+msgstr "/_Вид/Расположение/Минимальное"
 
 #: src/mainwindow.c:551
 #: src/mainwindow.c:554
@@ -5634,22 +5681,22 @@ msgstr "/_Вид/Все заголовки"
 #: src/mainwindow.c:733
 #: src/messageview.c:280
 msgid "/_View/Quotes"
-msgstr "/_Вид/Цытаты"
+msgstr "/_Вид/Цитаты"
 
 #: src/mainwindow.c:734
 #: src/messageview.c:281
 msgid "/_View/Quotes/_Fold all"
-msgstr "/_Вид/Цытаты/_Свернуть все"
+msgstr "/_Вид/Цитаты/_Свернуть все"
 
 #: src/mainwindow.c:735
 #: src/messageview.c:282
 msgid "/_View/Quotes/Fold from level _2"
-msgstr "/_Вид/Цытаты/Свернуть по второму уровню"
+msgstr "/_Вид/Цитаты/Свернуть по второму уровню"
 
 #: src/mainwindow.c:736
 #: src/messageview.c:283
 msgid "/_View/Quotes/Fold from level _3"
-msgstr "/_Вид/Цытаты/Свернуть по третьему уровню"
+msgstr "/_Вид/Цитаты/Свернуть по третьему уровню"
 
 #: src/mainwindow.c:738
 msgid "/_View/_Update summary"
@@ -5913,6 +5960,9 @@ msgstr "/_Инструменты/Создать правило обработк�
 msgid "/_Tools/C_reate processing rule/by _Subject"
 msgstr "/_Инструменты/Создать правило обработки/По теме"
 
+msgid "/_Tools/List _URLs..."
+msgstr "/_Инструменты/Список _URL'ов..."
+
 #: src/mainwindow.c:834
 msgid "/_Tools/Ch_eck for new messages in all folders"
 msgstr "/_Инструменты/_Проверить все папки на новые сообщения"
@@ -5936,6 +5986,9 @@ msgstr "/_Инструменты/Выполнить"
 #: src/mainwindow.c:846
 msgid "/_Tools/SSL cer_tificates..."
 msgstr "/_Инструменты/SSL сертификаты..."
+
+msgid "/_Tools/Filtering debug window"
+msgstr "/_Инструменты/Окно отладки фильтрации"
 
 #: src/mainwindow.c:850
 msgid "/_Tools/_Log window"
@@ -6936,7 +6989,7 @@ msgid "Grab input while entering a passphrase"
 msgstr "Захват ввода при введении парольной фразы"
 
 #: src/plugins/pgpcore/prefs_gpg.c:148
-msgid "Display warning on startup if GnuPG doesn't work"
+msgid "Display warning on start-up if GnuPG doesn't work"
 msgstr "Показывать предупреждение при старте, если GnuPG не работает"
 
 #: src/plugins/pgpcore/prefs_gpg.c:273
@@ -7410,7 +7463,7 @@ msgstr "PGP/Mine"
 
 #: src/plugins/spamassassin/spamassassin.c:159
 msgid "SpamAssassin plugin couldn't connect to spamd.\n"
-msgstr ""
+msgstr "Модуль SpamAssassin не может подключиться к spamd.\n"
 
 #: src/plugins/spamassassin/spamassassin.c:175
 msgid "SpamAssassin plugin filtering failed.\n"
@@ -7476,7 +7529,6 @@ msgid "Spam detection"
 msgstr "Обнаружение спама"
 
 #: src/plugins/spamassassin/spamassassin.c:560
-#, fuzzy
 msgid "Spam learning"
 msgstr "Обучить что это спам"
 
@@ -7574,7 +7626,7 @@ msgid "/_Email"
 msgstr "/_Сообщение"
 
 msgid "/_Email from account"
-msgstr "/_Сообщение для уч. записи"
+msgstr "/_Сообщение из уч. записи"
 
 #: src/plugins/trayicon/trayicon.c:97
 msgid "/Open A_ddressbook"
@@ -7621,6 +7673,15 @@ msgstr ""
 #: src/plugins/trayicon/trayicon.c:422
 msgid "Trayicon"
 msgstr "Значок трея"
+
+msgid "Hide at start-up"
+msgstr "Скрыть при запуске"
+
+msgid "Close to tray"
+msgstr "Скрыть в трее"
+
+msgid "Minimize to tray"
+msgstr "Минимизировать в трее"
 
 #: src/plugins/trayicon/trayicon.c:345
 msgid ""
@@ -8178,6 +8239,12 @@ msgstr "Имя меню:"
 msgid "Command line:"
 msgstr "Команда:"
 
+msgid "Menu name"
+msgstr "Имя меню"
+
+msgid "Command line"
+msgstr "Команда"
+
 #: src/prefs_actions.c:275
 #: src/prefs_filtering_action.c:493
 #: src/prefs_filtering.c:455
@@ -8537,15 +8604,15 @@ msgstr ""
 
 #: src/prefs_customheader.c:590
 msgid "The image is too big; it must be maximum 725 bytes."
-msgstr ""
+msgstr "Изображение слишком большое: должно быть макс. 725 байт."
 
 #: src/prefs_customheader.c:595
 msgid "The image isn't in the correct format (PNG)."
-msgstr ""
+msgstr "Неверный формат изображения (PNG)."
 
 #: src/prefs_customheader.c:604
 msgid "The image isn't in the correct format (XBM)."
-msgstr ""
+msgstr "Неверный формат изображения (XBM)."
 
 #: src/prefs_customheader.c:613
 msgid "Couldn't call `compface`. Make sure it's in your $PATH."
@@ -9438,7 +9505,7 @@ msgid "Set label for 'color %d'"
 msgstr "Выбрать цвет пометки для 'color %d'"
 
 #: src/prefs_msg_colors.c:612
-#, fuzzy, c-format
+#, c-format
 msgid "Pick color for 'color %d' "
 msgstr "Выбрать цвет для 'color %d'"
 
@@ -9519,12 +9586,21 @@ msgid "Empty trash on exit"
 msgstr "Очистить корзину при выходе"
 
 #: src/prefs_other.c:171
-msgid "Ask before emptying"
-msgstr "Запрос перед очисткой"
+msgid "Ask before emptying trash"
+msgstr "Запрос перед очисткой корзины"
+
+msgid "Ask about account specific filtering rules when filtering manually"
+msgstr "Запрос на определённые правила фильтрации для уч. записи при фильтарации вручную"
 
 #: src/prefs_other.c:175
 msgid "Warn if there are queued messages"
 msgstr "Предупреждать о наличии неотправленных сообщений"
+
+msgid "Keyboard shortcuts"
+msgstr "Горячие клавиши"
+
+msgid "Enable customisable menu shortcuts"
+msgstr "Разрешить настраиваемое меню горячих клавиш"
 
 #: src/prefs_other.c:181
 msgid "Socket I/O timeout"
@@ -9835,7 +9911,7 @@ msgid "Path to dictionaries"
 msgstr "Словарь по умолчанию"
 
 #: src/prefs_spelling.c:214
-msgid "Automatic spelling"
+msgid "Automatic spell checking"
 msgstr "Автопроверка орфографии"
 
 #: src/prefs_spelling.c:226
@@ -9845,6 +9921,9 @@ msgstr "Перепроверить сообщение при смене слов
 #: src/prefs_spelling.c:230
 msgid "Dictionary"
 msgstr "Словарь"
+
+msgid "Spell check dictionaries"
+msgstr "Словари проверки орфографии"
 
 #: src/prefs_spelling.c:243
 msgid "Default dictionary"
@@ -10482,6 +10561,9 @@ msgstr "Фильтрация сообщений...\n"
 #: src/quote_fmt.c:40
 msgid "customized date format (see 'man strftime')"
 msgstr "пользовательский формат даты (см. man strftime)"
+
+msgid "email address of sender"
+msgstr "эл. адрес отправителя"
 
 #: src/quote_fmt.c:43
 msgid "full name of sender"
@@ -11568,6 +11650,15 @@ msgstr "Обучить что это спам"
 msgid "Learn Ham"
 msgstr "Обучить что это не спам"
 
+msgid "Learn as..."
+msgstr "Обучить как..."
+
+msgid "Learn as _Spam"
+msgstr "Обучить что это _спам"
+
+msgid "Learn as _Ham"
+msgstr "Обучить что это не _спам"
+
 #: src/wizard.c:459
 msgid "Welcome to Sylpheed-Claws "
 msgstr "Добро пожаловать в Sylpheed-Claws"
@@ -11838,5 +11929,4 @@ msgstr "Использоать X-Face по умолчанию"
 
 msgid "_Email from account"
 msgstr "_Сообщение для учётной записи"
-
 
