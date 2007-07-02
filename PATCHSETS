@@ -2652,3 +2652,4 @@
 ( cvs diff -u -r 1.25.2.19 -r 1.25.2.20 tools/Makefile.am;  ) > 2.9.2cvs74.patchset
 ( cvs diff -u -r 1.207.2.165 -r 1.207.2.166 src/folderview.c;  ) > 2.9.2cvs75.patchset
 ( cvs diff -u -r 1.1.2.1 -r 1.1.2.2 src/gtk/headers.h;  ) > 2.9.2cvs76.patchset
+( cvs diff -u -r 1.100.2.50 -r 1.100.2.51 AUTHORS;  ) > 2.9.2cvs77.patchset
