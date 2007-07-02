@@ -1,5 +1,80 @@
 Changes of the  Claws Mail GTK2 branch
 
+* 2.10.0
+--------
+
+* libetpan 0.49 is now required for IMAP support
+
+* Added "From, To or Subject" to the QuickSearch types.
+
+* Added handling of the 'a' key to loop through a mail's MIME parts.
+
+* In the Compose window "Add to address book" has been added to the
+  context menu of the sender and recipient fields.
+
+* Implemented a proper References filtering condition.
+
+* Added the possibility to cancel receiving in IMAP accounts.
+
+* Made offline synchronisation faster.
+
+* Added an alternate way to fetch flags on IMAP, which improves
+  performance with some servers, (like Exchange).
+  See "Bandwidth-efficient mode" in IMAP accounts' Receive
+  preferences.
+
+* Allow manual sorting of Templates.
+
+* Templates improvements: easier syntax, add some useful variables.
+
+* Implemented per-account and per-folder compose/reply/forward
+  Templates.
+
+* Added a QuickSearch option to automatically run a search selected
+  from the history.
+
+* Made the Summaries Preferemces page "when entering a folder..."
+  options fully customisable.
+
+* Added an "Open last opened folder at startup" option to the
+  Summaries page in the Prerferences.
+
+* Changed the Preference "Only mark as read when opened in new
+  window" on the Summaries page to "Only mark as read when opened
+  in new window, or replied to".
+
+* Allow disabling mail filtering plugins on a per-account
+  basis.
+
+* Added an option to the Bogofilter and SpamAssassin plugins to
+  enable marking saved spam as Read.
+
+* Added a warning about encryption limits, which can be disabled.
+
+* Removed the "Download all" preference from POP3 accounts; it
+  was useless and confusing.
+
+* Re-organized some Preferences page.
+
+* Replaced the tabbed layout in Account Preferences with pages.
+
+* Renamed 'Protocol Log' to 'Network Log'
+
+* Added a few cursor improvments while Claws is busy.
+
+* Added support for CRLF in headers of messages.
+
+* Added support for a few more date formats (RFC3339 subsets).
+
+* The keypad's Enter key now does the same as the Return key.
+
+* Improved LDIF import, better error handling, UI cleanup.
+
+* LDAP write support has been added.
+
+* Use Hildon's file chooser on Maemo.
+
+
 * 2.9.2
 -------
 

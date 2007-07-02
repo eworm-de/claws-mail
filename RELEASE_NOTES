@@ -1,4 +1,4 @@
-8th May 2007                                         Claws Mail 2.9.2
+2nd July 2007                                       Claws Mail 2.10.0
 
 		    CLAWS MAIL  RELEASE NOTES
                     http://www.claws-mail.org
@@ -6,33 +6,117 @@
 Claws Mail is a GTK+ based, user-friendly, lightweight, and fast 
 email client.
 
+Notes for this release:
+~~~~~~~~~~~~~~~~~~~~~~~
+
+libetpan 0.49 is now required for IMAP support
+
 New in this release:
 ~~~~~~~~~~~~~~~~~~~~
 
-* Added a printer icon.
+* Added "From, To or Subject" to the QuickSearch types.
 
-* Bug fixes
-	o bug 1187, 'Reply-to addressee disappears when reply-to text
-		     box is clicked...' (Maemo)
-	o bug 1190, 'dir_open' button doesn't work' (Maemo)
-	o bug 1193, 'Need a way to multi-select items'
-	o bug 1194, 'Hardware keys move from email list to account/
-		     directory list, but not back to email list...'
-		     (Maemo)
-	o bug 1196, 'Edit>Select All doesn't work' (Maemo)
-	o bug 1198, 'Reply-all "disappearing" address bug
-		     persists...'
-	o bug 1200, 'Add option to always retrieve full messages'
-	o bug 1209, 'Clicking on address in header (mailto uri)
-		     selects default account'
-	o bug 1211, 'Offline dialog message bugs/annoyances...'
-	o Don't reflect accounts changes to the mainwindow when it's
-	  not necessary.
-	o Fix double fetching of mails if first try failed
-	o Fix a crash in textview
-	o Fix changing quicksearch type (after Esc, after changing
-	  Recursive, ...)
-	o tools/uudec Fix missing dash to `display` command-line
+* Added handling of the 'a' key to loop through a mail's MIME parts.
+
+* In the Compose window "Add to address book" has been added to the
+  context menu of the sender and recipient fields.
+
+* Implemented a proper References filtering condition.
+
+* Added the possibility to cancel receiving in IMAP accounts.
+
+* Made offline synchronisation faster.
+
+* Added an alternate way to fetch flags on IMAP, which improves
+  performance with some servers, (like Exchange).
+  See "Bandwidth-efficient mode" in IMAP accounts' Receive
+  preferences.
+
+* Allow manual sorting of Templates.
+
+* Templates improvements: easier syntax, add some useful variables.
+
+* Implemented per-account and per-folder compose/reply/forward
+  Templates.
+
+* Added a QuickSearch option to automatically run a search selected
+  from the history.
+
+* Made the Summaries Preferemces page "when entering a folder..."
+  options fully customisable.
+
+* Added an "Open last opened folder at startup" option to the
+  Summaries page in the Prerferences.
+
+* Changed the Preference "Only mark as read when opened in new
+  window" on the Summaries page to "Only mark as read when opened
+  in new window, or replied to".
+
+* Allow disabling mail filtering plugins on a per-account
+  basis.
+
+* Added an option to the Bogofilter and SpamAssassin plugins to
+  enable marking saved spam as Read.
+
+* Added a warning about encryption limits, which can be disabled.
+
+* Removed the "Download all" preference from POP3 accounts; it
+  was useless and confusing.
+
+* Re-organized some Preferences page.
+
+* Replaced the tabbed layout in Account Preferences with pages.
+
+* Renamed 'Protocol Log' to 'Network Log'
+
+* Added a few cursor improvments while Claws is busy.
+
+* Added support for CRLF in headers of messages.
+
+* Added support for a few more date formats (RFC3339 subsets).
+
+* The keypad's Enter key now does the same as the Return key.
+
+* Improved LDIF import, better error handling, UI cleanup.
+
+* LDAP write support has been added.
+
+* Use Hildon's file chooser on Maemo.
+
+* Updated Brazilian Portuguese, British English, French, German,
+  Hungarian, Russian, Simplified Chinese and Spanish translations. 
+
+* Bug fixes:
+	o bug 848, 'Redirect breaks GnuPG'
+	o bug 1217, 'reentrancy problems with time functions'
+	o bug 1248, 'Core dumps after unloading plugin and clicking
+		     on load plugins'
+	o bug 1249, 'Error handling for news errors needs
+		     modification'
+	o Race condition when automatically drafting due to
+	  insertion on re-edit.
+	o Consider "- -- \n" as signature separator (fixes signature
+	  stripping when replying to PGP/Inline signed emails).
+	o Race condition crash when reconnection fails on IMAP.
+	o Raising log windows when they are either minimized or in
+	  background.
+	o Occasional crasher when cancelling message sending.
+	o Stale news statusbar when scanning fails.
+	o A few race conditions when sending/drafting emails.
+	o Building of some plugins in Mac OS X.
+	o Don't decode leading ENV_ and ~ in P_PASSWORD configuration
+	  values.
+	o Incoming messages from local accounts always get filtered
+	  regardless of the preference.
+	o Use gethostname() instead of uname(), fixes failures to
+	  determine hostname on some BSDs.
+	o Crash if fork() fails when resolving hostnames.
+	o Infinite loop when exiting with compose window(s) opened,
+	  when the draft folder is on IMAP and unreachable.
+	o Sizing/alignment of the button bar in plugins window.
+	o Copying text from HTML parts.
+	o 'make distcheck' failure
+
 
 For further details of the numbered bugs listed above consult
 http://www.thewildbeast.co.uk/claws-mail/bugzilla/index.cgi
