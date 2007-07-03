@@ -1142,6 +1142,7 @@ Compose *compose_generic_new(PrefsAccount *account, const gchar *mailto, FolderI
 	if (prefs_common.auto_exteditor)
 		compose_exec_ext_editor(compose);
 
+	compose->draft_timeout_tag = -1;
 	compose->modified = FALSE;
 	compose_set_title(compose);
         return compose;

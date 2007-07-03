@@ -2452,8 +2452,7 @@ static void summary_set_column_titles(SummaryView *summaryview)
 		SORT_BY_NUMBER,
 		SORT_BY_SCORE,
 		SORT_BY_LOCKED,
-		SORT_BY_TAGS,
-		SORT_BY_THREAD_DATE
+		SORT_BY_TAGS
 	};
 
 	for (pos = 0; pos < N_SUMMARY_COLS; pos++) {
@@ -2705,7 +2704,7 @@ static void summary_find_thread_age(GNode *gnode)
 {
 	MsgInfo *msginfo = (MsgInfo *)gnode->data;
 	time_t most_recent;
-	gchar b[256],b2[256];
+
 	if (!msginfo)
 		return;
 	most_recent = msginfo->thread_date = msginfo->date_t;
