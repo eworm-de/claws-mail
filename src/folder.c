@@ -575,6 +575,10 @@ void folder_item_set_xml(Folder *folder, FolderItem *item, XMLTag *tag)
 				item->sort_key = SORT_BY_TO;
 			else if (!strcmp(attr->value, "locked"))
 				item->sort_key = SORT_BY_LOCKED;
+			else if (!strcmp(attr->value, "tags"))
+				item->sort_key = SORT_BY_TAGS;
+			else if (!strcmp(attr->value, "thread_date"))
+				item->sort_key = SORT_BY_THREAD_DATE;
 		} else if (!strcmp(attr->name, "sort_type")) {
 			if (!strcmp(attr->value, "ascending"))
 				item->sort_type = SORT_ASCENDING;
@@ -606,7 +610,7 @@ XMLTag *folder_item_get_xml(Folder *folder, FolderItem *item)
 	static gchar *sort_key_str[] = {"none", "number", "size", "date",
 					"from", "subject", "score", "label",
 					"mark", "unread", "mime", "to", 
-					"locked"};
+					"locked", "tags", "thread_date" };
 	XMLTag *tag;
 	gchar *value;
 

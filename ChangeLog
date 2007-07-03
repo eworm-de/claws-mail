@@ -1,3 +1,11 @@
+2007-07-03 [colin]	2.10.0cvs4
+
+	* src/folder.c
+	* src/mainwindow.c
+		Fix saving of sort mode for tags and
+		thread date. Thanks to Pierre Ossman.
+		Completes fix for bug 1233
+
 2007-07-03 [paul]	2.10.0cvs3
 
 	* src/compose.c
