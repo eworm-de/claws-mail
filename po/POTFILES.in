@@ -26,6 +26,7 @@ src/editgroup.c
 src/editjpilot.c
 src/editldap_basedn.c
 src/editldap.c
+src/edittags.c
 src/editvcard.c
 src/exphtmldlg.c
 src/expldifdlg.c
