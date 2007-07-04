@@ -1,3 +1,8 @@
+2007-07-04 [wwp]	2.10.0cvs6
+
+	* src/plugins/bogofilter/bogofilter.c
+		Gettext-ize an occurrence of "Any" that wasn't.
+
 2007-07-04 [colin]	2.10.0cvs5
 
 	* po/POTFILES.in

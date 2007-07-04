@@ -100,7 +100,7 @@ static PrefParam param[] = {
 	 NULL, NULL, NULL},
 	{"whitelist_ab", "FALSE", &config.whitelist_ab, P_BOOL,
 	 NULL, NULL, NULL},
-	{"whitelist_ab_folder", "Any", &config.whitelist_ab_folder, P_STRING,
+	{"whitelist_ab_folder", N_("Any"), &config.whitelist_ab_folder, P_STRING,
 	 NULL, NULL, NULL},
 	{"mark_as_read", "TRUE", &config.mark_as_read, P_BOOL,
 	 NULL, NULL, NULL},

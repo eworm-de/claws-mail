@@ -2659,3 +2659,4 @@
 ( cvs diff -u -r 1.382.2.392 -r 1.382.2.393 src/compose.c;  cvs diff -u -r 1.395.2.307 -r 1.395.2.308 src/summaryview.c;  ) > 2.10.0cvs3.patchset
 ( cvs diff -u -r 1.213.2.146 -r 1.213.2.147 src/folder.c;  cvs diff -u -r 1.274.2.193 -r 1.274.2.194 src/mainwindow.c;  ) > 2.10.0cvs4.patchset
 ( cvs diff -u -r 1.53.2.27 -r 1.53.2.28 po/POTFILES.in;  ) > 2.10.0cvs5.patchset
+( cvs diff -u -r 1.1.2.31 -r 1.1.2.32 src/plugins/bogofilter/bogofilter.c;  ) > 2.10.0cvs6.patchset
