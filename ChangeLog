@@ -2,7 +2,7 @@
 
 	* src/quote_fmt.c
 		It's %am that works, not %ae (this doc incoherence has been
-		introduced with 2.9.2cvs14).
+		introduced with 2.9.2cvs13).
 
 2007-07-04 [wwp]	2.10.0cvs6
 
