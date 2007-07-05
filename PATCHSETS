@@ -2661,3 +2661,4 @@
 ( cvs diff -u -r 1.53.2.27 -r 1.53.2.28 po/POTFILES.in;  ) > 2.10.0cvs5.patchset
 ( cvs diff -u -r 1.1.2.31 -r 1.1.2.32 src/plugins/bogofilter/bogofilter.c;  ) > 2.10.0cvs6.patchset
 ( cvs diff -u -r 1.8.2.20 -r 1.8.2.21 src/quote_fmt.c;  ) > 2.10.0cvs7.patchset
+( cvs diff -u -r 1.9.2.24 -r 1.9.2.25 src/plugins/clamav/clamav_plugin_gtk.c;  ) > 2.10.0cvs8.patchset

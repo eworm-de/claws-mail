@@ -1,3 +1,8 @@
+2007-07-05 [wwp]	2.10.0cvs8
+
+	* src/plugins/clamav/clamav_plugin_gtk.c
+		Make vertical spacing like in other plugin prefs pages.
+
 2007-07-05 [wwp]	2.10.0cvs7
 
 	* src/quote_fmt.c
