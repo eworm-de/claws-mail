@@ -1,3 +1,9 @@
+2007-07-05 [wwp]	2.10.0cvs7
+
+	* src/quote_fmt.c
+		It's %am that works, not %ae (this doc incoherence has been
+		introduced with 2.9.2cvs14).
+
 2007-07-04 [wwp]	2.10.0cvs6
 
 	* src/plugins/bogofilter/bogofilter.c

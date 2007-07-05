@@ -66,7 +66,7 @@ static gchar *quote_desc_strings[] = {
 	"%dict (%T)",				N_("current dictionary"), /* current dictionary */
 	"%cursor (%X)",				N_("cursor position"), /* X marks the cursor spot */
 	"%account_fullname (%af)",	N_("account property: your name"), /* full name in compose account */
-	"%account_email (%ae)",		N_("account property: your email address"), /* mail address in compose account */
+	"%account_email (%am)",		N_("account property: your email address"), /* mail address in compose account */
 	"%account_name (%an)",		N_("account property: account name"), /* compose account name itself */
 	"%account_org (%ao)",		N_("account property: organization"), /* organization in compose account */
 	"%account_dict (%aT)",		N_("account property: default dictionary"), /* main dict (if enabled) in account */
