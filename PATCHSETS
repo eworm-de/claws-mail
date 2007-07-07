@@ -2662,3 +2662,4 @@
 ( cvs diff -u -r 1.1.2.31 -r 1.1.2.32 src/plugins/bogofilter/bogofilter.c;  ) > 2.10.0cvs6.patchset
 ( cvs diff -u -r 1.8.2.20 -r 1.8.2.21 src/quote_fmt.c;  ) > 2.10.0cvs7.patchset
 ( cvs diff -u -r 1.9.2.24 -r 1.9.2.25 src/plugins/clamav/clamav_plugin_gtk.c;  ) > 2.10.0cvs8.patchset
+( cvs diff -u -r 1.5.10.5 -r 1.5.10.6 COPYING;  cvs diff -u -r 1.1.2.1 -r 1.1.2.2 manual/claws-mail-manual.xml;  cvs diff -u -r 1.1.2.13 -r 1.1.2.14 po/fi.po;  ) > 2.10.0cvs9.patchset

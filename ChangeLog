@@ -1,3 +1,11 @@
+2007-07-07 [paul]	2.10.0cvs9
+
+	* COPYING
+	* manual/claws-mail-manual.xml
+		update copyright year
+	* po/fi.po
+		updated by Flammie Pirinen
+
 2007-07-05 [wwp]	2.10.0cvs8
 
 	* src/plugins/clamav/clamav_plugin_gtk.c
