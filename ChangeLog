@@ -1,3 +1,8 @@
+2007-07-09 [colin]	2.10.0cvs10
+
+	* src/prefs_toolbar.c
+		Fix crash when no actions exist
+
 2007-07-07 [paul]	2.10.0cvs9
 
 	* COPYING

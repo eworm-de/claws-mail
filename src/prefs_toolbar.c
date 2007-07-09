@@ -367,6 +367,8 @@ static void prefs_toolbar_default(GtkButton *button, ToolbarPage *prefs_toolbar)
 static void get_action_name(const gchar *entry, gchar **menu)
 {
 	gchar *act, *act_p;
+	
+	*menu = NULL;
 
 	if (prefs_common.actions_list != NULL) {
 		
@@ -387,7 +389,7 @@ static void prefs_toolbar_register(GtkButton *button, ToolbarPage *prefs_toolbar
 	gchar *syl_act = toolbar_ret_descr_from_val(A_SYL_ACTIONS);
 	GtkListStore *store_set;
 	GtkTreeIter iter;
-	gchar *fname;
+	gchar *fname = NULL;
 
 	/* move selection in icon list view to set list view */
 
@@ -441,15 +443,17 @@ static void prefs_toolbar_register(GtkButton *button, ToolbarPage *prefs_toolbar
 			text = gtk_editable_get_chars
 				(GTK_EDITABLE(prefs_toolbar->entry_icon_text), 0, -1);
 
-		gtk_list_store_append(store_set, &iter);
-		gtk_list_store_set(store_set, &iter,
-				   SET_ICON, pixbuf,
-				   SET_FILENAME, fname,
-				   SET_TEXT, text,
-				   SET_EVENT, event,
-				   SET_ICON_TEXT, NULL,
-				   SET_ICON_IS_TEXT, FALSE,
-				   -1);
+		if (text != NULL) {
+			gtk_list_store_append(store_set, &iter);
+			gtk_list_store_set(store_set, &iter,
+					   SET_ICON, pixbuf,
+					   SET_FILENAME, fname,
+					   SET_TEXT, text,
+					   SET_EVENT, event,
+					   SET_ICON_TEXT, NULL,
+					   SET_ICON_IS_TEXT, FALSE,
+					   -1);
+		}
 		g_free(text);
 		g_free(event);
 	}
@@ -534,15 +538,16 @@ static void prefs_toolbar_substitute(GtkButton *button, ToolbarPage *prefs_toolb
 		}
 
 		/* change the row */
-		gtk_list_store_set(store_set, &iter_set,
-				   SET_ICON, pixbuf,
-				   SET_FILENAME, icon_fname,
-				   SET_TEXT, text,
-				   SET_EVENT, icon_event,
-				   SET_ICON_TEXT, NULL,
-				   SET_ICON_IS_TEXT, FALSE,
-				   -1);
-	
+		if (text != NULL) {
+			gtk_list_store_set(store_set, &iter_set,
+					   SET_ICON, pixbuf,
+					   SET_FILENAME, icon_fname,
+					   SET_TEXT, text,
+					   SET_EVENT, icon_event,
+					   SET_ICON_TEXT, NULL,
+					   SET_ICON_IS_TEXT, FALSE,
+					   -1);
+		}	
 		g_free(icon_event);
 		g_free(set_event);
 		g_free(text);
