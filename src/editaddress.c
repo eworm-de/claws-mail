@@ -42,51 +42,11 @@
 #include "gtkutils.h"
 #include "codeconv.h"
 #include "editaddress.h"
-
+#include "editaddress_other_attributes_ldap.h"
 #include "prefs_common.h"
 
-static struct _PersonEdit_dlg {
-	GtkWidget *container;
-	GtkWidget *notebook;
-	GtkWidget *ok_btn;
-	GtkWidget *cancel_btn;
-	GtkWidget *statusbar;	/* used when prefs_common.addressbook_use_editaddress_dialog is TRUE */
-	GtkWidget *title;	/* used when prefs_common.addressbook_use_editaddress_dialog is FALSE */
-	gint status_cid;
-
-	/* User data tab */
-	GtkWidget *entry_name;
-	GtkWidget *entry_first;
-	GtkWidget *entry_last;
-	GtkWidget *entry_nick;
-
-	/* EMail data tab */
-	GtkWidget *entry_email;
-	GtkWidget *entry_alias;
-	GtkWidget *entry_remarks;
-	GtkWidget *clist_email;
-	GtkWidget *email_up;
-	GtkWidget *email_down;
-	GtkWidget *email_del;
-	GtkWidget *email_mod;
-	GtkWidget *email_add;
-
-	/* Attribute data tab */
-	GtkWidget *entry_atname;
-	GtkWidget *entry_atvalue;
-	GtkWidget *clist_attrib;
-	GtkWidget *attrib_add;
-	GtkWidget *attrib_del;
-	GtkWidget *attrib_mod;
-
-	gint rowIndEMail;
-	gint rowIndAttrib;
-	gboolean editNew;
-	gboolean read_only;
-	gboolean ldap;
-} personeditdlg;
-
 /* transient data */
+static struct _PersonEdit_dlg personeditdlg;
 static AddressBookFile *current_abf = NULL;
 static ItemPerson *current_person = NULL;
 static ItemFolder *current_parent_folder = NULL;
@@ -226,8 +186,10 @@ static void edit_person_email_clear( gpointer data ) {
 }
 
 static void edit_person_attrib_clear( gpointer data ) {
-	gtk_entry_set_text( GTK_ENTRY(personeditdlg.entry_atname), "" );
-	gtk_entry_set_text( GTK_ENTRY(personeditdlg.entry_atvalue), "" );
+	if (!personeditdlg.ldap) {
+		gtk_entry_set_text( GTK_ENTRY(personeditdlg.entry_atname), "" );
+		gtk_entry_set_text( GTK_ENTRY(personeditdlg.entry_atvalue), "" );
+	}
 }
 
 static void edit_person_switch_page( GtkNotebook *notebook, GtkNotebookPage *page,
@@ -1163,7 +1125,10 @@ static void addressbook_edit_person_create( GtkWidget *parent, gboolean *cancell
 		addressbook_edit_person_widgetset_create( parent, cancelled );
 	addressbook_edit_person_page_basic( PAGE_BASIC, _( "_User Data" ) );
 	addressbook_edit_person_page_email( PAGE_EMAIL, _( "_Email Addresses" ) );
-	addressbook_edit_person_page_attrib( PAGE_ATTRIBUTES, _( "O_ther Attributes" ) );
+	if (personeditdlg.ldap)
+		addressbook_edit_person_page_attrib_ldap(&personeditdlg, PAGE_ATTRIBUTES, _("O_ther Attributes"));
+	else
+		addressbook_edit_person_page_attrib( PAGE_ATTRIBUTES, _( "O_ther Attributes" ) );
 	gtk_widget_show_all( personeditdlg.container );
 }
 
@@ -1211,11 +1176,11 @@ static void update_sensitivity(void)
 	gtk_widget_set_sensitive(personeditdlg.email_del,     !personeditdlg.read_only);
 	gtk_widget_set_sensitive(personeditdlg.email_mod,     !personeditdlg.read_only);
 	gtk_widget_set_sensitive(personeditdlg.email_add,     !personeditdlg.read_only);
-	gtk_widget_set_sensitive(personeditdlg.entry_atname,  !personeditdlg.read_only && !personeditdlg.ldap);
-	gtk_widget_set_sensitive(personeditdlg.entry_atvalue, !personeditdlg.read_only && !personeditdlg.ldap);
-	gtk_widget_set_sensitive(personeditdlg.attrib_add,    !personeditdlg.read_only && !personeditdlg.ldap);
-	gtk_widget_set_sensitive(personeditdlg.attrib_del,    !personeditdlg.read_only && !personeditdlg.ldap);
-	gtk_widget_set_sensitive(personeditdlg.attrib_mod,    !personeditdlg.read_only && !personeditdlg.ldap);
+	gtk_widget_set_sensitive(personeditdlg.entry_atname,  !personeditdlg.read_only);
+	gtk_widget_set_sensitive(personeditdlg.entry_atvalue, !personeditdlg.read_only);
+	gtk_widget_set_sensitive(personeditdlg.attrib_add,    !personeditdlg.read_only);
+	gtk_widget_set_sensitive(personeditdlg.attrib_del,    !personeditdlg.read_only);
+	gtk_widget_set_sensitive(personeditdlg.attrib_mod,    !personeditdlg.read_only);
 }
 
 static void addressbook_edit_person_flush_transient( void )
@@ -1388,6 +1353,7 @@ ItemPerson *addressbook_edit_person( AddressBookFile *abf, ItemFolder *parent_fo
 			gtk_entry_set_text(GTK_ENTRY(personeditdlg.entry_nick), person->nickName );
 		edit_person_load_email( person );
 		edit_person_load_attrib( person );
+		gtk_entry_set_text(GTK_ENTRY(personeditdlg.entry_atvalue), "");
 	}
 	else {
 		personeditdlg.editNew = TRUE;

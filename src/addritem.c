@@ -551,6 +551,47 @@ void addritem_person_add_attribute(
 }
 
 /**
+ * Remove user attribute from specified person.
+ * \param  person Person.
+ * \param  attrib Attribute to remove.
+ */
+void addritem_person_remove_attribute(	ItemPerson *person, const gchar *attrib ) {
+	g_return_if_fail( person != NULL || attrib != NULL );
+	GList *attrib_list;
+
+	attrib_list = person->listAttrib;
+	while (attrib_list) {
+		UserAttribute *user_attrib = attrib_list->data;
+		if (strcmp(user_attrib->name, attrib) == 0) {
+			person->listAttrib = g_list_remove(person->listAttrib, (gconstpointer) user_attrib);
+			break;
+		}
+		attrib_list = g_list_next(attrib_list);
+	}
+}
+
+/**
+ * find out if a user attribute already exists in the specified person.
+ * \param  person Person.
+ * \param  attrib Attribute to remove.
+ * \return <i>TRUE</i> if attribute exists
+ */
+gboolean addritem_person_has_attribute(	ItemPerson *person, const gchar *attrib ) {
+	g_return_val_if_fail( person != NULL || attrib != NULL, FALSE );
+	GList *attrib_list = NULL;
+
+	attrib_list = person->listAttrib;
+	while (attrib_list) {
+		UserAttribute *user_attrib = attrib_list->data;
+		if (strcmp(user_attrib->name, attrib) == 0) {
+			return TRUE;
+		}
+		attrib_list = g_list_next(attrib_list);
+	}
+	return FALSE;
+}
+
+/**
  * Create new address book group object.
  * \return Initialized group object.
  */

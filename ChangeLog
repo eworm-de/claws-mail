@@ -1,3 +1,19 @@
+2007-07-09 [colin]	2.10.0cvs12
+
+	* src/Makefile.am
+	* src/addritem.c
+	* src/addritem.h
+	* src/editaddress.c
+	* src/editaddress_other_attributes_ldap.c
+	* src/editaddress_other_attributes_ldap.h
+	* src/editldap.c
+	* src/ldapctrl.c
+	* src/ldapctrl.h
+	* src/ldapupdate.c
+		Add capability to edit all inetOrgPerson
+		attributes on LDAP. Patch by Michael 
+		Rasmussen
+
 2007-07-09 [colin]	2.10.0cvs11
 
 	* src/Makefile.am

@@ -47,7 +47,7 @@
 #define LDAPCTL_ATTR_PHONE     "telephoneNumber"
 #define LDAPCTL_ATTR_DISPLAYNAME "displayName"
 
-#define LDAPCTL_DFL_ATTR_LIST   "mail, cn, givenName, sn, displayName, telephoneNumber"
+#define LDAPCTL_DFL_ATTR_LIST   "mail, cn, givenName, sn, displayName"
 
 /*
  * Search matching options.
@@ -105,6 +105,9 @@ gchar *ldapctl_format_criteria	( LdapControl *ctl, const gchar *searchVal );
 char **ldapctl_attribute_array	( LdapControl *ctl );
 void ldapctl_free_attribute_array( char **ptrArray );
 void ldapctl_parse_ldap_search	( LdapControl *ctl, gchar *criteria );
+gchar *ldapctl_get_default_criteria(void);
+GList *ldapctl_get_default_criteria_list();
+gboolean ldapctl_compare_list(GList *l1, GList *l2);
 
 #endif	/* USE_LDAP */
 

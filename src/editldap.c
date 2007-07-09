@@ -311,8 +311,8 @@ static void edit_ldap_basedn_select( void ) {
 	g_free( sPass );
 }
 
-static void edit_ldap_search_reset( void ) {
-	gtk_entry_set_text(GTK_ENTRY(ldapedit.entry_criteria), LDAPCTL_DFL_ATTR_LIST );
+static void edit_ldap_search_reset() {
+	gtk_entry_set_text(GTK_ENTRY(ldapedit.entry_criteria), ldapctl_get_default_criteria());
 }
 
 static void addressbook_edit_ldap_dialog_create( gboolean *cancelled ) {
@@ -591,6 +591,7 @@ static void addressbook_edit_ldap_page_search( gint pageNum, gchar *pageLbl ) {
 	gtk_misc_set_alignment(GTK_MISC(label), 0, 0.5);
 
 	entry_criteria = gtk_entry_new();
+	gtk_editable_set_editable(GTK_EDITABLE(entry_criteria), FALSE);
 	gtk_table_attach(GTK_TABLE(table), entry_criteria, 1, 2, top, (top + 1),
 		GTK_EXPAND|GTK_SHRINK|GTK_FILL, 0, 0, 0);
 
@@ -878,7 +879,7 @@ static void editldap_parse_criteria( gchar *criteria, LdapControl *ctl ) {
 /**
  * Clear entry fields to reasonable defaults (for a new server entry).
  */
-static void edit_ldap_clear_fields( void ) {
+static void edit_ldap_clear_fields() {
 	gtk_entry_set_text(
 		GTK_ENTRY(ldapedit.entry_name), ADDRESSBOOK_GUESS_LDAP_NAME );
 	gtk_entry_set_text(
@@ -893,7 +894,7 @@ static void edit_ldap_clear_fields( void ) {
 	gtk_spin_button_set_value(
 		GTK_SPIN_BUTTON( ldapedit.spinbtn_maxentry ), LDAPCTL_DFL_TIMEOUT );
 	gtk_entry_set_text(
-		GTK_ENTRY(ldapedit.entry_criteria), LDAPCTL_DFL_ATTR_LIST );
+		GTK_ENTRY(ldapedit.entry_criteria), ldapctl_get_default_criteria());
 	gtk_spin_button_set_value(
 		GTK_SPIN_BUTTON(ldapedit.spinbtn_queryage), LDAPCTL_DFL_QUERY_AGE );
 	gtk_toggle_button_set_active(
@@ -999,7 +1000,7 @@ AdapterDSource *addressbook_edit_ldap(
 			GTK_WINDOW(ldapedit.window), _("Edit LDAP Server"));
 	}
 	else {
-		edit_ldap_clear_fields();
+		edit_ldap_clear_fields(NULL);
 		gtk_window_set_title(
 			GTK_WINDOW(ldapedit.window), _("Add New LDAP Server"));
 	}

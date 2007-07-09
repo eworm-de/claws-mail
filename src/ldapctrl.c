@@ -33,6 +33,7 @@
 
 #include "ldapctrl.h"
 #include "mgutils.h"
+#include "editaddress_other_attributes_ldap.h"
 
 /**
  * Create new LDAP control block object.
@@ -553,14 +554,26 @@ gchar *ldapctl_format_criteria( LdapControl *ctl, const gchar *searchVal ) {
  */
 char **ldapctl_attribute_array( LdapControl *ctl ) {
 	char **ptrArray;
-	GList *node;
+	GList *node, *def;
 	gint cnt, i;
 	g_return_val_if_fail( ctl != NULL, NULL );
 
+	def = ldapctl_get_default_criteria_list();
+	/* check if this servers config is updated to the new
+	 * default list of search criteria. If not update the list */
+	if (! ldapctl_compare_list(ctl->listCriteria, def)) {
+		/* Deep copy search criteria */
+		ldapctl_criteria_list_clear(ctl);
+		while(def) {
+			ctl->listCriteria = g_list_append(
+				ctl->listCriteria, g_strdup(def->data));
+			def = g_list_next(def);
+		}
+	}
+	node = ctl->listCriteria;
 	cnt = g_list_length( ctl->listCriteria );
 	ptrArray = g_new0( char *, 1 + cnt );
 	i = 0;
-	node = ctl->listCriteria;
 	while( node ) {
 		ptrArray[ i++ ] = node->data;
 		node = g_list_next( node );
@@ -625,6 +638,71 @@ void ldapctl_parse_ldap_search( LdapControl *ctl, gchar *criteria ) {
 		}
 		ptr++;
 	}
+}
+
+/**
+ * Return the default LDAP search criteria string.
+ * \return Formatted string or <i>""</i>. Should be g_free() when done.
+ */
+gchar *ldapctl_get_default_criteria() {
+	gchar *retVal = LDAPCTL_DFL_ATTR_LIST;
+	const gchar **attrs = ATTRIBUTE; 
+
+	while (*attrs) {
+		retVal = g_strdup_printf("%s, %s", retVal, *attrs++);
+	}
+	return retVal;
+}
+
+/**
+ * Return the default LDAP search criteria list.
+ * \return GList or <i>NULL</i>.
+ */
+GList *ldapctl_get_default_criteria_list() {
+	gchar *criteria, *item;
+	gchar **c_list, **w_list;
+	GList *attr_list = NULL;
+
+	criteria = ldapctl_get_default_criteria();
+	c_list = g_strsplit(criteria, " ", 0);
+	g_free(criteria);
+	criteria = NULL;
+	w_list = c_list;
+	while ((criteria = *w_list++) != 0) {
+		/* copy string elimination <,> */
+		if (*w_list)
+			item = g_strndup(criteria, strlen(criteria) - 1);
+		else
+			item = g_strdup(criteria);
+		attr_list = g_list_append(attr_list, g_strdup(item));
+		g_free(item);
+	}
+	g_strfreev(c_list);
+	return attr_list;
+}
+
+/**
+ * Compare to GList for equality.
+ * \param l1 First GList
+ * \param l2 Second GList
+ * \Return TRUE or FALSE
+ */
+gboolean ldapctl_compare_list(GList *l1, GList *l2) {
+	gchar *first, *second;
+	if (! l1 && ! l2)
+		return TRUE;
+	if ((! l1 && l2) || (l1 && ! l2))
+		return FALSE;
+	while (l1 && l2) {
+		first = (gchar *) l1->data;
+		second = (gchar *) l2->data;
+		if ( ! (first && second) || strcmp(first, second) != 0) {
+			return FALSE;
+		}
+		l1 = g_list_next(l1);
+		l2 = g_list_next(l2);
+	}
+	return TRUE;
 }
 
 #endif	/* USE_LDAP */

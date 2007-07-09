@@ -159,6 +159,8 @@ gboolean addritem_person_add_email		( ItemPerson *person, ItemEMail *email );
 ItemEMail *addritem_person_remove_email		( ItemPerson *person, ItemEMail *email );
 
 void addritem_person_add_attribute		( ItemPerson *person, UserAttribute *attrib );
+void addritem_person_remove_attribute	( ItemPerson *person, const gchar *attrib );
+gboolean addritem_person_has_attribute	( ItemPerson *person, const gchar *attrib );
 
 ItemFolder *addritem_create_item_folder	( void );
 ItemFolder *addritem_copy_item_folder	( ItemFolder *item );

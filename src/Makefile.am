@@ -38,6 +38,7 @@ claws_mail_SOURCES = \
 	customheader.c \
 	displayheader.c \
 	editaddress.c \
+	editaddress_other_attributes_ldap.c \
 	editbook.c \
 	editgroup.c \
 	editjpilot.c \
@@ -182,6 +183,7 @@ claws_mailinclude_HEADERS = \
 	customheader.h \
 	displayheader.h \
 	editaddress.h \
+	editaddress_other_attributes_ldap.h \
 	editbook.h \
 	editgroup.h \
 	editjpilot.h \
