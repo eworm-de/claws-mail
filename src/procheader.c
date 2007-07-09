@@ -29,6 +29,10 @@
 #include <time.h>
 #include <sys/stat.h>
 
+#ifdef G_OS_WIN32
+#  include <w32lib.h>
+#endif
+
 #include "procheader.h"
 #include "procmsg.h"
 #include "codeconv.h"

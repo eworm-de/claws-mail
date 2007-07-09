@@ -448,6 +448,7 @@ EXTRA_DIST = \
 
 INCLUDES = \
 	-I$(srcdir)/common \
+	-Icommon \
 	-I$(srcdir)/gtk \
 	-I$(srcdir)/etpan
 

@@ -44,7 +44,7 @@
 #include <string.h>
 #include <sys/types.h>
 #ifdef G_OS_WIN32
-#include <windows.h>
+#include <w32lib.h>
 #else
 #include <sys/mman.h>
 #endif

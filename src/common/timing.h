@@ -29,6 +29,7 @@
 #ifndef __TIMING_H__
 #define __TIMING_H__
 
+#include <glib.h>
 #include <sys/time.h>
 #ifdef HAVE_CONFIG_H
 #  include "config.h"
@@ -49,13 +50,38 @@
 #define START_TIMING(str) do {} while(0);
 #define END_TIMING() do {} while(0);
 #else
+
+#ifdef G_OS_WIN32
+
+#include <w32lib.h>
+
+/* no {} by purpose */
+#define START_TIMING(str) 						\
+        LARGE_INTEGER frequency;					\
+	LARGE_INTEGER start;						\
+	LARGE_INTEGER end;						\
+	LARGE_INTEGER diff;						\
+	const char *timing_name=str;					\
+	QueryPerformanceFrequency (&frequency);				\
+	QueryPerformanceCounter (&start);				\
+
+#define END_TIMING()							\
+	QueryPerformanceCounter (&end);					\
+        diff.QuadPart = (double)					\
+		((end.QuadPart - start.QuadPart)	\
+		* (double)1000.0/(double)frequency.QuadPart);		\
+        debug_print("TIMING %s: %ds%03dms\n",				\
+		timing_name, (unsigned int) (diff.QuadPart / 1000000),	\
+		(unsigned int) ((diff.QuadPart / 1000) % 1000));
+
+#else
 /* no {} by purpose */
 #define START_TIMING(str) 						\
 	struct timeval start;						\
 	struct timeval end;						\
 	struct timeval diff;						\
 	const char *timing_name=str;					\
-	gettimeofday(&start, NULL);					\
+	gettimeofday(&start, NULL);
 
 #ifdef __GLIBC__
 #define END_TIMING()							\
@@ -64,7 +90,7 @@
 	debug_print("TIMING %s %s: %ds%03dms\n", 			\
 		__FUNCTION__,						\
 		timing_name, (unsigned int)diff.tv_sec, 		\
-		(unsigned int)diff.tv_usec/1000);			
+		(unsigned int)diff.tv_usec/1000);
 #else
 #define END_TIMING()							\
 	gettimeofday(&end, NULL);					\
@@ -76,3 +102,4 @@
 
 #endif 
 #endif 
+#endif

@@ -33,7 +33,9 @@
 #include <stdlib.h>
 #include <errno.h>
 #include <sys/types.h>
-#include <sys/wait.h>
+#ifndef G_OS_WIN32
+#  include <sys/wait.h>
+#endif
 #if (defined(__DragonFly__) || defined (__NetBSD__) || defined (__FreeBSD__) || defined (__OpenBSD__))
 #  include <sys/signal.h>
 #endif

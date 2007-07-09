@@ -44,6 +44,12 @@
 
 /* Changes are:
 
+2007-05-21  Werner Koch  <wk@g10code.com>
+
+	* src/common/w32_account.c: New.
+
+	* src/common/w32lib.h: Undef "interface".
+
 2005-11-17  Werner Koch  <wk@g10code.com>
 
 	Add boilerplate text to all files and explain legal status.
@@ -75,6 +81,13 @@
 #include <wchar.h>
 #include <dirent.h>
 #endif
+
+/* Mingw32 3.4.4 defines interface to struct and thus breaks our own
+   use of that symbol.  Undef it here. */
+#if defined(_BASETYPS_H) && defined(interface) 
+#undef interface
+#endif
+
 
 /* types */
 /*** ??? ***/
@@ -188,8 +201,18 @@ int kill( pid_t pid, int sig );
 FILE *popen( const char *command, const char *type );
 int pclose( FILE *stream );
 
+/*** w32_account.c ***/
+int w32_is_administrator (void);
+
 /*** misc ***/
 char *read_w32_registry_string( char *parent, char *section, char *key );
 char *get_content_type_from_registry_with_ext( char *ext );
+
+
+/* Simulate thread-safe versions of some functions.  */
+#define gmtime_r(time, resultp) gmtime (time)
+#define localtime_r(time, resultp) localtime (time)
+#define asctime_r(time, buffer) asctime (time)
+#define ctime_r(time, buffer) ctime (time)
 
 #endif

@@ -31,6 +31,10 @@
 #include <gtk/gtk.h>
 #include <gdk/gdkkeysyms.h>
 
+#ifdef G_OS_WIN32
+#  include <w32lib.h>
+#endif
+
 #include "prefs_common.h"
 #include "prefs_gtk.h"
 #include "prefs_summary_open.h"

@@ -1,3 +1,38 @@
+2007-07-09 [colin]	2.10.0cvs11
+
+	* src/Makefile.am
+	* src/exporthtml.c
+	* src/mbox.c
+	* src/msgcache.c
+	* src/prefs_summaries.c
+	* src/prefs_themes.c
+	* src/procheader.c
+	* src/common/Makefile.am
+	* src/common/log.c
+	* src/common/timing.h
+	* src/common/utils.c
+	* src/common/utils.h
+	* src/common/w32_account.c
+	* src/common/w32lib.h
+	* src/gtk/Makefile.am
+	* src/gtk/colorlabel.c
+	* src/plugins/pgpcore/Makefile.am
+	* src/plugins/pgpcore/claws.def
+	* src/plugins/pgpcore/passphrase.c
+	* src/plugins/pgpcore/pgp_viewer.c
+	* src/plugins/pgpcore/plugin.def
+	* src/plugins/pgpcore/sgpgme.c
+	* src/plugins/pgpinline/Makefile.am
+	* src/plugins/pgpinline/claws.def
+	* src/plugins/pgpinline/mypgpcore.def
+	* src/plugins/pgpinline/plugin.def
+	* src/plugins/pgpmime/Makefile.am
+	* src/plugins/pgpmime/claws.def
+	* src/plugins/pgpmime/mypgpcore.def
+	* src/plugins/pgpmime/plugin.def
+		Commit win32 patch, from Werner Koch and
+		Marcus Brinkmann
+
 2007-07-09 [colin]	2.10.0cvs10
 
 	* src/prefs_toolbar.c

@@ -204,6 +204,14 @@ gboolean debug_get_mode		(void);
 #define Str(x)	#x
 #define Xstr(x)	Str(x)
 
+
+/* System related stuff.  */
+
+gboolean superuser_p (void);
+
+
+/* String utilities.  */
+
 void list_free_strings		(GList		*list);
 void slist_free_strings		(GSList		*list);
 

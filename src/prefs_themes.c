@@ -445,7 +445,7 @@ static void prefs_themes_btn_remove_clicked_cb(GtkWidget *widget, gpointer data)
 	tmp = g_path_get_basename(theme_str);
 
 	if (IS_SYSTEM_THEME(theme_str)) {
-		if (getuid() != 0) {
+		if (!superuser_p()) {
 			alertpanel_error(_("Only root can remove system themes"));
 			return;
 		}
@@ -518,7 +518,7 @@ static void prefs_themes_btn_install_clicked_cb(GtkWidget *widget, gpointer data
 		if (G_ALERTALTERNATE != val)
 			goto end_inst;
 	}
-	if (getuid() == 0) {
+	if (superuser_p ()) {
 		val = alertpanel(alert_title,
 				 _("Do you want to install theme for all users?"),
 				 GTK_STOCK_NO, GTK_STOCK_YES, NULL);

@@ -37,6 +37,10 @@
 #include <time.h>
 #include <errno.h>
 
+#ifdef G_OS_WIN32
+#  include <w32lib.h>
+#endif
+
 #include "mbox.h"
 #include "procmsg.h"
 #include "folder.h"

@@ -66,6 +66,7 @@ clawsgtkinclude_HEADERS = \
 
 AM_CPPFLAGS = \
 	-I$(srcdir)/../common \
+	-I../common \
 	-I$(srcdir)/.. \
 	$(GTK_CFLAGS) \
 	$(OPENSSL_CFLAGS) \

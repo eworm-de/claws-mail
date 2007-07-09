@@ -28,7 +28,12 @@
 
 #include <glib.h>
 #include <glib/gi18n.h>
-#include <sys/mman.h>
+#ifdef _WIN32
+# include <w32lib.h>
+# define MAP_FAILED	((char *) -1)
+#else
+# include <sys/mman.h>
+#endif
 #include <sys/types.h>
 #include <sys/stat.h>
 
@@ -622,8 +627,23 @@ MsgCache *msgcache_read_cache(FolderItem *item, const gchar *cache_file)
 			map_len = st.st_size;
 		else
 			map_len = -1;
-		if (map_len > 0)
+		if (map_len > 0) {
+#ifdef G_OS_WIN32
+			cache_data = NULL;
+			HANDLE hFile, hMapping;
+			hFile = (HANDLE) _get_osfhandle (fileno(fp));
+			if (hFile == (HANDLE) -1)
+				goto w32_fail;
+			hMapping = CreateFileMapping(hFile, NULL, PAGE_WRITECOPY, 0, 0, NULL);
+			if (!hMapping)
+				goto w32_fail;
+			cache_data = (unsigned char *)MapViewOfFile(hMapping, FILE_MAP_COPY, 0, 0, 0);
+		w32_fail:
+			;
+#else
 			cache_data = mmap(NULL, map_len, PROT_READ, MAP_PRIVATE, fileno(fp), 0);
+#endif
+		}
 	} else {
 		cache_data = NULL;
 	}
@@ -679,8 +699,12 @@ MsgCache *msgcache_read_cache(FolderItem *item, const gchar *cache_file)
 			if(msginfo->msgid)
 				g_hash_table_insert(cache->msgid_table, msginfo->msgid, msginfo);
 		}
-		
+
+#ifdef G_OS_WIN32
+		UnmapViewOfFile((void*) cache_data);
+#else
 		munmap(cache_data, map_len);
+#endif
 	} else {
 		while (fread(&num, sizeof(num), 1, fp) == 1) {
 			if (swapping)
@@ -785,8 +809,23 @@ void msgcache_read_mark(MsgCache *cache, const gchar *mark_file)
 			map_len = st.st_size;
 		else
 			map_len = -1;
-		if (map_len > 0)
+		if (map_len > 0) {
+#ifdef G_OS_WIN32
+			cache_data = NULL;
+			HANDLE hFile, hMapping;
+			hFile = (HANDLE) _get_osfhandle (fileno(fp));
+			if (hFile == (HANDLE) -1)
+				goto w32_fail2;
+			hMapping = CreateFileMapping(hFile, NULL, PAGE_WRITECOPY, 0, 0, NULL);
+			if (!hMapping)
+				goto w32_fail2;
+			cache_data = (unsigned char *)MapViewOfFile(hMapping, FILE_MAP_COPY, 0, 0, 0);
+		w32_fail2:
+			;
+#else
 			cache_data = mmap(NULL, map_len, PROT_READ, MAP_PRIVATE, fileno(fp), 0);
+#endif
+		}
 	} else {
 		cache_data = NULL;
 	}
@@ -802,7 +841,11 @@ void msgcache_read_mark(MsgCache *cache, const gchar *mark_file)
 				msginfo->flags.perm_flags = perm_flags;
 			}
 		}
+#ifdef G_OS_WIN32
+		UnmapViewOfFile((void*) cache_data);
+#else
 		munmap(cache_data, map_len);
+#endif
 	} else {
 		while (fread(&num, sizeof(num), 1, fp) == 1) {
 			if (swapping)
@@ -849,8 +892,23 @@ void msgcache_read_tags(MsgCache *cache, const gchar *tags_file)
 			map_len = st.st_size;
 		else
 			map_len = -1;
-		if (map_len > 0)
+		if (map_len > 0) {
+#ifdef G_OS_WIN32
+			cache_data = NULL;
+			HANDLE hFile, hMapping;
+			hFile = (HANDLE) _get_osfhandle (fileno(fp));
+			if (hFile == (HANDLE) -1)
+				goto w32_fail6;
+			hMapping = CreateFileMapping(hFile, NULL, PAGE_WRITECOPY, 0, 0, NULL);
+			if (!hMapping)
+				goto w32_fail6;
+			cache_data = (unsigned char *)MapViewOfFile(hMapping, FILE_MAP_COPY, 0, 0, 0);
+		w32_fail6:
+			;
+#else
 			cache_data = mmap(NULL, map_len, PROT_READ, MAP_PRIVATE, fileno(fp), 0);
+#endif
+		}
 	} else {
 		cache_data = NULL;
 	}
@@ -876,7 +934,11 @@ void msgcache_read_tags(MsgCache *cache, const gchar *tags_file)
 				msginfo->tags = g_slist_reverse(msginfo->tags);
 			}
 		}
+#ifdef G_OS_WIN32
+		UnmapViewOfFile((void*) cache_data);
+#else
 		munmap(cache_data, map_len);
+#endif
 	} else {
 		while (fread(&num, sizeof(num), 1, fp) == 1) {
 			gint id = -1;
@@ -1164,26 +1226,78 @@ gint msgcache_write(const gchar *cache_file, const gchar *mark_file, const gchar
 	if (msgcache_use_mmap_write && cache->memusage > 0) {
 		map_len = cache->memusage;
 		if (ftruncate(fileno(write_fps.cache_fp), (off_t)map_len) == 0) {
+
+#ifdef G_OS_WIN32
+			cache_data = NULL;
+			HANDLE hFile, hMapping;
+			hFile = (HANDLE) _get_osfhandle (fileno(write_fps.cache_fp));
+			if (hFile == (HANDLE) -1)
+				goto w32_fail3;
+			hMapping = CreateFileMapping(hFile, NULL, PAGE_READWRITE, 0, 0, NULL);
+			if (!hMapping)
+				goto w32_fail3;
+			cache_data = (unsigned char *)MapViewOfFile(hMapping, FILE_MAP_COPY, 0, 0, 0);
+		w32_fail3:
+			;
+#else
 			cache_data = mmap(NULL, map_len, PROT_WRITE, MAP_SHARED, 
 				fileno(write_fps.cache_fp), 0);
+#endif
 		}
 		if (cache_data != NULL && cache_data != MAP_FAILED) {
 			if (ftruncate(fileno(write_fps.mark_fp), (off_t)map_len) == 0) {
+#ifdef G_OS_WIN32
+				mark_data = NULL;
+				HANDLE hFile, hMapping;
+				hFile = (HANDLE) _get_osfhandle (fileno(write_fps.mark_fp));
+				if (hFile == (HANDLE) -1)
+					goto w32_fail4;
+				hMapping = CreateFileMapping(hFile, NULL, PAGE_READWRITE, 0, 0, NULL);
+				if (!hMapping)
+					goto w32_fail4;
+				mark_data = (unsigned char *)MapViewOfFile(hMapping, FILE_MAP_COPY, 0, 0, 0);
+			w32_fail4:
+				;
+#else
 				mark_data = mmap(NULL, map_len, PROT_WRITE, MAP_SHARED, 
 					fileno(write_fps.mark_fp), 0);
+#endif
 			} 
 			if (mark_data == NULL || mark_data == MAP_FAILED) {
+#ifdef G_OS_WIN32
+				UnmapViewOfFile((void*) cache_data);
+#else
 				munmap(cache_data, map_len);
+#endif
 				cache_data = NULL;
 			} else {
 				if (ftruncate(fileno(write_fps.tags_fp), (off_t)map_len) == 0) {
+#ifdef G_OS_WIN32
+						tags_data = NULL;
+						HANDLE hFile, hMapping;
+						hFile = (HANDLE) _get_osfhandle (fileno(write_fps.tags_fp));
+						if (hFile == (HANDLE) -1)
+							goto w32_fail5;
+						hMapping = CreateFileMapping(hFile, NULL, PAGE_READWRITE, 0, 0, NULL);
+						if (!hMapping)
+							goto w32_fail5;
+						tags_data = (unsigned char *)MapViewOfFile(hMapping, FILE_MAP_COPY, 0, 0, 0);
+					w32_fail5:
+						;
+#else
 					tags_data = mmap(NULL, map_len, PROT_WRITE, MAP_SHARED, 
 						fileno(write_fps.tags_fp), 0);
+#endif
 				} 
 				if (tags_data == NULL || tags_data == MAP_FAILED) {
+#ifdef G_OS_WIN32
+					UnmapViewOfFile((void*) cache_data);
+					UnmapViewOfFile((void*) mark_data);
+#else
 					munmap(cache_data, map_len);
-					cache_data = NULL;
 					munmap(mark_data, map_len);
+#endif
+					cache_data = NULL;
 					mark_data = NULL;
 				} 
 			}
@@ -1195,9 +1309,15 @@ gint msgcache_write(const gchar *cache_file, const gchar *mark_file, const gchar
 		write_fps.mark_data = mark_data + ftell(write_fps.mark_fp);
 		write_fps.tags_data = mark_data + ftell(write_fps.tags_fp);
 		g_hash_table_foreach(cache->msgnum_table, msgcache_write_mmap_func, (gpointer)&write_fps);
+#ifdef G_OS_WIN32
+		UnmapViewOfFile((void*) cache_data);
+		UnmapViewOfFile((void*) mark_data);
+		UnmapViewOfFile((void*) tags_data);
+#else
 		munmap(cache_data, map_len);
 		munmap(mark_data, map_len);
 		munmap(tags_data, map_len);
+#endif
 		ftruncate(fileno(write_fps.cache_fp), write_fps.cache_size);
 		ftruncate(fileno(write_fps.mark_fp), write_fps.mark_size);
 		ftruncate(fileno(write_fps.tags_fp), write_fps.tags_size);

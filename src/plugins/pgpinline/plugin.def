@@ -1,9 +1,10 @@
 EXPORTS
-        plugin_init
-        plugin_done
-        plugin_name
         plugin_desc
-        plugin_type
+        plugin_done
+        plugin_init
         plugin_licence
+        plugin_name
+        plugin_type
+	plugin_provides
         plugin_version
 

@@ -57,6 +57,7 @@
 #  include <direct.h>
 #  include <io.h>
 #  include <fcntl.h>
+#  include <w32lib.h>
 #endif
 
 #ifdef MAEMO
@@ -74,6 +75,18 @@ static gboolean debug_mode = FALSE;
 #ifdef G_OS_WIN32
 static GSList *tempfiles=NULL;
 #endif
+
+/* Return true if we are running as root.  This function should beused
+   instead of getuid () == 0.  */
+gboolean superuser_p (void)
+{
+#ifdef G_OS_WIN32
+  return w32_is_administrator ();
+#else
+  return !getuid();
+#endif  
+}
+
 
 
 #if !GLIB_CHECK_VERSION(2, 7, 0) && !defined(G_OS_UNIX)
@@ -4766,7 +4779,12 @@ gint copy_dir(const gchar *src, const gchar *dst)
 				g_dir_close(dir);
 				return r;
 			}
-		} else if (g_file_test(old_file, G_FILE_TEST_IS_SYMLINK)) {
+                }
+#ifndef G_OS_WIN32
+                /* Windows has no symlinks.  Or well, Vista seems to
+                   have something like this but the semantics might be
+                   different.  Thus we don't use it under Windows. */
+		 else if (g_file_test(old_file, G_FILE_TEST_IS_SYMLINK)) {
 			GError *error;
 			gint r = 0;
 			gchar *target = g_file_read_link(old_file, &error);
@@ -4777,7 +4795,9 @@ gint copy_dir(const gchar *src, const gchar *dst)
 				g_dir_close(dir);
 				return r;
 			}
-		} else if (g_file_test(old_file, G_FILE_TEST_IS_DIR)) {
+                 }
+#endif /*G_OS_WIN32*/
+	        else if (g_file_test(old_file, G_FILE_TEST_IS_DIR)) {
 			gint r = copy_dir(old_file, new_file);
 			if (r < 0) {
 				g_dir_close(dir);
