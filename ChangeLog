@@ -1,3 +1,10 @@
+2007-07-10 [wwp]	2.10.0cvs15
+
+	* src/main.c
+		Fix re-opening of all composing messages that were
+		opened when closing the previous instance, thanks
+		to Colin.
+
 2007-07-10 [paul]	2.10.0cvs14
 
 	* src/editaddress_other_attributes_ldap.c

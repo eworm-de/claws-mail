@@ -1410,7 +1410,7 @@ static gboolean draft_all_messages(void)
 		Compose *c = (Compose*)compose_list->data;
 		if (!compose_draft(c, COMPOSE_DRAFT_FOR_EXIT))
 			return FALSE;
-		compose_list = compose_list->next;
+		compose_list = compose_get_compose_list();
 	}
 	return TRUE;
 }
