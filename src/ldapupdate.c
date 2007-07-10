@@ -734,7 +734,7 @@ int ldapsvr_compare_manual_attr(LDAP *ld, LdapServer *server, gchar *dn, char *a
 	LdapControl *ctl;
 	gchar *filter;
 	gchar *attribute;
-	int retVal, i;
+	int retVal = -2, i;
 	AttrKeyValue *mail;
 
 	g_return_val_if_fail(ld != NULL || server != NULL || attr != NULL, -1);

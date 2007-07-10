@@ -1,3 +1,10 @@
+2007-07-10 [colin]	2.10.0cvs13
+
+	* src/editaddress.c
+	* src/editaddress_other_attributes_ldap.h
+	* src/ldapupdate.c
+		Fix --disable-ldap build
+
 2007-07-09 [colin]	2.10.0cvs12
 
 	* src/Makefile.am

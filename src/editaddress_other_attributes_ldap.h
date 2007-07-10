@@ -24,8 +24,6 @@
 #ifndef __EDITADDRESS_OTHER_ATTRIBUTES_LDAP_H__
 #define __EDITADDRESS_OTHER_ATTRIBUTES_LDAP_H__
 
-#ifdef USE_LDAP
-
 #include <glib.h>
 #include <glib/gi18n.h>
 #include <gdk/gdkkeysyms.h>
@@ -77,6 +75,8 @@ struct _PersonEdit_dlg {
 	gboolean read_only;
 	gboolean ldap;
 };
+
+#ifdef USE_LDAP
 
 static const char *ATTRIBUTE[] = {
 	"telephoneNumber",

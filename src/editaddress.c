@@ -1125,9 +1125,11 @@ static void addressbook_edit_person_create( GtkWidget *parent, gboolean *cancell
 		addressbook_edit_person_widgetset_create( parent, cancelled );
 	addressbook_edit_person_page_basic( PAGE_BASIC, _( "_User Data" ) );
 	addressbook_edit_person_page_email( PAGE_EMAIL, _( "_Email Addresses" ) );
+#ifdef USE_LDAP
 	if (personeditdlg.ldap)
 		addressbook_edit_person_page_attrib_ldap(&personeditdlg, PAGE_ATTRIBUTES, _("O_ther Attributes"));
 	else
+#endif
 		addressbook_edit_person_page_attrib( PAGE_ATTRIBUTES, _( "O_ther Attributes" ) );
 	gtk_widget_show_all( personeditdlg.container );
 }
