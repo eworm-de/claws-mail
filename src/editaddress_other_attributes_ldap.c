@@ -112,9 +112,11 @@ static void edit_person_option_menu_changed(GtkOptionMenu *opt_menu, gpointer da
 	gint row = personEditDlg->rowIndAttrib;
 	UserAttribute *attrib = gtk_clist_get_row_data(clist, row);
 	gint option = gtk_option_menu_get_history(opt_menu);
+	const gchar *str = attrib ? attrib->name:"";
 
+	g_return_if_fail (option < ATTRIBUTE_SIZE);
 	/* A corresponding attribute in contact does not match selected option */ 
-	if (strcmp(ATTRIBUTE[option], attrib->name) != 0) {
+	if (strcmp(ATTRIBUTE[option], str) != 0) {
 		gtk_widget_set_sensitive(personEditDlg->attrib_add, TRUE);
 		gtk_widget_set_sensitive(personEditDlg->attrib_mod, TRUE);
 		gtk_widget_set_sensitive(personEditDlg->attrib_del, FALSE);

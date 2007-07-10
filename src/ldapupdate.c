@@ -869,16 +869,18 @@ gboolean ldapsvr_check_search_attributes(char **list, char *attr) {
  */
 void ldapsvr_handle_other_attributes(LDAP *ld, LdapServer *server, char *dn, GHashTable *contact) {
 	GList *node;
-	gboolean CHECKED_ATTRIBUTE[ATTRIBUTE_SIZE];
+	gboolean CHECKED_ATTRIBUTE[ATTRIBUTE_SIZE + 1];
 	LDAPMod *mods[ATTRIBUTE_SIZE + 1];
 	LDAPMod modarr[ATTRIBUTE_SIZE];
 	gint cnt = 0;
-	char *attr[] = {NULL, NULL};
+	char *attr[ATTRIBUTE_SIZE + 1][2];
 	int mod_op, rc, i;
 
 	g_return_if_fail(server != NULL || dn != NULL || contact != NULL);
-	for (i = 0; i < ATTRIBUTE_SIZE; i++)
+	for (i = 0; i <= ATTRIBUTE_SIZE; i++) {
 		CHECKED_ATTRIBUTE[i] = FALSE;
+		attr[i][0] = attr[i][1] = NULL;
+	}
 	node = g_hash_table_lookup(contact , "attribute");
 	while (node) {
 		AttrKeyValue *item = node->data;
@@ -920,7 +922,7 @@ void ldapsvr_handle_other_attributes(LDAP *ld, LdapServer *server, char *dn, GHa
 			 		*/
 				}
 				else {
-					SETMOD(mods[cnt], modarr[cnt], mod_op, g_strdup(item->key), attr, g_strdup(item->value));
+					SETMOD(mods[cnt], modarr[cnt], mod_op, g_strdup(item->key), attr[cnt], g_strdup(item->value));
 					cnt++;
 					CHECKED_ATTRIBUTE[index] = TRUE;
 				}
@@ -939,7 +941,7 @@ void ldapsvr_handle_other_attributes(LDAP *ld, LdapServer *server, char *dn, GHa
 			if (ldapsvr_check_search_attributes(attribs, (char *) ATTRIBUTE[i])) {
 				mod_op = ldapsvr_deside_operation(ld, server, dn, (char *) ATTRIBUTE[i], "");
 				if (mod_op == LDAP_MOD_DELETE) {
-					SETMOD(mods[cnt], modarr[cnt], LDAP_MOD_DELETE, g_strdup((char *) ATTRIBUTE[i]), attr, NULL);
+					SETMOD(mods[cnt], modarr[cnt], LDAP_MOD_DELETE, g_strdup((char *) ATTRIBUTE[i]), attr[cnt], NULL);
 					cnt++;
 				}
 			}

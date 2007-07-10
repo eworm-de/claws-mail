@@ -1,3 +1,15 @@
+2007-07-10 [paul]	2.10.0cvs14
+
+	* src/editaddress_other_attributes_ldap.c
+	* src/ldapupdate.c
+		fix crash on selecting 'other attributes' combo
+		for either a new entry or an old entry with no
+		existing attributes.
+		fix bug on editing multiple attributes which
+		resulted them all having the value of the last
+		one changed.
+		Thanks to Colin
+
 2007-07-10 [colin]	2.10.0cvs13
 
 	* src/editaddress.c
