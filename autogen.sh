@@ -40,6 +40,7 @@ if test "$1" = "--build-w32"; then
              --disable-openssl --disable-dillo-viewer-plugin \
              --disable-nls --disable-libetpan --disable-aspell \
              --disable-trayicon-plugin --disable-spamassassin-plugin \
+             --disable-bogofilter-plugin --disable-valgrind \
              PKG_CONFIG_LIBDIR="$w32root/lib/pkgconfig"
 
     rc=$?

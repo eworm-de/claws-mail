@@ -4,7 +4,7 @@
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
+ * the Free Software Foundation; either version 3 of the License, or
  * (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
@@ -13,8 +13,8 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
+ * along with this program. If not, see <http://www.gnu.org/licenses/>.
+ * 
  */
 
 #include <stdio.h>
@@ -345,9 +345,9 @@ init_plugin:
 		return NULL;
 	}
 	
-	if (strcmp(plugin_licence(), "GPL")
-	&&  strncmp(plugin_licence(), "GPL-compatible", strlen("GPL-compatible"))) {
-		*error = g_strdup(_("This module is not licenced under a GPL compatible licence."));
+	if (strcmp(plugin_licence(), "GPL2+") && strncmp(plugin_licence(), "GPL3", strlen("GPL3"))
+	&&  strncmp(plugin_licence(), "GPL2+-compatible", strlen("GPL2+-compatible"))) {
+		*error = g_strdup(_("This module is not licenced under a GPL v2 or later compatible licence."));
 		if (plugin->unloaded_hidden)
 			return NULL;
 		g_module_close(plugin->module);

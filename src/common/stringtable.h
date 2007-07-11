@@ -1,20 +1,19 @@
 /*
- * sylpheed -- a gtk+ based, lightweight, and fast e-mail client
- * copyright (c) 1999-2007 Hiroyuki Yamamoto and the Claws Mail team
+ * Sylpheed -- a gtk+ based, lightweight, and fast e-mail client
+ * Copyright (c) 1999-2007 Hiroyuki Yamamoto and the Claws Mail team
  *
- * this program is free software; you can redistribute it and/or modify
+ * This program is free software; you can redistribute it and/or modify
  * it under the terms of the gnu general public license as published by
- * the free software foundation; either version 2 of the license, or
+ * the free software foundation; either version 3 of the license, or
  * (at your option) any later version.
  *
- * this program is distributed in the hope that it will be useful,
+ * This program is distributed in the hope that it will be useful,
  * but without any warranty; without even the implied warranty of
  * merchantability or fitness for a particular purpose.  see the
  * gnu general public license for more details.
  *
- * you should have received a copy of the gnu general public license
- * along with this program; if not, write to the free software
- * foundation, inc., 59 temple place - suite 330, boston, ma 02111-1307, usa.
+ * You should have received a copy of the Gnu General Public License
+ * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
 #ifndef STRINGTABLE_H__

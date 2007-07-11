@@ -4,7 +4,7 @@
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
+ * the Free Software Foundation; either version 3 of the License, or
  * (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
@@ -13,8 +13,8 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
+ * along with this program. If not, see <http://www.gnu.org/licenses/>.
+ * 
  */
 
 #ifdef HAVE_CONFIG_H
@@ -540,7 +540,7 @@ static GtkWidget *about_create_child_page_license(void)
 	gtk_text_buffer_insert(buffer, &iter,
 		_("This program is free software; you can redistribute it and/or modify "
 		  "it under the terms of the GNU General Public License as published by "
-		  "the Free Software Foundation; either version 2, or (at your option) "
+		  "the Free Software Foundation; either version 3, or (at your option) "
 		  "any later version.\n\n"), -1);
 
 	gtk_text_buffer_insert(buffer, &iter,
@@ -549,12 +549,6 @@ static GtkWidget *about_create_child_page_license(void)
 		  "MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. "
 		  "See the GNU General Public License for more details.\n\n"), -1);
 
-	gtk_text_buffer_insert(buffer, &iter,
-		_("You should have received a copy of the GNU General Public License "
-		  "along with this program; if not, write to the Free Software "
-		  "Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, "
-		  "MA 02110-1301, USA.\n\n"), -1);
-#ifdef USE_OPENSSL
 	/* textview link style (based upon main prefs) */
 	gtkut_convert_int_to_gdk_color(prefs_common.uri_col,
 			(GdkColor*)&uri_color);
@@ -567,6 +561,14 @@ static GtkWidget *about_create_child_page_license(void)
 		"underline", PANGO_UNDERLINE_SINGLE,
 		NULL);
 
+	gtk_text_buffer_insert(buffer, &iter,
+		_("You should have received a copy of the GNU General Public License "
+		  "along with this program. If not, see <"), -1);
+	gtk_text_buffer_insert_with_tags_by_name(buffer, &iter, 
+		"http://www.gnu.org/licenses/", -1,
+		"link", NULL);
+	gtk_text_buffer_insert(buffer, &iter, _(">. \n\n"), -1);
+#ifdef USE_OPENSSL
 	gtk_text_buffer_insert(buffer, &iter,
 		_("This product includes software developed by the OpenSSL Project "
 		  "for use in the OpenSSL Toolkit ("), -1);
