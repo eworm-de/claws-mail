@@ -1,3 +1,10 @@
+2007-07-13 [paul]	2.10.0cvs18
+
+	* src/gtk/colorlabel.c
+		fix bug 1261, '[DE] coloring messages in overview 
+		keys are not localised'
+		the string is now included in claws-mail.pot
+
 2007-07-13 [colin]	2.10.0cvs17
 
 	* src/summaryview.c
