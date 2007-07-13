@@ -6405,8 +6405,13 @@ static Compose *compose_create(PrefsAccount *account,
 	gtk_box_pack_start(GTK_BOX(vbox), handlebox, FALSE, FALSE, 0);
 
 	gtk_widget_realize(handlebox);
+#ifdef MAEMO
+	compose->toolbar = toolbar_create(TOOLBAR_COMPOSE, window,
+					  (gpointer)compose);
+#else
 	compose->toolbar = toolbar_create(TOOLBAR_COMPOSE, handlebox,
 					  (gpointer)compose);
+#endif
 
 	vbox2 = gtk_vbox_new(FALSE, 2);
 	gtk_box_pack_start(GTK_BOX(vbox), vbox2, TRUE, TRUE, 0);

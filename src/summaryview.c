@@ -813,10 +813,13 @@ void summary_relayout(SummaryView *summaryview)
 		gtk_box_pack_start(GTK_BOX(summaryview->stat_box2), summaryview->statlabel_msgs, FALSE, FALSE, 4);
 		gtk_widget_show_all(summaryview->stat_box);
 		gtk_widget_show_all(summaryview->stat_box2);
-		if (prefs_common.layout_mode == SMALL_LAYOUT)
+		if (prefs_common.layout_mode == SMALL_LAYOUT) {
 			gtk_widget_hide(summaryview->toggle_eventbox);
-		else
+			gtk_widget_hide(summaryview->statlabel_msgs);
+		} else {
 			gtk_widget_show(summaryview->toggle_eventbox);
+			gtk_widget_show(summaryview->statlabel_msgs);
+		}
 			
 		break;
 	}
@@ -2409,22 +2412,47 @@ static void summary_status_show(SummaryView *summaryview)
 		itstr = g_strdup("");
 	}
 		
-	str = g_strconcat(n_selected ? itos(n_selected) : "",
-					itstr, sel, spc, del, mv, cp, NULL);
-	gtk_label_set_text(GTK_LABEL(summaryview->statlabel_select), str);
-	g_free(str);
-	g_free(sel);
-	g_free(del);
-	g_free(mv);
-	g_free(cp);
-	g_free(itstr);
+	if (prefs_common.layout_mode != SMALL_LAYOUT) {
+		str = g_strconcat(n_selected ? itos(n_selected) : "",
+						itstr, sel, spc, del, mv, cp, NULL);
+		g_free(sel);
+		g_free(del);
+		g_free(mv);
+		g_free(cp);
+		g_free(itstr);
+		
+		gtk_label_set_text(GTK_LABEL(summaryview->statlabel_select), str);
+		g_free(str);
 
-	str = g_strdup_printf(_("%d new, %d unread, %d total (%s)"),
+		str = g_strdup_printf(_("%d new, %d unread, %d total (%s)"),
 
-				      n_new, n_unread, n_total,
-				      to_human_readable(n_size));
-	gtk_label_set_text(GTK_LABEL(summaryview->statlabel_msgs), str);
-	g_free(str);
+					      n_new, n_unread, n_total,
+					      to_human_readable(n_size));
+
+		gtk_label_set_text(GTK_LABEL(summaryview->statlabel_msgs), str);
+		g_free(str);
+	} else {
+		gchar *ssize, *tsize;
+		if (n_selected) {
+			ssize = g_strdup(to_human_readable(sel_size));
+			tsize = g_strdup(to_human_readable(n_size));
+			str = g_strdup_printf(_("%d/%d selected (%s/%s), %d unread"),
+				n_selected, n_total, ssize, tsize, n_unread);
+			g_free(ssize);
+			g_free(tsize);
+		} else
+			str = g_strdup_printf(_("%d new, %d unread, %d total (%s)"),
+				n_new, n_unread, n_total, to_human_readable(n_size));
+		g_free(sel);
+		g_free(del);
+		g_free(mv);
+		g_free(cp);
+		g_free(itstr);
+		
+		gtk_label_set_text(GTK_LABEL(summaryview->statlabel_select), str);
+		g_free(str);
+	}
+
 	toolbar_main_set_sensitive(summaryview->mainwin);
 }
 
@@ -5528,6 +5556,10 @@ static GtkWidget *summary_ctree_create(SummaryView *summaryview)
 
 	ctree = gtk_sctree_new_with_titles
 		(N_SUMMARY_COLS, col_pos[S_COL_SUBJECT], titles);
+
+#ifdef MAEMO
+	gtk_clist_column_titles_hide(GTK_CLIST(ctree));
+#endif
 
 	gtk_clist_set_selection_mode(GTK_CLIST(ctree), GTK_SELECTION_EXTENDED);
 	gtk_clist_set_column_justification(GTK_CLIST(ctree), col_pos[S_COL_MARK],

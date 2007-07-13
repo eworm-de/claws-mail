@@ -1351,7 +1351,11 @@ MainWindow *main_window_create()
 	menubar = menubar_create(window, mainwin_entries, 
 				 n_menu_entries, "<Main>", mainwin);
 	gtk_widget_show(menubar);
+
+#ifndef MAEMO
 	gtk_box_pack_start(GTK_BOX(vbox), menubar, FALSE, TRUE, 0);
+#endif
+
 	ifactory = gtk_item_factory_from_widget(menubar);
 
 /*	gtk_widget_show(gtk_item_factory_get_item(ifactory,"/Message/Mailing-List"));
@@ -1375,10 +1379,15 @@ MainWindow *main_window_create()
 	/* link window to mainwin->window to avoid gdk warnings */
 	mainwin->window       = window;
 	
-	/* create toolbar */
+#ifdef MAEMO
+	mainwin->toolbar = toolbar_create(TOOLBAR_MAIN, 
+					  window, 
+					  (gpointer)mainwin);
+#else
 	mainwin->toolbar = toolbar_create(TOOLBAR_MAIN, 
 					  handlebox, 
 					  (gpointer)mainwin);
+#endif
 	toolbar_set_learn_button
 		(mainwin->toolbar,
 		 LEARN_SPAM);
@@ -1636,7 +1645,9 @@ MainWindow *main_window_create()
 	   menu items in different menus             */
 	menu_connect_identical_items();
 
+#ifndef MAEMO
 	gtk_window_iconify(GTK_WINDOW(mainwin->window));
+#endif
 
 	g_signal_connect(G_OBJECT(window), "window_state_event",
 			 G_CALLBACK(mainwindow_state_event_cb), mainwin);
@@ -1957,24 +1968,18 @@ static void main_window_set_account_receive_menu(MainWindow *mainwin,
 static void main_window_set_toolbar_combo_receive_menu(MainWindow *mainwin,
 						       GList *account_list)
 {
-	GList *cur_ac, *cur_item;
+	GList *cur_ac;
 	GtkWidget *menuitem;
 	PrefsAccount *ac_prefs;
 	GtkWidget *menu = NULL;
 
-	if (mainwin->toolbar->getall_btn == NULL
-	||  mainwin->toolbar->getall_combo == NULL) /* button doesn't exist */
+	if (mainwin->toolbar->getall_btn == NULL) /* button doesn't exist */
 		return;
 
-	menu = mainwin->toolbar->getall_combo->menu;
-
-	/* destroy all previous menu item */
-	cur_item = GTK_MENU_SHELL(menu)->children;
-	while (cur_item != NULL) {
-		GList *next = cur_item->next;
-		gtk_widget_destroy(GTK_WIDGET(cur_item->data));
-		cur_item = next;
-	}
+	menu = gtk_menu_tool_button_get_menu(GTK_MENU_TOOL_BUTTON(mainwin->toolbar->getall_btn));
+	if (menu)
+		gtk_widget_destroy(menu);
+	menu = gtk_menu_new();
 
 	for (cur_ac = account_list; cur_ac != NULL; cur_ac = cur_ac->next) {
 		ac_prefs = (PrefsAccount *)cur_ac->data;
@@ -1988,29 +1993,25 @@ static void main_window_set_toolbar_combo_receive_menu(MainWindow *mainwin,
 				 G_CALLBACK(account_receive_menu_cb),
 				 ac_prefs);
 	}
+	gtk_menu_tool_button_set_menu(GTK_MENU_TOOL_BUTTON(mainwin->toolbar->getall_btn), menu);
 }
 
 static void main_window_set_toolbar_combo_compose_menu(MainWindow *mainwin,
 						       GList *account_list)
 {
-	GList *cur_ac, *cur_item;
+#ifndef MAEMO
+	GList *cur_ac;
 	GtkWidget *menuitem;
 	PrefsAccount *ac_prefs;
 	GtkWidget *menu = NULL;
 
-	if (mainwin->toolbar->compose_mail_btn == NULL
-	||  mainwin->toolbar->compose_combo == NULL) /* button doesn't exist */
+	if (mainwin->toolbar->compose_mail_btn == NULL) /* button doesn't exist */
 		return;
 
-	menu = mainwin->toolbar->compose_combo->menu;
-
-	/* destroy all previous menu item */
-	cur_item = GTK_MENU_SHELL(menu)->children;
-	while (cur_item != NULL) {
-		GList *next = cur_item->next;
-		gtk_widget_destroy(GTK_WIDGET(cur_item->data));
-		cur_item = next;
-	}
+	menu = gtk_menu_tool_button_get_menu(GTK_MENU_TOOL_BUTTON(mainwin->toolbar->compose_mail_btn));
+	if (menu)
+		gtk_widget_destroy(menu);
+	menu = gtk_menu_new();
 
 	for (cur_ac = account_list; cur_ac != NULL; cur_ac = cur_ac->next) {
 		ac_prefs = (PrefsAccount *)cur_ac->data;
@@ -2024,6 +2025,26 @@ static void main_window_set_toolbar_combo_compose_menu(MainWindow *mainwin,
 				 G_CALLBACK(account_compose_menu_cb),
 				 ac_prefs);
 	}
+	gtk_menu_tool_button_set_menu(GTK_MENU_TOOL_BUTTON(mainwin->toolbar->compose_mail_btn), menu);
+	menu = gtk_menu_tool_button_get_menu(GTK_MENU_TOOL_BUTTON(mainwin->toolbar->compose_news_btn));
+	if (menu)
+		gtk_widget_destroy(menu);
+	menu = gtk_menu_new();
+
+	for (cur_ac = account_list; cur_ac != NULL; cur_ac = cur_ac->next) {
+		ac_prefs = (PrefsAccount *)cur_ac->data;
+
+		menuitem = gtk_menu_item_new_with_label
+			(ac_prefs->account_name
+			 ? ac_prefs->account_name : _("Untitled"));
+		gtk_widget_show(menuitem);
+		gtk_menu_append(GTK_MENU(menu), menuitem);
+		g_signal_connect(G_OBJECT(menuitem), "activate",
+				 G_CALLBACK(account_compose_menu_cb),
+				 ac_prefs);
+	}
+	gtk_menu_tool_button_set_menu(GTK_MENU_TOOL_BUTTON(mainwin->toolbar->compose_news_btn), menu);
+#endif
 }
 
 void main_window_set_account_menu(GList *account_list)

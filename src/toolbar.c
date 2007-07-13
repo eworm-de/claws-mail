@@ -427,8 +427,10 @@ static void toolbar_set_default_main(void)
 		{ A_FORWARD,       STOCK_PIXMAP_MAIL_FORWARD,         _("Forward") },
 		{ A_SEPARATOR,     0,                                 ("")         },
 		{ A_TRASH,         STOCK_PIXMAP_TRASH,                _("Trash")   },
+#ifndef MAEMO
 #if (defined(USE_SPAMASSASSIN_PLUGIN) || defined(USE_BOGOFILTER_PLUGIN))
 		{ A_LEARN_SPAM,	   STOCK_PIXMAP_SPAM_BTN,             _("Spam")    },
+#endif
 #endif
 		{ A_SEPARATOR,     0,                                 ("")         },
 		{ A_GOTO_NEXT,     STOCK_PIXMAP_DOWN_ARROW,           _("Next")    }
@@ -525,8 +527,10 @@ static void toolbar_set_default_msgview(void)
 		{ A_FORWARD,       STOCK_PIXMAP_MAIL_FORWARD,         _("Forward") },
 		{ A_SEPARATOR,     0,                                 ("")         },
 		{ A_TRASH,         STOCK_PIXMAP_TRASH,                _("Trash")   },
+#ifndef MAEMO
 #if (defined(USE_SPAMASSASSIN_PLUGIN) || defined(USE_BOGOFILTER_PLUGIN))
 		{ A_LEARN_SPAM,	   STOCK_PIXMAP_SPAM_BTN,             _("Spam")    },
+#endif
 #endif
 		{ A_GOTO_NEXT,     STOCK_PIXMAP_DOWN_ARROW,           _("Next")    }
 #ifdef MAEMO
@@ -1557,6 +1561,40 @@ static void toolbar_buttons_cb(GtkWidget   *widget,
 	}
 }
 
+#ifndef MAEMO
+#define HOMOGENEOUS TRUE
+#else
+#define HOMOGENEOUS FALSE
+#endif
+#define TOOLBAR_ITEM(item,icon,text,tooltip) {								\
+	item = GTK_WIDGET(gtk_tool_button_new(icon, text));						\
+	gtk_tool_item_set_homogeneous(GTK_TOOL_ITEM(item), HOMOGENEOUS);				\
+	gtk_tool_item_set_is_important(GTK_TOOL_ITEM(item), TRUE);					\
+	g_signal_connect (G_OBJECT(item), "clicked", G_CALLBACK(toolbar_buttons_cb), toolbar_item);	\
+	gtk_toolbar_insert(GTK_TOOLBAR(toolbar), GTK_TOOL_ITEM(item), -1);				\
+	gtk_tool_item_set_tooltip(GTK_TOOL_ITEM(item), GTK_TOOLTIPS(toolbar_tips),			\
+			tooltip, NULL);									\
+}
+
+#define TOOLBAR_MENUITEM(item,icon,text,tooltip,menutip) {						\
+	item = GTK_WIDGET(gtk_menu_tool_button_new(icon, text));					\
+	gtk_tool_item_set_homogeneous(GTK_TOOL_ITEM(item), HOMOGENEOUS);				\
+	gtk_tool_item_set_is_important(GTK_TOOL_ITEM(item), TRUE);					\
+	g_signal_connect (G_OBJECT(item), "clicked", G_CALLBACK(toolbar_buttons_cb), toolbar_item);	\
+	gtk_toolbar_insert(GTK_TOOLBAR(toolbar), GTK_TOOL_ITEM(item), -1);				\
+	gtk_tool_item_set_tooltip(GTK_TOOL_ITEM(item), GTK_TOOLTIPS(toolbar_tips),			\
+			tooltip, NULL);									\
+	gtk_menu_tool_button_set_arrow_tooltip(GTK_MENU_TOOL_BUTTON(item), 				\
+				GTK_TOOLTIPS(toolbar_tips), menutip, NULL);				\
+}
+
+#define MAKE_MENU(entries,path,btn) {									\
+	n_menu_entries = sizeof(entries) /								\
+		sizeof(entries[0]);									\
+	menu = menu_create_items(entries, n_menu_entries, path, &factory, toolbar_item);		\
+	gtk_menu_tool_button_set_menu(GTK_MENU_TOOL_BUTTON(btn), menu);					\
+}
+
 /**
  * Create a new toolbar with specified type
  * if a callback list is passed it will be used before the 
@@ -1573,18 +1611,9 @@ Toolbar *toolbar_create(ToolbarType 	 type,
 	GtkWidget *icon_news;
 	GtkWidget *icon_ham;
 	GtkWidget *item;
-	GtkWidget *item_news;
-	GtkWidget *item_ham;
+	GtkWidget *menu;
 	guint n_menu_entries;
-	ComboButton *getall_combo;
-	ComboButton *reply_combo;
-	ComboButton *replyall_combo;
-	ComboButton *replylist_combo;
-	ComboButton *replysender_combo;
-	ComboButton *fwd_combo;
-	ComboButton *compose_combo;
-	ComboButton *ham_combo;
-
+	GtkItemFactory *factory;
 	GtkTooltips *toolbar_tips;
 	ToolbarSylpheedActions *action_item;
 	GSList *cur;
@@ -1600,15 +1629,15 @@ Toolbar *toolbar_create(ToolbarType 	 type,
 	toolbar_data = g_new0(Toolbar, 1); 
 
 	toolbar = gtk_toolbar_new();
-	gtk_container_add(GTK_CONTAINER(container), toolbar);
-	gtk_container_set_border_width(GTK_CONTAINER(container), 2);
+
 	gtk_toolbar_set_orientation(GTK_TOOLBAR(toolbar), GTK_ORIENTATION_HORIZONTAL);
 	gtk_toolbar_set_style(GTK_TOOLBAR(toolbar), GTK_TOOLBAR_BOTH);
+	gtk_toolbar_set_show_arrow(GTK_TOOLBAR(toolbar), TRUE);
 	
 	for (cur = toolbar_list; cur != NULL; cur = cur->next) {
 
 		if (g_ascii_strcasecmp(((ToolbarItem*)cur->data)->file, TOOLBAR_TAG_SEPARATOR) == 0) {
-			gtk_toolbar_append_space(GTK_TOOLBAR(toolbar));
+			gtk_toolbar_insert(GTK_TOOLBAR(toolbar), gtk_separator_tool_item_new(), -1);
 			continue;
 		}
 		
@@ -1624,301 +1653,214 @@ Toolbar *toolbar_create(ToolbarType 	 type,
 			g_slist_append(toolbar_data->item_list, 
 				       toolbar_item);
 		icon_wid = stock_pixmap_widget(container, stock_pixmap_get_icon(toolbar_item->file));
-		item  = gtk_toolbar_append_item(GTK_TOOLBAR(toolbar),
-						toolbar_item->text,
-						(""),
-						(""),
-						icon_wid, G_CALLBACK(toolbar_buttons_cb), 
-						toolbar_item);
-		
+			
 		switch (toolbar_item->index) {
 
 		case A_GO_FOLDERS:
+			TOOLBAR_ITEM(item,icon_wid,toolbar_item->text,_("Go to folder list"));
 			toolbar_data->folders_btn = item;
-			gtk_tooltips_set_tip(GTK_TOOLTIPS(toolbar_tips), 
-					     toolbar_data->folders_btn,
-					   _("Go to folder list"), NULL);
 			break;
 		case A_RECEIVE_ALL:
+			TOOLBAR_MENUITEM(item,icon_wid,toolbar_item->text,
+				_("Receive Mail on all Accounts"),
+				_("Receive Mail on selected Account"));
 			toolbar_data->getall_btn = item;
-			gtk_tooltips_set_tip(GTK_TOOLTIPS(toolbar_tips), 
-					     toolbar_data->getall_btn, 
-					   _("Receive Mail on all Accounts"), NULL);
-			getall_combo = gtkut_combo_button_create(toolbar_data->getall_btn, NULL, 0,
-					"<GetAll>", (gpointer)toolbar_item);
-			gtk_button_set_relief(GTK_BUTTON(getall_combo->arrow),
-					      GTK_RELIEF_NONE);
-			gtk_toolbar_append_widget(GTK_TOOLBAR(toolbar),
-				  		  GTK_WIDGET_PTR(getall_combo),
-				 		  _("Receive Mail on selected Account"), "Reply");
-			toolbar_data->getall_combo = getall_combo;
 			break;
 		case A_RECEIVE_CUR:
+			TOOLBAR_ITEM(item,icon_wid,toolbar_item->text, _("Receive Mail on current Account"));
 			toolbar_data->get_btn = item;
-			gtk_tooltips_set_tip(GTK_TOOLTIPS(toolbar_tips), 
-					     toolbar_data->get_btn,
-					   _("Receive Mail on current Account"), NULL);
 			break;
 		case A_SEND_QUEUED:
+			TOOLBAR_ITEM(item,icon_wid,toolbar_item->text,_("Send Queued Messages"));
 			toolbar_data->send_btn = item; 
-			gtk_tooltips_set_tip(GTK_TOOLTIPS(toolbar_tips), 
-					     toolbar_data->send_btn,
-					   _("Send Queued Messages"), NULL);
 			break;
 		case A_CLOSE:
+			TOOLBAR_ITEM(item,icon_wid,toolbar_item->text,_("Close window"));
 			toolbar_data->close_window_btn = item; 
-			gtk_tooltips_set_tip(GTK_TOOLTIPS(toolbar_tips), 
-					     toolbar_data->close_window_btn,
-					   _("Close window"), NULL);
 			break;
 		case A_OPEN_MAIL:
+			TOOLBAR_ITEM(item,icon_wid,toolbar_item->text,_("Open email"));
 			toolbar_data->open_mail_btn = item; 
-			gtk_tooltips_set_tip(GTK_TOOLTIPS(toolbar_tips), 
-					     toolbar_data->open_mail_btn,
-					   _("Open email"), NULL);
 			break;
 		case A_COMPOSE_EMAIL:
-			icon_news = stock_pixmap_widget(container, STOCK_PIXMAP_NEWS_COMPOSE);
-			item_news = gtk_toolbar_append_item(GTK_TOOLBAR(toolbar),
-							    _("Compose"),
-							    (""),
-							    (""),
-							    icon_news, G_CALLBACK(toolbar_buttons_cb), 
-							    toolbar_item);
+#ifndef MAEMO
+			TOOLBAR_MENUITEM(item,icon_wid,toolbar_item->text,
+				_("Compose Email"),
+				_("Compose with selected Account"));
 			toolbar_data->compose_mail_btn = item; 
-			gtk_tooltips_set_tip(GTK_TOOLTIPS(toolbar_tips), 
-					     toolbar_data->compose_mail_btn,
-					   _("Compose Email"), NULL);
-			toolbar_data->compose_news_btn = item_news;
-			gtk_tooltips_set_tip(GTK_TOOLTIPS(toolbar_tips), 
-					     toolbar_data->compose_news_btn,
-					   _("Compose News"), NULL);
-			compose_combo = gtkut_combo_button_create(toolbar_data->compose_mail_btn, NULL, 0,
-					"<Compose>", (gpointer)toolbar_item);
-			gtk_button_set_relief(GTK_BUTTON(compose_combo->arrow),
-					      GTK_RELIEF_NONE);
-			gtk_toolbar_append_widget(GTK_TOOLBAR(toolbar),
-				  		  GTK_WIDGET_PTR(compose_combo),
-				 		  _("Compose with selected Account"), "Compose");
-			toolbar_data->compose_combo = compose_combo;
+
+			icon_news = stock_pixmap_widget(container, STOCK_PIXMAP_NEWS_COMPOSE);
+			TOOLBAR_MENUITEM(item,icon_news,_("Compose"),
+				_("Compose News"),
+				_("Compose with selected Account"));
+			toolbar_data->compose_news_btn = item; 
+#else
+			TOOLBAR_ITEM(item,icon_wid,toolbar_item->text,
+				_("Compose Email"));
+			toolbar_data->compose_mail_btn = item; 
+
+			icon_news = stock_pixmap_widget(container, STOCK_PIXMAP_NEWS_COMPOSE);
+			TOOLBAR_ITEM(item,icon_news,_("Compose"),
+				_("Compose News"));
+			toolbar_data->compose_news_btn = item; 
+#endif
 			break;
 		case A_LEARN_SPAM:
-			icon_ham = stock_pixmap_widget(container, STOCK_PIXMAP_HAM_BTN);
-			item_ham = gtk_toolbar_append_item(GTK_TOOLBAR(toolbar),
-							    _("Ham"),
-							    (""),
-							    (""),
-							    icon_ham, G_CALLBACK(toolbar_buttons_cb), 
-							    toolbar_item);
+			TOOLBAR_MENUITEM(item,icon_wid,toolbar_item->text,
+				_("Learn Spam"),
+				_("Learn as..."));
 			toolbar_data->learn_spam_btn = item; 
-			gtk_tooltips_set_tip(GTK_TOOLTIPS(toolbar_tips), 
-					     toolbar_data->learn_spam_btn,
-					   _("Learn Spam"), NULL);
-			toolbar_data->learn_ham_btn = item_ham;
-			gtk_tooltips_set_tip(GTK_TOOLTIPS(toolbar_tips), 
-					     toolbar_data->learn_ham_btn,
-					   _("Learn Ham"), NULL);			
-			n_menu_entries = sizeof(learn_entries) / 
-				sizeof(learn_entries[0]);
-			ham_combo = gtkut_combo_button_create(toolbar_data->learn_spam_btn,
-					      learn_entries, n_menu_entries,
-					      "<LearnSpam>", (gpointer)toolbar_item);
-			gtk_button_set_relief(GTK_BUTTON(ham_combo->arrow),
-					      GTK_RELIEF_NONE);
-			gtk_toolbar_append_widget(GTK_TOOLBAR(toolbar),
-				  		  GTK_WIDGET_PTR(ham_combo),
-				 		  _("Learn as..."), _("Learn"));
-			toolbar_data->ham_combo = ham_combo;
+
+			icon_ham = stock_pixmap_widget(container, STOCK_PIXMAP_HAM_BTN);
+			TOOLBAR_MENUITEM(item,icon_ham,_("Ham"),
+				_("Learn Ham"),
+				_("Learn as..."));
+			toolbar_data->learn_ham_btn = item; 
+
+			MAKE_MENU(learn_entries,"<LearnSpam>",toolbar_data->learn_spam_btn);
+			MAKE_MENU(learn_entries,"<LearnHam>",toolbar_data->learn_ham_btn);
 			break;
 		case A_REPLY_MESSAGE:
+#ifndef MAEMO
+			TOOLBAR_MENUITEM(item,icon_wid,toolbar_item->text,
+				_("Reply to Message"),
+				_("Reply to Message options"));
 			toolbar_data->reply_btn = item;
-			gtk_tooltips_set_tip(GTK_TOOLTIPS(toolbar_tips), 
-					     toolbar_data->reply_btn,
-					   _("Reply to Message"), NULL);
-			n_menu_entries = sizeof(reply_entries) / 
-				sizeof(reply_entries[0]);
-			reply_combo = gtkut_combo_button_create(toolbar_data->reply_btn,
-					      reply_entries, n_menu_entries,
-					      "<Reply>", (gpointer)toolbar_item);
-			gtk_button_set_relief(GTK_BUTTON(reply_combo->arrow),
-					      GTK_RELIEF_NONE);
-			gtk_toolbar_append_widget(GTK_TOOLBAR(toolbar),
-				  		  GTK_WIDGET_PTR(reply_combo),
-				 		  _("Reply to Message"), "Reply");
-			toolbar_data->reply_combo = reply_combo;
+
+			MAKE_MENU(reply_entries,"<Reply>",toolbar_data->reply_btn);
+#else
+			TOOLBAR_ITEM(item,icon_wid,toolbar_item->text,
+				_("Reply to Message"));
+			toolbar_data->reply_btn = item;
+#endif
 			break;
 		case A_REPLY_SENDER:
+#ifndef MAEMO
+			TOOLBAR_MENUITEM(item,icon_wid,toolbar_item->text,
+				_("Reply to Sender"),
+				_("Reply to Sender options"));
 			toolbar_data->replysender_btn = item;
-			gtk_tooltips_set_tip(GTK_TOOLTIPS(toolbar_tips), 
-					     toolbar_data->replysender_btn,
-					   _("Reply to Sender"), NULL);
-			n_menu_entries = sizeof(replysender_entries) / 
-				sizeof(replysender_entries[0]);
-			replysender_combo = gtkut_combo_button_create(toolbar_data->replysender_btn,
-					      replysender_entries, n_menu_entries,
-					      "<ReplySender>", (gpointer)toolbar_item);
-			gtk_button_set_relief(GTK_BUTTON(replysender_combo->arrow),
-					      GTK_RELIEF_NONE);
-			gtk_toolbar_append_widget(GTK_TOOLBAR(toolbar),
-				  		  GTK_WIDGET_PTR(replysender_combo),
-				 		  _("Reply to Sender"), "ReplySender");
-			toolbar_data->replysender_combo = replysender_combo;
+
+			MAKE_MENU(replysender_entries,"<ReplySender>",toolbar_data->replysender_btn);
+#else
+			TOOLBAR_ITEM(item,icon_wid,toolbar_item->text,
+				_("Reply to Sender"));
+			toolbar_data->replysender_btn = item;
+#endif
 			break;
 		case A_REPLY_ALL:
+#ifndef MAEMO
+			TOOLBAR_MENUITEM(item,icon_wid,toolbar_item->text,
+				_("Reply to All"),
+				_("Reply to All options"));
 			toolbar_data->replyall_btn = item;
-			gtk_tooltips_set_tip(GTK_TOOLTIPS(toolbar_tips), 
-					     toolbar_data->replyall_btn,
-					   _("Reply to All"), NULL);
-			n_menu_entries = sizeof(replyall_entries) / 
-				sizeof(replyall_entries[0]);
-			replyall_combo = gtkut_combo_button_create(toolbar_data->replyall_btn,
-					      replyall_entries, n_menu_entries,
-					      "<ReplyAll>", (gpointer)toolbar_item);
-			gtk_button_set_relief(GTK_BUTTON(replyall_combo->arrow),
-					      GTK_RELIEF_NONE);
-			gtk_toolbar_append_widget(GTK_TOOLBAR(toolbar),
-				  		  GTK_WIDGET_PTR(replyall_combo),
-				 		  _("Reply to All"), "ReplyAll");
-			toolbar_data->replyall_combo = replyall_combo;
+
+			MAKE_MENU(replyall_entries,"<ReplyAll>",toolbar_data->replyall_btn);
+#else
+			TOOLBAR_ITEM(item,icon_wid,toolbar_item->text,
+				_("Reply to All"));
+			toolbar_data->replyall_btn = item;
+#endif
 			break;
 		case A_REPLY_ML:
+#ifndef MAEMO
+			TOOLBAR_MENUITEM(item,icon_wid,toolbar_item->text,
+				_("Reply to Mailing-list"),
+				_("Reply to Mailing-list options"));
 			toolbar_data->replylist_btn = item;
-			gtk_tooltips_set_tip(GTK_TOOLTIPS(toolbar_tips), 
-					     toolbar_data->replylist_btn,
-					   _("Reply to Mailing-list"), NULL);
-			n_menu_entries = sizeof(replylist_entries) / 
-				sizeof(replylist_entries[0]);
-			replylist_combo = gtkut_combo_button_create(toolbar_data->replylist_btn,
-					      replylist_entries, n_menu_entries,
-					      "<ReplyList>", (gpointer)toolbar_item);
-			gtk_button_set_relief(GTK_BUTTON(replylist_combo->arrow),
-					      GTK_RELIEF_NONE);
-			gtk_toolbar_append_widget(GTK_TOOLBAR(toolbar),
-				  		  GTK_WIDGET_PTR(replylist_combo),
-				 		  _("Reply to Mailing-list"), "ReplyList");
-			toolbar_data->replylist_combo = replylist_combo;
+
+			MAKE_MENU(replylist_entries,"<ReplyList>",toolbar_data->replylist_btn);
+#else
+			TOOLBAR_ITEM(item,icon_wid,toolbar_item->text,
+				_("Reply to Mailing-list"));
+			toolbar_data->replylist_btn = item;
+#endif
 			break;
 		case A_FORWARD:
+#ifndef MAEMO
+			TOOLBAR_MENUITEM(item,icon_wid,toolbar_item->text,
+				_("Forward Message"),
+				_("Forward Message options"));
 			toolbar_data->fwd_btn = item;
-			gtk_tooltips_set_tip(GTK_TOOLTIPS(toolbar_tips), 
-					     toolbar_data->fwd_btn,
-					     _("Forward Message"), NULL);
-			n_menu_entries = sizeof(forward_entries) / 
-				sizeof(forward_entries[0]);
-			fwd_combo = gtkut_combo_button_create(toolbar_data->fwd_btn,
-					      forward_entries, n_menu_entries,
-					      "<Forward>", (gpointer)toolbar_item);
-			gtk_button_set_relief(GTK_BUTTON(fwd_combo->arrow),
-					      GTK_RELIEF_NONE);
-			gtk_toolbar_append_widget(GTK_TOOLBAR(toolbar),
-				  		  GTK_WIDGET_PTR(fwd_combo),
-				 		  _("Forward Message"), "Fwd");
-			toolbar_data->fwd_combo = fwd_combo;
+
+			MAKE_MENU(forward_entries,"<Forward>",toolbar_data->fwd_btn);
+#else
+			TOOLBAR_ITEM(item,icon_wid,toolbar_item->text,
+				_("Forward Message"));
+			toolbar_data->fwd_btn = item;
+#endif
 			break;
 		case A_TRASH:
+			TOOLBAR_ITEM(item,icon_wid,toolbar_item->text,_("Trash Message"));
 			toolbar_data->trash_btn = item;
-			gtk_tooltips_set_tip(GTK_TOOLTIPS(toolbar_tips), 
-					     toolbar_data->trash_btn,
-					     _("Trash Message"), NULL);
 			break;
 		case A_DELETE_REAL:
+			TOOLBAR_ITEM(item,icon_wid,toolbar_item->text,_("Delete Message"));
 			toolbar_data->delete_btn = item;
-			gtk_tooltips_set_tip(GTK_TOOLTIPS(toolbar_tips), 
-					     toolbar_data->delete_btn,
-					     _("Delete Message"), NULL);
 			break;
 		case A_EXECUTE:
+			TOOLBAR_ITEM(item,icon_wid,toolbar_item->text,_("Execute"));
 			toolbar_data->exec_btn = item;
-			gtk_tooltips_set_tip(GTK_TOOLTIPS(toolbar_tips), 
-					     toolbar_data->exec_btn,
-					   _("Execute"), NULL);
 			break;
 		case A_GOTO_PREV:
+			TOOLBAR_ITEM(item,icon_wid,toolbar_item->text,_("Go to Previous Unread Message"));
 			toolbar_data->prev_btn = item;
-			gtk_tooltips_set_tip(GTK_TOOLTIPS(toolbar_tips), 
-					     toolbar_data->prev_btn,
-					     _("Go to Previous Unread Message"),
-					     NULL);
 			break;
 		case A_GOTO_NEXT:
+			TOOLBAR_ITEM(item,icon_wid,toolbar_item->text,_("Go to Next Unread Message"));
 			toolbar_data->next_btn = item;
-			gtk_tooltips_set_tip(GTK_TOOLTIPS(toolbar_tips), 
-					     toolbar_data->next_btn,
-					     _("Go to Next Unread Message"),
-					     NULL);
 			break;
 		
 		/* Compose Toolbar */
 		case A_SEND:
+			TOOLBAR_ITEM(item,icon_wid,toolbar_item->text,_("Send Message"));
 			toolbar_data->send_btn = item;
-			gtk_tooltips_set_tip(GTK_TOOLTIPS(toolbar_tips), 
-					     toolbar_data->send_btn, 
-					     _("Send Message"), NULL);
 			break;
 		case A_SENDL:
+			TOOLBAR_ITEM(item,icon_wid,toolbar_item->text,_("Put into queue folder and send later"));
 			toolbar_data->sendl_btn = item;
-			gtk_tooltips_set_tip(GTK_TOOLTIPS(toolbar_tips), 
-					     toolbar_data->sendl_btn,
-					     _("Put into queue folder and send later"), NULL);
 			break;
 		case A_DRAFT:
+			TOOLBAR_ITEM(item,icon_wid,toolbar_item->text,_("Save to draft folder"));
 			toolbar_data->draft_btn = item; 
-			gtk_tooltips_set_tip(GTK_TOOLTIPS(toolbar_tips), 
-					     toolbar_data->draft_btn,
-					     _("Save to draft folder"), NULL);
 			break;
 		case A_INSERT:
+			TOOLBAR_ITEM(item,icon_wid,toolbar_item->text,_("Insert file"));
 			toolbar_data->insert_btn = item; 
-			gtk_tooltips_set_tip(GTK_TOOLTIPS(toolbar_tips), 
-					     toolbar_data->insert_btn,
-					     _("Insert file"), NULL);
 			break;
 		case A_ATTACH:
+			TOOLBAR_ITEM(item,icon_wid,toolbar_item->text,_("Attach file"));
 			toolbar_data->attach_btn = item;
-			gtk_tooltips_set_tip(GTK_TOOLTIPS(toolbar_tips), 
-					     toolbar_data->attach_btn,
-					     _("Attach file"), NULL);
 			break;
 		case A_SIG:
+			TOOLBAR_ITEM(item,icon_wid,toolbar_item->text,_("Insert signature"));
 			toolbar_data->sig_btn = item;
-			gtk_tooltips_set_tip(GTK_TOOLTIPS(toolbar_tips), 
-					     toolbar_data->sig_btn,
-					     _("Insert signature"), NULL);
 			break;
 		case A_EXTEDITOR:
+			TOOLBAR_ITEM(item,icon_wid,toolbar_item->text,_("Edit with external editor"));
 			toolbar_data->exteditor_btn = item;
-			gtk_tooltips_set_tip(GTK_TOOLTIPS(toolbar_tips), 
-					     toolbar_data->exteditor_btn,
-					     _("Edit with external editor"), NULL);
 			break;
 		case A_LINEWRAP_CURRENT:
+			TOOLBAR_ITEM(item,icon_wid,toolbar_item->text,_("Wrap long lines of current paragraph"));
 			toolbar_data->linewrap_current_btn = item;
-			gtk_tooltips_set_tip(GTK_TOOLTIPS(toolbar_tips), 
-					     toolbar_data->linewrap_current_btn,
-					     _("Wrap long lines of current paragraph"), NULL);
 			break;
 		case A_LINEWRAP_ALL:
+			TOOLBAR_ITEM(item,icon_wid,toolbar_item->text,_("Wrap all long lines"));
 			toolbar_data->linewrap_all_btn = item;
-			gtk_tooltips_set_tip(GTK_TOOLTIPS(toolbar_tips), 
-					     toolbar_data->linewrap_all_btn,
-					     _("Wrap all long lines"), NULL);
 			break;
 		case A_ADDRBOOK:
+			TOOLBAR_ITEM(item,icon_wid,toolbar_item->text,_("Address book"));
 			toolbar_data->addrbook_btn = item;
-			gtk_tooltips_set_tip(GTK_TOOLTIPS(toolbar_tips), 
-					     toolbar_data->addrbook_btn,
-					     _("Address book"), NULL);
 			break;
 #ifdef USE_ASPELL
 		case A_CHECK_SPELLING:
+			TOOLBAR_ITEM(item,icon_wid,toolbar_item->text,_("Check spelling"));
 			toolbar_data->spellcheck_btn = item;
-			gtk_tooltips_set_tip(GTK_TOOLTIPS(toolbar_tips), 
-					     toolbar_data->spellcheck_btn,
-					     _("Check spelling"), NULL);
 			break;
 #endif
 
 		case A_SYL_ACTIONS:
+			TOOLBAR_ITEM(item,icon_wid,toolbar_item->text,toolbar_item->text);
 			action_item = g_new0(ToolbarSylpheedActions, 1);
 			action_item->widget = item;
 			action_item->name   = g_strdup(toolbar_item->text);
@@ -1926,31 +1868,22 @@ Toolbar *toolbar_create(ToolbarType 	 type,
 			toolbar_data->action_list = 
 				g_slist_append(toolbar_data->action_list,
 					       action_item);
-
-			gtk_tooltips_set_tip(GTK_TOOLTIPS(toolbar_tips), 
-					     item,
-					     action_item->name, NULL);
-
-			gtk_widget_show(item);
 			break;
 		case A_CANCEL_INC:
+			TOOLBAR_ITEM(item,icon_wid,toolbar_item->text,_("Cancel receiving"));
 			toolbar_data->cancel_inc_btn = item;
-			gtk_tooltips_set_tip(GTK_TOOLTIPS(toolbar_tips), 
-					     toolbar_data->cancel_inc_btn,
-					     _("Cancel receiving"), NULL);
 			break;
 		default:
+			TOOLBAR_ITEM(item,icon_wid,toolbar_item->text,
+				toolbar_ret_descr_from_val(toolbar_item->index));
 			/* find and set the tool tip text */
-			gtk_tooltips_set_tip(GTK_TOOLTIPS(toolbar_tips),
-					     item,
-					     toolbar_ret_descr_from_val
-						(toolbar_item->index),
-					     NULL);
 			break;
 		}
 
 	}
 	toolbar_data->toolbar = toolbar;
+	gtk_widget_show_all(toolbar);
+
 	if (type == TOOLBAR_MAIN)
 		activate_compose_button(toolbar_data, 
 					prefs_common.toolbar_style, 
@@ -1959,8 +1892,18 @@ Toolbar *toolbar_create(ToolbarType 	 type,
 		activate_learn_button(toolbar_data, prefs_common.toolbar_style,
 				LEARN_SPAM);
 	
-	gtk_widget_show_all(toolbar);
-	
+#ifndef MAEMO
+	gtk_container_add(GTK_CONTAINER(container), toolbar);
+	gtk_container_set_border_width(GTK_CONTAINER(container), 2);
+#else
+	if ( GTK_IS_WINDOW(container) ) {
+		hildon_window_add_toolbar (HILDON_WINDOW(container), GTK_TOOLBAR(toolbar));
+		gtk_widget_show_all (container);
+	} else {
+		gtk_container_add(GTK_CONTAINER(container), toolbar);
+		gtk_container_set_border_width(GTK_CONTAINER(container), 2);
+	}
+#endif
 	return toolbar_data; 
 }
 
@@ -2064,16 +2007,12 @@ void toolbar_main_set_sensitive(gpointer data)
 	if (toolbar->getall_btn) {
 		SET_WIDGET_COND(toolbar->getall_btn, 
 			M_HAVE_ACCOUNT|M_UNLOCKED);
-		SET_WIDGET_COND(GTK_WIDGET_PTR(toolbar->getall_combo),
-			M_HAVE_ACCOUNT|M_UNLOCKED);
 	}
 	if (toolbar->send_btn) {
 		SET_WIDGET_COND(toolbar->send_btn,
 			M_HAVE_QUEUED_MAILS);
 	}
 	if (toolbar->compose_mail_btn) {
-		SET_WIDGET_COND(GTK_WIDGET_PTR(toolbar->compose_combo),
-			M_HAVE_ACCOUNT);
 		SET_WIDGET_COND(toolbar->compose_news_btn, 
 			M_HAVE_ACCOUNT);
 	}
@@ -2088,37 +2027,22 @@ void toolbar_main_set_sensitive(gpointer data)
 	if (toolbar->reply_btn) {
 		SET_WIDGET_COND(toolbar->reply_btn,
 			M_HAVE_ACCOUNT|M_TARGET_EXIST);
-		SET_WIDGET_COND(GTK_WIDGET_PTR(toolbar->reply_combo),
-			M_HAVE_ACCOUNT|M_TARGET_EXIST);
 	}
 	if (toolbar->replyall_btn) {
 		SET_WIDGET_COND(toolbar->replyall_btn,
-			M_HAVE_ACCOUNT|M_TARGET_EXIST);
-		SET_WIDGET_COND(GTK_WIDGET_PTR(toolbar->replyall_combo),
 			M_HAVE_ACCOUNT|M_TARGET_EXIST);
 	}
 	if (toolbar->replylist_btn) {
 		SET_WIDGET_COND(toolbar->replylist_btn,
 			M_HAVE_ACCOUNT|M_TARGET_EXIST);
-		SET_WIDGET_COND(GTK_WIDGET_PTR(toolbar->replylist_combo),
-			M_HAVE_ACCOUNT|M_TARGET_EXIST);
 	}
 	if (toolbar->replysender_btn) {
 		SET_WIDGET_COND(toolbar->replysender_btn,
-			M_HAVE_ACCOUNT|M_TARGET_EXIST);
-		SET_WIDGET_COND(GTK_WIDGET_PTR(toolbar->replysender_combo),
 			M_HAVE_ACCOUNT|M_TARGET_EXIST);
 	}
 	if (toolbar->fwd_btn) {
 		SET_WIDGET_COND(toolbar->fwd_btn, 
 			M_HAVE_ACCOUNT|M_TARGET_EXIST);
-		SET_WIDGET_COND(GTK_WIDGET_PTR(toolbar->fwd_combo),
-			M_HAVE_ACCOUNT|M_TARGET_EXIST); 
-	}
-	if (toolbar->fwd_combo) {
-		GtkWidget *submenu = gtk_item_factory_get_widget(toolbar->fwd_combo->factory, "/Redirect");
-		SET_WIDGET_COND(submenu, 
-			M_HAVE_ACCOUNT|M_TARGET_EXIST); 
 	}
 
 	if (prefs_common.next_unread_msg_dialog == NEXTUNREADMSGDIALOG_ASSUME_NO) {
@@ -2145,10 +2069,6 @@ void toolbar_main_set_sensitive(gpointer data)
 
 	if (toolbar->learn_spam_btn)
 		SET_WIDGET_COND(toolbar->learn_spam_btn, 
-			M_TARGET_EXIST|M_CAN_LEARN_SPAM);
-
-	if (toolbar->ham_combo)
-		SET_WIDGET_COND(GTK_WIDGET_PTR(toolbar->ham_combo),
 			M_TARGET_EXIST|M_CAN_LEARN_SPAM);
 
 	if (toolbar->cancel_inc_btn)
@@ -2233,11 +2153,9 @@ void toolbar_init(Toolbar * toolbar) {
 	toolbar->folders_btn		= NULL;
 	toolbar->get_btn          	= NULL;
 	toolbar->getall_btn       	= NULL;
-	toolbar->getall_combo       	= NULL;
 	toolbar->send_btn         	= NULL;
 	toolbar->compose_mail_btn 	= NULL;
 	toolbar->compose_news_btn 	= NULL;
-	toolbar->compose_combo	 	= NULL;
 	toolbar->reply_btn        	= NULL;
 	toolbar->replysender_btn  	= NULL;
 	toolbar->replyall_btn     	= NULL;

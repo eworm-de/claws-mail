@@ -52,24 +52,17 @@ struct _Toolbar {
 	GtkWidget *folders_btn;
 	GtkWidget *get_btn;
 	GtkWidget *getall_btn;
-	ComboButton *getall_combo;
 	GtkWidget *send_btn;
 
 	GtkWidget *compose_mail_btn;
 	GtkWidget *compose_news_btn;
-	ComboButton *compose_combo;
 
 	GtkWidget *reply_btn;
-	ComboButton *reply_combo;
 	GtkWidget *replysender_btn;
-	ComboButton *replysender_combo;
 	GtkWidget *replyall_btn;
-	ComboButton *replyall_combo;
 	GtkWidget *replylist_btn;
-	ComboButton *replylist_combo;
 
 	GtkWidget *fwd_btn;
-	ComboButton *fwd_combo;
 	
 	GtkWidget *trash_btn;
 	GtkWidget *delete_btn;
@@ -80,7 +73,6 @@ struct _Toolbar {
 	GtkWidget *separator;
 	GtkWidget *learn_spam_btn;
 	GtkWidget *learn_ham_btn;
-	ComboButton *ham_combo;
 	
 	GtkWidget *cancel_inc_btn;
 	

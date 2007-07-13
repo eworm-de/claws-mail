@@ -1,3 +1,16 @@
+2007-07-13 [colin]	2.10.0cvs19
+
+	* src/toolbar.c
+	* src/toolbar.h
+		Rework to fit the non-deprecated API
+	* src/compose.c
+	* src/folderview.c
+	* src/mainwindow.c
+	* src/messageview.c
+	* src/summaryview.c
+		Maemo layout changes. Better toolbars,
+		removal of CTree headers. 
+
 2007-07-13 [paul]	2.10.0cvs18
 
 	* src/gtk/colorlabel.c

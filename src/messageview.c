@@ -424,8 +424,13 @@ void messageview_add_toolbar(MessageView *msgview, GtkWidget *window)
 	}
 	gtk_box_pack_start(GTK_BOX(vbox), handlebox, FALSE, FALSE, 0);
 	gtk_widget_realize(handlebox);
+#ifdef MAEMO
+	msgview->toolbar = toolbar_create(TOOLBAR_MSGVIEW, window,
+					  (gpointer)msgview);
+#else
 	msgview->toolbar = toolbar_create(TOOLBAR_MSGVIEW, handlebox,
 					  (gpointer)msgview);
+#endif
 
 	statusbar = gtk_statusbar_new();
 	gtk_widget_show(statusbar);
