@@ -4368,6 +4368,17 @@ void summary_print(SummaryView *summaryview)
 	gchar *p;
 #endif
 	GList *cur;
+	gchar *msg = g_strdup_printf(_("You are about to print %d "
+				       "messages, one by one. Do you "
+				       "want to continue?"), 
+				       g_list_length(clist->selection));
+	if (g_list_length(clist->selection) > 9
+	&&  alertpanel(_("Warning"), msg, GTK_STOCK_CANCEL, "+" GTK_STOCK_YES, NULL)
+	    != G_ALERTALTERNATE) {
+		g_free(msg);
+		return;
+	}
+	g_free(msg);
 
 	if (clist->selection == NULL) return;
 #ifndef USE_GNOMEPRINT

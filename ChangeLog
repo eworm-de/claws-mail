@@ -1,3 +1,11 @@
+2007-07-13 [colin]	2.10.0cvs17
+
+	* src/summaryview.c
+		Fix bug 1267, 'printing mutliple messages 
+		opens one message-dialog after the other'
+		Ask for confirmation when printing 10
+		messages or more.
+
 2007-07-11 [colin]	2.10.0cvs16
 
 	* COPYING
