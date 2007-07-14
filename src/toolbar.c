@@ -1561,9 +1561,14 @@ static void toolbar_buttons_cb(GtkWidget   *widget,
 	}
 }
 
+#ifndef MAEMO
+#define HOMOGENEOUS TRUE
+#else
+#define HOMOGENEOUS FALSE
+#endif
 #define TOOLBAR_ITEM(item,icon,text,tooltip) {								\
 	item = GTK_WIDGET(gtk_tool_button_new(icon, text));						\
-	gtk_tool_item_set_homogeneous(GTK_TOOL_ITEM(item), FALSE);				\
+	gtk_tool_item_set_homogeneous(GTK_TOOL_ITEM(item), HOMOGENEOUS);				\
 	gtk_tool_item_set_is_important(GTK_TOOL_ITEM(item), TRUE);					\
 	g_signal_connect (G_OBJECT(item), "clicked", G_CALLBACK(toolbar_buttons_cb), toolbar_item);	\
 	gtk_toolbar_insert(GTK_TOOLBAR(toolbar), GTK_TOOL_ITEM(item), -1);				\
@@ -1572,8 +1577,10 @@ static void toolbar_buttons_cb(GtkWidget   *widget,
 }
 
 #define TOOLBAR_MENUITEM(item,icon,text,tooltip,menutip) {						\
+	GtkWidget *child = NULL, *btn = NULL, *arr = NULL;						\
+	GList *gchild = NULL;										\
 	item = GTK_WIDGET(gtk_menu_tool_button_new(icon, text));					\
-	gtk_tool_item_set_homogeneous(GTK_TOOL_ITEM(item), FALSE);				\
+	gtk_tool_item_set_homogeneous(GTK_TOOL_ITEM(item), HOMOGENEOUS);				\
 	gtk_tool_item_set_is_important(GTK_TOOL_ITEM(item), TRUE);					\
 	g_signal_connect (G_OBJECT(item), "clicked", G_CALLBACK(toolbar_buttons_cb), toolbar_item);	\
 	gtk_toolbar_insert(GTK_TOOLBAR(toolbar), GTK_TOOL_ITEM(item), -1);				\
@@ -1581,6 +1588,13 @@ static void toolbar_buttons_cb(GtkWidget   *widget,
 			tooltip, NULL);									\
 	gtk_menu_tool_button_set_arrow_tooltip(GTK_MENU_TOOL_BUTTON(item), 				\
 				GTK_TOOLTIPS(toolbar_tips), menutip, NULL);				\
+	child = gtk_bin_get_child(GTK_BIN(item)); 							\
+	gchild = gtk_container_get_children(								\
+			GTK_CONTAINER(child)); 								\
+	btn = (GtkWidget *)gchild->data;								\
+	arr = (GtkWidget *)(gchild->next?gchild->next->data:NULL);					\
+	gchild = gtk_container_get_children(GTK_CONTAINER(arr));					\
+	gtk_widget_set_size_request(GTK_WIDGET(gchild->data), 9, -1);					\
 }
 
 #define MAKE_MENU(entries,path,btn) {									\
@@ -1962,12 +1976,50 @@ void toolbar_update(ToolbarType type, gpointer data)
 }
 
 #define GTK_BUTTON_SET_SENSITIVE(widget,sensitive) {		\
-	gboolean in_btn = FALSE;				\
+	gboolean in_btn1 = FALSE, in_btn2 = FALSE;		\
 	if (GTK_IS_BUTTON(widget))				\
-		in_btn = GTK_BUTTON(widget)->in_button;		\
+		in_btn1 = GTK_BUTTON(widget)->in_button;	\
+	else if (GTK_IS_MENU_TOOL_BUTTON(widget)) {		\
+		GtkWidget *child = gtk_bin_get_child(		\
+			GTK_BIN(widget)); 			\
+		GList *gchild = gtk_container_get_children(	\
+			GTK_CONTAINER(child)); 			\
+		GtkWidget *btn = (GtkWidget *)gchild->data;	\
+		GtkWidget *arr = (GtkWidget *)			\
+			(gchild->next?gchild->next->data:NULL);	\
+		if (GTK_IS_BUTTON(btn))				\
+			in_btn1 = GTK_BUTTON(btn)->in_button;	\
+		if (GTK_IS_BUTTON(arr))				\
+			in_btn2 = GTK_BUTTON(arr)->in_button;	\
+	}							\
+	else if (GTK_IS_TOOL_ITEM(widget)) {			\
+		GtkWidget *child = gtk_bin_get_child(		\
+			GTK_BIN(widget)); 			\
+		if (GTK_IS_BUTTON(child))			\
+			in_btn1 = GTK_BUTTON(child)->in_button;	\
+	}							\
 	gtk_widget_set_sensitive(widget, sensitive);		\
 	if (GTK_IS_BUTTON(widget))				\
-		GTK_BUTTON(widget)->in_button = in_btn;		\
+		GTK_BUTTON(widget)->in_button = in_btn1;	\
+	else if (GTK_IS_MENU_TOOL_BUTTON(widget)) {		\
+		GtkWidget *child = gtk_bin_get_child(		\
+			GTK_BIN(widget)); 			\
+		GList *gchild = gtk_container_get_children(	\
+			GTK_CONTAINER(child)); 			\
+		GtkWidget *btn = (GtkWidget *)gchild->data;	\
+		GtkWidget *arr = (GtkWidget *)			\
+			(gchild->next?gchild->next->data:NULL);	\
+		if (GTK_IS_BUTTON(btn))				\
+			GTK_BUTTON(btn)->in_button = in_btn1;	\
+		if (GTK_IS_BUTTON(arr))				\
+			GTK_BUTTON(arr)->in_button = in_btn2;	\
+	}							\
+	else if (GTK_IS_TOOL_ITEM(widget)) {			\
+		GtkWidget *child = gtk_bin_get_child(		\
+			GTK_BIN(widget)); 			\
+		if (GTK_IS_BUTTON(child))			\
+			GTK_BUTTON(child)->in_button = in_btn2;	\
+	}							\
 }
 
 void toolbar_main_set_sensitive(gpointer data)

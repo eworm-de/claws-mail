@@ -1,3 +1,13 @@
+2007-07-14 [colin]	2.10.0cvs21
+
+	* src/toolbar.c
+		Fix huge arrows
+		Fix button workaround to be able to click
+		if mouse was on button when it went un-
+		sensitive.
+		Revert previous commit, gtk_tool_item_set_homogeneous
+		doesn't mean what it seems to mean ;-)
+
 2007-07-14 [paul]	2.10.0cvs20
 
 	* src/toolbar.c
