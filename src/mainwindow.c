@@ -1378,6 +1378,7 @@ MainWindow *main_window_create()
 	}
 	/* link window to mainwin->window to avoid gdk warnings */
 	mainwin->window       = window;
+	mainwin_list = g_list_append(mainwin_list, mainwin);
 	
 #ifdef MAEMO
 	mainwin->toolbar = toolbar_create(TOOLBAR_MAIN, 
@@ -1431,10 +1432,11 @@ MainWindow *main_window_create()
 	statusbar = statusbar_create();
 	gtk_box_pack_start(GTK_BOX(hbox_stat), statusbar, TRUE, TRUE, 0);
 
+#ifndef MAEMO
 	progressbar = gtk_progress_bar_new();
 	gtk_widget_set_size_request(progressbar, 120, 1);
 	gtk_box_pack_start(GTK_BOX(hbox_stat), progressbar, FALSE, FALSE, 0);
-
+#endif
 	online_pixmap = stock_pixmap_widget(hbox_stat, STOCK_PIXMAP_ONLINE);
 	offline_pixmap = stock_pixmap_widget(hbox_stat, STOCK_PIXMAP_OFFLINE);
 	online_switch = gtk_button_new ();
@@ -1522,7 +1524,9 @@ MainWindow *main_window_create()
 	mainwin->vbox_body      = vbox_body;
 	mainwin->hbox_stat      = hbox_stat;
 	mainwin->statusbar      = statusbar;
+#ifndef MAEMO
 	mainwin->progressbar    = progressbar;
+#endif
 	mainwin->statuslabel    = statuslabel;
 	mainwin->online_switch  = online_switch;
 	mainwin->online_pixmap  = online_pixmap;
@@ -1681,8 +1685,6 @@ MainWindow *main_window_create()
 		watch_cursor = gdk_cursor_new(GDK_WATCH);
 	if (!hand_cursor)
 		hand_cursor = gdk_cursor_new(GDK_HAND2);
-
-	mainwin_list = g_list_append(mainwin_list, mainwin);
 
 	/* init work_offline */
 	if (prefs_common.work_offline)

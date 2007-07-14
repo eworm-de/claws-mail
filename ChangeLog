@@ -1,3 +1,10 @@
+2007-07-14 [colin]	2.10.0cvs25
+
+	* src/mainwindow.c
+	* src/toolbar.c
+		Maemo: put the progress bar in the
+		toolbar
+
 2007-07-14 [colin]	2.10.0cvs24
 
 	* src/prefs_common.c

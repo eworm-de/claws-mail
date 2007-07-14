@@ -1893,10 +1893,22 @@ Toolbar *toolbar_create(ToolbarType 	 type,
 	toolbar_data->toolbar = toolbar;
 	gtk_widget_show_all(toolbar);
 
-	if (type == TOOLBAR_MAIN)
+	if (type == TOOLBAR_MAIN) {
+#ifdef MAEMO
+		MainWindow *mainwin = mainwindow_get_mainwindow();
+		GtkWidget *progressbar = gtk_progress_bar_new();
+		item = gtk_tool_item_new();
+		gtk_container_add (GTK_CONTAINER (item), progressbar);
+		gtk_widget_show(item);
+		gtk_widget_show(progressbar);
+		gtk_widget_set_size_request(progressbar, 70, -1);
+		gtk_toolbar_insert(GTK_TOOLBAR(toolbar), GTK_TOOL_ITEM(item), -1);				\
+		mainwin->progressbar = progressbar;
+#endif
 		activate_compose_button(toolbar_data, 
 					prefs_common.toolbar_style, 
 					toolbar_data->compose_btn_type);
+	}
 	if (type != TOOLBAR_COMPOSE)
 		activate_learn_button(toolbar_data, prefs_common.toolbar_style,
 				LEARN_SPAM);
