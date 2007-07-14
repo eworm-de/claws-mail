@@ -1566,14 +1566,9 @@ static void toolbar_buttons_cb(GtkWidget   *widget,
 	}
 }
 
-#ifndef MAEMO
-#define HOMOGENEOUS TRUE
-#else
-#define HOMOGENEOUS FALSE
-#endif
 #define TOOLBAR_ITEM(item,icon,text,tooltip) {								\
 	item = GTK_WIDGET(gtk_tool_button_new(icon, text));						\
-	gtk_tool_item_set_homogeneous(GTK_TOOL_ITEM(item), HOMOGENEOUS);				\
+	gtk_tool_item_set_homogeneous(GTK_TOOL_ITEM(item), FALSE);					\
 	gtk_tool_item_set_is_important(GTK_TOOL_ITEM(item), TRUE);					\
 	g_signal_connect (G_OBJECT(item), "clicked", G_CALLBACK(toolbar_buttons_cb), toolbar_item);	\
 	gtk_toolbar_insert(GTK_TOOLBAR(toolbar), GTK_TOOL_ITEM(item), -1);				\
@@ -1585,7 +1580,7 @@ static void toolbar_buttons_cb(GtkWidget   *widget,
 	GtkWidget *child = NULL, *btn = NULL, *arr = NULL;						\
 	GList *gchild = NULL;										\
 	item = GTK_WIDGET(gtk_menu_tool_button_new(icon, text));					\
-	gtk_tool_item_set_homogeneous(GTK_TOOL_ITEM(item), HOMOGENEOUS);				\
+	gtk_tool_item_set_homogeneous(GTK_TOOL_ITEM(item), FALSE);				\
 	gtk_tool_item_set_is_important(GTK_TOOL_ITEM(item), TRUE);					\
 	g_signal_connect (G_OBJECT(item), "clicked", G_CALLBACK(toolbar_buttons_cb), toolbar_item);	\
 	gtk_toolbar_insert(GTK_TOOLBAR(toolbar), GTK_TOOL_ITEM(item), -1);				\

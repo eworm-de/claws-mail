@@ -2676,3 +2676,4 @@
 ( cvs diff -u -r 1.43.2.68 -r 1.43.2.69 src/toolbar.c;  ) > 2.10.0cvs20.patchset
 ( cvs diff -u -r 1.43.2.69 -r 1.43.2.70 src/toolbar.c;  ) > 2.10.0cvs21.patchset
 ( cvs diff -u -r 1.43.2.70 -r 1.43.2.71 src/toolbar.c;  ) > 2.10.0cvs22.patchset
+( cvs diff -u -r 1.43.2.71 -r 1.43.2.72 src/toolbar.c;  ) > 2.10.0cvs23.patchset
