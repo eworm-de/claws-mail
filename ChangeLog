@@ -1,3 +1,8 @@
+2007-07-14 [paul]	2.10.0cvs20
+
+	* src/toolbar.c
+		make homogeneous FALSE always
+
 2007-07-13 [colin]	2.10.0cvs19
 
 	* src/toolbar.c
