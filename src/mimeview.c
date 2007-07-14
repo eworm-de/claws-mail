@@ -306,7 +306,9 @@ MimeView *mimeview_create(MainWindow *mainwin)
 
 	gtk_widget_show(hbox);
 	gtk_widget_hide(ctree_mainbox);
-
+#ifdef MAEMO
+	gtk_widget_set_size_request(mime_toggle, -1, arrow->requisition.height + 8);
+#endif
 	mimeview->hbox          = hbox;
 	mimeview->paned         = paned;
 	mimeview->scrolledwin   = scrolledwin;
@@ -2149,7 +2151,6 @@ static void icon_list_append_icon (MimeView *mimeview, MimeInfo *mimeinfo)
 							  OVERLAY_NONE, 6, 3);
 	}
 	gtk_container_add(GTK_CONTAINER(button), pixmap);
-	
 	if (!desc) {
 		if (prefs_common.attach_desc)
 			desc = get_part_description(mimeinfo);
@@ -2203,6 +2204,10 @@ static void icon_list_append_icon (MimeView *mimeview, MimeInfo *mimeinfo)
 	g_signal_connect(G_OBJECT(button), "drag_data_get",
 			 G_CALLBACK(mimeview_drag_data_get), mimeview);
 	gtk_box_pack_start(GTK_BOX(vbox), button, FALSE, FALSE, 0);
+#ifdef MAEMO
+	gtk_widget_set_size_request(vbox, -1, pixmap->requisition.height + 8);
+	gtk_widget_set_size_request(button, -1, pixmap->requisition.height + 4);
+#endif
 
 }
 
@@ -2311,7 +2316,6 @@ static void icon_list_create(MimeView *mimeview, MimeInfo *mimeinfo)
 		gtk_widget_set_size_request(mimeview->icon_mainbox, 
 					    size.width, -1);
 	}
-
 }
 
 static void mime_toggle_button_cb (GtkWidget *button, MimeView *mimeview) 

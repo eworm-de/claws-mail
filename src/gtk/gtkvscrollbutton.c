@@ -122,11 +122,19 @@ static void gtk_vscrollbutton_init(GtkVScrollbutton *scrollbutton)
     arrow = gtk_arrow_new(GTK_ARROW_UP, GTK_SHADOW_NONE);
     gtk_widget_show(arrow);
     gtk_container_add(GTK_CONTAINER(scrollbutton->upbutton), arrow);
+#ifndef MAEMO
     gtk_widget_set_size_request(scrollbutton->upbutton, -1, 16);
+#else
+    gtk_widget_set_size_request(scrollbutton->upbutton, -1, arrow->requisition.height + 8);
+#endif
     arrow = gtk_arrow_new(GTK_ARROW_DOWN, GTK_SHADOW_NONE);
     gtk_widget_show(arrow);
     gtk_container_add(GTK_CONTAINER(scrollbutton->downbutton), arrow);
+#ifndef MAEMO
     gtk_widget_set_size_request(scrollbutton->downbutton, -1, 16);
+#else
+    gtk_widget_set_size_request(scrollbutton->downbutton, -1, arrow->requisition.height + 8);
+#endif
     GTK_WIDGET_UNSET_FLAGS(scrollbutton->upbutton, GTK_CAN_FOCUS);
     GTK_WIDGET_UNSET_FLAGS(scrollbutton->downbutton, GTK_CAN_FOCUS);
     gtk_widget_show(scrollbutton->downbutton);
