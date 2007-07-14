@@ -1,3 +1,9 @@
+2007-07-14 [colin]	2.10.0cvs26
+
+	* src/toolbar.c
+		Fix the button workaround fix.
+		(Use the correct variable)
+
 2007-07-14 [colin]	2.10.0cvs25
 
 	* src/mainwindow.c

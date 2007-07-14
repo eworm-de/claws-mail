@@ -2030,7 +2030,7 @@ void toolbar_update(ToolbarType type, gpointer data)
 		GtkWidget *child = gtk_bin_get_child(		\
 			GTK_BIN(widget)); 			\
 		if (GTK_IS_BUTTON(child))			\
-			GTK_BUTTON(child)->in_button = in_btn2;	\
+			GTK_BUTTON(child)->in_button = in_btn1;	\
 	}							\
 }
 
