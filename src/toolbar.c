@@ -407,7 +407,7 @@ static void toolbar_set_default_main(void)
 		gchar *text;
 	} default_toolbar[] = {
 #ifdef MAEMO
-		{ A_GO_FOLDERS,    STOCK_PIXMAP_DIR_OPEN,             _("Folders") },
+		{ A_GO_FOLDERS,    STOCK_PIXMAP_GO_FOLDERS,             _("Folders") },
 		{ A_SEPARATOR,     0,                                 ("")         }, 
 #endif
 		{ A_RECEIVE_ALL,   STOCK_PIXMAP_MAIL_RECEIVE_ALL,     _("Get Mail")},

@@ -2677,3 +2677,4 @@
 ( cvs diff -u -r 1.43.2.69 -r 1.43.2.70 src/toolbar.c;  ) > 2.10.0cvs21.patchset
 ( cvs diff -u -r 1.43.2.70 -r 1.43.2.71 src/toolbar.c;  ) > 2.10.0cvs22.patchset
 ( cvs diff -u -r 1.43.2.71 -r 1.43.2.72 src/toolbar.c;  ) > 2.10.0cvs23.patchset
+( cvs diff -u -r 1.155.2.68 -r 1.155.2.69 src/Makefile.am;  cvs diff -u -r 1.204.2.139 -r 1.204.2.140 src/prefs_common.c;  cvs diff -u -r 1.25.2.40 -r 1.25.2.41 src/stock_pixmap.c;  cvs diff -u -r 1.18.2.29 -r 1.18.2.30 src/stock_pixmap.h;  cvs diff -u -r 1.43.2.72 -r 1.43.2.73 src/toolbar.c;  diff -u /dev/null src/pixmaps/go_folders.xpm;  ) > 2.10.0cvs24.patchset

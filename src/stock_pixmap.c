@@ -95,6 +95,7 @@
 #include "pixmaps/quicksearch.xpm"
 #include "pixmaps/clip_gpg_signed.xpm"
 #include "pixmaps/gpg_signed.xpm"
+#include "pixmaps/go_folders.xpm"
 #include "pixmaps/mime_text_plain.xpm"
 #include "pixmaps/mime_text_html.xpm"
 #include "pixmaps/mime_application.xpm"
@@ -303,6 +304,7 @@ static StockPixmapData pixmaps[] =
 	{notice_note_xpm			, NULL, NULL, "notice_note",  NULL},
 	{quicksearch_xpm			, NULL, NULL, "quicksearch",  NULL},
 	{gpg_signed_xpm				, NULL, NULL, "gpg_signed", NULL},
+	{go_folders_xpm				, NULL, NULL, "go_folders", NULL},
 	{drafts_close_xpm			, NULL, NULL, "drafts_close", NULL},
 	{drafts_open_xpm			, NULL, NULL, "drafts_open", NULL},
 	{drafts_close_mark_xpm			, NULL, NULL, "drafts_close_mark", NULL},

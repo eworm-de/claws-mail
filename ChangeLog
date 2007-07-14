@@ -1,3 +1,15 @@
+2007-07-14 [colin]	2.10.0cvs24
+
+	* src/prefs_common.c
+		Maemo: hide statusbar by default
+	* src/Makefile.am
+	* src/stock_pixmap.c
+	* src/stock_pixmap.h
+	* src/toolbar.c
+	* src/pixmaps/go_folders.xpm
+		Maemo: Add a specific icon to go back to
+		folder list
+
 2007-07-14 [colin]	2.10.0cvs23
 
 	* src/toolbar.c

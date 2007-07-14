@@ -425,12 +425,14 @@ static PrefParam param[] = {
 #endif
 	{"toolbar_detachable", "FALSE", &prefs_common.toolbar_detachable, P_BOOL,
 	 NULL, NULL, NULL},
+#ifndef MAEMO
 	{"show_statusbar", "TRUE", &prefs_common.show_statusbar, P_BOOL,
 	 NULL, NULL, NULL},
-#ifndef MAEMO
 	{"show_searchbar", "TRUE", &prefs_common.show_searchbar, P_BOOL,
 	 NULL, NULL, NULL},
 #else
+	{"show_statusbar", "FALSE", &prefs_common.show_statusbar, P_BOOL,
+	 NULL, NULL, NULL},
 	{"show_searchbar", "FALSE", &prefs_common.show_searchbar, P_BOOL,
 	 NULL, NULL, NULL},
 #endif

@@ -337,6 +337,7 @@ EXTRA_DIST = \
 	pixmaps/exec.xpm \
 	pixmaps/forwarded.xpm \
 	pixmaps/gpg_signed.xpm \
+	pixmaps/go_folders.xpm \
 	pixmaps/group.xpm \
 	pixmaps/ham_btn.xpm \
 	pixmaps/ignorethread.xpm \
