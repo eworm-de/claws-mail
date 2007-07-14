@@ -2675,3 +2675,4 @@
 ( cvs diff -u -r 1.382.2.394 -r 1.382.2.395 src/compose.c;  cvs diff -u -r 1.207.2.167 -r 1.207.2.168 src/folderview.c;  cvs diff -u -r 1.274.2.195 -r 1.274.2.196 src/mainwindow.c;  cvs diff -u -r 1.94.2.137 -r 1.94.2.138 src/messageview.c;  cvs diff -u -r 1.395.2.310 -r 1.395.2.311 src/summaryview.c;  cvs diff -u -r 1.43.2.67 -r 1.43.2.68 src/toolbar.c;  cvs diff -u -r 1.19.2.18 -r 1.19.2.19 src/toolbar.h;  ) > 2.10.0cvs19.patchset
 ( cvs diff -u -r 1.43.2.68 -r 1.43.2.69 src/toolbar.c;  ) > 2.10.0cvs20.patchset
 ( cvs diff -u -r 1.43.2.69 -r 1.43.2.70 src/toolbar.c;  ) > 2.10.0cvs21.patchset
+( cvs diff -u -r 1.43.2.70 -r 1.43.2.71 src/toolbar.c;  ) > 2.10.0cvs22.patchset

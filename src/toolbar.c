@@ -778,12 +778,14 @@ static void activate_compose_button (Toolbar           *toolbar,
 {
 	if ((!toolbar->compose_mail_btn) || (!toolbar->compose_news_btn))
 		return;
-
 	gtk_widget_hide(type == COMPOSEBUTTON_NEWS ? toolbar->compose_mail_btn 
 			: toolbar->compose_news_btn);
-	gtk_widget_show(type == COMPOSEBUTTON_NEWS ? toolbar->compose_news_btn
+	gtk_widget_show_now(type == COMPOSEBUTTON_NEWS ? toolbar->compose_news_btn
 			: toolbar->compose_mail_btn);
-	toolbar->compose_btn_type = type;	
+	toolbar->compose_btn_type = type;
+	gtk_widget_queue_resize(toolbar->toolbar);
+	gtk_widget_show_now(toolbar->toolbar);
+	GTK_EVENTS_FLUSH();
 }
 
 void toolbar_set_compose_button(Toolbar            *toolbar, 
@@ -804,9 +806,12 @@ static void activate_learn_button (Toolbar           *toolbar,
 
 	gtk_widget_hide(type == LEARN_SPAM ? toolbar->learn_ham_btn 
 			: toolbar->learn_spam_btn);
-	gtk_widget_show(type == LEARN_SPAM ? toolbar->learn_spam_btn
+	gtk_widget_show_now(type == LEARN_SPAM ? toolbar->learn_spam_btn
 			: toolbar->learn_ham_btn);
 	toolbar->learn_btn_type = type;	
+	gtk_widget_queue_resize(toolbar->toolbar);
+	gtk_widget_show_now(toolbar->toolbar);
+	GTK_EVENTS_FLUSH();
 }
 
 void toolbar_set_learn_button(Toolbar            *toolbar, 
