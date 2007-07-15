@@ -2681,3 +2681,4 @@
 ( cvs diff -u -r 1.274.2.196 -r 1.274.2.197 src/mainwindow.c;  cvs diff -u -r 1.43.2.73 -r 1.43.2.74 src/toolbar.c;  ) > 2.10.0cvs25.patchset
 ( cvs diff -u -r 1.43.2.74 -r 1.43.2.75 src/toolbar.c;  ) > 2.10.0cvs26.patchset
 ( cvs diff -u -r 1.83.2.109 -r 1.83.2.110 src/mimeview.c;  cvs diff -u -r 1.5.2.9 -r 1.5.2.10 src/gtk/gtkvscrollbutton.c;  ) > 2.10.0cvs27.patchset
+( cvs diff -u -r 1.274.2.197 -r 1.274.2.198 src/mainwindow.c;  ) > 2.10.0cvs28.patchset

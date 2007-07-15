@@ -190,10 +190,11 @@ static void toggle_toolbar_cb	 (MainWindow	*mainwin,
 static void toggle_statusbar_cb	 (MainWindow	*mainwin,
 				  guint		 action,
 				  GtkWidget	*widget);
+#ifndef MAEMO
 static void set_layout_cb	 (MainWindow	*mainwin,
 				  guint		 action,
 				  GtkWidget	*widget);
-
+#endif
 static void addressbook_open_cb	(MainWindow	*mainwin,
 				 guint		 action,
 				 GtkWidget	*widget);
@@ -564,6 +565,7 @@ static GtkItemFactoryEntry mainwin_entries[] =
 	{N_("/_View/Set displayed _columns/in _Message list..."),NULL, set_summary_display_item_cb, 0, NULL},
 
 	{N_("/_View/---"),			NULL, NULL, 0, "<Separator>"},
+#ifndef MAEMO
 	{N_("/_View/La_yout"),			NULL, NULL, 0, "<Branch>"},
 	{N_("/_View/Layout/_Standard"),		NULL, set_layout_cb, NORMAL_LAYOUT, "<RadioItem>"},
 	{N_("/_View/Layout/_Three columns"),	NULL, set_layout_cb, VERTICAL_LAYOUT, "/View/Layout/Standard"},
@@ -571,6 +573,7 @@ static GtkItemFactoryEntry mainwin_entries[] =
 	{N_("/_View/Layout/W_ide message list"),NULL, set_layout_cb, WIDE_MSGLIST_LAYOUT, "/View/Layout/Standard"},
 	{N_("/_View/Layout/S_mall screen"),	NULL, set_layout_cb, SMALL_LAYOUT, "/View/Layout/Standard"},
 	{N_("/_View/---"),			NULL, NULL, 0, "<Separator>"},
+#endif
 	{N_("/_View/_Sort"),			NULL, NULL, 0, "<Branch>"},
 	{N_("/_View/_Sort/by _number"),		NULL, sort_summary_cb, SORT_BY_NUMBER, "<RadioItem>"},
 	{N_("/_View/_Sort/by S_ize"),		NULL, sort_summary_cb, SORT_BY_SIZE, "/View/Sort/by number"},
@@ -1319,7 +1322,9 @@ MainWindow *main_window_create()
 	window = gtkut_window_new(GTK_WINDOW_TOPLEVEL, "mainwindow");
 	gtk_window_set_title(GTK_WINDOW(window), PROG_VERSION);
 	gtk_window_set_resizable(GTK_WINDOW(window), TRUE);
-
+#ifdef MAEMO
+	prefs_common.layout_mode = SMALL_LAYOUT;
+#endif
 	if (!geometry.min_height) {
 		geometry.min_width = 320;
 		geometry.min_height = 200;
@@ -3117,6 +3122,7 @@ static void main_window_set_widgets(MainWindow *mainwin, LayoutType layout_mode)
 	gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM(menuitem), active); \
 }
 
+#ifndef MAEMO
 	switch (prefs_common.layout_mode) {
 	case NORMAL_LAYOUT:
 		SET_CHECK_MENU_ACTIVE("/View/Layout/Standard", TRUE);
@@ -3134,6 +3140,7 @@ static void main_window_set_widgets(MainWindow *mainwin, LayoutType layout_mode)
 		SET_CHECK_MENU_ACTIVE("/View/Layout/Small screen", TRUE);
 		break;
 	}
+#endif
 #undef SET_CHECK_MENU_ACTIVE
 
 	if (folderwin) {
@@ -3377,6 +3384,7 @@ static void toggle_statusbar_cb(MainWindow *mainwin, guint action,
 	}
 }
 
+#ifndef MAEMO
 static void set_layout_cb(MainWindow *mainwin, guint action,
 			       GtkWidget *widget)
 {
@@ -3410,6 +3418,7 @@ static void set_layout_cb(MainWindow *mainwin, guint action,
 	summary_relayout(mainwin->summaryview);	
 	summary_update_unread(mainwin->summaryview, NULL);
 }
+#endif
 
 void main_window_toggle_work_offline (MainWindow *mainwin, gboolean offline,
 					gboolean ask_sync)
