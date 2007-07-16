@@ -1,3 +1,8 @@
+2007-07-16 [colin]	2.10.0cvs32
+
+	* src/toolbar.c
+		Fix double-loading of mails on Maemo
+
 2007-07-16 [colin]	2.10.0cvs31
 
 	* src/messageview.c

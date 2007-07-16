@@ -1217,11 +1217,13 @@ static void toolbar_prev_unread_cb(GtkWidget *widget, gpointer data)
 		
 		/* Now we need to update the messageview window */
 		if (msgview->mainwin->summaryview->selected) {
+#ifndef MAEMO
 			MsgInfo * msginfo = summary_get_selected_msg(msgview->mainwin->summaryview);
 		       
 			if (msginfo)
 				messageview_show(msgview, msginfo, 
 					 msgview->all_headers);
+#endif
 		} else {
 			gtk_widget_destroy(msgview->window);
 		}
@@ -1262,11 +1264,13 @@ static void toolbar_next_unread_cb(GtkWidget *widget, gpointer data)
 
 		/* Now we need to update the messageview window */
 		if (msgview->mainwin->summaryview->selected) {
+#ifndef MAEMO
 			MsgInfo * msginfo = summary_get_selected_msg(msgview->mainwin->summaryview);
 			
 			if (msginfo)
 				messageview_show(msgview, msginfo, 
 					 msgview->all_headers);
+#endif
 		} else {
 			gtk_widget_destroy(msgview->window);
 		}
