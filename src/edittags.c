@@ -577,3 +577,366 @@ gint prefs_tags_create_new(MainWindow *mainwin)
 	return id;
 	
 }
+
+enum {
+	TAG_SELECTED,
+	TAG_SELECTED_INCONSISTENT,
+	TAG_NAME,
+	TAG_DATA,
+	N_TAG_EDIT_COLUMNS
+};
+
+static void apply_window_create(void);
+
+static struct TagApplyWindow
+{
+	GtkWidget *window;
+	GtkWidget *hbox1;
+	GtkWidget *vbox1;
+	GtkWidget *label;
+	GtkWidget *taglist;
+	GtkWidget *close_btn;
+	GtkWidget *add_entry;
+	GtkWidget *add_btn;
+	GSList *msglist;
+} applywindow;
+
+static void apply_window_load_tags (void);
+
+void tag_apply_open(GSList *msglist)
+{
+	g_return_if_fail(msglist);
+
+	if (!applywindow.window)
+		apply_window_create();
+
+	manage_window_set_transient(GTK_WINDOW(applywindow.window));
+	gtk_widget_grab_focus(applywindow.close_btn);
+	
+	applywindow.msglist = msglist;
+	apply_window_load_tags();
+
+	gtk_widget_show(applywindow.window);
+	gtk_widget_grab_focus(applywindow.taglist);
+	gtk_window_set_modal(GTK_WINDOW(applywindow.window), TRUE);
+}
+
+static GtkListStore* apply_window_create_data_store(void)
+{
+	return gtk_list_store_new(N_TAG_EDIT_COLUMNS,
+				  G_TYPE_BOOLEAN,
+				  G_TYPE_BOOLEAN,
+				  G_TYPE_STRING,
+  				  G_TYPE_POINTER,
+				  -1);
+}
+
+static void tag_apply_selected_toggled(GtkCellRendererToggle *widget,
+		gchar *path,
+		GtkWidget *list_view);
+
+static void apply_window_create_list_view_columns(GtkWidget *list_view)
+{
+	GtkTreeViewColumn *column;
+	GtkCellRenderer *renderer;
+
+	renderer = gtk_cell_renderer_toggle_new();
+	g_object_set(renderer,
+		     "radio", FALSE,
+		     "activatable", TRUE,
+		     NULL);
+	column = gtk_tree_view_column_new_with_attributes
+		(_(""),
+		 renderer,
+		 "active", TAG_SELECTED,
+		 "inconsistent", TAG_SELECTED_INCONSISTENT,
+		 NULL);
+	gtk_tree_view_column_set_alignment (column, 0.5);
+	gtk_tree_view_append_column(GTK_TREE_VIEW(list_view), column);		
+	g_signal_connect(G_OBJECT(renderer), "toggled",
+			 G_CALLBACK(tag_apply_selected_toggled),
+			 list_view);
+
+	renderer = gtk_cell_renderer_text_new();
+	column = gtk_tree_view_column_new_with_attributes
+		(_("Tag"),
+		 renderer,
+		 "text", TAG_NAME,
+		 NULL);
+	gtk_tree_view_append_column(GTK_TREE_VIEW(list_view), column);
+	gtk_tree_view_column_set_resizable(column, TRUE);
+}
+
+static GtkWidget *apply_window_list_view_create	(void)
+{
+	GtkTreeView *list_view;
+	GtkTreeSelection *selector;
+	GtkTreeModel *model;
+
+	model = GTK_TREE_MODEL(apply_window_create_data_store());
+	list_view = GTK_TREE_VIEW(gtk_tree_view_new_with_model(model));
+	g_object_unref(model);	
+	
+	gtk_tree_view_set_rules_hint(list_view, prefs_common.use_stripes_everywhere);
+	
+	selector = gtk_tree_view_get_selection(list_view);
+	gtk_tree_selection_set_mode(selector, GTK_SELECTION_BROWSE);
+
+	/* create the columns */
+	apply_window_create_list_view_columns(GTK_WIDGET(list_view));
+
+	return GTK_WIDGET(list_view);
+
+}
+
+static void apply_window_close(void) 
+{
+	g_slist_free(applywindow.msglist);
+	applywindow.msglist = NULL;
+	gtk_widget_hide(applywindow.window);
+}
+
+static void apply_window_close_cb(GtkWidget *widget,
+			         gpointer data) 
+{
+	apply_window_close();
+}
+
+static void apply_window_list_view_insert_tag(GtkWidget *list_view,
+						  GtkTreeIter *row_iter,
+						  gint tag);
+
+static void apply_window_add_tag(void)
+{
+	gchar *new_tag = gtk_editable_get_chars(GTK_EDITABLE(applywindow.add_entry), 0, -1);
+	if (new_tag) {
+		gint id = tags_get_id_for_str(new_tag);
+		if (id == -1) {
+			id = tags_add_tag(new_tag);
+			tags_write_tags();
+			if (mainwindow_get_mainwindow())
+				summary_set_tag(
+					mainwindow_get_mainwindow()->summaryview, 
+					id, NULL);
+			main_window_reflect_tags_changes(mainwindow_get_mainwindow());
+			apply_window_list_view_insert_tag(applywindow.taglist, NULL, id);
+		}
+		g_free(new_tag);
+	}
+}
+
+static void apply_window_add_tag_cb(GtkWidget *widget,
+			         gpointer data) 
+{
+	apply_window_add_tag();
+}
+
+static gboolean apply_window_key_pressed(GtkWidget *widget, GdkEventKey *event, gpointer data)
+{
+	if (event && event->keyval == GDK_Escape)
+		apply_window_close();
+	return FALSE;
+}
+
+static gboolean apply_window_add_key_pressed(GtkWidget *widget, GdkEventKey *event, gpointer data)
+{
+	if (event && (event->keyval == GDK_KP_Enter || event->keyval == GDK_Return)) {
+		apply_window_add_tag();
+		gtk_entry_set_text(GTK_ENTRY(applywindow.add_entry), "");
+		gtk_widget_grab_focus(applywindow.taglist);
+	}
+		
+	return FALSE;
+}
+
+static void apply_window_create(void) 
+{
+	GtkWidget *window;
+	GtkWidget *hbox1;
+	GtkWidget *vbox1;
+	GtkWidget *label;
+	GtkWidget *taglist;
+	GtkWidget *close_btn;
+	GtkWidget *scrolledwin;
+	GtkWidget *new_tag_label;
+	GtkWidget *new_tag_entry;
+	GtkWidget *add_btn;
+
+	window = gtkut_window_new(GTK_WINDOW_TOPLEVEL, "tag_apply_window");
+	gtk_window_set_title (GTK_WINDOW(window),
+			      Q_("Dialog title|Apply tags"));
+
+	gtk_container_set_border_width (GTK_CONTAINER (window), 8);
+	gtk_window_set_position (GTK_WINDOW (window), GTK_WIN_POS_CENTER);
+	gtk_window_set_resizable(GTK_WINDOW (window), TRUE);
+	g_signal_connect(G_OBJECT(window), "delete_event",
+			 G_CALLBACK(apply_window_close_cb), NULL);
+	g_signal_connect(G_OBJECT(window), "key_press_event",
+			 G_CALLBACK(apply_window_key_pressed), NULL);
+	MANAGE_WINDOW_SIGNALS_CONNECT (window);
+
+	vbox1 = gtk_vbox_new(FALSE, 6);
+	hbox1 = gtk_hbox_new(FALSE, 6);
+	
+	new_tag_label = gtk_label_new(_("New tag:"));
+	gtk_misc_set_alignment(GTK_MISC(new_tag_label), 0, 0.5);
+	gtk_box_pack_start(GTK_BOX(hbox1), new_tag_label, FALSE, FALSE, 0);
+	
+	new_tag_entry = gtk_entry_new();
+	gtk_box_pack_start(GTK_BOX(hbox1), new_tag_entry, FALSE, FALSE, 0);
+	g_signal_connect(G_OBJECT(new_tag_entry), "key_press_event",
+			 G_CALLBACK(apply_window_add_key_pressed), NULL);
+	
+	add_btn = gtk_button_new_from_stock(GTK_STOCK_ADD);
+	gtk_box_pack_start(GTK_BOX(hbox1), add_btn, FALSE, FALSE, 0);
+	
+	close_btn = gtk_button_new_from_stock(GTK_STOCK_CLOSE);
+	gtk_box_pack_end(GTK_BOX(hbox1), close_btn, FALSE, FALSE, 0);
+
+	gtk_widget_show(new_tag_label);
+	gtk_widget_show(new_tag_entry);
+	gtk_widget_show(close_btn);
+	gtk_widget_show(add_btn);
+	g_signal_connect(G_OBJECT(close_btn), "clicked",
+			 G_CALLBACK(apply_window_close_cb), NULL);
+	g_signal_connect(G_OBJECT(add_btn), "clicked",
+			 G_CALLBACK(apply_window_add_tag_cb), NULL);
+
+	taglist = apply_window_list_view_create();
+	
+	label = gtk_label_new(_("Please select tags to apply/remove. Changes are immediate."));
+	gtk_misc_set_alignment(GTK_MISC(label), 0, 0.5);
+	gtk_box_pack_start(GTK_BOX(vbox1), label, FALSE, TRUE, 0);
+	
+	scrolledwin = gtk_scrolled_window_new(NULL, NULL);
+	gtk_scrolled_window_set_policy(GTK_SCROLLED_WINDOW(scrolledwin),
+				       GTK_POLICY_AUTOMATIC, GTK_POLICY_ALWAYS);
+				       
+	gtk_widget_set_size_request(scrolledwin, 500, 250);
+
+	gtk_container_add(GTK_CONTAINER(scrolledwin), taglist);
+	gtk_box_pack_start(GTK_BOX(vbox1), scrolledwin, TRUE, TRUE, 0);
+	gtk_box_pack_start(GTK_BOX(vbox1), hbox1, FALSE, FALSE, 0);
+	
+	gtk_widget_show(label);
+	gtk_widget_show(scrolledwin);
+	gtk_widget_show(taglist);
+	gtk_widget_show(hbox1);
+	gtk_widget_show(vbox1);
+	gtk_widget_show(close_btn);
+	gtk_container_add(GTK_CONTAINER (window), vbox1);
+
+	applywindow.window = window;
+	applywindow.hbox1 = hbox1;
+	applywindow.vbox1 = vbox1;
+	applywindow.label = label;
+	applywindow.taglist = taglist;
+	applywindow.close_btn = close_btn;
+	applywindow.add_btn = add_btn;
+	applywindow.add_entry = new_tag_entry;
+}
+
+static void apply_window_list_view_clear_tags(GtkWidget *list_view)
+{
+	GtkListStore *list_store = GTK_LIST_STORE(gtk_tree_view_get_model
+					(GTK_TREE_VIEW(list_view)));
+	gtk_list_store_clear(list_store);
+}
+
+
+static void tag_apply_selected_toggled(GtkCellRendererToggle *widget,
+		gchar *path,
+		GtkWidget *list_view)
+{
+	GtkTreeIter iter;
+	GtkTreeModel *model = gtk_tree_view_get_model(GTK_TREE_VIEW(list_view));
+	gboolean enabled = TRUE, set = FALSE;
+	gpointer tmp;
+	gint tag_id;
+	SummaryView *summaryview = NULL;
+	
+	if (mainwindow_get_mainwindow() != NULL)
+		summaryview = mainwindow_get_mainwindow()->summaryview;
+
+	if (!gtk_tree_model_get_iter_from_string(model, &iter, path))
+		return;
+
+	gtk_tree_model_get(model, &iter,
+			   TAG_SELECTED, &enabled,
+			   TAG_DATA, &tmp,
+			   -1);
+
+	set = !enabled;
+	tag_id = GPOINTER_TO_INT(tmp);
+
+	gtk_list_store_set(GTK_LIST_STORE(model), &iter,
+			   TAG_SELECTED, set,
+			   TAG_SELECTED_INCONSISTENT, FALSE,
+			   -1);
+	
+	if (summaryview)
+		summary_set_tag(summaryview, set ? tag_id : -tag_id, NULL);
+}
+
+static void apply_window_get_selected_state(gint tag, gboolean *selected, gboolean *selected_inconsistent)
+{
+	GSList *cur = applywindow.msglist;
+	gint num_mails = 0;
+	gint num_selected = 0;
+	for (; cur; cur = cur->next) {
+		MsgInfo *msginfo = (MsgInfo *)cur->data;
+		num_mails++;
+		if (msginfo->tags && g_slist_find(msginfo->tags, GINT_TO_POINTER(tag))) {
+			*selected = TRUE;
+			num_selected++;
+		}
+	}
+	if (num_selected > 0 && num_selected < num_mails)
+		*selected_inconsistent = TRUE;
+	else
+		*selected_inconsistent = FALSE;
+}
+
+static void apply_window_list_view_insert_tag(GtkWidget *list_view,
+						  GtkTreeIter *row_iter,
+						  gint tag) 
+{
+	GtkTreeIter iter;
+	GtkListStore *list_store = GTK_LIST_STORE(gtk_tree_view_get_model
+					(GTK_TREE_VIEW(list_view)));
+	const gchar *name = tags_get_tag(tag);
+	gboolean selected = FALSE, selected_inconsistent = FALSE;
+
+	apply_window_get_selected_state(tag, &selected, &selected_inconsistent);
+	if (row_iter == NULL) {
+		/* append new */
+		gtk_list_store_append(list_store, &iter);
+		gtk_list_store_set(list_store, &iter,
+				   TAG_SELECTED, selected,
+				   TAG_SELECTED_INCONSISTENT, selected_inconsistent,
+				   TAG_NAME, name,
+				   TAG_DATA, GINT_TO_POINTER(tag),
+				   -1);
+	} else {
+		gtk_list_store_set(list_store, row_iter,
+				   TAG_SELECTED, selected,
+				   TAG_SELECTED_INCONSISTENT, selected_inconsistent,
+				   TAG_NAME, name,
+				   TAG_DATA, GINT_TO_POINTER(tag),
+				   -1);
+	}
+}
+
+static void apply_window_load_tags (void) 
+{
+	GSList *cur;
+	GSList *tags = tags_get_list();
+	apply_window_list_view_clear_tags(applywindow.taglist);
+	
+	cur = tags;
+	for (; cur; cur = cur->next) {
+		gint id = GPOINTER_TO_INT(cur->data);
+		apply_window_list_view_insert_tag(applywindow.taglist, NULL, id);
+	}
+}
+

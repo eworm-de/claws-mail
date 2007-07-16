@@ -126,6 +126,7 @@ static void mimeview_open_part_with	(MimeView	*mimeview,
 					 MimeInfo	*partinfo,
 					 gboolean	 automatic);
 static void mimeview_select_next_part	(MimeView	*mimeview);
+static void mimeview_select_prev_part	(MimeView	*mimeview);
 static void mimeview_view_file		(const gchar	*filename,
 					 MimeInfo	*partinfo,
 					 const gchar	*cmd,
@@ -139,8 +140,6 @@ static void icon_selected               (MimeView       *mimeview,
 static gint icon_key_pressed            (GtkWidget      *button, 
 					 GdkEventKey    *event,
 					 MimeView       *mimeview);
-static void toggle_icon			(GtkToggleButton *button,
-					 MimeView	*mimeview);
 static void icon_list_append_icon 	(MimeView 	*mimeview, 
 					 MimeInfo 	*mimeinfo);
 static void icon_list_create		(MimeView 	*mimeview, 
@@ -148,10 +147,8 @@ static void icon_list_create		(MimeView 	*mimeview,
 static void icon_list_clear		(MimeView	*mimeview);
 static void icon_list_toggle_by_mime_info (MimeView	*mimeview,
 					   MimeInfo	*mimeinfo);
-static gboolean icon_list_select_by_number(MimeView	*mimeview,
-					   gint		 number);
-static void mime_toggle_button_cb 	(GtkWidget 	*button,
-					 MimeView 	*mimeview);
+static gint mime_toggle_button_cb(GtkWidget *button, GdkEventButton *event,
+				    MimeView *mimeview);
 static gboolean part_button_pressed	(MimeView 	*mimeview, 
 					 GdkEventButton *event, 
 					 MimeInfo 	*partinfo);
@@ -182,6 +179,32 @@ static GtkTargetEntry mimeview_mime_types[] =
 GSList *mimeviewer_factories;
 GSList *mimeviews;
 
+static GdkCursor *hand_cursor = NULL;
+
+static gboolean mimeview_visi_notify(GtkWidget *widget,
+				       GdkEventVisibility *event,
+				       MimeView *mimeview)
+{
+	gdk_window_set_cursor(widget->window, hand_cursor);
+	return FALSE;
+}
+
+static gboolean mimeview_leave_notify(GtkWidget *widget,
+				      GdkEventCrossing *event,
+				      MimeView *mimeview)
+{
+	gdk_window_set_cursor(widget->window, NULL);
+	return FALSE;
+}
+
+static gboolean mimeview_enter_notify(GtkWidget *widget,
+				      GdkEventCrossing *event,
+				      MimeView *mimeview)
+{
+	gdk_window_set_cursor(widget->window, hand_cursor);
+	return FALSE;
+}
+
 MimeView *mimeview_create(MainWindow *mainwin)
 {
 	MimeView *mimeview;
@@ -206,6 +229,9 @@ MimeView *mimeview_create(MainWindow *mainwin)
 	gchar *titles[N_MIMEVIEW_COLS];
 	gint n_entries;
 	gint i;
+
+	if (!hand_cursor)
+		hand_cursor = gdk_cursor_new(GDK_HAND2);
 
 	debug_print("Creating MIME view...\n");
 	mimeview = g_new0(MimeView, 1);
@@ -261,16 +287,30 @@ MimeView *mimeview_create(MainWindow *mainwin)
 	g_signal_connect(G_OBJECT(icon_scroll), "scroll_event",
 			 G_CALLBACK(mimeview_scrolled), mimeview);
 
-    	mime_toggle = gtk_toggle_button_new();
+    	mime_toggle = gtk_event_box_new();
+	gtk_event_box_set_visible_window(GTK_EVENT_BOX(mime_toggle), FALSE);
+
+	g_signal_connect(G_OBJECT(mime_toggle), "visibility-notify-event",
+			 G_CALLBACK(mimeview_visi_notify), mimeview);
+	g_signal_connect(G_OBJECT(mime_toggle), "motion-notify-event",
+			 G_CALLBACK(mimeview_visi_notify), mimeview);
+	g_signal_connect(G_OBJECT(mime_toggle), "leave-notify-event",
+			 G_CALLBACK(mimeview_leave_notify), mimeview);
+	g_signal_connect(G_OBJECT(mime_toggle), "enter-notify-event",
+			 G_CALLBACK(mimeview_enter_notify), mimeview);
+
+	gtk_container_set_border_width(GTK_CONTAINER(mime_toggle), 2);
 	gtk_widget_show(mime_toggle);
+	mimeview->ctree_mode = FALSE;
 	arrow = gtk_arrow_new(GTK_ARROW_LEFT, GTK_SHADOW_NONE);
 	gtk_widget_show(arrow);
 	gtk_container_add(GTK_CONTAINER(mime_toggle), arrow);
-	g_signal_connect(G_OBJECT(mime_toggle), "toggled", 
+	g_signal_connect(G_OBJECT(mime_toggle), "button_release_event", 
 			 G_CALLBACK(mime_toggle_button_cb), mimeview);
 
 	icon_mainbox = gtk_vbox_new(FALSE, 0);
 	gtk_widget_show(icon_mainbox);
+	gtk_widget_set_size_request(icon_mainbox, 32, -1);
 	gtk_box_pack_start(GTK_BOX(icon_mainbox), mime_toggle, FALSE, FALSE, 0);
 	gtk_box_pack_start(GTK_BOX(icon_mainbox), icon_scroll, TRUE, TRUE, 3);
 	gtk_box_pack_end(GTK_BOX(icon_mainbox), scrollbutton, FALSE, FALSE, 0);
@@ -1236,39 +1276,43 @@ void mimeview_pass_key_press_event(MimeView *mimeview, GdkEventKey *event)
 
 static void mimeview_select_next_part(MimeView *mimeview)
 {
-	gboolean is_next = FALSE;
+	GtkCTree *ctree = GTK_CTREE(mimeview->ctree);
+	GtkCTreeNode *node = mimeview->opened;
+	MimeInfo *partinfo = NULL;
+	
+skip:
+	node = GTK_CTREE_NODE_NEXT(node);
+	if (!node)
+		node = gtk_ctree_node_nth(GTK_CTREE(ctree), 0);
 
-	GList *child = gtk_container_children(GTK_CONTAINER(mimeview->icon_vbox));
-	for (; child != NULL; child = g_list_next(child)) {
-		if (GTK_IS_TOGGLE_BUTTON(child->data) &&  
-		    gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(child->data))) {
-			is_next = TRUE;
-		} else if (GTK_IS_TOGGLE_BUTTON(child->data) &&
-			   is_next) {
-			toggle_icon(GTK_TOGGLE_BUTTON(child->data), mimeview);
-			gtk_toggle_button_set_active
-				(GTK_TOGGLE_BUTTON(child->data), TRUE);
-			icon_selected(mimeview, -1, 
-				(MimeInfo *)g_object_get_data(G_OBJECT(child->data),
-			 	      "partinfo"));
-			is_next = FALSE;
-			break;
-		}
+	if (node) {
+		partinfo = gtk_ctree_node_get_row_data(ctree, node);
+		if (partinfo->type == MIMETYPE_MULTIPART)
+			goto skip;
+		gtk_sctree_unselect_all(GTK_SCTREE(ctree));
+		gtk_sctree_select(GTK_SCTREE(ctree), node);
+		icon_list_toggle_by_mime_info(mimeview, partinfo);
 	}
-	if (is_next) {
-		/* we were on the last one, go to first */
-		child = gtk_container_children(GTK_CONTAINER(mimeview->icon_vbox));
-		for (; child != NULL; child = g_list_next(child)) {
-			if (GTK_IS_TOGGLE_BUTTON(child->data)) {
-				toggle_icon(GTK_TOGGLE_BUTTON(child->data), mimeview);
-				gtk_toggle_button_set_active
-					(GTK_TOGGLE_BUTTON(child->data), TRUE);
-				icon_selected(mimeview, -1, 
-					(MimeInfo *)g_object_get_data(G_OBJECT(child->data),
-			 			"partinfo"));
-				break;
-			}
-		}
+}
+
+static void mimeview_select_prev_part(MimeView *mimeview)
+{
+	GtkCTree *ctree = GTK_CTREE(mimeview->ctree);
+	GtkCTreeNode *node = mimeview->opened;
+	MimeInfo *partinfo = NULL;
+	
+skip:
+	node = GTK_CTREE_NODE_PREV(node);
+	if (!node)
+		node = gtk_ctree_node_nth(GTK_CTREE(ctree), GTK_CLIST(ctree)->rows - 1);
+
+	if (node) {
+		partinfo = gtk_ctree_node_get_row_data(ctree, node);
+		if (partinfo->type == MIMETYPE_MULTIPART)
+			goto skip;
+		gtk_sctree_unselect_all(GTK_SCTREE(ctree));
+		gtk_sctree_select(GTK_SCTREE(ctree), node);
+		icon_list_toggle_by_mime_info(mimeview, partinfo);
 	}
 }
 
@@ -1284,7 +1328,6 @@ static gint mimeview_key_pressed(GtkWidget *widget, GdkEventKey *event,
 {
 	SummaryView *summaryview;
 	GtkCTree *ctree = GTK_CTREE(widget);
-	GtkCTreeNode *node;
 
 	if (!event) return FALSE;
 	if (!mimeview->opened) return FALSE;
@@ -1299,13 +1342,9 @@ static gint mimeview_key_pressed(GtkWidget *widget, GdkEventKey *event,
 		if (mimeview_scroll_page(mimeview, FALSE))
 			return TRUE;
 
-		node = GTK_CTREE_NODE_NEXT(mimeview->opened);
-		if (node) {
-			gtk_sctree_unselect_all(GTK_SCTREE(ctree));
-			gtk_sctree_select(GTK_SCTREE(ctree), node);
-			return TRUE;
-		}
-		break;
+		mimeview_select_next_part(mimeview);
+		return TRUE;
+
 	case GDK_BackSpace:
 		mimeview_scroll_page(mimeview, TRUE);
 		return TRUE;
@@ -1317,19 +1356,15 @@ static gint mimeview_key_pressed(GtkWidget *widget, GdkEventKey *event,
 	case GDK_n:
 	case GDK_N:
 		BREAK_ON_MODIFIER_KEY();
-		if (!GTK_CTREE_NODE_NEXT(mimeview->opened)) break;
-		KEY_PRESS_EVENT_STOP();
-		g_signal_emit_by_name(G_OBJECT(ctree), "scroll_vertical",
-					GTK_SCROLL_STEP_FORWARD, 0.0);
+		mimeview_select_next_part(mimeview);
 		return TRUE;
+
 	case GDK_p:
 	case GDK_P:
 		BREAK_ON_MODIFIER_KEY();
-		if (!GTK_CTREE_NODE_PREV(mimeview->opened)) break;
-		KEY_PRESS_EVENT_STOP();
-		g_signal_emit_by_name(G_OBJECT(ctree), "scroll_vertical",
-					GTK_SCROLL_STEP_BACKWARD, 0.0);
+		mimeview_select_prev_part(mimeview);
 		return TRUE;
+
 	case GDK_y:
 		BREAK_ON_MODIFIER_KEY();
 		KEY_PRESS_EVENT_STOP();
@@ -1886,11 +1921,9 @@ static gboolean icon_clicked_cb (GtkWidget *button, GdkEventButton *event, MimeV
 	if (event->button == 1) {
 		icon_selected(mimeview, num, partinfo);
 		gtk_widget_grab_focus(button);
-		if (!gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(button))) {
-			toggle_icon(GTK_TOGGLE_BUTTON(button), mimeview);
-		}
 	}
 	part_button_pressed(mimeview, event, partinfo);
+	icon_list_toggle_by_mime_info(mimeview, partinfo);
 
 	return FALSE;
 }
@@ -1910,11 +1943,6 @@ void mimeview_select_mimepart_icon(MimeView *mimeview, MimeInfo *partinfo)
 	icon_selected(mimeview, -1, partinfo);
 }
 
-#undef  KEY_PRESS_EVENT_STOP
-#define KEY_PRESS_EVENT_STOP() \
-        g_signal_stop_emission_by_name(G_OBJECT(button), \
-                                       "key_press_event");
-
 static gint icon_key_pressed(GtkWidget *button, GdkEventKey *event,
 			     MimeView *mimeview)
 {
@@ -1932,19 +1960,11 @@ static gint icon_key_pressed(GtkWidget *button, GdkEventKey *event,
 
 	switch (event->keyval) {
 	case GDK_space:
-		if (gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(button))) {
-			/* stop the button being untoggled */
-			KEY_PRESS_EVENT_STOP();
-			if (mimeview_scroll_page(mimeview, FALSE))
-				return TRUE;
-
-			if (icon_list_select_by_number(mimeview, num + 1))
-				return TRUE;
-		} else {
-			icon_selected(mimeview, num, partinfo);
-			toggle_icon(GTK_TOGGLE_BUTTON(button), mimeview);
+		if (mimeview_scroll_page(mimeview, FALSE))
 			return TRUE;
-		}
+
+		mimeview_select_next_part(mimeview);
+		return TRUE;
 
 		break;
 	case GDK_BackSpace:
@@ -1952,63 +1972,44 @@ static gint icon_key_pressed(GtkWidget *button, GdkEventKey *event,
 		return TRUE;
 	case GDK_Return:
 	case GDK_KP_Enter:
-		if (gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(button))) {
-			KEY_PRESS_EVENT_STOP();
-			mimeview_scroll_one_line(mimeview,
-						 (event->state & GDK_MOD1_MASK) != 0);
-			return TRUE;
-		} else {
-			icon_selected(mimeview, num, partinfo);
-			toggle_icon(GTK_TOGGLE_BUTTON(button), mimeview);
-			return TRUE;
-		}
+		mimeview_scroll_one_line(mimeview,
+					 (event->state & GDK_MOD1_MASK) != 0);
+		return TRUE;
 
 	case GDK_n:
 	case GDK_N:
 		BREAK_ON_MODIFIER_KEY();
-		if (icon_list_select_by_number(mimeview, num + 1)) {
-			KEY_PRESS_EVENT_STOP();
-			return TRUE;
-		}
-		break;
+		mimeview_select_next_part(mimeview);
+		return TRUE;
 		
 	case GDK_p:
 	case GDK_P:
 		BREAK_ON_MODIFIER_KEY();
-		if (icon_list_select_by_number(mimeview, num - 1)) {
-			KEY_PRESS_EVENT_STOP();
-			return TRUE;
-		}
+		mimeview_select_prev_part(mimeview);
 		break;
 
 	case GDK_y:
 		BREAK_ON_MODIFIER_KEY();
-		KEY_PRESS_EVENT_STOP();
 		mimeview_save_as(mimeview);
 		return TRUE;
 	case GDK_t:
 		BREAK_ON_MODIFIER_KEY();
-		KEY_PRESS_EVENT_STOP();
 		mimeview_display_as_text(mimeview);
 		return TRUE;	
 	case GDK_l:
 		BREAK_ON_MODIFIER_KEY();
-		KEY_PRESS_EVENT_STOP();
 		mimeview_launch(mimeview, NULL);
 		return TRUE;
 	case GDK_o:
 		BREAK_ON_MODIFIER_KEY();
-		KEY_PRESS_EVENT_STOP();
 		mimeview_open_with(mimeview);
 		return TRUE;
 	case GDK_c:
 		BREAK_ON_MODIFIER_KEY();
-		KEY_PRESS_EVENT_STOP();
 		mimeview_check_signature(mimeview);
 		return TRUE;
 	case GDK_a:
 		BREAK_ON_MODIFIER_KEY();
-		KEY_PRESS_EVENT_STOP();
 		mimeview_select_next_part(mimeview);
 		return TRUE;
 	default:
@@ -2018,21 +2019,6 @@ static gint icon_key_pressed(GtkWidget *button, GdkEventKey *event,
 	if (!mimeview->messageview->mainwin) return FALSE;
 	summaryview = mimeview->messageview->mainwin->summaryview;
 	return summary_pass_key_press_event(summaryview, event);
-}
-
-static void toggle_icon(GtkToggleButton *button, MimeView *mimeview)
-{
-	GList *child;
-	
-	child = gtk_container_get_children(GTK_CONTAINER(mimeview->icon_vbox));
-	for (; child != NULL; child = g_list_next(child)) {
-		if (GTK_IS_TOGGLE_BUTTON(child->data) && 
-		    GTK_TOGGLE_BUTTON(child->data) != button &&
-		    gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(child->data)))
-			gtk_toggle_button_set_active
-				(GTK_TOGGLE_BUTTON(child->data),
-				 FALSE);
-	}
 }
 
 static gboolean icon_popup_menu(GtkWidget *widget, gpointer data)
@@ -2065,8 +2051,18 @@ static void icon_list_append_icon (MimeView *mimeview, MimeInfo *mimeinfo)
 	
 	vbox = mimeview->icon_vbox;
 	mimeview->icon_count++;
-	button = gtk_toggle_button_new();
-	gtk_button_set_relief(GTK_BUTTON(button), GTK_RELIEF_NONE);
+	button = gtk_event_box_new();
+
+	g_signal_connect(G_OBJECT(button), "visibility-notify-event",
+			 G_CALLBACK(mimeview_visi_notify), mimeview);
+	g_signal_connect(G_OBJECT(button), "motion-notify-event",
+			 G_CALLBACK(mimeview_visi_notify), mimeview);
+	g_signal_connect(G_OBJECT(button), "leave-notify-event",
+			 G_CALLBACK(mimeview_leave_notify), mimeview);
+	g_signal_connect(G_OBJECT(button), "enter-notify-event",
+			 G_CALLBACK(mimeview_enter_notify), mimeview);
+
+	gtk_container_set_border_width(GTK_CONTAINER(button), 2);
 	g_object_set_data(G_OBJECT(button), "icon_number", 
 			  GINT_TO_POINTER(mimeview->icon_count));
 	g_object_set_data(G_OBJECT(button), "partinfo", 
@@ -2228,53 +2224,11 @@ static void icon_list_clear (MimeView *mimeview)
 	gtk_adjustment_set_value(adj, adj->lower);
 }
 
-static void icon_list_toggle_by_mime_info(MimeView	*mimeview,
-					  MimeInfo	*mimeinfo)
-{
-	GList *child;
-	
-	child = gtk_container_children(GTK_CONTAINER(mimeview->icon_vbox));
-	for (; child != NULL; child = g_list_next(child)) {
-		if (GTK_IS_TOGGLE_BUTTON(child->data) &&  
-		    g_object_get_data(G_OBJECT(child->data),
-			 	      "partinfo") == (gpointer)mimeinfo) {
-			toggle_icon(GTK_TOGGLE_BUTTON(child->data), mimeview);
-			gtk_toggle_button_set_active
-				(GTK_TOGGLE_BUTTON(child->data), TRUE);	
-		}				 
-	}
-}
-
 /*!
  *\brief        Used to 'click' the next or previous icon.
  *
  *\return       true if the icon 'number' exists and was selected.
  */
-static gboolean icon_list_select_by_number(MimeView	*mimeview,
-					   gint		 number)
-{
-	GList *child;
-
-	if (number == 0) return FALSE;
-	child = gtk_container_children(GTK_CONTAINER(mimeview->icon_vbox));
-	for (; child != NULL; child = g_list_next(child)) {
-		if (GTK_IS_TOGGLE_BUTTON(child->data) &&  
-		    GPOINTER_TO_INT(g_object_get_data(G_OBJECT(child->data),
-					"icon_number")) == number) {
-			icon_selected(mimeview, number,
-				      (MimeInfo*)g_object_get_data(G_OBJECT(child->data),
-								   "partinfo"));
-			toggle_icon(GTK_TOGGLE_BUTTON(child->data), mimeview);
-			gtk_toggle_button_set_active
-				(GTK_TOGGLE_BUTTON(child->data), TRUE);
-			gtk_widget_grab_focus(GTK_WIDGET(child->data));
-		
-			return TRUE;
-		}				 
-	}
-	return FALSE;
-}
-
 static void icon_scroll_size_allocate_cb(GtkWidget *widget, 
 					 GtkAllocation *size, MimeView *mimeview)
 {
@@ -2318,11 +2272,41 @@ static void icon_list_create(MimeView *mimeview, MimeInfo *mimeinfo)
 	}
 }
 
-static void mime_toggle_button_cb (GtkWidget *button, MimeView *mimeview) 
+static void icon_list_toggle_by_mime_info (MimeView	*mimeview,
+					   MimeInfo	*mimeinfo)
+{
+	GList *child;
+	
+	child = gtk_container_children(GTK_CONTAINER(mimeview->icon_vbox));
+	for (; child != NULL; child = g_list_next(child)) {
+		if (!GTK_IS_EVENT_BOX(child->data))
+			continue;
+		if(g_object_get_data(G_OBJECT(child->data),
+			 	      "partinfo") == (gpointer)mimeinfo) {
+			gint *border_x = NULL;
+			GtkWidget *icon = gtk_bin_get_child(GTK_BIN(child->data));
+			border_x = g_object_get_data(G_OBJECT(icon), "border_x");
+			*border_x = 0;
+			gtk_widget_queue_draw(icon);
+		} else {
+			gint *border_x = NULL;
+			GtkWidget *icon = gtk_bin_get_child(GTK_BIN(child->data));
+			border_x = g_object_get_data(G_OBJECT(icon), "border_x");
+			*border_x = 6;
+			gtk_widget_queue_draw(icon);
+		}			 
+	}
+}
+
+static gint mime_toggle_button_cb(GtkWidget *button, GdkEventButton *event,
+				    MimeView *mimeview)
 {
 	gtk_widget_ref(button); 
 
-	if (gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(button))) {
+	mimeview_leave_notify(button, NULL, NULL);
+
+	mimeview->ctree_mode = !mimeview->ctree_mode;
+	if (mimeview->ctree_mode) {
 		gtk_arrow_set(GTK_ARROW(GTK_BIN(button)->child), GTK_ARROW_RIGHT, 
 					GTK_SHADOW_NONE);
 		gtk_widget_hide(mimeview->icon_mainbox);
@@ -2354,9 +2338,8 @@ static void mime_toggle_button_cb (GtkWidget *button, MimeView *mimeview)
 
 		gtk_paned_set_gutter_size(GTK_PANED(mimeview->paned), 0);
 	}
-	gtk_widget_grab_focus(button);
 	gtk_widget_unref(button);
-
+	return TRUE;
 }
 
 void mimeview_update (MimeView *mimeview) {

@@ -5389,6 +5389,11 @@ static void summary_tags_menu_item_activate_item_cb(GtkMenuItem *menu_item,
 					g_direct_hash,
 					g_direct_equal,
 					NULL, NULL);
+	GHashTable *menu_allsel_table = g_hash_table_new_full(
+					g_direct_hash,
+					g_direct_equal,
+					NULL, NULL);
+	gint sel_len;
 	SummaryView *summaryview = (SummaryView *)data;
 	g_return_if_fail(summaryview != NULL);
 
@@ -5412,11 +5417,13 @@ static void summary_tags_menu_item_activate_item_cb(GtkMenuItem *menu_item,
 				(GTK_CHECK_MENU_ITEM(cur->data), FALSE);
 				
 			g_hash_table_insert(menu_table, GINT_TO_POINTER(id), GTK_CHECK_MENU_ITEM(cur->data));
+			g_hash_table_insert(menu_allsel_table, GINT_TO_POINTER(id), GINT_TO_POINTER(0));
 		}
 	}
 
 	/* iterate all messages and set the state of the appropriate
 	 * items */
+	sel_len = 0;
 	for (; sel != NULL; sel = sel->next) {
 		MsgInfo *msginfo;
 		GSList *tags = NULL;
@@ -5425,33 +5432,49 @@ static void summary_tags_menu_item_activate_item_cb(GtkMenuItem *menu_item,
 		msginfo = gtk_ctree_node_get_row_data
 			(GTK_CTREE(summaryview->ctree),
 			 GTK_CTREE_NODE(sel->data));
+		sel_len++;
 		if (msginfo) {
 			tags =  msginfo->tags;
 			if (!tags)
 				continue;
 
 			for (; tags; tags = tags->next) {
+				gint num_checked = GPOINTER_TO_INT(g_hash_table_lookup(menu_allsel_table, tags->data));
 				id = GPOINTER_TO_INT(tags->data);
 				item = g_hash_table_lookup(menu_table, GINT_TO_POINTER(tags->data));
-				if (item && !item->active)
+				if (item && !item->active) {
 					gtk_check_menu_item_set_active
 						(item, TRUE);
+				}
+				num_checked++;
+				g_hash_table_replace(menu_allsel_table, tags->data, GINT_TO_POINTER(num_checked));
 			}
 		}
 	}
 
+	for (cur = menu->children; cur != NULL && cur->data != NULL; cur = cur->next) {
+		if (GTK_IS_CHECK_MENU_ITEM(cur->data)) {
+			gint id = GPOINTER_TO_INT(g_object_get_data(G_OBJECT(cur->data),
+				"tag_id"));
+			gint num_checked = GPOINTER_TO_INT(g_hash_table_lookup(menu_allsel_table, GINT_TO_POINTER(id)));
+			if (num_checked < sel_len && num_checked > 0)
+				gtk_check_menu_item_set_inconsistent(GTK_CHECK_MENU_ITEM(cur->data), TRUE);
+			else
+				gtk_check_menu_item_set_inconsistent(GTK_CHECK_MENU_ITEM(cur->data), FALSE);
+		}
+	}
 	g_hash_table_destroy(menu_table);
+	g_hash_table_destroy(menu_allsel_table);
 	/* reset "dont_toggle" state */
 	g_object_set_data(G_OBJECT(menu), "dont_toggle",
 			  GINT_TO_POINTER(0));
 
 }
 
-static void summary_tags_menu_item_new_tag_activate_cb(GtkWidget *widget,
+static void summary_tags_menu_item_apply_tags_activate_cb(GtkWidget *widget,
 						     gpointer data)
 {
 	SummaryView *summaryview;
-	gint id;
 
 	summaryview = g_object_get_data(G_OBJECT(widget), "summaryview");
 	g_return_if_fail(summaryview != NULL);
@@ -5460,12 +5483,8 @@ static void summary_tags_menu_item_new_tag_activate_cb(GtkWidget *widget,
 	if (g_object_get_data(G_OBJECT(summaryview->tags_menu),
 				"dont_toggle"))
 		return;
-
-	id = prefs_tags_create_new(summaryview->mainwin);
-	if (id != -1) {
-		summary_set_tag(summaryview, id, NULL);
-		main_window_reflect_tags_changes(mainwindow_get_mainwindow());
-	}
+	
+	tag_apply_open(summary_get_selection(summaryview));	
 }
 
 static void summary_tags_menu_create(SummaryView *summaryview, gboolean refresh)
@@ -5510,14 +5529,20 @@ static void summary_tags_menu_create(SummaryView *summaryview, gboolean refresh)
 		gtk_menu_shell_append(GTK_MENU_SHELL(menu), item);
 		gtk_widget_show(item);
 	}
-	item = gtk_menu_item_new_with_label(_("New tag..."));
+
+	item = gtk_menu_item_new_with_label(_("Apply tags..."));
+	gtk_widget_add_accelerator(item, "activate", 
+		   summaryview->popupfactory->accel_group, 
+		   GDK_T, GDK_CONTROL_MASK|GDK_SHIFT_MASK,
+		   GTK_ACCEL_LOCKED | GTK_ACCEL_VISIBLE);
 	gtk_menu_shell_append(GTK_MENU_SHELL(menu), item);
 	g_signal_connect(G_OBJECT(item), "activate",
-			 G_CALLBACK(summary_tags_menu_item_new_tag_activate_cb),
+			 G_CALLBACK(summary_tags_menu_item_apply_tags_activate_cb),
 			 NULL);
 	g_object_set_data(G_OBJECT(item), "summaryview",
 			  summaryview);
 	gtk_widget_show(item);
+
 	g_slist_free(orig);
 	gtk_widget_show(menu);
 	gtk_menu_item_set_submenu(GTK_MENU_ITEM(label_menuitem), menu);

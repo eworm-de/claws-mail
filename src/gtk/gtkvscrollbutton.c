@@ -114,31 +114,71 @@ static void gtk_vscrollbutton_class_init(GtkVScrollbuttonClass *class)
 {
 }
 
+static GdkCursor *hand_cursor = NULL;
+
+static gboolean vscroll_visi_notify(GtkWidget *widget,
+				       GdkEventVisibility *event,
+				       gpointer data)
+{
+	gdk_window_set_cursor(widget->window, hand_cursor);
+	return FALSE;
+}
+
+static gboolean vscroll_leave_notify(GtkWidget *widget,
+				      GdkEventCrossing *event,
+				       gpointer data)
+{
+	gdk_window_set_cursor(widget->window, NULL);
+	return FALSE;
+}
+
+static gboolean vscroll_enter_notify(GtkWidget *widget,
+				      GdkEventCrossing *event,
+				       gpointer data)
+{
+	gdk_window_set_cursor(widget->window, hand_cursor);
+	return FALSE;
+}
+
+
 static void gtk_vscrollbutton_init(GtkVScrollbutton *scrollbutton)
 {
     GtkWidget *arrow;
-    scrollbutton->upbutton = gtk_button_new();
-    scrollbutton->downbutton = gtk_button_new();
+
+    if (!hand_cursor)
+	    hand_cursor = gdk_cursor_new(GDK_HAND2);
+
+    scrollbutton->upbutton = gtk_event_box_new();
+    scrollbutton->downbutton = gtk_event_box_new();
     arrow = gtk_arrow_new(GTK_ARROW_UP, GTK_SHADOW_NONE);
     gtk_widget_show(arrow);
     gtk_container_add(GTK_CONTAINER(scrollbutton->upbutton), arrow);
-#ifndef MAEMO
     gtk_widget_set_size_request(scrollbutton->upbutton, -1, 16);
-#else
-    gtk_widget_set_size_request(scrollbutton->upbutton, -1, arrow->requisition.height + 8);
-#endif
     arrow = gtk_arrow_new(GTK_ARROW_DOWN, GTK_SHADOW_NONE);
     gtk_widget_show(arrow);
     gtk_container_add(GTK_CONTAINER(scrollbutton->downbutton), arrow);
-#ifndef MAEMO
     gtk_widget_set_size_request(scrollbutton->downbutton, -1, 16);
-#else
-    gtk_widget_set_size_request(scrollbutton->downbutton, -1, arrow->requisition.height + 8);
-#endif
     GTK_WIDGET_UNSET_FLAGS(scrollbutton->upbutton, GTK_CAN_FOCUS);
     GTK_WIDGET_UNSET_FLAGS(scrollbutton->downbutton, GTK_CAN_FOCUS);
     gtk_widget_show(scrollbutton->downbutton);
     gtk_widget_show(scrollbutton->upbutton);
+
+    g_signal_connect(G_OBJECT(scrollbutton->upbutton), "visibility-notify-event",
+		     G_CALLBACK(vscroll_visi_notify), NULL);
+    g_signal_connect(G_OBJECT(scrollbutton->upbutton), "motion-notify-event",
+		     G_CALLBACK(vscroll_visi_notify), NULL);
+    g_signal_connect(G_OBJECT(scrollbutton->upbutton), "leave-notify-event",
+		     G_CALLBACK(vscroll_leave_notify), NULL);
+    g_signal_connect(G_OBJECT(scrollbutton->upbutton), "enter-notify-event",
+		     G_CALLBACK(vscroll_enter_notify), NULL);
+    g_signal_connect(G_OBJECT(scrollbutton->downbutton), "visibility-notify-event",
+		     G_CALLBACK(vscroll_visi_notify), NULL);
+    g_signal_connect(G_OBJECT(scrollbutton->downbutton), "motion-notify-event",
+		     G_CALLBACK(vscroll_visi_notify), NULL);
+    g_signal_connect(G_OBJECT(scrollbutton->downbutton), "leave-notify-event",
+		     G_CALLBACK(vscroll_leave_notify), NULL);
+    g_signal_connect(G_OBJECT(scrollbutton->downbutton), "enter-notify-event",
+		     G_CALLBACK(vscroll_enter_notify), NULL);
 
     g_signal_connect(G_OBJECT(scrollbutton->upbutton),
 		       "button_press_event",

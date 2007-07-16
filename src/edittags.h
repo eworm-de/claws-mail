@@ -25,4 +25,5 @@
 void prefs_tags_open(MainWindow *mainwin);
 gint prefs_tags_create_new(MainWindow *mainwin);
 
+void tag_apply_open(GSList *msglist);
 #endif

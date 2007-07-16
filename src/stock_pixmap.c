@@ -736,6 +736,7 @@ GtkWidget *stock_pixmap_widget_with_overlay(GtkWidget *window, StockPixmap icon,
 			 G_CALLBACK(pixmap_with_overlay_expose_event_cb), data);
 	g_signal_connect(G_OBJECT(widget), "destroy",
 			 G_CALLBACK(pixmap_with_overlay_destroy_cb), data);
+	g_object_set_data(G_OBJECT(widget), "border_x", &(data->border_x));
 	return widget;
 
 }

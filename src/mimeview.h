@@ -70,6 +70,7 @@ struct _MimeView
 	GtkWidget *mime_toggle;
 	GtkWidget *scrollbutton;
 	MimeViewType type;
+	gboolean ctree_mode;
 
 	GtkWidget *popupmenu;
 	GtkItemFactory *popupfactory;
