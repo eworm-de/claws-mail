@@ -115,14 +115,15 @@ static void legend_create(void)
 	GtkWidget *label;
 	GtkWidget *icon_label;
 	GtkWidget *desc_label;
+	GtkWidget *scrolled_window;
 	GtkWidget *table;
 	gint i;
 
 	window = gtkut_window_new(GTK_WINDOW_TOPLEVEL, "icon_legend");
 	gtk_window_set_title(GTK_WINDOW(window), _("Icon Legend"));
 	gtk_container_set_border_width(GTK_CONTAINER(window), 8);
-	gtk_window_set_resizable(GTK_WINDOW(window), FALSE);
-	gtk_widget_set_size_request(window, -1, -1);
+	gtk_window_set_resizable(GTK_WINDOW(window), TRUE);
+	gtk_widget_set_size_request(window, 360, 570);
 	g_signal_connect(G_OBJECT(window), "delete_event",
 			 G_CALLBACK(legend_close), NULL);
 	g_signal_connect(G_OBJECT(window), "key_press_event",
@@ -145,6 +146,11 @@ static void legend_create(void)
 	gtk_widget_show(label);
 	gtk_box_pack_start(GTK_BOX(hbox), label, FALSE, FALSE, 0);
 
+	scrolled_window = gtk_scrolled_window_new (NULL, NULL);
+	gtk_scrolled_window_set_policy (GTK_SCROLLED_WINDOW (scrolled_window),
+                                        GTK_POLICY_AUTOMATIC, GTK_POLICY_AUTOMATIC);
+	gtk_box_pack_start(GTK_BOX(vbox), scrolled_window, TRUE, TRUE, 0);
+
 	table = gtk_table_new(ICONS, 2, FALSE);
 	gtk_container_set_border_width(GTK_CONTAINER(table), 8);
 	gtk_table_set_row_spacings(GTK_TABLE(table), 4);
@@ -163,7 +169,8 @@ static void legend_create(void)
 				GTK_FILL, 0, 0, 0);
 	}	
 
-	gtk_box_pack_start(GTK_BOX(vbox), table, FALSE, FALSE, 0);
+	gtk_scrolled_window_add_with_viewport(GTK_SCROLLED_WINDOW(scrolled_window),
+ 					      table);
 
 	gtkut_stock_button_set_create(&confirm_area, &close_button, GTK_STOCK_CLOSE,
 				      NULL, NULL, NULL, NULL);

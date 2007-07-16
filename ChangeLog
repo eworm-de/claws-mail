@@ -1,3 +1,10 @@
+2007-07-16 [paul]	2.10.0cvs29
+
+	* src/wizard.c
+		rework dialog
+	* src/gtk/icon_legend.c
+		put it all in a scrolled window
+
 2007-07-15 [colin]	2.10.0cvs28
 
 	* src/mainwindow.c
