@@ -404,7 +404,7 @@ void messageview_add_toolbar(MessageView *msgview, GtkWidget *window)
  	GtkWidget *handlebox;
 	GtkWidget *vbox;
 	GtkWidget *menubar;
-	GtkWidget *statusbar;
+	GtkWidget *statusbar = NULL;
 	guint n_menu_entries;
 
 	vbox = gtk_vbox_new(FALSE, 0);
@@ -427,17 +427,19 @@ void messageview_add_toolbar(MessageView *msgview, GtkWidget *window)
 #ifdef MAEMO
 	msgview->toolbar = toolbar_create(TOOLBAR_MSGVIEW, window,
 					  (gpointer)msgview);
+	msgview->statusbar = NULL;
+	msgview->statusbar_cid = 0;
 #else
 	msgview->toolbar = toolbar_create(TOOLBAR_MSGVIEW, handlebox,
 					  (gpointer)msgview);
-#endif
-
 	statusbar = gtk_statusbar_new();
 	gtk_widget_show(statusbar);
 	gtk_box_pack_end(GTK_BOX(vbox), statusbar, FALSE, FALSE, 0);
 	msgview->statusbar = statusbar;
 	msgview->statusbar_cid = gtk_statusbar_get_context_id
 		(GTK_STATUSBAR(statusbar), "Message View");
+#endif
+
 
 	msgview->handlebox = handlebox;
 	msgview->menubar   = menubar;
@@ -908,8 +910,11 @@ gint messageview_show(MessageView *messageview, MsgInfo *msginfo,
 		noticeview_hide(messageview->noticeview);
 
 	mimeinfo = procmime_mimeinfo_next(mimeinfo);
-	if (!all_headers && mimeinfo && (mimeinfo->type != MIMETYPE_TEXT || 
-	    strcasecmp(mimeinfo->subtype, "plain"))) {
+	if (!all_headers && mimeinfo 
+			&& (mimeinfo->type != MIMETYPE_TEXT || 
+	    strcasecmp(mimeinfo->subtype, "plain")) 
+			&& (mimeinfo->type != MIMETYPE_MULTIPART || 
+	    strcasecmp(mimeinfo->subtype, "signed"))) {
 	    	if (strcasecmp(mimeinfo->subtype, "html"))
 			mimeview_show_part(messageview->mimeview,mimeinfo);
 		else if (prefs_common.invoke_plugin_on_html)

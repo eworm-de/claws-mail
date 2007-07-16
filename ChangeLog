@@ -1,3 +1,9 @@
+2007-07-16 [colin]	2.10.0cvs31
+
+	* src/messageview.c
+		Prevent double-loading of the same part under some
+		conditions; hide statusbar on Maemo
+
 2007-07-16 [colin]	2.10.0cvs30
 
 	* src/edittags.c
