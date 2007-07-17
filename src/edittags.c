@@ -665,6 +665,9 @@ static void apply_window_create_list_view_columns(GtkWidget *list_view)
 		 NULL);
 	gtk_tree_view_append_column(GTK_TREE_VIEW(list_view), column);
 	gtk_tree_view_column_set_resizable(column, TRUE);
+
+	gtk_tree_view_set_search_column(GTK_TREE_VIEW(list_view),
+					TAG_NAME);
 }
 
 static GtkWidget *apply_window_list_view_create	(void)
@@ -706,6 +709,29 @@ static void apply_window_list_view_insert_tag(GtkWidget *list_view,
 						  GtkTreeIter *row_iter,
 						  gint tag);
 
+typedef struct FindTagInStore {
+	gint		 tag_id;
+	GtkTreePath	*path;
+	GtkTreeIter	 iter;
+} FindTagInStore;
+
+static gboolean find_tag_in_store(GtkTreeModel *model,
+				      GtkTreePath  *path,
+				      GtkTreeIter  *iter,
+				      FindTagInStore *data)
+{
+	gpointer tmp;
+	gtk_tree_model_get(model, iter, TAG_DATA, &tmp, -1);
+
+	if (data->tag_id == GPOINTER_TO_INT(tmp)) {
+		data->path = path; /* signal we found it */
+		data->iter = *iter;
+		return TRUE;
+	}
+
+	return FALSE; 
+}
+
 static void apply_window_add_tag(void)
 {
 	gchar *new_tag = gtk_editable_get_chars(GTK_EDITABLE(applywindow.add_entry), 0, -1);
@@ -720,6 +746,32 @@ static void apply_window_add_tag(void)
 					id, NULL);
 			main_window_reflect_tags_changes(mainwindow_get_mainwindow());
 			apply_window_list_view_insert_tag(applywindow.taglist, NULL, id);
+		} else {
+			FindTagInStore fis;
+			fis.tag_id = id;
+			fis.path = NULL;
+			gtk_tree_model_foreach(gtk_tree_view_get_model
+					(GTK_TREE_VIEW(applywindow.taglist)), 
+					(GtkTreeModelForeachFunc) find_tag_in_store,
+			       		&fis);
+			if (fis.path) {
+				GtkTreeSelection *selection;
+				GtkTreePath* path;
+				GtkTreeModel *model = gtk_tree_view_get_model(
+					GTK_TREE_VIEW(applywindow.taglist));
+
+				if (mainwindow_get_mainwindow())
+					summary_set_tag(
+						mainwindow_get_mainwindow()->summaryview, 
+						id, NULL);
+				selection = gtk_tree_view_get_selection(GTK_TREE_VIEW(applywindow.taglist));
+				gtk_tree_selection_select_iter(selection, &fis.iter);
+				path = gtk_tree_model_get_path(model, &fis.iter);
+				/* XXX returned path may not be valid??? create new one to be sure */ 
+				gtk_tree_view_set_cursor(GTK_TREE_VIEW(applywindow.taglist), path, NULL, FALSE);
+				apply_window_list_view_insert_tag(applywindow.taglist, &fis.iter, id);
+				gtk_tree_path_free(path);
+			}
 		}
 		g_free(new_tag);
 	}
@@ -729,6 +781,8 @@ static void apply_window_add_tag_cb(GtkWidget *widget,
 			         gpointer data) 
 {
 	apply_window_add_tag();
+	gtk_entry_set_text(GTK_ENTRY(applywindow.add_entry), "");
+	gtk_widget_grab_focus(applywindow.taglist);
 }
 
 static gboolean apply_window_key_pressed(GtkWidget *widget, GdkEventKey *event, gpointer data)

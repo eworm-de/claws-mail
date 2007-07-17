@@ -1,3 +1,12 @@
+2007-07-17 [paul]	2.10.0cvs34
+
+	* src/edittags.c
+		fix some issues with the Apply tags window:
+		- set search column (enables autocompl in the treeview)
+		- apply tag from "New tag" if it existed
+		- clears New tag entry when adding it with the button
+		Thanks to Colin
+
 2007-07-17 [paul]	2.10.0cvs33
 
 	* src/edittags.c

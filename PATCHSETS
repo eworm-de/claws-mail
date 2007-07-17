@@ -2687,3 +2687,4 @@
 ( cvs diff -u -r 1.94.2.138 -r 1.94.2.139 src/messageview.c;  ) > 2.10.0cvs31.patchset
 ( cvs diff -u -r 1.43.2.75 -r 1.43.2.76 src/toolbar.c;  ) > 2.10.0cvs32.patchset
 ( cvs diff -u -r 1.1.2.3 -r 1.1.2.4 src/edittags.c;  ) > 2.10.0cvs33.patchset
+( cvs diff -u -r 1.1.2.4 -r 1.1.2.5 src/edittags.c;  ) > 2.10.0cvs34.patchset
