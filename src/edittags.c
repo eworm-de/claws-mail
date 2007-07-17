@@ -646,7 +646,7 @@ static void apply_window_create_list_view_columns(GtkWidget *list_view)
 		     "activatable", TRUE,
 		     NULL);
 	column = gtk_tree_view_column_new_with_attributes
-		(_(""),
+		("",
 		 renderer,
 		 "active", TAG_SELECTED,
 		 "inconsistent", TAG_SELECTED_INCONSISTENT,
