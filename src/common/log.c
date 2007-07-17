@@ -54,6 +54,11 @@ static LogInstanceData log_instances[LOG_INSTANCE_MAX] = {
 	{ DEBUG_FILTERING_APPEND_TEXT_HOOKLIST, NULL, NULL, NULL }
 };
 
+gboolean prefs_common_enable_log_standard(void);
+gboolean prefs_common_enable_log_warning(void);
+gboolean prefs_common_enable_log_error(void);
+gboolean prefs_common_enable_log_status(void);
+
 static gboolean invoke_hook_cb (gpointer data)
 {
 	LogText *logtext = (LogText *)data;
@@ -142,8 +147,8 @@ void log_print(LogInstance instance, const gchar *format, ...)
 	logtext->type = LOG_NORMAL;
 	
 	g_timeout_add(0, invoke_hook_cb, logtext);
-	
-	if (log_fp[instance]) {
+
+	if (log_fp[instance] && prefs_common_enable_log_standard()) {
 		fputs(buf, log_fp[instance]);
 		fflush(log_fp[instance]);
 	}
@@ -172,7 +177,7 @@ void log_message(LogInstance instance, const gchar *format, ...)
 	
 	g_timeout_add(0, invoke_hook_cb, logtext);
 
-	if (log_fp[instance]) {
+	if (log_fp[instance] && prefs_common_enable_log_standard()) {
 		fwrite(buf, 1, LOG_TIME_LEN, log_fp[instance]);
 		fputs("* message: ", log_fp[instance]);
 		fputs(buf + LOG_TIME_LEN, log_fp[instance]);
@@ -203,7 +208,7 @@ void log_warning(LogInstance instance, const gchar *format, ...)
 	
 	g_timeout_add(0, invoke_hook_cb, logtext);
 
-	if (log_fp[instance]) {
+	if (log_fp[instance] && prefs_common_enable_log_warning()) {
 		fwrite(buf, 1, LOG_TIME_LEN, log_fp[instance]);
 		fputs("** warning: ", log_fp[instance]);
 		fputs(buf + LOG_TIME_LEN, log_fp[instance]);
@@ -234,7 +239,7 @@ void log_error(LogInstance instance, const gchar *format, ...)
 	
 	g_timeout_add(0, invoke_hook_cb, logtext);
 
-	if (log_fp[instance]) {
+	if (log_fp[instance] && prefs_common_enable_log_error()) {
 		fwrite(buf, 1, LOG_TIME_LEN, log_fp[instance]);
 		fputs("*** error: ", log_fp[instance]);
 		fputs(buf + LOG_TIME_LEN, log_fp[instance]);
@@ -265,7 +270,7 @@ void log_status_ok(LogInstance instance, const gchar *format, ...)
 	
 	g_timeout_add(0, invoke_hook_cb, logtext);
 
-	if (log_fp[instance]) {
+	if (log_fp[instance] && prefs_common_enable_log_status()) {
 		fwrite(buf, 1, LOG_TIME_LEN, log_fp[instance]);
 		fputs("* OK: ", log_fp[instance]);
 		fputs(buf + LOG_TIME_LEN, log_fp[instance]);
@@ -296,7 +301,7 @@ void log_status_nok(LogInstance instance, const gchar *format, ...)
 	
 	g_timeout_add(0, invoke_hook_cb, logtext);
 
-	if (log_fp[instance]) {
+	if (log_fp[instance] && prefs_common_enable_log_status()) {
 		fwrite(buf, 1, LOG_TIME_LEN, log_fp[instance]);
 		fputs("* NOT OK: ", log_fp[instance]);
 		fputs(buf + LOG_TIME_LEN, log_fp[instance]);
@@ -327,7 +332,7 @@ void log_status_skip(LogInstance instance, const gchar *format, ...)
 	
 	g_timeout_add(0, invoke_hook_cb, logtext);
 
-	if (log_fp[instance]) {
+	if (log_fp[instance] && prefs_common_enable_log_status()) {
 		fwrite(buf, 1, LOG_TIME_LEN, log_fp[instance]);
 		fputs("* SKIPPED: ", log_fp[instance]);
 		fputs(buf + LOG_TIME_LEN, log_fp[instance]);

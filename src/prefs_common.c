@@ -805,11 +805,29 @@ static PrefParam param[] = {
 	{"important_score", "1", &prefs_common.important_score, P_INT,
 	 NULL, NULL, NULL},
 
-    {"clip_log", "TRUE", &prefs_common.cliplog, P_BOOL,
+    	{"clip_log", "TRUE", &prefs_common.cliplog, P_BOOL,
 	 NULL, NULL, NULL},
 	{"log_length", "500", &prefs_common.loglength, P_INT,
 	 NULL, NULL, NULL},
-
+#ifndef MAEMO
+    	{"enable_log_standard", "TRUE", &prefs_common.enable_log_standard, P_BOOL,
+	 NULL, NULL, NULL},
+    	{"enable_log_warning", "TRUE", &prefs_common.enable_log_warning, P_BOOL,
+	 NULL, NULL, NULL},
+    	{"enable_log_error", "TRUE", &prefs_common.enable_log_error, P_BOOL,
+	 NULL, NULL, NULL},
+    	{"enable_log_status", "TRUE", &prefs_common.enable_log_status, P_BOOL,
+	 NULL, NULL, NULL},
+#else
+    	{"enable_log_standard", "FALSE", &prefs_common.enable_log_standard, P_BOOL,
+	 NULL, NULL, NULL},
+    	{"enable_log_warning", "FALSE", &prefs_common.enable_log_warning, P_BOOL,
+	 NULL, NULL, NULL},
+    	{"enable_log_error", "FALSE", &prefs_common.enable_log_error, P_BOOL,
+	 NULL, NULL, NULL},
+    	{"enable_log_status", "FALSE", &prefs_common.enable_log_status, P_BOOL,
+	 NULL, NULL, NULL},
+#endif
 	{"log_msg_color", "#00af00", &prefs_common.log_msg_color, P_COLOR,
 	 NULL, NULL, NULL},
 	{"log_warn_color", "#af0000", &prefs_common.log_warn_color, P_COLOR,
@@ -1342,6 +1360,23 @@ gboolean prefs_common_unsafe_ssl_certs(void)
 	return prefs_common.unsafe_ssl_certs;
 }
 
+gboolean prefs_common_enable_log_standard(void)
+{
+	return prefs_common.enable_log_standard;
+}
+
+gboolean prefs_common_enable_log_warning(void)
+{
+	return prefs_common.enable_log_warning;
+}
+gboolean prefs_common_enable_log_error(void)
+{
+	return prefs_common.enable_log_error;
+}
+gboolean prefs_common_enable_log_status(void)
+{
+	return prefs_common.enable_log_status;
+}
 /**
    return the translated name of a header, if the translate_header option is
    set, otherwise return the untranslated header name (header_name itself).

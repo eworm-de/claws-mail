@@ -2688,3 +2688,4 @@
 ( cvs diff -u -r 1.43.2.75 -r 1.43.2.76 src/toolbar.c;  ) > 2.10.0cvs32.patchset
 ( cvs diff -u -r 1.1.2.3 -r 1.1.2.4 src/edittags.c;  ) > 2.10.0cvs33.patchset
 ( cvs diff -u -r 1.1.2.4 -r 1.1.2.5 src/edittags.c;  ) > 2.10.0cvs34.patchset
+( cvs diff -u -r 1.204.2.140 -r 1.204.2.141 src/prefs_common.c;  cvs diff -u -r 1.103.2.86 -r 1.103.2.87 src/prefs_common.h;  cvs diff -u -r 1.1.2.7 -r 1.1.2.8 src/prefs_logging.c;  cvs diff -u -r 1.6.2.13 -r 1.6.2.14 src/common/log.c;  ) > 2.10.0cvs35.patchset

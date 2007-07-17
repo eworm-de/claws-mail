@@ -50,6 +50,10 @@ typedef struct _LoggingPage
 
 	GtkWidget *checkbtn_clip_network_log;
 	GtkWidget *spinbtn_network_log_length;
+	GtkWidget *checkbtn_log_standard;
+	GtkWidget *checkbtn_log_warning;
+	GtkWidget *checkbtn_log_error;
+	GtkWidget *checkbtn_log_status;
 	GtkWidget *checkbtn_clip_filtering_log;
 	GtkWidget *spinbtn_filtering_log_length;
 	GtkWidget *checkbtn_filtering_log;
@@ -75,7 +79,6 @@ static void prefs_logging_create_widget(PrefsPage *_page, GtkWindow *window,
 	GtkWidget *spinbtn_network_log_length;
 	GtkObject *spinbtn_network_log_length_adj;
 	GtkTooltips *network_log_length_tooltip;
-	GtkWidget *label;
 	GtkWidget *vbox1_filtering_log;
 	GtkWidget *hbox_clip_filtering_log;
 	GtkWidget *checkbtn_clip_filtering_log;
@@ -103,6 +106,18 @@ static void prefs_logging_create_widget(PrefsPage *_page, GtkWindow *window,
 	GtkWidget *menu;
 	GtkWidget *menuitem;
 	GtkTooltips *filtering_log_level_tooltip;
+	GtkWidget *frame_disc_log;
+	GtkWidget *vbox_disc_log;
+	GtkWidget *label;
+	GtkWidget *hbox;
+	GtkWidget *checkbtn_log_standard;
+	GtkWidget *hbox_log_standard;
+	GtkWidget *checkbtn_log_warning;
+	GtkWidget *hbox_log_warning;
+	GtkWidget *checkbtn_log_error;
+	GtkWidget *hbox_log_error;
+	GtkWidget *checkbtn_log_status;
+	GtkWidget *hbox_log_status;
 
 	vbox1 = gtk_vbox_new (FALSE, VSPACING);
 	gtk_widget_show (vbox1);
@@ -262,10 +277,52 @@ static void prefs_logging_create_widget(PrefsPage *_page, GtkWindow *window,
 	SET_TOGGLE_SENSITIVITY(checkbtn_filtering_log, checkbtn_clip_filtering_log);
 	SET_TOGGLE_SENSITIVITY(checkbtn_filtering_log, label_filtering_log_level);
 
+	/* disk log */
+	vbox_disc_log = gtkut_get_options_frame(vbox1, &frame_disc_log, _("Disc log"));
+
+	label = gtk_label_new(_("Write the following information to disc..."));
+	gtk_widget_show(label);
+	hbox = gtk_hbox_new (FALSE, 8);
+	gtk_container_add (GTK_CONTAINER (vbox_disc_log), hbox);
+	gtk_box_pack_start(GTK_BOX(hbox), label, FALSE, FALSE, 0);
+	gtk_widget_show (hbox);
+
+	PACK_CHECK_BUTTON (vbox_disc_log, checkbtn_log_standard,
+			   _("Network protocol messages"));
+	hbox_log_standard = gtk_hbox_new (FALSE, 8);
+	gtk_container_add (GTK_CONTAINER (vbox_disc_log), hbox_log_standard);
+	gtk_widget_show (hbox_log_standard);
+
+	PACK_CHECK_BUTTON (vbox_disc_log, checkbtn_log_warning,
+			   _("Warning messages"));
+	hbox_log_warning = gtk_hbox_new (FALSE, 8);
+	gtk_container_add (GTK_CONTAINER (vbox_disc_log), hbox_log_warning);
+	gtk_widget_show (hbox_log_warning);
+
+	PACK_CHECK_BUTTON (vbox_disc_log, checkbtn_log_error,
+			   _("Error messages"));
+	hbox_log_error = gtk_hbox_new (FALSE, 8);
+	gtk_container_add (GTK_CONTAINER (vbox_disc_log), hbox_log_error);
+	gtk_widget_show (hbox_log_error);
+
+	PACK_CHECK_BUTTON (vbox_disc_log, checkbtn_log_status,
+			   _("Status messages for filtering/processing log"));
+	hbox_log_status = gtk_hbox_new (FALSE, 8);
+	gtk_container_add (GTK_CONTAINER (vbox_disc_log), hbox_log_status);
+	gtk_widget_show (hbox_log_status);
+
 	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(checkbtn_clip_network_log), 
 		prefs_common.cliplog);
 	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(checkbtn_clip_filtering_log), 
 		prefs_common.filtering_debug_cliplog);
+	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(checkbtn_log_standard), 
+		prefs_common.enable_log_standard);
+	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(checkbtn_log_warning), 
+		prefs_common.enable_log_warning);
+	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(checkbtn_log_error), 
+		prefs_common.enable_log_error);
+	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(checkbtn_log_status), 
+		prefs_common.enable_log_status);
 	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(checkbtn_filtering_log), 
 		prefs_common.enable_filtering_debug);
 	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(checkbtn_filtering_log_inc), 
@@ -289,6 +346,10 @@ static void prefs_logging_create_widget(PrefsPage *_page, GtkWindow *window,
 
 	prefs_logging->checkbtn_clip_network_log = checkbtn_clip_network_log;
 	prefs_logging->spinbtn_network_log_length = spinbtn_network_log_length;
+	prefs_logging->checkbtn_log_standard = checkbtn_log_standard;
+	prefs_logging->checkbtn_log_warning = checkbtn_log_warning;
+	prefs_logging->checkbtn_log_error = checkbtn_log_error;
+	prefs_logging->checkbtn_log_status = checkbtn_log_status;
 	prefs_logging->checkbtn_clip_filtering_log = checkbtn_clip_filtering_log;
 	prefs_logging->spinbtn_filtering_log_length = spinbtn_filtering_log_length;
 	prefs_logging->checkbtn_filtering_log = checkbtn_filtering_log;
@@ -319,6 +380,14 @@ static void prefs_logging_save(PrefsPage *_page)
 		GTK_TOGGLE_BUTTON(page->checkbtn_clip_network_log));
 	prefs_common.loglength = gtk_spin_button_get_value_as_int(
 		GTK_SPIN_BUTTON(page->spinbtn_network_log_length));
+	prefs_common.enable_log_standard = gtk_toggle_button_get_active(
+		GTK_TOGGLE_BUTTON(page->checkbtn_log_standard));
+	prefs_common.enable_log_warning = gtk_toggle_button_get_active(
+		GTK_TOGGLE_BUTTON(page->checkbtn_log_warning));
+	prefs_common.enable_log_error = gtk_toggle_button_get_active(
+		GTK_TOGGLE_BUTTON(page->checkbtn_log_error));
+	prefs_common.enable_log_status = gtk_toggle_button_get_active(
+		GTK_TOGGLE_BUTTON(page->checkbtn_log_status));
 	prefs_common.filtering_debug_cliplog = gtk_toggle_button_get_active(
 		GTK_TOGGLE_BUTTON(page->checkbtn_clip_filtering_log));
 	prefs_common.filtering_debug_loglength = gtk_spin_button_get_value_as_int(
