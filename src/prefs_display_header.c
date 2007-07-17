@@ -111,6 +111,7 @@ static void drag_end	(GtkTreeView *list_view,
 			 GdkDragContext *context,
 			 gpointer data);
 
+#ifndef MAEMO
 static gchar *defaults[] =
 {
 	"From",
@@ -139,7 +140,36 @@ static gchar *defaults[] =
 	"-Priority",
 	"-X-Face"
 };
-
+#else
+static gchar *defaults[] =
+{
+	"From",
+	"To",
+	"Cc",
+	"Subject",
+	"Date",	
+	"Newsgroups",
+	"Followup-To",
+	"-Reply-To",
+	"-Sender",
+	"-User-Agent",
+	"-X-Mailer",	
+	"-Organization",
+	"-X-Newsreader",
+	"-Received",
+	"-Message-ID",
+	"-In-Reply-To",
+	"-References",
+	"-Mime-Version",
+	"-Content-Type",
+	"-Content-Transfer-Encoding",
+	"-X-UIDL",
+	"-Precedence",
+	"-Status",
+	"-Priority",
+	"-X-Face"
+};
+#endif
 static void prefs_display_header_set_default(void)
 {
 	gint i;

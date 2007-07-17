@@ -1,3 +1,12 @@
+2007-07-17 [colin]	2.10.0cvs36
+
+	* src/editaddress.c
+		Simplify layout on Maemo
+	* src/folder.c
+		Fix possible crash
+	* src/prefs_display_header.c
+		Remove some headers by default on Maemo
+
 2007-07-17 [paul]	2.10.0cvs35
 
 	* src/prefs_common.c

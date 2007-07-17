@@ -66,13 +66,25 @@ typedef enum {
 #define EDITPERSON_WIDTH      520
 #define EDITPERSON_HEIGHT     320
 
-#define EMAIL_N_COLS          3
-#define EMAIL_COL_WIDTH_EMAIL 180
-#define EMAIL_COL_WIDTH_ALIAS 80
+#ifndef MAEMO
+# define EMAIL_N_COLS          3
+# define EMAIL_COL_WIDTH_EMAIL 180
+# define EMAIL_COL_WIDTH_ALIAS 80
+#else
+# define EMAIL_N_COLS          1
+# define EMAIL_COL_WIDTH_EMAIL 130
+# define EMAIL_COL_WIDTH_ALIAS 130
+#endif
 
-#define ATTRIB_N_COLS          2
-#define ATTRIB_COL_WIDTH_NAME  120
-#define ATTRIB_COL_WIDTH_VALUE 180
+#ifndef MAEMO
+# define ATTRIB_N_COLS          2
+# define ATTRIB_COL_WIDTH_NAME  240
+# define ATTRIB_COL_WIDTH_VALUE 0
+#else
+# define ATTRIB_N_COLS          2
+# define ATTRIB_COL_WIDTH_NAME  120
+# define ATTRIB_COL_WIDTH_VALUE 120
+#endif
 
 #define PAGE_BASIC             0
 #define PAGE_EMAIL             1
@@ -211,9 +223,10 @@ static void edit_person_load_email( ItemPerson *person ) {
 		ItemEMail *email = addritem_copyfull_item_email( emorig );
 		gint row;
 		text[ EMAIL_COL_EMAIL   ] = email->address;
+#ifndef MAEMO
 		text[ EMAIL_COL_ALIAS   ] = email->obj.name;
 		text[ EMAIL_COL_REMARKS ] = email->remarks;
-
+#endif
 		row = gtk_clist_append( clist, text );
 		gtk_clist_set_row_data( clist, row, email );
 		node = g_list_next( node );
@@ -354,9 +367,10 @@ static void edit_person_email_add( gpointer data ) {
 	if( ! errFlg ) {
 		gchar *text[ EMAIL_N_COLS ];
 		text[ EMAIL_COL_EMAIL   ] = email->address;
+#ifndef MAEMO
 		text[ EMAIL_COL_ALIAS   ] = email->obj.name;
 		text[ EMAIL_COL_REMARKS ] = email->remarks;
-
+#endif
 		row = gtk_clist_insert( clist, 1 + row, text );
 		gtk_clist_set_row_data( clist, row, email );
 		gtk_clist_select_row( clist, row, 0 );
@@ -524,7 +538,7 @@ static void edit_person_attrib_add( gpointer data ) {
 
 	attrib = edit_person_attrib_edit( &errFlg, NULL );
 	if( ! errFlg ) {
-		gchar *text[ EMAIL_N_COLS ];
+		gchar *text[ ATTRIB_N_COLS ];
 		text[ ATTRIB_COL_NAME  ] = attrib->name;
 		text[ ATTRIB_COL_VALUE ] = attrib->value;
 
@@ -721,7 +735,16 @@ static void addressbook_edit_person_page_basic( gint pageNum, gchar *pageLbl ) {
 	top++; \
 }
 
+#define ATTACH_HIDDEN_ROW(text, entry) \
+{ \
+	entry = gtk_entry_new(); \
+}
+
+#ifndef MAEMO
 	ATTACH_ROW(_("Display Name"), entry_name);
+#else
+	ATTACH_HIDDEN_ROW(_("Display Name"), entry_name);
+#endif
 	locale = conv_get_current_locale();
 	if (locale &&
 	    (!g_ascii_strncasecmp(locale, "ja", 2) ||
@@ -733,9 +756,14 @@ static void addressbook_edit_person_page_basic( gint pageNum, gchar *pageLbl ) {
 		ATTACH_ROW(_("First Name"), entry_fn);
 		ATTACH_ROW(_("Last Name"), entry_ln);
 	}
+#ifndef MAEMO
 	ATTACH_ROW(_("Nickname"), entry_nn);
+#else
+	ATTACH_HIDDEN_ROW(_("Nickname"), entry_nn);
+#endif
 
 #undef ATTACH_ROW
+#undef ATTACH_HIDDEN_ROW
 
 	gtk_widget_show_all(vbox);
 
@@ -810,9 +838,10 @@ static void addressbook_edit_person_page_email( gint pageNum, gchar *pageLbl ) {
 	gint i;
 
 	titles[ EMAIL_COL_EMAIL   ] = _("Email Address");
+#ifndef MAEMO
 	titles[ EMAIL_COL_ALIAS   ] = _("Alias");
 	titles[ EMAIL_COL_REMARKS ] = _("Remarks");
-
+#endif
 	vbox = gtk_vbox_new( FALSE, 8 );
 	gtk_widget_show( vbox );
 	gtk_container_add( GTK_CONTAINER( personeditdlg.notebook ), vbox );
@@ -834,12 +863,12 @@ static void addressbook_edit_person_page_email( gint pageNum, gchar *pageLbl ) {
 	gtk_container_set_border_width( GTK_CONTAINER(vboxl), 4 );
 
 	clist_swin = gtk_scrolled_window_new( NULL, NULL );
-	gtk_container_add( GTK_CONTAINER(vboxl), clist_swin );
 	gtk_scrolled_window_set_policy(GTK_SCROLLED_WINDOW(clist_swin),
 				       GTK_POLICY_AUTOMATIC,
 				       GTK_POLICY_AUTOMATIC);
 
 	clist = gtk_clist_new_with_titles( EMAIL_N_COLS, titles );
+
 	gtk_container_add( GTK_CONTAINER(clist_swin), clist );
 	gtk_clist_set_selection_mode( GTK_CLIST(clist), GTK_SELECTION_BROWSE );
 	gtk_clist_set_column_width( GTK_CLIST(clist), EMAIL_COL_EMAIL, EMAIL_COL_WIDTH_EMAIL );
@@ -850,10 +879,22 @@ static void addressbook_edit_person_page_email( gint pageNum, gchar *pageLbl ) {
 
 	/* Data entry area */
 	table = gtk_table_new( 4, 2, FALSE);
+
+#ifndef MAEMO
+	gtk_container_add( GTK_CONTAINER(vboxl), clist_swin );
 	gtk_box_pack_start(GTK_BOX(vboxl), table, FALSE, FALSE, 0);
+#else
+	gtk_box_pack_start(GTK_BOX(vboxl), table, FALSE, FALSE, 0);
+	gtk_container_add( GTK_CONTAINER(vboxl), clist_swin );
+	gtk_clist_column_titles_hide(GTK_CLIST(clist));
+#endif
 	gtk_container_set_border_width( GTK_CONTAINER(table), 4 );
 	gtk_table_set_row_spacings(GTK_TABLE(table), 4);
 	gtk_table_set_col_spacings(GTK_TABLE(table), 4);
+
+	entry_email = gtk_entry_new();
+	entry_alias = gtk_entry_new();
+	entry_remarks = gtk_entry_new();
 
 	/* First row */
 	top = 0;
@@ -861,16 +902,15 @@ static void addressbook_edit_person_page_email( gint pageNum, gchar *pageLbl ) {
 	gtk_table_attach(GTK_TABLE(table), label, 0, 1, top, (top + 1), GTK_FILL, 0, 0, 0);
 	gtk_misc_set_alignment(GTK_MISC(label), 0, 0.5);
 
-	entry_email = gtk_entry_new();
 	gtk_table_attach(GTK_TABLE(table), entry_email, 1, 2, top, (top + 1), GTK_EXPAND|GTK_SHRINK|GTK_FILL, 0, 0, 0);
 
+#ifndef MAEMO
 	/* Next row */
 	++top;
 	label = gtk_label_new(_("Alias"));
 	gtk_table_attach(GTK_TABLE(table), label, 0, 1, top, (top + 1), GTK_FILL, 0, 0, 0);
 	gtk_misc_set_alignment(GTK_MISC(label), 0, 0.5);
 
-	entry_alias = gtk_entry_new();
 	gtk_table_attach(GTK_TABLE(table), entry_alias, 1, 2, top, (top + 1), GTK_EXPAND|GTK_SHRINK|GTK_FILL, 0, 0, 0);
 
 	/* Next row */
@@ -879,8 +919,8 @@ static void addressbook_edit_person_page_email( gint pageNum, gchar *pageLbl ) {
 	gtk_table_attach(GTK_TABLE(table), label, 0, 1, top, (top + 1), GTK_FILL, 0, 0, 0);
 	gtk_misc_set_alignment(GTK_MISC(label), 0, 0.5);
 
-	entry_remarks = gtk_entry_new();
 	gtk_table_attach(GTK_TABLE(table), entry_remarks, 1, 2, top, (top + 1), GTK_EXPAND|GTK_SHRINK|GTK_FILL, 0, 0, 0);
+#endif
 
 	/* Button box */
 	vboxb = gtk_vbox_new( FALSE, 4 );
@@ -894,18 +934,20 @@ static void addressbook_edit_person_page_email( gint pageNum, gchar *pageLbl ) {
 
 	/* Buttons */
 	buttonUp = gtk_button_new_from_stock(GTK_STOCK_GO_UP);
+	buttonDown = gtk_button_new_from_stock(GTK_STOCK_GO_DOWN);
+	buttonDel = gtk_button_new_from_stock(GTK_STOCK_DELETE);
+	buttonMod = gtk_button_new_from_stock(GTK_STOCK_SAVE);
+	buttonAdd = gtk_button_new_from_stock(GTK_STOCK_ADD);
+
+#ifndef MAEMO
 	gtk_container_add( GTK_CONTAINER(vbuttonbox), buttonUp );
 
-	buttonDown = gtk_button_new_from_stock(GTK_STOCK_GO_DOWN);
 	gtk_container_add( GTK_CONTAINER(vbuttonbox), buttonDown );
-
-	buttonDel = gtk_button_new_from_stock(GTK_STOCK_DELETE);
+#endif
 	gtk_container_add( GTK_CONTAINER(vbuttonbox), buttonDel );
 
-	buttonMod = gtk_button_new_from_stock(GTK_STOCK_SAVE);
 	gtk_container_add( GTK_CONTAINER(vbuttonbox), buttonMod );
 
-	buttonAdd = gtk_button_new_from_stock(GTK_STOCK_ADD);
 	gtk_container_add( GTK_CONTAINER(vbuttonbox), buttonAdd );
 
 	gtk_widget_show_all(vbox);
@@ -1027,7 +1069,6 @@ static void addressbook_edit_person_page_attrib( gint pageNum, gchar *pageLbl ) 
 	gtk_container_set_border_width( GTK_CONTAINER(vboxl), 4 );
 
 	clist_swin = gtk_scrolled_window_new( NULL, NULL );
-	gtk_container_add( GTK_CONTAINER(vboxl), clist_swin );
 	gtk_scrolled_window_set_policy(GTK_SCROLLED_WINDOW(clist_swin),
 				       GTK_POLICY_AUTOMATIC,
 				       GTK_POLICY_AUTOMATIC);
@@ -1035,23 +1076,32 @@ static void addressbook_edit_person_page_attrib( gint pageNum, gchar *pageLbl ) 
 	clist = gtk_clist_new_with_titles( ATTRIB_N_COLS, titles );
 	gtk_container_add( GTK_CONTAINER(clist_swin), clist );
 	gtk_clist_set_selection_mode( GTK_CLIST(clist), GTK_SELECTION_BROWSE );
-	gtk_clist_set_column_width( GTK_CLIST(clist), ATTRIB_COL_NAME, ATTRIB_COL_WIDTH_NAME );
-	gtk_clist_set_column_width( GTK_CLIST(clist), ATTRIB_COL_VALUE, ATTRIB_COL_WIDTH_VALUE );
 	gtk_clist_set_compare_func( GTK_CLIST(clist), edit_person_attrib_compare_func );
 	gtk_clist_set_auto_sort( GTK_CLIST(clist), TRUE );
+	gtk_clist_set_column_width( GTK_CLIST(clist), ATTRIB_COL_NAME, ATTRIB_COL_WIDTH_NAME );
+	gtk_clist_set_column_width( GTK_CLIST(clist), ATTRIB_COL_VALUE, ATTRIB_COL_WIDTH_VALUE );
 
 	for( i = 0; i < ATTRIB_N_COLS; i++ )
 		GTK_WIDGET_UNSET_FLAGS(GTK_CLIST(clist)->column[i].button, GTK_CAN_FOCUS);
 
 	/* Data entry area */
+#ifndef MAEMO
 	table = gtk_table_new( 4, 2, FALSE);
+	gtk_container_add( GTK_CONTAINER(vboxl), clist_swin );
 	gtk_box_pack_start(GTK_BOX(vboxl), table, FALSE, FALSE, 0);
+#else
+	table = gtk_table_new( 2, 4, FALSE);
+	gtk_box_pack_start(GTK_BOX(vboxl), table, FALSE, FALSE, 0);
+	gtk_container_add( GTK_CONTAINER(vboxl), clist_swin );
+	gtk_clist_column_titles_hide(GTK_CLIST(clist));
+#endif
 	gtk_container_set_border_width( GTK_CONTAINER(table), 4 );
 	gtk_table_set_row_spacings(GTK_TABLE(table), 4);
 	gtk_table_set_col_spacings(GTK_TABLE(table), 4);
 
 	/* First row */
 	top = 0;
+#ifndef MAEMO
 	label = gtk_label_new(_("Name"));
 	gtk_table_attach(GTK_TABLE(table), label, 0, 1, top, (top + 1), GTK_FILL, 0, 0, 0);
 	gtk_misc_set_alignment(GTK_MISC(label), 0, 0.5);
@@ -1067,7 +1117,23 @@ static void addressbook_edit_person_page_attrib( gint pageNum, gchar *pageLbl ) 
 
 	entry_value = gtk_entry_new();
 	gtk_table_attach(GTK_TABLE(table), entry_value, 1, 2, top, (top + 1), GTK_EXPAND|GTK_SHRINK|GTK_FILL, 0, 0, 0);
+#else
+	label = gtk_label_new(_("Name"));
+	gtk_table_attach(GTK_TABLE(table), label, 0, 1, 0, 1, GTK_FILL, 0, 0, 0);
+	gtk_misc_set_alignment(GTK_MISC(label), 0, 0.5);
 
+	entry_name = gtk_entry_new();
+	gtk_table_attach(GTK_TABLE(table), entry_name, 1, 2, 0, 1, GTK_EXPAND|GTK_SHRINK|GTK_FILL, 0, 0, 0);
+
+	/* Next row */
+	++top;
+	label = gtk_label_new(_("Value"));
+	gtk_table_attach(GTK_TABLE(table), label, 2, 3, 0, 1, GTK_FILL, 0, 0, 0);
+	gtk_misc_set_alignment(GTK_MISC(label), 0, 0.5);
+
+	entry_value = gtk_entry_new();
+	gtk_table_attach(GTK_TABLE(table), entry_value, 3, 4, 0, 1, GTK_EXPAND|GTK_SHRINK|GTK_FILL, 0, 0, 0);
+#endif
 	/* Button box */
 	vboxb = gtk_vbox_new( FALSE, 4 );
 	gtk_box_pack_start(GTK_BOX(hbox), vboxb, FALSE, FALSE, 2);
@@ -1244,7 +1310,17 @@ static gboolean addressbook_edit_person_close( gboolean cancelled )
 		return FALSE;
 	}
 
+#ifndef MAEMO
 	cn = gtk_editable_get_chars( GTK_EDITABLE(personeditdlg.entry_name), 0, -1 );
+#else
+	{
+		gchar *first = gtk_editable_get_chars( GTK_EDITABLE(personeditdlg.entry_first), 0, -1 );
+		gchar *last = gtk_editable_get_chars( GTK_EDITABLE(personeditdlg.entry_last), 0, -1 );
+		cn = g_strdup_printf("%s%s%s", first, (first && last && *first && *last)?" ":"", last);
+		g_free(first);
+		g_free(last);
+	}
+#endif
 	if( current_person && current_abf ) {
 		/* Update email/attribute list for existing current_person */
 		addrbook_update_address_list( current_abf, current_person, listEMail );

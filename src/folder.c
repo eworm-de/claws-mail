@@ -215,6 +215,9 @@ void folder_item_change_type(FolderItem *item, SpecialFolderItemType newtype)
 	Folder *folder = NULL;
 	FolderUpdateData hookdata;
 
+	if (item == NULL)
+		return;
+
 	folder = item->folder;
 	/* unset previous root of newtype */
 	switch(newtype) {
