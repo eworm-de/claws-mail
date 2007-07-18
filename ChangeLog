@@ -1,3 +1,8 @@
+2007-07-18 [paul]	2.10.0cvs39
+
+	* src/messageview.c
+		revert cvs37, breakage on maemo
+
 2007-07-18 [paul]	2.10.0cvs38
 
 	* src/gtk/gtkutils.c

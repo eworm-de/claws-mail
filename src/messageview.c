@@ -958,10 +958,8 @@ void messageview_destroy(MessageView *messageview)
 	if (messageview->mainwin->summaryview->messageview == messageview)
 		messageview->mainwin->summaryview->messageview = NULL;
 
-	if (messageview->mainwin->summaryview->ext_messageview == messageview) {
-		gtk_widget_hide(messageview->window);
-		return;
-	}
+	if (messageview->mainwin->summaryview->ext_messageview == messageview)
+		messageview->mainwin->summaryview->ext_messageview = NULL;
 
 	if (!messageview->deferred_destroy) {
 		hooks_unregister_hook(MSGINFO_UPDATE_HOOKLIST,
