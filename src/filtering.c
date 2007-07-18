@@ -244,6 +244,7 @@ void filtering_move_and_copy_msgs(GSList *msgs)
 				folder_item_synchronise(last_item);
 			g_slist_free(batch);
 			batch = NULL;
+			GTK_EVENTS_FLUSH();
 		}
 		last_item = NULL;
 		is_copy = FALSE;

@@ -2693,3 +2693,4 @@
 ( cvs diff -u -r 1.94.2.139 -r 1.94.2.140 src/messageview.c;  cvs diff -u -r 1.5.2.59 -r 1.5.2.60 src/gtk/gtkutils.c;  ) > 2.10.0cvs37.patchset
 ( cvs diff -u -r 1.5.2.60 -r 1.5.2.61 src/gtk/gtkutils.c;  ) > 2.10.0cvs38.patchset
 ( cvs diff -u -r 1.94.2.140 -r 1.94.2.141 src/messageview.c;  ) > 2.10.0cvs39.patchset
+( cvs diff -u -r 1.60.2.34 -r 1.60.2.35 src/filtering.c;  cvs diff -u -r 1.213.2.149 -r 1.213.2.150 src/folder.c;  ) > 2.10.0cvs40.patchset

@@ -1,3 +1,11 @@
+2007-07-18 [paul]	2.10.0cvs40
+
+	* src/filtering.c
+		fix screen blanking on moving/copying many msgs
+	* src/folder.c
+		fix processing progressbar and screen blanking
+		during processing
+
 2007-07-18 [paul]	2.10.0cvs39
 
 	* src/messageview.c
