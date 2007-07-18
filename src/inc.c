@@ -63,11 +63,14 @@
 
 #ifdef MAEMO
 #include <hildon-widgets/hildon-banner.h>
+
+#ifdef CONIC
 #include <conicconnection.h>
 #include <conicconnectionevent.h>
 
 static ConIcConnection *maemo_connection = NULL;
 static gboolean maemo_warned_offline = FALSE;
+#endif
 #endif
 
 static GList *inc_dialog_list = NULL;
@@ -1403,7 +1406,7 @@ static void inc_notify_cmd(gint new_msgs, gboolean notify)
 	g_free(buf);
 }
 
-#ifdef MAEMO
+#if (defined(MAEMO) && defined(CONIC))
 static void maemo_connection_event(ConIcConnection *connection, 
                      		   ConIcConnectionEvent *event,
 				   gpointer user_data)
@@ -1428,7 +1431,7 @@ static void maemo_connection_event(ConIcConnection *connection,
 
 void inc_autocheck_timer_init(MainWindow *mainwin)
 {
-#ifdef MAEMO
+#if (defined(MAEMO) && defined(CONIC))
 	GValue *val = g_new0(GValue, 1);
 	maemo_connection = con_ic_connection_new();
 
@@ -1464,7 +1467,7 @@ static void inc_autocheck_timer_set_interval(guint interval)
 void inc_autocheck_timer_set(void)
 {
 	inc_autocheck_timer_set_interval(prefs_common.autochk_itv * 60000);
-#ifdef MAEMO
+#if (defined(MAEMO) && defined(CONIC))
 	con_ic_connection_connect (maemo_connection,
 		CON_IC_CONNECT_FLAG_AUTOMATICALLY_TRIGGERED);
 #endif
@@ -1501,7 +1504,7 @@ gboolean inc_offline_should_override(gboolean force_ask, const gchar *msg)
 	int length = 10; /* minutes */
 	gint answer = G_ALERTDEFAULT;
 
-#ifdef MAEMO
+#if (defined(MAEMO) && defined(CONIC))
 	if (prefs_common.work_offline) {
 		if (force_ask && !maemo_warned_offline) {
 			if (mainwindow_get_mainwindow())

@@ -2695,3 +2695,4 @@
 ( cvs diff -u -r 1.94.2.140 -r 1.94.2.141 src/messageview.c;  ) > 2.10.0cvs39.patchset
 ( cvs diff -u -r 1.60.2.34 -r 1.60.2.35 src/filtering.c;  cvs diff -u -r 1.213.2.149 -r 1.213.2.150 src/folder.c;  ) > 2.10.0cvs40.patchset
 ( cvs diff -u -r 1.149.2.75 -r 1.149.2.76 src/inc.c;  cvs diff -u -r 1.5.2.17 -r 1.5.2.18 src/statusbar.c;  ) > 2.10.0cvs41.patchset
+( cvs diff -u -r 1.149.2.76 -r 1.149.2.77 src/inc.c;  cvs diff -u -r 1.654.2.2751 -r 1.654.2.2752 configure.ac;  ) > 2.10.0cvs42.patchset
