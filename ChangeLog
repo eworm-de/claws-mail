@@ -1,3 +1,8 @@
+2007-07-18 [paul]	2.10.0cvs38
+
+	* src/gtk/gtkutils.c
+		make sure we can still build with older GTK's
+
 2007-07-18 [colin]	2.10.0cvs37
 
 	* src/messageview.c
