@@ -34,6 +34,11 @@
 #include "log.h"
 #include "hooks.h"
 
+#ifdef MAEMO
+#include <hildon-widgets/hildon-banner.h>
+#endif
+
+
 #define BUFFSIZE 1024
 
 static GList *statusbar_list = NULL;
@@ -103,6 +108,11 @@ void statusbar_print(GtkStatusbar *statusbar, const gchar *format, ...)
 	statusbar_puts(statusbar, buf);
 }
 
+#ifdef MAEMO
+static GSList *banner_texts = NULL;
+static GtkWidget *banner = NULL;
+#endif
+
 void statusbar_print_all(const gchar *format, ...)
 {
 	va_list args;
@@ -115,6 +125,21 @@ void statusbar_print_all(const gchar *format, ...)
 
 	for (cur = statusbar_list; cur != NULL; cur = cur->next)
 		statusbar_puts(GTK_STATUSBAR(cur->data), buf);
+#ifdef MAEMO
+	if (mainwindow_get_mainwindow()) {
+		if (banner == NULL) {
+			banner = hildon_banner_show_animation(
+				mainwindow_get_mainwindow()->window,
+				NULL,
+				buf);
+			g_object_ref(banner);
+			banner_texts = g_slist_prepend(banner_texts, g_strdup(buf));
+		} else {
+			hildon_banner_set_text(HILDON_BANNER(banner), buf);
+			banner_texts = g_slist_prepend(banner_texts, g_strdup(buf));
+		}
+	}
+#endif
 }
 
 void statusbar_pop_all(void)
@@ -127,6 +152,22 @@ void statusbar_pop_all(void)
 						   "Standard Output");
 		gtk_statusbar_pop(GTK_STATUSBAR(cur->data), cid);
 	}
+#ifdef MAEMO
+	if (banner && banner_texts) {
+		gchar *old_text = (gchar *)banner_texts->data;
+		gchar *prev_text = NULL;
+		banner_texts = g_slist_remove(banner_texts, old_text);	
+		g_free(old_text);
+		if (banner_texts) {
+			prev_text = (gchar *)banner_texts->data;
+			hildon_banner_set_text(HILDON_BANNER(banner), prev_text);
+		} else {
+			gtk_widget_destroy(banner);
+			g_object_unref(banner);
+			banner = NULL;
+		}
+	}
+#endif
 }
 
 static gboolean statusbar_puts_all_hook (gpointer source, gpointer data)

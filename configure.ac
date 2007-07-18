@@ -11,7 +11,7 @@ MINOR_VERSION=10
 MICRO_VERSION=0
 INTERFACE_AGE=0
 BINARY_AGE=0
-EXTRA_VERSION=40
+EXTRA_VERSION=41
 EXTRA_RELEASE=
 EXTRA_GTK2_VERSION=
 
@@ -445,12 +445,12 @@ AC_ARG_ENABLE(maemo,
 	[  --enable-maemo   Build for the Maemo platform [default=no]],
 	[ac_cv_enable_maemo=$enableval], [ac_cv_enable_maemo=no])
 if test $ac_cv_enable_maemo = yes; then
-	PKG_CHECK_MODULES(MAEMO, libosso hildon-libs hildon-fm, ac_cv_enable_maemo=yes,
+	PKG_CHECK_MODULES(MAEMO, libosso conic hildon-libs hildon-fm, ac_cv_enable_maemo=yes,
 		  ac_cv_enable_maemo=no)
 	AC_SUBST(MAEMO_CFLAGS)
 	AC_SUBST(MAEMO_LIBS)
 	if test $ac_cv_enable_maemo = no; then
-		AC_MSG_ERROR(libosso, hildon-libs or hildon-fm not found)
+		AC_MSG_ERROR(libosso, conic, hildon-libs or hildon-fm not found)
 	else
 		AC_DEFINE(MAEMO, 1, Build for maemo)
 	fi

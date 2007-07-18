@@ -61,6 +61,15 @@
 #include "log.h"
 #include "hooks.h"
 
+#ifdef MAEMO
+#include <hildon-widgets/hildon-banner.h>
+#include <conicconnection.h>
+#include <conicconnectionevent.h>
+
+static ConIcConnection *maemo_connection = NULL;
+static gboolean maemo_warned_offline = FALSE;
+#endif
+
 static GList *inc_dialog_list = NULL;
 
 static guint inc_lock_count = 0;
@@ -1393,11 +1402,50 @@ static void inc_notify_cmd(gint new_msgs, gboolean notify)
 
 	g_free(buf);
 }
- 
+
+#ifdef MAEMO
+static void maemo_connection_event(ConIcConnection *connection, 
+                     		   ConIcConnectionEvent *event,
+				   gpointer user_data)
+{
+	ConIcConnectionStatus status =
+		con_ic_connection_event_get_status(event);
+	MainWindow *mainwin = (MainWindow *)user_data;
+	switch(status) {
+	case CON_IC_STATUS_CONNECTED:
+		debug_print("we're connected\n");
+		main_window_toggle_work_offline(mainwin, FALSE, FALSE);
+		break;
+	default:
+		debug_print("we're disconnected\n");
+		main_window_toggle_work_offline(mainwin, TRUE, FALSE);
+		maemo_warned_offline = FALSE;
+		break;
+	}
+}
+
+#endif
+
 void inc_autocheck_timer_init(MainWindow *mainwin)
 {
+#ifdef MAEMO
+	GValue *val = g_new0(GValue, 1);
+	maemo_connection = con_ic_connection_new();
+
+	g_value_init(val, G_TYPE_BOOLEAN);
+	g_value_set_boolean(val, TRUE);
+	g_object_set_property(G_OBJECT(maemo_connection),
+			"automatic-connection-events", val);
+	g_free(val);	
+	g_signal_connect (maemo_connection, "connection-event",
+			  G_CALLBACK(maemo_connection_event), mainwin);	
+	con_ic_connection_connect (maemo_connection,
+		CON_IC_CONNECT_FLAG_AUTOMATICALLY_TRIGGERED);
+	autocheck_data = mainwin;
+#else
 	autocheck_data = mainwin;
 	inc_autocheck_timer_set();
+#endif
 }
 
 static void inc_autocheck_timer_set_interval(guint interval)
@@ -1416,6 +1464,10 @@ static void inc_autocheck_timer_set_interval(guint interval)
 void inc_autocheck_timer_set(void)
 {
 	inc_autocheck_timer_set_interval(prefs_common.autochk_itv * 60000);
+#ifdef MAEMO
+	con_ic_connection_connect (maemo_connection,
+		CON_IC_CONNECT_FLAG_AUTOMATICALLY_TRIGGERED);
+#endif
 }
 
 void inc_autocheck_timer_remove(void)
@@ -1448,7 +1500,23 @@ gboolean inc_offline_should_override(gboolean force_ask, const gchar *msg)
 	static time_t overridden_no  = 0;
 	int length = 10; /* minutes */
 	gint answer = G_ALERTDEFAULT;
-	
+
+#ifdef MAEMO
+	if (prefs_common.work_offline) {
+		if (force_ask && !maemo_warned_offline) {
+			if (mainwindow_get_mainwindow())
+				hildon_banner_show_information(
+					mainwindow_get_mainwindow()->window, 
+					NULL,
+					_("Unable to connect: you are offline."));
+			maemo_warned_offline = TRUE;
+		}
+		return FALSE;
+	} else {
+		return TRUE;
+	}
+#endif	
+
 	if (prefs_common.autochk_newmail)
 		length = prefs_common.autochk_itv; /* minutes */
 

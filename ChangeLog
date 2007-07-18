@@ -1,3 +1,13 @@
+2007-07-18 [colin]	2.10.0cvs41
+
+	* src/inc.c
+		Maemo: plug the online/offline system into
+		maemo's interfaces to have Claws automatically
+		switch according to the system status
+	* src/statusbar.c
+		Maemo: use HildonBanners to display status
+		messages. Renders the main statusbar useless.
+
 2007-07-18 [paul]	2.10.0cvs40
 
 	* src/filtering.c
