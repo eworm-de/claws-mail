@@ -1,3 +1,13 @@
+2007-07-18 [colin]	2.10.0cvs37
+
+	* src/messageview.c
+		Only hide the small layout's messageview, instead
+		of destroying it when closing
+	* src/gtk/gtkutils.c
+		Use gtk_window_present_with_time to popup windows,
+		it seems to make things better with modern WMs
+		(actually focusing)
+
 2007-07-17 [colin]	2.10.0cvs36
 
 	* src/editaddress.c

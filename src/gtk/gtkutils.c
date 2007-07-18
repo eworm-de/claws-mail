@@ -757,7 +757,7 @@ void gtkut_window_popup(GtkWidget *window)
 		gdk_window_move(window->window, new_x, new_y);
 
 	gtk_window_set_skip_taskbar_hint(GTK_WINDOW(window), FALSE);
-	gtk_window_present(GTK_WINDOW(window));
+	gtk_window_present_with_time(GTK_WINDOW(window), time(NULL));
 }
 
 void gtkut_widget_get_uposition(GtkWidget *widget, gint *px, gint *py)
