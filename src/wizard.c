@@ -688,7 +688,8 @@ static gboolean wizard_write_config(WizardWindow *wizard)
 
 	tmp = g_path_get_basename(gtk_entry_get_text(GTK_ENTRY(wizard->mailbox_name)));
 	prefs_account->inbox = g_strdup_printf("#mh/%s/inbox",
-			(tmp && !strcmp("Mail", tmp))?_("Mailbox"):tmp);
+			(!strcmp("Mail", gtk_entry_get_text(GTK_ENTRY(wizard->mailbox_name))))
+				?_("Mailbox"):tmp);
 	g_free(tmp);
 	prefs_account->local_inbox = g_strdup(prefs_account->inbox);
 

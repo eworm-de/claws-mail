@@ -1,3 +1,9 @@
+2007-07-19 [colin]	2.10.0cvs43
+
+	* src/wizard.c
+		Solve Mail/Mailbox name when specifying
+		full /path/to/Mail.
+
 2007-07-18 [colin]	2.10.0cvs42
 
 	* src/inc.c
