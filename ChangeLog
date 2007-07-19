@@ -1,3 +1,8 @@
+2007-07-19 [paul]	2.10.0cvs44
+
+	* src/Makefile.am
+		fix build on n800
+
 2007-07-19 [colin]	2.10.0cvs43
 
 	* src/wizard.c

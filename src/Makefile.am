@@ -424,6 +424,7 @@ EXTRA_DIST = \
 	pixmaps/spam_btn.xpm \
 	pixmaps/claws-mail_icon.xpm \
 	pixmaps/claws-mail_logo.xpm \
+	pixmaps/claws-mail_logo-small.xpm \
 	pixmaps/claws-mail.xpm \
 	pixmaps/trash_hrm.xpm \
 	pixmaps/trash.xpm \
@@ -481,7 +482,8 @@ claws_mail_LDADD = \
 	$(LIBICONV) \
 	$(STARTUP_NOTIFICATION_LIBS) \
 	$(LIBETPAN_LIBS) \
-	$(MAEMO_LIBS)
+	$(MAEMO_LIBS) \
+	$(CONIC_LIBS)
 
 AM_CPPFLAGS = \
 	-DG_LOG_DOMAIN=\"Claws-Mail\" \
@@ -499,6 +501,7 @@ AM_CPPFLAGS = \
 	$(LIBETPAN_CPPFLAGS) \
 	$(STARTUP_NOTIFICATION_CFLAGS) \
 	$(MAEMO_CFLAGS) \
+	$(CONIC_CFLAGS) \
 	-Wno-unused-function
 	 
 #no-unused-function is there because of bison stuff
