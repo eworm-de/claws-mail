@@ -1,3 +1,16 @@
+2007-07-19 [colin]	2.10.0cvs47
+
+	* configure.ac
+	* src/main.c
+	* src/prefs_common.c
+	* src/prefs_common.h
+	* src/wizard.c
+	* src/common/defs.h
+	* src/common/utils.c
+		Maemo: add an easy way to store data (mails
+		and IMAP/NNTP caches) on one of the SD cards,
+		and protect against unmounts if needed
+
 2007-07-19 [paul]	2.10.0cvs46
 
 	* src/Makefile.am

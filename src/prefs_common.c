@@ -139,6 +139,10 @@ static PrefParam param_os_specific[] = {
  */
 
 static PrefParam param[] = {
+#ifdef MAEMO
+	{"data_root", "", &prefs_common.data_root, P_STRING,
+	 NULL, NULL, NULL},
+#endif
 	/* Receive */
 	{"use_ext_inc", "FALSE", &prefs_common.use_extinc, P_BOOL,
 	 NULL, NULL, NULL},
@@ -1377,6 +1381,16 @@ gboolean prefs_common_enable_log_status(void)
 {
 	return prefs_common.enable_log_status;
 }
+
+#ifdef MAEMO
+const gchar *prefs_common_get_data_root(void)
+{
+	if (prefs_common.data_root && *prefs_common.data_root)
+		return prefs_common.data_root;
+	else
+		return NULL;
+}
+#endif
 /**
    return the translated name of a header, if the translate_header option is
    set, otherwise return the untranslated header name (header_name itself).

@@ -94,6 +94,9 @@ typedef enum
 
 struct _PrefsCommon
 {
+#ifdef MAEMO
+	gchar *data_root;
+#endif
 	/* Receive */
 	gboolean use_extinc;
 	gchar *extinc_cmd;

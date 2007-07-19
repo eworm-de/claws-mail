@@ -1934,24 +1934,77 @@ const gchar *get_mail_base_dir(void)
 #endif
 }
 
+#ifdef MAEMO
+const gchar *prefs_common_get_data_root(void);
+gchar *last_data_root = NULL;
+#endif
+
 const gchar *get_news_cache_dir(void)
 {
 	static gchar *news_cache_dir = NULL;
-
+#ifdef MAEMO
+	const gchar *data_root = prefs_common_get_data_root();
+	if (strcmp2(data_root, last_data_root)) {
+		g_free(news_cache_dir);
+		news_cache_dir = NULL;
+	}
+#endif
 	if (!news_cache_dir)
+#ifndef MAEMO
 		news_cache_dir = g_strconcat(get_rc_dir(), G_DIR_SEPARATOR_S,
 					     NEWS_CACHE_DIR, NULL);
-
+#else
+	{
+		if (data_root) {
+			news_cache_dir = g_strconcat(data_root, G_DIR_SEPARATOR_S,
+					     "Claws", G_DIR_SEPARATOR_S, 
+					     g_get_user_name(), G_DIR_SEPARATOR_S,
+					     NEWS_CACHE_DIR, NULL);
+			g_free(last_data_root);
+			last_data_root = g_strdup(last_data_root);
+		} else {
+			news_cache_dir = g_strconcat(get_rc_dir(), G_DIR_SEPARATOR_S,
+					     NEWS_CACHE_DIR, NULL);
+			g_free(last_data_root);
+			last_data_root = NULL;
+		}
+	}
+#endif
 	return news_cache_dir;
 }
 
 const gchar *get_imap_cache_dir(void)
 {
 	static gchar *imap_cache_dir = NULL;
+#ifdef MAEMO
+	const gchar *data_root = prefs_common_get_data_root();
+	if (strcmp2(data_root, last_data_root)) {
+		g_free(imap_cache_dir);
+		imap_cache_dir = NULL;
+	}
+#endif
 
 	if (!imap_cache_dir)
+#ifndef MAEMO
 		imap_cache_dir = g_strconcat(get_rc_dir(), G_DIR_SEPARATOR_S,
 					     IMAP_CACHE_DIR, NULL);
+#else
+	{
+		if (data_root) {
+			imap_cache_dir = g_strconcat(data_root, G_DIR_SEPARATOR_S,
+					     "Claws", G_DIR_SEPARATOR_S, 
+					     g_get_user_name(), G_DIR_SEPARATOR_S,
+					     IMAP_CACHE_DIR, NULL);
+			g_free(last_data_root);
+			last_data_root = g_strdup(last_data_root);
+		} else {
+			imap_cache_dir = g_strconcat(get_rc_dir(), G_DIR_SEPARATOR_S,
+					     IMAP_CACHE_DIR, NULL);
+			g_free(last_data_root);
+			last_data_root = NULL;
+		}
+	}
+#endif
 
 	return imap_cache_dir;
 }
@@ -1959,10 +2012,34 @@ const gchar *get_imap_cache_dir(void)
 const gchar *get_mbox_cache_dir(void)
 {
 	static gchar *mbox_cache_dir = NULL;
-
+#ifdef MAEMO
+	const gchar *data_root = prefs_common_get_data_root();
+	if (strcmp2(data_root, last_data_root)) {
+		g_free(mbox_cache_dir);
+		mbox_cache_dir = NULL;
+	}
+#endif
 	if (!mbox_cache_dir)
+#ifndef MAEMO
 		mbox_cache_dir = g_strconcat(get_rc_dir(), G_DIR_SEPARATOR_S,
 					     MBOX_CACHE_DIR, NULL);
+#else
+	{
+		if (data_root) {
+			mbox_cache_dir = g_strconcat(data_root, G_DIR_SEPARATOR_S,
+					     "Claws", G_DIR_SEPARATOR_S, 
+					     g_get_user_name(), G_DIR_SEPARATOR_S,
+					     MBOX_CACHE_DIR, NULL);
+			g_free(last_data_root);
+			last_data_root = g_strdup(last_data_root);
+		} else {
+			mbox_cache_dir = g_strconcat(get_rc_dir(), G_DIR_SEPARATOR_S,
+					     MBOX_CACHE_DIR, NULL);
+			g_free(last_data_root);
+			last_data_root = NULL;
+		}
+	}
+#endif
 
 	return mbox_cache_dir;
 }

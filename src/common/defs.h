@@ -102,6 +102,11 @@
 #define MARK_VERSION		2
 #define TAGS_VERSION		1
 
+#ifdef MAEMO
+#define MMC1_PATH "/media/mmc1"
+#define MMC2_PATH "/media/mmc2"
+#endif
+
 #ifdef G_OS_WIN32
 #  define ACTIONS_RC		"actionswinrc"
 #  define COMMAND_HISTORY	"command_history_win"

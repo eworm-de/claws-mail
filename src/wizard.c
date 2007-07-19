@@ -62,6 +62,12 @@
 #endif
 #include "prefs_common.h"
 
+#ifdef MAEMO
+#include <libgnomevfs/gnome-vfs-volume.h>
+#include <libgnomevfs/gnome-vfs-volume-monitor.h>
+#include <libgnomevfs/gnome-vfs-utils.h>
+#endif
+
 typedef enum
 {
 	GO_BACK,
@@ -90,6 +96,7 @@ typedef struct
 	GtkWidget *organization;
 
 	GtkWidget *mailbox_name;
+	GtkWidget *mailbox_label;
 	
 	GtkWidget *smtp_server;
 	GtkWidget *smtp_auth;
@@ -115,7 +122,17 @@ typedef struct
 	GtkWidget *smtp_use_tls;
 	GtkWidget *recv_use_tls;
 #endif
-	
+
+#ifdef MAEMO
+	GtkWidget *data_root_nokia_radiobtn;
+	GtkWidget *data_root_mmc1_radiobtn;
+	GtkWidget *data_root_mmc2_radiobtn;
+	GnomeVFSVolumeMonitor *volmon;
+	gulong volmon_mount_sigid;
+	gulong volmon_unmount_sigid;
+	GnomeVFSVolume *vol_mmc1;
+	GnomeVFSVolume *vol_mmc2;
+#endif	
 	gboolean create_mailbox;
 	gboolean finished;
 	gboolean result;
@@ -578,6 +595,27 @@ static gboolean wizard_write_config(WizardWindow *wizard)
 		return FALSE;
 	}
 
+#ifdef MAEMO
+	g_free(prefs_common.data_root);
+	if (gtk_toggle_button_get_active(
+		GTK_TOGGLE_BUTTON(wizard->data_root_nokia_radiobtn)))
+		prefs_common.data_root = NULL;
+	else if (gtk_toggle_button_get_active(
+		GTK_TOGGLE_BUTTON(wizard->data_root_mmc1_radiobtn)))
+		prefs_common.data_root = g_strdup(MMC1_PATH);
+	else if (gtk_toggle_button_get_active(
+		GTK_TOGGLE_BUTTON(wizard->data_root_mmc2_radiobtn)))
+		prefs_common.data_root = g_strdup(MMC2_PATH);
+	if (wizard->volmon_mount_sigid)
+		g_signal_handler_disconnect(
+					G_OBJECT(wizard->volmon),
+					wizard->volmon_mount_sigid);
+	if (wizard->volmon_unmount_sigid)
+		g_signal_handler_disconnect(
+					G_OBJECT(wizard->volmon),
+					wizard->volmon_unmount_sigid);
+#endif
+
 	if (!mailbox_ok) {
 		if (wizard->create_mailbox && prefs_account->protocol != A_IMAP4) {
 			mailbox_ok = setup_write_mailbox_path(wizard->mainwin, 
@@ -926,10 +964,85 @@ static GtkWidget* user_page (WizardWindow * wizard)
 	return table;
 }
 
+#ifdef MAEMO
+static void wizard_vol_mount_cb(GnomeVFSVolumeMonitor *vfs, GnomeVFSVolume *vol, WizardWindow *wizard)
+{
+	gchar *uri = gnome_vfs_volume_get_activation_uri (vol);
+	gchar *mount_path = uri?gnome_vfs_get_local_path_from_uri (uri):NULL;
+	g_free (uri);
+	if (mount_path) {
+		if(!strcmp(mount_path, MMC1_PATH)) {
+			gtk_widget_set_sensitive(wizard->data_root_mmc1_radiobtn, TRUE);
+		}
+		if(!strcmp(mount_path, MMC2_PATH)) {
+			gtk_widget_set_sensitive(wizard->data_root_mmc2_radiobtn, TRUE);
+		}
+	}
+	g_free(mount_path);
+}
+static void wizard_vol_unmount_cb(GnomeVFSVolumeMonitor *vfs, GnomeVFSVolume *vol, WizardWindow *wizard)
+{
+	gchar *uri = gnome_vfs_volume_get_activation_uri (vol);
+	gchar *mount_path = uri?gnome_vfs_get_local_path_from_uri (uri):NULL;
+	g_free (uri);
+	if (mount_path) {
+		if(!strcmp(mount_path, MMC1_PATH)) {
+			gtk_widget_set_sensitive(wizard->data_root_mmc1_radiobtn, FALSE);
+			if (gtk_toggle_button_get_active(
+				GTK_TOGGLE_BUTTON(wizard->data_root_mmc1_radiobtn))) {
+				gtk_toggle_button_set_active(
+					GTK_TOGGLE_BUTTON(wizard->data_root_nokia_radiobtn), TRUE);
+			}
+		}
+		if(!strcmp(mount_path, MMC2_PATH)) {
+			gtk_widget_set_sensitive(wizard->data_root_mmc2_radiobtn, FALSE);
+			if (gtk_toggle_button_get_active(
+				GTK_TOGGLE_BUTTON(wizard->data_root_mmc2_radiobtn))) {
+				gtk_toggle_button_set_active(
+					GTK_TOGGLE_BUTTON(wizard->data_root_nokia_radiobtn), TRUE);
+			}
+		}
+	}
+	g_free(mount_path);
+}
+
+void data_root_changed		(GtkToggleButton	*toggle_btn,
+				 WizardWindow *wizard)
+{
+	gchar *name = g_path_get_basename(gtk_entry_get_text(GTK_ENTRY(wizard->mailbox_name)));
+	gchar *path = NULL;
+	if (gtk_toggle_button_get_active(
+		GTK_TOGGLE_BUTTON(wizard->data_root_nokia_radiobtn)))
+		gtk_entry_set_text(GTK_ENTRY(wizard->mailbox_name), name);
+	else if (gtk_toggle_button_get_active(
+		GTK_TOGGLE_BUTTON(wizard->data_root_mmc1_radiobtn))) {
+		path = g_strconcat(MMC1_PATH, G_DIR_SEPARATOR_S, 
+				  "Claws", G_DIR_SEPARATOR_S, 
+				  g_get_user_name(), G_DIR_SEPARATOR_S,
+				  name, NULL);
+		gtk_entry_set_text(GTK_ENTRY(wizard->mailbox_name), path);
+		g_free(path);
+	} else if (gtk_toggle_button_get_active(
+		GTK_TOGGLE_BUTTON(wizard->data_root_mmc2_radiobtn))) {
+		path = g_strconcat(MMC2_PATH, G_DIR_SEPARATOR_S, 
+				  "Claws", G_DIR_SEPARATOR_S, 
+				  g_get_user_name(), G_DIR_SEPARATOR_S,
+				  name, NULL);
+		gtk_entry_set_text(GTK_ENTRY(wizard->mailbox_name), path);
+		g_free(path);
+	}
+	g_free(name);
+}
+#endif
+
 static GtkWidget* mailbox_page (WizardWindow * wizard)
 {
 	GtkWidget *table = gtk_table_new(1,1, FALSE);
 	GtkWidget *vbox;
+#ifdef MAEMO
+	GtkWidget *vbox2;
+	gchar *uri, *mount_path;
+#endif
 	GtkWidget *hbox;
 	GtkTooltips *tips = gtk_tooltips_new();
 
@@ -944,7 +1057,13 @@ static GtkWidget* mailbox_page (WizardWindow * wizard)
 
 	hbox = gtk_hbox_new(FALSE, VSPACING_NARROW);
 	gtk_box_pack_start (GTK_BOX(vbox), hbox, FALSE, FALSE, 0);
+
+	wizard->mailbox_label = gtk_label_new(_("<span weight=\"bold\">Mailbox name:</span>"));
+	gtk_label_set_use_markup(GTK_LABEL(wizard->mailbox_label), TRUE);
+	if (GTK_IS_MISC(wizard->mailbox_label))						      
+		gtk_misc_set_alignment(GTK_MISC(wizard->mailbox_label), 1, 0.5);	      
 	wizard->mailbox_name = gtk_entry_new();
+
 	gtk_entry_set_text(GTK_ENTRY(wizard->mailbox_name), tmpl.mailbox?tmpl.mailbox:"");
 
 	gtk_tooltips_set_tip(GTK_TOOLTIPS(tips), wizard->mailbox_name,
@@ -952,9 +1071,69 @@ static GtkWidget* mailbox_page (WizardWindow * wizard)
 			       "\"/home/john/Documents/Mail\""),
 			     NULL);
 
-	PACK_BOX(hbox, _("<span weight=\"bold\">Mailbox name:</span>"),
-		 wizard->mailbox_name);
+	gtk_box_pack_start(GTK_BOX(hbox), wizard->mailbox_label, FALSE, FALSE, 0);
+	gtk_box_pack_start(GTK_BOX(hbox), wizard->mailbox_name, TRUE, TRUE, 0);
+
+#ifdef MAEMO
+	wizard->data_root_nokia_radiobtn = gtk_radio_button_new_with_label(NULL,
+		_("on internal memory"));
+	wizard->data_root_mmc1_radiobtn = gtk_radio_button_new_with_label_from_widget(
+		GTK_RADIO_BUTTON(wizard->data_root_nokia_radiobtn),
+		_("on /media/mmc1"));
+	wizard->data_root_mmc2_radiobtn = gtk_radio_button_new_with_label_from_widget(
+		GTK_RADIO_BUTTON(wizard->data_root_nokia_radiobtn),
+		_("on /media/mmc2"));
+		
+	g_signal_connect(G_OBJECT(wizard->data_root_nokia_radiobtn), "toggled",
+			 G_CALLBACK(data_root_changed), wizard);
+	g_signal_connect(G_OBJECT(wizard->data_root_mmc1_radiobtn), "toggled",
+			 G_CALLBACK(data_root_changed), wizard);
+	g_signal_connect(G_OBJECT(wizard->data_root_mmc2_radiobtn), "toggled",
+			 G_CALLBACK(data_root_changed), wizard);
+
+	wizard->volmon = gnome_vfs_get_volume_monitor();
+	wizard->vol_mmc1 = gnome_vfs_volume_monitor_get_volume_for_path(wizard->volmon, MMC1_PATH);
+	wizard->vol_mmc2 = gnome_vfs_volume_monitor_get_volume_for_path(wizard->volmon, MMC2_PATH);
+
+	uri = gnome_vfs_volume_get_activation_uri (wizard->vol_mmc1);
+	mount_path = uri?gnome_vfs_get_local_path_from_uri (uri):NULL;
+	g_free(uri);
+	if (wizard->vol_mmc1 == NULL || !gnome_vfs_volume_is_mounted(wizard->vol_mmc1)
+	    || strcmp(mount_path, MMC1_PATH)) {
+		gtk_widget_set_sensitive(wizard->data_root_mmc1_radiobtn, FALSE);
+	}
+	g_free(mount_path);
+
+	uri = gnome_vfs_volume_get_activation_uri (wizard->vol_mmc2);
+	mount_path = uri?gnome_vfs_get_local_path_from_uri (uri):NULL;
+	g_free(uri);
+	if (wizard->vol_mmc2 == NULL || !gnome_vfs_volume_is_mounted(wizard->vol_mmc2)
+	    || strcmp(mount_path, MMC2_PATH)) {
+		gtk_widget_set_sensitive(wizard->data_root_mmc2_radiobtn, FALSE);
+	}
+	g_free(mount_path);
 	
+	gnome_vfs_volume_unref(wizard->vol_mmc1);
+	gnome_vfs_volume_unref(wizard->vol_mmc2);
+	wizard->vol_mmc1 = NULL;
+	wizard->vol_mmc2 = NULL;
+
+	wizard->volmon_mount_sigid = g_signal_connect(G_OBJECT(wizard->volmon), 
+					"volume-mounted", G_CALLBACK(wizard_vol_mount_cb), wizard);
+	wizard->volmon_unmount_sigid = g_signal_connect(G_OBJECT(wizard->volmon), 
+					"volume-unmounted", G_CALLBACK(wizard_vol_unmount_cb), wizard);
+
+	vbox2 = gtk_vbox_new(FALSE, VSPACING_NARROW);
+	gtk_box_pack_start (GTK_BOX(vbox2), wizard->data_root_nokia_radiobtn, FALSE, FALSE, 0);
+	gtk_box_pack_start (GTK_BOX(vbox2), wizard->data_root_mmc1_radiobtn, FALSE, FALSE, 0);
+	gtk_box_pack_start (GTK_BOX(vbox2), wizard->data_root_mmc2_radiobtn, FALSE, FALSE, 0);
+
+	hbox = gtk_hbox_new(FALSE, VSPACING_NARROW);
+	gtk_box_pack_start (GTK_BOX(vbox), hbox, FALSE, FALSE, 0);
+	PACK_BOX(hbox, _("<span weight=\"bold\">Store data</span>"),
+		 vbox2);
+#endif
+
 	return table;
 }
 
@@ -1085,6 +1264,8 @@ static void wizard_protocol_change(WizardWindow *wizard, RecvProtocol protocol)
 		gtk_label_set_use_markup(GTK_LABEL(wizard->recv_label), TRUE);
 		gtk_dialog_set_response_sensitive (GTK_DIALOG(wizard->window), GO_FORWARD, TRUE);
 		g_free(text);
+		gtk_widget_show(wizard->mailbox_label);
+		gtk_widget_show(wizard->mailbox_name);
 	} else if (protocol == A_IMAP4) {
 #ifdef HAVE_LIBETPAN
 		text = get_default_server(wizard, "imap");
@@ -1105,6 +1286,8 @@ static void wizard_protocol_change(WizardWindow *wizard, RecvProtocol protocol)
 		gtk_label_set_use_markup(GTK_LABEL(wizard->recv_label), TRUE);
 		gtk_dialog_set_response_sensitive (GTK_DIALOG(wizard->window), GO_FORWARD, TRUE);
 		g_free(text);
+		gtk_widget_hide(wizard->mailbox_label);
+		gtk_widget_hide(wizard->mailbox_name);
 #else
 		gtk_widget_hide(wizard->recv_imap_label);
 		gtk_widget_hide(wizard->recv_imap_subdir);
@@ -1114,6 +1297,8 @@ static void wizard_protocol_change(WizardWindow *wizard, RecvProtocol protocol)
 		gtk_widget_hide(wizard->recv_username_label);
 		gtk_widget_hide(wizard->recv_password_label);
 		gtk_widget_show(wizard->no_imap_warning);
+		gtk_widget_hide(wizard->mailbox_label);
+		gtk_widget_hide(wizard->mailbox_name);
 #ifdef USE_OPENSSL
 		gtk_widget_hide(wizard->recv_use_ssl);
 		gtk_widget_hide(wizard->recv_use_tls);
@@ -1136,6 +1321,8 @@ static void wizard_protocol_change(WizardWindow *wizard, RecvProtocol protocol)
 		gtk_widget_hide(wizard->recv_use_ssl);
 		gtk_widget_hide(wizard->recv_use_tls);
 #endif
+		gtk_widget_show(wizard->mailbox_label);
+		gtk_widget_show(wizard->mailbox_name);
 		gtk_dialog_set_response_sensitive (GTK_DIALOG(wizard->window), GO_FORWARD, TRUE);
 	}
 }
@@ -1309,10 +1496,12 @@ wizard_response_cb (GtkDialog * dialog, int response, gpointer data)
 			(g_object_get_data(G_OBJECT(menuitem), MENU_VAL_ID));
 	gboolean skip_mailbox_page = FALSE;
 	
+#ifndef MAEMO
 	if (protocol == A_IMAP4) {
 		skip_mailbox_page = TRUE;
 	}
-	
+#endif
+
 	num_pages = g_slist_length(wizard->pages);
 
  	current_page = gtk_notebook_get_current_page (

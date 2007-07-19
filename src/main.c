@@ -119,6 +119,9 @@
 #include <hildon-widgets/hildon-program.h>
 #include <gtk/gtkmain.h>
 #include <libosso.h>
+#include <libgnomevfs/gnome-vfs-volume.h>
+#include <libgnomevfs/gnome-vfs-volume-monitor.h>
+#include <libgnomevfs/gnome-vfs-utils.h>
 
 #define OSSO_NAME    "claws_mail"
 #define OSSO_SERVICE "com.nokia."OSSO_NAME
@@ -131,6 +134,8 @@ struct _AppData {
     HildonWindow *window;
     osso_context_t *osso_context;
 };
+
+static GnomeVFSVolumeMonitor *volmon;
 #endif
 
 gchar *prog_version;
@@ -626,6 +631,35 @@ void main_set_show_at_startup(gboolean show)
 	show_at_startup = show;
 }
 
+#ifdef MAEMO
+static void main_vol_mount_cb(GnomeVFSVolumeMonitor *vfs, GnomeVFSVolume *vol, MainWindow *mainwin)
+{
+	gchar *uri = gnome_vfs_volume_get_activation_uri (vol);
+	gchar *mount_path = uri?gnome_vfs_get_local_path_from_uri (uri):NULL;
+	g_free (uri);
+	if (mount_path) {
+		if(!strcmp(mount_path, prefs_common.data_root)) {
+			gtk_widget_set_sensitive(mainwin->window, TRUE);
+			inc_unlock();
+		}
+	}
+	g_free(mount_path);
+}
+static void main_vol_unmount_cb(GnomeVFSVolumeMonitor *vfs, GnomeVFSVolume *vol, MainWindow *mainwin)
+{
+	gchar *uri = gnome_vfs_volume_get_activation_uri (vol);
+	gchar *mount_path = uri?gnome_vfs_get_local_path_from_uri (uri):NULL;
+	g_free (uri);
+	if (mount_path) {
+		if(!strcmp(mount_path, prefs_common.data_root)) {
+			gtk_widget_set_sensitive(mainwin->window, FALSE);
+			inc_lock();
+		}
+	}
+	g_free(mount_path);
+}
+#endif
+
 int main(int argc, char *argv[])
 {
 #ifdef MAEMO
@@ -1048,6 +1082,34 @@ int main(int argc, char *argv[])
 	}
 	
 	static_mainwindow = mainwin;
+
+#ifdef MAEMO
+	if (prefs_common.data_root != NULL && *prefs_common.data_root != '\0') {
+		GnomeVFSVolume *vol = NULL;
+		gchar *uri, *mount_path;
+
+		volmon = gnome_vfs_get_volume_monitor();
+		vol = gnome_vfs_volume_monitor_get_volume_for_path(volmon, prefs_common.data_root);
+
+		uri = gnome_vfs_volume_get_activation_uri (vol);
+		mount_path = uri?gnome_vfs_get_local_path_from_uri (uri):NULL;
+		g_free(uri);
+
+		if (vol == NULL || !gnome_vfs_volume_is_mounted(vol) 
+		    || strcmp(mount_path, prefs_common.data_root)) {
+			alertpanel_error(_("Claws Mail can not start without its data volume (%s)."), 
+				prefs_common.data_root);
+			exit_claws(mainwin);
+			exit(1);
+		}
+		g_free(mount_path);
+		gnome_vfs_volume_unref(vol);
+		g_signal_connect(G_OBJECT(volmon), 
+				"volume-mounted", G_CALLBACK(main_vol_mount_cb), mainwin);
+		g_signal_connect(G_OBJECT(volmon), 
+				"volume-unmounted", G_CALLBACK(main_vol_unmount_cb), mainwin);
+	}
+#endif
 
 #ifdef HAVE_STARTUP_NOTIFICATION
 	startup_notification_complete(FALSE);

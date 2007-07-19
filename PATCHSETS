@@ -2700,3 +2700,4 @@
 ( cvs diff -u -r 1.155.2.69 -r 1.155.2.70 src/Makefile.am;  ) > 2.10.0cvs44.patchset
 ( cvs diff -u -r 1.155.2.70 -r 1.155.2.71 src/Makefile.am;  ) > 2.10.0cvs45.patchset
 ( cvs diff -u -r 1.155.2.71 -r 1.155.2.72 src/Makefile.am;  cvs diff -u -r 1.25.2.42 -r 1.25.2.43 src/stock_pixmap.c;  cvs diff -u -r 1.1.2.56 -r 1.1.2.57 src/wizard.c;  cvs diff -u -r 1.4.2.51 -r 1.4.2.52 src/gtk/about.c;  diff -u /dev/null src/pixmaps/claws-mail_logo-small.xpm;  ) > 2.10.0cvs46.patchset
+( cvs diff -u -r 1.654.2.2756 -r 1.654.2.2757 configure.ac;  cvs diff -u -r 1.115.2.158 -r 1.115.2.159 src/main.c;  cvs diff -u -r 1.204.2.141 -r 1.204.2.142 src/prefs_common.c;  cvs diff -u -r 1.103.2.87 -r 1.103.2.88 src/prefs_common.h;  cvs diff -u -r 1.1.2.57 -r 1.1.2.58 src/wizard.c;  cvs diff -u -r 1.9.2.40 -r 1.9.2.41 src/common/defs.h;  cvs diff -u -r 1.36.2.106 -r 1.36.2.107 src/common/utils.c;  ) > 2.10.0cvs47.patchset
