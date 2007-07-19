@@ -1,3 +1,16 @@
+2007-07-19 [paul]	2.10.0cvs46
+
+	* src/Makefile.am
+	* src/stock_pixmap.c
+	* src/gtk/about.c
+	* src/pixmaps/claws-mail_logo-small.xpm
+		implement a (slightly) different About
+		dialog for maemo and add a small version
+		of the logo for it
+	* src/wizard.c
+		use a scrolled window for wizard page 1
+		on maemo
+
 2007-07-19 [paul]	2.10.0cvs45
 
 	* src/Makefile.am

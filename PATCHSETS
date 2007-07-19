@@ -2699,3 +2699,4 @@
 ( cvs diff -u -r 1.1.2.55 -r 1.1.2.56 src/wizard.c;  ) > 2.10.0cvs43.patchset
 ( cvs diff -u -r 1.155.2.69 -r 1.155.2.70 src/Makefile.am;  ) > 2.10.0cvs44.patchset
 ( cvs diff -u -r 1.155.2.70 -r 1.155.2.71 src/Makefile.am;  ) > 2.10.0cvs45.patchset
+( cvs diff -u -r 1.155.2.71 -r 1.155.2.72 src/Makefile.am;  cvs diff -u -r 1.25.2.42 -r 1.25.2.43 src/stock_pixmap.c;  cvs diff -u -r 1.1.2.56 -r 1.1.2.57 src/wizard.c;  cvs diff -u -r 1.4.2.51 -r 1.4.2.52 src/gtk/about.c;  diff -u /dev/null src/pixmaps/claws-mail_logo-small.xpm;  ) > 2.10.0cvs46.patchset

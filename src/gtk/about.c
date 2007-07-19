@@ -155,7 +155,11 @@ static GtkWidget *about_create_child_page_info(void)
 	gtk_text_buffer_create_tag(buffer, "underlined-list-title",
 				"underline", PANGO_UNDERLINE_SINGLE,
 				NULL);
-
+#ifdef MAEMO
+	gtk_text_buffer_insert(buffer, &iter, _(
+				"\n\nCopyright (C) 1999-2007\nHiroyuki Yamamoto <hiro-y@kcn.ne.jp>\n"
+				"and the Claws Mail team"), -1);
+#endif
 	gtk_text_buffer_insert_with_tags_by_name(buffer, &iter, (_("\n\nSystem Information\n")), -1,
 			"underlined-list-title", NULL);
 
@@ -716,7 +720,7 @@ static void about_create(void)
 
 	button = gtkut_get_link_btn(window, HOMEPAGE_URI, " "HOMEPAGE_URI" ");
 	gtk_box_pack_start(GTK_BOX(vbox2), button, FALSE, FALSE, 0);
-
+#ifndef MAEMO
 	label = gtk_label_new
 		(_("Copyright (C) 1999-2007\nHiroyuki Yamamoto <hiro-y@kcn.ne.jp>\n"
 		 "and the Claws Mail team"));
@@ -724,7 +728,7 @@ static void about_create(void)
 	gtk_label_set_justify(GTK_LABEL(label), GTK_JUSTIFY_CENTER);
 	gtk_label_set_line_wrap(GTK_LABEL(label), TRUE);
 	gtk_box_pack_start(GTK_BOX(vbox2), label, FALSE, FALSE, 0);
-
+#endif
 	notebook = gtk_notebook_new();
 	gtk_widget_set_size_request(notebook, -1, 220);
 	gtk_widget_show(notebook);

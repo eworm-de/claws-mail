@@ -81,7 +81,11 @@
 #include "pixmaps/queue_open.xpm"
 #include "pixmaps/queue_open_hrm.xpm"
 #include "pixmaps/claws-mail_icon.xpm"
+#ifndef MAEMO
 #include "pixmaps/claws-mail_logo.xpm"
+#else
+#include "pixmaps/claws-mail_logo-small.xpm"
+#endif
 #include "pixmaps/address_book.xpm"
 #include "pixmaps/unread.xpm"
 #include "pixmaps/read.xpm"
@@ -336,7 +340,11 @@ static StockPixmapData pixmaps[] =
 	{claws_mail_icon_xpm			, NULL, NULL, "claws_mail_icon", NULL},
 	{read_xpm				, NULL, NULL, "read", NULL},
 	{trash_btn_xpm				, NULL, NULL, "trash_btn", NULL},
+#ifndef MAEMO
 	{claws_mail_logo_xpm			, NULL, NULL, "claws_mail_logo", NULL},
+#else
+	{claws_mail_logo_small_xpm		, NULL, NULL, "claws_mail_logo_small", NULL},
+#endif
         {dir_noselect_xpm                       , NULL, NULL, "dir_noselect" , NULL},
         {spam_xpm                               , NULL, NULL, "spam" , NULL},
         {spam_btn_xpm                           , NULL, NULL, "spam_btn" , NULL},

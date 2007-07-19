@@ -1458,7 +1458,17 @@ gboolean run_wizard(MainWindow *mainwin, gboolean create_mailbox) {
 			  "Claws Mail in less than five minutes."));
 	widget = gtk_label_new(text);
 	gtk_label_set_line_wrap(GTK_LABEL(widget), TRUE);
+#ifndef MAEMO
 	gtk_box_pack_start (GTK_BOX(page), widget, FALSE, FALSE, 0);
+#else
+	scrolled_window = gtk_scrolled_window_new (NULL, NULL);
+	gtk_scrolled_window_set_policy (GTK_SCROLLED_WINDOW (scrolled_window),
+                                        GTK_POLICY_AUTOMATIC, GTK_POLICY_AUTOMATIC);
+	gtk_box_pack_start(GTK_BOX(page), scrolled_window, TRUE, TRUE, 0);
+
+	gtk_scrolled_window_add_with_viewport(GTK_SCROLLED_WINDOW(scrolled_window),
+ 					      widget);
+#endif
 	g_free(text);
 
 /* user page: 1 */

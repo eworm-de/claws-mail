@@ -424,6 +424,7 @@ EXTRA_DIST = \
 	pixmaps/spam_btn.xpm \
 	pixmaps/claws-mail_icon.xpm \
 	pixmaps/claws-mail_logo.xpm \
+	pixmaps/claws-mail_logo-small.xpm \
 	pixmaps/claws-mail.xpm \
 	pixmaps/trash_hrm.xpm \
 	pixmaps/trash.xpm \
