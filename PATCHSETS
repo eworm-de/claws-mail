@@ -2698,3 +2698,4 @@
 ( cvs diff -u -r 1.149.2.76 -r 1.149.2.77 src/inc.c;  cvs diff -u -r 1.654.2.2751 -r 1.654.2.2752 configure.ac;  ) > 2.10.0cvs42.patchset
 ( cvs diff -u -r 1.1.2.55 -r 1.1.2.56 src/wizard.c;  ) > 2.10.0cvs43.patchset
 ( cvs diff -u -r 1.155.2.69 -r 1.155.2.70 src/Makefile.am;  ) > 2.10.0cvs44.patchset
+( cvs diff -u -r 1.155.2.70 -r 1.155.2.71 src/Makefile.am;  ) > 2.10.0cvs45.patchset
