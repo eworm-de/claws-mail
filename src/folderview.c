@@ -534,8 +534,12 @@ static GtkWidget *folderview_ctree_create(FolderView *folderview)
 			 folderview);
 	g_signal_connect(G_OBJECT(ctree), "tree_select_row",
 			 G_CALLBACK(folderview_selected), folderview);
+#ifndef MAEMO
+	/* drag-n-dropping folders on maemo is impractical as this 
+	 * opens the folder almost everytime */
 	g_signal_connect(G_OBJECT(ctree), "start_drag",
 			 G_CALLBACK(folderview_start_drag), folderview);
+#endif
 	g_signal_connect(G_OBJECT(ctree), "drag_data_get",
 			 G_CALLBACK(folderview_drag_data_get),
 			 folderview);

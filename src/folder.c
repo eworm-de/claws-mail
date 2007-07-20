@@ -2298,6 +2298,38 @@ void folder_clean_cache_memory(FolderItem *protected_item)
 	}
 }
 
+static void folder_item_remove_cached_msg(FolderItem *item, MsgInfo *msginfo)
+{
+	Folder *folder = item->folder;
+
+	g_return_if_fail(folder != NULL);
+
+	if (folder->klass->remove_cached_msg == NULL)
+		return;
+	
+	folder->klass->remove_cached_msg(folder, item, msginfo);
+}
+
+static void folder_item_clean_local_files(FolderItem *item, gint days)
+{
+	g_return_if_fail(item != NULL);
+	g_return_if_fail(item->folder != NULL);
+
+	if (FOLDER_TYPE(item->folder) == F_IMAP ||
+	    FOLDER_TYPE(item->folder) == F_NEWS) {
+		GSList *msglist = folder_item_get_msg_list(item);
+		GSList *cur;
+		time_t t = time(NULL);
+		for (cur = msglist; cur; cur = cur->next) {
+			MsgInfo *msginfo = (MsgInfo *)cur->data;
+			gint age = (t - msginfo->date_t) / (60*60*24);
+			if (age > days)
+				folder_item_remove_cached_msg(item, msginfo);
+		}
+		procmsg_msg_list_free(msglist);
+	}
+}
+
 static void folder_item_read_cache(FolderItem *item)
 {
 	gchar *cache_file, *mark_file, *tags_file;
@@ -4071,7 +4103,11 @@ void folder_item_synchronise(FolderItem *item)
 		return;
 	if (item->prefs->offlinesync && item->folder->klass->synchronise) {
 		statusbar_print_all(_("Synchronising %s for offline use...\n"), item->path ? item->path : "(null)");
-		item->folder->klass->synchronise(item);
+		item->folder->klass->synchronise(item, 
+			item->prefs->offlinesync_days);
+		if (item->prefs->offlinesync_days > 0 &&
+		    item->prefs->remove_old_bodies)
+			folder_item_clean_local_files(item, item->prefs->offlinesync_days);
 		statusbar_pop_all();
 	}
 }

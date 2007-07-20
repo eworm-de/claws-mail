@@ -82,7 +82,11 @@ struct _FolderItemGeneralPage
 	GtkWidget *checkbtn_enable_processing;
 	GtkWidget *checkbtn_newmailcheck;
 	GtkWidget *checkbtn_offlinesync;
-
+	GtkWidget *label_offlinesync;
+	GtkWidget *entry_offlinesync;
+	GtkWidget *label_end_offlinesync;
+	GtkWidget *checkbtn_remove_old_offlinesync;
+	
 	/* apply to sub folders */
 	GtkWidget *simplify_subject_rec_checkbtn;
 	GtkWidget *folder_chmod_rec_checkbtn;
@@ -181,7 +185,7 @@ static void prefs_folder_item_general_create_widget_func(PrefsPage * page_,
 	guint rowcount;
 
 	GtkWidget *table;
-	GtkWidget *hbox;
+	GtkWidget *hbox, *hbox2, *hbox_spc;
 	GtkWidget *label;
 	
 	GtkWidget *folder_type_menu;
@@ -206,6 +210,10 @@ static void prefs_folder_item_general_create_widget_func(PrefsPage * page_,
 	GtkWidget *checkbtn_enable_processing;
 	GtkWidget *checkbtn_newmailcheck;
 	GtkWidget *checkbtn_offlinesync;
+	GtkWidget *label_offlinesync;
+	GtkWidget *entry_offlinesync;
+	GtkWidget *label_end_offlinesync;
+	GtkWidget *checkbtn_remove_old_offlinesync;
 
 	GtkWidget *simplify_subject_rec_checkbtn;
 	GtkWidget *folder_chmod_rec_checkbtn;
@@ -218,7 +226,7 @@ static void prefs_folder_item_general_create_widget_func(PrefsPage * page_,
 	page->item	   = item;
 
 	/* Table */
-	table = gtk_table_new(7, 4, FALSE);
+	table = gtk_table_new(9, 4, FALSE);
 	gtk_container_set_border_width (GTK_CONTAINER (table), VBOX_BORDER);
 	gtk_table_set_row_spacings(GTK_TABLE(table), 4);
 	gtk_table_set_col_spacings(GTK_TABLE(table), 4);
@@ -443,20 +451,72 @@ static void prefs_folder_item_general_create_widget_func(PrefsPage * page_,
 	gtk_table_attach(GTK_TABLE(table), offlinesync_rec_checkbtn, 3, 4, 
 			 rowcount, rowcount + 1, GTK_SHRINK, GTK_SHRINK, 0, 0);
 
+	rowcount++;
+
+	hbox = gtk_hbox_new (FALSE, 8);
+	gtk_widget_show (hbox);
+	gtk_table_attach(GTK_TABLE(table), hbox, 0, 4,
+			 rowcount, rowcount+1, GTK_EXPAND | GTK_FILL, GTK_FILL, 0, 0);
+	rowcount++;
+
+	hbox_spc = gtk_hbox_new (FALSE, 0);
+	gtk_widget_show (hbox_spc);
+	gtk_box_pack_start (GTK_BOX (hbox), hbox_spc, FALSE, FALSE, 0);
+	gtk_widget_set_size_request (hbox_spc, 12, -1);
+
+	label_offlinesync = gtk_label_new(_("Fetch bodies for the last"));
+	gtk_widget_show (label_offlinesync);
+	gtk_box_pack_start (GTK_BOX (hbox), label_offlinesync, FALSE, FALSE, 0);
+
+	entry_offlinesync = gtk_entry_new();
+	gtk_widget_set_size_request (entry_offlinesync, 64, -1);
+	gtk_widget_show (entry_offlinesync);
+	gtk_box_pack_start (GTK_BOX (hbox), entry_offlinesync, FALSE, FALSE, 0);
+
+	label_end_offlinesync = gtk_label_new(_("days (0: all bodies)"));
+	gtk_widget_show (label_end_offlinesync);
+	gtk_box_pack_start (GTK_BOX (hbox), label_end_offlinesync, FALSE, FALSE, 0);
+
+	checkbtn_remove_old_offlinesync = gtk_check_button_new_with_label(_("Remove older bodies"));
+
+	hbox2 = gtk_hbox_new (FALSE, 8);
+	gtk_widget_show (hbox2);
+	gtk_table_attach(GTK_TABLE(table), hbox2, 0, 4,
+			 rowcount, rowcount+1, GTK_EXPAND | GTK_FILL, GTK_FILL, 0, 0);
+	rowcount++;
+
+	hbox_spc = gtk_hbox_new (FALSE, 0);
+	gtk_widget_show (hbox_spc);
+	gtk_box_pack_start (GTK_BOX (hbox2), hbox_spc, FALSE, FALSE, 0);
+	gtk_widget_set_size_request (hbox_spc, 12, -1);
+	gtk_box_pack_start (GTK_BOX (hbox2), checkbtn_remove_old_offlinesync, FALSE, FALSE, 0);
+
+	SET_TOGGLE_SENSITIVITY (checkbtn_offlinesync, hbox);
+	SET_TOGGLE_SENSITIVITY (checkbtn_offlinesync, hbox2);
+	
+	gtk_widget_show_all(table);
+
 	if (item->folder && (item->folder->klass->type != F_IMAP && 
 	    item->folder->klass->type != F_NEWS)) {
-		 item->prefs->offlinesync = TRUE;
+		item->prefs->offlinesync = TRUE;
+		item->prefs->offlinesync_days = 0;
+		item->prefs->remove_old_bodies = FALSE;
+
 		gtk_widget_set_sensitive(GTK_WIDGET(checkbtn_offlinesync),
 								 FALSE);
 		gtk_widget_set_sensitive(GTK_WIDGET(offlinesync_rec_checkbtn),
 								 FALSE);
+		gtk_widget_hide(GTK_WIDGET(checkbtn_offlinesync));
+		gtk_widget_hide(GTK_WIDGET(hbox));
+		gtk_widget_hide(GTK_WIDGET(hbox2));
+		gtk_widget_hide(GTK_WIDGET(offlinesync_rec_checkbtn));
 	
 	}
 	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(checkbtn_offlinesync),
 								 item->prefs->offlinesync);
-	rowcount++;
-
-	gtk_widget_show_all(table);
+	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(checkbtn_remove_old_offlinesync),
+								 item->prefs->remove_old_bodies);
+	gtk_entry_set_text(GTK_ENTRY(entry_offlinesync), itos(item->prefs->offlinesync_days));
 
 	page->table = table;
 	page->folder_type = folder_type;
@@ -471,6 +531,10 @@ static void prefs_folder_item_general_create_widget_func(PrefsPage * page_,
 	page->checkbtn_enable_processing = checkbtn_enable_processing;
 	page->checkbtn_newmailcheck = checkbtn_newmailcheck;
 	page->checkbtn_offlinesync = checkbtn_offlinesync;
+	page->label_offlinesync = label_offlinesync;
+	page->entry_offlinesync = entry_offlinesync;
+	page->label_end_offlinesync = label_end_offlinesync;
+	page->checkbtn_remove_old_offlinesync = checkbtn_remove_old_offlinesync;
 
 	page->simplify_subject_rec_checkbtn  = simplify_subject_rec_checkbtn;
 	page->folder_chmod_rec_checkbtn	     = folder_chmod_rec_checkbtn;
@@ -556,6 +620,10 @@ static void general_save_folder_prefs(FolderItem *folder, FolderItemGeneralPage 
 	if (all ||  gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(page->offlinesync_rec_checkbtn))) {
 		prefs->offlinesync = 
 			gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(page->checkbtn_offlinesync));
+		prefs->offlinesync_days = 
+			atoi(gtk_entry_get_text(GTK_ENTRY(page->entry_offlinesync)));
+		prefs->remove_old_bodies =
+			gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(page->checkbtn_remove_old_offlinesync));
 	}
 
 	folder_item_prefs_save_config(folder);

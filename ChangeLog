@@ -1,3 +1,27 @@
+2007-07-20 [colin]	2.10.0cvs51
+
+	* src/folder.c
+	* src/folder.h
+	* src/folder_item_prefs.c
+	* src/folder_item_prefs.h
+	* src/folderview.c
+	* src/imap.c
+	* src/imap_gtk.c
+	* src/imap_gtk.h
+	* src/news.c
+	* src/news_gtk.c
+	* src/news_gtk.h
+	* src/prefs_folder_item.c
+		Implement age-based caching: allow to
+		specify a threshold for the offline synchronisation
+		feature, and whether old cached bodies should 
+		be removed
+	* src/toolbar.c
+	* src/toolbar.h
+		Fix label/tooltips
+	* src/plugins/dillo_viewer/dillo_viewer.c
+		Check that Dillo's installed
+
 2007-07-20 [wwp]	2.10.0cvs50
 
 	* src/mimeview.c

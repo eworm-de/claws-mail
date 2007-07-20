@@ -167,9 +167,16 @@ static MimeViewerFactory dillo_viewer_factory =
 
 gint plugin_init(gchar **error)
 {
+	gchar *dillo_path = NULL;
 	if (!check_plugin_version(MAKE_NUMERIC_VERSION(2,9,2,72),
 				VERSION_NUMERIC, PLUGIN_NAME, error))
   		return -1;
+
+	if ((dillo_path = g_find_program_in_path("dillo")) == NULL) {
+		*error = g_strdup(_("Can't find the dillo executable in PATH. Is it installed?"));
+		return -1;
+	}
+	g_free(dillo_path);
 
         dillo_prefs_init();
 

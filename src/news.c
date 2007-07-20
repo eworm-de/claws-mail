@@ -85,8 +85,9 @@ static void	 news_folder_destroy	(Folder		*folder);
 static gchar *news_fetch_msg		(Folder		*folder,
 					 FolderItem	*item,
 					 gint		 num);
-
-
+static void news_remove_cached_msg	(Folder 	*folder, 
+					 FolderItem 	*item, 
+					 MsgInfo 	*msginfo);
 #if USE_OPENSSL
 static Session *news_session_new	 (const gchar	*server,
 					  gushort	 port,
@@ -134,7 +135,7 @@ static gint news_post_stream			 (Folder 	*folder,
 static gchar *news_folder_get_path	 (Folder	*folder);
 static gchar *news_item_get_path		 (Folder	*folder,
 					  FolderItem	*item);
-static void news_synchronise		 (FolderItem	*item);
+static void news_synchronise		 (FolderItem	*item, gint days);
 static int news_remove_msg		 (Folder 	*folder, 
 					  FolderItem 	*item, 
 					  gint 		 msgnum);
@@ -165,6 +166,7 @@ FolderClass *news_get_class(void)
 		news_class.fetch_msg = news_fetch_msg;
 		news_class.synchronise = news_synchronise;
 		news_class.remove_msg = news_remove_msg;
+		news_class.remove_cached_msg = news_remove_cached_msg;
 	};
 
 	return &news_class;
@@ -355,6 +357,26 @@ static NNTPSession *news_session_get(Folder *folder)
 		session_set_access_time(rfolder->session);
 
 	return NNTP_SESSION(rfolder->session);
+}
+
+static void news_remove_cached_msg(Folder *folder, FolderItem *item, MsgInfo *msginfo)
+{
+	gchar *path, *filename;
+
+	path = folder_item_get_path(item);
+
+	if (!is_dir_exist(path)) {
+		g_free(path);
+		return;
+	}
+
+	filename = g_strconcat(path, G_DIR_SEPARATOR_S, itos(msginfo->msgnum), NULL);
+	g_free(path);
+
+	if (is_file_exist(filename)) {
+		g_unlink(filename);
+	}
+	g_free(filename);
 }
 
 static gchar *news_fetch_msg(Folder *folder, FolderItem *item, gint num)
@@ -1225,9 +1247,9 @@ static gboolean news_scan_required(Folder *folder, FolderItem *item)
 	return TRUE;
 }
 
-void news_synchronise(FolderItem *item) 
+void news_synchronise(FolderItem *item, gint days) 
 {
-	news_gtk_synchronise(item);
+	news_gtk_synchronise(item, days);
 }
 
 static gint news_remove_folder(Folder *folder, FolderItem *item)

@@ -198,6 +198,9 @@ static gchar   *imap_fetch_msg_full	(Folder 	*folder,
 					 gint 		 uid,
 					 gboolean	 headers,
 					 gboolean	 body);
+static void	imap_remove_cached_msg	(Folder 	*folder, 
+					 FolderItem 	*item, 
+					 MsgInfo	*msginfo);
 static gint 	imap_add_msg		(Folder 	*folder,
 			 		 FolderItem 	*dest,
 			 		 const gchar 	*file, 
@@ -303,7 +306,7 @@ static gchar imap_get_path_separator		(IMAPSession	*session,
 static gchar *imap_get_real_path		(IMAPSession	*session,
 						 IMAPFolder	*folder,
 						 const gchar	*path);
-static void imap_synchronise		(FolderItem	*item);
+static void imap_synchronise		(FolderItem	*item, gint days);
 static gboolean imap_is_busy		(Folder *folder);
 
 static void imap_free_capabilities	(IMAPSession 	*session);
@@ -471,6 +474,7 @@ FolderClass *imap_get_class(void)
 		imap_class.get_flags = imap_get_flags;
 		imap_class.set_batch = imap_set_batch;
 		imap_class.synchronise = imap_synchronise;
+		imap_class.remove_cached_msg = imap_remove_cached_msg;
 #ifdef USE_PTREAD
 		pthread_mutex_init(&imap_mutex, NULL);
 #endif
@@ -1004,6 +1008,26 @@ static guint get_file_size_with_crs(const gchar *filename)
 	
 	fclose(fp);
 	return cnt;
+}
+
+static void imap_remove_cached_msg(Folder *folder, FolderItem *item, MsgInfo *msginfo)
+{
+	gchar *path, *filename;
+
+	path = folder_item_get_path(item);
+
+	if (!is_dir_exist(path)) {
+		g_free(path);
+		return;
+	}
+
+	filename = g_strconcat(path, G_DIR_SEPARATOR_S, itos(msginfo->msgnum), NULL);
+	g_free(path);
+
+	if (is_file_exist(filename)) {
+		g_unlink(filename);
+	}
+	g_free(filename);
 }
 
 static gchar *imap_fetch_msg_full(Folder *folder, FolderItem *item, gint uid,
@@ -4824,7 +4848,7 @@ gboolean imap_cancel_all_enabled(void)
 
 #endif
 
-void imap_synchronise(FolderItem *item) 
+void imap_synchronise(FolderItem *item, gint days) 
 {
 #ifdef HAVE_LIBETPAN
 	if (IMAP_FOLDER_ITEM(item)->last_sync == IMAP_FOLDER_ITEM(item)->last_change) {
@@ -4832,7 +4856,7 @@ void imap_synchronise(FolderItem *item)
 		return;
 	}
 	debug_print("syncing %s\n", item->path?item->path:item->name);
-	imap_gtk_synchronise(item);
+	imap_gtk_synchronise(item, days);
 	IMAP_FOLDER_ITEM(item)->last_sync = IMAP_FOLDER_ITEM(item)->last_change;
 #endif
 }

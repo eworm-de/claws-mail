@@ -360,7 +360,7 @@ static void sync_cb(FolderView *folderview, guint action,
 	folder_synchronise(item->folder);
 }
 
-void imap_gtk_synchronise(FolderItem *item)
+void imap_gtk_synchronise(FolderItem *item, gint days)
 {
 	MainWindow *mainwin = mainwindow_get_mainwindow();
 	FolderView *folderview = mainwin->folderview;
@@ -379,11 +379,14 @@ void imap_gtk_synchronise(FolderItem *item)
 		GSList *cur;
 		gint num = 0;
 		gint total = item->total_msgs;
+		time_t t = time(NULL);
 
 		mlist = folder_item_get_msg_list(item);
 		for (cur = mlist; cur != NULL; cur = cur->next) {
 			MsgInfo *msginfo = (MsgInfo *)cur->data;
-			imap_cache_msg(msginfo->folder, msginfo->msgnum);
+			gint age = (t - msginfo->date_t) / (60*60*24);
+			if (days == 0 || age <= days)
+				imap_cache_msg(msginfo->folder, msginfo->msgnum);
 			statusbar_progress_all(num++,total, 100);
 			if (num % 100 == 0)
 				GTK_EVENTS_FLUSH();
@@ -399,7 +402,6 @@ void imap_gtk_synchronise(FolderItem *item)
 	main_window_unlock(mainwin);
 	inc_unlock();
 	main_window_cursor_normal(mainwin);
-
 }
 
 static void chk_update_val(GtkWidget *widget, gpointer data)
@@ -547,5 +549,5 @@ static void download_cb(FolderView *folderview, guint action,
 	if (!folderview->selected) return;
 
 	item = gtk_ctree_node_get_row_data(ctree, folderview->selected);
-	imap_gtk_synchronise(item);
+	imap_gtk_synchronise(item, 0);
 }

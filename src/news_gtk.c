@@ -278,16 +278,23 @@ static void sync_cb(FolderView *folderview, guint action,
 	folder_synchronise(item->folder);
 }
 
-void news_gtk_synchronise(FolderItem *item)
+void news_gtk_synchronise(FolderItem *item, gint days)
 {
 	MainWindow *mainwin = mainwindow_get_mainwindow();
 	FolderView *folderview = mainwin->folderview;
-	
+	GSList *mlist;
+	GSList *cur;
+	gint num = 0;
+	gint total = 0;
+	time_t t = time(NULL);
+
 	g_return_if_fail(item != NULL);
 	g_return_if_fail(item->folder != NULL);
 
 	if (mainwin->lock_count || news_folder_locked(item->folder))
 		return;
+
+	total = item->total_msgs;
 
 	main_window_cursor_wait(mainwin);
 	inc_lock();
@@ -295,16 +302,20 @@ void news_gtk_synchronise(FolderItem *item)
 	gtk_widget_set_sensitive(folderview->ctree, FALSE);
 	main_window_progress_on(mainwin);
 	GTK_EVENTS_FLUSH();
-	if (folder_item_fetch_all_msg(item) < 0) {
-		gchar *name;
 
-		name = trim_string(item->name, 32);
-		if (prefs_common.no_recv_err_panel)
-			log_error(LOG_PROTOCOL, _("Error occurred while downloading messages in '%s'."), name);
-		else
-			alertpanel_error(_("Error occurred while downloading messages in '%s'."), name);
-		g_free(name);
+	mlist = folder_item_get_msg_list(item);
+	for (cur = mlist; cur != NULL; cur = cur->next) {
+		MsgInfo *msginfo = (MsgInfo *)cur->data;
+		gint age = (t - msginfo->date_t) / (60*60*24);
+		if (days == 0 || age <= days)
+			folder_item_fetch_msg_full(msginfo->folder, msginfo->msgnum, TRUE, TRUE);
+		statusbar_progress_all(num++,total, 100);
+		if (num % 100 == 0)
+			GTK_EVENTS_FLUSH();
 	}
+
+	statusbar_progress_all(0,0,0);
+	procmsg_msg_list_free(mlist);
 	folder_set_ui_func(item->folder, NULL, NULL);
 	main_window_progress_off(mainwin);
 	gtk_widget_set_sensitive(folderview->ctree, TRUE);
@@ -322,5 +333,5 @@ static void download_cb(FolderView *folderview, guint action,
 	if (!folderview->selected) return;
 
 	item = gtk_ctree_node_get_row_data(ctree, folderview->selected);
-	news_gtk_synchronise(item);
+	news_gtk_synchronise(item, 0);
 }

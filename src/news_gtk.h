@@ -27,5 +27,5 @@
 #include "folder.h"
 
 void news_gtk_init(void);
-void news_gtk_synchronise(FolderItem *item);
+void news_gtk_synchronise(FolderItem *item, gint days);
 #endif /* NEWS_GTK_H */

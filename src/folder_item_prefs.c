@@ -95,6 +95,10 @@ static PrefParam param[] = {
 	 NULL, NULL, NULL},
 	{"offlinesync", "FALSE", &tmp_prefs.offlinesync, P_BOOL,
 	 NULL, NULL, NULL},
+	{"offlinesync_days", "0", &tmp_prefs.offlinesync_days, P_INT,
+	 NULL, NULL, NULL},
+	{"remove_old_bodies", "FALSE", &tmp_prefs.remove_old_bodies, P_BOOL,
+	 NULL, NULL, NULL},
 
 	{"compose_with_format", "FALSE", &tmp_prefs.compose_with_format, P_BOOL,
 	 NULL, NULL, NULL},
@@ -206,6 +210,8 @@ static FolderItemPrefs *folder_item_prefs_clear(FolderItemPrefs *prefs)
 
 	prefs->newmailcheck = TRUE;
 	prefs->offlinesync = FALSE;
+	prefs->offlinesync_days = 0;
+	prefs->remove_old_bodies = FALSE;
 
 	prefs->compose_with_format = FALSE;
 	prefs->compose_subject_format = NULL;
@@ -261,7 +267,9 @@ void folder_item_prefs_copy_prefs(FolderItem * src, FolderItem * dest)
 	tmp_prefs.enable_thread			= src->prefs->enable_thread;
         tmp_prefs.enable_processing             = src->prefs->enable_processing;
 	tmp_prefs.newmailcheck                  = src->prefs->newmailcheck;
-	tmp_prefs.offlinesync                  = src->prefs->offlinesync;
+	tmp_prefs.offlinesync                   = src->prefs->offlinesync;
+	tmp_prefs.offlinesync_days              = src->prefs->offlinesync_days;
+	tmp_prefs.remove_old_bodies             = src->prefs->remove_old_bodies;
 
 	prefs_matcher_read_config();
 

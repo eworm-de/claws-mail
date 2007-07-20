@@ -101,6 +101,7 @@ struct _Toolbar {
 	GSList    *action_list;
 	GSList    *item_list;
 
+	GtkTooltips *tooltips;
 };
 
 struct _ToolbarItem {

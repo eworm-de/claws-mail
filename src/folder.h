@@ -583,8 +583,10 @@ struct _FolderClass
 	/* Called when switching offline or asking for synchronisation. the imple
 	 * mentation should do what's necessary to be able to read mails present
 	 * in the FolderItem at this time with no network connectivity. 
+	 * Days: max number of days of mail to fetch.
 	 */
-	void		(*synchronise)		(FolderItem	*item);
+	void		(*synchronise)		(FolderItem	*item,
+						 gint		 days);
 	
 	/* Passed from claws-mail --subscribe scheme://uri. Implementations
 	 * should check if they handle this type of URI, and return TRUE in this
@@ -605,6 +607,10 @@ struct _FolderClass
 	void		(*copy_private_data)	(Folder		*folder,
 						 FolderItem	*src,
 						 FolderItem	*dest);
+
+	void		(*remove_cached_msg)	(Folder		*folder,
+						 FolderItem	*item,
+						 MsgInfo 	*msginfo);
 };
 
 struct _FolderItem

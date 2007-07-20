@@ -783,11 +783,15 @@ static void activate_compose_button (Toolbar           *toolbar,
 		gtk_tool_button_set_icon_widget(
 			GTK_TOOL_BUTTON(toolbar->compose_mail_btn),
 			toolbar->compose_news_icon);
+		gtk_tool_item_set_tooltip(GTK_TOOL_ITEM(toolbar->compose_mail_btn), GTK_TOOLTIPS(toolbar->tooltips),
+			_("Compose News message"), NULL);	
 		gtk_widget_show(toolbar->compose_news_icon);
 	} else {
 		gtk_tool_button_set_icon_widget(
 			GTK_TOOL_BUTTON(toolbar->compose_mail_btn),
 			toolbar->compose_mail_icon);
+		gtk_tool_item_set_tooltip(GTK_TOOL_ITEM(toolbar->compose_mail_btn), GTK_TOOLTIPS(toolbar->tooltips),
+			_("Compose Email"), NULL);	
 		gtk_widget_show(toolbar->compose_mail_icon);
 	}
 	toolbar->compose_btn_type = type;
@@ -815,7 +819,9 @@ static void activate_learn_button (Toolbar           *toolbar,
 			toolbar->learn_spam_icon);
 		gtk_tool_button_set_label(
 			GTK_TOOL_BUTTON(toolbar->learn_spam_btn),
-			_("Learn Spam"));
+			_("Spam"));
+		gtk_tool_item_set_tooltip(GTK_TOOL_ITEM(toolbar->learn_spam_btn), GTK_TOOLTIPS(toolbar->tooltips),
+			_("Learn spam"), NULL);	
 		gtk_widget_show(toolbar->learn_spam_icon);
 	} else {
 		gtk_tool_button_set_icon_widget(
@@ -823,7 +829,9 @@ static void activate_learn_button (Toolbar           *toolbar,
 			toolbar->learn_ham_icon);
 		gtk_tool_button_set_label(
 			GTK_TOOL_BUTTON(toolbar->learn_spam_btn),
-			_("Learn Ham"));
+			_("Ham"));
+		gtk_tool_item_set_tooltip(GTK_TOOL_ITEM(toolbar->learn_spam_btn), GTK_TOOLTIPS(toolbar->tooltips),
+			_("Learn ham"), NULL);	
 		gtk_widget_show(toolbar->learn_ham_icon);
 	}
 	toolbar->learn_btn_type = type;	
@@ -1734,7 +1742,7 @@ Toolbar *toolbar_create(ToolbarType 	 type,
 			break;
 		case A_LEARN_SPAM:
 			TOOLBAR_MENUITEM(item,icon_wid,toolbar_item->text,
-				_("Learn Spam"),
+				_("Spam"),
 				_("Learn as..."));
 			toolbar_data->learn_spam_btn = item; 
 			toolbar_data->learn_spam_icon = icon_wid; 
@@ -1908,6 +1916,7 @@ Toolbar *toolbar_create(ToolbarType 	 type,
 
 	}
 	toolbar_data->toolbar = toolbar;
+	toolbar_data->tooltips = toolbar_tips;
 	gtk_widget_show_all(toolbar);
 
 	if (type == TOOLBAR_MAIN) {

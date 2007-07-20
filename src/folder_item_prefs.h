@@ -46,6 +46,8 @@ struct _FolderItemPrefs {
 
 	int newmailcheck;
 	int offlinesync;
+	int offlinesync_days;
+	int remove_old_bodies;
 
 	gboolean request_return_receipt;
 	gboolean enable_default_to;

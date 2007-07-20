@@ -29,7 +29,7 @@
 #include "folder.h"
 
 void imap_gtk_init(void);
-void imap_gtk_synchronise(FolderItem *item);
+void imap_gtk_synchronise(FolderItem *item, gint days);
 gboolean imap_gtk_should_override(void);
 
 #endif /* IMAP_GTK_H */
