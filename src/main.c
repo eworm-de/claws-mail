@@ -1099,6 +1099,8 @@ int main(int argc, char *argv[])
 		    || strcmp(mount_path, prefs_common.data_root)) {
 			alertpanel_error(_("Claws Mail can not start without its data volume (%s)."), 
 				prefs_common.data_root);
+			g_free(mount_path);
+			gnome_vfs_volume_unref(vol);
 			exit_claws(mainwin);
 			exit(1);
 		}

@@ -606,14 +606,6 @@ static gboolean wizard_write_config(WizardWindow *wizard)
 	else if (gtk_toggle_button_get_active(
 		GTK_TOGGLE_BUTTON(wizard->data_root_mmc2_radiobtn)))
 		prefs_common.data_root = g_strdup(MMC2_PATH);
-	if (wizard->volmon_mount_sigid)
-		g_signal_handler_disconnect(
-					G_OBJECT(wizard->volmon),
-					wizard->volmon_mount_sigid);
-	if (wizard->volmon_unmount_sigid)
-		g_signal_handler_disconnect(
-					G_OBJECT(wizard->volmon),
-					wizard->volmon_unmount_sigid);
 #endif
 
 	if (!mailbox_ok) {
@@ -797,7 +789,18 @@ static gboolean wizard_write_config(WizardWindow *wizard)
 	initialize_fonts(wizard);
 	if (wizard->create_mailbox && prefs_account->protocol != A_IMAP4)
 		write_welcome_email(wizard);
-	
+
+#ifdef MAEMO
+	if (wizard->volmon_mount_sigid)
+		g_signal_handler_disconnect(
+					G_OBJECT(wizard->volmon),
+					wizard->volmon_mount_sigid);
+	if (wizard->volmon_unmount_sigid)
+		g_signal_handler_disconnect(
+					G_OBJECT(wizard->volmon),
+					wizard->volmon_unmount_sigid);
+#endif
+
 #ifndef G_OS_WIN32 
 	plugin_load_standard_plugins();
 #endif

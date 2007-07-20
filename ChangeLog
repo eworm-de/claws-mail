@@ -1,3 +1,11 @@
+2007-07-20 [colin]	2.10.0cvs49
+
+	* src/main.c
+		Unref stuff even on error
+	* src/wizard.c
+		disconnect signals only at the very
+		end of the wizard save.
+
 2007-07-20 [colin]	2.10.0cvs48
 
 	* src/mainwindow.c
