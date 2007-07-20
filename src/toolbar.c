@@ -776,16 +776,21 @@ static void activate_compose_button (Toolbar           *toolbar,
 				     ToolbarStyle      style,
 				     ComposeButtonType type)
 {
-	if ((!toolbar->compose_mail_btn) || (!toolbar->compose_news_btn))
+	if ((!toolbar->compose_mail_btn))
 		return;
-	gtk_widget_hide(type == COMPOSEBUTTON_NEWS ? toolbar->compose_mail_btn 
-			: toolbar->compose_news_btn);
-	gtk_widget_show_now(type == COMPOSEBUTTON_NEWS ? toolbar->compose_news_btn
-			: toolbar->compose_mail_btn);
+
+	if (type == COMPOSEBUTTON_NEWS) {
+		gtk_tool_button_set_icon_widget(
+			GTK_TOOL_BUTTON(toolbar->compose_mail_btn),
+			toolbar->compose_news_icon);
+		gtk_widget_show(toolbar->compose_news_icon);
+	} else {
+		gtk_tool_button_set_icon_widget(
+			GTK_TOOL_BUTTON(toolbar->compose_mail_btn),
+			toolbar->compose_mail_icon);
+		gtk_widget_show(toolbar->compose_mail_icon);
+	}
 	toolbar->compose_btn_type = type;
-	gtk_widget_queue_resize(toolbar->toolbar);
-	gtk_widget_show_now(toolbar->toolbar);
-	GTK_EVENTS_FLUSH();
 }
 
 void toolbar_set_compose_button(Toolbar            *toolbar, 
@@ -801,17 +806,27 @@ static void activate_learn_button (Toolbar           *toolbar,
 				     ToolbarStyle      style,
 				     LearnButtonType type)
 {
-	if ((!toolbar->learn_spam_btn) || (!toolbar->learn_ham_btn))
+	if ((!toolbar->learn_spam_btn))
 		return;
 
-	gtk_widget_hide(type == LEARN_SPAM ? toolbar->learn_ham_btn 
-			: toolbar->learn_spam_btn);
-	gtk_widget_show_now(type == LEARN_SPAM ? toolbar->learn_spam_btn
-			: toolbar->learn_ham_btn);
+	if (type == LEARN_SPAM) {
+		gtk_tool_button_set_icon_widget(
+			GTK_TOOL_BUTTON(toolbar->learn_spam_btn),
+			toolbar->learn_spam_icon);
+		gtk_tool_button_set_label(
+			GTK_TOOL_BUTTON(toolbar->learn_spam_btn),
+			_("Learn Spam"));
+		gtk_widget_show(toolbar->learn_spam_icon);
+	} else {
+		gtk_tool_button_set_icon_widget(
+			GTK_TOOL_BUTTON(toolbar->learn_spam_btn),
+			toolbar->learn_ham_icon);
+		gtk_tool_button_set_label(
+			GTK_TOOL_BUTTON(toolbar->learn_spam_btn),
+			_("Learn Ham"));
+		gtk_widget_show(toolbar->learn_ham_icon);
+	}
 	toolbar->learn_btn_type = type;	
-	gtk_widget_queue_resize(toolbar->toolbar);
-	gtk_widget_show_now(toolbar->toolbar);
-	GTK_EVENTS_FLUSH();
 }
 
 void toolbar_set_learn_button(Toolbar            *toolbar, 
@@ -1701,21 +1716,20 @@ Toolbar *toolbar_create(ToolbarType 	 type,
 				_("Compose Email"),
 				_("Compose with selected Account"));
 			toolbar_data->compose_mail_btn = item; 
+			toolbar_data->compose_mail_icon = icon_wid; 
+			g_object_ref(toolbar_data->compose_mail_icon);
 
 			icon_news = stock_pixmap_widget(container, STOCK_PIXMAP_NEWS_COMPOSE);
-			TOOLBAR_MENUITEM(item,icon_news,_("Compose"),
-				_("Compose News"),
-				_("Compose with selected Account"));
-			toolbar_data->compose_news_btn = item; 
+			toolbar_data->compose_news_icon = icon_news; 
+			g_object_ref(toolbar_data->compose_news_icon);
 #else
 			TOOLBAR_ITEM(item,icon_wid,toolbar_item->text,
 				_("Compose Email"));
 			toolbar_data->compose_mail_btn = item; 
+			toolbar_data->compose_mail_icon = icon_wid; 
 
 			icon_news = stock_pixmap_widget(container, STOCK_PIXMAP_NEWS_COMPOSE);
-			TOOLBAR_ITEM(item,icon_news,_("Compose"),
-				_("Compose News"));
-			toolbar_data->compose_news_btn = item; 
+			toolbar_data->compose_news_icon = icon_news; 
 #endif
 			break;
 		case A_LEARN_SPAM:
@@ -1723,15 +1737,14 @@ Toolbar *toolbar_create(ToolbarType 	 type,
 				_("Learn Spam"),
 				_("Learn as..."));
 			toolbar_data->learn_spam_btn = item; 
+			toolbar_data->learn_spam_icon = icon_wid; 
+			g_object_ref(toolbar_data->learn_spam_icon);
 
 			icon_ham = stock_pixmap_widget(container, STOCK_PIXMAP_HAM_BTN);
-			TOOLBAR_MENUITEM(item,icon_ham,_("Ham"),
-				_("Learn Ham"),
-				_("Learn as..."));
-			toolbar_data->learn_ham_btn = item; 
+			toolbar_data->learn_ham_icon = icon_ham; 
+			g_object_ref(toolbar_data->learn_ham_icon);
 
 			MAKE_MENU(learn_entries,"<LearnSpam>",toolbar_data->learn_spam_btn);
-			MAKE_MENU(learn_entries,"<LearnHam>",toolbar_data->learn_ham_btn);
 			break;
 		case A_REPLY_MESSAGE:
 #ifndef MAEMO
@@ -2076,11 +2089,11 @@ void toolbar_main_set_sensitive(gpointer data)
 			M_HAVE_QUEUED_MAILS);
 	}
 	if (toolbar->compose_mail_btn) {
-		SET_WIDGET_COND(toolbar->compose_news_btn, 
+		SET_WIDGET_COND(toolbar->compose_mail_btn, 
 			M_HAVE_ACCOUNT);
 	}
 	if (toolbar->close_window_btn) {
-		SET_WIDGET_COND(toolbar->compose_news_btn, 
+		SET_WIDGET_COND(toolbar->close_window_btn, 
 			M_UNLOCKED);
 	}
 	if (toolbar->open_mail_btn) {
@@ -2126,10 +2139,10 @@ void toolbar_main_set_sensitive(gpointer data)
 		SET_WIDGET_COND(toolbar->exec_btn, 
 			M_DELAY_EXEC);
 	
-	if (toolbar->learn_ham_btn)
+/*	if (toolbar->learn_ham_btn)
 		SET_WIDGET_COND(toolbar->learn_ham_btn,
 			M_TARGET_EXIST|M_CAN_LEARN_SPAM);
-
+*/
 	if (toolbar->learn_spam_btn)
 		SET_WIDGET_COND(toolbar->learn_spam_btn, 
 			M_TARGET_EXIST|M_CAN_LEARN_SPAM);
@@ -2218,7 +2231,8 @@ void toolbar_init(Toolbar * toolbar) {
 	toolbar->getall_btn       	= NULL;
 	toolbar->send_btn         	= NULL;
 	toolbar->compose_mail_btn 	= NULL;
-	toolbar->compose_news_btn 	= NULL;
+	toolbar->compose_mail_icon 	= NULL;
+	toolbar->compose_news_icon 	= NULL;
 	toolbar->reply_btn        	= NULL;
 	toolbar->replysender_btn  	= NULL;
 	toolbar->replyall_btn     	= NULL;

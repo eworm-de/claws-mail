@@ -55,7 +55,8 @@ struct _Toolbar {
 	GtkWidget *send_btn;
 
 	GtkWidget *compose_mail_btn;
-	GtkWidget *compose_news_btn;
+	GtkWidget *compose_mail_icon;
+	GtkWidget *compose_news_icon;
 
 	GtkWidget *reply_btn;
 	GtkWidget *replysender_btn;
@@ -72,7 +73,8 @@ struct _Toolbar {
 
 	GtkWidget *separator;
 	GtkWidget *learn_spam_btn;
-	GtkWidget *learn_ham_btn;
+	GtkWidget *learn_spam_icon;
+	GtkWidget *learn_ham_icon;
 	
 	GtkWidget *cancel_inc_btn;
 	

@@ -795,10 +795,6 @@ gint messageview_show(MessageView *messageview, MsgInfo *msginfo,
 			 MSG_IS_SPAM(msginfo->flags)?LEARN_HAM:LEARN_SPAM);
 
 	if (messageview->toolbar) {
-		if (messageview->toolbar->learn_ham_btn)
-			gtk_widget_set_sensitive(
-				messageview->toolbar->learn_ham_btn, 
-				procmsg_spam_can_learn());
 		if (messageview->toolbar->learn_spam_btn)
 			gtk_widget_set_sensitive(
 				messageview->toolbar->learn_spam_btn, 

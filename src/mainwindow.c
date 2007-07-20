@@ -2058,24 +2058,6 @@ static void main_window_set_toolbar_combo_compose_menu(MainWindow *mainwin,
 				 ac_prefs);
 	}
 	gtk_menu_tool_button_set_menu(GTK_MENU_TOOL_BUTTON(mainwin->toolbar->compose_mail_btn), menu);
-	menu = gtk_menu_tool_button_get_menu(GTK_MENU_TOOL_BUTTON(mainwin->toolbar->compose_news_btn));
-	if (menu)
-		gtk_widget_destroy(menu);
-	menu = gtk_menu_new();
-
-	for (cur_ac = account_list; cur_ac != NULL; cur_ac = cur_ac->next) {
-		ac_prefs = (PrefsAccount *)cur_ac->data;
-
-		menuitem = gtk_menu_item_new_with_label
-			(ac_prefs->account_name
-			 ? ac_prefs->account_name : _("Untitled"));
-		gtk_widget_show(menuitem);
-		gtk_menu_append(GTK_MENU(menu), menuitem);
-		g_signal_connect(G_OBJECT(menuitem), "activate",
-				 G_CALLBACK(account_compose_menu_cb),
-				 ac_prefs);
-	}
-	gtk_menu_tool_button_set_menu(GTK_MENU_TOOL_BUTTON(mainwin->toolbar->compose_news_btn), menu);
 #endif
 }
 
