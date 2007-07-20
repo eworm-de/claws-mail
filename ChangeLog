@@ -1,3 +1,10 @@
+2007-07-20 [wwp]	2.10.0cvs50
+
+	* src/mimeview.c
+	* src/stock_pixmap.c
+		Draw a frame around the selected mimeview part icon (instead of the
+		shifted 'dancing' icon).
+
 2007-07-20 [colin]	2.10.0cvs49
 
 	* src/main.c

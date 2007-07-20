@@ -2283,16 +2283,16 @@ static void icon_list_toggle_by_mime_info (MimeView	*mimeview,
 			continue;
 		if(g_object_get_data(G_OBJECT(child->data),
 			 	      "partinfo") == (gpointer)mimeinfo) {
-			gint *border_x = NULL;
+			gboolean *highlight = NULL;
 			GtkWidget *icon = gtk_bin_get_child(GTK_BIN(child->data));
-			border_x = g_object_get_data(G_OBJECT(icon), "border_x");
-			*border_x = 0;
+			highlight = g_object_get_data(G_OBJECT(icon), "highlight");
+			*highlight = TRUE;
 			gtk_widget_queue_draw(icon);
 		} else {
-			gint *border_x = NULL;
+			gint *highlight = NULL;
 			GtkWidget *icon = gtk_bin_get_child(GTK_BIN(child->data));
-			border_x = g_object_get_data(G_OBJECT(icon), "border_x");
-			*border_x = 6;
+			highlight = g_object_get_data(G_OBJECT(icon), "highlight");
+			*highlight = FALSE;
 			gtk_widget_queue_draw(icon);
 		}			 
 	}

@@ -200,6 +200,7 @@ struct _OverlayData
 	OverlayPosition position;
 	gint border_x;
 	gint border_y;
+	gboolean highlight;
 };
 
 static void stock_pixmap_find_themes_in_dir(GList **list, const gchar *dirname);
@@ -599,6 +600,23 @@ static gboolean pixmap_with_overlay_expose_event_cb(GtkWidget *widget, GdkEventE
 	gdk_window_clear_area (drawable, expose->area.x, expose->area.y,
 			       expose->area.width, expose->area.height);
 
+	if (data->highlight) {
+		MainWindow *mw = NULL;
+
+		mw = mainwindow_get_mainwindow();
+		if (mw != NULL && mw->menubar != NULL) {
+			GdkGC *gc_frame = gdk_gc_new((GdkWindow *)drawable);
+			GdkColor color = gtk_widget_get_style(mw->menubar)->base[GTK_STATE_SELECTED];
+
+			gdk_gc_set_foreground(gc_frame, &color);
+			gdk_gc_set_line_attributes(gc_frame, 1, GDK_LINE_SOLID,
+					GDK_CAP_BUTT, GDK_JOIN_BEVEL);
+			gdk_draw_rectangle(drawable, gc_frame, FALSE, data->border_x-2, data->border_y-2, 
+					data->base_width+3, data->base_height+3);
+			g_object_unref(gc_frame);
+		}
+	}
+
 	gdk_gc_set_tile(gc_pix, data->base_pixmap);
 	gdk_gc_set_ts_origin(gc_pix, data->border_x, data->border_y);
 	gdk_gc_set_clip_mask(gc_pix, data->base_mask);
@@ -736,6 +754,7 @@ GtkWidget *stock_pixmap_widget_with_overlay(GtkWidget *window, StockPixmap icon,
 	data->position = pos;
 	data->border_x = border_x;
 	data->border_y = border_y;
+	data->highlight = FALSE;
 
 	widget = gtk_drawing_area_new();
 	gtk_drawing_area_size(GTK_DRAWING_AREA(widget), data->base_width + border_x * 2, 
@@ -744,7 +763,7 @@ GtkWidget *stock_pixmap_widget_with_overlay(GtkWidget *window, StockPixmap icon,
 			 G_CALLBACK(pixmap_with_overlay_expose_event_cb), data);
 	g_signal_connect(G_OBJECT(widget), "destroy",
 			 G_CALLBACK(pixmap_with_overlay_destroy_cb), data);
-	g_object_set_data(G_OBJECT(widget), "border_x", &(data->border_x));
+	g_object_set_data(G_OBJECT(widget), "highlight", &(data->highlight));
 	return widget;
 
 }
