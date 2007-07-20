@@ -1,3 +1,8 @@
+2007-07-20 [paul]	2.10.0cvs52
+
+	* src/news_gtk.c
+		add missing #include "statusbar.h"
+
 2007-07-20 [colin]	2.10.0cvs51
 
 	* src/folder.c

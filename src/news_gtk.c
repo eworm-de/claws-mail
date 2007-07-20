@@ -40,6 +40,7 @@
 #include "common/hooks.h"
 #include "inc.h"
 #include "news.h"
+#include "statusbar.h"
 
 static void subscribe_newsgroup_cb(FolderView *folderview, guint action, GtkWidget *widget);
 static void unsubscribe_newsgroup_cb(FolderView *folderview, guint action, GtkWidget *widget);
