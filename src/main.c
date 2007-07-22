@@ -234,6 +234,10 @@ gint dbus_req_handler(const gchar * interface, const gchar * method,
     AppData *appdata;
     appdata = (AppData *) data;
 
+    if (!strcmp(method, "top_application")) {
+	    osso_rpc_free_val(retval);
+	    return OSSO_OK;
+    }
     osso_system_note_infoprint(appdata->osso_context, method, retval);
     osso_rpc_free_val(retval);
 
@@ -1053,14 +1057,14 @@ int main(int argc, char *argv[])
 	}
 
  	plugin_load_standard_plugins ();
-       
+      
 	/* if not crashed, show window now */
 	if (!claws_crashed()) {
 		/* apart if something told not to show */
 		if (show_at_startup)
 			main_window_popup(mainwin);
 	}
-
+	
 	if (!folder_have_mailbox()) {
 		prefs_destroy_cache();
 		main_window_cursor_normal(mainwin);
