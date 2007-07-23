@@ -127,6 +127,12 @@ void statusbar_print_all(const gchar *format, ...)
 		statusbar_puts(GTK_STATUSBAR(cur->data), buf);
 #ifdef MAEMO
 	if (mainwindow_get_mainwindow()) {
+		if (banner != NULL) {
+			gchar *last_text = (gchar *)banner_texts->data;
+			if (!strcmp2(last_text, buf))
+				return;
+		}
+		statusbar_pop_all();
 		if (banner == NULL) {
 			banner = hildon_banner_show_animation(
 				mainwindow_get_mainwindow()->window,
