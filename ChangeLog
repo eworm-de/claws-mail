@@ -1,3 +1,9 @@
+2007-07-23 [wwp]	2.10.0cvs57
+
+	* src/quote_fmt_lex.l
+		Revert accidentaly committed lines (account_sig) in
+		2.10.0cvs56.
+
 2007-07-23 [wwp]	2.10.0cvs56
 
 	* src/quote_fmt_lex.l
