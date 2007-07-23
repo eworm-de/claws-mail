@@ -2709,3 +2709,4 @@
 ( cvs diff -u -r 1.115.2.160 -r 1.115.2.161 src/main.c;  ) > 2.10.0cvs53.patchset
 ( cvs diff -u -r 1.5.2.18 -r 1.5.2.19 src/statusbar.c;  ) > 2.10.0cvs54.patchset
 ( cvs diff -u -r 1.27.2.37 -r 1.27.2.38 src/addr_compl.c;  ) > 2.10.0cvs55.patchset
+( cvs diff -u -r 1.8.2.13 -r 1.8.2.14 src/quote_fmt_lex.l;  ) > 2.10.0cvs56.patchset

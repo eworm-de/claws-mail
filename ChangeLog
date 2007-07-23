@@ -1,3 +1,8 @@
+2007-07-23 [wwp]	2.10.0cvs56
+
+	* src/quote_fmt_lex.l
+		Fix typos around long form expressions in the quote lexer.
+
 2007-07-23 [colin]	2.10.0cvs55
 
 	* src/addr_compl.c
