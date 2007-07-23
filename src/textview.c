@@ -860,18 +860,24 @@ void textview_show_mime_part(TextView *textview, MimeInfo *partinfo)
 
 	TEXTVIEW_INSERT(_("     - To save, select "));
 	TEXTVIEW_INSERT_LINK(_("'Save as...'"), "sc://save_as", NULL);
+#ifndef MAEMO
 	TEXTVIEW_INSERT(_(" (Shortcut key: 'y')\n"));
+#endif
 	TEXTVIEW_INSERT(_("     - To display as text, select "));
 	TEXTVIEW_INSERT_LINK(_("'Display as text'"), "sc://display_as_text", NULL);
+#ifndef MAEMO
 	TEXTVIEW_INSERT(_(" (Shortcut key: 't')\n"));
+#endif
 	TEXTVIEW_INSERT(_("     - To open with an external program, select "));
 	TEXTVIEW_INSERT_LINK(_("'Open'"), "sc://open", NULL);
+#ifndef MAEMO
 	TEXTVIEW_INSERT(_(" (Shortcut key: 'l')\n"));
 	TEXTVIEW_INSERT(_("       (alternately double-click, or click the middle "));
 	TEXTVIEW_INSERT(_("mouse button)\n"));
 	TEXTVIEW_INSERT(_("     - Or use "));
 	TEXTVIEW_INSERT_LINK(_("'Open with...'"), "sc://open_with", NULL);
 	TEXTVIEW_INSERT(_(" (Shortcut key: 'o')\n"));
+#endif
 	textview_show_icon(textview, GTK_STOCK_DIALOG_INFO);
 }
 

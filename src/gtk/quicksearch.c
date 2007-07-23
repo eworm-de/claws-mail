@@ -264,7 +264,7 @@ static gboolean searchbar_pressed(GtkWidget *widget, GdkEventKey *event,
 		return TRUE;
 	}
 
-	if (event != NULL && event->keyval == GDK_Return) {
+	if (event != NULL && (event->keyval == GDK_Return || event->keyval == GDK_KP_Enter)) {
 		if (quicksearch->press_timeout_id != -1) {
 			g_source_remove(quicksearch->press_timeout_id);
 			quicksearch->press_timeout_id = -1;

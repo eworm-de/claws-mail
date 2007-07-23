@@ -2711,3 +2711,4 @@
 ( cvs diff -u -r 1.27.2.37 -r 1.27.2.38 src/addr_compl.c;  ) > 2.10.0cvs55.patchset
 ( cvs diff -u -r 1.8.2.13 -r 1.8.2.14 src/quote_fmt_lex.l;  ) > 2.10.0cvs56.patchset
 ( cvs diff -u -r 1.8.2.14 -r 1.8.2.15 src/quote_fmt_lex.l;  ) > 2.10.0cvs57.patchset
+( cvs diff -u -r 1.83.2.112 -r 1.83.2.113 src/mimeview.c;  cvs diff -u -r 1.96.2.175 -r 1.96.2.176 src/textview.c;  cvs diff -u -r 1.1.2.74 -r 1.1.2.75 src/gtk/quicksearch.c;  ) > 2.10.0cvs58.patchset

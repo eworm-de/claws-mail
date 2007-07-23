@@ -66,6 +66,13 @@
 #include "gtk/logwindow.h"
 #include "timing.h"
 
+#ifdef MAEMO
+//#include <hildon-widgets/hildon-program.h>
+//#include <gtk/gtkmain.h>
+#include <libosso.h>
+#include <osso-mime.h>
+#endif
+
 typedef enum
 {
 	COL_MIMETYPE = 0,
@@ -164,7 +171,9 @@ static void mimeview_launch_cb(MimeView *mimeview)
 static GtkItemFactoryEntry mimeview_popup_entries[] =
 {
 	{N_("/_Open (l)"),		  NULL, mimeview_launch_cb,	  0, NULL},
+#ifndef MAEMO
 	{N_("/Open _with (o)..."),	  NULL, mimeview_open_with,	  0, NULL},
+#endif
 	{N_("/_Display as text (t)"), 	  NULL, mimeview_display_as_text, 0, NULL},
 	{N_("/_Save as (y)..."),	  NULL, mimeview_save_as,	  0, NULL},
 	{N_("/Save _all..."),	 	  NULL, mimeview_save_all,	  0, NULL},
@@ -1765,6 +1774,9 @@ static void mimeview_open_with(MimeView *mimeview)
 	mimeview_open_part_with(mimeview, partinfo, FALSE);
 }
 
+#ifdef MAEMO
+osso_context_t *get_osso_context(void);
+#endif
 static void mimeview_open_part_with(MimeView *mimeview, MimeInfo *partinfo, gboolean automatic)
 {
 	gchar *filename;
@@ -1772,6 +1784,11 @@ static void mimeview_open_part_with(MimeView *mimeview, MimeInfo *partinfo, gboo
 	gchar *mime_command = NULL;
 	gchar *content_type = NULL;
 	gint err;
+#ifdef MAEMO
+	DBusConnection *dbusconn;
+	gchar *uri;
+	int r = 0;
+#endif
 	g_return_if_fail(partinfo != NULL);
 
 	filename = procmime_get_tmp_file_name(partinfo);
@@ -1783,7 +1800,7 @@ static void mimeview_open_part_with(MimeView *mimeview, MimeInfo *partinfo, gboo
 		g_free(filename);
 		return;
 	}
-
+	
 	if (!prefs_common.mime_open_cmd_history)
 		prefs_common.mime_open_cmd_history =
 			add_history(NULL, prefs_common.mime_open_cmd);
@@ -1797,6 +1814,19 @@ static void mimeview_open_part_with(MimeView *mimeview, MimeInfo *partinfo, gboo
 		content_type = procmime_get_content_type_str(partinfo->type,
 			partinfo->subtype);
 	}
+	
+#ifdef MAEMO
+	if (content_type != NULL) {
+		uri = g_strconcat ("file://", filename, NULL);
+		dbusconn = osso_get_dbus_connection (get_osso_context());
+		r = osso_mime_open_file_with_mime_type (dbusconn, uri, content_type);
+		g_free(uri);
+	}
+	if (r != 1) {
+		alertpanel_error(_("No registered viewer for this file type."));
+	}
+	goto out;
+#endif
 	
 	if ((partinfo->type == MIMETYPE_TEXT && !strcmp(partinfo->subtype, "html"))
 	&& prefs_common.uri_cmd && prefs_common.uri_cmd[0]) {
@@ -1853,6 +1883,7 @@ static void mimeview_open_part_with(MimeView *mimeview, MimeInfo *partinfo, gboo
 		prefs_common.mime_open_cmd_history =
 			add_history(prefs_common.mime_open_cmd_history, cmd);
 	}
+out:
 	g_free(content_type);
 	g_free(filename);
 }
