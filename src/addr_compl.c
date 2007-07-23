@@ -929,11 +929,13 @@ static void addrcompl_add_entry( CompletionWindow *cw, gchar *address ) {
 		/* Select first row for now */
 		gtk_tree_selection_select_iter(selection, &iter);
 	}
+#ifndef MAEMO
 	else if( cw->listCount == 2 ) {
 		gtk_tree_model_iter_next(GTK_TREE_MODEL(store), &iter);
 		/* Move off first row */
 		gtk_tree_selection_select_iter(selection, &iter);
 	}
+#endif
 }
 
 /**
@@ -1288,7 +1290,7 @@ static gboolean address_completion_complete_address_in_entry(GtkEntry *entry,
 		new = get_next_complete_address();
 		g_free( new );
 	}
-#ifndef USE_LDAP
+#if (!defined(USE_LDAP) && !defined(MAEMO))
 	/* Select the address if there is only one match */
 	if (ncount == 2) {
 		/* Display selected address in entry field */		

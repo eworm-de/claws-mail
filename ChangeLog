@@ -1,3 +1,8 @@
+2007-07-23 [colin]	2.10.0cvs55
+
+	* src/addr_compl.c
+		Fix auto-completion on Maemo
+
 2007-07-23 [colin]	2.10.0cvs54
 
 	* src/statusbar.c
