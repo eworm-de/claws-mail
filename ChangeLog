@@ -18,6 +18,10 @@
 	* src/quote_fmt_lex.l
 		Fix typos around long form expressions in the quote lexer.
 
+2007-07-23 [paul]
+
+	3.0.0-rc1 released
+
 2007-07-23 [colin]	2.10.0cvs55
 
 	* src/addr_compl.c
