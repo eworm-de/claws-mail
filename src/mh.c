@@ -454,6 +454,8 @@ static gint mh_copy_msgs(Folder *folder, FolderItem *dest, MsgInfoList *msglist,
 			 GRelation *relation)
 {
 	gboolean dest_need_scan = FALSE;
+	gboolean src_need_scan = FALSE;
+	FolderItem *src = NULL;
 	gchar *srcfile;
 	gchar *destfile;
 	gint filemode = 0;
@@ -463,7 +465,8 @@ static gint mh_copy_msgs(Folder *folder, FolderItem *dest, MsgInfoList *msglist,
 	gint curnum = 0, total = 0;
 	gchar *srcpath = NULL;
 	gboolean full_fetch = FALSE;
-	time_t last_mtime = (time_t)0;
+	time_t last_dest_mtime = (time_t)0;
+	time_t last_src_mtime = (time_t)0;
 
 	g_return_val_if_fail(dest != NULL, -1);
 	g_return_val_if_fail(msglist != NULL, -1);
@@ -479,6 +482,10 @@ static gint mh_copy_msgs(Folder *folder, FolderItem *dest, MsgInfoList *msglist,
 
 	if (msginfo->folder->folder != dest->folder)
 		full_fetch = TRUE;
+	
+	if (FOLDER_TYPE(msginfo->folder->folder) == F_MH) {
+		src = msginfo->folder;
+	}
 
 	if (dest->last_num < 0) {
 		mh_get_last_num(folder, dest);
@@ -490,7 +497,12 @@ static gint mh_copy_msgs(Folder *folder, FolderItem *dest, MsgInfoList *msglist,
 	srcpath = folder_item_get_path(msginfo->folder);
 
 	dest_need_scan = mh_scan_required(dest->folder, dest);
-	last_mtime = dest->mtime;
+	last_dest_mtime = dest->mtime;
+
+	if (src) {
+		src_need_scan = mh_scan_required(src->folder, src);
+		last_src_mtime = src->mtime;
+	}
 
 	total = g_slist_length(msglist);
 	if (total > 100) {
@@ -571,9 +583,14 @@ static gint mh_copy_msgs(Folder *folder, FolderItem *dest, MsgInfoList *msglist,
 	g_free(srcpath);
 	mh_write_sequences(dest, TRUE);
 
-	if (dest->mtime == last_mtime && !dest_need_scan) {
+	if (dest->mtime == last_dest_mtime && !dest_need_scan) {
 		mh_set_mtime(dest);
 	}
+
+	if (src && src->mtime == last_src_mtime && !src_need_scan) {
+		mh_set_mtime(src);
+	}
+
 	if (total > 100) {
 		statusbar_progress_all(0,0,0);
 		statusbar_pop_all();

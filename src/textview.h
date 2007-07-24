@@ -134,6 +134,11 @@ gchar *textview_get_visible_uri		(TextView 	*textview,
 				(buffer, &iter, str, -1,\
 				 "header", NULL)
 
+#define TEXTVIEW_INSERT_BOLD(str) \
+	gtk_text_buffer_insert_with_tags_by_name \
+				(buffer, &iter, str, -1,\
+				 "header", "header_title", NULL)
+
 #define TEXTVIEW_INSERT_LINK(str, fname, udata) {				\
 	ClickableText *uri;							\
 	uri = g_new0(ClickableText, 1);					\

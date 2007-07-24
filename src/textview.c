@@ -844,6 +844,8 @@ void textview_show_mime_part(TextView *textview, MimeInfo *partinfo)
 	GtkTextView *text;
 	GtkTextBuffer *buffer;
 	GtkTextIter iter;
+	const gchar *name;
+	gchar *content_type;
 
 	if (!partinfo) return;
 
@@ -855,8 +857,27 @@ void textview_show_mime_part(TextView *textview, MimeInfo *partinfo)
 	gtk_text_buffer_get_start_iter(buffer, &iter);
 
 	TEXTVIEW_INSERT("\n");
-	TEXTVIEW_INSERT(_("  The following can be performed on this part by\n"));
-	TEXTVIEW_INSERT(_("  right-clicking the icon or list item:\n"));
+
+	name = procmime_mimeinfo_get_parameter(partinfo, "filename");
+	if (name == NULL)
+		name = procmime_mimeinfo_get_parameter(partinfo, "name");
+	if (name != NULL) {
+		content_type = procmime_get_content_type_str(partinfo->type,
+						     partinfo->subtype);
+		TEXTVIEW_INSERT("  ");
+		TEXTVIEW_INSERT_BOLD(name);
+		TEXTVIEW_INSERT(" (");
+		TEXTVIEW_INSERT(content_type);
+		TEXTVIEW_INSERT(", ");
+		TEXTVIEW_INSERT(to_human_readable(partinfo->length));
+		TEXTVIEW_INSERT("):\n\n");
+		
+		g_free(content_type);
+	}
+	TEXTVIEW_INSERT(_("  The following can be performed on this part\n"));
+#ifndef MAEMO
+	TEXTVIEW_INSERT(_("  by right-clicking the icon or list item:\n"));
+#endif
 
 	TEXTVIEW_INSERT(_("     - To save, select "));
 	TEXTVIEW_INSERT_LINK(_("'Save as...'"), "sc://save_as", NULL);
