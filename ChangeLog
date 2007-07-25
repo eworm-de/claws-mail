@@ -1,3 +1,8 @@
+2007-07-25 [iwkse]	2.10.0cvs60
+
+	* src/textview.c
+		fix o shortcut
+
 2007-07-24 [colin]	2.10.0cvs59
 
 	* src/mh.c
