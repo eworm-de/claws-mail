@@ -108,6 +108,10 @@ struct _PrefsCommon
  	gboolean newmail_notify_auto;
  	gboolean newmail_notify_manu;
  	gchar   *newmail_notify_cmd;
+#ifdef MAEMO
+	gboolean maemo_play_sound;
+	gboolean maemo_show_banner;
+#endif
 	RecvDialogMode recv_dialog_mode;
 	gint receivewin_width;
 	gint receivewin_height;

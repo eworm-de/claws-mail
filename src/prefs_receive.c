@@ -54,17 +54,23 @@ typedef struct _ReceivePage
 	GtkWidget *checkbtn_chkonstartup;
 	GtkWidget *checkbtn_openinbox;
 	GtkWidget *checkbtn_scan_after_inc;
+#ifndef MAEMO
 	GtkWidget *checkbtn_newmail_auto;
 	GtkWidget *checkbtn_newmail_manu;
 	GtkWidget *entry_newmail_notify_cmd;
+	GtkWidget *hbox_newmail_notify;
+#else
+	GtkWidget *checkbtn_maemo_play_sound;
+	GtkWidget *checkbtn_maemo_show_banner;
+#endif
 	GtkWidget *optmenu_recvdialog;
 	GtkWidget *checkbtn_no_recv_err_panel;
 	GtkWidget *checkbtn_close_recv_dialog;
-	GtkWidget *hbox_newmail_notify;
 } ReceivePage;
 
 ReceivePage *prefs_receive;
 
+#ifndef MAEMO
 static void prefs_common_recv_dialog_newmail_notify_toggle_cb(GtkWidget *w, gpointer data)
 {
 	gboolean toggled;
@@ -75,6 +81,7 @@ static void prefs_common_recv_dialog_newmail_notify_toggle_cb(GtkWidget *w, gpoi
 			(GTK_TOGGLE_BUTTON(prefs_receive->checkbtn_newmail_auto));
 	gtk_widget_set_sensitive(prefs_receive->hbox_newmail_notify, toggled);
 }
+#endif
 
 
 static void prefs_receive_create_widget(PrefsPage *_page, GtkWindow *window, 
@@ -84,7 +91,6 @@ static void prefs_receive_create_widget(PrefsPage *_page, GtkWindow *window,
 	
 	GtkWidget *vbox1;
 	GtkWidget *vbox2;
-	GtkWidget *vbox3;
 	GtkWidget *checkbtn_incext;
 	GtkWidget *hbox;
 	GtkWidget *label_incext;
@@ -100,11 +106,17 @@ static void prefs_receive_create_widget(PrefsPage *_page, GtkWindow *window,
 	GtkWidget *checkbtn_scan_after_inc;
 
 	GtkWidget *frame;
+#ifndef MAEMO
+	GtkWidget *vbox3;
 	GtkWidget *hbox_newmail_notify;
 	GtkWidget *checkbtn_newmail_auto;
 	GtkWidget *checkbtn_newmail_manu;
 	GtkWidget *entry_newmail_notify_cmd;
 	GtkWidget *label_newmail_notify_cmd;
+#else
+	GtkWidget *checkbtn_maemo_play_sound;
+	GtkWidget *checkbtn_maemo_show_banner;
+#endif
 	
 	GtkWidget *label_recvdialog;
 	GtkWidget *menu;
@@ -200,7 +212,8 @@ static void prefs_receive_create_widget(PrefsPage *_page, GtkWindow *window,
  	PACK_CHECK_BUTTON (vbox2, checkbtn_openinbox, _("Go to inbox"));
  	PACK_CHECK_BUTTON (vbox2, checkbtn_scan_after_inc,
  			   _("Update all local folders"));
- 
+
+#ifndef MAEMO 
  	vbox3 = gtkut_get_options_frame(vbox2, &frame, _("Run command"));
  	
 	hbox = gtk_hbox_new (TRUE, 8);
@@ -234,6 +247,25 @@ static void prefs_receive_create_widget(PrefsPage *_page, GtkWindow *window,
 				 prefs_common.newmail_notify_auto || 
 				 prefs_common.newmail_notify_manu);
 
+	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(checkbtn_newmail_auto),
+		prefs_common.newmail_notify_auto);
+	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(checkbtn_newmail_manu),
+		prefs_common.newmail_notify_manu);
+	gtk_entry_set_text(GTK_ENTRY(entry_newmail_notify_cmd), 
+		prefs_common.newmail_notify_cmd);
+#else
+ 	PACK_CHECK_BUTTON (vbox2, checkbtn_maemo_play_sound, _("Play sound"));
+ 	PACK_CHECK_BUTTON (vbox2, checkbtn_maemo_show_banner,
+ 			   _("Show info banner"));
+	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(checkbtn_maemo_play_sound),
+		prefs_common.maemo_play_sound);
+	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(checkbtn_maemo_show_banner),
+		prefs_common.maemo_show_banner);
+
+#endif
+
+	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(checkbtn_autochk),
+		prefs_common.autochk_newmail);
 	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(checkbtn_incext),
 		prefs_common.use_extinc);
 	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(checkbtn_no_recv_err_panel),
@@ -246,17 +278,9 @@ static void prefs_receive_create_widget(PrefsPage *_page, GtkWindow *window,
 		prefs_common.open_inbox_on_inc);
 	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(checkbtn_scan_after_inc),
 		prefs_common.scan_all_after_inc);
-	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(checkbtn_newmail_auto),
-		prefs_common.newmail_notify_auto);
-	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(checkbtn_newmail_manu),
-		prefs_common.newmail_notify_manu);
-	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(checkbtn_autochk),
-		prefs_common.autochk_newmail);
 
 	gtk_entry_set_text(GTK_ENTRY(entry_incext), 
 		prefs_common.extinc_cmd);
-	gtk_entry_set_text(GTK_ENTRY(entry_newmail_notify_cmd), 
-		prefs_common.newmail_notify_cmd);
 	gtk_spin_button_set_value(GTK_SPIN_BUTTON(spinbtn_autochk), 
 		prefs_common.autochk_itv);
 	gtk_option_menu_set_history(GTK_OPTION_MENU(optmenu_recvdialog),
@@ -270,22 +294,30 @@ static void prefs_receive_create_widget(PrefsPage *_page, GtkWindow *window,
 	prefs_receive->checkbtn_chkonstartup = checkbtn_chkonstartup;
 	prefs_receive->checkbtn_openinbox = checkbtn_openinbox;
 	prefs_receive->checkbtn_scan_after_inc = checkbtn_scan_after_inc;
+
+#ifndef MAEMO 
 	prefs_receive->checkbtn_newmail_auto = checkbtn_newmail_auto;
 	prefs_receive->checkbtn_newmail_manu = checkbtn_newmail_manu;
 	prefs_receive->entry_newmail_notify_cmd = entry_newmail_notify_cmd;
+	prefs_receive->hbox_newmail_notify = hbox_newmail_notify;
+#else
+	prefs_receive->checkbtn_maemo_play_sound = checkbtn_maemo_play_sound;
+	prefs_receive->checkbtn_maemo_show_banner = checkbtn_maemo_show_banner;
+#endif
+
 	prefs_receive->optmenu_recvdialog = optmenu_recvdialog;
 	prefs_receive->checkbtn_no_recv_err_panel = checkbtn_no_recv_err_panel;
 	prefs_receive->checkbtn_close_recv_dialog = checkbtn_close_recv_dialog;
-	prefs_receive->hbox_newmail_notify = hbox_newmail_notify;
 	prefs_receive->page.widget = vbox1;
 
+#ifndef MAEMO 
 	g_signal_connect(G_OBJECT(checkbtn_newmail_auto), "toggled",
 			 G_CALLBACK(prefs_common_recv_dialog_newmail_notify_toggle_cb),
 			 NULL);
 	g_signal_connect(G_OBJECT(checkbtn_newmail_manu), "toggled",
 			 G_CALLBACK(prefs_common_recv_dialog_newmail_notify_toggle_cb),
 			 NULL);
-
+#endif
 }
 
 static void prefs_receive_save(PrefsPage *_page)
@@ -307,10 +339,18 @@ static void prefs_receive_save(PrefsPage *_page)
 		GTK_TOGGLE_BUTTON(page->checkbtn_openinbox));
 	prefs_common.scan_all_after_inc = gtk_toggle_button_get_active(
 		GTK_TOGGLE_BUTTON(page->checkbtn_scan_after_inc));
+
+#ifndef MAEMO
 	prefs_common.newmail_notify_auto = gtk_toggle_button_get_active(
 		GTK_TOGGLE_BUTTON(page->checkbtn_newmail_auto));
 	prefs_common.newmail_notify_manu = gtk_toggle_button_get_active(
 		GTK_TOGGLE_BUTTON(page->checkbtn_newmail_manu));
+#else
+	prefs_common.maemo_play_sound = gtk_toggle_button_get_active(
+		GTK_TOGGLE_BUTTON(page->checkbtn_maemo_play_sound));
+	prefs_common.maemo_show_banner = gtk_toggle_button_get_active(
+		GTK_TOGGLE_BUTTON(page->checkbtn_maemo_show_banner));
+#endif
 	prefs_common.autochk_newmail = gtk_toggle_button_get_active(
 		GTK_TOGGLE_BUTTON(page->checkbtn_autochk));
 	prefs_common.autochk_itv = gtk_spin_button_get_value_as_int(
@@ -320,9 +360,11 @@ static void prefs_receive_save(PrefsPage *_page)
 	g_free(prefs_common.extinc_cmd);
 	prefs_common.extinc_cmd = tmp;
 	
+#ifndef MAEMO
 	tmp = gtk_editable_get_chars(GTK_EDITABLE(page->entry_newmail_notify_cmd), 0, -1);
 	g_free(prefs_common.newmail_notify_cmd);
 	prefs_common.newmail_notify_cmd = tmp;
+#endif
 	
 	menu = gtk_option_menu_get_menu(GTK_OPTION_MENU(page->optmenu_recvdialog));
 	menuitem = gtk_menu_get_active(GTK_MENU(menu));

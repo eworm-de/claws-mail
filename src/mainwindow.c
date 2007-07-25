@@ -187,10 +187,10 @@ static void toggle_message_cb	 (MainWindow	*mainwin,
 static void toggle_toolbar_cb	 (MainWindow	*mainwin,
 				  guint		 action,
 				  GtkWidget	*widget);
+#ifndef MAEMO
 static void toggle_statusbar_cb	 (MainWindow	*mainwin,
 				  guint		 action,
 				  GtkWidget	*widget);
-#ifndef MAEMO
 static void set_layout_cb	 (MainWindow	*mainwin,
 				  guint		 action,
 				  GtkWidget	*widget);
@@ -558,8 +558,10 @@ static GtkItemFactoryEntry mainwin_entries[] =
 						NULL, toggle_toolbar_cb, TOOLBAR_TEXT, "/View/Show or hide/Toolbar/Text below icons"},
 	{N_("/_View/Show or hi_de/_Toolbar/_Hide"),
 						NULL, toggle_toolbar_cb, TOOLBAR_NONE, "/View/Show or hide/Toolbar/Text below icons"},
+#ifndef MAEMO
 	{N_("/_View/Show or hi_de/Status _bar"),
 						NULL, toggle_statusbar_cb, 0, "<ToggleItem>"},
+#endif
 	{N_("/_View/Set displayed _columns"),	NULL, NULL, 0, "<Branch>"},
 	{N_("/_View/Set displayed _columns/in _Folder list..."),	NULL, set_folder_display_item_cb, 0, NULL},
 	{N_("/_View/Set displayed _columns/in _Message list..."),NULL, set_summary_display_item_cb, 0, NULL},
@@ -1312,6 +1314,7 @@ MainWindow *main_window_create()
 	GtkWidget *menubar;
 	GtkWidget *handlebox;
 	GtkWidget *vbox_body;
+#ifndef MAEMO
 	GtkWidget *hbox_stat;
 	GtkWidget *statusbar;
 	GtkWidget *progressbar;
@@ -1320,12 +1323,12 @@ MainWindow *main_window_create()
 	GtkWidget *ac_label;
  	GtkWidget *online_pixmap;
 	GtkWidget *offline_pixmap;
-	GtkWidget *online_switch;
-	GtkWidget *offline_switch;
 	GtkTooltips *tips;
 	GtkWidget *warning_icon;
 	GtkWidget *warning_btn;
-
+#endif
+	GtkWidget *online_switch;
+	GtkWidget *offline_switch;
 	FolderView *folderview;
 	SummaryView *summaryview;
 	MessageView *messageview;
@@ -1344,7 +1347,7 @@ MainWindow *main_window_create()
 	mainwin = g_new0(MainWindow, 1);
 
 	/* main window */
-	window = gtkut_window_new(GTK_WINDOW_TOPLEVEL, "mainwindow");
+	window = GTK_WIDGET(gtkut_window_new(GTK_WINDOW_TOPLEVEL, "mainwindow"));
 	gtk_window_set_title(GTK_WINDOW(window), PROG_VERSION);
 	gtk_window_set_resizable(GTK_WINDOW(window), TRUE);
 #ifdef MAEMO
@@ -1429,6 +1432,7 @@ MainWindow *main_window_create()
 	gtk_container_set_border_width(GTK_CONTAINER(vbox_body), BORDER_WIDTH);
 	gtk_box_pack_start(GTK_BOX(vbox), vbox_body, TRUE, TRUE, 0);
 
+#ifndef MAEMO
 	hbox_stat = gtk_hbox_new(FALSE, 2);
 	gtk_box_pack_end(GTK_BOX(vbox_body), hbox_stat, FALSE, FALSE, 0);
 
@@ -1462,11 +1466,10 @@ MainWindow *main_window_create()
 	statusbar = statusbar_create();
 	gtk_box_pack_start(GTK_BOX(hbox_stat), statusbar, TRUE, TRUE, 0);
 
-#ifndef MAEMO
 	progressbar = gtk_progress_bar_new();
 	gtk_widget_set_size_request(progressbar, 120, 1);
 	gtk_box_pack_start(GTK_BOX(hbox_stat), progressbar, FALSE, FALSE, 0);
-#endif
+
 	online_pixmap = stock_pixmap_widget(hbox_stat, STOCK_PIXMAP_ONLINE);
 	offline_pixmap = stock_pixmap_widget(hbox_stat, STOCK_PIXMAP_OFFLINE);
 	online_switch = gtk_button_new ();
@@ -1504,7 +1507,12 @@ MainWindow *main_window_create()
 
 	gtk_widget_hide(offline_switch);
 	gtk_widget_hide(warning_btn);
-
+#else
+	online_switch = gtk_button_new ();
+	offline_switch = gtk_button_new ();
+	g_signal_connect (G_OBJECT(online_switch), "clicked", G_CALLBACK(online_switch_clicked), mainwin);
+	g_signal_connect (G_OBJECT(offline_switch), "clicked", G_CALLBACK(online_switch_clicked), mainwin);
+#endif
 	/* create views */
 	mainwin->folderview  = folderview  = folderview_create();
 	mainwin->summaryview = summaryview = summary_create();
@@ -1546,25 +1554,23 @@ MainWindow *main_window_create()
 	summaryview->messageview = messageview;
 	summaryview->window      = window;
 
-	messageview->statusbar   = statusbar;
 	mainwin->vbox           = vbox;
 	mainwin->menubar        = menubar;
 	mainwin->menu_factory   = ifactory;
 	mainwin->handlebox      = handlebox;
 	mainwin->vbox_body      = vbox_body;
-	mainwin->hbox_stat      = hbox_stat;
-	mainwin->statusbar      = statusbar;
-#ifndef MAEMO
-	mainwin->progressbar    = progressbar;
-#endif
-	mainwin->statuslabel    = statuslabel;
 	mainwin->online_switch  = online_switch;
+	mainwin->offline_switch    = offline_switch;
+#ifndef MAEMO
+	messageview->statusbar  = statusbar;
+	mainwin->statusbar      = statusbar;
+	mainwin->hbox_stat      = hbox_stat;
+	mainwin->progressbar    = progressbar;
+	mainwin->statuslabel    = statuslabel;
 	mainwin->online_pixmap  = online_pixmap;
 	mainwin->offline_pixmap = offline_pixmap;
 	mainwin->ac_button      = ac_button;
 	mainwin->ac_label       = ac_label;
-	mainwin->offline_switch    = offline_switch;
-	
 	/* set context IDs for status bar */
 	mainwin->mainwin_cid = gtk_statusbar_get_context_id
 		(GTK_STATUSBAR(statusbar), "Main Window");
@@ -1574,9 +1580,20 @@ MainWindow *main_window_create()
 		(GTK_STATUSBAR(statusbar), "Summary View");
 	mainwin->messageview_cid = gtk_statusbar_get_context_id
 		(GTK_STATUSBAR(statusbar), "Message View");
-
 	messageview->statusbar_cid = mainwin->messageview_cid;
 
+#else
+	messageview->statusbar  = NULL;
+	mainwin->statusbar 	= NULL;
+	mainwin->hbox_stat	= NULL;
+	/* mainwin->progressbar is set in toolbar.c */
+	mainwin->statuslabel    = NULL;
+	mainwin->online_pixmap  = NULL;
+	mainwin->offline_pixmap = NULL;
+	mainwin->ac_button      = NULL;
+	mainwin->ac_label       = NULL;
+#endif
+	
 	/* allocate colors for summary view and folder view */
 	summaryview->color_marked.red = summaryview->color_marked.green = 0;
 	summaryview->color_marked.blue = (guint16)65535;
@@ -1645,12 +1662,13 @@ MainWindow *main_window_create()
 	}
 	gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM(menuitem), TRUE);
 
+#ifndef MAEMO
 	gtk_widget_hide(mainwin->hbox_stat);
 	menuitem = gtk_item_factory_get_item
 		(ifactory, "/View/Show or hide/Status bar");
 	gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM(menuitem),
 				       prefs_common.show_statusbar);
-	
+#endif	
 	/* set account selection menu */
 	ac_menu = gtk_item_factory_get_widget
 		(ifactory, "/Configuration/Change current account");
@@ -1769,7 +1787,7 @@ void main_window_cursor_normal(MainWindow *mainwin)
 /* lock / unlock the user-interface */
 void main_window_lock(MainWindow *mainwin)
 {
-	if (mainwin->lock_count == 0)
+	if (mainwin->lock_count == 0 && mainwin->ac_button)
 		gtk_widget_set_sensitive(mainwin->ac_button, FALSE);
 
 	mainwin->lock_count++;
@@ -1786,7 +1804,7 @@ void main_window_unlock(MainWindow *mainwin)
 	main_window_set_menu_sensitive(mainwin);
 	toolbar_main_set_sensitive(mainwin);
 
-	if (mainwin->lock_count == 0)
+	if (mainwin->lock_count == 0 && mainwin->ac_button)
 		gtk_widget_set_sensitive(mainwin->ac_button, TRUE);
 }
 
@@ -1829,7 +1847,7 @@ static gboolean reflect_prefs_timeout_cb(gpointer data)
 			compose_reflect_prefs_pixmap_theme();
 			folderview_reflect_prefs_pixmap_theme(mainwin->folderview);
 			summary_reflect_prefs_pixmap_theme(mainwin->summaryview);
-
+#ifndef MAEMO
 			pixmap = stock_pixmap_widget(mainwin->hbox_stat, STOCK_PIXMAP_ONLINE);
 			gtk_container_remove(GTK_CONTAINER(mainwin->online_switch), 
 					     mainwin->online_pixmap);
@@ -1842,6 +1860,7 @@ static gboolean reflect_prefs_timeout_cb(gpointer data)
 			gtk_container_add (GTK_CONTAINER(mainwin->offline_switch), pixmap);
 			gtk_widget_show(pixmap);
 			mainwin->offline_pixmap = pixmap;
+#endif
 		}
 		
 		headerview_set_font(mainwin->messageview->headerview);
@@ -1850,7 +1869,16 @@ static gboolean reflect_prefs_timeout_cb(gpointer data)
 		textview_reflect_prefs(mainwin->messageview->mimeview->textview);
 		folderview_reflect_prefs();
 		summary_reflect_prefs();
+#ifndef MAEMO
 		summary_redisplay_msg(mainwin->summaryview);
+#endif
+		if (prefs_common.layout_mode == SMALL_LAYOUT) {
+			if (mainwin->in_folder) {
+				mainwindow_enter_folder(mainwin);
+			} else {
+				mainwindow_exit_folder(mainwin);
+			}
+		}
 	}
 	prefs_tag = 0;
 	return FALSE;
@@ -2106,7 +2134,8 @@ static void main_window_show_cur_account(MainWindow *mainwin)
 	g_free(buf);
 
 	gtk_label_set_text(GTK_LABEL(mainwin->ac_label), ac_name);
-	gtk_widget_queue_resize(mainwin->ac_button);
+	if (mainwin->ac_button)
+		gtk_widget_queue_resize(mainwin->ac_button);
 
 	g_free(ac_name);
 }
@@ -2964,9 +2993,10 @@ static void main_window_set_widgets(MainWindow *mainwin, LayoutType layout_mode)
 				    prefs_common.msgview_height);
 	}
 
+#ifndef MAEMO
 	mainwin->messageview->statusbar = mainwin->statusbar;
 	mainwin->messageview->statusbar_cid = mainwin->messageview_cid;
-
+#endif
 	/* clean top-most container */
 	if (mainwin->hpaned) {
 		if (mainwin->hpaned->parent == mainwin->vpaned)
@@ -3379,6 +3409,7 @@ static void main_window_reply_cb(MainWindow *mainwin, guint action,
 }
 
 
+#ifndef MAEMO
 static void toggle_statusbar_cb(MainWindow *mainwin, guint action,
 				GtkWidget *widget)
 {
@@ -3391,7 +3422,6 @@ static void toggle_statusbar_cb(MainWindow *mainwin, guint action,
 	}
 }
 
-#ifndef MAEMO
 static void set_layout_cb(MainWindow *mainwin, guint action,
 			       GtkWidget *widget)
 {
@@ -3488,8 +3518,10 @@ static void online_switch_clicked (GtkButton *btn, gpointer data)
 	g_return_if_fail(menuitem != NULL);
 	
 	if (btn == GTK_BUTTON(mainwin->online_switch)) {
+#ifndef MAEMO
 		gtk_widget_hide (mainwin->online_switch);
 		gtk_widget_show (mainwin->offline_switch);
+#endif
 		menuitem->active = TRUE;
 		inc_autocheck_timer_remove();
 			
@@ -3504,8 +3536,10 @@ static void online_switch_clicked (GtkButton *btn, gpointer data)
 		/*go online */
 		if (!prefs_common.work_offline)
 			return;
+#ifndef MAEMO
 		gtk_widget_hide (mainwin->offline_switch);
 		gtk_widget_show (mainwin->online_switch);
+#endif
 		menuitem->active = FALSE;
 		prefs_common.work_offline = FALSE;
 		inc_autocheck_timer_set();

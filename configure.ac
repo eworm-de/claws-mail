@@ -11,7 +11,7 @@ MINOR_VERSION=10
 MICRO_VERSION=0
 INTERFACE_AGE=0
 BINARY_AGE=0
-EXTRA_VERSION=62
+EXTRA_VERSION=63
 EXTRA_RELEASE=
 EXTRA_GTK2_VERSION=
 
@@ -48,6 +48,11 @@ if test "$GNOME_CONFIG" != no; then
 	AC_SUBST(gnomedatadir)
 fi
 AM_CONDITIONAL(CLAWS_GNOME, test -n "$gnomedatadir")
+
+AC_PATH_PROG(PKG_CONFIG, pkg-config, no)
+if test x$PKG_CONFIG = xno ; then
+  AC_MSG_ERROR([*** pkg-config not found. See http://www.freedesktop.org/software/pkgconfig/])
+fi
 
 dnl GNOME 2.x installed?
 PKG_CHECK_MODULES(GNOME2, libgnome-2.0 >= 2.0, ac_enable_gnome2=yes, ac_enable_gnome2=no)

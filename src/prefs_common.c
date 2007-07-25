@@ -165,6 +165,12 @@ static PrefParam param[] = {
 	P_BOOL, NULL, NULL, NULL},
  	{"newmail_notify_cmd", "", &SPECIFIC_PREFS.newmail_notify_cmd, P_STRING,
  	 NULL, NULL, NULL},
+#ifdef MAEMO
+ 	{"maemo_play_sound", "FALSE", &prefs_common.maemo_play_sound, P_BOOL,
+ 	 NULL, NULL, NULL},
+ 	{"maemo_show_banner", "FALSE", &prefs_common.maemo_show_banner, P_BOOL,
+ 	 NULL, NULL, NULL},
+#endif
 	{"receive_dialog_mode", "2", &prefs_common.recv_dialog_mode, P_ENUM,
 	 NULL, NULL, NULL},
 	{"receivewin_width", "460", &prefs_common.receivewin_width, P_INT,

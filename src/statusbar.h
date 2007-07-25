@@ -39,14 +39,17 @@ void statusbar_verbosity_set	(gboolean	 verbose);
 void statusbar_progress_all	(gint done, gint total, gint step);
 #define STATUSBAR_PUSH(mainwin, str) \
 { \
-	gtk_statusbar_push(GTK_STATUSBAR(mainwin->statusbar), \
+	if (mainwin->statusbar) \
+		gtk_statusbar_push(GTK_STATUSBAR(mainwin->statusbar), \
 			   mainwin->folderview_cid, str); \
-	gtkut_widget_draw_now(mainwin->hbox_stat); \
+	if (mainwin->hbox_stat) \
+		gtkut_widget_draw_now(mainwin->hbox_stat); \
 }
 
 #define STATUSBAR_POP(mainwin) \
 { \
-	gtk_statusbar_pop(GTK_STATUSBAR(mainwin->statusbar), \
+	if (mainwin->statusbar) \
+		gtk_statusbar_pop(GTK_STATUSBAR(mainwin->statusbar), \
 			  mainwin->folderview_cid); \
 }
 

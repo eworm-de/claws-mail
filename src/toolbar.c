@@ -1971,6 +1971,7 @@ void toolbar_update(ToolbarType type, gpointer data)
 	Compose    *compose = (Compose*)data;
 	MessageView *msgview = (MessageView*)data;
 
+#ifndef MAEMO
 	switch(type) {
 	case TOOLBAR_MAIN:
 		toolbar_data = mainwin->toolbar;
@@ -1993,6 +1994,30 @@ void toolbar_update(ToolbarType type, gpointer data)
 
 	toolbar_init(toolbar_data);
  	toolbar_data = toolbar_create(type, handlebox, data);
+#else
+	switch(type) {
+	case TOOLBAR_MAIN:
+		toolbar_data = mainwin->toolbar;
+		handlebox    = mainwin->window;
+		break;
+	case TOOLBAR_COMPOSE:
+		toolbar_data = compose->toolbar;
+		handlebox    = compose->window;
+		break;
+	case TOOLBAR_MSGVIEW:
+		toolbar_data = msgview->toolbar;
+		handlebox    = msgview->window;
+		break;
+	default:
+		return;
+	}
+
+	hildon_window_remove_toolbar(HILDON_WINDOW(handlebox), GTK_WIDGET(toolbar_data->toolbar));
+
+	toolbar_init(toolbar_data);
+ 	toolbar_data = toolbar_create(type, handlebox, data);
+#endif
+
 	switch(type) {
 	case TOOLBAR_MAIN:
 		mainwin->toolbar = toolbar_data;

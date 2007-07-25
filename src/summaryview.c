@@ -826,6 +826,10 @@ void summary_relayout(SummaryView *summaryview)
 	gtk_widget_unref(summaryview->hbox_l);
 	gtk_widget_unref(summaryview->statlabel_msgs);
 	quicksearch_relayout(summaryview->quicksearch);
+	if (prefs_common.show_searchbar)
+		quicksearch_show(summaryview->quicksearch);
+	else
+		quicksearch_hide(summaryview->quicksearch);
 }
 
 static void summary_set_fonts(SummaryView *summaryview)
@@ -2616,7 +2620,10 @@ void summary_reflect_prefs(void)
 	}
 
 	summary_set_column_titles(summaryview);
-	summary_show(summaryview, summaryview->folder_item);
+	summary_relayout(summaryview);
+	
+	if (summaryview->folder_item)
+		summary_show(summaryview, summaryview->folder_item);
 }
 
 void summary_sort(SummaryView *summaryview,

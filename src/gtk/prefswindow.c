@@ -48,7 +48,8 @@ typedef struct _PrefsTreeNode PrefsTreeNode;
 struct _PrefsWindow
 {
 	GtkWidget *window;
-	GtkWidget *table1;
+	GtkWidget *vbox;
+	GtkWidget *paned;
 	GtkWidget *scrolledwindow1;
 	GtkWidget *scrolledwindow2;
 	GtkWidget *tree_view;
@@ -129,11 +130,44 @@ static void close_all_pages(GSList *prefs_pages)
 	}	
 }
 
+#ifdef MAEMO
+static void prefs_show_sections(PrefsWindow *prefswindow)
+{
+	gint max;
+	GtkWidget *paned = prefswindow->paned;
+	
+        g_object_get (G_OBJECT(paned),
+                        "max-position",
+                        &max, NULL);
+
+	gtk_widget_show(gtk_paned_get_child1(GTK_PANED(paned)));
+	gtk_widget_hide(gtk_paned_get_child2(GTK_PANED(paned)));
+	gtk_paned_set_position(GTK_PANED(paned), max);
+}
+
+static void prefs_show_page(PrefsWindow *prefswindow)
+{
+	gint min;
+	GtkWidget *paned = prefswindow->paned;
+	
+        g_object_get (G_OBJECT(paned),
+                        "min-position",
+                        &min, NULL);
+
+	gtk_widget_hide(gtk_paned_get_child1(GTK_PANED(paned)));
+	gtk_widget_show(gtk_paned_get_child2(GTK_PANED(paned)));
+	gtk_paned_set_position(GTK_PANED(paned), min);
+}
+#endif
+
 static void apply_button_clicked(GtkButton *button, gpointer user_data)
 {
 	PrefsWindow *prefswindow = (PrefsWindow *) user_data;
 
 	save_all_pages(prefswindow->prefs_pages);
+#ifdef MAEMO
+	prefs_show_sections(prefswindow);
+#endif
 }
 
 static void close_prefs_window(PrefsWindow *prefswindow)
@@ -170,7 +204,11 @@ static gboolean window_closed(GtkWidget *widget, GdkEvent *event, gpointer user_
 {
 	PrefsWindow *prefswindow = (PrefsWindow *) user_data;
 
+#ifdef MAEMO
+	save_all_pages(prefswindow->prefs_pages);
+#endif
 	close_prefs_window(prefswindow);
+
 	return FALSE;
 }
 
@@ -182,7 +220,11 @@ static gboolean prefswindow_key_pressed(GtkWidget *widget, GdkEventKey *event,
 	if (event) {
 		switch (event->keyval) {
 			case GDK_Escape :
+#ifndef MAEMO
 				cancel_button_clicked(NULL, data);
+#else
+				ok_button_clicked(NULL, data);
+#endif
 				break;
 			case GDK_Return : 
 			case GDK_KP_Enter :
@@ -276,7 +318,8 @@ static void prefswindow_build_tree(GtkWidget *tree_view, GSList *prefs_pages,
 	gint index; /* index in pages list */
 	GtkTreeSelection *selection;
 	GtkTreeIter iter;
-	
+	GtkAdjustment *adj;
+
 	for (cur = prefs_pages, index = 0; cur != NULL; cur = g_slist_next(cur), index++) {
 		PrefsPage *page = (PrefsPage *)cur->data;
 		FindNodeByName find_name;
@@ -363,6 +406,16 @@ static void prefswindow_build_tree(GtkWidget *tree_view, GSList *prefs_pages,
 		}
 		gtk_tree_selection_select_iter(selection, &iter);
 	}
+
+	adj = gtk_scrolled_window_get_vadjustment(
+			GTK_SCROLLED_WINDOW(prefswindow->scrolledwindow1));
+	gtk_adjustment_set_value(adj, 0);
+	adj = gtk_scrolled_window_get_vadjustment(
+			GTK_SCROLLED_WINDOW(prefswindow->scrolledwindow2));
+	gtk_adjustment_set_value(adj, 0);
+	adj = gtk_scrolled_window_get_hadjustment(
+			GTK_SCROLLED_WINDOW(prefswindow->scrolledwindow2));
+	gtk_adjustment_set_value(adj, 0);
 }
 
 void prefswindow_open_full(const gchar *title, GSList *prefs_pages,
@@ -391,16 +444,22 @@ void prefswindow_open_full(const gchar *title, GSList *prefs_pages,
 	gtk_window_set_resizable (GTK_WINDOW(prefswindow->window), TRUE);
 	gtk_container_set_border_width(GTK_CONTAINER(prefswindow->window), 4);
 
-	prefswindow->table1 = gtk_table_new(2, 2, FALSE);
-	gtk_widget_show(prefswindow->table1);
-	gtk_container_add(GTK_CONTAINER(prefswindow->window), prefswindow->table1);
+	prefswindow->vbox = gtk_vbox_new(FALSE, 6);
+	gtk_widget_show(prefswindow->vbox);
+	
+	prefswindow->paned = gtk_hpaned_new();
+	gtk_widget_show(prefswindow->paned);
+
+	gtk_container_add(GTK_CONTAINER(prefswindow->window), prefswindow->vbox);
+
+	gtk_box_pack_start(GTK_BOX(prefswindow->vbox), prefswindow->paned, TRUE, TRUE, 0);
 
 	prefswindow->scrolledwindow1 = gtk_scrolled_window_new(NULL, NULL);
 	gtk_widget_show(prefswindow->scrolledwindow1);
 	gtk_scrolled_window_set_policy(GTK_SCROLLED_WINDOW(prefswindow->scrolledwindow1),
 			GTK_POLICY_NEVER, GTK_POLICY_AUTOMATIC);
-	gtk_table_attach(GTK_TABLE(prefswindow->table1), prefswindow->scrolledwindow1,
-			0, 1, 0, 1, GTK_FILL, GTK_FILL | GTK_EXPAND, 2, 2);
+			
+	gtk_paned_add1(GTK_PANED(prefswindow->paned), prefswindow->scrolledwindow1);
 
 	prefswindow->tree_view = prefswindow_tree_view_create(prefswindow);
 	gtk_widget_show(prefswindow->tree_view);
@@ -410,8 +469,8 @@ void prefswindow_open_full(const gchar *title, GSList *prefs_pages,
 	prefswindow->frame = gtk_frame_new(NULL);
 	gtk_widget_show(prefswindow->frame);
 	gtk_frame_set_shadow_type(GTK_FRAME(prefswindow->frame), GTK_SHADOW_IN);
-	gtk_table_attach(GTK_TABLE(prefswindow->table1), prefswindow->frame,
-			1, 2, 0, 1, GTK_FILL | GTK_EXPAND, GTK_FILL | GTK_EXPAND, 2, 2);
+
+	gtk_paned_add2(GTK_PANED(prefswindow->paned), prefswindow->frame);
 
 	prefswindow->table2 = gtk_table_new(1, 2, FALSE);
 	gtk_widget_show(prefswindow->table2);
@@ -453,22 +512,36 @@ void prefswindow_open_full(const gchar *title, GSList *prefs_pages,
 
 	gtk_widget_grab_focus(prefswindow->tree_view);
 
+#ifndef MAEMO
 	gtkut_stock_button_set_create(&prefswindow->confirm_area,
 				      &prefswindow->apply_btn,	GTK_STOCK_APPLY,
 				      &prefswindow->cancel_btn,	GTK_STOCK_CANCEL,
 				      &prefswindow->ok_btn,	GTK_STOCK_OK);
-
+#else
+	gtkut_stock_button_set_create(&prefswindow->confirm_area,
+				      &prefswindow->apply_btn,	GTK_STOCK_APPLY,
+				      &prefswindow->ok_btn,	GTK_STOCK_CLOSE,
+				      NULL,			NULL);
+#endif
 	gtk_widget_show_all(prefswindow->confirm_area);
+	gtk_widget_show_all(prefswindow->vbox);
 
-	gtk_table_attach(GTK_TABLE(prefswindow->table1), prefswindow->confirm_area,
-			0, 2, 1, 2, GTK_FILL | GTK_EXPAND, GTK_FILL, 2, 2);
+	gtk_box_pack_start(GTK_BOX(prefswindow->vbox), prefswindow->confirm_area, FALSE, FALSE, 0);
 
+#ifndef MAEMO
 	g_signal_connect(G_OBJECT(prefswindow->ok_btn), "clicked", 
 			 G_CALLBACK(ok_button_clicked), prefswindow);
 	g_signal_connect(G_OBJECT(prefswindow->cancel_btn), "clicked", 
 			 G_CALLBACK(cancel_button_clicked), prefswindow);
 	g_signal_connect(G_OBJECT(prefswindow->apply_btn), "clicked", 
 			 G_CALLBACK(apply_button_clicked), prefswindow);
+#else
+	g_signal_connect(G_OBJECT(prefswindow->ok_btn), "clicked", 
+			 G_CALLBACK(ok_button_clicked), prefswindow);
+	g_signal_connect(G_OBJECT(prefswindow->apply_btn), "clicked", 
+			 G_CALLBACK(apply_button_clicked), prefswindow);
+#endif
+
 	g_signal_connect(G_OBJECT(prefswindow->window), "delete_event", 
 			 G_CALLBACK(window_closed), prefswindow);
 
@@ -502,6 +575,9 @@ void prefswindow_open_full(const gchar *title, GSList *prefs_pages,
 					    *(prefswindow->save_height));
 	}
 
+#ifdef MAEMO
+	prefs_show_sections(prefswindow);
+#endif
 	gtk_widget_show(prefswindow->window);
 #ifdef MAEMO
 	maemo_window_full_screen_if_needed(GTK_WINDOW(prefswindow->window));
@@ -593,9 +669,10 @@ static gboolean prefswindow_row_selected(GtkTreeSelection *selector,
 	GtkTreeIter iter;
 	GtkAdjustment *adj;
 
+#ifndef MAEMO
 	if (currently_selected) 
 		return TRUE;
-
+#endif
 	if (!gtk_tree_model_get_iter(GTK_TREE_MODEL(model), &iter, path))
 		return TRUE;
 
@@ -638,6 +715,9 @@ static gboolean prefswindow_row_selected(GtkTreeSelection *selector,
 			GTK_SCROLLED_WINDOW(prefswindow->scrolledwindow2));
 	gtk_adjustment_set_value(adj, 0);
 
+#ifdef MAEMO
+	prefs_show_page(prefswindow);
+#endif
 	return TRUE;
 }
 

@@ -63,6 +63,8 @@
 
 #ifdef MAEMO
 #include <hildon-widgets/hildon-banner.h>
+#include <hildon-widgets/hildon-system-sound.h>
+#include <libosso.h>
 
 #ifdef CONIC
 #include <conicconnection.h>
@@ -1375,15 +1377,21 @@ void inc_unlock(void)
 static guint autocheck_timer = 0;
 static gpointer autocheck_data = NULL;
 
+#ifdef MAEMO
+osso_context_t *get_osso_context(void);
+#endif
+
 static void inc_notify_cmd(gint new_msgs, gboolean notify)
 {
 
+#ifndef MAEMO
 	gchar *buf, *numpos, *ret_str;
 	gssize by_read = 0, by_written = 0;
 
 	if (!(new_msgs && notify && prefs_common.newmail_notify_cmd &&
 	    *prefs_common.newmail_notify_cmd))
 		     return;
+
 	buf = g_strdup(prefs_common.newmail_notify_cmd);
 	if ((numpos = strstr(buf, "%d")) != NULL) {
 		gchar *buf2;
@@ -1404,6 +1412,20 @@ static void inc_notify_cmd(gint new_msgs, gboolean notify)
 	execute_command_line(buf, TRUE);
 
 	g_free(buf);
+
+#else
+	if (new_msgs) {
+		if (prefs_common.maemo_play_sound)
+			hildon_play_system_sound("/usr/share/sounds/ui-new_email.wav");
+		if (prefs_common.maemo_show_banner) {
+			gchar *info = g_strdup_printf(ngettext("Claws Mail: %d new message",
+					  	   "Claws Mail: %d new messages",
+					  	   new_msgs), new_msgs);
+			osso_system_note_infoprint(get_osso_context(), info, NULL);
+			g_free(info);
+		}
+	}
+#endif
 }
 
 #if (defined(MAEMO) && defined(CONIC))
