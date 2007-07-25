@@ -1,3 +1,8 @@
+2007-07-25 [iwkse]	2.10.0cvs61
+
+	* src/summaryview.c
+		add 'o' shortcut on summaryview
+
 2007-07-25 [iwkse]	2.10.0cvs60
 
 	* src/textview.c
