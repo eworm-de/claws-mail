@@ -2715,3 +2715,4 @@
 ( cvs diff -u -r 1.79.2.56 -r 1.79.2.57 src/mh.c;  cvs diff -u -r 1.96.2.176 -r 1.96.2.177 src/textview.c;  cvs diff -u -r 1.12.2.20 -r 1.12.2.21 src/textview.h;  ) > 2.10.0cvs59.patchset
 ( cvs diff -u -r 1.96.2.177 -r 1.96.2.178 src/textview.c;  ) > 2.10.0cvs60.patchset
 ( cvs diff -u -r 1.395.2.312 -r 1.395.2.313 src/summaryview.c;  ) > 2.10.0cvs61.patchset
+( cvs diff -u -r 1.96.2.178 -r 1.96.2.179 src/textview.c;  ) > 2.10.0cvs62.patchset
