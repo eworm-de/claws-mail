@@ -838,7 +838,6 @@ FILE *procmime_get_text_content(MimeInfo *mimeinfo)
 	return outfp;
 }
 
-static void output_mime_structure(MimeInfo *mimeinfo, int indent);
 /* search the first text part of (multipart) MIME message,
    decode, convert it and output to outfp. */
 FILE *procmime_get_first_text_content(MsgInfo *msginfo)
@@ -850,8 +849,6 @@ FILE *procmime_get_first_text_content(MsgInfo *msginfo)
 
 	mimeinfo = procmime_scan_message_short(msginfo);
 	if (!mimeinfo) return NULL;
-
-output_mime_structure(mimeinfo, 0);
 
 	partinfo = mimeinfo;
 	while (partinfo && partinfo->type != MIMETYPE_TEXT) {
