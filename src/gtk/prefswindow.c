@@ -524,7 +524,9 @@ void prefswindow_open_full(const gchar *title, GSList *prefs_pages,
 				      NULL,			NULL);
 #endif
 	gtk_widget_show_all(prefswindow->confirm_area);
-	gtk_widget_show_all(prefswindow->vbox);
+	gtk_widget_show(prefswindow->vbox);
+	gtk_widget_show(prefswindow->scrolledwindow1);
+	gtk_widget_show(prefswindow->scrolledwindow2);
 
 	gtk_box_pack_start(GTK_BOX(prefswindow->vbox), prefswindow->confirm_area, FALSE, FALSE, 0);
 

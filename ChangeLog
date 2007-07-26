@@ -1,3 +1,9 @@
+2007-07-26 [paul]	2.10.0cvs66
+
+	* src/gtk/prefswindow.c
+		fix account prefs breakage
+		thanks to Colin
+
 2007-07-26 [paul]	2.10.0cvs65
 
 	* configure.ac
