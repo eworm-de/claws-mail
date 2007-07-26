@@ -123,6 +123,7 @@
 #include "combobox.h"
 #include "hooks.h"
 #include "privacy.h"
+#include "timing.h"
 
 enum
 {
@@ -1359,7 +1360,7 @@ static void compose_extract_original_charset(Compose *compose)
 		info = compose->targetinfo;
 	}
 	if (info) {
-		MimeInfo *mimeinfo = procmime_scan_message(info);
+		MimeInfo *mimeinfo = procmime_scan_message_short(info);
 		MimeInfo *partinfo = mimeinfo;
 		while (partinfo && partinfo->type != MIMETYPE_TEXT)
 			partinfo = procmime_mimeinfo_next(partinfo);
@@ -1405,7 +1406,7 @@ static Compose *compose_generic_reply(MsgInfo *msginfo,
 	gboolean quote = FALSE;
 	const gchar *qmark = NULL;
 	const gchar *body_fmt = NULL;
-
+	START_TIMING("");
 	g_return_val_if_fail(msginfo != NULL, NULL);
 	g_return_val_if_fail(msginfo->folder != NULL, NULL);
 
@@ -1482,7 +1483,8 @@ static Compose *compose_generic_reply(MsgInfo *msginfo,
 					  _("Message reply format error at line %d."));
 		quote_fmt_reset_vartable();
 	}
-	if (procmime_msginfo_is_encrypted(compose->replyinfo)) {
+
+	if (MSG_IS_ENCRYPTED(compose->replyinfo->flags)) {
 		compose_force_encryption(compose, account, FALSE);
 	}
 
@@ -1512,7 +1514,7 @@ static Compose *compose_generic_reply(MsgInfo *msginfo,
 		compose_destroy(compose);
 		return NULL;
 	}
-
+	END_TIMING();
 	return compose;
 }
 
@@ -1998,7 +2000,7 @@ Compose *compose_reedit(MsgInfo *msginfo, gboolean batch)
 					G_CALLBACK(compose_changed_cb),
 					compose);
 	
-	if (procmime_msginfo_is_encrypted(msginfo)) {
+	if (MSG_IS_ENCRYPTED(msginfo->flags)) {
 		fp = procmime_get_first_encrypted_text_content(msginfo);
 		if (fp) {
 			compose_force_encryption(compose, account, TRUE);
@@ -8419,6 +8421,10 @@ gboolean compose_draft (gpointer data, guint action)
 	}
 
 	newmsginfo = folder_item_get_msginfo(draft, msgnum);
+	if (!newmsginfo && compose->msgid) {
+		newmsginfo = folder_item_get_msginfo_by_msgid(draft, compose->msgid);
+		msgnum = newmsginfo->msgnum;
+	}
 	if (newmsginfo) {
 		procmsg_msginfo_unset_flags(newmsginfo, ~0, ~0);
 		if (target_locked)
@@ -9806,9 +9812,8 @@ static void compose_reply_from_messageview_real(MessageView *msgview, GSList *ms
 						orig_msginfo, mimeinfo);
 			if (tmp_msginfo != NULL) {
 				new_msglist = g_slist_append(NULL, tmp_msginfo);
-				if (procmime_msginfo_is_encrypted(orig_msginfo)) {
-					originally_enc = TRUE;
-				}
+
+				originally_enc = MSG_IS_ENCRYPTED(orig_msginfo->flags);
 				tmp_msginfo->folder = orig_msginfo->folder;
 				tmp_msginfo->msgnum = orig_msginfo->msgnum; 
 				if (orig_msginfo->tags)

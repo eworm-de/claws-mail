@@ -1,3 +1,16 @@
+2007-07-26 [colin]	2.10.0cvs68
+
+	* src/ldapserver.c
+		Fix possible crash on cache invalidation
+	* src/compose.c
+	* src/procmime.c
+	* src/procmime.h
+	* src/quote_fmt_parse.y
+		Make replying to mails with big attachments
+		much faster. Fixes bug 1224, 'The process of 
+		Replying to emails with large attachments 
+		seems unreasonably long...'
+
 2007-07-26 [colin]	2.10.0cvs67
 
 	* src/mimeview.c

@@ -165,6 +165,7 @@ MimeInfo *procmime_mimeinfo_parent	(MimeInfo	*mimeinfo);
 MimeInfo *procmime_mimeinfo_next	(MimeInfo	*mimeinfo);
 
 MimeInfo *procmime_scan_message		(MsgInfo	*msginfo);
+MimeInfo *procmime_scan_message_short	(MsgInfo	*msginfo);
 void procmime_scan_multipart_message	(MimeInfo	*mimeinfo,
 					 FILE		*fp);
 const gchar *procmime_mimeinfo_get_parameter

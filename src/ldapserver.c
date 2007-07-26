@@ -703,6 +703,8 @@ gint ldapsvr_read_data( LdapServer *server )
 	//printf( "...addrbook_read_data :%s:\n", addrcache_get_name( server->addressCache ) );
 	
 	addrcache_clear(server->addressCache);
+	ldapsvr_free_all_query( server );
+	server->listQuery = NULL;
 	server->addressCache->modified = FALSE;
 	server->addressCache->accessFlag = FALSE;
 	server->addressCache->dataRead = TRUE;

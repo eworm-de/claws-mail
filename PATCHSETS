@@ -2721,3 +2721,4 @@
 ( cvs diff -u -r 1.654.2.2774 -r 1.654.2.2775 configure.ac;  ) > 2.10.0cvs65.patchset
 ( cvs diff -u -r 1.12.2.38 -r 1.12.2.39 src/gtk/prefswindow.c;  ) > 2.10.0cvs66.patchset
 ( cvs diff -u -r 1.83.2.113 -r 1.83.2.114 src/mimeview.c;  cvs diff -u -r 1.75.2.43 -r 1.75.2.44 src/matcher.c;  cvs diff -u -r 1.9.2.20 -r 1.9.2.21 src/common/ssl.c;  ) > 2.10.0cvs67.patchset
+( cvs diff -u -r 1.382.2.395 -r 1.382.2.396 src/compose.c;  cvs diff -u -r 1.4.2.10 -r 1.4.2.11 src/ldapserver.c;  cvs diff -u -r 1.49.2.93 -r 1.49.2.94 src/procmime.c;  cvs diff -u -r 1.17.2.18 -r 1.17.2.19 src/procmime.h;  cvs diff -u -r 1.22.2.34 -r 1.22.2.35 src/quote_fmt_parse.y;  ) > 2.10.0cvs68.patchset

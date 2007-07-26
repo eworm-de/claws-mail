@@ -50,8 +50,12 @@
 #include "prefs_common.h"
 #include "prefs_gtk.h"
 #include "alertpanel.h"
+#include "timing.h"
 
 static GHashTable *procmime_get_mime_type_table	(void);
+static MimeInfo *procmime_scan_file_short(const gchar *filename);
+static MimeInfo *procmime_scan_queue_file_short(const gchar *filename);
+static MimeInfo *procmime_scan_queue_file_full(const gchar *filename, gboolean short_scan);
 
 MimeInfo *procmime_mimeinfo_new(void)
 {
@@ -186,7 +190,7 @@ MimeInfo *procmime_scan_message(MsgInfo *msginfo)
 {
 	gchar *filename;
 	MimeInfo *mimeinfo;
-
+	START_TIMING("");
 	filename = procmsg_get_message_file_path(msginfo);
 	if (!filename || !is_file_exist(filename)) {
 		g_free(filename);
@@ -198,6 +202,28 @@ MimeInfo *procmime_scan_message(MsgInfo *msginfo)
 		mimeinfo = procmime_scan_file(filename);
 	else
 		mimeinfo = procmime_scan_queue_file(filename);
+	g_free(filename);
+
+	END_TIMING();
+	return mimeinfo;
+}
+
+MimeInfo *procmime_scan_message_short(MsgInfo *msginfo)
+{
+	gchar *filename;
+	MimeInfo *mimeinfo;
+
+	filename = procmsg_get_message_file_path(msginfo);
+	if (!filename || !is_file_exist(filename)) {
+		g_free(filename);
+		return NULL;
+	}
+
+	if (!folder_has_parent_of_type(msginfo->folder, F_QUEUE) &&
+	    !folder_has_parent_of_type(msginfo->folder, F_DRAFT))
+		mimeinfo = procmime_scan_file_short(filename);
+	else
+		mimeinfo = procmime_scan_queue_file_short(filename);
 	g_free(filename);
 
 	return mimeinfo;
@@ -812,17 +838,20 @@ FILE *procmime_get_text_content(MimeInfo *mimeinfo)
 	return outfp;
 }
 
+static void output_mime_structure(MimeInfo *mimeinfo, int indent);
 /* search the first text part of (multipart) MIME message,
    decode, convert it and output to outfp. */
 FILE *procmime_get_first_text_content(MsgInfo *msginfo)
 {
 	FILE *outfp = NULL;
 	MimeInfo *mimeinfo, *partinfo;
-
+	START_TIMING("");
 	g_return_val_if_fail(msginfo != NULL, NULL);
 
-	mimeinfo = procmime_scan_message(msginfo);
+	mimeinfo = procmime_scan_message_short(msginfo);
 	if (!mimeinfo) return NULL;
+
+output_mime_structure(mimeinfo, 0);
 
 	partinfo = mimeinfo;
 	while (partinfo && partinfo->type != MIMETYPE_TEXT) {
@@ -832,7 +861,7 @@ FILE *procmime_get_first_text_content(MsgInfo *msginfo)
 		outfp = procmime_get_text_content(partinfo);
 
 	procmime_mimeinfo_free_all(mimeinfo);
-
+	END_TIMING();
 	return outfp;
 }
 
@@ -1348,9 +1377,10 @@ static int procmime_parse_mimepart(MimeInfo *parent,
 			     gchar *content_location,
 			     const gchar *filename,
 			     guint offset,
-			     guint length);
+			     guint length,
+			     gboolean short_scan);
 
-static void procmime_parse_message_rfc822(MimeInfo *mimeinfo)
+static void procmime_parse_message_rfc822(MimeInfo *mimeinfo, gboolean short_scan)
 {
 	HeaderEntry hentry[] = {{"Content-Type:",  NULL, TRUE},
 			        {"Content-Transfer-Encoding:",
@@ -1411,7 +1441,7 @@ static void procmime_parse_message_rfc822(MimeInfo *mimeinfo)
 				hentry[2].body, hentry[3].body,
 				hentry[4].body, hentry[5].body,
 				mimeinfo->data.filename, content_start,
-				len);
+				len, short_scan);
 	
 	for (i = 0; i < (sizeof hentry / sizeof hentry[0]); i++) {
 		g_free(hentry[i].body);
@@ -1419,7 +1449,7 @@ static void procmime_parse_message_rfc822(MimeInfo *mimeinfo)
 	}
 }
 
-static void procmime_parse_multipart(MimeInfo *mimeinfo)
+static void procmime_parse_multipart(MimeInfo *mimeinfo, gboolean short_scan)
 {
 	HeaderEntry hentry[] = {{"Content-Type:",  NULL, TRUE},
 			        {"Content-Transfer-Encoding:",
@@ -1439,6 +1469,7 @@ static void procmime_parse_multipart(MimeInfo *mimeinfo)
 	gchar buf[BUFFSIZE];
 	FILE *fp;
 	int result = 0;
+	gboolean done = FALSE;
 
 	boundary = g_hash_table_lookup(mimeinfo->typeparameters, "boundary");
 	if (!boundary)
@@ -1467,7 +1498,11 @@ static void procmime_parse_multipart(MimeInfo *mimeinfo)
 							hentry[2].body, hentry[3].body, 
 							hentry[4].body, hentry[5].body,
 							mimeinfo->data.filename, lastoffset,
-							len);
+							len, short_scan);
+				if (result == 1 && short_scan) {
+					done = TRUE;
+					break;
+				}
 			}
 			
 			if (buf[2 + boundary_len]     == '-' &&
@@ -1760,10 +1795,11 @@ static int procmime_parse_mimepart(MimeInfo *parent,
 			     gchar *content_location,
 			     const gchar *filename,
 			     guint offset,
-			     guint length)
+			     guint length,
+			     gboolean short_scan)
 {
 	MimeInfo *mimeinfo;
-
+	int result = 0;
 	/* Create MimeInfo */
 	mimeinfo = procmime_mimeinfo_new();
 	mimeinfo->content = MIMECONTENT_FILE;
@@ -1824,21 +1860,27 @@ static int procmime_parse_mimepart(MimeInfo *parent,
 
 	/* Call parser for mime type */
 	switch (mimeinfo->type) {
+		case MIMETYPE_TEXT:
+			if (g_ascii_strcasecmp(mimeinfo->subtype, "plain") == 0 && short_scan) {
+				return 1;
+			}
+			break;
+
 		case MIMETYPE_MESSAGE:
 			if (g_ascii_strcasecmp(mimeinfo->subtype, "rfc822") == 0) {
-				procmime_parse_message_rfc822(mimeinfo);
+				procmime_parse_message_rfc822(mimeinfo, short_scan);
 			}
 			break;
 			
 		case MIMETYPE_MULTIPART:
-			procmime_parse_multipart(mimeinfo);
+			procmime_parse_multipart(mimeinfo, short_scan);
 			break;
 			
 		default:
 			break;
 	}
 
-	return 0;
+	return result;
 }
 
 static gchar *typenames[] = {
@@ -1870,7 +1912,7 @@ static void output_mime_structure(MimeInfo *mimeinfo, int indent)
 	g_node_traverse(mimeinfo->node, G_PRE_ORDER, G_TRAVERSE_ALL, -1, output_func, NULL);
 }
 
-static MimeInfo *procmime_scan_file_with_offset(const gchar *filename, int offset)
+static MimeInfo *procmime_scan_file_with_offset(const gchar *filename, int offset, gboolean short_scan)
 {
 	MimeInfo *mimeinfo;
 	struct stat buf;
@@ -1886,25 +1928,35 @@ static MimeInfo *procmime_scan_file_with_offset(const gchar *filename, int offse
 	mimeinfo->offset = offset;
 	mimeinfo->length = buf.st_size - offset;
 
-	procmime_parse_message_rfc822(mimeinfo);
+	procmime_parse_message_rfc822(mimeinfo, short_scan);
 	if (debug_get_mode())
 		output_mime_structure(mimeinfo, 0);
 
 	return mimeinfo;
 }
 
-MimeInfo *procmime_scan_file(const gchar *filename)
+static MimeInfo *procmime_scan_file_full(const gchar *filename, gboolean short_scan)
 {
 	MimeInfo *mimeinfo;
 
 	g_return_val_if_fail(filename != NULL, NULL);
 
-	mimeinfo = procmime_scan_file_with_offset(filename, 0);
+	mimeinfo = procmime_scan_file_with_offset(filename, 0, short_scan);
 
 	return mimeinfo;
 }
 
-MimeInfo *procmime_scan_queue_file(const gchar *filename)
+MimeInfo *procmime_scan_file(const gchar *filename)
+{
+	return procmime_scan_file_full(filename, FALSE);
+}
+
+static MimeInfo *procmime_scan_file_short(const gchar *filename)
+{
+	return procmime_scan_file_full(filename, TRUE);
+}
+
+static MimeInfo *procmime_scan_queue_file_full(const gchar *filename, gboolean short_scan)
 {
 	FILE *fp;
 	MimeInfo *mimeinfo;
@@ -1938,9 +1990,19 @@ MimeInfo *procmime_scan_queue_file(const gchar *filename)
 	offset = ftell(fp);
 	fclose(fp);
 
-	mimeinfo = procmime_scan_file_with_offset(filename, offset);
+	mimeinfo = procmime_scan_file_with_offset(filename, offset, short_scan);
 
 	return mimeinfo;
+}
+
+MimeInfo *procmime_scan_queue_file(const gchar *filename)
+{
+	return procmime_scan_queue_file_full(filename, FALSE);
+}
+
+static MimeInfo *procmime_scan_queue_file_short(const gchar *filename)
+{
+	return procmime_scan_queue_file_full(filename, TRUE);
 }
 
 typedef enum {

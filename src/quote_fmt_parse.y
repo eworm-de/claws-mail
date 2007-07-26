@@ -426,7 +426,7 @@ static void quote_fmt_show_msg(MsgInfo *msginfo, const gchar *body,
 	if (body)
 		fp = str_open_as_stream(body);
 	else {
-		if (procmime_msginfo_is_encrypted(msginfo))
+		if (MSG_IS_ENCRYPTED(msginfo->flags))
 			fp = procmime_get_first_encrypted_text_content(msginfo);
 		else
 			fp = procmime_get_first_text_content(msginfo);
