@@ -1038,7 +1038,12 @@ void messageview_delete(MessageView *msgview)
 			procmsg_msginfo_set_flags(msginfo, MSG_DELETED, 0);
 			/* NOTE: does not update to next message in summaryview */
 		}
-	}		
+	}
+#ifdef MAEMO
+	if (msgview->window) {
+		messageview_destroy(msgview);
+	}
+#endif
 }
 
 /* 

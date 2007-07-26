@@ -1,3 +1,9 @@
+2007-07-26 [colin]	2.10.0cvs71
+
+	* src/messageview.c
+		Maemo: destroy messageview after trashing mail.
+		Maybe should be done on X11 too
+
 2007-07-26 [colin]	2.10.0cvs70
 
 	* src/folderview.c
