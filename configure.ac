@@ -11,7 +11,7 @@ MINOR_VERSION=10
 MICRO_VERSION=0
 INTERFACE_AGE=0
 BINARY_AGE=0
-EXTRA_VERSION=64
+EXTRA_VERSION=65
 EXTRA_RELEASE=
 EXTRA_GTK2_VERSION=
 
@@ -184,7 +184,7 @@ AC_ARG_WITH(manualdir,
 AC_SUBST(manualdir)
 
 AC_ARG_ENABLE(manual,
-	[  --disable-manual           Disable manual support],
+	[  --disable-manual           do not build manual],
 	[ac_cv_enable_manual=$enableval], [ac_cv_enable_manual=yes])
 
 AM_CONDITIONAL(BUILD_MANUAL, test x"$ac_cv_enable_manual" = xyes)
@@ -205,7 +205,7 @@ AC_CHECK_LIB(xpg4, setlocale)
 SM_LIBS=""
 dnl Check for LibSM
 AC_ARG_ENABLE(libsm,
-	[  --disable-libsm    Do not use libSM for session management.],
+	[  --disable-libsm    disable libSM support for session management.],
 	[ac_cv_enable_libsm=$enableval], [ac_cv_enable_libsm=yes])
 AC_MSG_CHECKING([whether to use LibSM])
 if test x"$ac_cv_enable_libsm" = xyes; then
@@ -331,7 +331,7 @@ LIBS=$syl_save_LIBS
 
 dnl check for IPv6 option
 AC_ARG_ENABLE(ipv6,
-	[  --disable-ipv6           Disable IPv6 support],
+	[  --disable-ipv6           disable build IPv6 support],
 	[ac_cv_enable_ipv6=$enableval], [ac_cv_enable_ipv6=yes])
 
 dnl automated checks for IPv6 support.
@@ -359,7 +359,7 @@ fi
 
 dnl Check for OpenSSL
 AC_ARG_ENABLE(openssl,
-	[  --disable-openssl    Do not use OpenSSL for SSL support.],
+	[  --disable-openssl    disable SSL (OpenSSL) support.],
 	[ac_cv_enable_openssl=$enableval], [ac_cv_enable_openssl=yes])
 AC_MSG_CHECKING([whether to use OpenSSL])
 if test x"$ac_cv_enable_openssl" = xyes; then
@@ -412,7 +412,7 @@ dnl Checks for GTK
 PKG_CHECK_MODULES(GTK, gtk+-2.0 >= 2.6)
 
 dnl --disable-deprecated switch for GTK2 purification
-AC_ARG_ENABLE(deprecated, [  --disable-deprecated  Disable deprecated GTK functions. ],
+AC_ARG_ENABLE(deprecated, [  --disable-deprecated  disable deprecated GTK functions. ],
 			  [GTK_CFLAGS="$GTK_CFLAGS -DG_DISABLE_DEPRECATED -DGTK_DISABLE_DEPRECATED"], [])
 
 AC_SUBST(GTK_CFLAGS)
@@ -420,7 +420,7 @@ AC_SUBST(GTK_LIBS)
 
 dnl GNU/Aspell is used for spell checking
 AC_ARG_ENABLE(aspell,
-	[  --disable-aspell         Disable GNU/aspell support [default=yes]],
+	[  --disable-aspell         disable GNU/aspell support],
 	[ac_cv_enable_aspell=$enableval], [ac_cv_enable_aspell=yes])
 AC_MSG_CHECKING([whether to use GNU/aspell])
 if test $ac_cv_enable_aspell = yes; then
@@ -447,7 +447,7 @@ fi
 
 dnl Maemo platform
 AC_ARG_ENABLE(maemo,
-	[  --enable-maemo   Build for the Maemo platform [default=no]],
+	[  --enable-maemo   build for the Maemo platform [default=no]],
 	[ac_cv_enable_maemo=$enableval], [ac_cv_enable_maemo=no])
 if test $ac_cv_enable_maemo = yes; then
 	PKG_CHECK_MODULES(MAEMO, libosso hildon-libs hildon-fm gnome-vfs-2.0, ac_cv_enable_maemo=yes,
@@ -470,7 +470,7 @@ fi
 
 dnl Check for X-Face support
 AC_ARG_ENABLE(compface,
-	[  --disable-compface      Do not use compface (X-Face)],
+	[  --disable-compface      disable compface (X-Face) support],
 	[ac_cv_enable_compface=$enableval], [ac_cv_enable_compface=yes])
 AC_MSG_CHECKING([whether to use compface])
 if test x"$ac_cv_enable_compface" = xyes; then
@@ -490,7 +490,7 @@ fi
 
 dnl check for pthread support
 AC_ARG_ENABLE(pthread,
-	[  --disable-pthread           Disable pthread support],
+	[  --disable-pthread           disable pthread support],
 	[ac_cv_enable_pthread=$enableval], [ac_cv_enable_pthread=yes])
 AC_MSG_CHECKING([whether to use pthread])
 if test x$ac_cv_enable_pthread = xno; then
@@ -551,7 +551,7 @@ LIBS="$LIBS $LIBRESOLV"
 dnl for LDAP support in addressbook
 dnl no check for libraries; dynamically loaded
 AC_ARG_ENABLE(ldap,
-	[  --disable-ldap         Do not build LDAP support [default=yes]],
+	[  --disable-ldap         disable LDAP support],
 	[ac_cv_enable_ldap=$enableval], [ac_cv_enable_ldap=yes])
 AC_MSG_CHECKING([whether to use LDAP])
 if test x"$ac_cv_enable_ldap" = xno; then
@@ -605,7 +605,7 @@ fi
 dnl for JPilot support in addressbook
 dnl no check for libraries; these are dynamically loaded
 AC_ARG_ENABLE(jpilot,
-	[  --disable-jpilot         Enable JPilot support [default=yes]],
+	[  --disable-jpilot         disable JPilot support],
 	[ac_cv_enable_jpilot=$enableval], [ac_cv_enable_jpilot=yes])
 AC_MSG_CHECKING([whether to use JPilot])
 if test "$ac_cv_enable_jpilot" = yes; then
@@ -633,7 +633,7 @@ fi
 dnl #######################################################################
 dnl # Check for startup notification
 dnl #######################################################################
-AC_ARG_ENABLE(startup-notification, [  --disable-startup-notification    compile without startup notification support],,enable_startup_notification=yes)
+AC_ARG_ENABLE(startup-notification, [  --disable-startup-notification    disable startup notification support],,enable_startup_notification=yes)
 
 if test "x$enable_startup_notification" = "xyes"; then
 	PKG_CHECK_MODULES(STARTUP_NOTIFICATION, libstartup-notification-1.0 >= 0.5,
@@ -660,7 +660,7 @@ PLUGINS=""
 dnl --- Trayicon ---
 AC_MSG_CHECKING([whether to build Trayicon plugin])
 AC_ARG_ENABLE(trayicon-plugin,
-	[  --disable-trayicon-plugin         Do not build System Tray Icon plugin],
+	[  --disable-trayicon-plugin         do not build System Tray Icon plugin],
 	[ac_cv_enable_trayicon_plugin=$enableval], [ac_cv_enable_trayicon_plugin=yes])
 if test x"$ac_cv_enable_trayicon_plugin" = xyes; then
 	AC_MSG_RESULT(yes)
@@ -673,7 +673,7 @@ AM_CONDITIONAL(BUILD_TRAYICON_PLUGIN, test x"$ac_cv_enable_trayicon_plugin" = xy
 dnl --- SpamAssassin ---
 AC_MSG_CHECKING([whether to build SpamAssassin plugin])
 AC_ARG_ENABLE(spamassassin-plugin,
-	[  --disable-spamassassin-plugin      Build SpamAssassin plugin [default=yes]],
+	[  --disable-spamassassin-plugin      do not build SpamAssassin plugin],
 	[ac_cv_enable_spamassassin_plugin=$enableval], [ac_cv_enable_spamassassin_plugin=yes])
 if test x"$ac_cv_enable_spamassassin_plugin" = xyes; then
 	AC_MSG_RESULT(yes)
@@ -688,7 +688,7 @@ AM_CONDITIONAL(BUILD_SPAMASSASSIN_PLUGIN, test x"$ac_cv_enable_spamassassin_plug
 dnl --- Bogofilter ---
 AC_MSG_CHECKING([whether to build Bogofilter plugin])
 AC_ARG_ENABLE(bogofilter-plugin,
-	[  --disable-bogofilter-plugin      Build bogofilter plugin [default=yes]],
+	[  --disable-bogofilter-plugin      do not build bogofilter plugin],
 	[ac_cv_enable_bogofilter_plugin=$enableval], [ac_cv_enable_bogofilter_plugin=yes])
 if test x"$ac_cv_enable_bogofilter_plugin" = xyes; then
 	AC_MSG_RESULT(yes)
@@ -702,7 +702,7 @@ AM_CONDITIONAL(BUILD_BOGOFILTER_PLUGIN, test x"$ac_cv_enable_bogofilter_plugin" 
 dnl --- PGP/CORE ---
 AC_MSG_CHECKING([whether to build PGP/CORE plugin])
 AC_ARG_ENABLE(pgpcore-plugin,
-	[  --disable-pgpcore-plugin           Do not build PGP/Core plugin],
+	[  --disable-pgpcore-plugin           do not build PGP/Core plugin],
 	[ac_cv_enable_pgpcore_plugin=$enableval], [ac_cv_enable_pgpcore_plugin=yes])
 if test x"$ac_cv_enable_pgpcore_plugin" = xyes; then
 	AC_MSG_RESULT(yes)
@@ -726,7 +726,7 @@ AM_CONDITIONAL(BUILD_PGPCORE_PLUGIN, test x"$ac_cv_enable_pgpcore_plugin" = xyes
 
 AC_MSG_CHECKING([whether to build PGP/MIME plugin])
 AC_ARG_ENABLE(pgpmime-plugin,
-	[  --disable-pgpmime-plugin           Do not build PGP/MIME plugin],
+	[  --disable-pgpmime-plugin           do not build PGP/MIME plugin],
 	[ac_cv_enable_pgpmime_plugin=$enableval], [ac_cv_enable_pgpmime_plugin=yes])
 if test x"$ac_cv_enable_pgpmime_plugin" = xyes; then
 	AC_MSG_RESULT(yes)
@@ -743,7 +743,7 @@ AM_CONDITIONAL(BUILD_PGPMIME_PLUGIN, test x"$ac_cv_enable_pgpmime_plugin" = xyes
 
 AC_MSG_CHECKING([whether to build PGP/Inline plugin])
 AC_ARG_ENABLE(pgpinline-plugin,
-	[  --disable-pgpinline-plugin           Do not build PGP/Inline plugin],
+	[  --disable-pgpinline-plugin           do not build PGP/Inline plugin],
 	[ac_cv_enable_pgpinline_plugin=$enableval], [ac_cv_enable_pgpinline_plugin=yes])
 if test x"$ac_cv_enable_pgpinline_plugin" = xyes; then
 	AC_MSG_RESULT(yes)
@@ -761,7 +761,7 @@ AM_CONDITIONAL(BUILD_PGPINLINE_PLUGIN, test x"$ac_cv_enable_pgpinline_plugin" = 
 dnl --- Dillo Viewer ---
 AC_MSG_CHECKING([whether to build Dillo plugin])
 AC_ARG_ENABLE(dillo-viewer-plugin,
-	[  --disable-dillo-viewer-plugin     Do not build Dillo plugin for html mail rendering],
+	[  --disable-dillo-viewer-plugin     do not build Dillo plugin for html mail rendering],
 	[ac_cv_enable_dillo_viewer_plugin=$enableval], [ac_cv_enable_dillo_viewer_plugin=yes])
 if test x"$ac_cv_enable_dillo_viewer_plugin" = xyes; then
 	AC_MSG_RESULT(yes)
@@ -773,7 +773,7 @@ AM_CONDITIONAL(BUILD_DILLO_VIEWER_PLUGIN, test x"$ac_cv_enable_dillo_viewer_plug
 
 dnl --- Demo ---
 AC_ARG_ENABLE(demo-plugin,
-	[  --enable-demo-plugin              Build demo plugin [default=no]],
+	[  --enable-demo-plugin              build demo plugin],
 	[ac_cv_enable_demo_plugin=$enableval], [ac_cv_enable_demo_plugin=no])
 if test x"$ac_cv_enable_demo_plugin" = xyes; then
 	PLUGINS="demo $PLUGINS"
@@ -783,7 +783,7 @@ AM_CONDITIONAL(BUILD_DEMO_PLUGIN, test x"$ac_cv_enable_demo_plugin" = xyes)
 dnl --- ClamAV ---
 AC_MSG_CHECKING([whether to build ClamAV plugin])
 AC_ARG_ENABLE(clamav-plugin,
-	[  --disable-clamav-plugin           Do not build Clam AntiVirus plugin],
+	[  --disable-clamav-plugin           do not build Clam AntiVirus plugin],
 	[ac_cv_enable_clamav_plugin=$enableval], [ac_cv_enable_clamav_plugin=yes])
 if test x"$ac_cv_enable_clamav_plugin" = xyes; then
 	AC_MSG_RESULT(yes)
@@ -804,7 +804,7 @@ AM_CONDITIONAL(BUILD_CLAMAV_PLUGIN, test x"$ac_cv_enable_clamav_plugin" = xyes)
 dnl Libetpan
 AC_MSG_CHECKING([whether to use libetpan])
 AC_ARG_ENABLE(libetpan,
-	[  --disable-libetpan		Do not compile IMAP4 support with libetpan],
+	[  --disable-libetpan		disable IMAP4 (libetpan) support],
 	[ac_cv_enable_libetpan=$enableval], [ac_cv_enable_libetpan=yes])
 if test x"$ac_cv_enable_libetpan" = xyes; then
 	AC_MSG_RESULT(yes)
@@ -846,7 +846,7 @@ AM_CONDITIONAL(CLAWS_LIBETPAN, test "x$libetpan_result" = "xyes")
 dnl Libgnomeprint
 AC_MSG_CHECKING([whether to use libgnomeprint])
 AC_ARG_ENABLE(gnomeprint,
-	[  --disable-gnomeprint		Do not use libgnomeprint for printing],
+	[  --disable-gnomeprint		disable libgnomeprint support],
 	[ac_cv_enable_gnomeprint=$enableval], [ac_cv_enable_gnomeprint=yes])
 if test x$ac_cv_enable_gnomeprint = xyes; then
 	AC_MSG_RESULT(yes)
@@ -866,7 +866,7 @@ AM_CONDITIONAL(CLAWS_GNOMEPRINT, test x"$ac_cv_enable_gnomeprint" = x"yes")
 
 AC_MSG_CHECKING([whether to use valgrind])
 AC_ARG_ENABLE(valgrind,
-	[  --disable-valgrind		Do not use valgrind for debugging],
+	[  --disable-valgrind		disable valgrind support for debugging],
 	[ac_cv_enable_valgrind=$enableval], [ac_cv_enable_valgrind=yes])
 if test x$ac_cv_enable_valgrind = xyes; then
 	AC_MSG_RESULT(yes)

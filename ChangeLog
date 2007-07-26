@@ -1,3 +1,8 @@
+2007-07-26 [paul]	2.10.0cvs65
+
+	* configure.ac
+		standardise ./configure --help messages
+
 2007-07-26 [colin]	2.10.0cvs64
 
 	* src/addressbook.c
