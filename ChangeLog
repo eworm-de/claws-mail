@@ -1,3 +1,9 @@
+2007-07-26 [colin]	2.10.0cvs64
+
+	* src/addressbook.c
+	* src/editaddress.c
+		Fix two vCard-related crashes
+
 2007-07-25 [colin]	2.10.0cvs63
 
 	* src/inc.c

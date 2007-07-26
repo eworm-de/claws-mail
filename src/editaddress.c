@@ -1387,7 +1387,7 @@ ItemPerson *addressbook_edit_person( AddressBookFile *abf, ItemFolder *parent_fo
 	current_person = person;
 	current_parent_folder = parent_folder;
 	edit_person_close_post_update_cb = post_update_cb;
-	personeditdlg.ldap = (abf->type == ADBOOKTYPE_LDAP)? TRUE : FALSE;
+	personeditdlg.ldap = (abf && abf->type == ADBOOKTYPE_LDAP)? TRUE : FALSE;
 
 	if( !personeditdlg.container )
 		addressbook_edit_person_create(parent_container, &cancelled);

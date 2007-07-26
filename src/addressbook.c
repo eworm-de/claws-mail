@@ -1467,7 +1467,7 @@ static void addressbook_del_clicked(GtkButton *button, gpointer data)
 					addritem_folder_remove_person(ADAPTER_FOLDER(pobj)->itemFolder, item);
 				item = addrbook_remove_person( abf, item );
 #ifdef USE_LDAP
-				if (ds->type == ADDR_IF_LDAP) {
+				if (ds && ds->type == ADDR_IF_LDAP) {
 					LdapServer *server = ds->rawDataSource;
 					ldapsvr_set_modified(server, TRUE);
 					ldapsvr_update_book(server, item);
@@ -1821,10 +1821,10 @@ static void addressbook_tree_selected(GtkCTree *ctree, GtkCTreeNode *node,
 
 			/* Load folders into the tree */
 			rootFolder = addrindex_ds_get_root_folder( ds );
-			if( ds->type == ADDR_IF_JPILOT ) {
+			if( ds && ds->type == ADDR_IF_JPILOT ) {
 				aot = ADDR_CATEGORY;
 			}
-			else if( ds->type == ADDR_IF_LDAP ) {
+			else if( ds && ds->type == ADDR_IF_LDAP ) {
 				aot = ADDR_LDAP_QUERY;
 			}
 			else {
@@ -1926,7 +1926,7 @@ static void addressbook_list_menu_setup( void ) {
 			if( ! addrselect_test_empty( _addressSelect_ ) ) canCut = TRUE;
 			canDelete = canEdit;
 		}
-		if( iface->type == ADDR_IF_LDAP ) {
+		if( iface && iface->type == ADDR_IF_LDAP ) {
 			if( obj ) canBrowse = TRUE;
 			canEdit = TRUE;
 			canDelete = TRUE;
@@ -2927,7 +2927,7 @@ static ItemFolder * addressbook_setup_subf(
 	/* Setup a query */
 	if( *title == '\0' || strlen( title ) < 1 ) return NULL;
 
-	if( ds->type == ADDR_IF_LDAP ) {
+	if( ds && ds->type == ADDR_IF_LDAP ) {
 #if USE_LDAP
 		aoType = ADDR_LDAP_QUERY;
 #endif
@@ -3013,7 +3013,7 @@ static void addressbook_new_address_cb( gpointer data, guint action, GtkWidget *
 			ItemPerson *person;
 			ItemFolder *folder = NULL;
 #ifdef USE_LDAP
-			if (abf->type == ADDR_IF_LDAP) {
+			if (abf && abf->type == ADDR_IF_LDAP) {
 				GtkCTreeNode *parentNode;
 				ds = addressbook_find_datasource( GTK_CTREE_NODE( addrbook.treeSelected ) );
 				if( ds == NULL ) return;
@@ -3040,7 +3040,7 @@ static void addressbook_new_address_cb( gpointer data, guint action, GtkWidget *
 								  addressbook_new_address_from_book_post_cb,
 								  TRUE );
 #ifdef USE_LDAP
-			if (abf->type == ADDR_IF_LDAP) {
+			if (abf && abf->type == ADDR_IF_LDAP) {
 				LdapServer *server = ds->rawDataSource;
 				ldapsvr_set_modified(server, TRUE);
 				ldapsvr_update_book(server, NULL);
@@ -3062,7 +3062,7 @@ static void addressbook_new_address_cb( gpointer data, guint action, GtkWidget *
 		ItemFolder *folder = ADAPTER_FOLDER(pobj)->itemFolder;
 		ItemPerson *person;
 #ifdef USE_LDAP
-		if (abf->type == ADDR_IF_LDAP) {
+		if (abf && abf->type == ADDR_IF_LDAP) {
 			GtkCTreeNode *parentNode;
 			ds = addressbook_find_datasource( GTK_CTREE_NODE( addrbook.treeSelected ) );
 			if( ds == NULL ) return;
@@ -3090,7 +3090,7 @@ static void addressbook_new_address_cb( gpointer data, guint action, GtkWidget *
 							  addressbook_new_address_from_folder_post_cb,
 							  TRUE );
 #ifdef USE_LDAP
-		if (abf->type == ADDR_IF_LDAP) {
+		if (abf && abf->type == ADDR_IF_LDAP) {
 			LdapServer *server = ds->rawDataSource;
 			ldapsvr_set_modified(server, TRUE);
 			ldapsvr_update_book(server, NULL);
@@ -3263,7 +3263,7 @@ static void addressbook_edit_address( gpointer data, guint action, GtkWidget *wi
 										   (prefs_common.addressbook_use_editaddress_dialog||force_focus) )
 				  != NULL ) { 
 #ifdef USE_LDAP
-				if (abf->type == ADDR_IF_LDAP) {
+				if (abf && abf->type == ADDR_IF_LDAP) {
 					ldapsvr_set_modified( (LdapServer *) abf, TRUE );
 					person->status = UPDATE_ENTRY;
 				}
@@ -3282,7 +3282,7 @@ static void addressbook_edit_address( gpointer data, guint action, GtkWidget *wi
 									  (prefs_common.addressbook_use_editaddress_dialog||force_focus) )
 			!= NULL ) {
 #ifdef USE_LDAP
-				if (abf->type == ADDR_IF_LDAP) {
+				if (abf && abf->type == ADDR_IF_LDAP) {
 					ldapsvr_set_modified( (LdapServer *) abf, TRUE );
 					person->status = UPDATE_ENTRY;
 				}
@@ -4342,7 +4342,7 @@ static void addressbook_perform_search(
 	/* Setup a query */
 	if( *searchTerm == '\0' || strlen( searchTerm ) < 1 ) return;
 
-	if( ds->type == ADDR_IF_LDAP ) {
+	if( ds && ds->type == ADDR_IF_LDAP ) {
 #if USE_LDAP
 		aoType = ADDR_LDAP_QUERY;
 #endif
@@ -4471,7 +4471,7 @@ static void addressbook_browse_entry_cb(void)
 		return;
 	}
 
-	if( iface->type == ADDR_IF_LDAP ) {
+	if( iface && iface->type == ADDR_IF_LDAP ) {
 		browseldap_entry(ds, person->externalID);
 	}
 }
