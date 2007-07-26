@@ -187,6 +187,9 @@ static void toggle_message_cb	 (MainWindow	*mainwin,
 static void toggle_toolbar_cb	 (MainWindow	*mainwin,
 				  guint		 action,
 				  GtkWidget	*widget);
+static void toggle_col_headers_cb(MainWindow	*mainwin,
+				  guint		 action,
+				  GtkWidget	*widget);
 #ifndef MAEMO
 static void toggle_statusbar_cb	 (MainWindow	*mainwin,
 				  guint		 action,
@@ -562,6 +565,8 @@ static GtkItemFactoryEntry mainwin_entries[] =
 	{N_("/_View/Show or hi_de/Status _bar"),
 						NULL, toggle_statusbar_cb, 0, "<ToggleItem>"},
 #endif
+	{N_("/_View/Show or hi_de/Column headers"),
+						NULL, toggle_col_headers_cb, 0, "<ToggleItem>"},
 	{N_("/_View/Set displayed _columns"),	NULL, NULL, 0, "<Branch>"},
 	{N_("/_View/Set displayed _columns/in _Folder list..."),	NULL, set_folder_display_item_cb, 0, NULL},
 	{N_("/_View/Set displayed _columns/in _Message list..."),NULL, set_summary_display_item_cb, 0, NULL},
@@ -1669,6 +1674,10 @@ MainWindow *main_window_create()
 	gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM(menuitem),
 				       prefs_common.show_statusbar);
 #endif	
+	menuitem = gtk_item_factory_get_item
+		(ifactory, "/View/Show or hide/Column headers");
+	gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM(menuitem),
+				       prefs_common.show_col_headers);
 	/* set account selection menu */
 	ac_menu = gtk_item_factory_get_widget
 		(ifactory, "/Configuration/Change current account");
@@ -3408,6 +3417,22 @@ static void main_window_reply_cb(MainWindow *mainwin, guint action,
 	g_slist_free(msginfo_list);
 }
 
+static void toggle_col_headers_cb(MainWindow *mainwin, guint action,
+				GtkWidget *widget)
+{
+	FolderView *folderview = mainwin->folderview;
+	SummaryView *summaryview = mainwin->summaryview;
+
+	if (GTK_CHECK_MENU_ITEM(widget)->active) {
+		gtk_clist_column_titles_show(GTK_CLIST(folderview->ctree));
+		gtk_clist_column_titles_show(GTK_CLIST(summaryview->ctree));
+		prefs_common.show_col_headers = TRUE;
+	} else {
+		gtk_clist_column_titles_hide(GTK_CLIST(folderview->ctree));
+		gtk_clist_column_titles_hide(GTK_CLIST(summaryview->ctree));
+		prefs_common.show_col_headers = FALSE;
+	}
+}
 
 #ifndef MAEMO
 static void toggle_statusbar_cb(MainWindow *mainwin, guint action,

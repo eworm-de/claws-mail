@@ -5589,9 +5589,8 @@ static GtkWidget *summary_ctree_create(SummaryView *summaryview)
 	ctree = gtk_sctree_new_with_titles
 		(N_SUMMARY_COLS, col_pos[S_COL_SUBJECT], titles);
 
-#ifdef MAEMO
-	gtk_clist_column_titles_hide(GTK_CLIST(ctree));
-#endif
+	if (prefs_common.show_col_headers == FALSE)
+		gtk_clist_column_titles_hide(GTK_CLIST(ctree));
 
 	gtk_clist_set_selection_mode(GTK_CLIST(ctree), GTK_SELECTION_EXTENDED);
 	gtk_clist_set_column_justification(GTK_CLIST(ctree), col_pos[S_COL_MARK],

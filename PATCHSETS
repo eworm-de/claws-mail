@@ -2723,3 +2723,4 @@
 ( cvs diff -u -r 1.83.2.113 -r 1.83.2.114 src/mimeview.c;  cvs diff -u -r 1.75.2.43 -r 1.75.2.44 src/matcher.c;  cvs diff -u -r 1.9.2.20 -r 1.9.2.21 src/common/ssl.c;  ) > 2.10.0cvs67.patchset
 ( cvs diff -u -r 1.382.2.395 -r 1.382.2.396 src/compose.c;  cvs diff -u -r 1.4.2.10 -r 1.4.2.11 src/ldapserver.c;  cvs diff -u -r 1.49.2.93 -r 1.49.2.94 src/procmime.c;  cvs diff -u -r 1.17.2.18 -r 1.17.2.19 src/procmime.h;  cvs diff -u -r 1.22.2.34 -r 1.22.2.35 src/quote_fmt_parse.y;  ) > 2.10.0cvs68.patchset
 ( cvs diff -u -r 1.49.2.94 -r 1.49.2.95 src/procmime.c;  ) > 2.10.0cvs69.patchset
+( cvs diff -u -r 1.207.2.169 -r 1.207.2.170 src/folderview.c;  cvs diff -u -r 1.274.2.201 -r 1.274.2.202 src/mainwindow.c;  cvs diff -u -r 1.204.2.143 -r 1.204.2.144 src/prefs_common.c;  cvs diff -u -r 1.103.2.89 -r 1.103.2.90 src/prefs_common.h;  cvs diff -u -r 1.395.2.314 -r 1.395.2.315 src/summaryview.c;  ) > 2.10.0cvs70.patchset

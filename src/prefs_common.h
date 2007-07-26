@@ -224,6 +224,7 @@ struct _PrefsCommon
 	ToolbarStyle toolbar_style;
 	gboolean toolbar_detachable;
 	gboolean show_statusbar;
+	gboolean show_col_headers;
 
 	gint folderview_vscrollbar_policy;
 

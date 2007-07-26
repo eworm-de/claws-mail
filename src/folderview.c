@@ -475,9 +475,9 @@ static GtkWidget *folderview_ctree_create(FolderView *folderview)
 	ctree = gtk_sctree_new_with_titles(N_FOLDER_COLS, col_pos[F_COL_FOLDER],
 					   titles);
 
-#ifdef MAEMO
-	gtk_clist_column_titles_hide(GTK_CLIST(ctree));
-#endif
+	if (prefs_common.show_col_headers == FALSE)
+		gtk_clist_column_titles_hide(GTK_CLIST(ctree));
+
 
 	gtk_clist_set_selection_mode(GTK_CLIST(ctree), GTK_SELECTION_BROWSE);
 	gtk_clist_set_column_justification(GTK_CLIST(ctree), col_pos[F_COL_NEW],
