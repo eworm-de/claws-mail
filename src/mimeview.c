@@ -1059,7 +1059,7 @@ static void check_signature_cb(GtkWidget *widget, gpointer user_data)
 #endif
 	noticeview_set_text(mimeview->siginfoview, _("Checking signature..."));
 	GTK_EVENTS_FLUSH();
-#if (defined USE_PTHREAD && defined __GLIBC__ && (__GLIBC__ > 2 || (__GLIBC__ == 2 && __GLIBC_MINOR__ >= 3)))
+#if (defined USE_PTHREAD && ((defined __GLIBC__ && (__GLIBC__ > 2 || (__GLIBC__ == 2 && __GLIBC_MINOR__ >= 3))) || !defined __GLIBC__))
 	/* let's do it non-blocking */
 	mimeview_check_sig_in_thread(mimeview);
 	if (!mimeview->check_data) /* let's check syncronously */

@@ -1,3 +1,10 @@
+2007-07-26 [colin]	2.10.0cvs67
+
+	* src/mimeview.c
+	* src/matcher.c
+	* src/common/ssl.c
+		Fix threads use on BSDs
+
 2007-07-26 [paul]	2.10.0cvs66
 
 	* src/gtk/prefswindow.c

@@ -657,7 +657,7 @@ static gboolean matcherprop_match_test(const MatcherProp *prop,
 	if (cmd == NULL)
 		return FALSE;
 
-#if (defined USE_PTHREAD && defined __GLIBC__ && (__GLIBC__ > 2 || (__GLIBC__ == 2 && __GLIBC_MINOR__ >= 3)))
+#if (defined USE_PTHREAD && ((defined __GLIBC__ && (__GLIBC__ > 2 || (__GLIBC__ == 2 && __GLIBC_MINOR__ >= 3))) || !defined __GLIBC__))
 	/* debug output */
 	if (debug_filtering_session
 			&& prefs_common.filtering_debug_level >= FILTERING_DEBUG_LEVEL_HIGH) {
