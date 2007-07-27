@@ -449,20 +449,26 @@ GtkTargetEntry summary_drag_types[2] =
 static GtkItemFactoryEntry summary_popup_entries[] =
 {
 	{N_("/_Reply"),			"<control>R", summary_reply_cb,	COMPOSE_REPLY, NULL},
+#ifndef MAEMO
 	{N_("/Repl_y to"),		NULL, NULL,		0, "<Branch>"},
 	{N_("/Repl_y to/_all"),		"<shift><control>R", summary_reply_cb,	COMPOSE_REPLY_TO_ALL, NULL},
 	{N_("/Repl_y to/_sender"),	NULL, summary_reply_cb,	COMPOSE_REPLY_TO_SENDER, NULL},
 	{N_("/Repl_y to/mailing _list"),
 					"<control>L", summary_reply_cb,	COMPOSE_REPLY_TO_LIST, NULL},
 	{"/---",			NULL, NULL,		0, "<Separator>"},
+#endif
 	{N_("/_Forward"),		"<control><alt>F", summary_reply_cb, COMPOSE_FORWARD_INLINE, NULL},
+#ifndef MAEMO
 	{N_("/For_ward as attachment"),	NULL, summary_reply_cb, COMPOSE_FORWARD_AS_ATTACH, NULL},
 	{N_("/Redirect"),	        NULL, summary_reply_cb, COMPOSE_REDIRECT, NULL},
+#endif
 	{"/---",			NULL, NULL,		0, "<Separator>"},
 	{N_("/M_ove..."),		"<control>O", summary_move_to,	0, NULL},
 	{N_("/_Copy..."),		"<shift><control>O", summary_copy_to,	0, NULL},
 	{N_("/Move to _trash"),		"<control>D", summary_delete_trash,	0, NULL},
+#ifndef MAEMO
 	{N_("/_Delete..."),		NULL, summary_delete, 0, NULL},
+#endif
 	{"/---",			NULL, NULL,		0, "<Separator>"},
 	{N_("/_Mark"),			NULL, NULL,		0, "<Branch>"},
 	{N_("/_Mark/_Mark"),		NULL, summary_mark,	0, NULL},
@@ -483,8 +489,10 @@ static GtkItemFactoryEntry summary_popup_entries[] =
 	{N_("/Ta_gs"),			NULL, NULL, 		0, NULL},
 
 	{"/---",			NULL, NULL,		0, "<Separator>"},
+#ifndef MAEMO
 	{N_("/Add sender to address boo_k"),
 					NULL, summary_add_address_cb, 0, NULL},
+#endif
 	{N_("/Create f_ilter rule"),	NULL, NULL,		0, "<Branch>"},
 	{N_("/Create f_ilter rule/_Automatically"),
 					NULL, summary_create_filter_cb, FILTER_BY_AUTO, NULL},
@@ -494,6 +502,7 @@ static GtkItemFactoryEntry summary_popup_entries[] =
 					NULL, summary_create_filter_cb, FILTER_BY_TO, NULL},
 	{N_("/Create f_ilter rule/by _Subject"),
 					NULL, summary_create_filter_cb, FILTER_BY_SUBJECT, NULL},
+#ifndef MAEMO
 	{N_("/Create processing rule"),	NULL, NULL,		0, "<Branch>"},
 	{N_("/Create processing rule/_Automatically"),
 					NULL, summary_create_processing_cb, FILTER_BY_AUTO, NULL},
@@ -503,15 +512,20 @@ static GtkItemFactoryEntry summary_popup_entries[] =
 					NULL, summary_create_processing_cb, FILTER_BY_TO, NULL},
 	{N_("/Create processing rule/by _Subject"),
 					NULL, summary_create_processing_cb, FILTER_BY_SUBJECT, NULL},
+#endif
 	{"/---",			NULL, NULL,		0, "<Separator>"},
 	{N_("/_View"),			NULL, NULL,		0, "<Branch>"},
 	{N_("/_View/Open in new _window"),
 					"<control><alt>N", summary_open_msg,	0, NULL},
 	{N_("/_View/Message _source"),	"<control>U", summary_view_source, 0, NULL},
+#ifndef MAEMO
 	{N_("/_View/All _headers"),	"<control>H", summary_show_all_header_cb, 0, "<ToggleItem>"},
+#endif
 	{"/---",			NULL, NULL,		0, "<Separator>"},
 	{N_("/_Save as..."),		"<control>S", summary_save_as,   0, NULL},
+#ifndef MAEMO
 	{N_("/_Print..."),		"<control>P", summary_print,   0, NULL},
+#endif
 };  /* see also list in menu_connect_identical_items() in menu.c if this changes */
 
 static const gchar *const col_label[N_SUMMARY_COLS] = {
@@ -1559,19 +1573,25 @@ void summary_set_menu_sensitive(SummaryView *summaryview)
 		SensitiveCond cond;
 	} entry[] = {
 		{"/Reply"			, M_HAVE_ACCOUNT|M_TARGET_EXIST},
+#ifndef MAEMO
 		{"/Reply to"			, M_HAVE_ACCOUNT|M_TARGET_EXIST},
 		{"/Reply to/all"		, M_HAVE_ACCOUNT|M_TARGET_EXIST},
 		{"/Reply to/sender"             , M_HAVE_ACCOUNT|M_TARGET_EXIST},
 		{"/Reply to/mailing list"       , M_HAVE_ACCOUNT|M_TARGET_EXIST},
+#endif
 
 		{"/Forward"			, M_HAVE_ACCOUNT|M_TARGET_EXIST},
+#ifndef MAEMO
 		{"/Forward as attachment"	, M_HAVE_ACCOUNT|M_TARGET_EXIST},
         	{"/Redirect"			, M_HAVE_ACCOUNT|M_TARGET_EXIST},
+#endif
 
 		{"/Move..."			, M_TARGET_EXIST|M_ALLOW_DELETE|M_NOT_NEWS},
 		{"/Copy..."			, M_TARGET_EXIST|M_EXEC},
 		{"/Move to trash"		, M_TARGET_EXIST|M_ALLOW_DELETE|M_NOT_NEWS},
+#ifndef MAEMO
 		{"/Delete..."			, M_TARGET_EXIST|M_ALLOW_DELETE},
+#endif
 
 		{"/Mark"			, M_TARGET_EXIST},
 		{"/Mark/Mark"   		, M_TARGET_EXIST},
@@ -1587,16 +1607,24 @@ void summary_set_menu_sensitive(SummaryView *summaryview)
 		{"/Color label"			, M_TARGET_EXIST},
 		{"/Tags"			, M_TARGET_EXIST},
 
+#ifndef MAEMO
 		{"/Add sender to address book"	, M_SINGLE_TARGET_EXIST},
+#endif
 		{"/Create filter rule"		, M_SINGLE_TARGET_EXIST|M_UNLOCKED},
+#ifndef MAEMO
 		{"/Create processing rule"	, M_SINGLE_TARGET_EXIST|M_UNLOCKED},
+#endif
 
 		{"/View"			, M_SINGLE_TARGET_EXIST},
 		{"/View/Open in new window"     , M_SINGLE_TARGET_EXIST},
 		{"/View/Message source"		, M_SINGLE_TARGET_EXIST},
+#ifndef MAEMO
 		{"/View/All headers"		, M_SINGLE_TARGET_EXIST},
+#endif
 		{"/Save as..."			, M_TARGET_EXIST},
+#ifndef MAEMO
 		{"/Print..."			, M_TARGET_EXIST},
+#endif
 		{NULL, 0}
 	};
 
@@ -1611,6 +1639,7 @@ void summary_set_menu_sensitive(SummaryView *summaryview)
 
 
 	summary_lock(summaryview);
+#ifndef MAEMO
 	menuitem = gtk_item_factory_get_widget(ifactory, "/View/All headers");
 	if (summaryview->messageview 
 	&&  summaryview->messageview->mimeview
@@ -1618,6 +1647,7 @@ void summary_set_menu_sensitive(SummaryView *summaryview)
 		gtk_check_menu_item_set_active
 			(GTK_CHECK_MENU_ITEM(menuitem),
 			 summaryview->messageview->mimeview->textview->show_all_headers);
+#endif
 	summary_unlock(summaryview);
 }
 

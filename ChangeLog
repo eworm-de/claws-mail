@@ -1,3 +1,8 @@
+2007-07-27 [colin]	2.10.0cvs72
+
+	* src/summaryview.c
+		Maemo: Remove less used menu items
+
 2007-07-26 [colin]	2.10.0cvs71
 
 	* src/messageview.c
