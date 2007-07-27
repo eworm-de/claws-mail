@@ -223,6 +223,7 @@ static void prefs_folder_item_general_create_widget_func(PrefsPage * page_,
 	GtkWidget *offlinesync_rec_checkbtn;
 	GtkTooltips *tooltips;
 
+	tooltips = gtk_tooltips_new();
 	page->item	   = item;
 
 	/* Table */
@@ -397,7 +398,6 @@ static void prefs_folder_item_general_create_widget_func(PrefsPage * page_,
 	folder_color_btn = gtk_button_new_with_label("");
 	gtk_widget_set_size_request(folder_color_btn, 36, 26);
   	gtk_box_pack_start (GTK_BOX(hbox), folder_color_btn, FALSE, FALSE, 0);
-	tooltips = gtk_tooltips_new();
 	gtk_tooltips_set_tip(tooltips, folder_color_btn,
 			     _("Pick color for folder"), NULL);
 
@@ -431,6 +431,10 @@ static void prefs_folder_item_general_create_widget_func(PrefsPage * page_,
 
 	/* Check folder for new mail */
 	checkbtn_newmailcheck = gtk_check_button_new_with_label(_("Scan for new mail"));
+	gtk_tooltips_set_tip(tooltips, checkbtn_newmailcheck,
+			     _("Turn this option on if mail is delivered directly "
+			       "to this folder by server side filtering on IMAP or "
+			       "by an external application"), NULL);
 	gtk_table_attach(GTK_TABLE(table), checkbtn_newmailcheck, 0, 2,
 			 rowcount, rowcount+1, GTK_EXPAND | GTK_FILL, GTK_FILL, 0, 0);
 	
@@ -464,20 +468,22 @@ static void prefs_folder_item_general_create_widget_func(PrefsPage * page_,
 	gtk_box_pack_start (GTK_BOX (hbox), hbox_spc, FALSE, FALSE, 0);
 	gtk_widget_set_size_request (hbox_spc, 12, -1);
 
-	label_offlinesync = gtk_label_new(_("Fetch bodies for the last"));
+	label_offlinesync = gtk_label_new(_("Fetch message bodies from the last"));
 	gtk_widget_show (label_offlinesync);
 	gtk_box_pack_start (GTK_BOX (hbox), label_offlinesync, FALSE, FALSE, 0);
 
 	entry_offlinesync = gtk_entry_new();
 	gtk_widget_set_size_request (entry_offlinesync, 64, -1);
 	gtk_widget_show (entry_offlinesync);
+	gtk_tooltips_set_tip(tooltips, entry_offlinesync, _("0: all bodies"), NULL);
 	gtk_box_pack_start (GTK_BOX (hbox), entry_offlinesync, FALSE, FALSE, 0);
 
-	label_end_offlinesync = gtk_label_new(_("days (0: all bodies)"));
+	label_end_offlinesync = gtk_label_new(_("days"));
 	gtk_widget_show (label_end_offlinesync);
 	gtk_box_pack_start (GTK_BOX (hbox), label_end_offlinesync, FALSE, FALSE, 0);
 
-	checkbtn_remove_old_offlinesync = gtk_check_button_new_with_label(_("Remove older bodies"));
+	checkbtn_remove_old_offlinesync = gtk_check_button_new_with_label(
+						_("Remove older messages bodies"));
 
 	hbox2 = gtk_hbox_new (FALSE, 8);
 	gtk_widget_show (hbox2);
