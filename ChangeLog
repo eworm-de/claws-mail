@@ -1,3 +1,12 @@
+2007-07-27 [paul]	2.10.0cvs75
+
+	* src/mainwindow.c
+	* src/manual.c
+	* src/manual.h
+	* src/gtk/gtkutils.c
+		make mainwindow's /Help/Manual point to the
+		remote copy if the local copy doesn't exist
+
 2007-07-27 [paul]	2.10.0cvs74
 
 	* src/Makefile.am

@@ -22,7 +22,7 @@
 
 typedef enum
 {
-	MANUAL_MANUAL_LOCAL,
+	MANUAL_MANUAL_CLAWS,
 	MANUAL_FAQ_CLAWS,
 } ManualType;
 

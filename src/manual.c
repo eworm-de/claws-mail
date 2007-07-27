@@ -92,7 +92,7 @@ gboolean manual_available(ManualType type)
     	gchar *dir = NULL, *uri = NULL;
 	
 	switch (type) {
-		case MANUAL_MANUAL_LOCAL:
+		case MANUAL_MANUAL_CLAWS:
 			dir = get_local_path_with_locale(MANUALDIR);
 			if (dir != NULL) {
 				uri = g_strconcat(dir, G_DIR_SEPARATOR_S, MANUAL_HTML_INDEX, NULL);
@@ -117,7 +117,7 @@ void manual_open(ManualType type, gchar *url_anchor)
 	gchar *dir;
 
 	switch (type) {
-		case MANUAL_MANUAL_LOCAL:
+		case MANUAL_MANUAL_CLAWS:
 			dir = get_local_path_with_locale(MANUALDIR);
 			if (dir != NULL) {
 				gchar *tmp_anchor = NULL;
@@ -129,6 +129,8 @@ void manual_open(ManualType type, gchar *url_anchor)
 						NULL);
 				g_free(tmp_anchor);
 				g_free(dir);
+			} else {
+				uri = g_strconcat(MANUAL_URI, NULL);
 			}
 			break;
 		case MANUAL_FAQ_CLAWS:
@@ -144,5 +146,5 @@ void manual_open(ManualType type, gchar *url_anchor)
 
 void manual_open_with_anchor_cb(GtkWidget *widget, gchar *url_anchor)
 {
-	manual_open(MANUAL_MANUAL_LOCAL, url_anchor);
+	manual_open(MANUAL_MANUAL_CLAWS, url_anchor);
 }

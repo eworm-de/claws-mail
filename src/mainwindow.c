@@ -916,7 +916,7 @@ static GtkItemFactoryEntry mainwin_entries[] =
 	{N_("/_Configuration/Plu_gins..."),  	NULL, plugins_open_cb, 0, NULL},
 
 	{N_("/_Help"),				NULL, NULL, 0, "<Branch>"},
-	{N_("/_Help/_Manual"),			NULL, manual_open_cb, MANUAL_MANUAL_LOCAL, NULL},
+	{N_("/_Help/_Manual"),			NULL, manual_open_cb, MANUAL_MANUAL_CLAWS, NULL},
 	{N_("/_Help/_Online User-contributed FAQ"),	
 						NULL, manual_open_cb, MANUAL_FAQ_CLAWS, NULL},
 	{N_("/_Help/Icon _Legend"),		NULL, legend_open_cb, 0, NULL},
@@ -1406,8 +1406,6 @@ MainWindow *main_window_create()
 
 /*	gtk_widget_show(gtk_item_factory_get_item(ifactory,"/Message/Mailing-List"));
 	main_create_mailing_list_menu (mainwin, NULL); */
-
-	menu_set_sensitive(ifactory, "/Help/Manual", manual_available(MANUAL_MANUAL_LOCAL));
 
 	if (prefs_common.toolbar_detachable) {
 		handlebox = gtk_handle_box_new();
