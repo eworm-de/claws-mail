@@ -220,6 +220,7 @@ void summary_thread_build	  (SummaryView		*summaryview);
 void summary_expand_threads	  (SummaryView		*summaryview);
 void summary_collapse_threads	  (SummaryView		*summaryview);
 void summary_toggle_ignore_thread (SummaryView		*summaryview);
+void summary_toggle_watch_thread  (SummaryView		*summaryview);
 
 void summary_filter		  (SummaryView		*summaryview,
 				   gboolean		 selected_only);
@@ -282,6 +283,8 @@ void summary_mark_as_spam	  (SummaryView 		*summaryview,
 				   GtkWidget 		*widget);
 void summary_ignore_thread	  (SummaryView 		*summaryview);
 void summary_unignore_thread	  (SummaryView 		*summaryview);
+void summary_watch_thread	  (SummaryView 		*summaryview);
+void summary_unwatch_thread	  (SummaryView 		*summaryview);
 
 void summary_add_address	  (SummaryView		*summaryview);
 void summary_select_all		  (SummaryView		*summaryview);

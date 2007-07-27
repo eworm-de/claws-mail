@@ -433,6 +433,10 @@ static gboolean filteringaction_apply(FilteringAction * action, MsgInfo * info)
                 procmsg_msginfo_set_flags(info, MSG_IGNORE_THREAD, 0);
                 return TRUE;
 
+	case MATCHACTION_WATCH:
+                procmsg_msginfo_set_flags(info, MSG_WATCH_THREAD, 0);
+                return TRUE;
+
 	case MATCHACTION_ADD_TO_ADDRESSBOOK:
 		{
 			AddressDataSource *book = NULL;
@@ -912,6 +916,7 @@ gchar *filteringaction_to_string(gchar *dest, gint destlen, FilteringAction *act
 	case MATCHACTION_STOP:
 	case MATCHACTION_HIDE:
 	case MATCHACTION_IGNORE:
+	case MATCHACTION_WATCH:
 	case MATCHACTION_CLEAR_TAGS:
 		g_snprintf(dest, destlen, "%s", command_str);
 		return dest;

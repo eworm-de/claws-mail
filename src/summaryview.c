@@ -125,6 +125,8 @@ static GdkPixmap *forwardedxpm;
 static GdkBitmap *forwardedxpmmask;
 static GdkPixmap *ignorethreadxpm;
 static GdkBitmap *ignorethreadxpmmask;
+static GdkPixmap *watchthreadxpm;
+static GdkBitmap *watchthreadxpmmask;
 static GdkPixmap *lockedxpm;
 static GdkBitmap *lockedxpmmask;
 static GdkPixmap *spamxpm;
@@ -479,6 +481,8 @@ static GtkItemFactoryEntry summary_popup_entries[] =
 	{N_("/_Mark/Mark all read"),    NULL, summary_mark_all_read, 0, NULL},
 	{N_("/_Mark/Ignore thread"),	NULL, summary_ignore_thread, 0, NULL},
 	{N_("/_Mark/Unignore thread"),	NULL, summary_unignore_thread, 0, NULL},
+	{N_("/_Mark/Watch thread"),	NULL, summary_watch_thread, 0, NULL},
+	{N_("/_Mark/Unwatch thread"),	NULL, summary_unwatch_thread, 0, NULL},
 	{N_("/_Mark/---"),		NULL, NULL, 0, "<Separator>"},
 	{N_("/_Mark/Mark as _spam"),	NULL, summary_mark_as_spam, 1, NULL},
 	{N_("/_Mark/Mark as _ham"),	NULL, summary_mark_as_spam, 0, NULL},
@@ -929,6 +933,8 @@ void summary_init(SummaryView *summaryview)
 			 &lockedxpm, &lockedxpmmask);
 	stock_pixmap_gdk(summaryview->ctree, STOCK_PIXMAP_IGNORETHREAD,
 			 &ignorethreadxpm, &ignorethreadxpmmask);
+	stock_pixmap_gdk(summaryview->ctree, STOCK_PIXMAP_WATCHTHREAD,
+			 &watchthreadxpm, &watchthreadxpmmask);
 	stock_pixmap_gdk(summaryview->ctree, STOCK_PIXMAP_CLIP_KEY,
 			 &clipkeyxpm, &clipkeyxpmmask);
 	stock_pixmap_gdk(summaryview->ctree, STOCK_PIXMAP_KEY,
@@ -3490,6 +3496,9 @@ static void summary_set_row_marks(SummaryView *summaryview, GtkCTreeNode *row)
 	if (MSG_IS_IGNORE_THREAD(flags)) {
 		gtk_ctree_node_set_pixmap(ctree, row, col_pos[S_COL_STATUS],
 					  ignorethreadxpm, ignorethreadxpmmask);
+	} else if (MSG_IS_WATCH_THREAD(flags)) {
+		gtk_ctree_node_set_pixmap(ctree, row, col_pos[S_COL_STATUS],
+					  watchthreadxpm, watchthreadxpmmask);
 	} else if (MSG_IS_SPAM(flags)) {
 		gtk_ctree_node_set_pixmap(ctree, row, col_pos[S_COL_STATUS],
 					  spamxpm, spamxpmmask);
@@ -6694,6 +6703,7 @@ static void summary_ignore_thread_func(GtkCTree *ctree, GtkCTreeNode *row, gpoin
 	msginfo = gtk_ctree_node_get_row_data(ctree, row);
 	g_return_if_fail(msginfo);
 
+	summary_msginfo_unset_flags(msginfo, MSG_WATCH_THREAD, 0);
 	summary_msginfo_change_flags(msginfo, MSG_IGNORE_THREAD, 0, MSG_NEW | MSG_UNREAD, 0);
 
 	summary_set_row_marks(summaryview, row);
@@ -6780,6 +6790,100 @@ void summary_toggle_ignore_thread(SummaryView *summaryview)
 		summary_ignore_thread(summaryview);
 }
 
+static void summary_watch_thread_func(GtkCTree *ctree, GtkCTreeNode *row, gpointer data)
+{
+	SummaryView *summaryview = (SummaryView *) data;
+	MsgInfo *msginfo;
+
+	msginfo = gtk_ctree_node_get_row_data(ctree, row);
+	g_return_if_fail(msginfo);
+
+	summary_msginfo_change_flags(msginfo, MSG_WATCH_THREAD, 0, MSG_IGNORE_THREAD, 0);
+
+	summary_set_row_marks(summaryview, row);
+	debug_print("Message %d is marked as watch thread\n",
+	    msginfo->msgnum);
+}
+
+void summary_watch_thread(SummaryView *summaryview)
+{
+	GtkCTree *ctree = GTK_CTREE(summaryview->ctree);
+	GList *cur;
+	gboolean froze = FALSE;
+
+	START_LONG_OPERATION(summaryview, FALSE);
+	for (cur = GTK_CLIST(ctree)->selection; cur != NULL && cur->data != NULL; cur = cur->next)
+		gtk_ctree_pre_recursive(ctree, GTK_CTREE_NODE(cur->data), 
+					GTK_CTREE_FUNC(summary_watch_thread_func), 
+					summaryview);
+
+	END_LONG_OPERATION(summaryview);
+
+	summary_status_show(summaryview);
+}
+
+static void summary_unwatch_thread_func(GtkCTree *ctree, GtkCTreeNode *row, gpointer data)
+{
+	SummaryView *summaryview = (SummaryView *) data;
+	MsgInfo *msginfo;
+
+	msginfo = gtk_ctree_node_get_row_data(ctree, row);
+	g_return_if_fail(msginfo);
+
+	summary_msginfo_unset_flags(msginfo, MSG_WATCH_THREAD, 0);
+
+	summary_set_row_marks(summaryview, row);
+	debug_print("Message %d is marked as unwatch thread\n",
+	    msginfo->msgnum);
+}
+
+void summary_unwatch_thread(SummaryView *summaryview)
+{
+	GtkCTree *ctree = GTK_CTREE(summaryview->ctree);
+	GList *cur;
+	gboolean froze = FALSE;
+
+	START_LONG_OPERATION(summaryview, FALSE);
+	for (cur = GTK_CLIST(ctree)->selection; cur != NULL && cur->data != NULL; cur = cur->next)
+		gtk_ctree_pre_recursive(ctree, GTK_CTREE_NODE(cur->data), 
+					GTK_CTREE_FUNC(summary_unwatch_thread_func), 
+					summaryview);
+
+	END_LONG_OPERATION(summaryview);
+
+	summary_status_show(summaryview);
+}
+
+static void summary_check_watch_thread_func
+		(GtkCTree *ctree, GtkCTreeNode *row, gpointer data)
+{
+	MsgInfo *msginfo;
+	gint *found_watch = (gint *) data;
+
+	if (*found_watch) return;
+	else {
+		msginfo = gtk_ctree_node_get_row_data(ctree, row);
+		*found_watch = msginfo && MSG_IS_WATCH_THREAD(msginfo->flags);
+	}		
+}
+
+void summary_toggle_watch_thread(SummaryView *summaryview)
+{
+	GtkCTree *ctree = GTK_CTREE(summaryview->ctree);
+	GList *cur;
+	gint found_watch = 0;
+
+	for (cur = GTK_CLIST(ctree)->selection; cur != NULL && cur->data != NULL; cur = cur->next)
+		gtk_ctree_pre_recursive(ctree, GTK_CTREE_NODE(cur->data),
+					GTK_CTREE_FUNC(summary_check_watch_thread_func),
+					&found_watch);
+
+	if (found_watch) 
+		summary_unwatch_thread(summaryview);
+	else 
+		summary_watch_thread(summaryview);
+}
+
 void summary_toggle_show_read_messages(SummaryView *summaryview)
 {
 	FolderItemUpdateData source;
@@ -6823,6 +6927,7 @@ void summary_reflect_prefs_pixmap_theme(SummaryView *summaryview)
 	stock_pixmap_gdk(ctree, STOCK_PIXMAP_CLIP, &clipxpm, &clipxpmmask);
 	stock_pixmap_gdk(ctree, STOCK_PIXMAP_LOCKED, &lockedxpm, &lockedxpmmask);
 	stock_pixmap_gdk(ctree, STOCK_PIXMAP_IGNORETHREAD, &ignorethreadxpm, &ignorethreadxpmmask);
+	stock_pixmap_gdk(ctree, STOCK_PIXMAP_WATCHTHREAD, &watchthreadxpm, &watchthreadxpmmask);
 	stock_pixmap_gdk(ctree, STOCK_PIXMAP_CLIP_KEY, &clipkeyxpm, &clipkeyxpmmask);
 	stock_pixmap_gdk(ctree, STOCK_PIXMAP_KEY, &keyxpm, &keyxpmmask);
 	stock_pixmap_gdk(ctree, STOCK_PIXMAP_GPG_SIGNED, &gpgsignedxpm, &gpgsignedxpmmask);

@@ -2094,6 +2094,9 @@ gint folder_item_scan_full(FolderItem *item, gboolean filtering)
 		if (!MSG_IS_IGNORE_THREAD(msginfo->flags) && procmsg_msg_has_flagged_parent(msginfo, MSG_IGNORE_THREAD)) {
 			procmsg_msginfo_change_flags(msginfo, MSG_IGNORE_THREAD, 0, MSG_NEW | MSG_UNREAD, 0);
 		}
+		if (!MSG_IS_WATCH_THREAD(msginfo->flags) && procmsg_msg_has_flagged_parent(msginfo, MSG_WATCH_THREAD)) {
+			procmsg_msginfo_set_flags(msginfo, MSG_WATCH_THREAD, 0);
+		}
 		if(prefs_common.thread_by_subject && !msginfo->inreplyto &&
 			!msginfo->references && !MSG_IS_IGNORE_THREAD(msginfo->flags) &&
 			(parent_msginfo = subject_table_lookup(subject_table, msginfo->subject)))
@@ -2732,6 +2735,9 @@ static void copy_msginfo_flags(MsgInfo *source, MsgInfo *dest)
 	/* set ignore flag of ignored parent exists */
 	if (procmsg_msg_has_flagged_parent(dest, MSG_IGNORE_THREAD))
 		perm_flags |= MSG_IGNORE_THREAD;
+
+	if (procmsg_msg_has_flagged_parent(dest, MSG_WATCH_THREAD))
+		perm_flags |= MSG_WATCH_THREAD;
 
 	/* Unset tmp flags that should not be copied */
 	tmp_flags &= ~(MSG_MOVE | MSG_COPY | MSG_MOVE_DONE);

@@ -1848,6 +1848,9 @@ void procmsg_msginfo_set_flags(MsgInfo *msginfo, MsgPermFlags perm_flags, MsgTmp
 	if ((perm_flags & MSG_IGNORE_THREAD) || (perm_flags_old & MSG_IGNORE_THREAD)) {
 		perm_flags_new &= ~(MSG_NEW | MSG_UNREAD);
 	}
+	if ((perm_flags & MSG_WATCH_THREAD) || (perm_flags_old & MSG_WATCH_THREAD)) {
+		perm_flags_new &= ~(MSG_IGNORE_THREAD);
+	}
 
 	if (perm_flags_old != perm_flags_new) {
 		folder_item_change_msg_flags(msginfo->folder, msginfo, perm_flags_new);
@@ -1925,6 +1928,9 @@ void procmsg_msginfo_change_flags(MsgInfo *msginfo,
 	perm_flags_new = (msginfo->flags.perm_flags & ~rem_perm_flags) | add_perm_flags;
 	if ((add_perm_flags & MSG_IGNORE_THREAD) || (perm_flags_old & MSG_IGNORE_THREAD)) {
 		perm_flags_new &= ~(MSG_NEW | MSG_UNREAD);
+	}
+	if ((add_perm_flags & MSG_WATCH_THREAD) || (perm_flags_old & MSG_WATCH_THREAD)) {
+		perm_flags_new &= ~(MSG_IGNORE_THREAD);
 	}
 
 	if (perm_flags_old != perm_flags_new) {

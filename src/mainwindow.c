@@ -271,6 +271,12 @@ static void ignore_thread_cb		(MainWindow 	*mainwin,
 static void unignore_thread_cb		(MainWindow 	*mainwin, 
 					 guint 		 action,
 			     		 GtkWidget 	*widget);
+static void watch_thread_cb		(MainWindow 	*mainwin, 
+					 guint 		 action,
+			     		 GtkWidget 	*widget);
+static void unwatch_thread_cb		(MainWindow 	*mainwin, 
+					 guint 		 action,
+			     		 GtkWidget 	*widget);
 static void lock_msgs_cb		(MainWindow 	*mainwin, 
 					 guint 		 action,
 			     		 GtkWidget 	*widget);
@@ -816,6 +822,8 @@ static GtkItemFactoryEntry mainwin_entries[] =
 	{N_("/_Message/_Mark/Mark all _read"),	NULL, mark_all_read_cb, 0, NULL},
 	{N_("/_Message/_Mark/Ignore thread"),	NULL, ignore_thread_cb, 0, NULL},
 	{N_("/_Message/_Mark/Unignore thread"),	NULL, unignore_thread_cb, 0, NULL},
+	{N_("/_Message/_Mark/Watch thread"),	NULL, watch_thread_cb, 0, NULL},
+	{N_("/_Message/_Mark/Unwatch thread"),	NULL, unwatch_thread_cb, 0, NULL},
 	{N_("/_Message/_Mark/---"),		NULL, NULL, 0, "<Separator>"},
 	{N_("/_Message/_Mark/Mark as _spam"),	NULL, mark_as_spam_cb, 1, NULL},
 	{N_("/_Message/_Mark/Mark as _ham"),	NULL, mark_as_spam_cb, 0, NULL},
@@ -3715,6 +3723,18 @@ static void unignore_thread_cb(MainWindow *mainwin, guint action,
 			    GtkWidget *widget)
 {
 	summary_unignore_thread(mainwin->summaryview);
+}
+
+static void watch_thread_cb(MainWindow *mainwin, guint action,
+			    GtkWidget *widget)
+{
+	summary_watch_thread(mainwin->summaryview);
+}
+
+static void unwatch_thread_cb(MainWindow *mainwin, guint action,
+			    GtkWidget *widget)
+{
+	summary_unwatch_thread(mainwin->summaryview);
 }
 
 static void lock_msgs_cb(MainWindow *mainwin, guint action,

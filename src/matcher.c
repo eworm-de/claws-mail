@@ -81,6 +81,8 @@ static const MatchParser matchparser_tab[] = {
 	{MATCHCRITERIA_NOT_COLORLABEL, "~colorlabel"},
 	{MATCHCRITERIA_IGNORE_THREAD, "ignore_thread"},
 	{MATCHCRITERIA_NOT_IGNORE_THREAD, "~ignore_thread"},
+	{MATCHCRITERIA_WATCH_THREAD, "watch_thread"},
+	{MATCHCRITERIA_NOT_WATCH_THREAD, "~watch_thread"},
 	{MATCHCRITERIA_SPAM, "spam"},
 	{MATCHCRITERIA_NOT_SPAM, "~spam"},
 
@@ -160,6 +162,7 @@ static const MatchParser matchparser_tab[] = {
 	{MATCHACTION_STOP, "stop"},
 	{MATCHACTION_HIDE, "hide"},
 	{MATCHACTION_IGNORE, "ignore"},
+	{MATCHACTION_WATCH, "watch"},
 	{MATCHACTION_ADD_TO_ADDRESSBOOK, "add_to_addressbook"},
 	{MATCHACTION_SET_TAG, "set_tag"},
 	{MATCHACTION_UNSET_TAG, "unset_tag"},
@@ -805,6 +808,10 @@ gboolean matcherprop_match(MatcherProp *prop,
 		return MSG_IS_IGNORE_THREAD(info->flags);
 	case MATCHCRITERIA_NOT_IGNORE_THREAD:
 		return !MSG_IS_IGNORE_THREAD(info->flags);
+	case MATCHCRITERIA_WATCH_THREAD:
+		return MSG_IS_WATCH_THREAD(info->flags);
+	case MATCHCRITERIA_NOT_WATCH_THREAD:
+		return !MSG_IS_WATCH_THREAD(info->flags);
 	case MATCHCRITERIA_SUBJECT:
 		return matcherprop_string_match(prop, info->subject,
 						prefs_common_translated_header_name("Subject:"));
@@ -1648,6 +1655,8 @@ gboolean matcherlist_match(MatcherList *matchers, MsgInfo *info)
 		case MATCHCRITERIA_NOT_COLORLABEL:
 		case MATCHCRITERIA_IGNORE_THREAD:
 		case MATCHCRITERIA_NOT_IGNORE_THREAD:
+		case MATCHCRITERIA_WATCH_THREAD:
+		case MATCHCRITERIA_NOT_WATCH_THREAD:
 		case MATCHCRITERIA_SUBJECT:
 		case MATCHCRITERIA_NOT_SUBJECT:
 		case MATCHCRITERIA_FROM:
@@ -1841,6 +1850,8 @@ gchar *matcherprop_to_string(MatcherProp *matcher)
 	case MATCHCRITERIA_NOT_PARTIAL:
 	case MATCHCRITERIA_IGNORE_THREAD:
 	case MATCHCRITERIA_NOT_IGNORE_THREAD:
+	case MATCHCRITERIA_WATCH_THREAD:
+	case MATCHCRITERIA_NOT_WATCH_THREAD:
 	case MATCHCRITERIA_TAGGED:
 	case MATCHCRITERIA_NOT_TAGGED:
 		return g_strdup(criteria_str);

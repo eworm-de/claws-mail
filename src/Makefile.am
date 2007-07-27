@@ -447,6 +447,7 @@ EXTRA_DIST = \
 	pixmaps/trash_mark.xpm \
 	pixmaps/moved.xpm \
 	pixmaps/copied.xpm \
+	pixmaps/watchthread.xpm \
 	pixmaps/empty.xpm
 
 

@@ -47,7 +47,6 @@ typedef GSList MsgNumberList;
 #define MSG_DELETED		(1U << 3)
 #define MSG_REPLIED		(1U << 4)
 #define MSG_FORWARDED		(1U << 5)
-#define MSG_POSTFILTERED	(1U << 14)
 
 #define MSG_CLABEL_SBIT	(6)		/* start bit of color label */
 /* color labels use 4 bits: 6, 7, 8, 9; bit weight is 7<8<9<6,
@@ -86,6 +85,8 @@ typedef GSList MsgNumberList;
 #define MSG_LOCKED		(1U << 11)   /* msg is locked  */
 #define MSG_RETRCPT_SENT	(1U << 12)   /* new one */ 
 #define MSG_SPAM		(1U << 13)   /* new one */ 
+#define MSG_POSTFILTERED	(1U << 14)
+#define MSG_WATCH_THREAD	(1U << 15)   /* watch threads */
 					 	
 /* RESERVED */
 #define	MSG_RESERVED_CLAWS	(1U << 30)   /* for claws-mail */
@@ -159,6 +160,7 @@ typedef guint32 MsgTmpFlags;
 #define MSG_IS_RETRCPT_PENDING(msg)	(((msg).perm_flags & MSG_RETRCPT_PENDING) != 0)
 #define MSG_IS_RETRCPT_SENT(msg)	(((msg).perm_flags & MSG_RETRCPT_SENT) != 0)
 #define MSG_IS_SPAM(msg)		(((msg).perm_flags & MSG_SPAM) != 0)
+#define MSG_IS_WATCH_THREAD(msg)	(((msg).perm_flags & MSG_WATCH_THREAD) != 0)
 
 #define MSGINFO_UPDATE_HOOKLIST "msginfo_update"
 #define MAIL_FILTERING_HOOKLIST "mail_filtering_hooklist"

@@ -1,3 +1,23 @@
+2007-07-27 [paul]	2.10.0cvs74
+
+	* src/Makefile.am
+	* src/filtering.c
+	* src/folder.c
+	* src/mainwindow.c
+	* src/matcher.c
+	* src/matcher.h
+	* src/matcher_parser_parse.y
+	* src/procmsg.c
+	* src/procmsg.h
+	* src/stock_pixmap.c
+	* src/stock_pixmap.h
+	* src/summaryview.c
+	* src/summaryview.h
+	* src/toolbar.c
+	* src/toolbar.h
+	* src/pixmaps/watchthread.xpm
+		add 'watch thread' feature
+
 2007-07-27 [paul]	2.10.0cvs73
 
 	* src/prefs_folder_item.c
