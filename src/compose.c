@@ -8423,7 +8423,8 @@ gboolean compose_draft (gpointer data, guint action)
 	newmsginfo = folder_item_get_msginfo(draft, msgnum);
 	if (!newmsginfo && compose->msgid) {
 		newmsginfo = folder_item_get_msginfo_by_msgid(draft, compose->msgid);
-		msgnum = newmsginfo->msgnum;
+		if (newmsginfo)
+			msgnum = newmsginfo->msgnum;
 	}
 	if (newmsginfo) {
 		procmsg_msginfo_unset_flags(newmsginfo, ~0, ~0);

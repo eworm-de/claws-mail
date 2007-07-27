@@ -1,3 +1,9 @@
+2007-07-27 [paul]	2.10.0cvs76
+
+	* src/compose.c
+		fix potential crasher
+		thanks to Colin
+
 2007-07-27 [paul]	2.10.0cvs75
 
 	* src/mainwindow.c
