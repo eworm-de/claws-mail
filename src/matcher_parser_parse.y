@@ -1340,6 +1340,10 @@ MATCHER_EXECUTE MATCHER_STRING
 {
 	action = filteringaction_new(MATCHACTION_IGNORE, 0, NULL, 0, 0, NULL);
 }
+| MATCHER_WATCH
+{
+	action = filteringaction_new(MATCHACTION_WATCH, 0, NULL, 0, 0, NULL);
+}
 | MATCHER_ADD_TO_ADDRESSBOOK MATCHER_STRING
 {
 	header = g_strdup($2);

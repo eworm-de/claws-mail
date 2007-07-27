@@ -153,6 +153,7 @@ typedef enum Action_ {
 	ACTION_CLEAR_TAGS,
 	ACTION_HIDE,
 	ACTION_IGNORE,
+	ACTION_WATCH,
 	ACTION_ADD_TO_ADDRESSBOOK,
 	ACTION_STOP,
 	/* add other action constants */
@@ -185,6 +186,7 @@ static struct {
 	{ N_("Clear tags"),		ACTION_CLEAR_TAGS},
 	{ N_("Hide"),		        ACTION_HIDE	},
 	{ N_("Ignore thread"),	        ACTION_IGNORE	},
+	{ N_("Watch thread"),	        ACTION_WATCH	},
 	{ N_("Add to address book"),	ACTION_ADD_TO_ADDRESSBOOK	},
 	{ N_("Stop filter"),		ACTION_STOP	},
 };
@@ -859,6 +861,8 @@ static gint prefs_filtering_action_get_matching_from_action(Action action_id)
 		return MATCHACTION_HIDE;
 	case ACTION_IGNORE:
 		return MATCHACTION_IGNORE;
+	case ACTION_WATCH:
+		return MATCHACTION_WATCH;
 	case ACTION_STOP:
 		return MATCHACTION_STOP;
 	case ACTION_CHANGE_SCORE:
@@ -970,6 +974,7 @@ static FilteringAction * prefs_filtering_action_dialog_to_action(gboolean alert)
 	case ACTION_STOP:
 	case ACTION_HIDE:
 	case ACTION_IGNORE:
+	case ACTION_WATCH:
         case ACTION_DELETE:
         case ACTION_MARK:
         case ACTION_UNMARK:
@@ -1416,6 +1421,7 @@ static void prefs_filtering_action_type_select(GtkList *list,
         case ACTION_STOP:
         case ACTION_HIDE:
 	case ACTION_IGNORE:
+	case ACTION_WATCH:
 	case ACTION_CLEAR_TAGS:
 		gtk_widget_show(filtering_action.account_label);
 		gtk_widget_set_sensitive(filtering_action.account_label, FALSE);
@@ -1893,6 +1899,10 @@ static gboolean prefs_filtering_actions_selected
 	case MATCHACTION_IGNORE:
 		gtk_list_select_item(GTK_LIST(filtering_action.action_type_list),
 				     ACTION_IGNORE);
+		break;
+	case MATCHACTION_WATCH:
+		gtk_list_select_item(GTK_LIST(filtering_action.action_type_list),
+				     ACTION_WATCH);
 		break;
 	case MATCHACTION_ADD_TO_ADDRESSBOOK:
 		if (action->header)

@@ -1,3 +1,11 @@
+2007-07-27 [paul]	2.10.0cvs77
+
+	* src/matcher_parser_parse.y
+	* src/prefs_filtering_action.c
+	* src/prefs_matcher.c
+		these changes forgotten in cvs74's
+		'watch thread' feature
+
 2007-07-27 [paul]	2.10.0cvs76
 
 	* src/compose.c

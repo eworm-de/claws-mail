@@ -136,23 +136,24 @@ enum {
 	CRITERIA_SPAM = 22,
 	CRITERIA_COLORLABEL = 23,
 	CRITERIA_IGNORE_THREAD = 24,
+	CRITERIA_WATCH_THREAD = 25,
 
-	CRITERIA_SCORE_GREATER = 25,
-	CRITERIA_SCORE_LOWER = 26,
-	CRITERIA_SCORE_EQUAL = 27,
+	CRITERIA_SCORE_GREATER = 26,
+	CRITERIA_SCORE_LOWER = 27,
+	CRITERIA_SCORE_EQUAL = 28,
 
-	CRITERIA_TEST = 28,
+	CRITERIA_TEST = 29,
 
-	CRITERIA_SIZE_GREATER = 29,
-	CRITERIA_SIZE_SMALLER = 30,
-	CRITERIA_SIZE_EQUAL   = 31,
+	CRITERIA_SIZE_GREATER = 30,
+	CRITERIA_SIZE_SMALLER = 31,
+	CRITERIA_SIZE_EQUAL   = 32,
 	
-	CRITERIA_PARTIAL = 32,
+	CRITERIA_PARTIAL = 33,
 
-	CRITERIA_FOUND_IN_ADDRESSBOOK = 33,
+	CRITERIA_FOUND_IN_ADDRESSBOOK = 34,
 	
-	CRITERIA_TAG = 34,
-	CRITERIA_TAGGED = 35
+	CRITERIA_TAG = 35,
+	CRITERIA_TAGGED = 36
 };
 
 /*!
@@ -193,6 +194,7 @@ static struct_criteria_text criteria_text [] = {
 	{ N_("Spam flag"), FALSE },
 	{ N_("Color label"), FALSE },
 	{ N_("Ignored thread"), FALSE },
+	{ N_("Watched thread"), FALSE },
 	{ N_("Score greater than"), FALSE },
 	{ N_("Score lower than"), FALSE },
 	{ N_("Score equal to"), FALSE },
@@ -1001,6 +1003,9 @@ static gint prefs_matcher_get_criteria_from_matching(gint matching_id)
 	case MATCHCRITERIA_IGNORE_THREAD:
 	case MATCHCRITERIA_NOT_IGNORE_THREAD:
 		return CRITERIA_IGNORE_THREAD;
+	case MATCHCRITERIA_WATCH_THREAD:
+	case MATCHCRITERIA_NOT_WATCH_THREAD:
+		return CRITERIA_WATCH_THREAD;
 	case MATCHCRITERIA_NOT_SUBJECT:
 	case MATCHCRITERIA_SUBJECT:
 		return CRITERIA_SUBJECT;
@@ -1105,6 +1110,8 @@ static gint prefs_matcher_get_matching_from_criteria(gint criteria_id)
 		return MATCHCRITERIA_COLORLABEL;
 	case CRITERIA_IGNORE_THREAD:
 		return MATCHCRITERIA_IGNORE_THREAD;
+	case CRITERIA_WATCH_THREAD:
+		return MATCHCRITERIA_WATCH_THREAD;
 	case CRITERIA_SUBJECT:
 		return MATCHCRITERIA_SUBJECT;
 	case CRITERIA_FROM:
@@ -1191,6 +1198,8 @@ static gint prefs_matcher_not_criteria(gint matcher_criteria)
 		return MATCHCRITERIA_NOT_COLORLABEL;
 	case MATCHCRITERIA_IGNORE_THREAD:
 		return MATCHCRITERIA_NOT_IGNORE_THREAD;
+	case MATCHCRITERIA_WATCH_THREAD:
+		return MATCHCRITERIA_NOT_WATCH_THREAD;
 	case MATCHCRITERIA_SUBJECT:
 		return MATCHCRITERIA_NOT_SUBJECT;
 	case MATCHCRITERIA_FROM:
@@ -1272,6 +1281,7 @@ static MatcherProp *prefs_matcher_dialog_to_matcher(void)
 	case CRITERIA_TEST:
 	case CRITERIA_COLORLABEL:
 	case CRITERIA_IGNORE_THREAD:
+	case CRITERIA_WATCH_THREAD:
 	case CRITERIA_FOUND_IN_ADDRESSBOOK:
 	case CRITERIA_TAGGED:
 		if (value_pred_flag == PREDICATE_FLAG_DISABLED)
@@ -1326,6 +1336,7 @@ static MatcherProp *prefs_matcher_dialog_to_matcher(void)
 	case CRITERIA_SPAM:
 	case CRITERIA_PARTIAL:
 	case CRITERIA_IGNORE_THREAD:
+	case CRITERIA_WATCH_THREAD:
 	case CRITERIA_TAGGED:
 		break;
 
@@ -1678,6 +1689,7 @@ static void prefs_matcher_criteria_select(GtkList *list,
 	case CRITERIA_SPAM:
 	case CRITERIA_PARTIAL:
 	case CRITERIA_IGNORE_THREAD:
+	case CRITERIA_WATCH_THREAD:
 	case CRITERIA_TAGGED:
 		prefs_matcher_disable_widget(matcher.header_combo);
 		prefs_matcher_disable_widget(matcher.header_label);
@@ -2107,6 +2119,7 @@ static gboolean prefs_matcher_selected(GtkTreeSelection *selector,
 	case MATCHCRITERIA_NOT_PARTIAL:
 	case MATCHCRITERIA_NOT_COLORLABEL:
 	case MATCHCRITERIA_NOT_IGNORE_THREAD:
+	case MATCHCRITERIA_NOT_WATCH_THREAD:
 	case MATCHCRITERIA_NOT_SUBJECT:
 	case MATCHCRITERIA_NOT_FROM:
 	case MATCHCRITERIA_NOT_TO:
