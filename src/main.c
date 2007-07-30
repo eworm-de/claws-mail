@@ -883,9 +883,6 @@ int main(int argc, char *argv[])
 #endif
 
 	sock_set_io_timeout(prefs_common.io_timeout_secs);
-#ifdef HAVE_LIBETPAN
-	imap_main_set_timeout(prefs_common.io_timeout_secs);
-#endif
 	prefs_actions_read_config();
 	prefs_display_header_read_config();
 	/* prefs_filtering_read_config(); */
@@ -990,6 +987,7 @@ int main(int argc, char *argv[])
 
 #ifdef HAVE_LIBETPAN
 	imap_main_init(prefs_common.skip_ssl_cert_check);
+	imap_main_set_timeout(prefs_common.io_timeout_secs);
 #endif	
 	account_set_missing_folder();
 	folder_set_missing_folders();
