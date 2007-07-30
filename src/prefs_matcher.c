@@ -178,8 +178,8 @@ static struct_criteria_text criteria_text [] = {
 	{ N_("Newsgroups"), TRUE },
 	{ N_("In reply to"), TRUE },
 	{ N_("References"), TRUE },
-	{ N_("Age greater than"), FALSE },
-	{ N_("Age lower than"), FALSE },
+	{ N_("Age greater than (days)"), FALSE },
+	{ N_("Age less than (days)"), FALSE },
 	{ N_("Header"), FALSE },
 	{ N_("Headers part"), FALSE },
 	{ N_("Body part"), FALSE },
@@ -199,9 +199,9 @@ static struct_criteria_text criteria_text [] = {
 	{ N_("Score lower than"), FALSE },
 	{ N_("Score equal to"), FALSE },
 	{ N_("Test"), FALSE },
-	{ N_("Size greater than"), FALSE }, 
-	{ N_("Size smaller than"), FALSE },
-	{ N_("Size exactly"), FALSE },
+	{ N_("Size greater than (bytes)"), FALSE }, 
+	{ N_("Size smaller than (bytes)"), FALSE },
+	{ N_("Size exactly (bytes)"), FALSE },
 	{ N_("Partially downloaded"), FALSE },
 	{ N_("Found in addressbook"), FALSE },
 	{ N_("Tags"), FALSE },
@@ -515,7 +515,7 @@ static void prefs_matcher_create(void)
 
 	g_list_free(combo_items);
 
-	gtk_widget_set_size_request(criteria_combo, 170, -1);
+	gtk_widget_set_size_request(criteria_combo, 190, -1);
 	gtk_table_attach(GTK_TABLE(criteria_table), criteria_combo, 0, 1, 1, 2,
 			  0, 0, 0, 0);
 	criteria_list = GTK_COMBO(criteria_combo)->list;

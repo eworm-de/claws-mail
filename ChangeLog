@@ -1,3 +1,8 @@
+2007-07-30 [paul]	2.10.0cvs80
+
+	* src/prefs_matcher.c
+		specify the units of age and size
+
 2007-07-30 [paul]	2.10.0cvs79
 
 	* src/main.c
