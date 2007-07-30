@@ -1291,8 +1291,8 @@ static void receive_create_widget_func(PrefsPage * _page,
 	GtkWidget *local_inbox_btn;
 
 	GtkWidget *optmenu;
-	GtkWidget *optmenu_menu;
-	GtkWidget *menuitem;
+	GtkListStore *menu;
+	GtkTreeIter iter;
 	GtkWidget *recvatgetall_checkbtn;
 
 	GtkWidget *hbox2;
@@ -1459,19 +1459,17 @@ static void receive_create_widget_func(PrefsPage * _page,
 	gtk_widget_show (label);
 	gtk_box_pack_start (GTK_BOX (hbox1), label, FALSE, FALSE, 0);
 
-	optmenu = gtk_option_menu_new ();
+
+	optmenu = gtkut_sc_combobox_create(NULL, FALSE);
+	menu = GTK_LIST_STORE(gtk_combo_box_get_model(GTK_COMBO_BOX(optmenu)));
 	gtk_widget_show (optmenu);
 	gtk_box_pack_start (GTK_BOX (hbox1), optmenu, FALSE, FALSE, 0);
 
-	optmenu_menu = gtk_menu_new ();
-
-	MENUITEM_ADD (optmenu_menu, menuitem, _("Automatic"), 0);
-	MENUITEM_ADD (optmenu_menu, menuitem, "LOGIN", IMAP_AUTH_LOGIN);
-	MENUITEM_ADD (optmenu_menu, menuitem, "CRAM-MD5", IMAP_AUTH_CRAM_MD5);
-	MENUITEM_ADD (optmenu_menu, menuitem, "ANONYMOUS", IMAP_AUTH_ANON);
-	MENUITEM_ADD (optmenu_menu, menuitem, "GSSAPI", IMAP_AUTH_GSSAPI);
-
-	gtk_option_menu_set_menu (GTK_OPTION_MENU (optmenu), optmenu_menu);
+	COMBOBOX_ADD (menu, _("Automatic"), 0);
+	COMBOBOX_ADD (menu, "LOGIN", IMAP_AUTH_LOGIN);
+	COMBOBOX_ADD (menu, "CRAM-MD5", IMAP_AUTH_CRAM_MD5);
+	COMBOBOX_ADD (menu, "ANONYMOUS", IMAP_AUTH_ANON);
+	COMBOBOX_ADD (menu, "GSSAPI", IMAP_AUTH_GSSAPI);
 
 	hbox1 = gtk_hbox_new (FALSE, 8);
 	gtk_widget_show (hbox1);
@@ -3532,43 +3530,16 @@ static void prefs_account_protocol_set_optmenu(PrefParam *pparam)
 
 static void prefs_account_imap_auth_type_set_data_from_optmenu(PrefParam *pparam)
 {
-	GtkWidget *menu;
-	GtkWidget *menuitem;
-
-	menu = gtk_option_menu_get_menu(GTK_OPTION_MENU(*pparam->widget));
-	menuitem = gtk_menu_get_active(GTK_MENU(menu));
-	*((RecvProtocol *)pparam->data) = GPOINTER_TO_INT
-		(g_object_get_data(G_OBJECT(menuitem), MENU_VAL_ID));
+	*((RecvProtocol *)pparam->data) =
+			combobox_get_active_data(GTK_COMBO_BOX(*pparam->widget));
 }
 
 static void prefs_account_imap_auth_type_set_optmenu(PrefParam *pparam)
 {
 	IMAPAuthType type = *((IMAPAuthType *)pparam->data);
-	GtkOptionMenu *optmenu = GTK_OPTION_MENU(*pparam->widget);
-	GtkWidget *menu;
-	GtkWidget *menuitem;
+	GtkComboBox *optmenu = GTK_COMBO_BOX(*pparam->widget);
 
-	switch (type) {
-	case IMAP_AUTH_LOGIN:
-		gtk_option_menu_set_history(optmenu, 1);
-		break;
-	case IMAP_AUTH_CRAM_MD5:
-		gtk_option_menu_set_history(optmenu, 2);
-		break;
-	case IMAP_AUTH_ANON:
-		gtk_option_menu_set_history(optmenu, 3);
-		break;
-	case IMAP_AUTH_GSSAPI:
-		gtk_option_menu_set_history(optmenu, 4);
-		break;
-	case 0:
-	default:
-		gtk_option_menu_set_history(optmenu, 0);
-	}
-
-	menu = gtk_option_menu_get_menu(optmenu);
-	menuitem = gtk_menu_get_active(GTK_MENU(menu));
-	gtk_menu_item_activate(GTK_MENU_ITEM(menuitem));
+	combobox_select_by_data(optmenu, type);
 }
 
 static void prefs_account_smtp_auth_type_set_data_from_optmenu(PrefParam *pparam)

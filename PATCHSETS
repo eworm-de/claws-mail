@@ -2731,3 +2731,4 @@
 ( cvs diff -u -r 1.274.2.203 -r 1.274.2.204 src/mainwindow.c;  cvs diff -u -r 1.11.2.12 -r 1.11.2.13 src/manual.c;  cvs diff -u -r 1.8.2.8 -r 1.8.2.9 src/manual.h;  cvs diff -u -r 1.5.2.61 -r 1.5.2.62 src/gtk/gtkutils.c;  ) > 2.10.0cvs75.patchset
 ( cvs diff -u -r 1.382.2.396 -r 1.382.2.397 src/compose.c;  ) > 2.10.0cvs76.patchset
 ( cvs diff -u -r 1.25.2.31 -r 1.25.2.32 src/matcher_parser_parse.y;  cvs diff -u -r 1.1.4.38 -r 1.1.4.39 src/prefs_filtering_action.c;  cvs diff -u -r 1.43.2.59 -r 1.43.2.60 src/prefs_matcher.c;  ) > 2.10.0cvs77.patchset
+( cvs diff -u -r 1.105.2.103 -r 1.105.2.104 src/prefs_account.c;  ) > 2.10.0cvs78.patchset
