@@ -2734,3 +2734,4 @@
 ( cvs diff -u -r 1.105.2.103 -r 1.105.2.104 src/prefs_account.c;  ) > 2.10.0cvs78.patchset
 ( cvs diff -u -r 1.115.2.161 -r 1.115.2.162 src/main.c;  ) > 2.10.0cvs79.patchset
 ( cvs diff -u -r 1.43.2.60 -r 1.43.2.61 src/prefs_matcher.c;  ) > 2.10.0cvs80.patchset
+( cvs diff -u -r 1.5.2.13 -r 1.5.2.14 src/setup.c;  cvs diff -u -r 1.5.2.62 -r 1.5.2.63 src/gtk/gtkutils.c;  ) > 2.10.0cvs81.patchset

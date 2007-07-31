@@ -1,3 +1,9 @@
+2007-07-31 [paul]	2.10.0cvs81
+
+	* src/setup.c
+	* src/gtk/gtkutils.c
+		fix crash on maemo on first launch
+
 2007-07-30 [paul]	2.10.0cvs80
 
 	* src/prefs_matcher.c
