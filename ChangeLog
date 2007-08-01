@@ -1,3 +1,14 @@
+2007-08-01 [paul]	2.10.0cvs82
+
+	* src/mainwindow.h
+		clean up cruft
+	* src/toolbar.c
+		change default toolbar layout on maemo
+	* src/pixmaps/close.xpm
+		make the red cross a grey cross
+	* src/pixmaps/jpilot.xpm
+		make icon smaller so it fits better
+
 2007-07-31 [paul]	2.10.0cvs81
 
 	* src/setup.c

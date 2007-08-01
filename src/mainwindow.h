@@ -186,9 +186,6 @@ void main_window_show			(MainWindow 	*mainwin);
 void main_window_hide			(MainWindow 	*mainwin);
 void main_window_popup			(MainWindow	*mainwin);
 
-void main_window_toolbar_set_compose_button	(MainWindow *mainwin, 
-						 ComposeButtonType compose_btn_type);
-
 SensitiveCond main_window_get_current_state   (MainWindow *mainwin);
 
 void toolbar_set_compose_button               (Toolbar		 *toolbar, 
