@@ -918,7 +918,6 @@ static void textview_write_body(TextView *textview, MimeInfo *mimeinfo)
 	CodeConverter *conv;
 	const gchar *charset, *p, *cmd;
 	GSList *cur;
-	int lines = 0;
 	
 	if (textview->messageview->forced_charset)
 		charset = textview->messageview->forced_charset;
@@ -1007,9 +1006,6 @@ static void textview_write_body(TextView *textview, MimeInfo *mimeinfo)
 		while (fgets(buf, sizeof(buf), tmpfp)) {
 			textview_write_line(textview, buf, conv, TRUE);
 			
-			lines++;
-			if (lines % 500 == 0)
-				GTK_EVENTS_FLUSH();
 			if (textview->stop_loading) {
 				fclose(tmpfp);
 				waitpid(pid, pfd, 0);
@@ -1024,16 +1020,12 @@ static void textview_write_body(TextView *textview, MimeInfo *mimeinfo)
 #endif
 	} else {
 textview_default:
-		lines = 0;
 		tmpfp = g_fopen(mimeinfo->data.filename, "rb");
 		fseek(tmpfp, mimeinfo->offset, SEEK_SET);
 		debug_print("Viewing text content of type: %s (length: %d)\n", mimeinfo->subtype, mimeinfo->length);
 		while ((ftell(tmpfp) < mimeinfo->offset + mimeinfo->length) &&
 		       (fgets(buf, sizeof(buf), tmpfp) != NULL)) {
 			textview_write_line(textview, buf, conv, TRUE);
-			lines++;
-			if (lines % 500 == 0)
-				GTK_EVENTS_FLUSH();
 			if (textview->stop_loading) {
 				fclose(tmpfp);
 				return;
@@ -1045,7 +1037,6 @@ textview_default:
 	conv_code_converter_destroy(conv);
 	procmime_force_encoding(0);
 
-	lines = 0;
 	textview->uri_list = g_slist_reverse(textview->uri_list);
 	for (cur = textview->uri_list; cur; cur = cur->next) {
 		ClickableText *uri = (ClickableText *)cur->data;
@@ -1054,14 +1045,13 @@ textview_default:
 		if (!prefs_common.hide_quotes ||
 		    uri->quote_level+1 < prefs_common.hide_quotes) {
 			textview_toggle_quote(textview, cur, uri, TRUE);
-			lines++;
-			if (lines % 500 == 0)
-				GTK_EVENTS_FLUSH();
 			if (textview->stop_loading) {
 				return;
 			}
 		}
 	}
+	
+	GTK_EVENTS_FLUSH();
 }
 
 static void textview_show_html(TextView *textview, FILE *fp,

@@ -1,3 +1,10 @@
+2007-08-02 [paul]	2.10.0cvs83
+
+	* src/textview.c
+		speed up/clean up rendering of larger
+		msgs
+		Thanks to Colin
+
 2007-08-01 [paul]	2.10.0cvs82
 
 	* src/mainwindow.h
