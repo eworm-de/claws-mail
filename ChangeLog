@@ -1,3 +1,11 @@
+2007-08-02 [paul]	2.10.0cvs84
+
+	* src/folderview.c
+	* src/mainwindow.c
+	* src/mainwindow.h
+		enable running folder Processing
+		rules on demand
+
 2007-08-02 [paul]	2.10.0cvs83
 
 	* src/textview.c

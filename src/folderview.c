@@ -237,6 +237,9 @@ static void folderview_send_queue_cb	(FolderView	*folderview,
 static void folderview_search_cb	(FolderView	*folderview,
 					 guint		 action,
 					 GtkWidget	*widget);
+static void folderview_run_processing_cb(FolderView	*folderview,
+					 guint		 action,
+					 GtkWidget	*widget);
 
 static void folderview_property_cb	(FolderView	*folderview,
 					 guint		 action,
@@ -289,6 +292,7 @@ static GtkItemFactoryEntry folderview_common_popup_entries[] =
 {
 	{N_("/Mark all re_ad"),		NULL, mark_all_read_cb, 0, NULL},
 	{"/---",                     	NULL, NULL, 0, "<Separator>"},
+	{N_("/Run processing rules"),	NULL, folderview_run_processing_cb, 0, NULL},
 	{N_("/_Search folder..."),	NULL, folderview_search_cb, 0, NULL},
 	{N_("/_Properties..."),		NULL, folderview_property_cb, 0, NULL},
 	{N_("/Process_ing..."),		NULL, folderview_processing_cb, 0, NULL},
@@ -1906,6 +1910,8 @@ static void folderview_set_sens_and_popup_menu(FolderView *folderview, gint row,
 	SET_SENS("/Mark all read", item->unread_msgs >= 1);
 	SET_SENS("/Search folder...", item->total_msgs >= 1 && 
 		 folderview->selected == folderview->opened);
+	SET_SENS("/Run processing rules", item->prefs->processing &&
+		 item->total_msgs >= 1);
 	SET_SENS("/Properties...", TRUE);
 	SET_SENS("/Processing...", item->node->parent != NULL);
 	if (item == folder->trash || item == special_trash
@@ -2428,6 +2434,21 @@ static void folderview_search_cb(FolderView *folderview, guint action,
 				 GtkWidget *widget)
 {
 	summary_search(folderview->summaryview);
+}
+
+static void folderview_run_processing_cb(FolderView *folderview, guint action,
+				 GtkWidget *widget)
+{
+	GtkCTree *ctree = GTK_CTREE(folderview->ctree);
+	FolderItem *item;
+
+	if (!folderview->selected) return;
+
+	item = gtk_ctree_node_get_row_data(ctree, folderview->selected);
+	g_return_if_fail(item != NULL);
+	g_return_if_fail(item->folder != NULL);
+
+	folder_item_apply_processing(item);
 }
 
 static void folderview_property_cb(FolderView *folderview, guint action,

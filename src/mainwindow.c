@@ -339,6 +339,9 @@ static void delete_duplicated_all_cb (MainWindow	*mainwin,
 static void filter_cb		 (MainWindow	*mainwin,
 				  guint		 action,
 				  GtkWidget	*widget);
+static void process_cb		 (MainWindow	*mainwin,
+				  guint		 action,
+				  GtkWidget	*widget);
 static void execute_summary_cb	 (MainWindow	*mainwin,
 				  guint		 action,
 				  GtkWidget	*widget);
@@ -849,6 +852,8 @@ static GtkItemFactoryEntry mainwin_entries[] =
 						NULL, filter_cb, 0, NULL},
 	{N_("/_Tools/Filter _selected messages"),
 						NULL, filter_cb, 1, NULL},
+	{N_("/_Tools/Run folder processing rules"),
+						NULL, process_cb, 0, NULL},
 	{N_("/_Tools/_Create filter rule"),	NULL, NULL, 0, "<Branch>"},
 	{N_("/_Tools/_Create filter rule/_Automatically"),
 						NULL, create_filter_cb, FILTER_BY_AUTO, NULL},
@@ -2502,6 +2507,9 @@ SensitiveCond main_window_get_current_state(MainWindow *mainwin)
 	if (any_folder_want_synchronise())
 		state |= M_WANT_SYNC;
 
+	if (item && item->prefs->processing && selection != SUMMARY_NONE)
+		state |= M_HAVE_PROCESSING;
+
 	for ( ; account_list != NULL; account_list = account_list->next) {
 		if (((PrefsAccount*)account_list->data)->protocol == A_NNTP) {
 			state |= M_HAVE_NEWS_ACCOUNT;
@@ -2613,6 +2621,7 @@ void main_window_set_menu_sensitive(MainWindow *mainwin)
 						       , M_TARGET_EXIST},
 		{"/Tools/Filter all messages in folder", M_MSG_EXIST|M_EXEC},
 		{"/Tools/Filter selected messages"     , M_TARGET_EXIST|M_EXEC},
+		{"/Tools/Run folder processing rules"  , M_HAVE_PROCESSING},
 		{"/Tools/Create filter rule"           , M_SINGLE_TARGET_EXIST|M_UNLOCKED},
 		{"/Tools/Create processing rule"       , M_SINGLE_TARGET_EXIST|M_UNLOCKED},
 		{"/Tools/List URLs..."                 , M_TARGET_EXIST},
@@ -3937,6 +3946,14 @@ static void delete_duplicated_all_cb(MainWindow *mainwin, guint action,
 static void filter_cb(MainWindow *mainwin, guint action, GtkWidget *widget)
 {
 	summary_filter(mainwin->summaryview, (gboolean)action);
+}
+
+static void process_cb(MainWindow *mainwin, guint action, GtkWidget *widget)
+{
+	FolderItem *item = mainwin->summaryview->folder_item;	
+	g_return_if_fail(item != NULL);
+
+	folder_item_apply_processing(item);	
 }
 
 static void execute_summary_cb(MainWindow *mainwin, guint action,
