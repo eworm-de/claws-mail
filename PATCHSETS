@@ -2738,3 +2738,4 @@
 ( cvs diff -u -r 1.39.2.39 -r 1.39.2.40 src/mainwindow.h;  cvs diff -u -r 1.43.2.80 -r 1.43.2.81 src/toolbar.c;  cvs diff -u -r 1.1.14.1 -r 1.1.14.2 src/pixmaps/close.xpm;  cvs diff -u -r 1.1.16.1 -r 1.1.16.2 src/pixmaps/jpilot.xpm;  ) > 2.10.0cvs82.patchset
 ( cvs diff -u -r 1.96.2.179 -r 1.96.2.180 src/textview.c;  ) > 2.10.0cvs83.patchset
 ( cvs diff -u -r 1.207.2.170 -r 1.207.2.171 src/folderview.c;  cvs diff -u -r 1.274.2.204 -r 1.274.2.205 src/mainwindow.c;  cvs diff -u -r 1.39.2.40 -r 1.39.2.41 src/mainwindow.h;  ) > 2.10.0cvs84.patchset
+( cvs diff -u -r 1.79.2.57 -r 1.79.2.58 src/mh.c;  ) > 2.10.0cvs85.patchset
