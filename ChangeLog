@@ -1,3 +1,11 @@
+2007-08-03 [colin]	2.10.0cvs87
+
+	* src/prefs_account.c
+	* src/gtk/combobox.h
+	* src/gtk/gtkutils.c
+		Fix a deprecated widget. Patch by
+		Andrej
+
 2007-08-03 [colin]	2.10.0cvs86
 
 	* src/compose.c

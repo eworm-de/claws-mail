@@ -24,12 +24,20 @@
 #include <gtk/gtkwidget.h>
 #include <gtk/gtkcombobox.h>
 
+enum {
+	COMBOBOX_TEXT,
+	COMBOBOX_DATA,
+	COMBOBOX_SENS
+};
+
+
 #define COMBOBOX_ADD(menu, label, data) 		 \
 { 								 \
 	gtk_list_store_append(menu, &iter); \
 	gtk_list_store_set(menu, &iter, \
-			0, (label ? label : ""), \
-			1, data, \
+			COMBOBOX_TEXT, (label ? label : ""), \
+			COMBOBOX_DATA, data, \
+			COMBOBOX_SENS, TRUE, \
 			-1); \
 }
 
@@ -38,8 +46,9 @@
 	gchar *tmp_esc = g_markup_printf_escaped("%s", label);	 \
 	gtk_list_store_append(menu, &iter); 			 \
 	gtk_list_store_set(menu, &iter, 			 \
-			0, (tmp_esc ? tmp_esc : ""), 		 \
-			1, data, 				 \
+			COMBOBOX_TEXT, (tmp_esc ? tmp_esc : ""), 		 \
+			COMBOBOX_DATA, data, 				 \
+			COMBOBOX_SENS, TRUE,				 \
 			-1); 					 \
 	g_free(tmp_esc);					 \
 }
