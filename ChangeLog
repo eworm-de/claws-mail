@@ -1,3 +1,11 @@
+2007-08-03 [colin]	2.10.0cvs86
+
+	* src/compose.c
+	* src/compose.h
+		Make colorisation and wrapping algorithms
+		faster. Fixes bug 1246, 'compose becomes 
+		increasingly slow replying to complex emails'
+
 2007-08-03 [paul]	2.10.0cvs85
 
 	* src/mh.c

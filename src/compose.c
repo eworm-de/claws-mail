@@ -273,7 +273,7 @@ static gboolean compose_attach_append		(Compose	*compose,
 static void compose_attach_parts		(Compose	*compose,
 						 MsgInfo	*msginfo);
 
-static void compose_beautify_paragraph		(Compose	*compose,
+static gboolean compose_beautify_paragraph	(Compose	*compose,
 						 GtkTextIter	*par_iter,
 						 gboolean	 force);
 static void compose_wrap_all			(Compose	*compose);
@@ -901,26 +901,26 @@ static void compose_create_tags(GtkTextView *text, Compose *compose)
 	}
 
 	if (prefs_common.enable_color && prefs_common.enable_bgcolor) {
-		gtk_text_buffer_create_tag(buffer, "quote0",
+		compose->quote0_tag = gtk_text_buffer_create_tag(buffer, "quote0",
 					   "foreground-gdk", &quote_color1,
 					   "paragraph-background-gdk", &quote_bgcolor1,
 					   NULL);
-		gtk_text_buffer_create_tag(buffer, "quote1",
+		compose->quote1_tag = gtk_text_buffer_create_tag(buffer, "quote1",
 					   "foreground-gdk", &quote_color2,
 					   "paragraph-background-gdk", &quote_bgcolor2,
 					   NULL);
-		gtk_text_buffer_create_tag(buffer, "quote2",
+		compose->quote2_tag = gtk_text_buffer_create_tag(buffer, "quote2",
 					   "foreground-gdk", &quote_color3,
 					   "paragraph-background-gdk", &quote_bgcolor3,
 					   NULL);
 	} else {
-		gtk_text_buffer_create_tag(buffer, "quote0",
+		compose->quote0_tag = gtk_text_buffer_create_tag(buffer, "quote0",
 					   "foreground-gdk", &quote_color1,
 					   NULL);
-		gtk_text_buffer_create_tag(buffer, "quote1",
+		compose->quote1_tag = gtk_text_buffer_create_tag(buffer, "quote1",
 					   "foreground-gdk", &quote_color2,
 					   NULL);
-		gtk_text_buffer_create_tag(buffer, "quote2",
+		compose->quote2_tag = gtk_text_buffer_create_tag(buffer, "quote2",
 					   "foreground-gdk", &quote_color3,
 					   NULL);
 	}
@@ -928,7 +928,8 @@ static void compose_create_tags(GtkTextView *text, Compose *compose)
  	gtk_text_buffer_create_tag(buffer, "signature",
 				   "foreground-gdk", &signature_color,
 				   NULL);
- 	gtk_text_buffer_create_tag(buffer, "link",
+ 	
+	compose->uri_tag = gtk_text_buffer_create_tag(buffer, "link",
 					"foreground-gdk", &uri_color,
 					 NULL);
 	compose->no_wrap_tag = gtk_text_buffer_create_tag(buffer, "no_wrap", NULL);
@@ -1813,6 +1814,36 @@ static void compose_colorize_signature(Compose *compose)
 		}
 }
 
+#define BLOCK_WRAP() {							\
+	prev_autowrap = compose->autowrap;				\
+	buffer = gtk_text_view_get_buffer(				\
+					GTK_TEXT_VIEW(compose->text));	\
+	compose->autowrap = FALSE;					\
+									\
+	g_signal_handlers_block_by_func(G_OBJECT(buffer),		\
+				G_CALLBACK(compose_changed_cb),		\
+				compose);				\
+	g_signal_handlers_block_by_func(G_OBJECT(buffer),		\
+				G_CALLBACK(text_inserted),		\
+				compose);				\
+}
+#define UNBLOCK_WRAP() {						\
+	compose->autowrap = prev_autowrap;				\
+	if (compose->autowrap) {					\
+		gint old = compose->draft_timeout_tag;			\
+		compose->draft_timeout_tag = -2;			\
+		compose_wrap_all(compose);				\
+		compose->draft_timeout_tag = old;			\
+	}								\
+									\
+	g_signal_handlers_unblock_by_func(G_OBJECT(buffer),		\
+				G_CALLBACK(compose_changed_cb),		\
+				compose);				\
+	g_signal_handlers_unblock_by_func(G_OBJECT(buffer),		\
+				G_CALLBACK(text_inserted),		\
+				compose);				\
+}
+
 Compose *compose_reedit(MsgInfo *msginfo, gboolean batch)
 {
 	Compose *compose = NULL;
@@ -2014,14 +2045,13 @@ Compose *compose_reedit(MsgInfo *msginfo, gboolean batch)
 
 	if (fp != NULL) {
 		gboolean prev_autowrap = compose->autowrap;
-
-		compose->autowrap = FALSE;
+		GtkTextBuffer *buffer = textbuf;
+		BLOCK_WRAP();
 		while (fgets(buf, sizeof(buf), fp) != NULL) {
 			strcrchomp(buf);
 			gtk_text_buffer_insert(textbuf, &iter, buf, -1);
 		}
-		compose_wrap_all_full(compose, FALSE);
-		compose->autowrap = prev_autowrap;
+		UNBLOCK_WRAP();
 		fclose(fp);
 	}
 	
@@ -2983,8 +3013,7 @@ static void compose_insert_sig(Compose *compose, gboolean replace)
 	
 	g_return_if_fail(compose->account != NULL);
 
-	prev_autowrap = compose->autowrap;
-	compose->autowrap = FALSE;
+	BLOCK_WRAP();
 
 	g_signal_handlers_block_by_func(G_OBJECT(buffer),
 					G_CALLBACK(compose_changed_cb),
@@ -3057,9 +3086,7 @@ again:
 					G_CALLBACK(compose_changed_cb),
 					compose);
 		
-	compose->autowrap = prev_autowrap;
-	if (compose->autowrap)
-		compose_wrap_all(compose);
+	UNBLOCK_WRAP();
 }
 
 static gchar *compose_get_signature_str(Compose *compose)
@@ -3764,8 +3791,7 @@ static gboolean compose_join_next_line(Compose *compose,
 		g_warning("alloc error scanning URIs\n"); \
 	}
 
-static gboolean automatic_break = FALSE;
-static void compose_beautify_paragraph(Compose *compose, GtkTextIter *par_iter, gboolean force)
+static gboolean compose_beautify_paragraph(Compose *compose, GtkTextIter *par_iter, gboolean force)
 {
 	GtkTextView *text = GTK_TEXT_VIEW(compose->text);
 	GtkTextBuffer *buffer;
@@ -3779,6 +3805,18 @@ static void compose_beautify_paragraph(Compose *compose, GtkTextIter *par_iter, 
 	gint nouri_start = -1, nouri_stop = -1;
 	gint num_blocks = 0;
 	gint quotelevel = -1;
+	gboolean modified = force;
+	gboolean removed = FALSE;
+	gboolean modified_before_remove = FALSE;
+	gint lines = 0;
+	gboolean start = TRUE;
+
+	if (force) {
+		modified = TRUE;
+	}
+	if (compose->draft_timeout_tag == -2) {
+		modified = TRUE;
+	}
 
 	compose->autowrap = FALSE;
 
@@ -3792,24 +3830,26 @@ static void compose_beautify_paragraph(Compose *compose, GtkTextIter *par_iter, 
 		gtk_text_buffer_get_iter_at_mark(buffer, &iter, mark);
 	}
 
-	/* move to paragraph start */
-	gtk_text_iter_set_line_offset(&iter, 0);
-	if (gtk_text_iter_ends_line(&iter)) {
-		while (gtk_text_iter_ends_line(&iter) &&
-		       gtk_text_iter_forward_line(&iter))
-			;
-	} else {
-		while (gtk_text_iter_backward_line(&iter)) {
-			if (gtk_text_iter_ends_line(&iter)) {
-				gtk_text_iter_forward_line(&iter);
-				break;
+
+	if (compose->draft_timeout_tag == -2) {
+		if (gtk_text_iter_ends_line(&iter)) {
+			while (gtk_text_iter_ends_line(&iter) &&
+			       gtk_text_iter_forward_line(&iter))
+				;
+		} else {
+			while (gtk_text_iter_backward_line(&iter)) {
+				if (gtk_text_iter_ends_line(&iter)) {
+					gtk_text_iter_forward_line(&iter);
+					break;
+				}
 			}
 		}
+	} else {
+		/* move to line start */
+		gtk_text_iter_set_line_offset(&iter, 0);
 	}
-
 	/* go until paragraph end (empty line) */
-	
-	while (!gtk_text_iter_ends_line(&iter)) {
+	while (start || !gtk_text_iter_ends_line(&iter)) {
 		gchar *scanpos = NULL;
 		/* parse table - in order of priority */
 		struct table {
@@ -3844,6 +3884,7 @@ static void compose_beautify_paragraph(Compose *compose, GtkTextIter *par_iter, 
 		gchar *o_walk = NULL, *walk = NULL, *bp = NULL, *ep = NULL;
 		gint walk_pos;
 		
+		start = FALSE;
 		if (!prev_autowrap && num_blocks == 0) {
 			num_blocks++;
 			g_signal_handlers_block_by_func(G_OBJECT(buffer),
@@ -3885,15 +3926,17 @@ static void compose_beautify_paragraph(Compose *compose, GtkTextIter *par_iter, 
 					       prefs_common.linewrap_len,
 					       quote_len)) {
 			GtkTextIter prev, next, cur;
-			
+
 			if (prev_autowrap != FALSE || force) {
-				automatic_break = TRUE;
+				compose->automatic_break = TRUE;
+				modified = TRUE;
 				gtk_text_buffer_insert(buffer, &break_pos, "\n", 1);
-				automatic_break = FALSE;
+				compose->automatic_break = FALSE;
 			} else if (quote_str && wrap_quote) {
-				automatic_break = TRUE;
+				compose->automatic_break = TRUE;
+				modified = TRUE;
 				gtk_text_buffer_insert(buffer, &break_pos, "\n", 1);
-				automatic_break = FALSE;
+				compose->automatic_break = FALSE;
 			} else 
 				goto colorize;
 			/* remove trailing spaces */
@@ -3920,7 +3963,7 @@ static void compose_beautify_paragraph(Compose *compose, GtkTextIter *par_iter, 
 						       quote_str, -1);
 
 			iter = break_pos;
-			compose_join_next_line(compose, buffer, &iter, quote_str);
+			modified |= compose_join_next_line(compose, buffer, &iter, quote_str);
 
 			/* move iter to current line start */
 			gtk_text_iter_set_line_offset(&iter, 0);
@@ -3928,10 +3971,11 @@ static void compose_beautify_paragraph(Compose *compose, GtkTextIter *par_iter, 
 				g_free(quote_str);
 				quote_str = NULL;
 			}
-			continue;
+			continue;	
 		} else {
 			/* move iter to next line start */
 			iter = break_pos;
+			lines++;
 		}
 
 colorize:
@@ -3991,14 +4035,41 @@ colorize:
 			endquote = iter;
 
 			switch (quotelevel) {
-			case 0:	gtk_text_buffer_apply_tag_by_name(
-					buffer, "quote0", &startquote, &endquote);
+			case 0:	
+				if (!gtk_text_iter_has_tag(&startquote, compose->quote0_tag) ||
+				    !gtk_text_iter_has_tag(&end_of_line, compose->quote0_tag)) {
+					gtk_text_buffer_apply_tag_by_name(
+						buffer, "quote0", &startquote, &endquote);
+					gtk_text_buffer_remove_tag_by_name(
+						buffer, "quote1", &startquote, &endquote);
+					gtk_text_buffer_remove_tag_by_name(
+						buffer, "quote2", &startquote, &endquote);
+					modified = TRUE;
+				}
 				break;
-			case 1:	gtk_text_buffer_apply_tag_by_name(
-					buffer, "quote1", &startquote, &endquote);
+			case 1:	
+				if (!gtk_text_iter_has_tag(&startquote, compose->quote1_tag) ||
+				    !gtk_text_iter_has_tag(&end_of_line, compose->quote1_tag)) {
+					gtk_text_buffer_apply_tag_by_name(
+						buffer, "quote1", &startquote, &endquote);
+					gtk_text_buffer_remove_tag_by_name(
+						buffer, "quote0", &startquote, &endquote);
+					gtk_text_buffer_remove_tag_by_name(
+						buffer, "quote2", &startquote, &endquote);
+					modified = TRUE;
+				}
 				break;
-			case 2:	gtk_text_buffer_apply_tag_by_name(
-					buffer, "quote2", &startquote, &endquote);
+			case 2:	
+				if (!gtk_text_iter_has_tag(&startquote, compose->quote2_tag) ||
+				    !gtk_text_iter_has_tag(&end_of_line, compose->quote2_tag)) {
+					gtk_text_buffer_apply_tag_by_name(
+						buffer, "quote2", &startquote, &endquote);
+					gtk_text_buffer_remove_tag_by_name(
+						buffer, "quote0", &startquote, &endquote);
+					gtk_text_buffer_remove_tag_by_name(
+						buffer, "quote1", &startquote, &endquote);
+					modified = TRUE;
+				}
 				break;
 			}
 			startq_offset = -1;
@@ -4007,39 +4078,71 @@ colorize:
 			gtk_text_buffer_get_iter_at_offset(
 				buffer, &startnoquote, noq_offset);
 			endnoquote = iter;
-			gtk_text_buffer_remove_tag_by_name(
-				buffer, "quote0", &startnoquote, &endnoquote);
-			gtk_text_buffer_remove_tag_by_name(
-				buffer, "quote1", &startnoquote, &endnoquote);
-			gtk_text_buffer_remove_tag_by_name(
-				buffer, "quote2", &startnoquote, &endnoquote);
+
+			if ((gtk_text_iter_has_tag(&startnoquote, compose->quote0_tag)
+			  && gtk_text_iter_has_tag(&end_of_line, compose->quote0_tag)) ||
+			    (gtk_text_iter_has_tag(&startnoquote, compose->quote1_tag)
+			  && gtk_text_iter_has_tag(&end_of_line, compose->quote1_tag)) ||
+			    (gtk_text_iter_has_tag(&startnoquote, compose->quote2_tag)
+			  && gtk_text_iter_has_tag(&end_of_line, compose->quote2_tag))) {
+				gtk_text_buffer_remove_tag_by_name(
+					buffer, "quote0", &startnoquote, &endnoquote);
+				gtk_text_buffer_remove_tag_by_name(
+					buffer, "quote1", &startnoquote, &endnoquote);
+				gtk_text_buffer_remove_tag_by_name(
+					buffer, "quote2", &startnoquote, &endnoquote);
+				modified = TRUE;
+			}
 			noq_offset = -1;
 		}
 		
-		/* always */ {
+		if (uri_start != nouri_start && uri_stop != nouri_stop) {
 			GtkTextIter nouri_start_iter, nouri_end_iter;
 			gtk_text_buffer_get_iter_at_offset(
 				buffer, &nouri_start_iter, nouri_start);
 			gtk_text_buffer_get_iter_at_offset(
 				buffer, &nouri_end_iter, nouri_stop);
-			gtk_text_buffer_remove_tag_by_name(
-				buffer, "link", &nouri_start_iter, &nouri_end_iter);
+			if (gtk_text_iter_has_tag(&nouri_start_iter, compose->uri_tag) &&
+			    gtk_text_iter_has_tag(&nouri_end_iter, compose->uri_tag)) {
+				gtk_text_buffer_remove_tag_by_name(
+					buffer, "link", &nouri_start_iter, &nouri_end_iter);
+				modified_before_remove = modified;
+				modified = TRUE;
+				removed = TRUE;
+			}
 		}
 		if (uri_start > 0 && uri_stop > 0) {
-			GtkTextIter uri_start_iter, uri_end_iter;
+			GtkTextIter uri_start_iter, uri_end_iter, back;
 			gtk_text_buffer_get_iter_at_offset(
 				buffer, &uri_start_iter, uri_start);
 			gtk_text_buffer_get_iter_at_offset(
 				buffer, &uri_end_iter, uri_stop);
-			gtk_text_buffer_apply_tag_by_name(
-				buffer, "link", &uri_start_iter, &uri_end_iter);
+			back = uri_end_iter;
+			gtk_text_iter_backward_char(&back);
+			if (!gtk_text_iter_has_tag(&uri_start_iter, compose->uri_tag) ||
+			    !gtk_text_iter_has_tag(&back, compose->uri_tag)) {
+				gtk_text_buffer_apply_tag_by_name(
+					buffer, "link", &uri_start_iter, &uri_end_iter);
+				modified = TRUE;
+				if (removed && !modified_before_remove) {
+					modified = FALSE;
+				} 
+			}
+		}
+		if (!modified) {
+			debug_print("not modified, out after %d lines\n", lines);
+			goto end;
 		}
 	}
 
+	debug_print("modified, out after %d lines\n", lines);
+end:
 	if (par_iter)
 		*par_iter = iter;
 	undo_wrapping(compose->undostruct, FALSE);
 	compose->autowrap = prev_autowrap;
+	
+	return modified;
 }
 
 void compose_action_cb(void *data)
@@ -4058,12 +4161,13 @@ static void compose_wrap_all_full(Compose *compose, gboolean force)
 	GtkTextView *text = GTK_TEXT_VIEW(compose->text);
 	GtkTextBuffer *buffer;
 	GtkTextIter iter;
+	gboolean modified = TRUE;
 
 	buffer = gtk_text_view_get_buffer(text);
 
 	gtk_text_buffer_get_start_iter(buffer, &iter);
-	while (!gtk_text_iter_is_end(&iter))
-		compose_beautify_paragraph(compose, &iter, force);
+	while (!gtk_text_iter_is_end(&iter) && modified)
+		modified = compose_beautify_paragraph(compose, &iter, force);
 
 }
 
@@ -6159,32 +6263,6 @@ static void compose_savemsg_select_cb(GtkWidget *widget, Compose *compose)
 
 static void entry_paste_clipboard(Compose *compose, GtkWidget *entry, gboolean wrap,
 				  GdkAtom clip, GtkTextIter *insert_place);
-
-#define BLOCK_WRAP() {							\
-	prev_autowrap = compose->autowrap;				\
-	buffer = gtk_text_view_get_buffer(				\
-					GTK_TEXT_VIEW(compose->text));	\
-	compose->autowrap = FALSE;					\
-									\
-	g_signal_handlers_block_by_func(G_OBJECT(buffer),		\
-				G_CALLBACK(compose_changed_cb),		\
-				compose);				\
-	g_signal_handlers_block_by_func(G_OBJECT(buffer),		\
-				G_CALLBACK(text_inserted),		\
-				compose);				\
-}
-#define UNBLOCK_WRAP() {						\
-	compose->autowrap = prev_autowrap;				\
-	if (compose->autowrap)						\
-		compose_wrap_all(compose);				\
-									\
-	g_signal_handlers_unblock_by_func(G_OBJECT(buffer),		\
-				G_CALLBACK(compose_changed_cb),		\
-				compose);				\
-	g_signal_handlers_unblock_by_func(G_OBJECT(buffer),		\
-				G_CALLBACK(text_inserted),		\
-				compose);				\
-}
 
 
 static gboolean text_clicked(GtkWidget *text, GdkEventButton *event,
@@ -9631,7 +9709,7 @@ static void text_inserted(GtkTextBuffer *buffer, GtkTextIter *iter,
 		gtk_text_buffer_get_iter_at_mark(buffer, iter, mark);
 		gtk_text_buffer_place_cursor(buffer, iter);
 	} else {
-		if (strcmp(text, "\n") || automatic_break
+		if (strcmp(text, "\n") || compose->automatic_break
 		|| gtk_text_iter_starts_line(iter))
 			gtk_text_buffer_insert(buffer, iter, text, len);
 		else {
