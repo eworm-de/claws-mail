@@ -264,7 +264,7 @@ static void mh_get_last_num(Folder *folder, FolderItem *item)
 			if (max < num)
 				max = num;
 		}
-		if (num % 100 == 0)
+		if (num % 2000 == 0)
 			GTK_EVENTS_FLUSH();
 	}
 	closedir(dp);

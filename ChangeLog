@@ -1,3 +1,10 @@
+2007-08-04 [colin]	2.10.0cvs88
+
+	* src/mh.c
+		Refresh GUI only every 2000 mails on mh_get_last_num
+		This is fast (readdir) and done only once per 
+		session/folder
+
 2007-08-03 [colin]	2.10.0cvs87
 
 	* src/prefs_account.c

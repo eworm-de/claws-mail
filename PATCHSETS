@@ -2741,3 +2741,4 @@
 ( cvs diff -u -r 1.79.2.57 -r 1.79.2.58 src/mh.c;  ) > 2.10.0cvs85.patchset
 ( cvs diff -u -r 1.382.2.397 -r 1.382.2.398 src/compose.c;  cvs diff -u -r 1.50.2.38 -r 1.50.2.39 src/compose.h;  cvs diff -u -r 1.213.2.152 -r 1.213.2.153 src/folder.c;  ) > 2.10.0cvs86.patchset
 ( cvs diff -u -r 1.105.2.104 -r 1.105.2.105 src/prefs_account.c;  cvs diff -u -r 1.1.2.7 -r 1.1.2.8 src/gtk/combobox.h;  cvs diff -u -r 1.5.2.63 -r 1.5.2.64 src/gtk/gtkutils.c;  ) > 2.10.0cvs87.patchset
+( cvs diff -u -r 1.79.2.58 -r 1.79.2.59 src/mh.c;  ) > 2.10.0cvs88.patchset
