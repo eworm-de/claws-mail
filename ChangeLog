@@ -1,3 +1,10 @@
+2007-08-04 [colin]	2.10.0cvs89
+
+	* src/prefs_summaries.c
+	* src/summary_search.c
+		Replace deprecated widgets. Patch by
+		Andrej.
+
 2007-08-04 [colin]	2.10.0cvs88
 
 	* src/mh.c

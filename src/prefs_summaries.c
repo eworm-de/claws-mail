@@ -44,6 +44,7 @@
 #include "gtk/menu.h"
 #include "gtk/gtkutils.h"
 #include "gtk/prefswindow.h"
+#include "gtk/combobox.h"
 
 #include "manage_window.h"
 
@@ -335,8 +336,8 @@ static void prefs_summaries_create_widget(PrefsPage *_page, GtkWindow *window,
 	GtkWidget *checkbtn_ask_mark_all_read;
 	GtkTooltips *immedexec_tooltip;
 	GtkWidget *label, *label_fill;
-	GtkWidget *menu;
-	GtkWidget *menuitem;
+	GtkListStore *menu;
+	GtkTreeIter iter;
  	GtkWidget *optmenu_nextunreadmsgdialog;
 	GtkWidget *folderview_frame;
 	GtkWidget *summaryview_frame;
@@ -360,15 +361,15 @@ static void prefs_summaries_create_widget(PrefsPage *_page, GtkWindow *window,
 	gtk_widget_show (label);
 	gtk_box_pack_start(GTK_BOX(hbox0), label, FALSE, FALSE, 0);
 
- 	optmenu_folder_unread = gtk_option_menu_new ();
- 	gtk_widget_show (optmenu_folder_unread);
+	optmenu_folder_unread = gtkut_sc_combobox_create(NULL, FALSE);
+	menu = GTK_LIST_STORE(gtk_combo_box_get_model(
+				GTK_COMBO_BOX(optmenu_folder_unread)));
+	gtk_widget_show (optmenu_folder_unread);
  	
-	menu = gtk_menu_new ();
-	MENUITEM_ADD (menu, menuitem, _("No"), 0);
-	MENUITEM_ADD (menu, menuitem, _("Unread messages"), 1);
-	MENUITEM_ADD (menu, menuitem, _("Unread and Total messages"), 2);
+	COMBOBOX_ADD (menu, _("No"), 0);
+	COMBOBOX_ADD (menu, _("Unread messages"), 1);
+	COMBOBOX_ADD (menu, _("Unread and Total messages"), 2);
 
-	gtk_option_menu_set_menu (GTK_OPTION_MENU (optmenu_folder_unread), menu);
 	gtk_box_pack_start(GTK_BOX(hbox0), optmenu_folder_unread, FALSE, FALSE, 0);
 
 	hbox1 = gtk_hbox_new (FALSE, 8);
@@ -435,17 +436,15 @@ static void prefs_summaries_create_widget(PrefsPage *_page, GtkWindow *window,
 	gtk_widget_show (label);
 	gtk_box_pack_start(GTK_BOX(hbox1), label, FALSE, FALSE, 0);
 	
- 	optmenu_nextunreadmsgdialog = gtk_option_menu_new ();
- 	gtk_widget_show (optmenu_nextunreadmsgdialog);
+	optmenu_nextunreadmsgdialog = gtkut_sc_combobox_create(NULL, FALSE);
+	menu = GTK_LIST_STORE(gtk_combo_box_get_model(
+				GTK_COMBO_BOX(optmenu_nextunreadmsgdialog)));
+	gtk_widget_show (optmenu_nextunreadmsgdialog);
 
-	menu = gtk_menu_new ();
-	MENUITEM_ADD (menu, menuitem, _("Always"), NEXTUNREADMSGDIALOG_ALWAYS);
-	MENUITEM_ADD (menu, menuitem, _("Assume 'Yes'"), 
-		      NEXTUNREADMSGDIALOG_ASSUME_YES);
-	MENUITEM_ADD (menu, menuitem, _("Assume 'No'"), 
-		      NEXTUNREADMSGDIALOG_ASSUME_NO);
+	COMBOBOX_ADD (menu, _("Always"), NEXTUNREADMSGDIALOG_ALWAYS);
+	COMBOBOX_ADD (menu, _("Assume 'Yes'"), NEXTUNREADMSGDIALOG_ASSUME_YES);
+	COMBOBOX_ADD (menu, _("Assume 'No'"), NEXTUNREADMSGDIALOG_ASSUME_NO);
 
-	gtk_option_menu_set_menu (GTK_OPTION_MENU (optmenu_nextunreadmsgdialog), menu);
 	gtk_box_pack_start(GTK_BOX(hbox1), optmenu_nextunreadmsgdialog, FALSE, FALSE, 0);
 
 	PACK_CHECK_BUTTON
@@ -557,7 +556,7 @@ static void prefs_summaries_create_widget(PrefsPage *_page, GtkWindow *window,
 	
 	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(checkbtn_transhdr),
 			prefs_common.trans_hdr);
-	gtk_option_menu_set_history(GTK_OPTION_MENU(optmenu_folder_unread),
+	combobox_select_by_data(GTK_COMBO_BOX(optmenu_folder_unread),
 			prefs_common.display_folder_unread);
 	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(checkbtn_useaddrbook),
 			prefs_common.use_addr_book);
@@ -581,7 +580,7 @@ static void prefs_summaries_create_widget(PrefsPage *_page, GtkWindow *window,
 	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(checkbtn_ask_mark_all_read),
 			prefs_common.ask_mark_all_read);
 
-	gtk_option_menu_set_history(GTK_OPTION_MENU(optmenu_nextunreadmsgdialog),
+	combobox_select_by_data(GTK_COMBO_BOX(optmenu_nextunreadmsgdialog),
 			prefs_common.next_unread_msg_dialog);
 
 	prefs_summaries->checkbtn_transhdr = checkbtn_transhdr;
@@ -605,16 +604,13 @@ static void prefs_summaries_create_widget(PrefsPage *_page, GtkWindow *window,
 static void prefs_summaries_save(PrefsPage *_page)
 {
 	SummariesPage *page = (SummariesPage *) _page;
-	GtkWidget *menu;
-	GtkWidget *menuitem;
 
 	prefs_common.trans_hdr = gtk_toggle_button_get_active(
 			GTK_TOGGLE_BUTTON(page->checkbtn_transhdr));
 
-	menu = gtk_option_menu_get_menu(GTK_OPTION_MENU(page->optmenu_folder_unread));
-	menuitem = gtk_menu_get_active(GTK_MENU(menu));
-	prefs_common.display_folder_unread = GPOINTER_TO_INT
-		(g_object_get_data(G_OBJECT(menuitem), MENU_VAL_ID));
+
+	prefs_common.display_folder_unread = combobox_get_active_data(
+			GTK_COMBO_BOX(page->optmenu_folder_unread));
 
 	prefs_common.use_addr_book = gtk_toggle_button_get_active(
 			GTK_TOGGLE_BUTTON(page->checkbtn_useaddrbook));
@@ -640,10 +636,8 @@ static void prefs_summaries_save(PrefsPage *_page)
 	prefs_common.mark_as_read_delay = gtk_spin_button_get_value_as_int(
 			GTK_SPIN_BUTTON(page->spinbtn_mark_as_read_delay));
 
-	menu = gtk_option_menu_get_menu(GTK_OPTION_MENU(page->optmenu_nextunreadmsgdialog));
-	menuitem = gtk_menu_get_active(GTK_MENU(menu));
-	prefs_common.next_unread_msg_dialog = GPOINTER_TO_INT
-		(g_object_get_data(G_OBJECT(menuitem), MENU_VAL_ID));
+	prefs_common.next_unread_msg_dialog = combobox_get_active_data(
+			GTK_COMBO_BOX(page->optmenu_nextunreadmsgdialog));
 	main_window_reflect_prefs_all();
 }
 

@@ -194,8 +194,8 @@ static void summary_search_create(void)
 	GtkWidget *vbox1;
 	GtkWidget *bool_hbox;
 	GtkWidget *bool_optmenu;
-	GtkWidget *bool_menu;
-	GtkWidget *menuitem;
+	GtkListStore *menu;
+	GtkTreeIter iter;
 	GtkWidget *clear_btn;
 
 	GtkWidget *table1;
@@ -248,14 +248,14 @@ static void summary_search_create(void)
 	gtk_widget_show(bool_hbox);
 	gtk_box_pack_start(GTK_BOX(vbox1), bool_hbox, FALSE, FALSE, 0);
 
-	bool_optmenu = gtk_option_menu_new();
+	bool_optmenu = gtkut_sc_combobox_create(NULL, FALSE);
+	menu = GTK_LIST_STORE(gtk_combo_box_get_model(GTK_COMBO_BOX(bool_optmenu)));
 	gtk_widget_show(bool_optmenu);
 	gtk_box_pack_start(GTK_BOX(bool_hbox), bool_optmenu, FALSE, FALSE, 0);
 
-	bool_menu = gtk_menu_new();
-	MENUITEM_ADD(bool_menu, menuitem, _("Match any of the following"), 0);
-	MENUITEM_ADD(bool_menu, menuitem, _("Match all of the following"), 1);
-	gtk_option_menu_set_menu(GTK_OPTION_MENU(bool_optmenu), bool_menu);
+	COMBOBOX_ADD(menu, _("Match any of the following"), 0);
+	gtk_combo_box_set_active_iter(GTK_COMBO_BOX(bool_optmenu), &iter);
+	COMBOBOX_ADD(menu, _("Match all of the following"), 1);
 
 	clear_btn = gtk_button_new_from_stock(GTK_STOCK_CLEAR);
 	gtk_widget_show(clear_btn);
@@ -439,7 +439,7 @@ static void summary_search_create(void)
 	gtk_box_pack_start (GTK_BOX (vbox1), confirm_area, FALSE, FALSE, 0);
 	gtk_widget_grab_default(next_btn);
 
-	SET_TOGGLE_SENSITIVITY_REVERSE(adv_search_checkbtn, bool_menu)
+	SET_TOGGLE_SENSITIVITY_REVERSE(adv_search_checkbtn, bool_optmenu)
 	SET_TOGGLE_SENSITIVITY_REVERSE(adv_search_checkbtn, from_entry)
 	SET_TOGGLE_SENSITIVITY_REVERSE(adv_search_checkbtn, to_entry)
 	SET_TOGGLE_SENSITIVITY_REVERSE(adv_search_checkbtn, subject_entry)
@@ -549,9 +549,8 @@ static void summary_search_execute(gboolean backward, gboolean search_all)
 			return;
 		}
 	} else {
-		bool_and = GPOINTER_TO_INT
-			(menu_get_option_menu_active_user_data
-				(GTK_OPTION_MENU(search_window.bool_optmenu)));
+		bool_and = combobox_get_active_data(
+				GTK_COMBO_BOX(search_window.bool_optmenu));
 		case_sens = gtk_toggle_button_get_active
 			(GTK_TOGGLE_BUTTON(search_window.case_checkbtn));
 
