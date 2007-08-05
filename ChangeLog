@@ -1,3 +1,8 @@
+2007-08-05 [colin]	2.10.0cvs90
+
+	* src/folder.c
+		Fix slowdown
+
 2007-08-04 [colin]	2.10.0cvs89
 
 	* src/prefs_summaries.c

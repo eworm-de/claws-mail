@@ -4004,7 +4004,7 @@ void folder_item_apply_processing(FolderItem *item)
                 /* apply post global rules */
 		filter_message_by_msginfo(post_global_processing, msginfo, NULL,
 				FILTERING_POST_PROCESSING, NULL);
-		if (curmsg % 10 == 0)
+		if (curmsg % 1000 == 0)
 			GTK_EVENTS_FLUSH();
 	}
 	prefs_common.apply_per_account_filtering_rules = last_apply_per_account;
