@@ -215,12 +215,6 @@ struct _Compose
 	
 	GtkTextTag *no_wrap_tag;
 	GtkTextTag *no_join_tag;
-	GtkTextTag *quote0_tag;
-	GtkTextTag *quote1_tag;
-	GtkTextTag *quote2_tag;
-	GtkTextTag *uri_tag;
-
-	gboolean automatic_break;
 	GMutex *mutex;
 	gchar *orig_charset;
 	gint set_cursor_pos;
