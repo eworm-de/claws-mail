@@ -19,5 +19,8 @@ EXPORTS
         sgpgme_verify_signature
 
         gpgmegtk_passphrase_cb
+        prefs_gpg_add_skip_encryption_warning
         prefs_gpg_enable_agent
+        prefs_gpg_remove_skip_encryption_warning
+        prefs_gpg_should_skip_encryption_warning
         prefs_gpg_get_config

@@ -1,3 +1,8 @@
+2007-08-06 [wwp]	2.10.0cvs92
+
+	* src/plugins/pgpcore/plugin.def
+		Apply one more chunk from gpg4win's 03-w32-port patch.
+
 2007-08-05 [colin]	2.10.0cvs91
 
 	* src/compose.c
