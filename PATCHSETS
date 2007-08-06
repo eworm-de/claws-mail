@@ -2748,3 +2748,4 @@
 ( cvs diff -u -r 1.1.2.3 -r 1.1.2.4 src/plugins/pgpcore/plugin.def;  ) > 2.10.0cvs92.patchset
 ( cvs diff -u -r 1.105.2.105 -r 1.105.2.106 src/prefs_account.c;  cvs diff -u -r 1.1.2.9 -r 1.1.2.10 src/gtk/combobox.c;  ) > 2.10.0cvs93.patchset
 ( cvs diff -u -r 1.1.2.75 -r 1.1.2.76 src/gtk/quicksearch.c;  ) > 2.10.0cvs94.patchset
+( cvs diff -u -r 1.382.2.399 -r 1.382.2.400 src/compose.c;  cvs diff -u -r 1.50.2.40 -r 1.50.2.41 src/compose.h;  ) > 2.10.0cvs95.patchset

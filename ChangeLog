@@ -1,3 +1,12 @@
+2007-08-06 [colin]	2.10.0cvs95
+
+	* src/compose.c
+	* src/compose.h
+		Re-commit 2.10.0cvs86, with a protection
+		against Pango bug. Also, try to fix 
+		bug 1275, 'auto-saved draft messages not 
+		always being removed'
+
 2007-08-06 [wwp]	2.10.0cvs94
 
 	* src/gtk/quicksearch.c
