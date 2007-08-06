@@ -315,8 +315,8 @@ static void prefs_account_protocol_set_optmenu		(PrefParam *pparam);
 static void prefs_account_protocol_changed		(GtkComboBox *combobox,
 							gpointer data);
 
-static void prefs_account_set_string_from_optmenu	(PrefParam *pparam);
-static void prefs_account_set_optmenu_from_string	(PrefParam *pparam);
+static void prefs_account_set_string_from_combobox (PrefParam *pparam);
+static void prefs_account_set_privacy_combobox_from_string (PrefParam *pparam);
 
 static void prefs_account_imap_auth_type_set_data_from_optmenu
 							(PrefParam *pparam);
@@ -625,7 +625,8 @@ static PrefParam templates_param[] = {
 static PrefParam privacy_param[] = {
 	{"default_privacy_system", "", &tmp_ac_prefs.default_privacy_system, P_STRING,
 	 &privacy_page.default_privacy_system,
-	 prefs_account_set_string_from_optmenu, prefs_account_set_optmenu_from_string},
+	 prefs_account_set_string_from_combobox,
+	 prefs_account_set_privacy_combobox_from_string},
 
 	{"default_encrypt", "FALSE", &tmp_ac_prefs.default_encrypt, P_BOOL,
 	 &privacy_page.default_encrypt_checkbtn,
@@ -809,66 +810,79 @@ static void pop_bfr_smtp_tm_set_sens		(GtkWidget	*widget,
 
 static void prefs_account_edit_custom_header	(void);
 
-static void privacy_system_activated(GtkMenuItem *menuitem)
+
+#define COMBOBOX_PRIVACY_PLUGIN_ID 3
+
+/* Enable/disable necessary preference widgets based on current privacy
+ * system choice. */
+static void privacy_system_activated(GtkWidget *combobox)
 {
-	const gchar* system_id;
+	const gchar *system_id;
 	gboolean privacy_enabled = FALSE;
-	
-	system_id = g_object_get_data(G_OBJECT(menuitem), MENU_VAL_ID);
+	gint privacy_enabled_int;
+	GtkTreeIter iter;
+	GtkListStore *menu = GTK_LIST_STORE(gtk_combo_box_get_model(
+				GTK_COMBO_BOX(combobox)));
+
+	gtk_combo_box_get_active_iter(GTK_COMBO_BOX(combobox), &iter);
+
+	gtk_tree_model_get(GTK_TREE_MODEL(menu), &iter,
+			COMBOBOX_PRIVACY_PLUGIN_ID, &system_id,
+			COMBOBOX_DATA, &privacy_enabled_int,
+			-1);
 	
 	privacy_enabled = strcmp(system_id, "");
 
-	if (g_object_get_data(G_OBJECT(menuitem), MENU_VAL_DATA) == NULL ||
-	    GPOINTER_TO_INT(g_object_get_data(G_OBJECT(menuitem), MENU_VAL_DATA)) == FALSE)
+	if( privacy_enabled_int == 0 )
 		privacy_enabled = FALSE;
 
-	gtk_widget_set_sensitive (privacy_page.default_encrypt_checkbtn, privacy_enabled);
-	gtk_widget_set_sensitive (privacy_page.default_encrypt_reply_checkbtn, privacy_enabled);
-	gtk_widget_set_sensitive (privacy_page.default_sign_checkbtn, privacy_enabled);
-	gtk_widget_set_sensitive (privacy_page.encrypt_to_self_checkbtn, privacy_enabled);
+	gtk_widget_set_sensitive (privacy_page.default_encrypt_checkbtn,
+			privacy_enabled);
+	gtk_widget_set_sensitive (privacy_page.default_encrypt_reply_checkbtn,
+			privacy_enabled);
+	gtk_widget_set_sensitive (privacy_page.default_sign_checkbtn,
+			privacy_enabled);
+	gtk_widget_set_sensitive (privacy_page.encrypt_to_self_checkbtn,
+			privacy_enabled);
 	gtk_widget_set_sensitive (privacy_page.save_clear_text_checkbtn, 
 		privacy_enabled && !gtk_toggle_button_get_active(
 					GTK_TOGGLE_BUTTON(privacy_page.encrypt_to_self_checkbtn)));
 }
 
+/* Populate the privacy system choice combobox with valid choices */
 static void update_privacy_system_menu() {
-	GtkWidget *menu;
-	GtkWidget *menuitem;
+	GtkListStore *menu;
+	GtkTreeIter iter;
 	GSList *system_ids, *cur;
 
-	menu = gtk_menu_new();
+	menu = GTK_LIST_STORE(gtk_combo_box_get_model(
+			GTK_COMBO_BOX(privacy_page.default_privacy_system)));
 
-	menuitem = gtk_menu_item_new_with_label(_("None"));
-	gtk_widget_show(menuitem);
-	g_object_set_data(G_OBJECT(menuitem), MENU_VAL_ID, "");
-	g_object_set_data(G_OBJECT(menuitem), MENU_VAL_DATA, GINT_TO_POINTER(FALSE));
-	gtk_menu_append(GTK_MENU(menu), menuitem);
+	/* First add "None", as that one is always available. :) */
+	gtk_list_store_append(menu, &iter);
+	gtk_list_store_set(menu, &iter,
+			COMBOBOX_TEXT, _("None"),
+			COMBOBOX_DATA, 0,
+			COMBOBOX_SENS, TRUE,
+			COMBOBOX_PRIVACY_PLUGIN_ID, "",
+			-1);
 
-	g_signal_connect(G_OBJECT(menuitem), "activate",
-			 G_CALLBACK(privacy_system_activated),
-			 NULL);
-
+	/* Now go through list of available privacy systems and add an entry
+	 * for each. */
 	system_ids = privacy_get_system_ids();
 	for (cur = system_ids; cur != NULL; cur = g_slist_next(cur)) {
 		gchar *id = (gchar *) cur->data;
 		const gchar *name;
 		
 		name = privacy_system_get_name(id);
-		menuitem = gtk_menu_item_new_with_label(name);
-		gtk_widget_show(menuitem);
-		g_object_set_data_full(G_OBJECT(menuitem), MENU_VAL_ID, id, g_free);
-		g_object_set_data(G_OBJECT(menuitem), MENU_VAL_DATA, GINT_TO_POINTER(TRUE));
-
-		gtk_menu_append(GTK_MENU(menu), menuitem);
-
-		g_signal_connect(G_OBJECT(menuitem), "activate",
-				 G_CALLBACK(privacy_system_activated),
-				 NULL);
-
-		
+		gtk_list_store_append(menu, &iter);
+		gtk_list_store_set(menu, &iter,
+				COMBOBOX_TEXT, name,
+				COMBOBOX_DATA, 1,
+				COMBOBOX_SENS, TRUE,
+				COMBOBOX_PRIVACY_PLUGIN_ID, id,
+				-1);
 	}
-
-	gtk_option_menu_set_menu(GTK_OPTION_MENU(privacy_page.default_privacy_system), menu);
 }
 
 #define TABLE_YPAD 2
@@ -2074,6 +2088,8 @@ static void privacy_create_widget_func(PrefsPage * _page,
 	GtkWidget *hbox1;
 	GtkWidget *label;
 	GtkWidget *default_privacy_system;
+	GtkListStore *menu;
+	GtkCellRenderer *rend;
 	GtkWidget *default_encrypt_checkbtn;
 	GtkWidget *default_encrypt_reply_checkbtn;
 	GtkWidget *default_sign_checkbtn;
@@ -2096,9 +2112,29 @@ static void privacy_create_widget_func(PrefsPage * _page,
 	gtk_widget_show(label);
 	gtk_box_pack_start (GTK_BOX (hbox1), label, FALSE, FALSE, 0);
 
-	default_privacy_system = gtk_option_menu_new();
+	/* Can't use gtkut_sc_combobox_create() here, because model for this
+	 * combobox needs an extra string column to store privacy plugin id. */
+	menu = gtk_list_store_new(4,
+			G_TYPE_STRING,
+			G_TYPE_INT,
+			G_TYPE_BOOLEAN,
+			G_TYPE_STRING);	/* This is where we store the privacy plugin id. */
+	default_privacy_system = gtk_combo_box_new_with_model(GTK_TREE_MODEL(menu));
+
+	rend = gtk_cell_renderer_text_new();
+	gtk_cell_layout_pack_start(GTK_CELL_LAYOUT(default_privacy_system), rend, TRUE);
+	gtk_cell_layout_set_attributes(GTK_CELL_LAYOUT(default_privacy_system), rend,
+			"text", COMBOBOX_TEXT,
+			"sensitive", COMBOBOX_SENS,
+			NULL);
+	gtk_combo_box_set_focus_on_click(GTK_COMBO_BOX(default_privacy_system), FALSE);
+
 	gtk_widget_show (default_privacy_system);
 	gtk_box_pack_start (GTK_BOX(hbox1), default_privacy_system, FALSE, TRUE, 0);
+
+	g_signal_connect(G_OBJECT(default_privacy_system), "changed",
+			 G_CALLBACK(privacy_system_activated),
+			 NULL);
 
 	PACK_CHECK_BUTTON (vbox2, default_sign_checkbtn,
 			   _("Always sign messages"));
@@ -3553,32 +3589,64 @@ static void prefs_account_smtp_auth_type_set_optmenu(PrefParam *pparam)
 	combobox_select_by_data(optmenu, type);
 }
 
-static void prefs_account_set_string_from_optmenu(PrefParam *pparam)
+static void prefs_account_set_string_from_combobox(PrefParam *pparam)
 {
-	GtkWidget *menu;
-	GtkWidget *menuitem;
+	GtkWidget *combobox;
+	GtkListStore *menu;
+	GtkTreeIter iter;
 	gchar **str;
 
 	g_return_if_fail(*pparam->widget != NULL);
 
-	menu = gtk_option_menu_get_menu(GTK_OPTION_MENU(*pparam->widget));
-	menuitem = gtk_menu_get_active(GTK_MENU(menu));
-	if (menuitem == NULL)
-		return;
+	combobox = *pparam->widget;
+	gtk_combo_box_get_active_iter(GTK_COMBO_BOX(combobox), &iter);
 
-	str = (gchar **) pparam->data;
-        g_free(*str);
-	*str = g_strdup(g_object_get_data(G_OBJECT(menuitem), MENU_VAL_ID));
+	str = (gchar **)pparam->data;
+	g_free(*str);
+	menu = GTK_LIST_STORE(gtk_combo_box_get_model(GTK_COMBO_BOX(combobox)));
+	gtk_tree_model_get(GTK_TREE_MODEL(menu), &iter,
+			COMBOBOX_PRIVACY_PLUGIN_ID, &(*str),
+			-1);
 }
 
-static void prefs_account_set_optmenu_from_string(PrefParam *pparam)
+/* Context struct and internal function called by gtk_tree_model_foreach().
+ * This is used in prefs_account_set_privacy_combobox_from_string() to find
+ * correct combobox entry to activate when account preferences are displayed
+ * and their values are set according to preferences. */
+typedef struct _privacy_system_set_ctx {
+	GtkWidget *combobox;
+	gchar *prefsid;
+	gboolean found;
+} PrivacySystemSetCtx;
+
+static gboolean _privacy_system_set_func(GtkTreeModel *model, GtkTreePath *path,
+		GtkTreeIter *iter, PrivacySystemSetCtx *ctx)
+{
+	GtkWidget *combobox = ctx->combobox;
+	gchar *prefsid = ctx->prefsid;
+	gchar *curid;
+
+	/* We're searching for correct privacy plugin ID. */
+	gtk_tree_model_get(model, iter, COMBOBOX_PRIVACY_PLUGIN_ID, &curid, -1);
+	if( strcmp(prefsid, curid) == 0 ) {
+		gtk_combo_box_set_active_iter(GTK_COMBO_BOX(combobox), iter);
+		g_free(curid);
+		ctx->found = TRUE;
+		return TRUE;
+	}
+
+	g_free(curid);
+	return FALSE;
+}
+
+static void prefs_account_set_privacy_combobox_from_string(PrefParam *pparam)
 {
 	GtkWidget *optionmenu;
-	GtkWidget *menu;
+	GtkListStore *menu;
+	GtkTreeIter iter;
 	gboolean found = FALSE;
-	GList *children, *cur;
 	gchar *prefsid;
-	guint i = 0;
+	PrivacySystemSetCtx *ctx = NULL;
 
 	g_return_if_fail(*pparam->widget != NULL);
 
@@ -3587,41 +3655,35 @@ static void prefs_account_set_optmenu_from_string(PrefParam *pparam)
 		return;
 
 	optionmenu = *pparam->widget;
-	menu = gtk_option_menu_get_menu(GTK_OPTION_MENU(optionmenu));
-	children = gtk_container_children(GTK_CONTAINER(menu));
-	for (cur = children; cur != NULL; cur = g_list_next(cur)) {
-		GtkWidget *item = (GtkWidget *) cur->data;
-		gchar *id;
+	menu = GTK_LIST_STORE(gtk_combo_box_get_model(GTK_COMBO_BOX(optionmenu)));
 
-		id = g_object_get_data(G_OBJECT(item), MENU_VAL_ID);
-		if (id != NULL && strcmp(id, prefsid) == 0) {
-			found = TRUE;
-			gtk_option_menu_set_history(GTK_OPTION_MENU(optionmenu), i);
-			privacy_system_activated(GTK_MENU_ITEM(item));
-		}
-		i++;
-	}
+	ctx = g_new(PrivacySystemSetCtx, sizeof(PrivacySystemSetCtx));
+	ctx->combobox = optionmenu;
+	ctx->prefsid = prefsid;
+	ctx->found = FALSE;
 
+	gtk_tree_model_foreach(GTK_TREE_MODEL(menu),
+			(GtkTreeModelForeachFunc)_privacy_system_set_func, ctx);
+	found = ctx->found;
+	g_free(ctx);
+
+	/* If chosen privacy system is not available, add a dummy entry with
+	 * "not loaded" note and make it active. */
 	if (!found) {
 		gchar *name;
-		GtkWidget *menuitem;
 
 		name = g_strdup_printf(_("%s (plugin not loaded)"), prefsid);
-		menuitem = gtk_menu_item_new_with_label(name);
-		gtk_widget_show(menuitem);
-		g_object_set_data(G_OBJECT(menuitem), MENU_VAL_ID, prefsid);
-		g_object_set_data(G_OBJECT(menuitem), MENU_VAL_DATA, GINT_TO_POINTER(FALSE));
-		gtk_menu_append(GTK_MENU(menu), menuitem);
+		gtk_list_store_append(menu, &iter);
+		gtk_list_store_set(menu, &iter,
+				COMBOBOX_TEXT, name,
+				COMBOBOX_DATA, 0,
+				COMBOBOX_SENS, TRUE,
+				COMBOBOX_PRIVACY_PLUGIN_ID, prefsid,
+				-1);
 		g_free(name);
 
-		gtk_option_menu_set_history(GTK_OPTION_MENU(optionmenu), i);
-		privacy_system_activated(GTK_MENU_ITEM(menuitem));
-		g_signal_connect(G_OBJECT(menuitem), "activate",
-				 G_CALLBACK(privacy_system_activated),
-				 NULL);
+		gtk_combo_box_set_active_iter(GTK_COMBO_BOX(optionmenu), &iter);
 	}
-
-	g_list_free(children);
 }
 
 static void prefs_account_protocol_changed(GtkComboBox *combobox, gpointer data)

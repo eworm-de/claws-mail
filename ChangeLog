@@ -1,3 +1,10 @@
+2007-08-06 [ticho]	2.10.0cvs93
+
+	* src/prefs_account.c
+	* src/gtk/combobox.c
+		Use GtkComboBox instead of GtkOptionMenu for privacy system
+		selection in account preferences.
+
 2007-08-06 [wwp]	2.10.0cvs92
 
 	* src/plugins/pgpcore/plugin.def

@@ -26,6 +26,7 @@
 #include <gdk/gdkkeysyms.h>
 #include <gtk/gtk.h>
 #include "gtkutils.h"
+#include "combobox.h"
 
 typedef struct _combobox_sel_by_data_ctx {
 	GtkComboBox *combobox;
@@ -39,7 +40,7 @@ static gboolean _select_by_data_func(GtkTreeModel *model,	GtkTreePath *path,
 	gint data = ctx->data;
 	gint curdata;
 
-	gtk_tree_model_get(model, iter, 1, &curdata, -1);
+	gtk_tree_model_get(GTK_TREE_MODEL(model), iter, COMBOBOX_DATA, &curdata, -1);
 	if (data == curdata) {
 		gtk_combo_box_set_active_iter(combobox, iter);
 		return TRUE;
@@ -77,7 +78,7 @@ gint combobox_get_active_data(GtkComboBox *combobox)
 
 	model = gtk_combo_box_get_model(combobox);
 
-	gtk_tree_model_get(model, &iter, 1, &data, -1);
+	gtk_tree_model_get(model, &iter, COMBOBOX_DATA, &data, -1);
 
 	return data;
 }
