@@ -99,7 +99,7 @@ static GdkColor emphasis_color = {
 	(gulong)0,
 	(gushort)0,
 	(gushort)0,
-	(gushort)0xcfff
+	(gushort)0
 };
 
 static GdkCursor *hand_cursor = NULL;
@@ -495,7 +495,6 @@ void textview_init(TextView *textview)
 static void textview_update_message_colors(TextView *textview)
 {
 	GdkColor black = {0, 0, 0, 0};
-	GdkColor colored_emphasis = {0, 0, 0, 0xcfff};
 	GtkTextBuffer *buffer = gtk_text_view_get_buffer(GTK_TEXT_VIEW(textview->text));
 
 	GtkTextTagTable *tags = gtk_text_buffer_get_tag_table(buffer);
@@ -517,7 +516,8 @@ static void textview_update_message_colors(TextView *textview)
 					       &uri_color);
 		gtkut_convert_int_to_gdk_color(prefs_common.signature_col,
 					       &signature_color);
-		emphasis_color = colored_emphasis;
+		gtkut_convert_int_to_gdk_color(prefs_common.emphasis_col,
+					       &emphasis_color);
 	}
 	if (prefs_common.enable_color && prefs_common.enable_bgcolor) {
 		gtkut_convert_int_to_gdk_color(prefs_common.quote_level1_bgcol,

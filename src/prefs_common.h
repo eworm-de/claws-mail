@@ -294,6 +294,7 @@ struct _PrefsCommon
 	gulong uri_col;
 	gulong tgt_folder_col;
 	gulong signature_col;
+	gulong emphasis_col;
 	gboolean recycle_quote_colors;
 	gboolean display_header_pane;
 	gboolean display_header;

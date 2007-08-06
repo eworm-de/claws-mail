@@ -1,3 +1,13 @@
+2007-08-06 [wwp]	2.10.0cvs96
+
+	* src/prefs_common.c
+	* src/prefs_common.h
+	* src/textview.c
+		Allow changing the emphasis color used to highlight
+		the newsreader/x-mailer header value when it matches
+		our preferred mail agent (hidden pref 'emphasis_col' added
+		to clawsrc).
+
 2007-08-06 [colin]	2.10.0cvs95
 
 	* src/compose.c

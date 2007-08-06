@@ -670,6 +670,8 @@ static PrefParam param[] = {
 	 NULL, NULL, NULL},
 	{"uri_color", "32512", &prefs_common.uri_col, P_COLOR,
 	 NULL, NULL, NULL},
+	{"emphasis_color", "207", &prefs_common.emphasis_col, P_COLOR,
+	 NULL, NULL, NULL},
 	{"target_folder_color", "14294218", &prefs_common.tgt_folder_col, P_COLOR,
 	 NULL, NULL, NULL},
 	{"signature_color", "7960953", &prefs_common.signature_col, P_COLOR,
