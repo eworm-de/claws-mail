@@ -2,7 +2,9 @@
 
 	* src/imap.c
 		fix bug 1275, 'auto-saved draft messages not 
-		always being removed'
+		always being removed'; Also, make multiple
+		copy (in the same account) faster by matching
+		source/destination message UIDs.
 	* src/messageview.c
 		Don't try to reshow deleted mail
 	* src/msgcache.c
