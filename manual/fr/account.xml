@@ -188,7 +188,8 @@
 	de désactiver le Filtrage sur les comptes et utiliser des règles de
 	traitement dans les différentes boîtes de réception des comptes. Les
 	règles de traitement sont exécutées lorsque vous entrerez dans le
-	dossier.
+	dossier ou en les exécutant manuellement à partir du menu contextuel
+	du dossier.
 	Il est aussi possible de définir des règles de filtrages spéciques à un
 	compte particulier, pour une utilisation plus fine lors de la relève du
 	courrier ou le filtrage manuel de messages.

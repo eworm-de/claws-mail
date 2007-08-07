@@ -66,10 +66,22 @@
   <section id="adv_processing">
     <title>Traitements</title>
     <para>
-	  Les règles de traitement sont identiques aux règles de filtrage à l'exception qu'elles sont appliquées lorsque vous entrez dans un dossier. Vous pouvez les utiliser pour déplacer vos anciens messages dans un dossier d'archives ou pour distribuer vos messages. Vous pouvez attribuer à chaque dossier ses règles de traitement en faisant un clic droit dessus.
+	  Les règles de traitement sont identiques aux règles de filtrage à l'exception
+	  qu'elles sont appliquées lorsque vous entrez dans un dossier ou lorsque vous
+	  les exécutez manuellement à partir du menu contextuel du dossier. Vous pouvez les
+	  utiliser pour déplacer vos anciens messages dans un dossier d'archives ou pour
+	  distribuer vos messages. Vous pouvez attribuer à chaque dossier ses règles de
+	  traitement en faisant un clic droit dessus.
     </para>
     <para>
-      Les règles de traitement sont accompagnées de règles de Pré-traitement et de Post-traitement. Comme les règles de traitement elles ne s'appliquent qu'à l'ouverture d'un dossier, mais comme les règles de filtrage elles sont partagées entre tous les dossiers. Vous pouvez les configurer à partir du menu <quote>Outils</quote>. Les règles de Pré-traitement sont exécutées avant les règles de traitement spécifiques des dossiers alors que les règles de Post-traitement le sont après.
+      Les règles de traitement sont accompagnées de règles de Pré-traitement et de
+	  Post-traitement. Comme les règles de traitement elles ne s'appliquent qu'à
+	  l'ouverture d'un dossier ou lors de l'exécution manuelle à partir du menu
+	  contextuel du dossier, mais comme les règles de filtrage elles sont communes
+	  à tous les dossiers. Vous pouvez les configurer à partir du menu
+	  <quote>Outils</quote>. Les règles de Pré-traitement sont exécutées avant les
+	  règles de traitement spécifiques des dossiers alors que les règles de
+	  Post-traitement le sont après.
     </para>
   </section>
   <section id="adv_ml_support">

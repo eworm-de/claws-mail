@@ -2750,3 +2750,4 @@
 ( cvs diff -u -r 1.1.2.75 -r 1.1.2.76 src/gtk/quicksearch.c;  ) > 2.10.0cvs94.patchset
 ( cvs diff -u -r 1.382.2.399 -r 1.382.2.400 src/compose.c;  cvs diff -u -r 1.50.2.40 -r 1.50.2.41 src/compose.h;  ) > 2.10.0cvs95.patchset
 ( cvs diff -u -r 1.204.2.144 -r 1.204.2.145 src/prefs_common.c;  cvs diff -u -r 1.103.2.90 -r 1.103.2.91 src/prefs_common.h;  cvs diff -u -r 1.96.2.180 -r 1.96.2.181 src/textview.c;  ) > 2.10.0cvs96.patchset
+( cvs diff -u -r 1.1.2.9 -r 1.1.2.10 manual/account.xml;  cvs diff -u -r 1.1.2.39 -r 1.1.2.40 manual/advanced.xml;  cvs diff -u -r 1.1.2.8 -r 1.1.2.9 manual/fr/account.xml;  cvs diff -u -r 1.1.2.15 -r 1.1.2.16 manual/fr/advanced.xml;  ) > 2.10.0cvs97.patchset

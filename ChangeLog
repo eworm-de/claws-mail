@@ -1,3 +1,13 @@
+2007-08-07 [wwp]	2.10.0cvs97
+
+	* manual/account.xml
+	* manual/advanced.xml
+	* manual/fr/account.xml
+	* manual/fr/advanced.xml
+		Updated the reference manual and the French translation to
+		reflect 2.10.0cvs84: enable running folder Processing
+		rules on demand.
+
 2007-08-06 [wwp]	2.10.0cvs96
 
 	* src/prefs_common.c

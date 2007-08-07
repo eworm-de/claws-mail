@@ -176,7 +176,8 @@
 	avoid that, but still want to automatically sort your incoming mail, the
 	best thing to do is to disable Filtering on certain accounts, and use
 	Processing rules in the Inbox folders that you specified, as Processing
-	rules are applied when entering a folder.
+	rules are automatically applied when entering a folder and can be
+	manually applied from a folder's context menu.
     </para>
   </section>
 
