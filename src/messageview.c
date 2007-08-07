@@ -153,7 +153,8 @@ static void open_urls_cb		(gpointer	 data,
 static void about_cb			(gpointer	 data,
 					 guint		 action,
 					 GtkWidget	*widget);
-static void messageview_update		(MessageView *msgview);
+static void messageview_update		(MessageView	*msgview,
+					 MsgInfo	*old_msginfo);
 static gboolean messageview_update_msg	(gpointer source, gpointer data);
 
 static GList *msgview_list = NULL;
@@ -1051,7 +1052,7 @@ void messageview_delete(MessageView *msgview)
  *        leave unchanged if summaryview is empty
  * \param pointer to MessageView
  */	
-static void messageview_update(MessageView *msgview)
+static void messageview_update(MessageView *msgview, MsgInfo *old_msginfo)
 {
 	SummaryView *summaryview = (SummaryView*)msgview->mainwin->summaryview;
 
@@ -1059,7 +1060,7 @@ static void messageview_update(MessageView *msgview)
 	
 	if (summaryview->selected) {
 		MsgInfo *msginfo = summary_get_selected_msg(summaryview);
-		if (msginfo == NULL)
+		if (msginfo == NULL || msginfo == old_msginfo)
 			return;
 
 		messageview_show(msgview, msginfo, 
@@ -1807,8 +1808,9 @@ static gboolean messageview_update_msg(gpointer source, gpointer data)
 		return FALSE;
 
 	if (msginfo_update->flags & MSGINFO_UPDATE_DELETED) {
+		MsgInfo *old_msginfo = messageview->msginfo;
 		messageview_clear(messageview);
-		messageview_update(messageview);
+		messageview_update(messageview, old_msginfo);
 	}
 
 	return FALSE;

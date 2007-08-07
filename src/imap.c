@@ -1175,6 +1175,30 @@ static gint imap_add_msg(Folder *folder, FolderItem *dest,
 	return ret;
 }
 
+static gint imap_get_msg_from_local(Folder *folder, FolderItem *dest, const gchar *real_file)
+{
+	/* don't get session, already done. */
+	MsgInfo *msginfo, *r_msginfo;
+	MsgFlags flags = {0, 0};
+	gint msgnum = 0;
+	msginfo = procheader_parse_file(real_file, flags, FALSE, FALSE);
+	unlock_session(IMAP_SESSION(REMOTE_FOLDER(folder)->session));
+	folder_item_scan_full(dest, FALSE);
+	lock_session(IMAP_SESSION(REMOTE_FOLDER(folder)->session));
+	if (msginfo && msginfo->msgid) {
+		r_msginfo = folder_item_get_msginfo_by_msgid(dest, msginfo->msgid);
+		if (r_msginfo) {
+			msgnum = r_msginfo->msgnum;
+			debug_print("get msgnum from msgid %s: %d\n", msginfo->msgid, msgnum);
+			procmsg_msginfo_free(r_msginfo);
+		} else {
+			debug_print("no msgnum\n");
+		}
+	}
+	procmsg_msginfo_free(msginfo);
+	return msgnum;
+}
+
 static gint imap_add_msgs(Folder *folder, FolderItem *dest, GSList *file_list,
 		   GRelation *relation)
 {
@@ -1185,7 +1209,6 @@ static gint imap_add_msgs(Folder *folder, FolderItem *dest, GSList *file_list,
 	MsgFileInfo *fileinfo;
 	gint ok;
 	gint curnum = 0, total = 0;
-
 
 	g_return_val_if_fail(folder != NULL, -1);
 	g_return_val_if_fail(dest != NULL, -1);
@@ -1242,6 +1265,10 @@ static gint imap_add_msgs(Folder *folder, FolderItem *dest, GSList *file_list,
 			debug_print("appended new message as %d\n", new_uid);
 			/* put the local file in the imapcache, so that we don't
 			 * have to fetch it back later. */
+			if (new_uid == 0 && !(cur->next)) {
+				debug_print("didn't get uid, last in list: scanning\n");
+				new_uid = imap_get_msg_from_local(folder, dest, real_file);
+			}
 			if (new_uid > 0) {
 				gchar *cache_path = folder_item_get_path(dest);
 				if (!is_dir_exist(cache_path))
@@ -1261,10 +1288,7 @@ static gint imap_add_msgs(Folder *folder, FolderItem *dest, GSList *file_list,
 		if (relation != NULL)
 			g_relation_insert(relation, fileinfo->msginfo != NULL ? 
 					  (gpointer) fileinfo->msginfo : (gpointer) fileinfo,
-					  GINT_TO_POINTER(dest->last_num + 1));
-		if (new_uid == 0) {
-			new_uid = dest->last_num+1;
-		}
+					  GINT_TO_POINTER(new_uid));
 		if (last_uid < new_uid) {
 			last_uid = new_uid;
 		}
@@ -1274,7 +1298,6 @@ static gint imap_add_msgs(Folder *folder, FolderItem *dest, GSList *file_list,
 	statusbar_progress_all(0,0,0);
 	statusbar_pop_all();
 	
-	imap_cmd_expunge(session);
 	unlock_session(session);
 	
 	g_free(destdir);
@@ -1282,6 +1305,32 @@ static gint imap_add_msgs(Folder *folder, FolderItem *dest, GSList *file_list,
 	return last_uid;
 }
 
+static GSList *flatten_mailimap_set(struct mailimap_set * set) 
+{
+	GSList *result = NULL;
+	clistiter *list;
+	int start, end, t;
+	GSList *cur;
+
+	for (list = clist_begin(set->set_list); list; list = clist_next(list)) {
+		struct mailimap_set_item *item = (struct mailimap_set_item *)clist_content(list);
+		start = item->set_first;
+		end = item->set_last;
+		for (t = start; t <= end; t++) {
+			result = g_slist_prepend(result, GINT_TO_POINTER(t));
+		}
+	}
+	result = g_slist_reverse(result);
+	if (debug_get_mode()) {
+		debug_print("flat imap set: ");
+		for (cur = result; cur; cur = cur->next) {
+			debug_print("%d ", GPOINTER_TO_INT(cur->data));
+		}
+		debug_print("\n");
+	}
+	
+	return result;
+}
 static gint imap_do_copy_msgs(Folder *folder, FolderItem *dest, 
 			      MsgInfoList *msglist, GRelation *relation)
 {
@@ -1364,16 +1413,23 @@ static gint imap_do_copy_msgs(Folder *folder, FolderItem *dest,
 			&source, &dest);
 		
 		if (ok == IMAP_SUCCESS) {
-			if (single && relation && source && dest) {
-				clistiter *l = clist_begin(source->set_list);
-				struct mailimap_set_item *i = (struct mailimap_set_item *)clist_content(l);
-				int snum = i->set_first;
-				int dnum = 0;
-				l = clist_begin(dest->set_list);
-				i = (struct mailimap_set_item *)clist_content(l);
-				dnum = i->set_first;
-				g_relation_insert(uid_mapping, GINT_TO_POINTER(snum), 
-					GINT_TO_POINTER(dnum));
+			if (relation && source && dest) {
+				GSList *s_list = flatten_mailimap_set(source);
+				GSList *d_list = flatten_mailimap_set(dest);
+				GSList *s_cur, *d_cur;
+				if (g_slist_length(s_list) == g_slist_length(d_list)) {
+
+					for (s_cur = s_list, d_cur = d_list; 
+					     s_cur && d_cur; 
+					     s_cur = s_cur->next, d_cur = d_cur->next) {
+						g_relation_insert(uid_mapping, s_cur->data, d_cur->data);
+					}
+
+				} else {
+					debug_print("hhhmm, source list length != dest list length.\n");
+				}
+				g_slist_free(s_list);
+				g_slist_free(d_list);
 			}
 		}
 
@@ -1405,7 +1461,7 @@ static gint imap_do_copy_msgs(Folder *folder, FolderItem *dest,
 					  GINT_TO_POINTER(num));
 			if (num > last_num)
 				last_num = num;
-			debug_print("copied new message as %d\n", num);
+			debug_print("copied message %d as %d\n", msginfo->msgnum, num);
 			/* put the local file in the imapcache, so that we don't
 			 * have to fetch it back later. */
 			if (num > 0) {
@@ -3678,8 +3734,9 @@ GSList *imap_get_msginfos(Folder *folder, FolderItem *item,
 				int i;
 				for (i = startnum; i <= lastnum; ++i) {
 					gchar *file;
-			
+					unlock_session(session);
 					file = imap_fetch_msg(folder, item, i);
+					lock_session(session);
 					if (file != NULL) {
 						MsgInfo *msginfo = imap_parse_msg(file, item);
 						if (msginfo != NULL) {

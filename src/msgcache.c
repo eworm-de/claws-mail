@@ -1175,6 +1175,7 @@ gint msgcache_write(const gchar *cache_file, const gchar *mark_file, const gchar
 	if (write_fps.cache_fp == NULL) {
 		g_free(new_cache);
 		g_free(new_mark);
+		g_free(new_tags);
 		return -1;
 	}
 

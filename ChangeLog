@@ -1,3 +1,13 @@
+2007-08-07 [colin]	2.10.0cvs98
+
+	* src/imap.c
+		fix bug 1275, 'auto-saved draft messages not 
+		always being removed'
+	* src/messageview.c
+		Don't try to reshow deleted mail
+	* src/msgcache.c
+		Fix leak on error path
+
 2007-08-07 [wwp]	2.10.0cvs97
 
 	* manual/account.xml
