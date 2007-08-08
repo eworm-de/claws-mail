@@ -47,6 +47,7 @@
 #include "gtk/colorsel.h"
 #include "string_match.h"
 #include "quote_fmt.h"
+#include "combobox.h"
 
 #if USE_ASPELL
 #include "gtkaspell.h"
@@ -188,10 +189,10 @@ static void prefs_folder_item_general_create_widget_func(PrefsPage * page_,
 	GtkWidget *hbox, *hbox2, *hbox_spc;
 	GtkWidget *label;
 	
-	GtkWidget *folder_type_menu;
+	GtkListStore *folder_type_menu;
 	GtkWidget *folder_type;
+	GtkTreeIter iter;
 	GtkWidget *dummy_checkbtn;
-	GtkWidget *menuitem;
 	SpecialFolderItemType type;
 	
 	GtkWidget *no_save_warning = NULL;
@@ -254,7 +255,7 @@ static void prefs_folder_item_general_create_widget_func(PrefsPage * page_,
 	rowcount++;
 
 	/* folder_type */
-	folder_type = gtk_option_menu_new ();
+	folder_type = gtkut_sc_combobox_create(NULL, FALSE);
 	gtk_widget_show (folder_type);
 
 	type = F_NORMAL;
@@ -269,17 +270,17 @@ static void prefs_folder_item_general_create_widget_func(PrefsPage * page_,
 	else if (folder_has_parent_of_type(item, F_TRASH))
 		type = F_TRASH;
 
-	folder_type_menu = gtk_menu_new ();
+	folder_type_menu = GTK_LIST_STORE(gtk_combo_box_get_model(
+				GTK_COMBO_BOX(folder_type)));
 
-	MENUITEM_ADD (folder_type_menu, menuitem, _("Normal"),  F_NORMAL);
-	MENUITEM_ADD (folder_type_menu, menuitem, _("Inbox"),  F_INBOX);
-	MENUITEM_ADD (folder_type_menu, menuitem, _("Outbox"),  F_OUTBOX);
-	MENUITEM_ADD (folder_type_menu, menuitem, _("Drafts"),  F_DRAFT);
-	MENUITEM_ADD (folder_type_menu, menuitem, _("Queue"),  F_QUEUE);
-	MENUITEM_ADD (folder_type_menu, menuitem, _("Trash"),  F_TRASH);
-	gtk_option_menu_set_menu (GTK_OPTION_MENU (folder_type), folder_type_menu);
+	COMBOBOX_ADD (folder_type_menu, _("Normal"),  F_NORMAL);
+	COMBOBOX_ADD (folder_type_menu, _("Inbox"),  F_INBOX);
+	COMBOBOX_ADD (folder_type_menu, _("Outbox"),  F_OUTBOX);
+	COMBOBOX_ADD (folder_type_menu, _("Drafts"),  F_DRAFT);
+	COMBOBOX_ADD (folder_type_menu, _("Queue"),  F_QUEUE);
+	COMBOBOX_ADD (folder_type_menu, _("Trash"),  F_TRASH);
 
-	gtk_option_menu_set_history(GTK_OPTION_MENU(folder_type), type);
+	combobox_select_by_data(GTK_COMBO_BOX(folder_type), type);
 
 	dummy_checkbtn = gtk_check_button_new();
 	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(dummy_checkbtn), type != F_INBOX);
@@ -570,8 +571,6 @@ static void general_save_folder_prefs(FolderItem *folder, FolderItemGeneralPage 
 	gchar *buf;
 	gboolean all = FALSE;
 	SpecialFolderItemType type = F_NORMAL;
-	GtkWidget *menu;
-	GtkWidget *menuitem;
 
 	if (folder->path == NULL)
 		return;
@@ -581,10 +580,7 @@ static void general_save_folder_prefs(FolderItem *folder, FolderItemGeneralPage 
 	if (page->item == folder) 
 		all = TRUE;
 
-	menu = gtk_option_menu_get_menu(GTK_OPTION_MENU(page->folder_type));
-	menuitem = gtk_menu_get_active(GTK_MENU(menu));
-	type = GPOINTER_TO_INT
-		(g_object_get_data(G_OBJECT(menuitem), MENU_VAL_ID));
+	type = combobox_get_active_data(GTK_COMBO_BOX(page->folder_type));
 	if (all && folder->stype != type) {
 		folder_item_change_type(folder, type);
 	}
@@ -702,8 +698,8 @@ static void prefs_folder_item_compose_create_widget_func(PrefsPage * page_,
 	GtkWidget *entry_default_reply_to = NULL;
 	GtkWidget *checkbtn_enable_default_account = NULL;
 	GtkWidget *optmenu_default_account = NULL;
-	GtkWidget *optmenu_default_account_menu = NULL;
-	GtkWidget *optmenu_default_account_menuitem = NULL;
+	GtkListStore *optmenu_default_account_menu = NULL;
+	GtkTreeIter iter;
 #if USE_ASPELL
 	GtkWidget *checkbtn_enable_default_dictionary = NULL;
 	GtkWidget *optmenu_default_dictionary = NULL;
@@ -726,10 +722,6 @@ static void prefs_folder_item_compose_create_widget_func(PrefsPage * page_,
 	gchar *dictionary;
 #endif
 	PrefsAccount *ac_prefs;
-	GtkOptionMenu *optmenu;
-	GtkWidget *menu;
-	GtkWidget *menuitem;
-	gint account_index, index;
 
 	page->item	   = item;
 
@@ -844,14 +836,13 @@ static void prefs_folder_item_compose_create_widget_func(PrefsPage * page_,
 	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(checkbtn_enable_default_account), 
 				     item->prefs->enable_default_account);
 
- 	optmenu_default_account = gtk_option_menu_new ();
+ 	optmenu_default_account = gtkut_sc_combobox_create(NULL, FALSE);
 	gtk_table_attach(GTK_TABLE(table), optmenu_default_account, 1, 2, 
 			 rowcount, rowcount + 1, GTK_EXPAND | GTK_FILL, GTK_SHRINK, 0, 0);
- 	optmenu_default_account_menu = gtk_menu_new ();
+ 	optmenu_default_account_menu = GTK_LIST_STORE(
+			gtk_combo_box_get_model(GTK_COMBO_BOX(optmenu_default_account)));
 
 	account_list = account_get_list();
-	account_index = 0;
-	index = 0;
 	for (cur_ac = account_list; cur_ac != NULL; cur_ac = cur_ac->next) {
 		ac_prefs = (PrefsAccount *)cur_ac->data;
 		if (item->folder->account &&
@@ -862,23 +853,15 @@ static void prefs_folder_item_compose_create_widget_func(PrefsPage * page_,
 		if (item->folder->klass->type != F_NEWS && ac_prefs->protocol == A_NNTP)
 			continue;
 
-	 	MENUITEM_ADD (optmenu_default_account_menu, optmenu_default_account_menuitem,
+		COMBOBOX_ADD (optmenu_default_account_menu,
 					ac_prefs->account_name?ac_prefs->account_name : _("Untitled"),
 					ac_prefs->account_id);
-		/* get the index for menu's set_history (sad method?) */
+
+		/* Set combobox to current default account id */
 		if (ac_prefs->account_id == item->prefs->default_account)
-			account_index = index;
-		index++;			
+			combobox_select_by_data(GTK_COMBO_BOX(optmenu_default_account),
+					ac_prefs->account_id);
 	}
-
-	optmenu = GTK_OPTION_MENU(optmenu_default_account);
- 	gtk_option_menu_set_menu(optmenu, optmenu_default_account_menu);
-
-	gtk_option_menu_set_history(optmenu, account_index);
-
-	menu = gtk_option_menu_get_menu(optmenu);
-	menuitem = gtk_menu_get_active(GTK_MENU(menu));
-	gtk_menu_item_activate(GTK_MENU_ITEM(menuitem));
 
 	SET_TOGGLE_SENSITIVITY(checkbtn_enable_default_account, optmenu_default_account);
 
@@ -1009,8 +992,6 @@ static void prefs_folder_item_compose_destroy_widget_func(PrefsPage *page_)
 static void compose_save_folder_prefs(FolderItem *folder, FolderItemComposePage *page)
 {
 	FolderItemPrefs *prefs = folder->prefs;
-	GtkWidget *menu;
-	GtkWidget *menuitem;
 	gboolean all = FALSE;
 
 	if (folder->path == NULL)
@@ -1054,12 +1035,14 @@ static void compose_save_folder_prefs(FolderItem *folder, FolderItemComposePage 
 		prefs->enable_default_to = FALSE;
 		prefs->enable_default_reply_to = FALSE;
 	}
-	if (all || gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(page->default_account_rec_checkbtn))) {
+
+	if (all || gtk_toggle_button_get_active(
+				GTK_TOGGLE_BUTTON(page->default_account_rec_checkbtn))) {
 		prefs->enable_default_account = 
-			gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(page->checkbtn_enable_default_account));
-		menu = gtk_option_menu_get_menu(GTK_OPTION_MENU(page->optmenu_default_account));
-		menuitem = gtk_menu_get_active(GTK_MENU(menu));
-		prefs->default_account = GPOINTER_TO_INT(g_object_get_data(G_OBJECT(menuitem), MENU_VAL_ID));
+			gtk_toggle_button_get_active(
+					GTK_TOGGLE_BUTTON(page->checkbtn_enable_default_account));
+		prefs->default_account = combobox_get_active_data(
+				GTK_COMBO_BOX(page->optmenu_default_account));
 	}
 
 #if USE_ASPELL

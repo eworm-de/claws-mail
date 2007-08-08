@@ -1,3 +1,8 @@
+2007-08-08 [ticho]	2.10.0cvs102
+
+	* src/prefs_folder_item.c
+		Migrate two deprecated GtkOptionMenu widgets to GtkComboBox.
+
 2007-08-08 [colin]	2.10.0cvs101
 
 	* src/imap.c
