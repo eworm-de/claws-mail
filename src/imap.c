@@ -327,6 +327,7 @@ static gint imap_cmd_select	(IMAPSession	*session,
 				 gint		*unseen,
 				 guint32	*uid_validity,
 				 gboolean	 block);
+static gint imap_cmd_close	(IMAPSession 	*session);
 static gint imap_cmd_examine	(IMAPSession	*session,
 				 const gchar	*folder,
 				 gint		*exists,
@@ -2839,6 +2840,16 @@ static gint imap_status(IMAPSession *session, IMAPFolder *folder,
 		mask |= 1 << 4;
 		*unseen = 0;
 	}
+	
+	if (session->mbox != NULL &&
+	    !strcmp(session->mbox, item->item.path)) {
+		r = imap_cmd_close(session);
+		if (r != MAILIMAP_NO_ERROR) {
+			debug_print("close err %d\n", r);
+			return IMAP_ERROR;
+		}
+	}
+	
 	r = imap_threaded_status(FOLDER(folder), real_path, 
 		&data_status, mask);
 
@@ -3005,6 +3016,20 @@ static gint imap_cmd_select(IMAPSession *session, const gchar *folder,
 		debug_print("select err %d\n", r);
 		return IMAP_ERROR;
 	}
+	return IMAP_SUCCESS;
+}
+
+static gint imap_cmd_close(IMAPSession *session)
+{
+	int r;
+
+	r = imap_threaded_close(session->folder);
+	if (r != MAILIMAP_NO_ERROR) {
+		debug_print("close err %d\n", r);
+		return IMAP_ERROR;
+	}
+	g_free(session->mbox);
+	session->mbox = NULL;
 	return IMAP_SUCCESS;
 }
 

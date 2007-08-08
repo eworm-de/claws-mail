@@ -1,3 +1,11 @@
+2007-08-08 [colin]	2.10.0cvs101
+
+	* src/imap.c
+	* src/etpan/imap-thread.c
+	* src/etpan/imap-thread.h
+		Close selected mailbox before doing
+		status on it.
+
 2007-08-08 [colin]	2.10.0cvs100
 
 	* src/html.c

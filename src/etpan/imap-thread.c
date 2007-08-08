@@ -1297,7 +1297,43 @@ int imap_threaded_select(Folder * folder, const char * mb,
 	return result.error;
 }
 
+static void close_run(struct etpan_thread_op * op)
+{
+	struct select_param * param;
+	struct select_result * result;
+	int r;
+	
+	param = op->param;
+	result = op->result;
 
+	CHECK_IMAP();
+
+	r = mailimap_close(param->imap);
+	
+	result->error = r;
+	debug_print("imap close run - end %i\n", r);
+}
+
+int imap_threaded_close(Folder * folder)
+{
+	struct select_param param;
+	struct select_result result;
+	mailimap * imap;
+	
+	debug_print("imap close - begin\n");
+	
+	imap = get_imap(folder);
+	param.imap = imap;
+	
+	threaded_run(folder, &param, &result, close_run);
+	
+	if (result.error != MAILIMAP_NO_ERROR)
+		return result.error;
+	
+	debug_print("imap close - end\n");
+	
+	return result.error;
+}
 
 struct examine_param {
 	mailimap * imap;
