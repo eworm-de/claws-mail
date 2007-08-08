@@ -2758,3 +2758,4 @@
 ( cvs diff -u -r 1.52.2.43 -r 1.52.2.44 src/prefs_folder_item.c;  ) > 2.10.0cvs102.patchset
 ( cvs diff -u -r 1.52.2.44 -r 1.52.2.45 src/prefs_folder_item.c;  ) > 2.10.0cvs103.patchset
 ( cvs diff -u -r 1.52.2.45 -r 1.52.2.46 src/prefs_folder_item.c;  ) > 2.10.0cvs104.patchset
+( cvs diff -u -r 1.52.2.46 -r 1.52.2.47 src/prefs_folder_item.c;  ) > 2.10.0cvs105.patchset

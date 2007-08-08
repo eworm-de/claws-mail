@@ -716,7 +716,7 @@ static void prefs_folder_item_compose_create_widget_func(PrefsPage * page_,
 	GtkWidget *save_copy_to_folder_rec_checkbtn = NULL;
 	GtkWidget *default_to_rec_checkbtn = NULL;
 	GtkWidget *default_reply_to_rec_checkbtn = NULL;
-	GtkWidget *default_account_rec_checkbtn = NULL;
+	GtkWidget *default_account_rec_checkbtn = NULL;
 
 	GList *cur_ac;
 	GList *account_list;
