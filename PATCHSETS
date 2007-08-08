@@ -2756,3 +2756,4 @@
 ( cvs diff -u -r 1.12.2.21 -r 1.12.2.22 src/html.c;  cvs diff -u -r 1.16.2.54 -r 1.16.2.55 src/msgcache.c;  ) > 2.10.0cvs100.patchset
 ( cvs diff -u -r 1.179.2.179 -r 1.179.2.180 src/imap.c;  cvs diff -u -r 1.1.4.80 -r 1.1.4.81 src/etpan/imap-thread.c;  cvs diff -u -r 1.1.4.17 -r 1.1.4.18 src/etpan/imap-thread.h;  ) > 2.10.0cvs101.patchset
 ( cvs diff -u -r 1.52.2.43 -r 1.52.2.44 src/prefs_folder_item.c;  ) > 2.10.0cvs102.patchset
+( cvs diff -u -r 1.52.2.44 -r 1.52.2.45 src/prefs_folder_item.c;  ) > 2.10.0cvs103.patchset

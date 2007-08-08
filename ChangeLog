@@ -1,3 +1,9 @@
+2007-08-08 [wwp]	2.10.0cvs103
+
+	* src/prefs_folder_item.c
+		Fix compilation w/ USE_ASPELL set (broken
+		by 2.10.0cvs102).
+
 2007-08-08 [ticho]	2.10.0cvs102
 
 	* src/prefs_folder_item.c

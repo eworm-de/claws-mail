@@ -710,7 +710,7 @@ static void prefs_folder_item_compose_create_widget_func(PrefsPage * page_,
 	GtkWidget *save_copy_to_folder_rec_checkbtn = NULL;
 	GtkWidget *default_to_rec_checkbtn = NULL;
 	GtkWidget *default_reply_to_rec_checkbtn = NULL;
-	GtkWidget *default_account_rec_checkbtn = NULL;
+	GtkWidget *default_account_rec_checkbtn = NULL;
 #if USE_ASPELL
 	GtkWidget *default_dictionary_rec_checkbtn = NULL;
 	GtkWidget *default_alt_dictionary_rec_checkbtn = NULL;
@@ -722,6 +722,9 @@ static void prefs_folder_item_compose_create_widget_func(PrefsPage * page_,
 	gchar *dictionary;
 #endif
 	PrefsAccount *ac_prefs;
+	GtkOptionMenu *optmenu;
+	GtkWidget *menu;
+	GtkWidget *menuitem;
 
 	page->item	   = item;
 
@@ -992,6 +995,7 @@ static void prefs_folder_item_compose_destroy_widget_func(PrefsPage *page_)
 static void compose_save_folder_prefs(FolderItem *folder, FolderItemComposePage *page)
 {
 	FolderItemPrefs *prefs = folder->prefs;
+	GtkWidget *menu;
 	gboolean all = FALSE;
 
 	if (folder->path == NULL)
