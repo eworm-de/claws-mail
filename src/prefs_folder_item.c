@@ -705,26 +705,22 @@ static void prefs_folder_item_compose_create_widget_func(PrefsPage * page_,
 	GtkWidget *optmenu_default_dictionary = NULL;
 	GtkWidget *checkbtn_enable_default_alt_dictionary = NULL;
 	GtkWidget *optmenu_default_alt_dictionary = NULL;
+	GtkWidget *default_dictionary_rec_checkbtn = NULL;
+	GtkWidget *default_alt_dictionary_rec_checkbtn = NULL;
+	gchar *dictionary;
+	GtkOptionMenu *optmenu;
+	GtkWidget *menu;
+	GtkWidget *menuitem;
 #endif
 	GtkWidget *request_return_receipt_rec_checkbtn = NULL;
 	GtkWidget *save_copy_to_folder_rec_checkbtn = NULL;
 	GtkWidget *default_to_rec_checkbtn = NULL;
 	GtkWidget *default_reply_to_rec_checkbtn = NULL;
 	GtkWidget *default_account_rec_checkbtn = NULL;
-#if USE_ASPELL
-	GtkWidget *default_dictionary_rec_checkbtn = NULL;
-	GtkWidget *default_alt_dictionary_rec_checkbtn = NULL;
-#endif
 
 	GList *cur_ac;
 	GList *account_list;
-#if USE_ASPELL
-	gchar *dictionary;
-#endif
 	PrefsAccount *ac_prefs;
-	GtkOptionMenu *optmenu;
-	GtkWidget *menu;
-	GtkWidget *menuitem;
 
 	page->item	   = item;
 
@@ -995,7 +991,9 @@ static void prefs_folder_item_compose_destroy_widget_func(PrefsPage *page_)
 static void compose_save_folder_prefs(FolderItem *folder, FolderItemComposePage *page)
 {
 	FolderItemPrefs *prefs = folder->prefs;
+#if USE_ASPELL
 	GtkWidget *menu;
+#endif
 	gboolean all = FALSE;
 
 	if (folder->path == NULL)

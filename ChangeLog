@@ -1,3 +1,8 @@
+2007-08-08 [wwp]	2.10.0cvs104
+
+	* src/prefs_folder_item.c
+		Better fix, group variables declarations (USE_ASPELL).
+
 2007-08-08 [wwp]	2.10.0cvs103
 
 	* src/prefs_folder_item.c
