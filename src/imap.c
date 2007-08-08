@@ -1178,22 +1178,33 @@ static gint imap_add_msg(Folder *folder, FolderItem *dest,
 static gint imap_get_msg_from_local(Folder *folder, FolderItem *dest, const gchar *real_file)
 {
 	/* don't get session, already done. */
-	MsgInfo *msginfo, *r_msginfo;
+	MsgInfo *msginfo;
 	MsgFlags flags = {0, 0};
 	gint msgnum = 0;
 	msginfo = procheader_parse_file(real_file, flags, FALSE, FALSE);
-	unlock_session(IMAP_SESSION(REMOTE_FOLDER(folder)->session));
-	folder_item_scan_full(dest, FALSE);
-	lock_session(IMAP_SESSION(REMOTE_FOLDER(folder)->session));
+
 	if (msginfo && msginfo->msgid) {
-		r_msginfo = folder_item_get_msginfo_by_msgid(dest, msginfo->msgid);
-		if (r_msginfo) {
-			msgnum = r_msginfo->msgnum;
-			debug_print("get msgnum from msgid %s: %d\n", msginfo->msgid, msgnum);
+		GSList *msglist = folder_item_get_msg_list(dest);
+		GSList *cur;
+		gint found_num = 0;
+
+		/* gets last matching mail with msgid. Slower than by msgid but gets the
+		 * most recent one */
+		for (cur = msglist ; cur != NULL ; cur = cur->next) {
+			MsgInfo * r_msginfo;
+
+			r_msginfo = (MsgInfo *) cur->data;
+			
+			if (r_msginfo->msgid && !strcmp(r_msginfo->msgid,msginfo->msgid)) {
+				if (found_num < r_msginfo->msgnum) {
+					found_num = r_msginfo->msgnum;
+				}
+			}
 			procmsg_msginfo_free(r_msginfo);
-		} else {
-			debug_print("no msgnum\n");
 		}
+		msgnum = found_num;
+		g_slist_free(msglist);
+
 	}
 	procmsg_msginfo_free(msginfo);
 	return msgnum;
@@ -1209,6 +1220,7 @@ static gint imap_add_msgs(Folder *folder, FolderItem *dest, GSList *file_list,
 	MsgFileInfo *fileinfo;
 	gint ok;
 	gint curnum = 0, total = 0;
+	gboolean missing_uids = FALSE;
 
 	g_return_val_if_fail(folder != NULL, -1);
 	g_return_val_if_fail(dest != NULL, -1);
@@ -1265,9 +1277,10 @@ static gint imap_add_msgs(Folder *folder, FolderItem *dest, GSList *file_list,
 			debug_print("appended new message as %d\n", new_uid);
 			/* put the local file in the imapcache, so that we don't
 			 * have to fetch it back later. */
-			if (new_uid == 0 && !(cur->next)) {
-				debug_print("didn't get uid, last in list: scanning\n");
-				new_uid = imap_get_msg_from_local(folder, dest, real_file);
+			
+			if (new_uid == 0) {
+				missing_uids = TRUE;
+				debug_print("Missing UID (0)\n");
 			}
 			if (new_uid > 0) {
 				gchar *cache_path = folder_item_get_path(dest);
@@ -1278,7 +1291,7 @@ static gint imap_add_msgs(Folder *folder, FolderItem *dest, GSList *file_list,
 						cache_path, G_DIR_SEPARATOR_S, 
 						itos(new_uid), NULL);
 					copy_file(real_file, cache_file, TRUE);
-					debug_print("copied to cache: %s\n", cache_file);
+					debug_print("got UID %d, copied to cache: %s\n", new_uid, cache_file);
 					g_free(cache_file);
 				}
 				g_free(cache_path);
@@ -1294,6 +1307,46 @@ static gint imap_add_msgs(Folder *folder, FolderItem *dest, GSList *file_list,
 		}
 
 		g_free(real_file);
+	}
+	
+	if (missing_uids) {
+		unlock_session(IMAP_SESSION(REMOTE_FOLDER(folder)->session));
+		folder_item_scan_full(dest, FALSE);
+		lock_session(IMAP_SESSION(REMOTE_FOLDER(folder)->session));
+		for (cur = file_list; cur != NULL; cur = cur->next) {
+			guint32 new_uid = 0;
+			fileinfo = (MsgFileInfo *)cur->data;
+			
+			if (!fileinfo->file)
+				continue;
+
+			new_uid = imap_get_msg_from_local(folder, dest, fileinfo->file);
+			debug_print("new uid %d from scanning\n", new_uid);
+			if (new_uid > 0) {
+				gchar *cache_path = folder_item_get_path(dest);
+				if (!is_dir_exist(cache_path))
+					make_dir_hier(cache_path);
+				if (is_dir_exist(cache_path)) {
+					gchar *cache_file = g_strconcat(
+						cache_path, G_DIR_SEPARATOR_S, 
+						itos(new_uid), NULL);
+					copy_file(fileinfo->file, cache_file, TRUE);
+					debug_print("copied to cache: %s\n", cache_file);
+					g_free(cache_file);
+				}
+				g_free(cache_path);
+				g_relation_delete(relation, fileinfo->msginfo != NULL ? 
+						  (gpointer) fileinfo->msginfo : (gpointer) fileinfo,
+						  0);
+
+				g_relation_insert(relation, fileinfo->msginfo != NULL ? 
+						  (gpointer) fileinfo->msginfo : (gpointer) fileinfo,
+						  GINT_TO_POINTER(new_uid));
+			}
+			if (last_uid < new_uid) {
+				last_uid = new_uid;
+			}
+		}
 	}
 	statusbar_progress_all(0,0,0);
 	statusbar_pop_all();

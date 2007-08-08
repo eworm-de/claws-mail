@@ -1,3 +1,8 @@
+2007-08-08 [colin]	2.10.0cvs99
+
+	* src/imap.c
+		Better way to fetch UIDs on non-UIDPLUS servers
+
 2007-08-07 [colin]	2.10.0cvs98
 
 	* src/imap.c
