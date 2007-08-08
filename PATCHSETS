@@ -2753,3 +2753,4 @@
 ( cvs diff -u -r 1.1.2.9 -r 1.1.2.10 manual/account.xml;  cvs diff -u -r 1.1.2.39 -r 1.1.2.40 manual/advanced.xml;  cvs diff -u -r 1.1.2.8 -r 1.1.2.9 manual/fr/account.xml;  cvs diff -u -r 1.1.2.15 -r 1.1.2.16 manual/fr/advanced.xml;  ) > 2.10.0cvs97.patchset
 ( cvs diff -u -r 1.179.2.177 -r 1.179.2.178 src/imap.c;  cvs diff -u -r 1.94.2.143 -r 1.94.2.144 src/messageview.c;  cvs diff -u -r 1.16.2.53 -r 1.16.2.54 src/msgcache.c;  ) > 2.10.0cvs98.patchset
 ( cvs diff -u -r 1.179.2.178 -r 1.179.2.179 src/imap.c;  ) > 2.10.0cvs99.patchset
+( cvs diff -u -r 1.12.2.21 -r 1.12.2.22 src/html.c;  cvs diff -u -r 1.16.2.54 -r 1.16.2.55 src/msgcache.c;  ) > 2.10.0cvs100.patchset

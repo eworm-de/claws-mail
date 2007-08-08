@@ -596,8 +596,10 @@ MsgCache *msgcache_read_cache(FolderItem *item, const gchar *cache_file)
 		tmp_flags |= MSG_DRAFT;
 	}
 
-	if (msgcache_read_cache_data_str(fp, &srccharset, NULL) < 0)
+	if (msgcache_read_cache_data_str(fp, &srccharset, NULL) < 0) {
+		fclose(fp);
 		return NULL;
+	}
 	dstcharset = CS_UTF_8;
 	if (srccharset == NULL || dstcharset == NULL) {
 		conv = NULL;
