@@ -1,3 +1,9 @@
+2007-08-09 [paul]	2.10.0cvs106
+
+	* src/prefs_account.c
+		remove the hyphen from plug-ins to
+		match everywhere else
+
 2007-08-08 [wwp]	2.10.0cvs105
 
 	* src/prefs_folder_item.c

@@ -1527,7 +1527,7 @@ static void receive_create_widget_func(PrefsPage * _page,
 			 NULL);
 
 	PACK_CHECK_BUTTON (vbox1, filterhook_on_recv_checkbtn,
-			   _("Allow filtering using plug-ins on receiving"));
+			   _("Allow filtering using plugins on receiving"));
 
 	PACK_CHECK_BUTTON
 		(vbox1, recvatgetall_checkbtn,
