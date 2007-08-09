@@ -1,3 +1,10 @@
+2007-08-09 [colin]	2.10.0cvs107
+
+	* src/folderview.c
+	* src/summaryview.c
+	* src/gtk/prefswindow.c
+		A few Maemo layout fixes
+
 2007-08-09 [paul]	2.10.0cvs106
 
 	* src/prefs_account.c

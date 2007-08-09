@@ -377,9 +377,11 @@ static void create_ifactories(gpointer key, gpointer value, gpointer data)
 static void folderview_column_set_titles(FolderView *folderview)
 {
 	GtkWidget *ctree = folderview->ctree;
+	GtkWidget *label_folder;
 	GtkWidget *label_new;
 	GtkWidget *label_unread;
 	GtkWidget *label_total;
+	GtkWidget *hbox_folder;
 	GtkWidget *hbox_new;
 	GtkWidget *hbox_unread;
 	GtkWidget *hbox_total;
@@ -397,18 +399,22 @@ static void folderview_column_set_titles(FolderView *folderview)
 			 &unreadxpm, &unreadxpmmask);
 	stock_pixmap_gdk(ctree, STOCK_PIXMAP_READ,
 			 &readxpm, &readxpmmask);
-		
+	
+	label_folder = gtk_label_new(_("Folder"));
 	label_new = gtk_image_new_from_pixmap(newxpm, newxpmmask);
 	label_unread = gtk_image_new_from_pixmap(unreadxpm, unreadxpmmask);
 	label_total = gtk_image_new_from_pixmap(readxpm, readxpmmask);
 	
 	gtk_clist_column_titles_active(GTK_CLIST(ctree));
 	 
+	hbox_folder = gtk_hbox_new(FALSE, 4);
 	hbox_new = gtk_hbox_new(FALSE, 4);
 	hbox_unread = gtk_hbox_new(FALSE, 4);
 	hbox_total = gtk_hbox_new(FALSE, 4);
 
 	/* left justified */
+	gtk_box_pack_start(GTK_BOX(hbox_folder), label_folder, TRUE, TRUE, 0);
+	gtk_misc_set_alignment (GTK_MISC (label_folder), 0, 0.5);
 	gtk_box_pack_start(GTK_BOX(hbox_new), label_new, TRUE, TRUE, 0);
 	gtk_misc_set_alignment (GTK_MISC (label_new), 1, 0.5);
 	gtk_box_pack_start(GTK_BOX(hbox_unread), label_unread, TRUE, TRUE, 0);
@@ -416,13 +422,25 @@ static void folderview_column_set_titles(FolderView *folderview)
 	gtk_box_pack_start(GTK_BOX(hbox_total), label_total, TRUE, TRUE, 0);
 	gtk_misc_set_alignment (GTK_MISC (label_total), 1, 0.5);
 
+	gtk_widget_show_all(hbox_folder);
 	gtk_widget_show_all(hbox_new);
 	gtk_widget_show_all(hbox_unread);
 	gtk_widget_show_all(hbox_total);
 
+#ifdef MAEMO
+	gtk_widget_set_size_request(hbox_new, -1, 20);
+	gtk_widget_set_size_request(hbox_unread, -1, 20);
+	gtk_widget_set_size_request(hbox_total, -1, 20);
+#endif
+
+	gtk_clist_set_column_widget(GTK_CLIST(ctree),col_pos[F_COL_FOLDER],hbox_folder);
 	gtk_clist_set_column_widget(GTK_CLIST(ctree),col_pos[F_COL_NEW],hbox_new);
 	gtk_clist_set_column_widget(GTK_CLIST(ctree),col_pos[F_COL_UNREAD],hbox_unread);
 	gtk_clist_set_column_widget(GTK_CLIST(ctree),col_pos[F_COL_TOTAL],hbox_total);
+
+#ifdef MAEMO
+	GTK_EVENTS_FLUSH();
+#endif
 
 	gtk_sctree_set_column_tooltip(GTK_SCTREE(ctree), col_pos[F_COL_NEW], _("New"));
 	gtk_sctree_set_column_tooltip(GTK_SCTREE(ctree), col_pos[F_COL_UNREAD], _("Unread"));

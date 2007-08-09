@@ -2575,6 +2575,9 @@ static void summary_set_column_titles(SummaryView *summaryview)
 
 		hbox  = gtk_hbox_new(FALSE, 4);
 		label = gtk_label_new(title);
+#ifdef MAEMO
+	gtk_widget_set_size_request(hbox, -1, 20);
+#endif
 
 		if (justify == GTK_JUSTIFY_RIGHT)
 			gtk_box_pack_end(GTK_BOX(hbox), label,

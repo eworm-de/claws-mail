@@ -397,6 +397,7 @@ static void prefswindow_build_tree(GtkWidget *tree_view, GSList *prefs_pages,
 		prefswindow_build_all_pages(prefswindow, prefs_pages);
 
 	/* select first one or its first child if necessary */
+#ifndef MAEMO
 	selection = gtk_tree_view_get_selection(GTK_TREE_VIEW(tree_view));
 	if (gtk_tree_model_get_iter_first(GTK_TREE_MODEL(store), &iter)) {
 		if (activate_child && gtk_tree_model_iter_has_child(GTK_TREE_MODEL(store), &iter)) {
@@ -406,7 +407,7 @@ static void prefswindow_build_tree(GtkWidget *tree_view, GSList *prefs_pages,
 		}
 		gtk_tree_selection_select_iter(selection, &iter);
 	}
-
+#endif
 	adj = gtk_scrolled_window_get_vadjustment(
 			GTK_SCROLLED_WINDOW(prefswindow->scrolledwindow1));
 	gtk_adjustment_set_value(adj, 0);
