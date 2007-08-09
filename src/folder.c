@@ -3559,7 +3559,12 @@ static gchar *folder_item_get_tags_file(FolderItem *item)
 
 	identifier = folder_item_get_identifier(item);
 	g_return_val_if_fail(identifier != NULL, NULL);
-	
+
+#ifdef G_OS_WIN32
+	while (strchr(identifier, '/'))
+		*strchr(identifier, '/') = '\\';
+#endif
+
 	path = g_strconcat(get_rc_dir(), G_DIR_SEPARATOR_S,
 			   "tagsdb", G_DIR_SEPARATOR_S,
 			   identifier, NULL);

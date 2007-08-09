@@ -1,3 +1,10 @@
+2007-08-09 [wwp]	2.10.0cvs108
+
+	* src/folder.c
+		Fix tags DB path in Windows (thanks to Colin): '/' is a valid
+		path divider in Windows, but Glib uses '\' as G_DIR_SEPARATOR.
+
+
 2007-08-09 [colin]	2.10.0cvs107
 
 	* src/folderview.c
