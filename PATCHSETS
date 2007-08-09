@@ -2762,3 +2762,4 @@
 ( cvs diff -u -r 1.105.2.106 -r 1.105.2.107 src/prefs_account.c;  ) > 2.10.0cvs106.patchset
 ( cvs diff -u -r 1.207.2.171 -r 1.207.2.172 src/folderview.c;  cvs diff -u -r 1.395.2.317 -r 1.395.2.318 src/summaryview.c;  cvs diff -u -r 1.12.2.39 -r 1.12.2.40 src/gtk/prefswindow.c;  ) > 2.10.0cvs107.patchset
 ( cvs diff -u -r 1.213.2.153 -r 1.213.2.154 src/folder.c;  ) > 2.10.0cvs108.patchset
+( cvs diff -u -r 1.8.2.23 -r 1.8.2.24 src/editldap.c;  cvs diff -u -r 1.213.2.154 -r 1.213.2.155 src/folder.c;  ) > 2.10.0cvs109.patchset

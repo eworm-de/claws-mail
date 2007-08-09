@@ -2688,10 +2688,27 @@ static gint folder_item_get_msg_num_by_file(FolderItem *dest, const gchar *file)
 
 	if ((folder_has_parent_of_type(dest, F_QUEUE)) || 
 	    (folder_has_parent_of_type(dest, F_DRAFT)))
-		while (fgets(buf, sizeof(buf), fp) != NULL)
+		while (fgets(buf, sizeof(buf), fp) != NULL) {
+			/* new way */
+			if ((!strncmp(buf, "X-Claws-End-Special-Headers: 1",
+				strlen("X-Claws-End-Special-Headers:"))) ||
+			    (!strncmp(buf, "X-Sylpheed-End-Special-Headers: 1",
+				strlen("X-Sylpheed-End-Special-Headers:"))))
+				break;
+			/* old way */
 			if (buf[0] == '\r' || buf[0] == '\n') break;
+			/* from other mailers */
+			if (!strncmp(buf, "Date: ", 6)
+			||  !strncmp(buf, "To: ", 4)
+			||  !strncmp(buf, "From: ", 6)
+			||  !strncmp(buf, "Subject: ", 9)) {
+				rewind(fp);
+				break;
+			}
+		}
 
 	procheader_get_header_fields(fp, hentry);
+	debug_print("looking for %s\n", hentry[0].body);
 	if (hentry[0].body) {
     		extract_parenthesis(hentry[0].body, '<', '>');
 		remove_space(hentry[0].body);
@@ -2881,6 +2898,7 @@ gint folder_item_add_msgs(FolderItem *dest, GSList *file_list,
 					folderscan = TRUE;
 				}
 				num = folder_item_get_msg_num_by_file(dest, fileinfo->file);
+				debug_print("got num %d\n", num);
 			}
 
 			if (num > lastnum)

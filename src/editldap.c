@@ -935,8 +935,6 @@ static void edit_ldap_set_fields( LdapServer *server ) {
 		gtk_entry_set_text(
 			GTK_ENTRY(ldapedit.entry_bindPW), ctl->bindPass );
 	gtk_spin_button_set_value(
-		GTK_SPIN_BUTTON(ldapedit.spinbtn_port), ctl->port );
-	gtk_spin_button_set_value(
 		GTK_SPIN_BUTTON(ldapedit.spinbtn_timeout), ctl->timeOut );
 	gtk_spin_button_set_value(
 		GTK_SPIN_BUTTON(ldapedit.spinbtn_maxentry), ctl->maxEntries );
@@ -946,6 +944,8 @@ static void edit_ldap_set_fields( LdapServer *server ) {
 	gtk_toggle_button_set_active(
 		GTK_TOGGLE_BUTTON(ldapedit.enable_ssl), ctl->enableSSL );
 #endif
+	gtk_spin_button_set_value(
+		GTK_SPIN_BUTTON(ldapedit.spinbtn_port), ctl->port );
 	/* Format criteria */
 	crit = editldap_build_criteria_list( ctl );
 	if( crit ) {
