@@ -28,7 +28,12 @@
 #include <stdio.h>
 #include <string.h>
 #include <unistd.h>
+
+#ifdef G_OS_WIN32
+#include "w32lib.h"
+#else
 #include <sys/time.h>
+#endif
 
 #include "recv.h"
 #include "socket.h"

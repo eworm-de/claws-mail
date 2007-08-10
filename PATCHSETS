@@ -2764,3 +2764,4 @@
 ( cvs diff -u -r 1.213.2.153 -r 1.213.2.154 src/folder.c;  ) > 2.10.0cvs108.patchset
 ( cvs diff -u -r 1.8.2.23 -r 1.8.2.24 src/editldap.c;  cvs diff -u -r 1.213.2.154 -r 1.213.2.155 src/folder.c;  ) > 2.10.0cvs109.patchset
 ( cvs diff -u -r 1.179.2.180 -r 1.179.2.181 src/imap.c;  cvs diff -u -r 1.1.4.6 -r 1.1.4.7 src/etpan/etpan-thread-manager-types.h;  cvs diff -u -r 1.1.4.81 -r 1.1.4.82 src/etpan/imap-thread.c;  cvs diff -u -r 1.1.4.18 -r 1.1.4.19 src/etpan/imap-thread.h;  ) > 2.10.0cvs110.patchset
+( cvs diff -u -r 1.16.2.55 -r 1.16.2.56 src/msgcache.c;  cvs diff -u -r 1.17.2.10 -r 1.17.2.11 src/recv.c;  ) > 2.10.0cvs111.patchset

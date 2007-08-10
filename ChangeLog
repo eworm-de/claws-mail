@@ -1,3 +1,13 @@
+2007-08-10 [wwp]	2.10.0cvs111
+
+	* src/msgcache.c
+		fix unpredictable crashes in Windows due to broken
+		cache/mark/tags files writting (file were opened for
+		writing in text mode).
+
+	* src/recv.c
+		use gettimeofday() from w32lib.h on Windows.
+
 2007-08-10 [colin]	2.10.0cvs110
 
 	* src/imap.c

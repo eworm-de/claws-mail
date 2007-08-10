@@ -395,7 +395,7 @@ static FILE *msgcache_open_data_file(const gchar *file, guint version,
 
 	if (mode == DATA_WRITE) {
 		int w_err = 0, wrote = 0;
-		if ((fp = g_fopen(file, "w+")) == NULL) {
+		if ((fp = g_fopen(file, "wb")) == NULL) {
 			FILE_OP_ERROR(file, "fopen");
 			return NULL;
 		}
