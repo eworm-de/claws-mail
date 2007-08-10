@@ -999,7 +999,12 @@ static void noop_run(struct etpan_thread_op * op)
 	debug_print("imap noop run - end %i\n", r);
 }
 
-int imap_threaded_noop(Folder * folder, unsigned int * p_exists)
+int imap_threaded_noop(Folder * folder, unsigned int * p_exists, 
+		       unsigned int *p_recent, 
+		       unsigned int *p_expunge,
+		       unsigned int *p_unseen,
+		       unsigned int *p_uidnext,
+		       unsigned int *p_uidval)
 {
 	struct noop_param param;
 	struct noop_result result;
@@ -1012,14 +1017,28 @@ int imap_threaded_noop(Folder * folder, unsigned int * p_exists)
 
 	threaded_run(folder, &param, &result, noop_run);
 	
-	if (imap && imap->imap_selection_info != NULL) {
+	if (result.error == 0 && imap && imap->imap_selection_info != NULL) {
 		* p_exists = imap->imap_selection_info->sel_exists;
-	}
-	else {
+		* p_recent = imap->imap_selection_info->sel_recent;
+		* p_unseen = imap->imap_selection_info->sel_unseen;
+		* p_uidnext = imap->imap_selection_info->sel_uidnext;
+		* p_uidval = imap->imap_selection_info->sel_uidvalidity;
+	} else {
 		* p_exists = 0;
+		* p_recent = 0;
+		* p_unseen = 0;
+		* p_uidnext = 0;
+		* p_uidval = 0;
 	}
-	
-	debug_print("imap noop - end\n");
+	if (result.error == 0 && imap && imap->imap_response_info != NULL &&
+	    imap->imap_response_info->rsp_expunged != NULL) {
+		* p_expunge = clist_count(imap->imap_response_info->rsp_expunged);
+	} else {
+		* p_expunge = 0;
+	}	
+	debug_print("imap noop - end [EXISTS %d RECENT %d EXPUNGE %d UNSEEN %d UIDNEXT %d UIDVAL %d]\n",
+		*p_exists, *p_recent, *p_expunge, *p_unseen,
+		*p_uidnext, *p_uidval);
 	
 	return result.error;
 }

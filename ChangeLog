@@ -1,3 +1,10 @@
+2007-08-10 [colin]	2.10.0cvs110
+
+	* src/imap.c
+	* src/etpan/imap-thread.c
+	* src/etpan/imap-thread.h
+		Better IMAP scanning (NOOP instead of CLOSE/SELECT)
+
 2007-08-09 [colin]	2.10.0cvs109
 
 	* src/editldap.c
