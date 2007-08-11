@@ -1,3 +1,12 @@
+2007-08-11 [paul]	2.10.0cvs113
+
+	* src/addrgather.c
+	* src/folderview.c
+		use 'subfolder' instead of 'sub-folder', matching
+		everywhere else the term is used
+	* src/imap_gtk.c
+		fix engrish
+
 2007-08-10 [wwp]	2.10.0cvs112
 
 	* src/msgcache.c

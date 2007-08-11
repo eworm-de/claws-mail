@@ -405,7 +405,7 @@ static void addrgather_page_fields( gint pageNum, gchar *pageLbl ) {
 
 	/* Recurse folders */
 	top += 4;
-	checkRecurse = gtk_check_button_new_with_label( _("Include sub-folders" ) );
+	checkRecurse = gtk_check_button_new_with_label( _("Include subfolders" ) );
 	gtk_table_attach( GTK_TABLE(table), checkRecurse, 0, 2, top, (top + 1),
 			GTK_EXPAND|GTK_SHRINK|GTK_FILL, 0, 0, 0 );
 

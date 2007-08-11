@@ -155,7 +155,7 @@ static void new_folder_cb(FolderView *folderview, guint action,
 		(_("New folder"),
 		 _("Input the name of new folder:\n"
 		   "(if you want to create a folder to store subfolders\n"
-		   "and no mails, append '/' at the end of the name)"),
+		   "only and no mail, append '/' to the folder name)"),
 		 _("NewFolder"));
 	if (!new_folder) return;
 	AUTORELEASE_STR(new_folder, {g_free(new_folder); return;});

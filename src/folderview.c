@@ -2522,7 +2522,7 @@ void folderview_move_folder(FolderView *folderview, FolderItem *from_folder,
 	
 	if (prefs_common.warn_dnd) {
 		buf = g_strdup_printf(copy ? _("Do you really want to copy folder '%s' in '%s' ?"):
-					     _("Do you really want to make folder '%s' a sub-folder of '%s' ?"), 
+					     _("Do you really want to make folder '%s' a subfolder of '%s' ?"), 
 					from_folder->name, to_folder->name);
 		status = alertpanel_full(copy ? _("Copy folder"):_("Move folder"), buf,
 				       	 GTK_STOCK_NO, GTK_STOCK_YES, NULL, TRUE,
