@@ -66,7 +66,7 @@ gboolean privacy_encrypt			(const gchar  *system,
 						 MimeInfo     *mimeinfo,
 						 const gchar  *encdata);
 
-void privacy_set_error				(const gchar *format, ...);
+void privacy_set_error				(const gchar *format, ...) G_GNUC_PRINTF(1, 2);
 void privacy_reset_error				(void);
 gboolean privacy_peek_error				(void);
 const gchar *privacy_get_error			(void);
