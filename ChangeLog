@@ -1,3 +1,10 @@
+2007-08-12 [wwp]	2.10.0cvs116
+
+	* src/plugins/pgpcore/prefs_gpg.c
+		Don't try to unset a GPG_AGENT_INFO that was not
+		set (and don't use a NULL string in Windows, it was
+		crashing with --debug if GPG_AGENT_INFO was not set).
+
 2007-08-12 [wwp]	2.10.0cvs115
 
 	* src/privacy.h

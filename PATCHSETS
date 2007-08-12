@@ -2770,3 +2770,4 @@
 ( cvs diff -u -r 1.52.2.47 -r 1.52.2.48 src/prefs_folder_item.c;  cvs diff -u -r 1.1.2.10 -r 1.1.2.11 src/gtk/combobox.c;  ) > 2.10.0cvs114.patchset
 ( cvs diff -u -r 1.52.2.47 -r 1.52.2.48 src/prefs_folder_item.c;  cvs diff -u -r 1.1.2.10 -r 1.1.2.11 src/gtk/combobox.c;  ) > 2.10.0cvs114.patchset
 ( cvs diff -u -r 1.10.2.14 -r 1.10.2.15 src/privacy.h;  ) > 2.10.0cvs115.patchset
+( cvs diff -u -r 1.1.2.25 -r 1.1.2.26 src/plugins/pgpcore/prefs_gpg.c;  ) > 2.10.0cvs116.patchset

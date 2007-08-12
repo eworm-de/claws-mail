@@ -530,9 +530,13 @@ void prefs_gpg_enable_agent(gboolean enable)
 			debug_print("Can't enable gpg agent (no GPG_AGENT_INFO)\n");
 		}
 	} else {
+		if (saved_gpg_agent_info) {
 			g_unsetenv("GPG_AGENT_INFO");
 			debug_print("unset GPG_AGENT_INFO=%s\n", 
 				saved_gpg_agent_info);
+		} else {
+			debug_print("Can't disable gpg agent (no GPG_AGENT_INFO)\n");
+		}
 	}
 }
 
