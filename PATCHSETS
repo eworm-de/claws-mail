@@ -2767,3 +2767,5 @@
 ( cvs diff -u -r 1.16.2.55 -r 1.16.2.56 src/msgcache.c;  cvs diff -u -r 1.17.2.10 -r 1.17.2.11 src/recv.c;  ) > 2.10.0cvs111.patchset
 ( cvs diff -u -r 1.16.2.56 -r 1.16.2.57 src/msgcache.c;  ) > 2.10.0cvs112.patchset
 ( cvs diff -u -r 1.5.10.19 -r 1.5.10.20 src/addrgather.c;  cvs diff -u -r 1.207.2.172 -r 1.207.2.173 src/folderview.c;  cvs diff -u -r 1.1.2.48 -r 1.1.2.49 src/imap_gtk.c;  ) > 2.10.0cvs113.patchset
+( cvs diff -u -r 1.52.2.47 -r 1.52.2.48 src/prefs_folder_item.c;  cvs diff -u -r 1.1.2.10 -r 1.1.2.11 src/gtk/combobox.c;  ) > 2.10.0cvs114.patchset
+( cvs diff -u -r 1.52.2.47 -r 1.52.2.48 src/prefs_folder_item.c;  cvs diff -u -r 1.1.2.10 -r 1.1.2.11 src/gtk/combobox.c;  ) > 2.10.0cvs114.patchset

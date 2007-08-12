@@ -1,3 +1,18 @@
+2007-08-12 [ticho]	2.10.0cvs114
+
+	* src/prefs_folder_item.c
+		Make sure that folder default account combobox always has some
+		account preselected.
+	* src/gtk/combobox.c
+		Handle empty combobox gracefully (warning instead of crash).
+
+2007-08-12 [ticho]	2.10.0cvs114
+
+	* src/prefs_folder_item.c
+		Make sure that folder default account combobox is not empty.
+	* src/gtk/combobox.c
+		Handle empty combobox gracefully (warning instead of crash).
+
 2007-08-11 [paul]	2.10.0cvs113
 
 	* src/addrgather.c

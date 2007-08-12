@@ -74,7 +74,7 @@ gint combobox_get_active_data(GtkComboBox *combobox)
 
 	g_return_val_if_fail(combobox != NULL, -1);
 
-	gtk_combo_box_get_active_iter(combobox, &iter);
+	g_return_val_if_fail(gtk_combo_box_get_active_iter(combobox, &iter), -1);
 
 	model = gtk_combo_box_get_model(combobox);
 

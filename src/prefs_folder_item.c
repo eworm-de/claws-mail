@@ -721,6 +721,7 @@ static void prefs_folder_item_compose_create_widget_func(PrefsPage * page_,
 	GList *cur_ac;
 	GList *account_list;
 	PrefsAccount *ac_prefs;
+	gboolean default_account_set = FALSE;
 
 	page->item	   = item;
 
@@ -857,10 +858,19 @@ static void prefs_folder_item_compose_create_widget_func(PrefsPage * page_,
 					ac_prefs->account_id);
 
 		/* Set combobox to current default account id */
-		if (ac_prefs->account_id == item->prefs->default_account)
+		if (ac_prefs->account_id == item->prefs->default_account) {
 			combobox_select_by_data(GTK_COMBO_BOX(optmenu_default_account),
 					ac_prefs->account_id);
+			default_account_set = TRUE;
+		}
 	}
+
+	/* If nothing has been set (folder doesn't have a default account set),
+	 * pre-select global default account, since that's what actually used
+	 * anyway. We don't want nothing selected in combobox. */
+	if( !default_account_set )
+		combobox_select_by_data(GTK_COMBO_BOX(optmenu_default_account),
+				account_get_default()->account_id);
 
 	SET_TOGGLE_SENSITIVITY(checkbtn_enable_default_account, optmenu_default_account);
 
