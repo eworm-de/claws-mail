@@ -1282,17 +1282,22 @@ static gint inc_spool_account(PrefsAccount *account)
 	} else
 		inbox = folder_get_default_inbox();
 
-	if (is_file_exist(account->local_mbox))
-		mbox = g_strdup(account->local_mbox);
-	else if (is_dir_exist(account->local_mbox)) 
-		mbox = g_strconcat(account->local_mbox, G_DIR_SEPARATOR_S,
-				   g_get_user_name(), NULL);
-	else {
-		debug_print("%s: local mailbox not found.\n", 
-			    account->local_mbox);
+	if (account->local_mbox) {
+		if (is_file_exist(account->local_mbox))
+			mbox = g_strdup(account->local_mbox);
+		else if (is_dir_exist(account->local_mbox)) 
+			mbox = g_strconcat(account->local_mbox, G_DIR_SEPARATOR_S,
+					   g_get_user_name(), NULL);
+		else {
+			debug_print("%s: local mailbox not found.\n", 
+				    account->local_mbox);
+			return -1;
+		}
+	} else {
+		debug_print("local mailbox not set in account info.\n");
 		return -1;
-	}
-	
+	}	
+
 	result = get_spool(inbox, mbox, account);
 	g_free(mbox);
 	

@@ -2916,7 +2916,7 @@ gboolean addrindex_load_completion(
 
 				AddressBookFile *abf = book->rawDataSource;
 
-				debug_print("addrindex_load_completion: book %p '%s'\n", book, abf->fileName);
+				debug_print("addrindex_load_completion: book %p '%s'\n", book, abf?abf->fileName:"(null)");
 
 				addrindex_load_completion_load_persons( callBackFunc, book );
 

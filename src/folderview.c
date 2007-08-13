@@ -2193,6 +2193,7 @@ static void folderview_selected(GtkCTree *ctree, GtkCTreeNode *row,
 	}
 
 	/* Open Folder */
+	/* TODO: wwp: avoid displaying (null) in the status bar */
     	buf = g_strdup_printf(_("Opening Folder %s..."), item->path ? 
 					item->path : "(null)");
 	debug_print("%s\n", buf);

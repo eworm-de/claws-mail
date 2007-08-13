@@ -135,7 +135,7 @@ void menu_set_active(GtkItemFactory *ifactory, const gchar *path,
 	g_return_if_fail(widget != NULL);
 
 	if (!GTK_IS_CHECK_MENU_ITEM(widget)) {
-		debug_print("%s not check_menu_item\n", path);
+		debug_print("%s not check_menu_item\n", path?path:"(null)");
 		return;
 	}	
 	gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM(widget), is_active);

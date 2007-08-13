@@ -317,7 +317,7 @@ static gboolean match_with_addresses_in_addressbook
 	g_return_val_if_fail(address_list != NULL, FALSE);
 
 	debug_print("match_with_addresses_in_addressbook(%d, %s)\n",
-				g_slist_length(address_list), folderpath);
+				g_slist_length(address_list), folderpath?folderpath:"(null)");
 
 	if (folderpath == NULL ||
 		strcasecmp(folderpath, _("Any")) == 0 ||

@@ -1699,7 +1699,7 @@ static GSList *gtkaspell_get_dictionary_list(const gchar *aspell_path, gint refr
 	dlist = get_aspell_dict_info_list(config);
 	delete_aspell_config(config);
 
-	debug_print("Aspell: checking for dictionaries in %s\n", aspell_path);
+	debug_print("Aspell: checking for dictionaries in %s\n", aspell_path?aspell_path:"(null)");
 	dels = aspell_dict_info_list_elements(dlist);
 	while ( (entry = aspell_dict_info_enumeration_next(dels)) != 0) 
 	{

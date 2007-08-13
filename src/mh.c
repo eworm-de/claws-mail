@@ -218,7 +218,7 @@ gboolean mh_scan_required(Folder *folder, FolderItem *item)
 	if ((s.st_mtime > item->mtime) &&
 		(s.st_mtime - 3600 != item->mtime)) {
 		debug_print("MH scan required, folder updated: %s (%ld > %ld)\n",
-			    path,
+			    path?path:"(null)",
 			    (long int) s.st_mtime,
 			    (long int) item->mtime);
 		g_free(path);
@@ -226,7 +226,7 @@ gboolean mh_scan_required(Folder *folder, FolderItem *item)
 	}
 
 	debug_print("MH scan not required: %s (%ld <= %ld)\n",
-		    path,
+		    path?path:"(null)",
 		    (long int) s.st_mtime,
 		    (long int) item->mtime);
 	g_free(path);
@@ -243,7 +243,7 @@ static void mh_get_last_num(Folder *folder, FolderItem *item)
 
 	g_return_if_fail(item != NULL);
 
-	debug_print("mh_get_last_num(): Scanning %s ...\n", item->path);
+	debug_print("mh_get_last_num(): Scanning %s ...\n", item->path?item->path:"(null)");
 
 	path = folder_item_get_path(item);
 	g_return_if_fail(path != NULL);
@@ -269,7 +269,7 @@ static void mh_get_last_num(Folder *folder, FolderItem *item)
 	}
 	closedir(dp);
 
-	debug_print("Last number in dir %s = %d\n", item->path, max);
+	debug_print("Last number in dir %s = %d\n", item->path?item->path:"(null)", max);
 	item->last_num = max;
 }
 
@@ -283,7 +283,7 @@ gint mh_get_num_list(Folder *folder, FolderItem *item, GSList **list, gboolean *
 
 	g_return_val_if_fail(item != NULL, -1);
 
-	debug_print("mh_get_num_list(): Scanning %s ...\n", item->path);
+	debug_print("mh_get_num_list(): Scanning %s ...\n", item->path?item->path:"(null)");
 
 	*old_uids_valid = TRUE;
 
@@ -997,7 +997,7 @@ static gboolean mh_remove_missing_folder_items_func(GNode *node, gpointer data)
 
 	path = folder_item_get_path(item);
 	if (!is_dir_exist(path)) {
-		debug_print("folder '%s' not found. removing...\n", path);
+		debug_print("folder '%s' not found. removing...\n", path?path:"(null)");
 		folder_item_remove(item);
 	}
 	g_free(path);
@@ -1449,6 +1449,6 @@ void mh_set_mtime(FolderItem *item)
 	}
 
 	item->mtime = s.st_mtime;
-	debug_print("MH: forced mtime of %s to %ld\n", item->name, item->mtime);
+	debug_print("MH: forced mtime of %s to %ld\n", item->name?item->name:"(null)", item->mtime);
 	g_free(path);
 }

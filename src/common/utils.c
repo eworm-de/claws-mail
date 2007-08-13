@@ -3467,7 +3467,7 @@ gint execute_command_line(const gchar *cmdline, gboolean async)
 	gchar **argv;
 	gint ret;
 
-	debug_print("execute_command_line(): executing: %s\n", cmdline);
+	debug_print("execute_command_line(): executing: %s\n", cmdline?cmdline:"(null)");
 
 	argv = strsplit_with_quote(cmdline, " ", 0);
 

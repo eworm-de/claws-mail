@@ -309,7 +309,7 @@ void partial_delete_old(const gchar *file)
 	int num = 0;
 	FolderItem *item = NULL;
 
-	debug_print("too big message updated,should remove %s\n", file);
+	debug_print("too big message updated, should remove %s\n", file?file:"(null)");
 
 	if (snum) {
 		snum++;

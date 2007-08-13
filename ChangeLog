@@ -1,3 +1,25 @@
+2007-08-13 [wwp]	2.10.0cvs119
+
+	* src/addr_compl.c
+	* src/addressbook.c
+	* src/addrindex.c
+	* src/compose.c
+	* src/filtering.c
+	* src/folderview.c
+	* src/inc.c
+	* src/matcher.c
+	* src/mh.c
+	* src/partial_download.c
+	* src/prefs_gtk.c
+	* src/procmsg.c
+	* src/stock_pixmap.c
+	* src/summaryview.c
+	* src/common/utils.c
+	* src/gtk/gtkaspell.c
+	* src/gtk/menu.c
+		Make sure we never pass NULL pointers for %s substitutions
+		(prevent from crashing in Windows).
+
 2007-08-13 [wwp]	2.10.0cvs118
 
 	* src/msgcache.c

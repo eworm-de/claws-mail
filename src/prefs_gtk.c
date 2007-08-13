@@ -1022,7 +1022,7 @@ static int prefs_cache_sections(GHashTable *file_cache, const gchar *rcfile)
 	GHashTable *section_cache = NULL;
 
 	if (!fp) {
-		debug_print("cache: %s: %s", rcfile, strerror(errno));
+		debug_print("cache: %s: %s", rcfile?rcfile:"(null)", strerror(errno));
 		return -1;
 	}
 	
@@ -1084,7 +1084,7 @@ static int prefs_cache(const gchar *rcfile)
 	GHashTable *file_cache = g_hash_table_new_full(g_str_hash, g_str_equal, 
 					g_free, prefs_destroy_file_cache);
 	
-	debug_print("new file '%s'\n", rcfile);
+	debug_print("new file '%s'\n", rcfile?rcfile:"(null)");
 	g_hash_table_insert(whole_cache, g_strdup(rcfile), file_cache);
 	
 	return prefs_cache_sections(file_cache, rcfile);
@@ -1145,13 +1145,13 @@ static gboolean prefs_read_config_from_cache(PrefParam *param, const gchar *labe
 	sections_table = g_hash_table_lookup(whole_cache, rcfile);
 	
 	if (sections_table == NULL) {
-		g_warning("Can't find %s in the whole cache\n", rcfile);
+		g_warning("Can't find %s in the whole cache\n", rcfile?rcfile:"(null)");
 		return FALSE;
 	}
 	values_table = g_hash_table_lookup(sections_table, label);
 	
 	if (values_table == NULL) {
-		debug_print("no '%s' section in '%s' cache\n", label, rcfile);
+		debug_print("no '%s' section in '%s' cache\n", label?label:"(null)", rcfile?rcfile:"(null)");
 		return TRUE;
 	}
 	g_hash_table_foreach(values_table, prefs_parse_cache, param);

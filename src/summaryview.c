@@ -1177,7 +1177,7 @@ gboolean summary_show(SummaryView *summaryview, FolderItem *item)
 		g_free(buf);
 		debug_print("empty folder (%p %s %p %d)\n\n",
 				item, 
-				item?item->path:"NULL",
+				(item && item->path)?item->path:"(null)",
 				item?folder_item_parent(item):0x0,
 				item?item->no_select:FALSE);
 		summary_set_hide_read_msgs_menu(summaryview, FALSE);

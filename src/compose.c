@@ -8557,7 +8557,7 @@ gboolean compose_draft (gpointer data, guint action)
 
 		path = folder_item_fetch_msg(draft, msgnum);
 		if (path == NULL) {
-			debug_print("can't fetch %s:%d\n",draft->path, msgnum);
+			debug_print("can't fetch %s:%d\n", draft->path, msgnum);
 			goto unlock;
 		}
 		if (g_stat(path, &s) < 0) {

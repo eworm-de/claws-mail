@@ -810,7 +810,7 @@ parse_again:
 	g_slist_free(orig);
 	
 	for (cur = result; cur; cur = cur->next)
-		debug_print("sort after  %s\n", ((MsgInfo *)cur->data)->from);
+		debug_print("sort after %s\n", ((MsgInfo *)cur->data)->from);
 
 	debug_print("\n");
 

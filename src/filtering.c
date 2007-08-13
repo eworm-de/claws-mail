@@ -57,7 +57,7 @@ static inline gint strlen_with_check(const gchar *expr, gint fline, const gchar 
         if (str) 
 		return strlen(str);
 	else {
-	        debug_print("%s(%d) - invalid string %s\n", __FILE__, fline, expr);
+	        debug_print("%s(%d) - invalid string %s\n", __FILE__, fline, expr?expr:"(null)");
 	        return 0;
 	}
 }
@@ -274,7 +274,7 @@ static gboolean filteringaction_apply(FilteringAction * action, MsgInfo * info)
 			folder_find_item_from_identifier(action->destination);
 		if (!dest_folder) {
 			debug_print("*** folder not found '%s'\n",
-				action->destination ?action->destination :"");
+				action->destination ?action->destination :"(null)");
 			return FALSE;
 		}
 		
@@ -296,7 +296,7 @@ static gboolean filteringaction_apply(FilteringAction * action, MsgInfo * info)
 
 		if (!dest_folder) {
 			debug_print("*** folder not found '%s'\n",
-				action->destination ?action->destination :"");
+				action->destination ?action->destination :"(null)");
 			return FALSE;
 		}
 
@@ -317,7 +317,7 @@ static gboolean filteringaction_apply(FilteringAction * action, MsgInfo * info)
 		val = tags_get_id_for_str(action->destination);
 		if (val == -1) {
 			debug_print("*** tag '%s' not found\n",
-				action->destination ?action->destination :"");
+				action->destination ?action->destination :"(null)");
 			return FALSE;
 		}
 		

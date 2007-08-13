@@ -371,7 +371,7 @@ gint start_address_completion(gchar *folderpath)
 
 	g_ref_count++;
 	debug_print("start_address_completion(%s) ref count %d\n",
-				folderpath, g_ref_count);
+				folderpath?folderpath:"(null)", g_ref_count);
 
 	return g_list_length(g_completion_list);
 }

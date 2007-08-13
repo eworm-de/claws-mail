@@ -4919,7 +4919,7 @@ gboolean addressbook_folder_selection( gchar **folderpath )
 		} else {
 			*folderpath = g_strdup_printf("%s", book->fileName);
 		}
-		debug_print( "addressbook_foldersel: %s\n", *folderpath);
+		debug_print( "addressbook_foldersel: %s\n", *folderpath?*folderpath:"(null)");
 		return (*folderpath != NULL);
 	}
 	return FALSE;
