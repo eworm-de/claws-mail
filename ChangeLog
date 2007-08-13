@@ -1,3 +1,10 @@
+2007-08-13 [wwp]	2.10.0cvs118
+
+	* src/msgcache.c
+		Re-enable mmap_reads in Windows with some missing
+		CloseHandle of mapping objects, thanks to
+		Marcus Brinkmann.
+
 2007-08-13 [paul]	2.10.0cvs117
 
 	* src/common/utils.c

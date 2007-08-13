@@ -69,11 +69,7 @@
 	 ((x[2]&0xff) << 16) |		\
 	 ((x[3]&0xff) << 24))
 
-#ifdef G_OS_WIN32
-static gboolean msgcache_use_mmap_read = FALSE;
-#else
 static gboolean msgcache_use_mmap_read = TRUE;
-#endif
 static gboolean msgcache_use_mmap_write = FALSE;
 
 #else
@@ -91,11 +87,7 @@ static gboolean msgcache_use_mmap_write = FALSE;
 	 ((x[2]&0xff) << 16) |		\
 	 ((x[3]&0xff) << 24))
 
-#ifdef G_OS_WIN32
-static gboolean msgcache_use_mmap_read = FALSE;
-#else
 static gboolean msgcache_use_mmap_read = TRUE;
-#endif
 static gboolean msgcache_use_mmap_write = FALSE;
 #endif
 
@@ -648,6 +640,7 @@ MsgCache *msgcache_read_cache(FolderItem *item, const gchar *cache_file)
 			if (!hMapping)
 				goto w32_fail;
 			cache_data = (unsigned char *)MapViewOfFile(hMapping, FILE_MAP_COPY, 0, 0, 0);
+			CloseHandle (hMapping);
 		w32_fail:
 			;
 #else
@@ -830,6 +823,7 @@ void msgcache_read_mark(MsgCache *cache, const gchar *mark_file)
 			if (!hMapping)
 				goto w32_fail2;
 			cache_data = (unsigned char *)MapViewOfFile(hMapping, FILE_MAP_COPY, 0, 0, 0);
+			CloseHandle (hMapping);
 		w32_fail2:
 			;
 #else
@@ -913,6 +907,7 @@ void msgcache_read_tags(MsgCache *cache, const gchar *tags_file)
 			if (!hMapping)
 				goto w32_fail6;
 			cache_data = (unsigned char *)MapViewOfFile(hMapping, FILE_MAP_COPY, 0, 0, 0);
+			CloseHandle (hMapping);
 		w32_fail6:
 			;
 #else
@@ -1248,6 +1243,7 @@ gint msgcache_write(const gchar *cache_file, const gchar *mark_file, const gchar
 			if (!hMapping)
 				goto w32_fail3;
 			cache_data = (unsigned char *)MapViewOfFile(hMapping, FILE_MAP_COPY, 0, 0, 0);
+			CloseHandle (hMapping);
 		w32_fail3:
 			;
 #else
@@ -1267,6 +1263,7 @@ gint msgcache_write(const gchar *cache_file, const gchar *mark_file, const gchar
 				if (!hMapping)
 					goto w32_fail4;
 				mark_data = (unsigned char *)MapViewOfFile(hMapping, FILE_MAP_COPY, 0, 0, 0);
+				CloseHandle (hMapping);
 			w32_fail4:
 				;
 #else
@@ -1293,6 +1290,7 @@ gint msgcache_write(const gchar *cache_file, const gchar *mark_file, const gchar
 						if (!hMapping)
 							goto w32_fail5;
 						tags_data = (unsigned char *)MapViewOfFile(hMapping, FILE_MAP_COPY, 0, 0, 0);
+						CloseHandle (hMapping);
 					w32_fail5:
 						;
 #else
