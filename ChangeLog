@@ -1,3 +1,14 @@
+2007-08-14 [ticho]	2.10.0cvs120
+
+	* src/compose.c
+	* src/prefs_common.c
+	* src/prefs_common.h
+	* src/prefs_send.c
+	* src/send_message.c
+		Change "Show send dialog" optionmenu to a checkbutton.
+	* src/prefs_receive.c
+		Migrate "Show receive dialog" GtkOptionMenu to GtkComboBox.
+
 2007-08-13 [wwp]	2.10.0cvs119
 
 	* src/addr_compl.c

@@ -574,7 +574,7 @@ static SendProgressDialog *send_progress_dialog_create(void)
 	gtk_widget_set_size_request(progress->window, prefs_common.sendwin_width,
 				    prefs_common.sendwin_height);
 
-	if (prefs_common.send_dialog_mode == SEND_DIALOG_ALWAYS) {
+	if (prefs_common.send_dialog_mode) {
 		gtk_widget_show_now(progress->window);
 	}
 	
@@ -586,7 +586,7 @@ static SendProgressDialog *send_progress_dialog_create(void)
 static void send_progress_dialog_destroy(SendProgressDialog *dialog)
 {
 	g_return_if_fail(dialog != NULL);
-	if (prefs_common.send_dialog_mode == SEND_DIALOG_ALWAYS) {
+	if (prefs_common.send_dialog_mode) {
 		progress_dialog_destroy(dialog->dialog);
 	}
 	g_free(dialog);

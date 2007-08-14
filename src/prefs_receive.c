@@ -40,6 +40,7 @@
 #include "gtk/menu.h"
 
 #include "manage_window.h"
+#include "combobox.h"
 
 typedef struct _ReceivePage
 {
@@ -119,8 +120,8 @@ static void prefs_receive_create_widget(PrefsPage *_page, GtkWindow *window,
 #endif
 	
 	GtkWidget *label_recvdialog;
-	GtkWidget *menu;
-	GtkWidget *menuitem;
+	GtkListStore *menu;
+	GtkTreeIter iter;
 	GtkWidget *optmenu_recvdialog;
 	GtkWidget *checkbtn_no_recv_err_panel;
 	GtkWidget *checkbtn_close_recv_dialog;
@@ -183,16 +184,14 @@ static void prefs_receive_create_widget(PrefsPage *_page, GtkWindow *window,
 	gtk_misc_set_alignment(GTK_MISC(label_recvdialog), 0, 0.5);
 	gtk_widget_show (label_recvdialog);
 
-	optmenu_recvdialog = gtk_option_menu_new ();
+	optmenu_recvdialog = gtkut_sc_combobox_create(NULL, FALSE);
 	gtk_widget_show (optmenu_recvdialog);
 
-	menu = gtk_menu_new ();
-	MENUITEM_ADD (menu, menuitem, _("Always"), RECV_DIALOG_ALWAYS);
-	MENUITEM_ADD (menu, menuitem, _("Only on manual receiving"),
-		      RECV_DIALOG_MANUAL);
-	MENUITEM_ADD (menu, menuitem, _("Never"), RECV_DIALOG_NEVER);
-
-	gtk_option_menu_set_menu (GTK_OPTION_MENU (optmenu_recvdialog), menu);
+	menu = GTK_LIST_STORE(gtk_combo_box_get_model(
+				GTK_COMBO_BOX(optmenu_recvdialog)));
+	COMBOBOX_ADD (menu, _("Always"), RECV_DIALOG_ALWAYS);
+	COMBOBOX_ADD (menu, _("Only on manual receiving"), RECV_DIALOG_MANUAL);
+	COMBOBOX_ADD (menu, _("Never"), RECV_DIALOG_NEVER);
 
 	hbox = gtk_hbox_new(FALSE, 20);
 	gtk_widget_show(hbox);
@@ -283,7 +282,7 @@ static void prefs_receive_create_widget(PrefsPage *_page, GtkWindow *window,
 		prefs_common.extinc_cmd);
 	gtk_spin_button_set_value(GTK_SPIN_BUTTON(spinbtn_autochk), 
 		prefs_common.autochk_itv);
-	gtk_option_menu_set_history(GTK_OPTION_MENU(optmenu_recvdialog),
+	combobox_select_by_data(GTK_COMBO_BOX(optmenu_recvdialog),
 		prefs_common.recv_dialog_mode);
 
 	prefs_receive->window = GTK_WIDGET(window);
@@ -324,8 +323,6 @@ static void prefs_receive_save(PrefsPage *_page)
 {
 	ReceivePage *page = (ReceivePage *) _page;
 	gchar *tmp;
-	GtkWidget *menu;
-	GtkWidget *menuitem;
 
 	prefs_common.use_extinc = gtk_toggle_button_get_active(
 		GTK_TOGGLE_BUTTON(page->checkbtn_incext));
@@ -366,10 +363,9 @@ static void prefs_receive_save(PrefsPage *_page)
 	prefs_common.newmail_notify_cmd = tmp;
 #endif
 	
-	menu = gtk_option_menu_get_menu(GTK_OPTION_MENU(page->optmenu_recvdialog));
-	menuitem = gtk_menu_get_active(GTK_MENU(menu));
-	prefs_common.recv_dialog_mode = GPOINTER_TO_INT
-		(g_object_get_data(G_OBJECT(menuitem), MENU_VAL_ID));
+	prefs_common.recv_dialog_mode =
+		combobox_get_active_data(GTK_COMBO_BOX(page->optmenu_recvdialog));
+
 	inc_autocheck_timer_remove();
 	inc_autocheck_timer_set();
 

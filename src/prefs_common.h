@@ -55,12 +55,6 @@ typedef enum {
 	CTE_8BIT
 } TransferEncodingMethod;
 
-typedef enum {
-	SEND_DIALOG_ALWAYS,
-	/* SEND_DIALOG_ACTIVE would be irrelevant */
-	SEND_DIALOG_NEVER
-} SendDialogMode;
-
 typedef enum
 {
 /* U = unread, N = new, M = marked */
@@ -121,7 +115,7 @@ struct _PrefsCommon
 	/* Send */
 	gboolean savemsg;
 	gboolean confirm_send_queued_messages;
-	SendDialogMode send_dialog_mode;
+	gboolean send_dialog_mode;
 	gint sendwin_width;
 	gint sendwin_height;
 	gchar *outgoing_charset;
