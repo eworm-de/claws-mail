@@ -19,6 +19,7 @@ EXTRA_TOOLS = \
 	multiwebsearch.pl \
 	nautilus2claws-mail.sh \
 	outlook2claws-mail.pl \
+	popfile-link.sh \
 	sylprint.pl \
 	sylprint.rc \
 	tb2claws-mail \

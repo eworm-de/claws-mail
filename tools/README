@@ -4,14 +4,14 @@ Contents of the tools directory:
 --------------------------------------------------------------------------------
 
 Action scripts:
-  freshmeat_search.pl		Search freshmeat.net for selected text
+  freshmeat_search.pl           Search freshmeat.net for selected text
   google_msgid.pl               Search groups.google.com for selected message-id
-  google_search.pl		Search google.com for selected text
-  multiwebsearch.pl		Search any search engine for the selected text
-  textviewer.sh			Attempt to view an attachment as plain text
+  google_search.pl              Search google.com for selected text
+  multiwebsearch.pl             Search any search engine for the selected text
+  textviewer.sh                 Attempt to view an attachment as plain text
   uudec                         Decode and display uuencoded images
-  uuooffice			Decode uuencoded attachments and open them with
-				OpenOffice
+  uuooffice                     Decode uuencoded attachments and open them with
+                                OpenOffice
 
 Addressbook conversion:
   eud2gc.py                     Convert Eudora address book to Gnomecard
@@ -19,29 +19,31 @@ Addressbook conversion:
   kmail2claws-mail_v2.pl        Import a Kmail address book (KDE3)
   outlook2claws-mail.pl         Import an Outlook generated contact list
   tb2claws-mail                 Import The Bat! address books
-  vcard2xml.py			Import an Evolution vCard
+  vcard2xml.py                  Import an Evolution vCard
 
 Mailbox conversion:
   calypso_convert.pl            Import mbox files with attachments from Calypso
-  convert_mbox.pl		Import mbox files
-  kmail-mailbox2claws-mail.pl	Convert a kmail mailbox to a Claws Mail mailbox
-  tbird2claws.py		Integrate a Thunderbird folder tree into Claws
+  convert_mbox.pl               Import mbox files
+  kmail-mailbox2claws-mail.pl   Convert a kmail mailbox to a Claws Mail mailbox
+  tbird2claws.py                Integrate a Thunderbird folder tree into Claws
 
 Other tools:
-  acroread2claws-mail.pl	Send PDFs from Adobe Reader 7
+  acroread2claws-mail.pl        Send PDFs from Adobe Reader 7
   claws-mail-compose-insert-files.pl
-				Insert files into a new Compose window
-  filter_conv_new.pl		Convert new-style Sylpheed filters to filtering
+                                Insert files into a new Compose window
+  filter_conv_new.pl            Convert new-style Sylpheed filters to filtering
   filter_conv.pl                Convert old-style Sylpheed filters to filtering
-  fix-date.sh			Replace/Add a message's Date field
+  fix-date.sh                   Replace/Add a message's Date field
   mairix.sh                     A wrapper to mairix, to enable global searches in
-  							mail folders
-  nautilus2claws-mail.sh	Send files from Nautilus
+                                mail folders
+  nautilus2claws-mail.sh        Send files from Nautilus
   OOo2claws-mail.pl             Send documents from OpenOffice.org
+  popfile-link.sh               Open messages in POPFile control center to edit
+                                their status
   sylprint.pl                   Printing engine, explained in README.sylprint
-  textviewer.pl			Display various attachments as text
+  textviewer.pl                 Display various attachments as text
   thunderbird-filters-convertor.pl
-				Convert Thunderbird filtering rules
+                                Convert Thunderbird filtering rules
 
 Extra tools:
   gif2xface.pl                  Convert a 48x48 GIF file to an X-Face header
@@ -559,6 +561,22 @@ Other tools
 
 
   Contact: Paul Mangan <paul@claws-mail.org>
+
+
+* popfile-link.sh
+
+ WHAT IT DOES
+	Open selected messages in POPFile control center to edit their
+	status.	Requires that POPFile is running and that the messages
+	have been processed by it (X-POPFile-Link: header is expected).
+	POPFile control center opens with the web browser set in
+	Claws Mail prefs.
+
+  HOW TO USE IT
+	popfile-link.sh <filename> [<filename>..]
+    
+
+  Contact: wwp <wwp@claws-mail.org>
 
 
 * textviewer.pl

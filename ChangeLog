@@ -1,3 +1,12 @@
+2007-08-14 [wwp]	2.10.0cvs121
+
+	* tools/Makefile.am
+	* tools/README
+	* tools/popfile-link.sh
+		Added a new tool: POPFile helper, to open
+		selected messages in POPFile control center,
+		in order to change the messages' status.
+
 2007-08-14 [ticho]	2.10.0cvs120
 
 	* src/compose.c
