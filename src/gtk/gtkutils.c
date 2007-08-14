@@ -36,6 +36,8 @@
 #include <stdarg.h>
 #include <sys/stat.h>
 
+#include "combobox.h"
+
 #if HAVE_LIBCOMPFACE
 #  include <compface.h>
 #endif
@@ -929,21 +931,22 @@ void label_window_destroy(GtkWidget *window)
 }
 
 GtkWidget *gtkut_account_menu_new(GList			*ac_list,
-				  GCallback		 callback,
-				  gpointer		 data)
+					GCallback		callback,
+				  gpointer		data)
 {
 	GList *cur_ac;
-	GtkWidget *menu;
+	GtkWidget *optmenu;
+	GtkListStore *menu;
+	GtkTreeIter iter;
+	PrefsAccount *account;
+	gchar *name;
 	
 	g_return_val_if_fail(ac_list != NULL, NULL);
 
-	menu = gtk_menu_new();
+	optmenu = gtkut_sc_combobox_create(NULL, FALSE);
+	menu = GTK_LIST_STORE(gtk_combo_box_get_model(GTK_COMBO_BOX(optmenu)));
 
 	for (cur_ac = ac_list; cur_ac != NULL; cur_ac = cur_ac->next) {
-		gchar *name;
-		GtkWidget *menuitem;
-		PrefsAccount *account;
-		
 		account = (PrefsAccount *) cur_ac->data;
 		if (account->name)
 			name = g_strdup_printf("%s: %s <%s>",
@@ -954,13 +957,15 @@ GtkWidget *gtkut_account_menu_new(GList			*ac_list,
 			name = g_strdup_printf("%s: %s",
 					       account->account_name,
 					       account->address);
-		MENUITEM_ADD(menu, menuitem, name, account->account_id);
+		COMBOBOX_ADD_ESCAPED(menu, name, account->account_id);
 		g_free(name);
-		if (callback != NULL)
-			g_signal_connect(G_OBJECT(menuitem), "activate",
-					 callback, data);
 	}
-	return menu;
+	gtk_combo_box_set_active(GTK_COMBO_BOX(optmenu), 0);
+
+	if( callback != NULL )
+		g_signal_connect(G_OBJECT(optmenu), "changed", callback, data);
+
+	return optmenu;
 }
 
 void gtkut_set_widget_bgcolor_rgb(GtkWidget *widget, guint rgbvalue)

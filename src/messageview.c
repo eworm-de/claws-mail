@@ -66,6 +66,7 @@
 #include "uri_opener.h"
 #include "inc.h"
 #include "log.h"
+#include "combobox.h"
 
 static GList *messageview_list = NULL;
 
@@ -587,7 +588,7 @@ static gint disposition_notification_send(MsgInfo *msginfo)
 	if (ok != 0) {
 		AlertValue val;
 		gchar *message;
-		message = g_strdup_printf(
+		message = g_markup_printf_escaped(
 		  _("The notification address to which the return receipt is\n"
 		    "to be sent does not correspond to the return path:\n"
 		    "Notification address: %s\n"
@@ -1401,26 +1402,22 @@ static void partial_recv_unmark_clicked(NoticeView *noticeview,
 
 static void select_account_cb(GtkWidget *w, gpointer data)
 {
-	*(gint*)data = GPOINTER_TO_INT(g_object_get_data(G_OBJECT(w), MENU_VAL_ID));
+	*(gint*)data = combobox_get_active_data(GTK_COMBO_BOX(w));
 }
-	
+
 static PrefsAccount *select_account_from_list(GList *ac_list)
 {
 	GtkWidget *optmenu;
-	GtkWidget *menu;
 	gint account_id;
 
 	g_return_val_if_fail(ac_list != NULL, NULL);
 	g_return_val_if_fail(ac_list->data != NULL, NULL);
 	
-	optmenu = gtk_option_menu_new();
-	menu = gtkut_account_menu_new(ac_list, 
-			G_CALLBACK(select_account_cb), 
+	optmenu = gtkut_account_menu_new(ac_list,
+			G_CALLBACK(select_account_cb),
 			&account_id);
-	if (!menu)
+	if (!optmenu)
 		return NULL;
-	gtk_option_menu_set_menu(GTK_OPTION_MENU(optmenu), menu);
-	gtk_option_menu_set_history(GTK_OPTION_MENU(optmenu), 0);
 	account_id = ((PrefsAccount *) ac_list->data)->account_id;
 	if (alertpanel_with_widget(
 				_("Return Receipt Notification"),

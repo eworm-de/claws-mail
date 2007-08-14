@@ -1,3 +1,11 @@
+2007-08-14 [ticho]	2.10.0cvs123
+
+	* src/messageview.c
+	* src/gtk/gtkutils.c
+		Changed return receipt account selector to GtkComboBox.
+		Fixed a runtime warning where GTK tried to parse
+		"name <email@address" as a Pango markup in an alertpanel label.
+
 2007-08-14 [ticho]	2.10.0cvs122
 
 	* src/prefs_logging.c
