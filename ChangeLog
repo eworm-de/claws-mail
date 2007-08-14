@@ -1,3 +1,8 @@
+2007-08-14 [ticho]	2.10.0cvs122
+
+	* src/prefs_logging.c
+		Changed GtkOptionMenu in logging preferences to GtkComboBox.
+
 2007-08-14 [wwp]	2.10.0cvs121
 
 	* tools/Makefile.am

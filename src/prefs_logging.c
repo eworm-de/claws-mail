@@ -41,6 +41,7 @@
 #include "manage_window.h"
 
 #include "log.h"
+#include "combobox.h"
 
 typedef struct _LoggingPage
 {
@@ -103,8 +104,8 @@ static void prefs_logging_create_widget(PrefsPage *_page, GtkWindow *window,
 	GtkWidget *hbox_filtering_log_level;
 	GtkWidget *label_filtering_log_level;
 	GtkWidget *optmenu_filtering_log_level;
-	GtkWidget *menu;
-	GtkWidget *menuitem;
+	GtkListStore *menu;
+	GtkTreeIter iter;
 	GtkTooltips *filtering_log_level_tooltip;
 	GtkWidget *frame_disc_log;
 	GtkWidget *vbox_disc_log;
@@ -218,15 +219,15 @@ static void prefs_logging_create_widget(PrefsPage *_page, GtkWindow *window,
 	gtk_widget_show (label_filtering_log_level);
 	gtk_box_pack_start(GTK_BOX(hbox_filtering_log_level), label_filtering_log_level, FALSE, FALSE, 0);
 
- 	optmenu_filtering_log_level = gtk_option_menu_new ();
+ 	optmenu_filtering_log_level = gtkut_sc_combobox_create(NULL, FALSE);
  	gtk_widget_show (optmenu_filtering_log_level);
  	
-	menu = gtk_menu_new ();
-	MENUITEM_ADD (menu, menuitem, _("Low"), 0);
-	MENUITEM_ADD (menu, menuitem, _("Medium"), 1);
-	MENUITEM_ADD (menu, menuitem, _("High"), 2);
+	menu = GTK_LIST_STORE(gtk_combo_box_get_model(
+				GTK_COMBO_BOX(optmenu_filtering_log_level)));
+	COMBOBOX_ADD (menu, _("Low"), 0);
+	COMBOBOX_ADD (menu, _("Medium"), 1);
+	COMBOBOX_ADD (menu, _("High"), 2);
 
-	gtk_option_menu_set_menu (GTK_OPTION_MENU (optmenu_filtering_log_level), menu);
 	gtk_box_pack_start(GTK_BOX(hbox_filtering_log_level), optmenu_filtering_log_level, FALSE, FALSE, 0);
 
 	filtering_log_level_tooltip = gtk_tooltips_new();
@@ -341,7 +342,7 @@ static void prefs_logging_create_widget(PrefsPage *_page, GtkWindow *window,
 	gtk_spin_button_set_value(GTK_SPIN_BUTTON(spinbtn_filtering_log_length),
 		prefs_common.filtering_debug_loglength);
 
-	gtk_option_menu_set_history(GTK_OPTION_MENU(optmenu_filtering_log_level),
+	combobox_select_by_data(GTK_COMBO_BOX(optmenu_filtering_log_level),
 			prefs_common.filtering_debug_level);
 
 	prefs_logging->checkbtn_clip_network_log = checkbtn_clip_network_log;
@@ -368,13 +369,9 @@ static void prefs_logging_save(PrefsPage *_page)
 	LoggingPage *page = (LoggingPage *) _page;
 	MainWindow *mainwindow;
 	gboolean filtering_debug_enabled;
-	GtkWidget *menu;
-	GtkWidget *menuitem;
 
-	menu = gtk_option_menu_get_menu(GTK_OPTION_MENU(page->optmenu_filtering_log_level));
-	menuitem = gtk_menu_get_active(GTK_MENU(menu));
-	prefs_common.filtering_debug_level = GPOINTER_TO_INT
-			(g_object_get_data(G_OBJECT(menuitem), MENU_VAL_ID));
+	prefs_common.filtering_debug_level =
+		combobox_get_active_data(GTK_COMBO_BOX(page->optmenu_filtering_log_level));
 
 	prefs_common.cliplog = gtk_toggle_button_get_active(
 		GTK_TOGGLE_BUTTON(page->checkbtn_clip_network_log));
