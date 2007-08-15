@@ -280,7 +280,7 @@ static void imp_ldif_load_fields( LdifFile *ldf ) {
 }
 
 /**
- * Callback function when list iterm selected.
+ * Callback function when list item is selected.
  * \param clist List widget.
  * \param row   Row.
  * \param col   Column.
@@ -581,7 +581,7 @@ static void imp_ldif_cancel( GtkWidget *widget, gpointer data ) {
  */
 static void imp_ldif_file_select_create( AddressFileSelection *afs ) {
 	gchar *file = filesel_select_file_open(_("Select LDIF File"), NULL);
-	
+
 	if (file == NULL)
 		afs->cancelled = TRUE;
 	else {
@@ -705,6 +705,7 @@ static void imp_ldif_page_file( gint pageNum, gchar *pageLbl ) {
 
 	impldif_dlg.entryFile = entryFile;
 	impldif_dlg.entryName = entryName;
+
 }
 
 /**
@@ -802,28 +803,13 @@ static void imp_ldif_page_fields( gint pageNum, gchar *pageLbl ) {
 	/* Second row */
 	++top;
 	label = gtk_label_new(_("Attribute"));
-	gtk_table_attach(GTK_TABLE(table), label, 0, 1, top, (top + 1),
-		GTK_FILL, 0, 0, 0);
-	gtk_misc_set_alignment(GTK_MISC(label), 0, 0.5);
-
-	entryAttrib = gtk_entry_new();
-	gtk_table_attach(GTK_TABLE(table), entryAttrib, 1, 3, top, (top + 1),
-		GTK_EXPAND|GTK_SHRINK|GTK_FILL, 0, 0, 0);
-
-	toolTip = gtk_tooltips_new();
-	gtk_tooltips_set_tip( toolTip, entryAttrib,
-		_( "The LDIF field can be renamed to the User Attribute name." ),
-		NULL );
-
-	/* Next row */
-	++top;
-
 	/*
 	 * Use an event box to attach some help in the form of a tooltip.
 	 * Tried this for the clist but it looked bad.
 	 */
 	eventBox = gtk_event_box_new();
 	gtk_container_add( GTK_CONTAINER(eventBox), label );
+	gtk_misc_set_alignment(GTK_MISC(label), 0, 0.5);
 	gtk_table_attach(GTK_TABLE(table), eventBox, 0, 1, top, (top + 1),
 		GTK_FILL, 0, 0, 0);
 
@@ -840,6 +826,17 @@ static void imp_ldif_page_fields( gint pageNum, gchar *pageLbl ) {
 		"select the field for import."
 		), NULL );
 
+	entryAttrib = gtk_entry_new();
+	gtk_table_attach(GTK_TABLE(table), entryAttrib, 1, 3, top, (top + 1),
+		GTK_EXPAND|GTK_SHRINK|GTK_FILL, 0, 0, 0);
+
+	toolTip = gtk_tooltips_new();
+	gtk_tooltips_set_tip( toolTip, entryAttrib,
+		_( "The LDIF field can be renamed to the User Attribute name." ),
+		NULL );
+
+	/* Next row */
+	++top;
 
 	checkSelect = gtk_check_button_new_with_label( _( "Select for Import" ) );
 	gtk_table_attach(GTK_TABLE(table), checkSelect, 1, 2, top, (top + 1),
