@@ -43,6 +43,7 @@
 #include "quote_fmt.h"
 #include "prefs_template.h"
 #include "alertpanel.h"
+#include "combobox.h"
 
 typedef struct _WritingPage
 {
@@ -102,8 +103,8 @@ static void prefs_compose_writing_create_widget(PrefsPage *_page, GtkWindow *win
 	GtkWidget *hbox_dnd_insert_or_attach;
 	GtkWidget *label_dnd_insert_or_attach;
 	GtkWidget *optmenu_dnd_insert_or_attach;
-	GtkWidget *menu;
-	GtkWidget *menuitem;
+	GtkListStore *menu;
+	GtkTreeIter iter;
 
 	GtkWidget *frame_quote;
 	GtkWidget *hbox1;
@@ -192,15 +193,14 @@ static void prefs_compose_writing_create_widget(PrefsPage *_page, GtkWindow *win
 	gtk_misc_set_alignment(GTK_MISC(label_dnd_insert_or_attach), 0, 0.5);
 	gtk_widget_show (label_dnd_insert_or_attach);
 
-	optmenu_dnd_insert_or_attach = gtk_option_menu_new ();
+	optmenu_dnd_insert_or_attach = gtkut_sc_combobox_create(NULL, FALSE);
 	gtk_widget_show (optmenu_dnd_insert_or_attach);
 
-	menu = gtk_menu_new ();
-	MENUITEM_ADD (menu, menuitem, _("Ask"), COMPOSE_DND_ASK);
-	MENUITEM_ADD (menu, menuitem, _("Insert"), COMPOSE_DND_INSERT);
-	MENUITEM_ADD (menu, menuitem, _("Attach"), COMPOSE_DND_ATTACH);
-
-	gtk_option_menu_set_menu (GTK_OPTION_MENU (optmenu_dnd_insert_or_attach), menu);
+	menu = GTK_LIST_STORE(gtk_combo_box_get_model(
+				GTK_COMBO_BOX(optmenu_dnd_insert_or_attach)));
+	COMBOBOX_ADD (menu, _("Ask"), COMPOSE_DND_ASK);
+	COMBOBOX_ADD (menu, _("Insert"), COMPOSE_DND_INSERT);
+	COMBOBOX_ADD (menu, _("Attach"), COMPOSE_DND_ATTACH);
 
 	hbox_dnd_insert_or_attach = gtk_hbox_new(FALSE, 20);
 	gtk_widget_show(hbox_dnd_insert_or_attach);
@@ -284,7 +284,7 @@ static void prefs_compose_writing_create_widget(PrefsPage *_page, GtkWindow *win
 			prefs_common.reply_with_quote);
 	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(prefs_writing->checkbtn_default_reply_list),
 		prefs_common.default_reply_list);
-	gtk_option_menu_set_history(GTK_OPTION_MENU(optmenu_dnd_insert_or_attach),
+	combobox_select_by_data(GTK_COMBO_BOX(optmenu_dnd_insert_or_attach),
 		prefs_common.compose_dnd_mode);
 	gtk_entry_set_text(GTK_ENTRY(entry_quote_chars), 
 			prefs_common.quote_chars?prefs_common.quote_chars:"");
@@ -294,10 +294,8 @@ static void prefs_compose_writing_create_widget(PrefsPage *_page, GtkWindow *win
 
 static void prefs_compose_writing_save(PrefsPage *_page)
 {
-	GtkWidget *menu;
-	GtkWidget *menuitem;
-
 	WritingPage *page = (WritingPage *) _page;
+
 	prefs_common.auto_exteditor = 
 		gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(page->checkbtn_autoextedit));
 	prefs_common.forward_as_attachment =
@@ -322,10 +320,8 @@ static void prefs_compose_writing_save(PrefsPage *_page)
 	prefs_common.default_reply_list =
 		gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(page->checkbtn_default_reply_list));
 	
-	menu = gtk_option_menu_get_menu(GTK_OPTION_MENU(page->optmenu_dnd_insert_or_attach));
-	menuitem = gtk_menu_get_active(GTK_MENU(menu));
-	prefs_common.compose_dnd_mode = GPOINTER_TO_INT
-		(g_object_get_data(G_OBJECT(menuitem), MENU_VAL_ID));
+	prefs_common.compose_dnd_mode = combobox_get_active_data(
+			GTK_COMBO_BOX(page->optmenu_dnd_insert_or_attach));
 
 	g_free(prefs_common.quote_chars); 
 	prefs_common.quote_chars = gtk_editable_get_chars(

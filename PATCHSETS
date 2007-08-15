@@ -2778,3 +2778,4 @@
 ( cvs diff -u -r 1.25.2.20 -r 1.25.2.21 tools/Makefile.am;  cvs diff -u -r 1.30.2.22 -r 1.30.2.23 tools/README;  diff -u /dev/null tools/popfile-link.sh;  ) > 2.10.0cvs121.patchset
 ( cvs diff -u -r 1.1.2.8 -r 1.1.2.9 src/prefs_logging.c;  ) > 2.10.0cvs122.patchset
 ( cvs diff -u -r 1.94.2.144 -r 1.94.2.145 src/messageview.c;  cvs diff -u -r 1.5.2.64 -r 1.5.2.65 src/gtk/gtkutils.c;  ) > 2.10.0cvs123.patchset
+( cvs diff -u -r 1.1.2.22 -r 1.1.2.23 src/prefs_compose_writing.c;  ) > 2.10.0cvs124.patchset
