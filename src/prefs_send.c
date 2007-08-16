@@ -37,6 +37,7 @@
 
 #include "gtk/gtkutils.h"
 #include "gtk/prefswindow.h"
+#include "gtk/combobox.h"
 
 #include "manage_window.h"
 
@@ -50,64 +51,80 @@ typedef struct _SendPage
 	GtkWidget *checkbtn_confirm_send_queued_messages;
 	GtkWidget *checkbtn_never_send_retrcpt;
 	GtkWidget *checkbtn_senddialog;
-	GtkWidget *optmenu_charset;
-	GtkWidget *optmenu_encoding_method;
+	GtkWidget *combobox_charset;
+	GtkWidget *combobox_encoding_method;
 } SendPage;
 
 static gchar * prefs_common_charset_set_data_from_optmenu(GtkWidget *widget)
 {
-	GtkWidget *menu;
-	GtkWidget *menuitem;
-	gchar *charset;
+	GtkTreeModel *model;
+	GtkTreeIter iter;
+	gchar *data = NULL;
 
-	menu = gtk_option_menu_get_menu(GTK_OPTION_MENU(widget));
-	menuitem = gtk_menu_get_active(GTK_MENU(menu));
-	charset = g_object_get_data(G_OBJECT(menuitem), MENU_VAL_ID);
-	return g_strdup(charset);
+	g_return_val_if_fail(widget != NULL, NULL);
+
+	g_return_val_if_fail(gtk_combo_box_get_active_iter(
+				GTK_COMBO_BOX(widget), &iter), NULL);
+
+	model = gtk_combo_box_get_model(GTK_COMBO_BOX(widget));
+
+	gtk_tree_model_get(model, &iter, COMBOBOX_DATA, &data, -1);
+
+	return data;
+}
+
+typedef struct _combobox_sel_by_data_ctx {
+	GtkComboBox *combobox;
+	gchar *data;
+} ComboboxSelCtx;
+
+static gboolean _select_by_data_func(GtkTreeModel *model, GtkTreePath *path,
+		GtkTreeIter *iter, ComboboxSelCtx *ctx)
+{
+	GtkComboBox *combobox = ctx->combobox;
+	gchar *data = ctx->data;
+	gchar *curdata; 
+
+	gtk_tree_model_get(GTK_TREE_MODEL(model), iter, COMBOBOX_DATA, &curdata, -1);
+	if ( data != NULL && curdata != NULL && !strcmp(data, curdata) ) {
+		gtk_combo_box_set_active_iter(combobox, iter);
+		return TRUE;
+	}
+
+	return FALSE;
 }
 
 static void prefs_common_charset_set_optmenu(GtkWidget *widget, gchar *data)
 {
-	GtkOptionMenu *optmenu = GTK_OPTION_MENU(widget);
-	gint index;
+	GtkComboBox *combobox = GTK_COMBO_BOX(widget);
+	GtkTreeModel *model;
+	ComboboxSelCtx *ctx = NULL;
+	g_return_if_fail(combobox != NULL);
 
-	g_return_if_fail(optmenu != NULL);
-	g_return_if_fail(data != NULL);
+	model = gtk_combo_box_get_model(combobox);
 
-	index = menu_find_option_menu_index(optmenu, data,
-					    (GCompareFunc)strcmp2);
-	if (index >= 0)
-		gtk_option_menu_set_history(optmenu, index);
-	else
-		gtk_option_menu_set_history(optmenu, 0);
+	ctx = g_new(ComboboxSelCtx,
+			sizeof(ComboboxSelCtx));
+	ctx->combobox = combobox;
+	ctx->data = data;
+
+	gtk_tree_model_foreach(model, (GtkTreeModelForeachFunc)_select_by_data_func, ctx);
+	g_free(ctx);
 }
 
-static TransferEncodingMethod prefs_common_encoding_set_data_from_optmenu(GtkWidget *widget)
+static gboolean _combobox_separator_func(GtkTreeModel *model,
+		GtkTreeIter *iter, gpointer data)
 {
-	GtkWidget *menu;
-	GtkWidget *menuitem;
+	gchar *txt = NULL;
 
-	menu = gtk_option_menu_get_menu(GTK_OPTION_MENU(widget));
-	menuitem = gtk_menu_get_active(GTK_MENU(menu));
-	return GPOINTER_TO_INT
-		(g_object_get_data(G_OBJECT(menuitem), MENU_VAL_ID));
+	g_return_val_if_fail(model != NULL, FALSE);
+
+	gtk_tree_model_get(model, iter, COMBOBOX_TEXT, &txt, -1);
+
+	if( txt == NULL )
+		return TRUE;
+	return FALSE;
 }
-
-static void prefs_common_encoding_set_optmenu(GtkWidget *widget, TransferEncodingMethod method)
-{
-	GtkOptionMenu *optmenu = GTK_OPTION_MENU(widget);
-	gint index;
-
-	g_return_if_fail(optmenu != NULL);
-
-	index = menu_find_option_menu_index(optmenu, GINT_TO_POINTER(method),
-					    NULL);
-	if (index >= 0)
-		gtk_option_menu_set_history(optmenu, index);
-	else
-		gtk_option_menu_set_history(optmenu, 0);
-}
-
 
 static void prefs_send_create_widget(PrefsPage *_page, GtkWindow *window, 
 			       	  gpointer data)
@@ -118,11 +135,12 @@ static void prefs_send_create_widget(PrefsPage *_page, GtkWindow *window,
 	GtkWidget *vbox2;
 	GtkWidget *checkbtn_savemsg;
 	GtkWidget *label_outcharset;
-	GtkWidget *optmenu_charset;
-	GtkWidget *optmenu_menu;
-	GtkWidget *menuitem;
+	GtkWidget *combobox_charset;
+	GtkListStore *optmenu;
+	GtkTreeIter iter;
+	GtkCellRenderer *rend;
 	GtkTooltips *charset_tooltip;
-	GtkWidget *optmenu_encoding;
+	GtkWidget *combobox_encoding;
 	GtkWidget *label_encoding;
 	GtkTooltips *encoding_tooltip;
 	GtkWidget *checkbtn_senddialog;
@@ -166,21 +184,37 @@ static void prefs_send_create_widget(PrefsPage *_page, GtkWindow *window,
 
 	charset_tooltip = gtk_tooltips_new();
 
-	optmenu_charset = gtk_option_menu_new ();
-	gtk_widget_show (optmenu_charset);
-	gtk_tooltips_set_tip(GTK_TOOLTIPS(charset_tooltip), optmenu_charset,
+	optmenu = gtk_list_store_new(2,
+			G_TYPE_STRING,		/* Menu label */
+			G_TYPE_STRING);		/* Actual charset data string */
+
+	combobox_charset = gtk_combo_box_new_with_model(
+			GTK_TREE_MODEL(optmenu));
+	rend = gtk_cell_renderer_text_new();
+	gtk_cell_layout_pack_start(GTK_CELL_LAYOUT(combobox_charset), rend, TRUE);
+	gtk_cell_layout_set_attributes(GTK_CELL_LAYOUT(combobox_charset), rend,
+			"text", COMBOBOX_TEXT,
+			NULL);
+
+	gtk_combo_box_set_row_separator_func(GTK_COMBO_BOX(combobox_charset),
+			(GtkTreeViewRowSeparatorFunc)_combobox_separator_func, NULL, NULL);
+
+	gtk_widget_show (combobox_charset);
+	gtk_tooltips_set_tip(GTK_TOOLTIPS(charset_tooltip), combobox_charset,
 			     _("If 'Automatic' is selected, the optimal encoding"
 		   	       " for the current locale will be used"),
 			     NULL);
-	gtk_table_attach(GTK_TABLE(table), optmenu_charset, 1, 2, 1, 2,
+	gtk_table_attach(GTK_TABLE(table), combobox_charset, 1, 2, 1, 2,
 			(GtkAttachOptions) (GTK_FILL),
 			(GtkAttachOptions) (0), 0, 0);
 
-	optmenu_menu = gtk_menu_new ();
-
 #define SET_MENUITEM(str, data) \
 { \
-	MENUITEM_ADD(optmenu_menu, menuitem, str, data); \
+	gtk_list_store_append(optmenu, &iter); \
+	gtk_list_store_set(optmenu, &iter, \
+			COMBOBOX_TEXT, str, \
+			COMBOBOX_DATA, data, \
+			-1); \
 }
 
 	SET_MENUITEM(_("Automatic (Recommended)"),	 CS_AUTO);
@@ -230,8 +264,7 @@ static void prefs_send_create_widget(PrefsPage *_page, GtkWindow *window,
 	SET_MENUITEM(_("Thai (TIS-620)"),		 CS_TIS_620);
 	SET_MENUITEM(_("Thai (Windows-874)"),		 CS_WINDOWS_874);
 
-	gtk_option_menu_set_menu (GTK_OPTION_MENU (optmenu_charset),
-				  optmenu_menu);
+#undef SET_MENUITEM
 
 	label_encoding = gtk_label_new (_("Transfer encoding"));
 	gtk_widget_show (label_encoding);
@@ -243,25 +276,23 @@ static void prefs_send_create_widget(PrefsPage *_page, GtkWindow *window,
 
 	encoding_tooltip = gtk_tooltips_new();
 
-	optmenu_encoding = gtk_option_menu_new ();
-	gtk_widget_show (optmenu_encoding);
-	gtk_tooltips_set_tip(GTK_TOOLTIPS(encoding_tooltip), optmenu_encoding,
+	combobox_encoding = gtkut_sc_combobox_create(NULL, FALSE);
+	gtk_widget_show (combobox_encoding);
+	gtk_tooltips_set_tip(GTK_TOOLTIPS(encoding_tooltip), combobox_encoding,
 			     _("Specify Content-Transfer-Encoding used when"
 		   	       " message body contains non-ASCII characters"),
 			     NULL);
-	gtk_table_attach(GTK_TABLE(table), optmenu_encoding, 1, 2, 2, 3,
+	gtk_table_attach(GTK_TABLE(table), combobox_encoding, 1, 2, 2, 3,
 			(GtkAttachOptions) (GTK_FILL),
 			(GtkAttachOptions) (0), 0, 0);
 
-	optmenu_menu = gtk_menu_new ();
+	optmenu = GTK_LIST_STORE(gtk_combo_box_get_model(
+				GTK_COMBO_BOX(combobox_encoding)));
 
-	SET_MENUITEM(_("Automatic"),	 CTE_AUTO);
-	SET_MENUITEM("base64",		 CTE_BASE64);
-	SET_MENUITEM("quoted-printable", CTE_QUOTED_PRINTABLE);
-	SET_MENUITEM("8bit",		 CTE_8BIT);
-
-	gtk_option_menu_set_menu (GTK_OPTION_MENU (optmenu_encoding),
-				  optmenu_menu);
+	COMBOBOX_ADD(optmenu, _("Automatic"),	 CTE_AUTO);
+	COMBOBOX_ADD(optmenu, "base64",		 CTE_BASE64);
+	COMBOBOX_ADD(optmenu, "quoted-printable", CTE_QUOTED_PRINTABLE);
+	COMBOBOX_ADD(optmenu, "8bit",		 CTE_8BIT);
 
 	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(checkbtn_savemsg),
 		prefs_common.savemsg);
@@ -271,9 +302,9 @@ static void prefs_send_create_widget(PrefsPage *_page, GtkWindow *window,
 		prefs_common.never_send_retrcpt);
 	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(checkbtn_senddialog),
 		prefs_common.send_dialog_mode);
-	prefs_common_charset_set_optmenu(optmenu_charset, 
+	prefs_common_charset_set_optmenu(combobox_charset, 
 		prefs_common.outgoing_charset);
-	prefs_common_encoding_set_optmenu(optmenu_encoding,
+	combobox_select_by_data(GTK_COMBO_BOX(combobox_encoding),
 		prefs_common.encoding_method);
 	
 	prefs_send->window			= GTK_WIDGET(window);
@@ -282,8 +313,8 @@ static void prefs_send_create_widget(PrefsPage *_page, GtkWindow *window,
 	prefs_send->checkbtn_confirm_send_queued_messages = checkbtn_confirm_send_queued_messages;
  	prefs_send->checkbtn_never_send_retrcpt = checkbtn_never_send_retrcpt;
 	prefs_send->checkbtn_senddialog = checkbtn_senddialog;
-	prefs_send->optmenu_charset = optmenu_charset;
-	prefs_send->optmenu_encoding_method = optmenu_encoding;
+	prefs_send->combobox_charset = combobox_charset;
+	prefs_send->combobox_encoding_method = combobox_encoding;
 
 	prefs_send->page.widget = vbox1;
 }
@@ -303,9 +334,9 @@ static void prefs_send_save(PrefsPage *_page)
 
 	g_free(prefs_common.outgoing_charset);
 	prefs_common.outgoing_charset = prefs_common_charset_set_data_from_optmenu(
-		page->optmenu_charset);
-	prefs_common.encoding_method = prefs_common_encoding_set_data_from_optmenu(
-		page->optmenu_encoding_method);
+		page->combobox_charset);
+	prefs_common.encoding_method =
+		combobox_get_active_data(GTK_COMBO_BOX(page->combobox_encoding_method));
 }
 
 static void prefs_send_destroy_widget(PrefsPage *_page)

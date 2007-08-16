@@ -35,7 +35,7 @@ enum {
 { 								 \
 	gtk_list_store_append(menu, &iter); \
 	gtk_list_store_set(menu, &iter, \
-			COMBOBOX_TEXT, (label ? label : ""), \
+			COMBOBOX_TEXT, label, \
 			COMBOBOX_DATA, data, \
 			COMBOBOX_SENS, TRUE, \
 			-1); \

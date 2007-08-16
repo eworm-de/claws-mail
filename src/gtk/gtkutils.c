@@ -1384,6 +1384,20 @@ GtkWidget *gtkut_get_link_btn(GtkWidget *window, const gchar *url, const gchar *
 	return btn;
 }
 
+static gboolean _combobox_separator_func(GtkTreeModel *model,
+		GtkTreeIter *iter, gpointer data)
+{
+	gchar *txt = NULL;
+
+	g_return_val_if_fail(model != NULL, FALSE);
+
+	gtk_tree_model_get(model, iter, COMBOBOX_TEXT, &txt, -1);
+
+	if( txt == NULL )
+		return TRUE;
+	return FALSE;
+}
+
 GtkWidget *gtkut_sc_combobox_create(GtkWidget *eventbox, gboolean focus_on_click)
 {
 	GtkWidget *combobox;
@@ -1406,6 +1420,10 @@ GtkWidget *gtkut_sc_combobox_create(GtkWidget *eventbox, gboolean focus_on_click
 #if GTK_CHECK_VERSION(2,6,0)
 	gtk_combo_box_set_focus_on_click(GTK_COMBO_BOX(combobox), focus_on_click);
 #endif
+
+	gtk_combo_box_set_row_separator_func(GTK_COMBO_BOX(combobox),
+			(GtkTreeViewRowSeparatorFunc)_combobox_separator_func, NULL, NULL);
+
 	return combobox;
 }
 
