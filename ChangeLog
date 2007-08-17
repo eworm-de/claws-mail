@@ -1,3 +1,9 @@
+2007-08-17 [colin]	2.10.0cvs128
+
+	* src/folder.c
+		Set batching after getting flags - maybe fixes
+		bug 1292, 'CM crashes on writing mail'
+
 2007-08-16 [ticho]	2.10.0cvs127
 
 	* src/prefs_send.c
