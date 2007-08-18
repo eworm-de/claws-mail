@@ -115,7 +115,7 @@ struct _PrefsCommon
 	/* Send */
 	gboolean savemsg;
 	gboolean confirm_send_queued_messages;
-	gboolean send_dialog_mode;
+	gboolean send_dialog_invisible;
 	gint sendwin_width;
 	gint sendwin_height;
 	gchar *outgoing_charset;

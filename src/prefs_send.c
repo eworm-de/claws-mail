@@ -301,7 +301,7 @@ static void prefs_send_create_widget(PrefsPage *_page, GtkWindow *window,
 	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(checkbtn_never_send_retrcpt),
 		prefs_common.never_send_retrcpt);
 	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(checkbtn_senddialog),
-		prefs_common.send_dialog_mode);
+		!prefs_common.send_dialog_invisible);
 	prefs_common_charset_set_optmenu(combobox_charset, 
 		prefs_common.outgoing_charset);
 	combobox_select_by_data(GTK_COMBO_BOX(combobox_encoding),
@@ -329,7 +329,7 @@ static void prefs_send_save(PrefsPage *_page)
 		GTK_TOGGLE_BUTTON(page->checkbtn_confirm_send_queued_messages));
 	prefs_common.never_send_retrcpt = gtk_toggle_button_get_active(
 		GTK_TOGGLE_BUTTON(page->checkbtn_never_send_retrcpt));
-	prefs_common.send_dialog_mode = gtk_toggle_button_get_active(
+	prefs_common.send_dialog_invisible = !gtk_toggle_button_get_active(
 		GTK_TOGGLE_BUTTON(page->checkbtn_senddialog));
 
 	g_free(prefs_common.outgoing_charset);

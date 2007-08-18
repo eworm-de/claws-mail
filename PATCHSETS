@@ -2784,3 +2784,4 @@
 ( cvs diff -u -r 1.1.2.17 -r 1.1.2.18 src/prefs_send.c;  cvs diff -u -r 1.1.2.8 -r 1.1.2.9 src/gtk/combobox.h;  cvs diff -u -r 1.5.2.65 -r 1.5.2.66 src/gtk/gtkutils.c;  ) > 2.10.0cvs127.patchset
 ( cvs diff -u -r 1.213.2.155 -r 1.213.2.156 src/folder.c;  ) > 2.10.0cvs128.patchset
 ( cvs diff -u -r 1.395.2.319 -r 1.395.2.320 src/summaryview.c;  ) > 2.10.0cvs129.patchset
+( cvs diff -u -r 1.382.2.402 -r 1.382.2.403 src/compose.c;  cvs diff -u -r 1.204.2.146 -r 1.204.2.147 src/prefs_common.c;  cvs diff -u -r 1.103.2.92 -r 1.103.2.93 src/prefs_common.h;  cvs diff -u -r 1.1.2.18 -r 1.1.2.19 src/prefs_send.c;  cvs diff -u -r 1.17.2.40 -r 1.17.2.41 src/send_message.c;  ) > 2.10.0cvs130.patchset

@@ -1,3 +1,15 @@
+2007-08-18 [colin]	2.10.0cvs130
+
+	* src/compose.c
+	* src/prefs_common.c
+	* src/prefs_common.h
+	* src/prefs_send.c
+	* src/send_message.c
+		Revert 'send_dialog_mode' meaning to 
+		'send_dialog_invisible', so that the 
+		new checkbox doesn't change the 
+		existing behaviour.
+
 2007-08-18 [paul]	2.10.0cvs129
 
 	* src/summaryview.c

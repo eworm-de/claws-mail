@@ -187,7 +187,7 @@ static PrefParam param[] = {
 	 NULL, NULL, NULL},
 	{"confirm_send_queued_messages", "FALSE", &prefs_common.confirm_send_queued_messages,
 	 P_BOOL, NULL, NULL, NULL},
-	{"send_dialog_mode", "0", &prefs_common.send_dialog_mode, P_BOOL,
+	{"send_dialog_mode", "0", &prefs_common.send_dialog_invisible, P_BOOL,
 	 NULL, NULL, NULL},
 	{"sendwin_width", "460", &prefs_common.sendwin_width, P_INT,
 	 NULL, NULL, NULL},

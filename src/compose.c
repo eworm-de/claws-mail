@@ -4508,7 +4508,7 @@ gint compose_send(Compose *compose)
 	MainWindow *mainwin = mainwindow_get_mainwindow();
 	gboolean queued_removed = FALSE;
 
-	if (!prefs_common.send_dialog_mode
+	if (prefs_common.send_dialog_invisible
 			|| compose->batch == TRUE)
 		discard_window = TRUE;
 
