@@ -72,7 +72,7 @@ static void edit_person_status_show(gchar *msg) {
 }
 
 static void edit_person_attrib_clear(gpointer data) {
-	gtk_option_menu_set_history(GTK_OPTION_MENU(personEditDlg->entry_atname), 0);
+	gtk_combo_box_set_active(GTK_COMBO_BOX(personEditDlg->entry_atname), 0);
 	gtk_entry_set_text(GTK_ENTRY(personEditDlg->entry_atvalue), "");
 }
 
@@ -107,11 +107,12 @@ static gint edit_person_attrib_compare_func(GtkCList *clist, gconstpointer ptr1,
 	return g_utf8_collate(name1, name2);
 }
 
-static void edit_person_option_menu_changed(GtkOptionMenu *opt_menu, gpointer data) {
+static void edit_person_combo_box_changed(GtkComboBox *opt_menu, gpointer data)
+{
 	GtkCList *clist = GTK_CLIST(data);
 	gint row = personEditDlg->rowIndAttrib;
 	UserAttribute *attrib = gtk_clist_get_row_data(clist, row);
-	gint option = gtk_option_menu_get_history(opt_menu);
+	gint option = gtk_combo_box_get_active(opt_menu);
 	const gchar *str = attrib ? attrib->name:"";
 
 	g_return_if_fail (option < ATTRIBUTE_SIZE);
@@ -130,10 +131,10 @@ static void edit_person_attrib_list_selected(GtkCList *clist, gint row, gint col
 	UserAttribute *attrib = gtk_clist_get_row_data(clist, row);
 	if (attrib && !personEditDlg->read_only) {
 		int index = get_attribute_index(attrib->name);
-		/*fprintf(stderr, "Row: %d ->  %s = %s\n", index, attrib->name, attrib->value);*/
 		if (index == -1)
 			index = 0;
-		gtk_option_menu_set_history(GTK_OPTION_MENU(personEditDlg->entry_atname), index);
+
+		gtk_combo_box_set_active(GTK_COMBO_BOX(personEditDlg->entry_atname), index);
 		gtk_entry_set_text( GTK_ENTRY(personEditDlg->entry_atvalue), attrib->value );
 		gtk_widget_set_sensitive(personEditDlg->attrib_del, TRUE);
 	}
@@ -176,7 +177,7 @@ static UserAttribute *edit_person_attrib_edit(gboolean *error, UserAttribute *at
 	gint index;
 
 	*error = TRUE;
-	index = gtk_option_menu_get_history(GTK_OPTION_MENU(personEditDlg->entry_atname));
+	index = gtk_combo_box_get_active(GTK_COMBO_BOX(personEditDlg->entry_atname));
 	sName_ = (gchar *) ATTRIBUTE[index];
 	sValue_ = gtk_editable_get_chars(GTK_EDITABLE(personEditDlg->entry_atvalue), 0, -1);
 	sName = mgu_email_check_empty(sName_);
@@ -247,7 +248,7 @@ static void edit_person_entry_att_changed (GtkWidget *entry, gpointer data)
 	if (personEditDlg->read_only)
 		return;
 
-	index = gtk_option_menu_get_history(GTK_OPTION_MENU(personEditDlg->entry_atname));
+	index = gtk_combo_box_get_active(GTK_COMBO_BOX(personEditDlg->entry_atname));
 	sName = ATTRIBUTE[index];
 	if (list_find_attribute(sName)) {
 		gtk_widget_set_sensitive(personEditDlg->attrib_add,FALSE);
@@ -275,9 +276,7 @@ static gboolean edit_person_entry_att_pressed(GtkWidget *widget, GdkEventKey *ev
 }
 
 void addressbook_edit_person_page_attrib_ldap(PersonEditDlg *dialog, gint pageNum, gchar *pageLbl) {
-	GtkWidget *option_menu;
-	GtkMenu *names_menu;
-
+	GtkWidget *combo_box;
 	GtkWidget *vbox;
 	GtkWidget *hbox;
 	GtkWidget *vboxl;
@@ -351,17 +350,16 @@ void addressbook_edit_person_page_attrib_ldap(PersonEditDlg *dialog, gint pageNu
 	gtk_table_attach(GTK_TABLE(table), label, 0, 1, top, (top + 1), GTK_FILL, 0, 0, 0);
 	gtk_misc_set_alignment(GTK_MISC(label), 0, 0.5);
 
-	names_menu = g_object_new(GTK_TYPE_MENU, NULL);
 	gchar **attribute = (gchar **) ATTRIBUTE;
 
-	while (*attribute) {
-		gtk_menu_shell_append(GTK_MENU_SHELL(names_menu),
-			gtk_menu_item_new_with_label(*attribute++));
-	}
-	option_menu = GTK_WIDGET(g_object_new(GTK_TYPE_OPTION_MENU, "menu", names_menu, NULL));
-	gtk_option_menu_set_history(GTK_OPTION_MENU(option_menu), 0);
+	combo_box = gtk_combo_box_new_text();
 
-	gtk_table_attach(GTK_TABLE(table), option_menu, 1, 2, top, (top + 1), GTK_EXPAND|GTK_SHRINK|GTK_FILL, 0, 0, 0);
+	while (*attribute) {
+		gtk_combo_box_append_text(GTK_COMBO_BOX(combo_box), *attribute++);
+	}
+	gtk_combo_box_set_active(GTK_COMBO_BOX(combo_box), 0);
+
+	gtk_table_attach(GTK_TABLE(table), combo_box, 1, 2, top, (top + 1), GTK_EXPAND|GTK_SHRINK|GTK_FILL, 0, 0, 0);
 
 	/* Next row */
 	++top;
@@ -407,15 +405,15 @@ void addressbook_edit_person_page_attrib_ldap(PersonEditDlg *dialog, gint pageNu
 			  G_CALLBACK(edit_person_attrib_modify), NULL);
 	g_signal_connect(G_OBJECT(buttonAdd), "clicked",
 			  G_CALLBACK(edit_person_attrib_add), NULL);
-	g_signal_connect(G_OBJECT(option_menu), "changed",
+	g_signal_connect(G_OBJECT(combo_box), "changed",
 			 G_CALLBACK(edit_person_entry_att_changed), NULL);
 	g_signal_connect(G_OBJECT(entry_value), "key_press_event",
 			 G_CALLBACK(edit_person_entry_att_pressed), NULL);
-	g_signal_connect(G_OBJECT(option_menu), "changed",
-			 G_CALLBACK(edit_person_option_menu_changed), clist);
+	g_signal_connect(G_OBJECT(combo_box), "changed",
+			 G_CALLBACK(edit_person_combo_box_changed), clist);
 
 	personEditDlg->clist_attrib  = clist;
-	personEditDlg->entry_atname  = option_menu;
+	personEditDlg->entry_atname  = combo_box;
 	personEditDlg->entry_atvalue = entry_value;
 	personEditDlg->attrib_add = buttonAdd;
 	personEditDlg->attrib_del = buttonDel;
