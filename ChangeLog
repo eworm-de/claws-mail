@@ -1,3 +1,8 @@
+2007-08-18 [paul]	2.10.0cvs129
+
+	* src/summaryview.c
+		add missing menu update
+
 2007-08-17 [colin]	2.10.0cvs128
 
 	* src/folder.c

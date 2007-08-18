@@ -2493,6 +2493,7 @@ static void summary_status_show(SummaryView *summaryview)
 		g_free(str);
 	}
 
+	summary_set_menu_sensitive(summaryview);
 	toolbar_main_set_sensitive(summaryview->mainwin);
 }
 
