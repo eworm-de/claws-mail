@@ -1,3 +1,8 @@
+2007-08-19 [colin]	2.10.0cvs133
+
+	* src/etpan/imap-thread.c
+		Make all fetch logs less verbose
+
 2007-08-19 [paul]	2.10.0cvs132
 
 	* src/foldersel.c

@@ -125,7 +125,7 @@ static void imap_logger_fetch(int direction, const char * str, size_t size)
 	gchar **lines;
 	int i = 0;
 
-	if (size > 8192) {
+	if (size > 128 && !direction) {
 		log_print(LOG_PROTOCOL, "IMAP4%c [FETCH data - %zd bytes]\n", direction?'>':'<', size);
 		return;
 	}
@@ -1672,9 +1672,12 @@ static int imap_get_messages_list(mailimap * imap,
 		goto free_fetch_type;
 	}
 
+	mailstream_logger = imap_logger_fetch;
+	
 	r = mailimap_uid_fetch(imap, set,
 			       fetch_type, &fetch_result);
 
+	mailstream_logger = imap_logger_cmd;
 	mailimap_fetch_type_free(fetch_type);
 	mailimap_set_free(set);
 
@@ -1904,9 +1907,12 @@ static int imap_get_messages_flags_list(mailimap * imap,
 		goto free_fetch_type;
 	}
 
+	mailstream_logger = imap_logger_fetch;
+	
 	r = mailimap_uid_fetch(imap, set,
 			       fetch_type, &fetch_result);
 
+	mailstream_logger = imap_logger_cmd;
 	mailimap_fetch_type_free(fetch_type);
 	mailimap_set_free(set);
 
@@ -2148,8 +2154,11 @@ static int imap_fetch_header(mailimap * imap,
     goto free_fetch_att;
   }
 
+  mailstream_logger = imap_logger_fetch;
+  
   r = mailimap_uid_fetch(imap, set, fetch_type, &fetch_result);
   
+  mailstream_logger = imap_logger_cmd;
   mailimap_fetch_type_free(fetch_type);
   mailimap_set_free(set);
 
@@ -2549,8 +2558,11 @@ imap_get_envelopes_list(mailimap * imap, struct mailimap_set * set,
 	else
 		r = imap_add_header_fetch_att(fetch_type);
 	
+	mailstream_logger = imap_logger_fetch;
+	
 	r = mailimap_uid_fetch(imap, set, fetch_type, &fetch_result);
 	
+	mailstream_logger = imap_logger_cmd;
 	switch (r) {
 	case MAILIMAP_NO_ERROR:
 		break;
