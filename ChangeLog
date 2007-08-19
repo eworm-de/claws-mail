@@ -1,3 +1,11 @@
+2007-08-19 [paul]	2.10.0cvs132
+
+	* src/foldersel.c
+	* src/folderview.c
+	* src/summaryview.c
+		fix bug 1286, 'Can't move a folder into a "Folders
+		Only" folder'
+
 2007-08-18 [ticho]	2.10.0cvs131
 
 	* src/editaddress_other_attributes_ldap.c

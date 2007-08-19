@@ -1925,13 +1925,14 @@ static void folderview_set_sens_and_popup_menu(FolderView *folderview, gint row,
 #define SET_SENS(name, sens) \
 	menu_set_sensitive(fpopup_factory, name, sens)
 
+	SET_SENS("/Download messages", !item->no_select);
 	SET_SENS("/Mark all read", item->unread_msgs >= 1);
 	SET_SENS("/Search folder...", item->total_msgs >= 1 && 
 		 folderview->selected == folderview->opened);
 	SET_SENS("/Run processing rules", item->prefs->processing &&
 		 item->total_msgs >= 1);
-	SET_SENS("/Properties...", TRUE);
-	SET_SENS("/Processing...", item->node->parent != NULL);
+	SET_SENS("/Properties...", !item->no_select);
+	SET_SENS("/Processing...", item->node->parent != NULL && !item->no_select);
 	if (item == folder->trash || item == special_trash
 	    || folder_has_parent_of_type(item, F_TRASH)) {
 		GSList *msglist = folder_item_get_msg_list(item);
@@ -2158,7 +2159,7 @@ static void folderview_selected(GtkCTree *ctree, GtkCTreeNode *row,
 		return;
 	}
 	item = gtk_ctree_node_get_row_data(ctree, row);
-	if (!item || item->no_select) {
+	if (!item) {
 		END_TIMING();
 		folderview->open_folder = FALSE;
 		return;
@@ -2203,7 +2204,7 @@ static void folderview_selected(GtkCTree *ctree, GtkCTreeNode *row,
 	main_window_cursor_wait(folderview->mainwin);
 
 	res = folder_item_open(item);
-	if (res == -1) {
+	if (res == -1 && item->no_select == FALSE) {
 		main_window_cursor_normal(folderview->mainwin);
 		STATUSBAR_POP(folderview->mainwin);
 
@@ -2213,7 +2214,7 @@ static void folderview_selected(GtkCTree *ctree, GtkCTreeNode *row,
 		can_select = TRUE;
 		END_TIMING();
 		return;
-        } else if (res == -2) {
+        } else if (res == -2 && item->no_select == FALSE) {
 		PostponedSelectData *data = g_new0(PostponedSelectData, 1);
 		data->ctree = ctree;
 		data->row = row;
@@ -2998,6 +2999,11 @@ static void folderview_drag_received_cb(GtkWidget        *widget,
 			item = gtk_ctree_node_get_row_data(GTK_CTREE(widget), node);
 			src_item = folderview->summaryview->folder_item;
 
+			if (item->no_select) {
+				alertpanel_error(_("The destination folder can only be used to "
+						   "store subfolders."));
+				return;
+			}
 			/* re-check (due to acceptable possibly set for folder moves */
 			if (!(item && item->folder && item->path && !item->no_select && 
 			      src_item && src_item != item && FOLDER_CLASS(item->folder)->copy_msg != NULL)) {
@@ -3044,8 +3050,7 @@ static void folderview_drag_received_cb(GtkWidget        *widget,
 				!folder_has_parent_of_type(src_item, F_DRAFT) &&
 				!folder_has_parent_of_type(src_item, F_QUEUE) &&
 				!folder_has_parent_of_type(src_item, F_TRASH);
-			if (!item || item->no_select || !src_item 
-			||  !folder_is_normal) {
+			if (!item || !src_item || !folder_is_normal) {
 				gtk_drag_finish(drag_context, FALSE, FALSE, time);			
 				return;
 			}

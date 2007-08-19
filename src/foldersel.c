@@ -198,7 +198,7 @@ FolderItem *foldersel_folder_sel(Folder *cur_folder, FolderSelectionType type,
 	gtk_tree_store_clear(tree_store);
 
 	if (!cancelled &&
-	    selected_item && selected_item->path && !selected_item->no_select) {
+	    selected_item && selected_item->path) {
 		folder_item = selected_item;
 		return folder_item;
 	} else
@@ -494,7 +494,7 @@ static gboolean foldersel_selected(GtkTreeSelection *selection,
 			   FOLDERSEL_FOLDERITEM, &item, -1);
 
 	selected_item = item;
-	if (selected_item && selected_item->path && !selected_item->no_select) {
+	if (selected_item && selected_item->path) {
 		gchar *id;
 		id = folder_item_get_identifier(selected_item);
 		gtk_entry_set_text(GTK_ENTRY(entry), id);

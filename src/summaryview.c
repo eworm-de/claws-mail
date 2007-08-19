@@ -4177,6 +4177,12 @@ void summary_move_selected_to(SummaryView *summaryview, FolderItem *to_folder)
 		return;
 	}
 
+	if (to_folder->no_select) {
+		alertpanel_error(_("The destination folder can only be used to "
+				   "store subfolders."));
+		return;
+	}
+
 	START_LONG_OPERATION(summaryview, FALSE); 
 
 	for (cur = GTK_CLIST(summaryview->ctree)->selection;
@@ -4265,6 +4271,12 @@ void summary_copy_selected_to(SummaryView *summaryview, FolderItem *to_folder)
 	if (summaryview->folder_item == to_folder) {
 		alertpanel_error
 			(_("Destination to copy is same as current folder."));
+		return;
+	}
+
+	if (to_folder->no_select) {
+		alertpanel_error(_("The destination folder can only be used to "
+				   "store subfolders."));
 		return;
 	}
 
