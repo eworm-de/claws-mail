@@ -117,6 +117,7 @@ struct _IMAPSession
 	Folder * folder;
 	gboolean busy;
 	gboolean cancelled;
+	gboolean sens_update_block;
 };
 
 struct _IMAPNameSpace
@@ -697,15 +698,27 @@ static IMAPSession *imap_reconnect_if_possible(Folder *folder, IMAPSession *sess
 	return session;
 }
 
+static void imap_refresh_sensitivity (IMAPSession *session)
+{
+        MainWindow *mainwin;
+
+	if (session->sens_update_block)
+		return;
+	mainwin = mainwindow_get_mainwindow();
+	if (mainwin) {
+		toolbar_main_set_sensitive(mainwin);
+		main_window_set_menu_sensitive(mainwin);
+	}
+}
+
 static void lock_session(IMAPSession *session)
 {
 	if (session) {
-                MainWindow *mainwin;
-		
 		debug_print("locking session %p (%d)\n", session, session->busy);
 		if (session->busy)
 			debug_print("         SESSION WAS LOCKED !!      \n");
                 session->busy = TRUE;
+		imap_refresh_sensitivity(session);
 	} else {
 		debug_print("can't lock null session\n");
 	}
@@ -714,10 +727,10 @@ static void lock_session(IMAPSession *session)
 static void unlock_session(IMAPSession *session)
 {
 	if (session) {
-                MainWindow *mainwin;
 		
 		debug_print("unlocking session %p\n", session);
 		session->busy = FALSE;
+		imap_refresh_sensitivity(session);
 	} else {
 		debug_print("can't unlock null session\n");
 	}
@@ -3926,8 +3939,7 @@ void imap_change_flags(Folder *folder, FolderItem *item, MsgInfo *msginfo, MsgPe
 				g_hash_table_insert(IMAP_FOLDER_ITEM(item)->flags_set_table, 
 					GINT_TO_POINTER(flags_set), ht_data);
 			}
-			if (!g_slist_find(ht_data->msglist, GINT_TO_POINTER(msginfo->msgnum)))
-				ht_data->msglist = g_slist_prepend(ht_data->msglist, GINT_TO_POINTER(msginfo->msgnum));
+			ht_data->msglist = g_slist_prepend(ht_data->msglist, GINT_TO_POINTER(msginfo->msgnum));
 		} 
 		if (flags_unset) {
 			ht_data = g_hash_table_lookup(IMAP_FOLDER_ITEM(item)->flags_unset_table, 
@@ -3939,8 +3951,7 @@ void imap_change_flags(Folder *folder, FolderItem *item, MsgInfo *msginfo, MsgPe
 				g_hash_table_insert(IMAP_FOLDER_ITEM(item)->flags_unset_table, 
 					GINT_TO_POINTER(flags_unset), ht_data);
 			}
-			if (!g_slist_find(ht_data->msglist, GINT_TO_POINTER(msginfo->msgnum)))
-				ht_data->msglist = g_slist_prepend(ht_data->msglist, 
+			ht_data->msglist = g_slist_prepend(ht_data->msglist, 
 					GINT_TO_POINTER(msginfo->msgnum));		
 		}
 	} else {
@@ -4352,11 +4363,13 @@ static void process_hashtable(IMAPFolderItem *item)
 		g_hash_table_destroy(item->flags_unset_table);
 		item->flags_unset_table = NULL;
 	}
+	
 }
 
 static void imap_set_batch (Folder *folder, FolderItem *_item, gboolean batch)
 {
 	IMAPFolderItem *item = (IMAPFolderItem *)_item;
+	IMAPSession *session;
 
 	g_return_if_fail(item != NULL);
 	
@@ -4372,11 +4385,23 @@ static void imap_set_batch (Folder *folder, FolderItem *_item, gboolean batch)
 		if (!item->flags_unset_table) {
 			item->flags_unset_table = g_hash_table_new(NULL, g_direct_equal);
 		}
+		session = imap_session_get(folder);
+		if (session) {
+			imap_refresh_sensitivity(session);
+			session->sens_update_block = TRUE;
+			unlock_session(session);
+		}
 	} else {
 		debug_print("IMAP switching away from batch mode\n");
 		/* process stuff */
 		process_hashtable(item);
 		item->batching = FALSE;
+		session = imap_session_get(folder);
+		if (session) {
+			unlock_session(session);
+			session->sens_update_block = FALSE;
+			imap_refresh_sensitivity(session);
+		}
 	}
 }
 
