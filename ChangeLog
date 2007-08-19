@@ -1,3 +1,8 @@
+2007-08-19 [colin]	2.10.0cvs134
+
+	* src/imap.c
+		Remove useless menu updates on session lock/unlock
+
 2007-08-19 [colin]	2.10.0cvs133
 
 	* src/etpan/imap-thread.c

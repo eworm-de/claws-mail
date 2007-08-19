@@ -706,11 +706,6 @@ static void lock_session(IMAPSession *session)
 		if (session->busy)
 			debug_print("         SESSION WAS LOCKED !!      \n");
                 session->busy = TRUE;
-		mainwin = mainwindow_get_mainwindow();
-		if (mainwin) {
-			toolbar_main_set_sensitive(mainwin);
-			main_window_set_menu_sensitive(mainwin);
-		}
 	} else {
 		debug_print("can't lock null session\n");
 	}
@@ -723,11 +718,6 @@ static void unlock_session(IMAPSession *session)
 		
 		debug_print("unlocking session %p\n", session);
 		session->busy = FALSE;
-		mainwin = mainwindow_get_mainwindow();
-		if (mainwin) {
-			toolbar_main_set_sensitive(mainwin);
-			main_window_set_menu_sensitive(mainwin);
-                }
 	} else {
 		debug_print("can't unlock null session\n");
 	}
