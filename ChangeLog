@@ -1,3 +1,8 @@
+2007-08-20 [colin]	2.10.0cvs137
+
+	* src/ldapctrl.c
+		Fix a leak
+
 2007-08-20 [paul]	2.10.0cvs136
 
 	* src/browseldap.c

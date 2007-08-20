@@ -526,7 +526,6 @@ gchar *ldapctl_format_criteria( LdapControl *ctl, const gchar *searchVal ) {
 	node = ctl->listCriteria;
 	while( node ) {
 		gchar *attr, *tmp;
-
 		attr = node->data;
 		node = g_list_next( node );
 
@@ -664,11 +663,13 @@ void ldapctl_parse_ldap_search( LdapControl *ctl, gchar *criteria ) {
  * \return Formatted string or <i>""</i>. Should be g_free() when done.
  */
 gchar *ldapctl_get_default_criteria() {
-	gchar *retVal = LDAPCTL_DFL_ATTR_LIST;
+	gchar *retVal = g_strdup(LDAPCTL_DFL_ATTR_LIST);
 	const gchar **attrs = ATTRIBUTE; 
 
 	while (*attrs) {
-		retVal = g_strdup_printf("%s, %s", retVal, *attrs++);
+		gchar *tmp = g_strdup_printf("%s, %s", retVal, *attrs++);
+		g_free(retVal);
+		retVal = tmp;
 	}
 	debug_print("default search criteria: %s\n", retVal);
 	return retVal;
