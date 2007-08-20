@@ -39,6 +39,7 @@
 
 #include "addritem.h"
 #include "addrcache.h"
+#include "common/utils.h"
 
 /*
  * Key for thread specific data.
@@ -125,6 +126,7 @@ void ldapqry_set_name( LdapQuery* qry, const gchar *value ) {
 void ldapqry_set_search_value( LdapQuery *qry, const gchar *value ) {
 	ADDRQUERY_SEARCHVALUE(qry) = mgu_replace_string( ADDRQUERY_SEARCHVALUE(qry), value );
 	g_strstrip( ADDRQUERY_SEARCHVALUE(qry) );
+	debug_print("search value: %s\n", ADDRQUERY_SEARCHVALUE(qry));
 }
 
 /**
@@ -382,7 +384,7 @@ static GSList *ldapqry_add_list_values(
 
 	if( ( vals = ldap_get_values_len( ld, entry, attr ) ) != NULL ) {
 		for( i = 0; vals[i] != NULL; i++ ) {
-			/* printf( "lv\t%s: %s\n", attr, vals[i] ); */
+			/*debug_print("lv\t%s: %s\n", attr, vals[i]->bv_val);*/
 			list = g_slist_append( list, g_strndup( vals[i]->bv_val, vals[i]->bv_len) );
 		}
 	}
@@ -403,7 +405,7 @@ static GSList *ldapqry_add_single_value( LDAP *ld, LDAPMessage *entry, char *att
 
 	if( ( vals = ldap_get_values_len( ld, entry, attr ) ) != NULL ) {
 		if( vals[0] != NULL ) {
-			/* printf( "sv\t%s: %s\n", attr, vals[0] ); */
+			debug_print("sv\t%s: %s\n", attr, vals[0]->bv_val);
 			list = g_slist_append( list, g_strndup( vals[0]->bv_val, vals[0]->bv_len ));
 		}
 	}
@@ -514,7 +516,9 @@ static GList *ldapqry_build_items_fl(
 		addrcache_id_email( cache, email );
 		addrcache_person_add_email( cache, person, email );
 		addritem_person_add_email( person, email );
-		/*addritem_print_item_email(email, stdout);*/
+		/*if (debug_get_mode()) {
+			addritem_print_item_email(email, stdout);
+		}*/
 		listReturn = g_list_append( listReturn, email );
 		nodeAddress = g_slist_next( nodeAddress );
 	}
@@ -552,7 +556,7 @@ static GList *ldapqry_process_single_entry(
 	listReturn = NULL;
 	ctl = qry->control;
 	dnEntry = ldap_get_dn( ld, e );
-	/* printf( "DN: %s\n", dnEntry ); */
+	debug_print( "DN: %s\n", dnEntry );
 
 	/* Process all attributes */
 	for( attribute = ldap_first_attribute( ld, e, &ber ); attribute != NULL;
@@ -650,11 +654,15 @@ static gint ldapqry_connect( LdapQuery *qry ) {
 	gchar *uri = NULL;
 
 	/* Initialize connection */
-	/* printf( "===ldapqry_connect===\n" ); */
-	/* ldapqry_print( qry, stdout ); */
+	if (debug_get_mode()) {
+		debug_print("===ldapqry_connect===\n");
+		/*ldapqry_print(qry, stdout);*/
+	}
 	ctl = qry->control;
-	/* ldapctl_print( ctl, stdout ); */
-	/* printf( "======\n" ); */
+	/*if (debug_get_mode()) {
+		ldapctl_print(ctl, stdout);
+		debug_print("======\n");
+	}*/
 	ldapqry_touch( qry );
 	qry->startTime = qry->touchTime;
 	qry->elapsedTime = -1;
@@ -676,9 +684,7 @@ static gint ldapqry_connect( LdapQuery *qry ) {
 	}
 	ldapqry_touch( qry );
 
-	/*
-	printf( "connected to LDAP host %s on port %d\n", ctl->hostName, ctl->port );
-	*/
+	debug_print("connected to LDAP host %s on port %d\n", ctl->hostName, ctl->port);
 
 #ifdef USE_LDAP_TLS
 	/* Handle TLS */
@@ -693,8 +699,8 @@ static gint ldapqry_connect( LdapQuery *qry ) {
 			ADDRQUERY_RETVAL(qry) = LDAPRC_TLS;
 			rc = ldap_start_tls_s( ld, NULL, NULL );
 			
-			/* printf( "rc=%d\n", rc );
-			printf( "LDAP Status: set_option: %s\n", ldap_err2string( rc ) ); */
+			debug_print("rc=%d\n", rc);
+			debug_print("LDAP Status: set_option: %s\n", ldap_err2string( rc ) );
 			
 			if( rc != LDAP_SUCCESS ) {
 				return ADDRQUERY_RETVAL(qry);
@@ -707,14 +713,11 @@ static gint ldapqry_connect( LdapQuery *qry ) {
 	ADDRQUERY_RETVAL(qry) = LDAPRC_BIND;
 	if( ctl->bindDN ) {
 		if( * ctl->bindDN != '\0' ) {
-			/* printf( "binding...\n" ); */
+			debug_print("binding...\n");
 			rc = claws_ldap_simple_bind_s( ld, ctl->bindDN, ctl->bindPass );
-			/* printf( "rc=%d\n", rc ); */
+			debug_print("rc=%d\n", rc);
 			if( rc != LDAP_SUCCESS ) {
-				/*
-				printf( "LDAP Error: ldap_simple_bind_s: %s\n",
-					ldap_err2string( rc ) );
-				*/
+				debug_print("LDAP Error: ldap_simple_bind_s: %s\n",	ldap_err2string(rc));
 				return ADDRQUERY_RETVAL(qry);
 			}
 		}
@@ -784,7 +787,7 @@ static gint ldapqry_search_retrieve( LdapQuery *qry ) {
 
 	/* Create LDAP search string */
 	criteria = ldapctl_format_criteria( ctl, ADDRQUERY_SEARCHVALUE(qry) );
-	/* printf( "Search criteria ::%s::\n", criteria ); */
+	debug_print("Search criteria ::%s::\n", criteria);
 
 	/*
 	 * Execute the search - this step may take some time to complete
@@ -793,6 +796,8 @@ static gint ldapqry_search_retrieve( LdapQuery *qry ) {
 	ADDRQUERY_RETVAL(qry) = LDAPRC_TIMEOUT;
 	rc = ldap_search_ext_s( ld, ctl->baseDN, LDAP_SCOPE_SUBTREE, criteria,
 		attribs, 0, NULL, NULL, &timeout, 0, &result );
+	debug_print("LDAP Error: ldap_search_st: %d\n", rc);
+	debug_print("LDAP Error: ldap_search_st: %s\n", ldap_err2string(rc));
 	ldapctl_free_attribute_array( attribs );
 	g_free( criteria );
 	criteria = NULL;
@@ -813,17 +818,13 @@ static gint ldapqry_search_retrieve( LdapQuery *qry ) {
 		searchFlag = TRUE;
 	}
 	else {
-		/*
-		printf( "LDAP Error: ldap_search_st: %d\n", rc );
-		printf( "LDAP Error: ldap_search_st: %s\n", ldap_err2string( rc ) );
-		*/
+		debug_print("LDAP Error: ldap_search_st: %d\n", rc);
+		debug_print("LDAP Error: ldap_search_st: %s\n", ldap_err2string(rc));
 		return ADDRQUERY_RETVAL(qry);
 	}
 	ADDRQUERY_RETVAL(qry) = LDAPRC_STOP_FLAG;
 
-	/*
-	printf( "Total results are: %d\n", ldap_count_entries( ld, result ) );
-	*/
+	debug_print("Total results are: %d\n", ldap_count_entries(ld, result));
 
 	/* Process results */
 	first = TRUE;
@@ -858,10 +859,12 @@ static gint ldapqry_search_retrieve( LdapQuery *qry ) {
 			qry->callBackEntry( qry, ADDRQUERY_ID(qry), listEMail, qry->data );
 		}
 		else {
-			/*GList *node = listEMail;
-			while (node) {
-				addritem_print_item_email(node->data, stdout);
-				node = g_list_next(node);
+			/*if (debug_get_mode()) {
+				GList *node = listEMail;
+				while (node) {
+					addritem_print_item_email(node->data, stdout);
+					node = g_list_next(node);
+				}
 			}*/
 			g_list_free( listEMail );
 		}
@@ -944,16 +947,12 @@ static gint ldapqry_search( LdapQuery *qry ) {
 		qry->server->addressCache->dataRead = TRUE;
 		qry->server->addressCache->accessFlag = FALSE;
 		if( ldapqry_get_stop_flag( qry ) ) {
-			/*
-			printf( "Search was terminated prematurely\n" );
-			*/
+			debug_print("Search was terminated prematurely\n");
 		}
 		else {
 			ldapqry_touch( qry );
 			qry->completed = TRUE;
-			/*
-			printf( "Search ran to completion\n" );
-			*/
+			debug_print("Search ran to completion\n");
 		}
 	}
 	ldapqry_set_stop_flag( qry, TRUE );
@@ -981,9 +980,7 @@ gint ldapqry_read_data_th( LdapQuery *qry ) {
 	ldapqry_touch( qry );
 	if( ldapqry_check_search( qry ) ) {
 		if( ADDRQUERY_RETVAL(qry) == LDAPRC_SUCCESS ) {
-			/*
-			printf( "Starting LDAP search thread\n");
-			*/
+			debug_print("Starting LDAP search thread\n");
 			ldapqry_set_busy_flag( qry, TRUE );
 			qry->thread = g_malloc0( sizeof( pthread_t ) );
 
@@ -1004,9 +1001,7 @@ static void ldapqry_destroyer( void * ptr ) {
 	LdapQuery *qry;
 
 	qry = ( LdapQuery * ) ptr;
-	/*
-	printf( "ldapqry_destroyer::%d::%s\n", (int) pthread_self(), ADDRQUERY_NAME(qry) );
-	*/
+	debug_print("ldapqry_destroyer::%d::%s\n", (int) pthread_self(), ADDRQUERY_NAME(qry));
 
 	/* Perform any destruction here */
 	if( qry->control != NULL ) {
@@ -1024,12 +1019,10 @@ static void ldapqry_destroyer( void * ptr ) {
 void ldapqry_cancel( LdapQuery *qry ) {
 	g_return_if_fail( qry != NULL );
 
-	/*
-	printf( "cancelling::%d::%s\n", (int) pthread_self(), ADDRQUERY_NAME(qry) );
-	*/
+	debug_print("cancelling::%d::%s\n", (int) pthread_self(), ADDRQUERY_NAME(qry));
 	if( ldapqry_get_busy_flag( qry ) ) {
 		if( qry->thread ) {
-			/* printf( "calling pthread_cancel\n" ); */
+			debug_print("calling pthread_cancel\n");
 			pthread_cancel( * qry->thread );
 		}
 	}
@@ -1040,15 +1033,13 @@ void ldapqry_cancel( LdapQuery *qry ) {
  * any LDAP queries to initialize thread specific data.
  */
 void ldapqry_initialize( void ) {
-	/* printf( "ldapqry_initialize...\n" ); */
+	debug_print("ldapqry_initialize...\n");
 	if( ! _queryThreadInit_ ) {
-		/*
-		printf( "ldapqry_initialize::creating thread specific area\n" );
-		*/
+		debug_print("ldapqry_initialize::creating thread specific area\n");
 		pthread_key_create( &_queryThreadKey_, ldapqry_destroyer );
 		_queryThreadInit_ = TRUE;
 	}
-	/* printf( "ldapqry_initialize... done!\n" ); */
+	debug_print("ldapqry_initialize... done!\n");
 }
 
 /**
@@ -1231,15 +1222,11 @@ static gint ldapqry_locate_retrieve( LdapQuery *qry ) {
 	}
 	ADDRQUERY_RETVAL(qry) = LDAPRC_SEARCH;
 	if( rc != LDAP_SUCCESS ) {
-		/*
-		printf( "LDAP Error: ldap_search_st: %s\n", ldap_err2string( rc ) );
-		*/
+		debug_print("LDAP Error: ldap_search_st: %s\n", ldap_err2string(rc));
 		return ADDRQUERY_RETVAL(qry);
 	}
 
-	/*
-	printf( "Total results are: %d\n", ldap_count_entries( ld, result ) );
-	*/
+	debug_print("Total results are: %d\n", ldap_count_entries(ld, result));
 
 	/* Process results */
 	ADDRQUERY_RETVAL(qry) = LDAPRC_STOP_FLAG;
@@ -1341,6 +1328,20 @@ gboolean ldapquery_remove_results( LdapQuery *qry ) {
 		retVal = TRUE;
 	}
 	return retVal;
+}
+
+void ldapqry_print(LdapQuery *qry, FILE *stream) {
+	ldapsvr_print_data(qry->server, stream);
+	ldapctl_print(qry->control, stream);
+	fprintf(stream, "entriesRead: %d\n", qry->entriesRead);
+	fprintf(stream, "elapsedTime: %d\n", qry->elapsedTime);
+	fprintf(stream, "stopFlag: %d\n", qry->stopFlag);
+	fprintf(stream, "busyFlag: %d\n", qry->busyFlag);
+	fprintf(stream, "agedFlag: %d\n", qry->agedFlag);
+	fprintf(stream, "completed: %d\n", qry->completed);
+	fprintf(stream, "startTime: %d\n", (int) qry->startTime);
+	fprintf(stream, "touchTime: %d\n", (int) qry->touchTime);
+	fprintf(stream, "data: %s\n", (gchar *) qry->data);
 }
 
 #endif	/* USE_LDAP */

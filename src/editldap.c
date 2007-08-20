@@ -106,6 +106,7 @@ static gboolean editldap_validate_criteria( gchar *criteria ) {
 			*ptr = ' ';
 		ptr++;
 	}
+	debug_print("cleaned criteria list: %s\n", criteria);
 
 	/* Parse string */
 	splitStr = g_strsplit( criteria, " ", 0 );
@@ -242,6 +243,7 @@ static void edit_ldap_server_check( void ) {
 	g_strchomp( sPass ); g_strchug( sPass );
 	if( *sHost != '\0' ) {
 		/* Test connection to server */
+		debug_print("ldap server: %s\nport: %d\nssl: %d\ntls: %d\nbindDN: %s\n", sHost, iPort, ssl, tls, sBind);
 		if( ldaputil_test_connect( sHost, iPort, ssl, tls ) ) {
 			/* Attempt to read base DN */
 			baseDN = ldaputil_read_basedn( sHost, iPort, sBind, sPass, iTime, ssl, tls );
@@ -266,6 +268,7 @@ static void edit_ldap_server_check( void ) {
 
 	if( sBaseDN ) {
 		/* Load search DN */
+		debug_print("baseDN: %s\n", sBaseDN);
 		gtk_entry_set_text(GTK_ENTRY(ldapedit.entry_baseDN), sBaseDN);
 		g_free( sBaseDN );
 	}
@@ -299,6 +302,7 @@ static void edit_ldap_basedn_select( void ) {
 	g_strchomp( sHost ); g_strchug( sHost );
 	g_strchomp( sBind ); g_strchug( sBind );
 	g_strchomp( sPass ); g_strchug( sPass );
+	debug_print("ldap server: %s\nport: %d\nssl: %d\ntls: %d\nbindDN: %s\n", sHost, iPort, ssl, tls, sBind);
 	selectDN = edit_ldap_basedn_selection( sHost, iPort, sBase, iTime, sBind, sPass, ssl, tls );
 	if( selectDN ) {
 		gtk_entry_set_text(GTK_ENTRY(ldapedit.entry_baseDN), selectDN);
@@ -325,6 +329,7 @@ static void addressbook_edit_ldap_dialog_create( gboolean *cancelled ) {
 	GtkWidget *hsbox;
 	GtkWidget *statusbar;
 
+	debug_print("creating edit_ldap_dialog\n");
 	window = gtkut_window_new(GTK_WINDOW_TOPLEVEL, "editldap");
 	gtk_widget_set_size_request(window, 450, -1);
 	gtk_container_set_border_width(GTK_CONTAINER(window), 0);
@@ -383,6 +388,7 @@ static void editldap_update_port (GtkToggleButton *ssl_btn, gpointer data) {
 	gtk_spin_button_set_value(
 		GTK_SPIN_BUTTON( ldapedit.spinbtn_port ), 
 			val ? LDAPCTL_DFL_SSL_PORT:LDAPCTL_DFL_PORT );
+	debug_print("Setting port: %d\n", val ? LDAPCTL_DFL_SSL_PORT:LDAPCTL_DFL_PORT);
 }
 
 static void addressbook_edit_ldap_page_basic( gint pageNum, gchar *pageLbl ) {
@@ -1039,6 +1045,7 @@ AdapterDSource *addressbook_edit_ldap(
 	tls = gtk_toggle_button_get_active(
 			GTK_TOGGLE_BUTTON( ldapedit.enable_tls ) );
 #endif
+	debug_print("saving server config:\nname: %s\nhost: %s\nbase: %s\ncriteria: %s\nbind: %s\nport: %d\ntime: %d\nmax_entries: %d\ntimeout: %d\ndynamic: %d\ncheck_match: %d\n",sName, sHost, sBase, sCrit, sBind, iPort, iTime, iMaxE, iAge, bSrch, bMatch);
 	fin = FALSE;
 	if( *sName == '\0' ) fin = TRUE;
 	if( *sHost == '\0' ) fin = TRUE;

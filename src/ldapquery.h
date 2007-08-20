@@ -68,6 +68,7 @@ struct _NameValuePair {
 };
 
 /* Function prototypes */
+void ldapqry_print(LdapQuery *qry, FILE *stream);
 void ldapqry_initialize		( void );
 LdapQuery *ldapqry_create	( void );
 void ldapqry_set_control	( LdapQuery *qry, LdapControl *ctl );

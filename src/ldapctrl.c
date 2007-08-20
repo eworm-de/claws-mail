@@ -34,6 +34,7 @@
 #include "ldapctrl.h"
 #include "mgutils.h"
 #include "editaddress_other_attributes_ldap.h"
+#include "common/utils.h"
 
 /**
  * Create new LDAP control block object.
@@ -77,6 +78,7 @@ LdapControl *ldapctl_create( void ) {
 void ldapctl_set_host( LdapControl* ctl, const gchar *value ) {
 	ctl->hostName = mgu_replace_string( ctl->hostName, value );
 	g_strstrip( ctl->hostName );
+	debug_print("setting hostname: %s\n", ctl->hostName);
 }
 
 /**
@@ -91,6 +93,7 @@ void ldapctl_set_port( LdapControl* ctl, const gint value ) {
 	else {
 		ctl->port = LDAPCTL_DFL_PORT;
 	}
+	debug_print("setting port: %d\n", ctl->port);
 }
 
 /**
@@ -101,6 +104,7 @@ void ldapctl_set_port( LdapControl* ctl, const gint value ) {
 void ldapctl_set_base_dn( LdapControl* ctl, const gchar *value ) {
 	ctl->baseDN = mgu_replace_string( ctl->baseDN, value );
 	g_strstrip( ctl->baseDN );
+	debug_print("setting baseDN: %s\n", ctl->baseDN);
 }
 
 /**
@@ -111,6 +115,7 @@ void ldapctl_set_base_dn( LdapControl* ctl, const gchar *value ) {
 void ldapctl_set_bind_dn( LdapControl* ctl, const gchar *value ) {
 	ctl->bindDN = mgu_replace_string( ctl->bindDN, value );
 	g_strstrip( ctl->bindDN );
+	debug_print("setting bindDN: %s\n", ctl->bindDN);
 }
 
 /**
@@ -121,6 +126,7 @@ void ldapctl_set_bind_dn( LdapControl* ctl, const gchar *value ) {
 void ldapctl_set_bind_password( LdapControl* ctl, const gchar *value ) {
 	ctl->bindPass = mgu_replace_string( ctl->bindPass, value );
 	g_strstrip( ctl->bindPass );
+	debug_print("setting bindPassword");
 }
 
 /**
@@ -135,6 +141,7 @@ void ldapctl_set_max_entries( LdapControl* ctl, const gint value ) {
 	else {
 		ctl->maxEntries = LDAPCTL_MAX_ENTRIES;
 	}
+	debug_print("setting maxEntries: %d\n", ctl->maxEntries);
 }
 
 /**
@@ -149,6 +156,7 @@ void ldapctl_set_timeout( LdapControl* ctl, const gint value ) {
 	else {
 		ctl->timeOut = LDAPCTL_DFL_TIMEOUT;
 	}
+	debug_print("setting timeOut: %d\n", ctl->timeOut);
 }
 
 /**
@@ -166,6 +174,7 @@ void ldapctl_set_max_query_age( LdapControl* ctl, const gint value ) {
 	else {
 		ctl->maxQueryAge = value;
 	}
+	debug_print("setting maxAge: %d\n", ctl->maxQueryAge);
 }
 
 /**
@@ -187,6 +196,7 @@ void ldapctl_set_matching_option( LdapControl* ctl, const gint value ) {
 	else {
 		ctl->matchingOption = value;
 	}
+	debug_print("setting matchingOption: %d\n", ctl->matchingOption);
 }
 
 /**
@@ -196,10 +206,12 @@ void ldapctl_set_matching_option( LdapControl* ctl, const gint value ) {
  */
 void ldapctl_set_tls( LdapControl* ctl, const gboolean value ) {
 	ctl->enableTLS = value;
+	debug_print("setting TLS: %d\n", ctl->enableTLS);
 }
 
 void ldapctl_set_ssl( LdapControl* ctl, const gboolean value ) {
 	ctl->enableSSL = value;
+	debug_print("setting SSL: %d\n", ctl->enableSSL);
 }
 
 /**
@@ -236,6 +248,7 @@ void ldapctl_criteria_list_add( LdapControl *ctl, gchar *attr ) {
 	g_return_if_fail( ctl != NULL );
 	if( attr != NULL ) {
 		if( mgu_list_test_unq_nc( ctl->listCriteria, attr ) ) {
+			debug_print("adding to criteria list: %s\n", attr);
 			ctl->listCriteria = g_list_append(
 				ctl->listCriteria, g_strdup( attr ) );
 		}
@@ -249,6 +262,7 @@ void ldapctl_criteria_list_add( LdapControl *ctl, gchar *attr ) {
 static void ldapctl_clear( LdapControl *ctl ) {
 	g_return_if_fail( ctl != NULL );
 
+	debug_print("clearing ldap controller members\n");
 	/* Free internal stuff */
 	g_free( ctl->hostName );
 	g_free( ctl->baseDN );
@@ -289,6 +303,7 @@ static void ldapctl_clear( LdapControl *ctl ) {
 void ldapctl_free( LdapControl *ctl ) {
 	g_return_if_fail( ctl != NULL );
 
+	debug_print("releasing requested memory for ldap controller\n");
 	/* Free internal stuff */
 	ldapctl_clear( ctl );
 
@@ -350,6 +365,7 @@ void ldapctl_copy( const LdapControl *ctlFrom, LdapControl *ctlTo ) {
 	g_return_if_fail( ctlFrom != NULL );
 	g_return_if_fail( ctlTo != NULL );
 
+	debug_print("ldap controller copy\n");
 	/* Lock both objects */
 	pthread_mutex_lock( ctlFrom->mutexCtl );
 	pthread_mutex_lock( ctlTo->mutexCtl );
@@ -463,6 +479,7 @@ static gchar *ldapctl_build_ldap_criteria(
 		g_free( p2 );
 	}
 	g_free( term );
+	debug_print("search criteria: %s\n", crit);
 	return crit;
 }
 
@@ -544,6 +561,7 @@ gchar *ldapctl_format_criteria( LdapControl *ctl, const gchar *searchVal ) {
 		retVal = p2;
 		g_free( p1 );
 	}
+	debug_print("current search string: %s\n", retVal);
 	return retVal;
 }
 
@@ -576,6 +594,7 @@ char **ldapctl_attribute_array( LdapControl *ctl ) {
 	i = 0;
 	while( node ) {
 		ptrArray[ i++ ] = node->data;
+		/*debug_print("adding search attribute: %s\n", (gchar *) node->data);*/
 		node = g_list_next( node );
 	}
 	ptrArray[ i ] = NULL;
@@ -651,6 +670,7 @@ gchar *ldapctl_get_default_criteria() {
 	while (*attrs) {
 		retVal = g_strdup_printf("%s, %s", retVal, *attrs++);
 	}
+	debug_print("default search criteria: %s\n", retVal);
 	return retVal;
 }
 
@@ -674,6 +694,7 @@ GList *ldapctl_get_default_criteria_list() {
 			item = g_strndup(criteria, strlen(criteria) - 1);
 		else
 			item = g_strdup(criteria);
+		debug_print("adding attribute to list: %s\n", item);
 		attr_list = g_list_append(attr_list, g_strdup(item));
 		g_free(item);
 	}
@@ -696,6 +717,7 @@ gboolean ldapctl_compare_list(GList *l1, GList *l2) {
 	while (l1 && l2) {
 		first = (gchar *) l1->data;
 		second = (gchar *) l2->data;
+		/*debug_print("comparing: %s = %s\n", first, second);*/
 		if ( ! (first && second) || strcmp(first, second) != 0) {
 			return FALSE;
 		}

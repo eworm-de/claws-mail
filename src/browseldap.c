@@ -114,12 +114,13 @@ static gint browse_callback_entry(
 	GList *node;
 	NameValuePair *nvp;
 
-	/* printf( "browse_callback_entry...\n" ); */
+	debug_print("browse_callback_entry...\n");
 	pthread_mutex_lock( & _browseMutex_ );
 	/* Append contents to end of display queue */
 	node = listValues;
 	while( node ) {
 		nvp = ( NameValuePair * ) node->data;
+		debug_print("adding to list: %s->%s\n", nvp->name, nvp->value);
 		_displayQueue_ = g_list_append( _displayQueue_, nvp );
 		node->data = NULL;
 		node = g_list_next( node );
@@ -141,6 +142,7 @@ static gint browse_callback_entry(
 static gint browse_callback_end(
 		LdapQuery *qry, gint queryID, gint status, gpointer data )
 {
+	debug_print("search completed\n");
 	_searchComplete_ = TRUE;
 	return 0;
 }
@@ -212,6 +214,7 @@ static void browse_create( void ) {
 	GtkWidget *close_btn;
 	gint top;
 
+	debug_print("creating browse widget\n");
 	window = gtk_dialog_new();
 	gtk_widget_set_size_request( window, BROWSELDAP_WIDTH, BROWSELDAP_HEIGHT );
 	gtk_container_set_border_width( GTK_CONTAINER(window), 0 );
@@ -321,6 +324,7 @@ static gboolean browse_idle( gpointer data ) {
 			nvp = ( NameValuePair * ) node->data;
 			text[COL_NAME]  = nvp->name;
 			text[COL_VALUE] = nvp->value;
+			debug_print("Adding row to list: %s->%s\n", nvp->name, nvp->value);
 			gtk_clist_append(
 				GTK_CLIST(browseldap_dlg.list_entry), text );
 
@@ -378,13 +382,16 @@ gboolean browseldap_entry( AddressDataSource *ds, const gchar *dn ) {
 		GTK_LABEL(browseldap_dlg.label_server ),
 		ldapsvr_get_name( server ) );
 
+	debug_print("browsing server: %s\n", ldapsvr_get_name(server));
 	/* Setup search */
 	_searchComplete_ = FALSE;
 	_queryID_ = ldaplocate_search_setup(
 			server, dn, browse_callback_entry, browse_callback_end );
+	debug_print("query id: %d\n", _queryID_);
 	_browseIdleID_ = g_idle_add( ( GtkFunction ) browse_idle, NULL );
 
 	/* Start search */
+	debug_print("starting search\n");
 	ldaplocate_search_start( _queryID_ );
 
 	/* Display dialog */
@@ -392,6 +399,7 @@ gboolean browseldap_entry( AddressDataSource *ds, const gchar *dn ) {
 	gtk_widget_hide( browseldap_dlg.window );
 
 	/* Stop query */
+	debug_print("stopping search\n");
 	ldaplocate_search_stop( _queryID_ );
 
 	if( _browseIdleID_ != 0 ) {

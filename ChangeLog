@@ -1,3 +1,15 @@
+2007-08-20 [paul]	2.10.0cvs136
+
+	* src/browseldap.c
+	* src/editldap.c
+	* src/ldapctrl.c
+	* src/ldapquery.c
+	* src/ldapquery.h
+	* src/ldapserver.c
+	* src/ldaputil.c
+		add debug_prints
+		patch by Michael Rasmussen
+
 2007-08-19 [colin]	2.10.0cvs135
 
 	* src/imap.c

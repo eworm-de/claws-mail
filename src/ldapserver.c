@@ -90,6 +90,7 @@ gchar *ldapsvr_get_name( LdapServer *server ) {
 void ldapsvr_set_name( LdapServer* server, const gchar *value ) {
 	g_return_if_fail( server != NULL );
 	addrcache_set_name( server->addressCache, value );
+	debug_print("setting name: %s\n", value);
 }
 
 /**
@@ -143,6 +144,7 @@ gboolean ldapsvr_get_accessed( LdapServer *server ) {
 void ldapsvr_set_accessed( LdapServer *server, const gboolean value ) {
 	g_return_if_fail( server != NULL );
 	server->addressCache->accessFlag = value;
+	debug_print("setting accessFlag: %d\n", value);
 }
 
 /**
@@ -163,6 +165,7 @@ gboolean ldapsvr_get_modified( LdapServer *server ) {
 void ldapsvr_set_modified( LdapServer *server, const gboolean value ) {
 	g_return_if_fail( server != NULL );
 	server->addressCache->modified = value;
+	debug_print("setting modified: %d\n", value);
 }
 
 /**
@@ -193,6 +196,7 @@ gboolean ldapsvr_get_search_flag( LdapServer *server ) {
 void ldapsvr_set_search_flag( LdapServer *server, const gboolean value ) {
 	g_return_if_fail( server != NULL );
 	server->searchFlag = value;
+	debug_print("setting searchFlag: %d\n", value);
 }
 
 /**
@@ -347,17 +351,15 @@ void ldapsvr_execute_query( LdapServer *server, LdapQuery *qry ) {
 	ldapqry_initialize();
 
 	/* Perform query */	
-	/* printf( "ldapsvr_execute_query::checking query...\n" ); */
+	debug_print("ldapsvr_execute_query::checking query...\n");
 	if( ldapqry_check_search( qry ) ) {
-		/* printf( "ldapsvr_execute_query::reading with thread...\n" ); */
+		debug_print("ldapsvr_execute_query::reading with thread...\n");
 		ldapqry_read_data_th( qry );
-		/*
-		if( qry->retVal == LDAPRC_SUCCESS ) {
-			printf( "ldapsvr_execute_query::SUCCESS with thread...\n" );
+		if(qry->server->retVal == LDAPRC_SUCCESS) {
+			debug_print("ldapsvr_execute_query::SUCCESS with thread...\n");
 		}
-		*/
 	}
-	/* printf( "ldapsvr_execute_query... terminated\n" ); */
+	debug_print("ldapsvr_execute_query... terminated\n");
 }
 
 /**
@@ -467,7 +469,7 @@ void ldapsvr_retire_query( LdapServer *server ) {
 	LdapControl *ctl;
 	ItemFolder *folder;
 
-	/* printf( "ldapsvr_retire_query\n" ); */
+	debug_print("ldapsvr_retire_query\n");
 	g_return_if_fail( server != NULL );
 	ctl = server->control;
 	maxAge = ctl->maxQueryAge;
@@ -489,9 +491,7 @@ void ldapsvr_retire_query( LdapServer *server ) {
 		ldapqry_age( qry, maxAge );
 		if( qry->agedFlag ) {
 			/* Delete folder associated with query */
-			/*
-			printf( "deleting folder... ::%s::\n", ADDRQUERY_NAME(qry) );
-			*/
+			debug_print("deleting folder... ::%s::\n", ADDRQUERY_NAME(qry));
 			ldapqry_delete_folder( qry );
 			listDelete = g_list_append( listDelete, qry );
 		}
@@ -700,7 +700,7 @@ gint ldapsvr_read_data( LdapServer *server )
 {
 	g_return_val_if_fail( server != NULL, -1 );
 
-	//printf( "...addrbook_read_data :%s:\n", addrcache_get_name( server->addressCache ) );
+	debug_print("...addrbook_read_data :%s:\n", addrcache_get_name(server->addressCache));
 	
 	addrcache_clear(server->addressCache);
 	ldapsvr_free_all_query( server );

@@ -33,6 +33,7 @@
 #include <ldap.h>
 #include <lber.h>
 #include <errno.h>
+#include "common/utils.h"
 
 #define SYLDAP_TEST_FILTER   "(objectclass=*)"
 #define SYLDAP_SEARCHBASE_V2 "cn=config"
@@ -204,6 +205,7 @@ int claws_ldap_simple_bind_s( LDAP *ld, LDAP_CONST char *dn, LDAP_CONST char *pa
 		cred.bv_len = 0;
 	}
 
+	debug_print("binding: DN->%s\n", dn);
 	return ldap_sasl_bind_s( ld, dn, LDAP_SASL_SIMPLE, &cred,
 		NULL, NULL, NULL );
 }
@@ -238,6 +240,7 @@ GList *ldaputil_read_basedn(
 	uri = g_strdup_printf("ldap%s://%s:%d",
 			ssl?"s":"",
 			host, port);
+	debug_print("URI: %s\n", uri);
 	rc = ldap_initialize(&ld, uri);
 	g_free(uri);
 	
@@ -274,9 +277,15 @@ GList *ldaputil_read_basedn(
 
 	/* Test for LDAP version 3 */
 	baseDN = ldaputil_test_v3( ld, tov, &rc );
+	if (baseDN) {
+		debug_print("Using LDAP v3\n");
+	}
 
 	if( baseDN == NULL && !LDAP_API_ERROR(rc) ) {
 		baseDN = ldaputil_test_v2( ld, tov );
+		if (baseDN) {
+			debug_print("Using LDAP v2\n");
+		}
 	}
 	if (ld && !LDAP_API_ERROR(rc))
 		ldap_unbind_ext( ld, NULL, NULL );
@@ -306,6 +315,7 @@ gboolean ldaputil_test_connect( const gchar *host, const gint port, int ssl, int
 	uri = g_strdup_printf("ldap%s://%s:%d",
 				ssl?"s":"",
 				host, port);
+	debug_print("URI: %s\n", uri);
 	ldap_initialize(&ld, uri);
 	g_free(uri);
 	if (ld == NULL)
