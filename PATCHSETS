@@ -2792,3 +2792,4 @@
 ( cvs diff -u -r 1.179.2.182 -r 1.179.2.183 src/imap.c;  ) > 2.10.0cvs135.patchset
 ( cvs diff -u -r 1.2.4.17 -r 1.2.4.18 src/browseldap.c;  cvs diff -u -r 1.8.2.24 -r 1.8.2.25 src/editldap.c;  cvs diff -u -r 1.2.2.11 -r 1.2.2.12 src/ldapctrl.c;  cvs diff -u -r 1.3.2.20 -r 1.3.2.21 src/ldapquery.c;  cvs diff -u -r 1.4.2.11 -r 1.4.2.12 src/ldapquery.h;  cvs diff -u -r 1.4.2.11 -r 1.4.2.12 src/ldapserver.c;  cvs diff -u -r 1.1.4.8 -r 1.1.4.9 src/ldaputil.c;  ) > 2.10.0cvs136.patchset
 ( cvs diff -u -r 1.2.2.12 -r 1.2.2.13 src/ldapctrl.c;  ) > 2.10.0cvs137.patchset
+( cvs diff -u -r 1.61.2.65 -r 1.61.2.66 src/account.c;  cvs diff -u -r 1.105.2.107 -r 1.105.2.108 src/prefs_account.c;  cvs diff -u -r 1.49.2.32 -r 1.49.2.33 src/prefs_account.h;  ) > 2.10.0cvs138.patchset

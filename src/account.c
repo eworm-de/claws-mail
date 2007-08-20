@@ -910,17 +910,16 @@ static void account_clone(GtkWidget *widget, gpointer data)
 	ACP_FASSIGN(use_mail_command);
 	ACP_FDUP(mail_command);
 	
-#if USE_OPENSSL
 	ACP_FASSIGN(ssl_pop);
 	ACP_FASSIGN(ssl_imap);
 	ACP_FASSIGN(ssl_nntp);
 	ACP_FASSIGN(ssl_smtp);
 	ACP_FASSIGN(use_nonblocking_ssl);
-#endif /* USE_OPENSSL */
 	
 	ac_clon->tmp_pass = NULL;
 
 	/* receive */
+	ACP_FASSIGN(use_apop_auth);
 	ACP_FASSIGN(rmmail);
 	ACP_FASSIGN(msg_leave_time);
 	ACP_FASSIGN(recv_at_getall);
@@ -930,6 +929,7 @@ static void account_clone(GtkWidget *widget, gpointer data)
 	ACP_FASSIGN(filter_on_recv);
 	ACP_FASSIGN(filterhook_on_recv);
 	ACP_FDUP(inbox);
+	ACP_FDUP(local_inbox);
 	ACP_FASSIGN(max_articles);
 
 	ACP_FASSIGN(imap_auth_type);
@@ -974,10 +974,27 @@ static void account_clone(GtkWidget *widget, gpointer data)
         ACP_FDUP(auto_bcc);
         ACP_FASSIGN(set_autoreplyto);
         ACP_FDUP(auto_replyto);
+	ACP_FASSIGN(enable_default_dictionary);
+	ACP_FDUP(default_dictionary);
+	ACP_FASSIGN(enable_default_alt_dictionary);
+	ACP_FDUP(default_alt_dictionary);
+	ACP_FASSIGN(compose_with_format);
+	ACP_FDUP(compose_subject_format);
+	ACP_FDUP(compose_body_format);
+	ACP_FASSIGN(reply_with_format);
+	ACP_FDUP(reply_quotemark);
+	ACP_FDUP(reply_body_format);
+	ACP_FASSIGN(forward_with_format);
+	ACP_FDUP(forward_quotemark);
+	ACP_FDUP(forward_body_format);
 
         /* privacy */
+	ACP_FDUP(default_privacy_system);
         ACP_FASSIGN(default_encrypt);
+	ACP_FASSIGN(default_encrypt_reply);
         ACP_FASSIGN(default_sign);
+	ACP_FASSIGN(save_encrypted_as_clear_text);
+	ACP_FASSIGN(encrypt_to_self);
 	
         /* advanced */
         ACP_FASSIGN(set_smtpport);
@@ -997,9 +1014,13 @@ static void account_clone(GtkWidget *widget, gpointer data)
         ACP_FDUP(tunnelcmd);
 
         ACP_FDUP(imap_dir);
+	ACP_FASSIGN(imap_subsonly);
+	ACP_FASSIGN(low_bandwidth);
 
         ACP_FASSIGN(set_sent_folder);
         ACP_FDUP(sent_folder);
+	ACP_FASSIGN(set_queue_folder);
+	ACP_FDUP(queue_folder);
         ACP_FASSIGN(set_draft_folder);
         ACP_FDUP(draft_folder);
         ACP_FASSIGN(set_trash_folder);

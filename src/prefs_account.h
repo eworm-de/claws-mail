@@ -49,6 +49,8 @@ typedef enum {
 #include "folder.h"
 #include "gtk/prefswindow.h"
 
+/* Changes to this data structure might need to be reflected
+ * in account_clone() */
 struct _PrefsAccount
 {
 	gchar *account_name;
