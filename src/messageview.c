@@ -1874,6 +1874,7 @@ void messageview_list_urls (MessageView	*msgview)
 		ClickableText *uri = (ClickableText *)cur->data;
 		if (uri->uri &&
 		    (!g_ascii_strncasecmp(uri->uri, "ftp.", 4) ||
+		     !g_ascii_strncasecmp(uri->uri, "ftp:", 4) ||
 		     !g_ascii_strncasecmp(uri->uri, "www.", 4) ||
 		     !g_ascii_strncasecmp(uri->uri, "http:", 5) ||
 		     !g_ascii_strncasecmp(uri->uri, "https:", 6)))

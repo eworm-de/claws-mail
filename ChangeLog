@@ -1,3 +1,8 @@
+2007-08-21 [paul]	2.10.0cvs143
+
+	* src/messageview.c
+		add check for ftp: to messageview_list_urls()
+
 2007-08-21 [colin]	2.10.0cvs142
 
 	* src/editldap.c
