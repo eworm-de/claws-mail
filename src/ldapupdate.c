@@ -341,7 +341,7 @@ LDAP *ldapsvr_connect(LdapControl *ctl) {
 			rc = ldap_start_tls_s(ld, NULL, NULL);
 			
 			if (rc != LDAP_SUCCESS) {
-				fprintf(stderr, "LDAP Error(tls): ldap_simple_bind_s: %s\n",
+				g_printerr("LDAP Error(tls): ldap_simple_bind_s: %s\n",
 					ldap_err2string(rc));
 				return NULL;
 			}
@@ -354,8 +354,8 @@ LDAP *ldapsvr_connect(LdapControl *ctl) {
 		if (* ctl->bindDN != '\0') {
 			rc = claws_ldap_simple_bind_s(ld, ctl->bindDN, ctl->bindPass);
 			if (rc != LDAP_SUCCESS) {
-				fprintf(stderr, "bindDN: %s, bindPass: %s\n", ctl->bindDN, ctl->bindPass);
-				fprintf(stderr, "LDAP Error(bind): ldap_simple_bind_s: %s\n",
+				g_printerr("bindDN: %s, bindPass: %s\n", ctl->bindDN, ctl->bindPass);
+				g_printerr("LDAP Error(bind): ldap_simple_bind_s: %s\n",
 					ldap_err2string(rc));
 				return NULL;
 			}
@@ -673,7 +673,7 @@ void ldapsvr_print_ldapmod(LDAPMod *mods[]) {
 	int i;
 
 	g_return_if_fail(mods != NULL);
-	fprintf( stderr, "Type\n");
+	g_printerr( "Type\n");
 	for (i = 0; NULL != mods[i]; i++) {
 		LDAPMod *mod = (LDAPMod *) mods[i];
 		gchar **vals;
@@ -683,10 +683,10 @@ void ldapsvr_print_ldapmod(LDAPMod *mods[]) {
 			case LDAP_MOD_DELETE: mod_op = g_strdup("DELETE"); break;
 			default: mod_op = g_strdup("UNKNOWN");
 		}
-		fprintf( stderr, "Operation: %s\tType:%s\nValues:\n", mod_op, mod->mod_type);
+		g_printerr( "Operation: %s\tType:%s\nValues:\n", mod_op, mod->mod_type);
 		vals = mod->mod_vals.modv_strvals;
 		while (*vals) {
-			fprintf( stderr, "\t%s\n", *vals++);
+			g_printerr( "\t%s\n", *vals++);
 		}
 	}
 }
@@ -710,7 +710,7 @@ void ldapsvr_compare_attr(LDAP *ld, gchar *dn, gint cnt, LDAPMod *mods[]) {
 		if (!value || strcmp(value, "") == 0)
 			value = g_strdup("thisisonlyadummy");
 		rc = ldap_compare_s(ld, dn, mods[i]->mod_type, value);
-		fprintf(stderr, "ldap_compare for (%s:%s)\" failed[0x%x]: %s\n",
+		g_printerr("ldap_compare for (%s:%s)\" failed[0x%x]: %s\n",
         	mods[i]->mod_type, value, rc, ldap_err2string(rc));
 		g_free(value);
 	}
@@ -747,7 +747,7 @@ int ldapsvr_compare_manual_attr(LDAP *ld, LdapServer *server, gchar *dn, char *a
 	if (ctl) {
 		rc = ldap_search_s(ld, ctl->baseDN, /*LDAP_SCOPE_SUBTREE*/LDAP_SCOPE_ONELEVEL, filter, NULL, 0, &res);
 		if (rc) {
-			fprintf(stderr, "ldap_search for attr=%s\" failed[0x%x]: %s\n",attr, rc, ldap_err2string(rc));
+			g_printerr("ldap_search for attr=%s\" failed[0x%x]: %s\n",attr, rc, ldap_err2string(rc));
 			retVal = -2;
 		}
 		else {
@@ -959,7 +959,7 @@ void ldapsvr_handle_other_attributes(LDAP *ld, LdapServer *server, char *dn, GHa
 				server->retVal = LDAPRC_ALREADY_EXIST;
 				break;
 			default:
-				fprintf(stderr, "ldap_modify for dn=%s\" failed[0x%x]: %s\n",dn, rc, ldap_err2string(rc));
+				g_printerr("ldap_modify for dn=%s\" failed[0x%x]: %s\n",dn, rc, ldap_err2string(rc));
 				if (rc == 0x8)
 					server->retVal = LDAPRC_STRONG_AUTH;
 				else
@@ -1100,7 +1100,7 @@ void ldapsvr_add_contact(LdapServer *server, GHashTable *contact) {
 				server->retVal = LDAPRC_ALREADY_EXIST;
 				break;
 			default:
-				fprintf(stderr, "ldap_modify for dn=%s\" failed[0x%x]: %s\n",base_dn, rc, ldap_err2string(rc));
+				g_printerr("ldap_modify for dn=%s\" failed[0x%x]: %s\n",base_dn, rc, ldap_err2string(rc));
 				if (rc == 0x8)
 					server->retVal = LDAPRC_STRONG_AUTH;
 				else
@@ -1159,9 +1159,9 @@ void ldapsvr_update_contact(LdapServer *server, GHashTable *contact) {
 				 */
 			}
 			else {
-				fprintf(stderr, "Current dn: %s\n", dn);
-				fprintf(stderr, "new dn: %s\n", newRdn);
-				fprintf(stderr, "LDAP Error(ldap_modrdn2_s) failed[0x%x]: %s\n", rc, ldap_err2string(rc));
+				g_printerr("Current dn: %s\n", dn);
+				g_printerr("new dn: %s\n", newRdn);
+				g_printerr("LDAP Error(ldap_modrdn2_s) failed[0x%x]: %s\n", rc, ldap_err2string(rc));
 				g_free(newRdn);
 				clean_up(ld, server, contact);
 				return;
@@ -1310,7 +1310,7 @@ void ldapsvr_update_contact(LdapServer *server, GHashTable *contact) {
 		mods[cnt] = NULL;
 		rc = ldap_modify_ext_s(ld, dn, mods, NULL, NULL);
 		if (rc) {
-			fprintf(stderr, "ldap_modify for dn=%s\" failed[0x%x]: %s\n",
+			g_printerr("ldap_modify for dn=%s\" failed[0x%x]: %s\n",
                     dn, rc, ldap_err2string(rc));
 			server->retVal = LDAPRC_NAMING_VIOLATION;
 		}
@@ -1351,7 +1351,7 @@ void ldapsvr_delete_contact(LdapServer *server, GHashTable *contact) {
 	server->retVal = LDAPRC_SUCCESS;
 	rc = ldap_delete_ext_s(ld, dn, NULL, NULL);
 	if (rc) {
-		fprintf(stderr, "ldap_modify for dn=%s\" failed[0x%x]: %s\n",
+		g_printerr("ldap_modify for dn=%s\" failed[0x%x]: %s\n",
 				dn, rc, ldap_err2string(rc));
 		server->retVal = LDAPRC_NODN;
 	}
@@ -1415,7 +1415,7 @@ void ldapsvr_update_book(LdapServer *server, ItemPerson *item) {
 					}
 				}
 				else {
-					fprintf(stderr, "\t\tpid : ???\n");
+					g_printerr("\t\tpid : ???\n");
 				}
 				node = g_list_next(node);
 			}

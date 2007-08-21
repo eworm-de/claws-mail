@@ -119,9 +119,9 @@ gint ldapsvr_get_status( LdapServer *server ) {
 ItemFolder *ldapsvr_get_root_folder( LdapServer *server ) {
 	g_return_val_if_fail( server != NULL, NULL );
 	/*
-	printf( "ldapsvr_get_root_folder/start\n" );
+	g_print( "ldapsvr_get_root_folder/start\n" );
 	ldapsvr_print_data( server, stdout );
-	printf( "ldapsvr_get_root_folder/done\n" );
+	g_print( "ldapsvr_get_root_folder/done\n" );
 	*/
 	return addrcache_get_root_folder( server->addressCache );
 }

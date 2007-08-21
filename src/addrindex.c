@@ -979,7 +979,7 @@ static AddressIfFragment *addrindex_read_fragment( XMLFile *file ) {
 	guint prevLevel;
 	gint rc;
 
-	/* printf( "addrindex_read_fragment\n" ); */
+	/* g_print( "addrindex_read_fragment\n" ); */
 
 	prevLevel = file->level;
 
@@ -1306,7 +1306,7 @@ static AddressDataSource *addrindex_parse_ldap( XMLFile *file ) {
 	gboolean bTLS, bSSL;
 	gint iMatch;
 
-	/* printf( "addrindex_parse_ldap\n" ); */
+	/* g_print( "addrindex_parse_ldap\n" ); */
 	/* Set up some defaults */
 	bDynSearch = FALSE;
 	bTLS = FALSE;
@@ -1343,7 +1343,7 @@ static AddressDataSource *addrindex_parse_ldap( XMLFile *file ) {
 		else if( strcmp( name, ATTAG_LDAP_CRITERIA ) == 0 ) {
 			g_free( criteria );
 			criteria = g_strdup( value );
-			printf("criteria %s\n", criteria);
+			g_print("criteria %s\n", criteria);
 		}
 		else if( strcmp( name, ATTAG_LDAP_MAX_ENTRY ) == 0 ) {
 			ldapctl_set_max_entries( ctl, ivalue );
@@ -1604,7 +1604,7 @@ static gint addrindex_read_file( AddressIndex *addrIndex ) {
 
 	if( file == NULL ) {
 		/*
-		fprintf( stdout, " file '%s' does not exist.\n", addrIndex->fileName );
+		g_print( " file '%s' does not exist.\n", addrIndex->fileName );
 		*/
 		return addrIndex->retVal;
 	}
@@ -1914,7 +1914,7 @@ static void addrindex_add_obj( XMLFile *file, AddressCvtNode *node ) {
 			node->list = g_list_append( node->list, newNode );
 		}
 		else {
-			/* printf( "invalid: !!! \n" ); */
+			/* g_print( "invalid: !!! \n" ); */
 			attr = xml_get_current_tag_attr( file );
 		}
 	}
@@ -1935,11 +1935,11 @@ static void addrindex_consume_tree( XMLFile *file ) {
 		if (file->level < prev_level) return;
 
 		xtag = xml_get_current_tag( file );
-		/* printf( "tag : %s\n", xtag->tag ); */
+		/* g_print( "tag : %s\n", xtag->tag ); */
 		element = xml_get_element( file );
 		attr = xml_get_current_tag_attr( file );
 		/* show_attribs( attr ); */
-		/* printf( "\ttag  value : %s :\n", element ); */
+		/* g_print( "\ttag  value : %s :\n", element ); */
 		addrindex_consume_tree( file );
 	}
 }
@@ -2140,7 +2140,7 @@ static void addrindex_convert_tree( AddressIndex *addrIndex, XMLFile *file ) {
 		if (file->level < prev_level) return;
 
 		xtag = xml_get_current_tag( file );
-		/* printf( "tag : %d : %s\n", prev_level, xtag->tag ); */
+		/* g_print( "tag : %d : %s\n", prev_level, xtag->tag ); */
 		if( strcmp( xtag->tag, TAG_IF_OLD_COMMON ) == 0 ) {
 			if( addrindex_process_book( addrIndex, file, DISP_OLD_COMMON ) ) {
 				addrIndex->needsConversion = FALSE;
@@ -2160,7 +2160,7 @@ static void addrindex_convert_tree( AddressIndex *addrIndex, XMLFile *file ) {
 		element = xml_get_element( file );
 		attr = xml_get_current_tag_attr( file );
 		/* show_attribs( attr ); */
-		/* printf( "\ttag  value : %s :\n", element ); */
+		/* g_print( "\ttag  value : %s :\n", element ); */
 		addrindex_consume_tree( file );
 	}
 }
@@ -2175,7 +2175,7 @@ static gint addrindex_convert_data( AddressIndex *addrIndex ) {
 	g_free( fileSpec );
 
 	if( file == NULL ) {
-		/* fprintf( stdout, " file '%s' does not exist.\n", addrIndex->fileName ); */
+		/* g_print( " file '%s' does not exist.\n", addrIndex->fileName ); */
 		return addrIndex->retVal;
 	}
 
@@ -2371,7 +2371,7 @@ gint addrindex_ds_read_data( AddressDataSource *ds ) {
 	if( iface->getReadData ) {
 		/*
 		gchar *name = ( iface->getName ) ( ds->rawDataSource );
-		printf( "addrindex_ds_read_data...reading:::%s:::\n", name );
+		g_print( "addrindex_ds_read_data...reading:::%s:::\n", name );
 		*/
 		retVal = ( iface->getReadData ) ( ds->rawDataSource );
 	}
@@ -2494,7 +2494,7 @@ gint addrindex_setup_search(
 	queryID = req->queryID;
 	qryreq_set_search_type( req, ADDRSEARCH_DYNAMIC );
 
-	/* printf( "***> query ID ::%d::\n", queryID ); */
+	/* g_print( "***> query ID ::%d::\n", queryID ); */
 	return queryID;
 }
 
@@ -2526,7 +2526,7 @@ static gboolean addrindex_start_dynamic( QueryRequest *req ) {
 	GList *nodeDS;
 	gint type;
 
-	/* printf( "addrindex_start_dynamic::%d::\n", req->queryID ); */
+	/* g_print( "addrindex_start_dynamic::%d::\n", req->queryID ); */
 	nodeIf = _addressIndex_->searchOrder;
 	while( nodeIf ) {
 		iface = nodeIf->data;
@@ -2579,7 +2579,7 @@ void addrindex_stop_search( const gint queryID ){
 	AddrQueryObject *aqo;
 	GList *node;
 
-	/* printf( "addrindex_stop_search/queryID=%d\n", queryID ); */
+	/* g_print( "addrindex_stop_search/queryID=%d\n", queryID ); */
 	/* If query ID does not match, search has not been setup */
 	req = qrymgr_find_request( queryID );
 	if( req == NULL ) {
@@ -2701,7 +2701,7 @@ gboolean addrindex_start_search( const gint queryID ) {
 	AddrSearchType searchType;
 
 	retVal = FALSE;
-	/* printf( "addrindex_start_search/queryID=%d\n", queryID ); */
+	/* g_print( "addrindex_start_search/queryID=%d\n", queryID ); */
 	req = qrymgr_find_request( queryID );
 	if( req == NULL ) {
 		return retVal;
@@ -2728,11 +2728,11 @@ void addrindex_remove_results( AddressDataSource *ds, ItemFolder *folder ) {
 	AddressCache *cache;
 	gint queryID = 0;
 
-	/* printf( "addrindex_remove_results/start\n" ); */
+	/* g_print( "addrindex_remove_results/start\n" ); */
 
 	/* Test for folder */
 	if( folder->folderType != ADDRFOLDER_QUERY_RESULTS ) return;
-	/* printf( "folder name ::%s::\n", ADDRITEM_NAME(folder) ); */
+	/* g_print( "folder name ::%s::\n", ADDRITEM_NAME(folder) ); */
 	adbase = ( AddrBookBase * ) ds->rawDataSource;
 	if( adbase == NULL ) return;
 	cache = adbase->addressCache;
@@ -2747,23 +2747,23 @@ void addrindex_remove_results( AddressDataSource *ds, ItemFolder *folder ) {
 
 		qry = ( LdapQuery * ) folder->folderData;
 		queryID = ADDRQUERY_ID(qry);
-		/* printf( "calling ldapquery_remove_results...queryID=%d\n", queryID ); */
+		/* g_print( "calling ldapquery_remove_results...queryID=%d\n", queryID ); */
 		delFlag = ldapquery_remove_results( qry );
 		if (delFlag) {
 			ldapqry_free( qry );
 		}
-		/* printf( "calling ldapquery_remove_results...done\n" ); */
+		/* g_print( "calling ldapquery_remove_results...done\n" ); */
 		/*
 		if( delFlag ) {
-			printf( "delFlag IS-TRUE\n" );
+			g_print( "delFlag IS-TRUE\n" );
 		}
 		else {
-			printf( "delFlag IS-FALSE\n" );
+			g_print( "delFlag IS-FALSE\n" );
 		}
 		*/
 #endif
 	}
-	/* printf( "addrindex_remove_results/end\n" ); */
+	/* g_print( "addrindex_remove_results/end\n" ); */
 
 	/* Delete query request */
 	if( queryID > 0 ) {

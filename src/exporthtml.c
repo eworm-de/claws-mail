@@ -960,7 +960,7 @@ void exporthtml_process(
 	htmlFile = g_fopen( ctl->path, "wb" );
 	if( ! htmlFile ) {
 		/* Cannot open file */
-		printf( "Cannot open file for write\n" );
+		g_print( "Cannot open file for write\n" );
 		ctl->retVal = MGU_OPEN_FILE;
 		return;
 	}

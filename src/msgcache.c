@@ -324,7 +324,7 @@ gint msgcache_get_memory_usage(MsgCache *cache)
 { \
 	GET_CACHE_DATA_INT(tmp_len);	\
 	if ((tmp_len = msgcache_get_cache_data_str(walk_data, &data, tmp_len, conv)) < 0) { \
-		printf("error at rem_len:%d\n", rem_len);\
+		g_print("error at rem_len:%d\n", rem_len);\
 		procmsg_msginfo_free(msginfo); \
 		error = TRUE; \
 		goto bail_err; \

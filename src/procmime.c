@@ -1898,8 +1898,8 @@ static gboolean output_func(GNode *node, gpointer data)
 
 	depth = g_node_depth(node);
 	for (i = 0; i < depth; i++)
-		printf("    ");
-	printf("%s/%s (offset:%d length:%d encoding: %d)\n", typenames[mimeinfo->type], mimeinfo->subtype, mimeinfo->offset, mimeinfo->length, mimeinfo->encoding_type);
+		g_print("    ");
+	g_print("%s/%s (offset:%d length:%d encoding: %d)\n", typenames[mimeinfo->type], mimeinfo->subtype, mimeinfo->offset, mimeinfo->length, mimeinfo->encoding_type);
 
 	return FALSE;
 }

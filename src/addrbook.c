@@ -920,7 +920,7 @@ gint addrbook_read_data(AddressBookFile *book)
 	g_return_val_if_fail(book != NULL, -1);
 
 	/*
-	printf( "...addrbook_read_data :%s:\t:%s:\n", book->fileName,
+	g_print( "...addrbook_read_data :%s:\t:%s:\n", book->fileName,
 		addrcache_get_name( book->addressCache ) );
 	*/
 
@@ -1839,7 +1839,7 @@ static void addrbook_chkparse_attribute(AddressBookFile *book, XMLFile *file)
 	attr = xml_get_current_tag_attr(file);
 	/* addrbook_show_attribs( attr ); */
 	element = xml_get_element(file);
-	/* printf( "\t\tattrib value : %s\n", element ); */
+	/* g_print( "\t\tattrib value : %s\n", element ); */
 }
 
 /**
@@ -2045,7 +2045,7 @@ gint addrbook_test_read_file(AddressBookFile *book, gchar *fileName)
 	if (file) {
 		book->retVal = MGU_BAD_FORMAT;
 		if (setjmp(book->jumper)) {
-			/* printf( "Caught Ya!!!\n" ); */
+			/* g_print( "Caught Ya!!!\n" ); */
 			xml_close_file(file);
 			return book->retVal;
 		}

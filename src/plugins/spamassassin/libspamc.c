@@ -1186,7 +1186,7 @@ int transport_setup(struct transport *tp, int flags)
     WSADATA wsaData;
     int nCode;
     if ((nCode = WSAStartup(MAKEWORD(1, 1), &wsaData)) != 0) {
-	printf("WSAStartup() returned error code %d\n", nCode);
+	g_print("WSAStartup() returned error code %d\n", nCode);
 	return EX_OSERR;
     }
 
@@ -1318,7 +1318,7 @@ libspamc_log (int flags, int level, char *msg, ...)
         syslog (level, "%s", buf);
 #else
         (void) level;  /* not used. suppress compiler warning */
-        fprintf (stderr, "%s\n", buf);
+        g_printerr ("%s\n", buf);
 #endif
     }
 
@@ -1355,7 +1355,7 @@ static void _test_locale_safe_string_to_float_val(float input)
 	return;
     }
 
-    printf("FAIL: input=%f != output=%f\n", input, output);
+    g_print("FAIL: input=%f != output=%f\n", input, output);
 }
 
 static void unit_test_locale_safe_string_to_float(void)
@@ -1368,7 +1368,7 @@ static void unit_test_locale_safe_string_to_float(void)
     float num;
     int i;
 
-    printf("starting unit_test_locale_safe_string_to_float\n");
+    g_print("starting unit_test_locale_safe_string_to_float\n");
     /* tests of precision */
     for (i = 0; statictestset[i] != 0.0; i++) {
 	_test_locale_safe_string_to_float_val(statictestset[i]);
@@ -1380,7 +1380,7 @@ static void unit_test_locale_safe_string_to_float(void)
     for (num = -1000.0; num < 1000.0; num += 0.01) {
 	_test_locale_safe_string_to_float_val(num);
     }
-    printf("finished unit_test_locale_safe_string_to_float\n");
+    g_print("finished unit_test_locale_safe_string_to_float\n");
 }
 
 void do_libspamc_unit_tests(void)

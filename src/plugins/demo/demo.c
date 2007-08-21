@@ -34,7 +34,7 @@ gboolean my_log_hook(gpointer source, gpointer data)
 {
 	LogText *logtext = (LogText *)source;
 
-	printf("*** Demo Plugin log: %s\n", logtext->text);
+	g_print("*** Demo Plugin log: %s\n", logtext->text);
 
 	return FALSE;
 }
@@ -53,7 +53,7 @@ gint plugin_init(gchar **error)
 		return -1;
 	}
 
-	printf("Demo plugin loaded\n");
+	g_print("Demo plugin loaded\n");
 
 	return 0;
 }
@@ -62,7 +62,7 @@ gboolean plugin_done(void)
 {
 	hooks_unregister_hook(LOG_APPEND_TEXT_HOOKLIST, hook_id);
 
-	printf("Demo plugin unloaded\n");
+	g_print("Demo plugin unloaded\n");
 	return TRUE;
 }
 

@@ -180,7 +180,7 @@ gint g_chmod	(const gchar	*path,
 
 #define FILE_OP_ERROR(file, func) \
 { \
-	fprintf(stderr, "%s: ", file); \
+	g_printerr("%s: ", file); \
 	fflush(stderr); \
 	perror(func); \
 }

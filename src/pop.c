@@ -901,7 +901,7 @@ static Pop3ErrorValue pop3_ok(Pop3Session *session, const gchar *msg)
 
 		g_free(session->error_msg);
 		session->error_msg = g_strdup(msg);
-		fprintf(stderr, "POP3: %s\n", msg);
+		g_printerr("POP3: %s\n", msg);
 	} else
 		ok = PS_PROTOCOL;
 

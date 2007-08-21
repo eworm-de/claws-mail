@@ -1327,7 +1327,7 @@ next_token:
 	}
 /*
 	g_timer_stop(timer);
-	printf("mh_get_flags: %f secs\n", g_timer_elapsed(timer, NULL));
+	g_print("mh_get_flags: %f secs\n", g_timer_elapsed(timer, NULL));
 	g_timer_destroy(timer);
 */
 	return 0;

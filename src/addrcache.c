@@ -192,7 +192,7 @@ static void addrcache_free_all_folders( ItemFolder *parent ) {
 void addrcache_clear( AddressCache *cache ) {
 	g_return_if_fail( cache != NULL );
 
-	/* printf( "...addrcache_clear :%s:\n", cache->name ); */
+	/* g_print( "...addrcache_clear :%s:\n", cache->name ); */
 	/* Free up folders and hash table */
 	addrcache_free_all_folders( cache->rootFolder );
 	addrcache_free_item_hash( cache->itemHash );

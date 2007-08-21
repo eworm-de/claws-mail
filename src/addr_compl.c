@@ -894,7 +894,7 @@ static void addrcompl_add_entry( CompletionWindow *cw, gchar *address ) {
 		stock_pixbuf_gdk(cw->list_view, STOCK_PIXMAP_ADDR_ONE, &email_pixbuf);
 		g_object_ref(G_OBJECT(email_pixbuf));
 	}
-	/* printf( "\t\tAdding :%s\n", address ); */
+	/* g_print( "\t\tAdding :%s\n", address ); */
 	if (strstr(address, " <!--___group___-->")) {
 		is_group = TRUE;
 		if (_groupAddresses_)
@@ -956,7 +956,7 @@ static gboolean addrcompl_idle( gpointer data ) {
 		node = _displayQueue_;
 		while( node ) {
 			address = node->data;
-			/* printf( "address ::: %s :::\n", address ); */
+			/* g_print( "address ::: %s :::\n", address ); */
 			addrcompl_add_entry( _compWindow_, address );
 			g_free( address );
 			node = g_list_next( node );
@@ -985,7 +985,7 @@ static gint addrcompl_callback_entry(
 	GList *node;
 	gchar *address;
 
-	/* printf( "addrcompl_callback_entry::queryID=%d\n", queryID ); */
+	/* g_print( "addrcompl_callback_entry::queryID=%d\n", queryID ); */
 	pthread_mutex_lock( & _completionMutex_ );
 	if( queryID == _queryID_ ) {
 		/* Append contents to end of display queue */
@@ -994,7 +994,7 @@ static gint addrcompl_callback_entry(
 			ItemEMail *email = node->data;
 
 			address = addritem_format_email( email );
-			/* printf( "\temail/address ::%s::\n", address ); */
+			/* g_print( "\temail/address ::%s::\n", address ); */
 			_displayQueue_ = g_list_append( _displayQueue_, address );
 			node = g_list_next( node );
 		}
@@ -1038,7 +1038,7 @@ static void addrcompl_load_local( void ) {
 		gchar *address;
 
 		address = get_complete_address( count );
-		/* printf( "\taddress ::%s::\n", address ); */
+		/* g_print( "\taddress ::%s::\n", address ); */
 
 		/* Append contents to end of display queue */
 		addrcompl_add_queue( address );
@@ -1057,7 +1057,7 @@ static void addrcompl_start_search( void ) {
 	_queryID_ = addrindex_setup_search(
 		searchTerm, NULL, addrcompl_callback_entry );
 	g_free( searchTerm );
-	/* printf( "addrcompl_start_search::queryID=%d\n", _queryID_ ); */
+	/* g_print( "addrcompl_start_search::queryID=%d\n", _queryID_ ); */
 
 	/* Load local stuff */
 	addrcompl_load_local();
@@ -1065,7 +1065,7 @@ static void addrcompl_start_search( void ) {
 	/* Sit back and wait until something happens */
 	_completionIdleID_ =
 		g_idle_add( ( GtkFunction ) addrcompl_idle, NULL );
-	/* printf( "addrindex_start_search::queryID=%d\n", _queryID_ ); */
+	/* g_print( "addrindex_start_search::queryID=%d\n", _queryID_ ); */
 
 	addrindex_start_search( _queryID_ );
 }
@@ -1278,7 +1278,7 @@ static gboolean address_completion_complete_address_in_entry(GtkEntry *entry,
 	/* get an address component from the cursor */
 	searchTerm = get_address_from_edit( entry, &cursor_pos );
 	if( ! searchTerm ) return FALSE;
-	/* printf( "search for :::%s:::\n", searchTerm ); */
+	/* g_print( "search for :::%s:::\n", searchTerm ); */
 
 	/* Clear any existing search */
 	g_free( _compWindow_->searchTerm );
@@ -1573,20 +1573,20 @@ static gboolean completion_window_key_press(GtkWidget *widget,
  * Setup completion object.
  */
 void addrcompl_initialize( void ) {
-	/* printf( "addrcompl_initialize...\n" ); */
+	/* g_print( "addrcompl_initialize...\n" ); */
 	if( ! _compWindow_ ) {
 		_compWindow_ = addrcompl_create_window();
 	}
 	_queryID_ = 0;
 	_completionIdleID_ = 0;
-	/* printf( "addrcompl_initialize...done\n" ); */
+	/* g_print( "addrcompl_initialize...done\n" ); */
 }
 
 /**
  * Teardown completion object.
  */
 void addrcompl_teardown( void ) {
-	/* printf( "addrcompl_teardown...\n" ); */
+	/* g_print( "addrcompl_teardown...\n" ); */
 	addrcompl_free_window( _compWindow_ );
 	_compWindow_ = NULL;
 	if( _displayQueue_ ) {
@@ -1594,7 +1594,7 @@ void addrcompl_teardown( void ) {
 	}
 	_displayQueue_ = NULL;
 	_completionIdleID_ = 0;
-	/* printf( "addrcompl_teardown...done\n" ); */
+	/* g_print( "addrcompl_teardown...done\n" ); */
 }
 
 /*

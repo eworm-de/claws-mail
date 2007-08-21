@@ -174,18 +174,18 @@ void vcard_free( VCardFile *cardFile ) {
 static gint vcard_open_file( VCardFile* cardFile ) {
 	g_return_val_if_fail( cardFile != NULL, -1 );
 
-	/* fprintf( stdout, "Opening file\n" ); */
+	/* g_print( "Opening file\n" ); */
 	cardFile->addressCache->dataRead = FALSE;
 	if( cardFile->path ) {
 		cardFile->file = g_fopen( cardFile->path, "rb" );
 		if( ! cardFile->file ) {
-			/* fprintf( stderr, "can't open %s\n", cardFile->path ); */
+			/* g_printerr( "can't open %s\n", cardFile->path ); */
 			cardFile->retVal = MGU_OPEN_FILE;
 			return cardFile->retVal;
 		}
 	}
 	else {
-		/* fprintf( stderr, "file not specified\n" ); */
+		/* g_printerr( "file not specified\n" ); */
 		cardFile->retVal = MGU_NO_FILE;
 		return cardFile->retVal;
 	}
@@ -445,7 +445,7 @@ static void vcard_read_file( VCardFile *cardFile ) {
 		gchar *line =  vcard_get_line( cardFile );
 		if( line == NULL ) break;
 
-		/* fprintf( stdout, "%s\n", line ); */
+		/* g_print( "%s\n", line ); */
 
 		/* Parse line */
 		tagtemp = vcard_get_tagname( line, VCARD_SEP_TAG );
@@ -454,7 +454,7 @@ static void vcard_read_file( VCardFile *cardFile ) {
 			continue;
 		}
 
-		/* fprintf( stdout, "\ttemp:  %s\n", tagtemp ); */
+		/* g_print( "\ttemp:  %s\n", tagtemp ); */
 		tagvalue = vcard_get_tagvalue( line, VCARD_SEP_TAG );
 		if( tagvalue == NULL ) {
 			g_free( tagtemp );
@@ -469,40 +469,40 @@ static void vcard_read_file( VCardFile *cardFile ) {
 			tagtemp = NULL;
 		}
 
-		/* fprintf( stdout, "\tname:  %s\n", tagname ); */
-		/* fprintf( stdout, "\ttype:  %s\n", tagtype ); */
-		/* fprintf( stdout, "\tvalue: %s\n", tagvalue ); */
+		/* g_print( "\tname:  %s\n", tagname ); */
+		/* g_print( "\ttype:  %s\n", tagtype ); */
+		/* g_print( "\tvalue: %s\n", tagvalue ); */
 
 		if( g_utf8_collate( tagtype, VCARD_TYPE_QP ) == 0 ) {
 			/* Quoted-Printable: could span multiple lines */
 			tagvalue = vcard_read_qp( cardFile, tagvalue );
 			vcard_unescape_qp( tagvalue );
-			/* fprintf( stdout, "QUOTED-PRINTABLE !!! final\n>%s<\n", tagvalue ); */
+			/* g_print( "QUOTED-PRINTABLE !!! final\n>%s<\n", tagvalue ); */
 		}
 
 		if( g_utf8_collate( tagname, VCARD_TAG_START ) == 0 &&
 			g_ascii_strcasecmp( tagvalue, VCARD_NAME ) == 0 ) {
-			/* fprintf( stdout, "start card\n" ); */
+			/* g_print( "start card\n" ); */
 			vcard_free_lists( listName, listAddress, listRemarks, listID );
 			listName = listAddress = listRemarks = listID = NULL;
 		}
 		if( g_utf8_collate( tagname, VCARD_TAG_FULLNAME ) == 0 ) {
-			/* fprintf( stdout, "- full name: %s\n", tagvalue ); */
+			/* g_print( "- full name: %s\n", tagvalue ); */
 			listName = g_slist_append( listName, g_strdup( tagvalue ) );
 		}
 		if( g_utf8_collate( tagname, VCARD_TAG_EMAIL ) == 0 ) {
-			/* fprintf( stdout, "- address: %s\n", tagvalue ); */
+			/* g_print( "- address: %s\n", tagvalue ); */
 			listAddress = g_slist_append( listAddress, g_strdup( tagvalue ) );
 			listRemarks = g_slist_append( listRemarks, g_strdup( tagtype ) );
 		}
 		if( g_utf8_collate( tagname, VCARD_TAG_UID ) == 0 ) {
-			/* fprintf( stdout, "- id: %s\n", tagvalue ); */
+			/* g_print( "- id: %s\n", tagvalue ); */
 			listID = g_slist_append( listID, g_strdup( tagvalue ) );
 		}
 		if( g_utf8_collate( tagname, VCARD_TAG_END ) == 0 &&
 			g_ascii_strcasecmp( tagvalue, VCARD_NAME ) == 0 ) {
 			/* vCard is complete */
-			/* fprintf( stdout, "end card\n--\n" ); */
+			/* g_print( "end card\n--\n" ); */
 			/* vcard_dump_lists( listName, listAddress, listRemarks, listID, stdout ); */
 			vcard_build_items( cardFile, listName, listAddress, listRemarks, listID );
 			vcard_free_lists( listName, listAddress, listRemarks, listID );

@@ -593,7 +593,7 @@ static void prefs_custom_header_val_from_file_cb(void)
 				}
 				if (g_ascii_strcasecmp("png", gdk_pixbuf_format_get_name(format))) {
 					alertpanel_error(_("The image isn't in the correct format (PNG)."));
-					printf("%s\n", gdk_pixbuf_format_get_name(format));
+					g_print("%s\n", gdk_pixbuf_format_get_name(format));
 					g_free(filename);
 					return;
 				}
@@ -602,7 +602,7 @@ static void prefs_custom_header_val_from_file_cb(void)
 				int i = 0;
 				if (g_ascii_strcasecmp("xbm", gdk_pixbuf_format_get_name(format))) {
 					alertpanel_error(_("The image isn't in the correct format (XBM)."));
-					printf("%s\n", gdk_pixbuf_format_get_name(format));
+					g_print("%s\n", gdk_pixbuf_format_get_name(format));
 					g_free(filename);
 					return;
 				}

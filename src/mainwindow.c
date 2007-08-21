@@ -4425,7 +4425,7 @@ void mainwindow_jump_to(const gchar *target, gboolean popup)
 		return;
 		
 	if (!mainwin) {
-		printf("not initialized\n");
+		g_print("not initialized\n");
 		return;
 	}
 
@@ -4437,7 +4437,7 @@ void mainwindow_jump_to(const gchar *target, gboolean popup)
 		*p = '\0';
 
 	if ((item = folder_find_item_from_identifier(tmp))) {
-		printf("selecting folder '%s'\n", tmp);
+		g_print("selecting folder '%s'\n", tmp);
 		folderview_select(mainwin->folderview, item);
 		if (popup)
 			main_window_popup(mainwin);
@@ -4449,13 +4449,13 @@ void mainwindow_jump_to(const gchar *target, gboolean popup)
 	if (msg) {
 		*msg++ = '\0';
 		if ((item = folder_find_item_from_identifier(tmp))) {
-			printf("selecting folder '%s'\n", tmp);
+			g_print("selecting folder '%s'\n", tmp);
 			folderview_select(mainwin->folderview, item);
 		} else {
-			printf("'%s' not found\n", tmp);
+			g_print("'%s' not found\n", tmp);
 		}
 		if (item && msg && atoi(msg)) {
-			printf("selecting message %d\n", atoi(msg));
+			g_print("selecting message %d\n", atoi(msg));
 			summary_select_by_msgnum(mainwin->summaryview, atoi(msg));
 			summary_display_msg_selected(mainwin->summaryview, FALSE);
 			if (popup)
@@ -4468,7 +4468,7 @@ void mainwindow_jump_to(const gchar *target, gboolean popup)
 			msg[strlen(msg)-1] = '\0';
 			msginfo = folder_item_get_msginfo_by_msgid(item, msg);
 			if (msginfo) {
-				printf("selecting message %s\n", msg);
+				g_print("selecting message %s\n", msg);
 				summary_select_by_msgnum(mainwin->summaryview, msginfo->msgnum);
 				summary_display_msg_selected(mainwin->summaryview, FALSE);
 				if (popup)
@@ -4477,13 +4477,13 @@ void mainwindow_jump_to(const gchar *target, gboolean popup)
 				procmsg_msginfo_free(msginfo);
 				return;
 			} else {
-				printf("'%s' not found\n", msg);
+				g_print("'%s' not found\n", msg);
 			}
 		} else {
-			printf("'%s' not found\n", msg);
+			g_print("'%s' not found\n", msg);
 		}
 	} else {
-		printf("'%s' not found\n", tmp);
+		g_print("'%s' not found\n", tmp);
 	}
 	
 	g_free(tmp);

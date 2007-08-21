@@ -594,7 +594,7 @@ gboolean prefs_gpg_should_skip_encryption_warning(const gchar *systemid)
 	systems = g_strsplit(prefs_gpg_get_config()->skip_encryption_warning,
 				",", -1);
 	while (systems && systems[i]) {
-		printf(" cmp %s %s\n", systems[i], systemid);
+		g_print(" cmp %s %s\n", systems[i], systemid);
 		if (!strcmp(systems[i],systemid)) {
 			g_strfreev(systems);
 			return TRUE;

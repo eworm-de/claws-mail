@@ -109,7 +109,7 @@ static gint mutt_open_file( MuttFile* muttFile ) {
 		}
 	}
 	else {
-		/* printf( "file not specified\n" ); */
+		/* g_print( "file not specified\n" ); */
 		muttFile->retVal = MGU_NO_FILE;
 		return muttFile->retVal;
 	}
@@ -414,7 +414,7 @@ static void mutt_build_items( MuttFile *muttFile, AddressCache *cache, gchar *li
 	gchar *aliasTag, *aliasName, *recipient;
 	GSList *addrList;
 
-	/* printf( "\nBUILD >%s<\n", line ); */
+	/* g_print( "\nBUILD >%s<\n", line ); */
 	list = mgu_parse_string( line,  3, &tCount );
 	if( tCount < 3 ) {
 		if( list ) {
@@ -433,10 +433,10 @@ static void mutt_build_items( MuttFile *muttFile, AddressCache *cache, gchar *li
 	addrList = NULL;
 	if( strcmp( aliasTag, MUTT_TAG_ALIAS ) == 0 ) {
 		aCount = 0;
-		/* printf( "aliasName :%s:\n", aliasName ); */
-		/* printf( "recipient :%s:\n", recipient ); */
+		/* g_print( "aliasName :%s:\n", aliasName ); */
+		/* g_print( "recipient :%s:\n", recipient ); */
 		addrList = mutt_parse_rcplist( recipient, &aCount );
-		/* printf( "---\n" ); */
+		/* g_print( "---\n" ); */
 		mutt_build_address( muttFile, cache, aliasName, addrList, aCount );
 	}
 

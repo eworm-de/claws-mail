@@ -361,7 +361,7 @@ static void crash_debug(unsigned long crash_pid,
 		dup(choutput[1]);
 		close(choutput[0]);
 		if (-1 == execvp("gdb", argp)) 
-			puts("error execvp\n");
+			g_print("error execvp\n");
 	} else {
 		char buf[100];
 		int r;
@@ -372,7 +372,7 @@ static void crash_debug(unsigned long crash_pid,
 		 * make it non blocking
 		 */
 		if (-1 == fcntl(choutput[0], F_SETFL, O_NONBLOCK))
-			puts("set to non blocking failed\n");
+			g_print("set to non blocking failed\n");
 
 		/*
 		 * get the output

@@ -995,7 +995,7 @@ static void textview_write_body(TextView *textview, MimeInfo *mimeinfo)
 			dup(pfd[1]);
 			rc = execvp(argv[0], argv);
 			close(pfd[1]);
-			printf (_("The command to view attachment "
+			g_print(_("The command to view attachment "
 			        "as text failed:\n"
 			        "    %s\n"
 			        "Exit code %d\n"), buf, rc);
@@ -1484,7 +1484,7 @@ do_quote:
 			if (textview->uri_list) {
 				lasturi = (ClickableText *)last->data;
 			} else {
-				printf("oops (%d %d)\n",
+				g_print("oops (%d %d)\n",
 					real_quotelevel, textview->prev_quote_level);
 			}		
 			if (lasturi->is_quote == FALSE) {

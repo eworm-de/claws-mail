@@ -210,17 +210,17 @@ void ldif_free( LdifFile *ldifFile ) {
  * \return <i>TRUE</i> if file opened successfully.
  */
 static gint ldif_open_file( LdifFile* ldifFile ) {
-	/* printf( "Opening file\n" ); */
+	/* g_print( "Opening file\n" ); */
 	if( ldifFile->path ) {
 		ldifFile->file = g_fopen( ldifFile->path, "rb" );
 		if( ! ldifFile->file ) {
-			/* printf( "can't open %s\n", ldifFile->path ); */
+			/* g_print( "can't open %s\n", ldifFile->path ); */
 			ldifFile->retVal = MGU_OPEN_FILE;
 			return ldifFile->retVal;
 		}
 	}
 	else {
-		/* printf( "file not specified\n" ); */
+		/* g_print( "file not specified\n" ); */
 		ldifFile->retVal = MGU_NO_FILE;
 		return ldifFile->retVal;
 	}

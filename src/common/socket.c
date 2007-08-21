@@ -551,7 +551,7 @@ struct hostent *my_gethostbyname(const gchar *hostname)
 	if (sigsetjmp(jmpenv, 1)) {
 		alarm(0);
 		signal(SIGALRM, prev_handler);
-		fprintf(stderr, "%s: host lookup timed out.\n", hostname);
+		g_printerr("%s: host lookup timed out.\n", hostname);
 		errno = 0;
 		return NULL;
 	}
@@ -563,7 +563,7 @@ struct hostent *my_gethostbyname(const gchar *hostname)
 		alarm(0);
 		signal(SIGALRM, prev_handler);
 #endif
-		fprintf(stderr, "%s: unknown host.\n", hostname);
+		g_printerr("%s: unknown host.\n", hostname);
 		errno = 0;
 		return NULL;
 	}
@@ -611,13 +611,13 @@ static gint sock_connect_by_hostname(gint sock, const gchar *hostname,
 
 	if (!my_inet_aton(hostname, &ad.sin_addr)) {
 		if ((hp = my_gethostbyname(hostname)) == NULL) {
-			fprintf(stderr, "%s: unknown host.\n", hostname);
+			g_printerr("%s: unknown host.\n", hostname);
 			errno = 0;
 			return -1;
 		}
 
 		if (hp->h_length != 4 && hp->h_length != 8) {
-			fprintf(stderr, "illegal address length received for host %s\n", hostname);
+			g_printerr("illegal address length received for host %s\n", hostname);
 			errno = 0;
 			return -1;
 		}
@@ -648,7 +648,7 @@ static gint sock_connect_by_getaddrinfo(const gchar *hostname, gushort	port)
 	g_snprintf(port_str, sizeof(port_str), "%d", port);
 
 	if ((gai_error = getaddrinfo(hostname, port_str, &hints, &res)) != 0) {
-		fprintf(stderr, "getaddrinfo for %s:%s failed: %s\n",
+		g_printerr("getaddrinfo for %s:%s failed: %s\n",
 			hostname, port_str, gai_strerror(gai_error));
 		return -1;
 	}

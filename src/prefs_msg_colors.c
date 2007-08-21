@@ -717,7 +717,7 @@ static void quote_colors_set_dialog_ok(GtkWidget *widget, gpointer data)
 			prefs_common.color_new = rgbvalue;
 			set_button_bg_color(color_buttons.btn_color_new, rgbvalue);
 		} else {
-			fprintf(stderr, "Unrecognized datatype '%s' in quote_color_set_dialog_ok\n", type);
+			g_printerr("Unrecognized datatype '%s' in quote_color_set_dialog_ok\n", type);
 		}
 	}
 

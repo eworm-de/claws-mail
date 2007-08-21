@@ -4789,7 +4789,7 @@ void imap_cancel_all(void)
 				IMAPSession *imap_session;
 				RemoteFolder *rfolder;
 				
-				fprintf(stderr, "cancelled\n");
+				g_printerr("cancelled\n");
 				imap_threaded_cancel(folder);
 				rfolder = (RemoteFolder *) folder;
 				imap_session = (IMAPSession *) rfolder->session;

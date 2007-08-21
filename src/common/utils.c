@@ -1723,7 +1723,7 @@ gint scan_mailto_url(const gchar *mailto, gchar **to, gchar **cc, gchar **bcc,
 			decode_uri(*attach, value);
 			for (; forbidden_uris[i]; i++) {
 				if (strstr(*attach, forbidden_uris[i])) {
-					printf("Refusing to attach '%s', potential private data leak\n",
+					g_print("Refusing to attach '%s', potential private data leak\n",
 							*attach);
 					g_free(*attach);
 					*attach = NULL;

@@ -2940,7 +2940,7 @@ static FolderItem *folder_item_move_recursive(FolderItem *src, FolderItem *dest,
 	debug_print("%s %s to %s\n", copy?"Copying":"Moving", src->path, dest->path);
 	new_item = folder_create_folder(dest, src->name);
 	if (new_item == NULL) {
-		printf("Can't create folder\n");
+		g_print("Can't create folder\n");
 		return NULL;
 	}
 	

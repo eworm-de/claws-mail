@@ -754,7 +754,7 @@ static gboolean folderview_defer_set(gpointer data)
 	if (mainwin->lock_count)
 		return TRUE;
 		
-	printf("doing deferred folderview_set now\n");
+	g_print("doing deferred folderview_set now\n");
 	folderview_set(folderview);
 
 	folderview->deferred_refresh_id = -1;
@@ -774,7 +774,7 @@ void folderview_set(FolderView *folderview)
 		if (folderview->deferred_refresh_id == -1)
 			folderview->deferred_refresh_id = 
 				g_timeout_add(500, folderview_defer_set, folderview);
-		printf("deferred folderview_set\n");
+		g_print("deferred folderview_set\n");
 		return;
 	}
 

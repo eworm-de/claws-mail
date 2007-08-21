@@ -2260,7 +2260,7 @@ static void addressbook_list_row_selected( GtkCTree *clist,
 
 	aio = gtk_ctree_node_get_row_data( clist, node );
 	if( aio ) {
-		/* printf( "list select: %d : '%s'\n", aio->type, aio->name ); */
+		/* g_print( "list select: %d : '%s'\n", aio->type, aio->name ); */
 		addressbook_list_select_add( aio, ds );
 	}
 
@@ -2279,7 +2279,7 @@ static void addressbook_list_row_unselected( GtkCTree *ctree,
 
 	aio = gtk_ctree_node_get_row_data( ctree, node );
 	if( aio != NULL ) {
-		/* printf( "list unselect: %d : '%s'\n", aio->type, aio->name ); */
+		/* g_print( "list unselect: %d : '%s'\n", aio->type, aio->name ); */
 		addressbook_list_select_remove( aio );
 	}
 
@@ -2813,12 +2813,12 @@ static void addressbook_treenode_delete_cb(
 
 		adapter->itemFolder = NULL;
 		/*
-		printf( "remove folder for ::%s::\n", obj->name );
-		printf( "      folder name ::%s::\n", ADDRITEM_NAME(folder) );
-		printf( "-------------- remove results\n" );
+		g_print( "remove folder for ::%s::\n", obj->name );
+		g_print( "      folder name ::%s::\n", ADDRITEM_NAME(folder) );
+		g_print( "-------------- remove results\n" );
 		*/
 		addrindex_remove_results( ds, folder );
-		/* printf( "-------------- remove node\n" ); */
+		/* g_print( "-------------- remove node\n" ); */
 		gtk_ctree_remove_node( ctree, node );
 		return;
 	}
@@ -3003,7 +3003,7 @@ static void addressbook_new_address_cb( gpointer data, guint action, GtkWidget *
 
 	abf = ds->rawDataSource;
 	if( abf == NULL ) {
-		printf("no addressbook file\n");
+		g_print("no addressbook file\n");
 		return;
 	}
 
@@ -3653,10 +3653,10 @@ static AddressDataSource *addressbook_find_datasource( GtkCTreeNode *node ) {
 		if( GTK_CTREE_ROW(node)->level < 2 ) return NULL;
 		ao = gtk_ctree_node_get_row_data( GTK_CTREE(addrbook.ctree), node );
 		if( ao ) {
-			/* printf( "ao->type = %d\n", ao->type ); */
+			/* g_print( "ao->type = %d\n", ao->type ); */
 			if( ao->type == ADDR_DATASOURCE ) {
 				AdapterDSource *ads = ADAPTER_DSOURCE(ao);
-				/* printf( "found it\n" ); */
+				/* g_print( "found it\n" ); */
 				ds = ads->dataSource;
 				break;
 			}
@@ -3690,7 +3690,7 @@ static void addressbook_set_clist( AddressObject *obj, gboolean refresh ) {
 	}
 
 	if( obj->type == ADDR_INTERFACE ) {
-		/* printf( "set_clist: loading datasource...\n" ); */
+		/* g_print( "set_clist: loading datasource...\n" ); */
 		/* addressbook_node_load_datasource( GTK_CTREE(clist), obj ); */
 		return;
 	}
@@ -4280,7 +4280,7 @@ static void addressbook_search_idle( gpointer data ) {
 	gint queryID;
 
 	queryID = GPOINTER_TO_INT( data );
-	printf( "addressbook_ldap_idle... queryID=%d\n", queryID );
+	g_print( "addressbook_ldap_idle... queryID=%d\n", queryID );
 	*/
 }
 
@@ -4828,7 +4828,7 @@ static void addrbookctl_build_ifselect( void ) {
 	splitStr = g_strsplit( selectStr, ",", -1 );
 	for( i = 0; i < ADDRESSBOOK_MAX_IFACE; i++ ) {
 		if( splitStr[i] ) {
-			/* printf( "%d : %s\n", i, splitStr[i] ); */
+			/* g_print( "%d : %s\n", i, splitStr[i] ); */
 			ifType = strtol( splitStr[i], &endptr, 10 );
 			enabled = TRUE;
 			if( *endptr ) {
@@ -4836,7 +4836,7 @@ static void addrbookctl_build_ifselect( void ) {
 					enabled = FALSE;
 				}
 			}
-			/* printf( "\t%d : %s\n", ifType, enabled ? "yes" : "no" ); */
+			/* g_print( "\t%d : %s\n", ifType, enabled ? "yes" : "no" ); */
 			adapter = addrbookctl_find_interface( ifType );
 			if( adapter ) {
 				newList = g_list_append( newList, adapter );
@@ -4846,7 +4846,7 @@ static void addrbookctl_build_ifselect( void ) {
 			break;
 		}
 	}
-	/* printf( "i=%d\n", i ); */
+	/* g_print( "i=%d\n", i ); */
 	g_strfreev( splitStr );
 	g_free( selectStr );
 

@@ -63,7 +63,7 @@ void description_window_create(DescriptionWindow *dwindow)
 			gtk_widget_destroy(dwindow->window);
 			dwindow->window = NULL; 
 		}
-	} else printf("windows exist\n");
+	} else g_print("windows exist\n");
 }
 
 static void description_create(DescriptionWindow * dwindow)

@@ -675,7 +675,7 @@ static gboolean matcherprop_match_test(const MatcherProp *prop,
 			matcher_test_thread, td) != 0)
 		retval = system(cmd);
 	else {
-		printf("waiting for test thread\n");
+		g_print("waiting for test thread\n");
 		while(!td->done) {
 			/* don't let the interface freeze while waiting */
 			claws_do_idle();
@@ -687,7 +687,7 @@ static gboolean matcherprop_match_test(const MatcherProp *prop,
 		}
 		pthread_join(pt, &res);
 		retval = GPOINTER_TO_INT(res);
-		printf(" test thread returned %d\n", retval);
+		g_print(" test thread returned %d\n", retval);
 	}
 	g_free(td);
 #else
@@ -2368,7 +2368,7 @@ void prefs_matcher_read_config(void)
 	else {
 		/* previous version compatibility */
 
-		/* printf("reading filtering\n"); */
+		/* g_print("reading filtering\n"); */
 		rcpath = g_strconcat(get_rc_dir(), G_DIR_SEPARATOR_S,
 				     FILTERING_RC, NULL);
 		f = g_fopen(rcpath, "rb");
@@ -2379,7 +2379,7 @@ void prefs_matcher_read_config(void)
 			fclose(matcher_parserin);
 		}
 		
-		/* printf("reading scoring\n"); */
+		/* g_print("reading scoring\n"); */
 		rcpath = g_strconcat(get_rc_dir(), G_DIR_SEPARATOR_S,
 				     SCORING_RC, NULL);
 		f = g_fopen(rcpath, "rb");

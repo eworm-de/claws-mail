@@ -139,7 +139,7 @@ static void edit_person_attrib_list_selected(GtkCList *clist, gint row, gint col
 		gtk_widget_set_sensitive(personEditDlg->attrib_del, TRUE);
 	}
 	else {
-		/*fprintf(stderr, "Row: %d -> empty attribute\n", row);*/
+		/*g_printerr("Row: %d -> empty attribute\n", row);*/
 		gtk_entry_set_text( GTK_ENTRY(personEditDlg->entry_atvalue), "");	
 		gtk_widget_set_sensitive(personEditDlg->attrib_del, FALSE);
 	}

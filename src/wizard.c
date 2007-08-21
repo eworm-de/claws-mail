@@ -408,7 +408,7 @@ static void wizard_read_defaults(void)
 	PARSE_DEFAULT(tmpl.mboxfile);
 	PARSE_DEFAULT(tmpl.mailbox);
 /*
-	printf("defaults:"
+	g_print("defaults:"
 	"%s, %s, %s, %s, %s, %d, %s, %s, %s, %s, %s, %s, %d, %d\n",
 	tmpl.name,tmpl.domain,tmpl.email,tmpl.organization,tmpl.smtpserver,
 	tmpl.recvtype,tmpl.recvserver,tmpl.recvuser,tmpl.recvpass,

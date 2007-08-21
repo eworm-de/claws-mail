@@ -1,3 +1,52 @@
+2007-08-21 [wwp]	2.10.0cvs141
+
+	* src/addr_compl.c
+	* src/addrbook.c
+	* src/addrcache.c
+	* src/addrcindex.c
+	* src/addressbook.c
+	* src/addrindex.c
+	* src/browseldap.c
+	* src/crash.c
+	* src/editaddress_other_attributes_ldap.c
+	* src/exporthtml.c
+	* src/folder.c
+	* src/folderview.c
+	* src/imap.c
+	* src/jpilot.c
+	* src/ldapserver.c
+	* src/ldapupdate.c
+	* src/ldif.c
+	* src/main.c
+	* src/mainwindow.c
+	* src/matcher.c
+	* src/mh.c
+	* src/msgcache.c
+	* src/mutt.c
+	* src/pine.c
+	* src/pop.c
+	* src/prefs_customheader.c
+	* src/prefs_msg_colors.c
+	* src/procmime.c
+	* src/textview.c
+	* src/vcard.c
+	* src/wizard.c
+	* src/common/log.c
+	* src/common/socket.c
+	* src/common/ssl_certificate.c
+	* src/common/utils.c
+	* src/common/utils.h
+	* src/gtk/description_window.c
+	* src/plugins/demo/demo.c
+	* src/plugins/pgpcore/prefs_gpg.c
+	* src/plugins/spamassassin/libspamc.c
+		Make sure we use glib functions to send text messages (information,
+		debug, warning, errors) to stdout/stderr - no more direct puts
+		fputs printf fprintf to stdout/stderr when it can be done using
+		g_log*() and g_print/g_printerr. Doing this, we make sure every
+		stdout/stderr message is saved to log in Windows.
+
+
 2007-08-21 [wwp]	2.10.0cvs140
 
 	* src/main.c

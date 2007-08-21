@@ -112,7 +112,7 @@ static gint pine_open_file( PineFile* pineFile ) {
 		}
 	}
 	else {
-		/* printf( "file not specified\n" ); */
+		/* g_print( "file not specified\n" ); */
 		pineFile->retVal = MGU_NO_FILE;
 		return pineFile->retVal;
 	}
@@ -486,7 +486,7 @@ static void pine_build_items( PineFile *pineFile, AddressCache *cache, gchar *li
 		pine_clean_name( rec );
 		pine_parse_address( pineFile, cache, rec );
 		/* pine_print_rec( rec, stdout ); */
-		/* printf( "=========\n" ); */
+		/* g_print( "=========\n" ); */
 
 		if( rec->isGroup ) {
 			/* Create group */

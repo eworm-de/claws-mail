@@ -126,7 +126,7 @@ static gint browse_callback_entry(
 		node = g_list_next( node );
 	}
 	pthread_mutex_unlock( & _browseMutex_ );
-	/* printf( "browse_callback_entry...done\n" ); */
+	/* g_print( "browse_callback_entry...done\n" ); */
 
 	return 0;
 }

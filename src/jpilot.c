@@ -1175,7 +1175,7 @@ static void jpilot_load_address(
 
 		ind = indPhoneLbl[k];
 		/*
-		* fprintf( stdout, "%d : %d : %20s : %s\n", k, ind,
+		* g_print( "%d : %d : %20s : %s\n", k, ind,
 		* ai->phoneLabels[ind], addrEnt[3+k] );
 		*/
 		if( indPhoneLbl[k] == IND_PHONE_EMAIL ) {
@@ -1192,7 +1192,7 @@ static void jpilot_load_address(
 		ind = GPOINTER_TO_INT( node->data );
 		if( ind > -1 ) {
 			/*
-			* fprintf( stdout, "%d : %20s : %s\n", ind, ai->labels[ind],
+			* g_print( "%d : %20s : %s\n", ind, ai->labels[ind],
 			* addrEnt[ind] );
 			*/
 			labelEntry = addrEnt[ind];

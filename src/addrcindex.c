@@ -51,7 +51,7 @@ AddrCacheIndex *addrcindex_create( void ) {
 
 	/*
 	++_n_created;
-	printf( "addrcindex_create/1/%d\n", _n_created );
+	g_print( "addrcindex_create/1/%d\n", _n_created );
 	*/
 	index = g_new0( AddrCacheIndex, 1 );
 	index->completion = g_completion_new( addrcindex_function );
@@ -83,7 +83,7 @@ void addrcindex_free( AddrCacheIndex *index ) {
 	if( index ) {
 		/*
 		++_n_freed;
-		printf( "addrcindex_free/2/%d\n", _n_freed );
+		g_print( "addrcindex_free/2/%d\n", _n_freed );
 		*/
 		/* Clear out */
 		addrcindex_clear( index );
@@ -292,14 +292,14 @@ void addrcindex_add_person( AddrCacheIndex *index, ItemPerson *person ) {
 			/* Create a completion entry for the address item */
 			node = listMail;
 			while( node ) {
-				/* printf( "\tname-m::%s::\n", node->data ); */
+				/* g_print( "\tname-m::%s::\n", node->data ); */
 				addrcindex_add_entry( index, node->data, email );
 				node = g_slist_next( node );
 			}
 			/* ... and all person's name entries */
 			node = uniqName;
 			while( node ) {
-				/* printf( "\tname-p::%s::\n", node->data ); */
+				/* g_print( "\tname-p::%s::\n", node->data ); */
 				addrcindex_add_entry( index, node->data, email );
 				node = g_slist_next( node );
 			}
@@ -365,7 +365,7 @@ GList *addrcindex_search( AddrCacheIndex *index, const gchar *search ) {
 		node = list;
 		while( node ) {
 			entry = node->data;
-			/* printf( "\tname ::%s::\n", entry->name ); */
+			/* g_print( "\tname ::%s::\n", entry->name ); */
 			if( NULL == g_list_find( listEMail, entry->address ) ) {
 				listEMail = g_list_append(
 						listEMail, entry->address );

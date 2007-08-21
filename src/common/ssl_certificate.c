@@ -372,7 +372,7 @@ char *ssl_certificate_check_signer (X509 *cert)
 
 	store = X509_STORE_new();
 	if (store == NULL) {
-		printf("Can't create X509_STORE\n");
+		g_print("Can't create X509_STORE\n");
 		return NULL;
 	}
 	if (!X509_STORE_set_default_paths(store)) {

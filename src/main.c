@@ -1475,7 +1475,7 @@ static void parse_cmd_opt(int argc, char *argv[])
 			cmd.send = TRUE;
 		} else if (!strncmp(argv[i], "--version", 9) ||
 			   !strncmp(argv[i], "-v", 2)) {
-			puts("Claws Mail version " VERSION);
+			g_print("Claws Mail version " VERSION);
 			exit(0);
  		} else if (!strncmp(argv[i], "--status-full", 13)) {
  			const gchar *p = argv[i + 1];
@@ -1540,7 +1540,7 @@ static void parse_cmd_opt(int argc, char *argv[])
 			cmd.crash_params = g_strdup(argv[i + 1]);
 			i++;
 		} else if (!strncmp(argv[i], "--config-dir", sizeof "--config-dir" - 1)) {
-			puts(RC_DIR);
+			g_print(RC_DIR);
 			exit(0);
 		} else if (!strncmp(argv[i], "--exit", 6) ||
 			   !strncmp(argv[i], "--quit", 6) ||
@@ -1836,7 +1836,7 @@ static gint prohibit_duplicate_launch(void)
 		memset(buf, 0, sizeof(buf));
 		fd_gets(uxsock, buf, sizeof(buf));
 		if (strcmp2(buf, x_display)) {
-			printf("Claws Mail is already running on display %s.\n",
+			g_print("Claws Mail is already running on display %s.\n",
 				buf);
 		} else {
 			fd_close(uxsock);
