@@ -3599,8 +3599,8 @@ static void prefs_account_set_string_from_combobox(PrefParam *pparam)
 	g_return_if_fail(*pparam->widget != NULL);
 
 	combobox = *pparam->widget;
-	g_return_val_if_fail(gtk_combo_box_get_active_iter(
-				GTK_COMBO_BOX(combobox), &iter), FALSE);
+	g_return_if_fail(gtk_combo_box_get_active_iter(
+				GTK_COMBO_BOX(combobox), &iter));
 
 	str = (gchar **)pparam->data;
 	g_free(*str);

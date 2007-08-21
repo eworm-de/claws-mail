@@ -1,3 +1,8 @@
+2007-08-21 [wwp]	2.10.0cvs144
+
+	* src/prefs_account.c
+		Don't return a value in a void function().
+
 2007-08-21 [paul]	2.10.0cvs143
 
 	* src/messageview.c
