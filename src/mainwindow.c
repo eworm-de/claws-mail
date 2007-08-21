@@ -2834,14 +2834,14 @@ static gint mailing_list_populate_submenu (GtkWidget *menuitem, const gchar * li
 		for (url_pt = list_header; url_pt && *url_pt;) {
 			get_url_part (&url_pt, url_decoded, BUFFSIZE);
 			item = NULL;
-			if (!g_strncasecmp(url_decoded, "mailto:", 7)) {
+			if (!g_ascii_strncasecmp(url_decoded, "mailto:", 7)) {
  				item = gtk_menu_item_new_with_label ((url_decoded));
 				g_signal_connect(G_OBJECT(item), "activate",
 						 G_CALLBACK(mailing_list_compose),
 						 NULL);
 			}
- 			else if (!g_strncasecmp (url_decoded, "http:", 5) ||
-				 !g_strncasecmp (url_decoded, "https:",6)) {
+ 			else if (!g_ascii_strncasecmp(url_decoded, "http:", 5) ||
+				 !g_ascii_strncasecmp(url_decoded, "https:",6)) {
 
 				item = gtk_menu_item_new_with_label ((url_decoded));
 				g_signal_connect(G_OBJECT(item), "activate",

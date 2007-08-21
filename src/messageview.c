@@ -1872,10 +1872,12 @@ void messageview_list_urls (MessageView	*msgview)
 	GSList *newlist = NULL;
 	for (; cur; cur = cur->next) {
 		ClickableText *uri = (ClickableText *)cur->data;
-		if (!uri->uri || !g_ascii_strncasecmp(uri->uri, "mailto:", 7) 
-		||  uri->is_quote)
-			continue;
-		newlist = g_slist_prepend(newlist, uri);
+		if (uri->uri &&
+		    (!g_ascii_strncasecmp(uri->uri, "ftp.", 4) ||
+		     !g_ascii_strncasecmp(uri->uri, "www.", 4) ||
+		     !g_ascii_strncasecmp(uri->uri, "http:", 5) ||
+		     !g_ascii_strncasecmp(uri->uri, "https:", 6)))
+			newlist = g_slist_prepend(newlist, uri);
 	}
 	newlist = g_slist_reverse(newlist);
 	uri_opener_open(msgview, newlist);

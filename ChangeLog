@@ -1,3 +1,10 @@
+2007-08-21 [paul]	2.10.0cvs139
+
+	* src/mainwindow.c
+		replace deprecated g_strncasecmp()
+	* src/messageview.c
+		fix 'List URLS'
+
 2007-08-20 [ticho]	2.10.0cvs138
 
 	* src/account.c
