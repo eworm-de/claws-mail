@@ -120,7 +120,9 @@ static gint browse_callback_entry(
 	node = listValues;
 	while( node ) {
 		nvp = ( NameValuePair * ) node->data;
-		debug_print("adding to list: %s->%s\n", nvp->name, nvp->value);
+		debug_print("adding to list: %s->%s\n",
+				nvp->name?nvp->name:"null",
+				nvp->value?nvp->value:"null");
 		_displayQueue_ = g_list_append( _displayQueue_, nvp );
 		node->data = NULL;
 		node = g_list_next( node );
@@ -324,7 +326,9 @@ static gboolean browse_idle( gpointer data ) {
 			nvp = ( NameValuePair * ) node->data;
 			text[COL_NAME]  = nvp->name;
 			text[COL_VALUE] = nvp->value;
-			debug_print("Adding row to list: %s->%s\n", nvp->name, nvp->value);
+			debug_print("Adding row to list: %s->%s\n",
+						nvp->name?nvp->name:"null",
+						nvp->value?nvp->value:"null");
 			gtk_clist_append(
 				GTK_CLIST(browseldap_dlg.list_entry), text );
 

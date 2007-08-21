@@ -114,8 +114,11 @@ void ldapqry_set_control( LdapQuery *qry, LdapControl *ctl ) {
  * \param value Name.
  */
 void ldapqry_set_name( LdapQuery* qry, const gchar *value ) {
+	g_return_if_fail( qry != NULL );
+	g_return_if_fail( ADDRQUERY_NAME(qry) != NULL );
 	ADDRQUERY_NAME(qry) = mgu_replace_string( ADDRQUERY_NAME(qry), value );
 	g_strstrip( ADDRQUERY_NAME(qry) );
+	debug_print("set name: %s\n", ADDRQUERY_NAME(qry));
 }
 
 /**
@@ -124,6 +127,8 @@ void ldapqry_set_name( LdapQuery* qry, const gchar *value ) {
  * \param value 
  */
 void ldapqry_set_search_value( LdapQuery *qry, const gchar *value ) {
+	g_return_if_fail( qry != NULL );
+	g_return_if_fail( ADDRQUERY_SEARCHVALUE(qry) != NULL );
 	ADDRQUERY_SEARCHVALUE(qry) = mgu_replace_string( ADDRQUERY_SEARCHVALUE(qry), value );
 	g_strstrip( ADDRQUERY_SEARCHVALUE(qry) );
 	debug_print("search value: %s\n", ADDRQUERY_SEARCHVALUE(qry));
@@ -152,6 +157,7 @@ void ldapqry_set_query_type( LdapQuery* qry, const gint value ) {
  */
 void ldapqry_set_search_type( LdapQuery *qry, const AddrSearchType value ) {
 	g_return_if_fail( qry != NULL );
+	g_return_if_fail( ADDRQUERY_SEARCHTYPE(qry) != NULL );
 	ADDRQUERY_SEARCHTYPE(qry) = value;
 }
 
@@ -161,6 +167,8 @@ void ldapqry_set_search_type( LdapQuery *qry, const AddrSearchType value ) {
  * \param value ID for the query.
  */
 void ldapqry_set_query_id( LdapQuery* qry, const gint value ) {
+	g_return_if_fail( qry != NULL );
+	g_return_if_fail( ADDRQUERY_ID(qry) != NULL );
 	ADDRQUERY_ID(qry) = value;
 }
 
@@ -384,7 +392,8 @@ static GSList *ldapqry_add_list_values(
 
 	if( ( vals = ldap_get_values_len( ld, entry, attr ) ) != NULL ) {
 		for( i = 0; vals[i] != NULL; i++ ) {
-			/*debug_print("lv\t%s: %s\n", attr, vals[i]->bv_val);*/
+			/*debug_print("lv\t%s: %s\n", attr?attr:"null",
+					vals[i]->bv_val?vals[i]->bv_val:"null");*/
 			list = g_slist_append( list, g_strndup( vals[i]->bv_val, vals[i]->bv_len) );
 		}
 	}
@@ -405,7 +414,8 @@ static GSList *ldapqry_add_single_value( LDAP *ld, LDAPMessage *entry, char *att
 
 	if( ( vals = ldap_get_values_len( ld, entry, attr ) ) != NULL ) {
 		if( vals[0] != NULL ) {
-			debug_print("sv\t%s: %s\n", attr, vals[0]->bv_val);
+			debug_print("sv\t%s: %s\n", attr?attr:"null",
+					vals[0]->bv_val?vals[0]->bv_val:"null");
 			list = g_slist_append( list, g_strndup( vals[0]->bv_val, vals[0]->bv_len ));
 		}
 	}
@@ -556,7 +566,7 @@ static GList *ldapqry_process_single_entry(
 	listReturn = NULL;
 	ctl = qry->control;
 	dnEntry = ldap_get_dn( ld, e );
-	debug_print( "DN: %s\n", dnEntry );
+	debug_print( "DN: %s\n", dnEntry?dnEntry:"null" );
 
 	/* Process all attributes */
 	for( attribute = ldap_first_attribute( ld, e, &ber ); attribute != NULL;
@@ -684,7 +694,8 @@ static gint ldapqry_connect( LdapQuery *qry ) {
 	}
 	ldapqry_touch( qry );
 
-	debug_print("connected to LDAP host %s on port %d\n", ctl->hostName, ctl->port);
+	debug_print("connected to LDAP host %s on port %d\n",
+			ctl->hostName?ctl->hostName:"null", ctl->port);
 
 #ifdef USE_LDAP_TLS
 	/* Handle TLS */
@@ -700,8 +711,8 @@ static gint ldapqry_connect( LdapQuery *qry ) {
 			rc = ldap_start_tls_s( ld, NULL, NULL );
 			
 			debug_print("rc=%d\n", rc);
-			debug_print("LDAP Status: set_option: %s\n", ldap_err2string( rc ) );
-			
+			debug_print("LDAP Status: set_option: %s\n", ldap_err2string(rc));
+
 			if( rc != LDAP_SUCCESS ) {
 				return ADDRQUERY_RETVAL(qry);
 			}
@@ -787,7 +798,7 @@ static gint ldapqry_search_retrieve( LdapQuery *qry ) {
 
 	/* Create LDAP search string */
 	criteria = ldapctl_format_criteria( ctl, ADDRQUERY_SEARCHVALUE(qry) );
-	debug_print("Search criteria ::%s::\n", criteria);
+	debug_print("Search criteria ::%s::\n", criteria?criteria:"null");
 
 	/*
 	 * Execute the search - this step may take some time to complete
@@ -1001,7 +1012,11 @@ static void ldapqry_destroyer( void * ptr ) {
 	LdapQuery *qry;
 
 	qry = ( LdapQuery * ) ptr;
-	debug_print("ldapqry_destroyer::%d::%s\n", (int) pthread_self(), ADDRQUERY_NAME(qry));
+	g_return_if_fail( qry != NULL );
+	g_return_if_fail( ADDRQUERY_NAME(qry) != NULL );
+
+	debug_print("ldapqry_destroyer::%d::%s\n", (int) pthread_self(),
+			ADDRQUERY_NAME(qry));
 
 	/* Perform any destruction here */
 	if( qry->control != NULL ) {
@@ -1331,6 +1346,8 @@ gboolean ldapquery_remove_results( LdapQuery *qry ) {
 }
 
 void ldapqry_print(LdapQuery *qry, FILE *stream) {
+	g_return_if_fail( qry != NULL );
+
 	ldapsvr_print_data(qry->server, stream);
 	ldapctl_print(qry->control, stream);
 	fprintf(stream, "entriesRead: %d\n", qry->entriesRead);
@@ -1341,7 +1358,7 @@ void ldapqry_print(LdapQuery *qry, FILE *stream) {
 	fprintf(stream, "completed: %d\n", qry->completed);
 	fprintf(stream, "startTime: %d\n", (int) qry->startTime);
 	fprintf(stream, "touchTime: %d\n", (int) qry->touchTime);
-	fprintf(stream, "data: %s\n", (gchar *) qry->data);
+	fprintf(stream, "data: %s\n", qry->data?(gchar *)qry->data:"null");
 }
 
 #endif	/* USE_LDAP */

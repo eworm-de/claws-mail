@@ -205,7 +205,7 @@ int claws_ldap_simple_bind_s( LDAP *ld, LDAP_CONST char *dn, LDAP_CONST char *pa
 		cred.bv_len = 0;
 	}
 
-	debug_print("binding: DN->%s\n", dn);
+	debug_print("binding: DN->%s\n", dn?dn:"null");
 	return ldap_sasl_bind_s( ld, dn, LDAP_SASL_SIMPLE, &cred,
 		NULL, NULL, NULL );
 }

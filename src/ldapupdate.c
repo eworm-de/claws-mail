@@ -232,15 +232,15 @@ void ldapsvr_print_contacts_hashtable(gpointer key, gpointer data, gpointer fd) 
 		while (node) {
 			EmailKeyValue *item = node->data;
 			if (debug_get_mode()) {
-				debug_print("\t\talias = %s\n", item->alias);
-				debug_print("\t\tmail = %s\n", item->mail);
-				debug_print("\t\tremarks = %s\n", item->remarks);
+				debug_print("\t\talias = %s\n", item->alias?item->alias:"null");
+				debug_print("\t\tmail = %s\n", item->mail?item->mail:"null");
+				debug_print("\t\tremarks = %s\n", item->remarks?item->remarks:"null");
 			}
 			else if (fd) {
 				FILE *stream = (FILE *) fd;
-				fprintf(stream, "\t\talias = %s\n", item->alias);
-				fprintf(stream, "\t\tmail = %s\n", item->mail);
-				fprintf(stream, "\t\tremarks = %s\n", item->remarks);
+				fprintf(stream, "\t\talias = %s\n", item->alias?item->alias:"null");
+				fprintf(stream, "\t\tmail = %s\n", item->mail?item->mail:"null");
+				fprintf(stream, "\t\tremarks = %s\n", item->remarks?item->remarks:"null");
 			}
 			node = g_list_next(node);
 		}
@@ -250,21 +250,23 @@ void ldapsvr_print_contacts_hashtable(gpointer key, gpointer data, gpointer fd) 
 		while (node) {
 			AttrKeyValue *item = node->data;
 			if (debug_get_mode()) {
-				debug_print("\t\t%s = %s\n", item->key, item->value);
+				debug_print("\t\t%s = %s\n", item->key?item->key:"null",
+						item->value?item->value:"null");
 			}
 			else if (fd) {
 				FILE *stream = (FILE *) fd;
-				fprintf(stream, "\t\t%s = %s\n", item->key, item->value);
+				fprintf(stream, "\t\t%s = %s\n", item->key?item->key:"null",
+						item->value?item->value:"null");
 			}
 			node = g_list_next(node);
 		}
 	}
 	else {
 		if (debug_get_mode())
-			debug_print("\t\t%s = %s\n", keyName, (gchar *) data);
+			debug_print("\t\t%s = %s\n", keyName?keyName:"null", data?(gchar *)data:"null");
 		else if (fd) {
 			FILE *stream = (FILE *) fd;
-			fprintf(stream, "\t\t%s = %s\n", keyName, (gchar *) data);
+			fprintf(stream, "\t\t%s = %s\n", keyName?keyName:"null", data?(gchar *)data:"null");
 		}
 	}
 }
@@ -887,7 +889,8 @@ void ldapsvr_handle_other_attributes(LDAP *ld, LdapServer *server, char *dn, GHa
 		if (item) {
 			int index = get_attribute_index(item->key);
 			if (index >= 0) {
-				debug_print("Found other attribute: %s = %s\n", item->key, item->value);
+				debug_print("Found other attribute: %s = %s\n",
+						item->key?item->key:"null", item->value?item->value:"null");
 				mod_op = ldapsvr_deside_operation(ld, server, dn, item->key, item->value);
 				/* Only consider attributes which we no how to handle.
 				 * Set to TRUE in CHECKED_ATTRIBUTE array to indicate no further action
@@ -959,7 +962,7 @@ void ldapsvr_handle_other_attributes(LDAP *ld, LdapServer *server, char *dn, GHa
 				server->retVal = LDAPRC_ALREADY_EXIST;
 				break;
 			default:
-				g_printerr("ldap_modify for dn=%s\" failed[0x%x]: %s\n",dn, rc, ldap_err2string(rc));
+				g_printerr("ldap_modify for dn=%s\" failed[0x%x]: %s\n", dn, rc, ldap_err2string(rc));
 				if (rc == 0x8)
 					server->retVal = LDAPRC_STRONG_AUTH;
 				else
@@ -1018,7 +1021,8 @@ void ldapsvr_add_contact(LdapServer *server, GHashTable *contact) {
 		clean_up(ld, server, contact);
 		return;
 	}
-	base_dn = g_strdup_printf("mail=%s,%s", email, server->control->baseDN);
+	base_dn = g_strdup_printf("mail=%s,%s",
+			email, server->control->baseDN?server->control->baseDN:"null");
 	g_free(email);
 	person = 
 		ldapsvr_get_contact(server, g_hash_table_lookup(contact , "uid"));
@@ -1096,7 +1100,8 @@ void ldapsvr_add_contact(LdapServer *server, GHashTable *contact) {
 				server->retVal = LDAPRC_ALREADY_EXIST;
 				break;
 			default:
-				g_printerr("ldap_modify for dn=%s\" failed[0x%x]: %s\n",base_dn, rc, ldap_err2string(rc));
+				g_printerr("ldap_modify for dn=%s\" failed[0x%x]: %s\n",
+						base_dn, rc, ldap_err2string(rc));
 				if (rc == 0x8)
 					server->retVal = LDAPRC_STRONG_AUTH;
 				else

@@ -90,7 +90,7 @@ gchar *ldapsvr_get_name( LdapServer *server ) {
 void ldapsvr_set_name( LdapServer* server, const gchar *value ) {
 	g_return_if_fail( server != NULL );
 	addrcache_set_name( server->addressCache, value );
-	debug_print("setting name: %s\n", value);
+	debug_print("setting name: %s\n", value?value:"null");
 }
 
 /**
@@ -98,6 +98,7 @@ void ldapsvr_set_name( LdapServer* server, const gchar *value ) {
  * \param server Server object.
  */
 void ldapsvr_force_refresh( LdapServer *server ) {
+	g_return_if_fail( server != NULL );
 	addrcache_refresh( server->addressCache );
 }
 
@@ -491,7 +492,8 @@ void ldapsvr_retire_query( LdapServer *server ) {
 		ldapqry_age( qry, maxAge );
 		if( qry->agedFlag ) {
 			/* Delete folder associated with query */
-			debug_print("deleting folder... ::%s::\n", ADDRQUERY_NAME(qry));
+			debug_print("deleting folder... ::%s::\n",
+					ADDRQUERY_NAME(qry)?ADDRQUERY_NAME(qry):"null");
 			ldapqry_delete_folder( qry );
 			listDelete = g_list_append( listDelete, qry );
 		}
@@ -698,9 +700,12 @@ LdapQuery *ldapsvr_new_explicit_search(
 
 gint ldapsvr_read_data( LdapServer *server )
 {
+	gchar *name;
+
 	g_return_val_if_fail( server != NULL, -1 );
 
-	debug_print("...addrbook_read_data :%s:\n", addrcache_get_name(server->addressCache));
+	name = addrcache_get_name(server->addressCache);
+	debug_print("...addrbook_read_data :%s:\n", name?name:"null");
 	
 	addrcache_clear(server->addressCache);
 	ldapsvr_free_all_query( server );

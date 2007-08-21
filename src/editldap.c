@@ -97,6 +97,8 @@ static gboolean editldap_validate_criteria( gchar *criteria ) {
 	gint i;
 	gboolean errorFlag;
 
+	g_return_val_if_fail(criteria != NULL, TRUE);
+
 	errorFlag = TRUE;
 
 	/* Replace delimiters with spaces */
@@ -1044,7 +1046,8 @@ AdapterDSource *addressbook_edit_ldap(
 	tls = gtk_toggle_button_get_active(
 			GTK_TOGGLE_BUTTON( ldapedit.enable_tls ) );
 #endif
-	debug_print("saving server config:\nname: %s\nhost: %s\nbase: %s\ncriteria: %s\nbind: %s\nport: %d\ntime: %d\nmax_entries: %d\ntimeout: %d\ndynamic: %d\ncheck_match: %d\n",sName, sHost, sBase, sCrit, sBind, iPort, iTime, iMaxE, iAge, bSrch, bMatch);
+	debug_print("saving server config:\nname: %s\nhost: %s\nbase: %s\ncriteria: %s\nbind: %s\nport: %d\ntime: %d\nmax_entries: %d\ntimeout: %d\ndynamic: %d\ncheck_match: %d\n",
+			sName, sHost, sBase, sCrit, sBind, iPort, iTime, iMaxE, iAge, bSrch, bMatch);
 	fin = FALSE;
 	if( *sName == '\0' ) fin = TRUE;
 	if( *sHost == '\0' ) fin = TRUE;

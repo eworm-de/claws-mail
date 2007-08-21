@@ -77,6 +77,10 @@ LdapControl *ldapctl_create( void ) {
  */
 void ldapctl_set_host( LdapControl* ctl, const gchar *value ) {
 	ctl->hostName = mgu_replace_string( ctl->hostName, value );
+
+	if ( ctl->hostName == NULL )
+		return;
+
 	g_strstrip( ctl->hostName );
 	debug_print("setting hostname: %s\n", ctl->hostName);
 }
@@ -103,6 +107,10 @@ void ldapctl_set_port( LdapControl* ctl, const gint value ) {
  */
 void ldapctl_set_base_dn( LdapControl* ctl, const gchar *value ) {
 	ctl->baseDN = mgu_replace_string( ctl->baseDN, value );
+
+	if ( ctl->baseDN == NULL )
+		return;
+
 	g_strstrip( ctl->baseDN );
 	debug_print("setting baseDN: %s\n", ctl->baseDN);
 }
@@ -114,6 +122,10 @@ void ldapctl_set_base_dn( LdapControl* ctl, const gchar *value ) {
  */
 void ldapctl_set_bind_dn( LdapControl* ctl, const gchar *value ) {
 	ctl->bindDN = mgu_replace_string( ctl->bindDN, value );
+
+	if ( ctl->bindDN == NULL )
+		return;
+
 	g_strstrip( ctl->bindDN );
 	debug_print("setting bindDN: %s\n", ctl->bindDN);
 }
@@ -125,6 +137,10 @@ void ldapctl_set_bind_dn( LdapControl* ctl, const gchar *value ) {
  */
 void ldapctl_set_bind_password( LdapControl* ctl, const gchar *value ) {
 	ctl->bindPass = mgu_replace_string( ctl->bindPass, value );
+
+	if ( ctl->bindPass == NULL )
+		return;
+
 	g_strstrip( ctl->bindPass );
 	debug_print("setting bindPassword");
 }
@@ -326,16 +342,16 @@ void ldapctl_print( const LdapControl *ctl, FILE *stream ) {
 
 	pthread_mutex_lock( ctl->mutexCtl );
 	fprintf( stream, "LdapControl:\n" );
-	fprintf( stream, "host name: '%s'\n", ctl->hostName );
+	fprintf( stream, "host name: '%s'\n", ctl->hostName?ctl->hostName:"null" );
 	fprintf( stream, "     port: %d\n",   ctl->port );
-	fprintf( stream, "  base dn: '%s'\n", ctl->baseDN );
-	fprintf( stream, "  bind dn: '%s'\n", ctl->bindDN );
-	fprintf( stream, "bind pass: '%s'\n", ctl->bindPass );
-	fprintf( stream, "attr mail: '%s'\n", ctl->attribEMail );
-	fprintf( stream, "attr comn: '%s'\n", ctl->attribCName );
-	fprintf( stream, "attr frst: '%s'\n", ctl->attribFName );
-	fprintf( stream, "attr last: '%s'\n", ctl->attribLName );
-	fprintf( stream, "attr disn: '%s'\n", ctl->attribDName );
+	fprintf( stream, "  base dn: '%s'\n", ctl->baseDN?ctl->baseDN:"null" );
+	fprintf( stream, "  bind dn: '%s'\n", ctl->bindDN?ctl->bindDN:"null" );
+	fprintf( stream, "bind pass: '%s'\n", ctl->bindPass?ctl->bindPass:"null" );
+	fprintf( stream, "attr mail: '%s'\n", ctl->attribEMail?ctl->attribEMail:"null" );
+	fprintf( stream, "attr comn: '%s'\n", ctl->attribCName?ctl->attribCName:"null" );
+	fprintf( stream, "attr frst: '%s'\n", ctl->attribFName?ctl->attribFName:"null" );
+	fprintf( stream, "attr last: '%s'\n", ctl->attribLName?ctl->attribLName:"null" );
+	fprintf( stream, "attr disn: '%s'\n", ctl->attribDName?ctl->attribDName:"null" );
 	fprintf( stream, "max entry: %d\n",   ctl->maxEntries );
 	fprintf( stream, "  timeout: %d\n",   ctl->timeOut );
 	fprintf( stream, "  max age: %d\n",   ctl->maxQueryAge );
@@ -479,7 +495,7 @@ static gchar *ldapctl_build_ldap_criteria(
 		g_free( p2 );
 	}
 	g_free( term );
-	debug_print("search criteria: %s\n", crit);
+	debug_print("search criteria: %s\n", crit?crit:"null");
 	return crit;
 }
 
