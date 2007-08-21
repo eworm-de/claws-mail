@@ -571,24 +571,53 @@ gchar *ldapctl_format_criteria( LdapControl *ctl, const gchar *searchVal ) {
  */
 char **ldapctl_attribute_array( LdapControl *ctl ) {
 	char **ptrArray;
-	GList *node, *def;
+	GList *node;
 	gint cnt, i;
 	g_return_val_if_fail( ctl != NULL, NULL );
 
-	def = ldapctl_get_default_criteria_list();
-	/* check if this servers config is updated to the new
-	 * default list of search criteria. If not update the list */
-	if (! ldapctl_compare_list(ctl->listCriteria, def)) {
-		/* Deep copy search criteria */
-		ldapctl_criteria_list_clear(ctl);
-		while(def) {
-			ctl->listCriteria = g_list_append(
-				ctl->listCriteria, g_strdup(def->data));
-			def = g_list_next(def);
-		}
-	}
 	node = ctl->listCriteria;
 	cnt = g_list_length( ctl->listCriteria );
+	ptrArray = g_new0( char *, 1 + cnt );
+	i = 0;
+	while( node ) {
+		ptrArray[ i++ ] = node->data;
+		/*debug_print("adding search attribute: %s\n", (gchar *) node->data);*/
+		node = g_list_next( node );
+	}
+	ptrArray[ i ] = NULL;
+	return ptrArray;
+}
+
+/**
+ * Return array of pointers to attributes for LDAP query.
+ * \param  ctl  Control object to process.
+ * \return NULL terminated list.
+ */
+char **ldapctl_full_attribute_array( LdapControl *ctl ) {
+	char **ptrArray;
+	GList *node, *def;
+	GList *tmp = NULL;
+	gint cnt, i;
+	g_return_val_if_fail( ctl != NULL, NULL );
+
+	def = ctl->listCriteria;
+	while (def) {
+		tmp = g_list_append(tmp, g_strdup(def->data));
+		def = def->next;
+	}
+
+	def = ldapctl_get_default_criteria_list();
+	
+	while (def) {
+		if( g_list_find_custom(tmp, (gpointer)def->data, 
+				(GCompareFunc)strcmp2) == NULL) {
+			tmp = g_list_append(tmp, g_strdup(def->data));
+		}
+		def = def->next;
+	}
+
+	node = tmp;
+	cnt = g_list_length( tmp );
 	ptrArray = g_new0( char *, 1 + cnt );
 	i = 0;
 	while( node ) {

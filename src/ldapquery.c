@@ -783,7 +783,7 @@ static gint ldapqry_search_retrieve( LdapQuery *qry ) {
 	ADDRQUERY_RETVAL(qry) = LDAPRC_SUCCESS;
 
 	/* Define all attributes we are interested in. */
-	attribs = ldapctl_attribute_array( ctl );
+	attribs = ldapctl_full_attribute_array( ctl );
 
 	/* Create LDAP search string */
 	criteria = ldapctl_format_criteria( ctl, ADDRQUERY_SEARCHVALUE(qry) );

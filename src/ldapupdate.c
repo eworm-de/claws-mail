@@ -930,7 +930,7 @@ void ldapsvr_handle_other_attributes(LDAP *ld, LdapServer *server, char *dn, GHa
 		}
 		node = g_list_next(node);
 	}
-	char **attribs = ldapctl_attribute_array(server->control);
+	char **attribs = ldapctl_full_attribute_array(server->control);
 	for (i = 0; i < ATTRIBUTE_SIZE; i++) {
 		/* Attributes which holds no information are to be removed */
 		if (CHECKED_ATTRIBUTE[i] == FALSE) {
@@ -967,11 +967,7 @@ void ldapsvr_handle_other_attributes(LDAP *ld, LdapServer *server, char *dn, GHa
 		}
 	}
 	else {
-		/* Only consider those attributes which is currently part of the search criteria.
-		 * If attributes are not part of the search criteria they would seem to hold
-		 * no information since their values will not be populated in the GUI
-		 */
-		char **attribs = ldapctl_attribute_array(server->control);
+		char **attribs = ldapctl_full_attribute_array(server->control);
 		for (i = 0; i < ATTRIBUTE_SIZE; i++) {
 			if (ldapsvr_check_search_attributes(attribs, (char *) ATTRIBUTE[i])) {
 				if (CHECKED_ATTRIBUTE[i] == FALSE) {

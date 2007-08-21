@@ -1,3 +1,16 @@
+2007-08-21 [colin]	2.10.0cvs142
+
+	* src/editldap.c
+	* src/ldapctrl.c
+	* src/ldapctrl.h
+	* src/ldapquery.c
+	* src/ldapupdate.c
+		Fix bug 1293, 'LDAP address book not working'
+		Search only on specified fields, but fetch 
+		every field possible. People will have to 
+		reset the searched Attributes in their LDAP
+		servers properties.
+
 2007-08-21 [wwp]	2.10.0cvs141
 
 	* src/addr_compl.c

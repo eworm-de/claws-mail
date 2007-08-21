@@ -103,6 +103,7 @@ void ldapctl_copy		( const LdapControl *ctlFrom,
 				  LdapControl *ctlTo );
 gchar *ldapctl_format_criteria	( LdapControl *ctl, const gchar *searchVal );
 char **ldapctl_attribute_array	( LdapControl *ctl );
+char **ldapctl_full_attribute_array( LdapControl *ctl );
 void ldapctl_free_attribute_array( char **ptrArray );
 void ldapctl_parse_ldap_search	( LdapControl *ctl, gchar *criteria );
 gchar *ldapctl_get_default_criteria(void);
