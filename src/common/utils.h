@@ -108,6 +108,14 @@ gint g_chmod	(const gchar	*path,
 	if (change_dir(dir) < 0) return val; \
 }
 
+#define CHDIR_EXEC_CODE_RETURN_VAL_IF_FAIL(dir, val, code) \
+{ \
+	if (change_dir(dir) < 0) { \
+		code \
+		return val; \
+	} \
+}
+
 #define Xalloca(ptr, size, iffail) \
 { \
 	if ((ptr = alloca(size)) == NULL) { \

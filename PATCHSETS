@@ -2794,3 +2794,4 @@
 ( cvs diff -u -r 1.2.2.12 -r 1.2.2.13 src/ldapctrl.c;  ) > 2.10.0cvs137.patchset
 ( cvs diff -u -r 1.61.2.65 -r 1.61.2.66 src/account.c;  cvs diff -u -r 1.105.2.107 -r 1.105.2.108 src/prefs_account.c;  cvs diff -u -r 1.49.2.32 -r 1.49.2.33 src/prefs_account.h;  ) > 2.10.0cvs138.patchset
 ( cvs diff -u -r 1.274.2.205 -r 1.274.2.206 src/mainwindow.c;  cvs diff -u -r 1.94.2.145 -r 1.94.2.146 src/messageview.c;  ) > 2.10.0cvs139.patchset
+( cvs diff -u -r 1.115.2.162 -r 1.115.2.163 src/main.c;  cvs diff -u -r 1.20.2.48 -r 1.20.2.49 src/common/utils.h;  ) > 2.10.0cvs140.patchset

@@ -664,6 +664,97 @@ static void main_vol_unmount_cb(GnomeVFSVolumeMonitor *vfs, GnomeVFSVolume *vol,
 }
 #endif
 
+#ifdef G_OS_WIN32
+static FILE* win32_debug_fp=NULL;
+static guint win32_log_handler_app_id;
+static guint win32_log_handler_glib_id;
+static guint win32_log_handler_gtk_id;
+
+static void win32_print_stdout(const gchar *string)
+{
+	if (win32_debug_fp) {
+		fprintf(win32_debug_fp, string);
+		fflush(win32_debug_fp);
+	}
+}
+
+static void win32_print_stderr(const gchar *string)
+{
+	if (win32_debug_fp) {
+		fprintf(win32_debug_fp, string);
+		fflush(win32_debug_fp);
+	}
+}
+
+static void win32_log(const gchar *log_domain, GLogLevelFlags log_level, const gchar* message, gpointer user_data)
+{
+	if (win32_debug_fp) {
+		const gchar* type;
+
+		switch(log_level & G_LOG_LEVEL_MASK)
+		{
+			case G_LOG_LEVEL_ERROR:
+				type="error";
+				break;
+			case G_LOG_LEVEL_CRITICAL:
+				type="critical";
+				break;
+			case G_LOG_LEVEL_WARNING:
+				type="warning";
+				break;
+			case G_LOG_LEVEL_MESSAGE:
+				type="message";
+				break;
+			case G_LOG_LEVEL_INFO:
+				type="info";
+				break;
+			case G_LOG_LEVEL_DEBUG:
+				type="debug";
+				break;
+			default:
+				type="N/A";
+		}
+		if (log_domain)
+			fprintf(win32_debug_fp, "%s: %s: %s", log_domain, type, message);
+		else
+			fprintf(win32_debug_fp, "%s: %s", type, message);
+		fflush(win32_debug_fp);
+	}
+}
+
+static void win32_open_log(void)
+{
+	if (is_file_exist("claws-win32.log")) {
+		if (rename_force("claws-win32.log", "claws-win32.log.bak") < 0)
+			FILE_OP_ERROR("claws-win32.log", "rename");
+	}
+	win32_debug_fp = fopen("claws-win32.log", "w");
+	if (win32_debug_fp)
+	{
+		g_set_print_handler(win32_print_stdout);
+		g_set_printerr_handler(win32_print_stdout);
+		win32_log_handler_app_id = g_log_set_handler(NULL, G_LOG_LEVEL_MASK | G_LOG_FLAG_FATAL
+                     | G_LOG_FLAG_RECURSION, win32_log, NULL);
+		win32_log_handler_glib_id = g_log_set_handler("GLib", G_LOG_LEVEL_MASK | G_LOG_FLAG_FATAL
+                     | G_LOG_FLAG_RECURSION, win32_log, NULL);
+		win32_log_handler_gtk_id = g_log_set_handler("Gtk", G_LOG_LEVEL_MASK | G_LOG_FLAG_FATAL
+                     | G_LOG_FLAG_RECURSION, win32_log, NULL);
+	}
+}
+
+static void win32_close_log(void)
+{
+	if (win32_debug_fp)
+	{
+		g_log_remove_handler("", win32_log_handler_app_id);
+		g_log_remove_handler("GLib", win32_log_handler_glib_id);
+		g_log_remove_handler("Gtk", win32_log_handler_gtk_id);
+		fclose(win32_debug_fp);
+		win32_debug_fp=NULL;
+	}
+}		
+#endif
+
 int main(int argc, char *argv[])
 {
 #ifdef MAEMO
@@ -682,7 +773,13 @@ int main(int argc, char *argv[])
 	
 	sc_starting = TRUE;
 
+#ifdef G_OS_WIN32
+	win32_open_log();
+#endif
 	if (!claws_init(&argc, &argv)) {
+#ifdef G_OS_WIN32
+		win32_close_log();
+#endif
 		return 0;
 	}
 
@@ -697,6 +794,9 @@ int main(int argc, char *argv[])
 		gtk_set_locale();
 		gtk_init(&argc, &argv);
 		crash_main(cmd.crash_params);
+#ifdef G_OS_WIN32
+		win32_close_log();
+#endif
 		return 0;
 	}
 	crash_install_handlers();
@@ -754,6 +854,9 @@ int main(int argc, char *argv[])
 				   "currently available. This will cause "
 				   "crashes. You need to upgrade GTK+ or "
 				   "recompile Claws Mail."));
+#ifdef G_OS_WIN32
+		win32_close_log();
+#endif
 		exit(1);
 	}
 #else
@@ -763,6 +866,9 @@ int main(int argc, char *argv[])
 				   "currently available. This will cause "
 				   "crashes. You need to recompile "
 				   "Claws Mail."));
+#ifdef G_OS_WIN32
+		win32_close_log();
+#endif
 		exit(1);
 	}
 #endif	
@@ -776,7 +882,11 @@ int main(int argc, char *argv[])
 	gtk_rc_parse(userrc);
 	g_free(userrc);
 
+#ifdef G_OS_WIN32
+	CHDIR_EXEC_CODE_RETURN_VAL_IF_FAIL(get_home_dir(), 1, win32_close_log(););
+#else
 	CHDIR_RETURN_VAL_IF_FAIL(get_home_dir(), 1);
+#endif
 	
 	/* no config dir exists. See if we can migrate an old config. */
 	if (!is_dir_exist(RC_DIR)) {
@@ -804,8 +914,12 @@ int main(int argc, char *argv[])
 		/* If migration failed or the user didn't want to do it,
 		 * we create a new one (and we'll hit wizard later). 
 		 */
-		if (r == FALSE && !is_dir_exist(RC_DIR) && make_dir(RC_DIR) < 0)
+		if (r == FALSE && !is_dir_exist(RC_DIR) && make_dir(RC_DIR) < 0) {
+#ifdef G_OS_WIN32
+			win32_close_log();
+#endif
 			exit(1);
+	}
 	}
 	
 
@@ -827,7 +941,11 @@ int main(int argc, char *argv[])
 	gtk_accel_map_load (userrc);
 	g_free(userrc);
 
+#ifdef G_OS_WIN32
+	CHDIR_EXEC_CODE_RETURN_VAL_IF_FAIL(get_rc_dir(), 1, win32_close_log(););
+#else
 	CHDIR_RETURN_VAL_IF_FAIL(get_rc_dir(), 1);
+#endif
 
 	MAKE_DIR_IF_NOT_EXIST(get_mail_base_dir());
 	MAKE_DIR_IF_NOT_EXIST(get_imap_cache_dir());
@@ -856,7 +974,11 @@ int main(int argc, char *argv[])
 	}
 	set_log_file(LOG_DEBUG_FILTERING, "filtering.log");
 
+#ifdef G_OS_WIN32
+	CHDIR_EXEC_CODE_RETURN_VAL_IF_FAIL(get_home_dir(), 1, win32_close_log(););
+#else
 	CHDIR_RETURN_VAL_IF_FAIL(get_home_dir(), 1);
+#endif
 
 	folder_system_init();
 	prefs_common_read_config();
@@ -956,6 +1078,9 @@ int main(int argc, char *argv[])
 		if (!run_wizard(mainwin, TRUE)) {
 			if (asked_for_migration)
 				remove_dir_recursive(RC_DIR);
+#ifdef G_OS_WIN32
+			win32_close_log();
+#endif
 			exit(1);
 		}
 		main_window_reflect_prefs_all_now();
@@ -967,11 +1092,17 @@ int main(int argc, char *argv[])
 		if (!run_wizard(mainwin, FALSE)) {
 			if (asked_for_migration)
 				remove_dir_recursive(RC_DIR);
+#ifdef G_OS_WIN32
+			win32_close_log();
+#endif
 			exit(1);
 		}
 		account_read_config_all();
 		if(!account_get_list()) {
 			exit_claws(mainwin);
+#ifdef G_OS_WIN32
+			win32_close_log();
+#endif
 			exit(1);
 		}
 	}
@@ -1079,6 +1210,9 @@ int main(int argc, char *argv[])
 				   "external plugin. Please reinstall the "
 				   "plugin and try again."));
 			exit_claws(mainwin);
+#ifdef G_OS_WIN32
+			win32_close_log();
+#endif
 			exit(1);
 		}
 	}
@@ -1172,6 +1306,9 @@ int main(int argc, char *argv[])
 
 #ifdef MAEMO
 	osso_deinitialize(osso_context);
+#endif
+#ifdef G_OS_WIN32
+	win32_close_log();
 #endif
 	exit_claws(mainwin);
 
