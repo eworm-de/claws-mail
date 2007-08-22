@@ -247,11 +247,17 @@ GList *ldaputil_read_basedn(
 	if( ld == NULL ) {
 		return baseDN;
 	}
+
+	if ((bindDN && *bindDN)
 #ifdef USE_LDAP_TLS
-	if (bindDN && *bindDN) {
+	   || (tls && !ssl)
+#endif			
+	) {
 		version = LDAP_VERSION3;
 		rc = ldap_set_option( ld, LDAP_OPT_PROTOCOL_VERSION, &version );
 	}
+#ifdef USE_LDAP_TLS
+	
 	if( tls && !ssl ) {
 		/* Handle TLS */
 		if( rc != LDAP_OPT_SUCCESS ) {

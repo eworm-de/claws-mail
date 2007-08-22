@@ -1,3 +1,8 @@
+2007-08-22 [colin]	2.10.0cvs147
+
+	* src/ldaputil.c
+		Fix test (set ldap v3 if bindDN is set or TLS is set)
+
 2007-08-22 [colin]	2.10.0cvs146
 
 	* src/editldap.c
