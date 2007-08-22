@@ -115,7 +115,7 @@ void ldapqry_set_control( LdapQuery *qry, LdapControl *ctl ) {
  */
 void ldapqry_set_name( LdapQuery* qry, const gchar *value ) {
 	g_return_if_fail( qry != NULL );
-	g_return_if_fail( ADDRQUERY_NAME(qry) != NULL );
+	g_return_if_fail( ADDRQUERY_OBJECT(qry) != NULL );
 	ADDRQUERY_NAME(qry) = mgu_replace_string( ADDRQUERY_NAME(qry), value );
 	g_strstrip( ADDRQUERY_NAME(qry) );
 	debug_print("set name: %s\n", ADDRQUERY_NAME(qry));
@@ -128,7 +128,7 @@ void ldapqry_set_name( LdapQuery* qry, const gchar *value ) {
  */
 void ldapqry_set_search_value( LdapQuery *qry, const gchar *value ) {
 	g_return_if_fail( qry != NULL );
-	g_return_if_fail( ADDRQUERY_SEARCHVALUE(qry) != NULL );
+	g_return_if_fail( ADDRQUERY_OBJECT(qry) != NULL );
 	ADDRQUERY_SEARCHVALUE(qry) = mgu_replace_string( ADDRQUERY_SEARCHVALUE(qry), value );
 	g_strstrip( ADDRQUERY_SEARCHVALUE(qry) );
 	debug_print("search value: %s\n", ADDRQUERY_SEARCHVALUE(qry));
@@ -157,7 +157,7 @@ void ldapqry_set_query_type( LdapQuery* qry, const gint value ) {
  */
 void ldapqry_set_search_type( LdapQuery *qry, const AddrSearchType value ) {
 	g_return_if_fail( qry != NULL );
-	g_return_if_fail( ADDRQUERY_SEARCHTYPE(qry) != NULL );
+	g_return_if_fail( ADDRQUERY_OBJECT(qry) != NULL );
 	ADDRQUERY_SEARCHTYPE(qry) = value;
 }
 
@@ -168,7 +168,7 @@ void ldapqry_set_search_type( LdapQuery *qry, const AddrSearchType value ) {
  */
 void ldapqry_set_query_id( LdapQuery* qry, const gint value ) {
 	g_return_if_fail( qry != NULL );
-	g_return_if_fail( ADDRQUERY_ID(qry) != NULL );
+	g_return_if_fail( ADDRQUERY_OBJECT(qry) != NULL );
 	ADDRQUERY_ID(qry) = value;
 }
 
