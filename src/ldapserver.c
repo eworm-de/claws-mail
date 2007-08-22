@@ -722,6 +722,7 @@ void ldapsrv_set_options (gint secs, LDAP *ld)
 	int i = LDAP_OPT_X_TLS_ALLOW;
 	int rc;
 	timeout.tv_sec = secs;
+	timeout.tv_usec = 0;
 	rc=ldap_set_option(NULL, LDAP_OPT_X_TLS_REQUIRE_CERT, &i);
 	debug_print("cert %s\n", ldap_err2string(rc));
 	

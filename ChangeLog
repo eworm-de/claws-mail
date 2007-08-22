@@ -1,3 +1,8 @@
+2007-08-22 [colin]	2.10.0cvs152
+
+	* src/ldapserver.c
+		Set tv_usec too
+
 2007-08-22 [wwp]	2.10.0cvs151
 
 	* src/ldapquery.c
