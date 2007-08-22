@@ -678,6 +678,8 @@ static gint ldapqry_connect( LdapQuery *qry ) {
 	qry->elapsedTime = -1;
 	ADDRQUERY_RETVAL(qry) = LDAPRC_INIT;
 
+	ldapsrv_set_options (ctl->timeOut, NULL);
+
 	uri = g_strdup_printf("ldap%s://%s:%d",
 				ctl->enableSSL?"s":"",
 				ctl->hostName, ctl->port);

@@ -266,7 +266,7 @@ static void edit_ldap_bdn_load_data(
 	gtk_label_set_text(GTK_LABEL(ldapedit_basedn.port_label), sPort);
 	if( *sHost != '\0' ) {
 		/* Test connection to server */
-		if( ldaputil_test_connect( sHost, iPort, ssl, tls ) ) {
+		if( ldaputil_test_connect( sHost, iPort, ssl, tls, tov ) ) {
 			/* Attempt to read base DN */
 			baseDN = ldaputil_read_basedn( sHost, iPort, bindDN, bindPW, tov, ssl, tls );
 			if( baseDN ) {

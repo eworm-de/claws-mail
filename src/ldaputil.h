@@ -32,7 +32,7 @@
 GList *ldaputil_read_basedn	( const gchar *host, const gint port,
 				  const gchar *bindDN, const gchar *bindPW,
 				  const gint tov, int ssl, int tls );
-gboolean ldaputil_test_connect	( const gchar *host, const gint port, int ssl, int tls);
+gboolean ldaputil_test_connect	( const gchar *host, const gint port, int ssl, int tls, int secs);
 gboolean ldaputil_test_ldap_lib	( void );
 int claws_ldap_simple_bind_s( LDAP *ld, LDAP_CONST char *dn, LDAP_CONST char *passwd );
 

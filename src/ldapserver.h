@@ -27,6 +27,7 @@
 #ifdef USE_LDAP
 
 #include <glib.h>
+#include <ldap.h>
 
 #include "ldapctrl.h"
 #include "addritem.h"
@@ -92,6 +93,8 @@ void ldapsvr_retire_query	( LdapServer *server );
 
 gboolean ldapsvr_reuse_previous	( const LdapServer *server,
 				  const QueryRequest *req );
+
+void ldapsrv_set_options (gint secs, LDAP *ld);
 #endif	/* USE_LDAP */
 
 #endif /* __LDAPSERVER_H__ */

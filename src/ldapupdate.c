@@ -319,6 +319,7 @@ LDAP *ldapsvr_connect(LdapControl *ctl) {
 
 	g_return_val_if_fail(ctl != NULL, NULL);
 
+	ldapsrv_set_options (ctl->timeOut, NULL);
 	uri = g_strdup_printf("ldap%s://%s:%d",
 				ctl->enableSSL?"s":"",
 				ctl->hostName, ctl->port);
@@ -327,6 +328,7 @@ LDAP *ldapsvr_connect(LdapControl *ctl) {
 
 	if (ld == NULL)
 		return NULL;
+
 
 	debug_print("connected to LDAP host %s on port %d\n", ctl->hostName, ctl->port);
 

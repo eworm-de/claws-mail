@@ -66,7 +66,6 @@ LdapServer *ldapsvr_create_noctl( void ) {
  */
 LdapServer *ldapsvr_create( void ) {
 	LdapServer *server;
-
 	server = ldapsvr_create_noctl();
 	server->control = ldapctl_create();
 	return server;
@@ -717,6 +716,20 @@ gint ldapsvr_read_data( LdapServer *server )
 	return 0;
 }
 
+void ldapsrv_set_options (gint secs, LDAP *ld)
+{
+	static struct timeval timeout;
+	int i = LDAP_OPT_X_TLS_ALLOW;
+	int rc;
+	timeout.tv_sec = secs;
+	rc=ldap_set_option(NULL, LDAP_OPT_X_TLS_REQUIRE_CERT, &i);
+	debug_print("cert %s\n", ldap_err2string(rc));
+	
+	/* can crash old libldaps... */
+	rc=ldap_set_option(NULL, LDAP_OPT_NETWORK_TIMEOUT, &timeout);
+	debug_print("tm %s\n", ldap_err2string(rc));
+
+}
 #endif	/* USE_LDAP */
 
 /*

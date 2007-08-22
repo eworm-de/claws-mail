@@ -1,3 +1,15 @@
+2007-08-22 [colin]	2.10.0cvs150
+
+	* src/editldap.c
+	* src/editldap_basedn.c
+	* src/ldapquery.c
+	* src/ldapserver.c
+	* src/ldapserver.h
+	* src/ldapupdate.c
+	* src/ldaputil.c
+	* src/ldaputil.h
+		Fix ldap timeouts
+
 2007-08-22 [colin]	2.10.0cvs149
 
 	* src/ldapquery.c

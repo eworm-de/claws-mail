@@ -237,6 +237,8 @@ GList *ldaputil_read_basedn(
 
 	/* Connect to server. */
 
+	ldapsrv_set_options (tov, NULL);
+
 	uri = g_strdup_printf("ldap%s://%s:%d",
 			ssl?"s":"",
 			host, port);
@@ -309,7 +311,7 @@ GList *ldaputil_read_basedn(
  * \param  port Port number.
  * \return <i>TRUE</i> if connected successfully.
  */
-gboolean ldaputil_test_connect( const gchar *host, const gint port, int ssl, int tls ) {
+gboolean ldaputil_test_connect( const gchar *host, const gint port, int ssl, int tls, int secs ) {
 	gboolean retVal = FALSE;
 	LDAP *ld;
 #ifdef USE_LDAP_TLS
@@ -321,6 +323,7 @@ gboolean ldaputil_test_connect( const gchar *host, const gint port, int ssl, int
 	if( host == NULL ) return retVal;
 	if( port < 1 ) return retVal;
 	
+	ldapsrv_set_options (secs, NULL);
 	uri = g_strdup_printf("ldap%s://%s:%d",
 				ssl?"s":"",
 				host, port);
@@ -332,7 +335,7 @@ gboolean ldaputil_test_connect( const gchar *host, const gint port, int ssl, int
 
 #ifdef USE_LDAP_TLS
 	if (ssl) {
-		GList *dummy = ldaputil_test_v3( ld, 10, &rc );
+		GList *dummy = ldaputil_test_v3( ld, secs, &rc );
 		if (dummy)
 			g_list_free(dummy);
 		if (LDAP_API_ERROR(rc))
