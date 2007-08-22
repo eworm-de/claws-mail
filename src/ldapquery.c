@@ -1013,10 +1013,9 @@ static void ldapqry_destroyer( void * ptr ) {
 
 	qry = ( LdapQuery * ) ptr;
 	g_return_if_fail( qry != NULL );
-	g_return_if_fail( ADDRQUERY_NAME(qry) != NULL );
 
 	debug_print("ldapqry_destroyer::%d::%s\n", (int) pthread_self(),
-			ADDRQUERY_NAME(qry));
+			ADDRQUERY_NAME(qry)?ADDRQUERY_NAME(qry):"null");
 
 	/* Perform any destruction here */
 	if( qry->control != NULL ) {

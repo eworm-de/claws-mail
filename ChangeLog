@@ -1,3 +1,8 @@
+2007-08-22 [colin]	2.10.0cvs149
+
+	* src/ldapquery.c
+		Finish previous fix
+
 2007-08-22 [colin]	2.10.0cvs148
 
 	* src/ldapquery.c
