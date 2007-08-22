@@ -1217,7 +1217,7 @@ static void inc_put_error(IncState istate, Pop3Session *session)
 		mainwindow_show_error();
 
 	if (err_msg) {
-		alertpanel_error_log(err_msg);
+		alertpanel_error_log("%s", err_msg);
 		g_free(err_msg);
 	}
 }

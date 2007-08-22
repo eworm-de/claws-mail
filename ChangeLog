@@ -1,3 +1,9 @@
+2007-08-22 [colin]	2.10.0cvs153
+
+	* src/inc.c
+		Fix format string vulnerability, thanks to
+		Ulf Harnhammar, Secunia Research
+
 2007-08-22 [colin]	2.10.0cvs152
 
 	* src/ldapserver.c
