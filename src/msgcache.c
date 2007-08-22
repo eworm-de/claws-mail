@@ -478,7 +478,6 @@ static gint msgcache_read_cache_data_str(FILE *fp, gchar **str,
 	tmpstr = g_try_malloc(len + 1);
 
 	if(tmpstr == NULL) {
-		g_warning("read_data_str: can't g_malloc %d bytes - cache data probably corrupted.\n", len);
 		return -1;
 	}
 
@@ -518,7 +517,6 @@ static gint msgcache_get_cache_data_str(gchar *src, gchar **str, gint len,
 	tmpstr = g_try_malloc(len + 1);
 
 	if(tmpstr == NULL) {
-		g_warning("read_data_str: can't g_malloc %d bytes - cache data probably corrupted.\n", len);
 		return -1;
 	}
 

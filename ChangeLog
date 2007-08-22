@@ -1,3 +1,11 @@
+2007-08-22 [colin]	2.10.0cvs154
+
+	* src/msgcache.c
+		Don't g_warning when g_try_malloc fails(), or it makes
+		things worse as g_log() allocates. Fixes bug 1290,
+		'Claws Mail crashes if too little memory when 
+		rebuilding folder tree'
+
 2007-08-22 [colin]	2.10.0cvs153
 
 	* src/inc.c
