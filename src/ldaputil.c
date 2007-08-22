@@ -248,10 +248,12 @@ GList *ldaputil_read_basedn(
 		return baseDN;
 	}
 #ifdef USE_LDAP_TLS
-	if( tls && !ssl ) {
-		/* Handle TLS */
+	if (bindDN && *bindDN) {
 		version = LDAP_VERSION3;
 		rc = ldap_set_option( ld, LDAP_OPT_PROTOCOL_VERSION, &version );
+	}
+	if( tls && !ssl ) {
+		/* Handle TLS */
 		if( rc != LDAP_OPT_SUCCESS ) {
 			ldap_unbind_ext( ld, NULL, NULL );
 			return baseDN;
@@ -269,6 +271,7 @@ GList *ldaputil_read_basedn(
 		if( *bindDN != '\0' ) {
 			rc = claws_ldap_simple_bind_s( ld, bindDN, bindPW );
 			if( rc != LDAP_SUCCESS ) {
+				g_printerr("LDAP: %s\n", ldap_err2string(rc));
 				ldap_unbind_ext( ld, NULL, NULL );
 				return baseDN;
 			}
@@ -348,6 +351,7 @@ gboolean ldaputil_test_connect( const gchar *host, const gint port, int ssl, int
 #endif
 	if( ld != NULL ) {
 		ldap_unbind_ext( ld, NULL, NULL );
+		debug_print("ld != NULL\n");
 		retVal = TRUE;
 	}
 	return retVal;

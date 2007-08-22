@@ -260,8 +260,10 @@ static void edit_ldap_server_check( void ) {
 				}
 				mgu_free_dlist( baseDN );
 				baseDN = node = NULL;
+				flg = TRUE;
+			} else {
+				flg = FALSE;
 			}
-			flg = TRUE;
 		}
 	}
 	g_free( sHost );

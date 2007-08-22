@@ -1,3 +1,10 @@
+2007-08-22 [colin]	2.10.0cvs146
+
+	* src/editldap.c
+	* src/ldaputil.c
+		Fix wrong "Connected successfully to server". Connection only succeeds if
+		we can get the base DN.
+
 2007-08-21 [wwp]	2.10.0cvs145
 
 	* src/browseldap.c
