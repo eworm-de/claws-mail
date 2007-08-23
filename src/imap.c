@@ -3591,7 +3591,8 @@ gint imap_get_num_list(Folder *folder, FolderItem *_item, GSList **msgnum_list, 
 	if (!item->should_update) {
 		debug_print("get_num_list: nothing to update\n");
 		*old_uids_valid = TRUE;
-		if (known_list_len == item->item.total_msgs) {
+		if (known_list_len == item->item.total_msgs
+		 && known_list_len > 0) {
 			*msgnum_list = g_slist_copy(item->uid_list);
 			return known_list_len;
 		} else {
