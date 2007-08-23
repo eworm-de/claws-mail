@@ -1,3 +1,10 @@
+2007-08-23 [wwp]	2.10.0cvs157
+
+	* src/addressbook.c
+		Contacts are now locale-aware sorted in the address book
+		(LC_COLLATE matters here).
+		Fix missing table initializers.
+
 2007-08-23 [colin]	2.10.0cvs156
 
 	* src/imap.c
