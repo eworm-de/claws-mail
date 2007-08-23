@@ -1,3 +1,8 @@
+2007-08-23 [colin]	2.10.0cvs156
+
+	* src/imap.c
+		Check scan_required on dest folder when copying
+
 2007-08-23 [colin]	2.10.0cvs155
 
 	* src/imap.c

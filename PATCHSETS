@@ -2810,3 +2810,4 @@
 ( cvs diff -u -r 1.149.2.79 -r 1.149.2.80 src/inc.c;  ) > 2.10.0cvs153.patchset
 ( cvs diff -u -r 1.16.2.59 -r 1.16.2.60 src/msgcache.c;  ) > 2.10.0cvs154.patchset
 ( cvs diff -u -r 1.179.2.184 -r 1.179.2.185 src/imap.c;  ) > 2.10.0cvs155.patchset
+( cvs diff -u -r 1.179.2.185 -r 1.179.2.186 src/imap.c;  ) > 2.10.0cvs156.patchset

@@ -1496,6 +1496,7 @@ static gint imap_do_copy_msgs(Folder *folder, FolderItem *dest,
 	IMAP_FOLDER_ITEM(dest)->uid_next = 0;
 	g_slist_free(IMAP_FOLDER_ITEM(dest)->uid_list);
 	IMAP_FOLDER_ITEM(dest)->uid_list = NULL;
+	imap_scan_required(folder, dest);
 
 	unlock_session(session);
 	if (ok == IMAP_SUCCESS)
