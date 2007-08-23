@@ -1,3 +1,12 @@
+2007-08-23 [wwp]	2.10.0cvs158
+
+	* src/action.c
+	* src/prefs_actions.c
+		Allow literal % chars in action commands (use %%).
+		Add a missing p++ to the action parser in action_get_type(),
+		which was missing it, even if it was neutral.
+		Fix a pango markup warning at runtime.
+
 2007-08-23 [wwp]	2.10.0cvs157
 
 	* src/addressbook.c

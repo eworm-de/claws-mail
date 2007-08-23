@@ -236,10 +236,14 @@ ActionType action_get_type(const gchar *action_str)
 			case 'h':
 				action_type |= ACTION_USER_HIDDEN_STR;
 				break;
+			case '%':
+				/* literal '%' */
+				break;
 			default:
 				action_type = ACTION_ERROR;
 				break;
 			}
+			p++;
 		} else if (p[0] == '|') {
 			if (p[1] == '\0')
 				action_type |= ACTION_PIPE_OUT;
@@ -319,6 +323,10 @@ static gchar *parse_action_cmd(gchar *action, MsgInfo *msginfo,
 			case 'h':
 				if (user_hidden_str)
 					g_string_append(cmd, user_hidden_str);
+				p++;
+				break;
+			case '%':
+				g_string_append_c(cmd, p[1]);
 				p++;
 				break;
 			default:

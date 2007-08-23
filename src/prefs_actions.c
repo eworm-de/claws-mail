@@ -568,8 +568,11 @@ static gint prefs_actions_clist_set_row(GtkTreeIter *row)
 	}
 
 	if (action_get_type(entry_text) == ACTION_ERROR) {
-		alertpanel_error(_("The command\n%s\nhas a syntax error."), 
-				 entry_text);
+		gchar *message;
+		message = g_markup_printf_escaped(_("The command\n%s\nhas a syntax error."),
+						entry_text);
+		alertpanel_error(message);
+		g_free(message);
 		return -1;
 	}
 
@@ -823,6 +826,7 @@ static gchar *actions_desc_strings[] = {
 	"     %h",  N_("for a user provided hidden argument (e.g. password)"),
 	"     %s",  N_("for the text selection"),
 	"  %as{}",  N_("apply filtering actions between {} to selected messages"),
+	"     %%",  N_("for a literal % sign"),
 	NULL, NULL
 };
 
