@@ -1,3 +1,8 @@
+2007-08-24 [holger]	2.10.0cvs170
+
+	* src/plugins/trayicon/trayicon.c
+		The same fix for another hook id.
+
 2007-08-24 [holger]	2.10.0cvs169
 
 	* src/plugins/trayicon/trayicon.c

@@ -418,7 +418,7 @@ int plugin_init(gchar **error)
 	}
 
 	account_hook_id = hooks_register_hook (ACCOUNT_LIST_CHANGED_HOOKLIST, trayicon_set_accounts_hook, NULL);
-	if (offline_hook_id == -1) {
+	if (account_hook_id == -1) {
 		*error = g_strdup(_("Failed to register account list changed hook"));
 		return -1;
 	}
