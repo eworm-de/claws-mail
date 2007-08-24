@@ -1,3 +1,9 @@
+2007-08-24 [wwp]	2.10.0cvs159
+
+	* src/folderview.c
+		Update menu item sensitivity if necessary (or we get a
+		gtk critical message).
+
 2007-08-23 [wwp]	2.10.0cvs158
 
 	* src/action.c

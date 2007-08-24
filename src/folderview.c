@@ -1925,7 +1925,8 @@ static void folderview_set_sens_and_popup_menu(FolderView *folderview, gint row,
 #define SET_SENS(name, sens) \
 	menu_set_sensitive(fpopup_factory, name, sens)
 
-	SET_SENS("/Download messages", !item->no_select);
+	if ( FOLDER_TYPE(item->folder) == F_NEWS || FOLDER_TYPE(item->folder) == F_IMAP )
+		SET_SENS("/Download messages", !item->no_select);
 	SET_SENS("/Mark all read", item->unread_msgs >= 1);
 	SET_SENS("/Search folder...", item->total_msgs >= 1 && 
 		 folderview->selected == folderview->opened);
@@ -1950,8 +1951,6 @@ static void folderview_set_sens_and_popup_menu(FolderView *folderview, gint row,
 	popup = gtk_item_factory_get_widget(fpopup_factory, fpopup->path);
 	gtk_menu_popup(GTK_MENU(popup), NULL, NULL, NULL, NULL,
 		       event->button, event->time);
-
-
 }
 
 static gboolean folderview_button_pressed(GtkWidget *ctree, GdkEventButton *event,
