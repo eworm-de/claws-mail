@@ -1,3 +1,9 @@
+2007-08-24 [paul]	2.10.0cvs165
+
+	* Makefile.am
+		oops! if i'm quick no-one will notice
+		(put back the proper file)
+
 2007-08-24 [paul]	2.10.0cvs164
 
 	* AUTHORS
