@@ -67,6 +67,9 @@ fi;
 if [ "$name" == "devel" ]; then
 	name="mones";
 fi;
+if [ "$name" == "hb" ]; then
+	name="holger";
+fi;
 
 log="`date --utc +%Y-%m-%d` [$name]\t$nextsversion\n\n"
 for line in $files; do
