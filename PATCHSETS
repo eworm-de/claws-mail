@@ -2821,3 +2821,4 @@
 ( cvs diff -u -r 1.100.2.51 -r 1.100.2.52 AUTHORS;  cvs diff -u -r 1.24.2.21 -r 1.24.2.22 Makefile.am;  cvs diff -u -r 1.8.2.38 -r 1.8.2.39 README;  cvs diff -u -r 1.1.2.38 -r 1.1.2.39 src/gtk/authors.h;  cvs diff -u -r 1.25.2.21 -r 1.25.2.22 tools/Makefile.am;  cvs diff -u -r 1.30.2.23 -r 1.30.2.24 tools/README;  diff -u /dev/null tools/mew2claws-mail.pl;  ) > 2.10.0cvs164.patchset
 ( cvs diff -u -r 1.24.2.22 -r 1.24.2.23 Makefile.am;  ) > 2.10.0cvs165.patchset
 ( cvs diff -u -r 1.17.2.41 -r 1.17.2.42 src/send_message.c;  ) > 2.10.0cvs166.patchset
+( cvs diff -u -r 1.8.2.39 -r 1.8.2.40 README;  ) > 2.10.0cvs167.patchset

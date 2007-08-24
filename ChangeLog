@@ -1,3 +1,8 @@
+2007-08-24 [paul]	2.10.0cvs167
+
+	* README
+		put back the correct version of this file also
+
 2007-08-24 [colin]	2.10.0cvs166
 
 	* src/send_message.c
