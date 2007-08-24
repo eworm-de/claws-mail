@@ -16,6 +16,7 @@ EXTRA_TOOLS = \
 	kmail2claws-mail_v2.pl \
 	kmail-mailbox2claws-mail.pl \
 	mairix.sh \
+	mew2claws-mail.pl \
 	multiwebsearch.pl \
 	nautilus2claws-mail.sh \
 	outlook2claws-mail.pl \

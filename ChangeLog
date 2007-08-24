@@ -1,3 +1,15 @@
+2007-08-24 [paul]	2.10.0cvs164
+
+	* AUTHORS
+	* Makefile.am
+	* README
+	* src/gtk/authors.h
+	* tools/Makefile.am
+	* tools/README
+	* tools/mew2claws-mail.pl
+		add new script that imports a Mew address book
+		submitted by Jerome Lelong
+
 2007-08-24 [paul]	2.10.0cvs163
 
 	* manual/plugins.xml

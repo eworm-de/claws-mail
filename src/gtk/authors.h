@@ -147,6 +147,7 @@ static char *CONTRIBS_LIST[] = {
 "IWAMOTO Kouichi",
 "Joshua M. Kwan",
 "Jean-Yves Lefort",
+"Jérôme Lelong",
 "Eric Limpens",
 "Thomas Link",
 "David Looney",

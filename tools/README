@@ -17,6 +17,7 @@ Addressbook conversion:
   eud2gc.py                     Convert Eudora address book to Gnomecard
   kmail2claws-mail.pl           Import a Kmail address book (KDE2)
   kmail2claws-mail_v2.pl        Import a Kmail address book (KDE3)
+  mew2claws-mail.pl		Import a Mew address book
   outlook2claws-mail.pl         Import an Outlook generated contact list
   tb2claws-mail                 Import The Bat! address books
   vcard2xml.py                  Import an Evolution vCard
@@ -209,6 +210,27 @@ Address book conversion
 
   Contact: Paul Mangan <paul@claws-mail.org>
 
+* mew2claws-mail.pl
+
+  WHAT IT DOES
+	This perl script will convert a Mew address book into a Claws Mail
+	address book.
+
+  HOW TO USE IT
+	(You must run claws-mail at least once before running this script.)
+  
+  	If Claws Mail is running, close it.
+
+  	From the command line, execute the following:
+ 
+		perl mew2claws-mail.pl --mew-addressbook=/path/to/mew/addressbook
+	
+  	You can also use --help to see usage instructions.
+
+  	Your Mew addressbook data will now be contained in Claws Mail's
+  	addressbook, under the name 'Mew Address Book'.
+
+  Contact: Jérôme Lelong <jerome.lelong@gmail.com>
 
 * outlook2claws-mail.pl
 

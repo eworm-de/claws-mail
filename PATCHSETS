@@ -2818,3 +2818,4 @@
 ( cvs diff -u -r 1.207.2.177 -r 1.207.2.178 src/folderview.c;  ) > 2.10.0cvs161.patchset
 ( cvs diff -u -r 1.1.2.40 -r 1.1.2.41 manual/advanced.xml;  cvs diff -u -r 1.1.2.9 -r 1.1.2.10 manual/keyboard.xml;  ) > 2.10.0cvs162.patchset
 ( cvs diff -u -r 1.1.2.18 -r 1.1.2.19 manual/plugins.xml;  ) > 2.10.0cvs163.patchset
+( cvs diff -u -r 1.100.2.51 -r 1.100.2.52 AUTHORS;  cvs diff -u -r 1.24.2.21 -r 1.24.2.22 Makefile.am;  cvs diff -u -r 1.8.2.38 -r 1.8.2.39 README;  cvs diff -u -r 1.1.2.38 -r 1.1.2.39 src/gtk/authors.h;  cvs diff -u -r 1.25.2.21 -r 1.25.2.22 tools/Makefile.am;  cvs diff -u -r 1.30.2.23 -r 1.30.2.24 tools/README;  diff -u /dev/null tools/mew2claws-mail.pl;  ) > 2.10.0cvs164.patchset

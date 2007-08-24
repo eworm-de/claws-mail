@@ -1,844 +1,729 @@
-Claws Mail - a GTK+ based, lightweight, and fast e-mail client
 
----------------------------------------------------------------------
-
-   Copyright(C) 1999-2007 Hiroyuki Yamamoto <hiro-y@kcn.ne.jp> and the
-   Claws Mail Team
-
-   This program is free software; you can redistribute it and/or modify
-   it under the terms of the GNU General Public License as published by
-   the Free Software Foundation; either version 3, or (at your option)
-   any later version.
-
-   This program is distributed in the hope that it will be useful,
-   but WITHOUT ANY WARRANTY; without even the implied warranty of
-   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-   GNU General Public License for more details.
-
-   You should have received a copy of the GNU General Public License
-   along with this program; if not, write to the Free Software
-   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
-
-   For more details see the file COPYING.
-
----------------------------------------------------------------------
-
-Summary:
-
- 1. What is Claws Mail?
- 2. Plugins
- 3. Actions
- 4. Icon Themes
- 5. Spell Checking
- 6. Quick Search
- 7. Custom toolbar
- 8. Partial downloading of POP3 mails
- 9. Hidden Options
-10. Tools
-11. How to contribute
-12. How to request features
-13. Installing Claws from CVS
-14. Release History
-15. Useful Links
-
-
-1. What is Claws Mail?
---------------------------
-
-Claws Mail (previously known as Sylpheed-Claws) is a lightweight and
-highly configurable email client and news reader based on the GTK+
-GUI toolkit, it runs on the X Window System.
-
-Claws Mail is free software distributed under the GNU GPL.
-
-To run Claws Mail use 'claws-mail' on the command line.
-
-When claws-mail is executed for the first time a configuration
-'Wizard' will appear prompting you for the minimum information
-necessary to create a new account.
-
-
-2. Plugins
-----------
-
-Claws Mail' capabilities are extended by plugins. It comes with
-the following plugins included, all of which are built automatically
-if the required libraries are present.
-
-Plugins are installed in $PREFIX/lib/claws-mail/plugins/
-and have a suffix of '.so'
-To load a plugin go to '/Configuration/Plugins' and click
-the 'Load Plugin' button.
-Select the plugin that you want and click 'OK'
- 
-  o Clam AntiVirus
-    Enables the scanning of message attachments in mail
-    received from a POP, IMAP or LOCAL account using Clam 
-    AntiVirus. It can optionally delete the mail or save it 
-    to a designated folder. Preferences can be found in 
-    '/Configuration/PreferencesPlugins/Clam AntiVirus'.
-    Clam AntiVirus is available from http://clamav.sourceforge.net/
-  
-  o Dillo HTML Viewer 
-    Enables the viewing of html messages using the Dillo web
-    browser, version 0.7.0 or newer. It uses Dillo's --local
-    option by default for safe browsing. Preferences can be 
-    found in '/Configuration/Preferences/Plugins/Dillo Browser'.
-    Dillo is available from http://www.dillo.org/
-	
-  o PGP/Core
-    Handles core PGP functions and is required by the PGP/Inline
-    and PGP/MIME plugins.
-    Uses GnuPG/GPGME, <ftp://ftp.gnupg.org/gcrypt/gpgme/>
-
-  o PGP/inline
-    Handles inline PGP signed and/or encrypted mails. You can
-    decrypt mails, verify signatures or sign and encrypt your
-    own mails. Uses GnuPG/GPGME, <ftp://ftp.gnupg.org/gcrypt/gpgme/>
-
-  o PGP/MIME
-    Handles PGP/MIME signed and/or encrypted mails. You can
-    decrypt mails, verify signatures or sign and encrypt your
-    own mails. Uses GnuPG/GPGME, <ftp://ftp.gnupg.org/gcrypt/gpgme/>
-
-  o SpamAssassin
-    Enables the scanning of incoming mail received from a POP,
-    IMAP or LOCAL account using SpamAssassin. It can optionally 
-    delete mail identified as spam or save it to a designated 
-    folder. Preferences can be found in '/Configuration/
-    Preferences/Plugins/SpamAssassin'.
-    SpamAssassin is available from http://spamassassin.apache.org/.
-	
-  o Trayicon 
-    Places an icon in the system tray that indicates whether
-    you have any new mail. A tooltip also shows the current
-    new, unread and total number of messages
-
-Additonal plugins can be found here:
-http://www.claws-mail.org/plugins.php
-
-
-3. Actions
-----------
-  The "actions" feature is a convenient way for the user to launch external 
-  commands to process a complete message file including headers and body or 
-  just one of its parts. It allows also the use of an external command to 
-  filter the whole text or just a selected part in the message window or in 
-  the compose window. This is a generic tool that allows to do any uncommon 
-  actions on the messages, and thus extends the possibilities of Claws Mail. 
-  For example, Claws Mail does not include the rot13 cyphering algorithm 
-  popular in some newsgroups. It does not support uuencoded messages. As 
-  all these features can be handled by external programs, the actions 
-  provide a convenient way to use them from the menu bar.
-
-  a. Usage
-  --------
-
-  To create a new action, go to Configuration -> Actions.... The "Action
-  Creation" dialog offers to enter the Menu name that will trigger the 
-  command. The created menu will be found in the Tools -> Actions submenu. 
-  By inserting a slash / in the menu name, you create a submenu.
-
-  The command is entered in the Command line entry. Note that Claws Mail
-  stores every single email in a separate file. This allows to use the 
-  following syntax for the command:
-
-    * %f denotes the file name of the selected message. If you selected more
-	 than one, then the command will be launched for each message with 
-	 the appropriate file name
-    * %F denotes the list of the file names of the selected message. If only
-	 one message is selected, this amounts to %f, but if more messages 
-	 are selected, then the command will be launched only once with the 
-	 list of the file names. (You can use both %f and %F in one command: 
-	 then the command will be launched for each selected message with 
-	 the name of this message and with the list of all selected 
-	 messages. I did not find a practical example for this.)
-    * %p denotes the current selected message part of a multipart message. 
-	 The part is decoded accordingly. If the message is not a multipart 
-	 message, it denotes the message body.
-    * Prepending >: this will allow you to send to the command's standard 
-	 input a text that you will enter in a dialog window.
-    * Prepending *: this will allow you to send to the command's standard 
-	 input a text that you will enter in a dialog window. But in 
-	 contrast to prepending >, the entered text is hidden (useful when 
-	 entering passwords).
-    * Appending an ampersand &: this will run the command asynchronously. 
-	 That means "fire and forget". Claws Mail won't wait for the
-	 command to finish, nor will it catch its output or its error
-	 messages.
-    * Prepending the vertical bar | (pipe-in): this will send the current 
-	 displayed text or the current selected text from the message view 
-	 or the compose window to the command standard input. The command 
-	 will silently fail if more than one message is selected.
-    * Appending the vertical bar | (pipe-out): this will replace the current 
-	 displayed text or the current selected text from the message window
-	 or the compose window by the command standard output. The command
-	 will silently fail if more than one message is selected.
-
-  Note: It is not possible to use actions containing %f, %F or %p from the
-  compose window. 
-
-  When a command is run, and unless it is run asynchronously, Claws Mail
-  will be insensitive to any interaction and it will wait for the command to 
-  finish. If the command takes too long (5 seconds), it will popup a dialog 
-  window allowing to stop it. This dialog will also be displayed as soon as
-  the command has some output: error messages or even its standard output 
-  when the command is not a "pipe-out" command. When multiple commands are 
-  being run, they are run in parallel and each command output is separated 
-  from the outputs of the others.
-
-  a. Examples
-  -----------
-
-  Here are some examples that are listed in the same syntax as used for 
-  storing the actions list. You can copy and past the definition in your 
-  ~/.claws-mail/actionsrc file (exit Claws Mail before). The syntax
-  is very simple: one line per action, each action contains the menu name
-  and the command line separated by a colon and a space ": "
-
-  Purpose:	rot13 cyphering
-  Definition:	Rot13: |tr a-zA-Z n-za-mN-ZA-M|
-  Details:	This will apply the rot13 cyphering algorithm to the 
-		(selected) text in the message/compose view.
-
-  Purpose:	Decoding uuencoded messages
-  Definition:	UUdeview: xdeview %F&
-  Details:	xdeview comes with uudeview. If an encoded file is split in 
-		multiple messages, just select them all and run the command.
-
-  Purpose:	Display uuencoded image
-  Definition:	Display uuencoded: uudec %f&
-  Details:	Displays uuencoded files. The uudec[1] script can be found in 
-		the 'tools' directory of the distribution package.
- 
-  Purpose:	Alter messages
-  Definition:	Edit message: gvim -f %F
-  Details:	Allows editing of any received message. Can be used to remove 
-		unneeded message parts, etc.
-
-  Purpose:	Pretty format
-  Definition:	Par: |par 72Tbgjqw74bEe B=._A_a 72bg|
-  Details:	par is a utility that can pretty format any text. It does a 
-		very good job in indenting quoted messages, and justifying 
-		text. Used when composing a message
-
-  Purpose:	Browse
-  Definition:	Part/Dillo: dillo %p&
-  Details:	Browse the selected message part in Dillo.
-
-
-  [1] The uudec script can be found in the 'tools' directory of the 
-  distribution package. It needs uudecode and ImageMagick's display. The 
-  latter can be replaced by any image viewer that can get input from 
-  standard input. The script could also be modified to use temporary files 
-  instead of standard input. 
-
-
-4. Icon Themes
---------------
-  Claws has support for different icon sets. Several icon sets can be
-  downloaded from http://www.claws-mail.org/themes.php
-  You will need to create a directory called 'themes' in your config
-  directory, unpack them into this directory, and then use the interface
-  to select them, /Configuration/Preferences/Display/Themes
-
-  This interface can also be used to install new themes.
-
-
-
-5. Spell Checking
------------------
-  a. Requirements
-  b. Configuration and installation
-  c. Usage
-  d. Known problems
-
-  a. Requirements
-  ---------------
-
-  The spell checker in Claws Mail requires the GNU/aspell library
-  (http://www.gnu.org/software/aspell), version 0.50 or newer.
-
-  You also need the dictionaries. Check GNU/aspell home page for how
-  to download and install them.
-  
-  NB: The old dictionaries used by the old aspell will not work.
-
-  b. Configuring Claws
-  --------------------
-
-  Spell checking is enabled automatically if the aspell executable is
-  found. If it is in unusual places, use '--with-aspell-prefix' to state
-  the path to the aspell executable.  E.g., if aspell's full path is
-  /foo/bar/bin/aspell, then use:
-
-  ./configure --with-aspell-prefix=/foo/bar
-
-  The '--with-aspell-prefix=PREFIX' option will let the configure
-  script search for includes and libraries in PREFIX/include and PREFIX/lib.
-
-  You can also manually specify the includes and libraries path by using
-  either following options:
-
-  --with-aspell-includes=/foo/bar/include
-
-  and/or 
-
-  --with-aspell-libs=/rab/oof/lib
-
-  as appropriate.
-
-  The configure script summarizes the options compiled in.  Check that
-  it lists 'GNU/aspell = yes'.
-
-  Then proceed as usual, with 'make' and 'make install'.
-
-  c. Usage
-  --------
-
-  After successful compiling, you need to tell Claws Mail where your
-  dictionaries reside. The configure script should have found it, but in
-  case it did not, run 'aspell config dict-dir' on the shell to get the
-  path to the dictionaries.
-
-  Then run claws-mail and go to /Configuration/Preferences/Compose/Spell Checking.
-  Check the box 'Enable spell checker' and use the directory selector to select
-  the path where the dictionaries reside.  Within the file selector, go to that
-  directory and select *any* file in the file lists.  Click OK. Then, you should
-  be able to select your default dictionary.
-
-  When composing, misspelled words are highlighted.  Click on any
-  highlighted word with the right mouse button to get a list of
-  suggestions.  The first entry of the menu just displays the unknown
-  word.  Selecting 'Accept in this session' (or hitting MOD1-Space, 
-  where MOD1 is usually the ALT key) will ignore this word and accept
-  it in this message.  Selecting the next entry, "Add to dictionary", which
-  is bound to MOD1-Enter combination, will add the unknown word to your
-  personal dictionary to learn it.  The next entries are the suggested words. 
-  The first 15 suggestions can be accessed by typing one of the first letters
-  of Latin alphabet (if this does not suit your language, please send
-  a mail to melvin.hadasht@free.fr).  Aspell has a 'learn from mistake'
-  function that can be used by pressing the MOD1 key and selecting the 
-  suggestion (with the keyboard or with the mouse).  See GNU/aspell manual
-  §6.3 for an explanation of this feature (also called 'replacement storing'). 
-
-  If you click with the right mouse button everywhere else, or if you
-  shift-right-click even on a misspelled word, you get the
-  configuration menu.  'Check all' highlights all misspelled words.
-  With this menu, you can also change the dictionary while editing.
-  Finally, you can change the suggestion mode, and the learn from
-  misktakes feature.
-
-  Spell checking can also be done using keyboard shortcuts.  In the
-  'Edit' menu of the compose window, there are two menus 'Check backwards
-  misspelled word' and 'Forward to next misspelled word'.  Add to them 
-  appropriate keyboard shortcuts.  'Check backwards misspelled word' 
-  checks backwards from cursor position for the first misspelled word.
-  If it finds one, it displays the suggestions lists which can be handled
-  with the keyboard as described before. When the suggestion menu is 
-  closed, the cursor returns to its original position to be able to 
-  continue editing.  The 'Forward to next misspelled word' do the same 
-  thing in the other direction but moves the cursor at the end of the
-  misspelled word.  This way, you can spell check easily a whole message
-  starting from its beginning and using the 'Forward to next misspelled
-  word' keyboard short cut.
-  
-
-6. Quick Search with extended search
-------------------------------------
-    Quick Search, with its powerful Extended search function,
-    enables searching through folder's messages.
-
-    Extended Search allows one to define criteria that messages must
-    have in order to match and be displayed in the summary view pane.
-    Search types titled From, Subject and To are self explanatory.
-    Search type extended allows one to use Claws Mail's powerful
-    filtering engine to select messages. Examples:
-    from regexpcase "foo"
-    subject regexp "Bug" & to regexp "claws-mail"
-
-    Additionally, it is possible to use simpler yet equally
-    powerfull patterns for message selections. Mutt users will
-    immediately recognise most of the available patterns:
-
-    Pattern  Parameter  Selects
-    ----------------------------------------------------
-    a                   all messages
-    ag       #          messages whose age is greater than #
-    al       #          messages whose age is lower than #
-    b        S          messages which contain S in the message body
-    B        S          messages which contain S in the whole message
-    c        S          messages carbon-copied to S
-    C        S          message is either to: or cc: to S
-    D                   deleted messages
-    e        S          messages which contain S in the Sender field
-    E        S          true if execute "S" succeeds
-    f        S          messages originating from user S
-    F                   forwarded messages
-    h        S          messages which contain header S
-    i        S          messages which contain S in Message-Id header
-    I        S          messages which contain S in inreplyto header
-    L                   locked messages
-    n        S          messages which are in newsgroup S
-    N                   new messages
-    O                   old messages
-    r                   messages which have been replied to
-    R                   read messages
-    s        S          messages which contain S in subject
-    se       #          messages whose score is equal to #
-    sg       #          messages whose score is greater than #
-    sl       #          messages whose score is lower than #
-    Se       #          messages whose size is equal to #
-    Sg       #          messages whose size is greater than #
-    Ss       #          messages whose size is smaller than #
-    t        S          messages which have been sent to S
-    T                   marked messages
-    U                   unread messages
-    x        S          messages which contain S in References header
-    y        S          messages which contain S in X-Label header
-
-    # means number
-    S means regexp string
-
-    It is possible to use logical operators AND (&), OR (|) and
-    NOT (! or ~). Case sensitive search is achieved with %.
-    Examples:
-    T                  marked messages
-    U                  unread messages
-    f "john beavis"    messages from john beavis
-    %f "John Beavis"   messages from John Beavis (case sensitive)
-    ~s foo             messages which do not have foo in the subject
-    f foo & ~s bar     messages from foo that do not have bar in thesubject
-
-
-7. Custom toolbar
------------------
-
-   /Configuration/Preferences/Customize Toolbars lets you define the
-   toolbar you want. The configuration dialog enables you to set an icon,
-   an appropriate text, and map an action to it. Actions to choose
-   from are predefined. You can also have your "Claws Mail Actions"
-   (refer to "Actions" above) on your toolbar.
-
-   Example: 
-	* Configuration->Actions 
-		- add an entry "Dillo: dillo %p&"
-        * Configuration->Custom toolbar    
-		- select Claws Mail Actions Feature
-	 	- select "Dillo: dillo %p&" from drop down list
-		- choose an icon and click ok
-
-
-    
-8. Partial downloading of POP3 mails
-------------------------------------
-  Messages over the configured size limit, (/[Account preferences]/
-  Receive/Message size limit), will be partially retrieved. These
-  messages will have a Notice View displayed (above the Message View),
-  informing of the partially retrieved state and the total size of the
-  message. The Notice View will also contain two buttons, 'Mark for
-  download' and 'Mark for deletion'. If the user clicks 'Mark for
-  download', the message will be downloaded in full at the next message
-  retrieval, (and the partial one deleted); if the user checks 'Mark for
-  deletion' it will be removed from the server after the normal delay
-  as specified in the POP3 account's 'Receive' preferences.
-  If a user moves a partially retrieved message to the Trash folder 
-  it will be deleted on the server at the next retrieval after the 
-  Trash folder has been emptied.
-
-
-
-
-9. Hidden options
------------------
-
-    bold_unread			(default: 1)
-	show unread messages using bold font in summary view
-	0: off  1: on
-
-    cache_max_mem_usage		(default: 4096)
-	the maximum kB of memory Claws Mail should use.
-	It will try to keep the memory usage below this
-	value, but it will always use the assigned
-	amount of memory for speed gain.
-
-    cache_min_keep_time		(default: 15)
-	the minimum time in minutes Claws Mail will keep
-	the folder cache in memory. If a cache is more
-	recent than this time it will not be freed even
-	if the memory usage is above the maximum. You
-	should probably set this value higher than your
-	mail check interval. Otherwise the cache will
-	always be freed between checks even if the folder
-	is accessed on every check, which will cause much
-	disk IO.
-
-    compose_no_markup		(default: 0)
-	prevent italic and bold text in the Compose dialog
-	account selector
-	0: normal (markup) 1: no markup
-
-    enable_dotted_lines		(default: 0)
-	Use the old dotted line look in the main window
-	GtkTreeView components, (Folder List and Message List),
-	instead of the modern lineless look. 
-
-    enable_hscrollbar		(default: 1)
-	enable horizontal scroll bar in summary view
-	0: off  1: on
-
-    enable_swap_from		(default: 0)
-	display sender's email address in To column in Sent
-	folder instead of recipient's
-	0: off  1: on
-
-    folderview_vscrollbar_policy	 (default: 0)
-	specify the policy of vertical scroll bar of folder view
-	0: always  1: automatic  2: never
-
-    hover_timeout			(default: 500)
-	time in milliseconds that will cause a folder tree to
-	expand during drag n drop when the mouse cover is held
-	over it
-
-    live_dangerously			(default: 0)
-	Don't ask for confirmation before definitive deletion of
-	emails.
-
-    log_error_color, log_in_color, log_msg_color, log_out_color,
-    log_warn_color
-	The colours used in the log window.  
-
-    mark_as_read_delay			(default: 0)
-	Number of seconds to wait before marking an opened mail
-	as read.
-
-    respect_flowed_format		(default: 0)
-	Respect format=flowed on text/plain message parts. This will
-	cause some mails to have long lines, but will fix some URLs
-	that would otherwise be wrapped.
- 
-    skip_ssl_cert_check			(default: 0)
-	Disables the verification of SSL certificates. 
-
-    statusbar_update_step		(default: 10)
-	update stepping in progress bars
-
-    stripes_color_offset		(default: 4000)
-	Specify the value to use when creating alternately coloured
-	lines in GtkTreeView components. The smaller the value, the
-	less visible the difference in the alternating colours of the
-	lines. 
-
-    textview_cursor_visible	 	(default: 0)
-	display the cursor in the message view
-	0: off  1: on
-
-    thread_by_subject_max_age		(default: 10)
-	number of days to include a message in a thread when using
-	'Thread using subject in addition to standard headers'
-
-    toolbar_detachable			(default: 0)
-	hide handles in the toolbar
-	0: off  1: on
-
-    use_stripes_everywhere		(default: 1)
-	Enable alternately coloured lines in GtkTreeView components. 
-
-    use_stripes_in_summaries		(default: 1)
-	Enable alternately coloured lines in the main window
-	GtkTreeView components, (Folder List and Message List). The
-	only useful way to use this option is to set it to 0 when
-	use_stripes_everywhere is set to 1. 
-
-    utf8_instead_of_locale_for_broken_mail	(default: 0)
-	use UTF-8 encoding for broken mails instead of current
-	locale
-	0: off  1: on
-
-    warn_dnd			(default: 1)
-	display a confirmation dialog on drag n drop of folders
-	0: off  1: on
-
-10. Tools
---------- 
-  You will find all of these tools in the 'tools' directory:
-
-  acroread2claws-mail.pl 
-	send PDFs from Adobe Reader 7
-  calypso_convert.pl 
-	import mbox files exported by calypso
-  convert_mbox.pl
-  	convert mbox format to MH format
-  eud2gc.py
-	convert a Eudora (v.3?) addressbook to vCard 
-	(GnomeCard) format
-  filter_conv.pl
-	convert sylpheed main's filter rules, (< 0.9.99),
-	into Claws' filtering format
-  filter_conv_new.pl
-	convert sylpheed main's filter rules, (>= 0.9.99),
-	into Claws' filtering format
-  fix-date.sh
-	Replace/Add a message's Date field
-  freshmeat_search.pl
-  	Actions script to lookup the selected text on
-	Freshmeat www.freshmeat.net using the configured
-	browser
-  gif2xface.pl
-	convert a gif file to an xface
-  google_msgid.pl
-  	Actions script to lookup selected message-id on 
-	google using mozilla.
-  google_search.pl
-  	Actions script to lookup up the selected text on
-	google using the configured browser
-  kdeservicemenu/*
-  	Service Menus for Konqueror to allow sending
-	files to Claws Mail
-  kmail2claws-mail.pl
-	convert a Kmail addressbook to a Claws Mail
-	addressbook
-  kmail2claws-mail_v2.pl
-	new version of the address book conversion script
-	for newer versions of Kmail/Kaddressbook
-  kmail-mailbox2claws-mail.pl
-  	convert a Kmail mailbox into a Claws mail mailbox
-  multiwebsearch.pl
-  	search any searchable website for the selected text
-  nautilus2claws-mail.sh
-  	enables sending files from the Nautilus file manager
-	to Claws Mail
-  OOo2claws-mail.pl
-	enable OpenOffice to send documents through
-	Claws Mail
-  outlook2claws-mail.pl
-	convert an Outlook contacts list to a Claws Mail
-	addressbook
-  sylprint.pl
-	process a Claws Mail message and print it using enscript
-	if available or lpr if not
-  tb2claws-mail
-	convert an addressbook exported from The Bat! into 
-	a Claws Mail addressbook
-  tbird2claws.py
-  	integrate a Thunderbird folder tree into Claws Mail
-  textviewer.pl
-	Display various attachments as text
-  textviewer.sh
-  	attempt to view an attachment as plain text
+--------------------------------------------------------------------------------
+Contents of the tools directory:
+--------------------------------------------------------------------------------
+
+Action scripts:
+  freshmeat_search.pl           Search freshmeat.net for selected text
+  google_msgid.pl               Search groups.google.com for selected message-id
+  google_search.pl              Search google.com for selected text
+  multiwebsearch.pl             Search any search engine for the selected text
+  textviewer.sh                 Attempt to view an attachment as plain text
+  uudec                         Decode and display uuencoded images
+  uuooffice                     Decode uuencoded attachments and open them with
+                                OpenOffice
+
+Addressbook conversion:
+  eud2gc.py                     Convert Eudora address book to Gnomecard
+  kmail2claws-mail.pl           Import a Kmail address book (KDE2)
+  kmail2claws-mail_v2.pl        Import a Kmail address book (KDE3)
+  mew2claws-mail.pl		Import a Mew address book
+  outlook2claws-mail.pl         Import an Outlook generated contact list
+  tb2claws-mail                 Import The Bat! address books
+  vcard2xml.py                  Import an Evolution vCard
+
+Mailbox conversion:
+  calypso_convert.pl            Import mbox files with attachments from Calypso
+  convert_mbox.pl               Import mbox files
+  kmail-mailbox2claws-mail.pl   Convert a kmail mailbox to a Claws Mail mailbox
+  tbird2claws.py                Integrate a Thunderbird folder tree into Claws
+
+Other tools:
+  acroread2claws-mail.pl        Send PDFs from Adobe Reader 7
+  claws-mail-compose-insert-files.pl
+                                Insert files into a new Compose window
+  filter_conv_new.pl            Convert new-style Sylpheed filters to filtering
+  filter_conv.pl                Convert old-style Sylpheed filters to filtering
+  fix-date.sh                   Replace/Add a message's Date field
+  mairix.sh                     A wrapper to mairix, to enable global searches in
+                                mail folders
+  nautilus2claws-mail.sh        Send files from Nautilus
+  OOo2claws-mail.pl             Send documents from OpenOffice.org
+  popfile-link.sh               Open messages in POPFile control center to edit
+                                their status
+  sylprint.pl                   Printing engine, explained in README.sylprint
+  textviewer.pl                 Display various attachments as text
   thunderbird-filters-convertor.pl
-	convert Thunderbird filtering rules
-  update-po 
-	translators' tool that eases the creation of 
-	*.po files
-  uudec
-	decode UUencoded mails, for use with Actions
-  uuooffice
-	Decode uuencoded attachments and open them with OpenOffice
-  vcard2xml.py
-	import an Evolution vCard
+                                Convert Thunderbird filtering rules
+
+Extra tools:
+  gif2xface.pl                  Convert a 48x48 GIF file to an X-Face header
+  update-po                     Update the .po files named on the command line.
+
+--------------------------------------------------------------------------------
+Detailed Descriptions:
+--------------------------------------------------------------------------------
+
+Action scripts
+--------------
+
+* freshmeat_search.pl
+  WORKS ON: selection
+  COMMAND: |freshmeat_search.pl
+  Search freshmeat.net for selected text using the default Claws Mail browser
+
+* google_msgid.pl
+  WORKS ON: selection
+  COMMAND: |google_msgid.pl
+  Lookup selected message-id in google using mozilla. Edit the script to use
+  different browsers.
+
+* google_search.pl
+  WORKS ON: selection
+  COMMAND: |google_search.pl
+  Search google.com for selected text using the default Claws Mail browser
+
+* multiwebsearch.pl
+  WORKS ON: selection
+  see further down for details
+
+* textviewer.sh
+  WORKS ON: current message part
+  COMMAND: textviewer.sh %p |
+  Attempt to view an attachment as plain text
+
+* uudec
+  WORKS ON: current message (or part of multipart message)
+  COMMAND: uudec %f&
+  Decode and display uuencoded images using uudecode.
+
+* uuooffice
+  WORKS ON: current message (or part of multipart message)
+  COMMAND: uuooffice %f&
+  Decode uuencoded attachments and open them with OpenOffice
+
+* More action examples can be found at the Claws Mail FAQ
+  http://www.claws-mail.org/faq/index.php/Actions
+
+** multiwebsearch.pl **
+
+  WHAT IT DOES
+	This is an Actions script that allows you to search
+	websites for the selected text. It uses the default
+	Claws Mail browser as configured through Claws Mail's 
+	GUI and specified in ~/.claws-mail/clawsrc, and a
+	configuration file called multiwebsearch.conf.
+	
+  CONFIGURATION
+  	The configuration file takes the following format:
+	
+	ALIAS|URL PART|URL PART
+	
+	ALIAS is a user-defined name; the first URL PART is the
+	url before the search term; the second URL PART is
+	optional and contains the remaining part of the url which
+	comes after the search term. A sample configuration file
+	is included.
+	
+  HOW TO USE IT
+	Copy 'multiwebsearch.conf' to ~/.claws-mail/
+	
+	Configure an Action:
+	a) pre-configured website 
+	   Command: multiwebsearch.pl --where="google" --what="%s"
+	b) dynamic
+	   Command: multiwebsearch.pl --where="%u" --what="%s"
+	   
+	In type a) "google" refers to one of the configured aliases,
+	this Action will always search the website referred to by
+	the alias "google".
+	
+	In type b) you will be presented with a dialog box into
+	which you type one of your configured aliases
+
+  
+  Contact: Paul Mangan <paul@claws-mail.org>
+--------------------------------------------------------------------------------
+
+Address book conversion
+-----------------------
+
+* eud2gc.py
+
+  WHAT IT DOES
+	This python-script is a quick hack to convert an Eudora (v.3?)
+	addressbook to vCard (GnomeCard) format.
+
+  HOW TO USE IT
+	You may do whatever you want with it! (Also regarding copying)
+	However, the script is intended to use like this:
+
+		eud2gc.py <Eudora-addressbook-file> <Gnomecard-file>
+
+  	Be careful not to overwrite your original GnomeCard.gcrd!
+  	(But of course you might want to add the converted stuff to it)
+
+  Contact: Jeroen Versteeg <j.m.versteeg@student.utwente.nl>
+
+* kmail2claws-mail.pl
+
+  WHAT IT DOES
+	This perl script will convert an exported Kmail addressbook into a
+  	Claws Mail addressbook. If your version of Kmail is 1.37 or
+	greater and/or your version of KAddressBook is 3.1beta1 or greater,
+	or this script mixes up your definitions and their related data, use
+  	'kmail2claws-mail_v2.pl' instead.
+
+  HOW TO USE IT
+	(You must run claws-mail at least once before running this script.)
+
+	In Kmail's Address book choose '/File/Export List'. This will export
+  	your Kmail address book data to a *.csv file.
+
+  	If Claws Mail is running, close it.
+
+  	From the command line, execute the following:
+ 
+		perl kmail2claws-mail.pl --kmailfile=/path/to/addressbook.csv
+
+  	Your Kmail address book data will now be contained in Claws Mail'
+  	address book, under the name 'Kmail Address Book'.
+
+  Contact: Paul Mangan <paul@claws-mail.org>
+    
+
+* kmail2claws-mail_v2.pl
+
+  This script has been tested with Kmail 1.4.7 and KAddressBook 3.1beta1
+
+  WHAT IT DOES
+	This perl script will convert a Kmail address book that has been
+  	exported in csv format into a Claws Mail address book.
+
+  HOW TO USE IT
+	(You must run claws-mail at least once before running this script.)
+  
+  	Open Kmail's Addressbook, /File/Address Book
+  	In Kmail's Addressbook choose '/File/Export/Export List...'. This 
+  	will allow you to export your Kmail addressbook data to a *.csv file.
+
+  	If Claws Mail is running, close it.
+
+  	From the command line, execute the following:
+ 
+		perl kmail2claws-mail_v2.pl --kmailfile=/path/to/addressbook.csv
+	
+  	You can also use --help to see usage instructions.
+
+  	Your Kmail addressbook data will now be contained in Claws Mail'
+  	addressbook, under the name 'Kmail address book'.
+
+  Contact: Paul Mangan <paul@claws-mail.org>
+
+* mew2claws-mail.pl
+
+  WHAT IT DOES
+	This perl script will convert a Mew address book into a Claws Mail
+	address book.
+
+  HOW TO USE IT
+	(You must run claws-mail at least once before running this script.)
+  
+  	If Claws Mail is running, close it.
+
+  	From the command line, execute the following:
+ 
+		perl mew2claws-mail.pl --mew-addressbook=/path/to/mew/addressbook
+	
+  	You can also use --help to see usage instructions.
+
+  	Your Mew addressbook data will now be contained in Claws Mail's
+  	addressbook, under the name 'Mew Address Book'.
+
+  Contact: Jérôme Lelong <jerome.lelong@gmail.com>
+
+* outlook2claws-mail.pl
+
+  WHAT IT DOES
+  	This perl script converts an Outlook generated contact list into a 
+  	Claws Mail XML address book.
+
+  HOW TO USE IT
+  	For text files:
+	--------------
+  	You must export Outlook Express contact list as TXT file, choosing
+  	only "Name" and "Address" fields to export.
+
+  	You must exit Claws Mail before converting the contact list.
+
+  	From the command line, execute the following:
+
+		outlook2claws-mail.pl fullpathname
+
+	For csv files:
+	-------------
+	You must export Outlook contact list as CSV file, choosing ALL the
+	fields available for exporting.
+
+	You must exit Claws Mail before converting the contact list.
+
+	From the command line, execute the following:
+
+		outlook2claws-mail.pl --csv fullpathname
+
+  LIMITATIONS
+	For text files only works with fields described above. If you have 
+	more complex examples send them to me, and I'll try to enhance the 
+	script.
+
+	For csv files you must export all fields (but only non empty fields
+	are added to the created Claws Mail address book) and the number
+	of fields expected is harcoded. Look for the $nboffields variable in
+	the script and change its value if you are sure you exported all
+	fields and script gives the 'unknown csv file format' error.
+
+  Contact: Ricardo Mones Lastra <mones@aic.uniovi.es>
 
 
-11. How to contribute
----------------------
+* tb2claws-mail
 
-You are encourged to send patches via the Claws Mail sourceforge
-project's Patch Tracker.
-http://sourceforge.net/tracker/?atid=384600&group_id=25528&func=browse
+  WHAT IT DOES
+  	This perl script will convert an address book exported from The Bat! 
+	into a Claws Mail address book.
 
-If that's too troublesome, either contact Paul Mangan
-<paul@claws-mail.org> or consider posting to the
-Claws Mail-users mailing list.
-http://www.claws-mail.org/MLs.php
+  HOW TO USE IT
+	(You must run claws-mail at least once before running this script.)
 
-Bugs can be reported with Claws' bugzilla at:
-http://www.thewildbeast.co.uk/claws-mail/bugzilla/index.cgi
+  	If Claws Mail is running, close it.
 
-Of course, you can also post to the Claws Mail-users mailing list.
+  	Export The Bat! Address Book to CSV file format with all fields 
+  	selected to YES and then start:
 
-Also, we really try to incorporate good contributions, but sometimes we
-don't have enough time. If the contribution is really big, or requires
-a long time to stabilise, send a mail to Paul Mangan
-<paul@claws-mail.org>. We can probably arrange access to the
-Claws Mail CVS tree.
+  		tb2claws-mail --tbfile=/full/path/to/thebat/addressbook.csv
+ 
+  	The Bat! addressbook data will now be contained in Claws Mail'
+  	addressbook, under the name 'The Bat! Address Book'.
+
+  Contact: Urke MMI <urke@gmx.net>  
 
 
+* vcard2xml.py
 
-12. How to request features
----------------------------
+  WHAT IT DOES
+  	This python script will convert an Evolution vCard into a Claws Mail
+	address book.
 
-Ask around in Claws Mail-users ML. Note that some developers may
-have already thought about your feature, may,perhaps, be implementing it,
-or the feature was already discussed and rejected for whatever reason.
-You might want to go ahead and hack a patch for it. (That would be very
-cool!) Another possibility is to use the Feature Request Tracker at the
-sourceforge project.
-http://sourceforge.net/tracker/?group_id=25528&atid=384601
+  HOW TO USE IT
+	(You must run claws-mail at least once before running this script.)
+
+  	If Claws Mail is running, close it.
+	From the command line, execute the following:
+
+  		vcard2xml.py source_file [destination_file]
+ 
+  	When only <source_file> is specified it will overwrite (and
+	create a backup of) the existing addressbook. 
+	When both arguments are suplied it will create a new additional 
+	addressbook named as <destination_file>.
+	If the script encounters an error it will attempt to roll back
+	the changes and restore the original files.
+
+  Contact: Bogdan Sumanariu <bsumanariu@one5.ro> 
+
+--------------------------------------------------------------------------------
+
+Mailbox conversion
+------------------
+
+* calypso_convert.pl
+
+  WHAT IT DOES
+	This perl script imports mbox files that are exported by Calypso.
+  	It recreates the folder structure by scanning the "X-CalypsoFolder"
+  	header and reincludes the attachments referenced in the
+  	"X-CalypsoHtmlBody" "X-CalypsoAccount" "X-Attachment" headers.
+  
+  HOW TO USE IT
+	Export the Calypso mailbox by selecting "Save to archive" and check
+  	the "Save attachments" box.
+	
+  	Edit the script to set following variables (at the top of the file):
+ 	   $mboxdir  : path to the exported mbox, e.g. 'Archive' or '.'
+ 	   $mboxfile : name of exported mbox, e.g. 'mail.txt'
+ 	   $outdir   : name of the MH folder to create, e.g. 'Calypso'
+	   
+ 	 Run the script using
+	 
+    		perl calypso_convert.pl
+		
+  	Finally, import that folder by either selecting "New mailbox" or
+  	moving it into your existing directory and recreate the folder
+  	structure manually (contentmenu from folderview).
+
+  Contact: Thorsten Maerz <torte@netztorte.de>
+
+* convert_mbox.pl
+
+  WHAT IT DOES
+	This perl script converts an mbox directory's contents into 
+	Claws Mail' MH format.
+  
+  HOW TO USE IT
+  
+	Run the script using:
+	 
+    		perl convert_mbox.pl MBOX MH_DIR
+		
+	Move the outputted MH_DIR and its contents into your Claws Mail
+	Mail folder; in Claws Mail right-click the top-level folder and
+	choose 'Rebuild folder tree' from the popup menu.
+
+  Contact: Fred Marton <Fred.Marton@uni-bayreuth.de>
+
+* kmail-mailbox2claws-mail.pl
+
+  WHAT IT DOES
+	This perl script converts a kmail mailbox  into Claws Mail' mailbox.
+  
+  HOW TO USE IT
+  
+  	Exit Claws Mail if running.
+	
+	Run the script using:
+	 
+    		kmail-mailbox2claws-mail.pl --kmaildir=/full/path/to/kmail/mailbox
+		
+	Start Claws Mail and right-click the toplevel mailbox, i.e
+	"Mailbox (MH)", and select 'Rebuild folder tree'.
+	You may also need to run '/File/Folder/Check for new messages
+	in all folders'
+	
+	Additional options:
+		--debug		debug mode
+		--dry-run	test mode, nothing is actually written
+		--help		brief usage info
+	
+  Contact: Paul Mangan <paul@claws-mail.org>
+
+* tbird2claws.py
+
+  WHAT IT DOES
+	This python script integrates a Thunderbird folder tree into 
+        Claws Mail.
+  
+  HOW TO USE IT
+  
+	The script receives two parameters from command-line:
+	<Thunderbird folder path> <Claws Mail folder path>
+
+	The best way to use it is to go to inside your Thunderbird
+	root mailfolder directory and invoke it as:
+
+		<path>\python2.4 <path>\tbird2claws.py . <path to Claws Mail>\Mail
+
+  Contact: Aleksandar Urosevic aka Urke MMI <urke@gmx.net>
+
+--------------------------------------------------------------------------------
+
+Other tools
+-----------
+
+* acroread2claws-mail.pl
+
+  WHAT IT DOES
+  	This perl script enables Adobe Reader 7 to send documents to
+	Claws Mail as attachments.
+
+  HOW TO USE IT
+  	Make sure that the script is executable (chmod +x acroread2claws-mail.pl)
+	Start up Adobe Reader 7 (acroread)
+	Go to /Edit/Preferences/SendMail
+	Select any email client except 'System Mail (mail)'
+	Enter the path to this script in the alternate location box  
+
+  	You can then use 'File/Email' or the Email toolbar button to launch
+	claws-mail (if not already launched) and open a new compose window
+	with the PDF attached.
+  
+  Contact: Paul Mangan <paul@claws-mail.org>
+
+* claws-mail-compose-insert-files.pl
+
+  WHAT IT DOES
+	This script enables inserting files into the message body of a new 
+	Claws Mail Compose window from the command line. Additionally To,
+	Cc, Subject and files to attach to the message can be specified. 
+
+  HOW TO USE IT
+  	claws-mail-compose-insert-files.pl [options]
+	Options:
+		--help -h
+		--to mail@address.net[,mail2@address.net]
+		--cc mail@address.net[,mail2@address.net]
+		--subject "My subject"
+		--attach FILE
+		--insert FILE
+
+	--attach and --insert can be used multiple times
+  
+  Contact: Paul Mangan <paul@claws-mail.org>
+
+* filter_conv_new.pl
+
+  WHAT IT DOES
+	This perl script provides easy conversion of your filtering rules from
+	sylpheed's new filter system (>= 0.9.99) to the filtering system used in
+	Claws Mail.
+	It reads '~/.sylpheed-2.0/filter.xml' or '~/.sylpheed/filter.xml' and
+	writes '~/[CLAWS CONFIG DIR]/matcherrc'
+  
+  HOW TO USE IT
+	Issue the following command from the 'tools' directory:
+
+        perl filter_conv_new.pl
+
+  	That's it, the claws' filtering system is now implemented with your
+  	previous rules applied.
+
+  REQUIREMENTS
+	XML::SimpleObject
+
+  Contact: Paul Mangan <paul@claws-mail.org>
+  
+
+* filter_conv.pl
+
+  WHAT IT DOES
+	This perl script provides easy conversion of your filtering rules
+  	from sylpheed's old filter system (< 0.9.99) to the filtering system
+	used in Claws Mail.
+	It reads '~/.sylpheed/filterrc' and writes '~/.claws-mail/matcherrc'
+  
+  HOW TO USE IT
+	Issue the following command from the 'tools' directory:
+
+        perl filter_conv.pl
+
+  	That's it, the new filtering system is now implemented with your
+  	previous rules applied.
+
+  Contact: Paul Mangan <paul@claws-mail.org>
+  
+
+* fix-date.sh
+
+ WHAT IT DOES
+	It will replace the Date: value w/ the one picked up from
+	more recent Received: field if this field resides in one
+	line. Otherwise, it will take the file modification time
+	(using a RFC 2822-compliant form). If no X-Original-Date already
+	exist, the former Date value will be set in such field.
+
+  HOW TO USE IT
+	fix_date.sh <filename> [<filename>..]
+
+  Contact: wwp <wwp@claws-mail.org>
 
 
+* mairix.sh
 
-13. Installing Claws Mail from CVS
---------------------------------------
+ WHAT IT DOES
+	It's a wrapper to mairix, a tool that makes indexed searches
+	and shows search results in a virtual folder. Maildir, MH and
+	mbox formats are supported, see:
+	http://www.rpcurnow.force9.co.uk/mairix/
 
-  a. Downloading
-  --------------
+  HOW TO USE IT
+	mairix.sh
+	mairix.sh <mairix rcfile> [<mairix options>..]
+    
+    For instance:    
+    mairix.sh ~/.mairixrc s:word1,word2
 
-  To download the latest cvs cd to the directory where you wish to download
-  to and type the following information:
-
-  cvs -z3 -d:pserver:cvs@sunsite.dk:/pack/anoncvs login
-
-  The password is cvs
-
-  After logging in:
-
-   cvs -z3 -d:pserver:cvs@sunsite.dk:/pack/anoncvs co -r gtk2 sylpheedclaws/sylpheed-claws
-
-
-  b. Installing
-  -------------
-
-  To compile and install use the following commands:
-
-  ./autogen.sh		[add configure options as required]
-  make
-  make install		[as root]
-
-  You will need a full set of development tools installed to be able to run
-  autogen.sh. See also ac/README.
+  Contact: wwp <wwp@claws-mail.org>
 
 
+* nautilus2claws-mail.sh
 
-14. Release History
--------------------
+  WHAT IT DOES
+	This script will recursively attach a number of selected 
+	files/directories from Nautilus to a new blank e-mail.
 
-GTK 2 Version
--------------
-2007-07-02	2.10.0
-2007-05-08	2.9.2
-2007-04-19	2.9.1
-2007-04-16	2.9.0
-2007-03-06	2.8.1
-2007-02-26	2.8.0
-2007-01-26	2.7.2
-2007-01-15	2.7.1
-2007-01-08	2.7.0
-2006-12-04	2.6.1 [first release as Claws Mail]
-2006-11-06	2.6.0
-2006-10-19	2.5.6
-2006-10-12	2.5.5
-2006-10-11	2.5.4
-2006-10-04	2.5.3
-2006-09-26	2.5.2
-2006-09-26	2.5.1
-2006-09-25	2.5.0
-2006-07-31	2.4.0
-2006-06-20	2.3.1
-2006-06-12	2.3.0
-2006-06-08	2.2.3
-2006-06-06	2.2.2
-2006-06-05	2.2.1
-2006-05-08	2.2.0
-2006-04-17	2.1.1
-2006-04-05	2.1.0
-2006-01-30	2.0.0
-2005-11-08	1.9.100
-2005-10-31	1.9.99
-2005-10-03	1.9.15
-2005-09-05	1.9.14
-2005-07-22	1.9.13
-2005-06-27	1.9.12
-2005-05-19	1.9.11
-2005-05-09	1.9.9
-2005-03-18	1.9.6
-
-GTK 1 Version
--------------
-2005-06-27	1.0.5
-2005-05-09	1.0.4a
-2005-03-24	1.0.4
-2005-03-10	1.0.3
-2005-02-08	1.0.1
-2005-01-17	1.0.0
-2004-12-06	0.9.13
-2004-09-27	0.9.12b
-2004-08-23	0.9.12a
-2004-06-28	0.9.12
-2004-05-31	0.9.11claws
-2004-03-08	0.9.10claws
-2004-02-06	0.9.9claws
-2003-12-19	0.9.8claws
-2003-11-26	0.9.7claws
-2003-10-02	0.9.6claws
-2003-09-10	0.9.5claws
-2003-08-04	0.9.4claws
-2003-07-12	0.9.3claws
-2003-05-24	0.9.0claws
-2003-03-12	0.8.11claws
-2003-02-12	0.8.10claws
-2003-01-24	0.8.9claws
-2002-12-26	0.8.8claws
-2002-12-23	0.8.7claws
-2002-11-25	0.8.6claws
-2002-10-07	0.8.5claws
-2002-09-22	0.8.3claws
-2002-08-28	0.8.2claws
-2002-07-30	0.8.1claws
-2002-07-23	0.8.0claws
-2002-06-15	0.7.8claws
-2002-05-18	0.7.6claws
-2002-04-28	0.7.5claws
-2002-03-11	0.7.4claws
-2002-02-19	0.7.2claws
-2002-02-14	0.7.1claws
-2002-01-14	0.7.0claws
-2001-12-16	0.6.6claws
-2001-10-16	0.6.5claws8
-2001-09-30	0.6.2claws
-2001-08-14 	0.6.1claws
-2001-07-13	0.5.1claws
-2001-07-01	0.5.0claws3
-2001-06-16	0.4.99claws
-2001-05-29	0.4.99claws3
-2001-05-11	0.4.67claws1
+  HOW TO USE IT
+  	Copy the script to $HOME/.gnome2/nautilus-scripts, chmod u+x, 
+	and restart nautilus (killall -9 nautilus). You will now have 
+	a right-click menu item: '/Scripts/nautilus2claws-mail.sh'
+	
+  Contact: Reza Pakdel <hrpakdel@cpsc.ucalgary.ca>
 
 
+* OOo2claws-mail.pl
 
-15. Useful links
-----------------
-Homepage
-    http://www.claws-mail.org/
-User Contributed FAQ
-    http://www.claws-mail.org/faq/
-Project page
-    http://sourceforge.net/projects/sylpheed-claws/
-Downloads
-    http://www.claws-mail.org/downloads.php
-Extra Plugins
-    http://www.claws-mail.org/plugins.php
-Icon Themes
-    http://www.claws-mail.org/themes.php
-CVS webview
-    http://cvs.sunsite.dk/viewcvs.cgi/sylpheedclaws/sylpheed-claws/?only_with_tag=gtk2
-Mailing Lists
-    http://www.claws-mail.org/MLs.php
-Users Mailing List archive
-    http://lists.sunsite.dk/cgi-bin/ezmlm-cgi/28
-Commits Announcement List archive
-    http://lists.sunsite.dk/cgi-bin/ezmlm-cgi/27
-Bug Tracker
-    http://www.thewildbeast.co.uk/claws-mail/bugzilla/index.cgi
-Feature Request Tracker
-    http://sourceforge.net/tracker/?group_id=25528&atid=384601
-Patch Tracker
-    http://sourceforge.net/tracker/?group_id=25528&atid=384600
-Internationalisation Status
-    http://www.claws-mail.org/i18n.php
-Donations
-    http://www.claws-mail.org/sponsors.php
-Planet Claws Mail
-    http://planet.claws-mail.org/
-Claws Mail for Windows homepage
-    http://www.claws-mail.org/win32/
+  WHAT IT DOES
+  	This perl script enables OpenOffice.org to send documents to
+	Claws Mail as attachments.
 
+  HOW TO USE IT
+    OpenOffice.org Version 2.0
+    ----------------------------
+	This script is not needed for OOo version 2, which can work
+	directly with Claws Mail.
+	Go to 'Tools/Options/Internet/E-mail' and enter 'claws-mail'
+	in the box.
+
+    OpenOffice.org Version 1.1.0
+    ----------------------------
+  	Start up OpenOffice.org.
+  	Go to 'Tools/Options/OpenOffice.org/External Programs'
+	Select either ''Mozilla 1.x (Option 1)', or 
+	'Netscape 6.x - 7.0 (Option 1)' from the 'Program' selection
+  	Enter the path to OOo2claws-mail.pl in the 'Path' box
+  	or select it by clicking on the '...' button.
+    
+  	You can then use 'File/Send/Document as email' to launch
+	claws-mail (if not already launched) and open a new compose
+	window with the document attached.
+
+    OpenOffice.org Version 1.0
+    --------------------------
+  	Start up OpenOffice.org.
+  	Go to 'Tools/Options/OpenOffice.org/External Programs'
+  	Enter the path to OOo2claws-mail.pl in the 'Program' box
+  	or select it by clicking on the '...' button.
+
+
+  Contact: Paul Mangan <paul@claws-mail.org>
+
+
+* popfile-link.sh
+
+ WHAT IT DOES
+	Open selected messages in POPFile control center to edit their
+	status.	Requires that POPFile is running and that the messages
+	have been processed by it (X-POPFile-Link: header is expected).
+	POPFile control center opens with the web browser set in
+	Claws Mail prefs.
+
+  HOW TO USE IT
+	popfile-link.sh <filename> [<filename>..]
+    
+
+  Contact: wwp <wwp@claws-mail.org>
+
+
+* textviewer.pl
+
+  WHAT IT DOES
+	This script tries to recognise an attachment by using the 'file'
+	command and/or the file extension and then uses the available Linux
+	utilities to make an effort to display it as text. For example
+		.doc			antiword -w 72
+		.txt, .diff, .c, .h,
+  		  .ic. .ec, .cc, .sh,
+  		  .sed, .awk		cat
+		.html			txt2htm	or text2html
+		.xls, .sxc, .csv	xlscat -L
+		.rtf			rtf2text
+		.pdf			pdf2text %f -
+		.odt			ooo2txt
+		.pl, .pm		perltidy -st -se or  cat
+		.bz2			bzip2 -d < %f | strings
+
+  HOW TO USE IT
+  	Go to /Configuration/Message View/External Programs and enter the
+	path to the script in the "Command for 'Display as text'" box.
+	Now when you right-click an attachment and choose 'Display as text'
+	this script will be invoked.
+
+	
+  Contact: H.Merijn Brand <h.m.brand@xs4all.nl>
+
+
+* thunderbird-filters-convertor.pl
+
+  WHAT IT DOES
+	This perl script converts Thunderbird filtering rules into Claws Mail
+	filtering rules. It can be run several times, once for each filter
+	configuration file in Thunderbird.
+
+  HOW TO USE IT
+	The script takes 3 arguments:
+
+	--tbird-file=PATH TO FILE	The full path to the file to be converted
+	--mailbox-name=NAME		The name of the Claws Mail mailbox
+	--account-name=NAME		The name of the account to be used (optional)	
+
+	--tbird-file must point to the Thunderbird filter file (msgFilterRules.dat)
+	that you want to convert, it must contain the full path to the file.
+	--mailbox-name should be given the name of your mailbox in Claws Mail, e.g.
+	if the top-level folder is 'Mailbox (MH)' then this option should be
+	'Mailbox'.
+	--account-name is optional, only needed if you are creating account-specific
+	rules. This is the name of your account in Claws Mail, which should
+	correspond to an account that you had in Thunderbird, e.g. the acount whose
+	rules you are converting.
+
+	This script presumes that your folder hierarchy in Claws Mail matches the
+	one that you had in Thunderbird. If you used the tbird2claws.py script to
+	convert your Thunderbird mailbox, then the folder hierarchy should match.
+
+	If the Claws Mail filtering configuration file (matcherrc) does not exist,
+	the script will create it; if it does exist, the newly converted rules will
+	be appended to it.
+
+  REQUIREMENTS
+	Getopt::Long
+	URI::Escape
+
+  Contact: Paul Mangan <paul@claws-mail.org>
+
+--------------------------------------------------------------------------------
+
+Extra tools
+-----------
+
+* gif2xface.pl
+
+  WHAT IT DOES
+	This perl script converts a monochrome (1 bit) 48x48 pixels GIF file
+  	into an X-Face graphic suitable for inclusion into custom headers of
+  	Claws Mail. An X-Face allows to quickly identify (or be identified
+	as) the sender of a mail message in a xface-capable MUA (like Claws
+	Mail).
+
+  HOW TO USE IT
+	After obtaining the desired image for your X-Face you should:
+    	  * scale it to 48x48 pixels (Image->Scale image on Gimp)
+    	  * down color depth to b/w (Image->Mode->Indexed selecting "Use
+      	    Black/White palette" and the desired dithering options (prior to
+      	    indexing doing Image->Colors->Threshold allows you to select the
+      	    b/w level if you don't want a dithered (dotty) image))
+    	  * save file as non-interlaced GIF
+  	Then do:
+
+      		./gif2xface < filename.gif > filename.xface
+
+  	In filename.xface will be the X-Face header ready to use.
+  	You can add a custom header in Claws Mail through Configuration->
+  	Preferences per account, "Send" tab, check "Add user-defined header"
+  	then "Edit..." if you want to add it via the Claws Mail interface, or do
+
+      		echo "0:" `cat filename.xface` > ~/.claws-mail/customheaderrc
+
+  	if you want to create the custom headers file yourself (Warning: this
+  	method is valid only if you don't have any other custom header set or
+  	they will be lost!).
+
+  Contact: Ricardo Mones Lastra <mones@aic.uniovi.es>
+
+
+* update-po
+
+  WHAT IT DOES
+  	This script is a message catalog translator's tool, it updates the .po 
+  	files named on the command line.
+
+  HOW TO USE IT
+	This script needs to be copied to and run from the 'po' directory.
+  
+		./update-po lang.po lang2.po ...
+
+  	to update one or more <yourlang>.po files from the sourcecode files
+ 	 named in POTFILES.in. The old .po file is save in a .po.old file.
+
+  	For example, when you want to update fr.po, run ./update-po fr.po, 
+  	then edit fr.po to update your translation.
+
+  Contact: Wilbert Berendsen <wilbert@oswf.org> or the Claws Mail Team
+
+--------------------------------------------------------------------------------
