@@ -555,6 +555,14 @@
 	</listitem>
       </varlistentry>
       <varlistentry>
+	<term><literal>emphasis_color</literal></term>
+	<listitem>
+	  <para>
+	The colour used for the X-Mailer line when its value is Claws Mail.
+	  </para>
+	</listitem>
+      </varlistentry>
+      <varlistentry>
 	<term><literal>enable_dotted_lines</literal></term>
 	<listitem>
 	  <para>

@@ -4,15 +4,37 @@
 
   <section id="keyb_general">
     <title>Motivations and general conventions</title>
-    <para>Although Claws Mail is a graphical application and can mainly be commanded with your mouse, it also requires the frequent use of the keyboard. Composing a mail is the most common of the tasks that require the use of the keyboard. For people who write a lot of mails, having to move hands from keyboard to mouse greatly reduces productivity, so Claws Mail provides keyboard shortcuts to allow faster operation.
+    <para>
+	Although Claws Mail is a graphical application and can mainly be 
+	commanded with your mouse, it also requires the frequent use of the 
+	keyboard. Composing a mail is the most common of the tasks that 
+	require the use of the keyboard. For people who write a lot of mails, 
+	having to move hands from keyboard to mouse greatly reduces 
+	productivity, so Claws Mail provides keyboard shortcuts to allow 
+	faster operation.
     </para>
-    <para>This not only benefits power users by providing keyboard alternatives and keyboard navigation, it also enables people with disabilities, (who may not be able to properly control a pointing device), to use Claws Mail.
+    <para>
+	This not only benefits power users by providing keyboard alternatives 
+	and keyboard navigation, it also enables people with disabilities, 
+	(who may not be able to properly control a pointing device), to use 
+	Claws Mail.
     </para>
-    <para>The most general convention is the <option>Escape</option> key. Focused dialogues or windows can be closed by hitting the <option>Esc</option> key.
+    <para>
+	The most general convention is the <option>Escape</option> key. Focused 
+	dialogues or windows can be closed by hitting the <option>Esc</option> 
+	key.
     </para>
-    <para>There are other key combinations which are assigned by default to menu items. We won't list these here, as they are already shown on the righthand side of the menus themselves, so you can easily learn them with usage. Furthermore, if you don't like them, these shortcuts can be changed on the fly by focusing on the menu item and pressing the desired key combination, but only for key combinations that include the <option>Alt</option>, <option>Ctrl</option> and/or <option>Shift</option> modifier keys; single keys cannot be assigned. (This is a standard behaviour of GTK2 library based programs like Claws Mail. Note that this behaviour may be disabled by default on some desktops.)
+    <para>
+	There are other key combinations which are assigned by default to menu 
+	items. We won't list these here, as they are already shown on the 
+	righthand side of the menus themselves, so you can easily learn them 
+	with usage. Furthermore, if you don't like them, these shortcuts can be 
+	changed on the fly by focusing on the menu item and pressing the 
+	desired key combination.
     </para>
-    <para>In addition to these shortcuts there are others which vary from window to window, which are summarised in the following sections.
+    <para>
+	In addition to these shortcuts there are others which vary from window 
+	to window, which are summarised in the following sections.
     </para>
   </section>
 

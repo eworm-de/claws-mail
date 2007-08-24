@@ -1,3 +1,11 @@
+2007-08-24 [paul]	2.10.0cvs162
+
+	* manual/advanced.xml
+		add info about the hidden emphasis_color option
+	* manual/keyboard.xml
+		correct the info about hotkeys
+		wrap the long lines
+
 2007-08-24 [paul]	2.10.0cvs161
 
 	* src/folderview.c
