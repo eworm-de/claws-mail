@@ -166,7 +166,7 @@
 	<term>AttRemover</term>
 	<listitem>
 	  <para> 
-	This plugin lets you remove attachments from emails.
+	Allows you to remove attachments from emails.
 	  </para>
 	</listitem>
       </varlistentry>
@@ -176,18 +176,8 @@
 	  <para>
 	Saves the caches every 60 seconds (or user-defined period). It helps 
 	avoiding the loss of metadata if your computer (<emphasis>or 
-	Claws Mail!</emphasis>) crashes.
-	  </para>
-	</listitem>
-      </varlistentry>
-      <varlistentry>
-	<term>etpan! Privacy</term>
-	<listitem>
-	  <para>
-	Handles signature verification and decryption of encrypted messages in 
-	S/MIME, OpenPGP and ascii-armored PGP formats. Doesn't handle 
-	passphrases. The development of this plugin has been discontinued
-	because its functions are avaliable in the PGP plugins. 
+	Claws Mail!</emphasis>) crashes. (NOTE: using this plugin can slow
+	down Claws Mail.)
 	  </para>
 	</listitem>
       </varlistentry>
@@ -201,7 +191,7 @@
 	</listitem>
       </varlistentry>
       <varlistentry>
-	<term>GtkHtml Viewer</term>
+	<term>GtkHtml2 Viewer</term>
 	<listitem>
 	  <para>
 	Like Dillo, enables the viewing of HTML messages, but in a nicer way 
@@ -210,21 +200,37 @@
 	</listitem>
       </varlistentry>
       <varlistentry>
-	<term>Maildir</term>
-	<listitem>
-	  <para>
-	Provides direct support for Maildir++ mailboxes. With this plugin you 
-	can share your Maildir++ mailbox with other mailers or IMAP servers.
-	The development of this plugin has been discontinued. If you're
-	a developer and want to adopt it then don't hesitate to contact us.
-	  </para>
-	</listitem>
-      </varlistentry>
-      <varlistentry>
 	<term>mailMBOX</term>
 	<listitem>
 	  <para>
 	Handles mailboxes in MBox format.
+	  </para>
+	</listitem>
+      </varlistentry>
+      <varlistentry>
+	<term>NewMail</term>
+	<listitem>
+	  <para>
+	Writes a msg header summary to a log file, (Default: ~/Mail/NewLog), 
+	on arrival of new mail *after* sorting. 
+	  </para>
+	</listitem>
+      </varlistentry>
+      <varlistentry>
+	<term>Notification</term>
+	<listitem>
+	  <para>
+	Provides various ways to notify the user of new and unread email.
+	  </para>
+	</listitem>
+      </varlistentry>
+      <varlistentry>
+	<term>PDF Viewer</term>
+	<listitem>
+	  <para>
+	Provides direct rendering of PDF and PostScript attachments
+	in the Claws Mail message view. It also allows browsing, zooming and 
+	displaying detailed information about such attachments.
 	  </para>
 	</listitem>
       </varlistentry>
@@ -239,12 +245,11 @@
 	</listitem>
       </varlistentry>
       <varlistentry>
-	<term>PDF Viewer</term>
+	<term>RSSyl</term>
 	<listitem>
 	  <para>
-	This plugin provides direct rendering of PDF and PostScript attachments
-	in the Claws Mail message view. It also allows browsing, zooming and 
-	displaying detailed information about such attachments.
+	Allows you to read your favorite newsfeeds in Claws. RSS 1.0, 2.0 and 
+	Atom feeds are currently supported.
 	  </para>
 	</listitem>
       </varlistentry>
@@ -256,6 +261,15 @@
 	verify signatures or sign and encrypt your own mails. Uses GnuPG/GPGME 
 	and GpgSM, <ulink url="ftp://ftp.gnupg.org/gcrypt/gpgme/"
 	>ftp://ftp.gnupg.org/gcrypt/gpgme/</ulink>.
+	  </para>
+	</listitem>
+      </varlistentry>
+      <varlistentry>
+	<term>SpamReport</term>
+	<listitem>
+	  <para>
+	This plugin reports spam to various places.
+	Currently only spam-signal.fr is supported.
 	  </para>
 	</listitem>
       </varlistentry>
@@ -275,15 +289,6 @@
 	  <para>
 	Enables vCalendar message handling like that produced by Evolution or 
 	Outlook, and Webcal subscriptions.
-	  </para>
-	</listitem>
-      </varlistentry>
-      <varlistentry>
-	<term>RSSyl</term>
-	<listitem>
-	  <para>
-	Allows you to read your favorite newsfeeds in Claws. RSS 1.0, 2.0 and 
-	Atom feeds are currently supported.
 	  </para>
 	</listitem>
       </varlistentry>

@@ -1,3 +1,10 @@
+2007-08-24 [paul]	2.10.0cvs163
+
+	* manual/plugins.xml
+		remove the obsolete plugins, add the
+		missing plugins, including the forthcoming
+		SpamReport plugin
+
 2007-08-24 [paul]	2.10.0cvs162
 
 	* manual/advanced.xml
