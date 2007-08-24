@@ -774,7 +774,7 @@ FolderItem *folder_get_default_outbox_for_class(FolderType type);
 FolderItem *folder_get_default_draft	(void);
 FolderItem *folder_get_default_draft_for_class(FolderType type);
 FolderItem *folder_get_default_queue	(void);
-FolderItem *folder_get_default_queu_for_class(FolderType type);
+FolderItem *folder_get_default_queue_for_class(FolderType type);
 FolderItem *folder_get_default_trash	(void);
 FolderItem *folder_get_default_trash_for_class(FolderType type);
 FolderItem *folder_get_default_processing (void);

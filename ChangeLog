@@ -1,3 +1,8 @@
+2007-08-24 [paul]	2.10.0cvs168
+
+	* src/folder.h
+		fix typo causing compiler warning
+
 2007-08-24 [paul]	2.10.0cvs167
 
 	* README
