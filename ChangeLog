@@ -1,3 +1,9 @@
+2007-08-24 [holger]	2.10.0cvs169
+
+	* src/plugins/trayicon/trayicon.c
+		Micro-fix: Do the error checking for
+		the right hook id.
+
 2007-08-24 [paul]	2.10.0cvs168
 
 	* src/folder.h

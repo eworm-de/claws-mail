@@ -430,7 +430,7 @@ int plugin_init(gchar **error)
 	}
 
 	iconified_hook_id = hooks_register_hook (MAIN_WINDOW_GOT_ICONIFIED, trayicon_got_iconified_hook, NULL);
-	if (offline_hook_id == -1) {
+	if (iconified_hook_id == -1) {
 		*error = g_strdup(_("Failed to register got iconified hook"));
 		return -1;
 	}
