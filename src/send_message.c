@@ -507,7 +507,8 @@ static gint send_send_data_progressive(Session *session, guint cur_len,
 {
 	gchar buf[BUFFSIZE];
 	SendProgressDialog *dialog = (SendProgressDialog *)data;
-
+	MainWindow *mainwin = mainwindow_get_mainwindow();
+	
 	g_return_val_if_fail(dialog != NULL, -1);
 
 	if (SMTP_SESSION(session)->state != SMTP_SEND_DATA &&
@@ -520,16 +521,26 @@ static gint send_send_data_progressive(Session *session, guint cur_len,
 	progress_dialog_set_fraction
 		(dialog->dialog, (total_len == 0) ? 0 : (gfloat)cur_len / (gfloat)total_len);
 
+	if (mainwin)
+		gtk_progress_bar_set_fraction
+			(GTK_PROGRESS_BAR(mainwin->progressbar),
+			 (total_len == 0) ? 0 : (gfloat)cur_len / (gfloat)total_len);
+
 	return 0;
 }
 
 static gint send_send_data_finished(Session *session, guint len, gpointer data)
 {
 	SendProgressDialog *dialog = (SendProgressDialog *)data;
+	MainWindow *mainwin = mainwindow_get_mainwindow();
 
 	g_return_val_if_fail(dialog != NULL, -1);
 
 	send_send_data_progressive(session, len, len, dialog);
+	if (mainwin)
+		gtk_progress_bar_set_fraction
+			(GTK_PROGRESS_BAR(mainwin->progressbar),(gfloat)0);
+
 	return 0;
 }
 

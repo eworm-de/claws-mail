@@ -1,3 +1,8 @@
+2007-08-24 [colin]	2.10.0cvs166
+
+	* src/send_message.c
+		Use progress bar when sending messages
+
 2007-08-24 [paul]	2.10.0cvs165
 
 	* Makefile.am
