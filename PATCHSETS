@@ -2814,3 +2814,4 @@
 ( cvs diff -u -r 1.60.2.95 -r 1.60.2.96 src/addressbook.c;  ) > 2.10.0cvs157.patchset
 ( cvs diff -u -r 1.12.2.47 -r 1.12.2.48 src/action.c;  cvs diff -u -r 1.60.2.47 -r 1.60.2.48 src/prefs_actions.c;  ) > 2.10.0cvs158.patchset
 ( cvs diff -u -r 1.207.2.176 -r 1.207.2.177 src/folderview.c;  ) > 2.10.0cvs159.patchset
+( cvs diff -u -r 1.61.2.66 -r 1.61.2.67 src/account.c;  cvs diff -u -r 1.213.2.157 -r 1.213.2.158 src/folder.c;  cvs diff -u -r 1.87.2.45 -r 1.87.2.46 src/folder.h;  ) > 2.10.0cvs160.patchset

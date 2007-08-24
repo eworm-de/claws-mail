@@ -1466,6 +1466,26 @@ FolderItem *folder_get_default_outbox(void)
 	return NULL;
 }
 
+FolderItem *folder_get_default_outbox_for_class(FolderType type)
+{
+	GList *flist;
+
+	for (flist = folder_list; flist != NULL; flist = g_list_next(flist)) {
+		Folder * folder = FOLDER(flist->data);
+
+		if (folder == NULL)
+			continue;
+		if (folder->outbox == NULL)
+			continue;
+		if (folder->klass->type != type)
+			continue;
+
+		return folder->outbox;
+	}
+
+	return NULL;
+}
+
 FolderItem *folder_get_default_draft(void)
 {
 	GList *flist;
@@ -1478,6 +1498,26 @@ FolderItem *folder_get_default_draft(void)
 		if (folder->draft == NULL)
 			continue;
 		if (folder->klass->type == F_UNKNOWN)
+			continue;
+
+		return folder->draft;
+	}
+
+	return NULL;
+}
+
+FolderItem *folder_get_default_draft_for_class(FolderType type)
+{
+	GList *flist;
+
+	for (flist = folder_list; flist != NULL; flist = g_list_next(flist)) {
+		Folder * folder = FOLDER(flist->data);
+
+		if (folder == NULL)
+			continue;
+		if (folder->draft == NULL)
+			continue;
+		if (folder->klass->type != type)
 			continue;
 
 		return folder->draft;
@@ -1506,6 +1546,26 @@ FolderItem *folder_get_default_queue(void)
 	return NULL;
 }
 
+FolderItem *folder_get_default_queue_for_class(FolderType type)
+{
+	GList *flist;
+
+	for (flist = folder_list; flist != NULL; flist = g_list_next(flist)) {
+		Folder * folder = FOLDER(flist->data);
+
+		if (folder == NULL)
+			continue;
+		if (folder->queue == NULL)
+			continue;
+		if (folder->klass->type != type)
+			continue;
+
+		return folder->queue;
+	}
+
+	return NULL;
+}
+
 FolderItem *folder_get_default_trash(void)
 {
 	GList *flist;
@@ -1518,6 +1578,26 @@ FolderItem *folder_get_default_trash(void)
 		if (folder->trash == NULL)
 			continue;
 		if (folder->klass->type == F_UNKNOWN)
+			continue;
+
+		return folder->trash;
+	}
+
+	return NULL;
+}
+
+FolderItem *folder_get_default_trash_for_class(FolderType type)
+{
+	GList *flist;
+
+	for (flist = folder_list; flist != NULL; flist = g_list_next(flist)) {
+		Folder * folder = FOLDER(flist->data);
+
+		if (folder == NULL)
+			continue;
+		if (folder->trash == NULL)
+			continue;
+		if (folder->klass->type != type)
 			continue;
 
 		return folder->trash;

@@ -583,6 +583,8 @@ FolderItem *account_get_special_folder(PrefsAccount *ac_prefs,
 			if (ac_prefs->folder)
 				item = FOLDER(ac_prefs->folder)->outbox;
 			if (!item)
+				item = folder_get_default_outbox_for_class(F_MH);
+			if (!item)
 				item = folder_get_default_outbox();
 		}
 		break;
@@ -594,6 +596,8 @@ FolderItem *account_get_special_folder(PrefsAccount *ac_prefs,
 		if (!item) {
 			if (ac_prefs->folder)
 				item = FOLDER(ac_prefs->folder)->draft;
+			if (!item)
+				item = folder_get_default_draft_for_class(F_MH);
 			if (!item)
 				item = folder_get_default_draft();
 		}
@@ -607,6 +611,8 @@ FolderItem *account_get_special_folder(PrefsAccount *ac_prefs,
 			if (ac_prefs->folder)
 				item = FOLDER(ac_prefs->folder)->queue;
 			if (!item)
+				item = folder_get_default_queue_for_class(F_MH);
+			if (!item)
 				item = folder_get_default_queue();
 		}
 		break;
@@ -618,6 +624,8 @@ FolderItem *account_get_special_folder(PrefsAccount *ac_prefs,
 		if (!item) {
 			if (ac_prefs->folder)
 				item = FOLDER(ac_prefs->folder)->trash;
+			if (!item)
+				item = folder_get_default_trash_for_class(F_MH);
 			if (!item)
 				item = folder_get_default_trash();
 		}
