@@ -292,7 +292,7 @@ static GtkItemFactoryEntry folderview_common_popup_entries[] =
 {
 	{N_("/Mark all re_ad"),		NULL, mark_all_read_cb, 0, NULL},
 	{"/---",                     	NULL, NULL, 0, "<Separator>"},
-	{N_("/Run processing rules"),	NULL, folderview_run_processing_cb, 0, NULL},
+	{N_("/R_un processing rules"),	NULL, folderview_run_processing_cb, 0, NULL},
 	{N_("/_Search folder..."),	NULL, folderview_search_cb, 0, NULL},
 	{N_("/_Properties..."),		NULL, folderview_property_cb, 0, NULL},
 	{N_("/Process_ing..."),		NULL, folderview_processing_cb, 0, NULL},
