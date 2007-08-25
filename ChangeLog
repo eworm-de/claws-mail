@@ -1,3 +1,8 @@
+2007-08-25 [paul]	2.10.0cvs172
+
+	* src/gtk/icon_legend.c
+		add watchthread.xpm
+
 2007-08-25 [paul]	2.10.0cvs171
 
 	* src/Makefile.am

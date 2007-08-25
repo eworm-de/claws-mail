@@ -1,5 +1,5 @@
 /*
- * This file Copyright (C) 2005 Paul Mangan <paul@claws-mail.org>
+ * This file Copyright (C) 2005-2007 Paul Mangan <paul@claws-mail.org>
  * and the Claws Mail team
  *
  * This program is free software; you can redistribute it and/or modify
@@ -38,7 +38,7 @@
 #include "stock_pixmap.h"
 #include "prefs_gtk.h"
 
-#define ICONS 19
+#define ICONS 20
 
 StockPixmap legend_icons[ICONS] = {
 	STOCK_PIXMAP_NEW,
@@ -46,6 +46,7 @@ StockPixmap legend_icons[ICONS] = {
 	STOCK_PIXMAP_REPLIED, 
 	STOCK_PIXMAP_FORWARDED, 
 	STOCK_PIXMAP_IGNORETHREAD,
+	STOCK_PIXMAP_WATCHTHREAD,
 	STOCK_PIXMAP_SPAM,
 	STOCK_PIXMAP_CLIP,
 	STOCK_PIXMAP_GPG_SIGNED,
@@ -69,6 +70,7 @@ static gchar *legend_icon_desc[] = {
 	N_("Message has been replied to"),
 	N_("Message has been forwarded"),
 	N_("Message is in an ignored thread"),
+	N_("Message is in a watched thread"),
 	N_("Message is spam"),
 /* attachment column */
 	N_("Message has attachment(s)"),

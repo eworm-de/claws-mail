@@ -2826,3 +2826,4 @@
 ( cvs diff -u -r 1.14.2.56 -r 1.14.2.57 src/plugins/trayicon/trayicon.c;  ) > 2.10.0cvs169.patchset
 ( cvs diff -u -r 1.14.2.57 -r 1.14.2.58 src/plugins/trayicon/trayicon.c;  ) > 2.10.0cvs170.patchset
 ( cvs diff -u -r 1.155.2.73 -r 1.155.2.74 src/Makefile.am;  cvs diff -u -r 1.25.2.46 -r 1.25.2.47 src/stock_pixmap.c;  diff -u /dev/null src/pixmaps/insert_file.xpm;  ) > 2.10.0cvs171.patchset
+( cvs diff -u -r 1.1.2.15 -r 1.1.2.16 src/gtk/icon_legend.c;  ) > 2.10.0cvs172.patchset
