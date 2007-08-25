@@ -140,7 +140,7 @@ void log_print(LogInstance instance, const gchar *format, ...)
 	g_vsnprintf(buf + LOG_TIME_LEN, BUFFSIZE, format, args);
 	va_end(args);
 
-	if (debug_get_mode()) g_print(buf);
+	if (debug_get_mode()) g_printf(buf);
 
 	logtext->instance = instance;
 	logtext->text = g_strdup(buf);

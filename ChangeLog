@@ -1,3 +1,8 @@
+2007-08-25 [paul]	2.10.0cvs173
+
+	* src/common/log.c
+		fix a segfault when refreshing RSSyl feeds
+
 2007-08-25 [paul]	2.10.0cvs172
 
 	* src/gtk/icon_legend.c
