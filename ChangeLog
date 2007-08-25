@@ -1,3 +1,9 @@
+2007-08-25 [paul]	2.10.0cvs175
+
+	* src/prefs_actions.c
+		workaround gettext problem marking
+		string as c-format when it's not
+
 2007-08-25 [wwp]	2.10.0cvs174
 
 	* src/alertpanel.c

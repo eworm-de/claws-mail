@@ -822,7 +822,7 @@ static gchar *actions_desc_strings[] = {
 	"     %h",  N_("for a user provided hidden argument (e.g. password)"),
 	"     %s",  N_("for the text selection"),
 	"  %as{}",  N_("apply filtering actions between {} to selected messages"),
-	"     %%",  N_("for a literal % sign"),
+	"     %%",  N_("for a literal %"),
 	NULL, NULL
 };
 
