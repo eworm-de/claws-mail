@@ -1,3 +1,11 @@
+2007-08-25 [paul]	2.10.0cvs171
+
+	* src/Makefile.am
+	* src/stock_pixmap.c
+	* src/pixmaps/insert_file.xpm
+		add a new pixmap instead of re-using
+		paste.xpm. (easier for icon theme authors)
+
 2007-08-24 [holger]	2.10.0cvs170
 
 	* src/plugins/trayicon/trayicon.c

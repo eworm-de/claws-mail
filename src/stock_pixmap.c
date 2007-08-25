@@ -45,6 +45,7 @@
 #include "pixmaps/edit_extern.xpm"
 #include "pixmaps/forwarded.xpm"
 #include "pixmaps/group.xpm"
+#include "pixmaps/insert_file.xpm"
 #include "pixmaps/interface.xpm"
 #include "pixmaps/jpilot.xpm"
 #include "pixmaps/key.xpm"
@@ -249,7 +250,7 @@ static StockPixmapData pixmaps[] =
 	{inbox_close_hrm_mark_xpm		, NULL, NULL, "inbox_close_hrm_mark", NULL},
 	{inbox_open_mark_xpm			, NULL, NULL, "inbox_open_mark", NULL},
 	{inbox_open_hrm_mark_xpm		, NULL, NULL, "inbox_open_hrm_mark", NULL},
-	{paste_xpm				, NULL, NULL, "insert_file", NULL},
+	{insert_file_xpm			, NULL, NULL, "insert_file", NULL},
 	{interface_xpm				, NULL, NULL, "interface", NULL},
 	{jpilot_xpm				, NULL, NULL, "jpilot", NULL},
 	{key_xpm				, NULL, NULL, "key", NULL},

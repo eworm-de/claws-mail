@@ -346,6 +346,7 @@ EXTRA_DIST = \
 	pixmaps/inbox_close_hrm.xpm \
 	pixmaps/inbox_close.xpm \
 	pixmaps/interface.xpm \
+	pixmaps/insert_file.xpm \
 	pixmaps/jpilot.xpm \
 	pixmaps/key.xpm \
 	pixmaps/ldap.xpm \
