@@ -568,11 +568,7 @@ static gint prefs_actions_clist_set_row(GtkTreeIter *row)
 	}
 
 	if (action_get_type(entry_text) == ACTION_ERROR) {
-		gchar *message;
-		message = g_markup_printf_escaped(_("The command\n%s\nhas a syntax error."),
-						entry_text);
-		alertpanel_error(message);
-		g_free(message);
+		alertpanel_error(_("The command\n%s\nhas a syntax error."), entry_text);
 		return -1;
 	}
 

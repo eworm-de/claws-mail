@@ -1,3 +1,16 @@
+2007-08-25 [wwp]	2.10.0cvs174
+
+	* src/alertpanel.c
+	* src/messageview.c
+	* src/prefs_actions.c
+		Call the pango markup escape function right ince in alertpanel_create
+		instead of everywhere (reverts some parts of 2.10.0cvs123 and
+		2.10.0cvs158).
+
+	* src/common/log.c
+		Fix a crash due to a misuse of g_print(), encountered when the string
+		passed to g_print was containing printf substitution symbols.
+
 2007-08-25 [paul]	2.10.0cvs173
 
 	* src/common/log.c

@@ -243,6 +243,7 @@ static void alertpanel_create(const gchar *title,
 	GtkWidget *button3;
 	const gchar *label2;
 	const gchar *label3;
+	gchar *esc_message;
 	gchar *tmp = title?g_markup_printf_escaped("%s", title)
 			:g_strdup("");
 	gchar *title_full = g_strdup_printf("<span weight=\"bold\" "
@@ -319,8 +320,10 @@ static void alertpanel_create(const gchar *title,
 	if (font_desc)
 		gtk_widget_modify_font(label, font_desc);
 	g_free(title_full);
-	
-	label = gtk_label_new(message);
+
+	esc_message = g_markup_printf_escaped("%s", message);
+	label = gtk_label_new(esc_message);
+	g_free(esc_message);
 	gtk_misc_set_alignment(GTK_MISC(label), 0, 0.5);
 	gtk_label_set_justify(GTK_LABEL(label), GTK_JUSTIFY_LEFT);
 	gtk_label_set_line_wrap(GTK_LABEL(label), TRUE);
