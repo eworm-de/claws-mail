@@ -1,3 +1,12 @@
+2007-08-26 [wwp]	2.10.0cvs176
+
+	* src/alertpanel.c
+	* src/messageview.c
+	* src/prefs_actions.c
+		Revert parts of 2.10.0cvs174: g_markup_printf_escaped()
+		will have to be used when necessary *before* calling
+		alertpanel functions.
+
 2007-08-25 [paul]	2.10.0cvs175
 
 	* src/prefs_actions.c

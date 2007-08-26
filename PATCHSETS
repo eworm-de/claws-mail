@@ -2830,3 +2830,4 @@
 ( cvs diff -u -r 1.6.2.15 -r 1.6.2.16 src/common/log.c;  ) > 2.10.0cvs173.patchset
 ( cvs diff -u -r 1.17.2.36 -r 1.17.2.37 src/alertpanel.c;  cvs diff -u -r 1.94.2.147 -r 1.94.2.148 src/messageview.c;  cvs diff -u -r 1.60.2.48 -r 1.60.2.49 src/prefs_actions.c;  cvs diff -u -r 1.6.2.16 -r 1.6.2.17 src/common/log.c;  ) > 2.10.0cvs174.patchset
 ( cvs diff -u -r 1.60.2.49 -r 1.60.2.50 src/prefs_actions.c;  ) > 2.10.0cvs175.patchset
+( cvs diff -u -r 1.17.2.37 -r 1.17.2.38 src/alertpanel.c;  cvs diff -u -r 1.94.2.148 -r 1.94.2.149 src/messageview.c;  cvs diff -u -r 1.60.2.50 -r 1.60.2.51 src/prefs_actions.c;  ) > 2.10.0cvs176.patchset

@@ -588,7 +588,7 @@ static gint disposition_notification_send(MsgInfo *msginfo)
 	if (ok != 0) {
 		AlertValue val;
 		gchar *message;
-		message = g_strdup_printf(
+		message = g_markup_printf_escaped(
 		  _("The notification address to which the return receipt is\n"
 		    "to be sent does not correspond to the return path:\n"
 		    "Notification address: %s\n"
