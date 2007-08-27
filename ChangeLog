@@ -1,3 +1,8 @@
+2007-08-27 [colin]	2.10.0cvs179
+
+	* src/summaryview.c
+		Fix indentation
+
 2007-08-27 [colin]	2.10.0cvs178
 
 	* src/summaryview.c

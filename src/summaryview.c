@@ -1128,7 +1128,7 @@ gboolean summary_show(SummaryView *summaryview, FolderItem *item)
 	}
 	if (!prefs_common.summary_quicksearch_sticky
 	 && (!prefs_common.summary_quicksearch_recurse
-	 || !quicksearch_is_active(summaryview->quicksearch))
+	  || !quicksearch_is_active(summaryview->quicksearch))
 	 && !quicksearch_is_running(summaryview->quicksearch)
 	 && !is_refresh) {
 		quicksearch_set(summaryview->quicksearch, prefs_common.summary_quicksearch_type, "");
