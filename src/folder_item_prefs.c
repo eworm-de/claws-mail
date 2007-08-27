@@ -167,12 +167,27 @@ void folder_item_prefs_save_config(FolderItem * item)
 	tmp_prefs = * item->prefs;
 
 	id = folder_item_get_identifier(item);
-
+	debug_print("saving prefs for %s\n", id?id:"(null)");
 	prefs_write_config(param, id, FOLDERITEM_RC);
 	g_free(id);
 
 	/* MIGRATION: make sure migrated items are not saved
 	 */
+}
+
+static gboolean folder_item_prefs_save_config_func(GNode *node, gpointer data)
+{
+	FolderItem *item = (FolderItem *) node->data;
+	folder_item_prefs_save_config(item);
+	return FALSE;
+}
+
+void folder_item_prefs_save_config_recursive(FolderItem * item)
+{	
+	gchar * id;
+
+	g_node_traverse(item->node, G_PRE_ORDER, G_TRAVERSE_ALL,
+			-1, folder_item_prefs_save_config_func, NULL);
 }
 
 static FolderItemPrefs *folder_item_prefs_clear(FolderItemPrefs *prefs)

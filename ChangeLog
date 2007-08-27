@@ -1,3 +1,12 @@
+2007-08-27 [colin]	2.10.0cvs177
+
+	* src/folder_item_prefs.c
+	* src/folder_item_prefs.h
+	* src/imap_gtk.c
+	* src/mh_gtk.c
+		Fix loss of subfolders properties when
+		renaming a folder
+
 2007-08-26 [wwp]	2.10.0cvs176
 
 	* src/alertpanel.c

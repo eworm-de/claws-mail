@@ -82,6 +82,7 @@ struct _FolderItemPrefs {
 
 void folder_item_prefs_read_config(FolderItem * item);
 void folder_item_prefs_save_config(FolderItem * item);
+void folder_item_prefs_save_config_recursive(FolderItem * item);
 FolderItemPrefs *folder_item_prefs_new(void);
 void folder_item_prefs_free(FolderItemPrefs * prefs);
 void folder_item_prefs_copy_prefs(FolderItem * src, FolderItem * dest);

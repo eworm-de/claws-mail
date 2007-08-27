@@ -257,7 +257,7 @@ static void rename_folder_cb(FolderView *folderview, guint action,
 	g_free(old_id);
 	g_free(new_id);
 
-	folder_item_prefs_save_config(item);
+	folder_item_prefs_save_config_recursive(item);
 	folder_write_list();
 }
 
