@@ -2832,3 +2832,4 @@
 ( cvs diff -u -r 1.60.2.49 -r 1.60.2.50 src/prefs_actions.c;  ) > 2.10.0cvs175.patchset
 ( cvs diff -u -r 1.17.2.37 -r 1.17.2.38 src/alertpanel.c;  cvs diff -u -r 1.94.2.148 -r 1.94.2.149 src/messageview.c;  cvs diff -u -r 1.60.2.50 -r 1.60.2.51 src/prefs_actions.c;  ) > 2.10.0cvs176.patchset
 ( cvs diff -u -r 1.2.2.22 -r 1.2.2.23 src/folder_item_prefs.c;  cvs diff -u -r 1.2.2.11 -r 1.2.2.12 src/folder_item_prefs.h;  cvs diff -u -r 1.1.2.49 -r 1.1.2.50 src/imap_gtk.c;  cvs diff -u -r 1.2.2.27 -r 1.2.2.28 src/mh_gtk.c;  ) > 2.10.0cvs177.patchset
+( cvs diff -u -r 1.395.2.321 -r 1.395.2.322 src/summaryview.c;  ) > 2.10.0cvs178.patchset
