@@ -1,3 +1,10 @@
+2007-08-28 [colin]	2.10.0cvs182
+
+	* src/mainwindow.c
+		Don't use current folder settings when
+		composing from the compose button's
+		account selector
+
 2007-08-28 [colin]	2.10.0cvs181
 
 	* src/quote_fmt_parse.y
