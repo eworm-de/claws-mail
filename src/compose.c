@@ -925,7 +925,7 @@ static void compose_create_tags(GtkTextView *text, Compose *compose)
 					   NULL);
 	}
 	
- 	gtk_text_buffer_create_tag(buffer, "signature",
+ 	compose->signature_tag = gtk_text_buffer_create_tag(buffer, "signature",
 				   "foreground-gdk", &signature_color,
 				   NULL);
  	
@@ -3006,10 +3006,9 @@ static void compose_insert_sig(Compose *compose, gboolean replace)
 	GtkTextMark *mark;
 	GtkTextIter iter, iter_end;
 	gint cur_pos;
-	gchar *search = NULL;
 	gboolean prev_autowrap;
-	gboolean found = FALSE, shift = FALSE;
-
+	gboolean found = FALSE;
+	gboolean exists = FALSE;
 	
 	g_return_if_fail(compose->account != NULL);
 
@@ -3025,54 +3024,55 @@ static void compose_insert_sig(Compose *compose, gboolean replace)
 
 	gtk_text_buffer_get_end_iter(buffer, &iter);
 
-	search = compose->sig_str;
-again:
-	if (replace && search) {
+	exists = (compose->sig_str != NULL);
+
+	if (replace) {
 		GtkTextIter first_iter, start_iter, end_iter;
 
 		gtk_text_buffer_get_start_iter(buffer, &first_iter);
 
-		if (compose->sig_str[0] == '\0')
+		if (!exists || compose->sig_str[0] == '\0')
 			found = FALSE;
 		else
-			found = gtk_text_iter_forward_search(&first_iter,
-							     search,
-							     GTK_TEXT_SEARCH_TEXT_ONLY,
-							     &start_iter, &end_iter,
-							     NULL);
+			found = gtk_text_iter_forward_to_tag_toggle(&first_iter,
+					compose->signature_tag);
 
 		if (found) {
-			gtk_text_buffer_delete(buffer, &start_iter, &end_iter);
-			iter = start_iter;
-		}
+			/* include previous \n\n */
+			gtk_text_iter_backward_chars(&first_iter, 2);
+			start_iter = first_iter;
+			end_iter = first_iter;
+			/* skip re-start */
+			found = gtk_text_iter_forward_to_tag_toggle(&end_iter,
+					compose->signature_tag);
+			found &= gtk_text_iter_forward_to_tag_toggle(&end_iter,
+					compose->signature_tag);
+			if (found) {
+				gtk_text_buffer_delete(buffer, &start_iter, &end_iter);
+				iter = start_iter;
+			}
+		} 
 	} 
-	if (replace && !found && search && strlen(search) > 2
-	&&  search[0] == '\n' && search[1] == '\n') {
-		search ++;
-		shift = TRUE;
-		goto again;
-	}
 
 	g_free(compose->sig_str);
 	compose->sig_str = compose_get_signature_str(compose);
-	if (!compose->sig_str || (replace && !compose->account->auto_sig))
-		compose->sig_str = g_strdup("");
 
 	cur_pos = gtk_text_iter_get_offset(&iter);
-	if (shift && found)
-		gtk_text_buffer_insert(buffer, &iter, compose->sig_str + 1, -1);
-	else
+
+	if (!compose->sig_str || (replace && !compose->account->auto_sig)) {
+		g_free(compose->sig_str);
+		compose->sig_str = NULL;
+	} else {
 		gtk_text_buffer_insert(buffer, &iter, compose->sig_str, -1);
-	/* skip \n\n */
-	gtk_text_buffer_get_iter_at_offset(buffer, &iter, cur_pos);
-	gtk_text_iter_forward_char(&iter);
-	gtk_text_iter_forward_char(&iter);
-	gtk_text_buffer_get_end_iter(buffer, &iter_end);
-	gtk_text_buffer_apply_tag_by_name(buffer,"signature",&iter, &iter_end);
+		/* remove \n\n */
+		gtk_text_buffer_get_iter_at_offset(buffer, &iter, cur_pos);
+		gtk_text_iter_forward_chars(&iter, 2);
+		gtk_text_buffer_get_end_iter(buffer, &iter_end);
+		gtk_text_buffer_apply_tag_by_name(buffer,"signature",&iter, &iter_end);
 
-	if (cur_pos > gtk_text_buffer_get_char_count (buffer))
-		cur_pos = gtk_text_buffer_get_char_count (buffer);
-
+		if (cur_pos > gtk_text_buffer_get_char_count (buffer))
+			cur_pos = gtk_text_buffer_get_char_count (buffer);
+	}
 	/* put the cursor where it should be 
 	 * either where the quote_fmt says, either before the signature */
 	if (compose->set_cursor_pos < 0)

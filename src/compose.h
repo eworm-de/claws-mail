@@ -215,6 +215,7 @@ struct _Compose
 	
 	GtkTextTag *no_wrap_tag;
 	GtkTextTag *no_join_tag;
+	GtkTextTag *signature_tag;
 	GtkTextTag *quote0_tag;
 	GtkTextTag *quote1_tag;
 	GtkTextTag *quote2_tag;

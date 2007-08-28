@@ -1,3 +1,9 @@
+2007-08-28 [colin]	2.10.0cvs180
+
+	* src/compose.c
+	* src/compose.h
+		Fix signature replacement when it's been wrapped
+
 2007-08-27 [colin]	2.10.0cvs179
 
 	* src/summaryview.c
