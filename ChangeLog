@@ -1,3 +1,9 @@
+2007-08-28 [colin]	2.10.0cvs181
+
+	* src/quote_fmt_parse.y
+		Fix cursor offset when quote contains UTF-8
+		chars
+
 2007-08-28 [colin]	2.10.0cvs180
 
 	* src/compose.c

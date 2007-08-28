@@ -818,7 +818,10 @@ special:
 	}
 	| SET_CURSOR_POS
 	{
-		cursor_pos = current->bufsize;
+		if (current->buffer)
+			cursor_pos = g_utf8_strlen(current->buffer, -1);
+		else
+			cursor_pos = 0;
 	}
 	| SHOW_ADDRESSBOOK_COMPLETION_FOR_CC
 	{

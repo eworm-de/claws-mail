@@ -2835,3 +2835,4 @@
 ( cvs diff -u -r 1.395.2.321 -r 1.395.2.322 src/summaryview.c;  ) > 2.10.0cvs178.patchset
 ( cvs diff -u -r 1.395.2.322 -r 1.395.2.323 src/summaryview.c;  ) > 2.10.0cvs179.patchset
 ( cvs diff -u -r 1.382.2.403 -r 1.382.2.404 src/compose.c;  cvs diff -u -r 1.50.2.41 -r 1.50.2.42 src/compose.h;  ) > 2.10.0cvs180.patchset
+( cvs diff -u -r 1.22.2.35 -r 1.22.2.36 src/quote_fmt_parse.y;  ) > 2.10.0cvs181.patchset
