@@ -402,37 +402,37 @@ int plugin_init(gchar **error)
 	item_hook_id = hooks_register_hook (FOLDER_ITEM_UPDATE_HOOKLIST, folder_item_update_hook, NULL);
 	if (item_hook_id == -1) {
 		*error = g_strdup(_("Failed to register folder item update hook"));
-		return -1;
+		goto err_out_item;
 	}
 
 	folder_hook_id = hooks_register_hook (FOLDER_UPDATE_HOOKLIST, folder_update_hook, NULL);
 	if (folder_hook_id == -1) {
 		*error = g_strdup(_("Failed to register folder update hook"));
-		return -1;
+		goto err_out_folder;
 	}
 
 	offline_hook_id = hooks_register_hook (OFFLINE_SWITCH_HOOKLIST, offline_update_hook, NULL);
 	if (offline_hook_id == -1) {
 		*error = g_strdup(_("Failed to register offline switch hook"));
-		return -1;
+		goto err_out_offline;
 	}
 
 	account_hook_id = hooks_register_hook (ACCOUNT_LIST_CHANGED_HOOKLIST, trayicon_set_accounts_hook, NULL);
 	if (account_hook_id == -1) {
 		*error = g_strdup(_("Failed to register account list changed hook"));
-		return -1;
+		goto err_out_account;
 	}
 
 	close_hook_id = hooks_register_hook (MAIN_WINDOW_CLOSE, trayicon_close_hook, NULL);
 	if (close_hook_id == -1) {
 		*error = g_strdup(_("Failed to register close hook"));
-		return -1;
+		goto err_out_close;
 	}
 
 	iconified_hook_id = hooks_register_hook (MAIN_WINDOW_GOT_ICONIFIED, trayicon_got_iconified_hook, NULL);
 	if (iconified_hook_id == -1) {
 		*error = g_strdup(_("Failed to register got iconified hook"));
-		return -1;
+		goto err_out_iconified;
 	}
 
 	create_trayicon();
@@ -449,6 +449,19 @@ int plugin_init(gchar **error)
 	}
 
 	return 0;
+
+err_out_iconified:
+	hooks_unregister_hook(MAIN_WINDOW_CLOSE, close_hook_id);
+err_out_close:
+	hooks_unregister_hook(ACCOUNT_LIST_CHANGED_HOOKLIST, account_hook_id);
+err_out_account:
+	hooks_unregister_hook(OFFLINE_SWITCH_HOOKLIST, offline_hook_id);
+err_out_offline:
+	hooks_unregister_hook(FOLDER_UPDATE_HOOKLIST, folder_hook_id);
+err_out_folder:
+	hooks_unregister_hook(FOLDER_ITEM_UPDATE_HOOKLIST, item_hook_id);
+err_out_item:
+	return -1;
 }
 
 gboolean plugin_done(void)

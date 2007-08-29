@@ -1,3 +1,9 @@
+2007-08-29 [colin]	2.10.0cvs183
+
+	* src/plugins/trayicon/trayicon.c
+		Fix leak of hooks in case of error,
+		thanks to Holger Berndt
+
 2007-08-28 [colin]	2.10.0cvs182
 
 	* src/mainwindow.c
