@@ -2671,9 +2671,7 @@ static gchar *compose_quote_fmt(Compose *compose, MsgInfo *msginfo,
 		buf = quote_fmt_get_buffer();
 		if (buf == NULL) {
 			gint line = quote_fmt_get_line();
-			gchar *msg = g_strdup_printf(err_msg, line);
-			alertpanel_error(msg);
-			g_free(msg);
+			alertpanel_error(err_msg, line);
 			goto error;
 		}
 	} else
@@ -4615,11 +4613,9 @@ gint compose_send(Compose *compose)
 		}
 	} else {
 		if (errstr) {
-			gchar *tmp = g_strdup_printf(_("%s\nUse \"Send queued messages\" from "
+			alertpanel_error_log(_("%s\nUse \"Send queued messages\" from "
 				   "the main window to retry."), errstr);
 			g_free(errstr);
-			alertpanel_error_log(tmp);
-			g_free(tmp);
 		} else {
 			alertpanel_error_log(_("The message was queued but could not be "
 				   "sent.\nUse \"Send queued messages\" from "
@@ -7061,12 +7057,9 @@ static void compose_update_privacy_system_menu_item(Compose * compose, gboolean 
 			gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM(menuitem), TRUE);
 		
 		if (warn && !found && strlen(compose->privacy_system)) {
-			gchar *tmp = g_strdup_printf(
-				_("The privacy system '%s' cannot be loaded. You "
+			alertpanel_warning(_("The privacy system '%s' cannot be loaded. You "
 				  "will not be able to sign or encrypt this message."),
 				  compose->privacy_system);
-			alertpanel_warning(tmp);
-			g_free(tmp);
 		}
 	} 
 

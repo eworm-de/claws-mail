@@ -70,7 +70,7 @@ gpgme_verify_result_t sgpgme_verify_signature(gpgme_ctx_t ctx, gpgme_data_t sig,
 
 	if ((err = gpgme_op_verify(ctx, sig, plain, dummy)) != GPG_ERR_NO_ERROR) {
 		debug_print("op_verify err %s\n", gpgme_strerror(err));
-		privacy_set_error(gpgme_strerror(err));
+		privacy_set_error("%s", gpgme_strerror(err));
 		return GINT_TO_POINTER(-GPG_ERR_SYSTEM_ERROR);
 		
 	}

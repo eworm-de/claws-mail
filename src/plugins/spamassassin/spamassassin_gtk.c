@@ -551,7 +551,7 @@ static void spamassassin_save_func(PrefsPage *_page)
 
 static void gtk_message_callback(gchar *message)
 {
-	statusbar_print_all(message);
+	statusbar_print_all("%s", message);
 }
 
 static struct SpamAssassinPage spamassassin_page;

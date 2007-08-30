@@ -1999,11 +1999,9 @@ static void send_queue(void)
 		}
 	}
 	if (errstr) {
-		gchar *tmp = g_strdup_printf(_("Some errors occurred "
+		alertpanel_error_log(_("Some errors occurred "
 				"while sending queued messages:\n%s"), errstr);
 		g_free(errstr);
-		alertpanel_error_log(tmp);
-		g_free(tmp);
 	} else if (error) {
 		alertpanel_error_log("Some errors occurred "
 				"while sending queued messages.");

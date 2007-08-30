@@ -1399,7 +1399,6 @@ static MatcherProp *prefs_matcher_dialog_to_matcher(void)
 		    return NULL;
 		}
 		if (*expr == '\0') {
-			gchar *msg;
 			gchar *tmp;
 
 			if (strcasecmp(header, Q_("Filtering Matcher Menu|All")) == 0)
@@ -1409,12 +1408,10 @@ static MatcherProp *prefs_matcher_dialog_to_matcher(void)
 				tmp = g_strdup(_("any address in any header"));
 			else
 				tmp = g_strdup_printf(_("the address(es) in header '%s'"), header);
-			msg = g_strdup_printf(_("Book/folder path is not set.\n\n"
+			alertpanel_error(_("Book/folder path is not set.\n\n"
 						"If you want to match %s against the whole address book, "
 						"you have to select 'Any' from the book/folder drop-down list."),
 						tmp);
-		    alertpanel_error(msg);
-			g_free(msg);
 			g_free(tmp);
 		    return NULL;
 		}

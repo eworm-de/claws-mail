@@ -317,13 +317,11 @@ static gboolean mail_filtering_hook(gpointer source, gpointer data)
 					   "sure spamd is running and accessible.");
 		if (!prefs_common.no_recv_err_panel) {
 			if (!warned_error) {
-				alertpanel_error(msg);
+				alertpanel_error("%s", msg);
 			}
 			warned_error = TRUE;
 		} else {
-			gchar *tmp = g_strdup_printf("%s\n", msg);
-			log_error(LOG_PROTOCOL, tmp);
-			g_free(tmp);
+			log_error(LOG_PROTOCOL, "%s\n", msg);
 		}
 	}
 	

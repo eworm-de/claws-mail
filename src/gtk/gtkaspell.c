@@ -2318,12 +2318,8 @@ gboolean gtkaspell_change_dict(GtkAspell *gtkaspell, const gchar *dictionary,
 	gtkaspeller = gtkaspeller_new(dict);
 
 	if (!gtkaspeller) {
-		gchar *message;
-		message = g_strdup_printf(_("The spell checker could not change dictionary.\n%s"), 
+		alertpanel_warning(_("The spell checker could not change dictionary.\n%s"), 
 					  gtkaspellcheckers->error_message);
-
-		alertpanel_warning(message); 
-		g_free(message);
 	} else {
 		if (gtkaspell->use_alternate) {
 			if (gtkaspell->alternate_speller) {
@@ -2364,12 +2360,8 @@ gboolean gtkaspell_change_alt_dict(GtkAspell *gtkaspell, const gchar *alt_dictio
 	gtkaspeller = gtkaspeller_new(dict);
 
 	if (!gtkaspeller) {
-		gchar *message;
-		message = g_strdup_printf(_("The spell checker could not change the alternate dictionary.\n%s"), 
+		alertpanel_warning(_("The spell checker could not change the alternate dictionary.\n%s"), 
 					  gtkaspellcheckers->error_message);
-
-		alertpanel_warning(message); 
-		g_free(message);
 	} else {
 		if (gtkaspell->alternate_speller)
 			gtkaspeller_delete(gtkaspell->alternate_speller);

@@ -2421,11 +2421,9 @@ void send_queue_cb(gpointer data, guint action, GtkWidget *widget)
 			alertpanel_error_log(_("Some errors occurred while "
 					   "sending queued messages."));
 		else {
-			gchar *tmp = g_strdup_printf(_("Some errors occurred "
+			alertpanel_error_log(_("Some errors occurred "
 					"while sending queued messages:\n%s"), errstr);
 			g_free(errstr);
-			alertpanel_error_log(tmp);
-			g_free(tmp);
 		}
 	}
 }

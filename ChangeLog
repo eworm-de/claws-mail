@@ -1,3 +1,22 @@
+2007-08-30 [colin]	2.10.0cvs185
+
+	* src/compose.c
+	* src/folderview.c
+	* src/main.c
+	* src/prefs_matcher.c
+	* src/prefs_template.c
+	* src/quote_fmt.c
+	* src/send_message.c
+	* src/toolbar.c
+	* src/gtk/gtkaspell.c
+	* src/plugins/bogofilter/bogofilter.c
+	* src/plugins/bogofilter/bogofilter_gtk.c
+	* src/plugins/clamav/clamav_plugin_gtk.c
+	* src/plugins/pgpcore/sgpgme.c
+	* src/plugins/spamassassin/spamassassin.c
+	* src/plugins/spamassassin/spamassassin_gtk.c
+		Fix all potential misuses of format-string functions
+
 2007-08-30 [wwp]	2.10.0cvs184
 
 	* src/prefs_template.c

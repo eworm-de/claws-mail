@@ -602,11 +602,7 @@ static gboolean prefs_template_list_view_set_row(GtkTreeIter *row)
 		value = NULL;
 		}
 	if (!prefs_template_string_is_valid(value, &line)) {
-		gchar *msg;
-
-		msg = g_strdup_printf(_("Template body format error at line %d."), line);
-		alertpanel_error(msg);
-		g_free(msg);
+		alertpanel_error(_("Template body format error at line %d."), line);
 		g_free(value);
 		return FALSE;
 	}

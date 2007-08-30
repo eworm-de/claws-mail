@@ -411,7 +411,7 @@ static gboolean gtk_message_callback(gpointer data)
 	BogoCbData *cbdata = (BogoCbData *)data;
 
 	if (cbdata->message)
-		statusbar_print_all(cbdata->message);
+		statusbar_print_all("%s", cbdata->message);
 	else if (cbdata->total == 0) {
 		statusbar_pop_all();
 	}

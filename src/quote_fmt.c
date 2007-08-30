@@ -418,9 +418,7 @@ void quotefmt_check_new_msg_formats(gboolean use_format,
 			alertpanel_error(_("New message subject format error."));
 
 		if (!prefs_template_string_is_valid(body_fmt, &line)) {
-			gchar *msg = g_strdup_printf(_("New message body format error at line %d."), line);
-			alertpanel_error(msg);
-			g_free(msg);
+			alertpanel_error(_("New message body format error at line %d."), line);
 		}
 	}
 }
@@ -436,9 +434,7 @@ void quotefmt_check_reply_formats(gboolean use_format,
 			alertpanel_error(_("Message reply quotation mark format error."));
 
 		if (!prefs_template_string_is_valid(body_fmt, &line)) {
-			gchar *msg = g_strdup_printf(_("Message reply format error at line %d."), line);
-			alertpanel_error(msg);
-			g_free(msg);
+			alertpanel_error(_("Message reply format error at line %d."), line);
 		}
 	}
 }
@@ -454,9 +450,7 @@ void quotefmt_check_forward_formats(gboolean use_format,
 			alertpanel_error(_("Message forward quotation mark format error."));
 
 		if (!prefs_template_string_is_valid(body_fmt, &line)) {
-			gchar *msg = g_strdup_printf(_("Message forward format error at line %d."), line);
-			alertpanel_error(msg);
-			g_free(msg);
+			alertpanel_error(_("Message forward format error at line %d."), line);
 		}
 	}
 }

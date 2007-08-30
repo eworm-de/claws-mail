@@ -572,13 +572,11 @@ static gboolean mail_filtering_hook(gpointer source, gpointer data)
 					   bogo_args[0], bogo_args[1], bogo_args[2]);
 		if (!prefs_common.no_recv_err_panel) {
 			if (!warned_error) {
-				alertpanel_error(msg);
+				alertpanel_error("%s", msg);
 			}
 			warned_error = TRUE;
 		} else {
-			gchar *tmp = g_strdup_printf("%s\n", msg);
-			log_error(LOG_PROTOCOL, tmp);
-			g_free(tmp);
+			log_error(LOG_PROTOCOL, "%s\n", msg);
 		}
 		g_free(msg);
 	}

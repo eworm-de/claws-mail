@@ -201,7 +201,7 @@ static struct ClamAvPage clamav_page;
 
 static void gtk_message_callback(gchar *message)
 {
-	statusbar_print_all(message);
+	statusbar_print_all("%s", message);
 }
 
 gint clamav_gtk_init(void)
