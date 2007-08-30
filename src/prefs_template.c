@@ -615,6 +615,7 @@ static gboolean prefs_template_list_view_set_row(GtkTreeIter *row)
 				      0, -1);
 	if (*name == '\0') {
 		alertpanel_error(_("Template name is not set."));
+		g_free(value);
 		return FALSE;
 	}
 	to = gtk_editable_get_chars(GTK_EDITABLE(templates.entry_to),
@@ -646,21 +647,25 @@ static gboolean prefs_template_list_view_set_row(GtkTreeIter *row)
 	if (!prefs_template_string_is_valid(to, NULL)) {
 		alertpanel_error(_("Template To format error."));
 		g_free(to);
+		g_free(value);
 		return FALSE;
 	}
 	if (!prefs_template_string_is_valid(cc, NULL)) {
 		alertpanel_error(_("Template Cc format error."));	
 		g_free(cc);
+		g_free(value);
 		return FALSE;
 	}
 	if (!prefs_template_string_is_valid(bcc, NULL)) {
 		alertpanel_error(_("Template Bcc format error."));	
 		g_free(bcc);
+		g_free(value);
 		return FALSE;
 	}
 	if (!prefs_template_string_is_valid(subject, NULL)) {
 		alertpanel_error(_("Template subject format error."));	
 		g_free(subject);
+		g_free(value);
 		return FALSE;
 	}
 	
@@ -675,6 +680,7 @@ static gboolean prefs_template_list_view_set_row(GtkTreeIter *row)
 
 	prefs_template_list_view_insert_template(templates.list_view,
 						 row, tmpl->name, tmpl);
+	g_free(value);
 	return TRUE;
 }
 

@@ -2838,3 +2838,4 @@
 ( cvs diff -u -r 1.22.2.35 -r 1.22.2.36 src/quote_fmt_parse.y;  ) > 2.10.0cvs181.patchset
 ( cvs diff -u -r 1.274.2.207 -r 1.274.2.208 src/mainwindow.c;  ) > 2.10.0cvs182.patchset
 ( cvs diff -u -r 1.14.2.58 -r 1.14.2.59 src/plugins/trayicon/trayicon.c;  ) > 2.10.0cvs183.patchset
+( cvs diff -u -r 1.12.2.45 -r 1.12.2.46 src/prefs_template.c;  ) > 2.10.0cvs184.patchset

@@ -1,3 +1,8 @@
+2007-08-30 [wwp]	2.10.0cvs184
+
+	* src/prefs_template.c
+		Fix a leak.
+
 2007-08-29 [colin]	2.10.0cvs183
 
 	* src/plugins/trayicon/trayicon.c
