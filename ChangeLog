@@ -1,3 +1,19 @@
+2007-08-30 [colin]	2.10.0cvs186
+
+	* src/folderview.c
+		Don't opened selected folder when clicking
+		on white space
+	* src/mainwindow.c
+		Maemo: Make Esc close messageviews
+	* src/messageview.c
+		Maemo: Fix message scrolling to the end on 
+		opening
+		Maemo: Fix reopening same message
+	* src/gtk/prefswindow.c
+		Maemo: try to fix scrollbar. Doesn't work,
+		it seems as if gtk_adjustment_set_value was
+		a noop.
+
 2007-08-30 [colin]	2.10.0cvs185
 
 	* src/compose.c

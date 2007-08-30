@@ -4340,6 +4340,14 @@ gboolean mainwindow_key_pressed (GtkWidget *widget, GdkEventKey *event,
                 	gtk_window_fullscreen(GTK_WINDOW(widget));
                 }
 		break;
+	case GDK_Escape:
+		if (mainwin->summaryview && 
+		    mainwin->summaryview->ext_messageview && 
+		    mainwin->summaryview->ext_messageview->window && 
+		    widget == mainwin->summaryview->ext_messageview->window) {
+			messageview_destroy(mainwin->summaryview->ext_messageview);
+		}
+		break;
 #endif
 	default:
 		break;

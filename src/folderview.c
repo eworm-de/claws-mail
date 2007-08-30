@@ -2016,8 +2016,13 @@ static gboolean folderview_button_pressed(GtkWidget *ctree, GdkEventButton *even
 static gboolean folderview_button_released(GtkWidget *ctree, GdkEventButton *event,
 					   FolderView *folderview)
 {
+	int row = -1, column = -1;
+
 	if (!event) return FALSE;
 
+	if (!gtk_clist_get_selection_info(GTK_CLIST(ctree), event->x, event->y,
+					  &row, &column))
+		return FALSE;
 	if (event->button == 1 && folderview->open_folder == FALSE &&
 	    folderview->opened != NULL) {
 		gtkut_ctree_set_focus_row(GTK_CTREE(ctree),

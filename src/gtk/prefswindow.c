@@ -318,7 +318,6 @@ static void prefswindow_build_tree(GtkWidget *tree_view, GSList *prefs_pages,
 	gint index; /* index in pages list */
 	GtkTreeSelection *selection;
 	GtkTreeIter iter;
-	GtkAdjustment *adj;
 
 	for (cur = prefs_pages, index = 0; cur != NULL; cur = g_slist_next(cur), index++) {
 		PrefsPage *page = (PrefsPage *)cur->data;
@@ -408,15 +407,6 @@ static void prefswindow_build_tree(GtkWidget *tree_view, GSList *prefs_pages,
 		gtk_tree_selection_select_iter(selection, &iter);
 	}
 #endif
-	adj = gtk_scrolled_window_get_vadjustment(
-			GTK_SCROLLED_WINDOW(prefswindow->scrolledwindow1));
-	gtk_adjustment_set_value(adj, 0);
-	adj = gtk_scrolled_window_get_vadjustment(
-			GTK_SCROLLED_WINDOW(prefswindow->scrolledwindow2));
-	gtk_adjustment_set_value(adj, 0);
-	adj = gtk_scrolled_window_get_hadjustment(
-			GTK_SCROLLED_WINDOW(prefswindow->scrolledwindow2));
-	gtk_adjustment_set_value(adj, 0);
 }
 
 void prefswindow_open_full(const gchar *title, GSList *prefs_pages,
@@ -428,6 +418,7 @@ void prefswindow_open_full(const gchar *title, GSList *prefs_pages,
 	gint x = gdk_screen_width();
 	gint y = gdk_screen_height();
 	static GdkGeometry geometry;
+	GtkAdjustment *adj;
 
 	prefswindow = g_new0(PrefsWindow, 1);
 
@@ -585,6 +576,15 @@ void prefswindow_open_full(const gchar *title, GSList *prefs_pages,
 #ifdef MAEMO
 	maemo_window_full_screen_if_needed(GTK_WINDOW(prefswindow->window));
 #endif
+	adj = gtk_scrolled_window_get_vadjustment(
+			GTK_SCROLLED_WINDOW(prefswindow->scrolledwindow1));
+	gtk_adjustment_set_value(adj, adj->lower);
+	adj = gtk_scrolled_window_get_vadjustment(
+			GTK_SCROLLED_WINDOW(prefswindow->scrolledwindow2));
+	gtk_adjustment_set_value(adj, adj->lower);
+	adj = gtk_scrolled_window_get_hadjustment(
+			GTK_SCROLLED_WINDOW(prefswindow->scrolledwindow2));
+	gtk_adjustment_set_value(adj, adj->lower);
 }
 
 void prefswindow_open(const gchar *title, GSList *prefs_pages, gpointer data,
@@ -713,10 +713,10 @@ static gboolean prefswindow_row_selected(GtkTreeSelection *selector,
 
 	adj = gtk_scrolled_window_get_vadjustment(
 			GTK_SCROLLED_WINDOW(prefswindow->scrolledwindow2));
-	gtk_adjustment_set_value(adj, 0);
+	gtk_adjustment_set_value(adj, adj->lower);
 	adj = gtk_scrolled_window_get_hadjustment(
 			GTK_SCROLLED_WINDOW(prefswindow->scrolledwindow2));
-	gtk_adjustment_set_value(adj, 0);
+	gtk_adjustment_set_value(adj, adj->lower);
 
 #ifdef MAEMO
 	prefs_show_page(prefswindow);

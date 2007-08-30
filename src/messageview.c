@@ -871,7 +871,9 @@ gint messageview_show(MessageView *messageview, MsgInfo *msginfo,
 	}
 	mimeview_show_message(messageview->mimeview, mimeinfo, file);
 	
+#ifndef MAEMO
 	messageview_set_position(messageview, 0);
+#endif
 
 	if (messageview->window && msginfo->subject) {
 		subject = g_strdup(msginfo->subject);
@@ -953,12 +955,14 @@ void messageview_destroy(MessageView *messageview)
 	debug_print("destroy messageview\n");
 	messageview_list = g_list_remove(messageview_list, messageview);
 
-	if (messageview->mainwin->summaryview->messageview == messageview)
+	if (messageview->mainwin->summaryview->messageview == messageview) {
+		messageview->mainwin->summaryview->displayed = NULL;
 		messageview->mainwin->summaryview->messageview = NULL;
-
-	if (messageview->mainwin->summaryview->ext_messageview == messageview)
+	}
+	if (messageview->mainwin->summaryview->ext_messageview == messageview) {
+		messageview->mainwin->summaryview->displayed = NULL;
 		messageview->mainwin->summaryview->ext_messageview = NULL;
-
+	}
 	if (!messageview->deferred_destroy) {
 		hooks_unregister_hook(MSGINFO_UPDATE_HOOKLIST,
 			      messageview->msginfo_update_callback_id);
