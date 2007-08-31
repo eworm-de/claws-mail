@@ -5366,12 +5366,14 @@ static gboolean addressbook_drag_motion_cb(GtkWidget      *widget,
 	if (gtk_clist_get_selection_info
 		(GTK_CLIST(widget), x - 24, y - 24, &row, &column)) {
 
-		if (y > height - 24 && height + vpos < total_height)
+		if (y > height - 24 && height + vpos < total_height) {
 			gtk_adjustment_set_value(pos, (vpos+5 > height ? height : vpos+5));
-
-		if (y < 24 && y > 0)
+			gtk_adjustment_changed(pos);
+		}
+		if (y < 24 && y > 0) {
 			gtk_adjustment_set_value(pos, (vpos-5 < 0 ? 0 : vpos-5));
-
+			gtk_adjustment_changed(pos);
+		}
 		node = gtk_ctree_node_nth(GTK_CTREE(widget), row);
 
 		if (node != NULL) {

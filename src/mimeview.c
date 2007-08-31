@@ -2253,6 +2253,7 @@ static void icon_list_clear (MimeView *mimeview)
 	mimeview->icon_count = 0;
 	adj  = gtk_layout_get_vadjustment(GTK_LAYOUT(mimeview->icon_scroll));
 	gtk_adjustment_set_value(adj, adj->lower);
+	gtk_adjustment_changed(adj);
 }
 
 /*!

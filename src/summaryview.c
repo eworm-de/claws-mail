@@ -5943,8 +5943,12 @@ static gboolean summary_key_pressed(GtkWidget *widget, GdkEventKey *event,
 		case GDK_KP_Enter:
 			handled = TRUE;
 			if (summaryview->displayed != summaryview->selected) {
+#ifndef MAEMO
 				summary_display_msg(summaryview,
 						    summaryview->selected);
+#else
+				summary_open_row(NULL, summaryview);
+#endif
 				break;
 			}
 			mimeview_scroll_one_line(messageview->mimeview, mod_pressed);

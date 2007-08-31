@@ -185,12 +185,16 @@ static void image_viewer_clear_viewer(MimeViewer *_mimeviewer)
 	if (imageviewer->scrolledwin) {
 		hadj = gtk_scrolled_window_get_hadjustment
 			(GTK_SCROLLED_WINDOW(imageviewer->scrolledwin));
-		if (hadj)
+		if (hadj) {
 			gtk_adjustment_set_value(hadj, 0.0);
+			gtk_adjustment_changed(hadj);
+		}
 		vadj = gtk_scrolled_window_get_vadjustment
 			(GTK_SCROLLED_WINDOW(imageviewer->scrolledwin));
-		if (vadj)
+		if (vadj) {
 			gtk_adjustment_set_value(vadj, 0.0);
+			gtk_adjustment_changed(vadj);
+		}
 	}
 	g_free(imageviewer->file);
 	imageviewer->file = NULL;

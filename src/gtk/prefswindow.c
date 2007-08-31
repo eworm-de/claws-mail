@@ -579,12 +579,15 @@ void prefswindow_open_full(const gchar *title, GSList *prefs_pages,
 	adj = gtk_scrolled_window_get_vadjustment(
 			GTK_SCROLLED_WINDOW(prefswindow->scrolledwindow1));
 	gtk_adjustment_set_value(adj, adj->lower);
+	gtk_adjustment_changed(adj);
 	adj = gtk_scrolled_window_get_vadjustment(
 			GTK_SCROLLED_WINDOW(prefswindow->scrolledwindow2));
 	gtk_adjustment_set_value(adj, adj->lower);
+	gtk_adjustment_changed(adj);
 	adj = gtk_scrolled_window_get_hadjustment(
 			GTK_SCROLLED_WINDOW(prefswindow->scrolledwindow2));
 	gtk_adjustment_set_value(adj, adj->lower);
+	gtk_adjustment_changed(adj);
 }
 
 void prefswindow_open(const gchar *title, GSList *prefs_pages, gpointer data,
@@ -714,9 +717,11 @@ static gboolean prefswindow_row_selected(GtkTreeSelection *selector,
 	adj = gtk_scrolled_window_get_vadjustment(
 			GTK_SCROLLED_WINDOW(prefswindow->scrolledwindow2));
 	gtk_adjustment_set_value(adj, adj->lower);
+	gtk_adjustment_changed(adj);
 	adj = gtk_scrolled_window_get_hadjustment(
 			GTK_SCROLLED_WINDOW(prefswindow->scrolledwindow2));
 	gtk_adjustment_set_value(adj, adj->lower);
+	gtk_adjustment_changed(adj);
 
 #ifdef MAEMO
 	prefs_show_page(prefswindow);

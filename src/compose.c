@@ -9688,6 +9688,7 @@ static void compose_show_first_last_header(Compose *compose, gboolean show_first
 
 	vadj = gtk_viewport_get_vadjustment(GTK_VIEWPORT(compose->header_table->parent));
 	gtk_adjustment_set_value(vadj, (show_first ? vadj->lower : vadj->upper));
+	gtk_adjustment_changed(vadj);
 }
 
 static void text_inserted(GtkTextBuffer *buffer, GtkTextIter *iter,
@@ -9705,6 +9706,8 @@ static void text_inserted(GtkTextBuffer *buffer, GtkTextIter *iter,
 	if (paste_as_quotation) {
 		gchar *new_text;
 		const gchar *qmark;
+		guint pos = 0;
+		GtkTextIter start_iter;
 
 		if (len < 0)
 			len = strlen(text);
@@ -9716,6 +9719,8 @@ static void text_inserted(GtkTextBuffer *buffer, GtkTextIter *iter,
 		mark = gtk_text_buffer_create_mark(buffer, NULL, iter, FALSE);
 		gtk_text_buffer_place_cursor(buffer, iter);
 
+		pos = gtk_text_iter_get_offset(iter);
+
 		compose_quote_fmt(compose, NULL, "%Q", qmark, new_text, TRUE, FALSE,
 						  _("Quote format error at line %d."));
 		quote_fmt_reset_vartable();
@@ -9725,6 +9730,13 @@ static void text_inserted(GtkTextBuffer *buffer, GtkTextIter *iter,
 				  
 		gtk_text_buffer_get_iter_at_mark(buffer, iter, mark);
 		gtk_text_buffer_place_cursor(buffer, iter);
+		gtk_text_buffer_delete_mark(buffer, mark);
+
+		gtk_text_buffer_get_iter_at_offset(buffer, &start_iter, pos);
+		mark = gtk_text_buffer_create_mark(buffer, NULL, &start_iter, FALSE);
+		compose_beautify_paragraph(compose, &start_iter, FALSE);
+		gtk_text_buffer_get_iter_at_mark(buffer, &start_iter, mark);
+		gtk_text_buffer_delete_mark(buffer, mark);
 	} else {
 		if (strcmp(text, "\n") || compose->automatic_break
 		|| gtk_text_iter_starts_line(iter))
@@ -9736,12 +9748,12 @@ static void text_inserted(GtkTextBuffer *buffer, GtkTextIter *iter,
 		}
 	}
 	
-	mark = gtk_text_buffer_create_mark(buffer, NULL, iter, FALSE);
-	
-	compose_beautify_paragraph(compose, iter, FALSE);
-
-	gtk_text_buffer_get_iter_at_mark(buffer, iter, mark);
-	gtk_text_buffer_delete_mark(buffer, mark);
+	if (!paste_as_quotation) {
+		mark = gtk_text_buffer_create_mark(buffer, NULL, iter, FALSE);
+		compose_beautify_paragraph(compose, iter, FALSE);
+		gtk_text_buffer_get_iter_at_mark(buffer, iter, mark);
+		gtk_text_buffer_delete_mark(buffer, mark);
+	}
 
 	g_signal_handlers_unblock_by_func(G_OBJECT(buffer),
 					  G_CALLBACK(text_inserted),

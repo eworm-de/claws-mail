@@ -1,3 +1,20 @@
+2007-08-31 [colin]	2.10.0cvs187
+
+	* src/etpan/imap-thread.c
+		Fix unwanted creation of 
+		libetpan's stream dump file
+	* src/compose.c
+		Fix coloring of pastes as quotation
+	* src/summaryview.c
+		Maemo: Fix opening of mails from keypad
+		in Sent folders
+	* src/addressbook.c
+	* src/folderview.c
+	* src/image_viewer.c
+	* src/mimeview.c
+	* src/gtk/prefswindow.c
+		Maemo: Fix adjustments changes 
+
 2007-08-30 [colin]	2.10.0cvs186
 
 	* src/folderview.c

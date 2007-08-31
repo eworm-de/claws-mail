@@ -84,6 +84,11 @@ static gboolean thread_manager_event(GIOChannel * source,
 	return TRUE;
 }
 
+static void imap_logger_noop(int direction, const char * str, size_t size) 
+{
+	/* inhibit logging */
+}
+
 static void imap_logger_cmd(int direction, const char * str, size_t size) 
 {
 	gchar *buf;
@@ -1728,7 +1733,7 @@ static void fetch_uid_run(struct etpan_thread_op * op)
 	CHECK_IMAP();
 
 	fetch_result = NULL;
-	mailstream_logger = NULL;
+	mailstream_logger = imap_logger_noop;
 	log_print(LOG_PROTOCOL, "IMAP4- [fetching UIDs...]\n");
 
 	r = imap_get_messages_list(param->imap, param->first_index,
@@ -1973,7 +1978,7 @@ int imap_threaded_fetch_uid_flags(Folder * folder, uint32_t first_index,
 	param.imap = imap;
 	param.first_index = first_index;
 	
-	mailstream_logger = NULL;
+	mailstream_logger = imap_logger_noop;
 	log_print(LOG_PROTOCOL, "IMAP4- [fetching flags...]\n");
 
 	threaded_run(folder, &param, &result, fetch_uid_flags_run);
