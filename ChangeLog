@@ -1,3 +1,12 @@
+2007-09-01 [colin]	2.10.0cvs189
+
+	* src/main.c
+		Fix double-reading of accounts list when
+		the wizard has been run due to no accounts
+	* src/mainwindow.c
+		Fix sensitivity of a menu item in case 
+		there's no account
+
 2007-09-01 [wwp]	2.10.0cvs188
 
 	* src/wizard.c

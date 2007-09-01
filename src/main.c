@@ -1097,7 +1097,6 @@ int main(int argc, char *argv[])
 #endif
 			exit(1);
 		}
-		account_read_config_all();
 		if(!account_get_list()) {
 			exit_claws(mainwin);
 #ifdef G_OS_WIN32
