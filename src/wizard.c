@@ -573,7 +573,6 @@ static gboolean wizard_write_config(WizardWindow *wizard)
 	GList *account_list = NULL;
 	GtkWidget *menu, *menuitem;
 	gchar *smtp_server, *recv_server;
-	gchar *tmp;
 	gint smtp_port, recv_port;
 #ifdef USE_OPENSSL			
 	SSLType smtp_ssl_type, recv_ssl_type;
@@ -596,16 +595,18 @@ static gboolean wizard_write_config(WizardWindow *wizard)
 	}
 
 #ifdef MAEMO
-	g_free(prefs_common.data_root);
-	if (gtk_toggle_button_get_active(
-		GTK_TOGGLE_BUTTON(wizard->data_root_nokia_radiobtn)))
-		prefs_common.data_root = NULL;
-	else if (gtk_toggle_button_get_active(
-		GTK_TOGGLE_BUTTON(wizard->data_root_mmc1_radiobtn)))
-		prefs_common.data_root = g_strdup(MMC1_PATH);
-	else if (gtk_toggle_button_get_active(
-		GTK_TOGGLE_BUTTON(wizard->data_root_mmc2_radiobtn)))
-		prefs_common.data_root = g_strdup(MMC2_PATH);
+	if (wizard->create_mailbox) {
+		g_free(prefs_common.data_root);
+		if (gtk_toggle_button_get_active(
+			GTK_TOGGLE_BUTTON(wizard->data_root_nokia_radiobtn)))
+			prefs_common.data_root = NULL;
+		else if (gtk_toggle_button_get_active(
+			GTK_TOGGLE_BUTTON(wizard->data_root_mmc1_radiobtn)))
+			prefs_common.data_root = g_strdup(MMC1_PATH);
+		else if (gtk_toggle_button_get_active(
+			GTK_TOGGLE_BUTTON(wizard->data_root_mmc2_radiobtn)))
+			prefs_common.data_root = g_strdup(MMC2_PATH);
+	}
 #endif
 
 	if (!mailbox_ok) {
@@ -716,12 +717,19 @@ static gboolean wizard_write_config(WizardWindow *wizard)
 				gtk_entry_get_text(GTK_ENTRY(wizard->organization)));
 	prefs_account->smtp_server = g_strdup(smtp_server);
 
-	tmp = g_path_get_basename(gtk_entry_get_text(GTK_ENTRY(wizard->mailbox_name)));
-	prefs_account->inbox = g_strdup_printf("#mh/%s/inbox",
+	if (wizard->create_mailbox && prefs_account->protocol != A_IMAP4) {
+		gchar *tmp;
+		tmp = g_path_get_basename(gtk_entry_get_text(GTK_ENTRY(wizard->mailbox_name)));
+		prefs_account->inbox = g_strdup_printf("#mh/%s/inbox",
 			(!strcmp("Mail", gtk_entry_get_text(GTK_ENTRY(wizard->mailbox_name))))
 				?_("Mailbox"):tmp);
-	g_free(tmp);
-	prefs_account->local_inbox = g_strdup(prefs_account->inbox);
+		g_free(tmp);
+		prefs_account->local_inbox = g_strdup(prefs_account->inbox);
+	} else if (prefs_account->protocol != A_IMAP4) {
+		if (folder_get_default_inbox())
+			prefs_account->local_inbox = 
+				folder_item_get_identifier(folder_get_default_inbox());
+	}
 
 	if (prefs_account->protocol != A_LOCAL)
 		prefs_account->recv_server = g_strdup(recv_server);
@@ -1267,8 +1275,10 @@ static void wizard_protocol_change(WizardWindow *wizard, RecvProtocol protocol)
 		gtk_label_set_use_markup(GTK_LABEL(wizard->recv_label), TRUE);
 		gtk_dialog_set_response_sensitive (GTK_DIALOG(wizard->window), GO_FORWARD, TRUE);
 		g_free(text);
-		gtk_widget_show(wizard->mailbox_label);
-		gtk_widget_show(wizard->mailbox_name);
+		if (wizard->create_mailbox) {
+			gtk_widget_show(wizard->mailbox_label);
+			gtk_widget_show(wizard->mailbox_name);
+		}
 	} else if (protocol == A_IMAP4) {
 #ifdef HAVE_LIBETPAN
 		text = get_default_server(wizard, "imap");
@@ -1289,8 +1299,10 @@ static void wizard_protocol_change(WizardWindow *wizard, RecvProtocol protocol)
 		gtk_label_set_use_markup(GTK_LABEL(wizard->recv_label), TRUE);
 		gtk_dialog_set_response_sensitive (GTK_DIALOG(wizard->window), GO_FORWARD, TRUE);
 		g_free(text);
-		gtk_widget_hide(wizard->mailbox_label);
-		gtk_widget_hide(wizard->mailbox_name);
+		if (wizard->create_mailbox) {
+			gtk_widget_hide(wizard->mailbox_label);
+			gtk_widget_hide(wizard->mailbox_name);
+		}
 #else
 		gtk_widget_hide(wizard->recv_imap_label);
 		gtk_widget_hide(wizard->recv_imap_subdir);
@@ -1300,8 +1312,10 @@ static void wizard_protocol_change(WizardWindow *wizard, RecvProtocol protocol)
 		gtk_widget_hide(wizard->recv_username_label);
 		gtk_widget_hide(wizard->recv_password_label);
 		gtk_widget_show(wizard->no_imap_warning);
-		gtk_widget_hide(wizard->mailbox_label);
-		gtk_widget_hide(wizard->mailbox_name);
+		if (wizard->create_mailbox) {
+			gtk_widget_hide(wizard->mailbox_label);
+			gtk_widget_hide(wizard->mailbox_name);
+		}
 #ifdef USE_OPENSSL
 		gtk_widget_hide(wizard->recv_use_ssl);
 		gtk_widget_hide(wizard->recv_use_tls);
@@ -1324,8 +1338,10 @@ static void wizard_protocol_change(WizardWindow *wizard, RecvProtocol protocol)
 		gtk_widget_hide(wizard->recv_use_ssl);
 		gtk_widget_hide(wizard->recv_use_tls);
 #endif
-		gtk_widget_show(wizard->mailbox_label);
-		gtk_widget_show(wizard->mailbox_name);
+		if (wizard->create_mailbox) {
+			gtk_widget_show(wizard->mailbox_label);
+			gtk_widget_show(wizard->mailbox_name);
+		}
 		gtk_dialog_set_response_sensitive (GTK_DIALOG(wizard->window), GO_FORWARD, TRUE);
 	}
 }
