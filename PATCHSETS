@@ -2844,3 +2844,4 @@
 ( cvs diff -u -r 1.60.2.96 -r 1.60.2.97 src/addressbook.c;  cvs diff -u -r 1.382.2.405 -r 1.382.2.406 src/compose.c;  cvs diff -u -r 1.207.2.180 -r 1.207.2.181 src/folderview.c;  cvs diff -u -r 1.1.2.18 -r 1.1.2.19 src/image_viewer.c;  cvs diff -u -r 1.83.2.114 -r 1.83.2.115 src/mimeview.c;  cvs diff -u -r 1.395.2.323 -r 1.395.2.324 src/summaryview.c;  cvs diff -u -r 1.1.4.83 -r 1.1.4.84 src/etpan/imap-thread.c;  cvs diff -u -r 1.12.2.41 -r 1.12.2.42 src/gtk/prefswindow.c;  ) > 2.10.0cvs187.patchset
 ( cvs diff -u -r 1.1.2.60 -r 1.1.2.61 src/wizard.c;  ) > 2.10.0cvs188.patchset
 ( cvs diff -u -r 1.115.2.165 -r 1.115.2.166 src/main.c;  cvs diff -u -r 1.274.2.209 -r 1.274.2.210 src/mainwindow.c;  ) > 2.10.0cvs189.patchset
+( cvs diff -u -r 1.1.2.5 -r 1.1.2.6 src/edittags.c;  cvs diff -u -r 1.1.2.2 -r 1.1.2.3 src/common/tags.c;  ) > 2.10.0cvs190.patchset

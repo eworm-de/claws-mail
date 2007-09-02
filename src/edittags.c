@@ -334,12 +334,12 @@ static gint prefs_tags_clist_set_row(GtkTreeIter *row)
 	
 
 	tag = gtk_editable_get_chars(GTK_EDITABLE(tags.name_entry), 0, -1);
+	g_strstrip(tag);
 	if (tag[0] == '\0') {
 		alertpanel_error(_("Tag is not set."));
 		return -1;
 	}
 
-	g_strstrip(tag);
 	if (row == NULL) {
 		if ((id = tags_add_tag(tag)) != -1) {
 			prefs_tags_list_view_insert_tag(tags.tags_list_view,
@@ -565,6 +565,7 @@ gint prefs_tags_create_new(MainWindow *mainwin)
 	if (!new_tag || !(*new_tag))
 		return -1;
 	
+	g_strstrip(new_tag);
 	id = tags_get_id_for_str(new_tag);
 	if (id != -1) {
 		g_free(new_tag);
@@ -735,7 +736,8 @@ static gboolean find_tag_in_store(GtkTreeModel *model,
 static void apply_window_add_tag(void)
 {
 	gchar *new_tag = gtk_editable_get_chars(GTK_EDITABLE(applywindow.add_entry), 0, -1);
-	if (new_tag) {
+	g_strstrip(new_tag);
+	if (new_tag && *new_tag) {
 		gint id = tags_get_id_for_str(new_tag);
 		if (id == -1) {
 			id = tags_add_tag(new_tag);
@@ -774,6 +776,8 @@ static void apply_window_add_tag(void)
 			}
 		}
 		g_free(new_tag);
+	} else {
+		alertpanel_error(_("Tag is not set."));
 	}
 }
 

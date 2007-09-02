@@ -150,6 +150,9 @@ void tags_write_tags(void)
 
 gint tags_add_tag(const gchar *tag)
 {
+	if (!tag || !(*tag))
+		return -1;
+
 	if (g_hash_table_lookup(tags_reverse_table, tag))
 		return -1;
 

@@ -1,3 +1,9 @@
+2007-09-02 [colin]	2.10.0cvs190
+
+	* src/edittags.c
+	* src/common/tags.c
+		Prevent empty or white-space tags
+
 2007-09-01 [colin]	2.10.0cvs189
 
 	* src/main.c
