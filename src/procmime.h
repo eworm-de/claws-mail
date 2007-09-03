@@ -26,6 +26,7 @@
 
 typedef struct _MimeType	MimeType;
 typedef struct _MimeInfo	MimeInfo;
+typedef struct _MimeParser	MimeParser;
 
 #include "procmsg.h"
 #include "utils.h"
@@ -79,6 +80,14 @@ struct _MimeType
 	gchar *sub_type;
 
 	gchar *extension;
+};
+
+struct _MimeParser
+{
+	MimeMediaType type;
+	const gchar *sub_type;
+
+	gboolean (*parse)(MimeParser *parser, MimeInfo *mimeinfo);
 };
 
 /*
@@ -228,6 +237,9 @@ void renderer_read_config(void);
 void renderer_write_config(void);
 
 gint procmime_write_mimeinfo(MimeInfo *mimeinfo, FILE *fp);
+
+void procmime_mimeparser_register(MimeParser *mimeparser);
+void procmime_mimeparser_unregister(MimeParser *mimeparser);
 
 #ifdef __cplusplus
 }

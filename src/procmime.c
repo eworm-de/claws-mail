@@ -1783,6 +1783,37 @@ static void procmime_parse_content_encoding(const gchar *content_encoding, MimeI
 	return;
 }
 
+static GSList *registered_parsers = NULL;
+
+static MimeParser *procmime_get_mimeparser_for_type(MimeMediaType type, const gchar *sub_type)
+{
+	GSList *cur;
+	for (cur = registered_parsers; cur; cur = cur->next) {
+		MimeParser *parser = (MimeParser *)cur->data;
+		if (parser->type == type && !strcmp2(parser->sub_type, sub_type))
+			return parser;
+	}
+	return NULL;
+}
+
+void procmime_mimeparser_register(MimeParser *parser)
+{
+	if (!procmime_get_mimeparser_for_type(parser->type, parser->sub_type))
+		registered_parsers = g_slist_append(registered_parsers, parser);
+}
+
+
+void procmime_mimeparser_unregister(MimeParser *parser) 
+{
+	registered_parsers = g_slist_remove(registered_parsers, parser);
+}
+
+static gboolean procmime_mimeparser_parse(MimeParser *parser, MimeInfo *mimeinfo)
+{
+	g_return_val_if_fail(parser->parse != NULL, FALSE);
+	return parser->parse(parser, mimeinfo);	
+}
+
 static int procmime_parse_mimepart(MimeInfo *parent,
 			     gchar *content_type,
 			     gchar *content_encoding,
@@ -1796,7 +1827,10 @@ static int procmime_parse_mimepart(MimeInfo *parent,
 			     gboolean short_scan)
 {
 	MimeInfo *mimeinfo;
+	MimeParser *parser = NULL;
+	gboolean parsed = FALSE;
 	int result = 0;
+
 	/* Create MimeInfo */
 	mimeinfo = procmime_mimeinfo_new();
 	mimeinfo->content = MIMECONTENT_FILE;
@@ -1856,7 +1890,11 @@ static int procmime_parse_mimepart(MimeInfo *parent,
 		mimeinfo->disposition = DISPOSITIONTYPE_UNKNOWN;
 
 	/* Call parser for mime type */
-	switch (mimeinfo->type) {
+	if ((parser = procmime_get_mimeparser_for_type(mimeinfo->type, mimeinfo->subtype)) != NULL) {
+		parsed = procmime_mimeparser_parse(parser, mimeinfo);
+	} 
+	if (!parsed) {
+		switch (mimeinfo->type) {
 		case MIMETYPE_TEXT:
 			if (g_ascii_strcasecmp(mimeinfo->subtype, "plain") == 0 && short_scan) {
 				return 1;
@@ -1875,6 +1913,7 @@ static int procmime_parse_mimepart(MimeInfo *parent,
 			
 		default:
 			break;
+		}
 	}
 
 	return result;
