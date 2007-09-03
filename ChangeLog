@@ -1,3 +1,8 @@
+2007-09-03 [ticho]	3.0.0cvs4
+
+	* src/summaryview.c
+		Handle plural form better in delete confirmation dialog.
+
 2007-09-03 [wwp]	3.0.0cvs3
 
 	* src/compose.c

@@ -4012,13 +4012,10 @@ void summary_delete(SummaryView *summaryview)
 	if (!prefs_common.live_dangerously) {
 		gchar *buf = NULL;
 		int num = g_list_length(GTK_CLIST(summaryview->ctree)->selection);
-		if (num == 1)
-			buf = g_strdup_printf(_(
-				"Do you really want to delete the selected message?"));
-		else
-			buf = g_strdup_printf(_(
-				"Do you really want to delete the %d selected messages?"), 
-				num);
+		buf = g_strdup_printf(ngettext(
+			"Do you really want to delete the selected message?",
+			"Do you really want to delete the %d selected messages?", num), 
+			num);
 		aval = alertpanel(_("Delete message(s)"),
 				  buf,
 				  GTK_STOCK_CANCEL, "+"GTK_STOCK_DELETE, NULL);
