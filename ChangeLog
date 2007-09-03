@@ -1,3 +1,22 @@
+2007-09-03 [paul]	2.10.0cvs191
+
+	* po/bg.po
+	* po/ca.po
+	* po/de.po
+	* po/fi.po
+	* po/fr.po
+	* po/hu.po
+	* po/it.po
+	* po/pl.po
+	* po/pt_BR.po
+	* po/ru.po
+	* po/sk.po
+	* po/zh_CN.po
+		updated by Yasen Pramatarov, Miquel Oliete, Stephan
+		Sachse, Flammie Pirinen, Fabien Vantard, Pader Rezso,
+		Andrea Spadaccini, Emil Nowak, Frederico Goncalves
+		Guimaraes, Pavlo Bohmat, Andrej Kacian, and Ralph Young
+
 2007-09-02 [colin]	2.10.0cvs190
 
 	* src/edittags.c
