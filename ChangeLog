@@ -1,3 +1,10 @@
+2007-09-03 [mones]	3.0.0cvs1
+
+	* po/es.po
+		Updated translation
+	* src/common/defs.h
+		While a better solution is made double history sizes
+
 2007-09-03 [paul]	3.0.0
 
 	* NEWS
