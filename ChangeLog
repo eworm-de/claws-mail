@@ -1,3 +1,8 @@
+2007-09-03 [wwp]	3.0.0cvs3
+
+	* src/compose.c
+		Warn differently when sending or sending later (queueing).
+
 2007-09-03 [colin]	3.0.0cvs2
 
 	* src/procmime.c

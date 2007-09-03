@@ -4479,10 +4479,19 @@ static gboolean compose_check_entries(Compose *compose, gboolean check_everythin
 		if (*str == '\0' && check_everything == TRUE && 
 		    compose->mode != COMPOSE_REDIRECT) {
 			AlertValue aval;
+			gchar *button_label;
+			gchar *message;
 
-			aval = alertpanel(_("Send"),
-					  _("Subject is empty. Send it anyway?"),
-					  GTK_STOCK_CANCEL, _("+_Send"), NULL);
+			if (compose->sending)
+				button_label = _("+_Send");
+			else
+				button_label = _("+_Queue");
+			message = g_strdup_printf(_("Subject is empty. %s it anyway?"),
+					compose->sending?_("Send"):_("Queue"));
+
+			aval = alertpanel(compose->sending?_("Send"):_("Send later"), message,
+					  GTK_STOCK_CANCEL, button_label, NULL);
+			g_free(message);
 			if (aval != G_ALERTALTERNATE)
 				return FALSE;
 		}
