@@ -1,5 +1,86 @@
 Changes of the  Claws Mail GTK2 branch
 
+* 3.0.0
+-------
+
+* Claws Mail is now licensed under GPLv3 or later.
+
+* added Tags feature
+  Tags are arbitrary labels that can be applied to messages. It is
+  possible to create, edit, remove Tags; apply them to mails;
+  filter on Tags or Tag presence; apply or unset Tags via Filtering
+  actions; reference Tags in reply Templates.
+
+* Threads can now be sorted by most recent message
+  /View/Sort/By thread date
+
+* Added "/View/Show or Hide/Column headers"
+
+* Added 'watch thread' feature
+	
+* Enabled the running of folder Processing rules on demand
+
+* Added options to stop/enable writing logs to disc, see Logging
+  page of preferences
+
+* IMAP and News: Implement age-based caching: allow the specifying 
+  of a threshold for the offline synchronisation feature, and whether 
+  old cached bodies should be removed. Accessible from the Folder
+  Properties.
+
+* IMAP: Made multiple copy, (in the same IMAP account), faster by
+  matching source/destination message UIDs.
+	
+* LDAP: Ability to edit all Person attributes
+
+* Nicer layout of the message part icons
+
+* Speed up and clean up rendering of larger msgs
+
+* Use progress bar when sending messages
+
+* Made mainwindow's /Help/Manual point to the remote copy if the
+  local copy doesn't exist
+
+* Replaced some deprecated widgets
+
+* Enabled changing the emphasis color used to highlight the
+  newsreader/x-mailer header value when it matches our preferred
+  mail agent, (hidden pref 'emphasis_color' added to clawsrc).
+
+* tools/mew2claws-mail.pl
+  Added new script that imports a Mew address book
+
+* tools/popfile-link.sh
+  Added a new script that will open selected messages in
+  POPFile control center, in order to change the message
+  status.
+
+* Updated the manual
+
+* Check that Dillo's installed when loading the Dillo Browser
+  plugin
+
+* Maemo improvements:
+	o Automatically choose the correct application
+	  to open parts
+	o Better way to notify of new mails
+	o Destroy messageview after trashing mail
+	o Simplified layout
+	o Better toolbars, removal of CTree headers
+	o Add a specific icon to go back to folder list
+	o Improvements to the Wizard, About and icon legend dialogues
+	o add an easy way to store data (mails and IMAP/NNTP caches)
+	  on one of the SD cards, and protect against unmounts if
+	  needed
+	o plug the online/offline system into maemo's interfaces to
+	  have Claws automatically switch according to the system
+	  status (on IT OS 2007)
+	o use HildonBanners to display status messages
+	o force layout to be Small screen
+	o put the progress bar in the toolbar
+
+
 * 2.10.0
 --------
 
