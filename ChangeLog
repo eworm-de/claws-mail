@@ -1,3 +1,10 @@
+2007-09-04 [wwp]	3.0.0cvs5
+
+	* src/account.c
+		Accounts list: fix "Local" protocol not shown when USE_OPENSSL is set.
+		Show protocol "SMTP" and the appropriate server for send-only
+		accounts, show "-" instead of "" when no value is relevant.
+
 2007-09-03 [ticho]	3.0.0cvs4
 
 	* src/summaryview.c

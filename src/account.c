@@ -1262,15 +1262,19 @@ static void account_list_view_add(PrefsAccount *ac_prefs)
 		   ac_prefs->protocol == A_NNTP ?
 		  (ac_prefs->ssl_nntp == SSL_TUNNEL ?
 		   "NNTP (SSL)" : "NNTP") :
-		   "";
+		   ac_prefs->protocol == A_LOCAL ? "Local" :
+		   ac_prefs->protocol == A_NONE ?  "SMTP" : "-";
 #else
 	protocol = ac_prefs->protocol == A_POP3  ? "POP3" :
 		   ac_prefs->protocol == A_IMAP4 ? "IMAP4" :
 		   ac_prefs->protocol == A_LOCAL ? "Local" :
-		   ac_prefs->protocol == A_NNTP  ? "NNTP" : "";
+		   ac_prefs->protocol == A_NNTP  ? "NNTP" :
+		   ac_prefs->protocol == A_NONE ?  "SMTP" : "-";
 #endif
-	server= ac_prefs->protocol == A_NNTP
-		? ac_prefs->nntp_server : ac_prefs->recv_server;
+	server= ac_prefs->protocol == A_NNTP ? ac_prefs->nntp_server :
+		   ac_prefs->protocol == A_LOCAL ?  "-" :
+		   ac_prefs->protocol == A_NONE ? ac_prefs->smtp_server :
+		   ac_prefs->recv_server;
 
 	has_getallbox = (ac_prefs->protocol == A_POP3  ||
 			 ac_prefs->protocol == A_IMAP4 ||

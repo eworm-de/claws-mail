@@ -2850,3 +2850,4 @@
 ( cvs diff -u -r 1.49.2.96 -r 1.49.2.97 src/procmime.c;  cvs diff -u -r 1.17.2.19 -r 1.17.2.20 src/procmime.h;  cvs diff -u -r 1.13.2.29 -r 1.13.2.30 src/common/plugin.c;  cvs diff -u -r 1.5.2.12 -r 1.5.2.13 src/common/plugin.h;  ) > 3.0.0cvs2.patchset
 ( cvs diff -u -r 1.382.2.406 -r 1.382.2.407 src/compose.c;  ) > 3.0.0cvs3.patchset
 ( cvs diff -u -r 1.395.2.324 -r 1.395.2.325 src/summaryview.c;  ) > 3.0.0cvs4.patchset
+( cvs diff -u -r 1.61.2.67 -r 1.61.2.68 src/account.c;  ) > 3.0.0cvs5.patchset
