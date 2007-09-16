@@ -1,3 +1,12 @@
+2007-09-16 [colin]	3.0.0cvs8-stable
+
+	* src/folderview.c
+	* src/main.c
+	* src/mainwindow.c
+		From 3.0.0cvs14
+		Fix bug 1308, 'Claws deletes folderlist.xml after
+                fetching mail short after start-up'
+
 2007-09-16 [colin]	3.0.0cvs7-stable
 
 	* src/compose.c

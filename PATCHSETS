@@ -2853,3 +2853,4 @@
 ( cvs diff -u -r 1.10.2.34 -r 1.10.2.35 src/prefs_gtk.c;  ) > 3.0.0cvs5-stable.patchset
 ( cvs diff -u -r 1.213.2.158.2.1 -r 1.213.2.158.2.2 src/folder.c;  ) > 3.0.0cvs6-stable.patchset
 ( cvs diff -u -r 1.382.2.406 -r 1.382.2.407 src/compose.c;  ) > 3.0.0cvs7-stable.patchset
+( cvs diff -u -r 1.207.2.181 -r 1.207.2.182 src/folderview.c;  cvs diff -u -r 1.115.2.166 -r 1.115.2.167 src/main.c;  cvs diff -u -r 1.274.2.210 -r 1.274.2.211 src/mainwindow.c;  ) > 3.0.0cvs8-stable.patchset
