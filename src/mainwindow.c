@@ -2453,7 +2453,7 @@ SensitiveCond main_window_get_current_state(MainWindow *mainwin)
 	
 	selection = summary_get_selection_type(mainwin->summaryview);
 
-	if (mainwin->lock_count == 0)
+	if (mainwin->lock_count == 0 && !claws_is_starting())
 		state |= M_UNLOCKED;
 	if (selection != SUMMARY_NONE)
 		state |= M_MSG_EXIST;

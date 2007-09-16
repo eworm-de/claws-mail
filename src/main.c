@@ -298,6 +298,8 @@ static void claws_gtk_idle(void)
 	g_usleep(50000);
 }
 
+static gboolean sc_starting = FALSE;
+
 static gboolean defer_check_all(void *data)
 {
 	gboolean autochk = GPOINTER_TO_INT(data);
@@ -305,6 +307,11 @@ static gboolean defer_check_all(void *data)
 	inc_all_account_mail(static_mainwindow, autochk, 
 			prefs_common.newmail_notify_manu);
 
+	if (sc_starting) {
+		sc_starting = FALSE;
+		main_window_set_menu_sensitive(static_mainwindow);
+		toolbar_main_set_sensitive(static_mainwindow);
+	}
 	return FALSE;
 }
 
@@ -312,6 +319,11 @@ static gboolean defer_check(void *data)
 {
 	inc_mail(static_mainwindow, prefs_common.newmail_notify_manu);
 
+	if (sc_starting) {
+		sc_starting = FALSE;
+		main_window_set_menu_sensitive(static_mainwindow);
+		toolbar_main_set_sensitive(static_mainwindow);
+	}
 	return FALSE;
 }
 
@@ -325,6 +337,11 @@ static gboolean defer_jump(void *data)
 		defer_check(NULL);
 	} 
 	mainwindow_jump_to(data, FALSE);
+	if (sc_starting) {
+		sc_starting = FALSE;
+		main_window_set_menu_sensitive(static_mainwindow);
+		toolbar_main_set_sensitive(static_mainwindow);
+	}
 	return FALSE;
 }
 
@@ -622,7 +639,6 @@ static void sc_session_manager_connect(MainWindow *mainwin)
 #endif
 
 static gboolean sc_exiting = FALSE;
-static gboolean sc_starting = FALSE;
 static gboolean show_at_startup = TRUE;
 static gboolean claws_crashed_bool = FALSE;
 
@@ -768,6 +784,7 @@ int main(int argc, char *argv[])
 	gboolean crash_file_present = FALSE;
 	gint num_folder_class = 0;
 	gboolean asked_for_migration = FALSE;
+	gboolean start_done = TRUE;
 
 	START_TIMING("startup");
 	
@@ -1265,10 +1282,13 @@ int main(int argc, char *argv[])
 	}
 
 	if (cmd.receive_all && !cmd.target) {
+		start_done = FALSE;
 		g_timeout_add(1000, defer_check_all, GINT_TO_POINTER(FALSE));
 	} else if (prefs_common.chk_on_startup && !cmd.target) {
+		start_done = FALSE;
 		g_timeout_add(1000, defer_check_all, GINT_TO_POINTER(TRUE));
 	} else if (cmd.receive && !cmd.target) {
+		start_done = FALSE;
 		g_timeout_add(1000, defer_check, NULL);
 	} else {
 		gtk_widget_grab_focus(folderview->ctree);
@@ -1291,6 +1311,7 @@ int main(int argc, char *argv[])
 	}
 	
 	if (cmd.target) {
+		start_done = FALSE;
 		g_timeout_add(500, defer_jump, (gpointer)cmd.target);
 	}
 
@@ -1298,7 +1319,11 @@ int main(int argc, char *argv[])
 	
 	compose_reopen_exit_drafts();
 
-	sc_starting = FALSE;
+	if (start_done) {
+		sc_starting = FALSE;
+		main_window_set_menu_sensitive(mainwin);
+		toolbar_main_set_sensitive(mainwin);
+	}
 	END_TIMING();
 
 	gtk_main();
