@@ -1,3 +1,17 @@
+2007-09-16 [colin]	3.0.0cvs2-stable
+
+	* src/folder.c
+	* src/imap.c
+	* src/inc.c
+	* src/mbox.c
+	* src/send_message.c
+	* src/statusbar.c
+	* src/statusbar.h
+		From 3.0.0cvs6
+                Maemo: distinguish various statusbar messages,
+                in order to display only the most important.
+
+
 2007-09-16 [colin]	3.0.0cvs1-stable
 
 	* src/account.c

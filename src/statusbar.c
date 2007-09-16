@@ -111,9 +111,7 @@ void statusbar_print(GtkStatusbar *statusbar, const gchar *format, ...)
 #ifdef MAEMO
 static GSList *banner_texts = NULL;
 static GtkWidget *banner = NULL;
-#endif
-
-void statusbar_print_all(const gchar *format, ...)
+void statuswindow_print_all(const gchar *format, ...)
 {
 	va_list args;
 	gchar buf[BUFFSIZE];
@@ -125,7 +123,6 @@ void statusbar_print_all(const gchar *format, ...)
 
 	for (cur = statusbar_list; cur != NULL; cur = cur->next)
 		statusbar_puts(GTK_STATUSBAR(cur->data), buf);
-#ifdef MAEMO
 	if (mainwindow_get_mainwindow()) {
 		if (banner != NULL) {
 			gchar *last_text = (gchar *)banner_texts->data;
@@ -145,10 +142,9 @@ void statusbar_print_all(const gchar *format, ...)
 			banner_texts = g_slist_prepend(banner_texts, g_strdup(buf));
 		}
 	}
-#endif
 }
 
-void statusbar_pop_all(void)
+void statuswindow_pop_all(void)
 {
 	GList *cur;
 	gint cid;
@@ -158,7 +154,6 @@ void statusbar_pop_all(void)
 						   "Standard Output");
 		gtk_statusbar_pop(GTK_STATUSBAR(cur->data), cid);
 	}
-#ifdef MAEMO
 	if (banner && banner_texts) {
 		gchar *old_text = (gchar *)banner_texts->data;
 		gchar *prev_text = NULL;
@@ -173,7 +168,33 @@ void statusbar_pop_all(void)
 			banner = NULL;
 		}
 	}
+}
 #endif
+
+void statusbar_print_all(const gchar *format, ...)
+{
+	va_list args;
+	gchar buf[BUFFSIZE];
+	GList *cur;
+
+	va_start(args, format);
+	g_vsnprintf(buf, sizeof(buf), format, args);
+	va_end(args);
+
+	for (cur = statusbar_list; cur != NULL; cur = cur->next)
+		statusbar_puts(GTK_STATUSBAR(cur->data), buf);
+}
+
+void statusbar_pop_all(void)
+{
+	GList *cur;
+	gint cid;
+
+	for (cur = statusbar_list; cur != NULL; cur = cur->next) {
+		cid = gtk_statusbar_get_context_id(GTK_STATUSBAR(cur->data),
+						   "Standard Output");
+		gtk_statusbar_pop(GTK_STATUSBAR(cur->data), cid);
+	}
 }
 
 static gboolean statusbar_puts_all_hook (gpointer source, gpointer data)

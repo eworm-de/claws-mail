@@ -845,7 +845,7 @@ static IMAPSession *imap_session_new(Folder * folder,
 #endif
 
 	imap_init(folder);
-	statusbar_print_all(_("Connecting to IMAP4 server: %s..."), folder->account->recv_server);
+	statuswindow_print_all(_("Connecting to IMAP4 server: %s..."), folder->account->recv_server);
 	if (account->set_tunnelcmd) {
 		r = imap_threaded_connect_cmd(folder,
 					      account->tunnelcmd,
@@ -868,7 +868,7 @@ static IMAPSession *imap_session_new(Folder * folder,
 		}
 	}
 	
-	statusbar_pop_all();
+	statuswindow_pop_all();
 	if (r == MAILIMAP_NO_ERROR_AUTHENTICATED) {
 		authenticated = TRUE;
 	}
@@ -955,7 +955,7 @@ try_again:
 	} else if (account->imap_auth_type == IMAP_AUTH_ANON) {
 		pass = "";
 	}
-	statusbar_print_all(_("Connecting to IMAP4 server %s...\n"),
+	statuswindow_print_all(_("Connecting to IMAP4 server %s...\n"),
 				account->recv_server);
 	if (imap_auth(session, account->userid, pass, account->imap_auth_type) != IMAP_SUCCESS) {
 		statusbar_pop_all();
@@ -975,7 +975,7 @@ try_again:
 		return;
 	} 
 
-	statusbar_pop_all();
+	statuswindow_pop_all();
 	session->authenticated = TRUE;
 	return;
 }

@@ -2711,7 +2711,7 @@ gint folder_item_fetch_all_msg(FolderItem *item)
 		return -1;
 
 	debug_print("fetching all messages in %s ...\n", item->path ? item->path : "(null)");
-	statusbar_print_all(_("Fetching all messages in %s ...\n"), item->path ? item->path : "(null)");
+	statuswindow_print_all(_("Fetching all messages in %s ...\n"), item->path ? item->path : "(null)");
 
 	folder = item->folder;
 
@@ -2748,7 +2748,7 @@ gint folder_item_fetch_all_msg(FolderItem *item)
 	}
 	
 	statusbar_progress_all(0,0,0);
-	statusbar_pop_all();
+	statuswindow_pop_all();
 	procmsg_msg_list_free(mlist);
 
 	return ret;
@@ -4211,13 +4211,13 @@ void folder_item_synchronise(FolderItem *item)
 	if (!item)
 		return;
 	if (item->prefs->offlinesync && item->folder->klass->synchronise) {
-		statusbar_print_all(_("Synchronising %s for offline use...\n"), item->path ? item->path : "(null)");
+		statuswindow_print_all(_("Synchronising %s for offline use...\n"), item->path ? item->path : "(null)");
 		item->folder->klass->synchronise(item, 
 			item->prefs->offlinesync_days);
 		if (item->prefs->offlinesync_days > 0 &&
 		    item->prefs->remove_old_bodies)
 			folder_item_clean_local_files(item, item->prefs->offlinesync_days);
-		statusbar_pop_all();
+		statuswindow_pop_all();
 	}
 }
 
