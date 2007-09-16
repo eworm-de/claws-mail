@@ -1,3 +1,10 @@
+2007-09-16 [colin]	3.0.0cvs5-stable
+
+	* src/prefs_gtk.c
+		From 3.0.0cvs9
+		Add a missing linefeed to a debug message.
+
+
 2007-09-16 [colin]	3.0.0cvs4-stable
 
 	* src/inc.c

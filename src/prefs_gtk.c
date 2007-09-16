@@ -1022,7 +1022,7 @@ static int prefs_cache_sections(GHashTable *file_cache, const gchar *rcfile)
 	GHashTable *section_cache = NULL;
 
 	if (!fp) {
-		debug_print("cache: %s: %s", rcfile?rcfile:"(null)", strerror(errno));
+		debug_print("cache: %s: %s\n", rcfile?rcfile:"(null)", strerror(errno));
 		return -1;
 	}
 	
