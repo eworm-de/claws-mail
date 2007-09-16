@@ -1,3 +1,12 @@
+2007-09-16 [colin]	3.0.0cvs15
+
+	* src/prefs_filtering.c
+	* src/prefs_filtering.h
+	* src/prefs_filtering_action.c
+	* src/common/tags.c
+		Fix tags issues: tags with spaces, renaming
+		tags.
+
 2007-09-16 [colin]	3.0.0cvs14
 
 	* src/folderview.c

@@ -49,4 +49,6 @@ void prefs_filtering_rename_path	(const gchar	*old_path,
 				 	 const gchar	*new_path);
 void prefs_filtering_delete_path	(const gchar	*path);
 
+void prefs_filtering_rename_tag(const gchar *old_tag, const gchar *new_tag);
+
 #endif /* __PREFS_FILTERING_H__ */

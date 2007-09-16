@@ -69,11 +69,19 @@ void tags_read_tags(void)
 		fclose(fp);
 		return;
 	}
-	while (fscanf(fp, "%d\t%254s\n", &id, tmp) == 2) {
+	while (fgets(&tmp, sizeof(tmp), fp) != NULL) {
+		gchar *sep = strchr(tmp, '\t');
+		gchar *tag_name = sep?(sep+1):NULL;
+		
+		if (!tag_name || !sep)
+			continue;
+		g_strstrip(tag_name);
+		*(sep) = '\0';
+		id = atoi(tmp);
 		g_hash_table_insert(tags_table,
-				    GINT_TO_POINTER(id), g_strdup(tmp));
+				    GINT_TO_POINTER(id), g_strdup(tag_name));
 		g_hash_table_insert(tags_reverse_table,
-				    g_strdup(tmp), GINT_TO_POINTER(id));		
+				    g_strdup(tag_name), GINT_TO_POINTER(id));		
 	}
 	
 	fclose(fp);
@@ -128,6 +136,7 @@ void tags_write_tags(void)
 	}
 
 	if (data.error) {
+		fclose(fp);
 		g_free(file);
 		g_free(file_new);
 		return;
@@ -139,9 +148,9 @@ void tags_write_tags(void)
 		g_free(file_new);
 		return;
 	}
-	
-	if (g_rename(file, file_new) < 0) {
-		FILE_OP_ERROR(file, "g_rename");
+
+	if (rename_force(file, file_new) < 0) {
+		FILE_OP_ERROR(file, "rename_force");
 	}
 
 	g_free(file);
@@ -175,11 +184,15 @@ void tags_remove_tag(gint id)
 	g_hash_table_remove(tags_table, GINT_TO_POINTER(id));
 }
 
+/* extern decl. to avoid including ../prefs_filtering.h */
+extern void prefs_filtering_rename_tag(const gchar *old_tag, const gchar *new_tag);
+
 void tags_update_tag(gint id, const gchar *tag)
 {
 	gchar *old_tag = g_hash_table_lookup(tags_table, GINT_TO_POINTER(id));
 
 	if (old_tag) {
+		prefs_filtering_rename_tag(old_tag, tag);
 		g_hash_table_remove(tags_reverse_table, old_tag);
 	}
 
