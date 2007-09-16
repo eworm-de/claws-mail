@@ -1,3 +1,9 @@
+2007-09-16 [paul]	3.0.0cvs11
+
+	* src/folder.c
+		do not allow locked msgs to be deleted,
+		even by filtering/processing
+
 2007-09-07 [paul]	3.0.0cvs10
 
 	* src/prefs_folder_column.c
