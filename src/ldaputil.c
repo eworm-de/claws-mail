@@ -228,9 +228,7 @@ GList *ldaputil_read_basedn(
 	LDAP *ld = NULL;
 	gint rc;
 	gchar *uri = NULL;
-#ifdef USE_LDAP_TLS
 	gint version;
-#endif
 
 	if( host == NULL ) return baseDN;
 	if( port < 1 ) return baseDN;

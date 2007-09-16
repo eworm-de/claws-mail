@@ -1,3 +1,9 @@
+2007-09-16 [colin]	3.0.0cvs3-stable
+
+	* src/ldaputil.c
+		From 3.0.0cvs7
+		Fix build without USE_LDAP_TLS
+
 2007-09-16 [colin]	3.0.0cvs2-stable
 
 	* src/folder.c
