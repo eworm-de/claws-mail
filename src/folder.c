@@ -3477,9 +3477,10 @@ gint folder_item_remove_msg(FolderItem *item, gint num)
 	if (!item->cache) folder_item_read_cache(item);
 
 	msginfo = msgcache_get_msg(item->cache, num);
-	if (MSG_IS_LOCKED(msginfo->flags))
+	if (MSG_IS_LOCKED(msginfo->flags)) {
+		procmsg_msginfo_free(msginfo);
 		return -1;
-
+	}
 	ret = folder->klass->remove_msg(folder, item, num);
 
 	if (msginfo != NULL) {
