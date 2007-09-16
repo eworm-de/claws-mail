@@ -1,3 +1,12 @@
+2007-09-16 [colin]	3.0.0cvs1-stable
+
+	* src/account.c
+		From 3.0.0cvs5:
+                Accounts list: fix "Local" protocol not shown when USE_OPENSSL is set.
+                Show protocol "SMTP" and the appropriate server for send-only
+                accounts, show "-" instead of "" when no value is relevant.
+
+
 2007-09-03 [paul]	3.0.0
 
 	* NEWS
