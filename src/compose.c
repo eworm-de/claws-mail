@@ -975,6 +975,15 @@ Compose *compose_new_with_list( PrefsAccount *account, GList *listAddress )
 	return compose_generic_new( account, NULL, NULL, NULL, listAddress );
 }
 
+#define SCROLL_TO_CURSOR(compose) {				\
+	GtkTextMark *cmark = gtk_text_buffer_get_insert(	\
+		gtk_text_view_get_buffer(			\
+			GTK_TEXT_VIEW(compose->text)));		\
+	gtk_text_view_scroll_mark_onscreen(			\
+		GTK_TEXT_VIEW(compose->text),			\
+		cmark);						\
+}
+
 Compose *compose_generic_new(PrefsAccount *account, const gchar *mailto, FolderItem *item,
 			     GPtrArray *attach_files, GList *listAddress )
 {
@@ -1145,6 +1154,8 @@ Compose *compose_generic_new(PrefsAccount *account, const gchar *mailto, FolderI
 		compose_exec_ext_editor(compose);
 
 	compose->draft_timeout_tag = -1;
+	SCROLL_TO_CURSOR(compose);
+
 	compose->modified = FALSE;
 	compose_set_title(compose);
         return compose;
@@ -1510,7 +1521,8 @@ static Compose *compose_generic_reply(MsgInfo *msginfo,
 
 	compose->updating = FALSE;
 	compose->draft_timeout_tag = -1; /* desinhibit auto-drafting after loading */
-
+	SCROLL_TO_CURSOR(compose);
+	
 	if (compose->deferred_destroy) {
 		compose_destroy(compose);
 		return NULL;
@@ -1656,6 +1668,7 @@ Compose *compose_forward(PrefsAccount *account, MsgInfo *msginfo,
 
 	compose->updating = FALSE;
 	compose->draft_timeout_tag = -1; /* desinhibit auto-drafting after loading */
+	SCROLL_TO_CURSOR(compose);
 
 	if (compose->deferred_destroy) {
 		compose_destroy(compose);
@@ -1758,6 +1771,7 @@ static Compose *compose_forward_multiple(PrefsAccount *account, GSList *msginfo_
 
 	compose->updating = FALSE;
 	compose->draft_timeout_tag = -1; /* desinhibit auto-drafting after loading */
+	SCROLL_TO_CURSOR(compose);
 
 	if (compose->deferred_destroy) {
 		compose_destroy(compose);
@@ -2073,6 +2087,7 @@ Compose *compose_reedit(MsgInfo *msginfo, gboolean batch)
 
 	compose->updating = FALSE;
 	compose->draft_timeout_tag = -1; /* desinhibit auto-drafting after loading */
+	SCROLL_TO_CURSOR(compose);
 
 	if (compose->deferred_destroy) {
 		compose_destroy(compose);
@@ -2182,6 +2197,7 @@ Compose *compose_redirect(PrefsAccount *account, MsgInfo *msginfo,
 	compose_set_title(compose);
 	compose->updating = FALSE;
 	compose->draft_timeout_tag = -1; /* desinhibit auto-drafting after loading */
+	SCROLL_TO_CURSOR(compose);
 
 	if (compose->deferred_destroy) {
 		compose_destroy(compose);
