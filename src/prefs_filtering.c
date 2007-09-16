@@ -117,6 +117,7 @@ static void prefs_filtering_action_define(void);
 static gint prefs_filtering_list_view_set_row	(gint row, FilteringProp * prop);
 					  
 static void prefs_filtering_reset_dialog	(void);
+static gboolean prefs_filtering_rename_tag_func(GNode *node, gpointer data);
 static gboolean prefs_filtering_rename_path_func(GNode *node, gpointer data);
 static gboolean prefs_filtering_delete_path_func(GNode *node, gpointer data);
 
@@ -534,6 +535,30 @@ static void prefs_filtering_create(void)
 	filtering.account_label  = account_label;
 }
 
+static void rename_tag(GSList * filters,
+			const gchar * old_tag, const gchar * new_tag);
+
+void prefs_filtering_rename_tag(const gchar *old_tag, const gchar *new_tag)
+{
+	GList * cur;
+	const gchar *tags[2] = {NULL, NULL};
+	tags[0] = old_tag;
+	tags[1] = new_tag;
+	for (cur = folder_get_list() ; cur != NULL ; cur = g_list_next(cur)) {
+		Folder *folder;
+		folder = (Folder *) cur->data;
+		g_node_traverse(folder->node, G_PRE_ORDER, G_TRAVERSE_ALL, -1,
+				prefs_filtering_rename_tag_func, tags);
+	}
+        
+	rename_tag(pre_global_processing, old_tag, new_tag);
+	rename_tag(post_global_processing, old_tag, new_tag);
+	rename_tag(filtering_rules, old_tag, new_tag);
+        
+	prefs_matcher_write_config();
+}
+
+
 static void rename_path(GSList * filters,
 			const gchar * old_path, const gchar * new_path);
 
@@ -582,7 +607,11 @@ static void rename_path(GSList * filters,
 
                         FilteringAction *action = action_cur->data;
                         
-                        if (!action->destination) continue;
+                        if (action->type == MATCHACTION_SET_TAG ||
+			    action->type == MATCHACTION_UNSET_TAG)
+				continue;
+                        if (!action->destination) 
+				continue;
                         
                         destlen = strlen(action->destination);
                         
@@ -660,6 +689,59 @@ static gboolean prefs_filtering_rename_path_func(GNode *node, gpointer data)
 	return FALSE;
 }
 
+static void rename_tag(GSList * filters,
+			const gchar * old_tag, const gchar * new_tag)
+{
+        GSList * action_cur;
+        GSList * cur;
+
+	for (cur = filters; cur != NULL; cur = cur->next) {
+		FilteringProp   *filtering = (FilteringProp *)cur->data;
+                
+                for(action_cur = filtering->action_list ; action_cur != NULL ;
+                    action_cur = action_cur->next) {
+
+                        FilteringAction *action = action_cur->data;
+                        
+                        if (action->type != MATCHACTION_SET_TAG &&
+			    action->type != MATCHACTION_UNSET_TAG)
+				continue;
+                        if (!action->destination)
+				continue;
+                        if (!strcmp(action->destination, old_tag)) {
+				g_free(action->destination);
+				action->destination = g_strdup(new_tag);
+			}
+                }
+        }
+}
+
+static gboolean prefs_filtering_rename_tag_func(GNode *node, gpointer data)
+{
+	GSList *filters;
+	const gchar * old_tag;
+        const gchar * new_tag;
+        const gchar ** tags;
+	FolderItem *item;
+        
+        tags = data;
+	old_tag = tags[0];
+	new_tag = tags[1];
+
+	g_return_val_if_fail(old_tag != NULL, FALSE);
+	g_return_val_if_fail(new_tag != NULL, FALSE);
+	g_return_val_if_fail(node != NULL, FALSE);
+
+        item = node->data;
+        if (!item || !item->prefs)
+                return FALSE;
+        filters = item->prefs->processing;
+
+        rename_tag(filters, old_tag, new_tag);
+
+	return FALSE;
+}
+
 void prefs_filtering_delete_path(const gchar *path)
 {
 	GList * cur;
@@ -700,7 +782,11 @@ static void delete_path(GSList ** p_filters, const gchar * path)
                         
                         action = action_cur->data;
                         
-                        if (!action->destination) continue;
+                        if (action->type == MATCHACTION_SET_TAG ||
+			    action->type == MATCHACTION_UNSET_TAG)
+				continue;
+                        if (!action->destination) 
+				continue;
                         
                         destlen = strlen(action->destination);
                         

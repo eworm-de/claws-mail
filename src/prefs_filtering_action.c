@@ -1173,7 +1173,8 @@ static gboolean prefs_filtering_action_key_pressed(GtkWidget *widget,
  */
 static void prefs_filtering_action_cancel(void)
 {
-	gtk_widget_hide(filtering_action.window);
+	gtk_widget_destroy(filtering_action.window);
+	filtering_action.window = NULL;
 	inc_unlock();
 }
 
@@ -1199,7 +1200,8 @@ static void prefs_filtering_action_ok(void)
         }
         g_slist_free(action_list);
 
-	gtk_widget_hide(filtering_action.window);
+	gtk_widget_destroy(filtering_action.window);
+	filtering_action.window = NULL;
         inc_unlock();
 }
 
