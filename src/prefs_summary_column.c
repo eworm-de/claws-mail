@@ -159,6 +159,12 @@ static void drag_data_received	(GtkTreeView *tree_view,
 				 guint time, 
 				 GtkTreeModel *model);
 
+static void prefs_summary_column_shown_set_btn_sensitivity(void);
+static void prefs_summary_column_shown_set_active(const gboolean active);
+static void prefs_summary_column_stock_set_active(const gboolean active);
+static void prefs_summary_column_shown_sel_changed(void);
+static void prefs_summary_column_stock_sel_changed(void);
+
 void prefs_summary_column_open(void)
 {
 	inc_lock();
@@ -265,6 +271,9 @@ static void prefs_summary_column_create(void)
 				       
 	stock_list_view = prefs_summary_column_list_view_create
 				(_("Hidden columns"));
+	g_signal_connect(G_OBJECT(stock_list_view), "cursor-changed",
+			   G_CALLBACK(prefs_summary_column_stock_sel_changed),
+			   NULL);
 	gtk_widget_show(stock_list_view);
 	gtk_container_add(GTK_CONTAINER(scrolledwin), stock_list_view);
 
@@ -294,6 +303,9 @@ static void prefs_summary_column_create(void)
 
 	shown_list_view = prefs_summary_column_list_view_create
 				(_("Displayed columns"));
+	g_signal_connect(G_OBJECT(shown_list_view), "cursor-changed",
+			   G_CALLBACK(prefs_summary_column_shown_sel_changed),
+			   NULL);
 	gtk_widget_show(shown_list_view);
 	gtk_container_add(GTK_CONTAINER(scrolledwin), shown_list_view);
 
@@ -359,6 +371,9 @@ static void prefs_summary_column_create(void)
 	summary_col.cancel_btn  = cancel_btn;
 	summary_col.stock_list_view = stock_list_view;
 	summary_col.shown_list_view = shown_list_view;
+	
+	prefs_summary_column_shown_set_active(FALSE);
+	prefs_summary_column_stock_set_active(FALSE);
 }
 
 SummaryColumnState *prefs_summary_column_get_config(void)
@@ -512,6 +527,8 @@ static void prefs_summary_column_add(void)
 	gtk_tree_selection_select_iter(gtk_tree_view_get_selection
 		(GTK_TREE_VIEW(summary_col.shown_list_view)),
 		 &shown_add);
+	prefs_summary_column_shown_set_active(TRUE);
+	prefs_summary_column_stock_set_active(FALSE);
 }
 
 static void prefs_summary_column_remove(void)
@@ -559,6 +576,8 @@ static void prefs_summary_column_remove(void)
 	gtk_tree_selection_select_iter(gtk_tree_view_get_selection
 		(GTK_TREE_VIEW(summary_col.stock_list_view)),
 		&stock_add);
+	prefs_summary_column_shown_set_active(FALSE);
+	prefs_summary_column_stock_set_active(TRUE);
 }
 
 static void prefs_summary_column_up(void)
@@ -596,6 +615,7 @@ static void prefs_summary_column_up(void)
 	gtk_tree_path_free(prev);
 
 	gtk_list_store_swap(shown_store, &iprev, &isel);
+	prefs_summary_column_shown_set_btn_sensitivity();
 }
 
 static void prefs_summary_column_down(void)
@@ -618,11 +638,14 @@ static void prefs_summary_column_down(void)
 		return;
 
 	gtk_list_store_swap(shown_store, &next, &sel);
+	prefs_summary_column_shown_set_btn_sensitivity();
 }
 
 static void prefs_summary_column_set_to_default(void)
 {
 	prefs_summary_column_set_dialog(default_state);
+	prefs_summary_column_shown_set_active(FALSE);
+	prefs_summary_column_stock_set_active(FALSE);
 }
 
 static void prefs_summary_column_ok(void)
@@ -888,6 +911,82 @@ static void drag_data_received(GtkTreeView *tree_view, GdkDragContext *context,
 		gtk_drag_finish(context, TRUE, FALSE, time);
 	}
 
+	prefs_summary_column_shown_set_active(FALSE);
+	prefs_summary_column_stock_set_active(FALSE);
+	
 	/* XXXX: should we call gtk_drag_finish() for other code paths? */
 }
 
+static void prefs_summary_column_shown_set_btn_sensitivity(void)
+{
+	GtkTreeModel *model = GTK_TREE_MODEL(gtk_tree_view_get_model(
+		GTK_TREE_VIEW(summary_col.shown_list_view)));
+	GtkTreeSelection *selection = gtk_tree_view_get_selection(
+		GTK_TREE_VIEW(summary_col.shown_list_view));
+	GtkTreeIter iter;
+	GtkTreePath *path;
+	
+	if(!gtk_tree_selection_get_selected(selection, NULL, &iter)) {
+		gtk_widget_set_sensitive(summary_col.remove_btn, FALSE);
+		gtk_widget_set_sensitive(summary_col.up_btn, FALSE);
+		gtk_widget_set_sensitive(summary_col.down_btn, FALSE);
+		return;
+	}
+	
+	path = gtk_tree_model_get_path(model, &iter);
+
+	gtk_widget_set_sensitive(summary_col.up_btn, gtk_tree_path_prev(path));
+	gtk_widget_set_sensitive(summary_col.down_btn,
+				 gtk_tree_model_iter_next(model, &iter));
+}
+
+static void prefs_summary_column_shown_set_active(const gboolean active)
+{
+	GtkTreeSelection *selection = NULL;
+	
+	gtk_widget_set_sensitive(summary_col.remove_btn, active);
+	
+	if(active == FALSE) {
+		selection = gtk_tree_view_get_selection(
+			GTK_TREE_VIEW(summary_col.shown_list_view));
+		gtk_tree_selection_unselect_all(selection);
+		
+		gtk_widget_set_sensitive(summary_col.up_btn, FALSE);
+		gtk_widget_set_sensitive(summary_col.down_btn, FALSE);
+	} else {
+		prefs_summary_column_shown_set_btn_sensitivity();
+	}
+}
+
+static void prefs_summary_column_stock_set_active(const gboolean active)
+{
+	GtkTreeSelection *selection = NULL;
+	
+	gtk_widget_set_sensitive(summary_col.add_btn, active);
+	
+	if(active == FALSE) {
+		selection = gtk_tree_view_get_selection(
+			GTK_TREE_VIEW(summary_col.stock_list_view));
+		gtk_tree_selection_unselect_all(selection);
+	}
+}
+
+static void prefs_summary_column_stock_sel_changed(void)
+{
+	GtkTreeSelection *selection = gtk_tree_view_get_selection(
+		GTK_TREE_VIEW(summary_col.stock_list_view));
+	prefs_summary_column_stock_set_active(
+		(selection != NULL) ? TRUE : FALSE);
+	prefs_summary_column_shown_set_active(
+		(selection != NULL) ? FALSE : TRUE);
+}
+
+static void prefs_summary_column_shown_sel_changed(void)
+{
+	GtkTreeSelection *selection = gtk_tree_view_get_selection(
+		GTK_TREE_VIEW(summary_col.shown_list_view));
+	prefs_summary_column_shown_set_active(
+		(selection != NULL) ? TRUE : FALSE);
+	prefs_summary_column_stock_set_active(
+		(selection != NULL) ? FALSE : TRUE);
+}

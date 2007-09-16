@@ -2855,3 +2855,4 @@
 ( cvs diff -u -r 1.1.4.13 -r 1.1.4.14 src/ldaputil.c;  ) > 3.0.0cvs7.patchset
 ( cvs diff -u -r 1.149.2.81 -r 1.149.2.82 src/inc.c;  ) > 3.0.0cvs8.patchset
 ( cvs diff -u -r 1.10.2.34 -r 1.10.2.35 src/prefs_gtk.c;  ) > 3.0.0cvs9.patchset
+( cvs diff -u -r 1.1.2.10 -r 1.1.2.11 src/prefs_folder_column.c;  cvs diff -u -r 1.10.2.19 -r 1.10.2.20 src/prefs_summary_column.c;  ) > 3.0.0cvs10.patchset

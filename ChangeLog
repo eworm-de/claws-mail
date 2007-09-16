@@ -1,3 +1,10 @@
+2007-09-07 [paul]	3.0.0cvs10
+
+	* src/prefs_folder_column.c
+	* src/prefs_summary_column.c
+		implement button sensitivity
+		patch by Pawel Pekala
+
 2007-09-06 [wwp]	3.0.0cvs9
 
 	* src/prefs_gtk.c
