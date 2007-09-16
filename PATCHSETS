@@ -2857,3 +2857,4 @@
 ( cvs diff -u -r 1.10.2.34 -r 1.10.2.35 src/prefs_gtk.c;  ) > 3.0.0cvs9.patchset
 ( cvs diff -u -r 1.1.2.10 -r 1.1.2.11 src/prefs_folder_column.c;  cvs diff -u -r 1.10.2.19 -r 1.10.2.20 src/prefs_summary_column.c;  ) > 3.0.0cvs10.patchset
 ( cvs diff -u -r 1.213.2.159 -r 1.213.2.160 src/folder.c;  ) > 3.0.0cvs11.patchset
+( cvs diff -u -r 1.17.2.27 -r 1.17.2.28 po/sr.po;  ) > 3.0.0cvs12.patchset
