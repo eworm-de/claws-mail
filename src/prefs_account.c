@@ -151,7 +151,6 @@ typedef struct SendPage
 
     GtkWidget *vbox;
 
-	GtkWidget *msgid_checkbtn;
 	GtkWidget *customhdr_checkbtn;
 	GtkWidget *smtp_auth_checkbtn;
 	GtkWidget *smtp_auth_type_optmenu;
@@ -473,10 +472,6 @@ static PrefParam receive_param[] = {
 };
 
 static PrefParam send_param[] = {
-	{"generate_msgid", "TRUE", &tmp_ac_prefs.gen_msgid, P_BOOL,
-	 &send_page.msgid_checkbtn,
-	 prefs_set_data_from_toggle, prefs_set_toggle},
-
 	{"add_custom_header", "FALSE", &tmp_ac_prefs.add_customhdr, P_BOOL,
 	 &send_page.customhdr_checkbtn,
 	 prefs_set_data_from_toggle, prefs_set_toggle},
@@ -1585,7 +1580,6 @@ static void send_create_widget_func(PrefsPage * _page,
 	GtkWidget *vbox1;
 	GtkWidget *vbox2;
 	GtkWidget *frame;
-	GtkWidget *msgid_checkbtn;
 	GtkWidget *hbox;
 	GtkWidget *customhdr_checkbtn;
 	GtkWidget *customhdr_edit_btn;
@@ -1610,8 +1604,6 @@ static void send_create_widget_func(PrefsPage * _page,
 	gtk_container_set_border_width (GTK_CONTAINER (vbox1), VBOX_BORDER);
 
 	vbox2 = gtkut_get_options_frame(vbox1, &frame, _("Header"));
-
-	PACK_CHECK_BUTTON (vbox2, msgid_checkbtn, _("Generate Message-ID"));
 
 	hbox = gtk_hbox_new (FALSE, 12);
 	gtk_widget_show (hbox);
@@ -1756,7 +1748,6 @@ static void send_create_widget_func(PrefsPage * _page,
 	gtk_widget_show (pop_auth_minutes_lbl);
 	gtk_box_pack_start (GTK_BOX (hbox), pop_auth_minutes_lbl, FALSE, FALSE, 0);
 	
-	page->msgid_checkbtn     = msgid_checkbtn;
 	page->customhdr_checkbtn = customhdr_checkbtn;
 
 	page->smtp_auth_checkbtn       = smtp_auth_checkbtn;

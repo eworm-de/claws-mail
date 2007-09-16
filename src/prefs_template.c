@@ -676,7 +676,7 @@ static gboolean prefs_template_list_view_set_row(GtkTreeIter *row)
 
 	prefs_template_list_view_insert_template(templates.list_view,
 						 row, tmpl->name, tmpl);
-	g_free(value);
+
 	return TRUE;
 }
 
