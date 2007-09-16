@@ -33,6 +33,8 @@
 #include "plugin.h"
 #include "prefs.h"
 #include "claws.h"
+#include "timing.h"
+
 #ifdef HAVE_VALGRIND
 #include "valgrind.h"
 #endif
@@ -294,9 +296,8 @@ Plugin *plugin_load(const gchar *filename, gchar **error)
 	const gchar *(*plugin_type)(void);
 	const gchar *(*plugin_licence)(void);
 	struct PluginFeature *(*plugin_provides)(void);
-
 	gint ok;
-
+	START_TIMING((filename?filename:"NULL plugin"));
 	g_return_val_if_fail(filename != NULL, NULL);
 	g_return_val_if_fail(error != NULL, NULL);
 
@@ -393,7 +394,7 @@ init_plugin:
 	plugin->unloaded_hidden = FALSE;
 
 	debug_print("Plugin %s (from file %s) loaded\n", plugin->name(), filename);
-
+	END_TIMING();
 	return plugin;
 }
 

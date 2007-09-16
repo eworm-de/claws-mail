@@ -709,6 +709,16 @@ static gint disposition_notification_send(MsgInfo *msginfo)
 	fprintf(fp, "Subject: Disposition notification: %s\n", buf);
 
 	/* Message ID */
+	if (account->set_domain && account->domain) {
+		g_snprintf(buf, sizeof(buf), "%s", account->domain); 
+	} else if (!strncmp(get_domain_name(), "localhost", strlen("localhost"))) {
+		g_snprintf(buf, sizeof(buf), "%s", 
+			strchr(account->address, '@') ?
+				strchr(account->address, '@')+1 :
+				account->address);
+	} else {
+		g_snprintf(buf, sizeof(buf), "%s", "");
+	}
 	generate_msgid(buf, sizeof(buf));
 	fprintf(fp, "Message-ID: <%s>\n", buf);
 

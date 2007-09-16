@@ -2853,9 +2853,10 @@ static gboolean folderview_drag_motion_cb(GtkWidget      *widget,
 	int height = (int)pos->page_size;
 	int total_height = (int)pos->upper;
 	int vpos = (int) pos->value;
-
+	int offset = prefs_common.show_col_headers ? 24:0;
+	
 	if (gtk_clist_get_selection_info
-		(GTK_CLIST(widget), x - 24, y - 24, &row, &column)) {
+		(GTK_CLIST(widget), x - offset, y - offset, &row, &column)) {
 		GtkWidget *srcwidget;
 
 		if (y > height - 24 && height + vpos < total_height) {
@@ -2994,13 +2995,14 @@ static void folderview_drag_received_cb(GtkWidget        *widget,
 	gint row, column;
 	FolderItem *item = NULL, *src_item;
 	GtkCTreeNode *node;
+	int offset = prefs_common.show_col_headers ? 24:0;
 
 	if (info == TARGET_DUMMY) {
 		drag_state_stop(folderview);
 		if ((void *)strstr(data->data, "FROM_OTHER_FOLDER") != (void *)data->data) {
 			/* comes from summaryview */
 			if (gtk_clist_get_selection_info
-				(GTK_CLIST(widget), x - 24, y - 24, &row, &column) == 0)
+				(GTK_CLIST(widget), x - offset, y - offset, &row, &column) == 0)
 				return;
 
 			node = gtk_ctree_node_nth(GTK_CTREE(widget), row);
@@ -3042,7 +3044,7 @@ static void folderview_drag_received_cb(GtkWidget        *widget,
 
 			source = data->data + 17;
 			if (gtk_clist_get_selection_info
-			    (GTK_CLIST(widget), x - 24, y - 24, &row, &column) == 0
+			    (GTK_CLIST(widget), x - offset, y - offset, &row, &column) == 0
 			    || *source == 0) {
 				gtk_drag_finish(drag_context, FALSE, FALSE, time);			
 				return;
@@ -3069,7 +3071,7 @@ static void folderview_drag_received_cb(GtkWidget        *widget,
 		folderview->nodes_to_recollapse = NULL;
 	} else if (info == TARGET_MAIL_URI_LIST) {
 		if (gtk_clist_get_selection_info
-			(GTK_CLIST(widget), x - 24, y - 24, &row, &column) == 0)
+			(GTK_CLIST(widget), x - offset, y - offset, &row, &column) == 0)
 			return;
 
 		node = gtk_ctree_node_nth(GTK_CTREE(widget), row);
