@@ -435,7 +435,7 @@ gint send_message_smtp_full(PrefsAccount *ac_prefs, GSList *to_list, FILE *fp, g
 		ac_prefs->session = SMTP_SESSION(session);
 
 
-	statusbar_pop_all();
+	statuswindow_pop_all();
 	statusbar_verbosity_set(FALSE);
 	return ret;
 }
@@ -461,12 +461,12 @@ static gint send_recv_message(Session *session, const gchar *msg, gpointer data)
 	case SMTP_HELO:
 		g_snprintf(buf, sizeof(buf), _("Sending HELO..."));
 		state_str = _("Authenticating");
-		statusbar_print_all(_("Sending message..."));
+		statuswindow_print_all(_("Sending message..."));
 		break;
 	case SMTP_EHLO:
 		g_snprintf(buf, sizeof(buf), _("Sending EHLO..."));
 		state_str = _("Authenticating");
-		statusbar_print_all(_("Sending message..."));
+		statuswindow_print_all(_("Sending message..."));
 		break;
 	case SMTP_AUTH:
 		g_snprintf(buf, sizeof(buf), _("Authenticating..."));

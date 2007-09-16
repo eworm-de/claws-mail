@@ -549,7 +549,7 @@ gint export_list_to_mbox(GSList *mlist, const gchar *mbox)
 	flockfile(mbox_fp);
 #endif
 
-	statusbar_print_all(_("Exporting to mbox..."));
+	statuswindow_print_all(_("Exporting to mbox..."));
 	for (cur = mlist; cur != NULL; cur = cur->next) {
 		int len;
 		gchar buft[BUFFSIZE];
@@ -610,7 +610,7 @@ gint export_list_to_mbox(GSList *mlist, const gchar *mbox)
 			GTK_EVENTS_FLUSH();
 	}
 	statusbar_progress_all(0,0,0);
-	statusbar_pop_all();
+	statuswindow_pop_all();
 
 #ifdef HAVE_FGETS_UNLOCKED
 	funlockfile(mbox_fp);

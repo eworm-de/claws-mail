@@ -801,7 +801,7 @@ static IncState inc_pop3_session_do(IncSession *session)
 #endif
 
 	buf = g_strdup_printf(_("Connecting to POP3 server: %s..."), server);
-	statusbar_print_all("%s", buf);
+	statuswindow_print_all("%s", buf);
 	log_message(LOG_PROTOCOL, "%s\n", buf);
 
 	progress_dialog_set_label(inc_dialog->dialog, buf);
@@ -825,7 +825,7 @@ static IncState inc_pop3_session_do(IncSession *session)
 			    server, port);
 		}
 		session->inc_state = INC_CONNECT_ERROR;
-		statusbar_pop_all();
+		statuswindow_pop_all();
 		return INC_CONNECT_ERROR;
 	}
 
@@ -873,7 +873,7 @@ static IncState inc_pop3_session_do(IncSession *session)
 	}
 
 	session_disconnect(SESSION(pop3_session));
-	statusbar_pop_all();
+	statuswindow_pop_all();
 
 	return session->inc_state;
 }
