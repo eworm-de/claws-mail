@@ -100,7 +100,6 @@ struct _PrefsAccount
 	gint imap_auth_type;
 
 	/* Send */
-	gboolean gen_msgid;
 	gboolean add_customhdr;
 	gboolean use_smtp_auth;
 	SMTPAuthType smtp_auth_type;

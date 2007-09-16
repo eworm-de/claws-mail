@@ -3923,7 +3923,12 @@ gchar *generate_msgid(gchar *buf, gint len)
 	t = time(NULL);
 	lt = localtime_r(&t, &buft);
 
-	addr = g_strconcat("@", get_domain_name(), NULL);
+	if (strcmp(buf, "") == 0) {
+		addr = g_strconcat("@", get_domain_name(), NULL);
+	}
+	else {
+		addr = g_strconcat("@", buf, NULL);
+	}
 
 	g_snprintf(buf, len, "%04d%02d%02d%02d%02d%02d.%08x%s",
 		   lt->tm_year + 1900, lt->tm_mon + 1,
