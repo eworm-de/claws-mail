@@ -2849,3 +2849,4 @@
 ( cvs diff -u -r 1.61.2.67 -r 1.61.2.68 src/account.c;  ) > 3.0.0cvs1-stable.patchset
 ( cvs diff -u -r 1.213.2.158 -r 1.213.2.159 src/folder.c;  cvs diff -u -r 1.179.2.186 -r 1.179.2.187 src/imap.c;  cvs diff -u -r 1.149.2.80 -r 1.149.2.81 src/inc.c;  cvs diff -u -r 1.28.2.37 -r 1.28.2.38 src/mbox.c;  cvs diff -u -r 1.17.2.43 -r 1.17.2.44 src/send_message.c;  cvs diff -u -r 1.5.2.19 -r 1.5.2.20 src/statusbar.c;  cvs diff -u -r 1.3.2.8 -r 1.3.2.9 src/statusbar.h;  ) > 3.0.0cvs2-stable.patchset
 ( cvs diff -u -r 1.1.4.13 -r 1.1.4.14 src/ldaputil.c;  ) > 3.0.0cvs3-stable.patchset
+( cvs diff -u -r 1.149.2.80.2.1 -r 1.149.2.80.2.2 src/inc.c;  ) > 3.0.0cvs4-stable.patchset

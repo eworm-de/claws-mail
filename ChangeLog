@@ -1,3 +1,9 @@
+2007-09-16 [colin]	3.0.0cvs4-stable
+
+	* src/inc.c
+		From 3.0.0cvs8
+		Fix statusbar/window mismatch on Maemo
+
 2007-09-16 [colin]	3.0.0cvs3-stable
 
 	* src/ldaputil.c

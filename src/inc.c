@@ -873,7 +873,7 @@ static IncState inc_pop3_session_do(IncSession *session)
 	}
 
 	session_disconnect(SESSION(pop3_session));
-	statuswindow_pop_all();
+	statusbar_pop_all();
 
 	return session->inc_state;
 }
@@ -902,7 +902,7 @@ static void inc_progress_dialog_set_label(IncProgressDialog *inc_dialog,
 	case POP3_GETAUTH_PASS:
 	case POP3_GETAUTH_APOP:
 		progress_dialog_set_label(dialog, _("Authenticating..."));
-		statusbar_pop_all();
+		statuswindow_pop_all();
 		statusbar_print_all(_("Retrieving messages from %s (%s) ..."),
 				    SESSION(session)->server,
 				    session->ac_prefs->account_name);
