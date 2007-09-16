@@ -2851,3 +2851,4 @@
 ( cvs diff -u -r 1.1.4.13 -r 1.1.4.14 src/ldaputil.c;  ) > 3.0.0cvs3-stable.patchset
 ( cvs diff -u -r 1.149.2.80.2.1 -r 1.149.2.80.2.2 src/inc.c;  ) > 3.0.0cvs4-stable.patchset
 ( cvs diff -u -r 1.10.2.34 -r 1.10.2.35 src/prefs_gtk.c;  ) > 3.0.0cvs5-stable.patchset
+( cvs diff -u -r 1.213.2.158.2.1 -r 1.213.2.158.2.2 src/folder.c;  ) > 3.0.0cvs6-stable.patchset
