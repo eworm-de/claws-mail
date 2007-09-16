@@ -53,6 +53,8 @@ struct _ImageViewer
 	GtkWidget *notebook;
 	GtkWidget *filename;
 	GtkWidget *filesize;
+	GtkWidget *error_lbl;
+	GtkWidget *error_msg;
 	GtkWidget *content_type;
 };
 
@@ -92,7 +94,9 @@ static void image_viewer_load_file(ImageViewer *imageviewer, const gchar *imgfil
 	}
 
 	if (error) {
-		g_warning(error->message);
+		gtk_label_set_text(GTK_LABEL(imageviewer->error_lbl), _("Error:"));
+		gtk_label_set_text(GTK_LABEL(imageviewer->error_msg), error->message);
+		gtk_notebook_set_current_page(GTK_NOTEBOOK(imageviewer->notebook), 0);
 		g_error_free(error);
 	}
 	if (!pixbuf) {
@@ -158,14 +162,15 @@ static void image_viewer_show_mimepart(MimeViewer *_mimeviewer, const gchar *fil
 	imageviewer->file = g_strdup(file);
 	imageviewer->mimeinfo = mimeinfo;
 
+	gtk_label_set_text(GTK_LABEL(imageviewer->filename),
+			   procmime_mimeinfo_get_parameter(mimeinfo, "name"));
+	gtk_label_set_text(GTK_LABEL(imageviewer->filesize), to_human_readable(mimeinfo->length));
+	gtk_label_set_text(GTK_LABEL(imageviewer->content_type), mimeinfo->subtype);
+	gtk_label_set_text(GTK_LABEL(imageviewer->error_lbl), "");
+	gtk_label_set_text(GTK_LABEL(imageviewer->error_msg), "");
+
 	if (prefs_common.display_img)
 		image_viewer_load_image(imageviewer);
-	else {
-		gtk_label_set_text(GTK_LABEL(imageviewer->filename),
-				   procmime_mimeinfo_get_parameter(mimeinfo, "name"));
-		gtk_label_set_text(GTK_LABEL(imageviewer->filesize), to_human_readable(mimeinfo->length));
-		gtk_label_set_text(GTK_LABEL(imageviewer->content_type), mimeinfo->subtype);
-	}
 }
 
 static void image_viewer_clear_viewer(MimeViewer *_mimeviewer)
@@ -277,6 +282,8 @@ static MimeViewer *image_viewer_create(void)
 	GtkWidget *label5;
 	GtkWidget *content_type;
 	GtkWidget *scrolledwin;
+	GtkWidget *error_lbl;
+	GtkWidget *error_msg;
 
 	notebook = gtk_notebook_new();
 	gtk_widget_show(notebook);
@@ -284,7 +291,7 @@ static MimeViewer *image_viewer_create(void)
 	gtk_notebook_set_show_tabs(GTK_NOTEBOOK(notebook), FALSE);
 	gtk_notebook_set_show_border(GTK_NOTEBOOK(notebook), FALSE);
 
-	table1 = gtk_table_new(4, 3, FALSE);
+	table1 = gtk_table_new(5, 3, FALSE);
 	gtk_widget_show(table1);
 	gtk_container_add(GTK_CONTAINER(notebook), table1);
 	gtk_container_set_border_width(GTK_CONTAINER(table1), 8);
@@ -319,12 +326,6 @@ static MimeViewer *image_viewer_create(void)
 			 (GtkAttachOptions) (0), 0, 0);
 	gtk_misc_set_alignment(GTK_MISC(filesize), 0, 0.5);
 
-	load_button = gtk_button_new_with_label(_("Load Image"));
-	gtk_widget_show(load_button);
-	gtk_table_attach(GTK_TABLE(table1), load_button, 1, 2, 3, 4,
-			 (GtkAttachOptions) (GTK_FILL),
-			 (GtkAttachOptions) (0), 0, 0);
-
 	label5 = gtk_label_new(_("Content-Type:"));
 	gtk_widget_show(label5);
 	gtk_table_attach(GTK_TABLE(table1), label5, 0, 1, 2, 3,
@@ -338,6 +339,26 @@ static MimeViewer *image_viewer_create(void)
 			 (GtkAttachOptions) (GTK_FILL),
 			 (GtkAttachOptions) (0), 0, 0);
 	gtk_misc_set_alignment(GTK_MISC(content_type), 0, 0.5);
+
+	error_lbl = gtk_label_new("");
+	gtk_widget_show(error_lbl);
+	gtk_table_attach(GTK_TABLE(table1), error_lbl, 0, 1, 3, 4,
+			 (GtkAttachOptions) (GTK_FILL),
+			 (GtkAttachOptions) (0), 0, 0);
+	gtk_misc_set_alignment(GTK_MISC(error_lbl), 0, 0.5);
+
+	error_msg = gtk_label_new("");
+	gtk_widget_show(error_msg);
+	gtk_table_attach(GTK_TABLE(table1), error_msg, 1, 3, 3, 4,
+			 (GtkAttachOptions) (GTK_FILL),
+			 (GtkAttachOptions) (0), 0, 0);
+	gtk_misc_set_alignment(GTK_MISC(error_msg), 0, 0.5);
+
+	load_button = gtk_button_new_with_label(_("Load Image"));
+	gtk_widget_show(load_button);
+	gtk_table_attach(GTK_TABLE(table1), load_button, 0, 1, 4, 5,
+			 (GtkAttachOptions) (GTK_FILL),
+			 (GtkAttachOptions) (0), 0, 0);
 
 	scrolledwin = gtk_scrolled_window_new(NULL, NULL);
 	gtk_widget_show(scrolledwin);
@@ -367,6 +388,8 @@ static MimeViewer *image_viewer_create(void)
 	imageviewer->filename	  = filename;
 	imageviewer->filesize	  = filesize;
 	imageviewer->content_type = content_type;
+	imageviewer->error_msg    = error_msg;
+	imageviewer->error_lbl    = error_lbl;
 
 	gtk_widget_ref(notebook);
 

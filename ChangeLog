@@ -1,3 +1,20 @@
+2007-09-16 [colin]	3.0.0cvs11-stable
+
+	* src/folderview.c
+	* src/image_viewer.c
+	* src/matcher.c
+	* src/messageview.c
+	* src/common/plugin.c
+		From 3.0.0cvs17:
+		Fix bug 1311, 'Wrong arrow position
+                while moving message into folder when
+                column headers hidden'
+		Show error in the GUI if image can't
+                be loaded
+		Fix spurious output
+		Allow setting domain in msgid
+		Add timing information
+
 2007-09-16 [colin]	3.0.0cvs10-stable
 
 	* src/account.c
