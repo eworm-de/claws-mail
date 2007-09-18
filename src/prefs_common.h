@@ -463,6 +463,14 @@ struct _PrefsCommon
 	gint hide_quotes;
 	gboolean unsafe_ssl_certs;
 	gboolean real_time_sync;
+	
+	gchar *print_paper_type;
+	gint print_paper_orientation;
+	gint print_use_color;
+	gint print_use_collate;
+	gint print_use_reverse;
+	gint print_use_duplex;
+	gint print_imgs;
 };
 
 extern PrefsCommon prefs_common;

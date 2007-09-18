@@ -44,6 +44,7 @@ typedef struct _ImageViewerPage
 	GtkWidget *autoload_img;
 	GtkWidget *resize_img;
 	GtkWidget *inline_img;
+	GtkWidget *print_imgs;
 }ImageViewerPage;
 
 static void imageviewer_create_widget_func(PrefsPage * _page,
@@ -56,9 +57,10 @@ static void imageviewer_create_widget_func(PrefsPage * _page,
 	GtkWidget *autoload_img;
 	GtkWidget *resize_img;
 	GtkWidget *inline_img;
+	GtkWidget *print_imgs;
 	GtkTooltips *resize_tooltip;
 
-	table = gtk_table_new(3, 1, FALSE);
+	table = gtk_table_new(4, 1, FALSE);
 	gtk_widget_show(table);
 	gtk_container_set_border_width(GTK_CONTAINER(table), VBOX_BORDER);
 	gtk_table_set_row_spacings(GTK_TABLE(table), 4);
@@ -87,14 +89,24 @@ static void imageviewer_create_widget_func(PrefsPage * _page,
 			 (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
 			 (GtkAttachOptions) (0), 0, 0);
 	
+	print_imgs = gtk_check_button_new_with_label(_("Print images"));
+#if !defined(USE_GNOMEPRINT) && GTK_CHECK_VERSION(2,10,0)
+	gtk_widget_show(print_imgs);
+#endif
+	gtk_table_attach(GTK_TABLE(table), print_imgs, 0, 1, 3, 4,
+			 (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
+			 (GtkAttachOptions) (0), 0, 0);
+	
 	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(resize_img), prefs_common.resize_img);
 	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(autoload_img), prefs_common.display_img);
 	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(inline_img), prefs_common.inline_img);
+	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(print_imgs), prefs_common.print_imgs);
 
 	prefs_imageviewer->window	= GTK_WIDGET(window);
 	prefs_imageviewer->autoload_img = autoload_img;
 	prefs_imageviewer->resize_img 	= resize_img;
 	prefs_imageviewer->inline_img 	= inline_img;
+	prefs_imageviewer->print_imgs 	= print_imgs;
 
 	prefs_imageviewer->page.widget = table;
 }
@@ -116,6 +128,9 @@ static void imageviewer_save_func(PrefsPage * _page)
 	prefs_common.inline_img =
 	    gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON
 	    				 (imageviewer->inline_img));
+	prefs_common.print_imgs =
+	    gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON
+	    				 (imageviewer->print_imgs));
 }
 
 ImageViewerPage *prefs_imageviewer;

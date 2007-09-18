@@ -1051,6 +1051,22 @@ static PrefParam param[] = {
 	{"real_time_sync", "TRUE", &prefs_common.real_time_sync, P_BOOL,
 	 NULL, NULL, NULL},
 #endif
+
+	{"print_paper_type", NULL, &prefs_common.print_paper_type, P_STRING,
+	 NULL, NULL, NULL},
+	{"print_paper_orientation", "0", &prefs_common.print_paper_orientation, P_INT,
+	 NULL, NULL, NULL},
+	{"print_use_color", "0", &prefs_common.print_use_color, P_INT,
+	 NULL, NULL, NULL},
+	{"print_use_collate", "0", &prefs_common.print_use_collate, P_INT,
+	 NULL, NULL, NULL},
+	{"print_use_reverse", "0", &prefs_common.print_use_reverse, P_INT,
+	 NULL, NULL, NULL},
+	{"print_use_duplex", "0", &prefs_common.print_use_duplex, P_INT,
+	 NULL, NULL, NULL},
+	{"print_imgs", "1", &prefs_common.print_imgs, P_INT,
+	 NULL, NULL, NULL},
+
 	{NULL, NULL, NULL, P_OTHER, NULL, NULL, NULL}
 };
 

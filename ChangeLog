@@ -1,3 +1,15 @@
+2007-09-18 [colin]	3.0.1cvs7
+
+	* src/prefs_common.c
+	* src/prefs_common.h
+	* src/prefs_image_viewer.c
+	* src/printing.c
+		GtkPrintOperation:
+		- add image printing support
+		- add option to print images
+		- add preview widget
+		- add saving of a few Page Setup parameters
+
 2007-09-18 [colin]	3.0.1cvs6
 
 	* AUTHORS
