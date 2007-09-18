@@ -26,7 +26,7 @@
 #  include "config.h"
 #endif
 
-#if GTK_CHECK_VERSION(2,10,0) && !defined(HAVE_GNOMEPRINT)
+#if GTK_CHECK_VERSION(2,10,0) && !defined(USE_GNOMEPRINT)
 
 void printing_print(GtkTextView*, GtkWindow*, gint, gint);
 void printing_page_setup(GtkWindow*);

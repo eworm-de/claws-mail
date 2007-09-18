@@ -23,7 +23,7 @@
 
 #include "printing.h"
 
-#if GTK_CHECK_VERSION(2,10,0) && !defined(HAVE_GNOMEPRINT)
+#if GTK_CHECK_VERSION(2,10,0) && !defined(USE_GNOMEPRINT)
 
 #include "prefs_common.h"
 
