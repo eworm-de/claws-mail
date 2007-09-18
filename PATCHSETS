@@ -2867,3 +2867,4 @@
 ( cvs diff -u -r 1.42.2.34 -r 1.42.2.35 NEWS;  cvs diff -u -r 1.8.2.41 -r 1.8.2.42 README;  cvs diff -u -r 1.1.2.23 -r 1.1.2.24 RELEASE_NOTES;  cvs diff -u -r 1.654.2.2920 -r 1.654.2.2921 configure.ac;  ) > 3.0.1cvs1.patchset
 ( cvs diff -u -r 1.155.2.74 -r 1.155.2.75 src/Makefile.am;  cvs diff -u -r 1.274.2.211 -r 1.274.2.212 src/mainwindow.c;  cvs diff -u -r 1.94.2.151 -r 1.94.2.152 src/messageview.c;  cvs diff -u -r 1.19.2.16 -r 1.19.2.17 src/messageview.h;  cvs diff -u -r 1.3.2.16 -r 1.3.2.17 src/prefs_ext_prog.c;  cvs diff -u -r 1.4.2.20 -r 1.4.2.21 src/prefs_fonts.c;  diff -u /dev/null src/printing.c;  diff -u /dev/null src/printing.h;  cvs diff -u -r 1.395.2.325 -r 1.395.2.326 src/summaryview.c;  ) > 3.0.1cvs2.patchset
 ( cvs diff -u -r 1.1.2.1 -r 1.1.2.2 src/printing.c;  cvs diff -u -r 1.1.2.1 -r 1.1.2.2 src/printing.h;  ) > 3.0.1cvs3.patchset
+( cvs diff -u -r 1.43.2.82 -r 1.43.2.83 src/toolbar.c;  ) > 3.0.1cvs4.patchset

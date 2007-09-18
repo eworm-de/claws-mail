@@ -1,3 +1,10 @@
+2007-09-18 [colin]	3.0.1cvs4
+
+	* src/toolbar.c
+		Fix bug 1320, 'Memory leak caused by 
+		gtk_container_get_children'. Patch by
+		Guillaume Chazarain <guichaz@yahoo.fr>
+
 2007-09-18 [colin]	3.0.1cvs3
 
 	* src/printing.c
