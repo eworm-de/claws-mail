@@ -67,6 +67,7 @@
 #include "inc.h"
 #include "log.h"
 #include "combobox.h"
+#include "printing.h"
 
 static GList *messageview_list = NULL;
 
@@ -94,6 +95,11 @@ static void partial_recv_unmark_clicked (NoticeView	*noticeview,
 static void save_as_cb			(gpointer	 data,
 					 guint		 action,
 					 GtkWidget	*widget);
+#if GTK_CHECK_VERSION(2,10,0) && !defined(USE_GNOMEPRINT)
+static void page_setup_cb		(gpointer	 data,
+					 guint		 action,
+					 GtkWidget	*widget);
+#endif
 static void print_cb			(gpointer	 data,
 					 guint		 action,
 					 GtkWidget	*widget);
@@ -163,6 +169,9 @@ static GtkItemFactoryEntry msgview_entries[] =
 {
 	{N_("/_File"),			NULL, NULL, 0, "<Branch>"},
 	{N_("/_File/_Save as..."),	"<control>S", save_as_cb, 0, NULL},
+#if GTK_CHECK_VERSION(2,10,0) && !defined(USE_GNOMEPRINT)
+	{N_("/_File/Page setup..."),	NULL, page_setup_cb, 0, NULL},
+#endif
 	{N_("/_File/_Print..."),	"<control>P", print_cb, 0, NULL},
 	{N_("/_File/---"),		NULL, NULL, 0, "<Separator>"},
 	{N_("/_File/_Close"),		"<control>W", close_cb, 0, NULL},
@@ -1500,9 +1509,12 @@ static void save_as_cb(gpointer data, guint action, GtkWidget *widget)
 	messageview_save_as(messageview);
 }
 
-#ifdef USE_GNOMEPRINT
+#if defined(USE_GNOMEPRINT) || GTK_CHECK_VERSION(2,10,0)
 static void print_mimeview(MimeView *mimeview, gint sel_start, gint sel_end, gint partnum) 
 {
+#if !defined(USE_GNOMEPRINT) && GTK_CHECK_VERSION(2,10,0)
+	MainWindow *mainwin;
+#endif
 	if (!mimeview 
 	||  !mimeview->textview
 	||  !mimeview->textview->text)
@@ -1529,8 +1541,15 @@ static void print_mimeview(MimeView *mimeview, gint sel_start, gint sel_end, gin
 			gtk_text_buffer_get_iter_at_offset(buffer, &end, sel_end);
 			gtk_text_buffer_select_range(buffer, &start, &end);
 		}
-
+#if defined(USE_GNOMEPRINT)
 		gedit_print(GTK_TEXT_VIEW(mimeview->textview->text));
+#else
+		/* TODO: Get the real parent window, not the main window */
+		mainwin = mainwindow_get_mainwindow();
+		printing_print(GTK_TEXT_VIEW(mimeview->textview->text),
+			       mainwin ? GTK_WINDOW(mainwin->window) : NULL,
+				sel_start, sel_end);
+#endif
 	}
 }
 
@@ -1564,10 +1583,19 @@ void messageview_print(MsgInfo *msginfo, gboolean all_headers,
 }
 #endif
 
+#if GTK_CHECK_VERSION(2,10,0) && !defined(USE_GNOMEPRINT)
+static void page_setup_cb(gpointer data, guint action, GtkWidget *widget)
+{
+	MessageView *messageview = (MessageView *)data;
+	printing_page_setup(messageview ?
+			    GTK_WINDOW(messageview->window) : NULL);
+}
+#endif
+
 static void print_cb(gpointer data, guint action, GtkWidget *widget)
 {
 	MessageView *messageview = (MessageView *)data;
-#ifndef USE_GNOMEPRINT
+#if !defined(USE_GNOMEPRINT) && !GTK_CHECK_VERSION(2,10,0)
 	gchar *cmdline = NULL;
 	gchar *p;
 #else
@@ -1575,9 +1603,10 @@ static void print_cb(gpointer data, guint action, GtkWidget *widget)
 #endif
 
 	if (!messageview->msginfo) return;
-#ifndef USE_GNOMEPRINT
+
+#if !defined(USE_GNOMEPRINT) && !GTK_CHECK_VERSION(2,10,0)
 	cmdline = input_dialog(_("Print"),
-			       _("Enter the print command line:\n"
+			       _("Ente the print command line:\n"
 				 "('%s' will be replaced with file name)"),
 			       prefs_common.print_cmd);
 	if (!cmdline) return;

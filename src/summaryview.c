@@ -4449,7 +4449,7 @@ void summary_save_as(SummaryView *summaryview)
 void summary_print(SummaryView *summaryview)
 {
 	GtkCList *clist = GTK_CLIST(summaryview->ctree);
-#ifndef USE_GNOMEPRINT
+#if !defined(USE_GNOMEPRINT) && !GTK_CHECK_VERSION(2,10,0)
 	GtkCTree *ctree = GTK_CTREE(summaryview->ctree);
 	MsgInfo *msginfo;
 	gchar *cmdline = NULL;
@@ -4469,7 +4469,7 @@ void summary_print(SummaryView *summaryview)
 	g_free(msg);
 
 	if (clist->selection == NULL) return;
-#ifndef USE_GNOMEPRINT
+#if !defined(USE_GNOMEPRINT) && !GTK_CHECK_VERSION(2,10,0)
 	cmdline = input_dialog(_("Print"),
 			       _("Enter the print command line:\n"
 				 "('%s' will be replaced with file name)"),

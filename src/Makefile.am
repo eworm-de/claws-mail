@@ -129,6 +129,7 @@ claws_mail_SOURCES = \
 	prefs_themes.c \
 	prefs_toolbar.c \
 	prefs_wrapping.c \
+	printing.c \
 	privacy.c \
 	procheader.c \
 	procmime.c \
@@ -275,6 +276,7 @@ claws_mailinclude_HEADERS = \
 	prefs_themes.h \
 	prefs_toolbar.h \
 	prefs_wrapping.h \
+	printing.h \
 	privacy.h \
 	procheader.h \
 	procmime.h \

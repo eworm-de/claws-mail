@@ -98,6 +98,7 @@
 #include "textview.h"
 #include "imap.h"
 #include "socket.h"
+#include "printing.h"
 
 #define AC_LABEL_WIDTH	240
 
@@ -170,6 +171,12 @@ static void empty_trash_cb	 (MainWindow	*mainwin,
 static void save_as_cb		 (MainWindow	*mainwin,
 				  guint		 action,
 				  GtkWidget	*widget);
+#if GTK_CHECK_VERSION(2,10,0) && !defined(USE_GNOMEPRINT)
+static void page_setup_cb	 (MainWindow	*mainwin,
+				  guint		 action,
+				  GtkWidget	*widget);
+#endif
+
 static void print_cb		 (MainWindow	*mainwin,
 				  guint		 action,
 				  GtkWidget	*widget);
@@ -536,6 +543,9 @@ static GtkItemFactoryEntry mainwin_entries[] =
 	{N_("/_File/Empty all _Trash folders"),	"<shift>D", empty_trash_cb, 0, NULL},
 	{N_("/_File/---"),			NULL, NULL, 0, "<Separator>"},
 	{N_("/_File/_Save as..."),		"<control>S", save_as_cb, 0, NULL},
+#if GTK_CHECK_VERSION(2,10,0) && !defined(USE_GNOMEPRINT)
+	{N_("/_File/Page setup..."),		NULL, page_setup_cb, 0, NULL},
+#endif
 	{N_("/_File/_Print..."),		"<control>P", print_cb, 0, NULL},
 	{N_("/_File/---"),			NULL, NULL, 0, "<Separator>"},
 	{N_("/_File/_Work offline"),		"<control>W", toggle_work_offline_cb, 0, "<ToggleItem>"},
@@ -3375,6 +3385,19 @@ static void print_cb(MainWindow *mainwin, guint action, GtkWidget *widget)
 {
 	summary_print(mainwin->summaryview);
 }
+
+#if GTK_CHECK_VERSION(2,10,0) && !defined(USE_GNOMEPRINT)
+static void page_setup_cb(MainWindow *mainwin, guint action, GtkWidget *widget)
+{
+	MainWindow *mainwindow;
+	GtkWindow *win;
+
+	mainwindow = mainwindow_get_mainwindow();
+	win = (mainwindow ? GTK_WINDOW(mainwindow->window) : NULL);
+
+	printing_page_setup(win);
+}
+#endif
 
 static void app_exit_cb(MainWindow *mainwin, guint action, GtkWidget *widget)
 {

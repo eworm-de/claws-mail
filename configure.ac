@@ -11,7 +11,7 @@ MINOR_VERSION=0
 MICRO_VERSION=1
 INTERFACE_AGE=0
 BINARY_AGE=0
-EXTRA_VERSION=1
+EXTRA_VERSION=2
 EXTRA_RELEASE=
 EXTRA_GTK2_VERSION=
 
@@ -843,12 +843,15 @@ fi
 AM_CONDITIONAL(CLAWS_LIBETPAN, test "x$libetpan_result" = "xyes")
 
 
-dnl Libgnomeprint
+dnl Printing support. GTK will be used if present and gnomeprint is not explicitely enabled
+PKG_CHECK_MODULES(GTK210, gtk+-2.0 >= 2.10, ac_cv_have_gtk210=yes, ac_cv_have_gtk210=no)
 AC_MSG_CHECKING([whether to use libgnomeprint])
 AC_ARG_ENABLE(gnomeprint,
 	[  --disable-gnomeprint		disable libgnomeprint support],
-	[ac_cv_enable_gnomeprint=$enableval], [ac_cv_enable_gnomeprint=yes])
-if test x$ac_cv_enable_gnomeprint = xyes; then
+	[ac_cv_enable_gnomeprint=$enableval], [ac_cv_enable_gnomeprint=auto])
+if test x$ac_cv_enable_gnomeprint = xyes \
+   	-o \( x$ac_cv_enable_gnomeprint = xauto \
+	   -a x$ac_cv_have_gtk210 = xno \); then
 	AC_MSG_RESULT(yes)
 	PKG_CHECK_MODULES(GNOMEPRINT, libgnomeprint-2.2 libgnomeprintui-2.2,
 			  ac_cv_enable_gnomeprint=yes, ac_cv_enable_gnomeprint=no)
@@ -860,6 +863,7 @@ if test x$ac_cv_enable_gnomeprint = xyes; then
 		AC_MSG_WARN([*** using built-in printing support ***])
 	fi
 else
+	ac_cv_enable_gnomeprint=no
 	AC_MSG_RESULT(no)
 fi
 AM_CONDITIONAL(CLAWS_GNOMEPRINT, test x"$ac_cv_enable_gnomeprint" = x"yes")

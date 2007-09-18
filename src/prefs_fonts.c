@@ -44,7 +44,7 @@ typedef struct _FontsPage
 
 	GtkWidget *entry_folderviewfont;
 	GtkWidget *entry_messageviewfont;
-#ifdef USE_GNOMEPRINT
+#if defined(USE_GNOMEPRINT) || GTK_CHECK_VERSION(2,10,0)
 	GtkWidget *print_checkbutton;
 	GtkWidget *entry_messageprintfont;
 #endif
@@ -59,7 +59,7 @@ static void prefs_fonts_create_widget(PrefsPage *_page, GtkWindow *window,
 	GtkWidget *entry_folderviewfont;
 	GtkWidget *entry_messageviewfont;
 	GtkWidget *tmplabel;
-#ifdef USE_GNOMEPRINT
+#if defined(USE_GNOMEPRINT) || GTK_CHECK_VERSION(2,10,0)
 	GtkWidget *entry_messageprintfont;
 	GtkWidget *print_checkbutton;
 #endif
@@ -105,7 +105,7 @@ static void prefs_fonts_create_widget(PrefsPage *_page, GtkWindow *window,
 			 (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
 			 (GtkAttachOptions) (0), 0, 0);
 
-#ifdef USE_GNOMEPRINT
+#if defined(USE_GNOMEPRINT) || GTK_CHECK_VERSION(2,10,0)
 	/* print check button */
 	print_checkbutton = gtk_check_button_new_with_label(_("Use different font for printing"));
 	gtk_widget_show(print_checkbutton);
@@ -146,7 +146,7 @@ static void prefs_fonts_create_widget(PrefsPage *_page, GtkWindow *window,
 	prefs_fonts->window			= GTK_WIDGET(window);
 	prefs_fonts->entry_folderviewfont	= entry_folderviewfont;
 	prefs_fonts->entry_messageviewfont	= entry_messageviewfont;
-#ifdef USE_GNOMEPRINT
+#if defined(USE_GNOMEPRINT) || GTK_CHECK_VERSION(2,10,0)
 	prefs_fonts->entry_messageprintfont	= entry_messageprintfont;
 	prefs_fonts->print_checkbutton	   	= print_checkbutton;
 #endif
@@ -170,7 +170,7 @@ static void prefs_fonts_save(PrefsPage *_page)
 	prefs_common.textfont   = g_strdup(gtk_font_button_get_font_name
 		(GTK_FONT_BUTTON(fonts->entry_messageviewfont)));
 
-#ifdef USE_GNOMEPRINT
+#if defined(USE_GNOMEPRINT) || GTK_CHECK_VERSION(2,10,0)
 	g_free(prefs_common.printfont);		
 	prefs_common.printfont   = g_strdup(gtk_font_button_get_font_name
 		(GTK_FONT_BUTTON(fonts->entry_messageprintfont)));

@@ -1,3 +1,17 @@
+2007-09-18 [colin]	3.0.1cvs2
+
+	* src/Makefile.am
+	* src/mainwindow.c
+	* src/messageview.c
+	* src/messageview.h
+	* src/prefs_ext_prog.c
+	* src/prefs_fonts.c
+	* src/printing.c
+	* src/printing.h
+	* src/summaryview.c
+		Use GtkPrintOperation by default on GTK+ >= 2.10
+		Patch by Holger Berndt <hb@claws-mail.org>
+
 2007-09-18 [paul]	3.0.1cvs1
 
 	* NEWS
