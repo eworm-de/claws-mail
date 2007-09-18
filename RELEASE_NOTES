@@ -1,4 +1,4 @@
-3rd September 2007                                   Claws Mail 3.0.0
+17th September 2007                                  Claws Mail 3.0.1
 
 		    CLAWS MAIL  RELEASE NOTES
                     http://www.claws-mail.org
@@ -6,161 +6,31 @@
 Claws Mail is a GTK+ based, user-friendly, lightweight, and fast 
 email client.
 
-Notes for this release:
-~~~~~~~~~~~~~~~~~~~~~~~
-
-* Claws Mail is now licensed under GPLv3 or later.
-
-
 New in this release:
 ~~~~~~~~~~~~~~~~~~~~
 
-* added Tags feature
-  Tags are arbitrary labels that can be applied to messages. It is
-  possible to create, edit, remove Tags; apply them to mails;
-  filter on Tags or Tag presence; apply or unset Tags via Filtering
-  actions; reference Tags in reply Templates.
-
-* Threads can now be sorted by most recent message
-  /View/Sort/By thread date
-
-* Added "/View/Show or Hide/Column headers"
-
-* Added 'watch thread' feature
-	
-* Enabled the running of folder Processing rules on demand
-
-* Added options to stop/enable writing logs to disc, see Logging
-  page of preferences
-
-* IMAP and News: Implement age-based caching: allow the specifying 
-  of a threshold for the offline synchronisation feature, and whether 
-  old cached bodies should be removed. Accessible from the Folder
-  Properties.
-
-* IMAP: Made multiple copy, (in the same IMAP account), faster by
-  matching source/destination message UIDs.
-	
-* LDAP: Ability to edit all Person attributes
-
-* Nicer layout of the message part icons
-
-* Speed up and clean up rendering of larger msgs
-
-* Use progress bar when sending messages
-
-* Made mainwindow's /Help/Manual point to the remote copy if the
-  local copy doesn't exist
-
-* Replaced some deprecated widgets
-
-* Enabled changing the emphasis color used to highlight the
-  newsreader/x-mailer header value when it matches our preferred
-  mail agent, (hidden pref 'emphasis_color' added to clawsrc).
-
-* tools/mew2claws-mail.pl
-  Added new script that imports a Mew address book
-
-* tools/popfile-link.sh
-  Added a new script that will open selected messages in
-  POPFile control center, in order to change the message
-  status.
-
-* Updated the manual
-
-* Check that Dillo's installed when loading the Dillo Browser
-  plugin
-
-* Maemo improvements:
-	o Automatically choose the correct application
-	  to open parts
-	o Better way to notify of new mails
-	o Destroy messageview after trashing mail
-	o Simplified layout
-	o Better toolbars, removal of CTree headers
-	o Add a specific icon to go back to folder list
-	o Improvements to the Wizard, About and icon legend dialogues
-	o add an easy way to store data (mails and IMAP/NNTP caches)
-	  on one of the SD cards, and protect against unmounts if
-	  needed
-	o plug the online/offline system into maemo's interfaces to
-	  have Claws automatically switch according to the system
-	  status (on IT OS 2007)
-	o use HildonBanners to display status messages
-	o force layout to be Small screen
-	o put the progress bar in the toolbar
-
-* Updated Brazilian Portuguese, Bulgarian, Catalan, Finnish, French,
-  German, Hungarian, Italian, Polish, Russian, Simplified Chinese and
-  Slovak translations. 
-
-
-* Bugfixes:
-	o bug 1224, 'The process of Replying to emails with large
-		     attachments seems unreasonably long...'
-	o bug 1246, 'compose becomes increasingly slow replying to
-		     complex emails'
-	o bug 1261, '[DE] coloring messages in overview keys are
-		     not localised'
-	o bug 1267, 'printing mutliple messages opens one message-
-		     dialog after the other'
-	o bug 1275, 'auto-saved draft messages not always being
-		     removed' 
-	o bug 1284, 'The html -> text  converter ignores entities'
-	o bug 1286, 'Can't move a folder into a "Folders Only"
-		     folder'
-	o bug 1287, 'Compile time problem on Solaris (nexenta
-		     gnu/Solaris) utils.c'
-	o bug 1292, 'CM crashes on writing mail'
-	o bug 1290, 'Claws Mail crashes if too little memory when 
-		     rebuilding folder tree'
-	o bug 1293, 'LDAP address book not working'
-	o fix processing progressbar
-	o fix re-opening of all composing messages that were opened
-	  when closing the previous instance
-	o fix toolbar prefs crash when no actions exist
-	o fix typos around long form expressions in the quote lexer.
-	o Quicksearch: Make search run on GDK_KP_Enter too
-	o fix missing timestamp update on MH source folder when
-	  moving mails
-	o fix 'o' (Open) shortcut on MIME parts
-	o fix two vCard-related crashes
-	o fix threads use on BSDs
-	o copy all account preferences in account_clone() - some
-		were missing.
-	o fix 'List URLS'
-	o Fix format string vulnerability
-	o Fix all potential misuses of format-string functions
-	o Address Book: Contacts are now locale-aware sorted in the
-	  address book
-	o use suitable defaults for outbox,
-		queue, drafts and trash folders
-	o fix loss of subfolders properties when renaming a folder
-	o fix Quicksearch's Sticky mode
-	o fix signature replacement when it's been wrapped
-	o fix cursor offset when quote contains UTF-8 chars
-	o fix coloring of pastes as quotation
-	o fix wizard crash when Mailbox dir already exists
-	o IMAP: fix timeout setting (requires libetpan 0.52)
-	o IMAP: better scanning (NOOP instead of CLOSE/SELECT)
-	o IMAP: fix unwanted creation of libetpan's stream dump file
-	o LDAP: fix possible crash on cache invalidation
-	o LDAP: fix port being reset to 636 on SSL
-	o LDAP: fix wrong "Connected successfully to server".
-	o Maemo: layout fixes
-	o Maemo: fix auto-completion
-	o Maemo: fix sticking statusbars
-	o Maemo: fix the strange "top_application" info at startup.
-	o Maemo: fix crash on first launch
-	o Maemo: don't opened selected folder when clicking on white
-	  space
-	o Maemo: make Esc close messageviews
-	o Maemo: fix message scrolling to the end on opening
-	o Maemo: fix reopening same message
-	o Maemo: fix opening of mails from keypad in Sent folders
-	o Maemo: fix adjustments changes
-	o Refresh window when processing
-	o Windows: never pass NULL pointers for %s substitutions
+* Bug fixes:
+	o bug 1308, 'Claws deletes folderlist.xml after fetching mail
+		     short after start-up'
+	o bug 1311, 'Wrong arrow position while moving message into
+		     folder when column headers hidden'
+	o fix build without USE_LDAP_TLS
+	o Accounts list: fix "Local" protocol not shown when
+	  USE_OPENSSL is set.
+	o Tags: fixed issues with tags with spaces, and renaming tags
+	o Accounts list: Show protocol "SMTP" and the appropriate
+	  server for send-only accounts
+	o Accounts list: show "-" instead of "" when no value is
+	  relevant
+	o do not allow locked msgs to be deleted, even by filtering
+	  or processing
+	o Remove Generate Message-ID option. We need this on some
+	  IMAP servers.
+	o Show error message in the GUI if image can't be loaded
+	o Maemo: distinguish various statusbar messages,
+                in order to display only the most important.
+	o Maemo: fix statusbar/window mismatch
+	o Maemo: fix scrolling to cursor
 
 For further details of the numbered bugs listed above consult
 http://www.thewildbeast.co.uk/claws-mail/bugzilla/index.cgi

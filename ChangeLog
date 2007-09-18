@@ -1,3 +1,11 @@
+2007-09-18 [paul]	3.0.1cvs1
+
+	* NEWS
+	* README
+	* RELEASE_NOTES
+	* configure.ac
+		bump up version number following stable release
+
 2007-09-16 [colin]	3.0.0cvs18
 
 	* src/folder.c
