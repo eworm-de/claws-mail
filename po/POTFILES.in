@@ -126,6 +126,7 @@ src/prefs_template.c
 src/prefs_themes.c
 src/prefs_toolbar.c
 src/prefs_wrapping.c
+src/printing.c
 src/privacy.c
 src/procmime.c
 src/procmsg.c

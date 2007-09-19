@@ -1,6 +1,6 @@
 /* Claws Mail -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 2007 Holger Berndt <hb@claws-mail.org> 
- * and the Claws Mail team
+ * Copyright (C) 2007 Holger Berndt <hb@claws-mail.org>,
+ * Colin Leroy <colin@colino.net>, and the Claws Mail team
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -34,25 +34,59 @@
 #include <gtk/gtk.h>
 #include <pango/pango.h>
 #include <string.h>
+#include <math.h>
 
 typedef struct {
   PangoLayout *layout;
   PangoContext *pango_context;
   char *text;
   GList *page_breaks;
+  guint npages;
   GtkTextBuffer *buffer;
   gint sel_start;
   gint sel_end;
   GHashTable *images;
   gint img_cnt;
-  gboolean print_started;
-  gchar *old_print_preview;
+  gboolean is_preview;
 } PrintData;
 
+typedef struct {
+  GtkPrintOperation *op;
+  GtkPrintOperationPreview *preview;
+  GtkWidget         *area;
+  PrintData         *print_data;
+  gdouble           dpi_x;
+  gdouble           dpi_y;
+  GtkWidget         *page_nr_label;
+  GList             *pages_to_print;
+  GList             *current_page;
+  GtkWidget *first;
+  GtkWidget *next;
+  GtkWidget *previous;
+  GtkWidget *last;
+  GtkWidget *close;
+  gboolean rendering;
+} PreviewData;
 
 /* callbacks */
-static void cb_begin_print(GtkPrintOperation*, GtkPrintContext*, gpointer);
-static void cb_draw_page(GtkPrintOperation*, GtkPrintContext*, gint, gpointer);
+static void     cb_begin_print(GtkPrintOperation*, GtkPrintContext*, gpointer);
+static void     cb_draw_page(GtkPrintOperation*, GtkPrintContext*, gint,
+			     gpointer);
+static gboolean cb_preview(GtkPrintOperation*, GtkPrintOperationPreview*,
+			   GtkPrintContext*, GtkWindow*, gpointer);
+static void     cb_preview_destroy(GtkWindow*, gpointer);
+static gboolean cb_preview_close(GtkWidget*, GdkEventAny*, gpointer);
+static void     cb_preview_size_allocate(GtkWidget*, GtkAllocation*);
+static void     cb_preview_ready(GtkPrintOperationPreview*,
+				 GtkPrintContext*, gpointer);
+static gboolean cb_preview_expose(GtkWidget*, GdkEventExpose*, gpointer);
+static void     cb_preview_got_page_size(GtkPrintOperationPreview*,
+					 GtkPrintContext*,
+					 GtkPageSetup*, gpointer);
+static void     cb_preview_go_first(GtkButton*, gpointer);
+static void     cb_preview_go_previous(GtkButton*, gpointer);
+static void     cb_preview_go_next(GtkButton*, gpointer);
+static void     cb_preview_go_last(GtkButton*, gpointer);
 
 /* variables */
 static GtkPrintSettings *settings   = NULL;
@@ -63,166 +97,12 @@ static void     printing_layout_set_text_attributes(PrintData*, GtkPrintContext 
 static gboolean printing_is_pango_gdk_color_equal(PangoColor*, GdkColor*); 
 static gint     printing_text_iter_get_offset_bytes(PrintData *, const GtkTextIter*);
 
-static gboolean claws_draw_page(GtkPrintOperation *op, GtkPrintContext *context, gint page_nr, gpointer user_data);
-
 #define PREVIEW_SCALE 72
-static void preview_destroy (GtkWindow *window, GtkPrintOperationPreview *preview)
+
+static void free_pixbuf(gpointer key, gpointer value, gpointer data)
 {
-  gtk_print_operation_preview_end_preview (preview);
-}
-
-static gboolean preview_close(GtkWidget *widget, GdkEventAny *event,
-				 gpointer data)
-{
-	if (event->type == GDK_KEY_PRESS)
-		if (((GdkEventKey *)event)->keyval != GDK_Escape)
-			return FALSE;
-
-	gtk_widget_destroy(widget);
-	return FALSE;
-}
-
-static void preview_size_allocate_cb(GtkWidget *widget,
-					 GtkAllocation *allocation)
-{
-	g_return_if_fail(allocation != NULL);
-
-	prefs_common.print_previewwin_width = allocation->width;
-	prefs_common.print_previewwin_height = allocation->height;
-}
-
-static gboolean cb_preview (GtkPrintOperation        *operation,
-                                     GtkPrintOperationPreview *preview,
-                                     GtkPrintContext          *context,
-                                     GtkWindow                *parent,
-                                     PrintData                *print_data)
-{
-  GtkPageSetup    *page_setup = gtk_print_context_get_page_setup (context);
-  GtkPaperSize    *paper_size;
-  gdouble          paper_width;
-  gdouble          paper_height;
-  gdouble          top_margin;
-  gdouble          bottom_margin;
-  gdouble          left_margin;
-  gdouble          right_margin;
-  gint             preview_width;
-  gint             preview_height;
-  gint num_pages = 0, i = 0;
-  cairo_t         *cr;
-  cairo_surface_t *surface;
-  GtkPageOrientation orientation;
-  cairo_status_t   status;
-  gchar           *fname;
-  GtkWidget *dialog = NULL;
-  GtkWidget *image, *notebook, *scrolled_window;
-  GSList *pages = NULL, *cur;
-  static GdkGeometry geometry;
-
-  paper_size      = gtk_page_setup_get_paper_size    (page_setup);
-  paper_width     = gtk_paper_size_get_width         (paper_size, GTK_UNIT_INCH);
-  paper_height    = gtk_paper_size_get_height        (paper_size,  GTK_UNIT_INCH);
-  top_margin      = gtk_page_setup_get_top_margin    (page_setup, GTK_UNIT_INCH);
-  bottom_margin   = gtk_page_setup_get_bottom_margin (page_setup, GTK_UNIT_INCH);
-  left_margin     = gtk_page_setup_get_left_margin   (page_setup, GTK_UNIT_INCH);
-  right_margin    = gtk_page_setup_get_right_margin  (page_setup, GTK_UNIT_INCH);
-
-  /* the print context does not have the page orientation, it is transformed */
-  orientation     = gtk_page_setup_get_orientation (page_setup);
-
-  if (orientation == GTK_PAGE_ORIENTATION_PORTRAIT ||
-      orientation == GTK_PAGE_ORIENTATION_REVERSE_PORTRAIT)
-    {
-      preview_width  = PREVIEW_SCALE * paper_width;
-      preview_height = PREVIEW_SCALE * paper_height;
-    }
-  else
-    {
-      preview_width  = PREVIEW_SCALE * paper_height;
-      preview_height = PREVIEW_SCALE * paper_width;
-    }
-
-
-  num_pages = 1;  
-  for (i = 0; i < num_pages; i++) {
-    surface = cairo_image_surface_create (CAIRO_FORMAT_RGB24,
-                                              preview_width, preview_height);
-
-    if (CAIRO_STATUS_SUCCESS != cairo_surface_status (surface)) {
-      g_message ("Unable to create preview (not enough memory?)");
-      return TRUE;
-    }
-
-    cr = cairo_create (surface);
-    gtk_print_context_set_cairo_context (context, cr, PREVIEW_SCALE, PREVIEW_SCALE);
-
-    /* fill page with white */
-    cairo_set_source_rgb (cr, 1, 1, 1);
-    cairo_new_path (cr);
-    cairo_rectangle (cr, 0, 0, preview_width, preview_height);
-    cairo_fill (cr);
-
-    cairo_translate (cr, left_margin * PREVIEW_SCALE, right_margin * PREVIEW_SCALE);
-
-    claws_draw_page (operation, context, i, print_data);
-    num_pages = g_list_length(print_data->page_breaks) + 1;
-
-    fname = get_tmp_file();
-    status = cairo_surface_write_to_png (surface, fname);
-    cairo_destroy (cr);
-    cairo_surface_destroy (surface);
-    if (status == CAIRO_STATUS_SUCCESS) {
-	image = gtk_image_new_from_file (fname);
-	g_unlink (fname);
-	g_free (fname);
-	pages = g_slist_prepend(pages, image);
-	debug_print("added one page\n");
-    }
-  }
-  pages = g_slist_reverse(pages);
-  
-  dialog = gtkut_window_new(GTK_WINDOW_TOPLEVEL, "print_preview");
-
-  if (!geometry.min_height) {
-	  geometry.min_width = 600;
-	  geometry.min_height = 400;
-  }
-
-  gtk_window_set_geometry_hints(GTK_WINDOW(dialog), NULL, &geometry,
-				GDK_HINT_MIN_SIZE);
-  gtk_widget_set_size_request(dialog, prefs_common.print_previewwin_width,
-			      prefs_common.print_previewwin_height);
-
-  gtk_window_set_title(GTK_WINDOW(dialog), _("Print preview"));
-  notebook = gtk_notebook_new();
-  gtk_container_add(GTK_CONTAINER(dialog), notebook);
-  i = 0;
-  for (cur = pages; cur; cur = cur->next) {
-    image = (GtkImage *)cur->data;
-    if (gtk_print_operation_preview_is_selected(preview, i)) {
-      scrolled_window = gtk_scrolled_window_new(NULL, NULL);
-      gtk_scrolled_window_set_policy(GTK_SCROLLED_WINDOW(scrolled_window),
-				       GTK_POLICY_AUTOMATIC,
-				       GTK_POLICY_AUTOMATIC);
-      gtk_scrolled_window_add_with_viewport
-	      (GTK_SCROLLED_WINDOW(scrolled_window),
-	       image);
-      debug_print("page %d sel\n", i);
-      gtk_notebook_append_page(GTK_NOTEBOOK(notebook), scrolled_window, NULL);
-    }
-    i++;
-  }
-  g_slist_free(pages);
-  
-  gtk_widget_show_all(dialog);
-  
-  g_signal_connect (dialog, "destroy",
-                    G_CALLBACK (preview_destroy), preview);
-  g_signal_connect (dialog, "key_press_event",
-                    G_CALLBACK (preview_close), preview);
- g_signal_connect(G_OBJECT(dialog), "size_allocate",
-		  G_CALLBACK(preview_size_allocate_cb), NULL);
-  
-  return TRUE;
+  PangoAttrShape *attr = (PangoAttrShape *) value;
+  g_object_unref(G_OBJECT(attr->data));
 }
 
 void printing_print(GtkTextView *text_view, GtkWindow *parent, gint sel_start, gint sel_end)
@@ -263,10 +143,12 @@ void printing_print(GtkTextView *text_view, GtkWindow *parent, gint sel_start, g
     gtk_print_settings_set_duplex(settings, prefs_common.print_use_duplex);
   }
   if (page_setup == NULL) {
-    GtkPaperSize *paper = gtk_paper_size_new(prefs_common.print_paper_type);
     page_setup = gtk_page_setup_new();
-    gtk_page_setup_set_paper_size(page_setup, paper);
-    gtk_paper_size_free(paper);
+    if (prefs_common.print_paper_type && *prefs_common.print_paper_type) {
+      GtkPaperSize *paper = gtk_paper_size_new(prefs_common.print_paper_type);
+      gtk_page_setup_set_paper_size(page_setup, paper);
+      gtk_paper_size_free(paper);
+    }
     gtk_page_setup_set_orientation(page_setup, prefs_common.print_paper_orientation);
   }
   
@@ -300,19 +182,13 @@ void printing_print(GtkTextView *text_view, GtkWindow *parent, gint sel_start, g
     prefs_common.print_use_duplex = gtk_print_settings_get_duplex(settings);
   }
 
+  g_hash_table_foreach(print_data->images, free_pixbuf, NULL);
   g_hash_table_destroy(print_data->images);
   if(print_data->text)
     g_free(print_data->text);
   g_list_free(print_data->page_breaks);
   if(print_data->layout)
     g_object_unref(print_data->layout);
-
-  if (print_data->old_print_preview) {
-    g_object_set(gtk_settings_get_default(),
-    	          "gtk-print-preview-command", print_data->old_print_preview, NULL);
-    g_free(print_data->old_print_preview);
-    print_data->old_print_preview = NULL;
-  }
 
   g_free(print_data);
 
@@ -332,10 +208,12 @@ void printing_page_setup(GtkWindow *parent)
     gtk_print_settings_set_duplex(settings, prefs_common.print_use_duplex);
   }
   if (page_setup == NULL) {
-    GtkPaperSize *paper = gtk_paper_size_new(prefs_common.print_paper_type);
     page_setup = gtk_page_setup_new();
-    gtk_page_setup_set_paper_size(page_setup, paper);
-    gtk_paper_size_free(paper);
+    if (prefs_common.print_paper_type && *prefs_common.print_paper_type) {
+      GtkPaperSize *paper = gtk_paper_size_new(prefs_common.print_paper_type);
+      gtk_page_setup_set_paper_size(page_setup, paper);
+      gtk_paper_size_free(paper);
+    }
     gtk_page_setup_set_orientation(page_setup, prefs_common.print_paper_orientation);
   }
 
@@ -350,6 +228,287 @@ void printing_page_setup(GtkWindow *parent)
   prefs_common.print_paper_type = g_strdup(gtk_paper_size_get_name(
   		gtk_page_setup_get_paper_size(page_setup)));
   prefs_common.print_paper_orientation = gtk_page_setup_get_orientation(page_setup);
+}
+
+static gboolean cb_preview(GtkPrintOperation        *operation,
+			   GtkPrintOperationPreview *preview,
+			   GtkPrintContext          *context,
+			   GtkWindow                *parent,
+			   gpointer                 data)
+{
+  PrintData *print_data;
+  cairo_t *cr;
+  PreviewData *preview_data;
+  GtkWidget *vbox;
+  GtkWidget *hbox;
+  GtkWidget *scrolled_window;
+  GtkWidget *da;
+  GtkWidget *page;
+  static GdkGeometry geometry;
+  GtkWidget *dialog = NULL;
+
+  debug_print("Creating internal print preview\n");
+
+  print_data = (PrintData*) data;
+  print_data->is_preview = TRUE;
+
+  preview_data = g_new0(PreviewData,1);
+  preview_data->print_data = print_data;
+  preview_data->op = g_object_ref(operation);
+  preview_data->preview = preview;
+
+  /* Window */
+  dialog = gtkut_window_new(GTK_WINDOW_TOPLEVEL, "print_preview");
+  if(!geometry.min_height) {
+    geometry.min_width = 600;
+    geometry.min_height = 400;
+  }
+  gtk_window_set_geometry_hints(GTK_WINDOW(dialog), NULL, &geometry,
+				GDK_HINT_MIN_SIZE);
+  gtk_widget_set_size_request(dialog, prefs_common.print_previewwin_width,
+			      prefs_common.print_previewwin_height);
+  gtk_window_set_title(GTK_WINDOW(dialog), _("Print preview"));
+
+  /* vbox */
+  vbox = gtk_vbox_new(FALSE, 0);
+  gtk_container_add(GTK_CONTAINER(dialog), vbox);
+  
+  /* toolbar */
+  hbox = gtk_hbox_new (FALSE, 0);
+  gtk_box_pack_start(GTK_BOX(vbox), hbox, FALSE, FALSE, 0);
+  preview_data->first = gtk_button_new_from_stock(GTK_STOCK_GOTO_FIRST);
+  gtk_box_pack_start(GTK_BOX(hbox), preview_data->first, FALSE, FALSE, 0);
+  preview_data->previous = gtk_button_new_from_stock(GTK_STOCK_GO_BACK);
+  gtk_box_pack_start(GTK_BOX(hbox), preview_data->previous, FALSE, FALSE, 0);
+  page = gtk_label_new("");
+  gtk_widget_set_size_request(page, 100, -1);
+  preview_data->page_nr_label = page;
+  gtk_box_pack_start(GTK_BOX(hbox), page, FALSE, FALSE, 0);
+  preview_data->next = gtk_button_new_from_stock(GTK_STOCK_GO_FORWARD);
+  gtk_box_pack_start(GTK_BOX(hbox), preview_data->next, FALSE, FALSE, 0);
+  preview_data->last = gtk_button_new_from_stock(GTK_STOCK_GOTO_LAST);
+  gtk_box_pack_start(GTK_BOX(hbox), preview_data->last, FALSE, FALSE, 0);
+  preview_data->close = gtk_button_new_from_stock(GTK_STOCK_CLOSE);
+  gtk_box_pack_start(GTK_BOX(hbox), preview_data->close, FALSE, FALSE, 0);
+
+  /* Drawing area */
+  scrolled_window = gtk_scrolled_window_new(NULL, NULL);
+  gtk_scrolled_window_set_policy(GTK_SCROLLED_WINDOW(scrolled_window),
+				 GTK_POLICY_AUTOMATIC,
+				 GTK_POLICY_AUTOMATIC);
+  gtk_box_pack_start(GTK_BOX(vbox), scrolled_window, TRUE, TRUE, 0);
+  da = gtk_drawing_area_new();
+  gtk_widget_set_double_buffered(da, FALSE);
+  gtk_widget_set_size_request(GTK_WIDGET(da), 400, 500);
+  gtk_scrolled_window_add_with_viewport(GTK_SCROLLED_WINDOW(scrolled_window),
+					da);
+  gtk_widget_realize(da);
+  preview_data->area = da;
+
+  /* cairo context */
+  cr = gdk_cairo_create(da->window);
+  gtk_print_context_set_cairo_context(context, cr, PREVIEW_SCALE, PREVIEW_SCALE);
+  cairo_destroy(cr);
+
+  /* signals */
+  g_signal_connect(dialog, "key_press_event",
+		   G_CALLBACK(cb_preview_close), preview_data);
+  g_signal_connect(dialog, "size_allocate",
+		   G_CALLBACK(cb_preview_size_allocate), NULL);
+  g_signal_connect(dialog, "destroy",G_CALLBACK(cb_preview_destroy),
+		   preview_data);
+  g_signal_connect_swapped(preview_data->close, "clicked",
+			   G_CALLBACK(gtk_widget_destroy), dialog);
+  g_signal_connect(preview_data->first, "clicked",
+		   G_CALLBACK(cb_preview_go_first), preview_data);
+  g_signal_connect(preview_data->previous, "clicked",
+		   G_CALLBACK(cb_preview_go_previous), preview_data);
+  g_signal_connect(preview_data->next, "clicked",
+		   G_CALLBACK(cb_preview_go_next), preview_data);
+  g_signal_connect(preview_data->last, "clicked",
+		   G_CALLBACK(cb_preview_go_last), preview_data);
+  g_signal_connect(preview, "ready", G_CALLBACK(cb_preview_ready),
+		   preview_data);
+  g_signal_connect(preview, "got-page-size",
+		   G_CALLBACK(cb_preview_got_page_size), preview_data);
+  gtk_widget_show_all(dialog);
+  return TRUE;
+}
+
+static void cb_preview_destroy(GtkWindow *window, gpointer data)
+{
+  PreviewData *preview_data;
+  preview_data = (PreviewData*) data;
+
+  if (preview_data->rendering)
+    return;
+  debug_print("Preview window destroyed\n");
+
+  gtk_print_operation_preview_end_preview(preview_data->preview);
+  g_object_unref(preview_data->op);
+  g_list_free(preview_data->pages_to_print);
+
+  g_free(preview_data);
+}
+
+static gboolean cb_preview_close(GtkWidget *widget, GdkEventAny *event,
+				 gpointer data)
+{
+  PreviewData *preview_data = (PreviewData *)data;
+  if(event->type == GDK_KEY_PRESS)
+    if(((GdkEventKey *)event)->keyval != GDK_Escape)
+      return FALSE;
+  if (preview_data->rendering)
+    return FALSE; 
+  gtk_widget_destroy(widget);
+  return FALSE;
+}
+
+static void cb_preview_size_allocate(GtkWidget *widget,
+				     GtkAllocation *allocation)
+{
+  g_return_if_fail(allocation != NULL);
+
+  prefs_common.print_previewwin_width = allocation->width;
+  prefs_common.print_previewwin_height = allocation->height;
+}
+
+static void cb_preview_ready(GtkPrintOperationPreview *preview,
+			     GtkPrintContext          *context,
+			     gpointer                  data)
+{
+  PreviewData *preview_data;
+  gint iPage;
+  preview_data = (PreviewData*) data;
+  debug_print("preview_ready %d\n", preview_data->print_data->npages);
+  
+  for(iPage = 0; iPage < (preview_data->print_data->npages); iPage++) {
+    if(gtk_print_operation_preview_is_selected(preview_data->preview, iPage)) {
+      preview_data->pages_to_print = 
+	g_list_prepend(preview_data->pages_to_print, GINT_TO_POINTER(iPage));
+      debug_print("want to print page %d\n",iPage+1);
+    }
+  }
+
+  preview_data->pages_to_print = g_list_reverse(preview_data->pages_to_print);
+  preview_data->current_page = preview_data->pages_to_print;
+
+  g_signal_connect(preview_data->area, "expose_event",
+		   G_CALLBACK(cb_preview_expose),
+		   preview_data);
+
+  gtk_widget_queue_draw(preview_data->area);
+}
+
+static void cb_preview_got_page_size(GtkPrintOperationPreview *preview,
+				     GtkPrintContext          *context,
+				     GtkPageSetup             *page_setup,
+				     gpointer                  data)
+{
+  PreviewData *preview_data;
+  GtkPageOrientation orientation;
+  GtkPaperSize *paper_size;
+  gdouble preview_width;
+  gdouble preview_height;
+  gdouble paper_width;
+  gdouble paper_height;
+  cairo_t *cr;
+  gdouble dpi_x;
+  gdouble dpi_y;
+
+  preview_data = (PreviewData*) data;
+  debug_print("got_page_size\n");
+  orientation  = gtk_page_setup_get_orientation(page_setup);
+  paper_size   = gtk_page_setup_get_paper_size(page_setup);
+  paper_width  = gtk_paper_size_get_width(paper_size, GTK_UNIT_INCH);
+  paper_height = gtk_paper_size_get_height(paper_size,  GTK_UNIT_INCH);
+
+  if((orientation == GTK_PAGE_ORIENTATION_PORTRAIT) ||
+     (orientation == GTK_PAGE_ORIENTATION_REVERSE_PORTRAIT)) {
+    preview_width  = paper_width;
+    preview_height = paper_height;
+  }
+  else {
+    preview_width  = paper_height;
+    preview_height = paper_width;
+  }
+
+  cr = gdk_cairo_create(preview_data->area->window);  
+
+  dpi_x = preview_data->area->allocation.width/preview_width;
+  dpi_y = preview_data->area->allocation.height/preview_height;
+
+  if((fabs(dpi_x - preview_data->dpi_x) > 0.001) ||
+     (fabs (dpi_y - preview_data->dpi_y) > 0.001))   {
+    gtk_print_context_set_cairo_context(context, cr, dpi_x, dpi_y);
+    preview_data->dpi_x = dpi_x;
+    preview_data->dpi_y = dpi_y;
+  }
+  pango_cairo_update_layout(cr, preview_data->print_data->layout);
+  cairo_destroy(cr);
+}
+
+static gboolean cb_preview_expose(GtkWidget *widget, GdkEventExpose *event,
+				  gpointer data)
+{
+  PreviewData *preview_data = data;
+  debug_print("preview_expose (current %p)\n", preview_data->current_page);
+  gdk_window_clear(preview_data->area->window);
+  if(preview_data->current_page) {
+    preview_data->rendering = TRUE;
+    gtk_widget_set_sensitive(preview_data->close, FALSE);
+    int cur = GPOINTER_TO_INT(preview_data->current_page->data);
+    gchar *str;
+    str = g_strdup_printf(_("Page %d"), cur+1);
+    gtk_label_set_text(GTK_LABEL(preview_data->page_nr_label), str);
+    g_free(str);
+    gtk_print_operation_preview_render_page(preview_data->preview,
+					    GPOINTER_TO_INT
+					    (preview_data->current_page->data));
+
+    gtk_widget_set_sensitive(preview_data->first, preview_data->current_page->prev != NULL);
+    gtk_widget_set_sensitive(preview_data->previous, preview_data->current_page->prev != NULL);
+    gtk_widget_set_sensitive(preview_data->next, preview_data->current_page->next != NULL);
+    gtk_widget_set_sensitive(preview_data->last, preview_data->current_page->next != NULL);
+    gtk_widget_set_sensitive(preview_data->close, TRUE);
+    preview_data->rendering = FALSE;
+
+  }
+  return TRUE;
+}
+
+static void cb_preview_go_first(GtkButton *button, gpointer data)
+{
+  PreviewData *preview_data = (PreviewData*) data;
+  preview_data->current_page = preview_data->pages_to_print;
+  gtk_widget_queue_draw(preview_data->area);
+}
+
+static void cb_preview_go_previous(GtkButton *button, gpointer data)
+{
+  GList *next;
+  PreviewData *preview_data = (PreviewData*) data;
+  next = g_list_previous(preview_data->current_page);
+  if(next)
+    preview_data->current_page = next;
+  gtk_widget_queue_draw(preview_data->area);
+}
+
+static void cb_preview_go_next(GtkButton *button, gpointer data)
+{
+  GList *next;
+  PreviewData *preview_data = (PreviewData*) data;
+  next = g_list_next(preview_data->current_page);
+  if(next)
+    preview_data->current_page = next;
+  gtk_widget_queue_draw(preview_data->area);
+}
+
+static void cb_preview_go_last(GtkButton *button, gpointer data)
+{
+  PreviewData *preview_data = (PreviewData*) data;
+  preview_data->current_page = g_list_last(preview_data->current_page);
+  gtk_widget_queue_draw(preview_data->area);
 }
 
 static void cb_begin_print(GtkPrintOperation *op, GtkPrintContext *context,
@@ -368,8 +527,6 @@ static void cb_begin_print(GtkPrintOperation *op, GtkPrintContext *context,
 
   print_data = (PrintData*) user_data;
 
-  if (print_data->print_started)
-    return;
   debug_print("Preparing print job...\n");
 	
   width  = gtk_print_context_get_width(context);
@@ -429,12 +586,12 @@ static void cb_begin_print(GtkPrintOperation *op, GtkPrintContext *context,
   pango_layout_iter_free(iter);
 
   page_breaks = g_list_reverse(page_breaks);
-  gtk_print_operation_set_n_pages(op, g_list_length(page_breaks) + 1);
-	
+  print_data->npages = g_list_length(page_breaks) + 1;	
   print_data->page_breaks = page_breaks;
 
+  gtk_print_operation_set_n_pages(op, print_data->npages);
+
   debug_print("Starting print job...\n");
-  print_data->print_started = TRUE;
 }
 
 static cairo_surface_t *pixbuf_to_surface(GdkPixbuf *pixbuf)
@@ -515,7 +672,8 @@ static cairo_surface_t *pixbuf_to_surface(GdkPixbuf *pixbuf)
 	return surface;
 }
 
-static gboolean claws_draw_page(GtkPrintOperation *op, GtkPrintContext *context, gint page_nr, gpointer user_data)
+static void cb_draw_page(GtkPrintOperation *op, GtkPrintContext *context,
+			 int page_nr, gpointer user_data)
 {
   cairo_t *cr;
   PrintData *print_data;
@@ -524,10 +682,9 @@ static gboolean claws_draw_page(GtkPrintOperation *op, GtkPrintContext *context,
   PangoLayoutIter *iter;
   double start_pos;
   gboolean notlast = TRUE;
+
   print_data = (PrintData*) user_data;
 
-  if (print_data->print_started == FALSE)
-    cb_begin_print(op, context, print_data);
   if (page_nr == 0) {
     start = 0;
   } else {
@@ -542,6 +699,10 @@ static gboolean claws_draw_page(GtkPrintOperation *op, GtkPrintContext *context,
     end = GPOINTER_TO_INT(pagebreak->data);
 
   cr = gtk_print_context_get_cairo_context(context);
+  if (print_data->is_preview) {
+    cairo_set_source_rgb(cr, 1., 1., 1.);
+    cairo_paint(cr);
+  }
   cairo_set_source_rgb(cr, 0., 0., 0.);
 
   ii = 0;
@@ -575,7 +736,6 @@ static gboolean claws_draw_page(GtkPrintOperation *op, GtkPrintContext *context,
 		((double)baseline) / PANGO_SCALE - start_pos);
 	  cairo_paint (cr);
 	  cairo_surface_destroy (surface);
-	  g_object_unref(GDK_PIXBUF(attr->data));
       }	else {
         pango_cairo_show_layout_line(cr, line);
       }
@@ -583,13 +743,6 @@ static gboolean claws_draw_page(GtkPrintOperation *op, GtkPrintContext *context,
     ii++;
   } while(ii < end && (notlast = pango_layout_iter_next_line(iter)));
   pango_layout_iter_free(iter);
-  return TRUE;
-}
-
-static void cb_draw_page(GtkPrintOperation *op, GtkPrintContext *context,
-			 int page_nr, gpointer user_data)
-{
-  claws_draw_page(op, context, page_nr, user_data);
   debug_print("Sent page %d to printer\n", page_nr+1);
 }
 
