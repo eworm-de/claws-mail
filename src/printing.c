@@ -299,7 +299,6 @@ static gboolean cb_preview(GtkPrintOperation        *operation,
   gtk_box_pack_start(GTK_BOX(vbox), scrolled_window, TRUE, TRUE, 0);
   da = gtk_drawing_area_new();
   gtk_widget_set_double_buffered(da, FALSE);
-  gtk_widget_set_size_request(GTK_WIDGET(da), 400, 500);
   gtk_scrolled_window_add_with_viewport(GTK_SCROLLED_WINDOW(scrolled_window),
 					da);
   gtk_widget_realize(da);
@@ -433,19 +432,10 @@ static void cb_preview_got_page_size(GtkPrintOperationPreview *preview,
     preview_height = paper_width;
   }
 
-  cr = gdk_cairo_create(preview_data->area->window);  
-
-  dpi_x = preview_data->area->allocation.width/preview_width;
-  dpi_y = preview_data->area->allocation.height/preview_height;
-
-  if((fabs(dpi_x - preview_data->dpi_x) > 0.001) ||
-     (fabs (dpi_y - preview_data->dpi_y) > 0.001))   {
-    gtk_print_context_set_cairo_context(context, cr, dpi_x, dpi_y);
-    preview_data->dpi_x = dpi_x;
-    preview_data->dpi_y = dpi_y;
-  }
-  pango_cairo_update_layout(cr, preview_data->print_data->layout);
-  cairo_destroy(cr);
+  debug_print("w/h %f/%f\n", paper_width * PREVIEW_SCALE, paper_height * PREVIEW_SCALE);
+  gtk_widget_set_size_request(GTK_WIDGET(preview_data->area), 
+		  (gint) paper_width * PREVIEW_SCALE, 
+		  (gint) paper_height * PREVIEW_SCALE);
 }
 
 static gboolean cb_preview_expose(GtkWidget *widget, GdkEventExpose *event,
