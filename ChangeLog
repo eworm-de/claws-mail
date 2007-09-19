@@ -1,3 +1,9 @@
+2007-09-19 [colin]	3.0.1cvs11
+
+	* src/common/utils.c
+		Prevent unquoted mime boundaries, by always
+		using a /
+
 2007-09-19 [colin]	3.0.1cvs10
 
 	* src/printing.c

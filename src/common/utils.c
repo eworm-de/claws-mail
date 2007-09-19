@@ -3191,7 +3191,7 @@ gchar *generate_mime_boundary(const gchar *prefix)
 		buf_uniq[i] = tbl[g_random_int_range(0, sizeof(tbl) - 1)];
 	buf_uniq[i] = '\0';
 
-	return g_strdup_printf("%s_%s", prefix ? prefix : "MP",
+	return g_strdup_printf("%s_/%s", prefix ? prefix : "MP",
 			       buf_uniq);
 }
 

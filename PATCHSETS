@@ -2874,3 +2874,4 @@
 ( cvs diff -u -r 1.204.2.148 -r 1.204.2.149 src/prefs_common.c;  cvs diff -u -r 1.103.2.94 -r 1.103.2.95 src/prefs_common.h;  cvs diff -u -r 1.1.2.3 -r 1.1.2.4 src/printing.c;  ) > 3.0.1cvs8.patchset
 ( cvs diff -u -r 1.53.2.28 -r 1.53.2.29 po/POTFILES.in;  cvs diff -u -r 1.1.2.4 -r 1.1.2.5 src/printing.c;  ) > 3.0.1cvs9.patchset
 ( cvs diff -u -r 1.1.2.5 -r 1.1.2.6 src/printing.c;  ) > 3.0.1cvs10.patchset
+( cvs diff -u -r 1.36.2.112 -r 1.36.2.113 src/common/utils.c;  ) > 3.0.1cvs11.patchset
