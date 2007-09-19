@@ -82,6 +82,15 @@ static gboolean preview_close(GtkWidget *widget, GdkEventAny *event,
 	return FALSE;
 }
 
+static void preview_size_allocate_cb(GtkWidget *widget,
+					 GtkAllocation *allocation)
+{
+	g_return_if_fail(allocation != NULL);
+
+	prefs_common.print_previewwin_width = allocation->width;
+	prefs_common.print_previewwin_height = allocation->height;
+}
+
 static gboolean cb_preview (GtkPrintOperation        *operation,
                                      GtkPrintOperationPreview *preview,
                                      GtkPrintContext          *context,
@@ -105,8 +114,9 @@ static gboolean cb_preview (GtkPrintOperation        *operation,
   cairo_status_t   status;
   gchar           *fname;
   GtkWidget *dialog = NULL;
-  GtkWidget *image, *notebook;
+  GtkWidget *image, *notebook, *scrolled_window;
   GSList *pages = NULL, *cur;
+  static GdkGeometry geometry;
 
   paper_size      = gtk_page_setup_get_paper_size    (page_setup);
   paper_width     = gtk_paper_size_get_width         (paper_size, GTK_UNIT_INCH);
@@ -171,6 +181,17 @@ static gboolean cb_preview (GtkPrintOperation        *operation,
   pages = g_slist_reverse(pages);
   
   dialog = gtkut_window_new(GTK_WINDOW_TOPLEVEL, "print_preview");
+
+  if (!geometry.min_height) {
+	  geometry.min_width = 600;
+	  geometry.min_height = 400;
+  }
+
+  gtk_window_set_geometry_hints(GTK_WINDOW(dialog), NULL, &geometry,
+				GDK_HINT_MIN_SIZE);
+  gtk_widget_set_size_request(dialog, prefs_common.print_previewwin_width,
+			      prefs_common.print_previewwin_height);
+
   gtk_window_set_title(GTK_WINDOW(dialog), _("Print preview"));
   notebook = gtk_notebook_new();
   gtk_container_add(GTK_CONTAINER(dialog), notebook);
@@ -178,8 +199,15 @@ static gboolean cb_preview (GtkPrintOperation        *operation,
   for (cur = pages; cur; cur = cur->next) {
     image = (GtkImage *)cur->data;
     if (gtk_print_operation_preview_is_selected(preview, i)) {
+      scrolled_window = gtk_scrolled_window_new(NULL, NULL);
+      gtk_scrolled_window_set_policy(GTK_SCROLLED_WINDOW(scrolled_window),
+				       GTK_POLICY_AUTOMATIC,
+				       GTK_POLICY_AUTOMATIC);
+      gtk_scrolled_window_add_with_viewport
+	      (GTK_SCROLLED_WINDOW(scrolled_window),
+	       image);
       debug_print("page %d sel\n", i);
-      gtk_notebook_append_page(GTK_NOTEBOOK(notebook), image, NULL);
+      gtk_notebook_append_page(GTK_NOTEBOOK(notebook), scrolled_window, NULL);
     }
     i++;
   }
@@ -191,6 +219,8 @@ static gboolean cb_preview (GtkPrintOperation        *operation,
                     G_CALLBACK (preview_destroy), preview);
   g_signal_connect (dialog, "key_press_event",
                     G_CALLBACK (preview_close), preview);
+ g_signal_connect(G_OBJECT(dialog), "size_allocate",
+		  G_CALLBACK(preview_size_allocate_cb), NULL);
   
   return TRUE;
 }

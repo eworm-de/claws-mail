@@ -1,3 +1,11 @@
+2007-09-19 [colin]	3.0.1cvs8
+
+	* src/prefs_common.c
+	* src/prefs_common.h
+	* src/printing.c
+		Add scrolledwindow, default allocation and
+		size saving to the print preview window.
+
 2007-09-18 [colin]	3.0.1cvs7
 
 	* src/prefs_common.c

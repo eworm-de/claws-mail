@@ -2871,3 +2871,4 @@
 ( cvs diff -u -r 1.36.2.111 -r 1.36.2.112 src/common/utils.c;  ) > 3.0.1cvs5.patchset
 ( cvs diff -u -r 1.100.2.52 -r 1.100.2.53 AUTHORS;  cvs diff -u -r 1.1.2.39 -r 1.1.2.40 src/gtk/authors.h;  ) > 3.0.1cvs6.patchset
 ( cvs diff -u -r 1.204.2.147 -r 1.204.2.148 src/prefs_common.c;  cvs diff -u -r 1.103.2.93 -r 1.103.2.94 src/prefs_common.h;  cvs diff -u -r 1.1.2.9 -r 1.1.2.10 src/prefs_image_viewer.c;  cvs diff -u -r 1.1.2.2 -r 1.1.2.3 src/printing.c;  ) > 3.0.1cvs7.patchset
+( cvs diff -u -r 1.204.2.148 -r 1.204.2.149 src/prefs_common.c;  cvs diff -u -r 1.103.2.94 -r 1.103.2.95 src/prefs_common.h;  cvs diff -u -r 1.1.2.3 -r 1.1.2.4 src/printing.c;  ) > 3.0.1cvs8.patchset

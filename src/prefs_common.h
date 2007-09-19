@@ -471,6 +471,8 @@ struct _PrefsCommon
 	gint print_use_reverse;
 	gint print_use_duplex;
 	gint print_imgs;
+	gint print_previewwin_width;
+	gint print_previewwin_height;
 };
 
 extern PrefsCommon prefs_common;

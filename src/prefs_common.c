@@ -1066,6 +1066,10 @@ static PrefParam param[] = {
 	 NULL, NULL, NULL},
 	{"print_imgs", "1", &prefs_common.print_imgs, P_INT,
 	 NULL, NULL, NULL},
+	{"print_previewwin_width", "600", &prefs_common.print_previewwin_width, P_INT,
+	 NULL, NULL, NULL},
+	{"print_previewwin_height", "-1", &prefs_common.print_previewwin_height, P_INT,
+	 NULL, NULL, NULL},
 
 	{NULL, NULL, NULL, P_OTHER, NULL, NULL, NULL}
 };
