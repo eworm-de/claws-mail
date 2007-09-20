@@ -1197,7 +1197,7 @@ gint folderview_check_new(Folder *folder)
 	for (list = folderview_list; list != NULL; list = list->next) {
 		folderview = (FolderView *)list->data;
 		ctree = GTK_CTREE(folderview->ctree);
-
+		folderview->scanning_folder = folder;
 		inc_lock();
 		main_window_lock(folderview->mainwin);
 
@@ -1264,7 +1264,7 @@ gint folderview_check_new(Folder *folder)
 			former_new_msgs += former_new;
 			STATUSBAR_POP(folderview->mainwin);
 		}
-
+		folderview->scanning_folder = NULL;
 		main_window_unlock(folderview->mainwin);
 		inc_unlock();
 	}
@@ -2150,7 +2150,15 @@ static void folderview_selected(GtkCTree *ctree, GtkCTreeNode *row,
 		return;
 	}
 	
-	if (!can_select || summary_is_locked(folderview->summaryview)) {
+	item = gtk_ctree_node_get_row_data(ctree, row);
+	if (!item) {
+		END_TIMING();
+		folderview->open_folder = FALSE;
+		return;
+	}
+
+	if (!can_select || summary_is_locked(folderview->summaryview)
+	||  folderview->scanning_folder == item->folder) {
 		if (folderview->opened) {
 			gtkut_ctree_set_focus_row(ctree, folderview->opened);
 			gtk_ctree_select(ctree, folderview->opened);
@@ -2162,12 +2170,6 @@ static void folderview_selected(GtkCTree *ctree, GtkCTreeNode *row,
 
 	if (!folderview->open_folder) {
 		END_TIMING();
-		return;
-	}
-	item = gtk_ctree_node_get_row_data(ctree, row);
-	if (!item) {
-		END_TIMING();
-		folderview->open_folder = FALSE;
 		return;
 	}
 
