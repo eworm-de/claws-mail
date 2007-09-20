@@ -1,3 +1,8 @@
+2007-09-20 [paul]	3.0.1cvs12
+
+	* po/ru.po
+		updated by Pavlo Bohmat
+
 2007-09-19 [colin]	3.0.1cvs11
 
 	* src/common/utils.c
