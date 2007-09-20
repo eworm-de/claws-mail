@@ -47,7 +47,6 @@ typedef struct {
   gint sel_end;
   GHashTable *images;
   gint img_cnt;
-  gboolean is_preview;
 } PrintData;
 
 typedef struct {
@@ -55,8 +54,6 @@ typedef struct {
   GtkPrintOperationPreview *preview;
   GtkWidget         *area;
   PrintData         *print_data;
-  gdouble           dpi_x;
-  gdouble           dpi_y;
   GtkWidget         *page_nr_label;
   GList             *pages_to_print;
   GList             *current_page;
@@ -66,6 +63,8 @@ typedef struct {
   GtkWidget *last;
   GtkWidget *close;
   gboolean rendering;
+  gint page_width;
+  gint page_height;
 } PreviewData;
 
 /* callbacks */
@@ -98,6 +97,7 @@ static gboolean printing_is_pango_gdk_color_equal(PangoColor*, GdkColor*);
 static gint     printing_text_iter_get_offset_bytes(PrintData *, const GtkTextIter*);
 
 #define PREVIEW_SCALE 72
+#define PREVIEW_SHADOW_OFFSET 3
 
 static void free_pixbuf(gpointer key, gpointer value, gpointer data)
 {
@@ -250,7 +250,6 @@ static gboolean cb_preview(GtkPrintOperation        *operation,
   debug_print("Creating internal print preview\n");
 
   print_data = (PrintData*) data;
-  print_data->is_preview = TRUE;
 
   preview_data = g_new0(PreviewData,1);
   preview_data->print_data = print_data;
@@ -289,7 +288,7 @@ static gboolean cb_preview(GtkPrintOperation        *operation,
   preview_data->last = gtk_button_new_from_stock(GTK_STOCK_GOTO_LAST);
   gtk_box_pack_start(GTK_BOX(hbox), preview_data->last, FALSE, FALSE, 0);
   preview_data->close = gtk_button_new_from_stock(GTK_STOCK_CLOSE);
-  gtk_box_pack_start(GTK_BOX(hbox), preview_data->close, FALSE, FALSE, 0);
+  gtk_box_pack_end(GTK_BOX(hbox), preview_data->close, FALSE, FALSE, 0);
 
   /* Drawing area */
   scrolled_window = gtk_scrolled_window_new(NULL, NULL);
@@ -407,43 +406,71 @@ static void cb_preview_got_page_size(GtkPrintOperationPreview *preview,
   PreviewData *preview_data;
   GtkPageOrientation orientation;
   GtkPaperSize *paper_size;
-  gdouble preview_width;
-  gdouble preview_height;
-  gdouble paper_width;
-  gdouble paper_height;
-  cairo_t *cr;
-  gdouble dpi_x;
-  gdouble dpi_y;
+  gint paper_width;
+  gint paper_height;
 
   preview_data = (PreviewData*) data;
   debug_print("got_page_size\n");
   orientation  = gtk_page_setup_get_orientation(page_setup);
   paper_size   = gtk_page_setup_get_paper_size(page_setup);
-  paper_width  = gtk_paper_size_get_width(paper_size, GTK_UNIT_INCH);
-  paper_height = gtk_paper_size_get_height(paper_size,  GTK_UNIT_INCH);
+  paper_width  = (gint)(gtk_paper_size_get_width(paper_size, GTK_UNIT_INCH)  
+			* PREVIEW_SCALE);
+  paper_height = (gint)(gtk_paper_size_get_height(paper_size,  GTK_UNIT_INCH)
+			* PREVIEW_SCALE);
 
-  if((orientation == GTK_PAGE_ORIENTATION_PORTRAIT) ||
-     (orientation == GTK_PAGE_ORIENTATION_REVERSE_PORTRAIT)) {
-    preview_width  = paper_width;
-    preview_height = paper_height;
-  }
-  else {
-    preview_width  = paper_height;
-    preview_height = paper_width;
-  }
+  preview_data->page_width  = paper_width;
+  preview_data->page_height = paper_height;
 
-  debug_print("w/h %f/%f\n", paper_width * PREVIEW_SCALE, paper_height * PREVIEW_SCALE);
+  debug_print("w/h %d/%d\n", paper_width, paper_height);
   gtk_widget_set_size_request(GTK_WIDGET(preview_data->area), 
-		  (gint) paper_width * PREVIEW_SCALE, 
-		  (gint) paper_height * PREVIEW_SCALE);
+			      paper_width, paper_height);
 }
 
 static gboolean cb_preview_expose(GtkWidget *widget, GdkEventExpose *event,
 				  gpointer data)
 {
   PreviewData *preview_data = data;
+  GdkGC *gc;
+  GdkColor white;
+  GdkColor black;
+  GdkColor gray;
+
   debug_print("preview_expose (current %p)\n", preview_data->current_page);
   gdk_window_clear(preview_data->area->window);
+
+  white.red   = 65535;
+  white.green = 65535;
+  white.blue  = 65535;
+  black.red   = 0;
+  black.green = 0;
+  black.blue  = 0;
+  gray.red   = 32700;
+  gray.green = 32700;
+  gray.blue  = 32700;
+
+  gc = gdk_gc_new(GDK_DRAWABLE(preview_data->area->window));
+
+  /* background */
+  gdk_gc_set_rgb_fg_color(gc, &gray);
+  gdk_draw_rectangle(preview_data->area->window, gc, TRUE, 0, 0,
+		     preview_data->area->allocation.width,
+		     preview_data->area->allocation.height);
+
+  /* shadow */
+  gdk_gc_set_rgb_fg_color(gc, &black);
+  gdk_draw_rectangle(preview_data->area->window, gc, TRUE,
+		     PREVIEW_SHADOW_OFFSET, PREVIEW_SHADOW_OFFSET,
+		     preview_data->page_width+PREVIEW_SHADOW_OFFSET,
+		     preview_data->page_height+PREVIEW_SHADOW_OFFSET);
+
+  /* paper */
+  gdk_gc_set_rgb_fg_color(gc, &white);
+  gdk_draw_rectangle(preview_data->area->window, gc, TRUE, 0, 0,
+		     preview_data->page_width,
+		     preview_data->page_height);
+
+  g_object_unref(gc);
+
   if(preview_data->current_page) {
     preview_data->rendering = TRUE;
     gtk_widget_set_sensitive(preview_data->close, FALSE);
@@ -689,10 +716,6 @@ static void cb_draw_page(GtkPrintOperation *op, GtkPrintContext *context,
     end = GPOINTER_TO_INT(pagebreak->data);
 
   cr = gtk_print_context_get_cairo_context(context);
-  if (print_data->is_preview) {
-    cairo_set_source_rgb(cr, 1., 1., 1.);
-    cairo_paint(cr);
-  }
   cairo_set_source_rgb(cr, 0., 0., 0.);
 
   ii = 0;

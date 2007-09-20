@@ -1,3 +1,10 @@
+2007-09-20 [holger]	3.0.1cvs13
+
+	* src/printing.c
+		Add page layout to print preview.
+		Make the close-button in the toolbar
+		right-aligned.
+
 2007-09-20 [paul]	3.0.1cvs12
 
 	* po/ru.po
