@@ -838,6 +838,8 @@ static void printing_layout_set_text_attributes(PrintData *print_data, GtkPrintC
 		open_attrs = g_slist_delete_link(open_attrs, attr_walk);
 		break;
 	      }
+              if (color)
+                gdk_color_free(color);
 	    }
 	  }
 	  if(!found)
@@ -858,6 +860,8 @@ static void printing_layout_set_text_attributes(PrintData *print_data, GtkPrintC
 		open_attrs = g_slist_delete_link(open_attrs, attr_walk);
 		break;
 	      }
+              if (color)
+                gdk_color_free(color);
 	    }
 	  }
 	  if(!found)
