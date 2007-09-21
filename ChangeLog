@@ -1,3 +1,11 @@
+2007-09-21 [paul]	3.0.1cvs18
+
+	* src/mainwindow.c
+		group together the character set menu items
+		move the /View/Show or hide/Message view below
+		.../Toolbar menu item
+		Patch by Pawel Pekala
+
 2007-09-21 [mones]	3.0.1cvs17
 
 	* src/compose.c
