@@ -1,3 +1,12 @@
+2007-09-21 [paul]	3.0.1cvs19
+
+	* src/prefs_account.c
+	* src/prefs_folder_item.c
+	* src/prefs_quote.c
+	* src/quote_fmt.c
+		put the Templates options into a tabbed
+		layout. Patch by Pawel Pekala
+
 2007-09-21 [paul]	3.0.1cvs18
 
 	* src/mainwindow.c

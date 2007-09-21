@@ -64,43 +64,61 @@ static void prefs_quote_create_widget(PrefsPage *_page, GtkWindow *window,
 	QuotePage *prefs_quote = (QuotePage *) _page;
 	
 	GtkWidget *vbox;
+	GtkWidget *vbox2;
+	GtkWidget *notebook;
 
-	vbox = gtk_vbox_new (FALSE, VSPACING);
+	vbox = gtk_vbox_new (FALSE, 0);
 	gtk_widget_show (vbox);
-	gtk_container_set_border_width (GTK_CONTAINER (vbox), VBOX_BORDER);
+
+	notebook = gtk_notebook_new();
+	gtk_widget_show(notebook);
+	gtk_notebook_set_homogeneous_tabs(GTK_NOTEBOOK(notebook), TRUE);
+	gtk_box_pack_start(GTK_BOX(vbox), notebook, TRUE, TRUE, 0);
 
 	/* new message */
-
+	vbox2 = gtk_vbox_new (FALSE, VSPACING);
+	gtk_widget_show (vbox2);
+	gtk_container_set_border_width (GTK_CONTAINER (vbox2), VBOX_BORDER);
+	
 	quotefmt_create_new_msg_fmt_widgets(
 				window,
-				vbox,
+				vbox2,
 				&prefs_quote->checkbtn_compose_with_format,
 				_("New message format"),
 				&prefs_quote->entry_subject,
 				&prefs_quote->text_format,
 				FALSE);
+	gtk_notebook_append_page(GTK_NOTEBOOK(notebook), vbox2, gtk_label_new(_("Compose")));
 
 	/* reply */
-
+	vbox2 = gtk_vbox_new (FALSE, VSPACING);
+	gtk_widget_show (vbox2);
+	gtk_container_set_border_width (GTK_CONTAINER (vbox2), VBOX_BORDER);
+	
 	quotefmt_create_reply_fmt_widgets(
 				window,
-				vbox,
+				vbox2,
 				NULL,
 				NULL,
 				&prefs_quote->entry_quotemark,
 				&prefs_quote->text_quotefmt,
 				FALSE);
+	gtk_notebook_append_page(GTK_NOTEBOOK(notebook), vbox2, gtk_label_new(_("Reply")));
 
 	/* forward */
-
+	vbox2 = gtk_vbox_new (FALSE, VSPACING);
+	gtk_widget_show (vbox2);
+	gtk_container_set_border_width (GTK_CONTAINER (vbox2), VBOX_BORDER);
+	
 	quotefmt_create_forward_fmt_widgets(
 				window,
-				vbox,
+				vbox2,
 				NULL,
 				NULL,
 				&prefs_quote->entry_fw_quotemark,
 				&prefs_quote->text_fw_quotefmt,
 				FALSE);
+	gtk_notebook_append_page(GTK_NOTEBOOK(notebook), vbox2, gtk_label_new(_("Forward")));
 
 	/* info button */
 

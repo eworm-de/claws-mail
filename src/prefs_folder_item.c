@@ -1129,37 +1129,28 @@ static void prefs_folder_item_templates_create_widget_func(PrefsPage * page_,
 	FolderItemTemplatesPage *page = (FolderItemTemplatesPage *) page_;
 	FolderItem *item = (FolderItem *) data;
 
-	GtkWidget *table;
-	GtkWidget *label;
-	guint rowcount;
+	GtkWidget *notebook;
 	GtkWidget *vbox;
-	GtkWidget *alignment;
+	GtkWidget *page_vbox;
 	GtkWidget *new_msg_format_rec_checkbtn;
 	GtkWidget *reply_format_rec_checkbtn;
 	GtkWidget *forward_format_rec_checkbtn;
 
-	page->item	   = item;
+	page->item = item;
 
-	/* Table */
-	table = gtk_table_new(5, 3, FALSE);
-	gtk_container_set_border_width (GTK_CONTAINER (table), VBOX_BORDER);
-	gtk_table_set_row_spacings(GTK_TABLE(table), 4);
-	gtk_table_set_col_spacings(GTK_TABLE(table), 4);
-	rowcount = 0;
-
-	/* Apply to subfolders */
-	label = gtk_label_new(_("Apply to\nsubfolders"));
-	gtk_misc_set_alignment(GTK_MISC(label), 0.5, 0.5);
-	gtk_table_attach(GTK_TABLE(table), label, 2, 3,
-			 rowcount, rowcount + 1, GTK_SHRINK, GTK_SHRINK, 0, 0);
-	rowcount++;
+	page_vbox = gtk_vbox_new (FALSE, 0);
+	gtk_widget_show (page_vbox);
+	
+	/* Notebook */
+	notebook = gtk_notebook_new();
+	gtk_widget_show(notebook);
+	gtk_notebook_set_homogeneous_tabs(GTK_NOTEBOOK(notebook), TRUE);
+	gtk_box_pack_start(GTK_BOX(page_vbox), notebook, TRUE, TRUE, 0);
 
 	/* compose format */
 	vbox = gtk_vbox_new (FALSE, VSPACING);
 	gtk_widget_show (vbox);
-	gtk_container_set_border_width (GTK_CONTAINER (vbox), 0);
-	gtk_table_attach(GTK_TABLE(table), vbox, 1, 2, 
-			 rowcount, rowcount + 1, GTK_EXPAND | GTK_FILL, GTK_FILL, 0, 0);
+	gtk_container_set_border_width (GTK_CONTAINER (vbox), VBOX_BORDER);
 
 	quotefmt_create_new_msg_fmt_widgets(
 				window,
@@ -1170,25 +1161,15 @@ static void prefs_folder_item_templates_create_widget_func(PrefsPage * page_,
 				&page->compose_body_format,
 				FALSE);
 
-	vbox = gtk_vbox_new (FALSE, VSPACING);
-	gtk_widget_show (vbox);
-	gtk_container_set_border_width (GTK_CONTAINER (vbox), 0);
-	gtk_table_attach(GTK_TABLE(table), vbox, 2, 3, 
-			 rowcount, rowcount + 1, GTK_SHRINK, GTK_FILL, 0, 0);
-
-	new_msg_format_rec_checkbtn = gtk_check_button_new();
-	gtk_box_pack_start (GTK_BOX(vbox), new_msg_format_rec_checkbtn, FALSE, FALSE, 0);
-	alignment = gtk_alignment_new(0, 1, 0, 0);	
-	gtk_box_pack_start (GTK_BOX(vbox), alignment, FALSE, FALSE, 0);
-
-	rowcount++;
+	new_msg_format_rec_checkbtn = gtk_check_button_new_with_label(
+			_("Apply to subfolders"));
+	gtk_box_pack_end (GTK_BOX(vbox), new_msg_format_rec_checkbtn, FALSE, FALSE, 0);
+	gtk_notebook_append_page(GTK_NOTEBOOK(notebook), vbox, gtk_label_new(_("Compose")));
 
 	/* reply format */
 	vbox = gtk_vbox_new (FALSE, VSPACING);
 	gtk_widget_show (vbox);
-	gtk_container_set_border_width (GTK_CONTAINER (vbox), 0);
-	gtk_table_attach(GTK_TABLE(table), vbox, 1, 2, 
-			 rowcount, rowcount + 1, GTK_EXPAND | GTK_FILL, GTK_FILL, 0, 0);
+	gtk_container_set_border_width (GTK_CONTAINER (vbox), VBOX_BORDER);
 
 	quotefmt_create_reply_fmt_widgets(
 				window,
@@ -1199,25 +1180,15 @@ static void prefs_folder_item_templates_create_widget_func(PrefsPage * page_,
 				&page->reply_body_format,
 				FALSE);
 
-	vbox = gtk_vbox_new (FALSE, VSPACING);
-	gtk_widget_show (vbox);
-	gtk_container_set_border_width (GTK_CONTAINER (vbox), 0);
-	gtk_table_attach(GTK_TABLE(table), vbox, 2, 3, 
-			 rowcount, rowcount + 1, GTK_SHRINK, GTK_FILL, 0, 0);
-
-	reply_format_rec_checkbtn = gtk_check_button_new();
-	gtk_box_pack_start (GTK_BOX(vbox), reply_format_rec_checkbtn, FALSE, FALSE, 0);
-	alignment = gtk_alignment_new(0, 1, 0, 0);	
-	gtk_box_pack_start (GTK_BOX(vbox), alignment, FALSE, FALSE, 0);
-
-	rowcount++;
+	reply_format_rec_checkbtn = gtk_check_button_new_with_label(
+			_("Apply to subfolders"));
+	gtk_box_pack_end (GTK_BOX(vbox), reply_format_rec_checkbtn, FALSE, FALSE, 0);
+	gtk_notebook_append_page(GTK_NOTEBOOK(notebook), vbox, gtk_label_new(_("Reply")));
 
 	/* forward format */
 	vbox = gtk_vbox_new (FALSE, VSPACING);
 	gtk_widget_show (vbox);
-	gtk_container_set_border_width (GTK_CONTAINER (vbox), 0);
-	gtk_table_attach(GTK_TABLE(table), vbox, 1, 2, 
-			 rowcount, rowcount + 1, GTK_EXPAND | GTK_FILL, GTK_FILL, 0, 0);
+	gtk_container_set_border_width (GTK_CONTAINER (vbox), VBOX_BORDER);
 
 	quotefmt_create_forward_fmt_widgets(
 				window,
@@ -1228,28 +1199,13 @@ static void prefs_folder_item_templates_create_widget_func(PrefsPage * page_,
 				&page->forward_body_format,
 				FALSE);
 
-	vbox = gtk_vbox_new (FALSE, VSPACING);
-	gtk_widget_show (vbox);
-	gtk_container_set_border_width (GTK_CONTAINER (vbox), 0);
-	gtk_table_attach(GTK_TABLE(table), vbox, 2, 3, 
-			 rowcount, rowcount + 1, GTK_SHRINK, GTK_FILL, 0, 0);
-
-	forward_format_rec_checkbtn = gtk_check_button_new();
-	gtk_box_pack_start (GTK_BOX(vbox), forward_format_rec_checkbtn, FALSE, FALSE, 0);
-	alignment = gtk_alignment_new(0, 1, 0, 0);	
-	gtk_box_pack_start (GTK_BOX(vbox), alignment, FALSE, FALSE, 0);
-
-	rowcount++;
+	forward_format_rec_checkbtn = gtk_check_button_new_with_label(
+			_("Apply to subfolders"));
+	gtk_box_pack_end (GTK_BOX(vbox), forward_format_rec_checkbtn, FALSE, FALSE, 0);
+	gtk_notebook_append_page(GTK_NOTEBOOK(notebook), vbox, gtk_label_new(_("Forward")));
 
 	/* information button */
-	vbox = gtk_vbox_new (FALSE, VSPACING);
-	gtk_widget_show (vbox);
-	gtk_container_set_border_width (GTK_CONTAINER (vbox), 0);
-	gtk_table_attach(GTK_TABLE(table), vbox, 1, 2, 
-			 rowcount, rowcount + 1, GTK_EXPAND | GTK_FILL, GTK_FILL, 0, 0);
-	rowcount++;
-	quotefmt_add_info_button(window, vbox);
-
+	quotefmt_add_info_button(window, page_vbox);
 
 	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(page->checkbtn_compose_with_format),
 			item->prefs->compose_with_format);
@@ -1272,16 +1228,15 @@ static void prefs_folder_item_templates_create_widget_func(PrefsPage * page_,
 	pref_set_textview_from_pref(GTK_TEXT_VIEW(page->forward_body_format),
 			item->prefs->forward_body_format);
 
-	gtk_widget_show_all(table);
+	gtk_widget_show_all(page_vbox);
 
 	page->window = GTK_WIDGET(window);
-	page->table = table;
 
 	page->new_msg_format_rec_checkbtn = new_msg_format_rec_checkbtn;
 	page->reply_format_rec_checkbtn = reply_format_rec_checkbtn;
 	page->forward_format_rec_checkbtn = forward_format_rec_checkbtn;
 
-	page->page.widget = table;
+	page->page.widget = page_vbox;
 }
 
 static void prefs_folder_item_templates_destroy_widget_func(PrefsPage *page_) 

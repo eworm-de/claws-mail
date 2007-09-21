@@ -2023,36 +2023,62 @@ static void templates_create_widget_func(PrefsPage * _page,
 	TemplatesPage *page = (TemplatesPage *) _page;
 	PrefsAccount *ac_prefs = (PrefsAccount *) data;
 	GtkWidget *vbox;
+	GtkWidget *vbox2;
+	GtkWidget *notebook;
 
-	vbox = gtk_vbox_new(FALSE, VSPACING);
+	vbox = gtk_vbox_new(FALSE, 0);
 	gtk_widget_show(vbox);
-	gtk_container_set_border_width (GTK_CONTAINER (vbox), VBOX_BORDER);
+	
+	notebook = gtk_notebook_new();
+	gtk_widget_show(notebook);
+	gtk_notebook_set_homogeneous_tabs(GTK_NOTEBOOK(notebook), TRUE);
+	gtk_box_pack_start(GTK_BOX(vbox), notebook, TRUE, TRUE, 0);
 
-	/* compose/reply/forward formats */
+	/* compose format */
+	vbox2 = gtk_vbox_new (FALSE, VSPACING);
+	gtk_widget_show (vbox2);
+	gtk_container_set_border_width (GTK_CONTAINER (vbox2), VBOX_BORDER);
+
 	quotefmt_create_new_msg_fmt_widgets(
 				window,
-				vbox,
+				vbox2,
 				&page->checkbtn_compose_with_format,
 				_("Use a specific format for new messages"),
 				&page->compose_subject_format,
 				&page->compose_body_format,
 				FALSE);
+	gtk_notebook_append_page(GTK_NOTEBOOK(notebook), vbox2, gtk_label_new(_("Compose")));
+
+	/* reply format */	
+	vbox2 = gtk_vbox_new (FALSE, VSPACING);
+	gtk_widget_show (vbox2);
+	gtk_container_set_border_width (GTK_CONTAINER (vbox2), VBOX_BORDER);
+	
 	quotefmt_create_reply_fmt_widgets(
 				window,
-				vbox,
+				vbox2,
 				&page->checkbtn_reply_with_format,
 				_("Use a specific reply quote format"),
 				&page->reply_quotemark,
 				&page->reply_body_format,
 				FALSE);
+	gtk_notebook_append_page(GTK_NOTEBOOK(notebook), vbox2, gtk_label_new(_("Reply")));
+
+	/* forward format */	
+	vbox2 = gtk_vbox_new (FALSE, VSPACING);
+	gtk_widget_show (vbox2);
+	gtk_container_set_border_width (GTK_CONTAINER (vbox2), VBOX_BORDER);
+
 	quotefmt_create_forward_fmt_widgets(
 				window,
-				vbox,
+				vbox2,
 				&page->checkbtn_forward_with_format,
 				_("Use a specific forward quote format"),
 				&page->forward_quotemark,
 				&page->forward_body_format,
 				FALSE);
+	gtk_notebook_append_page(GTK_NOTEBOOK(notebook), vbox2, gtk_label_new(_("Forward")));
+
 	quotefmt_add_info_button(window, vbox);
 
 	tmp_ac_prefs = *ac_prefs;

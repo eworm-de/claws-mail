@@ -144,7 +144,15 @@ void quotefmt_create_new_msg_fmt_widgets(GtkWindow *parent_window,
 		PACK_CHECK_BUTTON (parent_box, checkbtn_use_format, 
 				   _("Use format when composing new messages"));
 
-	vbox_format = gtkut_get_options_frame(parent_box, &frame_format, checkbtn_compose_text);
+	frame_format = gtk_frame_new(checkbtn_compose_text);
+	gtk_widget_show(frame_format);
+	gtk_box_pack_start(GTK_BOX(parent_box), frame_format, TRUE, TRUE, 0);
+	gtk_frame_set_label_align(GTK_FRAME(frame_format), 0.01, 0.5);
+
+	vbox_format = gtk_vbox_new (FALSE, 4);
+	gtk_widget_show(vbox_format);
+	gtk_container_add(GTK_CONTAINER (frame_format), vbox_format);
+	gtk_container_set_border_width (GTK_CONTAINER (vbox_format), 8);
 
 	if (checkbtn_compose_with_format)
 		SET_TOGGLE_SENSITIVITY(checkbtn_use_format, frame_format);
@@ -228,15 +236,18 @@ void quotefmt_create_reply_fmt_widgets(GtkWindow *parent_window,
 	if (checkbtn_reply_with_format)
 		PACK_CHECK_BUTTON (parent_box, checkbtn_use_format, checkbtn_reply_text);
 
-	PACK_FRAME (parent_box, frame_quote, _("Reply format"));
+	frame_quote = gtk_frame_new(checkbtn_reply_text);
+	gtk_widget_show(frame_quote);
+	gtk_box_pack_start(GTK_BOX(parent_box), frame_quote, TRUE, TRUE, 0);
+	gtk_frame_set_label_align(GTK_FRAME(frame_quote), 0.01, 0.5);
+
+	vbox_quote = gtk_vbox_new (FALSE, 4);
+	gtk_widget_show(vbox_quote);
+	gtk_container_add(GTK_CONTAINER (frame_quote), vbox_quote);
+	gtk_container_set_border_width (GTK_CONTAINER (vbox_quote), 8);
 
 	if (checkbtn_reply_with_format)
 		SET_TOGGLE_SENSITIVITY(checkbtn_use_format, frame_quote);
-
-	vbox_quote = gtk_vbox_new (FALSE, VSPACING_NARROW);
-	gtk_widget_show (vbox_quote);
-	gtk_container_add (GTK_CONTAINER (frame_quote), vbox_quote);
-	gtk_container_set_border_width (GTK_CONTAINER (vbox_quote), 8);
 
 	hbox1 = gtk_hbox_new (FALSE, 32);
 	gtk_widget_show (hbox1);
@@ -321,15 +332,18 @@ void quotefmt_create_forward_fmt_widgets(GtkWindow *parent_window,
 	if (checkbtn_forward_with_format)
 		PACK_CHECK_BUTTON (parent_box, checkbtn_use_format, checkbtn_forward_text);
 
-	PACK_FRAME (parent_box, frame_quote, _("Forward format"));
+	frame_quote = gtk_frame_new(checkbtn_forward_text);
+	gtk_widget_show(frame_quote);
+	gtk_box_pack_start(GTK_BOX(parent_box), frame_quote, TRUE, TRUE, 0);
+	gtk_frame_set_label_align(GTK_FRAME(frame_quote), 0.01, 0.5);
+
+	vbox_quote = gtk_vbox_new (FALSE, 4);
+	gtk_widget_show(vbox_quote);
+	gtk_container_add(GTK_CONTAINER (frame_quote), vbox_quote);
+	gtk_container_set_border_width (GTK_CONTAINER (vbox_quote), 8);
 
 	if (checkbtn_forward_with_format)
 		SET_TOGGLE_SENSITIVITY(checkbtn_use_format, frame_quote);
-
-	vbox_quote = gtk_vbox_new (FALSE, VSPACING_NARROW);
-	gtk_widget_show (vbox_quote);
-	gtk_container_add (GTK_CONTAINER (frame_quote), vbox_quote);
-	gtk_container_set_border_width (GTK_CONTAINER (vbox_quote), 8);
 
 	hbox1 = gtk_hbox_new (FALSE, 32);
 	gtk_widget_show (hbox1);
@@ -392,7 +406,8 @@ void quotefmt_add_info_button(GtkWindow *parent_window, GtkWidget *parent_box)
 
 	hbox_formatdesc = gtk_hbox_new (FALSE, 32);
 	gtk_widget_show (hbox_formatdesc);
-	gtk_box_pack_start (GTK_BOX (parent_box), hbox_formatdesc, FALSE, FALSE, 0);
+	gtk_box_pack_start (GTK_BOX (parent_box), hbox_formatdesc, FALSE, FALSE,
+				VBOX_BORDER);
 
 #if GTK_CHECK_VERSION(2, 8, 0)
 	btn_formatdesc = gtk_button_new_from_stock(GTK_STOCK_INFO);
