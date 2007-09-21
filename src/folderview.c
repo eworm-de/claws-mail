@@ -1215,6 +1215,11 @@ gint folderview_check_new(Folder *folder)
 					item->path ? item->path : item->name);
 				continue;
 			}
+			if (item->scanning == TRUE) {
+				debug_print("skipping %s, scanning\n",
+					item->path ? item->path : item->name);
+				continue;
+			}
 
 			str = get_scan_str(item);
 
