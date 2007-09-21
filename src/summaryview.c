@@ -7216,7 +7216,9 @@ gint summaryview_export_mbox_list(SummaryView *summaryview)
 	gchar *mbox = filesel_select_file_save(_("Export to mbox file"), NULL);
 	gint ret;
 	
-	if (mbox == NULL || list == NULL)
+	if (mbox == NULL)
+		return -2;
+	if (list == NULL)
 		return -1;
 		
 	ret = export_list_to_mbox(list, mbox);
