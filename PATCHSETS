@@ -2883,3 +2883,4 @@
 ( cvs diff -u -r 1.382.2.409 -r 1.382.2.410 src/compose.c;  ) > 3.0.1cvs17.patchset
 ( cvs diff -u -r 1.274.2.212 -r 1.274.2.213 src/mainwindow.c;  ) > 3.0.1cvs18.patchset
 ( cvs diff -u -r 1.105.2.110 -r 1.105.2.111 src/prefs_account.c;  cvs diff -u -r 1.52.2.48 -r 1.52.2.49 src/prefs_folder_item.c;  cvs diff -u -r 1.1.2.23 -r 1.1.2.24 src/prefs_quote.c;  cvs diff -u -r 1.8.2.23 -r 1.8.2.24 src/quote_fmt.c;  ) > 3.0.1cvs19.patchset
+( cvs diff -u -r 1.12.2.42 -r 1.12.2.43 src/gtk/prefswindow.c;  ) > 3.0.1cvs20.patchset

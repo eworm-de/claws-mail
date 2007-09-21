@@ -56,7 +56,7 @@ struct _PrefsWindow
 	GtkWidget *table2;
 	GtkWidget *pagelabel;
 	GtkWidget *labelframe;
-	GtkWidget *frame;
+	GtkWidget *vbox2;
 	GtkWidget *notebook;
 	GtkWidget *confirm_area;
 	GtkWidget *ok_btn;
@@ -419,6 +419,7 @@ void prefswindow_open_full(const gchar *title, GSList *prefs_pages,
 	gint y = gdk_screen_height();
 	static GdkGeometry geometry;
 	GtkAdjustment *adj;
+	GtkWidget *tmp;
 
 	prefswindow = g_new0(PrefsWindow, 1);
 
@@ -448,6 +449,8 @@ void prefswindow_open_full(const gchar *title, GSList *prefs_pages,
 
 	prefswindow->scrolledwindow1 = gtk_scrolled_window_new(NULL, NULL);
 	gtk_widget_show(prefswindow->scrolledwindow1);
+	gtk_scrolled_window_set_shadow_type(GTK_SCROLLED_WINDOW(prefswindow->scrolledwindow1),
+			GTK_SHADOW_IN);
 	gtk_scrolled_window_set_policy(GTK_SCROLLED_WINDOW(prefswindow->scrolledwindow1),
 			GTK_POLICY_NEVER, GTK_POLICY_AUTOMATIC);
 			
@@ -458,15 +461,14 @@ void prefswindow_open_full(const gchar *title, GSList *prefs_pages,
 	gtk_container_add(GTK_CONTAINER(prefswindow->scrolledwindow1), 
 			  prefswindow->tree_view);
 
-	prefswindow->frame = gtk_frame_new(NULL);
-	gtk_widget_show(prefswindow->frame);
-	gtk_frame_set_shadow_type(GTK_FRAME(prefswindow->frame), GTK_SHADOW_IN);
+	prefswindow->vbox2 = gtk_vbox_new(FALSE, 2);
+	gtk_widget_show(prefswindow->vbox2);
 
-	gtk_paned_add2(GTK_PANED(prefswindow->paned), prefswindow->frame);
+	gtk_paned_add2(GTK_PANED(prefswindow->paned), prefswindow->vbox2);
 
 	prefswindow->table2 = gtk_table_new(1, 2, FALSE);
 	gtk_widget_show(prefswindow->table2);
-	gtk_container_add(GTK_CONTAINER(prefswindow->frame), prefswindow->table2);
+	gtk_container_add(GTK_CONTAINER(prefswindow->vbox2), prefswindow->table2);
 
 	prefswindow->labelframe = gtk_frame_new(NULL);
 	gtk_widget_show(prefswindow->labelframe);
@@ -492,8 +494,10 @@ void prefswindow_open_full(const gchar *title, GSList *prefs_pages,
 	gtk_notebook_set_show_border(GTK_NOTEBOOK(prefswindow->notebook), FALSE);
 	gtk_scrolled_window_add_with_viewport(GTK_SCROLLED_WINDOW(prefswindow->scrolledwindow2),
 					prefswindow->notebook);
+	tmp = gtk_bin_get_child(GTK_BIN(prefswindow->scrolledwindow2));
+	gtk_viewport_set_shadow_type(GTK_VIEWPORT(tmp), GTK_SHADOW_NONE);
 	gtk_table_attach(GTK_TABLE(prefswindow->table2), prefswindow->scrolledwindow2,
-			0, 1, 1, 2, GTK_FILL | GTK_EXPAND, GTK_FILL | GTK_EXPAND, 8, 8);
+			0, 1, 1, 2, GTK_FILL | GTK_EXPAND, GTK_FILL | GTK_EXPAND, 0, 4);
 
 	prefswindow->empty_page = gtk_label_new("");
 	gtk_widget_show(prefswindow->empty_page);

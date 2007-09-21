@@ -1,3 +1,9 @@
+2007-09-21 [paul]	3.0.1cvs20
+
+	* src/gtk/prefswindow.c
+		remove unnecessary frames from the prefs
+		pages. Patch by Pawel Pekala
+
 2007-09-21 [paul]	3.0.1cvs19
 
 	* src/prefs_account.c
