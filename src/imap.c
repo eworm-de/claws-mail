@@ -1063,22 +1063,40 @@ static gchar *imap_fetch_msg_full(Folder *folder, FolderItem *item, gint uid,
 		 * or not. As the IMAP server reports size with \r chars,
 		 * we have to update the local file (UNIX \n only) size */
 		MsgInfo *cached = msgcache_get_msg(item->cache,uid);
-		guint have_size = get_file_size_with_crs(filename);
+		guint have_size = -1;
 
 		if (cached)
-			debug_print("message %d has been already %scached (%d/%d).\n", uid,
-				have_size >= cached->size ? "fully ":"",
-				have_size, (int)cached->size);
+			debug_print("message %d has been already %scached.\n", uid,
+				MSG_IS_FULLY_CACHED(cached->flags) ? "fully ":"");
 		
-		if (cached && (cached->size <= have_size || !body)) {
+		if (!cached || !MSG_IS_FULLY_CACHED(cached->flags)) {
+			have_size = get_file_size_with_crs(filename);
+			if (cached && (cached->size <= have_size || !body)) {
+				procmsg_msginfo_free(cached);
+				ok = file_strip_crs(filename);
+				if (ok == 0 && cached && cached->size <= have_size) {
+					/* we have it all and stripped */
+					debug_print("...fully cached in fact; setting flag.\n");
+					procmsg_msginfo_set_flags(cached, MSG_FULLY_CACHED, 0);
+				}
+				return filename;
+			} else if (!cached && time(NULL) - get_file_mtime(filename) < 60) {
+				debug_print("message not cached and file recent, considering file complete\n");
+				ok = file_strip_crs(filename);
+				if (ok == 0)
+					return filename;
+			} else {
+				procmsg_msginfo_free(cached);
+			}
+		}
+		if (cached && MSG_IS_FULLY_CACHED(cached->flags)) {
 			procmsg_msginfo_free(cached);
-			file_strip_crs(filename);
 			return filename;
-		} else if (!cached && time(NULL) - get_file_mtime(filename) < 60) {
-			debug_print("message not cached and file recent, considering file complete\n");
-			file_strip_crs(filename);
-			return filename;
-		} else {
+		}
+	} else {
+		MsgInfo *cached = msgcache_get_msg(item->cache,uid);
+		if (cached) {
+			procmsg_msginfo_unset_flags(cached, MSG_FULLY_CACHED, 0);
 			procmsg_msginfo_free(cached);
 		}
 	}
@@ -1112,7 +1130,21 @@ static gchar *imap_fetch_msg_full(Folder *folder, FolderItem *item, gint uid,
 	}
 
 	unlock_session(session);
-	file_strip_crs(filename);
+	ok = file_strip_crs(filename);
+
+	if (ok == 0 && headers && body) {
+		MsgInfo *cached = msgcache_get_msg(item->cache,uid);
+		if (cached) {
+			procmsg_msginfo_set_flags(cached, MSG_FULLY_CACHED, 0);
+			procmsg_msginfo_free(cached);
+		}
+	} else if (ok == -1) {
+		MsgInfo *cached = msgcache_get_msg(item->cache,uid);
+		if (cached) {
+			procmsg_msginfo_unset_flags(cached, MSG_FULLY_CACHED, 0);
+			procmsg_msginfo_free(cached);
+		}
+	}
 	return filename;
 }
 
@@ -1125,6 +1157,10 @@ static gboolean imap_is_msg_fully_cached(Folder *folder, FolderItem *item, gint 
 	if (!cached)
 		return FALSE;
 
+	if (MSG_IS_FULLY_CACHED(cached->flags)) {
+		procmsg_msginfo_free(cached);
+		return TRUE;
+	}
 	path = folder_item_get_path(item);
 	if (!is_dir_exist(path))
 		return FALSE;
@@ -1135,6 +1171,7 @@ static gboolean imap_is_msg_fully_cached(Folder *folder, FolderItem *item, gint 
 		if (cached && cached->total_size == cached->size) {
 			/* fast path */
 			g_free(filename);
+			procmsg_msginfo_set_flags(cached, MSG_FULLY_CACHED, 0);
 			return TRUE;
 		}
 		size = get_file_size_with_crs(filename);
@@ -1142,6 +1179,7 @@ static gboolean imap_is_msg_fully_cached(Folder *folder, FolderItem *item, gint 
 	}
 	if (cached && size >= cached->size) {
 		cached->total_size = cached->size;
+		procmsg_msginfo_set_flags(cached, MSG_FULLY_CACHED, 0);
 		procmsg_msginfo_free(cached);
 		return TRUE;
 	}
@@ -1496,9 +1534,9 @@ static gint imap_do_copy_msgs(Folder *folder, FolderItem *dest,
 	IMAP_FOLDER_ITEM(dest)->uid_next = 0;
 	g_slist_free(IMAP_FOLDER_ITEM(dest)->uid_list);
 	IMAP_FOLDER_ITEM(dest)->uid_list = NULL;
-	imap_scan_required(folder, dest);
 
 	unlock_session(session);
+	imap_scan_required(folder, dest);
 	if (ok == IMAP_SUCCESS)
 		return last_num;
 	else

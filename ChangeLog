@@ -1,3 +1,14 @@
+2007-09-22 [colin]	3.0.1cvs23
+
+	* src/imap.c
+	* src/procmsg.h
+	* src/common/utils.c
+	* src/common/utils.h
+	* src/etpan/imap-thread.c
+		Optimise fetching IMAP cached emails *a lot*
+		(remember whether mail is fully cached and \r's
+		 are already stripped)
+
 2007-09-22 [colin]	3.0.1cvs22
 
 	* src/folder.c

@@ -262,7 +262,7 @@ gchar *strretchomp	(gchar		*str);
 gchar *strtailchomp	(gchar		*str,
 			 gchar		 tail_char);
 gchar *strcrchomp	(gchar		*str);
-void file_strip_crs	(const gchar 	*file);
+gint file_strip_crs	(const gchar 	*file);
 gchar *strcasestr	(const gchar	*haystack,
 			 const gchar	*needle);
 gpointer my_memmem	(gconstpointer	 haystack,

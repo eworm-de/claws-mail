@@ -483,7 +483,7 @@ gchar *strcrchomp(gchar *str)
 	return str;
 }
 
-void file_strip_crs(const gchar *file)
+gint file_strip_crs(const gchar *file)
 {
 	FILE *fp = NULL, *outfp = NULL;
 	gchar buf[4096];
@@ -503,14 +503,27 @@ void file_strip_crs(const gchar *file)
 
 	while (fgets(buf, sizeof (buf), fp) != NULL) {
 		strcrchomp(buf);
-		fputs(buf, outfp);
+		if (fputs(buf, outfp) == EOF) {
+			fclose(fp);
+			fclose(outfp);
+			goto unlinkout;
+		}
 	}
 
 	fclose(fp);
-	fclose(outfp);
-	rename_force(out, file);
+	if (fclose(outfp) == EOF) {
+		goto unlinkout;
+	}
+	
+	if (rename_force(out, file) < 0)
+		goto unlinkout;
+	
+	return 0;
+unlinkout:
+	g_unlink(out);
 freeout:
 	g_free(out);
+	return -1;
 }
 
 /* Similar to `strstr' but this function ignores the case of both strings.  */

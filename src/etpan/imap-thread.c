@@ -2270,7 +2270,7 @@ static void fetch_content_run(struct etpan_thread_op * op)
 		}
 		
 		r = fwrite(content, 1, content_size, f);
-		if (r == 0) {
+		if (r < content_size) {
 			goto fclose;
 		}
 		
