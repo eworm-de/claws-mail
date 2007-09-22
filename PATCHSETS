@@ -2885,3 +2885,4 @@
 ( cvs diff -u -r 1.105.2.110 -r 1.105.2.111 src/prefs_account.c;  cvs diff -u -r 1.52.2.48 -r 1.52.2.49 src/prefs_folder_item.c;  cvs diff -u -r 1.1.2.23 -r 1.1.2.24 src/prefs_quote.c;  cvs diff -u -r 1.8.2.23 -r 1.8.2.24 src/quote_fmt.c;  ) > 3.0.1cvs19.patchset
 ( cvs diff -u -r 1.12.2.42 -r 1.12.2.43 src/gtk/prefswindow.c;  ) > 3.0.1cvs20.patchset
 ( cvs diff -u -r 1.395.2.326 -r 1.395.2.327 src/summaryview.c;  ) > 3.0.1cvs21.patchset
+( cvs diff -u -r 1.213.2.161 -r 1.213.2.162 src/folder.c;  cvs diff -u -r 1.87.2.47 -r 1.87.2.48 src/folder.h;  cvs diff -u -r 1.52.2.49 -r 1.52.2.50 src/prefs_folder_item.c;  ) > 3.0.1cvs22.patchset

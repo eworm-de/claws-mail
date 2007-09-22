@@ -30,6 +30,7 @@
 #include <glib.h>
 #include <glib/gi18n.h>
 #include "folder.h"
+#include "alertpanel.h"
 #include "prefs_folder_item.h"
 #include "folderview.h"
 #include "folder.h"
@@ -171,6 +172,7 @@ static gboolean templates_save_recurse_func(GNode *node, gpointer data);
 static gint prefs_folder_item_chmod_mode		(gchar *folder_chmod);
 
 static void folder_color_set_dialog(GtkWidget *widget, gpointer data);
+static void clean_cache_cb(GtkWidget *widget, gpointer data);
 static void folder_regexp_test_cb(GtkWidget *widget, gpointer data);
 static void folder_regexp_set_subject_example_cb(GtkWidget *widget, gpointer data);
 
@@ -192,7 +194,7 @@ static void prefs_folder_item_general_create_widget_func(PrefsPage * page_,
 	GtkListStore *folder_type_menu;
 	GtkWidget *folder_type;
 	GtkTreeIter iter;
-	GtkWidget *dummy_checkbtn;
+	GtkWidget *dummy_checkbtn, *clean_cache_btn;
 	SpecialFolderItemType type;
 	
 	GtkWidget *no_save_warning = NULL;
@@ -228,7 +230,7 @@ static void prefs_folder_item_general_create_widget_func(PrefsPage * page_,
 	page->item	   = item;
 
 	/* Table */
-	table = gtk_table_new(9, 4, FALSE);
+	table = gtk_table_new(10, 4, FALSE);
 	gtk_container_set_border_width (GTK_CONTAINER (table), VBOX_BORDER);
 	gtk_table_set_row_spacings(GTK_TABLE(table), 4);
 	gtk_table_set_col_spacings(GTK_TABLE(table), 4);
@@ -501,6 +503,14 @@ static void prefs_folder_item_general_create_widget_func(PrefsPage * page_,
 	SET_TOGGLE_SENSITIVITY (checkbtn_offlinesync, hbox);
 	SET_TOGGLE_SENSITIVITY (checkbtn_offlinesync, hbox2);
 	
+	clean_cache_btn = gtk_button_new_with_label(_("Discard folder cache"));
+	gtk_widget_show (clean_cache_btn);
+	gtk_table_attach(GTK_TABLE(table), clean_cache_btn, 0, 1,
+			 rowcount, rowcount+1, GTK_EXPAND | GTK_FILL, GTK_FILL, 0, 0);
+	g_signal_connect(G_OBJECT(clean_cache_btn), "clicked",
+			 G_CALLBACK(clean_cache_cb),
+			 page);
+
 	gtk_widget_show_all(table);
 
 	if (item->folder && (item->folder->klass->type != F_IMAP && 
@@ -517,6 +527,7 @@ static void prefs_folder_item_general_create_widget_func(PrefsPage * page_,
 		gtk_widget_hide(GTK_WIDGET(hbox));
 		gtk_widget_hide(GTK_WIDGET(hbox2));
 		gtk_widget_hide(GTK_WIDGET(offlinesync_rec_checkbtn));
+		gtk_widget_hide(GTK_WIDGET(clean_cache_btn));
 	
 	}
 	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(checkbtn_offlinesync),
@@ -1359,6 +1370,33 @@ static void folder_color_set_dialog(GtkWidget *widget, gpointer data)
 					     page->folder_color);
 	gtkut_set_widget_bgcolor_rgb(page->folder_color_btn, rgbcolor);
 	page->folder_color = rgbcolor;
+}
+
+static void clean_cache_cb(GtkWidget *widget, gpointer data)
+{
+	FolderItemGeneralPage *page = (FolderItemGeneralPage *) data;
+	FolderItem *item = page->item;
+	gboolean was_open = FALSE;
+	FolderView *folderview = NULL;
+
+	if (alertpanel_full(_("Discard cache"), 
+			    _("Do you really want to discard the local cached "
+			      "data for this folder?"),
+		 		 GTK_STOCK_CANCEL, _("+Discard"), NULL, FALSE,
+				 NULL, ALERT_WARNING, G_ALERTDEFAULT)
+		!= G_ALERTALTERNATE)
+		return;
+	
+	if (mainwindow_get_mainwindow())
+		folderview = mainwindow_get_mainwindow()->folderview;
+
+	if (folderview && item->opened) {
+		folderview_close_opened(folderview);
+		was_open = TRUE;
+	}
+	folder_item_discard_cache(item);
+	if (was_open)
+		folderview_select(folderview,item);
 }
 
 static regex_t *summary_compile_simplify_regexp(gchar *simplify_subject_regexp)

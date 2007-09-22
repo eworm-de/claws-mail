@@ -2447,6 +2447,7 @@ static void folder_item_read_cache(FolderItem *item)
 					unreadmarkedcnt++;
 				if (MSG_IS_MARKED(msginfo->flags))
 					markedcnt++;
+				procmsg_msginfo_unset_flags(msginfo, MSG_FULLY_CACHED, 0);
 			}
 			item->new_msgs = newcnt;
 		        item->unread_msgs = unreadcnt;
@@ -2832,6 +2833,9 @@ static void copy_msginfo_flags(MsgInfo *source, MsgInfo *dest)
 	/* set ignore flag of ignored parent exists */
 	if (procmsg_msg_has_flagged_parent(dest, MSG_IGNORE_THREAD))
 		perm_flags |= MSG_IGNORE_THREAD;
+
+	/* unset FULLY_CACHED flags */
+	perm_flags &= ~MSG_FULLY_CACHED;
 
 	if (procmsg_msg_has_flagged_parent(dest, MSG_WATCH_THREAD))
 		perm_flags |= MSG_WATCH_THREAD;
@@ -3596,6 +3600,30 @@ gboolean folder_item_is_msg_changed(FolderItem *item, MsgInfo *msginfo)
 	g_return_val_if_fail(folder->klass->is_msg_changed != NULL, -1);
 
 	return folder->klass->is_msg_changed(folder, item, msginfo);
+}
+
+void folder_item_discard_cache(FolderItem *item)
+{
+	gchar *dir;
+	gchar *cache;
+
+	if (!item)
+		return;
+
+	if (item->cache) {
+		msgcache_destroy(item->cache);
+		item->cache = NULL;
+	}
+	dir = folder_item_get_path(item);
+	if (is_dir_exist(dir))
+		remove_all_numbered_files(dir);
+	g_free(dir);
+	
+	cache = folder_item_get_cache_file(item);
+	if (is_file_exist(cache))
+		g_unlink(cache);
+	g_free(cache);
+	
 }
 
 static gchar *folder_item_get_cache_file(FolderItem *item)

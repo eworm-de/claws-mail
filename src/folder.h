@@ -866,4 +866,5 @@ gboolean folder_get_sort_type		(Folder		*folder,
 					 FolderSortKey	*sort_key,
 					 FolderSortType	*sort_type);
 void folder_item_synchronise		(FolderItem *item);
+void folder_item_discard_cache		(FolderItem *item);
 #endif /* __FOLDER_H__ */

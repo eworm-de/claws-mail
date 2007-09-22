@@ -1,3 +1,10 @@
+2007-09-22 [colin]	3.0.1cvs22
+
+	* src/folder.c
+	* src/folder.h
+	* src/prefs_folder_item.c
+		Add a button to allow users to drop local caches.
+
 2007-09-21 [colin]	3.0.1cvs21
 
 	* src/summaryview.c
