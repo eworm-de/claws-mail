@@ -1,3 +1,13 @@
+2007-09-23 [paul]	3.0.1cvs25
+
+	* src/prefs_account.c
+	* src/prefs_folder_item.c
+	* src/prefs_quote.c
+	* src/quote_fmt.c
+	* src/quote_fmt.h
+		remove unnecessary frame from Templates options
+		and improve the English of the check button label
+
 2007-09-22 [colin]	3.0.1cvs24
 
 	* src/gtk/quicksearch.c
