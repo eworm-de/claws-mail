@@ -2889,3 +2889,4 @@
 ( cvs diff -u -r 1.179.2.187 -r 1.179.2.188 src/imap.c;  cvs diff -u -r 1.60.2.47 -r 1.60.2.48 src/procmsg.h;  cvs diff -u -r 1.36.2.113 -r 1.36.2.114 src/common/utils.c;  cvs diff -u -r 1.20.2.50 -r 1.20.2.51 src/common/utils.h;  cvs diff -u -r 1.1.4.84 -r 1.1.4.85 src/etpan/imap-thread.c;  ) > 3.0.1cvs23.patchset
 ( cvs diff -u -r 1.1.2.76 -r 1.1.2.77 src/gtk/quicksearch.c;  ) > 3.0.1cvs24.patchset
 ( cvs diff -u -r 1.105.2.111 -r 1.105.2.112 src/prefs_account.c;  cvs diff -u -r 1.52.2.50 -r 1.52.2.51 src/prefs_folder_item.c;  cvs diff -u -r 1.1.2.24 -r 1.1.2.25 src/prefs_quote.c;  cvs diff -u -r 1.8.2.24 -r 1.8.2.25 src/quote_fmt.c;  cvs diff -u -r 1.5.12.11 -r 1.5.12.12 src/quote_fmt.h;  ) > 3.0.1cvs25.patchset
+( cvs diff -u -r 1.382.2.410 -r 1.382.2.411 src/compose.c;  ) > 3.0.1cvs26.patchset

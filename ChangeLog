@@ -1,3 +1,9 @@
+2007-09-24 [paul]	3.0.1cvs26
+
+	* src/compose.c
+		compact the character set menu, adding some
+		missing encodings. Patch by Pawel Pekala
+
 2007-09-23 [paul]	3.0.1cvs25
 
 	* src/prefs_account.c
