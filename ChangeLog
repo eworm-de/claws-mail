@@ -1,3 +1,10 @@
+2007-09-25 [holger]	3.0.1cvs27
+
+	* src/printing.c
+		Replace button bar of the preview window
+		with a real toolbar (patch by Colin)
+		Add zooming to the preview window
+
 2007-09-24 [paul]	3.0.1cvs26
 
 	* src/compose.c

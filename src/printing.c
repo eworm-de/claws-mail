@@ -27,6 +27,7 @@
 #if GTK_CHECK_VERSION(2,10,0) && !defined(USE_GNOMEPRINT)
 
 #include "gtkutils.h"
+#include "toolbar.h"
 #include "prefs_common.h"
 
 #include <glib/gi18n.h>
@@ -47,11 +48,14 @@ typedef struct {
   gint sel_end;
   GHashTable *images;
   gint img_cnt;
+  gdouble zoom;
 } PrintData;
 
 typedef struct {
   GtkPrintOperation *op;
   GtkPrintOperationPreview *preview;
+  GtkWidget         *dialog;
+  GtkWidget         *scrolled_window;
   GtkWidget         *area;
   PrintData         *print_data;
   GtkWidget         *page_nr_label;
@@ -62,6 +66,10 @@ typedef struct {
   GtkWidget *previous;
   GtkWidget *last;
   GtkWidget *close;
+  GtkWidget *zoom_100;
+  GtkWidget *zoom_fit;
+  GtkWidget *zoom_in;
+  GtkWidget *zoom_out;
   gboolean rendering;
   gint page_width;
   gint page_height;
@@ -86,6 +94,16 @@ static void     cb_preview_go_first(GtkButton*, gpointer);
 static void     cb_preview_go_previous(GtkButton*, gpointer);
 static void     cb_preview_go_next(GtkButton*, gpointer);
 static void     cb_preview_go_last(GtkButton*, gpointer);
+static void     cb_preview_btn_close(GtkButton*, gpointer);
+static void     cb_preview_zoom_100(GtkButton*, gpointer);
+static void     cb_preview_zoom_fit(GtkButton*, gpointer);
+static void     cb_preview_zoom_in(GtkButton*, gpointer);
+static void     cb_preview_zoom_out(GtkButton*, gpointer);
+static void     cb_preview_request_page_setup(GtkPrintOperation*,
+					      GtkPrintContext*,
+ 					      gint,GtkPageSetup*,gpointer);
+
+static void     printing_preview_update_zoom_sensitivity(PreviewData*);
 
 /* variables */
 static GtkPrintSettings *settings   = NULL;
@@ -98,6 +116,9 @@ static gint     printing_text_iter_get_offset_bytes(PrintData *, const GtkTextIt
 
 #define PREVIEW_SCALE 72
 #define PREVIEW_SHADOW_OFFSET 3
+#define PREVIEW_ZOOM_FAC 1.41
+#define PREVIEW_ZOOM_MAX 10.
+#define PREVIEW_ZOOM_MIN 0.2
 
 static void free_pixbuf(gpointer key, gpointer value, gpointer data)
 {
@@ -116,6 +137,8 @@ void printing_print(GtkTextView *text_view, GtkWindow *parent, gint sel_start, g
   op = gtk_print_operation_new();
 
   print_data = g_new0(PrintData,1);
+
+  print_data->zoom = 1.;
 
   print_data->images = g_hash_table_new(g_direct_hash, g_direct_equal);
   print_data->pango_context=gtk_widget_get_pango_context(GTK_WIDGET(text_view));
@@ -240,13 +263,15 @@ static gboolean cb_preview(GtkPrintOperation        *operation,
   cairo_t *cr;
   PreviewData *preview_data;
   GtkWidget *vbox;
-  GtkWidget *hbox;
-  GtkWidget *scrolled_window;
+  GtkWidget *toolbar;
   GtkWidget *da;
+  GtkWidget *sw;
   GtkWidget *page;
+  GtkToolItem *separator;
   static GdkGeometry geometry;
   GtkWidget *dialog = NULL;
-
+  GtkTooltips *toolbar_tips = gtk_tooltips_new();
+  GtkWidget *statusbar = gtk_hbox_new(2, FALSE);
   debug_print("Creating internal print preview\n");
 
   print_data = (PrintData*) data;
@@ -258,6 +283,7 @@ static gboolean cb_preview(GtkPrintOperation        *operation,
 
   /* Window */
   dialog = gtkut_window_new(GTK_WINDOW_TOPLEVEL, "print_preview");
+  preview_data->dialog = dialog;
   if(!geometry.min_height) {
     geometry.min_width = 600;
     geometry.min_height = 400;
@@ -273,34 +299,75 @@ static gboolean cb_preview(GtkPrintOperation        *operation,
   gtk_container_add(GTK_CONTAINER(dialog), vbox);
   
   /* toolbar */
-  hbox = gtk_hbox_new (FALSE, 0);
-  gtk_box_pack_start(GTK_BOX(vbox), hbox, FALSE, FALSE, 0);
-  preview_data->first = gtk_button_new_from_stock(GTK_STOCK_GOTO_FIRST);
-  gtk_box_pack_start(GTK_BOX(hbox), preview_data->first, FALSE, FALSE, 0);
-  preview_data->previous = gtk_button_new_from_stock(GTK_STOCK_GO_BACK);
-  gtk_box_pack_start(GTK_BOX(hbox), preview_data->previous, FALSE, FALSE, 0);
+  toolbar = gtk_toolbar_new();
+  gtk_toolbar_set_orientation(GTK_TOOLBAR(toolbar), GTK_ORIENTATION_HORIZONTAL);
+  switch (prefs_common.toolbar_style) {
+  case TOOLBAR_ICON:
+    gtk_toolbar_set_style(GTK_TOOLBAR(toolbar), GTK_TOOLBAR_ICONS);
+    break;
+  case TOOLBAR_TEXT:
+    gtk_toolbar_set_style(GTK_TOOLBAR(toolbar), GTK_TOOLBAR_TEXT);
+    break;
+  case TOOLBAR_BOTH_HORIZ:
+    gtk_toolbar_set_style(GTK_TOOLBAR(toolbar), GTK_TOOLBAR_BOTH_HORIZ);
+    break;
+  case TOOLBAR_BOTH:
+  default:	  
+    gtk_toolbar_set_style(GTK_TOOLBAR(toolbar), GTK_TOOLBAR_BOTH);
+  }
+  gtk_toolbar_set_show_arrow(GTK_TOOLBAR(toolbar), TRUE);
+	
+  gtk_box_pack_start(GTK_BOX(vbox), toolbar, FALSE, FALSE, 0);
+
+#define TOOLBAR_ITEM(item,text,tooltip,cb,cbdata) {								\
+	item = GTK_WIDGET(gtk_tool_button_new_from_stock(text));					\
+	gtk_tool_item_set_homogeneous(GTK_TOOL_ITEM(item), FALSE);					\
+	gtk_tool_item_set_is_important(GTK_TOOL_ITEM(item), TRUE);					\
+	gtk_toolbar_insert(GTK_TOOLBAR(toolbar), GTK_TOOL_ITEM(item), -1);				\
+	g_signal_connect (G_OBJECT(item), "clicked", G_CALLBACK(cb), cbdata);				\
+	gtk_tool_item_set_tooltip(GTK_TOOL_ITEM(item), GTK_TOOLTIPS(toolbar_tips),			\
+			tooltip, NULL);									\
+}
+
+  TOOLBAR_ITEM(preview_data->first, GTK_STOCK_GOTO_FIRST, _("First page"), cb_preview_go_first, preview_data);
+  TOOLBAR_ITEM(preview_data->previous, GTK_STOCK_GO_BACK, _("Previous page"), cb_preview_go_previous, preview_data);
+  
   page = gtk_label_new("");
   gtk_widget_set_size_request(page, 100, -1);
   preview_data->page_nr_label = page;
-  gtk_box_pack_start(GTK_BOX(hbox), page, FALSE, FALSE, 0);
-  preview_data->next = gtk_button_new_from_stock(GTK_STOCK_GO_FORWARD);
-  gtk_box_pack_start(GTK_BOX(hbox), preview_data->next, FALSE, FALSE, 0);
-  preview_data->last = gtk_button_new_from_stock(GTK_STOCK_GOTO_LAST);
-  gtk_box_pack_start(GTK_BOX(hbox), preview_data->last, FALSE, FALSE, 0);
-  preview_data->close = gtk_button_new_from_stock(GTK_STOCK_CLOSE);
-  gtk_box_pack_end(GTK_BOX(hbox), preview_data->close, FALSE, FALSE, 0);
+  
+  TOOLBAR_ITEM(preview_data->next, GTK_STOCK_GO_FORWARD, _("Next page"), cb_preview_go_next, preview_data);
+  TOOLBAR_ITEM(preview_data->last, GTK_STOCK_GOTO_LAST, _("Last page"), cb_preview_go_last, preview_data);
+  
+  separator = gtk_separator_tool_item_new();
+  gtk_toolbar_insert(GTK_TOOLBAR(toolbar), GTK_TOOL_ITEM(separator), -1);
 
+  TOOLBAR_ITEM(preview_data->zoom_100, GTK_STOCK_ZOOM_100, _("Zoom 100%"), cb_preview_zoom_100, preview_data);
+  TOOLBAR_ITEM(preview_data->zoom_fit, GTK_STOCK_ZOOM_FIT, _("Zoom fit"), cb_preview_zoom_fit, preview_data);
+  TOOLBAR_ITEM(preview_data->zoom_in, GTK_STOCK_ZOOM_IN, _("Zoom in"), cb_preview_zoom_in, preview_data);
+  TOOLBAR_ITEM(preview_data->zoom_out, GTK_STOCK_ZOOM_OUT, _("Zoom out"), cb_preview_zoom_out, preview_data);
+
+  separator = gtk_separator_tool_item_new();
+  gtk_toolbar_insert(GTK_TOOLBAR(toolbar), GTK_TOOL_ITEM(separator), -1);
+
+  /* tooltip has to be NULL else it triggers an expose_event */
+  TOOLBAR_ITEM(preview_data->close, GTK_STOCK_CLOSE, NULL, cb_preview_btn_close, preview_data);
+
+  gtk_widget_show(statusbar);
+  gtk_box_pack_start(GTK_BOX(vbox), statusbar, FALSE, FALSE, 0);
+  gtk_box_pack_start(GTK_BOX(statusbar), page, FALSE, FALSE, 0);
   /* Drawing area */
-  scrolled_window = gtk_scrolled_window_new(NULL, NULL);
-  gtk_scrolled_window_set_policy(GTK_SCROLLED_WINDOW(scrolled_window),
+  sw = gtk_scrolled_window_new(NULL, NULL);
+  gtk_scrolled_window_set_policy(GTK_SCROLLED_WINDOW(sw),
 				 GTK_POLICY_AUTOMATIC,
 				 GTK_POLICY_AUTOMATIC);
-  gtk_box_pack_start(GTK_BOX(vbox), scrolled_window, TRUE, TRUE, 0);
+  gtk_box_pack_start(GTK_BOX(vbox), sw, TRUE, TRUE, 0);
   da = gtk_drawing_area_new();
   gtk_widget_set_double_buffered(da, FALSE);
-  gtk_scrolled_window_add_with_viewport(GTK_SCROLLED_WINDOW(scrolled_window),
+  gtk_scrolled_window_add_with_viewport(GTK_SCROLLED_WINDOW(sw),
 					da);
   gtk_widget_realize(da);
+  preview_data->scrolled_window = sw;
   preview_data->area = da;
 
   /* cairo context */
@@ -315,20 +382,14 @@ static gboolean cb_preview(GtkPrintOperation        *operation,
 		   G_CALLBACK(cb_preview_size_allocate), NULL);
   g_signal_connect(dialog, "destroy",G_CALLBACK(cb_preview_destroy),
 		   preview_data);
-  g_signal_connect_swapped(preview_data->close, "clicked",
-			   G_CALLBACK(gtk_widget_destroy), dialog);
-  g_signal_connect(preview_data->first, "clicked",
-		   G_CALLBACK(cb_preview_go_first), preview_data);
-  g_signal_connect(preview_data->previous, "clicked",
-		   G_CALLBACK(cb_preview_go_previous), preview_data);
-  g_signal_connect(preview_data->next, "clicked",
-		   G_CALLBACK(cb_preview_go_next), preview_data);
-  g_signal_connect(preview_data->last, "clicked",
-		   G_CALLBACK(cb_preview_go_last), preview_data);
   g_signal_connect(preview, "ready", G_CALLBACK(cb_preview_ready),
 		   preview_data);
   g_signal_connect(preview, "got-page-size",
 		   G_CALLBACK(cb_preview_got_page_size), preview_data);
+
+  g_signal_connect(operation, "request-page-setup",
+		   G_CALLBACK(cb_preview_request_page_setup), preview_data);
+
   gtk_widget_show_all(dialog);
   return TRUE;
 }
@@ -528,6 +589,114 @@ static void cb_preview_go_last(GtkButton *button, gpointer data)
   gtk_widget_queue_draw(preview_data->area);
 }
 
+static void cb_preview_btn_close(GtkButton *button, gpointer data)
+{
+  PreviewData *preview_data = (PreviewData *)data;
+  if (preview_data->rendering)
+    return; 
+  gtk_widget_destroy(preview_data->dialog);
+}
+
+static void cb_preview_zoom_100(GtkButton *button, gpointer data)
+{
+  PreviewData *preview_data = (PreviewData*) data;
+  if(preview_data->print_data->zoom != 1.) {
+    preview_data->print_data->zoom = 1.;
+    gtk_widget_queue_draw(preview_data->area);
+    printing_preview_update_zoom_sensitivity(preview_data);
+  }
+}
+
+static void cb_preview_zoom_fit(GtkButton *button, gpointer data)
+{
+  PreviewData *preview_data = (PreviewData*) data;
+  gdouble zoom_w;
+  gdouble zoom_h;
+  
+  zoom_w = ((gdouble)preview_data->scrolled_window->allocation.width) /
+    ((gdouble)preview_data->page_width/preview_data->print_data->zoom +
+     PREVIEW_SHADOW_OFFSET);
+  zoom_h = ((gdouble)preview_data->scrolled_window->allocation.height) /
+    ((gdouble)preview_data->page_height/preview_data->print_data->zoom +
+     PREVIEW_SHADOW_OFFSET);
+
+  preview_data->print_data->zoom = MIN(zoom_w,zoom_h) - 0.01;
+
+  if(preview_data->print_data->zoom > PREVIEW_ZOOM_MAX)
+    preview_data->print_data->zoom = PREVIEW_ZOOM_MAX;
+  else if(preview_data->print_data->zoom < PREVIEW_ZOOM_MIN)
+    preview_data->print_data->zoom = PREVIEW_ZOOM_MIN;
+
+  printing_preview_update_zoom_sensitivity(preview_data);
+  gtk_widget_queue_draw(preview_data->area);
+}
+
+static void cb_preview_zoom_in(GtkButton *button, gpointer data)
+{
+  PreviewData *preview_data = (PreviewData*) data;
+  gdouble new_zoom;
+  new_zoom =  preview_data->print_data->zoom * PREVIEW_ZOOM_FAC;
+  if(new_zoom <= PREVIEW_ZOOM_MAX) {
+    preview_data->print_data->zoom = new_zoom;
+    printing_preview_update_zoom_sensitivity(preview_data);
+    gtk_widget_queue_draw(preview_data->area);
+  }
+}
+
+static void cb_preview_zoom_out(GtkButton *button, gpointer data)
+{
+  PreviewData *preview_data = (PreviewData*) data;
+  gdouble new_zoom;
+  new_zoom =  preview_data->print_data->zoom / PREVIEW_ZOOM_FAC;
+  if(new_zoom >= PREVIEW_ZOOM_MIN) {
+    preview_data->print_data->zoom = new_zoom;
+    printing_preview_update_zoom_sensitivity(preview_data);
+    gtk_widget_queue_draw(preview_data->area);
+  }
+}
+
+static void cb_preview_request_page_setup(GtkPrintOperation *op,
+					  GtkPrintContext *context,
+					  gint page_nr,
+					  GtkPageSetup *setup,gpointer data)
+{
+  GtkPaperSize *paper_size;
+  GtkPaperSize *old_size;
+  gdouble width;
+  gdouble height;
+  gdouble top_margin;
+  gdouble bottom_margin;
+  gdouble left_margin;
+  gdouble right_margin;
+
+  PreviewData *preview_data = (PreviewData*) data;
+
+  old_size = gtk_page_setup_get_paper_size(setup);
+  width  = gtk_paper_size_get_width(old_size,GTK_UNIT_INCH);
+  height = gtk_paper_size_get_height(old_size,GTK_UNIT_INCH);
+
+  top_margin    = gtk_page_setup_get_top_margin(setup,GTK_UNIT_INCH);
+  bottom_margin = gtk_page_setup_get_bottom_margin(setup,GTK_UNIT_INCH);
+  left_margin   = gtk_page_setup_get_left_margin(setup,GTK_UNIT_INCH);
+  right_margin  = gtk_page_setup_get_right_margin(setup,GTK_UNIT_INCH);
+
+  paper_size = gtk_paper_size_new_custom("preview paper", "preview_paper",
+					 width*preview_data->print_data->zoom,
+					 height*preview_data->print_data->zoom,
+					 GTK_UNIT_INCH);
+  gtk_page_setup_set_paper_size(setup, paper_size);
+  gtk_paper_size_free(paper_size);
+
+  gtk_page_setup_set_top_margin(setup,top_margin*preview_data->print_data->zoom,
+				GTK_UNIT_INCH);
+  gtk_page_setup_set_bottom_margin(setup,bottom_margin*preview_data->print_data->zoom,
+				   GTK_UNIT_INCH);
+  gtk_page_setup_set_left_margin(setup,left_margin*preview_data->print_data->zoom,
+				 GTK_UNIT_INCH);
+  gtk_page_setup_set_right_margin(setup,right_margin*preview_data->print_data->zoom,
+				  GTK_UNIT_INCH);
+}
+
 static void cb_begin_print(GtkPrintOperation *op, GtkPrintContext *context,
 			   gpointer user_data)
 {
@@ -716,6 +885,7 @@ static void cb_draw_page(GtkPrintOperation *op, GtkPrintContext *context,
     end = GPOINTER_TO_INT(pagebreak->data);
 
   cr = gtk_print_context_get_cairo_context(context);
+  cairo_scale(cr, print_data->zoom, print_data->zoom);
   cairo_set_source_rgb(cr, 0., 0., 0.);
 
   ii = 0;
@@ -989,6 +1159,19 @@ static gint printing_text_iter_get_offset_bytes(PrintData *print_data, const Gtk
   off_bytes = strlen(text);
   g_free(text);
   return off_bytes;
+}
+
+static void printing_preview_update_zoom_sensitivity(PreviewData *preview_data)
+{
+  if((preview_data->print_data->zoom * PREVIEW_ZOOM_FAC) > PREVIEW_ZOOM_MAX)
+    gtk_widget_set_sensitive(preview_data->zoom_in, FALSE);
+  else
+    gtk_widget_set_sensitive(preview_data->zoom_in, TRUE);
+
+  if((preview_data->print_data->zoom / PREVIEW_ZOOM_FAC) < PREVIEW_ZOOM_MIN)
+    gtk_widget_set_sensitive(preview_data->zoom_out, FALSE);
+  else
+    gtk_widget_set_sensitive(preview_data->zoom_out, TRUE);
 }
 
 #endif /* GTK+ >= 2.10.0 */
