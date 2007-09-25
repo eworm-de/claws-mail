@@ -175,8 +175,12 @@ gint xml_get_dtd(XMLFile *file)
 			bufp += 9;
 			extract_quote(bufp, '"');
 			file->encoding = g_strdup(bufp);
-		} else
+			file->need_codeconv =
+				strcmp2(bufp, CS_INTERNAL);
+		} else {
 			file->encoding = g_strdup(CS_INTERNAL);
+			file->need_codeconv = FALSE;
+		}
 	} else {
 		g_warning("Can't get xml dtd\n");
 		return -1;
@@ -230,19 +234,25 @@ gint xml_parse_next_tag(XMLFile *file)
 
 	while (*bufp != '\0' && !g_ascii_isspace(*bufp)) bufp++;
 	if (*bufp == '\0') {
-		tag_str = conv_codeset_strdup(buf, file->encoding, CS_INTERNAL);
-		if (tag_str) {
-			tag->tag = XML_STRING_ADD(tag_str);
-			g_free(tag_str);
+		if (file->need_codeconv) {
+			tag_str = conv_codeset_strdup(buf, file->encoding, CS_INTERNAL);
+			if (tag_str) {
+				tag->tag = XML_STRING_ADD(tag_str);
+				g_free(tag_str);
+			} else
+				tag->tag = XML_STRING_ADD(buf);
 		} else
 			tag->tag = XML_STRING_ADD(buf);
 		return 0;
 	} else {
 		*bufp++ = '\0';
-		tag_str = conv_codeset_strdup(buf, file->encoding, CS_INTERNAL);
-		if (tag_str) {
-			tag->tag = XML_STRING_ADD(tag_str);
-			g_free(tag_str);
+		if (file->need_codeconv) {
+			tag_str = conv_codeset_strdup(buf, file->encoding, CS_INTERNAL);
+			if (tag_str) {
+				tag->tag = XML_STRING_ADD(tag_str);
+				g_free(tag_str);
+			} else
+				tag->tag = XML_STRING_ADD(buf);
 		} else
 			tag->tag = XML_STRING_ADD(buf);
 	}
@@ -283,21 +293,26 @@ gint xml_parse_next_tag(XMLFile *file)
 
 		g_strchomp(attr_name);
 		xml_unescape_str(attr_value);
-		utf8_attr_name = conv_codeset_strdup
-			(attr_name, file->encoding, CS_INTERNAL);
-		utf8_attr_value = conv_codeset_strdup
-			(attr_value, file->encoding, CS_INTERNAL);
-		if (!utf8_attr_name)
-			utf8_attr_name = g_strdup(attr_name);
-		if (!utf8_attr_value)
-			utf8_attr_value = g_strdup(attr_value);
+		if (file->need_codeconv) {
+			utf8_attr_name = conv_codeset_strdup
+				(attr_name, file->encoding, CS_INTERNAL);
+			utf8_attr_value = conv_codeset_strdup
+				(attr_value, file->encoding, CS_INTERNAL);
+			if (!utf8_attr_name)
+				utf8_attr_name = g_strdup(attr_name);
+			if (!utf8_attr_value)
+				utf8_attr_value = g_strdup(attr_value);
 
-		attr = xml_attr_new(utf8_attr_name, utf8_attr_value);
+			attr = xml_attr_new(utf8_attr_name, utf8_attr_value);
+			g_free(utf8_attr_value);
+			g_free(utf8_attr_name);
+		} else {
+			attr = xml_attr_new(attr_name, attr_value);
+		}
 		xml_tag_add_attr(tag, attr);
 
-		g_free(utf8_attr_value);
-		g_free(utf8_attr_name);
 	}
+	tag->attr = g_list_reverse(tag->attr);
 
 	return 0;
 }
@@ -365,6 +380,9 @@ gchar *xml_get_element(XMLFile *file)
 		g_free(str);
 		return NULL;
 	}
+
+	if (!file->need_codeconv)
+		return str;
 
 	new_str = conv_codeset_strdup(str, file->encoding, CS_INTERNAL);
 	if (!new_str)
@@ -468,7 +486,7 @@ XMLAttr *xml_attr_new_int(const gchar *name, const gint value)
 
 void xml_tag_add_attr(XMLTag *tag, XMLAttr *attr)
 {
-	tag->attr = g_list_append(tag->attr, attr);
+	tag->attr = g_list_prepend(tag->attr, attr);
 }
 
 XMLTag *xml_copy_tag(XMLTag *tag)
@@ -482,6 +500,7 @@ XMLTag *xml_copy_tag(XMLTag *tag)
 		attr = xml_copy_attr((XMLAttr *)list->data);
 		xml_tag_add_attr(new_tag, attr);
 	}
+	tag->attr = g_list_reverse(tag->attr);
 
 	return new_tag;
 }
@@ -538,22 +557,13 @@ gint xml_unescape_str(gchar *str)
 
 gint xml_file_put_escape_str(FILE *fp, const gchar *str)
 {
-	const gchar *src_codeset = CS_INTERNAL;
-	const gchar *dest_codeset = CS_INTERNAL;
-	gchar *tmpstr = NULL;
 	const gchar *p;
 	int result = 0;
 	g_return_val_if_fail(fp != NULL, -1);
 
 	if (!str) return 0;
 
-	tmpstr = conv_codeset_strdup(str, src_codeset, dest_codeset);
-	if (!tmpstr) {
-		g_warning("xml_file_put_escape_str(): Failed to convert character set.");
-		tmpstr = g_strdup(str);
-	}
-
-	for (p = tmpstr; *p != '\0'; p++) {
+	for (p = str; *p != '\0'; p++) {
 		switch (*p) {
 		case '<':
 			result = fputs("&lt;", fp);
@@ -575,8 +585,6 @@ gint xml_file_put_escape_str(FILE *fp, const gchar *str)
 		}
 	}
 
-	g_free(tmpstr);
-	
 	return (result == EOF ? -1 : 0);
 }
 

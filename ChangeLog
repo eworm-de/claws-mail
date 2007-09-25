@@ -1,3 +1,14 @@
+2007-09-25 [colin]	3.0.1cvs28
+
+	* src/codeconv.c
+		Optimisation: shortcut conv_codeset_strdup
+		when src_code and dest_code are the same
+	* src/common/xml.c
+	* src/common/xml.h
+		Optimisation: shortcut code conversions when
+		files are in UTF-8; faster list walking by
+		using prepend/reverse.
+
 2007-09-25 [holger]	3.0.1cvs27
 
 	* src/printing.c

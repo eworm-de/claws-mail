@@ -57,6 +57,7 @@ struct _XMLFile
 
 	gchar *dtd;
 	gchar *encoding;
+	gboolean need_codeconv;
 
 	GList *tag_stack;
 	guint level;

@@ -716,6 +716,9 @@ gchar *conv_codeset_strdup(const gchar *inbuf,
 	size_t len;
 	CodeConvFunc conv_func;
 
+	if (!strcmp2(src_code, dest_code))
+		return g_strdup(inbuf);
+
 	src_code = conv_get_fallback_for_private_encoding(src_code);
 	conv_func = conv_get_code_conv_func(src_code, dest_code);
 	if (conv_func != conv_noconv) {
