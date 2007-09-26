@@ -822,10 +822,24 @@ gint messageview_show(MessageView *messageview, MsgInfo *msginfo,
 				procmsg_spam_can_learn());
 	}
 	messageview->updating = TRUE;
-	mimeinfo = procmime_scan_message(msginfo);
+
+	file = procmsg_get_message_file_path(msginfo);
+	if (!file) {
+		g_warning("can't get message file path.\n");
+		textview_show_error(messageview->mimeview->textview);
+		return -1;
+	}
+	
+	if (!folder_has_parent_of_type(msginfo->folder, F_QUEUE) &&
+	    !folder_has_parent_of_type(msginfo->folder, F_DRAFT))
+		mimeinfo = procmime_scan_file(file);
+	else
+		mimeinfo = procmime_scan_queue_file(file);
+
 	messageview->updating = FALSE;
 	
 	if (messageview->deferred_destroy) {
+		g_free(file);
 		messageview_destroy(messageview);
 		return 0;
 	}
@@ -843,29 +857,13 @@ gint messageview_show(MessageView *messageview, MsgInfo *msginfo,
 			break;
 		}
 	}
-	
-	messageview->updating = TRUE;
-	file = procmsg_get_message_file_path(msginfo);
-	messageview->updating = FALSE;
-	
-	if (messageview->deferred_destroy) {
-		g_free(file);
-		messageview_destroy(messageview);
-		return 0;
-	}
-
-	if (!file) {
-		g_warning("can't get message file path.\n");
-		procmime_mimeinfo_free_all(mimeinfo);
-		textview_show_error(messageview->mimeview->textview);
-		return -1;
-	}
-	
+			
 	if (messageview->msginfo != msginfo) {
 		procmsg_msginfo_free(messageview->msginfo);
 		messageview->msginfo = NULL;
 		messageview_set_menu_sensitive(messageview);
-		messageview->msginfo = procmsg_msginfo_get_full_info(msginfo);
+		messageview->msginfo = 
+			procmsg_msginfo_get_full_info_from_file(msginfo, file);
 		if (!messageview->msginfo)
 			messageview->msginfo = procmsg_msginfo_copy(msginfo);
 	} else {

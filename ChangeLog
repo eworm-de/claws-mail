@@ -1,3 +1,11 @@
+2007-09-26 [colin]	3.0.1cvs32
+
+	* src/messageview.c
+	* src/procmsg.c
+	* src/procmsg.h
+		Optimisation: avoid fetching mail 3 times locally
+		for displaying
+
 2007-09-26 [colin]	3.0.1cvs31
 
 	* src/mh.c

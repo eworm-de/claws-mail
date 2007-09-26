@@ -1218,25 +1218,18 @@ MsgInfo *procmsg_msginfo_copy(MsgInfo *msginfo)
 	return newmsginfo;
 }
 
-MsgInfo *procmsg_msginfo_get_full_info(MsgInfo *msginfo)
+MsgInfo *procmsg_msginfo_get_full_info_from_file(MsgInfo *msginfo, const gchar *file)
 {
 	MsgInfo *full_msginfo;
-	gchar *file;
 
 	if (msginfo == NULL) return NULL;
 
-	file = procmsg_get_message_file_path(msginfo);
 	if (!file || !is_file_exist(file)) {
-		g_free(file);
-		file = procmsg_get_message_file(msginfo);
-	}
-	if (!file || !is_file_exist(file)) {
-		g_warning("procmsg_msginfo_get_full_info(): can't get message file.\n");
+		g_warning("procmsg_msginfo_get_full_info_from_file(): can't get message file.\n");
 		return NULL;
 	}
 
 	full_msginfo = procheader_parse_file(file, msginfo->flags, TRUE, FALSE);
-	g_free(file);
 	if (!full_msginfo) return NULL;
 
 	msginfo->total_size = full_msginfo->total_size;
@@ -1280,6 +1273,28 @@ MsgInfo *procmsg_msginfo_get_full_info(MsgInfo *msginfo)
 	procmsg_msginfo_free(full_msginfo);
 
 	return procmsg_msginfo_new_ref(msginfo);
+}
+
+MsgInfo *procmsg_msginfo_get_full_info(MsgInfo *msginfo)
+{
+	MsgInfo *full_msginfo;
+	gchar *file;
+
+	if (msginfo == NULL) return NULL;
+
+	file = procmsg_get_message_file_path(msginfo);
+	if (!file || !is_file_exist(file)) {
+		g_free(file);
+		file = procmsg_get_message_file(msginfo);
+	}
+	if (!file || !is_file_exist(file)) {
+		g_warning("procmsg_msginfo_get_full_info(): can't get message file.\n");
+		return NULL;
+	}
+
+	full_msginfo = procmsg_msginfo_get_full_info_from_file(msginfo, file);
+	g_free(file);
+	return full_msginfo;
 }
 
 void procmsg_msginfo_free(MsgInfo *msginfo)

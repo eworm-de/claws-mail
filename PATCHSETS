@@ -2895,3 +2895,4 @@
 ( cvs diff -u -r 1.149.2.82 -r 1.149.2.83 src/inc.c;  ) > 3.0.1cvs29.patchset
 ( cvs diff -u -r 1.213.2.162 -r 1.213.2.163 src/folder.c;  cvs diff -u -r 1.87.2.48 -r 1.87.2.49 src/folder.h;  cvs diff -u -r 1.79.2.61 -r 1.79.2.62 src/mh.c;  cvs diff -u -r 1.9.2.7 -r 1.9.2.8 src/mh.h;  ) > 3.0.1cvs30.patchset
 ( cvs diff -u -r 1.79.2.62 -r 1.79.2.63 src/mh.c;  ) > 3.0.1cvs31.patchset
+( cvs diff -u -r 1.94.2.152 -r 1.94.2.153 src/messageview.c;  cvs diff -u -r 1.150.2.102 -r 1.150.2.103 src/procmsg.c;  cvs diff -u -r 1.60.2.48 -r 1.60.2.49 src/procmsg.h;  ) > 3.0.1cvs32.patchset
