@@ -1,3 +1,21 @@
+2007-09-26 [mones]	3.0.1cvs34
+
+	* manual/account.xml
+	* manual/plugins.xml
+		Fixed irc channel name, added some docbook markup.
+		Changed text markup to docbook markup. 
+		Added spamcop as supported in SpamReport description.
+	* manual/fr/plugins.xml
+		Fixed irc channel name.
+	* manual/es/account.xml
+	* manual/es/advanced.xml
+	* manual/es/claws-mail-manual.xml
+	* manual/es/glossary.xml
+	* manual/es/gpl.xml
+	* manual/es/keyboard.xml
+	* manual/es/plugins.xml
+		Synced with English version, fixed a couple of typos.
+
 2007-09-26 [colin]	3.0.1cvs33
 
 	* configure.ac

@@ -13,8 +13,8 @@
 	switcher at the lower right-hand corner of the main window.  The server
 	information lets you specify the receiving protocol to use (which is
 	not modifiable for existing accounts), the server(s) used to receive or
-	send your emails (usually pop.isp.com and smtp.isp.com) and your login
-	on the receiving server.  
+	send your emails (usually <literal>pop.isp.com</literal> and <literal
+	>smtp.isp.com</literal>) and your login on the receiving server.  
     </para>
     <para>
 	In the <quote>Receive</quote> tab you are able to change the default

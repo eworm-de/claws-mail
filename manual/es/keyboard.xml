@@ -31,13 +31,7 @@
 	manera que puedan ser aprendidas fácilmente con el uso. Además, si
 	no son de su agrado, estos atajos pueden ser cambiados al instante
 	mediante el enfoque del elemento del menú y pulsando la nueva
-	combinación deseada. Esto solo funciona para combinaciones de teclas
-	que incluyan las teclas modificadoras <option>Alt</option>, 
-	<option>Control</option> y/o <option>Mays</option>, no se pueden
-	asignar teclas simples. Este es un comportamiento estándar de los
-	programas basados en GTK2 como &SC; (Nótese que este comportamiento
-	puede estar desactivado de manera predeterminada en algunos 
-	escritorios). 
+	combinación deseada. 
     </para>
     <para>
 	Además de estos atajos hay otros que varían de una ventana a otra,

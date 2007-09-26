@@ -15,8 +15,8 @@
 	principal. La información del servidor le permite indicar el protocolo
 	de recepción a usar (que no es modificable en cuentas ya existentes),
 	el/los servidor/es usados para recibir o enviar sus correos (comúnmente
-	pop.isp.com y smtp.isp.com) y su nombre de usuario en el servidor de
-	recepción.
+	<literal>pop.isp.com</literal> y <literal>smtp.isp.com</literal>) 
+	y su nombre de usuario en el servidor de recepción.
     </para><para>
 	En la pestaña <quote>Recibir</quote> se puede cambiar el comportamiento
 	predeterminado de &SC;. Por ejemplo, dejar los mensajes en el servidor
@@ -164,16 +164,23 @@
   <section id="account_morefilt">
     <title>Más filtrado</title>
     <para>
-	Las reglas de filtrado son globales. Esto significa que los correos
-	de varias cuentas pueden ser filtrados hacia las carpetas de otras
-	cuentas. Por ejemplo, un correo recibido a través de POP3 podría ser
-	filtrado a una carpeta de una cuenta IMAP, y viceversa. Esto puede
-	ser una característica útil o desagradable, dependiendo de lo que
-	quiera hacer. Si prefiriese evitar esto, pero aún desea ordenar su
-	correo entrante de manera automática lo mejor es desactivar el filtrado
-	en todas las cuentas y utilizar las reglas de procesamiento en cada
-	una de las carpetas de entrada especificadas. Las reglas de
-	procesamiento se aplican cuando se abre la carpeta.
+	Por defecto las reglas de filtrado son globales, pero también pueden
+	asignarse a una cuenta específica. Al recuperar el correo, cualquier
+	regla asignada a una cuenta específica solo se aplicará a mensajes
+	recuperados desde esa cuenta.
+    </para>
+    <para>
+	El correo de cualquier cuenta se puede filtrar hacia las carpetas 
+	de otras cuentas. Por ejemplo, un correo recibido a través de POP3 
+	podría filtrarse a una carpeta de una cuenta IMAP, y viceversa. 
+	Esto puede ser una característica útil o desagradable, depende de 
+	lo que quiera conseguir. Si prefiriese evitar esto, pero aún desea 
+	ordenar su correo entrante de manera automática lo mejor es desactivar 
+	el filtrado en ciertas cuentas y utilizar las reglas de procesamiento 
+	en cada una de las carpetas de entrada que especifique, ya que las 
+	reglas de procesamiento se aplican automáticamente cuando se abre la 
+	carpeta y pueden aplicarse manualmente desde la opción correspondiente
+	en el menú de contexto de la carpeta.
     </para>
   </section>
 

@@ -156,6 +156,17 @@
 	</listitem>
       </varlistentry>
       <varlistentry>
+	<term>AttachWarner</term>
+	<listitem>
+	  <para> 
+	Le recuerda la posibilidad de que se haya olvidado adjuntos.
+	Comprueba expresiones comunes que se usan cuando se adjuntan
+	ficheros y le avisa si no se añadió ningún adjunto al correo
+	que se está enviando.
+	  </para>
+	</listitem>
+      </varlistentry>
+      <varlistentry>
 	<term>AttRemover</term>
 	<listitem>
 	  <para> 
@@ -170,17 +181,6 @@
 	Guarda las caches cada 60 segundos (o un período definido por el 
 	usuario). Puede ayudar a prevenir la pérdida de metadatos si su
 	ordenador (<emphasis>¡o &SC;!</emphasis>) se cuelga.
-	  </para>
-	</listitem>
-      </varlistentry>
-      <varlistentry>
-	<term>etpan! Privacy</term>
-	<listitem>
-	  <para>
-	Gestiona la verificación y descifrado de mensajes cifrados con S/MIME,
-	OpenPGP y en formato blindado-ASCII<footnote><para>
-	<emphasis>ASCII-armored</emphasis> en el original (N. del T.)</para>
-	</footnote>. No gestiona contraseñas.
 	  </para>
 	</listitem>
       </varlistentry>
@@ -204,20 +204,39 @@
 	</listitem>
       </varlistentry>
       <varlistentry>
-	<term>Maildir</term>
-	<listitem>
-	  <para>
-	Proporciona soporte de acceso directo a buzones Maildir++. Con este
-	módulo puede compartir su buzón Maildir++ con otros clientes de
-	correo o servidores IMAP.
-	  </para>
-	</listitem>
-      </varlistentry>
-      <varlistentry>
 	<term>mailMBOX</term>
 	<listitem>
 	  <para>
 	Gestiona buzones en formato Mbox.
+	  </para>
+	</listitem>
+      </varlistentry>
+      <varlistentry>
+	<term>NewMail</term>
+	<listitem>
+	  <para>
+	Escribe un resumen de las cabeceras de los mensajes en un fichero
+	de traza (por defecto <filename>~/Mail/NewLog</filename>) cuando
+	llega correo nuevo y <emphasis>después</emphasis> de ordenarlo.
+	  </para>
+	</listitem>
+      </varlistentry>
+      <varlistentry>
+	<term>Notification</term>
+	<listitem>
+	  <para>
+	Proporciona varios métodos para notificar al usuario sobre el
+	correo nuevo y no leído.
+	  </para>
+	</listitem>
+      </varlistentry>
+      <varlistentry>
+	<term>Visor PDF</term>
+	<listitem>
+	  <para>
+	Proporciona la visualización directa de adjuntos PDF y PostScript
+	en la vista de mensaje de &SC;. También permite hojear, hacer zoom
+	y mostrar información detallada sobre tales adjuntos.
 	  </para>
 	</listitem>
       </varlistentry>
@@ -232,6 +251,16 @@
 	</listitem>
       </varlistentry>
       <varlistentry>
+	<term>RSSyl</term>
+	<listitem>
+	  <para>
+	Le permite leer sus canales de noticias (<emphasis>feeds</emphasis>)
+	en &SC;. Actualmente están soportados los canales RSS 1.0 y 2.0, así
+	como los Atom.
+	  </para>
+	</listitem>
+      </varlistentry>
+      <varlistentry>
 	<term>S/MIME</term>
 	<listitem>
 	  <para>
@@ -240,6 +269,17 @@
 	propios correos. Utiliza GnuPG/GPGME y GpgSM, disponibles en <ulink 
 	url="ftp://ftp.gnupg.org/gcrypt/gpgme/"
 	>ftp://ftp.gnupg.org/gcrypt/gpgme/</ulink>.
+	  </para>
+	</listitem>
+      </varlistentry>
+      <varlistentry>
+	<term>SpamReport</term>
+	<listitem>
+	  <para>
+	Este módulo permite informar sobre correo basura en varios sitios.
+	Actualmente sólo están soportados los sitios <ulink 
+	url="http://spam-signal.fr">spam-signal.fr</ulink> y <ulink 
+	url="http://spamcop.net">spamcop.net</ulink>.
 	  </para>
 	</listitem>
       </varlistentry>
@@ -263,22 +303,13 @@
 	  </para>
 	</listitem>
       </varlistentry>
-      <varlistentry>
-	<term>RSSyl</term>
-	<listitem>
-	  <para>
-	Permite leer sus canales de noticias favoritos en &SC;. Actualmente
-	están soportados canales RSS 1.0, 2.0 y Atom.
-	  </para>
-	</listitem>
-      </varlistentry>
     </variablelist>
     <para>
 	Si usted es un desarrollador, escribir un módulo para extender las
 	capacidades de &SC; será probablemente la mejor solución y la más 
 	fácil. Nosotros proporcionaremos almacenamiento para su código y
 	estaremos encantados de responder a sus preguntas en la lista de
-	correo o en los canales de IRC, <literal>#claws-mail</literal> en 
+	correo o en los canales de IRC, <literal>#claws</literal> en 
 	Freenode o IRCnet.
     </para>
   </section>

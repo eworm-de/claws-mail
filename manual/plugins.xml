@@ -211,8 +211,9 @@
 	<term>NewMail</term>
 	<listitem>
 	  <para>
-	Writes a msg header summary to a log file, (Default: ~/Mail/NewLog), 
-	on arrival of new mail *after* sorting. 
+	Writes a msg header summary to a log file, (Default: 
+	<filename>~/Mail/NewLog</filename>), on arrival of new mail 
+	<emphasis>after</emphasis> sorting. 
 	  </para>
 	</listitem>
       </varlistentry>
@@ -269,7 +270,9 @@
 	<listitem>
 	  <para>
 	This plugin reports spam to various places.
-	Currently only spam-signal.fr is supported.
+	Currently only <ulink url="http://spam-signal.fr"
+	>spam-signal.fr</ulink> and <ulink url="http://spamcop.net"
+	>spamcop.net</ulink> are supported.
 	  </para>
 	</listitem>
       </varlistentry>
@@ -298,7 +301,7 @@
 	capabilities is probably the best and easiest solution. We will 
 	provide hosting to your code, and will be glad to answer your questions
 	in the mailing-list or on the IRC channels, 
-	<literal>#claws-mail</literal> on Freenode or IRCnet.
+	<literal>#claws</literal> on Freenode or IRCnet.
     </para>
   </section>
   <section id="plugins_network">

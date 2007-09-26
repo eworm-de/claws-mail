@@ -569,6 +569,21 @@
 -->
 <variablelist>
   <title>P</title>
+  <varlistentry id="gt_pdf">
+    <term>
+	<acronym>PDF</acronym>
+    </term>
+    <listitem>
+      <para>
+        Acrónimo de <emphasis>Portable Document Format</emphasis> (Formato de
+	documento portable). Es un formato binario abierto desarrollado por
+	Adobe Systems para permitir el intercambio de documentos imprimibles
+	entre distintas plataformas. Hereda algunas características del
+	<xref linkend="gt_postscript" />, pero al no ser un lenguaje lo hizo
+	más facil de procesar, especialmente en ordenadores de escritorio.
+      </para>
+    </listitem>
+  </varlistentry>
   <varlistentry id="gt_sticky_quick_search">
     <term>
 	Pegajoso (búsqueda rápida)
@@ -615,6 +630,21 @@
       </para>
     </listitem>
   </varlistentry>
+  <varlistentry id="gt_postscript">
+    <term>
+	<acronym>PostScript</acronym>
+    </term>
+    <listitem>
+      <para>
+	Lenguaje de descripción de páginas usado y entendido principalmente
+	por dispositivos de impresión para generar su salida. Fue desarrollado
+	por Adobe Systems y actualmente es un estándar ampliamente usado en
+	la industria de la impresión. Puesto que es un lenguaje interpretado
+	con gran número de funcionalidades necesita una cierta capacidad de 
+	proceso para poder tratarlo.
+      </para>
+    </listitem>
+  </varlistentry>  
   <varlistentry id="gt_privacy_gpg">
     <term>
 	Privacidad (<acronym>GPG</acronym>)

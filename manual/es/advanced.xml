@@ -17,7 +17,7 @@
     <blockquote>
       <example>
 	<title>
-	Un simple <quote>Abrin con...</quote>
+	Un simple <quote>Abrir con...</quote>
 	</title>
 	<variablelist>
 	  <varlistentry>
@@ -55,7 +55,8 @@
 	  </varlistentry>
 	  <varlistentry>
 	    <term>
-	Nombre del menú: <emphasis>Bogofilter/Marcar como spam</emphasis> 
+	Nombre del menú: 
+	<emphasis>Bogofilter/Marcar como correo basura</emphasis> 
 	Línea de orden: <command>bogofilter -s -v -B "%f"</command>
 	    </term>
 	    <listitem>
@@ -135,8 +136,10 @@
     <title>Procesamiento</title>
     <para>
 	Las reglas de procesamiento son iguales que las de filtrado, con la
-	excepcón de que son aplicadas cuando se abre una carpeta y que sólo
-	se aplican a ésa carpeta. Puede usarlas para mover automáticamente
+	excepción de que se aplican cuando se abre una carpeta o cuando
+	se selecciona la opción correspondiente en el menú contextual de la
+	carpeta, y que sólo se aplican a ésa carpeta. 
+	Puede usarlas para mover automáticamente
 	correos antiguos a una carpeta de archivo, o para un procesado
 	posterior de los mensajes, y más cosas. Se pueden establecer las reglas
 	de procesamiento de cada carpeta pulsando con el botón derecho del
@@ -144,7 +147,8 @@
     </para><para>
 	Las reglas de procesamiento están acompañadas por las reglas de
 	pre-procesamiento y post-procesamiento. Al igual que las reglas de
-	procesamiento sólo se aplican al abrir una carpeta, pero al igual
+	procesamiento sólo se aplican al abrir una carpeta o al aplicarlas
+	manualmente desde el menú contextual de la carpeta, pero al igual
 	que las reglas de filtrado son compartidas por todas las carpetas.
 	Se pueden configurar en el menú <quote>Herramientas</quote>. Las
 	reglas de pre-procesamiento se ejecutan antes que las reglas de
@@ -571,6 +575,14 @@
 	  <para>
 	No utilizar texto en negrita y cursiva en el selector de cuentas de
 	la ventana de composición.
+	  </para>
+	</listitem>
+      </varlistentry>
+      <varlistentry>
+	<term><literal>emphasis_color</literal></term>
+	<listitem>
+	  <para>
+	El color que se usará para la línea X-Mailer cuando su valor sea &SC;.
 	  </para>
 	</listitem>
       </varlistentry>

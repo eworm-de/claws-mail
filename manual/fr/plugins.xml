@@ -82,7 +82,7 @@
     </varlistentry>
     </variablelist>
     <para>
-	Si vous êtes développeur, l'écriture d'un module Claws Mail est certainement la meilleure solution pour étendre les fonctionnalités de Claws Mail. Nous pourrons héberger votre code, et serons ravis de répondre à vos questions sur la liste de diffusion ou le canal IRC, #claws-mail sur Freenode et sur IRCnet.
+	Si vous êtes développeur, l'écriture d'un module Claws Mail est certainement la meilleure solution pour étendre les fonctionnalités de Claws Mail. Nous pourrons héberger votre code, et serons ravis de répondre à vos questions sur la liste de diffusion ou le canal IRC, <literal>#claws</literal> sur Freenode et sur IRCnet.
     </para>
   </section>
   <section id="plugins_network">
