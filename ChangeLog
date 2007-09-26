@@ -1,3 +1,9 @@
+2007-09-26 [colin]	3.0.1cvs29
+
+	* src/inc.c
+		Fix bug 1334, 'user defined mail incorporation 
+		script not run'
+
 2007-09-25 [colin]	3.0.1cvs28
 
 	* src/codeconv.c

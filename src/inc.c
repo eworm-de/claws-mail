@@ -336,6 +336,17 @@ void inc_all_account_mail(MainWindow *mainwin, gboolean autocheck,
 		return;
 	}
 
+	if (prefs_common.use_extinc && prefs_common.extinc_cmd) {
+		/* external incorporating program */
+		if (execute_command_line(prefs_common.extinc_cmd, FALSE) < 0) {
+			log_error(LOG_PROTOCOL, _("%s failed\n"), prefs_common.extinc_cmd);
+			
+			main_window_unlock(mainwin);
+			inc_autocheck_timer_set();
+			return;
+		}
+	}
+	
 	/* check local folders */
 	account_new_msgs = inc_all_spool();
 	if (account_new_msgs > 0)

@@ -2892,3 +2892,4 @@
 ( cvs diff -u -r 1.382.2.410 -r 1.382.2.411 src/compose.c;  ) > 3.0.1cvs26.patchset
 ( cvs diff -u -r 1.1.2.8 -r 1.1.2.9 src/printing.c;  ) > 3.0.1cvs27.patchset
 ( cvs diff -u -r 1.65.2.58 -r 1.65.2.59 src/codeconv.c;  cvs diff -u -r 1.1.4.20 -r 1.1.4.21 src/common/xml.c;  cvs diff -u -r 1.1.4.10 -r 1.1.4.11 src/common/xml.h;  ) > 3.0.1cvs28.patchset
+( cvs diff -u -r 1.149.2.82 -r 1.149.2.83 src/inc.c;  ) > 3.0.1cvs29.patchset
