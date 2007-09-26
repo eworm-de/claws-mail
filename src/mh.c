@@ -128,6 +128,8 @@ static gchar   *mh_item_get_path		(Folder *folder,
 
 static gboolean mh_scan_required	(Folder		*folder,
 					 FolderItem	*item);
+static void mh_set_mtime		(Folder		*folder,
+					 FolderItem *item);
 static int mh_item_close		(Folder		*folder,
 					 FolderItem	*item);
 #if 0
@@ -160,6 +162,7 @@ FolderClass *mh_get_class(void)
 		mh_class.remove_folder = mh_remove_folder;
 		mh_class.get_num_list = mh_get_num_list;
 		mh_class.scan_required = mh_scan_required;
+		mh_class.set_mtime = mh_set_mtime;
 		mh_class.close = mh_item_close;
 		mh_class.get_flags = NULL; /*mh_get_flags */;
 
@@ -308,7 +311,7 @@ gint mh_get_num_list(Folder *folder, FolderItem *item, GSList **list, gboolean *
 	}
 	closedir(dp);
 
-	mh_set_mtime(item);
+	mh_set_mtime(folder, item);
 	return nummsgs;
 }
 
@@ -586,11 +589,11 @@ static gint mh_copy_msgs(Folder *folder, FolderItem *dest, MsgInfoList *msglist,
 	mh_write_sequences(dest, TRUE);
 
 	if (dest->mtime == last_dest_mtime && !dest_need_scan) {
-		mh_set_mtime(dest);
+		mh_set_mtime(folder, dest);
 	}
 
 	if (src && src->mtime == last_src_mtime && !src_need_scan) {
-		mh_set_mtime(src);
+		mh_set_mtime(folder, src);
 	}
 
 	if (total > 100) {
@@ -630,7 +633,7 @@ static gint mh_remove_msg(Folder *folder, FolderItem *item, gint num)
 	}
 
 	if (item->mtime == last_mtime && !need_scan) {
-		mh_set_mtime(item);
+		mh_set_mtime(folder, item);
 	}
 	g_free(file);
 	return 0;
@@ -689,7 +692,7 @@ static gint mh_remove_msgs(Folder *folder, FolderItem *item,
 		statusbar_pop_all();
 	}
 	if (item->mtime == last_mtime && !need_scan) {
-		mh_set_mtime(item);
+		mh_set_mtime(folder, item);
 	}
 
 	g_free(path);
@@ -1141,7 +1144,7 @@ static void mh_scan_tree_recursive(FolderItem *item)
 	closedir(dp);
 #endif
 
-	mh_set_mtime(item);
+	mh_set_mtime(folder, item);
 }
 
 static gboolean mh_rename_folder_func(GNode *node, gpointer data)
@@ -1429,13 +1432,13 @@ static int mh_item_close(Folder *folder, FolderItem *item)
 	mh_write_sequences(item, FALSE);
 
 	if (item->mtime == last_mtime && !need_scan) {
-		mh_set_mtime(item);
+		mh_set_mtime(folder, item);
 	}
 
 	return 0;
 }
 
-void mh_set_mtime(FolderItem *item)
+void mh_set_mtime(Folder *folder, FolderItem *item)
 {
 	struct stat s;
 	gchar *path = folder_item_get_path(item);

@@ -392,6 +392,12 @@ struct _FolderClass
 	gboolean	(*scan_required)	(Folder 	*folder,
 						 FolderItem 	*item);
 
+	/**
+	 * Updates the known mtime of a folder
+	 */
+	void		(*set_mtime)		(Folder 	*folder,
+						 FolderItem 	*item);
+
 	/* Message functions */
 	/**
 	 * Get a MsgInfo for a message in a \c FolderItem

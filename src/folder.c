@@ -2481,10 +2481,8 @@ void folder_item_write_cache(FolderItem *item)
 	if (!item || !item->path || !item->cache)
 		return;
 
-	if (FOLDER_TYPE(item->folder) == F_MH) {
-		last_mtime = item->mtime;
-		need_scan = item->folder->klass->scan_required(item->folder, item);
-	}
+	last_mtime = item->mtime;
+	need_scan = item->folder->klass->scan_required(item->folder, item);
 
 	id = folder_item_get_identifier(item);
 	debug_print("Save cache for folder %s\n", id);
@@ -2504,9 +2502,9 @@ void folder_item_write_cache(FolderItem *item)
 		}
         }
 
-	if (!need_scan && FOLDER_TYPE(item->folder) == F_MH) {
+	if (!need_scan && item->folder->klass->set_mtime) {
 		if (item->mtime == last_mtime) {
-			mh_set_mtime(item);
+			item->folder->klass->set_mtime(item->folder, item);
 		}
 	}
 
