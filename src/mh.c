@@ -1438,7 +1438,7 @@ static int mh_item_close(Folder *folder, FolderItem *item)
 	return 0;
 }
 
-void mh_set_mtime(Folder *folder, FolderItem *item)
+static void mh_set_mtime(Folder *folder, FolderItem *item)
 {
 	struct stat s;
 	gchar *path = folder_item_get_path(item);
