@@ -1,3 +1,8 @@
+2007-09-26 [colin]	3.0.1cvs33
+
+	* configure.ac
+		Explain why "Libgnomeprint: no" on GTK+ 2.10
+
 2007-09-26 [colin]	3.0.1cvs32
 
 	* src/messageview.c
