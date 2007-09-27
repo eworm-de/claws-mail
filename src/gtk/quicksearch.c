@@ -93,9 +93,17 @@ static void quicksearch_set_type(QuickSearch *quicksearch, gint type)
 	gtk_option_menu_set_history(GTK_OPTION_MENU(quicksearch->search_type_opt), index);	
 }
 
+static gchar *quicksearch_get_text(QuickSearch * quicksearch)
+{
+	gchar *search_string = gtk_editable_get_chars(GTK_EDITABLE(GTK_BIN(quicksearch->search_string_entry)->child), 0, -1);
+
+	g_strstrip(search_string);
+	return search_string;
+}
+
 static void prepare_matcher(QuickSearch *quicksearch)
 {
-	const gchar *search_string = gtk_entry_get_text(GTK_ENTRY(GTK_BIN(quicksearch->search_string_entry)->child));
+	gchar *search_string = quicksearch_get_text(quicksearch);
 
 	if (search_string == NULL || search_string[0] == '\0') {
 		quicksearch_set_active(quicksearch, FALSE);
@@ -104,6 +112,7 @@ static void prepare_matcher(QuickSearch *quicksearch)
 	if (quicksearch->matcher_list != NULL) {
 		if (quicksearch->matching) {
 			quicksearch->deferred_free = TRUE;
+			g_free(search_string);
 			return;
 		}
 		quicksearch->deferred_free = FALSE;
@@ -112,6 +121,7 @@ static void prepare_matcher(QuickSearch *quicksearch)
 	}
 
 	if (search_string == NULL || search_string[0] == '\0') {
+		g_free(search_string);
 		return;
 	}
 
@@ -125,7 +135,7 @@ static void prepare_matcher(QuickSearch *quicksearch)
 		} else {
 			quicksearch->matcher_list = NULL;
 			quicksearch_set_active(quicksearch, FALSE);
-
+			g_free(search_string);
 			return;
 		}
 	} else if (prefs_common.summary_quicksearch_type == QUICK_SEARCH_TAG) {
@@ -144,6 +154,7 @@ static void prepare_matcher(QuickSearch *quicksearch)
 		quicksearch->search_string = g_strdup(search_string);
 	}
 
+	g_free(search_string);
 	quicksearch_set_active(quicksearch, TRUE);
 }
 
@@ -186,7 +197,7 @@ gboolean quicksearch_has_focus(QuickSearch *quicksearch)
 
 static void searchbar_run(QuickSearch *quicksearch, gboolean run_only_if_fast)
 {
-	const gchar *search_string = gtk_entry_get_text(GTK_ENTRY(GTK_BIN(quicksearch->search_string_entry)->child));
+	gchar *search_string = quicksearch_get_text(quicksearch);
 
 	/* add to history */
 	if (!quicksearch->in_typing && search_string && strlen(search_string) != 0) {
@@ -199,16 +210,21 @@ static void searchbar_run(QuickSearch *quicksearch, gboolean run_only_if_fast)
 	}
 
 	prepare_matcher(quicksearch);
-	if (run_only_if_fast && !quicksearch->is_fast)
+	if (run_only_if_fast && !quicksearch->is_fast) {
+		g_free(search_string);
 		return;
+	}
 	if (quicksearch->matcher_list == NULL && 
 	    prefs_common.summary_quicksearch_type == QUICK_SEARCH_EXTENDED &&
-	    search_string && strlen(search_string) != 0)
+	    search_string && strlen(search_string) != 0) {
+	    	g_free(search_string);
 		return;
+	}
 	quicksearch_set_running(quicksearch, TRUE);
 	if (quicksearch->callback != NULL)
 		quicksearch->callback(quicksearch, quicksearch->callback_data);
 	quicksearch_set_running(quicksearch, FALSE);
+	g_free(search_string);
 }
 
 static int searchbar_changed_timeout(void *data)
@@ -245,11 +261,11 @@ static gboolean searchbar_pressed(GtkWidget *widget, GdkEventKey *event,
 			      	  QuickSearch *quicksearch)
 {
 	if (event && (event->keyval == GDK_Escape)) {
-		const gchar *str;
+		gchar *str;
 
 		quicksearch->in_typing = FALSE;
 
-		str = gtk_entry_get_text(GTK_ENTRY(GTK_BIN(quicksearch->search_string_entry)->child));
+		str = quicksearch_get_text(quicksearch);
 		g_return_val_if_fail(str != NULL, TRUE);
 
 		/* If the string entry is empty -> hide quicksearch bar. If not -> empty it */
@@ -262,6 +278,7 @@ static gboolean searchbar_pressed(GtkWidget *widget, GdkEventKey *event,
 			gtk_widget_grab_focus(
 					mainwindow_get_mainwindow()->summaryview->ctree);
 		}
+		g_free(str);
 		return TRUE;
 	}
 
@@ -291,7 +308,7 @@ static gboolean searchbar_pressed(GtkWidget *widget, GdkEventKey *event,
 static gboolean searchtype_changed(GtkMenuItem *widget, gpointer data)
 {
 	QuickSearch *quicksearch = (QuickSearch *)data;
-	const gchar *search_string = gtk_entry_get_text(GTK_ENTRY(GTK_BIN(quicksearch->search_string_entry)->child));
+	gchar *search_string = quicksearch_get_text(quicksearch);
 
 	prefs_common.summary_quicksearch_type = GPOINTER_TO_INT(g_object_get_data(
 				   G_OBJECT(GTK_MENU_ITEM(gtk_menu_get_active(
@@ -300,7 +317,8 @@ static gboolean searchtype_changed(GtkMenuItem *widget, gpointer data)
 	/* Show extended search description button, only when Extended is selected */
 	update_extended_buttons(quicksearch);
 
-	if (!search_string || strlen(search_string) == 0) {
+	if (!search_string || *(search_string) == 0) {
+		g_free(search_string);
 		return TRUE;
 	}
 
@@ -310,6 +328,7 @@ static gboolean searchtype_changed(GtkMenuItem *widget, gpointer data)
 	if (quicksearch->callback != NULL)
 		quicksearch->callback(quicksearch, quicksearch->callback_data);
 	quicksearch_set_running(quicksearch, FALSE);
+	g_free(search_string);
 	return TRUE;
 }
 
@@ -317,14 +336,15 @@ static gboolean searchtype_recursive_changed(GtkMenuItem *widget, gpointer data)
 {
 	QuickSearch *quicksearch = (QuickSearch *)data;
 	gboolean checked = gtk_check_menu_item_get_active(GTK_CHECK_MENU_ITEM(widget));
-	const gchar *search_string = gtk_entry_get_text(GTK_ENTRY(GTK_BIN(quicksearch->search_string_entry)->child));
+	gchar *search_string = quicksearch_get_text(quicksearch);
 
 	prefs_common.summary_quicksearch_recurse = checked;
 
 	/* reselect the search type */
 	quicksearch_set_type(quicksearch, prefs_common.summary_quicksearch_type);
 
-	if (!search_string || strlen(search_string) == 0) {
+	if (!search_string || *(search_string) == 0) {
+		g_free(search_string);
 		return TRUE;
 	}
 
@@ -334,6 +354,7 @@ static gboolean searchtype_recursive_changed(GtkMenuItem *widget, gpointer data)
 	if (quicksearch->callback != NULL)
 		quicksearch->callback(quicksearch, quicksearch->callback_data);
 	quicksearch_set_running(quicksearch, FALSE);
+	g_free(search_string);
 	return TRUE;
 }
 
@@ -490,7 +511,7 @@ static void search_condition_expr_done(MatcherList * matchers)
 
 static gboolean search_condition_expr(GtkMenuItem *widget, gpointer data)
 {
-	const gchar * cond_str;
+	gchar * cond_str;
 	MatcherList * matchers = NULL;
 	
 	g_return_val_if_fail(
@@ -499,9 +520,8 @@ static gboolean search_condition_expr(GtkMenuItem *widget, gpointer data)
 
 	/* re-use the current quicksearch value if it's a condition expression,
 	   otherwise ignore it silently */
-	cond_str = gtk_entry_get_text(
-			GTK_ENTRY(GTK_BIN(mainwindow_get_mainwindow()->summaryview->quicksearch->
-			search_string_entry)->child));
+	cond_str = quicksearch_get_text(mainwindow_get_mainwindow()->summaryview->quicksearch);
+
 	if (*cond_str != '\0') {
 		matchers = matcher_parser_get_cond((gchar*)cond_str, NULL);
 	}
@@ -510,6 +530,8 @@ static gboolean search_condition_expr(GtkMenuItem *widget, gpointer data)
 
 	if (matchers != NULL)
 		matcherlist_free(matchers);
+
+	g_free(cond_str);
 
 	return TRUE;
 };
