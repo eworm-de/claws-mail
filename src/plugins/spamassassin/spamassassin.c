@@ -49,6 +49,7 @@
 #include "log.h"
 #include "prefs_common.h"
 #include "alertpanel.h"
+#include "addr_compl.h"
 
 #ifdef HAVE_SYSEXITS_H
 #include <sysexits.h>
@@ -109,6 +110,10 @@ static PrefParam param[] = {
 	{"username", "", &config.username, P_STRING,
 	 NULL, NULL, NULL},
 	{"mark_as_read", "TRUE", &config.mark_as_read, P_BOOL,
+	 NULL, NULL, NULL},
+	{"whitelist_ab", "FALSE", &config.whitelist_ab, P_BOOL,
+	 NULL, NULL, NULL},
+	{"whitelist_ab_folder", N_("Any"), &config.whitelist_ab_folder, P_STRING,
 	 NULL, NULL, NULL},
 
 	{NULL, NULL, NULL, P_OTHER, NULL, NULL, NULL}
@@ -190,6 +195,33 @@ static MsgStatus msg_is_spam(FILE *fp)
 	return is_spam ? MSG_IS_SPAM:MSG_IS_HAM;
 }
 
+static gboolean sa_found_in_addressbook(const gchar *address)
+{
+	gchar *addr = NULL;
+	gboolean found = FALSE;
+	gint num_addr = 0;
+	
+	if (!address)
+		return FALSE;
+	
+	addr = g_strdup(address);
+	extract_address(addr);
+	num_addr = complete_address(addr);
+	if (num_addr > 1) {
+		/* skip first item (this is the search string itself) */
+		int i = 1;
+		for (; i < num_addr && !found; i++) {
+			gchar *caddr = get_complete_address(i);
+			extract_address(caddr);
+			if (strcasecmp(caddr, addr) == 0)
+				found = TRUE;
+			g_free(caddr);
+		}
+	}
+	g_free(addr);
+	return found;
+}
+
 static gboolean mail_filtering_hook(gpointer source, gpointer data)
 {
 	MailFilteringData *mail_filtering_data = (MailFilteringData *) source;
@@ -214,6 +246,30 @@ static gboolean mail_filtering_hook(gpointer source, gpointer data)
 		return FALSE;
 	}
 
+	if (config.whitelist_ab) {
+		gchar *ab_folderpath;
+		gboolean whitelisted = FALSE;
+
+		if (*config.whitelist_ab_folder == '\0' ||
+			strcasecmp(config.whitelist_ab_folder, _("Any")) == 0) {
+			/* match the whole addressbook */
+			ab_folderpath = NULL;
+		} else {
+			/* match the specific book/folder of the addressbook */
+			ab_folderpath = config.whitelist_ab_folder;
+		}
+
+		start_address_completion(ab_folderpath);
+		if (msginfo->from && 
+		    sa_found_in_addressbook(msginfo->from))
+				whitelisted = TRUE;
+		end_address_completion();
+		
+		if (whitelisted) {
+			debug_print("message is ham (whitelisted)\n");
+			return FALSE;
+		}
+	}
 	pid = fork();
 	if (pid == 0) {
 		_exit(msg_is_spam(fp));

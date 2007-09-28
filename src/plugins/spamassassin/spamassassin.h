@@ -48,6 +48,8 @@ struct _SpamAssassinConfig
 	guint 			 timeout;
 	gchar			*username;
 	gboolean		 mark_as_read;
+	gboolean		 whitelist_ab;
+	gchar			*whitelist_ab_folder;
 };
 
 SpamAssassinConfig *spamassassin_get_config	      (void);
