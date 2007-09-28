@@ -264,8 +264,8 @@ static gint pop3_getrange_uidl_recv(Pop3Session *session, const gchar *data,
 
 		session->msg[num].uidl = g_strdup(id);
 
-		recv_time = (time_t)g_hash_table_lookup(
-			   		session->uidl_table, id);
+		recv_time = (time_t)(GPOINTER_TO_INT(g_hash_table_lookup(
+			   		session->uidl_table, id)));
 		session->msg[num].recv_time = recv_time;
 
 		if (recv_time != RECV_TIME_NONE) {
@@ -274,8 +274,8 @@ static gint pop3_getrange_uidl_recv(Pop3Session *session, const gchar *data,
 			debug_print("num %d uidl %s: unknown\n", num, id);
 		}
 
-		partial_recv = (gint)g_hash_table_lookup(
-					session->partial_recv_table, id);
+		partial_recv = (gint)(GPOINTER_TO_INT(g_hash_table_lookup(
+					session->partial_recv_table, id));
 
 		if (recv_time != RECV_TIME_NONE
 		|| partial_recv != POP3_TOTALLY_RECEIVED) {

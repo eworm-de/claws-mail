@@ -168,7 +168,7 @@ void msgcache_add_msg(MsgCache *cache, MsgInfo *msginfo)
 	cache->memusage += procmsg_msginfo_memusage(msginfo);
 	cache->last_access = time(NULL);
 
-	debug_print("Cache size: %d messages, %d bytes\n", g_hash_table_size(cache->msgnum_table), cache->memusage);
+	debug_print("Cache size: %d messages, %u bytes\n", g_hash_table_size(cache->msgnum_table), cache->memusage);
 }
 
 void msgcache_remove_msg(MsgCache *cache, guint msgnum)
@@ -189,7 +189,7 @@ void msgcache_remove_msg(MsgCache *cache, guint msgnum)
 	procmsg_msginfo_free(msginfo);
 	cache->last_access = time(NULL);
 
-	debug_print("Cache size: %d messages, %d byte\n", g_hash_table_size(cache->msgnum_table), cache->memusage);
+	debug_print("Cache size: %d messages, %u bytes\n", g_hash_table_size(cache->msgnum_table), cache->memusage);
 }
 
 void msgcache_update_msg(MsgCache *cache, MsgInfo *msginfo)
@@ -215,7 +215,7 @@ void msgcache_update_msg(MsgCache *cache, MsgInfo *msginfo)
 	cache->memusage += procmsg_msginfo_memusage(newmsginfo);
 	cache->last_access = time(NULL);
 	
-	debug_print("Cache size: %d messages, %d byte\n", g_hash_table_size(cache->msgnum_table), cache->memusage);
+	debug_print("Cache size: %d messages, %u bytes\n", g_hash_table_size(cache->msgnum_table), cache->memusage);
 
 	return;
 }
@@ -305,7 +305,7 @@ gint msgcache_get_memory_usage(MsgCache *cache)
 	size_t ni; \
  \
 	if ((ni = fread(&idata, sizeof(idata), 1, fp)) != 1) { \
-		g_warning("read_int: Cache data corrupted, read %d of %d at " \
+		g_warning("read_int: Cache data corrupted, read %zd of %zd at " \
 			  "offset %ld\n", ni, sizeof(idata), ftell(fp)); \
 		procmsg_msginfo_free(msginfo); \
 		error = TRUE; \
@@ -456,16 +456,16 @@ static gint msgcache_read_cache_data_str(FILE *fp, gchar **str,
 	if (!swapping) {
 		if ((ni = fread(&len, sizeof(len), 1, fp) != 1) ||
 		    len > G_MAXINT) {
-			g_warning("read_data_str: Cache data (len) corrupted, read %d "
-				  "of %d bytes at offset %ld\n", ni, sizeof(len), 
+			g_warning("read_data_str: Cache data (len) corrupted, read %zd "
+				  "of %zd bytes at offset %ld\n", ni, sizeof(len), 
 				  ftell(fp));
 			return -1;
 		}
 	} else {
 		if ((ni = fread(&len, sizeof(len), 1, fp) != 1) ||
 		    bswap_32(len) > G_MAXINT) {
-			g_warning("read_data_str: Cache data (len) corrupted, read %d "
-				  "of %d bytes at offset %ld\n", ni, sizeof(len), 
+			g_warning("read_data_str: Cache data (len) corrupted, read %zd "
+				  "of %zd bytes at offset %ld\n", ni, sizeof(len), 
 				  ftell(fp));
 			return -1;
 		}
@@ -482,7 +482,7 @@ static gint msgcache_read_cache_data_str(FILE *fp, gchar **str,
 	}
 
 	if ((ni = fread(tmpstr, 1, len, fp)) != len) {
-		g_warning("read_data_str: Cache data corrupted, read %d of %d "
+		g_warning("read_data_str: Cache data corrupted, read %zd of %u "
 			  "bytes at offset %ld\n", 
 			  ni, len, ftell(fp));
 		g_free(tmpstr);
@@ -775,7 +775,7 @@ bail_err:
 	cache->memusage = memusage;
 
 	debug_print("done. (%d items read)\n", g_hash_table_size(cache->msgnum_table));
-	debug_print("Cache size: %d messages, %d byte\n", g_hash_table_size(cache->msgnum_table), cache->memusage);
+	debug_print("Cache size: %d messages, %u bytes\n", g_hash_table_size(cache->msgnum_table), cache->memusage);
 	return cache;
 }
 

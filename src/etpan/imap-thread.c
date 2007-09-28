@@ -196,7 +196,7 @@ static void imap_logger_uid(int direction, const char * str, size_t size)
 		else {
 			gchar tmp[64];
 			strncpy2(tmp, lines[i], 63);
-			log_print(LOG_PROTOCOL, "IMAP4%c %s[... - %zd bytes more]\n", direction?'>':'<', tmp,
+			log_print(LOG_PROTOCOL, "IMAP4%c %s[... - %d bytes more]\n", direction?'>':'<', tmp,
 				  llen-64);
 		}
 		i++;
@@ -506,7 +506,7 @@ static int etpan_certificate_check(const unsigned char *certificate, int len, vo
 		g_warning("no cert presented.\n");
 		return 0;
 	}
-	cert = d2i_X509(NULL, &certificate, len);
+	cert = d2i_X509(NULL, (const unsigned char **)&certificate, len);
 	if (cert == NULL) {
 		g_warning("can't get cert\n");
 		return 0;
