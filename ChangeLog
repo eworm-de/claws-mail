@@ -1,3 +1,8 @@
+2007-09-28 [paul]	3.0.1cvs44
+
+	* src/mimeview.c
+		fix maemo build
+
 2007-09-28 [paul]	3.0.1cvs43
 
 	* src/account.c
