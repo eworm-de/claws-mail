@@ -688,7 +688,7 @@ static void account_edit_create(void)
 
 	GtkWidget *default_btn;
 
-	GtkWidget *hbbox;
+	GtkWidget *confirm_area;
 	GtkWidget *help_btn;
 	GtkWidget *close_btn;
 
@@ -724,6 +724,8 @@ static void account_edit_create(void)
 		   "in the order given, the checkbox in the 'G' column indicates "
 		   "which accounts will be included."));
 	gtk_widget_show (label);
+	gtk_widget_set_size_request(GTK_WIDGET(label), 
+				    prefs_common.accountswin_width-8, -1);
 	gtk_box_pack_start (GTK_BOX (hbox), label, FALSE, FALSE, 4);
 	gtk_label_set_justify(GTK_LABEL(label), GTK_JUSTIFY_LEFT);
 	gtk_label_set_line_wrap(GTK_LABEL(label), TRUE);
@@ -788,27 +790,19 @@ static void account_edit_create(void)
 	gtk_widget_show (hbox);
 	gtk_box_pack_start (GTK_BOX (vbox), hbox, FALSE, FALSE, 0);
 
-	vbox2 = gtk_vbox_new(FALSE, 0);
-	gtk_widget_show (vbox2);
-	gtk_box_pack_start (GTK_BOX (hbox), vbox2, FALSE, FALSE, 0);
-
 	default_btn = gtk_button_new_with_mnemonic
 		(_(" _Set as default account "));
 	gtk_widget_show (default_btn);
-	gtk_box_pack_start (GTK_BOX (vbox2), default_btn, TRUE, FALSE, 0);
+	gtk_box_pack_start (GTK_BOX (hbox), default_btn, FALSE, FALSE, 0);
 	g_signal_connect (G_OBJECT(default_btn), "clicked",
 			  G_CALLBACK (account_set_default), NULL);
 
-	hbbox = gtk_hbutton_box_new();
-	gtk_button_box_set_layout(GTK_BUTTON_BOX(hbbox), GTK_BUTTONBOX_END);
-	gtk_box_set_spacing(GTK_BOX(hbbox), 5);
-
-	gtkut_stock_button_set_create_with_help(&hbbox, &help_btn,
+	gtkut_stock_button_set_create_with_help(&confirm_area, &help_btn,
 			&close_btn, GTK_STOCK_CLOSE,
 			NULL, NULL, NULL, NULL);
-	gtk_widget_show(hbbox);
+	gtk_widget_show(confirm_area);
 
-	gtk_box_pack_end (GTK_BOX (hbox), hbbox, FALSE, FALSE, 0);
+	gtk_box_pack_end (GTK_BOX (hbox), confirm_area, FALSE, FALSE, 0);
 	gtk_widget_grab_default (close_btn);
 
 	g_signal_connect (G_OBJECT (close_btn), "clicked",
