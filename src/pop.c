@@ -275,7 +275,7 @@ static gint pop3_getrange_uidl_recv(Pop3Session *session, const gchar *data,
 		}
 
 		partial_recv = (gint)(GPOINTER_TO_INT(g_hash_table_lookup(
-					session->partial_recv_table, id));
+					session->partial_recv_table, id)));
 
 		if (recv_time != RECV_TIME_NONE
 		|| partial_recv != POP3_TOTALLY_RECEIVED) {

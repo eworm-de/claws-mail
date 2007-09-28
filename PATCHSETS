@@ -2905,3 +2905,4 @@
 ( cvs diff -u -r 1.18.2.56 -r 1.18.2.57 src/plugins/spamassassin/spamassassin.c;  cvs diff -u -r 1.4.2.17 -r 1.4.2.18 src/plugins/spamassassin/spamassassin.h;  cvs diff -u -r 1.23.2.41 -r 1.23.2.42 src/plugins/spamassassin/spamassassin_gtk.c;  ) > 3.0.1cvs39.patchset
 ( cvs diff -u -r 1.2.2.23 -r 1.2.2.24 src/folder_item_prefs.c;  cvs diff -u -r 1.1.4.14 -r 1.1.4.15 src/ldaputil.c;  cvs diff -u -r 1.274.2.213 -r 1.274.2.214 src/mainwindow.c;  cvs diff -u -r 1.83.2.115 -r 1.83.2.116 src/mimeview.c;  cvs diff -u -r 1.1.2.4 -r 1.1.2.5 src/common/tags.c;  ) > 3.0.1cvs40.patchset
 ( cvs diff -u -r 1.382.2.411 -r 1.382.2.412 src/compose.c;  cvs diff -u -r 1.16.2.60 -r 1.16.2.61 src/msgcache.c;  cvs diff -u -r 1.56.2.54 -r 1.56.2.55 src/pop.c;  cvs diff -u -r 1.49.2.97 -r 1.49.2.98 src/procmime.c;  cvs diff -u -r 1.1.4.85 -r 1.1.4.86 src/etpan/imap-thread.c;  ) > 3.0.1cvs41.patchset
+( cvs diff -u -r 1.56.2.55 -r 1.56.2.56 src/pop.c;  ) > 3.0.1cvs42.patchset
