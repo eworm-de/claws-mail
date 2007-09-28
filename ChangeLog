@@ -1,3 +1,9 @@
+2007-09-28 [paul]	3.0.1cvs37
+
+	* src/prefs_folder_item.c
+		give the orphans a parent. makes all prefs
+		pages visible on maemo
+
 2007-09-28 [colin]	3.0.1cvs36
 
 	* src/prefs_folder_column.c

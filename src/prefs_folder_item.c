@@ -1495,11 +1495,12 @@ static void folder_regexp_set_subject_example_cb(GtkWidget *widget, gpointer dat
 
 static void register_general_page()
 {
-	static gchar *pfi_general_path[2];
+	static gchar *pfi_general_path[3];
 	static FolderItemGeneralPage folder_item_general_page;
 
-	pfi_general_path[0] = _("General");
-	pfi_general_path[1] = NULL;
+	pfi_general_path[0] = _("Folder");
+	pfi_general_path[1] = _("General");
+	pfi_general_path[2] = NULL;
 
         folder_item_general_page.page.path = pfi_general_path;
         folder_item_general_page.page.create_widget = prefs_folder_item_general_create_widget_func;
@@ -1512,11 +1513,12 @@ static void register_general_page()
 
 static void register_compose_page(void)
 {
-	static gchar *pfi_compose_path[2];
+	static gchar *pfi_compose_path[3];
 	static FolderItemComposePage folder_item_compose_page;
 
-	pfi_compose_path[0] = _("Compose");
-	pfi_compose_path[1] = NULL;
+	pfi_compose_path[0] = _("Folder");
+	pfi_compose_path[1] = _("Compose");
+	pfi_compose_path[2] = NULL;
 
         folder_item_compose_page.page.path = pfi_compose_path;
         folder_item_compose_page.page.create_widget = prefs_folder_item_compose_create_widget_func;
@@ -1528,11 +1530,12 @@ static void register_compose_page(void)
 
 static void register_templates_page(void)
 {
-	static gchar *pfi_templates_path[2];
+	static gchar *pfi_templates_path[3];
 	static FolderItemTemplatesPage folder_item_templates_page;
 
-	pfi_templates_path[0] = _("Templates");
-	pfi_templates_path[1] = NULL;
+	pfi_templates_path[0] = _("Folder");
+	pfi_templates_path[1] = _("Templates");
+	pfi_templates_path[2] = NULL;
 
         folder_item_templates_page.page.path = pfi_templates_path;
         folder_item_templates_page.page.create_widget = prefs_folder_item_templates_create_widget_func;
