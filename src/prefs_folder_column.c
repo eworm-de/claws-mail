@@ -922,6 +922,7 @@ static void prefs_folder_column_shown_set_btn_sensitivity(void)
 	gtk_widget_set_sensitive(folder_col.up_btn, gtk_tree_path_prev(path));
 	gtk_widget_set_sensitive(folder_col.down_btn,
 				 gtk_tree_model_iter_next(model, &iter));
+	gtk_tree_path_free(path);
 }
 
 static void prefs_folder_column_shown_set_active(const gboolean active)
