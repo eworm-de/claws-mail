@@ -1716,12 +1716,15 @@ static gint addrindex_write_to( AddressIndex *addrIndex, const gchar *newFile ) 
 * return: Status code, from addrIndex->retVal.
 */
 gint addrindex_save_data( AddressIndex *addrIndex ) {
-	GList *nodeIf, *nodeDS;
-
+#ifdef USE_LDAP
+	GList *nodeIf;
+	GList *nodeDS;
+#endif
+	
 	g_return_val_if_fail( addrIndex != NULL, -1 );
-	nodeIf = addrIndex->interfaceList;
 
 #ifdef USE_LDAP
+	nodeIf = addrIndex->interfaceList;
 	/* save LDAP interfaces */
 	while ( nodeIf ) {
 		AddressInterface *iface = nodeIf->data;

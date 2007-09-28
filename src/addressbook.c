@@ -3404,7 +3404,9 @@ static void addressbook_folder_load_one_person(
 	gchar *text[N_LIST_COLS];
 	gboolean flgFirst = TRUE, haveAddr = FALSE;
 	GList *node;
+#ifdef USE_LDAP
 	AddressBookFile *abf = addressbook_get_book_file();
+#endif
 
 	if( person == NULL ) return;
 
