@@ -1883,7 +1883,7 @@ static void mimeview_open_part_with(MimeView *mimeview, MimeInfo *partinfo, gboo
 		prefs_common.mime_open_cmd_history =
 			add_history(prefs_common.mime_open_cmd_history, cmd);
 	}
-out:
+
 	g_free(content_type);
 	g_free(filename);
 }
