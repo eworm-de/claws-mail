@@ -1,3 +1,8 @@
+2007-09-29 [colin]	3.0.1cvs46
+
+	* src/imap.c
+		Notice disconnections faster
+
 2007-09-28 [colin]	3.0.1cvs45
 
 	* src/addressbook.c

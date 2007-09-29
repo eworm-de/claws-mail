@@ -2909,3 +2909,4 @@
 ( cvs diff -u -r 1.61.2.69 -r 1.61.2.70 src/account.c;  ) > 3.0.1cvs43.patchset
 ( cvs diff -u -r 1.83.2.116 -r 1.83.2.117 src/mimeview.c;  ) > 3.0.1cvs44.patchset
 ( cvs diff -u -r 1.60.2.97 -r 1.60.2.98 src/addressbook.c;  cvs diff -u -r 1.28.2.30 -r 1.28.2.31 src/addrindex.c;  ) > 3.0.1cvs45.patchset
+( cvs diff -u -r 1.179.2.188 -r 1.179.2.189 src/imap.c;  ) > 3.0.1cvs46.patchset
