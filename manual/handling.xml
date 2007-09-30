@@ -70,9 +70,10 @@
 	folders are hidden from the list, you will have two ways to subscribe to 
 	a folder: either show all folders, subscribe the ones you want, and hide 
 	unsubscribed folders again; or, if you know the folder's name, use 
-	"Create new folder" in its parent's contextual menu.
+	<quote>Create new folder</quote> in its parent's contextual menu.
     </para>
   </section>
+
   <section id="handling_filters">
     <title>Filtering</title>
     <para>

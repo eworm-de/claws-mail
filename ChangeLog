@@ -1,3 +1,10 @@
+2007-09-30 [mones]	3.0.1cvs47
+
+	* manual/handling.xml
+		Use markup quotes instead hardcoded quotes
+	* manual/es/handling.xml
+		Added new synced section (IMAP subscriptions)
+
 2007-09-29 [colin]	3.0.1cvs46
 
 	* src/imap.c

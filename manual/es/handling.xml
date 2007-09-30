@@ -60,6 +60,26 @@
     </para>
   </section>
 
+  <section id="imap_subscriptions">
+    <title>Suscripciones IMAP</title>
+    <para>
+	El protocolo IMAP permite guardar una lista de carpetas suscritas.
+	La mayoría de los agentes de usuario no muestran en el interfaz 
+	gráfico las carpetas no suscritas y tienen una pequeña ventana que
+	permite suscribirse a dichas carpetas. Por defecto en &SC; se respetan
+	las suscripciones, y sólo se mostrarán las carpetas suscritas. Si
+	desea ver todas las carpetas desmarque <quote>Mostrar sólo las carpetas
+	suscritas</quote> en el menú de contexto del buzón IMAP o en las
+	preferencias de la cuenta. También podrá suscribir y desuscribir carpetas
+	desde este menú contextual. Si las carpetas no suscritas no aparecen
+	en la lista tendrá dos maneras de suscribirse a una carpeta: o bien
+	mostrar todas las carpetas, suscribir las que quiera y ocultar las
+	carpetas no suscritas de nuevo, o bien, si sabe los nombres de las
+	carpetas, usar <quote>Crear nueva carpeta</quote> en el menú contextual
+	de su antecesora.
+    </para>
+  </section>
+
   <section id="handling_filters">
     <title>Filtrado</title>
     <para>
