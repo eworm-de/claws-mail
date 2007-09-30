@@ -677,6 +677,7 @@ static IMAPSession *imap_reconnect_if_possible(Folder *folder, IMAPSession *sess
 		session_destroy(SESSION(session));
 		session = NULL;
 	} else {
+		rfolder->session = NULL;
 		log_warning(LOG_PROTOCOL, _("IMAP4 connection to %s has been"
 			    " disconnected. Reconnecting...\n"),
 			    folder->account->recv_server);
@@ -689,7 +690,6 @@ static IMAPSession *imap_reconnect_if_possible(Folder *folder, IMAPSession *sess
 		   a new session, because of rfolder->session == NULL
 		   it will not try to reconnect again and so avoid an
 		   endless loop */
-		rfolder->session = NULL;
 		debug_print("getting session...\n");
 		session = imap_session_get(folder);
 		rfolder->session = SESSION(session);
@@ -745,11 +745,10 @@ static void imap_disc_session_destroy(Folder *folder)
 	session = IMAP_SESSION(rfolder->session);
 	if (!session)
 		return;
-
+	rfolder->session = NULL;
 	log_warning(LOG_PROTOCOL, _("IMAP4 connection broken\n"));
 	SESSION(session)->state = SESSION_DISCONNECTED;
 	session_destroy(SESSION(session));
-	rfolder->session = NULL;
 }
 
 static IMAPSession *imap_session_get(Folder *folder)
@@ -793,9 +792,9 @@ static IMAPSession *imap_session_get(Folder *folder)
 	
 	if (!IMAP_SESSION(session)->authenticated) {
 		imap_threaded_disconnect(session->folder);
+		rfolder->session = NULL;
 		SESSION(session)->state = SESSION_DISCONNECTED;
 		session_destroy(SESSION(session));
-		rfolder->session = NULL;
 		rfolder->last_failure = time(NULL);
 		rfolder->connecting = FALSE;
 		return NULL;

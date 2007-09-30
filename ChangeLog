@@ -1,3 +1,9 @@
+2007-09-30 [colin]	3.0.1cvs48
+
+	* src/imap.c
+		Reset folder's session to NULL
+		before destroying it
+
 2007-09-30 [mones]	3.0.1cvs47
 
 	* manual/handling.xml
