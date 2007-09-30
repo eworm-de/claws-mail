@@ -2912,3 +2912,4 @@
 ( cvs diff -u -r 1.179.2.188 -r 1.179.2.189 src/imap.c;  ) > 3.0.1cvs46.patchset
 ( cvs diff -u -r 1.1.2.15 -r 1.1.2.16 manual/handling.xml;  cvs diff -u -r 1.1.2.4 -r 1.1.2.5 manual/es/handling.xml;  ) > 3.0.1cvs47.patchset
 ( cvs diff -u -r 1.179.2.189 -r 1.179.2.190 src/imap.c;  ) > 3.0.1cvs48.patchset
+( cvs diff -u -r 1.179.2.190 -r 1.179.2.191 src/imap.c;  ) > 3.0.1cvs49.patchset
