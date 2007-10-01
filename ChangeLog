@@ -1,3 +1,13 @@
+2007-10-01 [colin]	3.0.1cvs18-stable
+
+	* src/account.c
+		From 3.0.1cvs43
+		use gtk_widget_set_size_request() on the label
+                so that wrapping works better. get rid of the
+                (partially deprecated) hbutton_box.
+                these changes should prevent buttons overlapping
+                on maemo
+
 2007-10-01 [colin]	3.0.1cvs17-stable
 
 	* src/imap.c
