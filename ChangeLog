@@ -1,3 +1,9 @@
+2007-10-01 [colin]	3.0.1cvs17-stable
+
+	* src/imap.c
+		From 3.0.1vs49
+		Refresh session if needed
+
 2007-10-01 [colin]	3.0.1cvs16-stable
 
 	* src/imap.c

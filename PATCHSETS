@@ -2874,3 +2874,4 @@
 ( cvs diff -u -r 1.382.2.406.2.3 -r 1.382.2.406.2.4 src/compose.c;  cvs diff -u -r 1.16.2.60 -r 1.16.2.61 src/msgcache.c;  cvs diff -u -r 1.56.2.54 -r 1.56.2.55 src/pop.c;  cvs diff -u -r 1.49.2.96 -r 1.49.2.97 src/procmime.c;  cvs diff -u -r 1.1.4.84 -r 1.1.4.85 src/etpan/imap-thread.c;  ) > 3.0.1cvs14-stable.patchset
 ( cvs diff -u -r 1.179.2.186.2.1 -r 1.179.2.186.2.2 src/imap.c;  ) > 3.0.1cvs15-stable.patchset
 ( cvs diff -u -r 1.179.2.186.2.2 -r 1.179.2.186.2.3 src/imap.c;  ) > 3.0.1cvs16-stable.patchset
+( cvs diff -u -r 1.179.2.186.2.3 -r 1.179.2.186.2.4 src/imap.c;  ) > 3.0.1cvs17-stable.patchset

@@ -1319,6 +1319,12 @@ static gint imap_add_msgs(Folder *folder, FolderItem *dest, GSList *file_list,
 
 	imap_scan_required(folder, dest);
 
+	session = imap_session_get(folder);
+	if (!session) {
+		return -1;
+	} else {
+		unlock_session(session);
+	}
 	if (missing_uids) {
 		gint a;
 		ok = imap_select(session, IMAP_FOLDER(folder), dest->path,
