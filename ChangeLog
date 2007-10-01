@@ -1,3 +1,9 @@
+2007-10-01 [colin]	3.0.1cvs15-stable
+
+	* src/imap.c
+		From 3.0.1cvs46
+		Notice disconnections faster
+
 2007-10-01 [colin]	3.0.1cvs14-stable
 
 	* src/compose.c
