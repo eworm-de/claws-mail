@@ -1,3 +1,10 @@
+2007-10-01 [colin]	3.0.1cvs16-stable
+
+	* src/imap.c
+		From 3.0.1cvs48
+		Reset folder's session to NULL
+                before destroying it
+
 2007-10-01 [colin]	3.0.1cvs15-stable
 
 	* src/imap.c
