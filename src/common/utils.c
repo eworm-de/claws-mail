@@ -4568,7 +4568,7 @@ search_again:
 
 	if (!result) return FALSE;
 
-	if (*ep_ && *(bp_ - 1) == '"' && *(ep_) == '"'
+	if (*ep_ && bp_ != start && *(bp_ - 1) == '"' && *(ep_) == '"'
 	&& *(ep_ + 1) == ' ' && *(ep_ + 2) == '<'
 	&& IS_RFC822_CHAR(*(ep_ + 3))) {
 		/* this informative part with an @ in it is

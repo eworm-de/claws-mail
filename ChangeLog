@@ -1,3 +1,11 @@
+2007-10-01 [colin]	3.0.1cvs2-stable
+
+	* src/common/utils.c
+		From 3.0.1cvs5
+		Fix bug 1321, 'access before allocation
+                when scanning for uris'. Patch by
+                Guillaume Chazarain <guichaz@yahoo.fr>
+
 2007-10-01 [colin]	3.0.1cvs1-stable
 
 	* src/toolbar.c
