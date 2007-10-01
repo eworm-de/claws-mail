@@ -210,6 +210,9 @@ int claws_ldap_simple_bind_s( LDAP *ld, LDAP_CONST char *dn, LDAP_CONST char *pa
 		NULL, NULL, NULL );
 }
 
+/* from ldapsrc.c */
+void ldapsrv_set_options (gint secs, LDAP *ld);
+
 /**
  * Attempt to discover the base DN for the server.
  * \param  host   Host name.

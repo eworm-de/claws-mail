@@ -69,7 +69,7 @@ void tags_read_tags(void)
 		fclose(fp);
 		return;
 	}
-	while (fgets(&tmp, sizeof(tmp), fp) != NULL) {
+	while (fgets(tmp, sizeof(tmp), fp) != NULL) {
 		gchar *sep = strchr(tmp, '\t');
 		gchar *tag_name = sep?(sep+1):NULL;
 		

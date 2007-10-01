@@ -4206,9 +4206,7 @@ static void account_receive_menu_cb(GtkMenuItem *menuitem, gpointer data)
 
 static void account_compose_menu_cb(GtkMenuItem *menuitem, gpointer data)
 {
-	MainWindow *mainwin = (MainWindow *)mainwin_list->data;
 	PrefsAccount *account = (PrefsAccount *)data;
-	FolderItem *item = mainwin->summaryview->folder_item;	
 
 	compose_new_with_folderitem(account, NULL, NULL);
 }

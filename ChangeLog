@@ -1,3 +1,13 @@
+2007-10-01 [colin]	3.0.1cvs13-stable
+
+	* src/folder_item_prefs.c
+	* src/ldaputil.c
+	* src/mainwindow.c
+	* src/mimeview.c
+	* src/common/tags.c
+		From 3.0.1cvs40
+		Fix warnings
+
 2007-10-01 [colin]	3.0.1cvs12-stable
 
 	* src/folder.c

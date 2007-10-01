@@ -184,8 +184,6 @@ static gboolean folder_item_prefs_save_config_func(GNode *node, gpointer data)
 
 void folder_item_prefs_save_config_recursive(FolderItem * item)
 {	
-	gchar * id;
-
 	g_node_traverse(item->node, G_PRE_ORDER, G_TRAVERSE_ALL,
 			-1, folder_item_prefs_save_config_func, NULL);
 }
