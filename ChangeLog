@@ -1,3 +1,10 @@
+2007-10-01 [colin]	3.0.1cvs20-stable
+
+	* src/summaryview.c
+		From 3.0.1cvs21
+		Remove unnecessary error when cancelling export to mbox.
+                Patch by Pawel
+
 2007-10-01 [colin]	3.0.1cvs19-stable
 
 	* src/mimeview.c
