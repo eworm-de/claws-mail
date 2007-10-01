@@ -1304,6 +1304,10 @@ static Compose *compose_reply_mode(ComposeMode mode, GSList *msginfo_list, gchar
 		g_warning("compose_reply_mode(): invalid Compose Mode: %d\n", mode);
 	}
 	
+	if (compose == NULL) {
+		alertpanel_error(_("Unable to reply. The original email probably doesn't exist."));
+		return NULL;
+	}
 	ifactory = gtk_item_factory_from_widget(compose->menubar);
 
 	compose->rmode = mode;
@@ -9972,7 +9976,7 @@ static void compose_reply_from_messageview_real(MessageView *msgview, GSList *ms
 	} else
 		compose = compose_reply_mode((ComposeMode)action, msginfo_list, body);
 
-	if (originally_enc) {
+	if (compose && originally_enc) {
 		compose_force_encryption(compose, compose->account, FALSE);
 	}
 

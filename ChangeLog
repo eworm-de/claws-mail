@@ -1,3 +1,10 @@
+2007-10-01 [colin]	3.0.1cvs7-stable
+
+	* src/compose.c
+		From 3.0.1cvs17
+		Fix for bug 1327, 'segfault when replying to a non-existent
+                news message'
+
 2007-10-01 [colin]	3.0.1cvs6-stable
 
 	* src/folderview.c
