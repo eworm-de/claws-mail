@@ -1,3 +1,9 @@
+2007-10-01 [colin]	3.0.1cvs19-stable
+
+	* src/mimeview.c
+		From 3.0.1cvs44
+		fix maemo build
+
 2007-10-01 [colin]	3.0.1cvs18-stable
 
 	* src/account.c

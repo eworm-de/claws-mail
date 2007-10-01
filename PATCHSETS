@@ -2876,3 +2876,4 @@
 ( cvs diff -u -r 1.179.2.186.2.2 -r 1.179.2.186.2.3 src/imap.c;  ) > 3.0.1cvs16-stable.patchset
 ( cvs diff -u -r 1.179.2.186.2.3 -r 1.179.2.186.2.4 src/imap.c;  ) > 3.0.1cvs17-stable.patchset
 ( cvs diff -u -r 1.61.2.67.2.2 -r 1.61.2.67.2.3 src/account.c;  ) > 3.0.1cvs18-stable.patchset
+( cvs diff -u -r 1.83.2.115.2.1 -r 1.83.2.115.2.2 src/mimeview.c;  ) > 3.0.1cvs19-stable.patchset
