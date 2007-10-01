@@ -1,3 +1,9 @@
+2007-10-01 [colin]	3.0.1cvs3-stable
+
+	* src/gtk/authors.h
+		From 3.0.1cvs6
+		Add Guillaume Chazarain		
+
 2007-10-01 [colin]	3.0.1cvs2-stable
 
 	* src/common/utils.c
