@@ -1,3 +1,9 @@
+2007-10-01 [colin]	3.0.1cvs6-stable
+
+	* src/folderview.c
+		From 3.0.1cvs16
+		Complete 3.0.1cvs15
+
 2007-10-01 [colin]	3.0.1cvs5-stable
 
 	* src/folderview.c

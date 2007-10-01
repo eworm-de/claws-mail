@@ -2863,3 +2863,4 @@
 ( cvs diff -u -r 1.1.2.39 -r 1.1.2.40 src/gtk/authors.h;  ) > 3.0.1cvs3-stable.patchset
 ( cvs diff -u -r 1.36.2.110.2.2 -r 1.36.2.110.2.3 src/common/utils.c;  ) > 3.0.1cvs4-stable.patchset
 ( cvs diff -u -r 1.207.2.181.2.2 -r 1.207.2.181.2.3 src/folderview.c;  cvs diff -u -r 1.20.2.21 -r 1.20.2.22 src/folderview.h;  ) > 3.0.1cvs5-stable.patchset
+( cvs diff -u -r 1.207.2.181.2.3 -r 1.207.2.181.2.4 src/folderview.c;  ) > 3.0.1cvs6-stable.patchset
