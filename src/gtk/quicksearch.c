@@ -226,7 +226,7 @@ static void searchbar_changed_cb(GtkWidget *widget, QuickSearch *qs)
 	if (!qs->has_focus && prefs_common.summary_quicksearch_autorun) {
 		gtk_widget_grab_focus(qs->search_string_entry);
 		searchbar_run(qs, TRUE);
-		return FALSE;
+		return;
 	}
 
 	if (prefs_common.summary_quicksearch_dynamic) {

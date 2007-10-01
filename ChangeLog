@@ -1,3 +1,10 @@
+2007-10-01 [colin]	3.0.1cvs8-stable
+
+	* src/gtk/quicksearch.c
+		From 3.0.1cvs24
+		Fix bug 1329, 'error in quicksearch.c'
+                Fix return with value in function returning void
+
 2007-10-01 [colin]	3.0.1cvs7-stable
 
 	* src/compose.c
