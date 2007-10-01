@@ -3477,7 +3477,7 @@ gint folder_item_remove_msg(FolderItem *item, gint num)
 	if (!item->cache) folder_item_read_cache(item);
 
 	msginfo = msgcache_get_msg(item->cache, num);
-	if (MSG_IS_LOCKED(msginfo->flags)) {
+	if (msginfo && MSG_IS_LOCKED(msginfo->flags)) {
 		procmsg_msginfo_free(msginfo);
 		return -1;
 	}
@@ -3513,7 +3513,7 @@ gint folder_item_remove_msgs(FolderItem *item, GSList *msglist)
 	}
 	while (ret == 0 && msglist != NULL) {
 		MsgInfo *msginfo = (MsgInfo *)msglist->data;
-		if (MSG_IS_LOCKED(msginfo->flags)) {
+		if (msginfo && MSG_IS_LOCKED(msginfo->flags)) {
 			msglist = msglist->next;
 			continue;
 		}
