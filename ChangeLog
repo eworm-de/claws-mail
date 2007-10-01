@@ -1,3 +1,10 @@
+2007-10-01 [colin]	3.0.1cvs4-stable
+
+	* src/common/utils.c
+		From 3.0.1cvs11
+		Prevent unquoted mime boundaries, by always
+                using a /
+
 2007-10-01 [colin]	3.0.1cvs3-stable
 
 	* src/gtk/authors.h
