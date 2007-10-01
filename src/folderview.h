@@ -79,6 +79,7 @@ struct _FolderView
 	FolderColumnState col_state[N_FOLDER_COLS];
 	gint col_pos[N_FOLDER_COLS];
 	gint deferred_refresh_id;
+	Folder *scanning_folder;
 };
 
 struct _FolderViewPopup

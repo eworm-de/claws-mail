@@ -1,3 +1,10 @@
+2007-10-01 [colin]	3.0.1cvs5-stable
+
+	* src/folderview.c
+	* src/folderview.h
+		From 3.0.1cvs15
+		Maybe fix bug 1324, 'Corrupted IMAP cache'
+
 2007-10-01 [colin]	3.0.1cvs4-stable
 
 	* src/common/utils.c
