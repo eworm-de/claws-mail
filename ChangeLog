@@ -1,3 +1,13 @@
+2007-10-01 [colin]	3.0.1cvs14-stable
+
+	* src/compose.c
+	* src/msgcache.c
+	* src/pop.c
+	* src/procmime.c
+	* src/etpan/imap-thread.c
+		From 3.0.1cvs41,42
+		64bits-related warning fixes
+
 2007-10-01 [colin]	3.0.1cvs13-stable
 
 	* src/folder_item_prefs.c

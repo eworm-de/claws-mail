@@ -5033,7 +5033,7 @@ static gint compose_write_to_file(Compose *compose, FILE *fp, gint action, gbool
 		encoding = ENC_QUOTED_PRINTABLE;
 	}
 	
-	debug_print("main text: %d bytes encoded as %s in %d\n",
+	debug_print("main text: %zd bytes encoded as %s in %d\n",
 		strlen(buf), out_codeset, encoding);
 
 	/* check for line length limit */
