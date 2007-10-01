@@ -1,3 +1,9 @@
+2007-10-01 [colin]	3.0.1cvs10-stable
+
+	* src/gtk/quicksearch.c
+		From 3.0.1cvs35
+		Fix bug 1336, 'Segfault if empty space before search-string'
+
 2007-10-01 [colin]	3.0.1cvs9-stable
 
 	* src/inc.c

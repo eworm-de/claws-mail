@@ -2867,3 +2867,4 @@
 ( cvs diff -u -r 1.382.2.406.2.2 -r 1.382.2.406.2.3 src/compose.c;  ) > 3.0.1cvs7-stable.patchset
 ( cvs diff -u -r 1.1.2.76 -r 1.1.2.77 src/gtk/quicksearch.c;  ) > 3.0.1cvs8-stable.patchset
 ( cvs diff -u -r 1.149.2.80.2.2 -r 1.149.2.80.2.3 src/inc.c;  ) > 3.0.1cvs9-stable.patchset
+( cvs diff -u -r 1.1.2.76.2.1 -r 1.1.2.76.2.2 src/gtk/quicksearch.c;  ) > 3.0.1cvs10-stable.patchset
