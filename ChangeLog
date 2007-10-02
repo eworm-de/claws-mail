@@ -1,3 +1,11 @@
+2007-10-02 [paul]	3.0.2cvs1
+
+	* NEWS
+	* README
+	* RELEASE_NOTES
+	* configure.ac
+		bump up version number following stable release
+
 2007-09-30 [colin]	3.0.1cvs49
 
 	* src/imap.c
