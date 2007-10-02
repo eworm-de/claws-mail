@@ -1,5 +1,24 @@
 Changes of the  Claws Mail GTK2 branch
 
+* 3.0.2
+-------
+
+* Bug fixes:
+	o bug 1320, 'Memory leak caused by gtk_container_get_children'
+	o bug 1321, 'access before allocation when scanning for uris'
+	o bug 1324, 'Corrupted IMAP cache'
+	o bug 1327, 'segfault when replying to a non-existent news
+		     message'
+	o bug 1329, 'error in quicksearch.c'
+	o bug 1334, 'user defined mail incorporation script not run'
+	o bug 1336, 'Segfault if empty space before search-string'
+	o bug 1337, 'Crash on removing uncached emails'
+	o Prevent unquoted mime boundaries, by always using a /
+	o Remove unnecessary error when cancelling export to mbox.
+	o MAEMO: make all Folder Properties pages visible
+	o MAEMO: fix overlapping buttons in Edit Accounts page
+
+
 * 3.0.1
 -------
 

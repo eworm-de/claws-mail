@@ -1,4 +1,4 @@
-17th September 2007                                  Claws Mail 3.0.1
+2nd October 2007                                     Claws Mail 3.0.2
 
 		    CLAWS MAIL  RELEASE NOTES
                     http://www.claws-mail.org
@@ -10,27 +10,19 @@ New in this release:
 ~~~~~~~~~~~~~~~~~~~~
 
 * Bug fixes:
-	o bug 1308, 'Claws deletes folderlist.xml after fetching mail
-		     short after start-up'
-	o bug 1311, 'Wrong arrow position while moving message into
-		     folder when column headers hidden'
-	o fix build without USE_LDAP_TLS
-	o Accounts list: fix "Local" protocol not shown when
-	  USE_OPENSSL is set.
-	o Tags: fixed issues with tags with spaces, and renaming tags
-	o Accounts list: Show protocol "SMTP" and the appropriate
-	  server for send-only accounts
-	o Accounts list: show "-" instead of "" when no value is
-	  relevant
-	o do not allow locked msgs to be deleted, even by filtering
-	  or processing
-	o Remove Generate Message-ID option. We need this on some
-	  IMAP servers.
-	o Show error message in the GUI if image can't be loaded
-	o Maemo: distinguish various statusbar messages,
-                in order to display only the most important.
-	o Maemo: fix statusbar/window mismatch
-	o Maemo: fix scrolling to cursor
+	o bug 1320, 'Memory leak caused by gtk_container_get_children'
+	o bug 1321, 'access before allocation when scanning for uris'
+	o bug 1324, 'Corrupted IMAP cache'
+	o bug 1327, 'segfault when replying to a non-existent news
+		     message'
+	o bug 1329, 'error in quicksearch.c'
+	o bug 1334, 'user defined mail incorporation script not run'
+	o bug 1336, 'Segfault if empty space before search-string'
+	o bug 1337, 'Crash on removing uncached emails'
+	o Prevent unquoted mime boundaries, by always using a /
+	o Remove unnecessary error when cancelling export to mbox.
+	o MAEMO: make all Folder Properties pages visible
+	o MAEMO: fix overlapping buttons in Edit Accounts page
 
 For further details of the numbered bugs listed above consult
 http://www.thewildbeast.co.uk/claws-mail/bugzilla/index.cgi
