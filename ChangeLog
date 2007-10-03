@@ -1,3 +1,10 @@
+2007-10-03 [colin]	3.0.2cvs3
+
+	* src/main.c
+	* src/common/utils.c
+	* src/common/utils.h
+		Implement run-time alternative config directories
+
 2007-10-03 [colin]	3.0.2cvs2
 
 	* src/folderview.c

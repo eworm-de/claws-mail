@@ -1921,15 +1921,42 @@ const gchar *get_home_dir(void)
 #endif
 }
 
+static gchar *claws_rc_dir = NULL;
+static gboolean rc_dir_alt = FALSE;
 const gchar *get_rc_dir(void)
 {
-	static gchar *rc_dir = NULL;
 
-	if (!rc_dir)
-		rc_dir = g_strconcat(get_home_dir(), G_DIR_SEPARATOR_S,
+	if (!claws_rc_dir)
+		claws_rc_dir = g_strconcat(get_home_dir(), G_DIR_SEPARATOR_S,
 				     RC_DIR, NULL);
 
-	return rc_dir;
+	return claws_rc_dir;
+}
+
+void set_rc_dir(const gchar *dir)
+{
+	if (claws_rc_dir != NULL) {
+		g_print("Error: rc_dir already set\n");
+	} else {
+		rc_dir_alt = TRUE;
+		if (g_path_is_absolute(dir))
+			claws_rc_dir = g_strdup(dir);
+		else {
+			claws_rc_dir = g_strconcat(g_get_current_dir(),
+				G_DIR_SEPARATOR_S, dir, NULL);
+		}
+		debug_print("set rc_dir to %s\n", claws_rc_dir);
+		if (!is_dir_exist(claws_rc_dir)) {
+			if (make_dir_hier(claws_rc_dir) != 0) {
+				g_print("Error: can't create %s\n",
+				claws_rc_dir);
+			}
+		}
+	}
+}
+
+gboolean rc_dir_is_alt(void) {
+	return rc_dir_alt;
 }
 
 const gchar *get_mail_base_dir(void)

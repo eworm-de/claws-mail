@@ -800,11 +800,12 @@ int main(int argc, char *argv[])
 		return 0;
 	}
 
-	prefs_prepare_cache();
 	prog_version = PROG_VERSION;
 	argv0 = g_strdup(argv[0]);
 
 	parse_cmd_opt(argc, argv);
+
+	prefs_prepare_cache();
 
 #ifdef CRASH_DIALOG
 	if (cmd.crash) {
@@ -1499,7 +1500,7 @@ static void parse_cmd_opt(int argc, char *argv[])
 			cmd.send = TRUE;
 		} else if (!strncmp(argv[i], "--version", 9) ||
 			   !strncmp(argv[i], "-v", 2)) {
-			g_print("Claws Mail version " VERSION);
+			g_print("Claws Mail version " VERSION "\n");
 			exit(0);
  		} else if (!strncmp(argv[i], "--status-full", 13)) {
  			const gchar *p = argv[i + 1];
@@ -1546,7 +1547,7 @@ static void parse_cmd_opt(int argc, char *argv[])
 			g_print("%s\n", _("  --send                 send all queued messages"));
  			g_print("%s\n", _("  --status [folder]...   show the total number of messages"));
  			g_print("%s\n", _("  --status-full [folder]...\n"
- 			       "                         show the status of each folder"));
+ 			                  "                         show the status of each folder"));
 			g_print("%s\n", _("  --select folder[/msg]  jumps to the specified folder/message\n" 
 			                  "                         folder is a folder id like 'folder/sub_folder'"));
 			g_print("%s\n", _("  --online               switch to online mode"));
@@ -1556,6 +1557,8 @@ static void parse_cmd_opt(int argc, char *argv[])
 			g_print("%s\n", _("  --help -h              display this help and exit"));
 			g_print("%s\n", _("  --version -v           output version information and exit"));
 			g_print("%s\n", _("  --config-dir           output configuration directory"));
+			g_print("%s\n", _("  --alternate-config-dir [dir]\n"
+			                  "                         use specified configuration directory"));
 
 			g_free(base);
 			exit(1);
@@ -1564,8 +1567,10 @@ static void parse_cmd_opt(int argc, char *argv[])
 			cmd.crash_params = g_strdup(argv[i + 1]);
 			i++;
 		} else if (!strncmp(argv[i], "--config-dir", sizeof "--config-dir" - 1)) {
-			g_print(RC_DIR);
+			g_print(RC_DIR "\n");
 			exit(0);
+		} else if (!strncmp(argv[i], "--alternate-config-dir", sizeof "--alternate-config-dir" - 1) && i+1 < argc) {
+			set_rc_dir(argv[i+1]);
 		} else if (!strncmp(argv[i], "--exit", 6) ||
 			   !strncmp(argv[i], "--quit", 6) ||
 			   !strncmp(argv[i], "-q", 2)) {
@@ -1732,10 +1737,15 @@ gboolean claws_is_starting(void)
 gchar *claws_get_socket_name(void)
 {
 	static gchar *filename = NULL;
-
+	const gchar *socket_dir = NULL;
+	
+	if (rc_dir_is_alt())
+		socket_dir = get_rc_dir();
+	else
+		socket_dir = g_get_tmp_dir();
 	if (filename == NULL) {
 		filename = g_strdup_printf("%s%cclaws-mail-%d",
-					   g_get_tmp_dir(), G_DIR_SEPARATOR,
+					   socket_dir, G_DIR_SEPARATOR,
 #if HAVE_GETUID
 					   getuid());
 #else
