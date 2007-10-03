@@ -188,6 +188,18 @@ GSList *template_read_config(void)
 	return tmpl_list;
 }
 
+#define TRY(func) { \
+if (!(func)) \
+{ \
+	g_warning("Failed to write template to file\n"); \
+	if (fp) fclose(fp); \
+	if (new) g_unlink(new); \
+	g_free(new); \
+	g_free(filename); \
+	return; \
+} \
+}
+
 void template_write_config(GSList *tmpl_list)
 {
 	const gchar *path;
@@ -209,39 +221,50 @@ void template_write_config(GSList *tmpl_list)
 			return;
 	}
 
-	remove_all_files(path);
-
 	for (cur = tmpl_list, tmpl_num = 1; cur != NULL;
 	     cur = cur->next, tmpl_num++) {
-		gchar *filename;
+		gchar *filename, *new = NULL;
 
 		tmpl = cur->data;
 
 		filename = g_strconcat(path, G_DIR_SEPARATOR_S,
 				       itos(tmpl_num), NULL);
 
-		if ((fp = g_fopen(filename, "wb")) == NULL) {
-			FILE_OP_ERROR(filename, "fopen");
+		if (is_file_exist(filename)) {
+			new = g_strconcat(filename, ".new", NULL);
+		}
+
+		if ((fp = g_fopen(new?new:filename, "wb")) == NULL) {
+			FILE_OP_ERROR(new?new:filename, "fopen");
+			g_free(new);
 			g_free(filename);
 			return;
 		}
 
-		fprintf(fp, "Name: %s\n", tmpl->name);
+		TRY(fprintf(fp, "Name: %s\n", tmpl->name) > 0);
 		if (tmpl->subject && *tmpl->subject != '\0')
-			fprintf(fp, "Subject: %s\n", tmpl->subject);
+			TRY(fprintf(fp, "Subject: %s\n", tmpl->subject) > 0);
 		if (tmpl->to && *tmpl->to != '\0')
-			fprintf(fp, "To: %s\n", tmpl->to);
+			TRY(fprintf(fp, "To: %s\n", tmpl->to) > 0);
 		if (tmpl->cc && *tmpl->cc != '\0')
-			fprintf(fp, "Cc: %s\n", tmpl->cc);
+			TRY(fprintf(fp, "Cc: %s\n", tmpl->cc) > 0);
 		if (tmpl->bcc && *tmpl->bcc != '\0')
-			fprintf(fp, "Bcc: %s\n", tmpl->bcc);						
-		fputs("\n", fp);
-		if (tmpl->value && *tmpl->value != '\0')
-			fwrite(tmpl->value, sizeof(gchar), strlen(tmpl->value), fp);
-		else
-			fwrite("", sizeof(gchar), 1, fp);
+			TRY(fprintf(fp, "Bcc: %s\n", tmpl->bcc) > 0);
 
-		fclose(fp);
+		TRY(fputs("\n", fp) != EOF);
+
+		if (tmpl->value && *tmpl->value != '\0') {
+			TRY(fwrite(tmpl->value, sizeof(gchar), strlen(tmpl->value), fp) == strlen(tmpl->value));
+		} else {
+			TRY(fwrite("", sizeof(gchar), 1, fp) == 1);
+		}
+		TRY(fclose(fp) != EOF);
+
+		if (new) {
+			g_unlink(filename);
+			rename_force(new, filename);
+		}
+		g_free(new);
 		g_free(filename);
 	}
 }

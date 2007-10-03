@@ -2918,3 +2918,4 @@
 ( cvs diff -u -r 1.115.2.167 -r 1.115.2.168 src/main.c;  cvs diff -u -r 1.36.2.114 -r 1.36.2.115 src/common/utils.c;  cvs diff -u -r 1.20.2.51 -r 1.20.2.52 src/common/utils.h;  ) > 3.0.2cvs3.patchset
 ( cvs diff -u -r 1.75.2.48 -r 1.75.2.49 src/matcher.c;  cvs diff -u -r 1.1.2.78 -r 1.1.2.79 src/gtk/quicksearch.c;  ) > 3.0.2cvs4.patchset
 ( cvs diff -u -r 1.155.2.75 -r 1.155.2.76 src/Makefile.am;  diff -u /dev/null src/addrduplicates.c;  diff -u /dev/null src/addrduplicates.h;  cvs diff -u -r 1.60.2.98 -r 1.60.2.99 src/addressbook.c;  ) > 3.0.2cvs5.patchset
+( cvs diff -u -r 1.2.4.20 -r 1.2.4.21 src/common/template.c;  ) > 3.0.2cvs6.patchset
