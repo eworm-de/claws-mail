@@ -1,3 +1,11 @@
+2007-10-03 [colin]	3.0.2cvs5
+
+	* src/Makefile.am
+	* src/addrduplicates.c
+	* src/addrduplicates.h
+	* src/addressbook.c
+		Add duplicate deletion. Patch by Holger
+
 2007-10-03 [colin]	3.0.2cvs4
 
 	* src/matcher.c

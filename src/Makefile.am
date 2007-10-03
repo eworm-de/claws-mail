@@ -30,6 +30,7 @@ claws_mail_SOURCES = \
 	addritem.c \
 	addrquery.c \
 	addrselect.c \
+	addrduplicates.c \
 	alertpanel.c \
 	browseldap.c \
 	codeconv.c \
@@ -176,6 +177,7 @@ claws_mailinclude_HEADERS = \
 	addritem.h \
 	addrquery.h \
 	addrselect.h \
+	addrduplicates.h \
 	alertpanel.h \
 	browseldap.h \
 	codeconv.h \

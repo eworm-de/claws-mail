@@ -69,6 +69,7 @@
 #include "addrbook.h"
 #include "addrindex.h"
 #include "addressadd.h"
+#include "addrduplicates.h"
 #include "addressbook_foldersel.h"
 #include "vcard.h"
 #include "editvcard.h"
@@ -366,6 +367,7 @@ static void addressbook_list_select_add		( AddrItemObject    *aio,
 static void addressbook_list_select_remove	( AddrItemObject    *aio );
 
 static void addressbook_import_ldif_cb		( void );
+static void addressbook_find_duplicates_cb	( void );
 static void addressbook_import_mutt_cb		( void );
 static void addressbook_import_pine_cb		( void );
 static void addressbook_export_html_cb		( void );
@@ -461,6 +463,8 @@ static GtkItemFactoryEntry addressbook_entries[] =
 	{N_("/_Tools/---"),		NULL,		NULL, 0, "<Separator>", NULL},
 	{N_("/_Tools/Export _HTML..."), NULL,           addressbook_export_html_cb,	0, NULL, NULL},
 	{N_("/_Tools/Export LDI_F..."), NULL,           addressbook_export_ldif_cb,	0, NULL, NULL},
+	{N_("/_Tools/---"),		NULL,		NULL, 0, "<Separator>", NULL},
+	{N_("/_Tools/Find duplicates..."), NULL, addressbook_find_duplicates_cb,	0, NULL, NULL},
 	{N_("/_Help"),			NULL,		NULL, 0, "<Branch>", NULL},
 	{N_("/_Help/_About"),		NULL,		about_show, 0, NULL, NULL}
 };
@@ -5282,6 +5286,11 @@ static void addressbook_export_ldif_cb( void ) {
 	adbase = ( AddrBookBase * ) ds->rawDataSource;
 	cache = adbase->addressCache;
 	addressbook_exp_ldif( cache );
+}
+
+static void addressbook_find_duplicates_cb(void)
+{
+	addrduplicates_find();	
 }
 
 static void addressbook_start_drag(GtkWidget *widget, gint button, 
