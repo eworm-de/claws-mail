@@ -147,11 +147,11 @@ static void prepare_matcher(QuickSearch *quicksearch)
 		quicksearch->matcher_list = matcher_parser_get_cond(newstr, &quicksearch->is_fast);
 		g_free(newstr);
 		g_free(quicksearch->search_string);
-		quicksearch->search_string = g_strdup(search_string);
+		quicksearch->search_string = g_utf8_casefold(search_string, -1);
 	} else {
 		quicksearch->is_fast = TRUE;
 		g_free(quicksearch->search_string);
-		quicksearch->search_string = g_strdup(search_string);
+		quicksearch->search_string = g_utf8_casefold(search_string, -1);
 	}
 
 	g_free(search_string);
@@ -915,21 +915,37 @@ gboolean quicksearch_match(QuickSearch *quicksearch, MsgInfo *msginfo)
 {
 	gchar *searched_header = NULL;
 	gboolean result = FALSE;
+	gchar *to = NULL, *from = NULL, *subject = NULL;
 
 	if (!quicksearch->active)
 		return TRUE;
 
 	switch (prefs_common.summary_quicksearch_type) {
 	case QUICK_SEARCH_SUBJECT:
-		searched_header = msginfo->subject;
+		if (msginfo->subject)
+			searched_header = g_utf8_casefold(msginfo->subject, -1);
+		else
+			return FALSE;
 		break;
 	case QUICK_SEARCH_FROM:
-		searched_header = msginfo->from;
+		if (msginfo->from)
+			searched_header = g_utf8_casefold(msginfo->from, -1);
+		else
+			return FALSE;
 		break;
 	case QUICK_SEARCH_TO:
-		searched_header = msginfo->to;
+		if (msginfo->to)
+			searched_header = g_utf8_casefold(msginfo->to, -1);
+		else
+			return FALSE;
 		break;
 	case QUICK_SEARCH_MIXED:
+		if (msginfo->to)
+			to = g_utf8_casefold(msginfo->to, -1);
+		if (msginfo->from)
+			from = g_utf8_casefold(msginfo->from, -1);
+		if (msginfo->subject)
+			subject = g_utf8_casefold(msginfo->subject, -1);
 		break;
 	case QUICK_SEARCH_EXTENDED:
 		break;
@@ -937,18 +953,19 @@ gboolean quicksearch_match(QuickSearch *quicksearch, MsgInfo *msginfo)
 		debug_print("unknown search type (%d)\n", prefs_common.summary_quicksearch_type);
 		break;
 	}
+
 	quicksearch->matching = TRUE;
 	if (prefs_common.summary_quicksearch_type != QUICK_SEARCH_EXTENDED &&
 	    prefs_common.summary_quicksearch_type != QUICK_SEARCH_MIXED &&
 	    prefs_common.summary_quicksearch_type != QUICK_SEARCH_TAG &&
 	    quicksearch->search_string &&
-            searched_header && strcasestr(searched_header, quicksearch->search_string) != NULL)
+            searched_header && strstr(searched_header, quicksearch->search_string) != NULL)
 		result = TRUE;
 	else if (prefs_common.summary_quicksearch_type == QUICK_SEARCH_MIXED &&
 		quicksearch->search_string && (
-		(msginfo->to && strcasestr(msginfo->to, quicksearch->search_string) != NULL) ||
-		(msginfo->from && strcasestr(msginfo->from, quicksearch->search_string) != NULL) ||
-		(msginfo->subject && strcasestr(msginfo->subject, quicksearch->search_string) != NULL) ||
+		(to && strstr(to, quicksearch->search_string) != NULL) ||
+		(from && strstr(from, quicksearch->search_string) != NULL) ||
+		(subject && strstr(subject, quicksearch->search_string) != NULL) ||
 		((quicksearch->matcher_list != NULL) &&
 	         matcherlist_match(quicksearch->matcher_list, msginfo))  ))
 		result = TRUE;
@@ -960,6 +977,11 @@ gboolean quicksearch_match(QuickSearch *quicksearch, MsgInfo *msginfo)
 	if (quicksearch->deferred_free) {
 		prepare_matcher(quicksearch);
 	}
+
+	g_free(to);
+	g_free(from);
+	g_free(subject);
+	g_free(searched_header);
 
 	return result;
 }
@@ -1160,7 +1182,7 @@ static gchar *expand_tag_search_string(const gchar *search_string)
 			newstr = g_realloc(newstr,o_len+n_len+1);
 			strcpy(newstr+o_len, "|tag regexpcase \"");
 			strcpy(newstr+o_len+(s_len-1), words[i]);
-			strcpy(newstr+o_len+s_len, "\"");
+			strcpy(newstr+o_len+(n_len-1), "\"");
 		}
 		i++;
 	}

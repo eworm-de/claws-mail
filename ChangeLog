@@ -1,3 +1,10 @@
+2007-10-03 [colin]	3.0.2cvs4
+
+	* src/matcher.c
+	* src/gtk/quicksearch.c
+		Fix bug 1340, 'Case insensitive searches with 
+		non-ascii alphabets fail'.
+
 2007-10-03 [colin]	3.0.2cvs3
 
 	* src/main.c

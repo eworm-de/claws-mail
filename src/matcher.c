@@ -256,7 +256,13 @@ MatcherProp *matcherprop_new(gint criteria, const gchar *header,
  	prop = g_new0(MatcherProp, 1);
 	prop->criteria = criteria;
 	prop->header = header != NULL ? g_strdup(header) : NULL;
-	prop->expr = expr != NULL ? g_strdup(expr) : NULL;
+
+	if (matchtype == MATCHTYPE_MATCHCASE ||
+	    matchtype == MATCHTYPE_REGEXPCASE)
+		prop->expr = expr != NULL ? g_utf8_casefold(expr, -1) : NULL;
+	else
+		prop->expr = expr != NULL ? g_strdup(expr) : NULL;
+
 	prop->matchtype = matchtype;
 	prop->preg = NULL;
 	prop->value = value;
@@ -403,14 +409,22 @@ static gboolean match_with_addresses_in_addressbook
  *		matcher structure
  */
 static gboolean matcherprop_string_match(MatcherProp *prop, const gchar *str,
-										const gchar *debug_context)
+					 const gchar *debug_context)
 {
 	gchar *str1;
-	gchar *str2;
 	gboolean ret = FALSE;
-
+	gboolean should_free = FALSE;
 	if (str == NULL)
 		return FALSE;
+
+	if (prop->matchtype == MATCHTYPE_REGEXPCASE ||
+	    prop->matchtype == MATCHTYPE_MATCHCASE) {
+		str1 = g_utf8_casefold(str, -1);
+		should_free = TRUE;
+	} else {
+		str1 = (gchar *)str;
+		should_free = FALSE;
+	}
 
 	switch (prop->matchtype) {
 	case MATCHTYPE_REGEXPCASE:
@@ -430,7 +444,7 @@ static gboolean matcherprop_string_match(MatcherProp *prop, const gchar *str,
 		if (prop->preg == NULL)
 			return FALSE;
 		
-		if (regexec(prop->preg, str, 0, NULL, 0) == 0)
+		if (regexec(prop->preg, str1, 0, NULL, 0) == 0)
 			ret = TRUE;
 		else
 			ret = FALSE;
@@ -443,48 +457,22 @@ static gboolean matcherprop_string_match(MatcherProp *prop, const gchar *str,
 			strretchomp(stripped);
 			if (ret) {
 				log_print(LOG_DEBUG_FILTERING,
-						"%s value [ %s ] matches regular expression [ %s ]\n",
-						debug_context, stripped, prop->expr);
+						"%s value [ %s ] matches regular expression [ %s ] (%s)\n",
+						debug_context, stripped, prop->expr,
+						prop->matchtype == MATCHTYPE_REGEXP ? _("Case sensitive"):_("Case unsensitive"));
 			} else {
 				log_print(LOG_DEBUG_FILTERING,
-						"%s value [ %s ] doesn't matches regular expression [ %s ]\n",
-						debug_context, stripped, prop->expr);
+						"%s value [ %s ] doesn't matches regular expression [ %s ] (%s)\n",
+						debug_context, stripped, prop->expr,
+						prop->matchtype == MATCHTYPE_REGEXP ? _("Case sensitive"):_("Case unsensitive"));
 			}
 			g_free(stripped);
 		}
 		break;
 			
-	case MATCHTYPE_MATCH:
-		ret = (strstr(str, prop->expr) != NULL);
-
-		/* debug output */
-		if (debug_filtering_session
-				&& prefs_common.filtering_debug_level >= FILTERING_DEBUG_LEVEL_HIGH) {
-			gchar *stripped = g_strdup(str);
-
-			strretchomp(stripped);
-			if (ret) {
-				log_print(LOG_DEBUG_FILTERING,
-						"%s value [ %s ] contains [ %s ] (case sensitive)\n",
-						debug_context, stripped, prop->expr);
-			} else {
-				log_print(LOG_DEBUG_FILTERING,
-						"%s value [ %s ] doesn't contains [ %s ] (case sensitive)\n",
-						debug_context, stripped, prop->expr);
-			}
-			g_free(stripped);
-		}
-		break;
-
-	/* FIXME: put upper in unesc_str */
 	case MATCHTYPE_MATCHCASE:
-		str2 = alloca(strlen(prop->expr) + 1);
-		strcpy(str2, prop->expr);
-		g_strup(str2);
-		str1 = alloca(strlen(str) + 1);
-		strcpy(str1, str);
-		g_strup(str1);
-		ret = (strstr(str1, str2) != NULL);
+	case MATCHTYPE_MATCH:
+		ret = (strstr(str1, prop->expr) != NULL);
 
 		/* debug output */
 		if (debug_filtering_session
@@ -494,19 +482,25 @@ static gboolean matcherprop_string_match(MatcherProp *prop, const gchar *str,
 			strretchomp(stripped);
 			if (ret) {
 				log_print(LOG_DEBUG_FILTERING,
-						"%s value [ %s ] contains [ %s ] (case insensitive)\n",
-						debug_context, stripped, prop->expr);
+						"%s value [ %s ] contains [ %s ] (%s)\n",
+						debug_context, stripped, prop->expr,
+						prop->matchtype == MATCHTYPE_MATCH ? _("Case sensitive"):_("Case unsensitive"));
 			} else {
 				log_print(LOG_DEBUG_FILTERING,
-						"%s [ %s ] doesn't contains [ %s ] (case insensitive)\n",
-						debug_context, stripped, prop->expr);
+						"%s value [ %s ] doesn't contains [ %s ] (%s)\n",
+						debug_context, stripped, prop->expr,
+						prop->matchtype == MATCHTYPE_MATCH ? _("Case sensitive"):_("Case unsensitive"));
 			}
 			g_free(stripped);
 		}
 		break;
-		
+
 	default:
 		break;
+	}
+	
+	if (should_free) {
+		g_free(str1);
 	}
 	return ret;
 }
