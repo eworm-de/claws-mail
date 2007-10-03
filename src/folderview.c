@@ -2162,8 +2162,7 @@ static void folderview_selected(GtkCTree *ctree, GtkCTreeNode *row,
 		return;
 	}
 
-	if (!can_select || summary_is_locked(folderview->summaryview)
-	||  folderview->scanning_folder == item->folder) {
+	if (!can_select || summary_is_locked(folderview->summaryview)) {
 		if (folderview->opened) {
 			gtkut_ctree_set_focus_row(ctree, folderview->opened);
 			gtk_ctree_select(ctree, folderview->opened);
@@ -2216,7 +2215,12 @@ static void folderview_selected(GtkCTree *ctree, GtkCTreeNode *row,
 
 	main_window_cursor_wait(folderview->mainwin);
 
-	res = folder_item_open(item);
+	if (folderview->scanning_folder == item->folder) {
+		res = -2;
+	} else {
+		res = folder_item_open(item);
+	}
+
 	if (res == -1 && item->no_select == FALSE) {
 		main_window_cursor_normal(folderview->mainwin);
 		STATUSBAR_POP(folderview->mainwin);
