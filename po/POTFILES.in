@@ -6,7 +6,7 @@ src/addressbook.c
 src/addressbook_foldersel.c
 src/addrgather.c
 src/addrindex.c
-src/addrdupfind.c
+src/addrduplicates.c
 src/alertpanel.c
 src/browseldap.c
 src/common/md5.c
