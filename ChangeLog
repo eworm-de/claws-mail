@@ -1,3 +1,9 @@
+2007-10-04 [paul]	3.0.2cvs8
+
+	* manual/advanced.xml
+		add further info about Actions
+		Patch by Emmanuel Briot <briot@adacore.com>
+
 2007-10-04 [paul]	3.0.2cvs7
 
 	* src/account.c

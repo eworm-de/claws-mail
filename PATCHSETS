@@ -2920,3 +2920,4 @@
 ( cvs diff -u -r 1.155.2.75 -r 1.155.2.76 src/Makefile.am;  diff -u /dev/null src/addrduplicates.c;  diff -u /dev/null src/addrduplicates.h;  cvs diff -u -r 1.60.2.98 -r 1.60.2.99 src/addressbook.c;  ) > 3.0.2cvs5.patchset
 ( cvs diff -u -r 1.2.4.20 -r 1.2.4.21 src/common/template.c;  ) > 3.0.2cvs6.patchset
 ( cvs diff -u -r 1.61.2.70 -r 1.61.2.71 src/account.c;  ) > 3.0.2cvs7.patchset
+( cvs diff -u -r 1.1.2.41 -r 1.1.2.42 manual/advanced.xml;  ) > 3.0.2cvs8.patchset

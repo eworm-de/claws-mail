@@ -14,6 +14,23 @@
 	imagination. You can configure Actions via the <quote>Tools</quote> 
 	menu.
     </para>
+    <para>
+        The <quote>Tools/Actions/</quote> menu will contain one submenu
+	item for each action that you have created. When you have selected
+	one or more messages in the Message List, or are viewing a message
+	in the Message View, selecting one of these menu items will invoke
+	the action, and, depending on how it was defined, will pass the
+	message(s) to it.
+    </para>
+    <para>
+        Additionally, it is possible to add toolbar entries for your
+        actions. To do so, open the <quote>Preferences</quote>
+        menu and select <quote>Customize Toolbars/Main Window</quote>.
+        In the list of available icons, select the one you want, then
+        in <quote>Event executed on click</quote> select
+        <quote>Claws Mail Actions Feature</quote> and the action to execute
+        in the <quote>Claws Mail Action</quote> dropdown menu.
+    </para>
     <blockquote>
       <example>
         <title>Simple <quote>Open With...</quote></title>
