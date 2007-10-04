@@ -53,7 +53,7 @@
 #include "filtering.h"
 
 enum {
-	ACCOUNT_IS_DEFAULT,		/* GDK_TYPE_PIXMAP! */
+	ACCOUNT_IS_DEFAULT,
 	ACCOUNT_ENABLE_GET_ALL,	
 	ACCOUNT_NAME,
 	ACCOUNT_PROTOCOL,
@@ -86,8 +86,6 @@ static struct EditAccount {
 	GtkWidget *list_view;
 	GtkWidget *close_btn;
 } edit_account;
-
-static GdkPixbuf *mark_pixbuf;
 
 static void account_edit_create		(void);
 static void	      account_destroy		(PrefsAccount	*ac_prefs);
@@ -136,7 +134,6 @@ static void account_list_view_insert_account_item (GtkListStore	*list_store,
 						   PrefsAccount *account_data);
 
 static GtkWidget *account_list_view_create	(void);
-static void account_create_list_view_images	(GtkWidget *list_view);
 static void account_create_list_view_columns	(GtkWidget *list_view);
 
 static gint account_list_view_get_selected_account_id		(GtkWidget *list_view);
@@ -721,8 +718,8 @@ static void account_edit_create(void)
 
 	label = gtk_label_new
 		(_("Using 'Get Mail' will retrieve messages from your Accounts "
-		   "in the order given, the checkbox in the 'G' column indicates "
-		   "which accounts will be included."));
+		   "in the order given, the checkbox indicates which accounts "
+		   "will be included. Bold text indicates the default account."));
 	gtk_widget_show (label);
 	gtk_widget_set_size_request(GTK_WIDGET(label), 
 				    prefs_common.accountswin_width-8, -1);
@@ -812,7 +809,6 @@ static void account_edit_create(void)
 			G_CALLBACK(manual_open_with_anchor_cb),
 			MANUAL_ANCHOR_ACCOUNTPREFS);
 
-	account_create_list_view_images(list_view);
 
 	g_signal_connect(G_OBJECT(window), "size_allocate",
 			 G_CALLBACK(account_size_allocate_cb), NULL);
@@ -1412,7 +1408,7 @@ PrefsAccount *account_get_reply_account(MsgInfo *msginfo, gboolean reply_autosel
 static GtkListStore* account_create_data_store(void)
 {
 	return gtk_list_store_new(N_ACCOUNT_COLUMNS,
-				 GDK_TYPE_PIXBUF,	/* ACCOUNT_IS_DEFAULT */
+				 G_TYPE_INT,		/* ACCOUNT_IS_DEFAULT */
 				 G_TYPE_BOOLEAN,	/* ACCOUNT_ENABLE_GET_ALL */
 				 G_TYPE_STRING,		/* ACCOUNT_NAME */
 				 G_TYPE_STRING,		/* ACCOUNT_PROTOCOL */
@@ -1439,7 +1435,7 @@ static void account_list_view_insert_account_item(GtkListStore *list_store,
 	
 	gtk_list_store_append(list_store, &iter);
 	gtk_list_store_set(list_store, &iter, 
-			   ACCOUNT_IS_DEFAULT,     is_default ? mark_pixbuf : NULL,
+			   ACCOUNT_IS_DEFAULT,     is_default ? PANGO_WEIGHT_BOLD : PANGO_WEIGHT_NORMAL,
 			   ACCOUNT_ENABLE_GET_ALL, is_get_all,
 			   ACCOUNT_NAME,	   account_name,
 			   ACCOUNT_PROTOCOL,	   protocol,
@@ -1451,7 +1447,6 @@ static void account_list_view_insert_account_item(GtkListStore *list_store,
 /*!
  *\brief	Create and set up account list view, including tasks like
  *		creating the data store (\ref account_create_data_store()),
- *		creating images for the list view (\ref account_create_list_view_images()),
  *		and setting up the account list's individual columns (\ref 
  *		account_create_list_view_columns()).
  *
@@ -1492,26 +1487,11 @@ static GtkWidget *account_list_view_create(void)
 	return GTK_WIDGET(list_view);
 }
 
-static void account_create_list_view_images(GtkWidget *list_view)
-{
-	stock_pixbuf_gdk(list_view, STOCK_PIXMAP_MARK, &mark_pixbuf);
-}
-
 static void account_create_list_view_columns(GtkWidget *list_view)
 {
 	GtkTreeViewColumn *column;
 	GtkCellRenderer *renderer;
 	GtkTooltips *tooltips = gtk_tooltips_new();
-
-	renderer = gtk_cell_renderer_pixbuf_new();
-	column = gtk_tree_view_column_new_with_attributes
-		(Q_("Accounts List Default Column Name|D"), renderer,
-	         "pixbuf", ACCOUNT_IS_DEFAULT,
-		 NULL);
-	gtk_tree_view_append_column(GTK_TREE_VIEW(list_view), column);		 
-	gtk_tree_view_column_set_alignment (column, 0.5);
-	gtk_tooltips_set_tip(GTK_TOOLTIPS(tooltips), column->button,
-			_("Default account"), NULL);
 
 	renderer = gtk_cell_renderer_toggle_new();
 	g_object_set(renderer, 
@@ -1534,6 +1514,7 @@ static void account_create_list_view_columns(GtkWidget *list_view)
 	column = gtk_tree_view_column_new_with_attributes
 		(_("Name"), renderer,
 		 "text", ACCOUNT_NAME,
+		 "weight", ACCOUNT_IS_DEFAULT,
 		 NULL);
 	gtk_tree_view_append_column(GTK_TREE_VIEW(list_view), column);		
 	
@@ -1541,6 +1522,7 @@ static void account_create_list_view_columns(GtkWidget *list_view)
 	column = gtk_tree_view_column_new_with_attributes
 		(_("Protocol"), renderer,
 		 "text", ACCOUNT_PROTOCOL,
+		 "weight", ACCOUNT_IS_DEFAULT,
 		 NULL);
 	gtk_tree_view_append_column(GTK_TREE_VIEW(list_view), column);		 
 	
@@ -1548,6 +1530,7 @@ static void account_create_list_view_columns(GtkWidget *list_view)
 	column = gtk_tree_view_column_new_with_attributes
 		(_("Server"), renderer,
 		 "text", ACCOUNT_SERVER,
+		 "weight", ACCOUNT_IS_DEFAULT,
 		 NULL);
 	gtk_tree_view_append_column(GTK_TREE_VIEW(list_view), column);		 
 }
@@ -1663,20 +1646,19 @@ static gboolean set_new_default_account(GtkTreeModel *model,
 					gint	     *account_id)
 {
 	PrefsAccount *account = NULL;
-	GdkPixbuf *pixbuf;
+	PangoWeight weight;
 	
 	gtk_tree_model_get(model, iter, 
 			   ACCOUNT_DATA, &account, 
 			   -1);
 
 	if (*account_id == account->account_id)
-		pixbuf = NULL;
+		weight = PANGO_WEIGHT_NORMAL;
 	else
-		pixbuf = mark_pixbuf;
-	
+		weight = PANGO_WEIGHT_BOLD;
+
 	gtk_list_store_set(GTK_LIST_STORE(model), iter, 
-			   ACCOUNT_IS_DEFAULT, pixbuf,
-			   -1);
+			   ACCOUNT_IS_DEFAULT, weight, -1);
 
 	return FALSE;
 }
