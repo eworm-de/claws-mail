@@ -424,18 +424,20 @@ backup_mode:
 	return (r == 0);
 }
 
-static void migrate_common_rc(const gchar *old_rc, const gchar *new_rc)
+static int migrate_common_rc(const gchar *old_rc, const gchar *new_rc)
 {
 	FILE *oldfp, *newfp;
 	gchar *plugin_path, *old_plugin_path, *new_plugin_path;
 	gchar buf[BUFFSIZE];
+	gboolean err = FALSE;
+
 	oldfp = g_fopen(old_rc, "r");
 	if (!oldfp)
-		return;
+		return -1;
 	newfp = g_fopen(new_rc, "w");
 	if (!newfp) {
 		fclose(oldfp);
-		return;
+		return -1;
 	}
 	
 	plugin_path = g_strdup(get_plugin_dir());
@@ -452,19 +454,22 @@ static void migrate_common_rc(const gchar *old_rc, const gchar *new_rc)
 	debug_print("replacing %s with %s\n", old_plugin_path, new_plugin_path);
 	while (fgets(buf, sizeof(buf), oldfp)) {
 		if (strncmp(buf, old_plugin_path, strlen(old_plugin_path))) {
-			fputs(buf, newfp);
+			err |= (fputs(buf, newfp) == EOF);
 		} else {
 			debug_print("->replacing %s", buf);
 			debug_print("  with %s%s", new_plugin_path, buf+strlen(old_plugin_path));
-			fputs(new_plugin_path, newfp);
-			fputs(buf+strlen(old_plugin_path), newfp);
+			err |= (fputs(new_plugin_path, newfp) == EOF);
+			err |= (fputs(buf+strlen(old_plugin_path), newfp) == EOF);
 		}
 	}
 	g_free(plugin_path);
 	g_free(new_plugin_path);
 	g_free(old_plugin_path);
 	fclose(oldfp);
-	fclose(newfp);
+	if (fclose(newfp) == EOF)
+		err = TRUE;
+	
+	return (err ? -1:0);
 }
 
 #ifdef HAVE_LIBSM

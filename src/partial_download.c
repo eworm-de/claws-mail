@@ -214,8 +214,15 @@ static int partial_uidl_mark_mail(MsgInfo *msginfo, int download)
 			}
 		}
 		if (strcmp(tinfo->extradata->partial_recv, uidl)) {
-			fprintf(fpnew, "%s\t%ld\t%s\n", 
-				uidl, (long int) recv_time, partial_recv);
+			if (fprintf(fpnew, "%s\t%ld\t%s\n", 
+				uidl, (long int) recv_time, partial_recv) < 0) {
+				FILE_OP_ERROR(pathnew, "fprintf");
+				fclose(fpnew);
+				fclose(fp);
+				g_free(path);
+				g_free(pathnew);
+				goto bail;
+			}
 		} else {
 			gchar *stat = NULL;
 			if (download == POP3_PARTIAL_DLOAD_DLOAD) {
@@ -230,12 +237,25 @@ static int partial_uidl_mark_mail(MsgInfo *msginfo, int download)
 			else if (download == POP3_PARTIAL_DLOAD_DELE)
 				stat = g_strdup("0");
 			
-			fprintf(fpnew, "%s\t%ld\t%s\n", 
-				uidl, (long int) recv_time, stat);
+			if (fprintf(fpnew, "%s\t%ld\t%s\n", 
+				uidl, (long int) recv_time, stat) < 0) {
+				FILE_OP_ERROR(pathnew, "fprintf");
+				fclose(fpnew);
+				fclose(fp);
+				g_free(path);
+				g_free(pathnew);
+				goto bail;
+			}
 			g_free(stat);
 		}
 	}
-	fclose(fpnew);
+	if (fclose(fpnew) == EOF) {
+		FILE_OP_ERROR(pathnew, "fclose");
+		fclose(fp);
+		g_free(path);
+		g_free(pathnew);
+		goto bail;
+	}
 	fclose(fp);
 
 	move_file(pathnew, path, TRUE);
@@ -255,23 +275,47 @@ static int partial_uidl_mark_mail(MsgInfo *msginfo, int download)
 		goto bail;
 	}
 	
-	fprintf(fpnew, "SC-Marked-For-Download: %d\n", 
-			download);
+	if (fprintf(fpnew, "SC-Marked-For-Download: %d\n", 
+			download) < 0) {
+		FILE_OP_ERROR(pathnew, "fprintf");
+		fclose(fpnew);
+		fclose(fp);
+		g_free(pathnew);
+		goto bail;
+	}
 	while (fgets(buf, sizeof(buf)-1, fp) != NULL) {
 		if(strlen(buf) > strlen("SC-Marked-For-Download: x\n")
 		&& !strncmp(buf, "SC-Marked-For-Download:", 
 		            strlen("SC-Marked-For-Download:"))) {
-			fprintf(fpnew, "%s", 
-			 buf+strlen("SC-Marked-For-Download: x\n"));
+			if (fprintf(fpnew, "%s", 
+			 buf+strlen("SC-Marked-For-Download: x\n")) < 0) {
+				FILE_OP_ERROR(pathnew, "fprintf");
+				fclose(fpnew);
+				fclose(fp);
+				g_free(pathnew);
+				goto bail;
+			}
 			continue;
 		} else if (strlen(buf) == strlen("SC-Marked-For-Download: x\n")
 		&& !strncmp(buf, "SC-Marked-For-Download:", 
 		            strlen("SC-Marked-For-Download:"))) {
 			continue;
 		}
-		fprintf(fpnew, "%s", buf);
+		if (fprintf(fpnew, "%s", buf) < 0) {
+			FILE_OP_ERROR(pathnew, "fprintf");
+			fclose(fpnew);
+			fclose(fp);
+			g_free(pathnew);
+			goto bail;
+		}
 	}
-	fclose(fpnew);
+	if (fclose(fpnew) == EOF) {
+		FILE_OP_ERROR(pathnew, "fclose");
+		fclose(fp);
+		g_free(pathnew);
+		goto bail;
+	}
+
 	fclose(fp);
 	g_unlink(filename);
 	rename(pathnew, filename);

@@ -319,8 +319,12 @@ gint lock_mbox(const gchar *base, LockType type)
 			return -1;
 		}
 
-		fprintf(lockfp, "%d\n", getpid());
-		fclose(lockfp);
+		if (fprintf(lockfp, "%d\n", getpid()) < 0 ||
+		    fclose(lockfp) == EOF) {
+			FILE_OP_ERROR(lockfile, "fopen||fclose");
+			g_free(lockfile);
+			return -1;
+		}
 
 		locklink = g_strconcat(base, ".lock", NULL);
 		while (link(lockfile, locklink) < 0) {
@@ -528,6 +532,8 @@ gint export_list_to_mbox(GSList *mlist, const gchar *mbox)
 	FILE *msg_fp;
 	FILE *mbox_fp;
 	gchar buf[BUFFSIZE];
+	int err = 0;
+
 	gint msgs = 1, total = g_slist_length(mlist);
 	if (g_file_test(mbox, G_FILE_TEST_EXISTS) == TRUE) {
 		if (alertpanel_full(_("Overwrite mbox file"),
@@ -570,8 +576,15 @@ gint export_list_to_mbox(GSList *mlist, const gchar *mbox)
 			 sizeof(buf));
 		extract_address(buf);
 
-		fprintf(mbox_fp, "From %s %s",
-			buf, ctime_r(&msginfo->date_t, buft));
+		if (fprintf(mbox_fp, "From %s %s",
+			buf, ctime_r(&msginfo->date_t, buft)) < 0) {
+			err = -1;
+#ifdef HAVE_FGETS_UNLOCKED
+			funlockfile(msg_fp);
+#endif
+			fclose(msg_fp);
+			goto out;
+		}
 
 		buf[0] = '\0';
 		
@@ -585,21 +598,51 @@ gint export_list_to_mbox(GSList *mlist, const gchar *mbox)
 			while ((buf[offset] == '>')) {
 				offset++;
 			}
-			if (!strncmp(buf+offset, "From ", 5))
-				SC_FPUTC('>', mbox_fp);
-			SC_FPUTS(buf, mbox_fp);
+			if (!strncmp(buf+offset, "From ", 5)) {
+				if (SC_FPUTC('>', mbox_fp) == EOF) {
+					err = -1;
+#ifdef HAVE_FGETS_UNLOCKED
+					funlockfile(msg_fp);
+#endif
+					fclose(msg_fp);
+					goto out;
+				}
+			}
+			if (SC_FPUTS(buf, mbox_fp) == EOF) {
+				err = -1;
+#ifdef HAVE_FGETS_UNLOCKED
+				funlockfile(msg_fp);
+#endif
+				fclose(msg_fp);
+				goto out;
+			}
 		}
 
 		/* force last line to end w/ a newline */
 		len = strlen(buf);
 		if (len > 0) {
 			len--;
-			if ((buf[len] != '\n') && (buf[len] != '\r'))
-				SC_FPUTC('\n', mbox_fp);
+			if ((buf[len] != '\n') && (buf[len] != '\r')) {
+				if (SC_FPUTC('\n', mbox_fp) == EOF) {
+					err = -1;
+#ifdef HAVE_FGETS_UNLOCKED
+					funlockfile(msg_fp);
+#endif
+					fclose(msg_fp);
+					goto out;
+				}
+			}
 		}
 
 		/* add a trailing empty line */
-		SC_FPUTC('\n', mbox_fp);
+		if (SC_FPUTC('\n', mbox_fp) == EOF) {
+			err = -1;
+#ifdef HAVE_FGETS_UNLOCKED
+			funlockfile(msg_fp);
+#endif
+			fclose(msg_fp);
+			goto out;
+		}
 
 #ifdef HAVE_FGETS_UNLOCKED
 		funlockfile(msg_fp);
@@ -609,6 +652,8 @@ gint export_list_to_mbox(GSList *mlist, const gchar *mbox)
 		if (msgs%500 == 0)
 			GTK_EVENTS_FLUSH();
 	}
+
+out:
 	statusbar_progress_all(0,0,0);
 	statuswindow_pop_all();
 
@@ -617,7 +662,7 @@ gint export_list_to_mbox(GSList *mlist, const gchar *mbox)
 #endif
 	fclose(mbox_fp);
 
-	return 0;
+	return err;
 }
 
 /* read all messages in SRC, and store them into one MBOX file. */

@@ -44,7 +44,7 @@ void xmlprops_clear		( XmlProperty *props );
 void xmlprops_free		( XmlProperty *props );
 void xmlprops_set_path		( XmlProperty *props, const gchar *value );
 void xmlprops_set_encoding	( XmlProperty *props, const gchar *value );
-void xmlprops_print		( XmlProperty *props, FILE *stream );
+int xmlprops_print		( XmlProperty *props, FILE *stream );
 gint xmlprops_load_file		( XmlProperty *props );
 gint xmlprops_save_file		( XmlProperty *props );
 void xmlprops_set_property	( XmlProperty *props, const gchar *name,

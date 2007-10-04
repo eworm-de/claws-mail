@@ -1,3 +1,42 @@
+2007-10-04 [colin]	3.0.2cvs9
+
+	* src/action.c
+	* src/addrbook.c
+	* src/addrindex.c
+	* src/compose.c
+	* src/exporthtml.c
+	* src/exportldif.c
+	* src/folder.c
+	* src/main.c
+	* src/matcher.c
+	* src/mbox.c
+	* src/messageview.c
+	* src/mh.c
+	* src/news.c
+	* src/partial_download.c
+	* src/pop.c
+	* src/procmime.c
+	* src/procmsg.c
+	* src/toolbar.c
+	* src/common/log.c
+	* src/common/mgutils.c
+	* src/common/plugin.c
+	* src/common/utils.c
+	* src/common/xml.c
+	* src/common/xml.h
+	* src/common/xmlprops.c
+	* src/common/xmlprops.h
+	* src/plugins/bogofilter/bogofilter.c
+	* src/plugins/clamav/clamav_plugin.c
+	* src/plugins/dillo_viewer/dillo_prefs.c
+	* src/plugins/pgpcore/prefs_gpg.c
+	* src/plugins/pgpinline/pgpinline.c
+	* src/plugins/pgpmime/pgpmime.c
+	* src/plugins/spamassassin/spamassassin.c
+	* src/plugins/trayicon/trayicon_prefs.c
+		Verify success on writes. Will fix possible strange
+		failure on disk full.
+
 2007-10-04 [paul]	3.0.2cvs8
 
 	* manual/advanced.xml

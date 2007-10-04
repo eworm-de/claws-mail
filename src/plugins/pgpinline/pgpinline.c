@@ -436,38 +436,87 @@ static MimeInfo *pgpinline_decrypt(MimeInfo *mimeinfo)
 	if (src_codeset == NULL)
 		src_codeset = CS_ISO_8859_1;
 		
-	fprintf(dstfp, "MIME-Version: 1.0\r\n"
+	if (fprintf(dstfp, "MIME-Version: 1.0\r\n"
 			"Content-Type: text/plain; charset=%s\r\n"
 			"Content-Transfer-Encoding: 8bit\r\n"
 			"\r\n",
-			src_codeset);
+			src_codeset) < 0) {
+        	FILE_OP_ERROR(fname, "fprintf");
+		privacy_set_error(_("Couldn't write to decrypted file %s"), fname);
+        	g_free(fname);
+        	gpgme_data_release(plain);
+		gpgme_release(ctx);
+		return NULL;
+	}
 
 	/* Store any part before encrypted text */
 	pos = strstr(textdata, begin_indicator);
 	if (pos != NULL && (pos - textdata) > 0) {
-	    fwrite(textdata, pos - textdata, 1, dstfp);
+	    if (fwrite(textdata, 1, pos - textdata, dstfp) < pos - textdata) {
+        	FILE_OP_ERROR(fname, "fwrite");
+		privacy_set_error(_("Couldn't write to decrypted file %s"), fname);
+        	g_free(fname);
+        	gpgme_data_release(plain);
+		gpgme_release(ctx);
+		return NULL;
+	    }
 	}
 	
-	fwrite(_("\n--- Start of PGP/Inline encrypted data ---\n"), 
+	if (fwrite(_("\n--- Start of PGP/Inline encrypted data ---\n"), 1,
 		strlen(_("\n--- Start of PGP/Inline encrypted data ---\n")), 
-		1, dstfp);
+		dstfp) < strlen(_("\n--- Start of PGP/Inline encrypted data ---\n"))) {
+        	FILE_OP_ERROR(fname, "fwrite");
+		privacy_set_error(_("Couldn't write to decrypted file %s"), fname);
+        	g_free(fname);
+        	gpgme_data_release(plain);
+		gpgme_release(ctx);
+		return NULL;
+	}
 	chars = sgpgme_data_release_and_get_mem(plain, &len);
-	if (len > 0)
-		fwrite(chars, len, 1, dstfp);
-
+	if (len > 0) {
+		if (fwrite(chars, 1, len, dstfp) < len) {
+        		FILE_OP_ERROR(fname, "fwrite");
+			privacy_set_error(_("Couldn't write to decrypted file %s"), fname);
+        		g_free(fname);
+        		gpgme_data_release(plain);
+			gpgme_release(ctx);
+			return NULL;
+		}
+	}
 	/* Store any part after encrypted text */
-	fwrite(_("--- End of PGP/Inline encrypted data ---\n"), 
+	if (fwrite(_("--- End of PGP/Inline encrypted data ---\n"), 1,
 		strlen(_("--- End of PGP/Inline encrypted data ---\n")), 
-		1, dstfp);
+		dstfp) < strlen(_("--- End of PGP/Inline encrypted data ---\n"))) {
+        		FILE_OP_ERROR(fname, "fwrite");
+			privacy_set_error(_("Couldn't write to decrypted file %s"), fname);
+        		g_free(fname);
+        		gpgme_data_release(plain);
+			gpgme_release(ctx);
+			return NULL;
+	}
 	if (pos != NULL) {
 	    pos = strstr(pos, end_indicator);
 	    if (pos != NULL && *pos != '\0') {
 		pos += strlen(end_indicator);
-		fwrite(pos, strlen(pos), 1, dstfp);
+		if (fwrite(pos, 1, strlen(pos), dstfp) < strlen(pos)) {
+        		FILE_OP_ERROR(fname, "fwrite");
+			privacy_set_error(_("Couldn't write to decrypted file %s"), fname);
+        		g_free(fname);
+        		gpgme_data_release(plain);
+			gpgme_release(ctx);
+			return NULL;
+		}
 	    }
 	}
 
-	fclose(dstfp);
+	if (fclose(dstfp) == EOF) {
+        	FILE_OP_ERROR(fname, "fclose");
+		privacy_set_error(_("Couldn't close decrypted file %s"), fname);
+        	g_free(fname);
+        	gpgme_data_release(plain);
+		gpgme_release(ctx);
+		return NULL;
+	}
 	
 	parseinfo = procmime_scan_file(fname);
 	g_free(fname);

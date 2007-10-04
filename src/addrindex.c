@@ -927,11 +927,16 @@ static AddressInterface *addrindex_tag_get_datasource(
  * \param lvl  Indentation level.
  * \param name Element name.
  */
-static void addrindex_write_elem_s( FILE *fp, const gint lvl, const gchar *name ) {
+static int addrindex_write_elem_s( FILE *fp, const gint lvl, const gchar *name ) {
 	gint i;
-	for( i = 0; i < lvl; i++ ) fputs( "  ", fp );
-	fputs( "<", fp );
-	fputs( name, fp );
+	for( i = 0; i < lvl; i++ ) 
+		if (fputs( "  ", fp ) == EOF)
+			return -1;
+	if (fputs( "<", fp ) == EOF)
+		return -1;
+	if (fputs( name, fp ) == EOF)
+		return -1;
+	return 0;
 }
 
 /**
@@ -940,12 +945,18 @@ static void addrindex_write_elem_s( FILE *fp, const gint lvl, const gchar *name 
  * \param lvl  Indentation level.
  * \param name Element name.
  */
-static void addrindex_write_elem_e( FILE *fp, const gint lvl, const gchar *name ) {
+static int addrindex_write_elem_e( FILE *fp, const gint lvl, const gchar *name ) {
 	gint i;
-	for( i = 0; i < lvl; i++ ) fputs( "  ", fp );
-	fputs( "</", fp );
-	fputs( name, fp );
-	fputs( ">\n", fp );
+	for( i = 0; i < lvl; i++ ) 
+		if (fputs( "  ", fp ) == EOF)
+			return -1;
+	if (fputs( "</", fp ) == EOF)
+		return -1;
+	if (fputs( name, fp ) == EOF)
+		return -1;
+	if (fputs( ">\n", fp ) == EOF)
+		return -1;
+	return 0;
 }
 
 /**
@@ -954,12 +965,18 @@ static void addrindex_write_elem_e( FILE *fp, const gint lvl, const gchar *name 
  * \param name  Attribute name.
  * \param value Attribute value.
  */
-static void addrindex_write_attr( FILE *fp, const gchar *name, const gchar *value ) {
-	fputs( " ", fp );
-	fputs( name, fp );
-	fputs( "=\"", fp );
-	xml_file_put_escape_str( fp, value );
-	fputs( "\"", fp );
+static int addrindex_write_attr( FILE *fp, const gchar *name, const gchar *value ) {
+	if (fputs( " ", fp ) == EOF)
+		return -1;
+	if (fputs( name, fp ) == EOF)
+		return -1;
+	if (fputs( "=\"", fp ) == EOF)
+		return -1;
+	if (xml_file_put_escape_str( fp, value ) < 0)
+		return -1;
+	if (fputs( "\"", fp ) == EOF)
+		return -1;
+	return 0;
 }
 
 /**
@@ -1030,37 +1047,45 @@ static AddressIfFragment *addrindex_read_fragment( XMLFile *file ) {
  * \param fragment DOM fragment for configuration element.
  * \param lvl      Indent level.
  */
-static void addrindex_write_fragment(
+static int addrindex_write_fragment(
 		FILE *fp, const AddressIfFragment *fragment, const gint lvl )
 {
 	GList *node;
 
 	if( fragment ) {
-		addrindex_write_elem_s( fp, lvl, fragment->name );
+		if (addrindex_write_elem_s( fp, lvl, fragment->name ) < 0)
+			return -1;
 		node = fragment->attributes;
 		while( node ) {
 			AddressIfAttrib *nv = node->data;
-			addrindex_write_attr( fp, nv->name, nv->value );
+			if (addrindex_write_attr( fp, nv->name, nv->value ) < 0)
+				return -1;
 			node = g_list_next( node );
 		}
 		if( fragment->children ) {
-			fputs(" >\n", fp);
+			if (fputs(" >\n", fp) == EOF)
+				return -1;
 
 			/* Output children */
 			node = fragment->children;
 			while( node ) {
 				AddressIfFragment *child = node->data;
-				addrindex_write_fragment( fp, child, 1+lvl );
+				if (addrindex_write_fragment( fp, child, 1+lvl ) < 0)
+					return -1;
 				node = g_list_next( node );
 			}
 
 			/* Output closing tag */
-			addrindex_write_elem_e( fp, lvl, fragment->name );
+			if (addrindex_write_elem_e( fp, lvl, fragment->name ) < 0)
+				return -1;
 		}
 		else {
-			fputs(" />\n", fp);
+			if (fputs(" />\n", fp) == EOF)
+				return -1;
 		}
 	}
+	
+	return 0;
 }
 
 /**
@@ -1092,14 +1117,19 @@ static AddressDataSource *addrindex_parse_book( XMLFile *file ) {
 	return ds;
 }
 
-static void addrindex_write_book( FILE *fp, AddressDataSource *ds, gint lvl ) {
+static int addrindex_write_book( FILE *fp, AddressDataSource *ds, gint lvl ) {
 	AddressBookFile *abf = ds->rawDataSource;
 	if( abf ) {
-		addrindex_write_elem_s( fp, lvl, TAG_DS_ADDRESS_BOOK );
-		addrindex_write_attr( fp, ATTAG_BOOK_NAME, addrbook_get_name( abf ) );
-		addrindex_write_attr( fp, ATTAG_BOOK_FILE, abf->fileName );
-		fputs( " />\n", fp );
+		if (addrindex_write_elem_s( fp, lvl, TAG_DS_ADDRESS_BOOK ) < 0)
+			return -1;
+		if (addrindex_write_attr( fp, ATTAG_BOOK_NAME, addrbook_get_name( abf ) ) < 0)
+			return -1;
+		if (addrindex_write_attr( fp, ATTAG_BOOK_FILE, abf->fileName ) < 0)
+			return -1;
+		if (fputs( " />\n", fp ) == EOF)
+			return -1;
 	}
+	return 0;
 }
 
 static AddressDataSource *addrindex_parse_vcard( XMLFile *file ) {
@@ -1125,14 +1155,19 @@ static AddressDataSource *addrindex_parse_vcard( XMLFile *file ) {
 	return ds;
 }
 
-static void addrindex_write_vcard( FILE *fp, AddressDataSource *ds, gint lvl ) {
+static int addrindex_write_vcard( FILE *fp, AddressDataSource *ds, gint lvl ) {
      	VCardFile *vcf = ds->rawDataSource;
 	if( vcf ) {
-		addrindex_write_elem_s( fp, lvl, TAG_DS_VCARD );
-		addrindex_write_attr( fp, ATTAG_VCARD_NAME, vcard_get_name( vcf ) );
-		addrindex_write_attr( fp, ATTAG_VCARD_FILE, vcf->path );
-		fputs( " />\n", fp );
+		if (addrindex_write_elem_s( fp, lvl, TAG_DS_VCARD ) < 0)
+			return -1;
+		if (addrindex_write_attr( fp, ATTAG_VCARD_NAME, vcard_get_name( vcf ) ) < 0)
+			return -1;
+		if (addrindex_write_attr( fp, ATTAG_VCARD_FILE, vcf->path ) < 0)
+			return -1;
+		if (fputs( " />\n", fp ) == EOF)
+			return -1;
 	}
+	return 0;
 }
 
 #ifdef USE_JPILOT
@@ -1171,27 +1206,33 @@ static AddressDataSource *addrindex_parse_jpilot( XMLFile *file ) {
 	return ds;
 }
 
-static void addrindex_write_jpilot( FILE *fp,AddressDataSource *ds, gint lvl ) {
+static int addrindex_write_jpilot( FILE *fp,AddressDataSource *ds, gint lvl ) {
 	JPilotFile *jpf = ds->rawDataSource;
 	if( jpf ) {
 		gint ind;
 		GList *node;
 		GList *customLbl = jpilot_get_custom_labels( jpf );
-		addrindex_write_elem_s( fp, lvl, TAG_DS_JPILOT );
-		addrindex_write_attr( fp, ATTAG_JPILOT_NAME, jpilot_get_name( jpf ) );
-		addrindex_write_attr( fp, ATTAG_JPILOT_FILE, jpf->path );
+		if (addrindex_write_elem_s( fp, lvl, TAG_DS_JPILOT ) < 0)
+			return -1;
+		if (addrindex_write_attr( fp, ATTAG_JPILOT_NAME, jpilot_get_name( jpf ) ) < 0)
+			return -1;
+		if (addrindex_write_attr( fp, ATTAG_JPILOT_FILE, jpf->path ) < 0)
+			return -1;
 		node = customLbl;
 		ind = 1;
 		while( node ) {
 			gchar name[256];
 			g_snprintf( name, sizeof(name), "%s%d",
 				    ATTAG_JPILOT_CUSTOM, ind );
-			addrindex_write_attr( fp, name, node->data );
+			if (addrindex_write_attr( fp, name, node->data ) < 0)
+				return -1;
 			ind++;
 			node = g_list_next( node );
 		}
-		fputs( " />\n", fp );
+		if (fputs( " />\n", fp ) == EOF)
+			return -1;
 	}
+	return 0;
 }
 
 #else
@@ -1206,11 +1247,13 @@ static AddressDataSource *addrindex_parse_jpilot( XMLFile *file ) {
 	return ds;
 }
 
-static void addrindex_write_jpilot( FILE *fp, AddressDataSource *ds, gint lvl ) {
+static int addrindex_write_jpilot( FILE *fp, AddressDataSource *ds, gint lvl ) {
 	AddressIfFragment *fragment = ds->rawDataSource;
 	if( fragment ) {
-		addrindex_write_fragment( fp, fragment, lvl );
+		if (addrindex_write_fragment( fp, fragment, lvl ) < 0)
+			return -1;
 	}
+	return 0;
 }
 #endif
 
@@ -1410,7 +1453,7 @@ static AddressDataSource *addrindex_parse_ldap( XMLFile *file ) {
 	return ds;
 }
 
-static void addrindex_write_ldap( FILE *fp, AddressDataSource *ds, gint lvl ) {
+static int addrindex_write_ldap( FILE *fp, AddressDataSource *ds, gint lvl ) {
 	LdapServer *server = ds->rawDataSource;
 	LdapControl *ctl = NULL;
 	GList *node;
@@ -1419,55 +1462,76 @@ static void addrindex_write_ldap( FILE *fp, AddressDataSource *ds, gint lvl ) {
 	if( server ) {
 		ctl = server->control;
 	}
-	if( ctl == NULL ) return;
+	if( ctl == NULL ) return 0;
 
 	/* Output start element with attributes */
-	addrindex_write_elem_s( fp, lvl, TAG_DS_LDAP );
-	addrindex_write_attr( fp, ATTAG_LDAP_NAME, ldapsvr_get_name( server ) );
-	addrindex_write_attr( fp, ATTAG_LDAP_HOST, ctl->hostName );
+	if (addrindex_write_elem_s( fp, lvl, TAG_DS_LDAP ) < 0)
+		return -1;
+	if (addrindex_write_attr( fp, ATTAG_LDAP_NAME, ldapsvr_get_name( server ) ) < 0)
+		return -1;
+	if (addrindex_write_attr( fp, ATTAG_LDAP_HOST, ctl->hostName ) < 0)
+		return -1;
 
 	sprintf( value, "%d", ctl->port );	
-	addrindex_write_attr( fp, ATTAG_LDAP_PORT, value );
+	if (addrindex_write_attr( fp, ATTAG_LDAP_PORT, value ) < 0)
+		return -1;
 
-	addrindex_write_attr( fp, ATTAG_LDAP_BASE_DN, ctl->baseDN );
-	addrindex_write_attr( fp, ATTAG_LDAP_BIND_DN, ctl->bindDN );
-	addrindex_write_attr( fp, ATTAG_LDAP_BIND_PASS, ctl->bindPass );
+	if (addrindex_write_attr( fp, ATTAG_LDAP_BASE_DN, ctl->baseDN ) < 0)
+		return -1;
+	if (addrindex_write_attr( fp, ATTAG_LDAP_BIND_DN, ctl->bindDN ) < 0)
+		return -1;
+	if (addrindex_write_attr( fp, ATTAG_LDAP_BIND_PASS, ctl->bindPass ) < 0)
+		return -1;
 
 	sprintf( value, "%d", ctl->maxEntries );
-	addrindex_write_attr( fp, ATTAG_LDAP_MAX_ENTRY, value );
+	if (addrindex_write_attr( fp, ATTAG_LDAP_MAX_ENTRY, value ) < 0)
+		return -1;
 	sprintf( value, "%d", ctl->timeOut );
-	addrindex_write_attr( fp, ATTAG_LDAP_TIMEOUT, value );
+	if (addrindex_write_attr( fp, ATTAG_LDAP_TIMEOUT, value ) < 0)
+		return -1;
 	sprintf( value, "%d", ctl->maxQueryAge );
-	addrindex_write_attr( fp, ATTAG_LDAP_MAX_AGE, value );
+	if (addrindex_write_attr( fp, ATTAG_LDAP_MAX_AGE, value ) < 0)
+		return -1;
 
-	addrindex_write_attr( fp, ATTAG_LDAP_DYN_SEARCH,
+	if (addrindex_write_attr( fp, ATTAG_LDAP_DYN_SEARCH,
 			server->searchFlag ?
-			ATVAL_BOOLEAN_YES : ATVAL_BOOLEAN_NO );
+			ATVAL_BOOLEAN_YES : ATVAL_BOOLEAN_NO ) < 0)
+		return -1;
 
-	addrindex_write_attr( fp, ATTAG_LDAP_MATCH_OPT,
+	if (addrindex_write_attr( fp, ATTAG_LDAP_MATCH_OPT,
 		( ctl->matchingOption == LDAPCTL_MATCH_CONTAINS ) ?
-		ATVAL_LDAP_MATCH_CONTAINS : ATVAL_LDAP_MATCH_BEGIN );
+		ATVAL_LDAP_MATCH_CONTAINS : ATVAL_LDAP_MATCH_BEGIN ) < 0)
+		return -1;
 
-	addrindex_write_attr( fp, ATTAG_LDAP_ENABLE_TLS,
+	if (addrindex_write_attr( fp, ATTAG_LDAP_ENABLE_TLS,
 			ctl->enableTLS ?
-			ATVAL_BOOLEAN_YES : ATVAL_BOOLEAN_NO );
-	addrindex_write_attr( fp, ATTAG_LDAP_ENABLE_SSL,
+			ATVAL_BOOLEAN_YES : ATVAL_BOOLEAN_NO ) < 0)
+		return -1;
+	if (addrindex_write_attr( fp, ATTAG_LDAP_ENABLE_SSL,
 			ctl->enableSSL ?
-			ATVAL_BOOLEAN_YES : ATVAL_BOOLEAN_NO );
+			ATVAL_BOOLEAN_YES : ATVAL_BOOLEAN_NO ) < 0)
+		return -1;
 
-	fputs(" >\n", fp);
+	if (fputs(" >\n", fp) == EOF)
+		return -1;
 
 	/* Output attributes */
 	node = ldapctl_get_criteria_list( ctl );
 	while( node ) {
-		addrindex_write_elem_s( fp, 1+lvl, ELTAG_LDAP_ATTR_SRCH );
-		addrindex_write_attr( fp, ATTAG_LDAP_ATTR_NAME, node->data );
-		fputs(" />\n", fp);
+		if (addrindex_write_elem_s( fp, 1+lvl, ELTAG_LDAP_ATTR_SRCH ) < 0)
+			return -1;
+		if (addrindex_write_attr( fp, ATTAG_LDAP_ATTR_NAME, node->data ) < 0)
+			return -1;
+		if (fputs(" />\n", fp) == EOF)
+			return -1;
 		node = g_list_next( node );
 	}
 
 	/* End of element */	
-	addrindex_write_elem_e( fp, lvl, TAG_DS_LDAP );
+	if (addrindex_write_elem_e( fp, lvl, TAG_DS_LDAP ) < 0)
+		return -1;
+	
+	return 0;
 }
 
 #else
@@ -1482,11 +1546,13 @@ static AddressDataSource *addrindex_parse_ldap( XMLFile *file ) {
 	return ds;
 }
 
-static void addrindex_write_ldap( FILE *fp, AddressDataSource *ds, gint lvl ) {
+static int addrindex_write_ldap( FILE *fp, AddressDataSource *ds, gint lvl ) {
 	AddressIfFragment *fragment = ds->rawDataSource;
 	if( fragment ) {
-		addrindex_write_fragment( fp, fragment, lvl );
+		if (addrindex_write_fragment( fp, fragment, lvl ) < 0)
+			return -1;
 	}
+	return 0;
 }
 #endif
 
@@ -1625,7 +1691,7 @@ static gint addrindex_read_file( AddressIndex *addrIndex ) {
 	return addrIndex->retVal;
 }
 
-static void addrindex_write_index( AddressIndex *addrIndex, FILE *fp ) {
+static int addrindex_write_index( AddressIndex *addrIndex, FILE *fp ) {
 	GList *nodeIF, *nodeDS;
 	gint lvlList = 1;
 	gint lvlItem = 1 + lvlList;
@@ -1635,30 +1701,38 @@ static void addrindex_write_index( AddressIndex *addrIndex, FILE *fp ) {
 		AddressInterface *iface = nodeIF->data;
 		if( ! iface->legacyFlag ) {
 			nodeDS = iface->listSource;
-			addrindex_write_elem_s( fp, lvlList, iface->listTag );
-			fputs( ">\n", fp );
+			if (addrindex_write_elem_s( fp, lvlList, iface->listTag ) < 0)
+				return -1;
+			if (fputs( ">\n", fp ) == EOF)
+				return -1;
 			while( nodeDS ) {
 				AddressDataSource *ds = nodeDS->data;
 				if( ds ) {
 					if( iface->type == ADDR_IF_BOOK ) {
-						addrindex_write_book( fp, ds, lvlItem );
+						if (addrindex_write_book( fp, ds, lvlItem ) < 0)
+							return -1;
 					}
 					if( iface->type == ADDR_IF_VCARD ) {
-						addrindex_write_vcard( fp, ds, lvlItem );
+						if (addrindex_write_vcard( fp, ds, lvlItem ) < 0)
+							return -1;
 					}
 					if( iface->type == ADDR_IF_JPILOT ) {
-						addrindex_write_jpilot( fp, ds, lvlItem );
+						if (addrindex_write_jpilot( fp, ds, lvlItem ) < 0)
+							return -1;
 					}
 					if( iface->type == ADDR_IF_LDAP ) {
-						addrindex_write_ldap( fp, ds, lvlItem );
+						if (addrindex_write_ldap( fp, ds, lvlItem ) < 0)
+							return -1;
 					}
 				}
 				nodeDS = g_list_next( nodeDS );
 			}
-			addrindex_write_elem_e( fp, lvlList, iface->listTag );
+			if (addrindex_write_elem_e( fp, lvlList, iface->listTag ) < 0)
+				return -1;
 		}
 		nodeIF = g_list_next( nodeIF );
 	}
+	return 0;
 }
 
 /*
@@ -1689,13 +1763,18 @@ static gint addrindex_write_to( AddressIndex *addrIndex, const gchar *newFile ) 
 	g_free( fileSpec );
 	if( pfile ) {
 		fp = pfile->fp;
-		fprintf( fp, "<?xml version=\"1.0\" encoding=\"%s\" ?>\n", CS_INTERNAL );
+		if (fprintf( fp, "<?xml version=\"1.0\" encoding=\"%s\" ?>\n", CS_INTERNAL ) < 0)
+			goto fail;
 #endif
-		addrindex_write_elem_s( fp, 0, TAG_ADDRESS_INDEX );
-		fputs( ">\n", fp );
+		if (addrindex_write_elem_s( fp, 0, TAG_ADDRESS_INDEX ) < 0)
+			goto fail;
+		if (fputs( ">\n", fp ) == EOF)
+			goto fail;
 
-		addrindex_write_index( addrIndex, fp );
-		addrindex_write_elem_e( fp, 0, TAG_ADDRESS_INDEX );
+		if (addrindex_write_index( addrIndex, fp ) < 0)
+			goto fail;
+		if (addrindex_write_elem_e( fp, 0, TAG_ADDRESS_INDEX ) < 0)
+			goto fail;
 
 		addrIndex->retVal = MGU_SUCCESS;
 #ifdef DEV_STANDALONE
@@ -1708,6 +1787,12 @@ static gint addrindex_write_to( AddressIndex *addrIndex, const gchar *newFile ) 
 	}
 
 	fileSpec = NULL;
+	return addrIndex->retVal;
+fail:
+	g_warning("error writing AB index\n");
+	addrIndex->retVal = MGU_ERROR_WRITE;
+	if (pfile)
+		prefs_file_close_revert( pfile );
 	return addrIndex->retVal;
 }
 

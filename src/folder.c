@@ -3810,13 +3810,6 @@ static gchar *folder_get_list_path(void)
 	return filename;
 }
 
-#define PUT_ESCAPE_STR(fp, attr, str)			\
-{							\
-	fputs(" " attr "=\"", fp);			\
-	xml_file_put_escape_str(fp, str);		\
-	fputs("\"", fp);				\
-}
-
 static gpointer folder_item_to_xml(gpointer nodedata, gpointer data)
 {
 	FolderItem *item = (FolderItem *) nodedata;
@@ -4384,5 +4377,3 @@ gboolean folder_get_sort_type		(Folder		*folder,
 	folder->klass->get_sort_type(folder, sort_key, sort_type); 
 	return TRUE;
 }
-
-#undef PUT_ESCAPE_STR

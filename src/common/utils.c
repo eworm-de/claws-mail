@@ -4849,6 +4849,7 @@ void mailcap_update_default(const gchar *type, const gchar *command)
 	FILE *fp = fopen(path, "rb");
 	FILE *outfp = fopen(outpath, "wb");
 	gchar buf[BUFFSIZE];
+	gboolean err = FALSE;
 
 	if (!outfp) {
 		g_free(path);
@@ -4869,17 +4870,27 @@ void mailcap_update_default(const gchar *type, const gchar *command)
 			continue;
 		}
 		else {
-			fputs(buf, outfp);
+			if(fputs(buf, outfp) == EOF) {
+				err = TRUE;
+				break;
+			}
 		}
 		g_strfreev(parts);
 	}
-	fprintf(outfp, "%s; %s\n", type, command);
+	if (fprintf(outfp, "%s; %s\n", type, command) < 0)
+		err = TRUE;
 
 	if (fp)
 		fclose(fp);
 
-	fclose(outfp);
-	g_rename(outpath, path);
+	if (fclose(outfp) == EOF)
+		err = TRUE;
+		
+	if (!err)
+		g_rename(outpath, path);
+
+	g_free(path);
+	g_free(outpath);
 }
 
 gint copy_dir(const gchar *src, const gchar *dst)

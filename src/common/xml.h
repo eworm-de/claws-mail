@@ -103,8 +103,6 @@ gint xml_file_put_escape_str	(FILE		*fp,
 				 const gchar	*str);
 
 gint xml_file_put_xml_decl	(FILE		*fp);
-gint xml_file_put_node		(FILE		*fp,
-				 XMLNode	*node);
 
 void xml_free_node		(XMLNode	*node);
 void xml_free_tree		(GNode		*node);

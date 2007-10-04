@@ -4700,6 +4700,7 @@ static gint compose_redirect_write_headers_from_headerlist(Compose *compose,
 	const gchar *headerentryname;
 	const gchar *cc_hdr;
 	const gchar *to_hdr;
+	gboolean err = FALSE;
 
 	debug_print("Writing redirect header\n");
 
@@ -4721,17 +4722,17 @@ static gint compose_redirect_write_headers_from_headerlist(Compose *compose,
 					strlen("Resent-To") + 2, TRUE);
 
 				if (first_to_address) {
-					fprintf(fp, "Resent-To: ");
+					err |= (fprintf(fp, "Resent-To: ") < 0);
 					first_to_address = FALSE;
 				} else {
-					fprintf(fp, ",");
+					err |= (fprintf(fp, ",") < 0);
                                 }
-				fprintf(fp, "%s", buf);
+				err |= (fprintf(fp, "%s", buf) < 0);
 			}
 		}
 	}
 	if (!first_to_address) {
-		fprintf(fp, "\n");
+		err |= (fprintf(fp, "\n") < 0);
 	}
 
 	first_cc_address = TRUE;
@@ -4749,20 +4750,20 @@ static gint compose_redirect_write_headers_from_headerlist(Compose *compose,
 					strlen("Resent-Cc") + 2, TRUE);
 
                                 if (first_cc_address) {
-                                        fprintf(fp, "Resent-Cc: ");
+                                        err |= (fprintf(fp, "Resent-Cc: ") < 0);
                                         first_cc_address = FALSE;
                                 } else {
-                                        fprintf(fp, ",");
+                                        err |= (fprintf(fp, ",") < 0);
                                 }
-				fprintf(fp, "%s", buf);
+				err |= (fprintf(fp, "%s", buf) < 0);
 			}
 		}
 	}
 	if (!first_cc_address) {
-		fprintf(fp, "\n");
+		err |= (fprintf(fp, "\n") < 0);
         }
 	
-	return(0);
+	return (err ? -1:0);
 }
 
 static gint compose_redirect_write_headers(Compose *compose, FILE *fp)
@@ -4771,6 +4772,7 @@ static gint compose_redirect_write_headers(Compose *compose, FILE *fp)
 	gchar *str;
 	const gchar *entstr;
 	/* struct utsname utsbuf; */
+	gboolean err = FALSE;
 
 	g_return_val_if_fail(fp != NULL, -1);
 	g_return_val_if_fail(compose->account != NULL, -1);
@@ -4778,17 +4780,17 @@ static gint compose_redirect_write_headers(Compose *compose, FILE *fp)
 
 	/* Resent-Date */
 	get_rfc822_date(buf, sizeof(buf));
-	fprintf(fp, "Resent-Date: %s\n", buf);
+	err |= (fprintf(fp, "Resent-Date: %s\n", buf) < 0);
 
 	/* Resent-From */
 	if (compose->account->name && *compose->account->name) {
 		compose_convert_header
 			(compose, buf, sizeof(buf), compose->account->name,
 			 strlen("From: "), TRUE);
-		fprintf(fp, "Resent-From: %s <%s>\n",
-			buf, compose->account->address);
+		err |= (fprintf(fp, "Resent-From: %s <%s>\n",
+			buf, compose->account->address) < 0);
 	} else
-		fprintf(fp, "Resent-From: %s\n", compose->account->address);
+		err |= (fprintf(fp, "Resent-From: %s\n", compose->account->address) < 0);
 
 	/* Subject */
 	entstr = gtk_entry_get_text(GTK_ENTRY(compose->subject_entry));
@@ -4798,7 +4800,7 @@ static gint compose_redirect_write_headers(Compose *compose, FILE *fp)
 		if (*str != '\0') {
 			compose_convert_header(compose, buf, sizeof(buf), str,
 					       strlen("Subject: "), FALSE);
-			fprintf(fp, "Subject: %s\n", buf);
+			err |= (fprintf(fp, "Subject: %s\n", buf) < 0);
 		}
 	}
 
@@ -4814,15 +4816,16 @@ static gint compose_redirect_write_headers(Compose *compose, FILE *fp)
 		g_snprintf(buf, sizeof(buf), "%s", "");
 	}
 	generate_msgid(buf, sizeof(buf));
-	fprintf(fp, "Resent-Message-ID: <%s>\n", buf);
+	err |= (fprintf(fp, "Resent-Message-ID: <%s>\n", buf) < 0);
 	compose->msgid = g_strdup(buf);
 
-	compose_redirect_write_headers_from_headerlist(compose, fp);
+	if (compose_redirect_write_headers_from_headerlist(compose, fp))
+		return -1;
 
 	/* separator between header and body */
-	fputs("\n", fp);
+	err |= (fputs("\n", fp) == EOF);
 
-	return 0;
+	return (err ? -1:0);
 }
 
 static gint compose_redirect_write_to_file(Compose *compose, FILE *fdest)
@@ -4832,6 +4835,7 @@ static gint compose_redirect_write_to_file(Compose *compose, FILE *fdest)
 	gchar buf[BUFFSIZE];
 	int i = 0;
 	gboolean skip = FALSE;
+	gboolean err = FALSE;
 	gchar *not_included[]={
 		"Return-Path:",		"Delivered-To:",	"Received:",
 		"Subject:",		"X-UIDL:",		"AF:",
@@ -4870,7 +4874,7 @@ static gint compose_redirect_write_to_file(Compose *compose, FILE *fdest)
 		if (!prefs_common.redirect_keep_from) {
 			if (g_ascii_strncasecmp(buf, "From:",
 					  strlen("From:")) == 0) {
-				fputs(" (by way of ", fdest);
+				err |= (fputs(" (by way of ", fdest) == EOF);
 				if (compose->account->name
 				    && *compose->account->name) {
 					compose_convert_header
@@ -4878,13 +4882,13 @@ static gint compose_redirect_write_to_file(Compose *compose, FILE *fdest)
 						 compose->account->name,
 						 strlen("From: "),
 						 FALSE);
-					fprintf(fdest, "%s <%s>",
+					err |= (fprintf(fdest, "%s <%s>",
 						buf,
-						compose->account->address);
+						compose->account->address) < 0);
 				} else
-					fprintf(fdest, "%s",
-						compose->account->address);
-				fputs(")", fdest);
+					err |= (fprintf(fdest, "%s",
+						compose->account->address) < 0);
+				err |= (fputs(")", fdest) == EOF);
 			}
 		}
 
@@ -4892,7 +4896,11 @@ static gint compose_redirect_write_to_file(Compose *compose, FILE *fdest)
 			goto error;
 	}
 
-	compose_redirect_write_headers(compose, fdest);
+	if (err)
+		goto error;
+
+	if (compose_redirect_write_headers(compose, fdest))
+		goto error;
 
 	while ((len = fread(buf, sizeof(gchar), sizeof(buf), fp)) > 0) {
 		if (fwrite(buf, sizeof(gchar), len, fdest) != len)
@@ -5248,7 +5256,8 @@ static gint compose_queue_sub(Compose *compose, gint *msgnum, FolderItem **item,
 	gint num;
         static gboolean lock = FALSE;
 	PrefsAccount *mailac = NULL, *newsac = NULL;
-	
+	gboolean err = FALSE;
+
 	debug_print("queueing message...\n");
 	g_return_val_if_fail(compose->account != NULL, -1);
 
@@ -5306,55 +5315,55 @@ static gint compose_queue_sub(Compose *compose, gint *msgnum, FolderItem **item,
 	}
 
 	/* queueing variables */
-	fprintf(fp, "AF:\n");
-	fprintf(fp, "NF:0\n");
-	fprintf(fp, "PS:10\n");
-	fprintf(fp, "SRH:1\n");
-	fprintf(fp, "SFN:\n");
-	fprintf(fp, "DSR:\n");
+	err |= (fprintf(fp, "AF:\n") < 0);
+	err |= (fprintf(fp, "NF:0\n") < 0);
+	err |= (fprintf(fp, "PS:10\n") < 0);
+	err |= (fprintf(fp, "SRH:1\n") < 0);
+	err |= (fprintf(fp, "SFN:\n") < 0);
+	err |= (fprintf(fp, "DSR:\n") < 0);
 	if (compose->msgid)
-		fprintf(fp, "MID:<%s>\n", compose->msgid);
+		err |= (fprintf(fp, "MID:<%s>\n", compose->msgid) < 0);
 	else
-		fprintf(fp, "MID:\n");
-	fprintf(fp, "CFG:\n");
-	fprintf(fp, "PT:0\n");
-	fprintf(fp, "S:%s\n", compose->account->address);
-	fprintf(fp, "RQ:\n");
+		err |= (fprintf(fp, "MID:\n") < 0);
+	err |= (fprintf(fp, "CFG:\n") < 0);
+	err |= (fprintf(fp, "PT:0\n") < 0);
+	err |= (fprintf(fp, "S:%s\n", compose->account->address) < 0);
+	err |= (fprintf(fp, "RQ:\n") < 0);
 	if (mailac)
-		fprintf(fp, "SSV:%s\n", mailac->smtp_server);
+		err |= (fprintf(fp, "SSV:%s\n", mailac->smtp_server) < 0);
 	else
-		fprintf(fp, "SSV:\n");
+		err |= (fprintf(fp, "SSV:\n") < 0);
 	if (newsac)
-		fprintf(fp, "NSV:%s\n", newsac->nntp_server);
+		err |= (fprintf(fp, "NSV:%s\n", newsac->nntp_server) < 0);
 	else
-		fprintf(fp, "NSV:\n");
-	fprintf(fp, "SSH:\n");
+		err |= (fprintf(fp, "NSV:\n") < 0);
+	err |= (fprintf(fp, "SSH:\n") < 0);
 	/* write recepient list */
 	if (compose->to_list) {
-		fprintf(fp, "R:<%s>", (gchar *)compose->to_list->data);
+		err |= (fprintf(fp, "R:<%s>", (gchar *)compose->to_list->data) < 0);
 		for (cur = compose->to_list->next; cur != NULL;
 		     cur = cur->next)
-			fprintf(fp, ",<%s>", (gchar *)cur->data);
-		fprintf(fp, "\n");
+			err |= (fprintf(fp, ",<%s>", (gchar *)cur->data) < 0);
+		err |= (fprintf(fp, "\n") < 0);
 	}
 	/* write newsgroup list */
 	if (compose->newsgroup_list) {
-		fprintf(fp, "NG:");
-		fprintf(fp, "%s", (gchar *)compose->newsgroup_list->data);
+		err |= (fprintf(fp, "NG:") < 0);
+		err |= (fprintf(fp, "%s", (gchar *)compose->newsgroup_list->data) < 0);
 		for (cur = compose->newsgroup_list->next; cur != NULL; cur = cur->next)
-			fprintf(fp, ",%s", (gchar *)cur->data);
-		fprintf(fp, "\n");
+			err |= (fprintf(fp, ",%s", (gchar *)cur->data) < 0);
+		err |= (fprintf(fp, "\n") < 0);
 	}
 	/* Sylpheed account IDs */
 	if (mailac)
-		fprintf(fp, "MAID:%d\n", mailac->account_id);
+		err |= (fprintf(fp, "MAID:%d\n", mailac->account_id) < 0);
 	if (newsac)
-		fprintf(fp, "NAID:%d\n", newsac->account_id);
+		err |= (fprintf(fp, "NAID:%d\n", newsac->account_id) < 0);
 
 	
 	if (compose->privacy_system != NULL) {
-		fprintf(fp, "X-Claws-Privacy-System:%s\n", compose->privacy_system);
-		fprintf(fp, "X-Claws-Sign:%d\n", compose->use_signing);
+		err |= (fprintf(fp, "X-Claws-Privacy-System:%s\n", compose->privacy_system) < 0);
+		err |= (fprintf(fp, "X-Claws-Sign:%d\n", compose->use_signing) < 0);
 		if (compose->use_encryption) {
 			gchar *encdata;
 			if (!compose_warn_encryption(compose)) {
@@ -5374,12 +5383,12 @@ static gint compose_queue_sub(Compose *compose, gint *msgnum, FolderItem **item,
 			}
 			if (encdata != NULL) {
 				if (strcmp(encdata, "_DONT_ENCRYPT_")) {
-					fprintf(fp, "X-Claws-Encrypt:%d\n", compose->use_encryption);
-					fprintf(fp, "X-Claws-Encrypt-Data:%s\n", 
-						encdata);
+					err |= (fprintf(fp, "X-Claws-Encrypt:%d\n", compose->use_encryption) < 0);
+					err |= (fprintf(fp, "X-Claws-Encrypt-Data:%s\n", 
+						encdata) < 0);
 				} /* else we finally dont want to encrypt */
 			} else {
-				fprintf(fp, "X-Claws-Encrypt:%d\n", compose->use_encryption);
+				err |= (fprintf(fp, "X-Claws-Encrypt:%d\n", compose->use_encryption) < 0);
 				/* and if encdata was null, it means there's been a problem in 
 				 * key selection */
 				lock = FALSE;
@@ -5397,19 +5406,19 @@ static gint compose_queue_sub(Compose *compose, gint *msgnum, FolderItem **item,
 		gchar *savefolderid;
 		
 		savefolderid = gtk_editable_get_chars(GTK_EDITABLE(compose->savemsg_entry), 0, -1);
-		fprintf(fp, "SCF:%s\n", savefolderid);
+		err |= (fprintf(fp, "SCF:%s\n", savefolderid) < 0);
 		g_free(savefolderid);
 	}
 	/* Save copy folder */
 	if (compose->return_receipt) {
-		fprintf(fp, "RRCPT:1\n");
+		err |= (fprintf(fp, "RRCPT:1\n") < 0);
 	}
 	/* Message-ID of message replying to */
 	if ((compose->replyinfo != NULL) && (compose->replyinfo->msgid != NULL)) {
 		gchar *folderid;
 		
 		folderid = folder_item_get_identifier(compose->replyinfo->folder);
-		fprintf(fp, "RMID:%s\t%d\t%s\n", folderid, compose->replyinfo->msgnum, compose->replyinfo->msgid);
+		err |= (fprintf(fp, "RMID:%s\t%d\t%s\n", folderid, compose->replyinfo->msgnum, compose->replyinfo->msgid) < 0);
 		g_free(folderid);
 	}
 	/* Message-ID of message forwarding to */
@@ -5417,12 +5426,12 @@ static gint compose_queue_sub(Compose *compose, gint *msgnum, FolderItem **item,
 		gchar *folderid;
 		
 		folderid = folder_item_get_identifier(compose->fwdinfo->folder);
-		fprintf(fp, "FMID:%s\t%d\t%s\n", folderid, compose->fwdinfo->msgnum, compose->fwdinfo->msgid);
+		err |= (fprintf(fp, "FMID:%s\t%d\t%s\n", folderid, compose->fwdinfo->msgnum, compose->fwdinfo->msgid) < 0);
 		g_free(folderid);
 	}
 
 	/* end of headers */
-	fprintf(fp, "X-Claws-End-Special-Headers: 1\n");
+	err |= (fprintf(fp, "X-Claws-End-Special-Headers: 1\n") < 0);
 
 	if (compose->redirect_filename != NULL) {
 		if (compose_redirect_write_to_file(compose, fp) < 0) {
@@ -5442,7 +5451,14 @@ static gint compose_queue_sub(Compose *compose, gint *msgnum, FolderItem **item,
 			return result - 1; /* -2 for a generic error, -3 for signing error, -4 for encoding */
 		}
 	}
-
+	if (err == TRUE) {
+		g_warning("failed to write queue message\n");
+		fclose(fp);
+		g_unlink(tmp);
+		g_free(tmp);
+		lock = FALSE;
+		return -2;
+	}
 	if (fclose(fp) == EOF) {
 		FILE_OP_ERROR(tmp, "fclose");
 		g_unlink(tmp);
@@ -8432,7 +8448,8 @@ gboolean compose_draft (gpointer data, guint action)
 	MsgInfo *newmsginfo;
 	FILE *fp;
 	gboolean target_locked = FALSE;
-	
+	gboolean err = FALSE;
+
 	if (lock) return FALSE;
 
 	if (compose->sending)
@@ -8456,7 +8473,7 @@ gboolean compose_draft (gpointer data, guint action)
 			      G_DIR_SEPARATOR, compose);
 	if ((fp = g_fopen(tmp, "wb")) == NULL) {
 		FILE_OP_ERROR(tmp, "fopen");
-		goto unlock;
+		goto warn_err;
 	}
 
 	/* chmod for security */
@@ -8466,23 +8483,23 @@ gboolean compose_draft (gpointer data, guint action)
 	}
 
 	/* Save draft infos */
-	fprintf(fp, "X-Claws-Account-Id:%d\n", compose->account->account_id);
-	fprintf(fp, "S:%s\n", compose->account->address);
+	err |= (fprintf(fp, "X-Claws-Account-Id:%d\n", compose->account->account_id) < 0);
+	err |= (fprintf(fp, "S:%s\n", compose->account->address) < 0);
 
 	if (gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(compose->savemsg_checkbtn))) {
 		gchar *savefolderid;
 
 		savefolderid = gtk_editable_get_chars(GTK_EDITABLE(compose->savemsg_entry), 0, -1);
-		fprintf(fp, "SCF:%s\n", savefolderid);
+		err |= (fprintf(fp, "SCF:%s\n", savefolderid) < 0);
 		g_free(savefolderid);
 	}
 	if (compose->return_receipt) {
-		fprintf(fp, "RRCPT:1\n");
+		err |= (fprintf(fp, "RRCPT:1\n") < 0);
 	}
 	if (compose->privacy_system) {
-		fprintf(fp, "X-Claws-Sign:%d\n", compose->use_signing);
-		fprintf(fp, "X-Claws-Encrypt:%d\n", compose->use_encryption);
-		fprintf(fp, "X-Claws-Privacy-System:%s\n", compose->privacy_system);
+		err |= (fprintf(fp, "X-Claws-Sign:%d\n", compose->use_signing) < 0);
+		err |= (fprintf(fp, "X-Claws-Encrypt:%d\n", compose->use_encryption) < 0);
+		err |= (fprintf(fp, "X-Claws-Privacy-System:%s\n", compose->privacy_system) < 0);
 	}
 
 	/* Message-ID of message replying to */
@@ -8490,7 +8507,7 @@ gboolean compose_draft (gpointer data, guint action)
 		gchar *folderid;
 		
 		folderid = folder_item_get_identifier(compose->replyinfo->folder);
-		fprintf(fp, "RMID:%s\t%d\t%s\n", folderid, compose->replyinfo->msgnum, compose->replyinfo->msgid);
+		err |= (fprintf(fp, "RMID:%s\t%d\t%s\n", folderid, compose->replyinfo->msgnum, compose->replyinfo->msgid) < 0);
 		g_free(folderid);
 	}
 	/* Message-ID of message forwarding to */
@@ -8498,20 +8515,25 @@ gboolean compose_draft (gpointer data, guint action)
 		gchar *folderid;
 		
 		folderid = folder_item_get_identifier(compose->fwdinfo->folder);
-		fprintf(fp, "FMID:%s\t%d\t%s\n", folderid, compose->fwdinfo->msgnum, compose->fwdinfo->msgid);
+		err |= (fprintf(fp, "FMID:%s\t%d\t%s\n", folderid, compose->fwdinfo->msgnum, compose->fwdinfo->msgid) < 0);
 		g_free(folderid);
 	}
 
 	/* end of headers */
-	fprintf(fp, "X-Claws-End-Special-Headers: 1\n");
+	err |= (fprintf(fp, "X-Claws-End-Special-Headers: 1\n") < 0);
+
+	if (err) {
+		fclose(fp);
+		goto warn_err;
+	}
 
 	if (compose_write_to_file(compose, fp, COMPOSE_WRITE_FOR_STORE, action != COMPOSE_AUTO_SAVE) < 0) {
 		fclose(fp);
-		g_unlink(tmp);
-		g_free(tmp);
-		goto unlock;
+		goto warn_err;
 	}
-	fclose(fp);
+	if (fclose(fp) == EOF) {
+		goto warn_err;
+	}
 	
 	if (compose->targetinfo) {
 		target_locked = MSG_IS_LOCKED(compose->targetinfo->flags);
@@ -8537,6 +8559,7 @@ gboolean compose_draft (gpointer data, guint action)
 		debug_print("got draft msgnum %d from adding\n", msgnum);
 	}
 	if (msgnum < 0) {
+warn_err:
 		g_unlink(tmp);
 		g_free(tmp);
 		if (action != COMPOSE_AUTO_SAVE) {

@@ -665,24 +665,29 @@ static gint disposition_notification_send(MsgInfo *msginfo)
 	addrp = addr;
 	
 	/* write queue headers */
-	fprintf(fp, "AF:\n");
-	fprintf(fp, "NF:0\n");
-	fprintf(fp, "PS:10\n");
-	fprintf(fp, "SRH:1\n");
-	fprintf(fp, "SFN:\n");
-	fprintf(fp, "DSR:\n");
-	fprintf(fp, "MID:\n");
-	fprintf(fp, "CFG:\n");
-	fprintf(fp, "PT:0\n");
-	fprintf(fp, "S:%s\n", account->address);
-	fprintf(fp, "RQ:\n");
-	if (account->smtp_server)
-		fprintf(fp, "SSV:%s\n", account->smtp_server);
-	else
-		fprintf(fp, "SSV:\n");
-	fprintf(fp, "SSH:\n");
-	fprintf(fp, "R:<%s>\n", addrp);
-	
+	if (fprintf(fp, "AF:\n"
+		    "NF:0\n"
+		    "PS:10\n"
+		    "SRH:1\n"
+		    "SFN:\n"
+		    "DSR:\n"
+		    "MID:\n"
+		    "CFG:\n"
+		    "PT:0\n"
+		    "S:%s\n"
+		    "RQ:\n"
+		    "SSV:%s\n"
+		    "SSH:\n"
+		    "R:<%s>\n", 
+		    account->address,
+		    account->smtp_server?account->smtp_server:"",
+		    addrp) < 0) {
+		g_free(addrp);
+		fclose(fp);
+		g_unlink(tmp);
+		return -1;
+	}
+
 	g_free(addrp);
 	
 	/* check whether we need to save the message */
@@ -691,31 +696,61 @@ static gint disposition_notification_send(MsgInfo *msginfo)
 		outbox = NULL;
 	if (outbox) {
 		path = folder_item_get_identifier(outbox);
-		fprintf(fp, "SCF:%s\n", path);
+		if (fprintf(fp, "SCF:%s\n", path) < 0) {
+			g_free(path);
+			fclose(fp);
+			g_unlink(tmp);
+			return -1;
+		}
 		g_free(path);
 	}		
 
-	fprintf(fp, "X-Claws-End-Special-Headers: 1\n");
-	
+	if (fprintf(fp, "X-Claws-End-Special-Headers: 1\n") < 0) {
+		fclose(fp);
+		g_unlink(tmp);
+		return -1;
+	}
+
 	/* Date */
 	get_rfc822_date(buf, sizeof(buf));
-	fprintf(fp, "Date: %s\n", buf);
+	if (fprintf(fp, "Date: %s\n", buf) < 0) {
+		fclose(fp);
+		g_unlink(tmp);
+		return -1;
+	}
 
 	/* From */
 	if (account->name && *account->name) {
 		notification_convert_header
 			(buf, sizeof(buf), account->name,
 			 strlen("From: "));
-		fprintf(fp, "From: %s <%s>\n", buf, account->address);
+		if (fprintf(fp, "From: %s <%s>\n", buf, account->address) < 0) {
+			fclose(fp);
+			g_unlink(tmp);
+			return -1;
+		}
 	} else
-		fprintf(fp, "From: %s\n", account->address);
+		if (fprintf(fp, "From: %s\n", account->address) < 0) {
+			fclose(fp);
+			g_unlink(tmp);
+			return -1;
+		}
 
-	fprintf(fp, "To: %s\n", to);
+
+	if (fprintf(fp, "To: %s\n", to) < 0) {
+		fclose(fp);
+		g_unlink(tmp);
+		return -1;
+	}
 
 	/* Subject */
 	notification_convert_header(buf, sizeof(buf), msginfo->subject,
 				    strlen("Subject: "));
-	fprintf(fp, "Subject: Disposition notification: %s\n", buf);
+	if (fprintf(fp, "Subject: Disposition notification: %s\n", buf) < 0) {
+		fclose(fp);
+		g_unlink(tmp);
+		return -1;
+	}
 
 	/* Message ID */
 	if (account->set_domain && account->domain) {
@@ -729,7 +764,12 @@ static gint disposition_notification_send(MsgInfo *msginfo)
 		g_snprintf(buf, sizeof(buf), "%s", "");
 	}
 	generate_msgid(buf, sizeof(buf));
-	fprintf(fp, "Message-ID: <%s>\n", buf);
+	if (fprintf(fp, "Message-ID: <%s>\n", buf) < 0) {
+		fclose(fp);
+		g_unlink(tmp);
+		return -1;
+	}
+
 
 	if (fclose(fp) == EOF) {
 		FILE_OP_ERROR(tmp, "fclose");

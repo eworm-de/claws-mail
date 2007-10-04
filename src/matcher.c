@@ -2118,7 +2118,7 @@ gchar *matching_build_command(const gchar *cmd, MsgInfo *info)
  *\param	fp File
  *\param	prefs_filtering List of filtering conditions
  */
-static void prefs_filtering_write(FILE *fp, GSList *prefs_filtering)
+static int prefs_filtering_write(FILE *fp, GSList *prefs_filtering)
 {
 	GSList *cur = NULL;
 
@@ -2136,19 +2136,19 @@ static void prefs_filtering_write(FILE *fp, GSList *prefs_filtering)
 		if (prop->enabled) {
 			if (fputs("enabled ", fp) == EOF) {
 				FILE_OP_ERROR("filtering config", "fputs");
-				return;
+				return -1;
 			}
 		} else {
 			if (fputs("disabled ", fp) == EOF) {
 				FILE_OP_ERROR("filtering config", "fputs");
-				return;
+				return -1;
 			}
 		}
 
 		if (fputs("rulename \"", fp) == EOF) {
 			FILE_OP_ERROR("filtering config", "fputs");
 			g_free(filtering_str);
-			return;
+			return -1;
 		}
 		tmp_name = prop->name;
 		while (tmp_name && *tmp_name != '\0') {
@@ -2156,14 +2156,14 @@ static void prefs_filtering_write(FILE *fp, GSList *prefs_filtering)
 				if (fputc(*tmp_name, fp) == EOF) {
 					FILE_OP_ERROR("filtering config", "fputs || fputc");
 					g_free(filtering_str);
-					return;
+					return -1;
 				}
 			} else if (*tmp_name == '"') {
 				if (fputc('\\', fp) == EOF ||
 				    fputc('"', fp) == EOF) {
 					FILE_OP_ERROR("filtering config", "fputs || fputc");
 					g_free(filtering_str);
-					return;
+					return -1;
 				}
 			}
 			tmp_name ++;
@@ -2171,7 +2171,7 @@ static void prefs_filtering_write(FILE *fp, GSList *prefs_filtering)
 		if (fputs("\" ", fp) == EOF) {
 			FILE_OP_ERROR("filtering config", "fputs");
 			g_free(filtering_str);
-			return;
+			return -1;
 		}
 
 		if (prop->account_id != 0) {
@@ -2181,7 +2181,7 @@ static void prefs_filtering_write(FILE *fp, GSList *prefs_filtering)
 			if (fputs(tmp, fp) == EOF) {
 				FILE_OP_ERROR("filtering config", "fputs");
 				g_free(tmp);
-				return;
+				return -1;
 			}
 			g_free(tmp);
 		}
@@ -2190,11 +2190,18 @@ static void prefs_filtering_write(FILE *fp, GSList *prefs_filtering)
 		    fputc('\n', fp) == EOF) {
 			FILE_OP_ERROR("filtering config", "fputs || fputc");
 			g_free(filtering_str);
-			return;
+			return -1;
 		}
 		g_free(filtering_str);
 	}
+	
+	return 0;
 }
+
+typedef struct _NodeLoopData {
+	FILE *fp;
+	gboolean error;
+} NodeLoopData;
 
 /*!
  *\brief	Write matchers from a folder item
@@ -2204,10 +2211,10 @@ static void prefs_filtering_write(FILE *fp, GSList *prefs_filtering)
  *
  *\return	gboolean FALSE
  */
-static gboolean prefs_matcher_write_func(GNode *node, gpointer data)
+static gboolean prefs_matcher_write_func(GNode *node, gpointer d)
 {
 	FolderItem *item;
-	FILE *fp = data;
+	NodeLoopData *data = (NodeLoopData *)d;
 	gchar *id;
 	GSList *prefs_filtering;
 
@@ -2221,11 +2228,20 @@ static gboolean prefs_matcher_write_func(GNode *node, gpointer data)
         prefs_filtering = item->prefs->processing;
 
 	if (prefs_filtering != NULL) {
-		fprintf(fp, "[%s]\n", id);
-		prefs_filtering_write(fp, prefs_filtering);
-		fputc('\n', fp);
+		if (fprintf(data->fp, "[%s]\n", id) < 0) {
+			data->error = TRUE;
+			goto fail;
+		}
+		if (prefs_filtering_write(data->fp, prefs_filtering) < 0) {
+			data->error = TRUE;
+			goto fail;
+		}
+		if (fputc('\n', data->fp) == EOF) {
+			data->error = TRUE;
+			goto fail;
+		}
 	}
-
+fail:
 	g_free(id);
 
 	return FALSE;
@@ -2236,32 +2252,44 @@ static gboolean prefs_matcher_write_func(GNode *node, gpointer data)
  *
  *\param	fp File
  */
-static void prefs_matcher_save(FILE *fp)
+static int prefs_matcher_save(FILE *fp)
 {
 	GList *cur;
+	NodeLoopData data;
+	
+	data.fp = fp;
+	data.error = FALSE;
 
 	for (cur = folder_get_list() ; cur != NULL ; cur = g_list_next(cur)) {
 		Folder *folder;
 
 		folder = (Folder *) cur->data;
 		g_node_traverse(folder->node, G_PRE_ORDER, G_TRAVERSE_ALL, -1,
-				prefs_matcher_write_func, fp);
+				prefs_matcher_write_func, &data);
 	}
         
+	if (data.error == TRUE)
+		return -1;
+
         /* pre global rules */
-        fprintf(fp, "[preglobal]\n");
-        prefs_filtering_write(fp, pre_global_processing);
-        fputc('\n', fp);
+        if (fprintf(fp, "[preglobal]\n") < 0 ||
+            prefs_filtering_write(fp, pre_global_processing) < 0 ||
+            fputc('\n', fp) == EOF)
+		return -1;
 
         /* post global rules */
-        fprintf(fp, "[postglobal]\n");
-        prefs_filtering_write(fp, post_global_processing);
-        fputc('\n', fp);
+        if (fprintf(fp, "[postglobal]\n") < 0 ||
+            prefs_filtering_write(fp, post_global_processing) < 0 ||
+            fputc('\n', fp) == EOF)
+		return -1;
         
         /* filtering rules */
-        fprintf(fp, "[filtering]\n");
-        prefs_filtering_write(fp, filtering_rules);
-        fputc('\n', fp);
+	if (fprintf(fp, "[filtering]\n") < 0 ||
+            prefs_filtering_write(fp, filtering_rules) < 0 ||
+            fputc('\n', fp) == EOF)
+		return -1;
+
+	return 0;
 }
 
 /*!
@@ -2283,14 +2311,13 @@ void prefs_matcher_write_config(void)
 		return;
 	}
 
-
-	prefs_matcher_save(pfile->fp);
-
 	g_free(rcpath);
 
-	if (prefs_file_close(pfile) < 0) {
+	if (prefs_matcher_save(pfile->fp) < 0) {
 		g_warning("failed to write configuration to file\n");
-		return;
+		prefs_file_close_revert(pfile);
+	} else if (prefs_file_close(pfile) < 0) {
+		g_warning("failed to save configuration to file\n");
 	}
 }
 
@@ -2302,7 +2329,7 @@ static void matcher_add_rulenames(const gchar *rcpath)
 	FILE *src = g_fopen(rcpath, "rb");
 	FILE *dst = g_fopen(newpath, "wb");
 	gchar buf[BUFFSIZE];
-
+	int r;
 	if (dst == NULL) {
 		perror("fopen");
 		g_free(newpath);
@@ -2314,10 +2341,10 @@ static void matcher_add_rulenames(const gchar *rcpath)
 		&& strncmp(buf, "rulename \"", 10)
 		&& strncmp(buf, "enabled rulename \"", 18)
 		&& strncmp(buf, "disabled rulename \"", 18)) {
-			fwrite("enabled rulename \"\" ",
+			r = fwrite("enabled rulename \"\" ",
 				strlen("enabled rulename \"\" "), 1, dst);
 		}
-		fwrite(buf, strlen(buf), 1, dst);
+		r = fwrite(buf, strlen(buf), 1, dst);
 	}
 	fclose(dst);
 	fclose(src);

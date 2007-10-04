@@ -588,34 +588,47 @@ void toolbar_save_config_file(ToolbarType source)
 
 	fileSpec = g_strconcat(get_rc_dir(), G_DIR_SEPARATOR_S, toolbar_config[source].conf_file, NULL );
 	pfile = prefs_write_open(fileSpec);
-	g_free( fileSpec );
 	if( pfile ) {
 		fp = pfile->fp;
-		fprintf(fp, "<?xml version=\"1.0\" encoding=\"%s\" ?>\n", CS_INTERNAL);
+		if (fprintf(fp, "<?xml version=\"1.0\" encoding=\"%s\" ?>\n", CS_INTERNAL) < 0)
+			goto fail;
 
-		fprintf(fp, "<%s>\n", TOOLBAR_TAG_INDEX);
+		if (fprintf(fp, "<%s>\n", TOOLBAR_TAG_INDEX) < 0)
+			goto fail;
 
 		for (cur = toolbar_config[source].item_list; cur != NULL; cur = cur->next) {
 			ToolbarItem *toolbar_item = (ToolbarItem*) cur->data;
 			
 			if (toolbar_item->index != A_SEPARATOR) {
-				fprintf(fp, "\t<%s %s=\"%s\" %s=\"",
+				if (fprintf(fp, "\t<%s %s=\"%s\" %s=\"",
 					TOOLBAR_TAG_ITEM, 
 					TOOLBAR_ICON_FILE, toolbar_item->file,
-					TOOLBAR_ICON_TEXT);
-				xml_file_put_escape_str(fp, toolbar_item->text);
-				fprintf(fp, "\" %s=\"%s\"/>\n",
+					TOOLBAR_ICON_TEXT) < 0)
+					goto fail;
+				if (xml_file_put_escape_str(fp, toolbar_item->text) < 0)
+					goto fail;
+				if (fprintf(fp, "\" %s=\"%s\"/>\n",
 					TOOLBAR_ICON_ACTION, 
-					toolbar_ret_text_from_val(toolbar_item->index));
+					toolbar_ret_text_from_val(toolbar_item->index)) < 0)
+					goto fail;
 			} else {
-				fprintf(fp, "\t<%s/>\n", TOOLBAR_TAG_SEPARATOR); 
+				if (fprintf(fp, "\t<%s/>\n", TOOLBAR_TAG_SEPARATOR) < 0)
+					goto fail;
 			}
 		}
 
-		fprintf(fp, "</%s>\n", TOOLBAR_TAG_INDEX);	
+		if (fprintf(fp, "</%s>\n", TOOLBAR_TAG_INDEX) < 0)
+			goto fail;
 	
+		g_free( fileSpec );
 		if (prefs_file_close (pfile) < 0 ) 
 			g_warning("failed to write toolbar configuration to file\n");
+		return;
+		
+fail:
+		FILE_OP_ERROR(fileSpec, "fprintf");
+		g_free( fileSpec );
+		prefs_file_close_revert (pfile);
 	} else
 		g_warning("failed to open toolbar configuration file for writing\n");
 }

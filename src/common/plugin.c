@@ -101,7 +101,7 @@ void plugin_save_list(void)
 	PrefFile *pfile;
 	GSList *type_cur, *plugin_cur;
 	Plugin *plugin;
-
+	
 	for (type_cur = plugin_types; type_cur != NULL; type_cur = g_slist_next(type_cur)) {
 		rcpath = g_strconcat(get_rc_dir(), G_DIR_SEPARATOR_S, COMMON_RC, NULL);
 #ifdef G_OS_WIN32
@@ -124,7 +124,8 @@ void plugin_save_list(void)
 				continue;
 
 			if (!strcmp(plugin->type(), type_cur->data))
-				fprintf(pfile->fp, "%s\n", plugin->filename);
+				if (fprintf(pfile->fp, "%s\n", plugin->filename) < 0)
+					goto revert;
 		}
 		for (plugin_cur = unloaded_plugins; plugin_cur != NULL; plugin_cur = g_slist_next(plugin_cur)) {
 			plugin = (Plugin *) plugin_cur->data;
@@ -133,12 +134,23 @@ void plugin_save_list(void)
 				continue;
 			
 			if (!strcmp(plugin->type(), type_cur->data))
-				fprintf(pfile->fp, "%s\n", plugin->filename);
+				if (fprintf(pfile->fp, "%s\n", plugin->filename) < 0)
+					goto revert;
 		}
-		fprintf(pfile->fp, "\n");
+		if (fprintf(pfile->fp, "\n") < 0)
+			goto revert;
 
 		if (prefs_file_close(pfile) < 0)
 			g_warning("failed to write plugin list\n");
+
+		g_free(rcpath);	
+		
+		return;
+
+revert:
+		g_warning("failed to write plugin list\n");
+		if (prefs_file_close_revert(pfile) < 0)
+			g_warning("failed to revert plugin list\n");
 
 		g_free(rcpath);	
 	}

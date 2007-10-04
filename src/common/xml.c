@@ -596,33 +596,6 @@ gint xml_file_put_xml_decl(FILE *fp)
 	return fprintf(fp, "<?xml version=\"1.0\" encoding=\"%s\"?>\n", CS_INTERNAL);
 }
 
-gint xml_file_put_node(FILE *fp, XMLNode *node)
-{
-	GList *cur;
-
-	g_return_val_if_fail(fp != NULL, -1);
-	g_return_val_if_fail(node != NULL, -1);
-
-	fprintf(fp, "<%s", node->tag->tag);
-
-	for (cur = node->tag->attr; cur != NULL; cur = cur->next) {
-		XMLAttr *attr = (XMLAttr *)cur->data;
-		fprintf(fp, " %s=\"", attr->name);
-		xml_file_put_escape_str(fp, attr->value);
-		fputs("\"", fp);
-	}
-
-	if (node->element) {
-		fputs(">", fp);
-		xml_file_put_escape_str(fp, node->element);
-		fprintf(fp, "</%s>\n", node->tag->tag);
-	} else {
-		fputs(" />\n", fp);
-	}
-
-	return 0;
-}
-
 void xml_free_node(XMLNode *node)
 {
 	if (!node) return;
@@ -724,7 +697,7 @@ static int xml_write_tree_recursive(GNode *node, FILE *fp)
 
 	if (node->children) {
 		GNode *child;
-		fputs(">\n", fp);
+		TRY(fputs(">\n", fp) != EOF);
 
 		child = node->children;
 		while (child) {

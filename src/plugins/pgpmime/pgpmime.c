@@ -348,12 +348,37 @@ static MimeInfo *pgpmime_decrypt(MimeInfo *mimeinfo)
 		return NULL;
     	}
 
-	fprintf(dstfp, "MIME-Version: 1.0\n");
+	if (fprintf(dstfp, "MIME-Version: 1.0\n") < 0) {
+        	FILE_OP_ERROR(fname, "fprintf");
+		privacy_set_error(_("Couldn't write to decrypted file %s"), fname);
+        	g_free(fname);
+        	gpgme_data_release(plain);
+		gpgme_release(ctx);
+		debug_print("can't open!\n");
+		return NULL;
+	}
 
 	chars = sgpgme_data_release_and_get_mem(plain, &len);
-	if (len > 0)
-		fwrite(chars, len, 1, dstfp);
-	fclose(dstfp);
+	if (len > 0) {
+		if (fwrite(chars, 1, len, dstfp) < len) {
+        		FILE_OP_ERROR(fname, "fwrite");
+			privacy_set_error(_("Couldn't write to decrypted file %s"), fname);
+        		g_free(fname);
+        		gpgme_data_release(plain);
+			gpgme_release(ctx);
+			debug_print("can't open!\n");
+			return NULL;
+		}
+	}
+	if (fclose(dstfp) == EOF) {
+        	FILE_OP_ERROR(fname, "fclose");
+		privacy_set_error(_("Couldn't close decrypted file %s"), fname);
+        	g_free(fname);
+        	gpgme_data_release(plain);
+		gpgme_release(ctx);
+		debug_print("can't open!\n");
+		return NULL;
+	}
 
 	parseinfo = procmime_scan_file(fname);
 	g_free(fname);

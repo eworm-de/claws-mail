@@ -1343,6 +1343,7 @@ static void mh_write_sequences(FolderItem *item, gboolean remove_unseen)
 	FILE *mh_sequences_old_fp, *mh_sequences_new_fp;
 	gchar buf[BUFFSIZE];
 	gchar *path = NULL;
+	gboolean err = FALSE;
 	START_TIMING("");
 
 	if (!item)
@@ -1392,16 +1393,21 @@ static void mh_write_sequences(FolderItem *item, gboolean remove_unseen)
 			cur = cur ? cur->next:NULL;
 		} while (cur || (start > 0 && end > 0));
 		if (sequence && *sequence) {
-			fprintf(mh_sequences_new_fp, "%s%s\n", 
-					get_unseen_seq_name(), sequence);
-			debug_print("wrote unseen sequence: '%s%s'\n", 
+			if (fprintf(mh_sequences_new_fp, "%s%s\n", 
+					get_unseen_seq_name(), sequence) < 0)
+				err = TRUE;
+			else
+				debug_print("wrote unseen sequence: '%s%s'\n", 
 					get_unseen_seq_name(), sequence);
 		}
 		/* rewrite the rest of the file */
 		if ((mh_sequences_old_fp = g_fopen(mh_sequences_old, "r+b")) != NULL) {
 			while (fgets(buf, sizeof(buf), mh_sequences_old_fp) != NULL) {
 				if (strncmp(buf, get_unseen_seq_name(), strlen(get_unseen_seq_name())))
-					fprintf(mh_sequences_new_fp, "%s", buf);
+					if (fprintf(mh_sequences_new_fp, "%s", buf) < 0) {
+						err = TRUE;
+						break;
+					}
 			}
 			fclose(mh_sequences_old_fp);
 		}
@@ -1410,9 +1416,11 @@ static void mh_write_sequences(FolderItem *item, gboolean remove_unseen)
 #if 0
 		fsync(fileno(mh_sequences_new_fp));
 #endif
-		fclose(mh_sequences_new_fp);
+		if (fclose(mh_sequences_new_fp) == EOF)
+			err = TRUE;
 
-		g_rename(mh_sequences_new, mh_sequences_old);
+		if (!err)
+			g_rename(mh_sequences_new, mh_sequences_old);
 		g_free(sequence);
 		procmsg_msg_list_free(msglist);
 	}

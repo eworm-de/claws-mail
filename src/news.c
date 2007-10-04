@@ -825,18 +825,36 @@ gint news_cancel_article(Folder * folder, MsgInfo * msginfo)
 		g_warning("can't change file mode\n");
 	}
 	
-	fprintf(tmpfp, "From: %s\r\n", msginfo->from);
-	fprintf(tmpfp, "Newsgroups: %s\r\n", msginfo->newsgroups);
-	fprintf(tmpfp, "Subject: cmsg cancel <%s>\r\n", msginfo->msgid);
-	fprintf(tmpfp, "Control: cancel <%s>\r\n", msginfo->msgid);
-	fprintf(tmpfp, "Approved: %s\r\n", msginfo->from);
-	fprintf(tmpfp, "X-Cancelled-by: %s\r\n", msginfo->from);
 	get_rfc822_date(buf, sizeof(buf));
-	fprintf(tmpfp, "Date: %s\r\n", buf);
-	fprintf(tmpfp, "\r\n");
-	fprintf(tmpfp, "removed with Claws Mail\r\n");
+	if (fprintf(tmpfp, "From: %s\r\n"
+		       "Newsgroups: %s\r\n"
+		       "Subject: cmsg cancel <%s>\r\n"
+		       "Control: cancel <%s>\r\n"
+		       "Approved: %s\r\n"
+		       "X-Cancelled-by: %s\r\n"
+		       "Date: %s\r\n"
+		       "\r\n"
+		       "removed with Claws Mail\r\n",
+		       msginfo->from,
+		       msginfo->newsgroups,
+		       msginfo->msgid,
+		       msginfo->msgid,
+		       msginfo->from,
+		       msginfo->from,
+		       buf) < 0) {
+		FILE_OP_ERROR(tmp, "fprintf");
+		fclose(tmpfp);
+		g_unlink(tmp);
+		g_free(tmp);
+		return -1;
+	}
 
-	fclose(tmpfp);
+	if (fclose(tmpfp) == EOF) {
+		FILE_OP_ERROR(tmp, "fclose");
+		g_unlink(tmp);
+		g_free(tmp);
+		return -1;
+	}
 
 	news_post(folder, tmp);
 	remove(tmp);

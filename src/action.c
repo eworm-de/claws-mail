@@ -848,14 +848,14 @@ static ChildInfo *fork_child(gchar *cmd, const gchar *msg_str,
 					   "Pipe creation failed.\n%s"),
 					g_strerror(errno));
 			/* Closing fd = -1 fails silently */
-			close(chld_in[0]);
-			close(chld_in[1]);
-			close(chld_out[0]);
-			close(chld_out[1]);
-			close(chld_err[0]);
-			close(chld_err[1]);
-			close(chld_status[0]);
-			close(chld_status[1]);
+			(void)close(chld_in[0]);
+			(void)close(chld_in[1]);
+			(void)close(chld_out[0]);
+			(void)close(chld_out[1]);
+			(void)close(chld_err[0]);
+			(void)close(chld_err[1]);
+			(void)close(chld_status[0]);
+			(void)close(chld_status[1]);
 			return NULL; /* Pipe error */
 		}
 	}
@@ -869,7 +869,7 @@ static ChildInfo *fork_child(gchar *cmd, const gchar *msg_str,
 			perror("setpgid");
 
 #ifdef GDK_WINDOWING_X11
-		close(ConnectionNumber(gdk_display));
+		(void)close(ConnectionNumber(gdk_display));
 #endif /* GDK_WINDOWING_X11 */
 
 		gch_pid = fork();
@@ -883,21 +883,21 @@ static ChildInfo *fork_child(gchar *cmd, const gchar *msg_str,
 				    (ACTION_PIPE_IN |
 				     ACTION_USER_IN |
 				     ACTION_USER_HIDDEN_IN)) {
-					close(fileno(stdin));
-					dup  (chld_in[0]);
+					(void)close(fileno(stdin));
+					(void)dup  (chld_in[0]);
 				}
-				close(chld_in[0]);
-				close(chld_in[1]);
+				(void)close(chld_in[0]);
+				(void)close(chld_in[1]);
 
-				close(fileno(stdout));
-				dup  (chld_out[1]);
-				close(chld_out[0]);
-				close(chld_out[1]);
+				(void)close(fileno(stdout));
+				(void)dup  (chld_out[1]);
+				(void)close(chld_out[0]);
+				(void)close(chld_out[1]);
 
-				close(fileno(stderr));
-				dup  (chld_err[1]);
-				close(chld_err[0]);
-				close(chld_err[1]);
+				(void)close(fileno(stderr));
+				(void)dup  (chld_err[1]);
+				(void)close(chld_err[0]);
+				(void)close(chld_err[1]);
 			}
 
 			cmdline[0] = "sh";
@@ -917,24 +917,24 @@ static ChildInfo *fork_child(gchar *cmd, const gchar *msg_str,
 			_exit(1);
 		} else if (gch_pid < (pid_t) 0) { /* Fork error */
 			if (sync)
-				write(chld_status[1], "1\n", 2);
+				(void)write(chld_status[1], "1\n", 2);
 			perror("fork");
 			_exit(1);
 		} else { /* Child */
 			if (sync) {
-				close(chld_in[0]);
-				close(chld_in[1]);
-				close(chld_out[0]);
-				close(chld_out[1]);
-				close(chld_err[0]);
-				close(chld_err[1]);
-				close(chld_status[0]);
+				(void)close(chld_in[0]);
+				(void)close(chld_in[1]);
+				(void)close(chld_out[0]);
+				(void)close(chld_out[1]);
+				(void)close(chld_err[0]);
+				(void)close(chld_err[1]);
+				(void)close(chld_status[0]);
 
 				debug_print("Child: waiting for grandchild\n");
 				waitpid(gch_pid, NULL, 0);
 				debug_print("Child: grandchild ended\n");
-				write(chld_status[1], "0\n", 2);
-				close(chld_status[1]);
+				(void)write(chld_status[1], "0\n", 2);
+				(void)close(chld_status[1]);
 			}
 			_exit(0);
 		}
@@ -952,13 +952,13 @@ static ChildInfo *fork_child(gchar *cmd, const gchar *msg_str,
 		return NULL;
 	}
 
-	close(chld_in[0]);
+	(void)close(chld_in[0]);
 	if (!(children->action_type &
 	      (ACTION_PIPE_IN | ACTION_USER_IN | ACTION_USER_HIDDEN_IN)))
-		close(chld_in[1]);
-	close(chld_out[1]);
-	close(chld_err[1]);
-	close(chld_status[1]);
+		(void)close(chld_in[1]);
+	(void)close(chld_out[1]);
+	(void)close(chld_err[1]);
+	(void)close(chld_status[1]);
 
 	child_info = g_new0(ChildInfo, 1);
 
@@ -989,13 +989,13 @@ static ChildInfo *fork_child(gchar *cmd, const gchar *msg_str,
 		ret_str = g_locale_from_utf8(msg_str, strlen(msg_str),
 					     &by_read, &by_written, NULL);
 		if (ret_str && by_written) {
-			write(chld_in[1], ret_str, strlen(ret_str));
+			(void)write(chld_in[1], ret_str, strlen(ret_str));
 			g_free(ret_str);
 		} else
-			write(chld_in[1], msg_str, strlen(msg_str));
+			(void)write(chld_in[1], msg_str, strlen(msg_str));
 		if (!(children->action_type &
 		      (ACTION_USER_IN | ACTION_USER_HIDDEN_IN)))
-			close(chld_in[1]);
+			(void)close(chld_in[1]);
 		child_info->chld_in = -1; /* No more input */
 	}
 
@@ -1112,13 +1112,13 @@ static void childinfo_close_pipes(ChildInfo *child_info)
 		gdk_input_remove(child_info->tag_err);
 
 	if (child_info->chld_in >= 0)
-		close(child_info->chld_in);
+		(void)close(child_info->chld_in);
 	if (child_info->chld_out >= 0)
-		close(child_info->chld_out);
+		(void)close(child_info->chld_out);
 	if (child_info->chld_err >= 0)
-		close(child_info->chld_err);
+		(void)close(child_info->chld_err);
 
-	close(child_info->chld_status);
+	(void)close(child_info->chld_status);
 }
 
 static void free_children(Children *children)
@@ -1445,11 +1445,11 @@ static void catch_input(gpointer data, gint source, GdkInputCondition cond)
 	} while (c >= 0 && count < len);
 
 	if (c >= 0)
-		write(child_info->chld_in, "\n", 2);
+		(void)write(child_info->chld_in, "\n", 2);
 
 	g_free(input);
 
-	close(child_info->chld_in);
+	(void)close(child_info->chld_in);
 	child_info->chld_in = -1;
 	debug_print("Input to grand child sent.\n");
 }
@@ -1524,12 +1524,12 @@ static void catch_output(gpointer data, gint source, GdkInputCondition cond)
 		if (source == child_info->chld_out) {
 			gdk_input_remove(child_info->tag_out);
 			child_info->tag_out = -1;
-			close(child_info->chld_out);
+			(void)close(child_info->chld_out);
 			child_info->chld_out = -1;
 		} else {
 			gdk_input_remove(child_info->tag_err);
 			child_info->tag_err = -1;
-			close(child_info->chld_err);
+			(void)close(child_info->chld_err);
 			child_info->chld_err = -1;
 		}
 	}

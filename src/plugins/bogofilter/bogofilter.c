@@ -280,18 +280,28 @@ static void bogofilter_do_filter(BogoFilterData *data)
 							fclose (output);
 						else {
 							gchar tmpbuf[BUFFSIZE];
+							gboolean err = FALSE;
 							const gchar *bogosity = *parts[1] == 'S' ? "Spam":
 										 (*parts[1] == 'H' ? "Ham":"Unsure");
 							gchar *tmpstr = g_strdup_printf(
 									"X-Claws-Bogosity: %s, spamicity=%s%s\n",
 									bogosity, parts[2],
 									whitelisted?" [whitelisted]":"");
-							fwrite(tmpstr, 1, strlen(tmpstr), output);
-							while (fgets(tmpbuf, sizeof(buf), input))
-								fputs(tmpbuf, output);
+							if (fwrite(tmpstr, 1, strlen(tmpstr), output) < strlen(tmpstr)) {
+								err = TRUE;
+							} else {
+								while (fgets(tmpbuf, sizeof(buf), input)) {
+									if (fputs(tmpbuf, output) == EOF) {
+										err = TRUE;
+										break;
+									}
+								}
+							}
 							fclose(input);
-							fclose(output);
-							move_file(tmpfile, file, TRUE);
+							if (fclose(output) == EOF)
+								err = TRUE;
+							if (!err)
+								move_file(tmpfile, file, TRUE);
 							g_free(tmpstr);
 						}
 						g_free(tmpfile);
@@ -865,9 +875,11 @@ void bogofilter_save_config(void)
 		prefs_file_close_revert(pfile);
 		return;
 	}
-	fprintf(pfile->fp, "\n");
-
-	prefs_file_close(pfile);
+        if (fprintf(pfile->fp, "\n") < 0) {
+		FILE_OP_ERROR(rcpath, "fprintf");
+		prefs_file_close_revert(pfile);
+	} else
+	        prefs_file_close(pfile);
 }
 
 void bogofilter_set_message_callback(MessageCallback callback)

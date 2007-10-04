@@ -1080,7 +1080,7 @@ void procmsg_print_message(MsgInfo *msginfo, const gchar *cmdline)
 	FILE *tmpfp, *prfp;
 	gchar buf[1024];
 	gchar *p;
-
+	int r;
 	g_return_if_fail(msginfo);
 
 	if (procmime_msginfo_is_encrypted(msginfo))
@@ -1102,17 +1102,17 @@ void procmsg_print_message(MsgInfo *msginfo, const gchar *cmdline)
 		return;
 	}
 
-	if (msginfo->date) fprintf(prfp, "Date: %s\n", msginfo->date);
-	if (msginfo->from) fprintf(prfp, "From: %s\n", msginfo->from);
-	if (msginfo->to)   fprintf(prfp, "To: %s\n", msginfo->to);
-	if (msginfo->cc)   fprintf(prfp, "Cc: %s\n", msginfo->cc);
+	if (msginfo->date) r = fprintf(prfp, "Date: %s\n", msginfo->date);
+	if (msginfo->from) r = fprintf(prfp, "From: %s\n", msginfo->from);
+	if (msginfo->to)   r = fprintf(prfp, "To: %s\n", msginfo->to);
+	if (msginfo->cc)   r = fprintf(prfp, "Cc: %s\n", msginfo->cc);
 	if (msginfo->newsgroups)
-		fprintf(prfp, "Newsgroups: %s\n", msginfo->newsgroups);
-	if (msginfo->subject) fprintf(prfp, "Subject: %s\n", msginfo->subject);
+		r = fprintf(prfp, "Newsgroups: %s\n", msginfo->newsgroups);
+	if (msginfo->subject) r = fprintf(prfp, "Subject: %s\n", msginfo->subject);
 	fputc('\n', prfp);
 
 	while (fgets(buf, sizeof(buf), tmpfp) != NULL)
-		fputs(buf, prfp);
+		r = fputs(buf, prfp);
 
 	fclose(prfp);
 	fclose(tmpfp);

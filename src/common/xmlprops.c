@@ -49,6 +49,11 @@
 #define XMLS_ATTAG_NAME          "name"
 #define XMLS_ATTAG_VALUE         "value"
 
+typedef struct _HashLoopData {
+	FILE *fp;
+	int error;
+} HashLoopData;
+
 /*
  * Create new props.
  */
@@ -119,64 +124,110 @@ void xmlprops_free( XmlProperty *props ) {
 	g_free( props );
 }
 
-static void xmlprops_write_elem_s( FILE *fp, gint lvl, gchar *name ) {
+static int xmlprops_write_elem_s( FILE *fp, gint lvl, gchar *name ) {
 	gint i;
-	for( i = 0; i < lvl; i++ ) fputs( "  ", fp );
-	fputs( "<", fp );
-	fputs( name, fp );
+	for( i = 0; i < lvl; i++ ) {
+		if(fputs( "  ", fp ) == EOF)
+			return -1;
+	}
+	if(fputs( "<", fp ) == EOF)
+		return -1;
+	if(fputs( name, fp ) == EOF)
+		return -1;
+	
+	return 0;
 }
 
-static void xmlprops_write_elem_e( FILE *fp, gint lvl, gchar *name ) {
+static int xmlprops_write_elem_e( FILE *fp, gint lvl, gchar *name ) {
 	gint i;
-	for( i = 0; i < lvl; i++ ) fputs( "  ", fp );
-	fputs( "</", fp );
-	fputs( name, fp );
-	fputs( ">\n", fp );
+	for( i = 0; i < lvl; i++ ) {
+		if(fputs( "  ", fp ) == EOF)
+			return -1;
+	}
+	if(fputs( "</", fp ) == EOF)
+		return -1;
+	if(fputs( name, fp ) == EOF)
+		return -1;
+	if(fputs( ">\n", fp ) == EOF)
+		return -1;
+	
+	return 0;
 }
 
-static void xmlprops_write_attr( FILE *fp, gchar *name, gchar *value ) {
-	fputs( " ", fp );
-	fputs( name, fp );
-	fputs( "=\"", fp );
-	xml_file_put_escape_str( fp, value );
-	fputs( "\"", fp );
+static int xmlprops_write_attr( FILE *fp, gchar *name, gchar *value ) {
+	if(fputs( " ", fp ) == EOF)
+		return -1;
+	if(fputs( name, fp ) == EOF)
+		return -1;
+	if(fputs( "=\"", fp ) == EOF)
+		return -1;
+	if(xml_file_put_escape_str( fp, value ) < 0)
+		return -1;
+	if(fputs( "\"", fp ) == EOF)
+		return -1;
+	
+	return 0;
 }
 
-static void xmlprops_write_vis( gpointer key, gpointer value, gpointer data ) {
-	FILE *fp = ( FILE * ) data;
+static void xmlprops_write_vis( gpointer key, gpointer value, gpointer d ) {
+	HashLoopData *data = (HashLoopData *)d;
 
-	xmlprops_write_elem_s( fp, 1, XMLS_ELTAG_PROPERTY );
-	xmlprops_write_attr( fp, XMLS_ATTAG_NAME, key );
-	xmlprops_write_attr( fp, XMLS_ATTAG_VALUE, value );
-	fputs( " />\n", fp );
+	if(xmlprops_write_elem_s( data->fp, 1, XMLS_ELTAG_PROPERTY ) < 0)
+		data->error = 1;
+	if(xmlprops_write_attr( data->fp, XMLS_ATTAG_NAME, key ) < 0)
+		data->error = 1;
+	if(xmlprops_write_attr( data->fp, XMLS_ATTAG_VALUE, value ) < 0)
+		data->error = 1;
+	if(fputs( " />\n", data->fp ) == EOF)
+		data->error = 1;
 }
 
 static gint xmlprops_write_to( XmlProperty *props, const gchar *fileSpec ) {
 	PrefFile *pfile;
 	FILE *fp;
+	HashLoopData data;
 
 	props->retVal = MGU_OPEN_FILE;
 	pfile = prefs_write_open( fileSpec );
 	if( pfile ) {
 		fp = pfile->fp;
-		fprintf( fp, "<?xml version=\"1.0\"" );
+		if(fprintf( fp, "<?xml version=\"1.0\"" ) < 0)
+			goto revert;
 		if( props->encoding && *props->encoding ) {
-			fprintf( fp, " encoding=\"%s\"", props->encoding );
+			if(fprintf( fp, " encoding=\"%s\"", props->encoding ) < 0)
+				goto revert;
 		}
-		fprintf( fp, " ?>\n" );
-		xmlprops_write_elem_s( fp, 0, XMLS_ELTAG_PROP_LIST );
-		fputs( ">\n", fp );
+		if(fprintf( fp, " ?>\n" ) < 0)
+			goto revert;
+		if(xmlprops_write_elem_s( fp, 0, XMLS_ELTAG_PROP_LIST ) < 0)
+			goto revert;
+		if(fputs( ">\n", fp ) == EOF)
+			goto revert;
 
 		/* Output all properties */
-		g_hash_table_foreach( props->propertyTable, xmlprops_write_vis, fp );
+		data.fp = fp;
+		data.error = 0;
+		g_hash_table_foreach( props->propertyTable, xmlprops_write_vis, &data );
 
-		xmlprops_write_elem_e( fp, 0, XMLS_ELTAG_PROP_LIST );
+		if (data.error)
+			goto revert;
+
+		if(xmlprops_write_elem_e( fp, 0, XMLS_ELTAG_PROP_LIST ) < 0)
+			goto revert;
+		
 		props->retVal = MGU_SUCCESS;
 		if( prefs_file_close( pfile ) < 0 ) {
+			goto revert;
+		}
+		goto out;
+revert:
+		props->retVal = MGU_ERROR_WRITE;
+		if( prefs_file_close_revert( pfile ) < 0 ) {
 			props->retVal = MGU_ERROR_WRITE;
 		}
+	
 	}
-
+out:
 	return props->retVal;
 }
 
@@ -190,23 +241,34 @@ gint xmlprops_save_file( XmlProperty *props ) {
 	props->retVal = MGU_NO_FILE;
 	if( props->path == NULL || *props->path == '\0' ) return props->retVal;
 	xmlprops_write_to( props, props->path );
-	/*
-	if( props->retVal == MGU_SUCCESS ) {
-	}
-	*/
+
 	return props->retVal;
 }
 
-static void xmlprops_print_vis( gpointer key, gpointer value, gpointer data ) {
-	FILE *stream = ( FILE * ) data;
+static void xmlprops_print_vis( gpointer key, gpointer value, gpointer d ) {
+	HashLoopData *data = (HashLoopData *)d;
 
-	fprintf( stream, "-\tname/value:\t%s / %s\n", (char *)key, (char *)value );
+	if (fprintf( data->fp, "-\tname/value:\t%s / %s\n", (char *)key, (char *)value ) < 0)
+		data->error = 1;
 }
 
-void xmlprops_print( XmlProperty *props, FILE *stream ) {
-	fprintf( stream, "Property File: %s\n", props->path );
-	g_hash_table_foreach( props->propertyTable, xmlprops_print_vis, stream );
-	fprintf( stream, "---\n" );
+int xmlprops_print( XmlProperty *props, FILE *stream ) {
+	HashLoopData data;
+	
+	if (fprintf( stream, "Property File: %s\n", props->path ) < 0)
+		return -1;
+		
+	data.fp = stream;
+	data.error = 0;
+	g_hash_table_foreach( props->propertyTable, xmlprops_print_vis, &data );
+
+	if (data.error)
+		return -1;
+
+	if (fprintf( stream, "---\n" ) < 0)
+		return -1;
+	
+	return 0;
 }
 
 static void xmlprops_save_property(

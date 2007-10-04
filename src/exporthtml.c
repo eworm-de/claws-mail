@@ -1181,7 +1181,8 @@ void exporthtml_save_settings( ExportHtmlCtl *ctl ) {
 	xmlprops_set_property_b( props, EXMLPROP_BANDING, ctl->banding );
 	xmlprops_set_property_b( props, EXMLPROP_FMT_EMAIL, ctl->linkEMail );
 	xmlprops_set_property_b( props, EXMLPROP_FMT_ATTRIB, ctl->showAttribs );
-	xmlprops_save_file( props );
+	if (xmlprops_save_file( props ) != MGU_SUCCESS)
+		g_warning("can't save settings");
 	xmlprops_free( props );
 }
 

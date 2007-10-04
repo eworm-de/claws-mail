@@ -447,9 +447,11 @@ void prefs_gpg_save_config(void)
 		prefs_file_close_revert(pfile);
 		return;
 	}
-	fprintf(pfile->fp, "\n");
-
-	prefs_file_close(pfile);
+        if (fprintf(pfile->fp, "\n") < 0) {
+		FILE_OP_ERROR(rcpath, "fprintf");
+		prefs_file_close_revert(pfile);
+	} else
+	        prefs_file_close(pfile);
 }
 
 struct GPGAccountConfig *prefs_gpg_account_get_config(PrefsAccount *account)
@@ -594,7 +596,7 @@ gboolean prefs_gpg_should_skip_encryption_warning(const gchar *systemid)
 	systems = g_strsplit(prefs_gpg_get_config()->skip_encryption_warning,
 				",", -1);
 	while (systems && systems[i]) {
-		g_print(" cmp %s %s\n", systems[i], systemid);
+		debug_print(" cmp %s %s\n", systems[i], systemid);
 		if (!strcmp(systems[i],systemid)) {
 			g_strfreev(systems);
 			return TRUE;

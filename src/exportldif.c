@@ -644,7 +644,8 @@ void exportldif_save_settings( ExportLdifCtl *ctl ) {
 	xmlprops_set_property_i( props, EXMLPROP_RDN_INDEX, ctl->rdnIndex );
 	xmlprops_set_property_b( props, EXMLPROP_USE_DN, ctl->useDN );
 	xmlprops_set_property_b( props, EXMLPROP_EXCL_EMAIL, ctl->excludeEMail );
-	xmlprops_save_file( props );
+	if (xmlprops_save_file( props ) != MGU_SUCCESS)
+		g_warning("can't save settings");
 	xmlprops_free( props );
 }
 

@@ -526,9 +526,11 @@ void spamassassin_save_config(void)
 		prefs_file_close_revert(pfile);
 		return;
 	}
-	fprintf(pfile->fp, "\n");
-
-	prefs_file_close(pfile);
+        if (fprintf(pfile->fp, "\n") < 0) {
+		FILE_OP_ERROR(rcpath, "fprintf");
+		prefs_file_close_revert(pfile);
+	} else
+	        prefs_file_close(pfile);
 }
 
 gboolean spamassassin_check_username(void)
