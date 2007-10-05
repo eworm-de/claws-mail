@@ -2326,7 +2326,7 @@ static gint procmime_write_message_rfc822(MimeInfo *mimeinfo, FILE *fp)
 			}
 			len = strlen(buf);
 			if (fwrite(buf, sizeof(gchar), len, fp) < len) {
-				g_warning("failed to dump %d bytes from file", len);
+				g_warning("failed to dump %zd bytes from file", len);
 				fclose(infp);
 				return -1;
 			}
@@ -2338,7 +2338,7 @@ static gint procmime_write_message_rfc822(MimeInfo *mimeinfo, FILE *fp)
 	case MIMECONTENT_MEM:
 		len = strlen(mimeinfo->data.mem);
 		if (fwrite(mimeinfo->data.mem, sizeof(gchar), len, fp) < len) {
-			g_warning("failed to dump %d bytes from mem", len);
+			g_warning("failed to dump %zd bytes from mem", len);
 			return -1;
 		}
 		break;
@@ -2386,7 +2386,7 @@ static gint procmime_write_multipart(MimeInfo *mimeinfo, FILE *fp)
 				break;
 			len = strlen(buf);
 			if (fwrite(buf, sizeof(gchar), len, fp) < len) {
-				g_warning("failed to write %d", len);
+				g_warning("failed to write %zd", len);
 				fclose(infp);
 				return -1;
 			}
@@ -2401,7 +2401,7 @@ static gint procmime_write_multipart(MimeInfo *mimeinfo, FILE *fp)
 			*(str2 - 2) = '\0';
 		len = strlen(str);
 		if (fwrite(str, sizeof(gchar), len, fp) < len) {
-			g_warning("failed to write %d from mem", len);
+			g_warning("failed to write %zd from mem", len);
 			g_free(str);
 			return -1;
 		}

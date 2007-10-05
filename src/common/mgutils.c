@@ -35,6 +35,10 @@ void mgu_print_list( GSList *list, FILE *stream ) {
 	GSList *node = list;
 	while( node ) {
 		int r = fprintf( stream, "\t- >%s<\n", (gchar *)node->data );
+		if (r < 0) {
+			perror("fprintf");
+			break;
+		}
 		node = g_slist_next( node );
 	}
 }
@@ -46,6 +50,10 @@ void mgu_print_dlist( GList *list, FILE *stream ) {
 	GList *node = list;
 	while( node ) {
 		int r = fprintf( stream, "\t- >%s<\n", (gchar *)node->data );
+		if (r < 0) {
+			perror("fprintf");
+			break;
+		}
 		node = g_list_next( node );
 	}
 }
