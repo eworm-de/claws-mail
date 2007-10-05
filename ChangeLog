@@ -1,3 +1,12 @@
+2007-10-05 [paul]	3.0.2cvs13
+
+	* src/prefs_actions.c
+	* src/prefs_filtering.c
+	* src/prefs_template.c
+		fix bug 1343, 'Filtering..'s close button
+		silently discards new filter'
+		Thanks to Colin
+
 2007-10-05 [paul]	3.0.2cvs12
 
 	* configure.ac

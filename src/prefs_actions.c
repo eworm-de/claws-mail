@@ -70,6 +70,7 @@ static struct Actions
 } actions;
 
 static int modified = FALSE;
+static int modified_list = FALSE;
 
 /* widget creating functions */
 static void prefs_actions_create	(MainWindow *mainwin);
@@ -593,6 +594,7 @@ static void prefs_actions_register_cb(GtkWidget *w, gpointer data)
 {
 	prefs_actions_clist_set_row(NULL);
 	modified = FALSE;
+	modified_list = TRUE;
 }
 
 static void prefs_actions_substitute_cb(GtkWidget *w, gpointer data)
@@ -618,6 +620,7 @@ static void prefs_actions_substitute_cb(GtkWidget *w, gpointer data)
 	gtk_tree_path_free(path_sel);
 	gtk_tree_path_free(path_new);
 	modified = FALSE;
+	modified_list = TRUE;
 }
 
 static void prefs_actions_delete_cb(GtkWidget *w, gpointer data)
@@ -645,6 +648,7 @@ static void prefs_actions_delete_cb(GtkWidget *w, gpointer data)
 
 	prefs_common.actions_list = g_slist_remove(prefs_common.actions_list,
 						   action);
+	modified_list = TRUE;
 }
 
 static void prefs_actions_up(GtkWidget *w, gpointer data)
@@ -690,6 +694,7 @@ static void prefs_actions_up(GtkWidget *w, gpointer data)
 
 	gtk_list_store_swap(store, &iprev, &isel);
 	prefs_actions_set_list();
+	modified_list = TRUE;
 }
 
 static void prefs_actions_down(GtkWidget *w, gpointer data)
@@ -723,6 +728,7 @@ static void prefs_actions_down(GtkWidget *w, gpointer data)
 
 	gtk_list_store_swap(store, &next, &sel);
 	prefs_actions_set_list();
+	modified_list = TRUE;
 }
 
 static gint prefs_actions_deleted(GtkWidget *widget, GdkEventAny *event,
@@ -754,8 +760,14 @@ static void prefs_actions_cancel(GtkWidget *w, gpointer data)
 				 GTK_STOCK_CLOSE, _("+_Continue editing"),
 				 NULL) != G_ALERTDEFAULT) {
 		return;
+	} else if (modified_list && alertpanel(_("Actions list not saved"),
+				 _("The actions list has been modified. Close anyway?"),
+				 GTK_STOCK_CLOSE, _("+_Continue editing"), 
+				 NULL) != G_ALERTDEFAULT) {
+		return;
 	}
 	modified = FALSE;
+	modified_list = FALSE;
 	prefs_actions_read_config();
 	gtk_widget_hide(actions.window);
 	inc_unlock();
@@ -774,8 +786,14 @@ static void prefs_actions_ok(GtkWidget *widget, gpointer data)
 				 GTK_STOCK_CLOSE, _("+_Continue editing"),
 				 NULL) != G_ALERTDEFAULT) {
 		return;
+	} else if (modified_list && alertpanel(_("Actions list not saved"),
+				 _("The actions list has been modified. Close anyway?"),
+				 GTK_STOCK_CLOSE, _("+_Continue editing"), 
+				 NULL) != G_ALERTDEFAULT) {
+		return;
 	}
 	modified = FALSE;
+	modified_list = FALSE;
 	prefs_actions_set_list();
 	prefs_actions_write_config();
 

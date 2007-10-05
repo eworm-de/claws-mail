@@ -63,7 +63,7 @@ static struct Templates {
 } templates;
 
 static int modified = FALSE;
-
+static int modified_list = FALSE;
 /* widget creating functions */
 static void prefs_template_window_create	(void);
 static void prefs_template_window_setup		(void);
@@ -475,8 +475,14 @@ static void prefs_template_ok_cb(void)
 				 GTK_STOCK_CLOSE, _("+_Continue editing"), 
 				 NULL) != G_ALERTDEFAULT) {
 		return;
+	} else if (modified_list && alertpanel(_("Templates list not saved"),
+				 _("The templates list has been modified. Close anyway?"),
+				 GTK_STOCK_CLOSE, _("+_Continue editing"), 
+				 NULL) != G_ALERTDEFAULT) {
+		return;
 	}
 	modified = FALSE;
+	modified_list = FALSE;
 	tmpl_list = prefs_template_get_list();
 	template_set_config(tmpl_list);
 	compose_reflect_prefs_all();
@@ -492,8 +498,14 @@ static void prefs_template_cancel_cb(void)
 				 GTK_STOCK_CLOSE, _("+_Continue editing"),
 				 NULL) != G_ALERTDEFAULT) {
 		return;
+	} else if (modified_list && alertpanel(_("Templates list not saved"),
+				 _("The templates list has been modified. Close anyway?"),
+				 GTK_STOCK_CLOSE, _("+_Continue editing"), 
+				 NULL) != G_ALERTDEFAULT) {
+		return;
 	}
 	modified = FALSE;
+	modified_list = FALSE;
 	prefs_template_clear();
 	gtk_widget_hide(templates.window);
 	inc_unlock();
@@ -683,6 +695,7 @@ static gboolean prefs_template_list_view_set_row(GtkTreeIter *row)
 static void prefs_template_register_cb(void)
 {
 	modified = !prefs_template_list_view_set_row(NULL);
+	modified_list = TRUE;
 }
 
 static void prefs_template_substitute_cb(void)
@@ -705,6 +718,7 @@ static void prefs_template_substitute_cb(void)
 	if (!tmpl) return;
 
 	modified = !prefs_template_list_view_set_row(&row);
+	modified_list = TRUE;
 }
 
 static void prefs_template_delete_cb(void)
@@ -733,7 +747,8 @@ static void prefs_template_delete_cb(void)
 		       NULL) != G_ALERTALTERNATE)
 		return;
 
-	gtk_list_store_remove(GTK_LIST_STORE(model), &row);		
+	gtk_list_store_remove(GTK_LIST_STORE(model), &row);
+	modified_list = TRUE;	
 }
 
 static void prefs_template_top_cb(void)
@@ -754,6 +769,7 @@ static void prefs_template_top_cb(void)
 
 	gtk_list_store_move_after(GTK_LIST_STORE(model), &sel, &top);
 	gtkut_list_view_select_row(templates.list_view, 1);
+	modified_list = TRUE;
 }
 
 static void prefs_template_up_cb(void)
@@ -774,6 +790,7 @@ static void prefs_template_up_cb(void)
 
 	gtk_list_store_swap(GTK_LIST_STORE(model), &top, &sel);
 	gtkut_list_view_select_row(templates.list_view, row - 1);
+	modified_list = TRUE;
 }
 
 static void prefs_template_down_cb(void)
@@ -794,6 +811,7 @@ static void prefs_template_down_cb(void)
 			
 	gtk_list_store_swap(GTK_LIST_STORE(model), &top, &sel);
 	gtkut_list_view_select_row(templates.list_view, row + 1);
+	modified_list = TRUE;
 }
 
 static void prefs_template_bottom_cb(void)
@@ -814,6 +832,7 @@ static void prefs_template_bottom_cb(void)
 
 	gtk_list_store_move_after(GTK_LIST_STORE(model), &top, &sel);		
 	gtkut_list_view_select_row(templates.list_view, n_rows - 1);
+	modified_list = TRUE;
 }
 
 static GtkListStore* prefs_template_create_data_store(void)

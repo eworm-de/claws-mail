@@ -154,6 +154,8 @@ static void prefs_filtering_account_option_menu_populate(void);
 
 static gulong signal_id = 0; /* filtering.help_btn clicked signal */
 
+static int modified = FALSE;
+
 void prefs_filtering_open(GSList ** p_processing,
 			  const gchar *title,
 			  const gchar *help_url_anchor,
@@ -1127,6 +1129,7 @@ static void prefs_filtering_register_cb(void)
 	filteringprop_free(prop);
 
 	prefs_filtering_reset_dialog();
+	modified = TRUE;
 }
 
 static void prefs_filtering_substitute_cb(void)
@@ -1158,6 +1161,7 @@ static void prefs_filtering_substitute_cb(void)
 	filteringprop_free(prop);
 
 	prefs_filtering_reset_dialog();
+	modified = TRUE;
 }
 
 static void prefs_filtering_delete_cb(void)
@@ -1183,6 +1187,7 @@ static void prefs_filtering_delete_cb(void)
 	gtk_list_store_remove(GTK_LIST_STORE(model), &iter);
 
 	prefs_filtering_reset_dialog();
+	modified = TRUE;
 }
 
 static void prefs_filtering_top(void)
@@ -1203,6 +1208,7 @@ static void prefs_filtering_top(void)
 
 	gtk_list_store_move_after(GTK_LIST_STORE(model), &sel, &top);
 	gtkut_list_view_select_row(filtering.cond_list_view, 1);
+	modified = TRUE;
 }
 
 static void prefs_filtering_up(void)
@@ -1223,6 +1229,7 @@ static void prefs_filtering_up(void)
 
 	gtk_list_store_swap(GTK_LIST_STORE(model), &top, &sel);
 	gtkut_list_view_select_row(filtering.cond_list_view, row - 1);
+	modified = TRUE;
 }
 
 static void prefs_filtering_down(void)
@@ -1243,6 +1250,7 @@ static void prefs_filtering_down(void)
 			
 	gtk_list_store_swap(GTK_LIST_STORE(model), &top, &sel);
 	gtkut_list_view_select_row(filtering.cond_list_view, row + 1);
+	modified = TRUE;
 }
 
 static void prefs_filtering_bottom(void)
@@ -1263,6 +1271,7 @@ static void prefs_filtering_bottom(void)
 
 	gtk_list_store_move_after(GTK_LIST_STORE(model), &top, &sel);		
 	gtkut_list_view_select_row(filtering.cond_list_view, n_rows - 1);
+	modified = TRUE;
 }
 
 static void prefs_filtering_select_set(FilteringProp *prop)
@@ -1311,7 +1320,7 @@ static gboolean prefs_filtering_key_pressed(GtkWidget *widget, GdkEventKey *even
 	return FALSE;
 }
 
-static void prefs_filtering_ok(void)
+static gboolean prefs_filtering_check_mod(gboolean check_changed_list)
 {
 	FilteringProp * prop;
 	gchar * str;
@@ -1320,6 +1329,17 @@ static void prefs_filtering_ok(void)
         AlertValue val;
 	
 	prop = prefs_filtering_dialog_to_filtering(FALSE);
+	
+	if (check_changed_list) {
+		if (modified && alertpanel(_("Filtering rules not saved"),
+					 _("The list of filtering rules have been modified. Close anyway?"),
+					 GTK_STOCK_CLOSE, _("+_Continue editing"), 
+					 NULL) != G_ALERTDEFAULT) {
+			return TRUE;
+		}
+	}
+	
+	/* check if a rule is being edited */
 	if (prop != NULL) {
 		str = filteringprop_to_string(prop);
 
@@ -1340,7 +1360,7 @@ static void prefs_filtering_ok(void)
 				g_free(filtering_str);
 				g_free(str); /* fixed two leaks: huzzah! */
 				filteringprop_free(prop);
-				return;
+				return TRUE;
 			}
 		}		
 
@@ -1362,13 +1382,21 @@ static void prefs_filtering_ok(void)
 				g_free(name);
 				g_free(condition);
 				g_free(action);
-				return;
+				return TRUE;
 			}
 		}
 		g_free(name);
 		g_free(condition);
 		g_free(action);
 	}
+	return FALSE;
+}
+
+static void prefs_filtering_ok(void)
+{
+	if (prefs_filtering_check_mod(FALSE))
+		return;
+	modified = FALSE;
 	prefs_filtering_set_list();
 	prefs_matcher_write_config();
 	prefs_filtering_close();
@@ -1376,6 +1404,9 @@ static void prefs_filtering_ok(void)
 
 static void prefs_filtering_cancel(void)
 {
+	if (prefs_filtering_check_mod(TRUE))
+		return;
+	modified = FALSE;
 	prefs_matcher_read_config();
 	prefs_filtering_close();
 }
