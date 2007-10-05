@@ -2276,8 +2276,7 @@ static void fetch_content_run(struct etpan_thread_op * op)
 		
 		r = fclose(f);
 		if (r == EOF) {
-			g_unlink(param->filename);
-			goto close;
+			goto unlink;
 		}
 		goto free;
 		

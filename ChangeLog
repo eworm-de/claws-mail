@@ -1,3 +1,8 @@
+2007-10-05 [colin]	3.0.2cvs15
+
+	* src/etpan/imap-thread.c
+		Fix wrong error codepath
+
 2007-10-05 [wwp]	3.0.2cvs14
 
 	* src/filtering.c
