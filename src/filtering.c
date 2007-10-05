@@ -825,6 +825,8 @@ static gboolean filter_msginfo(GSList * filtering_list, MsgInfo * info, PrefsAcc
 gboolean filter_message_by_msginfo(GSList *flist, MsgInfo *info, PrefsAccount* ac_prefs,
 								   FilteringInvocationType context, gchar *extra_info)
 {
+	gboolean ret;
+
 	if (prefs_common.enable_filtering_debug) {
 		gchar *tmp = _("undetermined");
 
@@ -879,7 +881,10 @@ gboolean filter_message_by_msginfo(GSList *flist, MsgInfo *info, PrefsAccount* a
 		}
 	} else
 		debug_filtering_session = FALSE;
-	return filter_msginfo(flist, info, ac_prefs);
+
+	ret = filter_msginfo(flist, info, ac_prefs);
+	debug_filtering_session = FALSE;
+	return ret;
 }
 
 gchar *filteringaction_to_string(gchar *dest, gint destlen, FilteringAction *action)

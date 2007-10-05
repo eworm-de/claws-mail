@@ -2926,3 +2926,4 @@
 ( cvs diff -u -r 1.49.2.99 -r 1.49.2.100 src/procmime.c;  cvs diff -u -r 1.1.4.8 -r 1.1.4.9 src/common/mgutils.c;  ) > 3.0.2cvs11.patchset
 ( cvs diff -u -r 1.654.2.2980 -r 1.654.2.2981 configure.ac;  cvs diff -u -r 1.155.2.76 -r 1.155.2.77 src/Makefile.am;  ) > 3.0.2cvs12.patchset
 ( cvs diff -u -r 1.60.2.51 -r 1.60.2.52 src/prefs_actions.c;  cvs diff -u -r 1.59.2.58 -r 1.59.2.59 src/prefs_filtering.c;  cvs diff -u -r 1.12.2.48 -r 1.12.2.49 src/prefs_template.c;  ) > 3.0.2cvs13.patchset
+( cvs diff -u -r 1.60.2.37 -r 1.60.2.38 src/filtering.c;  ) > 3.0.2cvs14.patchset

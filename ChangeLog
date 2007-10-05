@@ -1,3 +1,11 @@
+2007-10-05 [wwp]	3.0.2cvs14
+
+	* src/filtering.c
+		Fix unexpected logging of quicksearches:
+		debug_filtering_session flag was never reset to FALSE, causing
+		matcher functions to log when called from a quicksearch
+		(if a filtering session happened before).
+
 2007-10-05 [paul]	3.0.2cvs13
 
 	* src/prefs_actions.c
