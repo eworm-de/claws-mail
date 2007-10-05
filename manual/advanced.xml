@@ -24,7 +24,7 @@
     </para>
     <para>
         Additionally, it is possible to add toolbar entries for your
-        actions. To do so, open the <quote>Preferences</quote>
+        actions. To do so, open the <quote>Configuration/Preferences</quote>
         menu and select <quote>Customize Toolbars/Main Window</quote>.
         In the list of available icons, select the one you want, then
         in <quote>Event executed on click</quote> select

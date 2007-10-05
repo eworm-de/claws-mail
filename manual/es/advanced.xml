@@ -14,6 +14,24 @@
 	imaginación. Las acciones se pueden configurar a través del menú
 	<quote>Herramientas</quote>.
     </para>
+    <para>
+	El menú <quote>Herramientas/Acciones</quote> contendrá un elemento
+	por cada acción que se haya creado. Cuando se seleccione uno o más
+	mensajes en la lista de mensajes o esté viendo un mensaje en la vista
+	de mensajes, al seleccionar uno de estos elementos de menú se invocará
+	la acción, y, dependiendo de como se haya definido, el/los mensaje(s)
+	serán pasados a ésta.
+    </para>
+    <para>
+	Además es posible añadir entradas en la barra de herramientas para sus
+	acciones. Para ello abra el menú 
+	<quote>Configuración/Preferencias</quote> y seleccione
+	<quote>Configurar barras de herramientas/Ventana principal</quote>.
+	En la lista de iconos disponibles seleccione el que desee y después en
+	<quote>Evento ejecutado al pulsar</quote> seleccione <quote>Acciones
+	de Claws Mail</quote> y la acción a ejecutar en el menú desplegable
+	<quote>Acción de Claws Mail</quote>.
+    </para>
     <blockquote>
       <example>
 	<title>
