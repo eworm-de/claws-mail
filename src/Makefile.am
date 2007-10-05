@@ -507,8 +507,7 @@ AM_CPPFLAGS = \
 	$(LIBETPAN_CPPFLAGS) \
 	$(STARTUP_NOTIFICATION_CFLAGS) \
 	$(MAEMO_CFLAGS) \
-	$(CONIC_CFLAGS) \
-	-Wno-unused-function
+	$(CONIC_CFLAGS)
 	 
 #no-unused-function is there because of bison stuff
 #no-deprecated-declarations because of gpgme_data_rewind, which we have

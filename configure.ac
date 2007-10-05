@@ -11,7 +11,7 @@ MINOR_VERSION=0
 MICRO_VERSION=2
 INTERFACE_AGE=0
 BINARY_AGE=0
-EXTRA_VERSION=11
+EXTRA_VERSION=12
 EXTRA_RELEASE=
 EXTRA_GTK2_VERSION=
 
@@ -135,6 +135,11 @@ case "$host" in
 esac
 AC_MSG_RESULT([$env_cygwin])
 AM_CONDITIONAL(CYGWIN, test x"$env_cygwin" = x"yes")
+
+if test "$GCC" = "yes"
+then
+	CFLAGS="$CFLAGS -Wno-unused-function"
+fi
 
 CFLAGS="$CFLAGS -Wall"
 
