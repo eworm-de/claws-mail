@@ -261,5 +261,5 @@ void 	toolbar_destroy			(Toolbar	*toolbar);
 void 	toolbar_init			(Toolbar	*toolbar);
 void toolbar_set_learn_button		(Toolbar	*toolbar, 
 					 LearnButtonType  learn_btn_type);
-
+const gchar *toolbar_get_short_text	(int action);
 #endif /* __CUSTOM_TOOLBAR_H__ */
