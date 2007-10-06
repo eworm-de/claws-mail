@@ -116,6 +116,12 @@ static void prefs_toolbar_up                     (GtkButton        *button,
 static void prefs_toolbar_down                   (GtkButton        *button,
 						  ToolbarPage *prefs_toolbar);
 
+static void action_selection_changed		 (GtkComboBox *action_combo,
+						  ToolbarPage *prefs_toolbar);
+
+static void func_selection_changed		 (GtkComboBox *action_combo,
+						  ToolbarPage *prefs_toolbar);
+
 static void prefs_toolbar_create                 (ToolbarPage *prefs_toolbar);
 
 static GtkWidget *create_set_list_view		 (ToolbarPage *prefs_toolbar);
@@ -602,10 +608,12 @@ static void item_type_changed(GtkComboBox *item_type_combo,
 		gtk_combo_box_set_active(
 			GTK_COMBO_BOX(prefs_toolbar->item_func_combo), 0);
 		gtk_button_set_label(GTK_BUTTON(prefs_toolbar->icon_button), "");
-		gtk_entry_set_text(GTK_ENTRY(prefs_toolbar->item_text_entry), "");
 		gtk_widget_set_sensitive(prefs_toolbar->item_text_entry, TRUE);
 		gtk_widget_set_sensitive(prefs_toolbar->item_func_combo, TRUE);
 		gtk_widget_set_sensitive(prefs_toolbar->icon_button, TRUE);
+
+		func_selection_changed(GTK_COMBO_BOX(prefs_toolbar->item_func_combo),
+					prefs_toolbar);
 		break;
 	case ITEM_USER_ACTION:
 		gtk_widget_show(prefs_toolbar->item_action_combo);
@@ -617,11 +625,8 @@ static void item_type_changed(GtkComboBox *item_type_combo,
 		gtk_widget_set_sensitive(prefs_toolbar->item_action_combo, TRUE);
 		gtk_widget_set_sensitive(prefs_toolbar->icon_button, TRUE);
 		
-		gchar *text = gtk_combo_box_get_active_text(GTK_COMBO_BOX(
-				   prefs_toolbar->item_action_combo));
-		gtk_entry_set_text(GTK_ENTRY(prefs_toolbar->item_text_entry), text);
-		g_free(text);
-		
+		action_selection_changed(GTK_COMBO_BOX(prefs_toolbar->item_action_combo),
+					prefs_toolbar);		
 		break;
 	case ITEM_SEPARATOR:
 		gtk_button_set_label(GTK_BUTTON(prefs_toolbar->icon_button), _("None"));
