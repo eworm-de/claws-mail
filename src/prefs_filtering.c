@@ -1534,6 +1534,9 @@ static GtkWidget *prefs_filtering_list_view_create(void)
 
 	list_view = GTK_TREE_VIEW(gtk_tree_view_new_with_model(GTK_TREE_MODEL
 		(prefs_filtering_create_data_store())));
+#ifdef MAEMO
+	g_object_set(list_view, "allow-checkbox-mode", FALSE, NULL);
+#endif
 	
 	gtk_tree_view_set_rules_hint(list_view, prefs_common.use_stripes_everywhere);
 	gtk_tree_view_set_reorderable(list_view, TRUE);
