@@ -1,3 +1,9 @@
+2007-10-06 [colin]	3.0.2cvs17
+
+	* configure.ac
+		Export -DSOLARIS in CFLAGS for all
+		Solaris (not just 2.8) and OpenSolaris
+
 2007-10-06 [paul]	3.0.2cvs16
 
 	* AUTHORS
