@@ -2928,3 +2928,4 @@
 ( cvs diff -u -r 1.60.2.51 -r 1.60.2.52 src/prefs_actions.c;  cvs diff -u -r 1.59.2.58 -r 1.59.2.59 src/prefs_filtering.c;  cvs diff -u -r 1.12.2.48 -r 1.12.2.49 src/prefs_template.c;  ) > 3.0.2cvs13.patchset
 ( cvs diff -u -r 1.60.2.37 -r 1.60.2.38 src/filtering.c;  ) > 3.0.2cvs14.patchset
 ( cvs diff -u -r 1.1.4.86 -r 1.1.4.87 src/etpan/imap-thread.c;  ) > 3.0.2cvs15.patchset
+( cvs diff -u -r 1.100.2.53 -r 1.100.2.54 AUTHORS;  cvs diff -u -r 1.5.2.23 -r 1.5.2.24 src/exporthtml.c;  cvs diff -u -r 1.28.2.39 -r 1.28.2.40 src/mbox.c;  cvs diff -u -r 1.1.2.40 -r 1.1.2.41 src/gtk/authors.h;  ) > 3.0.2cvs16.patchset
