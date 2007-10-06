@@ -1,3 +1,10 @@
+2007-10-06 [colin]	3.0.2cvs21
+
+	* src/prefs_toolbar.c
+	* src/toolbar.c
+		Set toolbar text automatically to the default
+		when changing Event executed on click
+
 2007-10-06 [colin]	3.0.2cvs20
 
 	* src/prefs_toolbar.c

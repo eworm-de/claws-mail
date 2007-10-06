@@ -645,11 +645,27 @@ static void action_selection_changed(GtkComboBox *action_combo,
 {
 	gchar *text = gtk_combo_box_get_active_text(GTK_COMBO_BOX(
 			   prefs_toolbar->item_action_combo));
-	
-	if(text != NULL)
+
+	if(text != NULL) { /* action */
 		gtk_entry_set_text(GTK_ENTRY(prefs_toolbar->item_text_entry), text);
-	
-	g_free(text);
+		g_free(text);
+	} 
+}
+
+static void func_selection_changed(GtkComboBox *action_combo,
+				ToolbarPage *prefs_toolbar)
+{
+	gchar *text = gtk_combo_box_get_active_text(GTK_COMBO_BOX(
+			   prefs_toolbar->item_func_combo));
+
+	if(text != NULL) { /* action */
+		int action = -1;
+		action = toolbar_ret_val_from_descr(text);
+		if (action >= 0)
+			gtk_entry_set_text(GTK_ENTRY(prefs_toolbar->item_text_entry), 
+					toolbar_get_short_text(action));
+		g_free(text);
+	} 
 }
 
 static void prefs_toolbar_create(ToolbarPage *prefs_toolbar)
@@ -859,6 +875,8 @@ static void prefs_toolbar_create(ToolbarPage *prefs_toolbar)
 			 G_CALLBACK(item_type_changed), prefs_toolbar);
 	g_signal_connect(G_OBJECT(item_action_combo), "changed",
 			 G_CALLBACK(action_selection_changed), prefs_toolbar);
+	g_signal_connect(G_OBJECT(item_func_combo), "changed",
+			 G_CALLBACK(func_selection_changed), prefs_toolbar);
 	g_signal_connect(G_OBJECT(up_btn), "clicked",
 			 G_CALLBACK(prefs_toolbar_up), prefs_toolbar);
 	g_signal_connect(G_OBJECT(down_btn), "clicked",
