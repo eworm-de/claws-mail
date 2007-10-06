@@ -2932,3 +2932,4 @@
 ( cvs diff -u -r 1.654.2.2985 -r 1.654.2.2986 configure.ac;  ) > 3.0.2cvs17.patchset
 ( cvs diff -u -r 1.61.2.71 -r 1.61.2.72 src/account.c;  cvs diff -u -r 1.59.2.59 -r 1.59.2.60 src/prefs_filtering.c;  ) > 3.0.2cvs18.patchset
 ( cvs diff -u -r 1.30.2.35 -r 1.30.2.36 src/prefs_toolbar.c;  cvs diff -u -r 1.43.2.84 -r 1.43.2.85 src/toolbar.c;  ) > 3.0.2cvs19.patchset
+( cvs diff -u -r 1.30.2.36 -r 1.30.2.37 src/prefs_toolbar.c;  ) > 3.0.2cvs20.patchset

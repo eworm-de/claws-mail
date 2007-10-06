@@ -721,39 +721,39 @@ static void prefs_toolbar_create(ToolbarPage *prefs_toolbar)
 			 (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
 			 (GtkAttachOptions) (0), 0, 0);
 
-	/* toolbar item description */
-	label_icon_text = gtk_label_new(_("Toolbar text"));
-	gtk_misc_set_alignment(GTK_MISC(label_icon_text), 0, 0.5);
-	gtk_widget_show (label_icon_text);
-	gtk_table_attach (GTK_TABLE (table), label_icon_text, 0, 1, 1, 2,
-			  (GtkAttachOptions) (GTK_FILL),
-			  (GtkAttachOptions) (0), 0, 0);
-
-	item_text_entry = gtk_entry_new();
-	gtk_table_attach (GTK_TABLE (table), item_text_entry, 1, 3, 1, 2,
-			  (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
-			  (GtkAttachOptions) (0), 0, 0);
-
 	/* available actions */
 	label = gtk_label_new(_("Event executed on click"));
 	gtk_misc_set_alignment(GTK_MISC(label), 0, 0.5);
-	gtk_table_attach (GTK_TABLE (table), label, 0, 1, 2, 3,
+	gtk_table_attach (GTK_TABLE (table), label, 0, 1, 1, 2,
 			  (GtkAttachOptions) (GTK_FILL),
 			  (GtkAttachOptions) (0), 0, 0);
 
 	item_action_combo = gtk_combo_box_new_text();
 	gtk_widget_set_size_request(item_action_combo, 200, -1);
-	gtk_table_attach (GTK_TABLE (table), item_action_combo, 1, 3, 2, 3,
+	gtk_table_attach (GTK_TABLE (table), item_action_combo, 1, 3, 1, 2,
 			  (GtkAttachOptions) (GTK_FILL),
 			  (GtkAttachOptions) (0), 0, 0);
 			  
 	/* available internal functions */
 	item_func_combo = gtk_combo_box_new_text();
 	gtk_widget_set_size_request(item_func_combo, 200, -1);
-	gtk_table_attach (GTK_TABLE (table), item_func_combo, 1, 3, 2, 3,
+	gtk_table_attach (GTK_TABLE (table), item_func_combo, 1, 3, 1, 2,
 			  (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
 			  (GtkAttachOptions) (0), 0, 0);
 	
+	/* toolbar item description */
+	label_icon_text = gtk_label_new(_("Toolbar text"));
+	gtk_misc_set_alignment(GTK_MISC(label_icon_text), 0, 0.5);
+	gtk_widget_show (label_icon_text);
+	gtk_table_attach (GTK_TABLE (table), label_icon_text, 0, 1, 2, 3,
+			  (GtkAttachOptions) (GTK_FILL),
+			  (GtkAttachOptions) (0), 0, 0);
+
+	item_text_entry = gtk_entry_new();
+	gtk_table_attach (GTK_TABLE (table), item_text_entry, 1, 3, 2, 3,
+			  (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
+			  (GtkAttachOptions) (0), 0, 0);
+
 	icon_vbox = gtk_vbox_new(FALSE, VBOX_BORDER);
 	gtk_widget_show(icon_vbox);
 	

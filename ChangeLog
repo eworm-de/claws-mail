@@ -1,3 +1,8 @@
+2007-10-06 [colin]	3.0.2cvs20
+
+	* src/prefs_toolbar.c
+		Invert Text and Event fields
+
 2007-10-06 [colin]	3.0.2cvs19
 
 	* src/prefs_toolbar.c
