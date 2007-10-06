@@ -1,3 +1,10 @@
+2007-10-06 [colin]	3.0.2cvs19
+
+	* src/prefs_toolbar.c
+	* src/toolbar.c
+		Make toolbar prefs look much better
+		Patch by Pawel Pekala
+
 2007-10-06 [paul]	3.0.2cvs18
 
 	* src/account.c

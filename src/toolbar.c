@@ -330,7 +330,7 @@ GList *toolbar_get_action_items(ToolbarType source)
 					A_TRASH , A_DELETE_REAL,       A_EXECUTE,       A_GOTO_PREV, 
 					A_GOTO_NEXT,	A_IGNORE_THREAD,  A_WATCH_THREAD,	A_PRINT,
 					A_ADDRBOOK, 	A_LEARN_SPAM, A_GO_FOLDERS, 
-					A_SYL_ACTIONS, A_CANCEL_INC };
+					A_CANCEL_INC };
 
 		for (i = 0; i < sizeof main_items / sizeof main_items[0]; i++)  {
 			items = g_list_append(items, gettext(toolbar_text[main_items[i]].descr));
@@ -344,7 +344,7 @@ GList *toolbar_get_action_items(ToolbarType source)
 #ifdef USE_ASPELL
 					A_CHECK_SPELLING, 
 #endif
-					A_SYL_ACTIONS, A_CLOSE };	
+					A_CLOSE };	
 
 		for (i = 0; i < sizeof comp_items / sizeof comp_items[0]; i++) 
 			items = g_list_append(items, gettext(toolbar_text[comp_items[i]].descr));
@@ -353,7 +353,7 @@ GList *toolbar_get_action_items(ToolbarType source)
 		gint msgv_items[] =   { A_COMPOSE_EMAIL, A_REPLY_MESSAGE, A_REPLY_SENDER,
 				        A_REPLY_ALL,     A_REPLY_ML,      A_FORWARD,
 				        A_TRASH, A_DELETE_REAL,       A_GOTO_PREV,	  A_GOTO_NEXT,
-					A_ADDRBOOK,	 A_LEARN_SPAM, A_SYL_ACTIONS, A_CLOSE };	
+					A_ADDRBOOK,	 A_LEARN_SPAM, A_CLOSE };	
 
 		for (i = 0; i < sizeof msgv_items / sizeof msgv_items[0]; i++) 
 			items = g_list_append(items, gettext(toolbar_text[msgv_items[i]].descr));
