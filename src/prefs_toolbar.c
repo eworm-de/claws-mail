@@ -385,6 +385,10 @@ static void prefs_toolbar_register(GtkButton *button, ToolbarPage *prefs_toolbar
 		GdkPixbuf *pixbuf;
 		gchar *event, *text;
 
+		if (prefs_toolbar->item_icon_file == NULL) {
+			alertpanel_error(ERROR_MSG_NO_ICON);
+			return;
+		}
 		stock_pixbuf_gdk(prefs_toolbar->window, 
 				 stock_pixmap_get_icon(prefs_toolbar->item_icon_file),
 				 &pixbuf);
@@ -461,6 +465,10 @@ static void prefs_toolbar_substitute(GtkButton *button, ToolbarPage *prefs_toolb
 		GdkPixbuf *pixbuf;
 		gchar *icon_event, *set_event, *text;
 
+		if (prefs_toolbar->item_icon_file == NULL) {
+			alertpanel_error(ERROR_MSG_NO_ICON);
+			return;
+		}
 		stock_pixbuf_gdk(prefs_toolbar->window, 
 				 stock_pixmap_get_icon(prefs_toolbar->item_icon_file),
 				 &pixbuf);
@@ -631,6 +639,8 @@ static void item_type_changed(GtkComboBox *item_type_combo,
 	case ITEM_SEPARATOR:
 		gtk_button_set_label(GTK_BUTTON(prefs_toolbar->icon_button), _("None"));
 		gtk_button_set_image(GTK_BUTTON(prefs_toolbar->icon_button), NULL);
+		g_free(prefs_toolbar->item_icon_file);
+		prefs_toolbar->item_icon_file = NULL;
 		gtk_combo_box_set_active(
 			GTK_COMBO_BOX(prefs_toolbar->item_func_combo), -1);
 		gtk_combo_box_set_active(
@@ -1106,6 +1116,8 @@ static gboolean set_list_selected(GtkTreeSelection *selector,
 	if (g_utf8_collate(toolbar_ret_descr_from_val(A_SEPARATOR), descr) == 0) {
 		gtk_button_set_label(GTK_BUTTON(prefs_toolbar->icon_button),
 				    _("None"));
+		g_free(prefs_toolbar->item_icon_file);
+		prefs_toolbar->item_icon_file = NULL;
 		gtk_combo_box_set_active(GTK_COMBO_BOX(prefs_toolbar->item_type_combo),
 					ITEM_SEPARATOR);
 		g_free(icon_text);
