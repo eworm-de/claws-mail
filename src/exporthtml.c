@@ -55,7 +55,7 @@
 #define BORDER_SIZE         2
 #define CELL_PADDING        2
 #define CELL_SPACING        2
-#define CHAR_ENCODING       "ISO-8859-1"
+#define CHAR_ENCODING       "UTF-8"
 
 /* Stylesheet names */
 #define FILENAME_NONE       ""
@@ -121,7 +121,7 @@ ExportHtmlCtl *exporthtml_create( void ) {
 	ctl->path = NULL;
 	ctl->dirOutput = NULL;
 	ctl->fileHtml = NULL;
-	ctl->encoding = NULL;
+	ctl->encoding = g_strconcat(CHAR_ENCODING, NULL);
 	ctl->stylesheet = EXPORT_HTML_ID_NONE;
 	ctl->nameFormat = EXPORT_HTML_FIRST_LAST;
 	ctl->banding = FALSE;
@@ -914,7 +914,9 @@ static void exporthtml_fmt_header(
 	entry = exporthtml_find_stylesheet( ctl );
 
 	fprintf( stream,
-		"<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\">\n" );
+		"<!DOCTYPE html PUBLIC \"-//W3C//DTD HTML 4.01 Transitional//EN\"\n" );
+	fprintf( stream,
+                "\"http://www.w3.org/TR/html4/loose.dtd\">\n" );
 	fprintf( stream, "<html>\n" );
 	fprintf( stream, "<head>\n" );
 
@@ -935,7 +937,6 @@ static void exporthtml_fmt_header(
 			fprintf( stream, "href=\"%s\" >\n", entry->fileName );
 		}
 	}
-	fprintf( stream, "<body>\n" );
 	fprintf( stream, "</head>\n" );
 }
 
@@ -987,7 +988,7 @@ void exporthtml_process(
 #else
 	fprintf( htmlFile, "<p>%s</p>\n", ctime_r( &tt, buf ) );
 #endif
-	fprintf( htmlFile, "<hr width=\"100%%\"></hr>\n" );
+	fprintf( htmlFile, "<hr width=\"100%%\">\n" );
 
 	fprintf( htmlFile, "</body>\n" );
 	fprintf( htmlFile, "</html>\n" );

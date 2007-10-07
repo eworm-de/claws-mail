@@ -1,3 +1,9 @@
+2007-10-07 [colin]	3.0.2cvs28
+
+	* src/exporthtml.c
+		Fix HTML export to make it more compliant
+		Patch by Frank Dietrich <bits_n_bytes@gmx.de>
+
 2007-10-07 [colin]	3.0.2cvs27
 
 	* src/prefs_toolbar.c
