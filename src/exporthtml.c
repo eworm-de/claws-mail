@@ -983,11 +983,7 @@ void exporthtml_process(
 	exporthtml_fmt_folder( ctl, htmlFile, rootFolder );
 
 	tt = time( NULL );
-#ifdef SOLARIS
-	fprintf(htmlFile, "<p>%s</p>\n", ctime_r(&tt, buf, sizeof(buf)));
-#else
 	fprintf( htmlFile, "<p>%s</p>\n", ctime_r( &tt, buf ) );
-#endif
 	fprintf( htmlFile, "<hr width=\"100%%\">\n" );
 
 	fprintf( htmlFile, "</body>\n" );

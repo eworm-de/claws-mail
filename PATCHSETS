@@ -2942,3 +2942,4 @@
 ( cvs diff -u -r 1.30.2.41 -r 1.30.2.42 src/prefs_toolbar.c;  ) > 3.0.2cvs27.patchset
 ( cvs diff -u -r 1.5.2.24 -r 1.5.2.25 src/exporthtml.c;  ) > 3.0.2cvs28.patchset
 ( cvs diff -u -r 1.100.2.55 -r 1.100.2.56 AUTHORS;  cvs diff -u -r 1.1.2.41 -r 1.1.2.42 src/gtk/authors.h;  ) > 3.0.2cvs29.patchset
+( cvs diff -u -r 1.5.2.25 -r 1.5.2.26 src/exporthtml.c;  cvs diff -u -r 1.28.2.40 -r 1.28.2.41 src/mbox.c;  cvs diff -u -r 1.36.2.116 -r 1.36.2.117 src/common/utils.c;  ) > 3.0.2cvs30.patchset

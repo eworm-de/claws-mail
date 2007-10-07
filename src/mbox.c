@@ -576,13 +576,8 @@ gint export_list_to_mbox(GSList *mlist, const gchar *mbox)
 			 sizeof(buf));
 		extract_address(buf);
 
-#ifdef SOLARIS
- 		if (fprintf(mbox_fp, "From %s %s",
-			buf, ctime_r(&msginfo->date_t, buft, sizeof(buft))) < 0) {
-#else
 		if (fprintf(mbox_fp, "From %s %s",
 			buf, ctime_r(&msginfo->date_t, buft)) < 0) {
-#endif
 			err = -1;
 #ifdef HAVE_FGETS_UNLOCKED
 			funlockfile(msg_fp);

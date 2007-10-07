@@ -1,3 +1,10 @@
+2007-10-07 [colin]	3.0.2cvs30
+
+	* src/exporthtml.c
+	* src/mbox.c
+	* src/common/utils.c
+		Better fix for Solaris, thanks to Nicolas Doualot
+
 2007-10-07 [colin]	3.0.2cvs29
 
 	* AUTHORS

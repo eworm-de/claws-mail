@@ -3776,13 +3776,9 @@ void get_rfc822_date(gchar *buf, gint len)
 	t = time(NULL);
 	lt = localtime_r(&t, &buf1);
 
-#ifdef SOLARIS
-	sscanf(asctime_r(lt, buf2, sizeof(buf2)), "%3s %3s %d %d:%d:%d %d\n",
-	       day, mon, &dd, &hh, &mm, &ss, &yyyy);
-#else
 	sscanf(asctime_r(lt, buf2), "%3s %3s %d %d:%d:%d %d\n",
 	       day, mon, &dd, &hh, &mm, &ss, &yyyy);
-#endif
+
 	g_snprintf(buf, len, "%s, %d %s %d %02d:%02d:%02d %s",
 		   day, dd, mon, yyyy, hh, mm, ss, tzoffset(&t));
 }
