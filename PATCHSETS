@@ -2939,3 +2939,4 @@
 ( cvs diff -u -r 1.30.2.39 -r 1.30.2.40 src/prefs_toolbar.c;  cvs diff -u -r 1.43.2.86 -r 1.43.2.87 src/toolbar.c;  cvs diff -u -r 1.19.2.23 -r 1.19.2.24 src/toolbar.h;  ) > 3.0.2cvs24.patchset
 ( cvs diff -u -r 1.43.2.87 -r 1.43.2.88 src/toolbar.c;  ) > 3.0.2cvs25.patchset
 ( cvs diff -u -r 1.30.2.40 -r 1.30.2.41 src/prefs_toolbar.c;  ) > 3.0.2cvs26.patchset
+( cvs diff -u -r 1.30.2.41 -r 1.30.2.42 src/prefs_toolbar.c;  ) > 3.0.2cvs27.patchset

@@ -1,3 +1,8 @@
+2007-10-07 [colin]	3.0.2cvs27
+
+	* src/prefs_toolbar.c
+		Only use icons that wouldn't look stupid in the toolbar
+
 2007-10-07 [colin]	3.0.2cvs26
 
 	* src/prefs_toolbar.c
