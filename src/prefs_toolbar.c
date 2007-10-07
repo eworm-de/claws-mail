@@ -670,6 +670,16 @@ static void func_selection_changed(GtkComboBox *action_combo,
 			gtk_entry_set_text(GTK_ENTRY(prefs_toolbar->item_text_entry), 
 					toolbar_get_short_text(action));
 		g_free(text);
+		if (action >= 0) {
+			StockPixmap stockp = toolbar_get_icon(action);
+			if (stockp >= 0)  {
+				g_free(prefs_toolbar->item_icon_file);
+				prefs_toolbar->item_icon_file = g_strdup(stock_pixmap_get_name(stockp));
+
+				gtk_button_set_image(GTK_BUTTON(prefs_toolbar->icon_button),
+				     stock_pixmap_widget(prefs_toolbar->window, stockp));
+			}
+		}
 	} 
 }
 
@@ -1201,6 +1211,23 @@ static void icon_chooser_cancel_clicked(GtkButton *button,
 	prefs_toolbar->icon_chooser_list = NULL;
 }
 
+static gboolean icon_chooser_key_pressed(GtkWidget *widget, GdkEventKey *event,
+			ToolbarPage *prefs_toolbar)
+{
+	if (event && event->keyval == GDK_Escape) {
+		icon_chooser_cancel_clicked(NULL, prefs_toolbar);
+		return TRUE;
+	}
+
+	return FALSE;
+}
+
+static void icon_chooser_tree_activated(GtkTreeView *treeview, GtkTreePath *path,
+				     GtkTreeViewColumn *column, ToolbarPage *prefs_toolbar)
+{
+	icon_chooser_ok_clicked(NULL, prefs_toolbar);
+}
+
 static void icon_chooser_create(GtkButton *button, ToolbarPage *prefs_toolbar)
 {
 	static GtkWidget *icon_chooser_win;
@@ -1305,7 +1332,11 @@ static void icon_chooser_create(GtkButton *button, ToolbarPage *prefs_toolbar)
 			 G_CALLBACK(icon_chooser_ok_clicked), prefs_toolbar);
 	g_signal_connect(G_OBJECT(cancel_btn), "clicked",
 			 G_CALLBACK(icon_chooser_cancel_clicked), prefs_toolbar);
-	
+	g_signal_connect(G_OBJECT(icon_chooser_win), "key_press_event",
+			 G_CALLBACK(icon_chooser_key_pressed), prefs_toolbar);
+	g_signal_connect(G_OBJECT(list_view), "row-activated",
+			 G_CALLBACK(icon_chooser_tree_activated), prefs_toolbar);
+
 	gtk_widget_show_all(icon_chooser_win);
 	gtk_window_set_modal(GTK_WINDOW(icon_chooser_win), TRUE);
 	

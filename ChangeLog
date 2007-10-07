@@ -1,3 +1,12 @@
+2007-10-07 [colin]	3.0.2cvs24
+
+	* src/prefs_toolbar.c
+	* src/toolbar.c
+	* src/toolbar.h
+		Update icon to default one when changing event
+		Make the icon chooser nicer (handle Esc, Enter,
+		double-click)
+
 2007-10-06 [colin]	3.0.2cvs23
 
 	* src/prefs_toolbar.c

@@ -437,6 +437,7 @@ const gchar *toolbar_get_short_text(int action) {
 	case A_LINEWRAP_ALL:	return _("Wrap all");
 	case A_ADDRBOOK: 	return _("Address");
 	case A_CANCEL_INC:	return _("Stop");
+	case A_EXECUTE:		return _("Execute");
 	#ifdef USE_ASPELL
 	case A_CHECK_SPELLING:	return _("Check spelling");
 	#endif
@@ -444,37 +445,78 @@ const gchar *toolbar_get_short_text(int action) {
 	}
 }
 
+gint toolbar_get_icon(int action) {
+	switch(action) {
+	case A_GO_FOLDERS: 	return STOCK_PIXMAP_GO_FOLDERS;
+	case A_OPEN_MAIL: 	return STOCK_PIXMAP_OPEN_MAIL;
+	case A_RECEIVE_ALL: 	return STOCK_PIXMAP_MAIL_RECEIVE_ALL;
+	case A_RECEIVE_CUR: 	return STOCK_PIXMAP_MAIL_RECEIVE;
+	case A_SEND_QUEUED: 	return STOCK_PIXMAP_MAIL_SEND_QUEUE;
+	case A_COMPOSE_EMAIL: 	return STOCK_PIXMAP_MAIL_COMPOSE;
+	case A_COMPOSE_NEWS: 	return STOCK_PIXMAP_NEWS_COMPOSE;
+	case A_REPLY_MESSAGE: 	return STOCK_PIXMAP_MAIL_REPLY;
+	case A_REPLY_ALL: 	return STOCK_PIXMAP_MAIL_REPLY_TO_ALL;
+	case A_REPLY_SENDER: 	return STOCK_PIXMAP_MAIL_REPLY_TO_AUTHOR;
+	case A_REPLY_ML: 	return STOCK_PIXMAP_MAIL_REPLY;
+	case A_FORWARD: 	return STOCK_PIXMAP_MAIL_FORWARD;
+	case A_TRASH: 		return STOCK_PIXMAP_TRASH;
+	case A_DELETE_REAL:	return STOCK_PIXMAP_DELETED;
+	case A_LEARN_SPAM: 	return STOCK_PIXMAP_SPAM_BTN;
+	case A_GOTO_PREV: 	return STOCK_PIXMAP_UP_ARROW;
+	case A_GOTO_NEXT: 	return STOCK_PIXMAP_DOWN_ARROW;
+	case A_IGNORE_THREAD: 	return STOCK_PIXMAP_IGNORETHREAD;
+	case A_WATCH_THREAD: 	return STOCK_PIXMAP_WATCHTHREAD;
+	case A_PRINT:	 	return STOCK_PIXMAP_PRINTER;
+	case A_CLOSE: 		return STOCK_PIXMAP_CLOSE;
+	case A_SEND: 		return STOCK_PIXMAP_MAIL_SEND;
+	case A_SENDL: 		return STOCK_PIXMAP_MAIL_SEND_QUEUE;
+	case A_DRAFT: 		return STOCK_PIXMAP_MAIL;
+	case A_INSERT: 		return STOCK_PIXMAP_INSERT_FILE;
+	case A_ATTACH: 		return STOCK_PIXMAP_MAIL_ATTACH;
+	case A_SIG: 		return STOCK_PIXMAP_MAIL_SIGN;
+	case A_EXTEDITOR:	return STOCK_PIXMAP_EDIT_EXTERN;
+	case A_LINEWRAP_CURRENT:return STOCK_PIXMAP_LINEWRAP_CURRENT;
+	case A_LINEWRAP_ALL:	return STOCK_PIXMAP_LINEWRAP_ALL;
+	case A_ADDRBOOK: 	return STOCK_PIXMAP_ADDRESS_BOOK;
+	case A_CANCEL_INC:	return STOCK_PIXMAP_NOTICE_ERROR;
+	case A_EXECUTE:		return STOCK_PIXMAP_EXEC;
+	#ifdef USE_ASPELL
+	case A_CHECK_SPELLING:	return STOCK_PIXMAP_CHECK_SPELLING;
+	#endif
+	default:		return -1;
+	}
+}
+
 static void toolbar_set_default_main(void) 
 {
 	struct {
 		gint action;
-		gint icon;
 	} default_toolbar[] = {
 #ifdef MAEMO
-		{ A_GO_FOLDERS,    STOCK_PIXMAP_GO_FOLDERS },
-		{ A_OPEN_MAIL,     STOCK_PIXMAP_OPEN_MAIL  },		
-		{ A_SEPARATOR,     0                       }, 
+		{ A_GO_FOLDERS},
+		{ A_OPEN_MAIL},		
+		{ A_SEPARATOR}, 
 #endif
-		{ A_RECEIVE_ALL,   STOCK_PIXMAP_MAIL_RECEIVE_ALL },
-		{ A_SEPARATOR,     0}, 
-		{ A_SEND_QUEUED,   STOCK_PIXMAP_MAIL_SEND_QUEUE},
-		{ A_COMPOSE_EMAIL, STOCK_PIXMAP_MAIL_COMPOSE },
-		{ A_SEPARATOR,     0},
-		{ A_REPLY_MESSAGE, STOCK_PIXMAP_MAIL_REPLY}, 
+		{ A_RECEIVE_ALL},
+		{ A_SEPARATOR}, 
+		{ A_SEND_QUEUED},
+		{ A_COMPOSE_EMAIL},
+		{ A_SEPARATOR},
+		{ A_REPLY_MESSAGE}, 
 #ifndef MAEMO
-		{ A_REPLY_ALL,     STOCK_PIXMAP_MAIL_REPLY_TO_ALL},
-		{ A_REPLY_SENDER,  STOCK_PIXMAP_MAIL_REPLY_TO_AUTHOR},
+		{ A_REPLY_ALL},
+		{ A_REPLY_SENDER},
 #endif
-		{ A_FORWARD,       STOCK_PIXMAP_MAIL_FORWARD},
-		{ A_SEPARATOR,     0},
-		{ A_TRASH,         STOCK_PIXMAP_TRASH},
+		{ A_FORWARD},
+		{ A_SEPARATOR},
+		{ A_TRASH},
 #ifndef MAEMO
 #if (defined(USE_SPAMASSASSIN_PLUGIN) || defined(USE_BOGOFILTER_PLUGIN))
-		{ A_LEARN_SPAM,	   STOCK_PIXMAP_SPAM_BTN},
+		{ A_LEARN_SPAM},
 #endif
 #endif
-		{ A_SEPARATOR,     0},
-		{ A_GOTO_NEXT,     STOCK_PIXMAP_DOWN_ARROW }
+		{ A_SEPARATOR},
+		{ A_GOTO_NEXT}
 	};
 	
 	gint i;
@@ -485,7 +527,7 @@ static void toolbar_set_default_main(void)
 		
 		if (default_toolbar[i].action != A_SEPARATOR) {
 			
-			gchar *file = stock_pixmap_get_name((StockPixmap)default_toolbar[i].icon);
+			gchar *file = stock_pixmap_get_name((StockPixmap)toolbar_get_short_text(default_toolbar[i].action));
 			
 			toolbar_item->file  = g_strdup(file);
 			toolbar_item->index = default_toolbar[i].action;
@@ -508,22 +550,21 @@ static void toolbar_set_default_compose(void)
 {
 	struct {
 		gint action;
-		gint icon;
 	} default_toolbar[] = {
 #ifdef MAEMO
-		{ A_CLOSE,		STOCK_PIXMAP_CLOSE},
-		{ A_SEPARATOR, 		0}, 
+		{ A_CLOSE},
+		{ A_SEPARATOR}, 
 #endif
-		{ A_SEND,      		STOCK_PIXMAP_MAIL_SEND},
-		{ A_SENDL,     		STOCK_PIXMAP_MAIL_SEND_QUEUE},
-		{ A_DRAFT,     		STOCK_PIXMAP_MAIL},
-		{ A_SEPARATOR, 		0}, 
+		{ A_SEND},
+		{ A_SENDL},
+		{ A_DRAFT},
+		{ A_SEPARATOR}, 
 #ifndef MAEMO
-		{ A_INSERT,    		STOCK_PIXMAP_INSERT_FILE},
+		{ A_INSERT},
 #endif
-		{ A_ATTACH,    		STOCK_PIXMAP_MAIL_ATTACH},
-		{ A_SEPARATOR, 		0},
-		{ A_ADDRBOOK,  		STOCK_PIXMAP_ADDRESS_BOOK	}
+		{ A_ATTACH},
+		{ A_SEPARATOR},
+		{ A_ADDRBOOK}
 	};
 	
 	gint i;
@@ -534,7 +575,7 @@ static void toolbar_set_default_compose(void)
 		
 		if (default_toolbar[i].action != A_SEPARATOR) {
 			
-			gchar *file = stock_pixmap_get_name((StockPixmap)default_toolbar[i].icon);
+			gchar *file = stock_pixmap_get_name((StockPixmap)toolbar_get_short_text(default_toolbar[i].action));
 			
 			toolbar_item->file  = g_strdup(file);
 			toolbar_item->index = default_toolbar[i].action;
@@ -557,24 +598,23 @@ static void toolbar_set_default_msgview(void)
 {
 	struct {
 		gint action;
-		gint icon;
 	} default_toolbar[] = {
 #ifdef MAEMO
-		{ A_CLOSE,		STOCK_PIXMAP_CLOSE},
-		{ A_SEPARATOR, 		0}, 
+		{ A_CLOSE},
+		{ A_SEPARATOR}, 
 #endif
-		{ A_REPLY_MESSAGE, STOCK_PIXMAP_MAIL_REPLY}, 
-		{ A_REPLY_ALL,     STOCK_PIXMAP_MAIL_REPLY_TO_ALL},
-		{ A_REPLY_SENDER,  STOCK_PIXMAP_MAIL_REPLY_TO_AUTHOR},
-		{ A_FORWARD,       STOCK_PIXMAP_MAIL_FORWARD},
-		{ A_SEPARATOR,     0},
-		{ A_TRASH,         STOCK_PIXMAP_TRASH},
+		{ A_REPLY_MESSAGE}, 
+		{ A_REPLY_ALL},
+		{ A_REPLY_SENDER},
+		{ A_FORWARD},
+		{ A_SEPARATOR},
+		{ A_TRASH},
 #ifndef MAEMO
 #if (defined(USE_SPAMASSASSIN_PLUGIN) || defined(USE_BOGOFILTER_PLUGIN))
-		{ A_LEARN_SPAM,	   STOCK_PIXMAP_SPAM_BTN},
+		{ A_LEARN_SPAM},
 #endif
 #endif
-		{ A_GOTO_NEXT,     STOCK_PIXMAP_DOWN_ARROW }
+		{ A_GOTO_NEXT}
 	};
 	
 	gint i;
@@ -585,7 +625,7 @@ static void toolbar_set_default_msgview(void)
 		
 		if (default_toolbar[i].action != A_SEPARATOR) {
 			
-			gchar *file = stock_pixmap_get_name((StockPixmap)default_toolbar[i].icon);
+			gchar *file = stock_pixmap_get_name((StockPixmap)toolbar_get_short_text(default_toolbar[i].action));
 			
 			toolbar_item->file  = g_strdup(file);
 			toolbar_item->index = default_toolbar[i].action;
