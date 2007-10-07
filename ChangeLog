@@ -1,3 +1,14 @@
+2007-10-07 [colin]	3.0.2cvs31
+
+	* src/addrduplicates.c
+	* src/addrduplicates.h
+	* src/addressbook.c
+	* src/addressbook.h
+	* src/addrindex.c
+	* src/addrindex.h
+		Implement deletion in duplicate finder. 
+		Patch by Holger 
+
 2007-10-07 [colin]	3.0.2cvs30
 
 	* src/exporthtml.c
@@ -21,6 +32,7 @@
 
 	* src/prefs_toolbar.c
 		Only use icons that wouldn't look stupid in the toolbar
+		Patch by Pawel
 
 2007-10-07 [colin]	3.0.2cvs26
 

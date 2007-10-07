@@ -3116,6 +3116,61 @@ gboolean addrindex_load_person_attribute(
 	return TRUE;
 }
 
+/**
+ * This function can be used to collect information about
+ * addressbook entries
+ *
+ * \param callBackFunc Function to be called for each ItemPerson
+ * \return <i>TRUE</i>
+ */
+gboolean addrindex_load_person_ds( gint (*callBackFunc)
+			( ItemPerson *, AddressDataSource * ) )
+{
+	AddressDataSource *ds;
+	GList *nodeIf, *nodeDS;
+	GList *listP, *nodeP;
+
+	nodeIf = addrindex_get_interface_list( _addressIndex_ );
+	while( nodeIf ) {
+		AddressInterface *iface = nodeIf->data;
+
+		nodeIf = g_list_next( nodeIf );
+
+		if( ! iface->useInterface || iface->externalQuery )
+			continue;
+
+		nodeDS = iface->listSource;
+		while( nodeDS ) {
+			ds = nodeDS->data;
+
+			/* Read address book */
+			if( addrindex_ds_get_modify_flag( ds ) ) {
+				addrindex_ds_read_data( ds );
+			}
+
+			if( ! addrindex_ds_get_read_flag( ds ) ) {
+				addrindex_ds_read_data( ds );
+			}
+
+			/* Get all persons */
+			listP = addrindex_ds_get_all_persons( ds );
+			nodeP = listP;
+			while( nodeP ) {
+				ItemPerson *person = nodeP->data;
+
+				callBackFunc(person, ds);
+				nodeP = g_list_next( nodeP );
+			}
+			/* Free up the list */
+			g_list_free( listP );
+
+			nodeDS = g_list_next( nodeDS );
+		}
+	}
+	return TRUE;
+}
+
+
 /*
  * End of Source.
  */

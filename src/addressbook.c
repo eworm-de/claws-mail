@@ -690,7 +690,7 @@ Compose *addressbook_get_target_compose(void)
 /**
  * Refresh addressbook and save to file(s).
  */
-static void addressbook_refresh( void )
+void addressbook_refresh( void )
 {
 	if (addrbook.window) {
 		if (addrbook.treeSelected) {
@@ -5290,7 +5290,7 @@ static void addressbook_export_ldif_cb( void ) {
 
 static void addressbook_find_duplicates_cb(void)
 {
-	addrduplicates_find();	
+	addrduplicates_find(GTK_WINDOW(addrbook.window));	
 }
 
 static void addressbook_start_drag(GtkWidget *widget, gint button, 

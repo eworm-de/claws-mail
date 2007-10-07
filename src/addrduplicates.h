@@ -19,6 +19,8 @@
 #ifndef __ADDRDUPLICATES_H__
 #define __ADDRDUPLICATES_H__
 
-void addrduplicates_find(void);
+#include <gtk/gtk.h>
+
+void addrduplicates_find(GtkWindow *parent);
 
 #endif /*__ADDRDUPLICATES_H__*/

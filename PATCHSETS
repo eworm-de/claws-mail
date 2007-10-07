@@ -2943,3 +2943,4 @@
 ( cvs diff -u -r 1.5.2.24 -r 1.5.2.25 src/exporthtml.c;  ) > 3.0.2cvs28.patchset
 ( cvs diff -u -r 1.100.2.55 -r 1.100.2.56 AUTHORS;  cvs diff -u -r 1.1.2.41 -r 1.1.2.42 src/gtk/authors.h;  ) > 3.0.2cvs29.patchset
 ( cvs diff -u -r 1.5.2.25 -r 1.5.2.26 src/exporthtml.c;  cvs diff -u -r 1.28.2.40 -r 1.28.2.41 src/mbox.c;  cvs diff -u -r 1.36.2.116 -r 1.36.2.117 src/common/utils.c;  ) > 3.0.2cvs30.patchset
+( cvs diff -u -r 1.1.2.1 -r 1.1.2.2 src/addrduplicates.c;  cvs diff -u -r 1.1.2.1 -r 1.1.2.2 src/addrduplicates.h;  cvs diff -u -r 1.60.2.99 -r 1.60.2.100 src/addressbook.c;  cvs diff -u -r 1.18.2.9 -r 1.18.2.10 src/addressbook.h;  cvs diff -u -r 1.28.2.32 -r 1.28.2.33 src/addrindex.c;  cvs diff -u -r 1.9.2.12 -r 1.9.2.13 src/addrindex.h;  ) > 3.0.2cvs31.patchset

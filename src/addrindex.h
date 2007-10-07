@@ -172,6 +172,9 @@ gboolean addrindex_load_person_attribute( const gchar *attr,
 		gint (*callBackFunc)
 			( ItemPerson *, const gchar * ) );
 
+gboolean addrindex_load_person_ds( gint (*callBackFunc)
+			( ItemPerson *, AddressDataSource * ) );
+			
 #endif /* __ADDRINDEX_H__ */
 
 /*
