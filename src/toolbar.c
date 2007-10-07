@@ -527,7 +527,7 @@ static void toolbar_set_default_main(void)
 		
 		if (default_toolbar[i].action != A_SEPARATOR) {
 			
-			gchar *file = stock_pixmap_get_name((StockPixmap)toolbar_get_short_text(default_toolbar[i].action));
+			gchar *file = stock_pixmap_get_name((StockPixmap)toolbar_get_icon(default_toolbar[i].action));
 			
 			toolbar_item->file  = g_strdup(file);
 			toolbar_item->index = default_toolbar[i].action;
@@ -575,7 +575,7 @@ static void toolbar_set_default_compose(void)
 		
 		if (default_toolbar[i].action != A_SEPARATOR) {
 			
-			gchar *file = stock_pixmap_get_name((StockPixmap)toolbar_get_short_text(default_toolbar[i].action));
+			gchar *file = stock_pixmap_get_name((StockPixmap)toolbar_get_icon(default_toolbar[i].action));
 			
 			toolbar_item->file  = g_strdup(file);
 			toolbar_item->index = default_toolbar[i].action;
@@ -625,7 +625,7 @@ static void toolbar_set_default_msgview(void)
 		
 		if (default_toolbar[i].action != A_SEPARATOR) {
 			
-			gchar *file = stock_pixmap_get_name((StockPixmap)toolbar_get_short_text(default_toolbar[i].action));
+			gchar *file = stock_pixmap_get_name((StockPixmap)toolbar_get_icon(default_toolbar[i].action));
 			
 			toolbar_item->file  = g_strdup(file);
 			toolbar_item->index = default_toolbar[i].action;
