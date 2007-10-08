@@ -1,3 +1,10 @@
+2007-10-08 [paul]	3.0.2cvs35
+
+	* src/mimeview.c
+		Save users from themselves: save temporary
+		files used for Open/Open with as read-only.
+		Thanks to Colin
+
 2007-10-08 [paul]	3.0.2cvs34
 
 	* tools/Makefile.am
