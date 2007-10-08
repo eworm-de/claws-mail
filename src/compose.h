@@ -107,6 +107,7 @@ struct _Compose
 	/* Attachments */
 	GtkWidget *attach_scrwin;
 	GtkWidget *attach_clist;
+	GtkWidget *attach_label;
 
 	/* Others */
 	GtkWidget *savemsg_checkbtn;

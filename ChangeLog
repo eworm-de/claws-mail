@@ -1,3 +1,11 @@
+2007-10-08 [colin]	3.0.2cvs36
+
+	* src/compose.c
+	* src/compose.h
+		Beautify the GUI a bit; in particular, show the
+		number of attachments in the tab's title.
+		Patch by Pawel
+
 2007-10-08 [paul]	3.0.2cvs35
 
 	* src/mimeview.c

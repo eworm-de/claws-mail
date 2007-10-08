@@ -2948,3 +2948,4 @@
 ( cvs diff -u -r 1.2.2.11 -r 1.2.2.12 tools/kdeservicemenu/README;  diff -u /dev/null tools/kdeservicemenu/claws-mail-attach-files.desktop.template;  cvs diff -u -r 1.2.2.5 -r 1.2.2.6 tools/kdeservicemenu/install.sh;  cvs diff -u -r -1.1.2.2 -r -1.1.2.3 tools/kdeservicemenu/template_claws-mail-attach-files.desktop;  ) > 3.0.2cvs33.patchset
 ( cvs diff -u -r 1.25.2.22 -r 1.25.2.23 tools/Makefile.am;  ) > 3.0.2cvs34.patchset
 ( cvs diff -u -r 1.83.2.117 -r 1.83.2.118 src/mimeview.c;  ) > 3.0.2cvs35.patchset
+( cvs diff -u -r 1.382.2.413 -r 1.382.2.414 src/compose.c;  cvs diff -u -r 1.50.2.42 -r 1.50.2.43 src/compose.h;  ) > 3.0.2cvs36.patchset
