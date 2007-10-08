@@ -1,3 +1,11 @@
+2007-10-08 [colin]	3.0.2cvs37
+
+	* src/prefs_toolbar.c
+		Transform the treeview to a GtkIconView.
+		Patch by Pawel
+		In addition, transform the window so that 
+		it looks like a popup menu. Patch by me
+
 2007-10-08 [colin]	3.0.2cvs36
 
 	* src/compose.c
