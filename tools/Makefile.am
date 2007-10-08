@@ -40,7 +40,7 @@ EXTRA_DIST = \
 	README.sylprint \
 	multiwebsearch.conf \
 	kdeservicemenu/README \
-	kdeservicemenu/template_claws-mail-attach-files.desktop \
+	kdeservicemenu/claws-mail-attach-files.desktop.template \
 	$(EXTRA_TOOLS)
 
 MAKE_EXE = chmod u+x $(EXTRA_TOOLS)

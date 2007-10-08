@@ -1,3 +1,8 @@
+2007-10-08 [paul]	3.0.2cvs34
+
+	* tools/Makefile.am
+		forgot this in cvs33
+
 2007-10-08 [paul]	3.0.2cvs33
 
 	* tools/kdeservicemenu/README
