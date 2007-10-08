@@ -1,3 +1,9 @@
+2007-10-08 [paul]	3.0.2cvs32
+
+	* src/prefs_themes.c
+	* src/stock_pixmap.c
+		replace 2 direct uses of RC_DIR
+
 2007-10-07 [colin]	3.0.2cvs31
 
 	* src/addrduplicates.c

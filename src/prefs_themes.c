@@ -536,7 +536,7 @@ static void prefs_themes_btn_install_clicked_cb(GtkWidget *widget, gpointer data
 	}
 	g_free(alert_title);
 	if (cinfo->dest == NULL) {
-		cinfo->dest = g_strconcat(get_home_dir(), G_DIR_SEPARATOR_S, RC_DIR,
+		cinfo->dest = g_strconcat(get_home_dir(), G_DIR_SEPARATOR_S, get_rc_dir(),
 					  G_DIR_SEPARATOR_S, PIXMAP_THEME_DIR, G_DIR_SEPARATOR_S,
 					  themename, NULL);
 	}

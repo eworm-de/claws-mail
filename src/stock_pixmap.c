@@ -544,7 +544,7 @@ GList *stock_pixmap_themes_list_new(void)
 	
 	defaulttheme = g_strdup(DEFAULT_PIXMAP_THEME);
 	userthemes   = g_strconcat(get_home_dir(), G_DIR_SEPARATOR_S,
-				   RC_DIR, G_DIR_SEPARATOR_S, 
+				   get_rc_dir(), G_DIR_SEPARATOR_S, 
 				   PIXMAP_THEME_DIR, NULL);
 	systemthemes = g_strconcat(PACKAGE_DATA_DIR, G_DIR_SEPARATOR_S,
 				   PIXMAP_THEME_DIR, NULL);
