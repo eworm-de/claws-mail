@@ -2950,3 +2950,4 @@
 ( cvs diff -u -r 1.83.2.117 -r 1.83.2.118 src/mimeview.c;  ) > 3.0.2cvs35.patchset
 ( cvs diff -u -r 1.382.2.413 -r 1.382.2.414 src/compose.c;  cvs diff -u -r 1.50.2.42 -r 1.50.2.43 src/compose.h;  ) > 3.0.2cvs36.patchset
 ( cvs diff -u -r 1.30.2.42 -r 1.30.2.43 src/prefs_toolbar.c;  ) > 3.0.2cvs37.patchset
+( cvs diff -u -r 1.30.2.43 -r 1.30.2.44 src/prefs_toolbar.c;  ) > 3.0.2cvs38.patchset

@@ -1,3 +1,9 @@
+2007-10-08 [colin]	3.0.2cvs38
+
+	* src/prefs_toolbar.c
+		Make height 320 to remove the scrollbar 
+		(with current number of icons)
+
 2007-10-08 [colin]	3.0.2cvs37
 
 	* src/prefs_toolbar.c

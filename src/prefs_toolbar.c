@@ -1423,7 +1423,7 @@ static void icon_chooser_create(GtkButton *button, ToolbarPage *prefs_toolbar)
 	x -= 300-50;
 	gtk_window_move(GTK_WINDOW(icon_chooser_win), x, y);
 	gtk_window_set_resizable(GTK_WINDOW(icon_chooser_win), FALSE);
-	gtk_widget_set_size_request(icon_chooser_win, 300, 300);
+	gtk_widget_set_size_request(icon_chooser_win, 300, 320);
 	
 	scrollwin = gtk_scrolled_window_new(NULL, NULL);
 	gtk_container_add(GTK_CONTAINER(icon_chooser_win), scrollwin);
