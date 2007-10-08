@@ -1,7 +1,7 @@
 #!/bin/bash
 
 PERL_SCRIPT="claws-mail-kdeservicemenu.pl"
-DESKTOP_TEMPLATE="template_claws-mail-attach-files.desktop"
+DESKTOP_TEMPLATE="claws-mail-attach-files.desktop.template"
 DESKTOP="claws-mail-attach-files.desktop"
 SERVICEMENU_DIR="share/apps/konqueror/servicemenus"
 

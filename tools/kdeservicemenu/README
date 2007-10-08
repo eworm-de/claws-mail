@@ -1,12 +1,12 @@
 claws-mail-kdeservicemenu.pl 
-Version: 1.4
+Version: 1.5
 Claws Mail servicemenu for Konqueror
 
 FILES
 o README			You're reading it
 o install.sh			installer script
 o claws-mail-kdeservicemenu.pl	perl program
-o template_claws-attach-files.desktop
+o claws-attach-files.desktop.template
 				.desktop file template
 
 DESCRIPTION

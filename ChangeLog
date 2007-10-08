@@ -1,3 +1,12 @@
+2007-10-08 [paul]	3.0.2cvs33
+
+	* tools/kdeservicemenu/README
+	* tools/kdeservicemenu/claws-mail-attach-files.desktop.template
+	* tools/kdeservicemenu/install.sh
+	* tools/kdeservicemenu/template_claws-mail-attach-files.desktop
+		renamed template* to *template so as not to confuse
+		lintian
+
 2007-10-08 [paul]	3.0.2cvs32
 
 	* src/prefs_themes.c
