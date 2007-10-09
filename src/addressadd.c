@@ -57,6 +57,7 @@ typedef struct {
 
 static struct _AddressAdd_dlg {
 	GtkWidget *window;
+	GtkWidget *picture;
 	GtkWidget *entry_name;
 	GtkWidget *label_address;
 	GtkWidget *entry_remarks;
@@ -155,9 +156,10 @@ static void addressadd_size_allocate_cb(GtkWidget *widget,
 
 static void addressadd_create( void ) {
 	GtkWidget *window;
-	GtkWidget *vbox;
+	GtkWidget *vbox, *hbox;
 	GtkWidget *table;
 	GtkWidget *label;
+	GtkWidget *picture;
 	GtkWidget *entry_name;
 	GtkWidget *label_addr;
 	GtkWidget *entry_rems;
@@ -184,12 +186,17 @@ static void addressadd_create( void ) {
 	g_signal_connect(G_OBJECT(window), "size_allocate",
 			 G_CALLBACK(addressadd_size_allocate_cb), NULL);
 
+	hbox = gtk_hbox_new(FALSE, 6);
 	vbox = gtk_vbox_new(FALSE, 8);
 	gtk_container_add(GTK_CONTAINER(window), vbox);
 	gtk_container_set_border_width( GTK_CONTAINER(vbox), 8 );
 
+	picture = gtk_image_new();
+	gtk_box_pack_start(GTK_BOX(hbox), picture, FALSE, FALSE, 0);
+
 	table = gtk_table_new(3, 2, FALSE);
-	gtk_box_pack_start(GTK_BOX(vbox), table, FALSE, FALSE, 0);
+	gtk_box_pack_start(GTK_BOX(hbox), table, FALSE, FALSE, 0);
+	gtk_box_pack_start(GTK_BOX(vbox), hbox, FALSE, FALSE, 0);
 	gtk_container_set_border_width( GTK_CONTAINER(table), 8 );
 	gtk_table_set_row_spacings(GTK_TABLE(table), 8);
 	gtk_table_set_col_spacings(GTK_TABLE(table), 8);
@@ -283,6 +290,7 @@ static void addressadd_create( void ) {
 	gtk_widget_show_all(vbox);
 
 	addressadd_dlg.window        = window;
+	addressadd_dlg.picture       = picture;
 	addressadd_dlg.entry_name    = entry_name;
 	addressadd_dlg.label_address = label_addr;
 	addressadd_dlg.entry_remarks = entry_rems;
@@ -377,7 +385,8 @@ static void addressadd_load_data( AddressIndex *addrIndex ) {
 	}
 }
 
-gboolean addressadd_selection( AddressIndex *addrIndex, const gchar *name, const gchar *address, const gchar *remarks ) {
+gboolean addressadd_selection( AddressIndex *addrIndex, const gchar *name, 
+		const gchar *address, const gchar *remarks, GdkPixbuf *picture ) {
 	gboolean retVal = FALSE;
 	ItemPerson *person = NULL;
 	FolderInfo *fi = NULL;
@@ -403,7 +412,12 @@ gboolean addressadd_selection( AddressIndex *addrIndex, const gchar *name, const
 		gtk_label_set_text( GTK_LABEL(addressadd_dlg.label_address ), address );
 	if( remarks )
 		gtk_entry_set_text( GTK_ENTRY(addressadd_dlg.entry_remarks ), remarks );
-
+	if( picture ) {
+		gtk_image_set_from_pixbuf(GTK_IMAGE(addressadd_dlg.picture), picture);
+		gtk_widget_show(GTK_WIDGET(addressadd_dlg.picture));
+	} else {
+		gtk_widget_hide(GTK_WIDGET(addressadd_dlg.picture));
+	}
 	gtk_main();
 	gtk_widget_hide( addressadd_dlg.window );
 
@@ -421,6 +435,15 @@ gboolean addressadd_selection( AddressIndex *addrIndex, const gchar *name, const
 							address, 
 							returned_remarks);
 			person->status = ADD_ENTRY;
+
+			if (picture) {
+				GError *error = NULL;
+				gchar *name = g_strconcat( get_rc_dir(), G_DIR_SEPARATOR_S, ADDRBOOK_DIR, G_DIR_SEPARATOR_S, 
+							ADDRITEM_ID(person), NULL );
+				gdk_pixbuf_save(picture, name, "png", &error, NULL);
+				addritem_person_set_picture( person, ADDRITEM_ID(person) ) ;
+				g_free( name );
+			}
 #ifdef USE_LDAP
 			if (fi->book->type == ADBOOKTYPE_LDAP) {
 				LdapServer *server = (LdapServer *) fi->book;

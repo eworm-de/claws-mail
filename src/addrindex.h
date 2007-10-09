@@ -174,7 +174,7 @@ gboolean addrindex_load_person_attribute( const gchar *attr,
 
 gboolean addrindex_load_person_ds( gint (*callBackFunc)
 			( ItemPerson *, AddressDataSource * ) );
-			
+gchar *addrindex_get_picture_file(const gchar *emailaddr);		
 #endif /* __ADDRINDEX_H__ */
 
 /*

@@ -268,6 +268,17 @@ void addritem_person_set_picture( ItemPerson *person, const gchar *value ) {
 		g_free(out);
 	}
 }
+
+/**
+ * Get picture for person object.
+ * \param person Person object.
+ * \param value Picture.
+ */
+gchar *addritem_person_get_picture( ItemPerson *person) {
+	if (person->picture)
+		return g_strdup(person->picture);
+	return NULL;
+}
 /**
  * Specify first name for person object.
  * \param person Person object.
@@ -1025,10 +1036,10 @@ GList *addritem_folder_get_person_list( ItemFolder *folder ) {
 	node = folder->listPerson;
 	while( node ) {
 		ItemPerson *person = node->data;
-		list = g_list_append( list, person );
+		list = g_list_prepend( list, person );
 		node = g_list_next( node );
 	}
-	return list;
+	return g_list_reverse(list);
 }
 
 /**
@@ -1048,10 +1059,10 @@ GList *addritem_folder_get_group_list( ItemFolder *folder ) {
 	node = folder->listGroup;
 	while( node ) {
 		ItemGroup *group = node->data;
-		list = g_list_append( list, group );
+		list = g_list_prepend( list, group );
 		node = g_list_next( node );
 	}
-	return list;
+	return g_list_reverse(list);
 }
 
 /**

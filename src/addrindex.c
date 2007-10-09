@@ -3170,6 +3170,69 @@ gboolean addrindex_load_person_ds( gint (*callBackFunc)
 	return TRUE;
 }
 
+gchar *addrindex_get_picture_file(const gchar *emailaddr)
+{
+	AddressDataSource *ds;
+	GList *nodeIf, *nodeDS;
+	GList *listP, *nodeP;
+	gboolean found = FALSE;
+	gchar *filename = NULL;
+	gchar *raw_addr = NULL;
+	
+	Xstrdup_a(raw_addr, emailaddr, return NULL);
+	extract_address(raw_addr);
+
+	nodeIf = addrindex_get_interface_list( _addressIndex_ );
+	while( nodeIf ) {
+		AddressInterface *iface = nodeIf->data;
+
+		nodeIf = g_list_next( nodeIf );
+
+		if( ! iface->useInterface || iface->externalQuery )
+			continue;
+
+		nodeDS = iface->listSource;
+		while( nodeDS && !found) {
+			ds = nodeDS->data;
+
+			/* Read address book */
+			if( addrindex_ds_get_modify_flag( ds ) ) {
+				addrindex_ds_read_data( ds );
+			}
+
+			if( ! addrindex_ds_get_read_flag( ds ) ) {
+				addrindex_ds_read_data( ds );
+			}
+
+			/* Get all persons */
+			listP = addrindex_ds_get_all_persons( ds );
+			nodeP = listP;
+			while( nodeP ) {
+				GList *nodeM;
+				ItemPerson *person = nodeP->data;
+				nodeM = person->listEMail;
+				while(nodeM) {
+					ItemEMail *email = nodeM->data;
+					if (email->address && !strcasecmp(raw_addr, email->address)) {
+						found = TRUE;
+						filename = g_strconcat( get_rc_dir(), G_DIR_SEPARATOR_S, 
+							ADDRBOOK_DIR, G_DIR_SEPARATOR_S, 
+							person->picture, NULL );
+						break;
+					}
+					nodeM = nodeM->next;
+				}
+				nodeP = g_list_next( nodeP );
+			}
+			/* Free up the list */
+			g_list_free( listP );
+
+			nodeDS = g_list_next( nodeDS );
+		}
+	}
+
+	return filename;
+}
 
 /*
  * End of Source.

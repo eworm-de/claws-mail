@@ -594,8 +594,13 @@ static gboolean delete_item(ItemPerson *item, AddressDataSource *ds)
 
 #endif
 
-	if(item)
+	if(item) {
+		gchar *filename = addritem_person_get_picture(item);
+		if (filename && is_file_exist(filename))
+			g_unlink(filename);
+		g_free(filename);
 		addritem_free_item_person(item);
+	}
 
 	return TRUE;
 }

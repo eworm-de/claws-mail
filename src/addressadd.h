@@ -25,7 +25,9 @@
 #define __ADDRESS_ADD_H__
 
 #include "addrindex.h"
+#include "gtk/gtk.h"
 
-gboolean addressadd_selection( AddressIndex *addrIndex, const gchar *name, const gchar *address, const gchar *remarks );
+gboolean addressadd_selection( AddressIndex *addrIndex, const gchar *name, const gchar *address, const gchar *remarks,
+			       GdkPixbuf *picture );
 
 #endif /* __ADDRESS_ADD_H__ */

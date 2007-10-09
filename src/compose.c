@@ -5963,7 +5963,7 @@ static void compose_add_to_addressbook_cb(GtkMenuItem *menuitem, gpointer user_d
 	if (*address != '\0') {
 		gchar *name = procheader_get_fromname(address);
 		extract_address(address);
-		addressbook_add_contact(name, address, NULL);
+		addressbook_add_contact(name, address, NULL, NULL);
 	}
 	g_free(address);
 }

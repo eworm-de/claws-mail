@@ -69,6 +69,7 @@
 #include "inputdialog.h"
 #include "timing.h"
 #include "tags.h"
+#include "addrindex.h"
 
 static GdkColor quote_colors[3] = {
 	{(gulong)0, (gushort)0, (gushort)0, (gushort)0},
@@ -1904,6 +1905,88 @@ bail:
 }
 #endif
 
+static void textview_save_contact_pic(TextView *textview)
+{
+	MsgInfo *msginfo = textview->messageview->msginfo;
+	gchar *filename = NULL;
+	GError *error = NULL;
+	GdkPixbuf *picture = NULL;
+				
+	if (!msginfo->extradata || (!msginfo->extradata->face && !msginfo->extradata->xface))
+		return;
+
+	if (textview->image) 
+		picture = gtk_image_get_pixbuf(GTK_IMAGE(textview->image));
+
+	filename = addrindex_get_picture_file(msginfo->from);
+	if (!filename)
+		return;
+	if (!is_file_exist(filename))
+		gdk_pixbuf_save(picture, filename, "png", &error, NULL);
+	g_free(filename);
+}
+
+static void textview_show_contact_pic(TextView *textview)
+{
+	MsgInfo *msginfo = textview->messageview->msginfo;
+	GtkTextView *text = GTK_TEXT_VIEW(textview->text);
+	int x = 0;
+	gchar *filename = NULL;
+	GError *error = NULL;
+	GdkPixbuf *picture = NULL;
+	gint w, h;
+				
+	if (prefs_common.display_header_pane
+	||  !prefs_common.display_xface)
+		goto bail;
+	
+	if (msginfo->extradata && (msginfo->extradata->face || msginfo->extradata->xface))
+		return;
+
+	if (textview->image) 
+		gtk_widget_destroy(textview->image);
+
+	filename = addrindex_get_picture_file(msginfo->from);
+	
+	if (!filename)
+		goto bail;
+	if (!is_file_exist(filename)) {
+		g_free(filename);
+		goto bail;
+	}
+
+	gdk_pixbuf_get_file_info(filename, &w, &h);
+	
+	if (w > 48 || h > 48)
+		picture = gdk_pixbuf_new_from_file_at_scale(filename, 
+						48, 48, TRUE, &error);
+	else
+		picture = gdk_pixbuf_new_from_file(filename, &error);
+
+	g_free(filename);
+
+	if (picture)
+		textview->image = gtk_image_new_from_pixbuf(picture);
+
+	g_return_if_fail(textview->image != NULL);
+
+	gtk_widget_show(textview->image);
+	
+	x = textview->text->allocation.width - WIDTH -5;
+
+	gtk_text_view_add_child_in_window(text, textview->image, 
+		GTK_TEXT_WINDOW_TEXT, x, 5);
+
+	gtk_widget_show_all(textview->text);
+	
+	return;
+bail:
+	if (textview->image) 
+		gtk_widget_destroy(textview->image);
+	textview->image = NULL;
+	
+}
+
 static void textview_show_tags(TextView *textview)
 {
 	MsgInfo *msginfo = textview->messageview->msginfo;
@@ -2027,6 +2110,8 @@ static void textview_show_header(TextView *textview, GPtrArray *headers)
 #if HAVE_LIBCOMPFACE
 	textview_show_xface(textview);
 #endif
+	textview_save_contact_pic(textview);
+	textview_show_contact_pic(textview);
 }
 
 gboolean textview_search_string(TextView *textview, const gchar *str,
@@ -2812,6 +2897,9 @@ static void add_uri_to_addrbook_cb (TextView *textview, guint action, void *data
 	gchar *fromname, *fromaddress;
 	ClickableText *uri = g_object_get_data(G_OBJECT(textview->mail_popup_menu),
 					   "menu_button");
+	GtkWidget *image = NULL;
+	GdkPixbuf *picture = NULL;
+
 	if (uri == NULL)
 		return;
 
@@ -2821,8 +2909,21 @@ static void add_uri_to_addrbook_cb (TextView *textview, guint action, void *data
 	fromname = procheader_get_fromname(fromaddress);
 	extract_address(fromaddress);
 
-	/* Add to address book - Match */
-	addressbook_add_contact( fromname, fromaddress, NULL );
+	if (textview->messageview->msginfo &&
+	    textview->messageview->msginfo->extradata &&
+	    textview->messageview->msginfo->extradata->face) {
+		image = face_get_from_header(textview->messageview->msginfo->extradata->face);
+	} else if (textview->messageview->msginfo &&
+	         textview->messageview->msginfo->extradata &&
+		 textview->messageview->msginfo->extradata->xface) {
+		image = xface_get_from_header(textview->messageview->msginfo->extradata->xface,
+				&textview->text->style->white,
+				mainwindow_get_mainwindow()->window->window);	
+	}
+	if (image)
+		picture = gtk_image_get_pixbuf(GTK_IMAGE(image));
+
+	addressbook_add_contact( fromname, fromaddress, NULL, picture);
 
 	g_free(fromaddress);
 	g_free(fromname);

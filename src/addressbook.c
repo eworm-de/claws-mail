@@ -1480,6 +1480,10 @@ static void addressbook_del_clicked(GtkButton *button, gpointer data)
 				}
 #endif
 				if( item ) {
+					gchar *filename = addritem_person_get_picture(item);
+					if (filename && is_file_exist(filename))
+						g_unlink(filename);
+					g_free(filename);
 					addritem_free_item_person( item );
 				}
 			}
@@ -4943,10 +4947,11 @@ static void addrbookctl_build_ifselect( void ) {
  * This function is used by the Add sender to address book function.
  */
 gboolean addressbook_add_contact(
-		const gchar *name, const gchar *address, const gchar *remarks )
+		const gchar *name, const gchar *address, const gchar *remarks,
+		GdkPixbuf *picture )
 {
 	debug_print( "addressbook_add_contact: name/address: %s - %s\n", name, address );
-	if( addressadd_selection( _addressIndex_, name, address, remarks ) ) {
+	if( addressadd_selection( _addressIndex_, name, address, remarks, picture ) ) {
 		debug_print( "addressbook_add_contact - added\n" );
 		addressbook_refresh();
 	}

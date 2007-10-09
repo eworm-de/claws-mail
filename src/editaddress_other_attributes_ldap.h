@@ -33,6 +33,7 @@
 #include <gtk/gtkvbox.h>
 #include <gtk/gtkentry.h>
 #include <gtk/gtktable.h>
+#include <gtk/gtkitemfactory.h>
 
 typedef struct _PersonEdit_dlg PersonEditDlg;
 struct _PersonEdit_dlg {
@@ -45,7 +46,8 @@ struct _PersonEdit_dlg {
 	gint status_cid;
 
 	/* User data tab */
-	GdkPixbuf *picture;
+	GdkPixbuf *pixbuf;
+	GtkWidget *image;
 	gboolean picture_set;
 	GtkWidget *entry_name;
 	GtkWidget *entry_first;
@@ -76,6 +78,8 @@ struct _PersonEdit_dlg {
 	gboolean editNew;
 	gboolean read_only;
 	gboolean ldap;
+	GtkItemFactory *editaddr_popupfactory;
+	GtkWidget *editaddr_popupmenu;
 };
 
 #ifdef USE_LDAP

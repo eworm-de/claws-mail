@@ -1233,7 +1233,8 @@ GtkWidget *xface_get_from_header(const gchar *o_xface, GdkColor *background,
 	pixmap = gdk_pixmap_create_from_xpm_d
 		(window, &mask, 
 		 background, xpm_xface);
-	return gtk_image_new_from_pixmap(pixmap, mask);
+	return gtk_image_new_from_pixbuf(
+		gdk_pixbuf_new_from_xpm_data((const char **)xpm_xface));
 }
 #endif
 

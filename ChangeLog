@@ -1,3 +1,32 @@
+2007-10-09 [colin]	3.0.2cvs44
+
+	* src/addrduplicates.c
+	* src/addressadd.c
+	* src/addressadd.h
+	* src/addressbook.c
+	* src/addressbook.h
+	* src/addrindex.c
+	* src/addrindex.h
+	* src/addritem.c
+	* src/addritem.h
+	* src/compose.c
+	* src/editaddress.c
+	* src/editaddress_other_attributes_ldap.h
+	* src/headerview.c
+	* src/messageview.c
+	* src/mimeview.c
+	* src/summaryview.c
+	* src/textview.c
+	* src/gtk/gtkutils.c
+		Automatically set contacts' pictures from Face 
+		or X-Face if they have no picture
+		Display the contact picture in textview or
+		headerview for mails sent by people in the 
+		addressbook, that have no Face or X-Face
+		Fix a few details in the Person edition dialog
+		(ability to unset picture)
+		Remove picture file when deleting contacts
+
 2007-10-09 [iwkse]	3.0.2cvs43
 
 	* src/gtk/about.c

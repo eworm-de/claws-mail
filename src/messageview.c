@@ -2260,15 +2260,37 @@ static void addressbook_open_cb(gpointer data, guint action, GtkWidget *widget)
 static void add_address_cb(gpointer data, guint action, GtkWidget *widget)
 {
 	MessageView *messageview = (MessageView *)data;
-	MsgInfo *msginfo;
+	MsgInfo *msginfo, *full_msginfo;
 	gchar *from;
+	GtkWidget *image = NULL;
+	GdkPixbuf *picture = NULL;
 
 	if (!messageview->msginfo) return;
 	msginfo = messageview->msginfo;
 	Xstrdup_a(from, msginfo->from, return);
 	eliminate_address_comment(from);
 	extract_address(from);
-	addressbook_add_contact(msginfo->fromname, from, NULL);
+	
+	full_msginfo = procmsg_msginfo_get_full_info(msginfo);
+	if (full_msginfo &&
+	    full_msginfo->extradata &&
+	    full_msginfo->extradata->face) {
+		image = face_get_from_header(full_msginfo->extradata->face);
+	} else if (full_msginfo &&
+	         full_msginfo->extradata &&
+		 full_msginfo->extradata->xface) {
+		image = xface_get_from_header(full_msginfo->extradata->xface,
+				&messageview->mainwin->summaryview->ctree->style->white,
+				messageview->window->window);	
+	}
+	procmsg_msginfo_free(full_msginfo);
+	if (image)
+		picture = gtk_image_get_pixbuf(GTK_IMAGE(image));
+
+	addressbook_add_contact(msginfo->fromname, from, NULL, picture);
+
+	if (image)
+		gtk_widget_destroy(image);
 }
 
 static void create_filter_cb(gpointer data, guint action, GtkWidget *widget)

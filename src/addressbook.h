@@ -38,7 +38,8 @@ void addressbook_destroy		( void );
 
 gboolean addressbook_add_contact	( const gchar *name,
 					  const gchar *address,
-					  const gchar *remarks );
+					  const gchar *remarks,
+					  GdkPixbuf *picture );
 					  
 gboolean addressbook_folder_selection( gchar **folderpath );
 gboolean addressbook_peek_folder_exists( gchar *folderpath,

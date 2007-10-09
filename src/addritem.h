@@ -137,6 +137,7 @@ void addritem_free_attribute		( UserAttribute *item );
 ItemPerson *addritem_create_item_person	( void );
 ItemPerson *addritem_copy_item_person	( ItemPerson *item );
 void addritem_person_set_picture	( ItemPerson *person, const gchar *value );
+gchar *addritem_person_get_picture	( ItemPerson *person);
 void addritem_person_set_first_name	( ItemPerson *person, const gchar *value );
 void addritem_person_set_last_name	( ItemPerson *person, const gchar *value );
 void addritem_person_set_nick_name	( ItemPerson *person, const gchar *value );

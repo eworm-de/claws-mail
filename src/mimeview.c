@@ -41,6 +41,8 @@
 #include <gtk/gtkcontainer.h>
 #include <gtk/gtkbutton.h>
 #include <stdio.h>
+#include <sys/types.h>
+#include <sys/stat.h>
 
 #ifndef HAVE_APACHE_FNMATCH
 /* kludge: apache's fnmatch clashes with <regex.h>, don't include

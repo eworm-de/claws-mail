@@ -45,6 +45,7 @@
 #include "editaddress.h"
 #include "editaddress_other_attributes_ldap.h"
 #include "prefs_common.h"
+#include "menu.h"
 
 /* transient data */
 static struct _PersonEdit_dlg personeditdlg;
@@ -696,20 +697,34 @@ void addressbook_edit_person_widgetset_hide( void )
 		gtk_widget_hide( personeditdlg.container );
 }
 
-GtkWidget *picture;
-
-static void addressbook_edit_person_set_picture(gpointer data)
+static void addressbook_edit_person_unset_picture (void *obj, guint action, void *data)
 {
-		GError *error = NULL;
-		gchar *filename;
-		int width, height, scalewidth, scaleheight;
+	personeditdlg.pixbuf = gdk_pixbuf_new(GDK_COLORSPACE_RGB, TRUE, 8, 48, 48);
+	gdk_pixbuf_fill(personeditdlg.pixbuf, 0xffffff00);
+	personeditdlg.picture_set = FALSE;
+	gtk_image_set_from_pixbuf(GTK_IMAGE(personeditdlg.image), personeditdlg.pixbuf);
+}
+
+static GtkItemFactoryEntry editaddr_popup_entries[] =
+{
+	{N_("/_Unset picture"),		NULL, addressbook_edit_person_unset_picture, 0, NULL},
+};
+
+static void addressbook_edit_person_set_picture(GtkWidget *widget, 
+		GdkEventButton *event, gpointer data)
+{
+	GError *error = NULL;
+	gchar *filename;
+	int width, height, scalewidth, scaleheight;
+	
+	if (event->button == 1) {
 		if ( (filename = filesel_select_file_open(_("Choose a picture"), NULL)) ) {
-			personeditdlg.picture = gdk_pixbuf_new_from_file(filename, &error);
+			personeditdlg.pixbuf = gdk_pixbuf_new_from_file(filename, &error);
 			personeditdlg.picture_set = TRUE;
 			g_free(filename);
-			width = gdk_pixbuf_get_width(personeditdlg.picture);
-			height = gdk_pixbuf_get_height(personeditdlg.picture);
-			
+			width = gdk_pixbuf_get_width(personeditdlg.pixbuf);
+			height = gdk_pixbuf_get_height(personeditdlg.pixbuf);
+
 			if ( width > 128 || height > 128 ) {
 				if (width > height) {
 					scaleheight = (height * 128) / width;
@@ -719,10 +734,15 @@ static void addressbook_edit_person_set_picture(gpointer data)
 					scalewidth = (width * 128) / height;
 					scaleheight = 128;
 				}
-				personeditdlg.picture = gdk_pixbuf_scale_simple(personeditdlg.picture, scalewidth, scaleheight, GDK_INTERP_BILINEAR);
+				personeditdlg.pixbuf = gdk_pixbuf_scale_simple(personeditdlg.pixbuf, scalewidth, scaleheight, GDK_INTERP_BILINEAR);
 			}
-		gtk_image_set_from_pixbuf(GTK_IMAGE(picture), personeditdlg.picture);
+		gtk_image_set_from_pixbuf(GTK_IMAGE(personeditdlg.image), personeditdlg.pixbuf);
 		}
+	} else {
+		gtk_menu_popup(GTK_MENU(personeditdlg.editaddr_popupmenu), 
+			       NULL, NULL, NULL, NULL, 
+			       event->button, event->time);
+	}
 }
 
 static void addressbook_edit_person_page_basic( gint pageNum, gchar *pageLbl ) {
@@ -738,6 +758,7 @@ static void addressbook_edit_person_page_basic( gint pageNum, gchar *pageLbl ) {
 	GtkWidget *entry_nn;
 	const gchar *locale;
 	gint top = 0;
+	gint n_entries;
 
 	vbox = gtk_vbox_new( FALSE, 20 );
 	hbox = gtk_hbox_new( FALSE, 8 );
@@ -749,11 +770,12 @@ static void addressbook_edit_person_page_basic( gint pageNum, gchar *pageLbl ) {
 	frame_picture = gtk_frame_new("Photo");
 	
 	/* Room for a photo */
-	personeditdlg.picture = gdk_pixbuf_new(GDK_COLORSPACE_RGB, TRUE, 8, 128, 128);
+	personeditdlg.pixbuf = gdk_pixbuf_new(GDK_COLORSPACE_RGB, TRUE, 8, 48, 48);
+	gdk_pixbuf_fill(personeditdlg.pixbuf, 0xffffff00);
 	personeditdlg.picture_set = FALSE;
-	picture = gtk_image_new_from_pixbuf(personeditdlg.picture);
+	personeditdlg.image = gtk_image_new_from_pixbuf(personeditdlg.pixbuf);
 	
-	gtk_container_add(GTK_CONTAINER(ebox_picture), picture);
+	gtk_container_add(GTK_CONTAINER(ebox_picture), personeditdlg.image);
 	gtk_container_add(GTK_CONTAINER(frame_picture), ebox_picture);	
 	gtk_container_add(GTK_CONTAINER( personeditdlg.notebook ), hbox );
 	gtk_container_set_border_width( GTK_CONTAINER (vbox), BORDER_WIDTH );
@@ -770,6 +792,12 @@ static void addressbook_edit_person_page_basic( gint pageNum, gchar *pageLbl ) {
 	
 	g_signal_connect(G_OBJECT(ebox_picture), "button_press_event", 
 			G_CALLBACK(addressbook_edit_person_set_picture), NULL);
+
+	n_entries = sizeof(editaddr_popup_entries) /
+		sizeof(editaddr_popup_entries[0]);
+	personeditdlg.editaddr_popupmenu = menu_create_items(editaddr_popup_entries, n_entries,
+				      "<EditAddrPopupMenu>", &personeditdlg.editaddr_popupfactory,
+				      NULL);
 
 	table = gtk_table_new( 3, 3, FALSE);
 
@@ -1405,9 +1433,14 @@ static gboolean addressbook_edit_person_close( gboolean cancelled )
 		if (personeditdlg.picture_set) {
 			name = g_strconcat( get_rc_dir(), G_DIR_SEPARATOR_S, ADDRBOOK_DIR, G_DIR_SEPARATOR_S, 
 							ADDRITEM_ID(current_person), NULL );
-			gdk_pixbuf_save(personeditdlg.picture, name, "png", &error, NULL);
+			gdk_pixbuf_save(personeditdlg.pixbuf, name, "png", &error, NULL);
 			addritem_person_set_picture( current_person, ADDRITEM_ID(current_person) ) ;
 			g_free( name );
+		} else {
+			name = g_strconcat( get_rc_dir(), G_DIR_SEPARATOR_S, ADDRBOOK_DIR, G_DIR_SEPARATOR_S, 
+							ADDRITEM_ID(current_person), NULL );
+			g_unlink(name);
+			g_free(name);
 		}
 		name = gtk_editable_get_chars( GTK_EDITABLE(personeditdlg.entry_first), 0, -1 );
 		addritem_person_set_first_name( current_person, name );
@@ -1487,19 +1520,25 @@ ItemPerson *addressbook_edit_person( AddressBookFile *abf, ItemFolder *parent_fo
 	if( current_person ) {
 		if( ADDRITEM_NAME(current_person) )
 			gtk_entry_set_text(GTK_ENTRY(personeditdlg.entry_name), ADDRITEM_NAME(person) );
-		else
-			personeditdlg.picture = gdk_pixbuf_new (GDK_COLORSPACE_RGB, TRUE, 8, 128, 128);
+
 		if( current_person->picture ) {	
 			gchar *filename = g_strconcat( get_rc_dir(), G_DIR_SEPARATOR_S, ADDRBOOK_DIR, G_DIR_SEPARATOR_S, 
 							current_person->picture, NULL );
-			personeditdlg.picture = gdk_pixbuf_new_from_file(filename, &error);
-			personeditdlg.picture_set = TRUE;
+			if (is_file_exist(filename)) {
+				personeditdlg.pixbuf = gdk_pixbuf_new_from_file(filename, &error);
+				personeditdlg.picture_set = TRUE;
+			} else {
+				personeditdlg.picture_set = FALSE;
+				personeditdlg.pixbuf = gdk_pixbuf_new(GDK_COLORSPACE_RGB, TRUE, 8, 48, 48);
+				gdk_pixbuf_fill(personeditdlg.pixbuf, 0xffffff00);
+			}
 			g_free(filename);
 		} else {
 			personeditdlg.picture_set = FALSE;
-			personeditdlg.picture = gdk_pixbuf_new(GDK_COLORSPACE_RGB, TRUE, 8, 128, 128);
+			personeditdlg.pixbuf = gdk_pixbuf_new(GDK_COLORSPACE_RGB, TRUE, 8, 48, 48);
+			gdk_pixbuf_fill(personeditdlg.pixbuf, 0xffffff00);
 		}
-		gtk_image_set_from_pixbuf(GTK_IMAGE(picture), personeditdlg.picture);
+		gtk_image_set_from_pixbuf(GTK_IMAGE(personeditdlg.image), personeditdlg.pixbuf);
 
 		if( current_person->firstName )
 			gtk_entry_set_text(GTK_ENTRY(personeditdlg.entry_first), current_person->firstName );

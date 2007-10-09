@@ -4307,8 +4307,10 @@ void summary_copy_to(SummaryView *summaryview)
 
 void summary_add_address(SummaryView *summaryview)
 {
-	MsgInfo *msginfo;
+	MsgInfo *msginfo, *full_msginfo;
 	gchar *from;
+	GtkWidget *image = NULL;
+	GdkPixbuf *picture = NULL;
 
 	msginfo = gtk_ctree_node_get_row_data(GTK_CTREE(summaryview->ctree),
 					      summaryview->selected);
@@ -4317,7 +4319,27 @@ void summary_add_address(SummaryView *summaryview)
 	Xstrdup_a(from, msginfo->from, return);
 	eliminate_address_comment(from);
 	extract_address(from);
-	addressbook_add_contact(msginfo->fromname, from, NULL);
+	
+	full_msginfo = procmsg_msginfo_get_full_info(msginfo);
+	if (full_msginfo &&
+	    full_msginfo->extradata &&
+	    full_msginfo->extradata->face) {
+		image = face_get_from_header(full_msginfo->extradata->face);
+	} else if (full_msginfo &&
+	         full_msginfo->extradata &&
+		 full_msginfo->extradata->xface) {
+		image = xface_get_from_header(full_msginfo->extradata->xface,
+				&summaryview->ctree->style->white,
+				summaryview->mainwin->window->window);	
+	}
+	procmsg_msginfo_free(full_msginfo);
+	if (image)
+		picture = gtk_image_get_pixbuf(GTK_IMAGE(image));
+
+	addressbook_add_contact(msginfo->fromname, from, NULL, picture);
+
+	if (image)
+		gtk_widget_destroy(image);
 }
 
 void summary_select_all(SummaryView *summaryview)

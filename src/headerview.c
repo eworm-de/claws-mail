@@ -49,17 +49,22 @@
 #include "utils.h"
 #include "base64.h"
 #include "headers.h"
+#include "addrindex.h"
 
 #if HAVE_LIBCOMPFACE
 #define XPM_XFACE_HEIGHT	(HEIGHT + 3)  /* 3 = 1 header + 2 colors */
 
 static gchar *xpm_xface[XPM_XFACE_HEIGHT];
 
-static void headerview_show_xface	(HeaderView	*headerview,
+static gint headerview_show_xface	(HeaderView	*headerview,
 					 MsgInfo	*msginfo);
 #endif
 
 static gint headerview_show_face	(HeaderView	*headerview,
+					 MsgInfo	*msginfo);
+static gint headerview_show_contact_pic	(HeaderView	*headerview,
+					 MsgInfo	*msginfo);
+static void headerview_save_contact_pic	(HeaderView	*headerview,
 					 MsgInfo	*msginfo);
 
 HeaderView *headerview_create(void)
@@ -237,12 +242,17 @@ void headerview_show(HeaderView *headerview, MsgInfo *msginfo)
 		return;
 
 #if HAVE_LIBCOMPFACE
-	headerview_show_xface(headerview, msginfo);
+	if (!headerview_show_xface(headerview, msginfo))
+		return;
 #endif
+
+	if (!headerview_show_contact_pic(headerview, msginfo))
+		return;
+
 }
 
 #if HAVE_LIBCOMPFACE
-static void headerview_show_xface(HeaderView *headerview, MsgInfo *msginfo)
+static gint headerview_show_xface(HeaderView *headerview, MsgInfo *msginfo)
 {
 	GtkWidget *hbox = headerview->hbox;
 	GtkWidget *image;
@@ -255,9 +265,9 @@ static void headerview_show_xface(HeaderView *headerview, MsgInfo *msginfo)
 			gtk_widget_hide(headerview->image);
 			gtk_widget_queue_resize(hbox);
 		}
-		return;
+		return -1;
 	}
-	if (!GTK_WIDGET_VISIBLE(headerview->hbox)) return;
+	if (!GTK_WIDGET_VISIBLE(headerview->hbox)) return -1;
 
 	if (headerview->image) {
 		gtk_widget_destroy(headerview->image);
@@ -274,6 +284,10 @@ static void headerview_show_xface(HeaderView *headerview, MsgInfo *msginfo)
 	}
 
 	headerview->image = image;
+	if (image) {
+		headerview_save_contact_pic(headerview, msginfo);
+	}
+	return 0;
 }
 #endif
 
@@ -299,6 +313,78 @@ static gint headerview_show_face (HeaderView *headerview, MsgInfo *msginfo)
 	
 
 	image = face_get_from_header(msginfo->extradata->face);
+
+	if (image) {
+		gtk_box_pack_start(GTK_BOX(hbox), image, FALSE, FALSE, 0);
+		gtk_widget_show(image);
+	}
+
+	headerview->image = image;
+	if (image == NULL)
+		return -1;
+	else {
+		headerview_save_contact_pic(headerview, msginfo);
+		return 0;
+	}
+}
+
+static void headerview_save_contact_pic (HeaderView *headerview, MsgInfo *msginfo)
+{
+	gchar *filename = NULL;
+	GError *error = NULL;
+	GdkPixbuf *picture = NULL;
+
+	if (!GTK_WIDGET_VISIBLE(headerview->hbox)) return;
+
+	if (headerview->image) {
+		picture = gtk_image_get_pixbuf(GTK_IMAGE(headerview->image));
+	}
+	
+	filename = addrindex_get_picture_file(msginfo->from);
+	if (!filename)
+		return;
+	if (!is_file_exist(filename))
+		gdk_pixbuf_save(picture, filename, "png", &error, NULL);
+	g_free(filename);
+}	
+
+static gint headerview_show_contact_pic (HeaderView *headerview, MsgInfo *msginfo)
+{
+	GtkWidget *hbox = headerview->hbox;
+	GtkWidget *image;
+	gchar *filename = NULL;
+	GError *error = NULL;
+	GdkPixbuf *picture = NULL;
+	gint w, h;
+
+	if (!GTK_WIDGET_VISIBLE(headerview->hbox)) return -1;
+
+	if (headerview->image) {
+		gtk_widget_destroy(headerview->image);
+		headerview->image = NULL;
+	}
+	
+	filename = addrindex_get_picture_file(msginfo->from);
+	
+	if (!filename)
+		return -1;
+	if (!is_file_exist(filename)) {
+		g_free(filename);
+		return -1;
+	}
+	gdk_pixbuf_get_file_info(filename, &w, &h);
+	
+	if (w > 48 || h > 48)
+		picture = gdk_pixbuf_new_from_file_at_scale(filename, 
+						48, 48, TRUE, &error);
+	else
+		picture = gdk_pixbuf_new_from_file(filename, &error);
+
+	g_free(filename);
+	if (picture)
+		image = gtk_image_new_from_pixbuf(picture);
+	else 
+		return -1;
 
 	if (image) {
 		gtk_box_pack_start(GTK_BOX(hbox), image, FALSE, FALSE, 0);
