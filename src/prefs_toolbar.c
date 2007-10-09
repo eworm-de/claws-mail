@@ -1414,7 +1414,9 @@ static void icon_chooser_create(GtkButton *button, ToolbarPage *prefs_toolbar)
 	
 	icon_chooser_win = gtkut_window_new(GTK_WINDOW_TOPLEVEL, "prefs_toolbar");
 	gtk_window_set_title(GTK_WINDOW(icon_chooser_win), _("Toolbar item icon"));
+#ifndef MAEMO
 	gtk_window_set_decorated(GTK_WINDOW(icon_chooser_win), FALSE);
+#endif
 	gdk_window_get_origin(GTK_WIDGET(prefs_toolbar->icon_button)->window, 
 			&x, &y);
 	x += GTK_WIDGET(prefs_toolbar->icon_button)->allocation.x;
