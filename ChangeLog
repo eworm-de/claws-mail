@@ -1,3 +1,37 @@
+2007-10-09 [iwkse]	3.0.2cvs41
+
+	* src/addressbook.c
+	* src/addritem.c
+	* src/addritem.h
+	* src/editaddress.c
+	* src/editaddress_other_attributes_ldap.h
+	* src/addrbook.c
+	* src/Makefile.am
+		set contact's picture in the Addressbook
+
+2007-10-09 [salvatore]	3.0.2cvs40
+
+	* src/addressbook.c
+	* src/addritem.c
+	* src/addritem.h
+	* src/editaddress.c
+	* src/editaddress_other_attributes_ldap.h
+	* src/addrbook.c
+	* src/Makefile.am
+		set a contact's photo in the Addressbook
+
+2007-10-09 [iwkse]	3.0.2cvs39
+
+	* Makefile.am
+	* src/addressbook.c
+	* src/addritem.c
+	* src/addritem.h
+	* src/editaddress.c
+	* src/editaddress_other_attributes_ldap.h
+	* src/addrbook.c
+	* src/Makefile.am
+		set a photo in the Addressbook
+
 2007-10-08 [colin]	3.0.2cvs38
 
 	* src/prefs_toolbar.c

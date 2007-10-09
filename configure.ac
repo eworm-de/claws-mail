@@ -1,4 +1,4 @@
-dnl Process this file with autoconf to produce a configure script.
+
 AC_PREREQ(2.60)
 AC_INIT(src/main.c)
 AC_CONFIG_AUX_DIR(config)
@@ -11,7 +11,7 @@ MINOR_VERSION=0
 MICRO_VERSION=2
 INTERFACE_AGE=0
 BINARY_AGE=0
-EXTRA_VERSION=38
+EXTRA_VERSION=41
 EXTRA_RELEASE=
 EXTRA_GTK2_VERSION=
 
@@ -142,7 +142,6 @@ then
 fi
 
 CFLAGS="$CFLAGS -Wall"
-
 pthread_name=
 case "$target" in
 *-darwin*)
