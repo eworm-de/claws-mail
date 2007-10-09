@@ -1963,6 +1963,12 @@ static void textview_show_contact_pic(TextView *textview)
 	else
 		picture = gdk_pixbuf_new_from_file(filename, &error);
 
+	if (error) {
+		debug_print("Failed to import image: \n%s",
+				error->message);
+		g_error_free(error);
+		goto bail;
+	}
 	g_free(filename);
 
 	if (picture)

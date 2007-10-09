@@ -33,6 +33,7 @@
 #include <gtk/gtkentry.h>
 #include <gtk/gtktable.h>
 
+#include "alertpanel.h"
 #include "mgutils.h"
 #include "addressbook.h"
 #include "addressitem.h"
@@ -720,6 +721,11 @@ static void addressbook_edit_person_set_picture(GtkWidget *widget,
 	if (event->button == 1) {
 		if ( (filename = filesel_select_file_open(_("Choose a picture"), NULL)) ) {
 			personeditdlg.pixbuf = gdk_pixbuf_new_from_file(filename, &error);
+			if (error) {
+				alertpanel_error(_("Failed to import image: \n%s"),
+						error->message);
+				g_error_free(error);
+			}
 			personeditdlg.picture_set = TRUE;
 			g_free(filename);
 			width = gdk_pixbuf_get_width(personeditdlg.pixbuf);
@@ -1526,14 +1532,19 @@ ItemPerson *addressbook_edit_person( AddressBookFile *abf, ItemFolder *parent_fo
 							current_person->picture, NULL );
 			if (is_file_exist(filename)) {
 				personeditdlg.pixbuf = gdk_pixbuf_new_from_file(filename, &error);
+				if (error) {
+					debug_print("Failed to import image: \n%s",
+							error->message);
+					g_error_free(error);
+					goto no_img;
+				}
 				personeditdlg.picture_set = TRUE;
 			} else {
-				personeditdlg.picture_set = FALSE;
-				personeditdlg.pixbuf = gdk_pixbuf_new(GDK_COLORSPACE_RGB, TRUE, 8, 48, 48);
-				gdk_pixbuf_fill(personeditdlg.pixbuf, 0xffffff00);
+				goto no_img;
 			}
 			g_free(filename);
 		} else {
+no_img:
 			personeditdlg.picture_set = FALSE;
 			personeditdlg.pixbuf = gdk_pixbuf_new(GDK_COLORSPACE_RGB, TRUE, 8, 48, 48);
 			gdk_pixbuf_fill(personeditdlg.pixbuf, 0xffffff00);

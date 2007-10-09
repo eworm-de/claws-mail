@@ -381,6 +381,12 @@ static gint headerview_show_contact_pic (HeaderView *headerview, MsgInfo *msginf
 		picture = gdk_pixbuf_new_from_file(filename, &error);
 
 	g_free(filename);
+	if (error) {
+		debug_print("Failed to import image: \n%s",
+				error->message);
+		g_error_free(error);
+		return -1;
+	}
 	if (picture)
 		image = gtk_image_new_from_pixbuf(picture);
 	else 
