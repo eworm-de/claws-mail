@@ -77,6 +77,7 @@
 #define UIDL_DIR		"uidl"
 #define NEWSGROUP_LIST		".newsgroup_list"
 #define ADDRESS_BOOK		"addressbook.xml"
+#define ADDRBOOK_DIR		"addrbook"
 #define MANUAL_HTML_INDEX	"claws-mail-manual.html"
 #define HOMEPAGE_URI		"http://www.claws-mail.org/"
 #define MANUAL_URI		"http://www.claws-mail.org/documentation.php"
