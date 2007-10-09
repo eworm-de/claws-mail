@@ -2276,13 +2276,16 @@ static void add_address_cb(gpointer data, guint action, GtkWidget *widget)
 	    full_msginfo->extradata &&
 	    full_msginfo->extradata->face) {
 		image = face_get_from_header(full_msginfo->extradata->face);
-	} else if (full_msginfo &&
+	} 
+#if HAVE_LIBCOMPFACE
+	else if (full_msginfo &&
 	         full_msginfo->extradata &&
 		 full_msginfo->extradata->xface) {
 		image = xface_get_from_header(full_msginfo->extradata->xface,
 				&messageview->mainwin->summaryview->ctree->style->white,
 				messageview->window->window);	
 	}
+#endif
 	procmsg_msginfo_free(full_msginfo);
 	if (image)
 		picture = gtk_image_get_pixbuf(GTK_IMAGE(image));

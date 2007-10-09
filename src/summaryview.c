@@ -4325,13 +4325,16 @@ void summary_add_address(SummaryView *summaryview)
 	    full_msginfo->extradata &&
 	    full_msginfo->extradata->face) {
 		image = face_get_from_header(full_msginfo->extradata->face);
-	} else if (full_msginfo &&
+	} 
+#if HAVE_LIBCOMPFACE
+	else if (full_msginfo &&
 	         full_msginfo->extradata &&
 		 full_msginfo->extradata->xface) {
 		image = xface_get_from_header(full_msginfo->extradata->xface,
 				&summaryview->ctree->style->white,
 				summaryview->mainwin->window->window);	
 	}
+#endif
 	procmsg_msginfo_free(full_msginfo);
 	if (image)
 		picture = gtk_image_get_pixbuf(GTK_IMAGE(image));

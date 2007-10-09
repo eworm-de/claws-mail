@@ -1,3 +1,10 @@
+2007-10-09 [paul]	3.0.2cvs46
+
+	* src/messageview.c
+	* src/summaryview.c
+	* src/textview.c
+		fix building without compface support
+
 2007-10-09 [colin]	3.0.2cvs45
 
 	* src/editaddress.c

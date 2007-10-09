@@ -2919,13 +2919,16 @@ static void add_uri_to_addrbook_cb (TextView *textview, guint action, void *data
 	    textview->messageview->msginfo->extradata &&
 	    textview->messageview->msginfo->extradata->face) {
 		image = face_get_from_header(textview->messageview->msginfo->extradata->face);
-	} else if (textview->messageview->msginfo &&
+	}
+#if HAVE_LIBCOMPFACE 
+	else if (textview->messageview->msginfo &&
 	         textview->messageview->msginfo->extradata &&
 		 textview->messageview->msginfo->extradata->xface) {
 		image = xface_get_from_header(textview->messageview->msginfo->extradata->xface,
 				&textview->text->style->white,
 				mainwindow_get_mainwindow()->window->window);	
 	}
+#endif
 	if (image)
 		picture = gtk_image_get_pixbuf(GTK_IMAGE(image));
 
