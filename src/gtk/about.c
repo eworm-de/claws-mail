@@ -87,8 +87,9 @@ void about_show(void)
 {
 	if (!window)
 		about_create();
-	else
+	else 
 		gtk_window_present(GTK_WINDOW(window));
+	
 }
 
 static GtkWidget *about_create_child_page_info(void)
@@ -671,6 +672,7 @@ static void about_create(void)
 	static GdkGeometry geometry;
 
 	window = gtkut_window_new(GTK_WINDOW_TOPLEVEL, "about");
+	gtk_window_set_position(GTK_WINDOW(window), GTK_WIN_POS_CENTER_ALWAYS);
 	gtk_window_set_title(GTK_WINDOW(window), _("About Claws Mail"));
 	gtk_container_set_border_width(GTK_CONTAINER(window), 8);
 	gtk_widget_set_size_request(window, -1, -1);
