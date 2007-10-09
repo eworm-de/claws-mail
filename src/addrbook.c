@@ -500,8 +500,10 @@ static void addrbook_parse_person(AddressBookFile *book, XMLFile *file)
 		value = ((XMLAttr *)attr->data)->value;
 		if (!person) 
 			person = addritem_create_item_person();
-		if (strcmp(name, AB_ATTAG_UID) == 0)
+		if (strcmp(name, AB_ATTAG_UID) == 0) {
 			ADDRITEM_ID(person) = g_strdup(value);
+			person->picture = g_strdup(value);
+		}
 		else if (strcmp(name, AB_ATTAG_FIRST_NAME) == 0)
 			person->firstName = g_strdup(value);
 		else if (strcmp(name, AB_ATTAG_LAST_NAME) == 0)

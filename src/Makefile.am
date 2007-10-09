@@ -491,9 +491,12 @@ claws_mail_LDADD = \
 	$(MAEMO_LIBS) \
 	$(CONIC_LIBS)
 
+pixmapdir=$(datadir)/icons/hicolor/48x48/apps
+
 AM_CPPFLAGS = \
 	-DG_LOG_DOMAIN=\"Claws-Mail\" \
 	-DLOCALEDIR=\""$(localedir)"\" \
+	-DPIXMAP_DIR=\""$(pixmapdir)"\" \
 	-DMANUALDIR=\""$(manualdir)"\" \
 	-DFAQDIR=\""$(faqdir)"\" \
 	-DTARGET_ALIAS=\""$(target_triplet)"\" \

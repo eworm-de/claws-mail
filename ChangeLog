@@ -7,6 +7,17 @@
 	* src/editaddress_other_attributes_ldap.h
 	* src/addrbook.c
 	* src/Makefile.am
+		add a contact's photo to the AddressBook
+
+2007-10-09 [iwkse]	3.0.2cvs39
+
+	* src/addressbook.c
+	* src/addritem.c
+	* src/addritem.h
+	* src/editaddress.c
+	* src/editaddress_other_attributes_ldap.h
+	* src/addrbook.c
+	* src/Makefile.am
 		add contact's picture to the Addressbook
 
 2007-10-09 [iwkse]	3.0.2cvs41

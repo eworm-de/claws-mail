@@ -72,13 +72,14 @@ struct _AddrItemObject {
 typedef struct _ItemPerson ItemPerson;
 struct _ItemPerson {
 	AddrItemObject obj;
-	gchar    *firstName;
-	gchar    *lastName;
-	gchar    *nickName;
-	gchar    *externalID;
-	GList    *listEMail;
-	GList    *listAttrib;
-	gboolean isOpened;
+	gchar		*picture;
+	gchar		*firstName;
+	gchar		*lastName;
+	gchar		*nickName;
+	gchar		*externalID;
+	GList		*listEMail;
+	GList		*listAttrib;
+	gboolean	isOpened;
 	ContactStatus status;
 };
 
@@ -135,6 +136,7 @@ void addritem_free_attribute		( UserAttribute *item );
 
 ItemPerson *addritem_create_item_person	( void );
 ItemPerson *addritem_copy_item_person	( ItemPerson *item );
+void addritem_person_set_picture	( ItemPerson *person, const gchar *value );
 void addritem_person_set_first_name	( ItemPerson *person, const gchar *value );
 void addritem_person_set_last_name	( ItemPerson *person, const gchar *value );
 void addritem_person_set_nick_name	( ItemPerson *person, const gchar *value );

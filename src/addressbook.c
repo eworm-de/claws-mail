@@ -44,6 +44,8 @@
 #include <gtk/gtkitemfactory.h>
 #include <string.h>
 #include <setjmp.h>
+#include <sys/types.h>
+#include <dirent.h>
 
 #include "main.h"
 #include "addressbook.h"
@@ -3915,9 +3917,61 @@ static gboolean addressbook_convert( AddressIndex *addrIndex ) {
 	return retVal;
 }
 
+static gboolean migrate_addrbook(const gchar *origdir, const gchar *destdir)
+{
+	DIR *dp;
+	struct dirent *d;
+	gboolean failed = FALSE;
+
+	if( ( dp = opendir( origdir ) ) == NULL ) {
+		return FALSE;
+	}
+	
+	while( ( d = readdir( dp ) ) != NULL ) {
+		if (strncmp(d->d_name, "addrbook-", strlen("addrbook-")))
+			continue;
+		else {
+			gchar *orig_file = g_strconcat(origdir, G_DIR_SEPARATOR_S, 
+					d->d_name, NULL);
+			gchar *dest_file = g_strconcat(destdir, G_DIR_SEPARATOR_S, 
+					d->d_name, NULL);
+			if (copy_file(orig_file, dest_file, FALSE) < 0) {
+				failed = TRUE;
+			}
+			g_free(orig_file);
+			g_free(dest_file);
+			if (failed) {
+				break;
+			}
+		}
+	}
+
+	closedir( dp );
+	if (!failed) {
+		/* all copies succeeded, we can remove source files */
+		if( ( dp = opendir( origdir ) ) == NULL ) {
+			return FALSE;
+		}
+		while( ( d = readdir( dp ) ) != NULL ) {
+			if (strncmp(d->d_name, "addrbook-", strlen("addrbook-")))
+				continue;
+			else {
+				gchar *orig_file = g_strconcat(origdir, G_DIR_SEPARATOR_S, 
+						d->d_name, NULL);
+				g_unlink(orig_file);
+				g_free(orig_file);
+			}
+		}
+		closedir( dp );
+	}
+	
+	return !failed;
+}
+
 void addressbook_read_file( void ) {
 	AddressIndex *addrIndex = NULL;
-
+	gchar *indexdir = g_strconcat(get_rc_dir(), G_DIR_SEPARATOR_S, ADDRBOOK_DIR, NULL);
+	
 	debug_print( "Reading address index...\n" );
 	if( _addressIndex_ ) {
 		debug_print( "address book already read!!!\n" );
@@ -3928,7 +3982,24 @@ void addressbook_read_file( void ) {
 	addrindex_initialize();
 
 	/* Use new address book index. */
-	addrindex_set_file_path( addrIndex, get_rc_dir() );
+	
+	if ( !is_dir_exist(indexdir) ) {
+		if ( make_dir(indexdir) < 0 ) {
+			addrindex_set_file_path( addrIndex, get_rc_dir() );
+			g_warning( "couldn't create dir %s\n", indexdir);
+		} else {
+			if (!migrate_addrbook(get_rc_dir(), indexdir)) {
+				remove_dir_recursive(indexdir);
+				addrindex_set_file_path( addrIndex, get_rc_dir() );
+				g_error("couldn't migrate dir %s", indexdir);
+			} else {
+				addrindex_set_file_path( addrIndex, indexdir);
+			}
+		}
+	} else {
+		addrindex_set_file_path( addrIndex, indexdir);
+	}
+	g_free(indexdir);
 	addrindex_set_file_name( addrIndex, ADDRESSBOOK_INDEX_FILE );
 	addrindex_read_data( addrIndex );
 	if( addrIndex->retVal == MGU_NO_FILE ) {
@@ -5350,11 +5421,11 @@ static void addressbook_drag_data_get(GtkWidget        *widget,
 		if( ds && ds->interface && ds->interface->readOnly)
 			gtk_selection_data_set(selection_data,
 				       selection_data->target, 8,
-				       "Dummy_addr_copy", 15);
+				       (const guchar *)"Dummy_addr_copy", 15);
 		else
 			gtk_selection_data_set(selection_data,
 				       selection_data->target, 8,
-				       "Dummy_addr_move", 15);
+				       (const guchar *)"Dummy_addr_move", 15);
 	} 
 }
 

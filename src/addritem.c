@@ -217,6 +217,7 @@ ItemPerson *addritem_create_item_person( void ) {
 	ADDRITEM_NAME(person) = NULL;
 	ADDRITEM_PARENT(person) = NULL;
 	ADDRITEM_SUBTYPE(person) = 0;
+	person->picture = NULL;
 	person->firstName = NULL;
 	person->lastName = NULL;
 	person->nickName = NULL;
@@ -240,6 +241,7 @@ ItemPerson *addritem_copy_item_person( ItemPerson *item ) {
 	if( item ) {
 		itemNew = addritem_create_item_person();
 		ADDRITEM_NAME(itemNew) = g_strdup( ADDRITEM_NAME(item) );
+		itemNew->picture = g_strdup( item->picture );
 		itemNew->firstName = g_strdup( item->firstName );
 		itemNew->lastName = g_strdup( item->lastName );
 		itemNew->nickName = g_strdup( item->nickName );
@@ -249,6 +251,23 @@ ItemPerson *addritem_copy_item_person( ItemPerson *item ) {
 	return itemNew;
 }
 
+/**
+ * Specify picture for person object.
+ * \param person Person object.
+ * \param value Picture.
+ */
+void addritem_person_set_picture( ItemPerson *person, const gchar *value ) {
+	if (!value || g_utf8_validate(value, -1, NULL))
+		person->picture = mgu_replace_string( person->picture, value );
+	else {
+		gchar *out = conv_codeset_strdup(value, 
+				conv_get_locale_charset_str_no_utf8(),
+				CS_INTERNAL);
+		if (out)
+			person->picture = mgu_replace_string( person->picture, out );
+		g_free(out);
+	}
+}
 /**
  * Specify first name for person object.
  * \param person Person object.
@@ -385,6 +404,7 @@ void addritem_free_item_person( ItemPerson *person ) {
 	/* Free internal stuff */
 	g_free( ADDRITEM_ID(person) );
 	g_free( ADDRITEM_NAME(person) );
+	g_free( person->picture );
 	g_free( person->firstName );
 	g_free( person->lastName );
 	g_free( person->nickName );
@@ -397,6 +417,7 @@ void addritem_free_item_person( ItemPerson *person ) {
 	ADDRITEM_NAME(person) = NULL;
 	ADDRITEM_PARENT(person) = NULL;
 	ADDRITEM_SUBTYPE(person) = 0;
+	person->picture = NULL;
 	person->firstName = NULL;
 	person->lastName = NULL;
 	person->nickName = NULL;
@@ -447,6 +468,7 @@ void addritem_print_item_person( ItemPerson *person, FILE *stream ) {
 	fprintf( stream, "\tt/uid: %d : '%s'\n", ADDRITEM_TYPE(person), ADDRITEM_ID(person) );
 	fprintf( stream, "\tsubty: %d\n", ADDRITEM_SUBTYPE(person) );
 	fprintf( stream, "\tcommn: '%s'\n", ADDRITEM_NAME(person) );
+	fprintf( stream, "\tphoto: '%s'\n", person->picture );
 	fprintf( stream, "\tfirst: '%s'\n", person->firstName );
 	fprintf( stream, "\tlast : '%s'\n", person->lastName );
 	fprintf( stream, "\tnick : '%s'\n", person->nickName );

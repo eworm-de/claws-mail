@@ -40,6 +40,7 @@
 #include "addrbook.h"
 #include "manage_window.h"
 #include "gtkutils.h"
+#include "filesel.h"
 #include "codeconv.h"
 #include "editaddress.h"
 #include "editaddress_other_attributes_ldap.h"
@@ -437,6 +438,7 @@ static void edit_person_load_attrib( ItemPerson *person ) {
 		UserAttribute *atorig = ( UserAttribute * ) node->data;
 		UserAttribute *attrib = addritem_copy_attribute( atorig );
 		gint row;
+		debug_print("name: %s value: %s\n", attrib->name, attrib->value);
 		text[ ATTRIB_COL_NAME  ] = attrib->name;
 		text[ ATTRIB_COL_VALUE ] = attrib->value;
 
@@ -572,7 +574,7 @@ static GtkWidget* addressbook_edit_person_widgets_create( GtkWidget* container, 
 	GtkWidget *cancel_btn;
 
 	vbox = gtk_vbox_new(FALSE, 4);
-	/* gtk_container_set_border_width(GTK_CONTAINER(vbox), BORDER_WIDTH); */
+	 gtk_container_set_border_width(GTK_CONTAINER(vbox), BORDER_WIDTH); 
 	gtk_widget_show(vbox);
 	gtk_container_add(GTK_CONTAINER(container), vbox);
 
@@ -694,10 +696,42 @@ void addressbook_edit_person_widgetset_hide( void )
 		gtk_widget_hide( personeditdlg.container );
 }
 
+GtkWidget *picture;
+
+static void addressbook_edit_person_set_picture(gpointer data)
+{
+		GError *error = NULL;
+		gchar *filename;
+		int width, height, scalewidth, scaleheight;
+		if ( (filename = filesel_select_file_open(_("Choose a picture"), NULL)) ) {
+			personeditdlg.picture = gdk_pixbuf_new_from_file(filename, &error);
+			personeditdlg.picture_set = TRUE;
+			g_free(filename);
+			width = gdk_pixbuf_get_width(personeditdlg.picture);
+			height = gdk_pixbuf_get_height(personeditdlg.picture);
+			
+			if ( width > 128 || height > 128 ) {
+				if (width > height) {
+					scaleheight = (height * 128) / width;
+					scalewidth = 128;
+				}
+				else {
+					scalewidth = (width * 128) / height;
+					scaleheight = 128;
+				}
+				personeditdlg.picture = gdk_pixbuf_scale_simple(personeditdlg.picture, scalewidth, scaleheight, GDK_INTERP_BILINEAR);
+			}
+		gtk_image_set_from_pixbuf(GTK_IMAGE(picture), personeditdlg.picture);
+		}
+}
+
 static void addressbook_edit_person_page_basic( gint pageNum, gchar *pageLbl ) {
 	GtkWidget *vbox;
+	GtkWidget *hbox;
 	GtkWidget *table;
 	GtkWidget *label;
+	GtkWidget *ebox_picture;
+	GtkWidget *frame_picture;
 	GtkWidget *entry_name;
 	GtkWidget *entry_fn;
 	GtkWidget *entry_ln;
@@ -705,22 +739,39 @@ static void addressbook_edit_person_page_basic( gint pageNum, gchar *pageLbl ) {
 	const gchar *locale;
 	gint top = 0;
 
-	vbox = gtk_vbox_new( FALSE, 8 );
-	gtk_widget_show( vbox );
-	gtk_container_add( GTK_CONTAINER( personeditdlg.notebook ), vbox );
+	vbox = gtk_vbox_new( FALSE, 20 );
+	hbox = gtk_hbox_new( FALSE, 8 );
+
+	gtk_widget_show( vbox );	
+	
+	/* User's picture */
+	ebox_picture = gtk_event_box_new();
+	frame_picture = gtk_frame_new("Photo");
+	
+	/* Room for a photo */
+	personeditdlg.picture = gdk_pixbuf_new(GDK_COLORSPACE_RGB, TRUE, 8, 128, 128);
+	personeditdlg.picture_set = FALSE;
+	picture = gtk_image_new_from_pixbuf(personeditdlg.picture);
+	
+	gtk_container_add(GTK_CONTAINER(ebox_picture), picture);
+	gtk_container_add(GTK_CONTAINER(frame_picture), ebox_picture);	
+	gtk_container_add(GTK_CONTAINER( personeditdlg.notebook ), hbox );
 	gtk_container_set_border_width( GTK_CONTAINER (vbox), BORDER_WIDTH );
+	gtk_container_set_border_width( GTK_CONTAINER (hbox), BORDER_WIDTH );
 
 	label = gtk_label_new_with_mnemonic( pageLbl );
 	gtk_widget_show( label );
+	
+	gtk_box_pack_start(GTK_BOX(hbox), frame_picture, TRUE, TRUE, 0);
+	
 	gtk_notebook_set_tab_label(
 		GTK_NOTEBOOK( personeditdlg.notebook ),
 		gtk_notebook_get_nth_page( GTK_NOTEBOOK( personeditdlg.notebook ), pageNum ), label );
+	
+	g_signal_connect(G_OBJECT(ebox_picture), "button_press_event", 
+			G_CALLBACK(addressbook_edit_person_set_picture), NULL);
 
-	table = gtk_table_new( 4, 3, FALSE);
-	gtk_box_pack_start(GTK_BOX(vbox), table, FALSE, FALSE, 0);
-	gtk_container_set_border_width( GTK_CONTAINER(table), 8 );
-	gtk_table_set_row_spacings(GTK_TABLE(table), 8);
-	gtk_table_set_col_spacings(GTK_TABLE(table), 8);
+	table = gtk_table_new( 3, 3, FALSE);
 
 #define ATTACH_ROW(text, entry) \
 { \
@@ -764,9 +815,13 @@ static void addressbook_edit_person_page_basic( gint pageNum, gchar *pageLbl ) {
 
 #undef ATTACH_ROW
 #undef ATTACH_HIDDEN_ROW
+	gtk_box_pack_start(GTK_BOX(vbox), table, TRUE, TRUE, 0);
+	gtk_box_pack_end(GTK_BOX(hbox), vbox, TRUE, TRUE, 0);
+	gtk_container_set_border_width( GTK_CONTAINER(table), 8 );
+	gtk_table_set_row_spacings(GTK_TABLE(table), 15);
+	gtk_table_set_col_spacings(GTK_TABLE(table), 8);
 
 	gtk_widget_show_all(vbox);
-
 	personeditdlg.entry_name  = entry_name;
 	personeditdlg.entry_first = entry_fn;
 	personeditdlg.entry_last  = entry_ln;
@@ -938,6 +993,7 @@ static void addressbook_edit_person_page_email( gint pageNum, gchar *pageLbl ) {
 	buttonDel = gtk_button_new_from_stock(GTK_STOCK_DELETE);
 	buttonMod = gtk_button_new_from_stock(GTK_STOCK_SAVE);
 	buttonAdd = gtk_button_new_from_stock(GTK_STOCK_ADD);
+	
 
 #ifndef MAEMO
 	gtk_container_add( GTK_CONTAINER(vbuttonbox), buttonUp );
@@ -1288,6 +1344,7 @@ static gboolean addressbook_edit_person_close( gboolean cancelled )
 {
 	GList *listEMail = NULL;
 	GList *listAttrib = NULL;
+	GError *error;
 	gchar *cn = NULL;
 
 	listEMail = edit_person_build_email_list();
@@ -1341,9 +1398,17 @@ static gboolean addressbook_edit_person_close( gboolean cancelled )
 	listAttrib = NULL;
 
 	if( ! cancelled ) {
-		/* Set current_person stuff */
+		/* Set current_person stuff */		
+
 		gchar *name;
 		addritem_person_set_common_name( current_person, cn );
+		if (personeditdlg.picture_set) {
+			name = g_strconcat( get_rc_dir(), G_DIR_SEPARATOR_S, ADDRBOOK_DIR, G_DIR_SEPARATOR_S, 
+							ADDRITEM_ID(current_person), NULL );
+			gdk_pixbuf_save(personeditdlg.picture, name, "png", &error, NULL);
+			addritem_person_set_picture( current_person, ADDRITEM_ID(current_person) ) ;
+			g_free( name );
+		}
 		name = gtk_editable_get_chars( GTK_EDITABLE(personeditdlg.entry_first), 0, -1 );
 		addritem_person_set_first_name( current_person, name );
 		g_free( name );
@@ -1374,13 +1439,13 @@ static gboolean addressbook_edit_person_close( gboolean cancelled )
 *               only required for new objects).
 *        person Person to edit, or NULL for a new person object.
 *        pgMail If TRUE, E-Mail page will be activated.
-* Return: Edited object, or NULL if cancelled.
-*/
+* Return: Edited object, or NULL if cancelled.*/
 ItemPerson *addressbook_edit_person( AddressBookFile *abf, ItemFolder *parent_folder, ItemPerson *person,
 									 gboolean pgMail, GtkWidget *parent_container,
 									 void (*post_update_cb) (ItemPerson *person),
 									 gboolean get_focus) {
 	static gboolean cancelled;
+	GError *error = NULL;
 
 	/* set transient data */
 	current_abf = abf;
@@ -1388,7 +1453,6 @@ ItemPerson *addressbook_edit_person( AddressBookFile *abf, ItemFolder *parent_fo
 	current_parent_folder = parent_folder;
 	edit_person_close_post_update_cb = post_update_cb;
 	personeditdlg.ldap = (abf && abf->type == ADBOOKTYPE_LDAP)? TRUE : FALSE;
-
 	if( !personeditdlg.container )
 		addressbook_edit_person_create(parent_container, &cancelled);
 
@@ -1420,17 +1484,31 @@ ItemPerson *addressbook_edit_person( AddressBookFile *abf, ItemFolder *parent_fo
 	gtk_entry_set_text(GTK_ENTRY(personeditdlg.entry_nick), "" );
 
 	personeditdlg.editNew = FALSE;
-	if( person ) {
-		if( ADDRITEM_NAME(person) )
+	if( current_person ) {
+		if( ADDRITEM_NAME(current_person) )
 			gtk_entry_set_text(GTK_ENTRY(personeditdlg.entry_name), ADDRITEM_NAME(person) );
-		if( person->firstName )
-			gtk_entry_set_text(GTK_ENTRY(personeditdlg.entry_first), person->firstName );
-		if( person->lastName )
-			gtk_entry_set_text(GTK_ENTRY(personeditdlg.entry_last), person->lastName );
-		if( person->nickName )
-			gtk_entry_set_text(GTK_ENTRY(personeditdlg.entry_nick), person->nickName );
-		edit_person_load_email( person );
-		edit_person_load_attrib( person );
+		else
+			personeditdlg.picture = gdk_pixbuf_new (GDK_COLORSPACE_RGB, TRUE, 8, 128, 128);
+		if( current_person->picture ) {	
+			gchar *filename = g_strconcat( get_rc_dir(), G_DIR_SEPARATOR_S, ADDRBOOK_DIR, G_DIR_SEPARATOR_S, 
+							current_person->picture, NULL );
+			personeditdlg.picture = gdk_pixbuf_new_from_file(filename, &error);
+			personeditdlg.picture_set = TRUE;
+			g_free(filename);
+		} else {
+			personeditdlg.picture_set = FALSE;
+			personeditdlg.picture = gdk_pixbuf_new(GDK_COLORSPACE_RGB, TRUE, 8, 128, 128);
+		}
+		gtk_image_set_from_pixbuf(GTK_IMAGE(picture), personeditdlg.picture);
+
+		if( current_person->firstName )
+			gtk_entry_set_text(GTK_ENTRY(personeditdlg.entry_first), current_person->firstName );
+		if( current_person->lastName )
+			gtk_entry_set_text(GTK_ENTRY(personeditdlg.entry_last), current_person->lastName );
+		if( current_person->nickName )
+			gtk_entry_set_text(GTK_ENTRY(personeditdlg.entry_nick), current_person->nickName );
+		edit_person_load_email( current_person );
+		edit_person_load_attrib( current_person );
 		gtk_entry_set_text(GTK_ENTRY(personeditdlg.entry_atvalue), "");
 	}
 	else {
@@ -1448,7 +1526,7 @@ ItemPerson *addressbook_edit_person( AddressBookFile *abf, ItemFolder *parent_fo
 	gtk_clist_select_row( GTK_CLIST(personeditdlg.clist_email), 0, 0 );
 	gtk_clist_select_row( GTK_CLIST(personeditdlg.clist_attrib), 0, 0 );
 	edit_person_email_clear( NULL );
-	if (person)
+	if (current_person)
 		edit_person_email_list_selected(GTK_CLIST(personeditdlg.clist_email), 0, 0, NULL, NULL);
 
 	edit_person_attrib_clear( NULL );
@@ -1462,7 +1540,7 @@ ItemPerson *addressbook_edit_person( AddressBookFile *abf, ItemFolder *parent_fo
 			return NULL;
 	}
 
-	return person;
+	return current_person;
 }
 
 /*
