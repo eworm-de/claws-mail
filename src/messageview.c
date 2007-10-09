@@ -42,6 +42,7 @@
 #include "menu.h"
 #include "about.h"
 #include "filesel.h"
+#include "foldersel.h"
 #include "sourcewindow.h"
 #include "addressbook.h"
 #include "alertpanel.h"
@@ -116,6 +117,49 @@ static void search_cb			(gpointer	 data,
 					 guint		 action,
 					 GtkWidget	*widget);
 
+static void prev_cb			(gpointer	 data,
+					 guint		 action,
+					 GtkWidget	*widget);
+static void next_cb			(gpointer	 data,
+					 guint		 action,
+					 GtkWidget	*widget);
+static void prev_unread_cb		(gpointer	 data,
+					 guint		 action,
+					 GtkWidget	*widget);
+static void next_unread_cb		(gpointer	 data,
+					 guint		 action,
+					 GtkWidget	*widget);
+static void prev_new_cb			(gpointer	 data,
+					 guint		 action,
+					 GtkWidget	*widget);
+static void next_new_cb			(gpointer	 data,
+					 guint		 action,
+					 GtkWidget	*widget);
+static void prev_marked_cb		(gpointer	 data,
+					 guint		 action,
+					 GtkWidget	*widget);
+static void next_marked_cb		(gpointer	 data,
+					 guint		 action,
+					 GtkWidget	*widget);
+static void prev_labeled_cb		(gpointer	 data,
+					 guint		 action,
+					 GtkWidget	*widget);
+static void next_labeled_cb		(gpointer	 data,
+					 guint		 action,
+					 GtkWidget	*widget);
+static void last_read_cb		(gpointer	 data,
+					 guint		 action,
+					 GtkWidget	*widget);
+static void parent_cb			(gpointer	 data,
+					 guint		 action,
+					 GtkWidget	*widget);
+static void goto_unread_folder_cb	(gpointer	 data,
+					 guint		 action,
+					 GtkWidget	*widget);
+static void goto_folder_cb		(gpointer	 data,
+					 guint		 action,
+					 GtkWidget	*widget);
+
 static void set_charset_cb		(gpointer	 data,
 					 guint		 action,
 					 GtkWidget	*widget);
@@ -184,6 +228,36 @@ static GtkItemFactoryEntry msgview_entries[] =
 					"<control>F", search_cb, 0, NULL},
 
 	{N_("/_View"),			NULL, NULL, 0, "<Branch>"},
+	{N_("/_View/_Go to"),			NULL, NULL, 0, "<Branch>"},
+	{N_("/_View/_Go to/_Previous message"),	"P", prev_cb, 0, NULL},
+	{N_("/_View/_Go to/_Next message"),	"N", next_cb, 0, NULL},
+	{N_("/_View/_Go to/---"),		NULL, NULL, 0, "<Separator>"},
+	{N_("/_View/_Go to/P_revious unread message"),
+						"<shift>P", prev_unread_cb, 0, NULL},
+	{N_("/_View/_Go to/N_ext unread message"),
+						"<shift>N", next_unread_cb, 0, NULL},
+	{N_("/_View/_Go to/---"),		NULL, NULL, 0, "<Separator>"},
+	{N_("/_View/_Go to/Previous ne_w message"),	NULL, prev_new_cb, 0, NULL},
+	{N_("/_View/_Go to/Ne_xt new message"),	NULL, next_new_cb, 0, NULL},
+	{N_("/_View/_Go to/---"),		NULL, NULL, 0, "<Separator>"},
+	{N_("/_View/_Go to/Previous _marked message"),
+						NULL, prev_marked_cb, 0, NULL},
+	{N_("/_View/_Go to/Next m_arked message"),
+						NULL, next_marked_cb, 0, NULL},
+	{N_("/_View/_Go to/---"),		NULL, NULL, 0, "<Separator>"},
+	{N_("/_View/_Go to/Previous _labeled message"),
+						NULL, prev_labeled_cb, 0, NULL},
+	{N_("/_View/_Go to/Next la_beled message"),
+						NULL, next_labeled_cb, 0, NULL},
+	{N_("/_View/_Go to/---"),		NULL, NULL, 0, "<Separator>"},
+	{N_("/_View/_Go to/Last read message"),
+						NULL, last_read_cb, 0, NULL},
+	{N_("/_View/_Go to/Parent message"),
+						"<control>Up", parent_cb, 0, NULL},
+	{N_("/_View/_Go to/---"),		NULL, NULL, 0, "<Separator>"},
+	{N_("/_View/_Go to/Next unread _folder"),	"<shift>G", goto_unread_folder_cb, 0, NULL},
+	{N_("/_View/_Go to/_Other folder..."),	"G", goto_folder_cb, 0, NULL},
+	{N_("/_View/---"),			NULL, NULL, 0, "<Separator>"},
 
 #define ENC_SEPARATOR \
 	{N_("/_View/Character _encoding/---"),	NULL, NULL, 0, "<Separator>"}
@@ -1688,6 +1762,362 @@ static void search_cb(gpointer data, guint action, GtkWidget *widget)
 {
 	MessageView *messageview = (MessageView *)data;
 	message_search(messageview);
+}
+
+static void prev_cb(gpointer data, guint action, GtkWidget *widget)
+{
+	MessageView *messageview = (MessageView *)data;
+	messageview->updating = TRUE;
+	summary_step(messageview->mainwin->summaryview, GTK_SCROLL_STEP_BACKWARD);
+	messageview->updating = FALSE;
+
+	if (messageview->deferred_destroy) {
+		debug_print("messageview got away!\n");
+		messageview_destroy(messageview);
+		return;
+	}
+	if (messageview->mainwin->summaryview->selected) {
+#ifndef MAEMO
+		MsgInfo * msginfo = summary_get_selected_msg(messageview->mainwin->summaryview);
+		       
+		if (msginfo)
+			messageview_show(messageview, msginfo, 
+					 messageview->all_headers);
+#endif
+	} else {
+		gtk_widget_destroy(messageview->window);
+	}
+}
+
+static void next_cb(gpointer data, guint action, GtkWidget *widget)
+{
+	MessageView *messageview = (MessageView *)data;
+	messageview->updating = TRUE;
+	summary_step(messageview->mainwin->summaryview, GTK_SCROLL_STEP_FORWARD);
+	messageview->updating = FALSE;
+
+	if (messageview->deferred_destroy) {
+		debug_print("messageview got away!\n");
+		messageview_destroy(messageview);
+		return;
+	}
+	if (messageview->mainwin->summaryview->selected) {
+#ifndef MAEMO
+		MsgInfo * msginfo = summary_get_selected_msg(messageview->mainwin->summaryview);
+		       
+		if (msginfo)
+			messageview_show(messageview, msginfo, 
+					 messageview->all_headers);
+#endif
+	} else {
+		gtk_widget_destroy(messageview->window);
+	}
+}
+
+static void prev_unread_cb(gpointer data, guint action, GtkWidget *widget)
+{
+	MessageView *messageview = (MessageView *)data;
+	messageview->updating = TRUE;
+	summary_select_prev_unread(messageview->mainwin->summaryview);
+	messageview->updating = FALSE;
+
+	if (messageview->deferred_destroy) {
+		debug_print("messageview got away!\n");
+		messageview_destroy(messageview);
+		return;
+	}
+	if (messageview->mainwin->summaryview->selected) {
+#ifndef MAEMO
+		MsgInfo * msginfo = summary_get_selected_msg(messageview->mainwin->summaryview);
+		       
+		if (msginfo)
+			messageview_show(messageview, msginfo, 
+					 messageview->all_headers);
+#endif
+	} else {
+		gtk_widget_destroy(messageview->window);
+	}
+}
+
+static void next_unread_cb(gpointer data, guint action, GtkWidget *widget)
+{
+	MessageView *messageview = (MessageView *)data;
+	messageview->updating = TRUE;
+	summary_select_next_unread(messageview->mainwin->summaryview);
+	messageview->updating = FALSE;
+
+	if (messageview->deferred_destroy) {
+		debug_print("messageview got away!\n");
+		messageview_destroy(messageview);
+		return;
+	}
+	if (messageview->mainwin->summaryview->selected) {
+#ifndef MAEMO
+		MsgInfo * msginfo = summary_get_selected_msg(messageview->mainwin->summaryview);
+		       
+		if (msginfo)
+			messageview_show(messageview, msginfo, 
+					 messageview->all_headers);
+#endif
+	} else {
+		gtk_widget_destroy(messageview->window);
+	}
+}
+
+static void prev_new_cb(gpointer data, guint action, GtkWidget *widget)
+{
+	MessageView *messageview = (MessageView *)data;
+	messageview->updating = TRUE;
+	summary_select_prev_new(messageview->mainwin->summaryview);
+	messageview->updating = FALSE;
+
+	if (messageview->deferred_destroy) {
+		debug_print("messageview got away!\n");
+		messageview_destroy(messageview);
+		return;
+	}
+	if (messageview->mainwin->summaryview->selected) {
+#ifndef MAEMO
+		MsgInfo * msginfo = summary_get_selected_msg(messageview->mainwin->summaryview);
+		       
+		if (msginfo)
+			messageview_show(messageview, msginfo, 
+					 messageview->all_headers);
+#endif
+	} else {
+		gtk_widget_destroy(messageview->window);
+	}
+}
+
+static void next_new_cb(gpointer data, guint action, GtkWidget *widget)
+{
+	MessageView *messageview = (MessageView *)data;
+	messageview->updating = TRUE;
+	summary_select_next_new(messageview->mainwin->summaryview);
+	messageview->updating = FALSE;
+
+	if (messageview->deferred_destroy) {
+		debug_print("messageview got away!\n");
+		messageview_destroy(messageview);
+		return;
+	}
+	if (messageview->mainwin->summaryview->selected) {
+#ifndef MAEMO
+		MsgInfo * msginfo = summary_get_selected_msg(messageview->mainwin->summaryview);
+		       
+		if (msginfo)
+			messageview_show(messageview, msginfo, 
+					 messageview->all_headers);
+#endif
+	} else {
+		gtk_widget_destroy(messageview->window);
+	}
+}
+
+static void prev_marked_cb(gpointer data, guint action, GtkWidget *widget)
+{
+	MessageView *messageview = (MessageView *)data;
+	messageview->updating = TRUE;
+	summary_select_prev_marked(messageview->mainwin->summaryview);
+	messageview->updating = FALSE;
+
+	if (messageview->deferred_destroy) {
+		debug_print("messageview got away!\n");
+		messageview_destroy(messageview);
+		return;
+	}
+	if (messageview->mainwin->summaryview->selected) {
+#ifndef MAEMO
+		MsgInfo * msginfo = summary_get_selected_msg(messageview->mainwin->summaryview);
+		       
+		if (msginfo)
+			messageview_show(messageview, msginfo, 
+					 messageview->all_headers);
+#endif
+	} else {
+		gtk_widget_destroy(messageview->window);
+	}
+}
+
+static void next_marked_cb(gpointer data, guint action, GtkWidget *widget)
+{
+	MessageView *messageview = (MessageView *)data;
+	messageview->updating = TRUE;
+	summary_select_next_marked(messageview->mainwin->summaryview);
+	messageview->updating = FALSE;
+
+	if (messageview->deferred_destroy) {
+		debug_print("messageview got away!\n");
+		messageview_destroy(messageview);
+		return;
+	}
+	if (messageview->mainwin->summaryview->selected) {
+#ifndef MAEMO
+		MsgInfo * msginfo = summary_get_selected_msg(messageview->mainwin->summaryview);
+		       
+		if (msginfo)
+			messageview_show(messageview, msginfo, 
+					 messageview->all_headers);
+#endif
+	} else {
+		gtk_widget_destroy(messageview->window);
+	}
+}
+
+static void prev_labeled_cb(gpointer data, guint action, GtkWidget *widget)
+{
+	MessageView *messageview = (MessageView *)data;
+	messageview->updating = TRUE;
+	summary_select_prev_labeled(messageview->mainwin->summaryview);
+	messageview->updating = FALSE;
+
+	if (messageview->deferred_destroy) {
+		debug_print("messageview got away!\n");
+		messageview_destroy(messageview);
+		return;
+	}
+	if (messageview->mainwin->summaryview->selected) {
+#ifndef MAEMO
+		MsgInfo * msginfo = summary_get_selected_msg(messageview->mainwin->summaryview);
+		       
+		if (msginfo)
+			messageview_show(messageview, msginfo, 
+					 messageview->all_headers);
+#endif
+	} else {
+		gtk_widget_destroy(messageview->window);
+	}
+}
+
+static void next_labeled_cb(gpointer data, guint action, GtkWidget *widget)
+{
+	MessageView *messageview = (MessageView *)data;
+	messageview->updating = TRUE;
+	summary_select_next_labeled(messageview->mainwin->summaryview);
+	messageview->updating = FALSE;
+
+	if (messageview->deferred_destroy) {
+		debug_print("messageview got away!\n");
+		messageview_destroy(messageview);
+		return;
+	}
+	if (messageview->mainwin->summaryview->selected) {
+#ifndef MAEMO
+		MsgInfo * msginfo = summary_get_selected_msg(messageview->mainwin->summaryview);
+		       
+		if (msginfo)
+			messageview_show(messageview, msginfo, 
+					 messageview->all_headers);
+#endif
+	} else {
+		gtk_widget_destroy(messageview->window);
+	}
+}
+
+static void last_read_cb(gpointer data, guint action, GtkWidget *widget)
+{
+	MessageView *messageview = (MessageView *)data;
+	messageview->updating = TRUE;
+	summary_select_last_read(messageview->mainwin->summaryview);
+	messageview->updating = FALSE;
+
+	if (messageview->deferred_destroy) {
+		debug_print("messageview got away!\n");
+		messageview_destroy(messageview);
+		return;
+	}
+	if (messageview->mainwin->summaryview->selected) {
+#ifndef MAEMO
+		MsgInfo * msginfo = summary_get_selected_msg(messageview->mainwin->summaryview);
+		       
+		if (msginfo)
+			messageview_show(messageview, msginfo, 
+					 messageview->all_headers);
+#endif
+	} else {
+		gtk_widget_destroy(messageview->window);
+	}
+}
+
+static void parent_cb(gpointer data, guint action, GtkWidget *widget)
+{
+	MessageView *messageview = (MessageView *)data;
+	messageview->updating = TRUE;
+	summary_select_parent(messageview->mainwin->summaryview);
+	messageview->updating = FALSE;
+
+	if (messageview->deferred_destroy) {
+		debug_print("messageview got away!\n");
+		messageview_destroy(messageview);
+		return;
+	}
+	if (messageview->mainwin->summaryview->selected) {
+#ifndef MAEMO
+		MsgInfo * msginfo = summary_get_selected_msg(messageview->mainwin->summaryview);
+		       
+		if (msginfo)
+			messageview_show(messageview, msginfo, 
+					 messageview->all_headers);
+#endif
+	} else {
+		gtk_widget_destroy(messageview->window);
+	}
+}
+
+static void goto_unread_folder_cb(gpointer data, guint action, GtkWidget *widget)
+{
+	MessageView *messageview = (MessageView *)data;
+	messageview->updating = TRUE;
+	folderview_select_next_unread(messageview->mainwin->folderview, FALSE);
+	messageview->updating = FALSE;
+
+	if (messageview->deferred_destroy) {
+		debug_print("messageview got away!\n");
+		messageview_destroy(messageview);
+		return;
+	}
+	if (messageview->mainwin->summaryview->selected) {
+#ifndef MAEMO
+		MsgInfo * msginfo = summary_get_selected_msg(messageview->mainwin->summaryview);
+		       
+		if (msginfo)
+			messageview_show(messageview, msginfo, 
+					 messageview->all_headers);
+#endif
+	} else {
+		gtk_widget_destroy(messageview->window);
+	}
+}
+
+static void goto_folder_cb(gpointer data, guint action, GtkWidget *widget)
+{
+	MessageView *messageview = (MessageView *)data;
+	messageview->updating = TRUE;
+	FolderItem *to_folder;
+	messageview->updating = FALSE;
+
+	to_folder = foldersel_folder_sel(NULL, FOLDER_SEL_ALL, NULL);
+
+	if (to_folder) {
+		folderview_select(messageview->mainwin->folderview, to_folder);
+
+		if (messageview->deferred_destroy) {
+			debug_print("messageview got away!\n");
+			messageview_destroy(messageview);
+			return;
+		}
+		if (messageview->mainwin->summaryview->selected) {
+#ifndef MAEMO
+			MsgInfo * msginfo = summary_get_selected_msg(messageview->mainwin->summaryview);
+		       
+			if (msginfo)
+				messageview_show(messageview, msginfo, 
+						 messageview->all_headers);
+#endif
+		} else {
+			gtk_widget_destroy(messageview->window);
+		}
+	}
 }
 
 static void set_charset_cb(gpointer data, guint action, GtkWidget *widget)
