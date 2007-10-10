@@ -129,6 +129,8 @@ static void prefs_template_window_create(void)
 {
 	/* window structure ;) */
 	GtkWidget *window;
+	GtkWidget *vbox;
+	GtkWidget *scrolled_window;
 	GtkWidget   *vpaned;
 	GtkWidget     *vbox1;
 	GtkWidget       *table; /* including : entry_[name|to|cc|bcc|subject] */
@@ -167,10 +169,22 @@ static void prefs_template_window_create(void)
 	gtk_window_set_modal(GTK_WINDOW(window), TRUE);
 	gtk_window_set_resizable(GTK_WINDOW(window), TRUE);
 
+	vbox = gtk_vbox_new(FALSE, 8);
+	gtk_widget_show(vbox);
+	gtk_container_add(GTK_CONTAINER(window), vbox);
+	gtk_container_set_border_width(GTK_CONTAINER(vbox), 4);
+
+	scrolled_window = gtk_scrolled_window_new (NULL, NULL);
+	gtk_widget_show(scrolled_window);
+	gtk_scrolled_window_set_policy (GTK_SCROLLED_WINDOW (scrolled_window),
+                                        GTK_POLICY_AUTOMATIC, GTK_POLICY_AUTOMATIC);
+	gtk_container_add(GTK_CONTAINER(vbox), scrolled_window);
+
 	/* vpaned to separate template settings from templates list */
 	vpaned = gtk_vpaned_new();
 	gtk_widget_show(vpaned);
-	gtk_container_add(GTK_CONTAINER(window), vpaned);
+	gtk_scrolled_window_add_with_viewport(GTK_SCROLLED_WINDOW(scrolled_window),
+ 					      vpaned);
 
 	/* vbox to handle template name and content */
 	vbox1 = gtk_vbox_new(FALSE, 6);
@@ -247,7 +261,11 @@ static void prefs_template_window_create(void)
 		}
 	}
 	gtk_widget_show(text_value);
+#ifndef MAEMO
 	gtk_widget_set_size_request(text_value, -1, 120);
+#else
+	gtk_widget_set_size_request(text_value, -1, 60);
+#endif
 	gtk_container_add(GTK_CONTAINER(scroll2), text_value);
 	gtk_text_view_set_editable(GTK_TEXT_VIEW(text_value), TRUE);
 	gtk_text_view_set_wrap_mode(GTK_TEXT_VIEW(text_value), GTK_WRAP_WORD);
@@ -356,7 +374,7 @@ static void prefs_template_window_create(void)
 			&ok_btn, GTK_STOCK_OK,
 			NULL, NULL);
 	gtk_widget_show(confirm_area);
-	gtk_box_pack_end(GTK_BOX(vbox2), confirm_area, FALSE, FALSE, 0);
+	gtk_box_pack_end(GTK_BOX(vbox), confirm_area, FALSE, FALSE, 0);
 	gtk_widget_grab_default(ok_btn);
 
 	gtk_window_set_title(GTK_WINDOW(window), _("Template configuration"));

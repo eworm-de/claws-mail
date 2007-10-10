@@ -1,3 +1,11 @@
+2007-10-10 [paul]	3.0.2cvs57
+
+	* src/prefs_template.c
+		put the whole thing in a scrolled window
+		so that half the page is no longer inaccessible
+		on maemo
+		make the gtk_text_view smaller on maemo
+
 2007-10-10 [colin]	3.0.2cvs56
 
 	* src/compose.c

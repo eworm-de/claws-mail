@@ -2969,3 +2969,4 @@
 ( cvs diff -u -r 1.1.4.40 -r 1.1.4.41 src/prefs_filtering_action.c;  cvs diff -u -r 1.5.2.23 -r 1.5.2.24 src/gtk/description_window.c;  cvs diff -u -r 1.1.2.15 -r 1.1.2.16 src/gtk/foldersort.c;  cvs diff -u -r 1.1.2.79 -r 1.1.2.80 src/gtk/quicksearch.c;  ) > 3.0.2cvs54.patchset
 ( cvs diff -u -r 1.14.2.36 -r 1.14.2.37 src/editaddress.c;  ) > 3.0.2cvs55.patchset
 ( cvs diff -u -r 1.382.2.415 -r 1.382.2.416 src/compose.c;  ) > 3.0.2cvs56.patchset
+( cvs diff -u -r 1.12.2.49 -r 1.12.2.50 src/prefs_template.c;  ) > 3.0.2cvs57.patchset
