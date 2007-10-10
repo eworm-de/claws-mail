@@ -37,19 +37,20 @@
 #include <string.h>
 #include <math.h>
 
-typedef struct {
+struct _PrintData {
+  PrintRenderer *renderer;
+  gpointer renderer_data;
   PangoLayout *layout;
   PangoContext *pango_context;
-  char *text;
+  gpointer to_print;
   GList *page_breaks;
   guint npages;
-  GtkTextBuffer *buffer;
   gint sel_start;
   gint sel_end;
   GHashTable *images;
   gint img_cnt;
   gdouble zoom;
-} PrintData;
+};
 
 typedef struct {
   GtkPrintOperation *op;
@@ -76,8 +77,8 @@ typedef struct {
 } PreviewData;
 
 /* callbacks */
-static void     cb_begin_print(GtkPrintOperation*, GtkPrintContext*, gpointer);
-static void     cb_draw_page(GtkPrintOperation*, GtkPrintContext*, gint,
+static void     printing_textview_cb_begin_print(GtkPrintOperation*, GtkPrintContext*, gpointer);
+static void     printing_textview_cb_draw_page(GtkPrintOperation*, GtkPrintContext*, gint,
 			     gpointer);
 static gboolean cb_preview(GtkPrintOperation*, GtkPrintOperationPreview*,
 			   GtkPrintContext*, GtkWindow*, gpointer);
@@ -126,37 +127,50 @@ static void free_pixbuf(gpointer key, gpointer value, gpointer data)
   g_object_unref(G_OBJECT(attr->data));
 }
 
-void printing_print(GtkTextView *text_view, GtkWindow *parent, gint sel_start, gint sel_end)
+gpointer printing_get_renderer_data(PrintData *print_data)
 {
+	if (!print_data)
+		return NULL;
+	return print_data->renderer_data;
+}
+
+gdouble printing_get_zoom(PrintData *print_data)
+{
+	if (!print_data)
+		return 1.0;
+	return print_data->zoom;
+}
+
+void printing_set_n_pages(PrintData *print_data, gint n_pages)
+{
+	if (!print_data)
+		return;
+	print_data->npages = n_pages;
+}
+
+void printing_print_full(GtkWindow *parent, PrintRenderer *renderer, gpointer renderer_data, 
+			 gint sel_start, gint sel_end)
+{			 
   GtkPrintOperation *op;
   GtkPrintOperationResult res;
   PrintData *print_data;
-  GtkTextIter start, end;
-  GtkTextBuffer *buffer;
 
   op = gtk_print_operation_new();
 
   print_data = g_new0(PrintData,1);
 
+  print_data->renderer = renderer;
+  print_data->renderer_data = renderer_data;
+  print_data->sel_start = sel_start;
+  print_data->sel_end = sel_end;
+
   print_data->zoom = 1.;
 
   print_data->images = g_hash_table_new(g_direct_hash, g_direct_equal);
-  print_data->pango_context=gtk_widget_get_pango_context(GTK_WIDGET(text_view));
+  
+  print_data->pango_context = renderer->get_pango_context(renderer_data);
 
-  /* get text */
-  buffer = gtk_text_view_get_buffer(text_view);
-  print_data->buffer = buffer;
-  print_data->sel_start = sel_start;
-  print_data->sel_end = sel_end;
-  if (print_data->sel_start < 0 || print_data->sel_end <= print_data->sel_start) {
-    gtk_text_buffer_get_start_iter(buffer, &start);
-    gtk_text_buffer_get_end_iter(buffer, &end);
-  } else {
-    gtk_text_buffer_get_iter_at_offset(buffer, &start, print_data->sel_start);
-    gtk_text_buffer_get_iter_at_offset(buffer, &end, print_data->sel_end);
-  }
-
-  print_data->text = gtk_text_buffer_get_text(buffer, &start, &end, FALSE);
+  print_data->to_print = renderer->get_data_to_print(renderer_data, sel_start, sel_end);
 
   if (settings == NULL) {
     settings = gtk_print_settings_new();
@@ -180,8 +194,8 @@ void printing_print(GtkTextView *text_view, GtkWindow *parent, gint sel_start, g
   gtk_print_operation_set_default_page_setup(op, page_setup);
 
   /* signals */
-  g_signal_connect(op, "begin_print", G_CALLBACK(cb_begin_print), print_data);
-  g_signal_connect(op, "draw_page", G_CALLBACK(cb_draw_page), print_data);
+  g_signal_connect(op, "begin_print", G_CALLBACK(renderer->cb_begin_print), print_data);
+  g_signal_connect(op, "draw_page", G_CALLBACK(renderer->cb_draw_page), print_data);
   g_signal_connect(op, "preview", G_CALLBACK(cb_preview), print_data);
 
   /* Start printing process */
@@ -207,8 +221,8 @@ void printing_print(GtkTextView *text_view, GtkWindow *parent, gint sel_start, g
 
   g_hash_table_foreach(print_data->images, free_pixbuf, NULL);
   g_hash_table_destroy(print_data->images);
-  if(print_data->text)
-    g_free(print_data->text);
+  if(print_data->to_print)
+    g_free(print_data->to_print);
   g_list_free(print_data->page_breaks);
   if(print_data->layout)
     g_object_unref(print_data->layout);
@@ -217,6 +231,42 @@ void printing_print(GtkTextView *text_view, GtkWindow *parent, gint sel_start, g
 
   g_object_unref(op);
   debug_print("printing_print finished\n");
+}
+
+static PangoContext *printing_textview_get_pango_context(gpointer data)
+{
+	return gtk_widget_get_pango_context(GTK_WIDGET(data));
+}
+
+static gpointer printing_textview_get_data_to_print(gpointer data, gint sel_start, gint sel_end)
+{
+  GtkTextView *text_view = GTK_TEXT_VIEW(data);
+  GtkTextBuffer *buffer = gtk_text_view_get_buffer(text_view);
+  GtkTextIter start, end;
+  
+  if (sel_start < 0 || sel_end <= sel_start) {
+    gtk_text_buffer_get_start_iter(buffer, &start);
+    gtk_text_buffer_get_end_iter(buffer, &end);
+  } else {
+    gtk_text_buffer_get_iter_at_offset(buffer, &start, sel_start);
+    gtk_text_buffer_get_iter_at_offset(buffer, &end, sel_end);
+  }
+
+  return gtk_text_buffer_get_text(buffer, &start, &end, FALSE);
+}
+
+void printing_print(GtkTextView *text_view, GtkWindow *parent, gint sel_start, gint sel_end)
+{
+	PrintRenderer *textview_renderer = g_new0(PrintRenderer, 1);
+	
+	textview_renderer->get_pango_context = printing_textview_get_pango_context;
+	textview_renderer->get_data_to_print = printing_textview_get_data_to_print;
+	textview_renderer->cb_begin_print    = printing_textview_cb_begin_print;
+	textview_renderer->cb_draw_page      = printing_textview_cb_draw_page;
+
+	printing_print_full(parent, textview_renderer, text_view, sel_start, sel_end);
+	
+	g_free(textview_renderer);
 }
 
 void printing_page_setup(GtkWindow *parent)
@@ -697,7 +747,7 @@ static void cb_preview_request_page_setup(GtkPrintOperation *op,
 				  GTK_UNIT_INCH);
 }
 
-static void cb_begin_print(GtkPrintOperation *op, GtkPrintContext *context,
+static void printing_textview_cb_begin_print(GtkPrintOperation *op, GtkPrintContext *context,
 			   gpointer user_data)
 {
   double width, height;
@@ -731,7 +781,7 @@ static void cb_begin_print(GtkPrintOperation *op, GtkPrintContext *context,
   pango_font_description_free(desc);
 
   pango_layout_set_width(print_data->layout, width * PANGO_SCALE);
-  pango_layout_set_text(print_data->layout, print_data->text, -1);
+  pango_layout_set_text(print_data->layout, (char *)print_data->to_print, -1);
 
   printing_layout_set_text_attributes(print_data, context);
 
@@ -858,7 +908,7 @@ static cairo_surface_t *pixbuf_to_surface(GdkPixbuf *pixbuf)
 	return surface;
 }
 
-static void cb_draw_page(GtkPrintOperation *op, GtkPrintContext *context,
+static void printing_textview_cb_draw_page(GtkPrintOperation *op, GtkPrintContext *context,
 			 int page_nr, gpointer user_data)
 {
   cairo_t *cr;
@@ -935,12 +985,14 @@ static void printing_layout_set_text_attributes(PrintData *print_data, GtkPrintC
   PangoAttrList *attr_list;
   PangoAttribute *attr;
   GSList *open_attrs, *attr_walk;
+  GtkTextView *text_view = GTK_TEXT_VIEW(print_data->renderer_data);
+  GtkTextBuffer *buffer = gtk_text_view_get_buffer(text_view);
 
   attr_list = pango_attr_list_new();
   if (print_data->sel_start < 0 || print_data->sel_end <= print_data->sel_start) {
-    gtk_text_buffer_get_start_iter(print_data->buffer, &iter);
+    gtk_text_buffer_get_start_iter(buffer, &iter);
   } else {
-    gtk_text_buffer_get_iter_at_offset(print_data->buffer, &iter, print_data->sel_start);
+    gtk_text_buffer_get_iter_at_offset(buffer, &iter, print_data->sel_start);
   }
 
   open_attrs = NULL;

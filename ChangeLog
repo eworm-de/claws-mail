@@ -1,3 +1,10 @@
+2007-10-10 [colin]	3.0.2cvs52
+
+	* src/printing.c
+	* src/printing.h
+		Generalize a bit printing, so we can factorize
+		most of the code. 
+
 2007-10-10 [paul]	3.0.2cvs51
 
 	* src/addrduplicates.c
