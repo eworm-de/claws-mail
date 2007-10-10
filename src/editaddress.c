@@ -742,6 +742,7 @@ static void addressbook_edit_person_set_picture(GtkWidget *widget,
 				alertpanel_error(_("Failed to import image: \n%s"),
 						error->message);
 				g_error_free(error);
+				error = NULL;
 			}
 			personeditdlg.picture_set = TRUE;
 			g_free(filename);
@@ -1383,7 +1384,7 @@ static gboolean addressbook_edit_person_close( gboolean cancelled )
 {
 	GList *listEMail = NULL;
 	GList *listAttrib = NULL;
-	GError *error;
+	GError *error = NULL;
 	gchar *cn = NULL;
 
 	listEMail = edit_person_build_email_list();

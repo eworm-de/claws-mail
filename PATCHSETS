@@ -2967,3 +2967,4 @@
 ( cvs diff -u -r 1.1.2.9 -r 1.1.2.10 src/printing.c;  cvs diff -u -r 1.1.2.2 -r 1.1.2.3 src/printing.h;  ) > 3.0.2cvs52.patchset
 ( cvs diff -u -r 1.9.2.19 -r 1.9.2.20 src/addressadd.c;  cvs diff -u -r 1.14.2.35 -r 1.14.2.36 src/editaddress.c;  cvs diff -u -r 1.8.2.25 -r 1.8.2.26 src/headerview.c;  cvs diff -u -r 1.96.2.186 -r 1.96.2.187 src/textview.c;  ) > 3.0.2cvs53.patchset
 ( cvs diff -u -r 1.1.4.40 -r 1.1.4.41 src/prefs_filtering_action.c;  cvs diff -u -r 1.5.2.23 -r 1.5.2.24 src/gtk/description_window.c;  cvs diff -u -r 1.1.2.15 -r 1.1.2.16 src/gtk/foldersort.c;  cvs diff -u -r 1.1.2.79 -r 1.1.2.80 src/gtk/quicksearch.c;  ) > 3.0.2cvs54.patchset
+( cvs diff -u -r 1.14.2.36 -r 1.14.2.37 src/editaddress.c;  ) > 3.0.2cvs55.patchset

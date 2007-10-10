@@ -1,3 +1,8 @@
+2007-10-10 [colin]	3.0.2cvs55
+
+	* src/editaddress.c
+		Initialise error correctly
+
 2007-10-10 [paul]	3.0.2cvs54
 
 	* src/prefs_filtering_action.c
