@@ -343,8 +343,14 @@ static void headerview_save_contact_pic (HeaderView *headerview, MsgInfo *msginf
 	filename = addrindex_get_picture_file(msginfo->from);
 	if (!filename)
 		return;
-	if (!is_file_exist(filename))
+	if (!is_file_exist(filename)) {
 		gdk_pixbuf_save(picture, filename, "png", &error, NULL);
+		if (error) {
+			g_warning(_("Failed to save image: \n%s"),
+					error->message);
+			g_error_free(error);
+		}
+	}
 	g_free(filename);
 }	
 

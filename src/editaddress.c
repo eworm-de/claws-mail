@@ -1446,6 +1446,11 @@ static gboolean addressbook_edit_person_close( gboolean cancelled )
 			name = g_strconcat( get_rc_dir(), G_DIR_SEPARATOR_S, ADDRBOOK_DIR, G_DIR_SEPARATOR_S, 
 							ADDRITEM_ID(current_person), ".png", NULL );
 			gdk_pixbuf_save(pixbuf, name, "png", &error, NULL);
+			if (error) {
+				alertpanel_error(_("Failed to save image: \n%s"),
+						error->message);
+				g_error_free(error);
+			}
 			addritem_person_set_picture( current_person, ADDRITEM_ID(current_person) ) ;
 			g_free( name );
 		} else {

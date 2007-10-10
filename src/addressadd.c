@@ -441,6 +441,11 @@ gboolean addressadd_selection( AddressIndex *addrIndex, const gchar *name,
 				gchar *name = g_strconcat( get_rc_dir(), G_DIR_SEPARATOR_S, ADDRBOOK_DIR, G_DIR_SEPARATOR_S, 
 							ADDRITEM_ID(person), ".png", NULL );
 				gdk_pixbuf_save(picture, name, "png", &error, NULL);
+				if (error) {
+					g_warning(_("Failed to save image: \n%s"),
+							error->message);
+					g_error_free(error);
+				}
 				addritem_person_set_picture( person, ADDRITEM_ID(person) ) ;
 				g_free( name );
 			}
