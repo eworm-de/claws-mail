@@ -3179,6 +3179,9 @@ gchar *addrindex_get_picture_file(const gchar *emailaddr)
 	gchar *filename = NULL;
 	gchar *raw_addr = NULL;
 	
+	if (!emailaddr)
+		return NULL;
+
 	Xstrdup_a(raw_addr, emailaddr, return NULL);
 	extract_address(raw_addr);
 

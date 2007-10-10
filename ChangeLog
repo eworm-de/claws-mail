@@ -1,3 +1,8 @@
+2007-10-10 [wwp]	3.0.2cvs47
+
+	* src/addrindex.c
+		Fix a crash when there's no From: in email, thanks to Colin.
+
 2007-10-09 [paul]	3.0.2cvs46
 
 	* src/messageview.c
