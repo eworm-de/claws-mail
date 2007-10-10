@@ -1,3 +1,9 @@
+2007-10-10 [paul]	3.0.2cvs51
+
+	* src/addrduplicates.c
+		fix engrish
+		use GTK_STOCK... buttons
+
 2007-10-10 [paul]	3.0.2cvs50
 
 	* src/addressadd.c

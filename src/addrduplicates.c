@@ -144,8 +144,8 @@ static gboolean create_dialog()
 
 	val = alertpanel_full(_("Find address book email duplicates"),
 	                      _("Claws-Mail will now search for duplicate email "
-	                        "addresses in the addressbook."),
-	                      _("Cancel"),_("Search"),NULL, FALSE, vbox, ALERT_NOTICE,
+	                        "addresses in the address book."),
+	                      GTK_STOCK_CANCEL,GTK_STOCK_FIND,NULL, FALSE, vbox, ALERT_NOTICE,
 	                      G_ALERTALTERNATE);
 	if(val == G_ALERTALTERNATE) {
 		want_search = TRUE;
@@ -324,7 +324,7 @@ static void present_finder_results(GtkWindow *parent)
 	static GdkGeometry geometry;
 
 	if(g_hash_table_size(addr_hash) == 0) {
-		alertpanel_notice(_("No duplicate email addresses in the addressbook found"));
+		alertpanel_notice(_("No duplicate email addresses found in the address book"));
 		return;
 	}
 
@@ -473,7 +473,7 @@ static GtkWidget* create_detail_view(GtkListStore *store)
 	/* col 1 */
 	gtk_tree_view_insert_column_with_attributes(GTK_TREE_VIEW(view),
 	        -1,
-	        _("Addressbook path"),
+	        _("Address book path"),
 	        renderer,
 	        "text", COL_BOOKPATH,
 	        NULL);
