@@ -162,11 +162,9 @@ static void description_create(DescriptionWindow * dwindow)
 
 	label = gtk_label_new(gettext(dwindow->description));
 	gtk_widget_show(label);
+	gtk_widget_set_size_request(GTK_WIDGET(label), max_width-2, -1);
 	gtk_label_set_justify(GTK_LABEL(label), GTK_JUSTIFY_LEFT);
 	gtk_label_set_line_wrap(GTK_LABEL(label), TRUE);
-	gtk_widget_size_request(label, &req);
-	if(req.width > max_width)
-		max_width = req.width + 20;
 	gtk_box_pack_start(GTK_BOX(hbox), label, FALSE, FALSE, 0);
 
 	gtk_box_pack_start(GTK_BOX(vbox), GTK_WIDGET(scrolledwin),

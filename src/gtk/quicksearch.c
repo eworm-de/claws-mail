@@ -465,7 +465,7 @@ static DescriptionWindow search_descr = {
 	2,
 	N_("Extended Search"),
 	N_("Extended Search allows the user to define criteria that messages must "
-           "have in order to match and be displayed in the message list.\n\n"
+           "have in order to match and be displayed in the message list.\n"
 	   "The following symbols can be used:"),
 	search_descr_strings
 };

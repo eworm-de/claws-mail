@@ -1249,7 +1249,7 @@ static DescriptionWindow exec_desc_win = {
         2,
         N_("Filtering Action: 'Execute'"),
 	N_("'Execute' allows you to send a message or message element "
-	   "to an external program or script.\n\n"
+	   "to an external program or script.\n"
 	   "The following symbols can be used:"),
        exec_desc_strings
 };

@@ -187,8 +187,10 @@ void foldersort_open()
 	gtk_box_pack_start(GTK_BOX(vbox1), hbox, FALSE, FALSE, 0);
 
 	label1 = gtk_label_new(_
-		("Move folders up or down to change the sort order in the folder list."));
+		("Move folders up or down to change the sort order "
+		 "in the folder list."));
 	gtk_widget_show(label1);
+	gtk_widget_set_size_request(GTK_WIDGET(label1), 392, -1);
 	gtk_label_set_line_wrap(GTK_LABEL(label1), TRUE);
 	gtk_box_pack_start(GTK_BOX(hbox), label1, FALSE, FALSE, 0);
 
