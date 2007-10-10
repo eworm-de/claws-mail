@@ -2265,7 +2265,9 @@ static void add_address_cb(gpointer data, guint action, GtkWidget *widget)
 	GtkWidget *image = NULL;
 	GdkPixbuf *picture = NULL;
 
-	if (!messageview->msginfo) return;
+	if (!messageview->msginfo || !messageview->msginfo->from) 
+		return;
+
 	msginfo = messageview->msginfo;
 	Xstrdup_a(from, msginfo->from, return);
 	eliminate_address_comment(from);

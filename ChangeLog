@@ -1,3 +1,21 @@
+2007-10-10 [claws]	3.0.2cvs49
+
+	* src/summaryview.c
+	* src/messageview.c
+		Fix crash on Add sender to addressbook when
+		From is null
+	* src/addressadd.c
+	* src/addrindex.c
+	* src/editaddress.c
+	* src/editaddress_other_attributes_ldap.h
+		Fix leaks 
+		Rename images to .png in addrbook/
+	* src/headerview.c
+	* src/textview.c
+		Fix Face/X-Face being used if adding another
+		address than sender to addressbook
+		Thanks to Colin
+
 2007-10-10 [holger]	3.0.2cvs48
 
 	* src/addrduplicates.c

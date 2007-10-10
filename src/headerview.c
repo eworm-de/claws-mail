@@ -392,6 +392,7 @@ static gint headerview_show_contact_pic (HeaderView *headerview, MsgInfo *msginf
 	else 
 		return -1;
 
+	g_object_unref(picture);
 	if (image) {
 		gtk_box_pack_start(GTK_BOX(hbox), image, FALSE, FALSE, 0);
 		gtk_widget_show(image);

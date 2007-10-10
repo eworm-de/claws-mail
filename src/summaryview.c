@@ -4314,7 +4314,8 @@ void summary_add_address(SummaryView *summaryview)
 
 	msginfo = gtk_ctree_node_get_row_data(GTK_CTREE(summaryview->ctree),
 					      summaryview->selected);
-	if (!msginfo) return;
+	if (!msginfo || !msginfo->from) 
+		return;
 
 	Xstrdup_a(from, msginfo->from, return);
 	eliminate_address_comment(from);

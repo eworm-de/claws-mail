@@ -1971,9 +1971,10 @@ static void textview_show_contact_pic(TextView *textview)
 	}
 	g_free(filename);
 
-	if (picture)
+	if (picture) {
 		textview->image = gtk_image_new_from_pixbuf(picture);
-
+		g_object_unref(picture);
+	}
 	g_return_if_fail(textview->image != NULL);
 
 	gtk_widget_show(textview->image);
@@ -2905,23 +2906,29 @@ static void add_uri_to_addrbook_cb (TextView *textview, guint action, void *data
 					   "menu_button");
 	GtkWidget *image = NULL;
 	GdkPixbuf *picture = NULL;
-
+	gboolean use_picture = FALSE;
 	if (uri == NULL)
 		return;
 
 	/* extract url */
 	fromaddress = g_strdup(uri->uri + 7);
-	/* Hiroyuki: please put this function in utils.c! */
+	
+	if (textview->messageview->msginfo &&
+	   !strcmp2(fromaddress, textview->messageview->msginfo->from))
+		use_picture = TRUE;
+
 	fromname = procheader_get_fromname(fromaddress);
 	extract_address(fromaddress);
 
-	if (textview->messageview->msginfo &&
+	if (use_picture && 
+	    textview->messageview->msginfo &&
 	    textview->messageview->msginfo->extradata &&
 	    textview->messageview->msginfo->extradata->face) {
 		image = face_get_from_header(textview->messageview->msginfo->extradata->face);
 	}
 #if HAVE_LIBCOMPFACE 
-	else if (textview->messageview->msginfo &&
+	else if (use_picture && 
+	         textview->messageview->msginfo &&
 	         textview->messageview->msginfo->extradata &&
 		 textview->messageview->msginfo->extradata->xface) {
 		image = xface_get_from_header(textview->messageview->msginfo->extradata->xface,

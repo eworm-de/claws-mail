@@ -3220,7 +3220,7 @@ gchar *addrindex_get_picture_file(const gchar *emailaddr)
 						found = TRUE;
 						filename = g_strconcat( get_rc_dir(), G_DIR_SEPARATOR_S, 
 							ADDRBOOK_DIR, G_DIR_SEPARATOR_S, 
-							person->picture, NULL );
+							person->picture, NULL, ".png" );
 						break;
 					}
 					nodeM = nodeM->next;

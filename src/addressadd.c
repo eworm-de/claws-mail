@@ -439,7 +439,7 @@ gboolean addressadd_selection( AddressIndex *addrIndex, const gchar *name,
 			if (picture) {
 				GError *error = NULL;
 				gchar *name = g_strconcat( get_rc_dir(), G_DIR_SEPARATOR_S, ADDRBOOK_DIR, G_DIR_SEPARATOR_S, 
-							ADDRITEM_ID(person), NULL );
+							ADDRITEM_ID(person), NULL, ".png" );
 				gdk_pixbuf_save(picture, name, "png", &error, NULL);
 				addritem_person_set_picture( person, ADDRITEM_ID(person) ) ;
 				g_free( name );

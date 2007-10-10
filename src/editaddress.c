@@ -700,10 +700,11 @@ void addressbook_edit_person_widgetset_hide( void )
 
 static void addressbook_edit_person_unset_picture (void *obj, guint action, void *data)
 {
-	personeditdlg.pixbuf = gdk_pixbuf_new(GDK_COLORSPACE_RGB, TRUE, 8, 48, 48);
-	gdk_pixbuf_fill(personeditdlg.pixbuf, 0xffffff00);
+	GdkPixbuf *pixbuf = gdk_pixbuf_new(GDK_COLORSPACE_RGB, TRUE, 8, 48, 48);
+	gdk_pixbuf_fill(pixbuf, 0xffffff00);
 	personeditdlg.picture_set = FALSE;
-	gtk_image_set_from_pixbuf(GTK_IMAGE(personeditdlg.image), personeditdlg.pixbuf);
+	gtk_image_set_from_pixbuf(GTK_IMAGE(personeditdlg.image), pixbuf);
+	g_object_unref(pixbuf);
 }
 
 static GtkItemFactoryEntry editaddr_popup_entries[] =
@@ -720,16 +721,8 @@ static void addressbook_edit_person_set_picture(GtkWidget *widget,
 	
 	if (event->button == 1) {
 		if ( (filename = filesel_select_file_open(_("Choose a picture"), NULL)) ) {
-			personeditdlg.pixbuf = gdk_pixbuf_new_from_file(filename, &error);
-			if (error) {
-				alertpanel_error(_("Failed to import image: \n%s"),
-						error->message);
-				g_error_free(error);
-			}
-			personeditdlg.picture_set = TRUE;
-			g_free(filename);
-			width = gdk_pixbuf_get_width(personeditdlg.pixbuf);
-			height = gdk_pixbuf_get_height(personeditdlg.pixbuf);
+			GdkPixbuf *pixbuf = NULL;
+			gdk_pixbuf_get_file_info(filename, &width, &height);
 
 			if ( width > 128 || height > 128 ) {
 				if (width > height) {
@@ -740,9 +733,20 @@ static void addressbook_edit_person_set_picture(GtkWidget *widget,
 					scalewidth = (width * 128) / height;
 					scaleheight = 128;
 				}
-				personeditdlg.pixbuf = gdk_pixbuf_scale_simple(personeditdlg.pixbuf, scalewidth, scaleheight, GDK_INTERP_BILINEAR);
+				pixbuf = gdk_pixbuf_new_from_file_at_scale(filename, 
+						scalewidth, scaleheight, TRUE, &error);
+			} else {
+				pixbuf = gdk_pixbuf_new_from_file(filename, &error);
 			}
-		gtk_image_set_from_pixbuf(GTK_IMAGE(personeditdlg.image), personeditdlg.pixbuf);
+			if (error) {
+				alertpanel_error(_("Failed to import image: \n%s"),
+						error->message);
+				g_error_free(error);
+			}
+			personeditdlg.picture_set = TRUE;
+			g_free(filename);
+			gtk_image_set_from_pixbuf(GTK_IMAGE(personeditdlg.image), pixbuf);
+			g_object_unref(pixbuf);
 		}
 	} else {
 		gtk_menu_popup(GTK_MENU(personeditdlg.editaddr_popupmenu), 
@@ -765,7 +769,7 @@ static void addressbook_edit_person_page_basic( gint pageNum, gchar *pageLbl ) {
 	const gchar *locale;
 	gint top = 0;
 	gint n_entries;
-
+	GdkPixbuf *pixbuf;
 	vbox = gtk_vbox_new( FALSE, 20 );
 	hbox = gtk_hbox_new( FALSE, 8 );
 
@@ -776,11 +780,12 @@ static void addressbook_edit_person_page_basic( gint pageNum, gchar *pageLbl ) {
 	frame_picture = gtk_frame_new("Photo");
 	
 	/* Room for a photo */
-	personeditdlg.pixbuf = gdk_pixbuf_new(GDK_COLORSPACE_RGB, TRUE, 8, 48, 48);
-	gdk_pixbuf_fill(personeditdlg.pixbuf, 0xffffff00);
+	pixbuf = gdk_pixbuf_new(GDK_COLORSPACE_RGB, TRUE, 8, 48, 48);
+	gdk_pixbuf_fill(pixbuf, 0xffffff00);
 	personeditdlg.picture_set = FALSE;
-	personeditdlg.image = gtk_image_new_from_pixbuf(personeditdlg.pixbuf);
-	
+	personeditdlg.image = gtk_image_new_from_pixbuf(pixbuf);
+	g_object_unref(pixbuf);
+
 	gtk_container_add(GTK_CONTAINER(ebox_picture), personeditdlg.image);
 	gtk_container_add(GTK_CONTAINER(frame_picture), ebox_picture);	
 	gtk_container_add(GTK_CONTAINER( personeditdlg.notebook ), hbox );
@@ -1437,14 +1442,15 @@ static gboolean addressbook_edit_person_close( gboolean cancelled )
 		gchar *name;
 		addritem_person_set_common_name( current_person, cn );
 		if (personeditdlg.picture_set) {
+			GdkPixbuf * pixbuf = gtk_image_get_pixbuf(GTK_IMAGE(personeditdlg.image));
 			name = g_strconcat( get_rc_dir(), G_DIR_SEPARATOR_S, ADDRBOOK_DIR, G_DIR_SEPARATOR_S, 
-							ADDRITEM_ID(current_person), NULL );
-			gdk_pixbuf_save(personeditdlg.pixbuf, name, "png", &error, NULL);
+							ADDRITEM_ID(current_person), NULL, ".png" );
+			gdk_pixbuf_save(pixbuf, name, "png", &error, NULL);
 			addritem_person_set_picture( current_person, ADDRITEM_ID(current_person) ) ;
 			g_free( name );
 		} else {
 			name = g_strconcat( get_rc_dir(), G_DIR_SEPARATOR_S, ADDRBOOK_DIR, G_DIR_SEPARATOR_S, 
-							ADDRITEM_ID(current_person), NULL );
+							ADDRITEM_ID(current_person), NULL, ".png" );
 			g_unlink(name);
 			g_free(name);
 		}
@@ -1485,7 +1491,7 @@ ItemPerson *addressbook_edit_person( AddressBookFile *abf, ItemFolder *parent_fo
 									 gboolean get_focus) {
 	static gboolean cancelled;
 	GError *error = NULL;
-
+	GdkPixbuf *pixbuf;
 	/* set transient data */
 	current_abf = abf;
 	current_person = person;
@@ -1533,9 +1539,9 @@ ItemPerson *addressbook_edit_person( AddressBookFile *abf, ItemFolder *parent_fo
 
 		if( current_person->picture ) {	
 			gchar *filename = g_strconcat( get_rc_dir(), G_DIR_SEPARATOR_S, ADDRBOOK_DIR, G_DIR_SEPARATOR_S, 
-							current_person->picture, NULL );
+							current_person->picture, NULL, ".png" );
 			if (is_file_exist(filename)) {
-				personeditdlg.pixbuf = gdk_pixbuf_new_from_file(filename, &error);
+				pixbuf = gdk_pixbuf_new_from_file(filename, &error);
 				if (error) {
 					debug_print("Failed to import image: \n%s",
 							error->message);
@@ -1550,10 +1556,12 @@ ItemPerson *addressbook_edit_person( AddressBookFile *abf, ItemFolder *parent_fo
 		} else {
 no_img:
 			personeditdlg.picture_set = FALSE;
-			personeditdlg.pixbuf = gdk_pixbuf_new(GDK_COLORSPACE_RGB, TRUE, 8, 48, 48);
-			gdk_pixbuf_fill(personeditdlg.pixbuf, 0xffffff00);
+			pixbuf = gdk_pixbuf_new(GDK_COLORSPACE_RGB, TRUE, 8, 48, 48);
+			gdk_pixbuf_fill(pixbuf, 0xffffff00);
 		}
-		gtk_image_set_from_pixbuf(GTK_IMAGE(personeditdlg.image), personeditdlg.pixbuf);
+		gtk_image_set_from_pixbuf(GTK_IMAGE(personeditdlg.image), pixbuf);
+		g_object_unref(pixbuf);
+		pixbuf = NULL;
 
 		if( current_person->firstName )
 			gtk_entry_set_text(GTK_ENTRY(personeditdlg.entry_first), current_person->firstName );

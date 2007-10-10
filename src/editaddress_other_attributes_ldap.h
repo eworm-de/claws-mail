@@ -46,7 +46,6 @@ struct _PersonEdit_dlg {
 	gint status_cid;
 
 	/* User data tab */
-	GdkPixbuf *pixbuf;
 	GtkWidget *image;
 	gboolean picture_set;
 	GtkWidget *entry_name;
