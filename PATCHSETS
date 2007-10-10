@@ -2960,3 +2960,4 @@
 ( cvs diff -u -r 1.14.2.31 -r 1.14.2.32 src/editaddress.c;  cvs diff -u -r 1.8.2.23 -r 1.8.2.24 src/headerview.c;  cvs diff -u -r 1.96.2.183 -r 1.96.2.184 src/textview.c;  ) > 3.0.2cvs45.patchset
 ( cvs diff -u -r 1.94.2.156 -r 1.94.2.157 src/messageview.c;  cvs diff -u -r 1.395.2.328 -r 1.395.2.329 src/summaryview.c;  cvs diff -u -r 1.96.2.184 -r 1.96.2.185 src/textview.c;  ) > 3.0.2cvs46.patchset
 ( cvs diff -u -r 1.28.2.34 -r 1.28.2.35 src/addrindex.c;  ) > 3.0.2cvs47.patchset
+( cvs diff -u -r 1.1.2.3 -r 1.1.2.4 src/addrduplicates.c;  cvs diff -u -r 1.14.2.32 -r 1.14.2.33 src/editaddress.c;  ) > 3.0.2cvs48.patchset

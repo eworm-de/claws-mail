@@ -1492,8 +1492,12 @@ ItemPerson *addressbook_edit_person( AddressBookFile *abf, ItemFolder *parent_fo
 	current_parent_folder = parent_folder;
 	edit_person_close_post_update_cb = post_update_cb;
 	personeditdlg.ldap = (abf && abf->type == ADBOOKTYPE_LDAP)? TRUE : FALSE;
-	if( !personeditdlg.container )
-		addressbook_edit_person_create(parent_container, &cancelled);
+
+	if( personeditdlg.container ) {
+		gtk_widget_destroy(personeditdlg.container);
+		personeditdlg.container = NULL;
+	}
+	addressbook_edit_person_create(parent_container, &cancelled);
 
 	/* typically, get focus when dialog mode is enabled, or when editing a new address */
 	if( get_focus ) {

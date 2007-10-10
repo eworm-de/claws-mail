@@ -1,3 +1,20 @@
+2007-10-10 [holger]	3.0.2cvs48
+
+	* src/addrduplicates.c
+	* src/editaddress.c
+		Improvements to the addressbook duplicate finder
+		feature:
+		 - add an edit button to the button bar
+		 - display the whole bookname (with iface) and
+		   use this for same-book checking
+		 - after editing, try to keep selections if the
+		   entries are still present
+		 - sort the email column alphabetically
+		 - put results in a scrolled window
+		 - support embedded editing
+		 - make columns in detail view resizable
+		 - add keyboard shortcuts
+
 2007-10-10 [wwp]	3.0.2cvs47
 
 	* src/addrindex.c
