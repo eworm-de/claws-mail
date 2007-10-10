@@ -1,3 +1,9 @@
+2007-10-10 [colin]	3.0.2cvs56
+
+	* src/compose.c
+		Fix updating of Attachments number in some
+		cases (reedit, attach from command-line, ...)
+
 2007-10-10 [colin]	3.0.2cvs55
 
 	* src/editaddress.c

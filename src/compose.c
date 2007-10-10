@@ -546,6 +546,7 @@ static MsgInfo *compose_msginfo_new_from_compose(Compose *compose);
 static void compose_set_dictionaries_from_folder_prefs(Compose *compose,
 						FolderItem *folder_item);
 #endif
+static void compose_attach_update_label(Compose *compose);
 
 static GtkItemFactoryEntry compose_popup_entries[] =
 {
@@ -3357,6 +3358,7 @@ static gboolean compose_attach_append(Compose *compose, const gchar *file,
 			   -1);
 	
 	g_auto_pointer_free(auto_ainfo);
+	compose_attach_update_label(compose);
 	return TRUE;
 }
 
@@ -8762,8 +8764,6 @@ static void compose_attach_cb(gpointer data, guint action, GtkWidget *widget)
 		}
 		g_list_free(file_list);
 	}
-	
-	compose_attach_update_label(compose);		
 }
 
 static void compose_insert_file_cb(gpointer data, guint action,
