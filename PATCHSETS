@@ -2962,3 +2962,4 @@
 ( cvs diff -u -r 1.28.2.34 -r 1.28.2.35 src/addrindex.c;  ) > 3.0.2cvs47.patchset
 ( cvs diff -u -r 1.1.2.3 -r 1.1.2.4 src/addrduplicates.c;  cvs diff -u -r 1.14.2.32 -r 1.14.2.33 src/editaddress.c;  ) > 3.0.2cvs48.patchset
 ( cvs diff -u -r 1.9.2.17 -r 1.9.2.18 src/addressadd.c;  cvs diff -u -r 1.28.2.35 -r 1.28.2.36 src/addrindex.c;  cvs diff -u -r 1.14.2.33 -r 1.14.2.34 src/editaddress.c;  cvs diff -u -r 1.1.2.5 -r 1.1.2.6 src/editaddress_other_attributes_ldap.h;  cvs diff -u -r 1.8.2.24 -r 1.8.2.25 src/headerview.c;  cvs diff -u -r 1.94.2.157 -r 1.94.2.158 src/messageview.c;  cvs diff -u -r 1.395.2.329 -r 1.395.2.330 src/summaryview.c;  cvs diff -u -r 1.96.2.185 -r 1.96.2.186 src/textview.c;  ) > 3.0.2cvs49.patchset
+( cvs diff -u -r 1.9.2.18 -r 1.9.2.19 src/addressadd.c;  cvs diff -u -r 1.28.2.36 -r 1.28.2.37 src/addrindex.c;  cvs diff -u -r 1.14.2.34 -r 1.14.2.35 src/editaddress.c;  ) > 3.0.2cvs50.patchset

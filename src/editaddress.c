@@ -1444,13 +1444,13 @@ static gboolean addressbook_edit_person_close( gboolean cancelled )
 		if (personeditdlg.picture_set) {
 			GdkPixbuf * pixbuf = gtk_image_get_pixbuf(GTK_IMAGE(personeditdlg.image));
 			name = g_strconcat( get_rc_dir(), G_DIR_SEPARATOR_S, ADDRBOOK_DIR, G_DIR_SEPARATOR_S, 
-							ADDRITEM_ID(current_person), NULL, ".png" );
+							ADDRITEM_ID(current_person), ".png", NULL );
 			gdk_pixbuf_save(pixbuf, name, "png", &error, NULL);
 			addritem_person_set_picture( current_person, ADDRITEM_ID(current_person) ) ;
 			g_free( name );
 		} else {
 			name = g_strconcat( get_rc_dir(), G_DIR_SEPARATOR_S, ADDRBOOK_DIR, G_DIR_SEPARATOR_S, 
-							ADDRITEM_ID(current_person), NULL, ".png" );
+							ADDRITEM_ID(current_person), ".png", NULL );
 			g_unlink(name);
 			g_free(name);
 		}
@@ -1539,7 +1539,7 @@ ItemPerson *addressbook_edit_person( AddressBookFile *abf, ItemFolder *parent_fo
 
 		if( current_person->picture ) {	
 			gchar *filename = g_strconcat( get_rc_dir(), G_DIR_SEPARATOR_S, ADDRBOOK_DIR, G_DIR_SEPARATOR_S, 
-							current_person->picture, NULL, ".png" );
+							current_person->picture, ".png", NULL );
 			if (is_file_exist(filename)) {
 				pixbuf = gdk_pixbuf_new_from_file(filename, &error);
 				if (error) {

@@ -1,3 +1,11 @@
+2007-10-10 [paul]	3.0.2cvs50
+
+	* src/addressadd.c
+	* src/addrindex.c
+	* src/editaddress.c
+		Fix previous patch
+		Thanks to Colin
+
 2007-10-10 [paul]	3.0.2cvs49
 
 	* src/summaryview.c
