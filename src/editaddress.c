@@ -1562,7 +1562,7 @@ ItemPerson *addressbook_edit_person( AddressBookFile *abf, ItemFolder *parent_fo
 
 	personeditdlg.editNew = FALSE;
 	if( current_person ) {
-		gchar *filename;
+		gchar *filename = NULL;
 
 		if( ADDRITEM_NAME(current_person) )
 			gtk_entry_set_text(GTK_ENTRY(personeditdlg.entry_name), ADDRITEM_NAME(person) );

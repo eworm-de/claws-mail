@@ -1,3 +1,9 @@
+2007-10-11 [wwp]	3.0.2cvs61
+
+	* src/editaddress.c
+		Fix a warning about possible use of uninitialized
+		filename var.
+
 2007-10-11 [wwp]	3.0.2cvs60
 
 	* src/editaddress.c
