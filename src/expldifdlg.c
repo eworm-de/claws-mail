@@ -733,7 +733,7 @@ static void export_ldif_dialog_create( void ) {
 static void export_ldif_create( void ) {
 	export_ldif_dialog_create();
 	export_ldif_page_file( PAGE_FILE_INFO, _( "File Info" ) );
-	export_ldif_page_dn( PAGE_DN, _( "Distguished Name" ) );
+	export_ldif_page_dn( PAGE_DN, _( "Distinguished Name" ) );
 	export_ldif_page_finish( PAGE_FINISH, _( "Finish" ) );
 	gtk_widget_show_all( expldif_dlg.window );
 }

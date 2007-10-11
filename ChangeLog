@@ -1,3 +1,20 @@
+2007-10-11 [mones]	3.0.2cvs62
+
+	* src/addrduplicates.c
+	* src/addressbook.c
+	* src/compose.c
+	* src/expldifdlg.c
+	* src/mainwindow.c
+	* src/messageview.c
+	* src/pop.c
+	* src/prefs_customheader.c
+	* src/prefs_send.c
+	* src/prefs_themes.c
+	* src/common/plugin.c
+	* src/gtk/pluginwindow.c
+	* src/gtk/quicksearch.c
+		Fix several typos and capitalisation issues
+
 2007-10-11 [wwp]	3.0.2cvs61
 
 	* src/editaddress.c

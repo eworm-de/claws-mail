@@ -551,7 +551,7 @@ static ErrMsgTableEntry _lutErrorsLDAP_[] = {
 	{ LDAPRC_NOENTRIES,			N_("No LDAP entries found for search criteria") },
 	{ LDAPRC_STOP_FLAG,			N_("LDAP search terminated on request") },
 	{ LDAPRC_TLS,				N_("Error starting TLS connection") },
-	{ LDAPRC_NODN,				N_("Distinguised Name (dn) is missing") },
+	{ LDAPRC_NODN,				N_("Distinguished Name (dn) is missing") },
 	{ LDAPRC_NAMING_VIOLATION,		N_("Missing required information") },
 	{ LDAPRC_ALREADY_EXIST,			N_("Another contact exists with that key") },
 	{ LDAPRC_STRONG_AUTH,			N_("Strong(er) authentication required") },
@@ -4658,7 +4658,7 @@ static void addrbookctl_build_map( GtkWidget *window ) {
 	atci->showInTree = FALSE;
 	atci->treeExpand = FALSE;
 	atci->treeLeaf = TRUE;
-	atci->displayName = _( "EMail Address" );
+	atci->displayName = _( "Email Address" );
 	atci->iconXpm = addressxpm;
 	atci->maskXpm = addressxpmmask;
 	atci->iconXpmOpen = addressxpm;

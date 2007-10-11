@@ -723,7 +723,7 @@ static GtkItemFactoryEntry compose_entries[] =
 			NULL, compose_set_encoding_cb, C_AUTO, "<RadioItem>"},
 	{N_("/_Options/Character _encoding/---"), NULL, NULL, 0, "<Separator>"},
 
-	{N_("/_Options/Character _encoding/7bit ascii (US-ASC_II)"),
+	{N_("/_Options/Character _encoding/7bit ASCII (US-ASC_II)"),
 	 ENC_ACTION(C_US_ASCII)},
 	{N_("/_Options/Character _encoding/Unicode (_UTF-8)"),
 	 ENC_ACTION(C_UTF_8)},

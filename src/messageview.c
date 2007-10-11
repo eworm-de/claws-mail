@@ -268,7 +268,7 @@ static GtkItemFactoryEntry msgview_entries[] =
 	{N_("/_View/Character _encoding/_Auto detect"),
 					NULL, set_charset_cb, C_AUTO, "<RadioItem>"},
 	ENC_SEPARATOR,
-	{N_("/_View/Character _encoding/7bit ascii (US-ASC_II)"),
+	{N_("/_View/Character _encoding/7bit ASCII (US-ASC_II)"),
 	 ENC_ACTION(C_US_ASCII)},
 
 	{N_("/_View/Character _encoding/Unicode (_UTF-8)"),
@@ -1718,7 +1718,7 @@ static void print_cb(gpointer data, guint action, GtkWidget *widget)
 
 #if !defined(USE_GNOMEPRINT) && !GTK_CHECK_VERSION(2,10,0)
 	cmdline = input_dialog(_("Print"),
-			       _("Ente the print command line:\n"
+			       _("Enter the print command line:\n"
 				 "('%s' will be replaced with file name)"),
 			       prefs_common.print_cmd);
 	if (!cmdline) return;

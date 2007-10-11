@@ -161,7 +161,7 @@ static gint pop3_getauth_apop_send(Pop3Session *session)
 	*(end + 1) = '\0';
 
 	if (!is_ascii_str(start)) {
-		log_error(LOG_PROTOCOL, _("Timestamp syntax error in greeting (not ascii)\n"));
+		log_error(LOG_PROTOCOL, _("Timestamp syntax error in greeting (not ASCII)\n"));
 		session->error_val = PS_PROTOCOL;
 		return -1;
 	}

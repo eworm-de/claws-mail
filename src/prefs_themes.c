@@ -475,7 +475,7 @@ static void prefs_themes_btn_remove_clicked_cb(GtkWidget *widget, gpointer data)
 				alertpanel_error(_("Removing theme directory failed."));
 		}
 		else {	
-			alertpanel_notice(_("Theme removed succesfully"));
+			alertpanel_notice(_("Theme removed successfully"));
 			/* update interface back to first theme */
 			prefs_themes_get_themes_and_names(tdata);
 			prefs_themes_set_themes_menu(GTK_OPTION_MENU(tdata->page->op_menu), tdata);
@@ -558,7 +558,7 @@ static void prefs_themes_btn_install_clicked_cb(GtkWidget *widget, gpointer data
 					    (gpointer)(cinfo->dest), 
 					    (GCompareFunc)strcmp2);
 		if (NULL != insted) {
-			alertpanel_notice(_("Theme installed succesfully"));
+			alertpanel_notice(_("Theme installed successfully"));
 			tdata->displayed = (gchar *)(insted->data);
 			prefs_themes_set_themes_menu(GTK_OPTION_MENU(tdata->page->op_menu), tdata);
 			prefs_themes_display_global_stats(tdata);

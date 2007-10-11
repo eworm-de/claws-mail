@@ -143,7 +143,7 @@ static gboolean create_dialog()
 	g_object_ref(check_other_book);
 
 	val = alertpanel_full(_("Find address book email duplicates"),
-	                      _("Claws-Mail will now search for duplicate email "
+	                      _("Claws Mail will now search for duplicate email "
 	                        "addresses in the address book."),
 	                      GTK_STOCK_CANCEL,GTK_STOCK_FIND,NULL, FALSE, vbox, ALERT_NOTICE,
 	                      G_ALERTALTERNATE);

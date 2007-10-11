@@ -425,7 +425,7 @@ static gchar *search_descr_strings[] = {
 	"F",	 N_("forwarded messages"),
 	"h S",	 N_("messages which contain header S"),
 	"i S",	 N_("messages which contain S in Message-ID header"),
-	"I S",	 N_("messages which contain S in inreplyto header"),
+	"I S",	 N_("messages which contain S in In-Reply-To header"),
 	"k #",	 N_("messages which are marked with color #"),
 	"L",	 N_("locked messages"),
 	"n S",	 N_("messages which are in newsgroup S"),

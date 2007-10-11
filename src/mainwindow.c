@@ -670,7 +670,7 @@ static GtkItemFactoryEntry mainwin_entries[] =
 	 NULL, set_charset_cb, C_AUTO, "<RadioItem>"},
 	ENC_SEPARATOR,
 
-	{N_("/_View/Character _encoding/7bit ascii (US-ASC_II)"),
+	{N_("/_View/Character _encoding/7bit ASCII (US-ASC_II)"),
 	 ENC_ACTION(C_US_ASCII)},
 	{N_("/_View/Character _encoding/Unicode (_UTF-8)"),
 	 ENC_ACTION(C_UTF_8)},

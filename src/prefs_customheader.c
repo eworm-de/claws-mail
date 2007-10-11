@@ -559,9 +559,9 @@ static void prefs_custom_header_val_from_file_cb(void)
 	const gchar *hdr = gtk_entry_get_text(GTK_ENTRY(customhdr.hdr_entry));
 	
 	if (!strcmp(hdr, "Face"))
-		filename = filesel_select_file_open(_("Choose a png file"), NULL);
+		filename = filesel_select_file_open(_("Choose a PNG file"), NULL);
 	else if (!strcmp(hdr, "X-Face"))
-		filename = filesel_select_file_open(_("Choose an xbm file"), NULL);
+		filename = filesel_select_file_open(_("Choose an XBM file"), NULL);
 	else
 		filename = filesel_select_file_open(_("Choose a text file"), NULL);
 

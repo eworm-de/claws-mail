@@ -361,7 +361,7 @@ init_plugin:
 	
 	if (strcmp(plugin_licence(), "GPL2+") && strncmp(plugin_licence(), "GPL3", strlen("GPL3"))
 	&&  strncmp(plugin_licence(), "GPL2+-compatible", strlen("GPL2+-compatible"))) {
-		*error = g_strdup(_("This module is not licenced under a GPL v2 or later compatible licence."));
+		*error = g_strdup(_("This module is not licensed under a GPL v2 or later compatible license."));
 		if (plugin->unloaded_hidden)
 			return NULL;
 		g_module_close(plugin->module);
