@@ -314,6 +314,7 @@ EXTRA_DIST = \
 	pixmaps/address_book.xpm \
 	pixmaps/address_search.xpm \
 	pixmaps/address.xpm \
+	pixmaps/anonymous.xpm \
 	pixmaps/book.xpm \
 	pixmaps/category.xpm \
 	pixmaps/checkbox_off.xpm \

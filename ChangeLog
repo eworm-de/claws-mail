@@ -1,3 +1,17 @@
+2007-10-11 [wwp]	3.0.2cvs59
+
+	* src/pixmaps/anonymous.xpm
+	* src/editaddress.c
+	* src/Makefile.am
+	* src/stock_pixmap.c
+	* src/stock_pixmap.h
+		Fix a leak, gettext-ize the photo label.
+		Don't clear the existing picture if loading
+		a new one fails. Use a default 'anonymous'
+		picture (this new xpm has been added to the
+		internal stock_pixmap API). Add a
+		"Set picture" context menu entry.
+
 2007-10-11 [colin]	3.0.2cvs58
 
 	* src/messageview.c

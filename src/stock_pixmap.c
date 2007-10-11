@@ -32,6 +32,7 @@
 #include "pixmaps/addr_one.xpm"
 #include "pixmaps/addr_two.xpm"
 #include "pixmaps/address.xpm"
+#include "pixmaps/anonymous.xpm"
 #include "pixmaps/book.xpm"
 #include "pixmaps/category.xpm"
 #include "pixmaps/checkbox_off.xpm"
@@ -214,6 +215,7 @@ static StockPixmapData pixmaps[] =
 	{address_xpm				, NULL, NULL, "address", NULL},
 	{address_book_xpm			, NULL, NULL, "address_book", NULL},
 	{address_search_xpm			, NULL, NULL, "address_search", NULL},
+	{anonymous_xpm				, NULL, NULL, "anonymous", NULL},
 	{book_xpm				, NULL, NULL, "book", NULL},
 	{category_xpm				, NULL, NULL, "category", NULL},
 	{checkbox_off_xpm			, NULL, NULL, "checkbox_off", NULL},
