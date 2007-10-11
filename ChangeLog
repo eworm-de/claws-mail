@@ -1,3 +1,10 @@
+2007-10-11 [wwp]	3.0.2cvs60
+
+	* src/editaddress.c
+		Disable "Unset picture" menu item when there's
+		no picture to clear. Fix an extraneous g_unref_object,
+		add missing initializers.
+
 2007-10-11 [wwp]	3.0.2cvs59
 
 	* src/pixmaps/anonymous.xpm

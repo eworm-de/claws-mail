@@ -2972,3 +2972,4 @@
 ( cvs diff -u -r 1.12.2.49 -r 1.12.2.50 src/prefs_template.c;  ) > 3.0.2cvs57.patchset
 ( cvs diff -u -r 1.94.2.158 -r 1.94.2.159 src/messageview.c;  cvs diff -u -r 1.60.2.52 -r 1.60.2.53 src/prefs_actions.c;  cvs diff -u -r 1.12.2.50 -r 1.12.2.51 src/prefs_template.c;  cvs diff -u -r 1.13.2.32 -r 1.13.2.33 src/common/plugin.c;  cvs diff -u -r 1.2.4.21 -r 1.2.4.22 src/common/template.c;  ) > 3.0.2cvs58.patchset
 ( diff -u /dev/null src/pixmaps/anonymous.xpm;  cvs diff -u -r 1.14.2.37 -r 1.14.2.38 src/editaddress.c;  cvs diff -u -r 1.155.2.78 -r 1.155.2.79 src/Makefile.am;  cvs diff -u -r 1.25.2.48 -r 1.25.2.49 src/stock_pixmap.c;  cvs diff -u -r 1.18.2.31 -r 1.18.2.32 src/stock_pixmap.h;  ) > 3.0.2cvs59.patchset
+( cvs diff -u -r 1.14.2.38 -r 1.14.2.39 src/editaddress.c;  ) > 3.0.2cvs60.patchset

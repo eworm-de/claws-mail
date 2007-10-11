@@ -734,6 +734,8 @@ void addressbook_edit_person_set_picture(void)
 			return;
 		}
 		personeditdlg.picture_set = TRUE;
+		menu_set_sensitive(personeditdlg.editaddr_popupfactory,
+				"/Unset picture", personeditdlg.picture_set);
 		g_free(filename);
 		gtk_image_set_from_pixbuf(GTK_IMAGE(personeditdlg.image), pixbuf);
 		g_object_unref(pixbuf);
@@ -746,8 +748,9 @@ static void addressbook_edit_person_clear_picture(void)
 
 	stock_pixbuf_gdk(NULL, STOCK_PIXMAP_ANONYMOUS, &pixbuf);
 	personeditdlg.picture_set = FALSE;
+	menu_set_sensitive(personeditdlg.editaddr_popupfactory,
+			"/Unset picture", personeditdlg.picture_set);
 	gtk_image_set_from_pixbuf(GTK_IMAGE(personeditdlg.image), pixbuf);
-	g_object_unref(pixbuf);
 }
 
 static void addressbook_edit_person_set_picture_menu_cb (void *obj, guint action, void *data)
@@ -762,8 +765,8 @@ static void addressbook_edit_person_unset_picture_menu_cb (void *obj, guint acti
 
 static GtkItemFactoryEntry editaddr_popup_entries[] =
 {
-	{N_("/_Set picture"),		NULL, addressbook_edit_person_set_picture_menu_cb, 0, NULL},
-	{N_("/_Unset picture"),		NULL, addressbook_edit_person_unset_picture_menu_cb, 0, NULL},
+	{N_("/_Set picture"),		NULL, addressbook_edit_person_set_picture_menu_cb, 0, NULL, NULL},
+	{N_("/_Unset picture"),		NULL, addressbook_edit_person_unset_picture_menu_cb, 0, NULL, NULL},
 };
 
 static void addressbook_edit_person_set_picture_cb(GtkWidget *widget, 
@@ -796,7 +799,14 @@ static void addressbook_edit_person_page_basic( gint pageNum, gchar *pageLbl ) {
 	hbox = gtk_hbox_new( FALSE, 8 );
 
 	gtk_widget_show( vbox );	
-	
+
+	/* set up picture context menu before we call addressbook_edit_person_clear_picture() */	
+	n_entries = sizeof(editaddr_popup_entries) /
+		sizeof(editaddr_popup_entries[0]);
+	personeditdlg.editaddr_popupmenu = menu_create_items(editaddr_popup_entries, n_entries,
+				      "<EditAddrPopupMenu>", &personeditdlg.editaddr_popupfactory,
+				      NULL);
+
 	/* User's picture */
 	ebox_picture = gtk_event_box_new();
 	frame_picture = gtk_frame_new(_("Photo"));
@@ -822,12 +832,6 @@ static void addressbook_edit_person_page_basic( gint pageNum, gchar *pageLbl ) {
 	
 	g_signal_connect(G_OBJECT(ebox_picture), "button_press_event", 
 			G_CALLBACK(addressbook_edit_person_set_picture_cb), NULL);
-
-	n_entries = sizeof(editaddr_popup_entries) /
-		sizeof(editaddr_popup_entries[0]);
-	personeditdlg.editaddr_popupmenu = menu_create_items(editaddr_popup_entries, n_entries,
-				      "<EditAddrPopupMenu>", &personeditdlg.editaddr_popupfactory,
-				      NULL);
 
 	table = gtk_table_new( 3, 3, FALSE);
 
@@ -1575,6 +1579,8 @@ ItemPerson *addressbook_edit_person( AddressBookFile *abf, ItemFolder *parent_fo
 					goto no_img;
 				}
 				personeditdlg.picture_set = TRUE;
+				menu_set_sensitive(personeditdlg.editaddr_popupfactory,
+						"/Unset picture", personeditdlg.picture_set);
 			} else {
 				goto no_img;
 			}
