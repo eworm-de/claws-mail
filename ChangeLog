@@ -854,10 +854,11 @@
 	* src/compose.c
 	* src/prefs_account.c
 	* src/prefs_account.h
-	* src/prefs_template.c
 	* src/common/utils.c
 		Remove Generate Message-ID option. We need
 		this on some IMAP servers.
+	* src/prefs_template.c
+		Fix double-free
 
 2007-09-16 [colin]	3.0.0cvs15
 
