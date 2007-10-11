@@ -786,12 +786,7 @@ static void prefs_actions_ok(GtkWidget *widget, gpointer data)
 				 GTK_STOCK_CLOSE, _("+_Continue editing"),
 				 NULL) != G_ALERTDEFAULT) {
 		return;
-	} else if (modified_list && alertpanel(_("Actions list not saved"),
-				 _("The actions list has been modified. Close anyway?"),
-				 GTK_STOCK_CLOSE, _("+_Continue editing"), 
-				 NULL) != G_ALERTDEFAULT) {
-		return;
-	}
+	} 
 	modified = FALSE;
 	modified_list = FALSE;
 	prefs_actions_set_list();

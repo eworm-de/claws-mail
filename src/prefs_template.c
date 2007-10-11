@@ -493,12 +493,7 @@ static void prefs_template_ok_cb(void)
 				 GTK_STOCK_CLOSE, _("+_Continue editing"), 
 				 NULL) != G_ALERTDEFAULT) {
 		return;
-	} else if (modified_list && alertpanel(_("Templates list not saved"),
-				 _("The templates list has been modified. Close anyway?"),
-				 GTK_STOCK_CLOSE, _("+_Continue editing"), 
-				 NULL) != G_ALERTDEFAULT) {
-		return;
-	}
+	} 
 	modified = FALSE;
 	modified_list = FALSE;
 	tmpl_list = prefs_template_get_list();

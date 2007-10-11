@@ -1,3 +1,18 @@
+2007-10-11 [colin]	3.0.2cvs58
+
+	* src/messageview.c
+		Make shift-shortcuts work
+	* src/prefs_actions.c
+		Don't ask if we really want to close when
+		choosing OK and only the list is changed
+	* src/prefs_template.c
+		Don't ask if we really want to close when
+		choosing OK and only the list is changed
+	* src/common/plugin.c
+		Fix writing of second [Plugins_*] block
+	* src/common/template.c
+		Remove unused files (fixes deletion)
+
 2007-10-10 [paul]	3.0.2cvs57
 
 	* src/prefs_template.c

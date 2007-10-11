@@ -145,7 +145,7 @@ void plugin_save_list(void)
 
 		g_free(rcpath);	
 		
-		return;
+		continue;
 
 revert:
 		g_warning("failed to write plugin list\n");

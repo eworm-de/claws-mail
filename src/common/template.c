@@ -267,6 +267,21 @@ void template_write_config(GSList *tmpl_list)
 		g_free(new);
 		g_free(filename);
 	}
+	
+	/* remove other templates */
+	while (TRUE) {
+		gchar *filename = g_strconcat(path, G_DIR_SEPARATOR_S,
+				       itos(tmpl_num), NULL);
+		if (is_file_exist(filename)) {
+			debug_print("removing old template %d\n", tmpl_num);
+			g_unlink(filename);
+			g_free(filename);
+		} else {
+			g_free(filename);
+			break;
+		}
+		tmpl_num++;
+	}
 }
 
 GSList *template_get_config(void)
