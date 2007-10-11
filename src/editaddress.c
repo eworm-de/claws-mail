@@ -698,7 +698,7 @@ void addressbook_edit_person_widgetset_hide( void )
 		gtk_widget_hide( personeditdlg.container );
 }
 
-void addressbook_edit_person_set_picture(void)
+static void addressbook_edit_person_set_picture(void)
 {
 	GError *error = NULL;
 	gchar *filename;
