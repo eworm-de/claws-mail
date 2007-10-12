@@ -291,13 +291,6 @@ void extract_parenthesis		(gchar		*str,
 					 gchar		 op,
 					 gchar		 cl);
 
-void extract_parenthesis_with_skip_quote	(gchar		*str,
-						 gchar		 quote_chr,
-						 gchar		 op,
-						 gchar		 cl);
-
-void eliminate_quote			(gchar		*str,
-					 gchar		 quote_chr);
 void extract_quote			(gchar		*str,
 					 gchar		 quote_chr);
 void eliminate_address_comment		(gchar		*str);
@@ -412,7 +405,6 @@ gboolean is_relative_filename   (const gchar *file);
 gboolean is_dir_exist		(const gchar	*dir);
 gboolean is_file_entry_exist	(const gchar	*file);
 gboolean dirent_is_regular_file	(struct dirent	*d);
-gboolean dirent_is_directory	(struct dirent	*d);
 
 #define is_file_exist(file)		file_exist(file, FALSE)
 #define is_file_or_fifo_exist(file)	file_exist(file, TRUE)

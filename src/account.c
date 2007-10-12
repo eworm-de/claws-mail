@@ -179,7 +179,7 @@ static void account_row_changed_while_drag_drop	(GtkTreeModel *model,
 						 gpointer      arg3,
 						 GtkTreeView  *list_view);
 
-void account_flush_state(void)
+static void account_flush_state(void)
 {
 	account_set_menu();
 	main_window_reflect_prefs_all();

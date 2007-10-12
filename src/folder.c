@@ -1687,25 +1687,6 @@ gchar *folder_item_get_path(FolderItem *item)
 	return folder->klass->item_get_path(folder, item);
 }
 
-void folder_item_set_default_flags(FolderItem *dest, MsgFlags *flags)
-{
-	if (!(folder_has_parent_of_type(dest, F_OUTBOX) ||
-	      folder_has_parent_of_type(dest, F_QUEUE)  ||
-	      folder_has_parent_of_type(dest, F_DRAFT) ||
-	      folder_has_parent_of_type(dest, F_TRASH))) {
-		flags->perm_flags = MSG_NEW|MSG_UNREAD;
-	} else {
-		flags->perm_flags = 0;
-	}
-	if (FOLDER_TYPE(dest->folder) == F_MH) {
-		if (folder_has_parent_of_type(dest, F_QUEUE)) {
-			MSG_SET_TMP_FLAGS(*flags, MSG_QUEUED);
-		} else if (folder_has_parent_of_type(dest, F_DRAFT)) {
-			MSG_SET_TMP_FLAGS(*flags, MSG_DRAFT);
-		}
-	}
-}
-
 static gint folder_sort_cache_list_by_msgnum(gconstpointer a, gconstpointer b)
 {
 	MsgInfo *msginfo_a = (MsgInfo *) a;
@@ -1722,7 +1703,87 @@ static gint folder_sort_folder_list(gconstpointer a, gconstpointer b)
 	return (gint_a - gint_b);
 }
 
-void folder_item_process_open (FolderItem *item,
+static gint syncronize_flags(FolderItem *item, MsgInfoList *msglist)
+{
+	GRelation *relation;
+	gint ret = 0;
+	GSList *cur;
+
+	if(msglist == NULL)
+		return 0;
+	if(item->folder->klass->get_flags == NULL)
+		return 0;
+	if (item->no_select)
+		return 0;
+
+	relation = g_relation_new(2);
+	g_relation_index(relation, 0, g_direct_hash, g_direct_equal);
+	if ((ret = item->folder->klass->get_flags(
+	    item->folder, item, msglist, relation)) == 0) {
+		GTuples *tuples;
+		MsgInfo *msginfo;
+		MsgPermFlags permflags = 0;
+		gboolean skip;
+
+		folder_item_update_freeze();
+		folder_item_set_batch(item, TRUE);
+		for (cur = msglist; cur != NULL; cur = g_slist_next(cur)) {
+			msginfo = (MsgInfo *) cur->data;
+		
+			tuples = g_relation_select(relation, msginfo, 0);
+			skip = tuples->len < 1;
+			if (!skip)
+				permflags = GPOINTER_TO_INT(g_tuples_index(tuples, 0, 1));
+			g_tuples_destroy(tuples);
+			if (skip)
+				continue;
+			
+			if (msginfo->flags.perm_flags != permflags) {
+				procmsg_msginfo_change_flags(msginfo,
+					permflags & ~msginfo->flags.perm_flags, 0,
+					~permflags & msginfo->flags.perm_flags, 0);
+			}
+		}
+		folder_item_set_batch(item, FALSE);
+		folder_item_update_thaw();
+	}
+	g_relation_destroy(relation);	
+
+	return ret;
+}
+
+static gint folder_item_syncronize_flags(FolderItem *item)
+{
+	MsgInfoList *msglist = NULL;
+	GSList *cur;
+	gint ret = 0;
+	
+	g_return_val_if_fail(item != NULL, -1);
+	g_return_val_if_fail(item->folder != NULL, -1);
+	g_return_val_if_fail(item->folder->klass != NULL, -1);
+	if (item->no_select)
+		return -1;
+
+	item->scanning = TRUE;
+
+	if (item->cache == NULL)
+		folder_item_read_cache(item);
+	
+	msglist = msgcache_get_msg_list(item->cache);
+	
+	ret = syncronize_flags(item, msglist);
+
+	for (cur = msglist; cur != NULL; cur = g_slist_next(cur))
+		procmsg_msginfo_free((MsgInfo *) cur->data);
+	
+	g_slist_free(msglist);
+
+	item->scanning = FALSE;
+
+	return ret;
+}
+
+static void folder_item_process_open (FolderItem *item,
 				 void (*before_proc_func)(gpointer data),
 				 void (*after_proc_func)(gpointer data),
 				 gpointer data)
@@ -1851,55 +1912,6 @@ static MsgInfo *get_msginfo(FolderItem *item, guint num)
 	procmsg_msg_list_free(msglist);
 
 	return msginfo;
-}
-
-static gint syncronize_flags(FolderItem *item, MsgInfoList *msglist)
-{
-	GRelation *relation;
-	gint ret = 0;
-	GSList *cur;
-
-	if(msglist == NULL)
-		return 0;
-	if(item->folder->klass->get_flags == NULL)
-		return 0;
-	if (item->no_select)
-		return 0;
-
-	relation = g_relation_new(2);
-	g_relation_index(relation, 0, g_direct_hash, g_direct_equal);
-	if ((ret = item->folder->klass->get_flags(
-	    item->folder, item, msglist, relation)) == 0) {
-		GTuples *tuples;
-		MsgInfo *msginfo;
-		MsgPermFlags permflags = 0;
-		gboolean skip;
-
-		folder_item_update_freeze();
-		folder_item_set_batch(item, TRUE);
-		for (cur = msglist; cur != NULL; cur = g_slist_next(cur)) {
-			msginfo = (MsgInfo *) cur->data;
-		
-			tuples = g_relation_select(relation, msginfo, 0);
-			skip = tuples->len < 1;
-			if (!skip)
-				permflags = GPOINTER_TO_INT(g_tuples_index(tuples, 0, 1));
-			g_tuples_destroy(tuples);
-			if (skip)
-				continue;
-			
-			if (msginfo->flags.perm_flags != permflags) {
-				procmsg_msginfo_change_flags(msginfo,
-					permflags & ~msginfo->flags.perm_flags, 0,
-					~permflags & msginfo->flags.perm_flags, 0);
-			}
-		}
-		folder_item_set_batch(item, FALSE);
-		folder_item_update_thaw();
-	}
-	g_relation_destroy(relation);	
-
-	return ret;
 }
 
 gint folder_item_scan_full(FolderItem *item, gboolean filtering)
@@ -2239,17 +2251,6 @@ gint folder_item_scan(FolderItem *item)
 	return folder_item_scan_full(item, TRUE);
 }
 
-static void folder_item_scan_foreach_func(gpointer key, gpointer val,
-					  gpointer data)
-{
-	folder_item_scan(FOLDER_ITEM(key));
-}
-
-void folder_item_scan_foreach(GHashTable *table)
-{
-	g_hash_table_foreach(table, folder_item_scan_foreach_func, NULL);
-}
-
 static void folder_count_total_cache_memusage(FolderItem *item, gpointer data)
 {
 	gint *memusage = (gint *)data;
@@ -2258,37 +2259,6 @@ static void folder_count_total_cache_memusage(FolderItem *item, gpointer data)
 		return;
 	
 	*memusage += msgcache_get_memory_usage(item->cache);
-}
-
-gint folder_item_syncronize_flags(FolderItem *item)
-{
-	MsgInfoList *msglist = NULL;
-	GSList *cur;
-	gint ret = 0;
-	
-	g_return_val_if_fail(item != NULL, -1);
-	g_return_val_if_fail(item->folder != NULL, -1);
-	g_return_val_if_fail(item->folder->klass != NULL, -1);
-	if (item->no_select)
-		return -1;
-
-	item->scanning = TRUE;
-
-	if (item->cache == NULL)
-		folder_item_read_cache(item);
-	
-	msglist = msgcache_get_msg_list(item->cache);
-	
-	ret = syncronize_flags(item, msglist);
-
-	for (cur = msglist; cur != NULL; cur = g_slist_next(cur))
-		procmsg_msginfo_free((MsgInfo *) cur->data);
-	
-	g_slist_free(msglist);
-
-	item->scanning = FALSE;
-
-	return ret;
 }
 
 static gint folder_cache_time_compare_func(gconstpointer a, gconstpointer b)
@@ -2695,63 +2665,6 @@ gchar *folder_item_fetch_msg_full(FolderItem *item, gint num, gboolean headers,
 	return msgfile;
 }
 
-
-gint folder_item_fetch_all_msg(FolderItem *item)
-{
-	Folder *folder;
-	GSList *mlist;
-	GSList *cur;
-	gint num = 0;
-	gint ret = 0;
-	gint total = 0;
-
-	g_return_val_if_fail(item != NULL, -1);
-	if (item->no_select)
-		return -1;
-
-	debug_print("fetching all messages in %s ...\n", item->path ? item->path : "(null)");
-	statuswindow_print_all(_("Fetching all messages in %s ...\n"), item->path ? item->path : "(null)");
-
-	folder = item->folder;
-
-	if (folder->ui_func)
-		folder->ui_func(folder, item, folder->ui_func_data ?
-				folder->ui_func_data : GINT_TO_POINTER(num));
-
-	mlist = folder_item_get_msg_list(item);
-
-	total = g_slist_length(mlist);
-
-	for (cur = mlist; cur != NULL; cur = cur->next) {
-		MsgInfo *msginfo = (MsgInfo *)cur->data;
-		gchar *msg;
-
-		statusbar_progress_all(num++,total, 10);
-
-		if (folder->ui_func)
-			folder->ui_func(folder, item,
-					folder->ui_func_data ?
-					folder->ui_func_data :
-					GINT_TO_POINTER(num));
-		if (num % 50 == 0)
-			GTK_EVENTS_FLUSH();
-
-		msg = folder_item_fetch_msg(item, msginfo->msgnum);
-		if (!msg) {
-			g_warning("Can't fetch message %d. Aborting.\n",
-				  msginfo->msgnum);
-			ret = -1;
-			break;
-		}
-		g_free(msg);
-	}
-	
-	statusbar_progress_all(0,0,0);
-	statuswindow_pop_all();
-	procmsg_msg_list_free(mlist);
-
-	return ret;
-}
 
 static gint folder_item_get_msg_num_by_file(FolderItem *dest, const gchar *file)
 {

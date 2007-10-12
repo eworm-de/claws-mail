@@ -101,7 +101,6 @@ void prefs_filtering_free(GSList *prefs_filtering);
 
 FilteringProp * filteringprop_copy(FilteringProp *src);
 void filtering_move_and_copy_msgs(GSList *msglist);
-void filtering_move_and_copy_msg(MsgInfo *msginfo);
 extern GSList * filtering_rules;
 extern GSList * pre_global_processing;
 extern GSList * post_global_processing;

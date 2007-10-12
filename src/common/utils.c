@@ -757,7 +757,7 @@ void extract_parenthesis(gchar *str, gchar op, gchar cl)
 	*destp = '\0';
 }
 
-void extract_parenthesis_with_skip_quote(gchar *str, gchar quote_chr,
+static void extract_parenthesis_with_skip_quote(gchar *str, gchar quote_chr,
 					 gchar op, gchar cl)
 {
 	register gchar *srcp, *destp;
@@ -786,24 +786,6 @@ void extract_parenthesis_with_skip_quote(gchar *str, gchar quote_chr,
 		}
 	}
 	*destp = '\0';
-}
-
-void eliminate_quote(gchar *str, gchar quote_chr)
-{
-	register gchar *srcp, *destp;
-
-	srcp = destp = str;
-
-	while ((destp = strchr(destp, quote_chr))) {
-		if ((srcp = strchr(destp + 1, quote_chr))) {
-			srcp++;
-			while (g_ascii_isspace(*srcp)) srcp++;
-			memmove(destp, srcp, strlen(srcp) + 1);
-		} else {
-			*destp = '\0';
-			break;
-		}
-	}
 }
 
 void extract_quote(gchar *str, gchar quote_chr)
@@ -2339,18 +2321,6 @@ gboolean dirent_is_regular_file(struct dirent *d)
 #endif
 
 	return g_file_test(d->d_name, G_FILE_TEST_IS_REGULAR);
-}
-
-gboolean dirent_is_directory(struct dirent *d)
-{
-#if !defined(G_OS_WIN32) && !defined(MAEMO) && defined(HAVE_DIRENT_D_TYPE)
-	if (d->d_type == DT_DIR)
-		return TRUE;
-	else if (d->d_type != DT_UNKNOWN)
-		return FALSE;
-#endif
-
-	return g_file_test(d->d_name, G_FILE_TEST_IS_DIR);
 }
 
 gint change_dir(const gchar *dir)

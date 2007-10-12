@@ -180,13 +180,6 @@ void filteringprop_free(FilteringProp * prop)
 	g_free(prop);
 }
 
-void filtering_move_and_copy_msg(MsgInfo *msginfo)
-{
-	GSList *list = g_slist_append(NULL, msginfo);
-	filtering_move_and_copy_msgs(list);
-	g_slist_free(list);
-}
-
 /* move and copy messages by batches to be faster on IMAP */
 void filtering_move_and_copy_msgs(GSList *msgs)
 {

@@ -795,8 +795,6 @@ gint   folder_item_close		(FolderItem	*item);
 gint   folder_item_scan			(FolderItem	*item);
 gint   folder_item_scan_full		(FolderItem 	*item, 
 					 gboolean 	 filtering);
-gint   folder_item_syncronize_flags	(FolderItem 	*item);
-void   folder_item_scan_foreach		(GHashTable	*table);
 MsgInfo *folder_item_get_msginfo	(FolderItem 	*item,
 					 gint		 num);
 MsgInfo *folder_item_get_msginfo_by_msgid(FolderItem 	*item,
@@ -809,7 +807,6 @@ gchar *folder_item_fetch_msg_full	(FolderItem	*item,
 					 gint		 num, 
 					 gboolean 	 get_headers,
 					 gboolean	 get_body);
-gint   folder_item_fetch_all_msg	(FolderItem	*item);
 gint   folder_item_add_msg		(FolderItem	*dest,
 					 const gchar	*file,
 					 MsgFlags	*flags,
@@ -845,7 +842,6 @@ gchar * folder_item_get_identifier	(FolderItem * item);
 void folder_clean_cache_memory		(FolderItem *protected_item);
 void folder_clean_cache_memory_force	(void);
 void folder_item_write_cache		(FolderItem *item);
-void folder_item_set_default_flags	(FolderItem *dest, MsgFlags *flags);
 
 void folder_item_apply_processing	(FolderItem *item);
 
@@ -859,10 +855,6 @@ void folder_item_set_batch		(FolderItem *item, gboolean batch);
 gboolean folder_has_parent_of_type	(FolderItem *item, SpecialFolderItemType type);
 void folder_synchronise			(Folder *folder);
 gboolean folder_want_synchronise	(Folder *folder);
-void folder_item_process_open		(FolderItem *item,
-					 void (*before_proc_func)(gpointer data),
-					 void (*after_proc_func)(gpointer data),
-					 gpointer data);
 gboolean folder_subscribe		(const gchar *uri);
 gboolean folder_have_mailbox 		(void);
 gboolean folder_item_free_cache		(FolderItem *item, gboolean force);
