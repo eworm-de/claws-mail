@@ -313,6 +313,7 @@ static void summary_col_resized		(GtkCList		*clist,
 static void summary_reply_cb		(SummaryView		*summaryview,
 					 guint			 action,
 					 GtkWidget		*widget);
+#ifndef MAEMO
 static void summary_show_all_header_cb	(SummaryView		*summaryview,
 					 guint			 action,
 					 GtkWidget		*widget);
@@ -320,13 +321,15 @@ static void summary_show_all_header_cb	(SummaryView		*summaryview,
 static void summary_add_address_cb	(SummaryView		*summaryview,
 					 guint			 action,
 					 GtkWidget		*widget);
+#endif
 static void summary_create_filter_cb	(SummaryView		*summaryview,
 					 guint			 action,
 					 GtkWidget		*widget);
+#ifndef MAEMO
 static void summary_create_processing_cb(SummaryView		*summaryview,
 					 guint			 action,
 					 GtkWidget		*widget);
-
+#endif
 static void summary_mark_clicked	(GtkWidget		*button,
 					 SummaryView		*summaryview);
 static void summary_status_clicked	(GtkWidget		*button,
@@ -1572,7 +1575,9 @@ void summary_set_menu_sensitive(SummaryView *summaryview)
 	GtkItemFactory *ifactory = summaryview->popupfactory;
 	SensitiveCond state;
 	gboolean sensitive;
+#ifndef MAEMO
 	GtkWidget *menuitem;
+#endif
 	gint i;
 
 	static const struct {
@@ -6286,7 +6291,7 @@ static void summary_reply_cb(SummaryView *summaryview, guint action,
 	compose_reply_from_messageview(msgview, msginfo_list, action);
 	g_slist_free(msginfo_list);
 }
-
+#ifndef MAEMO
 static void summary_show_all_header_cb(SummaryView *summaryview,
 				       guint action, GtkWidget *widget)
 {
@@ -6301,19 +6306,19 @@ static void summary_add_address_cb(SummaryView *summaryview,
 {
 	summary_add_address(summaryview);
 }
-
+#endif
 static void summary_create_filter_cb(SummaryView *summaryview,
 				     guint action, GtkWidget *widget)
 {
 	summary_filter_open(summaryview, (PrefsFilterType)action, 0);
 }
-
+#ifndef MAEMO
 static void summary_create_processing_cb(SummaryView *summaryview,
 					 guint action, GtkWidget *widget)
 {
 	summary_filter_open(summaryview, (PrefsFilterType)action, 1);
 }
-
+#endif
 static void summary_sort_by_column_click(SummaryView *summaryview,
 					 FolderSortKey sort_key)
 {

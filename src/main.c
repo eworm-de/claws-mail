@@ -116,6 +116,7 @@
 #include "timing.h"
 
 #ifdef MAEMO
+#include <hildon-widgets/hildon-banner.h>
 #include <hildon-widgets/hildon-program.h>
 #include <gtk/gtkmain.h>
 #include <libosso.h>

@@ -3538,7 +3538,7 @@ gchar *get_command_output(const gchar *cmdline)
 
 	return child_stdout;
 }
-
+#ifndef MAEMO
 static gint is_unchanged_uri_char(char c)
 {
 	switch (c) {
@@ -3574,7 +3574,7 @@ static void encode_uri(gchar *encoded_uri, gint bufsize, const gchar *uri)
 	}
 	encoded_uri[k] = 0;
 }
-
+#endif
 gint open_uri(const gchar *uri, const gchar *cmdline)
 {
 #ifndef MAEMO

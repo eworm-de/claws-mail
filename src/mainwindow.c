@@ -114,10 +114,10 @@ static void main_window_menu_callback_block	(MainWindow	*mainwin);
 static void main_window_menu_callback_unblock	(MainWindow	*mainwin);
 
 static void main_window_show_cur_account	(MainWindow	*mainwin);
-
+#ifndef MAEMO
 static void main_window_separation_change	(MainWindow	*mainwin,
 						 LayoutType	 layout_mode);
-
+#endif
 static void main_window_set_widgets		(MainWindow	*mainwin,
 						 LayoutType	 layout_mode);
 
@@ -127,11 +127,11 @@ static void toolbar_child_attached		(GtkWidget	*widget,
 static void toolbar_child_detached		(GtkWidget	*widget,
 						 GtkWidget	*child,
 						 gpointer	 data);
-
+#ifndef MAEMO
 static gboolean ac_label_button_pressed		(GtkWidget	*widget,
 						 GdkEventButton	*event,
 						 gpointer	 data);
-
+#endif
 static gint main_window_close_cb		(GtkWidget	*widget,
 						 GdkEventAny	*event,
 						 gpointer	 data);
@@ -461,9 +461,10 @@ static void account_selector_menu_cb	 (GtkMenuItem	*menuitem,
 					  gpointer	 data);
 static void account_receive_menu_cb	 (GtkMenuItem	*menuitem,
 					  gpointer	 data);
+#ifndef MAEMO
 static void account_compose_menu_cb	 (GtkMenuItem	*menuitem,
 					  gpointer	 data);
-
+#endif
 static void prefs_open_cb	(GtkMenuItem	*menuitem,
 				 gpointer 	 data);
 static void plugins_open_cb	(GtkMenuItem	*menuitem,
@@ -576,8 +577,10 @@ static GtkItemFactoryEntry mainwin_entries[] =
 						NULL, toggle_toolbar_cb, TOOLBAR_ICON, "/View/Show or hide/Toolbar/Text below icons"},
 	{N_("/_View/Show or hi_de/_Toolbar/_Text only"),
 						NULL, toggle_toolbar_cb, TOOLBAR_TEXT, "/View/Show or hide/Toolbar/Text below icons"},
+#ifndef MAEMO
 	{N_("/_View/Show or hi_de/_Toolbar/_Hide"),
 						NULL, toggle_toolbar_cb, TOOLBAR_NONE, "/View/Show or hide/Toolbar/Text below icons"},
+#endif
 	{N_("/_View/Show or hi_de/_Message view"),
 						"V", toggle_message_cb, 0, "<ToggleItem>"},
 #ifndef MAEMO
@@ -1287,7 +1290,7 @@ static void mainwindow_tags_menu_create(MainWindow *mainwin, gboolean refresh)
 	gtk_menu_item_set_submenu(GTK_MENU_ITEM(label_menuitem), menu);
 	mainwin->tags_menu = menu;
 }
-
+#ifndef MAEMO
 static gboolean warning_icon_pressed(GtkWidget *widget, GdkEventButton *evt,
 				    MainWindow *mainwindow)
 {
@@ -1321,7 +1324,7 @@ static gboolean warning_enter_notify(GtkWidget *widget,
 	gdk_window_set_cursor(mainwindow->warning_btn->window, hand_cursor);
 	return FALSE;
 }
-
+#endif
 void mainwindow_show_error(void)
 {
 	MainWindow *mainwin = mainwindow_get_mainwindow();
@@ -1860,8 +1863,9 @@ static gboolean reflect_prefs_timeout_cb(gpointer data)
 	gboolean pixmap_theme_changed = GPOINTER_TO_INT(data);
 	GList *cur;
 	MainWindow *mainwin;
+#ifndef MAEMO
 	GtkWidget *pixmap;
-
+#endif
 	for (cur = mainwin_list; cur != NULL; cur = cur->next) {
 		mainwin = (MainWindow *)cur->data;
 
@@ -2168,7 +2172,7 @@ static void main_window_show_cur_account(MainWindow *mainwin)
 
 	g_free(ac_name);
 }
-
+#ifndef MAEMO
 static void main_window_separation_change(MainWindow *mainwin, LayoutType layout_mode)
 {
 	GtkWidget *folder_wid  = GTK_WIDGET_PTR(mainwin->folderview);
@@ -2200,7 +2204,7 @@ static void main_window_separation_change(MainWindow *mainwin, LayoutType layout
 	gtk_widget_unref(summary_wid);
 	gtk_widget_unref(message_wid);
 }
-
+#endif
 void mainwindow_reset_paned(GtkPaned *paned)
 {
 		gint min, max, mid;
@@ -3264,7 +3268,7 @@ static void toolbar_child_detached(GtkWidget *widget, GtkWidget *child,
 {
 	gtk_widget_set_size_request(child, -1, -1);
 }
-
+#ifndef MAEMO
 static gboolean ac_label_button_pressed(GtkWidget *widget, GdkEventButton *event,
 				    gpointer data)
 {
@@ -3282,7 +3286,7 @@ static gboolean ac_label_button_pressed(GtkWidget *widget, GdkEventButton *event
 
 	return TRUE;
 }
-
+#endif
 static gint main_window_close_cb(GtkWidget *widget, GdkEventAny *event,
 				 gpointer data)
 {
@@ -4225,14 +4229,14 @@ static void account_receive_menu_cb(GtkMenuItem *menuitem, gpointer data)
 
 	inc_account_mail(mainwin, account);
 }
-
+#ifndef MAEMO
 static void account_compose_menu_cb(GtkMenuItem *menuitem, gpointer data)
 {
 	PrefsAccount *account = (PrefsAccount *)data;
 
 	compose_new_with_folderitem(account, NULL, NULL);
 }
-
+#endif
 static void prefs_open_cb(GtkMenuItem *menuitem, gpointer data)
 {
 	prefs_gtk_open();

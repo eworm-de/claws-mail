@@ -108,10 +108,11 @@ static gint account_delete_event	(GtkWidget	*widget,
 					 gpointer	 data);
 static void account_size_allocate_cb(GtkWidget *widget,
 					 GtkAllocation *allocation);
+#ifndef MAEMO
 static gboolean account_key_pressed	(GtkWidget	*widget,
 					 GdkEventKey	*event,
 					 gpointer	 data);
-
+#endif
 static void account_list_view_add	(PrefsAccount	*ac_prefs);
 static void account_list_view_set	(void);
 
@@ -1219,7 +1220,7 @@ static gint account_delete_event(GtkWidget *widget, GdkEventAny *event,
 	account_edit_close(NULL, NULL);
 	return TRUE;
 }
-
+#ifndef MAEMO
 static gboolean account_key_pressed(GtkWidget *widget, GdkEventKey *event,
 				    gpointer data)
 {
@@ -1227,7 +1228,7 @@ static gboolean account_key_pressed(GtkWidget *widget, GdkEventKey *event,
 		account_edit_close(NULL, NULL);
 	return FALSE;
 }
-
+#endif
 static void account_list_view_add(PrefsAccount *ac_prefs)
 {
 	GtkTreeView *list_view = GTK_TREE_VIEW(edit_account.list_view);

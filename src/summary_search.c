@@ -140,11 +140,11 @@ static gboolean adv_condition_entry_focus_evt_in(GtkWidget *widget, GdkEventFocu
 			      	  gpointer data);
 static gboolean adv_condition_entry_focus_evt_out(GtkWidget *widget, GdkEventFocus *event,
 			      	  gpointer data);
-
+#ifndef MAEMO
 static gboolean key_pressed		(GtkWidget	*widget,
 					 GdkEventKey	*event,
 					 gpointer	 data);
-
+#endif
 
 #define GTK_BUTTON_SET_SENSITIVE(widget,sensitive) {	\
 	gboolean in_btn = FALSE;							\
@@ -979,7 +979,7 @@ static gboolean adv_condition_entry_focus_evt_out(GtkWidget *widget, GdkEventFoc
 	search_window.adv_condition_entry_has_focus = FALSE;
 	return FALSE;
 }
-
+#ifndef MAEMO
 static gboolean key_pressed(GtkWidget *widget, GdkEventKey *event,
 			    gpointer data)
 {
@@ -1036,3 +1036,4 @@ static gboolean key_pressed(GtkWidget *widget, GdkEventKey *event,
 
 	return FALSE;
 }
+#endif

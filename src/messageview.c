@@ -77,10 +77,11 @@ static gint messageview_delete_cb	(GtkWidget		*widget,
 					 MessageView		*messageview);
 static void messageview_size_allocate_cb(GtkWidget	*widget,
 					 GtkAllocation	*allocation);
+#ifndef MAEMO
 static gboolean key_pressed		(GtkWidget	*widget,
 					 GdkEventKey	*event,
 					 MessageView	*messageview);
-
+#endif
 static void return_receipt_show		(NoticeView     *noticeview, 
 				         MsgInfo        *msginfo);	
 static void return_receipt_send_clicked (NoticeView	*noticeview, 
@@ -489,7 +490,9 @@ void messageview_add_toolbar(MessageView *msgview, GtkWidget *window)
  	GtkWidget *handlebox;
 	GtkWidget *vbox;
 	GtkWidget *menubar;
+#ifndef MAEMO
 	GtkWidget *statusbar = NULL;
+#endif
 	guint n_menu_entries;
 
 	vbox = gtk_vbox_new(FALSE, 0);
@@ -1368,7 +1371,7 @@ static void messageview_size_allocate_cb(GtkWidget *widget,
 	prefs_common.msgwin_width  = allocation->width;
 	prefs_common.msgwin_height = allocation->height;
 }
-
+#ifndef MAEMO
 static gboolean key_pressed(GtkWidget *widget, GdkEventKey *event,
 			MessageView *messageview)
 {
@@ -1385,7 +1388,7 @@ static gboolean key_pressed(GtkWidget *widget, GdkEventKey *event,
 	mimeview_pass_key_press_event(messageview->mimeview, event);
 	return FALSE;
 }
-
+#endif
 static void return_receipt_show(NoticeView *noticeview, MsgInfo *msginfo)
 {
 	gchar *addr = NULL;

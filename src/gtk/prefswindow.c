@@ -192,14 +192,14 @@ static void ok_button_clicked(GtkButton *button, gpointer user_data)
 		close_prefs_window(prefswindow);
 	}		
 }
-
+#ifndef MAEMO
 static void cancel_button_clicked(GtkButton *button, gpointer user_data)
 {
 	PrefsWindow *prefswindow = (PrefsWindow *) user_data;
 
 	close_prefs_window(prefswindow);
 }
-
+#endif
 static gboolean window_closed(GtkWidget *widget, GdkEvent *event, gpointer user_data)
 {
 	PrefsWindow *prefswindow = (PrefsWindow *) user_data;
@@ -211,7 +211,7 @@ static gboolean window_closed(GtkWidget *widget, GdkEvent *event, gpointer user_
 
 	return FALSE;
 }
-
+#ifndef MAEMO
 static gboolean prefswindow_key_pressed(GtkWidget *widget, GdkEventKey *event,
 				    PrefsWindow *data)
 {
@@ -220,11 +220,7 @@ static gboolean prefswindow_key_pressed(GtkWidget *widget, GdkEventKey *event,
 	if (event) {
 		switch (event->keyval) {
 			case GDK_Escape :
-#ifndef MAEMO
 				cancel_button_clicked(NULL, data);
-#else
-				ok_button_clicked(NULL, data);
-#endif
 				break;
 			case GDK_Return : 
 			case GDK_KP_Enter :
@@ -242,7 +238,7 @@ static gboolean prefswindow_key_pressed(GtkWidget *widget, GdkEventKey *event,
 	}
 	return FALSE;
 }
-
+#endif
 typedef struct FindNodeByName {
 	const gchar *name;
 	gboolean     found;
@@ -316,8 +312,10 @@ static void prefswindow_build_tree(GtkWidget *tree_view, GSList *prefs_pages,
 			(GTK_TREE_VIEW(tree_view)));
 	GSList *cur;
 	gint index; /* index in pages list */
+#ifndef MAEMO
 	GtkTreeSelection *selection;
 	GtkTreeIter iter;
+#endif
 
 	for (cur = prefs_pages, index = 0; cur != NULL; cur = g_slist_next(cur), index++) {
 		PrefsPage *page = (PrefsPage *)cur->data;

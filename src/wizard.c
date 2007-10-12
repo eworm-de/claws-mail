@@ -1509,13 +1509,13 @@ wizard_response_cb (GtkDialog * dialog, int response, gpointer data)
 {
 	WizardWindow * wizard = (WizardWindow *)data;
 	int current_page, num_pages;
+	gboolean skip_mailbox_page = FALSE;
+#ifndef MAEMO
 	GtkWidget *menu = gtk_option_menu_get_menu(GTK_OPTION_MENU(wizard->recv_type));
 	GtkWidget *menuitem = gtk_menu_get_active(GTK_MENU(menu));
 	gint protocol = GPOINTER_TO_INT
 			(g_object_get_data(G_OBJECT(menuitem), MENU_VAL_ID));
-	gboolean skip_mailbox_page = FALSE;
-	
-#ifndef MAEMO
+
 	if (protocol == A_IMAP4) {
 		skip_mailbox_page = TRUE;
 	}

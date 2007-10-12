@@ -1,3 +1,18 @@
+2007-10-12 [paul]	3.0.2cvs64
+
+	* src/account.c
+	* src/folderview.c
+	* src/main.c
+	* src/mainwindow.c
+	* src/messageview.c
+	* src/summary_search.c
+	* src/summaryview.c
+	* src/toolbar.c
+	* src/wizard.c
+	* src/common/utils.c
+	* src/gtk/prefswindow.c
+		fix a bunch of compiler warnings on maemo
+
 2007-10-11 [colin]	3.0.2cvs63
 
 	* src/editaddress.c

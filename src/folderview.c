@@ -263,8 +263,10 @@ static void folderview_drag_received_cb  (GtkWidget        *widget,
 					  guint             info,
 					  guint             time,
 					  FolderView       *folderview);
+#ifndef MAEMO
 static void folderview_start_drag	 (GtkWidget *widget, gint button, GdkEvent *event,
 			                  FolderView       *folderview);
+#endif
 static void folderview_drag_data_get     (GtkWidget        *widget,
 					  GdkDragContext   *drag_context,
 					  GtkSelectionData *selection_data,
@@ -2765,7 +2767,7 @@ static void drag_state_start(FolderView *folderview, GtkCTreeNode *node, FolderI
 		folderview->drag_item = item;
 	}			 
 }
-
+#ifndef MAEMO
 static void folderview_start_drag(GtkWidget *widget, gint button, GdkEvent *event,
 			          FolderView       *folderview)
 {
@@ -2780,7 +2782,7 @@ static void folderview_start_drag(GtkWidget *widget, gint button, GdkEvent *even
 				 GDK_ACTION_MOVE|GDK_ACTION_COPY|GDK_ACTION_DEFAULT, button, event);
 	gtk_drag_set_icon_default(context);
 }
-
+#endif
 static void folderview_drag_data_get(GtkWidget        *widget,
 				     GdkDragContext   *drag_context,
 				     GtkSelectionData *selection_data,

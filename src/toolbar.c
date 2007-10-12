@@ -226,7 +226,7 @@ struct {
 	{ "toolbar_compose.xml", NULL}, 
   	{ "toolbar_msgview.xml", NULL}
 };
-
+#ifndef MAEMO
 static GtkItemFactoryEntry reply_entries[] =
 {
 	{N_("/Reply with _quote"), NULL,    toolbar_reply, COMPOSE_REPLY_WITH_QUOTE, NULL},
@@ -253,6 +253,7 @@ static GtkItemFactoryEntry forward_entries[] =
 	{N_("/For_ward as attachment"), "<shift>F", toolbar_reply, COMPOSE_FORWARD_AS_ATTACH, NULL},
 	{N_("/Redirec_t"),		NULL, 	    toolbar_reply, COMPOSE_REDIRECT, NULL}
 };
+#endif
 static GtkItemFactoryEntry learn_entries[] =
 {
 	{N_("/Learn as _Spam"),		NULL,	toolbar_learn, TRUE, NULL},
@@ -2038,12 +2039,12 @@ Toolbar *toolbar_create(ToolbarType 	 type,
 #ifdef MAEMO
 		MainWindow *mainwin = mainwindow_get_mainwindow();
 		GtkWidget *progressbar = gtk_progress_bar_new();
-		item = gtk_tool_item_new();
+		item = GTK_WIDGET(gtk_tool_item_new());
 		gtk_container_add (GTK_CONTAINER (item), progressbar);
 		gtk_widget_show(item);
 		gtk_widget_show(progressbar);
 		gtk_widget_set_size_request(progressbar, 70, -1);
-		gtk_toolbar_insert(GTK_TOOLBAR(toolbar), GTK_TOOL_ITEM(item), -1);				\
+		gtk_toolbar_insert(GTK_TOOLBAR(toolbar), GTK_TOOL_ITEM(item), -1);
 		mainwin->progressbar = progressbar;
 #endif
 		activate_compose_button(toolbar_data, 
@@ -2127,7 +2128,7 @@ void toolbar_update(ToolbarType type, gpointer data)
 		return;
 	}
 
-	hildon_window_remove_toolbar(HILDON_WINDOW(handlebox), GTK_WIDGET(toolbar_data->toolbar));
+	hildon_window_remove_toolbar(HILDON_WINDOW(handlebox), GTK_TOOLBAR(toolbar_data->toolbar));
 
 	toolbar_init(toolbar_data);
  	toolbar_data = toolbar_create(type, handlebox, data);
