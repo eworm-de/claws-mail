@@ -22,16 +22,17 @@
 
 #include <glib.h>
 #include <gtk/gtkwidget.h>
-
-extern gchar *prog_version;
-extern gboolean debug_mode;
 #ifdef MAEMO
 #include <hildon-widgets/hildon-program.h>
 #include <hildon-widgets/hildon-window.h>
-	  
-HildonProgram *hildon_program;
 #endif
 
+extern gchar *prog_version;
+extern gboolean debug_mode;
+
+#ifdef MAEMO
+extern HildonProgram *hildon_program;
+#endif
 
 void app_will_exit	(GtkWidget *widget, gpointer data);
 gboolean clean_quit	(gpointer data);

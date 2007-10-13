@@ -142,6 +142,10 @@ static GnomeVFSVolumeMonitor *volmon;
 gchar *prog_version;
 gchar *argv0;
 
+#ifdef MAEMO
+HildonProgram *hildon_program;
+#endif
+
 #ifdef HAVE_STARTUP_NOTIFICATION
 static SnLauncheeContext *sn_context = NULL;
 static SnDisplay *sn_display = NULL;
