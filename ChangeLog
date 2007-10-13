@@ -1,3 +1,8 @@
+2007-10-13 [paul]	3.0.2cvs67
+
+	* src/gtk/menu.c
+		fix a bunch of runtime warnings on maemo
+
 2007-10-13 [paul]	3.0.2cvs66
 
 	* src/main.c
