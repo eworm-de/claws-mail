@@ -213,7 +213,6 @@ static void exit_claws			(MainWindow *mainwin);
 static MainWindow *static_mainwindow;
 
 #ifdef MAEMO
-static HildonProgram *static_hildonprogram;
 static osso_context_t *static_osso_context;
 
 void exit_event_handler(gboolean die_now, gpointer data)
@@ -859,7 +858,7 @@ int main(int argc, char *argv[])
 	if (osso_context == NULL) {
 		return OSSO_ERROR;
 	}
-	static_hildonprogram = HILDON_PROGRAM(hildon_program_get_instance());
+	hildon_program = HILDON_PROGRAM(hildon_program_get_instance());
 	static_osso_context = osso_context;
 #endif	
 	gdk_rgb_init();
@@ -1049,8 +1048,8 @@ int main(int argc, char *argv[])
 #ifdef MAEMO
 	AppData *appdata;
 	appdata = g_new0(AppData, 1);
-	appdata->program = static_hildonprogram;
-	appdata->window = mainwin->window;
+	appdata->program = hildon_program;
+	appdata->window = HILDON_WINDOW(mainwin->window);
 	appdata->osso_context = osso_context;
 	result = osso_rpc_set_cb_f(appdata->osso_context, 
                 OSSO_SERVICE, 
@@ -2092,10 +2091,6 @@ static void install_basic_sighandlers()
 }
 
 #ifdef MAEMO
-HildonProgram *hildon_program(void)
-{
-	return static_hildonprogram;
-}
 osso_context_t *get_osso_context(void)
 {
 	return static_osso_context;

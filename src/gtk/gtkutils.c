@@ -1642,24 +1642,18 @@ gboolean gtkut_tree_model_get_iter_last(GtkTreeModel *model,
 	return gtk_tree_model_iter_nth_child(model, iter, NULL, count - 1);
 }
 
-#ifdef MAEMO
-HildonWindow *gtkut_window_new		(GtkWindowType	 type,
-					 const gchar	*class)
-{
-	HildonWindow *window = HILDON_WINDOW(hildon_window_new());
-	gtk_window_set_role(GTK_WINDOW(window), class);
-	hildon_program_add_window(hildon_program(), window);
-	return window;
-}
-#else
 GtkWidget *gtkut_window_new		(GtkWindowType	 type,
 					 const gchar	*class)
 {
+#ifndef MAEMO
 	GtkWidget *window = gtk_window_new(type);
+#else
+	GtkWidget *window = hildon_window_new();
+	hildon_program_add_window(hildon_program, HILDON_WINDOW(window));
+#endif
 	gtk_window_set_role(GTK_WINDOW(window), class);
 	return window;
 }
-#endif
 
 gboolean gtkut_tree_iter_comp(GtkTreeModel *model, 
 				     GtkTreeIter *iter1, 

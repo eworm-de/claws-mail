@@ -42,6 +42,8 @@
 
 #ifdef MAEMO
 #include <hildon-widgets/hildon-program.h>
+#include <hildon-widgets/hildon-window.h>
+#include "main.h"
 #include <gtk/gtkmain.h>
 #endif
 
@@ -190,13 +192,9 @@ GtkWidget *label_window_create(const gchar *str);
 void label_window_destroy(GtkWidget *widget);
 
 void gtkut_window_popup			(GtkWidget	*window);
-#ifdef MAEMO
-HildonWindow *gtkut_window_new		(GtkWindowType	 type,
-					 const gchar	*class);
-#else
 GtkWidget *gtkut_window_new		(GtkWindowType	 type,
 					 const gchar	*class);
-#endif
+
 
 void gtkut_widget_get_uposition		(GtkWidget	*widget,
 					 gint		*px,
