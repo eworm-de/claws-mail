@@ -2981,3 +2981,4 @@
 ( cvs diff -u -r 1.115.2.170 -r 1.115.2.171 src/main.c;  cvs diff -u -r 1.7.2.12 -r 1.7.2.13 src/main.h;  cvs diff -u -r 1.5.2.67 -r 1.5.2.68 src/gtk/gtkutils.c;  cvs diff -u -r 1.4.2.36 -r 1.4.2.37 src/gtk/gtkutils.h;  ) > 3.0.2cvs66.patchset
 ( cvs diff -u -r 1.5.2.24 -r 1.5.2.25 src/gtk/menu.c;  ) > 3.0.2cvs67.patchset
 ( cvs diff -u -r 1.115.2.171 -r 1.115.2.172 src/main.c;  cvs diff -u -r 1.7.2.13 -r 1.7.2.14 src/main.h;  ) > 3.0.2cvs68.patchset
+( cvs diff -u -r 1.36.2.119 -r 1.36.2.120 src/common/utils.c;  cvs diff -u -r 1.20.2.53 -r 1.20.2.54 src/common/utils.h;  ) > 3.0.2cvs69.patchset

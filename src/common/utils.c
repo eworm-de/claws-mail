@@ -231,24 +231,6 @@ void slist_free_strings(GSList *list)
 	}
 }
 
-GSList *slist_concat_unique (GSList *first, GSList *second)
-{
-	GSList *tmp, *ret;
-	if (first == NULL) {
-		if (second == NULL)
-			return NULL;
-		else
-			return second;
-	} else if (second == NULL)
-		return first;
-	ret = first;
-	for (tmp = second; tmp != NULL; tmp = g_slist_next(tmp)) {
-		if (g_slist_find(ret, tmp->data) == NULL)
-			ret = g_slist_prepend(ret, tmp->data);
-	}
-	return ret;
-}
-
 static void hash_free_strings_func(gpointer key, gpointer value, gpointer data)
 {
 	g_free(key);
@@ -257,17 +239,6 @@ static void hash_free_strings_func(gpointer key, gpointer value, gpointer data)
 void hash_free_strings(GHashTable *table)
 {
 	g_hash_table_foreach(table, hash_free_strings_func, NULL);
-}
-
-static void hash_free_value_mem_func(gpointer key, gpointer value,
-				     gpointer data)
-{
-	g_free(value);
-}
-
-void hash_free_value_mem(GHashTable *table)
-{
-	g_hash_table_foreach(table, hash_free_value_mem_func, NULL);
 }
 
 gint str_case_equal(gconstpointer v, gconstpointer v2)
@@ -310,16 +281,6 @@ gboolean str_find(const gchar *haystack, const gchar *needle)
 gboolean str_case_find(const gchar *haystack, const gchar *needle)
 {
 	return strcasestr(haystack, needle) != NULL ? TRUE : FALSE;
-}
-
-gboolean str_find_equal(const gchar *haystack, const gchar *needle)
-{
-	return strcmp(haystack, needle) == 0;
-}
-
-gboolean str_case_find_equal(const gchar *haystack, const gchar *needle)
-{
-	return g_ascii_strcasecmp(haystack, needle) == 0;
 }
 
 gint to_number(const gchar *nstr)
@@ -612,6 +573,30 @@ gint get_next_word_len(const gchar *s)
 	return len;
 }
 
+static void trim_subject_for_compare(gchar *str)
+{
+	gchar *srcp;
+
+	eliminate_parenthesis(str, '[', ']');
+	eliminate_parenthesis(str, '(', ')');
+	g_strstrip(str);
+
+	srcp = str + subject_get_prefix_length(str);
+	if (srcp != str)
+		memmove(str, srcp, strlen(srcp) + 1);
+}
+
+static void trim_subject_for_sort(gchar *str)
+{
+	gchar *srcp;
+
+	g_strstrip(str);
+
+	srcp = str + subject_get_prefix_length(str);
+	if (srcp != str)
+		memmove(str, srcp, strlen(srcp) + 1);
+}
+
 /* compare subjects */
 gint subject_compare(const gchar *s1, const gchar *s2)
 {
@@ -644,30 +629,6 @@ gint subject_compare_for_sort(const gchar *s1, const gchar *s2)
 	trim_subject_for_sort(str2);
 
 	return g_utf8_collate(str1, str2);
-}
-
-void trim_subject_for_compare(gchar *str)
-{
-	gchar *srcp;
-
-	eliminate_parenthesis(str, '[', ']');
-	eliminate_parenthesis(str, '(', ')');
-	g_strstrip(str);
-
-	srcp = str + subject_get_prefix_length(str);
-	if (srcp != str)
-		memmove(str, srcp, strlen(srcp) + 1);
-}
-
-void trim_subject_for_sort(gchar *str)
-{
-	gchar *srcp;
-
-	g_strstrip(str);
-
-	srcp = str + subject_get_prefix_length(str);
-	if (srcp != str)
-		memmove(str, srcp, strlen(srcp) + 1);
 }
 
 void trim_subject(gchar *str)
@@ -856,23 +817,6 @@ gchar *strchr_with_skip_quote(const gchar *str, gint quote_chr, gint c)
 		if (*str == quote_chr)
 			in_quote ^= TRUE;
 		str++;
-	}
-
-	return NULL;
-}
-
-gchar *strrchr_with_skip_quote(const gchar *str, gint quote_chr, gint c)
-{
-	gboolean in_quote = FALSE;
-	const gchar *p;
-
-	p = str + strlen(str) - 1;
-	while (p >= str) {
-		if (*p == c && !in_quote)
-			return (gchar *)p;
-		if (*p == quote_chr)
-			in_quote ^= TRUE;
-		p--;
 	}
 
 	return NULL;
@@ -1093,7 +1037,7 @@ void subst_char(gchar *str, gchar orig, gchar subst)
 	}
 }
 
-void subst_chars(gchar *str, gchar *orig, gchar subst)
+static void subst_chars(gchar *str, gchar *orig, gchar subst)
 {
 	register gchar *p = str;
 
@@ -1123,19 +1067,6 @@ void subst_for_shellsafe_filename(gchar *str)
 	subst_chars(str, " \"'|&;()<>'!{}[]",'_');
 }
 
-gboolean is_header_line(const gchar *str)
-{
-	if (str[0] == ':') return FALSE;
-
-	while (*str != '\0' && *str != ' ') {
-		if (*str == ':')
-			return TRUE;
-		str++;
-	}
-
-	return FALSE;
-}
-
 gboolean is_ascii_str(const gchar *str)
 {
 	const guchar *p = (const guchar *)str;
@@ -1149,6 +1080,24 @@ gboolean is_ascii_str(const gchar *str)
 	}
 
 	return TRUE;
+}
+
+static const gchar * line_has_quote_char_last(const gchar * str, const gchar *quote_chars)
+{
+	gchar * position = NULL;
+	gchar * tmp_pos = NULL;
+	int i;
+
+	if (quote_chars == NULL)
+		return FALSE;
+
+	for (i = 0; i < strlen(quote_chars); i++) {
+		tmp_pos = strrchr (str,	quote_chars[i]);
+		if(position == NULL
+		   || (tmp_pos != NULL && position <= tmp_pos) )
+			position = tmp_pos;
+	}
+	return position;
 }
 
 gint get_quote_level(const gchar *str, const gchar *quote_chars)
@@ -1240,25 +1189,7 @@ const gchar * line_has_quote_char(const gchar * str, const gchar *quote_chars)
 	return position;
 }
 
-const gchar * line_has_quote_char_last(const gchar * str, const gchar *quote_chars)
-{
-	gchar * position = NULL;
-	gchar * tmp_pos = NULL;
-	int i;
-
-	if (quote_chars == NULL)
-		return FALSE;
-
-	for (i = 0; i < strlen(quote_chars); i++) {
-		tmp_pos = strrchr (str,	quote_chars[i]);
-		if(position == NULL
-		   || (tmp_pos != NULL && position <= tmp_pos) )
-			position = tmp_pos;
-	}
-	return position;
-}
-
-gchar *strstr_with_skip_quote(const gchar *haystack, const gchar *needle)
+static gchar *strstr_with_skip_quote(const gchar *haystack, const gchar *needle)
 {
 	register guint haystack_len, needle_len;
 	gboolean in_squote = FALSE, in_dquote = FALSE;
@@ -1295,7 +1226,7 @@ gchar *strstr_with_skip_quote(const gchar *haystack, const gchar *needle)
 	return NULL;
 }
 
-gchar *strchr_parenthesis_close(const gchar *str, gchar op, gchar cl)
+static gchar *strchr_parenthesis_close(const gchar *str, gchar op, gchar cl)
 {
 	const gchar *p;
 	gchar quote_chr = '"';
@@ -1323,64 +1254,6 @@ gchar *strchr_parenthesis_close(const gchar *str, gchar op, gchar cl)
 	}
 
 	return NULL;
-}
-
-gchar **strsplit_parenthesis(const gchar *str, gchar op, gchar cl,
-			     gint max_tokens)
-{
-	GSList *string_list = NULL, *slist;
-	gchar **str_array;
-	const gchar *s_op, *s_cl;
-	guint i, n = 1;
-
-	g_return_val_if_fail(str != NULL, NULL);
-
-	if (max_tokens < 1)
-		max_tokens = G_MAXINT;
-
-	s_op = strchr_with_skip_quote(str, '"', op);
-	if (!s_op) return NULL;
-	str = s_op;
-	s_cl = strchr_parenthesis_close(str, op, cl);
-	if (s_cl) {
-		do {
-			guint len;
-			gchar *new_string;
-
-			str++;
-			len = s_cl - str;
-			new_string = g_new(gchar, len + 1);
-			strncpy(new_string, str, len);
-			new_string[len] = 0;
-			string_list = g_slist_prepend(string_list, new_string);
-			n++;
-			str = s_cl + 1;
-
-			while (*str && g_ascii_isspace(*str)) str++;
-			if (*str != op) {
-				string_list = g_slist_prepend(string_list,
-							      g_strdup(""));
-				n++;
-				s_op = strchr_with_skip_quote(str, '"', op);
-				if (!--max_tokens || !s_op) break;
-				str = s_op;
-			} else
-				s_op = str;
-			s_cl = strchr_parenthesis_close(str, op, cl);
-		} while (--max_tokens && s_cl);
-	}
-
-	str_array = g_new(gchar*, n);
-
-	i = n - 1;
-
-	str_array[i--] = NULL;
-	for (slist = string_list; slist; slist = slist->next)
-		str_array[i--] = slist->data;
-
-	g_slist_free(string_list);
-
-	return str_array;
 }
 
 gchar **strsplit_with_quote(const gchar *str, const gchar *delim,
@@ -2031,41 +1904,6 @@ const gchar *get_imap_cache_dir(void)
 	return imap_cache_dir;
 }
 
-const gchar *get_mbox_cache_dir(void)
-{
-	static gchar *mbox_cache_dir = NULL;
-#ifdef MAEMO
-	const gchar *data_root = prefs_common_get_data_root();
-	if (strcmp2(data_root, last_data_root)) {
-		g_free(mbox_cache_dir);
-		mbox_cache_dir = NULL;
-	}
-#endif
-	if (!mbox_cache_dir)
-#ifndef MAEMO
-		mbox_cache_dir = g_strconcat(get_rc_dir(), G_DIR_SEPARATOR_S,
-					     MBOX_CACHE_DIR, NULL);
-#else
-	{
-		if (data_root) {
-			mbox_cache_dir = g_strconcat(data_root, G_DIR_SEPARATOR_S,
-					     "Claws", G_DIR_SEPARATOR_S, 
-					     g_get_user_name(), G_DIR_SEPARATOR_S,
-					     MBOX_CACHE_DIR, NULL);
-			g_free(last_data_root);
-			last_data_root = g_strdup(last_data_root);
-		} else {
-			mbox_cache_dir = g_strconcat(get_rc_dir(), G_DIR_SEPARATOR_S,
-					     MBOX_CACHE_DIR, NULL);
-			g_free(last_data_root);
-			last_data_root = NULL;
-		}
-	}
-#endif
-
-	return mbox_cache_dir;
-}
-
 const gchar *get_mime_tmp_dir(void)
 {
 	static gchar *mime_tmp_dir = NULL;
@@ -2086,17 +1924,6 @@ const gchar *get_template_dir(void)
 					   TEMPLATE_DIR, NULL);
 
 	return template_dir;
-}
-
-const gchar *get_header_cache_dir(void)
-{
-	static gchar *header_dir = NULL;
-
-	if (!header_dir)
-		header_dir = g_strconcat(get_rc_dir(), G_DIR_SEPARATOR_S,
-					 HEADER_CACHE_DIR, NULL);
-
-	return header_dir;
 }
 
 /* Return the default directory for Plugins. */
@@ -2222,33 +2049,6 @@ off_t get_file_size_as_crlf(const gchar *file)
 	}
 
 	fclose(fp);
-
-	return size;
-}
-
-off_t get_left_file_size(FILE *fp)
-{
-	glong pos;
-	glong end;
-	off_t size;
-
-	if ((pos = ftell(fp)) < 0) {
-		perror("ftell");
-		return -1;
-	}
-	if (fseek(fp, 0L, SEEK_END) < 0) {
-		perror("fseek");
-		return -1;
-	}
-	if ((end = ftell(fp)) < 0) {
-		perror("fseek");
-		return -1;
-	}
-	size = end - pos;
-	if (fseek(fp, pos, SEEK_SET) < 0) {
-		perror("fseek");
-		return -1;
-	}
 
 	return size;
 }
@@ -2515,62 +2315,6 @@ gint remove_numbered_files_not_in_list(const gchar *dir, GSList *numberlist)
 gint remove_all_numbered_files(const gchar *dir)
 {
 	return remove_numbered_files(dir, 0, UINT_MAX);
-}
-
-gint remove_expired_files(const gchar *dir, guint hours)
-{
-	GDir *dp;
-	const gchar *dir_name;
-	struct stat s;
-	gchar *prev_dir;
-	gint file_no;
-	time_t mtime, now, expire_time;
-
-	prev_dir = g_get_current_dir();
-
-	if (g_chdir(dir) < 0) {
-		FILE_OP_ERROR(dir, "chdir");
-		g_free(prev_dir);
-		return -1;
-	}
-
-	if ((dp = g_dir_open(".", 0, NULL)) == NULL) {
-		g_warning("failed to open directory: %s\n", dir);
-		g_free(prev_dir);
-		return -1;
-	}
-
-	now = time(NULL);
-	expire_time = hours * 60 * 60;
-
-	while ((dir_name = g_dir_read_name(dp)) != NULL) {
-		file_no = to_number(dir_name);
-		if (file_no > 0) {
-			if (g_stat(dir_name, &s) < 0) {
-				FILE_OP_ERROR(dir_name, "stat");
-				continue;
-			}
-			if (S_ISDIR(s.st_mode))
-				continue;
-			mtime = MAX(s.st_mtime, s.st_atime);
-			if (now - mtime > expire_time) {
-				if (g_unlink(dir_name) < 0)
-					FILE_OP_ERROR(dir_name, "unlink");
-			}
-		}
-	}
-
-	g_dir_close(dp);
-
-	if (g_chdir(prev_dir) < 0) {
-		FILE_OP_ERROR(prev_dir, "chdir");
-		g_free(prev_dir);
-		return -1;
-	}
-
-	g_free(prev_dir);
-
-	return 0;
 }
 
 gint remove_dir_recursive(const gchar *dir)
@@ -3017,79 +2761,6 @@ gint canonicalize_file_replace(const gchar *file)
 	tmp_file = get_tmp_file();
 
 	if (canonicalize_file(file, tmp_file) < 0) {
-		g_free(tmp_file);
-		return -1;
-	}
-
-	if (move_file(tmp_file, file, TRUE) < 0) {
-		g_warning("can't replace %s .\n", file);
-		g_unlink(tmp_file);
-		g_free(tmp_file);
-		return -1;
-	}
-
-	g_free(tmp_file);
-	return 0;
-}
-
-gint uncanonicalize_file(const gchar *src, const gchar *dest)
-{
-	FILE *src_fp, *dest_fp;
-	gchar buf[BUFFSIZE];
-	gboolean err = FALSE;
-
-	if ((src_fp = g_fopen(src, "rb")) == NULL) {
-		FILE_OP_ERROR(src, "fopen");
-		return -1;
-	}
-
-	if ((dest_fp = g_fopen(dest, "wb")) == NULL) {
-		FILE_OP_ERROR(dest, "fopen");
-		fclose(src_fp);
-		return -1;
-	}
-
-	if (change_file_mode_rw(dest_fp, dest) < 0) {
-		FILE_OP_ERROR(dest, "chmod");
-		g_warning("can't change file mode\n");
-	}
-
-	while (fgets(buf, sizeof(buf), src_fp) != NULL) {
-		strcrchomp(buf);
-		if (fputs(buf, dest_fp) == EOF) {
-			g_warning("writing to %s failed.\n", dest);
-			fclose(dest_fp);
-			fclose(src_fp);
-			g_unlink(dest);
-			return -1;
-		}
-	}
-
-	if (ferror(src_fp)) {
-		FILE_OP_ERROR(src, "fgets");
-		err = TRUE;
-	}
-	fclose(src_fp);
-	if (fclose(dest_fp) == EOF) {
-		FILE_OP_ERROR(dest, "fclose");
-		err = TRUE;
-	}
-
-	if (err) {
-		g_unlink(dest);
-		return -1;
-	}
-
-	return 0;
-}
-
-gint uncanonicalize_file_replace(const gchar *file)
-{
-	gchar *tmp_file;
-
-	tmp_file = get_tmp_file();
-
-	if (uncanonicalize_file(file, tmp_file) < 0) {
 		g_free(tmp_file);
 		return -1;
 	}
@@ -3753,13 +3424,6 @@ void get_rfc822_date(gchar *buf, gint len)
 		   day, dd, mon, yyyy, hh, mm, ss, tzoffset(&t));
 }
 
-/* just a wrapper to suppress the warning of gcc about %c */
-size_t my_strftime(gchar *s, size_t max, const gchar *format,
-		   const struct tm *tm)
-{
-	return strftime(s, max, format, tm);
-}
-
 void debug_set_mode(gboolean mode)
 {
 	debug_mode = mode;
@@ -3894,7 +3558,7 @@ int subject_get_prefix_length(const gchar *subject)
 		return 0;
 }
 
-guint g_stricase_hash(gconstpointer gptr)
+static guint g_stricase_hash(gconstpointer gptr)
 {
 	guint hash_result = 0;
 	const char *str;
@@ -3906,7 +3570,7 @@ guint g_stricase_hash(gconstpointer gptr)
 	return hash_result;
 }
 
-gint g_stricase_equal(gconstpointer gptr1, gconstpointer gptr2)
+static gint g_stricase_equal(gconstpointer gptr1, gconstpointer gptr2)
 {
 	const char *str1 = gptr1;
 	const char *str2 = gptr2;

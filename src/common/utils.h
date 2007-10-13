@@ -224,7 +224,6 @@ void list_free_strings		(GList		*list);
 void slist_free_strings		(GSList		*list);
 
 void hash_free_strings		(GHashTable	*table);
-void hash_free_value_mem	(GHashTable	*table);
 
 gint str_case_equal		(gconstpointer	 v,
 				 gconstpointer	 v2);
@@ -239,11 +238,6 @@ gboolean str_find		(const gchar	*haystack,
 				 const gchar	*needle);
 gboolean str_case_find		(const gchar	*haystack,
 				 const gchar	*needle);
-gboolean str_find_equal		(const gchar	*haystack,
-				 const gchar	*needle);
-gboolean str_case_find_equal	(const gchar	*haystack,
-				 const gchar	*needle);
-
 /* number-string conversion */
 gint to_number			(const gchar *nstr);
 gchar *itos_buf			(gchar	     *nstr,
@@ -281,8 +275,6 @@ gint subject_compare			(const gchar	*s1,
 					 const gchar	*s2);
 gint subject_compare_for_sort		(const gchar	*s1,
 					 const gchar	*s2);
-void trim_subject_for_compare		(gchar		*str);
-void trim_subject_for_sort		(gchar		*str);
 void trim_subject			(gchar		*str);
 void eliminate_parenthesis		(gchar		*str,
 					 gchar		 op,
@@ -297,14 +289,9 @@ void eliminate_address_comment		(gchar		*str);
 gchar *strchr_with_skip_quote		(const gchar	*str,
 					 gint		 quote_chr,
 					 gint		 c);
-gchar *strrchr_with_skip_quote		(const gchar	*str,
-					 gint		 quote_chr,
-					 gint		 c);
 void extract_address			(gchar		*str);
 void extract_list_id_str		(gchar		*str);
 
-GSList *slist_concat_unique		(GSList		*first,
-					 GSList		*second);
 GSList *address_list_append		(GSList		*addr_list,
 					 const gchar	*str);
 GSList *address_list_append_with_comments(GSList	*addr_list,
@@ -325,12 +312,8 @@ void unfold_line			(gchar		*str);
 void subst_char				(gchar		*str,
 					 gchar		 orig,
 					 gchar		 subst);
-void subst_chars			(gchar		*str,
-					 gchar		*orig,
-					 gchar		 subst);
 void subst_for_filename			(gchar		*str);
 void subst_for_shellsafe_filename	(gchar		*str);
-gboolean is_header_line			(const gchar	*str);
 gboolean is_ascii_str			(const gchar	*str);
 gint get_quote_level			(const gchar	*str,
 					 const gchar	*quote_chars);
@@ -338,16 +321,6 @@ gint check_line_length			(const gchar	*str,
 					 gint		 max_chars,
 					 gint		*line);
 
-gchar *strstr_with_skip_quote		(const gchar	*haystack,
-					 const gchar	*needle);
-gchar *strchr_parenthesis_close		(const gchar	*str,
-					 gchar		 op,
-					 gchar		 cl);
-
-gchar **strsplit_parenthesis		(const gchar	*str,
-					 gchar		 op,
-					 gchar		 cl,
-					 gint		 max_tokens);
 gchar **strsplit_with_quote		(const gchar	*str,
 					 const gchar	*delim,
 					 gint		 max_tokens);
@@ -382,10 +355,8 @@ gboolean rc_dir_is_alt			(void);
 const gchar *get_mail_base_dir		(void);
 const gchar *get_news_cache_dir		(void);
 const gchar *get_imap_cache_dir		(void);
-const gchar *get_mbox_cache_dir		(void);
 const gchar *get_mime_tmp_dir		(void);
 const gchar *get_template_dir		(void);
-const gchar *get_header_cache_dir	(void);
 const gchar *get_plugin_dir             (void);
 const gchar *get_tmp_dir		(void);
 const gchar *get_locale_dir		(void);
@@ -395,7 +366,6 @@ const gchar *get_domain_name		(void);
 /* file / directory handling */
 off_t get_file_size		(const gchar	*file);
 off_t get_file_size_as_crlf	(const gchar	*file);
-off_t get_left_file_size	(FILE		*fp);
 
 time_t get_file_mtime		(const gchar *file);
 
@@ -419,8 +389,6 @@ gint remove_numbered_files	(const gchar	*dir,
 gint remove_numbered_files_not_in_list(const gchar *dir,
 				       GSList *numberlist);
 gint remove_all_numbered_files	(const gchar	*dir);
-gint remove_expired_files	(const gchar	*dir,
-				 guint		 hours);
 gint remove_dir_recursive	(const gchar	*dir);
 gint append_file		(const gchar	*src,
 				 const gchar	*dest,
@@ -448,9 +416,6 @@ gchar *canonicalize_str		(const gchar	*str);
 gint canonicalize_file		(const gchar	*src,
 				 const gchar	*dest);
 gint canonicalize_file_replace	(const gchar	*file);
-gint uncanonicalize_file	(const gchar	*src,
-				 const gchar	*dest);
-gint uncanonicalize_file_replace(const gchar	*file);
 
 gchar *normalize_newlines	(const gchar	*str);
 
@@ -486,10 +451,6 @@ gchar *tzoffset			(time_t		*now);
 void get_rfc822_date		(gchar		*buf,
 				 gint		 len);
 
-size_t my_strftime		(gchar			*s,
-				 size_t			 max,
-				 const gchar		*format,
-				 const struct tm	*tm);
 size_t fast_strftime		(gchar 			*buf, 
 				 gint 			 buflen, 
 				 const gchar 		*format, 
@@ -509,11 +470,7 @@ gint subject_get_prefix_length (const gchar *subject);
 /* quoting recognition */
 const gchar * line_has_quote_char	(const gchar *str,
 					 const gchar *quote_chars);
-const gchar * line_has_quote_char_last	(const gchar *str,
-					 const gchar *quote_chars);
 
-guint g_stricase_hash	(gconstpointer gptr);
-gint g_stricase_equal	(gconstpointer gptr1, gconstpointer gptr2);
 gint g_int_compare	(gconstpointer a, gconstpointer b);
 
 gchar *generate_msgid		(gchar *buf, gint len);
