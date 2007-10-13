@@ -36,7 +36,6 @@ void imap_folder_ref(Folder *folder);
 void imap_folder_unref(Folder *folder);
 gchar imap_get_path_separator_for_item	(FolderItem *item);
 void imap_disconnect_all(void);
-gint imap_scan_tree_real(Folder *folder, gboolean subs_only);
 gint imap_subscribe(Folder *folder, FolderItem *item, gchar *rpath, gboolean sub);
 GList *imap_scan_subtree(Folder *folder, FolderItem *item, gboolean unsubs_only, gboolean recursive);
 void imap_cache_msg(FolderItem *item, gint msgnum);

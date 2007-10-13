@@ -206,107 +206,6 @@ void gtkut_stock_with_text_button_set_create(GtkWidget **bbox,
 	}
 }
 
-static void combo_button_size_request(GtkWidget *widget,
-				      GtkRequisition *requisition,
-				      gpointer data)
-{
-	ComboButton *combo = (ComboButton *)data;
-
-	if (combo->arrow->allocation.height != requisition->height)
-		gtk_widget_set_size_request(combo->arrow,
-					    -1, requisition->height);
-}
-
-static void combo_button_enter(GtkWidget *widget, gpointer data)
-{
-	ComboButton *combo = (ComboButton *)data;
-
-	if (GTK_WIDGET_STATE(combo->arrow) != GTK_STATE_PRELIGHT) {
-		gtk_widget_set_state(combo->arrow, GTK_STATE_PRELIGHT);
-		gtk_widget_queue_draw(combo->arrow);
-	}
-	if (GTK_WIDGET_STATE(combo->button) != GTK_STATE_PRELIGHT) {
-		gtk_widget_set_state(combo->button, GTK_STATE_PRELIGHT);
-		gtk_widget_queue_draw(combo->button);
-	}
-}
-
-static void combo_button_leave(GtkWidget *widget, gpointer data)
-{
-	ComboButton *combo = (ComboButton *)data;
-
-	if (GTK_WIDGET_STATE(combo->arrow) != GTK_STATE_NORMAL) {
-		gtk_widget_set_state(combo->arrow, GTK_STATE_NORMAL);
-		gtk_widget_queue_draw(combo->arrow);
-	}
-	if (GTK_WIDGET_STATE(combo->button) != GTK_STATE_NORMAL) {
-		gtk_widget_set_state(combo->button, GTK_STATE_NORMAL);
-		gtk_widget_queue_draw(combo->button);
-	}
-}
-
-static gint combo_button_arrow_pressed(GtkWidget *widget, GdkEventButton *event,
-				       gpointer data)
-{
-	ComboButton *combo = (ComboButton *)data;
-
-	if (!event) return FALSE;
-
-	gtk_menu_popup(GTK_MENU(combo->menu), NULL, NULL,
-		       menu_button_position, combo->button,
-		       event->button, event->time);
-
-	return FALSE;
-}
-
-static void combo_button_destroy(GtkWidget *widget, gpointer data)
-{
-	ComboButton *combo = (ComboButton *)data;
-
-	gtk_object_destroy(GTK_OBJECT(combo->factory));
-	g_free(combo);
-}
-
-ComboButton *gtkut_combo_button_create(GtkWidget *button,
-				       GtkItemFactoryEntry *entries,
-				       gint n_entries, const gchar *path,
-				       gpointer data)
-{
-	ComboButton *combo;
-	GtkWidget *arrow;
-
-	combo = g_new0(ComboButton, 1);
-
-	combo->arrow = gtk_button_new();
-	arrow = gtk_arrow_new(GTK_ARROW_DOWN, GTK_SHADOW_OUT);
-	gtk_widget_set_size_request(arrow, 7, -1);
-	gtk_container_add(GTK_CONTAINER(combo->arrow), arrow);
-	GTK_WIDGET_UNSET_FLAGS(combo->arrow, GTK_CAN_FOCUS);
-	gtk_widget_show_all(combo->arrow);
-
-	combo->button = button;
-	combo->menu = menu_create_items(entries, n_entries, path,
-					&combo->factory, data);
-	combo->data = data;
-
-	g_signal_connect(G_OBJECT(combo->button), "size_request",
-			 G_CALLBACK(combo_button_size_request), combo);
-	g_signal_connect(G_OBJECT(combo->button), "enter",
-			 G_CALLBACK(combo_button_enter), combo);
-	g_signal_connect(G_OBJECT(combo->button), "leave",
-			 G_CALLBACK(combo_button_leave), combo);
-	g_signal_connect(G_OBJECT(combo->arrow), "enter",
-			 G_CALLBACK(combo_button_enter), combo);
-	g_signal_connect(G_OBJECT(combo->arrow), "leave",
-			 G_CALLBACK(combo_button_leave), combo);
-	g_signal_connect(G_OBJECT(combo->arrow), "button_press_event",
-			 G_CALLBACK(combo_button_arrow_pressed), combo);
-	g_signal_connect(G_OBJECT(combo->arrow), "destroy",
-			 G_CALLBACK(combo_button_destroy), combo);
-
-	return combo;
-}
-
 #define CELL_SPACING 1
 #define ROW_TOP_YPIXEL(clist, row) (((clist)->row_height * (row)) + \
 				    (((row) + 1) * CELL_SPACING) + \
@@ -492,43 +391,12 @@ void gtkut_combo_set_items(GtkCombo *combo, const gchar *str1, ...)
 	g_list_free(combo_items);
 }
 
-gchar *gtkut_editable_get_selection(GtkEditable *editable)
-{
-	guint start_pos, end_pos;
-	gboolean found;
-
-	g_return_val_if_fail(GTK_IS_EDITABLE(editable), NULL);
-
-	found = gtk_editable_get_selection_bounds(editable,
-						  &start_pos, &end_pos);
-	if (found)
-		return gtk_editable_get_chars(editable, start_pos, end_pos);
-	else
-		return NULL;
-}
-
-void gtkut_editable_disable_im(GtkEditable *editable)
-{
-	g_return_if_fail(editable != NULL);
-
-#if USE_XIM
-	if (editable->ic) {
-		gdk_ic_destroy(editable->ic);
-		editable->ic = NULL;
-	}
-	if (editable->ic_attr) {
-		gdk_ic_attr_destroy(editable->ic_attr);
-		editable->ic_attr = NULL;
-	}
-#endif
-}
-
 void gtkut_container_remove(GtkContainer *container, GtkWidget *widget)
 {
 	gtk_container_remove(container, widget);
 }
 
-gboolean gtkut_text_buffer_match_string(GtkTextBuffer *textbuf,
+static gboolean gtkut_text_buffer_match_string(GtkTextBuffer *textbuf,
 					const GtkTextIter *iter,
 					gunichar *wcs, gint len,
 					gboolean case_sens)
@@ -574,7 +442,7 @@ gboolean gtkut_text_buffer_match_string(GtkTextBuffer *textbuf,
 		return FALSE;
 }
 
-gboolean gtkut_text_buffer_find(GtkTextBuffer *buffer, const GtkTextIter *iter,
+static gboolean gtkut_text_buffer_find(GtkTextBuffer *buffer, const GtkTextIter *iter,
 				const gchar *str, gboolean case_sens,
 				GtkTextIter *match_pos)
 {
@@ -609,7 +477,7 @@ gboolean gtkut_text_buffer_find(GtkTextBuffer *buffer, const GtkTextIter *iter,
 	return found;
 }
 
-gboolean gtkut_text_buffer_find_backward(GtkTextBuffer *buffer,
+static gboolean gtkut_text_buffer_find_backward(GtkTextBuffer *buffer,
 					 const GtkTextIter *iter,
 					 const gchar *str, gboolean case_sens,
 					 GtkTextIter *match_pos)
@@ -1655,7 +1523,7 @@ GtkWidget *gtkut_window_new		(GtkWindowType	 type,
 	return window;
 }
 
-gboolean gtkut_tree_iter_comp(GtkTreeModel *model, 
+static gboolean gtkut_tree_iter_comp(GtkTreeModel *model, 
 				     GtkTreeIter *iter1, 
 				     GtkTreeIter *iter2)
 {

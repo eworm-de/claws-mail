@@ -1740,7 +1740,7 @@ static gint imap_close(Folder *folder, FolderItem *item)
 	return 0;
 }
 
-gint imap_scan_tree_real(Folder *folder, gboolean subs_only)
+static gint imap_scan_tree_real(Folder *folder, gboolean subs_only)
 {
 	FolderItem *item = NULL;
 	IMAPSession *session;
@@ -5068,11 +5068,6 @@ FolderClass *imap_get_class(void)
 
 void imap_disconnect_all(void)
 {
-}
-
-gint imap_scan_tree_real(Folder *folder, gboolean subs_only)
-{
-	return -1;
 }
 
 gint imap_subscribe(Folder *folder, FolderItem *item, gchar *rpath, gboolean sub)

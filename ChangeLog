@@ -1,3 +1,13 @@
+2007-10-13 [colin]	3.0.2cvs70
+
+	* src/imap.c
+	* src/imap.h
+	* src/mainwindow.c
+	* src/mainwindow.h
+	* src/gtk/gtkutils.c
+	* src/gtk/gtkutils.h
+		Staticalise/Remove more code
+
 2007-10-13 [colin]	3.0.2cvs69
 
 	* src/common/utils.c

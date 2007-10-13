@@ -125,12 +125,6 @@ void gtkut_stock_with_text_button_set_create(GtkWidget **bbox,
 				   GtkWidget **button2, const gchar *label2, const gchar *text2,
 				   GtkWidget **button3, const gchar *label3, const gchar *text3);
 
-ComboButton *gtkut_combo_button_create	(GtkWidget		*button,
-					 GtkItemFactoryEntry	*entries,
-					 gint			 n_entries,
-					 const gchar		*path,
-					 gpointer		 data);
-
 void gtkut_ctree_node_move_if_on_the_edge
 					(GtkCTree	*ctree,
 					 GtkCTreeNode	*node,
@@ -159,27 +153,8 @@ void gtkut_clist_set_focus_row		(GtkCList	*clist,
 void gtkut_combo_set_items		(GtkCombo	*combo,
 					 const gchar	*str1, ...);
 
-gchar *gtkut_editable_get_selection	(GtkEditable	*editable);
-void gtkut_editable_disable_im		(GtkEditable	*editable);
-
 void gtkut_container_remove		(GtkContainer	*container,
 					 GtkWidget	*widget);
-
-gboolean gtkut_text_buffer_match_string	(GtkTextBuffer		*buffer,
-					 const GtkTextIter	*iter,
-					 gunichar		*wcs,
-					 gint			 len,
-					 gboolean		 case_sens);
-gboolean gtkut_text_buffer_find		(GtkTextBuffer		*buffer,
-					 const GtkTextIter	*iter,
-					 const gchar		*str,
-					 gboolean		 case_sens,
-					 GtkTextIter		*match_pos);
-gboolean gtkut_text_buffer_find_backward(GtkTextBuffer		*buffer,
-					 const GtkTextIter	*iter,
-					 const gchar		*str,
-					 gboolean		 case_sens,
-					 GtkTextIter		*match_pos);
 
 gchar *gtkut_text_view_get_selection	(GtkTextView	*textview);
 void gtkut_text_view_set_position		(GtkTextView *text, gint pos);
@@ -244,10 +219,6 @@ gboolean gtkut_tree_model_text_iter_prev(GtkTreeModel *model,
 				 const gchar* text);
 gboolean gtkut_tree_model_get_iter_last(GtkTreeModel *model,
 				 GtkTreeIter *iter);
-
-gboolean gtkut_tree_iter_comp(GtkTreeModel *model, 
-				     GtkTreeIter *iter1, 
-				     GtkTreeIter *iter2);
 
 gint gtkut_list_view_get_selected_row(GtkWidget *list_view);
 gboolean gtkut_list_view_select_row(GtkWidget *list, gint row);

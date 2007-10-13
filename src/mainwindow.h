@@ -141,8 +141,6 @@ struct _MainWindow
 
 MainWindow *main_window_create		(void);
 
-void main_window_destroy                (MainWindow *mainwin);
-
 void main_window_update_actions_menu	(MainWindow	*mainwin);
 
 void main_window_cursor_wait		(MainWindow	*mainwin);
@@ -172,13 +170,8 @@ void main_window_get_position		(MainWindow	*mainwin);
 
 void main_window_progress_on		(MainWindow	*mainwin);
 void main_window_progress_off		(MainWindow	*mainwin);
-void main_window_progress_set		(MainWindow	*mainwin,
-					 gint		 cur,
-					 gint		 total);
-
 void main_window_empty_trash		(MainWindow	*mainwin,
 					 gboolean	 confirm);
-void main_window_add_mailbox		(MainWindow	*mainwin);
 
 void main_window_set_menu_sensitive	(MainWindow	*mainwin);
 
@@ -197,10 +190,6 @@ void main_window_toggle_work_offline          (MainWindow        *mainwin,
                                                gboolean           offline,
 					       gboolean		  ask_sync);
 
-/* public so it can be disabled from summaryview */
-gboolean mainwindow_key_pressed		      (GtkWidget 	 *widget, 
-					       GdkEventKey 	 *event,
-				   	       gpointer 	  data);
 MainWindow *mainwindow_get_mainwindow 	      (void);
 void mainwindow_learn			      (MainWindow *mainwin,
 					       gboolean is_spam);

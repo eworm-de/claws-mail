@@ -1336,6 +1336,65 @@ void mainwindow_clear_error(MainWindow *mainwin)
 	gtk_widget_hide(mainwin->warning_btn);
 }
 
+#define BREAK_ON_MODIFIER_KEY() \
+	if ((event->state & (GDK_MOD1_MASK|GDK_CONTROL_MASK)) != 0) break
+
+static gboolean mainwindow_key_pressed (GtkWidget *widget, GdkEventKey *event,
+				    gpointer data)
+{
+	MainWindow *mainwin = (MainWindow*) data;
+	
+	if (!mainwin || !event) 
+		return FALSE;
+
+	if (quicksearch_has_focus(mainwin->summaryview->quicksearch))
+	{
+		lastkey = event->keyval;
+		return FALSE;
+	}
+
+	switch (event->keyval) {
+	case GDK_Q:             /* Quit */
+		BREAK_ON_MODIFIER_KEY();
+
+		app_exit_cb(mainwin, 0, NULL);
+		return FALSE;
+	case GDK_space:
+		if (mainwin->folderview && mainwin->summaryview
+		    && ((!mainwin->summaryview->displayed
+		        && !mainwin->summaryview->selected) 
+			|| (mainwin->summaryview->folder_item
+			    && mainwin->summaryview->folder_item->total_msgs == 0))) {
+			g_signal_stop_emission_by_name(G_OBJECT(widget), 
+                                       "key_press_event");
+			folderview_select_next_unread(mainwin->folderview, TRUE);
+		}
+		break;
+#ifdef MAEMO
+	case GDK_F6:
+		if (maemo_mainwindow_is_fullscreen(widget)) {
+                	gtk_window_unfullscreen(GTK_WINDOW(widget));
+                } else {
+                	gtk_window_fullscreen(GTK_WINDOW(widget));
+                }
+		break;
+	case GDK_Escape:
+		if (mainwin->summaryview && 
+		    mainwin->summaryview->ext_messageview && 
+		    mainwin->summaryview->ext_messageview->window && 
+		    widget == mainwin->summaryview->ext_messageview->window) {
+			messageview_destroy(mainwin->summaryview->ext_messageview);
+		}
+		break;
+#endif
+	default:
+		break;
+	}
+	return FALSE;
+}
+
+#undef BREAK_ON_MODIFIER_KEY
+
 MainWindow *main_window_create()
 {
 	MainWindow *mainwin;
@@ -1774,13 +1833,6 @@ MainWindow *main_window_create()
 	mainwindow_tags_menu_create(mainwin, FALSE);
 	
 	return mainwin;
-}
-
-void main_window_destroy(MainWindow *mainwin)
-{
-	/* TODO : destroy other component */
-	messageview_destroy(mainwin->messageview);
-	mainwin->messageview = NULL;	
 }
 
 void main_window_update_actions_menu(MainWindow *mainwin)
@@ -2394,16 +2446,6 @@ void main_window_progress_off(MainWindow *mainwin)
 	gtk_progress_bar_set_text(GTK_PROGRESS_BAR(mainwin->progressbar), "");
 }
 
-void main_window_progress_set(MainWindow *mainwin, gint cur, gint total)
-{
-	gchar buf[32];
-
-	g_snprintf(buf, sizeof(buf), "%d / %d", cur, total);
-	gtk_progress_bar_set_text(GTK_PROGRESS_BAR(mainwin->progressbar), buf);
-	gtk_progress_bar_set_fraction(GTK_PROGRESS_BAR(mainwin->progressbar),
-				(total == 0) ? 0 : (gfloat)cur / (gfloat)total);
-}
-
 void main_window_empty_trash(MainWindow *mainwin, gboolean confirm)
 {
 	if (confirm && procmsg_have_trashed_mails_fast()) {
@@ -2422,7 +2464,7 @@ void main_window_empty_trash(MainWindow *mainwin, gboolean confirm)
 		gtk_widget_grab_focus(mainwin->folderview->ctree);
 }
 
-void main_window_add_mailbox(MainWindow *mainwin)
+static void main_window_add_mailbox(MainWindow *mainwin)
 {
 	gchar *path;
 	Folder *folder;
@@ -4322,65 +4364,6 @@ gboolean mainwindow_is_obscured(void)
 {
 	return is_obscured;
 }
-
-#define BREAK_ON_MODIFIER_KEY() \
-	if ((event->state & (GDK_MOD1_MASK|GDK_CONTROL_MASK)) != 0) break
-
-gboolean mainwindow_key_pressed (GtkWidget *widget, GdkEventKey *event,
-				    gpointer data)
-{
-	MainWindow *mainwin = (MainWindow*) data;
-	
-	if (!mainwin || !event) 
-		return FALSE;
-
-	if (quicksearch_has_focus(mainwin->summaryview->quicksearch))
-	{
-		lastkey = event->keyval;
-		return FALSE;
-	}
-
-	switch (event->keyval) {
-	case GDK_Q:             /* Quit */
-		BREAK_ON_MODIFIER_KEY();
-
-		app_exit_cb(mainwin, 0, NULL);
-		return FALSE;
-	case GDK_space:
-		if (mainwin->folderview && mainwin->summaryview
-		    && ((!mainwin->summaryview->displayed
-		        && !mainwin->summaryview->selected) 
-			|| (mainwin->summaryview->folder_item
-			    && mainwin->summaryview->folder_item->total_msgs == 0))) {
-			g_signal_stop_emission_by_name(G_OBJECT(widget), 
-                                       "key_press_event");
-			folderview_select_next_unread(mainwin->folderview, TRUE);
-		}
-		break;
-#ifdef MAEMO
-	case GDK_F6:
-		if (maemo_mainwindow_is_fullscreen(widget)) {
-                	gtk_window_unfullscreen(GTK_WINDOW(widget));
-                } else {
-                	gtk_window_fullscreen(GTK_WINDOW(widget));
-                }
-		break;
-	case GDK_Escape:
-		if (mainwin->summaryview && 
-		    mainwin->summaryview->ext_messageview && 
-		    mainwin->summaryview->ext_messageview->window && 
-		    widget == mainwin->summaryview->ext_messageview->window) {
-			messageview_destroy(mainwin->summaryview->ext_messageview);
-		}
-		break;
-#endif
-	default:
-		break;
-	}
-	return FALSE;
-}
-
-#undef BREAK_ON_MODIFIER_KEY
 
 /*
  * Harvest addresses for selected folder.
