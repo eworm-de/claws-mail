@@ -1226,36 +1226,6 @@ static gchar *strstr_with_skip_quote(const gchar *haystack, const gchar *needle)
 	return NULL;
 }
 
-static gchar *strchr_parenthesis_close(const gchar *str, gchar op, gchar cl)
-{
-	const gchar *p;
-	gchar quote_chr = '"';
-	gint in_brace;
-	gboolean in_quote = FALSE;
-
-	p = str;
-
-	if ((p = strchr_with_skip_quote(p, quote_chr, op))) {
-		p++;
-		in_brace = 1;
-		while (*p) {
-			if (*p == op && !in_quote)
-				in_brace++;
-			else if (*p == cl && !in_quote)
-				in_brace--;
-			else if (*p == quote_chr)
-				in_quote ^= TRUE;
-
-			if (in_brace == 0)
-				return (gchar *)p;
-
-			p++;
-		}
-	}
-
-	return NULL;
-}
-
 gchar **strsplit_with_quote(const gchar *str, const gchar *delim,
 			    gint max_tokens)
 {
