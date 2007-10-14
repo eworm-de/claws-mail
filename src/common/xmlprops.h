@@ -40,11 +40,8 @@ struct _XmlProperty {
 /* Function prototypes */
 
 XmlProperty *xmlprops_create	( void );
-void xmlprops_clear		( XmlProperty *props );
 void xmlprops_free		( XmlProperty *props );
 void xmlprops_set_path		( XmlProperty *props, const gchar *value );
-void xmlprops_set_encoding	( XmlProperty *props, const gchar *value );
-int xmlprops_print		( XmlProperty *props, FILE *stream );
 gint xmlprops_load_file		( XmlProperty *props );
 gint xmlprops_save_file		( XmlProperty *props );
 void xmlprops_set_property	( XmlProperty *props, const gchar *name,
@@ -53,7 +50,6 @@ void xmlprops_set_property_i	( XmlProperty *props, const gchar *name,
 				  const gint value );
 void xmlprops_set_property_b	( XmlProperty *props, const gchar *name,
 				  const gboolean value );
-gchar *xmlprops_get_property	( XmlProperty *props, const gchar *name );
 void xmlprops_get_property_s	( XmlProperty *props, const gchar *name,
 				  gchar *buffer );
 gint xmlprops_get_property_i	( XmlProperty *props, const gchar *name );

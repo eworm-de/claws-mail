@@ -88,12 +88,8 @@ typedef void ( AddrSearchCallbackEnd ) ( gpointer sender,
 
 /* Function prototypes */
 QueryRequest *qryreq_create	( void );
-void qryreq_clear		( QueryRequest *req );
-void qryreq_free		( QueryRequest *req );
 void qryreq_set_search_type	( QueryRequest *req, const AddrSearchType value );
-void qryreq_set_search_term	( QueryRequest *req, const gchar *value );
 void qryreq_add_query		( QueryRequest *req, AddrQueryObject *aqo );
-void qryreq_print		( const QueryRequest *req, FILE *stream );
 
 void qrymgr_initialize		( void );
 void qrymgr_teardown		( void );
@@ -103,7 +99,6 @@ QueryRequest *qrymgr_add_request( const gchar *searchTerm,
 
 QueryRequest *qrymgr_find_request( const gint queryID );
 void qrymgr_delete_request	( const gint queryID );
-void qrymgr_print		( FILE *stream );
 
 #endif /* __ADDRQUERY_H__ */
 

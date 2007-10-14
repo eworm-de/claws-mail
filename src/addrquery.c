@@ -48,7 +48,7 @@ static gint _currentQueryID_ = 0;
  * Clear the query.
  * \param req Request query object.
  */
-void qryreq_clear( QueryRequest *req ) {
+static void qryreq_clear( QueryRequest *req ) {
 	GList *node;
 
 	g_return_if_fail( req != NULL );
@@ -73,7 +73,7 @@ void qryreq_clear( QueryRequest *req ) {
  * Free query.
  * \param req Request query object.
  */
-void qryreq_free( QueryRequest *req ) {
+static void qryreq_free( QueryRequest *req ) {
 	g_return_if_fail( req != NULL );
 	qryreq_clear( req );
 	g_free( req );
@@ -90,17 +90,6 @@ void qryreq_set_search_type( QueryRequest *req, const AddrSearchType value ) {
 }
 
 /**
- * Specify search term to be used.
- * \param req   Request query object.
- * \param value Search term.
- */
-void qryreq_set_search_term( QueryRequest *req, const gchar *value ) {
-	req->searchTerm = mgu_replace_string( req->searchTerm, value );
-	g_return_if_fail( req != NULL );
-	g_strstrip( req->searchTerm );
-}
-
-/**
  * Add address query object to request.
  * \param req  Request query object.
  * \param aqo  Address query object that performs the search.
@@ -109,27 +98,6 @@ void qryreq_add_query( QueryRequest *req, AddrQueryObject *aqo ) {
 	g_return_if_fail( req != NULL );
 	g_return_if_fail( aqo != NULL );
 	req->queryList = g_list_append( req->queryList, aqo );
-}
-
-/**
- * Display object to specified stream.
- * \param req    Request query object.
- * \param stream Output stream.
- */
-void qryreq_print( const QueryRequest *req, FILE *stream ) {
-	GList *node;
-	g_return_if_fail( req != NULL );
-
-	fprintf( stream, "QueryRequest:\n" );
-	fprintf( stream, "     queryID: %d\n",   req->queryID );
-	fprintf( stream, "  searchType: %d\n",   req->searchType );
-	fprintf( stream, "  searchTerm: '%s'\n", req->searchTerm );
-	node = req->queryList;
-	while( node ) {
-		AddrQueryObject *aqo = node->data;
-		fprintf( stream, "    --- type: %d\n", aqo->queryType );
-		node = g_list_next( node );
-	}
 }
 
 /**
@@ -253,26 +221,6 @@ static void qrymgr_free_all_request( void ) {
  */
 void qrymgr_teardown( void ) {
 	qrymgr_free_all_request();
-}
-
-/**
- * Display all queries to specified stream.
- * \param stream Output stream.
- */
-void qrymgr_print( FILE *stream ) {
-	QueryRequest *req;
-	GList *node;
-
-	pthread_mutex_lock( & _requestListMutex_ );
-	fprintf( stream, "=== Query Manager ===\n" );
-	node = _requestList_;
-	while( node ) {
-		req = node->data;
-		qryreq_print( req, stream );
-		fprintf( stream, "---\n" );
-		node = g_list_next( node );
-	}
-	pthread_mutex_unlock( & _requestListMutex_ );
 }
 
 /*

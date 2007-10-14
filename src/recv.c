@@ -73,37 +73,6 @@ gint recv_write_to_file(SockInfo *sock, const gchar *filename)
 	return 0;
 }
 
-gint recv_bytes_write_to_file(SockInfo *sock, glong size, const gchar *filename)
-{
-	FILE *fp;
-	gint ret;
-
-	g_return_val_if_fail(filename != NULL, -1);
-
-	if ((fp = g_fopen(filename, "wb")) == NULL) {
-		FILE_OP_ERROR(filename, "fopen");
-		recv_write(sock, NULL);
-		return -1;
-	}
-
-	if (change_file_mode_rw(fp, filename) < 0)
-		FILE_OP_ERROR(filename, "chmod");
-
-	if ((ret = recv_bytes_write(sock, size, fp)) < 0) {
-		fclose(fp);
-		g_unlink(filename);
-		return ret;
-	}
-
-	if (fclose(fp) == EOF) {
-		FILE_OP_ERROR(filename, "fclose");
-		g_unlink(filename);
-		return -1;
-	}
-
-	return 0;
-}
-
 gint recv_write(SockInfo *sock, FILE *fp)
 {
 	gchar buf[BUFFSIZE];
@@ -165,63 +134,6 @@ gint recv_write(SockInfo *sock, FILE *fp)
 
 	if (!fp) return -1;
 
-	return 0;
-}
-
-gint recv_bytes_write(SockInfo *sock, glong size, FILE *fp)
-{
-	gchar *buf;
-	glong count = 0;
-	gchar *prev, *cur;
-
-	if (size == 0)
-		return 0;
-
-	buf = g_malloc(size);
-
-	do {
-		gint read_count;
-
-		read_count = sock_read(sock, buf + count, size - count);
-		if (read_count < 0) {
-			g_free(buf);
-			return -2;
-		}
-		count += read_count;
-	} while (count < size);
-
-	/* +------------------+----------------+--------------------------+ *
-	 * ^buf               ^prev            ^cur             buf+size-1^ */
-
-	prev = buf;
-	while ((cur = memchr(prev, '\r', size - (prev - buf))) != NULL) {
-		if (cur == buf + size - 1) break;
-
-		if (fwrite(prev, sizeof(gchar), cur - prev, fp) == EOF ||
-		    fwrite("\n", sizeof(gchar), 1, fp) == EOF) {
-			perror("fwrite");
-			g_warning("Can't write to file.\n");
-			g_free(buf);
-			return -1;
-		}
-
-		if (*(cur + 1) == '\n')
-			prev = cur + 2;
-		else
-			prev = cur + 1;
-
-		if (prev - buf >= size) break;
-	}
-
-	if (prev - buf < size && fwrite(buf, sizeof(gchar),
-					size - (prev - buf), fp) == EOF) {
-		perror("fwrite");
-		g_warning("Can't write to file.\n");
-		g_free(buf);
-		return -1;
-	}
-
-	g_free(buf);
 	return 0;
 }
 

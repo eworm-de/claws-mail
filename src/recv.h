@@ -31,13 +31,7 @@ typedef gboolean (*RecvUIFunc)	(SockInfo	*sock,
 
 gint recv_write_to_file		(SockInfo	*sock,
 				 const gchar	*filename);
-gint recv_bytes_write_to_file	(SockInfo	*sock,
-				 glong		 size,
-				 const gchar	*filename);
 gint recv_write			(SockInfo	*sock,
-				 FILE		*fp);
-gint recv_bytes_write		(SockInfo	*sock,
-				 glong		 size,
 				 FILE		*fp);
 
 void recv_set_ui_func		(RecvUIFunc	 func,

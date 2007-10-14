@@ -1,3 +1,17 @@
+2007-10-14 [colin]	3.0.2cvs72
+
+	* src/addrquery.c
+	* src/addrquery.h
+	* src/recv.c
+	* src/recv.h
+	* src/vcard.c
+	* src/vcard.h
+	* src/common/xml.c
+	* src/common/xml.h
+	* src/common/xmlprops.c
+	* src/common/xmlprops.h
+		Remove more unused code
+
 2007-10-14 [colin]	3.0.2cvs71
 
 	* src/common/utils.c

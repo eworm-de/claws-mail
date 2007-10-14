@@ -98,10 +98,6 @@ gboolean vcard_get_read_flag( VCardFile *cardFile ) {
 	g_return_val_if_fail( cardFile != NULL, FALSE );
 	return cardFile->addressCache->dataRead;
 }
-void vcard_set_read_flag( VCardFile *cardFile, const gboolean value ) {
-	g_return_if_fail( cardFile != NULL );
-	cardFile->addressCache->dataRead = value;
-}
 
 /*
 * Return status code from last file operation.
@@ -122,16 +118,9 @@ gchar *vcard_get_name( VCardFile *cardFile ) {
 }
 
 /*
-* Refresh internal variables to force a file read.
-*/
-void vcard_force_refresh( VCardFile *cardFile ) {
-	addrcache_refresh( cardFile->addressCache );
-}
-
-/*
 * Create new cardfile object for specified file.
 */
-VCardFile *vcard_create_path( const gchar *path ) {
+static VCardFile *vcard_create_path( const gchar *path ) {
 	VCardFile *cardFile;
 	cardFile = vcard_create();
 	vcard_set_file(cardFile, path);
@@ -577,33 +566,6 @@ GList *vcard_get_list_folder( VCardFile *cardFile ) {
 GList *vcard_get_all_persons( VCardFile *cardFile ) {
 	g_return_val_if_fail( cardFile != NULL, NULL );
 	return addrcache_get_all_persons( cardFile->addressCache );
-}
-
-/*
-* Validate that all parameters specified.
-* Return: TRUE if data is good.
-*/
-gboolean vcard_validate( const VCardFile *cardFile ) {
-	gboolean retVal;
-	gchar *name;
-
-	g_return_val_if_fail( cardFile != NULL, FALSE );
-
-	retVal = TRUE;
-	if( cardFile->path ) {
-		if( strlen( cardFile->path ) < 1 ) retVal = FALSE;
-	}
-	else {
-		retVal = FALSE;
-	}
-	name = addrcache_get_name( cardFile->addressCache );
-	if( name ) {
-		if( strlen( name ) < 1 ) retVal = FALSE;
-	}
-	else {
-		retVal = FALSE;
-	}
-	return retVal;
 }
 
 #define WORK_BUFLEN 1024

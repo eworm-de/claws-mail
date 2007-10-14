@@ -34,6 +34,16 @@
 #include "stringtable.h" 
 
 static StringTable *xml_string_table;
+static XMLTag  *xml_copy_tag		(XMLTag		*tag);
+static XMLAttr *xml_copy_attr		(XMLAttr	*attr);
+static void xml_free_node		(XMLNode	*node);
+static void xml_free_tag		(XMLTag 	*tag);
+static void xml_pop_tag		(XMLFile	*file);
+static void xml_push_tag		(XMLFile	*file,
+				 XMLTag		*tag);
+static gint xml_read_line		(XMLFile	*file);
+static void xml_truncate_buf		(XMLFile	*file);
+static gint xml_unescape_str		(gchar		*str);
 
 static void xml_string_table_create(void)
 {
@@ -317,7 +327,7 @@ gint xml_parse_next_tag(XMLFile *file)
 	return 0;
 }
 
-void xml_push_tag(XMLFile *file, XMLTag *tag)
+static void xml_push_tag(XMLFile *file, XMLTag *tag)
 {
 	g_return_if_fail(tag != NULL);
 
@@ -325,7 +335,7 @@ void xml_push_tag(XMLFile *file, XMLTag *tag)
 	file->level++;
 }
 
-void xml_pop_tag(XMLFile *file)
+static void xml_pop_tag(XMLFile *file)
 {
 	XMLTag *tag;
 
@@ -392,7 +402,7 @@ gchar *xml_get_element(XMLFile *file)
 	return new_str;
 }
 
-gint xml_read_line(XMLFile *file)
+static gint xml_read_line(XMLFile *file)
 {
 	gchar buf[XMLBUFSIZE];
 	gint index;
@@ -409,7 +419,7 @@ gint xml_read_line(XMLFile *file)
 	return 0;
 }
 
-void xml_truncate_buf(XMLFile *file)
+static void xml_truncate_buf(XMLFile *file)
 {
 	gint len;
 
@@ -489,7 +499,7 @@ void xml_tag_add_attr(XMLTag *tag, XMLAttr *attr)
 	tag->attr = g_list_prepend(tag->attr, attr);
 }
 
-XMLTag *xml_copy_tag(XMLTag *tag)
+static XMLTag *xml_copy_tag(XMLTag *tag)
 {
 	XMLTag *new_tag;
 	XMLAttr *attr;
@@ -505,12 +515,12 @@ XMLTag *xml_copy_tag(XMLTag *tag)
 	return new_tag;
 }
 
-XMLAttr *xml_copy_attr(XMLAttr *attr)
+static XMLAttr *xml_copy_attr(XMLAttr *attr)
 {
 	return xml_attr_new(attr->name, attr->value);
 }
 
-gint xml_unescape_str(gchar *str)
+static gint xml_unescape_str(gchar *str)
 {
 	gchar *start;
 	gchar *end;
@@ -596,7 +606,7 @@ gint xml_file_put_xml_decl(FILE *fp)
 	return fprintf(fp, "<?xml version=\"1.0\" encoding=\"%s\"?>\n", CS_INTERNAL);
 }
 
-void xml_free_node(XMLNode *node)
+static void xml_free_node(XMLNode *node)
 {
 	if (!node) return;
 
@@ -623,7 +633,7 @@ void xml_free_tree(GNode *node)
 	g_node_destroy(node);
 }
 
-void xml_free_tag(XMLTag *tag)
+static void xml_free_tag(XMLTag *tag)
 {
 	if (!tag) return;
 

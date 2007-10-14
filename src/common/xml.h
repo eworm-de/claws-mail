@@ -71,16 +71,11 @@ GNode   *xml_parse_file		(const gchar	*path);
 
 gint xml_get_dtd		(XMLFile	*file);
 gint xml_parse_next_tag		(XMLFile	*file);
-void xml_push_tag		(XMLFile	*file,
-				 XMLTag		*tag);
-void xml_pop_tag		(XMLFile	*file);
 
 XMLTag *xml_get_current_tag	(XMLFile	*file);
 GList  *xml_get_current_tag_attr(XMLFile	*file);
 gchar  *xml_get_element		(XMLFile	*file);
 
-gint xml_read_line		(XMLFile	*file);
-void xml_truncate_buf		(XMLFile	*file);
 gboolean  xml_compare_tag	(XMLFile	*file,
 				 const gchar	*name);
 
@@ -95,19 +90,14 @@ XMLAttr *xml_attr_new_int	(const gchar	*name,
 void xml_tag_add_attr		(XMLTag		*tag,
 				 XMLAttr*	attr);
 
-XMLTag  *xml_copy_tag		(XMLTag		*tag);
-XMLAttr *xml_copy_attr		(XMLAttr	*attr);
 
-gint xml_unescape_str		(gchar		*str);
 gint xml_file_put_escape_str	(FILE		*fp,
 				 const gchar	*str);
 
 gint xml_file_put_xml_decl	(FILE		*fp);
 
-void xml_free_node		(XMLNode	*node);
 void xml_free_tree		(GNode		*node);
 
-void xml_free_tag		(XMLTag 	*tag);
 int  xml_write_tree		(GNode		*node,
 				 FILE		*fp);
 GNode *xml_copy_tree		(GNode 		*node);

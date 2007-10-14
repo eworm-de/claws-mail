@@ -49,6 +49,8 @@
 #define XMLS_ATTAG_NAME          "name"
 #define XMLS_ATTAG_VALUE         "value"
 
+static void xmlprops_clear		( XmlProperty *props );
+
 typedef struct _HashLoopData {
 	FILE *fp;
 	int error;
@@ -75,10 +77,6 @@ void xmlprops_set_path( XmlProperty *props, const gchar *value ) {
 	g_return_if_fail( props != NULL );
 	props->path = mgu_replace_string( props->path, value );
 }
-void xmlprops_set_encoding( XmlProperty *props, const gchar *value ) {
-	g_return_if_fail( props != NULL );
-	props->encoding = mgu_replace_string( props->encoding, value );
-}
 
 /*
  * Free hash table visitor function.
@@ -95,7 +93,7 @@ static gint xmlprops_free_entry_vis( gpointer key, gpointer value, gpointer data
  * Clear all properties.
  * Enter: props Property object.
  */
-void xmlprops_clear( XmlProperty *props ) {
+static void xmlprops_clear( XmlProperty *props ) {
 	g_return_if_fail( props != NULL );
 	g_hash_table_foreach_remove(
 		props->propertyTable, xmlprops_free_entry_vis, NULL );
@@ -245,32 +243,6 @@ gint xmlprops_save_file( XmlProperty *props ) {
 	return props->retVal;
 }
 
-static void xmlprops_print_vis( gpointer key, gpointer value, gpointer d ) {
-	HashLoopData *data = (HashLoopData *)d;
-
-	if (fprintf( data->fp, "-\tname/value:\t%s / %s\n", (char *)key, (char *)value ) < 0)
-		data->error = 1;
-}
-
-int xmlprops_print( XmlProperty *props, FILE *stream ) {
-	HashLoopData data;
-	
-	if (fprintf( stream, "Property File: %s\n", props->path ) < 0)
-		return -1;
-		
-	data.fp = stream;
-	data.error = 0;
-	g_hash_table_foreach( props->propertyTable, xmlprops_print_vis, &data );
-
-	if (data.error)
-		return -1;
-
-	if (fprintf( stream, "---\n" ) < 0)
-		return -1;
-	
-	return 0;
-}
-
 static void xmlprops_save_property(
 		XmlProperty *props, const gchar *name, const gchar *value )
 {
@@ -405,24 +377,6 @@ void xmlprops_set_property_b(
 	else {
 		xmlprops_set_property( props, name, "n" );
 	}
-}
-
-/*
- * Get property.
- * Enter:  props Property object.
- *         name  Property name.
- * Return: value found, or NULL if none. Should be g_free() when done.
- */
-gchar *xmlprops_get_property( XmlProperty *props, const gchar *name ) {
-	gchar *val, *value;
-
-	value = NULL;
-	g_return_val_if_fail( props != NULL, value );
-	val = g_hash_table_lookup( props->propertyTable, name );
-	if( val ) {
-		value = g_strdup( val );
-	}
-	return value;
 }
 
 /*
