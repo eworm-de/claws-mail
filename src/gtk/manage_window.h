@@ -45,16 +45,11 @@ gint manage_window_focus_out		(GtkWidget	*widget,
 gint manage_window_unmap		(GtkWidget	*widget,
 					 GdkEventAny	*event,
 					 gpointer	 data);
-gint manage_window_delete		(GtkWidget	*widget,
-					 GdkEventAny	*event,
-					 gpointer	 data);
 void manage_window_destroy		(GtkWidget	*widget,
 					 gpointer	 data);
 
 void manage_window_set_transient	(GtkWindow	*window);
 
 extern GtkWidget *focus_window;
-
-GtkWidget *manage_window_get_focus_window	(void);
 
 #endif /* __MANAGE_WINDOW_H__ */

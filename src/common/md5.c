@@ -54,7 +54,7 @@ rol( u32 x, int n)
 #endif
 
 
-void
+static void
 md5_init(MD5_CONTEXT *ctx)
 {
 	ctx->A = 0x67452301;
@@ -215,7 +215,7 @@ transform(MD5_CONTEXT *ctx, const unsigned char *data)
  * account for the presence of each of the characters inBuf[0..inLen-1]
  * in the message whose digest is being computed.
  */
-void
+static void
 md5_update(MD5_CONTEXT *hd, const unsigned char *inbuf, size_t inlen)
 {
 	if (hd->count == 64) { /* flush the buffer */
@@ -315,7 +315,7 @@ do_final(MD5_CONTEXT *hd)
 	hd->finalized = 1;
 }
 
-void
+static void
 md5_final(unsigned char *digest, MD5_CONTEXT *ctx)
 {
 	if (!ctx->finalized)
@@ -348,7 +348,7 @@ md5_hex_digest(char *hexdigest, const unsigned char *s)
 ** taken from the file rfc2104.txt
 ** written by Martin Schaaf <mascha@ma-scha.de>
 */
-void
+static void
 md5_hmac(unsigned char *digest,
 	 const unsigned char* text, int text_len,
 	 const unsigned char* key, int key_len)

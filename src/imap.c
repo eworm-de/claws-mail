@@ -5095,7 +5095,7 @@ gboolean imap_cancel_all_enabled(void)
 
 #endif
 
-void imap_synchronise(FolderItem *item, gint days) 
+static void imap_synchronise(FolderItem *item, gint days) 
 {
 #ifdef HAVE_LIBETPAN
 	if (IMAP_FOLDER_ITEM(item)->last_sync == IMAP_FOLDER_ITEM(item)->last_change) {

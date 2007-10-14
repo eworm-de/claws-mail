@@ -58,17 +58,6 @@ gint manage_window_unmap(GtkWidget *widget, GdkEventAny *event, gpointer data)
 	return FALSE;
 }
 
-gint manage_window_delete(GtkWidget *widget, GdkEventAny *event,
-			  gpointer data)
-{
-	/* debug_print("delete event: %p\n", widget); */
-
-	if (focus_window == widget)
-		focus_window = NULL;
-
-	return FALSE;
-}
-
 void manage_window_destroy(GtkWidget *widget, gpointer data)
 {
 	/* debug_print("destroy event: %p\n", widget); */
@@ -84,9 +73,4 @@ void manage_window_set_transient(GtkWindow *window)
 
 	if (window && focus_window)
 		gtk_window_set_transient_for(window, GTK_WINDOW(focus_window));
-}
-
-GtkWidget *manage_window_get_focus_window(void)
-{
-	return focus_window;
 }

@@ -31,15 +31,8 @@ typedef struct {  /* Hmm, should be private */
     int  finalized;
 } MD5_CONTEXT;
 
-void md5_init(MD5_CONTEXT *ctx);
-void md5_update(MD5_CONTEXT *hd, const unsigned char *inbuf, size_t inlen);
-void md5_final(unsigned char *digest, MD5_CONTEXT *ctx);
-
 void md5_hex_digest(char *hexdigest, const unsigned char *s);
 
-void md5_hmac(unsigned char *digest,
-              const unsigned char* text, int text_len,
-              const unsigned char* key, int key_len);
 void md5_hex_hmac(char *hexdigest,
                   const unsigned char* text, int text_len,
                   const unsigned char* key, int key_len);
