@@ -438,7 +438,7 @@ static HeaderEntry hentry_short[] = {{"Date:",		NULL, FALSE},
 				    {"SC-Message-Size:",NULL, FALSE},
 				    {NULL,		NULL, FALSE}};
 
-HeaderEntry* procheader_get_headernames(gboolean full)
+static HeaderEntry* procheader_get_headernames(gboolean full)
 {
 	return full ? hentry_full : hentry_short;
 }

@@ -44,6 +44,9 @@ static gint source_window_delete_cb	(GtkWidget	*widget,
 static gboolean key_pressed		(GtkWidget	*widget,
 					 GdkEventKey	*event,
 					 SourceWindow	*sourcewin);
+static void source_window_append	(SourceWindow	*sourcewin,
+					 const gchar	*str);
+static void source_window_destroy	(SourceWindow	*sourcewin);
 
 static void source_window_init()
 {
@@ -118,7 +121,7 @@ void source_window_show(SourceWindow *sourcewin)
 	gtk_widget_show_all(sourcewin->window);
 }
 
-void source_window_destroy(SourceWindow *sourcewin)
+static void source_window_destroy(SourceWindow *sourcewin)
 {
 	if (sourcewin->updating) {
 		debug_print("deferring destroy\n");
@@ -169,7 +172,7 @@ void source_window_show_msg(SourceWindow *sourcewin, MsgInfo *msginfo)
 	fclose(fp);
 }
 
-void source_window_append(SourceWindow *sourcewin, const gchar *str)
+static void source_window_append(SourceWindow *sourcewin, const gchar *str)
 {
 	GtkTextView *text = GTK_TEXT_VIEW(sourcewin->text);
 	GtkTextBuffer *buffer = gtk_text_view_get_buffer(text);

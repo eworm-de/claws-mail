@@ -357,7 +357,7 @@ void prefs_custom_header_read_config(PrefsAccount *ac)
 	fclose(fp);
 }
 
-void prefs_custom_header_write_config(PrefsAccount *ac)
+static void prefs_custom_header_write_config(PrefsAccount *ac)
 {
 	gchar *rcpath;
 	PrefFile *pfile;

@@ -1036,7 +1036,6 @@ int main(int argc, char *argv[])
 	prefs_display_header_read_config();
 	/* prefs_filtering_read_config(); */
 	addressbook_read_file();
-	renderer_read_config();
 
 	gtkut_widget_init();
 	stock_pixbuf_gdk(NULL, STOCK_PIXMAP_CLAWS_MAIL_ICON, &icon);
@@ -1442,6 +1441,7 @@ static void exit_claws(MainWindow *mainwin)
 	prefs_message_done();
 	prefs_other_done();
 	prefs_receive_done();
+	prefs_logging_done();
 	prefs_send_done();
 	tags_write_tags();
 #ifdef USE_ASPELL       

@@ -42,6 +42,8 @@
 #include "gtkutils.h"
 #include "utils.h"
 
+static void prefs_summary_column_set_config(SummaryColumnState *state);
+
 enum {
 	SUMCOL_NAME,
 	SUMCOL_TYPE,
@@ -401,7 +403,7 @@ SummaryColumnState *prefs_summary_column_get_config(void)
 	return state;
 }
 
-void prefs_summary_column_set_config(SummaryColumnState *state)
+static void prefs_summary_column_set_config(SummaryColumnState *state)
 {
 	SummaryColumnType type;
 	gint pos;

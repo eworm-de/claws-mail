@@ -50,6 +50,9 @@
 #include "matcher_parser.h"
 #include "colorlabel.h"
 
+static void prefs_matcher_addressbook_select(void);
+static void prefs_matcher_test_info(void);
+
 enum {
 	PREFS_MATCHER_COND,
 	PREFS_MATCHER_COND_VALID,
@@ -1972,12 +1975,12 @@ static DescriptionWindow test_desc_win = {
 /*!
  *\brief	Show Test action's info
  */
-void prefs_matcher_test_info(void)
+static void prefs_matcher_test_info(void)
 {
 	description_window_create(&test_desc_win);
 }
 
-void prefs_matcher_addressbook_select(void)
+static void prefs_matcher_addressbook_select(void)
 {
 	gchar *folderpath = NULL;
 	gboolean ret = FALSE;

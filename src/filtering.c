@@ -1004,7 +1004,7 @@ gchar * filteringprop_to_string(FilteringProp * prop)
 	return filtering_str;
 }
 
-void prefs_filtering_free(GSList * prefs_filtering)
+static void prefs_filtering_free(GSList * prefs_filtering)
 {
  	while (prefs_filtering != NULL) {
  		FilteringProp * filtering = (FilteringProp *)

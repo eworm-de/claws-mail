@@ -90,6 +90,7 @@ static gint pop3_session_recv_msg		(Session	*session,
 static gint pop3_session_recv_data_finished	(Session	*session,
 						 guchar		*data,
 						 guint		 len);
+static void pop3_get_uidl_table(PrefsAccount *ac_prefs, Pop3Session *session);
 
 static gint pop3_greeting_recv(Pop3Session *session, const gchar *msg)
 {
@@ -567,7 +568,7 @@ static void pop3_session_destroy(Session *session)
 	g_free(pop3_session->error_msg);
 }
 
-void pop3_get_uidl_table(PrefsAccount *ac_prefs, Pop3Session *session)
+static void pop3_get_uidl_table(PrefsAccount *ac_prefs, Pop3Session *session)
 {
 	GHashTable *table;
 	GHashTable *partial_recv_table;

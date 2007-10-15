@@ -41,6 +41,8 @@
 
 static RecvUIFunc	recv_ui_func;
 static gpointer		recv_ui_func_data;
+static gint recv_write			(SockInfo	*sock,
+					 FILE		*fp);
 
 gint recv_write_to_file(SockInfo *sock, const gchar *filename)
 {
@@ -73,7 +75,7 @@ gint recv_write_to_file(SockInfo *sock, const gchar *filename)
 	return 0;
 }
 
-gint recv_write(SockInfo *sock, FILE *fp)
+static gint recv_write(SockInfo *sock, FILE *fp)
 {
 	gchar buf[BUFFSIZE];
 	gint len;

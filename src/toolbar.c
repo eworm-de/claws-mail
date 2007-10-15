@@ -67,6 +67,7 @@
 #define TOOLBAR_ICON_TEXT   "text"     
 #define TOOLBAR_ICON_ACTION "action"    
 
+static void toolbar_init(Toolbar * toolbar);
 static gboolean      toolbar_is_duplicate		(gint           action,
 					      	 ToolbarType	source);
 static void   toolbar_parse_item		(XMLFile        *file,
@@ -824,7 +825,7 @@ void toolbar_set_list_item(ToolbarItem *t_item, ToolbarType source)
 			       toolbar_item);
 }
 
-void toolbar_action_execute(GtkWidget    *widget,
+static void toolbar_action_execute(GtkWidget    *widget,
 			    GSList       *action_list, 
 			    gpointer     data,
 			    gint         source) 
@@ -2375,7 +2376,8 @@ void toolbar_comp_set_sensitive(gpointer data, gboolean sensitive)
 /**
  * Initialize toolbar structure
  **/
-void toolbar_init(Toolbar * toolbar) {
+static void toolbar_init(Toolbar * toolbar)
+{
 
 	toolbar->toolbar          	= NULL;
 	toolbar->folders_btn		= NULL;

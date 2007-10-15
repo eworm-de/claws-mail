@@ -65,6 +65,9 @@ static GHashTable *whole_cache = NULL;
 static gboolean prefs_read_config_from_cache(PrefParam *param, const gchar *label,
 			       const gchar *rcfile);
 
+static void prefs_config_parse_one_line(PrefParam	*param,
+					 const gchar	*buf);
+
 void prefs_read_config(PrefParam *param, const gchar *label,
 		       const gchar *rcfile, const gchar *encoding)
 {
@@ -148,7 +151,7 @@ void prefs_read_config(PrefParam *param, const gchar *label,
 	fclose(fp);
 }
 
-void prefs_config_parse_one_line(PrefParam *param, const gchar *buf)
+static void prefs_config_parse_one_line(PrefParam *param, const gchar *buf)
 {
 	gint i;
 	gint name_len;
@@ -531,63 +534,6 @@ void prefs_free(PrefParam *param)
 			break;
 		}
 	}
-}
-
-void prefs_dialog_create(PrefsDialog *dialog)
-{
-	GtkWidget *window;
-	GtkWidget *vbox;
-	GtkWidget *notebook;
-
-	GtkWidget *confirm_area;
-	GtkWidget *ok_btn;
-	GtkWidget *cancel_btn;
-	GtkWidget *apply_btn;
-
-	g_return_if_fail(dialog != NULL);
-
-	window = gtkut_window_new(GTK_WINDOW_TOPLEVEL, "prefs_gtk");
-	gtk_container_set_border_width (GTK_CONTAINER (window), 8);
-	gtk_window_set_position (GTK_WINDOW(window), GTK_WIN_POS_CENTER);
-	gtk_window_set_modal (GTK_WINDOW (window), TRUE);
-	gtk_window_set_resizable(GTK_WINDOW(window), TRUE);
-
-	vbox = gtk_vbox_new (FALSE, 6);
-	gtk_widget_show(vbox);
-	gtk_container_add (GTK_CONTAINER (window), vbox);
-
-	notebook = gtk_notebook_new ();
-	gtk_widget_show(notebook);
-	gtk_box_pack_start (GTK_BOX (vbox), notebook, TRUE, TRUE, 0);
-	gtk_container_set_border_width (GTK_CONTAINER (notebook), 2);
-	/* GTK_WIDGET_UNSET_FLAGS (notebook, GTK_CAN_FOCUS); */
-	gtk_notebook_set_scrollable (GTK_NOTEBOOK (notebook), TRUE);
-	
-	gtk_notebook_popup_enable (GTK_NOTEBOOK (notebook));
-
-	gtkut_stock_button_set_create(&confirm_area,
-				      &ok_btn, GTK_STOCK_OK,
-				      &cancel_btn, GTK_STOCK_CANCEL,
-				      &apply_btn, GTK_STOCK_APPLY);
-	gtk_widget_show(confirm_area);
-	gtk_box_pack_end (GTK_BOX(vbox), confirm_area, FALSE, FALSE, 0);
-	gtk_widget_grab_default(ok_btn);
-
-	dialog->window     = window;
-	dialog->notebook   = notebook;
-	dialog->ok_btn     = ok_btn;
-	dialog->cancel_btn = cancel_btn;
-	dialog->apply_btn  = apply_btn;
-}
-
-void prefs_dialog_destroy(PrefsDialog *dialog)
-{
-	gtk_widget_destroy(dialog->window);
-	dialog->window     = NULL;
-	dialog->notebook   = NULL;
-	dialog->ok_btn     = NULL;
-	dialog->cancel_btn = NULL;
-	dialog->apply_btn  = NULL;
 }
 
 void prefs_button_toggled(GtkToggleButton *toggle_btn, GtkWidget *widget)

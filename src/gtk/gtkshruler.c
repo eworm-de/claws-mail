@@ -173,25 +173,3 @@ gtk_shruler_draw_ticks(GtkRuler *ruler)
 		}
 	}
 }
-
-/* gtk_ruler_set_pos() - does not work yet, need to reimplement 
- * gtk_ruler_draw_pos(). */
-void
-gtk_shruler_set_pos(GtkSHRuler * ruler, gfloat pos)
-{
-	GtkRuler * ruler_;
-	g_return_if_fail( ruler != NULL );
-	
-	ruler_ = GTK_RULER(ruler);
-	
-	if ( pos < ruler_->lower ) 
-		pos = ruler_->lower;
-	if ( pos > ruler_->upper )
-		pos = ruler_->upper;
-	
-	ruler_->position = pos;	
-	
-	/*  Make sure the ruler has been allocated already  */
-	if ( ruler_->backing_store != NULL )
-		gtk_ruler_draw_pos(ruler_);
-}

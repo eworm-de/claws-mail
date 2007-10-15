@@ -25,6 +25,5 @@
 void prefs_summary_column_open(void);
 
 SummaryColumnState *prefs_summary_column_get_config(void);
-void prefs_summary_column_set_config(SummaryColumnState *state);
 
 #endif /* __PREFS_SUMMARY_COLUMN_H__ */

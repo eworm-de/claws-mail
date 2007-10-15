@@ -39,10 +39,7 @@ struct _SourceWindow
 
 SourceWindow *source_window_create	(void);
 void source_window_show			(SourceWindow	*sourcewin);
-void source_window_destroy		(SourceWindow	*sourcewin);
 void source_window_show_msg		(SourceWindow	*sourcewin,
 					 MsgInfo	*msginfo);
-void source_window_append		(SourceWindow	*sourcewin,
-					 const gchar	*str);
 
 #endif /* __SOURCEWINDOW_H__ */

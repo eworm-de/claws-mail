@@ -21,7 +21,6 @@
 #define __PREFS_DISPLAY_HEADER_H__
 
 void prefs_display_header_read_config	(void);
-void prefs_display_header_write_config	(void);
 void prefs_display_header_open		(void);
 
 #endif /* __PREFS_DISPLAY_HEADER_H__ */

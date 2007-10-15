@@ -42,6 +42,8 @@
 #include "gtkutils.h"
 #include "utils.h"
 
+static void prefs_folder_column_set_config(FolderColumnState *state);
+
 enum {
 	SUMCOL_NAME,
 	SUMCOL_TYPE,
@@ -385,7 +387,7 @@ FolderColumnState *prefs_folder_column_get_config(void)
 	return state;
 }
 
-void prefs_folder_column_set_config(FolderColumnState *state)
+static void prefs_folder_column_set_config(FolderColumnState *state)
 {
 	FolderColumnType type;
 	gint pos;

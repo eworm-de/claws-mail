@@ -37,7 +37,6 @@ PrefFile *prefs_read_open	(const gchar	*path);
 PrefFile *prefs_write_open	(const gchar	*path);
 gint prefs_file_close		(PrefFile	*pfile);
 gint prefs_file_close_revert	(PrefFile	*pfile);
-gboolean prefs_is_readonly	(const gchar 	*path);
 gboolean prefs_rc_is_readonly	(const gchar 	*rcfile);
 gint prefs_set_block_label	(PrefFile       *pfile,
 				 const gchar	*block_label);

@@ -22,6 +22,6 @@
 #define PREFS_LOGGING_H
 
 void prefs_logging_init	(void);
-void prefs_loggin_done	(void);
+void prefs_logging_done	(void);
 
 #endif /* PREFS_LOGGING_H */ 

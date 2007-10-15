@@ -17,7 +17,6 @@
  * 
  */
 
-void touufrombits(unsigned char *, const unsigned char *, int);
 int fromuutobits(char *, const char *);
 
 #define X_UUENCODE_END_LINE '`'

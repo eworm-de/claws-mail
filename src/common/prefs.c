@@ -28,6 +28,8 @@
 #include "prefs.h"
 #include "utils.h"
 
+static gboolean prefs_is_readonly	(const gchar 	*path);
+
 /*!
  *\brief	Open preferences file for reading
  *
@@ -234,7 +236,7 @@ gint prefs_file_close_revert(PrefFile *pfile)
 /*!
  *\brief	Check if "path" is a file and readonly
  */
-gboolean prefs_is_readonly(const gchar * path)
+static gboolean prefs_is_readonly(const gchar * path)
 {
 	if (path == NULL)
 		return TRUE;

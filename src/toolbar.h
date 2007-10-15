@@ -202,11 +202,6 @@ struct _ToolbarSylpheedActions {
 };
 
 
-void	toolbar_action_execute		(GtkWidget	*widget,
-					 GSList		*action_list, 
-					 gpointer	 data,
-					 gint		 source);
-
 GList	*toolbar_get_action_items	(ToolbarType	 source);
 
 void	toolbar_save_config_file	(ToolbarType	 source);
@@ -258,7 +253,6 @@ void	toolbar_set_style		(GtkWidget	*toolbar_wid,
 					 GtkWidget	*handlebox_wid,
 					 guint		 action);
 void 	toolbar_destroy			(Toolbar	*toolbar);
-void 	toolbar_init			(Toolbar	*toolbar);
 void toolbar_set_learn_button		(Toolbar	*toolbar, 
 					 LearnButtonType  learn_btn_type);
 const gchar *toolbar_get_short_text	(int action);

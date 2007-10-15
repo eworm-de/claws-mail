@@ -186,28 +186,6 @@ void progress_dialog_destroy(ProgressDialog *progress)
 }
 
 /*!
- *\return	gint Row where account was set
- */
-gint progress_dialog_list_set_account(ProgressDialog *progress,
-				      gint	      row,
-				      const gchar    *account_name)
-{
-	return progress_dialog_insert_account(progress, row, account_name,
-					      NULL, NULL);
-}
-
-/*!
- *\return	gint Row where image was set
- */
-gint progress_dialog_list_set_image(ProgressDialog *progress,
-				    gint	    row,
-				    GdkPixbuf	   *image)
-{
-	return progress_dialog_insert_account(progress, row, NULL,
-					      NULL, image);
-}
-
-/*!
  *\return	gint Row where status was set
  */
 gint progress_dialog_list_set_status(ProgressDialog *progress,

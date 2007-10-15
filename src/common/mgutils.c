@@ -343,35 +343,6 @@ gchar *mgu_slist_longest_entry( GSList *list ) {
 }	
 
 /*
- * Return reference to longest entry in the specified linked list.
- * It is assumed that the list contains only gchar objects.
- * Enter:  list List of gchar strings to examine.
- * Return: Reference to longest entry, or NULL if nothing found.
- */
-gchar *mgu_list_longest_entry( GList *list ) {
-	GList *node;
-	gchar *name = NULL;
-	gint iLen = 0, iLenT = 0;
-
-	node = list;
-	while( node ) {
-		if( name == NULL ) {
-			name = node->data;
-			iLen = strlen( name );
-		}
-		else {
-			iLenT = strlen( node->data );
-			if( iLenT > iLen ) {
-				name = node->data;
-				iLen = iLenT;
-			}
-		}
-		node = g_list_next( node );
-	}
-	return name;
-}	
-
-/*
  * Test whether string appears in list of strings, ignoring case. NULL or empty
  * strings will be ignored.
  * Enter: list List to process.

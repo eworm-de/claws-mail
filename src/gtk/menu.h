@@ -59,17 +59,10 @@ GtkWidget *menu_create_items	(GtkItemFactoryEntry	*entries,
 				 const gchar		*path,
 				 GtkItemFactory	       **factory,
 				 gpointer		 data);
-GtkWidget *popupmenu_create	(GtkWidget *window,
-				 GtkItemFactoryEntry *entries,
-				 guint n_entries,
-				 const gchar *path,
-				 gpointer data);
 gchar *menu_translate		(const gchar *path, gpointer data);
 
 void menu_set_sensitive		(GtkItemFactory		*ifactory,
 				 const gchar		*path,
-				 gboolean		 sensitive);
-void menu_set_sensitive_all	(GtkMenuShell		*menu_shell,
 				 gboolean		 sensitive);
 
 void menu_set_active		(GtkItemFactory		*ifactory,
@@ -84,12 +77,7 @@ void menu_button_position	(GtkMenu		*menu,
 gint menu_find_option_menu_index(GtkOptionMenu		*optmenu,
 				 gpointer		 data,
 				 GCompareFunc		 func);
-
-gpointer menu_get_option_menu_active_user_data
-				(GtkOptionMenu		*optmenu);
+void menu_set_sensitive_all(GtkMenuShell *menu_shell, gboolean sensitive);
 void menu_connect_identical_items(void);
-
-void menu_select_by_data	(GtkMenu 		*menu,
-				 gpointer		 data);
 
 #endif /* __MENU_H__ */

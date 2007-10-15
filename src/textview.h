@@ -88,9 +88,6 @@ TextView *textview_create		(void);
 void textview_init			(TextView	*textview);
 void textview_reflect_prefs		(TextView	*textview);
 
-void textview_show_message	(TextView	*textview,
-				 MimeInfo	*mimeinfo,
-				 const gchar	*file);
 void textview_show_part		(TextView	*textview,
 				 MimeInfo	*mimeinfo,
 				 FILE		*fp);

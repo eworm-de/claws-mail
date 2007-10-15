@@ -31,7 +31,5 @@
 void prefs_folder_item_create(FolderView *folderview, FolderItem *item); 
 
 void prefs_folder_item_open		(FolderItem 	*item);
-void prefs_folder_item_register_page	(PrefsPage 	*page);
-void prefs_folder_item_unregister_page	(PrefsPage 	*page);
 
 #endif /* PREFS_FOLDER_ITEM_H */

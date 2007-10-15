@@ -99,7 +99,7 @@ void template_free(Template *tmpl)
 	g_free(tmpl);
 }
 
-void template_clear_config(GSList *tmpl_list)
+static void template_clear_config(GSList *tmpl_list)
 {
 	GSList *cur;
 	Template *tmpl;
@@ -200,7 +200,7 @@ if (!(func)) \
 } \
 }
 
-void template_write_config(GSList *tmpl_list)
+static void template_write_config(GSList *tmpl_list)
 {
 	const gchar *path;
 	GSList *cur;

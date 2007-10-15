@@ -103,6 +103,7 @@ static gboolean imp_pine_import_file( gchar *sName, gchar *sFile ) {
 	else {
 		addrbook_free_book( abf );
 	}
+	pine_free(pdf);
 
 	return retVal;
 }

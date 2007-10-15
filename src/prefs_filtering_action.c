@@ -93,6 +93,8 @@ static gboolean prefs_filtering_actions_selected		(GtkTreeSelection *selector,
 								 gboolean currently_selected,
 								 gpointer data);
 
+static void prefs_filtering_action_exec_info(void);
+
 /*!
  *\brief	UI data for matcher dialog
  */
@@ -1257,7 +1259,7 @@ static DescriptionWindow exec_desc_win = {
 /*!
  *\brief	Show Execute action's info
  */
-void prefs_filtering_action_exec_info(void)
+static void prefs_filtering_action_exec_info(void)
 {
 	description_window_create(&exec_desc_win);
 }

@@ -215,8 +215,6 @@ void summary_select_node	  (SummaryView		*summaryview,
 				   gboolean		 display_msg,
 				   gboolean		 do_refresh);
 
-void summary_thread_build	  (SummaryView		*summaryview);
-
 void summary_expand_threads	  (SummaryView		*summaryview);
 void summary_collapse_threads	  (SummaryView		*summaryview);
 void summary_toggle_ignore_thread (SummaryView		*summaryview);
@@ -298,9 +296,6 @@ void summary_set_colorlabel	  (SummaryView		*summaryview,
 void summary_set_tag		  (SummaryView		*summaryview,
 				   gint			 tag_id,
 				   GtkWidget		*widget);
-void summary_set_colorlabel_color (GtkCTree		*ctree,
-				   GtkCTreeNode		*node,
-				   guint		 labelcolor);
 
 void summary_set_column_order	  (SummaryView		*summaryview);
 

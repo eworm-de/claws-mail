@@ -55,7 +55,6 @@ GList *mgu_parse_string		( gchar *line, const gint maxTokens,
 void mgu_str_unescape		( gchar *str );
 void mgu_str_ltc2space		( gchar *str, gchar chlead, gchar chtail );
 gchar *mgu_slist_longest_entry	( GSList *list );
-gchar *mgu_list_longest_entry	( GList *list );
 gboolean mgu_slist_test_unq_nc	( GSList *list, gchar *str );
 gboolean mgu_list_test_unq_nc	( GList *list, gchar *str );
 

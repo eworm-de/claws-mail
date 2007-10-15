@@ -104,6 +104,8 @@ static gboolean imp_mutt_import_file( gchar *sName, gchar *sFile ) {
 		addrbook_free_book( abf );
 	}
 
+	mutt_free(mdf);
+
 	return retVal;
 }
 

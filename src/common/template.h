@@ -36,10 +36,8 @@ struct _Template {
 };
 
 void template_free		(Template	*tmpl);
-void template_clear_config	(GSList		*tmpl_list);
 
 GSList *template_read_config	(void);
-void template_write_config	(GSList		*tmpl_list);
 
 GSList *template_get_config	(void);
 void template_set_config	(GSList		*tmpl_list);

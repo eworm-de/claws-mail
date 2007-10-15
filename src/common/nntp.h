@@ -83,21 +83,6 @@ gint nntp_get_article		(NNTPSession	*session,
 				 const gchar	*cmd,
 				 gint		 num,
 				 gchar	       **msgid);
-gint nntp_article		(NNTPSession	*session,
-				 gint		 num,
-				 gchar	       **msgid);
-gint nntp_body			(NNTPSession	*session,
-				 gint		 num,
-				 gchar	       **msgid);
-gint nntp_head			(NNTPSession	*session,
-				 gint		 num,
-				 gchar	       **msgid);
-gint nntp_stat			(NNTPSession	*session,
-				 gint		 num,
-				 gchar	       **msgid);
-gint nntp_next			(NNTPSession	*session,
-				 gint		*num,
-				 gchar	       **msgid);
 gint nntp_xover			(NNTPSession	*session,
 				 gint		 first,
 				 gint		 last);
@@ -108,8 +93,6 @@ gint nntp_xhdr			(NNTPSession	*session,
 gint nntp_list			(NNTPSession	*session);
 gint nntp_post			(NNTPSession	*session,
 				 FILE		*fp);
-gint nntp_newgroups		(NNTPSession	*session);
-gint nntp_newnews		(NNTPSession	*session);
 gint nntp_mode			(NNTPSession	*sessio,
 				 gboolean	 stream);
 

@@ -1074,11 +1074,6 @@ static PrefParam param[] = {
 	{NULL, NULL, NULL, P_OTHER, NULL, NULL, NULL}
 };
 
-PrefsCommon *prefs_common_get(void)
-{
-	return &prefs_common;
-}
-
 /*
  * Read history list from the specified history file
  */

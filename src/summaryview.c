@@ -444,6 +444,10 @@ static void summary_find_answers	(SummaryView 	*summaryview,
 static gboolean summary_update_msg	(gpointer source, gpointer data);
 static gboolean summary_update_folder_item_hook(gpointer source, gpointer data);
 static gboolean summary_update_folder_hook(gpointer source, gpointer data);
+static void summary_set_colorlabel_color (GtkCTree		*ctree,
+				   GtkCTreeNode		*node,
+				   guint		 labelcolor);
+static void summary_thread_build(SummaryView *summaryview);
 
 GtkTargetEntry summary_drag_types[2] =
 {
@@ -4796,7 +4800,7 @@ static void summary_execute_delete_func(GtkCTree *ctree, GtkCTreeNode *node,
 
 /* thread functions */
 
-void summary_thread_build(SummaryView *summaryview)
+static void summary_thread_build(SummaryView *summaryview)
 {
 	GtkCTree *ctree = GTK_CTREE(summaryview->ctree);
 	GtkCTreeNode *node;

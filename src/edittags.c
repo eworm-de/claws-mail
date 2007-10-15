@@ -556,29 +556,6 @@ static gboolean prefs_tags_selected(GtkTreeSelection *selector,
 	return TRUE;
 }
 
-gint prefs_tags_create_new(MainWindow *mainwin)
-{
-	gchar *new_tag = input_dialog(_("New tag"),
-				_("New tag name:"), 
-				""); 
-	gint id = -1;
-	if (!new_tag || !(*new_tag))
-		return -1;
-	
-	g_strstrip(new_tag);
-	id = tags_get_id_for_str(new_tag);
-	if (id != -1) {
-		g_free(new_tag);
-		return id;
-	}
-	id = tags_add_tag(new_tag);
-	g_free(new_tag);
-	
-	tags_write_tags();
-	return id;
-	
-}
-
 enum {
 	TAG_SELECTED,
 	TAG_SELECTED_INCONSISTENT,

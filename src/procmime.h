@@ -199,15 +199,10 @@ gboolean procmime_decode_content	(MimeInfo	*mimeinfo);
 gboolean procmime_encode_content	(MimeInfo	*mimeinfo, EncodingType encoding);
 gint procmime_get_part			(const gchar	*outfile,
 					 MimeInfo	*mimeinfo);
-FILE *procmime_get_text_content		(MimeInfo	*mimeinfo);
 FILE *procmime_get_first_text_content	(MsgInfo	*msginfo);
 FILE *procmime_get_first_encrypted_text_content
 					(MsgInfo 	*msginfo);
 
-gboolean procmime_find_string_part	(MimeInfo	*mimeinfo,
-					 const gchar	*filename,
-					 const gchar	*str,
-					 StrFindFunc	 find_func);
 gboolean procmime_find_string		(MsgInfo	*msginfo,
 					 const gchar	*str,
 					 StrFindFunc	 find_func);
@@ -234,7 +229,6 @@ void procmime_force_encoding			(EncodingType	 encoding);
 gboolean procmime_msginfo_is_encrypted		(MsgInfo 	*msginfo);
 
 void renderer_read_config(void);
-void renderer_write_config(void);
 
 gint procmime_write_mimeinfo(MimeInfo *mimeinfo, FILE *fp);
 

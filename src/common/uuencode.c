@@ -34,36 +34,6 @@ const char uudigit[64] =
   'X', 'Y', 'Z', '[', '\\', ']', '^', '_'
 };
 
-int touufrombits(unsigned char *out, const unsigned char *in, int inlen)
-{
-    int len;
-
-    if (inlen > 45) return -1;
-    len = (inlen * 4 + 2) / 3 + 1;
-    *out++ = uudigit[inlen];
-
-    for (; inlen >= 3; inlen -= 3) {
-	*out++ = uudigit[in[0] >> 2];
-	*out++ = uudigit[((in[0] << 4) & 0x30) | (in[1] >> 4)];
-	*out++ = uudigit[((in[1] << 2) & 0x3c) | (in[2] >> 6)];
-	*out++ = uudigit[in[2] & 0x3f];
-	in += 3;
-    }
-
-    if (inlen > 0) {
-	*out++ = uudigit[(in[0] >> 2)];
-	if (inlen == 1) {
-	    *out++ = uudigit[((in[0] << 4) & 0x30)];
-	} else {
-	    *out++ = uudigit[(((in[0] << 4) & 0x30) | (in[1] >> 4))] ;	    
-	    *out++ = uudigit[((in[1] << 2) & 0x3c)];
-	}
-    }
-    *out = '\0';
-
-    return len;
-}
-
 int fromuutobits(char *out, const char *in)
 {
     int len, outlen, inlen;

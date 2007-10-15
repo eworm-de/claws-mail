@@ -485,7 +485,7 @@ void messageview_update_actions_menu(MessageView *msgview)
 	action_update_msgview_menu(ifactory, "/Tools/Actions", msgview);
 }
 
-void messageview_add_toolbar(MessageView *msgview, GtkWidget *window) 
+static void messageview_add_toolbar(MessageView *msgview, GtkWidget *window) 
 {
  	GtkWidget *handlebox;
 	GtkWidget *vbox;
@@ -1205,14 +1205,6 @@ static void messageview_update(MessageView *msgview, MsgInfo *old_msginfo)
 		messageview_show(msgview, msginfo, 
 				 msgview->all_headers);
 	} 
-}
-
-void messageview_quote_color_set(void)
-{
-}
-
-void messageview_set_font(MessageView *messageview)
-{
 }
 
 TextView *messageview_get_current_textview(MessageView *messageview)

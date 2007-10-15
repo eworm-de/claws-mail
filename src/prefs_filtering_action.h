@@ -26,6 +26,5 @@ typedef void PrefsFilteringActionSignal	(GSList *action_list);
 
 void prefs_filtering_action_open		(GSList *action_list,
 				 PrefsFilteringActionSignal *cb);
-void prefs_filtering_action_exec_info	(void);
 
 #endif /* __PREFS_FILTER_H__ */

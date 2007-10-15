@@ -155,7 +155,6 @@ struct _Pop3Session
 #define IDLEN		POPBUFSIZE
 
 Session *pop3_session_new	(PrefsAccount	*account);
-void pop3_get_uidl_table	(PrefsAccount	*account, Pop3Session *session);
 gint pop3_write_uidl_list	(Pop3Session	*session);
 
 #endif /* __POP_H__ */

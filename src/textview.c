@@ -551,22 +551,6 @@ void textview_reflect_prefs(TextView *textview)
 					 prefs_common.textview_cursor_visible);
 }
 
-void textview_show_message(TextView *textview, MimeInfo *mimeinfo,
-			   const gchar *file)
-{
-	textview->loading = TRUE;
-	textview->stop_loading = FALSE;
-
-	textview_clear(textview);
-
-	textview_add_parts(textview, mimeinfo);
-
-	textview_set_position(textview, 0);
-
-	textview->loading = FALSE;
-	textview->stop_loading = FALSE;
-}
-
 void textview_show_part(TextView *textview, MimeInfo *mimeinfo, FILE *fp)
 {
 	START_TIMING("");

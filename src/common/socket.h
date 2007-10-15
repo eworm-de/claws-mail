@@ -89,7 +89,6 @@ guint sock_add_watch			(SockInfo *sock, GIOCondition condition,
 struct hostent *my_gethostbyname	(const gchar *hostname);
 
 SockInfo *sock_connect			(const gchar *hostname, gushort port);
-SockInfo *sock_connect_cmd		(const gchar *hostname, const gchar *tunnelcmd);
 gint sock_connect_async			(const gchar *hostname, gushort port,
 					 SockConnectFunc func, gpointer data);
 gint sock_connect_async_cancel		(gint id);

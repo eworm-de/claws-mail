@@ -650,117 +650,14 @@ gint procmime_get_part(const gchar *outfile, MimeInfo *mimeinfo)
 	return 0;
 }
 
-struct ContentRenderer {
-	char * content_type;
-	char * renderer;
-};
-
-static GList * renderer_list = NULL;
-
-static struct ContentRenderer *
-content_renderer_new(char * content_type, char * renderer)
-{
-	struct ContentRenderer * cr;
-
-	cr = g_new(struct ContentRenderer, 1);
-	if (cr == NULL)
-		return NULL;
-
-	cr->content_type = g_strdup(content_type);
-	cr->renderer = g_strdup(renderer);
-
-	return cr;
-}
-
-static void content_renderer_free(struct ContentRenderer * cr)
-{
-	g_free(cr->content_type);
-	g_free(cr->renderer);
-	g_free(cr);
-}
-
-void renderer_read_config(void)
-{
-	gchar buf[BUFFSIZE];
-	FILE * f;
-	gchar * rcpath;
-
-	g_list_foreach(renderer_list, (GFunc) content_renderer_free, NULL);
-	renderer_list = NULL;
-
-	rcpath = g_strconcat(get_rc_dir(), G_DIR_SEPARATOR_S, RENDERER_RC, NULL);
-	f = g_fopen(rcpath, "rb");
-	g_free(rcpath);
-	
-	if (f == NULL)
-		return;
-
-	while (fgets(buf, BUFFSIZE, f)) {
-		char * p;
-		struct ContentRenderer * cr;
-
-		strretchomp(buf);
-		p = strchr(buf, ' ');
-		if (p == NULL)
-			continue;
-		* p = 0;
-
-		cr = content_renderer_new(buf, p + 1);
-		if (cr == NULL)
-			continue;
-
-		renderer_list = g_list_append(renderer_list, cr);
-	}
-
-	fclose(f);
-}
-
-void renderer_write_config(void)
-{
-	gchar * rcpath;
-	PrefFile *pfile;
-	GList * cur;
-	int err = 0;
-	rcpath = g_strconcat(get_rc_dir(), G_DIR_SEPARATOR_S, RENDERER_RC, NULL);
-	
-	if ((pfile = prefs_write_open(rcpath)) == NULL) {
-		g_warning("failed to write configuration to file\n");
-		g_free(rcpath);
-		return;
-	}
-
-	g_free(rcpath);
-
-	for (cur = renderer_list ; cur != NULL ; cur = cur->next) {
-		struct ContentRenderer * renderer;
-		renderer = cur->data;
-		if (fprintf(pfile->fp, "%s %s\n", renderer->content_type,
-			renderer->renderer) < 0) {
-			err = TRUE;
-			break;
-		}
-	}
-
-	if (!err) {
-		if (prefs_file_close(pfile) < 0) {
-			g_warning("failed to write configuration to file\n");
-			return;
-		}
-	} else {
-		prefs_file_close_revert(pfile);
-	}
-}
-
-FILE *procmime_get_text_content(MimeInfo *mimeinfo)
+static FILE *procmime_get_text_content(MimeInfo *mimeinfo)
 {
 	FILE *tmpfp, *outfp;
 	const gchar *src_codeset;
 	gboolean conv_fail = FALSE;
 	gchar buf[BUFFSIZE];
 	gchar *str;
-	struct ContentRenderer * renderer;
-	GList * cur;
-	gchar *tmpfile, *content_type;
+	gchar *tmpfile;
 	gboolean err = FALSE;
 
 	g_return_val_if_fail(mimeinfo != NULL, NULL);
@@ -794,45 +691,7 @@ FILE *procmime_get_text_content(MimeInfo *mimeinfo)
 		      ? forced_charset : 
 		      procmime_mimeinfo_get_parameter(mimeinfo, "charset");
 
-	renderer = NULL;
-
-	content_type = procmime_get_content_type_str(mimeinfo->type,
-						     mimeinfo->subtype);
-	for (cur = renderer_list ; cur != NULL ; cur = cur->next) {
-		struct ContentRenderer * cr;
-
-		cr = cur->data;
-		if (g_ascii_strcasecmp(cr->content_type, content_type) == 0) {
-			renderer = cr;
-			break;
-		}
-	}
-	g_free(content_type);
-
-	if (renderer != NULL) {
-		FILE * p;
-		int oldout;
-		
-		oldout = dup(1);
-		
-		dup2(fileno(outfp), 1);
-
-		p = popen(renderer->renderer, "w");
-		if (p != NULL) {
-			size_t count;
-			
-			while ((count =
-				fread(buf, sizeof(char), sizeof(buf),
-				      tmpfp)) > 0) {
-				if (fwrite(buf, sizeof(char), count, p) < count)
-					err = TRUE;
-			}
-			pclose(p);
-		}
-		
-		dup2(oldout, 1);
-/* CodeConverter seems to have no effect here */
-	} else if (mimeinfo->type == MIMETYPE_TEXT && !g_ascii_strcasecmp(mimeinfo->subtype, "html")) {
+	if (mimeinfo->type == MIMETYPE_TEXT && !g_ascii_strcasecmp(mimeinfo->subtype, "html")) {
 		SC_HTMLParser *parser;
 		CodeConverter *conv;
 
@@ -990,7 +849,7 @@ gboolean procmime_msginfo_is_encrypted(MsgInfo *msginfo)
 	return result;
 }
 
-gboolean procmime_find_string_part(MimeInfo *mimeinfo, const gchar *filename,
+static gboolean procmime_find_string_part(MimeInfo *mimeinfo, const gchar *filename,
 				   const gchar *str, StrFindFunc find_func)
 {
 	FILE *outfp;
@@ -2210,7 +2069,7 @@ static void write_parameters(gpointer key, gpointer value, gpointer user_data)
 	} \
 }
 
-int procmime_write_mime_header(MimeInfo *mimeinfo, FILE *fp)
+static int procmime_write_mime_header(MimeInfo *mimeinfo, FILE *fp)
 {
 	struct TypeTable *type_table;
 	ParametersData *pdata = g_new0(ParametersData, 1);

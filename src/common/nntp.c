@@ -210,52 +210,6 @@ gint nntp_get_article(NNTPSession *session, const gchar *cmd, gint num,
 	return NN_SUCCESS;
 }
 
-gint nntp_article(NNTPSession *session, gint num, gchar **msgid)
-{
-	return nntp_get_article(session, "ARTICLE", num, msgid);
-}
-
-gint nntp_body(NNTPSession *session, gint num, gchar **msgid)
-{
-	return nntp_get_article(session, "BODY", num, msgid);
-}
-
-gint nntp_head(NNTPSession *session, gint num, gchar **msgid)
-{
-	return nntp_get_article(session, "HEAD", num, msgid);
-}
-
-gint nntp_stat(NNTPSession *session, gint num, gchar **msgid)
-{
-	return nntp_get_article(session, "STAT", num, msgid);
-}
-
-gint nntp_next(NNTPSession *session, gint *num, gchar **msgid)
-{
-	gint ok;
-	gint resp;
-	gchar buf[NNTPBUFSIZE];
-
-	ok = nntp_gen_command(session, buf, "NEXT");
-
-	if (ok != NN_SUCCESS)
-		return ok;
-
-	if (sscanf(buf, "%d %d", &resp, num) != 2) {
-		log_warning(LOG_PROTOCOL, _("protocol error: %s\n"), buf);
-		return NN_PROTOCOL;
-	}
-
-	extract_parenthesis(buf, '<', '>');
-	if (buf[0] == '\0') {
-		log_warning(LOG_PROTOCOL, _("protocol error\n"));
-		return NN_PROTOCOL;
-	}
-	*msgid = g_strdup(buf);
-
-	return NN_SUCCESS;
-}
-
 gint nntp_xover(NNTPSession *session, gint first, gint last)
 {
 	gint ok;
@@ -310,16 +264,6 @@ gint nntp_post(NNTPSession *session, FILE *fp)
 
 	session_set_access_time(SESSION(session));
 
-	return NN_SUCCESS;
-}
-
-gint nntp_newgroups(NNTPSession *session)
-{
-	return NN_SUCCESS;
-}
-
-gint nntp_newnews(NNTPSession *session)
-{
 	return NN_SUCCESS;
 }
 

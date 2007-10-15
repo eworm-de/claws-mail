@@ -461,7 +461,7 @@ void prefs_display_header_read_config(void)
 	fclose(fp);
 }
 
-void prefs_display_header_write_config(void)
+static void prefs_display_header_write_config(void)
 {
 	gchar *rcpath;
 	PrefFile *pfile;

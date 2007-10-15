@@ -49,12 +49,6 @@ void progress_dialog_destroy		(ProgressDialog	*progress);
  * Use these functions to access the dialog list
  */
 
-gint progress_dialog_list_set_account	(ProgressDialog *progress,
-					 gint		 row,
-					 const gchar	*account_name);
-gint progress_dialog_list_set_image	(ProgressDialog *progress,
-					 gint		 row,
-					 GdkPixbuf	*image);
 gint progress_dialog_list_set_status	(ProgressDialog *progress,
 					 gint		 row,
 					 const gchar    *status);

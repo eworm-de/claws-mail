@@ -26,7 +26,5 @@ typedef void PrefsMatcherSignal	(MatcherList *matchers);
 
 void prefs_matcher_open		(MatcherList *matchers,
 				 PrefsMatcherSignal *cb);
-void prefs_matcher_test_info	(void);
-void prefs_matcher_addressbook_select	(void);
 
 #endif /* __PREFS_FILTER_H__ */

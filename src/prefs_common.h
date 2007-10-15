@@ -480,7 +480,6 @@ extern PrefsCommon prefs_common;
 void prefs_common_read_config	(void);
 void prefs_common_write_config	(void);
 void prefs_common_open		(void);
-PrefsCommon *prefs_common_get	(void);
 void pref_get_unescaped_pref(gchar *out, const gchar *in);
 void pref_get_escaped_pref(gchar *out, const gchar *in);
 void pref_set_textview_from_pref(GtkTextView *textview, const gchar *txt);

@@ -86,9 +86,6 @@ gint messageview_show				(MessageView	*messageview,
 void messageview_clear				(MessageView	*messageview);
 void messageview_destroy			(MessageView	*messageview);
 
-void messageview_quote_color_set		(void);
-void messageview_set_font			(MessageView	*messageview);
-
 TextView *messageview_get_current_textview	(MessageView	*messageview);
 MimeInfo *messageview_get_selected_mime_part	(MessageView	*messageview);
 
@@ -108,8 +105,6 @@ gboolean messageview_search_string_backward	(MessageView	*messageview,
 gboolean messageview_is_visible			(MessageView	*messageview);
 
 void messageview_update_actions_menu		(MessageView	*msgview);
-void messageview_add_toolbar			(MessageView 	*msgview,
-						 GtkWidget 	*vbox);
 void messageview_reflect_prefs_pixmap_theme	(void);
 gchar *messageview_get_selection		(MessageView 	*msgview);
 

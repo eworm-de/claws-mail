@@ -145,8 +145,6 @@ void prefs_read_config		(PrefParam	*param,
 				 const gchar	*label,
 				 const gchar	*rcfile,
 				 const gchar	*encoding);
-void prefs_config_parse_one_line(PrefParam	*param,
-				 const gchar	*buf);
 void prefs_write_config		(PrefParam	*param,
 				 const gchar	*label,
 				 const gchar	*rcfile);
@@ -159,9 +157,6 @@ gint prefs_write_close_revert	(PrefFile	*pfile);
 
 void prefs_set_default		(PrefParam	*param);
 void prefs_free			(PrefParam	*param);
-
-void prefs_dialog_create	(PrefsDialog	*dialog);
-void prefs_dialog_destroy	(PrefsDialog	*dialog);
 
 void prefs_button_toggled	(GtkToggleButton	*toggle_btn,
 				 GtkWidget		*widget);

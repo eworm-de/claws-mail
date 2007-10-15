@@ -78,22 +78,6 @@ GtkWidget *menu_create_items(GtkItemFactoryEntry *entries,
 	return gtk_item_factory_get_widget(*factory, path);
 }
 
-GtkWidget *popupmenu_create(GtkWidget *window, GtkItemFactoryEntry *entries,
-			     guint n_entries, const gchar *path, gpointer data)
-{
-	GtkItemFactory *factory;
-	GtkAccelGroup *accel_group;
-
-	accel_group = gtk_accel_group_new();
-	factory = gtk_item_factory_new(GTK_TYPE_MENU, path, accel_group);
-	gtk_item_factory_set_translate_func(factory, menu_translate,
-					    NULL, NULL);
-	gtk_item_factory_create_items(factory, n_entries, entries, data);
-	gtk_window_add_accel_group(GTK_WINDOW (window), accel_group);
-
-	return gtk_item_factory_get_widget(factory, path);
-}
-
 gchar *menu_translate(const gchar *path, gpointer data)
 {
 	gchar *retval;
@@ -201,17 +185,6 @@ gint menu_find_option_menu_index(GtkOptionMenu *optmenu, gpointer data,
 	return -1;
 }
 
-gpointer menu_get_option_menu_active_user_data(GtkOptionMenu *optmenu)
-{
-	GtkWidget *menu;
-	GtkWidget *menuitem;
-
-	menu = gtk_option_menu_get_menu(optmenu);
-	menuitem = gtk_menu_get_active(GTK_MENU(menu));
-
-	return g_object_get_data(G_OBJECT(menuitem), MENU_VAL_ID);
-}
-
 static void connect_accel_change_signals(GtkWidget* widget, GtkWidget *wid2) 
 {
 #if 0
@@ -293,28 +266,4 @@ void menu_connect_identical_items(void)
 			if (!item2) debug_print(" ** Menu item not found: %s\n",pairs[n].path2);
 		}				
 	}
-}
-
-void menu_select_by_data(GtkMenu *menu, gpointer data)
-{
-	GList *children, *cur;
-	GtkWidget *select_item = NULL;
-	
-	g_return_if_fail(menu != NULL);
-
-	children = gtk_container_get_children(GTK_CONTAINER(menu));
-
-	for (cur = children; cur != NULL; cur = g_list_next(cur)) {
-		GObject *child = G_OBJECT(cur->data);
-
-		if (g_object_get_data(child, MENU_VAL_ID) == data) {
-			select_item = GTK_WIDGET(child);
-		}
-	}
-	if (select_item != NULL) {
-		gtk_menu_shell_select_item(GTK_MENU_SHELL(menu), select_item);
-		gtk_menu_shell_activate_item(GTK_MENU_SHELL(menu), select_item, FALSE);
-	}
-
-	g_list_free(children);
 }

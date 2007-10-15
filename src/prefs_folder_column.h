@@ -25,6 +25,5 @@
 void prefs_folder_column_open(void);
 
 FolderColumnState *prefs_folder_column_get_config(void);
-void prefs_folder_column_set_config(FolderColumnState *state);
 
 #endif /* __PREFS_FOLDER_COLUMN_H__ */

@@ -68,19 +68,6 @@ StringTable *string_table_new(void)
 	return strtable;
 }
 
-gchar *string_table_lookup_string(StringTable *table, const gchar *str)
-{
-	StringEntry *entry;
-
-	entry = g_hash_table_lookup(table->hash_table, str);
-
-	if (entry) {
-		return entry->string;
-	} else {
-		return NULL;
-	}
-}
-
 gchar *string_table_insert_string(StringTable *table, const gchar *str)
 {
 	StringEntry *entry;

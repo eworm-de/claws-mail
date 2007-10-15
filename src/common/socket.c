@@ -675,40 +675,6 @@ static gint sock_connect_by_getaddrinfo(const gchar *hostname, gushort	port)
 }
 #endif /* !INET6 */
 
-
-/* Open a connection using an external program.  May be useful when
- * you need to tunnel through a SOCKS or other firewall, or to
- * establish an IMAP-over-SSH connection. */
-/* TODO: Recreate this for sock_connect_thread() */
-SockInfo *sock_connect_cmd(const gchar *hostname, const gchar *tunnelcmd)
-{
-#ifdef G_OS_UNIX
-	gint fd[2];
-	int r;
-		     
-	if ((r = socketpair(AF_UNIX, SOCK_STREAM, 0, fd)) == -1) {
-		perror("socketpair");
-		return NULL;
-	}
-	log_message(LOG_PROTOCOL, "launching tunnel command \"%s\"\n", tunnelcmd);
-	if (fork() == 0) {
-		close(fd[0]);
-		close(0);
-		close(1);
-		dup(fd[1]);	/* set onto stdin */
-		dup(fd[1]);
-		execlp("/bin/sh", "/bin/sh", "-c", tunnelcmd, NULL);
-	}
-
-	close(fd[1]);
-	return sockinfo_from_fd(hostname, 0, fd[0]);
-#else
-        /* We would need a special implementation for W32. */
-        return NULL;
-#endif
-}
-
-
 SockInfo *sock_connect(const gchar *hostname, gushort port)
 {
 #ifdef G_OS_WIN32

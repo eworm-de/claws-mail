@@ -28,7 +28,6 @@ typedef struct {
 StringTable *string_table_new     (void);
 void         string_table_free    (StringTable *table);
 
-gchar *string_table_lookup_string (StringTable *table, const gchar *str);
 gchar *string_table_insert_string (StringTable *table, const gchar *str);
 void   string_table_free_string   (StringTable *table, const gchar *str);
 

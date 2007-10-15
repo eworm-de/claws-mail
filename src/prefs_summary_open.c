@@ -113,11 +113,6 @@ static gchar *action_name[7] =
 	 N_("Do nothing")
 };
 
-const gchar *prefs_summary_open_get_label(int act)
-{
-	return gettext(action_name[act]);
-}
-
 void prefs_summary_open_open(void)
 {
 	int i = 0;
