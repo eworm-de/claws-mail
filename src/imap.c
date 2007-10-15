@@ -309,7 +309,9 @@ static gchar imap_get_path_separator		(IMAPSession	*session,
 static gchar *imap_get_real_path		(IMAPSession	*session,
 						 IMAPFolder	*folder,
 						 const gchar	*path);
+#ifdef HAVE_LIBETPAN
 static void imap_synchronise		(FolderItem	*item, gint days);
+#endif
 static gboolean imap_is_busy		(Folder *folder);
 
 static void imap_free_capabilities	(IMAPSession 	*session);
@@ -5095,9 +5097,9 @@ gboolean imap_cancel_all_enabled(void)
 
 #endif
 
+#ifdef HAVE_LIBETPAN
 static void imap_synchronise(FolderItem *item, gint days) 
 {
-#ifdef HAVE_LIBETPAN
 	if (IMAP_FOLDER_ITEM(item)->last_sync == IMAP_FOLDER_ITEM(item)->last_change) {
 		debug_print("%s already synced\n", item->path?item->path:item->name);
 		return;
@@ -5105,8 +5107,8 @@ static void imap_synchronise(FolderItem *item, gint days)
 	debug_print("syncing %s\n", item->path?item->path:item->name);
 	imap_gtk_synchronise(item, days);
 	IMAP_FOLDER_ITEM(item)->last_sync = IMAP_FOLDER_ITEM(item)->last_change;
-#endif
 }
+#endif
 
 static void imap_item_set_xml(Folder *folder, FolderItem *item, XMLTag *tag)
 {
