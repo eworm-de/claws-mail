@@ -617,7 +617,7 @@ static void *matcher_test_thread(void *data)
 	pthread_setcancelstate(PTHREAD_CANCEL_ENABLE, NULL);
 	pthread_setcanceltype(PTHREAD_CANCEL_ASYNCHRONOUS, NULL);
 
-	result = execute_command_line(td->cmd, FALSE);
+	result = system(td->cmd);
 	td->done = TRUE; /* let the caller thread join() */
 	return GINT_TO_POINTER(result);
 }
@@ -666,7 +666,7 @@ static gboolean matcherprop_match_test(const MatcherProp *prop,
 	td->done = FALSE;
 	if (pthread_create(&pt, PTHREAD_CREATE_JOINABLE, 
 			matcher_test_thread, td) != 0)
-		retval = execute_command_line(cmd, FALSE);
+		retval = system(cmd);
 	else {
 		debug_print("waiting for test thread\n");
 		while(!td->done) {
@@ -692,7 +692,7 @@ static gboolean matcherprop_match_test(const MatcherProp *prop,
 				cmd);
 	}
 
-	retval = execute_command_line(cmd, FALSE);
+	retval = system(cmd);
 #endif
 	debug_print("Command exit code: %d\n", retval);
 

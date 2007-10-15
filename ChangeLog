@@ -1,3 +1,8 @@
+2007-10-15 [colin]	3.0.2cvs75
+
+	* src/matcher.c
+		Fix redirections in filtering's tests
+
 2007-10-15 [colin]	3.0.2cvs74
 
 	* src/imap.c
