@@ -1,3 +1,7 @@
+2007-10-16 [wwp]	3.0.2cvs77
+	* src/gtk/pluginwindow.c
+		Reworked the plugin window layouts, patch by Pawel Pekala <c0rn@o2.pl>.
+
 2007-10-15 [colin]	3.0.2cvs76
 
 	* src/edittags.c
