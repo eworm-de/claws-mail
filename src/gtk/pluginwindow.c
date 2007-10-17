@@ -276,12 +276,15 @@ void pluginwindow_create()
 	GtkWidget *scrolledwindow3;
 	GtkWidget *plugin_desc;
 	GtkWidget *hbuttonbox1;
+	GtkWidget *hbuttonbox2;
 	GtkWidget *help_btn;
 	GtkWidget *load_btn;
 	GtkWidget *unload_btn;
 	GtkWidget *close_btn;
 	GtkWidget *get_more_btn;
 	GtkWidget *desc_lbl;
+	GtkWidget *vbox3;
+	GtkWidget *hbox_info;
 	static GdkGeometry geometry;
 	GtkTooltips *tooltips;
 	
@@ -305,9 +308,15 @@ void pluginwindow_create()
 	gtk_widget_show(hbox2);
 	gtk_box_pack_start(GTK_BOX(vbox1), hbox2, TRUE, TRUE, 0);
 
+	vbox3 = gtk_vbox_new(FALSE, 4);
+	gtk_widget_show(vbox3);
+	gtk_box_pack_start(GTK_BOX(hbox2), vbox3, FALSE, FALSE, 0);
+
 	scrolledwindow2 = gtk_scrolled_window_new(NULL, NULL);
 	gtk_widget_show(scrolledwindow2);
-	gtk_box_pack_start(GTK_BOX(hbox2), scrolledwindow2, FALSE, FALSE, 0);
+	gtk_box_pack_start(GTK_BOX(vbox3), scrolledwindow2, TRUE, TRUE, 0);
+	gtk_scrolled_window_set_shadow_type(GTK_SCROLLED_WINDOW(scrolledwindow2),
+					GTK_SHADOW_ETCHED_IN);
 	gtk_scrolled_window_set_policy(GTK_SCROLLED_WINDOW
 				       (scrolledwindow2), GTK_POLICY_NEVER,
 				       GTK_POLICY_AUTOMATIC);
@@ -317,6 +326,13 @@ void pluginwindow_create()
 	gtk_container_add(GTK_CONTAINER(scrolledwindow2), plugin_list_view);
 	gtk_widget_grab_focus(GTK_WIDGET(plugin_list_view));
 
+	gtkut_stock_button_set_create(&hbuttonbox1,
+				&load_btn, _("Load..."),
+				&unload_btn, _("Unload"),
+				NULL, NULL);
+	gtk_widget_show(hbuttonbox1);
+	gtk_box_pack_start(GTK_BOX(vbox3), hbuttonbox1, FALSE, FALSE, 0);
+	
 	vbox2 = gtk_vbox_new(FALSE, 0);
 	gtk_widget_show(vbox2);
 	gtk_box_pack_start(GTK_BOX(hbox2), vbox2, TRUE, TRUE, 0);
@@ -334,6 +350,8 @@ void pluginwindow_create()
 	scrolledwindow3 = gtk_scrolled_window_new(NULL, NULL);
 	gtk_widget_show(scrolledwindow3);
 	gtk_box_pack_start(GTK_BOX(vbox2), scrolledwindow3, TRUE, TRUE, 0);
+	gtk_scrolled_window_set_shadow_type(GTK_SCROLLED_WINDOW(scrolledwindow3),
+					GTK_SHADOW_ETCHED_IN);
 	gtk_scrolled_window_set_policy(GTK_SCROLLED_WINDOW
 				       (scrolledwindow3), GTK_POLICY_NEVER,
 				       GTK_POLICY_ALWAYS);
@@ -342,24 +360,29 @@ void pluginwindow_create()
 	gtk_widget_show(plugin_desc);
 	gtk_container_add(GTK_CONTAINER(scrolledwindow3), plugin_desc);
 
+	hbox_info = gtk_hbox_new(FALSE, 5);
+	gtk_widget_show(hbox_info);
+	
 	desc_lbl = gtk_label_new(_("More plugins are available from the "
 			           "Claws Mail website."));
 	gtk_misc_set_alignment(GTK_MISC(desc_lbl), 0, 0.5);
 	gtk_widget_show(desc_lbl);
-	gtk_box_pack_start(GTK_BOX(vbox1), desc_lbl, FALSE, FALSE, 0);
+	gtk_box_pack_start(GTK_BOX(hbox_info), desc_lbl, FALSE, FALSE, 0);
 
 	get_more_btn = gtkut_get_link_btn(window, PLUGINS_URI, _("Get more..."));
 	gtk_misc_set_alignment(GTK_MISC(GTK_BIN(get_more_btn)->child), 0, 0.5);
 	gtk_widget_show(get_more_btn);
-	gtk_box_pack_start(GTK_BOX(vbox1), get_more_btn, FALSE, FALSE, 0);
+	gtk_box_pack_start(GTK_BOX(hbox_info), get_more_btn, FALSE, FALSE, 0);
+	gtk_box_pack_start(GTK_BOX(hbox_info), gtk_label_new(""), TRUE, TRUE, 0);
+	gtk_box_pack_start(GTK_BOX(vbox1), hbox_info, FALSE, FALSE, 0);
 
-	gtkut_stock_button_set_create_with_help(&hbuttonbox1, &help_btn,
-			&load_btn, _("Load Plugin..."),
-			&unload_btn, _("Unload Plugin"),
-			&close_btn, GTK_STOCK_CLOSE);
-	gtk_box_set_spacing(GTK_BOX(hbuttonbox1), 6);
-	gtk_widget_show(hbuttonbox1);
-	gtk_box_pack_end(GTK_BOX(vbox1), hbuttonbox1, FALSE, FALSE, 0);
+	gtkut_stock_button_set_create_with_help(&hbuttonbox2, &help_btn,
+			&close_btn, GTK_STOCK_CLOSE,
+			NULL, NULL, NULL, NULL);
+
+	gtk_box_set_spacing(GTK_BOX(hbuttonbox2), 6);
+	gtk_widget_show(hbuttonbox2);
+	gtk_box_pack_end(GTK_BOX(vbox1), hbuttonbox2, FALSE, FALSE, 0);
 
 	gtk_text_view_set_wrap_mode(GTK_TEXT_VIEW(plugin_desc), GTK_WRAP_WORD);
 	gtk_widget_set_sensitive(GTK_WIDGET(unload_btn), FALSE);
