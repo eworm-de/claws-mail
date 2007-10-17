@@ -55,6 +55,7 @@ static gboolean dry_run = FALSE;
 static gint maxsize = 0;
 static gint stacksize = 0;
 static GHashTable *var_table = NULL;
+static GList *attachments = NULL;
 
 typedef struct st_buffer
 {
@@ -138,6 +139,12 @@ gchar *quote_fmt_get_buffer(void)
 		return current->buffer;
 }
 
+GList *quote_fmt_get_attachments_list(void)
+{
+	fprintf(stderr, "+ get attachment list %p\n", attachments);
+	return attachments;
+}
+
 gint quote_fmt_get_line(void)
 {
 	return line;
@@ -165,6 +172,17 @@ void quote_fmt_reset_vartable(void)
 	if (var_table) {
 		g_hash_table_destroy(var_table);
 		var_table = NULL;
+	}
+	if (attachments) {
+		fprintf(stderr, "+ freeing attachment list\n");
+		GList *cur = attachments;
+		while (cur) {
+			fprintf(stderr, "-> %s\n", (gchar*)cur->data);
+			g_free(cur->data);
+			cur = g_list_next(cur);
+		}
+		g_list_free(attachments);
+		attachments = NULL;
 	}
 }
 
@@ -503,6 +521,12 @@ static void quote_fmt_insert_user_input(const gchar *varname)
 	g_free(text);
 }
 
+static void quote_fmt_attach_file(const gchar *filename)
+{
+	fprintf(stderr, "+ adding attachment %s\n", filename);
+	attachments = g_list_append(attachments, g_strdup(filename));
+}
+
 static gchar *quote_fmt_complete_address(const gchar *addr)
 {
 	gint count;
@@ -582,6 +606,7 @@ static gchar *quote_fmt_complete_address(const gchar *addr)
 %token QUERY_NOT_TO_FOUND_IN_ADDRESSBOOK
 /* other tokens */
 %token INSERT_FILE INSERT_PROGRAMOUTPUT INSERT_USERINPUT
+%token ATTACH_FILE
 %token OPARENT CPARENT
 %token CHARACTER
 %token SHOW_DATE_EXPR
@@ -613,7 +638,8 @@ character_or_special_or_insert_or_query:
 	character_or_special
 	| query
 	| query_not
-	| insert ;
+	| insert
+	| attach ;
 
 character_or_special:
 	special
@@ -1187,5 +1213,19 @@ insert:
 		current = &main_expr;
 		if (!dry_run) {
 			quote_fmt_insert_user_input(sub_expr.buffer);
+		}
+	};
+
+attach:
+	ATTACH_FILE
+	{
+		current = &sub_expr;
+		clear_buffer();
+	}
+	OPARENT sub_expr CPARENT
+	{
+		current = &main_expr;
+		if (!dry_run) {
+			quote_fmt_attach_file(sub_expr.buffer);
 		}
 	};

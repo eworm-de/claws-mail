@@ -1,3 +1,12 @@
+2007-10-17 [wwp]	3.0.2cvs79
+
+	* src/compose.c
+	* src/quote_fmt.c
+	* src/quote_fmt.h
+	* src/quote_fmt_lex.l
+	* src/quote_fmt_parse.y
+		Templates can now attach files using |attach{filename}.
+
 2007-10-17 [wwp]	3.0.2cvs78
 
 	* src/prefs_customheader.c

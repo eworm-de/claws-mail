@@ -89,6 +89,7 @@ static gchar *quote_desc_strings[] = {
 	"|file{<span style=\"oblique\">sub_expr</span>}\n(|f{<span style=\"oblique\">sub_expr</span>})",		N_("insert file:\n<span style=\"oblique\">sub_expr</span> is evaluated as the path of the file to insert"), /* insert file */
 	"|program{<span style=\"oblique\">sub_expr</span>}\n(|p{<span style=\"oblique\">sub_expr</span>})\n",	N_("insert program output:\n<span style=\"oblique\">sub_expr</span> is evaluated as a command-line to get\nthe output from"), /* insert program output */
 	"|input{<span style=\"oblique\">sub_expr</span>}\n(|i{<span style=\"oblique\">sub_expr</span>})\n",		N_("insert user input:\n<span style=\"oblique\">sub_expr</span> is a variable to be replaced by\nuser-entered text"), /* insert user input */
+	"|attach{<span style=\"oblique\">sub_expr</span>}\n(|a{<span style=\"oblique\">sub_expr</span>})",		N_("attach file:\n<span style=\"oblique\">sub_expr</span> is evaluated as the path of the file to attach"), /* attach file */
 	"",					NULL,
 	N_("<span weight=\"bold\">definition of terms:</span>"),	NULL,
 	"<span style=\"oblique\">expr</span>\n",			N_("text that can contain any of the symbols or\ncommands above"),

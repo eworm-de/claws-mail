@@ -548,6 +548,8 @@ static void compose_set_dictionaries_from_folder_prefs(Compose *compose,
 #endif
 static void compose_attach_update_label(Compose *compose);
 
+static void compose_attach_from_list(Compose *compose, GList *file_list, gboolean free_data);
+
 static GtkItemFactoryEntry compose_popup_entries[] =
 {
 	{N_("/_Add..."),	NULL, compose_attach_cb, 0, NULL},
@@ -1096,6 +1098,7 @@ Compose *compose_generic_new(PrefsAccount *account, const gchar *mailto, FolderI
 				alertpanel_error(_("New message subject format error."));
 			else
 				gtk_entry_set_text(GTK_ENTRY(compose->subject_entry), buf);
+			compose_attach_from_list(compose, quote_fmt_get_attachments_list(), FALSE);
 			quote_fmt_reset_vartable();
 
 			g_free(subject);
@@ -1123,6 +1126,7 @@ Compose *compose_generic_new(PrefsAccount *account, const gchar *mailto, FolderI
 			        	  body_format,
 			        	  NULL, tmp, FALSE, TRUE,
 						  _("New message body format error at line %d."));
+			compose_attach_from_list(compose, quote_fmt_get_attachments_list(), FALSE);
 			quote_fmt_reset_vartable();
 
 			g_free(tmp);
@@ -1504,6 +1508,7 @@ static Compose *compose_generic_reply(MsgInfo *msginfo,
 		compose_quote_fmt(compose, compose->replyinfo,
 			          body_fmt, qmark, body, FALSE, TRUE,
 					  _("Message reply format error at line %d."));
+		compose_attach_from_list(compose, quote_fmt_get_attachments_list(), FALSE);
 		quote_fmt_reset_vartable();
 	}
 
@@ -1639,6 +1644,7 @@ Compose *compose_forward(PrefsAccount *account, MsgInfo *msginfo,
 		compose_quote_fmt(compose, full_msginfo,
 			          body_fmt, qmark, body, FALSE, TRUE,
 					  _("Message forward format error at line %d."));
+		compose_attach_from_list(compose, quote_fmt_get_attachments_list(), FALSE);
 		quote_fmt_reset_vartable();
 		compose_attach_parts(compose, msginfo);
 
@@ -7419,6 +7425,7 @@ static void compose_template_apply(Compose *compose, Template *tmpl,
 	/* process the other fields */
 
 	compose_template_apply_fields(compose, tmpl);
+	compose_attach_from_list(compose, quote_fmt_get_attachments_list(), FALSE);
 	quote_fmt_reset_vartable();
 	compose_changed_cb(NULL, compose);
 }
@@ -8741,6 +8748,25 @@ static void compose_draft_cb(gpointer data, guint action, GtkWidget *widget)
 	compose_draft(data, action);
 }
 
+static void compose_attach_from_list(Compose *compose, GList *file_list, gboolean free_data)
+{
+	if (compose && file_list) {
+		GList *tmp;
+
+		for ( tmp = file_list; tmp; tmp = tmp->next) {
+			gchar *file = (gchar *) tmp->data;
+			gchar *utf8_filename = conv_filename_to_utf8(file);
+			compose_attach_append(compose, file, utf8_filename, NULL);
+			compose_changed_cb(NULL, compose);
+			if (free_data) {
+			g_free(file);
+				tmp->data = NULL;
+			}
+			g_free(utf8_filename);
+		}
+	}
+}
+
 static void compose_attach_cb(gpointer data, guint action, GtkWidget *widget)
 {
 	Compose *compose = (Compose *)data;
@@ -8752,16 +8778,7 @@ static void compose_attach_cb(gpointer data, guint action, GtkWidget *widget)
 	file_list = filesel_select_multiple_files_open(_("Select file"));
 
 	if (file_list) {
-		GList *tmp;
-
-		for ( tmp = file_list; tmp; tmp = tmp->next) {
-			gchar *file = (gchar *) tmp->data;
-			gchar *utf8_filename = conv_filename_to_utf8(file);
-			compose_attach_append(compose, file, utf8_filename, NULL);
-			compose_changed_cb(NULL, compose);
-			g_free(file);
-			g_free(utf8_filename);
-		}
+		compose_attach_from_list(compose, file_list, TRUE);
 		g_list_free(file_list);
 	}
 }

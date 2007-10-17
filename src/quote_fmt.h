@@ -11,6 +11,7 @@
 void quote_fmt_quote_description(GtkWidget *widget, GtkWidget *pref_window);
 
 gchar *quote_fmt_get_buffer(void);
+GList *quote_fmt_get_attachments_list(void);
 gint quote_fmt_get_line(void);
 #ifdef USE_ASPELL
 void quote_fmt_init(MsgInfo *info, const gchar *my_quote_str,
