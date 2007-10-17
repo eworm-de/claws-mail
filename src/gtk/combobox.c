@@ -33,6 +33,32 @@ typedef struct _combobox_sel_by_data_ctx {
 	gint data;
 } ComboboxSelCtx;
 
+GtkWidget *combobox_text_new(const gboolean with_entry, const gchar *text, ...)
+{
+	GtkWidget *combo;
+	va_list args;
+	gchar *string;
+	
+	if(text == NULL)
+		return NULL;
+	
+	if (with_entry)
+		combo = gtk_combo_box_entry_new_text();
+	else
+		combo = gtk_combo_box_new_text();
+	gtk_widget_show(combo);
+
+	gtk_combo_box_append_text(GTK_COMBO_BOX(combo), text);
+	va_start(args, text);
+	while ((string = va_arg(args, gchar*)) != NULL)
+		gtk_combo_box_append_text(GTK_COMBO_BOX(combo), string);
+	va_end(args);
+		
+	gtk_combo_box_set_active(GTK_COMBO_BOX(combo), 0);
+	
+	return combo;
+}
+
 static gboolean _select_by_data_func(GtkTreeModel *model,	GtkTreePath *path,
 		GtkTreeIter *iter, ComboboxSelCtx *ctx)
 {

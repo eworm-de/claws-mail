@@ -47,6 +47,7 @@
 #include "alertpanel.h"
 #include "base64.h"
 #include "filesel.h"
+#include "combobox.h"
 
 enum {
 	CUSTHDR_STRING,		/*!< display string managed by list store */
@@ -209,15 +210,12 @@ static void prefs_custom_header_create(void)
 			  0, 0, 0);
 	gtk_misc_set_alignment (GTK_MISC (hdr_label), 0, 0.5);
 	
-	hdr_combo = gtk_combo_new ();
-	gtk_widget_show (hdr_combo);
+	hdr_combo = combobox_text_new(TRUE, "User-Agent", "Face", "X-Face",
+				      "X-Operating-System", NULL);
 	gtk_table_attach (GTK_TABLE (table1), hdr_combo, 0, 1, 1, 2,
 			  GTK_EXPAND | GTK_SHRINK | GTK_FILL,
 			  0, 0, 0);
 	gtk_widget_set_size_request (hdr_combo, 150, -1);
-	gtkut_combo_set_items (GTK_COMBO (hdr_combo),
-			       "User-Agent", "Face", "X-Face", "X-Operating-System",
-			       NULL);
 
 	val_label = gtk_label_new (_("Value"));
 	gtk_widget_show (val_label);
@@ -311,7 +309,7 @@ static void prefs_custom_header_create(void)
 	customhdr.cancel_btn = cancel_btn;
 
 	customhdr.hdr_combo  = hdr_combo;
-	customhdr.hdr_entry  = GTK_COMBO (hdr_combo)->entry;
+	customhdr.hdr_entry  = GTK_BIN (hdr_combo)->child;
 	customhdr.val_entry  = val_entry;
 
 	customhdr.list_view   = list_view;

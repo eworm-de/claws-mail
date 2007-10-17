@@ -37,6 +37,7 @@
 
 #include "stock_pixmap.h"
 #include "manage_window.h"
+#include "combobox.h"
 #include "gtkutils.h"
 #include "mainwindow.h"
 #include "alertpanel.h"
@@ -334,28 +335,17 @@ static void prefs_toolbar_set_displayed(ToolbarPage *prefs_toolbar)
 
 static void prefs_toolbar_populate(ToolbarPage *prefs_toolbar)
 {
-	GList *cur;
-	GSList *cur2;
+	GSList *cur;
 	gchar *act, *act_name;
 
-	gtk_combo_box_append_text(GTK_COMBO_BOX(prefs_toolbar->item_type_combo),
-				  _("Internal Function"));	
-	gtk_combo_box_append_text(GTK_COMBO_BOX(prefs_toolbar->item_type_combo),
-				  _("User Action"));
-	gtk_combo_box_append_text(GTK_COMBO_BOX(prefs_toolbar->item_type_combo),
-				  _("Separator"));
-	
 	prefs_toolbar->combo_action_list = toolbar_get_action_items(prefs_toolbar->source);
-	for(cur = prefs_toolbar->combo_action_list; cur != NULL; cur = cur->next) {
-		act = (gchar *)cur->data;
-		gtk_combo_box_append_text(GTK_COMBO_BOX(prefs_toolbar->item_func_combo),
-					  act);
-	}
-
+	combobox_set_popdown_strings(GTK_COMBO_BOX(prefs_toolbar->item_func_combo),
+				     prefs_toolbar->combo_action_list);
+	
 	/* get currently defined sylpheed actions */
 	if (prefs_common.actions_list != NULL) {
-		for (cur2 = prefs_common.actions_list; cur2 != NULL; cur2 = cur2->next) {
-			act = (gchar *)cur2->data;
+		for (cur = prefs_common.actions_list; cur != NULL; cur = cur->next) {
+			act = (gchar *)cur->data;
 			get_action_name(act, &act_name);
 			
 			gtk_combo_box_append_text(
@@ -367,7 +357,6 @@ static void prefs_toolbar_populate(ToolbarPage *prefs_toolbar)
 
 	}
 	
-	gtk_combo_box_set_active(GTK_COMBO_BOX(prefs_toolbar->item_type_combo), 0);
 	gtk_combo_box_set_active(GTK_COMBO_BOX(prefs_toolbar->item_func_combo), 0);
 	gtk_combo_box_set_active(GTK_COMBO_BOX(prefs_toolbar->item_action_combo), 0);
 	
@@ -828,7 +817,8 @@ static void prefs_toolbar_create(ToolbarPage *prefs_toolbar)
 			 (GtkAttachOptions) (GTK_FILL),
 			 (GtkAttachOptions) (0), 0, 0);	
 	
-	item_type_combo = gtk_combo_box_new_text();
+	item_type_combo = combobox_text_new(FALSE, _("Internal Function"),
+				_("User Action"), _("Separator"), NULL);
 	gtk_widget_set_size_request(item_type_combo, 200, -1);
 	gtk_table_attach(GTK_TABLE(table), item_type_combo, 1, 3, 0, 1,
 			 (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
@@ -1224,6 +1214,9 @@ static gboolean set_list_selected(GtkTreeSelection *selector,
 			}
 		}
 		
+		gtk_widget_show(prefs_toolbar->item_action_combo);
+		gtk_widget_hide(prefs_toolbar->item_func_combo);
+		
 		g_free(icon_text);
 		g_free(descr);
 
@@ -1247,6 +1240,8 @@ static gboolean set_list_selected(GtkTreeSelection *selector,
 
 	gtk_combo_box_set_active(GTK_COMBO_BOX(
 			prefs_toolbar->item_type_combo),ITEM_FUNCTION);
+	gtk_widget_hide(prefs_toolbar->item_action_combo);
+	gtk_widget_show(prefs_toolbar->item_func_combo);
 
 	g_free(icon_text);
 	g_free(descr);

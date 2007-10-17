@@ -32,6 +32,7 @@
 #include <gdk/gdkkeysyms.h>
 
 #include "utils.h"
+#include "combobox.h"
 #include "prefs_common.h"
 #include "prefs_gtk.h"
 
@@ -125,14 +126,7 @@ static void prefs_ext_prog_create_widget(PrefsPage *_page, GtkWindow *window,
 	gtk_label_set_justify(GTK_LABEL (uri_label), GTK_JUSTIFY_RIGHT);
 	gtk_misc_set_alignment(GTK_MISC (uri_label), 1, 0.5);
 
-	uri_combo = gtk_combo_new ();
-	gtk_widget_show (uri_combo);
-#ifdef MAEMO
-	gtk_widget_set_sensitive(uri_combo, FALSE);
-#endif
-	gtk_table_attach (GTK_TABLE (table2), uri_combo, 1, 2, 0, 1,
-			  GTK_EXPAND | GTK_FILL, 0, 0, 0);
-	gtkut_combo_set_items (GTK_COMBO (uri_combo),
+	uri_combo = combobox_text_new(TRUE,
 			       DEFAULT_BROWSER_CMD,
 			       "galeon --new-tab '%s'",
 			       "galeon '%s'",
@@ -145,7 +139,13 @@ static void prefs_ext_prog_create_widget(PrefsPage *_page, GtkWindow *window,
 			       "rxvt -e w3m '%s'",
 			       "rxvt -e lynx '%s'",
 			       NULL);
-	uri_entry = GTK_COMBO (uri_combo)->entry;
+#ifdef MAEMO
+	gtk_widget_set_sensitive(uri_combo, FALSE);
+#endif
+	gtk_table_attach (GTK_TABLE (table2), uri_combo, 1, 2, 0, 1,
+			  GTK_EXPAND | GTK_FILL, 0, 0, 0);
+
+	uri_entry = GTK_BIN (uri_combo)->child;
 	gtk_entry_set_text(GTK_ENTRY(uri_entry), prefs_common.uri_cmd ? prefs_common.uri_cmd : "");
 	
 	exteditor_label = gtk_label_new (_("Text editor"));
@@ -157,22 +157,21 @@ static void prefs_ext_prog_create_widget(PrefsPage *_page, GtkWindow *window,
 	gtk_label_set_justify(GTK_LABEL (exteditor_label), GTK_JUSTIFY_RIGHT);
 	gtk_misc_set_alignment(GTK_MISC (exteditor_label), 1, 0.5);
 
-	exteditor_combo = gtk_combo_new ();
-	gtk_widget_show (exteditor_combo);
+	exteditor_combo = combobox_text_new(TRUE,
+					"gedit %s",
+					"kedit %s",
+					"mousepad %s",
+					"nedit %s",
+					"mgedit --no-fork %s",
+					"emacs %s",
+					"xemacs %s",
+					"kterm -e jed %s",
+					"kterm -e vi %s",
+					NULL);
 	gtk_table_attach (GTK_TABLE (table2), exteditor_combo, 1, 2, 1, 2,
 			  GTK_EXPAND | GTK_FILL, 0, 0, 0);
-	gtkut_combo_set_items (GTK_COMBO (exteditor_combo),
-			       "gedit %s",
-			       "kedit %s",
-			       "mousepad %s",
-			       "nedit %s",
-			       "mgedit --no-fork %s",
-			       "emacs %s",
-			       "xemacs %s",
-			       "kterm -e jed %s",
-			       "kterm -e vi %s",
-			       NULL);
-	exteditor_entry = GTK_COMBO (exteditor_combo)->entry;
+
+	exteditor_entry = GTK_BIN (exteditor_combo)->child;
 	gtk_entry_set_text(GTK_ENTRY(exteditor_entry), 
 			   prefs_common.ext_editor_cmd ? prefs_common.ext_editor_cmd : "");
 

@@ -40,6 +40,7 @@
 #include "statusbar.h"
 #include "menu.h"
 #include "addressbook.h"
+#include "combobox.h"
 
 struct SpamAssassinPage
 {
@@ -64,13 +65,6 @@ struct SpamAssassinPage
 	GtkWidget *whitelist_ab_folder_combo;
 
 	SpamAssassinTransport	trans;
-};
-
-/*!
- *\brief	Preset addressbook book/folder items
- */
-static const gchar *whitelist_ab_folder_text [] = {
-	N_("Any")
 };
 
 struct Transport
@@ -104,10 +98,10 @@ static void spamassassin_whitelist_ab_select_cb(GtkWidget *widget, gpointer data
 	gchar *folderpath = NULL;
 	gboolean ret = FALSE;
 
-	folderpath = (gchar *) gtk_entry_get_text(GTK_ENTRY(GTK_COMBO(page->whitelist_ab_folder_combo)->entry));
+	folderpath = (gchar *) gtk_entry_get_text(GTK_ENTRY(GTK_BIN(page->whitelist_ab_folder_combo)->child));
 	ret = addressbook_folder_selection(&folderpath);
 	if ( ret != FALSE && folderpath != NULL)
-		gtk_entry_set_text(GTK_ENTRY(GTK_COMBO(page->whitelist_ab_folder_combo)->entry), folderpath);
+		gtk_entry_set_text(GTK_ENTRY(GTK_BIN(page->whitelist_ab_folder_combo)->child), folderpath);
 }
 
 static void foldersel_cb(GtkWidget *widget, gpointer data)
@@ -214,7 +208,6 @@ static void spamassassin_create_widget_func(PrefsPage * _page,
 	GtkWidget *whitelist_ab_checkbtn;
 	GtkWidget *whitelist_ab_folder_combo;
 	GtkWidget *whitelist_ab_select_btn;
-	GList *combo_items;
 
 	GtkWidget *enable_sa_checkbtn;
 
@@ -436,20 +429,8 @@ static void spamassassin_create_widget_func(PrefsPage * _page,
 	gtk_tooltips_set_tip(tooltips, whitelist_ab_checkbtn,
 			_("Messages coming from your address book contacts will be received in the normal folder even if detected as spam"), NULL);
 
-	whitelist_ab_folder_combo = gtk_combo_new();
-	gtk_widget_show(whitelist_ab_folder_combo);
+	whitelist_ab_folder_combo = combobox_text_new(TRUE, _("Any"), NULL);
 	gtk_widget_set_size_request(whitelist_ab_folder_combo, 100, -1);
-	gtk_entry_set_editable(GTK_ENTRY(GTK_COMBO(whitelist_ab_folder_combo)->entry),
-			       TRUE);
-
-	combo_items = NULL;
-	for (i = 0; i < (gint) (sizeof(whitelist_ab_folder_text) / sizeof(gchar *)); i++) {
-		combo_items = g_list_append(combo_items,
-					    (gpointer) _(whitelist_ab_folder_text[i]));
-	}
-	gtk_combo_set_popdown_strings(GTK_COMBO(whitelist_ab_folder_combo), combo_items);
-	g_list_free(combo_items);
-
 	gtk_box_pack_start (GTK_BOX (hbox_whitelist), whitelist_ab_folder_combo, TRUE, TRUE, 0);
 
 	whitelist_ab_select_btn = gtk_button_new_with_label(_("Select ..."));
@@ -485,7 +466,7 @@ static void spamassassin_create_widget_func(PrefsPage * _page,
 	if (config->socket != NULL)
 		gtk_entry_set_text(GTK_ENTRY(spamd_socket_entry), config->socket);
 	if (config->whitelist_ab_folder != NULL)
-		gtk_entry_set_text(GTK_ENTRY(GTK_COMBO(whitelist_ab_folder_combo)->entry),
+		gtk_entry_set_text(GTK_ENTRY(GTK_BIN(whitelist_ab_folder_combo)->child),
 				config->whitelist_ab_folder);
 	gtk_spin_button_set_value(GTK_SPIN_BUTTON(spamd_port_spinbtn), (float) config->port);
 	gtk_spin_button_set_value(GTK_SPIN_BUTTON(max_size_spinbtn), (float) config->max_size);
@@ -603,7 +584,7 @@ static void spamassassin_save_func(PrefsPage *_page)
 	config->whitelist_ab = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(page->whitelist_ab));
 	g_free(config->whitelist_ab_folder);
 	config->whitelist_ab_folder = gtk_editable_get_chars(
-				GTK_EDITABLE(GTK_COMBO(page->whitelist_ab_folder_combo)->entry), 0, -1);
+				GTK_EDITABLE(GTK_BIN(page->whitelist_ab_folder_combo)->child), 0, -1);
 
 	if (config->process_emails) {
 		spamassassin_register_hook();

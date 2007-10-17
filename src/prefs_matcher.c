@@ -46,6 +46,7 @@
 #include "alertpanel.h"
 #include "folder.h"
 #include "description_window.h"
+#include "combobox.h"
 
 #include "matcher_parser.h"
 #include "colorlabel.h"
@@ -71,14 +72,10 @@ static struct Matcher {
 	GtkWidget *predicate_flag_combo;
 	GtkWidget *header_combo;
 	GtkWidget *header_addr_combo;
+	GtkWidget *bool_op_combo;
+	GtkWidget *criteria_combo;
 
-	GtkWidget *criteria_list;
-
-	GtkWidget *predicate_list;
 	GtkWidget *predicate_label;
-	GtkWidget *predicate_flag_list;
-
-	GtkWidget *bool_op_list;
 
 	GtkWidget *header_entry;
 	GtkWidget *header_label;
@@ -213,26 +210,7 @@ static struct_criteria_text criteria_text [] = {
 };
 
 /*!
- *\brief	Boolean / predicate constants
- *
- *\warning	Same order as #bool_op_text!
- */
-enum {
-	BOOL_OP_OR = 0,
-	BOOL_OP_AND = 1
-};
-
-/*!
- *\brief	Descriptive text in UI
- */
-static const gchar *bool_op_text [] = {
-	N_("or"), N_("and")
-};
-
-/*!
  *\brief	Contains predicate	
- *
- *\warning	Same order as in #predicate_text
  */
 enum {
 	PREDICATE_CONTAINS = 0,
@@ -240,34 +218,11 @@ enum {
 };
 
 /*!
- *\brief	Descriptive text in UI for predicate
- */
-static const gchar *predicate_text [] = {
-	N_("contains"), N_("does not contain")
-};
-
-/*!
- *\brief	Preset addressbook book/folder items
- */
-static const gchar *addressbook_folder_text [] = {
-	N_("Any")
-};
-
-/*!
  *\brief	Enabled predicate
- *
- *\warning	Same order as in #predicate_flag_text
  */
 enum {
 	PREDICATE_FLAG_ENABLED = 0,
 	PREDICATE_FLAG_DISABLED = 1
-};
-
-/*!
- *\brief	Descriptive text in UI for enabled flag
- */
-static const gchar *predicate_flag_text [] = {
-	N_("yes"), N_("no")
 };
 
 /*!
@@ -296,8 +251,7 @@ static void prefs_matcher_ok		(void);
 static void prefs_matcher_cancel	(void);
 static gint prefs_matcher_deleted	(GtkWidget *widget, GdkEventAny *event,
 					 gpointer data);
-static void prefs_matcher_criteria_select	(GtkList   *list,
-						 GtkWidget *widget,
+static void prefs_matcher_criteria_select	(GtkWidget *widget,
 						 gpointer   user_data);
 static MatcherList *prefs_matcher_get_list	(void);
 
@@ -317,29 +271,6 @@ static gboolean prefs_matcher_selected			(GtkTreeSelection *selector,
 							 GtkTreePath *path,
 							 gboolean currently_selected,
 							 gpointer data);
-
-/*!
- *\brief	Find index of list selection 
- *
- *\param	list GTK list widget
- *
- *\return	gint Selection index
- */
-static gint get_sel_from_list(GtkList *list)
-{
-	gint row = 0;
-	void * sel;
-	GList * child;
-
-	sel = list->selection->data;
-	for (child = list->children; child != NULL; child = g_list_next(child)) {
-		if (child->data == sel)
-			return row;
-		row ++;
-	}
-	
-	return row;
-}
 
 /*!
  *\brief	Opens the matcher dialog with a list of conditions
@@ -396,6 +327,8 @@ static void prefs_matcher_create(void)
 	GtkWidget *vbox1;
 	GtkWidget *vbox2;
 	GtkWidget *vbox3;
+	GtkWidget *vbox_pred;
+	GtkWidget *hbox_pred;
 	GtkWidget *criteria_table;
 
 	GtkWidget *hbox1;
@@ -407,19 +340,15 @@ static void prefs_matcher_create(void)
 	GtkWidget *header_addr_entry;
 	GtkWidget *header_addr_label;
 	GtkWidget *criteria_combo;
-	GtkWidget *criteria_list;
 	GtkWidget *criteria_label;
 	GtkWidget *value_label;
 	GtkWidget *value_entry;
 	GtkWidget *addressbook_folder_label;
 	GtkWidget *addressbook_folder_combo;
 	GtkWidget *predicate_combo;
-	GtkWidget *predicate_list;
 	GtkWidget *predicate_flag_combo;
-	GtkWidget *predicate_flag_list;
 	GtkWidget *predicate_label;
 	GtkWidget *bool_op_combo;
-	GtkWidget *bool_op_list;
 	GtkWidget *bool_op_label;
 
 	GtkWidget *regexp_checkbtn;
@@ -445,7 +374,6 @@ static void prefs_matcher_create(void)
 
 	GtkWidget *color_optmenu;
 
-	GList *combo_items;
 	gint i;
 	static GdkGeometry geometry;
 
@@ -501,33 +429,23 @@ static void prefs_matcher_create(void)
 	gtk_table_attach(GTK_TABLE(criteria_table), criteria_label, 0, 1, 0, 1,
 			 GTK_FILL, 0, 0, 0);
 
-	criteria_combo = gtk_combo_new();
+	criteria_combo = gtk_combo_box_new_text();
 	gtk_widget_show(criteria_combo);
 
-	combo_items = NULL;
-
 	for (i = 0; criteria_text[i].text != NULL; i++) {
-		if (criteria_text[i].contains_header_name)
-			combo_items = g_list_append(combo_items,
-					    (gpointer) prefs_common_translated_header_name(criteria_text[i].text));
-		else
-			combo_items = g_list_append(combo_items,
-					    (gpointer) gettext(criteria_text[i].text));
+		gtk_combo_box_append_text(GTK_COMBO_BOX(criteria_combo),
+			criteria_text[i].contains_header_name ?
+				    (gpointer) prefs_common_translated_header_name(criteria_text[i].text) :
+				    (gpointer) gettext(criteria_text[i].text));
 	}
-	gtk_combo_set_popdown_strings(GTK_COMBO(criteria_combo), combo_items);
 
-	g_list_free(combo_items);
-
+	gtk_combo_box_set_active(GTK_COMBO_BOX(criteria_combo), CRITERIA_ALL);
 	gtk_widget_set_size_request(criteria_combo, 190, -1);
 	gtk_table_attach(GTK_TABLE(criteria_table), criteria_combo, 0, 1, 1, 2,
 			  0, 0, 0, 0);
-	criteria_list = GTK_COMBO(criteria_combo)->list;
-	g_signal_connect(G_OBJECT(criteria_list), "select-child",
+	g_signal_connect(G_OBJECT(criteria_combo), "changed",
 			 G_CALLBACK(prefs_matcher_criteria_select),
 			 NULL);
-
-	gtk_entry_set_editable(GTK_ENTRY(GTK_COMBO(criteria_combo)->entry),
-			       FALSE);
 
 	/* header name */
 
@@ -537,18 +455,14 @@ static void prefs_matcher_create(void)
 	gtk_table_attach(GTK_TABLE(criteria_table), header_label, 1, 2, 0, 1,
 			 GTK_FILL, 0, 0, 0);
 
-	header_combo = gtk_combo_new();
-	gtk_widget_show(header_combo);
-	gtk_widget_set_size_request(header_combo, 120, -1);
-	gtkut_combo_set_items(GTK_COMBO (header_combo),
+	header_combo = combobox_text_new(TRUE,
 			      "Subject", "From", "To", "Cc", "Reply-To",
 			      "Sender", "X-ML-Name", "X-List", "X-Sequence",
-			      "X-Mailer","X-BeenThere",
-			      NULL);
+			      "X-Mailer","X-BeenThere", NULL);
+	gtk_widget_set_size_request(header_combo, 120, -1);
 	gtk_table_attach(GTK_TABLE(criteria_table), header_combo, 1, 2, 1, 2,
 			 0, 0, 0, 0);
-	header_entry = GTK_COMBO(header_combo)->entry;
-	gtk_entry_set_editable(GTK_ENTRY(header_entry), TRUE);
+	header_entry = GTK_BIN (header_combo)->child;
 
 	/* address header name */
 
@@ -557,16 +471,13 @@ static void prefs_matcher_create(void)
 	gtk_table_attach(GTK_TABLE(criteria_table), header_addr_label, 1, 2, 0, 1,
 			 GTK_FILL, 0, 0, 0);
 
-	header_addr_combo = gtk_combo_new();
-	gtk_widget_set_size_request(header_addr_combo, 120, -1);
-	gtkut_combo_set_items(GTK_COMBO (header_addr_combo),
+	header_addr_combo = combobox_text_new(TRUE,
 			      Q_("Filtering Matcher Menu|All"),
-			      _("Any"), "From", "To", "Cc", "Reply-To", "Sender",
-			      NULL);
+			      _("Any"), "From", "To", "Cc", "Reply-To", "Sender", NULL);
+	gtk_widget_set_size_request(header_addr_combo, 120, -1);
 	gtk_table_attach(GTK_TABLE(criteria_table), header_addr_combo, 1, 2, 1, 2,
 			 0, 0, 0, 0);
-	header_addr_entry = GTK_COMBO(header_addr_combo)->entry;
-	gtk_entry_set_editable(GTK_ENTRY(header_addr_entry), TRUE);
+	header_addr_entry = GTK_BIN(header_addr_combo)->child;
 
 	/* value */
 
@@ -589,20 +500,8 @@ static void prefs_matcher_create(void)
 	gtk_table_attach(GTK_TABLE(criteria_table), addressbook_folder_label, 2, 3, 0, 1,
 			 GTK_FILL | GTK_SHRINK | GTK_EXPAND, 0, 0, 0);
 
-	addressbook_folder_combo = gtk_combo_new();
-	gtk_widget_show(addressbook_folder_combo);
+	addressbook_folder_combo = combobox_text_new(TRUE, _("Any"), NULL);
 	gtk_widget_set_size_request(addressbook_folder_combo, 200, -1);
-	gtk_entry_set_editable(GTK_ENTRY(GTK_COMBO(addressbook_folder_combo)->entry),
-			       TRUE);
-
-	combo_items = NULL;
-	for (i = 0; i < (gint) (sizeof(addressbook_folder_text) / sizeof(gchar *)); i++) {
-		combo_items = g_list_append(combo_items,
-					    (gpointer) _(addressbook_folder_text[i]));
-	}
-	gtk_combo_set_popdown_strings(GTK_COMBO(addressbook_folder_combo), combo_items);
-	g_list_free(combo_items);
-
 	gtk_table_attach(GTK_TABLE(criteria_table), addressbook_folder_combo, 2, 3, 1, 2,
 			 GTK_FILL | GTK_SHRINK | GTK_EXPAND, 0, 0, 0);
 
@@ -631,6 +530,12 @@ static void prefs_matcher_create(void)
 
 	/* predicate */
 
+	vbox_pred = gtk_vbox_new(TRUE, VSPACING);
+	gtk_widget_show(vbox_pred);
+
+	hbox_pred = gtk_hbox_new(FALSE, VSPACING);
+	gtk_widget_show(hbox_pred);
+
 	vbox2 = gtk_vbox_new(FALSE, VSPACING);
 	gtk_widget_show(vbox2);
 	gtk_box_pack_start(GTK_BOX(vbox1), vbox2, FALSE, FALSE, 0);
@@ -638,51 +543,26 @@ static void prefs_matcher_create(void)
 	hbox1 = gtk_hbox_new(FALSE, 8);
 	gtk_widget_show(hbox1);
 	gtk_box_pack_start(GTK_BOX(vbox2), hbox1, FALSE, FALSE, 0);
+	gtk_box_pack_start(GTK_BOX(hbox1), hbox_pred, FALSE, FALSE, 0);
+
 
 	predicate_label = gtk_label_new(_("Predicate"));
 	gtk_widget_show(predicate_label);
-	gtk_box_pack_start(GTK_BOX(hbox1), predicate_label,
+	gtk_box_pack_start(GTK_BOX(hbox_pred), predicate_label,
 			   FALSE, FALSE, 0);
 
-	predicate_combo = gtk_combo_new();
-	gtk_widget_show(predicate_combo);
+	predicate_combo = combobox_text_new(FALSE, _("contains"),
+					    _("does not contain"), NULL);
 	gtk_widget_set_size_request(predicate_combo, 120, -1);
-	predicate_list = GTK_COMBO(predicate_combo)->list;
-	gtk_entry_set_editable(GTK_ENTRY(GTK_COMBO(predicate_combo)->entry),
-			       FALSE);
-
-	combo_items = NULL;
-
-	for (i = 0; i < (gint) (sizeof(predicate_text) / sizeof(gchar *)); i++) {
-		combo_items = g_list_append(combo_items,
-					    (gpointer) _(predicate_text[i]));
-	}
-	gtk_combo_set_popdown_strings(GTK_COMBO(predicate_combo), combo_items);
-
-	g_list_free(combo_items);
-
-	gtk_box_pack_start(GTK_BOX(hbox1), predicate_combo,
+	gtk_box_pack_start(GTK_BOX(vbox_pred), predicate_combo,
 			   FALSE, FALSE, 0);
+	gtk_box_pack_start(GTK_BOX(hbox_pred), vbox_pred, FALSE, FALSE, 0);
 
 	/* predicate flag */
 
-	predicate_flag_combo = gtk_combo_new();
-	gtk_widget_hide(predicate_flag_combo);
+	predicate_flag_combo = combobox_text_new(FALSE, _("yes"), _("no"), NULL);
 	gtk_widget_set_size_request(predicate_flag_combo, 120, -1);
-	predicate_flag_list = GTK_COMBO(predicate_flag_combo)->list;
-	gtk_entry_set_editable(GTK_ENTRY(GTK_COMBO(predicate_flag_combo)->entry), FALSE);
-
-	combo_items = NULL;
-
-	for (i = 0; i < (gint) (sizeof(predicate_text) / sizeof(gchar *)); i++) {
-		combo_items = g_list_append(combo_items, (gpointer) _(predicate_flag_text[i]));
-	}
-	gtk_combo_set_popdown_strings(GTK_COMBO(predicate_flag_combo),
-				      combo_items);
-
-	g_list_free(combo_items);
-
-	gtk_box_pack_start(GTK_BOX(hbox1), predicate_flag_combo,
+	gtk_box_pack_start(GTK_BOX(vbox_pred), predicate_flag_combo,
 			   FALSE, FALSE, 0);
 
 	vbox3 = gtk_vbox_new(FALSE, 0);
@@ -734,23 +614,8 @@ static void prefs_matcher_create(void)
 	gtk_box_pack_start(GTK_BOX(btn_hbox), bool_op_label,
 			   FALSE, FALSE, 0);
 
-	bool_op_combo = gtk_combo_new();
-	gtk_widget_show(bool_op_combo);
+	bool_op_combo = combobox_text_new(FALSE, _("or"), _("and"), NULL);
 	gtk_widget_set_size_request(bool_op_combo, 60, -1);
-	bool_op_list = GTK_COMBO(bool_op_combo)->list;
-	gtk_entry_set_editable(GTK_ENTRY(GTK_COMBO(bool_op_combo)->entry),
-			       FALSE);
-
-	combo_items = NULL;
-
-	for (i = 0; i < (gint) (sizeof(bool_op_text) / sizeof(gchar *)); i++) {
-		combo_items = g_list_append(combo_items,
-					    (gpointer) _(bool_op_text[i]));
-	}
-	gtk_combo_set_popdown_strings(GTK_COMBO(bool_op_combo), combo_items);
-
-	g_list_free(combo_items);
-
 	gtk_box_pack_start(GTK_BOX(btn_hbox), bool_op_combo,
 			   FALSE, FALSE, 0);
 
@@ -807,7 +672,7 @@ static void prefs_matcher_create(void)
 
 	matcher.ok_btn = ok_btn;
 
-	matcher.criteria_list = criteria_list;
+	matcher.criteria_combo = criteria_combo;
 	matcher.header_combo = header_combo;
 	matcher.header_entry = header_entry;
 	matcher.header_label = header_label;
@@ -819,13 +684,11 @@ static void prefs_matcher_create(void)
 	matcher.addressbook_folder_label = addressbook_folder_label;
 	matcher.addressbook_folder_combo = addressbook_folder_combo;
 	matcher.predicate_label = predicate_label;
-	matcher.predicate_list = predicate_list;
 	matcher.predicate_combo = predicate_combo;
-	matcher.predicate_flag_list = predicate_flag_list;
 	matcher.predicate_flag_combo = predicate_flag_combo;
 	matcher.case_checkbtn = case_checkbtn;
 	matcher.regexp_checkbtn = regexp_checkbtn;
-	matcher.bool_op_list = bool_op_list;
+	matcher.bool_op_combo = bool_op_combo;
 	matcher.test_btn = test_btn;
 	matcher.addressbook_select_btn = addressbook_select_btn;
 	matcher.color_optmenu = color_optmenu;
@@ -834,7 +697,7 @@ static void prefs_matcher_create(void)
 	matcher.cond_list_view = cond_list_view;
 
 	matcher.selected_criteria = -1;
-	prefs_matcher_criteria_select(GTK_LIST(criteria_list), NULL, NULL);
+	prefs_matcher_criteria_select(criteria_combo, NULL);
 }
 
 /*!
@@ -872,12 +735,12 @@ static void prefs_matcher_list_view_set_row(GtkTreeIter *row, MatcherProp *prop)
  */
 static void prefs_matcher_reset_condition(void)
 {
-	gtk_list_select_item(GTK_LIST(matcher.criteria_list), 0);
-	gtk_list_select_item(GTK_LIST(matcher.predicate_list), 0);
+	gtk_combo_box_set_active(GTK_COMBO_BOX(matcher.criteria_combo), CRITERIA_ALL);
+	gtk_combo_box_set_active(GTK_COMBO_BOX(matcher.predicate_combo), PREDICATE_CONTAINS);
 	gtk_entry_set_text(GTK_ENTRY(matcher.header_entry), "");
 	gtk_entry_set_text(GTK_ENTRY(matcher.header_addr_entry), "");
 	gtk_entry_set_text(GTK_ENTRY(matcher.value_entry), "");
-	gtk_entry_set_text(GTK_ENTRY(GTK_COMBO(matcher.addressbook_folder_combo)->entry), "");
+	gtk_entry_set_text(GTK_ENTRY(GTK_BIN(matcher.addressbook_folder_combo)->child), "");
 }
 
 /*!
@@ -906,7 +769,7 @@ static void prefs_matcher_set_dialog(MatcherList *matchers)
 		bool_op = matchers->bool_and;
 	}
 	
-	gtk_list_select_item(GTK_LIST(matcher.bool_op_list), bool_op);
+	gtk_combo_box_set_active(GTK_COMBO_BOX(matcher.bool_op_combo), bool_op);
 
 	prefs_matcher_reset_condition();
 }
@@ -952,7 +815,7 @@ static MatcherList *prefs_matcher_get_list(void)
 		}
 	} while (gtk_tree_model_iter_next(model, &iter));
 
-	bool_and = get_sel_from_list(GTK_LIST(matcher.bool_op_list));
+	bool_and = gtk_combo_box_get_active(GTK_COMBO_BOX(matcher.bool_op_combo));
 
 	matchers = matcherlist_new(matcher_list, bool_and);
 
@@ -1261,12 +1124,12 @@ static MatcherProp *prefs_matcher_dialog_to_matcher(void)
 	gint value;
 	const gchar *value_str;
 
-	value_criteria = get_sel_from_list(GTK_LIST(matcher.criteria_list));
+	value_criteria = gtk_combo_box_get_active(GTK_COMBO_BOX(matcher.criteria_combo));
 
 	criteria = prefs_matcher_get_matching_from_criteria(value_criteria);
 
-	value_pred = get_sel_from_list(GTK_LIST(matcher.predicate_list));
-	value_pred_flag = get_sel_from_list(GTK_LIST(matcher.predicate_flag_list));
+	value_pred = gtk_combo_box_get_active(GTK_COMBO_BOX(matcher.predicate_combo));
+	value_pred_flag = gtk_combo_box_get_active(GTK_COMBO_BOX(matcher.predicate_flag_combo));
 
 	use_regexp = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(matcher.regexp_checkbtn));
 	case_sensitive = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(matcher.case_checkbtn));
@@ -1395,7 +1258,7 @@ static MatcherProp *prefs_matcher_dialog_to_matcher(void)
 
 	case CRITERIA_FOUND_IN_ADDRESSBOOK:
 		header = gtk_entry_get_text(GTK_ENTRY(matcher.header_addr_entry));
-		expr = gtk_entry_get_text(GTK_ENTRY(GTK_COMBO(matcher.addressbook_folder_combo)->entry));
+		expr = gtk_entry_get_text(GTK_ENTRY(GTK_BIN(matcher.addressbook_folder_combo)->child));
 
 		if (*header == '\0') {
 		    alertpanel_error(_("Header name is not set."));
@@ -1633,19 +1496,17 @@ static void prefs_matcher_enable_widget(GtkWidget* widget)
 /*!
  *\brief	Change widgets depending on the selected condition
  *
- *\param	list List widget
- *\param	widget Not used
+ *\param	criteria combo widget
  *\param	user_data Not used	
  */
-static void prefs_matcher_criteria_select(GtkList *list,
-					  GtkWidget *widget,
+static void prefs_matcher_criteria_select(GtkWidget *widget,
 					  gpointer user_data)
 {
 	gint value, old_value;
 
 	old_value = matcher.selected_criteria;
-	matcher.selected_criteria = value = get_sel_from_list
-		(GTK_LIST(matcher.criteria_list));
+	matcher.selected_criteria = value = gtk_combo_box_get_active
+		(GTK_COMBO_BOX(matcher.criteria_combo));
 
 	if (old_value == matcher.selected_criteria)
 		return;
@@ -1985,10 +1846,10 @@ static void prefs_matcher_addressbook_select(void)
 	gchar *folderpath = NULL;
 	gboolean ret = FALSE;
 
-	folderpath = (gchar *) gtk_entry_get_text(GTK_ENTRY(GTK_COMBO(matcher.addressbook_folder_combo)->entry));
+	folderpath = (gchar *) gtk_entry_get_text(GTK_ENTRY(GTK_BIN(matcher.addressbook_folder_combo)->child));
 	ret = addressbook_folder_selection(&folderpath);
 	if ( ret != FALSE && folderpath != NULL)
-		gtk_entry_set_text(GTK_ENTRY(GTK_COMBO(matcher.addressbook_folder_combo)->entry), folderpath);
+		gtk_entry_set_text(GTK_ENTRY(GTK_BIN(matcher.addressbook_folder_combo)->child), folderpath);
 }
 
 
@@ -2104,7 +1965,7 @@ static gboolean prefs_matcher_selected(GtkTreeSelection *selector,
 
 	criteria = prefs_matcher_get_criteria_from_matching(prop->criteria);
 	if (criteria != -1)
-		gtk_list_select_item(GTK_LIST(matcher.criteria_list),
+		gtk_combo_box_set_active(GTK_COMBO_BOX(matcher.criteria_combo),
 				     criteria);
 
 	switch(prop->criteria) {
@@ -2194,7 +2055,7 @@ static gboolean prefs_matcher_selected(GtkTreeSelection *selector,
 			expr = prop->expr;
 
 		gtk_entry_set_text(GTK_ENTRY(matcher.header_addr_entry), header);
-		gtk_entry_set_text(GTK_ENTRY(GTK_COMBO(matcher.addressbook_folder_combo)->entry), expr);
+		gtk_entry_set_text(GTK_ENTRY(GTK_BIN(matcher.addressbook_folder_combo)->child), expr);
 		break;
 	}
 
@@ -2223,11 +2084,15 @@ static gboolean prefs_matcher_selected(GtkTreeSelection *selector,
 	}
 
 	if (negative_cond) {
-		gtk_list_select_item(GTK_LIST(matcher.predicate_list), 1);
-		gtk_list_select_item(GTK_LIST(matcher.predicate_flag_list), 1);
+		gtk_combo_box_set_active(GTK_COMBO_BOX(matcher.predicate_combo),
+					 PREDICATE_DOES_NOT_CONTAIN);
+		gtk_combo_box_set_active(GTK_COMBO_BOX(matcher.predicate_flag_combo),
+					 PREDICATE_FLAG_DISABLED);
 	} else {
-		gtk_list_select_item(GTK_LIST(matcher.predicate_list), 0);
-		gtk_list_select_item(GTK_LIST(matcher.predicate_flag_list), 0);
+		gtk_combo_box_set_active(GTK_COMBO_BOX(matcher.predicate_combo),
+					 PREDICATE_CONTAINS);
+		gtk_combo_box_set_active(GTK_COMBO_BOX(matcher.predicate_flag_combo),
+					 PREDICATE_FLAG_ENABLED);
 	}
 	
 	switch(prop->matchtype) {

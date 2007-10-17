@@ -36,6 +36,7 @@
 
 #include "gtk/gtkutils.h"
 #include "gtk/prefswindow.h"
+#include "combobox.h"
 
 #include "manage_window.h"
 #ifdef HAVE_LIBETPAN
@@ -106,15 +107,13 @@ static void prefs_keybind_select(void)
 	gtk_box_pack_start (GTK_BOX (hbox1), label, FALSE, FALSE, 0);
 	gtk_label_set_justify (GTK_LABEL (label), GTK_JUSTIFY_LEFT);
 
-	combo = gtk_combo_new ();
-	gtk_box_pack_start (GTK_BOX (hbox1), combo, TRUE, TRUE, 0);
-	gtkut_combo_set_items (GTK_COMBO (combo),
+	combo = combobox_text_new(FALSE,
 			       _("Default"),
 			       "Mew / Wanderlust",
 			       "Mutt",
 			       _("Old Sylpheed"),
 			       NULL);
-	gtk_editable_set_editable(GTK_EDITABLE(GTK_COMBO (combo)->entry), FALSE);
+	gtk_box_pack_start (GTK_BOX (hbox1), combo, TRUE, TRUE, 0);
 
 	hbox1 = gtk_hbox_new (FALSE, 8);
 	gtk_box_pack_start (GTK_BOX (vbox1), hbox1, FALSE, FALSE, 0);
@@ -198,7 +197,7 @@ static void prefs_keybind_apply(struct KeyBind keybind[], gint num)
 
 static void prefs_keybind_apply_clicked(GtkWidget *widget)
 {
-	GtkEntry *entry = GTK_ENTRY(GTK_COMBO(keybind.combo)->entry);
+	GtkEntry *entry = GTK_ENTRY(GTK_BIN(keybind.combo)->child);
 	const gchar *text;
 	struct KeyBind *menurc;
 	gint n_menurc;

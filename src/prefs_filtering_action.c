@@ -50,6 +50,7 @@
 #include "tags.h"
 #include "matcher_parser.h"
 #include "colorlabel.h"
+#include "combobox.h"
 
 enum {
 	PFA_ACTION,
@@ -69,10 +70,8 @@ static void prefs_filtering_action_cancel(void);
 static void prefs_filtering_action_ok(void);
 static gint prefs_filtering_action_deleted(GtkWidget *widget,
     GdkEventAny *event, gpointer data);
-static void prefs_filtering_action_type_selection_changed(GtkList *list,
+static void prefs_filtering_action_type_selection_changed(GtkWidget *widget,
     gpointer user_data);
-static void prefs_filtering_action_type_select(GtkList *list,
-    GtkWidget *widget, gpointer user_data);
 static void prefs_filtering_action_select_dest(void);
 static void prefs_filtering_action_select_addressbook(void);
 static void prefs_filtering_action_up(void);
@@ -104,10 +103,8 @@ static struct FilteringAction_ {
 	GtkWidget *ok_btn;
 
 	GtkWidget *action_list_view;
-	GtkWidget *action_type_list;
 	GtkWidget *action_combo;
 	GtkWidget *account_label;
-	GtkWidget *account_list;
 	GtkWidget *account_combo;
 	GtkWidget *dest_entry;
 	GtkWidget *dest_btn;
@@ -124,7 +121,6 @@ static struct FilteringAction_ {
 	GtkWidget *addressbook_label;
 	GtkWidget *addressbook_btn;
 	GtkWidget *tags_label;
-	GtkWidget *tags_list;
 	GtkWidget *tags_combo;
 
 	gint current_action;
@@ -200,32 +196,6 @@ static struct {
 static PrefsFilteringActionSignal *filtering_action_callback;
 
 /*!
- *\brief	Find index of list selection 
- *
- *\param	list GTK list widget
- *
- *\return	gint Selection index
- */
-static gint get_sel_from_list(GtkList *list)
-{
-	gint row = 0;
-	void * sel;
-	GList * child;
-
-	if (list->selection == NULL) 
-		return -1;
-
-	sel = list->selection->data;
-	for (child = list->children; child != NULL; child = g_list_next(child)) {
-		if (child->data == sel)
-			return row;
-		row ++;
-	}
-	
-	return row;
-}
-
-/*!
  *\brief	Opens the filtering action dialog with a list of actions
  *
  *\param	matchers List of conditions
@@ -285,8 +255,6 @@ static void prefs_filtering_action_create(void)
 	GtkWidget *action_label;
 	GtkWidget *recip_label;
 	GtkWidget *action_combo;
-	GtkWidget *action_type_list;
-	GtkWidget *account_list;
 	GtkWidget *dest_label;
 	GtkWidget *exec_label;
 	GtkWidget *score_label;
@@ -301,9 +269,7 @@ static void prefs_filtering_action_create(void)
 	GtkWidget *dest_entry;
 	GtkWidget *dest_btn;
 	GtkWidget *tags_label;
-	GtkWidget *tags_list;
 	GtkWidget *tags_combo;
-        GList * cur;
 
 	GtkWidget *reg_hbox;
 	GtkWidget *btn_hbox;
@@ -324,7 +290,6 @@ static void prefs_filtering_action_create(void)
 
 	GtkWidget *color_optmenu;
 
-	GList *combo_items;
 	gint i;
 	static GdkGeometry geometry;
 
@@ -382,27 +347,16 @@ static void prefs_filtering_action_create(void)
 	gtk_misc_set_alignment (GTK_MISC (action_label), 0, 0.5);
 	gtk_box_pack_start (GTK_BOX (hbox1), action_label, FALSE, FALSE, 0);
 
-	action_combo = gtk_combo_new ();
+	action_combo = gtk_combo_box_new_text ();
 	gtk_widget_show (action_combo);
-	gtk_entry_set_editable(GTK_ENTRY(GTK_COMBO(action_combo)->entry),
-			       FALSE);
 
-	combo_items = NULL;
 	for (i = 0; i < sizeof action_text / sizeof action_text[0]; i++)
-		combo_items = g_list_append
-			(combo_items, (gpointer) _(action_text[i].text));
-	gtk_combo_set_popdown_strings(GTK_COMBO(action_combo), combo_items);
-
-	g_list_free(combo_items);
-
+		gtk_combo_box_append_text(GTK_COMBO_BOX(action_combo),
+					(gpointer) _(action_text[i].text));
+	gtk_combo_box_set_active(GTK_COMBO_BOX(action_combo), 0);
 	gtk_box_pack_start (GTK_BOX (hbox1), action_combo,
 			    TRUE, TRUE, 0);
-	action_type_list = GTK_COMBO(action_combo)->list;
-	g_signal_connect (G_OBJECT(action_type_list), "select-child",
-			  G_CALLBACK(prefs_filtering_action_type_select),
-			  NULL);
-
-	g_signal_connect(G_OBJECT(action_type_list), "selection-changed",
+	g_signal_connect(G_OBJECT(action_combo), "changed",
 			 G_CALLBACK(prefs_filtering_action_type_selection_changed),
 			 NULL);
 
@@ -418,11 +372,10 @@ static void prefs_filtering_action_create(void)
 	gtk_misc_set_alignment (GTK_MISC (account_label), 0, 0.5);
 	gtk_box_pack_start (GTK_BOX (hbox1), account_label, FALSE, FALSE, 0);
 
-	account_combo = gtk_combo_new ();
+	account_combo = gtk_combo_box_new_text ();
 	gtk_widget_set_size_request (account_combo, 150, -1);
 	gtk_widget_show (account_combo);
 
-	combo_items = NULL;
 	for (accounts = account_get_list() ; accounts != NULL;
 	     accounts = accounts->next) {
 		PrefsAccount *ac = (PrefsAccount *)accounts->data;
@@ -431,21 +384,13 @@ static void prefs_filtering_action_create(void)
 		name = g_strdup_printf("%s <%s> (%s)",
 				       ac->name, ac->address,
 				       ac->account_name);
-		combo_items = g_list_append(combo_items, (gpointer) name);
+		gtk_combo_box_append_text(GTK_COMBO_BOX(account_combo), (gpointer) name);
+		g_free(name);
 	}
 
-	gtk_combo_set_popdown_strings(GTK_COMBO(account_combo), combo_items);
-
-	for(cur = g_list_first(combo_items) ; cur != NULL ;
-	    cur = g_list_next(cur))
-		g_free(cur->data);
-	g_list_free(combo_items);
-
+	gtk_combo_box_set_active(GTK_COMBO_BOX(account_combo), 0);
 	gtk_box_pack_start (GTK_BOX (hbox1), account_combo,
 			    TRUE, TRUE, 0);
-	account_list = GTK_COMBO(account_combo)->list;
-	gtk_entry_set_editable(GTK_ENTRY(GTK_COMBO(account_combo)->entry),
-			       FALSE);
 
 	/* header */
 
@@ -454,16 +399,11 @@ static void prefs_filtering_action_create(void)
 	gtk_misc_set_alignment(GTK_MISC(header_label), 0, 0.5);
 	gtk_box_pack_start (GTK_BOX (hbox1), header_label, FALSE, FALSE, 0);
 
-	header_combo = gtk_combo_new();
-	gtk_widget_show(header_combo);
+	header_combo = combobox_text_new(TRUE, "From", "To", "Cc", "Reply-To", "Sender", NULL);
 	gtk_widget_set_size_request(header_combo, 120, -1);
-	gtkut_combo_set_items(GTK_COMBO (header_combo),
-			      "From", "To", "Cc", "Reply-To", "Sender",
-			      NULL);
 	gtk_box_pack_start (GTK_BOX (hbox1), header_combo,
 			    TRUE, TRUE, 0);
-	header_entry = GTK_COMBO(header_combo)->entry;
-	gtk_entry_set_editable(GTK_ENTRY(header_entry), TRUE);
+	header_entry = GTK_BIN(header_combo)->child;
 
 	/* destination */
 
@@ -517,31 +457,22 @@ static void prefs_filtering_action_create(void)
 				 colorlabel_create_color_menu());
 	gtk_box_pack_start(GTK_BOX(hbox1), color_optmenu, TRUE, TRUE, 0);
 
-	tags_combo = gtk_combo_new ();
+	tags_combo = gtk_combo_box_new_text ();
 	gtk_widget_set_size_request (tags_combo, 150, -1);
 	gtk_widget_show (tags_combo);
 
-	combo_items = NULL;
 	for (tmp = tags = tags_get_list() ; tmp != NULL;
 	     tmp = tmp->next) {
 		gchar *name = g_strdup(tags_get_tag(GPOINTER_TO_INT(tmp->data)));
 
-		combo_items = g_list_append(combo_items, (gpointer) name);
+		gtk_combo_box_append_text(GTK_COMBO_BOX(tags_combo), (gpointer) name);
+		g_free(name);
 	}
 
-	gtk_combo_set_popdown_strings(GTK_COMBO(tags_combo), combo_items);
-
-	for(cur = g_list_first(combo_items) ; cur != NULL ;
-	    cur = g_list_next(cur))
-		g_free(cur->data);
-	g_list_free(combo_items);
-	g_slist_free(tags);
-
+	gtk_combo_box_set_active(GTK_COMBO_BOX(tags_combo), 0);
 	gtk_box_pack_start (GTK_BOX (hbox1), tags_combo,
 			    TRUE, TRUE, 0);
-	tags_list = GTK_COMBO(tags_combo)->list;
-	gtk_entry_set_editable(GTK_ENTRY(GTK_COMBO(tags_combo)->entry),
-			       FALSE);
+
 	dest_btn = gtk_button_new_with_label (_("Select ..."));
 	gtk_widget_show (dest_btn);
 	gtk_box_pack_start (GTK_BOX (hbox1), dest_btn, FALSE, FALSE, 0);
@@ -647,13 +578,10 @@ static void prefs_filtering_action_create(void)
 	gtk_widget_show_all(window);
 
 	filtering_action.window    = window;
-	filtering_action.action_type_list = action_type_list;
 	filtering_action.action_combo = action_combo;
 	filtering_action.account_label = account_label;
-	filtering_action.account_list = account_list;
 	filtering_action.account_combo = account_combo;
 	filtering_action.tags_label = tags_label;
-	filtering_action.tags_list = tags_list;
 	filtering_action.tags_combo = tags_combo;
 	filtering_action.dest_entry = dest_entry;
 	filtering_action.dest_btn = dest_btn;
@@ -671,6 +599,8 @@ static void prefs_filtering_action_create(void)
 	filtering_action.addressbook_btn = addressbook_btn;
 	filtering_action.ok_btn = ok_btn;
 	filtering_action.action_list_view = action_list_view;
+	
+	prefs_filtering_action_type_selection_changed(NULL, NULL);
 }
 
 /*!
@@ -899,9 +829,9 @@ static FilteringAction * prefs_filtering_action_dialog_to_action(gboolean alert)
         gint score;
 	gchar * header = NULL;
         
-	action_id = get_sel_from_list(GTK_LIST(filtering_action.action_type_list));
+	action_id = gtk_combo_box_get_active(GTK_COMBO_BOX(filtering_action.action_combo));
 	action_type = prefs_filtering_action_get_matching_from_action(action_id);
-	list_id = get_sel_from_list(GTK_LIST(filtering_action.account_list));
+	list_id = gtk_combo_box_get_active(GTK_COMBO_BOX(filtering_action.account_combo));
 	account_id = get_account_id_from_list_id(list_id);
         score = 0;
         destination = NULL;
@@ -965,7 +895,7 @@ static FilteringAction * prefs_filtering_action_dialog_to_action(gboolean alert)
 		break;
 	case ACTION_SET_TAG:
 	case ACTION_UNSET_TAG:
-		destination = gtk_editable_get_chars(GTK_EDITABLE(GTK_COMBO(filtering_action.tags_combo)->entry), 0, -1);
+		destination = gtk_editable_get_chars(GTK_EDITABLE(GTK_BIN(filtering_action.tags_combo)->child), 0, -1);
 		if (*destination == '\0') {
 			if (alert)
                                 alertpanel_error(_("Tag name is empty."));
@@ -1018,8 +948,8 @@ static void prefs_filtering_action_register_cb(void)
 	 * what seems to be a bug. this causes any other 
 	 * list items to be unselectable)
 	 * prefs_filtering_action_reset_dialog(); */
-	gtk_list_select_item(GTK_LIST(filtering_action.account_list), 0);
-	gtk_list_select_item(GTK_LIST(filtering_action.tags_list), 0);
+	gtk_combo_box_set_active(GTK_COMBO_BOX(filtering_action.account_combo), 0);
+	gtk_combo_box_set_active(GTK_COMBO_BOX(filtering_action.tags_combo), 0);
 	gtk_entry_set_text(GTK_ENTRY(filtering_action.dest_entry), "");
 }
 
@@ -1292,12 +1222,12 @@ static void prefs_filtering_action_select_addressbook(void)
 	g_free(prev);
 }
 
-static void prefs_filtering_action_type_selection_changed(GtkList *list,
-    gpointer user_data)
+static void prefs_filtering_action_type_selection_changed(GtkWidget *combo,
+							  gpointer user_data)
 {
 	gint value;
 
-	value = get_sel_from_list(GTK_LIST(filtering_action.action_type_list));
+	value = gtk_combo_box_get_active(GTK_COMBO_BOX(filtering_action.action_combo));
 
 	if (filtering_action.current_action != value) {
 		if (filtering_action.current_action == ACTION_FORWARD 
@@ -1317,14 +1247,6 @@ static void prefs_filtering_action_type_selection_changed(GtkList *list,
 		}
 		filtering_action.current_action = value;
 	}
-}
-
-static void prefs_filtering_action_type_select(GtkList *list,
-    GtkWidget *widget, gpointer user_data)
-{
-	Action value;
-
-	value = (Action) get_sel_from_list(GTK_LIST(filtering_action.action_type_list));
 
 	switch (value) {
 	case ACTION_MOVE:
@@ -1690,8 +1612,8 @@ static void prefs_filtering_action_type_select(GtkList *list,
 
 static void prefs_filtering_action_reset_dialog(void)
 {
-	gtk_list_select_item(GTK_LIST(filtering_action.action_type_list), 0);
-	gtk_list_select_item(GTK_LIST(filtering_action.account_list), 0);
+	gtk_combo_box_set_active(GTK_COMBO_BOX(filtering_action.action_combo), 0);
+	gtk_combo_box_set_active(GTK_COMBO_BOX(filtering_action.account_combo), 0);
 	gtk_entry_set_text(GTK_ENTRY(filtering_action.dest_entry), "");
 }
 
@@ -1811,101 +1733,101 @@ static gboolean prefs_filtering_actions_selected
 
 	switch(action->type) {
 	case MATCHACTION_MOVE:
-		gtk_list_select_item(GTK_LIST(filtering_action.action_type_list),
+		gtk_combo_box_set_active(GTK_COMBO_BOX(filtering_action.action_combo),
 				     ACTION_MOVE);
 		break;
 	case MATCHACTION_COPY:
-		gtk_list_select_item(GTK_LIST(filtering_action.action_type_list),
+		gtk_combo_box_set_active(GTK_COMBO_BOX(filtering_action.action_combo),
 				     ACTION_COPY);
 		break;
 	case MATCHACTION_DELETE:
-		gtk_list_select_item(GTK_LIST(filtering_action.action_type_list),
+		gtk_combo_box_set_active(GTK_COMBO_BOX(filtering_action.action_combo),
 				     ACTION_DELETE);
 		break;
 	case MATCHACTION_MARK:
-		gtk_list_select_item(GTK_LIST(filtering_action.action_type_list),
+		gtk_combo_box_set_active(GTK_COMBO_BOX(filtering_action.action_combo),
 				     ACTION_MARK);
 		break;
 	case MATCHACTION_UNMARK:
-		gtk_list_select_item(GTK_LIST(filtering_action.action_type_list),
+		gtk_combo_box_set_active(GTK_COMBO_BOX(filtering_action.action_combo),
 				     ACTION_UNMARK);
 		break;
 	case MATCHACTION_LOCK:
-		gtk_list_select_item(GTK_LIST(filtering_action.action_type_list),
+		gtk_combo_box_set_active(GTK_COMBO_BOX(filtering_action.action_combo),
 				     ACTION_LOCK);
 		break;
 	case MATCHACTION_UNLOCK:
-		gtk_list_select_item(GTK_LIST(filtering_action.action_type_list),
+		gtk_combo_box_set_active(GTK_COMBO_BOX(filtering_action.action_combo),
 				     ACTION_UNLOCK);
 		break;
 	case MATCHACTION_MARK_AS_READ:
-		gtk_list_select_item(GTK_LIST(filtering_action.action_type_list),
+		gtk_combo_box_set_active(GTK_COMBO_BOX(filtering_action.action_combo),
 				     ACTION_MARK_AS_READ);
 		break;
 	case MATCHACTION_MARK_AS_UNREAD:
-		gtk_list_select_item(GTK_LIST(filtering_action.action_type_list),
+		gtk_combo_box_set_active(GTK_COMBO_BOX(filtering_action.action_combo),
 				     ACTION_MARK_AS_UNREAD);
 		break;
 	case MATCHACTION_MARK_AS_SPAM:
-		gtk_list_select_item(GTK_LIST(filtering_action.action_type_list),
+		gtk_combo_box_set_active(GTK_COMBO_BOX(filtering_action.action_combo),
 				     ACTION_MARK_AS_SPAM);
 		break;
 	case MATCHACTION_MARK_AS_HAM:
-		gtk_list_select_item(GTK_LIST(filtering_action.action_type_list),
+		gtk_combo_box_set_active(GTK_COMBO_BOX(filtering_action.action_combo),
 				     ACTION_MARK_AS_HAM);
 		break;
 	case MATCHACTION_FORWARD:
 		list_id = get_list_id_from_account_id(action->account_id);
-		gtk_list_select_item(GTK_LIST(filtering_action.action_type_list),
+		gtk_combo_box_set_active(GTK_COMBO_BOX(filtering_action.action_combo),
 				     ACTION_FORWARD);
-		gtk_list_select_item(GTK_LIST(filtering_action.account_list),
+		gtk_combo_box_set_active(GTK_COMBO_BOX(filtering_action.account_combo),
 				     list_id);
 		break;
 	case MATCHACTION_FORWARD_AS_ATTACHMENT:
 		list_id = get_list_id_from_account_id(action->account_id);
-		gtk_list_select_item(GTK_LIST(filtering_action.action_type_list),
+		gtk_combo_box_set_active(GTK_COMBO_BOX(filtering_action.action_combo),
 				     ACTION_FORWARD_AS_ATTACHMENT);
-		gtk_list_select_item(GTK_LIST(filtering_action.account_list),
+		gtk_combo_box_set_active(GTK_COMBO_BOX(filtering_action.account_combo),
 				     list_id);
 		break;
 	case MATCHACTION_REDIRECT:
 		list_id = get_list_id_from_account_id(action->account_id);
-		gtk_list_select_item(GTK_LIST(filtering_action.action_type_list),
+		gtk_combo_box_set_active(GTK_COMBO_BOX(filtering_action.action_combo),
 				     ACTION_REDIRECT);
-		gtk_list_select_item(GTK_LIST(filtering_action.account_list),
+		gtk_combo_box_set_active(GTK_COMBO_BOX(filtering_action.account_combo),
 				     list_id);
 		break;
 	case MATCHACTION_EXECUTE:
-		gtk_list_select_item(GTK_LIST(filtering_action.action_type_list),
+		gtk_combo_box_set_active(GTK_COMBO_BOX(filtering_action.action_combo),
 				     ACTION_EXECUTE);
 		break;
 	case MATCHACTION_COLOR:
-		gtk_list_select_item(GTK_LIST(filtering_action.action_type_list),
+		gtk_combo_box_set_active(GTK_COMBO_BOX(filtering_action.action_combo),
 				     ACTION_COLOR);
 		gtk_option_menu_set_history(GTK_OPTION_MENU(filtering_action.color_optmenu), action->labelcolor);     
 		break;
 	case MATCHACTION_CHANGE_SCORE:
-		gtk_list_select_item(GTK_LIST(filtering_action.action_type_list),
+		gtk_combo_box_set_active(GTK_COMBO_BOX(filtering_action.action_combo),
 				     ACTION_CHANGE_SCORE);
 		break;
 	case MATCHACTION_SET_SCORE:
-		gtk_list_select_item(GTK_LIST(filtering_action.action_type_list),
+		gtk_combo_box_set_active(GTK_COMBO_BOX(filtering_action.action_combo),
 				     ACTION_SET_SCORE);
 		break;
 	case MATCHACTION_STOP:
-		gtk_list_select_item(GTK_LIST(filtering_action.action_type_list),
+		gtk_combo_box_set_active(GTK_COMBO_BOX(filtering_action.action_combo),
 				     ACTION_STOP);
 		break;
 	case MATCHACTION_HIDE:
-		gtk_list_select_item(GTK_LIST(filtering_action.action_type_list),
+		gtk_combo_box_set_active(GTK_COMBO_BOX(filtering_action.action_combo),
 				     ACTION_HIDE);
 		break;
 	case MATCHACTION_IGNORE:
-		gtk_list_select_item(GTK_LIST(filtering_action.action_type_list),
+		gtk_combo_box_set_active(GTK_COMBO_BOX(filtering_action.action_combo),
 				     ACTION_IGNORE);
 		break;
 	case MATCHACTION_WATCH:
-		gtk_list_select_item(GTK_LIST(filtering_action.action_type_list),
+		gtk_combo_box_set_active(GTK_COMBO_BOX(filtering_action.action_combo),
 				     ACTION_WATCH);
 		break;
 	case MATCHACTION_ADD_TO_ADDRESSBOOK:
@@ -1913,7 +1835,7 @@ static gboolean prefs_filtering_actions_selected
 			gtk_entry_set_text(GTK_ENTRY(filtering_action.header_entry), action->header);
 		else
 			gtk_entry_set_text(GTK_ENTRY(filtering_action.header_entry), "");
-		gtk_list_select_item(GTK_LIST(filtering_action.action_type_list),
+		gtk_combo_box_set_active(GTK_COMBO_BOX(filtering_action.action_combo),
 				     ACTION_ADD_TO_ADDRESSBOOK);
 	}
 

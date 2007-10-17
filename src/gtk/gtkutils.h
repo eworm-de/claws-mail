@@ -150,9 +150,6 @@ void gtkut_ctree_set_focus_row		(GtkCTree	*ctree,
 void gtkut_clist_set_focus_row		(GtkCList	*clist,
 					 gint		 row);
 
-void gtkut_combo_set_items		(GtkCombo	*combo,
-					 const gchar	*str1, ...);
-
 void gtkut_container_remove		(GtkContainer	*container,
 					 GtkWidget	*widget);
 

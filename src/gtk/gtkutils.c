@@ -369,28 +369,6 @@ void gtkut_clist_set_focus_row(GtkCList *clist, gint row)
 	GTKUT_CTREE_REFRESH(clist);
 }
 
-void gtkut_combo_set_items(GtkCombo *combo, const gchar *str1, ...)
-{
-	va_list args;
-	gchar *s;
-	GList *combo_items = NULL;
-
-	g_return_if_fail(str1 != NULL);
-
-	combo_items = g_list_append(combo_items, (gpointer)str1);
-	va_start(args, str1);
-	s = va_arg(args, gchar*);
-	while (s) {
-		combo_items = g_list_append(combo_items, (gpointer)s);
-		s = va_arg(args, gchar*);
-	}
-	va_end(args);
-
-	gtk_combo_set_popdown_strings(combo, combo_items);
-
-	g_list_free(combo_items);
-}
-
 void gtkut_container_remove(GtkContainer *container, GtkWidget *widget)
 {
 	gtk_container_remove(container, widget);
