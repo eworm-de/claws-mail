@@ -313,10 +313,13 @@ fill_clist (struct select_keys_s *sk, const char *pattern, gpgme_protocol_t prot
     update_progress (sk, ++running, pattern);
     while ( !(err = gpgme_op_keylist_next ( ctx, &key )) ) {
 	gpgme_user_id_t uid = key->uids;
+	if (!key->can_encrypt)
+		continue;
         debug_print ("%% %s:%d:  insert\n", __FILE__ ,__LINE__ );
         set_row (clist, key, proto ); 
 	for (; uid; uid = uid->next) {
 		gchar *raw_mail = NULL;
+
 		if (!uid->email)
 			continue;
 		raw_mail = g_strdup(uid->email);

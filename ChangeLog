@@ -1,3 +1,11 @@
+2007-10-17 [colin]	3.0.2cvs80
+
+	* src/plugins/pgpcore/select-keys.c
+                Fix bug which prevented encryption key
+                auto-selection when two or more matched the
+                email address, but only one isn't revoked
+                or expired.
+
 2007-10-17 [wwp]	3.0.2cvs79
 
 	* src/compose.c
