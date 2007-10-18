@@ -1,3 +1,9 @@
+2007-10-18 [paul]	3.0.2cvs81
+
+	* src/gtk/inputdialog.c
+	* src/gtk/inputdialog.h
+		fix copyright header
+
 2007-10-17 [colin]	3.0.2cvs80
 
 	* src/plugins/pgpcore/select-keys.c
