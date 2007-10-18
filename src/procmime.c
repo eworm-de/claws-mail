@@ -2069,7 +2069,7 @@ static void write_parameters(gpointer key, gpointer value, gpointer user_data)
 	} \
 }
 
-static int procmime_write_mime_header(MimeInfo *mimeinfo, FILE *fp)
+int procmime_write_mime_header(MimeInfo *mimeinfo, FILE *fp)
 {
 	struct TypeTable *type_table;
 	ParametersData *pdata = g_new0(ParametersData, 1);

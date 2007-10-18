@@ -1,3 +1,9 @@
+2007-10-18 [colin]	3.0.2cvs84
+
+	* src/procmime.c
+	* src/procmime.h
+		Fix missing symbol for S/MIME
+
 2007-10-18 [colin]	3.0.2cvs83
 
 	* src/prefs_filtering_action.c

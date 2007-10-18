@@ -227,7 +227,8 @@ gchar *procmime_get_content_type_str		(MimeMediaType   type,
 void procmime_force_charset			(const gchar 	*str);
 void procmime_force_encoding			(EncodingType	 encoding);
 gboolean procmime_msginfo_is_encrypted		(MsgInfo 	*msginfo);
-
+int procmime_write_mime_header			(MimeInfo 	*mimeinfo, 
+						 FILE 		*fp);
 void renderer_read_config(void);
 
 gint procmime_write_mimeinfo(MimeInfo *mimeinfo, FILE *fp);
