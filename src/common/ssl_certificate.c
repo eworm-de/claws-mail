@@ -232,11 +232,11 @@ static SSLCertificate *ssl_certificate_new_lookup(gnutls_x509_crt x509_cert, gch
 static void i2d_X509_fp(FILE *fp, gnutls_x509_crt x509_cert)
 {
 	char output[10*1024];
-	size_t cert_size;
+	size_t cert_size = 10*1024;
 	int r;
 	
 	if ((r = gnutls_x509_crt_export(x509_cert, GNUTLS_X509_FMT_DER, output, &cert_size)) < 0) {
-		g_warning("couldn't export cert %s\n", gnutls_strerror(r));
+		g_warning("couldn't export cert %s (%d)\n", gnutls_strerror(r), cert_size);
 		return;
 	}
 	debug_print("writing %zd bytes\n",cert_size);
@@ -418,7 +418,7 @@ static gboolean ssl_certificate_compare (SSLCertificate *cert_a, SSLCertificate 
 #else
 	char *output_a;
 	char *output_b;
-	size_t cert_size_a, cert_size_b;
+	size_t cert_size_a = 0, cert_size_b = 0;
 	int r;
 
 	if (cert_a == NULL || cert_b == NULL)
