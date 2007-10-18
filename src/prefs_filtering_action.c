@@ -895,8 +895,8 @@ static FilteringAction * prefs_filtering_action_dialog_to_action(gboolean alert)
 		break;
 	case ACTION_SET_TAG:
 	case ACTION_UNSET_TAG:
-		destination = gtk_editable_get_chars(GTK_EDITABLE(GTK_BIN(filtering_action.tags_combo)->child), 0, -1);
-		if (*destination == '\0') {
+		destination = gtk_combo_box_get_active_text(GTK_COMBO_BOX(filtering_action.tags_combo));
+		if (!destination || *destination == '\0') {
 			if (alert)
                                 alertpanel_error(_("Tag name is empty."));
 			g_free(destination);
