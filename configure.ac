@@ -11,7 +11,7 @@ MINOR_VERSION=0
 MICRO_VERSION=2
 INTERFACE_AGE=0
 BINARY_AGE=0
-EXTRA_VERSION=84
+EXTRA_VERSION=85
 EXTRA_RELEASE=
 EXTRA_GTK2_VERSION=
 
@@ -840,7 +840,7 @@ AM_CONDITIONAL(BUILD_CLAMAV_PLUGIN, test x"$ac_cv_enable_clamav_plugin" = xyes)
 dnl Libetpan
 AC_MSG_CHECKING([whether to use libetpan])
 AC_ARG_ENABLE(libetpan,
-	[  --disable-libetpan		disable IMAP4 (libetpan) support],
+	[  --disable-libetpan		disable IMAP4/NNTP (libetpan) support],
 	[ac_cv_enable_libetpan=$enableval], [ac_cv_enable_libetpan=yes])
 if test x"$ac_cv_enable_libetpan" = xyes; then
 	AC_MSG_RESULT(yes)
@@ -862,15 +862,15 @@ if test x"$ac_cv_enable_libetpan" = xyes; then
 	   LIBETPAN_VERSION=`$libetpanconfig --version | sed "s/\.//g" | sed "s/-.*$//"`
 	   if test "$LIBETPAN_VERSION" -lt "049"; then
 		AC_MSG_RESULT([*** Claws Mail requires libetpan 0.49 or newer. See http://www.etpan.org/])
-		AC_MSG_RESULT([*** You can use --disable-libetpan if you don't need IMAP4 support.])
+		AC_MSG_RESULT([*** You can use --disable-libetpan if you don't need IMAP4 and/or NNTP support.])
                 AC_MSG_ERROR([libetpan 0.49 not found])
 	   fi
 	   AC_SUBST(LIBETPAN_FLAGS)
 	   AC_SUBST(LIBETPAN_LIBS)
-	   AC_DEFINE(HAVE_LIBETPAN, 1, Define if you want IMAP support.)
+	   AC_DEFINE(HAVE_LIBETPAN, 1, Define if you want IMAP and/or NNTP support.)
 	else
 	   AC_MSG_RESULT([*** Claws Mail requires libetpan 0.49 or newer. See http://www.etpan.org/ ])
-	   AC_MSG_RESULT([*** You can use --disable-libetpan if you don't need IMAP4 support.])
+	   AC_MSG_RESULT([*** You can use --disable-libetpan if you don't need IMAP4 and/or NNTP support.])
            AC_MSG_ERROR([libetpan 0.49 not found])
 	fi
 else
@@ -983,22 +983,24 @@ dnl Output the configuration summary
 echo ""
 echo "$PACKAGE $VERSION"
 echo ""
-echo "JPilot        : $ac_cv_enable_jpilot"
-echo "LDAP          : $ac_cv_enable_ldap"
-echo "OpenSSL       : $ac_cv_enable_openssl"
-echo "gnuTLS        : $ac_cv_enable_gnutls"
-echo "iconv         : $am_cv_func_iconv"
-echo "compface      : $ac_cv_enable_compface"
-echo "IPv6          : $ac_cv_enable_ipv6"
-echo "GNU/aspell    : $ac_cv_enable_aspell"
-echo "IMAP4         : $ac_cv_enable_libetpan"
-echo "Crash dialog  : $ac_cv_enable_crash_dialog"
-echo "Libgnomeprint : $ac_cv_enable_gnomeprint (GTK+ 2.10: $ac_cv_have_gtk210)"
-echo "LibSM         : $ac_cv_enable_libsm"
-echo "Manual        : $ac_cv_enable_manual"
-echo "Plugins       : $PLUGINS"
-echo "Maemo  build  : $ac_cv_enable_maemo"
-echo "Config dir    : $ac_cv_with_config_dir"
+echo "JPilot            : $ac_cv_enable_jpilot"
+echo "LDAP              : $ac_cv_enable_ldap"
+echo "OpenSSL           : $ac_cv_enable_openssl"
+echo "gnuTLS            : $ac_cv_enable_gnutls"
+echo "iconv             : $am_cv_func_iconv"
+echo "compface          : $ac_cv_enable_compface"
+echo "IPv6              : $ac_cv_enable_ipv6"
+echo "GNU/aspell        : $ac_cv_enable_aspell"
+echo "IMAP4             : $ac_cv_enable_libetpan"
+echo "NNTP              : $ac_cv_enable_libetpan"
+echo "Crash dialog      : $ac_cv_enable_crash_dialog"
+echo "Libgnomeprint     : $ac_cv_enable_gnomeprint"
+echo "GTK+ print support: $ac_cv_have_gtk210"
+echo "LibSM             : $ac_cv_enable_libsm"
+echo "Manual            : $ac_cv_enable_manual"
+echo "Plugins           : $PLUGINS"
+echo "Maemo  build      : $ac_cv_enable_maemo"
+echo "Config dir        : $ac_cv_with_config_dir"
 echo ""
 echo "The binary will be installed in $prefix/bin"
 echo ""

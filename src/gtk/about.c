@@ -412,6 +412,46 @@ static GtkWidget *about_create_child_page_features(void)
 	stock_pixbuf_gdk(window, STOCK_PIXMAP_CHECKBOX_ON, &active_pixbuf);
 	stock_pixbuf_gdk(window, STOCK_PIXMAP_CHECKBOX_OFF, &inactive_pixbuf);
 
+#if HAVE_LIBCOMPFACE
+	gtk_text_buffer_insert_pixbuf(buffer, &iter, active_pixbuf);
+#else
+	gtk_text_buffer_insert_pixbuf(buffer, &iter, inactive_pixbuf);
+#endif
+	gtk_text_buffer_insert_with_tags_by_name(buffer, &iter, (" compface "), -1,
+						 "bold", NULL);
+	gtk_text_buffer_insert(buffer, &iter, 
+		(gchar *)Q_("compface|adds support for the X-Face header\n"), -1);
+
+#if USE_ASPELL
+	gtk_text_buffer_insert_pixbuf(buffer, &iter, active_pixbuf);
+#else
+	gtk_text_buffer_insert_pixbuf(buffer, &iter, inactive_pixbuf);
+#endif
+	gtk_text_buffer_insert_with_tags_by_name(buffer, &iter, (" GNU/aspell "), -1,
+						 "bold", NULL);
+	gtk_text_buffer_insert(buffer, &iter, 
+		(gchar *)Q_("GNU/aspell|adds support for spell checking\n"), -1);
+
+#if USE_GNUTLS
+	gtk_text_buffer_insert_pixbuf(buffer, &iter, active_pixbuf);
+#else
+	gtk_text_buffer_insert_pixbuf(buffer, &iter, inactive_pixbuf);
+#endif
+	gtk_text_buffer_insert_with_tags_by_name(buffer, &iter, (" GnuTLS "), -1,
+						 "bold", NULL);
+	gtk_text_buffer_insert(buffer, &iter, 
+		(gchar *)Q_("GnuTLS|adds support for encrypted connections to servers\n"), -1);
+
+#if GTK_CHECK_VERSION(2,10,0) && !defined(USE_GNOMEPRINT)
+	gtk_text_buffer_insert_pixbuf(buffer, &iter, active_pixbuf);
+#else
+	gtk_text_buffer_insert_pixbuf(buffer, &iter, inactive_pixbuf);
+#endif
+	gtk_text_buffer_insert_with_tags_by_name(buffer, &iter, (" GTK+ >= 2.10.0 "), -1,
+						 "bold", NULL);
+	gtk_text_buffer_insert(buffer, &iter, 
+		(gchar *)Q_("GTK+ >= 2.10.0|adds support for a complete print dialog\n"), -1);
+
 #if INET6
 	gtk_text_buffer_insert_pixbuf(buffer, &iter, active_pixbuf);
 #else
@@ -433,35 +473,15 @@ static GtkWidget *about_create_child_page_features(void)
 	gtk_text_buffer_insert(buffer, &iter, 
 		(gchar *)Q_("iconv|allows converting to and from different character sets\n"), -1);
 
-#if HAVE_LIBCOMPFACE
+#if USE_JPILOT
 	gtk_text_buffer_insert_pixbuf(buffer, &iter, active_pixbuf);
 #else
 	gtk_text_buffer_insert_pixbuf(buffer, &iter, inactive_pixbuf);
 #endif
-	gtk_text_buffer_insert_with_tags_by_name(buffer, &iter, (" compface "), -1,
+	gtk_text_buffer_insert_with_tags_by_name(buffer, &iter, (" JPilot "), -1,
 						 "bold", NULL);
 	gtk_text_buffer_insert(buffer, &iter, 
-		(gchar *)Q_("compface|adds support for the X-Face header\n"), -1);
-
-#if USE_OPENSSL
-	gtk_text_buffer_insert_pixbuf(buffer, &iter, active_pixbuf);
-#else
-	gtk_text_buffer_insert_pixbuf(buffer, &iter, inactive_pixbuf);
-#endif
-	gtk_text_buffer_insert_with_tags_by_name(buffer, &iter, (" OpenSSL "), -1,
-						 "bold", NULL);
-	gtk_text_buffer_insert(buffer, &iter, 
-		(gchar *)Q_("OpenSSL|adds support for encrypted connections to servers\n"), -1);
-
-#if USE_GNUTLS
-	gtk_text_buffer_insert_pixbuf(buffer, &iter, active_pixbuf);
-#else
-	gtk_text_buffer_insert_pixbuf(buffer, &iter, inactive_pixbuf);
-#endif
-	gtk_text_buffer_insert_with_tags_by_name(buffer, &iter, (" GnuTLS "), -1,
-						 "bold", NULL);
-	gtk_text_buffer_insert(buffer, &iter, 
-		(gchar *)Q_("GnuTLS|is another mean of adding support for encrypted connections to servers\n"), -1);
+		(gchar *)Q_("JPilot|adds support for PalmOS addressbooks\n"), -1);
 
 #if USE_LDAP
 	gtk_text_buffer_insert_pixbuf(buffer, &iter, active_pixbuf);
@@ -473,26 +493,6 @@ static GtkWidget *about_create_child_page_features(void)
 	gtk_text_buffer_insert(buffer, &iter, 
 		(gchar *)Q_("LDAP|adds support for LDAP shared addressbooks\n"), -1);
 
-#if USE_JPILOT
-	gtk_text_buffer_insert_pixbuf(buffer, &iter, active_pixbuf);
-#else
-	gtk_text_buffer_insert_pixbuf(buffer, &iter, inactive_pixbuf);
-#endif
-	gtk_text_buffer_insert_with_tags_by_name(buffer, &iter, (" JPilot "), -1,
-						 "bold", NULL);
-	gtk_text_buffer_insert(buffer, &iter, 
-		(gchar *)Q_("JPilot|adds support for PalmOS addressbooks\n"), -1);
-
-#if USE_ASPELL
-	gtk_text_buffer_insert_pixbuf(buffer, &iter, active_pixbuf);
-#else
-	gtk_text_buffer_insert_pixbuf(buffer, &iter, inactive_pixbuf);
-#endif
-	gtk_text_buffer_insert_with_tags_by_name(buffer, &iter, (" GNU/aspell "), -1,
-						 "bold", NULL);
-	gtk_text_buffer_insert(buffer, &iter, 
-		(gchar *)Q_("GNU/aspell|adds support for spell checking\n"), -1);
-
 #if HAVE_LIBETPAN
 	gtk_text_buffer_insert_pixbuf(buffer, &iter, active_pixbuf);
 #else
@@ -501,7 +501,7 @@ static GtkWidget *about_create_child_page_features(void)
 	gtk_text_buffer_insert_with_tags_by_name(buffer, &iter, (" libetpan "), -1,
 						 "bold", NULL);
 	gtk_text_buffer_insert(buffer, &iter, 
-		(gchar *)Q_("libetpan|adds support for IMAP servers\n"), -1);
+		(gchar *)Q_("libetpan|adds support for IMAP and NNTP servers\n"), -1);
 
 #if USE_GNOMEPRINT
 	gtk_text_buffer_insert_pixbuf(buffer, &iter, active_pixbuf);
@@ -522,6 +522,16 @@ static GtkWidget *about_create_child_page_features(void)
 						 "bold", NULL);
 	gtk_text_buffer_insert(buffer, &iter, 
 		(gchar *)Q_("libSM|adds support for session handling\n"), -1);
+
+#if USE_OPENSSL
+	gtk_text_buffer_insert_pixbuf(buffer, &iter, active_pixbuf);
+#else
+	gtk_text_buffer_insert_pixbuf(buffer, &iter, inactive_pixbuf);
+#endif
+	gtk_text_buffer_insert_with_tags_by_name(buffer, &iter, (" OpenSSL "), -1,
+						 "bold", NULL);
+	gtk_text_buffer_insert(buffer, &iter, 
+		(gchar *)Q_("OpenSSL|adds support for encrypted connections to servers\n"), -1);
 
 	return scrolledwin;
 }
