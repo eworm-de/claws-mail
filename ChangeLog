@@ -1,3 +1,8 @@
+2007-10-18 [wwp]	3.0.2cvs88
+
+	* src/Makefile.am
+		Fix linking against GNUTLS (matters if --enable-gnutls only).
+
 2007-10-18 [colin]	3.0.2cvs87
 
 	* po/POTFILES.in

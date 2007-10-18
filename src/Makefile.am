@@ -481,6 +481,7 @@ claws_mail_LDADD = \
 	$(GPGME_LIBS) \
 	$(LDAP_LIBS) \
 	$(OPENSSL_LIBS) \
+	$(GNUTLS_LIBS) \
 	$(COMPFACE_LIBS) \
 	$(JPILOT_LIBS) \
 	$(PTHREAD_LIBS) \
