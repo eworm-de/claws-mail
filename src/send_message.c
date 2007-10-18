@@ -288,13 +288,13 @@ gint send_message_smtp_full(PrefsAccount *ac_prefs, GSList *to_list, FILE *fp, g
 			smtp_session->pass = NULL;
 		}
 
-	#if USE_OPENSSL
+#if (defined(USE_OPENSSL) || defined (USE_GNUTLS))
 		port = ac_prefs->set_smtpport ? ac_prefs->smtpport :
 			ac_prefs->ssl_smtp == SSL_TUNNEL ? SSMTP_PORT : SMTP_PORT;
 		session->ssl_type = ac_prefs->ssl_smtp;
 		if (ac_prefs->ssl_smtp != SSL_NONE)
 			session->nonblocking = ac_prefs->use_nonblocking_ssl;
-	#else
+#else
 		if (ac_prefs->ssl_smtp != SSL_NONE) {
 			if (alertpanel_full(_("Insecure connection"),
 				_("This connection is configured to be secured "
@@ -311,7 +311,7 @@ gint send_message_smtp_full(PrefsAccount *ac_prefs, GSList *to_list, FILE *fp, g
 			}
 		}
 		port = ac_prefs->set_smtpport ? ac_prefs->smtpport : SMTP_PORT;
-	#endif
+#endif
 
 		dialog = send_progress_dialog_create();
 		dialog->session = session;

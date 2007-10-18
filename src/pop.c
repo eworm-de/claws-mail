@@ -45,7 +45,7 @@ static gint pop3_greeting_recv		(Pop3Session *session,
 static gint pop3_getauth_user_send	(Pop3Session *session);
 static gint pop3_getauth_pass_send	(Pop3Session *session);
 static gint pop3_getauth_apop_send	(Pop3Session *session);
-#if USE_OPENSSL
+#if (defined(USE_OPENSSL) || defined (USE_GNUTLS))
 static gint pop3_stls_send		(Pop3Session *session);
 static gint pop3_stls_recv		(Pop3Session *session);
 #endif
@@ -100,7 +100,7 @@ static gint pop3_greeting_recv(Pop3Session *session, const gchar *msg)
 	return PS_SUCCESS;
 }
 
-#if USE_OPENSSL
+#if (defined(USE_OPENSSL) || defined (USE_GNUTLS))
 static gint pop3_stls_send(Pop3Session *session)
 {
 	session->state = POP3_STLS;
@@ -879,7 +879,7 @@ static Pop3ErrorValue pop3_ok(Pop3Session *session, const gchar *msg)
 			ok = PS_ERROR;
 		} else {
 			switch (session->state) {
-#if USE_OPENSSL
+#if (defined(USE_OPENSSL) || defined (USE_GNUTLS))
 			case POP3_STLS:
 				log_error(LOG_PROTOCOL, _("couldn't start TLS session\n"));
 				ok = PS_ERROR;
@@ -943,7 +943,7 @@ static gint pop3_session_recv_msg(Session *session, const gchar *msg)
 	case POP3_READY:
 	case POP3_GREETING:
 		pop3_greeting_recv(pop3_session, body);
-#if USE_OPENSSL
+#if (defined(USE_OPENSSL) || defined (USE_GNUTLS))
 		if (pop3_session->ac_prefs->ssl_pop == SSL_STARTTLS)
 			val = pop3_stls_send(pop3_session);
 		else
@@ -953,7 +953,7 @@ static gint pop3_session_recv_msg(Session *session, const gchar *msg)
 		else
 			val = pop3_getauth_user_send(pop3_session);
 		break;
-#if USE_OPENSSL
+#if (defined(USE_OPENSSL) || defined (USE_GNUTLS))
 	case POP3_STLS:
 		if (pop3_stls_recv(pop3_session) != PS_SUCCESS)
 			return -1;

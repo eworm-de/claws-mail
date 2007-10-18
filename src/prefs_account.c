@@ -286,7 +286,7 @@ static SendPage send_page;
 static ComposePage compose_page;
 static TemplatesPage templates_page;
 static PrivacyPage privacy_page;
-#if USE_OPENSSL
+#if (defined(USE_OPENSSL) || defined (USE_GNUTLS))
 static SSLPage ssl_page;
 #endif
 static AdvancedPage advanced_page;
@@ -650,7 +650,7 @@ static PrefParam privacy_param[] = {
 };
 
 static PrefParam ssl_param[] = {
-#if USE_OPENSSL
+#if (defined(USE_OPENSSL) || defined (USE_GNUTLS))
 	{"ssl_pop", "0", &tmp_ac_prefs.ssl_pop, P_ENUM,
 	 &ssl_page.pop_nossl_radiobtn,
 	 prefs_account_enum_set_data_from_radiobtn,
@@ -1037,7 +1037,7 @@ static void basic_create_widget_func(PrefsPage * _page,
 	no_imap_warn_icon = gtk_image_new_from_stock
                         (GTK_STOCK_DIALOG_WARNING, GTK_ICON_SIZE_SMALL_TOOLBAR);
 	no_imap_warn_label = gtk_label_new(_("<span weight=\"bold\">Warning: this version of Claws Mail\n"
-			  "has been built without IMAP support.</span>"));
+			  "has been built without IMAP and News support.</span>"));
 	gtk_label_set_use_markup(GTK_LABEL(no_imap_warn_label), TRUE);
 
 	gtk_box_pack_start(GTK_BOX (optmenubox), no_imap_warn_icon, FALSE, FALSE, 0);
@@ -2186,7 +2186,7 @@ static void privacy_create_widget_func(PrefsPage * _page,
 	page->page.widget = vbox1;
 }
 	
-#if USE_OPENSSL
+#if (defined(USE_OPENSSL) || defined (USE_GNUTLS))
 
 #define CREATE_RADIO_BUTTON(box, btn, btn_p, label, data)		\
 {									\
@@ -2709,7 +2709,7 @@ static gint prefs_privacy_apply(void)
 	return 0;
 }
 
-#if USE_OPENSSL
+#if (defined(USE_OPENSSL) || defined (USE_GNUTLS))
 static gint prefs_ssl_apply(void)
 {
 	prefs_set_data_from_dialog(ssl_param);
@@ -2753,7 +2753,7 @@ static void privacy_destroy_widget_func(PrefsPage *_page)
 	/* PrivacyPage *page = (PrivacyPage *) _page; */
 }
 
-#if USE_OPENSSL
+#if (defined(USE_OPENSSL) || defined (USE_GNUTLS))
 static void ssl_destroy_widget_func(PrefsPage *_page)
 {
 	/* SSLPage *page = (SSLPage *) _page; */
@@ -2825,7 +2825,7 @@ static gboolean privacy_can_close_func(PrefsPage *_page)
 	return prefs_privacy_apply() >= 0;
 }
 
-#if USE_OPENSSL
+#if (defined(USE_OPENSSL) || defined (USE_GNUTLS))
 static gboolean ssl_can_close_func(PrefsPage *_page)
 {
 	SSLPage *page = (SSLPage *) _page;
@@ -2922,7 +2922,7 @@ static void privacy_save_func(PrefsPage *_page)
 		cancelled = FALSE;
 }
 
-#if USE_OPENSSL
+#if (defined(USE_OPENSSL) || defined (USE_GNUTLS))
 static void ssl_save_func(PrefsPage *_page)
 {
 	SSLPage *page = (SSLPage *) _page;
@@ -3054,7 +3054,7 @@ static void register_privacy_page(void)
 	prefs_account_register_page((PrefsPage *) &privacy_page);
 }
 
-#if USE_OPENSSL
+#if (defined(USE_OPENSSL) || defined (USE_GNUTLS))
 static void register_ssl_page(void)
 {
 	static gchar *path[3];
@@ -3100,7 +3100,7 @@ void prefs_account_init()
 	register_compose_page();
 	register_templates_page();
 	register_privacy_page();
-#if USE_OPENSSL
+#if (defined(USE_OPENSSL) || defined (USE_GNUTLS))
 	register_ssl_page();
 #endif
 	register_advanced_page();
@@ -3564,7 +3564,7 @@ static void prefs_account_protocol_set_optmenu(PrefParam *pparam)
 		gtk_widget_hide(optmenu);
 		gtk_widget_show(optlabel);
 #ifndef HAVE_LIBETPAN
-		if (protocol == A_IMAP4) {
+		if (protocol == A_IMAP4 || protocol == A_NNTP) {
 			gtk_widget_show(protocol_optmenu->no_imap_warn_icon);
 			gtk_widget_show(protocol_optmenu->no_imap_warn_label);
 		} else {
@@ -3712,8 +3712,13 @@ static void prefs_account_protocol_changed(GtkComboBox *combobox, gpointer data)
 	gtk_widget_hide(protocol_optmenu->no_imap_warn_label);
 	switch(protocol) {
 	case A_NNTP:
+#ifndef HAVE_LIBETPAN
+		gtk_widget_show(protocol_optmenu->no_imap_warn_icon);
+		gtk_widget_show(protocol_optmenu->no_imap_warn_label);
+#else
 		gtk_widget_hide(protocol_optmenu->no_imap_warn_icon);
 		gtk_widget_hide(protocol_optmenu->no_imap_warn_label);
+#endif
 		gtk_widget_show(basic_page.nntpserv_label);
 		gtk_widget_show(basic_page.nntpserv_entry);
   		gtk_table_set_row_spacing (GTK_TABLE (basic_page.serv_table),
@@ -3788,7 +3793,7 @@ static void prefs_account_protocol_changed(GtkComboBox *combobox, gpointer data)
 				 FALSE);
 		}
 
-#if USE_OPENSSL
+#if (defined(USE_OPENSSL) || defined (USE_GNUTLS))
 		gtk_widget_hide(ssl_page.pop_frame);
 		gtk_widget_hide(ssl_page.imap_frame);
 		gtk_widget_show(ssl_page.nntp_frame);
@@ -3879,7 +3884,7 @@ static void prefs_account_protocol_changed(GtkComboBox *combobox, gpointer data)
 				 TRUE);
 		}
 
-#if USE_OPENSSL
+#if (defined(USE_OPENSSL) || defined (USE_GNUTLS))
 		gtk_widget_hide(ssl_page.pop_frame);
 		gtk_widget_hide(ssl_page.imap_frame);
 		gtk_widget_hide(ssl_page.nntp_frame);
@@ -3975,7 +3980,7 @@ static void prefs_account_protocol_changed(GtkComboBox *combobox, gpointer data)
 				 FALSE);
 		}
 
-#if USE_OPENSSL
+#if (defined(USE_OPENSSL) || defined (USE_GNUTLS))
 		gtk_widget_hide(ssl_page.pop_frame);
 		gtk_widget_show(ssl_page.imap_frame);
 		gtk_widget_hide(ssl_page.nntp_frame);
@@ -4064,7 +4069,7 @@ static void prefs_account_protocol_changed(GtkComboBox *combobox, gpointer data)
 		gtk_toggle_button_set_active
 			(GTK_TOGGLE_BUTTON(receive_page.recvatgetall_checkbtn), FALSE);
 
-#if USE_OPENSSL
+#if (defined(USE_OPENSSL) || defined (USE_GNUTLS))
 		gtk_widget_hide(ssl_page.pop_frame);
 		gtk_widget_hide(ssl_page.imap_frame);
 		gtk_widget_hide(ssl_page.nntp_frame);
@@ -4159,7 +4164,7 @@ static void prefs_account_protocol_changed(GtkComboBox *combobox, gpointer data)
 				 TRUE);
 		}
 
-#if USE_OPENSSL
+#if (defined(USE_OPENSSL) || defined (USE_GNUTLS))
 		gtk_widget_show(ssl_page.pop_frame);
 		gtk_widget_hide(ssl_page.imap_frame);
 		gtk_widget_hide(ssl_page.nntp_frame);

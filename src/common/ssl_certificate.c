@@ -22,9 +22,18 @@
 #  include "config.h"
 #endif
 
+#if (defined(USE_OPENSSL) || defined (USE_GNUTLS))
 #if USE_OPENSSL
-
 #include <openssl/ssl.h>
+#else
+#include <gnutls/gnutls.h>
+#include <gnutls/x509.h>
+#include <sys/types.h>
+#include <sys/stat.h>
+#include <stdio.h>
+#include <unistd.h>
+#include <string.h>
+#endif
 #include <glib.h>
 #include <glib/gi18n.h>
 
@@ -33,6 +42,7 @@
 #include "log.h"
 #include "socket.h"
 #include "hooks.h"
+#include "defs.h"
 
 static GHashTable *warned_expired = NULL;
 
@@ -50,8 +60,12 @@ static gchar *get_certificate_path(const gchar *host, const gchar *port, const g
 			  host, ".", port, ".cert", NULL);
 }
 
+#if USE_OPENSSL
 static SSLCertificate *ssl_certificate_new_lookup(X509 *x509_cert, gchar *host, gushort port, gboolean lookup);
-
+#else
+static SSLCertificate *ssl_certificate_new_lookup(gnutls_x509_crt x509_cert, gchar *host, gushort port, gboolean lookup);
+#endif
+#if USE_OPENSSL
 /* from Courier */
 time_t asn1toTime(ASN1_TIME *asn1Time)
 {
@@ -97,6 +111,7 @@ time_t asn1toTime(ASN1_TIME *asn1Time)
 
 	return mktime(&tm)-offset;
 }
+#endif
 
 static char * get_fqdn(char *host)
 {
@@ -134,17 +149,68 @@ char * readable_fingerprint(unsigned char *src, int len)
 	return ret;
 }
 
+#if USE_GNUTLS
+static gnutls_x509_crt x509_crt_copy(gnutls_x509_crt src)
+{
+    int ret;
+    size_t size;
+    gnutls_datum tmp;
+    gnutls_x509_crt dest;
+    
+    if (gnutls_x509_crt_init(&dest) != 0) {
+    	g_warning("couldn't gnutls_x509_crt_init\n");
+        return NULL;
+    }
+
+    if (gnutls_x509_crt_export(src, GNUTLS_X509_FMT_DER, NULL, &size) 
+        != GNUTLS_E_SHORT_MEMORY_BUFFER) {
+    	g_warning("couldn't gnutls_x509_crt_export to get size\n");
+        gnutls_x509_crt_deinit(dest);
+        return NULL;
+    }
+
+    tmp.data = malloc(size);
+    memset(tmp.data, 0, size);
+    ret = gnutls_x509_crt_export(src, GNUTLS_X509_FMT_DER, tmp.data, &size);
+    if (ret == 0) {
+        tmp.size = size;
+        ret = gnutls_x509_crt_import(dest, &tmp, GNUTLS_X509_FMT_DER);
+	if (ret) {
+		g_warning("couldn't gnutls_x509_crt_import for real (%d %s)\n", ret, gnutls_strerror(ret));
+		gnutls_x509_crt_deinit(dest);
+		dest = NULL;
+	}
+    } else {
+    	g_warning("couldn't gnutls_x509_crt_export for real (%d %s)\n", ret, gnutls_strerror(ret));
+        gnutls_x509_crt_deinit(dest);
+        dest = NULL;
+    }
+
+    free(tmp.data);
+    return dest;
+}
+#endif
+
+#if USE_OPENSSL
 static SSLCertificate *ssl_certificate_new_lookup(X509 *x509_cert, gchar *host, gushort port, gboolean lookup)
+#else
+static SSLCertificate *ssl_certificate_new_lookup(gnutls_x509_crt x509_cert, gchar *host, gushort port, gboolean lookup)
+#endif
 {
 	SSLCertificate *cert = g_new0(SSLCertificate, 1);
 	unsigned int n;
-	unsigned char md[EVP_MAX_MD_SIZE];	
-	
+	unsigned char md[128];	
+
 	if (host == NULL || x509_cert == NULL) {
 		ssl_certificate_destroy(cert);
 		return NULL;
 	}
+#if USE_OPENSSL
 	cert->x509_cert = X509_dup(x509_cert);
+#else
+	cert->x509_cert = x509_crt_copy(x509_cert);
+	cert->status = (guint)-1;
+#endif
 	if (lookup)
 		cert->host = get_fqdn(host);
 	else
@@ -152,11 +218,60 @@ static SSLCertificate *ssl_certificate_new_lookup(X509 *x509_cert, gchar *host, 
 	cert->port = port;
 	
 	/* fingerprint */
+#if USE_OPENSSL
 	X509_digest(cert->x509_cert, EVP_md5(), md, &n);
 	cert->fingerprint = readable_fingerprint(md, (int)n);
-
+#else
+	gnutls_x509_crt_get_fingerprint(cert->x509_cert, GNUTLS_DIG_MD5, md, &n);
+	cert->fingerprint = readable_fingerprint(md, (int)n);
+#endif
 	return cert;
 }
+
+#ifdef USE_GNUTLS
+static void i2d_X509_fp(FILE *fp, gnutls_x509_crt x509_cert)
+{
+	char output[10*1024];
+	size_t cert_size;
+	int r;
+	
+	if ((r = gnutls_x509_crt_export(x509_cert, GNUTLS_X509_FMT_DER, output, &cert_size)) < 0) {
+		g_warning("couldn't export cert %s\n", gnutls_strerror(r));
+		return;
+	}
+	debug_print("writing %zd bytes\n",cert_size);
+	if (fwrite(&output, 1, cert_size, fp) < cert_size) {
+		g_warning("failed to write cert\n");
+	}
+}
+static gnutls_x509_crt d2i_X509_fp(FILE *fp, int unused)
+{
+	gnutls_x509_crt cert = NULL;
+	gnutls_datum tmp;
+	struct stat s;
+	int r;
+	if (fstat(fileno(fp), &s) < 0) {
+		perror("fstat");
+		return NULL;
+	}
+	tmp.data = malloc(s.st_size);
+	memset(tmp.data, 0, s.st_size);
+	tmp.size = s.st_size;
+	if (fread (tmp.data, 1, s.st_size, fp) < s.st_size) {
+		perror("fread");
+		return NULL;
+	}
+
+	gnutls_x509_crt_init(&cert);
+	if ((r = gnutls_x509_crt_import(cert, &tmp, GNUTLS_X509_FMT_DER)) < 0) {
+		g_warning("import failed: %s\n", gnutls_strerror(r));
+		gnutls_x509_crt_deinit(cert);
+		cert = NULL;
+	}
+	debug_print("got cert! %p\n", cert);
+	return cert;
+}
+#endif
 
 static void ssl_certificate_save (SSLCertificate *cert)
 {
@@ -186,94 +301,17 @@ static void ssl_certificate_save (SSLCertificate *cert)
 
 }
 
-char* ssl_certificate_to_string(SSLCertificate *cert)
-{
-	char *ret, buf[100];
-	char *issuer_commonname, *issuer_location, *issuer_organization;
-	char *subject_commonname, *subject_location, *subject_organization;
-	char *fingerprint, *sig_status;
-	unsigned int n;
-	unsigned char md[EVP_MAX_MD_SIZE];	
-	
-	/* issuer */	
-	if (X509_NAME_get_text_by_NID(X509_get_issuer_name(cert->x509_cert), 
-				       NID_commonName, buf, 100) >= 0)
-		issuer_commonname = g_strdup(buf);
-	else
-		issuer_commonname = g_strdup(_("<not in certificate>"));
-	if (X509_NAME_get_text_by_NID(X509_get_issuer_name(cert->x509_cert), 
-				       NID_localityName, buf, 100) >= 0) {
-		issuer_location = g_strdup(buf);
-		if (X509_NAME_get_text_by_NID(X509_get_issuer_name(cert->x509_cert), 
-				       NID_countryName, buf, 100) >= 0)
-			issuer_location = g_strconcat(issuer_location,", ",buf, NULL);
-	} else if (X509_NAME_get_text_by_NID(X509_get_issuer_name(cert->x509_cert), 
-				       NID_countryName, buf, 100) >= 0)
-		issuer_location = g_strdup(buf);
-	else
-		issuer_location = g_strdup(_("<not in certificate>"));
-
-	if (X509_NAME_get_text_by_NID(X509_get_issuer_name(cert->x509_cert), 
-				       NID_organizationName, buf, 100) >= 0)
-		issuer_organization = g_strdup(buf);
-	else 
-		issuer_organization = g_strdup(_("<not in certificate>"));
-	 
-	/* subject */	
-	if (X509_NAME_get_text_by_NID(X509_get_subject_name(cert->x509_cert), 
-				       NID_commonName, buf, 100) >= 0)
-		subject_commonname = g_strdup(buf);
-	else
-		subject_commonname = g_strdup(_("<not in certificate>"));
-	if (X509_NAME_get_text_by_NID(X509_get_subject_name(cert->x509_cert), 
-				       NID_localityName, buf, 100) >= 0) {
-		subject_location = g_strdup(buf);
-		if (X509_NAME_get_text_by_NID(X509_get_subject_name(cert->x509_cert), 
-				       NID_countryName, buf, 100) >= 0)
-			subject_location = g_strconcat(subject_location,", ",buf, NULL);
-	} else if (X509_NAME_get_text_by_NID(X509_get_subject_name(cert->x509_cert), 
-				       NID_countryName, buf, 100) >= 0)
-		subject_location = g_strdup(buf);
-	else
-		subject_location = g_strdup(_("<not in certificate>"));
-
-	if (X509_NAME_get_text_by_NID(X509_get_subject_name(cert->x509_cert), 
-				       NID_organizationName, buf, 100) >= 0)
-		subject_organization = g_strdup(buf);
-	else 
-		subject_organization = g_strdup(_("<not in certificate>"));
-	 
-	/* fingerprint */
-	X509_digest(cert->x509_cert, EVP_md5(), md, &n);
-	fingerprint = readable_fingerprint(md, (int)n);
-
-	/* signature */
-	sig_status = ssl_certificate_check_signer(cert->x509_cert);
-
-	ret = g_strdup_printf(_("  Owner: %s (%s) in %s\n  Signed by: %s (%s) in %s\n  Fingerprint: %s\n  Signature status: %s"),
-				subject_commonname, subject_organization, subject_location, 
-				issuer_commonname, issuer_organization, issuer_location, 
-				fingerprint,
-				(sig_status==NULL ? "correct":sig_status));
-
-	g_free(issuer_commonname);
-	g_free(issuer_location);
-	g_free(issuer_organization);
-	g_free(subject_commonname);
-	g_free(subject_location);
-	g_free(subject_organization);
-	g_free(fingerprint);
-	g_free(sig_status);
-	return ret;
-}
-	
 void ssl_certificate_destroy(SSLCertificate *cert) 
 {
 	if (cert == NULL)
 		return;
 
 	if (cert->x509_cert)
+#if USE_OPENSSL
 		X509_free(cert->x509_cert);
+#else
+		gnutls_x509_crt_deinit(cert->x509_cert);
+#endif
 	g_free(cert->host);
 	g_free(cert->fingerprint);
 	g_free(cert);
@@ -302,7 +340,11 @@ SSLCertificate *ssl_certificate_find_lookup (gchar *host, gushort port, const gc
 	gchar *buf;
 	gchar *fqdn_host;
 	SSLCertificate *cert = NULL;
+#if USE_OPENSSL
 	X509 *tmp_x509;
+#else
+	gnutls_x509_crt tmp_x509;
+#endif
 	FILE *fp = NULL;
 	gboolean must_rename = FALSE;
 
@@ -319,12 +361,17 @@ SSLCertificate *ssl_certificate_find_lookup (gchar *host, gushort port, const gc
 	}
 	if (fp == NULL) {
 		/* see if we have the old one */
+		debug_print("didn't get %s\n", file);
 		g_free(file);
 		file = get_certificate_path(fqdn_host, buf, NULL);
 		fp = g_fopen(file, "rb");
 
-		if (fp)
+		if (fp) {
+			debug_print("got %s\n", file);
 			must_rename = (fingerprint != NULL);
+		}
+	} else {
+		debug_print("got %s first try\n", file);
 	}
 	if (fp == NULL) {
 		g_free(file);
@@ -335,7 +382,12 @@ SSLCertificate *ssl_certificate_find_lookup (gchar *host, gushort port, const gc
 	
 	if ((tmp_x509 = d2i_X509_fp(fp, 0)) != NULL) {
 		cert = ssl_certificate_new_lookup(tmp_x509, fqdn_host, port, lookup);
+		debug_print("got cert %p\n", cert);
+#if USE_OPENSSL
 		X509_free(tmp_x509);
+#else
+		gnutls_x509_crt_deinit(tmp_x509);
+#endif
 	}
 	fclose(fp);
 	g_free(file);
@@ -356,14 +408,58 @@ SSLCertificate *ssl_certificate_find_lookup (gchar *host, gushort port, const gc
 
 static gboolean ssl_certificate_compare (SSLCertificate *cert_a, SSLCertificate *cert_b)
 {
-	if (cert_a == NULL || cert_b == NULL)
-		return FALSE;
+#ifdef USE_OPENSSL
+ 	if (cert_a == NULL || cert_b == NULL)
+ 		return FALSE;
 	else if (!X509_cmp(cert_a->x509_cert, cert_b->x509_cert))
 		return TRUE;
 	else
 		return FALSE;
+#else
+	char *output_a;
+	char *output_b;
+	size_t cert_size_a, cert_size_b;
+	int r;
+
+	if (cert_a == NULL || cert_b == NULL)
+		return FALSE;
+
+	if ((r = gnutls_x509_crt_export(cert_a->x509_cert, GNUTLS_X509_FMT_DER, NULL, &cert_size_a)) 
+	    != GNUTLS_E_SHORT_MEMORY_BUFFER) {
+		g_warning("couldn't gnutls_x509_crt_export to get size a %s\n", gnutls_strerror(r));
+		return FALSE;
+	}
+
+	if ((r = gnutls_x509_crt_export(cert_b->x509_cert, GNUTLS_X509_FMT_DER, NULL, &cert_size_b))
+	    != GNUTLS_E_SHORT_MEMORY_BUFFER) {
+		g_warning("couldn't gnutls_x509_crt_export to get size b %s\n", gnutls_strerror(r));
+		return FALSE;
+	}
+
+	output_a = malloc(cert_size_a);
+	output_b = malloc(cert_size_b);
+	if ((r = gnutls_x509_crt_export(cert_a->x509_cert, GNUTLS_X509_FMT_DER, output_a, &cert_size_a)) < 0) {
+		g_warning("couldn't gnutls_x509_crt_export a %s\n", gnutls_strerror(r));
+		return FALSE;
+	}
+	if ((r = gnutls_x509_crt_export(cert_b->x509_cert, GNUTLS_X509_FMT_DER, output_b, &cert_size_b)) < 0) {
+		g_warning("couldn't gnutls_x509_crt_export b %s\n", gnutls_strerror(r));
+		return FALSE;
+	}
+	if (cert_size_a != cert_size_b) {
+		g_warning("size differ %d %d\n", cert_size_a, cert_size_b);
+		return FALSE;
+	}
+	if (memcmp(output_a, output_b, cert_size_a)) {
+		g_warning("contents differ\n");
+		return FALSE;
+	}
+	
+	return TRUE;
+#endif
 }
 
+#if USE_OPENSSL
 char *ssl_certificate_check_signer (X509 *cert) 
 {
 	X509_STORE_CTX store_ctx;
@@ -395,8 +491,33 @@ char *ssl_certificate_check_signer (X509 *cert)
 	X509_STORE_free (store);
 	return NULL;
 }
+#else
+char *ssl_certificate_check_signer (gnutls_x509_crt cert, guint status) 
+{
+	if (status == (guint)-1)
+		return g_strdup(_("Uncheckable"));
 
+	if (status & GNUTLS_CERT_INVALID) {
+		if (gnutls_x509_crt_check_issuer(cert, cert))
+			return g_strdup(_("Self-signed certificate"));
+	}
+	if (status & GNUTLS_CERT_REVOKED)
+		return g_strdup(_("Revoked certificate"));
+	if (status & GNUTLS_CERT_SIGNER_NOT_FOUND)
+		return g_strdup(_("No certificate issuer found"));
+	if (status & GNUTLS_CERT_SIGNER_NOT_CA)
+		return g_strdup(_("Certificate issuer is not a CA"));
+
+
+	return NULL;
+}
+#endif
+
+#if USE_OPENSSL
 gboolean ssl_certificate_check (X509 *x509_cert, gchar *fqdn, gchar *host, gushort port)
+#else
+gboolean ssl_certificate_check (gnutls_x509_crt x509_cert, guint status, gchar *fqdn, gchar *host, gushort port)
+#endif
 {
 	SSLCertificate *current_cert = NULL;
 	SSLCertificate *known_cert;
@@ -404,7 +525,7 @@ gboolean ssl_certificate_check (X509 *x509_cert, gchar *fqdn, gchar *host, gusho
 	gchar *fqdn_host = NULL;	
 	gchar *fingerprint;
 	unsigned int n;
-	unsigned char md[EVP_MAX_MD_SIZE];	
+	unsigned char md[128];	
 
 	if (fqdn)
 		fqdn_host = g_strdup(fqdn);
@@ -423,9 +544,18 @@ gboolean ssl_certificate_check (X509 *x509_cert, gchar *fqdn, gchar *host, gusho
 		return FALSE;
 	}
 
+#if USE_GNUTLS
+	current_cert->status = status;
+#endif
 	/* fingerprint */
+#if USE_OPENSSL
 	X509_digest(x509_cert, EVP_md5(), md, &n);
 	fingerprint = readable_fingerprint(md, (int)n);
+#else
+	n = 128;
+	gnutls_x509_crt_get_fingerprint(x509_cert, GNUTLS_DIG_MD5, md, &n);
+	fingerprint = readable_fingerprint(md, (int)n);
+#endif
 
 	known_cert = ssl_certificate_find_lookup (fqdn_host, port, fingerprint, FALSE);
 
@@ -466,7 +596,11 @@ gboolean ssl_certificate_check (X509 *x509_cert, gchar *fqdn, gchar *host, gusho
 			ssl_certificate_destroy(known_cert);
 			return TRUE;
 		}
+#if USE_OPENSSL
 	} else if (asn1toTime(X509_get_notAfter(current_cert->x509_cert)) < time(NULL)) {
+#else
+	} else if (gnutls_x509_crt_get_expiration_time(current_cert->x509_cert) < time(NULL)) {
+#endif
 		gchar *tmp = g_strdup_printf("%s:%d", current_cert->host, current_cert->port);
 		
 		if (warned_expired == NULL)

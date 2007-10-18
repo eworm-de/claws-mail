@@ -115,7 +115,7 @@ gboolean claws_init(int *argc, char ***argv)
 
 	srand((gint) time(NULL));
 
-#if USE_OPENSSL
+#if (defined(USE_OPENSSL) || defined (USE_GNUTLS))
 	ssl_init();
 #endif
 
@@ -127,7 +127,7 @@ gboolean claws_init(int *argc, char ***argv)
 void claws_done(void)
 {
 
-#if USE_OPENSSL
+#if (defined(USE_OPENSSL) || defined (USE_GNUTLS))
 	ssl_done();
 #endif
 }

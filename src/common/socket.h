@@ -35,7 +35,7 @@
 
 typedef struct _SockInfo	SockInfo;
 
-#if USE_OPENSSL
+#if (defined(USE_OPENSSL) || defined (USE_GNUTLS))
 #  include "ssl.h"
 #endif
 
@@ -60,6 +60,9 @@ struct _SockInfo
 	gint sock;
 #if USE_OPENSSL
 	SSL *ssl;
+	guint g_source;
+#elif USE_GNUTLS
+	gnutls_session ssl;
 	guint g_source;
 #endif
 	GIOChannel *sock_ch;
@@ -97,7 +100,6 @@ gint sock_connect_async_cancel		(gint id);
 gint sock_read		(SockInfo *sock, gchar *buf, gint len);
 gint sock_write		(SockInfo *sock, const gchar *buf, gint len);
 gint sock_write_all	(SockInfo *sock, const gchar *buf, gint len);
-gint sock_gets		(SockInfo *sock, gchar *buf, gint len);
 gint sock_close		(SockInfo *sock);
 
 /* Functions to directly work on FD.  They are needed for pipes */

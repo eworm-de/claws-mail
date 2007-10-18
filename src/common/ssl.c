@@ -21,8 +21,7 @@
 #  include "config.h"
 #endif
 
-#if USE_OPENSSL
-
+#if (defined(USE_OPENSSL) || defined (USE_GNUTLS))
 #include "defs.h"
 
 #include <glib.h>
@@ -43,16 +42,23 @@
 
 #ifdef USE_PTHREAD
 typedef struct _thread_data {
+#ifdef USE_OPENSSL
 	SSL *ssl;
+#else
+	gnutls_session ssl;
+#endif
 	gboolean done;
 } thread_data;
 #endif
 
 
+#ifdef USE_OPENSSL
 static SSL_CTX *ssl_ctx;
+#endif
 
 void ssl_init(void)
 {
+#ifdef USE_OPENSSL
 	SSL_METHOD *meth;
 
 	/* Global system initialization*/
@@ -73,14 +79,21 @@ void ssl_init(void)
 #if (OPENSSL_VERSION_NUMBER < 0x0090600fL)
 	SSL_CTX_set_verify_depth(ssl_ctx,1);
 #endif
+#else
+	gnutls_global_init();
+#endif
 }
 
 void ssl_done(void)
 {
+#if USE_OPENSSL
 	if (!ssl_ctx)
 		return;
 	
 	SSL_CTX_free(ssl_ctx);
+#else
+	gnutls_global_deinit();
+#endif
 }
 
 #ifdef USE_PTHREAD
@@ -92,18 +105,31 @@ static void *SSL_connect_thread(void *data)
 	pthread_setcancelstate(PTHREAD_CANCEL_ENABLE, NULL);
 	pthread_setcanceltype(PTHREAD_CANCEL_ASYNCHRONOUS, NULL);
 
+#ifdef USE_OPENSSL
 	result = SSL_connect(td->ssl);
+#else
+	do {
+		result = gnutls_handshake(td->ssl);
+	} while (result == GNUTLS_E_AGAIN || result == GNUTLS_E_INTERRUPTED);
+#endif
 	td->done = TRUE; /* let the caller thread join() */
 	return GINT_TO_POINTER(result);
 }
 #endif
 
+#ifdef USE_OPENSSL
 static gint SSL_connect_nb(SSL *ssl)
+#else
+static gint SSL_connect_nb(gnutls_session ssl)
+#endif
 {
 #if (defined USE_PTHREAD && ((defined __GLIBC__ && (__GLIBC__ > 2 || (__GLIBC__ == 2 && __GLIBC_MINOR__ >= 3))) || !defined __GLIBC__))
 	thread_data *td = g_new0(thread_data, 1);
 	pthread_t pt;
 	void *res = NULL;
+#ifdef USE_GNUTLS
+	int result;
+#endif
 	time_t start_time = time(NULL);
 	gboolean killed = FALSE;
 	
@@ -114,9 +140,15 @@ static gint SSL_connect_nb(SSL *ssl)
 	 * fallback to blocking method in case of problem 
 	 */
 	if (pthread_create(&pt, PTHREAD_CREATE_JOINABLE, 
-			SSL_connect_thread, td) != 0)
+			SSL_connect_thread, td) != 0) {
+#ifdef USE_OPENSSL
 		return SSL_connect(ssl);
-	
+#else
+		do {
+			result = gnutls_handshake(td->ssl);
+		} while (result == GNUTLS_E_AGAIN || result == GNUTLS_E_INTERRUPTED);
+#endif
+	}
 	debug_print("waiting for SSL_connect thread...\n");
 	while(!td->done) {
 		/* don't let the interface freeze while waiting */
@@ -140,7 +172,13 @@ static gint SSL_connect_nb(SSL *ssl)
 	
 	return GPOINTER_TO_INT(res);
 #else
+#ifdef USE_OPENSSL
 	return SSL_connect(ssl);
+#else
+	do {
+		result = gnutls_handshake(td->ssl);
+	} while (result == GNUTLS_E_AGAIN || result == GNUTLS_E_INTERRUPTED);
+#endif
 #endif
 }
 
@@ -149,8 +187,20 @@ gboolean ssl_init_socket(SockInfo *sockinfo)
 	return ssl_init_socket_with_method(sockinfo, SSL_METHOD_SSLv23);
 }
 
+static const gchar *ssl_get_cert_file(void)
+{
+	if (g_getenv("SSL_CERT_FILE"))
+		return g_getenv("SSL_CERT_FILE");
+#ifndef G_OS_WIN32
+	return "/etc/ssl/certs/ca-certificates.crt";
+#else
+	return "put_what_s_needed_here";
+#endif
+}
+
 gboolean ssl_init_socket_with_method(SockInfo *sockinfo, SSLMethod method)
 {
+#ifdef USE_OPENSSL
 	X509 *server_cert;
 	SSL *ssl;
 
@@ -202,14 +252,93 @@ gboolean ssl_init_socket_with_method(SockInfo *sockinfo, SSLMethod method)
 
 	X509_free(server_cert);
 	sockinfo->ssl = ssl;
+#else
+	gnutls_session session;
+	int r;
+	const int cipher_prio[] = { GNUTLS_CIPHER_AES_128_CBC,
+		  		GNUTLS_CIPHER_3DES_CBC,
+		  		GNUTLS_CIPHER_AES_256_CBC,
+		  		GNUTLS_CIPHER_ARCFOUR_128, 0 };
+	const int kx_prio[] = { GNUTLS_KX_DHE_RSA,
+			   GNUTLS_KX_RSA, 
+			   GNUTLS_KX_DHE_DSS, 0 };
+	const int mac_prio[] = { GNUTLS_MAC_SHA1,
+		  		GNUTLS_MAC_MD5, 0 };
+	const int proto_prio[] = { GNUTLS_TLS1,
+		  		  GNUTLS_SSL3, 0 };
+	const gnutls_datum *raw_cert_list;
+	unsigned int raw_cert_list_length;
+	gnutls_x509_crt cert = NULL;
+	guint status;
+	gnutls_certificate_credentials_t xcred;
 
+	if (gnutls_certificate_allocate_credentials (&xcred) != 0)
+		return FALSE;
+
+	r = gnutls_init(&session, GNUTLS_CLIENT);
+	if (session == NULL || r != 0)
+		return FALSE;
+  
+	gnutls_set_default_priority(session);
+	gnutls_protocol_set_priority (session, proto_prio);
+	gnutls_cipher_set_priority (session, cipher_prio);
+	gnutls_kx_set_priority (session, kx_prio);
+	gnutls_mac_set_priority (session, mac_prio);
+
+	gnutls_credentials_set(session, GNUTLS_CRD_CERTIFICATE, xcred);
+
+	r = gnutls_certificate_set_x509_trust_file(xcred, ssl_get_cert_file(),  GNUTLS_X509_FMT_PEM);
+	if (r < 0)
+		g_warning("Can't read SSL_CERT_FILE %s: %s\n",
+			ssl_get_cert_file(), 
+			gnutls_strerror(r));
+
+	gnutls_certificate_set_verify_flags (xcred, GNUTLS_VERIFY_ALLOW_X509_V1_CA_CRT);
+
+	gnutls_transport_set_ptr(session, (gnutls_transport_ptr) 
+		sockinfo->sock);
+
+	if (SSL_connect_nb(session) == -1) {
+		g_warning("SSL connection failed");
+		gnutls_deinit(session);
+		return FALSE;
+	}
+
+	/* Get server's certificate (note: beware of dynamic allocation) */
+	raw_cert_list = gnutls_certificate_get_peers(session, &raw_cert_list_length);
+
+	if (!raw_cert_list 
+	||  gnutls_certificate_type_get(session) != GNUTLS_CRT_X509
+	||  (r = gnutls_x509_crt_init(&cert)) < 0
+	||  (r = gnutls_x509_crt_import(cert, &raw_cert_list[0], GNUTLS_X509_FMT_DER)) < 0) {
+		g_warning("cert get failure: %d %s\n", r, gnutls_strerror(r));
+		gnutls_deinit(session);
+		return FALSE;
+	}
+
+	r = gnutls_certificate_verify_peers2(session, &status);
+
+	if (!ssl_certificate_check(cert, status, sockinfo->canonical_name, sockinfo->hostname, sockinfo->port)) {
+		gnutls_x509_crt_deinit(cert);
+		gnutls_deinit(session);
+		return FALSE;
+	}
+
+	gnutls_x509_crt_deinit(cert);
+
+	sockinfo->ssl = session;
+#endif
 	return TRUE;
 }
 
 void ssl_done_socket(SockInfo *sockinfo)
 {
 	if (sockinfo && sockinfo->ssl) {
+#ifdef USE_OPENSSL
 		SSL_free(sockinfo->ssl);
+#else
+		gnutls_deinit(sockinfo->ssl);
+#endif
 		sockinfo->ssl = NULL;
 	}
 }

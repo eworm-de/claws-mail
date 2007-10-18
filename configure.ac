@@ -11,7 +11,7 @@ MINOR_VERSION=0
 MICRO_VERSION=2
 INTERFACE_AGE=0
 BINARY_AGE=0
-EXTRA_VERSION=81
+EXTRA_VERSION=82
 EXTRA_RELEASE=
 EXTRA_GTK2_VERSION=
 
@@ -363,7 +363,7 @@ fi
 
 dnl Check for OpenSSL
 AC_ARG_ENABLE(openssl,
-	[  --disable-openssl    disable SSL (OpenSSL) support.],
+	[  --disable-openssl    disable OpenSSL support.],
 	[ac_cv_enable_openssl=$enableval], [ac_cv_enable_openssl=yes])
 AC_MSG_CHECKING([whether to use OpenSSL])
 if test x"$ac_cv_enable_openssl" = xyes; then
@@ -371,6 +371,7 @@ if test x"$ac_cv_enable_openssl" = xyes; then
 	PKG_CHECK_MODULES(OPENSSL, openssl >= 0.9.7, :, ac_cv_enable_openssl=no)
 	if test x$ac_cv_enable_openssl = xyes; then
 		AC_DEFINE(USE_OPENSSL, 1, Define if you want OpenSSL support)
+		disable_gnutls="yes"
 	else
 		AC_MSG_RESULT(not found)
 		AC_MSG_WARN([*** OpenSSL will not be supported ***])
@@ -380,6 +381,37 @@ else
 fi
 AC_SUBST(OPENSSL_CFLAGS)
 AC_SUBST(OPENSSL_LIBS)
+
+dnl GNUTLS
+AC_ARG_ENABLE(gnutls,    [ --disable-gnutls      disable GnuTLS support],
+            [ac_cv_enable_gnutls=$enableval], [ac_cv_enable_gnutls=yes])
+if test "x$disable_gnutls" != "xyes"; then
+	AC_MSG_CHECKING([whether to use GnuTLS])
+	if test "x$ac_cv_enable_gnutls" != "xno"; then
+	  OCPPFLAGS="$CPPFLAGS"
+	  OLDFLAGS="$LDFLAGS"
+	  GNUTLS_LIBS=""
+	  AC_CHECK_HEADER(gnutls/gnutls.h, [
+		AC_CHECK_LIB(gnutls, gnutls_global_deinit, 
+			[AC_DEFINE(USE_GNUTLS, 1, Define to use GnuTLS.)],
+			[ac_cv_enable_gnutls=no])
+	  ],[ac_cv_enable_gnutls=no])
+	  if test "x$ac_cv_enable_gnutls" != "xyes"; then
+	   CPPFLAGS="$OCPPFLAGS"
+	   LDFLAGS="$OLDFLAGS"
+	  fi
+	fi
+	if test "x$ac_cv_enable_gnutls" = "xyes"; then
+	  AC_DEFINE([USE_GNUTLS],1, [Define to use GnuTLS])
+	  GNUTLS_LIBS="-lgnutls"
+	  disable_openssl="yes"
+	else
+	  GNUTLS_LIBS=""
+	fi
+else
+	ac_cv_enable_gnutls="no"
+fi
+AC_SUBST(GNUTLS_LIBS)
 
 dnl password encryption
 OLDLIBS=$LIBS
@@ -954,6 +986,7 @@ echo ""
 echo "JPilot        : $ac_cv_enable_jpilot"
 echo "LDAP          : $ac_cv_enable_ldap"
 echo "OpenSSL       : $ac_cv_enable_openssl"
+echo "gnuTLS        : $ac_cv_enable_gnutls"
 echo "iconv         : $am_cv_func_iconv"
 echo "compface      : $ac_cv_enable_compface"
 echo "IPv6          : $ac_cv_enable_ipv6"

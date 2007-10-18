@@ -25,10 +25,15 @@
 #  include "config.h"
 #endif
 
+#if (defined(USE_OPENSSL) || defined (USE_GNUTLS))
 #if USE_OPENSSL
-
 #include <openssl/ssl.h>
 #include <openssl/objects.h>
+#else
+#include <gnutls/gnutls.h>
+#include <gnutls/x509.h>
+#endif
+
 #include <glib.h>
 
 #define SSLCERT_ASK_HOOKLIST "sslcert_ask"
@@ -37,10 +42,17 @@ typedef struct _SSLCertificate SSLCertificate;
 
 struct _SSLCertificate
 {
+#if USE_OPENSSL
 	X509 *x509_cert;
+#else
+	gnutls_x509_crt x509_cert;
+#endif
 	gchar *host;
 	gushort port;
 	gchar *fingerprint;
+#if USE_GNUTLS
+	guint status;
+#endif
 };
 
 typedef struct _SSLCertHookData SSLCertHookData;
@@ -55,13 +67,20 @@ struct _SSLCertHookData
 
 SSLCertificate *ssl_certificate_find (gchar *host, gushort port, const gchar *fingerprint);
 SSLCertificate *ssl_certificate_find_lookup (gchar *host, gushort port, const gchar *fingerprint, gboolean lookup);
+#if USE_OPENSSL
 gboolean ssl_certificate_check (X509 *x509_cert, gchar *fqdn, gchar *host, gushort port);
-char* ssl_certificate_to_string(SSLCertificate *cert);
+#else
+gboolean ssl_certificate_check (gnutls_x509_crt x509_cert, guint status, gchar *fqdn, gchar *host, gushort port);
+#endif
 void ssl_certificate_destroy(SSLCertificate *cert);
 void ssl_certificate_delete_from_disk(SSLCertificate *cert);
 char * readable_fingerprint(unsigned char *src, int len);
+#if USE_OPENSSL
 char *ssl_certificate_check_signer (X509 *cert);
 time_t asn1toTime(ASN1_TIME *asn1Time);
+#else
+char *ssl_certificate_check_signer (gnutls_x509_crt cert, guint status);
+#endif
 
 #endif /* USE_OPENSSL */
 #endif /* SSL_CERTIFICATE_H */

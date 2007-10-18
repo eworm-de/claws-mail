@@ -66,7 +66,7 @@ void session_init(Session *session)
 	session->sock = NULL;
 	session->server = NULL;
 	session->port = 0;
-#if USE_OPENSSL
+#if (defined(USE_OPENSSL) || defined (USE_GNUTLS))
 	session->ssl_type = SSL_NONE;
 #endif
 	session->nonblocking = TRUE;
@@ -158,7 +158,7 @@ static gint session_connect_cb(SockInfo *sock, gpointer data)
 
 	session->sock = sock;
 
-#if USE_OPENSSL
+#if (defined(USE_OPENSSL) || defined (USE_GNUTLS))
 	if (session->ssl_type == SSL_TUNNEL) {
 		sock_set_nonblocking_mode(sock, FALSE);
 		if (!ssl_init_socket(sock)) {
@@ -335,7 +335,7 @@ static gint session_close(Session *session)
 	return 0;
 }
 
-#if USE_OPENSSL
+#if (defined(USE_OPENSSL) || defined (USE_GNUTLS))
 gint session_start_tls(Session *session)
 {
 	gboolean nb_mode;

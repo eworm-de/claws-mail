@@ -1238,7 +1238,7 @@ static void account_list_view_add(PrefsAccount *ac_prefs)
 	gboolean getall;
 
 	name = ac_prefs->account_name;
-#if USE_OPENSSL
+#if (defined(USE_OPENSSL) || defined (USE_GNUTLS))
 	protocol = ac_prefs->protocol == A_POP3 ?
 		  (ac_prefs->ssl_pop == SSL_TUNNEL ?
 		   "POP3 (SSL)" :

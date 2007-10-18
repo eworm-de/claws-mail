@@ -21,6 +21,8 @@
 #  include "config.h"
 #endif
 
+#ifdef HAVE_LIBETPAN
+
 #include "defs.h"
 
 #include <glib.h>
@@ -31,10 +33,12 @@
 #include <dirent.h>
 #include <unistd.h>
 #include <time.h>
+#include <libetpan/libetpan.h>
 
+#include "nntp-thread.h"
+#include "news.h"
 #include "news.h"
 #include "news_gtk.h"
-#include "nntp.h"
 #include "socket.h"
 #include "recv.h"
 #include "procmsg.h"
@@ -52,19 +56,20 @@
 #include "remotefolder.h"
 #include "alertpanel.h"
 #include "inc.h"
-
-#if USE_OPENSSL
+#if (defined(USE_OPENSSL) || defined (USE_GNUTLS))
 #  include "ssl.h"
 #endif
 
 #define NNTP_PORT	119
-#if USE_OPENSSL
+#if (defined(USE_OPENSSL) || defined (USE_GNUTLS))
 #define NNTPS_PORT	563
 #endif
 
 typedef struct _NewsFolder	NewsFolder;
+typedef struct _NewsSession	NewsSession;
 
 #define NEWS_FOLDER(obj)	((NewsFolder *)obj)
+#define NEWS_SESSION(obj)       ((NewsSession *)obj)
 
 struct _NewsFolder
 {
@@ -72,11 +77,18 @@ struct _NewsFolder
 
 	gboolean use_auth;
 	gboolean lock_count;
+	guint refcnt;
 };
 
-static void news_folder_init		 (Folder	*folder,
-					  const gchar	*name,
-					  const gchar	*path);
+struct _NewsSession
+{
+	Session session;
+
+	gchar *group;
+};
+
+static void news_folder_init(Folder *folder, const gchar *name,
+			     const gchar *path);
 
 static Folder	*news_folder_new	(const gchar	*name,
 					 const gchar	*folder);
@@ -88,34 +100,32 @@ static gchar *news_fetch_msg		(Folder		*folder,
 static void news_remove_cached_msg	(Folder 	*folder, 
 					 FolderItem 	*item, 
 					 MsgInfo 	*msginfo);
-#if USE_OPENSSL
-static Session *news_session_new	 (const gchar	*server,
+#if (defined(USE_OPENSSL) || defined (USE_GNUTLS))
+static Session *news_session_new	 (Folder 	*folder,
+					  const gchar	*server,
 					  gushort	 port,
 					  const gchar	*userid,
 					  const gchar	*passwd,
 					  SSLType	 ssl_type);
 #else
-static Session *news_session_new	 (const gchar	*server,
+static Session *news_session_new	 (Folder 	*folder,
+					  const gchar	*server,
 					  gushort	 port,
 					  const gchar	*userid,
 					  const gchar	*passwd);
 #endif
 
-static gint news_get_article_cmd	 (NNTPSession	*session,
-					  const gchar	*cmd,
-					  gint		 num,
-					  gchar		*filename);
-static gint news_get_article		 (NNTPSession	*session,
+static gint news_get_article		 (Folder	*folder,
 					  gint		 num,
 					  gchar		*filename);
 
-static gint news_select_group		 (NNTPSession	*session,
+static gint news_select_group		 (Folder	*folder,
 					  const gchar	*group,
 					  gint		*num,
 					  gint		*first,
 					  gint		*last);
-static MsgInfo *news_parse_xover	 (const gchar	*xover_str);
-static gchar *news_parse_xhdr		 (const gchar	*xhdr_str,
+static MsgInfo *news_parse_xover	 (struct newsnntp_xover_resp_item *item);
+static gchar *news_parse_xhdr		 (clist		*list,
 					  MsgInfo	*msginfo);
 static gint news_get_num_list		 	 (Folder 	*folder, 
 					  FolderItem 	*item,
@@ -130,8 +140,6 @@ static GSList *news_get_msginfos		 (Folder 	*folder,
 static gboolean news_scan_required		 (Folder 	*folder,
 					  FolderItem 	*item);
 
-static gint news_post_stream			 (Folder 	*folder, 
-					  FILE 		*fp);
 static gchar *news_folder_get_path	 (Folder	*folder);
 static gchar *news_item_get_path		 (Folder	*folder,
 					  FolderItem	*item);
@@ -170,6 +178,22 @@ FolderClass *news_get_class(void)
 	};
 
 	return &news_class;
+}
+
+guint nntp_folder_get_refcnt(Folder *folder)
+{
+	return ((NewsFolder *)folder)->refcnt;
+}
+
+void nntp_folder_ref(Folder *folder)
+{
+	((NewsFolder *)folder)->refcnt++;
+}
+
+void nntp_folder_unref(Folder *folder)
+{
+	if (((NewsFolder *)folder)->refcnt > 0)
+		((NewsFolder *)folder)->refcnt--;
 }
 
 static int news_remove_msg		 (Folder 	*folder, 
@@ -226,11 +250,15 @@ static void news_folder_destroy(Folder *folder)
 {
 	gchar *dir;
 
+	while (nntp_folder_get_refcnt(folder) > 0)
+		gtk_main_iteration();
+
 	dir = news_folder_get_path(folder);
 	if (is_dir_exist(dir))
 		remove_dir_recursive(dir);
 	g_free(dir);
 
+	nntp_done(folder);
 	folder_remote_folder_destroy(REMOTE_FOLDER(folder));
 }
 
@@ -240,29 +268,54 @@ static void news_folder_init(Folder *folder, const gchar *name,
 	folder_remote_folder_init(folder, name, path);
 }
 
-#if USE_OPENSSL
-static Session *news_session_new(const gchar *server, gushort port,
+static void news_session_destroy(Session *session)
+{
+	NewsSession *news_session = NEWS_SESSION(session);
+
+	g_return_if_fail(session != NULL);
+
+	if (news_session->group)
+		g_free(news_session->group);
+}
+
+#if (defined(USE_OPENSSL) || defined (USE_GNUTLS))
+static Session *news_session_new(Folder *folder, const gchar *server, gushort port,
 				 const gchar *userid, const gchar *passwd,
 				 SSLType ssl_type)
 #else
-static Session *news_session_new(const gchar *server, gushort port,
+static Session *news_session_new(Folder *folder, const gchar *server, gushort port,
 				 const gchar *userid, const gchar *passwd)
 #endif
 {
-	gchar buf[NNTPBUFSIZE];
-	Session *session;
-
+	NewsSession *session;
+	int r = 0;
 	g_return_val_if_fail(server != NULL, NULL);
 
 	log_message(LOG_PROTOCOL, _("creating NNTP connection to %s:%d ...\n"), server, port);
 
-#if USE_OPENSSL
-	session = nntp_session_new(server, port, buf, userid, passwd, ssl_type);
-#else
-	session = nntp_session_new(server, port, buf, userid, passwd);
-#endif
+	session = g_new0(NewsSession, 1);
+	session_init(SESSION(session));
+	SESSION(session)->type             = SESSION_NEWS;
+	SESSION(session)->server           = g_strdup(server);
+ 	SESSION(session)->sock             = NULL;
+	SESSION(session)->destroy          = news_session_destroy;
+	
+	nntp_init(folder);
 
-	return session;
+#if (defined(USE_OPENSSL) || defined (USE_GNUTLS))
+	if (ssl_type != SSL_NONE)
+		r = nntp_threaded_connect_ssl(folder, server, port);
+	else
+#endif
+		r = nntp_threaded_connect(folder, server, port);
+	
+	if (r != NEWSNNTP_NO_ERROR) {
+		log_error(LOG_PROTOCOL, _("Error logging in to %s:%d ...\n"), server, port);
+		session_destroy(SESSION(session));
+		return NULL;
+	}
+	
+	return SESSION(session);
 }
 
 static Session *news_session_new_for_folder(Folder *folder)
@@ -272,7 +325,6 @@ static Session *news_session_new_for_folder(Folder *folder)
 	const gchar *userid = NULL;
 	gchar *passwd = NULL;
 	gushort port;
-	gchar buf[NNTPBUFSIZE];
 
 	g_return_val_if_fail(folder != NULL, NULL);
 	g_return_val_if_fail(folder->account != NULL, NULL);
@@ -287,10 +339,10 @@ static Session *news_session_new_for_folder(Folder *folder)
 							     userid);
 	}
 
-#if USE_OPENSSL
+#if (defined(USE_OPENSSL) || defined (USE_GNUTLS))
 	port = ac->set_nntpport ? ac->nntpport
 		: ac->ssl_nntp ? NNTPS_PORT : NNTP_PORT;
-	session = news_session_new(ac->nntp_server, port, userid, passwd,
+	session = news_session_new(folder, ac->nntp_server, port, userid, passwd,
 				   ac->ssl_nntp);
 #else
 	if (ac->ssl_nntp != SSL_NONE) {
@@ -307,20 +359,27 @@ static Session *news_session_new_for_folder(Folder *folder)
 			return NULL;
 	}
 	port = ac->set_nntpport ? ac->nntpport : NNTP_PORT;
-	session = news_session_new(ac->nntp_server, port, userid, passwd);
+	session = news_session_new(folder, ac->nntp_server, port, userid, passwd);
 #endif
-	if ((session != NULL) && ac->use_nntp_auth && ac->use_nntp_auth_onconnect)
-		nntp_forceauth(NNTP_SESSION(session), buf, userid, passwd);
 
+	if ((session != NULL) && ac->use_nntp_auth && ac->use_nntp_auth_onconnect) {
+		if (nntp_threaded_login(folder, userid, passwd) !=
+			NEWSNNTP_NO_ERROR) {
+			log_error(LOG_PROTOCOL, _("Error authenticating to %s:%d ...\n"), ac->nntp_server, port);
+			session_destroy(SESSION(session));
+			g_free(passwd);
+			return NULL;
+		}
+	}
 	g_free(passwd);
 
 	return session;
 }
 
-static NNTPSession *news_session_get(Folder *folder)
+static NewsSession *news_session_get(Folder *folder)
 {
 	RemoteFolder *rfolder = REMOTE_FOLDER(folder);
-
+	struct tm lt;
 	g_return_val_if_fail(folder != NULL, NULL);
 	g_return_val_if_fail(FOLDER_CLASS(folder) == &news_class, NULL);
 	g_return_val_if_fail(folder->account != NULL, NULL);
@@ -334,16 +393,16 @@ static NNTPSession *news_session_get(Folder *folder)
 
 	if (!rfolder->session) {
 		rfolder->session = news_session_new_for_folder(folder);
-		return NNTP_SESSION(rfolder->session);
+		return NEWS_SESSION(rfolder->session);
 	}
 
 	if (time(NULL) - rfolder->session->last_access_time <
 		SESSION_TIMEOUT_INTERVAL) {
-		return NNTP_SESSION(rfolder->session);
+		return NEWS_SESSION(rfolder->session);
 	}
 
-	if (nntp_mode(NNTP_SESSION(rfolder->session), FALSE)
-	    != NN_SUCCESS) {
+	if (nntp_threaded_date(folder, &lt)
+	    == NEWSNNTP_ERROR_STREAM) {
 		log_warning(LOG_PROTOCOL, _("NNTP connection to %s:%d has been"
 			      " disconnected. Reconnecting...\n"),
 			    folder->account->nntp_server,
@@ -352,11 +411,11 @@ static NNTPSession *news_session_get(Folder *folder)
 		session_destroy(rfolder->session);
 		rfolder->session = news_session_new_for_folder(folder);
 	}
-
+	
 	if (rfolder->session)
 		session_set_access_time(rfolder->session);
 
-	return NNTP_SESSION(rfolder->session);
+	return NEWS_SESSION(rfolder->session);
 }
 
 static void news_remove_cached_msg(Folder *folder, FolderItem *item, MsgInfo *msginfo)
@@ -382,7 +441,7 @@ static void news_remove_cached_msg(Folder *folder, FolderItem *item, MsgInfo *ms
 static gchar *news_fetch_msg(Folder *folder, FolderItem *item, gint num)
 {
 	gchar *path, *filename;
-	NNTPSession *session;
+	NewsSession *session;
 	gint ok;
 
 	g_return_val_if_fail(folder != NULL, NULL);
@@ -405,9 +464,9 @@ static gchar *news_fetch_msg(Folder *folder, FolderItem *item, gint num)
 		return NULL;
 	}
 
-	ok = news_select_group(session, item->path, NULL, NULL, NULL);
-	if (ok != NN_SUCCESS) {
-		if (ok == NN_SOCKET) {
+	ok = news_select_group(folder, item->path, NULL, NULL, NULL);
+	if (ok != NEWSNNTP_NO_ERROR) {
+		if (ok == NEWSNNTP_ERROR_STREAM) {
 			session_destroy(SESSION(session));
 			REMOTE_FOLDER(folder)->session = NULL;
 		}
@@ -416,11 +475,11 @@ static gchar *news_fetch_msg(Folder *folder, FolderItem *item, gint num)
 	}
 
 	debug_print("getting article %d...\n", num);
-	ok = news_get_article(NNTP_SESSION(REMOTE_FOLDER(folder)->session),
+	ok = news_get_article(folder,
 			      num, filename);
-	if (ok != NN_SUCCESS) {
+	if (ok != NEWSNNTP_NO_ERROR) {
 		g_warning("can't read article %d\n", num);
-		if (ok == NN_SOCKET) {
+		if (ok == NEWSNNTP_ERROR_STREAM) {
 			session_destroy(SESSION(session));
 			REMOTE_FOLDER(folder)->session = NULL;
 		}
@@ -463,7 +522,7 @@ GSList *news_get_group_list(Folder *folder)
 	FILE *fp;
 	GSList *list = NULL;
 	GSList *last = NULL;
-	gchar buf[NNTPBUFSIZE];
+	gchar buf[BUFFSIZE];
 
 	g_return_val_if_fail(folder != NULL, NULL);
 	g_return_val_if_fail(FOLDER_CLASS(folder) == &news_class, NULL);
@@ -475,26 +534,56 @@ GSList *news_get_group_list(Folder *folder)
 	g_free(path);
 
 	if ((fp = g_fopen(filename, "rb")) == NULL) {
-		NNTPSession *session;
+		NewsSession *session;
 		gint ok;
-
+		clist *grouplist = NULL;
+		clistiter *cur;
+		fp = fopen(filename, "wb");
+		
+		if (!fp) {
+			g_free(filename);
+			return NULL;
+		}
 		session = news_session_get(folder);
 		if (!session) {
+			fclose(fp);
 			g_free(filename);
 			return NULL;
 		}
 
-		ok = nntp_list(session);
-		if (ok != NN_SUCCESS) {
-			if (ok == NN_SOCKET) {
+		ok = nntp_threaded_list(folder, &grouplist);
+		
+		if (ok != NEWSNNTP_NO_ERROR) {
+			if (ok == NEWSNNTP_ERROR_STREAM) {
 				session_destroy(SESSION(session));
 				REMOTE_FOLDER(folder)->session = NULL;
 			}
+			fclose(fp);
 			g_free(filename);
 			return NULL;
 		}
-		if (recv_write_to_file(SESSION(session)->sock, filename) < 0) {
-			log_warning(LOG_PROTOCOL, _("can't retrieve newsgroup list\n"));
+		
+		for (cur = clist_begin(grouplist); cur; cur = clist_next(cur)) {
+			struct newsnntp_group_info *info = (struct newsnntp_group_info *)
+								clist_content(cur);
+			if (fprintf(fp, "%s %d %d %c\n",
+				info->grp_name,
+				info->grp_last,
+				info->grp_first,
+				info->grp_type) < 0) {
+				log_error(LOG_PROTOCOL, ("Can't write newsgroup list\n"));
+				session_destroy(SESSION(session));
+				REMOTE_FOLDER(folder)->session = NULL;
+				fclose(fp);
+				g_free(filename);
+				newsnntp_list_free(grouplist);
+				return NULL;
+			}
+		}
+		newsnntp_list_free(grouplist);
+
+		if (fclose(fp) == EOF) {
+			log_error(LOG_PROTOCOL, ("Can't write newsgroup list\n"));
 			session_destroy(SESSION(session));
 			REMOTE_FOLDER(folder)->session = NULL;
 			g_free(filename);
@@ -574,78 +663,46 @@ void news_remove_group_list_cache(Folder *folder)
 
 gint news_post(Folder *folder, const gchar *file)
 {
-	FILE *fp;
 	gint ok;
+	char *contents = file_read_to_str(file);
+	NewsSession *session;
 
 	g_return_val_if_fail(folder != NULL, -1);
 	g_return_val_if_fail(FOLDER_CLASS(folder) == &news_class, -1);
-	g_return_val_if_fail(file != NULL, -1);
-
-	if ((fp = g_fopen(file, "rb")) == NULL) {
-		FILE_OP_ERROR(file, "fopen");
+	g_return_val_if_fail(contents != NULL, -1);
+	
+	session = news_session_get(folder);
+	if (!session)  {
+		g_free(contents);
 		return -1;
 	}
-
-	ok = news_post_stream(folder, fp);
-
-	fclose(fp);
+	
+	ok = nntp_threaded_post(folder, contents, strlen(contents));
+	
+	g_free(contents);
+	if (ok == NEWSNNTP_ERROR_STREAM) {
+		session_destroy(SESSION(session));
+		REMOTE_FOLDER(folder)->session = NULL;
+	}
 
 	return ok;
 }
 
-static gint news_post_stream(Folder *folder, FILE *fp)
+static gint news_get_article(Folder *folder, gint num, gchar *filename)
 {
-	NNTPSession *session;
-	gint ok;
-
-	g_return_val_if_fail(folder != NULL, -1);
-	g_return_val_if_fail(FOLDER_CLASS(folder) == &news_class, -1);
-	g_return_val_if_fail(fp != NULL, -1);
-
-	session = news_session_get(folder);
-	if (!session) return -1;
-
-	ok = nntp_post(session, fp);
-	if (ok != NN_SUCCESS) {
-		log_warning(LOG_PROTOCOL, _("couldn't post article.\n"));
-		if (ok == NN_SOCKET) {
-			session_destroy(SESSION(session));
-			REMOTE_FOLDER(folder)->session = NULL;
-		}
-		return -1;
+	size_t len;
+	char *result = NULL;
+	int r;
+	
+	r = nntp_threaded_article(folder, num, &result, &len);
+	
+	if (r == NEWSNNTP_NO_ERROR) {
+		if (str_write_to_file(result, filename) < 0)
+			return -1;
 	}
-
-	return 0;
-}
-
-static gint news_get_article_cmd(NNTPSession *session, const gchar *cmd,
-				 gint num, gchar *filename)
-{
-	gchar *msgid;
-	gint ok;
-
-	ok = nntp_get_article(session, cmd, num, &msgid);
-	if (ok != NN_SUCCESS)
-		return ok;
-
-	debug_print("Message-ID = %s, num = %d\n", msgid, num);
-	g_free(msgid);
-
-	ok = recv_write_to_file(SESSION(session)->sock, filename);
-	if (ok < 0) {
-		log_warning(LOG_PROTOCOL, _("couldn't retrieve article %d\n"), num);
-		if (ok == -2)
-			return NN_SOCKET;
-		else
-			return NN_IOERR;
-	}
-
-	return NN_SUCCESS;
-}
-
-static gint news_get_article(NNTPSession *session, gint num, gchar *filename)
-{
-	return news_get_article_cmd(session, "ARTICLE", num, filename);
+	
+	g_free(result);
+	return r;
 }
 
 /**
@@ -661,15 +718,19 @@ static gint news_get_article(NNTPSession *session, gint num, gchar *filename)
  *
  * Return value: NNTP result code.
  **/
-static gint news_select_group(NNTPSession *session, const gchar *group,
+static gint news_select_group(Folder *folder, const gchar *group,
 			      gint *num, gint *first, gint *last)
 {
 	gint ok;
 	gint num_, first_, last_;
+	struct newsnntp_group_info *info = NULL;
+	NewsSession *session = NEWS_SESSION(news_session_get(folder));
 
+	g_return_val_if_fail(session != NULL, -1);
+	
 	if (!num || !first || !last) {
 		if (session->group && g_ascii_strcasecmp(session->group, group) == 0)
-			return NN_SUCCESS;
+			return NEWSNNTP_NO_ERROR;
 		num = &num_;
 		first = &first_;
 		last = &last_;
@@ -678,8 +739,25 @@ static gint news_select_group(NNTPSession *session, const gchar *group,
 	g_free(session->group);
 	session->group = NULL;
 
-	ok = nntp_group(session, group, num, first, last);
-	if (ok == NN_SUCCESS)
+	ok = nntp_threaded_group(folder, group, &info);
+	
+	if (ok != NEWSNNTP_NO_ERROR && 
+	    ok != NEWSNNTP_ERROR_STREAM && 
+	    ok != NEWSNNTP_WARNING_REQUEST_AUTHORIZATION_USERNAME) {
+		ok = nntp_threaded_mode_reader(folder);
+		if (ok == NEWSNNTP_NO_ERROR)
+			ok = nntp_threaded_group(folder, group, &info);
+	}
+
+	if (ok == NEWSNNTP_NO_ERROR) {
+		*num = info->grp_first;
+		*first = info->grp_first;
+		*last = info->grp_last;
+	}
+
+	newsnntp_group_free(info);
+	
+	if (ok == NEWSNNTP_NO_ERROR)
 		session->group = g_strdup(group);
 	else
 		log_warning(LOG_PROTOCOL, _("couldn't select group: %s\n"), group);
@@ -687,80 +765,45 @@ static gint news_select_group(NNTPSession *session, const gchar *group,
 	return ok;
 }
 
-#define PARSE_ONE_PARAM(p, srcp) \
-{ \
-	p = strchr(srcp, '\t'); \
-	if (!p) return NULL; \
-	else \
-		*p++ = '\0'; \
-}
-
-static MsgInfo *news_parse_xover(const gchar *xover_str)
+static MsgInfo *news_parse_xover(struct newsnntp_xover_resp_item *item)
 {
 	MsgInfo *msginfo;
-	gchar *subject, *sender, *size, *line, *date, *msgid, *ref, *tmp;
-	gchar *p;
-	gint num, size_int, line_int;
-	gchar *xover_buf;
-
-	Xstrdup_a(xover_buf, xover_str, return NULL);
-
-	PARSE_ONE_PARAM(subject, xover_buf);
-	PARSE_ONE_PARAM(sender, subject);
-	PARSE_ONE_PARAM(date, sender);
-	PARSE_ONE_PARAM(msgid, date);
-	PARSE_ONE_PARAM(ref, msgid);
-	PARSE_ONE_PARAM(size, ref);
-	PARSE_ONE_PARAM(line, size);
-	/*
-	 * PARSE_ONE_PARAM(xref, line);
-	 *
-         * if we parse extra headers we should first examine the
-	 * LIST OVERVIEW.FMT response from the server. See
-	 * RFC2980 for details
-	 */
-
-	tmp = strchr(line, '\t');
-	if (!tmp) tmp = strchr(line, '\r');
-	if (!tmp) tmp = strchr(line, '\n');
-	if (tmp) *tmp = '\0';
-
-	num = atoi(xover_str);
-	size_int = atoi(size);
-	line_int = atoi(line);
 
 	/* set MsgInfo */
 	msginfo = procmsg_msginfo_new();
-	msginfo->msgnum = num;
-	msginfo->size = size_int;
+	msginfo->msgnum = item->ovr_article;
+	msginfo->size = item->ovr_size;
 
-	msginfo->date = g_strdup(date);
-	msginfo->date_t = procheader_date_parse(NULL, date, 0);
+	msginfo->date = g_strdup(item->ovr_date);
+	msginfo->date_t = procheader_date_parse(NULL, item->ovr_date, 0);
 
-        msginfo->from = conv_unmime_header(sender, NULL);
+        msginfo->from = conv_unmime_header(item->ovr_author, NULL);
 	msginfo->fromname = procheader_get_fromname(msginfo->from);
 
-        msginfo->subject = conv_unmime_header(subject, NULL);
+        msginfo->subject = conv_unmime_header(item->ovr_subject, NULL);
 
 	remove_return(msginfo->from);
 	remove_return(msginfo->fromname);
 	remove_return(msginfo->subject);
 
-        if (msgid) {
-                extract_parenthesis(msgid, '<', '>');
-                remove_space(msgid);
-                if (*msgid != '\0')
-                        msginfo->msgid = g_strdup(msgid);
+        if (item->ovr_message_id) {
+		gchar *tmp = g_strdup(item->ovr_message_id);
+                extract_parenthesis(tmp, '<', '>');
+                remove_space(tmp);
+                if (*tmp != '\0')
+                        msginfo->msgid = g_strdup(tmp);
+		g_free(tmp);
         }                        
 
         /* FIXME: this is a quick fix; references' meaning was changed
          * into having the actual list of references in the References: header.
          * We need a GSList here, so msginfo_free() and msginfo_copy() can do 
          * their things properly. */ 
-        if (ref && strlen(ref)) {       
-		gchar **ref_tokens = g_strsplit(ref, " ", -1);
+        if (item->ovr_references && *(item->ovr_references)) {	 
+		gchar **ref_tokens = g_strsplit(item->ovr_references, " ", -1);
 		guint i = 0;
-		
+		char *tmp;
+		char *p;
 		while (ref_tokens[i]) {
 			gchar *cur_ref = ref_tokens[i];
 			msginfo->references = references_list_append(msginfo->references, 
@@ -769,40 +812,28 @@ static MsgInfo *news_parse_xover(const gchar *xover_str)
 		}
 		g_strfreev(ref_tokens);
 		
-                eliminate_parenthesis(ref, '(', ')');
-                if ((p = strrchr(ref, '<')) != NULL) {
+		tmp = g_strdup(item->ovr_references);
+                eliminate_parenthesis(tmp, '(', ')');
+                if ((p = strrchr(tmp, '<')) != NULL) {
                         extract_parenthesis(p, '<', '>');
                         remove_space(p);
                         if (*p != '\0')
                                 msginfo->inreplyto = g_strdup(p);
                 }
+		g_free(tmp);
         } 
 
 	return msginfo;
 }
 
-static gchar *news_parse_xhdr(const gchar *xhdr_str, MsgInfo *msginfo)
+static gchar *news_parse_xhdr(clist *hdrlist, MsgInfo *msginfo)
 {
-	gchar *p;
-	gchar *tmp;
-	gint num;
-
-	p = strchr(xhdr_str, ' ');
-	if (!p)
+	struct newsnntp_xhdr_resp_item *hdr;
+	
+	hdr = clist_content(clist_begin(hdrlist));
+	if (hdr->hdr_article != msginfo->msgnum)
 		return NULL;
-	else
-		p++;
-
-	num = atoi(xhdr_str);
-	if (msginfo->msgnum != num) return NULL;
-
-	tmp = strchr(p, '\r');
-	if (!tmp) tmp = strchr(p, '\n');
-
-	if (tmp)
-		return g_strndup(p, tmp - p);
-	else
-		return g_strdup(p);
+	return g_strdup(hdr->hdr_value);
 }
 
 gint news_cancel_article(Folder * folder, MsgInfo * msginfo)
@@ -908,7 +939,7 @@ static gchar *news_item_get_path(Folder *folder, FolderItem *item)
 
 static gint news_get_num_list(Folder *folder, FolderItem *item, GSList **msgnum_list, gboolean *old_uids_valid)
 {
-	NNTPSession *session;
+	NewsSession *session;
 	gint i, ok, num, first, last, nummsgs = 0;
 	gchar *dir;
 
@@ -923,8 +954,8 @@ static gint news_get_num_list(Folder *folder, FolderItem *item, GSList **msgnum_
 	
 	news_folder_lock(NEWS_FOLDER(item->folder));
 
-	ok = news_select_group(session, item->path, &num, &first, &last);
-	if (ok != NN_SUCCESS) {
+	ok = news_select_group(folder, item->path, &num, &first, &last);
+	if (ok != NEWSNNTP_NO_ERROR) {
 		log_warning(LOG_PROTOCOL, _("couldn't set group: %s\n"), item->path);
 		news_folder_unlock(NEWS_FOLDER(item->folder));
 		return -1;
@@ -951,14 +982,6 @@ static gint news_get_num_list(Folder *folder, FolderItem *item, GSList **msgnum_
 	return nummsgs;
 }
 
-#define READ_TO_LISTEND(hdr) \
-	while (!(buf[0] == '.' && buf[1] == '\r')) { \
-		if (sock_gets(SESSION(session)->sock, buf, sizeof(buf)) < 0) { \
-			log_warning(LOG_PROTOCOL, _("error occurred while getting %s.\n"), hdr); \
-			return msginfo; \
-		} \
-	}
-
 static void news_set_msg_flags(FolderItem *item, MsgInfo *msginfo)
 {
 	msginfo->flags.tmp_flags = 0;
@@ -981,10 +1004,11 @@ static void news_set_msg_flags(FolderItem *item, MsgInfo *msginfo)
 
 static MsgInfo *news_get_msginfo(Folder *folder, FolderItem *item, gint num)
 {
-	NNTPSession *session;
+	NewsSession *session;
 	MsgInfo *msginfo = NULL;
-	gchar buf[NNTPBUFSIZE];
 	gint ok;
+	struct newsnntp_xover_resp_item *result = NULL;
+	clist *hdrlist = NULL;
 
 	session = news_session_get(folder);
 	g_return_val_if_fail(session != NULL, NULL);
@@ -994,13 +1018,12 @@ static MsgInfo *news_get_msginfo(Folder *folder, FolderItem *item, gint num)
 
 	log_message(LOG_PROTOCOL, _("getting xover %d in %s...\n"),
 		    num, item->path);
-	ok = nntp_xover(session, num, num);
-	
 	news_folder_lock(NEWS_FOLDER(item->folder));
-	
-	if (ok != NN_SUCCESS) {
+
+	ok = nntp_threaded_xover(folder, num, num, &result, NULL);
+	if (ok != NEWSNNTP_NO_ERROR) {
 		log_warning(LOG_PROTOCOL, _("couldn't get xover\n"));
-		if (ok == NN_SOCKET) {
+		if (ok == NEWSNNTP_ERROR_STREAM) {
 			session_destroy(SESSION(session));
 			REMOTE_FOLDER(item->folder)->session = NULL;
 		}
@@ -1008,18 +1031,11 @@ static MsgInfo *news_get_msginfo(Folder *folder, FolderItem *item, gint num)
 		return NULL;
 	}
 	
-	if (sock_gets(SESSION(session)->sock, buf, sizeof(buf)) < 0) {
-		log_warning(LOG_PROTOCOL, _("error occurred while getting xover.\n"));
-		news_folder_unlock(NEWS_FOLDER(item->folder));
-		return NULL;
-	}
-	
-	msginfo = news_parse_xover(buf);
+	msginfo = news_parse_xover(result);
+	xover_resp_item_free(result);
 	if (!msginfo) {
-		log_warning(LOG_PROTOCOL, _("invalid xover line: %s\n"), buf);
+		log_warning(LOG_PROTOCOL, _("invalid xover line\n"));
 	}
-
-	READ_TO_LISTEND("xover");
 
 	if(!msginfo) {
 		news_folder_unlock(NEWS_FOLDER(item->folder));
@@ -1032,10 +1048,11 @@ static MsgInfo *news_get_msginfo(Folder *folder, FolderItem *item, gint num)
 	msginfo->flags.tmp_flags |= MSG_NEWS;
 	msginfo->newsgroups = g_strdup(item->path);
 
-	ok = nntp_xhdr(session, "to", num, num);
-	if (ok != NN_SUCCESS) {
+	ok = nntp_threaded_xhdr(folder, "to", num, num, &hdrlist);
+	
+	if (ok != NEWSNNTP_NO_ERROR) {
 		log_warning(LOG_PROTOCOL, _("couldn't get xhdr\n"));
-		if (ok == NN_SOCKET) {
+		if (ok == NEWSNNTP_ERROR_STREAM) {
 			session_destroy(SESSION(session));
 			REMOTE_FOLDER(item->folder)->session = NULL;
 		}
@@ -1043,20 +1060,14 @@ static MsgInfo *news_get_msginfo(Folder *folder, FolderItem *item, gint num)
 		return msginfo;
 	}
 
-	if (sock_gets(SESSION(session)->sock, buf, sizeof(buf)) < 0) {
-		log_warning(LOG_PROTOCOL, _("error occurred while getting xhdr.\n"));
-		news_folder_unlock(NEWS_FOLDER(item->folder));
-		return msginfo;
-	}
+	msginfo->to = news_parse_xhdr(hdrlist, msginfo);
+	newsnntp_xhdr_free(hdrlist);
 
-	msginfo->to = news_parse_xhdr(buf, msginfo);
-
-	READ_TO_LISTEND("xhdr (to)");
-
-	ok = nntp_xhdr(session, "cc", num, num);
-	if (ok != NN_SUCCESS) {
+	ok = nntp_threaded_xhdr(folder, "cc", num, num, &hdrlist);
+	
+	if (ok != NEWSNNTP_NO_ERROR) {
 		log_warning(LOG_PROTOCOL, _("couldn't get xhdr\n"));
-		if (ok == NN_SOCKET) {
+		if (ok == NEWSNNTP_ERROR_STREAM) {
 			session_destroy(SESSION(session));
 			REMOTE_FOLDER(item->folder)->session = NULL;
 		}
@@ -1064,62 +1075,47 @@ static MsgInfo *news_get_msginfo(Folder *folder, FolderItem *item, gint num)
 		return msginfo;
 	}
 
-	if (sock_gets(SESSION(session)->sock, buf, sizeof(buf)) < 0) {
-		log_warning(LOG_PROTOCOL, _("error occurred while getting xhdr.\n"));
-		news_folder_unlock(NEWS_FOLDER(item->folder));
-		return msginfo;
-	}
+	msginfo->cc = news_parse_xhdr(hdrlist, msginfo);
+	newsnntp_xhdr_free(hdrlist);
 
-	msginfo->cc = news_parse_xhdr(buf, msginfo);
-
-	READ_TO_LISTEND("xhdr (cc)");
 	news_folder_unlock(NEWS_FOLDER(item->folder));
 	return msginfo;
 }
 
-static GSList *news_get_msginfos_for_range(NNTPSession *session, FolderItem *item, guint begin, guint end)
+static GSList *news_get_msginfos_for_range(NewsSession *session, FolderItem *item, guint begin, guint end)
 {
-	gchar buf[NNTPBUFSIZE];
 	GSList *newlist = NULL;
 	GSList *llast = NULL;
 	MsgInfo *msginfo;
-	guint count = 0, lines = (end - begin) + 2;
 	gint ok;
-
+	clist *msglist = NULL;
+	clistiter *cur;
 	g_return_val_if_fail(session != NULL, NULL);
 	g_return_val_if_fail(item != NULL, NULL);
 
 	log_message(LOG_PROTOCOL, _("getting xover %d - %d in %s...\n"),
 		    begin, end, item->path);
-	ok = nntp_xover(session, begin, end);
-	if (ok != NN_SUCCESS) {
-		log_warning(LOG_PROTOCOL, _("couldn't get xover\n"));
-		if (ok == NN_SOCKET) {
-			session_destroy(SESSION(session));
-			REMOTE_FOLDER(item->folder)->session = NULL;
-		}
-		return NULL;
-	}
 
 	news_folder_lock(NEWS_FOLDER(item->folder));
 	
-	for (;;) {
-		if (sock_gets(SESSION(session)->sock, buf, sizeof(buf)) < 0) {
-			log_warning(LOG_PROTOCOL, _("error occurred while getting xover.\n"));
-			news_folder_unlock(NEWS_FOLDER(item->folder));
-			return newlist;
+	ok = nntp_threaded_xover(item->folder, begin, end, NULL, &msglist);
+	
+	if (ok != NEWSNNTP_NO_ERROR) {
+		log_warning(LOG_PROTOCOL, _("couldn't get xover\n"));
+		if (ok == NEWSNNTP_ERROR_STREAM) {
+			session_destroy(SESSION(session));
+			REMOTE_FOLDER(item->folder)->session = NULL;
 		}
-		count++;
-		progressindicator_set_percentage
-			(PROGRESS_TYPE_NETWORK,
-			 session->fetch_base_percentage +
-			 (((gfloat) count) / ((gfloat) lines)) * session->fetch_total_percentage);
+		news_folder_unlock(NEWS_FOLDER(item->folder));
+		return NULL;
+	}
 
-		if (buf[0] == '.' && buf[1] == '\r') break;
-
-		msginfo = news_parse_xover(buf);
+	for (cur = clist_begin(msglist); cur; cur = clist_next(cur)) {
+		struct newsnntp_xover_resp_item *ritem = (struct newsnntp_xover_resp_item *)clist_content(cur);
+		msginfo = news_parse_xover(ritem);
+		
 		if (!msginfo) {
-			log_warning(LOG_PROTOCOL, _("invalid xover line: %s\n"), buf);
+			log_warning(LOG_PROTOCOL, _("invalid xover line\n"));
 			continue;
 		}
 
@@ -1135,70 +1131,8 @@ static GSList *news_get_msginfos_for_range(NNTPSession *session, FolderItem *ite
 			llast = llast->next;
 		}
 	}
+	newsnntp_xover_resp_list_free(msglist);
 
-	ok = nntp_xhdr(session, "to", begin, end);
-	if (ok != NN_SUCCESS) {
-		log_warning(LOG_PROTOCOL, _("couldn't get xhdr\n"));
-		if (ok == NN_SOCKET) {
-			session_destroy(SESSION(session));
-			REMOTE_FOLDER(item->folder)->session = NULL;
-		}
-		news_folder_unlock(NEWS_FOLDER(item->folder));
-		return newlist;
-	}
-
-	llast = newlist;
-
-	for (;;) {
-		if (sock_gets(SESSION(session)->sock, buf, sizeof(buf)) < 0) {
-			log_warning(LOG_PROTOCOL, _("error occurred while getting xhdr.\n"));
-			news_folder_unlock(NEWS_FOLDER(item->folder));
-			return newlist;
-		}
-
-		if (buf[0] == '.' && buf[1] == '\r') break;
-		if (!llast) {
-			g_warning("llast == NULL\n");
-			continue;
-		}
-
-		msginfo = (MsgInfo *)llast->data;
-		msginfo->to = news_parse_xhdr(buf, msginfo);
-
-		llast = llast->next;
-	}
-
-	ok = nntp_xhdr(session, "cc", begin, end);
-	if (ok != NN_SUCCESS) {
-		log_warning(LOG_PROTOCOL, _("couldn't get xhdr\n"));
-		if (ok == NN_SOCKET) {
-			session_destroy(SESSION(session));
-			REMOTE_FOLDER(item->folder)->session = NULL;
-		}
-		news_folder_unlock(NEWS_FOLDER(item->folder));
-		return newlist;
-	}
-
-	llast = newlist;
-
-	for (;;) {
-		if (sock_gets(SESSION(session)->sock, buf, sizeof(buf)) < 0) {
-			log_warning(LOG_PROTOCOL, _("error occurred while getting xhdr.\n"));
-			news_folder_unlock(NEWS_FOLDER(item->folder));
-			return newlist;
-		}
-
-		if (buf[0] == '.' && buf[1] == '\r') break;
-		if (!llast) {
-			g_warning("llast == NULL\n");
-			continue;
-		}
-
-		msginfo = (MsgInfo *)llast->data;
-		msginfo->cc = news_parse_xhdr(buf, msginfo);
-
-		llast = llast->next;
-	}
 	news_folder_unlock(NEWS_FOLDER(item->folder));
 
 	session_set_access_time(SESSION(session));
@@ -1208,7 +1142,7 @@ static GSList *news_get_msginfos_for_range(NNTPSession *session, FolderItem *ite
 
 static GSList *news_get_msginfos(Folder *folder, FolderItem *item, GSList *msgnum_list)
 {
-	NNTPSession *session;
+	NewsSession *session;
 	GSList *elem, *msginfo_list = NULL, *tmp_msgnum_list, *tmp_msginfo_list;
 	guint first, last, next;
 	guint tofetch, fetched;
@@ -1236,8 +1170,9 @@ static GSList *news_get_msginfos(Folder *folder, FolderItem *item, GSList *msgnu
 	for(elem = g_slist_next(tmp_msgnum_list); elem != NULL; elem = g_slist_next(elem)) {
 		next = GPOINTER_TO_INT(elem->data);
 		if(next != (last + 1)) {
-			session->fetch_base_percentage = ((gfloat) fetched) / ((gfloat) tofetch);
+/*			session->fetch_base_percentage = ((gfloat) fetched) / ((gfloat) tofetch);
 			session->fetch_total_percentage = ((gfloat) (last - first + 1)) / ((gfloat) tofetch);
+*/
 			tmp_msginfo_list = news_get_msginfos_for_range(session, item, first, last);
 			msginfo_list = g_slist_concat(msginfo_list, tmp_msginfo_list);
 			fetched = last - first + 1;
@@ -1248,8 +1183,9 @@ static GSList *news_get_msginfos(Folder *folder, FolderItem *item, GSList *msgnu
 	
 	news_folder_unlock(NEWS_FOLDER(item->folder));
 	
-	session->fetch_base_percentage = ((gfloat) fetched) / ((gfloat) tofetch);
+/*	session->fetch_base_percentage = ((gfloat) fetched) / ((gfloat) tofetch);
 	session->fetch_total_percentage = ((gfloat) (last - first + 1)) / ((gfloat) tofetch);
+*/
 	tmp_msginfo_list = news_get_msginfos_for_range(session, item, first, last);
 	msginfo_list = g_slist_concat(msginfo_list, tmp_msginfo_list);
 
@@ -1289,3 +1225,82 @@ static gint news_remove_folder(Folder *folder, FolderItem *item)
 	folder_item_remove(item);
 	return 0;
 }
+
+#else
+#include <glib.h>
+#include <glib/gi18n.h>
+#include <gtk/gtk.h>
+#include "folder.h"
+#include "alertpanel.h"
+
+static FolderClass news_class;
+
+static void warn_etpan(void)
+{
+	static gboolean missing_news_warning = TRUE;
+	if (missing_news_warning) {
+		missing_news_warning = FALSE;
+		alertpanel_error(
+			_("You have one or more News accounts "
+			  "defined. However this version of "
+			  "Claws Mail has been built without "
+			  "News support; your News account(s) are "
+			  "disabled.\n\n"
+			  "You probably need to "
+			  "install libetpan and recompile "
+			  "Claws Mail."));
+	}
+}
+static Folder *news_folder_new(const gchar *name, const gchar *path)
+{
+	warn_etpan();
+	return NULL;
+}
+void news_group_list_free(GSList *group_list)
+{
+	warn_etpan();
+}
+void news_remove_group_list_cache(Folder *folder)
+{
+	warn_etpan();
+}
+int news_folder_locked(Folder *folder)
+{
+	warn_etpan();
+	return 0;
+}
+gint news_post(Folder *folder, const gchar *file)
+{
+	warn_etpan();
+	return -1;
+}
+
+gint news_cancel_article(Folder * folder, MsgInfo * msginfo)
+{
+	warn_etpan();
+	return -1;
+}
+
+GSList *news_get_group_list(Folder *folder)
+{
+	warn_etpan();
+	return NULL;
+}
+
+
+FolderClass *news_get_class(void)
+{
+	if (news_class.idstr == NULL) {
+		news_class.type = F_NEWS;
+		news_class.idstr = "news";
+		news_class.uistr = "News";
+
+		/* Folder functions */
+		news_class.new_folder = news_folder_new;
+	};
+
+	return &news_class;
+}
+
+
+#endif

@@ -30,16 +30,20 @@ typedef enum {
 	SSL_STARTTLS
 } SSLType;
 
-#if USE_OPENSSL
-
+#if (defined(USE_OPENSSL) || defined (USE_GNUTLS))
 #include <glib.h>
+
+#if USE_OPENSSL
 #include <openssl/crypto.h>
 #include <openssl/x509.h>
 #include <openssl/pem.h>
 #include <openssl/ssl.h>
 #include <openssl/err.h>
 #include <openssl/evp.h>
-
+#else
+#include <gnutls/gnutls.h>
+#include <gnutls/x509.h>
+#endif
 #include "socket.h"
 
 typedef enum {

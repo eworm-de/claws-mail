@@ -22,14 +22,25 @@
 #  include "config.h"
 #endif
 
-#if USE_OPENSSL
+#if (defined(USE_OPENSSL) || defined (USE_GNUTLS))
 
+#if USE_OPENSSL
 #include <openssl/ssl.h>
+#else
+#include <gnutls/gnutls.h>
+#include <gnutls/x509.h>
+#include <sys/types.h>
+#include <sys/stat.h>
+#include <stdio.h>
+#include <unistd.h>
+#include <string.h>
+#endif
 #include <glib.h>
 #include <glib/gi18n.h>
 #include <gtk/gtk.h>
 
 #include "prefs_common.h"
+#include "defs.h"
 #include "ssl_certificate.h"
 #include "utils.h"
 #include "alertpanel.h"
@@ -51,17 +62,22 @@ static GtkWidget *cert_presenter(SSLCertificate *cert)
 	GtkTable *status_table = NULL;
 	GtkWidget *label = NULL;
 	
-	char buf[100];
 	char *issuer_commonname, *issuer_location, *issuer_organization;
 	char *subject_commonname, *subject_location, *subject_organization;
 	char *fingerprint, *sig_status, *exp_date;
 	unsigned int n;
-	unsigned char md[EVP_MAX_MD_SIZE];	
+	char buf[100];
+	unsigned char md[128];	
+#if USE_OPENSSL
 	ASN1_TIME *validity;
+#else
+	char *tmp;
+#endif
 	time_t exp_time_t;
 	struct tm lt;
 
 	/* issuer */	
+#if USE_OPENSSL
 	if (X509_NAME_get_text_by_NID(X509_get_issuer_name(cert->x509_cert), 
 				       NID_commonName, buf, 100) >= 0)
 		issuer_commonname = g_strdup(buf);
@@ -114,17 +130,90 @@ static GtkWidget *cert_presenter(SSLCertificate *cert)
 	} else {
 		exp_time_t = (time_t)0;
 	}
-	
+#else
+	issuer_commonname = g_malloc(BUFFSIZE);
+	issuer_location = g_malloc(BUFFSIZE);
+	issuer_organization = g_malloc(BUFFSIZE);
+	subject_commonname = g_malloc(BUFFSIZE);
+	subject_location = g_malloc(BUFFSIZE);
+	subject_organization = g_malloc(BUFFSIZE);
+
+	n = BUFFSIZE;
+	if (gnutls_x509_crt_get_issuer_dn_by_oid(cert->x509_cert, 
+		GNUTLS_OID_X520_COMMON_NAME, 0, 0, issuer_commonname, &n))
+		strncpy(issuer_commonname, _("<not in certificate>"), BUFFSIZE);
+	n = BUFFSIZE;
+
+	if (gnutls_x509_crt_get_issuer_dn_by_oid(cert->x509_cert, 
+		GNUTLS_OID_X520_LOCALITY_NAME, 0, 0, issuer_location, &n)) {
+		if (gnutls_x509_crt_get_issuer_dn_by_oid(cert->x509_cert, 
+			GNUTLS_OID_X520_COUNTRY_NAME, 0, 0, issuer_location, &n)) {
+			strncpy(issuer_location, _("<not in certificate>"), BUFFSIZE);
+		}
+	} else {
+		tmp = g_malloc(BUFFSIZE);
+		if (gnutls_x509_crt_get_issuer_dn_by_oid(cert->x509_cert, 
+			GNUTLS_OID_X520_COUNTRY_NAME, 0, 0, tmp, &n) == 0) {
+			strncat(issuer_location, ", ", BUFFSIZE-strlen(issuer_location));
+			strncat(issuer_location, tmp, BUFFSIZE-strlen(issuer_location));
+		}
+		g_free(tmp);
+	}
+
+	n = BUFFSIZE;
+	if (gnutls_x509_crt_get_issuer_dn_by_oid(cert->x509_cert, 
+		GNUTLS_OID_X520_ORGANIZATION_NAME, 0, 0, issuer_organization, &n))
+		strncpy(issuer_organization, _("<not in certificate>"), BUFFSIZE);
+
+	n = BUFFSIZE;
+	if (gnutls_x509_crt_get_dn_by_oid(cert->x509_cert, 
+		GNUTLS_OID_X520_COMMON_NAME, 0, 0, subject_commonname, &n))
+		strncpy(subject_commonname, _("<not in certificate>"), BUFFSIZE);
+	n = BUFFSIZE;
+
+	if (gnutls_x509_crt_get_dn_by_oid(cert->x509_cert, 
+		GNUTLS_OID_X520_LOCALITY_NAME, 0, 0, subject_location, &n)) {
+		if (gnutls_x509_crt_get_dn_by_oid(cert->x509_cert, 
+			GNUTLS_OID_X520_COUNTRY_NAME, 0, 0, subject_location, &n)) {
+			strncpy(subject_location, _("<not in certificate>"), BUFFSIZE);
+		}
+	} else {
+		tmp = g_malloc(BUFFSIZE);
+		if (gnutls_x509_crt_get_dn_by_oid(cert->x509_cert, 
+			GNUTLS_OID_X520_COUNTRY_NAME, 0, 0, tmp, &n) == 0) {
+			strncat(subject_location, ", ", BUFFSIZE-strlen(subject_location));
+			strncat(subject_location, tmp, BUFFSIZE-strlen(subject_location));
+		}
+		g_free(tmp);
+	}
+
+	n = BUFFSIZE;
+	if (gnutls_x509_crt_get_dn_by_oid(cert->x509_cert, 
+		GNUTLS_OID_X520_ORGANIZATION_NAME, 0, 0, subject_organization, &n))
+		strncpy(subject_organization, _("<not in certificate>"), BUFFSIZE);
+		
+	exp_time_t = gnutls_x509_crt_get_expiration_time(cert->x509_cert);
+#endif	
+
 	memset(buf, 0, sizeof(buf));
 	strftime(buf, sizeof(buf)-1, prefs_common.date_format, localtime_r(&exp_time_t, &lt));
 	exp_date = buf? g_strdup(buf):g_strdup("?");
 
 	/* fingerprint */
+#if USE_OPENSSL
 	X509_digest(cert->x509_cert, EVP_md5(), md, &n);
 	fingerprint = readable_fingerprint(md, (int)n);
 
 	/* signature */
 	sig_status = ssl_certificate_check_signer(cert->x509_cert);
+#else
+	n = 128;
+	gnutls_x509_crt_get_fingerprint(cert->x509_cert, GNUTLS_DIG_MD5, md, &n);
+	fingerprint = readable_fingerprint(md, (int)n);
+
+	/* signature */
+	sig_status = ssl_certificate_check_signer(cert->x509_cert, cert->status);
+#endif
 
 	if (sig_status==NULL)
 		sig_status = g_strdup(_("correct"));
@@ -277,8 +366,11 @@ static gboolean sslcertwindow_ask_new_cert(SSLCertificate *cert)
 	gtk_box_pack_start(GTK_BOX(vbox), label, TRUE, TRUE, 0);
 	g_free(buf);
 	
+#if USE_OPENSSL
 	sig_status = ssl_certificate_check_signer(cert->x509_cert);
-
+#else
+	sig_status = ssl_certificate_check_signer(cert->x509_cert, cert->status);
+#endif
 	if (sig_status==NULL)
 		sig_status = g_strdup(_("correct"));
 
@@ -317,7 +409,11 @@ static gboolean sslcertwindow_ask_expired_cert(SSLCertificate *cert)
 	gtk_box_pack_start(GTK_BOX(vbox), label, TRUE, TRUE, 0);
 	g_free(buf);
 	
+#if USE_OPENSSL
 	sig_status = ssl_certificate_check_signer(cert->x509_cert);
+#else
+	sig_status = ssl_certificate_check_signer(cert->x509_cert, cert->status);
+#endif
 
 	if (sig_status==NULL)
 		sig_status = g_strdup(_("correct"));
@@ -371,7 +467,11 @@ static gboolean sslcertwindow_ask_changed_cert(SSLCertificate *old_cert, SSLCert
 	gtk_box_pack_start(GTK_BOX(vbox2), label, TRUE, TRUE, 0);
 	g_free(buf);
 	
+#if USE_OPENSSL
 	sig_status = ssl_certificate_check_signer(new_cert->x509_cert);
+#else
+	sig_status = ssl_certificate_check_signer(new_cert->x509_cert, new_cert->status);
+#endif
 
 	if (sig_status==NULL)
 		sig_status = g_strdup(_("correct"));

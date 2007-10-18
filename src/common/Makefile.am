@@ -18,7 +18,6 @@ libclawscommon_la_SOURCES = $(arch_sources) \
 	log.c \
 	md5.c \
 	mgutils.c \
-	nntp.c \
 	passcrypt.c \
 	plugin.c \
 	prefs.c \
@@ -47,7 +46,6 @@ clawscommoninclude_HEADERS = $(arch_headers) \
 	log.h \
 	md5.h \
 	mgutils.h \
-	nntp.h \
 	passcrypt.h \
 	plugin.h \
 	prefs.h \

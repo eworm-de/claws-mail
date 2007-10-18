@@ -448,7 +448,7 @@ static void prefs_post_processing_open_cb (MainWindow	*mainwin,
 static void prefs_filtering_open_cb 	(MainWindow	*mainwin,
 				  	 guint		 action,
 				  	 GtkWidget	*widget);
-#ifdef USE_OPENSSL
+#if (defined(USE_OPENSSL) || defined (USE_GNUTLS))
 static void ssl_manager_open_cb 	(MainWindow	*mainwin,
 				  	 guint		 action,
 				  	 GtkWidget	*widget);
@@ -899,7 +899,7 @@ static GtkItemFactoryEntry mainwin_entries[] =
 						NULL, delete_duplicated_all_cb,   0, NULL},
 	{N_("/_Tools/---"),			NULL, NULL, 0, "<Separator>"},
 	{N_("/_Tools/E_xecute"),		"X", execute_summary_cb, 0, NULL},
-#ifdef USE_OPENSSL
+#if (defined(USE_OPENSSL) || defined (USE_GNUTLS))
 	{N_("/_Tools/---"),			NULL, NULL, 0, "<Separator>"},
 	{N_("/_Tools/SSL cer_tificates..."),	
 						NULL, ssl_manager_open_cb, 0, NULL},
@@ -1810,7 +1810,7 @@ MainWindow *main_window_create()
 	folderview_init(folderview);
 	summary_init(summaryview);
 	messageview_init(messageview);
-#ifdef USE_OPENSSL
+#if (defined(USE_OPENSSL) || defined (USE_GNUTLS))
 	sslcertwindow_register_hook();
 #endif
 	mainwin->lock_count = 0;
@@ -4219,7 +4219,7 @@ static void prefs_tags_open_cb(MainWindow *mainwin, guint action,
 {
 	prefs_tags_open(mainwin);
 }
-#ifdef USE_OPENSSL
+#if (defined(USE_OPENSSL) || defined (USE_GNUTLS))
 static void ssl_manager_open_cb(MainWindow *mainwin, guint action,
 				  GtkWidget *widget)
 {

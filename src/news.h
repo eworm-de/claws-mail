@@ -47,4 +47,8 @@ gint news_cancel_article		(Folder 	*folder,
 					 MsgInfo 	*msginfo);
 int news_folder_locked			(Folder 	*folder);
 
+guint nntp_folder_get_refcnt(Folder *folder);
+void nntp_folder_ref(Folder *folder);
+void nntp_folder_unref(Folder *folder);
+
 #endif /* __NEWS_H__ */

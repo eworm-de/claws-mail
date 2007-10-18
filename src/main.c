@@ -100,12 +100,13 @@
 #include "tags.h"
 #ifdef HAVE_LIBETPAN
 #include "imap-thread.h"
+#include "nntp-thread.h"
 #endif
 #include "stock_pixmap.h"
 #ifdef HAVE_VALGRIND
 #include "valgrind.h"
 #endif
-#if USE_OPENSSL
+#if (defined(USE_OPENSSL) || defined (USE_GNUTLS))
 #  include "ssl.h"
 #endif
 
@@ -1144,6 +1145,7 @@ int main(int argc, char *argv[])
 #ifdef HAVE_LIBETPAN
 	imap_main_init(prefs_common.skip_ssl_cert_check);
 	imap_main_set_timeout(prefs_common.io_timeout_secs);
+	nntp_main_init(prefs_common.skip_ssl_cert_check);
 #endif	
 	account_set_missing_folder();
 	folder_set_missing_folders();
@@ -1407,6 +1409,7 @@ static void exit_claws(MainWindow *mainwin)
 
 #ifdef HAVE_LIBETPAN
 	imap_main_done();
+	nntp_main_done();
 #endif
 	/* delete crashfile */
 	if (!cmd.crash)

@@ -25,10 +25,13 @@
 #  include "config.h"
 #endif
 
-#if USE_OPENSSL
-
+#if (defined(USE_OPENSSL) || defined (USE_GNUTLS))
+#ifdef USE_OPENSSL
 #include <openssl/ssl.h>
 #include <openssl/objects.h>
+#else
+/* GNUTLS */
+#endif
 #include <glib.h>
 #include <gtk/gtk.h>
 #include "ssl_certificate.h"

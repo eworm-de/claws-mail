@@ -1,3 +1,54 @@
+2007-10-18 [colin]	3.0.2cvs82
+
+	* src/common/Makefile.am
+	* src/common/nntp.c
+	* src/common/nntp.h
+	* src/etpan/Makefile.am
+	* src/etpan/etpan-thread-manager-types.h
+	* src/etpan/etpan-thread-manager.c
+	* src/etpan/imap-thread.c
+	* src/etpan/nntp-thread.c
+	* src/etpan/nntp-thread.h
+	* src/news.c
+	* src/news.h
+		Rewrite the nntp implementation
+		to use libetpan. Non-blocking NNTP!
+	* src/account.c
+	* src/crash.c
+	* src/imap.c
+	* src/inc.c
+	* src/main.c
+	* src/mainwindow.c
+	* src/pop.c
+	* src/pop.h
+	* src/prefs_account.c
+	* src/recv.c
+	* src/recv.h
+	* src/send_message.c
+	* src/send_message.h
+	* src/ssl_manager.c
+	* src/ssl_manager.h
+	* src/wizard.c
+	* src/common/claws.c
+	* src/common/session.c
+	* src/common/session.h
+	* src/common/smtp.c
+	* src/common/smtp.h
+	* src/common/socket.c
+	* src/common/socket.h
+	* src/common/ssl.c
+	* src/common/ssl.h
+	* src/common/ssl_certificate.c
+	* src/common/ssl_certificate.h
+	* src/gtk/about.c
+	* src/gtk/sslcertwindow.c
+	* src/gtk/sslcertwindow.h
+		Implement GnuTLS support. GnuTLS support
+		will be used if OpenSSL isn't available, or
+		specified explicitely. (the reason is that
+		GnuTLS cerficate checking is a bit less 
+		practical than OpenSSL's)
+
 2007-10-18 [paul]	3.0.2cvs81
 
 	* src/gtk/inputdialog.c

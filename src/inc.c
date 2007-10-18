@@ -785,7 +785,7 @@ static IncState inc_pop3_session_do(IncSession *session)
 	g_free(buf);
 
 	server = pop3_session->ac_prefs->recv_server;
-#if USE_OPENSSL
+#if (defined(USE_OPENSSL) || defined (USE_GNUTLS))
 	port = pop3_session->ac_prefs->set_popport ?
 		pop3_session->ac_prefs->popport :
 		pop3_session->ac_prefs->ssl_pop == SSL_TUNNEL ? 995 : 110;

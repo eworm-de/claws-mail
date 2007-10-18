@@ -21,7 +21,7 @@
 #  include "config.h"
 #endif
 
-#ifdef USE_OPENSSL
+#if (defined(USE_OPENSSL) || defined (USE_GNUTLS))
 #include <gtk/gtkwidget.h>
 #include <glib.h>
 #include <glib/gi18n.h>

@@ -196,6 +196,7 @@ struct etpan_thread_op * etpan_thread_op_new(void)
   op->result = NULL;
   op->finished = 0;
   op->imap = NULL;
+  op->nntp = NULL;
 
   r = pthread_mutex_init(&op->lock, NULL);
   if (r != 0)

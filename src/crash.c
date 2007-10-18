@@ -418,6 +418,9 @@ static const gchar *get_compiled_in_features(void)
 #if USE_OPENSSL
 		   " OpenSSL"
 #endif
+#if USE_GNUTLS
+		   " GnuTLS"
+#endif
 #if USE_LDAP
 		   " LDAP"
 #endif

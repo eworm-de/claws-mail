@@ -70,6 +70,7 @@ struct etpan_thread_op {
   void * result;
   int finished;
   mailimap *imap;
+  newsnntp *nntp;
 };
 
 #endif

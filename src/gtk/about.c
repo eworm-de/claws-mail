@@ -453,6 +453,16 @@ static GtkWidget *about_create_child_page_features(void)
 	gtk_text_buffer_insert(buffer, &iter, 
 		(gchar *)Q_("OpenSSL|adds support for encrypted connections to servers\n"), -1);
 
+#if USE_GNUTLS
+	gtk_text_buffer_insert_pixbuf(buffer, &iter, active_pixbuf);
+#else
+	gtk_text_buffer_insert_pixbuf(buffer, &iter, inactive_pixbuf);
+#endif
+	gtk_text_buffer_insert_with_tags_by_name(buffer, &iter, (" GnuTLS "), -1,
+						 "bold", NULL);
+	gtk_text_buffer_insert(buffer, &iter, 
+		(gchar *)Q_("GnuTLS|is another mean of adding support for encrypted connections to servers\n"), -1);
+
 #if USE_LDAP
 	gtk_text_buffer_insert_pixbuf(buffer, &iter, active_pixbuf);
 #else

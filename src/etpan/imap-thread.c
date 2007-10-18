@@ -247,7 +247,7 @@ static void imap_logger_append(int direction, const char * str, size_t size)
 }
 
 #define ETPAN_DEFAULT_NETWORK_TIMEOUT 60
-static gboolean etpan_skip_ssl_cert_check = FALSE;
+gboolean etpan_skip_ssl_cert_check = FALSE;
 extern void mailsasl_ref(void);
 
 void imap_main_init(gboolean skip_ssl_cert_check)
@@ -508,7 +508,7 @@ static int etpan_certificate_check(const unsigned char *certificate, int len, vo
 	}
 	cert = d2i_X509(NULL, (const unsigned char **)&certificate, len);
 	if (cert == NULL) {
-		g_warning("can't get cert\n");
+		g_warning("IMAP: can't get cert\n");
 		return 0;
 	} else if (ssl_certificate_check(cert, NULL,
 		(gchar *)param->server, (gushort)param->port) == TRUE) {
@@ -518,9 +518,33 @@ static int etpan_certificate_check(const unsigned char *certificate, int len, vo
 		X509_free(cert);
 		return -1;
 	}
-#else
-	return 0;
+#elif USE_GNUTLS
+	struct connect_param *param = (struct connect_param *)data;
+	gnutls_x509_crt cert = NULL;
+	gnutls_datum tmp;
+	
+	if (certificate == NULL || len < 0) {
+		g_warning("no cert presented.\n");
+		return 0;
+	}
+	
+	tmp.data = malloc(len);
+	memcpy(tmp.data, certificate, len);
+	tmp.size = len;
+	gnutls_x509_crt_init(&cert);
+	if (gnutls_x509_crt_import(cert, &tmp, GNUTLS_X509_FMT_DER) < 0) {
+		g_warning("IMAP: can't get cert\n");
+		return 0;
+	} else if (ssl_certificate_check(cert, (guint)-1, NULL,
+		(gchar *)param->server, (gushort)param->port) == TRUE) {
+		gnutls_x509_crt_deinit(cert);
+		return 0;
+	} else {
+		gnutls_x509_crt_deinit(cert);
+		return -1;
+	}
 #endif
+	return 0;
 }
 
 static void connect_ssl_run(struct etpan_thread_op * op)
