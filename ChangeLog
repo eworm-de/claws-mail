@@ -1,3 +1,8 @@
+2007-10-18 [colin]	3.0.2cvs87
+
+	* po/POTFILES.in
+		Fix build
+
 2007-10-18 [mones]	3.0.2cvs86
 
 	* src/editbook.c

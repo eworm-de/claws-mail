@@ -10,7 +10,6 @@ src/addrduplicates.c
 src/alertpanel.c
 src/browseldap.c
 src/common/md5.c
-src/common/nntp.c
 src/common/plugin.c
 src/common/session.c
 src/common/smtp.c
