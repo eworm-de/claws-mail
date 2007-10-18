@@ -29,7 +29,7 @@
 	* src/gtk/gtkutils.h
 	* src/plugins/bogofilter/bogofilter_gtk.c
 	* src/plugins/spamassassin/spamassassin_gtk.c
-		Removed all remaining instances of GtkCombo
+		Removed almost all remaining instances of GtkCombo
 		old API, patch by Pawel Pekala <c0rn@o2.pl>, with
 		few visual and code cleanup from Colin.
 
