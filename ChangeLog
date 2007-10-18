@@ -1,3 +1,14 @@
+2007-10-18 [mones]	3.0.2cvs86
+
+	* src/editbook.c
+	* src/import.c
+	* src/prefs_account.c
+	* src/prefs_receive.c
+	* src/gtk/about.c
+	* src/plugins/bogofilter/bogofilter_gtk.c
+	* src/plugins/spamassassin/spamassassin_gtk.c
+		More capitalisation micro-fixes
+
 2007-10-18 [paul]	3.0.2cvs85
 
 	* configure.ac

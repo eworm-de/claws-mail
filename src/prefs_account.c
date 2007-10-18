@@ -1324,7 +1324,7 @@ static void receive_create_widget_func(PrefsPage * _page,
 	gtk_widget_show (local_hbox);
 	gtk_box_pack_start (GTK_BOX (local_vbox), local_hbox, FALSE, FALSE, 0);
 
-	local_inbox_label = gtk_label_new (_("Default inbox"));
+	local_inbox_label = gtk_label_new (_("Default Inbox"));
 	gtk_widget_show (local_inbox_label);
 	gtk_box_pack_start (GTK_BOX (local_hbox), local_inbox_label, FALSE, FALSE, 0);
 
@@ -1410,7 +1410,7 @@ static void receive_create_widget_func(PrefsPage * _page,
 	gtk_widget_show (hbox1);
 	gtk_box_pack_start (GTK_BOX (vbox2), hbox1, FALSE, FALSE, 0);
 
-	inbox_label = gtk_label_new (_("Default inbox"));
+	inbox_label = gtk_label_new (_("Default Inbox"));
 	gtk_widget_show (inbox_label);
 	gtk_box_pack_start (GTK_BOX (hbox1), inbox_label, FALSE, FALSE, 0);
 
@@ -2632,7 +2632,7 @@ static gint prefs_basic_apply(void)
 			inbox =  folder_find_item_from_identifier(mailbox);
 		}
 	    	if (inbox == NULL) {
-			alertpanel_error(_("The default inbox folder doesn't exist."));
+			alertpanel_error(_("The default Inbox folder doesn't exist."));
 			return -1;
 		}
 	}

@@ -2998,3 +2998,4 @@
 ( cvs diff -u -r 1.1.4.43 -r 1.1.4.44 src/prefs_filtering_action.c;  ) > 3.0.2cvs83.patchset
 ( cvs diff -u -r 1.49.2.101 -r 1.49.2.102 src/procmime.c;  cvs diff -u -r 1.17.2.21 -r 1.17.2.22 src/procmime.h;  ) > 3.0.2cvs84.patchset
 ( cvs diff -u -r 1.654.2.3054 -r 1.654.2.3055 configure.ac;  cvs diff -u -r 1.4.2.54 -r 1.4.2.55 src/gtk/about.c;  ) > 3.0.2cvs85.patchset
+( cvs diff -u -r 1.5.12.11 -r 1.5.12.12 src/editbook.c;  cvs diff -u -r 1.13.2.23 -r 1.13.2.24 src/import.c;  cvs diff -u -r 1.105.2.113 -r 1.105.2.114 src/prefs_account.c;  cvs diff -u -r 1.1.2.20 -r 1.1.2.21 src/prefs_receive.c;  cvs diff -u -r 1.4.2.55 -r 1.4.2.56 src/gtk/about.c;  cvs diff -u -r 1.1.2.27 -r 1.1.2.28 src/plugins/bogofilter/bogofilter_gtk.c;  cvs diff -u -r 1.23.2.43 -r 1.23.2.44 src/plugins/spamassassin/spamassassin_gtk.c;  ) > 3.0.2cvs86.patchset

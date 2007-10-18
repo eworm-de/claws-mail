@@ -164,7 +164,7 @@ static void bogofilter_create_widget_func(PrefsPage * _page,
 			_("Messages larger than this will not be checked"), NULL);
 	gtk_spin_button_set_numeric(GTK_SPIN_BUTTON(max_size_spinbtn), TRUE);
 
-	max_size_kb_label = gtk_label_new(_("kB"));
+	max_size_kb_label = gtk_label_new(_("KB"));
 	gtk_widget_show(max_size_kb_label);
 	gtk_box_pack_start(GTK_BOX(hbox_max_size), max_size_kb_label, FALSE, FALSE, 0);
 
@@ -202,7 +202,7 @@ static void bogofilter_create_widget_func(PrefsPage * _page,
 	gtk_widget_show (save_unsure_folder_entry);
 	gtk_box_pack_start (GTK_BOX (hbox_save_unsure), save_unsure_folder_entry, TRUE, TRUE, 0);
 	gtk_tooltips_set_tip(tooltips, save_unsure_folder_entry,
-			_("Folder for storing mail for which spam status is Unsure. Leave empty to use the inbox folder."),
+			_("Folder for storing mail for which spam status is Unsure. Leave empty to use the Inbox folder."),
 			NULL);
 
 	save_unsure_folder_select = gtkut_get_browse_directory_btn(_("_Browse"));

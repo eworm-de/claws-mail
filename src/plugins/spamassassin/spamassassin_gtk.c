@@ -353,7 +353,7 @@ static void spamassassin_create_widget_func(PrefsPage * _page,
 			_("Messages larger than this will not be checked"), NULL);
 	gtk_spin_button_set_numeric(GTK_SPIN_BUTTON(max_size_spinbtn), TRUE);
 
-	max_size_kb_label = gtk_label_new(_("kB"));
+	max_size_kb_label = gtk_label_new(_("KB"));
 	gtk_widget_show(max_size_kb_label);
 	gtk_box_pack_start(GTK_BOX(hbox_max_size), max_size_kb_label, FALSE, FALSE, 0);
 

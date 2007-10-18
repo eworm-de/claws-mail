@@ -110,7 +110,7 @@ static void edit_book_file_check( void ) {
 
 	t = addrbook_test_read_file( abf, abf->fileName );
 	if( t == MGU_SUCCESS ) {
-		sMsg = _("File appears to be Ok.");
+		sMsg = _("File appears to be OK.");
 	}
 	else if( t == MGU_BAD_FORMAT ) {
 		sMsg = _("File does not appear to be a valid address book format.");

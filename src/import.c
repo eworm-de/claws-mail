@@ -212,7 +212,7 @@ static void import_ok_cb(GtkWidget *widget, gpointer data)
 		return;
 	}
 	if (destdir && !*destdir) {
-		if (alertpanel(_("Import mbox file"), _("Destination folder is not set.\nImport mbox file to the inbox folder?"),
+		if (alertpanel(_("Import mbox file"), _("Destination folder is not set.\nImport mbox file to the Inbox folder?"),
 						GTK_STOCK_OK, GTK_STOCK_CANCEL, NULL)
 			== G_ALERTALTERNATE) {
 			gtk_widget_grab_focus(dest_entry);

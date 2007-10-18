@@ -460,7 +460,7 @@ static GtkWidget *about_create_child_page_features(void)
 	gtk_text_buffer_insert_with_tags_by_name(buffer, &iter, (" IPv6 "), -1,
 						 "bold", NULL);
 	gtk_text_buffer_insert(buffer, &iter, 
-		(gchar *)Q_("IPv6|adds support for IPv6 addresses, the new internet "
+		(gchar *)Q_("IPv6|adds support for IPv6 addresses, the new Internet "
 			    "addressing protocol\n"), -1);
 
 #if HAVE_ICONV
