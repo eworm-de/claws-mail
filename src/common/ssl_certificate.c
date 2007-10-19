@@ -37,6 +37,9 @@
 #include <glib.h>
 #include <glib/gi18n.h>
 
+#ifdef G_OS_WIN32
+#include "winsock2.h"
+#endif
 #include "ssl_certificate.h"
 #include "utils.h"
 #include "log.h"

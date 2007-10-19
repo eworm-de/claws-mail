@@ -1,3 +1,8 @@
+2007-10-19 [wwp]	3.0.2cvs93
+
+	* src/common/ssl_certificate.c
+		Add missing include (Windows).
+
 2007-10-19 [colin]	3.0.2cvs92
 
 	* src/imap_gtk.c

@@ -3005,3 +3005,4 @@
 ( cvs diff -u -r 1.9.2.22 -r 1.9.2.23 src/common/ssl.c;  ) > 3.0.2cvs90.patchset
 ( cvs diff -u -r 1.9.2.23 -r 1.9.2.24 src/common/ssl.c;  ) > 3.0.2cvs91.patchset
 ( cvs diff -u -r 1.1.2.50 -r 1.1.2.51 src/imap_gtk.c;  cvs diff -u -r 1.83.2.120 -r 1.83.2.121 src/mimeview.c;  cvs diff -u -r 1.96.2.188 -r 1.96.2.189 src/textview.c;  cvs diff -u -r 1.2.2.25 -r 1.2.2.26 src/gtk/inputdialog.c;  cvs diff -u -r 1.1.2.7 -r 1.1.2.8 src/gtk/inputdialog.h;  ) > 3.0.2cvs92.patchset
+( cvs diff -u -r 1.4.2.22 -r 1.4.2.23 src/common/ssl_certificate.c;  ) > 3.0.2cvs93.patchset
