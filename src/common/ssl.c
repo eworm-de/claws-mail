@@ -300,6 +300,8 @@ gboolean ssl_init_socket_with_method(SockInfo *sockinfo, SSLMethod method)
 	gnutls_transport_set_ptr(session, (gnutls_transport_ptr) 
 		sockinfo->sock);
 
+	gnutls_dh_set_prime_bits(session, 512);
+
 	if ((r = SSL_connect_nb(session)) < 0) {
 		g_warning("SSL connection failed (%s)", gnutls_strerror(r));
 		gnutls_deinit(session);
