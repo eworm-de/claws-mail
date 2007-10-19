@@ -1,3 +1,13 @@
+2007-10-19 [colin]	3.0.2cvs92
+
+	* src/imap_gtk.c
+	* src/mimeview.c
+	* src/textview.c
+	* src/gtk/inputdialog.c
+	* src/gtk/inputdialog.h
+		Remove the last old combo; patch by
+		Pawel
+
 2007-10-19 [colin]	3.0.2cvs91
 
 	* src/common/ssl.c

@@ -33,7 +33,7 @@
 #include <gtk/gtkhbox.h>
 #include <gtk/gtklabel.h>
 #include <gtk/gtkentry.h>
-#include <gtk/gtkcombo.h>
+#include <gtk/gtkcomboboxentry.h>
 #include <gtk/gtkbutton.h>
 #include <gtk/gtkhbbox.h>
 #include <gtk/gtkstock.h>
@@ -45,6 +45,7 @@
 #include "manage_window.h"
 #include "gtkutils.h"
 #include "utils.h"
+#include "combobox.h"
 
 #define INPUT_DIALOG_WIDTH	420
 
@@ -136,16 +137,15 @@ gchar *input_dialog_with_invisible(const gchar *title, const gchar *message,
 }
 
 gchar *input_dialog_combo(const gchar *title, const gchar *message,
-			  const gchar *default_string, GList *list,
-			  gboolean case_sensitive)
+			  const gchar *default_string, GList *list)
 {
 	return input_dialog_combo_remember(title, message, 
-		default_string, list, case_sensitive, NULL);
+		default_string, list, FALSE);
 }
 
 gchar *input_dialog_combo_remember(const gchar *title, const gchar *message,
 			  const gchar *default_string, GList *list,
-			  gboolean case_sensitive, gboolean *remember)
+			  gboolean *remember)
 {
 	if (dialog && GTK_WIDGET_VISIBLE(dialog)) return NULL;
 
@@ -166,17 +166,8 @@ gchar *input_dialog_combo_remember(const gchar *title, const gchar *message,
 	gtk_widget_hide(icon_p);
 	is_pass = FALSE;
 
-	if (!list) {
-		GList empty_list;
-
-		empty_list.data = (gpointer)"";
-		empty_list.next = NULL;
-		empty_list.prev = NULL;
-		gtk_combo_set_popdown_strings(GTK_COMBO(combo), &empty_list);
-	} else
-		gtk_combo_set_popdown_strings(GTK_COMBO(combo), list);
-
-	gtk_combo_set_case_sensitive(GTK_COMBO(combo), case_sensitive);
+	combobox_unset_popdown_strings(GTK_COMBO_BOX(combo));
+	combobox_set_popdown_strings(GTK_COMBO_BOX(combo), list);
 
 	return input_dialog_open(title, message, default_string, remember);
 }
@@ -270,9 +261,9 @@ static void input_dialog_create(gboolean is_password)
 	g_signal_connect(G_OBJECT(entry), "activate",
 			 G_CALLBACK(entry_activated), NULL);
 
-	combo = gtk_combo_new();
+	combo = gtk_combo_box_entry_new_text();
 	gtk_box_pack_start(GTK_BOX(vbox), combo, FALSE, FALSE, 0);
-	g_signal_connect(G_OBJECT(GTK_COMBO(combo)->entry), "activate",
+	g_signal_connect(G_OBJECT(GTK_BIN(combo)->child), "activate",
 			 G_CALLBACK(combo_activated), NULL);
 
 	remember_checkbtn = gtk_check_button_new_with_label(_("Remember this"));
@@ -342,7 +333,7 @@ static gchar *input_dialog_open(const gchar *title, const gchar *message,
 		GtkEditable *editable;
 
 		if (type == INPUT_DIALOG_COMBO)
-			editable = GTK_EDITABLE(GTK_COMBO(combo)->entry);
+			editable = GTK_EDITABLE(GTK_BIN(combo)->child);
 		else
 			editable = GTK_EDITABLE(entry);
 
@@ -372,7 +363,7 @@ static void input_dialog_set(const gchar *title, const gchar *message,
 	GtkWidget *entry_;
 
 	if (type == INPUT_DIALOG_COMBO)
-		entry_ = GTK_COMBO(combo)->entry;
+		entry_ = GTK_BIN(combo)->child;
 	else
 		entry_ = entry;
 

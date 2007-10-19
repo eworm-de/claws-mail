@@ -466,7 +466,7 @@ static void subscribe_cb(FolderView *folderview, guint action,
 					item->name); 
 			gchar *child_folder = input_dialog_combo(_("Subscribe"), 
 					msg,
-					child_list->next?_("All of them"):child_list->data, child_list, TRUE);
+					child_list->next?_("All of them"):child_list->data, child_list);
 			g_free(msg);
 			if (child_folder && strcmp(child_folder, _("All of them"))) {
 				r = imap_subscribe(item->folder, NULL, child_folder, TRUE);

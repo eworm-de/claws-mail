@@ -2786,7 +2786,7 @@ static void open_image_cb (TextView *textview, guint action, void *data)
 			   "('%s' will be replaced with file name)"),
 			 prefs_common.mime_open_cmd,
 			 prefs_common.mime_open_cmd_history,
-			 TRUE, &remember);
+			 &remember);
 		if (cmd && remember) {
 			mailcap_update_default("image/jpeg", cmd);
 		}

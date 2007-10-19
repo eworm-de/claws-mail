@@ -1861,16 +1861,14 @@ static void mimeview_open_part_with(MimeView *mimeview, MimeInfo *partinfo, gboo
 				 _("Enter the command line to open file:\n"
 				   "('%s' will be replaced with file name)"),
 				 mime_command ? mime_command : prefs_common.mime_open_cmd,
-				 prefs_common.mime_open_cmd_history,
-				 TRUE, &remember);
+				 prefs_common.mime_open_cmd_history, &remember);
 		else
 			cmd = input_dialog_combo
 				(_("Open with"),
 				 _("Enter the command line to open file:\n"
 				   "('%s' will be replaced with file name)"),
 				 mime_command ? mime_command : prefs_common.mime_open_cmd,
-				 prefs_common.mime_open_cmd_history,
-				 TRUE);
+				 prefs_common.mime_open_cmd_history);
 		if (cmd && remember) {
 			mailcap_update_default(content_type, cmd);
 		}
