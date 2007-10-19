@@ -3002,3 +3002,4 @@
 ( cvs diff -u -r 1.53.2.31 -r 1.53.2.32 po/POTFILES.in;  ) > 3.0.2cvs87.patchset
 ( cvs diff -u -r 1.155.2.79 -r 1.155.2.80 src/Makefile.am;  ) > 3.0.2cvs88.patchset
 ( cvs diff -u -r 1.4.2.21 -r 1.4.2.22 src/common/ssl_certificate.c;  ) > 3.0.2cvs89.patchset
+( cvs diff -u -r 1.9.2.22 -r 1.9.2.23 src/common/ssl.c;  ) > 3.0.2cvs90.patchset

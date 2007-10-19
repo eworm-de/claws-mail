@@ -1,3 +1,9 @@
+2007-10-19 [colin]	3.0.2cvs90
+
+	* src/common/ssl.c
+		Fix return value check on GnuTLS, and
+		display the error
+
 2007-10-18 [colin]	3.0.2cvs89
 
 	* src/common/ssl_certificate.c

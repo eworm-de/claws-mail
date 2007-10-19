@@ -187,6 +187,7 @@ gboolean ssl_init_socket(SockInfo *sockinfo)
 	return ssl_init_socket_with_method(sockinfo, SSL_METHOD_SSLv23);
 }
 
+#ifdef USE_GNUTLS
 static const gchar *ssl_get_cert_file(void)
 {
 	if (g_getenv("SSL_CERT_FILE"))
@@ -197,6 +198,7 @@ static const gchar *ssl_get_cert_file(void)
 	return "put_what_s_needed_here";
 #endif
 }
+#endif
 
 gboolean ssl_init_socket_with_method(SockInfo *sockinfo, SSLMethod method)
 {
@@ -298,8 +300,8 @@ gboolean ssl_init_socket_with_method(SockInfo *sockinfo, SSLMethod method)
 	gnutls_transport_set_ptr(session, (gnutls_transport_ptr) 
 		sockinfo->sock);
 
-	if (SSL_connect_nb(session) == -1) {
-		g_warning("SSL connection failed");
+	if ((r = SSL_connect_nb(session)) < 0) {
+		g_warning("SSL connection failed (%s)", gnutls_strerror(r));
 		gnutls_deinit(session);
 		return FALSE;
 	}
