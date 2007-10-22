@@ -304,6 +304,7 @@ gboolean ssl_init_socket_with_method(SockInfo *sockinfo, SSLMethod method)
 
 	if ((r = SSL_connect_nb(session)) < 0) {
 		g_warning("SSL connection failed (%s)", gnutls_strerror(r));
+		gnutls_certificate_free_credentials(xcred);
 		gnutls_deinit(session);
 		return FALSE;
 	}
@@ -316,6 +317,7 @@ gboolean ssl_init_socket_with_method(SockInfo *sockinfo, SSLMethod method)
 	||  (r = gnutls_x509_crt_init(&cert)) < 0
 	||  (r = gnutls_x509_crt_import(cert, &raw_cert_list[0], GNUTLS_X509_FMT_DER)) < 0) {
 		g_warning("cert get failure: %d %s\n", r, gnutls_strerror(r));
+		gnutls_certificate_free_credentials(xcred);
 		gnutls_deinit(session);
 		return FALSE;
 	}
@@ -324,6 +326,7 @@ gboolean ssl_init_socket_with_method(SockInfo *sockinfo, SSLMethod method)
 
 	if (!ssl_certificate_check(cert, status, sockinfo->canonical_name, sockinfo->hostname, sockinfo->port)) {
 		gnutls_x509_crt_deinit(cert);
+		gnutls_certificate_free_credentials(xcred);
 		gnutls_deinit(session);
 		return FALSE;
 	}
@@ -331,6 +334,7 @@ gboolean ssl_init_socket_with_method(SockInfo *sockinfo, SSLMethod method)
 	gnutls_x509_crt_deinit(cert);
 
 	sockinfo->ssl = session;
+	sockinfo->xcred = xcred;
 #endif
 	return TRUE;
 }
@@ -341,6 +345,7 @@ void ssl_done_socket(SockInfo *sockinfo)
 #ifdef USE_OPENSSL
 		SSL_free(sockinfo->ssl);
 #else
+		gnutls_certificate_free_credentials(sockinfo->xcred);
 		gnutls_deinit(sockinfo->ssl);
 #endif
 		sockinfo->ssl = NULL;

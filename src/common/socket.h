@@ -60,11 +60,11 @@ struct _SockInfo
 	gint sock;
 #if USE_OPENSSL
 	SSL *ssl;
-	guint g_source;
 #elif USE_GNUTLS
 	gnutls_session ssl;
-	guint g_source;
+	gnutls_certificate_credentials_t xcred;
 #endif
+	guint g_source;
 	GIOChannel *sock_ch;
 
 	gchar *hostname;
