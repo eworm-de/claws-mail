@@ -607,8 +607,14 @@ static void prefs_custom_header_val_from_file_cb(void)
 				cmd = g_strdup_printf("compface %s", filename);
 				tmp = get_command_output(cmd);
 				g_free(cmd);
-				if (tmp == NULL || strlen(tmp) == 0){
+				if (tmp == NULL || *tmp == '\0') {
 					alertpanel_error(_("Couldn't call `compface`. Make sure it's in your $PATH."));
+					g_free(filename);
+					g_free(tmp);
+					return;
+				}
+				if (strstr(tmp, "compface:")) {
+					alertpanel_error(_("Compface error: %s"), tmp);
 					g_free(filename);
 					g_free(tmp);
 					return;

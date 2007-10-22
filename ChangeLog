@@ -1,3 +1,8 @@
+2007-10-22 [colin]	3.0.2cvs96
+
+	* src/prefs_customheader.c
+		Catch compface warnings when generating X-Faces
+
 2007-10-22 [wwp]	3.0.2cvs95
 
 	* src/quote_fmt_parse.y
