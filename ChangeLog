@@ -1,3 +1,9 @@
+2007-10-22 [wwp]	3.0.2cvs95
+
+	* src/quote_fmt_parse.y
+		Remove accidentally committed debug traces.
+		Fix a warning.
+
 2007-10-22 [colin]	3.0.2cvs94
 
 	* src/etpan/nntp-thread.c

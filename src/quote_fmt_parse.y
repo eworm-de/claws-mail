@@ -141,7 +141,6 @@ gchar *quote_fmt_get_buffer(void)
 
 GList *quote_fmt_get_attachments_list(void)
 {
-	fprintf(stderr, "+ get attachment list %p\n", attachments);
 	return attachments;
 }
 
@@ -174,10 +173,8 @@ void quote_fmt_reset_vartable(void)
 		var_table = NULL;
 	}
 	if (attachments) {
-		fprintf(stderr, "+ freeing attachment list\n");
 		GList *cur = attachments;
 		while (cur) {
-			fprintf(stderr, "-> %s\n", (gchar*)cur->data);
 			g_free(cur->data);
 			cur = g_list_next(cur);
 		}
@@ -523,7 +520,6 @@ static void quote_fmt_insert_user_input(const gchar *varname)
 
 static void quote_fmt_attach_file(const gchar *filename)
 {
-	fprintf(stderr, "+ adding attachment %s\n", filename);
 	attachments = g_list_append(attachments, g_strdup(filename));
 }
 
@@ -660,7 +656,7 @@ string:
 	}
 	| string CHARACTER
 	{
-		int len;
+		size_t len;
 		
 		strncpy($$, $1, sizeof($$));
 		$$[sizeof($$) - 1] = '\0';
