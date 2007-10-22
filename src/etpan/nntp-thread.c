@@ -523,7 +523,8 @@ static void login_run(struct etpan_thread_op * op)
 #endif
 
 	r = newsnntp_authinfo_username(param->nntp, param->login);
-	if (r == NEWSNNTP_NO_ERROR) {
+	if (r == NEWSNNTP_NO_ERROR || 
+	    r == NEWSNNTP_WARNING_REQUEST_AUTHORIZATION_PASSWORD) {
 		r = newsnntp_authinfo_password(param->nntp, param->password);
 	}
 	
