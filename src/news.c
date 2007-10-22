@@ -755,7 +755,8 @@ static gint news_select_group(Folder *folder, const gchar *group,
 		*last = info->grp_last;
 	}
 
-	newsnntp_group_free(info);
+	if (info)
+		newsnntp_group_free(info);
 	
 	if (ok == NEWSNNTP_NO_ERROR)
 		session->group = g_strdup(group);

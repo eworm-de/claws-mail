@@ -3009,3 +3009,4 @@
 ( cvs diff -u -r 1.1.2.1 -r 1.1.2.2 src/etpan/nntp-thread.c;  ) > 3.0.2cvs94.patchset
 ( cvs diff -u -r 1.22.2.37 -r 1.22.2.38 src/quote_fmt_parse.y;  ) > 3.0.2cvs95.patchset
 ( cvs diff -u -r 1.16.2.31 -r 1.16.2.32 src/prefs_customheader.c;  ) > 3.0.2cvs96.patchset
+( cvs diff -u -r 1.101.2.42 -r 1.101.2.43 src/news.c;  ) > 3.0.2cvs97.patchset

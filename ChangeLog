@@ -1,3 +1,8 @@
+2007-10-22 [colin]	3.0.2cvs97
+
+	* src/news.c
+		Fix bug 1368, 'SIGSEGV in NNTP code'
+
 2007-10-22 [colin]	3.0.2cvs96
 
 	* src/prefs_customheader.c
