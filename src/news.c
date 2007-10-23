@@ -749,20 +749,15 @@ static gint news_select_group(Folder *folder, const gchar *group,
 			ok = nntp_threaded_group(folder, group, &info);
 	}
 
-	if (ok == NEWSNNTP_NO_ERROR) {
+	if (ok == NEWSNNTP_NO_ERROR && info) {
+		session->group = g_strdup(group);
 		*num = info->grp_first;
 		*first = info->grp_first;
 		*last = info->grp_last;
-	}
-
-	if (info)
 		newsnntp_group_free(info);
-	
-	if (ok == NEWSNNTP_NO_ERROR)
-		session->group = g_strdup(group);
-	else
+	} else {
 		log_warning(LOG_PROTOCOL, _("couldn't select group: %s\n"), group);
-
+	}
 	return ok;
 }
 
