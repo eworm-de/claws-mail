@@ -634,7 +634,7 @@ char **ldapctl_full_attribute_array( LdapControl *ctl ) {
 
 	node = tmp;
 	cnt = g_list_length( tmp );
-	ptrArray = g_new0( char *, 1 + cnt );
+	ptrArray = g_new0( char *, 1 + cnt);
 	i = 0;
 	while( node ) {
 		ptrArray[ i++ ] = node->data;

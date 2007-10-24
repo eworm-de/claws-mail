@@ -704,6 +704,9 @@ static void addressbook_edit_person_set_picture(void)
 	gchar *filename;
 	int width, height, scalewidth, scaleheight;
 
+	if (personeditdlg.ldap)
+		return;
+
 	if ( (filename = filesel_select_file_open(_("Choose a picture"), NULL)) ) {
 		GdkPixbuf *pixbuf = NULL;
 		gdk_pixbuf_get_file_info(filename, &width, &height);
@@ -1423,6 +1426,7 @@ static gboolean addressbook_edit_person_close( gboolean cancelled )
 		/* no callback, as we're discarding the form */
 		edit_person_close_post_update_cb = NULL;
 		addressbook_edit_person_flush_transient();
+		current_person = NULL;
 
 		/* set focus to the address list (this is done by the post_update_cb usually) */
 		addressbook_address_list_set_focus();
@@ -1464,21 +1468,34 @@ static gboolean addressbook_edit_person_close( gboolean cancelled )
 
 		gchar *name;
 		addritem_person_set_common_name( current_person, cn );
-		if (personeditdlg.picture_set) {
+		if (personeditdlg.picture_set) { 
 			GdkPixbuf * pixbuf = gtk_image_get_pixbuf(GTK_IMAGE(personeditdlg.image));
-			name = g_strconcat( get_rc_dir(), G_DIR_SEPARATOR_S, ADDRBOOK_DIR, G_DIR_SEPARATOR_S, 
-							ADDRITEM_ID(current_person), ".png", NULL );
+
+			if (!current_person->picture)
+				name = g_strconcat( get_rc_dir(), G_DIR_SEPARATOR_S, ADDRBOOK_DIR, G_DIR_SEPARATOR_S, 
+						ADDRITEM_ID(current_person), ".png", NULL );
+			else 
+				name = g_strconcat( get_rc_dir(), G_DIR_SEPARATOR_S, ADDRBOOK_DIR, G_DIR_SEPARATOR_S, 
+						current_person->picture, ".png", NULL );
+
 			gdk_pixbuf_save(pixbuf, name, "png", &error, NULL);
 			if (error) {
 				alertpanel_error(_("Failed to save image: \n%s"),
 						error->message);
 				g_error_free(error);
+			} else {
+				debug_print("saved picture to %s\n", name);
 			}
-			addritem_person_set_picture( current_person, ADDRITEM_ID(current_person) ) ;
+			if (!current_person->picture)
+				addritem_person_set_picture( current_person, ADDRITEM_ID(current_person) ) ;
 			g_free( name );
 		} else {
-			name = g_strconcat( get_rc_dir(), G_DIR_SEPARATOR_S, ADDRBOOK_DIR, G_DIR_SEPARATOR_S, 
-							ADDRITEM_ID(current_person), ".png", NULL );
+			if (!current_person->picture)
+				name = g_strconcat( get_rc_dir(), G_DIR_SEPARATOR_S, ADDRBOOK_DIR, G_DIR_SEPARATOR_S, 
+						ADDRITEM_ID(current_person), ".png", NULL );
+			else 
+				name = g_strconcat( get_rc_dir(), G_DIR_SEPARATOR_S, ADDRBOOK_DIR, G_DIR_SEPARATOR_S, 
+						current_person->picture, ".png", NULL );
 			g_unlink(name);
 			g_free(name);
 		}
@@ -1567,6 +1584,10 @@ ItemPerson *addressbook_edit_person( AddressBookFile *abf, ItemFolder *parent_fo
 		if( ADDRITEM_NAME(current_person) )
 			gtk_entry_set_text(GTK_ENTRY(personeditdlg.entry_name), ADDRITEM_NAME(person) );
 
+		menu_set_sensitive(personeditdlg.editaddr_popupfactory,
+				"/Set picture", !personeditdlg.ldap);
+		menu_set_sensitive(personeditdlg.editaddr_popupfactory,
+				"/Unset picture", !personeditdlg.ldap);
 		if( current_person->picture ) {	
 			filename = g_strconcat( get_rc_dir(), G_DIR_SEPARATOR_S, ADDRBOOK_DIR, G_DIR_SEPARATOR_S, 
 							current_person->picture, ".png", NULL );
@@ -1580,7 +1601,7 @@ ItemPerson *addressbook_edit_person( AddressBookFile *abf, ItemFolder *parent_fo
 				}
 				personeditdlg.picture_set = TRUE;
 				menu_set_sensitive(personeditdlg.editaddr_popupfactory,
-						"/Unset picture", personeditdlg.picture_set);
+						"/Unset picture", !personeditdlg.ldap && personeditdlg.picture_set);
 			} else {
 				goto no_img;
 			}
@@ -1589,6 +1610,7 @@ ItemPerson *addressbook_edit_person( AddressBookFile *abf, ItemFolder *parent_fo
 no_img:
 			addressbook_edit_person_clear_picture();
 		}
+		
 		g_free(filename);
 		if (pixbuf) {
 			g_object_unref(pixbuf);
@@ -1626,15 +1648,15 @@ no_img:
 	edit_person_attrib_clear( NULL );
 
 	if (prefs_common.addressbook_use_editaddress_dialog) {
-
-	gtk_main();
+		gtk_main();
 		gtk_widget_hide( personeditdlg.container );
 
-		if (!addressbook_edit_person_close( cancelled ))
+		if (!addressbook_edit_person_close( cancelled )) {
 			return NULL;
+		}
 	}
-
-	return current_person;
+	
+	return person;
 }
 
 /*

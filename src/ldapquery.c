@@ -32,6 +32,7 @@
 #include <string.h>
 #include <lber.h>
 
+#include "defs.h"
 #include "ldaputil.h"
 #include "ldapquery.h"
 #include "ldapctrl.h"
@@ -414,9 +415,19 @@ static GSList *ldapqry_add_single_value( LDAP *ld, LDAPMessage *entry, char *att
 
 	if( ( vals = ldap_get_values_len( ld, entry, attr ) ) != NULL ) {
 		if( vals[0] != NULL ) {
-			debug_print("sv\t%s: %s\n", attr?attr:"null",
-					vals[0]->bv_val?vals[0]->bv_val:"null");
-			list = g_slist_append( list, g_strndup( vals[0]->bv_val, vals[0]->bv_len ));
+			if (strcmp(attr, "jpegPhoto")) {
+				debug_print("sv\t%s: %s\n", attr?attr:"null",
+						vals[0]->bv_val?vals[0]->bv_val:"null");
+				list = g_slist_append( list, g_strndup( vals[0]->bv_val, vals[0]->bv_len ));
+			} else {
+				char *file = get_tmp_file();
+				FILE *fp = fopen(file, "wb");
+				if (fp) {
+					fwrite(vals[0]->bv_val, 1, vals[0]->bv_len, fp);
+					fclose(fp);
+				}
+				list = g_slist_append( list, file);
+			}
 		}
 	}
 	ldap_value_free_len( vals );
@@ -455,6 +466,7 @@ static GList *ldapqry_build_items_fl(
 	ItemPerson *person;
 	ItemEMail *email;
 	ItemFolder *folder;
+	gchar *picfile = NULL;
 	GList *listReturn = NULL;
 
 	folder = ADDRQUERY_FOLDER(qry);
@@ -511,7 +523,24 @@ static GList *ldapqry_build_items_fl(
 	
 	for (cur = attributes; cur; cur = cur->next) {
 		UserAttribute *attrib = addritem_copy_attribute((UserAttribute *)cur->data);
-		addritem_person_add_attribute( person, attrib );
+		if (attrib->name && strcmp(attrib->name, "jpegPhoto")) {
+			addritem_person_add_attribute( person, attrib );
+		} else {
+			if (qry && qry->server && qry->server->control) {
+				gchar *dir = g_strconcat( get_rc_dir(), G_DIR_SEPARATOR_S, 
+							ADDRBOOK_DIR, G_DIR_SEPARATOR_S, NULL );
+				gchar *filename = g_strdup_printf("%s-%s-%s",
+					qry->server->control->hostName?qry->server->control->hostName:"nohost", 
+					qry->server->control->baseDN?qry->server->control->baseDN:"nobase", 
+					dn);
+				picfile = g_strdup_printf("%s%s.png", dir, filename);
+				addritem_person_set_picture( person, filename );
+				rename_force(attrib->value, picfile);
+				g_free(filename);
+				g_free(picfile);
+				g_free(dir);
+			}
+		}
 	}
 	
 	addrcache_folder_add_person( cache, ADDRQUERY_FOLDER(qry), person );

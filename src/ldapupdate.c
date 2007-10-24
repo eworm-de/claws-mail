@@ -943,6 +943,10 @@ void ldapsvr_handle_other_attributes(LDAP *ld, LdapServer *server, char *dn, GHa
 			 * If attributes are not part of the search criteria they would seem to hold
 			 * no information since their values will not be populated in the GUI
 			 */
+			if (!strcmp(ATTRIBUTE[i], "jpegPhoto")) {
+				debug_print("not updating jpegPhoto\n");
+				continue;
+			}
 			if (ldapsvr_check_search_attributes(attribs, (char *) ATTRIBUTE[i])) {
 				mod_op = ldapsvr_deside_operation(ld, server, dn, (char *) ATTRIBUTE[i], "");
 				if (mod_op == LDAP_MOD_DELETE) {
@@ -974,6 +978,10 @@ void ldapsvr_handle_other_attributes(LDAP *ld, LdapServer *server, char *dn, GHa
 	else {
 		char **attribs = ldapctl_full_attribute_array(server->control);
 		for (i = 0; i < ATTRIBUTE_SIZE; i++) {
+			if (!strcmp(ATTRIBUTE[i], "jpegPhoto")) {
+				debug_print("not updating jpegPhoto\n");
+				continue;
+			}
 			if (ldapsvr_check_search_attributes(attribs, (char *) ATTRIBUTE[i])) {
 				if (CHECKED_ATTRIBUTE[i] == FALSE) {
 					AddrItemObject *aio = addrcache_get_object(server->addressCache, g_hash_table_lookup(contact , "uid"));

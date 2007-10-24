@@ -102,6 +102,7 @@ static const char *ATTRIBUTE[] = {
 	"mobile",
 	"pager",
 	"roomNumber",
+	"jpegPhoto",
 	NULL
 };
 
