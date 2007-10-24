@@ -2012,18 +2012,21 @@ static void textview_show_tags(TextView *textview)
 		"header_title", "header", "tags", NULL);
 
 	for (cur = msginfo->tags; cur; cur = cur->next) {
+		const gchar *cur_tag = tags_get_tag(GPOINTER_TO_INT(cur->data));
+		if (!cur_tag)
+			continue;
 		uri = g_new0(ClickableText, 1);
 		uri->uri = g_strdup("");
 		uri->start = gtk_text_iter_get_offset(&iter);
 		gtk_text_buffer_insert_with_tags_by_name(buffer, &iter, 
-			tags_get_tag(GPOINTER_TO_INT(cur->data)), -1,
+			cur_tag, -1,
 			"link", "header", "tags", NULL);
 		uri->end = gtk_text_iter_get_offset(&iter);
-		uri->filename = g_strdup_printf("sc://search_tags:%s", tags_get_tag(GPOINTER_TO_INT(cur->data)));
+		uri->filename = g_strdup_printf("sc://search_tags:%s", cur_tag);
 		uri->data = NULL;
 		textview->uri_list =
 			g_slist_prepend(textview->uri_list, uri);
-		if (cur->next)
+		if (cur->next && tags_get_tag(GPOINTER_TO_INT(cur->next->data)))
 			gtk_text_buffer_insert_with_tags_by_name(buffer, &iter, ", ", 2,
 				"header", "tags", NULL);
 		else

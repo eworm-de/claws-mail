@@ -1229,14 +1229,25 @@ static void mainwindow_tags_menu_item_apply_tags_activate_cb(GtkWidget *widget,
 	tag_apply_open(summary_get_selection(mainwin->summaryview));	
 }
 
+static gint tag_cmp_list(gconstpointer a, gconstpointer b)
+{
+	gint id_a = GPOINTER_TO_INT(a);
+	gint id_b = GPOINTER_TO_INT(b);
+	const gchar *tag_a = tags_get_tag(id_a);
+	const gchar *tag_b = tags_get_tag(id_b);
+	
+	return strcmp2(tag_a, tag_b);
+}
 static void mainwindow_tags_menu_create(MainWindow *mainwin, gboolean refresh)
 {
 	GtkWidget *label_menuitem;
 	GtkWidget *menu;
 	GtkWidget *item;
 	GSList *cur = tags_get_list();
-	GSList *orig = cur;
+	GSList *orig = NULL;
 	gboolean existing_tags = FALSE;
+
+	cur = orig = g_slist_sort(cur, tag_cmp_list);
 
 	label_menuitem = gtk_item_factory_get_item(mainwin->menu_factory,
 						   "/Message/Tags");

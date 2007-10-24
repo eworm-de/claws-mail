@@ -32,6 +32,7 @@
 #include <string.h>
 #include <errno.h>
 
+#include "menu.h"
 #include "edittags.h"
 #include "prefs_gtk.h"
 #include "utils.h"
@@ -54,6 +55,15 @@ enum {
 				 *   the list store, and which is retrieved
 				 *   and touched by us */
 	N_PREFS_TAGS_COLUMNS
+};
+
+	
+enum {
+	TAG_SELECTED,
+	TAG_SELECTED_INCONSISTENT,
+	TAG_NAME,
+	TAG_DATA,
+	N_TAG_EDIT_COLUMNS
 };
 
 static struct Tags
@@ -303,9 +313,6 @@ static void prefs_tags_set_dialog(void)
 				(GTK_TREE_VIEW(tags.tags_list_view)));
 	gtk_list_store_clear(store);
 
-	prefs_tags_list_view_insert_tag(tags.tags_list_view,
-					      NULL, _("(New)"), -1);
-
 	for (orig = cur = tags_get_list(); cur != NULL; cur = cur->next) {
 		gint id = GPOINTER_TO_INT(cur->data);
 		gchar *tag = (gchar *) tags_get_tag(id);
@@ -449,12 +456,37 @@ static void prefs_tags_ok(GtkWidget *widget, gpointer data)
 	gtk_widget_hide(tags.window);
 }
 
+gint tag_cmp_func (GtkTreeModel *model, GtkTreeIter *a, GtkTreeIter *b, gpointer userdata)
+ {
+	gchar *name1, *name2;
+
+	if (GPOINTER_TO_INT(userdata) == 0) {
+		gtk_tree_model_get(model, a, PREFS_TAGS_STRING, &name1, -1);
+		gtk_tree_model_get(model, b, PREFS_TAGS_STRING, &name2, -1);
+	} else {
+		gtk_tree_model_get(model, a, TAG_NAME, &name1, -1);
+		gtk_tree_model_get(model, b, TAG_NAME, &name2, -1);
+	}
+	if (name1 == NULL)
+		return name2 == NULL ? 0:1;
+	
+	if (name2 == NULL)
+		return name1 == NULL ? 0:1;
+	
+	return g_utf8_collate(name1,name2);
+}
+
 static GtkListStore* prefs_tags_create_data_store(void)
 {
-	return gtk_list_store_new(N_PREFS_TAGS_COLUMNS,
+	GtkListStore *store = gtk_list_store_new(N_PREFS_TAGS_COLUMNS,
 				  G_TYPE_STRING,	
 				  G_TYPE_INT,
 				  -1);
+	GtkTreeSortable *sortable = GTK_TREE_SORTABLE(store);
+
+	gtk_tree_sortable_set_sort_func(sortable, 0, tag_cmp_func,
+                                    GINT_TO_POINTER(0), NULL);
+	return store;
 }
 
 static void prefs_tags_list_view_insert_tag(GtkWidget *list_view,
@@ -493,6 +525,8 @@ static GtkWidget *prefs_tags_list_view_create(void)
 	GtkTreeModel *model;
 
 	model = GTK_TREE_MODEL(prefs_tags_create_data_store());
+	gtk_tree_sortable_set_sort_column_id(GTK_TREE_SORTABLE(model), PREFS_TAGS_STRING, GTK_SORT_ASCENDING);
+
 	list_view = GTK_TREE_VIEW(gtk_tree_view_new_with_model(model));
 	g_object_unref(model);	
 	
@@ -556,14 +590,6 @@ static gboolean prefs_tags_selected(GtkTreeSelection *selector,
 	return TRUE;
 }
 
-enum {
-	TAG_SELECTED,
-	TAG_SELECTED_INCONSISTENT,
-	TAG_NAME,
-	TAG_DATA,
-	N_TAG_EDIT_COLUMNS
-};
-
 static void apply_window_create(void);
 
 static struct TagApplyWindow
@@ -601,12 +627,18 @@ void tag_apply_open(GSList *msglist)
 
 static GtkListStore* apply_window_create_data_store(void)
 {
-	return gtk_list_store_new(N_TAG_EDIT_COLUMNS,
+	GtkListStore *store = gtk_list_store_new(N_TAG_EDIT_COLUMNS,
 				  G_TYPE_BOOLEAN,
 				  G_TYPE_BOOLEAN,
 				  G_TYPE_STRING,
   				  G_TYPE_POINTER,
 				  -1);
+	GtkTreeSortable *sortable = GTK_TREE_SORTABLE(store);
+
+	gtk_tree_sortable_set_sort_func(sortable, 0, tag_cmp_func,
+                                    GINT_TO_POINTER(1), NULL);
+
+	return store;
 }
 
 static void tag_apply_selected_toggled(GtkCellRendererToggle *widget,
@@ -648,6 +680,66 @@ static void apply_window_create_list_view_columns(GtkWidget *list_view)
 					TAG_NAME);
 }
 
+static GtkItemFactory *apply_popup_factory = NULL;
+static GtkWidget *apply_popup_menu = NULL;
+
+static void apply_popup_delete (void *obj, guint action, void *data)
+{
+	GtkTreeIter sel;
+	GtkTreeModel *model;
+	gint id;
+	SummaryView *summaryview = NULL;
+	
+	if (!gtk_tree_selection_get_selected(gtk_tree_view_get_selection
+				(GTK_TREE_VIEW(applywindow.taglist)),
+				&model, &sel))
+		return;				
+
+	if (alertpanel(_("Delete tag"),
+		       _("Do you really want to delete this tag?"),
+		       GTK_STOCK_CANCEL, GTK_STOCK_DELETE, NULL) != G_ALERTALTERNATE)
+		return;
+
+	/* XXX: Here's the reason why we need to store the original 
+	 * pointer: we search the slist for it. */
+	gtk_tree_model_get(model, &sel,
+			   TAG_DATA, &id,
+			   -1);
+	gtk_list_store_remove(GTK_LIST_STORE(model), &sel);
+	if (mainwindow_get_mainwindow() != NULL)
+		summaryview = mainwindow_get_mainwindow()->summaryview;
+	if (summaryview)
+		summary_set_tag(summaryview, -id, NULL);
+	tags_remove_tag(id);
+	tags_write_tags();
+}
+
+static GtkItemFactoryEntry apply_popup_entries[] =
+{
+	{N_("/_Delete"),		NULL, apply_popup_delete, 0, NULL, NULL},
+};
+
+
+static gint apply_list_btn_pressed(GtkWidget *widget, GdkEventButton *event,
+				    GtkTreeView *list_view)
+{
+	if (event && event->button == 3) {
+		if (!apply_popup_menu) {
+			gint n_entries = sizeof(apply_popup_entries) /
+				sizeof(apply_popup_entries[0]);
+			apply_popup_menu = menu_create_items(apply_popup_entries, n_entries,
+						      "<TagPopupMenu>", &apply_popup_factory,
+						      list_view);
+		}
+		gtk_menu_popup(GTK_MENU(apply_popup_menu), 
+			       NULL, NULL, NULL, NULL, 
+			       event->button, event->time);
+
+		return FALSE;
+	}
+	return FALSE;
+}
+
 static GtkWidget *apply_window_list_view_create	(void)
 {
 	GtkTreeView *list_view;
@@ -657,7 +749,8 @@ static GtkWidget *apply_window_list_view_create	(void)
 	model = GTK_TREE_MODEL(apply_window_create_data_store());
 	list_view = GTK_TREE_VIEW(gtk_tree_view_new_with_model(model));
 	g_object_unref(model);	
-	
+	gtk_tree_sortable_set_sort_column_id(GTK_TREE_SORTABLE(model), TAG_NAME, GTK_SORT_ASCENDING);
+
 	gtk_tree_view_set_rules_hint(list_view, prefs_common.use_stripes_everywhere);
 	
 	selector = gtk_tree_view_get_selection(list_view);
@@ -666,6 +759,8 @@ static GtkWidget *apply_window_list_view_create	(void)
 	/* create the columns */
 	apply_window_create_list_view_columns(GTK_WIDGET(list_view));
 
+	g_signal_connect(G_OBJECT(list_view), "button-press-event",
+			G_CALLBACK(apply_list_btn_pressed), list_view);
 	return GTK_WIDGET(list_view);
 
 }
@@ -675,6 +770,7 @@ static void apply_window_close(void)
 	g_slist_free(applywindow.msglist);
 	applywindow.msglist = NULL;
 	gtk_widget_hide(applywindow.window);
+	main_window_reflect_tags_changes(mainwindow_get_mainwindow());
 }
 
 static void apply_window_close_cb(GtkWidget *widget,

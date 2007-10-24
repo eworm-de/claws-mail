@@ -1,3 +1,12 @@
+2007-10-24 [colin]	3.0.2cvs101
+
+	* src/edittags.c
+	* src/mainwindow.c
+	* src/summaryview.c
+	* src/textview.c
+		Add tags sorting (alphabetical); allow deletion of
+		tags from the Apply Tags window
+
 2007-10-24 [colin]	3.0.2cvs100
 
 	* src/editaddress.c
