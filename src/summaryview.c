@@ -5589,7 +5589,13 @@ static gint summary_tag_cmp_list(gconstpointer a, gconstpointer b)
 	const gchar *tag_a = tags_get_tag(id_a);
 	const gchar *tag_b = tags_get_tag(id_b);
 	
-	return strcmp2(tag_a, tag_b);
+	if (tag_a == NULL)
+		return tag_b == NULL ? 0:1;
+	
+	if (tag_b == NULL)
+		return tag_a == NULL ? 0:1;
+
+	return g_utf8_collate(tag_a, tag_b);
 }
 
 static void summary_tags_menu_create(SummaryView *summaryview, gboolean refresh)

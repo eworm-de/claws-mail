@@ -20,9 +20,7 @@
 #ifndef __EDITTAGS_H__
 #define __EDITTAGS_H__
 
-#include "mainwindow.h"
-
-void prefs_tags_open(MainWindow *mainwin);
+#include <glib.h>
 
 void tag_apply_open(GSList *msglist);
 #endif

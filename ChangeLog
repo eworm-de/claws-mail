@@ -1,3 +1,15 @@
+2007-10-25 [colin]	3.0.2cvs103
+
+	* src/editaddress.c
+		Add tap-and-hold on the picture, for Maemo
+	* src/edittags.c
+	* src/edittags.h
+	* src/mainwindow.c
+	* src/procmsg.c
+	* src/summaryview.c
+	* src/textview.c
+		Unify tag interfaces.
+
 2007-10-25 [colin]	3.0.2cvs102
 
 	* src/imap.c

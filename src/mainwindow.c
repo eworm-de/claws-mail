@@ -1229,15 +1229,23 @@ static void mainwindow_tags_menu_item_apply_tags_activate_cb(GtkWidget *widget,
 	tag_apply_open(summary_get_selection(mainwin->summaryview));	
 }
 
-static gint tag_cmp_list(gconstpointer a, gconstpointer b)
+static gint mainwin_tag_cmp_list(gconstpointer a, gconstpointer b)
 {
 	gint id_a = GPOINTER_TO_INT(a);
 	gint id_b = GPOINTER_TO_INT(b);
 	const gchar *tag_a = tags_get_tag(id_a);
 	const gchar *tag_b = tags_get_tag(id_b);
 	
-	return strcmp2(tag_a, tag_b);
+ 		
+ 	if (tag_a == NULL)
+ 		return tag_b == NULL ? 0:1;
+ 	
+ 	if (tag_b == NULL)
+ 		return tag_a == NULL ? 0:1;
+ 
+ 	return g_utf8_collate(tag_a, tag_b);
 }
+
 static void mainwindow_tags_menu_create(MainWindow *mainwin, gboolean refresh)
 {
 	GtkWidget *label_menuitem;
@@ -1247,7 +1255,7 @@ static void mainwindow_tags_menu_create(MainWindow *mainwin, gboolean refresh)
 	GSList *orig = NULL;
 	gboolean existing_tags = FALSE;
 
-	cur = orig = g_slist_sort(cur, tag_cmp_list);
+	cur = orig = g_slist_sort(cur, mainwin_tag_cmp_list);
 
 	label_menuitem = gtk_item_factory_get_item(mainwin->menu_factory,
 						   "/Message/Tags");
@@ -4228,7 +4236,8 @@ static void prefs_actions_open_cb(MainWindow *mainwin, guint action,
 static void prefs_tags_open_cb(MainWindow *mainwin, guint action,
 				  GtkWidget *widget)
 {
-	prefs_tags_open(mainwin);
+	GSList * list = summary_get_selected_msg_list(mainwin->summaryview);
+	tag_apply_open(list);
 }
 #if (defined(USE_OPENSSL) || defined (USE_GNUTLS))
 static void ssl_manager_open_cb(MainWindow *mainwin, guint action,

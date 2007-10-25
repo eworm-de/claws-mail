@@ -2416,6 +2416,9 @@ gchar *procmsg_msginfo_get_tags_str(MsgInfo *msginfo)
 
 void procmsg_msginfo_update_tags(MsgInfo *msginfo, gboolean set, gint id)
 {
+	if (id == 0)
+		return;
+
 	if (!set) {
 		msginfo->tags = g_slist_remove(
 					msginfo->tags,

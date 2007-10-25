@@ -1984,6 +1984,23 @@ bail:
 	
 }
 
+static gint textview_tag_cmp_list(gconstpointer a, gconstpointer b)
+{
+	gint id_a = GPOINTER_TO_INT(a);
+	gint id_b = GPOINTER_TO_INT(b);
+	const gchar *tag_a = tags_get_tag(id_a);
+	const gchar *tag_b = tags_get_tag(id_b);
+	
+	if (tag_a == NULL)
+		return tag_b == NULL ? 0:1;
+	
+	if (tag_b == NULL)
+		return tag_a == NULL ? 0:1;
+
+	return g_utf8_collate(tag_a, tag_b);
+}
+
+
 static void textview_show_tags(TextView *textview)
 {
 	MsgInfo *msginfo = textview->messageview->msginfo;
@@ -1991,27 +2008,31 @@ static void textview_show_tags(TextView *textview)
 	GtkTextBuffer *buffer = gtk_text_view_get_buffer(text);
 	GtkTextIter iter;
 	ClickableText *uri;
-	GSList *cur;
+	GSList *cur, *orig;
 	gboolean found_tag = FALSE;
 	
 	if (!msginfo->tags)
 		return;
 	
-	for (cur = msginfo->tags; cur; cur = cur->next) {
+	cur = orig = g_slist_sort(g_slist_copy(msginfo->tags), textview_tag_cmp_list);
+
+	for (; cur; cur = cur->next) {
 		if (tags_get_tag(GPOINTER_TO_INT(cur->data)) != NULL) {
 			found_tag = TRUE;
 			break;
 		}
 	}
-	if (!found_tag) 
+	if (!found_tag) {
+		g_slist_free(orig);
 		return;
+	}
 
 	gtk_text_buffer_get_end_iter (buffer, &iter);
 	gtk_text_buffer_insert_with_tags_by_name(buffer,
 		&iter, _("Tags: "), -1,
 		"header_title", "header", "tags", NULL);
 
-	for (cur = msginfo->tags; cur; cur = cur->next) {
+	for (cur = orig; cur; cur = cur->next) {
 		const gchar *cur_tag = tags_get_tag(GPOINTER_TO_INT(cur->data));
 		if (!cur_tag)
 			continue;
@@ -2033,6 +2054,7 @@ static void textview_show_tags(TextView *textview)
 			gtk_text_buffer_insert_with_tags_by_name(buffer, &iter, " ", 1,
 				"header", "tags", NULL);
 	}
+	g_slist_free(orig);
 
 	gtk_text_buffer_insert_with_tags_by_name(buffer, &iter, "\n", 1,
 		"header", "tags", NULL);
