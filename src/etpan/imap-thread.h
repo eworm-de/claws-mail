@@ -24,7 +24,7 @@
 #include <libetpan/libetpan.h>
 #include "folder.h"
 
-#define IMAP_SET_MAX_COUNT 100
+#define IMAP_SET_MAX_COUNT 500
 
 void imap_main_set_timeout(int sec);
 void imap_main_init(gboolean skip_ssl_cert_check);

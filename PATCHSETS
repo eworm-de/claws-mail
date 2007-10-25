@@ -3014,3 +3014,4 @@
 ( cvs diff -u -r 1.101.2.43 -r 1.101.2.44 src/news.c;  ) > 3.0.2cvs99.patchset
 ( cvs diff -u -r 1.14.2.41 -r 1.14.2.42 src/editaddress.c;  cvs diff -u -r 1.1.2.5 -r 1.1.2.6 src/editaddress_other_attributes_ldap.c;  cvs diff -u -r 1.1.2.6 -r 1.1.2.7 src/editaddress_other_attributes_ldap.h;  cvs diff -u -r 1.2.2.15 -r 1.2.2.16 src/ldapctrl.c;  cvs diff -u -r 1.3.2.27 -r 1.3.2.28 src/ldapquery.c;  cvs diff -u -r 1.1.2.15 -r 1.1.2.16 src/ldapupdate.c;  ) > 3.0.2cvs100.patchset
 ( cvs diff -u -r 1.1.2.7 -r 1.1.2.8 src/edittags.c;  cvs diff -u -r 1.274.2.218 -r 1.274.2.219 src/mainwindow.c;  cvs diff -u -r 1.395.2.332 -r 1.395.2.333 src/summaryview.c;  cvs diff -u -r 1.96.2.189 -r 1.96.2.190 src/textview.c;  ) > 3.0.2cvs101.patchset
+( cvs diff -u -r 1.179.2.195 -r 1.179.2.196 src/imap.c;  cvs diff -u -r 1.1.4.19 -r 1.1.4.20 src/etpan/imap-thread.h;  ) > 3.0.2cvs102.patchset

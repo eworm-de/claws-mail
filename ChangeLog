@@ -1,3 +1,11 @@
+2007-10-25 [colin]	3.0.2cvs102
+
+	* src/imap.c
+	* src/etpan/imap-thread.h
+		Much better error handling. We'll need to be really
+		clear to users about where errors come from, with 
+		the apparition of Gmail's IMAP server.
+
 2007-10-24 [colin]	3.0.2cvs101
 
 	* src/edittags.c
