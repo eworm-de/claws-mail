@@ -3016,3 +3016,4 @@
 ( cvs diff -u -r 1.1.2.7 -r 1.1.2.8 src/edittags.c;  cvs diff -u -r 1.274.2.218 -r 1.274.2.219 src/mainwindow.c;  cvs diff -u -r 1.395.2.332 -r 1.395.2.333 src/summaryview.c;  cvs diff -u -r 1.96.2.189 -r 1.96.2.190 src/textview.c;  ) > 3.0.2cvs101.patchset
 ( cvs diff -u -r 1.179.2.195 -r 1.179.2.196 src/imap.c;  cvs diff -u -r 1.1.4.19 -r 1.1.4.20 src/etpan/imap-thread.h;  ) > 3.0.2cvs102.patchset
 ( cvs diff -u -r 1.14.2.42 -r 1.14.2.43 src/editaddress.c;  cvs diff -u -r 1.1.2.8 -r 1.1.2.9 src/edittags.c;  cvs diff -u -r 1.1.2.4 -r 1.1.2.5 src/edittags.h;  cvs diff -u -r 1.274.2.219 -r 1.274.2.220 src/mainwindow.c;  cvs diff -u -r 1.150.2.104 -r 1.150.2.105 src/procmsg.c;  cvs diff -u -r 1.395.2.333 -r 1.395.2.334 src/summaryview.c;  cvs diff -u -r 1.96.2.190 -r 1.96.2.191 src/textview.c;  ) > 3.0.2cvs103.patchset
+( cvs diff -u -r 1.1.2.9 -r 1.1.2.10 src/edittags.c;  ) > 3.0.2cvs104.patchset

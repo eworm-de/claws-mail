@@ -55,7 +55,7 @@ enum {
 	N_TAG_EDIT_COLUMNS
 };
 
-gint tag_cmp_func (GtkTreeModel *model, GtkTreeIter *a, GtkTreeIter *b, gpointer userdata)
+static gint tag_cmp_func (GtkTreeModel *model, GtkTreeIter *a, GtkTreeIter *b, gpointer userdata)
  {
 	gchar *name1, *name2;
 

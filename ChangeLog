@@ -1,3 +1,8 @@
+2007-10-26 [colin]	3.0.2cvs104
+
+	* src/edittags.c
+		Add missing static
+
 2007-10-25 [colin]	3.0.2cvs103
 
 	* src/editaddress.c
