@@ -38,6 +38,8 @@
 #include "prefs.h"
 #include "prefs_gtk.h"
 #include "prefswindow.h"
+#include "combobox.h"
+#include "addressbook.h"
 
 #include "dillo_prefs.h"
 
@@ -50,12 +52,20 @@ typedef struct _DilloBrowserPage DilloBrowserPage;
 struct _DilloBrowserPage {
         PrefsPage page;
         GtkWidget *local;
+	GtkWidget *whitelist_ab;
+	GtkWidget *whitelist_ab_folder_combo;
+	GtkWidget *whitelist_ab_select_btn;
         GtkWidget *full;
 };
 
 static PrefParam param[] = {
         {"local_browse", "TRUE", &dillo_prefs.local, P_BOOL, NULL, NULL, NULL},
         {"full_window", "TRUE", &dillo_prefs.full, P_BOOL, NULL, NULL, NULL},
+	{"whitelist_ab", "FALSE", &dillo_prefs.whitelist_ab, P_BOOL,
+	 NULL, NULL, NULL},
+	{"whitelist_ab_folder", N_("Any"), &dillo_prefs.whitelist_ab_folder, P_STRING,
+	 NULL, NULL, NULL},
+
         {0,0,0,0,0,0,0}
 };
 
@@ -66,6 +76,43 @@ static void create_dillo_prefs_page	(PrefsPage *page,
 					 gpointer   data);
 static void destroy_dillo_prefs_page	(PrefsPage *page);
 static void save_dillo_prefs		(PrefsPage *page);
+
+static void dillo_whitelist_ab_select_cb(GtkWidget *widget, gpointer data)
+{
+	DilloBrowserPage *page = (DilloBrowserPage *) data;
+	gchar *folderpath = NULL;
+	gboolean ret = FALSE;
+
+	folderpath = (gchar *) gtk_entry_get_text(GTK_ENTRY(GTK_BIN(page->whitelist_ab_folder_combo)->child));
+	ret = addressbook_folder_selection(&folderpath);
+	if ( ret != FALSE && folderpath != NULL)
+		gtk_entry_set_text(GTK_ENTRY(GTK_BIN(page->whitelist_ab_folder_combo)->child), folderpath);
+}
+
+static void local_checkbox_toggled(GtkToggleButton *button,
+					  gpointer user_data)
+{
+	gboolean active = gtk_toggle_button_get_active(button);
+        DilloBrowserPage *prefs_page = (DilloBrowserPage *) user_data;
+
+	gtk_widget_set_sensitive(prefs_page->whitelist_ab, active);
+	gtk_widget_set_sensitive(prefs_page->whitelist_ab_folder_combo, active && 
+			gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(prefs_page->whitelist_ab)));
+	gtk_widget_set_sensitive(prefs_page->whitelist_ab_select_btn, active && 
+			gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(prefs_page->whitelist_ab)));
+}
+
+static void whitelist_checkbox_toggled(GtkToggleButton *button,
+					  gpointer user_data)
+{
+	gboolean active = gtk_toggle_button_get_active(button);
+        DilloBrowserPage *prefs_page = (DilloBrowserPage *) user_data;
+
+	active &= gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(prefs_page->local));
+
+	gtk_widget_set_sensitive(prefs_page->whitelist_ab_folder_combo, active);
+	gtk_widget_set_sensitive(prefs_page->whitelist_ab_select_btn, active);
+}
 
 void dillo_prefs_init(void)
 {
@@ -106,6 +153,11 @@ static void create_dillo_prefs_page(PrefsPage *page,
         GtkWidget *label;
 	GtkTooltips *local_tooltip;
 	GtkTooltips *full_tooltip;
+	GtkWidget *whitelist_ab_checkbtn;
+	GtkWidget *whitelist_ab_folder_combo;
+	GtkWidget *whitelist_ab_select_btn;
+	GtkWidget *hbox_whitelist, *spacer;
+
 
         vbox = gtk_vbox_new(FALSE, 3);
         gtk_container_set_border_width(GTK_CONTAINER(vbox), VBOX_BORDER);
@@ -113,9 +165,9 @@ static void create_dillo_prefs_page(PrefsPage *page,
         
 	local_tooltip = gtk_tooltips_new();
         local_checkbox = gtk_check_button_new_with_label
-				(_("Do not load remote links in mails"));
+				(_("Load remote links in mails"));
         gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(local_checkbox),
-                                     dillo_prefs.local);
+                                     !dillo_prefs.local);
         gtk_box_pack_start(GTK_BOX(vbox), local_checkbox, FALSE, FALSE, 0);
         gtk_widget_show(local_checkbox);
 	gtk_tooltips_set_tip(GTK_TOOLTIPS(local_tooltip), local_checkbox,
@@ -128,6 +180,33 @@ static void create_dillo_prefs_page(PrefsPage *page,
 	gtkut_widget_set_small_font_size (label);
         gtk_widget_show(label);
 
+	
+	hbox_whitelist = gtk_hbox_new(FALSE, 8);
+	gtk_widget_show(hbox_whitelist);
+	gtk_box_pack_start (GTK_BOX (vbox), hbox_whitelist, FALSE, FALSE, 0);
+	
+	spacer = gtk_hbox_new(FALSE, 0);
+	gtk_widget_set_size_request(spacer, 12, -1);
+	gtk_widget_show(spacer);
+	gtk_box_pack_start(GTK_BOX(hbox_whitelist), spacer, FALSE, FALSE, 0);
+
+	whitelist_ab_checkbtn = gtk_check_button_new_with_label(_("Only for senders found in address book/folder"));
+	gtk_widget_show(whitelist_ab_checkbtn);
+	gtk_box_pack_start(GTK_BOX(hbox_whitelist), whitelist_ab_checkbtn, FALSE, FALSE, 0);
+
+	whitelist_ab_folder_combo = combobox_text_new(TRUE, _("Any"), NULL);
+	gtk_widget_set_size_request(whitelist_ab_folder_combo, 100, -1);
+	gtk_box_pack_start (GTK_BOX (hbox_whitelist), whitelist_ab_folder_combo, TRUE, TRUE, 0);
+
+	whitelist_ab_select_btn = gtk_button_new_with_label(_("Select ..."));
+	gtk_widget_show (whitelist_ab_select_btn);
+	gtk_box_pack_start (GTK_BOX (hbox_whitelist), whitelist_ab_select_btn, FALSE, FALSE, 0);
+
+	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(whitelist_ab_checkbtn), dillo_prefs.whitelist_ab);
+	if (dillo_prefs.whitelist_ab_folder != NULL)
+		gtk_entry_set_text(GTK_ENTRY(GTK_BIN(whitelist_ab_folder_combo)->child),
+				dillo_prefs.whitelist_ab_folder);
+
 	full_tooltip = gtk_tooltips_new();
         full_checkbox = gtk_check_button_new_with_label
 				(_("Full window mode (hide controls)"));
@@ -138,9 +217,25 @@ static void create_dillo_prefs_page(PrefsPage *page,
 	gtk_tooltips_set_tip(GTK_TOOLTIPS(full_tooltip), full_checkbox,
 			     _("Equivalent to Dillo's '--fullwindow' option"),
 			     NULL);
+
+	g_signal_connect(G_OBJECT(local_checkbox), "toggled",
+			 G_CALLBACK(local_checkbox_toggled),
+			 prefs_page);
+
+	g_signal_connect(G_OBJECT(whitelist_ab_checkbtn), "toggled",
+			 G_CALLBACK(whitelist_checkbox_toggled),
+			 prefs_page);
+
+	gtk_widget_set_sensitive(whitelist_ab_checkbtn, !dillo_prefs.local);
+	gtk_widget_set_sensitive(whitelist_ab_folder_combo, !dillo_prefs.local && dillo_prefs.whitelist_ab);
+	gtk_widget_set_sensitive(whitelist_ab_select_btn, !dillo_prefs.local && dillo_prefs.whitelist_ab);
+
         
         prefs_page->local = local_checkbox;
         prefs_page->full = full_checkbox;
+	prefs_page->whitelist_ab = whitelist_ab_checkbtn;
+	prefs_page->whitelist_ab_folder_combo = whitelist_ab_folder_combo;
+	prefs_page->whitelist_ab_select_btn = whitelist_ab_select_btn;
         prefs_page->page.widget = vbox;
 }
 
@@ -156,10 +251,15 @@ static void save_dillo_prefs(PrefsPage *page)
         gchar *rc_file_path = g_strconcat(get_rc_dir(), G_DIR_SEPARATOR_S,
                                           COMMON_RC, NULL);
         
-        dillo_prefs.local = gtk_toggle_button_get_active
+        dillo_prefs.local = !gtk_toggle_button_get_active
 				(GTK_TOGGLE_BUTTON(prefs_page->local));
         dillo_prefs.full = gtk_toggle_button_get_active
 				(GTK_TOGGLE_BUTTON(prefs_page->full));
+
+	dillo_prefs.whitelist_ab = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(prefs_page->whitelist_ab));
+	g_free(dillo_prefs.whitelist_ab_folder);
+	dillo_prefs.whitelist_ab_folder = gtk_editable_get_chars(
+				GTK_EDITABLE(GTK_BIN(prefs_page->whitelist_ab_folder_combo)->child), 0, -1);
         
         pref_file = prefs_write_open(rc_file_path);
         g_free(rc_file_path);

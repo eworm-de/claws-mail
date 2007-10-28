@@ -33,6 +33,7 @@
 #include "plugin.h"
 #include "utils.h"
 #include "mimeview.h"
+#include "addr_compl.h"
 
 #include "dillo_prefs.h"
 
@@ -67,6 +68,73 @@ static gboolean socket_destroy_cb(GtkObject *object, gpointer data)
 	return FALSE;
 }
 
+static gboolean found_in_addressbook(const gchar *address)
+{
+	gchar *addr = NULL;
+	gboolean found = FALSE;
+	gint num_addr = 0;
+	
+	if (!address)
+		return FALSE;
+	
+	addr = g_strdup(address);
+	extract_address(addr);
+	num_addr = complete_address(addr);
+	if (num_addr > 1) {
+		/* skip first item (this is the search string itself) */
+		int i = 1;
+		for (; i < num_addr && !found; i++) {
+			gchar *caddr = get_complete_address(i);
+			extract_address(caddr);
+			if (strcasecmp(caddr, addr) == 0)
+				found = TRUE;
+			g_free(caddr);
+		}
+	}
+	g_free(addr);
+	return found;
+}
+
+static gboolean load_images(DilloViewer *viewer)
+{
+	MessageView *messageview = ((MimeViewer *)viewer)->mimeview 
+					? ((MimeViewer *)viewer)->mimeview->messageview 
+					: NULL;
+	MsgInfo *msginfo = NULL;
+	gchar *ab_folderpath = NULL;
+
+	if (messageview == NULL)
+		return FALSE;
+	
+	msginfo = messageview->msginfo;
+	
+	if (msginfo == NULL)
+		return FALSE;
+
+	/* don't load remote images, period. */
+	if (dillo_prefs.local)
+		return FALSE;
+	
+	/* don't do whitelisting -> load images */
+	if (!dillo_prefs.whitelist_ab)
+		return TRUE;
+
+	if (*dillo_prefs.whitelist_ab_folder != '\0' &&
+	    strcasecmp(dillo_prefs.whitelist_ab_folder, _("Any")) != 0)
+		ab_folderpath = dillo_prefs.whitelist_ab_folder;
+
+	start_address_completion(ab_folderpath);
+
+	/* do whitelisting -> check sender */
+	if (found_in_addressbook(msginfo->from)) {
+		end_address_completion();
+		return TRUE;
+	}
+	
+	end_address_completion();
+	return FALSE;
+}
+
 static void dillo_show_mimepart(MimeViewer *_viewer,
 				const gchar *infile,
 				MimeInfo *partinfo)
@@ -97,7 +165,7 @@ static void dillo_show_mimepart(MimeViewer *_viewer,
 				 G_CALLBACK(socket_destroy_cb), viewer);
 
 		cmd = g_strdup_printf("dillo %s%s-x %d \"%s\"",
-				      (dillo_prefs.local ? "-l " : ""),
+				      (!load_images(viewer) ? "-l " : ""),
 				      (dillo_prefs.full ? "-f " : ""),
 				      (gint) GDK_WINDOW_XWINDOW(viewer->socket->window),
 				      viewer->filename);
@@ -124,6 +192,10 @@ static void dillo_destroy_viewer(MimeViewer *_viewer)
 	DilloViewer *viewer = (DilloViewer *) _viewer;
 
 	debug_print("dillo_destroy_viewer\n");
+
+	if (viewer->socket) {
+		gtk_widget_destroy(viewer->socket);
+	}
 
 	gtk_widget_unref(GTK_WIDGET(viewer->widget));
 	g_unlink(viewer->filename);
