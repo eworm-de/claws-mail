@@ -226,6 +226,9 @@ static void create_dillo_prefs_page(PrefsPage *page,
 			 G_CALLBACK(whitelist_checkbox_toggled),
 			 prefs_page);
 
+	g_signal_connect(G_OBJECT (whitelist_ab_select_btn), "clicked",
+			 G_CALLBACK(dillo_whitelist_ab_select_cb), prefs_page);
+
 	gtk_widget_set_sensitive(whitelist_ab_checkbtn, !dillo_prefs.local);
 	gtk_widget_set_sensitive(whitelist_ab_folder_combo, !dillo_prefs.local && dillo_prefs.whitelist_ab);
 	gtk_widget_set_sensitive(whitelist_ab_select_btn, !dillo_prefs.local && dillo_prefs.whitelist_ab);

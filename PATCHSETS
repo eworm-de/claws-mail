@@ -3018,3 +3018,4 @@
 ( cvs diff -u -r 1.14.2.42 -r 1.14.2.43 src/editaddress.c;  cvs diff -u -r 1.1.2.8 -r 1.1.2.9 src/edittags.c;  cvs diff -u -r 1.1.2.4 -r 1.1.2.5 src/edittags.h;  cvs diff -u -r 1.274.2.219 -r 1.274.2.220 src/mainwindow.c;  cvs diff -u -r 1.150.2.104 -r 1.150.2.105 src/procmsg.c;  cvs diff -u -r 1.395.2.333 -r 1.395.2.334 src/summaryview.c;  cvs diff -u -r 1.96.2.190 -r 1.96.2.191 src/textview.c;  ) > 3.0.2cvs103.patchset
 ( cvs diff -u -r 1.1.2.9 -r 1.1.2.10 src/edittags.c;  ) > 3.0.2cvs104.patchset
 ( cvs diff -u -r 1.5.2.17 -r 1.5.2.18 src/plugins/dillo_viewer/dillo_prefs.c;  cvs diff -u -r 1.2.4.7 -r 1.2.4.8 src/plugins/dillo_viewer/dillo_prefs.h;  cvs diff -u -r 1.12.2.23 -r 1.12.2.24 src/plugins/dillo_viewer/dillo_viewer.c;  ) > 3.0.2cvs105.patchset
+( cvs diff -u -r 1.5.2.18 -r 1.5.2.19 src/plugins/dillo_viewer/dillo_prefs.c;  ) > 3.0.2cvs106.patchset

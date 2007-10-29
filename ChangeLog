@@ -1,3 +1,8 @@
+2007-10-29 [colin]	3.0.2cvs106
+
+	* src/plugins/dillo_viewer/dillo_prefs.c
+		Fix forgotten signal connect
+
 2007-10-28 [colin]	3.0.2cvs105
 
 	* src/plugins/dillo_viewer/dillo_prefs.c
