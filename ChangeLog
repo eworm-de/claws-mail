@@ -6,6 +6,10 @@
 		gtk >= 2.10.x don't allow gnomeprint even if the
 		user asks for it
 
+2007-10-30 [paul]
+
+	3.1.0-rc1 released
+
 2007-10-30 [paul]	3.0.2cvs108
 
 	* Makefile.am
