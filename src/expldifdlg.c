@@ -47,6 +47,7 @@
 #include "utils.h"
 #include "manage_window.h"
 #include "filesel.h"
+#include "combobox.h"
 
 #define PAGE_FILE_INFO             0
 #define PAGE_DN                    1
@@ -219,7 +220,6 @@ static gboolean exp_ldif_move_dn( void ) {
 	gboolean retVal = FALSE;
 	gboolean errFlag = FALSE;
 	gchar *suffix;
-	GtkWidget *menu, *menuItem;
 	gint id;
 
 	/* Set suffix */
@@ -227,9 +227,7 @@ static gboolean exp_ldif_move_dn( void ) {
 	g_strchug( suffix ); g_strchomp( suffix );
 
 	/* Set RDN format */
-	menu = gtk_option_menu_get_menu( GTK_OPTION_MENU( expldif_dlg.optmenuRDN ) );
-	menuItem = gtk_menu_get_active( GTK_MENU( menu ) );
-	id = GPOINTER_TO_INT( g_object_get_data(G_OBJECT(menuItem), "user_data"));
+	id = combobox_get_active_data(GTK_COMBO_BOX(expldif_dlg.optmenuRDN));
 	exportldif_set_rdn( _exportCtl_, id );
 
 	exportldif_set_suffix( _exportCtl_, suffix );
@@ -426,6 +424,34 @@ static void export_ldif_page_file( gint pageNum, gchar *pageLbl ) {
 	expldif_dlg.entryLdif = entryLdif;
 }
 
+static void export_ldif_relative_dn_changed(GtkWidget *widget, gpointer data)
+{
+	gint relativeDN = combobox_get_active_data(GTK_COMBO_BOX(widget));
+	GtkLabel *label = GTK_LABEL(data);
+
+	switch(relativeDN) {
+	case EXPORT_LDIF_ID_UID:
+		gtk_label_set_text(label,
+		_("The address book Unique ID is used to create a DN that is " \
+		"formatted similar to:\n" \
+		"  uid=102376,ou=people,dc=claws-mail,dc=org"));
+		break;
+	case EXPORT_LDIF_ID_DNAME:
+		gtk_label_set_text(label,
+		_("The address book Display Name is used to create a DN that " \
+		"is formatted similar to:\n" \
+		"  cn=John Doe,ou=people,dc=claws-mail,dc=org"));	
+		break;
+	case EXPORT_LDIF_ID_EMAIL:
+		gtk_label_set_text(label, 
+		_("The first Email Address belonging to a person is used to " \
+		"create a DN that is formatted similar to:\n" \
+		"  mail=john.doe@domain.com,ou=people,dc=claws-mail,dc=org"));	
+		break;
+	}
+	
+}
+
 /**
  * Format notebook distinguished name page.
  * \param pageNum Page (tab) number.
@@ -437,10 +463,11 @@ static void export_ldif_page_dn( gint pageNum, gchar *pageLbl ) {
 	GtkWidget *label;
 	GtkWidget *entrySuffix;
 	GtkWidget *optmenuRDN;
+	GtkWidget *labelRDN;
 	GtkWidget *checkUseDN;
 	GtkWidget *checkEMail;
-	GtkWidget *menu;
-	GtkWidget *menuItem;
+	GtkListStore *store;
+	GtkTreeIter iter;
 	GtkTooltips *toolTip;
 	gint top;
 
@@ -456,7 +483,7 @@ static void export_ldif_page_dn( gint pageNum, gchar *pageLbl ) {
 			GTK_NOTEBOOK( expldif_dlg.notebook ), pageNum ),
 		label );
 
-	table = gtk_table_new( 5, 2, FALSE );
+	table = gtk_table_new( 6, 2, FALSE );
 	gtk_box_pack_start(GTK_BOX(vbox), table, FALSE, FALSE, 0);
 	gtk_container_set_border_width( GTK_CONTAINER(table), 8 );
 	gtk_table_set_row_spacings(GTK_TABLE(table), 8);
@@ -490,49 +517,12 @@ static void export_ldif_page_dn( gint pageNum, gchar *pageLbl ) {
 		GTK_FILL, 0, 0, 0);
 	gtk_misc_set_alignment(GTK_MISC(label), 0, 0.5);
 
-	menu = gtk_menu_new();
-
-	menuItem = gtk_menu_item_new_with_label( _( "Unique ID" ) );
-	g_object_set_data( G_OBJECT( menuItem ), "user_data",
-			GINT_TO_POINTER( EXPORT_LDIF_ID_UID ) );
-	gtk_menu_append( GTK_MENU(menu), menuItem );
-	gtk_widget_show( menuItem );
-	toolTip = gtk_tooltips_new();
-	gtk_tooltips_set_tip(
-		GTK_TOOLTIPS(toolTip), menuItem, _(
-		"The address book Unique ID is used to create a DN that is " \
-		"formatted similar to:\n" \
-		"  uid=102376,ou=people,dc=claws-mail,dc=org"
-		), NULL );
-
-	menuItem = gtk_menu_item_new_with_label( _( "Display Name" ) );
-	g_object_set_data( G_OBJECT( menuItem ), "user_data",
-			GINT_TO_POINTER( EXPORT_LDIF_ID_DNAME ) );
-	gtk_menu_append( GTK_MENU(menu), menuItem );
-	gtk_widget_show( menuItem );
-	toolTip = gtk_tooltips_new();
-	gtk_tooltips_set_tip(
-		GTK_TOOLTIPS(toolTip), menuItem, _(
-		"The address book Display Name is used to create a DN that " \
-		"is formatted similar to:\n" \
-		"  cn=John Doe,ou=people,dc=claws-mail,dc=org"
-		), NULL );
-
-	menuItem = gtk_menu_item_new_with_label( _( "Email Address" ) );
-	g_object_set_data( G_OBJECT( menuItem ), "user_data",
-			GINT_TO_POINTER( EXPORT_LDIF_ID_EMAIL ) );
-	gtk_menu_append( GTK_MENU(menu), menuItem );
-	gtk_widget_show( menuItem );
-	toolTip = gtk_tooltips_new();
-	gtk_tooltips_set_tip(
-		GTK_TOOLTIPS(toolTip), menuItem, _(
-		"The first Email Address belonging to a person is used to " \
-		"create a DN that is formatted similar to:\n" \
-		"  mail=john.doe@domain.com,ou=people,dc=claws-mail,dc=org"
-		), NULL );
-
-	optmenuRDN = gtk_option_menu_new();
-	gtk_option_menu_set_menu( GTK_OPTION_MENU( optmenuRDN ), menu );
+	optmenuRDN = gtkut_sc_combobox_create(NULL, TRUE);
+	store = GTK_LIST_STORE(gtk_combo_box_get_model(GTK_COMBO_BOX(optmenuRDN)));
+	
+	COMBOBOX_ADD(store, _("Unique ID"), EXPORT_LDIF_ID_UID);
+	COMBOBOX_ADD(store, _("Display Name"), EXPORT_LDIF_ID_DNAME);
+	COMBOBOX_ADD(store, _("Email Address"), EXPORT_LDIF_ID_EMAIL);
 
 	gtk_table_attach(GTK_TABLE(table), optmenuRDN, 1, 2, top, (top + 1),
 		GTK_FILL, 0, 0, 0);
@@ -549,8 +539,16 @@ static void export_ldif_page_dn( gint pageNum, gchar *pageLbl ) {
 		"the available RDN options that will be used to " \
 		"create the DN."
 		), NULL );
-
-	/* Third row */
+	
+	/* Third row*/
+	top++;
+	labelRDN = gtk_label_new("");
+	gtk_label_set_line_wrap(GTK_LABEL(labelRDN), TRUE);
+	gtk_label_set_justify(GTK_LABEL(labelRDN), GTK_JUSTIFY_CENTER);
+	gtk_table_attach(GTK_TABLE(table), labelRDN, 0, 2, top, (top + 1),
+		GTK_FILL, 0, 0, 0);
+		
+	/* Fourth row */
 	top++;
 	checkUseDN = gtk_check_button_new_with_label(
 			_( "Use DN attribute if present in data" ) );
@@ -568,7 +566,7 @@ static void export_ldif_page_dn( gint pageNum, gchar *pageLbl ) {
 		"will be used if the DN user attribute is not found."
 		), NULL );
 
-	/* Fourth row */
+	/* Fifth row */
 	top++;
 	checkEMail = gtk_check_button_new_with_label(
 			_( "Exclude record if no Email Address" ) );
@@ -585,6 +583,11 @@ static void export_ldif_page_dn( gint pageNum, gchar *pageLbl ) {
 
 
 	gtk_widget_show_all(vbox);
+
+	g_signal_connect(G_OBJECT(optmenuRDN), "changed",
+		G_CALLBACK(export_ldif_relative_dn_changed), labelRDN);
+	gtk_combo_box_set_active(GTK_COMBO_BOX(optmenuRDN), 0);
+
 
 	expldif_dlg.entrySuffix = entrySuffix;
 	expldif_dlg.optmenuRDN  = optmenuRDN;
@@ -754,8 +757,8 @@ static void export_ldif_fill_fields( ExportLdifCtl *ctl ) {
 			ctl->suffix );
 	}
 
-	gtk_option_menu_set_history(
-		GTK_OPTION_MENU( expldif_dlg.optmenuRDN ), ctl->rdnIndex );
+	gtk_combo_box_set_active(
+		GTK_COMBO_BOX( expldif_dlg.optmenuRDN ), ctl->rdnIndex );
 	gtk_toggle_button_set_active(
 		GTK_TOGGLE_BUTTON( expldif_dlg.checkUseDN ), ctl->useDN );
 	gtk_toggle_button_set_active(

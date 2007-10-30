@@ -83,23 +83,22 @@ void 		gtkaspell_check_backwards	(GtkAspell *gtkaspell);
 void 		gtkaspell_check_all		(GtkAspell *gtkaspell);
 void 		gtkaspell_highlight_all		(GtkAspell *gtkaspell);
 
-GtkWidget*	gtkaspell_dictionary_option_menu_new	(const gchar *aspell_path);
-GtkWidget*	gtkaspell_dictionary_option_menu_new_with_refresh
+GtkWidget*	gtkaspell_dictionary_combo_new	(const gchar *aspell_path,
+						 const gboolean refresh);
+
+GtkTreeModel*	gtkaspell_dictionary_store_new	(const gchar *aspell_path);
+GtkTreeModel*	gtkaspell_dictionary_store_new_with_refresh
 							(const gchar *aspell_path,
 							 gboolean     refresh);
 
 gchar*		gtkaspell_get_dictionary_menu_active_item
-							(GtkWidget *menu);
+							(GtkComboBox *combo);
 gint		gtkaspell_set_dictionary_menu_active_item
-							(GtkWidget *menu, 
+							(GtkComboBox *combo, 
 							 const gchar *dictionary);
 
-GtkWidget*	gtkaspell_sugmode_option_menu_new	(gint sugmode);
+GtkWidget*	gtkaspell_sugmode_combo_new	(gint sugmode);
 
-void 		gtkaspell_sugmode_option_menu_set	(GtkOptionMenu *optmenu,
-							 gint sugmode);
-
-gint 		gtkaspell_get_sugmode_from_option_menu	(GtkOptionMenu *optmenu);
 GSList*		gtkaspell_make_config_menu		(GtkAspell	*gtkaspell);
 
 gchar *gtkaspell_get_default_dictionary(GtkAspell *gtkaspell);

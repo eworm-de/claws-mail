@@ -60,6 +60,7 @@
 #include "alertpanel.h"
 #include "gtkaspell.h"
 #include "gtk/gtkutils.h"
+#include "gtk/combobox.h"
 
 #define ASPELL_FASTMODE       1
 #define ASPELL_NORMALMODE     2
@@ -86,6 +87,12 @@
 	aspell_config_replace(config, option, value);        \
 	RETURN_FALSE_IF_CONFIG_ERROR();                      \
 	}
+
+enum {
+	SET_GTKASPELL_NAME	= 0,
+	SET_GTKASPELL_FULLNAME	= 1,
+	SET_GTKASPELL_SIZE
+};
 
 typedef struct _GtkAspellCheckers {
 	GSList		*checkers;
@@ -1747,146 +1754,131 @@ static void gtkaspell_free_dictionary_list(GSList *list)
 	g_slist_free(list);
 }
 
-/* FIXME */
-GtkWidget *gtkaspell_dictionary_option_menu_new_with_refresh(const gchar *aspell_path,
+GtkTreeModel *gtkaspell_dictionary_store_new_with_refresh(const gchar *aspell_path,
 							     gboolean refresh)
 {
 	GSList *dict_list, *tmp;
-	GtkWidget *item;
-	GtkWidget *menu;
+	GtkListStore *store;
+	GtkTreeIter iter;
 	Dictionary *dict;
 
 	dict_list = gtkaspell_get_dictionary_list(aspell_path, refresh);
 	g_return_val_if_fail(dict_list, NULL);
 
-	menu = gtk_menu_new();
+	store = gtk_list_store_new(SET_GTKASPELL_SIZE,
+				   G_TYPE_STRING,
+				   G_TYPE_STRING,
+				   -1);
 	
 	for (tmp = dict_list; tmp != NULL; tmp = g_slist_next(tmp)) {
 		dict = (Dictionary *) tmp->data;
-		item = gtk_menu_item_new_with_label(dict->dictname);
-		g_object_set_data(G_OBJECT(item), "dict_name",
-				  dict->fullname); 
-					 
-		gtk_menu_append(GTK_MENU(menu), item);					 
-		gtk_widget_show(item);
+		
+		gtk_list_store_append(store, &iter);
+		gtk_list_store_set(store, &iter,
+				   SET_GTKASPELL_NAME, dict->dictname,
+				   SET_GTKASPELL_FULLNAME, dict->fullname,
+				   -1);
 	}
 
-	gtk_widget_show(menu);
-
-	return menu;
+	return GTK_TREE_MODEL(store);
 }
 
-GtkWidget *gtkaspell_dictionary_option_menu_new(const gchar *aspell_path)
+GtkTreeModel *gtkaspell_dictionary_store_new(const gchar *aspell_path)
 {
-	return gtkaspell_dictionary_option_menu_new_with_refresh
+	return gtkaspell_dictionary_store_new_with_refresh
 		(aspell_path, TRUE);
-
 }
 
-gchar *gtkaspell_get_dictionary_menu_active_item(GtkWidget *menu)
+GtkWidget *gtkaspell_dictionary_combo_new(const gchar *aspell_path,
+					  const gboolean refresh)
 {
-	GtkWidget *menuitem;
-	gchar *dict_fullname;
-	gchar *label;
+	GtkWidget *combo;
+	GtkCellRenderer *renderer;
 
-	g_return_val_if_fail(GTK_IS_MENU(menu), NULL);
+	combo = gtk_combo_box_new_with_model(
+			gtkaspell_dictionary_store_new_with_refresh(aspell_path, refresh));
+	gtk_combo_box_set_active(GTK_COMBO_BOX(combo), 0);   
+	gtk_widget_show(combo);
+	
+	renderer = gtk_cell_renderer_text_new();
+	gtk_cell_layout_pack_start(GTK_CELL_LAYOUT(combo), renderer, TRUE);
+	gtk_cell_layout_set_attributes(GTK_CELL_LAYOUT(combo),renderer,
+					"text",	SET_GTKASPELL_NAME, NULL);
+	
+	return combo;
+} 
 
-	menuitem = gtk_menu_get_active(GTK_MENU(menu));
-        dict_fullname = (gchar *) g_object_get_data(G_OBJECT(menuitem), 
-						    "dict_name");
-        g_return_val_if_fail(dict_fullname, NULL);
+gchar *gtkaspell_get_dictionary_menu_active_item(GtkComboBox *combo)
+{
+	GtkTreeIter iter;
+	GtkTreeModel *model;
+	gchar *dict_fullname = NULL;
+	
+	g_return_val_if_fail(GTK_IS_COMBO_BOX(combo), NULL);
+	g_return_val_if_fail(gtk_combo_box_get_active_iter(combo, &iter), NULL);
+	
+	model = gtk_combo_box_get_model(combo);
+	if(model == NULL)
+		return NULL;
+	
+	gtk_tree_model_get(model, &iter,
+			   SET_GTKASPELL_FULLNAME, &dict_fullname,
+			   -1);
 
-	label = g_strdup(dict_fullname);
-
-        return label;
-  
+        return dict_fullname;
 }
 
-gint gtkaspell_set_dictionary_menu_active_item(GtkWidget *menu,
+gint gtkaspell_set_dictionary_menu_active_item(GtkComboBox *combo,
 					       const gchar *dictionary)
 {
-	GList *cur;
-	gint n;
-
-	g_return_val_if_fail(menu != NULL, 0);
+	GtkTreeModel *model;
+	GtkTreeIter iter;
+	gchar *dict_name = NULL;
+	
+	g_return_val_if_fail(combo != NULL, 0);
 	g_return_val_if_fail(dictionary != NULL, 0);
-	g_return_val_if_fail(GTK_IS_OPTION_MENU(menu), 0);
+	g_return_val_if_fail(GTK_IS_COMBO_BOX(combo), 0);
 
-	n = 0;
-	for (cur = GTK_MENU_SHELL(gtk_option_menu_get_menu(
-					GTK_OPTION_MENU(menu)))->children;
-	     cur != NULL; cur = cur->next) {
-		GtkWidget *menuitem;
-		gchar *dict_name;
-
-		menuitem = GTK_WIDGET(cur->data);
-		dict_name = g_object_get_data(G_OBJECT(menuitem), 
-					      "dict_name");
+	if((model = gtk_combo_box_get_model(combo)) == NULL)
+		return 0;
+	if((gtk_tree_model_get_iter_first(model, &iter)) == FALSE)
+		return 0;
+	
+	do {
+		gtk_tree_model_get(model, &iter,
+				   SET_GTKASPELL_FULLNAME, &dict_name,
+				   -1);
+		
 		if ((dict_name != NULL) && !strcmp2(dict_name, dictionary)) {
-			gtk_option_menu_set_history(GTK_OPTION_MENU(menu), n);
-
+			gtk_combo_box_set_active_iter(combo, &iter);
+			g_free(dict_name);
 			return 1;
 		}
-		n++;
-	}
-
+		
+		g_free(dict_name);
+		
+	} while ((gtk_tree_model_iter_next(model, &iter)) == TRUE);
+	
 	return 0;
 }
 
-/* FIXME */
-GtkWidget *gtkaspell_sugmode_option_menu_new(gint sugmode)
+GtkWidget *gtkaspell_sugmode_combo_new(gint sugmode)
 {
-	GtkWidget *menu;
-	GtkWidget *item;
-
-	menu = gtk_menu_new();
-	gtk_widget_show(menu);
-
-	item = gtk_menu_item_new_with_label(_("Fast Mode"));
-        gtk_widget_show(item);
-	gtk_menu_append(GTK_MENU(menu), item);
-	g_object_set_data(G_OBJECT(item), "sugmode",
-			  GINT_TO_POINTER(ASPELL_FASTMODE));
-
-	item = gtk_menu_item_new_with_label(_("Normal Mode"));
-        gtk_widget_show(item);
-	gtk_menu_append(GTK_MENU(menu), item);
-	g_object_set_data(G_OBJECT(item), "sugmode",
-			  GINT_TO_POINTER(ASPELL_NORMALMODE));
+	GtkWidget *combo = gtkut_sc_combobox_create(NULL, FALSE);
+	GtkListStore *store = GTK_LIST_STORE(gtk_combo_box_get_model(
+						GTK_COMBO_BOX(combo)));
+	GtkTreeIter iter;
 	
-	item = gtk_menu_item_new_with_label(_("Bad Spellers Mode"));
-        gtk_widget_show(item);
-	gtk_menu_append(GTK_MENU(menu), item);
-	g_object_set_data(G_OBJECT(item), "sugmode",
-			  GINT_TO_POINTER(ASPELL_BADSPELLERMODE));
-
-	return menu;
-}
+	g_return_val_if_fail(store != NULL, NULL);
 	
-void gtkaspell_sugmode_option_menu_set(GtkOptionMenu *optmenu, gint sugmode)
-{
-	g_return_if_fail(GTK_IS_OPTION_MENU(optmenu));
+	COMBOBOX_ADD(store, _("Fast Mode"), ASPELL_FASTMODE);
+	COMBOBOX_ADD(store, _("Normal Mode"), ASPELL_NORMALMODE);
+	COMBOBOX_ADD(store, _("Bad Spellers Mode"), ASPELL_BADSPELLERMODE);
 
-	g_return_if_fail(sugmode == ASPELL_FASTMODE ||
-			 sugmode == ASPELL_NORMALMODE ||
-			 sugmode == ASPELL_BADSPELLERMODE);
-
-	gtk_option_menu_set_history(GTK_OPTION_MENU(optmenu), sugmode - 1);
-}
-
-gint gtkaspell_get_sugmode_from_option_menu(GtkOptionMenu *optmenu)
-{
-	gint sugmode;
-	GtkWidget *item;
+	gtk_combo_box_set_active(GTK_COMBO_BOX(combo), sugmode - 1);
+	gtk_widget_show(combo);
 	
-	g_return_val_if_fail(GTK_IS_OPTION_MENU(optmenu), -1);
-
-	item = gtk_menu_get_active(GTK_MENU(gtk_option_menu_get_menu(optmenu)));
-	
-	sugmode = GPOINTER_TO_INT(g_object_get_data(G_OBJECT(item),
-						    "sugmode"));
-
-	return sugmode;
+	return combo;
 }
 
 static void use_alternate_dict(GtkAspell *gtkaspell)

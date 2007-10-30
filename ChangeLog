@@ -1,3 +1,17 @@
+2007-10-30 [paul]	3.0.2cvs107
+
+	* src/expldifdlg.c
+	* src/prefs_account.c
+	* src/prefs_folder_item.c
+	* src/prefs_spelling.c
+	* src/prefs_themes.c
+	* src/wizard.c
+	* src/gtk/gtkaspell.c
+	* src/gtk/gtkaspell.h
+	* src/plugins/spamassassin/spamassassin_gtk.c
+		replace deprecated gtk_option_menu...
+		patch by Pawel Pekala
+
 2007-10-29 [colin]	3.0.2cvs106
 
 	* src/plugins/dillo_viewer/dillo_prefs.c

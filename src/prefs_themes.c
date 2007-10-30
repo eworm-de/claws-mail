@@ -141,7 +141,7 @@ static void prefs_themes_get_themes_and_names	(ThemesData *tdata);
 static int prefs_themes_cmp_name(gconstpointer a, gconstpointer b);
 static void prefs_themes_free_names		(ThemesData *tdata);
 
-static void prefs_themes_set_themes_menu	(GtkOptionMenu *opmenu, const ThemesData *tdata);
+static void prefs_themes_set_themes_menu	(GtkComboBox *combo, const ThemesData *tdata);
 
 static gchar *prefs_themes_get_theme_stats	(const gchar *dirname);
 static gboolean prefs_themes_is_system_theme	(const gchar *dirname);
@@ -262,43 +262,40 @@ static gboolean prefs_themes_is_system_theme(const gchar *dirname)
 	return FALSE;
 }
 
-static void prefs_themes_set_themes_menu(GtkOptionMenu *opmenu, const ThemesData *tdata)
+static void prefs_themes_set_themes_menu(GtkComboBox *combo, const ThemesData *tdata)
 {
+	GtkListStore *store;
+	GtkTreeIter iter;
 	GList	  *themes = tdata->names;
-	GtkWidget *menu;
-	GtkWidget *item;
 	gint       i = 0, active = 0;
 	GList     *sorted_list = NULL;
 
-	g_return_if_fail(opmenu != NULL);
-
-	gtk_option_menu_remove_menu(opmenu);
+	g_return_if_fail(combo != NULL);
 
 	/* sort theme data list by data name */
-	menu = gtk_menu_new ();
 	while (themes != NULL) {
 		ThemeName *tname = (ThemeName *)(themes->data);
 
 		sorted_list = g_list_insert_sorted(sorted_list, (gpointer)(tname),
-										(GCompareFunc)prefs_themes_cmp_name);
+				 		   (GCompareFunc)prefs_themes_cmp_name);
 
 		themes = g_list_next(themes);
 	}
 
+	store = gtk_list_store_new(2, G_TYPE_STRING, G_TYPE_POINTER);
+	
 	/* feed gtk_menu w/ sorted themes names */
 	themes = sorted_list;
 	while (themes != NULL) {
 		ThemeName *tname = (ThemeName *)(themes->data);
 		gchar     *tpath = (gchar *)(tname->item->data);
 
-		item = gtk_menu_item_new_with_label(tname->name);
-		gtk_widget_show(item);
-		g_signal_connect(G_OBJECT(item), "activate",
-				 G_CALLBACK(prefs_themes_menu_item_activated_cb),
-				 tname->item->data);
-		gtk_menu_append(GTK_MENU(menu), item);
+		gtk_list_store_append(store, &iter);
+		gtk_list_store_set(store, &iter,
+				   0, tname->name,
+				   1, tname->item->data, -1);
 
-		if (tdata->displayed != NULL && tdata->displayed == tpath)
+		if (tdata->displayed != NULL && !strcmp2(tdata->displayed,tpath))
 			active = i;
 		++i;
 
@@ -307,8 +304,12 @@ static void prefs_themes_set_themes_menu(GtkOptionMenu *opmenu, const ThemesData
 
 	g_list_free(sorted_list);
 
-	gtk_menu_set_active(GTK_MENU(menu), active);
-	gtk_option_menu_set_menu (opmenu, menu);
+	g_signal_connect(G_OBJECT(combo), "changed",
+			 G_CALLBACK(prefs_themes_menu_item_activated_cb),
+			 NULL);
+
+	gtk_combo_box_set_model(combo, GTK_TREE_MODEL(store));
+	gtk_combo_box_set_active(combo, active);
 }
 
 static int prefs_themes_cmp_name(gconstpointer a_p, gconstpointer b_p)
@@ -410,7 +411,7 @@ void prefs_themes_done(void)
 	debug_print("Finished preferences for themes.\n");
 	
 	stock_pixmap_themes_list_free(tdata->themes);
-	prefs_themes_free_names(tdata);	
+	prefs_themes_free_names(tdata); 
 	g_free(tdata->page);
 	g_free(tdata);
 }
@@ -422,7 +423,7 @@ static void prefs_themes_btn_use_clicked_cb(GtkWidget *widget, gpointer data)
 
 	theme_str = tdata->displayed;
 	
-		g_free(prefs_common.pixmap_theme_path);
+	g_free(prefs_common.pixmap_theme_path);
 	
         prefs_common.pixmap_theme_path = g_strdup(theme_str);
        
@@ -478,7 +479,7 @@ static void prefs_themes_btn_remove_clicked_cb(GtkWidget *widget, gpointer data)
 			alertpanel_notice(_("Theme removed successfully"));
 			/* update interface back to first theme */
 			prefs_themes_get_themes_and_names(tdata);
-			prefs_themes_set_themes_menu(GTK_OPTION_MENU(tdata->page->op_menu), tdata);
+			prefs_themes_set_themes_menu(GTK_COMBO_BOX(tdata->page->op_menu), tdata);
 			prefs_themes_display_global_stats(tdata);
 			tdata->displayed = (gchar *)((g_list_first(tdata->themes))->data);
 			prefs_themes_get_theme_info(tdata);
@@ -560,7 +561,7 @@ static void prefs_themes_btn_install_clicked_cb(GtkWidget *widget, gpointer data
 		if (NULL != insted) {
 			alertpanel_notice(_("Theme installed successfully"));
 			tdata->displayed = (gchar *)(insted->data);
-			prefs_themes_set_themes_menu(GTK_OPTION_MENU(tdata->page->op_menu), tdata);
+			prefs_themes_set_themes_menu(GTK_COMBO_BOX(tdata->page->op_menu), tdata);
 			prefs_themes_display_global_stats(tdata);
 			prefs_themes_get_theme_info(tdata);
 		}
@@ -581,10 +582,15 @@ end_inst:
 static void prefs_themes_menu_item_activated_cb(GtkWidget *widget, gpointer data)
 {
 	ThemesData *tdata = prefs_themes_data;
-	gchar      *path = (gchar *)data;
+	gchar      *path;
+	GtkTreeModel *model;
+	GtkTreeIter iter;
 	
-	g_return_if_fail(path != NULL);
+	g_return_if_fail(gtk_combo_box_get_active_iter(GTK_COMBO_BOX(widget), &iter));
 	
+	model = gtk_combo_box_get_model(GTK_COMBO_BOX(widget));			
+	gtk_tree_model_get(model, &iter, 1, &path, -1);	
+
 	tdata->displayed = path;
 	prefs_themes_get_theme_info(tdata);
 }
@@ -805,8 +811,6 @@ static void prefs_themes_create_widget(PrefsPage *page, GtkWindow *window, gpoin
 	GtkWidget *vbox2;
 	GtkWidget *hbox3;
 	GtkWidget *menu_themes;
-	GtkWidget *menu_themes_menu;
-	GtkWidget *glade_menuitem;
 	GtkWidget *btn_install;
 	GtkWidget *btn_more;
 	GtkWidget *label_global_status;
@@ -833,6 +837,7 @@ static void prefs_themes_create_widget(PrefsPage *page, GtkWindow *window, gpoin
 	GtkWidget *hbuttonbox1;
 	GtkWidget *btn_use;
 	GtkWidget *btn_remove;
+	GtkCellRenderer *renderer;
 
 	vbox1 = gtk_vbox_new (FALSE, VSPACING);
 	gtk_container_set_border_width (GTK_CONTAINER (vbox1), VBOX_BORDER);
@@ -845,14 +850,9 @@ static void prefs_themes_create_widget(PrefsPage *page, GtkWindow *window, gpoin
 	gtk_box_pack_start (GTK_BOX (vbox2), hbox3, FALSE, FALSE, 0);
 	gtk_container_set_border_width (GTK_CONTAINER (hbox3), 5);
 
-	menu_themes = gtk_option_menu_new ();
+	menu_themes = gtk_combo_box_new();
 	gtk_widget_show (menu_themes);
 	gtk_box_pack_start (GTK_BOX (hbox3), menu_themes, FALSE, FALSE, 0);
-	menu_themes_menu = gtk_menu_new ();
-	glade_menuitem = gtk_menu_item_new_with_label ("");
-	gtk_widget_show (glade_menuitem);
-	gtk_menu_append (GTK_MENU (menu_themes_menu), glade_menuitem);
-	gtk_option_menu_set_menu (GTK_OPTION_MENU (menu_themes), menu_themes_menu);
 
 	btn_install = gtk_button_new_with_label (_("Install new..."));
 	gtk_widget_show (btn_install);
@@ -1028,8 +1028,12 @@ static void prefs_themes_create_widget(PrefsPage *page, GtkWindow *window, gpoin
 	prefs_themes->op_menu     = menu_themes;
 
 	prefs_themes->page.widget = vbox1;
-
-	prefs_themes_set_themes_menu(GTK_OPTION_MENU(prefs_themes->op_menu), tdata);
+	
+	prefs_themes_set_themes_menu(GTK_COMBO_BOX(menu_themes), tdata);
+	renderer = gtk_cell_renderer_text_new();
+	gtk_cell_layout_pack_start(GTK_CELL_LAYOUT(menu_themes), renderer, TRUE);
+	gtk_cell_layout_set_attributes(GTK_CELL_LAYOUT(menu_themes), renderer,
+					"text", 0, NULL);
 	
 	prefs_themes_get_theme_info(tdata);
 	prefs_themes_display_global_stats(tdata);

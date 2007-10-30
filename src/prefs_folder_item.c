@@ -123,8 +123,8 @@ struct _FolderItemComposePage
 #if USE_ASPELL
 	GtkWidget *checkbtn_enable_default_dictionary;
 	GtkWidget *checkbtn_enable_default_alt_dictionary;
-	GtkWidget *optmenu_default_dictionary;
-	GtkWidget *optmenu_default_alt_dictionary;
+	GtkWidget *combo_default_dictionary;
+	GtkWidget *combo_default_alt_dictionary;
 #endif
 
 	/* apply to sub folders */
@@ -716,15 +716,12 @@ static void prefs_folder_item_compose_create_widget_func(PrefsPage * page_,
 	GtkTreeIter iter;
 #if USE_ASPELL
 	GtkWidget *checkbtn_enable_default_dictionary = NULL;
-	GtkWidget *optmenu_default_dictionary = NULL;
+	GtkWidget *combo_default_dictionary = NULL;
 	GtkWidget *checkbtn_enable_default_alt_dictionary = NULL;
-	GtkWidget *optmenu_default_alt_dictionary = NULL;
+	GtkWidget *combo_default_alt_dictionary = NULL;
 	GtkWidget *default_dictionary_rec_checkbtn = NULL;
 	GtkWidget *default_alt_dictionary_rec_checkbtn = NULL;
 	gchar *dictionary;
-	GtkOptionMenu *optmenu;
-	GtkWidget *menu;
-	GtkWidget *menuitem;
 #endif
 	GtkWidget *request_return_receipt_rec_checkbtn = NULL;
 	GtkWidget *save_copy_to_folder_rec_checkbtn = NULL;
@@ -901,25 +898,17 @@ static void prefs_folder_item_compose_create_widget_func(PrefsPage * page_,
 	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(checkbtn_enable_default_dictionary),
 	    			     item->prefs->enable_default_dictionary);
 
-	optmenu_default_dictionary = gtk_option_menu_new();
-	gtk_table_attach(GTK_TABLE(table), optmenu_default_dictionary, 1, 2,
+	combo_default_dictionary = gtkaspell_dictionary_combo_new(
+						prefs_common.aspell_path, TRUE);
+	gtk_table_attach(GTK_TABLE(table), combo_default_dictionary, 1, 2,
 	    		 rowcount, rowcount + 1, GTK_EXPAND | GTK_FILL, GTK_SHRINK, 0, 0);
 
-	gtk_option_menu_set_menu(GTK_OPTION_MENU(optmenu_default_dictionary), 
-				 gtkaspell_dictionary_option_menu_new(
-					 prefs_common.aspell_path));
-
 	dictionary = item->prefs->default_dictionary;
-
-	optmenu = GTK_OPTION_MENU(optmenu_default_dictionary);
-
-	menu = gtk_option_menu_get_menu(optmenu);
 	if (dictionary)
-		gtkaspell_set_dictionary_menu_active_item(optmenu_default_dictionary, dictionary);
-	menuitem = gtk_menu_get_active(GTK_MENU(menu));
-	gtk_menu_item_activate(GTK_MENU_ITEM(menuitem));
+		gtkaspell_set_dictionary_menu_active_item(
+			GTK_COMBO_BOX(combo_default_dictionary), dictionary);
 
-	SET_TOGGLE_SENSITIVITY(checkbtn_enable_default_dictionary, optmenu_default_dictionary);
+	SET_TOGGLE_SENSITIVITY(checkbtn_enable_default_dictionary, combo_default_dictionary);
 
 	default_dictionary_rec_checkbtn = gtk_check_button_new();
 	gtk_table_attach(GTK_TABLE(table), default_dictionary_rec_checkbtn, 2, 3, 
@@ -934,25 +923,17 @@ static void prefs_folder_item_compose_create_widget_func(PrefsPage * page_,
 	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(checkbtn_enable_default_alt_dictionary),
 	    			     item->prefs->enable_default_alt_dictionary);
 
-	optmenu_default_alt_dictionary = gtk_option_menu_new();
-	gtk_table_attach(GTK_TABLE(table), optmenu_default_alt_dictionary, 1, 2,
+	combo_default_alt_dictionary = gtkaspell_dictionary_combo_new(
+						prefs_common.aspell_path, FALSE);
+	gtk_table_attach(GTK_TABLE(table), combo_default_alt_dictionary, 1, 2,
 	    		 rowcount, rowcount + 1, GTK_EXPAND | GTK_FILL, GTK_SHRINK, 0, 0);
 
-	gtk_option_menu_set_menu(GTK_OPTION_MENU(optmenu_default_alt_dictionary), 
-				 gtkaspell_dictionary_option_menu_new_with_refresh(
-					 prefs_common.aspell_path, FALSE));
-
 	dictionary = item->prefs->default_alt_dictionary;
-
-	optmenu = GTK_OPTION_MENU(optmenu_default_alt_dictionary);
-
-	menu = gtk_option_menu_get_menu(optmenu);
 	if (dictionary)
-		gtkaspell_set_dictionary_menu_active_item(optmenu_default_alt_dictionary, dictionary);
-	menuitem = gtk_menu_get_active(GTK_MENU(menu));
-	gtk_menu_item_activate(GTK_MENU_ITEM(menuitem));
+		gtkaspell_set_dictionary_menu_active_item(
+			GTK_COMBO_BOX(combo_default_alt_dictionary), dictionary);
 
-	SET_TOGGLE_SENSITIVITY(checkbtn_enable_default_alt_dictionary, optmenu_default_alt_dictionary);
+	SET_TOGGLE_SENSITIVITY(checkbtn_enable_default_alt_dictionary, combo_default_alt_dictionary);
 
 	default_alt_dictionary_rec_checkbtn = gtk_check_button_new();
 	gtk_table_attach(GTK_TABLE(table), default_alt_dictionary_rec_checkbtn, 2, 3, 
@@ -976,9 +957,9 @@ static void prefs_folder_item_compose_create_widget_func(PrefsPage * page_,
 	page->optmenu_default_account = optmenu_default_account;
 #ifdef USE_ASPELL
 	page->checkbtn_enable_default_dictionary = checkbtn_enable_default_dictionary;
-	page->optmenu_default_dictionary = optmenu_default_dictionary;
+	page->combo_default_dictionary = combo_default_dictionary;
 	page->checkbtn_enable_default_alt_dictionary = checkbtn_enable_default_alt_dictionary;
-	page->optmenu_default_alt_dictionary = optmenu_default_alt_dictionary;
+	page->combo_default_alt_dictionary = combo_default_alt_dictionary;
 #endif
 
 	page->request_return_receipt_rec_checkbtn = request_return_receipt_rec_checkbtn;
@@ -1015,9 +996,7 @@ static void prefs_folder_item_compose_destroy_widget_func(PrefsPage *page_)
 static void compose_save_folder_prefs(FolderItem *folder, FolderItemComposePage *page)
 {
 	FolderItemPrefs *prefs = folder->prefs;
-#if USE_ASPELL
-	GtkWidget *menu;
-#endif
+
 	gboolean all = FALSE;
 
 	if (folder->path == NULL)
@@ -1075,16 +1054,16 @@ static void compose_save_folder_prefs(FolderItem *folder, FolderItemComposePage 
 	if (all || gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(page->default_dictionary_rec_checkbtn))) {
 		prefs->enable_default_dictionary =
 			gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(page->checkbtn_enable_default_dictionary));
-		menu = gtk_option_menu_get_menu(GTK_OPTION_MENU(page->optmenu_default_dictionary));
 		ASSIGN_STRING(prefs->default_dictionary,
-			      gtkaspell_get_dictionary_menu_active_item(menu));
+			      gtkaspell_get_dictionary_menu_active_item(
+			      		GTK_COMBO_BOX(page->combo_default_dictionary)));
 	}
 	if (all || gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(page->default_alt_dictionary_rec_checkbtn))) {
 		prefs->enable_default_alt_dictionary =
 			gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(page->checkbtn_enable_default_alt_dictionary));
-		menu = gtk_option_menu_get_menu(GTK_OPTION_MENU(page->optmenu_default_alt_dictionary));
 		ASSIGN_STRING(prefs->default_alt_dictionary,
-			      gtkaspell_get_dictionary_menu_active_item(menu));
+			      gtkaspell_get_dictionary_menu_active_item(
+				      GTK_COMBO_BOX(page->combo_default_alt_dictionary)));
 	}
 #endif
 

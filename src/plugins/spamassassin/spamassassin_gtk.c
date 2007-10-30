@@ -187,8 +187,15 @@ static void transport_sel_cb(GtkMenuItem *menuitem, gpointer data)
 {
 	struct SpamAssassinPage *page = (struct SpamAssassinPage *) data;
 	struct Transport *transport;
+	GtkTreeModel *model;
+	GtkTreeIter iter;
+	
+	g_return_if_fail(gtk_combo_box_get_active_iter(
+			GTK_COMBO_BOX(page->transport_optmenu), &iter));
+	
+	model = gtk_combo_box_get_model(GTK_COMBO_BOX(page->transport_optmenu));			
+	gtk_tree_model_get(model, &iter, 1, &transport, -1);
 
-	transport = (struct Transport *) g_object_get_data(G_OBJECT(menuitem), MENU_VAL_ID);
 	show_transport(page, transport);
 }
 
@@ -213,7 +220,6 @@ static void spamassassin_create_widget_func(PrefsPage * _page,
 
 	GtkWidget *transport_label;
 	GtkWidget *transport_optmenu;
-	GtkWidget *transport_menu;
 
 	GtkWidget *user_label;
 	GtkWidget *user_entry;
@@ -244,6 +250,10 @@ static void spamassassin_create_widget_func(PrefsPage * _page,
 	GtkWidget *mark_as_read_checkbtn;
 
 	GtkTooltips *tooltips;
+	
+	GtkListStore *store;
+	GtkCellRenderer *renderer;
+	GtkTreeIter iter;
 
 	tooltips = gtk_tooltips_new();
 
@@ -275,13 +285,18 @@ static void spamassassin_create_widget_func(PrefsPage * _page,
 	gtk_label_set_justify(GTK_LABEL(transport_label), GTK_JUSTIFY_RIGHT);
 	gtk_misc_set_alignment(GTK_MISC(transport_label), 1, 0.5);
 
-	transport_optmenu = gtk_option_menu_new();
+	store = gtk_list_store_new(2, G_TYPE_STRING, G_TYPE_POINTER);
+	transport_optmenu = gtk_combo_box_new_with_model(GTK_TREE_MODEL(store));
+	renderer = gtk_cell_renderer_text_new();
+	gtk_cell_layout_pack_start(GTK_CELL_LAYOUT(transport_optmenu),
+				   renderer, TRUE);
+	gtk_cell_layout_set_attributes(GTK_CELL_LAYOUT(transport_optmenu),
+				       renderer, "text", 0, NULL);
 	gtk_widget_show(transport_optmenu);
 
 	gtk_table_attach (GTK_TABLE (table_transport), transport_optmenu, 1, 2, 0, 1,
 			(GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
 			(GtkAttachOptions) (0), 0, 0);
-	transport_menu = gtk_menu_new();
 
 	user_label = gtk_label_new(_("User"));
 	gtk_widget_show(user_label);
@@ -498,14 +513,11 @@ static void spamassassin_create_widget_func(PrefsPage * _page,
 
 	active = 0;
 	for (i = 0; i < (sizeof(transports) / sizeof(struct Transport)); i++) {
-		GtkWidget *menuitem;
-
-		menuitem = gtk_menu_item_new_with_label(gettext(transports[i].name));
-		g_object_set_data(G_OBJECT(menuitem), MENU_VAL_ID, &transports[i]);
-		g_signal_connect(G_OBJECT(menuitem), "activate",
-				G_CALLBACK(transport_sel_cb), page);
-		gtk_widget_show(menuitem);
-		gtk_menu_append(GTK_MENU(transport_menu), menuitem);
+		
+		gtk_list_store_append(store, &iter);
+		gtk_list_store_set(store, &iter,
+				   0, gettext(transports[i].name),
+				   1, &transports[i], -1);
 
 		if (config->transport == transports[i].transport) {
 			show_transport(page, &transports[i]);
@@ -521,8 +533,9 @@ static void spamassassin_create_widget_func(PrefsPage * _page,
 				config->enable);
 		}
 	}
-	gtk_option_menu_set_menu(GTK_OPTION_MENU(transport_optmenu), transport_menu);
-	gtk_option_menu_set_history(GTK_OPTION_MENU(transport_optmenu), active);
+	gtk_combo_box_set_active(GTK_COMBO_BOX(transport_optmenu), active);
+	g_signal_connect(G_OBJECT(transport_optmenu), "changed",
+			 G_CALLBACK(transport_sel_cb), page);
 
 	page->page.widget = vbox1;
 }

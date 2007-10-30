@@ -61,6 +61,7 @@
 #include "ssl.h"
 #endif
 #include "prefs_common.h"
+#include "combobox.h"
 
 #ifdef MAEMO
 #include <libgnomevfs/gnome-vfs-volume.h>
@@ -571,18 +572,14 @@ static gboolean wizard_write_config(WizardWindow *wizard)
 	static gboolean mailbox_ok = FALSE;
 	PrefsAccount *prefs_account = prefs_account_new();
 	GList *account_list = NULL;
-	GtkWidget *menu, *menuitem;
 	gchar *smtp_server, *recv_server;
 	gint smtp_port, recv_port;
 #if (defined(USE_OPENSSL) || defined (USE_GNUTLS))
 	SSLType smtp_ssl_type, recv_ssl_type;
 #endif
 
-	menu = gtk_option_menu_get_menu(GTK_OPTION_MENU(wizard->recv_type));
-	menuitem = gtk_menu_get_active(GTK_MENU(menu));
-	prefs_account->protocol = GPOINTER_TO_INT
-			(g_object_get_data(G_OBJECT(menuitem), MENU_VAL_ID));
-	
+	prefs_account->protocol = combobox_get_active_data(
+					GTK_COMBO_BOX(wizard->recv_type));
 	
 	if (wizard->create_mailbox && prefs_account->protocol != A_IMAP4 && 
 	    !strlen(gtk_entry_get_text(GTK_ENTRY(wizard->mailbox_name)))) {
@@ -909,8 +906,7 @@ static void wizard_email_changed(GtkWidget *widget, gpointer data)
 	WizardWindow *wizard = (WizardWindow *)data;
 	RecvProtocol protocol;
 	gchar *text;
-	protocol = GPOINTER_TO_INT
-		(g_object_get_data(G_OBJECT(wizard->recv_type), MENU_VAL_ID));
+	protocol = combobox_get_active_data(GTK_COMBO_BOX(wizard->recv_type));
 	
 	text = get_default_server(wizard, "smtp");
 	gtk_entry_set_text(GTK_ENTRY(wizard->smtp_server), text);
@@ -1346,12 +1342,10 @@ static void wizard_protocol_change(WizardWindow *wizard, RecvProtocol protocol)
 	}
 }
 
-static void wizard_protocol_changed(GtkMenuItem *menuitem, gpointer data)
+static void wizard_protocol_changed(GtkComboBox *combo, gpointer data)
 {
 	WizardWindow *wizard = (WizardWindow *)data;
-	RecvProtocol protocol;
-	protocol = GPOINTER_TO_INT
-		(g_object_get_data(G_OBJECT(menuitem), MENU_VAL_ID));
+	RecvProtocol protocol = combobox_get_active_data(combo);
 
 	wizard_protocol_change(wizard, protocol);	
 }
@@ -1359,11 +1353,11 @@ static void wizard_protocol_changed(GtkMenuItem *menuitem, gpointer data)
 static GtkWidget* recv_page (WizardWindow * wizard)
 {
 	GtkWidget *table = gtk_table_new(1,1, FALSE);
-	GtkWidget *menu = gtk_menu_new();
-	GtkWidget *menuitem;
 	GtkTooltips *tips = gtk_tooltips_new();
 	GtkWidget *vbox;
 	GtkWidget *hbox;
+	GtkListStore *store;
+	GtkTreeIter iter;
 	gchar *text;
 	gint index = 0;
 
@@ -1378,24 +1372,14 @@ static GtkWidget* recv_page (WizardWindow * wizard)
 
 	hbox = gtk_hbox_new(FALSE, VSPACING_NARROW);
 	gtk_box_pack_start (GTK_BOX(vbox), hbox, FALSE, FALSE, 0);
-	wizard->recv_type = gtk_option_menu_new();
-	
-	MENUITEM_ADD (menu, menuitem, _("POP3"), A_POP3);
-	g_signal_connect(G_OBJECT(menuitem), "activate",
-			 G_CALLBACK(wizard_protocol_changed),
-			 wizard);
+	wizard->recv_type = gtkut_sc_combobox_create(NULL, FALSE);
+	store = GTK_LIST_STORE(gtk_combo_box_get_model(
+			GTK_COMBO_BOX(wizard->recv_type)));
 
-	MENUITEM_ADD (menu, menuitem, _("IMAP"), A_IMAP4);
-	g_signal_connect(G_OBJECT(menuitem), "activate",
-			 G_CALLBACK(wizard_protocol_changed),
-			 wizard);
+	COMBOBOX_ADD(store, _("POP3"), A_POP3);
+	COMBOBOX_ADD(store, _("IMAP"), A_IMAP4);
+	COMBOBOX_ADD(store, _("Local mbox file"), A_LOCAL);
 
-	MENUITEM_ADD (menu, menuitem, _("Local mbox file"), A_LOCAL);
-	g_signal_connect(G_OBJECT(menuitem), "activate",
-			 G_CALLBACK(wizard_protocol_changed),
-			 wizard);
-
-	gtk_option_menu_set_menu (GTK_OPTION_MENU (wizard->recv_type), menu);
 	switch(tmpl.recvtype) {
 	case A_POP3: 
 		index = 0;
@@ -1409,7 +1393,10 @@ static GtkWidget* recv_page (WizardWindow * wizard)
 	default:
 		index = 0;
 	}
-	gtk_option_menu_set_history(GTK_OPTION_MENU (wizard->recv_type), index);
+	gtk_combo_box_set_active(GTK_COMBO_BOX (wizard->recv_type), index);
+	g_signal_connect(G_OBJECT(wizard->recv_type), "changed",
+			 G_CALLBACK(wizard_protocol_changed),
+			 wizard);
 	PACK_BOX(hbox, _("<span weight=\"bold\">Server type:</span>"),
 		 wizard->recv_type);
 
@@ -1511,10 +1498,7 @@ wizard_response_cb (GtkDialog * dialog, int response, gpointer data)
 	int current_page, num_pages;
 	gboolean skip_mailbox_page = FALSE;
 #ifndef MAEMO
-	GtkWidget *menu = gtk_option_menu_get_menu(GTK_OPTION_MENU(wizard->recv_type));
-	GtkWidget *menuitem = gtk_menu_get_active(GTK_MENU(menu));
-	gint protocol = GPOINTER_TO_INT
-			(g_object_get_data(G_OBJECT(menuitem), MENU_VAL_ID));
+	gint protocol = combobox_get_active_data(GTK_COMBO_BOX(wizard->recv_type));
 
 	if (protocol == A_IMAP4) {
 		skip_mailbox_page = TRUE;

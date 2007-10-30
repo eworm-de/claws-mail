@@ -40,6 +40,7 @@
 #include "gtk/prefswindow.h"
 #include "gtk/filesel.h"
 #include "gtk/colorsel.h"
+#include "gtk/combobox.h"
 
 typedef struct _SpellingPage
 {
@@ -60,18 +61,15 @@ typedef struct _SpellingPage
 	GtkWidget *aspell_path_select;
 
 	GtkWidget *default_dict_label;
-	GtkWidget *default_dict_optmenu;
-	GtkWidget *default_dict_optmenu_menu;
+	GtkWidget *default_dict_combo;
 
 	GtkWidget *default_alt_dict_label;
-	GtkWidget *default_alt_dict_optmenu;
-	GtkWidget *default_alt_dict_optmenu_menu;
+	GtkWidget *default_alt_dict_combo;
 
 	GtkWidget *both_dict_check;
 
 	GtkWidget *sugmode_label;
-	GtkWidget *sugmode_optmenu;
-	GtkWidget *sugmode_optmenu_menu;
+	GtkWidget *sugmode_combo;
 
 	GtkWidget *misspelled_label;
 	GtkWidget *misspelled_colorbtn;
@@ -85,8 +83,6 @@ static void prefs_spelling_btn_aspell_path_clicked_cb(GtkWidget *widget,
 {
 	SpellingPage *spelling = (SpellingPage *) data;
 	gchar *file_path;
-	GtkWidget *new_menu;
-	GtkWidget *alt_new_menu;
 
 	file_path = filesel_select_file_open(_("Select dictionaries location"),
 					prefs_common.aspell_path);
@@ -97,20 +93,18 @@ static void prefs_spelling_btn_aspell_path_clicked_cb(GtkWidget *widget,
 		tmp = g_strdup_printf("%s%s", tmp_path, G_DIR_SEPARATOR_S);
 		g_free(tmp_path);
 
-		new_menu = gtkaspell_dictionary_option_menu_new(tmp);
-		gtk_option_menu_set_menu(GTK_OPTION_MENU(spelling->default_dict_optmenu),
-					 new_menu);
+		gtk_combo_box_set_model(GTK_COMBO_BOX(spelling->default_dict_combo),
+					gtkaspell_dictionary_store_new(tmp));
 
-		alt_new_menu = gtkaspell_dictionary_option_menu_new_with_refresh(tmp, FALSE);
-		gtk_option_menu_set_menu(GTK_OPTION_MENU(spelling->default_alt_dict_optmenu),
-					 alt_new_menu);
+		gtk_combo_box_set_model(GTK_COMBO_BOX(spelling->default_alt_dict_combo),
+					gtkaspell_dictionary_store_new_with_refresh(tmp, FALSE));
 
 		gtk_entry_set_text(GTK_ENTRY(spelling->aspell_path_entry), tmp);
 		/* select first one */
-		gtk_option_menu_set_history(GTK_OPTION_MENU(
-					spelling->default_dict_optmenu), 0);
-		gtk_option_menu_set_history(GTK_OPTION_MENU(
-					spelling->default_alt_dict_optmenu), 0);
+		gtk_combo_box_set_active(GTK_COMBO_BOX(
+					spelling->default_dict_combo), 0);
+		gtk_combo_box_set_active(GTK_COMBO_BOX(
+					spelling->default_alt_dict_combo), 0);
 	
 		g_free(tmp);
 
@@ -154,16 +148,13 @@ static void prefs_spelling_create_widget(PrefsPage *_page, GtkWindow *window, gp
 	GtkWidget *table;
 
 	GtkWidget *default_dict_label;
-	GtkWidget *default_dict_optmenu;
-	GtkWidget *default_dict_optmenu_menu;
+	GtkWidget *default_dict_combo;
 
 	GtkWidget *default_alt_dict_label;
-	GtkWidget *default_alt_dict_optmenu;
-	GtkWidget *default_alt_dict_optmenu_menu;
+	GtkWidget *default_alt_dict_combo;
 
 	GtkWidget *sugmode_label;
-	GtkWidget *sugmode_optmenu;
-	GtkWidget *sugmode_optmenu_menu;
+	GtkWidget *sugmode_combo;
 	
 	GtkWidget *both_dict_check;
 	GtkWidget *misspelled_label;
@@ -238,15 +229,11 @@ static void prefs_spelling_create_widget(PrefsPage *_page, GtkWindow *window, gp
 	gtk_label_set_justify(GTK_LABEL(default_dict_label), GTK_JUSTIFY_RIGHT);
 	gtk_misc_set_alignment(GTK_MISC(default_dict_label), 1, 0.5);
 	
-	default_dict_optmenu = gtk_option_menu_new();
-	gtk_widget_show(default_dict_optmenu);
-	gtk_widget_set_size_request(default_dict_optmenu, 180, -1);
-	gtk_table_attach (GTK_TABLE (table), default_dict_optmenu, 1, 2, 0, 1,
+	default_dict_combo = gtkaspell_dictionary_combo_new(
+					prefs_common.aspell_path, TRUE);
+	gtk_widget_set_size_request(default_dict_combo, 180, -1);
+	gtk_table_attach (GTK_TABLE (table), default_dict_combo, 1, 2, 0, 1,
 			  GTK_SHRINK, 0, 0, 0);
-
-	default_dict_optmenu_menu = gtk_menu_new();
-	gtk_option_menu_set_menu(GTK_OPTION_MENU(default_dict_optmenu),
-			default_dict_optmenu_menu);
 
 	default_alt_dict_label = gtk_label_new(_("Default alternate dictionary"));
 	gtk_widget_show(default_alt_dict_label);
@@ -256,22 +243,17 @@ static void prefs_spelling_create_widget(PrefsPage *_page, GtkWindow *window, gp
 	gtk_label_set_justify(GTK_LABEL(default_alt_dict_label), GTK_JUSTIFY_RIGHT);
 	gtk_misc_set_alignment(GTK_MISC(default_alt_dict_label), 1, 0.5);
 	
-	default_alt_dict_optmenu = gtk_option_menu_new();
-	gtk_widget_show(default_alt_dict_optmenu);
-	gtk_widget_set_size_request(default_alt_dict_optmenu, 180, -1);
-	gtk_table_attach (GTK_TABLE (table), default_alt_dict_optmenu, 1, 2, 1, 2,
+	default_alt_dict_combo = gtkaspell_dictionary_combo_new(
+					prefs_common.aspell_path, FALSE);
+	gtk_widget_set_size_request(default_alt_dict_combo, 180, -1);
+	gtk_table_attach (GTK_TABLE (table), default_alt_dict_combo, 1, 2, 1, 2,
 			  GTK_SHRINK, 0, 0, 0);
-
-	default_alt_dict_optmenu_menu = gtk_menu_new();
-	gtk_option_menu_set_menu(GTK_OPTION_MENU(default_alt_dict_optmenu),
-			default_alt_dict_optmenu_menu);
 
 	both_dict_check = gtk_check_button_new_with_label(
 				_("Check with both dictionaries"));
 	gtk_widget_show(both_dict_check);
 	gtk_table_attach (GTK_TABLE (table), both_dict_check, 1, 2, 2, 3,
 			  GTK_SHRINK, 0, 0, 0);
-
 
 	sugmode_label = gtk_label_new(_("Default suggestion mode"));
 	gtk_widget_show(sugmode_label);
@@ -281,15 +263,10 @@ static void prefs_spelling_create_widget(PrefsPage *_page, GtkWindow *window, gp
 	gtk_label_set_justify(GTK_LABEL(sugmode_label), GTK_JUSTIFY_RIGHT);
 	gtk_misc_set_alignment(GTK_MISC(sugmode_label), 1, 0.5);
 
-	sugmode_optmenu = gtk_option_menu_new();
-	gtk_widget_show(sugmode_optmenu);
-	gtk_widget_set_size_request(sugmode_optmenu, 180, -1); 
-	gtk_table_attach (GTK_TABLE (table), sugmode_optmenu, 1, 2, 3, 4,
+	sugmode_combo = gtkaspell_sugmode_combo_new(prefs_common.aspell_sugmode);
+	gtk_widget_set_size_request(sugmode_combo, 180, -1); 
+	gtk_table_attach (GTK_TABLE (table), sugmode_combo, 1, 2, 3, 4,
 			  GTK_SHRINK, 0, 0, 0);
-	
-	sugmode_optmenu_menu = gtk_menu_new();
-	gtk_option_menu_set_menu(GTK_OPTION_MENU(sugmode_optmenu),
-			sugmode_optmenu_menu);
 	
 	misspelled_hbox = gtk_hbox_new(FALSE, 10);
 	gtk_widget_show(misspelled_hbox);
@@ -319,7 +296,7 @@ static void prefs_spelling_create_widget(PrefsPage *_page, GtkWindow *window, gp
 	SET_TOGGLE_SENSITIVITY(enable_aspell_checkbtn, misspelled_colorbtn);
 	SET_TOGGLE_SENSITIVITY(enable_aspell_checkbtn, use_alternate_checkbtn);
 	SET_TOGGLE_SENSITIVITY(use_alternate_checkbtn, default_alt_dict_label);
-	SET_TOGGLE_SENSITIVITY(use_alternate_checkbtn, default_alt_dict_optmenu);
+	SET_TOGGLE_SENSITIVITY(use_alternate_checkbtn, default_alt_dict_combo);
 	SET_TOGGLE_SENSITIVITY(use_alternate_checkbtn, both_dict_check);
 
 	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(enable_aspell_checkbtn),
@@ -337,17 +314,12 @@ static void prefs_spelling_create_widget(PrefsPage *_page, GtkWindow *window, gp
 	g_signal_connect(G_OBJECT(aspell_path_select), "clicked", 
 			 G_CALLBACK(prefs_spelling_btn_aspell_path_clicked_cb),
 			 prefs_spelling);
-	gtk_option_menu_set_menu(GTK_OPTION_MENU(default_dict_optmenu),
-				 gtkaspell_dictionary_option_menu_new(prefs_common.aspell_path));
-	gtkaspell_set_dictionary_menu_active_item(default_dict_optmenu, prefs_common.dictionary);
-	gtk_option_menu_set_menu(GTK_OPTION_MENU(default_alt_dict_optmenu),
-				 gtkaspell_dictionary_option_menu_new_with_refresh(prefs_common.aspell_path, FALSE));
-	gtkaspell_set_dictionary_menu_active_item(default_alt_dict_optmenu, prefs_common.alt_dictionary);
+	gtkaspell_set_dictionary_menu_active_item(GTK_COMBO_BOX(default_dict_combo),
+						prefs_common.dictionary);
 
-	gtk_option_menu_set_menu(GTK_OPTION_MENU(sugmode_optmenu),
-				 gtkaspell_sugmode_option_menu_new(prefs_common.aspell_sugmode));
-	gtkaspell_sugmode_option_menu_set(GTK_OPTION_MENU(sugmode_optmenu),
-					  prefs_common.aspell_sugmode);
+	gtkaspell_set_dictionary_menu_active_item(GTK_COMBO_BOX(default_alt_dict_combo),
+						prefs_common.alt_dictionary);
+
 	g_signal_connect(G_OBJECT(misspelled_colorbtn), "clicked",
 			 G_CALLBACK(prefs_spelling_colorsel), prefs_spelling);
 
@@ -367,16 +339,11 @@ static void prefs_spelling_create_widget(PrefsPage *_page, GtkWindow *window, gp
 	prefs_spelling->aspell_path_entry	= aspell_path_entry;
 	prefs_spelling->aspell_path_select	= aspell_path_select;
 	prefs_spelling->default_dict_label	= default_dict_label;
-	prefs_spelling->default_dict_optmenu	= default_dict_optmenu;
-	prefs_spelling->default_dict_optmenu_menu
-		= default_dict_optmenu_menu;
+	prefs_spelling->default_dict_combo	= default_dict_combo;
 	prefs_spelling->default_alt_dict_label	= default_alt_dict_label;
-	prefs_spelling->default_alt_dict_optmenu	= default_alt_dict_optmenu;
-	prefs_spelling->default_alt_dict_optmenu_menu
-		= default_alt_dict_optmenu_menu;
+	prefs_spelling->default_alt_dict_combo	= default_alt_dict_combo;
 	prefs_spelling->sugmode_label		= sugmode_label;
-	prefs_spelling->sugmode_optmenu		= sugmode_optmenu;
-	prefs_spelling->sugmode_optmenu_menu	= sugmode_optmenu_menu;
+	prefs_spelling->sugmode_combo		= sugmode_combo;
 	prefs_spelling->misspelled_label	= misspelled_label;
 	prefs_spelling->misspelled_colorbtn	= misspelled_colorbtn;
 	prefs_spelling->both_dict_check	= both_dict_check;
@@ -406,20 +373,15 @@ static void prefs_spelling_save(PrefsPage *_page)
 	g_free(prefs_common.dictionary);
 	prefs_common.dictionary = 
 		gtkaspell_get_dictionary_menu_active_item(
-			gtk_option_menu_get_menu(
-				GTK_OPTION_MENU(
-					spelling->default_dict_optmenu)));
+				GTK_COMBO_BOX(spelling->default_dict_combo));
 
 	g_free(prefs_common.alt_dictionary);
 	prefs_common.alt_dictionary = 
 		gtkaspell_get_dictionary_menu_active_item(
-			gtk_option_menu_get_menu(
-				GTK_OPTION_MENU(
-					spelling->default_alt_dict_optmenu)));
+				GTK_COMBO_BOX(spelling->default_alt_dict_combo));
 
 	prefs_common.aspell_sugmode =
-		gtkaspell_get_sugmode_from_option_menu(
-			GTK_OPTION_MENU(spelling->sugmode_optmenu));
+		combobox_get_active_data(GTK_COMBO_BOX(spelling->sugmode_combo));
 
 	prefs_common.misspelled_col = spelling->misspell_col;
 }
