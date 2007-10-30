@@ -11,7 +11,7 @@ MINOR_VERSION=0
 MICRO_VERSION=2
 INTERFACE_AGE=0
 BINARY_AGE=0
-EXTRA_VERSION=108
+EXTRA_VERSION=109
 EXTRA_RELEASE=
 EXTRA_GTK2_VERSION=
 
@@ -365,13 +365,22 @@ dnl Check for OpenSSL
 AC_ARG_ENABLE(openssl,
 	[  --disable-openssl    disable OpenSSL support.],
 	[ac_cv_enable_openssl=$enableval], [ac_cv_enable_openssl=yes])
+dnl GNUTLS
+AC_ARG_ENABLE(gnutls,    [ --enable-gnutls      enable GnuTLS support],
+            [ac_cv_enable_gnutls=$enableval], [ac_cv_enable_gnutls=no])
+if test x$ac_cv_enable_openssl = xyes && test x$ac_cv_enable_gnutls != xyes; then
+	ac_cv_enable_gnutls="no"
+fi
+if test x$ac_cv_enable_gnutls = xyes; then
+	  ac_cv_enable_openssl="no"
+fi
+
 AC_MSG_CHECKING([whether to use OpenSSL])
 if test x"$ac_cv_enable_openssl" = xyes; then
 	AC_MSG_RESULT(yes)
 	PKG_CHECK_MODULES(OPENSSL, openssl >= 0.9.7, :, ac_cv_enable_openssl=no)
 	if test x$ac_cv_enable_openssl = xyes; then
 		AC_DEFINE(USE_OPENSSL, 1, Define if you want OpenSSL support)
-		disable_gnutls="yes"
 	else
 		AC_MSG_RESULT(not found)
 		AC_MSG_WARN([*** OpenSSL will not be supported ***])
@@ -382,34 +391,26 @@ fi
 AC_SUBST(OPENSSL_CFLAGS)
 AC_SUBST(OPENSSL_LIBS)
 
-dnl GNUTLS
-AC_ARG_ENABLE(gnutls,    [ --disable-gnutls      disable GnuTLS support],
-            [ac_cv_enable_gnutls=$enableval], [ac_cv_enable_gnutls=yes])
-if test "x$disable_gnutls" != "xyes"; then
-	AC_MSG_CHECKING([whether to use GnuTLS])
-	if test "x$ac_cv_enable_gnutls" != "xno"; then
-	  OCPPFLAGS="$CPPFLAGS"
-	  OLDFLAGS="$LDFLAGS"
-	  GNUTLS_LIBS=""
-	  AC_CHECK_HEADER(gnutls/gnutls.h, [
-		AC_CHECK_LIB(gnutls, gnutls_global_deinit, 
-			[AC_DEFINE(USE_GNUTLS, 1, Define to use GnuTLS.)],
-			[ac_cv_enable_gnutls=no])
-	  ],[ac_cv_enable_gnutls=no])
-	  if test "x$ac_cv_enable_gnutls" != "xyes"; then
-	   CPPFLAGS="$OCPPFLAGS"
-	   LDFLAGS="$OLDFLAGS"
-	  fi
-	fi
-	if test "x$ac_cv_enable_gnutls" = "xyes"; then
-	  AC_DEFINE([USE_GNUTLS],1, [Define to use GnuTLS])
-	  GNUTLS_LIBS="-lgnutls"
-	  disable_openssl="yes"
-	else
-	  GNUTLS_LIBS=""
-	fi
+AC_MSG_CHECKING([whether to use GnuTLS])
+if test "x$ac_cv_enable_gnutls" != "xno"; then
+  OCPPFLAGS="$CPPFLAGS"
+  OLDFLAGS="$LDFLAGS"
+  GNUTLS_LIBS=""
+  AC_CHECK_HEADER(gnutls/gnutls.h, [
+	AC_CHECK_LIB(gnutls, gnutls_global_deinit, 
+		[AC_DEFINE(USE_GNUTLS, 1, Define to use GnuTLS.)],
+		[ac_cv_enable_gnutls=no])
+  ],[ac_cv_enable_gnutls=no])
+  if test "x$ac_cv_enable_gnutls" != "xyes"; then
+   CPPFLAGS="$OCPPFLAGS"
+   LDFLAGS="$OLDFLAGS"
+  fi
+fi
+if test "x$ac_cv_enable_gnutls" = "xyes"; then
+  AC_DEFINE([USE_GNUTLS],1, [Define to use GnuTLS])
+  GNUTLS_LIBS="-lgnutls"
 else
-	ac_cv_enable_gnutls="no"
+  GNUTLS_LIBS=""
 fi
 AC_SUBST(GNUTLS_LIBS)
 
@@ -879,12 +880,18 @@ fi
 AM_CONDITIONAL(CLAWS_LIBETPAN, test "x$libetpan_result" = "xyes")
 
 
-dnl Printing support. GTK will be used if present and gnomeprint is not explicitely enabled
+dnl Printing support.
 PKG_CHECK_MODULES(GTK210, gtk+-2.0 >= 2.10, ac_cv_have_gtk210=yes, ac_cv_have_gtk210=no)
+
 AC_MSG_CHECKING([whether to use libgnomeprint])
 AC_ARG_ENABLE(gnomeprint,
 	[  --disable-gnomeprint		disable libgnomeprint support],
 	[ac_cv_enable_gnomeprint=$enableval], [ac_cv_enable_gnomeprint=auto])
+
+if test x$ac_cv_have_gtk210 = xyes; then
+	ac_cv_enable_gnomeprint="no"
+fi
+
 if test x$ac_cv_enable_gnomeprint = xyes \
    	-o \( x$ac_cv_enable_gnomeprint = xauto \
 	   -a x$ac_cv_have_gtk210 = xno \); then
