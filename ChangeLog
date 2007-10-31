@@ -1,3 +1,10 @@
+2007-10-31 [paul]	3.0.2cvs110
+
+	* src/ldapupdate.c
+		fix bug 1375, 'Impossible to modify e-mail
+		in LDAP addressbook twice'
+		Patch by Michael Rasmussen
+
 2007-10-30 [paul]	3.0.2cvs109
 
 	* configure.ac

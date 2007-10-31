@@ -1181,6 +1181,7 @@ void ldapsvr_update_contact(LdapServer *server, GHashTable *contact) {
 		else {
 			g_free(newRdn);
 			dn = g_strdup(NoRemove->new_dn);
+			g_hash_table_replace(contact, "dn", dn);
 		}
 	}
 	else {
