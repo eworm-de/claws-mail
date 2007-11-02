@@ -1452,6 +1452,8 @@ static void addressbook_del_clicked(GtkButton *button, gpointer data)
 			item = node->data;
 			node = g_list_next( node );
 			aio = ( AddrItemObject * ) item->addressItem;
+			if (!aio)
+				continue;
 			if( aio->type == ADDR_ITEM_GROUP ) {
 				ItemGroup *item = ( ItemGroup * ) aio;
 				GtkCTreeNode *nd = NULL;

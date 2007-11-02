@@ -1,3 +1,9 @@
+2007-11-02 [colin]	3.0.2cvs111
+
+	* src/addressbook.c
+		Maybe fix bug 1376, 'crash on 
+		addressbook manipulation'
+
 2007-10-31 [paul]	3.0.2cvs110
 
 	* src/ldapupdate.c
