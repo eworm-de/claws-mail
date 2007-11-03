@@ -2379,18 +2379,21 @@ static void compose_entries_set(Compose *compose, const gchar *mailto)
 {
 	gchar *to = NULL;
 	gchar *cc = NULL;
+	gchar *bcc = NULL;
 	gchar *subject = NULL;
 	gchar *body = NULL;
 	gchar *temp = NULL;
 	gsize  len = 0;
 	gchar *attach = NULL;
 	
-	scan_mailto_url(mailto, &to, &cc, NULL, &subject, &body, &attach);
+	scan_mailto_url(mailto, &to, &cc, &bcc, &subject, &body, &attach);
 
 	if (to)
 		compose_entry_append(compose, to, COMPOSE_TO);
 	if (cc)
 		compose_entry_append(compose, cc, COMPOSE_CC);
+	if (bcc)
+		compose_entry_append(compose, bcc, COMPOSE_BCC);
 	if (subject) {
 		if (!g_utf8_validate (subject, -1, NULL)) {
 			temp = g_locale_to_utf8 (subject, -1, NULL, &len, NULL);
@@ -2439,6 +2442,7 @@ static void compose_entries_set(Compose *compose, const gchar *mailto)
 	}
 	g_free(to);
 	g_free(cc);
+	g_free(bcc);
 	g_free(subject);
 	g_free(body);
 	g_free(attach);

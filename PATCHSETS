@@ -3024,3 +3024,4 @@
 ( cvs diff -u -r 1.654.2.3078 -r 1.654.2.3079 configure.ac;  ) > 3.0.2cvs109.patchset
 ( cvs diff -u -r 1.1.2.16 -r 1.1.2.17 src/ldapupdate.c;  ) > 3.0.2cvs110.patchset
 ( cvs diff -u -r 1.60.2.103 -r 1.60.2.104 src/addressbook.c;  ) > 3.0.2cvs111.patchset
+( cvs diff -u -r 1.100.2.56 -r 1.100.2.57 AUTHORS;  cvs diff -u -r 1.382.2.418 -r 1.382.2.419 src/compose.c;  cvs diff -u -r 1.1.2.42 -r 1.1.2.43 src/gtk/authors.h;  ) > 3.0.2cvs112.patchset
