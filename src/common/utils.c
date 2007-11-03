@@ -1500,6 +1500,13 @@ void decode_uri(gchar *decoded_uri, const gchar *encoded_uri)
 	decode_uri_with_plus(decoded_uri, encoded_uri, TRUE);
 }
 
+static gchar *decode_uri_gdup(const gchar *encoded_uri)
+{
+    gchar *buffer = g_malloc(strlen(encoded_uri)+1);
+    decode_uri(buffer, encoded_uri);
+    return buffer;
+}
+
 gint scan_mailto_url(const gchar *mailto, gchar **to, gchar **cc, gchar **bcc,
 		     gchar **subject, gchar **body, gchar **attach)
 {
@@ -1522,7 +1529,7 @@ gint scan_mailto_url(const gchar *mailto, gchar **to, gchar **cc, gchar **bcc,
 	}
 
 	if (to && !*to)
-		*to = g_strdup(tmp_mailto);
+		*to = decode_uri_gdup(tmp_mailto);
 
 	while (p) {
 		gchar *field, *value;
@@ -1545,20 +1552,17 @@ gint scan_mailto_url(const gchar *mailto, gchar **to, gchar **cc, gchar **bcc,
 		if (*value == '\0') continue;
 
 		if (cc && !*cc && !g_ascii_strcasecmp(field, "cc")) {
-			*cc = g_strdup(value);
+			*cc = decode_uri_gdup(value);
 		} else if (bcc && !*bcc && !g_ascii_strcasecmp(field, "bcc")) {
-			*bcc = g_strdup(value);
+			*bcc = decode_uri_gdup(value);
 		} else if (subject && !*subject &&
 			   !g_ascii_strcasecmp(field, "subject")) {
-			*subject = g_malloc(strlen(value) + 1);
-			decode_uri(*subject, value);
+			*subject = decode_uri_gdup(value);
 		} else if (body && !*body && !g_ascii_strcasecmp(field, "body")) {
-			*body = g_malloc(strlen(value) + 1);
-			decode_uri(*body, value);
+			*body = decode_uri_gdup(value);
 		} else if (attach && !*attach && !g_ascii_strcasecmp(field, "attach")) {
 			int i = 0;
-			*attach = g_malloc(strlen(value) + 1);
-			decode_uri(*attach, value);
+			*attach = decode_uri_gdup(value);
 			for (; forbidden_uris[i]; i++) {
 				if (strstr(*attach, forbidden_uris[i])) {
 					g_print("Refusing to attach '%s', potential private data leak\n",

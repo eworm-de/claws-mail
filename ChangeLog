@@ -1,3 +1,10 @@
+2007-11-03 [paul]	3.0.2cvs113
+
+	* src/common/utils.c
+		fix debian bug #448814, 'mailto: URI decoding
+		desn't decode the destination address field'
+		Patch by Federico Heinz <fheinz@vialibre.org.ar>
+
 2007-11-03 [paul]	3.0.2cvs112
 
 	* AUTHORS
