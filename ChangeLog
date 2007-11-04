@@ -1,3 +1,9 @@
+2007-11-04 [paul]	3.0.2cvs114
+
+	* src/gtk/gtkutils.c
+		gtkut_stock_with_text_button_set_create(): set
+		GTK_CAN_DEFAULT on buttons 2 and 3
+
 2007-11-03 [paul]	3.0.2cvs113
 
 	* src/common/utils.c
