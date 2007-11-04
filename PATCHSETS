@@ -3027,3 +3027,4 @@
 ( cvs diff -u -r 1.100.2.56 -r 1.100.2.57 AUTHORS;  cvs diff -u -r 1.382.2.418 -r 1.382.2.419 src/compose.c;  cvs diff -u -r 1.1.2.42 -r 1.1.2.43 src/gtk/authors.h;  ) > 3.0.2cvs112.patchset
 ( cvs diff -u -r 1.36.2.121 -r 1.36.2.122 src/common/utils.c;  ) > 3.0.2cvs113.patchset
 ( cvs diff -u -r 1.5.2.70 -r 1.5.2.71 src/gtk/gtkutils.c;  ) > 3.0.2cvs114.patchset
+( cvs diff -u -r 1.30.2.24 -r 1.30.2.25 tools/README;  cvs diff -u -r 1.1.2.2 -r 1.1.2.3 tools/claws-mail-compose-insert-files.pl;  ) > 3.0.2cvs115.patchset

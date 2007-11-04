@@ -442,18 +442,21 @@ Other tools
   WHAT IT DOES
 	This script enables inserting files into the message body of a new 
 	Claws Mail Compose window from the command line. Additionally To,
-	Cc, Subject and files to attach to the message can be specified. 
+	Cc, Bcc, Subject and files to attach to the message can be specified. 
 
   HOW TO USE IT
   	claws-mail-compose-insert-files.pl [options]
 	Options:
-		--help -h
-		--to mail@address.net[,mail2@address.net]
-		--cc mail@address.net[,mail2@address.net]
-		--subject "My subject"
-		--attach FILE
-		--insert FILE
+        	--help -h
+        	--to "Person One <mail@address.net>"
+        	--cc "Person One <mail@address.net>"
+       	 	--bcc "Person One <mail@address.net>"
+        	--subject "My subject"
+        	--attach FILE
+        	--insert FILE
 
+	For multiple recipients separate the addresses with ','
+	e.g. --to "Person One <mail@address.net>,Person Two <mail2@address.net>"
 	--attach and --insert can be used multiple times
   
   Contact: Paul Mangan <paul@claws-mail.org>

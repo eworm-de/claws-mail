@@ -23,19 +23,21 @@ use URI::Escape;
 #  *
 
 # This script enables inserting files into the message body of a new Claws Mail
-# Compose window from the command line. Additionally To, Cc, Subject and files
-# to attach to the message can be specified 
+# Compose window from the command line. Additionally To, Cc, Bcc, Subject and
+# files to attach to the message can be specified 
 
 my (@inserts,@attachments,@lines,@output) = ();
 my $body = "";
 my $attach_list = "";
 my $to = "";
 my $cc = "";
+my $bcc = "";
 my $subject = "";
 my $help = "";
 
 GetOptions("to=s"      => \$to,
 	   "cc=s"      => \$cc,
+	   "bcc=s"     => \$bcc,
 	   "subject=s" => \$subject,
 	   "attach=s"  => \@attachments,
 	   "insert=s"  => \@inserts,
@@ -63,9 +65,13 @@ foreach my $line (@output) {
 	$body .= "$line";
 }
 
+$to = uri_escape($to);
+$cc = uri_escape($cc);
+$bcc = uri_escape($bcc);
+$subject = uri_escape($subject);
 $body = uri_escape($body);
 
-system("claws-mail --compose \"mailto:$to?subject=$subject&cc=$cc&body=$body\" --attach $attach_list");
+system("claws-mail --compose \"mailto:$to?subject=$subject&cc=$cc&bcc=$bcc&body=$body\" --attach $attach_list");
 
 exit;
 
@@ -75,12 +81,15 @@ Usage:
 	claws-mail-compose-insert-files.pl [options]
 Options:
 	--help -h
-	--to mail@address.net[,mail2@address.net]
-	--cc mail@address.net[,mail2@address.net]
+	--to "Person One <mail@address.net>"
+	--cc "Person One <mail@address.net>"
+	--bcc "Person One <mail@address.net>"
 	--subject "My subject"
 	--attach FILE
 	--insert FILE
 
+For multiple recipients separate the addresses with ','
+e.g. --to "Person One <mail@address.net>,Person Two <mail2@address.net>"
 --attach and --insert can be used multiple times
 
 EOH
