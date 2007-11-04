@@ -255,7 +255,7 @@ static void addressbook_foldersel_load_folder( GtkCTreeNode *parentNode, ItemFol
 		fName = g_strdup( ADDRITEM_NAME(folder) );
 
 		name = &fName;
-		node = gtk_sctree_insert_node( tree, parentNode, NULL, name, FOLDER_SPACING,
+		node = gtk_ctree_insert_node( tree, parentNode, NULL, name, FOLDER_SPACING,
 				folderXpm, folderXpmMask, folderXpm, folderXpmMask,
 				FALSE, TRUE );
 
@@ -323,7 +323,7 @@ static void addressbook_foldersel_load_data( AddressIndex *addrIndex, gchar *pat
 				/* Add node for address book */
 				abf = ds->rawDataSource;
 				name = &dsName;
-				node = gtk_sctree_insert_node( tree, NULL, NULL,
+				node = gtk_ctree_insert_node( tree, NULL, NULL,
 						name, FOLDER_SPACING, bookXpm,
 						bookXpmMask, bookXpm, bookXpmMask,
 						FALSE, TRUE );

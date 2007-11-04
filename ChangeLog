@@ -1,3 +1,9 @@
+2007-11-04 [paul]	3.0.2cvs116
+
+	* src/addressbook_foldersel.c
+		fix gtk critical warning
+		Patch by Pawel Pekala
+
 2007-11-04 [paul]	3.0.2cvs115
 
 	* tools/README

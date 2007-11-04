@@ -3028,3 +3028,4 @@
 ( cvs diff -u -r 1.36.2.121 -r 1.36.2.122 src/common/utils.c;  ) > 3.0.2cvs113.patchset
 ( cvs diff -u -r 1.5.2.70 -r 1.5.2.71 src/gtk/gtkutils.c;  ) > 3.0.2cvs114.patchset
 ( cvs diff -u -r 1.30.2.24 -r 1.30.2.25 tools/README;  cvs diff -u -r 1.1.2.2 -r 1.1.2.3 tools/claws-mail-compose-insert-files.pl;  ) > 3.0.2cvs115.patchset
+( cvs diff -u -r 1.1.2.6 -r 1.1.2.7 src/addressbook_foldersel.c;  ) > 3.0.2cvs116.patchset
