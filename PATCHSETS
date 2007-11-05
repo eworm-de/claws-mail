@@ -3030,4 +3030,3 @@
 ( cvs diff -u -r 1.30.2.24 -r 1.30.2.25 tools/README;  cvs diff -u -r 1.1.2.2 -r 1.1.2.3 tools/claws-mail-compose-insert-files.pl;  ) > 3.0.2cvs115.patchset
 ( cvs diff -u -r 1.1.2.6 -r 1.1.2.7 src/addressbook_foldersel.c;  ) > 3.0.2cvs116.patchset
 ( cvs diff -u -r 1.1.2.3 -r 1.1.2.4 src/prefs_summary_open.c;  ) > 3.0.2cvs117.patchset
-( cvs diff -u -r 1.1.2.3 -r 1.1.2.4 src/prefs_summary_open.c;  ) > 3.0.2cvs117.patchset
