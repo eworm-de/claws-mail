@@ -1803,18 +1803,21 @@ static gint imap_do_remove_msgs(Folder *folder, FolderItem *dest,
 	uid_mapping = g_relation_new(2);
 	g_relation_index(uid_mapping, 0, g_direct_hash, g_direct_equal);
 
-	ok = imap_set_message_flags
-		(session, numlist, IMAP_FLAG_DELETED, TRUE);
-	if (ok != MAILIMAP_NO_ERROR) {
-		log_warning(LOG_PROTOCOL, _("can't set deleted flags\n"));
-		return ok;
-	}
+	if (numlist != NULL) {
+		ok = imap_set_message_flags
+			(session, numlist, IMAP_FLAG_DELETED, TRUE);
+		if (ok != MAILIMAP_NO_ERROR) {
+			log_warning(LOG_PROTOCOL, _("can't set deleted flags\n"));
+			return ok;
+		}
+	} /* else we just need to expunge */
 	ok = imap_cmd_expunge(session);
 	if (ok != MAILIMAP_NO_ERROR) {
 		log_warning(LOG_PROTOCOL, _("can't expunge\n"));
 		return ok;
 	}
 	
+	session->folder_content_changed = TRUE;
 	unlock_session(session);
 
 	dir = folder_item_get_path(msginfo->folder);
@@ -1828,6 +1831,8 @@ static gint imap_do_remove_msgs(Folder *folder, FolderItem *dest,
 
 	g_relation_destroy(uid_mapping);
 	g_slist_free(numlist);
+
+	imap_scan_required(folder, dest);
 
 	g_free(destdir);
 	if (ok == MAILIMAP_NO_ERROR)
