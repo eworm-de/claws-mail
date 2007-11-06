@@ -110,7 +110,7 @@ static gchar *action_name[7] =
 	 N_("first unread email"),
 	 N_("last opened email"),
 	 N_("last email in the list"),
-	 N_("Do nothing")
+	 N_("none")
 };
 
 void prefs_summary_open_open(void)

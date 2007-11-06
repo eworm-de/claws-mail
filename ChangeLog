@@ -1,3 +1,8 @@
+2007-11-06 [iwkse]	3.0.2cvs120
+
+	* src/prefs_summary_open.c
+		yet a string change
+
 2007-11-06 [paul]	3.0.2cvs119
 
 	* tools/Makefile.am
