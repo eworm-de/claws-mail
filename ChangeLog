@@ -1,3 +1,12 @@
+2007-11-06 [paul]	3.0.2cvs119
+
+	* tools/Makefile.am
+	* tools/README
+	* tools/csv2addressbook.pl
+		add a new script that imports a CSV formatted
+		address book. Becky and Thunderbird address
+		book are currently supported.
+
 2007-11-05 [colin]	3.0.2cvs118
 
 	* src/imap.c

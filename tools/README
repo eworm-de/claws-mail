@@ -14,6 +14,7 @@ Action scripts:
                                 OpenOffice
 
 Addressbook conversion:
+  csv2addressbook.pl		Import Becky or Thunderbird address books
   eud2gc.py                     Convert Eudora address book to Gnomecard
   kmail2claws-mail.pl           Import a Kmail address book (KDE2)
   kmail2claws-mail_v2.pl        Import a Kmail address book (KDE3)
@@ -137,6 +138,46 @@ Action scripts
 
 Address book conversion
 -----------------------
+
+* csv2addressbook.pl
+
+  WHAT IT DOES
+	This perl script will import a Becky address book and a Thunderbird
+	address book.
+
+  HOW TO USE IT
+	(You must run claws-mail at least once before running this script.)
+
+	Becky >= 2.41
+	-------------
+	In Becky you need to do a CSV full export with titles of your
+	address book.
+
+	Run the script with the following options:
+
+	perl csv2addressbook.pl --type=becky --csv=/full/path/to/file.csv
+
+	Addtionally you can use the option '--name="My address book"', if
+	you don't use this option the new Claws address book will be
+	called 'Becky address book'.
+
+
+	Thunderbird >= 2.0.0.6
+	----------------------
+	In Thunderbird you need to export your address book as 'comma
+	separated'.
+
+	Run the script with the following options:
+
+	perl csv2addressbook.pl --type=thunderbird --csv=/full/path/to/file.csv
+
+	Addtionally you can use the option '--name="My address book"', if
+	you don't use this option the new Claws address book will be
+	called 'Thunderbird address book'.
+
+	You can also run the script with '--help' to get a brief usage message.
+
+  Contact: Paul Mangan <paul@claws-mail.org>
 
 * eud2gc.py
 

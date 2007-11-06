@@ -1,9 +1,10 @@
 EXTRA_TOOLS = \
 	OOo2claws-mail.pl \
 	acroread2claws-mail.pl \
-	claws-mail-compose-insert-files.pl \
 	calypso_convert.pl \
+	claws-mail-compose-insert-files.pl \
 	convert_mbox.pl \
+	csv2addressbook.pl \
 	eud2gc.py \
 	filter_conv.pl \
 	filter_conv_new.pl \

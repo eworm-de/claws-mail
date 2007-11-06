@@ -3031,3 +3031,4 @@
 ( cvs diff -u -r 1.1.2.6 -r 1.1.2.7 src/addressbook_foldersel.c;  ) > 3.0.2cvs116.patchset
 ( cvs diff -u -r 1.1.2.3 -r 1.1.2.4 src/prefs_summary_open.c;  ) > 3.0.2cvs117.patchset
 ( cvs diff -u -r 1.179.2.196 -r 1.179.2.197 src/imap.c;  ) > 3.0.2cvs118.patchset
+( cvs diff -u -r 1.25.2.23 -r 1.25.2.24 tools/Makefile.am;  cvs diff -u -r 1.30.2.25 -r 1.30.2.26 tools/README;  diff -u /dev/null tools/csv2addressbook.pl;  ) > 3.0.2cvs119.patchset
