@@ -157,7 +157,11 @@ static gchar *get_part_as_string(MimeInfo *mimeinfo)
 			textdata = tmp;
 		}
 	}
-	if (textdata && mimeinfo->offset && 
+
+	if (textdata && mimeinfo->offset &&
+	    mimeinfo->offset+mimeinfo->length == g_utf8_strlen(textdata, -1)) {
+		/* textdata is OK */    
+	} else if (textdata && mimeinfo->offset && 
 	    mimeinfo->offset+ mimeinfo->length <= strlen(textdata)) {
 		real_data = g_strdup(textdata + mimeinfo->offset);
 		real_data[mimeinfo->length] = '\0';
@@ -234,16 +238,20 @@ static gint pgpinline_check_signature(MimeInfo *mimeinfo)
 
 	g_return_val_if_fail(mimeinfo != NULL, 0);
 
-	if (procmime_mimeinfo_parent(mimeinfo) == NULL)
+	if (procmime_mimeinfo_parent(mimeinfo) == NULL) {
+		privacy_set_error(_("Incorrect part"));
 		return 0; /* not parent */
-	if (mimeinfo->type != MIMETYPE_TEXT)
+	}
+	if (mimeinfo->type != MIMETYPE_TEXT) {
+		privacy_set_error(_("Not a text part"));
+		debug_print("type %d\n", mimeinfo->type);
 		return 0;
-
+	}
 	g_return_val_if_fail(mimeinfo->privacy != NULL, 0);
 	data = (PrivacyDataPGP *) mimeinfo->privacy;
 
 	textdata = get_part_as_string(mimeinfo);
-	
+
 	if (!textdata) {
 		g_free(textdata);
 		privacy_set_error(_("Couldn't get text data."));

@@ -1,3 +1,10 @@
+2007-11-07 [colin]	3.0.2cvs121
+
+	* src/plugins/pgpinline/pgpinline.c
+		Fix bug 1377, 'unspecific errors on 
+		signature checking'. Fix trimming of
+		UTF8 data.
+
 2007-11-06 [iwkse]	3.0.2cvs120
 
 	* src/prefs_summary_open.c
