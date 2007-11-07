@@ -3034,3 +3034,4 @@
 ( cvs diff -u -r 1.25.2.23 -r 1.25.2.24 tools/Makefile.am;  cvs diff -u -r 1.30.2.25 -r 1.30.2.26 tools/README;  diff -u /dev/null tools/csv2addressbook.pl;  ) > 3.0.2cvs119.patchset
 ( cvs diff -u -r 1.1.2.4 -r 1.1.2.5 src/prefs_summary_open.c;  ) > 3.0.2cvs120.patchset
 ( cvs diff -u -r 1.1.2.36 -r 1.1.2.37 src/plugins/pgpinline/pgpinline.c;  ) > 3.0.2cvs121.patchset
+( cvs diff -u -r 1.43.2.90 -r 1.43.2.91 src/toolbar.c;  ) > 3.0.2cvs122.patchset

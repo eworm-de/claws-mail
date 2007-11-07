@@ -875,15 +875,19 @@ static void activate_compose_button (Toolbar           *toolbar,
 		gtk_tool_button_set_icon_widget(
 			GTK_TOOL_BUTTON(toolbar->compose_mail_btn),
 			toolbar->compose_news_icon);
+#ifndef MAEMO
 		gtk_tool_item_set_tooltip(GTK_TOOL_ITEM(toolbar->compose_mail_btn), GTK_TOOLTIPS(toolbar->tooltips),
-			_("Compose News message"), NULL);	
+			_("Compose News message"), NULL);
+#endif	
 		gtk_widget_show(toolbar->compose_news_icon);
 	} else {
 		gtk_tool_button_set_icon_widget(
 			GTK_TOOL_BUTTON(toolbar->compose_mail_btn),
 			toolbar->compose_mail_icon);
+#ifndef MAEMO
 		gtk_tool_item_set_tooltip(GTK_TOOL_ITEM(toolbar->compose_mail_btn), GTK_TOOLTIPS(toolbar->tooltips),
-			_("Compose Email"), NULL);	
+			_("Compose Email"), NULL);
+#endif	
 		gtk_widget_show(toolbar->compose_mail_icon);
 	}
 	toolbar->compose_btn_type = type;
@@ -912,8 +916,10 @@ static void activate_learn_button (Toolbar           *toolbar,
 		gtk_tool_button_set_label(
 			GTK_TOOL_BUTTON(toolbar->learn_spam_btn),
 			_("Spam"));
+#ifndef MAEMO
 		gtk_tool_item_set_tooltip(GTK_TOOL_ITEM(toolbar->learn_spam_btn), GTK_TOOLTIPS(toolbar->tooltips),
 			_("Learn spam"), NULL);	
+#endif
 		gtk_widget_show(toolbar->learn_spam_icon);
 	} else {
 		gtk_tool_button_set_icon_widget(
@@ -922,8 +928,10 @@ static void activate_learn_button (Toolbar           *toolbar,
 		gtk_tool_button_set_label(
 			GTK_TOOL_BUTTON(toolbar->learn_spam_btn),
 			_("Ham"));
+#ifndef MAEMO
 		gtk_tool_item_set_tooltip(GTK_TOOL_ITEM(toolbar->learn_spam_btn), GTK_TOOLTIPS(toolbar->tooltips),
-			_("Learn ham"), NULL);	
+			_("Learn ham"), NULL);
+#endif	
 		gtk_widget_show(toolbar->learn_ham_icon);
 	}
 	toolbar->learn_btn_type = type;	
@@ -1707,7 +1715,7 @@ static void toolbar_buttons_cb(GtkWidget   *widget,
 		}
 	}
 }
-
+#ifndef MAEMO
 #define TOOLBAR_ITEM(item,icon,text,tooltip) {								\
 	item = GTK_WIDGET(gtk_tool_button_new(icon, text));						\
 	gtk_tool_item_set_homogeneous(GTK_TOOL_ITEM(item), FALSE);					\
@@ -1740,6 +1748,34 @@ static void toolbar_buttons_cb(GtkWidget   *widget,
 	gtk_widget_set_size_request(GTK_WIDGET(gchild->data), 9, -1);					\
 	g_list_free(gchild);										\
 }
+#else
+#define TOOLBAR_ITEM(item,icon,text,tooltip) {								\
+	item = GTK_WIDGET(gtk_tool_button_new(icon, text));						\
+	gtk_tool_item_set_homogeneous(GTK_TOOL_ITEM(item), FALSE);					\
+	gtk_tool_item_set_is_important(GTK_TOOL_ITEM(item), TRUE);					\
+	g_signal_connect (G_OBJECT(item), "clicked", G_CALLBACK(toolbar_buttons_cb), toolbar_item);	\
+	gtk_toolbar_insert(GTK_TOOLBAR(toolbar), GTK_TOOL_ITEM(item), -1);				\
+}
+
+#define TOOLBAR_MENUITEM(item,icon,text,tooltip,menutip) {						\
+	GtkWidget *child = NULL, *btn = NULL, *arr = NULL;						\
+	GList *gchild = NULL;										\
+	item = GTK_WIDGET(gtk_menu_tool_button_new(icon, text));					\
+	gtk_tool_item_set_homogeneous(GTK_TOOL_ITEM(item), FALSE);				\
+	gtk_tool_item_set_is_important(GTK_TOOL_ITEM(item), TRUE);					\
+	g_signal_connect (G_OBJECT(item), "clicked", G_CALLBACK(toolbar_buttons_cb), toolbar_item);	\
+	gtk_toolbar_insert(GTK_TOOLBAR(toolbar), GTK_TOOL_ITEM(item), -1);				\
+	child = gtk_bin_get_child(GTK_BIN(item)); 							\
+	gchild = gtk_container_get_children(								\
+			GTK_CONTAINER(child)); 								\
+	btn = (GtkWidget *)gchild->data;								\
+	arr = (GtkWidget *)(gchild->next?gchild->next->data:NULL);					\
+	g_list_free(gchild);										\
+	gchild = gtk_container_get_children(GTK_CONTAINER(arr));					\
+	gtk_widget_set_size_request(GTK_WIDGET(gchild->data), 9, -1);					\
+	g_list_free(gchild);										\
+}
+#endif
 
 #define MAKE_MENU(entries,path,btn) {									\
 	n_menu_entries = sizeof(entries) /								\
@@ -1767,15 +1803,15 @@ Toolbar *toolbar_create(ToolbarType 	 type,
 	GtkWidget *menu;
 	guint n_menu_entries;
 	GtkItemFactory *factory;
-	GtkTooltips *toolbar_tips;
 	ToolbarSylpheedActions *action_item;
 	GSList *cur;
 	GSList *toolbar_list;
 	Toolbar *toolbar_data;
-
+#ifndef MAEMO
+	GtkTooltips *toolbar_tips;
 	
  	toolbar_tips = gtk_tooltips_new();
-	
+#endif	
 	toolbar_read_config_file(type);
 	toolbar_list = toolbar_get_list(type);
 
@@ -2033,7 +2069,9 @@ Toolbar *toolbar_create(ToolbarType 	 type,
 
 	}
 	toolbar_data->toolbar = toolbar;
+#ifndef MAEMO
 	toolbar_data->tooltips = toolbar_tips;
+#endif
 	gtk_widget_show_all(toolbar);
 
 	if (type == TOOLBAR_MAIN) {

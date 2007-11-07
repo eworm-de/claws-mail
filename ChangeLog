@@ -1,3 +1,8 @@
+2007-11-07 [paul]	3.0.2cvs122
+
+	* src/toolbar.c
+		MAEMO: remove tooltips
+
 2007-11-07 [colin]	3.0.2cvs121
 
 	* src/plugins/pgpinline/pgpinline.c
