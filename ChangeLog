@@ -1,3 +1,10 @@
+2007-11-07 [colin]	3.0.2cvs125
+
+	* src/toolbar.c
+		Re-change the string occurence of A_CLAWS_ACTIONS
+		to A_SYL_ACTIONS, to prevent parse errors of the
+		toolbar_*.xml files
+
 2007-11-07 [colin]	3.0.2cvs124
 
 	* src/mimeview.c

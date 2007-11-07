@@ -208,7 +208,7 @@ struct {
 #ifdef USE_ASPELL
 	{ "A_CHECK_SPELLING",	N_("Check spelling")                       },
 #endif
-	{ "A_CLAWS_ACTIONS",   	N_("Claws Mail Actions Feature")	   }, 
+	{ "A_SYL_ACTIONS",   	N_("Claws Mail Actions Feature")	   }, 
 	{ "A_CANCEL_INC",	N_("Cancel receiving")			   },
 	{ "A_CLOSE",		N_("Close window")			   },
 	{ "A_SEPARATOR",     	"Separator"				}
