@@ -26,7 +26,7 @@
 
 typedef struct _Toolbar Toolbar;
 typedef struct _ToolbarItem ToolbarItem;
-typedef struct _ToolbarSylpheedActions ToolbarSylpheedActions;
+typedef struct _ToolbarClawsActions ToolbarClawsActions;
 
 typedef enum {
 	TOOLBAR_MAIN = 0,	
@@ -129,9 +129,9 @@ struct _ToolbarItem {
 
 #define TOOLBAR_DESTROY_ACTIONS(action_list) \
 { \
-	ToolbarSylpheedActions *action; \
+	ToolbarClawsActions *action; \
 	while (action_list != NULL) { \
-		action = (ToolbarSylpheedActions*)action_list->data;\
+		action = (ToolbarClawsActions*)action_list->data;\
 		action_list = \
 			g_slist_remove(action_list, action);\
 		if (action->name) \
@@ -187,7 +187,7 @@ enum {
 #endif
 
 	/* common items */
-	A_SYL_ACTIONS,
+	A_CLAWS_ACTIONS,
 	A_CANCEL_INC,
 	A_CLOSE,
 
@@ -196,7 +196,7 @@ enum {
 	N_ACTION_VAL
 };
 
-struct _ToolbarSylpheedActions {
+struct _ToolbarClawsActions {
 	GtkWidget *widget;
 	gchar     *name;
 };

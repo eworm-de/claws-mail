@@ -256,7 +256,7 @@ static void prefs_toolbar_save(PrefsPage *_page)
 			item->index = toolbar_ret_val_from_descr(event);
 			g_free(event);
 
-			/* TODO: save A_SYL_ACTIONS only if they are still active */
+			/* TODO: save A_CLAWS_ACTIONS only if they are still active */
 			toolbar_set_list_item(item, prefs_toolbar->source);
 
 			g_free(item->file);
@@ -468,7 +468,7 @@ static void prefs_toolbar_register(GtkButton *button, ToolbarPage *prefs_toolbar
 				return;
 			}
 		} else
-			event = toolbar_ret_descr_from_val(A_SYL_ACTIONS);
+			event = toolbar_ret_descr_from_val(A_CLAWS_ACTIONS);
 		
 		text = gtk_editable_get_chars(
 			GTK_EDITABLE(prefs_toolbar->item_text_entry), 0 , -1);
@@ -554,7 +554,7 @@ static void prefs_toolbar_substitute(GtkButton *button, ToolbarPage *prefs_toolb
 				return;
 			}
 		} else
-			icon_event = toolbar_ret_descr_from_val(A_SYL_ACTIONS);
+			icon_event = toolbar_ret_descr_from_val(A_CLAWS_ACTIONS);
 		
 		text = gtk_editable_get_chars(
 			GTK_EDITABLE(prefs_toolbar->item_text_entry), 0 , -1);
@@ -1192,7 +1192,7 @@ static gboolean set_list_selected(GtkTreeSelection *selector,
 	gtk_entry_set_text(GTK_ENTRY(prefs_toolbar->item_text_entry), 
 			   icon_text);
 
-	if (g_utf8_collate(toolbar_ret_descr_from_val(A_SYL_ACTIONS), descr) == 0) {
+	if (g_utf8_collate(toolbar_ret_descr_from_val(A_CLAWS_ACTIONS), descr) == 0) {
 		gtk_combo_box_set_active(GTK_COMBO_BOX(
 			prefs_toolbar->item_type_combo), ITEM_USER_ACTION);
 

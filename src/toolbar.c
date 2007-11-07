@@ -208,7 +208,7 @@ struct {
 #ifdef USE_ASPELL
 	{ "A_CHECK_SPELLING",	N_("Check spelling")                       },
 #endif
-	{ "A_SYL_ACTIONS",   	N_("Claws Mail Actions Feature")	   }, 
+	{ "A_CLAWS_ACTIONS",   	N_("Claws Mail Actions Feature")	   }, 
 	{ "A_CANCEL_INC",	N_("Cancel receiving")			   },
 	{ "A_CLOSE",		N_("Close window")			   },
 	{ "A_SEPARATOR",     	"Separator"				}
@@ -304,7 +304,7 @@ static gboolean toolbar_is_duplicate(gint action, ToolbarType source)
 {
 	GSList *cur;
 
-	if ((action == A_SEPARATOR) || (action == A_SYL_ACTIONS)) 
+	if ((action == A_SEPARATOR) || (action == A_CLAWS_ACTIONS)) 
 		return FALSE;
 
 	for (cur = toolbar_config[source].item_list; cur != NULL; cur = cur->next) {
@@ -836,7 +836,7 @@ static void toolbar_action_execute(GtkWidget    *widget,
 	gint i = 0;
 
 	for (cur = action_list; cur != NULL;  cur = cur->next) {
-		ToolbarSylpheedActions *act = (ToolbarSylpheedActions*)cur->data;
+		ToolbarClawsActions *act = (ToolbarClawsActions*)cur->data;
 
 		if (widget == act->widget) {
 			
@@ -1702,7 +1702,7 @@ static void toolbar_buttons_cb(GtkWidget   *widget,
 #ifdef USE_ASPELL
 		{ A_CHECK_SPELLING,     toolbar_check_spelling_cb       },
 #endif
-		{ A_SYL_ACTIONS,	toolbar_actions_execute_cb	},
+		{ A_CLAWS_ACTIONS,	toolbar_actions_execute_cb	},
 		{ A_CANCEL_INC,		toolbar_cancel_inc_cb		}
 	};
 
@@ -1803,7 +1803,7 @@ Toolbar *toolbar_create(ToolbarType 	 type,
 	GtkWidget *menu;
 	guint n_menu_entries;
 	GtkItemFactory *factory;
-	ToolbarSylpheedActions *action_item;
+	ToolbarClawsActions *action_item;
 	GSList *cur;
 	GSList *toolbar_list;
 	Toolbar *toolbar_data;
@@ -2046,9 +2046,9 @@ Toolbar *toolbar_create(ToolbarType 	 type,
 			break;
 #endif
 
-		case A_SYL_ACTIONS:
+		case A_CLAWS_ACTIONS:
 			TOOLBAR_ITEM(item,icon_wid,toolbar_item->text,toolbar_item->text);
-			action_item = g_new0(ToolbarSylpheedActions, 1);
+			action_item = g_new0(ToolbarClawsActions, 1);
 			action_item->widget = item;
 			action_item->name   = g_strdup(toolbar_item->text);
 
@@ -2343,7 +2343,7 @@ void toolbar_main_set_sensitive(gpointer data)
 				M_INC_ACTIVE);
 
 	for (cur = toolbar->action_list; cur != NULL;  cur = cur->next) {
-		ToolbarSylpheedActions *act = (ToolbarSylpheedActions*)cur->data;
+		ToolbarClawsActions *act = (ToolbarClawsActions*)cur->data;
 		
 		SET_WIDGET_COND(act->widget, M_TARGET_EXIST|M_UNLOCKED);
 	}
@@ -2406,7 +2406,7 @@ void toolbar_comp_set_sensitive(gpointer data, gboolean sensitive)
 		GTK_BUTTON_SET_SENSITIVE(compose->toolbar->spellcheck_btn, sensitive);
 #endif
 	for (; items != NULL; items = g_slist_next(items)) {
-		ToolbarSylpheedActions *item = (ToolbarSylpheedActions *)items->data;
+		ToolbarClawsActions *item = (ToolbarClawsActions *)items->data;
 		GTK_BUTTON_SET_SENSITIVE(item->widget, sensitive);
 	}
 }

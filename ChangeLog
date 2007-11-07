@@ -1,3 +1,11 @@
+2007-11-07 [paul]	3.0.2cvs123
+
+	* src/prefs_toolbar.c
+	* src/toolbar.c
+	* src/toolbar.h
+		rename ToolbarSylpheedActions to ToolbarClawsActions
+		rename A_SYL_ACTIONS to A_CLAWS_ACTIONS
+
 2007-11-07 [paul]	3.0.2cvs122
 
 	* src/toolbar.c
