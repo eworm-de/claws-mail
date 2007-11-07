@@ -1901,13 +1901,17 @@ static void mimeview_view_file(const gchar *filename, MimeInfo *partinfo,
 		if ((p = strchr(cmd, '%')) && *(p + 1) == 's' &&
 		    !strchr(p + 2, '%')) {
 			g_snprintf(buf, sizeof(buf), cmd, filename);
-			g_chmod(filename, S_IRUSR);
+			if (!prefs_common.save_parts_readwrite)
+				g_chmod(filename, S_IRUSR);
+			else
+				g_chmod(filename, S_IRUSR|S_IWUSR);
  		} else {
 			g_warning("MIME viewer command line is invalid: '%s'", cmd);
 			mimeview_open_part_with(mimeview, partinfo, FALSE);
  		}
 		if (execute_command_line(buf, TRUE) != 0) {
-			g_chmod(filename, S_IRUSR|S_IWUSR);
+			if (!prefs_common.save_parts_readwrite)
+				g_chmod(filename, S_IRUSR|S_IWUSR);
 			mimeview_open_part_with(mimeview, partinfo, FALSE);
 		}
 	}

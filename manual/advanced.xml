@@ -655,6 +655,14 @@
 	</listitem>
       </varlistentry>
       <varlistentry>
+	<term><literal>save_parts_readwrite</literal></term>
+	<listitem>
+	  <para>
+	Saves temporary files when opening attachment with write bit set.
+	  </para>
+	</listitem>
+      </varlistentry>
+      <varlistentry>
 	<term><literal>skip_ssl_cert_check</literal></term>
 	<listitem>
 	  <para>

@@ -1,3 +1,12 @@
+2007-11-07 [colin]	3.0.2cvs124
+
+	* src/mimeview.c
+	* src/prefs_common.c
+	* src/prefs_common.h
+	* manual/advanced.xml
+		Add an hidden pref, 'save_parts_readwrite';
+		completes 3.0.2cvs35
+
 2007-11-07 [paul]	3.0.2cvs123
 
 	* src/prefs_toolbar.c

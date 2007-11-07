@@ -1040,6 +1040,8 @@ static PrefParam param[] = {
 	 NULL, NULL, NULL},
 	{"live_dangerously", "FALSE", &prefs_common.live_dangerously, P_BOOL,
 	 NULL, NULL, NULL},
+	{"save_parts_readwrite", "FALSE", &prefs_common.save_parts_readwrite, P_BOOL,
+	 NULL, NULL, NULL},
 	{"hide_quotes", "0", &prefs_common.hide_quotes, P_INT,
 	 NULL, NULL, NULL},
 	{"unsafe_ssl_certs", "FALSE", &prefs_common.unsafe_ssl_certs, P_BOOL,

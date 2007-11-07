@@ -459,6 +459,7 @@ struct _PrefsCommon
 	gint broken_are_utf8;
 	gint skip_ssl_cert_check;
 	gint live_dangerously;
+	gint save_parts_readwrite;
 	gint never_send_retrcpt;
 	gint hide_quotes;
 	gboolean unsafe_ssl_certs;

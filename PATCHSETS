@@ -3036,3 +3036,4 @@
 ( cvs diff -u -r 1.1.2.36 -r 1.1.2.37 src/plugins/pgpinline/pgpinline.c;  ) > 3.0.2cvs121.patchset
 ( cvs diff -u -r 1.43.2.90 -r 1.43.2.91 src/toolbar.c;  ) > 3.0.2cvs122.patchset
 ( cvs diff -u -r 1.30.2.46 -r 1.30.2.47 src/prefs_toolbar.c;  cvs diff -u -r 1.43.2.91 -r 1.43.2.92 src/toolbar.c;  cvs diff -u -r 1.19.2.25 -r 1.19.2.26 src/toolbar.h;  ) > 3.0.2cvs123.patchset
+( cvs diff -u -r 1.83.2.121 -r 1.83.2.122 src/mimeview.c;  cvs diff -u -r 1.204.2.150 -r 1.204.2.151 src/prefs_common.c;  cvs diff -u -r 1.103.2.96 -r 1.103.2.97 src/prefs_common.h;  cvs diff -u -r 1.1.2.43 -r 1.1.2.44 manual/advanced.xml;  ) > 3.0.2cvs124.patchset
