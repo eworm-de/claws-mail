@@ -208,7 +208,7 @@ struct {
 #ifdef USE_ASPELL
 	{ "A_CHECK_SPELLING",	N_("Check spelling")                       },
 #endif
-	{ "A_SYL_ACTIONS",   	N_("Claws Mail Actions Feature")	   }, 
+	{ "A_CLAWS_ACTIONS",   	N_("Claws Mail Actions Feature")	   }, 
 	{ "A_CANCEL_INC",	N_("Cancel receiving")			   },
 	{ "A_CLOSE",		N_("Close window")			   },
 	{ "A_SEPARATOR",     	"Separator"				}
@@ -390,6 +390,11 @@ static void toolbar_parse_item(XMLFile *file, ToolbarType source)
 			item->file = g_strdup("trash_btn");
 			g_free(item->text);
 			item->text = g_strdup(_("Trash"));
+			rewrite = TRUE;
+		}
+		if (item->index == -1 && !strcmp(value, "A_SYL_ACTIONS")) {
+			/* switch button */
+			item->index = A_CLAWS_ACTIONS;
 			rewrite = TRUE;
 		}
 		attr = g_list_next(attr);

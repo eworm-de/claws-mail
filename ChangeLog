@@ -1,3 +1,8 @@
+2007-11-07 [colin]	3.0.2cvs126
+
+	* src/toolbar.c
+		Migrate from A_SYL_ACTIONS to A_CLAWS_ACTIONS
+
 2007-11-07 [colin]	3.0.2cvs125
 
 	* src/toolbar.c
