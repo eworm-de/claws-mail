@@ -4594,7 +4594,7 @@ gint compose_send(Compose *compose)
 		goto bail;
 	}
 
-	tmsgid = g_strdup(compose->msgid);
+	tmsgid = compose->msgid ? g_strdup(compose->msgid) : NULL;
 	if (discard_window) {
 		compose->sending = FALSE;
 		compose_close(compose);
@@ -4827,9 +4827,14 @@ static gint compose_redirect_write_headers(Compose *compose, FILE *fp)
 	} else {
 		g_snprintf(buf, sizeof(buf), "%s", "");
 	}
-	generate_msgid(buf, sizeof(buf));
-	err |= (fprintf(fp, "Resent-Message-ID: <%s>\n", buf) < 0);
-	compose->msgid = g_strdup(buf);
+
+	if (compose->account->gen_msgid) {
+		generate_msgid(buf, sizeof(buf));
+		err |= (fprintf(fp, "Resent-Message-ID: <%s>\n", buf) < 0);
+		compose->msgid = g_strdup(buf);
+	} else {
+		compose->msgid = NULL;
+	}
 
 	if (compose_redirect_write_headers_from_headerlist(compose, fp))
 		return -1;
@@ -5750,9 +5755,14 @@ static gchar *compose_get_header(Compose *compose)
 	} else {
 		g_snprintf(buf, sizeof(buf), "%s", "");
 	}
-	generate_msgid(buf, sizeof(buf));
-	g_string_append_printf(header, "Message-ID: <%s>\n", buf);
-	compose->msgid = g_strdup(buf);
+	
+	if (compose->account->gen_msgid) {
+		generate_msgid(buf, sizeof(buf));
+		g_string_append_printf(header, "Message-ID: <%s>\n", buf);
+		compose->msgid = g_strdup(buf);
+	} else {
+		compose->msgid = NULL;
+	}
 
 	if (compose->remove_references == FALSE) {
 		/* In-Reply-To */

@@ -840,13 +840,16 @@ static gint disposition_notification_send(MsgInfo *msginfo)
 	} else {
 		g_snprintf(buf, sizeof(buf), "%s", "");
 	}
-	generate_msgid(buf, sizeof(buf));
-	if (fprintf(fp, "Message-ID: <%s>\n", buf) < 0) {
-		fclose(fp);
-		g_unlink(tmp);
-		return -1;
-	}
+	
+	if (account->gen_msgid) {
+		generate_msgid(buf, sizeof(buf));
 
+		if (fprintf(fp, "Message-ID: <%s>\n", buf) < 0) {
+			fclose(fp);
+			g_unlink(tmp);
+			return -1;
+		}
+	}
 
 	if (fclose(fp) == EOF) {
 		FILE_OP_ERROR(tmp, "fclose");

@@ -1,3 +1,14 @@
+2007-11-08 [paul]	3.0.2cvs128
+
+	* src/account.c
+	* src/compose.c
+	* src/messageview.c
+	* src/prefs_account.c
+	* src/prefs_account.h
+		reinstate 'Generate Message-ID' option as an
+		account preference. (hidden on IMAP)
+		Thanks to Colin
+
 2007-11-08 [paul]	3.0.2cvs127
 
 	* src/textview.c

@@ -3040,3 +3040,4 @@
 ( cvs diff -u -r 1.43.2.92 -r 1.43.2.93 src/toolbar.c;  ) > 3.0.2cvs125.patchset
 ( cvs diff -u -r 1.43.2.93 -r 1.43.2.94 src/toolbar.c;  ) > 3.0.2cvs126.patchset
 ( cvs diff -u -r 1.96.2.191 -r 1.96.2.192 src/textview.c;  ) > 3.0.2cvs127.patchset
+( cvs diff -u -r 1.61.2.75 -r 1.61.2.76 src/account.c;  cvs diff -u -r 1.382.2.419 -r 1.382.2.420 src/compose.c;  cvs diff -u -r 1.94.2.162 -r 1.94.2.163 src/messageview.c;  cvs diff -u -r 1.105.2.115 -r 1.105.2.116 src/prefs_account.c;  cvs diff -u -r 1.49.2.34 -r 1.49.2.35 src/prefs_account.h;  ) > 3.0.2cvs128.patchset

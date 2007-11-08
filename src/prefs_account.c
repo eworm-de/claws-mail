@@ -151,6 +151,7 @@ typedef struct SendPage
 
     GtkWidget *vbox;
 
+	GtkWidget *msgid_checkbtn;
 	GtkWidget *customhdr_checkbtn;
 	GtkWidget *smtp_auth_checkbtn;
 	GtkWidget *smtp_auth_type_optmenu;
@@ -472,6 +473,10 @@ static PrefParam receive_param[] = {
 };
 
 static PrefParam send_param[] = {
+	{"generate_msgid", "TRUE", &tmp_ac_prefs.gen_msgid, P_BOOL,
+	 &send_page.msgid_checkbtn,
+	 prefs_set_data_from_toggle, prefs_set_toggle},
+
 	{"add_custom_header", "FALSE", &tmp_ac_prefs.add_customhdr, P_BOOL,
 	 &send_page.customhdr_checkbtn,
 	 prefs_set_data_from_toggle, prefs_set_toggle},
@@ -1580,6 +1585,7 @@ static void send_create_widget_func(PrefsPage * _page,
 	GtkWidget *vbox1;
 	GtkWidget *vbox2;
 	GtkWidget *frame;
+	GtkWidget *msgid_checkbtn;
 	GtkWidget *hbox;
 	GtkWidget *customhdr_checkbtn;
 	GtkWidget *customhdr_edit_btn;
@@ -1604,6 +1610,8 @@ static void send_create_widget_func(PrefsPage * _page,
 	gtk_container_set_border_width (GTK_CONTAINER (vbox1), VBOX_BORDER);
 
 	vbox2 = gtkut_get_options_frame(vbox1, &frame, _("Header"));
+
+	PACK_CHECK_BUTTON (vbox2, msgid_checkbtn, _("Generate Message-ID"));
 
 	hbox = gtk_hbox_new (FALSE, 12);
 	gtk_widget_show (hbox);
@@ -1748,6 +1756,7 @@ static void send_create_widget_func(PrefsPage * _page,
 	gtk_widget_show (pop_auth_minutes_lbl);
 	gtk_box_pack_start (GTK_BOX (hbox), pop_auth_minutes_lbl, FALSE, FALSE, 0);
 	
+	page->msgid_checkbtn     = msgid_checkbtn;
 	page->customhdr_checkbtn = customhdr_checkbtn;
 
 	page->smtp_auth_checkbtn       = smtp_auth_checkbtn;
@@ -2399,7 +2408,7 @@ static void advanced_create_widget_func(PrefsPage * _page,
 	GtkWidget *draft_folder_entry;
 	GtkWidget *trash_folder_checkbtn;
 	GtkWidget *trash_folder_entry;
-
+	GtkTooltips *tips = gtk_tooltips_new();
 #define PACK_HBOX(hbox) \
 	{ \
 	hbox = gtk_hbox_new (FALSE, 8); \
@@ -2449,11 +2458,23 @@ static void advanced_create_widget_func(PrefsPage * _page,
 
 	PACK_HBOX (hbox1);
 	PACK_CHECK_BUTTON (hbox1, checkbtn_domain, _("Domain name"));
+	
+	gtk_tooltips_set_tip(GTK_TOOLTIPS(tips), checkbtn_domain,
+			     _("The domain name will be used in the right part of "
+			       "the generated Message-Ids, and when connecting to "
+			       "SMTP servers."),
+			     NULL);
 
 	entry_domain = gtk_entry_new ();
 	gtk_widget_show (entry_domain);
 	gtk_box_pack_start (GTK_BOX (hbox1), entry_domain, TRUE, TRUE, 0);
 	SET_TOGGLE_SENSITIVITY (checkbtn_domain, entry_domain);
+	gtk_tooltips_set_tip(GTK_TOOLTIPS(tips), entry_domain,
+			     _("The domain name will be used in the right part of "
+			       "the generated Message-Ids, and when connecting to "
+			       "SMTP servers."),
+			     NULL);
+
 
 	
 	PACK_HBOX (hbox1);
@@ -3563,6 +3584,15 @@ static void prefs_account_protocol_set_optmenu(PrefParam *pparam)
 			gtk_widget_hide(protocol_optmenu->no_imap_warn_label);
 		}
 #endif
+		if (protocol == A_IMAP4) {
+			if (new_account)
+				gtk_toggle_button_set_active(
+					GTK_TOGGLE_BUTTON(send_page.msgid_checkbtn), 
+					TRUE);
+			gtk_widget_hide(send_page.msgid_checkbtn);
+		} else {
+			gtk_widget_show(send_page.msgid_checkbtn);
+		}
 	}
 }
 
@@ -3710,6 +3740,7 @@ static void prefs_account_protocol_changed(GtkComboBox *combobox, gpointer data)
 		gtk_widget_hide(protocol_optmenu->no_imap_warn_icon);
 		gtk_widget_hide(protocol_optmenu->no_imap_warn_label);
 #endif
+		gtk_widget_show(send_page.msgid_checkbtn);
 		gtk_widget_show(basic_page.nntpserv_label);
 		gtk_widget_show(basic_page.nntpserv_entry);
   		gtk_table_set_row_spacing (GTK_TABLE (basic_page.serv_table),
@@ -3803,6 +3834,7 @@ static void prefs_account_protocol_changed(GtkComboBox *combobox, gpointer data)
 		gtk_widget_hide(receive_page.low_bandwidth_checkbtn);
 		break;
 	case A_LOCAL:
+		gtk_widget_show(send_page.msgid_checkbtn);
 		gtk_widget_hide(protocol_optmenu->no_imap_warn_icon);
 		gtk_widget_hide(protocol_optmenu->no_imap_warn_label);
 		gtk_widget_hide(basic_page.nntpserv_label);
@@ -3898,6 +3930,11 @@ static void prefs_account_protocol_changed(GtkComboBox *combobox, gpointer data)
 		gtk_widget_show(protocol_optmenu->no_imap_warn_icon);
 		gtk_widget_show(protocol_optmenu->no_imap_warn_label);
 #endif
+		if (new_account)
+			gtk_toggle_button_set_active(
+				GTK_TOGGLE_BUTTON(send_page.msgid_checkbtn), 
+				TRUE);
+		gtk_widget_hide(send_page.msgid_checkbtn);
 		gtk_widget_hide(basic_page.nntpserv_label);
 		gtk_widget_hide(basic_page.nntpserv_entry);
   		gtk_table_set_row_spacing (GTK_TABLE (basic_page.serv_table),
@@ -3990,6 +4027,7 @@ static void prefs_account_protocol_changed(GtkComboBox *combobox, gpointer data)
 		gtk_widget_show(receive_page.low_bandwidth_checkbtn);
 		break;
 	case A_NONE:
+		gtk_widget_show(send_page.msgid_checkbtn);
 		gtk_widget_hide(protocol_optmenu->no_imap_warn_icon);
 		gtk_widget_hide(protocol_optmenu->no_imap_warn_label);
 		gtk_widget_hide(basic_page.nntpserv_label);
@@ -4080,6 +4118,7 @@ static void prefs_account_protocol_changed(GtkComboBox *combobox, gpointer data)
 		break;
 	case A_POP3:
 	default:
+		gtk_widget_show(send_page.msgid_checkbtn);
 		gtk_widget_hide(protocol_optmenu->no_imap_warn_icon);
 		gtk_widget_hide(protocol_optmenu->no_imap_warn_label);
 		gtk_widget_hide(basic_page.nntpserv_label);
