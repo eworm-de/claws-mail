@@ -656,6 +656,8 @@ static void textview_add_part(TextView *textview, MimeInfo *mimeinfo)
 		if (mimeinfo->type == MIMETYPE_IMAGE  &&
 		    prefs_common.inline_img ) {
 			GdkPixbuf *pixbuf;
+			gint avail_width;
+			gint avail_height;
 			GError *error = NULL;
 			gchar *filename;
 			ClickableText *uri;
@@ -677,11 +679,12 @@ static void textview_add_part(TextView *textview, MimeInfo *mimeinfo)
 			} else {
 				gint w, h;
 				gdk_pixbuf_get_file_info(filename, &w, &h);
-				if (textview->scrolledwin->allocation.width - 100 > 0 &&
-				    w > textview->scrolledwin->allocation.width - 100)
+				avail_width = textview->scrolledwin->allocation.width;
+				avail_height = textview->scrolledwin->allocation.height;
+				if (avail_width - 100 > 0 &&
+				    (w > avail_width || h > avail_height))
 					pixbuf = gdk_pixbuf_new_from_file_at_scale(filename, 
-						textview->scrolledwin->allocation.width - 100, 
-						-1, TRUE, &error);
+						avail_width, avail_height, TRUE, &error);
 				else
 					pixbuf = gdk_pixbuf_new_from_file(filename, &error);
 			}
@@ -741,7 +744,9 @@ static void recursive_add_parts(TextView *textview, GNode *node)
         mimeinfo = (MimeInfo *) node->data;
         
         textview_add_part(textview, mimeinfo);
-        
+#ifdef MAEMO
+	textview_set_position(textview, 0);
+#endif        
         if ((mimeinfo->type != MIMETYPE_MULTIPART) &&
             (mimeinfo->type != MIMETYPE_MESSAGE)) {
 	    	END_TIMING();

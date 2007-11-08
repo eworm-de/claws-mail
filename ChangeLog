@@ -1,3 +1,10 @@
+2007-11-08 [paul]	3.0.2cvs127
+
+	* src/textview.c
+		MAEMO: fix failure of loading images inline
+		MAEMO: fix bug 1349, 'Emails still skip to end
+		when opened (in certain circumstances)...'
+
 2007-11-07 [colin]	3.0.2cvs126
 
 	* src/toolbar.c
