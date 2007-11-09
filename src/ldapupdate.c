@@ -195,6 +195,7 @@ gboolean ldapsvr_retrieve_item_person(ItemPerson *person, GHashTable *array) {
 	g_hash_table_insert(array, "sn", person->lastName);
 	g_hash_table_insert(array, "nickName", person->nickName);
 	g_hash_table_insert(array, "dn", person->externalID);
+	g_hash_table_insert(array, "person", person);
 	node = person->listEMail;
 	attr = NULL;
 	while (node) {
@@ -423,7 +424,7 @@ void rdn_free(Rdn *rdn) {
  */
 void update_rdn(Rdn *rdn, gchar *head, gchar *tail) {
 	rdn->value = g_strdup(head);
-	rdn->new_dn = g_strdup_printf("mail=%s%s", head, tail);
+	rdn->new_dn = g_strdup_printf("%s=%s%s", rdn->attribute, head, tail);
 }
 
 /**
@@ -1150,6 +1151,7 @@ void ldapsvr_update_contact(LdapServer *server, GHashTable *contact) {
 		return;
 	}
 	dn = g_hash_table_lookup(contact, "dn");
+
 	if (dn == NULL) {
 		clean_up(ld, server, contact);
 		return;
@@ -1179,9 +1181,14 @@ void ldapsvr_update_contact(LdapServer *server, GHashTable *contact) {
 			}
 		}
 		else {
+			ItemPerson *person = g_hash_table_lookup(contact, "person");
 			g_free(newRdn);
 			dn = g_strdup(NoRemove->new_dn);
 			g_hash_table_replace(contact, "dn", dn);
+			if (person) {
+				g_free(person->externalID);
+				person->externalID = dn;
+			}
 		}
 	}
 	else {

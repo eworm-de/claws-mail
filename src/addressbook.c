@@ -3199,7 +3199,10 @@ static void addressbook_move_nodes_up( GtkCTree *ctree, GtkCTreeNode *node ) {
 static void addressbook_edit_address_post_cb( ItemPerson *person )
 {
 	if( person ) {
-
+#ifdef USE_LDAP
+		if (strcmp2(person->nickName, ADDRITEM_NAME(person)))
+			addritem_person_set_nick_name( person, ADDRITEM_NAME(person));
+#endif
 		addressbook_folder_refresh_one_person( GTK_CTREE(addrbook.clist), person );
 		invalidate_address_completion();
 	}
