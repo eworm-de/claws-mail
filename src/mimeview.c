@@ -69,10 +69,12 @@
 #include "timing.h"
 
 #ifdef MAEMO
-//#include <hildon-widgets/hildon-program.h>
-//#include <gtk/gtkmain.h>
 #include <libosso.h>
+#ifndef CHINOOK
 #include <osso-mime.h>
+#else
+#include <hildon-mime.h>
+#endif
 #endif
 
 typedef enum
@@ -1821,7 +1823,11 @@ static void mimeview_open_part_with(MimeView *mimeview, MimeInfo *partinfo, gboo
 	if (content_type != NULL) {
 		uri = g_strconcat ("file://", filename, NULL);
 		dbusconn = osso_get_dbus_connection (get_osso_context());
+#ifdef CHINOOK
+		r = hildon_mime_open_file_with_mime_type (dbusconn, uri, content_type);
+#else
 		r = osso_mime_open_file_with_mime_type (dbusconn, uri, content_type);
+#endif
 		g_free(uri);
 	}
 	if (r != 1) {

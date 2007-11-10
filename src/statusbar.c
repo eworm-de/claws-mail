@@ -35,7 +35,11 @@
 #include "hooks.h"
 
 #ifdef MAEMO
+#ifdef CHINOOK
+#include <hildon/hildon-banner.h>
+#else
 #include <hildon-widgets/hildon-banner.h>
+#endif
 #endif
 
 

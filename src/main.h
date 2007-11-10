@@ -23,8 +23,12 @@
 #include <glib.h>
 #include <gtk/gtkwidget.h>
 #ifdef MAEMO
+#ifdef CHINOOK
+#include <hildon/hildon-program.h>
+#else
 #include <hildon-widgets/hildon-program.h>
 #include <hildon-widgets/hildon-window.h>
+#endif
 #endif
 
 extern gchar *prog_version;

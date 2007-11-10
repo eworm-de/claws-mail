@@ -36,7 +36,11 @@
 #include "utils.h"
 
 #ifdef MAEMO
+#ifdef CHINOOK
+#include <hildon/hildon-program.h>
+#else
 #include <hildon-widgets/hildon-program.h>
+#endif
 #include <gtk/gtkmain.h>
 #endif
 

@@ -21,7 +21,8 @@ trayicon_la_LDFLAGS = \
 trayicon_la_LIBADD = libeggtrayicon/libeggtrayicon.la \
 	$(cygwin_export_lib) \
 	$(GTK_LIBS) \
-	-L/usr/X11R6/lib -lX11
+	-L/usr/X11R6/lib -lX11 \
+	$(MAEMO_LIBS)
 
 INCLUDES = \
 	-I$(top_srcdir)/src \
@@ -33,7 +34,8 @@ AM_CPPFLAGS = \
 	$(GLIB_CFLAGS) \
 	$(GTK_CFLAGS) \
 	$(ASPELL_CFLAGS) \
-	$(OPENSSL_CFLAGS) 
+	$(OPENSSL_CFLAGS) \
+	$(MAEMO_CFLAGS)
 
 EXTRA_DIST = \
 	README \

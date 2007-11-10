@@ -1,3 +1,24 @@
+2007-11-10 [colin]	3.0.2cvs130
+
+	* configure.ac
+	* src/inc.c
+	* src/main.c
+	* src/main.h
+	* src/mimeview.c
+	* src/statusbar.c
+	* src/common/utils.c
+	* src/etpan/Makefile.am
+	* src/gtk/filesel.c
+	* src/gtk/gtkutils.h
+	* src/gtk/menu.c
+	* src/plugins/bogofilter/Makefile.am
+	* src/plugins/clamav/Makefile.am
+	* src/plugins/dillo_viewer/Makefile.am
+	* src/plugins/pgpcore/Makefile.am
+	* src/plugins/spamassassin/Makefile.am
+	* src/plugins/trayicon/Makefile.am
+		Fixes (mainly preprocessor foo) for Maemo 4.0 (Chinook)
+
 2007-11-09 [colin]	3.0.2cvs129
 
 	* src/addressbook.c

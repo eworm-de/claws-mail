@@ -62,8 +62,13 @@
 #include "hooks.h"
 
 #ifdef MAEMO
+#ifdef CHINOOK
+#include <hildon/hildon-banner.h>
+#include <hildon/hildon-sound.h>
+#else
 #include <hildon-widgets/hildon-banner.h>
 #include <hildon-widgets/hildon-system-sound.h>
+#endif
 #include <libosso.h>
 
 #ifdef CONIC

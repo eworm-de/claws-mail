@@ -41,8 +41,12 @@
 #endif
 
 #ifdef MAEMO
+#ifdef CHINOOK
+#include <hildon/hildon-program.h>
+#else
 #include <hildon-widgets/hildon-program.h>
 #include <hildon-widgets/hildon-window.h>
+#endif
 #include "main.h"
 #include <gtk/gtkmain.h>
 #endif

@@ -62,7 +62,11 @@
 
 #ifdef MAEMO
 #include <libosso.h>
-#include <osso-browser-interface.h>
+#ifdef CHINOOK
+# include <tablet-browser-interface.h>
+#else
+# include <osso-browser-interface.h>
+#endif
 #endif
 
 #include "utils.h"

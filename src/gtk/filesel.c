@@ -35,7 +35,11 @@
 #include <gtk/gtkfilechooserdialog.h>
 
 #ifdef MAEMO
+#ifdef CHINOOK
+#include <hildon/hildon-file-chooser-dialog.h>
+#else
 #include <hildon-widgets/hildon-file-chooser-dialog.h>
+#endif
 #endif
 
 #include "claws.h"

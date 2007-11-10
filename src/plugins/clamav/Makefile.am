@@ -15,7 +15,8 @@ cygwin_export_lib =
 endif
 clamav_plugin_la_LIBADD = $(cygwin_export_lib) \
 	$(GTK_LIBS) \
-	$(CLAMAV_LIBS)
+	$(CLAMAV_LIBS) \
+	$(MAEMO_LIBS)
 	
 INCLUDES = \
 	-I$(top_srcdir)/src \
@@ -25,7 +26,8 @@ INCLUDES = \
 AM_CPPFLAGS = \
 	$(ASPELL_CFLAGS) \
 	$(GLIB_CFLAGS) \
-	$(GTK_CFLAGS) 
+	$(GTK_CFLAGS) \
+	$(MAEMO_CFLAGS)
 
 EXTRA_DIST = \
 	README

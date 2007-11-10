@@ -22,9 +22,11 @@ INCLUDES = \
 
 AM_CPPFLAGS = \
 	$(GTK_CFLAGS) \
-	$(LIBETPAN_CFLAGS) 
+	$(LIBETPAN_CFLAGS) \
+	$(MAEMO_CFLAGS)
 
 libclawsetpan_la_LIBADD = \
 	../common/libclawscommon.la \
 	$(GTK_LIBS) \
-	$(LIBETPAN_LIBS)
+	$(LIBETPAN_LIBS) \
+	$(MAEMO_LIBS)

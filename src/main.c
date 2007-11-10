@@ -117,8 +117,13 @@
 #include "timing.h"
 
 #ifdef MAEMO
+#ifdef CHINOOK
+#include <hildon/hildon-banner.h>
+#include <hildon/hildon-program.h>
+#else
 #include <hildon-widgets/hildon-banner.h>
 #include <hildon-widgets/hildon-program.h>
+#endif
 #include <gtk/gtkmain.h>
 #include <libosso.h>
 #include <libgnomevfs/gnome-vfs-volume.h>
@@ -1064,6 +1069,7 @@ int main(int argc, char *argv[])
 		return OSSO_ERROR;
 	}
 
+#ifndef CHINOOK
 	/* Add handler for Exit D-BUS messages */
 	result = osso_application_set_exit_cb(appdata->osso_context,
 	                                        exit_event_handler,
@@ -1071,6 +1077,7 @@ int main(int argc, char *argv[])
 	if (result != OSSO_OK) {
 		return OSSO_ERROR;
 	}
+#endif
 #endif
 	manage_window_focus_in(mainwin->window, NULL, NULL);
 	folderview = mainwin->folderview;
