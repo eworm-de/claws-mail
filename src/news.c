@@ -362,7 +362,7 @@ static Session *news_session_new_for_folder(Folder *folder)
 	session = news_session_new(folder, ac->nntp_server, port, userid, passwd);
 #endif
 
-	if ((session != NULL) && ac->use_nntp_auth && ac->use_nntp_auth_onconnect) {
+	if ((session != NULL) && ac->use_nntp_auth) { /* FIXME:  && ac->use_nntp_auth_onconnect */
 		if (nntp_threaded_login(folder, userid, passwd) !=
 			NEWSNNTP_NO_ERROR) {
 			log_error(LOG_PROTOCOL, _("Error authenticating to %s:%d ...\n"), ac->nntp_server, port);
