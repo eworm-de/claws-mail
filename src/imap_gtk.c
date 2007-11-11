@@ -295,7 +295,7 @@ static void delete_folder_cb(FolderView *folderview, guint action,
 
 	name = trim_string(item->name, 32);
 	AUTORELEASE_STR(name, {g_free(name); return;});
-	message = g_strdup_printf
+	message = g_markup_printf_escaped
 		(_("All folders and messages under '%s' will be permanently deleted. "
 		   "Recovery will not be possible.\n\n"
 		   "Do you really want to delete?"), name);
@@ -443,7 +443,7 @@ static void subscribe_cb(FolderView *folderview, guint action,
 	if (action && item->folder->account->imap_subsonly) {
 		GList *child_list = NULL;
 		
-		message = g_strdup_printf
+		message = g_markup_printf_escaped
 			(_("Do you want to search for unsubscribed subfolders of '%s'?"),
 			 name);
 
@@ -488,7 +488,7 @@ static void subscribe_cb(FolderView *folderview, guint action,
 		g_list_free(child_list);
 		return;
 	}
-	message = g_strdup_printf
+	message = g_markup_printf_escaped
 		(_("Do you want to %s the '%s' folder?"),
 		   action?_("subscribe"):_("unsubscribe"), name);
 	

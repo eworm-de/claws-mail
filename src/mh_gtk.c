@@ -175,7 +175,7 @@ static void delete_folder_cb(FolderView *folderview, guint action,
 
 	name = trim_string(item->name, 32);
 	AUTORELEASE_STR(name, {g_free(name); return;});
-	message = g_strdup_printf
+	message = g_markup_printf_escaped
 		(_("All folders and messages under '%s' will be permanently deleted. "
 		   "Recovery will not be possible.\n\n"
 		   "Do you really want to delete?"), name);
@@ -320,7 +320,7 @@ static void remove_mailbox_cb(FolderView *folderview, guint action,
 	if (folder_item_parent(item)) return;
 
 	name = trim_string(item->folder->name, 32);
-	message = g_strdup_printf
+	message = g_markup_printf_escaped
 		(_("Really remove the mailbox '%s' ?\n"
 		   "(The messages are NOT deleted from the disk)"), name);
 	avalue = alertpanel_full(_("Remove mailbox"), message,
