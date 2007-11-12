@@ -1,3 +1,8 @@
+2007-11-12 [paul]	3.0.2cvs134
+
+	* src/plugins/dillo_viewer/dillo_viewer.c
+		don't offer the mime type for translation
+
 2007-11-11 [colin]	3.0.2cvs133
 
 	* src/imap_gtk.c
