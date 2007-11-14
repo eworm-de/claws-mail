@@ -1282,6 +1282,20 @@ static gboolean quicksearch_match_subfolder(QuickSearch *quicksearch,
 	return result;
 }
 
+gboolean quicksearch_is_in_subfolder(QuickSearch *quicksearch, FolderItem *cur)
+{
+	if (quicksearch->root_folder_item == NULL)
+		return FALSE;
+	
+	while (cur) {
+		if (cur == quicksearch->root_folder_item) {
+			return TRUE;
+		}
+		cur = folder_item_parent(cur);
+	}
+	return FALSE;
+}
+
 void quicksearch_search_subfolders(QuickSearch *quicksearch,
 				   FolderView *folderview,
 				   FolderItem *folder_item)

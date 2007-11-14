@@ -1,3 +1,12 @@
+2007-11-14 [colin]	3.0.2cvs136
+
+	* src/summaryview.c
+	* src/gtk/quicksearch.c
+	* src/gtk/quicksearch.h
+		Fix resetting the quicksearch when in non-sticky
+		mode, but Recursive is set: reset only when going
+		out of the root search folder.
+
 2007-11-14 [colin]	3.0.2cvs135
 
 	* src/filtering.c
