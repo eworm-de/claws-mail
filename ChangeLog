@@ -1,3 +1,9 @@
+2007-11-14 [colin]	3.0.2cvs135
+
+	* src/filtering.c
+		Don't set new flag back when doing "Mark as unread"
+		from filtering
+
 2007-11-12 [paul]	3.0.2cvs134
 
 	* src/plugins/dillo_viewer/dillo_viewer.c

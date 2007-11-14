@@ -3047,3 +3047,4 @@
 ( cvs diff -u -r 1.179.2.197 -r 1.179.2.198 src/imap.c;  ) > 3.0.2cvs132.patchset
 ( cvs diff -u -r 1.1.2.51 -r 1.1.2.52 src/imap_gtk.c;  cvs diff -u -r 1.2.2.28 -r 1.2.2.29 src/mh_gtk.c;  ) > 3.0.2cvs133.patchset
 ( cvs diff -u -r 1.12.2.24 -r 1.12.2.25 src/plugins/dillo_viewer/dillo_viewer.c;  ) > 3.0.2cvs134.patchset
+( cvs diff -u -r 1.60.2.40 -r 1.60.2.41 src/filtering.c;  ) > 3.0.2cvs135.patchset
