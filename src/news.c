@@ -380,6 +380,8 @@ static NewsSession *news_session_get(Folder *folder)
 {
 	RemoteFolder *rfolder = REMOTE_FOLDER(folder);
 	struct tm lt;
+	int r;
+	
 	g_return_val_if_fail(folder != NULL, NULL);
 	g_return_val_if_fail(FOLDER_CLASS(folder) == &news_class, NULL);
 	g_return_val_if_fail(folder->account != NULL, NULL);
@@ -401,15 +403,17 @@ static NewsSession *news_session_get(Folder *folder)
 		return NEWS_SESSION(rfolder->session);
 	}
 
-	if (nntp_threaded_date(folder, &lt)
-	    == NEWSNNTP_ERROR_STREAM) {
-		log_warning(LOG_PROTOCOL, _("NNTP connection to %s:%d has been"
+	if ((r = nntp_threaded_date(folder, &lt)) != NEWSNNTP_NO_ERROR) {
+		if (r != NEWSNNTP_ERROR_COMMAND_NOT_SUPPORTED &&
+		    r != NEWSNNTP_ERROR_COMMAND_NOT_UNDERSTOOD) {
+			log_warning(LOG_PROTOCOL, _("NNTP connection to %s:%d has been"
 			      " disconnected. Reconnecting...\n"),
 			    folder->account->nntp_server,
 			    folder->account->set_nntpport ?
 			    folder->account->nntpport : NNTP_PORT);
-		session_destroy(rfolder->session);
-		rfolder->session = news_session_new_for_folder(folder);
+			session_destroy(rfolder->session);
+			rfolder->session = news_session_new_for_folder(folder);
+		}
 	}
 	
 	if (rfolder->session)

@@ -3050,3 +3050,4 @@
 ( cvs diff -u -r 1.60.2.40 -r 1.60.2.41 src/filtering.c;  ) > 3.0.2cvs135.patchset
 ( cvs diff -u -r 1.395.2.334 -r 1.395.2.335 src/summaryview.c;  cvs diff -u -r 1.1.2.81 -r 1.1.2.82 src/gtk/quicksearch.c;  cvs diff -u -r 1.1.2.16 -r 1.1.2.17 src/gtk/quicksearch.h;  ) > 3.0.2cvs136.patchset
 ( cvs diff -u -r 1.16.2.32 -r 1.16.2.33 src/prefs_display_header.c;  ) > 3.0.2cvs137.patchset
+( cvs diff -u -r 1.101.2.45 -r 1.101.2.46 src/news.c;  ) > 3.0.2cvs138.patchset

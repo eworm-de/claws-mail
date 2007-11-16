@@ -1,3 +1,9 @@
+2007-11-16 [colin]	3.0.2cvs138
+
+	* src/news.c
+		Fix bug 1390, 'NNTP fails after server 
+		closed connection'
+
 2007-11-16 [colin]	3.0.2cvs137
 
 	* src/prefs_display_header.c
