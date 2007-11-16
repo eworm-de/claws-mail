@@ -2384,7 +2384,7 @@ static void compose_entries_set(Compose *compose, const gchar *mailto)
 	gchar *body = NULL;
 	gchar *temp = NULL;
 	gsize  len = 0;
-	gchar *attach = NULL;
+	gchar **attach = NULL;
 	
 	scan_mailto_url(mailto, &to, &cc, &bcc, &subject, &body, &attach);
 
@@ -2430,14 +2430,18 @@ static void compose_entries_set(Compose *compose, const gchar *mailto)
 	}
 
 	if (attach) {
-		gchar *utf8_filename = conv_filename_to_utf8(attach);
-		if (utf8_filename) {
-			if (compose_attach_append(compose, attach, utf8_filename, NULL)) {
-				alertpanel_notice(_("The file '%s' has been attached."), attach);
-			} 
-			g_free(utf8_filename);
-		} else {
-			alertpanel_error(_("Couldn't attach a file (charset conversion failed)."));
+		gint i = 0;
+		while (attach[i] != NULL) {
+			gchar *utf8_filename = conv_filename_to_utf8(attach[i]);
+			if (utf8_filename) {
+				if (compose_attach_append(compose, attach[i], utf8_filename, NULL)) {
+					alertpanel_notice(_("The file '%s' has been attached."), utf8_filename);
+				} 
+				g_free(utf8_filename);
+			} else {
+				alertpanel_error(_("Couldn't attach a file (charset conversion failed)."));
+			}
+			i++;
 		}
 	}
 	g_free(to);
@@ -2445,7 +2449,7 @@ static void compose_entries_set(Compose *compose, const gchar *mailto)
 	g_free(bcc);
 	g_free(subject);
 	g_free(body);
-	g_free(attach);
+	g_strfreev(attach);
 }
 
 static gint compose_parse_header(Compose *compose, MsgInfo *msginfo)

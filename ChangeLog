@@ -1,3 +1,11 @@
+2007-11-16 [colin]	3.0.2cvs139
+
+	* src/compose.c
+	* src/common/utils.c
+	* src/common/utils.h
+		Fix bug 1387, 'Request for --compose to 
+		support multiple attachments'
+
 2007-11-16 [colin]	3.0.2cvs138
 
 	* src/news.c

@@ -1512,7 +1512,7 @@ static gchar *decode_uri_gdup(const gchar *encoded_uri)
 }
 
 gint scan_mailto_url(const gchar *mailto, gchar **to, gchar **cc, gchar **bcc,
-		     gchar **subject, gchar **body, gchar **attach)
+		     gchar **subject, gchar **body, gchar ***attach)
 {
 	gchar *tmp_mailto;
 	gchar *p;
@@ -1520,6 +1520,8 @@ gint scan_mailto_url(const gchar *mailto, gchar **to, gchar **cc, gchar **bcc,
 					  "/etc/passwd",
 					  "/etc/shadow",
 					  NULL };
+	gint num_attach = 0;
+	gchar **my_att = NULL;
 
 	Xstrdup_a(tmp_mailto, mailto, return -1);
 
@@ -1534,6 +1536,9 @@ gint scan_mailto_url(const gchar *mailto, gchar **to, gchar **cc, gchar **bcc,
 
 	if (to && !*to)
 		*to = decode_uri_gdup(tmp_mailto);
+
+	my_att = g_malloc(sizeof(char *));
+	my_att[0] = NULL;
 
 	while (p) {
 		gchar *field, *value;
@@ -1555,30 +1560,53 @@ gint scan_mailto_url(const gchar *mailto, gchar **to, gchar **cc, gchar **bcc,
 
 		if (*value == '\0') continue;
 
-		if (cc && !*cc && !g_ascii_strcasecmp(field, "cc")) {
-			*cc = decode_uri_gdup(value);
-		} else if (bcc && !*bcc && !g_ascii_strcasecmp(field, "bcc")) {
-			*bcc = decode_uri_gdup(value);
+		if (cc && !g_ascii_strcasecmp(field, "cc")) {
+			if (!*cc) {
+				*cc = decode_uri_gdup(value);
+			} else {
+				gchar *tmp = decode_uri_gdup(value);
+				gchar *new_cc = g_strdup_printf("%s, %s", *cc, tmp);
+				g_free(*cc);
+				*cc = new_cc;
+			}
+		} else if (bcc && !g_ascii_strcasecmp(field, "bcc")) {
+			if (!*bcc) {
+				*bcc = decode_uri_gdup(value);
+			} else {
+				gchar *tmp = decode_uri_gdup(value);
+				gchar *new_bcc = g_strdup_printf("%s, %s", *bcc, tmp);
+				g_free(*bcc);
+				*bcc = new_bcc;
+			}
 		} else if (subject && !*subject &&
 			   !g_ascii_strcasecmp(field, "subject")) {
 			*subject = decode_uri_gdup(value);
 		} else if (body && !*body && !g_ascii_strcasecmp(field, "body")) {
 			*body = decode_uri_gdup(value);
-		} else if (attach && !*attach && !g_ascii_strcasecmp(field, "attach")) {
+		} else if (attach && !g_ascii_strcasecmp(field, "attach")) {
 			int i = 0;
-			*attach = decode_uri_gdup(value);
+			gchar *tmp = decode_uri_gdup(value);
 			for (; forbidden_uris[i]; i++) {
-				if (strstr(*attach, forbidden_uris[i])) {
+				if (strstr(tmp, forbidden_uris[i])) {
 					g_print("Refusing to attach '%s', potential private data leak\n",
-							*attach);
-					g_free(*attach);
-					*attach = NULL;
+							tmp);
+					g_free(tmp);
+					tmp = NULL;
 					break;
 				}
+			}
+			if (tmp) {
+				/* attach is correct */
+				num_attach++;
+				printf("realloc my_att %d\n", (num_attach+1));
+				my_att = g_realloc(my_att, (sizeof(char *))*(num_attach+1));
+				my_att[num_attach-1] = tmp;
+				my_att[num_attach] = NULL;
 			}
 		}
 	}
 
+	*attach = my_att;
 	return 0;
 }
 
