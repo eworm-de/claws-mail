@@ -1606,7 +1606,8 @@ gint scan_mailto_url(const gchar *mailto, gchar **to, gchar **cc, gchar **bcc,
 		}
 	}
 
-	*attach = my_att;
+	if (attach)
+		*attach = my_att;
 	return 0;
 }
 
