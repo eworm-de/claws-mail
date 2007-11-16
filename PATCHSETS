@@ -3052,3 +3052,4 @@
 ( cvs diff -u -r 1.16.2.32 -r 1.16.2.33 src/prefs_display_header.c;  ) > 3.0.2cvs137.patchset
 ( cvs diff -u -r 1.101.2.45 -r 1.101.2.46 src/news.c;  ) > 3.0.2cvs138.patchset
 ( cvs diff -u -r 1.382.2.420 -r 1.382.2.421 src/compose.c;  cvs diff -u -r 1.36.2.123 -r 1.36.2.124 src/common/utils.c;  cvs diff -u -r 1.20.2.54 -r 1.20.2.55 src/common/utils.h;  ) > 3.0.2cvs139.patchset
+( cvs diff -u -r 1.115.2.175 -r 1.115.2.176 src/main.c;  cvs diff -u -r 1.1.2.3 -r 1.1.2.4 src/common/claws.c;  ) > 3.0.2cvs140.patchset

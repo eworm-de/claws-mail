@@ -815,6 +815,44 @@ int main(int argc, char *argv[])
 		return 0;
 	}
 
+	debug_print("GTK+ %d.%d.%d / GLib %d.%d.%d\n",
+		   gtk_major_version, gtk_minor_version, gtk_micro_version,
+		   glib_major_version, glib_minor_version, glib_micro_version);
+	debug_print("Compiled-in features:\n");
+#if HAVE_LIBCOMPFACE
+	debug_print(" compface\n");
+#endif
+#if USE_ASPELL
+	debug_print(" aspell\n");
+#endif
+#if USE_GNUTLS
+	debug_print(" gnutls\n");
+#endif
+#if INET6
+	debug_print(" ipv6\n");
+#endif
+#if HAVE_ICONV
+	debug_print(" iconv\n");
+#endif
+#if USE_JPILOT
+	debug_print(" jpilot\n");
+#endif
+#if USE_LDAP
+	debug_print(" ldap\n");
+#endif
+#if HAVE_LIBETPAN
+	debug_print(" libetpan %d.%d\n", LIBETPAN_VERSION_MAJOR, LIBETPAN_VERSION_MINOR);
+#endif
+#if USE_GNOMEPRINT
+	debug_print(" gnomeprint\n");
+#endif
+#if HAVE_LIBSM
+	debug_print(" libsm\n");
+#endif
+#if USE_OPENSSL
+	debug_print(" openssl\n");
+#endif
+
 	prog_version = PROG_VERSION;
 	argv0 = g_strdup(argv[0]);
 

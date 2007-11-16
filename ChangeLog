@@ -1,3 +1,10 @@
+2007-11-16 [colin]	3.0.2cvs140
+
+	* src/main.c
+	* src/common/claws.c
+		Output a bit more useful info at startup
+		in --debug mode
+
 2007-11-16 [colin]	3.0.2cvs139
 
 	* src/compose.c
