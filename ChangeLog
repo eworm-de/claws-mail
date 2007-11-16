@@ -1,3 +1,9 @@
+2007-11-16 [colin]	3.0.2cvs137
+
+	* src/prefs_display_header.c
+		Fix bug 1389, 'Changing 'Display headers 
+		in message view' breaks dispheaderrc'
+
 2007-11-14 [colin]	3.0.2cvs136
 
 	* src/summaryview.c
