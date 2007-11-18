@@ -3056,3 +3056,4 @@
 ( cvs diff -u -r 1.36.2.124 -r 1.36.2.125 src/common/utils.c;  ) > 3.0.2cvs141.patchset
 ( cvs diff -u -r 1.14.2.43 -r 1.14.2.44 src/editaddress.c;  ) > 3.0.2cvs142.patchset
 ( cvs diff -u -r 1.1.2.10 -r 1.1.2.11 src/edittags.c;  ) > 3.0.2cvs143.patchset
+( cvs diff -u -r 1.60.2.46 -r 1.60.2.47 po/es.po;  ) > 3.0.2cvs144.patchset
