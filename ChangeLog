@@ -1,3 +1,8 @@
+2007-11-18 [colin]	3.0.2cvs143
+
+	* src/edittags.c
+		Prevent empty tag after edit, thanks to wwp
+
 2007-11-18 [colin]	3.0.2cvs142
 
 	* src/editaddress.c

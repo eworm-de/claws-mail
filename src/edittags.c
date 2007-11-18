@@ -571,6 +571,9 @@ static void tag_apply_selected_edited(GtkCellRendererText *widget,
 	if (!gtk_tree_model_get_iter_from_string(model, &iter, path))
 		return;
 
+	if (!new_text || !*new_text)
+		return;
+
 	gtk_tree_model_get(model, &iter,
 			   TAG_DATA, &tmp,
 			   -1);
