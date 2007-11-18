@@ -1460,7 +1460,7 @@ static gboolean addressbook_edit_person_close( gboolean cancelled )
 	{
 		gchar *first = gtk_editable_get_chars( GTK_EDITABLE(personeditdlg.entry_first), 0, -1 );
 		gchar *last = gtk_editable_get_chars( GTK_EDITABLE(personeditdlg.entry_last), 0, -1 );
-		cn = g_strdup_printf("%s%s%s", first, (first && last && *first && *last)?" ":"", last);
+		cn = g_strdup_printf("%s%s%s", first?first:"", (first && last && *first && *last)?" ":"", last?last:"");
 		g_free(first);
 		g_free(last);
 	}
