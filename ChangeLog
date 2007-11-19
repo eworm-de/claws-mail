@@ -1,3 +1,19 @@
+2007-11-19 [paul]	3.0.2cvs145
+
+	* po/de.po
+	* po/fi.po
+	* po/fr.po
+	* po/hu.po
+	* po/it.po
+	* po/pl.po
+	* po/pt_BR.po
+	* po/sk.po
+	* po/zh_CN.po
+		updated by Stephan Sachse, Flammie Pirinen,
+		Fabien Vantard, Pader Rezso, Andrea Spadaccini,
+		Emil Nowak, Frederico Goncalves Guimaraes,
+		Andrej Kacian, and Ralph Young
+
 2007-11-18 [mones]	3.0.2cvs144
 
 	* po/es.po
