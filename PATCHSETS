@@ -3061,3 +3061,4 @@
 ( cvs diff -u -r 1.1.2.11 -r 1.1.2.12 src/edittags.c;  ) > 3.1.0cvs1.patchset
 ( cvs diff -u -r 1.382.2.421 -r 1.382.2.422 src/compose.c;  cvs diff -u -r 1.50.2.43 -r 1.50.2.44 src/compose.h;  cvs diff -u -r 1.1.2.9 -r 1.1.2.10 src/prefs_logging.c;  cvs diff -u -r 1.1.2.47 -r 1.1.2.48 src/prefs_summaries.c;  ) > 3.1.0cvs2.patchset
 ( cvs diff -u -r 1.60.2.105 -r 1.60.2.106 src/addressbook.c;  cvs diff -u -r 1.18.2.11 -r 1.18.2.12 src/addressbook.h;  cvs diff -u -r 1.14.2.44 -r 1.14.2.45 src/editaddress.c;  cvs diff -u -r 1.11.2.17 -r 1.11.2.18 src/editgroup.c;  cvs diff -u -r 1.1.2.6 -r 1.1.2.7 src/addrduplicates.c;  ) > 3.1.0cvs3.patchset
+( cvs diff -u -r 1.382.2.422 -r 1.382.2.423 src/compose.c;  cvs diff -u -r 1.50.2.44 -r 1.50.2.45 src/compose.h;  ) > 3.1.0cvs4.patchset

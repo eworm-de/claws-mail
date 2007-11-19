@@ -1,3 +1,9 @@
+2007-11-19 [wwp]	3.1.0cvs4
+
+	* src/compose.c
+	* src/compose.h
+		Revert changes to compose.c made in 3.1.0cvs2.
+
 2007-11-19 [wwp]	3.1.0cvs3
 
 	* src/addressbook.c

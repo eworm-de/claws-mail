@@ -97,7 +97,6 @@ struct _Compose
 	Toolbar *toolbar;
 	
 	GtkWidget *vbox2;
-	GtkSizeGroup *size_group;
 
 	/* Header */
 	GtkWidget *table_vbox;
