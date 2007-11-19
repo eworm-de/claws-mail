@@ -1,3 +1,19 @@
+2007-11-19 [wwp]	3.1.0cvs3
+
+	* src/addressbook.c
+	* src/addressbook.h
+	* src/editaddress.c
+	* src/editgroup.c
+	* src/addrduplicates.c
+		Minor improvements in the address book:
+		always accept new contacts provided that some
+		detail is set (instead of rejecting silently).
+		Better guessing of contact name from incomplete
+		name information. Better display of contacts with
+		no name, in contact lists, group contents, find
+		duplicate results.
+		
+
 2007-11-19 [wwp]	3.1.0cvs2
 
 	* src/compose.c

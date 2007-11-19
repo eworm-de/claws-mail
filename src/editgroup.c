@@ -140,10 +140,10 @@ static gint edit_group_clist_add_email( GtkCList *clist, ItemEMail *email ) {
 	gchar *text[ GROUP_N_COLS ];
 	gint row;
 	if( str ) {
-		text[ GROUP_COL_NAME ] = str;
+		text[ GROUP_COL_NAME ] = addressbook_set_col_name_guard(str);
 	}
 	else {
-		text[ GROUP_COL_NAME ] = ADDRITEM_NAME(person);
+		text[ GROUP_COL_NAME ] = addressbook_set_col_name_guard(ADDRITEM_NAME(person));
 	}
 	text[ GROUP_COL_EMAIL   ] = email->address;
 	text[ GROUP_COL_REMARKS ] = email->remarks;

@@ -581,7 +581,7 @@ static void email_selection_changed(GtkTreeSelection *selection, gpointer data)
 			gtk_list_store_append(detail_store, &iter);
 			gtk_list_store_set(detail_store, &iter,
 			                   COL_BOOKPATH, entry->book_path,
-			                   COL_NAME, ADDRITEM_NAME(entry->person),
+			                   COL_NAME, addressbook_set_col_name_guard(ADDRITEM_NAME(entry->person)),
 			                   COL_ITEM, entry->person,
 			                   COL_DS, entry->ds,
 			                   -1);

@@ -3390,10 +3390,10 @@ static void addressbook_load_group( GtkCTree *clist, ItemGroup *itemGroup ) {
 		person = ( ItemPerson * ) ADDRITEM_PARENT(email);
 		str = addressbook_format_item_clist( person, email );
 		if( str ) {
-			text[COL_NAME] = str;
+			text[COL_NAME] = addressbook_set_col_name_guard(str);
 		}
 		else {
-			text[COL_NAME] = ADDRITEM_NAME(person);
+			text[COL_NAME] = addressbook_set_col_name_guard(ADDRITEM_NAME(person));
 		}
 		text[COL_ADDRESS] = email->address;
 		text[COL_REMARKS] = email->remarks;
@@ -3407,6 +3407,17 @@ static void addressbook_load_group( GtkCTree *clist, ItemGroup *itemGroup ) {
 		g_free( str );
 		str = NULL;
 	}
+}
+
+gchar *addressbook_set_col_name_guard(gchar *value)
+{
+	gchar *ret = "<not set>";
+	gchar *tmp = g_strdup(value);
+	g_strstrip(tmp);
+	if (tmp !=NULL && *tmp != '\0')
+		ret = value;
+	g_free(tmp);
+	return ret;
 }
 
 static void addressbook_folder_load_one_person(
@@ -3440,23 +3451,23 @@ static void addressbook_folder_load_one_person(
 			/* First email belongs with person */
 			gchar *str = addressbook_format_item_clist( person, email );
 			if( str ) {
-				text[COL_NAME] = str;
+				text[COL_NAME] = addressbook_set_col_name_guard(str);
 			}
 #ifdef USE_LDAP
 			else if( abf && abf->type == ADDR_IF_LDAP && 
 				 person && person->nickName ) {
 				if (person->nickName) {
 					if (strcmp(person->nickName, "") != 0) {
-						text[COL_NAME] = person->nickName;
+						text[COL_NAME] = addressbook_set_col_name_guard(person->nickName);
 					}
 					else {
-						text[COL_NAME] = ADDRITEM_NAME(person);
+						text[COL_NAME] = addressbook_set_col_name_guard(ADDRITEM_NAME(person));
 					}
 				}
 			}
 #endif
 			else {
-				text[COL_NAME] = ADDRITEM_NAME(person);
+				text[COL_NAME] = addressbook_set_col_name_guard(ADDRITEM_NAME(person));
 			}
 			nodePerson = gtk_sctree_insert_node(
 					clist, NULL, NULL,
@@ -3484,7 +3495,7 @@ static void addressbook_folder_load_one_person(
 	}
 	if( ! haveAddr ) {
 		/* Have name without EMail */
-		text[COL_NAME] = ADDRITEM_NAME(person);
+		text[COL_NAME] = addressbook_set_col_name_guard(ADDRITEM_NAME(person));
 		text[COL_ADDRESS] = "";
 		text[COL_REMARKS] = "";
 		nodePerson = gtk_sctree_insert_node(

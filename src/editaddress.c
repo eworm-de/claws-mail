@@ -94,6 +94,41 @@ typedef enum {
 #define PAGE_ATTRIBUTES        2
 
 static gboolean addressbook_edit_person_close( gboolean cancelled );
+static GList *edit_person_build_email_list();
+static GList *edit_person_build_attrib_list();
+
+static gchar* edit_person_get_common_name_from_widgets(void)
+{
+	gchar *cn = NULL; /* cn must be freed by caller */
+
+#ifndef MAEMO
+	{
+		cn = gtk_editable_get_chars( GTK_EDITABLE(personeditdlg.entry_name), 0, -1 );
+		if ( cn == NULL || *cn == '\0' ) {
+			gchar *first = gtk_editable_get_chars( GTK_EDITABLE(personeditdlg.entry_first), 0, -1 );
+			gchar *last = gtk_editable_get_chars( GTK_EDITABLE(personeditdlg.entry_last), 0, -1 );
+			cn = g_strdup_printf("%s%s%s", first?first:"", (first && last && *first && *last)?" ":"", last?last:"");
+			g_free(first);
+			g_free(last);
+		}
+		if ( cn == NULL || *cn == '\0' ) {
+			g_free(cn);
+			cn = gtk_editable_get_chars( GTK_EDITABLE(personeditdlg.entry_nick), 0, -1 );;
+		}
+	}
+#else
+	{
+		gchar *first = gtk_editable_get_chars( GTK_EDITABLE(personeditdlg.entry_first), 0, -1 );
+		gchar *last = gtk_editable_get_chars( GTK_EDITABLE(personeditdlg.entry_last), 0, -1 );
+		cn = g_strdup_printf("%s%s%s", first?first:"", (first && last && *first && *last)?" ":"", last?last:"");
+		g_free(first);
+		g_free(last);
+	}
+#endif
+	if ( cn != NULL )
+		g_strstrip(cn);
+	return cn;
+}
 
 static void edit_person_status_show( gchar *msg ) {
 	if( personeditdlg.statusbar != NULL ) {
@@ -104,16 +139,47 @@ static void edit_person_status_show( gchar *msg ) {
 	}
 }
 
-static void edit_person_ok(GtkWidget *widget, gboolean *cancelled) {
-	*cancelled = FALSE;
+static void edit_person_cancel(GtkWidget *widget, gboolean *cancelled) {
+	*cancelled = TRUE;
 	if (prefs_common.addressbook_use_editaddress_dialog)
 		gtk_main_quit();
 	else
 		addressbook_edit_person_close( *cancelled );
 }
 
-static void edit_person_cancel(GtkWidget *widget, gboolean *cancelled) {
-	*cancelled = TRUE;
+static void edit_person_ok(GtkWidget *widget, gboolean *cancelled) {
+	GList *listEMail = edit_person_build_email_list();
+	GList *listAttrib = edit_person_build_attrib_list();
+	gchar *cn = edit_person_get_common_name_from_widgets();
+
+	if( (cn == NULL || *cn == '\0') && listEMail == NULL && listAttrib == NULL ) {
+		gint val;
+
+		val = alertpanel( _("Add New Person"),
+				_("Adding a new person requires at least one of the\n"
+				  "information above to be set:\n"
+#ifndef MAEMO
+				  " - Display Name\n"
+#endif
+				  " - First Name\n"
+				  " - Last Name\n"
+#ifndef MAEMO
+				  " - Nickname\n"
+#endif
+				  " - any email address\n"
+				  " - any additional attribute\n\n"
+				  "Click OK to keep editing this contact.\n"
+				  "Click Cancel to close without saving."),
+				GTK_STOCK_CANCEL, "+"GTK_STOCK_OK, NULL );
+		if( val == G_ALERTALTERNATE ) {
+			edit_person_cancel(widget, cancelled);
+		}
+		g_free( cn );
+		return;
+	}
+	g_free( cn );
+
+	*cancelled = FALSE;
 	if (prefs_common.addressbook_use_editaddress_dialog)
 		gtk_main_quit();
 	else
@@ -183,7 +249,11 @@ static void edit_person_set_window_title( gint pageNum ) {
 		else {
 			gchar *name;
 			name = gtk_editable_get_chars( GTK_EDITABLE(personeditdlg.entry_name), 0, -1 );
-			sTitle = g_strdup_printf( "%s - %s", _title_edit_, name );
+			g_strstrip(name);
+			if ( *name != '\0' )
+				sTitle = g_strdup_printf( "%s - %s", _title_edit_, name );
+			else
+				sTitle = g_strdup( _title_edit_ );
 			g_free( name );
 		}
 		if (prefs_common.addressbook_use_editaddress_dialog)
@@ -1431,7 +1501,6 @@ static gboolean addressbook_edit_person_close( gboolean cancelled )
 	GList *listEMail = NULL;
 	GList *listAttrib = NULL;
 	GError *error = NULL;
-	gchar *cn = NULL;
 
 	listEMail = edit_person_build_email_list();
 	listAttrib = edit_person_build_attrib_list();
@@ -1454,17 +1523,6 @@ static gboolean addressbook_edit_person_close( gboolean cancelled )
 		return FALSE;
 	}
 
-#ifndef MAEMO
-	cn = gtk_editable_get_chars( GTK_EDITABLE(personeditdlg.entry_name), 0, -1 );
-#else
-	{
-		gchar *first = gtk_editable_get_chars( GTK_EDITABLE(personeditdlg.entry_first), 0, -1 );
-		gchar *last = gtk_editable_get_chars( GTK_EDITABLE(personeditdlg.entry_last), 0, -1 );
-		cn = g_strdup_printf("%s%s%s", first?first:"", (first && last && *first && *last)?" ":"", last?last:"");
-		g_free(first);
-		g_free(last);
-	}
-#endif
 	if( current_person && current_abf ) {
 		/* Update email/attribute list for existing current_person */
 		addrbook_update_address_list( current_abf, current_person, listEMail );
@@ -1472,10 +1530,6 @@ static gboolean addressbook_edit_person_close( gboolean cancelled )
 	}
 	else {
 		/* Create new current_person and email/attribute list */
-		if( cn == NULL || *cn == '\0' ) {
-			/* Wasting our time */
-			if( listEMail == NULL && listAttrib == NULL ) cancelled = TRUE;
-		}
 		if( ! cancelled && current_abf ) {
 			current_person = addrbook_add_address_list( current_abf, current_parent_folder, listEMail );
 			addrbook_add_attrib_list( current_abf, current_person, listAttrib );
@@ -1488,7 +1542,11 @@ static gboolean addressbook_edit_person_close( gboolean cancelled )
 		/* Set current_person stuff */		
 
 		gchar *name;
+		gchar *cn = edit_person_get_common_name_from_widgets();
+
 		addritem_person_set_common_name( current_person, cn );
+		g_free( cn );
+
 		if (personeditdlg.picture_set) { 
 			GdkPixbuf * pixbuf = gtk_image_get_pixbuf(GTK_IMAGE(personeditdlg.image));
 
@@ -1530,7 +1588,6 @@ static gboolean addressbook_edit_person_close( gboolean cancelled )
 		addritem_person_set_nick_name( current_person, name );
 		g_free( name );
 	}
-	g_free( cn );
 
 	gtk_clist_clear( GTK_CLIST(personeditdlg.clist_email) );
 	gtk_clist_clear( GTK_CLIST(personeditdlg.clist_attrib) );
