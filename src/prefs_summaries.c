@@ -358,6 +358,8 @@ static void prefs_summaries_create_widget(PrefsPage *_page, GtkWindow *window,
 	gtk_box_pack_start(GTK_BOX (vbox2), hbox0, FALSE, FALSE, 0);
 
 	label = gtk_label_new (_("Display message number next to folder name"));
+	gtk_widget_set_size_request(label, 200, -1);
+	gtk_label_set_line_wrap(GTK_LABEL(label), TRUE);
 	gtk_widget_show (label);
 	gtk_box_pack_start(GTK_BOX(hbox0), label, FALSE, FALSE, 0);
 

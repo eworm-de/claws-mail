@@ -66,6 +66,25 @@ typedef struct _LoggingPage
 	GtkWidget *optmenu_filtering_log_level;
 } LoggingPage;
 
+static GtkWidget *prefs_logging_create_check_buttons(GtkWidget **checkbtn1,
+			gchar *label1, GtkWidget **checkbtn2, gchar *label2)
+{
+	GtkWidget *hbox_checkbtn;
+
+	hbox_checkbtn = gtk_hbox_new(TRUE, VBOX_BORDER);
+	gtk_widget_show(hbox_checkbtn);
+	
+	PACK_CHECK_BUTTON (hbox_checkbtn, *checkbtn1, label1); 
+	gtk_widget_set_size_request(GTK_BIN(*checkbtn1)->child, 200, -1);
+	gtk_label_set_line_wrap(GTK_LABEL(GTK_BIN(*checkbtn1)->child), TRUE);
+
+	PACK_CHECK_BUTTON (hbox_checkbtn, *checkbtn2, label2);
+	gtk_widget_set_size_request(GTK_BIN(*checkbtn2)->child, 200, -1);
+	gtk_label_set_line_wrap(GTK_LABEL(GTK_BIN(*checkbtn2)->child), TRUE);
+	
+	return hbox_checkbtn;
+}
+
 static void prefs_logging_create_widget(PrefsPage *_page, GtkWindow *window, 
 			       	  gpointer data)
 {
@@ -90,15 +109,11 @@ static void prefs_logging_create_widget(PrefsPage *_page, GtkWindow *window,
 	GtkWidget *checkbtn_filtering_log;
 	GtkWidget *frame_filtering_log;
 	GtkWidget *vbox2_filtering_log;
-	GtkWidget *hbox_filtering_log_inc;
+	GtkWidget *hbox_checkbtn;
 	GtkWidget *checkbtn_filtering_log_inc;
-	GtkWidget *hbox_filtering_log_manual;
 	GtkWidget *checkbtn_filtering_log_manual;
-	GtkWidget *hbox_filtering_log_folder_proc;
 	GtkWidget *checkbtn_filtering_log_folder_proc;
-	GtkWidget *hbox_filtering_log_pre_proc;
 	GtkWidget *checkbtn_filtering_log_pre_proc;
-	GtkWidget *hbox_filtering_log_post_proc;
 	GtkWidget *checkbtn_filtering_log_post_proc;
 	GtkTooltips *filtering_log_tooltip;
 	GtkWidget *hbox_filtering_log_level;
@@ -112,13 +127,9 @@ static void prefs_logging_create_widget(PrefsPage *_page, GtkWindow *window,
 	GtkWidget *label;
 	GtkWidget *hbox;
 	GtkWidget *checkbtn_log_standard;
-	GtkWidget *hbox_log_standard;
 	GtkWidget *checkbtn_log_warning;
-	GtkWidget *hbox_log_warning;
 	GtkWidget *checkbtn_log_error;
-	GtkWidget *hbox_log_error;
 	GtkWidget *checkbtn_log_status;
-	GtkWidget *hbox_log_status;
 
 	vbox1 = gtk_vbox_new (FALSE, VSPACING);
 	gtk_widget_show (vbox1);
@@ -179,35 +190,27 @@ static void prefs_logging_create_widget(PrefsPage *_page, GtkWindow *window,
 	vbox2_filtering_log = gtkut_get_options_frame(vbox1_filtering_log, &frame_filtering_log,
 							_("Log filtering/processing when..."));
 
-	PACK_CHECK_BUTTON (vbox2_filtering_log, checkbtn_filtering_log_inc,
-			   _("filtering at incorporation"));
-	hbox_filtering_log_inc = gtk_hbox_new (FALSE, 8);
-	gtk_container_add (GTK_CONTAINER (vbox2_filtering_log), hbox_filtering_log_inc);
-	gtk_widget_show (hbox_filtering_log_inc);
+	hbox_checkbtn = prefs_logging_create_check_buttons(
+						&checkbtn_filtering_log_inc,
+						_("filtering at incorporation"),
+						&checkbtn_filtering_log_pre_proc,
+						_("pre-processing folders"));
+	gtk_box_pack_start(GTK_BOX(vbox2_filtering_log), hbox_checkbtn, FALSE, FALSE, 0);
 
-	PACK_CHECK_BUTTON (vbox2_filtering_log, checkbtn_filtering_log_manual,
-			   _("manually filtering"));
-	hbox_filtering_log_manual = gtk_hbox_new (FALSE, 8);
-	gtk_container_add (GTK_CONTAINER (vbox2_filtering_log), hbox_filtering_log_manual);
-	gtk_widget_show (hbox_filtering_log_manual);
-
-	PACK_CHECK_BUTTON (vbox2_filtering_log, checkbtn_filtering_log_folder_proc,
+	hbox_checkbtn = prefs_logging_create_check_buttons(
+						&checkbtn_filtering_log_manual,
+						_("manually filtering"),
+						&checkbtn_filtering_log_post_proc,
+						_("post-processing folders"));
+	gtk_box_pack_start(GTK_BOX(vbox2_filtering_log), hbox_checkbtn, FALSE, FALSE, 0);
+	
+	hbox_checkbtn = gtk_hbox_new(TRUE, VBOX_BORDER);
+	gtk_widget_show(hbox_checkbtn);
+	gtk_box_pack_start(GTK_BOX(vbox2_filtering_log), hbox_checkbtn, FALSE, FALSE, 0);
+	PACK_CHECK_BUTTON (hbox_checkbtn, checkbtn_filtering_log_folder_proc,
 			   _("processing folders"));
-	hbox_filtering_log_folder_proc = gtk_hbox_new (FALSE, 8);
-	gtk_container_add (GTK_CONTAINER (vbox2_filtering_log), hbox_filtering_log_folder_proc);
-	gtk_widget_show (hbox_filtering_log_folder_proc);
-
-	PACK_CHECK_BUTTON (vbox2_filtering_log, checkbtn_filtering_log_pre_proc,
-			   _("pre-processing folders"));
-	hbox_filtering_log_pre_proc = gtk_hbox_new (FALSE, 8);
-	gtk_container_add (GTK_CONTAINER (vbox2_filtering_log), hbox_filtering_log_pre_proc);
-	gtk_widget_show (hbox_filtering_log_pre_proc);
-
-	PACK_CHECK_BUTTON (vbox2_filtering_log, checkbtn_filtering_log_post_proc,
-			   _("post-processing folders"));
-	hbox_filtering_log_post_proc = gtk_hbox_new (FALSE, 8);
-	gtk_container_add (GTK_CONTAINER (vbox2_filtering_log), hbox_filtering_log_post_proc);
-	gtk_widget_show (hbox_filtering_log_post_proc);
+	gtk_box_pack_start(GTK_BOX(hbox_checkbtn), gtk_label_new(""),
+			   FALSE, TRUE, 0);
 
 	SET_TOGGLE_SENSITIVITY(checkbtn_filtering_log, frame_filtering_log);
 
@@ -288,29 +291,15 @@ static void prefs_logging_create_widget(PrefsPage *_page, GtkWindow *window,
 	gtk_box_pack_start(GTK_BOX(hbox), label, FALSE, FALSE, 0);
 	gtk_widget_show (hbox);
 
-	PACK_CHECK_BUTTON (vbox_disc_log, checkbtn_log_standard,
-			   _("Network protocol messages"));
-	hbox_log_standard = gtk_hbox_new (FALSE, 8);
-	gtk_container_add (GTK_CONTAINER (vbox_disc_log), hbox_log_standard);
-	gtk_widget_show (hbox_log_standard);
+	hbox_checkbtn = prefs_logging_create_check_buttons(&checkbtn_log_warning,
+				_("Warning messages"), &checkbtn_log_standard,
+				_("Network protocol messages"));
+	gtk_box_pack_start(GTK_BOX(vbox_disc_log), hbox_checkbtn, FALSE, FALSE, 0);
 
-	PACK_CHECK_BUTTON (vbox_disc_log, checkbtn_log_warning,
-			   _("Warning messages"));
-	hbox_log_warning = gtk_hbox_new (FALSE, 8);
-	gtk_container_add (GTK_CONTAINER (vbox_disc_log), hbox_log_warning);
-	gtk_widget_show (hbox_log_warning);
-
-	PACK_CHECK_BUTTON (vbox_disc_log, checkbtn_log_error,
-			   _("Error messages"));
-	hbox_log_error = gtk_hbox_new (FALSE, 8);
-	gtk_container_add (GTK_CONTAINER (vbox_disc_log), hbox_log_error);
-	gtk_widget_show (hbox_log_error);
-
-	PACK_CHECK_BUTTON (vbox_disc_log, checkbtn_log_status,
-			   _("Status messages for filtering/processing log"));
-	hbox_log_status = gtk_hbox_new (FALSE, 8);
-	gtk_container_add (GTK_CONTAINER (vbox_disc_log), hbox_log_status);
-	gtk_widget_show (hbox_log_status);
+	hbox_checkbtn = prefs_logging_create_check_buttons(&checkbtn_log_error,	
+				_("Error messages"), &checkbtn_log_status,
+				_("Status messages for filtering/processing log"));
+	gtk_box_pack_start(GTK_BOX(vbox_disc_log), hbox_checkbtn, FALSE, FALSE, 0);
 
 	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(checkbtn_clip_network_log), 
 		prefs_common.cliplog);

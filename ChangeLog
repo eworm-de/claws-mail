@@ -1,3 +1,15 @@
+2007-11-19 [wwp]	3.1.0cvs2
+
+	* src/compose.c
+	* src/compose.h
+	* src/prefs_logging.c
+	* src/prefs_summaries.c
+		GUI improvements, thanks to Pawel Pekala <c0rn@o2.pl>:
+		wrap some long label in prefs/summaries, layout checkboxes
+		in a more compact form in prefs/loggin, make account and
+		header's combos have the same size/spacing in compose
+		window.
+
 2007-11-19 [wwp]	3.1.0cvs1
 
 	* src/edittags.c

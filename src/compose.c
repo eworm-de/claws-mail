@@ -6035,6 +6035,7 @@ static void compose_create_header_entry(Compose *compose)
 
 	/* Combo box */
 	combo = gtk_combo_box_entry_new_text();
+	gtk_size_group_add_widget(compose->size_group, combo);
 	string = headers; 
 	while(*string != NULL) {
 		gtk_combo_box_append_text(GTK_COMBO_BOX(combo),
@@ -6157,6 +6158,8 @@ static GtkWidget *compose_create_header(Compose *compose)
 
 	gint count = 0;
 
+	compose->size_group = gtk_size_group_new(GTK_SIZE_GROUP_HORIZONTAL);
+
 	/* header labels and entries */
 	header_scrolledwin = gtk_scrolled_window_new(NULL, NULL);
 	gtk_widget_show(header_scrolledwin);
@@ -6165,6 +6168,7 @@ static GtkWidget *compose_create_header(Compose *compose)
 	header_table = gtk_table_new(2, 2, FALSE);
 	gtk_widget_show(header_table);
 	gtk_container_set_border_width(GTK_CONTAINER(header_table), BORDER_WIDTH);
+	gtk_table_set_col_spacings(GTK_TABLE(header_table), 6);
 	gtk_scrolled_window_add_with_viewport(GTK_SCROLLED_WINDOW(header_scrolledwin), header_table);
 	gtk_viewport_set_shadow_type(GTK_VIEWPORT(GTK_BIN(header_scrolledwin)->child), GTK_SHADOW_NONE);
 	count = 0;
@@ -6956,6 +6960,7 @@ static GtkWidget *compose_account_option_menu_create(Compose *compose)
 
 	optmenubox = gtk_event_box_new();
 	optmenu = gtkut_sc_combobox_create(optmenubox, FALSE);
+	gtk_size_group_add_widget(compose->size_group, optmenu);
 	menu = GTK_LIST_STORE(gtk_combo_box_get_model(GTK_COMBO_BOX(optmenu)));
 
 	hbox = gtk_hbox_new(FALSE, 6);
