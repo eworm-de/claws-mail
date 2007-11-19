@@ -5672,6 +5672,137 @@ static gboolean summary_popup_menu(GtkWidget *widget, gpointer data)
 	return TRUE;
 }
 
+#if GTK_CHECK_VERSION(2,12,0)
+static gchar *summaryview_get_tooltip_text(SummaryView *summaryview, MsgInfo *info, gint column)
+{
+	MsgFlags flags;
+
+	if (!info)
+		return NULL;
+
+	flags = info->flags;
+
+	switch(summaryview->col_state[column].type) {
+		case S_COL_STATUS:
+			if (MSG_IS_IGNORE_THREAD(flags)) {
+				return _("Ignored thread");
+			} else if (MSG_IS_WATCH_THREAD(flags)) {
+				return _("Watched thread");
+			} else if (MSG_IS_SPAM(flags)) {
+				return _("Spam");
+			} else if (MSG_IS_NEW(flags)) {
+				return _("New");
+			} else if (MSG_IS_UNREAD(flags)) {
+				return _("Unread");
+			} else if (MSG_IS_REPLIED(flags)) {
+				return _("Replied");
+			} else if (MSG_IS_FORWARDED(flags)) {
+				return _("Forwarded");
+			} else {
+				return NULL;
+			}
+		case S_COL_MARK:
+			if (MSG_IS_DELETED(flags)) {
+				return _("Deleted");
+			} else if (MSG_IS_MARKED(flags)) {
+				return _("Marked");
+			} else if (MSG_IS_MOVE(flags)) {
+				return _("To be moved");
+			} else if (MSG_IS_COPY(flags)) {
+				return _("To be copied");
+			} else {
+				return NULL;
+			}
+		case S_COL_LOCKED:
+			if (MSG_IS_LOCKED(flags)) {
+				return _("Locked");
+			} else {
+				return NULL;
+			}
+		case S_COL_MIME:
+			if (MSG_IS_WITH_ATTACHMENT(flags) && MSG_IS_SIGNED(flags)) {
+				return _("Signed, has attachment(s)");
+			} else if (MSG_IS_SIGNED(flags)) {
+				return _("Signed");
+			} else if (MSG_IS_WITH_ATTACHMENT(flags) && MSG_IS_ENCRYPTED(flags)) {
+				return _("Encrypted, has attachment(s)");
+			} else if (MSG_IS_ENCRYPTED(flags)) {
+				return _("Encrypted");
+			} else if (MSG_IS_WITH_ATTACHMENT(flags)) {
+				return _("Has attachment(s)");
+			} else {
+				return NULL;
+			}
+		default:
+			return NULL;
+	}
+}
+static gboolean tooltip_cb (GtkWidget  *widget,
+                            gint        x,
+                            gint        y,
+                            gboolean    keyboard_mode,
+                            GtkTooltip *tooltip,
+                            gpointer    user_data) 
+{
+	GtkCTree *ctree = GTK_CTREE(widget);
+	SummaryView *summaryview = (SummaryView *)user_data;
+	gint row = -1, column = -1;
+	int offset = prefs_common.show_col_headers ? 24:0;
+	GtkCTreeNode *node = NULL;
+	gchar *text = NULL;
+	gchar *formatted = NULL;
+	MsgInfo *info = NULL;
+	GdkRectangle rect;
+
+	if (!prefs_common.show_tooltips)
+		return FALSE;
+
+	if (y - offset < 0)
+		return FALSE;
+
+	if (!gtk_clist_get_selection_info(GTK_CLIST(ctree), x, y - offset,
+					  &row, &column))
+		return FALSE;
+
+	if ((node = gtk_ctree_node_nth(ctree, row)) == NULL)
+		return FALSE;
+
+	if ((info = gtk_ctree_node_get_row_data(ctree, node)) == NULL)
+		return FALSE;
+
+	switch (gtk_ctree_node_get_cell_type(ctree, node, column)) {
+		case GTK_CELL_TEXT:
+			if (gtk_ctree_node_get_text(ctree, node, column, &text) != TRUE)
+				return FALSE;
+			break;
+		case GTK_CELL_PIXTEXT:
+			if (gtk_ctree_node_get_pixtext(ctree, node, column, &text, 
+				NULL, NULL, NULL) != TRUE)
+				return FALSE;
+			break;
+		default: 
+			if ((text = summaryview_get_tooltip_text(summaryview, info, column)) == NULL)
+				return FALSE;
+	}
+	
+	if (!text || !*text)
+		return FALSE;
+
+	formatted = g_strdup(text);
+	g_strstrip(formatted);
+	
+	gtk_tooltip_set_text (tooltip, formatted);
+	g_free(formatted);
+	
+	rect.x = x - 2;
+	rect.y = y - 2;
+	rect.width = 4;
+	rect.height= 4;	
+	gtk_tooltip_set_tip_area(tooltip, &rect);
+	
+	return TRUE;
+}
+#endif
 static GtkWidget *summary_ctree_create(SummaryView *summaryview)
 {
 	GtkWidget *ctree;
@@ -5780,7 +5911,7 @@ static GtkWidget *summary_ctree_create(SummaryView *summaryview)
 	CLIST_BUTTON_SIGNAL_CONNECT(S_COL_SCORE,   summary_score_clicked);
 	CLIST_BUTTON_SIGNAL_CONNECT(S_COL_LOCKED,  summary_locked_clicked);
 	CLIST_BUTTON_SIGNAL_CONNECT(S_COL_TAGS,    summary_tags_clicked);
-
+	
 #undef CLIST_BUTTON_SIGNAL_CONNECT
 
 	g_signal_connect(G_OBJECT(ctree), "tree_select_row",
@@ -5838,6 +5969,12 @@ static GtkWidget *summary_ctree_create(SummaryView *summaryview)
 			 G_CALLBACK(summary_drag_motion_cb),
 			 summaryview);
 
+#if GTK_CHECK_VERSION(2,12,0)
+	g_object_set (G_OBJECT(ctree), "has-tooltip", TRUE, NULL);
+	g_signal_connect(G_OBJECT(ctree), "query-tooltip", 
+			 G_CALLBACK(tooltip_cb),
+			summaryview);
+#endif
 	return ctree;
 }
 

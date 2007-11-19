@@ -738,6 +738,8 @@ static PrefParam param[] = {
 	 P_BOOL, NULL, NULL, NULL},
 	{"select_on_entry", "3", &prefs_common.select_on_entry,
 	 P_ENUM, NULL, NULL, NULL},
+	{"show_tooltips", "TRUE", &prefs_common.show_tooltips,
+	 P_BOOL, NULL, NULL, NULL},
 
 	{"summary_select_prio1", "0", &prefs_common.summary_select_prio[0], P_ENUM,
 	 NULL, NULL, NULL},

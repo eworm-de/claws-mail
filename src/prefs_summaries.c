@@ -58,6 +58,7 @@ typedef struct _SummariesPage
 	GtkWidget *optmenu_folder_unread;
 	GtkWidget *spinbtn_ng_abbrev_len;
 	GtkWidget *checkbtn_useaddrbook;
+	GtkWidget *checkbtn_show_tooltips;
 	GtkWidget *checkbtn_threadsubj;
 	GtkWidget *button_datefmt;
 	GtkWidget *entry_datefmt;
@@ -318,6 +319,7 @@ static void prefs_summaries_create_widget(PrefsPage *_page, GtkWindow *window,
 	GtkObject *spinbtn_ng_abbrev_len_adj;
 	GtkWidget *vbox2;
 	GtkWidget *checkbtn_useaddrbook;
+	GtkWidget *checkbtn_show_tooltips;
 	GtkWidget *checkbtn_threadsubj;
 	GtkWidget *label_datefmt;
 	GtkWidget *button_datefmt;
@@ -493,6 +495,13 @@ static void prefs_summaries_create_widget(PrefsPage *_page, GtkWindow *window,
 		(vbox2, checkbtn_useaddrbook,
 		 _("Display sender using address book"));
 		 
+	PACK_CHECK_BUTTON
+		(vbox2, checkbtn_show_tooltips,
+		 _("Show tooltips"));
+
+#if !GTK_CHECK_VERSION(2,12,0)
+	gtk_widget_hide(checkbtn_show_tooltips);
+#endif
 	hbox2 = gtk_hbox_new (FALSE, 8);
 	gtk_widget_show (hbox2);
 	gtk_box_pack_start (GTK_BOX (vbox2), hbox2, FALSE, TRUE, 0);
@@ -562,6 +571,8 @@ static void prefs_summaries_create_widget(PrefsPage *_page, GtkWindow *window,
 			prefs_common.display_folder_unread);
 	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(checkbtn_useaddrbook),
 			prefs_common.use_addr_book);
+	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(checkbtn_show_tooltips),
+			prefs_common.show_tooltips);
 	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(checkbtn_threadsubj),
 			prefs_common.thread_by_subject);
 	gtk_spin_button_set_value(GTK_SPIN_BUTTON(spinbtn_ng_abbrev_len),
@@ -589,6 +600,7 @@ static void prefs_summaries_create_widget(PrefsPage *_page, GtkWindow *window,
 	prefs_summaries->optmenu_folder_unread = optmenu_folder_unread;
 	prefs_summaries->spinbtn_ng_abbrev_len = spinbtn_ng_abbrev_len;
 	prefs_summaries->checkbtn_useaddrbook = checkbtn_useaddrbook;
+	prefs_summaries->checkbtn_show_tooltips = checkbtn_show_tooltips;
 	prefs_summaries->checkbtn_threadsubj = checkbtn_threadsubj;
 	prefs_summaries->entry_datefmt = entry_datefmt;
 
@@ -616,6 +628,8 @@ static void prefs_summaries_save(PrefsPage *_page)
 
 	prefs_common.use_addr_book = gtk_toggle_button_get_active(
 			GTK_TOGGLE_BUTTON(page->checkbtn_useaddrbook));
+	prefs_common.show_tooltips = gtk_toggle_button_get_active(
+			GTK_TOGGLE_BUTTON(page->checkbtn_show_tooltips));
 	prefs_common.thread_by_subject = gtk_toggle_button_get_active(
 			GTK_TOGGLE_BUTTON(page->checkbtn_threadsubj));
 	prefs_common.ng_abbrev_len = gtk_spin_button_get_value_as_int(

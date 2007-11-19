@@ -341,6 +341,7 @@ struct _PrefsCommon
 	gboolean mark_as_read_delay;
 	gboolean immediate_exec;
 	SelectOnEntry select_on_entry;
+	gboolean show_tooltips;
 
 	EntryAction summary_select_prio[6];
 
