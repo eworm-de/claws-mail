@@ -76,7 +76,6 @@ static void apply_window_create(void);
 static struct TagApplyWindow
 {
 	GtkWidget *window;
-	GtkWidget *list_view;
 	GtkWidget *hbox1;
 	GtkWidget *vbox1;
 	GtkWidget *label;
@@ -103,12 +102,12 @@ void tag_apply_open(GSList *msglist)
 	apply_window_load_tags();
 
 	if (msglist && !applywindow.has_tag_col) {
-		apply_window_insert_check_column(applywindow.list_view);
+		apply_window_insert_check_column(applywindow.taglist);
 		applywindow.has_tag_col = TRUE;
 	}
 	if (!msglist && applywindow.has_tag_col) {
-		gtk_tree_view_remove_column(GTK_TREE_VIEW(applywindow.list_view),
-			gtk_tree_view_get_column(GTK_TREE_VIEW(applywindow.list_view), 0));
+		gtk_tree_view_remove_column(GTK_TREE_VIEW(applywindow.taglist),
+			gtk_tree_view_get_column(GTK_TREE_VIEW(applywindow.taglist), 0));
 		applywindow.has_tag_col = FALSE;
 	} 
 
@@ -375,10 +374,10 @@ static void apply_window_add_tag(void)
 			apply_window_list_view_insert_tag(applywindow.taglist, &fis.iter, id);
 			gtk_tree_path_free(path);
 		}
-		g_free(new_tag);
 	} else {
 		alertpanel_error(_("Tag is not set."));
 	}
+	g_free(new_tag);
 }
 
 static void apply_window_add_tag_cb(GtkWidget *widget,
@@ -502,7 +501,6 @@ static void apply_window_create(void)
 	gtk_container_add(GTK_CONTAINER (window), vbox1);
 
 	applywindow.window = window;
-	applywindow.list_view = taglist;
 	applywindow.hbox1 = hbox1;
 	applywindow.vbox1 = vbox1;
 	applywindow.label = label;
