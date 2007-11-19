@@ -1,3 +1,9 @@
+2007-11-19 [colin]	3.1.0cvs6
+
+	* src/compose.c
+		Make strings a bit better when attaching
+		from mailto: URIs
+
 2007-11-19 [colin]	3.1.0cvs5
 
 	* src/common/utils.c

@@ -2430,18 +2430,30 @@ static void compose_entries_set(Compose *compose, const gchar *mailto)
 	}
 
 	if (attach) {
-		gint i = 0;
+		gint i = 0, att = 0;
+		gchar *warn_files = NULL;
 		while (attach[i] != NULL) {
 			gchar *utf8_filename = conv_filename_to_utf8(attach[i]);
 			if (utf8_filename) {
 				if (compose_attach_append(compose, attach[i], utf8_filename, NULL)) {
-					alertpanel_notice(_("The file '%s' has been attached."), utf8_filename);
-				} 
+					gchar *tmp = g_strdup_printf("%s%s\n",
+							warn_files?warn_files:"",
+							utf8_filename);
+					g_free(warn_files);
+					warn_files = tmp;
+					att++;
+				}
 				g_free(utf8_filename);
 			} else {
 				alertpanel_error(_("Couldn't attach a file (charset conversion failed)."));
 			}
 			i++;
+		}
+		if (warn_files) {
+			alertpanel_notice(ngettext(
+			"The following file has been attached: \n%s",
+			"The following files have been attached: \n%s", att), warn_files);
+			g_free(warn_files);
 		}
 	}
 	g_free(to);
