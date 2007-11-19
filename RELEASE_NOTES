@@ -1,4 +1,4 @@
-2nd October 2007                                     Claws Mail 3.0.2
+19th November 2007                                   Claws Mail 3.1.0
 
 		    CLAWS MAIL  RELEASE NOTES
                     http://www.claws-mail.org
@@ -9,20 +9,114 @@ email client.
 New in this release:
 ~~~~~~~~~~~~~~~~~~~~
 
+Non-blocking NNTP has been implemented. NNTP support is now provided
+	by and depends upon libetpan
+
+GnuTLS support has been implemented as an alternative to OpenSSL.
+	[./configure --enable-gnutls]
+
+A run-time alternative configuration directory switch has been added,
+	[claws-mail --alternate-config-dir DIR]
+
+Tags: Added tag alphabetical sorting and unified the dialogues.
+
+Edit accounts dialogue: The 'default account' (D) column has been
+	removed, instead the default account is indicated by use of
+	bold text.
+
+Templates: Added ability to attach files using |attach{filename}.
+    Templates options are now presented in a tabbed layout.
+
+Address Book: Added duplicate finder, '/Tools/Find duplicates'.
+    It is now possible to set an image for each contact. Pictures 
+	from a contact's Face or X-Face will be automatically set
+	when available. The contact's image will be automatically
+	displayed in the message view or header pane if the message
+	has no Face or X-Face header.
+
+'/View/Character encoding' submenus are now grouped together
+
+GTK+ built-in print support is now used if GTK+ >= 2.10 is available.
+	libgnomeprint will never be used if GTK+ >= 2.10 is available.
+
+Reinstated 'Generate Message-ID' option as an Account preference. It
+	is hidden on IMAP accounts, because Message-IDs are needed on
+	servers that don't implement the UIDPLUS extension.
+
+Toolbar preferences: Improved dialogue.
+
+Compose window: the number of attachments is now shown in the tab's
+	title.
+
+Attachments: When opening attachments with 'Open' or 'Open with...'
+	the temporary files are now saved as read-only. A hidden
+	preference has been added, 'save_parts_readwrite', which
+	permits the previous behaviour.
+
+IMAP: Added a button on the Folder Properties General page to allow
+	users to discard local caches.
+    Added much better error handling.
+    Fetching of cached mails has been heavily optimised.
+
+LDAP: Added read-only support for jpegPhoto LDAP field
+
+Bcc in commandline URIs has been added.
+
+Dillo browser plugin: Address book based whitelisting for loading
+	remote images has been added.
+
+SpamAssassin plugin: Address book based whitelisting has been added.
+
+MAEMO: Maemo 4.0 (Chinook) build enabled.
+
+MAEMO: Removed some useless tooltips.
+
+tools/csv2addressbook.pl
+	a new script that imports a CSV formatted address book. Becky
+	and Thunderbird address book are currently supported.
+
+Updated translations: Brazilian Portuguese, Finnish, French, German,
+	Hungarian, Italian, Polish, Simplified Chinese, and Slovak
+	
+
 * Bug fixes:
-	o bug 1320, 'Memory leak caused by gtk_container_get_children'
-	o bug 1321, 'access before allocation when scanning for uris'
-	o bug 1324, 'Corrupted IMAP cache'
-	o bug 1327, 'segfault when replying to a non-existent news
-		     message'
-	o bug 1329, 'error in quicksearch.c'
-	o bug 1334, 'user defined mail incorporation script not run'
-	o bug 1336, 'Segfault if empty space before search-string'
-	o bug 1337, 'Crash on removing uncached emails'
-	o Prevent unquoted mime boundaries, by always using a /
-	o Remove unnecessary error when cancelling export to mbox.
-	o MAEMO: make all Folder Properties pages visible
-	o MAEMO: fix overlapping buttons in Edit Accounts page
+	o bug 1340, 'Case insensitive searches with non-ascii
+		     alphabets fail'.
+	o bug 1343, 'Filtering..'s close button silently discards new
+		     filter'
+	o bug 1347, '-Wno-unused-function, optional'
+	o bug 1349, (MAEMO) 'Emails still skip to end when opened (in 
+		     certain circumstances)...'
+	o bug 1375, 'Impossible to modify e-mail in LDAP addressbook 
+		     twice'
+	o bug 1376, 'crash on addressbook manipulation'
+	o bug 1377, 'unspecific errors on signature checking'
+	* bug 1387, 'Request for --compose to support multiple
+		     attachments'
+	o bug 1389, 'Changing 'Display headers in message view'
+		     breaks dispheaderrc'
+	* bug 1390, 'NNTP fails after server closed connection'
+	o debian bug 448814, 'mailto: URI decoding doesn't decode the 
+			      destination address field'
+	o debian bug 450698, 'nntp auth behavior changed without
+			      notice'
+	o IMAP: Fix message deletion (EXPUNGE)
+	o IMAP: Better IMAP-UTF7/UTF8 conversion
+	o gtkut_stock_with_text_button_set_create(): set
+	  GTK_CAN_DEFAULT on buttons 2 and 3.
+	o Fixed gtk critical warning in addressbook selector.
+	o Don't set new flag back when doing "Mark as unread" from
+	  filtering.
+	o Fixed resetting the quicksearch when in non-sticky mode,
+	  but Recursive is set: reset only when going out of the root
+	  search folder.
+	o Prevent empty Tag after edit.
+	o GPG plugins: Fixed a bug which prevented the encryption key
+	  auto-selection when two or more matched the email address
+	  but only one isn't revoked or expired.
+	o MAEMO: fix failure of loading images inline
+	o MAEMO: Put the whole Templates dialogue in a scrolled
+	  window so that it is accessible.
 
 For further details of the numbered bugs listed above consult
 http://www.thewildbeast.co.uk/claws-mail/bugzilla/index.cgi

@@ -1,5 +1,74 @@
 Changes of the  Claws Mail GTK2 branch
 
+* 3.1.0
+-------
+
+Non-blocking NNTP has been implemented. NNTP support is now provided
+	by and depends upon libetpan
+
+GnuTLS support has been implemented as an alternative to OpenSSL.
+	[./configure --enable-gnutls]
+
+A run-time alternative configuration directory switch has been added,
+	[claws-mail --alternate-config-dir DIR]
+
+Tags: Added tag alphabetical sorting and unified the dialogues.
+
+Edit accounts dialogue: The 'default account' (D) column has been
+	removed, instead the default account is indicated by use of
+	bold text.
+
+Templates: Added ability to attach files using |attach{filename}.
+    Templates options are now presented in a tabbed layout.
+
+Address Book: Added duplicate finder, '/Tools/Find duplicates'.
+    It is now possible to set an image for each contact. Pictures 
+	from a contact's Face or X-Face will be automatically set
+	when available. The contact's image will be automatically
+	displayed in the message view or header pane if the message
+	has no Face or X-Face header.
+
+'/View/Character encoding' submenus are now grouped together
+
+GTK+ built-in print support is now used if GTK+ >= 2.10 is available.
+	libgnomeprint will never be used if GTK+ >= 2.10 is available.
+
+Reinstated 'Generate Message-ID' option as an Account preference. It
+	is hidden on IMAP accounts, because Message-IDs are needed on
+	servers that don't implement the UIDPLUS extension.
+
+Toolbar preferences: Improved dialogue.
+
+Compose window: the number of attachments is now shown in the tab's
+	title.
+
+Attachments: When opening attachments with 'Open' or 'Open with...'
+	the temporary files are now saved as read-only. A hidden
+	preference has been added, 'save_parts_readwrite', which
+	permits the previous behaviour.
+
+IMAP: Added a button on the Folder Properties General page to allow
+	users to discard local caches.
+    Added much better error handling.
+    Fetching of cached mails has been heavily optimised.
+
+LDAP: Added read-only support for jpegPhoto LDAP field
+
+Bcc in commandline URIs has been added.
+
+Dillo browser plugin: Address book based whitelisting for loading
+	remote images has been added.
+
+SpamAssassin plugin: Address book based whitelisting has been added.
+
+MAEMO: Maemo 4.0 (Chinook) build enabled.
+
+MAEMO: Removed some useless tooltips.
+
+tools/csv2addressbook.pl
+	a new script that imports a CSV formatted address book. Becky
+	and Thunderbird address book are currently supported.
+
 * 3.0.2
 -------
 
