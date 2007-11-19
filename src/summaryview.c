@@ -5672,7 +5672,7 @@ static gboolean summary_popup_menu(GtkWidget *widget, gpointer data)
 	return TRUE;
 }
 
-#if GTK_CHECK_VERSION(2,12,0)
+#if GTK_CHECK_VERSION(2,12,0) && !MAEMO
 static gchar *summaryview_get_tooltip_text(SummaryView *summaryview, MsgInfo *info, gint column)
 {
 	MsgFlags flags;
@@ -5969,7 +5969,7 @@ static GtkWidget *summary_ctree_create(SummaryView *summaryview)
 			 G_CALLBACK(summary_drag_motion_cb),
 			 summaryview);
 
-#if GTK_CHECK_VERSION(2,12,0)
+#if GTK_CHECK_VERSION(2,12,0) && !MAEMO
 	g_object_set (G_OBJECT(ctree), "has-tooltip", TRUE, NULL);
 	g_signal_connect(G_OBJECT(ctree), "query-tooltip", 
 			 G_CALLBACK(tooltip_cb),

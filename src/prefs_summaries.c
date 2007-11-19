@@ -499,7 +499,7 @@ static void prefs_summaries_create_widget(PrefsPage *_page, GtkWindow *window,
 		(vbox2, checkbtn_show_tooltips,
 		 _("Show tooltips"));
 
-#if !GTK_CHECK_VERSION(2,12,0)
+#if !GTK_CHECK_VERSION(2,12,0) && !MAEMO
 	gtk_widget_hide(checkbtn_show_tooltips);
 #endif
 	hbox2 = gtk_hbox_new (FALSE, 8);

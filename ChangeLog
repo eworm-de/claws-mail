@@ -1,3 +1,9 @@
+2007-11-19 [colin]	3.1.0cvs8
+
+	* src/prefs_summaries.c
+	* src/summaryview.c
+		Don't enable more tooltips on Maemo
+
 2007-11-19 [colin]	3.1.0cvs7
 
 	* src/prefs_common.c
