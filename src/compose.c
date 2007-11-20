@@ -4540,8 +4540,9 @@ static gboolean compose_check_entries(Compose *compose, gboolean check_everythin
 				button_label = _("+_Send");
 			else
 				button_label = _("+_Queue");
-			message = g_strdup_printf(_("Subject is empty. %s it anyway?"),
-					compose->sending?_("Send"):_("Queue"));
+			message = g_strdup_printf(_("Subject is empty. %s"),
+					compose->sending?_("Send it anyway?"):
+					_("Queue it anyway?"));
 
 			aval = alertpanel(compose->sending?_("Send"):_("Send later"), message,
 					  GTK_STOCK_CANCEL, button_label, NULL);

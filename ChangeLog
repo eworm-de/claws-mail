@@ -1,3 +1,8 @@
+2007-11-20 [paul]	3.1.0cvs9
+
+	* src/compose.c
+		make this string easier for translators
+
 2007-11-19 [colin]	3.1.0cvs8
 
 	* src/prefs_summaries.c
