@@ -1,3 +1,10 @@
+2007-11-20 [paul]	3.1.0cvs10
+
+	* src/folder.c
+		fix bug 1395, 'Crash on checking for new mails
+		while filter is running'
+		Thanks to Colin
+
 2007-11-20 [paul]	3.1.0cvs9
 
 	* src/compose.c

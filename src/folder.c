@@ -4014,6 +4014,8 @@ void folder_item_apply_processing(FolderItem *item)
 	debug_print("processing %s\n", item->name);
 	folder_item_update_freeze();
 
+	inc_lock();
+
 	mlist = folder_item_get_msg_list(item);
 	total = g_slist_length(mlist);
 	statusbar_print_all(_("Processing messages..."));
@@ -4059,6 +4061,8 @@ void folder_item_apply_processing(FolderItem *item)
 	
 	statusbar_progress_all(0,0,0);
 	statusbar_pop_all();
+
+	inc_unlock();
 
 	folder_item_update_thaw();
 }
