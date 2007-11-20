@@ -1683,7 +1683,9 @@ static void initial_processing(FolderItem *item, gpointer data)
 
 	
 	if (item->prefs->enable_processing) {
+		item->processing_pending = TRUE;
 		folder_item_apply_processing(item);
+		item->processing_pending = FALSE;
 	}
 
 	STATUSBAR_POP(mainwin);

@@ -1936,13 +1936,17 @@ static void folderview_set_sens_and_popup_menu(FolderView *folderview, gint row,
 
 	if ( FOLDER_TYPE(item->folder) == F_NEWS || FOLDER_TYPE(item->folder) == F_IMAP )
 		SET_SENS("/Download messages", !item->no_select);
+
 	SET_SENS("/Mark all read", item->unread_msgs >= 1);
 	SET_SENS("/Search folder...", item->total_msgs >= 1 && 
 		 folderview->selected == folderview->opened);
-	SET_SENS("/Run processing rules", item->prefs->processing &&
-		 item->total_msgs >= 1);
 	SET_SENS("/Properties...", !item->no_select);
-	SET_SENS("/Processing...", item->node->parent != NULL && !item->no_select);
+
+	SET_SENS("/Run processing rules", item->prefs->processing &&
+		 item->total_msgs >= 1 && !item->processing_pending);
+	SET_SENS("/Processing...", item->node->parent != NULL && 
+		!item->no_select && !item->processing_pending);
+
 	if (item == folder->trash || item == special_trash
 	    || folder_has_parent_of_type(item, F_TRASH)) {
 		GSList *msglist = folder_item_get_msg_list(item);
@@ -2485,7 +2489,9 @@ static void folderview_run_processing_cb(FolderView *folderview, guint action,
 	g_return_if_fail(item != NULL);
 	g_return_if_fail(item->folder != NULL);
 
+	item->processing_pending = TRUE;
 	folder_item_apply_processing(item);
+	item->processing_pending = FALSE;
 }
 
 static void folderview_property_cb(FolderView *folderview, guint action,

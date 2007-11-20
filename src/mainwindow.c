@@ -4041,7 +4041,9 @@ static void process_cb(MainWindow *mainwin, guint action, GtkWidget *widget)
 	FolderItem *item = mainwin->summaryview->folder_item;	
 	g_return_if_fail(item != NULL);
 
+	item->processing_pending = TRUE;
 	folder_item_apply_processing(item);	
+	item->processing_pending = FALSE;
 }
 
 static void execute_summary_cb(MainWindow *mainwin, guint action,

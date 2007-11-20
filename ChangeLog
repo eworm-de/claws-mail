@@ -1,3 +1,11 @@
+2007-11-20 [colin]	3.1.0cvs11
+
+	* src/folderview.c
+	* src/main.c
+	* src/mainwindow.c
+		Fix bug 1396, 'Crash on disabling a filter 
+		while it is processing'
+
 2007-11-20 [paul]	3.1.0cvs10
 
 	* src/folder.c
