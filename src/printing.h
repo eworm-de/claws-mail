@@ -46,6 +46,9 @@ void printing_page_setup(GtkWindow*);
 gpointer printing_get_renderer_data(PrintData *print_data);
 gdouble  printing_get_zoom(PrintData *print_data);
 void     printing_set_n_pages(PrintData *print_data, gint n_pages);
+GtkPrintSettings *printing_get_settings(void);
+GtkPageSetup *printing_get_page_setup(void);
+void printing_store_settings(GtkPrintSettings *new_settings);
 
 #endif /* GTK+ >= 2.10.0 */
 

@@ -1,3 +1,10 @@
+2007-11-20 [colin]	3.1.0cvs12
+
+	* src/printing.c
+	* src/printing.h
+		Add getter/setter for settings, and getter
+		for page setup
+
 2007-11-20 [colin]	3.1.0cvs11
 
 	* src/folderview.c

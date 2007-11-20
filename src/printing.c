@@ -148,6 +148,43 @@ void printing_set_n_pages(PrintData *print_data, gint n_pages)
 	print_data->npages = n_pages;
 }
 
+GtkPrintSettings *printing_get_settings(void)
+{
+  if (settings == NULL) {
+    settings = gtk_print_settings_new();
+    gtk_print_settings_set_use_color(settings, prefs_common.print_use_color);
+    gtk_print_settings_set_collate(settings, prefs_common.print_use_collate);
+    gtk_print_settings_set_reverse(settings, prefs_common.print_use_reverse);
+    gtk_print_settings_set_duplex(settings, prefs_common.print_use_duplex);
+  }
+  return settings;
+}
+
+void printing_store_settings(GtkPrintSettings *new_settings)
+{
+    if(settings != NULL)
+      g_object_unref(settings);
+    settings = g_object_ref(new_settings);
+    prefs_common.print_use_color = gtk_print_settings_get_use_color(settings);
+    prefs_common.print_use_collate = gtk_print_settings_get_collate(settings);
+    prefs_common.print_use_reverse = gtk_print_settings_get_reverse(settings);
+    prefs_common.print_use_duplex = gtk_print_settings_get_duplex(settings);
+
+}
+GtkPageSetup *printing_get_page_setup(void)
+{
+  if (page_setup == NULL) {
+    page_setup = gtk_page_setup_new();
+    if (prefs_common.print_paper_type && *prefs_common.print_paper_type) {
+      GtkPaperSize *paper = gtk_paper_size_new(prefs_common.print_paper_type);
+      gtk_page_setup_set_paper_size(page_setup, paper);
+      gtk_paper_size_free(paper);
+    }
+    gtk_page_setup_set_orientation(page_setup, prefs_common.print_paper_orientation);
+  }
+  return page_setup;
+}
+
 void printing_print_full(GtkWindow *parent, PrintRenderer *renderer, gpointer renderer_data, 
 			 gint sel_start, gint sel_end)
 {			 
@@ -172,22 +209,8 @@ void printing_print_full(GtkWindow *parent, PrintRenderer *renderer, gpointer re
 
   print_data->to_print = renderer->get_data_to_print(renderer_data, sel_start, sel_end);
 
-  if (settings == NULL) {
-    settings = gtk_print_settings_new();
-    gtk_print_settings_set_use_color(settings, prefs_common.print_use_color);
-    gtk_print_settings_set_collate(settings, prefs_common.print_use_collate);
-    gtk_print_settings_set_reverse(settings, prefs_common.print_use_reverse);
-    gtk_print_settings_set_duplex(settings, prefs_common.print_use_duplex);
-  }
-  if (page_setup == NULL) {
-    page_setup = gtk_page_setup_new();
-    if (prefs_common.print_paper_type && *prefs_common.print_paper_type) {
-      GtkPaperSize *paper = gtk_paper_size_new(prefs_common.print_paper_type);
-      gtk_page_setup_set_paper_size(page_setup, paper);
-      gtk_paper_size_free(paper);
-    }
-    gtk_page_setup_set_orientation(page_setup, prefs_common.print_paper_orientation);
-  }
+  printing_get_settings();
+  printing_get_page_setup();
   
   /* Config for printing */
   gtk_print_operation_set_print_settings(op, settings);
@@ -210,13 +233,7 @@ void printing_print_full(GtkWindow *parent, PrintRenderer *renderer, gpointer re
   }
   else if(res == GTK_PRINT_OPERATION_RESULT_APPLY) {
     /* store settings for next printing session */
-    if(settings != NULL)
-      g_object_unref(settings);
-    settings = g_object_ref(gtk_print_operation_get_print_settings(op));
-    prefs_common.print_use_color = gtk_print_settings_get_use_color(settings);
-    prefs_common.print_use_collate = gtk_print_settings_get_collate(settings);
-    prefs_common.print_use_reverse = gtk_print_settings_get_reverse(settings);
-    prefs_common.print_use_duplex = gtk_print_settings_get_duplex(settings);
+    printing_store_settings(gtk_print_operation_get_print_settings(op));
   }
 
   g_hash_table_foreach(print_data->images, free_pixbuf, NULL);
@@ -273,22 +290,8 @@ void printing_page_setup(GtkWindow *parent)
 {
   GtkPageSetup *new_page_setup;
 
-  if(settings == NULL) {
-    settings = gtk_print_settings_new();
-    gtk_print_settings_set_use_color(settings, prefs_common.print_use_color);
-    gtk_print_settings_set_collate(settings, prefs_common.print_use_collate);
-    gtk_print_settings_set_reverse(settings, prefs_common.print_use_reverse);
-    gtk_print_settings_set_duplex(settings, prefs_common.print_use_duplex);
-  }
-  if (page_setup == NULL) {
-    page_setup = gtk_page_setup_new();
-    if (prefs_common.print_paper_type && *prefs_common.print_paper_type) {
-      GtkPaperSize *paper = gtk_paper_size_new(prefs_common.print_paper_type);
-      gtk_page_setup_set_paper_size(page_setup, paper);
-      gtk_paper_size_free(paper);
-    }
-    gtk_page_setup_set_orientation(page_setup, prefs_common.print_paper_orientation);
-  }
+  printing_get_settings();
+  printing_get_page_setup();
 
   new_page_setup = gtk_print_run_page_setup_dialog(parent,page_setup,settings);
 
