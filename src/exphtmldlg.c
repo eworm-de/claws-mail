@@ -311,7 +311,7 @@ static void export_html_browse( GtkWidget *widget, gpointer data ) {
 	gchar *uri;
 
 	uri = g_strconcat( "file://", _exportCtl_->path, NULL );
-	open_uri( uri, prefs_common.uri_cmd );
+	open_uri( uri, prefs_common_get_uri_cmd() );
 	g_free( uri );
 }
 

@@ -1172,7 +1172,7 @@ static void link_btn_clicked(GtkButton *button, gpointer data)
 	gchar *url = (gchar *)data;
 	gtk_button_set_relief(button, GTK_RELIEF_NONE);
 	gtk_widget_set_state(GTK_WIDGET(button), GTK_STATE_NORMAL);
-	open_uri(url, prefs_common.uri_cmd);
+	open_uri(url, prefs_common_get_uri_cmd());
 }
 
 static void link_btn_unrealize(GtkButton *button, gpointer data)

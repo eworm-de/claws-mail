@@ -8103,14 +8103,14 @@ static gint compose_exec_ext_editor_real(const gchar *file)
 	if (setpgid(0, getppid()))
 		perror("setpgid");
 
-	if (prefs_common.ext_editor_cmd &&
-	    (p = strchr(prefs_common.ext_editor_cmd, '%')) &&
+	if (prefs_common_get_ext_editor_cmd() &&
+	    (p = strchr(prefs_common_get_ext_editor_cmd(), '%')) &&
 	    *(p + 1) == 's' && !strchr(p + 2, '%')) {
-		g_snprintf(buf, sizeof(buf), prefs_common.ext_editor_cmd, file);
+		g_snprintf(buf, sizeof(buf), prefs_common_get_ext_editor_cmd(), file);
 	} else {
-		if (prefs_common.ext_editor_cmd)
+		if (prefs_common_get_ext_editor_cmd())
 			g_warning("External editor command line is invalid: '%s'\n",
-				  prefs_common.ext_editor_cmd);
+				  prefs_common_get_ext_editor_cmd());
 		g_snprintf(buf, sizeof(buf), DEFAULT_EDITOR_CMD, file);
 	}
 

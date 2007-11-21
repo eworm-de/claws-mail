@@ -303,7 +303,7 @@ static void uri_opener_double_clicked(GtkTreeView		*list_view,
 
 	if (textview_uri_security_check(opener.msgview->mimeview->textview, uri) == TRUE) 
 		open_uri(uri->uri,
-			 prefs_common.uri_cmd);
+			 prefs_common_get_uri_cmd());
 }
 
 
@@ -331,7 +331,7 @@ static void uri_opener_open_cb(GtkWidget *widget,
 
 		if (textview_uri_security_check(opener.msgview->mimeview->textview, uri) == TRUE) 
 			open_uri(uri->uri,
-				 prefs_common.uri_cmd);
+				 prefs_common_get_uri_cmd());
 	} else {
 		GSList *cur = opener.uris;
 
@@ -339,7 +339,7 @@ static void uri_opener_open_cb(GtkWidget *widget,
 			uri = (ClickableText *)cur->data;
 			if (textview_uri_security_check(opener.msgview->mimeview->textview, uri) == TRUE) 
 				open_uri(uri->uri,
-					 prefs_common.uri_cmd);
+					 prefs_common_get_uri_cmd());
 		}
 	}
 }

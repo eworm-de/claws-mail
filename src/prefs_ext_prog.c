@@ -47,6 +47,8 @@ typedef struct _ExtProgPage
 
 	GtkWidget *window;		/* do not modify */
 
+	GtkWidget *cmds_use_system_default_checkbtn;
+
 	GtkWidget *uri_label;
 	GtkWidget *uri_combo;
 	GtkWidget *uri_entry;
@@ -71,6 +73,7 @@ static void prefs_ext_prog_create_widget(PrefsPage *_page, GtkWindow *window,
 	GtkWidget *vbox;
 	GtkWidget *hint_label;
 	GtkWidget *table2;
+	GtkWidget *cmds_use_system_default_checkbtn;
 	GtkWidget *uri_label;
 	GtkWidget *uri_combo;
 	GtkWidget *uri_entry;
@@ -82,7 +85,8 @@ static void prefs_ext_prog_create_widget(PrefsPage *_page, GtkWindow *window,
 	GtkWidget *printcmd_label;
 	GtkWidget *printcmd_entry;
 	GtkTooltips *tooltip;
-
+	int i = 0;
+	gchar *tmp;
 	tooltip = gtk_tooltips_new();
 
 	table = gtk_table_new(2, 1, FALSE);
@@ -93,7 +97,7 @@ static void prefs_ext_prog_create_widget(PrefsPage *_page, GtkWindow *window,
 
  	vbox = gtk_vbox_new(TRUE, 0);
 	gtk_widget_show(vbox);
-	
+
 	gtk_table_attach(GTK_TABLE (table), vbox, 0, 1, 0, 1,
                     	 (GtkAttachOptions) (GTK_SHRINK),
                     	 (GtkAttachOptions) (0), 0, 0);
@@ -105,7 +109,7 @@ static void prefs_ext_prog_create_widget(PrefsPage *_page, GtkWindow *window,
 	gtk_box_pack_start(GTK_BOX (vbox),
 			   hint_label, FALSE, FALSE, 4);
 
-	table2 = gtk_table_new(6, 2, FALSE);
+	table2 = gtk_table_new(7, 2, FALSE);
 	gtk_widget_show(table2);
 	gtk_container_set_border_width(GTK_CONTAINER(table2), 8);
 	gtk_table_set_row_spacings(GTK_TABLE(table2), 4);
@@ -114,13 +118,40 @@ static void prefs_ext_prog_create_widget(PrefsPage *_page, GtkWindow *window,
 	gtk_table_attach(GTK_TABLE (table), table2, 0, 1, 1, 2,
                     	 (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
                     	 (GtkAttachOptions) (0), 0, 0);
-			 
+	
+	cmds_use_system_default_checkbtn = gtk_check_button_new_with_label(
+		_("Use system defaults when possible")); 
+	
+#ifndef MAEMO
+	gtk_widget_show(cmds_use_system_default_checkbtn);
+	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(cmds_use_system_default_checkbtn),
+					prefs_common.cmds_use_system_default);
+#else
+	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(cmds_use_system_default_checkbtn),
+					TRUE);
+#endif
+	tmp = g_find_program_in_path("xdg-open");
+	if (!tmp) {
+		g_print("xdg-open not found\n");
+		gtk_widget_set_sensitive(cmds_use_system_default_checkbtn, FALSE);
+		gtk_widget_set_sensitive(cmds_use_system_default_checkbtn, FALSE);
+		gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(cmds_use_system_default_checkbtn),
+					FALSE);
+	} else
+		g_free(tmp);
+
+	
+	gtk_table_attach(GTK_TABLE (table2), cmds_use_system_default_checkbtn, 0, 2, i, i+1,
+                    	 (GtkAttachOptions) (GTK_FILL),
+                    	 (GtkAttachOptions) (0), 0, 2);
+	
 	uri_label = gtk_label_new (_("Web browser"));
 	gtk_widget_show(uri_label);
 #ifdef MAEMO
 	gtk_widget_set_sensitive(uri_label, FALSE);
 #endif
-	gtk_table_attach(GTK_TABLE (table2), uri_label, 0, 1, 0, 1,
+	i++;
+	gtk_table_attach(GTK_TABLE (table2), uri_label, 0, 1, i, i+1,
                     	 (GtkAttachOptions) (GTK_FILL),
                     	 (GtkAttachOptions) (0), 0, 2);
 	gtk_label_set_justify(GTK_LABEL (uri_label), GTK_JUSTIFY_RIGHT);
@@ -142,7 +173,7 @@ static void prefs_ext_prog_create_widget(PrefsPage *_page, GtkWindow *window,
 #ifdef MAEMO
 	gtk_widget_set_sensitive(uri_combo, FALSE);
 #endif
-	gtk_table_attach (GTK_TABLE (table2), uri_combo, 1, 2, 0, 1,
+	gtk_table_attach (GTK_TABLE (table2), uri_combo, 1, 2, i, i+1,
 			  GTK_EXPAND | GTK_FILL, 0, 0, 0);
 
 	uri_entry = GTK_BIN (uri_combo)->child;
@@ -151,7 +182,8 @@ static void prefs_ext_prog_create_widget(PrefsPage *_page, GtkWindow *window,
 	exteditor_label = gtk_label_new (_("Text editor"));
 	gtk_widget_show(exteditor_label);
 
-	gtk_table_attach(GTK_TABLE (table2), exteditor_label, 0, 1, 1, 2,
+	i++;
+	gtk_table_attach(GTK_TABLE (table2), exteditor_label, 0, 1, i, i+1,
                     	 (GtkAttachOptions) (GTK_FILL),
                     	 (GtkAttachOptions) (0), 0, 2);
 	gtk_label_set_justify(GTK_LABEL (exteditor_label), GTK_JUSTIFY_RIGHT);
@@ -168,7 +200,7 @@ static void prefs_ext_prog_create_widget(PrefsPage *_page, GtkWindow *window,
 					"kterm -e jed %s",
 					"kterm -e vi %s",
 					NULL);
-	gtk_table_attach (GTK_TABLE (table2), exteditor_combo, 1, 2, 1, 2,
+	gtk_table_attach (GTK_TABLE (table2), exteditor_combo, 1, 2, i, i+1,
 			  GTK_EXPAND | GTK_FILL, 0, 0, 0);
 
 	exteditor_entry = GTK_BIN (exteditor_combo)->child;
@@ -178,7 +210,8 @@ static void prefs_ext_prog_create_widget(PrefsPage *_page, GtkWindow *window,
 	astextviewer_label = gtk_label_new(_("Command for 'Display as text'"));
 	gtk_widget_show(astextviewer_label);
 
-	gtk_table_attach(GTK_TABLE (table2), astextviewer_label, 0, 1, 2, 3,
+	i++;
+	gtk_table_attach(GTK_TABLE (table2), astextviewer_label, 0, 1, i, i+1,
                     	 (GtkAttachOptions) (GTK_FILL),
                     	 (GtkAttachOptions) (0), 0, 2);
 	gtk_label_set_justify(GTK_LABEL (astextviewer_label), GTK_JUSTIFY_RIGHT);
@@ -192,7 +225,7 @@ static void prefs_ext_prog_create_widget(PrefsPage *_page, GtkWindow *window,
 			       "contextual menu item"),
 			     NULL);
 	
-	gtk_table_attach(GTK_TABLE (table2), astextviewer_entry, 1, 2, 2, 3,
+	gtk_table_attach(GTK_TABLE (table2), astextviewer_entry, 1, 2, i, i+1,
                     	 (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
                     	 (GtkAttachOptions) (0), 0, 0);
 	gtk_entry_set_text(GTK_ENTRY(astextviewer_entry), 
@@ -202,7 +235,8 @@ static void prefs_ext_prog_create_widget(PrefsPage *_page, GtkWindow *window,
 #if !defined(USE_GNOMEPRINT) && !GTK_CHECK_VERSION(2,10,0)
 	gtk_widget_show(printcmd_label);
 #endif
-	gtk_table_attach(GTK_TABLE (table2), printcmd_label, 0, 1, 3, 4,
+	i++;
+	gtk_table_attach(GTK_TABLE (table2), printcmd_label, 0, 1, i, i+1,
                     	 (GtkAttachOptions) (GTK_FILL),
                     	 (GtkAttachOptions) (0), 0, 2);
 	gtk_label_set_justify(GTK_LABEL (printcmd_label), GTK_JUSTIFY_RIGHT);
@@ -212,18 +246,25 @@ static void prefs_ext_prog_create_widget(PrefsPage *_page, GtkWindow *window,
 #if !defined(USE_GNOMEPRINT) && !GTK_CHECK_VERSION(2,10,0)
 	gtk_widget_show(printcmd_entry);
 #endif
-	gtk_table_attach(GTK_TABLE (table2), printcmd_entry, 1, 2, 3, 4,
+	gtk_table_attach(GTK_TABLE (table2), printcmd_entry, 1, 2, i, i+1,
                     	 (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
                     	 (GtkAttachOptions) (0), 0, 0);
 	gtk_entry_set_text(GTK_ENTRY(printcmd_entry), prefs_common.print_cmd ? prefs_common.print_cmd : "");
 
+	SET_TOGGLE_SENSITIVITY_REVERSE (cmds_use_system_default_checkbtn, uri_label);
+	SET_TOGGLE_SENSITIVITY_REVERSE (cmds_use_system_default_checkbtn, uri_combo);
+#if 0 /* we should do that, but it detaches the editor and breaks
+	 compose.c's external composition. */
+	SET_TOGGLE_SENSITIVITY_REVERSE (cmds_use_system_default_checkbtn, exteditor_label);
+	SET_TOGGLE_SENSITIVITY_REVERSE (cmds_use_system_default_checkbtn, exteditor_combo);
+#endif
 
 	prefs_ext_prog->window			= GTK_WIDGET(window);
 	prefs_ext_prog->uri_entry		= uri_entry;
 	prefs_ext_prog->exteditor_entry		= exteditor_entry;
 	prefs_ext_prog->astextviewer_entry	= astextviewer_entry;
 	prefs_ext_prog->printcmd_entry		= printcmd_entry;
-
+	prefs_ext_prog->cmds_use_system_default_checkbtn = cmds_use_system_default_checkbtn;
 	prefs_ext_prog->page.widget = table;
 }
 
@@ -239,6 +280,8 @@ static void prefs_ext_prog_save(PrefsPage *_page)
 		(GTK_EDITABLE(ext_prog->exteditor_entry), 0, -1);
 	prefs_common.mime_textviewer = gtk_editable_get_chars
 		(GTK_EDITABLE(ext_prog->astextviewer_entry), 0, -1);
+	prefs_common.cmds_use_system_default = gtk_toggle_button_get_active
+		(GTK_TOGGLE_BUTTON(ext_prog->cmds_use_system_default_checkbtn));
 }
 
 static void prefs_ext_prog_destroy_widget(PrefsPage *_page)

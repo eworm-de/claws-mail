@@ -1,3 +1,22 @@
+2007-11-21 [colin]	3.1.0cvs14
+
+	* src/compose.c
+	* src/crash.c
+	* src/exphtmldlg.c
+	* src/mainwindow.c
+	* src/manual.c
+	* src/mimeview.c
+	* src/prefs_account.c
+	* src/prefs_common.c
+	* src/prefs_common.h
+	* src/prefs_ext_prog.c
+	* src/textview.c
+	* src/uri_opener.c
+	* src/gtk/about.c
+	* src/gtk/gtkutils.c
+		Use xdg-open as a way to find default browser,
+		when available
+
 2007-11-21 [colin]	3.1.0cvs13
 
 	* src/messageview.c

@@ -140,7 +140,7 @@ void manual_open(ManualType type, gchar *url_anchor)
 		default:
 			break;
 	}
-	open_uri(uri, prefs_common.uri_cmd);
+	open_uri(uri, prefs_common_get_uri_cmd());
 	g_free(uri);
 }
 

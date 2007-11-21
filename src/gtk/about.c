@@ -848,7 +848,7 @@ static gboolean about_textview_uri_clicked(GtkTextTag *tag, GObject *obj,
 		}
 		/* open link and do *not* return TRUE so that
 		   further gtk processing of the signal is done */
-		open_uri(link, prefs_common.uri_cmd);
+		open_uri(link, prefs_common_get_uri_cmd());
 
 	} else {
 		if (bevent->button == 3 && event->type == GDK_BUTTON_PRESS) {
@@ -884,7 +884,7 @@ static void about_open_link_cb(GtkWidget *widget, guint action, void *data)
 		return;
 	}
 
-	open_uri(link, prefs_common.uri_cmd);
+	open_uri(link, prefs_common_get_uri_cmd());
 	g_object_set_data(G_OBJECT(link_popupmenu), "menu_button",
 			  NULL);
 }

@@ -2643,7 +2643,7 @@ static gboolean textview_uri_button_pressed(GtkTextTag *tag, GObject *obj,
 			if (bevent->button == 1 &&
 			    textview_uri_security_check(textview, uri) == TRUE) 
 					open_uri(uri->uri,
-						 prefs_common.uri_cmd);
+						 prefs_common_get_uri_cmd());
 			else if (bevent->button == 3 && !qlink) {
 				g_object_set_data(
 					G_OBJECT(textview->link_popup_menu),
@@ -2771,7 +2771,7 @@ static void open_uri_cb (TextView *textview, guint action, void *data)
 
 	if (textview_uri_security_check(textview, uri) == TRUE) 
 		open_uri(uri->uri,
-			 prefs_common.uri_cmd);
+			 prefs_common_get_uri_cmd());
 	g_object_set_data(G_OBJECT(textview->link_popup_menu), "menu_button",
 			  NULL);
 }

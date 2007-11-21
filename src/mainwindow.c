@@ -3013,7 +3013,7 @@ static void mailing_list_compose (GtkWidget *w, gpointer *data)
  	gchar *mailto;
  
  	gtk_label_get (GTK_LABEL (GTK_BIN (w)->child), (gchar **) &mailto);
- 	open_uri (mailto, prefs_common.uri_cmd);
+ 	open_uri (mailto, prefs_common_get_uri_cmd());
 } 
 	
 void main_window_popup(MainWindow *mainwin)

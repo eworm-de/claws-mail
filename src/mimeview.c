@@ -1837,15 +1837,15 @@ static void mimeview_open_part_with(MimeView *mimeview, MimeInfo *partinfo, gboo
 #endif
 	
 	if ((partinfo->type == MIMETYPE_TEXT && !strcmp(partinfo->subtype, "html"))
-	&& prefs_common.uri_cmd && prefs_common.uri_cmd[0]) {
-		mime_command = g_strdup(prefs_common.uri_cmd);
+	&& prefs_common_get_uri_cmd() && prefs_common.uri_cmd[0]) {
+		mime_command = g_strdup(prefs_common_get_uri_cmd());
 		g_free(content_type);
 		content_type = NULL;
-	} else if (partinfo->type != MIMETYPE_TEXT || !prefs_common.ext_editor_cmd
-	||  !prefs_common.ext_editor_cmd[0]) {
+	} else if (partinfo->type != MIMETYPE_TEXT || !prefs_common_get_ext_editor_cmd()
+	||  !prefs_common_get_ext_editor_cmd()[0]) {
 		mime_command = mailcap_get_command_for_type(content_type, filename);
 	} else {
-		mime_command = g_strdup(prefs_common.ext_editor_cmd);
+		mime_command = g_strdup(prefs_common_get_ext_editor_cmd());
 		g_free(content_type);
 		content_type = NULL;
 	}

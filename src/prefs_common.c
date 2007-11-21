@@ -792,6 +792,8 @@ static PrefParam param[] = {
 	 &SPECIFIC_PREFS.print_cmd, P_STRING, NULL, NULL, NULL},
 	{"ext_editor_command", DEFAULT_EDITOR_CMD,
 	 &SPECIFIC_PREFS.ext_editor_cmd, P_STRING, NULL, NULL, NULL},
+	{"cmds_use_system_default", "TRUE",
+	 &prefs_common.cmds_use_system_default, P_BOOL, NULL, NULL, NULL},
 	{"add_address_by_click", "FALSE", &prefs_common.add_address_by_click,
 	 P_BOOL, NULL, NULL, NULL},
 	{"confirm_on_exit", "FALSE", &prefs_common.confirm_on_exit, P_BOOL,
@@ -1435,4 +1437,38 @@ const gchar *prefs_common_translated_header_name(const gchar *header_name)
 		return header_name;
 
 	return prefs_common.trans_hdr ? gettext(header_name) : header_name;
+}
+
+const gchar *prefs_common_get_uri_cmd(void)
+{
+	gchar *tmp = NULL;
+	
+	if (!prefs_common.cmds_use_system_default)
+		return prefs_common.uri_cmd;
+	
+	tmp = g_find_program_in_path("xdg-open");
+	if (!tmp) 
+		return prefs_common.uri_cmd;
+	
+	g_free(tmp);
+	return "xdg-open %s";
+}
+
+const gchar *prefs_common_get_ext_editor_cmd(void)
+{
+	return prefs_common.ext_editor_cmd;
+#if 0 /* we should do that, but it detaches the editor and breaks
+	 compose.c's external composition. */
+	gchar *tmp = NULL;
+	
+	if (!prefs_common.cmds_use_system_default)
+		return prefs_common.ext_editor_cmd;
+	
+	tmp = g_find_program_in_path("xdg-open");
+	if (!tmp) 
+		return prefs_common.ext_editor_cmd;
+	
+	g_free(tmp);
+	return "xdg-open %s";
+#endif 
 }
