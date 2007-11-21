@@ -3070,3 +3070,4 @@
 ( cvs diff -u -r 1.213.2.166 -r 1.213.2.167 src/folder.c;  ) > 3.1.0cvs10.patchset
 ( cvs diff -u -r 1.207.2.187 -r 1.207.2.188 src/folderview.c;  cvs diff -u -r 1.115.2.176 -r 1.115.2.177 src/main.c;  cvs diff -u -r 1.274.2.220 -r 1.274.2.221 src/mainwindow.c;  ) > 3.1.0cvs11.patchset
 ( cvs diff -u -r 1.1.2.10 -r 1.1.2.11 src/printing.c;  cvs diff -u -r 1.1.2.3 -r 1.1.2.4 src/printing.h;  ) > 3.1.0cvs12.patchset
+( cvs diff -u -r 1.94.2.163 -r 1.94.2.164 src/messageview.c;  cvs diff -u -r 1.49.2.102 -r 1.49.2.103 src/procmime.c;  cvs diff -u -r 1.60.2.49 -r 1.60.2.50 src/procmsg.h;  ) > 3.1.0cvs13.patchset

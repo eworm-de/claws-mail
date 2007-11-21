@@ -88,7 +88,8 @@ typedef GSList MsgNumberList;
 #define MSG_POSTFILTERED	(1U << 14)
 #define MSG_WATCH_THREAD	(1U << 15)   /* watch threads */
 #define MSG_FULLY_CACHED	(1U << 16)   /* IMAP: fully cached */
-					 	
+#define MSG_RETRCPT_GOT		(1U << 17)   /* got return receipt */
+ 	
 /* RESERVED */
 #define	MSG_RESERVED_CLAWS	(1U << 30)   /* for claws-mail */
 #define	MSG_RESERVED		(1U << 31)
@@ -160,6 +161,7 @@ typedef guint32 MsgTmpFlags;
 #define MSG_IS_IGNORE_THREAD(msg)	(((msg).perm_flags & MSG_IGNORE_THREAD) != 0)
 #define MSG_IS_RETRCPT_PENDING(msg)	(((msg).perm_flags & MSG_RETRCPT_PENDING) != 0)
 #define MSG_IS_RETRCPT_SENT(msg)	(((msg).perm_flags & MSG_RETRCPT_SENT) != 0)
+#define MSG_IS_RETRCPT_GOT(msg)		(((msg).perm_flags & MSG_RETRCPT_GOT) != 0)
 #define MSG_IS_SPAM(msg)		(((msg).perm_flags & MSG_SPAM) != 0)
 #define MSG_IS_WATCH_THREAD(msg)	(((msg).perm_flags & MSG_WATCH_THREAD) != 0)
 #define MSG_IS_FULLY_CACHED(msg)	(((msg).perm_flags & MSG_FULLY_CACHED) != 0)

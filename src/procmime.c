@@ -1354,6 +1354,64 @@ static void procmime_parse_message_rfc822(MimeInfo *mimeinfo, gboolean short_sca
 	}
 }
 
+static void procmime_parse_disposition_notification(MimeInfo *mimeinfo, gboolean short_scan)
+{
+	HeaderEntry hentry[] = {{"Original-Message-ID:",  NULL, TRUE},
+			        {"Disposition:",	  NULL, TRUE},
+				{NULL,			  NULL, FALSE}};
+	guint i;
+	FILE *fp;
+	gchar *orig_msg_id = NULL;
+	gchar *disp = NULL;
+
+	procmime_decode_content(mimeinfo);
+
+	fp = g_fopen(mimeinfo->data.filename, "rb");
+	if (fp == NULL) {
+		FILE_OP_ERROR(mimeinfo->data.filename, "fopen");
+		return;
+	}
+	fseek(fp, mimeinfo->offset, SEEK_SET);
+	procheader_get_header_fields(fp, hentry);
+
+	if (!hentry[0].body || !hentry[1].body) {
+		goto bail;
+	}
+
+	orig_msg_id = g_strdup(hentry[0].body);
+	disp = g_strdup(hentry[1].body);
+
+	extract_parenthesis(orig_msg_id, '<', '>');
+	remove_space(orig_msg_id);
+	
+	if (strstr(disp, "displayed")) {
+		/* find sent message, if possible */
+		MsgInfo *info = NULL;
+		GList *flist;
+		debug_print("%s has been displayed.\n", orig_msg_id);
+		for (flist = folder_get_list(); flist != NULL; flist = g_list_next(flist)) {
+			FolderItem *outbox = ((Folder *)(flist->data))->outbox;
+			if (!outbox) {
+				debug_print("skipping folder with no outbox...\n");
+				continue;
+			}
+			info = folder_item_get_msginfo_by_msgid(outbox, orig_msg_id);
+			debug_print("%s %s in %s\n", info?"found":"didn't find", orig_msg_id, outbox->path);
+			if (info) {
+				procmsg_msginfo_set_flags(info, MSG_RETRCPT_GOT, 0);
+				procmsg_msginfo_free(info);
+			}
+		}
+	}
+	g_free(orig_msg_id);
+	g_free(disp);
+bail:
+	for (i = 0; i < (sizeof hentry / sizeof hentry[0]); i++) {
+		g_free(hentry[i].body);
+		hentry[i].body = NULL;
+	}
+}
+
 static void procmime_parse_multipart(MimeInfo *mimeinfo, gboolean short_scan)
 {
 	HeaderEntry hentry[] = {{"Content-Type:",  NULL, TRUE},
@@ -1812,6 +1870,9 @@ static int procmime_parse_mimepart(MimeInfo *parent,
 		case MIMETYPE_MESSAGE:
 			if (g_ascii_strcasecmp(mimeinfo->subtype, "rfc822") == 0) {
 				procmime_parse_message_rfc822(mimeinfo, short_scan);
+			}
+			if (g_ascii_strcasecmp(mimeinfo->subtype, "disposition-notification") == 0) {
+				procmime_parse_disposition_notification(mimeinfo, short_scan);
 			}
 			break;
 			

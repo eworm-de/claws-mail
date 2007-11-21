@@ -1,3 +1,11 @@
+2007-11-21 [colin]	3.1.0cvs13
+
+	* src/messageview.c
+	* src/procmime.c
+	* src/procmsg.h
+		Send better return receipts (useful ones)
+		Handle incoming return receipts
+
 2007-11-20 [colin]	3.1.0cvs12
 
 	* src/printing.c

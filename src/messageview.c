@@ -69,6 +69,8 @@
 #include "log.h"
 #include "combobox.h"
 #include "printing.h"
+#include "quoted-printable.h"
+#include "version.h"
 
 static GList *messageview_list = NULL;
 
@@ -645,7 +647,11 @@ static gint disposition_notification_send(MsgInfo *msginfo)
         gchar *addrp;
 	gchar *foo = NULL;
 	gboolean queued_removed = FALSE;
-	
+	gchar *boundary = NULL;
+	gchar *date = NULL;
+	gchar *orig_to = NULL;
+	gchar *enc_sub = NULL;
+
 	if (!msginfo->extradata)
 		return -1;
 	if (!msginfo->extradata->returnreceiptto && 
@@ -850,6 +856,66 @@ static gint disposition_notification_send(MsgInfo *msginfo)
 			return -1;
 		}
 	}
+
+	boundary = generate_mime_boundary("DN");
+	get_rfc822_date(buf, sizeof(buf));
+	date = g_strdup(buf);
+	if (msginfo->to) {
+		orig_to = g_strdup(msginfo->to);
+		extract_address(orig_to);
+	}
+	if (msginfo->subject) {
+		enc_sub = g_malloc0(strlen(msginfo->subject)*2);
+		qp_encode_line(enc_sub, (const guchar *)msginfo->subject);
+		g_strstrip(enc_sub);
+	}
+	if (fprintf(fp, "MIME-Version: 1.0\n"
+			"Content-Type: multipart/report; report-type=disposition-notification;\n"
+			"  boundary=\"%s\"\n"
+			"\n"
+			"--%s\n"
+			"Content-Type: text/plain; charset=UTF-8\n"
+			"Content-Transfer-Encoding: quoted-printable\n"
+			"\n"
+			"The message sent on: %s\n"
+			"To: %s\n"
+			"With subject: \"%s\"\n"
+			"has been displayed at %s.\n"
+			"\n"
+			"There is no guarantee that the message has been read or understood.\n"
+			"\n"
+			"--%s\n"
+			"Content-Type: message/disposition-notification\n"
+			"\n"
+			"Reporting-UA: %s\n"
+			"Original-Recipient: rfc822;%s\n"
+			"Final-Recipient: rfc822;%s\n"
+			"Original-Message-ID: <%s>\n"
+			"Disposition: manual-action/MDN-sent-manually; displayed\n"
+			"\n"
+			"--%s--\n", 
+			boundary, 
+			boundary,
+			msginfo->date, 
+			orig_to?orig_to:"No To:",
+			enc_sub?enc_sub:"No subject",
+			date,
+			boundary,
+			PROG_VERSION,
+			orig_to?orig_to:"No To:",
+			account->address,
+			msginfo->msgid?msginfo->msgid:"NO MESSAGE ID",
+			boundary) < 0) {
+		fclose(fp);
+		g_unlink(tmp);
+		g_free(boundary);
+		return -1;
+	}
+
+	g_free(enc_sub);
+	g_free(orig_to);
+	g_free(date);
+	g_free(boundary);
 
 	if (fclose(fp) == EOF) {
 		FILE_OP_ERROR(tmp, "fclose");
@@ -1404,7 +1470,12 @@ static void return_receipt_show(NoticeView *noticeview, MsgInfo *msginfo)
 
 	if (from_me) {
 		noticeview_set_icon(noticeview, STOCK_PIXMAP_NOTICE_WARN);
-		noticeview_set_text(noticeview, _("You asked for a return receipt in this message."));
+		if (MSG_IS_RETRCPT_GOT(msginfo->flags)) {
+			noticeview_set_text(noticeview, _("You got a return receipt in this message : "
+							  "it has been displayed by the recipient."));
+		} else {
+			noticeview_set_text(noticeview, _("You asked for a return receipt in this message."));
+		}
 		noticeview_set_button_text(noticeview, NULL);
 		noticeview_set_button_press_callback(noticeview, NULL, NULL);
 	} else {
