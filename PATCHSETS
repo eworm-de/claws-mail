@@ -3075,3 +3075,4 @@
 ( cvs diff -u -r 1.204.2.153 -r 1.204.2.154 src/prefs_common.c;  cvs diff -u -r 1.395.2.337 -r 1.395.2.338 src/summaryview.c;  ) > 3.1.0cvs15.patchset
 ( cvs diff -u -r 1.382.2.426 -r 1.382.2.427 src/compose.c;  ) > 3.1.0cvs16.patchset
 ( cvs diff -u -r 1.1.2.12 -r 1.1.2.13 src/edittags.c;  cvs diff -u -r 1.1.2.5 -r 1.1.2.6 src/edittags.h;  cvs diff -u -r 1.1.2.5 -r 1.1.2.6 src/common/tags.c;  cvs diff -u -r 1.1.2.2 -r 1.1.2.3 src/common/tags.h;  ) > 3.1.0cvs17.patchset
+( cvs diff -u -r 1.25.2.49 -r 1.25.2.50 src/stock_pixmap.c;  ) > 3.1.0cvs18.patchset
