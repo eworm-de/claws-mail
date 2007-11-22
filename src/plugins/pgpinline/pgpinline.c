@@ -158,9 +158,11 @@ static gchar *get_part_as_string(MimeInfo *mimeinfo)
 		}
 	}
 
-	if (textdata && mimeinfo->offset &&
-	    mimeinfo->offset+mimeinfo->length == g_utf8_strlen(textdata, -1)) {
-		/* textdata is OK */    
+	if (textdata && mimeinfo->offset && 
+	    mimeinfo->offset+ mimeinfo->length <= g_utf8_strlen(textdata, -1)) {
+		real_data = g_strdup(textdata + mimeinfo->offset);
+		g_free(textdata);
+		textdata = real_data;
 	} else if (textdata && mimeinfo->offset && 
 	    mimeinfo->offset+ mimeinfo->length <= strlen(textdata)) {
 		real_data = g_strdup(textdata + mimeinfo->offset);

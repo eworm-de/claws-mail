@@ -3077,3 +3077,4 @@
 ( cvs diff -u -r 1.1.2.12 -r 1.1.2.13 src/edittags.c;  cvs diff -u -r 1.1.2.5 -r 1.1.2.6 src/edittags.h;  cvs diff -u -r 1.1.2.5 -r 1.1.2.6 src/common/tags.c;  cvs diff -u -r 1.1.2.2 -r 1.1.2.3 src/common/tags.h;  ) > 3.1.0cvs17.patchset
 ( cvs diff -u -r 1.25.2.49 -r 1.25.2.50 src/stock_pixmap.c;  ) > 3.1.0cvs18.patchset
 ( cvs diff -u -r 1.3.2.53 -r 1.3.2.54 src/prefs_themes.c;  ) > 3.1.0cvs19.patchset
+( cvs diff -u -r 1.1.2.37 -r 1.1.2.38 src/plugins/pgpinline/pgpinline.c;  ) > 3.1.0cvs20.patchset

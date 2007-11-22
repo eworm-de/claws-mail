@@ -1,3 +1,8 @@
+2007-11-22 [colin]	3.1.0cvs20
+
+	* src/plugins/pgpinline/pgpinline.c
+		Fix decryption
+
 2007-11-22 [wwp]	3.1.0cvs19
 
 	* src/prefs_themes.c
