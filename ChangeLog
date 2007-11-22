@@ -1,3 +1,12 @@
+2007-11-22 [paul]	3.1.0cvs15
+
+	* src/prefs_common.c
+		make "cmds_use_system_default" default to FALSE
+		so as not to disrupt current settings
+	* src/summaryview.c
+		increase the size of the GdkRectangle, tooltips
+		didn't show for me otherwise
+
 2007-11-21 [colin]	3.1.0cvs14
 
 	* src/compose.c

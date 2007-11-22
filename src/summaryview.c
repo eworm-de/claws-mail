@@ -5796,8 +5796,8 @@ static gboolean tooltip_cb (GtkWidget  *widget,
 	
 	rect.x = x - 2;
 	rect.y = y - 2;
-	rect.width = 4;
-	rect.height= 4;	
+	rect.width = 12;
+	rect.height= 12;	
 	gtk_tooltip_set_tip_area(tooltip, &rect);
 	
 	return TRUE;
