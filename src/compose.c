@@ -9684,6 +9684,21 @@ static void compose_insert_drag_received_cb (GtkWidget		*widget,
 	if (gdk_atom_name(data->type) && !strcmp(gdk_atom_name(data->type), "text/uri-list")) {
 		AlertValue val = G_ALERTDEFAULT;
 
+		list = uri_list_extract_filenames((const gchar *)data->data);
+
+		if (list == NULL && strstr((gchar *)(data->data), "://")) {
+			/* Assume a list of no files, and data has ://, is a remote link */
+			gchar *tmpdata = g_strstrip(g_strdup((const gchar *)data->data));
+			gchar *tmpfile = get_tmp_file();
+			str_write_to_file(tmpdata, tmpfile);
+			g_free(tmpdata);  
+			compose_insert_file(compose, tmpfile);
+			g_unlink(tmpfile);
+			g_free(tmpfile);
+			gtk_drag_finish(drag_context, TRUE, FALSE, time);
+			compose_beautify_paragraph(compose, NULL, TRUE);
+			return;
+		}
 		switch (prefs_common.compose_dnd_mode) {
 			case COMPOSE_DND_ASK:
 				val = alertpanel_full(_("Insert or attach?"),
@@ -9714,12 +9729,16 @@ static void compose_insert_drag_received_cb (GtkWidget		*widget,
 
 		if (val == G_ALERTDEFAULT || val == G_ALERTCANCEL) {
 			gtk_drag_finish(drag_context, FALSE, FALSE, time);
+			list_free_strings(list);
+			g_list_free(list);
 			return;
 		} else if (val == G_ALERTOTHER) {
 			compose_attach_drag_received_cb(widget, drag_context, x, y, data, info, time, user_data);
+			list_free_strings(list);
+			g_list_free(list);
 			return;
 		} 
-		list = uri_list_extract_filenames((const gchar *)data->data);
+
 		for (tmp = list; tmp != NULL; tmp = tmp->next) {
 			compose_insert_file(compose, (const gchar *)tmp->data);
 		}

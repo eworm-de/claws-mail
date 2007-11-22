@@ -1,3 +1,9 @@
+2007-11-22 [paul]	3.1.0cvs16
+
+	* src/compose.c
+		fix bug 1400, 'Drag and drop of URLs does not work'
+		Thanks to Colin
+
 2007-11-22 [paul]	3.1.0cvs15
 
 	* src/prefs_common.c
