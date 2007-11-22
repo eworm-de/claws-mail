@@ -1,3 +1,12 @@
+2007-11-22 [wwp]	3.1.0cvs17
+
+	* src/edittags.c
+	* src/edittags.h
+	* src/common/tags.c
+	* src/common/tags.h
+		Correct copyright for these claws-mail-only brand new
+		files.
+
 2007-11-22 [paul]	3.1.0cvs16
 
 	* src/compose.c
