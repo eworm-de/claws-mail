@@ -741,6 +741,7 @@ static PrefParam param[] = {
 	{"show_tooltips", "TRUE", &prefs_common.show_tooltips,
 	 P_BOOL, NULL, NULL, NULL},
 
+	/* do it SUMMARY_OPEN_ACTIONS-1 times */
 	{"summary_select_prio1", "0", &prefs_common.summary_select_prio[0], P_ENUM,
 	 NULL, NULL, NULL},
 	{"summary_select_prio2", "0", &prefs_common.summary_select_prio[1], P_ENUM,
@@ -752,6 +753,8 @@ static PrefParam param[] = {
 	{"summary_select_prio5", "0", &prefs_common.summary_select_prio[4], P_ENUM,
 	 NULL, NULL, NULL},
 	{"summary_select_prio6", "0", &prefs_common.summary_select_prio[5], P_ENUM,
+	 NULL, NULL, NULL},
+	{"summary_select_prio7", "0", &prefs_common.summary_select_prio[6], P_ENUM,
 	 NULL, NULL, NULL},
 
 	{"mark_as_read_on_new_window", "FALSE",

@@ -33,6 +33,7 @@
 #include "textview.h"
 #include "procmime.h"
 #include "prefs_msg_colors.h"
+#include "prefs_summary_open.h"
 
 typedef struct _PrefsCommon	PrefsCommon;
 
@@ -76,7 +77,8 @@ typedef enum
 	ACTION_UNREAD,
 	ACTION_LAST_OPENED,
 	ACTION_LAST_LIST,
-	ACTION_NOTHING
+	ACTION_NOTHING,
+	ACTION_FIRST_LIST
 } EntryAction;
 
 typedef enum
@@ -343,7 +345,7 @@ struct _PrefsCommon
 	SelectOnEntry select_on_entry;
 	gboolean show_tooltips;
 
-	EntryAction summary_select_prio[6];
+	EntryAction summary_select_prio[SUMMARY_OPEN_ACTIONS-1];
 
 	NextUnreadMsgDialogShow next_unread_msg_dialog;
 	gboolean add_address_by_click;

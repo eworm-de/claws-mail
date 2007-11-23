@@ -101,21 +101,22 @@ static void drag_end	(GtkTreeView *list_view,
 			 GdkDragContext *context,
 			 gpointer data);
 
-static EntryAction saved_summary_select_prio[6];
+static EntryAction saved_summary_select_prio[SUMMARY_OPEN_ACTIONS-1];
 
-static gchar *action_name[7] = 
+static gchar *action_name[SUMMARY_OPEN_ACTIONS] = 
 {	  ("UNSET (!)"),
 	 N_("first marked email"),
 	 N_("first new email"),
 	 N_("first unread email"),
 	 N_("last opened email"),
 	 N_("last email in the list"),
-	 N_("none")
+	 N_("none"),
+	 N_("first email in the list")
 };
 
 void prefs_summary_open_open(void)
 {
-	int i = 0;
+	int i;
 	if (!summaryopen.window) {
 		prefs_summary_open_create();
 	}
@@ -125,7 +126,7 @@ void prefs_summary_open_open(void)
 
 	prefs_summary_open_set_dialog();
 	
-	for (i = 0; i < 6; i++)
+	for (i = 0; i < SUMMARY_OPEN_ACTIONS-1; i++)
 		saved_summary_select_prio[i] = prefs_common.summary_select_prio[i];
 
 	gtk_widget_show(summaryopen.window);
@@ -250,7 +251,7 @@ static void prefs_summary_open_create(void)
 	gtk_box_pack_start (GTK_BOX (list_view_hbox), list_view_hbox2, TRUE, TRUE, 0);
 
 	list_view_scrolledwin = gtk_scrolled_window_new (NULL, NULL);
-	gtk_widget_set_size_request (list_view_scrolledwin, 200, 210);
+	gtk_widget_set_size_request (list_view_scrolledwin, 200, 230);
 	gtk_widget_show (list_view_scrolledwin);
 	gtk_box_pack_start (GTK_BOX (list_view_hbox2), list_view_scrolledwin,
 			    TRUE, TRUE, 0);
@@ -305,6 +306,7 @@ static void prefs_summary_open_create(void)
 	summaryopen.actions_list_view = actions_list_view;
 }
 
+/* do it SUMMARY_OPEN_ACTIONS-1 times */
 #define SET_PRIO(p_one,p_two,p_three,p_four) {				\
 	prefs_common.summary_select_prio[0] = p_one;			\
 	prefs_common.summary_select_prio[1] = p_two;			\
@@ -312,6 +314,7 @@ static void prefs_summary_open_create(void)
 	prefs_common.summary_select_prio[3] = p_four;			\
 	prefs_common.summary_select_prio[4] = ACTION_UNSET;		\
 	prefs_common.summary_select_prio[5] = ACTION_UNSET;		\
+	prefs_common.summary_select_prio[6] = ACTION_UNSET;		\
 }							
 
 void prefs_summary_open_set_defaults(void)
@@ -342,9 +345,9 @@ static void prefs_summary_open_set_dialog(void)
 	GtkTreeView *possible_list_view = GTK_TREE_VIEW(summaryopen.possible_actions_list_view);
 	GtkTreeView *actions_list_view = GTK_TREE_VIEW(summaryopen.actions_list_view);
 	GtkTreeModel *model_poss, *model_act;
-	int i = 0;
+	int i;
 	gboolean set = FALSE;
-	gboolean used[7] = {FALSE, FALSE, FALSE, FALSE, FALSE, FALSE, FALSE};
+	gboolean used[SUMMARY_OPEN_ACTIONS-1] = {FALSE, FALSE, FALSE, FALSE, FALSE, FALSE, FALSE};
 
 	model_poss = gtk_tree_view_get_model(possible_list_view);
 	model_act = gtk_tree_view_get_model(actions_list_view);
@@ -353,14 +356,14 @@ static void prefs_summary_open_set_dialog(void)
 	gtk_list_store_clear(GTK_LIST_STORE(model_act));
 
 fill:
-	for (i = 0; i < 6; i++) {
+	for (i = 0; i < SUMMARY_OPEN_ACTIONS-1; i++) {
 		EntryAction act = prefs_common.summary_select_prio[i];
 
 		if (act == ACTION_UNSET) 
 			continue;
 		
 		set = TRUE;
-		used[act] = TRUE;
+		used[act-1] = TRUE;
 		prefs_summary_open_insert_action(GTK_LIST_STORE
 					(model_act), action_name[act], act);	
 	}
@@ -370,8 +373,8 @@ fill:
 		goto fill;
 	}
 
-	for (i = ACTION_MARKED; i <= ACTION_NOTHING; i++) {
-		if (!used[i]) {
+	for (i = 1; i < SUMMARY_OPEN_ACTIONS; i++) {
+		if (!used[i-1]) {
 			prefs_summary_open_insert_action(GTK_LIST_STORE
 					(model_poss), action_name[i], i);	
 		}
@@ -392,7 +395,7 @@ static void prefs_summary_open_set_list(void)
 		prefs_common.summary_select_prio[row] = GPOINTER_TO_INT(data);
 		row++;				
 	}
-	for (; row < 6; row++) {
+	for (; row < SUMMARY_OPEN_ACTIONS-1; row++) {
 		prefs_common.summary_select_prio[row] = ACTION_UNSET;
 	}
 }
@@ -531,8 +534,8 @@ static gboolean prefs_summary_open_key_pressed(GtkWidget *widget,
 
 static void prefs_summary_open_ok(void)
 {
-	int i = 0;
-	for (i = 0; i < 6; i++)
+	int i;
+	for (i = 0; i < SUMMARY_OPEN_ACTIONS-1; i++)
 		saved_summary_select_prio[i] = prefs_common.summary_select_prio[i];
 
 	gtk_widget_hide(summaryopen.window);
@@ -540,8 +543,8 @@ static void prefs_summary_open_ok(void)
 
 static void prefs_summary_open_cancel(void)
 {
-	int i = 0;
-	for (i = 0; i < 6; i++)
+	int i;
+	for (i = 0; i < SUMMARY_OPEN_ACTIONS-1; i++)
 		prefs_common.summary_select_prio[i] = saved_summary_select_prio[i];
 
 	gtk_widget_hide(summaryopen.window);

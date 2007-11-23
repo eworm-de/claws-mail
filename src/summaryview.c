@@ -1419,6 +1419,14 @@ gboolean summary_show(SummaryView *summaryview, FolderItem *item)
 						 ? 0 : GTK_CLIST(ctree)->rows - 1);
 				}
 				break;
+			case ACTION_FIRST_LIST:
+				if (GTK_CLIST(ctree)->row_list != NULL) {
+					node = gtk_ctree_node_nth
+						(ctree,
+						 item->sort_type == SORT_ASCENDING
+						 ? 0 : GTK_CLIST(ctree)->rows - 1);
+				}
+				break;
 			case ACTION_NOTHING:
 			case ACTION_UNSET:
 				node = NULL;
