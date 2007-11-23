@@ -1,3 +1,9 @@
+2007-11-23 [paul]	3.1.0cvs24
+
+	* po/de.po
+		a fix by Stephan Sachse, plus remove all
+		old strings from the end of the file
+
 2007-11-23 [wwp]	3.1.0cvs23
 
 	* src/prefs_msg_colors.c

@@ -3081,3 +3081,4 @@
 ( cvs diff -u -r 1.1.2.50 -r 1.1.2.51 src/prefs_summaries.c;  ) > 3.1.0cvs21.patchset
 ( cvs diff -u -r 1.1.2.10 -r 1.1.2.11 src/prefs_logging.c;  ) > 3.1.0cvs22.patchset
 ( cvs diff -u -r 1.1.2.35 -r 1.1.2.36 src/prefs_msg_colors.c;  ) > 3.1.0cvs23.patchset
+( cvs diff -u -r 1.58.2.34 -r 1.58.2.35 po/de.po;  ) > 3.1.0cvs24.patchset
