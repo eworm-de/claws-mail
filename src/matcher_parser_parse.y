@@ -1133,7 +1133,7 @@ MATCHER_ALL
 	matcher_is_fast = FALSE;
 	criteria = MATCHCRITERIA_TEST;
 	expr = $2;
-	prop = matcherprop_new(criteria, NULL, 0, expr, 0);
+	prop = matcherprop_new(criteria, NULL, MATCHTYPE_MATCH, expr, 0);
 }
 | MATCHER_NOT_TEST MATCHER_STRING
 {
@@ -1142,7 +1142,7 @@ MATCHER_ALL
 	matcher_is_fast = FALSE;
 	criteria = MATCHCRITERIA_NOT_TEST;
 	expr = $2;
-	prop = matcherprop_new(criteria, NULL, 0, expr, 0);
+	prop = matcherprop_new(criteria, NULL, MATCHTYPE_MATCH, expr, 0);
 }
 ;
 

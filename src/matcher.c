@@ -272,6 +272,41 @@ MatcherProp *matcherprop_new(gint criteria, const gchar *header,
 }
 
 /*!
+ *\brief	Allocate a structure for a filtering / scoring
+ *		"condition" (a matcher structure)
+ *		Same as matcherprop_new, except it doesn't change the expr's 
+ *		case.
+ *
+ *\param	criteria Criteria ID (MATCHCRITERIA_XXXX)
+ *\param	header Header string (if criteria is MATCHCRITERIA_HEADER
+			or MATCHCRITERIA_FOUND_IN_ADDRESSBOOK)
+ *\param	matchtype Type of action (MATCHTYPE_XXX)
+ *\param	expr String value or expression to check
+ *\param	value Integer value to check
+ *
+ *\return	MatcherProp * Pointer to newly allocated structure
+ */
+MatcherProp *matcherprop_new_create(gint criteria, const gchar *header,
+			      gint matchtype, const gchar *expr,
+			      int value)
+{
+	MatcherProp *prop;
+
+ 	prop = g_new0(MatcherProp, 1);
+	prop->criteria = criteria;
+	prop->header = header != NULL ? g_strdup(header) : NULL;
+
+	prop->expr = expr != NULL ? g_strdup(expr) : NULL;
+
+	prop->matchtype = matchtype;
+	prop->preg = NULL;
+	prop->value = value;
+	prop->error = 0;
+
+	return prop;
+}
+
+/*!
  *\brief	Free a matcher structure
  *
  *\param	prop Pointer to matcher structure allocated with

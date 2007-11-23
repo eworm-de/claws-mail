@@ -1,3 +1,12 @@
+2007-11-23 [wwp]	3.1.0cvs26
+
+	* src/matcher.c
+	* src/matcher.h
+	* src/matcher_parser_parse.y
+	* src/prefs_matcher.c
+		Fix irrelevant case folding when adding matcher condition 'test',
+		thanks to Colin.
+
 2007-11-23 [wwp]	3.1.0cvs25
 
 	* src/prefs_common.c
