@@ -94,6 +94,7 @@ static void prefs_msg_colors_create_widget(PrefsPage *_page, GtkWindow *window,
 {
 	MsgColorsPage *prefs_msg_colors = (MsgColorsPage *) _page;
 	
+	GtkWidget *notebook;
 	GtkWidget *vbox1;
 	GtkWidget *vbox2;
 	GtkWidget *checkbtn_enable_colors;
@@ -121,12 +122,10 @@ static void prefs_msg_colors_create_widget(PrefsPage *_page, GtkWindow *window,
 	GtkWidget *vbox_quotefg;
 	GtkWidget *vbox_quotebg;
 	/* custom colors */
-	GtkWidget *vbox_color_labels;
 	GtkWidget *hbox_custom_colors;
 	GtkWidget *vbox_custom_colors;
 	GtkWidget *vbox_custom_colors1;
 	GtkWidget *vbox_custom_colors2;
-	GtkWidget *frame_custom_colors;
  	GtkWidget *hbox_reset_custom_colors;
 	GtkWidget *btn_reset_custom_colors;
 	GtkWidget *hbox_custom_color[COLORLABELS];
@@ -136,34 +135,40 @@ static void prefs_msg_colors_create_widget(PrefsPage *_page, GtkWindow *window,
 	gchar *tooltip_btn_text = NULL;
 	gchar *tooltip_entry_text = NULL;
 
-	vbox1 = gtk_vbox_new (FALSE, VSPACING_NARROW);
+	notebook = gtk_notebook_new();
+	gtk_widget_show(notebook);
+	
+	vbox1 = gtk_vbox_new (FALSE, VBOX_BORDER);
 	gtk_widget_show (vbox1);
 	gtk_container_set_border_width (GTK_CONTAINER (vbox1), VBOX_BORDER);
+	gtk_notebook_append_page(GTK_NOTEBOOK(notebook), vbox1,
+				 gtk_label_new(_("Other")));
 
 	vbox2 = gtkut_get_options_frame(vbox1, &frame_msg, _("Message view"));
 
-	hbox = gtk_hbox_new(FALSE, 8);
+	hbox = gtk_hbox_new(FALSE, VBOX_BORDER);
 	gtk_widget_show (hbox);
-	hbox_quote = gtk_hbox_new(FALSE, 8);
+
+	gtk_box_pack_start (GTK_BOX (vbox2), hbox, FALSE, TRUE, 0);
+	PACK_CHECK_BUTTON (hbox, checkbtn_enable_colors,
+			   _("Enable coloration of message text"));	
+
+	hbox_quote = gtk_hbox_new(FALSE, VBOX_BORDER);
 	gtk_widget_show (hbox_quote);
-	vbox_quotefg = gtk_vbox_new(FALSE, 8);
+	vbox_quotefg = gtk_vbox_new(FALSE, VBOX_BORDER);
 	gtk_widget_show (vbox_quotefg);
-	vbox_quotebg = gtk_vbox_new(FALSE, 8);
+	vbox_quotebg = gtk_vbox_new(FALSE, VBOX_BORDER);
 #if GTK_CHECK_VERSION(2, 8, 0)
 	gtk_widget_show (vbox_quotebg);
 #endif	
-	
-	gtk_box_pack_start (GTK_BOX (vbox2), hbox, FALSE, TRUE, 0);
-	PACK_CHECK_BUTTON (hbox, checkbtn_enable_colors,
-			   _("Enable coloration of message text"));
-
 	vbox3 = gtkut_get_options_frame(vbox2, &frame_quote, _("Quote"));
-
+	SET_TOGGLE_SENSITIVITY(checkbtn_enable_colors, frame_quote);
+	
 	gtk_box_pack_start (GTK_BOX (vbox3), hbox_quote, FALSE, TRUE, 0);
 	gtk_box_pack_start (GTK_BOX (hbox_quote), vbox_quotefg, FALSE, TRUE, 0);
 	gtk_box_pack_start (GTK_BOX (hbox_quote), vbox_quotebg, FALSE, TRUE, 0);
 
-	hbox = gtk_hbox_new(FALSE, 8);
+	hbox = gtk_hbox_new(FALSE, VBOX_BORDER);
 	gtk_widget_show (hbox);
 	gtk_box_pack_start (GTK_BOX (vbox_quotefg), hbox, FALSE, TRUE, 0);
 
@@ -175,7 +180,7 @@ static void prefs_msg_colors_create_widget(PrefsPage *_page, GtkWindow *window,
 			     _("If there are more than 3 quote levels, the colors will be reused"),
 			     NULL);
 
-	hbox = gtk_hbox_new(FALSE, 8);
+	hbox = gtk_hbox_new(FALSE, VBOX_BORDER);
 	gtk_widget_show (hbox);
 	gtk_box_pack_start (GTK_BOX (vbox_quotefg), hbox, FALSE, TRUE, 0);
 
@@ -201,7 +206,7 @@ static void prefs_msg_colors_create_widget(PrefsPage *_page, GtkWindow *window,
 	gtk_tooltips_set_tip(tooltips, color_buttons.btn_quote_level1,
 			     Q_("Tooltip|Pick color for 1st level text"), NULL);
 
-	hbox = gtk_hbox_new(FALSE, 8);
+	hbox = gtk_hbox_new(FALSE, VBOX_BORDER);
 	gtk_widget_show (hbox);
 	gtk_box_pack_start (GTK_BOX (vbox_quotefg), hbox, FALSE, TRUE, 0);
 
@@ -227,7 +232,7 @@ static void prefs_msg_colors_create_widget(PrefsPage *_page, GtkWindow *window,
 	gtk_tooltips_set_tip(tooltips, color_buttons.btn_quote_level2,
 			     Q_("Tooltip|Pick color for 2nd level text"), NULL);
 
-	hbox = gtk_hbox_new(FALSE, 8);
+	hbox = gtk_hbox_new(FALSE, VBOX_BORDER);
 	gtk_widget_show (hbox);
 	gtk_box_pack_start (GTK_BOX (vbox_quotefg), hbox, FALSE, TRUE, 0);
 
@@ -253,7 +258,7 @@ static void prefs_msg_colors_create_widget(PrefsPage *_page, GtkWindow *window,
 	gtk_tooltips_set_tip(tooltips, color_buttons.btn_quote_level3,
 			     Q_("Tooltip|Pick color for 3rd level text"), NULL);
 
-	hbox = gtk_hbox_new(FALSE, 8);
+	hbox = gtk_hbox_new(FALSE, VBOX_BORDER);
 	gtk_widget_show (hbox);
 	gtk_box_pack_start (GTK_BOX (vbox_quotebg), hbox, FALSE, TRUE, 0);
 
@@ -261,7 +266,7 @@ static void prefs_msg_colors_create_widget(PrefsPage *_page, GtkWindow *window,
 			   _("Enable coloration of text background"));
 	SET_TOGGLE_SENSITIVITY(checkbtn_enable_colors, checkbtn_enable_bgcolors);
 
-	hbox = gtk_hbox_new(FALSE, 8);
+	hbox = gtk_hbox_new(FALSE, VBOX_BORDER);
 	gtk_widget_show (hbox);
 	SET_TOGGLE_SENSITIVITY(checkbtn_enable_colors, hbox);
 	gtk_box_pack_start (GTK_BOX (vbox_quotebg), hbox, FALSE, TRUE, 0);
@@ -282,7 +287,7 @@ static void prefs_msg_colors_create_widget(PrefsPage *_page, GtkWindow *window,
 			    FALSE, FALSE, 0);
 	SET_TOGGLE_SENSITIVITY(checkbtn_enable_bgcolors, label_quote_bgcolor1);
 
-	hbox = gtk_hbox_new(FALSE, 8);
+	hbox = gtk_hbox_new(FALSE, VBOX_BORDER);
 	gtk_widget_show (hbox);
 	SET_TOGGLE_SENSITIVITY(checkbtn_enable_colors, hbox);
 	gtk_box_pack_start (GTK_BOX (vbox_quotebg), hbox, FALSE, TRUE, 0);
@@ -302,8 +307,8 @@ static void prefs_msg_colors_create_widget(PrefsPage *_page, GtkWindow *window,
   	gtk_box_pack_start (GTK_BOX(hbox), label_quote_bgcolor2, 
 			    FALSE, FALSE, 0);
 	SET_TOGGLE_SENSITIVITY(checkbtn_enable_bgcolors, label_quote_bgcolor2);
-
-	hbox = gtk_hbox_new(FALSE, 8);
+	
+	hbox = gtk_hbox_new(FALSE, VBOX_BORDER);
 	gtk_widget_show (hbox);
 	SET_TOGGLE_SENSITIVITY(checkbtn_enable_colors, hbox);
 	gtk_box_pack_start (GTK_BOX (vbox_quotebg), hbox, FALSE, TRUE, 0);
@@ -323,8 +328,8 @@ static void prefs_msg_colors_create_widget(PrefsPage *_page, GtkWindow *window,
   	gtk_box_pack_start (GTK_BOX(hbox), label_quote_bgcolor3, 
 			    FALSE, FALSE, 0);
 	SET_TOGGLE_SENSITIVITY(checkbtn_enable_bgcolors, label_quote_bgcolor3);
-
-	hbox = gtk_hbox_new(FALSE, 8);
+	
+	hbox = gtk_hbox_new(FALSE, VBOX_BORDER);
 	gtk_widget_show (hbox);
 	gtk_box_pack_start (GTK_BOX (vbox2), hbox, FALSE, TRUE, 0);
 
@@ -343,7 +348,7 @@ static void prefs_msg_colors_create_widget(PrefsPage *_page, GtkWindow *window,
   	gtk_box_pack_start (GTK_BOX(hbox), lable_uri, FALSE, FALSE, 0);
 	SET_TOGGLE_SENSITIVITY(checkbtn_enable_colors, lable_uri);
 
-	hbox = gtk_hbox_new(FALSE, 8);
+	hbox = gtk_hbox_new(FALSE, VBOX_BORDER);
 	gtk_widget_show (hbox);
 	gtk_box_pack_start (GTK_BOX (vbox2), hbox, FALSE, TRUE, 0);
 
@@ -364,7 +369,7 @@ static void prefs_msg_colors_create_widget(PrefsPage *_page, GtkWindow *window,
 
 	vbox2 = gtkut_get_options_frame(vbox1, &frame_folder, _("Folder list"));
 
-	hbox = gtk_hbox_new(FALSE, 8);
+	hbox = gtk_hbox_new(FALSE, VBOX_BORDER);
 	gtk_widget_show (hbox);
 	gtk_box_pack_start (GTK_BOX (vbox2), hbox, FALSE, TRUE, 0);
 
@@ -383,7 +388,7 @@ static void prefs_msg_colors_create_widget(PrefsPage *_page, GtkWindow *window,
 	gtk_widget_show(label_tgt_folder);
   	gtk_box_pack_start (GTK_BOX(hbox), label_tgt_folder, FALSE, FALSE, 0);
 
-	hbox = gtk_hbox_new(FALSE, 8);
+	hbox = gtk_hbox_new(FALSE, VBOX_BORDER);
 	gtk_widget_show (hbox);
 	gtk_box_pack_start (GTK_BOX (vbox2), hbox, FALSE, FALSE, 0);
 
@@ -401,13 +406,11 @@ static void prefs_msg_colors_create_widget(PrefsPage *_page, GtkWindow *window,
  	gtk_box_pack_start (GTK_BOX(hbox), label_color_new, FALSE, FALSE, 0);
 
 	/* custom colors */
-	vbox_color_labels = gtkut_get_options_frame(vbox1,
-				&frame_custom_colors, _("Color labels"));
-
 	vbox_custom_colors = gtk_vbox_new (FALSE, VSPACING_NARROW);
 	gtk_widget_show (vbox_custom_colors);
-	gtk_box_pack_start(GTK_BOX(vbox_color_labels), vbox_custom_colors,
-		FALSE, FALSE, 0);
+	gtk_container_set_border_width (GTK_CONTAINER (vbox_custom_colors), VBOX_BORDER);
+	gtk_notebook_prepend_page(GTK_NOTEBOOK(notebook), vbox_custom_colors,
+				 gtk_label_new(_("Color labels")));
 
 	hbox_custom_colors = gtk_hbox_new(FALSE, 8);
 	gtk_widget_show(hbox_custom_colors);
@@ -489,9 +492,9 @@ static void prefs_msg_colors_create_widget(PrefsPage *_page, GtkWindow *window,
 	g_free(tooltip_btn_text);
 	g_free(tooltip_entry_text);
 
-	hbox_reset_custom_colors = gtk_hbox_new(FALSE, 8);
+	hbox_reset_custom_colors = gtk_hbox_new(FALSE, VBOX_BORDER);
 	gtk_widget_show (hbox_reset_custom_colors);
-	gtk_box_pack_start(GTK_BOX (vbox_color_labels), hbox_reset_custom_colors,
+	gtk_box_pack_start(GTK_BOX (vbox_custom_colors), hbox_reset_custom_colors,
 			   FALSE, FALSE, 0);
 
 	btn_reset_custom_colors = gtk_button_new_with_label(_(" Use default "));
@@ -570,8 +573,9 @@ static void prefs_msg_colors_create_widget(PrefsPage *_page, GtkWindow *window,
 	for (c = 0; c < COLORLABELS; c++) {
 		prefs_msg_colors->entry_custom_colorlabel[c] = entry_custom_colorlabel[c];
 	}
-
-	prefs_msg_colors->page.widget = vbox1;
+	gtk_notebook_set_current_page(GTK_NOTEBOOK(notebook), 0);
+		
+	prefs_msg_colors->page.widget = notebook;
 }
 
 static void quote_color_set_dialog(GtkWidget *widget, gpointer data)

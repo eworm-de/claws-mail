@@ -1,3 +1,9 @@
+2007-11-23 [wwp]	3.1.0cvs23
+
+	* src/prefs_msg_colors.c
+		Move colour prefs into tabs. Patch by Pawel Pekala <c0rn@o2.pl>,
+		with little changes.
+
 2007-11-23 [paul]	3.1.0cvs22
 
 	* src/prefs_logging.c
