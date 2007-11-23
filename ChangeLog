@@ -1,3 +1,8 @@
+2007-11-23 [paul]	3.1.0cvs21
+
+	* src/prefs_summaries.c
+		don't wrap the label or put linebreaks
+
 2007-11-22 [colin]	3.1.0cvs20
 
 	* src/plugins/pgpinline/pgpinline.c
