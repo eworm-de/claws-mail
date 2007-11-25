@@ -1,3 +1,9 @@
+2007-11-25 [paul]	3.1.0cvs27
+
+	* src/folder_item_prefs.c
+	* src/folder_item_prefs.h
+		remove dead code
+
 2007-11-23 [wwp]	3.1.0cvs26
 
 	* src/matcher.c

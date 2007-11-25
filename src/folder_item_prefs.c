@@ -17,10 +17,6 @@
  * 
  */
 
-/* alfons - all folder item specific settings should migrate into 
- * folderlist.xml!!! the old folderitemrc file will only serve for a few 
- * versions (for compatibility) */
-
 #ifdef HAVE_CONFIG_H
 #  include "config.h"
 #endif
@@ -38,23 +34,6 @@
 FolderItemPrefs tmp_prefs;
 
 static PrefParam param[] = {
-	{"sort_by_number", "FALSE", &tmp_prefs.sort_by_number, P_BOOL,
-	 NULL, NULL, NULL},
-	{"sort_by_size", "FALSE", &tmp_prefs.sort_by_size, P_BOOL,
-	 NULL, NULL, NULL},
-	{"sort_by_date", "FALSE", &tmp_prefs.sort_by_date, P_BOOL,
-	 NULL, NULL, NULL},
-	{"sort_by_from", "FALSE", &tmp_prefs.sort_by_from, P_BOOL,
-	 NULL, NULL, NULL},
-	{"sort_by_subject", "FALSE", &tmp_prefs.sort_by_subject, P_BOOL,
-	 NULL, NULL, NULL},
-	{"sort_by_score", "FALSE", &tmp_prefs.sort_by_score, P_BOOL,
-	 NULL, NULL, NULL},
-	{"sort_descending", "FALSE", &tmp_prefs.sort_descending, P_BOOL,
-	 NULL, NULL, NULL},
-	/* MIGRATION */	 
-	{"request_return_receipt", "", &tmp_prefs.request_return_receipt, P_BOOL,
-	 NULL, NULL, NULL},
 	{"enable_default_to", "", &tmp_prefs.enable_default_to, P_BOOL,
 	 NULL, NULL, NULL},
 	{"default_to", "", &tmp_prefs.default_to, P_STRING,
@@ -136,28 +115,6 @@ void folder_item_prefs_read_config(FolderItem * item)
 	g_free(rcpath);
 
 	*item->prefs = tmp_prefs;
-
-	/*
-	 * MIGRATION: next lines are migration code. the idea is that
-	 *            if used regularly, claws folder config ends up
-	 *            in the same file as sylpheed-main
-	 */
-
-	item->ret_rcpt = tmp_prefs.request_return_receipt ? TRUE : FALSE;
-
-	/* MIGRATION: 0.7.8main+ has persistent sort order. claws had the sort
-	 *	      order in different members, which is ofcourse a little
-	 *	      bit phoney. */
-	if (item->sort_key == SORT_BY_NONE) {
-		item->sort_key  = (tmp_prefs.sort_by_number  ? SORT_BY_NUMBER  :
-				   tmp_prefs.sort_by_size    ? SORT_BY_SIZE    :
-				   tmp_prefs.sort_by_date    ? SORT_BY_DATE    :
-				   tmp_prefs.sort_by_from    ? SORT_BY_FROM    :
-				   tmp_prefs.sort_by_subject ? SORT_BY_SUBJECT :
-				   tmp_prefs.sort_by_score   ? SORT_BY_SCORE   :
-								 SORT_BY_NONE);
-		item->sort_type = tmp_prefs.sort_descending ? SORT_DESCENDING : SORT_ASCENDING;
-	}								
 }
 
 void folder_item_prefs_save_config(FolderItem * item)
@@ -170,9 +127,6 @@ void folder_item_prefs_save_config(FolderItem * item)
 	debug_print("saving prefs for %s\n", id?id:"(null)");
 	prefs_write_config(param, id, FOLDERITEM_RC);
 	g_free(id);
-
-	/* MIGRATION: make sure migrated items are not saved
-	 */
 }
 
 static gboolean folder_item_prefs_save_config_func(GNode *node, gpointer data)
@@ -190,15 +144,6 @@ void folder_item_prefs_save_config_recursive(FolderItem * item)
 
 static FolderItemPrefs *folder_item_prefs_clear(FolderItemPrefs *prefs)
 {
-	prefs->sort_by_number = FALSE;
-	prefs->sort_by_size = FALSE;
-	prefs->sort_by_date = FALSE;
-	prefs->sort_by_from = FALSE;
-	prefs->sort_by_subject = FALSE;
-	prefs->sort_by_score = FALSE;
-	prefs->sort_descending = FALSE;
-
-	prefs->request_return_receipt = FALSE;
 	prefs->enable_default_to = FALSE;
 	prefs->default_to = NULL;
 	prefs->enable_default_reply_to = FALSE;
@@ -270,14 +215,6 @@ void folder_item_prefs_copy_prefs(FolderItem * src, FolderItem * dest)
 	folder_item_prefs_read_config(src);
 
 	tmp_prefs.directory			= g_strdup(src->prefs->directory);
-	tmp_prefs.sort_by_number		= src->prefs->sort_by_number;
-	tmp_prefs.sort_by_size			= src->prefs->sort_by_size;
-	tmp_prefs.sort_by_date			= src->prefs->sort_by_date;
-	tmp_prefs.sort_by_from			= src->prefs->sort_by_from;
-	tmp_prefs.sort_by_subject		= src->prefs->sort_by_subject;
-	tmp_prefs.sort_by_score			= src->prefs->sort_by_score;
-	tmp_prefs.sort_descending		= src->prefs->sort_descending;
-	tmp_prefs.enable_thread			= src->prefs->enable_thread;
         tmp_prefs.enable_processing             = src->prefs->enable_processing;
 	tmp_prefs.newmailcheck                  = src->prefs->newmailcheck;
 	tmp_prefs.offlinesync                   = src->prefs->offlinesync;

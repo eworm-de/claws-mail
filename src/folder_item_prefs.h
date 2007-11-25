@@ -30,17 +30,6 @@ typedef struct _FolderItemPrefs FolderItemPrefs;
 struct _FolderItemPrefs {
 	gchar * directory;
 
-	gboolean sort_by_number;
-	gboolean sort_by_size;
-	gboolean sort_by_date;
-	gboolean sort_by_from;
-	gboolean sort_by_subject;
-	gboolean sort_by_score;
-
-	gboolean sort_descending;
-
-	gboolean enable_thread;
-
         int enable_processing;
 	GSList * processing;
 
