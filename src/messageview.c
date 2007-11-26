@@ -893,6 +893,14 @@ static gint disposition_notification_send(MsgInfo *msginfo)
 			"Original-Message-ID: <%s>\n"
 			"Disposition: manual-action/MDN-sent-manually; displayed\n"
 			"\n"
+			"--%s\n"
+			"Content-Type: application/octet-stream\n"
+			"Reporting-UA: %s\n"
+			"Original-Recipient: rfc822;%s\n"
+			"Final-Recipient: rfc822;%s\n"
+			"Original-Message-ID: <%s>\n"
+			"Disposition: manual-action/MDN-sent-manually; displayed\n"
+			"\n"
 			"--%s--\n", 
 			boundary, 
 			boundary,
@@ -900,6 +908,11 @@ static gint disposition_notification_send(MsgInfo *msginfo)
 			orig_to?orig_to:"No To:",
 			enc_sub?enc_sub:"No subject",
 			date,
+			boundary,
+			PROG_VERSION,
+			orig_to?orig_to:"No To:",
+			account->address,
+			msginfo->msgid?msginfo->msgid:"NO MESSAGE ID",
 			boundary,
 			PROG_VERSION,
 			orig_to?orig_to:"No To:",

@@ -1,3 +1,10 @@
+2007-11-26 [colin]	3.1.0cvs28
+
+	* src/messageview.c
+	* src/procmime.c
+		Handle broken disposition-notifications from Evolution
+		(http://bugzilla.gnome.org/show_bug.cgi?id=499145)
+
 2007-11-25 [paul]	3.1.0cvs27
 
 	* src/folder_item_prefs.c

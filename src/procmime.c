@@ -1280,6 +1280,8 @@ static int procmime_parse_mimepart(MimeInfo *parent,
 			     gchar *content_id,
 			     gchar *content_disposition,
 			     gchar *content_location,
+			     const gchar *original_msgid,
+			     const gchar *disposition_notification_hdr,
 			     const gchar *filename,
 			     guint offset,
 			     guint length,
@@ -1299,6 +1301,10 @@ static void procmime_parse_message_rfc822(MimeInfo *mimeinfo, gboolean short_sca
 				{"Content-Location:",
 						   NULL, TRUE},
 				{"MIME-Version:",
+						   NULL, TRUE},
+				{"Original-Message-ID:",
+						   NULL, TRUE},
+				{"Disposition:",
 						   NULL, TRUE},
 				{NULL,		   NULL, FALSE}};
 	guint content_start, i;
@@ -1335,6 +1341,17 @@ static void procmime_parse_message_rfc822(MimeInfo *mimeinfo, gboolean short_sca
                 g_free(hentry[5].body);
                 hentry[5].body = tmp;
         }                
+	if (hentry[7].body != NULL) {
+                tmp = conv_unmime_header(hentry[7].body, NULL);
+                g_free(hentry[7].body);
+                hentry[7].body = tmp;
+        }
+	if (hentry[8].body != NULL) {
+                tmp = conv_unmime_header(hentry[8].body, NULL);
+                g_free(hentry[8].body);
+                hentry[8].body = tmp;
+        }
+  
 	content_start = ftell(fp);
 	fclose(fp);
 	
@@ -1345,6 +1362,7 @@ static void procmime_parse_message_rfc822(MimeInfo *mimeinfo, gboolean short_sca
 				hentry[0].body, hentry[1].body,
 				hentry[2].body, hentry[3].body,
 				hentry[4].body, hentry[5].body,
+				hentry[7].body, hentry[8].body, 
 				mimeinfo->data.filename, content_start,
 				len, short_scan);
 	
@@ -1354,7 +1372,9 @@ static void procmime_parse_message_rfc822(MimeInfo *mimeinfo, gboolean short_sca
 	}
 }
 
-static void procmime_parse_disposition_notification(MimeInfo *mimeinfo, gboolean short_scan)
+static void procmime_parse_disposition_notification(MimeInfo *mimeinfo, 
+		const gchar *original_msgid, const gchar *disposition_notification_hdr,
+		gboolean short_scan)
 {
 	HeaderEntry hentry[] = {{"Original-Message-ID:",  NULL, TRUE},
 			        {"Disposition:",	  NULL, TRUE},
@@ -1366,15 +1386,25 @@ static void procmime_parse_disposition_notification(MimeInfo *mimeinfo, gboolean
 
 	procmime_decode_content(mimeinfo);
 
+	debug_print("parse disposition notification\n");
 	fp = g_fopen(mimeinfo->data.filename, "rb");
 	if (fp == NULL) {
 		FILE_OP_ERROR(mimeinfo->data.filename, "fopen");
 		return;
 	}
 	fseek(fp, mimeinfo->offset, SEEK_SET);
-	procheader_get_header_fields(fp, hentry);
+
+	if (original_msgid && disposition_notification_hdr) {
+		hentry[0].body = g_strdup(original_msgid);
+		hentry[1].body = g_strdup(disposition_notification_hdr);
+	} else {
+		procheader_get_header_fields(fp, hentry);
+	}
 
 	if (!hentry[0].body || !hentry[1].body) {
+		debug_print("MsgId %s, Disp %s\n",
+			hentry[0].body ? hentry[0].body:"(nil)",
+			hentry[1].body ? hentry[1].body:"(nil)");
 		goto bail;
 	}
 
@@ -1412,6 +1442,40 @@ bail:
 	}
 }
 
+#define GET_HEADERS() {						\
+	procheader_get_header_fields(fp, hentry);		\
+        if (hentry[0].body != NULL) {				\
+                tmp = conv_unmime_header(hentry[0].body, NULL);	\
+                g_free(hentry[0].body);				\
+                hentry[0].body = tmp;				\
+        }                					\
+        if (hentry[2].body != NULL) {				\
+                tmp = conv_unmime_header(hentry[2].body, NULL);	\
+                g_free(hentry[2].body);				\
+                hentry[2].body = tmp;				\
+        }                					\
+        if (hentry[4].body != NULL) {				\
+                tmp = conv_unmime_header(hentry[4].body, NULL);	\
+                g_free(hentry[4].body);				\
+                hentry[4].body = tmp;				\
+        }                					\
+        if (hentry[5].body != NULL) {				\
+                tmp = conv_unmime_header(hentry[5].body, NULL);	\
+                g_free(hentry[5].body);				\
+                hentry[5].body = tmp;				\
+        }                					\
+	if (hentry[6].body != NULL) {				\
+                tmp = conv_unmime_header(hentry[6].body, NULL);	\
+                g_free(hentry[6].body);				\
+                hentry[6].body = tmp;				\
+        }                					\
+	if (hentry[7].body != NULL) {				\
+                tmp = conv_unmime_header(hentry[7].body, NULL);	\
+                g_free(hentry[7].body);				\
+                hentry[7].body = tmp;				\
+        }							\
+}
+
 static void procmime_parse_multipart(MimeInfo *mimeinfo, gboolean short_scan)
 {
 	HeaderEntry hentry[] = {{"Content-Type:",  NULL, TRUE},
@@ -1424,6 +1488,10 @@ static void procmime_parse_multipart(MimeInfo *mimeinfo, gboolean short_scan)
 				{"Content-Disposition:",
 				                   NULL, TRUE},
 				{"Content-Location:",
+						   NULL, TRUE},
+				{"Original-Message-ID:",
+						   NULL, TRUE},
+				{"Disposition:",
 						   NULL, TRUE},
 				{NULL,		   NULL, FALSE}};
 	gchar *p, *tmp;
@@ -1460,43 +1528,24 @@ static void procmime_parse_multipart(MimeInfo *mimeinfo, gboolean short_scan)
 				                        hentry[0].body, hentry[1].body,
 							hentry[2].body, hentry[3].body, 
 							hentry[4].body, hentry[5].body,
+							hentry[6].body, hentry[7].body,
 							mimeinfo->data.filename, lastoffset,
 							len, short_scan);
 				if (result == 1 && short_scan) {
 					done = TRUE;
 					break;
 				}
-			}
+			} 
 			
 			if (buf[2 + boundary_len]     == '-' &&
-			    buf[2 + boundary_len + 1] == '-')
+			    buf[2 + boundary_len + 1] == '-') {
 				break;
-
+			}
 			for (i = 0; i < (sizeof hentry / sizeof hentry[0]) ; i++) {
 				g_free(hentry[i].body);
 				hentry[i].body = NULL;
 			}
-			procheader_get_header_fields(fp, hentry);
-                        if (hentry[0].body != NULL) {
-                                tmp = conv_unmime_header(hentry[0].body, NULL);
-                                g_free(hentry[0].body);
-                                hentry[0].body = tmp;
-                        }                
-                        if (hentry[2].body != NULL) {
-                                tmp = conv_unmime_header(hentry[2].body, NULL);
-                                g_free(hentry[2].body);
-                                hentry[2].body = tmp;
-                        }                
-                        if (hentry[4].body != NULL) {
-                                tmp = conv_unmime_header(hentry[4].body, NULL);
-                                g_free(hentry[4].body);
-                                hentry[4].body = tmp;
-                        }                
-                        if (hentry[5].body != NULL) {
-                                tmp = conv_unmime_header(hentry[5].body, NULL);
-                                g_free(hentry[5].body);
-                                hentry[5].body = tmp;
-                        }                
+			GET_HEADERS();
 			lastoffset = ftell(fp);
 		}
 	}
@@ -1787,6 +1836,8 @@ static int procmime_parse_mimepart(MimeInfo *parent,
 			     gchar *content_id,
 			     gchar *content_disposition,
 			     gchar *content_location,
+			     const gchar *original_msgid,
+			     const gchar *disposition_notification_hdr,
 			     const gchar *filename,
 			     guint offset,
 			     guint length,
@@ -1872,14 +1923,23 @@ static int procmime_parse_mimepart(MimeInfo *parent,
 				procmime_parse_message_rfc822(mimeinfo, short_scan);
 			}
 			if (g_ascii_strcasecmp(mimeinfo->subtype, "disposition-notification") == 0) {
-				procmime_parse_disposition_notification(mimeinfo, short_scan);
+				procmime_parse_disposition_notification(mimeinfo, 
+					original_msgid, disposition_notification_hdr, short_scan);
 			}
 			break;
 			
 		case MIMETYPE_MULTIPART:
 			procmime_parse_multipart(mimeinfo, short_scan);
 			break;
-			
+		
+		case MIMETYPE_APPLICATION:
+			if (g_ascii_strcasecmp(mimeinfo->subtype, "octet-stream") == 0
+			&& original_msgid && *original_msgid 
+			&& disposition_notification_hdr && *disposition_notification_hdr) {
+				procmime_parse_disposition_notification(mimeinfo, 
+					original_msgid, disposition_notification_hdr, short_scan);
+			}
+			break;
 		default:
 			break;
 		}
