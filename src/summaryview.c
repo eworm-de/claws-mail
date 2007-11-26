@@ -5311,7 +5311,6 @@ static gboolean summary_set_row_tag(SummaryView *summaryview, GtkCTreeNode *row,
 
 	procmsg_msginfo_update_tags(msginfo, set, id);
 	
-	
 	if (summaryview->col_state[summaryview->col_pos[S_COL_TAGS]].visible) {
 		tags_str = procmsg_msginfo_get_tags_str(msginfo);
 		gtk_ctree_node_set_text(ctree, row, 
@@ -5337,10 +5336,12 @@ void summary_set_tag(SummaryView *summaryview, gint tag_id,
 	gboolean froze = FALSE;
 	gboolean redisplay = FALSE;
 	START_LONG_OPERATION(summaryview, FALSE);
+	folder_item_set_batch(summaryview->folder_item, TRUE);
 	for (cur = GTK_CLIST(ctree)->selection; cur != NULL && cur->data != NULL; cur = cur->next) {
 		redisplay |= summary_set_row_tag(summaryview,
 					   GTK_CTREE_NODE(cur->data), FALSE, set, real_id);
 	}
+	folder_item_set_batch(summaryview->folder_item, FALSE);
 	END_LONG_OPERATION(summaryview);
 	if (redisplay)
 		summary_redisplay_msg(summaryview);

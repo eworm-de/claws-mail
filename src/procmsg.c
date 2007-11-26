@@ -2416,6 +2416,8 @@ gchar *procmsg_msginfo_get_tags_str(MsgInfo *msginfo)
 
 void procmsg_msginfo_update_tags(MsgInfo *msginfo, gboolean set, gint id)
 {
+	GSList changed;
+
 	if (id == 0)
 		return;
 
@@ -2423,16 +2425,26 @@ void procmsg_msginfo_update_tags(MsgInfo *msginfo, gboolean set, gint id)
 		msginfo->tags = g_slist_remove(
 					msginfo->tags,
 					GINT_TO_POINTER(id));
+		changed.data = GINT_TO_POINTER(id);
+		changed.next = NULL;
+		folder_item_commit_tags(msginfo->folder, msginfo, NULL, &changed);
 	} else {
-		if (!g_slist_find(msginfo->tags, GINT_TO_POINTER(id)))
+		if (!g_slist_find(msginfo->tags, GINT_TO_POINTER(id))) {
 			msginfo->tags = g_slist_append(
 					msginfo->tags,
 					GINT_TO_POINTER(id));
+		}
+		changed.data = GINT_TO_POINTER(id);
+		changed.next = NULL;
+		folder_item_commit_tags(msginfo->folder, msginfo, &changed, NULL);
 	}
+	
 }
 
 void procmsg_msginfo_clear_tags(MsgInfo *msginfo)
 {
-	g_slist_free(msginfo->tags);
+	GSList *unset = msginfo->tags;
 	msginfo->tags = NULL;
+	folder_item_commit_tags(msginfo->folder, msginfo, NULL, unset);
+	g_slist_free(unset);
 }

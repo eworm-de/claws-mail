@@ -68,7 +68,7 @@ int imap_threaded_rename(Folder * folder,
 int imap_threaded_delete(Folder * folder, const char * mb);
 int imap_threaded_select(Folder * folder, const char * mb,
 			 gint * exists, gint * recent, gint * unseen,
-			 guint32 * uid_validity);
+			 guint32 * uid_validity, gint * can_create_flags);
 int imap_threaded_examine(Folder * folder, const char * mb,
 			  gint * exists, gint * recent, gint * unseen,
 			  guint32 * uid_validity);

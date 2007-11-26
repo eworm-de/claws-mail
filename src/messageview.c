@@ -865,7 +865,7 @@ static gint disposition_notification_send(MsgInfo *msginfo)
 		extract_address(orig_to);
 	}
 	if (msginfo->subject) {
-		enc_sub = g_malloc0(strlen(msginfo->subject)*2);
+		enc_sub = g_malloc0(strlen(msginfo->subject)*8);
 		qp_encode_line(enc_sub, (const guchar *)msginfo->subject);
 		g_strstrip(enc_sub);
 	}

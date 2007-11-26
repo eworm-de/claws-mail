@@ -312,6 +312,9 @@ void unfold_line			(gchar		*str);
 void subst_char				(gchar		*str,
 					 gchar		 orig,
 					 gchar		 subst);
+void subst_chars			(gchar 		*str, 	
+					 gchar 		*orig, 
+					 gchar 		subst);
 void subst_for_filename			(gchar		*str);
 void subst_for_shellsafe_filename	(gchar		*str);
 gboolean is_ascii_str			(const gchar	*str);

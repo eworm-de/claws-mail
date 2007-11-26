@@ -1041,7 +1041,7 @@ void subst_char(gchar *str, gchar orig, gchar subst)
 	}
 }
 
-static void subst_chars(gchar *str, gchar *orig, gchar subst)
+void subst_chars(gchar *str, gchar *orig, gchar subst)
 {
 	register gchar *p = str;
 

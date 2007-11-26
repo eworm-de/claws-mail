@@ -1315,12 +1315,12 @@ static void select_run(struct etpan_thread_op * op)
 
 int imap_threaded_select(Folder * folder, const char * mb,
 			 gint * exists, gint * recent, gint * unseen,
-			 guint32 * uid_validity)
+			 guint32 * uid_validity,gint *can_create_flags)
 {
 	struct select_param param;
 	struct select_result result;
 	mailimap * imap;
-	
+
 	debug_print("imap select - begin\n");
 	
 	imap = get_imap(folder);
@@ -1339,7 +1339,22 @@ int imap_threaded_select(Folder * folder, const char * mb,
 	* recent = imap->imap_selection_info->sel_recent;
 	* unseen = imap->imap_selection_info->sel_unseen;
 	* uid_validity = imap->imap_selection_info->sel_uidvalidity;
-	
+	* can_create_flags = FALSE;
+
+	if (imap->imap_selection_info->sel_perm_flags) {
+		clistiter *cur =
+			clist_begin(imap->imap_selection_info->sel_perm_flags);
+		for (; cur && !(*can_create_flags); cur = clist_next(cur)) {
+			struct mailimap_flag_perm *flag = (struct mailimap_flag_perm *)clist_content(cur);
+			if (flag->fl_type == MAILIMAP_FLAG_PERM_ALL)
+				*can_create_flags = TRUE;
+			else if (flag->fl_flag && 
+					flag->fl_flag->fl_type == 6 &&
+					!strcmp(flag->fl_flag->fl_data.fl_extension, "*"))
+				*can_create_flags = TRUE; 
+			
+		}
+	}
 	debug_print("imap select - end\n");
 	
 	return result.error;
@@ -1812,7 +1827,7 @@ void imap_fetch_uid_list_free(carray * uid_list)
 
 
 
-static int imap_flags_to_flags(struct mailimap_msg_att_dynamic * att_dyn);
+static int imap_flags_to_flags(struct mailimap_msg_att_dynamic * att_dyn, GSList **tags);
 
 static int
 result_to_uid_flags_list(clist * fetch_result, carray ** result)
@@ -1821,7 +1836,8 @@ result_to_uid_flags_list(clist * fetch_result, carray ** result)
 	int r;
 	int res;
 	carray * tab;
-	
+	GSList *tags = NULL;
+
 	tab = carray_new(128);
 	if (tab == NULL) {
 		res = MAILIMAP_ERROR_MEMORY;
@@ -1847,7 +1863,7 @@ result_to_uid_flags_list(clist * fetch_result, carray ** result)
 		if (att_dyn == NULL)
 			continue;
 		
-		flags = imap_flags_to_flags(att_dyn);
+		flags = imap_flags_to_flags(att_dyn, &tags);
 		
 		puid = malloc(sizeof(* puid));
 		if (puid == NULL) {
@@ -1874,6 +1890,12 @@ result_to_uid_flags_list(clist * fetch_result, carray ** result)
 			res = MAILIMAP_ERROR_MEMORY;
 			goto free_list;
 		}
+		r = carray_add(tab, tags, NULL);
+		if (r < 0) {
+			free(pflags);
+			res = MAILIMAP_ERROR_MEMORY;
+			goto free_list;
+		}
 	}
 		
 	* result = tab;
@@ -1882,6 +1904,8 @@ result_to_uid_flags_list(clist * fetch_result, carray ** result)
   
  free_list:
 	imap_fetch_uid_flags_list_free(tab);
+	slist_free_strings(tags);
+	g_slist_free(tags);
  err:
 	return res;
 }
@@ -2025,10 +2049,12 @@ void imap_fetch_uid_flags_list_free(carray * uid_flags_list)
 {
 	unsigned int i;
 	
-	for(i = 0 ; i < carray_count(uid_flags_list) ; i ++) {
+	for(i = 0 ; i < carray_count(uid_flags_list) ; i += 3) {
 		void * data;
 		
 		data = carray_get(uid_flags_list, i);
+		free(data);
+		data = carray_get(uid_flags_list, i + 1);
 		free(data);
 	}
 	carray_free(uid_flags_list);
@@ -2348,12 +2374,13 @@ int imap_threaded_fetch_content(Folder * folder, uint32_t msg_index,
 
 
 
-static int imap_flags_to_flags(struct mailimap_msg_att_dynamic * att_dyn)
+static int imap_flags_to_flags(struct mailimap_msg_att_dynamic * att_dyn, GSList **s_tags)
 {
 	int flags;
 	clist * flag_list;
 	clistiter * cur;
-	
+	GSList *tags = NULL;
+
 	flags = MSG_UNREAD;
 	
 	flag_list = att_dyn->att_list;
@@ -2382,10 +2409,18 @@ static int imap_flags_to_flags(struct mailimap_msg_att_dynamic * att_dyn)
 				flags &= ~MSG_UNREAD;
 				flags &= ~MSG_NEW;
 				break;
+			case MAILIMAP_FLAG_KEYWORD:
+				tags = g_slist_prepend(tags, g_strdup(flag_fetch->fl_flag->fl_data.fl_keyword));
+				break;
 			}
 		}
 	}
-	
+	if (s_tags)
+		*s_tags = tags;
+	else {
+		slist_free_strings(tags);
+		g_slist_free(tags);
+	}
 	return flags;
 }
 
@@ -2451,14 +2486,14 @@ static int imap_get_msg_att_info(struct mailimap_msg_att * msg_att,
 }
 
 static struct imap_fetch_env_info *
-fetch_to_env_info(struct mailimap_msg_att * msg_att)
+fetch_to_env_info(struct mailimap_msg_att * msg_att, GSList **tags)
 {
 	struct imap_fetch_env_info * info;
 	uint32_t uid;
 	char * headers;
 	size_t size;
 	struct mailimap_msg_att_dynamic * att_dyn;
-	
+	GSList *s_tags = NULL;
 	imap_get_msg_att_info(msg_att, &uid, &headers, &size,
 			      &att_dyn);
 	
@@ -2468,8 +2503,14 @@ fetch_to_env_info(struct mailimap_msg_att * msg_att)
 	info->uid = uid;
 	info->headers = strdup(headers);
 	info->size = size;
-	info->flags = imap_flags_to_flags(att_dyn);
+	info->flags = imap_flags_to_flags(att_dyn, &s_tags);
 	
+	if (tags)
+		*tags = s_tags;
+	else {
+		slist_free_strings(s_tags);
+		g_slist_free(s_tags);
+	}
 	return info;
 }
 
@@ -2481,7 +2522,7 @@ imap_fetch_result_to_envelop_list(clist * fetch_result,
 	unsigned int i;
 	carray * env_list;
 	i = 0;
-  
+  	GSList *tags = NULL;
 	env_list = carray_new(16);
   
 	for(cur = clist_begin(fetch_result) ; cur != NULL ;
@@ -2491,10 +2532,11 @@ imap_fetch_result_to_envelop_list(clist * fetch_result,
     
 		msg_att = clist_content(cur);
 
-		env_info = fetch_to_env_info(msg_att);
+		env_info = fetch_to_env_info(msg_att, &tags);
 		if (!env_info)
 			return MAILIMAP_ERROR_MEMORY;
 		carray_add(env_list, env_info, NULL);
+		carray_add(env_list, tags, NULL);
 	}
   
 	* p_env_list = env_list;
@@ -2704,7 +2746,7 @@ void imap_fetch_env_free(carray * env_list)
 {
 	unsigned int i;
 	
-	for(i = 0 ; i < carray_count(env_list) ; i ++) {
+	for(i = 0 ; i < carray_count(env_list) ; i += 2) {
 		struct imap_fetch_env_info * env_info;
 		
 		env_info = carray_get(env_list, i);

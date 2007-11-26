@@ -562,6 +562,7 @@ static void tag_apply_selected_edited(GtkCellRendererText *widget,
 	gpointer tmp;
 	gint tag_id;
 	SummaryView *summaryview = NULL;
+	gboolean selected;
 
 	if (mainwindow_get_mainwindow() != NULL)
 		summaryview = mainwindow_get_mainwindow()->summaryview;
@@ -573,17 +574,29 @@ static void tag_apply_selected_edited(GtkCellRendererText *widget,
 		return;
 
 	gtk_tree_model_get(model, &iter,
+			   TAG_SELECTED, &selected,
 			   TAG_DATA, &tmp,
 			   -1);
 
 	tag_id = GPOINTER_TO_INT(tmp);
+	
+	if (selected) {
+		if (summaryview)
+			summary_set_tag(summaryview, -tag_id, NULL);
+	}
+	
 	tags_update_tag(tag_id, new_text);
 	
 	gtk_list_store_set(GTK_LIST_STORE(model), &iter,
 			   TAG_NAME, new_text,
 			   -1);
-	if (summaryview)
-		summary_set_tag(summaryview, 0, NULL);
+	if (selected) {
+		if (summaryview)
+			summary_set_tag(summaryview, tag_id, NULL);
+	} else  {
+		if (summaryview)
+			summary_set_tag(summaryview, 0, NULL);
+	}	
 }
 
 static void apply_window_get_selected_state(gint tag, gboolean *selected, gboolean *selected_inconsistent)

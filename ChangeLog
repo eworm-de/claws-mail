@@ -1,3 +1,19 @@
+2007-11-26 [colin]	3.1.0cvs30
+
+	* src/edittags.c
+	* src/folder.c
+	* src/folder.h
+	* src/imap.c
+	* src/messageview.c
+	* src/procmsg.c
+	* src/procmsg.h
+	* src/summaryview.c
+	* src/common/utils.c
+	* src/common/utils.h
+	* src/etpan/imap-thread.c
+	* src/etpan/imap-thread.h
+		Add IMAP tags support
+
 2007-11-26 [colin]	3.1.0cvs29
 
 	* src/imap.c

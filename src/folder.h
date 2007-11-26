@@ -617,6 +617,10 @@ struct _FolderClass
 	void		(*remove_cached_msg)	(Folder		*folder,
 						 FolderItem	*item,
 						 MsgInfo 	*msginfo);
+	void		(*commit_tags)		(FolderItem	*item,
+						 MsgInfo 	*msginfo,
+						 GSList		*tags_set,
+						 GSList		*tags_unset);
 };
 
 struct _FolderItem
@@ -865,4 +869,6 @@ gboolean folder_get_sort_type		(Folder		*folder,
 					 FolderSortType	*sort_type);
 void folder_item_synchronise		(FolderItem *item);
 void folder_item_discard_cache		(FolderItem *item);
+void folder_item_commit_tags(FolderItem *item, MsgInfo *msginfo, GSList *tags_set, GSList *tags_unset);
+
 #endif /* __FOLDER_H__ */

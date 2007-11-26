@@ -3498,6 +3498,27 @@ void folder_item_change_msg_flags(FolderItem *item, MsgInfo *msginfo, MsgPermFla
 	}
 }
 
+void folder_item_commit_tags(FolderItem *item, MsgInfo *msginfo, GSList *tags_set, GSList *tags_unset)
+{
+	Folder *folder = NULL;
+
+	if (!msginfo)
+		return;
+	if (!item)
+		return;
+	if (!tags_set && !tags_unset)
+		return;
+
+	folder = item->folder;
+	if (!folder)
+		return;
+	
+	if (folder->klass->commit_tags == NULL)
+		return;
+	
+	folder->klass->commit_tags(item, msginfo, tags_set, tags_unset);
+}
+
 gboolean folder_item_is_msg_changed(FolderItem *item, MsgInfo *msginfo)
 {
 	Folder *folder;
