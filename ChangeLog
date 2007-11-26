@@ -1,3 +1,9 @@
+2007-11-26 [colin]	3.1.0cvs29
+
+	* src/imap.c
+		Fix bug 1405, 'imap auto auth method doesn't 
+		work since 3.1.0'
+
 2007-11-26 [colin]	3.1.0cvs28
 
 	* src/messageview.c

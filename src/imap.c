@@ -845,9 +845,11 @@ static gint imap_auth(IMAPSession *session, const gchar *user, const gchar *pass
 			imap_has_capability(session, "GSSAPI"));
 		if (imap_has_capability(session, "CRAM-MD5"))
 			ok = imap_cmd_login(session, user, pass, "CRAM-MD5");
-		if (ok == MAILIMAP_ERROR_BAD_STATE && imap_has_capability(session, "GSSAPI"))
+		if ((ok == MAILIMAP_ERROR_BAD_STATE ||
+		     ok == MAILIMAP_ERROR_LOGIN) && imap_has_capability(session, "GSSAPI"))
 			ok = imap_cmd_login(session, user, pass, "GSSAPI");
-		if (ok == MAILIMAP_ERROR_BAD_STATE) /* we always try LOGIN before giving up */
+		if (ok == MAILIMAP_ERROR_BAD_STATE||
+		    ok == MAILIMAP_ERROR_LOGIN) /* we always try LOGIN before giving up */
 			ok = imap_cmd_login(session, user, pass, "LOGIN");
 	}
 

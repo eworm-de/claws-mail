@@ -3086,3 +3086,4 @@
 ( cvs diff -u -r 1.75.2.51 -r 1.75.2.52 src/matcher.c;  cvs diff -u -r 1.39.2.15 -r 1.39.2.16 src/matcher.h;  cvs diff -u -r 1.25.2.32 -r 1.25.2.33 src/matcher_parser_parse.y;  cvs diff -u -r 1.43.2.64 -r 1.43.2.65 src/prefs_matcher.c;  ) > 3.1.0cvs26.patchset
 ( cvs diff -u -r 1.2.2.24 -r 1.2.2.25 src/folder_item_prefs.c;  cvs diff -u -r 1.2.2.12 -r 1.2.2.13 src/folder_item_prefs.h;  ) > 3.1.0cvs27.patchset
 ( cvs diff -u -r 1.94.2.164 -r 1.94.2.165 src/messageview.c;  cvs diff -u -r 1.49.2.103 -r 1.49.2.104 src/procmime.c;  ) > 3.1.0cvs28.patchset
+( cvs diff -u -r 1.179.2.198 -r 1.179.2.199 src/imap.c;  ) > 3.1.0cvs29.patchset
