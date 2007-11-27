@@ -332,6 +332,7 @@ struct _PrefsCommon
 	gboolean addressbook_use_editaddress_dialog;
 	gint addressbook_hpaned_pos;
 	gint addressbook_vpaned_pos;
+	GList *addressbook_custom_attributes;
 
 	/* Interface */
 	gboolean layout_mode;
@@ -482,6 +483,8 @@ struct _PrefsCommon
 
 extern PrefsCommon prefs_common;
 
+GList *prefs_common_read_history_from_dir_with_defaults(const gchar *dirname, const gchar *history,
+															  GList *default_list);
 void prefs_common_read_config	(void);
 void prefs_common_write_config	(void);
 void prefs_common_open		(void);

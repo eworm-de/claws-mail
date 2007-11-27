@@ -1,3 +1,17 @@
+2007-11-27 [wwp]	3.1.0cvs33
+
+	* src/Makefile.am
+	* src/addrcustomattr.c
+	* src/addrcustomattr.h
+	* src/addressbook.c
+	* src/editaddress.c
+	* src/editaddress.h
+	* src/prefs_common.c
+	* src/prefs_common.h
+	* src/common/defs.h
+		Provide a (customizable) list of preset attribute names
+		for editing contacts (closes bug #1391).
+
 2007-11-27 [wwp]	3.1.0cvs32
 
 	* src/addrclip.c

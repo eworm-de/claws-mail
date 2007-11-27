@@ -105,6 +105,7 @@
 #include "exphtmldlg.h"
 #include "expldifdlg.h"
 #include "browseldap.h"
+#include "addrcustomattr.h"
 
 typedef enum
 {
@@ -370,6 +371,7 @@ static void addressbook_list_select_remove	( AddrItemObject    *aio );
 
 static void addressbook_import_ldif_cb		( void );
 static void addressbook_find_duplicates_cb	( void );
+static void addressbook_edit_custom_attr_cb	( void );
 static void addressbook_import_mutt_cb		( void );
 static void addressbook_import_pine_cb		( void );
 static void addressbook_export_html_cb		( void );
@@ -467,6 +469,7 @@ static GtkItemFactoryEntry addressbook_entries[] =
 	{N_("/_Tools/Export LDI_F..."), NULL,           addressbook_export_ldif_cb,	0, NULL, NULL},
 	{N_("/_Tools/---"),		NULL,		NULL, 0, "<Separator>", NULL},
 	{N_("/_Tools/Find duplicates..."), NULL, addressbook_find_duplicates_cb,	0, NULL, NULL},
+	{N_("/_Tools/Edit custom attributes..."), NULL, addressbook_edit_custom_attr_cb,	0, NULL, NULL},
 	{N_("/_Help"),			NULL,		NULL, 0, "<Branch>", NULL},
 	{N_("/_Help/_About"),		NULL,		about_show, 0, NULL, NULL}
 };
@@ -5404,6 +5407,11 @@ static void addressbook_find_duplicates_cb(void)
 	addrduplicates_find(GTK_WINDOW(addrbook.window));	
 }
 
+static void addressbook_edit_custom_attr_cb(void)
+{
+	addressbook_custom_attr_edit();
+}
+		
 static void addressbook_start_drag(GtkWidget *widget, gint button, 
 				   GdkEvent *event,
 			           void *data)
@@ -5590,4 +5598,3 @@ static void addressbook_drag_received_cb(GtkWidget        *widget,
 /*
 * End of Source.
 */
-

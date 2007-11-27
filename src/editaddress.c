@@ -47,6 +47,7 @@
 #include "editaddress_other_attributes_ldap.h"
 #include "prefs_common.h"
 #include "menu.h"
+#include "combobox.h"
 
 /* transient data */
 static struct _PersonEdit_dlg personeditdlg;
@@ -272,7 +273,7 @@ static void edit_person_email_clear( gpointer data ) {
 
 static void edit_person_attrib_clear( gpointer data ) {
 	if (!personeditdlg.ldap) {
-		gtk_entry_set_text( GTK_ENTRY(personeditdlg.entry_atname), "" );
+		gtk_entry_set_text( GTK_ENTRY(GTK_BIN(personeditdlg.entry_atname)->child), "" );
 		gtk_entry_set_text( GTK_ENTRY(personeditdlg.entry_atvalue), "" );
 	}
 }
@@ -523,7 +524,7 @@ static void edit_person_load_attrib( ItemPerson *person ) {
 static void edit_person_attrib_list_selected( GtkCList *clist, gint row, gint column, GdkEvent *event, gpointer data ) {
 	UserAttribute *attrib = gtk_clist_get_row_data( clist, row );
 	if( attrib && !personeditdlg.read_only && !personeditdlg.ldap ) {
-		gtk_entry_set_text( GTK_ENTRY(personeditdlg.entry_atname), attrib->name );
+		gtk_entry_set_text( GTK_ENTRY(GTK_BIN(personeditdlg.entry_atname)->child ), attrib->name );
 		gtk_entry_set_text( GTK_ENTRY(personeditdlg.entry_atvalue), attrib->value );
 		gtk_widget_set_sensitive(personeditdlg.attrib_del, TRUE);
 	} else {
@@ -562,7 +563,7 @@ static UserAttribute *edit_person_attrib_edit( gboolean *error, UserAttribute *a
 	gchar *sName, *sValue, *sName_, *sValue_;
 
 	*error = TRUE;
-	sName_ = gtk_editable_get_chars( GTK_EDITABLE(personeditdlg.entry_atname), 0, -1 );
+	sName_ = gtk_editable_get_chars( GTK_EDITABLE(GTK_BIN(personeditdlg.entry_atname)->child), 0, -1 );
 	sValue_ = gtk_editable_get_chars( GTK_EDITABLE(personeditdlg.entry_atvalue), 0, -1 );
 	sName = mgu_email_check_empty( sName_ );
 	sValue = mgu_email_check_empty( sValue_ );
@@ -1202,17 +1203,19 @@ static gboolean attrib_adding = FALSE, attrib_saving = FALSE;
 static void edit_person_entry_att_changed (GtkWidget *entry, gpointer data)
 {
 	gboolean non_empty = gtk_clist_get_row_data(GTK_CLIST(personeditdlg.clist_attrib), 0) != NULL;
+	const gchar *atname;
 
 	if (personeditdlg.read_only || personeditdlg.ldap)
 		return;
 
-	if (gtk_entry_get_text(GTK_ENTRY(personeditdlg.entry_atname)) == NULL
-	||  strlen(gtk_entry_get_text(GTK_ENTRY(personeditdlg.entry_atname))) == 0) {
+	atname = gtk_entry_get_text(GTK_ENTRY(GTK_BIN(personeditdlg.entry_atname)->child));
+	if ( atname == NULL
+	||  strlen(atname) == 0) {
 		gtk_widget_set_sensitive(personeditdlg.attrib_add,FALSE);
 		gtk_widget_set_sensitive(personeditdlg.attrib_mod,FALSE);
 		attrib_adding = FALSE;
 		attrib_saving = FALSE;
-	} else if (list_find_attribute(gtk_entry_get_text(GTK_ENTRY(personeditdlg.entry_atname)))) {
+	} else if (list_find_attribute(atname)) {
 		gtk_widget_set_sensitive(personeditdlg.attrib_add,FALSE);
 		gtk_widget_set_sensitive(personeditdlg.attrib_mod,non_empty);
 		attrib_adding = FALSE;
@@ -1318,7 +1321,7 @@ static void addressbook_edit_person_page_attrib( gint pageNum, gchar *pageLbl ) 
 	gtk_table_attach(GTK_TABLE(table), label, 0, 1, top, (top + 1), GTK_FILL, 0, 0, 0);
 	gtk_misc_set_alignment(GTK_MISC(label), 0, 0.5);
 
-	entry_name = gtk_entry_new();
+	entry_name = gtk_combo_box_entry_new_text ();
 	gtk_table_attach(GTK_TABLE(table), entry_name, 1, 2, top, (top + 1), GTK_EXPAND|GTK_SHRINK|GTK_FILL, 0, 0, 0);
 
 	/* Next row */
@@ -1334,7 +1337,7 @@ static void addressbook_edit_person_page_attrib( gint pageNum, gchar *pageLbl ) 
 	gtk_table_attach(GTK_TABLE(table), label, 0, 1, 0, 1, GTK_FILL, 0, 0, 0);
 	gtk_misc_set_alignment(GTK_MISC(label), 0, 0.5);
 
-	entry_name = gtk_entry_new();
+	entry_name = gtk_combo_box_entry_new_text ();
 	gtk_table_attach(GTK_TABLE(table), entry_name, 1, 2, 0, 1, GTK_EXPAND|GTK_SHRINK|GTK_FILL, 0, 0, 0);
 
 	/* Next row */
@@ -1346,6 +1349,11 @@ static void addressbook_edit_person_page_attrib( gint pageNum, gchar *pageLbl ) 
 	entry_value = gtk_entry_new();
 	gtk_table_attach(GTK_TABLE(table), entry_value, 3, 4, 0, 1, GTK_EXPAND|GTK_SHRINK|GTK_FILL, 0, 0, 0);
 #endif
+	gtk_combo_box_set_active(GTK_COMBO_BOX(entry_name), -1);
+	if (prefs_common.addressbook_custom_attributes)
+		combobox_set_popdown_strings(GTK_COMBO_BOX(entry_name),
+				prefs_common.addressbook_custom_attributes);
+
 	/* Button box */
 	vboxb = gtk_vbox_new( FALSE, 4 );
 	gtk_box_pack_start(GTK_BOX(hbox), vboxb, FALSE, FALSE, 2);
@@ -1735,6 +1743,16 @@ no_img:
 	}
 	
 	return person;
+}
+
+void addressbook_edit_reload_attr_list( void )
+{
+	if (personeditdlg.entry_atname) {
+		combobox_unset_popdown_strings(GTK_COMBO_BOX(personeditdlg.entry_atname));
+		if (prefs_common.addressbook_custom_attributes)
+			combobox_set_popdown_strings(GTK_COMBO_BOX(personeditdlg.entry_atname),
+					prefs_common.addressbook_custom_attributes);
+	}
 }
 
 /*

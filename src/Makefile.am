@@ -21,6 +21,7 @@ claws_mail_SOURCES = \
 	addrcache.c \
 	addrclip.c \
 	addr_compl.c \
+	addrcustomattr.c \
 	addressadd.c \
 	addressbook.c \
 	addressbook_foldersel.c \
@@ -167,6 +168,7 @@ claws_mailinclude_HEADERS = \
 	addrclip.h \
 	addr_compl.h \
 	addrdefs.h \
+	addrcustomattr.h \
 	addressadd.h \
 	addressbook.h \
 	addressbook_foldersel.h \

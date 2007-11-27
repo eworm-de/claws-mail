@@ -1084,21 +1084,30 @@ static PrefParam param[] = {
 };
 
 /*
- * Read history list from the specified history file
+ * Read history list from the specified history file in the specified directory (subdir of rc_dir)
+ * Fallback to default_list if history file is not found
  */
-static GList *prefs_common_read_history(const gchar *history) 
+GList *prefs_common_read_history_from_dir_with_defaults(const gchar *dirname, const gchar *history,
+															  GList *default_list)
 {
 	FILE *fp;
 	gchar *path;
 	gchar buf[PREFSBUFSIZE];
 	GList *tmp = NULL;
 
+	if (dirname) {
+		path = g_strconcat(get_rc_dir(), G_DIR_SEPARATOR_S, dirname,
+				   G_DIR_SEPARATOR_S, history,
+				   NULL);
+	} else {
 	path = g_strconcat(get_rc_dir(), G_DIR_SEPARATOR_S, history,
 			   NULL);
+	}
 	if ((fp = g_fopen(path, "rb")) == NULL) {
 		if (ENOENT != errno) FILE_OP_ERROR(path, "fopen");
 		g_free(path);
-		return NULL;
+		/* returns default list if set, otherwise NULL */
+		return default_list;
 	}
 	g_free(path);
 	while (fgets(buf, sizeof(buf), fp) != NULL) {
@@ -1111,6 +1120,22 @@ static GList *prefs_common_read_history(const gchar *history)
 	tmp = g_list_reverse(tmp);
 
 	return tmp;
+}
+
+/*
+ * Read history list from the specified history file in the specified directory (subdir of rc_dir)
+ */
+static GList *prefs_common_read_history_from_dir(const gchar *dirname, const gchar *history) 
+{
+	return prefs_common_read_history_from_dir_with_defaults(dirname, history, NULL);
+}
+
+/*
+ * Read history list from the specified history file
+ */
+static GList *prefs_common_read_history(const gchar *history) 
+{
+	return prefs_common_read_history_from_dir(NULL, history);
 }
 
 void prefs_common_read_config(void)
@@ -1159,6 +1184,8 @@ void prefs_common_read_config(void)
 	prefs_common.message_search_history =
 		prefs_common_read_history(MESSAGE_SEARCH_HISTORY);
 
+	prefs_common.addressbook_custom_attributes = addressbook_update_custom_attr_from_prefs();
+
 	colorlabel_update_colortable_from_prefs();
 }
 
@@ -1170,16 +1197,22 @@ if (!(func)) \
 } \
 
 /*
- * Save history list to the specified history file
+ * Save history list to the specified history file in the specified directory (subdir of rc_dir)
  */
-static void prefs_common_save_history(const gchar *history, GList *list)
+static void prefs_common_save_history_to_dir(const gchar *dirname, const gchar *history, GList *list)
 {
 	GList *cur;
 	FILE *fp;
 	gchar *path, *tmp_path;
 
+	if (dirname) {
+		path = g_strconcat(get_rc_dir(), G_DIR_SEPARATOR_S, dirname,
+				   G_DIR_SEPARATOR_S, history,
+				   NULL);
+	} else {
 	path = g_strconcat(get_rc_dir(), G_DIR_SEPARATOR_S, history,
 			   NULL);
+	}
 	tmp_path = g_strconcat(path, ".tmp", NULL);
 
 	if ((fp = g_fopen(tmp_path, "wb")) == NULL) {
@@ -1213,6 +1246,14 @@ out:
 	g_free(path);
 }
 
+/*
+ * Save history list to the specified history file
+ */
+static void prefs_common_save_history(const gchar *history, GList *list)
+{
+	prefs_common_save_history_to_dir(NULL, history, list);
+}
+
 #undef TRY
 
 void prefs_common_write_config(void)
@@ -1238,6 +1279,10 @@ void prefs_common_write_config(void)
 		prefs_common.summary_search_adv_condition_history);
 	prefs_common_save_history(MESSAGE_SEARCH_HISTORY, 
 		prefs_common.message_search_history);
+
+	prefs_common_save_history_to_dir(ADDRBOOK_DIR,
+		ADDRESSBOOK_CUSTOM_ATTRIBUTES, 
+		prefs_common.addressbook_custom_attributes);
 }
 
 /* make a copy of string 'in' into buffer 'out'. un-escape \ sequences.
