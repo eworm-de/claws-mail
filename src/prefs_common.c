@@ -59,6 +59,7 @@
 #include "stock_pixmap.h"
 #include "prefswindow.h"
 #include "colorlabel.h"
+#include "addrcustomattr.h"
 
 enum {
 	DATEFMT_FMT,

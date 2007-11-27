@@ -1,3 +1,10 @@
+2007-11-27 [wwp]	3.1.0cvs37
+
+	* src/addressbook.c
+	* src/prefs_common.c
+		Fix warning introduced by 3.1.0cvs33 (prefs_common.c)
+		and 3.1.0cvs35 (addressbook.c).
+
 2007-11-27 [holger]	3.1.0cvs36
 
 	* src/printing.c

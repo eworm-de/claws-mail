@@ -1872,9 +1872,6 @@ static void addressbook_list_menu_setup( void ) {
 	gboolean canCopy = FALSE;
 	gboolean canPaste = FALSE;
 	gboolean canBrowse = FALSE;
-	AddrSelectItem *item;
-	AddrItemObject *aio;
-	GList *list, *node;
 
 	pobj = gtk_ctree_node_get_row_data( GTK_CTREE(addrbook.ctree), addrbook.treeSelected );
 	if( pobj == NULL ) return;
