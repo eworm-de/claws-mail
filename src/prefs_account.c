@@ -465,7 +465,7 @@ static PrefParam receive_param[] = {
 	 &receive_page.subsonly_checkbtn,
 	 prefs_set_data_from_toggle, prefs_set_toggle},
 
-	{"low_bandwidth", "TRUE", &tmp_ac_prefs.low_bandwidth, P_BOOL,
+	{"low_bandwidth", "FALSE", &tmp_ac_prefs.low_bandwidth, P_BOOL,
 	 &receive_page.low_bandwidth_checkbtn,
 	 prefs_set_data_from_toggle, prefs_set_toggle},
 
@@ -1514,7 +1514,7 @@ static void receive_create_widget_func(PrefsPage * _page,
 	gtk_box_pack_start (GTK_BOX (vbox2), hbox1, FALSE, FALSE, 4);
 
 	PACK_CHECK_BUTTON (hbox1, low_bandwidth_checkbtn,
-			   _("Bandwidth-efficient mode"));
+			   _("Bandwidth-efficient mode (prevents retrieving remote tags)"));
 	gtk_tooltips_set_tip(GTK_TOOLTIPS(inbox_tooltip), low_bandwidth_checkbtn,
 			     _("This mode uses less bandwidth, but can be slower with some servers."),
 			     NULL);

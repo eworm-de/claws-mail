@@ -1853,6 +1853,8 @@ result_to_uid_flags_list(clist * fetch_result, carray ** result)
 		int flags;
 		int * pflags;
 		
+		tags = NULL;
+
 		msg_att = clist_content(cur);
 		
 		uid = 0;
@@ -2410,17 +2412,14 @@ static int imap_flags_to_flags(struct mailimap_msg_att_dynamic * att_dyn, GSList
 				flags &= ~MSG_NEW;
 				break;
 			case MAILIMAP_FLAG_KEYWORD:
-				tags = g_slist_prepend(tags, g_strdup(flag_fetch->fl_flag->fl_data.fl_keyword));
+				if (s_tags)
+					tags = g_slist_prepend(tags, g_strdup(flag_fetch->fl_flag->fl_data.fl_keyword));
 				break;
 			}
 		}
 	}
 	if (s_tags)
 		*s_tags = tags;
-	else {
-		slist_free_strings(tags);
-		g_slist_free(tags);
-	}
 	return flags;
 }
 
@@ -2493,7 +2492,7 @@ fetch_to_env_info(struct mailimap_msg_att * msg_att, GSList **tags)
 	char * headers;
 	size_t size;
 	struct mailimap_msg_att_dynamic * att_dyn;
-	GSList *s_tags = NULL;
+
 	imap_get_msg_att_info(msg_att, &uid, &headers, &size,
 			      &att_dyn);
 	
@@ -2503,14 +2502,8 @@ fetch_to_env_info(struct mailimap_msg_att * msg_att, GSList **tags)
 	info->uid = uid;
 	info->headers = strdup(headers);
 	info->size = size;
-	info->flags = imap_flags_to_flags(att_dyn, &s_tags);
+	info->flags = imap_flags_to_flags(att_dyn, tags);
 	
-	if (tags)
-		*tags = s_tags;
-	else {
-		slist_free_strings(s_tags);
-		g_slist_free(s_tags);
-	}
 	return info;
 }
 
@@ -2521,15 +2514,16 @@ imap_fetch_result_to_envelop_list(clist * fetch_result,
 	clistiter * cur;
 	unsigned int i;
 	carray * env_list;
+
 	i = 0;
-  	GSList *tags = NULL;
 	env_list = carray_new(16);
   
 	for(cur = clist_begin(fetch_result) ; cur != NULL ;
 	    cur = clist_next(cur)) {
 		struct mailimap_msg_att * msg_att;
 		struct imap_fetch_env_info * env_info;
-    
+	    	GSList *tags = NULL;
+
 		msg_att = clist_content(cur);
 
 		env_info = fetch_to_env_info(msg_att, &tags);

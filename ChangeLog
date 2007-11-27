@@ -1,3 +1,15 @@
+2007-11-27 [colin]	3.1.0cvs41
+
+	* src/imap.c
+	* src/imap.h
+	* src/imap_gtk.c
+	* src/prefs_account.c
+	* src/etpan/imap-thread.c
+		A few fixes to the IMAP flags handling: Optimisations,
+		two crashers, mention that Bandwitdh-efficient mode
+		prevents tag fetching.
+		Fix M-UTF7 in subscription dialog.
+
 2007-11-27 [colin]	3.1.0cvs40
 
 	* src/folder.c

@@ -42,4 +42,8 @@ void imap_cache_msg(FolderItem *item, gint msgnum);
 
 void imap_cancel_all(void);
 gboolean imap_cancel_all_enabled(void);
+
+char* imap_modified_utf7_to_utf8(const char *mbox, gboolean change_spaces);
+char* imap_utf8_to_modified_utf7(const char *src, gboolean change_spaces);
+
 #endif /* __IMAP_H__ */

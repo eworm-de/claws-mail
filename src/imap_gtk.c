@@ -442,7 +442,8 @@ static void subscribe_cb(FolderView *folderview, guint action,
 	
 	if (action && item->folder->account->imap_subsonly) {
 		GList *child_list = NULL;
-		
+		GList *transc_list = NULL;
+
 		message = g_markup_printf_escaped
 			(_("Do you want to search for unsubscribed subfolders of '%s'?"),
 			 name);
@@ -459,23 +460,35 @@ static void subscribe_cb(FolderView *folderview, guint action,
 		if (avalue != G_ALERTALTERNATE) return;
 		
 		child_list = imap_scan_subtree(item->folder, item, TRUE, recurse);
+		
 		if (child_list) {
 			GList *cur;
 			int r = -1;
 			gchar *msg = g_strdup_printf(_("Choose a subfolder of %s to subscribe to: "),
 					item->name); 
-			gchar *child_folder = input_dialog_combo(_("Subscribe"), 
+			gchar *child_folder = NULL;
+			
+			for (cur = child_list; cur; cur = cur->next) {
+				transc_list = g_list_append(transc_list, 
+					imap_modified_utf7_to_utf8(cur->data, FALSE));
+			}
+
+			child_folder = input_dialog_combo(_("Subscribe"), 
 					msg,
-					child_list->next?_("All of them"):child_list->data, child_list);
+					transc_list->next?_("All of them"):transc_list->data, transc_list);
 			g_free(msg);
 			if (child_folder && strcmp(child_folder, _("All of them"))) {
-				r = imap_subscribe(item->folder, NULL, child_folder, TRUE);
+				gchar *transc_folder = imap_utf8_to_modified_utf7(child_folder, FALSE);
+				r = imap_subscribe(item->folder, NULL, transc_folder, TRUE);
+				g_free(transc_folder);
 			} else if (child_folder) {
 				for (cur = child_list; cur; cur = cur->next) 
 					r = imap_subscribe(item->folder, NULL, (gchar *)cur->data, TRUE);
 			}
 			g_free(child_folder);
 			for (cur = child_list; cur; cur = cur->next) 
+				g_free((gchar *)cur->data);
+			for (cur = transc_list; cur; cur = cur->next) 
 				g_free((gchar *)cur->data);
 			if (r == 0)
 				folderview_fast_rescan_tree(item->folder);
