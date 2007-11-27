@@ -1000,12 +1000,13 @@ static void printing_layout_set_text_attributes(PrintData *print_data, GtkPrintC
 
   open_attrs = NULL;
   do {
-    gboolean fg_set, bg_set, under_set, strike_set;
+    gboolean fg_set, bg_set, under_set, strike_set, weight_set;
     GSList *tags, *tag_walk;
     GtkTextTag *tag;
     GdkColor *color;
     PangoUnderline underline;
     gboolean strikethrough;
+    gint weight;
     GdkPixbuf *image;
 
     if (prefs_common.print_imgs && (image = gtk_text_iter_get_pixbuf(&iter)) != NULL) {
@@ -1047,6 +1048,7 @@ static void printing_layout_set_text_attributes(PrintData *print_data, GtkPrintC
 		     "foreground-set", &fg_set,
 		     "underline-set",&under_set,
 		     "strikethrough-set", &strike_set,
+		     "weight-set", &weight_set,
 		     NULL);
 
 	if(fg_set) {
@@ -1132,6 +1134,27 @@ static void printing_layout_set_text_attributes(PrintData *print_data, GtkPrintC
 	  if(!found)
 	    debug_print("Error generating attribute list.\n");
 	}
+	
+	if(weight_set) {
+	  found = FALSE;
+	  for(attr_walk = open_attrs; attr_walk != NULL; attr_walk = attr_walk->next) {
+	    attr = (PangoAttribute*)attr_walk->data;
+	    if(attr->klass->type == PANGO_ATTR_WEIGHT) {
+	      attr_int = (PangoAttrInt*)attr;
+	      g_object_get(G_OBJECT(tag), "weight", &weight, NULL);
+	      if(attr_int->value == weight) {
+		attr->end_index = printing_text_iter_get_offset_bytes(print_data, &iter);
+		pango_attr_list_insert(attr_list, attr);
+		found = TRUE;
+		open_attrs = g_slist_delete_link(open_attrs, attr_walk);
+		break;
+	      }
+	    }
+	  }
+	  if(!found)
+	    debug_print("Error generating attribute list.\n");
+	}
+	
 
       }
       g_slist_free(tags);
@@ -1139,6 +1162,9 @@ static void printing_layout_set_text_attributes(PrintData *print_data, GtkPrintC
 
     if(gtk_text_iter_begins_tag(&iter, NULL)) {
       tags = gtk_text_iter_get_toggled_tags(&iter, TRUE);
+      /* Sometimes, an iter has several weights. Use only the first in this case */
+      gboolean weight_set_for_this_iter;
+      weight_set_for_this_iter = FALSE;
       for(tag_walk = tags; tag_walk != NULL; tag_walk = tag_walk->next) {
 	tag = GTK_TEXT_TAG(tag_walk->data);
 	g_object_get(G_OBJECT(tag),
@@ -1170,6 +1196,13 @@ static void printing_layout_set_text_attributes(PrintData *print_data, GtkPrintC
 	  attr = pango_attr_strikethrough_new(strikethrough);
 	  attr->start_index = printing_text_iter_get_offset_bytes(print_data, &iter);
 	  open_attrs = g_slist_prepend(open_attrs, attr);	  
+	}
+	if(weight_set && !weight_set_for_this_iter) {
+		weight_set_for_this_iter = TRUE;
+		g_object_get(G_OBJECT(tag), "weight", &weight, NULL);
+		attr = pango_attr_weight_new(weight);
+		attr->start_index = printing_text_iter_get_offset_bytes(print_data, &iter);
+		open_attrs = g_slist_prepend(open_attrs, attr); 
 	}
       }
       g_slist_free(tags);

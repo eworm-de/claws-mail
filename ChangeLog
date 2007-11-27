@@ -1,3 +1,9 @@
+2007-11-27 [holger]	3.1.0cvs34
+
+	* src/printing.c
+		Add weights to the list of supported text attributes
+		for printing
+
 2007-11-27 [wwp]	3.1.0cvs33
 
 	* src/Makefile.am
