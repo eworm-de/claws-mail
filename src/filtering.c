@@ -253,6 +253,14 @@ void filtering_move_and_copy_msgs(GSList *msgs)
   return value : return TRUE if the action could be applied
 */
 
+#define FLUSH_COPY_IF_NEEDED(info) {					\
+	if (info->is_copy && info->to_filter_folder) {			\
+		debug_print("must debatch pending copy\n");		\
+		folder_item_copy_msg(info->to_filter_folder, info);	\
+		info->is_copy = FALSE;					\
+	}								\
+}
+
 static gboolean filteringaction_apply(FilteringAction * action, MsgInfo * info)
 {
 	FolderItem * dest_folder;
@@ -271,13 +279,7 @@ static gboolean filteringaction_apply(FilteringAction * action, MsgInfo * info)
 			return FALSE;
 		}
 		
-		/* check if mail is set to copy already, 
-		 * in which case we have to do it */
-		if (info->is_copy && info->to_filter_folder) {
-			debug_print("should cp and mv !\n");
-			folder_item_copy_msg(info->to_filter_folder, info);
-			info->is_copy = FALSE;
-		}
+		FLUSH_COPY_IF_NEEDED(info);
 		/* mark message to be moved */		
 		info->is_move = TRUE;
 		info->to_filter_folder = dest_folder;
@@ -293,13 +295,7 @@ static gboolean filteringaction_apply(FilteringAction * action, MsgInfo * info)
 			return FALSE;
 		}
 
-		/* check if mail is set to copy already, 
-		 * in which case we have to do it */
-		if (info->is_copy && info->to_filter_folder) {
-			debug_print("should cp and mv !\n");
-			folder_item_copy_msg(info->to_filter_folder, info);
-			info->is_copy = FALSE;
-		}
+		FLUSH_COPY_IF_NEEDED(info);
 		/* mark message to be copied */		
 		info->is_copy = TRUE;
 		info->to_filter_folder = dest_folder;
@@ -313,11 +309,12 @@ static gboolean filteringaction_apply(FilteringAction * action, MsgInfo * info)
 				action->destination ?action->destination :"(null)");
 			return FALSE;
 		}
-		
+		FLUSH_COPY_IF_NEEDED(info);
 		procmsg_msginfo_update_tags(info, (action->type == MATCHACTION_SET_TAG), val);
 		return TRUE;
 
 	case MATCHACTION_CLEAR_TAGS:
+		FLUSH_COPY_IF_NEEDED(info);
 		procmsg_msginfo_clear_tags(info);
 		return TRUE;
 
@@ -327,30 +324,37 @@ static gboolean filteringaction_apply(FilteringAction * action, MsgInfo * info)
 		return TRUE;
 
 	case MATCHACTION_MARK:
+		FLUSH_COPY_IF_NEEDED(info);
 		procmsg_msginfo_set_flags(info, MSG_MARKED, 0);
 		return TRUE;
 
 	case MATCHACTION_UNMARK:
+		FLUSH_COPY_IF_NEEDED(info);
 		procmsg_msginfo_unset_flags(info, MSG_MARKED, 0);
 		return TRUE;
 
 	case MATCHACTION_LOCK:
+		FLUSH_COPY_IF_NEEDED(info);
 		procmsg_msginfo_set_flags(info, MSG_LOCKED, 0);
 		return TRUE;
 
 	case MATCHACTION_UNLOCK:
+		FLUSH_COPY_IF_NEEDED(info);
 		procmsg_msginfo_unset_flags(info, MSG_LOCKED, 0);	
 		return TRUE;
 		
 	case MATCHACTION_MARK_AS_READ:
+		FLUSH_COPY_IF_NEEDED(info);
 		procmsg_msginfo_unset_flags(info, MSG_UNREAD | MSG_NEW, 0);
 		return TRUE;
 
 	case MATCHACTION_MARK_AS_UNREAD:
+		FLUSH_COPY_IF_NEEDED(info);
 		procmsg_msginfo_set_flags(info, MSG_UNREAD, 0);
 		return TRUE;
 	
 	case MATCHACTION_MARK_AS_SPAM:
+		FLUSH_COPY_IF_NEEDED(info);
 		procmsg_spam_learner_learn(info, NULL, TRUE);
 		procmsg_msginfo_change_flags(info, MSG_SPAM, 0, MSG_NEW|MSG_UNREAD, 0);
 		if (procmsg_spam_get_folder(info)) {
@@ -360,11 +364,13 @@ static gboolean filteringaction_apply(FilteringAction * action, MsgInfo * info)
 		return TRUE;
 
 	case MATCHACTION_MARK_AS_HAM:
+		FLUSH_COPY_IF_NEEDED(info);
 		procmsg_spam_learner_learn(info, NULL, FALSE);
 		procmsg_msginfo_unset_flags(info, MSG_SPAM, 0);
 		return TRUE;
 	
 	case MATCHACTION_COLOR:
+		FLUSH_COPY_IF_NEEDED(info);
 		procmsg_msginfo_unset_flags(info, MSG_CLABEL_FLAG_MASK, 0); 
 		procmsg_msginfo_set_flags(info, MSG_COLORLABEL_TO_FLAGS(action->labelcolor), 0);
 		return TRUE;
@@ -408,10 +414,12 @@ static gboolean filteringaction_apply(FilteringAction * action, MsgInfo * info)
 		return TRUE;
 
 	case MATCHACTION_SET_SCORE:
+		FLUSH_COPY_IF_NEEDED(info);
 		info->score = action->score;
 		return TRUE;
 
 	case MATCHACTION_CHANGE_SCORE:
+		FLUSH_COPY_IF_NEEDED(info);
 		info->score += action->score;
 		return TRUE;
 
@@ -419,14 +427,17 @@ static gboolean filteringaction_apply(FilteringAction * action, MsgInfo * info)
                 return FALSE;
 
 	case MATCHACTION_HIDE:
+		FLUSH_COPY_IF_NEEDED(info);
                 info->hidden = TRUE;
                 return TRUE;
 
 	case MATCHACTION_IGNORE:
+		FLUSH_COPY_IF_NEEDED(info);
                 procmsg_msginfo_set_flags(info, MSG_IGNORE_THREAD, 0);
                 return TRUE;
 
 	case MATCHACTION_WATCH:
+		FLUSH_COPY_IF_NEEDED(info);
                 procmsg_msginfo_set_flags(info, MSG_WATCH_THREAD, 0);
                 return TRUE;
 

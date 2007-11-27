@@ -1,3 +1,9 @@
+2007-11-27 [colin]	3.1.0cvs39
+
+	* src/filtering.c
+		Fix bug 1407, 'After a copy action, further rules apply 
+		to both original and copy'
+
 2007-11-27 [colin]	3.1.0cvs38
 
 	* src/edittags.c
