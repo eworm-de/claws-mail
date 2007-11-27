@@ -1,3 +1,10 @@
+2007-11-27 [wwp]	3.1.0cvs35
+
+	* src/addressbook.c
+		Fix a drag-and-drop issue introduced with 3.1.0cvs33
+		(thanks to Colin) and revert disabling of cut/copy
+		context menu entries upon selected groups.
+
 2007-11-27 [holger]	3.1.0cvs34
 
 	* src/printing.c

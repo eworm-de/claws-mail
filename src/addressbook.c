@@ -1952,21 +1952,6 @@ static void addressbook_list_menu_setup( void ) {
 		canBrowse = FALSE;
 	}
 
-	/* Forbid cut/copy when selection contains a group */
-	list = addrselect_get_list( _addressSelect_ );
-	node = list;
-	while( node ) {
-		item = node->data;
-		aio = ( AddrItemObject * ) item->addressItem;
-		if (aio && aio->type == ADDR_ITEM_GROUP) {
-			canCut = FALSE;
-			canCopy = FALSE;
-			break;
-		}
-		node = g_list_next( node );
-	}
-	g_list_free( list );
-
 	/* Forbid write changes when read-only */
 	if( iface && iface->readOnly ) {
 		canCut = FALSE;
@@ -2102,13 +2087,11 @@ static void addressbook_clip_paste_cb( void ) {
 		/* Paste/Cut */
 		folderGroup = addrclip_paste_cut( _clipBoard_, abf, folder );
 
-		if (folderGroup) {
-			/* Remove all groups and folders in clipboard from tree node */
-			addressbook_treenode_remove_item();
+		/* Remove all groups and folders in clipboard from tree node */
+		addressbook_treenode_remove_item();
 
-			/* Remove all "cut" items */
-			addrclip_delete_item( _clipBoard_ );
-		}
+		/* Remove all "cut" items */
+		addrclip_delete_item( _clipBoard_ );
 
 		/* Clear clipboard - cut items??? */
 		addrclip_clear( _clipBoard_ );
