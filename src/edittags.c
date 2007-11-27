@@ -85,7 +85,19 @@ static struct TagApplyWindow
 	GtkWidget *add_btn;
 	GSList *msglist;
 	gboolean has_tag_col;
+	GdkCursor *watch_cursor;
+	gboolean busy;
 } applywindow;
+
+#define APPLYWINDOW_LOCK() {								\
+	gdk_window_set_cursor(applywindow.window->window, applywindow.watch_cursor);	\
+	applywindow.busy = TRUE;							\
+}
+
+#define APPLYWINDOW_UNLOCK() {								\
+	gdk_window_set_cursor(applywindow.window->window, NULL);			\
+	applywindow.busy = FALSE;							\
+}
 
 static void apply_window_load_tags (void);
 static void apply_window_insert_check_column(GtkWidget *list_view);
@@ -205,6 +217,8 @@ static void apply_popup_delete (void *obj, guint action, void *data)
 		       GTK_STOCK_CANCEL, GTK_STOCK_DELETE, NULL) != G_ALERTALTERNATE)
 		return;
 
+	APPLYWINDOW_LOCK();
+
 	/* XXX: Here's the reason why we need to store the original 
 	 * pointer: we search the slist for it. */
 	gtk_tree_model_get(model, &sel,
@@ -217,6 +231,7 @@ static void apply_popup_delete (void *obj, guint action, void *data)
 		summary_set_tag(summaryview, -id, NULL);
 	tags_remove_tag(id);
 	tags_write_tags();
+	APPLYWINDOW_UNLOCK();
 }
 
 static GtkItemFactoryEntry apply_popup_entries[] =
@@ -227,6 +242,9 @@ static GtkItemFactoryEntry apply_popup_entries[] =
 static gint apply_list_btn_pressed(GtkWidget *widget, GdkEventButton *event,
 				    GtkTreeView *list_view)
 {
+	if (applywindow.busy)
+		return FALSE;
+
 	if (event && event->button == 3) {
 		if (!apply_popup_menu) {
 			gint n_entries = sizeof(apply_popup_entries) /
@@ -293,11 +311,16 @@ static GtkWidget *apply_window_list_view_create	(void)
 
 static void apply_window_close(void) 
 {
+	if (applywindow.busy)
+		return;
+
 	if (applywindow.msglist)
 		g_slist_free(applywindow.msglist);
 	applywindow.msglist = NULL;
-	gtk_widget_hide(applywindow.window);
+	APPLYWINDOW_LOCK();
 	main_window_reflect_tags_changes(mainwindow_get_mainwindow());
+	APPLYWINDOW_UNLOCK();
+	gtk_widget_hide(applywindow.window);
 }
 
 static void apply_window_close_cb(GtkWidget *widget,
@@ -340,6 +363,7 @@ static void apply_window_add_tag(void)
 	if (new_tag && *new_tag) {
 		gint id = tags_get_id_for_str(new_tag);
 		FindTagInStore fis;
+		APPLYWINDOW_LOCK();
 		if (id == -1) {
 			id = tags_add_tag(new_tag);
 			tags_write_tags();
@@ -374,6 +398,7 @@ static void apply_window_add_tag(void)
 			apply_window_list_view_insert_tag(applywindow.taglist, &fis.iter, id);
 			gtk_tree_path_free(path);
 		}
+		APPLYWINDOW_UNLOCK();
 	} else {
 		alertpanel_error(_("Tag is not set."));
 	}
@@ -383,6 +408,8 @@ static void apply_window_add_tag(void)
 static void apply_window_add_tag_cb(GtkWidget *widget,
 			         gpointer data) 
 {
+	if (applywindow.busy)
+		return;
 	apply_window_add_tag();
 	gtk_entry_set_text(GTK_ENTRY(applywindow.add_entry), "");
 	gtk_widget_grab_focus(applywindow.taglist);
@@ -391,12 +418,16 @@ static void apply_window_add_tag_cb(GtkWidget *widget,
 static void apply_window_del_tag_cb(GtkWidget *widget,
 			         gpointer data) 
 {
+	if (applywindow.busy)
+		return;
 	apply_popup_delete(NULL, 0, NULL);
 	gtk_widget_grab_focus(applywindow.taglist);
 }
 
 static gboolean apply_window_key_pressed(GtkWidget *widget, GdkEventKey *event, gpointer data)
 {
+	if (applywindow.busy)
+		return FALSE;
 	if (event && event->keyval == GDK_Escape)
 		apply_window_close();
 	else if (event && event->keyval == GDK_Delete)
@@ -406,6 +437,9 @@ static gboolean apply_window_key_pressed(GtkWidget *widget, GdkEventKey *event, 
 
 static gboolean apply_window_add_key_pressed(GtkWidget *widget, GdkEventKey *event, gpointer data)
 {
+	if (applywindow.busy)
+		return FALSE;
+
 	if (event && (event->keyval == GDK_KP_Enter || event->keyval == GDK_Return)) {
 		apply_window_add_tag();
 		gtk_entry_set_text(GTK_ENTRY(applywindow.add_entry), "");
@@ -509,6 +543,7 @@ static void apply_window_create(void)
 	applywindow.add_btn = add_btn;
 	applywindow.add_entry = new_tag_entry;
 	applywindow.has_tag_col = FALSE;
+	applywindow.watch_cursor = gdk_cursor_new(GDK_WATCH);
 }
 
 static void apply_window_list_view_clear_tags(GtkWidget *list_view)
@@ -529,7 +564,10 @@ static void tag_apply_selected_toggled(GtkCellRendererToggle *widget,
 	gpointer tmp;
 	gint tag_id;
 	SummaryView *summaryview = NULL;
-	
+
+	if (applywindow.busy)
+		return;
+
 	if (mainwindow_get_mainwindow() != NULL)
 		summaryview = mainwindow_get_mainwindow()->summaryview;
 
@@ -549,8 +587,10 @@ static void tag_apply_selected_toggled(GtkCellRendererToggle *widget,
 			   TAG_SELECTED_INCONSISTENT, FALSE,
 			   -1);
 	
+	APPLYWINDOW_LOCK();
 	if (summaryview)
 		summary_set_tag(summaryview, set ? tag_id : -tag_id, NULL);
+	APPLYWINDOW_UNLOCK();
 }
 
 static void tag_apply_selected_edited(GtkCellRendererText *widget,
@@ -563,6 +603,9 @@ static void tag_apply_selected_edited(GtkCellRendererText *widget,
 	gint tag_id;
 	SummaryView *summaryview = NULL;
 	gboolean selected;
+
+	if (applywindow.busy)
+		return;
 
 	if (mainwindow_get_mainwindow() != NULL)
 		summaryview = mainwindow_get_mainwindow()->summaryview;
@@ -580,6 +623,7 @@ static void tag_apply_selected_edited(GtkCellRendererText *widget,
 
 	tag_id = GPOINTER_TO_INT(tmp);
 	
+	APPLYWINDOW_LOCK();
 	if (selected) {
 		if (summaryview)
 			summary_set_tag(summaryview, -tag_id, NULL);
@@ -597,6 +641,7 @@ static void tag_apply_selected_edited(GtkCellRendererText *widget,
 		if (summaryview)
 			summary_set_tag(summaryview, 0, NULL);
 	}	
+	APPLYWINDOW_UNLOCK();
 }
 
 static void apply_window_get_selected_state(gint tag, gboolean *selected, gboolean *selected_inconsistent)

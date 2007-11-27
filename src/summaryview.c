@@ -581,11 +581,13 @@ GtkWidget *summary_get_main_widget(SummaryView *summaryview)
 }
 
 #define START_LONG_OPERATION(summaryview,force_freeze) {	\
+	if (summary_is_locked(summaryview)) 			\
+		return;						\
 	summary_lock(summaryview);				\
 	main_window_cursor_wait(summaryview->mainwin);		\
 	if (force_freeze || sc_g_list_bigger(GTK_CLIST(summaryview->ctree)->selection, 1)) {\
-		froze = TRUE;						\
-		summary_freeze(summaryview);	\
+		froze = TRUE;					\
+		summary_freeze(summaryview);			\
 	}							\
 	folder_item_update_freeze();				\
 	inc_lock();						\
@@ -595,8 +597,9 @@ GtkWidget *summary_get_main_widget(SummaryView *summaryview)
 #define END_LONG_OPERATION(summaryview) {			\
 	inc_unlock();						\
 	folder_item_update_thaw();				\
-	if (froze) 						\
-		summary_thaw(summaryview);	\
+	if (froze) {						\
+		summary_thaw(summaryview);			\
+	}							\
 	main_window_cursor_normal(summaryview->mainwin);	\
 	summary_unlock(summaryview);				\
 	summaryview->msginfo_update_callback_id =		\
@@ -1524,8 +1527,9 @@ void summary_lock(SummaryView *summaryview)
 
 void summary_unlock(SummaryView *summaryview)
 {
-	if (summaryview->lock_count)
+	if (summaryview->lock_count) {
 		summaryview->lock_count--;
+	}
 }
 
 gboolean summary_is_locked(SummaryView *summaryview)

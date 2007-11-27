@@ -3095,3 +3095,4 @@
 ( cvs diff -u -r 1.60.2.108 -r 1.60.2.109 src/addressbook.c;  ) > 3.1.0cvs35.patchset
 ( cvs diff -u -r 1.1.2.12 -r 1.1.2.13 src/printing.c;  ) > 3.1.0cvs36.patchset
 ( cvs diff -u -r 1.60.2.109 -r 1.60.2.110 src/addressbook.c;  cvs diff -u -r 1.204.2.156 -r 1.204.2.157 src/prefs_common.c;  ) > 3.1.0cvs37.patchset
+( cvs diff -u -r 1.1.2.14 -r 1.1.2.15 src/edittags.c;  cvs diff -u -r 1.395.2.340 -r 1.395.2.341 src/summaryview.c;  ) > 3.1.0cvs38.patchset

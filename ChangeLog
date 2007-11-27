@@ -1,3 +1,11 @@
+2007-11-27 [colin]	3.1.0cvs38
+
+	* src/edittags.c
+	* src/summaryview.c
+		Fixes races when doing a long operation and user
+		asks for another one (Mark all read/unread on a 
+		big folder on IMAP for example)
+
 2007-11-27 [wwp]	3.1.0cvs37
 
 	* src/addressbook.c
