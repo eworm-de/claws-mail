@@ -5128,10 +5128,15 @@ void summary_filter(SummaryView *summaryview, gboolean selected_only)
 	} else {
 		mlist = folder_item_get_msg_list(summaryview->folder_item);
 	}
+	
+	folder_item_set_batch(summaryview->folder_item, TRUE);
 	for (cur_list = mlist; cur_list; cur_list = cur_list->next) {
 		summary_filter_func((MsgInfo *)cur_list->data);
 	}
+	folder_item_set_batch(summaryview->folder_item, FALSE);
+	
 	filtering_move_and_copy_msgs(mlist);
+	
 	for (cur_list = mlist; cur_list; cur_list = cur_list->next) {
 		procmsg_msginfo_free((MsgInfo *)cur_list->data);
 	}

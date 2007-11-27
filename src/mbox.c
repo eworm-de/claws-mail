@@ -266,8 +266,11 @@ gint proc_mbox(FolderItem *dest, const gchar *mbox, gboolean apply_filter,
 		statusbar_pop_all();
 
 	if (apply_filter) {
+
+		folder_item_set_batch(dropfolder, FALSE);
 		procmsg_msglist_filter(to_filter, account, 
 				&filtered, &unfiltered, TRUE);
+		folder_item_set_batch(dropfolder, TRUE);
 
 		filtering_move_and_copy_msgs(to_filter);
 		for (cur = filtered; cur; cur = g_slist_next(cur)) {

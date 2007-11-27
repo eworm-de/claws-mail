@@ -2139,9 +2139,12 @@ gint folder_item_scan_full(FolderItem *item, gboolean filtering)
 
 		if (do_filter) {
 			GSList *unfiltered;
+			
+			folder_item_set_batch(item, TRUE);
 			procmsg_msglist_filter(newmsg_list, item->folder->account, 
 					&to_filter, &unfiltered, 
 					TRUE);
+			folder_item_set_batch(item, FALSE);
 			
 			filtering_move_and_copy_msgs(newmsg_list);
 			if (to_filter != NULL) {
@@ -4045,6 +4048,7 @@ void folder_item_apply_processing(FolderItem *item)
 	last_apply_per_account = prefs_common.apply_per_account_filtering_rules;
 	prefs_common.apply_per_account_filtering_rules = FILTERING_ACCOUNT_RULES_SKIP;
 
+	folder_item_set_batch(item, TRUE);
 	for (cur = mlist ; cur != NULL ; cur = cur->next) {
 		MsgInfo * msginfo;
 
@@ -4070,6 +4074,8 @@ void folder_item_apply_processing(FolderItem *item)
 		if (curmsg % 1000 == 0)
 			GTK_EVENTS_FLUSH();
 	}
+	folder_item_set_batch(item, FALSE);
+
 	prefs_common.apply_per_account_filtering_rules = last_apply_per_account;
 
 	if (pre_global_processing || processing_list

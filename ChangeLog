@@ -1,3 +1,11 @@
+2007-11-27 [colin]	3.1.0cvs40
+
+	* src/folder.c
+	* src/mbox.c
+	* src/summaryview.c
+		Make filtering faster on flags change: Batch original 
+		folderitem, where we'll do flags/tags changes.
+
 2007-11-27 [colin]	3.1.0cvs39
 
 	* src/filtering.c
