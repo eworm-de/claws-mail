@@ -1,3 +1,9 @@
+2007-11-27 [holger]	3.1.0cvs36
+
+	* src/printing.c
+		Add a line separating header and body
+		in the printout
+
 2007-11-27 [wwp]	3.1.0cvs35
 
 	* src/addressbook.c

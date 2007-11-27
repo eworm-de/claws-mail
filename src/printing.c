@@ -50,6 +50,7 @@ struct _PrintData {
   GHashTable *images;
   gint img_cnt;
   gdouble zoom;
+  gdouble ypos_line;
 };
 
 typedef struct {
@@ -762,6 +763,9 @@ static void printing_textview_cb_begin_print(GtkPrintOperation *op, GtkPrintCont
   int start, ii;
   PangoLayoutIter *iter;
   double start_pos;
+  gint num_header_lines;
+  gboolean header_done;
+  const gchar *text;
   double line_height =0.;
 
   print_data = (PrintData*) user_data;
@@ -796,6 +800,23 @@ static void printing_textview_cb_begin_print(GtkPrintOperation *op, GtkPrintCont
   ii = 0;
   start_pos = 0.;
   iter = pango_layout_get_iter(print_data->layout);
+
+  /* count number of header lines */
+  num_header_lines = 0;
+  header_done = FALSE;
+  text = pango_layout_get_text(print_data->layout);
+  if(text && *text && *text != '\n') {
+    do {
+      if(text[0] == '\n' && (text[1] != '\0')) {
+	num_header_lines++;
+	if(text[1] == '\n') {
+	  header_done = TRUE;
+	}
+      }
+      text++;
+    } while(*text && !header_done);
+  }
+
   do {
     PangoRectangle logical_rect;
     PangoLayoutLine *line;
@@ -817,6 +838,12 @@ static void printing_textview_cb_begin_print(GtkPrintOperation *op, GtkPrintCont
     if((page_height + line_height) > height) {
       page_breaks = g_list_prepend(page_breaks, GINT_TO_POINTER(ii));
       page_height = 0;
+    }
+
+    if(ii == num_header_lines) {
+      int y0, y1;
+      pango_layout_iter_get_line_yrange(iter,&y0,&y1);
+      print_data->ypos_line = (double)y0 + 1./3.*((double)(y1 - y0))/2.;
     }
 
     page_height += line_height;
@@ -958,7 +985,26 @@ static void printing_textview_cb_draw_page(GtkPrintOperation *op, GtkPrintContex
 
       if(ii == start)
 	start_pos = ((double)logical_rect.y) / PANGO_SCALE;
-      
+
+      /* Draw header separator line */
+      if(ii == 0) {
+	cairo_surface_t *surface;
+	surface = cairo_image_surface_create(CAIRO_FORMAT_ARGB32,
+					     gtk_print_context_get_width(context)/print_data->zoom,
+					     gtk_print_context_get_height(context)/print_data->zoom);
+	cairo_set_line_width(cr, .5);
+	cairo_set_source_surface(cr, surface,
+				 ((double)logical_rect.x) / PANGO_SCALE, 
+				 ((double)baseline) / PANGO_SCALE - start_pos);
+	cairo_move_to(cr,
+		      ((double)logical_rect.x) / PANGO_SCALE,
+		      (double)print_data->ypos_line / PANGO_SCALE);
+	cairo_rel_line_to(cr, gtk_print_context_get_width(context)/print_data->zoom, 0);
+	cairo_set_source_rgb(cr, 0., 0., 0.);
+	cairo_stroke(cr);
+	cairo_surface_destroy(surface);
+      }
+
       cairo_move_to(cr,
 		    ((double)logical_rect.x) / PANGO_SCALE,
 		    ((double)baseline) / PANGO_SCALE - start_pos);
