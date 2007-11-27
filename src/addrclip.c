@@ -47,12 +47,15 @@
 
 #include <stdio.h>
 #include <glib.h>
+#include <glib/gi18n.h>
 
 #include "addrcache.h"
 #include "addrbook.h"
 #include "addrselect.h"
 #include "addrindex.h"
 #include "addrclip.h"
+#include "alertpanel.h"
+#include "defs.h"
 
 /*
 * Create a clipboard.
@@ -255,6 +258,24 @@ static GList *addrclip_cache_add_person(
 		node = g_list_next( node );
 	}
 
+	/* Set picture name and create picture file (from copy) if missing */
+	addritem_person_set_picture(newPerson, ADDRITEM_ID(newPerson));
+	if( strcmp(ADDRITEM_ID(newPerson), ADDRITEM_ID(person)) ) {
+		gchar *pictureFile;
+		gchar *newPictureFile;
+
+		pictureFile = g_strconcat( get_rc_dir(), G_DIR_SEPARATOR_S, ADDRBOOK_DIR, G_DIR_SEPARATOR_S, 
+							person->picture, ".png", NULL );
+		newPictureFile = g_strconcat( get_rc_dir(), G_DIR_SEPARATOR_S, ADDRBOOK_DIR, G_DIR_SEPARATOR_S, 
+							newPerson->picture, ".png", NULL );
+		if (file_exist(pictureFile, FALSE) && !file_exist(newPictureFile, FALSE)) {
+			debug_print("copying contact picture file: %s -> %s\n", person->picture, newPerson->picture);
+			copy_file(pictureFile, newPictureFile, FALSE);
+		}
+		g_free( pictureFile );
+		g_free( newPictureFile );
+	}
+
 	return copyList;
 }
 
@@ -372,6 +393,27 @@ static ItemFolder *addrclip_cache_copy_folder(
 	return newFolder;
 }
 
+static gboolean addrclip_is_subfolder_of(ItemFolder *is_parent, ItemFolder *is_child)
+{
+	ItemFolder *folder;
+	AddrItemObject *obj;
+
+	g_return_val_if_fail(is_parent != NULL, FALSE);
+	g_return_val_if_fail(is_child != NULL, FALSE);
+
+	if (is_parent == is_child)
+		return TRUE;
+
+	folder = is_child;
+	obj = folder->obj.parent;
+	while (obj) {
+		if ((void*)obj == (void*)is_parent)
+			return TRUE;
+		obj = obj->parent;
+	}
+	return FALSE;
+}
+
 /*
 * Paste item list into address book.
 * Enter: cache     Target address cache.
@@ -424,10 +466,15 @@ static GList *addrclip_cache_add_folder(
 					ItemFolder *itemFolder, *newFolder;
 
 					itemFolder = ( ItemFolder * ) aio;
-					newFolder = addrclip_cache_copy_folder(
-							cache, folder, itemFolder );
-					folderGroup =
-						g_list_append( folderGroup, newFolder );
+					if (!addrclip_is_subfolder_of(itemFolder, folder)) {
+						newFolder = addrclip_cache_copy_folder(
+								cache, folder, itemFolder );
+						folderGroup =
+							g_list_append( folderGroup, newFolder );
+					} else {
+						alertpanel_error(
+							_("Cannot copy a folder to itself or to its sub-structure.") );
+					}
 				}
 			}
 		}
@@ -447,6 +494,9 @@ static GList *addrclip_cache_add_folder(
 						addrcache_get_name( cacheFrom ) );
 					folderGroup =
 						g_list_append( folderGroup, newFolder );
+				} else {
+					alertpanel_error(
+						_("Cannot copy an address book to itself.") );
 				}
 			}
 		}
@@ -528,13 +578,17 @@ static GList *addrclip_cache_move_items(
 				folderGroup = g_list_append( folderGroup, group );
 			}
 			else if( ADDRITEM_TYPE(aio) == ITEMTYPE_FOLDER ) {
-				ItemFolder *folder;
+				ItemFolder *folder = ( ItemFolder * ) aio;
 
-				folder = ( ItemFolder * ) aio;
-				addrcache_folder_move_folder(
-					cache, folder, targetFolder );
-				folderGroup =
-					g_list_append( folderGroup, folder );
+				if (!addrclip_is_subfolder_of(folder, targetFolder)) {
+					addrcache_folder_move_folder(
+						cache, folder, targetFolder );
+					folderGroup =
+						g_list_append( folderGroup, folder );
+				} else {
+					alertpanel_error(
+						_("Cannot move a folder to itself or to its sub-structure.") );
+				}
 			}
 		}
 	}

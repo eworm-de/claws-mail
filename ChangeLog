@@ -1,3 +1,27 @@
+2007-11-27 [wwp]	3.1.0cvs32
+
+	* src/addrclip.c
+	* src/addressbook.c
+	* src/addritem.c
+		Various fixes in the address book:
+			- made copy/move of a folder to itself or its subtree
+			  impossible (-> error)
+			- errors messages don't show in the status bar anymore,
+			  use alertpanels instead
+			- simple click on group doesn't open group edit dialog
+			  anymore when in contact edit embedded mode (was too itchy)
+			- fixed disabling of edit button and and menu entry when
+			  in contact edit embedded mode (was done in a bad and
+			  ineffective way)
+			- fix menu cut/paste sensitivity in treelist context
+			  menu (conflicting enabling was done by different functions)
+			- fix some menu item sensitivity in address list context menu
+			- don't allow cut/copy of groups, it's useless as they won't
+			  be copied w/ their contents
+			- fix missing copy of the picture file when copying (bug #1402),
+			  fix picture attribute (internal) value when moving or copying
+
+
 2007-11-27 [colin]	3.1.0cvs31
 
 	* src/folder.c

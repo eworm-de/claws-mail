@@ -241,7 +241,7 @@ ItemPerson *addritem_copy_item_person( ItemPerson *item ) {
 	if( item ) {
 		itemNew = addritem_create_item_person();
 		ADDRITEM_NAME(itemNew) = g_strdup( ADDRITEM_NAME(item) );
-		itemNew->picture = g_strdup( item->picture );
+		itemNew->picture = g_strdup( ADDRITEM_ID(itemNew) );
 		itemNew->firstName = g_strdup( item->firstName );
 		itemNew->lastName = g_strdup( item->lastName );
 		itemNew->nickName = g_strdup( item->nickName );
