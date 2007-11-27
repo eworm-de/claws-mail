@@ -2765,6 +2765,7 @@ static void copy_msginfo_flags(MsgInfo *source, MsgInfo *dest)
 	if (source && source->tags) {
 		g_slist_free(dest->tags);
 		dest->tags = g_slist_copy(source->tags);
+		folder_item_commit_tags(dest->folder, dest, dest->tags, NULL);
 	}
 }
 

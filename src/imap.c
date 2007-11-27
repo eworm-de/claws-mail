@@ -2871,7 +2871,7 @@ static void *imap_get_uncached_messages_thread(void *data)
 				msginfo->tags = NULL;
 			}
 			for (cur = tags; cur; cur = cur->next) {
-				gchar *real_tag = imap_modified_utf7_to_utf8(cur->data, FALSE);
+				gchar *real_tag = imap_modified_utf7_to_utf8(cur->data, TRUE);
 				gint id = 0;
 				id = tags_get_id_for_str(real_tag);
 				if (id == -1) {
@@ -4781,7 +4781,7 @@ bail:
 					msginfo->tags = NULL;
 				}
 				for (cur = tags; cur; cur = cur->next) {
-					gchar *real_tag = imap_modified_utf7_to_utf8(cur->data, FALSE);
+					gchar *real_tag = imap_modified_utf7_to_utf8(cur->data, TRUE);
 					gint id = 0;
 					id = tags_get_id_for_str(real_tag);
 					if (id == -1) {

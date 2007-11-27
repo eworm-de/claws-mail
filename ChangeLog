@@ -1,3 +1,9 @@
+2007-11-27 [colin]	3.1.0cvs31
+
+	* src/folder.c
+	* src/imap.c
+		Fix tags loss on move, fix space encoding
+
 2007-11-26 [colin]	3.1.0cvs30
 
 	* src/edittags.c
