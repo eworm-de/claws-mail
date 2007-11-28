@@ -581,13 +581,11 @@ GtkWidget *summary_get_main_widget(SummaryView *summaryview)
 }
 
 #define START_LONG_OPERATION(summaryview,force_freeze) {	\
-	if (summary_is_locked(summaryview)) 			\
-		return;						\
 	summary_lock(summaryview);				\
 	main_window_cursor_wait(summaryview->mainwin);		\
 	if (force_freeze || sc_g_list_bigger(GTK_CLIST(summaryview->ctree)->selection, 1)) {\
-		froze = TRUE;					\
-		summary_freeze(summaryview);			\
+		froze = TRUE;						\
+		summary_freeze(summaryview);	\
 	}							\
 	folder_item_update_freeze();				\
 	inc_lock();						\
@@ -597,9 +595,8 @@ GtkWidget *summary_get_main_widget(SummaryView *summaryview)
 #define END_LONG_OPERATION(summaryview) {			\
 	inc_unlock();						\
 	folder_item_update_thaw();				\
-	if (froze) {						\
-		summary_thaw(summaryview);			\
-	}							\
+	if (froze) 						\
+		summary_thaw(summaryview);	\
 	main_window_cursor_normal(summaryview->mainwin);	\
 	summary_unlock(summaryview);				\
 	summaryview->msginfo_update_callback_id =		\
@@ -1375,6 +1372,7 @@ gboolean summary_show(SummaryView *summaryview, FolderItem *item)
 					 item->sort_type == SORT_DESCENDING
 					 ? 0 : GTK_CLIST(ctree)->rows - 1);
 			gtk_sctree_select(GTK_SCTREE(ctree), node);
+			summaryview->selected = node;
 			gtk_ctree_node_moveto(ctree, node, 0, 0.5, 0);
 		}
 	} else {
@@ -1527,9 +1525,8 @@ void summary_lock(SummaryView *summaryview)
 
 void summary_unlock(SummaryView *summaryview)
 {
-	if (summaryview->lock_count) {
+	if (summaryview->lock_count)
 		summaryview->lock_count--;
-	}
 }
 
 gboolean summary_is_locked(SummaryView *summaryview)
@@ -3694,6 +3691,8 @@ void summary_mark(SummaryView *summaryview)
 	GList *cur;
 	gboolean froze = FALSE;
 
+	if (summary_is_locked(summaryview))
+		return;
 	START_LONG_OPERATION(summaryview, FALSE);
 	folder_item_set_batch(summaryview->folder_item, TRUE);
 	for (cur = GTK_CLIST(ctree)->selection; cur != NULL && cur->data != NULL; cur = cur->next)
@@ -3728,6 +3727,8 @@ void summary_mark_as_read(SummaryView *summaryview)
 	GList *cur;
 	gboolean froze = FALSE;
 
+	if (summary_is_locked(summaryview))
+		return;
 	START_LONG_OPERATION(summaryview, FALSE);
 	folder_item_set_batch(summaryview->folder_item, TRUE);
 	for (cur = GTK_CLIST(ctree)->selection; cur != NULL && cur->data != NULL; cur = cur->next)
@@ -3745,6 +3746,8 @@ void summary_msgs_lock(SummaryView *summaryview)
 	GList *cur;
 	gboolean froze = FALSE;
 
+	if (summary_is_locked(summaryview))
+		return;
 	START_LONG_OPERATION(summaryview, FALSE);
 	for (cur = GTK_CLIST(ctree)->selection; cur != NULL && cur->data != NULL; cur = cur->next)
 		summary_lock_row(summaryview,
@@ -3760,6 +3763,8 @@ void summary_msgs_unlock(SummaryView *summaryview)
 	GList *cur;
 	gboolean froze = FALSE;
 
+	if (summary_is_locked(summaryview))
+		return;
 	START_LONG_OPERATION(summaryview, FALSE);
 	for (cur = GTK_CLIST(ctree)->selection; cur != NULL && cur->data != NULL; cur = cur->next)
 		summary_unlock_row(summaryview,
@@ -3788,6 +3793,8 @@ void summary_mark_all_read(SummaryView *summaryview)
 			prefs_common.ask_mark_all_read = FALSE;
 	}
 	
+	if (summary_is_locked(summaryview))
+		return;
 	START_LONG_OPERATION(summaryview, TRUE);
 	folder_item_set_batch(summaryview->folder_item, TRUE);
 	for (node = GTK_CTREE_NODE(GTK_CLIST(ctree)->row_list); node != NULL;
@@ -3816,8 +3823,9 @@ void summary_mark_as_spam(SummaryView *summaryview, guint action, GtkWidget *wid
 
 	prefs_common.immediate_exec = FALSE;
 
+	if (summary_is_locked(summaryview))
+		return;
 	START_LONG_OPERATION(summaryview, FALSE);
-
 	for (cur = GTK_CLIST(ctree)->selection; cur != NULL && cur->data != NULL; cur = cur->next) {
 		GtkCTreeNode *row = GTK_CTREE_NODE(cur->data);
 		MsgInfo *msginfo = gtk_ctree_node_get_row_data(ctree, row);
@@ -3896,6 +3904,8 @@ void summary_mark_as_unread(SummaryView *summaryview)
 	GList *cur;
 	gboolean froze = FALSE;
 
+	if (summary_is_locked(summaryview))
+		return;
 	START_LONG_OPERATION(summaryview, FALSE);
 	folder_item_set_batch(summaryview->folder_item, TRUE);
 	for (cur = GTK_CLIST(ctree)->selection; cur != NULL && cur->data != NULL; 
@@ -4135,6 +4145,8 @@ void summary_unmark(SummaryView *summaryview)
 	GList *cur;
 	gboolean froze = FALSE;
 
+	if (summary_is_locked(summaryview))
+		return;
 	START_LONG_OPERATION(summaryview, FALSE);
 	folder_item_set_batch(summaryview->folder_item, TRUE);
 	for (cur = GTK_CLIST(ctree)->selection; cur != NULL && cur->data != NULL; cur = cur->next)
@@ -5344,6 +5356,9 @@ void summary_set_tag(SummaryView *summaryview, gint tag_id,
 	gint real_id = set? tag_id:-tag_id;
 	gboolean froze = FALSE;
 	gboolean redisplay = FALSE;
+
+	if (summary_is_locked(summaryview))
+		return;
 	START_LONG_OPERATION(summaryview, FALSE);
 	folder_item_set_batch(summaryview->folder_item, TRUE);
 	for (cur = GTK_CLIST(ctree)->selection; cur != NULL && cur->data != NULL; cur = cur->next) {
@@ -6601,6 +6616,7 @@ static void summary_start_drag(GtkWidget *widget, gint button, GdkEvent *event,
 	g_return_if_fail(summaryview != NULL);
 	g_return_if_fail(summaryview->folder_item != NULL);
 	g_return_if_fail(summaryview->folder_item->folder != NULL);
+
 	if (summaryview->selected == NULL) return;
 
 	context = gtk_drag_begin(widget, summaryview->target_list,

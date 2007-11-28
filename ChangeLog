@@ -1,3 +1,9 @@
+2007-11-28 [colin]	3.1.0cvs44
+
+	* src/summaryview.c
+		Maybe fix bug 1410 and other crash reports
+		in summaryview since cvs38.
+
 2007-11-28 [wwp]	3.1.0cvs43
 
 	* src/prefs_summary_open.c
