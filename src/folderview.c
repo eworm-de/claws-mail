@@ -856,15 +856,20 @@ static void mark_all_read_cb(FolderView *folderview, guint action,
 			prefs_common.ask_mark_all_read = FALSE;
 	}
 
-	summary_lock(folderview->summaryview);
+	
 	folder_item_update_freeze();
-	if (folderview->summaryview->folder_item == item)
+	if (folderview->summaryview->folder_item != item)
+		summary_lock(folderview->summaryview);
+	else
 		summary_freeze(folderview->summaryview);
+		
 	folderutils_mark_all_read(item);
-	if (folderview->summaryview->folder_item == item)
+	
+	if (folderview->summaryview->folder_item != item)
+		summary_unlock(folderview->summaryview);
+	else
 		summary_thaw(folderview->summaryview);
 	folder_item_update_thaw();
-	summary_unlock(folderview->summaryview);
 }
 
 static void folderview_select_node(FolderView *folderview, GtkCTreeNode *node)
