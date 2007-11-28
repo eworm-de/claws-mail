@@ -388,7 +388,6 @@ static void prefs_summary_open_set_list(void)
 	GtkTreeModel *model;
 	GtkTreeIter iter;
 
-
 	model = gtk_tree_view_get_model(GTK_TREE_VIEW(summaryopen.actions_list_view));
 	while (gtk_tree_model_iter_nth_child(model, &iter, NULL, row)) {
 		gtk_tree_model_get(model, &iter, PREFS_SUMMARY_OPEN_DATA, &data, -1);
@@ -535,6 +534,11 @@ static gboolean prefs_summary_open_key_pressed(GtkWidget *widget,
 static void prefs_summary_open_ok(void)
 {
 	int i;
+
+	/* force an empty list to be at least ACTION_NONE */
+	if (prefs_common.summary_select_prio[0] == ACTION_UNSET)
+		prefs_common.summary_select_prio[0] = ACTION_NOTHING;
+
 	for (i = 0; i < SUMMARY_OPEN_ACTIONS-1; i++)
 		saved_summary_select_prio[i] = prefs_common.summary_select_prio[i];
 

@@ -1,3 +1,10 @@
+2007-11-28 [wwp]	3.1.0cvs43
+
+	* src/prefs_summary_open.c
+		Guard against an empty list of actions to perform
+		when opening a folder (or migration defaults could
+		be introduced, confusing).
+
 2007-11-28 [colin]	3.1.0cvs42
 
 	* src/folderview.c
