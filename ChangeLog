@@ -1,3 +1,9 @@
+2007-11-29 [colin]	3.1.0cvs45
+
+	* src/common/ssl_certificate.c
+		Use the more modern getaddrinfo instead of 
+		gethostbyname when possible
+
 2007-11-28 [colin]	3.1.0cvs44
 
 	* src/summaryview.c

@@ -118,16 +118,47 @@ time_t asn1toTime(ASN1_TIME *asn1Time)
 
 static char * get_fqdn(char *host)
 {
+#ifdef INET6
+        gint gai_err;
+        struct addrinfo hints, *res;
+#else
 	struct hostent *hp;
+#endif
 
 	if (host == NULL || strlen(host) == 0)
 		return g_strdup("");
+#ifdef INET6
+        memset(&hints, 0, sizeof(hints));
+        hints.ai_flags = AI_CANONNAME;
+        hints.ai_family = AF_UNSPEC;
+        hints.ai_socktype = SOCK_STREAM;
+        hints.ai_protocol = IPPROTO_TCP;
 
+        gai_err = getaddrinfo(host, NULL, &hints, &res);
+        if (gai_err != 0) {
+                g_warning("getaddrinfo for %s failed: %s\n",
+                          host, gai_strerror(gai_err));
+		return g_strdup(host);
+        }
+	if (res != NULL) {
+		if (res->ai_canonname && strlen(res->ai_canonname)) {
+			gchar *fqdn = g_strdup(res->ai_canonname);
+			freeaddrinfo(res);
+			return fqdn;
+		} else {
+			freeaddrinfo(res);
+			return g_strdup(host);
+		}
+	} else {
+		return g_strdup(host);
+	}
+#else
 	hp = my_gethostbyname(host);
 	if (hp == NULL)
 		return g_strdup(host); /*caller should free*/
 	else 
 		return g_strdup(hp->h_name);
+#endif
 }
 
 char * readable_fingerprint(unsigned char *src, int len) 
