@@ -494,12 +494,12 @@ static gboolean matcherprop_string_match(MatcherProp *prop, const gchar *str,
 				log_print(LOG_DEBUG_FILTERING,
 						"%s value [ %s ] matches regular expression [ %s ] (%s)\n",
 						debug_context, stripped, prop->expr,
-						prop->matchtype == MATCHTYPE_REGEXP ? _("Case sensitive"):_("Case unsensitive"));
+						prop->matchtype == MATCHTYPE_REGEXP ? _("Case sensitive"):_("Case insensitive"));
 			} else {
 				log_print(LOG_DEBUG_FILTERING,
 						"%s value [ %s ] doesn't matches regular expression [ %s ] (%s)\n",
 						debug_context, stripped, prop->expr,
-						prop->matchtype == MATCHTYPE_REGEXP ? _("Case sensitive"):_("Case unsensitive"));
+						prop->matchtype == MATCHTYPE_REGEXP ? _("Case sensitive"):_("Case insensitive"));
 			}
 			g_free(stripped);
 		}
@@ -519,12 +519,12 @@ static gboolean matcherprop_string_match(MatcherProp *prop, const gchar *str,
 				log_print(LOG_DEBUG_FILTERING,
 						"%s value [ %s ] contains [ %s ] (%s)\n",
 						debug_context, stripped, prop->expr,
-						prop->matchtype == MATCHTYPE_MATCH ? _("Case sensitive"):_("Case unsensitive"));
+						prop->matchtype == MATCHTYPE_MATCH ? _("Case sensitive"):_("Case insensitive"));
 			} else {
 				log_print(LOG_DEBUG_FILTERING,
 						"%s value [ %s ] doesn't contains [ %s ] (%s)\n",
 						debug_context, stripped, prop->expr,
-						prop->matchtype == MATCHTYPE_MATCH ? _("Case sensitive"):_("Case unsensitive"));
+						prop->matchtype == MATCHTYPE_MATCH ? _("Case sensitive"):_("Case insensitive"));
 			}
 			g_free(stripped);
 		}

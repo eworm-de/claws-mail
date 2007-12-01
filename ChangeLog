@@ -1,3 +1,8 @@
+2007-12-01 [paul]	3.1.0cvs47
+
+	* src/matcher.c
+		fix a typo
+
 2007-12-01 [paul]	3.1.0cvs46
 
 	* po/POTFILES.in
