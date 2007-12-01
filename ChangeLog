@@ -1,3 +1,8 @@
+2007-12-01 [paul]	3.1.0cvs46
+
+	* po/POTFILES.in
+		add the new addrcustomattr.c file
+
 2007-11-29 [colin]	3.1.0cvs45
 
 	* src/common/ssl_certificate.c

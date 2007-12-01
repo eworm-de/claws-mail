@@ -3103,3 +3103,4 @@
 ( cvs diff -u -r 1.1.2.6 -r 1.1.2.7 src/prefs_summary_open.c;  ) > 3.1.0cvs43.patchset
 ( cvs diff -u -r 1.395.2.342 -r 1.395.2.343 src/summaryview.c;  ) > 3.1.0cvs44.patchset
 ( cvs diff -u -r 1.4.2.23 -r 1.4.2.24 src/common/ssl_certificate.c;  ) > 3.1.0cvs45.patchset
+( cvs diff -u -r 1.53.2.32 -r 1.53.2.33 po/POTFILES.in;  ) > 3.1.0cvs46.patchset

@@ -1,6 +1,7 @@
 src/account.c
 src/action.c
 src/addr_compl.c
+src/addrcustomattr.c
 src/addressadd.c
 src/addressbook.c
 src/addressbook_foldersel.c
