@@ -1,3 +1,8 @@
+2007-12-02 [iwkse]	3.1.0cvs49
+
+	* src/plugins/dillo_viewer/dillo_prefs.c
+			Insert dillo under the Plugins menu
+
 2007-12-01 [paul]	3.1.0cvs48
 
 	* src/html.c

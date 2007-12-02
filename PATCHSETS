@@ -3106,3 +3106,4 @@
 ( cvs diff -u -r 1.53.2.32 -r 1.53.2.33 po/POTFILES.in;  ) > 3.1.0cvs46.patchset
 ( cvs diff -u -r 1.75.2.52 -r 1.75.2.53 src/matcher.c;  ) > 3.1.0cvs47.patchset
 ( cvs diff -u -r 1.12.2.22 -r 1.12.2.23 src/html.c;  ) > 3.1.0cvs48.patchset
+( cvs diff -u -r 1.5.2.19 -r 1.5.2.20 src/plugins/dillo_viewer/dillo_prefs.c;  ) > 3.1.0cvs49.patchset
