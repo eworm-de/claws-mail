@@ -1,3 +1,10 @@
+2007-12-03 [cleroy]	3.1.0cvs50
+
+	* src/etpan/imap-thread.c
+	* src/etpan/nntp-thread.c
+		Fix bug 1417, 'Network log doesn't reveal 
+		enough NNTP errors'
+
 2007-12-02 [iwkse]	3.1.0cvs49
 
 	* src/plugins/dillo_viewer/dillo_prefs.c

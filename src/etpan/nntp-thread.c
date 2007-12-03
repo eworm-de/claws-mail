@@ -535,6 +535,9 @@ static void login_run(struct etpan_thread_op * op)
 #endif
 	
 	result->error = r;
+	if (param->nntp->nntp_response)
+		nntp_logger(0, param->nntp->nntp_response, strlen(param->nntp->nntp_response));
+
 	debug_print("nntp login run - end %i\n", r);
 }
 

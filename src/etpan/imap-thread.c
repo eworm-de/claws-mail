@@ -896,6 +896,8 @@ static void login_run(struct etpan_thread_op * op)
 #endif
 	
 	result->error = r;
+	if (param->imap->imap_response)
+		imap_logger_cmd(0, param->imap->imap_response, strlen(param->imap->imap_response));
 	debug_print("imap login run - end %i\n", r);
 }
 

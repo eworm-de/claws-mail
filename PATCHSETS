@@ -3107,3 +3107,4 @@
 ( cvs diff -u -r 1.75.2.52 -r 1.75.2.53 src/matcher.c;  ) > 3.1.0cvs47.patchset
 ( cvs diff -u -r 1.12.2.22 -r 1.12.2.23 src/html.c;  ) > 3.1.0cvs48.patchset
 ( cvs diff -u -r 1.5.2.19 -r 1.5.2.20 src/plugins/dillo_viewer/dillo_prefs.c;  ) > 3.1.0cvs49.patchset
+( cvs diff -u -r 1.1.4.90 -r 1.1.4.91 src/etpan/imap-thread.c;  cvs diff -u -r 1.1.2.2 -r 1.1.2.3 src/etpan/nntp-thread.c;  ) > 3.1.0cvs50.patchset
