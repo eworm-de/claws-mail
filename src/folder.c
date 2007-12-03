@@ -1764,7 +1764,7 @@ static gint folder_item_syncronize_flags(FolderItem *item)
 	if (item->no_select)
 		return -1;
 
-	item->scanning = TRUE;
+	item->scanning = ITEM_SCANNING_WITH_FLAGS;
 
 	if (item->cache == NULL)
 		folder_item_read_cache(item);
@@ -1778,7 +1778,7 @@ static gint folder_item_syncronize_flags(FolderItem *item)
 	
 	g_slist_free(msglist);
 
-	item->scanning = FALSE;
+	item->scanning = ITEM_NOT_SCANNING;
 
 	return ret;
 }
@@ -1821,7 +1821,7 @@ gint folder_item_open(FolderItem *item)
 	if (item->no_select)
 		return -1;
 
-	if (item->scanning) {
+	if (item->scanning != ITEM_NOT_SCANNING) {
 		debug_print("%s is scanning... \n", item->path ? item->path : item->name);
 		return -2;
 	}
@@ -1935,14 +1935,14 @@ gint folder_item_scan_full(FolderItem *item, gboolean filtering)
 	g_return_val_if_fail(folder != NULL, -1);
 	g_return_val_if_fail(folder->klass->get_num_list != NULL, -1);
 
-	item->scanning = TRUE;
+	item->scanning = ITEM_SCANNING_WITH_FLAGS;
 
 	debug_print("Scanning folder %s for cache changes.\n", item->path ? item->path : "(null)");
 	
 	/* Get list of messages for folder and cache */
 	if (folder->klass->get_num_list(item->folder, item, &folder_list, &old_uids_valid) < 0) {
 		debug_print("Error fetching list of message numbers\n");
-		item->scanning = FALSE;
+		item->scanning = ITEM_NOT_SCANNING;
 		return(-1);
 	}
 
@@ -2115,6 +2115,9 @@ gint folder_item_scan_full(FolderItem *item, gboolean filtering)
 	}
 
 	folder_item_update_freeze();
+	
+	item->scanning = ITEM_SCANNING;
+
 	if (newmsg_list != NULL) {
 		GSList *elem, *to_filter = NULL;
 		gboolean do_filter = (filtering == TRUE) &&
@@ -2244,7 +2247,7 @@ gint folder_item_scan_full(FolderItem *item, gboolean filtering)
 	folder_item_update(item, update_flags);
 	folder_item_update_thaw();
 	
-	item->scanning = FALSE;
+	item->scanning = ITEM_NOT_SCANNING;
 
 	return 0;
 }
@@ -3495,7 +3498,7 @@ void folder_item_change_msg_flags(FolderItem *item, MsgInfo *msginfo, MsgPermFla
 	if (item->no_select)
 		return;
 	
-	if (item->folder->klass->change_flags != NULL) {
+	if (item->folder->klass->change_flags != NULL && item->scanning != ITEM_SCANNING_WITH_FLAGS) {
 		item->folder->klass->change_flags(item->folder, item, msginfo, newflags);
 	} else {
 		msginfo->flags.perm_flags = newflags;

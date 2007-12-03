@@ -623,6 +623,12 @@ struct _FolderClass
 						 GSList		*tags_unset);
 };
 
+enum {
+	ITEM_NOT_SCANNING,
+	ITEM_SCANNING_WITH_FLAGS,
+	ITEM_SCANNING
+};
+
 struct _FolderItem
 {
 	SpecialFolderItemType stype;
@@ -678,7 +684,7 @@ struct _FolderItem
 	/* for faster search of special parents */
 	SpecialFolderItemType parent_stype;
 	gboolean processing_pending;
-	gboolean scanning;
+	gint scanning;
 	guint last_seen;
 };
 

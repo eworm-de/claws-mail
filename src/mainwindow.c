@@ -2011,10 +2011,15 @@ void main_window_reflect_prefs_custom_colors(MainWindow *mainwin)
 
 }
 
-void main_window_reflect_tags_changes(MainWindow *mainwin)
+static gint tags_tag = 0;
+static gboolean main_window_reflect_tags_changes_real(gpointer data)
 {
 	GtkMenuShell *menu;
 	GList *cur;
+	MainWindow *mainwin = (MainWindow *)data;
+
+	if (summary_is_locked(mainwin->summaryview))
+		return TRUE;
 
 	/* re-create tags submenu */
 	menu = GTK_MENU_SHELL(mainwin->tags_menu);
@@ -2026,7 +2031,16 @@ void main_window_reflect_tags_changes(MainWindow *mainwin)
 	}
 	mainwindow_tags_menu_create(mainwin, TRUE);
 	summary_reflect_tags_changes(mainwin->summaryview);
+	
+	return FALSE;
+}
 
+void main_window_reflect_tags_changes(MainWindow *mainwin)
+{
+	if (tags_tag == 0) {
+		tags_tag = g_timeout_add(100, main_window_reflect_tags_changes_real, 
+						mainwin);
+	}
 }
 
 void main_window_reflect_prefs_all_real(gboolean pixmap_theme_changed)

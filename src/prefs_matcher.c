@@ -68,22 +68,24 @@ static struct Matcher {
 
 	GtkWidget *ok_btn;
 
-	GtkWidget *predicate_combo;
-	GtkWidget *predicate_flag_combo;
-	GtkWidget *header_combo;
+	GtkWidget *match_combo;
 	GtkWidget *header_addr_combo;
 	GtkWidget *bool_op_combo;
+	GtkWidget *criteria_label2;
 	GtkWidget *criteria_combo;
-
-	GtkWidget *predicate_label;
+	GtkWidget *criteria_combo2;
+	GtkWidget *match_combo2;
+	GtkWidget *match_label;
+	GtkWidget *match_label2;
+	GtkWidget *headers_combo;
+	GtkWidget *upper_filler;
+	GtkWidget *lower_filler;
 
 	GtkWidget *header_entry;
-	GtkWidget *header_label;
 	GtkWidget *header_addr_entry;
-	GtkWidget *header_addr_label;
-	GtkWidget *value_entry;
-	GtkWidget *value_label;
-	GtkWidget *addressbook_folder_label;
+	GtkWidget *string_entry;
+	GtkWidget *numeric_entry;
+	GtkWidget *numeric_label;
 	GtkWidget *addressbook_folder_combo;
 	GtkWidget *case_checkbtn;
 	GtkWidget *regexp_checkbtn;
@@ -92,9 +94,23 @@ static struct Matcher {
 	GtkWidget *test_btn;
 	GtkWidget *addressbook_select_btn;
 
+	GtkTreeModel *model_age;
+	GtkTreeModel *model_age_units;
+	GtkTreeModel *model_contain;
+	GtkTreeModel *model_found;
+	GtkTreeModel *model_flags;
+	GtkTreeModel *model_headers;
+	GtkTreeModel *model_partial;
+	GtkTreeModel *model_phrase;
+	GtkTreeModel *model_score;
+	GtkTreeModel *model_set;
+	GtkTreeModel *model_size;
+	GtkTreeModel *model_size_units;
+	GtkTreeModel *model_tags;
+	GtkTreeModel *model_test;
+	GtkTreeModel *model_thread;
+	
 	GtkWidget *cond_list_view;
-
-	GtkWidget *criteria_table;
 
 	gint selected_criteria; /*!< selected criteria in combobox */ 
 } matcher;
@@ -104,9 +120,6 @@ static struct Matcher {
  *		have the same CRITERIA_XXX id). I.e. both unread and ~unread
  *		have criteria id CRITERIA_UNREAD. This id is passed as the
  *		first parameter to #matcherprop_new and #matcherprop_unquote_new.
- *
- *\warning	Currently the enum constants should have the same order as the 
- *		#criteria_text	
  */		
 enum {
 	CRITERIA_ALL = 0,
@@ -156,57 +169,41 @@ enum {
 	CRITERIA_TAGGED = 36
 };
 
-/*!
- *\brief	Descriptive text for conditions
- */
-typedef struct _struct_criteria_text struct_criteria_text;
-struct _struct_criteria_text {
-	const gchar	*text;
-	gboolean	 contains_header_name;
-	/* if contains_header_name is TRUE, prefs_common_translated_headername(text)
-	   will be used
-	*/
+enum {
+	MATCH_ALL	= 0,
+	MATCH_HEADER	= 1,
+	MATCH_AGE	= 2,
+	MATCH_PHRASE	= 3,
+	MATCH_FLAG	= 4,
+	MATCH_LABEL	= 5,
+	MATCH_THREAD	= 6,
+	MATCH_SCORE	= 7,
+	MATCH_SIZE	= 8,
+	MATCH_PARTIAL	= 9,
+	MATCH_ABOOK	= 10,
+	MATCH_TAGS	= 11,
+	MATCH_TEST	= 12
 };
 
-static struct_criteria_text criteria_text [] = {
-	{ N_("All messages"), FALSE },
-	{ N_("Subject"), TRUE },
-	{ N_("From"), TRUE },
-	{ N_("To"), TRUE },
-	{ N_("Cc"), TRUE },
-	{ N_("To or Cc"), TRUE },
-	{ N_("Newsgroups"), TRUE },
-	{ N_("In reply to"), TRUE },
-	{ N_("References"), TRUE },
-	{ N_("Age greater than (days)"), FALSE },
-	{ N_("Age less than (days)"), FALSE },
-	{ N_("Header"), FALSE },
-	{ N_("Headers part"), FALSE },
-	{ N_("Body part"), FALSE },
-	{ N_("Whole message"), FALSE },
-	{ N_("Unread flag"), FALSE },
-	{ N_("New flag"), FALSE },
-	{ N_("Marked flag"), FALSE },
-	{ N_("Deleted flag"), FALSE },
-	{ N_("Replied flag"), FALSE },
-	{ N_("Forwarded flag"), FALSE },
-	{ N_("Locked flag"), FALSE },
-	{ N_("Spam flag"), FALSE },
-	{ N_("Color label"), FALSE },
-	{ N_("Ignored thread"), FALSE },
-	{ N_("Watched thread"), FALSE },
-	{ N_("Score greater than"), FALSE },
-	{ N_("Score lower than"), FALSE },
-	{ N_("Score equal to"), FALSE },
-	{ N_("Test"), FALSE },
-	{ N_("Size greater than (bytes)"), FALSE }, 
-	{ N_("Size smaller than (bytes)"), FALSE },
-	{ N_("Size exactly (bytes)"), FALSE },
-	{ N_("Partially downloaded"), FALSE },
-	{ N_("Found in addressbook"), FALSE },
-	{ N_("Tags"), FALSE },
-	{ N_("Tagged"), FALSE },
-	{ NULL, FALSE }
+enum {
+	AGE_DAYS  = 0,
+	AGE_WEEKS = 1
+};
+
+enum {
+	SIZE_UNIT_BYTES  = 0,
+	SIZE_UNIT_KBYTES = 1,
+	SIZE_UNIT_MBYTES = 2
+};
+
+#define MB_SIZE 0x100000
+#define KB_SIZE 0x000400
+
+enum {
+	THREAD_IGNORED = 0,
+	THREAD_NOT_IGNORED = 1,
+	THREAD_WATCHED = 2,
+	THREAD_NOT_WATCHED = 3
 };
 
 /*!
@@ -253,6 +250,10 @@ static gint prefs_matcher_deleted	(GtkWidget *widget, GdkEventAny *event,
 					 gpointer data);
 static void prefs_matcher_criteria_select	(GtkWidget *widget,
 						 gpointer   user_data);
+static void prefs_matcher_second_criteria_sel	(GtkWidget *widget,
+						 gpointer   user_data);
+static void prefs_matcher_set_model		(GtkWidget *wiget,
+						 GtkTreeModel *model);
 static MatcherList *prefs_matcher_get_list	(void);
 
 static GtkListStore* prefs_matcher_create_data_store	(void);
@@ -272,6 +273,137 @@ static gboolean prefs_matcher_selected			(GtkTreeSelection *selector,
 							 gboolean currently_selected,
 							 gpointer data);
 
+static int header_name_to_crit(const gchar *header)
+{
+	if (header == NULL)
+		return CRITERIA_HEADER;
+
+	if (!strcasecmp(header, "Subject"))
+		return CRITERIA_SUBJECT;
+	if (!strcasecmp(header, "From"))
+		return CRITERIA_FROM;
+	if (!strcasecmp(header, "To"))
+		return CRITERIA_TO;
+	if (!strcasecmp(header, "Cc"))
+		return CRITERIA_CC;
+	if (!strcasecmp(header, "To or Cc"))
+		return CRITERIA_TO_OR_CC;
+	if (!strcasecmp(header, "In-Reply-To"))
+		return CRITERIA_INREPLYTO;
+	if (!strcasecmp(header, "Newsgroups"))
+		return CRITERIA_NEWSGROUPS;
+	if (!strcasecmp(header, "References"))
+		return CRITERIA_REFERENCES;
+
+	return CRITERIA_HEADER;
+}
+
+static void prefs_matcher_models_create(void)
+{
+	GtkListStore *store;
+	GtkTreeIter iter;
+	
+	store = gtk_list_store_new(3, G_TYPE_STRING, G_TYPE_INT, G_TYPE_BOOLEAN);
+	COMBOBOX_ADD(store, _("more than"), CRITERIA_AGE_GREATER);
+	COMBOBOX_ADD(store, _("less than"), CRITERIA_AGE_LOWER);
+	matcher.model_age = GTK_TREE_MODEL(store);
+
+	store = gtk_list_store_new(3, G_TYPE_STRING, G_TYPE_INT, G_TYPE_BOOLEAN);
+	COMBOBOX_ADD(store, _("days"), AGE_DAYS);
+	COMBOBOX_ADD(store, _("weeks"), AGE_WEEKS);
+	matcher.model_age_units = GTK_TREE_MODEL(store);
+
+	store = gtk_list_store_new(3, G_TYPE_STRING, G_TYPE_INT, G_TYPE_BOOLEAN);
+	COMBOBOX_ADD(store, _("higher than"), CRITERIA_SCORE_GREATER);
+	COMBOBOX_ADD(store, _("lower than"), CRITERIA_SCORE_LOWER);
+	COMBOBOX_ADD(store, _("exactly"), CRITERIA_SCORE_EQUAL);
+	matcher.model_score = GTK_TREE_MODEL(store);
+	
+	store = gtk_list_store_new(3, G_TYPE_STRING, G_TYPE_INT, G_TYPE_BOOLEAN);
+	COMBOBOX_ADD(store, _("greater than"), CRITERIA_SIZE_GREATER);
+	COMBOBOX_ADD(store, _("smaller than"), CRITERIA_SIZE_SMALLER);
+	COMBOBOX_ADD(store, _("exactly"), CRITERIA_SIZE_EQUAL);
+	matcher.model_size = GTK_TREE_MODEL(store);
+
+	store = gtk_list_store_new(3, G_TYPE_STRING, G_TYPE_INT, G_TYPE_BOOLEAN);
+	COMBOBOX_ADD(store, _("bytes"), SIZE_UNIT_BYTES);
+	COMBOBOX_ADD(store, _("kilobytes"), SIZE_UNIT_KBYTES);
+	COMBOBOX_ADD(store, _("megabytes"), SIZE_UNIT_MBYTES);
+	matcher.model_size_units = GTK_TREE_MODEL(store);
+	
+	store = gtk_list_store_new(3, G_TYPE_STRING, G_TYPE_INT, G_TYPE_BOOLEAN);
+	COMBOBOX_ADD(store, _("contains"), 0);
+	COMBOBOX_ADD(store, _("doesn't contain"), 0);
+	matcher.model_contain = GTK_TREE_MODEL(store);
+	
+	store = gtk_list_store_new(3, G_TYPE_STRING, G_TYPE_INT, G_TYPE_BOOLEAN);
+	COMBOBOX_ADD(store, "Subject", CRITERIA_HEADER);
+	COMBOBOX_ADD(store, "From", CRITERIA_HEADER);
+	COMBOBOX_ADD(store, "To", CRITERIA_HEADER);
+	COMBOBOX_ADD(store, "Cc", CRITERIA_HEADER);
+	COMBOBOX_ADD(store, "To or Cc", CRITERIA_HEADER);
+	COMBOBOX_ADD(store, "In-Reply-To", CRITERIA_HEADER);
+	COMBOBOX_ADD(store, "Newsgroups", CRITERIA_HEADER);
+	COMBOBOX_ADD(store, "References", CRITERIA_HEADER);
+	COMBOBOX_ADD(store, "Sender", CRITERIA_HEADER);
+	COMBOBOX_ADD(store, "X-ML-Name", CRITERIA_HEADER);
+	COMBOBOX_ADD(store, "X-List", CRITERIA_HEADER);
+	COMBOBOX_ADD(store, "X-Sequence", CRITERIA_HEADER);
+	COMBOBOX_ADD(store, "X-Mailer", CRITERIA_HEADER);
+	COMBOBOX_ADD(store, "X-BeenThere", CRITERIA_HEADER);
+	COMBOBOX_ADD(store, "List-Post", CRITERIA_HEADER);
+	matcher.model_headers = GTK_TREE_MODEL(store);
+	
+	store = gtk_list_store_new(3, G_TYPE_STRING, G_TYPE_INT, G_TYPE_BOOLEAN);
+	COMBOBOX_ADD(store, "headers part", CRITERIA_HEADERS_PART);
+	COMBOBOX_ADD(store, "body part", CRITERIA_BODY_PART);
+	COMBOBOX_ADD(store, "whole message", CRITERIA_MESSAGE);
+	matcher.model_phrase = GTK_TREE_MODEL(store);
+	
+	store = gtk_list_store_new(3, G_TYPE_STRING, G_TYPE_INT, G_TYPE_BOOLEAN);
+	COMBOBOX_ADD(store, _("Unread"), CRITERIA_UNREAD);
+	COMBOBOX_ADD(store, _("New"), CRITERIA_NEW);
+	COMBOBOX_ADD(store, _("Marked"), CRITERIA_MARKED);
+	COMBOBOX_ADD(store, _("Deleted"), CRITERIA_DELETED);
+	COMBOBOX_ADD(store, _("Replied"), CRITERIA_REPLIED);
+	COMBOBOX_ADD(store, _("Forwarded"), CRITERIA_FORWARDED);
+	COMBOBOX_ADD(store, _("Locked"), CRITERIA_LOCKED);
+	COMBOBOX_ADD(store, _("Spam"), CRITERIA_SPAM);
+	matcher.model_flags = GTK_TREE_MODEL(store);
+	
+	store = gtk_list_store_new(3, G_TYPE_STRING, G_TYPE_INT, G_TYPE_BOOLEAN);
+	COMBOBOX_ADD(store, _("set"), 0);
+	COMBOBOX_ADD(store, _("not set"), 1);
+	matcher.model_set = GTK_TREE_MODEL(store);
+
+	store = gtk_list_store_new(3, G_TYPE_STRING, G_TYPE_INT, G_TYPE_BOOLEAN);
+	COMBOBOX_ADD(store, _("yes"), CRITERIA_PARTIAL);
+	COMBOBOX_ADD(store, _("no"), CRITERIA_PARTIAL);
+	matcher.model_partial = GTK_TREE_MODEL(store);
+
+	store = gtk_list_store_new(3, G_TYPE_STRING, G_TYPE_INT, G_TYPE_BOOLEAN);
+	COMBOBOX_ADD(store, _("Any tags"), CRITERIA_TAGGED);
+	COMBOBOX_ADD(store, _("Specific tag"), CRITERIA_TAG);
+	matcher.model_tags = GTK_TREE_MODEL(store);
+
+	store = gtk_list_store_new(3, G_TYPE_STRING, G_TYPE_INT, G_TYPE_BOOLEAN);
+	COMBOBOX_ADD(store, _("ignored"), CRITERIA_IGNORE_THREAD);
+	COMBOBOX_ADD(store, _("not ignored"), CRITERIA_IGNORE_THREAD);
+	COMBOBOX_ADD(store, _("watched"), CRITERIA_WATCH_THREAD);
+	COMBOBOX_ADD(store, _("not watched"), CRITERIA_WATCH_THREAD);
+	matcher.model_thread = GTK_TREE_MODEL(store);
+	
+	store = gtk_list_store_new(3, G_TYPE_STRING, G_TYPE_INT, G_TYPE_BOOLEAN);
+	COMBOBOX_ADD(store, _("found"), 0);
+	COMBOBOX_ADD(store, _("not found"), 1);
+	matcher.model_found = GTK_TREE_MODEL(store);
+
+	store = gtk_list_store_new(3, G_TYPE_STRING, G_TYPE_INT, G_TYPE_BOOLEAN);
+	COMBOBOX_ADD(store, _("0 (Passed)"), 0);
+	COMBOBOX_ADD(store, _("non-0 (Failed)"), 1);
+	matcher.model_test = GTK_TREE_MODEL(store);
+}
+
 /*!
  *\brief	Opens the matcher dialog with a list of conditions
  *
@@ -284,6 +416,7 @@ void prefs_matcher_open(MatcherList *matchers, PrefsMatcherSignal *cb)
 	inc_lock();
 
 	if (!matcher.window) {
+		prefs_matcher_models_create();
 		prefs_matcher_create();
 	} else {
 		/* update color label menu */
@@ -325,32 +458,37 @@ static void prefs_matcher_create(void)
 	GtkWidget *confirm_area;
 
 	GtkWidget *vbox1;
-	GtkWidget *vbox2;
-	GtkWidget *vbox3;
-	GtkWidget *vbox_pred;
-	GtkWidget *hbox_pred;
-	GtkWidget *criteria_table;
-
-	GtkWidget *hbox1;
-
-	GtkWidget *header_combo;
-	GtkWidget *header_entry;
-	GtkWidget *header_label;
-	GtkWidget *header_addr_combo;
-	GtkWidget *header_addr_entry;
-	GtkWidget *header_addr_label;
+	GtkWidget *frame;
+	GtkWidget *table;
+	GtkWidget *upper_hbox;
+	GtkWidget *lower_hbox;
+	GtkWidget *match_hbox;
 	GtkWidget *criteria_combo;
 	GtkWidget *criteria_label;
-	GtkWidget *value_label;
-	GtkWidget *value_entry;
-	GtkWidget *addressbook_folder_label;
+	GtkWidget *match_label;
+	GtkWidget *criteria_label2;
+	GtkWidget *headers_combo;
+	GtkWidget *match_combo2;
+	GtkWidget *match_label2;
+
+	GtkWidget *hbox;
+	GtkWidget *upper_filler;
+	GtkWidget *lower_filler;
+	
+	GtkWidget *criteria_combo2;
+	GtkWidget *header_entry;
+	GtkWidget *header_addr_combo;
+	GtkWidget *header_addr_entry;
+	GtkWidget *string_entry;
 	GtkWidget *addressbook_folder_combo;
-	GtkWidget *predicate_combo;
-	GtkWidget *predicate_flag_combo;
-	GtkWidget *predicate_label;
+	GtkWidget *match_combo;
 	GtkWidget *bool_op_combo;
 	GtkWidget *bool_op_label;
 
+	GtkWidget *numeric_hbox;
+	GtkWidget *numeric_entry;
+	GtkWidget *numeric_label;
+	
 	GtkWidget *regexp_checkbtn;
 	GtkWidget *case_checkbtn;
 
@@ -374,24 +512,21 @@ static void prefs_matcher_create(void)
 
 	GtkWidget *color_optmenu;
 
-	gint i;
 	static GdkGeometry geometry;
+	GtkSizeGroup *size_group;
 
 	debug_print("Creating matcher configuration window...\n");
 
 	window = gtkut_window_new(GTK_WINDOW_TOPLEVEL, "prefs_matcher");
-	gtk_container_set_border_width(GTK_CONTAINER(window), 8);
+	gtk_container_set_border_width(GTK_CONTAINER(window), 4);
 	gtk_window_set_position(GTK_WINDOW(window), GTK_WIN_POS_CENTER);
 	gtk_window_set_modal(GTK_WINDOW(window), TRUE);
-	gtk_window_set_resizable(GTK_WINDOW(window), TRUE);
 
 	vbox = gtk_vbox_new(FALSE, 6);
-	gtk_widget_show(vbox);
 	gtk_container_add(GTK_CONTAINER(window), vbox);
 
 	gtkut_stock_button_set_create(&confirm_area, &cancel_btn, GTK_STOCK_CANCEL,
 				      &ok_btn, GTK_STOCK_OK, NULL, NULL);
-	gtk_widget_show(confirm_area);
 	gtk_box_pack_end(GTK_BOX(vbox), confirm_area, FALSE, FALSE, 0);
 	gtk_widget_grab_default(ok_btn);
 
@@ -410,221 +545,189 @@ static void prefs_matcher_create(void)
 			 G_CALLBACK(prefs_matcher_cancel), NULL);
 
 	vbox1 = gtk_vbox_new(FALSE, VSPACING);
-	gtk_widget_show(vbox1);
 	gtk_box_pack_start(GTK_BOX(vbox), vbox1, TRUE, TRUE, 0);
 	gtk_container_set_border_width(GTK_CONTAINER (vbox1), 2);
 
-	criteria_table = gtk_table_new(2, 4, FALSE);
-	gtk_widget_show(criteria_table);
-
-	gtk_box_pack_start(GTK_BOX(vbox1), criteria_table, FALSE, FALSE, 0);
-	gtk_table_set_row_spacings(GTK_TABLE(criteria_table), 8);
-	gtk_table_set_col_spacings(GTK_TABLE(criteria_table), 8);
-
+	frame = gtk_frame_new(_("Rule"));
+	gtk_frame_set_label_align(GTK_FRAME(frame), 0.01, 0.5);
+	gtk_box_pack_start(GTK_BOX(vbox1), frame, FALSE, FALSE, 0);
+	
+	table = gtk_table_new(3, 3, FALSE);
+	gtk_container_add(GTK_CONTAINER(frame), table);
+	gtk_widget_set_size_request(frame, -1, 105);
+	
+	upper_hbox = gtk_hbox_new(FALSE, HSPACING_NARROW);
+	hbox = gtk_hbox_new(FALSE, 0);
+	gtk_box_pack_start(GTK_BOX(hbox), upper_hbox, FALSE, FALSE, 0);
+	gtk_box_pack_start(GTK_BOX(hbox), gtk_label_new(""), TRUE, TRUE, 0);
+	gtk_table_attach(GTK_TABLE(table), hbox, 2, 3, 0, 1, 
+			GTK_FILL, GTK_SHRINK, 2, 2);
+	
+	lower_hbox = gtk_hbox_new(FALSE, HSPACING_NARROW);
+	hbox = gtk_hbox_new(FALSE, 0);
+	gtk_box_pack_start(GTK_BOX(hbox), lower_hbox, FALSE, FALSE, 0);
+	gtk_box_pack_start(GTK_BOX(hbox), gtk_label_new(""), TRUE, TRUE, 0);
+	gtk_table_attach(GTK_TABLE(table), hbox,2, 3, 1, 2, 
+			 GTK_FILL, GTK_SHRINK, 2, 2);
+	
+	size_group = gtk_size_group_new(GTK_SIZE_GROUP_HORIZONTAL);
+	gtk_size_group_add_widget(size_group, upper_hbox);
+	gtk_size_group_add_widget(size_group, lower_hbox);
+	
 	/* criteria combo box */
+	criteria_label = gtk_label_new(_("Match criteria:"));
+	gtk_misc_set_alignment(GTK_MISC(criteria_label), 1, 0.5);
+	gtk_widget_set_size_request(criteria_label, 100, -1);
+	gtk_table_attach(GTK_TABLE(table), criteria_label, 0, 1, 0, 1, 
+			 GTK_FILL, GTK_SHRINK, 2, 2);
 
-	criteria_label = gtk_label_new(_("Match type"));
-	gtk_widget_show(criteria_label);
-	gtk_misc_set_alignment(GTK_MISC(criteria_label), 0, 0.5);
-	gtk_table_attach(GTK_TABLE(criteria_table), criteria_label, 0, 1, 0, 1,
-			 GTK_FILL, 0, 0, 0);
-
-	criteria_combo = gtk_combo_box_new_text();
-	gtk_widget_show(criteria_combo);
-
-	for (i = 0; criteria_text[i].text != NULL; i++) {
-		gtk_combo_box_append_text(GTK_COMBO_BOX(criteria_combo),
-			criteria_text[i].contains_header_name ?
-				    (gpointer) prefs_common_translated_header_name(criteria_text[i].text) :
-				    (gpointer) gettext(criteria_text[i].text));
-	}
-
-	gtk_combo_box_set_active(GTK_COMBO_BOX(criteria_combo), CRITERIA_ALL);
-	gtk_widget_set_size_request(criteria_combo, 190, -1);
-	gtk_table_attach(GTK_TABLE(criteria_table), criteria_combo, 0, 1, 1, 2,
-			  0, 0, 0, 0);
+	criteria_combo = combobox_text_new(FALSE, _("All messages"), _("Header"),
+					   _("Age"), _("Phrase"), _("Flags"),
+					   _("Color labels"), _("Thread"), 
+					   _("Score"), _("Size"),
+					   _("Partially downloaded"),
+					   _("Address book"), _("Tags"),
+					   _("External program test"),
+					   NULL);
+	gtk_widget_set_size_request(criteria_combo, 150, -1);
+	gtk_combo_box_set_active(GTK_COMBO_BOX(criteria_combo), MATCH_ALL);
+	gtk_table_attach(GTK_TABLE(table), criteria_combo, 1, 2, 0, 1,
+			 GTK_FILL, GTK_SHRINK, 2, 2);
 	g_signal_connect(G_OBJECT(criteria_combo), "changed",
 			 G_CALLBACK(prefs_matcher_criteria_select),
 			 NULL);
+	
+	upper_filler = gtk_label_new("");
+	gtk_box_pack_start(GTK_BOX(upper_hbox), upper_filler, TRUE, TRUE, 0); 
+	
+	lower_filler = gtk_label_new("");
+	gtk_box_pack_start(GTK_BOX(lower_hbox), lower_filler, TRUE, TRUE, 0);
+			 
+	criteria_label2 = gtk_label_new("");
+	gtk_box_pack_start(GTK_BOX(upper_hbox), criteria_label2, FALSE, FALSE, 0);
 
-	/* header name */
-
-	header_label = gtk_label_new(_("Header name"));
-	gtk_widget_show(header_label);
-	gtk_misc_set_alignment(GTK_MISC(header_label), 0, 0.5);
-	gtk_table_attach(GTK_TABLE(criteria_table), header_label, 1, 2, 0, 1,
-			 GTK_FILL, 0, 0, 0);
-
-	header_combo = combobox_text_new(TRUE,
-			      "Subject", "From", "To", "Cc", "Reply-To",
-			      "Sender", "X-ML-Name", "X-List", "X-Sequence",
-			      "X-Mailer","X-BeenThere", NULL);
-	gtk_widget_set_size_request(header_combo, 120, -1);
-	gtk_table_attach(GTK_TABLE(criteria_table), header_combo, 1, 2, 1, 2,
-			 0, 0, 0, 0);
-	header_entry = GTK_BIN (header_combo)->child;
-
-	/* address header name */
-
-	header_addr_label = gtk_label_new(_("Address header"));
-	gtk_misc_set_alignment(GTK_MISC(header_addr_label), 0, 0.5);
-	gtk_table_attach(GTK_TABLE(criteria_table), header_addr_label, 1, 2, 0, 1,
-			 GTK_FILL, 0, 0, 0);
-
-	header_addr_combo = combobox_text_new(TRUE,
-			      Q_("Filtering Matcher Menu|All"),
-			      _("Any"), "From", "To", "Cc", "Reply-To", "Sender", NULL);
-	gtk_widget_set_size_request(header_addr_combo, 120, -1);
-	gtk_table_attach(GTK_TABLE(criteria_table), header_addr_combo, 1, 2, 1, 2,
-			 0, 0, 0, 0);
-	header_addr_entry = GTK_BIN(header_addr_combo)->child;
-
-	/* value */
-
-	value_label = gtk_label_new(_("Value"));
-	gtk_widget_show(value_label);
-	gtk_misc_set_alignment(GTK_MISC (value_label), 0, 0.5);
-	gtk_table_attach(GTK_TABLE(criteria_table), value_label, 2, 3, 0, 1,
-			 GTK_FILL | GTK_SHRINK | GTK_EXPAND, 0, 0, 0);
-
-	value_entry = gtk_entry_new();
-	gtk_widget_show(value_entry);
-	gtk_widget_set_size_request(value_entry, 200, -1);
-	gtk_table_attach(GTK_TABLE(criteria_table), value_entry, 2, 3, 1, 2,
-			 GTK_FILL | GTK_SHRINK | GTK_EXPAND, 0, 0, 0);
+	/* headers combo box entry */
+	headers_combo = gtk_combo_box_entry_new_with_model(matcher.model_headers, 0);
+	gtk_widget_set_size_request(headers_combo, 100, -1);
+	gtk_box_pack_start(GTK_BOX(upper_hbox), headers_combo, TRUE, TRUE, 0);
+	header_entry = GTK_BIN (headers_combo)->child;
+	
+	criteria_combo2 = gtkut_sc_combobox_create(NULL, TRUE);
+	prefs_matcher_set_model(criteria_combo2, matcher.model_phrase);
+	gtk_box_pack_start(GTK_BOX(upper_hbox), criteria_combo2, TRUE, TRUE, 0);
+	g_signal_connect(G_OBJECT(criteria_combo2), "changed",
+			 G_CALLBACK(prefs_matcher_second_criteria_sel),
+			 NULL);
 
 	/* book/folder value */
-
-	addressbook_folder_label = gtk_label_new(_("Book/folder"));
-	gtk_misc_set_alignment(GTK_MISC (addressbook_folder_label), 0, 0.5);
-	gtk_table_attach(GTK_TABLE(criteria_table), addressbook_folder_label, 2, 3, 0, 1,
-			 GTK_FILL | GTK_SHRINK | GTK_EXPAND, 0, 0, 0);
-
 	addressbook_folder_combo = combobox_text_new(TRUE, _("Any"), NULL);
-	gtk_widget_set_size_request(addressbook_folder_combo, 200, -1);
-	gtk_table_attach(GTK_TABLE(criteria_table), addressbook_folder_combo, 2, 3, 1, 2,
-			 GTK_FILL | GTK_SHRINK | GTK_EXPAND, 0, 0, 0);
+	gtk_widget_set_size_request(addressbook_folder_combo, 150, -1);
+	gtk_box_pack_start(GTK_BOX(upper_hbox), addressbook_folder_combo, TRUE, TRUE, 0);			 
 
+	addressbook_select_btn = gtk_button_new_with_label(_("Select ..."));
+	gtk_box_pack_start(GTK_BOX(upper_hbox), addressbook_select_btn, FALSE, FALSE, 0);
+	g_signal_connect(G_OBJECT (addressbook_select_btn), "clicked",
+			 G_CALLBACK(prefs_matcher_addressbook_select),
+			 NULL);
+
+	match_label = gtk_label_new("");
+	gtk_misc_set_alignment(GTK_MISC(match_label), 1, 0.5);
+	gtk_table_attach(GTK_TABLE(table), match_label, 0, 1, 1, 2,
+			 GTK_FILL, GTK_SHRINK, 2, 2);
+
+	match_hbox = gtk_hbox_new(FALSE, 0);
+	gtk_table_attach(GTK_TABLE(table), match_hbox, 1, 2, 1, 2,
+			 GTK_FILL, GTK_SHRINK, 2, 2); 
+
+	match_combo = gtkut_sc_combobox_create(NULL, TRUE);
+	gtk_box_pack_start(GTK_BOX(match_hbox), match_combo, TRUE, TRUE, 0);
+	
+	/* color labels combo */
+	color_optmenu = gtk_option_menu_new();
+	gtk_option_menu_set_menu(GTK_OPTION_MENU(color_optmenu),
+				 colorlabel_create_color_menu());
+	gtk_box_pack_start(GTK_BOX(match_hbox), color_optmenu, FALSE, FALSE, 0);
+	
+	/* address header name */
+	header_addr_combo = combobox_text_new(TRUE,
+			      Q_("Filtering Matcher Menu|All"), _("Any"),
+			      "From", "To", "Cc", "Reply-To", "Sender", NULL);
+	gtk_box_pack_start(GTK_BOX(match_hbox), header_addr_combo, FALSE, FALSE, 0);
+	header_addr_entry = GTK_BIN(header_addr_combo)->child;
+	gtk_widget_set_size_request(header_addr_combo, 150, -1);
+	
+	match_label2 = gtk_label_new("");
+	gtk_box_pack_start(GTK_BOX(lower_hbox), match_label2, FALSE, FALSE, 0);
+
+	/* numeric value */
+	numeric_hbox = gtk_hbox_new(FALSE, HSPACING_NARROW);
+	gtk_box_pack_start(GTK_BOX(lower_hbox), numeric_hbox, FALSE, FALSE, 0);
+
+	numeric_entry = gtk_spin_button_new_with_range(0, 1000, 1);
+	gtk_spin_button_set_digits(GTK_SPIN_BUTTON(numeric_entry), 0);
+	gtk_box_pack_start(GTK_BOX(numeric_hbox), numeric_entry, FALSE, FALSE, 0);
+	
+	numeric_label = gtk_label_new("");
+	gtk_box_pack_start(GTK_BOX(numeric_hbox), numeric_label, FALSE, FALSE, 0);
+	gtk_box_pack_end(GTK_BOX(numeric_hbox), gtk_label_new(""), TRUE, TRUE, 0);
+
+	match_combo2 = gtkut_sc_combobox_create(NULL, TRUE);
+	gtk_box_pack_start(GTK_BOX(lower_hbox), match_combo2, TRUE, TRUE, 0);
+	
+	/* string value */
+	string_entry = gtk_entry_new();
+	gtk_box_pack_start(GTK_BOX(lower_hbox), string_entry, TRUE, TRUE, 0);
+
+	hbox = gtk_hbox_new(FALSE, HSPACING_NARROW);
+	gtk_size_group_add_widget(size_group, hbox);
+	PACK_CHECK_BUTTON(hbox, case_checkbtn, _("Case sensitive"));
+	PACK_CHECK_BUTTON(hbox, regexp_checkbtn, _("Use regexp"));
+	gtk_box_pack_end(GTK_BOX(hbox), gtk_label_new(""), TRUE, TRUE, 0);
+	gtk_table_attach(GTK_TABLE(table), hbox, 2, 3, 2, 3,
+			 GTK_FILL, GTK_SHRINK, 4, 0);
+
+	/* test info button */
 #if GTK_CHECK_VERSION(2, 8, 0)
 	test_btn = gtk_button_new_from_stock(GTK_STOCK_INFO);
 #else
 	test_btn = gtk_button_new_with_label(_("Info..."));
 #endif
-	gtk_widget_show(test_btn);
-	gtk_table_attach(GTK_TABLE (criteria_table), test_btn, 3, 4, 1, 2,
-			 0, 0, 0, 0);
+	gtk_box_pack_start(GTK_BOX(lower_hbox), test_btn, FALSE, FALSE, 0);
 	g_signal_connect(G_OBJECT (test_btn), "clicked",
 			 G_CALLBACK(prefs_matcher_test_info),
 			 NULL);
 
-	addressbook_select_btn = gtk_button_new_with_label(_("Select ..."));
-	gtk_table_attach(GTK_TABLE (criteria_table), addressbook_select_btn, 3, 4, 1, 2,
-			 0, 0, 0, 0);
-	g_signal_connect(G_OBJECT (addressbook_select_btn), "clicked",
-			 G_CALLBACK(prefs_matcher_addressbook_select),
-			 NULL);
-
-	color_optmenu = gtk_option_menu_new();
-	gtk_option_menu_set_menu(GTK_OPTION_MENU(color_optmenu),
-				 colorlabel_create_color_menu());
-
-	/* predicate */
-
-	vbox_pred = gtk_vbox_new(TRUE, VSPACING);
-	gtk_widget_show(vbox_pred);
-
-	hbox_pred = gtk_hbox_new(FALSE, VSPACING);
-	gtk_widget_show(hbox_pred);
-
-	vbox2 = gtk_vbox_new(FALSE, VSPACING);
-	gtk_widget_show(vbox2);
-	gtk_box_pack_start(GTK_BOX(vbox1), vbox2, FALSE, FALSE, 0);
-
-	hbox1 = gtk_hbox_new(FALSE, 8);
-	gtk_widget_show(hbox1);
-	gtk_box_pack_start(GTK_BOX(vbox2), hbox1, FALSE, FALSE, 0);
-	gtk_box_pack_start(GTK_BOX(hbox1), hbox_pred, FALSE, FALSE, 0);
-
-
-	predicate_label = gtk_label_new(_("Predicate"));
-	gtk_widget_show(predicate_label);
-	gtk_box_pack_start(GTK_BOX(hbox_pred), predicate_label,
-			   FALSE, FALSE, 0);
-
-	predicate_combo = combobox_text_new(FALSE, _("contains"),
-					    _("does not contain"), NULL);
-	gtk_widget_set_size_request(predicate_combo, 120, -1);
-	gtk_box_pack_start(GTK_BOX(vbox_pred), predicate_combo,
-			   FALSE, FALSE, 0);
-	gtk_box_pack_start(GTK_BOX(hbox_pred), vbox_pred, FALSE, FALSE, 0);
-
-	/* predicate flag */
-
-	predicate_flag_combo = combobox_text_new(FALSE, _("yes"), _("no"), NULL);
-	gtk_widget_set_size_request(predicate_flag_combo, 120, -1);
-	gtk_box_pack_start(GTK_BOX(vbox_pred), predicate_flag_combo,
-			   FALSE, FALSE, 0);
-
-	vbox3 = gtk_vbox_new(FALSE, 0);
-	gtk_widget_show (vbox3);
-	gtk_box_pack_start(GTK_BOX(hbox1), vbox3, FALSE, FALSE, 0);
-
-	PACK_CHECK_BUTTON(vbox3, case_checkbtn, _("Case sensitive"));
-	PACK_CHECK_BUTTON(vbox3, regexp_checkbtn, _("Use regexp"));
-
 	/* register / substitute / delete */
-
-	reg_hbox = gtk_hbox_new(FALSE, 4);
-	gtk_widget_show(reg_hbox);
+	reg_hbox = gtk_hbox_new(FALSE, HSPACING_NARROW);
 	gtk_box_pack_start(GTK_BOX(vbox1), reg_hbox, FALSE, FALSE, 0);
 
 	arrow = gtk_arrow_new(GTK_ARROW_DOWN, GTK_SHADOW_OUT);
-	gtk_widget_show(arrow);
 	gtk_box_pack_start(GTK_BOX(reg_hbox), arrow, FALSE, FALSE, 0);
 	gtk_widget_set_size_request(arrow, -1, 16);
 
-	btn_hbox = gtk_hbox_new(FALSE, 4);
-	gtk_widget_show(btn_hbox);
+	btn_hbox = gtk_hbox_new(FALSE, HSPACING_NARROW);
 	gtk_box_pack_start(GTK_BOX(reg_hbox), btn_hbox, FALSE, FALSE, 0);
 
 	reg_btn = gtk_button_new_from_stock(GTK_STOCK_ADD);
-	gtk_widget_show(reg_btn);
 	gtk_box_pack_start(GTK_BOX(btn_hbox), reg_btn, FALSE, TRUE, 0);
 	g_signal_connect(G_OBJECT(reg_btn), "clicked",
 			 G_CALLBACK(prefs_matcher_register_cb), NULL);
 
 	subst_btn = gtkut_get_replace_btn(_("Replace"));
-	gtk_widget_show(subst_btn);
 	gtk_box_pack_start(GTK_BOX(btn_hbox), subst_btn, FALSE, TRUE, 0);
 	g_signal_connect(G_OBJECT(subst_btn), "clicked",
 			 G_CALLBACK(prefs_matcher_substitute_cb),
 			 NULL);
 
 	del_btn = gtk_button_new_from_stock(GTK_STOCK_DELETE);
-	gtk_widget_show(del_btn);
 	gtk_box_pack_start(GTK_BOX(btn_hbox), del_btn, FALSE, TRUE, 0);
 	g_signal_connect(G_OBJECT(del_btn), "clicked",
 			 G_CALLBACK(prefs_matcher_delete_cb), NULL);
 
-	/* boolean operation */
-
-	bool_op_label = gtk_label_new(_("Boolean Op"));
-	gtk_misc_set_alignment(GTK_MISC(value_label), 0, 0.5);
-	gtk_widget_show(bool_op_label);
-	gtk_box_pack_start(GTK_BOX(btn_hbox), bool_op_label,
-			   FALSE, FALSE, 0);
-
-	bool_op_combo = combobox_text_new(FALSE, _("or"), _("and"), NULL);
-	gtk_widget_set_size_request(bool_op_combo, 60, -1);
-	gtk_box_pack_start(GTK_BOX(btn_hbox), bool_op_combo,
-			   FALSE, FALSE, 0);
-
-	cond_hbox = gtk_hbox_new(FALSE, 8);
-	gtk_widget_show(cond_hbox);
+	cond_hbox = gtk_hbox_new(FALSE, VBOX_BORDER);
 	gtk_box_pack_start(GTK_BOX(vbox1), cond_hbox, TRUE, TRUE, 0);
 
 	cond_scrolledwin = gtk_scrolled_window_new(NULL, NULL);
-	gtk_widget_show(cond_scrolledwin);
 	gtk_widget_set_size_request(cond_scrolledwin, -1, 150);
 	gtk_box_pack_start(GTK_BOX(cond_hbox), cond_scrolledwin,
 			   TRUE, TRUE, 0);
@@ -633,27 +736,42 @@ static void prefs_matcher_create(void)
 				       GTK_POLICY_AUTOMATIC);
 
 	cond_list_view = prefs_matcher_list_view_create(); 				       
-	gtk_widget_show(cond_list_view);
+	gtk_scrolled_window_set_shadow_type(GTK_SCROLLED_WINDOW(cond_scrolledwin),
+					    GTK_SHADOW_ETCHED_IN);
 	gtk_container_add(GTK_CONTAINER(cond_scrolledwin), cond_list_view);
 
-	btn_vbox = gtk_vbox_new(FALSE, 8);
-	gtk_widget_show(btn_vbox);
+	btn_vbox = gtk_vbox_new(FALSE, VBOX_BORDER);
 	gtk_box_pack_start(GTK_BOX(cond_hbox), btn_vbox, FALSE, FALSE, 0);
 
 	up_btn = gtk_button_new_from_stock(GTK_STOCK_GO_UP);
-	gtk_widget_show(up_btn);
 	gtk_box_pack_start(GTK_BOX(btn_vbox), up_btn, FALSE, FALSE, 0);
 	g_signal_connect(G_OBJECT(up_btn), "clicked",
 			 G_CALLBACK(prefs_matcher_up), NULL);
 
 	down_btn = gtk_button_new_from_stock(GTK_STOCK_GO_DOWN);
-	gtk_widget_show(down_btn);
 	gtk_box_pack_start(GTK_BOX(btn_vbox), down_btn, FALSE, FALSE, 0);
 	g_signal_connect(G_OBJECT(down_btn), "clicked",
 			 G_CALLBACK(prefs_matcher_down), NULL);
 
+	/* boolean operation */
+	GtkWidget *hbox_bool = gtk_hbox_new(FALSE, HSPACING_NARROW);
+	gtk_box_pack_start(GTK_BOX(vbox1), hbox_bool, FALSE, FALSE, 0);
+
+	bool_op_label = gtk_label_new(_("Message must match"));
+	gtk_box_pack_start(GTK_BOX(hbox_bool), bool_op_label,
+			   FALSE, FALSE, 0);
+
+	bool_op_combo = combobox_text_new(FALSE, _("at least one"), 
+					  _("all"), NULL);
+	gtk_box_pack_start(GTK_BOX(hbox_bool), bool_op_combo,
+			   FALSE, FALSE, 0);
+	gtk_box_pack_start(GTK_BOX(hbox_bool), gtk_label_new(_("of above rules")),
+			   FALSE, FALSE, 0);
+	gtk_box_pack_start(GTK_BOX(hbox_bool), gtk_label_new(""),
+			   TRUE, TRUE, 0);
+	
 	if (!geometry.min_height) {
-		geometry.min_width = 520;
+		geometry.min_width = 550;
 		geometry.min_height = 368;
 	}
 
@@ -663,37 +781,35 @@ static void prefs_matcher_create(void)
 				    prefs_common.matcherwin_height);
 
 	gtk_widget_show_all(window);
-	gtk_widget_hide(header_addr_label);
-	gtk_widget_hide(header_addr_combo);
-	gtk_widget_hide(addressbook_select_btn);
-	gtk_widget_hide(addressbook_folder_label);
 
 	matcher.window    = window;
 
 	matcher.ok_btn = ok_btn;
 
 	matcher.criteria_combo = criteria_combo;
-	matcher.header_combo = header_combo;
+	matcher.criteria_combo2 = criteria_combo2;
 	matcher.header_entry = header_entry;
-	matcher.header_label = header_label;
 	matcher.header_addr_combo = header_addr_combo;
 	matcher.header_addr_entry = header_addr_entry;
-	matcher.header_addr_label = header_addr_label;
-	matcher.value_entry = value_entry;
-	matcher.value_label = value_label;
-	matcher.addressbook_folder_label = addressbook_folder_label;
+	matcher.string_entry = string_entry;
+	matcher.numeric_entry = numeric_entry;
+	matcher.numeric_label = numeric_label;
 	matcher.addressbook_folder_combo = addressbook_folder_combo;
-	matcher.predicate_label = predicate_label;
-	matcher.predicate_combo = predicate_combo;
-	matcher.predicate_flag_combo = predicate_flag_combo;
+	matcher.match_combo = match_combo;
 	matcher.case_checkbtn = case_checkbtn;
 	matcher.regexp_checkbtn = regexp_checkbtn;
 	matcher.bool_op_combo = bool_op_combo;
 	matcher.test_btn = test_btn;
 	matcher.addressbook_select_btn = addressbook_select_btn;
 	matcher.color_optmenu = color_optmenu;
-	matcher.criteria_table = criteria_table;
-
+	matcher.match_label = match_label;
+	matcher.criteria_label2 = criteria_label2;
+	matcher.headers_combo = headers_combo;
+	matcher.match_combo2 = match_combo2;
+	matcher.match_label2 = match_label2;
+	matcher.upper_filler = upper_filler;
+	matcher.lower_filler = lower_filler;
+	
 	matcher.cond_list_view = cond_list_view;
 
 	matcher.selected_criteria = -1;
@@ -735,12 +851,18 @@ static void prefs_matcher_list_view_set_row(GtkTreeIter *row, MatcherProp *prop)
  */
 static void prefs_matcher_reset_condition(void)
 {
-	gtk_combo_box_set_active(GTK_COMBO_BOX(matcher.criteria_combo), CRITERIA_ALL);
-	gtk_combo_box_set_active(GTK_COMBO_BOX(matcher.predicate_combo), PREDICATE_CONTAINS);
+	gtk_combo_box_set_active(GTK_COMBO_BOX(matcher.criteria_combo), MATCH_ALL);
+	gtk_combo_box_set_active(GTK_COMBO_BOX(matcher.criteria_combo2), 0);
+	gtk_combo_box_set_active(GTK_COMBO_BOX(matcher.match_combo), 0);
+	gtk_combo_box_set_active(GTK_COMBO_BOX(matcher.match_combo2), 0);
+	gtk_option_menu_set_history(GTK_OPTION_MENU(matcher.color_optmenu), 0);
+	gtk_spin_button_set_value(GTK_SPIN_BUTTON(matcher.numeric_entry), 0);
 	gtk_entry_set_text(GTK_ENTRY(matcher.header_entry), "");
 	gtk_entry_set_text(GTK_ENTRY(matcher.header_addr_entry), "");
-	gtk_entry_set_text(GTK_ENTRY(matcher.value_entry), "");
+	gtk_entry_set_text(GTK_ENTRY(matcher.string_entry), "");
 	gtk_entry_set_text(GTK_ENTRY(GTK_BIN(matcher.addressbook_folder_combo)->child), "");
+	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(matcher.regexp_checkbtn), FALSE);
+	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(matcher.case_checkbtn), FALSE);
 }
 
 /*!
@@ -1103,6 +1225,82 @@ static gint prefs_matcher_not_criteria(gint matcher_criteria)
 	}
 }
 
+static gint prefs_matcher_get_criteria(void)
+{
+	gint match_criteria = gtk_combo_box_get_active(GTK_COMBO_BOX(
+					matcher.criteria_combo));
+	const gchar *header = NULL;
+	  
+	switch (match_criteria) {
+	case MATCH_ABOOK:
+		return CRITERIA_FOUND_IN_ADDRESSBOOK;	
+	case MATCH_ALL:
+		return CRITERIA_ALL;
+	case MATCH_AGE:
+	case MATCH_SCORE:
+	case MATCH_SIZE:
+	case MATCH_FLAG:
+		return combobox_get_active_data(GTK_COMBO_BOX(
+					matcher.match_combo));
+	case MATCH_HEADER:
+		header = gtk_entry_get_text(GTK_ENTRY(matcher.header_entry));
+		return header_name_to_crit(header);
+	case MATCH_LABEL:
+		return CRITERIA_COLORLABEL;
+	case MATCH_PARTIAL:
+		return CRITERIA_PARTIAL;
+	case MATCH_TEST:
+		return CRITERIA_TEST;
+	case MATCH_PHRASE:
+	case MATCH_TAGS:
+	case MATCH_THREAD:
+		return combobox_get_active_data(GTK_COMBO_BOX(
+					matcher.criteria_combo2));
+	}
+	
+	return -1;
+}
+
+static gint prefs_matcher_get_pred(const gint criteria)
+{
+	switch(criteria) {
+	case CRITERIA_SUBJECT:
+	case CRITERIA_FROM:
+	case CRITERIA_TO:
+	case CRITERIA_CC:
+	case CRITERIA_TO_OR_CC:
+	case CRITERIA_NEWSGROUPS:
+	case CRITERIA_INREPLYTO:
+	case CRITERIA_REFERENCES:
+	case CRITERIA_HEADER:
+	case CRITERIA_HEADERS_PART:
+	case CRITERIA_BODY_PART:
+	case CRITERIA_MESSAGE:
+	case CRITERIA_TAG:
+	case CRITERIA_TAGGED:
+	case CRITERIA_TEST:
+		return gtk_combo_box_get_active(GTK_COMBO_BOX(matcher.match_combo));
+	case CRITERIA_FOUND_IN_ADDRESSBOOK:
+	case CRITERIA_UNREAD:
+	case CRITERIA_NEW:
+	case CRITERIA_MARKED:
+	case CRITERIA_DELETED:
+	case CRITERIA_REPLIED:
+	case CRITERIA_FORWARDED:
+	case CRITERIA_LOCKED:
+	case CRITERIA_SPAM:
+	case CRITERIA_COLORLABEL:
+		return gtk_combo_box_get_active(GTK_COMBO_BOX(matcher.match_combo2));
+	case CRITERIA_WATCH_THREAD:
+		return gtk_combo_box_get_active(GTK_COMBO_BOX(matcher.criteria_combo2)) - 2;
+	case CRITERIA_IGNORE_THREAD:
+	case CRITERIA_PARTIAL:
+		return gtk_combo_box_get_active(GTK_COMBO_BOX(matcher.criteria_combo2));
+	}
+	
+	return 0;
+}
+
 /*!
  *\brief	Converts the text in the selected row to a 
  *		matcher structure
@@ -1115,63 +1313,24 @@ static MatcherProp *prefs_matcher_dialog_to_matcher(void)
 	gint criteria;
 	gint matchtype;
 	gint value_pred;
-	gint value_pred_flag;
-	gint value_criteria;
+	gint value_criteria = prefs_matcher_get_criteria();
 	gboolean use_regexp;
 	gboolean case_sensitive;
 	const gchar *header;
 	const gchar *expr;
-	gint value;
-	const gchar *value_str;
+	gint value, sel;
 
-	value_criteria = gtk_combo_box_get_active(GTK_COMBO_BOX(matcher.criteria_combo));
+	if (value_criteria == -1)
+		return -1;
 
 	criteria = prefs_matcher_get_matching_from_criteria(value_criteria);
 
-	value_pred = gtk_combo_box_get_active(GTK_COMBO_BOX(matcher.predicate_combo));
-	value_pred_flag = gtk_combo_box_get_active(GTK_COMBO_BOX(matcher.predicate_flag_combo));
+	value_pred = prefs_matcher_get_pred(value_criteria);
+	if(value_pred)
+		criteria = prefs_matcher_not_criteria(criteria);
 
 	use_regexp = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(matcher.regexp_checkbtn));
 	case_sensitive = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(matcher.case_checkbtn));
-
-	switch (value_criteria) {
-	case CRITERIA_UNREAD:
-	case CRITERIA_NEW:
-	case CRITERIA_MARKED:
-	case CRITERIA_DELETED:
-	case CRITERIA_REPLIED:
-	case CRITERIA_FORWARDED:
-	case CRITERIA_LOCKED:
-	case CRITERIA_SPAM:
-	case CRITERIA_PARTIAL:
-	case CRITERIA_TEST:
-	case CRITERIA_COLORLABEL:
-	case CRITERIA_IGNORE_THREAD:
-	case CRITERIA_WATCH_THREAD:
-	case CRITERIA_FOUND_IN_ADDRESSBOOK:
-	case CRITERIA_TAGGED:
-		if (value_pred_flag == PREDICATE_FLAG_DISABLED)
-			criteria = prefs_matcher_not_criteria(criteria);
-		break;
-	case CRITERIA_SUBJECT:
-	case CRITERIA_FROM:
-	case CRITERIA_TO:
-	case CRITERIA_CC:
-	case CRITERIA_TO_OR_CC:
-	case CRITERIA_TAG:
-	case CRITERIA_NEWSGROUPS:
-	case CRITERIA_INREPLYTO:
-	case CRITERIA_REFERENCES:
-	case CRITERIA_HEADERS_PART:
-	case CRITERIA_BODY_PART:
-	case CRITERIA_MESSAGE:
-	case CRITERIA_AGE_GREATER:
-	case CRITERIA_AGE_LOWER:
-	case CRITERIA_HEADER:
-		if (value_pred == PREDICATE_DOES_NOT_CONTAIN)
-			criteria = prefs_matcher_not_criteria(criteria);
-		break;
-	}
 
 	if (use_regexp) {
 		if (case_sensitive)
@@ -1218,26 +1377,49 @@ static MatcherProp *prefs_matcher_dialog_to_matcher(void)
 	case CRITERIA_HEADERS_PART:
 	case CRITERIA_BODY_PART:
 	case CRITERIA_MESSAGE:
+		expr = gtk_entry_get_text(GTK_ENTRY(matcher.string_entry));
+		
+		if(*expr == '\0') {
+			alertpanel_error(_("Search pattern is not set."));
+			return NULL;
+		}
+		break;
+
 	case CRITERIA_TEST:
-		expr = gtk_entry_get_text(GTK_ENTRY(matcher.value_entry));
+		expr = gtk_entry_get_text(GTK_ENTRY(matcher.string_entry));
+		
+		if(*expr == '\0') {
+			alertpanel_error(_("Test command is not set."));
+			return NULL;
+		}
 		break;
 
 	case CRITERIA_AGE_GREATER:
 	case CRITERIA_AGE_LOWER:
+		value = gtk_spin_button_get_value_as_int(GTK_SPIN_BUTTON(
+							 matcher.numeric_entry));
+		sel = gtk_combo_box_get_active(GTK_COMBO_BOX(matcher.match_combo2));
+		if(sel == AGE_WEEKS)
+			value *= 7;
+		break;
+			
 	case CRITERIA_SCORE_GREATER:
 	case CRITERIA_SCORE_LOWER:
 	case CRITERIA_SCORE_EQUAL:
+		value = gtk_spin_button_get_value_as_int(GTK_SPIN_BUTTON(
+							 matcher.numeric_entry));
+		break;
+							 
 	case CRITERIA_SIZE_GREATER:
 	case CRITERIA_SIZE_SMALLER:
 	case CRITERIA_SIZE_EQUAL:
-		value_str = gtk_entry_get_text(GTK_ENTRY(matcher.value_entry));
-
-		if (*value_str == '\0') {
-		    alertpanel_error(_("Value is not set."));
-		    return NULL;
-		}
-
-		value = atoi(value_str);
+		value = gtk_spin_button_get_value_as_int(GTK_SPIN_BUTTON(
+							 matcher.numeric_entry));
+		sel = gtk_combo_box_get_active(GTK_COMBO_BOX(matcher.match_combo2));
+		if(sel == SIZE_UNIT_MBYTES)
+			value *= MB_SIZE;
+		if(sel == SIZE_UNIT_KBYTES)
+			value *= KB_SIZE;
 		break;
 		
 	case CRITERIA_COLORLABEL:
@@ -1248,12 +1430,17 @@ static MatcherProp *prefs_matcher_dialog_to_matcher(void)
 
 	case CRITERIA_HEADER:
 		header = gtk_entry_get_text(GTK_ENTRY(matcher.header_entry));
-		expr = gtk_entry_get_text(GTK_ENTRY(matcher.value_entry));
+		expr = gtk_entry_get_text(GTK_ENTRY(matcher.string_entry));
 
 		if (*header == '\0') {
 		    alertpanel_error(_("Header name is not set."));
 		    return NULL;
 		}
+		
+		if(*expr == '\0') {
+			alertpanel_error(_("Search pattern is not set."));
+			return NULL;
+		} 
 		break;
 
 	case CRITERIA_FOUND_IN_ADDRESSBOOK:
@@ -1312,7 +1499,7 @@ static void prefs_matcher_register_cb(void)
 	prefs_matcher_list_view_set_row(NULL, matcherprop);
 
 	matcherprop_free(matcherprop);
-
+	
 	prefs_matcher_reset_condition();
 }
 
@@ -1346,8 +1533,6 @@ static void prefs_matcher_substitute_cb(void)
 	prefs_matcher_list_view_set_row(&row, matcherprop);
 
 	matcherprop_free(matcherprop);
-
-	prefs_matcher_reset_condition();
 }
 
 /*!
@@ -1453,45 +1638,81 @@ static void prefs_matcher_down(void)
 	gtk_tree_path_free(try);
 }
 
-/*!
- *\brief	Helper function that allows us to replace the 'Value' entry box
- *		by another widget.
- *
- *\param	old_widget Widget that needs to be removed.
- *\param	new_widget Replacement widget
- */
-static void prefs_matcher_set_value_widget(GtkWidget *old_widget, 
-					   GtkWidget *new_widget)
+static void prefs_matcher_enable_widget(GtkWidget* widget, const gboolean enable)
 {
-	/* TODO: find out why the following spews harmless "parent errors" */
+	g_return_if_fail(widget != NULL);
 
-	/* NOTE: we first need to bump up the refcount of the old_widget,
-	 * because the gtkut_container_remove() will otherwise destroy it */
-	gtk_widget_ref(old_widget);
-	gtkut_container_remove(GTK_CONTAINER(matcher.criteria_table), old_widget);
-	gtk_widget_show(new_widget);
-	gtk_widget_set_size_request(new_widget, 200, -1);
-	gtk_table_attach(GTK_TABLE(matcher.criteria_table), new_widget, 
-			 2, 3, 1, 2, 
-			 GTK_FILL | GTK_SHRINK | GTK_EXPAND, 
-			 0, 0, 0);
+	if(enable == TRUE) {
+		gtk_widget_set_sensitive(widget, TRUE);
+		gtk_widget_show(widget);	
+	} else {
+		gtk_widget_set_sensitive(widget, FALSE);
+		gtk_widget_hide(widget);
+	}
 }
 
-static void prefs_matcher_disable_widget(GtkWidget* widget)
+static void prefs_matcher_set_model(GtkWidget *widget, GtkTreeModel *model)
 {
-	g_return_if_fail( widget != NULL);
-
-	gtk_widget_set_sensitive(widget, FALSE);
-	gtk_widget_hide(widget);
+	g_return_if_fail(widget != NULL);
+	g_return_if_fail(model != NULL);
+	
+	gtk_combo_box_set_model(GTK_COMBO_BOX(widget), model);
+	gtk_combo_box_set_active(GTK_COMBO_BOX(widget), 0);
 }
 
-static void prefs_matcher_enable_widget(GtkWidget* widget)
+static void prefs_matcher_second_criteria_sel(GtkWidget *widget,
+					      gpointer user_data)
 {
-	g_return_if_fail( widget != NULL);
-
-	gtk_widget_set_sensitive(widget, TRUE);
-	gtk_widget_show(widget);
+	gint criteria = gtk_combo_box_get_active(GTK_COMBO_BOX(
+						matcher.criteria_combo));
+	gint criteria2 = combobox_get_active_data(GTK_COMBO_BOX(
+						matcher.criteria_combo2));
+	
+	if(criteria != MATCH_PHRASE && criteria != MATCH_TAGS) return;
+	
+	if(criteria == MATCH_PHRASE) {
+		switch(criteria2) {
+		case CRITERIA_HEADERS_PART:
+			gtk_label_set_text(GTK_LABEL(matcher.match_label),
+					_("Headers part"));
+			break;
+		case CRITERIA_BODY_PART:
+			gtk_label_set_text(GTK_LABEL(matcher.match_label),
+					_("Body part"));
+			break;	
+		case CRITERIA_MESSAGE:
+			gtk_label_set_text(GTK_LABEL(matcher.match_label),
+					_("Whole message"));
+			break;
+		}
+	}
+	
+	if(criteria == MATCH_TAGS) {
+		if(criteria2 == CRITERIA_TAGGED) {
+			prefs_matcher_enable_widget(matcher.upper_filler, FALSE);
+			prefs_matcher_enable_widget(matcher.match_label2, TRUE);
+			prefs_matcher_enable_widget(matcher.string_entry, FALSE);
+			prefs_matcher_enable_widget(matcher.case_checkbtn, FALSE);
+			prefs_matcher_enable_widget(matcher.regexp_checkbtn, FALSE);
+		} else {
+			prefs_matcher_enable_widget(matcher.upper_filler, TRUE);
+			prefs_matcher_enable_widget(matcher.match_label2, FALSE);
+			prefs_matcher_enable_widget(matcher.string_entry, TRUE);
+			prefs_matcher_enable_widget(matcher.case_checkbtn, TRUE);
+			prefs_matcher_enable_widget(matcher.regexp_checkbtn, TRUE);
+			gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(
+						matcher.regexp_checkbtn), FALSE);
+			gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(
+						matcher.case_checkbtn), FALSE);
+		}
+	}
 }
+
+#define MATCH_COMBO_IS_ENABLED(x) (x != MATCH_ALL && x != MATCH_ABOOK && \
+		x != MATCH_PARTIAL && x != MATCH_THREAD && x != MATCH_LABEL) ? TRUE : FALSE
+#define MATCH_CASE_REGEXP(x) (x == MATCH_HEADER || x == MATCH_PHRASE) ? TRUE : FALSE 
+#define MATCH_NUMERIC(x) (x == MATCH_AGE || x == MATCH_SCORE || \
+			  x == MATCH_SIZE) ? TRUE : FALSE
 
 /*!
  *\brief	Change widgets depending on the selected condition
@@ -1511,190 +1732,146 @@ static void prefs_matcher_criteria_select(GtkWidget *widget,
 	if (old_value == matcher.selected_criteria)
 		return;
 
-	/* CLAWS: the value widget is currently either the color label combo box,
-	 * or a GtkEntry, so kiss for now */
-	if (matcher.selected_criteria == CRITERIA_COLORLABEL) { 
-		prefs_matcher_set_value_widget(matcher.value_entry, 
-					       matcher.color_optmenu);
-	} else if (old_value == CRITERIA_COLORLABEL) {
-		prefs_matcher_set_value_widget(matcher.color_optmenu,
-					       matcher.value_entry);
-	}					       
+	prefs_matcher_enable_widget(matcher.criteria_label2,
+				    (value == MATCH_ABOOK   ||
+				     value == MATCH_PHRASE  ||
+				     value == MATCH_HEADER  ||
+				     value == MATCH_PARTIAL ||
+				     value == MATCH_TAGS    ||
+				     value == MATCH_THREAD));
+	prefs_matcher_enable_widget(matcher.headers_combo,
+				    (value == MATCH_HEADER));
+	prefs_matcher_enable_widget(matcher.criteria_combo2,
+				    (value == MATCH_PHRASE  ||
+				     value == MATCH_PARTIAL ||
+				     value == MATCH_TAGS    ||
+				     value == MATCH_THREAD));
+	prefs_matcher_enable_widget(matcher.match_combo2,
+				    (value == MATCH_ABOOK ||
+				     value == MATCH_AGE   ||
+				     value == MATCH_FLAG  ||
+				     value == MATCH_LABEL ||
+				     value == MATCH_SIZE));
+	prefs_matcher_enable_widget(matcher.match_label2,
+				    (value == MATCH_ABOOK ||
+				     value == MATCH_FLAG  ||
+				     value == MATCH_LABEL ||
+				     value == MATCH_TAGS));
+	prefs_matcher_enable_widget(matcher.header_addr_combo,
+				    (value == MATCH_ABOOK));
+	prefs_matcher_enable_widget(matcher.string_entry,
+				    (MATCH_CASE_REGEXP(value) ||
+				     value == MATCH_TEST));
+	prefs_matcher_enable_widget(matcher.numeric_entry,
+				    MATCH_NUMERIC(value));
+	prefs_matcher_enable_widget(matcher.numeric_label,
+				    (value == MATCH_SCORE));
+	prefs_matcher_enable_widget(matcher.addressbook_folder_combo,
+				    (value == MATCH_ABOOK));
+	prefs_matcher_enable_widget(matcher.match_combo,
+				    MATCH_COMBO_IS_ENABLED(value));
+	prefs_matcher_enable_widget(matcher.case_checkbtn,
+				    MATCH_CASE_REGEXP(value));
+	prefs_matcher_enable_widget(matcher.regexp_checkbtn,
+				    MATCH_CASE_REGEXP(value));
+	prefs_matcher_enable_widget(matcher.test_btn,
+				    (value == MATCH_TEST));
+	prefs_matcher_enable_widget(matcher.addressbook_select_btn,
+				    (value == MATCH_ABOOK));
+	prefs_matcher_enable_widget(matcher.color_optmenu,
+				    (value == MATCH_LABEL));
+	prefs_matcher_enable_widget(matcher.upper_filler,
+				    MATCH_CASE_REGEXP(value));
+	prefs_matcher_enable_widget(matcher.lower_filler,
+				    (value == MATCH_ABOOK));
+				
+	gtk_label_set_text(GTK_LABEL(matcher.match_label), "");
+	gtk_entry_set_text(GTK_ENTRY(matcher.string_entry), "");
 
-	switch (value) {
-	case CRITERIA_ALL:
-		prefs_matcher_disable_widget(matcher.header_combo);
-		prefs_matcher_disable_widget(matcher.header_label);
-		prefs_matcher_disable_widget(matcher.header_addr_combo);
-		prefs_matcher_disable_widget(matcher.header_addr_label);
-		prefs_matcher_disable_widget(matcher.value_label);
-		prefs_matcher_disable_widget(matcher.value_entry);
-		prefs_matcher_disable_widget(matcher.addressbook_folder_label);
-		prefs_matcher_disable_widget(matcher.addressbook_folder_combo);
-		prefs_matcher_disable_widget(matcher.predicate_label);
-		prefs_matcher_disable_widget(matcher.predicate_combo);
-		prefs_matcher_disable_widget(matcher.predicate_flag_combo);
-		prefs_matcher_disable_widget(matcher.case_checkbtn);
-		prefs_matcher_disable_widget(matcher.regexp_checkbtn);
-		prefs_matcher_disable_widget(matcher.test_btn);
-		prefs_matcher_disable_widget(matcher.addressbook_select_btn);
+	switch(value) {
+	case MATCH_ABOOK:
+		gtk_combo_box_set_active(GTK_COMBO_BOX(matcher.header_addr_combo), 0);	
+		gtk_combo_box_set_active(GTK_COMBO_BOX(matcher.addressbook_folder_combo), 0);
+		prefs_matcher_set_model(matcher.match_combo2, matcher.model_found);
+		gtk_label_set_text(GTK_LABEL(matcher.criteria_label2), _("in"));
+		gtk_label_set_text(GTK_LABEL(matcher.match_label), _("Header"));
+		gtk_label_set_text(GTK_LABEL(matcher.match_label2), _("content is"));
 		break;
-
-	case CRITERIA_UNREAD:
-	case CRITERIA_NEW:
-	case CRITERIA_MARKED:
-	case CRITERIA_DELETED:
-	case CRITERIA_REPLIED:
-	case CRITERIA_FORWARDED:
-	case CRITERIA_LOCKED:
-	case CRITERIA_SPAM:
-	case CRITERIA_PARTIAL:
-	case CRITERIA_IGNORE_THREAD:
-	case CRITERIA_WATCH_THREAD:
-	case CRITERIA_TAGGED:
-		prefs_matcher_disable_widget(matcher.header_combo);
-		prefs_matcher_disable_widget(matcher.header_label);
-		prefs_matcher_disable_widget(matcher.header_addr_combo);
-		prefs_matcher_disable_widget(matcher.header_addr_label);
-		prefs_matcher_disable_widget(matcher.value_label);
-		prefs_matcher_disable_widget(matcher.value_entry);
-		prefs_matcher_disable_widget(matcher.addressbook_folder_label);
-		prefs_matcher_disable_widget(matcher.addressbook_folder_combo);
-		prefs_matcher_enable_widget(matcher.predicate_label);
-		prefs_matcher_disable_widget(matcher.predicate_combo);
-		prefs_matcher_enable_widget(matcher.predicate_flag_combo);
-		prefs_matcher_disable_widget(matcher.case_checkbtn);
-		prefs_matcher_disable_widget(matcher.regexp_checkbtn);
-		prefs_matcher_disable_widget(matcher.test_btn);
-		prefs_matcher_disable_widget(matcher.addressbook_select_btn);
+	case MATCH_AGE:
+		prefs_matcher_set_model(matcher.match_combo, matcher.model_age);
+		prefs_matcher_set_model(matcher.match_combo2, matcher.model_age_units);
+		gtk_spin_button_set_range(GTK_SPIN_BUTTON(
+				  matcher.numeric_entry), 0, 1000);
+		gtk_spin_button_set_value(GTK_SPIN_BUTTON(matcher.numeric_entry), 0);
+		gtk_label_set_text(GTK_LABEL(matcher.match_label), _("Age is"));
 		break;
-		
-	case CRITERIA_COLORLABEL:
-		prefs_matcher_disable_widget(matcher.header_combo);
-		prefs_matcher_disable_widget(matcher.header_label);
-		prefs_matcher_disable_widget(matcher.header_addr_combo);
-		prefs_matcher_disable_widget(matcher.header_addr_label);
-		prefs_matcher_enable_widget(matcher.value_label);
-		prefs_matcher_disable_widget(matcher.value_entry);
-		prefs_matcher_disable_widget(matcher.addressbook_folder_label);
-		prefs_matcher_disable_widget(matcher.addressbook_folder_combo);
-		prefs_matcher_enable_widget(matcher.predicate_label);
-		prefs_matcher_disable_widget(matcher.predicate_combo);
-		prefs_matcher_enable_widget(matcher.predicate_flag_combo);
-		prefs_matcher_disable_widget(matcher.case_checkbtn);
-		prefs_matcher_disable_widget(matcher.regexp_checkbtn);
-		prefs_matcher_disable_widget(matcher.test_btn);
-		prefs_matcher_disable_widget(matcher.addressbook_select_btn);
+	case MATCH_FLAG:
+		prefs_matcher_set_model(matcher.match_combo, matcher.model_flags);
+		prefs_matcher_set_model(matcher.match_combo2, matcher.model_set);
+		gtk_label_set_text(GTK_LABEL(matcher.match_label), _("Flag"));
+		gtk_label_set_text(GTK_LABEL(matcher.match_label2), _("is"));
 		break;
-
-	case CRITERIA_SUBJECT:
-	case CRITERIA_FROM:
-	case CRITERIA_TO:
-	case CRITERIA_CC:
-	case CRITERIA_TO_OR_CC:
-	case CRITERIA_TAG:
-	case CRITERIA_NEWSGROUPS:
-	case CRITERIA_INREPLYTO:
-	case CRITERIA_REFERENCES:
-	case CRITERIA_HEADERS_PART:
-	case CRITERIA_BODY_PART:
-	case CRITERIA_MESSAGE:
-		prefs_matcher_disable_widget(matcher.header_combo);
-		prefs_matcher_disable_widget(matcher.header_label);
-		prefs_matcher_disable_widget(matcher.header_addr_combo);
-		prefs_matcher_disable_widget(matcher.header_addr_label);
-		prefs_matcher_enable_widget(matcher.value_label);
-		prefs_matcher_enable_widget(matcher.value_entry);
-		prefs_matcher_disable_widget(matcher.addressbook_folder_label);
-		prefs_matcher_disable_widget(matcher.addressbook_folder_combo);
-		prefs_matcher_enable_widget(matcher.predicate_label);
-		prefs_matcher_enable_widget(matcher.predicate_combo);
-		prefs_matcher_disable_widget(matcher.predicate_flag_combo);
-		prefs_matcher_enable_widget(matcher.case_checkbtn);
-		prefs_matcher_enable_widget(matcher.regexp_checkbtn);
-		prefs_matcher_disable_widget(matcher.test_btn);
-		prefs_matcher_disable_widget(matcher.addressbook_select_btn);
+	case MATCH_HEADER:
+		gtk_combo_box_set_active(GTK_COMBO_BOX(matcher.headers_combo), 0);
+		prefs_matcher_set_model(matcher.match_combo, matcher.model_contain);
+		gtk_label_set_text(GTK_LABEL(matcher.criteria_label2), _("Name:"));
+		gtk_label_set_text(GTK_LABEL(matcher.match_label), _("Header"));
+		gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(matcher.regexp_checkbtn), FALSE);
+		gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(matcher.case_checkbtn), FALSE);
 		break;
-
-	case CRITERIA_TEST:
-		prefs_matcher_disable_widget(matcher.header_combo);
-		prefs_matcher_disable_widget(matcher.header_label);
-		prefs_matcher_disable_widget(matcher.header_addr_combo);
-		prefs_matcher_disable_widget(matcher.header_addr_label);
-		prefs_matcher_enable_widget(matcher.value_label);
-		prefs_matcher_enable_widget(matcher.value_entry);
-		prefs_matcher_disable_widget(matcher.addressbook_folder_label);
-		prefs_matcher_disable_widget(matcher.addressbook_folder_combo);
-		prefs_matcher_enable_widget(matcher.predicate_label);
-		prefs_matcher_disable_widget(matcher.predicate_combo);
-		prefs_matcher_enable_widget(matcher.predicate_flag_combo);
-		prefs_matcher_disable_widget(matcher.case_checkbtn);
-		prefs_matcher_disable_widget(matcher.regexp_checkbtn);
-		prefs_matcher_enable_widget(matcher.test_btn);
-		prefs_matcher_disable_widget(matcher.addressbook_select_btn);
+	case MATCH_LABEL:
+		gtk_option_menu_set_history(GTK_OPTION_MENU(matcher.color_optmenu), 0);
+		prefs_matcher_set_model(matcher.match_combo2, matcher.model_set);
+		gtk_label_set_text(GTK_LABEL(matcher.match_label), _("Label"));
+		gtk_label_set_text(GTK_LABEL(matcher.match_label2), _("is"));
 		break;
-
-	case CRITERIA_AGE_GREATER:
-	case CRITERIA_AGE_LOWER:
-	case CRITERIA_SCORE_GREATER:
-	case CRITERIA_SCORE_LOWER:
-	case CRITERIA_SCORE_EQUAL:
-	case CRITERIA_SIZE_GREATER:
-	case CRITERIA_SIZE_SMALLER:
-	case CRITERIA_SIZE_EQUAL:
-		prefs_matcher_disable_widget(matcher.header_combo);
-		prefs_matcher_disable_widget(matcher.header_label);
-		prefs_matcher_disable_widget(matcher.header_addr_combo);
-		prefs_matcher_disable_widget(matcher.header_addr_label);
-		prefs_matcher_enable_widget(matcher.value_label);
-		prefs_matcher_enable_widget(matcher.value_entry);
-		prefs_matcher_disable_widget(matcher.addressbook_folder_label);
-		prefs_matcher_disable_widget(matcher.addressbook_folder_combo);
-		prefs_matcher_disable_widget(matcher.predicate_label);
-		prefs_matcher_disable_widget(matcher.predicate_combo);
-		prefs_matcher_disable_widget(matcher.predicate_flag_combo);
-		prefs_matcher_disable_widget(matcher.case_checkbtn);
-		prefs_matcher_disable_widget(matcher.regexp_checkbtn);
-		prefs_matcher_disable_widget(matcher.test_btn);
-		prefs_matcher_disable_widget(matcher.addressbook_select_btn);
+	case MATCH_PARTIAL:
+		prefs_matcher_set_model(matcher.criteria_combo2, matcher.model_partial);
+		gtk_label_set_text(GTK_LABEL(matcher.criteria_label2), _("Value:"));
 		break;
-
-	case CRITERIA_HEADER:
-		prefs_matcher_enable_widget(matcher.header_combo);
-		prefs_matcher_enable_widget(matcher.header_label);
-		prefs_matcher_disable_widget(matcher.header_addr_combo);
-		prefs_matcher_disable_widget(matcher.header_addr_label);
-		prefs_matcher_enable_widget(matcher.value_label);
-		prefs_matcher_enable_widget(matcher.value_entry);
-		prefs_matcher_disable_widget(matcher.addressbook_folder_label);
-		prefs_matcher_disable_widget(matcher.addressbook_folder_combo);
-		prefs_matcher_enable_widget(matcher.predicate_label);
-		prefs_matcher_enable_widget(matcher.predicate_combo);
-		prefs_matcher_disable_widget(matcher.predicate_flag_combo);
-		prefs_matcher_enable_widget(matcher.case_checkbtn);
-		prefs_matcher_enable_widget(matcher.regexp_checkbtn);
-		prefs_matcher_disable_widget(matcher.test_btn);
-		prefs_matcher_disable_widget(matcher.addressbook_select_btn);
+	case MATCH_PHRASE:
+		prefs_matcher_set_model(matcher.criteria_combo2, matcher.model_phrase);
+		prefs_matcher_set_model(matcher.match_combo, matcher.model_contain);
+		gtk_label_set_text(GTK_LABEL(matcher.criteria_label2), _("in"));
+		gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(matcher.regexp_checkbtn), FALSE);
+		gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(matcher.case_checkbtn), FALSE);
+		prefs_matcher_second_criteria_sel(NULL, NULL);
+		break;	
+	case MATCH_SCORE:
+		prefs_matcher_set_model(matcher.match_combo, matcher.model_score);
+		gtk_spin_button_set_range(GTK_SPIN_BUTTON(
+				  	  matcher.numeric_entry), -1000, 1000);
+		gtk_spin_button_set_value(GTK_SPIN_BUTTON(matcher.numeric_entry), 0);
+		gtk_label_set_text(GTK_LABEL(matcher.match_label), _("Score is"));
+		gtk_label_set_text(GTK_LABEL(matcher.numeric_label), _("points"));
+		break;	
+	case MATCH_SIZE:
+		prefs_matcher_set_model(matcher.match_combo, matcher.model_size);
+		prefs_matcher_set_model(matcher.match_combo2, matcher.model_size_units);
+		gtk_combo_box_set_active(GTK_COMBO_BOX(matcher.match_combo2),
+					 SIZE_UNIT_KBYTES);
+		gtk_spin_button_set_range(GTK_SPIN_BUTTON(
+				  	  matcher.numeric_entry), 0, 100000);
+		gtk_spin_button_set_value(GTK_SPIN_BUTTON(matcher.numeric_entry), 0);
+		gtk_label_set_text(GTK_LABEL(matcher.match_label), _("Size is"));
 		break;
-
-	case CRITERIA_FOUND_IN_ADDRESSBOOK:
-		prefs_matcher_disable_widget(matcher.header_combo);
-		prefs_matcher_disable_widget(matcher.header_label);
-		prefs_matcher_enable_widget(matcher.header_addr_combo);
-		prefs_matcher_enable_widget(matcher.header_addr_label);
-		prefs_matcher_disable_widget(matcher.value_label);
-		prefs_matcher_disable_widget(matcher.value_entry);
-		prefs_matcher_enable_widget(matcher.addressbook_folder_label);
-		prefs_matcher_enable_widget(matcher.addressbook_folder_combo);
-		prefs_matcher_enable_widget(matcher.predicate_label);
-		prefs_matcher_disable_widget(matcher.predicate_combo);
-		prefs_matcher_enable_widget(matcher.predicate_flag_combo);
-		prefs_matcher_disable_widget(matcher.case_checkbtn);
-		prefs_matcher_disable_widget(matcher.regexp_checkbtn);
-		prefs_matcher_disable_widget(matcher.test_btn);
-		prefs_matcher_enable_widget(matcher.addressbook_select_btn);
+	case MATCH_TAGS:
+		prefs_matcher_set_model(matcher.criteria_combo2, matcher.model_tags);
+		prefs_matcher_set_model(matcher.match_combo, matcher.model_contain);
+		gtk_label_set_text(GTK_LABEL(matcher.criteria_label2), _("Scope:"));
+		gtk_label_set_text(GTK_LABEL(matcher.match_label), _("Message"));
+		gtk_label_set_text(GTK_LABEL(matcher.match_label2), _("tags"));
+		prefs_matcher_second_criteria_sel(NULL, NULL);
 		break;
-	}
+	case MATCH_THREAD:
+		prefs_matcher_set_model(matcher.criteria_combo2, matcher.model_thread);
+		gtk_label_set_text(GTK_LABEL(matcher.criteria_label2), _("type is"));
+		break;
+	case MATCH_TEST:
+		prefs_matcher_set_model(matcher.match_combo, matcher.model_test);
+		gtk_label_set_text(GTK_LABEL(matcher.match_label), _("Program returns"));
+		break;
+	}	
 }
 
 /*!
@@ -1925,6 +2102,101 @@ static void prefs_matcher_create_list_view_columns(GtkWidget *list_view)
 	gtk_tree_view_append_column(GTK_TREE_VIEW(list_view), column);		
 }
 
+static void prefs_matcher_set_criteria(const gint criteria)
+{
+	gint match_criteria = 0;
+	
+	switch (criteria) {
+	case CRITERIA_FOUND_IN_ADDRESSBOOK:
+		match_criteria = MATCH_ABOOK;
+		break;	
+	case CRITERIA_ALL:
+		match_criteria = MATCH_ALL;
+		break;
+	case CRITERIA_AGE_GREATER:
+	case CRITERIA_AGE_LOWER:
+		match_criteria = MATCH_AGE;
+		break;
+	case CRITERIA_SCORE_GREATER:
+	case CRITERIA_SCORE_LOWER:
+	case CRITERIA_SCORE_EQUAL:
+		match_criteria = MATCH_SCORE;
+		break;
+	case CRITERIA_SIZE_GREATER:
+	case CRITERIA_SIZE_SMALLER:
+	case CRITERIA_SIZE_EQUAL:
+		match_criteria = MATCH_SIZE;
+		break;
+	case CRITERIA_SUBJECT:
+	case CRITERIA_FROM:
+	case CRITERIA_TO:
+	case CRITERIA_CC:
+	case CRITERIA_TO_OR_CC:
+	case CRITERIA_NEWSGROUPS:
+	case CRITERIA_INREPLYTO:
+	case CRITERIA_REFERENCES:
+	case CRITERIA_HEADER:
+		match_criteria = MATCH_HEADER;
+		break;
+	case CRITERIA_HEADERS_PART:
+	case CRITERIA_BODY_PART:
+	case CRITERIA_MESSAGE:
+		match_criteria = MATCH_PHRASE;
+		break;
+	case CRITERIA_TEST:
+		match_criteria = MATCH_TEST;
+		break;
+	case CRITERIA_COLORLABEL:
+		match_criteria = MATCH_LABEL;
+		break;
+	case CRITERIA_TAG:
+	case CRITERIA_TAGGED:
+		match_criteria = MATCH_TAGS;
+		break;
+	case CRITERIA_UNREAD:
+	case CRITERIA_NEW:
+	case CRITERIA_MARKED:
+	case CRITERIA_DELETED:
+	case CRITERIA_REPLIED:
+	case CRITERIA_FORWARDED:
+	case CRITERIA_LOCKED:
+	case CRITERIA_SPAM:
+		match_criteria = MATCH_FLAG;
+		break;
+	case CRITERIA_PARTIAL:
+		match_criteria = MATCH_PARTIAL;
+		break;
+	case CRITERIA_IGNORE_THREAD:
+	case CRITERIA_WATCH_THREAD:
+		match_criteria = MATCH_THREAD;
+		break;
+	}
+	
+	gtk_combo_box_set_active(GTK_COMBO_BOX(matcher.criteria_combo),
+				 match_criteria);
+	
+	switch(match_criteria) {
+	case MATCH_HEADER:
+		if(criteria != CRITERIA_HEADER)
+			combobox_select_by_data(GTK_COMBO_BOX(
+						matcher.headers_combo),
+						criteria);
+		break;
+	case MATCH_AGE:
+	case MATCH_SCORE:
+	case MATCH_SIZE:
+	case MATCH_FLAG:
+		combobox_select_by_data(GTK_COMBO_BOX(
+					matcher.match_combo), criteria);
+		break;
+	case MATCH_PHRASE:
+	case MATCH_TAGS:
+		combobox_select_by_data(GTK_COMBO_BOX(
+					matcher.criteria_combo2), criteria);
+		break;
+	}
+}
+
 static gboolean prefs_matcher_selected(GtkTreeSelection *selector,
 				       GtkTreeModel *model, 
 				       GtkTreePath *path,
@@ -1935,6 +2207,7 @@ static gboolean prefs_matcher_selected(GtkTreeSelection *selector,
 	MatcherProp *prop;
 	gboolean negative_cond;
 	gint criteria;
+	GtkWidget *menu;
 	GtkTreeIter iter;
 	gboolean is_valid;
 
@@ -1964,9 +2237,7 @@ static gboolean prefs_matcher_selected(GtkTreeSelection *selector,
 	}		
 
 	criteria = prefs_matcher_get_criteria_from_matching(prop->criteria);
-	if (criteria != -1)
-		gtk_combo_box_set_active(GTK_COMBO_BOX(matcher.criteria_combo),
-				     criteria);
+	prefs_matcher_set_criteria(criteria);
 
 	switch(prop->criteria) {
 	case MATCHCRITERIA_NOT_UNREAD:
@@ -2031,7 +2302,7 @@ static gboolean prefs_matcher_selected(GtkTreeSelection *selector,
 	case MATCHCRITERIA_BODY_PART:
 	case MATCHCRITERIA_MESSAGE:
 	case MATCHCRITERIA_TEST:
-		gtk_entry_set_text(GTK_ENTRY(matcher.value_entry), prop->expr);
+		gtk_entry_set_text(GTK_ENTRY(matcher.string_entry), prop->expr);
 		break;
 
 	case MATCHCRITERIA_FOUND_IN_ADDRESSBOOK:
@@ -2061,40 +2332,113 @@ static gboolean prefs_matcher_selected(GtkTreeSelection *selector,
 
 	case MATCHCRITERIA_AGE_GREATER:
 	case MATCHCRITERIA_AGE_LOWER:
+		if(prop->value >= 7 && !(prop->value % 7)) {
+			gtk_combo_box_set_active(GTK_COMBO_BOX(matcher.match_combo2),
+						 AGE_WEEKS);
+			gtk_spin_button_set_value(GTK_SPIN_BUTTON(
+					matcher.numeric_entry), prop->value/7);
+		} else {
+			gtk_combo_box_set_active(GTK_COMBO_BOX(matcher.match_combo2),
+						 AGE_DAYS);
+			gtk_spin_button_set_value(GTK_SPIN_BUTTON(
+					matcher.numeric_entry), prop->value);
+		}
+		break;
+		
 	case MATCHCRITERIA_SCORE_GREATER:
 	case MATCHCRITERIA_SCORE_LOWER:
 	case MATCHCRITERIA_SCORE_EQUAL:
+		gtk_spin_button_set_value(GTK_SPIN_BUTTON(matcher.numeric_entry),
+					  prop->value);
+		break;
+
 	case MATCHCRITERIA_SIZE_GREATER:
 	case MATCHCRITERIA_SIZE_SMALLER:
 	case MATCHCRITERIA_SIZE_EQUAL:
-		gtk_entry_set_text(GTK_ENTRY(matcher.value_entry), itos(prop->value));
+		if(prop->value >= MB_SIZE && !(prop->value % MB_SIZE)) {
+			gtk_combo_box_set_active(GTK_COMBO_BOX(matcher.match_combo2),
+						 SIZE_UNIT_MBYTES);
+			gtk_spin_button_set_value(GTK_SPIN_BUTTON(
+					matcher.numeric_entry), prop->value/MB_SIZE);
+		} else if(prop->value >= KB_SIZE && !(prop->value % KB_SIZE)) {
+			gtk_combo_box_set_active(GTK_COMBO_BOX(matcher.match_combo2),
+						 SIZE_UNIT_KBYTES);
+			gtk_spin_button_set_value(GTK_SPIN_BUTTON(
+					matcher.numeric_entry), prop->value/KB_SIZE);
+		} else {
+			gtk_combo_box_set_active(GTK_COMBO_BOX(matcher.match_combo2),
+						 SIZE_UNIT_BYTES);
+			gtk_spin_button_set_value(GTK_SPIN_BUTTON(
+					matcher.numeric_entry), prop->value);		
+		}
 		break;
 
 	case MATCHCRITERIA_NOT_COLORLABEL:
 	case MATCHCRITERIA_COLORLABEL:
 		gtk_option_menu_set_history(GTK_OPTION_MENU(matcher.color_optmenu),
 					    prop->value);
+		menu = gtk_option_menu_get_menu(GTK_OPTION_MENU(matcher.color_optmenu));
+		g_signal_emit_by_name(G_OBJECT(menu), "selection-done", menu);
 		break;
 
 	case MATCHCRITERIA_NOT_HEADER:
 	case MATCHCRITERIA_HEADER:
 		gtk_entry_set_text(GTK_ENTRY(matcher.header_entry), prop->header);
-		gtk_entry_set_text(GTK_ENTRY(matcher.value_entry), prop->expr);
+		gtk_entry_set_text(GTK_ENTRY(matcher.string_entry), prop->expr);
 		break;
 	}
 
-	if (negative_cond) {
-		gtk_combo_box_set_active(GTK_COMBO_BOX(matcher.predicate_combo),
-					 PREDICATE_DOES_NOT_CONTAIN);
-		gtk_combo_box_set_active(GTK_COMBO_BOX(matcher.predicate_flag_combo),
-					 PREDICATE_FLAG_DISABLED);
-	} else {
-		gtk_combo_box_set_active(GTK_COMBO_BOX(matcher.predicate_combo),
-					 PREDICATE_CONTAINS);
-		gtk_combo_box_set_active(GTK_COMBO_BOX(matcher.predicate_flag_combo),
-					 PREDICATE_FLAG_ENABLED);
+	switch(criteria) {
+	case CRITERIA_SUBJECT:
+	case CRITERIA_FROM:
+	case CRITERIA_TO:
+	case CRITERIA_CC:
+	case CRITERIA_TO_OR_CC:
+	case CRITERIA_NEWSGROUPS:
+	case CRITERIA_INREPLYTO:
+	case CRITERIA_REFERENCES:
+	case CRITERIA_HEADER:
+	case CRITERIA_HEADERS_PART:
+	case CRITERIA_BODY_PART:
+	case CRITERIA_MESSAGE:
+	case CRITERIA_TAG:
+	case CRITERIA_TAGGED:
+	case CRITERIA_TEST:
+		gtk_combo_box_set_active(GTK_COMBO_BOX(matcher.match_combo),
+					negative_cond ? PREDICATE_DOES_NOT_CONTAIN :
+							PREDICATE_CONTAINS);
+		break;
+	case CRITERIA_FOUND_IN_ADDRESSBOOK:
+	case CRITERIA_UNREAD:
+	case CRITERIA_NEW:
+	case CRITERIA_MARKED:
+	case CRITERIA_DELETED:
+	case CRITERIA_REPLIED:
+	case CRITERIA_FORWARDED:
+	case CRITERIA_LOCKED:
+	case CRITERIA_SPAM:
+	case CRITERIA_COLORLABEL:
+		gtk_combo_box_set_active(GTK_COMBO_BOX(matcher.match_combo2),
+					 negative_cond ? PREDICATE_FLAG_DISABLED :
+					 		 PREDICATE_FLAG_ENABLED);
+		break;
+	case CRITERIA_WATCH_THREAD:
+		gtk_combo_box_set_active(GTK_COMBO_BOX(matcher.criteria_combo2),
+					 negative_cond ? THREAD_NOT_WATCHED :
+					 		 THREAD_WATCHED);
+		break;
+	case CRITERIA_IGNORE_THREAD:
+		gtk_combo_box_set_active(GTK_COMBO_BOX(matcher.criteria_combo2),
+					 negative_cond ? THREAD_NOT_IGNORED :
+					 		 THREAD_IGNORED);
+		break;	
+	case CRITERIA_PARTIAL:
+		gtk_combo_box_set_active(GTK_COMBO_BOX(matcher.criteria_combo2),
+					 negative_cond ? PREDICATE_FLAG_DISABLED :
+					 		 PREDICATE_FLAG_ENABLED);
+		break;
 	}
-	
+
 	switch(prop->matchtype) {
 	case MATCHTYPE_MATCH:
 		gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(matcher.regexp_checkbtn), FALSE);

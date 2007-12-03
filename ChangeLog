@@ -1,4 +1,16 @@
-2007-12-03 [cleroy]	3.1.0cvs50
+2007-12-03 [colin]	3.1.0cvs51
+
+	* src/folder.c
+	* src/folder.h
+	* src/folderview.c
+	* src/imap.c
+	* src/mainwindow.c
+		Fix update problem when getting remote tags
+	* src/prefs_matcher.c
+		Rework GUI to make it better. Patch by Pawel
+		Pekala
+
+2007-12-03 [colin]	3.1.0cvs50
 
 	* src/etpan/imap-thread.c
 	* src/etpan/nntp-thread.c

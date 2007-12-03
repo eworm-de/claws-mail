@@ -1222,7 +1222,7 @@ gint folderview_check_new(Folder *folder)
 					item->path ? item->path : item->name);
 				continue;
 			}
-			if (item->scanning == TRUE) {
+			if (item->scanning != ITEM_NOT_SCANNING) {
 				debug_print("skipping %s, scanning\n",
 					item->path ? item->path : item->name);
 				continue;
