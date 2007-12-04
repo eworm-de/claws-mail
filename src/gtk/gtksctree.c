@@ -1500,6 +1500,91 @@ select_row (GtkSCTree *sctree, gint row, gint col, guint state, GtkCTreeNode *_n
 		select_range (sctree, row);
 }
 
+static gboolean
+sctree_is_hot_spot (GtkSCTree     *sctree, 
+		   GtkCTreeNode *node,
+		   gint          row, 
+		   gint          x, 
+		   gint          y)
+{
+  GtkCTreeRow *tree_row;
+  GtkCList *clist;
+  GtkCTree *ctree;
+  GtkCellPixText *cell;
+  gint xl, xmax;
+  gint yu;
+  
+  g_return_val_if_fail (GTK_IS_SCTREE (sctree), FALSE);
+  g_return_val_if_fail (node != NULL, FALSE);
+
+  clist = GTK_CLIST (sctree);
+  ctree = GTK_CTREE (sctree);
+
+  if (!clist->column[ctree->tree_column].visible ||
+      ctree->expander_style == GTK_CTREE_EXPANDER_NONE)
+    return FALSE;
+
+  tree_row = GTK_CTREE_ROW (node);
+
+  cell = GTK_CELL_PIXTEXT (tree_row->row.cell[ctree->tree_column]);
+
+  yu = (ROW_TOP_YPIXEL (clist, row) + (clist->row_height - PM_SIZE) / 2 -
+	(clist->row_height - 1) % 2);
+
+#ifndef MAEMO
+  if (clist->column[ctree->tree_column].justification == GTK_JUSTIFY_RIGHT)
+    xl = (clist->column[ctree->tree_column].area.x + 
+	  clist->column[ctree->tree_column].area.width - 1 + clist->hoffset -
+	  (tree_row->level - 1) * ctree->tree_indent - PM_SIZE -
+	  (ctree->line_style == GTK_CTREE_LINES_TABBED) * 3);
+  else
+    xl = (clist->column[ctree->tree_column].area.x + clist->hoffset +
+	  (tree_row->level - 1) * ctree->tree_indent +
+	  (ctree->line_style == GTK_CTREE_LINES_TABBED) * 3);
+
+  xmax = xl + PM_SIZE;
+#else
+  if (clist->column[ctree->tree_column].justification == GTK_JUSTIFY_RIGHT) {
+    xl = (clist->column[ctree->tree_column].area.x + 
+	  clist->column[ctree->tree_column].area.width - 1 + clist->hoffset -
+	  (tree_row->level - 1) * ctree->tree_indent - PM_SIZE -
+	  (ctree->line_style == GTK_CTREE_LINES_TABBED) * 3);
+    xmax = xl + PM_SIZE;
+  } else if (ctree->tree_column == 0) {
+    xl = (clist->column[ctree->tree_column].area.x + clist->hoffset +
+	  (ctree->line_style == GTK_CTREE_LINES_TABBED) * 3);
+    xmax = (clist->column[ctree->tree_column].area.x + clist->hoffset +
+	   (tree_row->level - 1) * ctree->tree_indent +
+	   (ctree->line_style == GTK_CTREE_LINES_TABBED) * 3) +
+	   PM_SIZE;
+  } else {
+    xl = (clist->column[ctree->tree_column].area.x + clist->hoffset +
+	  (tree_row->level - 1) * ctree->tree_indent +
+	  (ctree->line_style == GTK_CTREE_LINES_TABBED) * 3);
+    xmax = xl + PM_SIZE;
+  }
+#endif
+  return (x >= xl && x <= xmax && y >= yu && y <= yu + PM_SIZE);
+}
+
+gboolean
+gtk_sctree_is_hot_spot (GtkSCTree *ctree, 
+		       gint      x, 
+		       gint      y)
+{
+  GtkCTreeNode *node;
+  gint column;
+  gint row;
+  
+  g_return_val_if_fail (GTK_IS_SCTREE (ctree), FALSE);
+
+  if (gtk_clist_get_selection_info (GTK_CLIST (ctree), x, y, &row, &column))
+    if ((node = GTK_CTREE_NODE(g_list_nth (GTK_CLIST (ctree)->row_list, row))))
+      return sctree_is_hot_spot (ctree, node, row, x, y);
+
+  return FALSE;
+}
+
 /* Our handler for button_press events.  We override all of GtkCList's broken
  * behavior.
  */
@@ -1529,7 +1614,7 @@ gtk_sctree_button_press (GtkWidget *widget, GdkEventButton *event)
 	if (on_row && !GTK_WIDGET_HAS_FOCUS(widget))
 		gtk_widget_grab_focus (widget);
 
-	if (gtk_ctree_is_hot_spot (GTK_CTREE(sctree), event->x, event->y)) {
+	if (gtk_sctree_is_hot_spot (GTK_SCTREE(sctree), event->x, event->y)) {
 		GtkCTreeNode *node = gtk_ctree_node_nth(GTK_CTREE(sctree), row);
 		if (GTK_CTREE_ROW (node)->expanded)
 			gtk_ctree_collapse(GTK_CTREE(sctree), node);

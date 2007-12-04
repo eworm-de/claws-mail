@@ -1,3 +1,11 @@
+2007-12-04 [colin]	3.1.0cvs56
+
+	* src/folderview.c
+	* src/gtk/gtksctree.c
+		MAEMO: Fix bug 1325, 'Folder Navigation Problems'
+                Make all the left of column zero an hotspot for
+                expanding.
+
 2007-12-04 [colin]	3.1.0cvs55
 
 	* src/mainwindow.c

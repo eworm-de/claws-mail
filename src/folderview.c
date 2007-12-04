@@ -1980,7 +1980,7 @@ static gboolean folderview_button_pressed(GtkWidget *ctree, GdkEventButton *even
 	if (!event) return FALSE;
 
 	if (event->button == 1 || event->button == 2) {
-		if (!gtk_ctree_is_hot_spot (GTK_CTREE(clist), event->x, event->y))
+		if (!gtk_sctree_is_hot_spot (GTK_SCTREE(clist), event->x, event->y))
 			folderview->open_folder = TRUE;
 
 	        if (event->type == GDK_2BUTTON_PRESS) {
