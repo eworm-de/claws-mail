@@ -197,7 +197,6 @@ static void prefs_keybind_apply(struct KeyBind keybind[], gint num)
 
 static void prefs_keybind_apply_clicked(GtkWidget *widget)
 {
-	GtkEntry *entry = GTK_ENTRY(GTK_BIN(keybind.combo)->child);
 	const gchar *text;
 	struct KeyBind *menurc;
 	gint n_menurc;
@@ -446,9 +445,9 @@ static void prefs_keybind_apply_clicked(GtkWidget *widget)
 		{"<Compose>/Edit/Advanced/Delete a word backward",	"<control>W"},
 		{"<Compose>/Edit/Advanced/Delete a word forward",	"<alt>D"},
 	};
-  
-	text = gtk_entry_get_text(entry);
-  
+
+	text = gtk_combo_box_get_active_text(GTK_COMBO_BOX(keybind.combo));
+
 	if (!strcmp(text, _("Default"))) {
 		menurc = default_menurc;
 		n_menurc = G_N_ELEMENTS(default_menurc);
@@ -462,8 +461,10 @@ static void prefs_keybind_apply_clicked(GtkWidget *widget)
 	        menurc = old_sylpheed_menurc;
 		n_menurc = G_N_ELEMENTS(old_sylpheed_menurc);
 	} else {
+		g_free(text);
 		return;
 	}
+	g_free(text);
 
 	/* prefs_keybind_apply(empty_menurc, G_N_ELEMENTS(empty_menurc)); */
 	prefs_keybind_apply(menurc, n_menurc);
