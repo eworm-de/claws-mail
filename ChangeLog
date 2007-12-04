@@ -1,3 +1,9 @@
+2007-12-04 [holger]	3.1.0cvs53
+
+	* src/addrduplicates.c
+	* src/addrduplicates.h
+		Export addressbook entry deletion
+
 2007-12-04 [colin]	3.1.0cvs52
 
 	* tools/Makefile.am

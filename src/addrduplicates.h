@@ -21,6 +21,10 @@
 
 #include <gtk/gtk.h>
 
+#include "addritem.h"
+#include "addrindex.h"
+
 void addrduplicates_find(GtkWindow *parent);
+gboolean addrduplicates_delete_item_person(ItemPerson*, AddressDataSource*);
 
 #endif /*__ADDRDUPLICATES_H__*/

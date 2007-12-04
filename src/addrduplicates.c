@@ -32,7 +32,6 @@
 #include "ldapupdate.h"
 #endif
 #include "addrduplicates.h"
-#include "addrindex.h"
 #include "addrbook.h"
 #include "addressbook.h"
 #include "editaddress.h"
@@ -84,7 +83,6 @@ static gboolean detail_focus_out(GtkWidget*,GdkEventFocus*,gpointer);
 
 static void cb_del_btn_clicked(GtkButton *, gpointer);
 static void cb_edit_btn_clicked(GtkButton *, gpointer);
-static gboolean delete_item(ItemPerson*, AddressDataSource*);
 static gchar* get_bookpath(ItemPerson*,AddressDataSource*);
 static gboolean is_editing_entry_only_selection(void);
 static void edit_post_update_cb(ItemPerson*);
@@ -824,7 +822,7 @@ static void cb_del_btn_clicked(GtkButton *button, gpointer data)
 		path = gtk_tree_row_reference_get_path(ref);
 		if(gtk_tree_model_get_iter(model, &iter, path)) {
 			gtk_tree_model_get(model, &iter, COL_ITEM, &item, COL_DS, &ds, -1);
-			delete_item(item,ds);
+			addrduplicates_delete_item_person(item,ds);
 		}
 		gtk_tree_path_free(path);
 	}
@@ -842,7 +840,7 @@ static void cb_del_btn_clicked(GtkButton *button, gpointer data)
 		g_free(email);
 }
 
-static gboolean delete_item(ItemPerson *item, AddressDataSource *ds)
+gboolean addrduplicates_delete_item_person(ItemPerson *item, AddressDataSource *ds)
 {
 	AddressBookFile *abf;
 	AddressInterface *iface;
