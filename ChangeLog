@@ -1,3 +1,9 @@
+2007-12-04 [colin]	3.1.0cvs57
+
+	* src/etpan/imap-thread.c
+		Fix bug 1378, 'Claws exits on IMAP alert message'
+		Don't do GTK calls directly from Etpan thread
+
 2007-12-04 [colin]	3.1.0cvs56
 
 	* src/folderview.c

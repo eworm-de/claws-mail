@@ -372,6 +372,11 @@ static mailimap * get_imap(Folder * folder)
 	return imap;
 }
 
+static gboolean cb_show_error(gpointer data)
+{
+	mainwindow_show_error();
+	return FALSE;
+}
 
 static void generic_cb(int cancelled, void * result, void * callback_data)
 {
@@ -384,7 +389,7 @@ static void generic_cb(int cancelled, void * result, void * callback_data)
 	    op->imap->imap_response_info->rsp_alert) {
 		log_error(LOG_PROTOCOL, "IMAP4< Alert: %s\n", 
 			op->imap->imap_response_info->rsp_alert);
-		mainwindow_show_error();
+		g_timeout_add(10, cb_show_error, NULL);
 	} 
 	op->finished = 1;
 }
