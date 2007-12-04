@@ -1,3 +1,16 @@
+2007-12-04 [colin]	3.1.0cvs52
+
+	* tools/Makefile.am
+	* tools/README.sylprint
+	* tools/sylprint.pl
+	* tools/sylprint.rc
+		Fix debian bug #454089 (symlink attack in TMP directory)
+		http://secwatch.org/advisories/1019661/ :
+		Remove the buggy script, which was unmaintained anyway
+	* src/news.c
+	* src/procmsg.c
+		Store things in our private tmp directory.
+
 2007-12-03 [colin]	3.1.0cvs51
 
 	* src/folder.c

@@ -22,8 +22,6 @@ EXTRA_TOOLS = \
 	nautilus2claws-mail.sh \
 	outlook2claws-mail.pl \
 	popfile-link.sh \
-	sylprint.pl \
-	sylprint.rc \
 	tb2claws-mail \
 	tbird2claws.py \
 	textviewer.pl \
@@ -38,7 +36,6 @@ EXTRA_TOOLS = \
 
 EXTRA_DIST = \
 	README \
-	README.sylprint \
 	multiwebsearch.conf \
 	kdeservicemenu/README \
 	kdeservicemenu/claws-mail-attach-files.desktop.template \

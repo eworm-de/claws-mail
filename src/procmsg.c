@@ -1653,7 +1653,7 @@ send_mail:
 		FILE *tmpfp;
 
     		/* write to temporary file */
-    		tmp = g_strdup_printf("%s%ctmp%p", g_get_tmp_dir(),
+    		tmp = g_strdup_printf("%s%cnntp%p", get_tmp_dir(),
                     	    G_DIR_SEPARATOR, file);
     		if ((tmpfp = g_fopen(tmp, "wb")) == NULL) {
             		FILE_OP_ERROR(tmp, "fopen");
