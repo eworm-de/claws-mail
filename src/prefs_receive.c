@@ -61,6 +61,7 @@ typedef struct _ReceivePage
 	GtkWidget *entry_newmail_notify_cmd;
 	GtkWidget *hbox_newmail_notify;
 #else
+	GtkWidget *checkbtn_maemo_show_led;
 	GtkWidget *checkbtn_maemo_play_sound;
 	GtkWidget *checkbtn_maemo_show_banner;
 #endif
@@ -115,6 +116,7 @@ static void prefs_receive_create_widget(PrefsPage *_page, GtkWindow *window,
 	GtkWidget *entry_newmail_notify_cmd;
 	GtkWidget *label_newmail_notify_cmd;
 #else
+	GtkWidget *checkbtn_maemo_show_led;
 	GtkWidget *checkbtn_maemo_play_sound;
 	GtkWidget *checkbtn_maemo_show_banner;
 #endif
@@ -253,9 +255,12 @@ static void prefs_receive_create_widget(PrefsPage *_page, GtkWindow *window,
 	gtk_entry_set_text(GTK_ENTRY(entry_newmail_notify_cmd), 
 		prefs_common.newmail_notify_cmd);
 #else
+ 	PACK_CHECK_BUTTON (vbox2, checkbtn_maemo_show_led, _("Toggle LED blinking"));
  	PACK_CHECK_BUTTON (vbox2, checkbtn_maemo_play_sound, _("Play sound"));
  	PACK_CHECK_BUTTON (vbox2, checkbtn_maemo_show_banner,
  			   _("Show info banner"));
+	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(checkbtn_maemo_show_led),
+		prefs_common.maemo_show_led);
 	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(checkbtn_maemo_play_sound),
 		prefs_common.maemo_play_sound);
 	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(checkbtn_maemo_show_banner),
@@ -300,6 +305,7 @@ static void prefs_receive_create_widget(PrefsPage *_page, GtkWindow *window,
 	prefs_receive->entry_newmail_notify_cmd = entry_newmail_notify_cmd;
 	prefs_receive->hbox_newmail_notify = hbox_newmail_notify;
 #else
+	prefs_receive->checkbtn_maemo_show_led = checkbtn_maemo_show_led;
 	prefs_receive->checkbtn_maemo_play_sound = checkbtn_maemo_play_sound;
 	prefs_receive->checkbtn_maemo_show_banner = checkbtn_maemo_show_banner;
 #endif
@@ -343,6 +349,12 @@ static void prefs_receive_save(PrefsPage *_page)
 	prefs_common.newmail_notify_manu = gtk_toggle_button_get_active(
 		GTK_TOGGLE_BUTTON(page->checkbtn_newmail_manu));
 #else
+	prefs_common.maemo_show_led = TRUE;
+	if (!gtk_toggle_button_get_active(
+		GTK_TOGGLE_BUTTON(page->checkbtn_maemo_show_led))) {
+		mainwindow_maemo_led_set(FALSE);
+		prefs_common.maemo_show_led = FALSE;
+	}
 	prefs_common.maemo_play_sound = gtk_toggle_button_get_active(
 		GTK_TOGGLE_BUTTON(page->checkbtn_maemo_play_sound));
 	prefs_common.maemo_show_banner = gtk_toggle_button_get_active(

@@ -206,6 +206,7 @@ void mainwindow_reset_paned		      (GtkPaned *paned);
 gboolean maemo_mainwindow_is_fullscreen               (GtkWidget *widget);
 void maemo_window_full_screen_if_needed               (GtkWindow *window);
 void maemo_connect_key_press_to_mainwindow    (GtkWindow *window);
+void mainwindow_maemo_led_set(gboolean state);
 #endif
 
 #endif /* __MAINWINDOW_H__ */

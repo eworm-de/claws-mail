@@ -167,6 +167,8 @@ static PrefParam param[] = {
  	{"newmail_notify_cmd", "", &SPECIFIC_PREFS.newmail_notify_cmd, P_STRING,
  	 NULL, NULL, NULL},
 #ifdef MAEMO
+ 	{"maemo_show_led", "TRUE", &prefs_common.maemo_show_led, P_BOOL,
+ 	 NULL, NULL, NULL},
  	{"maemo_play_sound", "FALSE", &prefs_common.maemo_play_sound, P_BOOL,
  	 NULL, NULL, NULL},
  	{"maemo_show_banner", "FALSE", &prefs_common.maemo_show_banner, P_BOOL,

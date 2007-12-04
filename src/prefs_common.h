@@ -105,6 +105,7 @@ struct _PrefsCommon
  	gboolean newmail_notify_manu;
  	gchar   *newmail_notify_cmd;
 #ifdef MAEMO
+	gboolean maemo_show_led;
 	gboolean maemo_play_sound;
 	gboolean maemo_show_banner;
 #endif

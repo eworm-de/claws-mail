@@ -3112,3 +3112,4 @@
 ( cvs diff -u -r 1.101.2.46 -r 1.101.2.47 src/news.c;  cvs diff -u -r 1.150.2.106 -r 1.150.2.107 src/procmsg.c;  cvs diff -u -r 1.25.2.24 -r 1.25.2.25 tools/Makefile.am;  cvs diff -u -r -1.1.14.4 -r -1.1.14.5 tools/README.sylprint;  cvs diff -u -r -1.2.14.3 -r -1.2.14.4 tools/sylprint.pl;  cvs diff -u -r -1.1.14.2 -r -1.1.14.3 tools/sylprint.rc;  ) > 3.1.0cvs52.patchset
 ( cvs diff -u -r 1.1.2.7 -r 1.1.2.8 src/addrduplicates.c;  cvs diff -u -r 1.1.2.2 -r 1.1.2.3 src/addrduplicates.h;  ) > 3.1.0cvs53.patchset
 ( cvs diff -u -r 1.1.2.25 -r 1.1.2.26 src/prefs_other.c;  ) > 3.1.0cvs54.patchset
+( cvs diff -u -r 1.274.2.223 -r 1.274.2.224 src/mainwindow.c;  cvs diff -u -r 1.39.2.42 -r 1.39.2.43 src/mainwindow.h;  cvs diff -u -r 1.204.2.157 -r 1.204.2.158 src/prefs_common.c;  cvs diff -u -r 1.103.2.101 -r 1.103.2.102 src/prefs_common.h;  cvs diff -u -r 1.1.2.21 -r 1.1.2.22 src/prefs_receive.c;  ) > 3.1.0cvs55.patchset

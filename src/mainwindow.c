@@ -1414,6 +1414,86 @@ static gboolean mainwindow_key_pressed (GtkWidget *widget, GdkEventKey *event,
 
 #undef BREAK_ON_MODIFIER_KEY
 
+#ifdef MAEMO
+void mainwindow_maemo_led_set(gboolean state) {
+	static gint last_state = -1;
+	if (last_state == state)
+		return;
+	last_state = (gint)state;
+	if (prefs_common.maemo_show_led) {
+		if(state) {
+		  execute_command_line("/usr/bin/dbus-send --system --type=method_call "
+			"--dest=com.nokia.mce "
+			"/com/nokia/mce/request com.nokia.mce.request.req_led_pattern_activate "
+			"string:PatternCommunicationEvent", TRUE);
+		} else {
+		  execute_command_line("/usr/bin/dbus-send --system --type=method_call "
+			"--dest=com.nokia.mce "
+			"/com/nokia/mce/request com.nokia.mce.request.req_led_pattern_deactivate "
+			"string:PatternCommunicationEvent", TRUE);
+		}
+	} 
+}
+
+static void led_update(FolderItem *removed_item)
+{
+	guint new, unread, unreadmarked, marked, total;
+
+	folder_count_total_msgs(&new, &unread, &unreadmarked, &marked, &total);
+	if (removed_item) {
+		total -= removed_item->total_msgs;
+		new -= removed_item->new_msgs;
+		unread -= removed_item->unread_msgs;
+	}
+
+	if (new > 0)
+		mainwindow_maemo_led_set(TRUE);
+	else
+		mainwindow_maemo_led_set(FALSE);
+}
+
+static gboolean maemo_folder_item_update_hook(gpointer source, gpointer data)
+{
+	led_update(NULL);
+
+	return FALSE;
+}
+
+static gboolean maemo_folder_update_hook(gpointer source, gpointer data)
+{
+	FolderUpdateData *hookdata;
+	hookdata = source;
+	if (hookdata->update_flags & FOLDER_REMOVE_FOLDERITEM)
+		led_update(hookdata->item);
+	else
+		led_update(NULL);
+
+	return FALSE;
+}
+
+static void main_window_install_maemo_hooks(MainWindow *mainwin)
+{
+	gint maemo_item_hook_id, maemo_folder_hook_id;
+	
+	maemo_item_hook_id = hooks_register_hook (FOLDER_ITEM_UPDATE_HOOKLIST, maemo_folder_item_update_hook, NULL);
+	if (maemo_item_hook_id == -1) {
+		goto err_out_item;
+	}
+
+	maemo_folder_hook_id = hooks_register_hook (FOLDER_UPDATE_HOOKLIST, maemo_folder_update_hook, NULL);
+	if (maemo_folder_hook_id == -1) {
+		goto err_out_folder;
+	}
+	
+	return;
+
+err_out_folder:
+	hooks_unregister_hook(FOLDER_ITEM_UPDATE_HOOKLIST, maemo_item_hook_id);
+err_out_item:
+	return;
+}
+#endif
+
 MainWindow *main_window_create()
 {
 	MainWindow *mainwin;
@@ -1850,7 +1930,10 @@ MainWindow *main_window_create()
 
 	mainwindow_colorlabel_menu_create(mainwin, FALSE);
 	mainwindow_tags_menu_create(mainwin, FALSE);
-	
+
+#ifdef MAEMO
+	main_window_install_maemo_hooks(mainwin);
+#endif
 	return mainwin;
 }
 
@@ -2023,7 +2106,7 @@ static gboolean main_window_reflect_tags_changes_real(gpointer data)
 
 	/* re-create tags submenu */
 	menu = GTK_MENU_SHELL(mainwin->tags_menu);
-	g_return_if_fail(menu != NULL);
+	g_return_val_if_fail(menu != NULL, FALSE);
 
 	/* clear items. get item pointers. */
 	for (cur = menu->children; cur != NULL && cur->data != NULL; cur = cur->next) {

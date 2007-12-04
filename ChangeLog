@@ -1,3 +1,12 @@
+2007-12-04 [colin]	3.1.0cvs55
+
+	* src/mainwindow.c
+	* src/mainwindow.h
+	* src/prefs_common.c
+	* src/prefs_common.h
+	* src/prefs_receive.c
+		MAEMO: Fix bug 1199, 'Tie into LED for new mail alert'
+
 2007-12-04 [wwp]	3.1.0cvs54
 
 	* src/prefs_other.c
