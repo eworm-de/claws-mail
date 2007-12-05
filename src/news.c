@@ -682,14 +682,20 @@ gint news_post(Folder *folder, const gchar *file)
 	}
 	
 	ok = nntp_threaded_post(folder, contents, strlen(contents));
-	
+
+	if (ok != NEWSNNTP_NO_ERROR && ok != NEWSNNTP_ERROR_STREAM) {
+		ok = nntp_threaded_mode_reader(folder);
+		if (ok == NEWSNNTP_NO_ERROR)
+			ok = nntp_threaded_post(folder, contents, strlen(contents));
+	}
 	g_free(contents);
+
 	if (ok == NEWSNNTP_ERROR_STREAM) {
 		session_destroy(SESSION(session));
 		REMOTE_FOLDER(folder)->session = NULL;
 	}
 
-	return ok;
+	return (ok  = NEWSNNTP_NO_ERROR ? 0 : -1);
 }
 
 static gint news_get_article(Folder *folder, gint num, gchar *filename)
