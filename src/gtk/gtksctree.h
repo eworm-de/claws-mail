@@ -121,4 +121,8 @@ gtk_sctree_insert_gnode 		    (GtkCTree          *ctree,
 void gtk_sctree_set_column_tooltip	    (GtkSCTree		*sctree,
 					     int		 column,
 					     const gchar 	*tip);
+gboolean
+gtk_sctree_is_hot_spot (GtkSCTree *ctree, 
+		       gint      x, 
+		       gint      y);
 #endif /* __GTK_SCTREE_H__ */

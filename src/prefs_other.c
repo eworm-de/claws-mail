@@ -197,7 +197,7 @@ static void prefs_keybind_apply(struct KeyBind keybind[], gint num)
 
 static void prefs_keybind_apply_clicked(GtkWidget *widget)
 {
-	const gchar *text;
+	gchar *text;
 	struct KeyBind *menurc;
 	gint n_menurc;
 
