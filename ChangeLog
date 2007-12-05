@@ -1,3 +1,10 @@
+2007-12-05 [colin]	3.1.0cvs59
+
+	* src/messageview.c
+	* src/uri_opener.c
+		Improvements to the List URIs dialog
+		Patch by Pawel
+
 2007-12-05 [colin]	3.1.0cvs58
 
 	* src/prefs_other.c

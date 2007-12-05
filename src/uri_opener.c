@@ -51,8 +51,8 @@ static struct URIOpener
 	GtkWidget *vbox1;
 	GtkWidget *label;
 	GtkWidget *urilist;
+	GtkWidget *scrolledwin;
 	GtkWidget *open_btn;
-	GtkWidget *open_all_btn;
 	GtkWidget *close_btn;
 	MessageView *msgview;
 	GSList    *uris;
@@ -60,7 +60,8 @@ static struct URIOpener
 
 static void uri_opener_load_uris (void);
 static void uri_opener_open_cb		(GtkWidget *widget, gpointer data);
-static void uri_opener_close_cb	(GtkWidget *widget, gpointer data);
+static void uri_opener_close_cb		(GtkWidget *widget, gpointer data);
+static void uri_opener_select_all_cb	(GtkWidget *widget, gpointer data);
 static gboolean key_pressed		(GtkWidget *widget, GdkEventKey *event,
 					 gpointer data);
 static void uri_opener_double_clicked(GtkTreeView		*list_view,
@@ -70,6 +71,8 @@ static void uri_opener_double_clicked(GtkTreeView		*list_view,
 static void uri_opener_create(void);
 void uri_opener_open(MessageView *msgview, GSList *uris)
 {
+	GtkAdjustment *hadj, *vadj;
+	
 	g_return_if_fail(msgview);
 	g_return_if_fail(msgview->mimeview);
 	g_return_if_fail(msgview->mimeview->textview);
@@ -92,6 +95,14 @@ void uri_opener_open(MessageView *msgview, GSList *uris)
 	gtk_widget_show(opener.window);
 	gtk_widget_grab_focus(opener.urilist);
 	gtk_window_set_modal(GTK_WINDOW(opener.window), TRUE);
+	
+	vadj = gtk_scrolled_window_get_vadjustment(GTK_SCROLLED_WINDOW(
+						   opener.scrolledwin));
+	gtk_adjustment_set_value(vadj, 0);
+	hadj = gtk_scrolled_window_get_hadjustment(GTK_SCROLLED_WINDOW(
+						   opener.scrolledwin));
+	gtk_adjustment_set_value(hadj, 0);
+
 }
 
 static GtkListStore* uri_opener_create_data_store(void)
@@ -129,7 +140,7 @@ static GtkWidget *uri_opener_list_view_create	(void)
 	gtk_tree_view_set_rules_hint(list_view, prefs_common.use_stripes_everywhere);
 	
 	selector = gtk_tree_view_get_selection(list_view);
-	gtk_tree_selection_set_mode(selector, GTK_SELECTION_BROWSE);
+	gtk_tree_selection_set_mode(selector, GTK_SELECTION_MULTIPLE);
 
 	g_signal_connect(G_OBJECT(list_view), "row_activated",
 	                 G_CALLBACK(uri_opener_double_clicked),
@@ -145,12 +156,13 @@ static GtkWidget *uri_opener_list_view_create	(void)
 static void uri_opener_create(void) 
 {
 	GtkWidget *window;
+	GtkWidget *hbox;
 	GtkWidget *hbox1;
 	GtkWidget *vbox1;
 	GtkWidget *label;
 	GtkWidget *urilist;
+	GtkWidget *select_all_btn;
 	GtkWidget *open_btn;
-	GtkWidget *open_all_btn;
 	GtkWidget *close_btn;
 	GtkWidget *scrolledwin;
 
@@ -169,15 +181,12 @@ static void uri_opener_create(void)
 
 	vbox1 = gtk_vbox_new(FALSE, 6);
 	gtkut_stock_button_set_create(&hbox1, 
+				      &open_btn, GTK_STOCK_OPEN,
 				      &close_btn, GTK_STOCK_CLOSE,
-				      &open_all_btn, _("Open _All"),
-				      &open_btn, GTK_STOCK_OPEN);
+				      NULL, NULL);
 
 	g_signal_connect(G_OBJECT(open_btn), "clicked",
-			 G_CALLBACK(uri_opener_open_cb), GINT_TO_POINTER(FALSE));
-
-	g_signal_connect(G_OBJECT(open_all_btn), "clicked",
-			 G_CALLBACK(uri_opener_open_cb), GINT_TO_POINTER(TRUE));
+			 G_CALLBACK(uri_opener_open_cb), NULL);
 
 	g_signal_connect(G_OBJECT(close_btn), "clicked",
 			 G_CALLBACK(uri_opener_close_cb), NULL);
@@ -189,23 +198,27 @@ static void uri_opener_create(void)
 	gtk_box_pack_start(GTK_BOX(vbox1), label, FALSE, TRUE, 0);
 	
 	scrolledwin = gtk_scrolled_window_new(NULL, NULL);
+	gtk_scrolled_window_set_shadow_type(GTK_SCROLLED_WINDOW(scrolledwin),
+					    GTK_SHADOW_ETCHED_IN);
 	gtk_scrolled_window_set_policy(GTK_SCROLLED_WINDOW(scrolledwin),
-				       GTK_POLICY_AUTOMATIC, GTK_POLICY_ALWAYS);
+				       GTK_POLICY_AUTOMATIC, GTK_POLICY_AUTOMATIC);
 				       
 	gtk_widget_set_size_request(scrolledwin, 500, 250);
 
+	select_all_btn = gtk_button_new_with_label(_("Select All"));
+	g_signal_connect(G_OBJECT(select_all_btn), "clicked",
+			 G_CALLBACK(uri_opener_select_all_cb), NULL);	
+
+	hbox = gtk_hbox_new(FALSE, 0);
+	gtk_box_pack_start(GTK_BOX(hbox), select_all_btn, FALSE, FALSE, 0);
+	gtk_box_pack_start(GTK_BOX(hbox), gtk_label_new(""), TRUE, TRUE, 0);
+	
 	gtk_container_add(GTK_CONTAINER(scrolledwin), urilist);
 	gtk_box_pack_start(GTK_BOX(vbox1), scrolledwin, TRUE, TRUE, 0);
+	gtk_box_pack_start(GTK_BOX(vbox1), hbox, FALSE, FALSE, 0);
 	gtk_box_pack_start(GTK_BOX(vbox1), hbox1, FALSE, FALSE, 0);
 	
-	gtk_widget_show(label);
-	gtk_widget_show(scrolledwin);
-	gtk_widget_show(urilist);
-	gtk_widget_show(hbox1);
-	gtk_widget_show(vbox1);
-	gtk_widget_show(close_btn);
-	gtk_widget_show(open_btn);
-	gtk_widget_show(open_all_btn);
+	gtk_widget_show_all(vbox1);
 	gtk_container_add(GTK_CONTAINER (window), vbox1);
 
 	opener.window = window;
@@ -213,8 +226,8 @@ static void uri_opener_create(void)
 	opener.vbox1 = vbox1;
 	opener.label = label;
 	opener.urilist = urilist;
+	opener.scrolledwin = scrolledwin;
 	opener.open_btn = open_btn;
-	opener.open_all_btn = open_all_btn;
 	opener.close_btn = close_btn;
 
 }
@@ -254,12 +267,20 @@ static void uri_opener_list_view_clear_uris(GtkWidget *list_view)
 static void uri_opener_load_uris (void) 
 {
 	GSList *cur = opener.uris;
+	GtkTreeModel *model;
+	GtkTreeSelection *selection;
+	GtkTreeIter iter;
 	
 	uri_opener_list_view_clear_uris(opener.urilist);
 	for (; cur; cur = cur->next) {
 		ClickableText *uri = (ClickableText *)cur->data;
 		uri_opener_list_view_insert_uri(opener.urilist, NULL, uri);
 	}
+	
+	model = gtk_tree_view_get_model(GTK_TREE_VIEW(opener.urilist));
+	gtk_tree_model_get_iter_first(model, &iter);
+	selection = gtk_tree_view_get_selection(GTK_TREE_VIEW(opener.urilist));
+	gtk_tree_selection_select_iter(selection, &iter);
 }
 
 static void uri_opener_close(void) 
@@ -306,40 +327,44 @@ static void uri_opener_double_clicked(GtkTreeView		*list_view,
 			 prefs_common_get_uri_cmd());
 }
 
-
-
-
 static void uri_opener_open_cb(GtkWidget *widget, 
 			        gpointer data) 
 {
 	ClickableText *uri;
 	GtkTreeIter sel;
 	GtkTreeModel *model;
-	gboolean all = GPOINTER_TO_INT(data);
+	GtkTreeSelection *selection;
+	GList *selected, *cur;
 
-	if (!gtk_tree_selection_get_selected(gtk_tree_view_get_selection
-				(GTK_TREE_VIEW(opener.urilist)),
-				&model, &sel))
+	selection = gtk_tree_view_get_selection(GTK_TREE_VIEW(opener.urilist));
+	selected  = gtk_tree_selection_get_selected_rows(selection, &model);
+	if(!selected)
 		return;
-	
-	if (!all) {
+		
+	for(cur = selected; cur != NULL; cur = g_list_next(cur))
+	{ 
+		if(!gtk_tree_model_get_iter(model, &sel, (GtkTreePath *)cur->data))
+			continue;
+		
 		gtk_tree_model_get(model, &sel,
 			   URI_OPENER_DATA, &uri,
 			   -1);
 		if (!uri)
-			return;
+			continue;
 
 		if (textview_uri_security_check(opener.msgview->mimeview->textview, uri) == TRUE) 
 			open_uri(uri->uri,
 				 prefs_common_get_uri_cmd());
-	} else {
-		GSList *cur = opener.uris;
-
-		for (; cur; cur = cur->next) {
-			uri = (ClickableText *)cur->data;
-			if (textview_uri_security_check(opener.msgview->mimeview->textview, uri) == TRUE) 
-				open_uri(uri->uri,
-					 prefs_common_get_uri_cmd());
-		}
 	}
+	
+	g_list_foreach(selected, (GFunc)gtk_tree_path_free, NULL);
+	g_list_free(selected);
+}
+
+static void uri_opener_select_all_cb(GtkWidget *widget, 
+				     gpointer data)
+{
+	GtkTreeSelection *selection = gtk_tree_view_get_selection(
+						GTK_TREE_VIEW(opener.urilist));
+	gtk_tree_selection_select_all(selection);
 }

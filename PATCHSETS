@@ -3116,3 +3116,4 @@
 ( cvs diff -u -r 1.207.2.190 -r 1.207.2.191 src/folderview.c;  cvs diff -u -r 1.1.4.40 -r 1.1.4.41 src/gtk/gtksctree.c;  ) > 3.1.0cvs56.patchset
 ( cvs diff -u -r 1.1.4.91 -r 1.1.4.92 src/etpan/imap-thread.c;  ) > 3.1.0cvs57.patchset
 ( cvs diff -u -r 1.1.2.26 -r 1.1.2.27 src/prefs_other.c;  cvs diff -u -r 1.1.4.11 -r 1.1.4.12 src/gtk/gtksctree.h;  ) > 3.1.0cvs58.patchset
+( cvs diff -u -r 1.94.2.166 -r 1.94.2.167 src/messageview.c;  cvs diff -u -r 1.1.2.6 -r 1.1.2.7 src/uri_opener.c;  ) > 3.1.0cvs59.patchset

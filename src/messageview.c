@@ -2490,6 +2490,7 @@ void messageview_list_urls (MessageView	*msgview)
 {
 	GSList *cur = msgview->mimeview->textview->uri_list;
 	GSList *newlist = NULL;
+	GHashTable *uri_hashtable = g_hash_table_new(g_str_hash, g_str_equal); 
 	for (; cur; cur = cur->next) {
 		ClickableText *uri = (ClickableText *)cur->data;
 		if (uri->uri &&
@@ -2498,9 +2499,17 @@ void messageview_list_urls (MessageView	*msgview)
 		     !g_ascii_strncasecmp(uri->uri, "www.", 4) ||
 		     !g_ascii_strncasecmp(uri->uri, "http:", 5) ||
 		     !g_ascii_strncasecmp(uri->uri, "https:", 6)))
+		{
+			if(g_hash_table_lookup(uri_hashtable, uri->uri))
+				continue;
+			
 			newlist = g_slist_prepend(newlist, uri);
+			g_hash_table_insert(uri_hashtable, uri->uri,
+					    GUINT_TO_POINTER(g_str_hash(uri->uri)));
+		}
 	}
 	newlist = g_slist_reverse(newlist);
 	uri_opener_open(msgview, newlist);
 	g_slist_free(newlist);
+	g_hash_table_destroy(uri_hashtable);
 }
