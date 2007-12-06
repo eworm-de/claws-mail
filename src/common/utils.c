@@ -3023,26 +3023,7 @@ gint str_write_to_file(const gchar *str, const gchar *file)
 	return 0;
 }
 
-gchar *file_read_to_str(const gchar *file)
-{
-	FILE *fp;
-	gchar *str;
-
-	g_return_val_if_fail(file != NULL, NULL);
-
-	if ((fp = g_fopen(file, "rb")) == NULL) {
-		FILE_OP_ERROR(file, "fopen");
-		return NULL;
-	}
-
-	str = file_read_stream_to_str(fp);
-
-	fclose(fp);
-
-	return str;
-}
-
-gchar *file_read_stream_to_str(FILE *fp)
+static gchar *file_read_stream_to_str_full(FILE *fp, gboolean recode)
 {
 	GByteArray *array;
 	guchar buf[BUFSIZ];
@@ -3070,7 +3051,7 @@ gchar *file_read_stream_to_str(FILE *fp)
 	str = (gchar *)array->data;
 	g_byte_array_free(array, FALSE);
 
-	if (!g_utf8_validate(str, -1, NULL)) {
+	if (recode && !g_utf8_validate(str, -1, NULL)) {
 		const gchar *src_codeset, *dest_codeset;
 		gchar *tmp = NULL;
 		src_codeset = conv_get_locale_charset_str();
@@ -3083,6 +3064,42 @@ gchar *file_read_stream_to_str(FILE *fp)
 	return str;
 }
 
+static gchar *file_read_to_str_full(const gchar *file, gboolean recode)
+{
+	FILE *fp;
+	gchar *str;
+
+	g_return_val_if_fail(file != NULL, NULL);
+
+	if ((fp = g_fopen(file, "rb")) == NULL) {
+		FILE_OP_ERROR(file, "fopen");
+		return NULL;
+	}
+
+	str = file_read_stream_to_str_full(fp, recode);
+
+	fclose(fp);
+
+	return str;
+}
+
+gchar *file_read_to_str(const gchar *file)
+{
+	file_read_to_str_full(file, TRUE);
+}
+gchar *file_read_stream_to_str(FILE *fp)
+{
+	file_read_stream_to_str_full(fp, TRUE);
+}
+
+gchar *file_read_to_str_no_recode(const gchar *file)
+{
+	file_read_to_str_full(file, FALSE);
+}
+gchar *file_read_stream_to_str_no_recode(FILE *fp)
+{
+	file_read_stream_to_str_full(fp, FALSE);
+}
 
 char *fgets_crlf(char *buf, int size, FILE *stream)
 {

@@ -1,3 +1,11 @@
+2007-12-06 [colin]	3.1.0cvs61
+
+	* src/news.c
+	* src/common/utils.c
+	* src/common/utils.h
+		Fix posting, and fix UTF-8 being sent when encoding
+		is 8bit
+
 2007-12-05 [colin]	3.1.0cvs60
 
 	* src/news.c

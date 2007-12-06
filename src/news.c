@@ -668,7 +668,7 @@ void news_remove_group_list_cache(Folder *folder)
 gint news_post(Folder *folder, const gchar *file)
 {
 	gint ok;
-	char *contents = file_read_to_str(file);
+	char *contents = file_read_to_str_no_recode(file);
 	NewsSession *session;
 
 	g_return_val_if_fail(folder != NULL, -1);
@@ -695,7 +695,7 @@ gint news_post(Folder *folder, const gchar *file)
 		REMOTE_FOLDER(folder)->session = NULL;
 	}
 
-	return (ok  = NEWSNNTP_NO_ERROR ? 0 : -1);
+	return (ok == NEWSNNTP_NO_ERROR ? 0 : -1);
 }
 
 static gint news_get_article(Folder *folder, gint num, gchar *filename)

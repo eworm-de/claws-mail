@@ -434,6 +434,8 @@ gint str_write_to_file		(const gchar	*str,
 				 const gchar	*file);
 gchar *file_read_to_str		(const gchar	*file);
 gchar *file_read_stream_to_str	(FILE		*fp);
+gchar *file_read_to_str_no_recode(const gchar *file);
+gchar *file_read_stream_to_str_no_recode(FILE *fp);
 
 char *fgets_crlf(char *buf, int size, FILE *stream);
 
