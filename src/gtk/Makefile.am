@@ -68,6 +68,7 @@ AM_CPPFLAGS = \
 	-I$(srcdir)/../common \
 	-I../common \
 	-I$(srcdir)/.. \
+	-I$(builddir)/.. \
 	$(GTK_CFLAGS) \
 	$(OPENSSL_CFLAGS) \
 	$(ASPELL_CFLAGS) \

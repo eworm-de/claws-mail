@@ -1,3 +1,14 @@
+2007-12-06 [colin]	3.1.0cvs63
+
+	* src/common/w32_time.c
+	* src/common/w32lib.h
+	* src/etpan/etpan-thread-manager.c
+	* src/etpan/imap-thread.c
+	* src/etpan/nntp-thread.c
+	* src/gtk/Makefile.am
+		Fix win32 build with libetpan. Thanks to
+		Marcus Brinkmann.
+
 2007-12-06 [colin]	3.1.0cvs62
 
 	* src/account.c

@@ -31,9 +31,10 @@
 #include <sys/socket.h>
 #endif
 #include <fcntl.h>
+#ifndef G_OS_WIN32
 #include <sys/mman.h>
 #include <sys/wait.h>
-
+#endif
 #include <gtk/gtk.h>
 #include <log.h>
 #include "etpan-thread-manager.h"

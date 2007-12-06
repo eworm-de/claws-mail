@@ -31,6 +31,7 @@
 #include <libetpan/mailsem.h>
 #include <semaphore.h>
 #include <unistd.h>
+#include <fcntl.h>
 
 #include "etpan-errors.h"
 

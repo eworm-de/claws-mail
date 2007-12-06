@@ -76,8 +76,12 @@
 #include <stdio.h>
 
 #ifdef __MINGW32__
+#include <_mingw.h>
+#define MINGW32_VERSION (__MINGW32_MAJOR_VERSION * 100 \
+			 + __MINGW32_MINOR_VERSION)
 #include <wchar.h>
 #include <dirent.h>
+#include <sys/time.h>
 #endif
 
 /* Mingw32 3.4.4 defines interface to struct and thus breaks our own
@@ -162,7 +166,7 @@ DIR *opendir( const char *name );
 int closedir( DIR *dir );
 struct dirent *readdir( DIR *dir );
 
-#ifdef __MINGW32__
+#if defined (__MINGW32__) && MINGW32_VERSION < 312
 struct timezone {
   int tz_minuteswest;
   int tz_dsttime;
@@ -176,7 +180,9 @@ int lstat( const char *file_name, struct stat *buf );
 pid_t waitpid( pid_t pid, int *status, int options );
 
 /*** sys/time ***/
+#if ! defined (__MINGW32__) || MINGW32_VERSION < 312
 int gettimeofday( struct timeval *tv, struct timezone *tz );
+#endif
 
 /*** unistd ***/
 uid_t getuid( void );
