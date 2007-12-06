@@ -1009,8 +1009,10 @@ static void account_clone(GtkWidget *widget, gpointer data)
         ACP_FASSIGN(mark_crosspost_read);
         ACP_FASSIGN(crosspost_col);
 
+#ifndef G_OS_WIN32
         ACP_FASSIGN(set_tunnelcmd);
         ACP_FDUP(tunnelcmd);
+#endif
 
         ACP_FDUP(imap_dir);
 	ACP_FASSIGN(imap_subsonly);

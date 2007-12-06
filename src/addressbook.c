@@ -4984,17 +4984,15 @@ gboolean addressbook_add_contact(
 /*
  * This function is used by the matcher dialog to select a book/folder.
  */
-gboolean addressbook_folder_selection( gchar **folderpath )
+gchar *addressbook_folder_selection( const gchar *folderpath)
 {
 	AddressBookFile *book = NULL;
 	ItemFolder *folder = NULL;
-	gchar *path;
+	gchar *path = NULL;
 
-	g_return_val_if_fail( folderpath != NULL, FALSE);
+	g_return_val_if_fail( folderpath != NULL, NULL);
 
-	path = *folderpath;
-	*folderpath = NULL;
-	if ( addressbook_foldersel_selection( _addressIndex_, &book, &folder, path )
+	if ( addressbook_foldersel_selection( _addressIndex_, &book, &folder, folderpath )
 		&& book != NULL ) {
 		if ( folder != NULL) {
 			gchar *tmp = NULL;
@@ -5014,15 +5012,15 @@ gboolean addressbook_folder_selection( gchar **folderpath )
 					g_free(oldtmp);
 				}
 			}
-			*folderpath = g_strdup_printf("%s/%s", book->fileName, tmp);
+			path = g_strdup_printf("%s/%s", book->fileName, tmp);
 			g_free(tmp);
 		} else {
-			*folderpath = g_strdup_printf("%s", book->fileName);
+			path = g_strdup_printf("%s", book->fileName);
 		}
-		debug_print( "addressbook_foldersel: %s\n", *folderpath?*folderpath:"(null)");
-		return (*folderpath != NULL);
+		debug_print( "addressbook_foldersel: %s\n", path?path:"(null)");
+		return path;
 	}
-	return FALSE;
+	return NULL;
 }
 
 /* ***********************************************************************

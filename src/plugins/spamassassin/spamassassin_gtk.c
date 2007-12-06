@@ -95,13 +95,15 @@ struct Transport transports[] = {
 static void spamassassin_whitelist_ab_select_cb(GtkWidget *widget, gpointer data)
 {
 	struct SpamAssassinPage *page = (struct SpamAssassinPage *) data;
-	gchar *folderpath = NULL;
-	gboolean ret = FALSE;
+	const gchar *folderpath = NULL;
+	gchar *new_path = NULL;
 
-	folderpath = (gchar *) gtk_entry_get_text(GTK_ENTRY(GTK_BIN(page->whitelist_ab_folder_combo)->child));
-	ret = addressbook_folder_selection(&folderpath);
-	if ( ret != FALSE && folderpath != NULL)
-		gtk_entry_set_text(GTK_ENTRY(GTK_BIN(page->whitelist_ab_folder_combo)->child), folderpath);
+	folderpath = gtk_entry_get_text(GTK_ENTRY(GTK_BIN(page->whitelist_ab_folder_combo)->child));
+	new_path = addressbook_folder_selection(folderpath);
+	if (new_path) {
+		gtk_entry_set_text(GTK_ENTRY(GTK_BIN(page->whitelist_ab_folder_combo)->child), new_path);
+		g_free(new_path);
+	} 
 }
 
 static void foldersel_cb(GtkWidget *widget, gpointer data)

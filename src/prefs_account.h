@@ -163,6 +163,7 @@ struct _PrefsAccount
 	gboolean  mark_crosspost_read;
 	gint	  crosspost_col;
 
+#ifndef G_OS_WIN32
 	/* Use this command to open a socket, rather than doing so
 	 * directly.  Good if you want to perhaps use a special socks
 	 * tunnel command, or run IMAP-over-SSH.  In this case the
@@ -173,6 +174,7 @@ struct _PrefsAccount
 	 * as a particular user. */
 	gboolean  set_tunnelcmd;
 	gchar     *tunnelcmd;
+#endif
 
 	gchar *imap_dir;
 	gboolean imap_subsonly;

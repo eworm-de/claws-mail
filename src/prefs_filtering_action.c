@@ -1210,16 +1210,15 @@ static void prefs_filtering_action_select_dest(void)
 
 static void prefs_filtering_action_select_addressbook(void)
 {
-	gchar *folderpath = NULL;
-	gchar *prev = NULL;
-	gboolean ret = FALSE;
+	const gchar *folderpath = NULL;
+	gchar *new_path = NULL;
 
-	prev = g_strdup(gtk_editable_get_chars(GTK_EDITABLE(filtering_action.dest_entry), 0, -1));
-	folderpath = prev;
-	ret = addressbook_folder_selection(&folderpath);
-	if ( ret != FALSE && folderpath != NULL)
-		gtk_entry_set_text(GTK_ENTRY(filtering_action.dest_entry), folderpath);
-	g_free(prev);
+	folderpath = gtk_entry_get_text(GTK_ENTRY(filtering_action.dest_entry));
+	new_path = addressbook_folder_selection(folderpath);
+	if (new_path) {
+		gtk_entry_set_text(GTK_ENTRY(filtering_action.dest_entry), new_path);
+		g_free(new_path);
+	} 
 }
 
 static void prefs_filtering_action_type_selection_changed(GtkWidget *combo,

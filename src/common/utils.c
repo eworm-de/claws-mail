@@ -3085,20 +3085,20 @@ static gchar *file_read_to_str_full(const gchar *file, gboolean recode)
 
 gchar *file_read_to_str(const gchar *file)
 {
-	file_read_to_str_full(file, TRUE);
+	return file_read_to_str_full(file, TRUE);
 }
 gchar *file_read_stream_to_str(FILE *fp)
 {
-	file_read_stream_to_str_full(fp, TRUE);
+	return file_read_stream_to_str_full(fp, TRUE);
 }
 
 gchar *file_read_to_str_no_recode(const gchar *file)
 {
-	file_read_to_str_full(file, FALSE);
+	return file_read_to_str_full(file, FALSE);
 }
 gchar *file_read_stream_to_str_no_recode(FILE *fp)
 {
-	file_read_stream_to_str_full(fp, FALSE);
+	return file_read_stream_to_str_full(fp, FALSE);
 }
 
 char *fgets_crlf(char *buf, int size, FILE *stream)

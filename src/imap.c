@@ -1042,13 +1042,16 @@ static IMAPSession *imap_session_new(Folder * folder,
 
 	imap_init(folder);
 	statuswindow_print_all(_("Connecting to IMAP4 server: %s..."), folder->account->recv_server);
+#ifndef G_OS_WIN32
 	if (account->set_tunnelcmd) {
 		r = imap_threaded_connect_cmd(folder,
 					      account->tunnelcmd,
 					      account->recv_server,
 					      port);
 	}
-	else {
+	else 
+#endif
+	{
 #if (defined(USE_OPENSSL) || defined (USE_GNUTLS))
 		if (ssl_type == SSL_TUNNEL) {
 			r = imap_threaded_connect_ssl(folder,

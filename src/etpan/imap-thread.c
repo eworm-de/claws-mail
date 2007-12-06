@@ -2348,6 +2348,8 @@ static void fetch_content_run(struct etpan_thread_op * op)
 		g_unlink(param->filename);
 	
 	free:
+		/* mmap_string_unref is a simple free in libetpan
+		 * when it has MMAP_UNAVAILABLE defined */
 		if (mmap_string_unref(content) != 0)
 			free(content);
 	}
@@ -2780,8 +2782,10 @@ static void append_run(struct etpan_thread_op * op)
 	int r;
 	char * data;
 	size_t size;
+#ifndef G_OS_WIN32
 	struct stat stat_buf;
 	int fd;
+#endif
 	guint32 uid = 0, val = 0;
 	
 	param = op->param;
@@ -2789,6 +2793,7 @@ static void append_run(struct etpan_thread_op * op)
 	
 	CHECK_IMAP();
 
+#ifndef G_OS_WIN32
 	r = stat(param->filename, &stat_buf);
 	if (r < 0) {
 		result->error = MAILIMAP_ERROR_APPEND;
@@ -2808,7 +2813,14 @@ static void append_run(struct etpan_thread_op * op)
 		result->error = MAILIMAP_ERROR_APPEND;
 		return;
 	}
-	
+#else
+	data = file_read_to_str_no_recode(param->filename);
+	if (data == NULL) {
+		result->error = MAILIMAP_ERROR_APPEND;
+		return;
+	}
+	size = strlen(data);
+#endif
 	mailstream_logger = imap_logger_append;
 	
 	r = mailimap_uidplus_append(param->imap, param->mailbox,
@@ -2817,8 +2829,12 @@ static void append_run(struct etpan_thread_op * op)
 
 	mailstream_logger = imap_logger_cmd;
 	
+#ifndef G_OS_WIN32
 	munmap(data, size);
 	close(fd);
+#else
+	g_free(data);
+#endif
 	
 	result->error = r;
 	result->uid = uid;
@@ -3025,7 +3041,7 @@ int imap_threaded_store(Folder * folder, struct mailimap_set * set,
 
 
 #define ENV_BUFFER_SIZE 512
-
+#ifndef G_OS_WIN32
 static void do_exec_command(int fd, const char * command,
 			    const char * servername, uint16_t port)
 {
@@ -3224,6 +3240,7 @@ int imap_threaded_connect_cmd(Folder * folder, const char * command,
 	
 	return result.error;
 }
+#endif /* G_OS_WIN32 */
 
 void imap_threaded_cancel(Folder * folder)
 {

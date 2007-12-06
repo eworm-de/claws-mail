@@ -292,7 +292,8 @@ static void addressbook_foldersel_load_folder( GtkCTreeNode *parentNode, ItemFol
 	}
 }
 
-static void addressbook_foldersel_load_data( AddressIndex *addrIndex, gchar *path, FolderPathMatch* match )
+static void addressbook_foldersel_load_data( AddressIndex *addrIndex, 
+					     FolderPathMatch* match )
 {
 	AddressDataSource *ds;
 	GList *list, *nodeDS;
@@ -367,7 +368,8 @@ static void addressbook_foldersel_load_data( AddressIndex *addrIndex, gchar *pat
 }
 
 gboolean addressbook_foldersel_selection( AddressIndex *addrIndex,
-					AddressBookFile **book, ItemFolder **folder, gchar* path)
+					AddressBookFile **book, ItemFolder **folder, 
+					const gchar* path)
 {
 	FolderPathMatch folder_path_match = { NULL, FALSE, 0, NULL };
 	gboolean retVal = FALSE;
@@ -393,7 +395,7 @@ gboolean addressbook_foldersel_selection( AddressIndex *addrIndex,
 			folder_path_match.folder_path = g_strsplit( path, "/", 256 );
 	}
 
-	addressbook_foldersel_load_data( addrIndex, path, &folder_path_match );
+	addressbook_foldersel_load_data( addrIndex, &folder_path_match );
 
 	if ( folder_path_match.folder_path != NULL && folder_path_match.matched == FALSE)
 		g_warning("addressbook_foldersel_load_data: couldn't match book/folder path '%s'\n", path);

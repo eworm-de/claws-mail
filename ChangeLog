@@ -1,3 +1,27 @@
+2007-12-06 [colin]	3.1.0cvs62
+
+	* src/account.c
+	* src/imap.c
+	* src/prefs_account.c
+	* src/prefs_account.h
+	* src/etpan/imap-thread.c
+	* src/etpan/imap-thread.h
+		Disable connection via command line on WIN32
+		Disable mmap use on WIN32 - use normal strings
+	* src/addressbook.c
+	* src/addressbook.h
+	* src/addressbook_foldersel.c
+	* src/addressbook_foldersel.h
+	* src/prefs_filtering_action.c
+	* src/prefs_matcher.c
+	* src/plugins/bogofilter/bogofilter_gtk.c
+	* src/plugins/dillo_viewer/dillo_prefs.c
+	* src/plugins/spamassassin/spamassassin_gtk.c
+		Fix leak, rework function logics to be more
+		natural - thanks to Holger
+	* src/common/utils.c
+		Fix warnings
+
 2007-12-06 [colin]	3.1.0cvs61
 
 	* src/news.c

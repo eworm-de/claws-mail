@@ -1321,7 +1321,7 @@ static MatcherProp *prefs_matcher_dialog_to_matcher(void)
 	gint value, sel;
 
 	if (value_criteria == -1)
-		return -1;
+		return NULL;
 
 	criteria = prefs_matcher_get_matching_from_criteria(value_criteria);
 
@@ -2020,13 +2020,15 @@ static void prefs_matcher_test_info(void)
 
 static void prefs_matcher_addressbook_select(void)
 {
-	gchar *folderpath = NULL;
-	gboolean ret = FALSE;
+	const gchar *folderpath = NULL;
+	gchar *new_path = NULL;
 
-	folderpath = (gchar *) gtk_entry_get_text(GTK_ENTRY(GTK_BIN(matcher.addressbook_folder_combo)->child));
-	ret = addressbook_folder_selection(&folderpath);
-	if ( ret != FALSE && folderpath != NULL)
-		gtk_entry_set_text(GTK_ENTRY(GTK_BIN(matcher.addressbook_folder_combo)->child), folderpath);
+	folderpath = gtk_entry_get_text(GTK_ENTRY(GTK_BIN(matcher.addressbook_folder_combo)->child));
+	new_path = addressbook_folder_selection(folderpath);
+	if (new_path) {
+		gtk_entry_set_text(GTK_ENTRY(GTK_BIN(matcher.addressbook_folder_combo)->child), new_path);
+		g_free(new_path);
+	} 
 }
 
 
