@@ -470,6 +470,7 @@ void * subject_table_lookup(GHashTable *subject_table, gchar * subject);
 void subject_table_insert(GHashTable *subject_table, gchar * subject,
 			  void * data);
 void subject_table_remove(GHashTable *subject_table, gchar * subject);
+void utils_free_regex(void);
 gint subject_get_prefix_length (const gchar *subject);
 
 /* quoting recognition */

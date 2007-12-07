@@ -1384,12 +1384,13 @@ int main(int argc, char *argv[])
 
 	gtk_main();
 
-#ifdef MAEMO
+	#ifdef MAEMO
 	osso_deinitialize(osso_context);
 #endif
 #ifdef G_OS_WIN32
 	win32_close_log();
 #endif
+	utils_free_regex();
 	exit_claws(mainwin);
 
 	return 0;

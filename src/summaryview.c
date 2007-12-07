@@ -1122,6 +1122,8 @@ gboolean summary_show(SummaryView *summaryview, FolderItem *item)
 	inc_lock();
 	summary_lock(summaryview);
 
+	utils_free_regex();
+
 	is_refresh = (item == summaryview->folder_item) ? TRUE : FALSE;
 
 	if (!is_refresh) {

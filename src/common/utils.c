@@ -3519,6 +3519,17 @@ void subject_table_remove(GHashTable *subject_table, gchar * subject)
  *		for a "clean" subject line. If no prefix was found, 0
  *		is returned.
  */
+static regex_t u_regex;
+static gboolean u_init_;
+
+void utils_free_regex(void)
+{
+	if (u_init_) {
+		regfree(&u_regex);
+		u_init_ = FALSE;
+	}
+}
+
 int subject_get_prefix_length(const gchar *subject)
 {
 	/*!< Array with allowable reply prefixes regexps. */
@@ -3542,13 +3553,11 @@ int subject_get_prefix_length(const gchar *subject)
 	const int PREFIXES = sizeof prefixes / sizeof prefixes[0];
 	int n;
 	regmatch_t pos;
-	static regex_t regex;
-	static gboolean init_;
 
 	if (!subject) return 0;
 	if (!*subject) return 0;
 
-	if (!init_) {
+	if (!u_init_) {
 		GString *s = g_string_new("");
 
 		for (n = 0; n < PREFIXES; n++)
@@ -3566,17 +3575,17 @@ int subject_get_prefix_length(const gchar *subject)
 
 		/* We now have something like "^\ *((PREFIX1\ ?)|(PREFIX2\ ?))+"
 		 * TODO: Should this be       "^\ *(((PREFIX1)|(PREFIX2))\ ?)+" ??? */
-		if (regcomp(&regex, s->str, REG_EXTENDED | REG_ICASE)) {
+		if (regcomp(&u_regex, s->str, REG_EXTENDED | REG_ICASE)) {
 			debug_print("Error compiling regexp %s\n", s->str);
 			g_string_free(s, TRUE);
 			return 0;
 		} else {
-			init_ = TRUE;
+			u_init_ = TRUE;
 			g_string_free(s, TRUE);
 		}
 	}
 
-	if (!regexec(&regex, subject, 1, &pos, 0) && pos.rm_so != -1)
+	if (!regexec(&u_regex, subject, 1, &pos, 0) && pos.rm_so != -1)
 		return pos.rm_eo;
 	else
 		return 0;
