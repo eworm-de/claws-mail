@@ -1,3 +1,10 @@
+2007-12-07 [colin]	3.1.0cvs65
+
+	* src/addrcustomattr.c
+		Update list of default custom attributes
+		now (will be needed for a feature patch
+		post 3.2.0)
+
 2007-12-07 [colin]	3.1.0cvs64
 
 	* src/folder.c

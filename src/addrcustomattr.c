@@ -62,9 +62,13 @@ enum {
 
 static gchar *default_addressbook_attributes_table[] = {
 	N_("birth date"),
-	N_("home address"),
-	N_("home phone"),
-	N_("home mobile phone"),
+	N_("address"),
+	N_("phone"),
+	N_("mobile phone"),
+	N_("organisation"),
+	N_("office address"),
+	N_("office phone"),
+	N_("fax"),
 	N_("website"),
 	NULL
 };
