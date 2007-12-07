@@ -3239,6 +3239,8 @@ static gint do_copy_msgs(FolderItem *dest, GSList *msglist, gboolean remove_sour
 
 	statusbar_print_all(_("Updating cache for %s..."), dest->path ? dest->path : "(null)");
 	total = g_slist_length(msglist);
+	
+	folder_item_set_batch(dest, TRUE);
 	for (l = msglist; l != NULL; l = g_slist_next(l)) {
 		MsgInfo *msginfo = (MsgInfo *) l->data;
                 GTuples *tuples;
@@ -3299,6 +3301,7 @@ static gint do_copy_msgs(FolderItem *dest, GSList *msglist, gboolean remove_sour
 				lastnum = num;
 		}
 	}
+	folder_item_set_batch(dest, FALSE);
 	statusbar_progress_all(0,0,0);
 	statusbar_pop_all();
 

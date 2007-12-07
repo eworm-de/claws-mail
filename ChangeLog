@@ -1,3 +1,9 @@
+2007-12-07 [colin]	3.1.0cvs64
+
+	* src/folder.c
+		Batch on destination folder when copying - fixes
+		slowness when moving unread mails to trash on IMAP
+
 2007-12-06 [colin]	3.1.0cvs63
 
 	* src/common/w32_time.c
