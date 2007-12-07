@@ -3402,6 +3402,7 @@ void main_window_destroy_all(void)
 		TOOLBAR_DESTROY_ACTIONS(mainwin->toolbar->action_list);
 		TOOLBAR_DESTROY_ITEMS(mainwin->toolbar->item_list);
 
+		summaryview_destroy(mainwin->summaryview);
 		mainwin->folderview->mainwin = NULL;
 		mainwin->summaryview->mainwin = NULL;
 		mainwin->messageview->mainwin = NULL;

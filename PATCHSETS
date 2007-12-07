@@ -3125,3 +3125,4 @@
 ( cvs diff -u -r 1.1.2.1 -r 1.1.2.2 src/addrcustomattr.c;  ) > 3.1.0cvs65.patchset
 ( cvs diff -u -r 1.14.2.12 -r 1.14.2.13 src/vcard.c;  ) > 3.1.0cvs66.patchset
 ( cvs diff -u -r 1.115.2.177 -r 1.115.2.178 src/main.c;  cvs diff -u -r 1.395.2.343 -r 1.395.2.344 src/summaryview.c;  cvs diff -u -r 1.36.2.129 -r 1.36.2.130 src/common/utils.c;  cvs diff -u -r 1.20.2.57 -r 1.20.2.58 src/common/utils.h;  ) > 3.1.0cvs67.patchset
+( cvs diff -u -r 1.274.2.224 -r 1.274.2.225 src/mainwindow.c;  cvs diff -u -r 1.395.2.344 -r 1.395.2.345 src/summaryview.c;  cvs diff -u -r 1.68.2.41 -r 1.68.2.42 src/summaryview.h;  ) > 3.1.0cvs68.patchset

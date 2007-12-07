@@ -178,7 +178,7 @@ private:
 };
 
 SummaryView	*summary_create(void);
-
+void summaryview_destroy(SummaryView *summaryview);
 void summary_init		  (SummaryView		*summaryview);
 gboolean summary_show		  (SummaryView		*summaryview,
 				   FolderItem		*fitem);

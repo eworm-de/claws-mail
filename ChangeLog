@@ -1,3 +1,10 @@
+2007-12-07 [colin]	3.1.0cvs68
+
+	* src/mainwindow.c
+	* src/summaryview.c
+	* src/summaryview.h
+		Free simplify_subject_preg at exit
+
 2007-12-07 [colin]	3.1.0cvs67
 
 	* src/main.c

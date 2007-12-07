@@ -5602,6 +5602,14 @@ static void summary_tags_menu_item_activate_item_cb(GtkMenuItem *menu_item,
 
 }
 
+void summaryview_destroy(SummaryView *summaryview)
+{
+	if(summaryview->simplify_subject_preg) {
+		regfree(summaryview->simplify_subject_preg);
+		g_free(summaryview->simplify_subject_preg);
+		summaryview->simplify_subject_preg = NULL;
+	}
+}
 static void summary_tags_menu_item_apply_tags_activate_cb(GtkWidget *widget,
 						     gpointer data)
 {
