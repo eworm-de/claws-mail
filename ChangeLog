@@ -1,3 +1,8 @@
+2007-12-07 [colin]	3.1.0cvs66
+
+	* src/vcard.c
+		Fix QP decoding (and UTF8)
+
 2007-12-07 [colin]	3.1.0cvs65
 
 	* src/addrcustomattr.c

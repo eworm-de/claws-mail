@@ -3123,3 +3123,4 @@
 ( cvs diff -u -r 1.1.2.2 -r 1.1.2.3 src/common/w32_time.c;  cvs diff -u -r 1.1.2.3 -r 1.1.2.4 src/common/w32lib.h;  cvs diff -u -r 1.1.4.9 -r 1.1.4.10 src/etpan/etpan-thread-manager.c;  cvs diff -u -r 1.1.4.93 -r 1.1.4.94 src/etpan/imap-thread.c;  cvs diff -u -r 1.1.2.3 -r 1.1.2.4 src/etpan/nntp-thread.c;  cvs diff -u -r 1.20.2.15 -r 1.20.2.16 src/gtk/Makefile.am;  ) > 3.1.0cvs63.patchset
 ( cvs diff -u -r 1.213.2.171 -r 1.213.2.172 src/folder.c;  ) > 3.1.0cvs64.patchset
 ( cvs diff -u -r 1.1.2.1 -r 1.1.2.2 src/addrcustomattr.c;  ) > 3.1.0cvs65.patchset
+( cvs diff -u -r 1.14.2.12 -r 1.14.2.13 src/vcard.c;  ) > 3.1.0cvs66.patchset

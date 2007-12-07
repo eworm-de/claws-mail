@@ -374,48 +374,25 @@ static void vcard_build_items(
 }
 
 /* Unescape characters in quoted-printable string. */
-static void vcard_unescape_qp( gchar *value ) {
-	gchar *ptr, *src, *dest;
-	gint d, v = 0;
-	gchar ch;
-	gboolean gotch;
-	ptr = value;
-	while( *ptr ) {
-		gotch = FALSE;
-		if( *ptr == '=' ) {
-			v = 0;
-			ch = *(ptr + 1);
-			if( ch ) {
-				if( ch > '0' && ch < '8' ) v = ch - '0';
-			}
-			d = -1;
-			ch = *(ptr + 2);
-			if( ch ) {
-				if( ch > '\x60' ) ch -= '\x20';
-				if( ch > '0' && ch < ' ' ) d = ch - '0';
-				d = ch - '0';
-				if( d > 9 ) d -= 7;
-				if( d > -1 && d < 16 ) {
-					v = ( 16 * v ) + d;
-					gotch = TRUE;
-				}
-			}
-		}
-		if( gotch ) {
-			/* Replace = with char and move down in buffer */
-			*ptr = v;
-			src = ptr + 3;
-			dest = ptr + 1;
-			while( *src ) {
-				*dest++ = *src++;
-			}
-			*dest = '\0';
-		}
-		ptr++;
+static gchar *vcard_unescape_qp( gchar *value ) {
+	gchar *res = NULL;
+	gint len;
+	if (value == NULL)
+		return NULL;
+		
+	len = strlen(value);
+	res = g_malloc(len);
+	qp_decode_const(res, len-1, value);
+	if (!g_utf8_validate(res, -1, NULL)) {
+		gchar *mybuf = g_malloc(strlen(res)*2 +1);
+		conv_localetodisp(mybuf, strlen(res)*2 +1, res);
+		g_free(res);
+		res = mybuf;
 	}
+	return res;
 }
 
-/*
+ /*
 * Read file data into root folder.
 * Note that one vCard can have multiple E-Mail addresses (MAIL tags);
 * these are broken out into separate address items. An address item
@@ -463,9 +440,12 @@ static void vcard_read_file( VCardFile *cardFile ) {
 		/* g_print( "\tvalue: %s\n", tagvalue ); */
 
 		if( g_utf8_collate( tagtype, VCARD_TYPE_QP ) == 0 ) {
+			gchar *tmp;
 			/* Quoted-Printable: could span multiple lines */
 			tagvalue = vcard_read_qp( cardFile, tagvalue );
-			vcard_unescape_qp( tagvalue );
+			tmp = vcard_unescape_qp( tagvalue );
+			g_free(tagvalue);
+			tagvalue=tmp;
 			/* g_print( "QUOTED-PRINTABLE !!! final\n>%s<\n", tagvalue ); */
 		}
 
@@ -677,9 +657,12 @@ gint vcard_test_read_file( const gchar *fileSpec ) {
 			}
 
 			if( g_utf8_collate( tagtype, VCARD_TYPE_QP ) == 0 ) {
+				gchar *tmp;
 				/* Quoted-Printable: could span multiple lines */
 				tagvalue = vcard_read_qp( cardFile, tagvalue );
-				vcard_unescape_qp( tagvalue );
+				tmp = vcard_unescape_qp( tagvalue );
+				g_free(tagvalue);
+				tagvalue=tmp;
 			}
 			if( g_utf8_collate( tagname, VCARD_TAG_START ) == 0 &&
 				g_ascii_strcasecmp( tagvalue, VCARD_NAME ) == 0 ) {
