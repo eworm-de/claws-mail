@@ -1,3 +1,8 @@
+2007-12-08 [paul]	3.1.0cvs70
+
+	* src/prefs_receive.c
+		small change to the English
+
 2007-12-08 [colin]	3.1.0cvs69
 
 	* src/vcard.c

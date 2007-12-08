@@ -255,7 +255,7 @@ static void prefs_receive_create_widget(PrefsPage *_page, GtkWindow *window,
 	gtk_entry_set_text(GTK_ENTRY(entry_newmail_notify_cmd), 
 		prefs_common.newmail_notify_cmd);
 #else
- 	PACK_CHECK_BUTTON (vbox2, checkbtn_maemo_show_led, _("Toggle LED blinking"));
+ 	PACK_CHECK_BUTTON (vbox2, checkbtn_maemo_show_led, _("Blink LED"));
  	PACK_CHECK_BUTTON (vbox2, checkbtn_maemo_play_sound, _("Play sound"));
  	PACK_CHECK_BUTTON (vbox2, checkbtn_maemo_show_banner,
  			   _("Show info banner"));
