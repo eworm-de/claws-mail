@@ -1,3 +1,8 @@
+2007-12-08 [colin]	3.1.0cvs69
+
+	* src/vcard.c
+		Fix warnings
+
 2007-12-07 [colin]	3.1.0cvs68
 
 	* src/mainwindow.c

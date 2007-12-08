@@ -33,6 +33,8 @@
 #include "addrcache.h"
 #include "adbookbase.h"
 #include "utils.h"
+#include "codeconv.h"
+#include "quoted-printable.h"
 
 #define GNOMECARD_DIR     ".gnome"
 #define GNOMECARD_FILE    "GnomeCard"
