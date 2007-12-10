@@ -1,3 +1,9 @@
+2007-12-10 [colin]	3.1.0cvs71
+
+	* src/common/utils.c
+		Fix potential buffer overrun (thanks to
+		Hiroyuki)
+
 2007-12-08 [paul]	3.1.0cvs70
 
 	* src/prefs_receive.c
