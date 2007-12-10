@@ -1,3 +1,8 @@
+2007-12-10 [colin]	3.1.0cvs72
+
+	* src/folder.c
+		Don't crash when setting batch mode on no folder
+
 2007-12-10 [colin]	3.1.0cvs71
 
 	* src/common/utils.c

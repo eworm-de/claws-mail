@@ -4240,6 +4240,8 @@ gboolean folder_want_synchronise(Folder *folder)
 
 void folder_item_set_batch (FolderItem *item, gboolean batch)
 {
+	if (!item || !item->folder)
+		return;
 	if (item->folder->klass->set_batch) {
 		item->folder->klass->set_batch(item->folder, item, batch);
 	}
