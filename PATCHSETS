@@ -3130,3 +3130,4 @@
 ( cvs diff -u -r 1.1.2.22 -r 1.1.2.23 src/prefs_receive.c;  ) > 3.1.0cvs70.patchset
 ( cvs diff -u -r 1.36.2.130 -r 1.36.2.131 src/common/utils.c;  ) > 3.1.0cvs71.patchset
 ( cvs diff -u -r 1.213.2.172 -r 1.213.2.173 src/folder.c;  ) > 3.1.0cvs72.patchset
+( cvs diff -u -r 1.5.2.73 -r 1.5.2.74 src/gtk/gtkutils.c;  ) > 3.1.0cvs73.patchset

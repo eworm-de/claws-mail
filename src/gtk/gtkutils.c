@@ -552,7 +552,7 @@ gboolean gtkut_text_view_search_string(GtkTextView *text, const gchar *str,
 		gtk_text_iter_forward_chars(&end, len);
 		/* place "insert" at the last character */
 		gtk_text_buffer_select_range(buffer, &end, &match_pos);
-		gtk_text_view_scroll_to_mark(text, mark, 0.0, FALSE, 0.0, 0.0);
+		gtk_text_view_scroll_to_mark(text, mark, 0.0, TRUE, 0.0, 0.5);
 		return TRUE;
 	}
 
@@ -584,7 +584,7 @@ gboolean gtkut_text_view_search_string_backward(GtkTextView *text, const gchar *
 
 		gtk_text_iter_forward_chars(&end, len);
 		gtk_text_buffer_select_range(buffer, &match_pos, &end);
-		gtk_text_view_scroll_to_mark(text, mark, 0.0, FALSE, 0.0, 0.0);
+		gtk_text_view_scroll_to_mark(text, mark, 0.0, TRUE, 0.0, 0.5);
 		return TRUE;
 	}
 

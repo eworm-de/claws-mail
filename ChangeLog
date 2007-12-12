@@ -1,3 +1,11 @@
+2007-12-12 [wwp]	3.1.0cvs73
+
+	* src/gtk/gtkutils.c
+		Improve the way we show results of searches
+		in message bodies: selected text now get centered
+		vertically in the message window.
+		Patch by Marius Glauser <seelenhirt@gmx.net>.
+
 2007-12-10 [colin]	3.1.0cvs72
 
 	* src/folder.c
