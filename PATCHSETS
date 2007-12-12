@@ -3131,3 +3131,4 @@
 ( cvs diff -u -r 1.36.2.130 -r 1.36.2.131 src/common/utils.c;  ) > 3.1.0cvs71.patchset
 ( cvs diff -u -r 1.213.2.172 -r 1.213.2.173 src/folder.c;  ) > 3.1.0cvs72.patchset
 ( cvs diff -u -r 1.5.2.73 -r 1.5.2.74 src/gtk/gtkutils.c;  ) > 3.1.0cvs73.patchset
+( cvs diff -u -r 1.100.2.57 -r 1.100.2.58 AUTHORS;  cvs diff -u -r 1.1.2.43 -r 1.1.2.44 src/gtk/authors.h;  ) > 3.1.0cvs74.patchset

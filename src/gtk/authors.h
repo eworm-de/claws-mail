@@ -115,6 +115,7 @@ static char *CONTRIBS_LIST[] = {
 "Matthias Förste",
 "Stoyan Genov",
 "Thomas Gilgin",
+"Marius Glauser",
 "Thierry Godefroy",
 "Alex Gorbachenko",
 "Yang Guilong",

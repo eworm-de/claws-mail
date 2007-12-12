@@ -1,3 +1,9 @@
+2007-12-12 [wwp]	3.1.0cvs74
+
+	* AUTHORS
+	* src/gtk/authors.h
+		Added Marius Glauser to the hall of fame.
+
 2007-12-12 [wwp]	3.1.0cvs73
 
 	* src/gtk/gtkutils.c
