@@ -1889,10 +1889,7 @@ static void folderview_set_sens_and_popup_menu(FolderView *folderview, gint row,
 	FolderItem *special_trash = NULL, *special_queue = NULL;
 	PrefsAccount *ac;
 
-	if (row > 0)
-		item = gtk_clist_get_row_data(clist, row);
-	else
-		item = folderview_get_selected_item(folderview);
+	item = folderview_get_selected_item(folderview);
 
 	g_return_if_fail(item != NULL);
 	g_return_if_fail(item->folder != NULL);
