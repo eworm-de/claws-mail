@@ -1,3 +1,8 @@
+2007-12-15 [paul]	3.1.0cvs76
+
+	* src/folderview.c
+		fix compiler warning
+
 2007-12-14 [colin]	3.1.0cvs75
 
 	* src/folderview.c

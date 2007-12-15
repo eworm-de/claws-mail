@@ -1880,7 +1880,6 @@ static void folderview_append_folder(FolderView *folderview, Folder *folder)
 static void folderview_set_sens_and_popup_menu(FolderView *folderview, gint row, 
 				GdkEventButton *event)
 {
-	GtkCList *clist = GTK_CLIST(folderview->ctree);
 	FolderItem *item;
 	Folder *folder;
 	FolderViewPopup *fpopup;
