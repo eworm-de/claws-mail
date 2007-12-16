@@ -609,7 +609,7 @@ static GList *custom_attr_default_list(void)
 	list = NULL;
 	while (default_addressbook_attributes_table[i]) {
 		list = g_list_prepend(
-			list, g_strdup(default_addressbook_attributes_table[i]));
+			list, g_strdup(gettext(default_addressbook_attributes_table[i])));
 		i++;
 	}
 	list = g_list_reverse(list);

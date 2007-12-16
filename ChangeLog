@@ -1,3 +1,8 @@
+2007-12-16 [colin]	3.1.0cvs77
+
+	* src/addrcustomattr.c
+		Fix translations, patch by Fabien
+
 2007-12-15 [paul]	3.1.0cvs76
 
 	* src/folderview.c
