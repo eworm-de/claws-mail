@@ -1,5 +1,61 @@
 Changes of the  Claws Mail GTK2 branch
 
+* 3.2.0
+-------
+
+* Several GUI improvements
+	The colour preferences have been split into tabs.
+	Improve the way 'Find in current message' search results are
+	shown by vertically centering the selected text in the
+	Message View.
+	Improvements to the 'List URIs' dialogue.
+	Filtering/Processing Match Type dialogue has been reworked.
+	Several other layout improvements.
+
+* Several address book improvements
+	Added Custom Attributes, which can be edited from
+	'/Tools/Edit custom attributes...' and are used from the
+	'Name' drop down list on the 'Edit Person Details' dialogue. 
+	Always add a new contact if any value is set, instead of
+	silently rejecting it when an email address is not set.
+	Better guessing of contact name from incomplete name
+	information.
+	Better display of contacts that have no name set, in contact
+	lists, group contents, find duplicate results.
+	Error messages don't show in the status bar anymore, alert
+	panels are used instead.
+	Several other GUI improvements.
+
+* Added optional Tooltips to the Message List. This is enabled by the
+  'Show tooltips' option on the '/Display/Summaries' Preferences page
+  and is only possible with GTK+ >= 2.12
+
+* Much improved handling of Return Receipts, both outgoing and
+  incoming. 
+
+* Added the option to use the system defaults for External Programs
+  preferences on the '/Message View/External Programs' page.
+
+* Added "select first email in list" to the list of possible
+  selections in the 'Set default selection on entering a folder'
+  options on the '/Display/Summaries' preferences page.
+
+* IMAP: Added IMAP tags support. (Note: 'Bandwidth-efficient' mode
+  prevents fetching of tags.)
+
+* IMAP: Optimised flag handling and message copying.
+
+* Improved printed page layout for built-in GTK+ printing
+	Bold fonts are now used where appropriate and a demarcation
+	between header and body has been added.
+
+* Optimised filtering on flags/tags changes.
+
+* MAEMO: Added LED flashing for new mail alerts
+
+* MAEMO: Made all of the left of column in the Folder List a hotspot
+  for expanding/collapsing the tree.
+
 * 3.1.0
 -------
 
