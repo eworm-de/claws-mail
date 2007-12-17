@@ -3135,3 +3135,4 @@
 ( cvs diff -u -r 1.207.2.191 -r 1.207.2.192 src/folderview.c;  ) > 3.1.0cvs75.patchset
 ( cvs diff -u -r 1.207.2.192 -r 1.207.2.193 src/folderview.c;  ) > 3.1.0cvs76.patchset
 ( cvs diff -u -r 1.1.2.2 -r 1.1.2.3 src/addrcustomattr.c;  ) > 3.1.0cvs77.patchset
+( cvs diff -u -r 1.60.2.47 -r 1.60.2.48 po/es.po;  ) > 3.1.0cvs78.patchset

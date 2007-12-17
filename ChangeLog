@@ -1,3 +1,8 @@
+2007-12-17 [mones]	3.1.0cvs78
+
+	* po/es.po
+		Updated Spanish translation for 3.2.0 release
+
 2007-12-16 [colin]	3.1.0cvs77
 
 	* src/addrcustomattr.c
