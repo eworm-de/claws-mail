@@ -61,11 +61,11 @@ enum {
 };
 
 static gchar *default_addressbook_attributes_table[] = {
-	N_("birth date"),
+	N_("date of birth"),
 	N_("address"),
 	N_("phone"),
 	N_("mobile phone"),
-	N_("organisation"),
+	N_("organization"),
 	N_("office address"),
 	N_("office phone"),
 	N_("fax"),
@@ -187,9 +187,9 @@ static void custom_attr_popup_delete (void *obj, guint action, void *data)
 
 static void custom_attr_popup_factory_defaults (void *obj, guint action, void *data)
 {
-	if (alertpanel(_("Reset to factory defaults"),
-		       _("Do you really want to replace all attribute names\nwith the default ones?"),
-		       GTK_STOCK_CANCEL, GTK_STOCK_APPLY, NULL) == G_ALERTALTERNATE) {
+	if (alertpanel(_("Reset to default"),
+		       _("Do you really want to replace all attribute names\nwith the default set?"),
+		       GTK_STOCK_NO, GTK_STOCK_YES, NULL) == G_ALERTALTERNATE) {
 		GList *tmp = custom_attr_default_list();
 		custom_attr_window_load_list(tmp);
 		if (tmp) {
@@ -207,9 +207,9 @@ static void custom_attr_popup_factory_defaults (void *obj, guint action, void *d
 
 static GtkItemFactoryEntry custom_attr_popup_entries[] =
 {
-	{N_("/_Clear list"),					NULL, custom_attr_popup_clear_list, 0, NULL, NULL},
-	{N_("/_Delete"),						NULL, custom_attr_popup_delete, 0, NULL, NULL},
-	{N_("/_Reset to factory defaults"),		NULL, custom_attr_popup_factory_defaults, 0, NULL, NULL},
+	{N_("/_Clear list"),		NULL, custom_attr_popup_clear_list, 0, NULL, NULL},
+	{N_("/_Delete"),		NULL, custom_attr_popup_delete, 0, NULL, NULL},
+	{N_("/_Reset to default"),	NULL, custom_attr_popup_factory_defaults, 0, NULL, NULL},
 };
 
 static gint custom_attr_list_btn_pressed(GtkWidget *widget, GdkEventButton *event,
@@ -504,7 +504,8 @@ static void custom_attr_window_create(void)
 
 	attr_list = custom_attr_window_list_view_create();
 	
-	label = gtk_label_new(_("Adding or removing attribute names won't affect attributes already set to contacts."));
+	label = gtk_label_new(_("Adding or removing attribute names won't "
+				"affect attributes already set for contacts."));
 	gtk_widget_set_size_request(GTK_WIDGET(label), 380, -1);
 	gtk_label_set_line_wrap(GTK_LABEL(label), TRUE);
 	gtk_misc_set_alignment(GTK_MISC(label), 0, 0.5);

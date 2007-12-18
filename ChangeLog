@@ -1,3 +1,16 @@
+2007-12-18 [paul]	3.2.0cvs5
+
+	* po/en_GB.po
+		updated
+	* src/addrcustomattr.c
+	* src/editaddress.c
+		fixes to the ingleesh
+	* src/prefs_filtering_action.c
+		fix copyright header
+		fix untranslated strings
+	* src/prefs_filtering_action.h
+		fix copyright header
+
 2007-12-18 [wwp]	3.2.0cvs4
 
 	* src/folderview.c

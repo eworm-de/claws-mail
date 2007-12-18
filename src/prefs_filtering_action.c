@@ -1,6 +1,6 @@
 /*
- * Sylpheed -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 1999-2007 Hiroyuki Yamamoto
+ * Claws Mail -- a GTK+ based, lightweight, and fast e-mail client
+ * Copyright (C) 2003-2007 the Claws Mail team
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -170,7 +170,7 @@ static struct {
 	{ N_("Message flags"), 	N_("Mark as spam"),		ACTION_MARK_AS_SPAM },
 	{ N_("Message flags"), 	N_("Mark as ham"),		ACTION_MARK_AS_HAM },
 	{ NULL, 		N_("Execute"),			ACTION_EXECUTE },
-	{ NULL, 		N_("Color"),			ACTION_COLOR },
+	{ NULL, 		N_("Color label"),		ACTION_COLOR },
 	{ N_("Resend"), 	N_("Forward"),			ACTION_FORWARD },
 	{ N_("Resend"), 	N_("Forward as attachment"),	ACTION_FORWARD_AS_ATTACHMENT },
 	{ N_("Resend"), 	N_("Redirect"),			ACTION_REDIRECT },
@@ -206,20 +206,21 @@ static GtkTreeModel *prefs_filtering_action_create_model(void)
 	
 	store = gtk_tree_store_new(N_ACTION_COMBO, G_TYPE_STRING, G_TYPE_INT);
 	
-	for(i = 0; action_menu[i].menu || action_menu[i].text; i++)
+	for (i = 0; action_menu[i].menu || action_menu[i].text; i++)
 	{
-		if(action_menu[i].menu) {
-			if(!curr_menu || strcmp(action_menu[i].menu, curr_menu)) {
+		if (action_menu[i].menu) {
+			if (!curr_menu || strcmp(action_menu[i].menu, curr_menu)) {
 				gtk_tree_store_append(store, &iter, NULL);
 				gtk_tree_store_set(store, &iter,
-						   ACTION_COMBO_TEXT, action_menu[i].menu,
+						   ACTION_COMBO_TEXT,
+						   gettext(action_menu[i].menu),
 						   -1);
 				curr_menu = action_menu[i].menu;
 			} 
 			
 			gtk_tree_store_append(store, &iter2, &iter);
 			gtk_tree_store_set(store, &iter2,
-					   ACTION_COMBO_TEXT, action_menu[i].text,
+					   ACTION_COMBO_TEXT, gettext(action_menu[i].text),
 					   ACTION_COMBO_DATA, action_menu[i].action,
 					   -1);
 		} else {
@@ -227,7 +228,7 @@ static GtkTreeModel *prefs_filtering_action_create_model(void)
 			
 			gtk_tree_store_append(store, &iter, NULL);
 			gtk_tree_store_set(store, &iter,
-					   ACTION_COMBO_TEXT, action_menu[i].text,
+					   ACTION_COMBO_TEXT, gettext(action_menu[i].text),
 					   ACTION_COMBO_DATA, action_menu[i].action,
 					   -1); 
 		}   

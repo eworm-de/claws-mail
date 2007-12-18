@@ -159,7 +159,7 @@ static void edit_person_ok(GtkWidget *widget, gboolean *cancelled) {
 		val = alertpanel( _("Add New Person"),
 #ifndef MAEMO
 				_("Adding a new person requires at least one of the\n"
-				  "information above to be set:\n"
+				  "following values to be set:\n"
 				  " - Display Name\n"
 				  " - First Name\n"
 				  " - Last Name\n"
@@ -170,7 +170,7 @@ static void edit_person_ok(GtkWidget *widget, gboolean *cancelled) {
 				  "Click Cancel to close without saving."),
 #else
 				_("Adding a new person requires at least one of the\n"
-				  "information above to be set:\n"
+				  "following values to be set:\n"
 				  " - First Name\n"
 				  " - Last Name\n"
 				  " - any email address\n"
