@@ -120,8 +120,8 @@ static void prefs_logging_create_widget(PrefsPage *_page, GtkWindow *window,
 	GtkListStore *menu;
 	GtkTreeIter iter;
 	GtkTooltips *filtering_log_level_tooltip;
-	GtkWidget *frame_disc_log;
-	GtkWidget *vbox_disc_log;
+	GtkWidget *frame_disk_log;
+	GtkWidget *vbox_disk_log;
 	GtkWidget *label;
 	GtkWidget *hbox;
 	GtkWidget *checkbtn_log_standard;
@@ -287,24 +287,24 @@ static void prefs_logging_create_widget(PrefsPage *_page, GtkWindow *window,
 	SET_TOGGLE_SENSITIVITY(checkbtn_filtering_log, label_filtering_log_level);
 
 	/* disk log */
-	vbox_disc_log = gtkut_get_options_frame(vbox1, &frame_disc_log, _("Disc log"));
+	vbox_disk_log = gtkut_get_options_frame(vbox1, &frame_disk_log, _("Disk log"));
 
-	label = gtk_label_new(_("Write the following information to disc..."));
+	label = gtk_label_new(_("Write the following information to disk..."));
 	gtk_widget_show(label);
 	hbox = gtk_hbox_new (FALSE, 8);
-	gtk_container_add (GTK_CONTAINER (vbox_disc_log), hbox);
+	gtk_container_add (GTK_CONTAINER (vbox_disk_log), hbox);
 	gtk_box_pack_start(GTK_BOX(hbox), label, FALSE, FALSE, 0);
 	gtk_widget_show (hbox);
 
 	hbox_checkbtn = prefs_logging_create_check_buttons(&checkbtn_log_warning,
 				_("Warning messages"), &checkbtn_log_standard,
 				_("Network protocol messages"));
-	gtk_box_pack_start(GTK_BOX(vbox_disc_log), hbox_checkbtn, FALSE, FALSE, 0);
+	gtk_box_pack_start(GTK_BOX(vbox_disk_log), hbox_checkbtn, FALSE, FALSE, 0);
 
 	hbox_checkbtn = prefs_logging_create_check_buttons(&checkbtn_log_error,	
 				_("Error messages"), &checkbtn_log_status,
 				_("Status messages for filtering/processing log"));
-	gtk_box_pack_start(GTK_BOX(vbox_disc_log), hbox_checkbtn, FALSE, FALSE, 0);
+	gtk_box_pack_start(GTK_BOX(vbox_disk_log), hbox_checkbtn, FALSE, FALSE, 0);
 	
 	log_size_group = gtk_size_group_new(GTK_SIZE_GROUP_HORIZONTAL);
 	gtk_size_group_add_widget(log_size_group, checkbtn_log_warning);

@@ -1,3 +1,8 @@
+2007-12-18 [paul]	3.2.0cvs6
+
+	* src/prefs_logging.c
+		use 'disk' instead of 'disc'
+
 2007-12-18 [paul]	3.2.0cvs5
 
 	* po/en_GB.po
