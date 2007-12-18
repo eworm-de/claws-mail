@@ -355,9 +355,9 @@ static void prefs_matcher_models_create(void)
 	matcher.model_headers = GTK_TREE_MODEL(store);
 	
 	store = gtk_list_store_new(3, G_TYPE_STRING, G_TYPE_INT, G_TYPE_BOOLEAN);
-	COMBOBOX_ADD(store, "headers part", CRITERIA_HEADERS_PART);
-	COMBOBOX_ADD(store, "body part", CRITERIA_BODY_PART);
-	COMBOBOX_ADD(store, "whole message", CRITERIA_MESSAGE);
+	COMBOBOX_ADD(store, _("headers part"), CRITERIA_HEADERS_PART);
+	COMBOBOX_ADD(store, _("body part"), CRITERIA_BODY_PART);
+	COMBOBOX_ADD(store, _("whole message"), CRITERIA_MESSAGE);
 	matcher.model_phrase = GTK_TREE_MODEL(store);
 	
 	store = gtk_list_store_new(3, G_TYPE_STRING, G_TYPE_INT, G_TYPE_BOOLEAN);

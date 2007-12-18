@@ -1,3 +1,9 @@
+2007-12-18 [paul]	3.2.0cvs7
+
+	* src/prefs_matcher.c
+		add missing i18n for a few strings
+		Patch by Stephan Sachse
+
 2007-12-18 [paul]	3.2.0cvs6
 
 	* src/prefs_logging.c
