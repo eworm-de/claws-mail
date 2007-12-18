@@ -128,7 +128,9 @@ static void prefs_logging_create_widget(PrefsPage *_page, GtkWindow *window,
 	GtkWidget *checkbtn_log_warning;
 	GtkWidget *checkbtn_log_error;
 	GtkWidget *checkbtn_log_status;
-
+	GtkSizeGroup *log_size_group;
+	GtkSizeGroup *filter_size_group;
+	
 	vbox1 = gtk_vbox_new (FALSE, VSPACING);
 	gtk_widget_show (vbox1);
 	gtk_container_set_border_width (GTK_CONTAINER (vbox1), VBOX_BORDER);
@@ -209,6 +211,11 @@ static void prefs_logging_create_widget(PrefsPage *_page, GtkWindow *window,
 			   _("processing folders"));
 	gtk_box_pack_start(GTK_BOX(hbox_checkbtn), gtk_label_new(""),
 			   FALSE, TRUE, 0);
+
+	filter_size_group = gtk_size_group_new(GTK_SIZE_GROUP_HORIZONTAL);
+	gtk_size_group_add_widget(filter_size_group, checkbtn_filtering_log_inc);
+	gtk_size_group_add_widget(filter_size_group, checkbtn_filtering_log_manual);
+	gtk_size_group_add_widget(filter_size_group, checkbtn_filtering_log_folder_proc);
 
 	SET_TOGGLE_SENSITIVITY(checkbtn_filtering_log, frame_filtering_log);
 
@@ -298,6 +305,10 @@ static void prefs_logging_create_widget(PrefsPage *_page, GtkWindow *window,
 				_("Error messages"), &checkbtn_log_status,
 				_("Status messages for filtering/processing log"));
 	gtk_box_pack_start(GTK_BOX(vbox_disc_log), hbox_checkbtn, FALSE, FALSE, 0);
+	
+	log_size_group = gtk_size_group_new(GTK_SIZE_GROUP_HORIZONTAL);
+	gtk_size_group_add_widget(log_size_group, checkbtn_log_warning);
+	gtk_size_group_add_widget(log_size_group, checkbtn_log_error);
 
 	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(checkbtn_clip_network_log), 
 		prefs_common.cliplog);
