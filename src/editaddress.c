@@ -157,22 +157,29 @@ static void edit_person_ok(GtkWidget *widget, gboolean *cancelled) {
 		gint val;
 
 		val = alertpanel( _("Add New Person"),
+#ifndef MAEMO
 				_("Adding a new person requires at least one of the\n"
 				  "information above to be set:\n"
-#ifndef MAEMO
 				  " - Display Name\n"
-#endif
 				  " - First Name\n"
 				  " - Last Name\n"
-#ifndef MAEMO
 				  " - Nickname\n"
-#endif
 				  " - any email address\n"
 				  " - any additional attribute\n\n"
 				  "Click OK to keep editing this contact.\n"
 				  "Click Cancel to close without saving."),
+#else
+				_("Adding a new person requires at least one of the\n"
+				  "information above to be set:\n"
+				  " - First Name\n"
+				  " - Last Name\n"
+				  " - any email address\n"
+				  " - any additional attribute\n\n"
+				  "Click OK to keep editing this contact.\n"
+				  "Click Cancel to close without saving."),
+#endif
 				GTK_STOCK_CANCEL, "+"GTK_STOCK_OK, NULL );
-		if( val == G_ALERTALTERNATE ) {
+		if( val == G_ALERTDEFAULT ) {
 			edit_person_cancel(widget, cancelled);
 		}
 		g_free( cn );

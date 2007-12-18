@@ -1,3 +1,9 @@
+2007-12-18 [colin]	3.2.0cvs1
+
+	* src/editaddress.c
+		Fix build on old GCC
+		Fix inverted buttons
+
 2007-12-17 [paul]	3.2.0
 
 	* NEWS
