@@ -181,10 +181,13 @@ struct _PrefsCommon
 	/* new fonts */
 	gchar *widgetfont;
 	gchar *textfont;
-        gchar *printfont;
+	gchar *printfont;
+	gchar *boldfont;
 	gchar *normalfont;
 	gchar *smallfont;
 	gchar *titlefont;
+	gboolean use_different_print_font;
+	gboolean derive_from_normal_font;
 
 	/* custom colors */
 	ColorlabelPrefs custom_colorlabel[COLORLABELS];
@@ -306,7 +309,6 @@ struct _PrefsCommon
 	gboolean respect_flowed_format;
 
 	gboolean show_other_header;
-	gboolean use_different_print_font;
 	GSList *disphdr_list;
 
 	gboolean attach_desc;

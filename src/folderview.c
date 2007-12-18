@@ -736,8 +736,19 @@ void folderview_init(FolderView *folderview)
 	if (!bold_style) {
 		gtkut_convert_int_to_gdk_color(prefs_common.color_new, &gdk_color);
 		bold_style = gtk_style_copy(gtk_widget_get_style(ctree));
-		pango_font_description_set_weight
-			(bold_style->font_desc, PANGO_WEIGHT_BOLD);
+		if (prefs_common.derive_from_normal_font || !BOLD_FONT) {
+			pango_font_description_set_weight
+				(bold_style->font_desc, PANGO_WEIGHT_BOLD);
+		} else {
+			PangoFontDescription *font_desc;
+			font_desc = pango_font_description_from_string(BOLD_FONT);
+			if (font_desc) {
+				if (bold_style->font_desc)
+					pango_font_description_free
+						(bold_style->font_desc);
+				bold_style->font_desc = font_desc;
+			}
+		}
 		bold_color_style = gtk_style_copy(bold_style);
 		bold_color_style->fg[GTK_STATE_NORMAL] = gdk_color;
 
@@ -2678,29 +2689,40 @@ void folderview_set_target_folder_color(gint color_op)
 	}
 }
 
-static gchar *last_font = NULL;
+static gchar *last_smallfont = NULL;
+static gchar *last_normalfont = NULL;
+static gchar *last_boldfont = NULL;
 void folderview_reflect_prefs_pixmap_theme(FolderView *folderview)
 {
 	/* force reinit */
-	g_free(last_font);
-	last_font = NULL;
-	
+	g_free(last_smallfont);
+	last_smallfont = NULL;
+	g_free(last_normalfont);
+	last_normalfont = NULL;
+	g_free(last_boldfont);
+	last_boldfont = NULL;
 }
 
 void folderview_reflect_prefs(void)
 {
-	gboolean update_font = TRUE;
+	gboolean update_font = FALSE;
 	FolderView *folderview = mainwindow_get_mainwindow()->folderview;
 	FolderItem *item = folderview_get_selected_item(folderview);
 	GtkAdjustment *pos = gtk_scrolled_window_get_vadjustment(
 				GTK_SCROLLED_WINDOW(folderview->scrolledwin));
 	gint height = pos->value;
 
-	if (last_font && !strcmp(last_font, NORMAL_FONT))
-		update_font = FALSE;
+	if (!last_smallfont || strcmp(last_smallfont, SMALL_FONT) ||
+			!last_normalfont || strcmp(last_normalfont, NORMAL_FONT) ||
+			!last_boldfont || strcmp(last_boldfont, BOLD_FONT))
+		update_font = TRUE;
 
-	g_free(last_font);
-	last_font = g_strdup(NORMAL_FONT);
+	g_free(last_smallfont);
+	last_smallfont = g_strdup(SMALL_FONT);
+	g_free(last_normalfont);
+	last_normalfont = g_strdup(NORMAL_FONT);
+	g_free(last_boldfont);
+	last_boldfont = g_strdup(BOLD_FONT);
 
 	if (update_font) {		
 		normal_style = normal_color_style = bold_style = 

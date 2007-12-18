@@ -91,11 +91,17 @@ void gtkut_widget_set_small_font_size(GtkWidget *widget)
 	g_return_if_fail(widget != NULL);
 	g_return_if_fail(widget->style != NULL);
 
-	font_desc = pango_font_description_from_string(NORMAL_FONT);
-	size = pango_font_description_get_size(font_desc);
-	pango_font_description_set_size(font_desc, size * PANGO_SCALE_SMALL);
-	gtk_widget_modify_font(widget, font_desc);
-	pango_font_description_free(font_desc);
+	if (prefs_common.derive_from_normal_font || !SMALL_FONT) {
+		font_desc = pango_font_description_from_string(NORMAL_FONT);
+		size = pango_font_description_get_size(font_desc);
+		pango_font_description_set_size(font_desc, size * PANGO_SCALE_SMALL);
+		gtk_widget_modify_font(widget, font_desc);
+		pango_font_description_free(font_desc);
+	} else {
+		font_desc = pango_font_description_from_string(SMALL_FONT);
+		gtk_widget_modify_font(widget, font_desc);
+		pango_font_description_free(font_desc);
+	}
 }
 
 void gtkut_convert_int_to_gdk_color(gint rgbvalue, GdkColor *color)

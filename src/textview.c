@@ -378,10 +378,15 @@ static void textview_create_tags(GtkTextView *text, TextView *textview)
 			(NORMAL_FONT);
 
 	if (!bold_font_desc) {
-		bold_font_desc = pango_font_description_from_string
-			(NORMAL_FONT);
-		pango_font_description_set_weight
-			(bold_font_desc, PANGO_WEIGHT_BOLD);
+		if (prefs_common.derive_from_normal_font || !BOLD_FONT) {
+			bold_font_desc = pango_font_description_from_string
+				(NORMAL_FONT);
+			pango_font_description_set_weight
+				(bold_font_desc, PANGO_WEIGHT_BOLD);
+		} else {
+			bold_font_desc = pango_font_description_from_string
+				(BOLD_FONT);
+		}
 	}
 
 	buffer = gtk_text_view_get_buffer(text);
@@ -462,6 +467,10 @@ static void textview_create_tags(GtkTextView *text, TextView *textview)
                          G_CALLBACK(textview_uri_button_pressed), textview);
 	g_signal_connect(G_OBJECT(tag), "event",
                          G_CALLBACK(textview_uri_button_pressed), textview);
+/*	if (font_desc)
+		pango_font_description_free(font_desc);
+	if (bold_font_desc)
+		pango_font_description_free(bold_font_desc);*/
  }
 
 void textview_init(TextView *textview)
@@ -1615,25 +1624,29 @@ void textview_set_font(TextView *textview, const gchar *codeset)
 	GtkTextTag *tag;
 	GtkTextBuffer *buffer = gtk_text_view_get_buffer(GTK_TEXT_VIEW(textview->text));
 	GtkTextTagTable *tags = gtk_text_buffer_get_tag_table(buffer);
-	
-	if (NORMAL_FONT) {
-		PangoFontDescription *font_desc, *bold_font_desc;
-		font_desc = pango_font_description_from_string
-						(NORMAL_FONT);
+	PangoFontDescription *font_desc, *bold_font_desc;
+
+	font_desc = pango_font_description_from_string
+					(NORMAL_FONT);
+	if (font_desc) {
+		gtk_widget_modify_font(textview->text, font_desc);
+		CHANGE_TAG_FONT("header", font_desc);
+		CHANGE_TAG_FONT("hlink", font_desc);
+		pango_font_description_free(font_desc);
+	}
+	if (prefs_common.derive_from_normal_font || !BOLD_FONT) {
 		bold_font_desc = pango_font_description_from_string
 						(NORMAL_FONT);
-		if (font_desc) {
-			gtk_widget_modify_font(textview->text, font_desc);
-			CHANGE_TAG_FONT("header", font_desc);
-			CHANGE_TAG_FONT("hlink", font_desc);
-			pango_font_description_free(font_desc);
-		}
-		if (bold_font_desc) {
+		if (bold_font_desc)
 			pango_font_description_set_weight
 				(bold_font_desc, PANGO_WEIGHT_BOLD);
-			CHANGE_TAG_FONT("header_title", bold_font_desc);
-			pango_font_description_free(bold_font_desc);
-		}
+	} else {
+		bold_font_desc = pango_font_description_from_string
+						(BOLD_FONT);
+	}
+	if (bold_font_desc) {
+		CHANGE_TAG_FONT("header_title", bold_font_desc);
+		pango_font_description_free(bold_font_desc);
 	}
 
 	if (prefs_common.textfont) {

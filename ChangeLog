@@ -1,3 +1,19 @@
+2007-12-18 [wwp]	3.2.0cvs4
+
+	* src/folderview.c
+	* src/headerview.c
+	* src/prefs_common.c
+	* src/prefs_common.h
+	* src/prefs_fonts.c
+	* src/summaryview.c
+	* src/textview.c
+	* src/wizard.c
+	* src/common/defs.h
+	* src/gtk/gtkutils.c
+		Added prefs to set custom small and bold fonts
+		(might matter on some desktops, according to
+		DPI and font settings).
+
 2007-12-18 [colin]	3.2.0cvs3
 
 	* src/prefs_logging.c

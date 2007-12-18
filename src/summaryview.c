@@ -863,20 +863,30 @@ static void summary_set_fonts(SummaryView *summaryview)
 	gint size;
 
 	font_desc = pango_font_description_from_string(NORMAL_FONT);
-	gtk_widget_modify_font(summaryview->ctree, font_desc);
-	pango_font_description_free(font_desc);
+	if (font_desc) {
+		gtk_widget_modify_font(summaryview->ctree, font_desc);
+		pango_font_description_free(font_desc);
+	}
 
 	if (!bold_style) {
 		bold_style = gtk_style_copy
 			(gtk_widget_get_style(summaryview->ctree));
-		font_desc = pango_font_description_from_string(NORMAL_FONT);
-		if (font_desc) {
-			pango_font_description_free(bold_style->font_desc);
-			bold_style->font_desc = font_desc;
+
+		if (prefs_common.derive_from_normal_font || !BOLD_FONT) {
+			font_desc = pango_font_description_from_string(NORMAL_FONT);
+			if (font_desc) {
+				pango_font_description_free(bold_style->font_desc);
+				bold_style->font_desc = font_desc;
+			}
+			pango_font_description_set_weight
+					(bold_style->font_desc, PANGO_WEIGHT_BOLD);
+		} else {
+			font_desc = pango_font_description_from_string(BOLD_FONT);
+			if (font_desc) {
+				pango_font_description_free(bold_style->font_desc);
+				bold_style->font_desc = font_desc;
+			}
 		}
-		
-		pango_font_description_set_weight
-				(bold_style->font_desc, PANGO_WEIGHT_BOLD);
 		bold_marked_style = gtk_style_copy(bold_style);
 		bold_marked_style->fg[GTK_STATE_NORMAL] =
 			summaryview->color_marked;
@@ -885,15 +895,21 @@ static void summary_set_fonts(SummaryView *summaryview)
 			summaryview->color_dim;
 	}
 
-	font_desc = pango_font_description_new();
-	size = pango_font_description_get_size
-		(summaryview->ctree->style->font_desc);
-	pango_font_description_set_size(font_desc, size * PANGO_SCALE_SMALL);
-	gtk_widget_modify_font(summaryview->statlabel_folder, font_desc);
-	gtk_widget_modify_font(summaryview->statlabel_select, font_desc);
-	gtk_widget_modify_font(summaryview->statlabel_msgs, font_desc);
-	/* ici */
-	pango_font_description_free(font_desc);
+	if (prefs_common.derive_from_normal_font || !SMALL_FONT) {
+		font_desc = pango_font_description_new();
+		size = pango_font_description_get_size
+			(summaryview->ctree->style->font_desc);
+		pango_font_description_set_size(font_desc, size * PANGO_SCALE_SMALL);
+	} else {
+		font_desc = pango_font_description_from_string(SMALL_FONT);
+	}
+	if (font_desc) {
+		gtk_widget_modify_font(summaryview->statlabel_folder, font_desc);
+		gtk_widget_modify_font(summaryview->statlabel_select, font_desc);
+		gtk_widget_modify_font(summaryview->statlabel_msgs, font_desc);
+		pango_font_description_free(font_desc);
+	}
+
 }
 
 static void summary_set_folder_pixmap(SummaryView *summaryview, StockPixmap icon)
@@ -2660,20 +2676,27 @@ void summary_reflect_tags_changes(SummaryView *summaryview)
 
 void summary_reflect_prefs(void)
 {
-	static gchar *last_font = NULL;
-	gboolean update_font = TRUE;
+	static gchar *last_smallfont = NULL;
+	static gchar *last_normalfont = NULL;
+	static gchar *last_boldfont = NULL;
+	gboolean update_font = FALSE;
 	SummaryView *summaryview = NULL;
 
 	if (!mainwindow_get_mainwindow())
 		return;
 	summaryview = mainwindow_get_mainwindow()->summaryview;
 
-	if (last_font && !strcmp(last_font, NORMAL_FONT))
-		update_font = FALSE;
+	if (!last_smallfont || strcmp(last_smallfont, SMALL_FONT) ||
+			!last_normalfont || strcmp(last_normalfont, NORMAL_FONT) ||
+			!last_boldfont || strcmp(last_boldfont, BOLD_FONT))
+		update_font = TRUE;
 
-	g_free(last_font);
-	
-	last_font = g_strdup(NORMAL_FONT);
+	g_free(last_smallfont);
+	last_smallfont = g_strdup(SMALL_FONT);
+	g_free(last_normalfont);
+	last_normalfont = g_strdup(NORMAL_FONT);
+	g_free(last_boldfont);
+	last_boldfont = g_strdup(BOLD_FONT);
 
 	if (update_font) {	
 		bold_style = bold_marked_style = bold_deleted_style = 

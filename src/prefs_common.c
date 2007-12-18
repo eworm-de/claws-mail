@@ -102,6 +102,8 @@ static PrefParam param_os_specific[] = {
 	  &prefs_common.smallfont,		P_STRING, NULL, NULL, NULL},
 	{"normal_font_gtk2",	"Sans 9",
 	  &prefs_common.normalfont,		P_STRING, NULL, NULL, NULL},
+	{"bold_font_gtk2",	"Sans 9 Bold",
+	  &prefs_common.boldfont,		P_STRING, NULL, NULL, NULL},
 	/* Message */
 	{"attach_save_directory", NULL,
 	 &prefs_common.attach_save_dir, P_STRING, NULL, NULL, NULL},
@@ -324,6 +326,8 @@ static PrefParam param[] = {
 	  &SPECIFIC_PREFS.smallfont,		P_STRING, NULL, NULL, NULL},
 	{"normal_font_gtk2",	"Sans 9",
 	  &SPECIFIC_PREFS.normalfont,		P_STRING, NULL, NULL, NULL},
+	{"bold_font_gtk2",	"Sans Bold 9",
+	  &SPECIFIC_PREFS.boldfont,		P_STRING, NULL, NULL, NULL},
 #else
 	{"widget_font_gtk2",	NULL,
 	  &SPECIFIC_PREFS.widgetfont,		P_STRING, NULL, NULL, NULL},
@@ -335,7 +339,15 @@ static PrefParam param[] = {
 	  &SPECIFIC_PREFS.smallfont,		P_STRING, NULL, NULL, NULL},
 	{"normal_font_gtk2",	"Sans 8",
 	  &SPECIFIC_PREFS.normalfont,		P_STRING, NULL, NULL, NULL},
+	{"bold_font_gtk2",	"Sans Bold 8",
+	  &SPECIFIC_PREFS.boldfont,		P_STRING, NULL, NULL, NULL},
 #endif
+
+	{"use_different_print_font", "FALSE", &prefs_common.use_different_print_font, P_BOOL,
+	 NULL, NULL, NULL},
+	{"derive_from_normal_font", "TRUE", &prefs_common.derive_from_normal_font, P_BOOL,
+	 NULL, NULL, NULL},
+
 	/* custom colors */
 	{"custom_color1", "#ff9900", &prefs_common.custom_colorlabel[0].color, P_COLOR,
 	 NULL, NULL, NULL},
@@ -708,9 +720,6 @@ static PrefParam param[] = {
 	 NULL, NULL, NULL},
 
 	{"show_other_header", "FALSE", &prefs_common.show_other_header, P_BOOL,
-	 NULL, NULL, NULL},
-
-	{"use_different_print_font", "FALSE", &prefs_common.use_different_print_font, P_BOOL,
 	 NULL, NULL, NULL},
 
 	{"attach_desc", "TRUE", &prefs_common.attach_desc, P_BOOL,

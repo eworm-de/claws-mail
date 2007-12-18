@@ -167,6 +167,7 @@
 #define SESSION_TIMEOUT_INTERVAL	60	/* sec */
 #define MAX_HISTORY_SIZE		32
 
+#define BOLD_FONT prefs_common.boldfont
 #define NORMAL_FONT prefs_common.normalfont
 #define SMALL_FONT	prefs_common.smallfont
 

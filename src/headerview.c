@@ -167,12 +167,22 @@ void headerview_set_font(HeaderView *headerview)
 	PangoFontDescription *boldfont = NULL;
 	PangoFontDescription *normalfont = NULL;
 	
-	if (!boldfont) {
-		normalfont = pango_font_description_from_string(NORMAL_FONT);
-		boldfont = pango_font_description_from_string(NORMAL_FONT);
-		pango_font_description_set_weight(boldfont, PANGO_WEIGHT_BOLD);
+	normalfont = pango_font_description_from_string(NORMAL_FONT);
+	if (normalfont) {
+		gtk_widget_modify_font(headerview->from_body_label, normalfont);
+		gtk_widget_modify_font(headerview->to_body_label, normalfont);
+		gtk_widget_modify_font(headerview->ng_body_label, normalfont);
+		gtk_widget_modify_font(headerview->subject_body_label, normalfont);
+		gtk_widget_modify_font(headerview->tags_body_label, normalfont);
+		pango_font_description_free(normalfont);
 	}
 
+	if (prefs_common.derive_from_normal_font || !BOLD_FONT) {
+		boldfont = pango_font_description_from_string(NORMAL_FONT);
+		pango_font_description_set_weight(boldfont, PANGO_WEIGHT_BOLD);
+	} else {
+		boldfont = pango_font_description_from_string(BOLD_FONT);
+	}
 	if (boldfont) {
 		gtk_widget_modify_font(headerview->from_header_label, boldfont);
 		gtk_widget_modify_font(headerview->to_header_label, boldfont);
@@ -180,13 +190,6 @@ void headerview_set_font(HeaderView *headerview)
 		gtk_widget_modify_font(headerview->subject_header_label, boldfont);
 		gtk_widget_modify_font(headerview->tags_header_label, boldfont);
 		pango_font_description_free(boldfont);
-
-		gtk_widget_modify_font(headerview->from_body_label, normalfont);
-		gtk_widget_modify_font(headerview->to_body_label, normalfont);
-		gtk_widget_modify_font(headerview->ng_body_label, normalfont);
-		gtk_widget_modify_font(headerview->subject_body_label, normalfont);
-		gtk_widget_modify_font(headerview->tags_body_label, normalfont);
-		pango_font_description_free(normalfont);
 	}
 }
 

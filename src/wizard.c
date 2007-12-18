@@ -452,6 +452,15 @@ static void initialize_fonts(WizardWindow *wizard)
 		prefs_common.normalfont = new;
 	}
 	g_free(tmp);
+
+	tmp = g_strdup(prefs_common.boldfont);
+	if (strrchr(tmp, ' ')) {
+		*(strrchr(tmp, ' ')) = '\0';
+		new = g_strdup_printf("%s %d", tmp, size);
+		g_free(prefs_common.boldfont);
+		prefs_common.boldfont = new;
+	}
+	g_free(tmp);
 }
 
 #define XFACE "+}Axz@~a,-Yx?0Ysa|q}CLRH=89Y]\"')DSX^<6p\"d)'81yx5%G#u^o*7JG&[aPU0h1Ux.vb2yIjH83{5`/bVo|~nn/i83vE^E)qk-4W)_E.4Y=D*qvf/,Ci_=P<iY<M6"
