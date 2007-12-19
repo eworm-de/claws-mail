@@ -3145,3 +3145,4 @@
 ( cvs diff -u -r 1.1.2.12 -r 1.1.2.13 src/prefs_logging.c;  ) > 3.2.0cvs6.patchset
 ( cvs diff -u -r 1.43.2.67 -r 1.43.2.68 src/prefs_matcher.c;  ) > 3.2.0cvs7.patchset
 ( cvs diff -u -r 1.105.2.119 -r 1.105.2.120 src/prefs_account.c;  ) > 3.2.0cvs8.patchset
+( cvs diff -u -r 1.1.4.47 -r 1.1.4.48 src/prefs_filtering_action.c;  cvs diff -u -r 1.43.2.68 -r 1.43.2.69 src/prefs_matcher.c;  cvs diff -u -r 1.5.2.24 -r 1.5.2.25 src/gtk/description_window.c;  ) > 3.2.0cvs9.patchset

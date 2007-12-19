@@ -1,3 +1,11 @@
+2007-12-19 [colin]	3.2.0cvs9
+
+	* src/prefs_filtering_action.c
+	* src/prefs_matcher.c
+	* src/gtk/description_window.c
+		Destroy info windows with their parents
+		Patch by Pawel
+
 2007-12-19 [colin]	3.2.0cvs8
 
 	* src/prefs_account.c

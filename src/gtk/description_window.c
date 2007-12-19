@@ -41,7 +41,8 @@ static gboolean description_window_focus_in_event	(GtkWidget *widget,
 static gboolean description_window_focus_out_event	(GtkWidget *widget,
 							 GdkEventFocus *event,
 							 gpointer data);
-
+static void description_window_destroy	 		(GtkWidget *parent,
+							 gpointer data);
 
 void description_window_create(DescriptionWindow *dwindow)
 {
@@ -49,7 +50,7 @@ void description_window_create(DescriptionWindow *dwindow)
 		description_create(dwindow);
 	
 		gtk_window_set_transient_for(GTK_WINDOW(dwindow->window), GTK_WINDOW(dwindow->parent));
-
+		gtk_window_set_destroy_with_parent(GTK_WINDOW(dwindow->window), TRUE);
 		gtk_widget_show(dwindow->window);
 
 		/* in case the description window is closed using the WM's [X] button */
@@ -96,7 +97,6 @@ static void description_create(DescriptionWindow * dwindow)
 	}
 	
 	scrolledwin = gtk_scrolled_window_new(NULL, NULL);
-	gtk_widget_show(scrolledwin);
 	gtk_scrolled_window_set_policy(GTK_SCROLLED_WINDOW(scrolledwin),
 				       GTK_POLICY_AUTOMATIC, GTK_POLICY_AUTOMATIC);
 	
@@ -150,18 +150,14 @@ static void description_create(DescriptionWindow * dwindow)
 
 	gtkut_stock_button_set_create(&hbbox, &close_btn, GTK_STOCK_CLOSE,
 				      NULL, NULL, NULL, NULL);
-	gtk_widget_show(hbbox);
 
 	vbox = gtk_vbox_new(FALSE, VSPACING_NARROW);
-	gtk_widget_show(vbox);
 	gtk_container_add(GTK_CONTAINER(dwindow->window), vbox);
 
 	hbox = gtk_hbox_new(FALSE, 0);
-	gtk_widget_show(hbox);
 	gtk_box_pack_start(GTK_BOX(vbox), hbox, FALSE, FALSE, 0);
 
 	label = gtk_label_new(gettext(dwindow->description));
-	gtk_widget_show(label);
 	gtk_widget_set_size_request(GTK_WIDGET(label), max_width-2, -1);
 	gtk_label_set_justify(GTK_LABEL(label), GTK_JUSTIFY_LEFT);
 	gtk_label_set_line_wrap(GTK_LABEL(label), TRUE);
@@ -175,17 +171,21 @@ static void description_create(DescriptionWindow * dwindow)
 	gtk_widget_grab_default(close_btn);
 
 	g_signal_connect(G_OBJECT(close_btn), "clicked",
-			 G_CALLBACK(gtk_main_quit), NULL);
+			 G_CALLBACK(description_window_destroy), dwindow->parent);
 	g_signal_connect(G_OBJECT(dwindow->window), "key_press_event",
-		 	 G_CALLBACK(description_window_key_pressed), NULL);
+		 	 G_CALLBACK(description_window_key_pressed), dwindow->parent);
 	g_signal_connect(G_OBJECT(dwindow->window), "focus_in_event",
 			 G_CALLBACK(description_window_focus_in_event), NULL);
 	g_signal_connect(G_OBJECT(dwindow->window), "focus_out_event",
 			 G_CALLBACK(description_window_focus_out_event), NULL);
 	g_signal_connect(G_OBJECT(dwindow->window), "delete_event",
-			 G_CALLBACK(gtk_main_quit), NULL);
+			 G_CALLBACK(description_window_destroy), dwindow->parent);
+	
+	if(dwindow->parent)
+		g_signal_connect(G_OBJECT(dwindow->parent), "hide",
+			G_CALLBACK(description_window_destroy), dwindow->parent);
 
-	gtk_widget_show_all(table);
+	gtk_widget_show_all(vbox);
 	gtk_widget_set_size_request(dwindow->window,
                                (max_width < 400) ? 400 : max_width, 450);	
 }
@@ -195,7 +195,7 @@ static gboolean description_window_key_pressed(GtkWidget *widget,
 					       gpointer data)
 {
 	if (event && event->keyval == GDK_Escape)
-		gtk_main_quit();
+		description_window_destroy(widget, data);
 	return FALSE;
 }
 
@@ -218,5 +218,10 @@ static gboolean description_window_focus_out_event (GtkWidget *widget,
 	return FALSE;
 }
 
-
-
+static void description_window_destroy (GtkWidget *widget, gpointer parent)
+{
+	if(parent)
+		g_signal_handlers_disconnect_by_func(G_OBJECT(parent), 
+					      description_window_destroy, parent);
+	gtk_main_quit();
+}

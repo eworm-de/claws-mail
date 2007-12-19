@@ -52,7 +52,7 @@
 #include "colorlabel.h"
 
 static void prefs_matcher_addressbook_select(void);
-static void prefs_matcher_test_info(void);
+static void prefs_matcher_test_info(GtkWidget *widget, GtkWidget *parent);
 
 enum {
 	PREFS_MATCHER_COND,
@@ -695,7 +695,7 @@ static void prefs_matcher_create(void)
 	gtk_box_pack_start(GTK_BOX(lower_hbox), test_btn, FALSE, FALSE, 0);
 	g_signal_connect(G_OBJECT (test_btn), "clicked",
 			 G_CALLBACK(prefs_matcher_test_info),
-			 NULL);
+			 window);
 
 	/* register / substitute / delete */
 	reg_hbox = gtk_hbox_new(FALSE, HSPACING_NARROW);
@@ -2013,8 +2013,9 @@ static DescriptionWindow test_desc_win = {
 /*!
  *\brief	Show Test action's info
  */
-static void prefs_matcher_test_info(void)
+static void prefs_matcher_test_info(GtkWidget *widget, GtkWidget *parent)
 {
+	test_desc_win.parent = parent;
 	description_window_create(&test_desc_win);
 }
 

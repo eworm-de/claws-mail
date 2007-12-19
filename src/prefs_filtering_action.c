@@ -92,7 +92,8 @@ static gboolean prefs_filtering_actions_selected		(GtkTreeSelection *selector,
 								 gboolean currently_selected,
 								 gpointer data);
 
-static void prefs_filtering_action_exec_info(void);
+static void prefs_filtering_action_exec_info			(GtkWidget *widget,
+								 GtkWidget *parent);
 
 /*!
  *\brief	UI data for matcher dialog
@@ -541,7 +542,7 @@ static void prefs_filtering_action_create(void)
 	gtk_box_pack_start (GTK_BOX (hbox1), exec_btn, FALSE, FALSE, 0);
 	g_signal_connect (G_OBJECT (exec_btn), "clicked",
 			  G_CALLBACK(prefs_filtering_action_exec_info),
-			  NULL);
+			  window);
 
 	/* register / substitute / delete */
 
@@ -1216,8 +1217,9 @@ static DescriptionWindow exec_desc_win = {
 /*!
  *\brief	Show Execute action's info
  */
-static void prefs_filtering_action_exec_info(void)
+static void prefs_filtering_action_exec_info(GtkWidget *widget, GtkWidget *parent)
 {
+	exec_desc_win.parent = parent;
 	description_window_create(&exec_desc_win);
 }
 
