@@ -1,4 +1,13 @@
-.TH "Claws Mail" "1" "" "Hiroyuki Yamamoto & the Claws Mail team" ""
+.TH "Claws Mail" "1" "December 18, 2007" "Hiroyuki Yamamoto & the Claws Mail team"
+
+.SH "NAME"
+.LP 
+Claws Mail \- a GTK+ based fast email and news client
+
+.SH "SYNOPSIS"
+.B claws-mail
+.RI [ options ]
+
 .SH "DESCRIPTION"
 .TP 
 Claws Mail is an email client (and news reader) based on GTK+, running on X Window System, and aiming for
@@ -81,9 +90,7 @@ o support for plugins
 \fR
 .LP 
 This list is not complete.
-.SH "NAME"
-.LP 
-Claws Mail \- a GTK+ based fast email and news client
+
 .SH "OPTIONS"
 .LP 
 \fB \-\-compose\fR [address]
@@ -119,6 +126,9 @@ Claws Mail \- a GTK+ based fast email and news client
 \fB \-\-version\fR
 .br 
 \fB \-\-config\-dir\fR
+.br
+\fB \-\-alternate\-config\-dir [dir]\fR
+
 .SH "FILES"
 .LP 
 .TP 
@@ -129,7 +139,7 @@ $PREFIX/share/claws\-mail
 Global program directory
 .TP 
 $PREFIX/share/claws\-mail/manual
-Manual files in HTML format
+Manual files in HTML, PDF, PostScript and plain text format
 .TP 
 $PREFIX/share/claws\-mail/themes
 Global themes directory
@@ -175,7 +185,6 @@ Claws Mail logfile
 .TP 
 $HOME/.claws\-mail/clawsrc
 Main configuration file
-
 
 .SH "EXAMPLES"
 .LP 
@@ -245,6 +254,10 @@ display version number and exit
 .TP 
 \fB\-\-config\-dir\fR
 display the CONFIG\-DIR and exit
+.TP
+\fB\-\-alternate\-config\-dir [dir]\fR
+start Claws Mail with the configuration stored in [dir] directory
+
 .SH "INSTALLATION"
 .LP 
 This program requires GTK+ 2.6.x or higher to be compiled.
@@ -266,6 +279,7 @@ Password: [Enter password]
 # make install
 .LP 
 Refer to ./configure \-\-help for further information.
+
 .SH "AUTHORS"
 .LP 
 .TP 
@@ -313,7 +327,6 @@ Carsten Schurig
 Sergey Vlasov
 .br 
 Hiroyuki Yamamoto
-
 
 .SH "SEE ALSO"
 .LP 
