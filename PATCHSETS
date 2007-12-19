@@ -3144,3 +3144,4 @@
 ( cvs diff -u -r 1.12.2.15 -r 1.12.2.16 po/en_GB.po;  cvs diff -u -r 1.1.2.3 -r 1.1.2.4 src/addrcustomattr.c;  cvs diff -u -r 1.14.2.47 -r 1.14.2.48 src/editaddress.c;  cvs diff -u -r 1.1.4.46 -r 1.1.4.47 src/prefs_filtering_action.c;  cvs diff -u -r 1.1.4.5 -r 1.1.4.6 src/prefs_filtering_action.h;  ) > 3.2.0cvs5.patchset
 ( cvs diff -u -r 1.1.2.12 -r 1.1.2.13 src/prefs_logging.c;  ) > 3.2.0cvs6.patchset
 ( cvs diff -u -r 1.43.2.67 -r 1.43.2.68 src/prefs_matcher.c;  ) > 3.2.0cvs7.patchset
+( cvs diff -u -r 1.105.2.119 -r 1.105.2.120 src/prefs_account.c;  ) > 3.2.0cvs8.patchset

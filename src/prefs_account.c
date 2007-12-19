@@ -116,9 +116,9 @@ typedef struct ReceivePage
 	GtkWidget *pop3_frame;
 	GtkWidget *use_apop_checkbtn;
 	GtkWidget *rmmail_checkbtn;
-	GtkWidget *leave_time_entry;
+	GtkWidget *leave_time_spinbtn;
 	GtkWidget *size_limit_checkbtn;
-	GtkWidget *size_limit_entry;
+	GtkWidget *size_limit_spinbtn;
 	GtkWidget *inbox_label;
 	GtkWidget *inbox_entry;
 	GtkWidget *inbox_btn;
@@ -253,16 +253,16 @@ typedef struct AdvancedPage
     GtkWidget *vbox;
 
 	GtkWidget *smtpport_checkbtn;
-	GtkWidget *smtpport_entry;
+	GtkWidget *smtpport_spinbtn;
 	GtkWidget *popport_hbox;
 	GtkWidget *popport_checkbtn;
-	GtkWidget *popport_entry;
+	GtkWidget *popport_spinbtn;
 	GtkWidget *imapport_hbox;
 	GtkWidget *imapport_checkbtn;
-	GtkWidget *imapport_entry;
+	GtkWidget *imapport_spinbtn;
 	GtkWidget *nntpport_hbox;
 	GtkWidget *nntpport_checkbtn;
-	GtkWidget *nntpport_entry;
+	GtkWidget *nntpport_spinbtn;
 	GtkWidget *domain_checkbtn;
 	GtkWidget *domain_entry;
 	GtkWidget *crosspost_checkbtn;
@@ -418,20 +418,20 @@ static PrefParam receive_param[] = {
 
 #ifndef MAEMO
 	{"message_leave_time", "7", &tmp_ac_prefs.msg_leave_time, P_INT,
-	 &receive_page.leave_time_entry,
-	 prefs_set_data_from_entry, prefs_set_entry},
+	 &receive_page.leave_time_spinbtn,
+	 prefs_set_data_from_spinbtn, prefs_set_spinbtn},
 #else
 	{"message_leave_time", "30", &tmp_ac_prefs.msg_leave_time, P_INT,
-	 &receive_page.leave_time_entry,
-	 prefs_set_data_from_entry, prefs_set_entry},
+	 &receive_page.leave_time_spinbtn,
+	 prefs_set_data_from_spinbtn, prefs_set_spinbtn},
 #endif
 
 	{"enable_size_limit", "FALSE", &tmp_ac_prefs.enable_size_limit, P_BOOL,
 	 &receive_page.size_limit_checkbtn,
 	 prefs_set_data_from_toggle, prefs_set_toggle},
 	{"size_limit", "1024", &tmp_ac_prefs.size_limit, P_INT,
-	 &receive_page.size_limit_entry,
-	 prefs_set_data_from_entry, prefs_set_entry},
+	 &receive_page.size_limit_spinbtn,
+	 prefs_set_data_from_spinbtn, prefs_set_spinbtn},
 
 	{"filter_on_receive", "TRUE", &tmp_ac_prefs.filter_on_recv, P_BOOL,
 	 &receive_page.filter_on_recv_checkbtn,
@@ -707,32 +707,32 @@ static PrefParam advanced_param[] = {
 	 prefs_set_data_from_toggle, prefs_set_toggle},
 
 	{"smtp_port", "25", &tmp_ac_prefs.smtpport, P_USHORT,
-	 &advanced_page.smtpport_entry,
-	 prefs_set_data_from_entry, prefs_set_entry},
+	 &advanced_page.smtpport_spinbtn,
+	 prefs_set_data_from_spinbtn, prefs_set_spinbtn},
 
 	{"set_popport", "FALSE", &tmp_ac_prefs.set_popport, P_BOOL,
 	 &advanced_page.popport_checkbtn,
 	 prefs_set_data_from_toggle, prefs_set_toggle},
 
 	{"pop_port", "110", &tmp_ac_prefs.popport, P_USHORT,
-	 &advanced_page.popport_entry,
-	 prefs_set_data_from_entry, prefs_set_entry},
+	 &advanced_page.popport_spinbtn,
+	 prefs_set_data_from_spinbtn, prefs_set_spinbtn},
 
 	{"set_imapport", "FALSE", &tmp_ac_prefs.set_imapport, P_BOOL,
 	 &advanced_page.imapport_checkbtn,
 	 prefs_set_data_from_toggle, prefs_set_toggle},
 
 	{"imap_port", "143", &tmp_ac_prefs.imapport, P_USHORT,
-	 &advanced_page.imapport_entry,
-	 prefs_set_data_from_entry, prefs_set_entry},
+	 &advanced_page.imapport_spinbtn,
+	 prefs_set_data_from_spinbtn, prefs_set_spinbtn},
 
 	{"set_nntpport", "FALSE", &tmp_ac_prefs.set_nntpport, P_BOOL,
 	 &advanced_page.nntpport_checkbtn,
 	 prefs_set_data_from_toggle, prefs_set_toggle},
 
 	{"nntp_port", "119", &tmp_ac_prefs.nntpport, P_USHORT,
-	 &advanced_page.nntpport_entry,
-	 prefs_set_data_from_entry, prefs_set_entry},
+	 &advanced_page.nntpport_spinbtn,
+	 prefs_set_data_from_spinbtn, prefs_set_spinbtn},
 
 	{"set_domain", "FALSE", &tmp_ac_prefs.set_domain, P_BOOL,
 	 &advanced_page.domain_checkbtn,
@@ -1281,10 +1281,10 @@ static void receive_create_widget_func(PrefsPage * _page,
 	GtkWidget *hbox_spc;
 	GtkTooltips *leave_time_tooltip;
 	GtkWidget *leave_time_label;
-	GtkWidget *leave_time_entry;
+	GtkWidget *leave_time_spinbtn;
 	GtkWidget *hbox1;
 	GtkWidget *size_limit_checkbtn;
-	GtkWidget *size_limit_entry;
+	GtkWidget *size_limit_spinbtn;
 	GtkTooltips *size_limit_tooltip;
 	GtkWidget *label;
 	GtkWidget *filter_on_recv_checkbtn;
@@ -1375,12 +1375,11 @@ static void receive_create_widget_func(PrefsPage * _page,
 
 	leave_time_tooltip = gtk_tooltips_new();
 
-	leave_time_entry = gtk_entry_new ();
-	gtk_widget_show (leave_time_entry);
-	gtk_tooltips_set_tip(GTK_TOOLTIPS(leave_time_tooltip), leave_time_entry,
+	leave_time_spinbtn = gtk_spin_button_new_with_range(0, 365, 1);
+	gtk_widget_show (leave_time_spinbtn);
+	gtk_tooltips_set_tip(GTK_TOOLTIPS(leave_time_tooltip), leave_time_spinbtn,
 			     _("0 days: remove immediately"), NULL);
-	gtk_widget_set_size_request (leave_time_entry, 64, -1);
-	gtk_box_pack_start (GTK_BOX (hbox1), leave_time_entry, FALSE, FALSE, 0);
+	gtk_box_pack_start (GTK_BOX (hbox1), leave_time_spinbtn, FALSE, FALSE, 0);
 
 	leave_time_label = gtk_label_new (_("days"));
 	gtk_widget_show (leave_time_label);
@@ -1400,16 +1399,15 @@ static void receive_create_widget_func(PrefsPage * _page,
 			       "or delete them."),
 			     NULL);
 
-	size_limit_entry = gtk_entry_new ();
-	gtk_widget_show (size_limit_entry);
-	gtk_widget_set_size_request (size_limit_entry, 64, -1);
-	gtk_box_pack_start (GTK_BOX (hbox1), size_limit_entry, FALSE, FALSE, 0);
+	size_limit_spinbtn = gtk_spin_button_new_with_range(0, 100000, 1);
+	gtk_widget_show (size_limit_spinbtn);
+	gtk_box_pack_start (GTK_BOX (hbox1), size_limit_spinbtn, FALSE, FALSE, 0);
 
 	label = gtk_label_new (_("KB"));
 	gtk_widget_show (label);
 	gtk_box_pack_start (GTK_BOX (hbox1), label, FALSE, FALSE, 0);
 
-	SET_TOGGLE_SENSITIVITY (size_limit_checkbtn, size_limit_entry);
+	SET_TOGGLE_SENSITIVITY (size_limit_checkbtn, size_limit_spinbtn);
 
 	PACK_VSPACER(vbox2, vbox3, VSPACING_NARROW_2);
 
@@ -1538,9 +1536,9 @@ static void receive_create_widget_func(PrefsPage * _page,
 	page->pop3_frame               = frame1;
 	page->use_apop_checkbtn          = use_apop_checkbtn;
 	page->rmmail_checkbtn            = rmmail_checkbtn;
-	page->leave_time_entry         = leave_time_entry;
+	page->leave_time_spinbtn         = leave_time_spinbtn;
 	page->size_limit_checkbtn        = size_limit_checkbtn;
-	page->size_limit_entry         = size_limit_entry;
+	page->size_limit_spinbtn         = size_limit_spinbtn;
 	page->filter_on_recv_checkbtn    = filter_on_recv_checkbtn;
 	page->filterhook_on_recv_checkbtn = filterhook_on_recv_checkbtn;
 	page->inbox_label              = inbox_label;
@@ -2382,16 +2380,16 @@ static void advanced_create_widget_func(PrefsPage * _page,
 	GtkWidget *vbox2;
 	GtkWidget *hbox1;
 	GtkWidget *checkbtn_smtpport;
-	GtkWidget *entry_smtpport;
+	GtkWidget *spinbtn_smtpport;
 	GtkWidget *hbox_popport;
 	GtkWidget *checkbtn_popport;
-	GtkWidget *entry_popport;
+	GtkWidget *spinbtn_popport;
 	GtkWidget *hbox_imapport;
 	GtkWidget *checkbtn_imapport;
-	GtkWidget *entry_imapport;
+	GtkWidget *spinbtn_imapport;
 	GtkWidget *hbox_nntpport;
 	GtkWidget *checkbtn_nntpport;
-	GtkWidget *entry_nntpport;
+	GtkWidget *spinbtn_nntpport;
 	GtkWidget *checkbtn_domain;
 	GtkWidget *entry_domain;
 	GtkWidget *checkbtn_crosspost;
@@ -2420,13 +2418,11 @@ static void advanced_create_widget_func(PrefsPage * _page,
 	gtk_box_pack_start (GTK_BOX (vbox2), hbox, FALSE, FALSE, 0); \
 	}
 
-#define PACK_PORT_ENTRY(box, entry) \
+#define PACK_PORT_SPINBTN(box, spinbtn) \
 	{ \
-	entry = gtk_entry_new (); \
-	gtk_entry_set_max_length  (GTK_ENTRY(entry), 5); \
-	gtk_widget_show (entry); \
-	gtk_box_pack_start (GTK_BOX (box), entry, FALSE, FALSE, 0); \
-	gtk_widget_set_size_request (entry, 64, -1); \
+	spinbtn = gtk_spin_button_new_with_range(0, 65535, 1); \
+	gtk_widget_show (spinbtn); \
+	gtk_box_pack_start (GTK_BOX (box), spinbtn, FALSE, FALSE, 0); \
 	}
 
 	vbox1 = gtk_vbox_new (FALSE, VSPACING);
@@ -2439,26 +2435,26 @@ static void advanced_create_widget_func(PrefsPage * _page,
 
 	PACK_HBOX (hbox1);
 	PACK_CHECK_BUTTON (hbox1, checkbtn_smtpport, _("SMTP port"));
-	PACK_PORT_ENTRY (hbox1, entry_smtpport);
-	SET_TOGGLE_SENSITIVITY (checkbtn_smtpport, entry_smtpport);
+	PACK_PORT_SPINBTN (hbox1, spinbtn_smtpport);
+	SET_TOGGLE_SENSITIVITY (checkbtn_smtpport, spinbtn_smtpport);
 
 	PACK_HBOX (hbox_popport);
 	PACK_CHECK_BUTTON (hbox_popport, checkbtn_popport,
 			   _("POP3 port"));
-	PACK_PORT_ENTRY (hbox_popport, entry_popport);
-	SET_TOGGLE_SENSITIVITY (checkbtn_popport, entry_popport);
+	PACK_PORT_SPINBTN (hbox_popport, spinbtn_popport);
+	SET_TOGGLE_SENSITIVITY (checkbtn_popport, spinbtn_popport);
 
 	PACK_HBOX (hbox_imapport);
 	PACK_CHECK_BUTTON (hbox_imapport, checkbtn_imapport,
 			   _("IMAP4 port"));
-	PACK_PORT_ENTRY (hbox_imapport, entry_imapport);
-	SET_TOGGLE_SENSITIVITY (checkbtn_imapport, entry_imapport);
+	PACK_PORT_SPINBTN (hbox_imapport, spinbtn_imapport);
+	SET_TOGGLE_SENSITIVITY (checkbtn_imapport, spinbtn_imapport);
 
 	PACK_HBOX (hbox_nntpport);
 	PACK_CHECK_BUTTON (hbox_nntpport, checkbtn_nntpport,
 			   _("NNTP port"));
-	PACK_PORT_ENTRY (hbox_nntpport, entry_nntpport);
-	SET_TOGGLE_SENSITIVITY (checkbtn_nntpport, entry_nntpport);
+	PACK_PORT_SPINBTN (hbox_nntpport, spinbtn_nntpport);
+	SET_TOGGLE_SENSITIVITY (checkbtn_nntpport, spinbtn_nntpport);
 
 	PACK_HBOX (hbox1);
 	PACK_CHECK_BUTTON (hbox1, checkbtn_domain, _("Domain name"));
@@ -2506,7 +2502,7 @@ static void advanced_create_widget_func(PrefsPage * _page,
 
 	PACK_HBOX (hbox1);
 #undef PACK_HBOX
-#undef PACK_PORT_ENTRY
+#undef PACK_PORT_SPINBTN
 
 	/* special folder setting (maybe these options are redundant) */
 
@@ -2556,16 +2552,16 @@ static void advanced_create_widget_func(PrefsPage * _page,
 				trash_folder_checkbtn, trash_folder_entry, 3);
 
 	page->smtpport_checkbtn	= checkbtn_smtpport;
-	page->smtpport_entry		= entry_smtpport;
+	page->smtpport_spinbtn		= spinbtn_smtpport;
 	page->popport_hbox		= hbox_popport;
 	page->popport_checkbtn		= checkbtn_popport;
-	page->popport_entry		= entry_popport;
+	page->popport_spinbtn		= spinbtn_popport;
 	page->imapport_hbox		= hbox_imapport;
 	page->imapport_checkbtn	= checkbtn_imapport;
-	page->imapport_entry		= entry_imapport;
+	page->imapport_spinbtn		= spinbtn_imapport;
 	page->nntpport_hbox		= hbox_nntpport;
 	page->nntpport_checkbtn	= checkbtn_nntpport;
-	page->nntpport_entry		= entry_nntpport;
+	page->nntpport_spinbtn		= spinbtn_nntpport;
 	page->domain_checkbtn		= checkbtn_domain;
 	page->domain_entry		= entry_domain;
  	page->crosspost_checkbtn	= checkbtn_crosspost;

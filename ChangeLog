@@ -1,3 +1,9 @@
+2007-12-19 [colin]	3.2.0cvs8
+
+	* src/prefs_account.c
+		Use spinbuttons instead of entries where needed
+		Patch by Pawel
+
 2007-12-18 [paul]	3.2.0cvs7
 
 	* src/prefs_matcher.c
