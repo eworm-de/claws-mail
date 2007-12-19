@@ -158,7 +158,7 @@ typedef struct SendPage
 	GtkWidget *smtp_uid_entry;
 	GtkWidget *smtp_pass_entry;
 	GtkWidget *pop_bfr_smtp_checkbtn;
-	GtkWidget *pop_bfr_smtp_tm_entry;
+	GtkWidget *pop_bfr_smtp_tm_spinbtn;
 	GtkWidget *pop_auth_timeout_lbl;
 	GtkWidget *pop_auth_minutes_lbl;
 } SendPage;
@@ -502,8 +502,8 @@ static PrefParam send_param[] = {
 	 prefs_set_data_from_toggle, prefs_set_toggle},
 
 	{"pop_before_smtp_timeout", "5", &tmp_ac_prefs.pop_before_smtp_timeout, P_INT,
-	 &send_page.pop_bfr_smtp_tm_entry,
-	 prefs_set_data_from_entry, prefs_set_entry},
+	 &send_page.pop_bfr_smtp_tm_spinbtn,
+	 prefs_set_data_from_spinbtn, prefs_set_spinbtn},
 
 	{NULL, NULL, NULL, P_OTHER, NULL, NULL, NULL}
 };
@@ -1601,7 +1601,7 @@ static void send_create_widget_func(PrefsPage * _page,
 	GtkWidget *smtp_pass_entry;
 	GtkWidget *vbox_spc;
 	GtkWidget *pop_bfr_smtp_checkbtn;
-	GtkWidget *pop_bfr_smtp_tm_entry;
+	GtkWidget *pop_bfr_smtp_tm_spinbtn;
 	GtkWidget *pop_auth_timeout_lbl;
 	GtkWidget *pop_auth_minutes_lbl;
 
@@ -1747,10 +1747,9 @@ static void send_create_widget_func(PrefsPage * _page,
 	gtk_widget_show (pop_auth_timeout_lbl);
 	gtk_box_pack_start (GTK_BOX (hbox), pop_auth_timeout_lbl, FALSE, FALSE, 0);
 
-	pop_bfr_smtp_tm_entry = gtk_entry_new ();
-	gtk_widget_show (pop_bfr_smtp_tm_entry);
-	gtk_widget_set_size_request (pop_bfr_smtp_tm_entry, 30, -1);
-	gtk_box_pack_start (GTK_BOX (hbox), pop_bfr_smtp_tm_entry, FALSE, FALSE, 0);
+	pop_bfr_smtp_tm_spinbtn = gtk_spin_button_new_with_range(0, 1440, 1);
+	gtk_widget_show (pop_bfr_smtp_tm_spinbtn);
+	gtk_box_pack_start (GTK_BOX (hbox), pop_bfr_smtp_tm_spinbtn, FALSE, FALSE, 0);
 
 	pop_auth_minutes_lbl = gtk_label_new(_("minutes"));
 	gtk_widget_show (pop_auth_minutes_lbl);
@@ -1764,7 +1763,7 @@ static void send_create_widget_func(PrefsPage * _page,
 	page->smtp_uid_entry         = smtp_uid_entry;
 	page->smtp_pass_entry        = smtp_pass_entry;
 	page->pop_bfr_smtp_checkbtn    = pop_bfr_smtp_checkbtn;
-	page->pop_bfr_smtp_tm_entry  = pop_bfr_smtp_tm_entry;
+	page->pop_bfr_smtp_tm_spinbtn  = pop_bfr_smtp_tm_spinbtn;
 	page->pop_auth_timeout_lbl   = pop_auth_timeout_lbl;
 	page->pop_auth_minutes_lbl   = pop_auth_minutes_lbl;
 
@@ -3435,7 +3434,7 @@ static void prefs_account_crosspost_set_colormenu(PrefParam *pparam)
 
 static void pop_bfr_smtp_tm_set_sens(GtkWidget *widget, gpointer data)
 {
-	gtk_widget_set_sensitive(send_page.pop_bfr_smtp_tm_entry, 
+	gtk_widget_set_sensitive(send_page.pop_bfr_smtp_tm_spinbtn, 
 				 gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(send_page.pop_bfr_smtp_checkbtn)));
 	gtk_widget_set_sensitive(send_page.pop_auth_timeout_lbl, 
 				 gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(send_page.pop_bfr_smtp_checkbtn)));
@@ -3802,7 +3801,7 @@ static void prefs_account_protocol_changed(GtkComboBox *combobox, gpointer data)
 		gtk_toggle_button_set_active
 			(GTK_TOGGLE_BUTTON(send_page.pop_bfr_smtp_checkbtn), FALSE);
 		gtk_widget_set_sensitive(send_page.pop_bfr_smtp_checkbtn, FALSE);
-		gtk_widget_set_sensitive(send_page.pop_bfr_smtp_tm_entry, FALSE);
+		gtk_widget_set_sensitive(send_page.pop_bfr_smtp_tm_spinbtn, FALSE);
 		
 		if (!tmp_ac_prefs.account_name) {
 			gtk_toggle_button_set_active
@@ -3896,7 +3895,7 @@ static void prefs_account_protocol_changed(GtkComboBox *combobox, gpointer data)
 		gtk_toggle_button_set_active
 			(GTK_TOGGLE_BUTTON(send_page.pop_bfr_smtp_checkbtn), FALSE);
 		gtk_widget_set_sensitive(send_page.pop_bfr_smtp_checkbtn, FALSE);
-		gtk_widget_set_sensitive(send_page.pop_bfr_smtp_tm_entry, FALSE);
+		gtk_widget_set_sensitive(send_page.pop_bfr_smtp_tm_spinbtn, FALSE);
 
 		if (!tmp_ac_prefs.account_name) {
 			gtk_toggle_button_set_active
@@ -3999,7 +3998,7 @@ static void prefs_account_protocol_changed(GtkComboBox *combobox, gpointer data)
 		gtk_toggle_button_set_active
 			(GTK_TOGGLE_BUTTON(send_page.pop_bfr_smtp_checkbtn), FALSE);
 		gtk_widget_set_sensitive(send_page.pop_bfr_smtp_checkbtn, FALSE);
-		gtk_widget_set_sensitive(send_page.pop_bfr_smtp_tm_entry, FALSE);
+		gtk_widget_set_sensitive(send_page.pop_bfr_smtp_tm_spinbtn, FALSE);
 
 		if (!tmp_ac_prefs.account_name) {
 			gtk_toggle_button_set_active

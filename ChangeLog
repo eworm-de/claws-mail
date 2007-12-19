@@ -1,3 +1,9 @@
+2007-12-19 [paul]	3.2.0cvs10
+
+	* src/prefs_account.c
+		use a spinbutton instead of an entry for
+		"POP authentication timeout" also
+
 2007-12-19 [colin]	3.2.0cvs9
 
 	* src/prefs_filtering_action.c
