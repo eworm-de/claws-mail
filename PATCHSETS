@@ -3149,3 +3149,4 @@
 ( cvs diff -u -r 1.105.2.120 -r 1.105.2.121 src/prefs_account.c;  ) > 3.2.0cvs10.patchset
 ( cvs diff -u -r 1.1.2.4 -r 1.1.2.5 doc/man/claws-mail.1;  cvs diff -u -r 1.60.2.48 -r 1.60.2.49 po/es.po;  ) > 3.2.0cvs11.patchset
 ( cvs diff -u -r 1.179.2.204 -r 1.179.2.205 src/imap.c;  cvs diff -u -r 1.34.2.19 -r 1.34.2.20 src/imap.h;  cvs diff -u -r 1.105.2.121 -r 1.105.2.122 src/prefs_account.c;  ) > 3.2.0cvs12.patchset
+( cvs diff -u -r 1.179.2.205 -r 1.179.2.206 src/imap.c;  ) > 3.2.0cvs13.patchset

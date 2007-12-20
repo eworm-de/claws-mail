@@ -1,3 +1,8 @@
+2007-12-20 [colin]	3.2.0cvs13
+
+	* src/imap.c
+		Fix error handling
+
 2007-12-20 [colin]	3.2.0cvs12
 
 	* src/imap.c

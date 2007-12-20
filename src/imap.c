@@ -3820,8 +3820,11 @@ static gint get_list_of_uids(IMAPSession *session, Folder *folder, IMAPFolderIte
 		uidlist = g_slist_concat(fetchuid_list, uidlist);
 	} else {
 		carray * lep_uidtab;
-		if (r != -1) /* inited */
+		if (r != -1) { /* inited */
 			imap_handle_error(SESSION(session), r);
+			if (is_fatal(r))
+				return -1;
+		}
 		r = imap_threaded_fetch_uid(folder, 1,
 				    &lep_uidtab);
 		if (r == MAILIMAP_NO_ERROR) {
