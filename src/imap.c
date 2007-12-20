@@ -846,6 +846,9 @@ static gint imap_auth(IMAPSession *session, const gchar *user, const gchar *pass
 	case IMAP_AUTH_CRAM_MD5:
 		ok = imap_cmd_login(session, user, pass, "CRAM-MD5");
 		break;
+	case IMAP_AUTH_DIGEST_MD5:
+		ok = imap_cmd_login(session, user, pass, "DIGEST-MD5");
+		break;
 	case IMAP_AUTH_LOGIN:
 		ok = imap_cmd_login(session, user, pass, "LOGIN");
 		break;
@@ -856,14 +859,19 @@ static gint imap_auth(IMAPSession *session, const gchar *user, const gchar *pass
 		debug_print("capabilities:\n"
 				"\t ANONYMOUS %d\n"
 				"\t CRAM-MD5 %d\n"
+				"\t DIGEST-MD5 %d\n"
 				"\t LOGIN %d\n"
 				"\t GSSAPI %d\n", 
 			imap_has_capability(session, "ANONYMOUS"),
 			imap_has_capability(session, "CRAM-MD5"),
+			imap_has_capability(session, "DIGEST-MD5"),
 			imap_has_capability(session, "LOGIN"),
 			imap_has_capability(session, "GSSAPI"));
 		if (imap_has_capability(session, "CRAM-MD5"))
 			ok = imap_cmd_login(session, user, pass, "CRAM-MD5");
+		if ((ok == MAILIMAP_ERROR_BAD_STATE ||
+		     ok == MAILIMAP_ERROR_LOGIN) && imap_has_capability(session, "DIGEST-MD5"))
+			ok = imap_cmd_login(session, user, pass, "DIGEST-MD5");
 		if ((ok == MAILIMAP_ERROR_BAD_STATE ||
 		     ok == MAILIMAP_ERROR_LOGIN) && imap_has_capability(session, "GSSAPI"))
 			ok = imap_cmd_login(session, user, pass, "GSSAPI");
@@ -879,6 +887,12 @@ static gint imap_auth(IMAPSession *session, const gchar *user, const gchar *pass
 			ext_info = _("\n\nCRAM-MD5 logins only work if libetpan has been "
 				     "compiled with SASL support and the "
 				     "CRAM-MD5 SASL plugin is installed.");
+		} 
+
+		if (type == IMAP_AUTH_DIGEST_MD5) {
+			ext_info = _("\n\nDIGEST-MD5 logins only work if libetpan has been "
+				     "compiled with SASL support and the "
+				     "DIGEST-MD5 SASL plugin is installed.");
 		} 
 
 		if (time(NULL) - last_login_err > 10) {

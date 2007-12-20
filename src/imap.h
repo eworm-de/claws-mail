@@ -27,7 +27,8 @@ typedef enum
 	IMAP_AUTH_LOGIN		= 1 << 0,
 	IMAP_AUTH_CRAM_MD5	= 1 << 1,
 	IMAP_AUTH_ANON		= 1 << 2,
-	IMAP_AUTH_GSSAPI	= 1 << 3
+	IMAP_AUTH_GSSAPI	= 1 << 3,
+	IMAP_AUTH_DIGEST_MD5	= 1 << 4
 } IMAPAuthType;
 
 FolderClass *imap_get_class		(void);
