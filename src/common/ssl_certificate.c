@@ -28,12 +28,15 @@
 #else
 #include <gnutls/gnutls.h>
 #include <gnutls/x509.h>
-#include <sys/types.h>
 #include <sys/stat.h>
-#include <stdio.h>
 #include <unistd.h>
 #include <string.h>
 #endif
+#include <sys/types.h>
+#include <sys/socket.h>
+#include <netinet/in.h>
+#include <stdio.h>
+#include <netdb.h>
 #include <glib.h>
 #include <glib/gi18n.h>
 

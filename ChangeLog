@@ -1,3 +1,8 @@
+2007-12-21 [paul]	3.2.0cvs14
+
+	* src/common/ssl_certificate.c
+		fix FreeBSD build with IPV6 support 
+
 2007-12-20 [colin]	3.2.0cvs13
 
 	* src/imap.c
