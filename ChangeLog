@@ -1,3 +1,9 @@
+2007-12-22 [paul]	3.2.0cvs15
+
+	* src/compose.c
+		fix bug 1435, 'Reply doesn't take into account
+		reply-to field'
+
 2007-12-21 [paul]	3.2.0cvs14
 
 	* src/common/ssl_certificate.c

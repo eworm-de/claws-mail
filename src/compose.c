@@ -2901,9 +2901,15 @@ static void compose_reply_set_entry(Compose *compose, MsgInfo *msginfo,
 				if (!folder_has_parent_of_type(msginfo->folder, F_QUEUE) &&
 				    !folder_has_parent_of_type(msginfo->folder, F_OUTBOX) &&
 				    !folder_has_parent_of_type(msginfo->folder, F_DRAFT)) {
-					compose_entry_append(compose,
-						  msginfo->from ? msginfo->from : "",
-						  COMPOSE_TO);
+					if (compose->replyto) {
+						compose_entry_append(compose,
+			    				compose->replyto,
+			    				COMPOSE_TO);
+					} else {
+						compose_entry_append(compose,
+							  msginfo->from ? msginfo->from : "",
+							  COMPOSE_TO);
+					}
 				} else {
 					/* replying to own mail, use original recp */
 					compose_entry_append(compose,
