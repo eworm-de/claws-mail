@@ -1,3 +1,9 @@
+2007-12-23 [paul]	3.2.0cvs16
+
+	* src/prefs_matcher.c
+		fix bug 1436, 'Filter condition dialog doesn't
+		load header name from current rules'
+
 2007-12-22 [paul]	3.2.0cvs15
 
 	* src/compose.c

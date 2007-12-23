@@ -337,14 +337,14 @@ static void prefs_matcher_models_create(void)
 	matcher.model_contain = GTK_TREE_MODEL(store);
 	
 	store = gtk_list_store_new(3, G_TYPE_STRING, G_TYPE_INT, G_TYPE_BOOLEAN);
-	COMBOBOX_ADD(store, "Subject", CRITERIA_HEADER);
-	COMBOBOX_ADD(store, "From", CRITERIA_HEADER);
-	COMBOBOX_ADD(store, "To", CRITERIA_HEADER);
-	COMBOBOX_ADD(store, "Cc", CRITERIA_HEADER);
-	COMBOBOX_ADD(store, "To or Cc", CRITERIA_HEADER);
-	COMBOBOX_ADD(store, "In-Reply-To", CRITERIA_HEADER);
-	COMBOBOX_ADD(store, "Newsgroups", CRITERIA_HEADER);
-	COMBOBOX_ADD(store, "References", CRITERIA_HEADER);
+	COMBOBOX_ADD(store, "Subject", CRITERIA_SUBJECT);
+	COMBOBOX_ADD(store, "From", CRITERIA_FROM);
+	COMBOBOX_ADD(store, "To", CRITERIA_TO);
+	COMBOBOX_ADD(store, "Cc", CRITERIA_CC);
+	COMBOBOX_ADD(store, "To or Cc", CRITERIA_TO_OR_CC);
+	COMBOBOX_ADD(store, "In-Reply-To", CRITERIA_INREPLYTO);
+	COMBOBOX_ADD(store, "Newsgroups", CRITERIA_NEWSGROUPS);
+	COMBOBOX_ADD(store, "References", CRITERIA_REFERENCES);
 	COMBOBOX_ADD(store, "Sender", CRITERIA_HEADER);
 	COMBOBOX_ADD(store, "X-ML-Name", CRITERIA_HEADER);
 	COMBOBOX_ADD(store, "X-List", CRITERIA_HEADER);

@@ -3152,3 +3152,4 @@
 ( cvs diff -u -r 1.179.2.205 -r 1.179.2.206 src/imap.c;  ) > 3.2.0cvs13.patchset
 ( cvs diff -u -r 1.4.2.24 -r 1.4.2.25 src/common/ssl_certificate.c;  ) > 3.2.0cvs14.patchset
 ( cvs diff -u -r 1.382.2.427 -r 1.382.2.428 src/compose.c;  ) > 3.2.0cvs15.patchset
+( cvs diff -u -r 1.43.2.69 -r 1.43.2.70 src/prefs_matcher.c;  ) > 3.2.0cvs16.patchset
