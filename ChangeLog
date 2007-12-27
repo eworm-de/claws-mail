@@ -1,3 +1,10 @@
+2007-12-27 [colin]	3.2.0cvs19
+
+	* src/plugins/pgpcore/Makefile.am
+	* src/plugins/pgpinline/Makefile.am
+	* src/plugins/pgpmime/Makefile.am
+		Add missing flags to build pgp plugins on maemo
+
 2007-12-27 [colin]	3.2.0cvs18
 
 	* src/mainwindow.c
