@@ -1265,7 +1265,7 @@ int main(int argc, char *argv[])
 		if (show_at_startup)
 			main_window_popup(mainwin);
 	}
-	
+
 	if (!folder_have_mailbox()) {
 		prefs_destroy_cache();
 		main_window_cursor_normal(mainwin);

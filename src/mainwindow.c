@@ -2508,7 +2508,8 @@ void main_window_get_size(MainWindow *mainwin)
 	}
 
 	allocation = &mainwin->window->allocation;
-	if (allocation->width > 1 && allocation->height > 1) {
+	if (allocation->width > 1 && allocation->height > 1 &&
+	    !prefs_common.mainwin_maximised) {
 		prefs_common.mainview_height = allocation->height;
 		prefs_common.mainwin_width   = allocation->width;
 		prefs_common.mainwin_height  = allocation->height;
@@ -2540,6 +2541,9 @@ void main_window_get_size(MainWindow *mainwin)
 void main_window_get_position(MainWindow *mainwin)
 {
 	gint x, y;
+
+	if (prefs_common.mainwin_maximised)
+		return;
 
 	gtkut_widget_get_uposition(mainwin->window, &x, &y);
 
@@ -3119,6 +3123,10 @@ void main_window_popup(MainWindow *mainwin)
 		main_window_show(mainwin);
 
 	gtkut_window_popup(mainwin->window);
+
+	if (prefs_common.mainwin_maximised)
+		gtk_window_maximize(GTK_WINDOW(mainwin->window));
+
 	if (prefs_common.layout_mode == SMALL_LAYOUT) {
 		if (mainwin->in_folder) {
 			mainwindow_enter_folder(mainwin);
@@ -4474,6 +4482,9 @@ static gboolean mainwindow_state_event_cb(GtkWidget *widget, GdkEventWindowState
 		if (iconified_count > 0)
 			hooks_invoke(MAIN_WINDOW_GOT_ICONIFIED, NULL);
 		iconified_count++;
+	} else if (!claws_is_starting()) {
+		prefs_common.mainwin_maximised = 
+			((state->new_window_state&GDK_WINDOW_STATE_MAXIMIZED) != 0);
 	}
 	if (state->new_window_state == 0)
 		gtk_window_set_skip_taskbar_hint(GTK_WINDOW(widget), FALSE);

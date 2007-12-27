@@ -270,6 +270,7 @@ struct _PrefsCommon
 	gint mainwin_y;
 	gint mainwin_width;
 	gint mainwin_height;
+	gint mainwin_maximised;
 
 	gint msgwin_width;
 	gint msgwin_height;

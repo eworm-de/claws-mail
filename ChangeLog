@@ -1,3 +1,13 @@
+2007-12-27 [colin]	3.2.0cvs17
+
+	* src/main.c
+	* src/mainwindow.c
+	* src/prefs_common.c
+	* src/prefs_common.h
+		Fix bug 1439, 'Claws Mail does not remember window size 
+		state when restarted'. Save maximised state and force
+		maximisation at startup if applicable.
+
 2007-12-23 [paul]	3.2.0cvs16
 
 	* src/prefs_matcher.c

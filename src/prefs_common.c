@@ -626,6 +626,8 @@ static PrefParam param[] = {
 	 NULL, NULL, NULL},
 	{"mainwin_y", "64", &prefs_common.mainwin_y, P_INT,
 	 NULL, NULL, NULL},
+	{"mainwin_maximised", "FALSE", &prefs_common.mainwin_maximised, P_BOOL,
+	 NULL, NULL, NULL},
 #ifndef MAEMO
 	{"mainwin_width", "800", &prefs_common.mainwin_width, P_INT,
 	 NULL, NULL, NULL},
