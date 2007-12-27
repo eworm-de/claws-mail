@@ -3122,10 +3122,10 @@ void main_window_popup(MainWindow *mainwin)
 	if (!GTK_WIDGET_VISIBLE(GTK_WIDGET(mainwin->window)))
 		main_window_show(mainwin);
 
-	gtkut_window_popup(mainwin->window);
-
 	if (prefs_common.mainwin_maximised)
 		gtk_window_maximize(GTK_WINDOW(mainwin->window));
+
+	gtkut_window_popup(mainwin->window);
 
 	if (prefs_common.layout_mode == SMALL_LAYOUT) {
 		if (mainwin->in_folder) {

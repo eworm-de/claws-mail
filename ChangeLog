@@ -1,3 +1,9 @@
+2007-12-27 [colin]	3.2.0cvs18
+
+	* src/mainwindow.c
+		Maximise before showing to avoid probable flickering
+		on slow computers.
+
 2007-12-27 [colin]	3.2.0cvs17
 
 	* src/main.c
