@@ -1055,7 +1055,7 @@ GList *procmime_get_mime_type_list(void)
 	if (mime_type_list) 
 		return mime_type_list;
 	
-#if defined(__NetBSD__)
+#if defined(__NetBSD__) || defined(__OpenBSD__)
 	if ((fp = g_fopen(DATAROOTDIR "/mime/globs", "rb")) == NULL) 
 #else
 	if ((fp = g_fopen("/usr/share/mime/globs", "rb")) == NULL) 

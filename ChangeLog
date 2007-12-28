@@ -1,3 +1,8 @@
+2007-12-28 [colin]	3.2.0cvs20
+
+	* src/procmime.c
+		Fix path to mime/globs. Patch by Marten King.
+
 2007-12-27 [colin]	3.2.0cvs19
 
 	* src/plugins/pgpcore/Makefile.am
