@@ -4429,8 +4429,8 @@ gboolean compose_check_for_valid_recipient(Compose *compose) {
 		gchar *entry;
 		header = gtk_editable_get_chars(GTK_EDITABLE(GTK_BIN(((ComposeHeaderEntry *)list->data)->combo)->child), 0, -1);
 		entry = gtk_editable_get_chars(GTK_EDITABLE(((ComposeHeaderEntry *)list->data)->entry), 0, -1);
-
 		g_strstrip(entry);
+		g_strstrip(header);
 		if (entry[0] != '\0') {
 			for (strptr = recipient_headers_mail; *strptr != NULL; strptr++) {
 				if (!strcmp(header, prefs_common_translated_header_name(*strptr))) {
@@ -4463,6 +4463,7 @@ static gboolean compose_check_for_set_recipients(Compose *compose)
 			entry = gtk_editable_get_chars(GTK_EDITABLE(((ComposeHeaderEntry *)list->data)->entry), 0, -1);
 			header = gtk_editable_get_chars(GTK_EDITABLE(GTK_BIN(((ComposeHeaderEntry *)list->data)->combo)->child), 0, -1);
 			g_strstrip(entry);
+			g_strstrip(header);
 			if (strcmp(entry, compose->account->auto_cc)
 			||  strcmp(header, prefs_common_translated_header_name("Cc:"))) {
 				found_other = TRUE;
@@ -4494,6 +4495,7 @@ static gboolean compose_check_for_set_recipients(Compose *compose)
 			entry = gtk_editable_get_chars(GTK_EDITABLE(((ComposeHeaderEntry *)list->data)->entry), 0, -1);
 			header = gtk_editable_get_chars(GTK_EDITABLE(GTK_BIN(((ComposeHeaderEntry *)list->data)->combo)->child), 0, -1);
 			g_strstrip(entry);
+			g_strstrip(header);
 			if (strcmp(entry, compose->account->auto_bcc)
 			||  strcmp(header, prefs_common_translated_header_name("Bcc:"))) {
 				found_other = TRUE;
@@ -5892,9 +5894,10 @@ static gchar *compose_get_header(Compose *compose)
 		gboolean standard_header = FALSE;
 
 		headerentry = ((ComposeHeaderEntry *)list->data);
-		
+
 		tmp = g_strdup(gtk_entry_get_text(GTK_ENTRY(GTK_BIN(headerentry->combo)->child)));
-		if (strchr(tmp, ' ') != NULL || strchr(tmp, '\r') != NULL || strchr(tmp, '\n') != NULL) {
+		g_strstrip(tmp);
+		if (*tmp == '\0' || strchr(tmp, ' ') != NULL || strchr(tmp, '\r') != NULL || strchr(tmp, '\n') != NULL) {
 			g_free(tmp);
 			continue;
 		}

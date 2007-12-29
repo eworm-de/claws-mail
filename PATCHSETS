@@ -3159,3 +3159,4 @@
 ( cvs diff -u -r 1.49.2.104 -r 1.49.2.105 src/procmime.c;  ) > 3.2.0cvs20.patchset
 ( cvs diff -u -r 1.96.2.194 -r 1.96.2.195 src/textview.c;  ) > 3.2.0cvs21.patchset
 ( cvs diff -u -r 1.60.2.49 -r 1.60.2.50 po/es.po;  cvs diff -u -r 1.49.2.105 -r 1.49.2.106 src/procmime.c;  ) > 3.2.0cvs22.patchset
+( cvs diff -u -r 1.382.2.428 -r 1.382.2.429 src/compose.c;  ) > 3.2.0cvs23.patchset
