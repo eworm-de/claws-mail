@@ -3157,3 +3157,4 @@
 ( cvs diff -u -r 1.274.2.226 -r 1.274.2.227 src/mainwindow.c;  ) > 3.2.0cvs18.patchset
 ( cvs diff -u -r 1.1.2.10 -r 1.1.2.11 src/plugins/pgpcore/Makefile.am;  cvs diff -u -r 1.1.2.8 -r 1.1.2.9 src/plugins/pgpinline/Makefile.am;  cvs diff -u -r 1.1.2.10 -r 1.1.2.11 src/plugins/pgpmime/Makefile.am;  ) > 3.2.0cvs19.patchset
 ( cvs diff -u -r 1.49.2.104 -r 1.49.2.105 src/procmime.c;  ) > 3.2.0cvs20.patchset
+( cvs diff -u -r 1.96.2.194 -r 1.96.2.195 src/textview.c;  ) > 3.2.0cvs21.patchset

@@ -208,6 +208,7 @@ static void save_file_cb			(TextView 	*textview,
 static void open_image_cb			(TextView 	*textview,
 						 guint		 action,
 						 void		*data);
+static void textview_show_tags(TextView *textview);
 
 static GtkItemFactoryEntry textview_link_popup_entries[] = 
 {
@@ -634,6 +635,9 @@ static void textview_add_part(TextView *textview, MimeInfo *mimeinfo)
 		if (headers) {
 			if (charcount > 0)
 				gtk_text_buffer_insert(buffer, &iter, "\n", 1);
+			
+			if (procmime_mimeinfo_parent(mimeinfo) == NULL)
+				textview_show_tags(textview);
 			textview_show_header(textview, headers);
 			procheader_header_array_destroy(headers);
 		}
@@ -2087,8 +2091,6 @@ static void textview_show_header(TextView *textview, GPtrArray *headers)
 	gint i;
 
 	g_return_if_fail(headers != NULL);
-
-	textview_show_tags(textview);
 
 	for (i = 0; i < headers->len; i++) {
 		header = g_ptr_array_index(headers, i);
