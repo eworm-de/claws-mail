@@ -1,3 +1,12 @@
+2007-12-29 [mones]	3.2.0cvs22
+
+	* po/es.po
+		Updated translation, corrected a term based 
+		on suggestion from Israel Saeta Pérez,
+		reverted awful X-Mailer translation
+	* src/procmime.c
+		Complete cvs20 for FreeBSD, patch by Pawel
+
 2007-12-29 [colin]	3.2.0cvs21
 
 	* src/textview.c
