@@ -1,3 +1,8 @@
+2008-01-05 [colin]	3.2.0cvs24
+
+	* src/addressadd.c
+		Little GUI fixes, patch by Pawel
+
 2007-12-29 [wwp]	3.2.0cvs23
 
 	* src/compose.c

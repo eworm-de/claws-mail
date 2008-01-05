@@ -41,6 +41,7 @@
 #include "gtkutils.h"
 #include "stock_pixmap.h"
 #include "prefs_common.h"
+#include "prefs_gtk.h"
 #include "addressadd.h"
 #include "addritem.h"
 #include "addrbook.h"
@@ -64,8 +65,6 @@ static struct _AddressAdd_dlg {
 	GtkWidget *tree_folder;
 	GtkWidget *ok_btn;
 	GtkWidget *cancel_btn;
-	GtkWidget *statusbar;
-	gint status_cid;
 	FolderInfo *fiSelected;
 } addressadd_dlg;
 
@@ -88,18 +87,6 @@ static void addressadd_free_folderinfo( FolderInfo *fi ) {
 	fi->book   = NULL;
 	fi->folder = NULL;
 	g_free( fi );
-}
-
-/*
-* Edit functions.
-*/
-static void addressadd_status_show( gchar *msg ) {
-	if( addressadd_dlg.statusbar != NULL ) {
-		gtk_statusbar_pop( GTK_STATUSBAR(addressadd_dlg.statusbar), addressadd_dlg.status_cid );
-		if( msg ) {
-			gtk_statusbar_push( GTK_STATUSBAR(addressadd_dlg.statusbar), addressadd_dlg.status_cid, msg );
-		}
-	}
 }
 
 static gint addressadd_delete_event( GtkWidget *widget, GdkEventAny *event, gboolean *cancelled ) {
@@ -157,6 +144,7 @@ static void addressadd_size_allocate_cb(GtkWidget *widget,
 static void addressadd_create( void ) {
 	GtkWidget *window;
 	GtkWidget *vbox, *hbox;
+	GtkWidget *frame;
 	GtkWidget *table;
 	GtkWidget *label;
 	GtkWidget *picture;
@@ -169,13 +157,11 @@ static void addressadd_create( void ) {
 	GtkWidget *hbbox;
 	GtkWidget *ok_btn;
 	GtkWidget *cancel_btn;
-	GtkWidget *hsbox;
-	GtkWidget *statusbar;
 	gint top;
 	static GdkGeometry geometry;
 
 	window = gtkut_window_new(GTK_WINDOW_TOPLEVEL, "addressadd");
-	gtk_container_set_border_width( GTK_CONTAINER(window), 0 );
+	gtk_container_set_border_width( GTK_CONTAINER(window), VBOX_BORDER );
 	gtk_window_set_title( GTK_WINDOW(window), _("Add to address book") );
 	gtk_window_set_position( GTK_WINDOW(window), GTK_WIN_POS_MOUSE );
 	gtk_window_set_modal( GTK_WINDOW(window), TRUE );
@@ -185,21 +171,25 @@ static void addressadd_create( void ) {
 			  G_CALLBACK(addressadd_key_pressed), NULL );
 	g_signal_connect(G_OBJECT(window), "size_allocate",
 			 G_CALLBACK(addressadd_size_allocate_cb), NULL);
-
-	hbox = gtk_hbox_new(FALSE, 6);
+	
+	hbox = gtk_hbox_new(FALSE, 10);
+	gtk_container_set_border_width(GTK_CONTAINER(hbox), 4);
 	vbox = gtk_vbox_new(FALSE, 8);
 	gtk_container_add(GTK_CONTAINER(window), vbox);
-	gtk_container_set_border_width( GTK_CONTAINER(vbox), 8 );
 
 	picture = gtk_image_new();
 	gtk_box_pack_start(GTK_BOX(hbox), picture, FALSE, FALSE, 0);
 
 	table = gtk_table_new(3, 2, FALSE);
-	gtk_box_pack_start(GTK_BOX(hbox), table, FALSE, FALSE, 0);
-	gtk_box_pack_start(GTK_BOX(vbox), hbox, FALSE, FALSE, 0);
-	gtk_container_set_border_width( GTK_CONTAINER(table), 8 );
-	gtk_table_set_row_spacings(GTK_TABLE(table), 8);
-	gtk_table_set_col_spacings(GTK_TABLE(table), 8);
+	gtk_box_pack_start(GTK_BOX(hbox), table, TRUE, TRUE, 0);
+	gtk_table_set_row_spacings(GTK_TABLE(table), VSPACING_NARROW);
+	gtk_table_set_col_spacings(GTK_TABLE(table), HSPACING_NARROW);
+
+	frame = gtk_frame_new(_("Contact"));
+	gtk_frame_set_label_align(GTK_FRAME(frame), 0.01, 0.5);
+	gtk_container_add(GTK_CONTAINER(frame), hbox);
+	gtk_container_set_border_width( GTK_CONTAINER(frame), 4);
+	gtk_box_pack_start(GTK_BOX(vbox), frame, FALSE, FALSE, 0);
 
 	/* First row */
 	top = 0;
@@ -208,7 +198,7 @@ static void addressadd_create( void ) {
 	gtk_misc_set_alignment(GTK_MISC(label), 0, 0.5);
 
 	entry_name = gtk_entry_new();
-	/* gtk_entry_set_max_length(); */
+	gtk_widget_set_size_request(entry_name, 150, -1);
 	gtk_entry_set_text (GTK_ENTRY(entry_name),"");
 	
 	gtk_table_attach(GTK_TABLE(table), entry_name, 1, 2, top, (top + 1), GTK_FILL | GTK_EXPAND , 0, 0, 0);
@@ -230,13 +220,13 @@ static void addressadd_create( void ) {
 	gtk_misc_set_alignment(GTK_MISC(label), 0, 0.5);
 
 	entry_rems = gtk_entry_new();
-	/* gtk_entry_set_max_length(); */
+	gtk_widget_set_size_request(entry_rems, 150, -1);
 	gtk_table_attach(GTK_TABLE(table), entry_rems, 1, 2, top, (top + 1), GTK_FILL | GTK_EXPAND, 0, 0, 0);
-
+	
 	/* Address book/folder tree */
-	vlbox = gtk_vbox_new(FALSE, 8);
+	vlbox = gtk_vbox_new(FALSE, VBOX_BORDER);
 	gtk_box_pack_start(GTK_BOX(vbox), vlbox, TRUE, TRUE, 0);
-	gtk_container_set_border_width( GTK_CONTAINER(vlbox), 8 );
+	gtk_container_set_border_width( GTK_CONTAINER(vlbox), 4);
 
 	tree_win = gtk_scrolled_window_new( NULL, NULL );
 	gtk_scrolled_window_set_policy( GTK_SCROLLED_WINDOW(tree_win),
@@ -254,18 +244,12 @@ static void addressadd_create( void ) {
 	gtk_ctree_set_indent( GTK_CTREE(tree_folder), CTREE_INDENT );
 	gtk_clist_set_auto_sort( GTK_CLIST(tree_folder), TRUE );
 
-	/* Status line */
-	hsbox = gtk_hbox_new(FALSE, 0);
-	gtk_box_pack_end(GTK_BOX(vbox), hsbox, FALSE, FALSE, BORDER_WIDTH);
-	statusbar = gtk_statusbar_new();
-	gtk_box_pack_start(GTK_BOX(hsbox), statusbar, TRUE, TRUE, BORDER_WIDTH);
-
 	/* Button panel */
 	gtkut_stock_button_set_create(&hbbox, &cancel_btn, GTK_STOCK_CANCEL,
 				      &ok_btn, GTK_STOCK_OK,
 				      NULL, NULL);
 	gtk_box_pack_end(GTK_BOX(vbox), hbbox, FALSE, FALSE, 0);
-	gtk_container_set_border_width( GTK_CONTAINER(hbbox), 0 );
+	gtk_container_set_border_width( GTK_CONTAINER(hbbox), HSPACING_NARROW );
 	gtk_widget_grab_default(ok_btn);
 
 	g_signal_connect(G_OBJECT(ok_btn), "clicked",
@@ -279,15 +263,13 @@ static void addressadd_create( void ) {
 
 	if (!geometry.min_height) {
 		geometry.min_width = 300;
-		geometry.min_height = 400;
+		geometry.min_height = 350;
 	}
 
 	gtk_window_set_geometry_hints(GTK_WINDOW(window), NULL, &geometry,
 				      GDK_HINT_MIN_SIZE);
 	gtk_widget_set_size_request(window, prefs_common.addressaddwin_width,
 				    prefs_common.addressaddwin_height);
-
-	gtk_widget_show_all(vbox);
 
 	addressadd_dlg.window        = window;
 	addressadd_dlg.picture       = picture;
@@ -297,8 +279,6 @@ static void addressadd_create( void ) {
 	addressadd_dlg.tree_folder   = tree_folder;
 	addressadd_dlg.ok_btn        = ok_btn;
 	addressadd_dlg.cancel_btn    = cancel_btn;
-	addressadd_dlg.statusbar     = statusbar;
-	addressadd_dlg.status_cid    = gtk_statusbar_get_context_id( GTK_STATUSBAR(statusbar), "Address Add" );
 
 	gtk_widget_show_all( window );
 
@@ -398,7 +378,6 @@ gboolean addressadd_selection( AddressIndex *addrIndex, const gchar *name,
 	manage_window_set_transient(GTK_WINDOW(addressadd_dlg.window));
 
 	addressadd_dlg.fiSelected = NULL;
-	addressadd_status_show( "" );
 	addressadd_load_data( addrIndex );
 	gtk_clist_select_row( GTK_CLIST( addressadd_dlg.tree_folder ), 0, 0 );
 	gtk_widget_show(addressadd_dlg.window);
