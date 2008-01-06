@@ -210,7 +210,8 @@ static void addressadd_create( void ) {
 	gtk_misc_set_alignment(GTK_MISC(label), 0, 0);
 
 	label_addr = gtk_label_new("");
-	gtk_table_attach(GTK_TABLE(table), label_addr, 1, 2, top, (top + 1), GTK_FILL, 0, 0, 0);
+	gtk_widget_set_size_request(label_addr, 150, -1);
+	gtk_table_attach(GTK_TABLE(table), label_addr, 1, 2, top, (top + 1), GTK_FILL | GTK_EXPAND, 0, 0, 0);
 	gtk_misc_set_alignment(GTK_MISC(label_addr), 0, 0.5);
 
 	/* Third row */
