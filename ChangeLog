@@ -1,3 +1,32 @@
+2008-01-07 [wwp]	3.2.0cvs26
+
+	* src/prefs_filtering.c
+		 - add a clear button to clear dialog input fields
+		 - add page up and page down buttons to move selected rule up and down
+		 - in rules list popup-menu: added Delete, Delete all and Duplicate
+		 - popup-menu items are greyed out either if the list is empty (not counting the
+		   (New) row or if there is no selected item
+		 - clear store when closing dialog
+
+	* src/prefs_actions.c
+		 - reflect some changes to filtering prefs (+ rewritten a bit some funcs):
+		   clear button, popup-menu
+		 - clear store when closing dialog
+
+	* src/prefs_template.c
+		 - reflect some changes to filtering prefs (+ rewritten a bit some funcs):
+		   clear button, popup-menu 
+
+	* src/addrcustomattr.c
+		 - renamed popup-menu item Clear list to Delete all
+		 - grey out popup-menu items is there is no selected item or if list is empty
+		 - clear store when closing dialog
+
+	* src/edittags.c
+		 - added popup-menu item Delete all
+		 - grey out popup-menu items is there is no selected item or if list is empty
+		 - clear store when closing dialog
+
 2008-01-06 [wwp]	3.2.0cvs25
 
 	* src/addressadd.c

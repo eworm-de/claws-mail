@@ -152,7 +152,7 @@ static void custom_attr_window_create_list_view_columns(GtkWidget *list_view)
 
 static void custom_attr_window_list_view_clear_list(GtkWidget *list_view, gboolean warn)
 {
-	if (!warn || alertpanel(_("Clear attribute names list"),
+	if (!warn || alertpanel(_("Delete all attribute names"),
 		       _("Do you really want to delete all attribute names?"),
 		       GTK_STOCK_CANCEL, GTK_STOCK_DELETE, NULL) == G_ALERTALTERNATE) {
 		GtkListStore *list_store = GTK_LIST_STORE(gtk_tree_view_get_model
@@ -207,8 +207,8 @@ static void custom_attr_popup_factory_defaults (void *obj, guint action, void *d
 
 static GtkItemFactoryEntry custom_attr_popup_entries[] =
 {
-	{N_("/_Clear list"),		NULL, custom_attr_popup_clear_list, 0, NULL, NULL},
-	{N_("/_Delete"),		NULL, custom_attr_popup_delete, 0, NULL, NULL},
+	{N_("/_Delete"),			NULL, custom_attr_popup_delete, 0, NULL, NULL},
+	{N_("/Delete _all"),		NULL, custom_attr_popup_clear_list, 0, NULL, NULL},
 	{N_("/_Reset to default"),	NULL, custom_attr_popup_factory_defaults, 0, NULL, NULL},
 };
 
@@ -216,6 +216,10 @@ static gint custom_attr_list_btn_pressed(GtkWidget *widget, GdkEventButton *even
 				    GtkTreeView *list_view)
 {
 	if (event && event->button == 3) {
+		GtkTreeModel *model = gtk_tree_view_get_model(list_view);
+		GtkTreeIter iter;
+		gboolean non_empty;
+
 		if (!custom_attr_popup_menu) {
 			gint n_entries = sizeof(custom_attr_popup_entries) /
 					sizeof(custom_attr_popup_entries[0]);
@@ -223,6 +227,12 @@ static gint custom_attr_list_btn_pressed(GtkWidget *widget, GdkEventButton *even
 							  n_entries, "<CustomAttrPopupMenu>",
 							  &custom_attr_popup_factory, list_view);
 		}
+
+		/* grey out popup menu items if list is empty */
+		non_empty = gtk_tree_model_get_iter_first(model, &iter);
+		menu_set_sensitive(custom_attr_popup_factory, "/Delete", non_empty);
+		menu_set_sensitive(custom_attr_popup_factory, "/Delete all", non_empty);
+
 		gtk_menu_popup(GTK_MENU(custom_attr_popup_menu), 
 			       NULL, NULL, NULL, NULL, 
 			       event->button, event->time);
@@ -283,6 +293,7 @@ static void custom_attr_window_close(void)
 {
 	if (dirty)
 		custom_attr_window_save_list();
+	custom_attr_window_list_view_clear_list(custom_attr_window.attr_list, FALSE);
 	gtk_widget_hide(custom_attr_window.window);
 	if (dirty && !prefs_common.addressbook_use_editaddress_dialog)
 		addressbook_edit_reload_attr_list();

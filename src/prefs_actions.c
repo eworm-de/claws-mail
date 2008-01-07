@@ -45,6 +45,7 @@
 #include "description_window.h"
 #include "gtkutils.h"
 #include "manual.h"
+#include "menu.h"
 
 enum {
 	PREFS_ACTIONS_STRING,	/*!< string pointer managed by list store, 
@@ -75,7 +76,7 @@ static int modified_list = FALSE;
 /* widget creating functions */
 static void prefs_actions_create	(MainWindow *mainwin);
 static void prefs_actions_set_dialog	(void);
-static gint prefs_actions_clist_set_row	(GtkTreeIter *row);
+static gint prefs_actions_clist_set_row	(gint row);
 
 /* callback functions */
 static void prefs_actions_info_cb	(GtkWidget	*w,
@@ -85,6 +86,11 @@ static void prefs_actions_register_cb	(GtkWidget	*w,
 static void prefs_actions_substitute_cb	(GtkWidget	*w,
 					 gpointer	 data);
 static void prefs_actions_delete_cb	(GtkWidget	*w,
+					 gpointer	 data);
+static void prefs_actions_delete_all_cb	(GtkWidget	*w,
+					 gpointer	 data);
+static void prefs_actions_clear_cb	(void);
+static void prefs_actions_duplicate_cb	(GtkWidget	*w,
 					 gpointer	 data);
 static void prefs_actions_up		(GtkWidget	*w,
 					 gpointer	 data);
@@ -101,20 +107,15 @@ static void prefs_actions_cancel	(GtkWidget	*w,
 static void prefs_actions_ok		(GtkWidget	*w,
 					 gpointer	 data);
 
-
 static GtkListStore* prefs_actions_create_data_store	(void);
 
 static void prefs_actions_list_view_insert_action	(GtkWidget *list_view,
-							 GtkTreeIter *row_iter,
+							 gint row,
 							 gchar *action,
 							 gboolean is_valid);
 static GtkWidget *prefs_actions_list_view_create	(void);
 static void prefs_actions_create_list_view_columns	(GtkWidget *list_view);
-static gboolean prefs_actions_selected			(GtkTreeSelection *selector,
-							 GtkTreeModel *model, 
-							 GtkTreePath *path,
-							 gboolean currently_selected,
-							 gpointer data);
+static void prefs_actions_select_row(GtkTreeView *list_view, GtkTreePath *path);
 
 void prefs_actions_open(MainWindow *mainwin)
 {
@@ -166,6 +167,7 @@ static void prefs_actions_create(MainWindow *mainwin)
 	GtkWidget *reg_btn;
 	GtkWidget *subst_btn;
 	GtkWidget *del_btn;
+	GtkWidget *clear_btn;
 
 	GtkWidget *cond_hbox;
 	GtkWidget *cond_scrolledwin;
@@ -286,6 +288,12 @@ static void prefs_actions_create(MainWindow *mainwin)
 	g_signal_connect(G_OBJECT(del_btn), "clicked",
 			 G_CALLBACK(prefs_actions_delete_cb), NULL);
 
+	clear_btn = gtk_button_new_from_stock (GTK_STOCK_CLEAR);
+	gtk_widget_show (clear_btn);
+	gtk_box_pack_start (GTK_BOX (btn_hbox), clear_btn, FALSE, TRUE, 0);
+	g_signal_connect(G_OBJECT (clear_btn), "clicked",
+			G_CALLBACK(prefs_actions_clear_cb), NULL);
+
 #if GTK_CHECK_VERSION(2, 8, 0)
 	info_btn = gtk_button_new_from_stock(GTK_STOCK_INFO);
 #else
@@ -350,6 +358,11 @@ static void prefs_actions_create(MainWindow *mainwin)
 	actions.actions_list_view = cond_list_view;
 }
 
+static void prefs_actions_reset_dialog(void)
+{
+	gtk_entry_set_text(GTK_ENTRY(actions.name_entry), "");
+	gtk_entry_set_text(GTK_ENTRY(actions.cmd_entry), "");
+}
 
 void prefs_actions_read_config(void)
 {
@@ -444,6 +457,14 @@ void prefs_actions_write_config(void)
 	}
 }
 
+static void prefs_actions_clear_list(GtkListStore *list_store)
+{
+	gtk_list_store_clear(list_store);
+
+	prefs_actions_list_view_insert_action(actions.actions_list_view,
+					      -1, _("(New)"), FALSE);
+}
+
 static void prefs_actions_set_dialog(void)
 {
 	GtkListStore *store;
@@ -453,16 +474,14 @@ static void prefs_actions_set_dialog(void)
 
 	store = GTK_LIST_STORE(gtk_tree_view_get_model
 				(GTK_TREE_VIEW(actions.actions_list_view)));
-	gtk_list_store_clear(store);
 
-	prefs_actions_list_view_insert_action(actions.actions_list_view,
-					      NULL, _("(New)"), FALSE);
+	prefs_actions_clear_list(store);	
 
 	for (cur = prefs_common.actions_list; cur != NULL; cur = cur->next) {
 		gchar *action = (gchar *) cur->data;
 		
 		prefs_actions_list_view_insert_action(actions.actions_list_view,
-						      NULL, action, TRUE);
+						      -1, action, TRUE);
 	}
 
 	/* select first entry */
@@ -507,7 +526,7 @@ static void prefs_actions_set_list(void)
 #define GET_ENTRY(entry) \
 	entry_text = gtk_entry_get_text(GTK_ENTRY(entry))
 
-static gint prefs_actions_clist_set_row(GtkTreeIter *row)
+static gint prefs_actions_clist_set_row(gint row)
 {
 	const gchar *entry_text;
 	gint len;
@@ -517,7 +536,6 @@ static gint prefs_actions_clist_set_row(GtkTreeIter *row)
 
 	store = GTK_LIST_STORE(gtk_tree_view_get_model
 				(GTK_TREE_VIEW(actions.actions_list_view)));
-	
 
 	GET_ENTRY(actions.name_entry);
 	if (entry_text[0] == '\0') {
@@ -592,33 +610,22 @@ static gint prefs_actions_clist_set_row(GtkTreeIter *row)
 
 static void prefs_actions_register_cb(GtkWidget *w, gpointer data)
 {
-	prefs_actions_clist_set_row(NULL);
+	prefs_actions_clist_set_row(-1);
+
 	modified = FALSE;
 	modified_list = TRUE;
 }
 
 static void prefs_actions_substitute_cb(GtkWidget *w, gpointer data)
 {
-	GtkTreeIter isel, inew;
-	GtkTreePath *path_sel, *path_new;
-	GtkTreeSelection *selection = gtk_tree_view_get_selection
-					(GTK_TREE_VIEW(actions.actions_list_view));
-	GtkTreeModel *model;					
+	gint row;
 
-	if (!gtk_tree_selection_get_selected(selection, &model, &isel))
-		return;
-	if (!gtk_tree_model_get_iter_first(model, &inew))
+	row = gtkut_list_view_get_selected_row(actions.actions_list_view);
+	if (row <= 0)
 		return;
 
-	path_sel = gtk_tree_model_get_path(model, &isel);
-	path_new = gtk_tree_model_get_path(model, &inew);
+	prefs_actions_clist_set_row(row);
 
-	if (path_sel && path_new 
-	&&  gtk_tree_path_compare(path_sel, path_new) != 0)
-		prefs_actions_clist_set_row(&isel);
-
-	gtk_tree_path_free(path_sel);
-	gtk_tree_path_free(path_new);
 	modified = FALSE;
 	modified_list = TRUE;
 }
@@ -628,6 +635,11 @@ static void prefs_actions_delete_cb(GtkWidget *w, gpointer data)
 	GtkTreeIter sel;
 	GtkTreeModel *model;
 	gchar *action;
+	gint row;
+
+	row = gtkut_list_view_get_selected_row(actions.actions_list_view);
+	if (row <= 0) 
+		return;	
 
 	if (!gtk_tree_selection_get_selected(gtk_tree_view_get_selection
 				(GTK_TREE_VIEW(actions.actions_list_view)),
@@ -649,6 +661,46 @@ static void prefs_actions_delete_cb(GtkWidget *w, gpointer data)
 	prefs_common.actions_list = g_slist_remove(prefs_common.actions_list,
 						   action);
 	modified_list = TRUE;
+}
+
+static void prefs_actions_delete_all_cb(GtkWidget *w, gpointer data)
+{
+	GtkListStore *list_store;
+
+	if (alertpanel(_("Delete all actions"),
+			  _("Do you really want to delete all actions?"),
+			  GTK_STOCK_CANCEL, "+"GTK_STOCK_DELETE, NULL) == G_ALERTDEFAULT)
+	   return;
+
+	list_store = GTK_LIST_STORE(gtk_tree_view_get_model(GTK_TREE_VIEW(actions.actions_list_view)));
+	prefs_actions_clear_list(list_store);
+	modified = FALSE;
+
+	prefs_actions_reset_dialog();
+	modified_list = TRUE;
+}
+
+static void prefs_actions_clear_cb(void)
+{
+	gint row;
+
+	prefs_actions_reset_dialog();
+	row = gtkut_list_view_get_selected_row(actions.actions_list_view);
+	if (row < 1)
+		modified = FALSE;
+	else
+		modified = TRUE;
+}
+
+static void prefs_actions_duplicate_cb(GtkWidget *w, gpointer data)
+{
+	gint row;
+	
+	row = gtkut_list_view_get_selected_row(actions.actions_list_view);
+	if (row <= 0)
+		return;
+
+	modified_list = !prefs_actions_clist_set_row(-row-2);
 }
 
 static void prefs_actions_up(GtkWidget *w, gpointer data)
@@ -755,6 +807,8 @@ static gboolean prefs_actions_key_pressed(GtkWidget *widget, GdkEventKey *event,
 
 static void prefs_actions_cancel(GtkWidget *w, gpointer data)
 {
+	GtkListStore *store;
+
 	if (modified && alertpanel(_("Entry not saved"),
 				 _("The entry was not saved. Close anyway?"),
 				 GTK_STOCK_CLOSE, _("+_Continue editing"),
@@ -768,6 +822,9 @@ static void prefs_actions_cancel(GtkWidget *w, gpointer data)
 	}
 	modified = FALSE;
 	modified_list = FALSE;
+	store = GTK_LIST_STORE(gtk_tree_view_get_model(GTK_TREE_VIEW
+				(actions.actions_list_view)));
+	gtk_list_store_clear(store);
 	prefs_actions_read_config();
 	gtk_widget_hide(actions.window);
 	inc_unlock();
@@ -780,6 +837,7 @@ static void prefs_actions_ok(GtkWidget *widget, gpointer data)
 	GList *iter;
 	MessageView *msgview;
 	Compose *compose;
+	GtkListStore *store;
 
 	if (modified && alertpanel(_("Entry not saved"),
 				 _("The entry was not saved. Close anyway?"),
@@ -790,6 +848,9 @@ static void prefs_actions_ok(GtkWidget *widget, gpointer data)
 	modified = FALSE;
 	modified_list = FALSE;
 	prefs_actions_set_list();
+	store = GTK_LIST_STORE(gtk_tree_view_get_model(GTK_TREE_VIEW
+				(actions.actions_list_view)));
+	gtk_list_store_clear(store);
 	prefs_actions_write_config();
 
 	/* Update mainwindow actions menu */
@@ -872,17 +933,41 @@ static GtkListStore* prefs_actions_create_data_store(void)
 }
 
 static void prefs_actions_list_view_insert_action(GtkWidget *list_view,
-						  GtkTreeIter *row_iter,
+						  gint row,
 						  gchar *action,
 						  gboolean is_valid) 
 {
 	GtkTreeIter iter;
+	GtkTreeIter sibling;
 	GtkListStore *list_store = GTK_LIST_STORE(gtk_tree_view_get_model
 					(GTK_TREE_VIEW(list_view)));
 
-	if (row_iter == NULL) {
+/*	row -1 to add a new rule to store,
+	row >=0 to change an existing row
+	row <-1 insert a new row after (-row-2)
+*/
+	if (row >= 0 ) {
+		/* modify the existing */
+ 		if (!gtk_tree_model_iter_nth_child(GTK_TREE_MODEL(list_store),
+ 						   &iter, NULL, row))
+			row = -1;
+	} else if (row < -1 ) {
+		if (!gtk_tree_model_iter_nth_child(GTK_TREE_MODEL(list_store),
+						   &sibling, NULL, -row-2))
+ 			row = -1;		
+	}
+
+	if (row == -1 ) {
 		/* append new */
 		gtk_list_store_append(list_store, &iter);
+		gtk_list_store_set(list_store, &iter,
+				   PREFS_ACTIONS_STRING, action,
+				   PREFS_ACTIONS_DATA, action,
+				   PREFS_ACTIONS_VALID,  is_valid,
+				   -1);
+	} else if (row < -1) {
+		/* duplicate */
+		gtk_list_store_insert_after(list_store, &iter, &sibling);
 		gtk_list_store_set(list_store, &iter,
 				   PREFS_ACTIONS_STRING, action,
 				   PREFS_ACTIONS_DATA, action,
@@ -892,16 +977,89 @@ static void prefs_actions_list_view_insert_action(GtkWidget *list_view,
 		/* change existing */
 		gchar *old_action;
 
-		gtk_tree_model_get(GTK_TREE_MODEL(list_store), row_iter,
+		gtk_tree_model_get(GTK_TREE_MODEL(list_store), &iter,
 				   PREFS_ACTIONS_DATA, &old_action,
 				   -1);
-		
 		g_free(old_action);				
-		gtk_list_store_set(list_store, row_iter,
+
+		gtk_list_store_set(list_store, &iter,
 				   PREFS_ACTIONS_STRING, action,
 				   PREFS_ACTIONS_DATA, action,
 				   -1);
 	}
+}
+
+static GtkItemFactory *prefs_actions_popup_factory = NULL;
+static GtkWidget *prefs_actions_popup_menu = NULL;
+
+static GtkItemFactoryEntry prefs_actions_popup_entries[] =
+{
+   {N_("/_Delete"),		NULL, prefs_actions_delete_cb, 0, NULL, NULL},
+   {N_("/Delete _all"),	NULL, prefs_actions_delete_all_cb, 0, NULL, NULL},
+   {N_("/D_uplicate"),	NULL, prefs_actions_duplicate_cb, 0, NULL, NULL},
+};
+
+static gint prefs_actions_list_btn_pressed(GtkWidget *widget, GdkEventButton *event,
+				   GtkTreeView *list_view)
+{
+   if (event) {
+	   /* left- or right-button click */
+	   if (event->button == 1 || event->button == 3) {
+		   GtkTreePath *path = NULL;
+		   if (gtk_tree_view_get_path_at_pos( list_view, event->x, event->y,
+							   &path, NULL, NULL, NULL)) {
+			   prefs_actions_select_row(list_view, path);
+		   }
+		   if (path)
+			   gtk_tree_path_free(path);
+	   }
+
+	   /* right-button click */
+	   if (event->button == 3) {
+		   GtkTreeModel *model = gtk_tree_view_get_model(list_view);
+		   GtkTreeIter iter;
+		   gboolean non_empty;
+		   gint row;
+
+		   if (!prefs_actions_popup_menu) {
+			   gint n_entries = sizeof(prefs_actions_popup_entries) /
+					   sizeof(prefs_actions_popup_entries[0]);
+			   prefs_actions_popup_menu = menu_create_items(prefs_actions_popup_entries,
+								 n_entries, "<PrefsActionsPopupMenu>",
+								 &prefs_actions_popup_factory, list_view);
+		   }
+
+		   /* grey out some popup menu items if there is no selected row */
+		   row = gtkut_list_view_get_selected_row(GTK_WIDGET(list_view));
+		   menu_set_sensitive(prefs_actions_popup_factory, "/Delete", (row > 0));
+		   menu_set_sensitive(prefs_actions_popup_factory, "/Duplicate", (row > 0));
+
+		   /* grey out seom popup menu items if there is no row
+			  (not counting the (New) one at row 0) */
+		   non_empty = gtk_tree_model_get_iter_first(model, &iter);
+		   if (non_empty)
+			   non_empty = gtk_tree_model_iter_next(model, &iter);
+		   menu_set_sensitive(prefs_actions_popup_factory, "/Delete all", non_empty);
+
+		   gtk_menu_popup(GTK_MENU(prefs_actions_popup_menu), 
+					  NULL, NULL, NULL, NULL, 
+					  event->button, event->time);
+	   }
+   }
+   return FALSE;
+}
+
+static gboolean prefs_actions_list_popup_menu(GtkWidget *widget, gpointer data)
+{
+   GtkTreeView *list_view = (GtkTreeView *)data;
+   GdkEventButton event;
+   
+   event.button = 3;
+   event.time = gtk_get_current_event_time();
+   
+   prefs_actions_list_btn_pressed(NULL, &event, list_view);
+
+   return TRUE;
 }
 
 static GtkWidget *prefs_actions_list_view_create(void)
@@ -914,13 +1072,23 @@ static GtkWidget *prefs_actions_list_view_create(void)
 	list_view = GTK_TREE_VIEW(gtk_tree_view_new_with_model(model));
 	g_object_unref(model);	
 	
+#ifndef MAEMO
+	g_signal_connect(G_OBJECT(list_view), "popup-menu",
+			 G_CALLBACK(prefs_actions_list_popup_menu), list_view);
+#else
+	gtk_widget_tap_and_hold_setup(GTK_WIDGET(list_view), NULL, NULL,
+			GTK_TAP_AND_HOLD_NONE | GTK_TAP_AND_HOLD_NO_INTERNALS);
+	g_signal_connect(G_OBJECT(list_view), "tap-and-hold",
+			 G_CALLBACK(prefs_actions_list_popup_menu), list_view);
+#endif
+	g_signal_connect(G_OBJECT(list_view), "button-press-event",
+			G_CALLBACK(prefs_actions_list_btn_pressed), list_view);
+
 	gtk_tree_view_set_rules_hint(list_view, prefs_common.use_stripes_everywhere);
 	gtk_tree_view_set_reorderable(list_view, TRUE);
 
 	selector = gtk_tree_view_get_selection(list_view);
 	gtk_tree_selection_set_mode(selector, GTK_SELECTION_BROWSE);
-	gtk_tree_selection_set_select_function(selector, prefs_actions_selected,
-					       NULL, NULL);
 
 	/* create the columns */
 	prefs_actions_create_list_view_columns(GTK_WIDGET(list_view));
@@ -945,46 +1113,43 @@ static void prefs_actions_create_list_view_columns(GtkWidget *list_view)
 #define ENTRY_SET_TEXT(entry, str) \
 	gtk_entry_set_text(GTK_ENTRY(entry), str ? str : "")
 
-static gboolean prefs_actions_selected(GtkTreeSelection *selector,
-				       GtkTreeModel *model, 
-				       GtkTreePath *path,
-				       gboolean currently_selected,
-				       gpointer data)
+static void prefs_actions_select_row(GtkTreeView *list_view, GtkTreePath *path)
 {
+	GtkTreeModel *model = gtk_tree_view_get_model(list_view);
+	GtkTreeSelection *selection;
 	gchar *action;
 	gchar *cmd;
 	gchar buf[PREFSBUFSIZE];
 	GtkTreeIter iter;
 	gboolean is_valid;
 
-	if (currently_selected)
-		return TRUE;
+	if (!model || !path || !gtk_tree_model_get_iter(model, &iter, path))
+		return;
 
-	if (!gtk_tree_model_get_iter(model, &iter, path))
-		return TRUE;
+	/* select row */
+	selection = gtk_tree_view_get_selection(list_view);
+	gtk_tree_selection_select_path(selection, path);
 
 	gtk_tree_model_get(model, &iter, 
 			   PREFS_ACTIONS_VALID,  &is_valid,
 			   PREFS_ACTIONS_DATA, &action,
 			   -1);
 	if (!is_valid) {
-		ENTRY_SET_TEXT(actions.name_entry, "");
-		ENTRY_SET_TEXT(actions.cmd_entry, "");
-		return TRUE;
+		prefs_actions_reset_dialog();
+		return;
 	}
 	
 	strncpy(buf, action, PREFSBUFSIZE - 1);
-	buf[PREFSBUFSIZE - 1] = 0x00;
+	buf[PREFSBUFSIZE - 1] = '\0';
 	cmd = strstr(buf, ": ");
 
 	if (cmd && cmd[2])
 		ENTRY_SET_TEXT(actions.cmd_entry, &cmd[2]);
 	else
-		return TRUE;
+		return;
 
-	*cmd = 0x00;
+	*cmd = '\0';
 	ENTRY_SET_TEXT(actions.name_entry, buf);
 
-	return TRUE;
+	return;
 }
-

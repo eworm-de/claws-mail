@@ -234,9 +234,40 @@ static void apply_popup_delete (void *obj, guint action, void *data)
 	APPLYWINDOW_UNLOCK();
 }
 
+static void apply_popup_delete_all (void *obj, guint action, void *data)
+{
+	GSList *cur;
+	GtkTreeModel *model;
+	SummaryView *summaryview = NULL;
+	
+	if (alertpanel(_("Delete all tags"),
+		       _("Do you really want to delete all tags?"),
+		       GTK_STOCK_CANCEL, GTK_STOCK_DELETE, NULL) != G_ALERTALTERNATE)
+		return;
+
+	APPLYWINDOW_LOCK();
+
+	model = gtk_tree_view_get_model(GTK_TREE_VIEW(applywindow.taglist));
+	gtk_list_store_clear(GTK_LIST_STORE(model));
+
+	if (mainwindow_get_mainwindow() != NULL)
+		summaryview = mainwindow_get_mainwindow()->summaryview;
+	cur = tags_get_list();
+	for (; cur; cur = cur->next) {
+		gint id = GPOINTER_TO_INT(cur->data);
+		if (summaryview)
+			summary_set_tag(summaryview, -id, NULL);
+		tags_remove_tag(id);
+	}
+	tags_write_tags();
+
+	APPLYWINDOW_UNLOCK();
+}
+
 static GtkItemFactoryEntry apply_popup_entries[] =
 {
 	{N_("/_Delete"),		NULL, apply_popup_delete, 0, NULL, NULL},
+	{N_("/Delete _all"),	NULL, apply_popup_delete_all, 0, NULL, NULL},
 };
 
 static gint apply_list_btn_pressed(GtkWidget *widget, GdkEventButton *event,
@@ -246,6 +277,10 @@ static gint apply_list_btn_pressed(GtkWidget *widget, GdkEventButton *event,
 		return FALSE;
 
 	if (event && event->button == 3) {
+		GtkTreeModel *model = gtk_tree_view_get_model(list_view);
+		GtkTreeIter iter;
+		gboolean non_empty;
+
 		if (!apply_popup_menu) {
 			gint n_entries = sizeof(apply_popup_entries) /
 				sizeof(apply_popup_entries[0]);
@@ -253,6 +288,12 @@ static gint apply_list_btn_pressed(GtkWidget *widget, GdkEventButton *event,
 						      "<TagPopupMenu>", &apply_popup_factory,
 						      list_view);
 		}
+
+		/* grey out popup menu items if list is empty */
+		non_empty = gtk_tree_model_get_iter_first(model, &iter);
+		menu_set_sensitive(apply_popup_factory, "/Delete", non_empty);
+		menu_set_sensitive(apply_popup_factory, "/Delete all", non_empty);
+
 		gtk_menu_popup(GTK_MENU(apply_popup_menu), 
 			       NULL, NULL, NULL, NULL, 
 			       event->button, event->time);
@@ -309,6 +350,8 @@ static GtkWidget *apply_window_list_view_create	(void)
 
 }
 
+static void apply_window_list_view_clear_tags(GtkWidget *list_view);
+
 static void apply_window_close(void) 
 {
 	if (applywindow.busy)
@@ -320,6 +363,7 @@ static void apply_window_close(void)
 	APPLYWINDOW_LOCK();
 	main_window_reflect_tags_changes(mainwindow_get_mainwindow());
 	APPLYWINDOW_UNLOCK();
+	apply_window_list_view_clear_tags(applywindow.taglist);
 	gtk_widget_hide(applywindow.window);
 }
 
@@ -696,13 +740,12 @@ static void apply_window_list_view_insert_tag(GtkWidget *list_view,
 static void apply_window_load_tags (void) 
 {
 	GSList *cur;
-	GSList *tags = tags_get_list();
+	gint id;
 	apply_window_list_view_clear_tags(applywindow.taglist);
 	
-	cur = tags;
+	cur = tags_get_list();
 	for (; cur; cur = cur->next) {
-		gint id = GPOINTER_TO_INT(cur->data);
+		id = GPOINTER_TO_INT(cur->data);
 		apply_window_list_view_insert_tag(applywindow.taglist, NULL, id);
 	}
 }
-
