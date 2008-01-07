@@ -150,7 +150,7 @@ static void prefs_filtering_list_view_get_rule_info	(GtkWidget *list,
 static GtkWidget *prefs_filtering_list_view_create	(void);
 static void prefs_filtering_create_list_view_columns	(GtkWidget *list_view);
 
-void prefs_filtering_select_row(GtkTreeView *list_view, GtkTreePath *path);
+static void prefs_filtering_select_row(GtkTreeView *list_view, GtkTreePath *path);
 
 static void prefs_filtering_account_option_menu_populate(void);
 
@@ -1900,7 +1900,7 @@ static void prefs_filtering_create_list_view_columns(GtkWidget *list_view)
 /*!
  *\brief	Triggered when a row has to be selected
  */
-void prefs_filtering_select_row(GtkTreeView *list_view, GtkTreePath *path)
+static void prefs_filtering_select_row(GtkTreeView *list_view, GtkTreePath *path)
 {
 	GtkTreeModel *model = gtk_tree_view_get_model(list_view);
 

@@ -3165,3 +3165,4 @@
 ( cvs diff -u -r 1.1.2.4 -r 1.1.2.5 src/addrcustomattr.c;  cvs diff -u -r 1.1.2.15 -r 1.1.2.16 src/edittags.c;  cvs diff -u -r 1.60.2.53 -r 1.60.2.54 src/prefs_actions.c;  cvs diff -u -r 1.59.2.60 -r 1.59.2.61 src/prefs_filtering.c;  cvs diff -u -r 1.12.2.51 -r 1.12.2.52 src/prefs_template.c;  ) > 3.2.0cvs26.patchset
 ( cvs diff -u -r 1.60.2.54 -r 1.60.2.55 src/prefs_actions.c;  cvs diff -u -r 1.59.2.61 -r 1.59.2.62 src/prefs_filtering.c;  cvs diff -u -r 1.12.2.52 -r 1.12.2.53 src/prefs_template.c;  ) > 3.2.0cvs27.patchset
 ( cvs diff -u -r 1.207.2.194 -r 1.207.2.195 src/folderview.c;  cvs diff -u -r 1.395.2.346 -r 1.395.2.347 src/summaryview.c;  ) > 3.2.0cvs28.patchset
+( cvs diff -u -r 1.59.2.62 -r 1.59.2.63 src/prefs_filtering.c;  ) > 3.2.0cvs29.patchset

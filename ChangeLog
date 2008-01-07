@@ -1,3 +1,8 @@
+2008-01-07 [wwp]	3.2.0cvs29
+
+	* src/prefs_filtering.c
+		Static-alize a function, thanks to Colin.
+
 2008-01-07 [colin]	3.2.0cvs28
 
 	* src/folderview.c
