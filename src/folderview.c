@@ -2902,7 +2902,7 @@ static gboolean folderview_drag_motion_cb(GtkWidget      *widget,
 		GtkWidget *srcwidget;
 
 		if (y > height - 24 && height + vpos < total_height) {
-			gtk_adjustment_set_value(pos, (vpos+5 > height ? height : vpos+5));
+			gtk_adjustment_set_value(pos, (vpos+5 > total_height ? total_height : vpos+5));
 			gtk_adjustment_changed(pos);
 		}
 		if (y < 48 && y > 0) {

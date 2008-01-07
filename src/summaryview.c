@@ -3009,7 +3009,7 @@ static gchar *summary_complete_address(const gchar *addr)
 	gint count;
 	gchar *res, *tmp, *email_addr;
 	
-	if (addr == NULL)
+	if (addr == NULL || !strchr(addr, '@'))
 		return NULL;
 
 	Xstrdup_a(email_addr, addr, return NULL);
