@@ -1,3 +1,11 @@
+2008-01-07 [wwp]	3.2.0cvs27
+
+	* src/prefs_actions.c
+	* src/prefs_filtering.c
+	* src/prefs_template.c
+		Add tooltips to most buttons in the templates, actions and
+		filtering/processing dialogs.
+
 2008-01-07 [wwp]	3.2.0cvs26
 
 	* src/prefs_filtering.c

@@ -179,8 +179,11 @@ static void prefs_actions_create(MainWindow *mainwin)
 	GtkWidget *up_btn;
 	GtkWidget *down_btn;
 	static GdkGeometry geometry;
+	GtkTooltips *tooltips;
 
 	debug_print("Creating actions configuration window...\n");
+
+	tooltips = gtk_tooltips_new();
 
 	window = gtkut_window_new(GTK_WINDOW_TOPLEVEL, "prefs_actions");
 
@@ -274,25 +277,32 @@ static void prefs_actions_create(MainWindow *mainwin)
 	gtk_box_pack_start(GTK_BOX(btn_hbox), reg_btn, FALSE, TRUE, 0);
 	g_signal_connect(G_OBJECT(reg_btn), "clicked",
 			 G_CALLBACK(prefs_actions_register_cb), NULL);
+	gtk_tooltips_set_tip(GTK_TOOLTIPS(tooltips), reg_btn,
+			_("Append new action to list, as defined above"), NULL);
 
 	subst_btn = gtkut_get_replace_btn(_("Replace"));
 	gtk_widget_show(subst_btn);
 	gtk_box_pack_start(GTK_BOX(btn_hbox), subst_btn, FALSE, TRUE, 0);
 	g_signal_connect(G_OBJECT(subst_btn), "clicked",
-			 G_CALLBACK(prefs_actions_substitute_cb),
-			 NULL);
+			 G_CALLBACK(prefs_actions_substitute_cb), NULL);
+	gtk_tooltips_set_tip(GTK_TOOLTIPS(tooltips), subst_btn,
+			_("Replace selected action in list with the above data"), NULL);
 
 	del_btn = gtk_button_new_from_stock(GTK_STOCK_DELETE);
 	gtk_widget_show(del_btn);
 	gtk_box_pack_start(GTK_BOX(btn_hbox), del_btn, FALSE, TRUE, 0);
 	g_signal_connect(G_OBJECT(del_btn), "clicked",
 			 G_CALLBACK(prefs_actions_delete_cb), NULL);
+	gtk_tooltips_set_tip(GTK_TOOLTIPS(tooltips), del_btn,
+			_("Delete selected action from list"), NULL);
 
 	clear_btn = gtk_button_new_from_stock (GTK_STOCK_CLEAR);
 	gtk_widget_show (clear_btn);
 	gtk_box_pack_start (GTK_BOX (btn_hbox), clear_btn, FALSE, TRUE, 0);
 	g_signal_connect(G_OBJECT (clear_btn), "clicked",
 			G_CALLBACK(prefs_actions_clear_cb), NULL);
+	gtk_tooltips_set_tip(GTK_TOOLTIPS(tooltips), clear_btn,
+			_("Clear all input fields in dialog"), NULL);
 
 #if GTK_CHECK_VERSION(2, 8, 0)
 	info_btn = gtk_button_new_from_stock(GTK_STOCK_INFO);
@@ -303,6 +313,10 @@ static void prefs_actions_create(MainWindow *mainwin)
 	gtk_box_pack_end(GTK_BOX(reg_hbox), info_btn, FALSE, FALSE, 0);
 	g_signal_connect(G_OBJECT(info_btn), "clicked",
 			 G_CALLBACK(prefs_actions_info_cb), GTK_WINDOW(window));
+	gtk_tooltips_set_tip(GTK_TOOLTIPS(tooltips), info_btn,
+			_("Click here to get further information "
+			  "about actions menu name restrictions and "
+			  "command line syntax"), NULL);
 
 	cond_hbox = gtk_hbox_new(FALSE, 8);
 	gtk_widget_show(cond_hbox);
@@ -330,12 +344,16 @@ static void prefs_actions_create(MainWindow *mainwin)
 	gtk_box_pack_start(GTK_BOX(btn_vbox), up_btn, FALSE, FALSE, 0);
 	g_signal_connect(G_OBJECT(up_btn), "clicked",
 			 G_CALLBACK(prefs_actions_up), NULL);
+	gtk_tooltips_set_tip(GTK_TOOLTIPS(tooltips), up_btn,
+			_("Move up selected action in list"), NULL);
 
 	down_btn = gtk_button_new_from_stock(GTK_STOCK_GO_DOWN);
 	gtk_widget_show(down_btn);
 	gtk_box_pack_start(GTK_BOX(btn_vbox), down_btn, FALSE, FALSE, 0);
 	g_signal_connect(G_OBJECT(down_btn), "clicked",
 			 G_CALLBACK(prefs_actions_down), NULL);
+	gtk_tooltips_set_tip(GTK_TOOLTIPS(tooltips), down_btn,
+			_("Move down selected action in list"), NULL);
 
 	if (!geometry.min_height) {
 		geometry.min_width = 486;

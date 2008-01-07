@@ -323,8 +323,11 @@ static void prefs_filtering_create(void)
 	GtkWidget *bottom_btn;
 	GtkWidget *table;
 	static GdkGeometry geometry;
+	GtkTooltips *tooltips;
 
 	debug_print("Creating filtering configuration window...\n");
+
+	tooltips = gtk_tooltips_new();
 
 	window = gtkut_window_new(GTK_WINDOW_TOPLEVEL, "prefs_filtering");
 	gtk_container_set_border_width (GTK_CONTAINER (window), 8);
@@ -460,6 +463,8 @@ static void prefs_filtering_create(void)
 	gtk_box_pack_start (GTK_BOX (btn_hbox), reg_btn, FALSE, TRUE, 0);
 	g_signal_connect(G_OBJECT (reg_btn), "clicked",
 			 G_CALLBACK(prefs_filtering_register_cb), NULL);
+	gtk_tooltips_set_tip(GTK_TOOLTIPS(tooltips), reg_btn,
+			_("Append new rule to list, as defined above"), NULL);
 
 	subst_btn = gtkut_get_replace_btn (_("Replace"));
 	gtk_widget_show (subst_btn);
@@ -467,18 +472,24 @@ static void prefs_filtering_create(void)
 	g_signal_connect(G_OBJECT (subst_btn), "clicked",
 			 G_CALLBACK(prefs_filtering_substitute_cb),
 			 NULL);
+	gtk_tooltips_set_tip(GTK_TOOLTIPS(tooltips), subst_btn,
+			_("Replace selected rule in list with the above data"), NULL);
 
 	del_btn = gtk_button_new_from_stock (GTK_STOCK_DELETE);
 	gtk_widget_show (del_btn);
 	gtk_box_pack_start (GTK_BOX (btn_hbox), del_btn, FALSE, TRUE, 0);
 	g_signal_connect(G_OBJECT (del_btn), "clicked",
 			G_CALLBACK(prefs_filtering_delete_cb), NULL);
+	gtk_tooltips_set_tip(GTK_TOOLTIPS(tooltips), del_btn,
+			_("Delete selected rule from list"), NULL);
 
 	clear_btn = gtk_button_new_from_stock (GTK_STOCK_CLEAR);
 	gtk_widget_show (clear_btn);
 	gtk_box_pack_start (GTK_BOX (btn_hbox), clear_btn, FALSE, TRUE, 0);
 	g_signal_connect(G_OBJECT (clear_btn), "clicked",
 			G_CALLBACK(prefs_filtering_clear_cb), NULL);
+	gtk_tooltips_set_tip(GTK_TOOLTIPS(tooltips), clear_btn,
+			_("Clear all input fields in dialog"), NULL);
 
 	cond_hbox = gtk_hbox_new (FALSE, 8);
 	gtk_widget_show (cond_hbox);
@@ -506,6 +517,8 @@ static void prefs_filtering_create(void)
 	gtk_box_pack_start (GTK_BOX (btn_vbox), top_btn, FALSE, FALSE, 0);
 	g_signal_connect(G_OBJECT (top_btn), "clicked",
 			 G_CALLBACK(prefs_filtering_top), NULL);
+	gtk_tooltips_set_tip(GTK_TOOLTIPS(tooltips), top_btn,
+			_("Move selected rule to top of list"), NULL);
 
 	page_up_btn = gtk_button_new_with_mnemonic (_("Page up"));
 	gtk_button_set_image(GTK_BUTTON(page_up_btn),
@@ -514,18 +527,24 @@ static void prefs_filtering_create(void)
 	gtk_box_pack_start (GTK_BOX (btn_vbox), page_up_btn, FALSE, FALSE, 0);
 	g_signal_connect(G_OBJECT (page_up_btn), "clicked",
 			 G_CALLBACK(prefs_filtering_page_up), NULL);
+	gtk_tooltips_set_tip(GTK_TOOLTIPS(tooltips), page_up_btn,
+			_("Move selected rule one page up in list"), NULL);
 
 	up_btn = gtk_button_new_from_stock (GTK_STOCK_GO_UP);
 	gtk_widget_show (up_btn);
 	gtk_box_pack_start (GTK_BOX (btn_vbox), up_btn, FALSE, FALSE, 0);
 	g_signal_connect(G_OBJECT (up_btn), "clicked",
 			 G_CALLBACK(prefs_filtering_up), NULL);
+	gtk_tooltips_set_tip(GTK_TOOLTIPS(tooltips), up_btn,
+			_("Move up selected rule by one row in list"), NULL);
 
 	down_btn = gtk_button_new_from_stock (GTK_STOCK_GO_DOWN);
 	gtk_widget_show (down_btn);
 	gtk_box_pack_start (GTK_BOX (btn_vbox), down_btn, FALSE, FALSE, 0);
 	g_signal_connect(G_OBJECT (down_btn), "clicked",
 			 G_CALLBACK(prefs_filtering_down), NULL);
+	gtk_tooltips_set_tip(GTK_TOOLTIPS(tooltips), down_btn,
+			_("Move down selected rule by one row in list"), NULL);
 
 	page_down_btn = gtk_button_new_with_mnemonic (_("Page down"));
 	gtk_button_set_image(GTK_BUTTON(page_down_btn),
@@ -534,12 +553,16 @@ static void prefs_filtering_create(void)
 	gtk_box_pack_start (GTK_BOX (btn_vbox), page_down_btn, FALSE, FALSE, 0);
 	g_signal_connect(G_OBJECT (page_down_btn), "clicked",
 			 G_CALLBACK(prefs_filtering_page_down), NULL);
+	gtk_tooltips_set_tip(GTK_TOOLTIPS(tooltips), page_down_btn,
+			_("Move selected rule one page down in list"), NULL);
 
 	bottom_btn = gtk_button_new_from_stock (GTK_STOCK_GOTO_BOTTOM);
 	gtk_widget_show (bottom_btn);
 	gtk_box_pack_start (GTK_BOX (btn_vbox), bottom_btn, FALSE, FALSE, 0);
 	g_signal_connect(G_OBJECT (bottom_btn), "clicked",
 			 G_CALLBACK(prefs_filtering_bottom), NULL);
+	gtk_tooltips_set_tip(GTK_TOOLTIPS(tooltips), bottom_btn,
+			_("Move selected rule to bottom of list"), NULL);
 
 	if (!geometry.min_height) {
 		geometry.min_width = 500;

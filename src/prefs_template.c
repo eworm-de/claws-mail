@@ -295,6 +295,8 @@ static void prefs_template_window_create(void)
 	gtk_box_pack_start(GTK_BOX(hbox3), reg_btn, FALSE, TRUE, 0);
 	g_signal_connect(G_OBJECT (reg_btn), "clicked",
 			 G_CALLBACK (prefs_template_register_cb), NULL);
+	gtk_tooltips_set_tip(GTK_TOOLTIPS(tooltips), reg_btn,
+			_("Append new template to list, as defined above"), NULL);
 
 	subst_btn = gtkut_get_replace_btn(_("Replace"));
 	gtk_widget_show(subst_btn);
@@ -302,19 +304,24 @@ static void prefs_template_window_create(void)
 	g_signal_connect(G_OBJECT(subst_btn), "clicked",
 			 G_CALLBACK(prefs_template_substitute_cb),
 			 NULL);
+	gtk_tooltips_set_tip(GTK_TOOLTIPS(tooltips), subst_btn,
+			_("Replace selected template in list with the above data"), NULL);
 
 	del_btn = gtk_button_new_from_stock(GTK_STOCK_DELETE);
 	gtk_widget_show(del_btn);
 	gtk_box_pack_start(GTK_BOX(hbox3), del_btn, FALSE, TRUE, 0);
 	g_signal_connect(G_OBJECT(del_btn), "clicked",
 			 G_CALLBACK(prefs_template_delete_cb), NULL);
+	gtk_tooltips_set_tip(GTK_TOOLTIPS(tooltips), del_btn,
+			_("Delete selected template from list"), NULL);
 
 	clear_btn = gtk_button_new_from_stock (GTK_STOCK_CLEAR);
 	gtk_widget_show (clear_btn);
 	gtk_box_pack_start (GTK_BOX (hbox3), clear_btn, FALSE, TRUE, 0);
 	g_signal_connect(G_OBJECT (clear_btn), "clicked",
 			G_CALLBACK(prefs_template_clear_cb), NULL);
-
+	gtk_tooltips_set_tip(GTK_TOOLTIPS(tooltips), clear_btn,
+			_("Clear all input fields in dialog"), NULL);
 
 #if GTK_CHECK_VERSION(2, 8, 0)
 	desc_btn = gtk_button_new_from_stock(GTK_STOCK_INFO);
@@ -325,6 +332,9 @@ static void prefs_template_window_create(void)
 	gtk_box_pack_end(GTK_BOX(hbox2), desc_btn, FALSE, FALSE, 0);
 	g_signal_connect(G_OBJECT(desc_btn), "clicked",
 			 G_CALLBACK(quote_fmt_quote_description), NULL);
+	gtk_tooltips_set_tip(GTK_TOOLTIPS(tooltips), desc_btn,
+			_("Click here to get further information "
+			  "about templates format syntax"), NULL);
 
 	/* templates list */
 	hbox4 = gtk_hbox_new(FALSE, 8);
@@ -347,6 +357,8 @@ static void prefs_template_window_create(void)
 	gtk_box_pack_start(GTK_BOX(vbox3), top_btn, FALSE, FALSE, 0);
 	g_signal_connect(G_OBJECT(top_btn), "clicked",
 			 G_CALLBACK(prefs_template_top_cb), NULL);
+	gtk_tooltips_set_tip(GTK_TOOLTIPS(tooltips), top_btn,
+			_("Move selected template to top of list"), NULL);
 
 	PACK_VSPACER(vbox3, spc_vbox, VSPACING_NARROW_2);
 
@@ -355,12 +367,16 @@ static void prefs_template_window_create(void)
 	gtk_box_pack_start (GTK_BOX(vbox3), up_btn, FALSE, FALSE, 0);
 	g_signal_connect(G_OBJECT(up_btn), "clicked",
 			 G_CALLBACK(prefs_template_up_cb), NULL);
+	gtk_tooltips_set_tip(GTK_TOOLTIPS(tooltips), up_btn,
+			_("Move up selected template in list"), NULL);
 
 	down_btn = gtk_button_new_from_stock(GTK_STOCK_GO_DOWN);
 	gtk_widget_show (down_btn);
 	gtk_box_pack_start(GTK_BOX (vbox3), down_btn, FALSE, FALSE, 0);
 	g_signal_connect(G_OBJECT (down_btn), "clicked",
 			 G_CALLBACK(prefs_template_down_cb), NULL);
+	gtk_tooltips_set_tip(GTK_TOOLTIPS(tooltips), down_btn,
+			_("Move down selected template in list"), NULL);
 
 	PACK_VSPACER(vbox3, spc_vbox, VSPACING_NARROW_2);
 
@@ -369,6 +385,8 @@ static void prefs_template_window_create(void)
 	gtk_box_pack_start(GTK_BOX(vbox3), bottom_btn, FALSE, FALSE, 0);
 	g_signal_connect(G_OBJECT(bottom_btn), "clicked",
 			 G_CALLBACK(prefs_template_bottom_cb), NULL);
+	gtk_tooltips_set_tip(GTK_TOOLTIPS(tooltips), bottom_btn,
+			_("Move selected template to bottom of list"), NULL);
 
 	list_view = prefs_template_list_view_create();
 	gtk_widget_show(list_view);
