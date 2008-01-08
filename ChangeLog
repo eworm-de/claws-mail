@@ -1,3 +1,9 @@
+2008-01-08 [colin]	3.2.0cvs30
+
+	* src/summaryview.c
+		Maybe fix bug 1452, 'crash while drag'n'droping 
+		emails to an IMAP folder'
+
 2008-01-07 [wwp]	3.2.0cvs29
 
 	* src/prefs_filtering.c

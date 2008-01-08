@@ -2386,6 +2386,9 @@ static void summary_update_status(SummaryView *summaryview)
 	for (node = GTK_CTREE_NODE(GTK_CLIST(ctree)->row_list);
 	     node != NULL; node = gtkut_ctree_node_next(ctree, node)) {
 		msginfo = GTKUT_CTREE_NODE_GET_ROW_DATA(node);
+		
+		if (!msginfo)
+			continue;
 
 		if (MSG_IS_DELETED(msginfo->flags))
 			summaryview->deleted++;
