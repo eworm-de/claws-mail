@@ -1,3 +1,13 @@
+2008-01-08 [wwp]	3.2.0cvs32
+
+	* src/folder.c
+	* src/folder_item_prefs.c
+	* src/folder_item_prefs.h
+	* src/prefs_folder_item.c
+		It's now possible to disable processing rules when
+		entering a folder (this adds a new option to the
+		folder properties dialog).
+
 2008-01-08 [wwp]	3.2.0cvs31
 
 	* src/common/utils.c

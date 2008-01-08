@@ -30,7 +30,8 @@ typedef struct _FolderItemPrefs FolderItemPrefs;
 struct _FolderItemPrefs {
 	gchar * directory;
 
-        int enable_processing;
+        int enable_processing; /* at start-up */
+        int enable_processing_when_opening;
 	GSList * processing;
 
 	int newmailcheck;

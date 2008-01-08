@@ -85,6 +85,7 @@ struct _FolderItemGeneralPage
 	GtkWidget *entry_folder_chmod;
 	GtkWidget *folder_color_btn;
 	GtkWidget *checkbtn_enable_processing;
+	GtkWidget *checkbtn_enable_processing_when_opening;
 	GtkWidget *checkbtn_newmailcheck;
 	GtkWidget *checkbtn_offlinesync;
 	GtkWidget *label_offlinesync;
@@ -97,6 +98,7 @@ struct _FolderItemGeneralPage
 	GtkWidget *folder_chmod_rec_checkbtn;
 	GtkWidget *folder_color_rec_checkbtn;
 	GtkWidget *enable_processing_rec_checkbtn;
+	GtkWidget *enable_processing_when_opening_rec_checkbtn;
 	GtkWidget *newmailcheck_rec_checkbtn;
 	GtkWidget *offlinesync_rec_checkbtn;
 
@@ -214,6 +216,7 @@ static void prefs_folder_item_general_create_widget_func(PrefsPage * page_,
 	GtkWidget *folder_color;
 	GtkWidget *folder_color_btn;
 	GtkWidget *checkbtn_enable_processing;
+	GtkWidget *checkbtn_enable_processing_when_opening;
 	GtkWidget *checkbtn_newmailcheck;
 	GtkWidget *checkbtn_offlinesync;
 	GtkWidget *label_offlinesync;
@@ -225,6 +228,7 @@ static void prefs_folder_item_general_create_widget_func(PrefsPage * page_,
 	GtkWidget *folder_chmod_rec_checkbtn;
 	GtkWidget *folder_color_rec_checkbtn;
 	GtkWidget *enable_processing_rec_checkbtn;
+	GtkWidget *enable_processing_when_opening_rec_checkbtn;
 	GtkWidget *newmailcheck_rec_checkbtn;
 	GtkWidget *offlinesync_rec_checkbtn;
 	GtkTooltips *tooltips;
@@ -233,7 +237,7 @@ static void prefs_folder_item_general_create_widget_func(PrefsPage * page_,
 	page->item	   = item;
 
 	/* Table */
-	table = gtk_table_new(10, 4, FALSE);
+	table = gtk_table_new(11, 4, FALSE);
 	gtk_container_set_border_width (GTK_CONTAINER (table), VBOX_BORDER);
 	gtk_table_set_row_spacings(GTK_TABLE(table), 4);
 	gtk_table_set_col_spacings(GTK_TABLE(table), 4);
@@ -435,6 +439,20 @@ static void prefs_folder_item_general_create_widget_func(PrefsPage * page_,
 	
 	rowcount++;
 
+	/* Enable processing rules when opening folder */
+	checkbtn_enable_processing_when_opening = gtk_check_button_new_with_label(_("Process when opening"));
+	gtk_table_attach(GTK_TABLE(table), checkbtn_enable_processing_when_opening, 0, 2, 
+			 rowcount, rowcount + 1, GTK_EXPAND | GTK_FILL, GTK_FILL, 0, 0);
+
+	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(checkbtn_enable_processing_when_opening), 
+				     item->prefs->enable_processing_when_opening);
+
+	enable_processing_when_opening_rec_checkbtn = gtk_check_button_new();
+	gtk_table_attach(GTK_TABLE(table), enable_processing_when_opening_rec_checkbtn, 3, 4, 
+			 rowcount, rowcount + 1, GTK_SHRINK, GTK_SHRINK, 0, 0);
+	
+	rowcount++;
+
 	/* Check folder for new mail */
 	checkbtn_newmailcheck = gtk_check_button_new_with_label(_("Scan for new mail"));
 	gtk_tooltips_set_tip(tooltips, checkbtn_newmailcheck,
@@ -550,6 +568,7 @@ static void prefs_folder_item_general_create_widget_func(PrefsPage * page_,
 	page->entry_folder_chmod = entry_folder_chmod;
 	page->folder_color_btn = folder_color_btn;
 	page->checkbtn_enable_processing = checkbtn_enable_processing;
+	page->checkbtn_enable_processing_when_opening = checkbtn_enable_processing_when_opening;
 	page->checkbtn_newmailcheck = checkbtn_newmailcheck;
 	page->checkbtn_offlinesync = checkbtn_offlinesync;
 	page->label_offlinesync = label_offlinesync;
@@ -561,6 +580,7 @@ static void prefs_folder_item_general_create_widget_func(PrefsPage * page_,
 	page->folder_chmod_rec_checkbtn	     = folder_chmod_rec_checkbtn;
 	page->folder_color_rec_checkbtn	     = folder_color_rec_checkbtn;
 	page->enable_processing_rec_checkbtn = enable_processing_rec_checkbtn;
+	page->enable_processing_when_opening_rec_checkbtn = enable_processing_when_opening_rec_checkbtn;
 	page->newmailcheck_rec_checkbtn	     = newmailcheck_rec_checkbtn;
 	page->offlinesync_rec_checkbtn	     = offlinesync_rec_checkbtn;
 
@@ -628,6 +648,11 @@ static void general_save_folder_prefs(FolderItem *folder, FolderItemGeneralPage 
 			gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(page->checkbtn_enable_processing));
 	}
 
+	if (all || gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(page->enable_processing_when_opening_rec_checkbtn))) {
+		prefs->enable_processing_when_opening = 
+			gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(page->checkbtn_enable_processing_when_opening));
+	}
+
 	if (all ||  gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(page->newmailcheck_rec_checkbtn))) {
 		prefs->newmailcheck = 
 			gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(page->checkbtn_newmailcheck));
@@ -663,6 +688,7 @@ static gboolean general_save_recurse_func(GNode *node, gpointer data)
 	      gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(page->folder_chmod_rec_checkbtn)) ||
 	      gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(page->folder_color_rec_checkbtn)) ||
 	      gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(page->enable_processing_rec_checkbtn)) ||
+	      gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(page->enable_processing_when_opening_rec_checkbtn)) ||
 	      gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(page->newmailcheck_rec_checkbtn)) ||
 	      gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(page->offlinesync_rec_checkbtn))))
 		return TRUE;

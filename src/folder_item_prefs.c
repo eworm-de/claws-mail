@@ -70,6 +70,8 @@ static PrefParam param[] = {
 	 NULL, NULL, NULL},
 	{"enable_processing", "FALSE", &tmp_prefs.enable_processing, P_BOOL,
 	 NULL, NULL, NULL},
+	{"enable_processing_when_opening", "TRUE", &tmp_prefs.enable_processing_when_opening, P_BOOL,
+	 NULL, NULL, NULL},
 	{"newmailcheck", "TRUE", &tmp_prefs.newmailcheck, P_BOOL,
 	 NULL, NULL, NULL},
 	{"offlinesync", "FALSE", &tmp_prefs.offlinesync, P_BOOL,
@@ -164,6 +166,7 @@ static FolderItemPrefs *folder_item_prefs_clear(FolderItemPrefs *prefs)
 	prefs->color = 0;
 
         prefs->enable_processing = TRUE;
+        prefs->enable_processing_when_opening = TRUE;
 	prefs->processing = NULL;
 
 	prefs->newmailcheck = TRUE;
@@ -216,6 +219,7 @@ void folder_item_prefs_copy_prefs(FolderItem * src, FolderItem * dest)
 
 	tmp_prefs.directory			= g_strdup(src->prefs->directory);
         tmp_prefs.enable_processing             = src->prefs->enable_processing;
+        tmp_prefs.enable_processing_when_opening = src->prefs->enable_processing_when_opening;
 	tmp_prefs.newmailcheck                  = src->prefs->newmailcheck;
 	tmp_prefs.offlinesync                   = src->prefs->offlinesync;
 	tmp_prefs.offlinesync_days              = src->prefs->offlinesync_days;

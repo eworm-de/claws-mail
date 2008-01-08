@@ -1799,18 +1799,19 @@ static void folder_item_process_open (FolderItem *item,
 	}
 	
 	/* Processing */
-	buf = g_strdup_printf(_("Processing (%s)...\n"), 
+	if (item->prefs->enable_processing_when_opening) {
+		buf = g_strdup_printf(_("Processing (%s)...\n"), 
 			      item->path ? item->path : item->name);
-	g_free(buf);
+		g_free(buf);
 
-	if (before_proc_func)
-		before_proc_func(data);
+		if (before_proc_func)
+			before_proc_func(data);
 
-	folder_item_apply_processing(item);
+		folder_item_apply_processing(item);
 
-	if (after_proc_func)
-		after_proc_func(data);
-
+		if (after_proc_func)
+			after_proc_func(data);
+	}
 	item->processing_pending = FALSE;
 	return;	
 }

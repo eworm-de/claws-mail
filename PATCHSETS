@@ -3168,3 +3168,4 @@
 ( cvs diff -u -r 1.59.2.62 -r 1.59.2.63 src/prefs_filtering.c;  ) > 3.2.0cvs29.patchset
 ( cvs diff -u -r 1.395.2.347 -r 1.395.2.348 src/summaryview.c;  ) > 3.2.0cvs30.patchset
 ( cvs diff -u -r 1.36.2.131 -r 1.36.2.132 src/common/utils.c;  ) > 3.2.0cvs31.patchset
+( cvs diff -u -r 1.213.2.173 -r 1.213.2.174 src/folder.c;  cvs diff -u -r 1.2.2.25 -r 1.2.2.26 src/folder_item_prefs.c;  cvs diff -u -r 1.2.2.13 -r 1.2.2.14 src/folder_item_prefs.h;  cvs diff -u -r 1.52.2.54 -r 1.52.2.55 src/prefs_folder_item.c;  ) > 3.2.0cvs32.patchset
