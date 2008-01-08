@@ -1,3 +1,12 @@
+2008-01-08 [colin]	3.2.0cvs33
+
+	* src/main.c
+		Maemo: connect HW status change signal for shutdown
+	* src/mainwindow.c
+		Maemo: Fix hardware space key
+	* src/wizard.c
+		Maemo: name mmc1 and 2 a better name
+
 2008-01-08 [wwp]	3.2.0cvs32
 
 	* src/folder.c

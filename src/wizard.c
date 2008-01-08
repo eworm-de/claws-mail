@@ -1095,10 +1095,10 @@ static GtkWidget* mailbox_page (WizardWindow * wizard)
 		_("on internal memory"));
 	wizard->data_root_mmc1_radiobtn = gtk_radio_button_new_with_label_from_widget(
 		GTK_RADIO_BUTTON(wizard->data_root_nokia_radiobtn),
-		_("on /media/mmc1"));
+		_("on external memory card"));
 	wizard->data_root_mmc2_radiobtn = gtk_radio_button_new_with_label_from_widget(
 		GTK_RADIO_BUTTON(wizard->data_root_nokia_radiobtn),
-		_("on /media/mmc2"));
+		_("on internal memory card"));
 		
 	g_signal_connect(G_OBJECT(wizard->data_root_nokia_radiobtn), "toggled",
 			 G_CALLBACK(data_root_changed), wizard);
@@ -1126,6 +1126,8 @@ static GtkWidget* mailbox_page (WizardWindow * wizard)
 	if (wizard->vol_mmc2 == NULL || !gnome_vfs_volume_is_mounted(wizard->vol_mmc2)
 	    || strcmp(mount_path, MMC2_PATH)) {
 		gtk_widget_set_sensitive(wizard->data_root_mmc2_radiobtn, FALSE);
+	} else
+		gtk_toggle_button_set_active(wizard->data_root_mmc2_radiobtn, TRUE);
 	}
 	g_free(mount_path);
 	

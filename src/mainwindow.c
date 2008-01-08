@@ -1379,14 +1379,16 @@ static gboolean mainwindow_key_pressed (GtkWidget *widget, GdkEventKey *event,
 		app_exit_cb(mainwin, 0, NULL);
 		return FALSE;
 	case GDK_space:
-		if (mainwin->folderview && mainwin->summaryview
-		    && ((!mainwin->summaryview->displayed
-		        && !mainwin->summaryview->selected) 
-			|| (mainwin->summaryview->folder_item
-			    && mainwin->summaryview->folder_item->total_msgs == 0))) {
-			g_signal_stop_emission_by_name(G_OBJECT(widget), 
-                                       "key_press_event");
-			folderview_select_next_unread(mainwin->folderview, TRUE);
+		if (gtk_window_is_active(GTK_WINDOW(mainwin->window))) {
+			if (mainwin->folderview && mainwin->summaryview
+			    && ((!mainwin->summaryview->displayed
+		        	&& !mainwin->summaryview->selected) 
+				|| (mainwin->summaryview->folder_item
+				    && mainwin->summaryview->folder_item->total_msgs == 0))) {
+				g_signal_stop_emission_by_name(G_OBJECT(widget), 
+                                	       "key_press_event");
+				folderview_select_next_unread(mainwin->folderview, TRUE);
+			}
 		}
 		break;
 #ifdef MAEMO

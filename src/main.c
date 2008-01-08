@@ -236,6 +236,19 @@ void exit_event_handler(gboolean die_now, gpointer data)
 
 }
 
+/* Callback for hardware D-BUS events */
+void hw_event_handler(osso_hw_state_t *state, gpointer data)
+{
+	AppData *appdata;
+	appdata = (AppData *) data;
+
+	if (state->shutdown_ind) {
+		exit_claws(static_mainwindow);
+		hildon_banner_show_information(GTK_WIDGET(appdata->window), NULL,
+			_("Exiting..."));
+	}
+}
+
 /* Callback for normal D-BUS messages */
 gint dbus_req_handler(const gchar * interface, const gchar * method,
                       GArray * arguments, gpointer data,
@@ -1116,6 +1129,8 @@ int main(int argc, char *argv[])
 		return OSSO_ERROR;
 	}
 #endif
+	osso_hw_set_event_cb( appdata->osso_context,
+				NULL, hw_event_handler, (gpointer) appdata );
 #endif
 	manage_window_focus_in(mainwin->window, NULL, NULL);
 	folderview = mainwin->folderview;
