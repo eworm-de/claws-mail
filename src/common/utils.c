@@ -1586,6 +1586,13 @@ gint scan_mailto_url(const gchar *mailto, gchar **to, gchar **cc, gchar **bcc,
 			*subject = decode_uri_gdup(value);
 		} else if (body && !*body && !g_ascii_strcasecmp(field, "body")) {
 			*body = decode_uri_gdup(value);
+		} else if (body && !*body && !g_ascii_strcasecmp(field, "insert")) {
+			gchar *tmp = decode_uri_gdup(value);
+			if (!g_file_get_contents(value, body, NULL, NULL)) {
+				g_error("Error: couldn't set insert file '%s' in body\n", value);
+			}
+			g_free(tmp);
+			tmp = NULL;
 		} else if (attach && !g_ascii_strcasecmp(field, "attach")) {
 			int i = 0;
 			gchar *tmp = decode_uri_gdup(value);
