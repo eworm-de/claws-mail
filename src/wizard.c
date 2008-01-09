@@ -1126,7 +1126,7 @@ static GtkWidget* mailbox_page (WizardWindow * wizard)
 	if (wizard->vol_mmc2 == NULL || !gnome_vfs_volume_is_mounted(wizard->vol_mmc2)
 	    || strcmp(mount_path, MMC2_PATH)) {
 		gtk_widget_set_sensitive(wizard->data_root_mmc2_radiobtn, FALSE);
-	} else
+	} else {
 		gtk_toggle_button_set_active(wizard->data_root_mmc2_radiobtn, TRUE);
 	}
 	g_free(mount_path);

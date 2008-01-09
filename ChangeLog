@@ -1,3 +1,16 @@
+2008-01-09 [colin]	3.2.0cvs34
+
+	* po/pl.po
+		Fix bug 1446, 'SC crashes frequently when staying 
+		in background'. Format string error in Polish 
+		translation
+	* src/gtk/description_window.c
+	* src/prefs_template.c
+		Complete 3.2.0cvs9 (fix bug with gtk_main loop);
+		patch by Pawel
+	* src/wizard.c
+		Maemo: Fix build
+
 2008-01-08 [colin]	3.2.0cvs33
 
 	* src/main.c

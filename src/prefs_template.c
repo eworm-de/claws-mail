@@ -331,7 +331,7 @@ static void prefs_template_window_create(void)
 	gtk_widget_show(desc_btn);
 	gtk_box_pack_end(GTK_BOX(hbox2), desc_btn, FALSE, FALSE, 0);
 	g_signal_connect(G_OBJECT(desc_btn), "clicked",
-			 G_CALLBACK(quote_fmt_quote_description), NULL);
+			 G_CALLBACK(quote_fmt_quote_description), window);
 	gtk_tooltips_set_tip(GTK_TOOLTIPS(tooltips), desc_btn,
 			_("Click here to get further information "
 			  "about templates format syntax"), NULL);

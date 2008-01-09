@@ -1019,7 +1019,7 @@ msgstr "Twoja wersja Claws Mail jest za stara aby u¿yæ tej wtyczki."
 
 #: src/common/session.c:166 src/imap.c:1057
 msgid "SSL handshake failed\n"
-msgstr "B³±d po³±czenia SSL (%s)\n"
+msgstr "B³±d po³±czenia SSL\n"
 
 #: src/common/smtp.c:176
 msgid "SMTP AUTH not available\n"

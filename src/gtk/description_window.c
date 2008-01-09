@@ -57,13 +57,6 @@ void description_window_create(DescriptionWindow *dwindow)
 		g_signal_connect(G_OBJECT(dwindow->window), "destroy",
 				GTK_SIGNAL_FUNC(gtk_widget_destroyed), &dwindow->window);
 
-		gtk_main();
-
-		if (dwindow->window) {
-			gtk_widget_hide(dwindow->window);
-			gtk_widget_destroy(dwindow->window);
-			dwindow->window = NULL; 
-		}
 	} else g_print("windows exist\n");
 }
 
@@ -171,19 +164,19 @@ static void description_create(DescriptionWindow * dwindow)
 	gtk_widget_grab_default(close_btn);
 
 	g_signal_connect(G_OBJECT(close_btn), "clicked",
-			 G_CALLBACK(description_window_destroy), dwindow->parent);
+			 G_CALLBACK(description_window_destroy), dwindow);
 	g_signal_connect(G_OBJECT(dwindow->window), "key_press_event",
-		 	 G_CALLBACK(description_window_key_pressed), dwindow->parent);
+		 	 G_CALLBACK(description_window_key_pressed), dwindow);
 	g_signal_connect(G_OBJECT(dwindow->window), "focus_in_event",
 			 G_CALLBACK(description_window_focus_in_event), NULL);
 	g_signal_connect(G_OBJECT(dwindow->window), "focus_out_event",
 			 G_CALLBACK(description_window_focus_out_event), NULL);
 	g_signal_connect(G_OBJECT(dwindow->window), "delete_event",
-			 G_CALLBACK(description_window_destroy), dwindow->parent);
+			 G_CALLBACK(description_window_destroy), dwindow);
 	
 	if(dwindow->parent)
 		g_signal_connect(G_OBJECT(dwindow->parent), "hide",
-			G_CALLBACK(description_window_destroy), dwindow->parent);
+			G_CALLBACK(description_window_destroy), dwindow);
 
 	gtk_widget_show_all(vbox);
 	gtk_widget_set_size_request(dwindow->window,
@@ -218,10 +211,17 @@ static gboolean description_window_focus_out_event (GtkWidget *widget,
 	return FALSE;
 }
 
-static void description_window_destroy (GtkWidget *widget, gpointer parent)
+static void description_window_destroy (GtkWidget *widget, gpointer data)
 {
-	if(parent)
-		g_signal_handlers_disconnect_by_func(G_OBJECT(parent), 
-					      description_window_destroy, parent);
-	gtk_main_quit();
+	DescriptionWindow *dwindow = (DescriptionWindow *) data;
+	
+	if(dwindow->window) {
+		gtk_widget_hide(dwindow->window);
+		gtk_widget_destroy(dwindow->window);
+		dwindow->window = NULL;
+	}
+	
+	if(dwindow->parent)
+		g_signal_handlers_disconnect_by_func(G_OBJECT(dwindow->parent), 
+					description_window_destroy, dwindow->parent);
 }
