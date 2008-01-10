@@ -111,6 +111,10 @@ gchar *input_dialog(const gchar *title, const gchar *message,
 	gtk_widget_hide(icon_p);
 	is_pass = FALSE;
 	gtk_entry_set_visibility(GTK_ENTRY(entry), TRUE);
+#ifdef MAEMO
+	hildon_gtk_entry_set_input_mode(GTK_ENTRY(entry), 
+		HILDON_GTK_INPUT_MODE_FULL | HILDON_GTK_INPUT_MODE_AUTOCAP);
+#endif
 
 	return input_dialog_open(title, message, default_string, NULL);
 }
@@ -132,6 +136,10 @@ gchar *input_dialog_with_invisible(const gchar *title, const gchar *message,
 	gtk_widget_show(icon_p);
 	is_pass = TRUE;
 	gtk_entry_set_visibility(GTK_ENTRY(entry), FALSE);
+#ifdef MAEMO
+	hildon_gtk_entry_set_input_mode(GTK_ENTRY(entry), 
+		HILDON_GTK_INPUT_MODE_FULL | HILDON_GTK_INPUT_MODE_INVISIBLE);
+#endif
 
 	return input_dialog_open(title, message, default_string, NULL);
 }

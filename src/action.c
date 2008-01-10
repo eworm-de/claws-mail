@@ -1288,8 +1288,14 @@ static void create_io_dialog(Children *children)
 		g_signal_connect(G_OBJECT(entry), "activate",
 				 G_CALLBACK(send_input), children);
 		gtk_box_pack_start(GTK_BOX(input_hbox), entry, TRUE, TRUE, 0);
-		if (children->action_type & ACTION_USER_HIDDEN_IN)
+		if (children->action_type & ACTION_USER_HIDDEN_IN) {
 			gtk_entry_set_visibility(GTK_ENTRY(entry), FALSE);
+#ifdef MAEMO
+			hildon_gtk_entry_set_input_mode(GTK_ENTRY(entry), 
+				HILDON_GTK_INPUT_MODE_FULL | 
+				HILDON_GTK_INPUT_MODE_INVISIBLE);
+#endif
+		}
 		gtk_widget_show(entry);
 
 		send_button = gtk_button_new_from_stock(GTK_STOCK_EXECUTE);

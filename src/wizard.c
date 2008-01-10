@@ -1230,6 +1230,10 @@ static GtkWidget* smtp_page (WizardWindow * wizard)
 	wizard->smtp_password = gtk_entry_new();
 	gtk_entry_set_text(GTK_ENTRY(wizard->smtp_password), tmpl.smtppass?tmpl.smtppass:""); 
 	gtk_entry_set_visibility(GTK_ENTRY(wizard->smtp_password), FALSE);
+#ifdef MAEMO
+	hildon_gtk_entry_set_input_mode(GTK_ENTRY(wizard->smtp_password), 
+		HILDON_GTK_INPUT_MODE_FULL | HILDON_GTK_INPUT_MODE_INVISIBLE);
+#endif
 	wizard->smtp_password_label = gtk_label_new(_("SMTP password:\n"
 					"<span size=\"small\">(empty to use the same as receive)</span>"));
 	gtk_label_set_use_markup(GTK_LABEL(wizard->smtp_password_label), TRUE);
@@ -1452,6 +1456,10 @@ static GtkWidget* recv_page (WizardWindow * wizard)
 	if (GTK_IS_MISC(wizard->recv_password_label))						      
 		gtk_misc_set_alignment(GTK_MISC(wizard->recv_password_label), 1, 0.5);	      
 	gtk_entry_set_visibility(GTK_ENTRY(wizard->recv_password), FALSE);
+#ifdef MAEMO
+	hildon_gtk_entry_set_input_mode(GTK_ENTRY(wizard->recv_password), 
+		HILDON_GTK_INPUT_MODE_FULL | HILDON_GTK_INPUT_MODE_INVISIBLE);
+#endif
 	gtk_box_pack_start(GTK_BOX(hbox), wizard->recv_password_label, FALSE, FALSE, 0);
 	gtk_box_pack_start(GTK_BOX(hbox), wizard->recv_password, TRUE, TRUE, 0);
 	

@@ -127,6 +127,10 @@ passphrase_mbox(const gchar *uid_hint, const gchar *pass_hint, gint prev_bad, gi
     pass_entry = gtk_entry_new();
     gtk_box_pack_start(GTK_BOX(vbox), pass_entry, FALSE, FALSE, 0);
     gtk_entry_set_visibility(GTK_ENTRY(pass_entry), FALSE);
+#ifdef MAEMO
+    hildon_gtk_entry_set_input_mode(GTK_ENTRY(pass_entry), 
+    	HILDON_GTK_INPUT_MODE_FULL | HILDON_GTK_INPUT_MODE_INVISIBLE);
+#endif
     gtk_widget_grab_focus(pass_entry);
 
     gtkut_stock_button_set_create(&confirm_box, 

@@ -1,3 +1,14 @@
+2008-01-10 [colin]	3.2.0cvs35
+
+	* src/action.c
+	* src/editldap.c
+	* src/prefs_account.c
+	* src/wizard.c
+	* src/gtk/inputdialog.c
+	* src/plugins/pgpcore/passphrase.c
+		Maemo: Fix bug 1455, 'Password enters leading letter 
+		incorrectly as uppercase'
+
 2008-01-09 [colin]	3.2.0cvs34
 
 	* po/pl.po
