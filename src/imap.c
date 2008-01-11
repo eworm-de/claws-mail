@@ -5169,6 +5169,7 @@ void imap_folder_ref(Folder *folder)
 void imap_disconnect_all(void)
 {
 	GList *list;
+	imap_main_set_timeout(1);
 	for (list = account_get_list(); list != NULL; list = list->next) {
 		PrefsAccount *account = list->data;
 		if (account->protocol == A_IMAP4) {
@@ -5182,6 +5183,7 @@ void imap_disconnect_all(void)
 			}
 		}
 	}
+	imap_main_set_timeout(prefs_common.io_timeout_secs);
 }
 
 void imap_folder_unref(Folder *folder)

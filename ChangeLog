@@ -1,3 +1,15 @@
+2008-01-11 [colin]	3.2.0cvs36
+
+	* src/imap.c
+		Set timeout to 1 before disconnecting all -
+		for when one switches to offline and has 
+		no network anymore
+	* src/messageview.c
+		Fix bug 1454, 'error message shows parts and 
+		signature of previous messages'
+	* src/prefs_common.c
+		Maemo: Hide Send dialog by default
+
 2008-01-10 [colin]	3.2.0cvs35
 
 	* src/action.c

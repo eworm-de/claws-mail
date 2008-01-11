@@ -1020,6 +1020,9 @@ gint messageview_show(MessageView *messageview, MsgInfo *msginfo,
 				messageview->toolbar->learn_spam_btn, 
 				procmsg_spam_can_learn());
 	}
+	
+	noticeview_hide(messageview->noticeview);
+	mimeview_clear(messageview->mimeview);
 	messageview->updating = TRUE;
 
 	file = procmsg_get_message_file_path(msginfo);
@@ -1122,8 +1125,6 @@ gint messageview_show(MessageView *messageview, MsgInfo *msginfo,
 	    !prefs_common.never_send_retrcpt)
 		return_receipt_show(messageview->noticeview, 
 				    messageview->msginfo);
-	else 
-		noticeview_hide(messageview->noticeview);
 
 	mimeinfo = procmime_mimeinfo_next(mimeinfo);
 	if (!all_headers && mimeinfo 
