@@ -1,3 +1,9 @@
+2008-01-12 [wwp]	3.2.0cvs37
+
+	* src/prefs_display_header.c
+		Fix extra leading hyphen visible in the display
+		header configuration combo list (maemo).
+
 2008-01-11 [colin]	3.2.0cvs36
 
 	* src/imap.c
