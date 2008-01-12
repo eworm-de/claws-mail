@@ -456,6 +456,16 @@ EXTRA_DIST = \
 	pixmaps/moved.xpm \
 	pixmaps/copied.xpm \
 	pixmaps/watchthread.xpm \
+	pixmaps/tray_newmail.offline.xpm \
+	pixmaps/tray_newmail.xpm \
+	pixmaps/tray_newmarkedmail.offline.xpm \
+	pixmaps/tray_newmarkedmail.xpm \
+	pixmaps/tray_nomail.offline.xpm \
+	pixmaps/tray_nomail.xpm \
+	pixmaps/tray_unreadmail.offline.xpm \
+	pixmaps/tray_unreadmail.xpm \
+	pixmaps/tray_unreadmarkedmail.offline.xpm \
+	pixmaps/tray_unreadmarkedmail.xpm \
 	pixmaps/empty.xpm
 
 

@@ -1,3 +1,32 @@
+2008-01-12 [colin]	3.2.0cvs38
+
+	* src/Makefile.am
+	* src/stock_pixmap.c
+	* src/stock_pixmap.h
+	* src/pixmaps/tray_newmail.offline.xpm
+	* src/pixmaps/tray_newmail.xpm
+	* src/pixmaps/tray_newmarkedmail.offline.xpm
+	* src/pixmaps/tray_newmarkedmail.xpm
+	* src/pixmaps/tray_nomail.offline.xpm
+	* src/pixmaps/tray_nomail.xpm
+	* src/pixmaps/tray_unreadmail.offline.xpm
+	* src/pixmaps/tray_unreadmail.xpm
+	* src/pixmaps/tray_unreadmarkedmail.offline.xpm
+	* src/pixmaps/tray_unreadmarkedmail.xpm
+	* src/plugins/trayicon/Makefile.am
+	* src/plugins/trayicon/newmail.offline.xpm
+	* src/plugins/trayicon/newmail.xpm
+	* src/plugins/trayicon/newmarkedmail.offline.xpm
+	* src/plugins/trayicon/newmarkedmail.xpm
+	* src/plugins/trayicon/nomail.offline.xpm
+	* src/plugins/trayicon/nomail.xpm
+	* src/plugins/trayicon/trayicon.c
+	* src/plugins/trayicon/unreadmail.offline.xpm
+	* src/plugins/trayicon/unreadmail.xpm
+	* src/plugins/trayicon/unreadmarkedmail.offline.xpm
+	* src/plugins/trayicon/unreadmarkedmail.xpm
+		Make the Trayicon plugin icons themable
+
 2008-01-12 [wwp]	3.2.0cvs37
 
 	* src/prefs_display_header.c

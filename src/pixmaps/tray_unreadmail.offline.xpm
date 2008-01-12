@@ -1,5 +1,5 @@
 /* XPM */
-static char * unreadmail_offline_xpm[] = {
+static char * tray_unreadmail_offline_xpm[] = {
 "16 16 10 1",
 " 	c None",
 ".	c #787878",

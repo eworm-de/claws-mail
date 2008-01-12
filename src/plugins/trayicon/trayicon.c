@@ -47,16 +47,7 @@
 
 #include "trayicon_prefs.h"
 
-#include "newmarkedmail.xpm"
-#include "unreadmarkedmail.xpm"
-#include "newmail.xpm"
-#include "unreadmail.xpm"
-#include "nomail.xpm"
-#include "newmarkedmail.offline.xpm"
-#include "unreadmarkedmail.offline.xpm"
-#include "newmail.offline.xpm"
-#include "unreadmail.offline.xpm"
-#include "nomail.offline.xpm"
+#include "stock_pixmap.h"
 
 #define PLUGIN_NAME (_("Trayicon"))
 
@@ -351,17 +342,17 @@ static void create_trayicon()
 	gtk_window_set_default_size(GTK_WINDOW(trayicon), 16, 16);
 	gtk_container_set_border_width(GTK_CONTAINER(trayicon), 0);
 
-	PIXMAP_CREATE(GTK_WIDGET(trayicon), nomail_pixmap[0], nomail_bitmap[0], nomail_xpm);
-	PIXMAP_CREATE(GTK_WIDGET(trayicon), unreadmail_pixmap[0], unreadmail_bitmap[0], unreadmail_xpm);
-	PIXMAP_CREATE(GTK_WIDGET(trayicon), newmail_pixmap[0], newmail_bitmap[0], newmail_xpm);
-	PIXMAP_CREATE(GTK_WIDGET(trayicon), unreadmarkedmail_pixmap[0], unreadmarkedmail_bitmap[0], unreadmarkedmail_xpm);
-	PIXMAP_CREATE(GTK_WIDGET(trayicon), newmarkedmail_pixmap[0], newmarkedmail_bitmap[0], newmarkedmail_xpm);
+	stock_pixmap_gdk(GTK_WIDGET(trayicon), STOCK_PIXMAP_TRAY_NOMAIL, &nomail_pixmap[0], &nomail_bitmap[0]);
+	stock_pixmap_gdk(GTK_WIDGET(trayicon), STOCK_PIXMAP_TRAY_UNREADMAIL, &unreadmail_pixmap[0], &unreadmail_bitmap[0]);
+	stock_pixmap_gdk(GTK_WIDGET(trayicon), STOCK_PIXMAP_TRAY_NEWMAIL, &newmail_pixmap[0], &newmail_bitmap[0]);
+	stock_pixmap_gdk(GTK_WIDGET(trayicon), STOCK_PIXMAP_TRAY_UNREADMARKEDMAIL, &unreadmarkedmail_pixmap[0], &unreadmarkedmail_bitmap[0]);
+	stock_pixmap_gdk(GTK_WIDGET(trayicon), STOCK_PIXMAP_TRAY_NEWMARKEDMAIL, &newmarkedmail_pixmap[0], &newmarkedmail_bitmap[0]);
 
-	PIXMAP_CREATE(GTK_WIDGET(trayicon), nomail_pixmap[1], nomail_bitmap[1], nomail_offline_xpm);
-	PIXMAP_CREATE(GTK_WIDGET(trayicon), unreadmail_pixmap[1], unreadmail_bitmap[1], unreadmail_offline_xpm);
-	PIXMAP_CREATE(GTK_WIDGET(trayicon), newmail_pixmap[1], newmail_bitmap[1], newmail_offline_xpm);
-	PIXMAP_CREATE(GTK_WIDGET(trayicon), unreadmarkedmail_pixmap[1], unreadmarkedmail_bitmap[1], unreadmarkedmail_offline_xpm);
-	PIXMAP_CREATE(GTK_WIDGET(trayicon), newmarkedmail_pixmap[1], newmarkedmail_bitmap[1], newmarkedmail_offline_xpm);
+	stock_pixmap_gdk(GTK_WIDGET(trayicon), STOCK_PIXMAP_TRAY_NOMAIL_OFFLINE, &nomail_pixmap[1], &nomail_bitmap[1]);
+	stock_pixmap_gdk(GTK_WIDGET(trayicon), STOCK_PIXMAP_TRAY_UNREADMAIL_OFFLINE, &unreadmail_pixmap[1], &unreadmail_bitmap[1]);
+	stock_pixmap_gdk(GTK_WIDGET(trayicon), STOCK_PIXMAP_TRAY_NEWMAIL_OFFLINE, &newmail_pixmap[1], &newmail_bitmap[1]);
+	stock_pixmap_gdk(GTK_WIDGET(trayicon), STOCK_PIXMAP_TRAY_UNREADMARKEDMAIL_OFFLINE, &unreadmarkedmail_pixmap[1], &unreadmarkedmail_bitmap[1]);
+	stock_pixmap_gdk(GTK_WIDGET(trayicon), STOCK_PIXMAP_TRAY_NEWMARKEDMAIL_OFFLINE, &newmarkedmail_pixmap[1], &newmarkedmail_bitmap[1]);
 
 
 	eventbox = gtk_event_box_new();

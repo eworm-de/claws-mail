@@ -1,5 +1,5 @@
 /* XPM */
-static char * unreadmarkedmail_xpm[] = {
+static char * tray_unreadmarkedmail_xpm[] = {
 "16 16 8 1",
 " 	c None",
 ".	c #DE3636",

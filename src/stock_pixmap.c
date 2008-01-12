@@ -175,6 +175,16 @@
 #include "pixmaps/selection.xpm"
 #include "pixmaps/watchthread.xpm"
 #include "pixmaps/empty.xpm"
+#include "pixmaps/tray_newmail.offline.xpm"
+#include "pixmaps/tray_newmail.xpm"
+#include "pixmaps/tray_newmarkedmail.offline.xpm"
+#include "pixmaps/tray_newmarkedmail.xpm"
+#include "pixmaps/tray_nomail.offline.xpm"
+#include "pixmaps/tray_nomail.xpm"
+#include "pixmaps/tray_unreadmail.offline.xpm"
+#include "pixmaps/tray_unreadmail.xpm"
+#include "pixmaps/tray_unreadmarkedmail.offline.xpm"
+#include "pixmaps/tray_unreadmarkedmail.xpm"
 
 typedef struct _StockPixmapData	StockPixmapData;
 
@@ -358,6 +368,16 @@ static StockPixmapData pixmaps[] =
 	{copied_xpm				, NULL, NULL, "copied", NULL},
 	{selection_xpm				, NULL, NULL, "selection", NULL},
 	{watchthread_xpm			, NULL, NULL, "watchthread", NULL},
+	{tray_newmail_offline_xpm		, NULL, NULL, "tray_newmail_offline", NULL},
+	{tray_newmail_xpm			, NULL, NULL, "tray_newmail", NULL},
+	{tray_newmarkedmail_offline_xpm		, NULL, NULL, "tray_newmarkedmail_offline", NULL},
+	{tray_newmarkedmail_xpm			, NULL, NULL, "tray_newmarkedmail", NULL},
+	{tray_nomail_offline_xpm		, NULL, NULL, "tray_nomail_offline", NULL},
+	{tray_nomail_xpm			, NULL, NULL, "tray_nomail", NULL},
+	{tray_unreadmail_offline_xpm		, NULL, NULL, "tray_unreadmail_offline", NULL},
+	{tray_unreadmail_xpm			, NULL, NULL, "tray_unreadmail", NULL},
+	{tray_unreadmarkedmail_offline_xpm	, NULL, NULL, "tray_unreadmarkedmail_offline", NULL},
+	{tray_unreadmarkedmail_xpm		, NULL, NULL, "tray_unreadmarkedmail", NULL},
         {empty_xpm                              , NULL, NULL, "empty" , NULL}
 };
 

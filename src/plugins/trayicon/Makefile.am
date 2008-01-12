@@ -38,14 +38,4 @@ AM_CPPFLAGS = \
 	$(MAEMO_CFLAGS)
 
 EXTRA_DIST = \
-	README \
-	newmail.xpm \
-	newmarkedmail.xpm \
-	nomail.xpm \
-	unreadmail.xpm \
-	unreadmarkedmail.xpm \
-	newmail.offline.xpm \
-	newmarkedmail.offline.xpm \
-	nomail.offline.xpm \
-	unreadmail.offline.xpm \
-	unreadmarkedmail.offline.xpm
+	README 

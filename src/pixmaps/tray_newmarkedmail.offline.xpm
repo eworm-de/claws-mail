@@ -1,8 +1,8 @@
 /* XPM */
-static char * newmail_offline_xpm[] = {
-"16 16 10 1",
+static char * tray_newmarkedmail_offline_xpm[] = {
+"16 16 11 1",
 " 	c None",
-".	c #787878",
+".	c #EE9595",
 "+	c #FFFFFF",
 "@	c #FF7878",
 "#	c #CDCDCD",
@@ -11,6 +11,7 @@ static char * newmail_offline_xpm[] = {
 "&	c #6666CC",
 "*	c #BCBCBC",
 "=	c #A7A7A7",
+"-	c #787878",
 "       ..       ",
 "      .++.      ",
 "     .++@+.     ",
@@ -25,5 +26,5 @@ static char * newmail_offline_xpm[] = {
 "$$$&&$%%%%$&&$$$",
 ".+%$&$$$**$&$*=.",
 ".+%#$$****$$**=.",
-" .%#**********. ",
+" -%#**********. ",
 "  ............  "};
