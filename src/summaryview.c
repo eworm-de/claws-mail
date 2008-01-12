@@ -5764,7 +5764,7 @@ static gchar *summaryview_get_tooltip_text(SummaryView *summaryview, MsgInfo *in
 			} else if (MSG_IS_UNREAD(flags)) {
 				return _("Unread");
 			} else if (MSG_IS_REPLIED(flags)) {
-				return _("Replied");
+				return _("Replied - click to see reply");
 			} else if (MSG_IS_FORWARDED(flags)) {
 				return _("Forwarded");
 			} else {

@@ -1,3 +1,8 @@
+2008-01-12 [colin]	3.2.0cvs39
+
+	* src/summaryview.c
+		Advertise the click-on-reply feature in the tooltip
+
 2008-01-12 [colin]	3.2.0cvs38
 
 	* src/Makefile.am
