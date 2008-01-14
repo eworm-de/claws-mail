@@ -11,7 +11,7 @@ MINOR_VERSION=2
 MICRO_VERSION=0
 INTERFACE_AGE=0
 BINARY_AGE=0
-EXTRA_VERSION=39
+EXTRA_VERSION=40
 EXTRA_RELEASE=
 EXTRA_GTK2_VERSION=
 
@@ -698,6 +698,44 @@ if test "x$enable_startup_notification" = "xyes"; then
 	AC_SUBST(STARTUP_NOTIFICATION_LIBS)
 fi
 
+dnl #######################################################################
+dnl # Check for D-Bus support
+dnl #######################################################################
+PKG_CHECK_MODULES(DBUS, [dbus-1 >= 0.60, dbus-glib-1 >= 0.60],
+[
+	AC_DEFINE(HAVE_DBUS_GLIB, 1, [Define if glib bindings of D-Bus are available])
+	enable_dbus_glib=yes
+],
+[
+	echo "D-Bus requirements not met. D-Bus support not activated."
+	enable_dbus_glib=no
+])
+AC_SUBST(DBUS_CFLAGS)
+AC_SUBST(DBUS_LIBS)
+
+dnl #######################################################################
+dnl # Check for NetworkManager support
+dnl #######################################################################
+if test x"$enable_dbus_glib" = xyes; then
+	AC_ARG_ENABLE(networkmanager-support, [  --disable-networkmanager-support  disable NetworkManager support],,enable_networkmanager_support=yes)
+	if test x"$enable_networkmanager_support" = xyes; then
+		PKG_CHECK_MODULES(NETWORKMANAGER_SUPPORT, NetworkManager >= 0.6.2,
+		[
+			AC_DEFINE(HAVE_NETWORKMANAGER_SUPPORT, 1, [Define if NetworkManager support is to be included.])
+			echo "Building with NetworkManager support"
+			enable_networkmanager_support=yes
+		],
+		[
+			echo "NetworkManager not found."
+			enable_networkmanager_support=no
+		])
+		AC_SUBST(NETWORKMANAGER_SUPPORT_CFLAGS)
+	fi
+else
+	echo "NetworkManager support deactivated as D-Bus requirements were not met."
+	enable_networkmanager_support=no
+fi
+
 dnl *************************
 dnl ** section for plugins **
 dnl *************************
@@ -1014,6 +1052,7 @@ echo "Crash dialog      : $ac_cv_enable_crash_dialog"
 echo "Libgnomeprint     : $ac_cv_enable_gnomeprint"
 echo "GTK+ print support: $ac_cv_have_gtk210"
 echo "LibSM             : $ac_cv_enable_libsm"
+echo "NetworkManager    : $enable_networkmanager_support"
 echo "Manual            : $ac_cv_enable_manual"
 echo "Plugins           : $PLUGINS"
 echo "Maemo  build      : $ac_cv_enable_maemo"

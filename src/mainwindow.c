@@ -3744,6 +3744,13 @@ static void online_switch_clicked (GtkButton *btn, gpointer data)
 	MainWindow *mainwin;
 	GtkItemFactory *ifactory;
 	GtkCheckMenuItem *menuitem;
+	gboolean have_connectivity;
+
+#ifdef HAVE_NETWORKMANAGER
+	have_connectivity = networkmanager_is_online(NULL); 
+#else
+	have_connectivity = TRUE;
+#endif
 
 	mainwin = (MainWindow *) data;
 	
@@ -3764,7 +3771,9 @@ static void online_switch_clicked (GtkButton *btn, gpointer data)
 		/* go offline */
 		if (prefs_common.work_offline)
 			return;
-		mainwindow_check_synchronise(mainwin, TRUE);
+
+		if(have_connectivity)
+			mainwindow_check_synchronise(mainwin, TRUE);
 		prefs_common.work_offline = TRUE;
 		imap_disconnect_all();
 		hooks_invoke(OFFLINE_SWITCH_HOOKLIST, NULL);

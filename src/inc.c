@@ -1547,6 +1547,12 @@ gboolean inc_offline_should_override(gboolean force_ask, const gchar *msg)
 	int length = 10; /* minutes */
 	gint answer = G_ALERTDEFAULT;
 
+#ifdef HAVE_NETWORKMANAGER_SUPPORT
+	/* If no network connection is available, override is not possible */
+	if(!networkmanager_is_online(NULL))
+		return FALSE;
+#endif
+
 #if (defined(MAEMO) && defined(CONIC))
 	if (prefs_common.work_offline) {
 		if (force_ask && !maemo_warned_offline) {

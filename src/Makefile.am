@@ -503,7 +503,8 @@ claws_mail_LDADD = \
 	$(STARTUP_NOTIFICATION_LIBS) \
 	$(LIBETPAN_LIBS) \
 	$(MAEMO_LIBS) \
-	$(CONIC_LIBS)
+	$(CONIC_LIBS) \
+	$(DBUS_LIBS)
 
 pixmapdir=$(datadir)/icons/hicolor/48x48/apps
 
@@ -524,8 +525,10 @@ AM_CPPFLAGS = \
 	$(LIBETPAN_CPPFLAGS) \
 	$(STARTUP_NOTIFICATION_CFLAGS) \
 	$(MAEMO_CFLAGS) \
-	$(CONIC_CFLAGS)
-	 
+	$(CONIC_CFLAGS) \
+	$(DBUS_CFLAGS) \
+  $(NETWORKMANAGER_SUPPORT_CFLAGS)
+
 #no-unused-function is there because of bison stuff
 #no-deprecated-declarations because of gpgme_data_rewind, which we have
 #to call inside gpgme due to our lack of LARGEFILE support

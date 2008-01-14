@@ -70,6 +70,7 @@
 #include "imap-thread.h"
 #include "account.h"
 #include "tags.h"
+#include "main.h"
 
 typedef struct _IMAPFolder	IMAPFolder;
 typedef struct _IMAPSession	IMAPSession;
@@ -5169,7 +5170,25 @@ void imap_folder_ref(Folder *folder)
 void imap_disconnect_all(void)
 {
 	GList *list;
-	imap_main_set_timeout(1);
+	gboolean short_timeout;
+#ifdef HAVE_NETWORKMANAGER_SUPPORT
+	GError *error;
+#endif
+
+#ifdef HAVE_NETWORKMANAGER_SUPPORT
+	error = NULL;
+	short_timeout = !networkmanager_is_online(&error);
+	if(error) {
+		short_timeout = TRUE;
+		g_error_free(error);
+	}
+#else
+	short_timeout = TRUE;
+#endif
+
+	if(short_timeout)
+		imap_main_set_timeout(1);
+
 	for (list = account_get_list(); list != NULL; list = list->next) {
 		PrefsAccount *account = list->data;
 		if (account->protocol == A_IMAP4) {
@@ -5183,7 +5202,9 @@ void imap_disconnect_all(void)
 			}
 		}
 	}
-	imap_main_set_timeout(prefs_common.io_timeout_secs);
+
+	if(short_timeout)
+		imap_main_set_timeout(prefs_common.io_timeout_secs);
 }
 
 void imap_folder_unref(Folder *folder)

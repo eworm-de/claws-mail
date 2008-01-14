@@ -51,6 +51,11 @@
 # include <gdk/gdkx.h>
 #endif
 
+#ifdef HAVE_NETWORKMANAGER_SUPPORT
+#include <dbus/dbus-glib.h>
+#include <NetworkManager.h>
+#endif
+
 #include "claws.h"
 #include "main.h"
 #include "mainwindow.h"
@@ -145,6 +150,11 @@ struct _AppData {
 static GnomeVFSVolumeMonitor *volmon;
 #endif
 
+#ifdef HAVE_NETWORKMANAGER_SUPPORT
+/* Went offline due to NetworkManager */
+static gboolean went_offline_nm;
+#endif
+
 gchar *prog_version;
 gchar *argv0;
 
@@ -204,6 +214,11 @@ static void initial_processing		(FolderItem *item, gpointer data);
 static void quit_signal_handler         (int sig);
 static void install_basic_sighandlers   (void);
 static void exit_claws			(MainWindow *mainwin);
+
+#ifdef HAVE_NETWORKMANAGER_SUPPORT
+static void networkmanager_state_change_cb(DBusGProxy *proxy, gchar *dev,
+																					 gpointer data);
+#endif
 
 #define MAKE_DIR_IF_NOT_EXIST(dir) \
 { \
@@ -805,6 +820,11 @@ int main(int argc, char *argv[])
 	osso_context_t *osso_context;
 	osso_return_t result;
 #endif
+#ifdef HAVE_NETWORKMANAGER_SUPPORT
+	DBusGConnection *connection;
+  GError *error;
+  DBusGProxy *proxy;
+#endif
 	gchar *userrc;
 	MainWindow *mainwin;
 	FolderView *folderview;
@@ -862,6 +882,9 @@ int main(int argc, char *argv[])
 #if HAVE_LIBSM
 	debug_print(" libsm\n");
 #endif
+#if HAVE_NETWORKMANAGER_SUPPORT
+	debug_print(" NetworkManager\n");
+#endif
 #if USE_OPENSSL
 	debug_print(" openssl\n");
 #endif
@@ -913,6 +936,29 @@ int main(int argc, char *argv[])
 
 	gtk_set_locale();
 	gtk_init(&argc, &argv);
+
+#ifdef HAVE_NETWORKMANAGER_SUPPORT
+	went_offline_nm = FALSE;
+	error = NULL;
+	proxy = NULL;
+  connection = dbus_g_bus_get(DBUS_BUS_SYSTEM, &error);
+
+  if(!connection) {
+		debug_print("Failed to open connection to system bus: %s\n", error->message);
+		g_error_free(error);
+	}
+	else {
+		proxy = dbus_g_proxy_new_for_name(connection,
+																			"org.freedesktop.NetworkManager",
+																			"/org/freedesktop/NetworkManager",
+																			"org.freedesktop.NetworkManager");
+		dbus_g_proxy_add_signal(proxy,"StateChange", G_TYPE_UINT, G_TYPE_INVALID);
+		dbus_g_proxy_connect_signal(proxy, "StateChange",
+																G_CALLBACK(networkmanager_state_change_cb),
+																NULL,NULL);
+	}
+#endif
+
 
 #ifdef MAEMO
 	osso_context = osso_initialize(OSSO_SERVICE, "2.8.1", TRUE, NULL);
@@ -1105,6 +1151,11 @@ int main(int argc, char *argv[])
 	news_gtk_init();
 
 	mainwin = main_window_create();
+
+#ifdef HAVE_NETWORKMANAGER_SUPPORT
+		networkmanager_state_change_cb(proxy,NULL,mainwin);
+#endif
+
 #ifdef MAEMO
 	AppData *appdata;
 	appdata = g_new0(AppData, 1);
@@ -1145,6 +1196,7 @@ int main(int argc, char *argv[])
 					lock_socket_input_cb,
 					mainwin);
 #endif
+
 
 	prefs_account_init();
 	account_read_config_all();
@@ -1342,6 +1394,7 @@ int main(int argc, char *argv[])
 #ifdef HAVE_LIBSM
 	sc_session_manager_connect(mainwin);
 #endif
+
 	folder_item_update_thaw();
 	gtk_clist_thaw(GTK_CLIST(mainwin->folderview->ctree));
 	main_window_cursor_normal(mainwin);
@@ -1399,8 +1452,14 @@ int main(int argc, char *argv[])
 
 	gtk_main();
 
-	#ifdef MAEMO
+#ifdef MAEMO
 	osso_deinitialize(osso_context);
+#endif
+#ifdef HAVE_NETWORKMANAGER_SUPPORT
+	if(proxy)
+		g_object_unref(proxy);
+	if(connection)
+		dbus_g_connection_unref(connection);
 #endif
 #ifdef G_OS_WIN32
 	win32_close_log();
@@ -1436,6 +1495,11 @@ static void exit_claws(MainWindow *mainwin)
 	if (prefs_common.clean_on_exit && !emergency_exit) {
 		main_window_empty_trash(mainwin, prefs_common.ask_on_clean);
 	}
+
+#ifdef HAVE_NETWORKMANAGER_SUPPORT
+	if (prefs_common.work_offline && went_offline_nm)
+		prefs_common.work_offline = FALSE;
+#endif
 
 	/* save prefs for opened folder */
 	if(mainwin->folderview->opened) {
@@ -2164,5 +2228,95 @@ static void install_basic_sighandlers()
 osso_context_t *get_osso_context(void)
 {
 	return static_osso_context;
+}
+#endif
+
+
+#ifdef HAVE_NETWORKMANAGER_SUPPORT
+static void networkmanager_state_change_cb(DBusGProxy *proxy, gchar *dev,
+																					 gpointer data)
+{
+	MainWindow *mainWin;
+
+	mainWin = NULL;
+	if(static_mainwindow)
+		mainWin = static_mainwindow;
+	else if(data)
+		mainWin = (MainWindow*)data;
+	
+	if(mainWin) {
+		GError *error;
+		gboolean online;
+
+		error = NULL;		
+		online = networkmanager_is_online(&error);
+		if(!error) {
+			if(online && went_offline_nm) {
+				went_offline_nm = FALSE;
+				main_window_toggle_work_offline(mainWin, FALSE, FALSE);
+				debug_print("NetworkManager: Went online\n");
+			}
+			else if(!online) {
+				went_offline_nm = TRUE;
+				main_window_toggle_work_offline(mainWin, TRUE, FALSE);
+				debug_print("NetworkManager: Went offline\n");
+			}
+		}
+		else {
+			debug_print("Failed to get online information from NetworkManager: %s\n",
+							 error->message);
+			g_error_free(error);
+		}
+	}
+	else
+		debug_print("NetworkManager: Cannot change connection state because "
+						 "main window does not exist\n");
+}
+
+/* Returns true (and sets error appropriately, if given) in case of error */
+gboolean networkmanager_is_online(GError **error)
+{
+	DBusGConnection *connection;
+  DBusGProxy *proxy;
+	GError *tmp_error;
+	gboolean retVal;
+	guint32 state;
+
+	tmp_error = NULL;
+	proxy = NULL;
+  connection = dbus_g_bus_get(DBUS_BUS_SYSTEM, &tmp_error);
+
+  if(!connection) {
+		/* If calling code doesn't do error checking, at least print some debug */
+		if((error == NULL) || (*error == NULL))
+			debug_print("Failed to open connection to system bus: %s\n",
+							 tmp_error->message);
+		g_propagate_error(error, tmp_error);
+		return TRUE;
+	}
+
+	proxy = dbus_g_proxy_new_for_name(connection,
+																		"org.freedesktop.NetworkManager",
+																		"/org/freedesktop/NetworkManager",
+																		"org.freedesktop.NetworkManager");
+
+	retVal = dbus_g_proxy_call(proxy,"state",&tmp_error,G_TYPE_INVALID,
+														 G_TYPE_UINT,&state,G_TYPE_INVALID);
+
+	if(proxy)
+		g_object_unref(proxy);
+	if(connection)
+		dbus_g_connection_unref(connection);
+
+	if(!retVal) {
+		/* If calling code doesn't do error checking, at least print some debug */
+		if((error == NULL) || (*error == NULL))
+			debug_print("Failed to get state info from NetworkManager: %s\n",
+							 tmp_error->message);
+		g_propagate_error(error, tmp_error);
+		return TRUE;
+	}
+
+	return (state == NM_STATE_CONNECTED);
 }
 #endif

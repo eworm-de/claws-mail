@@ -1,3 +1,21 @@
+2008-01-14 [holger]	3.2.0cvs40
+
+	* configure.ac
+		Add tests for dbus, dbus glib bindings,
+		and NetworkManager. All is optional. Add new
+		--(en|dis)able-networkmanager-support switch.
+	* src/Makefile.am
+	* src/imap.c
+	* src/inc.c
+	* src/main.c
+	* src/main.h
+	* src/mainwindow.c
+	* src/gtk/about.c
+		Add optional NetworkManager support, so Claws Mail
+		can try to do the right thing when the network connection
+		status changes. NetworkManager support is active by
+		default if above requirements were met.
+
 2008-01-12 [colin]	3.2.0cvs39
 
 	* src/summaryview.c

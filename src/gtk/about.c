@@ -523,6 +523,16 @@ static GtkWidget *about_create_child_page_features(void)
 	gtk_text_buffer_insert(buffer, &iter, 
 		(gchar *)Q_("libSM|adds support for session handling\n"), -1);
 
+#if HAVE_NETWORKMANAGER_SUPPORT
+	gtk_text_buffer_insert_pixbuf(buffer, &iter, active_pixbuf);
+#else
+	gtk_text_buffer_insert_pixbuf(buffer, &iter, inactive_pixbuf);
+#endif
+	gtk_text_buffer_insert_with_tags_by_name(buffer, &iter, (" NetworkManager "), -1,
+						 "bold", NULL);
+	gtk_text_buffer_insert(buffer, &iter,
+		(gchar *)Q_("NetworkManager|adds support for network connection changes\n"), -1);
+
 #if USE_OPENSSL
 	gtk_text_buffer_insert_pixbuf(buffer, &iter, active_pixbuf);
 #else
