@@ -6391,7 +6391,7 @@ static gboolean text_clicked(GtkWidget *text, GdkEventButton *event,
                                        Compose *compose)
 {
 	gint prev_autowrap;
-	GtkTextBuffer *buffer;
+	GtkTextBuffer *buffer = GTK_TEXT_VIEW(text)->buffer;
 #if USE_ASPELL
 	if (event->button == 3) {
 		GtkTextIter iter;
@@ -6400,21 +6400,26 @@ static gboolean text_clicked(GtkWidget *text, GdkEventButton *event,
 		gint x, y;
 		/* move the cursor to allow GtkAspell to check the word
 		 * under the mouse */
-		gtk_text_view_window_to_buffer_coords(GTK_TEXT_VIEW(text),
-			GTK_TEXT_WINDOW_TEXT, event->x, event->y,
-			&x, &y);
-		gtk_text_view_get_iter_at_location (GTK_TEXT_VIEW(text),
-			&iter, x, y);
+		if (event->x && event->y) {
+			gtk_text_view_window_to_buffer_coords(GTK_TEXT_VIEW(text),
+				GTK_TEXT_WINDOW_TEXT, event->x, event->y,
+				&x, &y);
+			gtk_text_view_get_iter_at_location (GTK_TEXT_VIEW(text),
+				&iter, x, y);
+		} else {
+			GtkTextMark *mark = gtk_text_buffer_get_insert(buffer);
+			gtk_text_buffer_get_iter_at_mark(buffer, &iter, mark);
+		}
 		/* get selection */
 		stuff_selected = gtk_text_buffer_get_selection_bounds(
-				GTK_TEXT_VIEW(text)->buffer,
+				buffer,
 				&sel_start, &sel_end);
 
-		gtk_text_buffer_place_cursor (GTK_TEXT_VIEW(text)->buffer, &iter);
+		gtk_text_buffer_place_cursor (buffer, &iter);
 		/* reselect stuff */
 		if (stuff_selected 
 		&& gtk_text_iter_in_range(&iter, &sel_start, &sel_end)) {
-			gtk_text_buffer_select_range(GTK_TEXT_VIEW(text)->buffer,
+			gtk_text_buffer_select_range(buffer,
 				&sel_start, &sel_end);
 		}
 		return FALSE; /* pass the event so that the right-click goes through */
@@ -6490,6 +6495,8 @@ static gboolean compose_popup_menu(GtkWidget *widget, gpointer data)
 	
 	event.button = 3;
 	event.time = gtk_get_current_event_time();
+	event.x = 0;
+	event.y = 0;
 
 	return text_clicked(compose->text, &event, compose);
 }

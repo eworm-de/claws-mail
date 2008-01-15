@@ -3849,10 +3849,11 @@ void summary_mark_as_spam(SummaryView *summaryview, guint action, GtkWidget *wid
 	gboolean moved = FALSE;
 	gboolean froze = FALSE;
 
-	prefs_common.immediate_exec = FALSE;
 
 	if (summary_is_locked(summaryview))
 		return;
+
+	prefs_common.immediate_exec = FALSE;
 	START_LONG_OPERATION(summaryview, FALSE);
 	for (cur = GTK_CLIST(ctree)->selection; cur != NULL && cur->data != NULL; cur = cur->next) {
 		GtkCTreeNode *row = GTK_CTREE_NODE(cur->data);

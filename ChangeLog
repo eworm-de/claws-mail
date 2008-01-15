@@ -1,3 +1,12 @@
+2008-01-15 [colin]	3.2.0cvs45
+
+	* src/compose.c
+		Fix bug 1472, 'Keyboard "Menu" key doesn't call 
+		spell check of actuall word'
+	* src/summaryview.c
+		Temporarily disable immediate execution when learning
+		spam *only* if the summaryview isn't locked
+
 2008-01-15 [wwp]	3.2.0cvs44
 
 	* src/prefs_filtering.c
