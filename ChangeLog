@@ -1,3 +1,9 @@
+2008-01-15 [colin]	3.2.0cvs41
+
+	* src/summaryview.c
+		Fix bug 1469, 'Column width adjustments on message 
+		lists do not save'
+
 2008-01-14 [holger]	3.2.0cvs40
 
 	* configure.ac

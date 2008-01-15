@@ -5914,13 +5914,13 @@ static GtkWidget *summary_ctree_create(SummaryView *summaryview)
 	gtk_clist_set_column_justification(GTK_CLIST(ctree), col_pos[S_COL_SCORE],
 					   GTK_JUSTIFY_RIGHT);
 	gtk_clist_set_column_width(GTK_CLIST(ctree), col_pos[S_COL_MARK],
-				   SUMMARY_COL_MARK_WIDTH);
+				   prefs_common.summary_col_size[S_COL_MARK]);
 	gtk_clist_set_column_width(GTK_CLIST(ctree), col_pos[S_COL_STATUS],
-				   SUMMARY_COL_STATUS_WIDTH);
+				   prefs_common.summary_col_size[S_COL_STATUS]);
 	gtk_clist_set_column_width(GTK_CLIST(ctree), col_pos[S_COL_LOCKED],
-				   SUMMARY_COL_LOCKED_WIDTH);
+				   prefs_common.summary_col_size[S_COL_LOCKED]);
 	gtk_clist_set_column_width(GTK_CLIST(ctree), col_pos[S_COL_MIME],
-				   SUMMARY_COL_MIME_WIDTH);
+				   prefs_common.summary_col_size[S_COL_MIME]);
 	gtk_clist_set_column_width(GTK_CLIST(ctree), col_pos[S_COL_SUBJECT],
 				   prefs_common.summary_col_size[S_COL_SUBJECT]);
 	gtk_clist_set_column_width(GTK_CLIST(ctree), col_pos[S_COL_FROM],
