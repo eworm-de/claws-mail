@@ -4179,7 +4179,7 @@ colorize:
 				removed = TRUE;
 			}
 		}
-		if (uri_start > 0 && uri_stop > 0) {
+		if (uri_start >= 0 && uri_stop > 0) {
 			GtkTextIter uri_start_iter, uri_end_iter, back;
 			gtk_text_buffer_get_iter_at_offset(
 				buffer, &uri_start_iter, uri_start);

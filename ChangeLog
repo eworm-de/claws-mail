@@ -1,3 +1,8 @@
+2008-01-15 [colin]	3.2.0cvs43
+
+	* src/compose.c
+		Fix bug 1465, 'First line in new message does not mark URLs'
+
 2008-01-15 [colin]	3.2.0cvs42
 
 	* src/common/passcrypt.c
