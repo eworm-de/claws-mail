@@ -316,10 +316,12 @@ static void prefs_filtering_create(void)
 
 	GtkWidget *btn_vbox;
 	GtkWidget *top_btn;
-	GtkWidget *page_up_btn;
 	GtkWidget *up_btn;
 	GtkWidget *down_btn;
+#ifndef MAEMO
+	GtkWidget *page_up_btn;
 	GtkWidget *page_down_btn;
+#endif
 	GtkWidget *bottom_btn;
 	GtkWidget *table;
 	static GdkGeometry geometry;
@@ -520,6 +522,7 @@ static void prefs_filtering_create(void)
 	gtk_tooltips_set_tip(GTK_TOOLTIPS(tooltips), top_btn,
 			_("Move selected rule to top of list"), NULL);
 
+#ifndef MAEMO
 	page_up_btn = gtk_button_new_with_mnemonic (_("Page up"));
 	gtk_button_set_image(GTK_BUTTON(page_up_btn),
 			gtk_image_new_from_stock(GTK_STOCK_GO_UP,GTK_ICON_SIZE_BUTTON));
@@ -529,6 +532,7 @@ static void prefs_filtering_create(void)
 			 G_CALLBACK(prefs_filtering_page_up), NULL);
 	gtk_tooltips_set_tip(GTK_TOOLTIPS(tooltips), page_up_btn,
 			_("Move selected rule one page up in list"), NULL);
+#endif
 
 	up_btn = gtk_button_new_from_stock (GTK_STOCK_GO_UP);
 	gtk_widget_show (up_btn);
@@ -546,6 +550,7 @@ static void prefs_filtering_create(void)
 	gtk_tooltips_set_tip(GTK_TOOLTIPS(tooltips), down_btn,
 			_("Move down selected rule by one row in list"), NULL);
 
+#ifndef MAEMO
 	page_down_btn = gtk_button_new_with_mnemonic (_("Page down"));
 	gtk_button_set_image(GTK_BUTTON(page_down_btn),
 			gtk_image_new_from_stock(GTK_STOCK_GO_DOWN,GTK_ICON_SIZE_BUTTON));
@@ -555,6 +560,7 @@ static void prefs_filtering_create(void)
 			 G_CALLBACK(prefs_filtering_page_down), NULL);
 	gtk_tooltips_set_tip(GTK_TOOLTIPS(tooltips), page_down_btn,
 			_("Move selected rule one page down in list"), NULL);
+#endif
 
 	bottom_btn = gtk_button_new_from_stock (GTK_STOCK_GOTO_BOTTOM);
 	gtk_widget_show (bottom_btn);
@@ -1723,6 +1729,11 @@ static GtkItemFactoryEntry prefs_filtering_popup_entries[] =
 	{N_("/_Delete"),		NULL, prefs_filtering_delete_cb, 0, NULL, NULL},
 	{N_("/Delete _all"),		NULL, prefs_filtering_delete_all_cb, 0, NULL, NULL},
 	{N_("/D_uplicate"),		NULL, prefs_filtering_duplicate_cb, 0, NULL, NULL},
+#ifdef MAEMO
+	{N_("/---"),			NULL, NULL, 0, "<Separator>", NULL},
+	{N_("/Move one page up"),		NULL, prefs_filtering_page_up, 0, NULL, NULL},
+	{N_("/Move one page down"),		NULL, prefs_filtering_page_down, 0, NULL, NULL},
+#endif
 };
 
 static gint prefs_filtering_list_btn_pressed(GtkWidget *widget, GdkEventButton *event,

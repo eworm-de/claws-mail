@@ -1,3 +1,9 @@
+2008-01-15 [wwp]	3.2.0cvs44
+
+	* src/prefs_filtering.c
+		Fix filtering prefs layout (Maemo port), moving page up/down
+		from buttons to context menu.
+
 2008-01-15 [colin]	3.2.0cvs43
 
 	* src/compose.c
