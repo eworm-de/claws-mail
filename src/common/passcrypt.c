@@ -17,7 +17,7 @@
  * 
  */
 
-#define _XOPEN_SOURCE
+#define _XOPEN_SOURCE 600
 
 #include <sys/types.h>
 #include <stdio.h>

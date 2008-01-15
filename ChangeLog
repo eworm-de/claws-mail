@@ -1,3 +1,9 @@
+2008-01-15 [colin]	3.2.0cvs42
+
+	* src/common/passcrypt.c
+		Fix bug 1461, 'several components #define 
+		_XOPEN_SOURCE improperly'
+
 2008-01-15 [colin]	3.2.0cvs41
 
 	* src/summaryview.c
