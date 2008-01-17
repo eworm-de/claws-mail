@@ -7,11 +7,6 @@
 	    Claws Mail jest <emphasis>rozszerzon±</emphasis> wersj± Sylpheed, przekonasz siê, ¿e zawiera wszystkie mo¿liwo¶ci Sylpheed a nawet znacznie wiêcej. Zawiera równie¿ zmodyfikowane okna dialogowe w celu u³atwienia u¿ytkowania. Wiêcej informacji na ten temat mo¿na znale¼æ na <ulink url="http://www.claws-mail.org/features.php">http://www.claws-mail.org/features.php</ulink>.
     </para></section>
     <section>
-    <title>Co oznacza s³owo <quote>Sylpheed</quote>?</title>
-    <para>
-	<quote>Sylpheed</quote> jest wariacj± s³owa <emphasis>Sylph</emphasis>. Sylphs to ma³e, niewidzialne istoty (duszki) powietrza.
-    </para></section>
-    <section>
     <title>Czy Claws Mail obs³uguje pisanie wiadomo¶ci w HTML?</title>
     <para>
 	Nie. Dyskusja tocz±ca siê na ten temat doprowadzi³a do decyzji, ¿e poczta w formacie HTML jest zbêdna. Je¶li jednak chcesz wysy³aæ HTML mo¿esz oczywi¶cie do³±czyæ j± w postaci strony do twojego emaila.
