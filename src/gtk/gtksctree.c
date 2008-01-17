@@ -1762,8 +1762,13 @@ gtk_sctree_motion (GtkWidget *widget, GdkEventMotion *event)
 
 	/* This is the same threshold value that is used in gtkdnd.c */
 
+#ifndef MAEMO
+#define THRESHOLD 3
+#else
+#define THRESHOLD 8
+#endif
 	if (MAX (ABS (sctree->dnd_press_x - event->x),
-		 ABS (sctree->dnd_press_y - event->y)) <= 3)
+		 ABS (sctree->dnd_press_y - event->y)) <= THRESHOLD)
 		return FALSE;
 
 	/* Handle any pending selections */
