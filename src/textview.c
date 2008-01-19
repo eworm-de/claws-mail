@@ -630,6 +630,11 @@ static void textview_add_part(TextView *textview, MimeInfo *mimeinfo)
 		FILE *fp;
 
 		fp = g_fopen(mimeinfo->data.filename, "rb");
+		if (!fp) {
+			FILE_OP_ERROR(mimeinfo->data.filename, "fopen");
+			END_TIMING();
+			return;
+		}
 		fseek(fp, mimeinfo->offset, SEEK_SET);
 		headers = textview_scan_header(textview, fp);
 		if (headers) {
@@ -1024,6 +1029,10 @@ static void textview_write_body(TextView *textview, MimeInfo *mimeinfo)
 	} else {
 textview_default:
 		tmpfp = g_fopen(mimeinfo->data.filename, "rb");
+		if (!tmpfp) {
+			FILE_OP_ERROR(mimeinfo->data.filename, "fopen");
+			return;
+		}
 		fseek(tmpfp, mimeinfo->offset, SEEK_SET);
 		debug_print("Viewing text content of type: %s (length: %d)\n", mimeinfo->subtype, mimeinfo->length);
 		while ((ftell(tmpfp) < mimeinfo->offset + mimeinfo->length) &&
