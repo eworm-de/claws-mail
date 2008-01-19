@@ -1,3 +1,13 @@
+2008-01-19 [colin]	3.2.0cvs51
+
+	* src/filtering.c
+	* src/procmsg.h
+	* src/plugins/bogofilter/bogofilter.c
+	* src/plugins/clamav/clamav_plugin.c
+	* src/plugins/spamassassin/spamassassin.c
+		Batch filtering deletions too (and save 4 bytes
+		per MsgInfo in the process :)
+
 2008-01-19 [colin]	3.2.0cvs50
 
 	* src/folder.c

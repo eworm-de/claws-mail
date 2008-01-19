@@ -641,7 +641,7 @@ static gboolean mail_filtering_hook(gpointer source, gpointer data)
 			if (save_folder) {
 				for (cur = new_spams; cur; cur = cur->next) {
 					msginfo = (MsgInfo *)cur->data;
-					msginfo->is_move = TRUE;
+					msginfo->filter_op = IS_MOVE;
 					msginfo->to_filter_folder = save_folder;
 				}
 			}
@@ -681,7 +681,7 @@ static gboolean mail_filtering_hook(gpointer source, gpointer data)
 			if (save_unsure_folder) {
 				for (cur = new_unsure; cur; cur = cur->next) {
 					msginfo = (MsgInfo *)cur->data;
-					msginfo->is_move = TRUE;
+					msginfo->filter_op = IS_MOVE;
 					msginfo->to_filter_folder = save_unsure_folder;
 				}
 			}

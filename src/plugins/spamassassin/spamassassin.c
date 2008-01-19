@@ -354,7 +354,7 @@ static gboolean mail_filtering_hook(gpointer source, gpointer data)
 			if (config.mark_as_read)
 				procmsg_msginfo_unset_flags(msginfo, ~0, 0);
 			procmsg_msginfo_set_flags(msginfo, MSG_SPAM, 0);
-			msginfo->is_move = TRUE;
+			msginfo->filter_op = IS_MOVE;
 			msginfo->to_filter_folder = save_folder;
 		} else {
 			folder_item_remove_msg(msginfo->folder, msginfo->msgnum);

@@ -186,6 +186,13 @@ struct _MsgFlags
 	MsgTmpFlags  tmp_flags;
 };
 
+typedef enum {
+	IS_NOTHING = 0,
+	IS_MOVE,
+	IS_COPY,
+	IS_DELE
+} FiltOp;
+
 /* *********************************************************** *
  * WARNING: When adding or removing members to this structure, *
  * be sure to update procmsg.c::procmsg_msginfo_memusage()  to *
@@ -221,8 +228,7 @@ struct _MsgInfo
 	FolderItem *to_folder;
 
 	FolderItem *to_filter_folder;	
-	gboolean is_move;
-	gboolean is_copy;
+	FiltOp filter_op;
 
 	GSList *references;
 	gchar *fromspace;

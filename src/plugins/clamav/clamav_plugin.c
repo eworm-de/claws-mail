@@ -166,7 +166,7 @@ static gboolean mail_filtering_hook(gpointer source, gpointer data)
 				    clamav_save_folder = folder_get_default_trash();
 
 			procmsg_msginfo_unset_flags(msginfo, ~0, 0);
-			msginfo->is_move = TRUE;
+			msginfo->filter_op = IS_MOVE;
 			msginfo->to_filter_folder = clamav_save_folder;
 		} else {
 			folder_item_remove_msg(msginfo->folder, msginfo->msgnum);

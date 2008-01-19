@@ -185,7 +185,8 @@ void filtering_move_and_copy_msgs(GSList *msgs)
 {
 	GSList *messages = g_slist_copy(msgs);
 	FolderItem *last_item = NULL;
-	gboolean is_copy = FALSE, is_move = FALSE;
+	FiltOp cur_op = IS_NOTHING;
+
 	debug_print("checking %d messages\n", g_slist_length(msgs));
 	while (messages) {
 		GSList *batch = NULL, *cur;
@@ -193,44 +194,61 @@ void filtering_move_and_copy_msgs(GSList *msgs)
 		for (cur = messages; cur; cur = cur->next) {
 			MsgInfo *info = (MsgInfo *)cur->data;
 			if (last_item == NULL) {
-				last_item = info->to_filter_folder;
+				if (info->filter_op == IS_COPY || info->filter_op == IS_MOVE)
+					last_item = info->to_filter_folder;
+				else if (info->filter_op == IS_DELE)
+					last_item = info->folder;
 			}
 			if (last_item == NULL)
 				continue;
-			if (!is_copy && !is_move) {
-				if (info->is_copy)
-					is_copy = TRUE;
-				else if (info->is_move)
-					is_move = TRUE;
+			if (cur_op == IS_NOTHING) {
+				if (info->filter_op == IS_COPY)
+					cur_op = IS_COPY;
+				else if (info->filter_op == IS_MOVE)
+					cur_op = IS_MOVE;
+				else if (info->filter_op == IS_DELE)
+					cur_op = IS_DELE;
 			}
-			found++;
-			if (info->to_filter_folder == last_item 
-			&&  info->is_copy == is_copy
-			&&  info->is_move == is_move) {
-				batch = g_slist_prepend(batch, info);
+			if (info->filter_op == IS_COPY || info->filter_op == IS_MOVE) {
+				if (info->to_filter_folder == last_item 
+				&&  cur_op == info->filter_op) {
+					found++;
+					batch = g_slist_prepend(batch, info);
+				}
+			} else if (info->filter_op == IS_DELE) {
+				if (info->folder == last_item 
+				&&  cur_op == info->filter_op) {
+					found++;
+					batch = g_slist_prepend(batch, info);
+				}
 			}
 		}
 		if (found == 0) {
-			debug_print("no more messages to move/copy\n");
+			debug_print("no more messages to move/copy/del\n");
 			break;
 		} else {
 			debug_print("%d messages to %s in %s\n", found,
-				is_copy ? "copy":"move", last_item->name ? last_item->name:"(noname)");
+				cur_op==IS_COPY ? "copy":(cur_op==IS_DELE ?"delete":"move"), 
+				last_item?(last_item->name ? last_item->name:"(noname)"):"nowhere");
 		}
 		for (cur = batch; cur; cur = cur->next) {
 			MsgInfo *info = (MsgInfo *)cur->data;
 			messages = g_slist_remove(messages, info);
+			info->to_filter_folder = NULL;
+			info->filter_op = IS_NOTHING;
 		}
 		batch = g_slist_reverse(batch);
 		if (g_slist_length(batch)) {
 			MsgInfo *info = (MsgInfo *)batch->data;
-			if (is_copy && last_item != info->folder) {
+			if (cur_op == IS_COPY && last_item != info->folder) {
 				folder_item_copy_msgs(last_item, batch);
-			} else if (is_move && last_item != info->folder) {
+			} else if (cur_op == IS_MOVE && last_item != info->folder) {
 				if (folder_item_move_msgs(last_item, batch) < 0)
 					folder_item_move_msgs(
 						folder_get_default_inbox(), 
 						batch);
+			} else if (cur_op == IS_DELE && last_item == info->folder) {
+				folder_item_remove_msgs(last_item, batch);
 			}
 			/* we don't reference the msginfos, because caller will do */
 			if (prefs_common.real_time_sync)
@@ -240,8 +258,7 @@ void filtering_move_and_copy_msgs(GSList *msgs)
 			GTK_EVENTS_FLUSH();
 		}
 		last_item = NULL;
-		is_copy = FALSE;
-		is_move = FALSE;
+		cur_op = IS_NOTHING;
 	}
 	/* we don't reference the msginfos, because caller will do */
 	g_slist_free(messages);
@@ -254,10 +271,10 @@ void filtering_move_and_copy_msgs(GSList *msgs)
 */
 
 #define FLUSH_COPY_IF_NEEDED(info) {					\
-	if (info->is_copy && info->to_filter_folder) {			\
+	if (info->filter_op == IS_COPY && info->to_filter_folder) {	\
 		debug_print("must debatch pending copy\n");		\
 		folder_item_copy_msg(info->to_filter_folder, info);	\
-		info->is_copy = FALSE;					\
+		info->filter_op = IS_NOTHING;				\
 	}								\
 }
 
@@ -281,7 +298,7 @@ static gboolean filteringaction_apply(FilteringAction * action, MsgInfo * info)
 		
 		FLUSH_COPY_IF_NEEDED(info);
 		/* mark message to be moved */		
-		info->is_move = TRUE;
+		info->filter_op = IS_MOVE;
 		info->to_filter_folder = dest_folder;
 		return TRUE;
 
@@ -297,7 +314,7 @@ static gboolean filteringaction_apply(FilteringAction * action, MsgInfo * info)
 
 		FLUSH_COPY_IF_NEEDED(info);
 		/* mark message to be copied */		
-		info->is_copy = TRUE;
+		info->filter_op = IS_COPY;
 		info->to_filter_folder = dest_folder;
 		return TRUE;
 
@@ -319,8 +336,8 @@ static gboolean filteringaction_apply(FilteringAction * action, MsgInfo * info)
 		return TRUE;
 
 	case MATCHACTION_DELETE:
-		if (folder_item_remove_msg(info->folder, info->msgnum) == -1)
-			return FALSE;
+		FLUSH_COPY_IF_NEEDED(info);
+		info->filter_op = IS_DELE;
 		return TRUE;
 
 	case MATCHACTION_MARK:
@@ -358,7 +375,7 @@ static gboolean filteringaction_apply(FilteringAction * action, MsgInfo * info)
 		procmsg_spam_learner_learn(info, NULL, TRUE);
 		procmsg_msginfo_change_flags(info, MSG_SPAM, 0, MSG_NEW|MSG_UNREAD, 0);
 		if (procmsg_spam_get_folder(info)) {
-			info->is_move = TRUE;
+			info->filter_op = IS_MOVE;
 			info->to_filter_folder = procmsg_spam_get_folder(info);
 		}
 		return TRUE;
