@@ -3241,6 +3241,10 @@ static gint do_copy_msgs(FolderItem *dest, GSList *msglist, gboolean remove_sour
 	statusbar_print_all(_("Updating cache for %s..."), dest->path ? dest->path : "(null)");
 	total = g_slist_length(msglist);
 	
+	if (FOLDER_TYPE(dest->folder) == F_IMAP && total > 1) {
+		folder_item_scan_full(dest, FALSE);
+		folderscan = TRUE;
+	}
 	folder_item_set_batch(dest, TRUE);
 	for (l = msglist; l != NULL; l = g_slist_next(l)) {
 		MsgInfo *msginfo = (MsgInfo *) l->data;

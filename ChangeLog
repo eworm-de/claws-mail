@@ -1,3 +1,9 @@
+2008-01-19 [colin]	3.2.0cvs50
+
+	* src/folder.c
+		Make cache update after copies much faster
+		on IMAP
+
 2008-01-19 [colin]	3.2.0cvs49
 
 	* src/textview.c
