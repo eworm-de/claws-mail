@@ -137,7 +137,8 @@ typedef enum
 	IMAP_FLAG_ANSWERED	= 1 << 1,
 	IMAP_FLAG_FLAGGED	= 1 << 2,
 	IMAP_FLAG_DELETED	= 1 << 3,
-	IMAP_FLAG_DRAFT		= 1 << 4
+	IMAP_FLAG_DRAFT		= 1 << 4,
+	IMAP_FLAG_FORWARDED	= 1 << 5
 } IMAPFlags;
 
 #define IMAP_IS_SEEN(flags)	((flags & IMAP_FLAG_SEEN) != 0)
@@ -145,6 +146,7 @@ typedef enum
 #define IMAP_IS_FLAGGED(flags)	((flags & IMAP_FLAG_FLAGGED) != 0)
 #define IMAP_IS_DELETED(flags)	((flags & IMAP_FLAG_DELETED) != 0)
 #define IMAP_IS_DRAFT(flags)	((flags & IMAP_FLAG_DRAFT) != 0)
+#define IMAP_IS_FORWARDED(flags)	((flags & IMAP_FLAG_FORWARDED) != 0)
 
 
 #define IMAP4_PORT	143
@@ -1596,8 +1598,11 @@ static gint imap_add_msgs(Folder *folder, FolderItem *dest, GSList *file_list,
 				iflags |= IMAP_FLAG_FLAGGED;
 			if (MSG_IS_REPLIED(*fileinfo->flags))
 				iflags |= IMAP_FLAG_ANSWERED;
+			if (MSG_IS_FORWARDED(*fileinfo->flags))
+				iflags |= IMAP_FLAG_FORWARDED;
 			if (!MSG_IS_UNREAD(*fileinfo->flags))
 				iflags |= IMAP_FLAG_SEEN;
+			
 		}
 		
 		if (real_file == NULL)
@@ -4201,6 +4206,11 @@ void imap_change_flags(Folder *folder, FolderItem *item, MsgInfo *msginfo, MsgPe
 	if ( MSG_IS_REPLIED(msginfo->flags) && !(newflags & MSG_REPLIED))
 		flags_unset |= IMAP_FLAG_ANSWERED;
 
+	if (!MSG_IS_FORWARDED(msginfo->flags) &&  (newflags & MSG_FORWARDED))
+		flags_set |= IMAP_FLAG_FORWARDED;
+	if ( MSG_IS_FORWARDED(msginfo->flags) && !(newflags & MSG_FORWARDED))
+		flags_unset |= IMAP_FLAG_FORWARDED;
+
 	if (!MSG_IS_DELETED(msginfo->flags) &&  (newflags & MSG_DELETED))
 		flags_set |= IMAP_FLAG_DELETED;
 	if ( MSG_IS_DELETED(msginfo->flags) && !(newflags & MSG_DELETED))
@@ -4381,8 +4391,8 @@ static /*gint*/ void *imap_get_flags_thread(void *data)
 	GHashTable *tags_hash = NULL;
 	gboolean full_search = stuff->full_search;
 	GSList *sorted_list = NULL;
-	GSList *unseen = NULL, *answered = NULL, *flagged = NULL, *deleted = NULL;
-	GSList *p_unseen, *p_answered, *p_flagged, *p_deleted;
+	GSList *unseen = NULL, *answered = NULL, *flagged = NULL, *deleted = NULL, *forwarded = NULL;
+	GSList *p_unseen, *p_answered, *p_flagged, *p_deleted, *p_forwarded;
 	GSList *seq_list, *cur;
 	gboolean reverse_seen = FALSE;
 	gboolean selected_folder;
@@ -4481,6 +4491,20 @@ static /*gint*/ void *imap_get_flags_thread(void *data)
 					goto bail;
 				}
 
+				r = imap_threaded_search(folder, IMAP_SEARCH_TYPE_FORWARDED,
+							 full_search ? NULL:imapset, &lep_uidlist);
+				if (r == MAILIMAP_NO_ERROR) {
+					GSList * uidlist;
+
+					uidlist = imap_uid_list_from_lep(lep_uidlist);
+					mailimap_search_result_free(lep_uidlist);
+
+					forwarded = g_slist_concat(forwarded, uidlist);
+				} else {
+					imap_handle_error(SESSION(session), r);
+					goto bail;
+				}
+
 				r = imap_threaded_search(folder, IMAP_SEARCH_TYPE_DELETED,
 							 full_search ? NULL:imapset, &lep_uidlist);
 				if (r == MAILIMAP_NO_ERROR) {
@@ -4498,6 +4522,7 @@ static /*gint*/ void *imap_get_flags_thread(void *data)
 		}
 		p_unseen = unseen;
 		p_answered = answered;
+		p_forwarded = forwarded;
 		p_flagged = flagged;
 		p_deleted = deleted;
 
@@ -4526,11 +4551,11 @@ bail:
 		msginfo = (MsgInfo *) elem->data;
 		flags = msginfo->flags.perm_flags;
 		wasnew = (flags & MSG_NEW);
-		oldflags = flags & ~(MSG_NEW|MSG_UNREAD|MSG_REPLIED|MSG_MARKED|MSG_DELETED);
+		oldflags = flags & ~(MSG_NEW|MSG_UNREAD|MSG_REPLIED|MSG_FORWARDED|MSG_MARKED|MSG_DELETED);
 
 		if (folder->account && folder->account->low_bandwidth) {
 			if (fitem->opened || fitem->processing_pending || fitem == folder->inbox) {
-				flags &= ~((reverse_seen ? 0 : MSG_UNREAD | MSG_NEW) | MSG_REPLIED | MSG_MARKED);
+				flags &= ~((reverse_seen ? 0 : MSG_UNREAD | MSG_NEW) | MSG_REPLIED | MSG_FORWARDED | MSG_MARKED);
 			} else {
 				flags &= ~((reverse_seen ? 0 : MSG_UNREAD | MSG_NEW | MSG_MARKED));
 			}
@@ -4554,6 +4579,10 @@ bail:
 					flags |= MSG_REPLIED;
 				else
 					flags &= ~MSG_REPLIED;
+				if (gslist_find_next_num(&p_forwarded, msginfo->msgnum) == msginfo->msgnum)
+					flags |= MSG_FORWARDED;
+				else
+					flags &= ~MSG_FORWARDED;
 				if (gslist_find_next_num(&p_deleted, msginfo->msgnum) == msginfo->msgnum)
 					flags |= MSG_DELETED;
 				else
@@ -4617,6 +4646,7 @@ bail:
 	g_slist_free(flagged);
 	g_slist_free(deleted);
 	g_slist_free(answered);
+	g_slist_free(forwarded);
 	g_slist_free(unseen);
 	g_slist_free(sorted_list);
 
@@ -5144,6 +5174,9 @@ static struct mailimap_flag_list * imap_flag_to_lep(IMAPFlags flags, GSList *tag
 	if (IMAP_IS_DRAFT(flags))
 		mailimap_flag_list_add(flag_list,
 				       mailimap_flag_new_draft());
+	if (IMAP_IS_FORWARDED(flags))
+		mailimap_flag_list_add(flag_list,
+				       mailimap_flag_new_flag_keyword(strdup("$Forwarded")));
 	
 	for (; cur; cur = cur->next) {
 		gchar *enc_str = 

@@ -1568,6 +1568,14 @@ static void search_run(struct etpan_thread_op * op)
 							  NULL, NULL, NULL, NULL, NULL,
 							  NULL, 0, NULL, NULL, NULL);
 		break;
+	case IMAP_SEARCH_TYPE_FORWARDED:
+		search_type_key = mailimap_search_key_new(MAILIMAP_SEARCH_KEY_KEYWORD,
+							  NULL, NULL, NULL, NULL, NULL,
+							  strdup("$Forwarded"), NULL, NULL, NULL, NULL,
+							  NULL, NULL, NULL, NULL, 0,
+							  NULL, NULL, NULL, NULL, NULL,
+							  NULL, 0, NULL, NULL, NULL);
+		break;
 	}
 	
 	if (search_type_key != NULL) {
@@ -2422,7 +2430,9 @@ static int imap_flags_to_flags(struct mailimap_msg_att_dynamic * att_dyn, GSList
 				flags &= ~MSG_NEW;
 				break;
 			case MAILIMAP_FLAG_KEYWORD:
-				if (s_tags)
+				if (!strcasecmp(flag_fetch->fl_flag->fl_data.fl_keyword, "$Forwarded"))
+					flags |= MSG_FORWARDED;
+				else if (s_tags)
 					tags = g_slist_prepend(tags, g_strdup(flag_fetch->fl_flag->fl_data.fl_keyword));
 				break;
 			}

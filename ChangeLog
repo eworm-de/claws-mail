@@ -1,3 +1,11 @@
+2008-01-20 [colin]	3.2.0cvs56
+
+	* src/imap.c
+	* src/etpan/imap-thread.c
+	* src/etpan/imap-thread.h
+		Fix bug 1468, 'Use IMAP keyword to 
+		store "forwarded" flag'
+
 2008-01-20 [colin]	3.2.0cvs55
 
 	* src/folderutils.c
