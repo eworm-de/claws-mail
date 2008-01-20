@@ -1195,6 +1195,10 @@ static void compose_force_encryption(Compose *compose, PrefsAccount *account,
 	if (privacy != NULL) {
 		if (compose->privacy_system == NULL)
 			compose->privacy_system = g_strdup(privacy);
+		else if (*(compose->privacy_system) == '\0') {
+			g_free(compose->privacy_system);
+			compose->privacy_system = g_strdup(privacy);
+		}
 		compose_update_privacy_system_menu_item(compose, FALSE);
 		compose_use_encryption(compose, TRUE);
 	}
@@ -7161,7 +7165,6 @@ static void compose_update_privacy_system_menu_item(Compose * compose, gboolean 
 
 	if (compose->privacy_system != NULL) {
 		gchar *systemid;
-
 		menuitem = gtk_item_factory_get_widget(ifactory, branch_path);
 		g_return_if_fail(menuitem != NULL);
 
