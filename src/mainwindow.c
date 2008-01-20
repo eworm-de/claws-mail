@@ -4651,6 +4651,7 @@ void mainwindow_exit_folder(MainWindow *mainwin) {
 	if (prefs_common.layout_mode == SMALL_LAYOUT) {
 		folderview_close_opened(mainwin->folderview);
 		mainwin_paned_show_first(GTK_PANED(mainwin->hpaned));
+		gtk_widget_grab_focus(mainwin->folderview->ctree);
 	}
 	mainwin->in_folder = FALSE;
 }

@@ -3190,3 +3190,4 @@
 ( cvs diff -u -r 1.60.2.42 -r 1.60.2.43 src/filtering.c;  cvs diff -u -r 1.60.2.51 -r 1.60.2.52 src/procmsg.h;  cvs diff -u -r 1.1.2.35 -r 1.1.2.36 src/plugins/bogofilter/bogofilter.c;  cvs diff -u -r 1.13.2.35 -r 1.13.2.36 src/plugins/clamav/clamav_plugin.c;  cvs diff -u -r 1.18.2.58 -r 1.18.2.59 src/plugins/spamassassin/spamassassin.c;  ) > 3.2.0cvs51.patchset
 ( cvs diff -u -r 1.382.2.431 -r 1.382.2.432 src/compose.c;  ) > 3.2.0cvs52.patchset
 ( cvs diff -u -r 1.96.2.196 -r 1.96.2.197 src/textview.c;  ) > 3.2.0cvs53.patchset
+( cvs diff -u -r 1.274.2.229 -r 1.274.2.230 src/mainwindow.c;  ) > 3.2.0cvs54.patchset

@@ -1,3 +1,9 @@
+2008-01-20 [colin]	3.2.0cvs54
+
+	* src/mainwindow.c
+		Fix bug 1353, 'on startup with small screen 
+		layout, keyboard input gets lost'
+
 2008-01-20 [colin]	3.2.0cvs53
 
 	* src/textview.c
