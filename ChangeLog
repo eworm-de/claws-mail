@@ -1,3 +1,8 @@
+2008-01-20 [colin]	3.2.0cvs55
+
+	* src/folderutils.c
+		Make list operations faster
+
 2008-01-20 [colin]	3.2.0cvs54
 
 	* src/mainwindow.c

@@ -58,9 +58,9 @@ gint folderutils_delete_duplicates(FolderItem *item,
 		else {
 			if ((MSG_IS_UNREAD(msginfo->flags) && !MSG_IS_UNREAD(msginfo_dup->flags)) || 
 			    (MSG_IS_UNREAD(msginfo->flags) == MSG_IS_UNREAD(msginfo_dup->flags))) {
-				duplist = g_slist_append(duplist, msginfo);
+				duplist = g_slist_prepend(duplist, msginfo);
 			} else {
-				duplist = g_slist_append(duplist, msginfo_dup);
+				duplist = g_slist_prepend(duplist, msginfo_dup);
 				g_hash_table_insert(table, msginfo->msgid, msginfo);
 			}
 		}
