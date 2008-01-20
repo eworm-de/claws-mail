@@ -628,8 +628,10 @@ static void textview_add_part(TextView *textview, MimeInfo *mimeinfo)
 
 	if ((mimeinfo->type == MIMETYPE_MESSAGE) && !g_ascii_strcasecmp(mimeinfo->subtype, "rfc822")) {
 		FILE *fp;
-
-		fp = g_fopen(mimeinfo->data.filename, "rb");
+		if (mimeinfo->content == MIMECONTENT_MEM)
+			fp = str_open_as_stream(mimeinfo->data.mem);
+		else
+			fp = g_fopen(mimeinfo->data.filename, "rb");
 		if (!fp) {
 			FILE_OP_ERROR(mimeinfo->data.filename, "fopen");
 			END_TIMING();
@@ -1028,7 +1030,10 @@ static void textview_write_body(TextView *textview, MimeInfo *mimeinfo)
 #endif
 	} else {
 textview_default:
-		tmpfp = g_fopen(mimeinfo->data.filename, "rb");
+		if (mimeinfo->content == MIMECONTENT_MEM)
+			tmpfp = str_open_as_stream(mimeinfo->data.mem);
+		else
+			tmpfp = g_fopen(mimeinfo->data.filename, "rb");
 		if (!tmpfp) {
 			FILE_OP_ERROR(mimeinfo->data.filename, "fopen");
 			return;

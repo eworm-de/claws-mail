@@ -1,3 +1,10 @@
+2008-01-20 [colin]	3.2.0cvs53
+
+	* src/textview.c
+		Complete 3.2.0cvs49, and fixes bug 1477, 
+		'Claws Mail crashes when view PGP-encrypted 
+		message'
+
 2008-01-20 [colin]	3.2.0cvs52
 
 	* src/compose.c
