@@ -1,3 +1,10 @@
+2008-01-21 [colin]	3.2.0cvs58
+
+	* src/summaryview.c
+		Fix bug 1457, 'sorting messages on, say, from, 
+		should subsort on previous sort choice'. Subsort
+		by date when sort is Subject, From, To, Tags.
+
 2008-01-21 [colin]	3.2.0cvs57
 
 	* AUTHORS

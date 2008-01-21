@@ -6835,14 +6835,16 @@ static gint summary_cmp_by_subject(GtkCList *clist,
 {
 	MsgInfo *msginfo1 = ((GtkCListRow *)ptr1)->data;
 	MsgInfo *msginfo2 = ((GtkCListRow *)ptr2)->data;
+	gint res;
 
 	if (!msginfo1->subject)
 		return (msginfo2->subject != NULL);
 	if (!msginfo2->subject)
 		return -1;
 
-	return subject_compare_for_sort
+	res = subject_compare_for_sort
 		(msginfo1->subject, msginfo2->subject);
+	return (res != 0)? res: summary_cmp_by_date(clist, ptr1, ptr2);
 }
 
 static gint summary_cmp_by_thread_date(GtkCList *clist,
@@ -6866,7 +6868,8 @@ static gint summary_cmp_by_from(GtkCList *clist, gconstpointer ptr1,
 	const GtkCListRow *r1 = (const GtkCListRow *) ptr1;
 	const GtkCListRow *r2 = (const GtkCListRow *) ptr2;
 	const SummaryView *sv = g_object_get_data(G_OBJECT(clist), "summaryview");
-	
+	gint res;
+
 	g_return_val_if_fail(sv, -1);
 	
 	str1 = GTK_CELL_TEXT(r1->cell[sv->col_pos[S_COL_FROM]])->text;
@@ -6878,7 +6881,8 @@ static gint summary_cmp_by_from(GtkCList *clist, gconstpointer ptr1,
 	if (!str2)
  		return -1;
  
-	return g_utf8_collate(str1, str2);
+	res = g_utf8_collate(str1, str2);
+	return (res != 0)? res: summary_cmp_by_date(clist, ptr1, ptr2);
 }
  
 static gint summary_cmp_by_to(GtkCList *clist, gconstpointer ptr1,
@@ -6888,7 +6892,7 @@ static gint summary_cmp_by_to(GtkCList *clist, gconstpointer ptr1,
 	const GtkCListRow *r1 = (const GtkCListRow *) ptr1;
 	const GtkCListRow *r2 = (const GtkCListRow *) ptr2;
 	const SummaryView *sv = g_object_get_data(G_OBJECT(clist), "summaryview");
-	
+	gint res;
 	g_return_val_if_fail(sv, -1);
 	
 	str1 = GTK_CELL_TEXT(r1->cell[sv->col_pos[S_COL_TO]])->text;
@@ -6900,7 +6904,8 @@ static gint summary_cmp_by_to(GtkCList *clist, gconstpointer ptr1,
 	if (!str2)
  		return -1;
  
-	return g_utf8_collate(str1, str2);
+	res = g_utf8_collate(str1, str2);
+	return (res != 0)? res: summary_cmp_by_date(clist, ptr1, ptr2);
 }
  
 static gint summary_cmp_by_tags(GtkCList *clist, gconstpointer ptr1,
@@ -6936,7 +6941,8 @@ static gint summary_cmp_by_simplified_subject
 	const MsgInfo *msginfo1 = r1->data;
 	const MsgInfo *msginfo2 = r2->data;
 	const SummaryView *sv = g_object_get_data(G_OBJECT(clist), "summaryview");
-	
+	gint res;
+
 	g_return_val_if_fail(sv, -1);
 	g_return_val_if_fail(msginfo1 != NULL && msginfo2 != NULL, -1);
 	
@@ -6955,7 +6961,8 @@ static gint summary_cmp_by_simplified_subject
 	if (!prefs)
 		return -1;
 	
-	return subject_compare_for_sort(str1, str2);
+	res = subject_compare_for_sort(str1, str2);
+	return (res != 0)? res: summary_cmp_by_date(clist, ptr1, ptr2);
 }
 
 static gint summary_cmp_by_score(GtkCList *clist,
