@@ -123,9 +123,10 @@ static gint SSL_connect_nb(SSL *ssl)
 static gint SSL_connect_nb(gnutls_session ssl)
 #endif
 {
-#if (defined USE_PTHREAD && ((defined __GLIBC__ && (__GLIBC__ > 2 || (__GLIBC__ == 2 && __GLIBC_MINOR__ >= 3))) || !defined __GLIBC__))
+#ifdef USE_PTHREAD
 	thread_data *td = g_new0(thread_data, 1);
 	pthread_t pt;
+	pthread_attr_t pta;
 	void *res = NULL;
 #ifdef USE_GNUTLS
 	int result;
@@ -139,14 +140,16 @@ static gint SSL_connect_nb(gnutls_session ssl)
 	/* try to create a thread to initialize the SSL connection,
 	 * fallback to blocking method in case of problem 
 	 */
-	if (pthread_create(&pt, PTHREAD_CREATE_JOINABLE, 
-			SSL_connect_thread, td) != 0) {
+	if (pthread_attr_init(&pta) != 0 ||
+	    pthread_attr_setdetachstate(&pta, PTHREAD_CREATE_JOINABLE) != 0 ||
+	    pthread_create(&pt, &pta, SSL_connect_thread, td) != 0) {
 #ifdef USE_OPENSSL
 		return SSL_connect(ssl);
 #else
 		do {
 			result = gnutls_handshake(td->ssl);
 		} while (result == GNUTLS_E_AGAIN || result == GNUTLS_E_INTERRUPTED);
+		return result;
 #endif
 	}
 	debug_print("waiting for SSL_connect thread...\n");

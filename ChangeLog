@@ -1,3 +1,13 @@
+2008-01-21 [colin]	3.2.0cvs57
+
+	* AUTHORS
+	* src/matcher.c
+	* src/mimeview.c
+	* src/common/ssl.c
+	* src/gtk/authors.h
+		Fix bug 1478, 'Wrong pthread_create calls all 
+		over the place'. Patch by Christian Cornelssen
+
 2008-01-20 [colin]	3.2.0cvs56
 
 	* src/imap.c

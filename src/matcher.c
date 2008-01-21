@@ -674,6 +674,7 @@ static gboolean matcherprop_match_test(const MatcherProp *prop,
 	gint retval;
 #ifdef USE_PTHREAD
 	pthread_t pt;
+	pthread_attr_t pta;
 	thread_data *td = g_new0(thread_data, 1);
 	void *res = NULL;
 	time_t start_time = time(NULL);
@@ -688,7 +689,7 @@ static gboolean matcherprop_match_test(const MatcherProp *prop,
 	if (cmd == NULL)
 		return FALSE;
 
-#if (defined USE_PTHREAD && ((defined __GLIBC__ && (__GLIBC__ > 2 || (__GLIBC__ == 2 && __GLIBC_MINOR__ >= 3))) || !defined __GLIBC__))
+#ifdef USE_PTHREAD
 	/* debug output */
 	if (debug_filtering_session
 			&& prefs_common.filtering_debug_level >= FILTERING_DEBUG_LEVEL_HIGH) {
@@ -699,8 +700,9 @@ static gboolean matcherprop_match_test(const MatcherProp *prop,
 
 	td->cmd = cmd;
 	td->done = FALSE;
-	if (pthread_create(&pt, PTHREAD_CREATE_JOINABLE, 
-			matcher_test_thread, td) != 0)
+	if (pthread_attr_init(&pta) != 0 ||
+	    pthread_attr_setdetachstate(&pta, PTHREAD_CREATE_JOINABLE) != 0 ||
+	    pthread_create(&pt, &pta, matcher_test_thread, td) != 0)
 		retval = system(cmd);
 	else {
 		debug_print("waiting for test thread\n");
