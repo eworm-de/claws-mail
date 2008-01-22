@@ -3196,3 +3196,4 @@
 ( cvs diff -u -r 1.100.2.58 -r 1.100.2.59 AUTHORS;  cvs diff -u -r 1.75.2.53 -r 1.75.2.54 src/matcher.c;  cvs diff -u -r 1.83.2.124 -r 1.83.2.125 src/mimeview.c;  cvs diff -u -r 1.9.2.25 -r 1.9.2.26 src/common/ssl.c;  cvs diff -u -r 1.1.2.44 -r 1.1.2.45 src/gtk/authors.h;  ) > 3.2.0cvs57.patchset
 ( cvs diff -u -r 1.395.2.351 -r 1.395.2.352 src/summaryview.c;  ) > 3.2.0cvs58.patchset
 ( cvs diff -u -r 1.1.2.8 -r 1.1.2.9 src/addrduplicates.c;  ) > 3.2.0cvs59.patchset
+( cvs diff -u -r 1.115.2.181 -r 1.115.2.182 src/main.c;  ) > 3.2.0cvs60.patchset

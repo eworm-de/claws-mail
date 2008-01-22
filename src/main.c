@@ -814,6 +814,62 @@ static void win32_close_log(void)
 }		
 #endif
 
+static void main_dump_debug_print(const gchar *format, ...)
+/* wrapper function to debug_print macro */
+{
+	va_list args;
+
+	va_start(args, format);
+	debug_print(format, args);
+	va_end(args);
+}
+
+static void main_dump_features_list(int (*output_func) (const gchar *, ...))
+/* display compiled-in features list using output_func (commonly any
+   g_print-like function) */
+{
+	output_func("GTK+ %d.%d.%d / GLib %d.%d.%d\n",
+		   gtk_major_version, gtk_minor_version, gtk_micro_version,
+		   glib_major_version, glib_minor_version, glib_micro_version);
+	output_func("Compiled-in features:\n");
+#if HAVE_LIBCOMPFACE
+	output_func(" compface\n");
+#endif
+#if USE_ASPELL
+	output_func(" aspell\n");
+#endif
+#if USE_GNUTLS
+	output_func(" gnutls\n");
+#endif
+#if INET6
+	output_func(" ipv6\n");
+#endif
+#if HAVE_ICONV
+	output_func(" iconv\n");
+#endif
+#if USE_JPILOT
+	output_func(" jpilot\n");
+#endif
+#if USE_LDAP
+	output_func(" ldap\n");
+#endif
+#if HAVE_LIBETPAN
+	output_func(" libetpan %d.%d\n", LIBETPAN_VERSION_MAJOR, LIBETPAN_VERSION_MINOR);
+#endif
+#if USE_GNOMEPRINT
+	output_func(" gnomeprint\n");
+#endif
+#if HAVE_LIBSM
+	output_func(" libsm\n");
+#endif
+#if HAVE_NETWORKMANAGER_SUPPORT
+	output_func(" NetworkManager\n");
+#endif
+#if USE_OPENSSL
+	output_func(" openssl\n");
+#endif
+}
+
 int main(int argc, char *argv[])
 {
 #ifdef MAEMO
@@ -848,46 +904,7 @@ int main(int argc, char *argv[])
 		return 0;
 	}
 
-	debug_print("GTK+ %d.%d.%d / GLib %d.%d.%d\n",
-		   gtk_major_version, gtk_minor_version, gtk_micro_version,
-		   glib_major_version, glib_minor_version, glib_micro_version);
-	debug_print("Compiled-in features:\n");
-#if HAVE_LIBCOMPFACE
-	debug_print(" compface\n");
-#endif
-#if USE_ASPELL
-	debug_print(" aspell\n");
-#endif
-#if USE_GNUTLS
-	debug_print(" gnutls\n");
-#endif
-#if INET6
-	debug_print(" ipv6\n");
-#endif
-#if HAVE_ICONV
-	debug_print(" iconv\n");
-#endif
-#if USE_JPILOT
-	debug_print(" jpilot\n");
-#endif
-#if USE_LDAP
-	debug_print(" ldap\n");
-#endif
-#if HAVE_LIBETPAN
-	debug_print(" libetpan %d.%d\n", LIBETPAN_VERSION_MAJOR, LIBETPAN_VERSION_MINOR);
-#endif
-#if USE_GNOMEPRINT
-	debug_print(" gnomeprint\n");
-#endif
-#if HAVE_LIBSM
-	debug_print(" libsm\n");
-#endif
-#if HAVE_NETWORKMANAGER_SUPPORT
-	debug_print(" NetworkManager\n");
-#endif
-#if USE_OPENSSL
-	debug_print(" openssl\n");
-#endif
+	main_dump_features_list(main_dump_debug_print);
 
 	prog_version = PROG_VERSION;
 	argv0 = g_strdup(argv[0]);
@@ -1635,6 +1652,11 @@ static void parse_cmd_opt(int argc, char *argv[])
 			}
 		} else if (!strncmp(argv[i], "--send", 6)) {
 			cmd.send = TRUE;
+		} else if (!strncmp(argv[i], "--version-full", 14) ||
+			   !strncmp(argv[i], "-V", 2)) {
+			g_print("Claws Mail version " VERSION "\n");
+			main_dump_features_list(g_print);
+			exit(0);
 		} else if (!strncmp(argv[i], "--version", 9) ||
 			   !strncmp(argv[i], "-v", 2)) {
 			g_print("Claws Mail version " VERSION "\n");
@@ -1693,6 +1715,7 @@ static void parse_cmd_opt(int argc, char *argv[])
 			g_print("%s\n", _("  --debug                debug mode"));
 			g_print("%s\n", _("  --help -h              display this help and exit"));
 			g_print("%s\n", _("  --version -v           output version information and exit"));
+			g_print("%s\n", _("  --version-full -V      output version and built-in features information and exit"));
 			g_print("%s\n", _("  --config-dir           output configuration directory"));
 			g_print("%s\n", _("  --alternate-config-dir [dir]\n"
 			                  "                         use specified configuration directory"));
