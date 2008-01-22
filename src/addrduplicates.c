@@ -365,8 +365,7 @@ static void present_finder_results(GtkWindow *parent)
 	gtk_scrolled_window_set_policy(GTK_SCROLLED_WINDOW(scrolled_win),
 	                               GTK_POLICY_AUTOMATIC,
 	                               GTK_POLICY_AUTOMATIC);
-	gtk_scrolled_window_add_with_viewport(GTK_SCROLLED_WINDOW(scrolled_win),
-	                                      email_view);
+	gtk_container_add(GTK_CONTAINER(scrolled_win), email_view);
 
 	gtk_paned_add1(GTK_PANED(hpaned), scrolled_win);
 
@@ -374,8 +373,7 @@ static void present_finder_results(GtkWindow *parent)
 	gtk_scrolled_window_set_policy(GTK_SCROLLED_WINDOW(scrolled_win),
 	                               GTK_POLICY_AUTOMATIC,
 	                               GTK_POLICY_AUTOMATIC);
-	gtk_scrolled_window_add_with_viewport(GTK_SCROLLED_WINDOW(scrolled_win),
-	                                      detail_view);
+	gtk_container_add(GTK_CONTAINER(scrolled_win), detail_view);
 
 	if (prefs_common.addressbook_use_editaddress_dialog) {
 		gtk_paned_add2(GTK_PANED(hpaned), scrolled_win);
