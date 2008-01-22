@@ -38,7 +38,7 @@ o MIME (attachments)
 .br 
 o built\-in image view
 .br 
-o X\-Face support
+o X\-Face and (colour) Face support
 .br 
 o multiple MH folder support
 .br 
@@ -78,7 +78,7 @@ o IPv6 support
 .br 
 o drag & drop (partially implemented)
 .br 
-o GnuPG support (currently implementing)
+o GnuPG support
 .br 
 o automake + autoconf support
 .br 
@@ -125,6 +125,8 @@ This list is not complete.
 .br 
 \fB \-\-version\fR
 .br 
+\fB \-\-version\-full\fR
+.br 
 \fB \-\-config\-dir\fR
 .br
 \fB \-\-alternate\-config\-dir [dir]\fR
@@ -153,14 +155,32 @@ Directory for header files
 $HOME/.claws\-mail
 Default directory for user's configuration files directory
 .TP 
+$HOME/.claws\-mail/addrbook/*
+Addressbook files
+.TP 
+$HOME/.claws\-mail/templates
+User\-defined templates directory
+.TP 
 $HOME/.claws\-mail/themes
 User's themes directory
 .TP 
 $HOME/.claws\-mail/accountrc
 Configuration for account(s)
 .TP 
-$HOME/.claws\-mail/addrbook*
-Addressbook files
+$HOME/.claws\-mail/actionsrc
+User\-defined custom actions
+.TP 
+$HOME/.claws\-mail/addressbookcustomattributerc
+User\-defined address book custom attributes
+.TP 
+$HOME/.claws\-mail/claws.log
+Claws Mail logfile
+.TP 
+$HOME/.claws\-mail/claws-win32.log
+Claws Mail output file (Windows only)
+.TP 
+$HOME/.claws\-mail/clawsrc
+Main configuration file
 .TP 
 $HOME/.claws\-mail/command_history
 User\-specified commands
@@ -171,20 +191,35 @@ Configuration for custom headers for sending mail
 $HOME/.claws\-mail/dispheaderrc
 Configuration for custom display of headers in message view
 .TP 
-$HOME/.claws\-mail/matcherrc
-Filtering and Processing function configuration
+$HOME/.claws\-mail/folderitemrc
+All folders' attributes
 .TP 
 $HOME/.claws\-mail/folderlist.xml
 Folder hierarchy listing
 .TP 
+$HOME/.claws\-mail/matcherrc
+Filtering and Processing function configuration
+.TP 
 $HOME/.claws\-mail/menurc
 Menu shortcut\-key configuration
 .TP 
-$HOME/.claws\-mail/claws.log
-Claws Mail logfile
+$HOME/.claws\-mail/messagesearch_history
+User\-specified searches in message bodies
 .TP 
-$HOME/.claws\-mail/clawsrc
-Main configuration file
+$HOME/.claws\-mail/quicksearch_history
+User\-specified quick-search list
+.TP 
+$HOME/.claws\-mail/messagesearch_history
+User\-specified searches in message bodies
+.TP 
+$HOME/.claws\-mail/summary*_history
+User\-specified searches in message list
+.TP 
+$HOME/.claws\-mail/tagsrc
+User\-specified tag list
+.TP 
+$HOME/.claws\-mail/toolbar*.xml
+User\-defined custom toolbars
 
 .SH "EXAMPLES"
 .LP 
@@ -251,6 +286,9 @@ for debug mode
 .TP 
 \fB\-\-version\fR
 display version number and exit
+.TP 
+\fB\-\-version-full\fR
+display version number and compiled-in features then exit
 .TP 
 \fB\-\-config\-dir\fR
 display the CONFIG\-DIR and exit
