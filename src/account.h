@@ -38,7 +38,7 @@ GList        *account_find_all_from_address	(GList		*ac_list,
 						 const gchar	*address);
 PrefsAccount *account_find_from_smtp_server	(const gchar	*address,
 						 const gchar	*smtp_server);
-PrefsAccount *account_find_from_address		(const gchar	*address);
+PrefsAccount *account_find_from_address		(const gchar	*address, gboolean newsgroups_ok);
 PrefsAccount *account_find_from_id		(gint		 id);
 PrefsAccount *account_find_from_item		(FolderItem	*item);
 

@@ -3102,7 +3102,7 @@ static inline void summary_set_header(SummaryView *summaryview, gchar *text[],
 
 		if (addr) {
 			extract_address(addr);
-			if (account_find_from_address(addr)) {
+			if (account_find_from_address(addr, FALSE)) {
 				should_swap = TRUE;
 			}
 			g_free(addr);

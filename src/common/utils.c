@@ -1514,7 +1514,7 @@ static gchar *decode_uri_gdup(const gchar *encoded_uri)
     return buffer;
 }
 
-gint scan_mailto_url(const gchar *mailto, gchar **to, gchar **cc, gchar **bcc,
+gint scan_mailto_url(const gchar *mailto, gchar **from, gchar **to, gchar **cc, gchar **bcc,
 		     gchar **subject, gchar **body, gchar ***attach)
 {
 	gchar *tmp_mailto;
@@ -1563,7 +1563,16 @@ gint scan_mailto_url(const gchar *mailto, gchar **to, gchar **cc, gchar **bcc,
 
 		if (*value == '\0') continue;
 
-		if (cc && !g_ascii_strcasecmp(field, "cc")) {
+		if (from && !g_ascii_strcasecmp(field, "from")) {
+			if (!*from) {
+				*from = decode_uri_gdup(value);
+			} else {
+				gchar *tmp = decode_uri_gdup(value);
+				gchar *new_from = g_strdup_printf("%s, %s", *from, tmp);
+				g_free(*from);
+				*from = new_from;
+			}
+		} else if (cc && !g_ascii_strcasecmp(field, "cc")) {
 			if (!*cc) {
 				*cc = decode_uri_gdup(value);
 			} else {

@@ -235,7 +235,8 @@ static void compose_template_apply		(Compose	*compose,
 static void compose_destroy			(Compose	*compose);
 
 static void compose_entries_set			(Compose	*compose,
-						 const gchar	*mailto);
+						 const gchar	*mailto,
+						 ComposeEntryType to_type);
 static gint compose_parse_header		(Compose	*compose,
 						 MsgInfo	*msginfo);
 static gchar *compose_parse_references		(const gchar	*ref,
@@ -1003,14 +1004,36 @@ Compose *compose_generic_new(PrefsAccount *account, const gchar *mailto, FolderI
 	GtkItemFactory *ifactory;
 	const gchar *subject_format = NULL;
 	const gchar *body_format = NULL;
+	gchar *mailto_from = NULL;
+	PrefsAccount *mailto_account = NULL;
 
-	if (item && item->prefs && item->prefs->enable_default_account)
+	/* check if mailto defines a from */
+	if (mailto && *mailto != '\0') {
+		scan_mailto_url(mailto, &mailto_from, NULL, NULL, NULL, NULL, NULL, NULL);
+		/* mailto defines a from, check if we can get account prefs from it,
+		   if not, the account prefs will be guessed using other ways, but we'll keep
+		   the from anyway */
+		if (mailto_from)
+			mailto_account = account_find_from_address(mailto_from, TRUE);
+		if (mailto_account)
+			account = mailto_account;
+	}
+
+	/* if no account prefs set from mailto, set if from folder prefs (if any) */
+	if (!mailto_account && item && item->prefs && item->prefs->enable_default_account)
 		account = account_find_from_id(item->prefs->default_account);
 
+	/* if no account prefs set, fallback to the current one */
  	if (!account) account = cur_account;
 	g_return_val_if_fail(account != NULL, NULL);
 
 	compose = compose_create(account, item, COMPOSE_NEW, FALSE);
+
+	/* override from name if mailto asked for it */
+	if (mailto_from) {
+		gtk_entry_set_text(GTK_ENTRY(compose->from_name), mailto_from);
+		g_free(mailto_from);
+	}
 
 	ifactory = gtk_item_factory_from_widget(compose->menubar);
 
@@ -1033,7 +1056,7 @@ Compose *compose_generic_new(PrefsAccount *account, const gchar *mailto, FolderI
 
 	if (account->protocol != A_NNTP) {
 		if (mailto && *mailto != '\0') {
-			compose_entries_set(compose, mailto);
+			compose_entries_set(compose, mailto, COMPOSE_TO);
 
 		} else if (item && item->prefs->enable_default_to) {
 			compose_entry_append(compose, item->prefs->default_to, COMPOSE_TO);
@@ -1043,8 +1066,9 @@ Compose *compose_generic_new(PrefsAccount *account, const gchar *mailto, FolderI
 			menu_set_active(ifactory, "/Options/Request Return Receipt", TRUE);
 		}
 	} else {
-		if (mailto) {
-			compose_entry_append(compose, mailto, COMPOSE_NEWSGROUPS);
+		if (mailto && *mailto != '\0') {
+			compose_entries_set(compose, mailto, COMPOSE_NEWSGROUPS);
+
 		} else if (item && FOLDER_CLASS(item->folder) == news_get_class()) {
 			compose_entry_append(compose, item->path, COMPOSE_NEWSGROUPS);
 		}
@@ -1930,7 +1954,7 @@ Compose *compose_reedit(MsgInfo *msginfo, gboolean batch)
 		}
 		if (!account && !procheader_get_header_from_msginfo(msginfo, queueheader_buf, 
 		                                                sizeof(queueheader_buf), "S:")) {
-			account = account_find_from_address(queueheader_buf);
+			account = account_find_from_address(queueheader_buf, FALSE);
 		}
 		if (!procheader_get_header_from_msginfo(msginfo, queueheader_buf, 
 					     sizeof(queueheader_buf), "X-Claws-Sign:")) {
@@ -1997,7 +2021,7 @@ Compose *compose_reedit(MsgInfo *msginfo, gboolean batch)
                	gchar from[BUFFSIZE];
 		if (!procheader_get_header_from_msginfo(msginfo, from, sizeof(from), "FROM:")) {
 		        extract_address(from);
-		        account = account_find_from_address(from);
+		        account = account_find_from_address(from, FALSE);
                 }
 	}
         if (!account) {
@@ -2379,7 +2403,7 @@ void compose_toolbar_cb(gint action, gpointer data)
 	}
 }
 
-static void compose_entries_set(Compose *compose, const gchar *mailto)
+static void compose_entries_set(Compose *compose, const gchar *mailto, ComposeEntryType to_type)
 {
 	gchar *to = NULL;
 	gchar *cc = NULL;
@@ -2389,11 +2413,12 @@ static void compose_entries_set(Compose *compose, const gchar *mailto)
 	gchar *temp = NULL;
 	gsize  len = 0;
 	gchar **attach = NULL;
-	
-	scan_mailto_url(mailto, &to, &cc, &bcc, &subject, &body, &attach);
+
+	/* get mailto parts but skip from */
+	scan_mailto_url(mailto, NULL, &to, &cc, &bcc, &subject, &body, &attach);
 
 	if (to)
-		compose_entry_append(compose, to, COMPOSE_TO);
+		compose_entry_append(compose, to, to_type);
 	if (cc)
 		compose_entry_append(compose, cc, COMPOSE_CC);
 	if (bcc)
@@ -2550,7 +2575,7 @@ static gint compose_parse_header(Compose *compose, MsgInfo *msginfo)
 		extract_address(hentry[H_LIST_POST].body);
 		if (hentry[H_LIST_POST].body[0] != '\0') {
 			scan_mailto_url(hentry[H_LIST_POST].body,
-					&to, NULL, NULL, NULL, NULL, NULL);
+					NULL, &to, NULL, NULL, NULL, NULL, NULL);
 			if (to) {
 				g_free(compose->ml_post);
 				compose->ml_post = to;
@@ -2895,7 +2920,7 @@ static void compose_reply_set_entry(Compose *compose, MsgInfo *msginfo,
 			Xstrdup_a(tmp1, msginfo->from, return);
 			extract_address(tmp1);
 			if (to_all || to_sender ||
-			    !account_find_from_address(tmp1))
+			    !account_find_from_address(tmp1, FALSE))
 				compose_entry_append(compose,
 				 (compose->replyto && !to_sender)
 					  ? compose->replyto :
@@ -10036,7 +10061,7 @@ static PrefsAccount *compose_guess_forward_account_from_msginfo(MsgInfo *msginfo
 		gchar *to;
 		Xstrdup_a(to, msginfo->to, return NULL);
 		extract_address(to);
-		account = account_find_from_address(to);
+		account = account_find_from_address(to, FALSE);
 	}
 
 	if (!account && prefs_common.forward_account_autosel) {
@@ -10045,7 +10070,7 @@ static PrefsAccount *compose_guess_forward_account_from_msginfo(MsgInfo *msginfo
 			(msginfo, cc,sizeof cc , "Cc:")) { 
 			gchar *buf = cc + strlen("Cc:");
 		        extract_address(buf);
-		        account = account_find_from_address(buf);
+		        account = account_find_from_address(buf, FALSE);
                 }
 	}
 	
@@ -10055,7 +10080,7 @@ static PrefsAccount *compose_guess_forward_account_from_msginfo(MsgInfo *msginfo
 			(msginfo, deliveredto,sizeof deliveredto , "Delivered-To:")) { 
 			gchar *buf = deliveredto + strlen("Delivered-To:");
 		        extract_address(buf);
-		        account = account_find_from_address(buf);
+		        account = account_find_from_address(buf, FALSE);
                 }
 	}
 	

@@ -1476,7 +1476,7 @@ static void return_receipt_show(NoticeView *noticeview, MsgInfo *msginfo)
 	addr = g_strdup(msginfo->from);
 	if (addr) {
 		extract_address(addr);
-		if (account_find_from_address(addr)) {
+		if (account_find_from_address(addr, FALSE)) {
 			from_me = TRUE;
 		}
 		g_free(addr);

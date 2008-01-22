@@ -343,6 +343,7 @@ void decode_uri_with_plus		(gchar 		*decoded_uri,
 					 const gchar 	*encoded_uri, 
 					 gboolean 	 with_plus);
 gint scan_mailto_url			(const gchar	*mailto,
+					 gchar	       **from,
 					 gchar	       **to,
 					 gchar	       **cc,
 					 gchar	       **bcc,
