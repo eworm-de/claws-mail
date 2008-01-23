@@ -1,3 +1,10 @@
+2008-01-23 [colin]	3.2.0cvs65
+
+	* src/procmime.c
+		Fix bug 1486, 'Re: Incorrect content when replying'
+		Revert to full scan if short scan found only 0-length
+		text parts
+
 2008-01-23 [paul]	3.2.0cvs64
 
 	* src/prefs_folder_item.c

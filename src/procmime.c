@@ -752,19 +752,40 @@ FILE *procmime_get_first_text_content(MsgInfo *msginfo)
 {
 	FILE *outfp = NULL;
 	MimeInfo *mimeinfo, *partinfo;
+	gboolean empty_ok = FALSE, short_scan = TRUE;
 	START_TIMING("");
 	g_return_val_if_fail(msginfo != NULL, NULL);
 
-	mimeinfo = procmime_scan_message_short(msginfo);
+	/* first we try to short-scan (for speed), refusing empty parts */
+scan_again:
+	if (short_scan)
+		mimeinfo = procmime_scan_message_short(msginfo);
+	else
+		mimeinfo = procmime_scan_message(msginfo);
 	if (!mimeinfo) return NULL;
 
 	partinfo = mimeinfo;
-	while (partinfo && partinfo->type != MIMETYPE_TEXT) {
+	while (partinfo && (partinfo->type != MIMETYPE_TEXT ||
+	       (partinfo->length == 0 && !empty_ok))) {
 		partinfo = procmime_mimeinfo_next(partinfo);
 	}
 	if (partinfo)
 		outfp = procmime_get_text_content(partinfo);
-
+	else if (!empty_ok && short_scan) {
+		/* if short scan didn't find a non-empty part, rescan
+		 * fully for non-empty parts
+		 */
+		short_scan = FALSE;
+		procmime_mimeinfo_free_all(mimeinfo);
+		goto scan_again;
+	} else if (!empty_ok && !short_scan) {
+		/* if full scan didn't find a non-empty part, rescan
+		 * accepting empty parts 
+		 */
+		empty_ok = TRUE;
+		procmime_mimeinfo_free_all(mimeinfo);
+		goto scan_again;
+	}
 	procmime_mimeinfo_free_all(mimeinfo);
 	END_TIMING();
 	return outfp;
