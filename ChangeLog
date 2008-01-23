@@ -1,3 +1,9 @@
+2008-01-23 [paul]	3.2.0cvs64
+
+	* src/prefs_folder_item.c
+		fix bug 1485, 'selecting a folder's default
+		account if name contains '&''
+
 2008-01-23 [colin]	3.2.0cvs63
 
 	* src/folder.c

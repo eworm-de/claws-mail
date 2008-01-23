@@ -890,7 +890,7 @@ static void prefs_folder_item_compose_create_widget_func(PrefsPage * page_,
 		if (item->folder->klass->type != F_NEWS && ac_prefs->protocol == A_NNTP)
 			continue;
 
-		COMBOBOX_ADD (optmenu_default_account_menu,
+		COMBOBOX_ADD_ESCAPED (optmenu_default_account_menu,
 					ac_prefs->account_name?ac_prefs->account_name : _("Untitled"),
 					ac_prefs->account_id);
 
