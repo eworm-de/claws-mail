@@ -211,7 +211,7 @@ struct {
 	{ "A_CLAWS_ACTIONS",   	N_("Claws Mail Actions Feature")	   }, 
 	{ "A_CANCEL_INC",	N_("Cancel receiving")			   },
 	{ "A_CLOSE",		N_("Close window")			   },
-	{ "A_SEPARATOR",     	"Separator"				}
+	{ "A_SEPARATOR",     	N_("Separator")				}
 };
 
 /* struct holds configuration files and a list of
@@ -758,7 +758,7 @@ void toolbar_read_config_file(ToolbarType source)
 			} else if (xml_compare_tag(file, TOOLBAR_TAG_SEPARATOR)) {
 				ToolbarItem *item = g_new0(ToolbarItem, 1);
 			
-				item->file   = g_strdup(toolbar_ret_descr_from_val(A_SEPARATOR));
+				item->file   = g_strdup(TOOLBAR_TAG_SEPARATOR);
 				item->index  = A_SEPARATOR;
 				toolbar_config[source].item_list = 
 					g_slist_append(toolbar_config[source].item_list, item);

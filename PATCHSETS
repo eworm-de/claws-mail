@@ -3202,3 +3202,4 @@
 ( cvs diff -u -r 1.213.2.175 -r 1.213.2.176 src/folder.c;  cvs diff -u -r 1.87.2.52 -r 1.87.2.53 src/folder.h;  cvs diff -u -r 1.115.2.182 -r 1.115.2.183 src/main.c;  cvs diff -u -r 1.274.2.230 -r 1.274.2.231 src/mainwindow.c;  ) > 3.2.0cvs63.patchset
 ( cvs diff -u -r 1.52.2.55 -r 1.52.2.56 src/prefs_folder_item.c;  ) > 3.2.0cvs64.patchset
 ( cvs diff -u -r 1.49.2.106 -r 1.49.2.107 src/procmime.c;  ) > 3.2.0cvs65.patchset
+( cvs diff -u -r 1.43.2.94 -r 1.43.2.95 src/toolbar.c;  ) > 3.2.0cvs66.patchset
