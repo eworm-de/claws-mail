@@ -4578,7 +4578,7 @@ void mainwindow_jump_to(const gchar *target, gboolean popup)
 	FolderItem *item = NULL;
 	gchar *msg = NULL;
 	MainWindow *mainwin = mainwindow_get_mainwindow();
-	
+	gchar *from_uri = NULL;
 	if (!target)
 		return;
 		
@@ -4587,7 +4587,10 @@ void mainwindow_jump_to(const gchar *target, gboolean popup)
 		return;
 	}
 
-	tmp = g_strdup(target);
+	if ((from_uri = g_filename_from_uri(target, NULL, NULL)) != NULL)
+		tmp = from_uri;
+	else
+		tmp = g_strdup(target);
 	
 	if ((p = strstr(tmp, "\r")) != NULL)
 		*p = '\0';
@@ -4607,6 +4610,9 @@ void mainwindow_jump_to(const gchar *target, gboolean popup)
 	if (msg) {
 		*msg++ = '\0';
 		if ((item = folder_find_item_from_identifier(tmp))) {
+			g_print("selecting folder '%s'\n", tmp);
+			folderview_select(mainwin->folderview, item);
+		} else if ((item = folder_find_item_from_real_path(tmp))) {
 			g_print("selecting folder '%s'\n", tmp);
 			folderview_select(mainwin->folderview, item);
 		} else {

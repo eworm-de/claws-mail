@@ -1227,6 +1227,43 @@ FolderItem *folder_find_item_from_path(const gchar *path)
 	return d[1];
 }
 
+static gboolean folder_item_find_func_real_path(GNode *node, gpointer data)
+{
+	FolderItem *item = node->data;
+	gpointer *d = data;
+	const gchar *path = d[0];
+	gchar *tmp = folder_item_get_path(item);
+	if (path_cmp(path, tmp) != 0) {
+		g_free(tmp);
+		return FALSE;
+	}
+	g_free(tmp);
+	d[1] = item;
+
+	return TRUE;
+}
+
+FolderItem *folder_find_item_from_real_path(const gchar *path)
+{
+	Folder *folder;
+	gpointer d[2];
+	GList *list = folder_get_list();
+	
+	folder = list ? list->data:NULL;
+	
+	g_return_val_if_fail(folder != NULL, NULL);
+
+	d[0] = (gpointer)path;
+	d[1] = NULL;
+	while (d[1] == NULL && list) {
+		folder = FOLDER(list->data);
+		g_node_traverse(folder->node, G_PRE_ORDER, G_TRAVERSE_ALL, -1,
+			folder_item_find_func_real_path, d);
+		list = list->next;
+	}
+	return d[1];
+}
+
 FolderItem *folder_find_child_item_by_name(FolderItem *item, const gchar *name)
 {
 	GNode *node;

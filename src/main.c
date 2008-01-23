@@ -1751,6 +1751,8 @@ static void parse_cmd_opt(int argc, char *argv[])
 						cmd.compose_mailto = p;
 					}
 				}
+			} else if (!strncmp(argv[i], "file://", 7)) {
+				cmd.target = argv[i];
 			} else if (strstr(argv[i], "://")) {
 				const gchar *p = argv[i];
 				if (p && *p != '\0' && *p != '-') {
@@ -1759,6 +1761,8 @@ static void parse_cmd_opt(int argc, char *argv[])
 				}
 			} else if (!strcmp(argv[i], "--sync")) {
 				/* gtk debug */
+			} else if (is_dir_exist(argv[i]) || is_file_exist(argv[i])) {
+				cmd.target = argv[i];
 			} else {
 				g_print(_("Unknown option\n"));
 				exit(1);
