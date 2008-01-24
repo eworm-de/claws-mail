@@ -3203,3 +3203,4 @@
 ( cvs diff -u -r 1.52.2.55 -r 1.52.2.56 src/prefs_folder_item.c;  ) > 3.2.0cvs64.patchset
 ( cvs diff -u -r 1.49.2.106 -r 1.49.2.107 src/procmime.c;  ) > 3.2.0cvs65.patchset
 ( cvs diff -u -r 1.43.2.94 -r 1.43.2.95 src/toolbar.c;  ) > 3.2.0cvs66.patchset
+( cvs diff -u -r 1.1.4.95 -r 1.1.4.96 src/etpan/imap-thread.c;  cvs diff -u -r 1.1.2.4 -r 1.1.2.5 src/etpan/nntp-thread.c;  ) > 3.2.0cvs67.patchset
