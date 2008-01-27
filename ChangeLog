@@ -1,3 +1,14 @@
+2008-01-27 [paul]	3.2.0cvs68
+
+	* po/en_GB.po
+		updated
+	* src/prefs_actions.c
+	* src/prefs_filtering.c
+	* src/prefs_folder_item.c
+	* src/prefs_template.c
+	* src/gtk/about.c
+		some minor changes to the English
+
 2008-01-24 [colin]	3.2.0cvs67
 
 	* src/etpan/imap-thread.c

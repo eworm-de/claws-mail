@@ -426,7 +426,8 @@ static void prefs_folder_item_general_create_widget_func(PrefsPage * page_,
 	rowcount++;
 
 	/* Enable processing at startup */
-	checkbtn_enable_processing = gtk_check_button_new_with_label(_("Process at start-up"));
+	checkbtn_enable_processing =
+		gtk_check_button_new_with_label(_("Run Processing rules at start-up"));
 	gtk_table_attach(GTK_TABLE(table), checkbtn_enable_processing, 0, 2, 
 			 rowcount, rowcount + 1, GTK_EXPAND | GTK_FILL, GTK_FILL, 0, 0);
 
@@ -440,7 +441,8 @@ static void prefs_folder_item_general_create_widget_func(PrefsPage * page_,
 	rowcount++;
 
 	/* Enable processing rules when opening folder */
-	checkbtn_enable_processing_when_opening = gtk_check_button_new_with_label(_("Process when opening"));
+	checkbtn_enable_processing_when_opening =
+		gtk_check_button_new_with_label(_("Run Processing rules when opening"));
 	gtk_table_attach(GTK_TABLE(table), checkbtn_enable_processing_when_opening, 0, 2, 
 			 rowcount, rowcount + 1, GTK_EXPAND | GTK_FILL, GTK_FILL, 0, 0);
 

@@ -466,7 +466,7 @@ static void prefs_filtering_create(void)
 	g_signal_connect(G_OBJECT (reg_btn), "clicked",
 			 G_CALLBACK(prefs_filtering_register_cb), NULL);
 	gtk_tooltips_set_tip(GTK_TOOLTIPS(tooltips), reg_btn,
-			_("Append new rule to list, as defined above"), NULL);
+			_("Append the new rule above to the list"), NULL);
 
 	subst_btn = gtkut_get_replace_btn (_("Replace"));
 	gtk_widget_show (subst_btn);
@@ -475,7 +475,7 @@ static void prefs_filtering_create(void)
 			 G_CALLBACK(prefs_filtering_substitute_cb),
 			 NULL);
 	gtk_tooltips_set_tip(GTK_TOOLTIPS(tooltips), subst_btn,
-			_("Replace selected rule in list with the above data"), NULL);
+			_("Replace the selected rule in list with the rule above"), NULL);
 
 	del_btn = gtk_button_new_from_stock (GTK_STOCK_DELETE);
 	gtk_widget_show (del_btn);
@@ -483,7 +483,7 @@ static void prefs_filtering_create(void)
 	g_signal_connect(G_OBJECT (del_btn), "clicked",
 			G_CALLBACK(prefs_filtering_delete_cb), NULL);
 	gtk_tooltips_set_tip(GTK_TOOLTIPS(tooltips), del_btn,
-			_("Delete selected rule from list"), NULL);
+			_("Delete the selected rule from the list"), NULL);
 
 	clear_btn = gtk_button_new_from_stock (GTK_STOCK_CLEAR);
 	gtk_widget_show (clear_btn);
@@ -491,7 +491,7 @@ static void prefs_filtering_create(void)
 	g_signal_connect(G_OBJECT (clear_btn), "clicked",
 			G_CALLBACK(prefs_filtering_clear_cb), NULL);
 	gtk_tooltips_set_tip(GTK_TOOLTIPS(tooltips), clear_btn,
-			_("Clear all input fields in dialog"), NULL);
+			_("Clear all the input fields in the dialog"), NULL);
 
 	cond_hbox = gtk_hbox_new (FALSE, 8);
 	gtk_widget_show (cond_hbox);
@@ -520,7 +520,7 @@ static void prefs_filtering_create(void)
 	g_signal_connect(G_OBJECT (top_btn), "clicked",
 			 G_CALLBACK(prefs_filtering_top), NULL);
 	gtk_tooltips_set_tip(GTK_TOOLTIPS(tooltips), top_btn,
-			_("Move selected rule to top of list"), NULL);
+			_("Move the selected rule to the top"), NULL);
 
 #ifndef MAEMO
 	page_up_btn = gtk_button_new_with_mnemonic (_("Page up"));
@@ -531,7 +531,7 @@ static void prefs_filtering_create(void)
 	g_signal_connect(G_OBJECT (page_up_btn), "clicked",
 			 G_CALLBACK(prefs_filtering_page_up), NULL);
 	gtk_tooltips_set_tip(GTK_TOOLTIPS(tooltips), page_up_btn,
-			_("Move selected rule one page up in list"), NULL);
+			_("Move the selected rule one page up"), NULL);
 #endif
 
 	up_btn = gtk_button_new_from_stock (GTK_STOCK_GO_UP);
@@ -540,7 +540,7 @@ static void prefs_filtering_create(void)
 	g_signal_connect(G_OBJECT (up_btn), "clicked",
 			 G_CALLBACK(prefs_filtering_up), NULL);
 	gtk_tooltips_set_tip(GTK_TOOLTIPS(tooltips), up_btn,
-			_("Move up selected rule by one row in list"), NULL);
+			_("Move the selected rule up"), NULL);
 
 	down_btn = gtk_button_new_from_stock (GTK_STOCK_GO_DOWN);
 	gtk_widget_show (down_btn);
@@ -548,7 +548,7 @@ static void prefs_filtering_create(void)
 	g_signal_connect(G_OBJECT (down_btn), "clicked",
 			 G_CALLBACK(prefs_filtering_down), NULL);
 	gtk_tooltips_set_tip(GTK_TOOLTIPS(tooltips), down_btn,
-			_("Move down selected rule by one row in list"), NULL);
+			_("Move the selected rule down"), NULL);
 
 #ifndef MAEMO
 	page_down_btn = gtk_button_new_with_mnemonic (_("Page down"));
@@ -559,7 +559,7 @@ static void prefs_filtering_create(void)
 	g_signal_connect(G_OBJECT (page_down_btn), "clicked",
 			 G_CALLBACK(prefs_filtering_page_down), NULL);
 	gtk_tooltips_set_tip(GTK_TOOLTIPS(tooltips), page_down_btn,
-			_("Move selected rule one page down in list"), NULL);
+			_("Move the selected rule one page down"), NULL);
 #endif
 
 	bottom_btn = gtk_button_new_from_stock (GTK_STOCK_GOTO_BOTTOM);
@@ -568,7 +568,7 @@ static void prefs_filtering_create(void)
 	g_signal_connect(G_OBJECT (bottom_btn), "clicked",
 			 G_CALLBACK(prefs_filtering_bottom), NULL);
 	gtk_tooltips_set_tip(GTK_TOOLTIPS(tooltips), bottom_btn,
-			_("Move selected rule to bottom of list"), NULL);
+			_("Move the selected rule to the bottom"), NULL);
 
 	if (!geometry.min_height) {
 		geometry.min_width = 500;
@@ -1256,7 +1256,7 @@ static void prefs_filtering_delete_all_cb(void)
 	GtkListStore *list_store;
 	
 	if (alertpanel(_("Delete all rules"),
-		       _("Do you really want to delete all rules?"),
+		       _("Do you really want to delete all the rules?"),
 		       GTK_STOCK_CANCEL, "+"GTK_STOCK_DELETE, NULL) == G_ALERTDEFAULT)
 		return;
 

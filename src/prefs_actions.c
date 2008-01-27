@@ -278,7 +278,7 @@ static void prefs_actions_create(MainWindow *mainwin)
 	g_signal_connect(G_OBJECT(reg_btn), "clicked",
 			 G_CALLBACK(prefs_actions_register_cb), NULL);
 	gtk_tooltips_set_tip(GTK_TOOLTIPS(tooltips), reg_btn,
-			_("Append new action to list, as defined above"), NULL);
+			_("Append the new action above to the list"), NULL);
 
 	subst_btn = gtkut_get_replace_btn(_("Replace"));
 	gtk_widget_show(subst_btn);
@@ -286,7 +286,7 @@ static void prefs_actions_create(MainWindow *mainwin)
 	g_signal_connect(G_OBJECT(subst_btn), "clicked",
 			 G_CALLBACK(prefs_actions_substitute_cb), NULL);
 	gtk_tooltips_set_tip(GTK_TOOLTIPS(tooltips), subst_btn,
-			_("Replace selected action in list with the above data"), NULL);
+			_("Replace the selected action in list with the action above"), NULL);
 
 	del_btn = gtk_button_new_from_stock(GTK_STOCK_DELETE);
 	gtk_widget_show(del_btn);
@@ -294,7 +294,7 @@ static void prefs_actions_create(MainWindow *mainwin)
 	g_signal_connect(G_OBJECT(del_btn), "clicked",
 			 G_CALLBACK(prefs_actions_delete_cb), NULL);
 	gtk_tooltips_set_tip(GTK_TOOLTIPS(tooltips), del_btn,
-			_("Delete selected action from list"), NULL);
+			_("Delete the selected action from the list"), NULL);
 
 	clear_btn = gtk_button_new_from_stock (GTK_STOCK_CLEAR);
 	gtk_widget_show (clear_btn);
@@ -302,7 +302,7 @@ static void prefs_actions_create(MainWindow *mainwin)
 	g_signal_connect(G_OBJECT (clear_btn), "clicked",
 			G_CALLBACK(prefs_actions_clear_cb), NULL);
 	gtk_tooltips_set_tip(GTK_TOOLTIPS(tooltips), clear_btn,
-			_("Clear all input fields in dialog"), NULL);
+			_("Clear all the input fields in the dialog"), NULL);
 
 #if GTK_CHECK_VERSION(2, 8, 0)
 	info_btn = gtk_button_new_from_stock(GTK_STOCK_INFO);
@@ -314,9 +314,7 @@ static void prefs_actions_create(MainWindow *mainwin)
 	g_signal_connect(G_OBJECT(info_btn), "clicked",
 			 G_CALLBACK(prefs_actions_info_cb), GTK_WINDOW(window));
 	gtk_tooltips_set_tip(GTK_TOOLTIPS(tooltips), info_btn,
-			_("Click here to get further information "
-			  "about actions menu name restrictions and "
-			  "command line syntax"), NULL);
+			_("Show information on configuring actions"), NULL);
 
 	cond_hbox = gtk_hbox_new(FALSE, 8);
 	gtk_widget_show(cond_hbox);
@@ -345,7 +343,7 @@ static void prefs_actions_create(MainWindow *mainwin)
 	g_signal_connect(G_OBJECT(up_btn), "clicked",
 			 G_CALLBACK(prefs_actions_up), NULL);
 	gtk_tooltips_set_tip(GTK_TOOLTIPS(tooltips), up_btn,
-			_("Move up selected action in list"), NULL);
+			_("Move the selected action up"), NULL);
 
 	down_btn = gtk_button_new_from_stock(GTK_STOCK_GO_DOWN);
 	gtk_widget_show(down_btn);
@@ -353,7 +351,7 @@ static void prefs_actions_create(MainWindow *mainwin)
 	g_signal_connect(G_OBJECT(down_btn), "clicked",
 			 G_CALLBACK(prefs_actions_down), NULL);
 	gtk_tooltips_set_tip(GTK_TOOLTIPS(tooltips), down_btn,
-			_("Move down selected action in list"), NULL);
+			_("Move selected action down"), NULL);
 
 	if (!geometry.min_height) {
 		geometry.min_width = 486;
@@ -686,7 +684,7 @@ static void prefs_actions_delete_all_cb(GtkWidget *w, gpointer data)
 	GtkListStore *list_store;
 
 	if (alertpanel(_("Delete all actions"),
-			  _("Do you really want to delete all actions?"),
+			  _("Do you really want to delete all the actions?"),
 			  GTK_STOCK_CANCEL, "+"GTK_STOCK_DELETE, NULL) == G_ALERTDEFAULT)
 	   return;
 

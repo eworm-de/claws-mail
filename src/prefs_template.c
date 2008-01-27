@@ -1,5 +1,5 @@
 /*
- * Sylpheed templates subsystem 
+ * Claws Mail templates subsystem 
  * Copyright (C) 2001 Alexander Barinov
  * Copyright (C) 2001-2007 Hiroyuki Yamamoto and the Claws Mail team
  *
@@ -296,7 +296,7 @@ static void prefs_template_window_create(void)
 	g_signal_connect(G_OBJECT (reg_btn), "clicked",
 			 G_CALLBACK (prefs_template_register_cb), NULL);
 	gtk_tooltips_set_tip(GTK_TOOLTIPS(tooltips), reg_btn,
-			_("Append new template to list, as defined above"), NULL);
+			_("Append the new template above to the list"), NULL);
 
 	subst_btn = gtkut_get_replace_btn(_("Replace"));
 	gtk_widget_show(subst_btn);
@@ -305,7 +305,7 @@ static void prefs_template_window_create(void)
 			 G_CALLBACK(prefs_template_substitute_cb),
 			 NULL);
 	gtk_tooltips_set_tip(GTK_TOOLTIPS(tooltips), subst_btn,
-			_("Replace selected template in list with the above data"), NULL);
+			_("Replace the selected template in list with the template above"), NULL);
 
 	del_btn = gtk_button_new_from_stock(GTK_STOCK_DELETE);
 	gtk_widget_show(del_btn);
@@ -313,7 +313,7 @@ static void prefs_template_window_create(void)
 	g_signal_connect(G_OBJECT(del_btn), "clicked",
 			 G_CALLBACK(prefs_template_delete_cb), NULL);
 	gtk_tooltips_set_tip(GTK_TOOLTIPS(tooltips), del_btn,
-			_("Delete selected template from list"), NULL);
+			_("Delete the selected template from the list"), NULL);
 
 	clear_btn = gtk_button_new_from_stock (GTK_STOCK_CLEAR);
 	gtk_widget_show (clear_btn);
@@ -321,7 +321,7 @@ static void prefs_template_window_create(void)
 	g_signal_connect(G_OBJECT (clear_btn), "clicked",
 			G_CALLBACK(prefs_template_clear_cb), NULL);
 	gtk_tooltips_set_tip(GTK_TOOLTIPS(tooltips), clear_btn,
-			_("Clear all input fields in dialog"), NULL);
+			_("Clear all the input fields in the dialog"), NULL);
 
 #if GTK_CHECK_VERSION(2, 8, 0)
 	desc_btn = gtk_button_new_from_stock(GTK_STOCK_INFO);
@@ -333,8 +333,7 @@ static void prefs_template_window_create(void)
 	g_signal_connect(G_OBJECT(desc_btn), "clicked",
 			 G_CALLBACK(quote_fmt_quote_description), window);
 	gtk_tooltips_set_tip(GTK_TOOLTIPS(tooltips), desc_btn,
-			_("Click here to get further information "
-			  "about templates format syntax"), NULL);
+			_("Show information on configuring templates"), NULL);
 
 	/* templates list */
 	hbox4 = gtk_hbox_new(FALSE, 8);
@@ -358,7 +357,7 @@ static void prefs_template_window_create(void)
 	g_signal_connect(G_OBJECT(top_btn), "clicked",
 			 G_CALLBACK(prefs_template_top_cb), NULL);
 	gtk_tooltips_set_tip(GTK_TOOLTIPS(tooltips), top_btn,
-			_("Move selected template to top of list"), NULL);
+			_("Move the selected template to the top"), NULL);
 
 	PACK_VSPACER(vbox3, spc_vbox, VSPACING_NARROW_2);
 
@@ -368,7 +367,7 @@ static void prefs_template_window_create(void)
 	g_signal_connect(G_OBJECT(up_btn), "clicked",
 			 G_CALLBACK(prefs_template_up_cb), NULL);
 	gtk_tooltips_set_tip(GTK_TOOLTIPS(tooltips), up_btn,
-			_("Move up selected template in list"), NULL);
+			_("Move the selected template up"), NULL);
 
 	down_btn = gtk_button_new_from_stock(GTK_STOCK_GO_DOWN);
 	gtk_widget_show (down_btn);
@@ -376,7 +375,7 @@ static void prefs_template_window_create(void)
 	g_signal_connect(G_OBJECT (down_btn), "clicked",
 			 G_CALLBACK(prefs_template_down_cb), NULL);
 	gtk_tooltips_set_tip(GTK_TOOLTIPS(tooltips), down_btn,
-			_("Move down selected template in list"), NULL);
+			_("Move the selected template down"), NULL);
 
 	PACK_VSPACER(vbox3, spc_vbox, VSPACING_NARROW_2);
 
@@ -386,7 +385,7 @@ static void prefs_template_window_create(void)
 	g_signal_connect(G_OBJECT(bottom_btn), "clicked",
 			 G_CALLBACK(prefs_template_bottom_cb), NULL);
 	gtk_tooltips_set_tip(GTK_TOOLTIPS(tooltips), bottom_btn,
-			_("Move selected template to bottom of list"), NULL);
+			_("Move the selected template to the bottom"), NULL);
 
 	list_view = prefs_template_list_view_create();
 	gtk_widget_show(list_view);
@@ -802,7 +801,7 @@ static void prefs_template_delete_all_cb(void)
 	GtkListStore *list_store;
 
 	if (alertpanel(_("Delete all templates"),
-			  _("Do you really want to delete all templates?"),
+			  _("Do you really want to delete all the templates?"),
 			  GTK_STOCK_CANCEL, "+"GTK_STOCK_DELETE, NULL) == G_ALERTDEFAULT)
 	   return;
 
