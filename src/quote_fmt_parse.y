@@ -76,6 +76,7 @@ static gint cursor_pos = -1;
 
 extern int quote_fmt_firsttime;
 extern int line;
+extern int escaped_string;
 
 static void add_visibility(gboolean val)
 {
@@ -187,11 +188,13 @@ void quote_fmt_reset_vartable(void)
 void quote_fmt_init(MsgInfo *info, const gchar *my_quote_str,
 		    const gchar *my_body, gboolean my_dry_run,
 			PrefsAccount *compose_account,
+			gboolean string_is_escaped,
 			GtkAspell *compose_gtkaspell)
 #else
 void quote_fmt_init(MsgInfo *info, const gchar *my_quote_str,
 		    const gchar *my_body, gboolean my_dry_run,
-			PrefsAccount *compose_account)
+			PrefsAccount *compose_account,
+			gboolean string_is_escaped)
 #endif
 {
 	quote_str = my_quote_str;
@@ -214,6 +217,7 @@ void quote_fmt_init(MsgInfo *info, const gchar *my_quote_str,
 	clear_buffer();
 	error = 0;
 	line = 1;
+	escaped_string = string_is_escaped;
 
 	if (!var_table)
 		var_table = g_hash_table_new_full(g_str_hash, g_str_equal, 

@@ -1,3 +1,15 @@
+2008-01-28 [wwp]	3.2.0cvs69
+
+	* src/compose.c
+	* src/prefs_template.c
+	* src/prefs_template.h
+	* src/quote_fmt.c
+	* src/quote_fmt.h
+	* src/quote_fmt_lex.l
+	* src/quote_fmt_parse.y
+		Fix for bug #1493: count lines (\n chars) according to the way
+		format body is passed (i.e. \-escaped or not).
+
 2008-01-27 [paul]	3.2.0cvs68
 
 	* po/en_GB.po

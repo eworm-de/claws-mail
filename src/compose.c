@@ -1109,10 +1109,10 @@ Compose *compose_generic_new(PrefsAccount *account, const gchar *mailto, FolderI
 
 			subject = gtk_editable_get_chars(GTK_EDITABLE(compose->subject_entry), 0, -1);
 #ifdef USE_ASPELL
-			quote_fmt_init(dummyinfo, NULL, subject, FALSE, compose->account,
+			quote_fmt_init(dummyinfo, NULL, subject, FALSE, compose->account, FALSE,
 					compose->gtkaspell);
 #else
-			quote_fmt_init(dummyinfo, NULL, subject, FALSE, compose->account);
+			quote_fmt_init(dummyinfo, NULL, subject, FALSE, compose->account, FALSE);
 #endif
 			quote_fmt_scan_string(tmp);
 			quote_fmt_parse();
@@ -2709,10 +2709,10 @@ static gchar *compose_quote_fmt(Compose *compose, MsgInfo *msginfo,
 
 	if (qmark != NULL) {
 #ifdef USE_ASPELL
-		quote_fmt_init(msginfo, NULL, NULL, FALSE, compose->account,
+		quote_fmt_init(msginfo, NULL, NULL, FALSE, compose->account, FALSE,
 				compose->gtkaspell);
 #else
-		quote_fmt_init(msginfo, NULL, NULL, FALSE, compose->account);
+		quote_fmt_init(msginfo, NULL, NULL, FALSE, compose->account, FALSE);
 #endif
 		quote_fmt_scan_string(qmark);
 		quote_fmt_parse();
@@ -2731,10 +2731,10 @@ static gchar *compose_quote_fmt(Compose *compose, MsgInfo *msginfo,
 				trimmed_body++;
 
 #ifdef USE_ASPELL
-		quote_fmt_init(msginfo, quote_str, trimmed_body, FALSE, compose->account,
+		quote_fmt_init(msginfo, quote_str, trimmed_body, FALSE, compose->account, FALSE,
 				compose->gtkaspell);
 #else
-		quote_fmt_init(msginfo, quote_str, trimmed_body, FALSE, compose->account);
+		quote_fmt_init(msginfo, quote_str, trimmed_body, FALSE, compose->account, FALSE);
 #endif
 		if (need_unescape) {
 			gchar *tmp = NULL;
@@ -7522,10 +7522,10 @@ static void compose_template_apply_fields(Compose *compose, Template *tmpl)
 
 	if (tmpl->to && *tmpl->to != '\0') {
 #ifdef USE_ASPELL
-		quote_fmt_init(msginfo, NULL, NULL, FALSE, compose->account,
+		quote_fmt_init(msginfo, NULL, NULL, FALSE, compose->account, FALSE,
 				compose->gtkaspell);
 #else
-		quote_fmt_init(msginfo, NULL, NULL, FALSE, compose->account);
+		quote_fmt_init(msginfo, NULL, NULL, FALSE, compose->account, FALSE);
 #endif
 		quote_fmt_scan_string(tmpl->to);
 		quote_fmt_parse();
@@ -7540,10 +7540,10 @@ static void compose_template_apply_fields(Compose *compose, Template *tmpl)
 
 	if (tmpl->cc && *tmpl->cc != '\0') {
 #ifdef USE_ASPELL
-		quote_fmt_init(msginfo, NULL, NULL, FALSE, compose->account,
+		quote_fmt_init(msginfo, NULL, NULL, FALSE, compose->account, FALSE,
 				compose->gtkaspell);
 #else
-		quote_fmt_init(msginfo, NULL, NULL, FALSE, compose->account);
+		quote_fmt_init(msginfo, NULL, NULL, FALSE, compose->account, FALSE);
 #endif
 		quote_fmt_scan_string(tmpl->cc);
 		quote_fmt_parse();
@@ -7558,10 +7558,10 @@ static void compose_template_apply_fields(Compose *compose, Template *tmpl)
 
 	if (tmpl->bcc && *tmpl->bcc != '\0') {
 #ifdef USE_ASPELL
-		quote_fmt_init(msginfo, NULL, NULL, FALSE, compose->account,
+		quote_fmt_init(msginfo, NULL, NULL, FALSE, compose->account, FALSE,
 				compose->gtkaspell);
 #else
-		quote_fmt_init(msginfo, NULL, NULL, FALSE, compose->account);
+		quote_fmt_init(msginfo, NULL, NULL, FALSE, compose->account, FALSE);
 #endif
 		quote_fmt_scan_string(tmpl->bcc);
 		quote_fmt_parse();
@@ -7577,10 +7577,10 @@ static void compose_template_apply_fields(Compose *compose, Template *tmpl)
 	/* process the subject */
 	if (tmpl->subject && *tmpl->subject != '\0') {
 #ifdef USE_ASPELL
-		quote_fmt_init(msginfo, NULL, NULL, FALSE, compose->account,
+		quote_fmt_init(msginfo, NULL, NULL, FALSE, compose->account, FALSE,
 				compose->gtkaspell);
 #else
-		quote_fmt_init(msginfo, NULL, NULL, FALSE, compose->account);
+		quote_fmt_init(msginfo, NULL, NULL, FALSE, compose->account, FALSE);
 #endif
 		quote_fmt_scan_string(tmpl->subject);
 		quote_fmt_parse();

@@ -608,7 +608,7 @@ static GSList *prefs_template_get_list(void)
 	return tmpl_list;
 }
 
-gboolean prefs_template_string_is_valid(gchar *string, gint *line)
+gboolean prefs_template_string_is_valid(gchar *string, gint *line, gboolean escaped_string)
 {
 	if (string && *string != '\0') {
 		gchar *parsed_buf;
@@ -616,9 +616,9 @@ gboolean prefs_template_string_is_valid(gchar *string, gint *line)
 
 		memset(&dummyinfo, 0, sizeof(MsgInfo));
 #ifdef USE_ASPELL
-		quote_fmt_init(&dummyinfo, NULL, NULL, TRUE, NULL, NULL);
+		quote_fmt_init(&dummyinfo, NULL, NULL, TRUE, NULL, escaped_string, NULL);
 #else
-		quote_fmt_init(&dummyinfo, NULL, NULL, TRUE, NULL);
+		quote_fmt_init(&dummyinfo, NULL, NULL, TRUE, NULL, escaped_string);
 #endif
 		quote_fmt_scan_string(string);
 		quote_fmt_parse();
@@ -659,7 +659,7 @@ static gboolean prefs_template_list_view_set_row(gint row)
 			g_free(value);
 		value = NULL;
 		}
-	if (!prefs_template_string_is_valid(value, &line)) {
+	if (!prefs_template_string_is_valid(value, &line, FALSE)) {
 		alertpanel_error(_("Template body format error at line %d."), line);
 		g_free(value);
 		return FALSE;
@@ -698,25 +698,25 @@ static gboolean prefs_template_list_view_set_row(gint row)
 		subject = NULL;
 	}
 
-	if (!prefs_template_string_is_valid(to, NULL)) {
+	if (!prefs_template_string_is_valid(to, NULL, FALSE)) {
 		alertpanel_error(_("Template To format error."));
 		g_free(to);
 		g_free(value);
 		return FALSE;
 	}
-	if (!prefs_template_string_is_valid(cc, NULL)) {
+	if (!prefs_template_string_is_valid(cc, NULL, FALSE)) {
 		alertpanel_error(_("Template Cc format error."));	
 		g_free(cc);
 		g_free(value);
 		return FALSE;
 	}
-	if (!prefs_template_string_is_valid(bcc, NULL)) {
+	if (!prefs_template_string_is_valid(bcc, NULL, FALSE)) {
 		alertpanel_error(_("Template Bcc format error."));	
 		g_free(bcc);
 		g_free(value);
 		return FALSE;
 	}
-	if (!prefs_template_string_is_valid(subject, NULL)) {
+	if (!prefs_template_string_is_valid(subject, NULL, FALSE)) {
 		alertpanel_error(_("Template subject format error."));	
 		g_free(subject);
 		g_free(value);

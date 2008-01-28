@@ -417,10 +417,10 @@ void quotefmt_check_new_msg_formats(gboolean use_format,
 	if (use_format) {
 		gint line;
 
-		if (!prefs_template_string_is_valid(subject_fmt, NULL))
+		if (!prefs_template_string_is_valid(subject_fmt, NULL, FALSE))
 			alertpanel_error(_("New message subject format error."));
 
-		if (!prefs_template_string_is_valid(body_fmt, &line)) {
+		if (!prefs_template_string_is_valid(body_fmt, &line, TRUE)) {
 			alertpanel_error(_("New message body format error at line %d."), line);
 		}
 	}
@@ -433,10 +433,10 @@ void quotefmt_check_reply_formats(gboolean use_format,
 	if (use_format) {
 		gint line;
 
-		if (!prefs_template_string_is_valid(quotation_mark, NULL))
+		if (!prefs_template_string_is_valid(quotation_mark, NULL, FALSE))
 			alertpanel_error(_("Message reply quotation mark format error."));
 
-		if (!prefs_template_string_is_valid(body_fmt, &line)) {
+		if (!prefs_template_string_is_valid(body_fmt, &line, TRUE)) {
 			alertpanel_error(_("Message reply format error at line %d."), line);
 		}
 	}
@@ -449,10 +449,11 @@ void quotefmt_check_forward_formats(gboolean use_format,
 	if (use_format) {
 		gint line;
 
-		if (!prefs_template_string_is_valid(quotation_mark, NULL))
+		if (!prefs_template_string_is_valid(quotation_mark, NULL, FALSE))
 			alertpanel_error(_("Message forward quotation mark format error."));
 
-		if (!prefs_template_string_is_valid(body_fmt, &line)) {
+fprintf(stderr, "\n%s\n", body_fmt);
+		if (!prefs_template_string_is_valid(body_fmt, &line, TRUE)) {
 			alertpanel_error(_("Message forward format error at line %d."), line);
 		}
 	}

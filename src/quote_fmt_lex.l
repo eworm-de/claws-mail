@@ -36,6 +36,7 @@
  */
 int quote_fmt_firsttime = 1;
 int line = -1;
+int escaped_string = 0;
 %}
 
 %%
@@ -102,7 +103,8 @@ int line = -1;
 "\\\%" /* % */ return SHOW_PERCENT;
 "\\\\" /* \ */ return SHOW_BACKSLASH;
 "\\t"|"\t" /* tab */ return SHOW_TAB;
-"\\n"|"\n" /* return */ { if (yytext[0] == '\n') line++; return SHOW_EOL; }
+"\n" /* return */ { line++; return SHOW_EOL; }
+"\\n" /* escaped return */ { if (escaped_string) line++; return SHOW_EOL; }
 "\\?" /* ? */ return SHOW_QUESTION_MARK;
 "\\!" return SHOW_EXCLAMATION_MARK;
 "\\|" return SHOW_PIPE;
