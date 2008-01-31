@@ -1486,7 +1486,9 @@ static void mimeview_drag_data_get(GtkWidget	    *widget,
 			(_("Couldn't save the part of multipart message: %s"), 
 				strerror(-err));
 
-	uriname = g_strconcat("file://", filename, "\r\n", NULL);
+	tmp = g_filename_to_uri(filename, NULL, NULL);
+	uriname = g_strconcat(tmp, "\r\n", NULL);
+	g_free(tmp);
 
 	gtk_selection_data_set(selection_data, selection_data->target, 8,
 			       (guchar *)uriname, strlen(uriname));
@@ -1819,7 +1821,7 @@ static void mimeview_open_part_with(MimeView *mimeview, MimeInfo *partinfo, gboo
 	
 #ifdef MAEMO
 	if (content_type != NULL) {
-		uri = g_strconcat ("file://", filename, NULL);
+		uri = g_filename_to_uri(filename, NULL, NULL);
 		dbusconn = osso_get_dbus_connection (get_osso_context());
 #ifdef CHINOOK
 		r = hildon_mime_open_file_with_mime_type (dbusconn, uri, content_type);

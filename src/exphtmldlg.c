@@ -310,7 +310,7 @@ static void export_html_next( GtkWidget *widget ) {
 static void export_html_browse( GtkWidget *widget, gpointer data ) {
 	gchar *uri;
 
-	uri = g_strconcat( "file://", _exportCtl_->path, NULL );
+	uri = g_filename_to_uri(_exportCtl_->path, NULL, NULL);
 	open_uri( uri, prefs_common_get_uri_cmd() );
 	g_free( uri );
 }

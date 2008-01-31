@@ -6719,8 +6719,11 @@ static void summary_drag_data_get(GtkWidget        *widget,
 					tmp2 = dest;
 				}
 			} 
-			tmp1 = g_strconcat("file://", tmp2, "\r\n", NULL);
+			tmp1 = g_filename_to_uri(tmp2, NULL, NULL);
 			g_free(tmp2);
+			tmp2 = g_strconcat(tmp1, "\r\n", NULL);
+			g_free(tmp1);
+			tmp1 = tmp2;
 
 			if (!mail_list) {
 				mail_list = tmp1;
