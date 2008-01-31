@@ -18,10 +18,6 @@ if BUILD_TRAYICON_PLUGIN
 trayicon_dir = trayicon
 endif
 
-if BUILD_CLAMAV_PLUGIN
-clamav_dir = clamav
-endif
-
 if BUILD_PGPCORE_PLUGIN
 pgpcore_dir = pgpcore
 if BUILD_PGPMIME_PLUGIN
@@ -37,7 +33,6 @@ SUBDIRS = $(demo_dir) \
 	$(bogofilter_dir) \
 	$(dillo_viewer_dir) \
 	$(trayicon_dir) \
-	$(clamav_dir) \
 	$(pgpcore_dir) \
 	$(pgpmime_dir) \
 	$(pgpinline_dir)

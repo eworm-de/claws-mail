@@ -11,7 +11,7 @@ MINOR_VERSION=2
 MICRO_VERSION=0
 INTERFACE_AGE=0
 BINARY_AGE=0
-EXTRA_VERSION=69
+EXTRA_VERSION=70
 EXTRA_RELEASE=
 EXTRA_GTK2_VERSION=
 
@@ -865,27 +865,6 @@ if test x"$ac_cv_enable_demo_plugin" = xyes; then
 fi
 AM_CONDITIONAL(BUILD_DEMO_PLUGIN, test x"$ac_cv_enable_demo_plugin" = xyes)
 
-dnl --- ClamAV ---
-AC_MSG_CHECKING([whether to build ClamAV plugin])
-AC_ARG_ENABLE(clamav-plugin,
-	[  --disable-clamav-plugin           do not build Clam AntiVirus plugin],
-	[ac_cv_enable_clamav_plugin=$enableval], [ac_cv_enable_clamav_plugin=yes])
-if test x"$ac_cv_enable_clamav_plugin" = xyes; then
-	AC_MSG_RESULT(yes)
-	PKG_CHECK_MODULES(CLAMAV, libclamav, ac_cv_enable_clamav_plugin=yes,
-			  ac_cv_enable_clamav_plugin=no)
-	if test x"$ac_cv_enable_clamav_plugin" = xyes; then
-		PLUGINS="clamav $PLUGINS"
-	else
-		AC_MSG_RESULT(not found)
-		AC_MSG_WARN([*** ClamAV plugin will not be built ***])
-	fi
-else
-	AC_MSG_RESULT(no)
-fi
-AC_SUBST(CLAMAV_LIBS)
-AM_CONDITIONAL(BUILD_CLAMAV_PLUGIN, test x"$ac_cv_enable_clamav_plugin" = xyes)
-
 dnl Libetpan
 AC_MSG_CHECKING([whether to use libetpan])
 AC_ARG_ENABLE(libetpan,
@@ -998,7 +977,6 @@ src/plugins/spamassassin/Makefile
 src/plugins/dillo_viewer/Makefile
 src/plugins/trayicon/Makefile
 src/plugins/trayicon/libeggtrayicon/Makefile
-src/plugins/clamav/Makefile
 src/plugins/pgpcore/Makefile
 src/plugins/pgpmime/Makefile
 src/plugins/pgpinline/Makefile

@@ -1067,8 +1067,10 @@ Compose *compose_generic_new(PrefsAccount *account, const gchar *mailto, FolderI
 		}
 	} else {
 		if (mailto && *mailto != '\0') {
-			compose_entries_set(compose, mailto, COMPOSE_NEWSGROUPS);
-
+			if (!strchr(mailto, '@'))
+				compose_entries_set(compose, mailto, COMPOSE_NEWSGROUPS);
+			else
+				compose_entries_set(compose, mailto, COMPOSE_TO);
 		} else if (item && FOLDER_CLASS(item->folder) == news_get_class()) {
 			compose_entry_append(compose, item->path, COMPOSE_NEWSGROUPS);
 		}

@@ -1,3 +1,18 @@
+2008-01-31 [colin]	3.2.0cvs70
+
+	* configure.ac
+	* po/POTFILES.in
+	* src/compose.c
+	* src/plugins/Makefile.am
+	* src/plugins/clamav/.cvsignore
+	* src/plugins/clamav/Makefile.am
+	* src/plugins/clamav/README
+	* src/plugins/clamav/clamav_plugin.c
+	* src/plugins/clamav/clamav_plugin.h
+	* src/plugins/clamav/clamav_plugin_gtk.c
+	* src/plugins/clamav/clamav_plugin_gtk.deps
+		Remove the Clamav plugin from the core
+
 2008-01-28 [wwp]	3.2.0cvs69
 
 	* src/compose.c

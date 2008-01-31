@@ -76,8 +76,6 @@ src/news.c
 src/news_gtk.c
 src/plugins/bogofilter/bogofilter.c
 src/plugins/bogofilter/bogofilter_gtk.c
-src/plugins/clamav/clamav_plugin.c
-src/plugins/clamav/clamav_plugin_gtk.c
 src/plugins/demo/demo.c
 src/plugins/dillo_viewer/dillo_prefs.c
 src/plugins/dillo_viewer/dillo_viewer.c
