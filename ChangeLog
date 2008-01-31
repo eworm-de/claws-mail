@@ -1,3 +1,9 @@
+2008-01-31 [wwp]	3.2.0cvs71
+
+	* src/main.c
+		Fixes debug output of compiled-in features list
+		(completes 3.2.0cvs60).
+
 2008-01-31 [colin]	3.2.0cvs70
 
 	* configure.ac

@@ -814,61 +814,61 @@ static void win32_close_log(void)
 }		
 #endif
 
-static void main_dump_debug_print(const gchar *format, ...)
-/* wrapper function to debug_print macro */
-{
-	va_list args;
-
-	va_start(args, format);
-	debug_print(format, args);
-	va_end(args);
-}
-
-static void main_dump_features_list(int (*output_func) (const gchar *, ...))
+static void main_dump_features_list(gboolean show_debug_only)
 /* display compiled-in features list using output_func (commonly any
    g_print-like function) */
 {
-	output_func("GTK+ %d.%d.%d / GLib %d.%d.%d\n",
+	if (show_debug_only && !debug_get_mode())
+		return;
+
+#define debug_print_cond(format, ...) \
+	if (show_debug_only) \
+		debug_print(format, ## __VA_ARGS__); \
+	else \
+		g_print(format, ## __VA_ARGS__);
+
+	debug_print_cond("GTK+ %d.%d.%d / GLib %d.%d.%d\n",
 		   gtk_major_version, gtk_minor_version, gtk_micro_version,
 		   glib_major_version, glib_minor_version, glib_micro_version);
-	output_func("Compiled-in features:\n");
+	debug_print_cond("Compiled-in features:\n");
 #if HAVE_LIBCOMPFACE
-	output_func(" compface\n");
+	debug_print_cond(" compface\n");
 #endif
 #if USE_ASPELL
-	output_func(" aspell\n");
+	debug_print_cond(" aspell\n");
 #endif
 #if USE_GNUTLS
-	output_func(" gnutls\n");
+	debug_print_cond(" gnutls\n");
 #endif
 #if INET6
-	output_func(" ipv6\n");
+	debug_print_cond(" ipv6\n");
 #endif
 #if HAVE_ICONV
-	output_func(" iconv\n");
+	debug_print_cond(" iconv\n");
 #endif
 #if USE_JPILOT
-	output_func(" jpilot\n");
+	debug_print_cond(" jpilot\n");
 #endif
 #if USE_LDAP
-	output_func(" ldap\n");
+	debug_print_cond(" ldap\n");
 #endif
 #if HAVE_LIBETPAN
-	output_func(" libetpan %d.%d\n", LIBETPAN_VERSION_MAJOR, LIBETPAN_VERSION_MINOR);
+	debug_print_cond(" libetpan %d.%d\n", LIBETPAN_VERSION_MAJOR, LIBETPAN_VERSION_MINOR);
 #endif
 #if USE_GNOMEPRINT
-	output_func(" gnomeprint\n");
+	debug_print_cond(" gnomeprint\n");
 #endif
 #if HAVE_LIBSM
-	output_func(" libsm\n");
+	debug_print_cond(" libsm\n");
 #endif
 #if HAVE_NETWORKMANAGER_SUPPORT
-	output_func(" NetworkManager\n");
+	debug_print_cond(" NetworkManager\n");
 #endif
 #if USE_OPENSSL
-	output_func(" openssl\n");
+	debug_print_cond(" openssl\n");
 #endif
 }
+#undef debug_print_cond
 
 int main(int argc, char *argv[])
 {
@@ -904,7 +904,7 @@ int main(int argc, char *argv[])
 		return 0;
 	}
 
-	main_dump_features_list(main_dump_debug_print);
+	main_dump_features_list(TRUE);
 
 	prog_version = PROG_VERSION;
 	argv0 = g_strdup(argv[0]);
@@ -1655,7 +1655,7 @@ static void parse_cmd_opt(int argc, char *argv[])
 		} else if (!strncmp(argv[i], "--version-full", 14) ||
 			   !strncmp(argv[i], "-V", 2)) {
 			g_print("Claws Mail version " VERSION "\n");
-			main_dump_features_list(g_print);
+			main_dump_features_list(FALSE);
 			exit(0);
 		} else if (!strncmp(argv[i], "--version", 9) ||
 			   !strncmp(argv[i], "-v", 2)) {
