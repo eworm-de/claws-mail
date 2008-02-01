@@ -1510,7 +1510,7 @@ void decode_uri(gchar *decoded_uri, const gchar *encoded_uri)
 static gchar *decode_uri_gdup(const gchar *encoded_uri)
 {
     gchar *buffer = g_malloc(strlen(encoded_uri)+1);
-    decode_uri(buffer, encoded_uri);
+    decode_uri_with_plus(buffer, encoded_uri, FALSE);
     return buffer;
 }
 
