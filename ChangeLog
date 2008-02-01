@@ -1,3 +1,13 @@
+2008-02-01 [colin]	3.2.0cvs74
+
+	* src/compose.c
+		Possibly fix the annoying and hard-to reproduce bug
+		where lines 
+		are
+		rewrapped
+		like
+		that.
+
 2008-02-01 [paul]	3.2.0cvs73
 
 	* src/common/utils.c

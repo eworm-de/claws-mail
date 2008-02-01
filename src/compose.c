@@ -3792,9 +3792,9 @@ static gboolean compose_join_next_line(Compose *compose,
 	gboolean keep_cursor = FALSE;
 
 	if (!gtk_text_iter_forward_line(&iter_) ||
-	    gtk_text_iter_ends_line(&iter_))
+	    gtk_text_iter_ends_line(&iter_)) {
 		return FALSE;
-
+	}
 	next_quote_str = compose_get_quote_str(buffer, &iter_, &quote_len);
 
 	if ((quote_str || next_quote_str) &&
@@ -3807,18 +3807,20 @@ static gboolean compose_join_next_line(Compose *compose,
 	end = iter_;
 	if (quote_len > 0) {
 		gtk_text_iter_forward_chars(&end, quote_len);
-		if (gtk_text_iter_ends_line(&end))
+		if (gtk_text_iter_ends_line(&end)) {
 			return FALSE;
+		}
 	}
 
 	/* don't join itemized lines */
-	if (compose_is_itemized(buffer, &end))
+	if (compose_is_itemized(buffer, &end)) {
 		return FALSE;
+	}
 
 	/* don't join signature separator */
-	if (compose_is_sig_separator(compose, buffer, &iter_))
+	if (compose_is_sig_separator(compose, buffer, &iter_)) {
 		return FALSE;
-
+	}
 	/* delete quote str */
 	if (quote_len > 0)
 		gtk_text_buffer_delete(buffer, &iter_, &end);
@@ -9972,9 +9974,30 @@ static void text_inserted(GtkTextBuffer *buffer, GtkTextIter *iter,
 		|| gtk_text_iter_starts_line(iter))
 			gtk_text_buffer_insert(buffer, iter, text, len);
 		else {
-			debug_print("insert nowrap \\n\n");
-			gtk_text_buffer_insert_with_tags_by_name(buffer, 
-				iter, text, len, "no_join", NULL);
+			/* check if the preceding is just whitespace or quote */
+			GtkTextIter start_line;
+			gchar *tmp = NULL, *quote = NULL;
+			gint quote_len = 0, is_normal = 0;
+			start_line = *iter;
+			gtk_text_iter_set_line_offset(&start_line, 0); 
+			tmp = gtk_text_buffer_get_text(buffer, &start_line, iter, FALSE);
+			g_strstrip(tmp);
+			if (*tmp == '\0') {
+				is_normal = 1;
+			} else {
+				quote = compose_get_quote_str(buffer, &start_line, &quote_len);
+				if (quote)
+					is_normal = 1;
+				g_free(quote);
+			}
+			g_free(tmp);
+			
+			if (is_normal) {
+				gtk_text_buffer_insert(buffer, iter, text, len);
+			} else {
+				gtk_text_buffer_insert_with_tags_by_name(buffer, 
+					iter, text, len, "no_join", NULL);
+			}
 		}
 	}
 	
