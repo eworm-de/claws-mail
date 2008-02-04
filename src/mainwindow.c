@@ -1428,11 +1428,19 @@ void mainwindow_maemo_led_set(gboolean state) {
 			"--dest=com.nokia.mce "
 			"/com/nokia/mce/request com.nokia.mce.request.req_led_pattern_activate "
 			"string:PatternCommunicationEvent", TRUE);
+		  execute_command_line("/usr/bin/dbus-send --system --type=method_call "
+			"--dest=com.nokia.mce "
+			"/com/nokia/mce/request com.nokia.mce.request.req_led_pattern_activate "
+			"string:PatternCommunicationEmail", TRUE);
 		} else {
 		  execute_command_line("/usr/bin/dbus-send --system --type=method_call "
 			"--dest=com.nokia.mce "
 			"/com/nokia/mce/request com.nokia.mce.request.req_led_pattern_deactivate "
 			"string:PatternCommunicationEvent", TRUE);
+		  execute_command_line("/usr/bin/dbus-send --system --type=method_call "
+			"--dest=com.nokia.mce "
+			"/com/nokia/mce/request com.nokia.mce.request.req_led_pattern_deactivate "
+			"string:PatternCommunicationEmail", TRUE);
 		}
 	} 
 }

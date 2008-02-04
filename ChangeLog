@@ -1,3 +1,8 @@
+2008-02-04 [colin]	3.2.0cvs75
+
+	* src/mainwindow.c
+		Maemo: Fix LED handling on OS 2008
+
 2008-02-01 [colin]	3.2.0cvs74
 
 	* src/compose.c
