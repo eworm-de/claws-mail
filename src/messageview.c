@@ -1132,12 +1132,28 @@ gint messageview_show(MessageView *messageview, MsgInfo *msginfo,
 	    strcasecmp(mimeinfo->subtype, "plain")) 
 			&& (mimeinfo->type != MIMETYPE_MULTIPART || 
 	    strcasecmp(mimeinfo->subtype, "signed"))) {
-	    	if (strcasecmp(mimeinfo->subtype, "html"))
+	    	if (strcasecmp(mimeinfo->subtype, "html")) {
 			mimeview_show_part(messageview->mimeview,mimeinfo);
-		else if (prefs_common.invoke_plugin_on_html)
-			mimeview_select_mimepart_icon(messageview->mimeview,mimeinfo);
+			goto done;
+		} else if (prefs_common.invoke_plugin_on_html) {
+			mimeview_select_mimepart_icon(messageview->mimeview, mimeinfo);
+			goto done;
+		}
 	}
-
+	if (!all_headers && mimeinfo &&
+	    mimeinfo->type == MIMETYPE_MULTIPART &&
+	    mimeview_has_viewer_for_content_type(messageview->mimeview, "text/calendar")) {
+		/* look for a calendar part or it looks really strange */
+		while (mimeinfo) {
+			if (mimeinfo->type == MIMETYPE_TEXT &&
+			    !strcasecmp(mimeinfo->subtype, "calendar")) {
+				mimeview_select_mimepart_icon(messageview->mimeview, mimeinfo);
+				goto done;
+			}
+			mimeinfo = procmime_mimeinfo_next(mimeinfo);
+		}
+	}
+done:
 	g_free(file);
 
 	return 0;

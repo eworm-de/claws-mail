@@ -677,6 +677,11 @@ static MimeViewer *get_viewer_for_content_type(MimeView *mimeview, const gchar *
 	return viewer;
 }
 
+gboolean mimeview_has_viewer_for_content_type(MimeView *mimeview, const gchar *content_type)
+{
+	return (get_viewer_for_content_type(mimeview, content_type) != NULL);
+}
+
 static MimeViewer *get_viewer_for_mimeinfo(MimeView *mimeview, MimeInfo *partinfo)
 {
 	gchar *content_type = NULL;

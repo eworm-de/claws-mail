@@ -169,7 +169,9 @@ void mimeview_scroll_one_line		(MimeView 	*mimeview,
 gint mimeview_get_selected_part_num	(MimeView 	*mimeview);
 void mimeview_select_part_num		(MimeView 	*mimeview, 
 					 gint 		 i);
-
+gboolean mimeview_has_viewer_for_content_type
+					(MimeView	*mimeview,
+					 const gchar	*content_type);
 
 #ifdef __cplusplus
 }

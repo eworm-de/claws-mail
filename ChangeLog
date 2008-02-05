@@ -1,3 +1,14 @@
+2008-02-05 [colin]	3.2.0cvs76
+
+	* src/messageview.c
+	* src/mimeview.c
+	* src/mimeview.h
+		Special case text/calendar parts: if there's one in
+		the mail, and a plugin handling text/calendar is
+		loaded, show that part. That'll avoid rendering 
+		meetings as plain text, which just looks broken to
+		many users.
+
 2008-02-04 [colin]	3.2.0cvs75
 
 	* src/mainwindow.c
