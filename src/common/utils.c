@@ -1522,6 +1522,8 @@ gint scan_mailto_url(const gchar *mailto, gchar **from, gchar **to, gchar **cc, 
 	const gchar *forbidden_uris[] = { ".gnupg/",
 					  "/etc/passwd",
 					  "/etc/shadow",
+					  ".ssh/",
+					  "../",
 					  NULL };
 	gint num_attach = 0;
 	gchar **my_att = NULL;

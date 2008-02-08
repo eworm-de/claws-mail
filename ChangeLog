@@ -1,3 +1,9 @@
+2008-02-08 [colin]	3.3.0cvs1
+
+	* src/common/utils.c
+		Forbid attaching anything containing "../" or ".ssh/"
+		from mailto: URI
+
 2008-02-08 [paul]	3.3.0
 
 	* NEWS
