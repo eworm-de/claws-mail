@@ -1,3 +1,28 @@
+2008-02-08 [paul]	3.3.0cvs1
+
+	* AUTHORS
+		updated with new translators
+	* configure.ac
+		added he to ALL_LINGUAS
+	* po/cs.po
+	* po/de.po
+	* po/es.po
+	* po/fi.po
+	* po/hu.po
+	* po/it.po
+	* po/pt_BR.po
+	* po/zh_CN.po
+		updated by Tim Brain and Petr Vanek, Stephan Sachse,
+		Ricardo Mones Lastra, Flammie Pirinen, Pader Rezso,
+		Andrea Spadaccini, Frederico Goncalves Guimaraes,
+		and Ralph Young
+	* po/he.po
+		new Hebrew translation by Ofer <oc666@netvision.net.il>
+	* src/gtk/about.c
+		updated with new translators and bumped (c) year
+	* src/gtk/authors.h
+		updated with new translators
+
 2008-02-05 [colin]	3.2.0cvs76
 
 	* src/messageview.c

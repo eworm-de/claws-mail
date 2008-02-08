@@ -7,11 +7,11 @@ PACKAGE=claws-mail
 
 dnl version number
 MAJOR_VERSION=3
-MINOR_VERSION=2
+MINOR_VERSION=3
 MICRO_VERSION=0
 INTERFACE_AGE=0
 BINARY_AGE=0
-EXTRA_VERSION=76
+EXTRA_VERSION=1
 EXTRA_RELEASE=
 EXTRA_GTK2_VERSION=
 
@@ -173,7 +173,7 @@ AC_CHECK_FUNCS(bind_textdomain_codeset)
 LIBS=$syl_save_LIBS
 
 dnl for gettext
-ALL_LINGUAS="bg ca cs de el en_GB es fi fr hr hu it ja ko nb nl pl pt_BR ru sk sr sv zh_CN zh_TW"
+ALL_LINGUAS="bg ca cs de el en_GB es fi fr he hr hu it ja ko nb nl pl pt_BR ru sk sr sv zh_CN zh_TW"
 GETTEXT_PACKAGE=claws-mail
 AC_SUBST(GETTEXT_PACKAGE)
 AC_DEFINE_UNQUOTED(GETTEXT_PACKAGE,"$GETTEXT_PACKAGE", [Define text domain.])
