@@ -1,5 +1,63 @@
 Changes of the  Claws Mail GTK2 branch
 
+* 3.3.0
+-------
+
+* Due to licensing problems, the ClamAV plugin has been removed from
+  the Claws Mail core distribution and can now been found packaged
+  separately or with the 'extra plugins' package.
+
+* Added NetworkManager support
+  This is built by default if the dependencies are satisfied; it can
+  be specifically disabled with '--disable-networkmanager-support'.
+  This enables Claws Mail to track changes to the network status.
+
+* Added DIGEST-MD5 support for IMAP authentication
+
+* Added Folder Properties option, 'Run processing rules when opening'
+  to the General page.
+
+* Added sub-sorting to the Message List; when the Sort type is either
+  Subject, From, To or Tags, sub-sorting by Date will be active.
+
+* Added from=address to the mailto sequence
+  The 'from' will try to select the first matching account in the
+  Accounts list, otherwise it will use the usual account selection
+  mechanism but will override it with the given 'from' address.
+
+* Added insert=FILE  to the mailto sequence (stands for 'insert file')
+  This adds the ability to create a new message from the command-line,
+  with the body set from the contents of an existing file.
+		
+* Added mailto with NNTP accounts
+  This comes into play if mailto is used when an NNTP account is the
+  default account or if an NNTP account address is used with 'from'.
+
+* Added several GUI improvements to the Filtering, Processing, Tags,
+  Actions, Templates, Logging and Address Book dialogues
+
+* Added a tooltip to the 'replied' icon in the Message List which
+  indicates 'click to see your reply' feature.
+
+* Added 'claws-mail --version-full' to display the version and a list
+  of the compiled-in features
+
+* Implemented speed-ups to list operations, deletions and cache
+  updates.
+
+* Updated the man page
+
+* The Trayicon plugin icons are now themable.
+
+* text/calendar message parts are now automatically displayed if a
+  plugin handling text/calendar is loaded, e.g. vCalendar.
+
+* Maemo: connect HW status change signal for shutdown
+
+* Maemo: identify mmc1 and mmc2 more clearly in the GUI
+
+* Maemo: Make dnd threshold higher
+
 * 3.2.0
 -------
 

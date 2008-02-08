@@ -1,4 +1,4 @@
-17th December 2007                                   Claws Mail 3.2.0
+8th February 2008                                    Claws Mail 3.3.0
 
 		    CLAWS MAIL  RELEASE NOTES
                     http://www.claws-mail.org
@@ -6,91 +6,128 @@
 Claws Mail is a GTK+ based, user-friendly, lightweight, and fast 
 email client.
 
+Notes for this release:
+~~~~~~~~~~~~~~~~~~~~~~~
+
+* Due to licensing problems, the ClamAV plugin has been removed from
+  the Claws Mail core distribution and can now been found packaged
+  separately or with the 'extra plugins' package.
+
 New in this release:
 ~~~~~~~~~~~~~~~~~~~~
 
-* Several GUI improvements
-	The colour preferences have been split into tabs.
-	Improve the way 'Find in current message' search results are
-	shown by vertically centering the selected text in the
-	Message View.
-	Improvements to the 'List URIs' dialogue.
-	Filtering/Processing Match Type dialogue has been reworked.
-	Several other layout improvements.
+* Added NetworkManager support
+  This is built by default if the dependencies are satisfied; it can
+  be specifically disabled with '--disable-networkmanager-support'.
+  This enables Claws Mail to track changes to the network status.
 
-* Several address book improvements
-	Added Custom Attributes, which can be edited from
-	'/Tools/Edit custom attributes...' and are used from the
-	'Name' drop down list on the 'Edit Person Details' dialogue. 
-	Always add a new contact if any value is set, instead of
-	silently rejecting it when an email address is not set.
-	Better guessing of contact name from incomplete name
-	information.
-	Better display of contacts that have no name set, in contact
-	lists, group contents, find duplicate results.
-	Error messages don't show in the status bar anymore, alert
-	panels are used instead.
-	Several other GUI improvements.
+* Added DIGEST-MD5 support for IMAP authentication
 
-* Added optional Tooltips to the Message List. This is enabled by the
-  'Show tooltips' option on the '/Display/Summaries' Preferences page
-  and is only possible with GTK+ >= 2.12
+* Added Folder Properties option, 'Run processing rules when opening'
+  to the General page.
 
-* Much improved handling of Return Receipts, both outgoing and
-  incoming. 
+* Added sub-sorting to the Message List; when the Sort type is either
+  Subject, From, To or Tags, sub-sorting by Date will be active.
 
-* Added the option to use the system defaults for External Programs
-  preferences on the '/Message View/External Programs' page.
+* Added from=address to the mailto sequence
+  The 'from' will try to select the first matching account in the
+  Accounts list, otherwise it will use the usual account selection
+  mechanism but will override it with the given 'from' address.
 
-* Added "select first email in list" to the list of possible
-  selections in the 'Set default selection on entering a folder'
-  options on the '/Display/Summaries' preferences page.
+* Added insert=FILE  to the mailto sequence (stands for 'insert file')
+  This adds the ability to create a new message from the command-line,
+  with the body set from the contents of an existing file.
+		
+* Added mailto with NNTP accounts
+  This comes into play if mailto is used when an NNTP account is the
+  default account or if an NNTP account address is used with 'from'.
 
-* IMAP: Added IMAP tags support. (Note: 'Bandwidth-efficient' mode
-  prevents fetching of tags.)
+* Added several GUI improvements to the Filtering, Processing, Tags,
+  Actions, Templates, Logging and Address Book dialogues
 
-* IMAP: Optimised flag handling and message copying.
+* Added a tooltip to the 'replied' icon in the Message List which
+  indicates 'click to see your reply' feature.
 
-* Improved printed page layout for built-in GTK+ printing
-	Bold fonts are now used where appropriate and a demarcation
-	between header and body has been added.
+* Added 'claws-mail --version-full' to display the version and a list
+  of the compiled-in features
 
-* Optimised filtering on flags/tags changes.
+* Implemented speed-ups to list operations, deletions and cache
+  updates.
 
-* MAEMO: Added LED flashing for new mail alerts
+* Updated the man page
 
-* MAEMO: Made all of the left of column in the Folder List a hotspot
-  for expanding/collapsing the tree.
+* The Trayicon plugin icons are now themable.
 
-* Updated translations: Brazilian Portuguese, French, German,
-  Hungarian, Italian, and Spanish
+* text/calendar message parts are now automatically displayed if a
+  plugin handling text/calendar is loaded, e.g. vCalendar.
+
+* Maemo: connect HW status change signal for shutdown
+
+* Maemo: identify mmc1 and mmc2 more clearly in the GUI
+
+* Maemo: Make dnd threshold higher
+
+* New translations: Hebrew
+
+* Updated translations: Brazilian Portuguese, British English, Czech,
+  Finnish, German, Hungarian, Italian, Simplified Chinese, Spanish
 
 * Bug fixes:
-	o bug 1378, 'Claws exits on IMAP alert message'
-	o bug 1392, 'Top level domain .EU is not recognised as valid'
-	o bug 1395, 'Crash on checking for new mails while filter is
-		     running'
-	o bug 1396, 'Crash on disabling a filter while it is
-		     processing'
-	o bug 1400, 'Drag and drop of URLs does not work'
-	o bug 1402, 'Photo lost when moving address book cards'
-	o bug 1405, 'imap auto auth method doesn't work since 3.1.0'
-	o bug 1407, 'After a copy action, further rules apply to both
-		     original and copy'
-	o bug 1410, 'CM crashed while closing :-('
-	o bug 1417, 'Network log doesn't reveal enough NNTP errors'
-	o bug 1419, 'Seg fault when trying to choose key bindings'
-	o debian bug 453157, 'Fails to post usenet articles after
-			      NNTP connection has been interrupted'
-	o debian bug 454089, 'CVE-2007-6208 insecure tmp file
-			      handling in sylprint.pl prone to
-			      symlink attack' (Removed sylprint.pl)
-	o user themes dir was not set properly and some themes might
-	  have disappeared from themes list in prefs.
-	o NNTP: Fix UTF-8 being sent when encoding is 8bit
-	o vCard: Fix QP decoding (and UTF8)
-	o IMAP: Fix M-UTF7 in subscription dialog.
-	o Fix potential buffer overrun
+	o bug 1348, 'Hang ups at exit time with pgp plugin since
+		     3.0.2'
+	o bug 1353, 'on startup with small screen layout, keyboard
+		     input gets lost'
+	o bug 1435, 'Reply doesn't take into account reply-to field'
+	o bug 1436, 'Filter condition dialog doesn't load header
+		     name from current rules'
+	o bug 1439, 'Claws Mail does not remember window size state
+		     when restarted'
+	o bug 1442, 'Tags are repeated in encapsulated messages'
+	o bug 1443, and strip possible whitespaces around custom
+		    header names
+	o bug 1445, 'Display sender using addressbook: fails when
+		     From: isn't an email address'
+	o bug 1452, 'crash while drag'n'droping emails to an IMAP
+		     folder'
+	o bug 1454, 'error message shows parts and signature of
+		     previous messages'
+	o bug 1455, 'Password enters leading letter incorrectly as
+		     uppercase' (maemo)
+	o bug 1446, 'SC crashes frequently when staying in
+		     background'
+	o bug 1465, 'First line in new message does not mark URLs'
+	o bug 1461, 'several components #define _XOPEN_SOURCE
+		     improperly'
+	o bug 1468, 'Use IMAP keyword to store "forwarded" flag'
+	o bug 1469, 'Column width adjustments on message lists do not
+		     save'
+	o bug 1472, 'Keyboard "Menu" key doesn't call spell check of
+		     actuall word'
+	o bug 1477, 
+		'Claws Mail crashes when view PGP-encrypted message'
+	o bug 1478, 'Wrong pthread_create calls all over the place'
+	o bug 1480, 'should be able to display mail file from command
+		     line'
+	o bug 1485, 'selecting a folder's default account if name
+		     contains '&''
+	o bug 1486, 'Re: Incorrect content when replying'
+	o bug 1493, count lines (\n chars) according to the way
+		    format body is passed (i.e. \-escaped or not).
+	o bug 1502, 'Plus signs are stripped from email addresses
+		     when calling from command line'
+	o Fix the line-breaking, wrapping bug
+	o Fix building of URIs from filenames
+	o Fix scrolling in addressbook duplicate finder result dialog
+	o Fix privacy menu update when replying to encrypted mail and
+	  no default privacy system is set
+	o Fix scrolling to bottom when dragging and dropping
+	o Fix path to mime/globs
+	o Fix FreeBSD build with IPV6 support
+	o Fix build on old GCC
+	o Maemo: Fix extra leading hyphen visible in the display
+	  header configuration combo list.
+	o Maemo: Fix hardware space key
+	o Maemo: Fix LED handling on OS 2008
 
 For further details of the numbered bugs listed above consult
 http://www.thewildbeast.co.uk/claws-mail/bugzilla/index.cgi
