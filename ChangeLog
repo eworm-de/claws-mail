@@ -1,3 +1,8 @@
+2008-02-09 [wwp]	3.3.0cvs2
+
+	* src/main.c
+		Fix compiling issue w/ non-gcc/C99 compilers (suncc).
+
 2008-02-08 [colin]	3.3.0cvs1
 
 	* src/common/utils.c
