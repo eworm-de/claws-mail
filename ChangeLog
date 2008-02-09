@@ -1,3 +1,8 @@
+2008-02-09 [paul]	3.3.0cvs3
+
+	* src/gtk/about.c
+		bump the (c) year
+
 2008-02-09 [wwp]	3.3.0cvs2
 
 	* src/main.c

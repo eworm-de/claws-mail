@@ -3216,3 +3216,4 @@
 ( cvs diff -u -r 1.100.2.59 -r 1.100.2.60 AUTHORS;  cvs diff -u -r 1.654.2.3272 -r 1.654.2.3274 configure.ac;  cvs diff -u -r 1.9.2.12 -r 1.9.2.13 po/cs.po;  cvs diff -u -r 1.58.2.36 -r 1.58.2.37 po/de.po;  cvs diff -u -r 1.60.2.50 -r 1.60.2.51 po/es.po;  cvs diff -u -r 1.1.2.16 -r 1.1.2.17 po/fi.po;  diff -u /dev/null po/he.po;  cvs diff -u -r 1.5.2.9 -r 1.5.2.10 po/hu.po;  cvs diff -u -r 1.34.2.25 -r 1.34.2.26 po/it.po;  cvs diff -u -r 1.50.2.29 -r 1.50.2.30 po/pt_BR.po;  cvs diff -u -r 1.5.2.26 -r 1.5.2.27 po/zh_CN.po;  cvs diff -u -r 1.4.2.59 -r 1.4.2.60 src/gtk/about.c;  cvs diff -u -r 1.1.2.45 -r 1.1.2.46 src/gtk/authors.h;  ) > 3.2.0cvs77.patchset
 ( cvs diff -u -r 1.36.2.134 -r 1.36.2.135 src/common/utils.c;  ) > 3.3.0cvs1.patchset
 ( cvs diff -u -r 1.115.2.184 -r 1.115.2.185 src/main.c;  ) > 3.3.0cvs2.patchset
+( cvs diff -u -r 1.4.2.60 -r 1.4.2.61 src/gtk/about.c;  ) > 3.3.0cvs3.patchset
