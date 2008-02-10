@@ -1,3 +1,13 @@
+2008-02-10 [paul]	3.3.0cvs4
+
+	* src/Makefile.am
+	* src/mimeview.c
+	* src/prefs_toolbar.c
+	* src/stock_pixmap.c
+	* src/stock_pixmap.h
+	* src/pixmaps/mime_text_patch.xpm
+		add an icon for attached patches
+
 2008-02-09 [paul]	3.3.0cvs3
 
 	* src/gtk/about.c

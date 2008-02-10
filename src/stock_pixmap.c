@@ -104,6 +104,7 @@
 #include "pixmaps/go_folders.xpm"
 #include "pixmaps/mime_text_plain.xpm"
 #include "pixmaps/mime_text_html.xpm"
+#include "pixmaps/mime_text_patch.xpm"
 #include "pixmaps/mime_application.xpm"
 #include "pixmaps/mime_image.xpm"
 #include "pixmaps/mime_audio.xpm"
@@ -330,6 +331,7 @@ static StockPixmapData pixmaps[] =
 	{drafts_open_mark_xpm			, NULL, NULL, "drafts_open_mark", NULL},
 	{mime_text_plain_xpm			, NULL, NULL, "mime_text_plain", NULL},
 	{mime_text_html_xpm			, NULL, NULL, "mime_text_html", NULL},
+	{mime_text_patch_xpm			, NULL, NULL, "mime_text_patch", NULL},
 	{mime_application_xpm			, NULL, NULL, "mime_application", NULL},
 	{mime_image_xpm				, NULL, NULL, "mime_image", NULL},
 	{mime_audio_xpm				, NULL, NULL, "mime_audio", NULL},

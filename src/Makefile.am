@@ -383,6 +383,7 @@ EXTRA_DIST = \
 	pixmaps/mime_pgpsig.xpm \
 	pixmaps/mime_text_enriched.xpm \
 	pixmaps/mime_text_html.xpm \
+	pixmaps/mime_text_patch.xpm \
 	pixmaps/mime_text_plain.xpm \
 	pixmaps/mime_unknown.xpm \
 	pixmaps/news_compose.xpm \

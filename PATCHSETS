@@ -3217,3 +3217,4 @@
 ( cvs diff -u -r 1.36.2.134 -r 1.36.2.135 src/common/utils.c;  ) > 3.3.0cvs1.patchset
 ( cvs diff -u -r 1.115.2.184 -r 1.115.2.185 src/main.c;  ) > 3.3.0cvs2.patchset
 ( cvs diff -u -r 1.4.2.60 -r 1.4.2.61 src/gtk/about.c;  ) > 3.3.0cvs3.patchset
+( cvs diff -u -r 1.155.2.83 -r 1.155.2.84 src/Makefile.am;  cvs diff -u -r 1.83.2.127 -r 1.83.2.128 src/mimeview.c;  cvs diff -u -r 1.30.2.47 -r 1.30.2.48 src/prefs_toolbar.c;  cvs diff -u -r 1.25.2.51 -r 1.25.2.52 src/stock_pixmap.c;  cvs diff -u -r 1.18.2.33 -r 1.18.2.34 src/stock_pixmap.h;  diff -u /dev/null src/pixmaps/mime_text_patch.xpm;  ) > 3.3.0cvs4.patchset
