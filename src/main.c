@@ -38,10 +38,11 @@
 #include <sys/types.h>
 #ifdef G_OS_UNIX
 #  include <signal.h>
+#  include <errno.h>
+#  include <fcntl.h>
 #endif
 #ifdef HAVE_LIBSM
 #include <X11/SM/SMlib.h>
-#include <fcntl.h>
 #endif
 
 #include "wizard.h"
@@ -213,6 +214,9 @@ static void send_queue			(void);
 static void initial_processing		(FolderItem *item, gpointer data);
 static void quit_signal_handler         (int sig);
 static void install_basic_sighandlers   (void);
+#if (defined linux && defined SIGIO)
+static void install_memory_sighandler   (void);
+#endif
 static void exit_claws			(MainWindow *mainwin);
 
 #ifdef HAVE_NETWORKMANAGER_SUPPORT
@@ -962,6 +966,9 @@ int main(int argc, char *argv[])
 	crash_install_handlers();
 #endif
 	install_basic_sighandlers();
+#if (defined linux && defined SIGIO)
+	install_memory_sighandler();
+#endif
 	sock_init();
 
 	/* check and create unix domain socket for remote operation */
@@ -2286,6 +2293,57 @@ static void install_basic_sighandlers()
 	sigprocmask(SIG_UNBLOCK, &mask, 0);
 #endif /* !G_OS_WIN32 */
 }
+
+#if (defined linux && defined SIGIO)
+static int mem_notify_fd = 0;
+
+static gboolean clean_caches(gpointer unused)
+{
+	if (static_mainwindow && static_mainwindow->lock_count > 0)
+		return TRUE;
+	debug_print("/dev/mem_notify: callback: Freeing some memory now!\n");
+	folder_clean_cache_memory_force();
+	return FALSE;
+}
+
+static void memory_signal_handler(int sig)
+{
+	debug_print("/dev/mem_notify: Kernel says we should free up some memory!\n");
+	g_timeout_add(10, clean_caches, NULL); 
+}
+
+static void install_memory_sighandler()
+{
+	sigset_t    mask;
+	struct sigaction act;
+	int flags;
+
+	mem_notify_fd = open("/dev/mem_notify", O_RDONLY|O_NONBLOCK);
+	if (mem_notify_fd == -1) {
+		debug_print("/dev/mem_notify not available (%s)\n", 
+			strerror(errno));
+		return;
+	}
+	
+	fcntl(mem_notify_fd, F_SETOWN, getpid());
+	flags = fcntl(mem_notify_fd, F_GETFL);
+	fcntl(mem_notify_fd, flags|FASYNC);
+
+	sigemptyset(&mask);
+
+	sigaddset(&mask, SIGIO);
+
+	act.sa_handler = memory_signal_handler;
+	act.sa_mask    = mask;
+	act.sa_flags   = 0;
+
+	sigaction(SIGIO, &act, 0);
+
+	sigprocmask(SIG_UNBLOCK, &mask, 0);
+
+	debug_print("/dev/mem_notify: installed handler\n");
+}
+#endif /* linux && SIGIO */
 
 #ifdef MAEMO
 osso_context_t *get_osso_context(void)

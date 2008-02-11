@@ -1,3 +1,12 @@
+2008-02-11 [colin]	3.3.0cvs5
+
+	* src/main.c
+		Implement support for future /dev/mem_notify.
+		This Linux kernel feature will allow applications
+		to be notified that memory has to be freed
+		before getting OOM-killed. For more information:
+		http://lwn.net/Articles/267013/
+
 2008-02-10 [paul]	3.3.0cvs4
 
 	* src/Makefile.am
