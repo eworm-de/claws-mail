@@ -1,3 +1,9 @@
+2008-02-12 [colin]	3.3.0cvs9
+
+	* src/folderview.c
+		Fix crashy stuff when changing displayed
+		columns
+
 2008-02-12 [wwp]	3.3.0cvs8
 
 	* src/folder.h
