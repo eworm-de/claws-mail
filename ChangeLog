@@ -1,3 +1,8 @@
+2008-02-12 [fabien]	3.3.0cvs6
+
+	* po/fr.po
+		a few days late for i18n fr update. Sorry.
+
 2008-02-11 [colin]	3.3.0cvs5
 
 	* src/main.c
