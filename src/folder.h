@@ -780,7 +780,9 @@ FolderItem *folder_find_item_from_real_path	(const gchar 	*path);
 FolderClass *folder_get_class_from_string	(const gchar 	*str);
 FolderItem *folder_find_child_item_by_name	(FolderItem	*item,
 						 const gchar	*name);
+/* return value is locale charset */
 gchar 	   *folder_get_identifier		(Folder *folder);
+/* return value is locale charset */
 gchar      *folder_item_get_identifier		(FolderItem	*item);
 FolderItem *folder_find_item_from_identifier	(const gchar	*identifier);
 gchar 	   *folder_item_get_name		(FolderItem 	*item);
@@ -798,6 +800,9 @@ FolderItem *folder_get_default_trash_for_class(FolderType type);
 FolderItem *folder_get_default_processing (void);
 void folder_set_missing_folders		(void);
 void folder_unref_account_all		(PrefsAccount	*account);
+
+/* return value is locale encoded file name */
+gchar *folder_item_get_path		(FolderItem	*item);
 
 gint   folder_item_open			(FolderItem	*item);
 gint   folder_item_close		(FolderItem	*item);
@@ -845,8 +850,6 @@ void 	folder_item_change_msg_flags	(FolderItem 	*item,
 					 MsgPermFlags 	 newflags);
 gboolean folder_item_is_msg_changed	(FolderItem	*item,
 					 MsgInfo	*msginfo);
-/* return value is locale charset */
-gchar * folder_item_get_identifier	(FolderItem * item);
 
 void folder_clean_cache_memory		(FolderItem *protected_item);
 void folder_clean_cache_memory_force	(void);

@@ -1,3 +1,9 @@
+2008-02-12 [wwp]	3.3.0cvs8
+
+	* src/folder.h
+		Remove duplicate func declaration and restore the one
+		a missing one.
+
 2008-02-12 [wwp]	3.3.0cvs7
 
 	* src/compose.c
