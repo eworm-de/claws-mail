@@ -81,6 +81,7 @@ static GtkWidget *entry;
 static GtkWidget *ok_button;
 static GtkWidget *cancel_button;
 static GtkWidget *new_button;
+static gboolean   root_selectable;
 
 static FolderItem *folder_item;
 static FolderItem *selected_item;
@@ -140,9 +141,10 @@ static gboolean tree_view_folder_item_func	(GtkTreeModel	  *model,
 						 FolderItemSearch *data);
 
 FolderItem *foldersel_folder_sel(Folder *cur_folder, FolderSelectionType type,
-				 const gchar *default_folder)
+				 const gchar *default_folder, gboolean can_sel_mailbox)
 {
 	selected_item = NULL;
+	root_selectable = can_sel_mailbox;
 
 	if (!window) {
 		foldersel_create();
@@ -198,7 +200,7 @@ FolderItem *foldersel_folder_sel(Folder *cur_folder, FolderSelectionType type,
 	gtk_tree_store_clear(tree_store);
 
 	if (!cancelled &&
-	    selected_item && selected_item->path) {
+	    selected_item && (selected_item->path || root_selectable)) {
 		folder_item = selected_item;
 		return folder_item;
 	} else
@@ -477,6 +479,7 @@ static void foldersel_set_tree(Folder *cur_folder, FolderSelectionType type)
 	gtk_tree_view_expand_all(GTK_TREE_VIEW(treeview));
 }
 
+#include "localfolder.h"
 static gboolean foldersel_selected(GtkTreeSelection *selection,
 				   GtkTreeModel *model, GtkTreePath *path,
 				   gboolean currently_selected, gpointer data)
@@ -497,6 +500,14 @@ static gboolean foldersel_selected(GtkTreeSelection *selection,
 	if (selected_item && selected_item->path) {
 		gchar *id;
 		id = folder_item_get_identifier(selected_item);
+		gtk_entry_set_text(GTK_ENTRY(entry), id);
+		g_free(id);
+	} else
+	if (root_selectable && selected_item && selected_item->folder &&
+			(FOLDER_TYPE(selected_item->folder) == F_MH ||
+			 FOLDER_TYPE(selected_item->folder) == F_MBOX ||
+			 FOLDER_TYPE(selected_item->folder) == F_IMAP)) {
+		gchar *id = folder_get_identifier(selected_item->folder);
 		gtk_entry_set_text(GTK_ENTRY(entry), id);
 		g_free(id);
 	} else

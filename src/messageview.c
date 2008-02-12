@@ -2195,7 +2195,7 @@ static void goto_folder_cb(gpointer data, guint action, GtkWidget *widget)
 	FolderItem *to_folder;
 	messageview->updating = FALSE;
 
-	to_folder = foldersel_folder_sel(NULL, FOLDER_SEL_ALL, NULL);
+	to_folder = foldersel_folder_sel(NULL, FOLDER_SEL_ALL, NULL, FALSE);
 
 	if (to_folder) {
 		folderview_select(messageview->mainwin->folderview, to_folder);

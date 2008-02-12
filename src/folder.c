@@ -1297,7 +1297,7 @@ FolderClass *folder_get_class_from_string(const gchar *str)
 	return NULL;
 }
 
-static gchar *folder_get_identifier(Folder *folder)
+gchar *folder_get_identifier(Folder *folder)
 {
 	gchar *type_str;
 

@@ -1228,7 +1228,7 @@ static void prefs_filtering_action_select_dest(void)
 	FolderItem *dest;
 	gchar * path;
 
-	dest = foldersel_folder_sel(NULL, FOLDER_SEL_COPY, NULL);
+	dest = foldersel_folder_sel(NULL, FOLDER_SEL_COPY, NULL, FALSE);
 	if (!dest) return;
 
 	path = folder_item_get_identifier(dest);

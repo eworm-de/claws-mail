@@ -4269,7 +4269,7 @@ static void goto_folder_cb(MainWindow *mainwin, guint action,
 {
 	FolderItem *to_folder;
 
-	to_folder = foldersel_folder_sel(NULL, FOLDER_SEL_ALL, NULL);
+	to_folder = foldersel_folder_sel(NULL, FOLDER_SEL_ALL, NULL, FALSE);
 
 	if (to_folder)
 		folderview_select(mainwin->folderview, to_folder);

@@ -34,6 +34,7 @@ typedef enum
 
 FolderItem *foldersel_folder_sel(Folder			*cur_folder,
 				 FolderSelectionType	 type,
-				 const gchar		*default_folder);
+				 const gchar		*default_folder,
+				 gboolean 			 can_sel_mailbox);
 
 #endif /* __FOLDERSEL_H__ */

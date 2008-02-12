@@ -279,7 +279,7 @@ static void move_folder_cb(FolderView *folderview, guint action, GtkWidget *widg
 	if (!from_folder || from_folder->folder->klass != mh_get_class())
 		return;
 
-	to_folder = foldersel_folder_sel(from_folder->folder, FOLDER_SEL_MOVE, NULL);
+	to_folder = foldersel_folder_sel(from_folder->folder, FOLDER_SEL_MOVE, NULL, TRUE);
 	if (!to_folder)
 		return;
 	

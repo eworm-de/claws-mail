@@ -1,3 +1,26 @@
+2008-02-12 [wwp]	3.3.0cvs7
+
+	* src/compose.c
+	* src/export.c
+	* src/folder.c
+	* src/folder.h
+	* src/foldersel.c
+	* src/foldersel.h
+	* src/imap_gtk.c
+	* src/import.c
+	* src/mainwindow.c
+	* src/messageview.c
+	* src/mh_gtk.c
+	* src/prefs_account.c
+	* src/prefs_filtering_action.c
+	* src/summaryview.c
+	* src/plugins/bogofilter/bogofilter_gtk.c
+	* src/plugins/spamassassin/spamassassin_gtk.c
+		Allow moving/copying folders to root folders when using
+		the folder selection dialog (it was not possible to
+		maemo users to reparent a subfolder to a root folder
+		at all).
+
 2008-02-12 [fabien]	3.3.0cvs6
 
 	* po/fr.po
