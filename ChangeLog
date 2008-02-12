@@ -1,3 +1,12 @@
+2008-02-12 [colin]	3.3.0cvs11
+
+	* src/imap.c
+	* src/etpan/imap-thread.c
+	* src/etpan/imap-thread.h
+		Fix handling of $Forwarded flag on Exchange:
+		check for the existence or creatability of a
+		flag before using it.
+
 2008-02-12 [colin]	3.3.0cvs10
 
 	* src/matcher.c

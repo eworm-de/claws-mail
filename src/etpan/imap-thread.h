@@ -26,6 +26,16 @@
 
 #define IMAP_SET_MAX_COUNT 500
 
+typedef enum
+{
+	IMAP_FLAG_SEEN		= 1 << 0,
+	IMAP_FLAG_ANSWERED	= 1 << 1,
+	IMAP_FLAG_FLAGGED	= 1 << 2,
+	IMAP_FLAG_DELETED	= 1 << 3,
+	IMAP_FLAG_DRAFT		= 1 << 4,
+	IMAP_FLAG_FORWARDED	= 1 << 5
+} IMAPFlags;
+
 void imap_main_set_timeout(int sec);
 void imap_main_init(gboolean skip_ssl_cert_check);
 void imap_main_done(void);
@@ -70,7 +80,8 @@ int imap_threaded_rename(Folder * folder,
 int imap_threaded_delete(Folder * folder, const char * mb);
 int imap_threaded_select(Folder * folder, const char * mb,
 			 gint * exists, gint * recent, gint * unseen,
-			 guint32 * uid_validity, gint * can_create_flags);
+			 guint32 * uid_validity, gint * can_create_flags,
+			 GSList **ok_flags);
 int imap_threaded_examine(Folder * folder, const char * mb,
 			  gint * exists, gint * recent, gint * unseen,
 			  guint32 * uid_validity);
