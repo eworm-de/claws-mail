@@ -3225,3 +3225,4 @@
 ( cvs diff -u -r 1.207.2.195 -r 1.207.2.196 src/folderview.c;  ) > 3.3.0cvs9.patchset
 ( cvs diff -u -r 1.75.2.54 -r 1.75.2.55 src/matcher.c;  ) > 3.3.0cvs10.patchset
 ( cvs diff -u -r 1.179.2.209 -r 1.179.2.210 src/imap.c;  cvs diff -u -r 1.1.4.96 -r 1.1.4.97 src/etpan/imap-thread.c;  cvs diff -u -r 1.1.4.23 -r 1.1.4.24 src/etpan/imap-thread.h;  ) > 3.3.0cvs11.patchset
+( cvs diff -u -r 1.207.2.196 -r 1.207.2.197 src/folderview.c;  ) > 3.3.0cvs12.patchset

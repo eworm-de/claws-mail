@@ -603,15 +603,15 @@ static GtkWidget *folderview_ctree_create(FolderView *folderview)
 
 void folderview_set_column_order(FolderView *folderview)
 {
-	GtkWidget *ctree;
+	GtkWidget *ctree = folderview->ctree;
 	FolderItem *item = folderview_get_selected_item(folderview);
 	FolderItem *sel_item = NULL, *op_item = NULL;
 	GtkWidget *scrolledwin = folderview->scrolledwin;
 
 	if (folderview->selected)
-		sel_item = gtk_ctree_node_get_row_data(ctree, folderview->selected);
+		sel_item = gtk_ctree_node_get_row_data(GTK_CTREE(ctree), folderview->selected);
 	if (folderview->opened)
-		op_item = gtk_ctree_node_get_row_data(ctree, folderview->opened);
+		op_item = gtk_ctree_node_get_row_data(GTK_CTREE(ctree), folderview->opened);
 
 	debug_print("recreating tree...\n");
 	gtk_widget_destroy(folderview->ctree);
@@ -625,9 +625,9 @@ void folderview_set_column_order(FolderView *folderview)
 	gtk_widget_show(ctree);
 	
 	if (sel_item)
-		folderview->selected = gtk_ctree_find_by_row_data(ctree, NULL, sel_item);
+		folderview->selected = gtk_ctree_find_by_row_data(GTK_CTREE(ctree), NULL, sel_item);
 	if (op_item)
-		folderview->opened = gtk_ctree_find_by_row_data(ctree, NULL, op_item);
+		folderview->opened = gtk_ctree_find_by_row_data(GTK_CTREE(ctree), NULL, op_item);
 
 	folderview_set(folderview);
 	folderview_column_set_titles(folderview);

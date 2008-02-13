@@ -1,3 +1,8 @@
+2008-02-13 [colin]	3.3.0cvs12
+
+	* src/folderview.c
+		Fix important warnings
+
 2008-02-12 [colin]	3.3.0cvs11
 
 	* src/imap.c
