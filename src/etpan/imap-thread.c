@@ -1326,7 +1326,8 @@ static void select_run(struct etpan_thread_op * op)
 
 int imap_threaded_select(Folder * folder, const char * mb,
 			 gint * exists, gint * recent, gint * unseen,
-			 guint32 * uid_validity,gint *can_create_flags)
+			 guint32 * uid_validity,gint *can_create_flags,
+			 GSList **ok_flags)
 {
 	struct select_param param;
 	struct select_result result;
@@ -1353,9 +1354,10 @@ int imap_threaded_select(Folder * folder, const char * mb,
 	* can_create_flags = FALSE;
 
 	if (imap->imap_selection_info->sel_perm_flags) {
+		GSList *t_flags = NULL;
 		clistiter *cur =
 			clist_begin(imap->imap_selection_info->sel_perm_flags);
-		for (; cur && !(*can_create_flags); cur = clist_next(cur)) {
+		for (; cur; cur = clist_next(cur)) {
 			struct mailimap_flag_perm *flag = (struct mailimap_flag_perm *)clist_content(cur);
 			if (flag->fl_type == MAILIMAP_FLAG_PERM_ALL)
 				*can_create_flags = TRUE;
@@ -1363,8 +1365,39 @@ int imap_threaded_select(Folder * folder, const char * mb,
 					flag->fl_flag->fl_type == 6 &&
 					!strcmp(flag->fl_flag->fl_data.fl_extension, "*"))
 				*can_create_flags = TRUE; 
-			
+			if (ok_flags) {
+				MsgPermFlags c_flag = 0;
+				switch (flag->fl_flag->fl_type) {
+				case MAILIMAP_FLAG_ANSWERED:
+					c_flag = IMAP_FLAG_ANSWERED;
+					break;
+				case MAILIMAP_FLAG_FLAGGED:
+					c_flag = IMAP_FLAG_FLAGGED;
+					break;
+				case MAILIMAP_FLAG_DELETED:
+					c_flag = IMAP_FLAG_DELETED;
+					break;
+				case MAILIMAP_FLAG_DRAFT:
+					c_flag = IMAP_FLAG_DRAFT;
+					break;
+				case MAILIMAP_FLAG_SEEN:
+					c_flag = IMAP_FLAG_SEEN;
+					break;
+				case MAILIMAP_FLAG_KEYWORD:
+					if (!strcasecmp(flag->fl_flag->fl_data.fl_keyword, "$Forwarded"))
+						c_flag = IMAP_FLAG_FORWARDED;
+					break;
+				default:
+					break;
+				}
+				if (c_flag != 0) {
+					t_flags = g_slist_prepend(t_flags, 
+						GUINT_TO_POINTER(c_flag));
+				}
+			}
 		}
+		if (ok_flags)
+			*ok_flags = t_flags;
 	}
 	debug_print("imap select - end\n");
 	

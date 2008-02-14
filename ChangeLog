@@ -1,3 +1,27 @@
+2008-02-14 [colin]	3.3.0cvs1-stable
+
+	* commitHelper
+	* po/fr.po
+	* src/folderview.c
+	* src/imap.c
+	* src/main.c
+	* src/common/utils.c
+	* src/etpan/imap-thread.c
+	* src/etpan/imap-thread.h
+	* src/gtk/about.c
+		Backport 3.3.0cvs{1,2,3,6,9,11,12}:
+		Forbid attaching anything containing "../" or ".ssh/"
+		from mailto: URI
+		Fix compiling issue w/ non-gcc/C99 compilers (suncc).
+		bump the (c) year
+		a few days late for i18n fr update. Sorry.
+		Fix crashy stuff when changing displayed
+		columns
+		Fix handling of $Forwarded flag on Exchange:
+		check for the existence or creatability of a
+		flag before using it.
+		Fix important warnings
+
 2008-02-08 [paul]	3.3.0
 
 	* NEWS

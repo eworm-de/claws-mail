@@ -815,60 +815,96 @@ static void win32_close_log(void)
 #endif
 
 static void main_dump_features_list(gboolean show_debug_only)
-/* display compiled-in features list using output_func (commonly any
-   g_print-like function) */
+/* display compiled-in features list */
 {
 	if (show_debug_only && !debug_get_mode())
 		return;
 
-#define debug_print_cond(format, ...) \
-	if (show_debug_only) \
-		debug_print(format, ## __VA_ARGS__); \
-	else \
-		g_print(format, ## __VA_ARGS__);
-
-	debug_print_cond("GTK+ %d.%d.%d / GLib %d.%d.%d\n",
-		   gtk_major_version, gtk_minor_version, gtk_micro_version,
-		   glib_major_version, glib_minor_version, glib_micro_version);
-	debug_print_cond("Compiled-in features:\n");
+	if (show_debug_only)
+		debug_print("GTK+ %d.%d.%d / GLib %d.%d.%d\n",
+			   gtk_major_version, gtk_minor_version, gtk_micro_version,
+			   glib_major_version, glib_minor_version, glib_micro_version);
+	else
+		g_print("GTK+ %d.%d.%d / GLib %d.%d.%d\n",
+			   gtk_major_version, gtk_minor_version, gtk_micro_version,
+			   glib_major_version, glib_minor_version, glib_micro_version);
+	if (show_debug_only)
+		debug_print("Compiled-in features:\n");
+	else
+		g_print("Compiled-in features:\n");
 #if HAVE_LIBCOMPFACE
-	debug_print_cond(" compface\n");
+	if (show_debug_only)
+		debug_print(" compface\n");
+	else
+		g_print(" compface\n");
 #endif
 #if USE_ASPELL
-	debug_print_cond(" aspell\n");
+	if (show_debug_only)
+		debug_print(" aspell\n");
+	else
+		g_print(" aspell\n");
 #endif
 #if USE_GNUTLS
-	debug_print_cond(" gnutls\n");
+	if (show_debug_only)
+		debug_print(" gnutls\n");
+	else
+		g_print(" gnutls\n");
 #endif
 #if INET6
-	debug_print_cond(" ipv6\n");
+	if (show_debug_only)
+		debug_print(" ipv6\n");
+	else
+		g_print(" ipv6\n");
 #endif
 #if HAVE_ICONV
-	debug_print_cond(" iconv\n");
+	if (show_debug_only)
+		debug_print(" iconv\n");
+	else
+		g_print(" iconv\n");
 #endif
 #if USE_JPILOT
-	debug_print_cond(" jpilot\n");
+	if (show_debug_only)
+		debug_print(" jpilot\n");
+	else
+		g_print(" jpilot\n");
 #endif
 #if USE_LDAP
-	debug_print_cond(" ldap\n");
+	if (show_debug_only)
+		debug_print(" ldap\n");
+	else
+		g_print(" ldap\n");
 #endif
 #if HAVE_LIBETPAN
-	debug_print_cond(" libetpan %d.%d\n", LIBETPAN_VERSION_MAJOR, LIBETPAN_VERSION_MINOR);
+	if (show_debug_only)
+		debug_print(" libetpan %d.%d\n", LIBETPAN_VERSION_MAJOR, LIBETPAN_VERSION_MINOR);
+	else
+		g_print(" libetpan %d.%d\n", LIBETPAN_VERSION_MAJOR, LIBETPAN_VERSION_MINOR);
 #endif
 #if USE_GNOMEPRINT
-	debug_print_cond(" gnomeprint\n");
+	if (show_debug_only)
+		debug_print(" gnomeprint\n");
+	else
+		g_print(" gnomeprint\n");
 #endif
 #if HAVE_LIBSM
-	debug_print_cond(" libsm\n");
+	if (show_debug_only)
+		debug_print(" libsm\n");
+	else
+		g_print(" libsm\n");
 #endif
 #if HAVE_NETWORKMANAGER_SUPPORT
-	debug_print_cond(" NetworkManager\n");
+	if (show_debug_only)
+		debug_print(" NetworkManager\n");
+	else
+		g_print(" NetworkManager\n");
 #endif
 #if USE_OPENSSL
-	debug_print_cond(" openssl\n");
+	if (show_debug_only)
+		debug_print(" openssl\n");
+	else
+		g_print(" openssl\n");
 #endif
 }
-#undef debug_print_cond
 
 int main(int argc, char *argv[])
 {

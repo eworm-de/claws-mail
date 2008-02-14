@@ -131,16 +131,6 @@ struct _IMAPNameSpace
 
 #define IMAPBUFSIZE	8192
 
-typedef enum
-{
-	IMAP_FLAG_SEEN		= 1 << 0,
-	IMAP_FLAG_ANSWERED	= 1 << 1,
-	IMAP_FLAG_FLAGGED	= 1 << 2,
-	IMAP_FLAG_DELETED	= 1 << 3,
-	IMAP_FLAG_DRAFT		= 1 << 4,
-	IMAP_FLAG_FORWARDED	= 1 << 5
-} IMAPFlags;
-
 #define IMAP_IS_SEEN(flags)	((flags & IMAP_FLAG_SEEN) != 0)
 #define IMAP_IS_ANSWERED(flags)	((flags & IMAP_FLAG_ANSWERED) != 0)
 #define IMAP_IS_FLAGGED(flags)	((flags & IMAP_FLAG_FLAGGED) != 0)
@@ -181,6 +171,7 @@ struct _IMAPFolderItem
 
 	GHashTable *tags_set_table;
 	GHashTable *tags_unset_table;
+	GSList *ok_flags;
 
 };
 
@@ -290,6 +281,7 @@ static void imap_set_batch		(Folder		*folder,
 					 FolderItem	*item,
 					 gboolean	 batch);
 static gint imap_set_message_flags	(IMAPSession	*session,
+					 IMAPFolderItem *item,
 					 MsgNumberList	*numlist,
 					 IMAPFlags	 flags,
 					 GSList		*tags,
@@ -346,6 +338,7 @@ static gint imap_cmd_select	(IMAPSession	*session,
 				 gint		*unseen,
 				 guint32	*uid_validity,
 				 gint		*can_create_flags,
+				 GSList		**ok_flags,
 				 gboolean	 block);
 static gint imap_cmd_close	(IMAPSession 	*session);
 static gint imap_cmd_examine	(IMAPSession	*session,
@@ -368,6 +361,7 @@ static gint imap_cmd_fetch	(IMAPSession	*sock,
 				 gboolean	 headers,
 				 gboolean	 body);
 static gint imap_cmd_append	(IMAPSession	*session,
+				 IMAPFolderItem *item,
 				 const gchar	*destfolder,
 				 const gchar	*file,
 				 IMAPFlags	 flags,
@@ -379,6 +373,7 @@ static gint imap_cmd_copy       (IMAPSession *session,
 				 struct mailimap_set ** source,
 				 struct mailimap_set ** dest);
 static gint imap_cmd_store	(IMAPSession	*session,
+			   	 IMAPFolderItem *item,
 				 struct mailimap_set * set,
 				 IMAPFlags flags,
 				 GSList *tags,
@@ -429,7 +424,7 @@ static void imap_flags_hash_from_lep_uid_flags_tab(carray * list,
 static MsgInfo *imap_envelope_from_lep(struct imap_fetch_env_info * info,
 				       FolderItem *item);
 static void imap_lep_set_free(GSList *seq_list);
-static struct mailimap_flag_list * imap_flag_to_lep(IMAPFlags flags, GSList *tags);
+static struct mailimap_flag_list * imap_flag_to_lep(IMAPFolderItem *item, IMAPFlags flags, GSList *tags);
 
 typedef struct _hashtable_data {
 	GSList *msglist;
@@ -1348,7 +1343,8 @@ static void imap_commit_tags(FolderItem *item, MsgInfo *msginfo, GSList *tags_se
 			list_set = g_slist_prepend(list_set, g_strdup(str));
 		}
 		if (list_set) {
-			ok = imap_set_message_flags(session, &numlist, 0, list_set, TRUE);
+			ok = imap_set_message_flags(session, 
+				IMAP_FOLDER_ITEM(item), &numlist, 0, list_set, TRUE);
 			slist_free_strings(list_set);
 			g_slist_free(list_set);
 			if (ok != MAILIMAP_NO_ERROR) {
@@ -1362,7 +1358,8 @@ static void imap_commit_tags(FolderItem *item, MsgInfo *msginfo, GSList *tags_se
 			list_unset = g_slist_prepend(list_unset, g_strdup(str));
 		}
 		if (list_unset) {
-			ok = imap_set_message_flags(session, &numlist, 0, list_unset, FALSE);
+			ok = imap_set_message_flags(session, 
+				IMAP_FOLDER_ITEM(item), &numlist, 0, list_unset, FALSE);
 			slist_free_strings(list_unset);
 			g_slist_free(list_unset);
 			if (ok != MAILIMAP_NO_ERROR) {
@@ -1614,7 +1611,7 @@ static gint imap_add_msgs(Folder *folder, FolderItem *dest, GSList *file_list,
 		    folder_has_parent_of_type(dest, F_TRASH))
 			iflags |= IMAP_FLAG_SEEN;
 
-		ok = imap_cmd_append(session, destdir, real_file, iflags, 
+		ok = imap_cmd_append(session, IMAP_FOLDER_ITEM(dest), destdir, real_file, iflags, 
 				     &new_uid);
 
 		if (ok != MAILIMAP_NO_ERROR) {
@@ -1963,7 +1960,7 @@ static gint imap_do_remove_msgs(Folder *folder, FolderItem *dest,
 
 	if (numlist != NULL) {
 		ok = imap_set_message_flags
-			(session, numlist, IMAP_FLAG_DELETED, NULL, TRUE);
+			(session, IMAP_FOLDER_ITEM(msginfo->folder), numlist, IMAP_FLAG_DELETED, NULL, TRUE);
 		if (ok != MAILIMAP_NO_ERROR) {
 			log_warning(LOG_PROTOCOL, _("can't set deleted flags\n"));
 			return ok;
@@ -3124,6 +3121,7 @@ static gchar *imap_get_real_path(IMAPSession *session, IMAPFolder *folder, const
 }
 
 static gint imap_set_message_flags(IMAPSession *session,
+				   IMAPFolderItem *item,
 				   MsgNumberList *numlist,
 				   IMAPFlags flags,
 				   GSList *tags,
@@ -3160,7 +3158,7 @@ static gint imap_set_message_flags(IMAPSession *session,
 
 		statusbar_progress_all(set_item->set_first, total, 1);
 
-		ok = imap_cmd_store(session, imapset,
+		ok = imap_cmd_store(session, item, imapset,
 				    flags, tags, is_set);
 		statusbar_progress_all(set_item->set_last, total, 1);
 		if (ok != MAILIMAP_NO_ERROR && folder->max_set_size > 20) {
@@ -3238,8 +3236,11 @@ static gint imap_select(IMAPSession *session, IMAPFolder *folder,
 
 	real_path = imap_get_real_path(session, folder, path);
 
+	g_slist_free(IMAP_FOLDER_ITEM(item)->ok_flags);
+	IMAP_FOLDER_ITEM(item)->ok_flags = NULL;
 	ok = imap_cmd_select(session, real_path,
-			     exists, recent, unseen, uid_validity, can_create_flags, block);
+			     exists, recent, unseen, uid_validity, can_create_flags, 
+			     &(IMAP_FOLDER_ITEM(item)->ok_flags), block);
 	if (ok != MAILIMAP_NO_ERROR) {
 		log_warning(LOG_PROTOCOL, _("can't select folder: %s\n"), real_path);
 	} else {
@@ -3490,12 +3491,12 @@ static gint imap_cmd_starttls(IMAPSession *session)
 static gint imap_cmd_select(IMAPSession *session, const gchar *folder,
 			    gint *exists, gint *recent, gint *unseen,
 			    guint32 *uid_validity, gint *can_create_flags,
-			    gboolean block)
+			    GSList **ok_flags, gboolean block)
 {
 	int r;
 
 	r = imap_threaded_select(session->folder, folder,
-				 exists, recent, unseen, uid_validity, can_create_flags);
+				 exists, recent, unseen, uid_validity, can_create_flags, ok_flags);
 	if (r != MAILIMAP_NO_ERROR) {
 		imap_handle_error(SESSION(session), r);
 		debug_print("select err %d\n", r);
@@ -3643,7 +3644,9 @@ static gint imap_cmd_fetch(IMAPSession *session, guint32 uid,
 }
 
 
-static gint imap_cmd_append(IMAPSession *session, const gchar *destfolder,
+static gint imap_cmd_append(IMAPSession *session, 
+			    IMAPFolderItem *item,
+			    const gchar *destfolder,
 			    const gchar *file, IMAPFlags flags, 
 			    guint32 *new_uid)
 {
@@ -3652,7 +3655,7 @@ static gint imap_cmd_append(IMAPSession *session, const gchar *destfolder,
 	
 	g_return_val_if_fail(file != NULL, MAILIMAP_ERROR_BAD_STATE);
 
-	flag_list = imap_flag_to_lep(flags, NULL);
+	flag_list = imap_flag_to_lep(item, flags, NULL);
 	lock_session(session);
 	r = imap_threaded_append(session->folder, destfolder,
 			 file, flag_list, (int *)new_uid);
@@ -3688,14 +3691,16 @@ static gint imap_cmd_copy(IMAPSession *session, struct mailimap_set * set,
 	return MAILIMAP_NO_ERROR;
 }
 
-static gint imap_cmd_store(IMAPSession *session, struct mailimap_set * set,
+static gint imap_cmd_store(IMAPSession *session, 
+			   IMAPFolderItem *item,
+			   struct mailimap_set * set,
 			   IMAPFlags flags, GSList *tags, int do_add)
 {
 	int r;
 	struct mailimap_flag_list * flag_list = NULL;
 	struct mailimap_store_att_flags * store_att_flags;
 	
-	flag_list = imap_flag_to_lep(flags, tags);
+	flag_list = imap_flag_to_lep(item, flags, tags);
 
 	if (do_add)
 		store_att_flags =
@@ -4269,14 +4274,14 @@ void imap_change_flags(Folder *folder, FolderItem *item, MsgInfo *msginfo, MsgPe
 	} else {
 		debug_print("IMAP changing flags\n");
 		if (flags_set) {
-			ok = imap_set_message_flags(session, &numlist, flags_set, NULL, TRUE);
+			ok = imap_set_message_flags(session, IMAP_FOLDER_ITEM(item), &numlist, flags_set, NULL, TRUE);
 			if (ok != MAILIMAP_NO_ERROR) {
 				return;
 			}
 		}
 
 		if (flags_unset) {
-			ok = imap_set_message_flags(session, &numlist, flags_unset, NULL, FALSE);
+			ok = imap_set_message_flags(session, IMAP_FOLDER_ITEM(item), &numlist, flags_unset, NULL, FALSE);
 			if (ok != MAILIMAP_NO_ERROR) {
 				return;
 			}
@@ -4310,7 +4315,7 @@ static gint imap_remove_msg(Folder *folder, FolderItem *item, gint uid)
 	numlist.data = GINT_TO_POINTER(uid);
 	
 	ok = imap_set_message_flags
-		(session, &numlist, IMAP_FLAG_DELETED, NULL, TRUE);
+		(session, IMAP_FOLDER_ITEM(item), &numlist, IMAP_FLAG_DELETED, NULL, TRUE);
 	if (ok != MAILIMAP_NO_ERROR) {
 		log_warning(LOG_PROTOCOL, _("can't set deleted flags: %d\n"), uid);
 		return ok;
@@ -4355,6 +4360,19 @@ static guint gslist_find_next_num(MsgNumberList **list, guint num)
 			break;
 	*list = elem;
 	return elem != NULL ? GPOINTER_TO_INT(elem->data) : (gint)-1;
+}
+
+static gboolean flag_ok(IMAPFolderItem *item, guint flag)
+{
+	if (item->ok_flags && g_slist_find(item->ok_flags, GUINT_TO_POINTER(flag))) {
+		debug_print("flag %d is OK\n", flag);
+		return TRUE;
+	}
+	if (item->can_create_flags == ITEM_CAN_CREATE_FLAGS) {
+		debug_print("creating flags is OK\n");
+		return TRUE;
+	}
+	return FALSE;
 }
 
 /*
@@ -4491,18 +4509,20 @@ static /*gint*/ void *imap_get_flags_thread(void *data)
 					goto bail;
 				}
 
-				r = imap_threaded_search(folder, IMAP_SEARCH_TYPE_FORWARDED,
-							 full_search ? NULL:imapset, &lep_uidlist);
-				if (r == MAILIMAP_NO_ERROR) {
-					GSList * uidlist;
+				if (flag_ok(IMAP_FOLDER_ITEM(fitem), IMAP_FLAG_FORWARDED)) {
+					r = imap_threaded_search(folder, IMAP_SEARCH_TYPE_FORWARDED,
+								 full_search ? NULL:imapset, &lep_uidlist);
+					if (r == MAILIMAP_NO_ERROR) {
+						GSList * uidlist;
 
-					uidlist = imap_uid_list_from_lep(lep_uidlist);
-					mailimap_search_result_free(lep_uidlist);
+						uidlist = imap_uid_list_from_lep(lep_uidlist);
+						mailimap_search_result_free(lep_uidlist);
 
-					forwarded = g_slist_concat(forwarded, uidlist);
-				} else {
-					imap_handle_error(SESSION(session), r);
-					goto bail;
+						forwarded = g_slist_concat(forwarded, uidlist);
+					} else {
+						imap_handle_error(SESSION(session), r);
+						goto bail;
+					}
 				}
 
 				r = imap_threaded_search(folder, IMAP_SEARCH_TYPE_DELETED,
@@ -4719,7 +4739,8 @@ static gboolean process_flags(gpointer key, gpointer value, gpointer user_data)
 			 NULL, NULL, NULL, NULL, NULL, FALSE);
 	}
 	if (ok == MAILIMAP_NO_ERROR) {
-		ok = imap_set_message_flags(session, data->msglist, flags_value, NULL, flags_set);
+		ok = imap_set_message_flags(session, IMAP_FOLDER_ITEM(item),
+			data->msglist, flags_value, NULL, flags_set);
 	} else {
 		g_warning("can't select mailbox %s\n", item->path);
 	}
@@ -4761,7 +4782,8 @@ static gboolean process_tags(gpointer key, gpointer value, gpointer user_data)
 		GSList list;
 		list.data = str;
 		list.next = NULL;
-		ok = imap_set_message_flags(session, data->msglist, 0, &list, tags_set);
+		ok = imap_set_message_flags(session, IMAP_FOLDER_ITEM(item),
+			data->msglist, 0, &list, tags_set);
 	} else {
 		g_warning("can't select mailbox %s\n", item->path);
 	}
@@ -5152,29 +5174,29 @@ static void imap_lep_set_free(GSList *seq_list)
 	g_slist_free(seq_list);
 }
 
-static struct mailimap_flag_list * imap_flag_to_lep(IMAPFlags flags, GSList *tags)
+static struct mailimap_flag_list * imap_flag_to_lep(IMAPFolderItem *item, IMAPFlags flags, GSList *tags)
 {
 	struct mailimap_flag_list * flag_list;
 	GSList *cur = tags;
 
 	flag_list = mailimap_flag_list_new_empty();
 	
-	if (IMAP_IS_SEEN(flags))
+	if (IMAP_IS_SEEN(flags) && flag_ok(item, IMAP_FLAG_SEEN))
 		mailimap_flag_list_add(flag_list,
 				       mailimap_flag_new_seen());
-	if (IMAP_IS_ANSWERED(flags))
+	if (IMAP_IS_ANSWERED(flags) && flag_ok(item, IMAP_FLAG_ANSWERED))
 		mailimap_flag_list_add(flag_list,
 				       mailimap_flag_new_answered());
-	if (IMAP_IS_FLAGGED(flags))
+	if (IMAP_IS_FLAGGED(flags) && flag_ok(item, IMAP_FLAG_FLAGGED))
 		mailimap_flag_list_add(flag_list,
 				       mailimap_flag_new_flagged());
-	if (IMAP_IS_DELETED(flags))
+	if (IMAP_IS_DELETED(flags) && flag_ok(item, IMAP_FLAG_DELETED))
 		mailimap_flag_list_add(flag_list,
 				       mailimap_flag_new_deleted());
-	if (IMAP_IS_DRAFT(flags))
+	if (IMAP_IS_DRAFT(flags) && flag_ok(item, IMAP_FLAG_DRAFT))
 		mailimap_flag_list_add(flag_list,
 				       mailimap_flag_new_draft());
-	if (IMAP_IS_FORWARDED(flags))
+	if (IMAP_IS_FORWARDED(flags) && flag_ok(item, IMAP_FLAG_FORWARDED))
 		mailimap_flag_list_add(flag_list,
 				       mailimap_flag_new_flag_keyword(strdup("$Forwarded")));
 	
