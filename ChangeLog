@@ -1,3 +1,8 @@
+2008-02-15 [colin]	3.3.0cvs14
+
+	* src/matcher.c
+		Revert cvs10 for now, it breaks the feature
+
 2008-02-15 [colin]	3.3.0cvs13
 
 	* src/main.c

@@ -1333,16 +1333,9 @@ static gboolean matcherprop_criteria_headers(const MatcherProp *matcher)
 	case MATCHCRITERIA_NOT_HEADER:
 	case MATCHCRITERIA_HEADERS_PART:
 	case MATCHCRITERIA_NOT_HEADERS_PART:
-		return TRUE;
 	case MATCHCRITERIA_FOUND_IN_ADDRESSBOOK:
 	case MATCHCRITERIA_NOT_FOUND_IN_ADDRESSBOOK:
-		if (!strcasecmp(matcher->header, Q_("Filtering Matcher Menu|All")) ||
-		    !strcasecmp(matcher->header, _("Any")) ||
-		    !strcasecmp(matcher->header, "Sender") ||
-		    !strcasecmp(matcher->header, "Reply-To"))
-			return TRUE;
-		else
-			return FALSE;
+		return TRUE;
 	default:
 		return FALSE;
 	}
