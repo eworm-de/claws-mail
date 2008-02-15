@@ -1,3 +1,11 @@
+2008-02-15 [colin]	3.3.0cvs13
+
+	* src/main.c
+		Always focus folder tree at startup
+	* src/compose.c
+		Fix bug 1521, 'Cannot close compose window after 
+		replying to a non-existent news message'
+
 2008-02-13 [colin]	3.3.0cvs12
 
 	* src/folderview.c
