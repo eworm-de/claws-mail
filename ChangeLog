@@ -1,3 +1,16 @@
+2008-02-18 [colin]	3.3.0cvs16
+
+	* src/imap.c
+		Unset folder's session before creating a
+		new one
+	* src/main.c
+	* src/prefs_common.c
+	* src/prefs_common.h
+	* manual/advanced.xml
+		Add an hidden use_networkmanager pref, to
+		disable NetworkManager handling. Also,
+		consider UNKNOWN state to be CONNECTED.
+
 2008-02-18 [wwp]	3.3.0cvs15
 
 	* src/matcher.c

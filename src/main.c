@@ -1014,8 +1014,8 @@ int main(int argc, char *argv[])
 																			"org.freedesktop.NetworkManager");
 		dbus_g_proxy_add_signal(proxy,"StateChange", G_TYPE_UINT, G_TYPE_INVALID);
 		dbus_g_proxy_connect_signal(proxy, "StateChange",
-																G_CALLBACK(networkmanager_state_change_cb),
-																NULL,NULL);
+			G_CALLBACK(networkmanager_state_change_cb),
+			NULL,NULL);
 	}
 #endif
 
@@ -2354,17 +2354,20 @@ osso_context_t *get_osso_context(void)
 
 #ifdef HAVE_NETWORKMANAGER_SUPPORT
 static void networkmanager_state_change_cb(DBusGProxy *proxy, gchar *dev,
-																					 gpointer data)
+					 gpointer data)
 {
 	MainWindow *mainWin;
 
 	mainWin = NULL;
-	if(static_mainwindow)
+	if (static_mainwindow)
 		mainWin = static_mainwindow;
-	else if(data)
+	else if (data)
 		mainWin = (MainWindow*)data;
 	
-	if(mainWin) {
+	if (!prefs_common.use_networkmanager)
+		return;
+
+	if (mainWin) {
 		GError *error;
 		gboolean online;
 
@@ -2375,11 +2378,13 @@ static void networkmanager_state_change_cb(DBusGProxy *proxy, gchar *dev,
 				went_offline_nm = FALSE;
 				main_window_toggle_work_offline(mainWin, FALSE, FALSE);
 				debug_print("NetworkManager: Went online\n");
+				log_message(LOG_PROTOCOL, _("NetworkManager: network is online."));
 			}
 			else if(!online) {
 				went_offline_nm = TRUE;
 				main_window_toggle_work_offline(mainWin, TRUE, FALSE);
 				debug_print("NetworkManager: Went offline\n");
+				log_message(LOG_PROTOCOL, _("NetworkManager: network is offline."));
 			}
 		}
 		else {
@@ -2397,16 +2402,19 @@ static void networkmanager_state_change_cb(DBusGProxy *proxy, gchar *dev,
 gboolean networkmanager_is_online(GError **error)
 {
 	DBusGConnection *connection;
-  DBusGProxy *proxy;
+	DBusGProxy *proxy;
 	GError *tmp_error;
 	gboolean retVal;
 	guint32 state;
 
+	if (!prefs_common.use_networkmanager)
+		return TRUE;
+
 	tmp_error = NULL;
 	proxy = NULL;
-  connection = dbus_g_bus_get(DBUS_BUS_SYSTEM, &tmp_error);
+	connection = dbus_g_bus_get(DBUS_BUS_SYSTEM, &tmp_error);
 
-  if(!connection) {
+	if(!connection) {
 		/* If calling code doesn't do error checking, at least print some debug */
 		if((error == NULL) || (*error == NULL))
 			debug_print("Failed to open connection to system bus: %s\n",
@@ -2416,12 +2424,12 @@ gboolean networkmanager_is_online(GError **error)
 	}
 
 	proxy = dbus_g_proxy_new_for_name(connection,
-																		"org.freedesktop.NetworkManager",
-																		"/org/freedesktop/NetworkManager",
-																		"org.freedesktop.NetworkManager");
+			"org.freedesktop.NetworkManager",
+			"/org/freedesktop/NetworkManager",
+			"org.freedesktop.NetworkManager");
 
-	retVal = dbus_g_proxy_call(proxy,"state",&tmp_error,G_TYPE_INVALID,
-														 G_TYPE_UINT,&state,G_TYPE_INVALID);
+	retVal = dbus_g_proxy_call(proxy,"state",&tmp_error, G_TYPE_INVALID,
+			G_TYPE_UINT, &state, G_TYPE_INVALID);
 
 	if(proxy)
 		g_object_unref(proxy);
@@ -2437,6 +2445,6 @@ gboolean networkmanager_is_online(GError **error)
 		return TRUE;
 	}
 
-	return (state == NM_STATE_CONNECTED);
+	return (state == NM_STATE_CONNECTED || state == NM_STATE_UNKNOWN);
 }
 #endif

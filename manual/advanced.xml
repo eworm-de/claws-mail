@@ -723,6 +723,15 @@
 	</listitem>
       </varlistentry>
       <varlistentry>
+	<term><literal>use_networkmanager</literal></term>
+	<listitem>
+	<para>
+	Use NetworkManager to switch offline automatically. This is enabled
+	by default.
+	</para>
+	</listitem>
+      </varlistentry>
+      <varlistentry>
 	<term><literal>use_stripes_everywhere</literal></term>
 	<listitem>
 	<para>
