@@ -1,3 +1,8 @@
+2008-02-18 [wwp]	3.3.0cvs15
+
+	* src/matcher.c
+		Fix Engrish and make 'not' more visible in filtering debug logs.
+
 2008-02-15 [colin]	3.3.0cvs14
 
 	* src/matcher.c

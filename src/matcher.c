@@ -398,7 +398,7 @@ static gboolean match_with_addresses_in_addressbook
 				&& prefs_common.filtering_debug_level >= FILTERING_DEBUG_LEVEL_HIGH
 				&& !found) {
 			log_print(LOG_DEBUG_FILTERING,
-					"address [ %s ] doesn't match\n",
+					"address [ %s ] does NOT match\n",
 					(gchar *)walk->data);
 		}
 		g_free(walk->data);
@@ -497,7 +497,7 @@ static gboolean matcherprop_string_match(MatcherProp *prop, const gchar *str,
 						prop->matchtype == MATCHTYPE_REGEXP ? _("Case sensitive"):_("Case insensitive"));
 			} else {
 				log_print(LOG_DEBUG_FILTERING,
-						"%s value [ %s ] doesn't matches regular expression [ %s ] (%s)\n",
+						"%s value [ %s ] does NOT match regular expression [ %s ] (%s)\n",
 						debug_context, stripped, prop->expr,
 						prop->matchtype == MATCHTYPE_REGEXP ? _("Case sensitive"):_("Case insensitive"));
 			}
@@ -522,7 +522,7 @@ static gboolean matcherprop_string_match(MatcherProp *prop, const gchar *str,
 						prop->matchtype == MATCHTYPE_MATCH ? _("Case sensitive"):_("Case insensitive"));
 			} else {
 				log_print(LOG_DEBUG_FILTERING,
-						"%s value [ %s ] doesn't contains [ %s ] (%s)\n",
+						"%s value [ %s ] does NOT contain [ %s ] (%s)\n",
 						debug_context, stripped, prop->expr,
 						prop->matchtype == MATCHTYPE_MATCH ? _("Case sensitive"):_("Case insensitive"));
 			}
@@ -808,7 +808,7 @@ gboolean matcherprop_match(MatcherProp *prop,
 						color, prop->value);
 			} else {
 				log_print(LOG_DEBUG_FILTERING,
-						"message color value [ %d ] doesn't matches color value [ %d ]\n",
+						"message color value [ %d ] does NOT match color value [ %d ]\n",
 						color, prop->value);
 			}
 		}
@@ -828,7 +828,7 @@ gboolean matcherprop_match(MatcherProp *prop,
 						color, prop->value);
 			} else {
 				log_print(LOG_DEBUG_FILTERING,
-						"message color value [ %d ] doesn't matches color value [ %d ]\n",
+						"message color value [ %d ] does NOT match color value [ %d ]\n",
 						color, prop->value);
 			}
 		}

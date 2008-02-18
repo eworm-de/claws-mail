@@ -3228,3 +3228,4 @@
 ( cvs diff -u -r 1.207.2.196 -r 1.207.2.197 src/folderview.c;  ) > 3.3.0cvs12.patchset
 ( cvs diff -u -r 1.115.2.186 -r 1.115.2.187 src/main.c;  cvs diff -u -r 1.382.2.437 -r 1.382.2.438 src/compose.c;  ) > 3.3.0cvs13.patchset
 ( cvs diff -u -r 1.75.2.55 -r 1.75.2.56 src/matcher.c;  ) > 3.3.0cvs14.patchset
+( cvs diff -u -r 1.75.2.56 -r 1.75.2.57 src/matcher.c;  ) > 3.3.0cvs15.patchset
