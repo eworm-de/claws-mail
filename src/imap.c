@@ -1006,8 +1006,11 @@ static IMAPSession *imap_session_get(Folder *folder)
 			debug_print("disconnected!\n");
 			if (!is_fatal(r))
 				session = imap_reconnect_if_possible(folder, session);
-			else
+			else {
+				rfolder->session = NULL;
+				rfolder->connecting = FALSE;
 				session = imap_session_get(folder);
+			}
 		}
 		if (session)
 			session->cancelled = FALSE;

@@ -1,3 +1,18 @@
+2008-02-18 [colin]	3.3.0cvs3-stable
+
+	* src/imap.c
+		Backport 3.3.0cvs16:
+		Unset folder's session before creating a
+		new one
+	* src/main.c
+	* src/prefs_common.c
+	* src/prefs_common.h
+	* manual/advanced.xml
+		Backport 3.3.0cvs16:
+		Add an hidden use_networkmanager pref, to
+		disable NetworkManager handling. Also,
+		consider UNKNOWN state to be CONNECTED.
+
 2008-02-15 [colin]	3.3.0cvs2-stable
 
 	* src/main.c

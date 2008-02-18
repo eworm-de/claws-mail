@@ -1098,6 +1098,8 @@ static PrefParam param[] = {
 	 NULL, NULL, NULL},
 	{"print_previewwin_height", "-1", &prefs_common.print_previewwin_height, P_INT,
 	 NULL, NULL, NULL},
+	{"use_networkmanager", "TRUE", &prefs_common.use_networkmanager, P_BOOL,
+	 NULL, NULL, NULL},
 
 	{NULL, NULL, NULL, P_OTHER, NULL, NULL, NULL}
 };
