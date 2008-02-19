@@ -177,7 +177,7 @@ Address book conversion
 
 	Kmail >= 1.9.7 / Kaddressbook >= 3.5.7
 	--------------------------------------
-	In Kaddressbook you need to export your address as 'CSV List'.
+	In Kaddressbook you need to export your address book as 'CSV List'.
 
 	Run the script with the following options:
 
