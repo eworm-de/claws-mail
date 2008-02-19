@@ -12,9 +12,6 @@
 	Si vous ne trouvez pas le module que vous cherchez, il est possible que votre distribution GNU/Linux le fournisse dans un paquet séparé. Dans ce cas, recherchez-le dans votre gestionnaire de paquets.
     </para>
     <variablelist>
-	    <varlistentry><term>Clam Antivirus</term>
-	    <listitem><para>Permet de vérifier l'absence de virus dans les messages reçus. Ce module peut effacer les courriers contaminés ou les mettre en quarantaine dans le dossier de votre choix. Vous pouvez le configurer dans <quote>Configuration/Préférences/Modules/Clam AntiVirus</quote>. Clam AntiVirus est disponible sur <ulink url="http://clamav.sourceforge.net/">http://clamav.sourceforge.net/</ulink>.</para></listitem>
-    </varlistentry>
     <varlistentry><term>Visualiseur HTML Dillo</term>
 	    <listitem><para>Permet de voir les messages en HTML grâce au navigateur léger Dillo, version 0.7.0 ou supérieure. Il utilise l'option --local de Dillo pour rester sécurisé et ne pas charger les images distantes. Vous pouvez le configurer dans <quote>Configuration/Préférences/Modules/Dillo Browser</quote>. Dillo est disponible sur <ulink url="http://www.dillo.org/">http://www.dillo.org/</ulink>.</para></listitem>
     </varlistentry>

@@ -1,3 +1,11 @@
+2008-02-19 [colin]	3.3.0cvs18
+
+	* manual/plugins.xml
+	* manual/es/plugins.xml
+	* manual/fr/plugins.xml
+	* manual/pl/plugins.xml
+		Remove Clamav
+
 2008-02-19 [paul]	3.3.0cvs17
 
 	* tools/README
