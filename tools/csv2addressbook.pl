@@ -18,7 +18,7 @@ use Text::CSV_XS;
 #  * along with this program; if not, write to the Free Software
 #  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
 #  *
-#  * Copyright 2007 Paul Mangan <paul@claws-mail.org>
+#  * Copyright 2007/2008 Paul Mangan <paul@claws-mail.org>
 #  *
 
 #
@@ -26,10 +26,13 @@ use Text::CSV_XS;
 # Supported address books: 
 #	Becky >= 2.41
 #	Thunderbird >= 2.0.0.6
+#	Kmail >= 1.9.7 / Kaddressbook >= 3.5.7		
+#		** kmail bug: can export badly formatted csv **
 #
 
 # Becky: full export with titles
 # thunderbird: export as 'comma separated'
+# kmail/kaddressbook: Export CSV list
 
 ###
 my $quote_char = '"';
@@ -43,7 +46,7 @@ my $csvfile = '';
 my $bookname = '';
 my $iNeedHelp = '';
 
-my $known_types = qr/^(?:becky|thunderbird)$/;
+my $known_types = qr/^(?:becky|thunderbird|kmail)$/;
 
 GetOptions("type=s" => \$type,
 	   "csv=s"  => \$csvfile,
@@ -65,6 +68,20 @@ my @tbird_fields = ('First Name','Last Name','Display Name','Nickname',
 		    'Job Title','Department','Organization','Web Page 1',
 		    'Web Page 2','Birth Year','Birth Month','Birth Day',
 		    'Custom 1','Custom 2','Custom 3','Custom 4','Notes','junk');
+my @kmail_fields = ('Formatted Name','Family Name','Given Name',
+		    'Additional Names','Honorific Prefixes','Honorific Suffixes',
+		    'Nick Name','Birthday','Home Address Street',
+		    'Home Address City','Home Address Region',
+		    'Home Address Post Code','Home Address Country',
+		    'Home Address Label','Business Address Street',
+		    'Business Address City','Business Address Region',
+		    'Business Address Post Code','Business Address Country',
+		    'Business Address Label','Home Phone','Business Phone',
+		    'Mobile Phone','Home Fax','Business Fax','Car Phone','ISDN',
+		    'Pager','Email Address','Mail Client','Title','Role',
+		    'Organisation','Department','Note','Homepage','Profession',
+		    'Assistant\'s Name','Manager\'s Name','Partner\'s Name',
+		    'Office','IM Address','Anniversary','Blog');
 
 if (grep m/claws-mail/ => `ps -U $ENV{USER}`) {
 	die("You must quit claws-mail before running this script\n");
@@ -87,7 +104,7 @@ Usage:
 	$script [OPTIONS]
 Options:
 	--help				Show this screen
-	--type=becky|thunderbird	Type of exported address book
+	--type=becky|thunderbird|kmail	Type of exported address book
 	--csv=FILENAME			Full path to CSV file
 	--name="My new address book"	Name of new Claws address book (optional)
 ~;
@@ -184,6 +201,8 @@ sub get_book_name {
 		return("Becky address book");
 	} elsif ($type eq "thunderbird") {
 		return("Thunderbird address book");
+	} elsif ($type eq "kmail") {
+		return("Kmail address book");
 	}
 }
 
@@ -195,6 +214,11 @@ sub check_fields {
 		}
 	} elsif ($type eq "thunderbird") {
 		if ($#csvfields != $#tbird_fields) {
+			die("ERROR:\n\tNot enough fields!\n"
+		    	   ."\tProblem with your exported CSV file\n");
+		}
+	} elsif ($type eq "kmail") {
+		if ($#csvfields != $#kmail_fields) {
 			die("ERROR:\n\tNot enough fields!\n"
 		    	   ."\tProblem with your exported CSV file\n");
 		}
@@ -289,6 +313,8 @@ sub get_items {
 		return ('10','9','2','0','1','4');
 	} elsif ($type eq "thunderbird") {
 		return ('0','1','3','2','4','5','38');
+	} elsif ($type eq "kmail") {
+		return ('2','1','6','0','28','34');
 	}
 }
 
@@ -297,6 +323,8 @@ sub get_fields {
 		return(@becky_fields);
 	} elsif ($type eq "thunderbird") {
 		return(@tbird_fields);
+	} elsif ($type eq "kmail") {
+		return(@kmail_fields);
 	}
 }
 

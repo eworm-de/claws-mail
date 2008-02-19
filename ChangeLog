@@ -1,3 +1,9 @@
+2008-02-19 [paul]	3.3.0cvs17
+
+	* tools/README
+	* tools/csv2addressbook.pl
+		add support for Kmail/Kaddressbook
+
 2008-02-18 [colin]	3.3.0cvs16
 
 	* src/imap.c
