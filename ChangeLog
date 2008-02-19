@@ -1,3 +1,11 @@
+2008-02-19 [colin]	3.3.0cvs4-stable
+
+	* manual/plugins.xml
+	* manual/es/plugins.xml
+	* manual/pl/plugins.xml
+	* manual/fr/plugins.xml
+		Backport 3.3.0cvs18: Remove Clamav 
+
 2008-02-18 [colin]	3.3.0cvs3-stable
 
 	* src/imap.c

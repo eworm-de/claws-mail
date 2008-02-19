@@ -12,9 +12,6 @@
 	Je¶li nie mo¿esz znale¼æ wtyczki, której poszukujesz jest ca³kiem mo¿liwe, ¿e twoja dystrybucja GNU/Linux oferuje j± jako oddzieln± paczkê. W tym przypadku poszukaj wtyczki w swoim menad¿erze paczek.
     </para>
     <variablelist>
-	    <varlistentry><term>Clam AntiVirus</term>
-	    <listitem><para>Pozwala na skanowanie za³±czników wiadomo¶ci ¶ci±gniêtych z kont POP3, IMAP lub lokalnych przy u¿yciu Clam AntiVirus. Opcjonalnie usuwaæ wiadomo¶ci albo zapisywaæ w wyznaczonym katalogu. Ustawienia znajduj± siê w  <quote>Konfiguracja/Ustawienia/Wtyczki/Clam AntiVirus</quote>. Clam AntiVirus mo¿na pobraæ z <ulink url="http://clamav.sourceforge.net/">http://clamav.sourceforge.net/</ulink>.</para></listitem>
-    </varlistentry>
     <varlistentry><term>Przegl±darka HTML Dillo</term>
 	    <listitem><para>Pozwala na wy¶wietlanie wiadomo¶ci w formacie HTML u¿ywaj±c przy tym przegl±darki Dillo, w wersji 0.7.0 lub nowszej. Domy¶lnie u¿ywa opcji --local przegl±darki Dillo w celu bezpiecznego surfowania. Ustawienia znajduj± siê w <quote>/Konfiguracja/Ustawienia/Wtyczki/Dillo Browser</quote>. Dillo mo¿na pobraæ z <ulink url="http://www.dillo.org/">http://www.dillo.org/</ulink>.</para></listitem>
     </varlistentry>

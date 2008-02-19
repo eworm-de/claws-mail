@@ -53,19 +53,6 @@
 	</listitem>
       </varlistentry>
       <varlistentry>
-	<term>Antivirus Clam</term>
-	<listitem>
-	  <para>
-	Habilita el escaneado usando el antivirus Clam de los adjuntos de los 
-	mensajes recibidos de una cuenta POP, IMAP o local. Las preferencias
-	se encuentran en <quote>Configuración/Preferencias/Módulos/Antivirus
-	Clam</quote>. El antivirus Clam está disponible en <ulink 
-	url="http://clamav.sourceforge.net/"
-	>http://clamav.sourceforge.net/</ulink>.
-	  </para>
-	</listitem>
-      </varlistentry>
-      <varlistentry>
 	<term>Visor HTML Dillo</term>
 	<listitem>
 	  <para>
