@@ -1,3 +1,8 @@
+2008-02-20 [colin]	3.3.0cvs19
+
+	* src/main.c
+		Fix file attachments from older Thunar
+
 2008-02-19 [colin]	3.3.0cvs18
 
 	* manual/plugins.xml

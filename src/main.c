@@ -1795,6 +1795,9 @@ static void parse_cmd_opt(int argc, char *argv[])
 				}
 			} else if (!strncmp(argv[i], "file://", 7)) {
 				cmd.target = argv[i];
+			} else if (!strncmp(argv[i], "?attach=file://", strlen("?attach=file://"))) {
+				cmd.compose = TRUE;
+				cmd.compose_mailto = argv[i];
 			} else if (strstr(argv[i], "://")) {
 				const gchar *p = argv[i];
 				if (p && *p != '\0' && *p != '-') {
