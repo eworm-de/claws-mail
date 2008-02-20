@@ -1,3 +1,9 @@
+2008-02-20 [colin]	3.3.0cvs5-stable
+
+	* src/main.c
+		Backport from 3.3.0cvs19: Fix file
+		attachments from older Thunar
+
 2008-02-19 [colin]	3.3.0cvs4-stable
 
 	* manual/plugins.xml
