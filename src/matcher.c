@@ -257,11 +257,7 @@ MatcherProp *matcherprop_new(gint criteria, const gchar *header,
 	prop->criteria = criteria;
 	prop->header = header != NULL ? g_strdup(header) : NULL;
 
-	if (matchtype == MATCHTYPE_MATCHCASE ||
-	    matchtype == MATCHTYPE_REGEXPCASE)
-		prop->expr = expr != NULL ? g_utf8_casefold(expr, -1) : NULL;
-	else
-		prop->expr = expr != NULL ? g_strdup(expr) : NULL;
+	prop->expr = expr != NULL ? g_strdup(expr) : NULL;
 
 	prop->matchtype = matchtype;
 	prop->preg = NULL;
@@ -447,6 +443,7 @@ static gboolean matcherprop_string_match(MatcherProp *prop, const gchar *str,
 					 const gchar *debug_context)
 {
 	gchar *str1;
+	gchar *down_expr;
 	gboolean ret = FALSE;
 	gboolean should_free = FALSE;
 	if (str == NULL)
@@ -455,9 +452,11 @@ static gboolean matcherprop_string_match(MatcherProp *prop, const gchar *str,
 	if (prop->matchtype == MATCHTYPE_REGEXPCASE ||
 	    prop->matchtype == MATCHTYPE_MATCHCASE) {
 		str1 = g_utf8_casefold(str, -1);
+		down_expr = g_utf8_casefold(prop->expr, -1);
 		should_free = TRUE;
 	} else {
 		str1 = (gchar *)str;
+		down_expr = (gchar *)prop->expr;
 		should_free = FALSE;
 	}
 
@@ -467,7 +466,7 @@ static gboolean matcherprop_string_match(MatcherProp *prop, const gchar *str,
 		if (!prop->preg && (prop->error == 0)) {
 			prop->preg = g_new0(regex_t, 1);
 			/* if regexp then don't use the escaped string */
-			if (regcomp(prop->preg, prop->expr,
+			if (regcomp(prop->preg, down_expr,
 				    REG_NOSUB | REG_EXTENDED
 				    | ((prop->matchtype == MATCHTYPE_REGEXPCASE)
 				    ? REG_ICASE : 0)) != 0) {
@@ -476,8 +475,10 @@ static gboolean matcherprop_string_match(MatcherProp *prop, const gchar *str,
 				prop->preg = NULL;
 			}
 		}
-		if (prop->preg == NULL)
-			return FALSE;
+		if (prop->preg == NULL) {
+			ret = FALSE;
+			goto free_strs;
+		}
 		
 		if (regexec(prop->preg, str1, 0, NULL, 0) == 0)
 			ret = TRUE;
@@ -507,7 +508,7 @@ static gboolean matcherprop_string_match(MatcherProp *prop, const gchar *str,
 			
 	case MATCHTYPE_MATCHCASE:
 	case MATCHTYPE_MATCH:
-		ret = (strstr(str1, prop->expr) != NULL);
+		ret = (strstr(str1, down_expr) != NULL);
 
 		/* debug output */
 		if (debug_filtering_session
@@ -534,8 +535,10 @@ static gboolean matcherprop_string_match(MatcherProp *prop, const gchar *str,
 		break;
 	}
 	
+free_strs:
 	if (should_free) {
 		g_free(str1);
+		g_free(down_expr);
 	}
 	return ret;
 }
