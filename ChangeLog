@@ -1,3 +1,9 @@
+2008-02-21 [colin]	3.3.0cvs20
+
+	* src/matcher.c
+		Fix bug 1527, 'filtering is case sensitive when it 
+		shouldn't be'
+
 2008-02-20 [colin]	3.3.0cvs19
 
 	* src/main.c
