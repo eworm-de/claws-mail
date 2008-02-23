@@ -1,5 +1,14 @@
 Changes of the  Claws Mail GTK2 branch
 
+* 3.3.1
+-------
+
+* Forbid attaching anything containing "../" or ".ssh/" in mailto:
+  URIs.
+
+* Add a hidden preference, 'use_networkmanager', to disable
+  NetworkManager handling
+
 * 3.3.0
 -------
 
