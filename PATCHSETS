@@ -3220,3 +3220,4 @@
 ( cvs diff -u -r 1.1.2.20 -r 1.1.2.21 manual/plugins.xml;  cvs diff -u -r 1.1.2.4 -r 1.1.2.5 manual/es/plugins.xml;  cvs diff -u -r 1.1.2.3 -r 1.1.2.4 manual/pl/plugins.xml;  cvs diff -u -r 1.1.2.8 -r 1.1.2.9 manual/fr/plugins.xml;  ) > 3.3.0cvs4-stable.patchset
 ( cvs diff -u -r 1.115.2.184.2.3 -r 1.115.2.184.2.4 src/main.c;  ) > 3.3.0cvs5-stable.patchset
 ( cvs diff -u -r 1.75.2.54 -r 1.75.2.55 src/matcher.c;  ) > 3.3.0cvs6-stable.patchset
+( cvs diff -u -r 1.1.2.1 -r 1.1.2.2 po/he.po;  ) > 3.3.0cvs7-stable.patchset

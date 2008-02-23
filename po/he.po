@@ -6,7 +6,7 @@ msgstr ""
 "Project-Id-Version: claws-mail\n"
 "Report-Msgid-Bugs-To: paul@claws-mail.org\n"
 "POT-Creation-Date: 2008-01-24 06:08+0100\n"
-"PO-Revision-Date: 2008-02-07 14:29+0200\n"
+"PO-Revision-Date: 2008-02-12 21:28+0200\n"
 "Last-Translator: S.D.O.C. LTD <sdocdb@gmail.com>\n"
 "Language-Team: S.D.O.C. LTD <sdocdb@gmail.com>\n"
 "MIME-Version: 1.0\n"
@@ -241,7 +241,6 @@ msgid "Attribute name"
 msgstr "שם תכונות"
 
 #: src/addrcustomattr.c:155
-#, fuzzy
 msgid "Delete all attribute names"
 msgstr "מחיקת כל שמות התכונות"
 
@@ -2093,7 +2092,7 @@ msgstr ""
 #: src/toolbar.c:419
 #: src/toolbar.c:436
 msgid "Send"
-msgstr "שלח"
+msgstr "שליחה"
 
 #: src/compose.c:4511
 msgid "The only recipient is the default CC address. Send anyway?"
@@ -2104,7 +2103,7 @@ msgstr "הנמען היחיד הוא העתק לידיעה. לשלוח בכל ז
 #: src/compose.c:4577
 #: src/compose.c:5085
 msgid "+_Send"
-msgstr "+_שלח"
+msgstr "+_שליחה"
 
 #: src/compose.c:4543
 msgid "The only recipient is the default BCC address. Send anyway?"
@@ -2828,7 +2827,7 @@ msgstr "שם שאתה רוצה לקרוא לשרת"
 
 #: src/editldap.c:459
 msgid "This is the hostname of the server. For example, \"ldap.mydomain.com\" may be appropriate for the \"mydomain.com\" organization. An IP address may also be used. You may specify \"localhost\" if running an LDAP server on the same computer as Claws Mail."
-msgstr "This is the hostname of the server. For example, \"ldap.mydomain.com\" may be appropriate for the \"mydomain.com\" organisation. An IP address may also be used. You may specify \"localhost\" if running an LDAP server on the same computer as Claws Mail."
+msgstr ""
 
 #: src/editldap.c:480
 msgid "TLS"
@@ -2980,7 +2979,6 @@ msgid "Do you really want to delete this tag?"
 msgstr "האם ברצונך למחוק תגית זו?"
 
 #: src/edittags.c:243
-#, fuzzy
 msgid "Delete all tags"
 msgstr "מחק את כל התגיות"
 
@@ -3608,7 +3606,7 @@ msgstr "שלח את כל ההודעות שבתור?"
 #: src/messageview.c:708
 #: src/toolbar.c:2543
 msgid "_Send"
-msgstr "_שלח"
+msgstr "_שליחה"
 
 #: src/folderview.c:2476
 #: src/toolbar.c:2561
@@ -4327,7 +4325,7 @@ msgstr "מאת:"
 #: src/gtk/headers.h:10
 #: src/toolbar.c:424
 msgid "Sender"
-msgstr "שולח"
+msgstr "השב לשולח"
 
 #: src/gtk/headers.h:10
 msgid "Sender:"
@@ -4920,7 +4918,7 @@ msgstr ""
 #: src/prefs_filtering.c:391
 #: src/prefs_filtering.c:1893
 msgid "Account"
-msgstr ""
+msgstr "חשבון"
 
 #: src/gtk/quicksearch.c:414
 msgid "all messages"
@@ -5698,36 +5696,36 @@ msgstr ""
 #: src/imap_gtk.c:58
 #: src/mh_gtk.c:50
 msgid "/Create _new folder..."
-msgstr ""
+msgstr "/צור תיקיה _חדשה..."
 
 #: src/imap_gtk.c:60
 #: src/mh_gtk.c:52
 msgid "/_Rename folder..."
-msgstr ""
+msgstr "/שנה _שם לתיקייה..."
 
 #: src/imap_gtk.c:61
 #: src/mh_gtk.c:53
 msgid "/M_ove folder..."
-msgstr ""
+msgstr "/ה_זז תיקייה..."
 
 #: src/imap_gtk.c:62
 #: src/mh_gtk.c:54
 msgid "/Cop_y folder..."
-msgstr ""
+msgstr "/ה_עתק תיקייה..."
 
 #: src/imap_gtk.c:64
 #: src/mh_gtk.c:56
 msgid "/_Delete folder..."
-msgstr ""
+msgstr "/_מחק תיקייה..."
 
 #: src/imap_gtk.c:66
 msgid "/_Synchronise"
-msgstr ""
+msgstr "/_סנכרן"
 
 #: src/imap_gtk.c:67
 #: src/news_gtk.c:57
 msgid "/Down_load messages"
-msgstr ""
+msgstr "/הו_רד הודעות"
 
 #: src/imap_gtk.c:69
 msgid "/S_ubscriptions"
@@ -5753,17 +5751,17 @@ msgstr ""
 #: src/mh_gtk.c:58
 #: src/news_gtk.c:59
 msgid "/_Check for new messages"
-msgstr ""
+msgstr "/_בדוק עבור הודעות חדשות"
 
 #: src/imap_gtk.c:78
 #: src/mh_gtk.c:59
 msgid "/C_heck for new folders"
-msgstr ""
+msgstr "/ב_דוק עבור תיקיות"
 
 #: src/imap_gtk.c:79
 #: src/mh_gtk.c:60
 msgid "/R_ebuild folder tree"
-msgstr ""
+msgstr "/_בנה מחדש עץ תיקיות"
 
 #: src/imap_gtk.c:156
 msgid ""
@@ -6503,11 +6501,11 @@ msgstr "/_קובץ"
 
 #: src/mainwindow.c:534
 msgid "/_File/_Add mailbox"
-msgstr ""
+msgstr "/_קובץ/_הוסף תיבת דואר"
 
 #: src/mainwindow.c:535
 msgid "/_File/_Add mailbox/MH..."
-msgstr ""
+msgstr "/_קובץ/_הוסף תיבת דואר/MH..."
 
 #: src/mainwindow.c:536
 #: src/mainwindow.c:538
@@ -6517,23 +6515,23 @@ msgstr ""
 #: src/mainwindow.c:554
 #: src/messageview.c:223
 msgid "/_File/---"
-msgstr ""
+msgstr "/_קובץ/---"
 
 #: src/mainwindow.c:537
 msgid "/_File/Change folder order..."
-msgstr ""
+msgstr "/_קובץ/שנה מיון תיקייה..."
 
 #: src/mainwindow.c:539
 msgid "/_File/_Import mbox file..."
-msgstr ""
+msgstr "/_קובץ/י_בא קובץ mbox..."
 
 #: src/mainwindow.c:540
 msgid "/_File/_Export to mbox file..."
-msgstr ""
+msgstr "/_קובץ/י_צא לקובץ mbox..."
 
 #: src/mainwindow.c:541
 msgid "/_File/Exp_ort selected to mbox file..."
-msgstr ""
+msgstr "/_קובץ/יצ_א נבחר לקובץ mbox..."
 
 #: src/mainwindow.c:544
 msgid "/_File/Empty all _Trash folders"
@@ -6542,50 +6540,50 @@ msgstr "/_File/Empty all Was_tebin folders"
 #: src/mainwindow.c:546
 #: src/messageview.c:218
 msgid "/_File/_Save as..."
-msgstr ""
+msgstr "/_קובץ/_שמור כ..."
 
 #: src/mainwindow.c:548
 #: src/messageview.c:220
 msgid "/_File/Page setup..."
-msgstr ""
+msgstr "/_קובץ/הגדרת עמוד..."
 
 #: src/mainwindow.c:550
 #: src/messageview.c:222
 msgid "/_File/_Print..."
-msgstr ""
+msgstr "/_קובץ/ה_דפסה..."
 
 #: src/mainwindow.c:552
 msgid "/_File/_Work offline"
-msgstr ""
+msgstr "/_קובץ/עבוד לא _מקוון"
 
 #: src/mainwindow.c:553
 msgid "/_File/Synchronise folders"
-msgstr ""
+msgstr "/_קובץ/סנכרן תיקיות"
 
 #: src/mainwindow.c:556
 msgid "/_File/E_xit"
-msgstr ""
+msgstr "/_קובץ/יצי_אה"
 
 #: src/mainwindow.c:561
 msgid "/_Edit/Select _thread"
-msgstr ""
+msgstr "/_עריכה/בחר _שרשור"
 
 #: src/mainwindow.c:562
 msgid "/_Edit/_Delete thread"
-msgstr ""
+msgstr "/_עריכה/_מחק שרשור"
 
 #: src/mainwindow.c:564
 #: src/messageview.c:230
 msgid "/_Edit/_Find in current message..."
-msgstr ""
+msgstr "/_עריכה/_חפש בהודעה נוכחית"
 
 #: src/mainwindow.c:566
 msgid "/_Edit/_Search folder..."
-msgstr ""
+msgstr "/_עריכה/חפש בתי_קייה"
 
 #: src/mainwindow.c:567
 msgid "/_Edit/_Quick search"
-msgstr ""
+msgstr "/_עריכה/חיפוש _מהיר"
 
 #: src/mainwindow.c:568
 #: src/messageview.c:233
@@ -6595,55 +6593,55 @@ msgstr "/_תצוגה"
 
 #: src/mainwindow.c:569
 msgid "/_View/Show or hi_de"
-msgstr ""
+msgstr "/_תצוגה/הצג או ה_סתר"
 
 #: src/mainwindow.c:570
 msgid "/_View/Show or hi_de/_Toolbar"
-msgstr ""
+msgstr "/_תצוגה/הצג או ה_סתר/_סרגל כלים"
 
 #: src/mainwindow.c:572
 msgid "/_View/Show or hi_de/_Toolbar/Text _below icons"
-msgstr ""
+msgstr "/_תצוגה/הצג או ה_סתר/_סרגל כלים/כיתוב מ_תחת לסמלים"
 
 #: src/mainwindow.c:574
 msgid "/_View/Show or hi_de/_Toolbar/Text be_side icons"
-msgstr ""
+msgstr "/_תצוגה/הצג או ה_סתר/_סרגל כלים/כיתוב ל_צד הסמלים"
 
 #: src/mainwindow.c:576
 msgid "/_View/Show or hi_de/_Toolbar/_Icons only"
-msgstr ""
+msgstr "/_תצוגה/הצג או ה_סתר/_סרגל כלים/_סמלים בלבד"
 
 #: src/mainwindow.c:578
 msgid "/_View/Show or hi_de/_Toolbar/_Text only"
-msgstr ""
+msgstr "/_תצוגה/הצג או ה_סתר/_סרגל כלים/_כיתוב בלבד"
 
 #: src/mainwindow.c:581
 msgid "/_View/Show or hi_de/_Toolbar/_Hide"
-msgstr ""
+msgstr "/_תצוגה/הצג או ה_סתר/_סרגל כלים/ה_סתר"
 
 #: src/mainwindow.c:584
 msgid "/_View/Show or hi_de/_Message view"
-msgstr ""
+msgstr "/_תצוגה/הצג או ה_סתר/תצוגת _הודעה"
 
 #: src/mainwindow.c:587
 msgid "/_View/Show or hi_de/Status _bar"
-msgstr ""
+msgstr "/_תצוגה/הצג או ה_סתר/_סרגל כלים/_שורת מצב"
 
 #: src/mainwindow.c:590
 msgid "/_View/Show or hi_de/Column headers"
-msgstr ""
+msgstr "/_תצוגה/הצג או ה_סתר/כותרות עמודות"
 
 #: src/mainwindow.c:592
 msgid "/_View/Set displayed _columns"
-msgstr ""
+msgstr "/_תצוגה/הגדר _עמודות לתצוגה"
 
 #: src/mainwindow.c:593
 msgid "/_View/Set displayed _columns/in _Folder list..."
-msgstr ""
+msgstr "/_תצוגה/הגדר _עמודות לתצוגה/ברשימת _תיקיות"
 
 #: src/mainwindow.c:594
 msgid "/_View/Set displayed _columns/in _Message list..."
-msgstr ""
+msgstr "/_תצוגה/הגדר _עמודות לתצוגה/ברשימת _הודעות"
 
 #: src/mainwindow.c:596
 #: src/mainwindow.c:604
@@ -6654,63 +6652,63 @@ msgstr ""
 #: src/messageview.c:263
 #: src/messageview.c:369
 msgid "/_View/---"
-msgstr ""
+msgstr "/_תצוגה/---"
 
 #: src/mainwindow.c:598
 msgid "/_View/La_yout"
-msgstr ""
+msgstr "/_תצוגה/פ_ריסה"
 
 #: src/mainwindow.c:599
 msgid "/_View/Layout/_Standard"
-msgstr ""
+msgstr "/_תצוגה/פ_ריסה/רגילה"
 
 #: src/mainwindow.c:600
 msgid "/_View/Layout/_Three columns"
-msgstr ""
+msgstr "/_תצוגה/פ_ריסה/_שלוש עמודות"
 
 #: src/mainwindow.c:601
 msgid "/_View/Layout/_Wide message"
-msgstr ""
+msgstr "/_תצוגה/פ_ריסה/_רחבה"
 
 #: src/mainwindow.c:602
 msgid "/_View/Layout/W_ide message list"
-msgstr ""
+msgstr "/_תצוגה/פ_ריסה/רשימת הו_דעות רחבה"
 
 #: src/mainwindow.c:603
 msgid "/_View/Layout/S_mall screen"
-msgstr ""
+msgstr "/_תצוגה/פ_ריסה/מסך _קטן"
 
 #: src/mainwindow.c:606
 msgid "/_View/_Sort"
-msgstr ""
+msgstr "/_תצוגה/מ_יון"
 
 #: src/mainwindow.c:607
 msgid "/_View/_Sort/by _number"
-msgstr ""
+msgstr "/_תצוגה/מ_יון/לפי _מספר"
 
 #: src/mainwindow.c:608
 msgid "/_View/_Sort/by S_ize"
-msgstr ""
+msgstr "/_תצוגה/מ_יון/לפי _גודל"
 
 #: src/mainwindow.c:609
 msgid "/_View/_Sort/by _Date"
-msgstr ""
+msgstr "/_תצוגה/מ_יון/לפי תאריך"
 
 #: src/mainwindow.c:610
 msgid "/_View/_Sort/by Thread date"
-msgstr ""
+msgstr "/_תצוגה/מ_יון/לפי תאריך שרשור"
 
 #: src/mainwindow.c:611
 msgid "/_View/_Sort/by _From"
-msgstr ""
+msgstr "/_תצוגה/מ_יון/לפי מאת"
 
 #: src/mainwindow.c:612
 msgid "/_View/_Sort/by _To"
-msgstr ""
+msgstr "/_תצוגה/מ_יון/לפי _אל"
 
 #: src/mainwindow.c:613
 msgid "/_View/_Sort/by S_ubject"
-msgstr ""
+msgstr "/_תצוגה/מ_יון/לפי _נושא"
 
 #: src/mainwindow.c:614
 msgid "/_View/_Sort/by _color label"
@@ -6718,79 +6716,79 @@ msgstr "/_View/_Sort/by _colour label"
 
 #: src/mainwindow.c:615
 msgid "/_View/_Sort/by tag"
-msgstr ""
+msgstr "/_תצוגה/מ_יון/לפי _תגית"
 
 #: src/mainwindow.c:616
 msgid "/_View/_Sort/by _mark"
-msgstr ""
+msgstr "/_תצוגה/מ_יון/לפי _סימון"
 
 #: src/mainwindow.c:617
 msgid "/_View/_Sort/by _status"
-msgstr ""
+msgstr "/_תצוגה/מ_יון/לפי ס_טטוס"
 
 #: src/mainwindow.c:618
 msgid "/_View/_Sort/by a_ttachment"
-msgstr ""
+msgstr "/_תצוגה/מ_יון/לפי מ_צורף"
 
 #: src/mainwindow.c:620
 msgid "/_View/_Sort/by score"
-msgstr ""
+msgstr "/_תצוגה/מ_יון/לפי ני_קוד"
 
 #: src/mainwindow.c:621
 msgid "/_View/_Sort/by locked"
-msgstr ""
+msgstr "/_תצוגה/מ_יון/לפי נ_עילה"
 
 #: src/mainwindow.c:622
 msgid "/_View/_Sort/D_on't sort"
-msgstr ""
+msgstr "/_תצוגה/מ_יון/_ללא"
 
 #: src/mainwindow.c:623
 #: src/mainwindow.c:626
 msgid "/_View/_Sort/---"
-msgstr ""
+msgstr "/_תצוגה/מ_יון/---"
 
 #: src/mainwindow.c:624
 msgid "/_View/_Sort/Ascending"
-msgstr ""
+msgstr "/_תצוגה/מ_יון/בסדר עולה"
 
 #: src/mainwindow.c:625
 msgid "/_View/_Sort/Descending"
-msgstr ""
+msgstr "/_תצוגה/מ_יון/בסדר יורד"
 
 #: src/mainwindow.c:627
 msgid "/_View/_Sort/_Attract by subject"
-msgstr ""
+msgstr "/_תצוגה/מ_יון/_Attract by subject"
 
 #: src/mainwindow.c:629
 msgid "/_View/Th_read view"
-msgstr ""
+msgstr "/_תצוגה/תצוגת ש_רשור"
 
 #: src/mainwindow.c:630
 msgid "/_View/E_xpand all threads"
-msgstr ""
+msgstr "/_תצוגה/הרחב כל השרשורים"
 
 #: src/mainwindow.c:631
 msgid "/_View/Co_llapse all threads"
-msgstr ""
+msgstr "/_תצוגה/ק_פל כל השרשורים"
 
 #: src/mainwindow.c:632
 msgid "/_View/_Hide read messages"
-msgstr ""
+msgstr "/_תצוגה/ה_סתר הודעות שנקראו"
 
 #: src/mainwindow.c:635
 #: src/messageview.c:234
 msgid "/_View/_Go to"
-msgstr ""
+msgstr "/_תצוגה/_עבור אל"
 
 #: src/mainwindow.c:636
 #: src/messageview.c:235
 msgid "/_View/_Go to/_Previous message"
-msgstr ""
+msgstr "/_תצוגה/_עבור אל/הודעה _קודמת"
 
 #: src/mainwindow.c:637
 #: src/messageview.c:236
 msgid "/_View/_Go to/_Next message"
-msgstr ""
+msgstr "/_תצוגה/_עבור אל/הודעה ה_באה"
 
 #: src/mainwindow.c:638
 #: src/mainwindow.c:643
@@ -6805,37 +6803,37 @@ msgstr ""
 #: src/messageview.c:255
 #: src/messageview.c:260
 msgid "/_View/_Go to/---"
-msgstr ""
+msgstr "/_תצוגה/_עבור אל/---"
 
 #: src/mainwindow.c:639
 #: src/messageview.c:238
 msgid "/_View/_Go to/P_revious unread message"
-msgstr ""
+msgstr "/_תצוגה/_עבור אל/הודעה הקוד_מת שלא נקראה"
 
 #: src/mainwindow.c:641
 #: src/messageview.c:240
 msgid "/_View/_Go to/N_ext unread message"
-msgstr ""
+msgstr "/_תצוגה/_עבור אל/הודעה הבאה ש_לא נקראה"
 
 #: src/mainwindow.c:644
 #: src/messageview.c:243
 msgid "/_View/_Go to/Previous ne_w message"
-msgstr ""
+msgstr "/_תצוגה/_עבור אל/הודעה _חדשה הקודמת"
 
 #: src/mainwindow.c:645
 #: src/messageview.c:244
 msgid "/_View/_Go to/Ne_xt new message"
-msgstr ""
+msgstr "/_תצוגה/_עבור אל/הודעה ח_דשה הבאה"
 
 #: src/mainwindow.c:647
 #: src/messageview.c:246
 msgid "/_View/_Go to/Previous _marked message"
-msgstr ""
+msgstr "/_תצוגה/_עבור אל/הודעה מ_סומנת הקודמת"
 
 #: src/mainwindow.c:649
 #: src/messageview.c:248
 msgid "/_View/_Go to/Next m_arked message"
-msgstr ""
+msgstr "/_תצוגה/_עבור אל/הודעה מס_ומנת הבאה"
 
 #: src/mainwindow.c:652
 #: src/messageview.c:251
@@ -6850,253 +6848,253 @@ msgstr "/_View/_Go to/Next la_belled message"
 #: src/mainwindow.c:657
 #: src/messageview.c:256
 msgid "/_View/_Go to/Last read message"
-msgstr ""
+msgstr "/_תצוגה/_עבור אל/הודעה אחרונה שנקראה"
 
 #: src/mainwindow.c:659
 #: src/messageview.c:258
 msgid "/_View/_Go to/Parent message"
-msgstr ""
+msgstr "/_תצוגה/_עבור אל/הודעת אב"
 
 #: src/mainwindow.c:662
 #: src/messageview.c:261
 msgid "/_View/_Go to/Next unread _folder"
-msgstr ""
+msgstr "/_תצוגה/_עבור אל/_תיקייה הבאה שלא נקראה"
 
 #: src/mainwindow.c:663
 #: src/messageview.c:262
 msgid "/_View/_Go to/_Other folder..."
-msgstr ""
+msgstr "/_תצוגה/_עבור אל/תיקייה אחרת..."
 
 #: src/mainwindow.c:667
 #: src/messageview.c:266
 msgid "/_View/Character _encoding/---"
-msgstr ""
+msgstr "/_תצוגה/_קידוד תווים/---"
 
 #: src/mainwindow.c:671
 #: src/messageview.c:270
 msgid "/_View/Character _encoding"
-msgstr ""
+msgstr "/_תצוגה/_קידוד תווים"
 
 #: src/mainwindow.c:672
 #: src/messageview.c:271
 msgid "/_View/Character _encoding/_Auto detect"
-msgstr ""
+msgstr "/_תצוגה/_קידוד תווים/בדיקה אוטומטית"
 
 #: src/mainwindow.c:676
 #: src/messageview.c:274
 msgid "/_View/Character _encoding/7bit ASCII (US-ASC_II)"
-msgstr ""
+msgstr "/_תצוגה/_קידוד תווים/7 ביט אסקי (US-ASC_II)"
 
 #: src/mainwindow.c:678
 #: src/messageview.c:277
 msgid "/_View/Character _encoding/Unicode (_UTF-8)"
-msgstr ""
+msgstr "/_תצוגה/_קידוד תווים/יוניקוד (_UTF-8)"
 
 #: src/mainwindow.c:682
 msgid "/_View/Character _encoding/Western European"
-msgstr ""
+msgstr "/_תצוגה/_קידוד תווים/מערב אירופה"
 
 #: src/mainwindow.c:683
 msgid "/_View/Character _encoding/Western European/ISO-8859-_1"
-msgstr ""
+msgstr "/_תצוגה/_קידוד תווים/מערב אירופה/ISO-8859-_1"
 
 #: src/mainwindow.c:685
 msgid "/_View/Character _encoding/Western European/ISO-8859-15"
-msgstr ""
+msgstr "/_תצוגה/_קידוד תווים/מערב אירופה/ISO-8859-15"
 
 #: src/mainwindow.c:687
 msgid "/_View/Character _encoding/Western European/Windows-1252"
-msgstr ""
+msgstr "/_תצוגה/_קידוד תווים/מערב אירופה/חלונות-1252"
 
 #: src/mainwindow.c:690
 #: src/messageview.c:287
 msgid "/_View/Character _encoding/Central European (ISO-8859-_2)"
-msgstr ""
+msgstr "/_תצוגה/_קידוד תווים/מרכז אירופה (ISO-8859-_2)"
 
 #: src/mainwindow.c:693
 msgid "/_View/Character _encoding/Baltic"
-msgstr ""
+msgstr "/_תצוגה/_קידוד תווים/Baltic"
 
 #: src/mainwindow.c:694
 msgid "/_View/Character _encoding/Baltic/ISO-8859-13"
-msgstr ""
+msgstr "/_תצוגה/_קידוד תווים/Baltic/ISO-8859-13"
 
 #: src/mainwindow.c:696
 msgid "/_View/Character _encoding/Baltic/ISO-8859-_4"
-msgstr ""
+msgstr "/_תצוגה/_קידוד תווים/Baltic/ISO-8859-_4"
 
 #: src/mainwindow.c:699
 #: src/messageview.c:295
 msgid "/_View/Character _encoding/Greek (ISO-8859-_7)"
-msgstr ""
+msgstr "/_תצוגה/_קידוד תווים/יוונית (ISO-8859-_7)"
 
 #: src/mainwindow.c:702
 msgid "/_View/Character _encoding/Hebrew"
-msgstr ""
+msgstr "/_תצוגה/_קידוד תווים/עברית"
 
 #: src/mainwindow.c:703
 msgid "/_View/Character _encoding/Hebrew/ISO-8859-_8"
-msgstr ""
+msgstr "/_תצוגה/_קידוד תווים/עברית/ISO-8859-_8"
 
 #: src/mainwindow.c:705
 msgid "/_View/Character _encoding/Hebrew/Windows-1255"
-msgstr ""
+msgstr "/_תצוגה/_קידוד תווים/עברית/חלונות-1255"
 
 #: src/mainwindow.c:708
 msgid "/_View/Character _encoding/Arabic"
-msgstr ""
+msgstr "/_תצוגה/_קידוד תווים/ערבית"
 
 #: src/mainwindow.c:709
 msgid "/_View/Character _encoding/Arabic/ISO-8859-_6"
-msgstr ""
+msgstr "/_תצוגה/_קידוד תווים/ערבית/ISO-8859-_6"
 
 #: src/mainwindow.c:711
 msgid "/_View/Character _encoding/Arabic/Windows-1256"
-msgstr ""
+msgstr "/_תצוגה/_קידוד תווים/ערבית/חלונות-1256"
 
 #: src/mainwindow.c:714
 #: src/messageview.c:308
 msgid "/_View/Character _encoding/Turkish (ISO-8859-_9)"
-msgstr ""
+msgstr "/_תצוגה/_קידוד תווים/טורקית (ISO-8859-_9)"
 
 #: src/mainwindow.c:717
 msgid "/_View/Character _encoding/Cyrillic"
-msgstr ""
+msgstr "/_תצוגה/_קידוד תווים/קירילית"
 
 #: src/mainwindow.c:718
 msgid "/_View/Character _encoding/Cyrillic/ISO-8859-_5"
-msgstr ""
+msgstr "/_תצוגה/_קידוד תווים/קירילית/ISO-8859-_5"
 
 #: src/mainwindow.c:720
 msgid "/_View/Character _encoding/Cyrillic/KOI8-_R"
-msgstr ""
+msgstr "/_תצוגה/_קידוד תווים/קירילית/KOI8-_R"
 
 #: src/mainwindow.c:722
 msgid "/_View/Character _encoding/Cyrillic/KOI8-U"
-msgstr ""
+msgstr "/_תצוגה/_קידוד תווים/קירילית/KOI8-U"
 
 #: src/mainwindow.c:724
 msgid "/_View/Character _encoding/Cyrillic/Windows-1251"
-msgstr ""
+msgstr "/_תצוגה/_קידוד תווים/קירילית/חלונות-1251"
 
 #: src/mainwindow.c:727
 msgid "/_View/Character _encoding/Japanese"
-msgstr ""
+msgstr "/_תצוגה/_קידוד תווים/יפנית"
 
 #: src/mainwindow.c:728
 msgid "/_View/Character _encoding/Japanese/ISO-2022-_JP"
-msgstr ""
+msgstr "/_תצוגה/_קידוד תווים/יפנית/ISO-2022-_JP"
 
 #: src/mainwindow.c:730
 msgid "/_View/Character _encoding/Japanese/ISO-2022-JP-2"
-msgstr ""
+msgstr "/_תצוגה/_קידוד תווים/יפנית/ISO-2022-JP-2"
 
 #: src/mainwindow.c:732
 msgid "/_View/Character _encoding/Japanese/_EUC-JP"
-msgstr ""
+msgstr "/_תצוגה/_קידוד תווים/יפנית/_EUC-JP"
 
 #: src/mainwindow.c:734
 msgid "/_View/Character _encoding/Japanese/_Shift__JIS"
-msgstr ""
+msgstr "/_תצוגה/_קידוד תווים/יפנית/_Shift__JIS"
 
 #: src/mainwindow.c:737
 msgid "/_View/Character _encoding/Chinese"
-msgstr ""
+msgstr "/_תצוגה/_קידוד תווים/סינית"
 
 #: src/mainwindow.c:738
 msgid "/_View/Character _encoding/Chinese/Simplified (_GB2312)"
-msgstr ""
+msgstr "/_תצוגה/_קידוד תווים/סינית/Simplified (_GB2312)"
 
 #: src/mainwindow.c:740
 msgid "/_View/Character _encoding/Chinese/Simplified (GBK)"
-msgstr ""
+msgstr "/_תצוגה/_קידוד תווים/סינית/Simplified (GBK)"
 
 #: src/mainwindow.c:742
 msgid "/_View/Character _encoding/Chinese/Traditional (_Big5)"
-msgstr ""
+msgstr "/_תצוגה/_קידוד תווים/סינית/Traditional (_Big5)"
 
 #: src/mainwindow.c:744
 msgid "/_View/Character _encoding/Chinese/Traditional (EUC-_TW)"
-msgstr ""
+msgstr "/_תצוגה/_קידוד תווים/סינית/Traditional (EUC-_TW)"
 
 #: src/mainwindow.c:746
 msgid "/_View/Character _encoding/Chinese/ISO-2022-_CN"
-msgstr ""
+msgstr "/_תצוגה/_קידוד תווים/סינית/ISO-2022-_CN"
 
 #: src/mainwindow.c:749
 msgid "/_View/Character _encoding/Korean"
-msgstr ""
+msgstr "/_תצוגה/_קידוד תווים/קוריאנית"
 
 #: src/mainwindow.c:750
 msgid "/_View/Character _encoding/Korean/EUC-_KR"
-msgstr ""
+msgstr "/_תצוגה/_קידוד תווים/קוריאנית/EUC-_KR"
 
 #: src/mainwindow.c:752
 msgid "/_View/Character _encoding/Korean/ISO-2022-KR"
-msgstr ""
+msgstr "/_תצוגה/_קידוד תווים/קוריאנית/ISO-2022-KR"
 
 #: src/mainwindow.c:755
 msgid "/_View/Character _encoding/Thai"
-msgstr ""
+msgstr "/_תצוגה/_קידוד תווים/טאי"
 
 #: src/mainwindow.c:756
 msgid "/_View/Character _encoding/Thai/TIS-620"
-msgstr ""
+msgstr "/_תצוגה/_קידוד תווים/טאי/TIS-620"
 
 #: src/mainwindow.c:758
 msgid "/_View/Character _encoding/Thai/Windows-874"
-msgstr ""
+msgstr "/_תצוגה/_קידוד תווים/טאי/חלונות-874"
 
 #: src/mainwindow.c:765
 #: src/mainwindow.c:771
 #: src/messageview.c:354
 #: src/messageview.c:360
 msgid "/_View/Decode/---"
-msgstr ""
+msgstr "/_תצוגה/פענוח/---"
 
 #: src/mainwindow.c:768
 #: src/messageview.c:357
 msgid "/_View/Decode"
-msgstr ""
+msgstr "/_תצוגה/פענוח"
 
 #: src/mainwindow.c:769
 #: src/messageview.c:358
 msgid "/_View/Decode/_Auto detect"
-msgstr ""
+msgstr "/_תצוגה/פענוח/_בדיקה אוטומטית"
 
 #: src/mainwindow.c:772
 #: src/messageview.c:361
 msgid "/_View/Decode/_8bit"
-msgstr ""
+msgstr "/_תצוגה/פענוח/_8 ביט"
 
 #: src/mainwindow.c:773
 #: src/messageview.c:362
 msgid "/_View/Decode/_Quoted printable"
-msgstr ""
+msgstr "/_תצוגה/פענוח/_Quoted printable"
 
 #: src/mainwindow.c:774
 #: src/messageview.c:363
 msgid "/_View/Decode/_Base64"
-msgstr ""
+msgstr "/_תצוגה/פענוח/_Base64"
 
 #: src/mainwindow.c:775
 #: src/messageview.c:364
 msgid "/_View/Decode/_Uuencode"
-msgstr ""
+msgstr "/_תצוגה/פענוח/_Uuencode"
 
 #: src/mainwindow.c:781
 #: src/summaryview.c:529
 msgid "/_View/Open in new _window"
-msgstr ""
+msgstr "/_תצוגה/פתח ב_חלון חדש"
 
 #: src/mainwindow.c:782
 #: src/messageview.c:370
 msgid "/_View/Mess_age source"
-msgstr ""
+msgstr "/_תצוגה/מקור הו_דעה"
 
 #: src/mainwindow.c:783
 msgid "/_View/All headers"
-msgstr ""
+msgstr "/_תצוגה/כל הכותרות"
 
 #: src/mainwindow.c:784
 #: src/messageview.c:372
@@ -7124,113 +7122,113 @@ msgstr "/_תצוגה/_עדכן סיכום"
 
 #: src/mainwindow.c:792
 msgid "/_Message/Recei_ve"
-msgstr "/_הודעה/ק_בל"
+msgstr "/_הודעה/_קבלה"
 
 #: src/mainwindow.c:793
 msgid "/_Message/Recei_ve/Get from _current account"
-msgstr ""
+msgstr "/_הודעה/_קבלה/מחשבון _נוכחי"
 
 #: src/mainwindow.c:795
 msgid "/_Message/Recei_ve/Get from _all accounts"
-msgstr ""
+msgstr "/_הודעה/_קבלה/מכל החשבונות"
 
 #: src/mainwindow.c:797
 msgid "/_Message/Recei_ve/Cancel receivin_g"
-msgstr ""
+msgstr "/_הודעה/_קבלה/בטל"
 
 #: src/mainwindow.c:799
 msgid "/_Message/Recei_ve/---"
-msgstr ""
+msgstr "/_הודעה/_קבלה/---"
 
 #: src/mainwindow.c:800
 msgid "/_Message/_Send queued messages"
-msgstr ""
+msgstr "/_הודעה/_שלח הודעות שבתור"
 
 #: src/mainwindow.c:802
 msgid "/_Message/Compose a_n email message"
-msgstr ""
+msgstr "/_הודעה/צור הודעת _דואר"
 
 #: src/mainwindow.c:803
 msgid "/_Message/Compose a news message"
-msgstr ""
+msgstr "/_הודעה/צור הודעת _חדשות"
 
 #: src/mainwindow.c:804
 #: src/messageview.c:381
 msgid "/_Message/_Reply"
-msgstr ""
+msgstr "/_הודעה/_השב"
 
 #: src/mainwindow.c:805
 msgid "/_Message/Repl_y to"
-msgstr ""
+msgstr "/_הודעה/ה_שב ל"
 
 #: src/mainwindow.c:806
 #: src/messageview.c:382
 msgid "/_Message/Repl_y to/_all"
-msgstr ""
+msgstr "/_הודעה/ה_שב ל/_כולם"
 
 #: src/mainwindow.c:807
 #: src/messageview.c:384
 msgid "/_Message/Repl_y to/_sender"
-msgstr ""
+msgstr "/_הודעה/ה_שב ל/_שולח"
 
 #: src/mainwindow.c:808
 #: src/messageview.c:386
 msgid "/_Message/Repl_y to/mailing _list"
-msgstr ""
+msgstr "/_הודעה/ה_שב ל/רשימת _תפוצה"
 
 #: src/mainwindow.c:810
 msgid "/_Message/Follow-up and reply to"
-msgstr ""
+msgstr "/_הודעה/המשך והעבר"
 
 #: src/mainwindow.c:812
 #: src/messageview.c:389
 msgid "/_Message/_Forward"
-msgstr ""
+msgstr "/_הודעה/ה_עבר"
 
 #: src/mainwindow.c:813
 #: src/messageview.c:390
 msgid "/_Message/For_ward as attachment"
-msgstr ""
+msgstr "/_הודעה/העבר כ_מצורף"
 
 #: src/mainwindow.c:814
 msgid "/_Message/Redirect"
-msgstr ""
+msgstr "/_הודעה/הפנה"
 
 #: src/mainwindow.c:816
 msgid "/_Message/Mailing-_List"
-msgstr ""
+msgstr "/_הודעה/רשימת-ת_פוצה"
 
 #: src/mainwindow.c:817
 msgid "/_Message/Mailing-_List/Post"
-msgstr ""
+msgstr "/_הודעה/רשימת-ת_פוצה/Post"
 
 #: src/mainwindow.c:818
 msgid "/_Message/Mailing-_List/Help"
-msgstr ""
+msgstr "/_הודעה/רשימת-ת_פוצה/עזרה"
 
 #: src/mainwindow.c:819
 msgid "/_Message/Mailing-_List/Subscribe"
-msgstr ""
+msgstr "/_הודעה/רשימת-ת_פוצה/Subscribe"
 
 #: src/mainwindow.c:820
 msgid "/_Message/Mailing-_List/Unsubscribe"
-msgstr ""
+msgstr "/_הודעה/רשימת-ת_פוצה/Unsubscribe"
 
 #: src/mainwindow.c:821
 msgid "/_Message/Mailing-_List/View archive"
-msgstr ""
+msgstr "/_הודעה/רשימת-ת_פוצה/הצג ארכיב"
 
 #: src/mainwindow.c:822
 msgid "/_Message/Mailing-_List/Contact owner"
-msgstr ""
+msgstr "/_הודעה/רשימת-ת_פוצה/איש קשר"
 
 #: src/mainwindow.c:825
 msgid "/_Message/M_ove..."
-msgstr ""
+msgstr "/_הודעה/ה_זז..."
 
 #: src/mainwindow.c:826
 msgid "/_Message/_Copy..."
-msgstr ""
+msgstr "/_הודעה/ה_עתק..."
 
 #: src/mainwindow.c:827
 msgid "/_Message/Move to _trash"
@@ -7238,73 +7236,73 @@ msgstr "/_Message/Move to was_tebin"
 
 #: src/mainwindow.c:828
 msgid "/_Message/_Delete..."
-msgstr ""
+msgstr "/_הודעה/_מחק..."
 
 #: src/mainwindow.c:829
 msgid "/_Message/Cancel a news message"
-msgstr ""
+msgstr "/_הודעה/בטל הודעת חדשות"
 
 #: src/mainwindow.c:831
 msgid "/_Message/_Mark"
-msgstr ""
+msgstr "/_הודעה/_סמן"
 
 #: src/mainwindow.c:832
 msgid "/_Message/_Mark/_Mark"
-msgstr ""
+msgstr "/_הודעה/_סמן/_סמן"
 
 #: src/mainwindow.c:833
 msgid "/_Message/_Mark/_Unmark"
-msgstr ""
+msgstr "/_הודעה/_סמן/ב_טל סימון"
 
 #: src/mainwindow.c:834
 #: src/mainwindow.c:842
 #: src/mainwindow.c:845
 msgid "/_Message/_Mark/---"
-msgstr ""
+msgstr "/_הודעה/_סמן/---"
 
 #: src/mainwindow.c:835
 msgid "/_Message/_Mark/Mark as unr_ead"
-msgstr ""
+msgstr "/_הודעה/_סמן/סמן כ_לא נקרא"
 
 #: src/mainwindow.c:836
 msgid "/_Message/_Mark/Mark as rea_d"
-msgstr ""
+msgstr "/_הודעה/_סמן/סמן כ_נקרא"
 
 #: src/mainwindow.c:837
 msgid "/_Message/_Mark/Mark all _read"
-msgstr ""
+msgstr "/_הודעה/_סמן/סמן _הכל כנקרא"
 
 #: src/mainwindow.c:838
 msgid "/_Message/_Mark/Ignore thread"
-msgstr ""
+msgstr "/_הודעה/_סמן/התעלם משרשור"
 
 #: src/mainwindow.c:839
 msgid "/_Message/_Mark/Unignore thread"
-msgstr ""
+msgstr "/_הודעה/_סמן/בטל התעלמות משרשור"
 
 #: src/mainwindow.c:840
 msgid "/_Message/_Mark/Watch thread"
-msgstr ""
+msgstr "/_הודעה/_סמן/עקוב אחר שרשור"
 
 #: src/mainwindow.c:841
 msgid "/_Message/_Mark/Unwatch thread"
-msgstr ""
+msgstr "/_הודעה/_סמן/בטל מעקב אחר שרשור"
 
 #: src/mainwindow.c:843
 msgid "/_Message/_Mark/Mark as _spam"
-msgstr ""
+msgstr "/_הודעה/_סמן/סמן כ_ספאם"
 
 #: src/mainwindow.c:844
 msgid "/_Message/_Mark/Mark as _ham"
-msgstr ""
+msgstr "/_הודעה/_סמן/סמן כדואר רגיל"
 
 #: src/mainwindow.c:846
 msgid "/_Message/_Mark/Lock"
-msgstr ""
+msgstr "/_הודעה/_סמן/נעל"
 
 #: src/mainwindow.c:847
 msgid "/_Message/_Mark/Unlock"
-msgstr ""
+msgstr "/_הודעה/_סמן/בטל נעילה"
 
 #: src/mainwindow.c:848
 msgid "/_Message/Color la_bel"
@@ -7312,199 +7310,199 @@ msgstr "/_Message/Colour la_bel"
 
 #: src/mainwindow.c:849
 msgid "/_Message/T_ags"
-msgstr ""
+msgstr "/_הודעה/_תגיות"
 
 #: src/mainwindow.c:851
 msgid "/_Message/Re-_edit"
-msgstr ""
+msgstr "/_הודעה/ערוך _מחדש"
 
 #: src/mainwindow.c:854
 msgid "/_Tools/_Address book..."
-msgstr ""
+msgstr "/_כלים/_פנקס כתובות"
 
 #: src/mainwindow.c:855
 #: src/messageview.c:396
 msgid "/_Tools/Add sender to address boo_k"
-msgstr ""
+msgstr "/_כלים/_הוסף שולח לפנקס הכתובות"
 
 #: src/mainwindow.c:857
 msgid "/_Tools/_Harvest addresses"
-msgstr ""
+msgstr "/_כלים/_Harvest addresses"
 
 #: src/mainwindow.c:858
 msgid "/_Tools/_Harvest addresses/from _Folder..."
-msgstr ""
+msgstr "/_כלים/_Harvest addresses/"
 
 #: src/mainwindow.c:860
 msgid "/_Tools/_Harvest addresses/from _Messages..."
-msgstr ""
+msgstr "/_כלים/_Harvest addresses/"
 
 #: src/mainwindow.c:863
 msgid "/_Tools/_Filter all messages in folder"
-msgstr ""
+msgstr "/_כלים/_Filter all messages in folder"
 
 #: src/mainwindow.c:865
 msgid "/_Tools/Filter _selected messages"
-msgstr ""
+msgstr "/_כלים/Filter _selected messages"
 
 #: src/mainwindow.c:867
 msgid "/_Tools/Run folder processing rules"
-msgstr ""
+msgstr "/_כלים/הרץ חוקי עיבוד תיקייה"
 
 #: src/mainwindow.c:869
 #: src/messageview.c:399
 msgid "/_Tools/_Create filter rule"
-msgstr ""
+msgstr "/_כלים/_צור חוק סינון"
 
 #: src/mainwindow.c:870
 #: src/messageview.c:401
 msgid "/_Tools/_Create filter rule/_Automatically"
-msgstr ""
+msgstr "/_כלים/_צור חוק סינון/_אוטומטית"
 
 #: src/mainwindow.c:872
 #: src/messageview.c:403
 msgid "/_Tools/_Create filter rule/by _From"
-msgstr ""
+msgstr "/_כלים/_צור חוק סינון/לפי _מאת"
 
 #: src/mainwindow.c:874
 #: src/messageview.c:405
 msgid "/_Tools/_Create filter rule/by _To"
-msgstr ""
+msgstr "/_כלים/_צור חוק סינון/לפי _אל"
 
 #: src/mainwindow.c:876
 #: src/messageview.c:407
 msgid "/_Tools/_Create filter rule/by _Subject"
-msgstr ""
+msgstr "/_כלים/_צור חוק סינון/לפי _נושא"
 
 #: src/mainwindow.c:878
 msgid "/_Tools/C_reate processing rule"
-msgstr ""
+msgstr "/_כלים/צ_ור חוק עיבוד"
 
 #: src/mainwindow.c:879
 msgid "/_Tools/C_reate processing rule/_Automatically"
-msgstr ""
+msgstr "/_כלים/צ_ור חוק עיבוד/_אוטומטית"
 
 #: src/mainwindow.c:881
 msgid "/_Tools/C_reate processing rule/by _From"
-msgstr ""
+msgstr "/_כלים/צ_ור חוק עיבוד/לפי _מאת"
 
 #: src/mainwindow.c:883
 msgid "/_Tools/C_reate processing rule/by _To"
-msgstr ""
+msgstr "/_כלים/צ_ור חוק עיבוד/לפי _אל"
 
 #: src/mainwindow.c:885
 msgid "/_Tools/C_reate processing rule/by _Subject"
-msgstr ""
+msgstr "/_כלים/צ_ור חוק עיבוד/לפי _נושא"
 
 #: src/mainwindow.c:888
 #: src/messageview.c:420
 msgid "/_Tools/List _URLs..."
-msgstr ""
+msgstr "/_כלים/List _URLs..."
 
 #: src/mainwindow.c:892
 msgid "/_Tools/Ch_eck for new messages in all folders"
-msgstr ""
+msgstr "/_כלים/ב_דוק עבור הודעות חדשות בכל התיקיות"
 
 #: src/mainwindow.c:894
 msgid "/_Tools/Delete du_plicated messages"
-msgstr ""
+msgstr "/_כלים/מחק הודעות _כפולות"
 
 #: src/mainwindow.c:896
 msgid "/_Tools/Delete du_plicated messages/In selected folder"
-msgstr ""
+msgstr "/_כלים/מחק הודעות _כפולות/בתיקייה שנבחרה"
 
 #: src/mainwindow.c:898
 msgid "/_Tools/Delete du_plicated messages/In all folders"
-msgstr ""
+msgstr "/_כלים/מחק הודעות _כפולות/בכל התיקיות"
 
 #: src/mainwindow.c:901
 msgid "/_Tools/E_xecute"
-msgstr ""
+msgstr "/_כלים/ביצוע"
 
 #: src/mainwindow.c:904
 msgid "/_Tools/SSL cer_tificates..."
-msgstr ""
+msgstr "/_כלים/אישורי SSL"
 
 #: src/mainwindow.c:908
 msgid "/_Tools/Filtering Log"
-msgstr ""
+msgstr "/_כלים/לוג סינון"
 
 #: src/mainwindow.c:909
 msgid "/_Tools/Network _Log"
-msgstr ""
+msgstr "/_כלים/לוג רשת"
 
 #: src/mainwindow.c:911
 msgid "/_Configuration"
-msgstr ""
+msgstr "/_הגדרות"
 
 #: src/mainwindow.c:912
 msgid "/_Configuration/C_hange current account"
-msgstr ""
+msgstr "/_הגדרות/_שנה חשבון נוכחי"
 
 #: src/mainwindow.c:914
 msgid "/_Configuration/_Preferences for current account..."
-msgstr ""
+msgstr "/_הגדרות/ה_עדפות לחשבון נוכחי"
 
 #: src/mainwindow.c:916
 msgid "/_Configuration/Create _new account..."
-msgstr ""
+msgstr "/_הגדרות/צור חשבון _חדש"
 
 #: src/mainwindow.c:918
 msgid "/_Configuration/_Edit accounts..."
-msgstr ""
+msgstr "/_הגדרות/_ערוך חשבונות"
 
 #: src/mainwindow.c:920
 #: src/mainwindow.c:932
 msgid "/_Configuration/---"
-msgstr ""
+msgstr "/_הגדרות/---"
 
 #: src/mainwindow.c:921
 msgid "/_Configuration/P_references..."
-msgstr ""
+msgstr "/_הגדרות/הע_דפות"
 
 #: src/mainwindow.c:923
 msgid "/_Configuration/Pre-pr_ocessing..."
-msgstr ""
+msgstr "/_הגדרות/עיבוד לפני"
 
 #: src/mainwindow.c:925
 msgid "/_Configuration/Post-pro_cessing..."
-msgstr ""
+msgstr "/_הגדרות/עיבוד שאחרי"
 
 #: src/mainwindow.c:927
 msgid "/_Configuration/_Filtering..."
-msgstr ""
+msgstr "/_הגדרות/_סינון..."
 
 #: src/mainwindow.c:929
 msgid "/_Configuration/_Templates..."
-msgstr ""
+msgstr "/_הגדרות/_תבניות..."
 
 #: src/mainwindow.c:930
 msgid "/_Configuration/_Actions..."
-msgstr ""
+msgstr "/_הגדרות/_פעולות"
 
 #: src/mainwindow.c:931
 msgid "/_Configuration/Tag_s..."
-msgstr ""
+msgstr "/_הגדרות/_תגיות"
 
 #: src/mainwindow.c:933
 msgid "/_Configuration/Plu_gins..."
-msgstr ""
+msgstr "/_הגדרות/תו_ספים..."
 
 #: src/mainwindow.c:936
 msgid "/_Help/_Manual"
-msgstr ""
+msgstr "/_עזרה/ספר הדרכה"
 
 #: src/mainwindow.c:937
 msgid "/_Help/_Online User-contributed FAQ"
-msgstr ""
+msgstr "/_עזרה/שאלות נפוצות _Online"
 
 #: src/mainwindow.c:939
 msgid "/_Help/Icon _Legend"
-msgstr ""
+msgstr "/_עזרה/Icon _Legend"
 
 #: src/mainwindow.c:940
 msgid "/_Help/---"
-msgstr ""
+msgstr "/_עזרה/---"
 
 #: src/mainwindow.c:1294
 #: src/summaryview.c:5716
@@ -7816,148 +7814,148 @@ msgstr ""
 
 #: src/messageview.c:224
 msgid "/_File/_Close"
-msgstr ""
+msgstr "/_קובץ/_סגור"
 
 #: src/messageview.c:280
 msgid "/_View/Character _encoding/Western European (ISO-8859-_1)"
-msgstr ""
+msgstr "/_תצוגה/_קידוד תווים/Western European (ISO-8859-_1)"
 
 #: src/messageview.c:282
 msgid "/_View/Character _encoding/Western European (ISO-8859-15)"
-msgstr ""
+msgstr "/_תצוגה/_קידוד תווים/Western European (ISO-8859-15)"
 
 #: src/messageview.c:284
 msgid "/_View/Character _encoding/Western European (Windows-1252)"
-msgstr ""
+msgstr "/_תצוגה/_קידוד תווים/Western European (Windows-1252)"
 
 #: src/messageview.c:290
 msgid "/_View/Character _encoding/_Baltic (ISO-8859-13)"
-msgstr ""
+msgstr "/_תצוגה/_קידוד תווים/_Baltic (ISO-8859-13)"
 
 #: src/messageview.c:292
 msgid "/_View/Character _encoding/Baltic (ISO-8859-_4)"
-msgstr ""
+msgstr "/_תצוגה/_קידוד תווים/Baltic (ISO-8859-_4)"
 
 #: src/messageview.c:298
 msgid "/_View/Character _encoding/Hebrew (ISO-8859-_8)"
-msgstr ""
+msgstr "/_תצוגה/_קידוד תווים/עברית (ISO-8859-_8)"
 
 #: src/messageview.c:300
 msgid "/_View/Character _encoding/Hebrew (Windows-1255)"
-msgstr ""
+msgstr "/_תצוגה/_קידוד תווים/עברית (חלונות-1255)"
 
 #: src/messageview.c:303
 msgid "/_View/Character _encoding/Arabic (ISO-8859-_6)"
-msgstr ""
+msgstr "/_תצוגה/_קידוד תווים/ערבית (ISO-8859-_6)"
 
 #: src/messageview.c:305
 msgid "/_View/Character _encoding/Arabic (Windows-1256)"
-msgstr ""
+msgstr "/_תצוגה/_קידוד תווים/ערבית (Windows-1256)"
 
 #: src/messageview.c:311
 msgid "/_View/Character _encoding/Cyrillic (ISO-8859-_5)"
-msgstr ""
+msgstr "/_תצוגה/_קידוד תווים/Cyrillic (ISO-8859-_5)"
 
 #: src/messageview.c:313
 msgid "/_View/Character _encoding/Cyrillic (KOI8-_R)"
-msgstr ""
+msgstr "/_תצוגה/_קידוד תווים/Cyrillic (KOI8-_R)"
 
 #: src/messageview.c:315
 msgid "/_View/Character _encoding/Cyrillic (KOI8-U)"
-msgstr ""
+msgstr "/_תצוגה/_קידוד תווים/Cyrillic (KOI8-U)"
 
 #: src/messageview.c:317
 msgid "/_View/Character _encoding/Cyrillic (Windows-1251)"
-msgstr ""
+msgstr "/_תצוגה/_קידוד תווים/Cyrillic (Windows-1251)"
 
 #: src/messageview.c:320
 msgid "/_View/Character _encoding/Japanese (ISO-2022-_JP)"
-msgstr ""
+msgstr "/_תצוגה/_קידוד תווים/Japanese (ISO-2022-_JP)"
 
 #: src/messageview.c:322
 msgid "/_View/Character _encoding/Japanese (ISO-2022-JP-2)"
-msgstr ""
+msgstr "/_תצוגה/_קידוד תווים/Japanese (ISO-2022-JP-2)"
 
 #: src/messageview.c:324
 msgid "/_View/Character _encoding/Japanese (_EUC-JP)"
-msgstr ""
+msgstr "/_תצוגה/_קידוד תווים/Japanese (_EUC-JP)"
 
 #: src/messageview.c:326
 msgid "/_View/Character _encoding/Japanese (_Shift__JIS)"
-msgstr ""
+msgstr "/_תצוגה/_קידוד תווים/Japanese (_Shift__JIS)"
 
 #: src/messageview.c:329
 msgid "/_View/Character _encoding/Simplified Chinese (_GB2312)"
-msgstr ""
+msgstr "/_תצוגה/_קידוד תווים/Simplified Chinese (_GB2312)"
 
 #: src/messageview.c:331
 msgid "/_View/Character _encoding/Simplified Chinese (GBK)"
-msgstr ""
+msgstr "/_תצוגה/_קידוד תווים/Simplified Chinese (GBK)"
 
 #: src/messageview.c:333
 msgid "/_View/Character _encoding/Traditional Chinese (_Big5)"
-msgstr ""
+msgstr "/_תצוגה/_קידוד תווים/Traditional Chinese (_Big5)"
 
 #: src/messageview.c:335
 msgid "/_View/Character _encoding/Traditional Chinese (EUC-_TW)"
-msgstr ""
+msgstr "/_תצוגה/_קידוד תווים/Traditional Chinese (EUC-_TW)"
 
 #: src/messageview.c:337
 msgid "/_View/Character _encoding/Chinese (ISO-2022-_CN)"
-msgstr ""
+msgstr "/_תצוגה/_קידוד תווים/Chinese (ISO-2022-_CN)"
 
 #: src/messageview.c:340
 msgid "/_View/Character _encoding/Korean (EUC-_KR)"
-msgstr ""
+msgstr "/_תצוגה/_קידוד תווים/Korean (EUC-_KR)"
 
 #: src/messageview.c:342
 msgid "/_View/Character _encoding/Korean (ISO-2022-KR)"
-msgstr ""
+msgstr "/_תצוגה/_קידוד תווים/Korean (ISO-2022-KR)"
 
 #: src/messageview.c:345
 msgid "/_View/Character _encoding/Thai (TIS-620)"
-msgstr ""
+msgstr "/_תצוגה/_קידוד תווים/Thai (TIS-620)"
 
 #: src/messageview.c:347
 msgid "/_View/Character _encoding/Thai (Windows-874)"
-msgstr ""
+msgstr "/_תצוגה/_קידוד תווים/Thai (Windows-874)"
 
 #: src/messageview.c:371
 msgid "/_View/Show all _headers"
-msgstr ""
+msgstr "/_תצוגה/הצג כל ה_כותרות"
 
 #: src/messageview.c:378
 msgid "/_Message/Compose _new message"
-msgstr ""
+msgstr "/_הודעה/כתוב הודעה _חדשה"
 
 #: src/messageview.c:392
 msgid "/_Message/Redirec_t"
-msgstr ""
+msgstr "/_הודעה/ה_פנה"
 
 #: src/messageview.c:409
 msgid "/_Tools/Create processing rule"
-msgstr ""
+msgstr "/_תצוגה/צור חוק עיבוד"
 
 #: src/messageview.c:411
 msgid "/_Tools/Create processing rule/_Automatically"
-msgstr ""
+msgstr "/_תצוגה/צור חוק עיבוד/_אוטומטית"
 
 #: src/messageview.c:413
 msgid "/_Tools/Create processing rule/by _From"
-msgstr ""
+msgstr "/_תצוגה/צור חוק עיבוד/לפי _מאת"
 
 #: src/messageview.c:415
 msgid "/_Tools/Create processing rule/by _To"
-msgstr ""
+msgstr "/_תצוגה/צור חוק עיבוד/לפי _אל"
 
 #: src/messageview.c:417
 msgid "/_Tools/Create processing rule/by _Subject"
-msgstr ""
+msgstr "/_תצוגה/צור חוק עיבוד/לפי _נושא"
 
 #: src/messageview.c:552
 #: src/messageview.c:1088
 msgid "Claws Mail - Message View"
-msgstr ""
+msgstr "Claws Mail - תצוגת הודעה"
 
 #: src/messageview.c:676
 msgid "<No Return-Path found>"
@@ -8132,7 +8130,7 @@ msgstr ""
 
 #: src/mh_gtk.c:62
 msgid "/Remove _mailbox..."
-msgstr ""
+msgstr "/הסר _תיבת דואר"
 
 #: src/mh_gtk.c:324
 #, c-format
@@ -8147,15 +8145,15 @@ msgstr ""
 
 #: src/mh_gtk.c:327
 msgid "_Remove"
-msgstr ""
+msgstr "_הסר"
 
 #: src/mimeview.c:177
 msgid "/_Open (l)"
-msgstr ""
+msgstr "/_פתח (I)"
 
 #: src/mimeview.c:179
 msgid "/Open _with (o)..."
-msgstr ""
+msgstr "/פתח ב_אמצעות (o)"
 
 #: src/mimeview.c:181
 msgid "/_Display as text (t)"
@@ -8331,7 +8329,7 @@ msgstr ""
 
 #: src/news_gtk.c:56
 msgid "/Synchronise"
-msgstr ""
+msgstr "/סנכרן"
 
 #: src/news_gtk.c:227
 #, c-format
@@ -10160,9 +10158,8 @@ msgid "Do you really want to delete this action?"
 msgstr ""
 
 #: src/prefs_actions.c:688
-#, fuzzy
 msgid "Delete all actions"
-msgstr "Delete all messages in wastebin?"
+msgstr "למחוק את כל ההודעות בפח האשפה?"
 
 #: src/prefs_actions.c:689
 msgid "Do you really want to delete all actions?"
@@ -10622,7 +10619,7 @@ msgstr "סמן כספאם"
 
 #: src/prefs_filtering_action.c:172
 msgid "Mark as ham"
-msgstr ""
+msgstr "סמן כדואר רגיל"
 
 #: src/prefs_filtering_action.c:173
 #: src/prefs_filtering_action.c:1361
@@ -11230,9 +11227,8 @@ msgid ""
 msgstr ""
 
 #: src/prefs_logging.c:290
-#, fuzzy
 msgid "Disk log"
-msgstr "Dialogues"
+msgstr "לוג"
 
 #: src/prefs_logging.c:292
 msgid "Write the following information to disk..."
@@ -11320,9 +11316,8 @@ msgid "body part"
 msgstr ""
 
 #: src/prefs_matcher.c:360
-#, fuzzy
 msgid "whole message"
-msgstr "No labelled messages."
+msgstr "ההודעה כולה"
 
 #: src/prefs_matcher.c:366
 #: src/summaryview.c:5778
@@ -11595,7 +11590,7 @@ msgstr ""
 
 #: src/prefs_message.c:108
 msgid "Headers"
-msgstr ""
+msgstr "כותרות"
 
 #: src/prefs_message.c:111
 msgid "Display header pane above message view"
@@ -11615,7 +11610,7 @@ msgstr ""
 
 #: src/prefs_message.c:144
 msgid "HTML messages"
-msgstr ""
+msgstr "הודעות HTML"
 
 #: src/prefs_message.c:147
 msgid "Render HTML messages as text"
@@ -11656,11 +11651,11 @@ msgstr ""
 
 #: src/prefs_message.c:294
 msgid "Text Options"
-msgstr ""
+msgstr "אפשרויות כיתוב"
 
 #: src/prefs_msg_colors.c:147
 msgid "Message view"
-msgstr ""
+msgstr "תצוגת הודעה"
 
 #: src/prefs_msg_colors.c:154
 msgid "Enable coloration of message text"
@@ -11668,7 +11663,7 @@ msgstr "Enable colouration of message text"
 
 #: src/prefs_msg_colors.c:164
 msgid "Quote"
-msgstr ""
+msgstr "ציטוט"
 
 #: src/prefs_msg_colors.c:176
 msgid "Cycle quote colors"
@@ -12414,7 +12409,7 @@ msgstr ""
 #: src/prefs_summary_column.c:83
 #: src/summaryview.c:2598
 msgid "Attachment"
-msgstr ""
+msgstr "מצורף(ים)"
 
 #: src/prefs_summary_column.c:89
 msgid "Number"
@@ -12531,9 +12526,8 @@ msgid "Do you really want to delete this template?"
 msgstr ""
 
 #: src/prefs_template.c:804
-#, fuzzy
 msgid "Delete all templates"
-msgstr "Delete all messages in wastebin?"
+msgstr "מחק את כל התבניות"
 
 #: src/prefs_template.c:805
 msgid "Do you really want to delete all templates?"
@@ -14058,35 +14052,35 @@ msgstr "סגור חלון"
 
 #: src/toolbar.c:233
 msgid "/Reply with _quote"
-msgstr "/השב בלי _ציטוט"
+msgstr "/_עם ציטוט"
 
 #: src/toolbar.c:234
 msgid "/_Reply without quote"
-msgstr "/_השב בלי ציטוט"
+msgstr "/_ללא ציטוט"
 
 #: src/toolbar.c:238
 msgid "/Reply to all with _quote"
-msgstr "/השב לכולם עם _ציטוט"
+msgstr "/_עם ציטוט"
 
 #: src/toolbar.c:239
 msgid "/_Reply to all without quote"
-msgstr "/_השב לכולם בלי ציטוט"
+msgstr "/_ללא ציטוט"
 
 #: src/toolbar.c:243
 msgid "/Reply to list with _quote"
-msgstr "/השב לרשימה בלי _ציטוט"
+msgstr "/_עם ציטוט"
 
 #: src/toolbar.c:244
 msgid "/_Reply to list without quote"
-msgstr "/_השב לרשימה בלי ציטוט"
+msgstr "/_ללא ציטוט"
 
 #: src/toolbar.c:248
 msgid "/Reply to sender with _quote"
-msgstr "השב לשולח עם _ציטוט"
+msgstr "/_עם ציטוט"
 
 #: src/toolbar.c:249
 msgid "/_Reply to sender without quote"
-msgstr "/_השב לשולח ללא ציטוט"
+msgstr "/_ללא ציטוט"
 
 #: src/toolbar.c:255
 msgid "/Redirec_t"
@@ -14119,7 +14113,7 @@ msgstr "Toolbar|חבר הודעה"
 
 #: src/toolbar.c:423
 msgid "All"
-msgstr "הכל"
+msgstr "השב לכולם"
 
 #: src/toolbar.c:425
 msgid "List"
@@ -14167,7 +14161,7 @@ msgstr "למד ספאם"
 
 #: src/toolbar.c:935
 msgid "Ham"
-msgstr ""
+msgstr "דואר רגיל"
 
 #: src/toolbar.c:938
 msgid "Learn ham"
