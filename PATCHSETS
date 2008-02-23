@@ -3235,3 +3235,4 @@
 ( cvs diff -u -r 1.115.2.188 -r 1.115.2.189 src/main.c;  ) > 3.3.0cvs19.patchset
 ( cvs diff -u -r 1.75.2.57 -r 1.75.2.58 src/matcher.c;  ) > 3.3.0cvs20.patchset
 ( cvs diff -u -r 1.1.2.1 -r 1.1.2.2 po/he.po;  ) > 3.3.0cvs21.patchset
+( cvs diff -u -r 1.654.2.3296 -r 1.654.2.3297 configure.ac;  ) > 3.3.1cvs1.patchset
