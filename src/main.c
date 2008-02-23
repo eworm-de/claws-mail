@@ -2381,13 +2381,13 @@ static void networkmanager_state_change_cb(DBusGProxy *proxy, gchar *dev,
 				went_offline_nm = FALSE;
 				main_window_toggle_work_offline(mainWin, FALSE, FALSE);
 				debug_print("NetworkManager: Went online\n");
-				log_message(LOG_PROTOCOL, _("NetworkManager: network is online."));
+				log_message(LOG_PROTOCOL, _("NetworkManager: network is online.\n"));
 			}
 			else if(!online) {
 				went_offline_nm = TRUE;
 				main_window_toggle_work_offline(mainWin, TRUE, FALSE);
 				debug_print("NetworkManager: Went offline\n");
-				log_message(LOG_PROTOCOL, _("NetworkManager: network is offline."));
+				log_message(LOG_PROTOCOL, _("NetworkManager: network is offline.\n"));
 			}
 		}
 		else {

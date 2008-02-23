@@ -1,3 +1,8 @@
+2008-02-23 [colin]	3.3.1cvs2
+
+	* src/main.c
+		Fix log output (missing \n)
+
 2008-02-23 [colin]	3.3.1cvs1
 
 	* configure.ac
