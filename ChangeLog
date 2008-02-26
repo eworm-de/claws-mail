@@ -1,3 +1,10 @@
+2008-02-26 [paul]	3.3.1cvs3
+
+	* INSTALL
+	* README
+		remove mentions of ClamAV and a few other
+		old bits of information
+
 2008-02-23 [colin]	3.3.1cvs2
 
 	* src/main.c

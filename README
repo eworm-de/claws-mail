@@ -71,14 +71,6 @@ To load a plugin go to '/Configuration/Plugins' and click
 the 'Load Plugin' button.
 Select the plugin that you want and click 'OK'
  
-  o Clam AntiVirus
-    Enables the scanning of message attachments in mail
-    received from a POP, IMAP or LOCAL account using Clam 
-    AntiVirus. It can optionally delete the mail or save it 
-    to a designated folder. Preferences can be found in 
-    '/Configuration/PreferencesPlugins/Clam AntiVirus'.
-    Clam AntiVirus is available from http://clamav.sourceforge.net/
-  
   o Dillo HTML Viewer 
     Enables the viewing of html messages using the Dillo web
     browser, version 0.7.0 or newer. It uses Dillo's --local

@@ -1,7 +1,7 @@
 Installation
 ============
 
-This program requires GTK+ 2.4.0 or higher to be compiled.
+This program requires GTK+ 2.6.0 or higher to be compiled.
 
 Build it
 ========
@@ -29,9 +29,6 @@ only needed if you require the additional functionality
 Aspell (>= 0.50) (and dictionaries)
     for spell-checker support
     http://aspell.sourceforge.net/
-Clam AntiVirus
-    for Clam AntiVirus plugin support
-    http://clamav.sourceforge.net/
 compface
     for X-Face support
     http://freshmeat.net/projects/compface/
@@ -42,13 +39,10 @@ GnuPG (>= 1.2.1) and GPGME (>=  0.4.5)
     for GnuPG plugin support
     http://www.gnupg.org/
     ftp://ftp.gnupg.org/gcrypt/gpgme/
-GtkMathView (>= 0.4.2 and < 0.5)
-    for MathML viewer plugin support
-    http://helm.cs.unibo.it/mml-widget/
 J-Pilot
     for J-Pilot support
     http://www.jpilot.org/
-libEtPan! (>= 0.39)
+libEtPan! (>= 0.52)
     for IMAP4 support
     http://www.etpan.org
 libgnomeprint (>= 2.2)
@@ -85,9 +79,7 @@ are matched.
   --disable-pgpcore-plugin	    do not build PGP/Core plugin
   --disable-pgpmime-plugin          do not build PGP/MIME plugin
   --disable-pgpinline-plugin        do not build PGP/Inline plugin
-  --disable-mathml-viewer-plugin    do not build MathML-Viewer plugin
   --disable-dillo-viewer-plugin     do not build Dillo plugin
-  --disable-clamav-plugin           do not build Clam AntiVirus plugin
  
 For other options, refer to ./configure --help .
 
