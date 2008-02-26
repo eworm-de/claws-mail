@@ -895,7 +895,7 @@ static gint imap_auth(IMAPSession *session, const gchar *user, const gchar *pass
 
 		if (time(NULL) - last_login_err > 10) {
 			if (!prefs_common.no_recv_err_panel) {
-				alertpanel_error(_("Connection to %s failed: "
+				alertpanel_error_log(_("Connection to %s failed: "
 					"login refused.%s"),
 					SESSION(session)->server, ext_info);
 			} else {

@@ -3238,3 +3238,4 @@
 ( cvs diff -u -r 1.654.2.3296 -r 1.654.2.3297 configure.ac;  ) > 3.3.1cvs1.patchset
 ( cvs diff -u -r 1.115.2.189 -r 1.115.2.190 src/main.c;  ) > 3.3.1cvs2.patchset
 ( cvs diff -u -r 1.29.2.10 -r 1.29.2.11 INSTALL;  cvs diff -u -r 1.8.2.47 -r 1.8.2.48 README;  ) > 3.3.1cvs3.patchset
+( cvs diff -u -r 1.179.2.211 -r 1.179.2.212 src/imap.c;  ) > 3.3.1cvs4.patchset
