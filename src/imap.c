@@ -5184,19 +5184,19 @@ static struct mailimap_flag_list * imap_flag_to_lep(IMAPFolderItem *item, IMAPFl
 
 	flag_list = mailimap_flag_list_new_empty();
 	
-	if (IMAP_IS_SEEN(flags) && flag_ok(item, IMAP_FLAG_SEEN))
+	if (IMAP_IS_SEEN(flags))
 		mailimap_flag_list_add(flag_list,
 				       mailimap_flag_new_seen());
-	if (IMAP_IS_ANSWERED(flags) && flag_ok(item, IMAP_FLAG_ANSWERED))
+	if (IMAP_IS_ANSWERED(flags))
 		mailimap_flag_list_add(flag_list,
 				       mailimap_flag_new_answered());
-	if (IMAP_IS_FLAGGED(flags) && flag_ok(item, IMAP_FLAG_FLAGGED))
+	if (IMAP_IS_FLAGGED(flags))
 		mailimap_flag_list_add(flag_list,
 				       mailimap_flag_new_flagged());
-	if (IMAP_IS_DELETED(flags) && flag_ok(item, IMAP_FLAG_DELETED))
+	if (IMAP_IS_DELETED(flags))
 		mailimap_flag_list_add(flag_list,
 				       mailimap_flag_new_deleted());
-	if (IMAP_IS_DRAFT(flags) && flag_ok(item, IMAP_FLAG_DRAFT))
+	if (IMAP_IS_DRAFT(flags))
 		mailimap_flag_list_add(flag_list,
 				       mailimap_flag_new_draft());
 	if (IMAP_IS_FORWARDED(flags) && flag_ok(item, IMAP_FLAG_FORWARDED))

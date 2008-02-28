@@ -2375,11 +2375,13 @@ static void fetch_content_run(struct etpan_thread_op * op)
 		
 		r = fwrite(content, 1, content_size, f);
 		if (r < content_size) {
+			result->error = MAILIMAP_ERROR_FETCH;
 			goto fclose;
 		}
 		
 		r = fclose(f);
 		if (r == EOF) {
+			result->error = MAILIMAP_ERROR_FETCH;
 			goto unlink;
 		}
 		goto free;
@@ -2399,7 +2401,7 @@ static void fetch_content_run(struct etpan_thread_op * op)
 			free(content);
 	}
 	
-	debug_print("imap fetch_content run - end %i\n", r);
+	debug_print("imap fetch_content run - end %i\n", result->error);
 }
 
 int imap_threaded_fetch_content(Folder * folder, uint32_t msg_index,

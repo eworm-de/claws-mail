@@ -8940,10 +8940,18 @@ static void compose_close_cb(gpointer data, guint action, GtkWidget *widget)
 #endif
 
 	if (compose->modified) {
+		if (!g_mutex_trylock(compose->mutex)) {
+			/* we don't want to lock the mutex once it's available,
+			 * because as the only other part of compose.c locking
+			 * it is compose_close - which means once unlocked,
+			 * the compose struct will be freed */
+			debug_print("couldn't lock mutex, probably sending\n");
+			return;
+		}
 		val = alertpanel(_("Discard message"),
 				 _("This message has been modified. Discard it?"),
 				 _("_Discard"), _("_Save to Drafts"), GTK_STOCK_CANCEL);
-
+		g_mutex_unlock(compose->mutex);
 		switch (val) {
 		case G_ALERTDEFAULT:
 			if (prefs_common.autosave)

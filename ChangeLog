@@ -1,3 +1,20 @@
+2008-02-28 [colin]	3.3.1cvs5
+
+	* src/compose.c
+		Fix bug 1534, 'Segmentation fault when doing 
+		some draft saving and then throwing away'
+	* src/imap.c
+		Fix bug 1533, 'Claws is unable to mark messages 
+		as "read" in IMAP shared folders'
+	* src/etpan/imap-thread.c
+		Fix bug 1515, 'large messages crash claws when 
+		syncing for offline mode'. This is rather a
+		workaround, and mails > 64MB will still be
+		problematic if there's less than 64MB available
+		on the dataroot volume.
+	* src/messageview.c
+		MAEMO: Add information when fetching big messages
+
 2008-02-26 [colin]	3.3.1cvs4
 
 	* src/imap.c

@@ -3239,3 +3239,4 @@
 ( cvs diff -u -r 1.115.2.189 -r 1.115.2.190 src/main.c;  ) > 3.3.1cvs2.patchset
 ( cvs diff -u -r 1.29.2.10 -r 1.29.2.11 INSTALL;  cvs diff -u -r 1.8.2.47 -r 1.8.2.48 README;  ) > 3.3.1cvs3.patchset
 ( cvs diff -u -r 1.179.2.211 -r 1.179.2.212 src/imap.c;  ) > 3.3.1cvs4.patchset
+( cvs diff -u -r 1.382.2.438 -r 1.382.2.439 src/compose.c;  cvs diff -u -r 1.179.2.212 -r 1.179.2.213 src/imap.c;  cvs diff -u -r 1.94.2.171 -r 1.94.2.172 src/messageview.c;  cvs diff -u -r 1.1.4.97 -r 1.1.4.98 src/etpan/imap-thread.c;  ) > 3.3.1cvs5.patchset
