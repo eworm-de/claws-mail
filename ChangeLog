@@ -1,3 +1,9 @@
+2008-03-01 [colin]	3.3.1cvs6
+
+	* src/folder.c
+	* src/imap_gtk.c
+		Get rid of stale folders with no account
+
 2008-02-28 [colin]	3.3.1cvs5
 
 	* src/compose.c

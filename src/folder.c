@@ -136,9 +136,10 @@ void folder_register_class(FolderClass *klass)
 				Folder *folder;
 
 				folder = folder_get_from_xml(node);
-				folder_add(folder);
-				folder_unloaded_list = g_slist_remove(folder_unloaded_list, node);
-
+				if (folder) {
+					folder_add(folder);
+					folder_unloaded_list = g_slist_remove(folder_unloaded_list, node);
+				}
 				cur = NULL;
 				continue;
 			}
@@ -726,6 +727,12 @@ void folder_add(Folder *folder)
 	FolderUpdateData hookdata;
 
 	g_return_if_fail(folder != NULL);
+
+	if ((FOLDER_TYPE(folder) == F_IMAP ||
+	     FOLDER_TYPE(folder) == F_NEWS) &&
+	    folder->account == NULL) {
+		return;
+	}
 
 	for (i = 0, cur = folder_list; cur != NULL; cur = cur->next, i++) {
 		cur_folder = FOLDER(cur->data);
