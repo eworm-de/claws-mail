@@ -1288,7 +1288,7 @@ void messageview_delete(MessageView *msgview)
 		}
 	}
 #ifdef MAEMO
-	if (msgview->window) {
+	if (msgview->window && !prefs_common.always_show_msg) {
 		messageview_destroy(msgview);
 	}
 #endif

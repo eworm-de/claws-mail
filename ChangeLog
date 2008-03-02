@@ -1,3 +1,9 @@
+2008-03-02 [colin]	3.3.1cvs8
+
+	* src/messageview.c
+		MAEMO: Fix bug 1541, 'Deleting message from within 
+		read window displays next message then closes.'
+
 2008-03-02 [colin]	3.3.1cvs7
 
 	* src/main.c
