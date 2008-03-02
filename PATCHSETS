@@ -3241,3 +3241,4 @@
 ( cvs diff -u -r 1.179.2.211 -r 1.179.2.212 src/imap.c;  ) > 3.3.1cvs4.patchset
 ( cvs diff -u -r 1.382.2.438 -r 1.382.2.439 src/compose.c;  cvs diff -u -r 1.179.2.212 -r 1.179.2.213 src/imap.c;  cvs diff -u -r 1.94.2.171 -r 1.94.2.172 src/messageview.c;  cvs diff -u -r 1.1.4.97 -r 1.1.4.98 src/etpan/imap-thread.c;  ) > 3.3.1cvs5.patchset
 ( cvs diff -u -r 1.213.2.177 -r 1.213.2.178 src/folder.c;  cvs diff -u -r 1.1.2.54 -r 1.1.2.55 src/imap_gtk.c;  ) > 3.3.1cvs6.patchset
+( cvs diff -u -r 1.115.2.190 -r 1.115.2.191 src/main.c;  ) > 3.3.1cvs7.patchset

@@ -1,3 +1,10 @@
+2008-03-02 [colin]	3.3.1cvs7
+
+	* src/main.c
+		Probably fix bug 1539, 'Program crashes':
+		Setup Gcrypt's thread functions when built
+		with GnuTLS
+
 2008-03-01 [colin]	3.3.1cvs6
 
 	* src/folder.c
