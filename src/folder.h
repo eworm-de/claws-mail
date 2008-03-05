@@ -621,6 +621,8 @@ struct _FolderClass
 						 MsgInfo 	*msginfo,
 						 GSList		*tags_set,
 						 GSList		*tags_unset);
+	void		(*item_opened)		(FolderItem	*item);
+	void		(*item_closed)		(FolderItem	*item);
 };
 
 enum {

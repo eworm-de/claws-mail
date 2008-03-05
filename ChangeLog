@@ -1,3 +1,23 @@
+2008-03-05 [colin]	3.3.1cvs10
+
+	* src/folder.h
+	* src/folderview.c
+		Add klass functions for notification of folder
+		opening/closing via the GUI
+	* src/summaryview.c
+	* src/summaryview.h
+		Add a specific container for the scrolledwin
+
+2008-03-05 [colin]	3.3.1cvs9
+
+	* src/folder.h
+	* src/folderview.c
+		Add klass functions for notification of folder 
+		opening/closing via the GUI
+	* src/summaryview.c
+	* src/summaryview.h
+		Add a specific container for the scrolledwin
+
 2008-03-02 [colin]	3.3.1cvs8
 
 	* src/messageview.c
