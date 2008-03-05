@@ -88,7 +88,7 @@ struct _SummaryColumnState
 struct _SummaryView
 {
 	GtkWidget *vbox;
-	GtkWidget *mainwidget_hbox;
+	GtkWidget *mainwidget_book;
 	GtkWidget *scrolledwin;
 	GtkWidget *ctree;
 	GtkWidget *hbox;

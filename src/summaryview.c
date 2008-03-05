@@ -714,10 +714,13 @@ SummaryView *summary_create(void)
 	gtk_scrolled_window_set_policy(GTK_SCROLLED_WINDOW(scrolledwin),
 				       GTK_POLICY_AUTOMATIC,
 				       GTK_POLICY_AUTOMATIC);
+	summaryview->mainwidget_book = gtk_notebook_new();
+        gtk_notebook_set_show_tabs(GTK_NOTEBOOK(summaryview->mainwidget_book), FALSE);
+        gtk_notebook_set_show_border(GTK_NOTEBOOK(summaryview->mainwidget_book), FALSE);
 #ifndef MAEMO
-	summaryview->mainwidget_hbox = gtk_hbox_new(FALSE, 0);
-	gtk_box_pack_start(GTK_BOX(summaryview->mainwidget_hbox), scrolledwin, TRUE, TRUE, 0);
-	gtk_box_pack_start(GTK_BOX(vbox), summaryview->mainwidget_hbox, TRUE, TRUE, 0);
+	gtk_container_add(GTK_CONTAINER(summaryview->mainwidget_book),
+		scrolledwin);
+	gtk_box_pack_start(GTK_BOX(vbox), summaryview->mainwidget_book, TRUE, TRUE, 0);
 #endif
 	gtk_widget_set_size_request(vbox,
 			     prefs_common.summaryview_width,
@@ -741,9 +744,9 @@ SummaryView *summary_create(void)
 	gtk_box_pack_start(GTK_BOX(vbox), quicksearch_get_widget(quicksearch), FALSE, FALSE, 0);
 
 #ifdef MAEMO
-	summaryview->mainwidget_hbox = gtk_hbox_new(FALSE, 0);
-	gtk_box_pack_start(GTK_BOX(summaryview->mainwidget_hbox), scrolledwin, TRUE, TRUE, 0);
-	gtk_box_pack_start(GTK_BOX(vbox), summaryview->mainwidget_hbox, TRUE, TRUE, 0);
+	gtk_container_add(GTK_CONTAINER(summaryview->mainwidget_book),
+		scrolledwin);
+	gtk_box_pack_start(GTK_BOX(vbox), summaryview->mainwidget_book, TRUE, TRUE, 0);
 #endif
 	quicksearch_set_execute_callback(quicksearch, quicksearch_execute_cb, summaryview);
 
