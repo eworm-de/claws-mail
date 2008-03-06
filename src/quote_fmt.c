@@ -117,7 +117,6 @@ void quote_fmt_quote_description(GtkWidget *widget, GtkWidget *pref_window)
 void quotefmt_create_new_msg_fmt_widgets(GtkWindow *parent_window,
 						GtkWidget *parent_box,
 						GtkWidget **checkbtn_compose_with_format,
-						GtkWidget **override_from_format,
 						GtkWidget **edit_subject_format,
 						GtkWidget **edit_body_format,
 						gboolean add_info_button)
@@ -125,9 +124,6 @@ void quotefmt_create_new_msg_fmt_widgets(GtkWindow *parent_window,
 	GtkWidget *checkbtn_use_format = NULL;
 	GtkWidget *vbox_format;
 	GtkWidget *hbox_format;
-	GtkWidget *hbox2_format;
-	GtkWidget *label_from;
-	GtkWidget *entry_from;
 	GtkWidget *label_subject;
 	GtkWidget *entry_subject;
 	GtkWidget *scrolledwin_format;
@@ -150,25 +146,6 @@ void quotefmt_create_new_msg_fmt_widgets(GtkWindow *parent_window,
 	gtk_widget_show(vbox_format);
 	gtk_container_add(GTK_CONTAINER (parent_box), vbox_format);
 	gtk_container_set_border_width (GTK_CONTAINER (vbox_format), 8);
-
-	if (override_from_format) {
-		hbox2_format = gtk_hbox_new (FALSE, 8);
-		gtk_widget_show (hbox2_format);
-		gtk_box_pack_start (GTK_BOX (vbox_format), hbox2_format, FALSE, FALSE, 0);
-
-		label_from = gtk_label_new (_("From"));
-		gtk_widget_show (label_from);
-		gtk_box_pack_start (GTK_BOX (hbox2_format), label_from, FALSE, FALSE, 0);
-
-		entry_from = gtk_entry_new ();
-		gtk_widget_show (entry_from);
-		gtk_box_pack_start (GTK_BOX (hbox2_format), entry_from, TRUE, TRUE, 0);
-		gtk_widget_set_size_request (entry_from, 100, -1);
-
-		gtk_tooltips_set_tip(gtk_tooltips_new(), entry_from,
-				_("Override From header. This doesn't change the account used to compose the new message."),
-				NULL);
-	}
 
 	hbox_format = gtk_hbox_new (FALSE, 8);
 	gtk_widget_show (hbox_format);
@@ -211,8 +188,6 @@ void quotefmt_create_new_msg_fmt_widgets(GtkWindow *parent_window,
 
 	if (checkbtn_compose_with_format) {
 		SET_TOGGLE_SENSITIVITY(checkbtn_use_format, label_subject);
-		if (override_from_format)
-			SET_TOGGLE_SENSITIVITY(checkbtn_use_format, entry_from);
 		SET_TOGGLE_SENSITIVITY(checkbtn_use_format, entry_subject);
 		SET_TOGGLE_SENSITIVITY(checkbtn_use_format, text_format);
 	}
@@ -222,8 +197,6 @@ void quotefmt_create_new_msg_fmt_widgets(GtkWindow *parent_window,
 
 	if (checkbtn_compose_with_format)
 		*checkbtn_compose_with_format = checkbtn_use_format;
-	if (override_from_format)
-		*override_from_format = entry_from;
 	*edit_subject_format = entry_subject;
 	*edit_body_format = text_format;
 }
@@ -231,7 +204,6 @@ void quotefmt_create_new_msg_fmt_widgets(GtkWindow *parent_window,
 void quotefmt_create_reply_fmt_widgets(GtkWindow *parent_window,
 						GtkWidget *parent_box,
 						GtkWidget **checkbtn_reply_with_format,
-						GtkWidget **override_from_format,
 						GtkWidget **edit_reply_quotemark,
 						GtkWidget **edit_reply_format,
 						gboolean add_info_button)
@@ -240,11 +212,8 @@ void quotefmt_create_reply_fmt_widgets(GtkWindow *parent_window,
 	GtkWidget *vbox_quote;
 	GtkWidget *hbox1;
 	GtkWidget *hbox2;
-	GtkWidget *hbox3;
 	GtkWidget *label_quotemark;
 	GtkWidget *entry_quotemark;
-	GtkWidget *label_from;
-	GtkWidget *entry_from;
 	GtkWidget *scrolledwin_quotefmt;
 	GtkWidget *text_quotefmt;
 
@@ -265,25 +234,6 @@ void quotefmt_create_reply_fmt_widgets(GtkWindow *parent_window,
 	gtk_widget_show(vbox_quote);
 	gtk_container_add(GTK_CONTAINER (parent_box), vbox_quote);
 	gtk_container_set_border_width (GTK_CONTAINER (vbox_quote), 8);
-
-	if (override_from_format) {
-		hbox3 = gtk_hbox_new (FALSE, 8);
-		gtk_widget_show (hbox3);
-		gtk_box_pack_start (GTK_BOX (vbox_quote), hbox3, FALSE, FALSE, 0);
-
-		label_from = gtk_label_new (_("From"));
-		gtk_widget_show (label_from);
-		gtk_box_pack_start (GTK_BOX (hbox3), label_from, FALSE, FALSE, 0);
-
-		entry_from = gtk_entry_new ();
-		gtk_widget_show (entry_from);
-		gtk_box_pack_start (GTK_BOX (hbox3), entry_from, TRUE, TRUE, 0);
-		gtk_widget_set_size_request (entry_from, 100, -1);
-
-		gtk_tooltips_set_tip(gtk_tooltips_new(), entry_from,
-				_("Override From header. This doesn't change the account used to reply."),
-				NULL);
-	}
 
 	hbox1 = gtk_hbox_new (FALSE, 32);
 	gtk_widget_show (hbox1);
@@ -331,8 +281,6 @@ void quotefmt_create_reply_fmt_widgets(GtkWindow *parent_window,
 	if (checkbtn_reply_with_format) {
 		SET_TOGGLE_SENSITIVITY(checkbtn_use_format, label_quotemark);
 		SET_TOGGLE_SENSITIVITY(checkbtn_use_format, entry_quotemark);
-		if (override_from_format)
-			SET_TOGGLE_SENSITIVITY(checkbtn_use_format, entry_from);
 		SET_TOGGLE_SENSITIVITY(checkbtn_use_format, text_quotefmt);
 	}
 
@@ -342,15 +290,12 @@ void quotefmt_create_reply_fmt_widgets(GtkWindow *parent_window,
 	if (checkbtn_reply_with_format)
 		*checkbtn_reply_with_format = checkbtn_use_format;
 	*edit_reply_quotemark = entry_quotemark;
-	if (override_from_format)
-		*override_from_format = entry_from;
 	*edit_reply_format = text_quotefmt;
 }
 
 void quotefmt_create_forward_fmt_widgets(GtkWindow *parent_window,
 						GtkWidget *parent_box,
 						GtkWidget **checkbtn_forward_with_format,
-						GtkWidget **override_from_format,
 						GtkWidget **edit_fw_quotemark,
 						GtkWidget **edit_fw_format,
 						gboolean add_info_button)
@@ -359,11 +304,8 @@ void quotefmt_create_forward_fmt_widgets(GtkWindow *parent_window,
 	GtkWidget *vbox_quote;
 	GtkWidget *hbox1;
 	GtkWidget *hbox2;
-	GtkWidget *hbox3;
 	GtkWidget *label_quotemark;
 	GtkWidget *entry_fw_quotemark;
-	GtkWidget *label_from;
-	GtkWidget *entry_from;
 	GtkWidget *scrolledwin_quotefmt;
 	GtkWidget *text_fw_quotefmt;
 
@@ -384,25 +326,6 @@ void quotefmt_create_forward_fmt_widgets(GtkWindow *parent_window,
 	gtk_widget_show(vbox_quote);
 	gtk_container_add(GTK_CONTAINER (parent_box), vbox_quote);
 	gtk_container_set_border_width (GTK_CONTAINER (vbox_quote), 8);
-
-	if (override_from_format) {
-		hbox3 = gtk_hbox_new (FALSE, 8);
-		gtk_widget_show (hbox3);
-		gtk_box_pack_start (GTK_BOX (vbox_quote), hbox3, FALSE, FALSE, 0);
-
-		label_from = gtk_label_new (_("From"));
-		gtk_widget_show (label_from);
-		gtk_box_pack_start (GTK_BOX (hbox3), label_from, FALSE, FALSE, 0);
-
-		entry_from = gtk_entry_new ();
-		gtk_widget_show (entry_from);
-		gtk_box_pack_start (GTK_BOX (hbox3), entry_from, TRUE, TRUE, 0);
-		gtk_widget_set_size_request (entry_from, 100, -1);
-
-		gtk_tooltips_set_tip(gtk_tooltips_new(), entry_from,
-				_("Override From header. This doesn't change the account used to forward."),
-				NULL);
-	}
 
 	hbox1 = gtk_hbox_new (FALSE, 32);
 	gtk_widget_show (hbox1);
@@ -452,8 +375,6 @@ void quotefmt_create_forward_fmt_widgets(GtkWindow *parent_window,
 	if (checkbtn_forward_with_format) {
 		SET_TOGGLE_SENSITIVITY(checkbtn_use_format, label_quotemark);
 		SET_TOGGLE_SENSITIVITY(checkbtn_use_format, entry_fw_quotemark);
-		if (override_from_format)
-			SET_TOGGLE_SENSITIVITY(checkbtn_use_format, entry_from);
 		SET_TOGGLE_SENSITIVITY(checkbtn_use_format, text_fw_quotefmt);
 	}
 
@@ -463,8 +384,6 @@ void quotefmt_create_forward_fmt_widgets(GtkWindow *parent_window,
 	if (checkbtn_forward_with_format)
 		*checkbtn_forward_with_format = checkbtn_use_format;
 	*edit_fw_quotemark = entry_fw_quotemark;
-	if (override_from_format)
-		*override_from_format = entry_from;
 	*edit_fw_format = text_fw_quotefmt;
 }
 
@@ -492,15 +411,11 @@ void quotefmt_add_info_button(GtkWindow *parent_window, GtkWidget *parent_box)
 
 
 void quotefmt_check_new_msg_formats(gboolean use_format,
-									gchar *override_from_fmt,
 									gchar *subject_fmt,
 									gchar *body_fmt)
 {
 	if (use_format) {
 		gint line;
-
-		if (override_from_fmt && !prefs_template_string_is_valid(override_from_fmt, NULL, FALSE))
-			alertpanel_error(_("New message From format error."));
 
 		if (!prefs_template_string_is_valid(subject_fmt, NULL, FALSE))
 			alertpanel_error(_("New message subject format error."));
@@ -512,7 +427,6 @@ void quotefmt_check_new_msg_formats(gboolean use_format,
 }
 
 void quotefmt_check_reply_formats(gboolean use_format,
-									gchar *override_from_fmt,
 									gchar *quotation_mark,
 									gchar *body_fmt)
 {
@@ -522,9 +436,6 @@ void quotefmt_check_reply_formats(gboolean use_format,
 		if (!prefs_template_string_is_valid(quotation_mark, NULL, FALSE))
 			alertpanel_error(_("Message reply quotation mark format error."));
 
-		if (override_from_fmt && !prefs_template_string_is_valid(override_from_fmt, NULL, FALSE))
-			alertpanel_error(_("Message reply From format error."));
-
 		if (!prefs_template_string_is_valid(body_fmt, &line, TRUE)) {
 			alertpanel_error(_("Message reply format error at line %d."), line);
 		}
@@ -532,7 +443,6 @@ void quotefmt_check_reply_formats(gboolean use_format,
 }
 
 void quotefmt_check_forward_formats(gboolean use_format,
-									gchar *override_from_fmt,
 									gchar *quotation_mark,
 									gchar *body_fmt)
 {
@@ -542,9 +452,7 @@ void quotefmt_check_forward_formats(gboolean use_format,
 		if (!prefs_template_string_is_valid(quotation_mark, NULL, FALSE))
 			alertpanel_error(_("Message forward quotation mark format error."));
 
-		if (override_from_fmt && !prefs_template_string_is_valid(override_from_fmt, NULL, FALSE))
-			alertpanel_error(_("Message forward From format error."));
-
+fprintf(stderr, "\n%s\n", body_fmt);
 		if (!prefs_template_string_is_valid(body_fmt, &line, TRUE)) {
 			alertpanel_error(_("Message forward format error at line %d."), line);
 		}

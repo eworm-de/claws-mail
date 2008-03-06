@@ -57,7 +57,6 @@ static struct Templates {
 	GtkWidget *list_view;
 	GtkWidget *entry_name;
 	GtkWidget *entry_subject;
-	GtkWidget *entry_from;
 	GtkWidget *entry_to;
 	GtkWidget *entry_cc;	
 	GtkWidget *entry_bcc;
@@ -133,7 +132,7 @@ static void prefs_template_window_create(void)
 	GtkWidget *scrolled_window;
 	GtkWidget   *vpaned;
 	GtkWidget     *vbox1;
-	GtkWidget       *table; /* including : entry_[name|from|to|cc|bcc|subject] */
+	GtkWidget       *table; /* including : entry_[name|to|cc|bcc|subject] */
 	GtkWidget       *scroll2;
 	GtkWidget         *text_value;
 	GtkWidget     *vbox2;
@@ -210,8 +209,6 @@ static void prefs_template_window_create(void)
 	} tab[] = {
 		{_("Name"),	&templates.entry_name,		FALSE,
 			_("This name is used as the Menu item")},
-		{_("From"),	&templates.entry_from,		TRUE,
-			_("Override composing account's From header. This doesn't change the composing account.")},
 		{_("To"),	&templates.entry_to,		TRUE, 	NULL},
 		{_("Cc"),	&templates.entry_cc,		TRUE, 	NULL},
 		{_("Bcc"),	&templates.entry_bcc,		TRUE, 	NULL},
@@ -444,7 +441,6 @@ static void prefs_template_reset_dialog(void)
 	GtkTextBuffer *buffer;
 
 	gtk_entry_set_text(GTK_ENTRY(templates.entry_name), "");
-	gtk_entry_set_text(GTK_ENTRY(templates.entry_from), "");
 	gtk_entry_set_text(GTK_ENTRY(templates.entry_to), "");
 	gtk_entry_set_text(GTK_ENTRY(templates.entry_cc), "");
 	gtk_entry_set_text(GTK_ENTRY(templates.entry_bcc), "");			
@@ -592,9 +588,6 @@ static GSList *prefs_template_get_list(void)
 			ntmpl->subject = tmpl->subject && *(tmpl->subject) 
 					 ? g_strdup(tmpl->subject) 
 					 : NULL;
-			ntmpl->from    = tmpl->from && *(tmpl->from)
-					 ? g_strdup(tmpl->from)
-					 : NULL;
 			ntmpl->to      = tmpl->to && *(tmpl->to)
 					 ? g_strdup(tmpl->to)
 					 : NULL;
@@ -646,7 +639,6 @@ static gboolean prefs_template_list_view_set_row(gint row)
 	Template *tmpl;
 	gchar *name;
 	gchar *subject;
-	gchar *from;
 	gchar *to;
 	gchar *cc;
 	gchar *bcc;	
@@ -680,8 +672,6 @@ static gboolean prefs_template_list_view_set_row(gint row)
 		g_free(value);
 		return FALSE;
 	}
-	from = gtk_editable_get_chars(GTK_EDITABLE(templates.entry_from),
-				    0, -1);
 	to = gtk_editable_get_chars(GTK_EDITABLE(templates.entry_to),
 				    0, -1);
 	cc = gtk_editable_get_chars(GTK_EDITABLE(templates.entry_cc),
@@ -691,10 +681,6 @@ static gboolean prefs_template_list_view_set_row(gint row)
 	subject = gtk_editable_get_chars(GTK_EDITABLE(templates.entry_subject),
 					 0, -1);
 
-	if (from && *from == '\0') {
-		g_free(from);
-		from = NULL;
-	}
 	if (to && *to == '\0') {
 		g_free(to);
 		to = NULL;
@@ -712,12 +698,6 @@ static gboolean prefs_template_list_view_set_row(gint row)
 		subject = NULL;
 	}
 
-	if (!prefs_template_string_is_valid(to, NULL, FALSE)) {
-		alertpanel_error(_("Template From format error."));
-		g_free(from);
-		g_free(value);
-		return FALSE;
-	}
 	if (!prefs_template_string_is_valid(to, NULL, FALSE)) {
 		alertpanel_error(_("Template To format error."));
 		g_free(to);
@@ -747,7 +727,6 @@ static gboolean prefs_template_list_view_set_row(gint row)
 	tmpl->load_filename = NULL;
 	tmpl->name = name;
 	tmpl->subject = subject;
-	tmpl->from = from;
 	tmpl->to = to;
 	tmpl->cc = cc;
 	tmpl->bcc = bcc;	
@@ -1153,7 +1132,6 @@ static void prefs_template_select_row(GtkTreeView *list_view, GtkTreePath *path)
 
 	tmpl_def.name = _("Template");
 	tmpl_def.subject = "";
-	tmpl_def.from = "";
 	tmpl_def.to = "";
 	tmpl_def.cc = "";
 	tmpl_def.bcc = "";	
@@ -1164,8 +1142,6 @@ static void prefs_template_select_row(GtkTreeView *list_view, GtkTreePath *path)
 		tmpl = &tmpl_def;
 
 	gtk_entry_set_text(GTK_ENTRY(templates.entry_name), tmpl->name);
-	gtk_entry_set_text(GTK_ENTRY(templates.entry_from),
-			   tmpl->from ? tmpl->from : "");
 	gtk_entry_set_text(GTK_ENTRY(templates.entry_to),
 			   tmpl->to ? tmpl->to : "");
 	gtk_entry_set_text(GTK_ENTRY(templates.entry_cc),

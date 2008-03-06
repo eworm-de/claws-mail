@@ -150,16 +150,13 @@ struct _FolderItemTemplatesPage
 	GtkWidget *window;
 	GtkWidget *table;
 	GtkWidget *checkbtn_compose_with_format;
-	GtkWidget *compose_override_from_format;
 	GtkWidget *compose_subject_format;
 	GtkWidget *compose_body_format;
 	GtkWidget *checkbtn_reply_with_format;
 	GtkWidget *reply_quotemark;
-	GtkWidget *reply_override_from_format;
 	GtkWidget *reply_body_format;
 	GtkWidget *checkbtn_forward_with_format;
 	GtkWidget *forward_quotemark;
-	GtkWidget *forward_override_from_format;
 	GtkWidget *forward_body_format;
 
 	/* apply to sub folders */
@@ -1180,7 +1177,6 @@ static void prefs_folder_item_templates_create_widget_func(PrefsPage * page_,
 				window,
 				vbox,
 				&page->checkbtn_compose_with_format,
-				&page->compose_override_from_format,
 				&page->compose_subject_format,
 				&page->compose_body_format,
 				FALSE);
@@ -1199,7 +1195,6 @@ static void prefs_folder_item_templates_create_widget_func(PrefsPage * page_,
 				window,
 				vbox,
 				&page->checkbtn_reply_with_format,
-				&page->reply_override_from_format,
 				&page->reply_quotemark,
 				&page->reply_body_format,
 				FALSE);
@@ -1218,7 +1213,6 @@ static void prefs_folder_item_templates_create_widget_func(PrefsPage * page_,
 				window,
 				vbox,
 				&page->checkbtn_forward_with_format,
-				&page->forward_override_from_format,
 				&page->forward_quotemark,
 				&page->forward_body_format,
 				FALSE);
@@ -1233,8 +1227,6 @@ static void prefs_folder_item_templates_create_widget_func(PrefsPage * page_,
 
 	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(page->checkbtn_compose_with_format),
 			item->prefs->compose_with_format);
-	pref_set_entry_from_pref(GTK_ENTRY(page->compose_override_from_format),
-			item->prefs->compose_override_from_format);
 	pref_set_entry_from_pref(GTK_ENTRY(page->compose_subject_format),
 			item->prefs->compose_subject_format);
 	pref_set_textview_from_pref(GTK_TEXT_VIEW(page->compose_body_format),
@@ -1244,8 +1236,6 @@ static void prefs_folder_item_templates_create_widget_func(PrefsPage * page_,
 			item->prefs->reply_with_format);
 	pref_set_entry_from_pref(GTK_ENTRY(page->reply_quotemark),
 			item->prefs->reply_quotemark);
-	pref_set_entry_from_pref(GTK_ENTRY(page->reply_override_from_format),
-			item->prefs->reply_override_from_format);
 	pref_set_textview_from_pref(GTK_TEXT_VIEW(page->reply_body_format),
 			item->prefs->reply_body_format);
 
@@ -1253,8 +1243,6 @@ static void prefs_folder_item_templates_create_widget_func(PrefsPage * page_,
 			item->prefs->forward_with_format);
 	pref_set_entry_from_pref(GTK_ENTRY(page->forward_quotemark),
 			item->prefs->forward_quotemark);
-	pref_set_entry_from_pref(GTK_ENTRY(page->forward_override_from_format),
-			item->prefs->forward_override_from_format);
 	pref_set_textview_from_pref(GTK_TEXT_VIEW(page->forward_body_format),
 			item->prefs->forward_body_format);
 
@@ -1297,14 +1285,11 @@ static void templates_save_folder_prefs(FolderItem *folder, FolderItemTemplatesP
 	if (all || gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(page->new_msg_format_rec_checkbtn))) {
 		prefs->compose_with_format =
 			gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(page->checkbtn_compose_with_format));
-		prefs->compose_override_from_format = pref_get_pref_from_entry(
-				GTK_ENTRY(page->compose_override_from_format));
 		prefs->compose_subject_format = pref_get_pref_from_entry(
 				GTK_ENTRY(page->compose_subject_format));
 		prefs->compose_body_format = pref_get_pref_from_textview(
 				GTK_TEXT_VIEW(page->compose_body_format));
 		quotefmt_check_new_msg_formats(prefs->compose_with_format,
-										prefs->compose_override_from_format,
 										prefs->compose_subject_format,
 										prefs->compose_body_format);
 	}
@@ -1314,12 +1299,9 @@ static void templates_save_folder_prefs(FolderItem *folder, FolderItemTemplatesP
 			gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(page->checkbtn_reply_with_format));
 		prefs->reply_quotemark = gtk_editable_get_chars(
 				GTK_EDITABLE(page->reply_quotemark), 0, -1);
-		prefs->reply_override_from_format = pref_get_pref_from_entry(
-				GTK_ENTRY(page->reply_override_from_format));
 		prefs->reply_body_format = pref_get_pref_from_textview(
 				GTK_TEXT_VIEW(page->reply_body_format));
 		quotefmt_check_reply_formats(prefs->reply_with_format,
-										prefs->reply_override_from_format,
 										prefs->reply_quotemark,
 										prefs->reply_body_format);
 	}
@@ -1329,12 +1311,9 @@ static void templates_save_folder_prefs(FolderItem *folder, FolderItemTemplatesP
 			gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(page->checkbtn_forward_with_format));
 		prefs->forward_quotemark = gtk_editable_get_chars(
 				GTK_EDITABLE(page->forward_quotemark), 0, -1);
-		prefs->forward_override_from_format = pref_get_pref_from_entry(
-				GTK_ENTRY(page->forward_override_from_format));
 		prefs->forward_body_format = pref_get_pref_from_textview(
 				GTK_TEXT_VIEW(page->forward_body_format));
 		quotefmt_check_forward_formats(prefs->forward_with_format,
-										prefs->forward_override_from_format,
 										prefs->forward_quotemark,
 										prefs->forward_body_format);
 	}

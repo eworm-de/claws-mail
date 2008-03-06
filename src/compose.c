@@ -1006,7 +1006,6 @@ Compose *compose_generic_new(PrefsAccount *account, const gchar *mailto, FolderI
 	const gchar *body_format = NULL;
 	gchar *mailto_from = NULL;
 	PrefsAccount *mailto_account = NULL;
-	MsgInfo* dummyinfo = NULL;
 
 	/* check if mailto defines a from */
 	if (mailto && *mailto != '\0') {
@@ -1034,40 +1033,7 @@ Compose *compose_generic_new(PrefsAccount *account, const gchar *mailto, FolderI
 	if (mailto_from) {
 		gtk_entry_set_text(GTK_ENTRY(compose->from_name), mailto_from);
 		g_free(mailto_from);
-	} else
-		/* override from name according to folder properties */
-		if (item && item->prefs &&
-			item->prefs->compose_with_format &&
-			item->prefs->compose_override_from_format &&
-			*item->prefs->compose_override_from_format != '\0') {
-
-			gchar *tmp = NULL;
-			gchar *buf = NULL;
-
-			dummyinfo = compose_msginfo_new_from_compose(compose);
-
-			/* decode \-escape sequences in the internal representation of the quote format */
-			tmp = malloc(strlen(item->prefs->compose_override_from_format)+1);
-			pref_get_unescaped_pref(tmp, item->prefs->compose_override_from_format);
-
-#ifdef USE_ASPELL
-			quote_fmt_init(dummyinfo, NULL, NULL, FALSE, compose->account, FALSE,
-					compose->gtkaspell);
-#else
-			quote_fmt_init(dummyinfo, NULL, NULL, FALSE, compose->account, FALSE);
-#endif
-			quote_fmt_scan_string(tmp);
-			quote_fmt_parse();
-
-			buf = quote_fmt_get_buffer();
-			if (buf == NULL)
-				alertpanel_error(_("New message From format error."));
-			else
-				gtk_entry_set_text(GTK_ENTRY(compose->from_name), buf);
-			quote_fmt_reset_vartable();
-
-			g_free(tmp);
-		}
+	}
 
 	ifactory = gtk_item_factory_from_widget(compose->menubar);
 
@@ -1128,6 +1094,7 @@ Compose *compose_generic_new(PrefsAccount *account, const gchar *mailto, FolderI
 	}
 
 	if (subject_format || body_format) {
+		MsgInfo* dummyinfo = NULL;
 
 		if ( subject_format
 			 && *subject_format != '\0' )
@@ -1136,8 +1103,7 @@ Compose *compose_generic_new(PrefsAccount *account, const gchar *mailto, FolderI
 			gchar *tmp = NULL;
 			gchar *buf = NULL;
 
-			if (!dummyinfo)
-				dummyinfo = compose_msginfo_new_from_compose(compose);
+			dummyinfo = compose_msginfo_new_from_compose(compose);
 
 			/* decode \-escape sequences in the internal representation of the quote format */
 			tmp = malloc(strlen(subject_format)+1);
@@ -1173,7 +1139,7 @@ Compose *compose_generic_new(PrefsAccount *account, const gchar *mailto, FolderI
 			GtkTextIter start, end;
 			gchar *tmp = NULL;
 
-			if (!dummyinfo)
+			if ( dummyinfo == NULL )
 				dummyinfo = compose_msginfo_new_from_compose(compose);
 
 			text = GTK_TEXT_VIEW(compose->text);
@@ -1192,8 +1158,8 @@ Compose *compose_generic_new(PrefsAccount *account, const gchar *mailto, FolderI
 			g_free(tmp);
 		}
 
+		procmsg_msginfo_free( dummyinfo );
 	}
-	procmsg_msginfo_free( dummyinfo );
 
 	if (attach_files) {
 		gint i;
@@ -1539,38 +1505,6 @@ static Compose *compose_generic_reply(MsgInfo *msginfo,
 		return NULL;
 	}
 
-	/* override from name according to folder properties */
-	if (msginfo->folder && msginfo->folder->prefs &&
-		msginfo->folder->prefs->reply_with_format &&
-		msginfo->folder->prefs->reply_override_from_format &&
-		*msginfo->folder->prefs->reply_override_from_format != '\0') {
-
-		gchar *tmp = NULL;
-		gchar *buf = NULL;
-
-		/* decode \-escape sequences in the internal representation of the quote format */
-		tmp = malloc(strlen(msginfo->folder->prefs->reply_override_from_format)+1);
-		pref_get_unescaped_pref(tmp, msginfo->folder->prefs->reply_override_from_format);
-
-#ifdef USE_ASPELL
-		quote_fmt_init(compose->replyinfo, NULL, NULL, FALSE, compose->account, FALSE,
-				compose->gtkaspell);
-#else
-		quote_fmt_init(compose->replyinfo, NULL, NULL, FALSE, compose->account, FALSE);
-#endif
-		quote_fmt_scan_string(tmp);
-		quote_fmt_parse();
-
-		buf = quote_fmt_get_buffer();
-		if (buf == NULL)
-			alertpanel_error(_("Message reply From format error."));
-		else
-			gtk_entry_set_text(GTK_ENTRY(compose->from_name), buf);
-		quote_fmt_reset_vartable();
-
-		g_free(tmp);
-	}
-
 	textview = (GTK_TEXT_VIEW(compose->text));
 	textbuf = gtk_text_view_get_buffer(textview);
 	compose_create_tags(textview, compose);
@@ -1693,45 +1627,6 @@ Compose *compose_forward(PrefsAccount *account, MsgInfo *msginfo,
 		
 		g_free(buf);
 		g_free(buf2);
-	}
-
-	/* override from name according to folder properties */
-	if (msginfo->folder && msginfo->folder->prefs &&
-		msginfo->folder->prefs->forward_with_format &&
-		msginfo->folder->prefs->forward_override_from_format &&
-		*msginfo->folder->prefs->forward_override_from_format != '\0') {
-
-		gchar *tmp = NULL;
-		gchar *buf = NULL;
-		MsgInfo *full_msginfo = NULL;
-
-		if (!as_attach)
-			full_msginfo = procmsg_msginfo_get_full_info(msginfo);
-		if (!full_msginfo)
-			full_msginfo = procmsg_msginfo_copy(msginfo);
-
-		/* decode \-escape sequences in the internal representation of the quote format */
-		tmp = malloc(strlen(msginfo->folder->prefs->forward_override_from_format)+1);
-		pref_get_unescaped_pref(tmp, msginfo->folder->prefs->forward_override_from_format);
-
-#ifdef USE_ASPELL
-		quote_fmt_init(full_msginfo, NULL, NULL, FALSE, compose->account, FALSE,
-				compose->gtkaspell);
-#else
-		quote_fmt_init(full_msginfo, NULL, NULL, FALSE, compose->account, FALSE);
-#endif
-		quote_fmt_scan_string(tmp);
-		quote_fmt_parse();
-
-		buf = quote_fmt_get_buffer();
-		if (buf == NULL)
-			alertpanel_error(_("Message forward From format error."));
-		else
-			gtk_entry_set_text(GTK_ENTRY(compose->from_name), buf);
-		quote_fmt_reset_vartable();
-
-		g_free(tmp);
-		procmsg_msginfo_free(full_msginfo);
 	}
 
 	textview = GTK_TEXT_VIEW(compose->text);
@@ -1871,42 +1766,6 @@ static Compose *compose_forward_multiple(PrefsAccount *account, GSList *msginfo_
 	compose = compose_create(account, ((MsgInfo *)msginfo_list->data)->folder, COMPOSE_FORWARD, FALSE);
 
 	compose->updating = TRUE;
-
-	/* override from name according to folder properties */
-	if (msginfo_list->data) {
-		MsgInfo *msginfo = msginfo_list->data;
-
-		if (msginfo->folder && msginfo->folder->prefs &&
-			msginfo->folder->prefs->forward_with_format &&
-			msginfo->folder->prefs->forward_override_from_format &&
-			*msginfo->folder->prefs->forward_override_from_format != '\0') {
-
-			gchar *tmp = NULL;
-			gchar *buf = NULL;
-
-			/* decode \-escape sequences in the internal representation of the quote format */
-			tmp = malloc(strlen(msginfo->folder->prefs->forward_override_from_format)+1);
-			pref_get_unescaped_pref(tmp, msginfo->folder->prefs->forward_override_from_format);
-
-#ifdef USE_ASPELL
-			quote_fmt_init(msginfo, NULL, NULL, FALSE, compose->account, FALSE,
-					compose->gtkaspell);
-#else
-			quote_fmt_init(msginfo, NULL, NULL, FALSE, compose->account, FALSE);
-#endif
-			quote_fmt_scan_string(tmp);
-			quote_fmt_parse();
-
-			buf = quote_fmt_get_buffer();
-			if (buf == NULL)
-				alertpanel_error(_("Message forward From format error."));
-			else
-				gtk_entry_set_text(GTK_ENTRY(compose->from_name), buf);
-			quote_fmt_reset_vartable();
-
-			g_free(tmp);
-		}
-	}
 
 	textview = GTK_TEXT_VIEW(compose->text);
 	textbuf = gtk_text_view_get_buffer(textview);
@@ -7667,24 +7526,6 @@ static void compose_template_apply_fields(Compose *compose, Template *tmpl)
 	else {
 		dummyinfo = compose_msginfo_new_from_compose(compose);
 		msginfo = dummyinfo;
-	}
-
-	if (tmpl->from && *tmpl->from != '\0') {
-#ifdef USE_ASPELL
-		quote_fmt_init(msginfo, NULL, NULL, FALSE, compose->account, FALSE,
-				compose->gtkaspell);
-#else
-		quote_fmt_init(msginfo, NULL, NULL, FALSE, compose->account, FALSE);
-#endif
-		quote_fmt_scan_string(tmpl->from);
-		quote_fmt_parse();
-
-		buf = quote_fmt_get_buffer();
-		if (buf == NULL) {
-			alertpanel_error(_("Template From format error."));
-		} else {
-			gtk_entry_set_text(GTK_ENTRY(compose->from_name), buf);
-		}
 	}
 
 	if (tmpl->to && *tmpl->to != '\0') {
