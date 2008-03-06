@@ -29,7 +29,8 @@ typedef void (*PrefsCreateWidgetFunc) (PrefsPage *, GtkWindow *window, gpointer)
 typedef void (*PrefsDestroyWidgetFunc) (PrefsPage *);
 typedef void (*PrefsSavePageFunc) (PrefsPage *);
 typedef gboolean (*PrefsCanClosePageFunc) (PrefsPage *);
-
+typedef void (*PrefsOpenCallbackFunc) (GtkWindow *);
+typedef void (*PrefsCloseCallbackFunc) (GtkWindow *);
 
 struct _PrefsPage
 {
@@ -49,11 +50,15 @@ void prefswindow_open_full		(const gchar *title,
 					 gpointer data,
 					 GtkDestroyNotify func,
 					 gint *save_width, gint *save_height,
-					 gboolean preload_pages, gboolean activate_child);
+					 gboolean preload_pages, gboolean activate_child,
+					 PrefsOpenCallbackFunc open_cb,
+					 PrefsCloseCallbackFunc close_cb);
 
 void prefswindow_open			(const gchar *title, 
 					 GSList *prefs_pages,
 					 gpointer data,
-					 gint *save_width, gint *save_height);
+					 gint *save_width, gint *save_height,
+					 PrefsOpenCallbackFunc open_cb,
+					 PrefsCloseCallbackFunc close_cb);
 
 #endif

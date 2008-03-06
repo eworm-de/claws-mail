@@ -66,6 +66,26 @@ static struct Templates {
 
 static int modified = FALSE;
 static int modified_list = FALSE;
+
+static struct
+{
+	gchar *label;
+	GtkWidget **entry;
+	gboolean compl;
+	gchar *tooltips;
+} widgets_table[] = {
+	{N_("Name"),	&templates.entry_name,		FALSE,
+		N_("This name is used as the Menu item")},
+	{N_("From"),	&templates.entry_from,		TRUE,
+		N_("Override composing account's From header. This doesn't change the composing account.")},
+	{N_("To"),	&templates.entry_to,		TRUE, 	NULL},
+	{N_("Cc"),	&templates.entry_cc,		TRUE, 	NULL},
+	{N_("Bcc"),	&templates.entry_bcc,		TRUE, 	NULL},
+	{N_("Subject"),	&templates.entry_subject,	FALSE,	NULL},
+	{NULL,		NULL,				FALSE,	NULL}
+};
+
+
 /* widget creating functions */
 static void prefs_template_window_create	(void);
 static void prefs_template_window_setup		(void);
@@ -201,45 +221,28 @@ static void prefs_template_window_create(void)
 
 	tooltips = gtk_tooltips_new();
 
-	struct
-	{
-		gchar *label;
-		GtkWidget **entry;
-		gboolean compl;
-		gchar *tooltips;
-	} tab[] = {
-		{_("Name"),	&templates.entry_name,		FALSE,
-			_("This name is used as the Menu item")},
-		{_("From"),	&templates.entry_from,		TRUE,
-			_("Override composing account's From header. This doesn't change the composing account.")},
-		{_("To"),	&templates.entry_to,		TRUE, 	NULL},
-		{_("Cc"),	&templates.entry_cc,		TRUE, 	NULL},
-		{_("Bcc"),	&templates.entry_bcc,		TRUE, 	NULL},
-		{_("Subject"),	&templates.entry_subject,	FALSE,	NULL},
-		{NULL,		NULL,				FALSE,	NULL}
-	};
-
-	for (i=0; tab[i].label; i++) {
+	for (i=0; widgets_table[i].label; i++) {
 
 		GtkWidget *label;
 
-		label = gtk_label_new(tab[i].label);
+		label = gtk_label_new(widgets_table[i].label);
 		gtk_widget_show(label);
 		gtk_table_attach(GTK_TABLE(table), label, 0, 1, i, (i + 1),
 				(GtkAttachOptions) (GTK_FILL),
 				(GtkAttachOptions) 0, 0, 0);
 		gtk_misc_set_alignment(GTK_MISC(label), 1, 0.5);
 
-		*(tab[i].entry) = gtk_entry_new();
-		gtk_widget_show(*(tab[i].entry));
-		gtk_table_attach(GTK_TABLE(table), *(tab[i].entry), 1, 2, i, (i + 1),
+		*(widgets_table[i].entry) = gtk_entry_new();
+		gtk_widget_show(*(widgets_table[i].entry));
+		gtk_table_attach(GTK_TABLE(table), *(widgets_table[i].entry), 1, 2, i, (i + 1),
 				(GtkAttachOptions) (GTK_EXPAND|GTK_SHRINK|GTK_FILL),
 				(GtkAttachOptions) 0, 0, 0);
-		gtk_tooltips_set_tip(tooltips, *(tab[i].entry), tab[i].tooltips, NULL);
+		gtk_tooltips_set_tip(tooltips, *(widgets_table[i].entry),
+				widgets_table[i].tooltips, NULL);
 
-		if (tab[i].compl)
+		if (widgets_table[i].compl)
 			address_completion_register_entry(
-				GTK_ENTRY(*(tab[i].entry)), TRUE);
+				GTK_ENTRY(*(widgets_table[i].entry)), TRUE);
 	}
 
 	/* template content */
@@ -514,6 +517,18 @@ static gboolean prefs_template_key_pressed_cb(GtkWidget *widget,
 	return FALSE;
 }
 
+static void prefs_template_address_completion_end(void)
+{
+	gint i;
+
+	for (i=0; widgets_table[i].label; i++) {
+		if (widgets_table[i].compl)
+			address_completion_unregister_entry(
+				GTK_ENTRY(*(widgets_table[i].entry)));
+	}
+	address_completion_end(templates.window);
+}
+
 static void prefs_template_ok_cb(void)
 {
 	GSList *tmpl_list;
@@ -525,6 +540,9 @@ static void prefs_template_ok_cb(void)
 				 NULL) != G_ALERTDEFAULT) {
 		return;
 	} 
+
+	prefs_template_address_completion_end();
+
 	modified = FALSE;
 	modified_list = FALSE;
 	tmpl_list = prefs_template_get_list();
@@ -552,6 +570,9 @@ static void prefs_template_cancel_cb(void)
 				 NULL) != G_ALERTDEFAULT) {
 		return;
 	}
+
+	prefs_template_address_completion_end();
+
 	modified = FALSE;
 	modified_list = FALSE;
 	store = GTK_LIST_STORE(gtk_tree_view_get_model(GTK_TREE_VIEW

@@ -1,3 +1,17 @@
+2008-03-06 [wwp]	3.3.1cvs14
+
+	* src/prefs_account.c
+	* src/prefs_folder_item.c
+	* src/prefs_gtk.c
+	* src/prefs_template.c
+	* src/gtk/prefswindow.c
+	* src/gtk/prefswindow.h
+		prefs_templates: fix missing unregistering of addr_completion widgets
+		and and ending of addr_completion service.
+		prefs_folder_item: fix missing registering/unregistering of widgets,
+		and rework the way add_completion service is started and stopped.
+		Plus few prefswindow API changes (opening).
+
 2008-03-06 [wwp]	3.3.1cvs13
 
 	* src/folder_item_prefs.c

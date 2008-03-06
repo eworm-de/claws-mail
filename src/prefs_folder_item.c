@@ -1003,8 +1003,6 @@ static void prefs_folder_item_compose_create_widget_func(PrefsPage * page_,
 	page->default_alt_dictionary_rec_checkbtn = default_alt_dictionary_rec_checkbtn;
 #endif
 
-	address_completion_start(page->window);
-
 	page->page.widget = table;
 }
 
@@ -1016,7 +1014,6 @@ static void prefs_folder_item_compose_destroy_widget_func(PrefsPage *page_)
 		address_completion_unregister_entry(GTK_ENTRY(page->entry_default_to));
 	if (page->entry_default_reply_to)
 		address_completion_unregister_entry(GTK_ENTRY(page->entry_default_reply_to));
-	address_completion_end(page->window);
 }
 
 /** \brief  Save the prefs in page to folder.
@@ -1184,6 +1181,8 @@ static void prefs_folder_item_templates_create_widget_func(PrefsPage * page_,
 				&page->compose_subject_format,
 				&page->compose_body_format,
 				FALSE);
+	address_completion_register_entry(GTK_ENTRY(page->compose_override_from_format),
+			TRUE);
 
 	new_msg_format_rec_checkbtn = gtk_check_button_new_with_label(
 			_("Apply to subfolders"));
@@ -1203,6 +1202,8 @@ static void prefs_folder_item_templates_create_widget_func(PrefsPage * page_,
 				&page->reply_quotemark,
 				&page->reply_body_format,
 				FALSE);
+	address_completion_register_entry(GTK_ENTRY(page->reply_override_from_format),
+			TRUE);
 
 	reply_format_rec_checkbtn = gtk_check_button_new_with_label(
 			_("Apply to subfolders"));
@@ -1222,6 +1223,8 @@ static void prefs_folder_item_templates_create_widget_func(PrefsPage * page_,
 				&page->forward_quotemark,
 				&page->forward_body_format,
 				FALSE);
+	address_completion_register_entry(GTK_ENTRY(page->forward_override_from_format),
+			TRUE);
 
 	forward_format_rec_checkbtn = gtk_check_button_new_with_label(
 			_("Apply to subfolders"));
@@ -1271,7 +1274,14 @@ static void prefs_folder_item_templates_create_widget_func(PrefsPage * page_,
 
 static void prefs_folder_item_templates_destroy_widget_func(PrefsPage *page_) 
 {
-	/* FolderItemTemplatesPage *page = (FolderItemTemplatesPage *) page_; */
+	FolderItemTemplatesPage *page = (FolderItemTemplatesPage *) page_;
+
+	if (page->compose_override_from_format)
+		address_completion_unregister_entry(GTK_ENTRY(page->compose_override_from_format));		
+	if (page->reply_override_from_format)
+		address_completion_unregister_entry(GTK_ENTRY(page->reply_override_from_format));		
+	if (page->forward_override_from_format)
+		address_completion_unregister_entry(GTK_ENTRY(page->forward_override_from_format));		
 }
 
 /** \brief  Save the prefs in page to folder.
@@ -1578,6 +1588,16 @@ static void register_templates_page(void)
 
 static GSList *prefs_pages = NULL;
 
+static void prefs_folder_item_address_completion_start(GtkWindow * window)
+{
+	address_completion_start(GTK_WIDGET(window));
+}
+
+static void prefs_folder_item_address_completion_end(GtkWindow * window)
+{
+	address_completion_end(GTK_WIDGET(window));
+}
+
 void prefs_folder_item_open(FolderItem *item)
 {
 	gchar *id, *title;
@@ -1597,8 +1617,10 @@ void prefs_folder_item_open(FolderItem *item)
 	title = g_strdup_printf (_("Properties for folder %s"), id);
 	g_free (id);
 	prefswindow_open(title, prefs_pages, item,
-			&prefs_common.folderitemwin_width, &prefs_common.folderitemwin_height);
-	
+			&prefs_common.folderitemwin_width, &prefs_common.folderitemwin_height,
+			prefs_folder_item_address_completion_start,
+			prefs_folder_item_address_completion_end);
+
 	g_free (title);
 }
 

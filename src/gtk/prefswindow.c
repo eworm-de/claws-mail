@@ -64,6 +64,8 @@ struct _PrefsWindow
 	GtkWidget *apply_btn;
 	gint *save_width;
 	gint *save_height;
+	PrefsCloseCallbackFunc open_cb;
+	PrefsCloseCallbackFunc close_cb;
 
 	GtkWidget *empty_page;
 
@@ -175,6 +177,9 @@ static void close_prefs_window(PrefsWindow *prefswindow)
 	debug_print("prefs window closed\n");
 
 	close_all_pages(prefswindow->prefs_pages);
+
+	if (prefswindow->close_cb)
+		prefswindow->close_cb(GTK_WINDOW(prefswindow->window));
 
 	gtk_widget_destroy(prefswindow->window);
 	g_slist_free(prefswindow->prefs_pages);
@@ -410,7 +415,9 @@ static void prefswindow_build_tree(GtkWidget *tree_view, GSList *prefs_pages,
 void prefswindow_open_full(const gchar *title, GSList *prefs_pages,
 							 gpointer data, GtkDestroyNotify func,
 							 gint *save_width, gint *save_height,
-							 gboolean preload_pages, gboolean activate_child)
+							 gboolean preload_pages, gboolean activate_child,
+							 PrefsOpenCallbackFunc open_cb,
+							 PrefsCloseCallbackFunc close_cb)
 {
 	PrefsWindow *prefswindow;
 	gint x = gdk_screen_width();
@@ -426,6 +433,8 @@ void prefswindow_open_full(const gchar *title, GSList *prefs_pages,
 	prefswindow->prefs_pages = g_slist_copy(prefs_pages);
 	prefswindow->save_width = save_width;
 	prefswindow->save_height = save_height;
+	prefswindow->open_cb = open_cb;
+	prefswindow->close_cb = close_cb;
 
 	prefswindow->window = gtkut_window_new(GTK_WINDOW_TOPLEVEL, "prefswindow");
 	gtk_window_set_title(GTK_WINDOW(prefswindow->window), title);
@@ -503,6 +512,9 @@ void prefswindow_open_full(const gchar *title, GSList *prefs_pages,
 
 	prefswindow_build_tree(prefswindow->tree_view, prefs_pages, prefswindow,
 							preload_pages, activate_child);
+
+	if (open_cb)
+		open_cb(GTK_WINDOW(prefswindow->window));
 
 	gtk_widget_grab_focus(prefswindow->tree_view);
 
@@ -593,10 +605,12 @@ void prefswindow_open_full(const gchar *title, GSList *prefs_pages,
 }
 
 void prefswindow_open(const gchar *title, GSList *prefs_pages, gpointer data,
-					 gint *save_width, gint *save_height)
+					 gint *save_width, gint *save_height,
+					 PrefsOpenCallbackFunc open_cb,
+					 PrefsCloseCallbackFunc close_cb)
 {
 	prefswindow_open_full(title, prefs_pages, data, NULL, save_width, save_height,
-						  FALSE, FALSE);
+						  FALSE, FALSE, open_cb, close_cb);
 }
 
 /*!
