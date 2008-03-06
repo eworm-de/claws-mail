@@ -2051,6 +2051,7 @@ static void templates_create_widget_func(PrefsPage * _page,
 				window,
 				vbox2,
 				&page->checkbtn_compose_with_format,
+				NULL,
 				&page->compose_subject_format,
 				&page->compose_body_format,
 				FALSE);
@@ -2065,6 +2066,7 @@ static void templates_create_widget_func(PrefsPage * _page,
 				window,
 				vbox2,
 				&page->checkbtn_reply_with_format,
+				NULL,
 				&page->reply_quotemark,
 				&page->reply_body_format,
 				FALSE);
@@ -2079,6 +2081,7 @@ static void templates_create_widget_func(PrefsPage * _page,
 				window,
 				vbox2,
 				&page->checkbtn_forward_with_format,
+				NULL,
 				&page->forward_quotemark,
 				&page->forward_body_format,
 				FALSE);
@@ -2920,12 +2923,15 @@ static void templates_save_func(PrefsPage *_page)
 		return;
 
 	quotefmt_check_new_msg_formats(tmp_ac_prefs.compose_with_format,
+									NULL,
 									tmp_ac_prefs.compose_subject_format,
 									tmp_ac_prefs.compose_body_format);
 	quotefmt_check_reply_formats(tmp_ac_prefs.reply_with_format,
+									NULL,
 									tmp_ac_prefs.reply_quotemark,
 									tmp_ac_prefs.reply_body_format);
 	quotefmt_check_forward_formats(tmp_ac_prefs.forward_with_format,
+									NULL,
 									tmp_ac_prefs.forward_quotemark,
 									tmp_ac_prefs.forward_body_format);
 	if (prefs_templates_apply() >= 0)

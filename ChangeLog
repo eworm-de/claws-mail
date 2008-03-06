@@ -1,3 +1,22 @@
+2008-03-06 [wwp]	3.3.1cvs12
+
+	* src/compose.c
+	* src/folder_item_prefs.c
+	* src/folder_item_prefs.h
+	* src/prefs_account.c
+	* src/prefs_folder_item.c
+	* src/prefs_quote.c
+	* src/prefs_template.c
+	* src/quote_fmt.c
+	* src/quote_fmt.h
+	* src/common/template.c
+	* src/common/template.h
+		Global and per-folder templates can now override the from name (this
+		doesn't change the account being used).
+		Examples:
+		 "My other name" <%account_email> (just changes the name)
+		 my.faked.email@address.org (overrides the address too)
+
 2008-03-05 [colin]	3.3.1cvs11
 
 	* src/summaryview.c
