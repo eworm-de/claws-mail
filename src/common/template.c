@@ -48,6 +48,7 @@ static Template *template_load(gchar *filename)
 	tmpl->load_filename = g_strdup(filename);;
 	tmpl->name = NULL;
 	tmpl->subject = NULL;
+	tmpl->from = NULL;
 	tmpl->to = NULL;
 	tmpl->cc = NULL;	
 	tmpl->bcc = NULL;	
@@ -58,6 +59,8 @@ static Template *template_load(gchar *filename)
 			break;
 		else if (!g_ascii_strncasecmp(buf, "Name:", 5))
 			tmpl->name = g_strdup(g_strstrip(buf + 5));
+		else if (!g_ascii_strncasecmp(buf, "From:", 5))
+			tmpl->from = g_strdup(g_strstrip(buf + 5));
 		else if (!g_ascii_strncasecmp(buf, "To:", 3))
 			tmpl->to = g_strdup(g_strstrip(buf + 3));
 		else if (!g_ascii_strncasecmp(buf, "Cc:", 3))
@@ -244,6 +247,8 @@ static void template_write_config(GSList *tmpl_list)
 		TRY(fprintf(fp, "Name: %s\n", tmpl->name) > 0);
 		if (tmpl->subject && *tmpl->subject != '\0')
 			TRY(fprintf(fp, "Subject: %s\n", tmpl->subject) > 0);
+		if (tmpl->from && *tmpl->from != '\0')
+			TRY(fprintf(fp, "From: %s\n", tmpl->from) > 0);
 		if (tmpl->to && *tmpl->to != '\0')
 			TRY(fprintf(fp, "To: %s\n", tmpl->to) > 0);
 		if (tmpl->cc && *tmpl->cc != '\0')

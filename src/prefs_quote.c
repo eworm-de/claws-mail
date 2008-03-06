@@ -84,6 +84,7 @@ static void prefs_quote_create_widget(PrefsPage *_page, GtkWindow *window,
 				window,
 				vbox2,
 				&prefs_quote->checkbtn_compose_with_format,
+				NULL,
 				&prefs_quote->entry_subject,
 				&prefs_quote->text_format,
 				FALSE);
@@ -98,6 +99,7 @@ static void prefs_quote_create_widget(PrefsPage *_page, GtkWindow *window,
 				window,
 				vbox2,
 				NULL,
+				NULL,
 				&prefs_quote->entry_quotemark,
 				&prefs_quote->text_quotefmt,
 				FALSE);
@@ -111,6 +113,7 @@ static void prefs_quote_create_widget(PrefsPage *_page, GtkWindow *window,
 	quotefmt_create_forward_fmt_widgets(
 				window,
 				vbox2,
+				NULL,
 				NULL,
 				&prefs_quote->entry_fw_quotemark,
 				&prefs_quote->text_fw_quotefmt,
@@ -164,20 +167,27 @@ static void prefs_quote_save(PrefsPage *_page)
 	prefs_common.compose_body_format = pref_get_pref_from_textview(
 			GTK_TEXT_VIEW(page->text_format));
 	quotefmt_check_new_msg_formats(prefs_common.compose_with_format,
-									prefs_common.compose_subject_format,
-									prefs_common.compose_body_format);
+								   NULL,
+								   prefs_common.compose_subject_format,
+								   prefs_common.compose_body_format);
 
 	prefs_common.quotemark = gtk_editable_get_chars(
 			GTK_EDITABLE(page->entry_quotemark), 0, -1);
 	prefs_common.quotefmt = pref_get_pref_from_textview(
 			GTK_TEXT_VIEW(page->text_quotefmt));
-	quotefmt_check_reply_formats(TRUE, prefs_common.quotemark, prefs_common.quotefmt);
+	quotefmt_check_reply_formats(TRUE,
+								 NULL,
+								 prefs_common.quotemark,
+								 prefs_common.quotefmt);
 
 	prefs_common.fw_quotemark = gtk_editable_get_chars(
 			GTK_EDITABLE(page->entry_fw_quotemark), 0, -1);
 	prefs_common.fw_quotefmt = pref_get_pref_from_textview(
 			GTK_TEXT_VIEW(page->text_fw_quotefmt));
-	quotefmt_check_forward_formats(TRUE, prefs_common.fw_quotemark, prefs_common.fw_quotefmt);
+	quotefmt_check_forward_formats(TRUE,
+								   NULL,
+								   prefs_common.fw_quotemark,
+								   prefs_common.fw_quotefmt);
 }
 
 static void prefs_quote_destroy_widget(PrefsPage *_page)

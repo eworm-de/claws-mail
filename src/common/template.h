@@ -29,6 +29,7 @@ struct _Template {
 	gchar *load_filename;
 	gchar *name;
 	gchar *subject;
+	gchar *from;
 	gchar *to;
 	gchar *cc;
 	gchar *bcc;		
