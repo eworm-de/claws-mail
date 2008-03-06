@@ -127,7 +127,7 @@ void quotefmt_create_new_msg_fmt_widgets(GtkWindow *parent_window,
 	GtkWidget *hbox_format;
 	GtkWidget *hbox2_format;
 	GtkWidget *label_from;
-	GtkWidget *entry_from;
+	GtkWidget *entry_from = NULL;
 	GtkWidget *label_subject;
 	GtkWidget *entry_subject;
 	GtkWidget *scrolledwin_format;
@@ -244,7 +244,7 @@ void quotefmt_create_reply_fmt_widgets(GtkWindow *parent_window,
 	GtkWidget *label_quotemark;
 	GtkWidget *entry_quotemark;
 	GtkWidget *label_from;
-	GtkWidget *entry_from;
+	GtkWidget *entry_from = NULL;
 	GtkWidget *scrolledwin_quotefmt;
 	GtkWidget *text_quotefmt;
 
@@ -363,7 +363,7 @@ void quotefmt_create_forward_fmt_widgets(GtkWindow *parent_window,
 	GtkWidget *label_quotemark;
 	GtkWidget *entry_fw_quotemark;
 	GtkWidget *label_from;
-	GtkWidget *entry_from;
+	GtkWidget *entry_from = NULL;
 	GtkWidget *scrolledwin_quotefmt;
 	GtkWidget *text_fw_quotefmt;
 

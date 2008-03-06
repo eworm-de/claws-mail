@@ -1,3 +1,8 @@
+2008-03-06 [wwp]	3.3.1cvs15
+
+	* src/quote_fmt.c
+		Fix some gcc warnings.
+
 2008-03-06 [wwp]	3.3.1cvs14
 
 	* src/prefs_account.c
