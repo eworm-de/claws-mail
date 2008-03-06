@@ -1,3 +1,12 @@
+2008-03-06 [wwp]	3.3.1cvs13
+
+	* src/folder_item_prefs.c
+	* src/prefs_template.c
+	* src/prefs_template.h
+	* src/quote_fmt.c
+	* src/common/template.c
+		Complete 3.3.1cvs12, thanks to Colin.
+
 2008-03-06 [wwp]	3.3.1cvs12
 
 	* src/compose.c

@@ -183,13 +183,15 @@ static FolderItemPrefs *folder_item_prefs_clear(FolderItemPrefs *prefs)
 	prefs->compose_with_format = FALSE;
 	prefs->compose_subject_format = NULL;
 	prefs->compose_body_format = NULL;
+	prefs->compose_override_from_format = NULL;
 	prefs->reply_with_format = FALSE;
 	prefs->reply_quotemark = NULL;
 	prefs->reply_body_format = NULL;
+	prefs->reply_override_from_format = NULL;
 	prefs->forward_with_format = FALSE;
 	prefs->forward_quotemark = NULL;
 	prefs->forward_body_format = NULL;
-
+	prefs->forward_override_from_format = NULL;
 	return prefs;
 }
 
@@ -208,10 +210,13 @@ void folder_item_prefs_free(FolderItemPrefs * prefs)
 	g_free(prefs->default_reply_to);
 	g_free(prefs->compose_subject_format);
 	g_free(prefs->compose_body_format);
+	g_free(prefs->compose_override_from_format);
 	g_free(prefs->reply_quotemark);
 	g_free(prefs->reply_body_format);
+	g_free(prefs->reply_override_from_format);
 	g_free(prefs->forward_quotemark);
 	g_free(prefs->forward_body_format);
+	g_free(prefs->forward_override_from_format);
 	g_free(prefs);
 }
 
@@ -265,12 +270,15 @@ void folder_item_prefs_copy_prefs(FolderItem * src, FolderItem * dest)
 	tmp_prefs.compose_with_format = src->prefs->compose_with_format;
 	tmp_prefs.compose_subject_format = g_strdup(src->prefs->compose_subject_format);
 	tmp_prefs.compose_body_format = g_strdup(src->prefs->compose_body_format);
+	tmp_prefs.compose_override_from_format = g_strdup(src->prefs->compose_override_from_format);
 	tmp_prefs.reply_with_format = src->prefs->reply_with_format;
 	tmp_prefs.reply_quotemark = g_strdup(src->prefs->reply_quotemark);
 	tmp_prefs.reply_body_format = g_strdup(src->prefs->reply_body_format);
+	tmp_prefs.reply_override_from_format = g_strdup(src->prefs->reply_override_from_format);
 	tmp_prefs.forward_with_format = src->prefs->forward_with_format;
 	tmp_prefs.forward_quotemark = g_strdup(src->prefs->forward_quotemark);
 	tmp_prefs.forward_body_format = g_strdup(src->prefs->forward_body_format);
+	tmp_prefs.forward_override_from_format = g_strdup(src->prefs->forward_override_from_format);
 
 	*dest->prefs = tmp_prefs;
 	folder_item_prefs_save_config(dest);

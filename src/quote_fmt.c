@@ -499,13 +499,13 @@ void quotefmt_check_new_msg_formats(gboolean use_format,
 	if (use_format) {
 		gint line;
 
-		if (override_from_fmt && !prefs_template_string_is_valid(override_from_fmt, NULL, FALSE))
+		if (override_from_fmt && !prefs_template_string_is_valid(override_from_fmt, NULL, FALSE, TRUE))
 			alertpanel_error(_("New message From format error."));
 
-		if (!prefs_template_string_is_valid(subject_fmt, NULL, FALSE))
+		if (!prefs_template_string_is_valid(subject_fmt, NULL, FALSE, FALSE))
 			alertpanel_error(_("New message subject format error."));
 
-		if (!prefs_template_string_is_valid(body_fmt, &line, TRUE)) {
+		if (!prefs_template_string_is_valid(body_fmt, &line, TRUE, FALSE)) {
 			alertpanel_error(_("New message body format error at line %d."), line);
 		}
 	}
@@ -519,13 +519,13 @@ void quotefmt_check_reply_formats(gboolean use_format,
 	if (use_format) {
 		gint line;
 
-		if (!prefs_template_string_is_valid(quotation_mark, NULL, FALSE))
+		if (!prefs_template_string_is_valid(quotation_mark, NULL, FALSE, FALSE))
 			alertpanel_error(_("Message reply quotation mark format error."));
 
-		if (override_from_fmt && !prefs_template_string_is_valid(override_from_fmt, NULL, FALSE))
+		if (override_from_fmt && !prefs_template_string_is_valid(override_from_fmt, NULL, FALSE, TRUE))
 			alertpanel_error(_("Message reply From format error."));
 
-		if (!prefs_template_string_is_valid(body_fmt, &line, TRUE)) {
+		if (!prefs_template_string_is_valid(body_fmt, &line, TRUE, FALSE)) {
 			alertpanel_error(_("Message reply format error at line %d."), line);
 		}
 	}
@@ -539,13 +539,13 @@ void quotefmt_check_forward_formats(gboolean use_format,
 	if (use_format) {
 		gint line;
 
-		if (!prefs_template_string_is_valid(quotation_mark, NULL, FALSE))
+		if (!prefs_template_string_is_valid(quotation_mark, NULL, FALSE, FALSE))
 			alertpanel_error(_("Message forward quotation mark format error."));
 
-		if (override_from_fmt && !prefs_template_string_is_valid(override_from_fmt, NULL, FALSE))
+		if (override_from_fmt && !prefs_template_string_is_valid(override_from_fmt, NULL, FALSE, TRUE))
 			alertpanel_error(_("Message forward From format error."));
 
-		if (!prefs_template_string_is_valid(body_fmt, &line, TRUE)) {
+		if (!prefs_template_string_is_valid(body_fmt, &line, TRUE, FALSE)) {
 			alertpanel_error(_("Message forward format error at line %d."), line);
 		}
 	}

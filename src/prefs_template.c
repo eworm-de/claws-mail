@@ -615,17 +615,19 @@ static GSList *prefs_template_get_list(void)
 	return tmpl_list;
 }
 
-gboolean prefs_template_string_is_valid(gchar *string, gint *line, gboolean escaped_string)
+gboolean prefs_template_string_is_valid(gchar *string, gint *line, gboolean escaped_string, gboolean email)
 {
+	gboolean result = TRUE;
 	if (string && *string != '\0') {
 		gchar *parsed_buf;
 		MsgInfo dummyinfo;
+		PrefsAccount *account = account_get_default();
 
 		memset(&dummyinfo, 0, sizeof(MsgInfo));
 #ifdef USE_ASPELL
-		quote_fmt_init(&dummyinfo, NULL, NULL, TRUE, NULL, escaped_string, NULL);
+		quote_fmt_init(&dummyinfo, NULL, NULL, TRUE, account, escaped_string, NULL);
 #else
-		quote_fmt_init(&dummyinfo, NULL, NULL, TRUE, NULL, escaped_string);
+		quote_fmt_init(&dummyinfo, NULL, NULL, TRUE, account, escaped_string);
 #endif
 		quote_fmt_scan_string(string);
 		quote_fmt_parse();
@@ -635,9 +637,19 @@ gboolean prefs_template_string_is_valid(gchar *string, gint *line, gboolean esca
 				*line = quote_fmt_get_line();
 			return FALSE;
 		}
+		if (email) {
+			const gchar *start = strrchr(parsed_buf, '<');
+			const gchar *end = strrchr(parsed_buf, '>');
+			const gchar *at = strrchr(parsed_buf, '@');
+			const gchar *space = strrchr(parsed_buf, ' ');
+			if (!at)
+				result = FALSE;
+			if (at && space && (!start || !end || end < start || start < space))
+				result = FALSE;
+		}
 		quote_fmt_reset_vartable();
 	}
-	return TRUE;
+	return result;
 }
 
 static gboolean prefs_template_list_view_set_row(gint row)
@@ -667,7 +679,7 @@ static gboolean prefs_template_list_view_set_row(gint row)
 			g_free(value);
 		value = NULL;
 		}
-	if (!prefs_template_string_is_valid(value, &line, FALSE)) {
+	if (!prefs_template_string_is_valid(value, &line, FALSE, FALSE)) {
 		alertpanel_error(_("Template body format error at line %d."), line);
 		g_free(value);
 		return FALSE;
@@ -712,31 +724,31 @@ static gboolean prefs_template_list_view_set_row(gint row)
 		subject = NULL;
 	}
 
-	if (!prefs_template_string_is_valid(to, NULL, FALSE)) {
+	if (!prefs_template_string_is_valid(from, NULL, FALSE, TRUE)) {
 		alertpanel_error(_("Template From format error."));
 		g_free(from);
 		g_free(value);
 		return FALSE;
 	}
-	if (!prefs_template_string_is_valid(to, NULL, FALSE)) {
+	if (!prefs_template_string_is_valid(to, NULL, FALSE, TRUE)) {
 		alertpanel_error(_("Template To format error."));
 		g_free(to);
 		g_free(value);
 		return FALSE;
 	}
-	if (!prefs_template_string_is_valid(cc, NULL, FALSE)) {
+	if (!prefs_template_string_is_valid(cc, NULL, FALSE, TRUE)) {
 		alertpanel_error(_("Template Cc format error."));	
 		g_free(cc);
 		g_free(value);
 		return FALSE;
 	}
-	if (!prefs_template_string_is_valid(bcc, NULL, FALSE)) {
+	if (!prefs_template_string_is_valid(bcc, NULL, FALSE, TRUE)) {
 		alertpanel_error(_("Template Bcc format error."));	
 		g_free(bcc);
 		g_free(value);
 		return FALSE;
 	}
-	if (!prefs_template_string_is_valid(subject, NULL, FALSE)) {
+	if (!prefs_template_string_is_valid(subject, NULL, FALSE, FALSE)) {
 		alertpanel_error(_("Template subject format error."));	
 		g_free(subject);
 		g_free(value);

@@ -22,6 +22,7 @@
 #define __PREFS_TEMPLATES_H__
 
 void prefs_template_open(void);
-gboolean prefs_template_string_is_valid(gchar *string, gint *line, gboolean escaped_string);
+gboolean prefs_template_string_is_valid(gchar *string, gint *line, 
+			gboolean escaped_string, gboolean email);
 
 #endif /* __PREFS_TEMPLATES_H__ */

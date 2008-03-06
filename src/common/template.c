@@ -95,6 +95,7 @@ void template_free(Template *tmpl)
 	g_free(tmpl->load_filename);
 	g_free(tmpl->name);
 	g_free(tmpl->subject);
+	g_free(tmpl->from);
 	g_free(tmpl->to);
 	g_free(tmpl->cc);
 	g_free(tmpl->bcc);		
