@@ -1,3 +1,13 @@
+2008-03-06 [colin]	3.3.1cvs16
+
+	* src/mainwindow.c
+	* src/mainwindow.h
+	* src/summaryview.c
+	* src/summaryview.h
+	* src/toolbar.c
+		Integrate things better wrt the new
+		summaryview extensibility.
+
 2008-03-06 [wwp]	3.3.1cvs15
 
 	* src/quote_fmt.c

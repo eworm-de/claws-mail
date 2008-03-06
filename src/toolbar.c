@@ -2294,31 +2294,31 @@ void toolbar_main_set_sensitive(gpointer data)
 	}
 	if (toolbar->open_mail_btn) {
 		SET_WIDGET_COND(toolbar->open_mail_btn, 
-			M_TARGET_EXIST);
+			M_TARGET_EXIST|M_SUMMARY_ISLIST);
 	}
 	if (toolbar->reply_btn) {
 		SET_WIDGET_COND(toolbar->reply_btn,
-			M_HAVE_ACCOUNT|M_TARGET_EXIST);
+			M_HAVE_ACCOUNT|M_TARGET_EXIST|M_SUMMARY_ISLIST);
 	}
 	if (toolbar->replyall_btn) {
 		SET_WIDGET_COND(toolbar->replyall_btn,
-			M_HAVE_ACCOUNT|M_TARGET_EXIST);
+			M_HAVE_ACCOUNT|M_TARGET_EXIST|M_SUMMARY_ISLIST);
 	}
 	if (toolbar->replylist_btn) {
 		SET_WIDGET_COND(toolbar->replylist_btn,
-			M_HAVE_ACCOUNT|M_TARGET_EXIST);
+			M_HAVE_ACCOUNT|M_TARGET_EXIST|M_SUMMARY_ISLIST);
 	}
 	if (toolbar->replysender_btn) {
 		SET_WIDGET_COND(toolbar->replysender_btn,
-			M_HAVE_ACCOUNT|M_TARGET_EXIST);
+			M_HAVE_ACCOUNT|M_TARGET_EXIST|M_SUMMARY_ISLIST);
 	}
 	if (toolbar->fwd_btn) {
 		SET_WIDGET_COND(toolbar->fwd_btn, 
-			M_HAVE_ACCOUNT|M_TARGET_EXIST);
+			M_HAVE_ACCOUNT|M_TARGET_EXIST|M_SUMMARY_ISLIST);
 	}
 
 	if (prefs_common.next_unread_msg_dialog == NEXTUNREADMSGDIALOG_ASSUME_NO) {
-		SET_WIDGET_COND(toolbar->next_btn, M_MSG_EXIST);
+		SET_WIDGET_COND(toolbar->next_btn, M_MSG_EXIST|M_SUMMARY_ISLIST);
 	} else {
 		SET_WIDGET_COND(toolbar->next_btn, 0);
 	}
@@ -2335,13 +2335,9 @@ void toolbar_main_set_sensitive(gpointer data)
 		SET_WIDGET_COND(toolbar->exec_btn, 
 			M_DELAY_EXEC);
 	
-/*	if (toolbar->learn_ham_btn)
-		SET_WIDGET_COND(toolbar->learn_ham_btn,
-			M_TARGET_EXIST|M_CAN_LEARN_SPAM);
-*/
 	if (toolbar->learn_spam_btn)
 		SET_WIDGET_COND(toolbar->learn_spam_btn, 
-			M_TARGET_EXIST|M_CAN_LEARN_SPAM);
+			M_TARGET_EXIST|M_CAN_LEARN_SPAM|M_SUMMARY_ISLIST);
 
 	if (toolbar->cancel_inc_btn)
 		SET_WIDGET_COND(toolbar->cancel_inc_btn,

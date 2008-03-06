@@ -3485,12 +3485,18 @@ gboolean summary_step(SummaryView *summaryview, GtkScrollType type)
 	return TRUE;
 }
 
+gboolean summary_is_list(SummaryView *summaryview)
+{
+	return (gtk_notebook_get_current_page(
+		GTK_NOTEBOOK(summaryview->mainwidget_book)) == 0);
+}
+
 void summary_toggle_view(SummaryView *summaryview)
 {
 	if (prefs_common.layout_mode == SMALL_LAYOUT)
 		return;
 	if (!messageview_is_visible(summaryview->messageview) &&
-	    summaryview->selected)
+	    summaryview->selected && summary_is_list(summaryview))
 		summary_display_msg(summaryview,
 				    summaryview->selected);
 	else
@@ -6147,7 +6153,10 @@ static gboolean summary_button_released(GtkWidget *ctree, GdkEventButton *event,
 
 gboolean summary_pass_key_press_event(SummaryView *summaryview, GdkEventKey *event)
 {
-	return summary_key_pressed(summaryview->ctree, event, summaryview);
+	if (summary_is_list(summaryview))
+		return summary_key_pressed(summaryview->ctree, event, summaryview);
+	else
+		return FALSE;
 }
 
 #define BREAK_ON_MODIFIER_KEY() \

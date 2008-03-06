@@ -59,7 +59,8 @@ typedef enum
 	M_HAVE_QUEUED_MAILS   = 1 << 18,
 	M_WANT_SYNC	      = 1 << 19,
 	M_TAGS_EXIST	      = 1 << 20,
-	M_HAVE_PROCESSING     = 1 << 21
+	M_HAVE_PROCESSING     = 1 << 21,
+	M_SUMMARY_ISLIST      = 1 << 22
 } SensitiveCond;
 
 typedef enum

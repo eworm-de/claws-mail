@@ -2719,6 +2719,9 @@ SensitiveCond main_window_get_current_state(MainWindow *mainwin)
 	    mainwin->summaryview->copied > 0)
 		state |= M_DELAY_EXEC;
 
+	if (summary_is_list(mainwin->summaryview))
+		state |= M_SUMMARY_ISLIST;
+
 	return state;
 }
 
@@ -2745,17 +2748,17 @@ void main_window_set_menu_sensitive(MainWindow *mainwin)
 		{"/File/Synchronise folders", M_WANT_SYNC},
 		{"/File/Exit"      , M_UNLOCKED},
 
-		{"/Edit/Select thread"		   , M_TARGET_EXIST},
-		{"/Edit/Delete thread"		   , M_TARGET_EXIST},
+		{"/Edit/Select thread"		   , M_TARGET_EXIST|M_SUMMARY_ISLIST},
+		{"/Edit/Delete thread"		   , M_TARGET_EXIST|M_SUMMARY_ISLIST},
 		{"/Edit/Find in current message...", M_SINGLE_TARGET_EXIST},
 
 		{"/View/Set displayed columns/in Folder list..."
-						   , M_UNLOCKED}, 
-		{"/View/Sort"                      , M_EXEC},
-		{"/View/Thread view"               , M_EXEC},
-		{"/View/Expand all threads"        , M_MSG_EXIST},
-		{"/View/Collapse all threads"      , M_MSG_EXIST},
-		{"/View/Hide read messages"	   , M_HIDE_READ_MSG},
+						   , M_UNLOCKED|M_SUMMARY_ISLIST}, 
+		{"/View/Sort"                      , M_EXEC|M_SUMMARY_ISLIST},
+		{"/View/Thread view"               , M_EXEC|M_SUMMARY_ISLIST},
+		{"/View/Expand all threads"        , M_MSG_EXIST|M_SUMMARY_ISLIST},
+		{"/View/Collapse all threads"      , M_MSG_EXIST|M_SUMMARY_ISLIST},
+		{"/View/Hide read messages"	   , M_HIDE_READ_MSG|M_SUMMARY_ISLIST},
 		{"/View/Go to/Previous message"        , M_MSG_EXIST},
 		{"/View/Go to/Next message"        , M_MSG_EXIST},
 		{"/View/Go to/Previous unread message" , M_MSG_EXIST},
@@ -2779,18 +2782,18 @@ void main_window_set_menu_sensitive(MainWindow *mainwin)
 		{"/Message/Send queued messages"  , M_HAVE_ACCOUNT|M_HAVE_QUEUED_MAILS},
 		{"/Message/Compose an email message", M_HAVE_ACCOUNT},
 		{"/Message/Compose a news message", M_HAVE_NEWS_ACCOUNT},
-		{"/Message/Reply"                 , M_HAVE_ACCOUNT|M_TARGET_EXIST},
-		{"/Message/Reply to"              , M_HAVE_ACCOUNT|M_TARGET_EXIST},
-		{"/Message/Follow-up and reply to", M_HAVE_ACCOUNT|M_TARGET_EXIST|M_NEWS},
-		{"/Message/Forward"               , M_HAVE_ACCOUNT|M_TARGET_EXIST},
-		{"/Message/Forward as attachment" , M_HAVE_ACCOUNT|M_TARGET_EXIST},
-        	{"/Message/Redirect"		  , M_HAVE_ACCOUNT|M_TARGET_EXIST},
+		{"/Message/Reply"                 , M_HAVE_ACCOUNT|M_TARGET_EXIST|M_SUMMARY_ISLIST},
+		{"/Message/Reply to"              , M_HAVE_ACCOUNT|M_TARGET_EXIST|M_SUMMARY_ISLIST},
+		{"/Message/Follow-up and reply to", M_HAVE_ACCOUNT|M_TARGET_EXIST|M_NEWS|M_SUMMARY_ISLIST},
+		{"/Message/Forward"               , M_HAVE_ACCOUNT|M_TARGET_EXIST|M_SUMMARY_ISLIST},
+		{"/Message/Forward as attachment" , M_HAVE_ACCOUNT|M_TARGET_EXIST|M_SUMMARY_ISLIST},
+        	{"/Message/Redirect"		  , M_HAVE_ACCOUNT|M_TARGET_EXIST|M_SUMMARY_ISLIST},
 		{"/Message/Move..."		  , M_TARGET_EXIST|M_ALLOW_DELETE},
 		{"/Message/Copy..."		  , M_TARGET_EXIST|M_EXEC},
 		{"/Message/Move to trash"	  , M_TARGET_EXIST|M_ALLOW_DELETE|M_NOT_NEWS},
 		{"/Message/Delete..." 		  , M_TARGET_EXIST|M_ALLOW_DELETE},
 		{"/Message/Cancel a news message" , M_TARGET_EXIST|M_ALLOW_DELETE|M_NEWS},
-		{"/Message/Mark"   		  , M_TARGET_EXIST},
+		{"/Message/Mark"   		  , M_TARGET_EXIST|M_SUMMARY_ISLIST},
 		{"/Message/Mark/Mark as spam"	  , M_TARGET_EXIST|M_CAN_LEARN_SPAM},
 		{"/Message/Mark/Mark as ham" 	  , M_TARGET_EXIST|M_CAN_LEARN_SPAM},
 		{"/Message/Mark/Ignore thread"    , M_TARGET_EXIST},
@@ -2802,7 +2805,7 @@ void main_window_set_menu_sensitive(MainWindow *mainwin)
 		{"/Message/Re-edit"               , M_HAVE_ACCOUNT|M_ALLOW_REEDIT},
 
 		{"/Tools/Add sender to address book"   , M_SINGLE_TARGET_EXIST},
-		{"/Tools/Harvest addresses"            , M_MSG_EXIST},
+		{"/Tools/Harvest addresses"            , M_MSG_EXIST|M_SUMMARY_ISLIST},
 		{"/Tools/Harvest addresses/from Messages..."
 						       , M_TARGET_EXIST},
 		{"/Tools/Filter all messages in folder", M_MSG_EXIST|M_EXEC},
