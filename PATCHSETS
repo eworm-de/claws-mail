@@ -3251,3 +3251,4 @@
 ( cvs diff -u -r 1.105.2.127 -r 1.105.2.128 src/prefs_account.c;  cvs diff -u -r 1.52.2.60 -r 1.52.2.61 src/prefs_folder_item.c;  cvs diff -u -r 1.10.2.36 -r 1.10.2.37 src/prefs_gtk.c;  cvs diff -u -r 1.12.2.60 -r 1.12.2.61 src/prefs_template.c;  cvs diff -u -r 1.12.2.44 -r 1.12.2.45 src/gtk/prefswindow.c;  cvs diff -u -r 1.7.2.11 -r 1.7.2.12 src/gtk/prefswindow.h;  ) > 3.3.1cvs14.patchset
 ( cvs diff -u -r 1.8.2.31 -r 1.8.2.32 src/quote_fmt.c;  ) > 3.3.1cvs15.patchset
 ( cvs diff -u -r 1.274.2.233 -r 1.274.2.234 src/mainwindow.c;  cvs diff -u -r 1.39.2.43 -r 1.39.2.44 src/mainwindow.h;  cvs diff -u -r 1.395.2.357 -r 1.395.2.358 src/summaryview.c;  cvs diff -u -r 1.68.2.44 -r 1.68.2.45 src/summaryview.h;  cvs diff -u -r 1.43.2.95 -r 1.43.2.96 src/toolbar.c;  ) > 3.3.1cvs16.patchset
+( cvs diff -u -r 1.1.2.46 -r 1.1.2.47 src/gtk/authors.h;  ) > 3.3.1cvs17.patchset

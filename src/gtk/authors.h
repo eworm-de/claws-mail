@@ -7,7 +7,7 @@ static char *TEAM_LIST[] = {
 "Ricardo Mones Lastra <ricardo@mones.org>",
 "Colin Leroy <colin@colino.net>",
 "Paul Mangan <paul@claws-mail.org>",
-"Martin Schaaf <mascha1@users.sf.net>",
+"Salvatore De Paolis <iwkse@claws-mail.org>", 
 "Fabien Vantard <fzzzzz@gmail.com>",
 NULL
 };
@@ -22,6 +22,7 @@ static char *EX_TEAM_LIST[] = {
 "Thorsten Maerz",
 "Leandro A. F. Pereira",
 "Luke Plant",
+"Martin Schaaf",
 "Carsten Schurig",
 "Sergey Vlasov",
 "Hiroyuki Yamamoto",
