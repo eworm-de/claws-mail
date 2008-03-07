@@ -3153,7 +3153,7 @@ void main_window_show(MainWindow *mainwin)
 {
 	gtk_widget_show(mainwin->window);
 	gtk_widget_show(mainwin->vbox_body);
-
+#ifndef MAEMO
         gtk_widget_set_uposition(mainwin->window,
                                  prefs_common.mainwin_x,
                                  prefs_common.mainwin_y);
@@ -3167,6 +3167,7 @@ void main_window_show(MainWindow *mainwin)
 	gtk_widget_set_size_request(GTK_WIDGET_PTR(mainwin->messageview),
 			     prefs_common.msgview_width,
 			     prefs_common.msgview_height);
+#endif
 }
 
 void main_window_hide(MainWindow *mainwin)

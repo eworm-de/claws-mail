@@ -1,3 +1,9 @@
+2008-03-07 [colin]	3.3.1cvs18
+
+	* src/mainwindow.c
+		MAEMO: Fix bug 1494, 'Trayicon 
+		plugin breaks UI...'
+
 2008-03-07 [paul]	3.3.1cvs17
 
 	* src/gtk/authors.h
