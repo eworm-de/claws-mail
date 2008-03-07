@@ -3132,14 +3132,20 @@ static void mailing_list_compose (GtkWidget *w, gpointer *data)
 	
 void main_window_popup(MainWindow *mainwin)
 {
+	static gboolean first_start = TRUE;
+
 	if (!GTK_WIDGET_VISIBLE(GTK_WIDGET(mainwin->window)))
 		main_window_show(mainwin);
 
 	if (prefs_common.mainwin_maximised)
 		gtk_window_maximize(GTK_WINDOW(mainwin->window));
 
-	gtkut_window_popup(mainwin->window);
-
+	if (first_start) {
+		gtk_window_deiconify(GTK_WINDOW(mainwin->window));
+		first_start = FALSE;
+	} else {
+		gtkut_window_popup(mainwin->window);
+	}
 	if (prefs_common.layout_mode == SMALL_LAYOUT) {
 		if (mainwin->in_folder) {
 			mainwindow_enter_folder(mainwin);
