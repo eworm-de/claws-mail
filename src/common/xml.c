@@ -207,6 +207,7 @@ gint xml_parse_next_tag(XMLFile *file)
 	XMLTag *tag;
 	gint len;
 
+next:
 	if (file->is_empty_element == TRUE) {
 		file->is_empty_element = FALSE;
 		xml_pop_tag(file);
@@ -218,6 +219,8 @@ gint xml_parse_next_tag(XMLFile *file)
 		return -1;
 	}
 
+	len = strlen(buf);
+
 	/* end-tag */
 	if (buf[0] == '/') {
 		if (strcmp(xml_get_current_tag(file)->tag, buf + 1) != 0) {
@@ -228,15 +231,20 @@ gint xml_parse_next_tag(XMLFile *file)
 		return 0;
 	}
 
+	if (len >= 7 && !strncmp(buf, "!-- ", 4) && !strncmp(buf+len-3, " --", 3)) {
+		/* skip comment */
+		goto next;
+	}
+
 	tag = xml_tag_new(NULL);
 	xml_push_tag(file, tag);
 
-	len = strlen(buf);
 	if (len > 0 && buf[len - 1] == '/') {
 		file->is_empty_element = TRUE;
 		buf[len - 1] = '\0';
 		g_strchomp(buf);
 	}
+	
 	if (strlen(buf) == 0) {
 		g_warning("xml_parse_next_tag(): Tag name is empty\n");
 		return -1;
@@ -280,7 +288,7 @@ gint xml_parse_next_tag(XMLFile *file)
 		while (g_ascii_isspace(*bufp)) bufp++;
 		attr_name = bufp;
 		if ((p = strchr(attr_name, '=')) == NULL) {
-			g_warning("xml_parse_next_tag(): Syntax error in tag\n");
+			g_warning("xml_parse_next_tag(): Syntax error in tag (a) %s\n", attr_name);
 			return -1;
 		}
 		bufp = p;
@@ -288,14 +296,14 @@ gint xml_parse_next_tag(XMLFile *file)
 		while (g_ascii_isspace(*bufp)) bufp++;
 
 		if (*bufp != '"' && *bufp != '\'') {
-			g_warning("xml_parse_next_tag(): Syntax error in tag\n");
+			g_warning("xml_parse_next_tag(): Syntax error in tag (b) %s\n", bufp);
 			return -1;
 		}
 		quote = *bufp;
 		bufp++;
 		attr_value = bufp;
 		if ((p = strchr(attr_value, quote)) == NULL) {
-			g_warning("xml_parse_next_tag(): Syntax error in tag\n");
+			g_warning("xml_parse_next_tag(): Syntax error in tag (c) %s\n", attr_value);
 			return -1;
 		}
 		bufp = p;

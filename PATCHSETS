@@ -3254,3 +3254,4 @@
 ( cvs diff -u -r 1.1.2.46 -r 1.1.2.47 src/gtk/authors.h;  ) > 3.3.1cvs17.patchset
 ( cvs diff -u -r 1.274.2.234 -r 1.274.2.235 src/mainwindow.c;  ) > 3.3.1cvs18.patchset
 ( cvs diff -u -r 1.274.2.235 -r 1.274.2.236 src/mainwindow.c;  ) > 3.3.1cvs19.patchset
+( cvs diff -u -r 1.1.4.23 -r 1.1.4.24 src/common/xml.c;  ) > 3.3.1cvs20.patchset
