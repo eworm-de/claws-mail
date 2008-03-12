@@ -1164,6 +1164,10 @@ gboolean summary_show(SummaryView *summaryview, FolderItem *item)
 
 	is_refresh = (item == summaryview->folder_item) ? TRUE : FALSE;
 
+	if (item && item->folder->klass->item_opened) {
+		item->folder->klass->item_opened(item);
+	}
+
 	if (!is_refresh) {
 		main_create_mailing_list_menu (summaryview->mainwin, NULL);
 		if (prefs_common.layout_mode == SMALL_LAYOUT) {

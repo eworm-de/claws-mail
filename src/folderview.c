@@ -2296,8 +2296,6 @@ static void folderview_selected(GtkCTree *ctree, GtkCTreeNode *row,
 		if (gtk_ctree_node_is_visible(ctree, row)
 		    != GTK_VISIBILITY_FULL)
 			gtk_ctree_node_moveto(ctree, row, -1, 0.5, 0);
-		if (item->folder->klass->item_opened)
-			item->folder->klass->item_opened(item);
 	}
 
 	STATUSBAR_POP(folderview->mainwin);

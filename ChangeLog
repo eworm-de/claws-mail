@@ -1,3 +1,10 @@
+2008-03-12 [colin]	3.3.1cvs22
+
+	* src/folderview.c
+	* src/summaryview.c
+		Use item_opened at the beginning of showing
+		a folder instead of the end. Fixes flicker.
+
 2008-03-12 [paul]	3.3.1cvs21
 
 	* src/folder.c
