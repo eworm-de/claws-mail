@@ -276,6 +276,18 @@ static void resize_cb(GtkWidget *widget, GtkRequisition *req,
 	update(NULL);
 }
 
+static void fix_folderview_scroll(MainWindow *mainwin)
+{
+	static gboolean fix_done = FALSE;
+
+	if (fix_done)
+		return;
+
+	gtk_widget_queue_resize(mainwin->folderview->ctree);
+
+	fix_done = TRUE;
+}
+
 static gboolean click_cb(GtkWidget * widget,
 		         GdkEventButton * event, gpointer user_data)
 {
@@ -304,6 +316,7 @@ static gboolean click_cb(GtkWidget * widget,
 			gtk_window_set_skip_taskbar_hint(GTK_WINDOW(mainwin->window), FALSE);
 			main_window_show(mainwin);
 			gtk_window_present(GTK_WINDOW(mainwin->window));
+			fix_folderview_scroll(mainwin);
         }
 		break;
 	case 3:

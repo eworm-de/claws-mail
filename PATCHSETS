@@ -3257,3 +3257,4 @@
 ( cvs diff -u -r 1.1.4.23 -r 1.1.4.24 src/common/xml.c;  ) > 3.3.1cvs20.patchset
 ( cvs diff -u -r 1.213.2.178 -r 1.213.2.179 src/folder.c;  cvs diff -u -r 1.87.2.56 -r 1.87.2.57 src/folder.h;  cvs diff -u -r 1.274.2.236 -r 1.274.2.237 src/mainwindow.c;  cvs diff -u -r 1.150.2.107 -r 1.150.2.108 src/procmsg.c;  cvs diff -u -r 1.395.2.358 -r 1.395.2.359 src/summaryview.c;  cvs diff -u -r 1.14.2.60 -r 1.14.2.61 src/plugins/trayicon/trayicon.c;  ) > 3.3.1cvs21.patchset
 ( cvs diff -u -r 1.207.2.198 -r 1.207.2.199 src/folderview.c;  cvs diff -u -r 1.395.2.359 -r 1.395.2.360 src/summaryview.c;  ) > 3.3.1cvs22.patchset
+( cvs diff -u -r 1.395.2.360 -r 1.395.2.361 src/summaryview.c;  cvs diff -u -r 1.14.2.61 -r 1.14.2.62 src/plugins/trayicon/trayicon.c;  ) > 3.3.1cvs23.patchset

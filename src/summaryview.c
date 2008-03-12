@@ -2439,7 +2439,9 @@ static void summary_status_show(SummaryView *summaryview)
 	off_t sel_size = 0, n_size = 0;
 	MsgInfo *msginfo;
 	gchar *name;
+#if GTK_CHECK_VERSION(2, 12, 0)
 	gchar *tooltip;
+#endif
 	
 	if (!summaryview->folder_item) {
 		gtk_label_set_text(GTK_LABEL(summaryview->statlabel_folder), "");

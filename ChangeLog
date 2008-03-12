@@ -1,3 +1,11 @@
+2008-03-12 [colin]	3.3.1cvs23
+
+	* src/summaryview.c
+		Fix a new unused variable warning
+	* src/plugins/trayicon/trayicon.c
+		Fix folderview's scrollbar at startup
+		if starting hidden
+
 2008-03-12 [colin]	3.3.1cvs22
 
 	* src/folderview.c
