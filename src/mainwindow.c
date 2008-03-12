@@ -1,6 +1,6 @@
 /*
    Claws Mail -- a GTK+ based, lightweight, and fast e-mail client
-   Copyright (C) 1999-2007 Hiroyuki Yamamoto and the Claws Mail team
+   Copyright (C) 1999-2008 Hiroyuki Yamamoto and the Claws Mail team
 
    This program is free software; you can redistribute it and/or modify
    it under the terms of the GNU General Public License as published by
@@ -1447,9 +1447,12 @@ void mainwindow_maemo_led_set(gboolean state) {
 
 static void led_update(FolderItem *removed_item)
 {
-	guint new, unread, unreadmarked, marked, total;
+	guint new, unread, unreadmarked, marked, total, replied;
+	guint forwarded, locked, ignored, watched;
 
-	folder_count_total_msgs(&new, &unread, &unreadmarked, &marked, &total);
+	folder_count_total_msgs(&new, &unread, &unreadmarked, &marked, &total,
+				&replied, &forwarded, &locked, &ignored,
+				&watched);
 	if (removed_item) {
 		total -= removed_item->total_msgs;
 		new -= removed_item->new_msgs;

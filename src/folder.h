@@ -2,7 +2,7 @@
 
 /*
  * Sylpheed -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 1999-2007 Hiroyuki Yamamoto and the Claws Mail team
+ * Copyright (C) 1999-2008 Hiroyuki Yamamoto and the Claws Mail team
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -645,6 +645,11 @@ struct _FolderItem
 	gint total_msgs;
 	gint unreadmarked_msgs;
 	gint marked_msgs;
+	gint replied_msgs;
+	gint forwarded_msgs;
+	gint locked_msgs;
+	gint ignored_msgs;
+	gint watched_msgs;
 
 	gint order;
 
@@ -770,7 +775,9 @@ void   folder_func_to_all_folders	(FolderItemFunc function,
 					 gpointer data);
 void folder_count_total_msgs(guint *new_msgs, guint *unread_msgs, 
 			     guint *unreadmarked_msgs, guint *marked_msgs,
-			     guint *total_msgs);
+			     guint *total_msgs, guint *replied_msgs,
+			     guint *forwarded_msgs, guint *locked_msgs,
+			     guint *ignored_msgs, guint *watched_msgs);
 gchar *folder_get_status	(GPtrArray	*folders,
 				 gboolean	 full);
 

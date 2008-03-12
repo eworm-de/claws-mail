@@ -1,6 +1,6 @@
 /*
  * Sylpheed -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 1999-2007 Hiroyuki Yamamoto and the Claws Mail team
+ * Copyright (C) 1999-2008 Hiroyuki Yamamoto and the Claws Mail team
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -1842,6 +1842,46 @@ static void update_folder_msg_counts(FolderItem *item, MsgInfo *msginfo, MsgPerm
 		procmsg_update_unread_children(msginfo, FALSE);
 		item->marked_msgs--;
 	}
+
+	if (!(old_flags & MSG_REPLIED) && (new_flags & MSG_REPLIED)) {
+		item->replied_msgs++;
+	}
+
+	if ((old_flags & MSG_REPLIED) && !(new_flags & MSG_REPLIED)) {
+		item->replied_msgs--;
+	}
+
+	if (!(old_flags & MSG_FORWARDED) && (new_flags & MSG_FORWARDED)) {
+		item->forwarded_msgs++;
+	}
+
+	if ((old_flags & MSG_FORWARDED) && !(new_flags & MSG_FORWARDED)) {
+		item->forwarded_msgs--;
+	}
+
+	if (!(old_flags & MSG_LOCKED) && (new_flags & MSG_LOCKED)) {
+		item->locked_msgs++;
+	}
+
+	if ((old_flags & MSG_LOCKED) && !(new_flags & MSG_LOCKED)) {
+		item->locked_msgs--;
+	}
+
+	if ((old_flags & MSG_IGNORE_THREAD) && !(new_flags & MSG_IGNORE_THREAD)) {
+		item->ignored_msgs--;
+	}
+
+	if (!(old_flags & MSG_IGNORE_THREAD) && (new_flags & MSG_IGNORE_THREAD)) {
+		item->ignored_msgs++;
+	}
+
+	if ((old_flags & MSG_WATCH_THREAD) && !(new_flags & MSG_WATCH_THREAD)) {
+		item->watched_msgs--;
+	}
+
+	if (!(old_flags & MSG_WATCH_THREAD) && (new_flags & MSG_WATCH_THREAD)) {
+		item->watched_msgs++;
+	}
 }
 
 void procmsg_msginfo_set_flags(MsgInfo *msginfo, MsgPermFlags perm_flags, MsgTmpFlags tmp_flags)
@@ -1871,7 +1911,7 @@ void procmsg_msginfo_set_flags(MsgInfo *msginfo, MsgPermFlags perm_flags, MsgTmp
 		folder_item_change_msg_flags(msginfo->folder, msginfo, perm_flags_new);
 
 		update_folder_msg_counts(item, msginfo, perm_flags_old);
-
+		summary_update_unread(mainwindow_get_mainwindow()->summaryview, NULL);
 	}
 
 	/* Tmp flags handling */

@@ -1,3 +1,13 @@
+2008-03-12 [paul]	3.3.1cvs21
+
+	* src/folder.c
+	* src/folder.h
+	* src/mainwindow.c
+	* src/procmsg.c
+	* src/summaryview.c
+	* src/plugins/trayicon/trayicon.c
+		add tooltip with extended folder stats
+
 2008-03-10 [colin]	3.3.1cvs20
 
 	* src/common/xml.c

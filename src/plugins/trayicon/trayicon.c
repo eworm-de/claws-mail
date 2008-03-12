@@ -1,6 +1,6 @@
 /*
  * Claws Mail -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 2003-2007 the Claws Mail Team
+ * Copyright (C) 2003-2008 the Claws Mail Team
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -186,10 +186,13 @@ static void set_trayicon_pixmap(TrayIconType icontype)
 static void update(FolderItem *removed_item)
 {
 	guint new, unread, unreadmarked, marked, total;
+	guint replied, forwarded, locked, ignored, watched;
 	gchar *buf;
 	TrayIconType icontype = TRAYICON_NOTHING;
 
-	folder_count_total_msgs(&new, &unread, &unreadmarked, &marked, &total);
+	folder_count_total_msgs(&new, &unread, &unreadmarked, &marked, &total,
+				&replied, &forwarded, &locked, &ignored,
+				&watched);
 	if (removed_item) {
 		total -= removed_item->total_msgs;
 		new -= removed_item->new_msgs;

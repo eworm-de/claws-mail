@@ -1,6 +1,6 @@
 /*
  * Sylpheed -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 1999-2007 Hiroyuki Yamamoto and the Claws Mail team
+ * Copyright (C) 1999-2008 Hiroyuki Yamamoto and the Claws Mail team
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -1093,7 +1093,7 @@ static gboolean summaryview_quicksearch_recurse(gpointer data)
 
 static gboolean summary_check_consistency(FolderItem *item, GSList *mlist)
 {
-	int u = 0, n = 0, m = 0, t = 0;
+	int u = 0, n = 0, m = 0, t = 0, r = 0, f = 0, l = 0, i = 0, w = 0;
 	GSList *cur;
 	START_TIMING("");
 	for(cur = mlist ; cur != NULL && cur->data != NULL ; cur = g_slist_next(cur)) {
@@ -1105,11 +1105,26 @@ static gboolean summary_check_consistency(FolderItem *item, GSList *mlist)
 			u++;
 		if (MSG_IS_MARKED(msginfo->flags))
 			m++;		
+		if (MSG_IS_REPLIED(msginfo->flags))
+			r++;
+		if (MSG_IS_FORWARDED(msginfo->flags))
+			f++;
+		if (MSG_IS_LOCKED(msginfo->flags))
+			l++;
+		if (MSG_IS_IGNORE_THREAD(msginfo->flags))
+			i++;
+		if (MSG_IS_WATCH_THREAD(msginfo->flags))
+			w++;
 	}
 	if (t != item->total_msgs
 	||  n != item->new_msgs
 	||  u != item->unread_msgs
 	||  m != item->marked_msgs
+	||  r != item->replied_msgs
+	||  f != item->forwarded_msgs
+	||  l != item->locked_msgs
+	||  i != item->ignored_msgs
+	||  w != item->watched_msgs
 	||  (m == 0 && item->unreadmarked_msgs != 0)
 	||  item->unreadmarked_msgs < 0) {
 		debug_print("Inconsistency\n");
@@ -2416,9 +2431,11 @@ static void summary_status_show(SummaryView *summaryview)
 	gchar *itstr;
 	GList *rowlist, *cur;
 	guint n_selected = 0, n_new = 0, n_unread = 0, n_total = 0;
+	guint n_marked = 0, n_replied = 0, n_forwarded = 0, n_locked = 0, n_ignored = 0, n_watched = 0;
 	off_t sel_size = 0, n_size = 0;
 	MsgInfo *msginfo;
 	gchar *name;
+	gchar *tooltip;
 	
 	if (!summaryview->folder_item) {
 		gtk_label_set_text(GTK_LABEL(summaryview->statlabel_folder), "");
@@ -2453,11 +2470,29 @@ static void summary_status_show(SummaryView *summaryview)
 					n_new++;
 				if (MSG_IS_UNREAD(msginfo->flags))
 					n_unread++;
+				if (MSG_IS_MARKED(msginfo->flags))
+					n_marked++;
+				if (MSG_IS_REPLIED(msginfo->flags))
+					n_replied++;
+				if (MSG_IS_FORWARDED(msginfo->flags))
+					n_forwarded++;
+				if (MSG_IS_LOCKED(msginfo->flags))
+					n_locked++;
+				if (MSG_IS_IGNORE_THREAD(msginfo->flags))
+					n_ignored++;
+				if (MSG_IS_WATCH_THREAD(msginfo->flags))
+					n_watched++;
 			}
 		}
 	} else {
 		n_new = summaryview->folder_item->new_msgs;
 		n_unread = summaryview->folder_item->unread_msgs;
+		n_marked = summaryview->folder_item->marked_msgs;
+		n_replied = summaryview->folder_item->replied_msgs;
+		n_forwarded = summaryview->folder_item->forwarded_msgs;
+		n_locked = summaryview->folder_item->locked_msgs;
+		n_ignored = summaryview->folder_item->ignored_msgs;
+		n_watched = summaryview->folder_item->watched_msgs;
 		n_total = summaryview->folder_item->total_msgs;
 		n_size = summaryview->total_size;
 	}
@@ -2513,11 +2548,31 @@ static void summary_status_show(SummaryView *summaryview)
 		g_free(str);
 
 		str = g_strdup_printf(_("%d new, %d unread, %d total (%s)"),
-
 					      n_new, n_unread, n_total,
 					      to_human_readable(n_size));
 
+
 		gtk_label_set_text(GTK_LABEL(summaryview->statlabel_msgs), str);
+#if GTK_CHECK_VERSION(2, 12, 0)
+		tooltip = g_strdup_printf(_("<b>Message summary</b>\n"
+					    "<b>New:</b> %d\n"
+					    "<b>Unread:</b> %d\n"
+					    "<b>Total:</b> %d\n"
+					    "<b>Size:</b> %s\n\n"
+					    "<b>Marked:</b> %d\n"
+					    "<b>Replied:</b> %d\n"
+					    "<b>Forwarded:</b> %d\n"
+					    "<b>Locked:</b> %d\n"
+					    "<b>Ignored:</b> %d\n"
+					    "<b>Watched:</b> %d"),
+					      n_new, n_unread, n_total,
+					      to_human_readable(n_size),
+					      n_marked,n_replied,n_forwarded,
+					      n_locked,n_ignored,n_watched);
+
+		gtk_widget_set_tooltip_markup(GTK_WIDGET(summaryview->statlabel_msgs),
+				            tooltip); 
+#endif
 		g_free(str);
 	} else {
 		gchar *ssize, *tsize;
@@ -6431,8 +6486,10 @@ static void summary_selected(GtkCTree *ctree, GtkCTreeNode *row,
 		    !MSG_IS_COPY(msginfo->flags)) {
 			if (MSG_IS_MARKED(msginfo->flags)) {
 				summary_unmark_row(summaryview, row);
+				summary_status_show(summaryview);
 			} else {
 				summary_mark_row(summaryview, row);
+				summary_status_show(summaryview);
 			}
 		}
 		break;
@@ -6455,11 +6512,13 @@ static void summary_selected(GtkCTree *ctree, GtkCTreeNode *row,
 		break;
 	case S_COL_LOCKED:
 		if (MSG_IS_LOCKED(msginfo->flags)) {
-			summary_msginfo_unset_flags(msginfo, MSG_LOCKED, 0);
-			summary_set_row_marks(summaryview, row);
+			summary_unlock_row(summaryview, row);
+			summary_status_show(summaryview);
 		}
-		else
+		else {
 			summary_lock_row(summaryview, row);
+			summary_status_show(summaryview);
+		}
 		break;
 	default:
 		break;
@@ -7392,6 +7451,7 @@ static gboolean summary_update_msg(gpointer source, gpointer data)
 void summary_update_unread(SummaryView *summaryview, FolderItem *removed_item)
 {
 	guint new, unread, unreadmarked, marked, total;
+	guint replied, forwarded, locked, ignored, watched;
 	static gboolean tips_initialized = FALSE;
 
 	if (prefs_common.layout_mode != SMALL_LAYOUT) {
@@ -7404,7 +7464,9 @@ void summary_update_unread(SummaryView *summaryview, FolderItem *removed_item)
 		} 
 		return;
 	}
-	folder_count_total_msgs(&new, &unread, &unreadmarked, &marked, &total);
+	folder_count_total_msgs(&new, &unread, &unreadmarked, &marked, &total,
+				&replied, &forwarded, &locked, &ignored,
+				&watched);
 	if (removed_item) {
 		total -= removed_item->total_msgs;
 		new -= removed_item->new_msgs;

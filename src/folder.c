@@ -1,6 +1,6 @@
 /*
  * Sylpheed -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 1999-2007 Hiroyuki Yamamoto and the Claws Mail team
+ * Copyright (C) 1999-2008 Hiroyuki Yamamoto and the Claws Mail team
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -352,6 +352,11 @@ FolderItem *folder_item_new(Folder *folder, const gchar *name, const gchar *path
 	item->unreadmarked_msgs = 0;
 	item->marked_msgs = 0;
 	item->total_msgs = 0;
+	item->replied_msgs = 0;
+	item->forwarded_msgs = 0;
+	item->locked_msgs = 0;
+	item->ignored_msgs = 0;
+	item->watched_msgs = 0;
 	item->order = 0;
 	item->last_num = -1;
 	item->cache = NULL;
@@ -534,6 +539,16 @@ void folder_item_set_xml(Folder *folder, FolderItem *item, XMLTag *tag)
 			item->unreadmarked_msgs = atoi(attr->value);
 		else if (!strcmp(attr->name, "marked"))
 			item->marked_msgs = atoi(attr->value);
+		else if (!strcmp(attr->name, "replied"))
+			item->replied_msgs = atoi(attr->value);
+		else if (!strcmp(attr->name, "forwarded"))
+			item->forwarded_msgs = atoi(attr->value);
+		else if (!strcmp(attr->name, "locked"))
+			item->locked_msgs = atoi(attr->value);
+		else if (!strcmp(attr->name, "ignored"))
+			item->ignored_msgs = atoi(attr->value);
+		else if (!strcmp(attr->name, "watched"))
+			item->watched_msgs = atoi(attr->value);
 		else if (!strcmp(attr->name, "order"))
 			item->order = atoi(attr->value);
 		else if (!strcmp(attr->name, "total"))
@@ -649,6 +664,11 @@ XMLTag *folder_item_get_xml(Folder *folder, FolderItem *item)
 	xml_tag_add_attr(tag, xml_attr_new_int("unreadmarked", item->unreadmarked_msgs));
 	xml_tag_add_attr(tag, xml_attr_new_int("marked", item->marked_msgs));
 	xml_tag_add_attr(tag, xml_attr_new_int("total", item->total_msgs));
+	xml_tag_add_attr(tag, xml_attr_new_int("replied", item->replied_msgs));
+	xml_tag_add_attr(tag, xml_attr_new_int("forwarded", item->forwarded_msgs));
+	xml_tag_add_attr(tag, xml_attr_new_int("locked", item->locked_msgs));
+	xml_tag_add_attr(tag, xml_attr_new_int("ignore", item->ignored_msgs));
+	xml_tag_add_attr(tag, xml_attr_new_int("watched", item->watched_msgs));
 	xml_tag_add_attr(tag, xml_attr_new_int("order", item->order));
 
 	if (item->account)
@@ -989,6 +1009,11 @@ struct TotalMsgCount
 	guint unreadmarked_msgs;
 	guint marked_msgs;
 	guint total_msgs;
+	guint replied_msgs;
+	guint forwarded_msgs;
+	guint locked_msgs;
+	guint ignored_msgs;
+	guint watched_msgs;
 };
 
 struct FuncToAllFoldersData
@@ -1040,6 +1065,11 @@ static void folder_count_total_msgs_func(FolderItem *item, gpointer data)
 	count->unreadmarked_msgs += item->unreadmarked_msgs;
 	count->marked_msgs += item->marked_msgs;
 	count->total_msgs += item->total_msgs;
+	count->replied_msgs += item->replied_msgs;
+	count->forwarded_msgs += item->forwarded_msgs;
+	count->locked_msgs += item->locked_msgs;
+	count->ignored_msgs += item->ignored_msgs;
+	count->watched_msgs += item->watched_msgs;
 }
 
 struct TotalMsgStatus
@@ -1151,11 +1181,16 @@ gchar *folder_get_status(GPtrArray *folders, gboolean full)
 
 void folder_count_total_msgs(guint *new_msgs, guint *unread_msgs, 
 			     guint *unreadmarked_msgs, guint *marked_msgs,
-			     guint *total_msgs)
+			     guint *total_msgs, guint *replied_msgs,
+			     guint *forwarded_msgs, guint *locked_msgs,
+			     guint *ignored_msgs, guint *watched_msgs)
 {
 	struct TotalMsgCount count;
 
-	count.new_msgs = count.unread_msgs = count.unreadmarked_msgs = count.total_msgs = 0;
+	count.new_msgs = count.unread_msgs = count.unreadmarked_msgs = 0;
+	count.total_msgs = count.replied_msgs = count.forwarded_msgs = 0;
+	count.locked_msgs = count.ignored_msgs = count.watched_msgs = 0;
+	count.marked_msgs = 0;
 
 	debug_print("Counting total number of messages...\n");
 
@@ -1166,6 +1201,11 @@ void folder_count_total_msgs(guint *new_msgs, guint *unread_msgs,
 	*unreadmarked_msgs = count.unreadmarked_msgs;
 	*marked_msgs = count.marked_msgs;
 	*total_msgs = count.total_msgs;
+	*replied_msgs = count.replied_msgs;
+	*forwarded_msgs = count.forwarded_msgs;
+	*locked_msgs = count.locked_msgs;
+	*ignored_msgs = count.ignored_msgs;
+	*watched_msgs = count.watched_msgs;
 }
 
 Folder *folder_find_from_path(const gchar *path)
@@ -1968,6 +2008,9 @@ gint folder_item_scan_full(FolderItem *item, gboolean filtering)
 	GSList *newmsg_list = NULL;
 	guint newcnt = 0, unreadcnt = 0, totalcnt = 0;
 	guint markedcnt = 0, unreadmarkedcnt = 0;
+	guint repliedcnt = 0, forwardedcnt = 0;
+	guint lockedcnt = 0, ignoredcnt = 0, watchedcnt = 0;
+
 	guint cache_max_num, folder_max_num, cache_cur_num, folder_cur_num;
 	gboolean update_flags = 0, old_uids_valid = FALSE;
 	GHashTable *subject_table = NULL;
@@ -2263,6 +2306,16 @@ gint folder_item_scan_full(FolderItem *item, gboolean filtering)
 			unreadmarkedcnt++;
 		if (MSG_IS_MARKED(msginfo->flags))
 			markedcnt++;
+		if (MSG_IS_REPLIED(msginfo->flags))
+			repliedcnt++;
+		if (MSG_IS_FORWARDED(msginfo->flags))
+			forwardedcnt++;
+		if (MSG_IS_LOCKED(msginfo->flags))
+			lockedcnt++;
+		if (MSG_IS_IGNORE_THREAD(msginfo->flags))
+			ignoredcnt++;
+		if (MSG_IS_WATCH_THREAD(msginfo->flags))
+			watchedcnt++;
 
 		totalcnt++;
 
@@ -2277,7 +2330,10 @@ gint folder_item_scan_full(FolderItem *item, gboolean filtering)
 	
 	if (item->new_msgs != newcnt || item->unread_msgs != unreadcnt
 	||  item->total_msgs != totalcnt || item->marked_msgs != markedcnt
-	||  item->unreadmarked_msgs != unreadmarkedcnt) {
+	||  item->unreadmarked_msgs != unreadmarkedcnt
+	||  item->replied_msgs != repliedcnt || item->forwarded_msgs != forwardedcnt
+	||  item->locked_msgs != lockedcnt || item->ignored_msgs != ignoredcnt
+	||  item->watched_msgs != watchedcnt) {
 		update_flags |= F_ITEM_UPDATE_CONTENT;
 	}
 
@@ -2286,6 +2342,11 @@ gint folder_item_scan_full(FolderItem *item, gboolean filtering)
 	item->total_msgs = totalcnt;
 	item->unreadmarked_msgs = unreadmarkedcnt;
 	item->marked_msgs = markedcnt;
+	item->replied_msgs = repliedcnt;
+	item->forwarded_msgs = forwardedcnt;
+	item->locked_msgs = lockedcnt;
+	item->ignored_msgs = ignoredcnt;
+	item->watched_msgs = watchedcnt;
 
 	update_flags |= F_ITEM_UPDATE_MSGCNT;
 
@@ -2449,6 +2510,9 @@ static void folder_item_read_cache(FolderItem *item)
 			MsgInfoList *list, *cur;
 			guint newcnt = 0, unreadcnt = 0;
 			guint markedcnt = 0, unreadmarkedcnt = 0;
+			guint repliedcnt = 0, forwardedcnt = 0;
+			guint lockedcnt = 0, ignoredcnt = 0;
+			guint watchedcnt = 0;
 			MsgInfo *msginfo;
 
 			item->cache = msgcache_new();
@@ -2468,12 +2532,27 @@ static void folder_item_read_cache(FolderItem *item)
 					unreadmarkedcnt++;
 				if (MSG_IS_MARKED(msginfo->flags))
 					markedcnt++;
+				if (MSG_IS_REPLIED(msginfo->flags))
+					repliedcnt++;
+				if (MSG_IS_FORWARDED(msginfo->flags))
+					forwardedcnt++;
+				if (MSG_IS_LOCKED(msginfo->flags))
+					lockedcnt++;
+				if (MSG_IS_IGNORE_THREAD(msginfo->flags))
+					ignoredcnt++;
+				if (MSG_IS_WATCH_THREAD(msginfo->flags))
+					watchedcnt++;
 				procmsg_msginfo_unset_flags(msginfo, MSG_FULLY_CACHED, 0);
 			}
 			item->new_msgs = newcnt;
 		        item->unread_msgs = unreadcnt;
 			item->unreadmarked_msgs = unreadmarkedcnt;
 			item->marked_msgs = markedcnt;
+			item->replied_msgs = repliedcnt;
+			item->forwarded_msgs = forwardedcnt;
+			item->locked_msgs = lockedcnt;
+			item->ignored_msgs = ignoredcnt;
+			item->watched_msgs = watchedcnt;
 			procmsg_msg_list_free(list);
 		} else
 			msgcache_read_mark(item->cache, mark_file);
@@ -2831,6 +2910,16 @@ static void add_msginfo_to_cache(FolderItem *item, MsgInfo *newmsginfo, MsgInfo 
 		item->unreadmarked_msgs++;
 	if (MSG_IS_MARKED(newmsginfo->flags))
 		item->marked_msgs++;
+	if (MSG_IS_REPLIED(newmsginfo->flags))
+		item->replied_msgs++;
+	if (MSG_IS_FORWARDED(newmsginfo->flags))
+		item->forwarded_msgs++;
+	if (MSG_IS_LOCKED(newmsginfo->flags))
+		item->locked_msgs++;
+	if (MSG_IS_IGNORE_THREAD(newmsginfo->flags))
+		item->ignored_msgs++;
+	if (MSG_IS_WATCH_THREAD(newmsginfo->flags))
+		item->watched_msgs++;
 	item->total_msgs++;
 
 	folder_item_update_freeze();
@@ -2859,6 +2948,16 @@ static void remove_msginfo_from_cache(FolderItem *item, MsgInfo *msginfo)
 		msginfo->folder->unreadmarked_msgs--;
 	if (MSG_IS_MARKED(msginfo->flags))
 		item->marked_msgs--;
+	if (MSG_IS_REPLIED(msginfo->flags))
+		item->replied_msgs--;
+	if (MSG_IS_FORWARDED(msginfo->flags))
+		item->forwarded_msgs--;
+	if (MSG_IS_LOCKED(msginfo->flags))
+		item->locked_msgs--;
+	if (MSG_IS_IGNORE_THREAD(msginfo->flags))
+		item->ignored_msgs--;
+	if (MSG_IS_WATCH_THREAD(msginfo->flags))
+		item->watched_msgs--;
 
 	msginfo->folder->total_msgs--;
 
@@ -3536,6 +3635,11 @@ gint folder_item_remove_all_msg(FolderItem *item)
 		item->unreadmarked_msgs = 0;
 		item->marked_msgs = 0;
 		item->total_msgs = 0;
+		item->replied_msgs = 0;
+		item->forwarded_msgs = 0;
+		item->locked_msgs = 0;
+		item->ignored_msgs = 0;
+		item->watched_msgs = 0;
 		folder_item_update(item, F_ITEM_UPDATE_MSGCNT | F_ITEM_UPDATE_CONTENT);
 	}
 
