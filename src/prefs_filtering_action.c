@@ -1488,11 +1488,6 @@ static gboolean prefs_filtering_actions_selected
         action = action_list->data;
         g_slist_free(action_list);
 
-	if (action->destination)
-		gtk_entry_set_text(GTK_ENTRY(filtering_action.dest_entry), action->destination);
-	else
-		gtk_entry_set_text(GTK_ENTRY(filtering_action.dest_entry), "");
-
 	switch(action->type) {
 	case MATCHACTION_MOVE:
 		combobox_select_by_data(GTK_COMBO_BOX(filtering_action.action_combo),
@@ -1605,6 +1600,10 @@ static gboolean prefs_filtering_actions_selected
 		combobox_select_by_data(GTK_COMBO_BOX(filtering_action.action_combo),
 				     ACTION_ADD_TO_ADDRESSBOOK);
 	}
+	if (action->destination)
+		gtk_entry_set_text(GTK_ENTRY(filtering_action.dest_entry), action->destination);
+	else
+		gtk_entry_set_text(GTK_ENTRY(filtering_action.dest_entry), "");
 
 	filteringaction_free(action); /* XXX: memleak */
 	return TRUE;
