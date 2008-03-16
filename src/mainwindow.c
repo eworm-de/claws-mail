@@ -2497,6 +2497,9 @@ void main_window_toggle_message_view(MainWindow *mainwin)
 		gtk_widget_queue_resize(mainwin->vpaned);
 	}
 	summary_grab_focus(summaryview);
+	if (!summary_is_list(summaryview)) {
+		summary_show(summaryview, summaryview->folder_item);
+	}
 }
 
 void main_window_get_size(MainWindow *mainwin)

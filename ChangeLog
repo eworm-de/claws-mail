@@ -1,3 +1,9 @@
+2008-03-16 [colin]	3.3.1cvs28
+
+	* src/mainwindow.c
+		Refresh non-list widget when switching
+		messageview
+
 2008-03-16 [colin]	3.3.1cvs27
 
 	* manual/faq.xml
