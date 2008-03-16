@@ -1,3 +1,10 @@
+2008-03-16 [colin]	3.3.1cvs27
+
+	* manual/faq.xml
+		Revert cvs25: This wasn't a typo :) :
+		jade:.../faq.xml:49:16:E: there is no attribute "linkend"
+
+
 2008-03-16 [colin]	3.3.1cvs26
 
 	* src/summaryview.c
