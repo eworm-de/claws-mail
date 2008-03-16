@@ -3259,3 +3259,4 @@
 ( cvs diff -u -r 1.207.2.198 -r 1.207.2.199 src/folderview.c;  cvs diff -u -r 1.395.2.359 -r 1.395.2.360 src/summaryview.c;  ) > 3.3.1cvs22.patchset
 ( cvs diff -u -r 1.395.2.360 -r 1.395.2.361 src/summaryview.c;  cvs diff -u -r 1.14.2.61 -r 1.14.2.62 src/plugins/trayicon/trayicon.c;  ) > 3.3.1cvs23.patchset
 ( cvs diff -u -r 1.1.4.49 -r 1.1.4.50 src/prefs_filtering_action.c;  ) > 3.3.1cvs24.patchset
+( cvs diff -u -r 1.1.2.15 -r 1.1.2.16 manual/faq.xml;  ) > 3.3.1cvs25.patchset

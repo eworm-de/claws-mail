@@ -46,7 +46,7 @@
     <para>
 	Yes. It has a SpamAssassin and a Bogofilter plugin. You can find 
 	details of it on the
-	<link linkend="ch_plugins">Extending Claws Mail</link> chapter.
+	<ulink linkend="ch_plugins">Extending Claws Mail</ulink> chapter.
     </para>
     <para>
 	You can also use other spam filters via the <quote>Filtering</quote> and
