@@ -3125,10 +3125,13 @@ static inline void summary_set_header(SummaryView *summaryview, gchar *text[],
 	gchar *from_text = NULL, *to_text = NULL, *tags_text = NULL;
 	gboolean should_swap = FALSE;
 	gboolean vert = (prefs_common.layout_mode == VERTICAL_LAYOUT);
-	static gchar *color_dim_rgb = NULL;
+#if GTK_CHECK_VERSION(2,12,0)
+	static const gchar *color_dim_rgb = NULL;
 	if (!color_dim_rgb)
 		color_dim_rgb = gdk_color_to_string(&summaryview->color_dim);
-
+#else
+	static const gchar *color_dim_rgb = "#888888";
+#endif
 	text[col_pos[S_COL_FROM]]   = "";
 	text[col_pos[S_COL_TO]]     = "";
 	text[col_pos[S_COL_SUBJECT]]= "";

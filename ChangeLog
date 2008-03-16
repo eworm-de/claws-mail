@@ -1,3 +1,8 @@
+2008-03-16 [colin]	3.3.1cvs29
+
+	* src/summaryview.c
+		Fix build on GTK < 2.12
+
 2008-03-16 [colin]	3.3.1cvs28
 
 	* src/mainwindow.c
