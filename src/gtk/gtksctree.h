@@ -41,6 +41,7 @@ struct _GtkSCTree {
 	GtkTooltips *tips;
 	gboolean always_expand_recursively;
 	gboolean force_additive_sel;
+	gboolean *use_markup;
 };
 
 struct _GtkSCTreeClass {
@@ -121,6 +122,9 @@ gtk_sctree_insert_gnode 		    (GtkCTree          *ctree,
 void gtk_sctree_set_column_tooltip	    (GtkSCTree		*sctree,
 					     int		 column,
 					     const gchar 	*tip);
+void gtk_sctree_set_use_markup		    (GtkSCTree		*sctree,
+					     int		 column,
+					     gboolean		 markup);
 gboolean
 gtk_sctree_is_hot_spot (GtkSCTree *ctree, 
 		       gint      x, 

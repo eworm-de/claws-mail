@@ -98,7 +98,7 @@
 #define SUMMARY_COL_LOCKED_WIDTH	13
 #define SUMMARY_COL_MIME_WIDTH		11
 
-
+static int normal_row_height = -1;
 static GtkStyle *bold_style;
 static GtkStyle *bold_marked_style;
 static GtkStyle *bold_deleted_style;
@@ -854,6 +854,12 @@ void summary_relayout(SummaryView *summaryview)
 		}
 			
 		break;
+	}
+	summary_set_column_order(summaryview);
+	if (prefs_common.layout_mode == VERTICAL_LAYOUT) {
+		gtk_clist_set_row_height(GTK_CLIST(summaryview->ctree), 2*normal_row_height + 2);		
+	} else {
+		gtk_clist_set_row_height(GTK_CLIST(summaryview->ctree), 0);		
 	}
 	gtk_widget_unref(summaryview->hbox_l);
 	gtk_widget_unref(summaryview->statlabel_msgs);
@@ -2914,7 +2920,8 @@ static gboolean summary_insert_gnode_func(GtkCTree *ctree, guint depth, GNode *g
 	gint *col_pos = summaryview->col_pos;
 	const gchar *msgid = msginfo->msgid;
 	GHashTable *msgid_table = summaryview->msgid_table;
-	
+	gboolean vert = (prefs_common.layout_mode == VERTICAL_LAYOUT);
+
 	summary_set_header(summaryview, text, msginfo);
 
 	gtk_sctree_set_node_info(ctree, cnode, text[col_pos[S_COL_SUBJECT]], 2,
@@ -2939,6 +2946,9 @@ static gboolean summary_insert_gnode_func(GtkCTree *ctree, guint depth, GNode *g
 	if (summaryview->col_state[summaryview->col_pos[S_COL_TAGS]].visible)
 		SET_TEXT(S_COL_TAGS);
 
+	if (vert)
+		g_free(text[summaryview->col_pos[S_COL_SUBJECT]]);
+
 #undef SET_TEXT
 
 	GTKUT_CTREE_NODE_SET_ROW_DATA(cnode, msginfo);
@@ -2959,6 +2969,8 @@ static void summary_set_ctree_from_list(SummaryView *summaryview,
 	GHashTable *msgid_table;
 	GHashTable *subject_table = NULL;
 	GSList * cur;
+	gboolean vert = (prefs_common.layout_mode == VERTICAL_LAYOUT);
+
 	START_TIMING("");
 	
 	if (!mlist) return;
@@ -3014,6 +3026,8 @@ static void summary_set_ctree_from_list(SummaryView *summaryview,
 				(ctree, NULL, node, text, 2,
 				 NULL, NULL, NULL, NULL,
 				 FALSE, FALSE);
+			if (vert)
+				g_free(text[summaryview->col_pos[S_COL_SUBJECT]]);
 
 			GTKUT_CTREE_NODE_SET_ROW_DATA(node, msginfo);
 			summary_set_marks_func(ctree, node, summaryview);
@@ -3110,6 +3124,10 @@ static inline void summary_set_header(SummaryView *summaryview, gchar *text[],
 	gint *col_pos = summaryview->col_pos;
 	gchar *from_text = NULL, *to_text = NULL, *tags_text = NULL;
 	gboolean should_swap = FALSE;
+	gboolean vert = (prefs_common.layout_mode == VERTICAL_LAYOUT);
+	static gchar *color_dim_rgb = NULL;
+	if (!color_dim_rgb)
+		color_dim_rgb = gdk_color_to_string(&summaryview->color_dim);
 
 	text[col_pos[S_COL_FROM]]   = "";
 	text[col_pos[S_COL_TO]]     = "";
@@ -3150,7 +3168,7 @@ static inline void summary_set_header(SummaryView *summaryview, gchar *text[],
 		text[col_pos[S_COL_TAGS]] = "";
 
 	/* slow! */
-	if (summaryview->col_state[summaryview->col_pos[S_COL_DATE]].visible) {
+	if (summaryview->col_state[summaryview->col_pos[S_COL_DATE]].visible || vert) {
 		if (msginfo->date_t) {
 			procheader_date_get_localtime(date_modified,
 						      sizeof(date_modified),
@@ -3217,6 +3235,14 @@ static inline void summary_set_header(SummaryView *summaryview, gchar *text[],
 	else 
 		text[col_pos[S_COL_SUBJECT]] = msginfo->subject ? msginfo->subject :
 			_("(No Subject)");
+	if (vert) {
+		gchar *tmp = g_markup_printf_escaped(_("%s\n<span color='%s' style='italic'>From: %s, on %s</span>"),
+				text[col_pos[S_COL_SUBJECT]],
+				color_dim_rgb,
+				text[col_pos[S_COL_FROM]],
+				text[col_pos[S_COL_DATE]]);
+		text[col_pos[S_COL_SUBJECT]] = tmp;
+	}
 }
 
 static void summary_display_msg(SummaryView *summaryview, GtkCTreeNode *row)
@@ -5820,7 +5846,6 @@ static gboolean summary_popup_menu(GtkWidget *widget, gpointer data)
 static gchar *summaryview_get_tooltip_text(SummaryView *summaryview, MsgInfo *info, gint column)
 {
 	MsgFlags flags;
-
 	if (!info)
 		return NULL;
 
@@ -5897,6 +5922,7 @@ static gboolean tooltip_cb (GtkWidget  *widget,
 	gchar *formatted = NULL;
 	MsgInfo *info = NULL;
 	GdkRectangle rect;
+	gboolean vert = (prefs_common.layout_mode == VERTICAL_LAYOUT);
 
 	if (!prefs_common.show_tooltips)
 		return FALSE;
@@ -5934,8 +5960,11 @@ static gboolean tooltip_cb (GtkWidget  *widget,
 
 	formatted = g_strdup(text);
 	g_strstrip(formatted);
-	
-	gtk_tooltip_set_text (tooltip, formatted);
+
+	if (!vert)	
+		gtk_tooltip_set_text (tooltip, formatted);
+	else
+		gtk_tooltip_set_markup (tooltip, formatted);
 	g_free(formatted);
 	
 	rect.x = x - 2;
@@ -5955,6 +5984,7 @@ static GtkWidget *summary_ctree_create(SummaryView *summaryview)
 	gchar *titles[N_SUMMARY_COLS];
 	SummaryColumnType type;
 	gint pos;
+	gboolean vert = (prefs_common.layout_mode == VERTICAL_LAYOUT);
 
 	memset(titles, 0, sizeof(titles));
 
@@ -5969,6 +5999,10 @@ static GtkWidget *summary_ctree_create(SummaryView *summaryview)
 
 	ctree = gtk_sctree_new_with_titles
 		(N_SUMMARY_COLS, col_pos[S_COL_SUBJECT], titles);
+
+	/* get normal row height */
+	gtk_clist_set_row_height(GTK_CLIST(ctree), 0);
+	normal_row_height = GTK_CLIST(ctree)->row_height;
 
 	if (prefs_common.show_col_headers == FALSE)
 		gtk_clist_column_titles_hide(GTK_CLIST(ctree));
@@ -6031,9 +6065,16 @@ static GtkWidget *summary_ctree_create(SummaryView *summaryview)
 	for (pos = 0; pos < N_SUMMARY_COLS; pos++) {
 		GTK_WIDGET_UNSET_FLAGS(GTK_CLIST(ctree)->column[pos].button,
 				       GTK_CAN_FOCUS);
-		gtk_clist_set_column_visibility
-			(GTK_CLIST(ctree), pos, col_state[pos].visible);
+		if ((pos == summaryview->col_pos[S_COL_FROM] ||
+		     pos == summaryview->col_pos[S_COL_DATE]) && vert)
+			gtk_clist_set_column_visibility
+				(GTK_CLIST(ctree), pos, FALSE);
+		else
+			gtk_clist_set_column_visibility
+				(GTK_CLIST(ctree), pos, col_state[pos].visible);
 	}
+
+	gtk_sctree_set_use_markup(GTK_SCTREE(ctree), summaryview->col_pos[S_COL_SUBJECT], vert);
 
 	/* connect signal to the buttons for sorting */
 #define CLIST_BUTTON_SIGNAL_CONNECT(col, func) \

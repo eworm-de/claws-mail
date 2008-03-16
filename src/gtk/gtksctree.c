@@ -289,8 +289,12 @@ gtk_sctree_draw_expander (GtkCTree     *ctree,
     justification_factor = -1;
   else
     justification_factor = 1;
-  y = (clip_rectangle->y + (clip_rectangle->height - PM_SIZE) / 2 -
-       (clip_rectangle->height + 1) % 2);
+  if (!GTK_CLIST_ROW_HEIGHT_SET(GTK_CLIST(clist)))
+      y = (clip_rectangle->y + (clip_rectangle->height - PM_SIZE) / 2 -
+          (clip_rectangle->height + 1) % 2);
+  else
+      y = (clip_rectangle->y + (clip_rectangle->height/2 - PM_SIZE) / 2 -
+          (clip_rectangle->height/2 + 1) % 2);
 
   if (!ctree_row->children)
     {
@@ -777,6 +781,15 @@ gtk_sctree_draw_lines (GtkCTree     *ctree,
   return offset;
 }
 
+static gboolean filter_fg (PangoAttribute *attribute, gpointer data)
+{
+	const PangoAttrClass *klass = attribute->klass;
+	if (klass->type == PANGO_ATTR_FOREGROUND)
+		return TRUE;
+
+	return FALSE;	
+}
+
 static PangoLayout *
 sc_gtk_clist_create_cell_layout (GtkCList       *clist,
 			       GtkCListRow    *clist_row,
@@ -803,11 +816,26 @@ sc_gtk_clist_create_cell_layout (GtkCList       *clist,
       if (!text)
 	return NULL;
       
-      layout = gtk_widget_create_pango_layout (GTK_WIDGET (clist),
-					       ((cell->type == GTK_CELL_PIXTEXT) ?
-						GTK_CELL_PIXTEXT (*cell)->text :
-						GTK_CELL_TEXT (*cell)->text));
-      pango_layout_set_font_description (layout, style->font_desc);
+      if (!GTK_SCTREE(clist)->use_markup[column]) {
+	      layout = gtk_widget_create_pango_layout (GTK_WIDGET (clist),
+						       ((cell->type == GTK_CELL_PIXTEXT) ?
+							GTK_CELL_PIXTEXT (*cell)->text :
+							GTK_CELL_TEXT (*cell)->text));
+	      pango_layout_set_font_description (layout, style->font_desc);
+      } else {
+	      PangoContext *context = gtk_widget_get_pango_context (GTK_WIDGET(clist));
+	      layout = pango_layout_new (context);
+	      pango_layout_set_markup (layout, text, -1);
+	      pango_layout_set_font_description (layout, style->font_desc);
+	      if (clist_row->state == GTK_STATE_SELECTED) {
+		      /* for selected row, we should remove any forced foreground color
+		       * or it looks like shit */
+		      PangoAttrList *list = pango_layout_get_attributes(layout);
+		      PangoAttrList *rem = pango_attr_list_filter(list, filter_fg, NULL);
+		      if (rem)
+			      pango_attr_list_unref(rem);
+	      }
+      }
       
       return layout;
       
@@ -1117,6 +1145,10 @@ gtk_sctree_draw_row (GtkCList     *clist,
 
 	  if (i != ctree->tree_column)
 	    {
+	      int start_y = (clip_rectangle.height - height) / 2;
+	      if (GTK_CLIST_ROW_HEIGHT_SET(GTK_CLIST(clist)))
+		      start_y = (clip_rectangle.height/2 - height) / 2;
+
 	      offset += clist_row->cell[i].horizontal;
 	      switch (clist_row->cell[i].type)
 		{
@@ -1127,7 +1159,7 @@ gtk_sctree_draw_row (GtkCList     *clist,
 		     GTK_CELL_PIXMAP (clist_row->cell[i])->mask,
 		     offset,
 		     clip_rectangle.y + clist_row->cell[i].vertical +
-		     (clip_rectangle.height - height) / 2,
+		     start_y,
 		     pixmap_width, height);
 		  break;
 		case GTK_CELL_PIXTEXT:
@@ -1137,7 +1169,7 @@ gtk_sctree_draw_row (GtkCList     *clist,
 		     GTK_CELL_PIXTEXT (clist_row->cell[i])->mask,
 		     offset,
 		     clip_rectangle.y + clist_row->cell[i].vertical +
-		     (clip_rectangle.height - height) / 2,
+		     start_y,
 		     pixmap_width, height);
 		  offset += GTK_CELL_PIXTEXT (clist_row->cell[i])->spacing;
 
@@ -1528,8 +1560,12 @@ sctree_is_hot_spot (GtkSCTree     *sctree,
 
   cell = GTK_CELL_PIXTEXT (tree_row->row.cell[ctree->tree_column]);
 
-  yu = (ROW_TOP_YPIXEL (clist, row) + (clist->row_height - PM_SIZE) / 2 -
+  if (!GTK_CLIST_ROW_HEIGHT_SET(GTK_CLIST(clist)))
+     yu = (ROW_TOP_YPIXEL (clist, row) + (clist->row_height - PM_SIZE) / 2 -
 	(clist->row_height - 1) % 2);
+  else
+     yu = (ROW_TOP_YPIXEL (clist, row) + (clist->row_height/2 - PM_SIZE) / 2 -
+	(clist->row_height/2 - 1) % 2);
 
 #ifndef MAEMO
   if (clist->column[ctree->tree_column].justification == GTK_JUSTIFY_RIGHT)
@@ -1928,8 +1964,30 @@ GtkWidget *gtk_sctree_new_with_titles (gint columns, gint tree_column,
 
 	GTK_SCTREE(widget)->show_stripes = TRUE;
 	GTK_SCTREE(widget)->always_expand_recursively = TRUE;
+	GTK_SCTREE(widget)->force_additive_sel = FALSE;
+	
+	GTK_SCTREE(widget)->use_markup = g_new0(gboolean, columns);
 
 	return widget;
+}
+
+void gtk_sctree_set_use_markup		    (GtkSCTree		*sctree,
+					     int		 column,
+					     gboolean		 markup)
+{
+	gint columns = 0;
+	GValue value = { 0 };
+	
+	g_return_if_fail(GTK_IS_SCTREE(sctree));
+
+	g_value_init (&value, G_TYPE_INT);	
+	g_object_get_property (G_OBJECT (sctree), "n-columns", &value);
+	columns = g_value_get_int (&value);
+	g_value_unset (&value);
+
+	g_return_if_fail(column < columns);
+
+	sctree->use_markup[column] = markup;
 }
 
 void gtk_sctree_select (GtkSCTree *sctree, GtkCTreeNode *node)
