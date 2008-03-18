@@ -243,7 +243,7 @@ gint to_number			(const gchar *nstr);
 gchar *itos_buf			(gchar	     *nstr,
 				 gint	      n);
 gchar *itos			(gint	      n);
-gchar *to_human_readable	(off_t	      size);
+gchar *to_human_readable	(size_t	      size);
 
 /* alternative string functions */
 gint strcmp2		(const gchar	*s1,

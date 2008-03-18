@@ -1,3 +1,9 @@
+2008-03-18 [colin]	3.3.1cvs31
+
+	* src/common/utils.c
+	* src/common/utils.h
+		Handle size_t instead of off_t in to_human_readable
+
 2008-03-18 [colin]	3.3.1cvs30
 
 	* src/imap.c
