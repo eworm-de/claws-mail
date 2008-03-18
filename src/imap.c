@@ -2894,7 +2894,6 @@ static void *imap_get_uncached_messages_thread(void *data)
 				gchar *real_tag = imap_modified_utf7_to_utf8(cur->data, TRUE);
 				gint id = 0;
 				id = tags_get_id_for_str(real_tag);
-				printf("tag %s %d\n", real_tag, id);
 				if (id == -1) {
 					id = tags_add_tag(real_tag);
 					got_alien_tags = TRUE;

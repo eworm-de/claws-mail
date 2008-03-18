@@ -1,3 +1,8 @@
+2008-03-18 [colin]	3.3.1cvs30
+
+	* src/imap.c
+		Remove raw printf
+
 2008-03-16 [colin]	3.3.1cvs29
 
 	* src/summaryview.c
