@@ -1,3 +1,8 @@
+2008-03-19 [wwp]	3.3.1cvs32
+
+	* src/procheader.c
+		Sanity check.
+
 2008-03-18 [colin]	3.3.1cvs31
 
 	* src/common/utils.c

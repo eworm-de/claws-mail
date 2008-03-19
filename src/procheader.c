@@ -772,6 +772,9 @@ static gint procheader_scan_date_string(const gchar *str,
 	gchar zone1[3];
 	gchar zone2[3];
 
+	if (str == NULL)
+		return -1;
+
 	result = sscanf(str, "%10s %d %9s %d %2d:%2d:%2d %5s",
 			weekday, day, month, year, hh, mm, ss, zone);
 	if (result == 8) return 0;
