@@ -203,10 +203,15 @@ typedef struct _OverlayData OverlayData;
 
 struct _OverlayData
 {
+	gboolean is_pixmap;
 	GdkPixmap *base_pixmap;
 	GdkBitmap *base_mask;
 	GdkPixmap *overlay_pixmap;
 	GdkBitmap *overlay_mask;
+	
+	GdkPixbuf *base_pixbuf;
+	GdkPixbuf *overlay_pixbuf;
+	
 	guint base_height;
 	guint base_width;
 	guint overlay_height;
@@ -386,14 +391,13 @@ static StockPixmapData pixmaps[] =
 /* return newly constructed GtkPixmap from GdkPixmap */
 GtkWidget *stock_pixmap_widget(GtkWidget *window, StockPixmap icon)
 {
-	GdkPixmap *pixmap;
-	GdkBitmap *mask;
+	GdkPixbuf *pixbuf;
 
 	g_return_val_if_fail(window != NULL, NULL);
 	g_return_val_if_fail(icon >= 0 && icon < N_STOCK_PIXMAPS, NULL);
 
-	if (stock_pixmap_gdk(window, icon, &pixmap, &mask) != -1)
-		return gtk_image_new_from_pixmap(pixmap, mask);
+	if (stock_pixbuf_gdk(window, icon, &pixbuf) != -1)
+		return gtk_image_new_from_pixbuf(pixbuf);
 	
 	return NULL;
 }
@@ -404,6 +408,8 @@ GtkWidget *stock_pixmap_widget(GtkWidget *window, StockPixmap icon)
 gint stock_pixbuf_gdk(GtkWidget *window, StockPixmap icon, GdkPixbuf **pixbuf)
 {
 	StockPixmapData *pix_d;
+	static const char *extension[]={".png", ".xpm", NULL};
+	int i = 0;
 
 	if (pixbuf)
 		*pixbuf = NULL;
@@ -418,11 +424,11 @@ gint stock_pixbuf_gdk(GtkWidget *window, StockPixmap icon, GdkPixbuf **pixbuf)
 		if (strcmp(prefs_common.pixmap_theme_path, DEFAULT_PIXMAP_THEME) != 0) {
 			if (is_dir_exist(prefs_common.pixmap_theme_path)) {
 				char *icon_file_name; 
-				
+try_next_extension:				
 				icon_file_name = g_strconcat(prefs_common.pixmap_theme_path,
 							     G_DIR_SEPARATOR_S,
 							     pix_d->file,
-							     ".xpm",
+							     extension[i],
 							     NULL);
 				if (is_file_exist(icon_file_name)) {
 					GError *err = NULL;
@@ -434,6 +440,11 @@ gint stock_pixbuf_gdk(GtkWidget *window, StockPixmap icon, GdkPixbuf **pixbuf)
 					pix_d->icon_path = g_strdup(prefs_common.pixmap_theme_path);
 				}
 				g_free(icon_file_name);
+				if (!pix) {
+					i++;
+					if (extension[i])
+						goto try_next_extension;
+				}
 			} else {
 				/* even the path does not exist (deleted between two sessions), so
 				set the preferences to the internal theme */
@@ -466,6 +477,8 @@ gint stock_pixmap_gdk(GtkWidget *window, StockPixmap icon,
 		      GdkPixmap **pixmap, GdkBitmap **mask)
 {
 	StockPixmapData *pix_d;
+	static const char *extension[]={".png", ".xpm", NULL};
+	int i = 0;
 
 	if (pixmap) *pixmap = NULL;
 	if (mask)   *mask   = NULL;
@@ -481,11 +494,11 @@ gint stock_pixmap_gdk(GtkWidget *window, StockPixmap icon,
 		if (strcmp(prefs_common.pixmap_theme_path, DEFAULT_PIXMAP_THEME) != 0) {
 			if ( is_dir_exist(prefs_common.pixmap_theme_path) ) {
 				char *icon_file_name; 
-				
+try_next_extension:
 				icon_file_name = g_strconcat(prefs_common.pixmap_theme_path,
 							     G_DIR_SEPARATOR_S,
 							     pix_d->file,
-							     ".xpm",
+							     extension[i],
 							     NULL);
 				if (is_file_exist(icon_file_name))
 					PIXMAP_CREATE_FROM_FILE(window, pix, pix_d->mask, icon_file_name);
@@ -494,6 +507,11 @@ gint stock_pixmap_gdk(GtkWidget *window, StockPixmap icon,
 					pix_d->icon_path = g_strdup(prefs_common.pixmap_theme_path);
 				}
 				g_free(icon_file_name);
+				if (!pix) {
+					i++;
+					if (extension[i])
+						goto try_next_extension;
+				}
 			} else {
 				/* even the path does not exist (deleted between two sessions), so
 				set the preferences to the internal theme */
@@ -525,6 +543,7 @@ static void stock_pixmap_find_themes_in_dir(GList **list, const gchar *dirname)
 {
 	struct dirent *d;
 	DIR *dp;
+	static const char *extension[]={".png", ".xpm", NULL};
 	
 	if ((dp = opendir(dirname)) == NULL) {
 		debug_print("dir %s not found, skipping theme scan", dirname?dirname:"(null)");
@@ -540,16 +559,18 @@ static void stock_pixmap_find_themes_in_dir(GList **list, const gchar *dirname)
 		
 		if (strcmp(entry, ".") != 0 && strcmp(entry, "..") != 0 && is_dir_exist(fullentry)) {
 			gchar *filetoexist;
+			gboolean found = FALSE;
 			int i;
-			
-			for (i = 0; i < N_STOCK_PIXMAPS; i++) {
-				filetoexist = g_strconcat(fullentry, G_DIR_SEPARATOR_S, pixmaps[i].file, ".xpm", NULL);
-				if (is_file_exist(filetoexist)) {
-					*list = g_list_append(*list, fullentry);
+			int j;
+			for (i = 0; i < N_STOCK_PIXMAPS && !found; i++) {
+				for (j = 0; extension[j] && !found; j++) {
+					filetoexist = g_strconcat(fullentry, G_DIR_SEPARATOR_S, pixmaps[i].file, extension[j], NULL);
+					if (is_file_exist(filetoexist)) {
+						*list = g_list_append(*list, fullentry);
+						found = TRUE;
+					}
 					g_free(filetoexist);
-					break;
 				}
-				g_free(filetoexist);
 			}
 			if (i == N_STOCK_PIXMAPS) 
 				g_free(fullentry);
@@ -618,9 +639,12 @@ static gboolean pixmap_with_overlay_expose_event_cb(GtkWidget *widget, GdkEventE
 	gint left = 0;
 	gint top = 0;
 
-	g_return_val_if_fail(data->base_pixmap != NULL, FALSE);
-	g_return_val_if_fail(data->base_mask != NULL, FALSE);
-
+	if (data->is_pixmap) {
+		g_return_val_if_fail(data->base_pixmap != NULL, FALSE);
+		g_return_val_if_fail(data->base_mask != NULL, FALSE);
+	} else {
+		g_return_val_if_fail(data->base_pixbuf != NULL, FALSE);
+	}
 	gc_pix = gdk_gc_new((GdkWindow *)drawable);
 						 
 	gdk_window_clear_area (drawable, expose->area.x, expose->area.y,
@@ -643,21 +667,22 @@ static gboolean pixmap_with_overlay_expose_event_cb(GtkWidget *widget, GdkEventE
 		}
 	}
 
-	gdk_gc_set_tile(gc_pix, data->base_pixmap);
-	gdk_gc_set_ts_origin(gc_pix, data->border_x, data->border_y);
-	gdk_gc_set_clip_mask(gc_pix, data->base_mask);
-	gdk_gc_set_clip_origin(gc_pix, data->border_x, data->border_y);
-	gdk_gc_set_fill(gc_pix, GDK_TILED);
-
-	gdk_draw_rectangle(drawable, gc_pix, TRUE, data->border_x, data->border_y, 
+	if (data->is_pixmap) {
+		gdk_gc_set_tile(gc_pix, data->base_pixmap);
+		gdk_gc_set_ts_origin(gc_pix, data->border_x, data->border_y);
+		gdk_gc_set_clip_mask(gc_pix, data->base_mask);
+		gdk_gc_set_clip_origin(gc_pix, data->border_x, data->border_y);
+		gdk_gc_set_fill(gc_pix, GDK_TILED);
+		gdk_draw_rectangle(drawable, gc_pix, TRUE, data->border_x, data->border_y, 
 			   data->base_width, data->base_height);
+	} else {
+		gdk_draw_pixbuf(drawable, gc_pix, data->base_pixbuf, 
+			0, 0, data->border_x, data->border_y,
+			-1, -1, GDK_RGB_DITHER_NONE, 0, 0);
+	}
+
 
 	if (data->position != OVERLAY_NONE) {
-		g_return_val_if_fail(data->overlay_pixmap != NULL, FALSE);
-		g_return_val_if_fail(data->overlay_mask != NULL, FALSE);
-
-		gdk_gc_set_tile(gc_pix, data->overlay_pixmap);
-		gdk_gc_set_clip_mask(gc_pix, data->overlay_mask);
 
 		switch (data->position) {
 			case OVERLAY_TOP_LEFT:
@@ -703,12 +728,26 @@ static gboolean pixmap_with_overlay_expose_event_cb(GtkWidget *widget, GdkEventE
 			default:
 				break;
 		}
+	}
+	if (data->position != OVERLAY_NONE) {
+		if (data->is_pixmap) {
+			g_return_val_if_fail(data->overlay_pixmap != NULL, FALSE);
+			g_return_val_if_fail(data->overlay_mask != NULL, FALSE);
+			gdk_gc_set_tile(gc_pix, data->overlay_pixmap);
+			gdk_gc_set_clip_mask(gc_pix, data->overlay_mask);
 
-		gdk_gc_set_ts_origin(gc_pix, left, top);
-		gdk_gc_set_clip_origin(gc_pix, left, top);
-		gdk_gc_set_fill(gc_pix, GDK_TILED);
-		gdk_draw_rectangle(drawable, gc_pix, TRUE, left, top, 
+			gdk_gc_set_ts_origin(gc_pix, left, top);
+			gdk_gc_set_clip_origin(gc_pix, left, top);
+			gdk_gc_set_fill(gc_pix, GDK_TILED);
+			gdk_draw_rectangle(drawable, gc_pix, TRUE, left, top, 
 				   data->overlay_width, data->overlay_height);
+		} else {
+			g_return_val_if_fail(data->overlay_pixbuf != NULL, FALSE);
+			gdk_draw_pixbuf(drawable, gc_pix, data->overlay_pixbuf, 
+				0, 0, left, top,
+				-1, -1, GDK_RGB_DITHER_NONE, 0, 0);
+
+		}
 	}
 	g_object_unref(gc_pix);
 	
@@ -717,11 +756,18 @@ static gboolean pixmap_with_overlay_expose_event_cb(GtkWidget *widget, GdkEventE
 
 static void pixmap_with_overlay_destroy_cb(GtkObject *object, OverlayData *data) 
 {
-	g_object_unref(data->base_pixmap);
-	g_object_unref(data->base_mask);
-	if (data->position != OVERLAY_NONE) {
-		g_object_unref(data->overlay_pixmap);
-		g_object_unref(data->overlay_mask);
+	if (data->is_pixmap) {
+		g_object_unref(data->base_pixmap);
+		g_object_unref(data->base_mask);
+		if (data->position != OVERLAY_NONE) {
+			g_object_unref(data->overlay_pixmap);
+			g_object_unref(data->overlay_mask);
+		}
+	} else {
+		g_object_unref(data->base_pixbuf);
+		if (data->position != OVERLAY_NONE) {
+			g_object_unref(data->overlay_pixbuf);
+		}
 	}
 	g_free(data);
 }
@@ -743,40 +789,69 @@ GtkWidget *stock_pixmap_widget_with_overlay(GtkWidget *window, StockPixmap icon,
 					    StockPixmap overlay, OverlayPosition pos,
 					    gint border_x, gint border_y)
 {
-	GdkPixmap *stock_pixmap;
-	GdkBitmap *stock_mask;
-	GtkWidget *widget;
-	GtkWidget *stock_wid;
-	OverlayData *data;
+	GdkPixmap *stock_pixmap = NULL;
+	GdkBitmap *stock_mask = NULL;
+	GdkPixbuf *stock_pixbuf = NULL;
+	GtkWidget *widget = NULL;
+	GtkWidget *stock_wid = NULL;
+	OverlayData *data = NULL;
 	
 	data = g_new0(OverlayData, 1);
 
 	stock_wid = stock_pixmap_widget(window, icon);
-	gtk_image_get_pixmap(GTK_IMAGE(stock_wid), &stock_pixmap, &stock_mask);
-	g_object_ref(stock_pixmap);
-	g_object_ref(stock_mask);
-	data->base_pixmap = stock_pixmap;
-	data->base_mask   = stock_mask;
-	data->base_height = stock_wid->requisition.height;
-	data->base_width  = stock_wid->requisition.width;
-	gtk_widget_destroy(stock_wid);
 
-	if (pos == OVERLAY_NONE) {
-		data->overlay_pixmap = NULL;
-		data->overlay_mask   = NULL;
-	} else {
-		stock_wid = stock_pixmap_widget(window, overlay);
+	if (gtk_image_get_storage_type(GTK_IMAGE(stock_wid)) == GTK_IMAGE_PIXMAP)
+		data->is_pixmap = TRUE;
+	else
+		data->is_pixmap = FALSE;
+
+	if (data->is_pixmap) {
 		gtk_image_get_pixmap(GTK_IMAGE(stock_wid), &stock_pixmap, &stock_mask);
 		g_object_ref(stock_pixmap);
 		g_object_ref(stock_mask);
-		data->overlay_pixmap = stock_pixmap;
-		data->overlay_mask   = stock_mask;
-		data->overlay_height = stock_wid->requisition.height;
-		data->overlay_width  = stock_wid->requisition.width;
-
+		data->base_pixmap = stock_pixmap;
+		data->base_mask   = stock_mask;
+		data->base_height = stock_wid->requisition.height;
+		data->base_width  = stock_wid->requisition.width;
 		gtk_widget_destroy(stock_wid);
+
+		if (pos == OVERLAY_NONE) {
+			data->overlay_pixmap = NULL;
+			data->overlay_mask   = NULL;
+		} else {
+			stock_wid = stock_pixmap_widget(window, overlay);
+			gtk_image_get_pixmap(GTK_IMAGE(stock_wid), &stock_pixmap, &stock_mask);
+			g_object_ref(stock_pixmap);
+			g_object_ref(stock_mask);
+			data->overlay_pixmap = stock_pixmap;
+			data->overlay_mask   = stock_mask;
+			data->overlay_height = stock_wid->requisition.height;
+			data->overlay_width  = stock_wid->requisition.width;
+
+			gtk_widget_destroy(stock_wid);
+		}
+	} else {
+		data->is_pixmap = FALSE;
+		stock_pixbuf = gtk_image_get_pixbuf(GTK_IMAGE(stock_wid));
+		g_object_ref(stock_pixbuf);
+		data->base_pixbuf = stock_pixbuf;
+		data->base_height = stock_wid->requisition.height;
+		data->base_width  = stock_wid->requisition.width;
+		gtk_widget_destroy(stock_wid);
+		if (pos == OVERLAY_NONE) {
+			data->overlay_pixmap = NULL;
+			data->overlay_mask   = NULL;
+		} else {
+			stock_wid = stock_pixmap_widget(window, overlay);
+			stock_pixbuf = gtk_image_get_pixbuf(GTK_IMAGE(stock_wid));
+			g_object_ref(stock_pixbuf);
+			data->overlay_pixbuf = stock_pixbuf;
+			data->overlay_height = stock_wid->requisition.height;
+			data->overlay_width  = stock_wid->requisition.width;
+
+			gtk_widget_destroy(stock_wid);
+		}
 	}
-	
 	data->position = pos;
 	data->border_x = border_x;
 	data->border_y = border_y;
