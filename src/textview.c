@@ -928,7 +928,9 @@ static void textview_write_body(TextView *textview, MimeInfo *mimeinfo)
 	CodeConverter *conv;
 	const gchar *charset, *p, *cmd;
 	GSList *cur;
-	
+	gboolean continue_write = TRUE;
+	size_t wrote = 0, i = 0;
+
 	if (textview->messageview->forced_charset)
 		charset = textview->messageview->forced_charset;
 	else
@@ -1040,12 +1042,19 @@ textview_default:
 		}
 		fseek(tmpfp, mimeinfo->offset, SEEK_SET);
 		debug_print("Viewing text content of type: %s (length: %d)\n", mimeinfo->subtype, mimeinfo->length);
-		while ((ftell(tmpfp) < mimeinfo->offset + mimeinfo->length) &&
-		       (fgets(buf, sizeof(buf), tmpfp) != NULL)) {
+		while (((i = ftell(tmpfp)) < mimeinfo->offset + mimeinfo->length) &&
+		       (fgets(buf, sizeof(buf), tmpfp) != NULL)
+		       && continue_write) {
 			textview_write_line(textview, buf, conv, TRUE);
 			if (textview->stop_loading) {
 				fclose(tmpfp);
 				return;
+			}
+			wrote += ftell(tmpfp)-i;
+			if (mimeinfo->length > 1024*1024 
+			&&  wrote > 1024*1024
+			&& !textview->messageview->show_full_text) {
+				continue_write = FALSE;
 			}
 		}
 		fclose(tmpfp);
@@ -1068,6 +1077,12 @@ textview_default:
 		}
 	}
 	
+	if (continue_write == FALSE) {
+		messageview_show_partial_display(
+			textview->messageview, 
+			textview->messageview->msginfo,
+			mimeinfo->length);
+	}
 	GTK_EVENTS_FLUSH();
 }
 

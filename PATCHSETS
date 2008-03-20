@@ -3268,3 +3268,4 @@
 ( cvs diff -u -r 1.36.2.135 -r 1.36.2.136 src/common/utils.c;  cvs diff -u -r 1.20.2.59 -r 1.20.2.60 src/common/utils.h;  ) > 3.3.1cvs31.patchset
 ( cvs diff -u -r 1.47.2.46 -r 1.47.2.47 src/procheader.c;  ) > 3.3.1cvs32.patchset
 ( cvs diff -u -r 1.25.2.52 -r 1.25.2.53 src/stock_pixmap.c;  ) > 3.3.1cvs33.patchset
+( cvs diff -u -r 1.94.2.173 -r 1.94.2.174 src/messageview.c;  cvs diff -u -r 1.19.2.18 -r 1.19.2.19 src/messageview.h;  cvs diff -u -r 1.96.2.197 -r 1.96.2.198 src/textview.c;  ) > 3.3.1cvs34.patchset

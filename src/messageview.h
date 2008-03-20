@@ -74,6 +74,8 @@ struct _MessageView
 	gint msginfo_update_callback_id;
 	gboolean updating;
 	gboolean deferred_destroy;
+	
+	gboolean show_full_text;
 };
 
 MessageView *messageview_create			(MainWindow	*mainwin);
@@ -119,4 +121,7 @@ void messageview_print				(MsgInfo	*msginfo,
 						 gint		 partnum);
 #endif
 void messageview_list_urls			(MessageView	*msgview);
+void messageview_show_partial_display		(MessageView 	*msgview, 
+						 MsgInfo 	*msginfo,
+						 size_t 	 length);
 #endif /* __MESSAGEVIEW_H__ */

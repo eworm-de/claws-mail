@@ -466,6 +466,8 @@ MessageView *messageview_create(MainWindow *mainwin)
 	messageview->statusbar     = NULL;
 	messageview->statusbar_cid = 0;
 
+	messageview->show_full_text= FALSE;
+
 	messageview->msginfo_update_callback_id =
 		hooks_register_hook(MSGINFO_UPDATE_HOOKLIST, messageview_update_msg, (gpointer) messageview);
 
@@ -1000,6 +1002,9 @@ gint messageview_show(MessageView *messageview, MsgInfo *msginfo,
 	gchar *subject = NULL;
 	g_return_val_if_fail(msginfo != NULL, -1);
 
+	if (msginfo != messageview->msginfo)
+		messageview->show_full_text = FALSE;
+
 	if (messageview->mimeview->textview &&
 	    messageview->mimeview->textview->loading) {
 		messageview->mimeview->textview->stop_loading = TRUE;
@@ -1124,14 +1129,16 @@ gint messageview_show(MessageView *messageview, MsgInfo *msginfo,
 	main_create_mailing_list_menu(messageview->mainwin, messageview->msginfo);
 
 	if (messageview->msginfo && messageview->msginfo->extradata
-	    && messageview->msginfo->extradata->partial_recv)
+	    && messageview->msginfo->extradata->partial_recv
+	    && !noticeview_is_visible(messageview->noticeview))
 		partial_recv_show(messageview->noticeview, 
 				  messageview->msginfo);
 	else if (messageview->msginfo && messageview->msginfo->extradata &&
 	    (messageview->msginfo->extradata->dispositionnotificationto || 
 	     messageview->msginfo->extradata->returnreceiptto) &&
 	    !MSG_IS_RETRCPT_SENT(messageview->msginfo->flags) &&
-	    !prefs_common.never_send_retrcpt)
+	    !prefs_common.never_send_retrcpt &&
+	    !noticeview_is_visible(messageview->noticeview))
 		return_receipt_show(messageview->noticeview, 
 				    messageview->msginfo);
 
@@ -1489,6 +1496,30 @@ static gboolean key_pressed(GtkWidget *widget, GdkEventKey *event,
 	return FALSE;
 }
 #endif
+
+static void messageview_show_partial_display_cb(NoticeView *noticeview, MessageView *messageview)
+{
+	messageview->show_full_text = TRUE;
+	main_window_cursor_wait(mainwindow_get_mainwindow());
+	GTK_EVENTS_FLUSH();
+	messageview_show(messageview, messageview->msginfo, messageview->all_headers);
+	main_window_cursor_normal(mainwindow_get_mainwindow());
+}
+
+void messageview_show_partial_display(MessageView *messageview, MsgInfo *msginfo,
+					     size_t length)
+{
+	gchar *msg = g_strdup_printf(_("Show all %s."), to_human_readable(length));
+	noticeview_set_icon(messageview->noticeview, STOCK_PIXMAP_NOTICE_WARN);
+	noticeview_set_text(messageview->noticeview, _("Only the first megabyte of text is shown."));
+	noticeview_set_button_text(messageview->noticeview, msg);
+	g_free(msg);
+	noticeview_set_button_press_callback(messageview->noticeview,
+					     G_CALLBACK(messageview_show_partial_display_cb),
+					     (gpointer) messageview);
+	noticeview_show(messageview->noticeview);
+}
+
 static void return_receipt_show(NoticeView *noticeview, MsgInfo *msginfo)
 {
 	gchar *addr = NULL;
