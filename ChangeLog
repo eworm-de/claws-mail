@@ -1,3 +1,8 @@
+2008-03-21 [colin]	3.3.1cvs36
+
+	* src/procmime.c
+		strstrip mime subtype
+
 2008-03-21 [paul]	3.3.1cvs35
 
 	* manual/advanced.xml

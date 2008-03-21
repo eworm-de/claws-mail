@@ -1767,7 +1767,7 @@ static void procmime_parse_content_type(const gchar *content_type, MimeInfo *mim
 		}
 
 		mimeinfo->type = procmime_get_media_type(type);
-		mimeinfo->subtype = g_strdup(subtype);
+		mimeinfo->subtype = g_strstrip(g_strdup(subtype));
 
 		/* Get mimeinfo->typeparameters */
 		if (params != NULL)

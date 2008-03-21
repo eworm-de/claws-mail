@@ -3270,3 +3270,4 @@
 ( cvs diff -u -r 1.25.2.52 -r 1.25.2.53 src/stock_pixmap.c;  ) > 3.3.1cvs33.patchset
 ( cvs diff -u -r 1.94.2.173 -r 1.94.2.174 src/messageview.c;  cvs diff -u -r 1.19.2.18 -r 1.19.2.19 src/messageview.h;  cvs diff -u -r 1.96.2.197 -r 1.96.2.198 src/textview.c;  ) > 3.3.1cvs34.patchset
 ( cvs diff -u -r 1.1.2.45 -r 1.1.2.46 manual/advanced.xml;  ) > 3.3.1cvs35.patchset
+( cvs diff -u -r 1.49.2.107 -r 1.49.2.108 src/procmime.c;  ) > 3.3.1cvs36.patchset
