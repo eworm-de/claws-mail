@@ -11,8 +11,8 @@
 	such as editing a raw mail in your text editor, 
 	<emphasis>hide</emphasis> what you mean using ROT-13, apply patches 
 	contained in emails directly, and so on. The only limit is your 
-	imagination. You can configure Actions via the <quote>Tools</quote> 
-	menu.
+	imagination. You can create and configure Actions via the
+	<quote>/Configuration/Actions...</quote> menu.
     </para>
     <para>
         The <quote>Tools/Actions/</quote> menu will contain one submenu
@@ -26,10 +26,10 @@
         Additionally, it is possible to add toolbar entries for your
         actions. To do so, open the <quote>Configuration/Preferences</quote>
         menu and select <quote>Customize Toolbars/Main Window</quote>.
-        In the list of available icons, select the one you want, then
-        in <quote>Event executed on click</quote> select
-        <quote>Claws Mail Actions Feature</quote> and the action to execute
-        in the <quote>Claws Mail Action</quote> dropdown menu.
+	Select <quote>User Action</quote> in the <quote>Item type</quote>
+	dropdown menu, then select the Action in the <quote>Event executed on click</quote>
+	dropdown menu, and click the <quote>Icon</quote> button to select the
+	icon that you want to use.
     </para>
     <blockquote>
       <example>
