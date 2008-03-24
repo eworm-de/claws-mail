@@ -60,7 +60,6 @@
 
 static gboolean cancelled;
 static gboolean new_account;
-static gboolean create_mailbox;
 
 static PrefsAccount tmp_ac_prefs;
 
@@ -1230,7 +1229,6 @@ static void basic_create_widget_func(PrefsPage * _page,
 	page->uid_entry        = uid_entry;
 	page->pass_entry       = pass_entry;
 
-	create_mailbox = FALSE;
 	if (new_account) {
 		PrefsAccount *def_ac;
 		gchar *buf;
@@ -1258,8 +1256,6 @@ static void basic_create_widget_func(PrefsPage * _page,
 				gtk_entry_set_text(GTK_ENTRY(receive_page.local_inbox_entry),
 					id);
 				g_free(id);
-			} else {
-				create_mailbox = TRUE;
 			}
 		}
 	} else
@@ -2642,7 +2638,7 @@ static gint prefs_basic_apply(void)
 		GtkWidget *inbox_entry = (protocol == A_POP3 ? receive_page.inbox_entry : receive_page.local_inbox_entry );
 		const gchar *mailbox = gtk_entry_get_text(GTK_ENTRY(inbox_entry));
 		FolderItem *inbox =  folder_find_item_from_identifier(mailbox);
-		if (!inbox && create_mailbox) {
+		if (!inbox) {
 			gchar *id = NULL;
 			setup_write_mailbox_path(mainwindow_get_mainwindow(), "Mail");
 			id = folder_item_get_identifier(folder_get_default_inbox_for_class(F_MH));
@@ -2652,7 +2648,6 @@ static gint prefs_basic_apply(void)
 				id);
 			g_free(id);
 			mailbox = gtk_entry_get_text(GTK_ENTRY(inbox_entry));
-			create_mailbox = FALSE;
 			inbox =  folder_find_item_from_identifier(mailbox);
 		}
 	    	if (inbox == NULL) {
