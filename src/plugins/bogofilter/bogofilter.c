@@ -102,6 +102,8 @@ static PrefParam param[] = {
 	 NULL, NULL, NULL},
 	{"whitelist_ab_folder", N_("Any"), &config.whitelist_ab_folder, P_STRING,
 	 NULL, NULL, NULL},
+	{"learn_from_whitelist", "FALSE", &config.learn_from_whitelist, P_BOOL,
+	 NULL, NULL, NULL},
 	{"mark_as_read", "TRUE", &config.mark_as_read, P_BOOL,
 	 NULL, NULL, NULL},
 
@@ -316,9 +318,11 @@ static void bogofilter_do_filter(BogoFilterData *data)
 							data->mail_filtering_data->filtered, msginfo);
 						data->new_spams = g_slist_prepend(data->new_spams, msginfo);
 
-					} else if (whitelisted && parts && parts[0] && parts[1] && *parts[1] == 'S') {
+					} else if (whitelisted && parts && parts[0] && parts[1] && 
+							(*parts[1] == 'S' || *parts[1] == 'U')) {
 
-						debug_print("message %d is whitelisted spam\n", msginfo->msgnum);
+						debug_print("message %d is whitelisted %s\n", msginfo->msgnum,
+							*parts[1] == 'S' ? "spam":"unsure");
 						/* Whitelisted spam will *not* be filtered away, but continue
 						 * their trip through filtering as if it was ham. */
 						data->mail_filtering_data->unfiltered = g_slist_prepend(
@@ -366,7 +370,7 @@ static void bogofilter_do_filter(BogoFilterData *data)
 		else
 			status = WEXITSTATUS(status);
 	}
-	
+
 	to_filter_data->status = status; 
 }
 
@@ -542,17 +546,38 @@ static gboolean mail_filtering_hook(gpointer source, gpointer data)
 	for (cur = new_hams; cur; cur = cur->next) {
 		MsgInfo *msginfo = (MsgInfo *)cur->data;
 		procmsg_msginfo_unset_flags(msginfo, MSG_SPAM, 0);
+		debug_print("unflagging ham: %d\n", msginfo->msgnum);
 	}
 	/* unflag unsure */
 	for (cur = new_unsure; cur; cur = cur->next) {
 		MsgInfo *msginfo = (MsgInfo *)cur->data;
 		procmsg_msginfo_unset_flags(msginfo, MSG_SPAM, 0);
+		debug_print("unflagging unsure: %d\n", msginfo->msgnum);
 	}
-	/* flag whitelisted spams */
-	for (cur = whitelisted_new_spams; cur; cur = cur->next) {
-		MsgInfo *msginfo = (MsgInfo *)cur->data;
-		procmsg_msginfo_set_flags(msginfo, MSG_SPAM, 0);
+	if (config.learn_from_whitelist && whitelisted_new_spams) {
+		/* flag whitelisted spams */
+		for (cur = whitelisted_new_spams; cur; cur = cur->next) {
+			MsgInfo *msginfo = (MsgInfo *)cur->data;
+			procmsg_msginfo_set_flags(msginfo, MSG_SPAM, 0);
+			debug_print("flagging whitelisted non-ham: %d\n", msginfo->msgnum);
+		}
+		/* correct bogo */
+		bogofilter_learn(NULL, whitelisted_new_spams, FALSE);
+
+		/* unflag them */
+		for (cur = whitelisted_new_spams; cur; cur = cur->next) {
+			MsgInfo *msginfo = (MsgInfo *)cur->data;
+			procmsg_msginfo_unset_flags(msginfo, MSG_SPAM, 0);
+			debug_print("unflagging whitelisted non-ham: %d\n", msginfo->msgnum);
+		}
+	} else {
+		for (cur = whitelisted_new_spams; cur; cur = cur->next) {
+			MsgInfo *msginfo = (MsgInfo *)cur->data;
+			procmsg_msginfo_unset_flags(msginfo, MSG_SPAM, 0);
+			debug_print("not flagging whitelisted non-ham: %d\n", msginfo->msgnum);
+		}
 	}
+
 	/* flag spams and delete them if !config.receive_spam 
 	 * (if config.receive_spam is set, we'll move them later) */
 	for (cur = new_spams; cur; cur = cur->next) {

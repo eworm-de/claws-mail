@@ -59,6 +59,7 @@ struct BogofilterPage
 	GtkWidget *bogopath;
 	GtkWidget *whitelist_ab;
 	GtkWidget *whitelist_ab_folder_combo;
+	GtkWidget *learn_from_whitelist_chkbtn;
 	GtkWidget *mark_as_read;
 };
 
@@ -121,6 +122,7 @@ static void bogofilter_create_widget_func(PrefsPage * _page,
 
 	GtkWidget *insert_header_checkbtn;
 	GtkWidget *whitelist_ab_checkbtn;
+	GtkWidget *learn_from_whitelist_chkbtn;
 	GtkWidget *bogopath_label;
 	GtkWidget *bogopath_entry;
 
@@ -242,6 +244,13 @@ static void bogofilter_create_widget_func(PrefsPage * _page,
 			_("Click this button to select a book or folder in the address book"),
 			NULL);
 
+	learn_from_whitelist_chkbtn = gtk_check_button_new_with_label(_("Learn whitelisted emails as ham"));
+	gtk_tooltips_set_tip(tooltips, learn_from_whitelist_chkbtn,
+			_("If Bogofilter thought an email was spam or unsure, but it was whitelisted, "
+			  "learn it as ham."), NULL);
+	gtk_widget_show(learn_from_whitelist_chkbtn);
+	gtk_box_pack_start (GTK_BOX (vbox2), learn_from_whitelist_chkbtn, TRUE, TRUE, 0);
+
 	hbox_bogopath = gtk_hbox_new(FALSE, 8);
 	gtk_widget_show(hbox_bogopath);
 	gtk_box_pack_start (GTK_BOX (vbox2), hbox_bogopath, FALSE, FALSE, 0);
@@ -271,6 +280,7 @@ static void bogofilter_create_widget_func(PrefsPage * _page,
 	SET_TOGGLE_SENSITIVITY(save_unsure_checkbtn, save_unsure_folder_select);
 	SET_TOGGLE_SENSITIVITY(whitelist_ab_checkbtn, whitelist_ab_folder_combo);
 	SET_TOGGLE_SENSITIVITY(whitelist_ab_checkbtn, whitelist_ab_select_btn);
+	SET_TOGGLE_SENSITIVITY(whitelist_ab_checkbtn, learn_from_whitelist_chkbtn);
 	SET_TOGGLE_SENSITIVITY(save_spam_checkbtn, mark_as_read_checkbtn);
 
 	config = bogofilter_get_config();
@@ -288,6 +298,7 @@ static void bogofilter_create_widget_func(PrefsPage * _page,
 	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(save_unsure_checkbtn), config->save_unsure);
 	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(insert_header_checkbtn), config->insert_header);
 	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(whitelist_ab_checkbtn), config->whitelist_ab);
+	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(learn_from_whitelist_chkbtn), config->learn_from_whitelist);
 	if (config->whitelist_ab_folder != NULL)
 		gtk_entry_set_text(GTK_ENTRY(GTK_BIN(whitelist_ab_folder_combo)->child),
 				config->whitelist_ab_folder);
@@ -313,6 +324,7 @@ static void bogofilter_create_widget_func(PrefsPage * _page,
 	page->insert_header = insert_header_checkbtn;
 	page->whitelist_ab = whitelist_ab_checkbtn;
 	page->whitelist_ab_folder_combo = whitelist_ab_folder_combo;
+	page->learn_from_whitelist_chkbtn = learn_from_whitelist_chkbtn;
 	page->bogopath = bogopath_entry;
 
 	page->mark_as_read = mark_as_read_checkbtn;
@@ -359,6 +371,9 @@ static void bogofilter_save_func(PrefsPage *_page)
 	g_free(config->whitelist_ab_folder);
 	config->whitelist_ab_folder = gtk_editable_get_chars(
 				GTK_EDITABLE(GTK_BIN(page->whitelist_ab_folder_combo)->child), 0, -1);
+
+	/* learn_from_whitelist_chkbtn */
+	config->learn_from_whitelist = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(page->learn_from_whitelist_chkbtn));
 
 	/* bogopath */
 	g_free(config->bogopath);

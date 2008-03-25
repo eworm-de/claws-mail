@@ -3272,3 +3272,4 @@
 ( cvs diff -u -r 1.1.2.45 -r 1.1.2.46 manual/advanced.xml;  ) > 3.3.1cvs35.patchset
 ( cvs diff -u -r 1.49.2.107 -r 1.49.2.108 src/procmime.c;  ) > 3.3.1cvs36.patchset
 ( cvs diff -u -r 1.105.2.128 -r 1.105.2.129 src/prefs_account.c;  ) > 3.3.1cvs37.patchset
+( cvs diff -u -r 1.1.2.36 -r 1.1.2.37 src/plugins/bogofilter/bogofilter.c;  cvs diff -u -r 1.1.2.13 -r 1.1.2.14 src/plugins/bogofilter/bogofilter.h;  cvs diff -u -r 1.1.2.30 -r 1.1.2.31 src/plugins/bogofilter/bogofilter_gtk.c;  ) > 3.3.1cvs38.patchset
