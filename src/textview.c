@@ -3024,8 +3024,11 @@ static void mail_to_uri_cb (TextView *textview, guint action, void *data)
 		folder_item = textview->messageview->msginfo->folder;
 		if (folder_item->prefs && folder_item->prefs->enable_default_account)
 			account = account_find_from_id(folder_item->prefs->default_account);
+		
+		compose_new_with_folderitem(account, folder_item, uri->uri+7);
+	} else {
+		compose_new(account, uri->uri + 7, NULL);
 	}
-	compose_new(account, uri->uri + 7, NULL);
 }
 
 static void copy_mail_to_uri_cb	(TextView *textview, guint action, void *data)
