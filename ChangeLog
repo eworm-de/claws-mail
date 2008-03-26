@@ -1,3 +1,9 @@
+2008-03-26 [colin]	3.3.1cvs40
+
+	* src/imap.c
+		Clean up session disconnection. Possibly
+		fix Ubuntu bug #204290
+
 2008-03-26 [colin]	3.3.1cvs39
 
 	* src/textview.c
