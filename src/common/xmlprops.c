@@ -215,7 +215,8 @@ static gint xmlprops_write_to( XmlProperty *props, const gchar *fileSpec ) {
 		
 		props->retVal = MGU_SUCCESS;
 		if( prefs_file_close( pfile ) < 0 ) {
-			goto revert;
+			props->retVal = MGU_ERROR_WRITE;
+			goto out;
 		}
 		goto out;
 revert:
