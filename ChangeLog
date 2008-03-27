@@ -1,3 +1,9 @@
+2008-03-27 [colin]	3.3.1cvs43
+
+	* src/addressbook.c
+		Fix bug 1559, 'Claws Mail crashed deleting all 
+		common contacts'
+
 2008-03-27 [wwp]	3.3.1cvs42
 
 	* src/addressbook.c

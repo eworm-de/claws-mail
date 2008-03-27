@@ -1348,6 +1348,11 @@ static void addressbook_edit_clicked(GtkButton *button, gpointer data)
 	addressbook_edit_address_cb(NULL, 0, NULL);
 }
 
+static gboolean find_person(AddrSelectItem *item_a, ItemPerson *person)
+{
+	return ((ItemPerson *)item_a->addressItem == person)?0:-1;
+}
+
 /*
 * Delete one or more objects from address list.
 */
@@ -1405,9 +1410,13 @@ static void addressbook_del_clicked(GtkButton *button, gpointer data)
 	if( abf == NULL ) return;
 
 	gtk_clist_freeze(GTK_CLIST(addrbook.clist));
+	g_signal_handlers_block_by_func
+		(G_OBJECT(addrbook.clist),
+		 G_CALLBACK(addressbook_list_row_unselected), NULL);
 
 	/* Process deletions */
 	if( pobj->type == ADDR_DATASOURCE || pobj->type == ADDR_ITEM_FOLDER ) {
+		GList *groups = NULL, *persons = NULL, *emails = NULL;
 		gboolean group_delete = TRUE;
 		/* Items inside folders */
 		list = addrselect_get_list( _addressSelect_ );
@@ -1428,20 +1437,52 @@ static void addressbook_del_clicked(GtkButton *button, gpointer data)
 					  "The addresses it contains will not be lost."),
 					GTK_STOCK_CANCEL, "+"GTK_STOCK_DELETE, NULL );
 			if( aval != G_ALERTALTERNATE ) {
-				gtk_clist_thaw(GTK_CLIST(addrbook.clist));
-				return;
+				goto thaw_ret;
 			}
 		} else {
 			aval = alertpanel( _("Delete address(es)"),
 					_("Really delete the address(es)?"),
 					GTK_STOCK_CANCEL, "+"GTK_STOCK_DELETE, NULL );
 			if( aval != G_ALERTALTERNATE ) {
-				gtk_clist_thaw(GTK_CLIST(addrbook.clist));
-				return;
+				goto thaw_ret;
 			}
 		}
-
+	
+	/* first, set lists of groups and persons to remove */
 		node = list;
+		while( node ) {
+			item = node->data;
+			node = g_list_next( node );
+			aio = ( AddrItemObject * ) item->addressItem;
+			if (!aio)
+				continue;
+			if( aio->type == ADDR_ITEM_GROUP ) {
+				groups = g_list_prepend(groups, item);
+			}
+			else if( aio->type == ADDR_ITEM_PERSON ) {
+				persons = g_list_prepend(persons, item);
+			}
+		}
+	/* then set list of emails to remove *if* they're not children of
+	 * persons to remove */
+		node = list;
+		while( node ) {
+			item = node->data;
+			node = g_list_next( node );
+			aio = ( AddrItemObject * ) item->addressItem;
+			if (!aio)
+				continue;
+			if( aio->type == ADDR_ITEM_EMAIL ) {
+				ItemEMail *sitem = ( ItemEMail * ) aio;
+				ItemPerson *person = ( ItemPerson * ) ADDRITEM_PARENT(sitem);
+				if (!g_list_find_custom(persons, person, (GCompareFunc)(find_person))) {
+					emails = g_list_prepend(emails, item);
+				}
+				/* else, the email will be removed via the parent person */
+			}
+		}
+	/* then delete groups */
+		node = groups;
 		while( node ) {
 			item = node->data;
 			node = g_list_next( node );
@@ -1451,7 +1492,6 @@ static void addressbook_del_clicked(GtkButton *button, gpointer data)
 			if( aio->type == ADDR_ITEM_GROUP ) {
 				ItemGroup *item = ( ItemGroup * ) aio;
 				GtkCTreeNode *nd = NULL;
-
 				nd = addressbook_find_group_node( addrbook.opened, item );
 				item = addrbook_remove_group( abf, item );
 				if( item ) {
@@ -1461,7 +1501,16 @@ static void addressbook_del_clicked(GtkButton *button, gpointer data)
 				gtk_ctree_remove_node( ctree, nd );
 				refreshList = TRUE;
 			}
-			else if( aio->type == ADDR_ITEM_PERSON ) {
+		}
+	/* then delete persons */
+		node = persons;
+		while( node ) {
+			item = node->data;
+			node = g_list_next( node );
+			aio = ( AddrItemObject * ) item->addressItem;
+			if (!aio)
+				continue;
+			if( aio->type == ADDR_ITEM_PERSON ) {
 				ItemPerson *item = ( ItemPerson * ) aio;
 				item->status = DELETE_ENTRY; 
 				addressbook_folder_remove_one_person( clist, item );
@@ -1483,17 +1532,30 @@ static void addressbook_del_clicked(GtkButton *button, gpointer data)
 					addritem_free_item_person( item );
 				}
 			}
-			else if( aio->type == ADDR_ITEM_EMAIL ) {
-				ItemEMail *item = ( ItemEMail * ) aio;
-				ItemPerson *person = ( ItemPerson * ) ADDRITEM_PARENT(item);
-				item = addrbook_person_remove_email( abf, person, item );
-				if( item ) {
-					addrcache_remove_email(abf->addressCache, item);
-					addritem_free_item_email( item );
+		}
+	/* then delete emails */
+		node = emails;
+		while( node ) {
+			item = node->data;
+			node = g_list_next( node );
+			aio = ( AddrItemObject * ) item->addressItem;
+			if (!aio)
+				continue;
+
+			if( aio->type == ADDR_ITEM_EMAIL ) {
+				ItemEMail *sitem = ( ItemEMail * ) aio;
+				ItemPerson *person = ( ItemPerson * ) ADDRITEM_PARENT(sitem);
+				sitem = addrbook_person_remove_email( abf, person, sitem );
+				if( sitem ) {
+					addrcache_remove_email(abf->addressCache, sitem);
+					addritem_free_item_email( sitem );
 				}
 				addressbook_folder_refresh_one_person( clist, person );
 			}
 		}
+		g_list_free( groups );
+		g_list_free( persons );
+		g_list_free( emails );
 		g_list_free( list );
 		addressbook_list_select_clear();
 		if( refreshList ) {
@@ -1506,8 +1568,7 @@ static void addressbook_del_clicked(GtkButton *button, gpointer data)
 		addrbook_set_dirty(abf, TRUE);
 		addressbook_export_to_file();
 		addressbook_list_menu_setup();
-		gtk_clist_thaw(GTK_CLIST(addrbook.clist));
-		return;
+		goto thaw_ret;
 	}
 	else if( pobj->type == ADDR_ITEM_GROUP ) {
 		/* Items inside groups */
@@ -1537,14 +1598,16 @@ static void addressbook_del_clicked(GtkButton *button, gpointer data)
 		addrbook_set_dirty(abf, TRUE);
 		addressbook_export_to_file();
 		addressbook_list_menu_setup();
-		gtk_clist_thaw(GTK_CLIST(addrbook.clist));
-		return;
+		goto thaw_ret;
 	}
 
 	gtk_ctree_node_set_row_data( clist, nodeList, NULL );
 	gtk_ctree_remove_node( clist, nodeList );
-
+thaw_ret:
 	gtk_clist_thaw(GTK_CLIST(addrbook.clist));
+	g_signal_handlers_unblock_by_func
+		(G_OBJECT(addrbook.clist),
+		 G_CALLBACK(addressbook_list_row_unselected), NULL);
 }
 
 static void addressbook_reg_clicked(GtkButton *button, gpointer data)
