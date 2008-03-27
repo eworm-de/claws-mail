@@ -1,3 +1,8 @@
+2008-03-27 [wwp]	3.3.1cvs41
+
+	* src/addressbook.c
+		Prevent list flickering when deleting addresses.
+
 2008-03-26 [colin]	3.3.1cvs40
 
 	* src/imap.c

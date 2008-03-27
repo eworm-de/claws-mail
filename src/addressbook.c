@@ -1404,6 +1404,7 @@ static void addressbook_del_clicked(GtkButton *button, gpointer data)
 	abf = ds->rawDataSource;
 	if( abf == NULL ) return;
 
+	gtk_clist_freeze(GTK_CLIST(addrbook.clist));
 
 	/* Process deletions */
 	if( pobj->type == ADDR_DATASOURCE || pobj->type == ADDR_ITEM_FOLDER ) {
@@ -1426,12 +1427,18 @@ static void addressbook_del_clicked(GtkButton *button, gpointer data)
 					_("Really delete the group(s)?\n"
 					  "The addresses it contains will not be lost."),
 					GTK_STOCK_CANCEL, "+"GTK_STOCK_DELETE, NULL );
-			if( aval != G_ALERTALTERNATE ) return;
+			if( aval != G_ALERTALTERNATE ) {
+				gtk_clist_thaw(GTK_CLIST(addrbook.clist));
+				return;
+			}
 		} else {
 			aval = alertpanel( _("Delete address(es)"),
 					_("Really delete the address(es)?"),
 					GTK_STOCK_CANCEL, "+"GTK_STOCK_DELETE, NULL );
-			if( aval != G_ALERTALTERNATE ) return;
+			if( aval != G_ALERTALTERNATE ) {
+				gtk_clist_freeze(GTK_CLIST(addrbook.clist));
+				return;
+			}
 		}
 
 		node = list;
@@ -1499,6 +1506,7 @@ static void addressbook_del_clicked(GtkButton *button, gpointer data)
 		addrbook_set_dirty(abf, TRUE);
 		addressbook_export_to_file();
 		addressbook_list_menu_setup();
+		gtk_clist_thaw(GTK_CLIST(addrbook.clist));
 		return;
 	}
 	else if( pobj->type == ADDR_ITEM_GROUP ) {
@@ -1529,12 +1537,14 @@ static void addressbook_del_clicked(GtkButton *button, gpointer data)
 		addrbook_set_dirty(abf, TRUE);
 		addressbook_export_to_file();
 		addressbook_list_menu_setup();
+		gtk_clist_thaw(GTK_CLIST(addrbook.clist));
 		return;
 	}
 
 	gtk_ctree_node_set_row_data( clist, nodeList, NULL );
 	gtk_ctree_remove_node( clist, nodeList );
 
+	gtk_clist_freeze(GTK_CLIST(addrbook.clist));
 }
 
 static void addressbook_reg_clicked(GtkButton *button, gpointer data)
@@ -3335,9 +3345,7 @@ static void addressbook_edit_address( gpointer data, guint action, GtkWidget *wi
 static void addressbook_delete_address_cb(gpointer data, guint action,
 					  GtkWidget *widget)
 {
-	gtk_clist_freeze(GTK_CLIST(addrbook.clist));
 	addressbook_del_clicked(NULL, NULL);
-	gtk_clist_thaw(GTK_CLIST(addrbook.clist));
 }
 
 static void close_cb(gpointer data, guint action, GtkWidget *widget)
