@@ -3276,3 +3276,4 @@
 ( cvs diff -u -r 1.96.2.198 -r 1.96.2.199 src/textview.c;  ) > 3.3.1cvs39.patchset
 ( cvs diff -u -r 1.179.2.214 -r 1.179.2.215 src/imap.c;  ) > 3.3.1cvs40.patchset
 ( cvs diff -u -r 1.60.2.111 -r 1.60.2.112 src/addressbook.c;  ) > 3.3.1cvs41.patchset
+( cvs diff -u -r 1.60.2.112 -r 1.60.2.113 src/addressbook.c;  ) > 3.3.1cvs42.patchset

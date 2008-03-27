@@ -1436,7 +1436,7 @@ static void addressbook_del_clicked(GtkButton *button, gpointer data)
 					_("Really delete the address(es)?"),
 					GTK_STOCK_CANCEL, "+"GTK_STOCK_DELETE, NULL );
 			if( aval != G_ALERTALTERNATE ) {
-				gtk_clist_freeze(GTK_CLIST(addrbook.clist));
+				gtk_clist_thaw(GTK_CLIST(addrbook.clist));
 				return;
 			}
 		}
@@ -1544,7 +1544,7 @@ static void addressbook_del_clicked(GtkButton *button, gpointer data)
 	gtk_ctree_node_set_row_data( clist, nodeList, NULL );
 	gtk_ctree_remove_node( clist, nodeList );
 
-	gtk_clist_freeze(GTK_CLIST(addrbook.clist));
+	gtk_clist_thaw(GTK_CLIST(addrbook.clist));
 }
 
 static void addressbook_reg_clicked(GtkButton *button, gpointer data)
