@@ -58,6 +58,34 @@ typedef struct _QuotePage
 	GtkWidget *btn_quotedesc;
 } QuotePage;
 
+QuotePage *prefs_quote;
+
+static void prefs_quote_set_default_new_msg_fmt(void)
+{
+	g_return_if_fail(prefs_quote->text_format != NULL);
+
+	pref_set_textview_from_pref(GTK_TEXT_VIEW(prefs_quote->text_format),
+		_("Hello,\\n"));
+}
+
+static void prefs_quote_set_default_reply_fmt(void)
+{
+	g_return_if_fail(prefs_quote->text_quotefmt != NULL);
+
+	pref_set_textview_from_pref(GTK_TEXT_VIEW(prefs_quote->text_quotefmt),
+		_("On %d\\n%f wrote:\\n\\n%q"));
+}
+
+static void prefs_quote_set_default_forward_fmt(void)
+{
+	g_return_if_fail(prefs_quote->text_fw_quotefmt != NULL);
+
+	pref_set_textview_from_pref(GTK_TEXT_VIEW(prefs_quote->text_fw_quotefmt),
+		_("\\n\\nBegin forwarded message:\\n\\n"
+		"?d{Date: %d\\n}?f{From: %f\\n}?t{To: %t\\n}?c{Cc: %c\\n}"
+		"?n{Newsgroups: %n\\n}?s{Subject: %s\\n}\\n\\n%M"));
+}
+
 static void prefs_quote_create_widget(PrefsPage *_page, GtkWindow *window, 
 			       	  gpointer data)
 {
@@ -87,7 +115,7 @@ static void prefs_quote_create_widget(PrefsPage *_page, GtkWindow *window,
 				NULL,
 				&prefs_quote->entry_subject,
 				&prefs_quote->text_format,
-				FALSE);
+				FALSE, prefs_quote_set_default_new_msg_fmt);
 	gtk_notebook_append_page(GTK_NOTEBOOK(notebook), vbox2, gtk_label_new(_("Compose")));
 
 	/* reply */
@@ -102,7 +130,7 @@ static void prefs_quote_create_widget(PrefsPage *_page, GtkWindow *window,
 				NULL,
 				&prefs_quote->entry_quotemark,
 				&prefs_quote->text_quotefmt,
-				FALSE);
+				FALSE, prefs_quote_set_default_reply_fmt);
 	gtk_notebook_append_page(GTK_NOTEBOOK(notebook), vbox2, gtk_label_new(_("Reply")));
 
 	/* forward */
@@ -117,27 +145,37 @@ static void prefs_quote_create_widget(PrefsPage *_page, GtkWindow *window,
 				NULL,
 				&prefs_quote->entry_fw_quotemark,
 				&prefs_quote->text_fw_quotefmt,
-				FALSE);
+				FALSE, prefs_quote_set_default_forward_fmt);
 	gtk_notebook_append_page(GTK_NOTEBOOK(notebook), vbox2, gtk_label_new(_("Forward")));
 
 	/* info button */
-
 	quotefmt_add_info_button(window, vbox);
-
-	gtk_entry_set_text(GTK_ENTRY(prefs_quote->entry_quotemark), 
-			prefs_common.quotemark?prefs_common.quotemark:"");
-	pref_set_textview_from_pref(GTK_TEXT_VIEW(prefs_quote->text_quotefmt),
-			prefs_common.quotefmt);
-
-	pref_set_textview_from_pref(GTK_TEXT_VIEW(prefs_quote->text_fw_quotefmt),
-			prefs_common.fw_quotefmt);
-	gtk_entry_set_text(GTK_ENTRY(prefs_quote->entry_fw_quotemark), 
-			prefs_common.fw_quotemark?prefs_common.fw_quotemark:"");
 
 	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(prefs_quote->checkbtn_compose_with_format),
 			prefs_common.compose_with_format);
-	pref_set_entry_from_pref(GTK_ENTRY(prefs_quote->entry_subject), prefs_common.compose_subject_format);
-	pref_set_textview_from_pref(GTK_TEXT_VIEW(prefs_quote->text_format), prefs_common.compose_body_format);
+	pref_set_entry_from_pref(GTK_ENTRY(prefs_quote->entry_subject),
+			prefs_common.compose_subject_format);
+	if (prefs_common.compose_body_format)
+		pref_set_textview_from_pref(GTK_TEXT_VIEW(prefs_quote->text_format),
+				prefs_common.compose_body_format);
+	else
+		prefs_quote_set_default_new_msg_fmt();
+
+	gtk_entry_set_text(GTK_ENTRY(prefs_quote->entry_quotemark), 
+			prefs_common.quotemark?prefs_common.quotemark:"");
+	if (prefs_common.quotefmt)
+		pref_set_textview_from_pref(GTK_TEXT_VIEW(prefs_quote->text_quotefmt),
+				prefs_common.quotefmt);
+	else
+		prefs_quote_set_default_reply_fmt();
+
+	gtk_entry_set_text(GTK_ENTRY(prefs_quote->entry_fw_quotemark), 
+			prefs_common.fw_quotemark?prefs_common.fw_quotemark:"");
+	if (prefs_common.fw_quotefmt)
+		pref_set_textview_from_pref(GTK_TEXT_VIEW(prefs_quote->text_fw_quotefmt),
+				prefs_common.fw_quotefmt);
+	else
+		prefs_quote_set_default_forward_fmt();
 
 	prefs_quote->window		= GTK_WIDGET(window);
 	prefs_quote->page.widget = vbox;
@@ -193,8 +231,6 @@ static void prefs_quote_save(PrefsPage *_page)
 static void prefs_quote_destroy_widget(PrefsPage *_page)
 {
 }
-
-QuotePage *prefs_quote;
 
 void prefs_quote_init(void)
 {

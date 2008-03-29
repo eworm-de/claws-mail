@@ -1180,7 +1180,7 @@ static void prefs_folder_item_templates_create_widget_func(PrefsPage * page_,
 				&page->compose_override_from_format,
 				&page->compose_subject_format,
 				&page->compose_body_format,
-				FALSE);
+				FALSE, FALSE);
 	address_completion_register_entry(GTK_ENTRY(page->compose_override_from_format),
 			TRUE);
 
@@ -1201,7 +1201,7 @@ static void prefs_folder_item_templates_create_widget_func(PrefsPage * page_,
 				&page->reply_override_from_format,
 				&page->reply_quotemark,
 				&page->reply_body_format,
-				FALSE);
+				FALSE, FALSE);
 	address_completion_register_entry(GTK_ENTRY(page->reply_override_from_format),
 			TRUE);
 
@@ -1222,7 +1222,7 @@ static void prefs_folder_item_templates_create_widget_func(PrefsPage * page_,
 				&page->forward_override_from_format,
 				&page->forward_quotemark,
 				&page->forward_body_format,
-				FALSE);
+				FALSE, FALSE);
 	address_completion_register_entry(GTK_ENTRY(page->forward_override_from_format),
 			TRUE);
 

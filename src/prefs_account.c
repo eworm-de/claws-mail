@@ -2050,7 +2050,7 @@ static void templates_create_widget_func(PrefsPage * _page,
 				NULL,
 				&page->compose_subject_format,
 				&page->compose_body_format,
-				FALSE);
+				FALSE, NULL);
 	gtk_notebook_append_page(GTK_NOTEBOOK(notebook), vbox2, gtk_label_new(_("Compose")));
 
 	/* reply format */	
@@ -2065,7 +2065,7 @@ static void templates_create_widget_func(PrefsPage * _page,
 				NULL,
 				&page->reply_quotemark,
 				&page->reply_body_format,
-				FALSE);
+				FALSE, NULL);
 	gtk_notebook_append_page(GTK_NOTEBOOK(notebook), vbox2, gtk_label_new(_("Reply")));
 
 	/* forward format */	
@@ -2080,7 +2080,7 @@ static void templates_create_widget_func(PrefsPage * _page,
 				NULL,
 				&page->forward_quotemark,
 				&page->forward_body_format,
-				FALSE);
+				FALSE, NULL);
 	gtk_notebook_append_page(GTK_NOTEBOOK(notebook), vbox2, gtk_label_new(_("Forward")));
 
 	quotefmt_add_info_button(window, vbox);

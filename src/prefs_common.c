@@ -226,7 +226,7 @@ static PrefParam param[] = {
 	 NULL, NULL, NULL},
 	{"compose_subject_format", "",
 	 &prefs_common.compose_subject_format, P_STRING, NULL, NULL, NULL},
-	{"compose_body_format", N_("Hello,\\n"),
+	{"compose_body_format", NULL,
 	 &prefs_common.compose_body_format, P_STRING, NULL, NULL, NULL},
 
 	{"linewrap_length", "72", &prefs_common.linewrap_len, P_INT,
@@ -293,16 +293,13 @@ static PrefParam param[] = {
 	/* Quote */
 	{"reply_quote_mark", "> ", &prefs_common.quotemark, P_STRING,
 	 NULL, NULL, NULL},
-	{"reply_quote_format", N_("On %d\\n%f wrote:\\n\\n%q"),
+	{"reply_quote_format", NULL,
 	 &prefs_common.quotefmt, P_STRING, NULL, NULL, NULL},
 
 	{"forward_quote_mark", "> ", &prefs_common.fw_quotemark, P_STRING,
 	 NULL, NULL, NULL},
-	{"forward_quote_format",
-	 N_("\\n\\nBegin forwarded message:\\n\\n"
-	 "?d{Date: %d\\n}?f{From: %f\\n}?t{To: %t\\n}?c{Cc: %c\\n}"
-	 "?n{Newsgroups: %n\\n}?s{Subject: %s\\n}\\n\\n%M"),
-	 &prefs_common.fw_quotefmt, P_STRING, NULL, NULL, NULL},
+	{"forward_quote_format", NULL, &prefs_common.fw_quotefmt, P_STRING,
+	 NULL, NULL, NULL},
 	{"quote_chars", ">", &prefs_common.quote_chars, P_STRING,
 	 NULL, NULL, NULL},
 
@@ -1172,21 +1169,9 @@ void prefs_common_read_config(void)
 
 	g_free(rcpath);
 
-	tmp = g_strdup(gettext(prefs_common.quotefmt));
-	g_free(prefs_common.quotefmt);
-	prefs_common.quotefmt = tmp;
-
-	tmp = g_strdup(gettext(prefs_common.fw_quotefmt));
-	g_free(prefs_common.fw_quotefmt);
-	prefs_common.fw_quotefmt = tmp;
-	
 	tmp = g_strdup(gettext(prefs_common.date_format));
 	g_free(prefs_common.date_format);
 	prefs_common.date_format = tmp;
-
-	tmp = g_strdup(gettext(prefs_common.compose_body_format));
-	g_free(prefs_common.compose_body_format);
-	prefs_common.compose_body_format = tmp;
 
 	prefs_common.mime_open_cmd_history =
 		prefs_common_read_history(COMMAND_HISTORY);

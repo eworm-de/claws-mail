@@ -1,3 +1,16 @@
+2008-03-29 [wwp]	3.3.1cvs45
+
+	* src/prefs_account.c
+	* src/prefs_common.c
+	* src/prefs_folder_item.c
+	* src/prefs_quote.c
+	* src/quote_fmt.c
+	* src/quote_fmt.h
+		Fix compose template formats (in global preferences)
+		being translated under specific conditions.
+		Add a button to restore factory defaults for current
+		language.
+
 2008-03-27 [colin]	3.3.1cvs44
 
 	* src/common/prefs.c
