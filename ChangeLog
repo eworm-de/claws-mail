@@ -1,3 +1,10 @@
+2008-03-31 [colin]	3.3.1cvs47
+
+	* src/folder.c
+		Fix bug 1553, 'File lock not respected'
+		Regression due to the implementation of
+		deletion batching
+
 2008-03-31 [colin]	3.3.1cvs46
 
 	* src/mainwindow.c
