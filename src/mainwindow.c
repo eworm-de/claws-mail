@@ -2114,9 +2114,10 @@ static gboolean main_window_reflect_tags_changes_real(gpointer data)
 	GList *cur;
 	MainWindow *mainwin = (MainWindow *)data;
 
-	if (summary_is_locked(mainwin->summaryview))
+	if (summary_is_locked(mainwin->summaryview)) {
+		tags_tag = 0;
 		return TRUE;
-
+	}
 	/* re-create tags submenu */
 	menu = GTK_MENU_SHELL(mainwin->tags_menu);
 	g_return_val_if_fail(menu != NULL, FALSE);
@@ -2128,6 +2129,7 @@ static gboolean main_window_reflect_tags_changes_real(gpointer data)
 	mainwindow_tags_menu_create(mainwin, TRUE);
 	summary_reflect_tags_changes(mainwin->summaryview);
 	
+	tags_tag = 0;
 	return FALSE;
 }
 

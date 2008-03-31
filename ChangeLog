@@ -1,3 +1,8 @@
+2008-03-31 [colin]	3.3.1cvs46
+
+	* src/mainwindow.c
+		Fix tags menu update, thanks to Paul
+
 2008-03-29 [wwp]	3.3.1cvs45
 
 	* src/prefs_account.c
