@@ -552,6 +552,14 @@ static void subscribed_cb(FolderView *folderview, guint action,
 	if (item->folder->account->imap_subsonly == GTK_CHECK_MENU_ITEM(widget)->active)
 		return;
 
+	if (folderview->opened == folderview->selected ||
+	    gtk_ctree_is_ancestor(ctree,
+				  folderview->selected,
+				  folderview->opened)) {
+		summary_clear_all(folderview->summaryview);
+		folderview->opened = NULL;
+	}
+
 	item->folder->account->imap_subsonly = GTK_CHECK_MENU_ITEM(widget)->active;
 	folderview_fast_rescan_tree(item->folder);
 }

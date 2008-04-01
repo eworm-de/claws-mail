@@ -1,3 +1,9 @@
+2008-04-01 [colin]	3.3.1cvs48
+
+	* src/imap_gtk.c
+		Fix bug 1561, 'Crashes leaving unsubscribed folder after 
+		ticking "Show only subscribed"'
+
 2008-03-31 [colin]	3.3.1cvs47
 
 	* src/folder.c
