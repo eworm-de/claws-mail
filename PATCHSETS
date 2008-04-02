@@ -3283,3 +3283,4 @@
 ( cvs diff -u -r 1.274.2.238 -r 1.274.2.239 src/mainwindow.c;  ) > 3.3.1cvs46.patchset
 ( cvs diff -u -r 1.213.2.179 -r 1.213.2.180 src/folder.c;  ) > 3.3.1cvs47.patchset
 ( cvs diff -u -r 1.1.2.55 -r 1.1.2.56 src/imap_gtk.c;  ) > 3.3.1cvs48.patchset
+( cvs diff -u -r 1.115.2.191 -r 1.115.2.192 src/main.c;  ) > 3.3.1cvs49.patchset
