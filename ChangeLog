@@ -1,3 +1,10 @@
+2008-04-02 [colin]	3.3.1cvs50
+
+	* src/main.c
+		Revert part of the previous patch: we do
+		want to parse ~/.claws-mail/gtkrc-2.0 if it
+		exists
+
 2008-04-02 [colin]	3.3.1cvs49
 
 	* src/main.c

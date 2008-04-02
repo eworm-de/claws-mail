@@ -26,6 +26,7 @@
 #include <glib.h>
 #include <glib/gi18n.h>
 #include <gtk/gtkmain.h>
+#include <gtk/gtkrc.h>
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -1117,6 +1118,10 @@ int main(int argc, char *argv[])
 
 	if (!cmd.exit)
 		plugin_load_all("Common");
+
+	userrc = g_strconcat(get_rc_dir(), G_DIR_SEPARATOR_S, "gtkrc-2.0", NULL);
+	gtk_rc_parse(userrc);
+	g_free(userrc);
 
 	userrc = g_strconcat(get_rc_dir(), G_DIR_SEPARATOR_S, MENU_RC, NULL);
 	gtk_accel_map_load (userrc);
