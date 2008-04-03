@@ -1,3 +1,8 @@
+2008-04-03 [iwkse]	3.3.1cvs51
+
+	* src/prefs_filtering.c
+		Add search in filtering rules list
+
 2008-04-02 [colin]	3.3.1cvs50
 
 	* src/main.c

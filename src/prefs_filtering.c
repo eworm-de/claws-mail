@@ -97,6 +97,7 @@ static void prefs_filtering_set_dialog	(const gchar *header,
 static void prefs_filtering_set_list	(void);
 
 /* callback functions */
+static gboolean prefs_filtering_search_func_cb (GtkTreeModel *model, gint column, const gchar *key, GtkTreeIter *iter, gpointer search_data);
 static void prefs_filtering_register_cb	(void);
 static void prefs_filtering_substitute_cb	(void);
 static void prefs_filtering_delete_cb	(void);
@@ -962,6 +963,26 @@ static void prefs_filtering_reset_dialog(void)
 	combobox_select_by_data(GTK_COMBO_BOX(filtering.account_combobox), 0);
 	gtk_entry_set_text(GTK_ENTRY(filtering.cond_entry), "");
 	gtk_entry_set_text(GTK_ENTRY(filtering.action_entry), "");
+}
+
+static gboolean prefs_filtering_search_func_cb (GtkTreeModel *model, gint column, 
+												const gchar *key, GtkTreeIter *iter, 
+												gpointer search_data) {
+	gchar *store_string;
+	gint key_len;
+	gboolean retval;
+
+	gtk_tree_model_get (model, iter, column, &store_string, -1);
+
+	if (!store_string) return FALSE;
+
+	key_len = strlen (key);
+
+	retval = (strncmp (key, store_string, key_len) != 0);
+
+	g_free(store_string);
+
+	return retval;
 }
 
 static void prefs_filtering_set_list(void)
@@ -1905,6 +1926,10 @@ static void prefs_filtering_create_list_view_columns(GtkWidget *list_view)
 		 renderer,
 		 "text", PREFS_FILTERING_RULE,
 		 NULL);
+
+	gtk_tree_view_set_search_column(GTK_TREE_VIEW(list_view), 1);
+	gtk_tree_view_set_search_equal_func(GTK_TREE_VIEW(list_view), prefs_filtering_search_func_cb , NULL, NULL);
+	
 	gtk_tree_view_append_column(GTK_TREE_VIEW(list_view), column);		
 }
 
