@@ -368,7 +368,7 @@ void undo_undo(UndoMain *undostruct)
 	gtk_adjustment_set_value
 		(GTK_ADJUSTMENT(textview->vadjustment),
 		 undoinfo->window_position);
-
+	
 	switch (undoinfo->action) {
 	case UNDO_ACTION_DELETE:
 		gtk_text_buffer_get_iter_at_offset(buffer, &iter, undoinfo->start_pos);
@@ -384,21 +384,22 @@ void undo_undo(UndoMain *undostruct)
 		gtk_text_buffer_get_iter_at_offset(buffer, &end_iter, undoinfo->end_pos);
 		gtk_text_buffer_delete(buffer, &start_iter, &end_iter);
 		/* "pull" another data structure from the list */
-		undoinfo = (UndoInfo *)undostruct->undo->data;
-		g_return_if_fail(undoinfo != NULL);
-		undostruct->redo = g_list_prepend(undostruct->redo, undoinfo);
-		undostruct->undo = g_list_remove(undostruct->undo, undoinfo);
-		g_return_if_fail(undoinfo->action == UNDO_ACTION_REPLACE_DELETE);
-		gtk_text_buffer_insert(buffer, &start_iter, undoinfo->text, -1);
+		if (undostruct->undo){
+			undoinfo = (UndoInfo *)undostruct->undo->data;
+			g_return_if_fail(undoinfo != NULL);
+			g_return_if_fail(undoinfo->action == UNDO_ACTION_REPLACE_DELETE);
+			gtk_text_buffer_insert(buffer, &start_iter, undoinfo->text, -1);
+		}
 		break;
 	case UNDO_ACTION_REPLACE_DELETE:
-		g_warning("This should not happen. UNDO_REPLACE_DELETE");
+		gtk_text_buffer_get_iter_at_offset(buffer, &iter, undoinfo->start_pos);
+		gtk_text_buffer_insert(buffer, &iter, undoinfo->text, -1);
 		break;
 	default:
 		g_assert_not_reached();
 		break;
 	}
-
+	
 	undostruct->change_state_func(undostruct,
 				      UNDO_STATE_UNCHANGED, UNDO_STATE_TRUE,
 				      undostruct->change_state_data);
@@ -474,7 +475,8 @@ void undo_redo(UndoMain *undostruct)
 		gtk_text_buffer_insert(buffer, &start_iter, redoinfo->text, -1);
 		break;
 	case UNDO_ACTION_REPLACE_INSERT:
-		g_warning("This should not happen. Redo: UNDO_REPLACE_INSERT");
+		gtk_text_buffer_get_iter_at_offset(buffer, &iter, redoinfo->start_pos);
+		gtk_text_buffer_insert(buffer, &iter, redoinfo->text, -1);
 		break;
 	default:
 		g_assert_not_reached();

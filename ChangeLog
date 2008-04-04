@@ -1,3 +1,10 @@
+2008-04-04 [iwkse]	3.3.1cvs53
+
+	* src/undo.c
+		Fix a segfault but breaks undo
+		on a specific case (eg. double paste with
+		middle-mouse button)
+
 2008-04-04 [iwkse]	3.3.1cvs52
 
 	* src/prefs_filtering.c
