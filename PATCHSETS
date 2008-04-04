@@ -3288,3 +3288,4 @@
 ( cvs diff -u -r 1.59.2.65 -r 1.59.2.66 src/prefs_filtering.c;  ) > 3.3.1cvs51.patchset
 ( cvs diff -u -r 1.59.2.66 -r 1.59.2.67 src/prefs_filtering.c;  ) > 3.3.1cvs52.patchset
 ( cvs diff -u -r 1.13.2.14 -r 1.13.2.15 src/undo.c;  ) > 3.3.1cvs53.patchset
+( cvs diff -u -r 1.13.2.15 -r 1.13.2.16 src/undo.c;  ) > 3.3.1cvs54.patchset

@@ -1,3 +1,8 @@
+2008-04-04 [iwkse]	3.3.1cvs54
+
+	* src/undo.c
+		undo should works properly again
+
 2008-04-04 [iwkse]	3.3.1cvs53
 
 	* src/undo.c
