@@ -97,7 +97,9 @@ static void prefs_filtering_set_dialog	(const gchar *header,
 static void prefs_filtering_set_list	(void);
 
 /* callback functions */
-static gboolean prefs_filtering_search_func_cb (GtkTreeModel *model, gint column, const gchar *key, GtkTreeIter *iter, gpointer search_data);
+static gboolean prefs_filtering_search_func_cb (GtkTreeModel *model, gint column, 
+						const gchar *key, GtkTreeIter *iter, 
+						gpointer search_data);
 static void prefs_filtering_register_cb	(void);
 static void prefs_filtering_substitute_cb	(void);
 static void prefs_filtering_delete_cb	(void);
@@ -965,9 +967,9 @@ static void prefs_filtering_reset_dialog(void)
 	gtk_entry_set_text(GTK_ENTRY(filtering.action_entry), "");
 }
 
-static gboolean prefs_filtering_search_func_cb (GtkTreeModel *model, gint column, 
-												const gchar *key, GtkTreeIter *iter, 
-												gpointer search_data) {
+static gboolean prefs_filtering_search_func_cb (GtkTreeModel *model, gint column, const gchar *key, 
+						GtkTreeIter *iter, gpointer search_data) 
+{
 	gchar *store_string;
 	gint key_len;
 	gboolean retval;
