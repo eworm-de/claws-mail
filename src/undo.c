@@ -386,8 +386,8 @@ void undo_undo(UndoMain *undostruct)
 		/* "pull" another data structure from the list */
 		if (undostruct->undo){
 			undoinfo = (UndoInfo *)undostruct->undo->data;
-			undostruct->undo = g_list_prepend(undostruct->undo, undoinfo);
-			undostruct->redo = g_list_remove(undostruct->redo, undoinfo);
+			undostruct->redo = g_list_prepend(undostruct->redo, undoinfo);
+			undostruct->undo = g_list_remove(undostruct->undo, undoinfo);
 			g_return_if_fail(undoinfo != NULL);
 			g_return_if_fail(undoinfo->action == UNDO_ACTION_REPLACE_DELETE);
 			gtk_text_buffer_insert(buffer, &start_iter, undoinfo->text, -1);
