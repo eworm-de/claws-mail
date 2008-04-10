@@ -1,3 +1,8 @@
+2008-04-10 [paul]	3.3.1cvs56
+
+	* src/prefs_receive.c
+		add an accurate description
+
 2008-04-08 [colin]	3.3.1cvs55
 
 	* src/undo.c

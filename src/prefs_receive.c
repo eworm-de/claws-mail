@@ -208,7 +208,8 @@ static void prefs_receive_create_widget(PrefsPage *_page, GtkWindow *window,
 	PACK_CHECK_BUTTON (vbox2, checkbtn_no_recv_err_panel,
 			   _("Don't popup error dialog on receive error"));
 
- 	vbox2 = gtkut_get_options_frame(vbox1, &frame, _("After receiving new mail"));
+ 	vbox2 = gtkut_get_options_frame(vbox1, &frame, 
+					_("After checking for new mail"));
 
  	PACK_CHECK_BUTTON (vbox2, checkbtn_openinbox, _("Go to Inbox"));
  	PACK_CHECK_BUTTON (vbox2, checkbtn_scan_after_inc,
