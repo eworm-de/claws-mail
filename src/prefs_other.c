@@ -89,7 +89,8 @@ static void prefs_keybind_select(void)
 
 	window = gtkut_window_new(GTK_WINDOW_TOPLEVEL, "prefs_other");
 	gtk_container_set_border_width (GTK_CONTAINER (window), 8);
-	gtk_window_set_title (GTK_WINDOW (window), _("Select key bindings"));
+	gtk_window_set_title (GTK_WINDOW (window), 
+				_("Choose preset keyboard shortcuts"));
 	gtk_window_set_position (GTK_WINDOW (window), GTK_WIN_POS_CENTER);
 	gtk_window_set_modal (GTK_WINDOW (window), TRUE);
 	gtk_window_set_resizable(GTK_WINDOW (window), FALSE);
@@ -535,7 +536,7 @@ static void prefs_other_create_widget(PrefsPage *_page, GtkWindow *window,
 	vbox_keys = gtkut_get_options_frame(vbox1, &frame_keys, _("Keyboard shortcuts"));
 
 	PACK_CHECK_BUTTON(vbox_keys, checkbtn_gtk_can_change_accels,
-			_("Enable customisable menu shortcuts"));
+			_("Enable customisable keyboard shortcuts"));
 	gtk_can_change_accels_tooltip = gtk_tooltips_new();
 	gtk_tooltips_set_tip(GTK_TOOLTIPS(gtk_can_change_accels_tooltip),
 			checkbtn_gtk_can_change_accels,
@@ -543,10 +544,11 @@ static void prefs_other_create_widget(PrefsPage *_page, GtkWindow *window,
 				"most of the menu items by focusing on the menu "
 				"item and pressing a key combination.\n"
 				"Uncheck this option if you want to lock all "
-				"existing menu shortcuts."),
+				"existing keyboard shortcuts."),
 			NULL);
 
-	button_keybind = gtk_button_new_with_label (_(" Set key bindings... "));
+	button_keybind = gtk_button_new_with_label(
+				_(" Choose preset keyboard shortcuts... "));
 	gtk_widget_show (button_keybind);
 	hbox1 = gtk_hbox_new (FALSE, 8);
 	gtk_widget_show (hbox1);
