@@ -4403,7 +4403,6 @@ static /*gint*/ void *imap_get_flags_thread(void *data)
 	gboolean full_search = stuff->full_search;
 	GSList *sorted_list = NULL;
 	GSList *unseen = NULL, *answered = NULL, *flagged = NULL, *deleted = NULL, *forwarded = NULL;
-	GSList *p_unseen, *p_answered, *p_flagged, *p_deleted, *p_forwarded;
 	GSList *seq_list, *cur;
 	gboolean reverse_seen = FALSE;
 	gboolean selected_folder;
@@ -4533,11 +4532,6 @@ static /*gint*/ void *imap_get_flags_thread(void *data)
 				}
 			}
 		}
-		p_unseen = unseen;
-		p_answered = answered;
-		p_forwarded = forwarded;
-		p_flagged = flagged;
-		p_deleted = deleted;
 
 	} else {
 		r = imap_threaded_fetch_uid_flags(folder, 1, &lep_uidtab);
@@ -4574,7 +4568,7 @@ bail:
 			}
 			if (reverse_seen)
 				flags |= MSG_UNREAD | (wasnew ? MSG_NEW : 0);
-			if (gslist_find_next_num(&p_unseen, msginfo->msgnum) == msginfo->msgnum) {
+			if (gslist_find_next_num(&unseen, msginfo->msgnum) == msginfo->msgnum) {
 				if (!reverse_seen) {
 					flags |= MSG_UNREAD | (wasnew ? MSG_NEW : 0);
 				} else {
@@ -4582,21 +4576,21 @@ bail:
 				}
 			}
 
-			if (gslist_find_next_num(&p_flagged, msginfo->msgnum) == msginfo->msgnum)
+			if (gslist_find_next_num(&flagged, msginfo->msgnum) == msginfo->msgnum)
 				flags |= MSG_MARKED;
 			else
 				flags &= ~MSG_MARKED;
 
 			if (fitem->opened || fitem->processing_pending || fitem == folder->inbox) {
-				if (gslist_find_next_num(&p_answered, msginfo->msgnum) == msginfo->msgnum)
+				if (gslist_find_next_num(&answered, msginfo->msgnum) == msginfo->msgnum)
 					flags |= MSG_REPLIED;
 				else
 					flags &= ~MSG_REPLIED;
-				if (gslist_find_next_num(&p_forwarded, msginfo->msgnum) == msginfo->msgnum)
+				if (gslist_find_next_num(&forwarded, msginfo->msgnum) == msginfo->msgnum)
 					flags |= MSG_FORWARDED;
 				else
 					flags &= ~MSG_FORWARDED;
-				if (gslist_find_next_num(&p_deleted, msginfo->msgnum) == msginfo->msgnum)
+				if (gslist_find_next_num(&deleted, msginfo->msgnum) == msginfo->msgnum)
 					flags |= MSG_DELETED;
 				else
 					flags &= ~MSG_DELETED;

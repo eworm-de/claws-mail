@@ -1,3 +1,12 @@
+2008-04-17 [colin]	3.3.1cvs59
+
+	* src/imap.c
+		Fix debian bug 474712, 'claws seg faults when IMAP 
+		connection breaks after an IMAP protocol error 
+		(BAD UID SEARCH Invalid parameter: $Forwarded)]'
+	* src/summaryview.c
+		Fix a little leak
+
 2008-04-17 [colin]	3.3.1cvs58
 
 	* src/common/log.c

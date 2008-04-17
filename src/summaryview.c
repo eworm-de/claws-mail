@@ -2565,6 +2565,7 @@ static void summary_status_show(SummaryView *summaryview)
 
 
 		gtk_label_set_text(GTK_LABEL(summaryview->statlabel_msgs), str);
+		g_free(str);
 #if GTK_CHECK_VERSION(2, 12, 0)
 		tooltip = g_strdup_printf(_("<b>Message summary</b>\n"
 					    "<b>New:</b> %d\n"
@@ -2584,8 +2585,8 @@ static void summary_status_show(SummaryView *summaryview)
 
 		gtk_widget_set_tooltip_markup(GTK_WIDGET(summaryview->statlabel_msgs),
 				            tooltip); 
+		g_free(tooltip);
 #endif
-		g_free(str);
 	} else {
 		gchar *ssize, *tsize;
 		if (n_selected) {
