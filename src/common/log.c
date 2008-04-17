@@ -40,6 +40,16 @@ static FILE *log_fp[LOG_INSTANCE_MAX] = {
 	NULL
 };
 
+static size_t log_size[LOG_INSTANCE_MAX] = {
+	0,
+	0
+};
+
+static gchar *log_filename[LOG_INSTANCE_MAX] = {
+	NULL,
+	NULL
+};
+
 typedef struct _LogInstanceData LogInstanceData;
 
 struct _LogInstanceData {
@@ -70,22 +80,37 @@ static gboolean invoke_hook_cb (gpointer data)
 
 void set_log_file(LogInstance instance, const gchar *filename)
 {
+	gchar *fullname = NULL;
 	if (log_fp[instance])
 		return;
 
+	if (!g_path_is_absolute(filename)) {
+		fullname = g_strconcat(get_rc_dir(), G_DIR_SEPARATOR_S,
+					filename, NULL);
+	} else {
+		fullname = g_strdup(filename);
+	}
 	/* backup old logfile if existing */
-	if (is_file_exist(filename)) {
+	if (is_file_exist(fullname)) {
 		gchar *backupname;
 		
-		backupname = g_strconcat(filename, ".bak", NULL);
-		if (rename(filename, backupname) < 0)
-			FILE_OP_ERROR(filename, "rename");
+		backupname = g_strconcat(fullname, ".bak", NULL);
+		g_unlink(backupname);
+		if (g_rename(fullname, backupname) < 0)
+			FILE_OP_ERROR(fullname, "rename");
 		g_free(backupname);
 	}
 
-	log_fp[instance] = g_fopen(filename, "wb");
-	if (!log_fp[instance])
-		FILE_OP_ERROR(filename, "fopen");
+	log_fp[instance] = g_fopen(fullname, "wb");
+	if (!log_fp[instance]) {
+		FILE_OP_ERROR(fullname, "fopen");
+		log_filename[instance] = NULL;
+		g_free(fullname);
+		return;
+	}
+	log_filename[instance] = g_strdup(fullname);
+	log_size[instance] = 0;
+	g_free(fullname);
 }
 
 void close_log_file(LogInstance instance)
@@ -93,6 +118,20 @@ void close_log_file(LogInstance instance)
 	if (log_fp[instance]) {
 		fclose(log_fp[instance]);
 		log_fp[instance] = NULL;
+		log_size[instance] = 0;
+		g_free(log_filename[instance]);
+		log_filename[instance] = NULL;
+	}
+}
+
+static void rotate_log(LogInstance instance)
+{
+	if (log_size[instance] > 10 * 1024* 1024) {
+		gchar *filename = g_strdup(log_filename[instance]);
+		debug_print("rotating %s\n", filename);
+		close_log_file(instance);
+		set_log_file(instance, filename);
+		g_free(filename);
 	}
 }
 
@@ -151,7 +190,9 @@ void log_print(LogInstance instance, const gchar *format, ...)
 	if (log_fp[instance] && prefs_common_enable_log_standard()) {
 		int r;
 		r = fputs(buf, log_fp[instance]);
+		log_size[instance] += strlen(buf);
 		r = fflush(log_fp[instance]);
+		rotate_log(instance);
 	}
 }
 
@@ -182,8 +223,11 @@ void log_message(LogInstance instance, const gchar *format, ...)
 		int r;
 		r = fwrite(buf, 1, LOG_TIME_LEN, log_fp[instance]);
 		r = fputs("* message: ", log_fp[instance]);
+		log_size[instance] += strlen("* message: ");
 		r = fputs(buf + LOG_TIME_LEN, log_fp[instance]);
+		log_size[instance] += strlen(buf);
 		r = fflush(log_fp[instance]);
+		rotate_log(instance);
 	}
 }
 
@@ -214,8 +258,11 @@ void log_warning(LogInstance instance, const gchar *format, ...)
 		int r;
 		r = fwrite(buf, 1, LOG_TIME_LEN, log_fp[instance]);
 		r = fputs("** warning: ", log_fp[instance]);
+		log_size[instance] += strlen("** warning: ");
 		r = fputs(buf + LOG_TIME_LEN, log_fp[instance]);
+		log_size[instance] += strlen(buf);
 		r = fflush(log_fp[instance]);
+		rotate_log(instance);
 	}
 }
 
@@ -246,8 +293,11 @@ void log_error(LogInstance instance, const gchar *format, ...)
 		int r;
 		r = fwrite(buf, 1, LOG_TIME_LEN, log_fp[instance]);
 		r = fputs("*** error: ", log_fp[instance]);
+		log_size[instance] += strlen("*** error: ");
 		r = fputs(buf + LOG_TIME_LEN, log_fp[instance]);
+		log_size[instance] += strlen(buf);
 		r = fflush(log_fp[instance]);
+		rotate_log(instance);
 	}
 }
 
@@ -278,8 +328,11 @@ void log_status_ok(LogInstance instance, const gchar *format, ...)
 		int r;
 		r = fwrite(buf, 1, LOG_TIME_LEN, log_fp[instance]);
 		r = fputs("* OK: ", log_fp[instance]);
+		log_size[instance] += strlen("* OK: ");
 		r = fputs(buf + LOG_TIME_LEN, log_fp[instance]);
+		log_size[instance] += strlen(buf);
 		r = fflush(log_fp[instance]);
+		rotate_log(instance);
 	}
 }
 
@@ -310,8 +363,11 @@ void log_status_nok(LogInstance instance, const gchar *format, ...)
 		int r;
 		r = fwrite(buf, 1, LOG_TIME_LEN, log_fp[instance]);
 		r = fputs("* NOT OK: ", log_fp[instance]);
+		log_size[instance] += strlen("* NOT OK: ");
 		r = fputs(buf + LOG_TIME_LEN, log_fp[instance]);
+		log_size[instance] += strlen(buf);
 		r = fflush(log_fp[instance]);
+		rotate_log(instance);
 	}
 }
 
@@ -342,7 +398,10 @@ void log_status_skip(LogInstance instance, const gchar *format, ...)
 		int r;
 		r = fwrite(buf, 1, LOG_TIME_LEN, log_fp[instance]);
 		r = fputs("* SKIPPED: ", log_fp[instance]);
+		log_size[instance] += strlen("* SKIPPED: ");
 		r = fputs(buf + LOG_TIME_LEN, log_fp[instance]);
+		log_size[instance] += strlen(buf);
 		r = fflush(log_fp[instance]);
+		rotate_log(instance);
 	}
 }

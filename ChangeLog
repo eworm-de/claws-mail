@@ -1,3 +1,9 @@
+2008-04-17 [colin]	3.3.1cvs58
+
+	* src/common/log.c
+		Fix log size getting out of control (claws-mail
+		getting SIGXFSZ): rotate if every 10MB
+
 2008-04-10 [paul]	3.3.1cvs57
 
 	* src/prefs_other.c
