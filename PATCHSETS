@@ -3294,3 +3294,4 @@
 ( cvs diff -u -r 1.1.2.27 -r 1.1.2.28 src/prefs_other.c;  ) > 3.3.1cvs57.patchset
 ( cvs diff -u -r 1.6.2.18 -r 1.6.2.19 src/common/log.c;  ) > 3.3.1cvs58.patchset
 ( cvs diff -u -r 1.179.2.215 -r 1.179.2.216 src/imap.c;  cvs diff -u -r 1.395.2.363 -r 1.395.2.364 src/summaryview.c;  ) > 3.3.1cvs59.patchset
+( cvs diff -u -r 1.42.2.36 -r 1.42.2.37 po/fr.po;  ) > 3.3.1cvs60.patchset

@@ -1,3 +1,8 @@
+2008-04-18 [colin]	3.3.1cvs60
+
+	* po/fr.po
+		Update translation (Fabien Vantard)
+
 2008-04-17 [colin]	3.3.1cvs59
 
 	* src/imap.c
