@@ -197,7 +197,7 @@ if (!(func)) \
 { \
 	g_warning("Failed to write template to file\n"); \
 	if (fp) fclose(fp); \
-	if (new) g_unlink(new); \
+	if (new) claws_unlink(new); \
 	g_free(new); \
 	g_free(filename); \
 	return; \
@@ -267,7 +267,7 @@ static void template_write_config(GSList *tmpl_list)
 		TRY(fclose(fp) != EOF);
 
 		if (new) {
-			g_unlink(filename);
+			claws_unlink(filename);
 			rename_force(new, filename);
 		}
 		g_free(new);
@@ -280,7 +280,7 @@ static void template_write_config(GSList *tmpl_list)
 				       itos(tmpl_num), NULL);
 		if (is_file_exist(filename)) {
 			debug_print("removing old template %d\n", tmpl_num);
-			g_unlink(filename);
+			claws_unlink(filename);
 			g_free(filename);
 		} else {
 			g_free(filename);

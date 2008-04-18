@@ -1187,7 +1187,7 @@ gint msgcache_write(const gchar *cache_file, const gchar *mark_file, const gchar
 	if (w_err != 0) {
 		g_warning("failed to write charset\n");
 		fclose(write_fps.cache_fp);
-		g_unlink(new_cache);
+		claws_unlink(new_cache);
 		g_free(new_cache);
 		g_free(new_mark);
 		g_free(new_tags);
@@ -1198,7 +1198,7 @@ gint msgcache_write(const gchar *cache_file, const gchar *mark_file, const gchar
 		DATA_WRITE, NULL, 0);
 	if (write_fps.mark_fp == NULL) {
 		fclose(write_fps.cache_fp);
-		g_unlink(new_cache);
+		claws_unlink(new_cache);
 		g_free(new_cache);
 		g_free(new_mark);
 		g_free(new_tags);
@@ -1210,8 +1210,8 @@ gint msgcache_write(const gchar *cache_file, const gchar *mark_file, const gchar
 	if (write_fps.tags_fp == NULL) {
 		fclose(write_fps.cache_fp);
 		fclose(write_fps.mark_fp);
-		g_unlink(new_cache);
-		g_unlink(new_mark);
+		claws_unlink(new_cache);
+		claws_unlink(new_mark);
 		g_free(new_cache);
 		g_free(new_mark);
 		g_free(new_tags);
@@ -1358,9 +1358,9 @@ gint msgcache_write(const gchar *cache_file, const gchar *mark_file, const gchar
 
 
 	if (write_fps.error != 0) {
-		g_unlink(new_cache);
-		g_unlink(new_mark);
-		g_unlink(new_tags);
+		claws_unlink(new_cache);
+		claws_unlink(new_mark);
+		claws_unlink(new_tags);
 		g_free(new_cache);
 		g_free(new_mark);
 		g_free(new_tags);

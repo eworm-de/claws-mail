@@ -1119,7 +1119,7 @@ static gint inc_drop_message(Pop3Session *session, const gchar *file)
 	} else
 		inbox = folder_get_default_inbox();
 	if (!inbox) {
-		g_unlink(file);
+		claws_unlink(file);
 		return -1;
 	}
 
@@ -1129,7 +1129,7 @@ static gint inc_drop_message(Pop3Session *session, const gchar *file)
 	/* add msg file to drop folder */
 	if ((msgnum = folder_item_add_msg(
 			dropfolder, file, NULL, TRUE)) < 0) {
-		g_unlink(file);
+		claws_unlink(file);
 		return -1;
 	}
 
@@ -1377,7 +1377,7 @@ static gint get_spool(FolderItem *dest, const gchar *mbox, PrefsAccount *account
 
 	msgs = proc_mbox(dest, tmp_mbox, account->filter_on_recv, account);
 
-	g_unlink(tmp_mbox);
+	claws_unlink(tmp_mbox);
 	if (msgs >= 0) empty_mbox(mbox);
 	unlock_mbox(mbox, lockfd, LOCK_FLOCK);
 

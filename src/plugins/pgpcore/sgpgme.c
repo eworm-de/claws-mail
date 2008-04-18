@@ -353,7 +353,7 @@ gpgme_data_t sgpgme_data_from_mimeinfo(MimeInfo *mimeinfo)
 	debug_print("tmp file %s\n", tmp_file);
 	
 	err = gpgme_data_new_from_file(&data, tmp_file, 1);
-	g_unlink(tmp_file);
+	claws_unlink(tmp_file);
 	g_free(tmp_file);
 
 	debug_print("data %p (%d %d)\n", (void *)&data, mimeinfo->offset, mimeinfo->length);

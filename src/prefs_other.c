@@ -57,6 +57,7 @@ typedef struct _OtherPage
 	GtkWidget *spinbtn_iotimeout;
 	GtkWidget *checkbtn_gtk_can_change_accels;
 	GtkWidget *checkbtn_askonfilter;
+	GtkWidget *checkbtn_use_shred;
 	GtkWidget *checkbtn_real_time_sync;
 } OtherPage;
 
@@ -496,7 +497,7 @@ static void prefs_other_create_widget(PrefsPage *_page, GtkWindow *window,
 	GtkWidget *frame_keys;
 	GtkWidget *vbox_keys;
 	GtkWidget *checkbtn_gtk_can_change_accels;
-	GtkTooltips *gtk_can_change_accels_tooltip;
+	GtkTooltips *tooltips;
 	GtkWidget *button_keybind;
 
 	GtkWidget *label_iotimeout;
@@ -506,7 +507,9 @@ static void prefs_other_create_widget(PrefsPage *_page, GtkWindow *window,
 	GtkWidget *vbox2;
 	GtkWidget *checkbtn_askonclean;
 	GtkWidget *checkbtn_askonfilter;
+	GtkWidget *checkbtn_use_shred;
 	GtkWidget *checkbtn_real_time_sync;
+	gchar *shred_binary = NULL;
 	vbox1 = gtk_vbox_new (FALSE, VSPACING);
 	gtk_widget_show (vbox1);
 	gtk_container_set_border_width (GTK_CONTAINER (vbox1), VBOX_BORDER);
@@ -537,8 +540,8 @@ static void prefs_other_create_widget(PrefsPage *_page, GtkWindow *window,
 
 	PACK_CHECK_BUTTON(vbox_keys, checkbtn_gtk_can_change_accels,
 			_("Enable customisable keyboard shortcuts"));
-	gtk_can_change_accels_tooltip = gtk_tooltips_new();
-	gtk_tooltips_set_tip(GTK_TOOLTIPS(gtk_can_change_accels_tooltip),
+	tooltips = gtk_tooltips_new();
+	gtk_tooltips_set_tip(GTK_TOOLTIPS(tooltips),
 			checkbtn_gtk_can_change_accels,
 			_("If checked, you can change the keyboard shortcuts of "
 				"most of the menu items by focusing on the menu "
@@ -587,6 +590,23 @@ static void prefs_other_create_widget(PrefsPage *_page, GtkWindow *window,
 	PACK_CHECK_BUTTON (vbox2, checkbtn_askonfilter,
 			   _("Ask about account specific filtering rules when "
 			     "filtering manually"));
+	shred_binary = g_find_program_in_path("shred");
+	if (shred_binary) {
+		PACK_CHECK_BUTTON (vbox2, checkbtn_use_shred,
+				   _("Use secure file deletion if possible"));
+		g_free(shred_binary);
+	} else {
+		PACK_CHECK_BUTTON (vbox2, checkbtn_use_shred,
+				   _("Use secure file deletion if possible\n"
+				     "(the 'shred' program is not available)"));
+		gtk_widget_set_sensitive(checkbtn_use_shred, FALSE);
+	}
+	gtk_tooltips_set_tip(GTK_TOOLTIPS(tooltips),
+			checkbtn_use_shred,
+			_("Use the 'shred' program to overwrite files with random data before "
+			  "deleting them. This slows down deletion. Be sure to "
+			  "read shred's man page for caveats."),
+			NULL);
 	PACK_CHECK_BUTTON (vbox2, checkbtn_real_time_sync,
 			   _("Synchronise offline folders as soon as possible"));
 
@@ -608,6 +628,8 @@ static void prefs_other_create_widget(PrefsPage *_page, GtkWindow *window,
 
 	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(checkbtn_askonfilter), 
 		prefs_common.ask_apply_per_account_filtering_rules);
+	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(checkbtn_use_shred), 
+		prefs_common.use_shred);
 	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(checkbtn_real_time_sync), 
 		prefs_common.real_time_sync);
 
@@ -619,6 +641,7 @@ static void prefs_other_create_widget(PrefsPage *_page, GtkWindow *window,
 	prefs_other->spinbtn_iotimeout = spinbtn_iotimeout;
 	prefs_other->checkbtn_gtk_can_change_accels = checkbtn_gtk_can_change_accels;
 	prefs_other->checkbtn_askonfilter = checkbtn_askonfilter;
+	prefs_other->checkbtn_use_shred = checkbtn_use_shred;
 	prefs_other->checkbtn_real_time_sync = checkbtn_real_time_sync;
 
 	prefs_other->page.widget = vbox1;
@@ -648,6 +671,9 @@ static void prefs_other_save(PrefsPage *_page)
 	prefs_common.ask_apply_per_account_filtering_rules = 
 		gtk_toggle_button_get_active(
 			GTK_TOGGLE_BUTTON(page->checkbtn_askonfilter)); 
+	prefs_common.use_shred = 
+		gtk_toggle_button_get_active(
+			GTK_TOGGLE_BUTTON(page->checkbtn_use_shred)); 
 	prefs_common.real_time_sync = 
 		gtk_toggle_button_get_active(
 			GTK_TOGGLE_BUTTON(page->checkbtn_real_time_sync)); 

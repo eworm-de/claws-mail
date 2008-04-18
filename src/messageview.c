@@ -770,7 +770,7 @@ static gint disposition_notification_send(MsgInfo *msginfo)
 		    addrp) < 0) {
 		g_free(addrp);
 		fclose(fp);
-		g_unlink(tmp);
+		claws_unlink(tmp);
 		return -1;
 	}
 
@@ -785,7 +785,7 @@ static gint disposition_notification_send(MsgInfo *msginfo)
 		if (fprintf(fp, "SCF:%s\n", path) < 0) {
 			g_free(path);
 			fclose(fp);
-			g_unlink(tmp);
+			claws_unlink(tmp);
 			return -1;
 		}
 		g_free(path);
@@ -793,7 +793,7 @@ static gint disposition_notification_send(MsgInfo *msginfo)
 
 	if (fprintf(fp, "X-Claws-End-Special-Headers: 1\n") < 0) {
 		fclose(fp);
-		g_unlink(tmp);
+		claws_unlink(tmp);
 		return -1;
 	}
 
@@ -801,7 +801,7 @@ static gint disposition_notification_send(MsgInfo *msginfo)
 	get_rfc822_date(buf, sizeof(buf));
 	if (fprintf(fp, "Date: %s\n", buf) < 0) {
 		fclose(fp);
-		g_unlink(tmp);
+		claws_unlink(tmp);
 		return -1;
 	}
 
@@ -812,20 +812,20 @@ static gint disposition_notification_send(MsgInfo *msginfo)
 			 strlen("From: "));
 		if (fprintf(fp, "From: %s <%s>\n", buf, account->address) < 0) {
 			fclose(fp);
-			g_unlink(tmp);
+			claws_unlink(tmp);
 			return -1;
 		}
 	} else
 		if (fprintf(fp, "From: %s\n", account->address) < 0) {
 			fclose(fp);
-			g_unlink(tmp);
+			claws_unlink(tmp);
 			return -1;
 		}
 
 
 	if (fprintf(fp, "To: %s\n", to) < 0) {
 		fclose(fp);
-		g_unlink(tmp);
+		claws_unlink(tmp);
 		return -1;
 	}
 
@@ -834,7 +834,7 @@ static gint disposition_notification_send(MsgInfo *msginfo)
 				    strlen("Subject: "));
 	if (fprintf(fp, "Subject: Disposition notification: %s\n", buf) < 0) {
 		fclose(fp);
-		g_unlink(tmp);
+		claws_unlink(tmp);
 		return -1;
 	}
 
@@ -855,7 +855,7 @@ static gint disposition_notification_send(MsgInfo *msginfo)
 
 		if (fprintf(fp, "Message-ID: <%s>\n", buf) < 0) {
 			fclose(fp);
-			g_unlink(tmp);
+			claws_unlink(tmp);
 			return -1;
 		}
 	}
@@ -923,7 +923,7 @@ static gint disposition_notification_send(MsgInfo *msginfo)
 			msginfo->msgid?msginfo->msgid:"NO MESSAGE ID",
 			boundary) < 0) {
 		fclose(fp);
-		g_unlink(tmp);
+		claws_unlink(tmp);
 		g_free(boundary);
 		return -1;
 	}
@@ -935,7 +935,7 @@ static gint disposition_notification_send(MsgInfo *msginfo)
 
 	if (fclose(fp) == EOF) {
 		FILE_OP_ERROR(tmp, "fclose");
-		g_unlink(tmp);
+		claws_unlink(tmp);
 		return -1;
 	}
 
@@ -944,13 +944,13 @@ static gint disposition_notification_send(MsgInfo *msginfo)
 	if (!queue) queue = folder_get_default_queue();
 	if (!queue) {
 		g_warning("can't find queue folder\n");
-		g_unlink(tmp);
+		claws_unlink(tmp);
 		return -1;
 	}
 	folder_item_scan(queue);
 	if ((num = folder_item_add_msg(queue, tmp, NULL, TRUE)) < 0) {
 		g_warning("can't queue the message\n");
-		g_unlink(tmp);
+		claws_unlink(tmp);
 		return -1;
 	}
 		

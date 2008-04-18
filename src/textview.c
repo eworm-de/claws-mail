@@ -955,7 +955,7 @@ static void textview_write_body(TextView *textview, MimeInfo *mimeinfo)
 			tmpfp = g_fopen(filename, "rb");
 			textview_show_html(textview, tmpfp, conv);
 			fclose(tmpfp);
-			g_unlink(filename);
+			claws_unlink(filename);
 		}
 		g_free(filename);
 	} else if (!g_ascii_strcasecmp(mimeinfo->subtype, "enriched")) {
@@ -966,7 +966,7 @@ static void textview_write_body(TextView *textview, MimeInfo *mimeinfo)
 			tmpfp = g_fopen(filename, "rb");
 			textview_show_ertf(textview, tmpfp, conv);
 			fclose(tmpfp);
-			g_unlink(filename);
+			claws_unlink(filename);
 		}
 		g_free(filename);
 #ifndef G_OS_WIN32

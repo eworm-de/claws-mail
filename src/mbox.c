@@ -71,7 +71,7 @@
 		g_warning("can't write to temporary file\n"); \
 		fclose(tmp_fp); \
 		fclose(mbox_fp); \
-		g_unlink(tmp_file); \
+		claws_unlink(tmp_file); \
 		g_free(tmp_file); \
 		return -1; \
 	} \
@@ -223,7 +223,7 @@ gint proc_mbox(FolderItem *dest, const gchar *mbox, gboolean apply_filter,
 			g_warning("malformed mbox: %s: message %d is empty\n", mbox, msgs);
 			fclose(tmp_fp);
 			fclose(mbox_fp);
-			g_unlink(tmp_file);
+			claws_unlink(tmp_file);
 			return -1;
 		}
 
@@ -231,7 +231,7 @@ gint proc_mbox(FolderItem *dest, const gchar *mbox, gboolean apply_filter,
 			FILE_OP_ERROR(tmp_file, "fclose");
 			g_warning("can't write to temporary file\n");
 			fclose(mbox_fp);
-			g_unlink(tmp_file);
+			claws_unlink(tmp_file);
 			g_free(tmp_file);
 			return -1;
 		}
@@ -239,7 +239,7 @@ gint proc_mbox(FolderItem *dest, const gchar *mbox, gboolean apply_filter,
 		if (apply_filter) {
 			if ((msgnum = folder_item_add_msg(dropfolder, tmp_file, NULL, TRUE)) < 0) {
 				fclose(mbox_fp);
-				g_unlink(tmp_file);
+				claws_unlink(tmp_file);
 				g_free(tmp_file);
 				return -1;
 			}
@@ -334,7 +334,7 @@ gint lock_mbox(const gchar *base, LockType type)
 			FILE_OP_ERROR(lockfile, "link");
 			if (retry >= 5) {
 				g_warning("can't create %s\n", lockfile);
-				g_unlink(lockfile);
+				claws_unlink(lockfile);
 				g_free(lockfile);
 				return -1;
 			}
@@ -344,7 +344,7 @@ gint lock_mbox(const gchar *base, LockType type)
 			retry++;
 			sleep(5);
 		}
-		g_unlink(lockfile);
+		claws_unlink(lockfile);
 		g_free(lockfile);
 	} else if (type == LOCK_FLOCK) {
 		gint lockfd;
@@ -409,7 +409,7 @@ gint unlock_mbox(const gchar *base, gint fd, LockType type)
 		gchar *lockfile;
 
 		lockfile = g_strconcat(base, ".lock", NULL);
-		if (g_unlink(lockfile) < 0) {
+		if (claws_unlink(lockfile) < 0) {
 			FILE_OP_ERROR(lockfile, "unlink");
 			g_free(lockfile);
 			return -1;
@@ -491,7 +491,7 @@ gint copy_mbox(gint srcfd, const gchar *dest)
 		if (fwrite(buf, 1, n_read, dest_fp) < n_read) {
 			g_warning("writing to %s failed.\n", dest);
 			fclose(dest_fp);
-			g_unlink(dest);
+			claws_unlink(dest);
 			return -1;
 		}
 	}
@@ -508,7 +508,7 @@ gint copy_mbox(gint srcfd, const gchar *dest)
 	}
 
 	if (err) {
-		g_unlink(dest);
+		claws_unlink(dest);
 		return -1;
 	}
 

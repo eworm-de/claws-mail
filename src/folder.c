@@ -3051,7 +3051,7 @@ gint folder_item_add_msgs(FolderItem *dest, GSList *file_list,
 				lastnum = num;
 
 			if (num >= 0 && remove_source) {
-				if (g_unlink(fileinfo->file) < 0)
+				if (claws_unlink(fileinfo->file) < 0)
 					FILE_OP_ERROR(fileinfo->file, "unlink");
 			}
 
@@ -3728,7 +3728,7 @@ void folder_item_discard_cache(FolderItem *item)
 	
 	cache = folder_item_get_cache_file(item);
 	if (is_file_exist(cache))
-		g_unlink(cache);
+		claws_unlink(cache);
 	g_free(cache);
 	
 }

@@ -50,7 +50,7 @@
 #define g_mkdir		mkdir
 #define g_stat		stat
 #define g_lstat		lstat
-#define g_unlink	unlink
+#define claws_unlink	unlink
 #define g_remove	remove
 #define g_rmdir		rmdir
 #define g_fopen		fopen
@@ -527,6 +527,8 @@ void mailcap_update_default	   (const gchar *type,
 gboolean file_is_email(const gchar *filename);
 gboolean sc_g_list_bigger(GList *list, gint max);
 gboolean sc_g_slist_bigger(GSList *list, gint max);
+
+int claws_unlink(const gchar *filename);
 #ifdef __cplusplus
 }
 #endif

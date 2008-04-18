@@ -1597,7 +1597,7 @@ static void exit_claws(MainWindow *mainwin)
 #endif
 	/* delete crashfile */
 	if (!cmd.crash)
-		g_unlink(get_crashfile_name());
+		claws_unlink(get_crashfile_name());
 
 	lock_socket_remove();
 
@@ -1991,7 +1991,7 @@ static gint prohibit_duplicate_launch(void)
 		x_display = g_strdup(g_getenv("DISPLAY"));
 
 	if (uxsock < 0) {
-		g_unlink(path);
+		claws_unlink(path);
 		return fd_open_unix(path);
 	}
 
@@ -2108,7 +2108,7 @@ static gint lock_socket_remove(void)
 	}
 	fd_close(lock_socket);
 	filename = claws_get_socket_name();
-	g_unlink(filename);
+	claws_unlink(filename);
 #endif
 
 	return 0;

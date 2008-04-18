@@ -485,7 +485,7 @@ gint file_strip_crs(const gchar *file)
 	
 	return 0;
 unlinkout:
-	g_unlink(out);
+	claws_unlink(out);
 freeout:
 	g_free(out);
 	return -1;
@@ -2234,7 +2234,7 @@ gint remove_all_files(const gchar *dir)
 	}
 
 	while ((dir_name = g_dir_read_name(dp)) != NULL) {
-		if (g_unlink(dir_name) < 0)
+		if (claws_unlink(dir_name) < 0)
 			FILE_OP_ERROR(dir_name, "unlink");
 	}
 
@@ -2277,7 +2277,7 @@ gint remove_numbered_files(const gchar *dir, guint first, guint last)
 		if (file_no > 0 && first <= file_no && file_no <= last) {
 			if (is_dir_exist(dir_name))
 				continue;
-			if (g_unlink(dir_name) < 0)
+			if (claws_unlink(dir_name) < 0)
 				FILE_OP_ERROR(dir_name, "unlink");
 		}
 	}
@@ -2322,7 +2322,7 @@ gint remove_numbered_files_not_in_list(const gchar *dir, GSList *numberlist)
 			debug_print("removing unwanted file %d from %s\n", file_no, dir);
 			if (is_dir_exist(dir_name))
 				continue;
-			if (g_unlink(dir_name) < 0)
+			if (claws_unlink(dir_name) < 0)
 				FILE_OP_ERROR(dir_name, "unlink");
 		}
 	}
@@ -2359,7 +2359,7 @@ gint remove_dir_recursive(const gchar *dir)
 	}
 
 	if (!S_ISDIR(s.st_mode)) {
-		if (g_unlink(dir) < 0) {
+		if (claws_unlink(dir) < 0) {
 			FILE_OP_ERROR(dir, "unlink");
 			return -1;
 		}
@@ -2402,7 +2402,7 @@ gint remove_dir_recursive(const gchar *dir)
 				return -1;
 			}
 		} else {
-			if (g_unlink(dir_name) < 0)
+			if (claws_unlink(dir_name) < 0)
 				FILE_OP_ERROR(dir_name, "unlink");
 		}
 	}
@@ -2433,7 +2433,7 @@ gint rename_force(const gchar *oldpath, const gchar *newpath)
 		return -1;
 	}
 	if (is_file_exist(newpath)) {
-		if (g_unlink(newpath) < 0)
+		if (claws_unlink(newpath) < 0)
 			FILE_OP_ERROR(newpath, "unlink");
 	}
 #endif
@@ -2475,7 +2475,7 @@ gint append_file(const gchar *src, const gchar *dest, gboolean keep_backup)
 			g_warning("writing to %s failed.\n", dest);
 			fclose(dest_fp);
 			fclose(src_fp);
-			g_unlink(dest);
+			claws_unlink(dest);
 			return -1;
 		}
 	}
@@ -2491,7 +2491,7 @@ gint append_file(const gchar *src, const gchar *dest, gboolean keep_backup)
 	}
 
 	if (err) {
-		g_unlink(dest);
+		claws_unlink(dest);
 		return -1;
 	}
 
@@ -2543,7 +2543,7 @@ gint copy_file(const gchar *src, const gchar *dest, gboolean keep_backup)
 			g_warning("writing to %s failed.\n", dest);
 			fclose(dest_fp);
 			fclose(src_fp);
-			g_unlink(dest);
+			claws_unlink(dest);
 			if (dest_bak) {
 				if (rename_force(dest_bak, dest) < 0)
 					FILE_OP_ERROR(dest_bak, "rename");
@@ -2564,7 +2564,7 @@ gint copy_file(const gchar *src, const gchar *dest, gboolean keep_backup)
 	}
 
 	if (err) {
-		g_unlink(dest);
+		claws_unlink(dest);
 		if (dest_bak) {
 			if (rename_force(dest_bak, dest) < 0)
 				FILE_OP_ERROR(dest_bak, "rename");
@@ -2574,7 +2574,7 @@ gint copy_file(const gchar *src, const gchar *dest, gboolean keep_backup)
 	}
 
 	if (keep_backup == FALSE && dest_bak)
-		g_unlink(dest_bak);
+		claws_unlink(dest_bak);
 
 	g_free(dest_bak);
 
@@ -2597,7 +2597,7 @@ gint move_file(const gchar *src, const gchar *dest, gboolean overwrite)
 
 	if (copy_file(src, dest, FALSE) < 0) return -1;
 
-	g_unlink(src);
+	claws_unlink(src);
 
 	return 0;
 }
@@ -2661,7 +2661,7 @@ gint copy_file_part(FILE *fp, off_t offset, size_t length, const gchar *dest)
 
 	if (err) {
 		g_warning("writing to %s failed.\n", dest);
-		g_unlink(dest);
+		claws_unlink(dest);
 		return -1;
 	}
 
@@ -2754,7 +2754,7 @@ gint canonicalize_file(const gchar *src, const gchar *dest)
 			g_warning("writing to %s failed.\n", dest);
 			fclose(dest_fp);
 			fclose(src_fp);
-			g_unlink(dest);
+			claws_unlink(dest);
 			return -1;
 		}
 	}
@@ -2775,7 +2775,7 @@ gint canonicalize_file(const gchar *src, const gchar *dest)
 	}
 
 	if (err) {
-		g_unlink(dest);
+		claws_unlink(dest);
 		return -1;
 	}
 
@@ -2795,7 +2795,7 @@ gint canonicalize_file_replace(const gchar *file)
 
 	if (move_file(tmp_file, file, TRUE) < 0) {
 		g_warning("can't replace %s .\n", file);
-		g_unlink(tmp_file);
+		claws_unlink(tmp_file);
 		g_free(tmp_file);
 		return -1;
 	}
@@ -2945,7 +2945,7 @@ FILE *my_tmpfile(void)
 		return tmpfile();
 
 #ifndef G_OS_WIN32
-	g_unlink(fname);
+	claws_unlink(fname);
 	
 	/* verify that we can write in the file after unlinking */
 	if (write(fd, buf, 1) < 0) {
@@ -3031,13 +3031,13 @@ gint str_write_to_file(const gchar *str, const gchar *file)
 	if (fwrite(str, 1, len, fp) != len) {
 		FILE_OP_ERROR(file, "fwrite");
 		fclose(fp);
-		g_unlink(file);
+		claws_unlink(file);
 		return -1;
 	}
 
 	if (fclose(fp) == EOF) {
 		FILE_OP_ERROR(file, "fclose");
-		g_unlink(file);
+		claws_unlink(file);
 		return -1;
 	}
 
@@ -5009,4 +5009,36 @@ size_t fast_strftime(gchar *buf, gint buflen, const gchar *format, struct tm *lt
 	}
 	*curpos++ = '\0';
 	return total_done;
+}
+
+gboolean prefs_common_get_use_shred(void);
+
+int claws_unlink(const gchar *filename) 
+{
+	struct stat s;
+	static int found_shred = -1;
+	static const gchar *args[4];
+
+	if (found_shred == -1) {
+		/* init */
+		args[0] = g_find_program_in_path("shred");
+		debug_print("found shred: %s\n", args[0]);
+		found_shred = (args[0] != NULL) ? 1:0;
+		args[1] = "-f";
+		args[3] = NULL;
+	}
+	if (found_shred == 1 && prefs_common_get_use_shred()) {
+		if (is_file_exist(filename) && g_stat(filename, &s) == 0) {
+			if (s.st_nlink == 1) {
+				gint status=0;
+				args[2] = filename;
+				g_spawn_sync(NULL, (gchar **)args, NULL, 0,
+				 NULL, NULL, NULL, NULL, &status, NULL);
+				debug_print("%s %s exited with status %d\n",
+					args[0], filename, WEXITSTATUS(status));
+				truncate(filename, 0);
+			}
+		}
+	}
+	return g_unlink(filename);
 }

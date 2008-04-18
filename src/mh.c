@@ -626,7 +626,7 @@ static gint mh_remove_msg(Folder *folder, FolderItem *item, gint num)
 	need_scan = mh_scan_required(folder, item);
 	last_mtime = item->mtime;
 
-	if (g_unlink(file) < 0) {
+	if (claws_unlink(file) < 0) {
 		FILE_OP_ERROR(file, "unlink");
 		g_free(file);
 		return -1;
@@ -679,7 +679,7 @@ static gint mh_remove_msgs(Folder *folder, FolderItem *item,
 		if (file == NULL)
 			continue;
 		
-		if (g_unlink(file) < 0) {
+		if (claws_unlink(file) < 0) {
 			g_free(file);
 			continue;
 		}

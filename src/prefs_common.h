@@ -485,6 +485,7 @@ struct _PrefsCommon
 	gint print_previewwin_height;
 	
 	gboolean use_networkmanager;
+	gboolean use_shred;
 };
 
 extern PrefsCommon prefs_common;

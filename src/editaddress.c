@@ -1590,7 +1590,7 @@ static gboolean addressbook_edit_person_close( gboolean cancelled )
 			else 
 				name = g_strconcat( get_rc_dir(), G_DIR_SEPARATOR_S, ADDRBOOK_DIR, G_DIR_SEPARATOR_S, 
 						current_person->picture, ".png", NULL );
-			g_unlink(name);
+			claws_unlink(name);
 			g_free(name);
 		}
 		name = gtk_editable_get_chars( GTK_EDITABLE(personeditdlg.entry_first), 0, -1 );

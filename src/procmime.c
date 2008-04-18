@@ -110,7 +110,7 @@ static gboolean free_func(GNode *node, gpointer data)
 	switch (mimeinfo->content) {
 	case MIMECONTENT_FILE:
 		if (mimeinfo->tmp)
-			g_unlink(mimeinfo->data.filename);
+			claws_unlink(mimeinfo->data.filename);
 		g_free(mimeinfo->data.filename);
 		break;
 
@@ -438,7 +438,7 @@ gboolean procmime_decode_content(MimeInfo *mimeinfo)
 
 	stat(tmpfilename, &statbuf);
 	if (mimeinfo->tmp && (mimeinfo->data.filename != NULL))
-		g_unlink(mimeinfo->data.filename);
+		claws_unlink(mimeinfo->data.filename);
 	g_free(mimeinfo->data.filename);
 	mimeinfo->data.filename = tmpfilename;
 	mimeinfo->tmp = TRUE;
@@ -503,7 +503,7 @@ gboolean procmime_encode_content(MimeInfo *mimeinfo, EncodingType encoding)
 				}
 				if ((tmp_fp = g_fopen(tmp_file, "rb")) == NULL) {
 					FILE_OP_ERROR(tmp_file, "fopen");
-					g_unlink(tmp_file);
+					claws_unlink(tmp_file);
 					g_free(tmp_file);
 					fclose(infp);
 					return FALSE;
@@ -538,7 +538,7 @@ gboolean procmime_encode_content(MimeInfo *mimeinfo, EncodingType encoding)
 
 		if (tmp_file) {
 			fclose(tmp_fp);
-			g_unlink(tmp_file);
+			claws_unlink(tmp_file);
 			g_free(tmp_file);
 		}
 	} else if (encoding == ENC_QUOTED_PRINTABLE) {
@@ -579,7 +579,7 @@ gboolean procmime_encode_content(MimeInfo *mimeinfo, EncodingType encoding)
 
 	if (mimeinfo->content == MIMECONTENT_FILE) {
 		if (mimeinfo->tmp && (mimeinfo->data.filename != NULL))
-			g_unlink(mimeinfo->data.filename);
+			claws_unlink(mimeinfo->data.filename);
 		g_free(mimeinfo->data.filename);
 	} else if (mimeinfo->content == MIMECONTENT_MEM) {
 		if (mimeinfo->tmp && (mimeinfo->data.mem != NULL))
@@ -643,7 +643,7 @@ gint procmime_get_part(const gchar *outfile, MimeInfo *mimeinfo)
 	if (fclose(outfp) == EOF) {
 		saved_errno = errno;
 		FILE_OP_ERROR(outfile, "fclose");
-		g_unlink(outfile);
+		claws_unlink(outfile);
 		return -(saved_errno);
 	}
 
@@ -735,7 +735,7 @@ static FILE *procmime_get_text_content(MimeInfo *mimeinfo)
 
 	fclose(tmpfp);
 	rewind(outfp);
-	g_unlink(tmpfile);
+	claws_unlink(tmpfile);
 	g_free(tmpfile);
 
 	if (err == TRUE) {

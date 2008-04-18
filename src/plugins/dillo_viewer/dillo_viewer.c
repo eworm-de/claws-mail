@@ -144,7 +144,7 @@ static void dillo_show_mimepart(MimeViewer *_viewer,
 	debug_print("dillo_show_mimepart\n");
 
 	if (viewer->filename != NULL) {
-		g_unlink(viewer->filename);
+		claws_unlink(viewer->filename);
 		g_free(viewer->filename);
 	}
 
@@ -198,7 +198,7 @@ static void dillo_destroy_viewer(MimeViewer *_viewer)
 	}
 
 	gtk_widget_unref(GTK_WIDGET(viewer->widget));
-	g_unlink(viewer->filename);
+	claws_unlink(viewer->filename);
 	g_free(viewer->filename);
     	g_free(viewer);
 }

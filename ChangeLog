@@ -1,3 +1,44 @@
+lease complete the changelog entry below
+2008-04-18 [colin]	3.4.0cvs1
+
+	* src/addrduplicates.c
+	* src/addressbook.c
+	* src/compose.c
+	* src/crash.c
+	* src/editaddress.c
+	* src/folder.c
+	* src/image_viewer.c
+	* src/imap.c
+	* src/inc.c
+	* src/main.c
+	* src/mbox.c
+	* src/messageview.c
+	* src/mh.c
+	* src/msgcache.c
+	* src/news.c
+	* src/partial_download.c
+	* src/pop.c
+	* src/prefs_common.c
+	* src/prefs_common.h
+	* src/prefs_other.c
+	* src/prefs_themes.c
+	* src/procheader.c
+	* src/procmime.c
+	* src/procmsg.c
+	* src/textview.c
+	* src/wizard.c
+	* src/common/prefs.c
+	* src/common/ssl_certificate.c
+	* src/common/template.c
+	* src/common/utils.c
+	* src/common/utils.h
+	* src/etpan/imap-thread.c
+	* src/plugins/dillo_viewer/dillo_viewer.c
+	* src/plugins/pgpcore/sgpgme.c
+	* src/plugins/pgpinline/pgpinline.c
+		Add an option to shred temporary files and messages
+		instead of just removing them. Slows deletions down!
+
 2008-04-18 [paul]	3.4.0
 
 	* NEWS

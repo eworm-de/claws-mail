@@ -164,7 +164,7 @@ gint prefs_file_close(PrefFile *pfile)
 	tmppath = g_strconcat(path, ".tmp", NULL);
 	if (fclose(fp) == EOF) {
 		FILE_OP_ERROR(tmppath, "fclose");
-		g_unlink(tmppath);
+		claws_unlink(tmppath);
 		g_free(path);
 		g_free(tmppath);
 		return -1;
@@ -173,11 +173,11 @@ gint prefs_file_close(PrefFile *pfile)
 	if (is_file_exist(path)) {
 		bakpath = g_strconcat(path, ".bak", NULL);
 #ifdef G_OS_WIN32
-                g_unlink(bakpath);
+                claws_unlink(bakpath);
 #endif
 		if (rename(path, bakpath) < 0) {
 			FILE_OP_ERROR(path, "rename");
-			g_unlink(tmppath);
+			claws_unlink(tmppath);
 			g_free(path);
 			g_free(tmppath);
 			g_free(bakpath);
@@ -186,11 +186,11 @@ gint prefs_file_close(PrefFile *pfile)
 	}
 
 #ifdef G_OS_WIN32
-        g_unlink(path);
+        claws_unlink(path);
 #endif
 	if (rename(tmppath, path) < 0) {
 		FILE_OP_ERROR(tmppath, "rename");
-		g_unlink(tmppath);
+		claws_unlink(tmppath);
 		g_free(path);
 		g_free(tmppath);
 		g_free(bakpath);
@@ -222,7 +222,7 @@ gint prefs_file_close_revert(PrefFile *pfile)
 		tmppath = g_strconcat(pfile->path, ".tmp", NULL);
 	fclose(pfile->fp);
 	if (pfile->writing) {
-		if (g_unlink(tmppath) < 0) FILE_OP_ERROR(tmppath, "unlink");
+		if (claws_unlink(tmppath) < 0) FILE_OP_ERROR(tmppath, "unlink");
 		g_free(tmppath);
 	}
 	g_free(pfile->path);

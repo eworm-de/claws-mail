@@ -189,7 +189,7 @@ static void prefs_themes_file_remove(const gchar *filename, gpointer data)
 			g_warning("prefs_themes_file_remove(): subdir in theme dir skipped: '%s'.\n",
 						base);
 	}
-	else if (0 != g_unlink(filename)) {
+	else if (0 != claws_unlink(filename)) {
 		(*status) = g_strdup(filename);
 	}
 	g_free(base);

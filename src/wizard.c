@@ -572,7 +572,7 @@ static void write_welcome_email(WizardWindow *wizard)
 	g_free(head);
 	g_free(body);
 	g_free(msg);
-	g_unlink(file);
+	claws_unlink(file);
 }
 #undef XFACE
 

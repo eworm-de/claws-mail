@@ -1242,7 +1242,7 @@ static void imap_remove_cached_msg(Folder *folder, FolderItem *item, MsgInfo *ms
 	g_free(path);
 
 	if (is_file_exist(filename)) {
-		g_unlink(filename);
+		claws_unlink(filename);
 	}
 	g_free(filename);
 }

@@ -361,7 +361,7 @@ void ssl_certificate_delete_from_disk(SSLCertificate *cert)
 	gchar *file;
 	buf = g_strdup_printf("%d", cert->port);
 	file = get_certificate_path(cert->host, buf, cert->fingerprint);
-	g_unlink (file);
+	claws_unlink (file);
 	g_free(file);
 	g_free(buf);
 }

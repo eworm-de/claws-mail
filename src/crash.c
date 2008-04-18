@@ -559,7 +559,7 @@ static void crash_handler(int sig)
 static void crash_cleanup_exit(void)
 {
 	const char *filename = claws_get_socket_name();
-	g_unlink(filename);
+	claws_unlink(filename);
 }
 
 #endif

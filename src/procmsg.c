@@ -1044,7 +1044,7 @@ static gint procmsg_save_to_outbox(FolderItem *outbox, const gchar *file,
 		folder_item_scan(outbox);
 		if ((num = folder_item_add_msg(outbox, tmp, &flag, TRUE)) < 0) {
 			g_warning("can't save message\n");
-			g_unlink(tmp);
+			claws_unlink(tmp);
 			return -1;
 		}
 	} else {
@@ -1689,7 +1689,7 @@ send_mail:
                             		 newsac->nntp_server);
 				}
 			}
-			g_unlink(tmp);
+			claws_unlink(tmp);
 		}
 		g_free(tmp);
 	}
@@ -1732,7 +1732,7 @@ send_mail:
 	}
 
 	if (tmp_enc_file != NULL) {
-		g_unlink(tmp_enc_file);
+		claws_unlink(tmp_enc_file);
 		free(tmp_enc_file);
 		tmp_enc_file = NULL;
 	}

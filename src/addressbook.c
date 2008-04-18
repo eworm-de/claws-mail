@@ -1527,7 +1527,7 @@ static void addressbook_del_clicked(GtkButton *button, gpointer data)
 				if( item ) {
 					gchar *filename = addritem_person_get_picture(item);
 					if (filename && is_file_exist(filename))
-						g_unlink(filename);
+						claws_unlink(filename);
 					g_free(filename);
 					addritem_free_item_person( item );
 				}
@@ -4051,7 +4051,7 @@ static gboolean migrate_addrbook(const gchar *origdir, const gchar *destdir)
 			else {
 				gchar *orig_file = g_strconcat(origdir, G_DIR_SEPARATOR_S, 
 						d->d_name, NULL);
-				g_unlink(orig_file);
+				claws_unlink(orig_file);
 				g_free(orig_file);
 			}
 		}
