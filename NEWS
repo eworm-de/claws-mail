@@ -1,5 +1,46 @@
 Changes of the  Claws Mail GTK2 branch
 
+* 3.4.0
+-------
+
+* Added support for /dev/mem_notify. This Linux kernel feature
+  will allow applications to be notified that memory has to be
+  freed before getting OOM-killed.
+  For more information: http://lwn.net/Articles/267013/
+
+* Enabled moving/copying folders to root folders when using the
+  folder selection dialogue.
+
+* Global and per-folder templates can now override the From name.
+
+* Added a tooltip with extended folder stats. (Hover the cursor over
+  the short stats on the right, below the message list.)
+
+* Implemented 2-line items in the message list when in three column
+  mode.
+
+* Added support for png themes.
+
+* Added an icon for attached patches (text/x-patch and text/x-diff).
+
+* When viewing a message that has a large amount of text, show a
+  maximum of 1MB of text and add a noticeview to show optionally show
+  the whole message.
+
+* Added a button to the templates preferences to restore defaults for
+  current language.
+
+* Added search in filtering rules list.
+
+* Bogofilter Plugin:
+  Added a "learn from whitelist" preference.
+
+* MAEMO:
+  Added information when fetching large messages.
+
+* tools/csv2addressbook.pl
+  Added support for Kmail/Kaddressbook.
+
 * 3.3.1
 -------
 

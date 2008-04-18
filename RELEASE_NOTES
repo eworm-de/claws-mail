@@ -1,4 +1,4 @@
-23rd February 2008                                   Claws Mail 3.3.1
+18th April 2008                                      Claws Mail 3.4.0
 
 		    CLAWS MAIL  RELEASE NOTES
                     http://www.claws-mail.org
@@ -9,24 +9,86 @@ email client.
 New in this release:
 ~~~~~~~~~~~~~~~~~~~~
 
-* Forbid attaching anything containing "../" or ".ssh/" in mailto:
-  URIs.
+* Added support for /dev/mem_notify. This Linux kernel feature
+  will allow applications to be notified that memory has to be
+  freed before getting OOM-killed.
+  For more information: http://lwn.net/Articles/267013/
 
-* Add a hidden preference, 'use_networkmanager', to disable
-  NetworkManager handling
+* Enabled moving/copying folders to root folders when using the
+  folder selection dialogue.
 
-* Updated translations: French, Hebrew
+* Global and per-folder templates can now override the From name.
+
+* Added a tooltip with extended folder stats. (Hover the cursor over
+  the short stats on the right, below the message list.)
+
+* Implemented 2-line items in the message list when in three column
+  mode.
+
+* Added support for png themes.
+
+* Added an icon for attached patches (text/x-patch and text/x-diff).
+
+* When viewing a message that has a large amount of text, show a
+  maximum of 1MB of text and add a noticeview to show optionally show
+  the whole message.
+
+* Added a button to the templates preferences to restore defaults for
+  current language.
+
+* Added search in filtering rules list.
+
+* Bogofilter Plugin:
+  Added a "learn from whitelist" preference.
+
+* MAEMO:
+  Added information when fetching large messages.
+
+* tools/csv2addressbook.pl
+  Added support for Kmail/Kaddressbook.
+
+* Updated translations: Brazilian Portuguese, Finnish, French,
+  German, and Italian.
 
 * Bug fixes:
-	o bug 1521, 'Cannot close compose window after replying to a
-		     non-existent news message'
-	o bug 1527, 'filtering is case sensitive when it shouldn't
-		     be'
-	o Fix handling of $Forwarded flag on Exchange: check for
-	  the existence or creatability of a flag before using it
-	o Fix compiling issue w/ non-gcc/C99 compilers (suncc)
-	o Fix crashy stuff when changing displayed columns
-	o Fix file attachments from older Thunar
+	o bug 1494, 'Trayicon plugin breaks UI...' (MAEMO)
+	o bug 1515, 'large messages crash claws when syncing for
+		     offline mode'
+	o bug 1532, '"login refused" message insufficiently 
+		     detailed'
+	o bug 1533, 'Claws is unable to mark messages as "read" in
+		     IMAP shared folders'
+	o bug 1534, 'Segmentation fault when doing some draft saving
+		     and then throwing away'
+	o bug 1539, 'Program crashes':
+		    Setup Gcrypt's thread functions when built with
+		    GnuTLS
+	o bug 1541, 'Deleting message from within read window
+		     displays next message then closes.' (MAEMO)
+	o bug 1553, 'File lock not respected'
+	o bug 1555, 'Bug with the feature "save a copy of outgoing
+		     messages in this folder"'
+	o bug 1559, 'Claws Mail crashed deleting all common contacts'
+	o bug 1561, 'Crashes leaving unsubscribed folder after
+		     ticking "Show only subscribed"'
+	o bug 1562, 'Claws-Mail does not completely respect settings
+		     in GTK2_RC_FILES environment'
+	o Fix blinking of the taskbar entry.
+	o Fix folder view's scrollbar at startup if starting hidden.
+	o If no MH mailbox and no account exists, when creating a
+	  POP/Local account, just create it and use the default one
+	  instead of bailing with a "Mailbox doesn't exist" error.
+	o Clean up session disconnection. Possibly fix Ubuntu bug
+	  #204290
+	o Fix RedHat bug 431735, 'segfault if /home is full'
+	o Fix compose template formats (in global preferences)
+	  getting translated under specific conditions.
+	o Fix updating of tags menu.
+	o Fix log size getting out of control (claws-mail getting
+	  SIGXFSZ): rotate if every 10MB.
+	o Fix debian bug 474712, 'claws seg faults when IMAP 
+	  connection breaks after an IMAP protocol error (BAD UID
+	  SEARCH Invalid parameter: $Forwarded)]'
 
 For further details of the numbered bugs listed above consult
 http://www.thewildbeast.co.uk/claws-mail/bugzilla/index.cgi
