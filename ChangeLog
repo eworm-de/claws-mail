@@ -1,3 +1,8 @@
+2008-04-18 [colin]	3.4.0cvs2
+
+	* src/common/log.c
+		Forgot one g_unlink
+
 lease complete the changelog entry below
 2008-04-18 [colin]	3.4.0cvs1
 
