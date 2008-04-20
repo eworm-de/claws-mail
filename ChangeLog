@@ -1,3 +1,19 @@
+2008-04-20 [colin]	3.4.0cvs3
+
+	* src/pixmaps/tray_newmail.offline.xpm
+	* src/pixmaps/tray_newmail.xpm
+	* src/pixmaps/tray_newmarkedmail.offline.xpm
+	* src/pixmaps/tray_newmarkedmail.xpm
+	* src/pixmaps/tray_nomail.offline.xpm
+	* src/pixmaps/tray_nomail.xpm
+	* src/pixmaps/tray_unreadmail.offline.xpm
+	* src/pixmaps/tray_unreadmail.xpm
+	* src/pixmaps/tray_unreadmarkedmail.offline.xpm
+	* src/pixmaps/tray_unreadmarkedmail.xpm
+		Make the tray icons a bit nicer. Would be
+		nice to get really nice icons from someone
+		who's good at Gimp :)
+
 2008-04-18 [colin]	3.4.0cvs2
 
 	* src/common/log.c
