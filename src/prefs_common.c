@@ -1105,6 +1105,9 @@ static PrefParam param[] = {
 	{"use_shred", "FALSE", &prefs_common.use_shred, P_BOOL,
 	 NULL, NULL, NULL},
 
+	{"two_line_vertical", "TRUE", &prefs_common.two_line_vert,
+	P_BOOL, NULL, NULL, NULL },
+
 	{NULL, NULL, NULL, P_OTHER, NULL, NULL, NULL}
 };
 

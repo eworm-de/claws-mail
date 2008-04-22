@@ -486,6 +486,8 @@ struct _PrefsCommon
 	
 	gboolean use_networkmanager;
 	gboolean use_shred;
+	gboolean two_line_vert;
+
 };
 
 extern PrefsCommon prefs_common;

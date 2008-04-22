@@ -1,3 +1,11 @@
+2008-04-22 [paul]	3.4.0cvs7
+
+	* src/prefs_common.c
+	* src/prefs_common.h
+	* src/summaryview.c
+		make the 2-line view in summaryview when in three
+		columns mode configurable. hidden pref: "two_line_vertical"
+
 2008-04-22 [colin]	3.4.0cvs6
 
 	* src/inc.c

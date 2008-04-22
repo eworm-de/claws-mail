@@ -856,7 +856,8 @@ void summary_relayout(SummaryView *summaryview)
 		break;
 	}
 	summary_set_column_order(summaryview);
-	if (prefs_common.layout_mode == VERTICAL_LAYOUT) {
+	if (prefs_common.layout_mode == VERTICAL_LAYOUT &&
+	    prefs_common.two_line_vert) {
 		gtk_clist_set_row_height(GTK_CLIST(summaryview->ctree), 2*normal_row_height + 2);		
 	} else {
 		gtk_clist_set_row_height(GTK_CLIST(summaryview->ctree), 0);		
@@ -2947,7 +2948,7 @@ static gboolean summary_insert_gnode_func(GtkCTree *ctree, guint depth, GNode *g
 	if (summaryview->col_state[summaryview->col_pos[S_COL_TAGS]].visible)
 		SET_TEXT(S_COL_TAGS);
 
-	if (vert)
+	if (vert && prefs_common.two_line_vert)
 		g_free(text[summaryview->col_pos[S_COL_SUBJECT]]);
 
 #undef SET_TEXT
@@ -3027,7 +3028,7 @@ static void summary_set_ctree_from_list(SummaryView *summaryview,
 				(ctree, NULL, node, text, 2,
 				 NULL, NULL, NULL, NULL,
 				 FALSE, FALSE);
-			if (vert)
+			if (vert && prefs_common.two_line_vert)
 				g_free(text[summaryview->col_pos[S_COL_SUBJECT]]);
 
 			GTKUT_CTREE_NODE_SET_ROW_DATA(node, msginfo);
@@ -3172,7 +3173,8 @@ static inline void summary_set_header(SummaryView *summaryview, gchar *text[],
 		text[col_pos[S_COL_TAGS]] = "";
 
 	/* slow! */
-	if (summaryview->col_state[summaryview->col_pos[S_COL_DATE]].visible || vert) {
+	if (summaryview->col_state[summaryview->col_pos[S_COL_DATE]].visible || 
+	    (vert && prefs_common.two_line_vert)) {
 		if (msginfo->date_t) {
 			procheader_date_get_localtime(date_modified,
 						      sizeof(date_modified),
@@ -3239,7 +3241,7 @@ static inline void summary_set_header(SummaryView *summaryview, gchar *text[],
 	else 
 		text[col_pos[S_COL_SUBJECT]] = msginfo->subject ? msginfo->subject :
 			_("(No Subject)");
-	if (vert) {
+	if (vert && prefs_common.two_line_vert) {
 		gchar *tmp = g_markup_printf_escaped(_("%s\n<span color='%s' style='italic'>From: %s, on %s</span>"),
 				text[col_pos[S_COL_SUBJECT]],
 				color_dim_rgb,
@@ -5967,7 +5969,7 @@ static gboolean tooltip_cb (GtkWidget  *widget,
 
 	if (!vert)	
 		gtk_tooltip_set_text (tooltip, formatted);
-	else
+	else if (prefs_common.two_line_vert)
 		gtk_tooltip_set_markup (tooltip, formatted);
 	g_free(formatted);
 	
@@ -6070,15 +6072,16 @@ static GtkWidget *summary_ctree_create(SummaryView *summaryview)
 		GTK_WIDGET_UNSET_FLAGS(GTK_CLIST(ctree)->column[pos].button,
 				       GTK_CAN_FOCUS);
 		if ((pos == summaryview->col_pos[S_COL_FROM] ||
-		     pos == summaryview->col_pos[S_COL_DATE]) && vert)
+		     pos == summaryview->col_pos[S_COL_DATE]) && vert &&
+			    prefs_common.two_line_vert)
 			gtk_clist_set_column_visibility
 				(GTK_CLIST(ctree), pos, FALSE);
 		else
 			gtk_clist_set_column_visibility
 				(GTK_CLIST(ctree), pos, col_state[pos].visible);
 	}
-
-	gtk_sctree_set_use_markup(GTK_SCTREE(ctree), summaryview->col_pos[S_COL_SUBJECT], vert);
+	if (prefs_common.two_line_vert)
+		gtk_sctree_set_use_markup(GTK_SCTREE(ctree), summaryview->col_pos[S_COL_SUBJECT], vert);
 
 	/* connect signal to the buttons for sorting */
 #define CLIST_BUTTON_SIGNAL_CONNECT(col, func) \

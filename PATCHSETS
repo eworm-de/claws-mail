@@ -3302,3 +3302,4 @@
 ( cvs diff -u -r 1.149.2.87 -r 1.149.2.88 src/inc.c;  cvs diff -u -r 1.204.2.164 -r 1.204.2.165 src/prefs_common.c;  cvs diff -u -r 1.17.2.45 -r 1.17.2.46 src/send_message.c;  ) > 3.4.0cvs4.patchset
 ( cvs diff -u -r 1.1.4.99 -r 1.1.4.100 src/etpan/imap-thread.c;  ) > 3.4.0cvs5.patchset
 ( cvs diff -u -r 1.149.2.88 -r 1.149.2.89 src/inc.c;  cvs diff -u -r 1.43.2.70 -r 1.43.2.71 src/prefs_matcher.c;  cvs diff -u -r 1.17.2.46 -r 1.17.2.47 src/send_message.c;  ) > 3.4.0cvs6.patchset
+( cvs diff -u -r 1.204.2.165 -r 1.204.2.166 src/prefs_common.c;  cvs diff -u -r 1.103.2.106 -r 1.103.2.107 src/prefs_common.h;  cvs diff -u -r 1.395.2.364 -r 1.395.2.365 src/summaryview.c;  ) > 3.4.0cvs7.patchset
