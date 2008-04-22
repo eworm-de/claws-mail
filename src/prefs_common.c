@@ -835,8 +835,13 @@ static PrefParam param[] = {
 	 NULL, NULL, NULL},
 #endif
 
+#if defined(__OpenBSD__)
+	{"io_timeout_secs", "75", &prefs_common.io_timeout_secs,
+	 P_INT, NULL, NULL, NULL},
+#else
 	{"io_timeout_secs", "60", &prefs_common.io_timeout_secs,
 	 P_INT, NULL, NULL, NULL},
+#endif
 	{"hide_score", "-9999", &prefs_common.kill_score, P_INT,
 	 NULL, NULL, NULL},
 	{"important_score", "1", &prefs_common.important_score, P_INT,

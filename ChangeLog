@@ -1,3 +1,11 @@
+2008-04-22 [colin]	3.4.0cvs4
+
+	* src/inc.c
+	* src/prefs_common.c
+	* src/send_message.c
+		Fix bug 1566, 'too short I/O timeout on OpenBSD'
+		Set the default timeout to 75 seconds
+
 2008-04-20 [colin]	3.4.0cvs3
 
 	* src/pixmaps/tray_newmail.offline.xpm

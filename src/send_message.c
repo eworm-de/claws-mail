@@ -649,7 +649,9 @@ static void send_put_error(Session *session)
 			err_msg = g_strdup(log_msg);
 			break;
 		case SESSION_TIMEOUT:
-			log_msg = _("Session timed out.");
+			log_msg = _("Session timed out. You may be able to "
+				    "recover by increasing the timeout value in 
+				    "Preferences/Other.");
 			err_msg = g_strdup(log_msg);
 			break;
 		default:
