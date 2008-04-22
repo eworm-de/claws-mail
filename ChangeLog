@@ -1,3 +1,11 @@
+2008-04-22 [colin]	3.4.0cvs6
+
+	* src/inc.c
+		Fix missing inc_unlock()
+	* src/prefs_matcher.c
+	* src/send_message.c
+		Fix my last commit
+
 2008-04-22 [colin]	3.4.0cvs5
 
 	* src/etpan/imap-thread.c

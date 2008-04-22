@@ -205,6 +205,7 @@ void inc_mail(MainWindow *mainwin, gboolean notify)
 		if (execute_command_line(prefs_common.extinc_cmd, FALSE) < 0) {
 			main_window_unlock(mainwin);
 			inc_autocheck_timer_set();
+			inc_unlock();
 			return;
 		}
 	} else {
@@ -1213,7 +1214,7 @@ static void inc_put_error(IncState istate, Pop3Session *session)
 		break;
 	case INC_TIMEOUT:
 		log_msg = _("Session timed out. You may be able to "
-			    "recover by increasing the timeout value in 
+			    "recover by increasing the timeout value in "
 			    "Preferences/Other.");
 		if (prefs_common.no_recv_err_panel)
 			break;

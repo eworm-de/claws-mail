@@ -1951,11 +1951,11 @@ static void prefs_matcher_ok(void)
 		}
                 g_free(str);
 		gtk_widget_hide(matcher.window);
-		inc_unlock();
 		if (matchers_callback != NULL)
 			matchers_callback(matchers);
 		matcherlist_free(matchers);
 	}
+	inc_unlock();
 }
 
 /*!
