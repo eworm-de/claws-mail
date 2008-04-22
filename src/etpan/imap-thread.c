@@ -3105,37 +3105,20 @@ static void do_exec_command(int fd, const char * command,
 		exit(0);
 	}
   
-#ifdef SOLARIS
 	if (servername)
-		snprintf(env_buffer, ENV_BUFFER_SIZE,
-			 "ETPANSERVER=%s", servername);
+		g_setenv("ETPANSERVER", servername, TRUE);
 	else
-		snprintf(env_buffer, ENV_BUFFER_SIZE, "ETPANSERVER=");
-	putenv(env_buffer);
-#else
-	if (servername)
-		setenv("ETPANSERVER", servername, 1);
-	else
-		unsetenv("ETPANSERVER");
-#endif
+		g_unsetenv("ETPANSERVER");
   
-#ifdef SOLARIS
-	if (port)
-		snprintf(env_buffer, ENV_BUFFER_SIZE, "ETPANPORT=%d", port);
-	else
-		snprintf(env_buffer, ENV_BUFFER_SIZE, "ETPANPORT=");
-	putenv(env_buffer);
-#else
 	if (port) {
 		char porttext[20];
 		
 		snprintf(porttext, sizeof(porttext), "%d", port);
-		setenv("ETPANPORT", porttext, 1);
+		g_setenv("ETPANPORT", porttext, TRUE);
 	}
 	else {
-		unsetenv("ETPANPORT");
+		g_unsetenv("ETPANPORT");
 	}
-#endif
 		
 	/* Not a lot we can do if there's an error other than bail. */
 	if (dup2(fd, 0) == -1)

@@ -1,3 +1,9 @@
+2008-04-22 [colin]	3.4.0cvs5
+
+	* src/etpan/imap-thread.c
+		Use g_(un)setenv instead of (un)setenv which
+		doesn't exist on IRIX 6.5
+
 2008-04-22 [colin]	3.4.0cvs4
 
 	* src/inc.c
