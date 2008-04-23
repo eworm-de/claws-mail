@@ -1,3 +1,12 @@
+2008-04-23 [colin]	3.4.0cvs9
+
+	* src/compose.c
+	* src/prefs_folder_item.c
+	* src/prefs_template.c
+	* src/quote_fmt.c
+		Fix bug 1576: Fix unescaping of templates when testing them
+		I think it breaks nothing. (wwp, you're welcome to double-check)
+
 2008-04-23 [paul]	3.4.0cvs8
 
 	* manual/advanced.xml

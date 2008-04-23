@@ -1305,6 +1305,7 @@ static void templates_save_folder_prefs(FolderItem *folder, FolderItemTemplatesP
 	/* save and check formats */
 
 	if (all || gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(page->new_msg_format_rec_checkbtn))) {
+		
 		prefs->compose_with_format =
 			gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(page->checkbtn_compose_with_format));
 		prefs->compose_override_from_format = pref_get_pref_from_entry(
@@ -1314,9 +1315,9 @@ static void templates_save_folder_prefs(FolderItem *folder, FolderItemTemplatesP
 		prefs->compose_body_format = pref_get_pref_from_textview(
 				GTK_TEXT_VIEW(page->compose_body_format));
 		quotefmt_check_new_msg_formats(prefs->compose_with_format,
-										prefs->compose_override_from_format,
-										prefs->compose_subject_format,
-										prefs->compose_body_format);
+						prefs->compose_override_from_format,
+						prefs->compose_subject_format,
+						prefs->compose_body_format);
 	}
 
 	if (all || gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(page->reply_format_rec_checkbtn))) {

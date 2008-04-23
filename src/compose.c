@@ -9261,7 +9261,8 @@ static void entry_paste_clipboard(Compose *compose, GtkWidget *entry,
 		}
 	} else if (GTK_IS_EDITABLE(entry))
 		gtk_editable_paste_clipboard (GTK_EDITABLE(entry));
-	
+
+	compose->modified = TRUE;
 }
 
 static void entry_allsel(GtkWidget *entry)

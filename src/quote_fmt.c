@@ -523,17 +523,17 @@ void quotefmt_add_defaults_button(GtkWindow *parent_window,
 }
 
 void quotefmt_check_new_msg_formats(gboolean use_format,
-									gchar *override_from_fmt,
-									gchar *subject_fmt,
-									gchar *body_fmt)
+				    gchar *override_from_fmt,
+				    gchar *subject_fmt,
+				    gchar *body_fmt)
 {
 	if (use_format) {
 		gint line;
 
-		if (override_from_fmt && !prefs_template_string_is_valid(override_from_fmt, NULL, FALSE, TRUE))
+		if (override_from_fmt && !prefs_template_string_is_valid(override_from_fmt, NULL, TRUE, TRUE))
 			alertpanel_error(_("New message From format error."));
 
-		if (!prefs_template_string_is_valid(subject_fmt, NULL, FALSE, FALSE))
+		if (!prefs_template_string_is_valid(subject_fmt, NULL, TRUE, FALSE))
 			alertpanel_error(_("New message subject format error."));
 
 		if (!prefs_template_string_is_valid(body_fmt, &line, TRUE, FALSE)) {
@@ -543,17 +543,17 @@ void quotefmt_check_new_msg_formats(gboolean use_format,
 }
 
 void quotefmt_check_reply_formats(gboolean use_format,
-									gchar *override_from_fmt,
-									gchar *quotation_mark,
-									gchar *body_fmt)
+				  gchar *override_from_fmt,
+				  gchar *quotation_mark,
+				  gchar *body_fmt)
 {
 	if (use_format) {
 		gint line;
 
-		if (!prefs_template_string_is_valid(quotation_mark, NULL, FALSE, FALSE))
+		if (!prefs_template_string_is_valid(quotation_mark, NULL, TRUE, FALSE))
 			alertpanel_error(_("Message reply quotation mark format error."));
 
-		if (override_from_fmt && !prefs_template_string_is_valid(override_from_fmt, NULL, FALSE, TRUE))
+		if (override_from_fmt && !prefs_template_string_is_valid(override_from_fmt, NULL, TRUE, TRUE))
 			alertpanel_error(_("Message reply From format error."));
 
 		if (!prefs_template_string_is_valid(body_fmt, &line, TRUE, FALSE)) {
@@ -563,17 +563,17 @@ void quotefmt_check_reply_formats(gboolean use_format,
 }
 
 void quotefmt_check_forward_formats(gboolean use_format,
-									gchar *override_from_fmt,
-									gchar *quotation_mark,
-									gchar *body_fmt)
+				    gchar *override_from_fmt,
+				    gchar *quotation_mark,
+				    gchar *body_fmt)
 {
 	if (use_format) {
 		gint line;
 
-		if (!prefs_template_string_is_valid(quotation_mark, NULL, FALSE, FALSE))
+		if (!prefs_template_string_is_valid(quotation_mark, NULL, TRUE, FALSE))
 			alertpanel_error(_("Message forward quotation mark format error."));
 
-		if (override_from_fmt && !prefs_template_string_is_valid(override_from_fmt, NULL, FALSE, TRUE))
+		if (override_from_fmt && !prefs_template_string_is_valid(override_from_fmt, NULL, TRUE, TRUE))
 			alertpanel_error(_("Message forward From format error."));
 
 		if (!prefs_template_string_is_valid(body_fmt, &line, TRUE, FALSE)) {

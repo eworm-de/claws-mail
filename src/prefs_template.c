@@ -640,18 +640,26 @@ gboolean prefs_template_string_is_valid(gchar *string, gint *line, gboolean esca
 {
 	gboolean result = TRUE;
 	if (string && *string != '\0') {
+		gchar *tmp = NULL;
 		gchar *parsed_buf;
 		MsgInfo dummyinfo;
 		PrefsAccount *account = account_get_default();
 
+		if (escaped_string) {
+			tmp = malloc(strlen(string)+1);
+			pref_get_unescaped_pref(tmp, string);
+		} else {
+			tmp = g_strdup(string);
+		}
 		memset(&dummyinfo, 0, sizeof(MsgInfo));
 #ifdef USE_ASPELL
-		quote_fmt_init(&dummyinfo, NULL, NULL, TRUE, account, escaped_string, NULL);
+		quote_fmt_init(&dummyinfo, NULL, NULL, TRUE, account, FALSE, NULL);
 #else
-		quote_fmt_init(&dummyinfo, NULL, NULL, TRUE, account, escaped_string);
+		quote_fmt_init(&dummyinfo, NULL, NULL, TRUE, account, FALSE);
 #endif
-		quote_fmt_scan_string(string);
+		quote_fmt_scan_string(tmp);
 		quote_fmt_parse();
+		g_free(tmp);
 		parsed_buf = quote_fmt_get_buffer();
 		if (!parsed_buf) {
 			if (line)
@@ -700,7 +708,7 @@ static gboolean prefs_template_list_view_set_row(gint row)
 			g_free(value);
 		value = NULL;
 		}
-	if (!prefs_template_string_is_valid(value, &line, FALSE, FALSE)) {
+	if (!prefs_template_string_is_valid(value, &line, TRUE, FALSE)) {
 		alertpanel_error(_("Template body format error at line %d."), line);
 		g_free(value);
 		return FALSE;
@@ -745,31 +753,31 @@ static gboolean prefs_template_list_view_set_row(gint row)
 		subject = NULL;
 	}
 
-	if (!prefs_template_string_is_valid(from, NULL, FALSE, TRUE)) {
+	if (!prefs_template_string_is_valid(from, NULL, TRUE, TRUE)) {
 		alertpanel_error(_("Template From format error."));
 		g_free(from);
 		g_free(value);
 		return FALSE;
 	}
-	if (!prefs_template_string_is_valid(to, NULL, FALSE, TRUE)) {
+	if (!prefs_template_string_is_valid(to, NULL, TRUE, TRUE)) {
 		alertpanel_error(_("Template To format error."));
 		g_free(to);
 		g_free(value);
 		return FALSE;
 	}
-	if (!prefs_template_string_is_valid(cc, NULL, FALSE, TRUE)) {
+	if (!prefs_template_string_is_valid(cc, NULL, TRUE, TRUE)) {
 		alertpanel_error(_("Template Cc format error."));	
 		g_free(cc);
 		g_free(value);
 		return FALSE;
 	}
-	if (!prefs_template_string_is_valid(bcc, NULL, FALSE, TRUE)) {
+	if (!prefs_template_string_is_valid(bcc, NULL, TRUE, TRUE)) {
 		alertpanel_error(_("Template Bcc format error."));	
 		g_free(bcc);
 		g_free(value);
 		return FALSE;
 	}
-	if (!prefs_template_string_is_valid(subject, NULL, FALSE, FALSE)) {
+	if (!prefs_template_string_is_valid(subject, NULL, TRUE, FALSE)) {
 		alertpanel_error(_("Template subject format error."));	
 		g_free(subject);
 		g_free(value);
