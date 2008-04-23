@@ -1,3 +1,9 @@
+2008-04-23 [paul]	3.4.0cvs8
+
+	* manual/advanced.xml
+		add info about the "two_line_vertical" hidden
+		pref
+
 2008-04-22 [paul]	3.4.0cvs7
 
 	* src/prefs_common.c

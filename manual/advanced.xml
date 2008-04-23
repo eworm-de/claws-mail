@@ -714,6 +714,15 @@
 	</listitem>
       </varlistentry>
       <varlistentry>
+	<term><literal>two_line_vertical</literal></term>
+	<listitem>
+	  <para>
+	Spread message list information over two lines when using the
+	three column layout.
+	  </para>
+	</listitem>
+      </varlistentry>
+      <varlistentry>
 	<term><literal>unsafe_ssl_certs</literal></term>
 	<listitem>
 	<para>
