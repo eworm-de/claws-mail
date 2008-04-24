@@ -836,7 +836,7 @@ static PrefParam param[] = {
 #endif
 
 #if defined(__OpenBSD__)
-	{"io_timeout_secs", "75", &prefs_common.io_timeout_secs,
+	{"io_timeout_secs", "80", &prefs_common.io_timeout_secs,
 	 P_INT, NULL, NULL, NULL},
 #else
 	{"io_timeout_secs", "60", &prefs_common.io_timeout_secs,

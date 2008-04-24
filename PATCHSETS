@@ -3305,3 +3305,4 @@
 ( cvs diff -u -r 1.204.2.165 -r 1.204.2.166 src/prefs_common.c;  cvs diff -u -r 1.103.2.106 -r 1.103.2.107 src/prefs_common.h;  cvs diff -u -r 1.395.2.364 -r 1.395.2.365 src/summaryview.c;  ) > 3.4.0cvs7.patchset
 ( cvs diff -u -r 1.1.2.46 -r 1.1.2.47 manual/advanced.xml;  ) > 3.4.0cvs8.patchset
 ( cvs diff -u -r 1.382.2.443 -r 1.382.2.444 src/compose.c;  cvs diff -u -r 1.52.2.62 -r 1.52.2.63 src/prefs_folder_item.c;  cvs diff -u -r 1.12.2.61 -r 1.12.2.62 src/prefs_template.c;  cvs diff -u -r 1.8.2.33 -r 1.8.2.34 src/quote_fmt.c;  ) > 3.4.0cvs9.patchset
+( cvs diff -u -r 1.204.2.166 -r 1.204.2.167 src/prefs_common.c;  ) > 3.4.0cvs10.patchset

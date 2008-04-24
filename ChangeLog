@@ -1,3 +1,8 @@
+2008-04-24 [colin]	3.4.0cvs10
+
+	* src/prefs_common.c
+		Increment the timeout a bit on OpenBSD, 75 isn't enough
+
 2008-04-23 [colin]	3.4.0cvs9
 
 	* src/compose.c
