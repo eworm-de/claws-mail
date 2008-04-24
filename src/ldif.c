@@ -47,7 +47,6 @@ LdifFile *ldif_create() {
 	ldifFile = g_new0( LdifFile, 1 );
 	ldifFile->path = NULL;
 	ldifFile->file = NULL;
-	ldifFile->bufptr = ldifFile->buffer;
 	ldifFile->hashFields = g_hash_table_new( g_str_hash, g_str_equal );
 	ldifFile->tempList = NULL;
 	ldifFile->dirtyFlag = TRUE;
@@ -226,8 +225,6 @@ static gint ldif_open_file( LdifFile* ldifFile ) {
 	}
 
 	/* Setup a buffer area */
-	ldifFile->buffer[0] = '\0';
-	ldifFile->bufptr = ldifFile->buffer;
 	ldifFile->retVal = MGU_SUCCESS;
 	return ldifFile->retVal;
 }
@@ -248,14 +245,15 @@ static void ldif_close_file( LdifFile *ldifFile ) {
  * \return ptr to buffer where line starts.
  */
 static gchar *ldif_get_line( LdifFile *ldifFile ) {
-	gchar buf[ LDIFBUFSIZE ];
+	gchar *buf = g_malloc(LDIFBUFSIZE);
 	gint ch;
 	int i = 0;
+	int cur_alloc = LDIFBUFSIZE;
 
 	if( feof( ldifFile->file ) ) 
 		return NULL;
 
-	while( i < LDIFBUFSIZE-1 ) {
+	while( i < cur_alloc-1 ) {
 		ch = fgetc( ldifFile->file );
 		if (ferror( ldifFile->file ))
 			ldifFile->retVal = MGU_ERROR_READ;
@@ -272,6 +270,10 @@ static gchar *ldif_get_line( LdifFile *ldifFile ) {
 			break;
 		buf[i] = ch;
 		i++;
+		if (i == cur_alloc-1 && cur_alloc < LDIFBUFSIZE * 32) {
+			cur_alloc += LDIFBUFSIZE;
+			buf = g_realloc(buf, cur_alloc);
+		}
 	}
 	buf[i] = '\0';
 
@@ -394,7 +396,7 @@ static void ldif_build_items(
 	ItemEMail *email;
 
 	nodeAddress = rec->listAddress;
-	if( nodeAddress == NULL ) return;
+//	if( nodeAddress == NULL ) return;
 
 	/* Find longest first name in list */
 	nodeFirst = rec->listFName;

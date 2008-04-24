@@ -1,3 +1,14 @@
+2008-04-24 [colin]	3.4.0cvs11
+
+	* src/inc.c
+	* src/inc.h
+		Trace inc locks
+	* src/ldif.c
+	* src/ldif.h
+		Fix bug 1581, 'Bad File Format during Import LDIF':
+		Use dynamically allocated buffers; also, allow 
+		importing contacts with no email address
+
 2008-04-24 [colin]	3.4.0cvs10
 
 	* src/prefs_common.c

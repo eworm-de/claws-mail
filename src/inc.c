@@ -82,7 +82,7 @@ static gboolean maemo_warned_offline = FALSE;
 
 static GList *inc_dialog_list = NULL;
 
-static guint inc_lock_count = 0;
+guint inc_lock_count = 0;
 
 static GdkPixbuf *currentpix;
 static GdkPixbuf *errorpix;
@@ -1387,12 +1387,12 @@ static gint get_spool(FolderItem *dest, const gchar *mbox, PrefsAccount *account
 	return msgs;
 }
 
-void inc_lock(void)
+void inc_lock_real(void)
 {
 	inc_lock_count++;
 }
 
-void inc_unlock(void)
+void inc_unlock_real(void)
 {
 	if (inc_lock_count > 0)
 		inc_lock_count--;

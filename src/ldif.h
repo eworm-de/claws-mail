@@ -87,7 +87,6 @@ struct _LdifFile {
 	FILE       *file;
 	gchar      *path;
 	gchar      *bufptr;
-	gchar      buffer[ LDIFBUFSIZE ];
 	gint       retVal;
 	GHashTable *hashFields;
 	GList      *tempList;

@@ -92,8 +92,19 @@ gboolean inc_is_active		(void);
 
 void inc_cancel_all		(void);
 
-void inc_lock			(void);
-void inc_unlock			(void);
+extern guint inc_lock_count;
+#define inc_lock() {								\
+	inc_lock_real();							\
+	debug_print("called inc_lock (lock count %d)\n", inc_lock_count);	\
+}
+
+#define inc_unlock() {								\
+	inc_unlock_real();							\
+	debug_print("called inc_unlock (lock count %d)\n", inc_lock_count);	\
+}
+
+void inc_lock_real		(void);
+void inc_unlock_real		(void);
 
 void inc_autocheck_timer_init	(MainWindow	*mainwin);
 void inc_autocheck_timer_set	(void);
