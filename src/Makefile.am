@@ -14,6 +14,21 @@ install-exec-hook:
 	@rm -f $(DESTDIR)$(bindir)/sylpheed-claws
 	@ln -s claws-mail $(DESTDIR)$(bindir)/sylpheed-claws
 
+if PLATFORM_WIN32
+LTRCCOMPILE = $(LIBTOOL) --mode=compile $(RC) \
+     `echo $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) | \
+     sed -e 's/-I/--include-dir /g;s/-D/--define /g'`
+
+%.o : %.rc
+	$(LTRCCOMPILE) -i $< -o $@
+
+claws_mail_res_ldflag = -Wl,w32-resource.o
+claws_mail_deps = w32-resource.o
+else
+claws_mail_res_ldflag =
+claws_mail_deps =
+endif
+
 claws_mail_SOURCES = \
 	account.c \
 	action.c \
@@ -311,6 +326,7 @@ BUILT_SOURCES = \
 	quote_fmt_parse.h
 
 EXTRA_DIST = \
+	w32-logo.ico w32-resource.rc \
 	pixmaps/addr_one.xpm \
 	pixmaps/addr_two.xpm \
 	pixmaps/address_book.xpm \
@@ -483,7 +499,11 @@ arch_ldflags :=
 endif
 
 claws_mail_LDFLAGS = \
-	$(arch_ldflags) -export-dynamic
+	$(arch_ldflags) -export-dynamic $(claws_mail_res_ldflag)
+
+claws_mail_DEPENDENCIES = $(claws_mail_deps) \
+	$(etpan_library) \
+	gtk/libclawsgtk.la
 
 claws_mail_LDADD = \
 	$(etpan_library) \

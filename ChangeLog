@@ -1,3 +1,10 @@
+2008-04-25 [colin]	3.4.0cvs12
+
+	* src/Makefile.am
+	* src/w32-logo.ico
+	* src/w32-resource.rc
+		Patch from Marcus Brinkmann to set an icon on w32.
+
 2008-04-24 [colin]	3.4.0cvs11
 
 	* src/inc.c
