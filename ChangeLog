@@ -1,3 +1,9 @@
+2008-04-25 [colin]	3.4.0cvs13
+
+	* src/summaryview.c
+		Fix bug 1586, '3-pane vertical layout now and then 
+		still shows sender column'
+
 2008-04-25 [colin]	3.4.0cvs12
 
 	* src/Makefile.am

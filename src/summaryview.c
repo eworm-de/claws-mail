@@ -1024,9 +1024,9 @@ void summary_init(SummaryView *summaryview)
   && (!g_ascii_strcasecmp(m->folder->name,item->name)) )
 
 #define FOLDER_SHOWS_TO_HDR(i) \
-( folder_has_parent_of_type(i, F_OUTBOX) \
-  ||  folder_has_parent_of_type(i, F_DRAFT) \
-  ||  folder_has_parent_of_type(i, F_QUEUE) )
+( i && (folder_has_parent_of_type(i, F_OUTBOX) \
+        || folder_has_parent_of_type(i, F_DRAFT) \
+        || folder_has_parent_of_type(i, F_QUEUE)) )
   
 static void summary_switch_from_to(SummaryView *summaryview, FolderItem *item)
 {
@@ -1036,7 +1036,7 @@ static void summary_switch_from_to(SummaryView *summaryview, FolderItem *item)
 	SummaryColumnState *col_state = summaryview->col_state;
 	GtkCTree *ctree = GTK_CTREE(summaryview->ctree);
 	
-	if (!item)
+	if (!item || (prefs_common.layout_mode == VERTICAL_LAYOUT && prefs_common.two_line_vert) )
 		return;
 	if (FOLDER_SHOWS_TO_HDR(item))
 		show_to = TRUE;
@@ -3242,12 +3242,21 @@ static inline void summary_set_header(SummaryView *summaryview, gchar *text[],
 		text[col_pos[S_COL_SUBJECT]] = msginfo->subject ? msginfo->subject :
 			_("(No Subject)");
 	if (vert && prefs_common.two_line_vert) {
-		gchar *tmp = g_markup_printf_escaped(_("%s\n<span color='%s' style='italic'>From: %s, on %s</span>"),
-				text[col_pos[S_COL_SUBJECT]],
-				color_dim_rgb,
-				text[col_pos[S_COL_FROM]],
-				text[col_pos[S_COL_DATE]]);
-		text[col_pos[S_COL_SUBJECT]] = tmp;
+		if (!FOLDER_SHOWS_TO_HDR(summaryview->folder_item)) {
+			gchar *tmp = g_markup_printf_escaped(_("%s\n<span color='%s' style='italic'>From: %s, on %s</span>"),
+					text[col_pos[S_COL_SUBJECT]],
+					color_dim_rgb,
+					text[col_pos[S_COL_FROM]],
+					text[col_pos[S_COL_DATE]]);
+			text[col_pos[S_COL_SUBJECT]] = tmp;
+		} else {
+			gchar *tmp = g_markup_printf_escaped(_("%s\n<span color='%s' style='italic'>To: %s, on %s</span>"),
+					text[col_pos[S_COL_SUBJECT]],
+					color_dim_rgb,
+					text[col_pos[S_COL_TO]],
+					text[col_pos[S_COL_DATE]]);
+			text[col_pos[S_COL_SUBJECT]] = tmp;
+		}
 	}
 }
 
@@ -6071,7 +6080,8 @@ static GtkWidget *summary_ctree_create(SummaryView *summaryview)
 	for (pos = 0; pos < N_SUMMARY_COLS; pos++) {
 		GTK_WIDGET_UNSET_FLAGS(GTK_CLIST(ctree)->column[pos].button,
 				       GTK_CAN_FOCUS);
-		if ((pos == summaryview->col_pos[S_COL_FROM] ||
+		if (((pos == summaryview->col_pos[S_COL_FROM] && !FOLDER_SHOWS_TO_HDR(summaryview->folder_item)) ||
+		     (pos == summaryview->col_pos[S_COL_TO] && FOLDER_SHOWS_TO_HDR(summaryview->folder_item)) ||
 		     pos == summaryview->col_pos[S_COL_DATE]) && vert &&
 			    prefs_common.two_line_vert)
 			gtk_clist_set_column_visibility
