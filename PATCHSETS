@@ -3309,3 +3309,4 @@
 ( cvs diff -u -r 1.149.2.89 -r 1.149.2.90 src/inc.c;  cvs diff -u -r 1.29.2.13 -r 1.29.2.14 src/inc.h;  cvs diff -u -r 1.12.2.15 -r 1.12.2.16 src/ldif.c;  cvs diff -u -r 1.5.2.6 -r 1.5.2.7 src/ldif.h;  ) > 3.4.0cvs11.patchset
 ( cvs diff -u -r 1.155.2.84 -r 1.155.2.85 src/Makefile.am;  diff -u /dev/null src/w32-logo.ico;  diff -u /dev/null src/w32-resource.rc;  ) > 3.4.0cvs12.patchset
 ( cvs diff -u -r 1.395.2.365 -r 1.395.2.366 src/summaryview.c;  ) > 3.4.0cvs13.patchset
+( cvs diff -u -r 1.9.2.14 -r 1.9.2.15 src/addrindex.h;  cvs diff -u -r 1.9.2.26 -r 1.9.2.27 src/common/ssl.c;  cvs diff -u -r 1.4.2.26 -r 1.4.2.27 src/common/ssl_certificate.c;  ) > 3.4.0cvs14.patchset

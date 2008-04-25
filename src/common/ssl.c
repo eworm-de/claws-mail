@@ -123,14 +123,14 @@ static gint SSL_connect_nb(SSL *ssl)
 static gint SSL_connect_nb(gnutls_session ssl)
 #endif
 {
+#ifdef USE_GNUTLS
+	int result;
+#endif
 #ifdef USE_PTHREAD
 	thread_data *td = g_new0(thread_data, 1);
 	pthread_t pt;
 	pthread_attr_t pta;
 	void *res = NULL;
-#ifdef USE_GNUTLS
-	int result;
-#endif
 	time_t start_time = time(NULL);
 	gboolean killed = FALSE;
 	
@@ -179,7 +179,11 @@ static gint SSL_connect_nb(gnutls_session ssl)
 	return SSL_connect(ssl);
 #else
 	do {
+#ifdef USE_PTHRED
 		result = gnutls_handshake(td->ssl);
+#else
+		result = gnutls_handshake(ssl);
+#endif
 	} while (result == GNUTLS_E_AGAIN || result == GNUTLS_E_INTERRUPTED);
 #endif
 #endif

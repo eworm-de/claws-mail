@@ -33,16 +33,16 @@
 #include <string.h>
 #endif
 #include <sys/types.h>
-#include <sys/socket.h>
-#include <netinet/in.h>
 #include <stdio.h>
-#include <netdb.h>
 #include <glib.h>
 #include <glib/gi18n.h>
-
 #ifdef G_OS_WIN32
-#include "winsock2.h"
-#endif
+#  include <winsock2.h>
+#else
+#  include <sys/socket.h>
+#  include <netinet/in.h>
+#  include <netdb.h>
+#endif /* G_OS_WIN32 */
 #include "ssl_certificate.h"
 #include "utils.h"
 #include "log.h"

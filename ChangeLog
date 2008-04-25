@@ -1,3 +1,12 @@
+2008-04-25 [colin]	3.4.0cvs14
+
+	* src/addrindex.h
+	* src/common/ssl_certificate.c
+		Patch by Marcus: Fix Win32 build
+	* src/common/ssl.c
+		Fix build with GnuTLS/no pthread, thanks
+		to Marcus
+
 2008-04-25 [colin]	3.4.0cvs13
 
 	* src/summaryview.c

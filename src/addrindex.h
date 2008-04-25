@@ -91,6 +91,11 @@ struct _AddressInterface {
 	void (*stopSearch)( void * );
 };
 
+#ifdef G_OS_WIN32
+/* W32 headers define INTERFACE to "struct".  */
+#undef interface
+#endif
+
 typedef struct _AddressDataSource AddressDataSource;
 struct _AddressDataSource {
 	AddrItemObject obj;
