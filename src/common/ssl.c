@@ -174,16 +174,12 @@ static gint SSL_connect_nb(gnutls_session ssl)
 			GPOINTER_TO_INT(res));
 	
 	return GPOINTER_TO_INT(res);
-#else
+#else /* USE_PTHREAD */
 #ifdef USE_OPENSSL
 	return SSL_connect(ssl);
 #else
 	do {
-#ifdef USE_PTHRED
-		result = gnutls_handshake(td->ssl);
-#else
 		result = gnutls_handshake(ssl);
-#endif
 	} while (result == GNUTLS_E_AGAIN || result == GNUTLS_E_INTERRUPTED);
 #endif
 #endif
