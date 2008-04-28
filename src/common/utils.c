@@ -5019,6 +5019,9 @@ int claws_unlink(const gchar *filename)
 	static int found_shred = -1;
 	static const gchar *args[4];
 
+	if (filename == NULL)
+		return 0;
+
 	if (found_shred == -1) {
 		/* init */
 		args[0] = g_find_program_in_path("shred");

@@ -1,3 +1,11 @@
+2008-04-28 [colin]	3.4.0cvs16
+
+	* src/folder.c
+		Fix bug 1589, 'tagsdb file not removed when
+		folder deleted'.
+	* src/common/utils.c
+		Make sure claws_unlink accepts NULL arg.
+
 2008-04-25 [colin]	3.4.0cvs15
 
 	* src/common/ssl.c

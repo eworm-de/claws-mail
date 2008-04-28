@@ -3311,3 +3311,4 @@
 ( cvs diff -u -r 1.395.2.365 -r 1.395.2.366 src/summaryview.c;  ) > 3.4.0cvs13.patchset
 ( cvs diff -u -r 1.9.2.14 -r 1.9.2.15 src/addrindex.h;  cvs diff -u -r 1.9.2.26 -r 1.9.2.27 src/common/ssl.c;  cvs diff -u -r 1.4.2.26 -r 1.4.2.27 src/common/ssl_certificate.c;  ) > 3.4.0cvs14.patchset
 ( cvs diff -u -r 1.9.2.27 -r 1.9.2.28 src/common/ssl.c;  ) > 3.4.0cvs15.patchset
+( cvs diff -u -r 1.213.2.181 -r 1.213.2.182 src/folder.c;  cvs diff -u -r 1.36.2.137 -r 1.36.2.138 src/common/utils.c;  ) > 3.4.0cvs16.patchset

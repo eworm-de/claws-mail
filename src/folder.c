@@ -398,6 +398,7 @@ void folder_item_remove(FolderItem *item)
 {
 	GNode *node, *start_node;
 	FolderUpdateData hookdata;
+	gchar *tags_file = NULL;
 
 	g_return_if_fail(item != NULL);
 	g_return_if_fail(item->folder != NULL);
@@ -424,6 +425,10 @@ void folder_item_remove(FolderItem *item)
 		msgcache_destroy(item->cache);
 		item->cache = NULL;
 	}
+	tags_file = folder_item_get_tags_file(item);
+	if (tags_file)
+		claws_unlink(tags_file);
+	g_free(tags_file);
 
 	hookdata.folder = item->folder;
 	hookdata.update_flags = FOLDER_TREE_CHANGED | FOLDER_REMOVE_FOLDERITEM;
