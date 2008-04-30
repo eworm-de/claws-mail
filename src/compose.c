@@ -152,7 +152,6 @@ typedef enum
 	COMPOSE_CALL_ADVANCED_ACTION_DELETE_FORWARD_WORD,
 	COMPOSE_CALL_ADVANCED_ACTION_DELETE_BACKWARD_WORD,
 	COMPOSE_CALL_ADVANCED_ACTION_DELETE_LINE,
-	COMPOSE_CALL_ADVANCED_ACTION_DELETE_LINE_N,
 	COMPOSE_CALL_ADVANCED_ACTION_DELETE_TO_LINE_END
 } ComposeCallAdvancedAction;
 
@@ -656,11 +655,6 @@ static GtkItemFactoryEntry compose_entries[] =
 					"<control>U",
 					compose_advanced_action_cb,
 					COMPOSE_CALL_ADVANCED_ACTION_DELETE_LINE,
-					NULL},
-	{N_("/_Edit/A_dvanced/Delete entire line"),
-					NULL,
-					compose_advanced_action_cb,
-					COMPOSE_CALL_ADVANCED_ACTION_DELETE_LINE_N,
 					NULL},
 	{N_("/_Edit/A_dvanced/Delete to end of line"),
 					"<control>K",
@@ -9649,7 +9643,6 @@ static void compose_advanced_action_cb(Compose *compose,
 		{textview_delete_forward_word},
 		{textview_delete_backward_word},
 		{textview_delete_line},
-		{NULL}, /* gtk_stext_delete_line_n */
 		{textview_delete_to_line_end}
 	};
 
