@@ -9590,7 +9590,6 @@ static void textview_delete_line (GtkTextView *text)
 	GtkTextBuffer *buffer;
 	GtkTextMark *mark;
 	GtkTextIter ins, start_iter, end_iter;
-	gboolean found;
 
 	g_return_if_fail(GTK_IS_TEXT_VIEW(text));
 
@@ -9602,13 +9601,13 @@ static void textview_delete_line (GtkTextView *text)
 	gtk_text_iter_set_line_offset(&start_iter, 0);
 
 	end_iter = ins;
-	if (gtk_text_iter_ends_line(&end_iter))
-		found = gtk_text_iter_forward_char(&end_iter);
-	else
-		found = gtk_text_iter_forward_to_line_end(&end_iter);
-
-	if (found)
-		gtk_text_buffer_delete(buffer, &start_iter, &end_iter);
+	if (gtk_text_iter_ends_line(&end_iter)){
+		if (!gtk_text_iter_forward_char(&end_iter))
+			gtk_text_iter_backward_char(&start_iter);
+	}
+	else 
+		gtk_text_iter_forward_to_line_end(&end_iter);
+	gtk_text_buffer_delete(buffer, &start_iter, &end_iter);
 }
 
 static void textview_delete_to_line_end (GtkTextView *text)
@@ -9616,7 +9615,6 @@ static void textview_delete_to_line_end (GtkTextView *text)
 	GtkTextBuffer *buffer;
 	GtkTextMark *mark;
 	GtkTextIter ins, end_iter;
-	gboolean found;
 
 	g_return_if_fail(GTK_IS_TEXT_VIEW(text));
 
@@ -9625,11 +9623,10 @@ static void textview_delete_to_line_end (GtkTextView *text)
 	gtk_text_buffer_get_iter_at_mark(buffer, &ins, mark);
 	end_iter = ins;
 	if (gtk_text_iter_ends_line(&end_iter))
-		found = gtk_text_iter_forward_char(&end_iter);
+		gtk_text_iter_forward_char(&end_iter);
 	else
-		found = gtk_text_iter_forward_to_line_end(&end_iter);
-	if (found)
-		gtk_text_buffer_delete(buffer, &ins, &end_iter);
+		gtk_text_iter_forward_to_line_end(&end_iter);
+	gtk_text_buffer_delete(buffer, &ins, &end_iter);
 }
 
 static void compose_advanced_action_cb(Compose *compose,
