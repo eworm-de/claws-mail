@@ -138,6 +138,8 @@ static const gint ToolbarIcons[] =
 	STOCK_PIXMAP_MIME_MESSAGE,
 	STOCK_PIXMAP_SPAM_BTN,
 	STOCK_PIXMAP_HAM_BTN,
+	STOCK_PIXMAP_TRASH,
+	STOCK_PIXMAP_DELETED,
 	STOCK_PIXMAP_EMPTY,              /* last entry */
 };
 

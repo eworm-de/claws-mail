@@ -1,3 +1,8 @@
+2008-04-30 [colin]	3.4.0cvs19
+
+	* src/prefs_toolbar.c
+		Add Trash and Delete icons to the icon chooser
+
 2008-04-30 [colin]	3.4.0cvs18
 
 	* src/compose.c
