@@ -11723,7 +11723,7 @@ msgstr ""
 "<i>Attention, les paramètres de ce méta-dossier (boîte aux lettres) NE "
 "seront PAS enregistrés. Cependant, vous pouvez très bien les utiliser pour "
 "les appliquer récursivement à l'ensemble de la boîte aux lettres en cochant "
-"« Inclure les sous-dossiers ».</i>"
+"« Appliquer aux sous-dossiers ».</i>"
 
 #: src/prefs_folder_item.c:263 src/prefs_folder_item.c:796
 msgid ""

@@ -1153,6 +1153,7 @@ static void prefs_folder_item_templates_create_widget_func(PrefsPage * page_,
 	GtkWidget *notebook;
 	GtkWidget *vbox;
 	GtkWidget *page_vbox;
+	GtkWidget *no_save_warning;
 	GtkWidget *new_msg_format_rec_checkbtn;
 	GtkWidget *reply_format_rec_checkbtn;
 	GtkWidget *forward_format_rec_checkbtn;
@@ -1162,6 +1163,17 @@ static void prefs_folder_item_templates_create_widget_func(PrefsPage * page_,
 	page_vbox = gtk_vbox_new (FALSE, 0);
 	gtk_widget_show (page_vbox);
 	
+	if (!can_save) {
+		no_save_warning = gtk_label_new(
+			_("<i>These preferences will not be saved as this folder "
+			"is a top-level one. However you can use them to set them "
+			"to the whole mailbox tree using \"Apply to subfolders\".</i>"));
+		gtk_label_set_use_markup(GTK_LABEL(no_save_warning), TRUE);
+		gtk_label_set_line_wrap(GTK_LABEL(no_save_warning), TRUE);
+		gtk_misc_set_alignment(GTK_MISC(no_save_warning), 0.0, 0.5);
+		gtk_box_pack_start(GTK_BOX(page_vbox), no_save_warning, FALSE, FALSE, 4);
+	}
+
 	/* Notebook */
 	notebook = gtk_notebook_new();
 	gtk_widget_show(notebook);
