@@ -1,3 +1,8 @@
+2008-05-03 [colin]	3.4.0cvs22
+
+	* po/de.po
+		Fix bug 1598, 'Leading slash while translating "Unsubscribe"'
+
 2008-05-03 [colin]	3.4.0cvs21
 
 	* src/toolbar.c

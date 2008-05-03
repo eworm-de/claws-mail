@@ -8307,7 +8307,7 @@ msgstr "Newsgroup kündigen"
 
 #: src/news_gtk.c:229
 msgid "_Unsubscribe"
-msgstr "/Newsgroup _kündigen"
+msgstr "_Kündigen"
 
 #: src/plugins/bogofilter/bogofilter.c:77
 #: src/plugins/bogofilter/bogofilter_gtk.c:445
