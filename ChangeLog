@@ -1,3 +1,9 @@
+2008-05-03 [colin]	3.4.0cvs21
+
+	* src/toolbar.c
+		Fix bug 1597, 'In news folders, "Move Message to Wastebin" 
+		icon isn't grayed although ineffective'
+
 2008-05-02 [wwp]	3.4.0cvs20
 
 	* po/fr.po

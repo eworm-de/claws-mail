@@ -2325,7 +2325,7 @@ void toolbar_main_set_sensitive(gpointer data)
 	
 	if (toolbar->trash_btn)
 		SET_WIDGET_COND(toolbar->trash_btn,
-			M_TARGET_EXIST|M_ALLOW_DELETE);
+			M_TARGET_EXIST|M_ALLOW_DELETE|M_NOT_NEWS);
 
 	if (toolbar->delete_btn)
 		SET_WIDGET_COND(toolbar->delete_btn,
