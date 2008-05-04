@@ -1,3 +1,9 @@
+2008-05-04 [paul]	3.4.0cvs23
+
+	* src/compose.c
+	* src/prefs_common.c
+		fix bug 1587 'can not replay with quote'
+
 2008-05-03 [colin]	3.4.0cvs22
 
 	* po/de.po
