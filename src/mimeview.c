@@ -1431,6 +1431,7 @@ static void mimeview_drag_data_get(GtkWidget	    *widget,
 	gchar *filename = NULL, *uriname, *tmp;
 	MimeInfo *partinfo;
 	gint err;
+	gint count = 0;
 
 	if (!mimeview->opened) return;
 	if (!mimeview->file) return;
@@ -1483,6 +1484,30 @@ static void mimeview_drag_data_get(GtkWidget	    *widget,
 	}
 	filename = g_strconcat(get_mime_tmp_dir(), G_DIR_SEPARATOR_S,
 			       tmp, NULL);
+
+check_new_file:
+	if (is_file_exist(filename)) {
+		gchar *ext = NULL;
+		gchar *prefix = NULL;
+		gchar *new_name = NULL;
+		if (strrchr(tmp, '.')) {
+			prefix = g_strdup(tmp);
+			ext = g_strdup(strrchr(tmp, '.'));
+			*(strrchr(prefix, '.')) = '\0';
+		} else {
+			prefix = g_strdup(tmp);
+			ext = g_strdup("");
+		}
+		count++;
+		new_name = g_strdup_printf("%s.%d%s", prefix, count, ext);
+		g_free(prefix);
+		g_free(ext);
+		g_free(filename);
+		filename = g_strconcat(get_mime_tmp_dir(), G_DIR_SEPARATOR_S,
+			       new_name, NULL);
+		g_free(new_name);
+		goto check_new_file;
+	}
 
 	g_free(tmp);
 

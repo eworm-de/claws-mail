@@ -1,3 +1,11 @@
+2008-05-05 [colin]	3.4.0cvs24
+
+	* src/mimeview.c
+		Don't overwrite temporary files with same
+		name when drag and dropping. Fixes bug 1599,
+		'attach multiple files with the same name from 
+		one mail to another'
+
 2008-05-04 [paul]	3.4.0cvs23
 
 	* src/compose.c
