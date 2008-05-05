@@ -1,3 +1,9 @@
+2008-05-05 [colin]	3.4.0cvs25
+
+	* src/messageview.c
+		Fix bug 1602, 'Crash when sending return receipt for
+		messages with no subject'
+
 2008-05-05 [colin]	3.4.0cvs24
 
 	* src/mimeview.c

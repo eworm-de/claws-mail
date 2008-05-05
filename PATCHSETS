@@ -3320,3 +3320,4 @@
 ( cvs diff -u -r 1.58.2.38 -r 1.58.2.39 po/de.po;  ) > 3.4.0cvs22.patchset
 ( cvs diff -u -r 1.382.2.446 -r 1.382.2.447 src/compose.c;  cvs diff -u -r 1.204.2.167 -r 1.204.2.168 src/prefs_common.c;  ) > 3.4.0cvs23.patchset
 ( cvs diff -u -r 1.83.2.128 -r 1.83.2.129 src/mimeview.c;  ) > 3.4.0cvs24.patchset
+( cvs diff -u -r 1.94.2.175 -r 1.94.2.176 src/messageview.c;  ) > 3.4.0cvs25.patchset
