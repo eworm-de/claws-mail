@@ -1,3 +1,8 @@
+2008-05-06 [colin]	3.4.0cvs26
+
+	* src/common/utils.c
+		Maybe fix crash on FreeBSD
+
 2008-05-05 [colin]	3.4.0cvs25
 
 	* src/messageview.c

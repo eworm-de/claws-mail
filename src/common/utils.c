@@ -5022,24 +5022,26 @@ int claws_unlink(const gchar *filename)
 	if (filename == NULL)
 		return 0;
 
-	if (found_shred == -1) {
-		/* init */
-		args[0] = g_find_program_in_path("shred");
-		debug_print("found shred: %s\n", args[0]);
-		found_shred = (args[0] != NULL) ? 1:0;
-		args[1] = "-f";
-		args[3] = NULL;
-	}
-	if (found_shred == 1 && prefs_common_get_use_shred()) {
-		if (is_file_exist(filename) && g_stat(filename, &s) == 0) {
-			if (s.st_nlink == 1) {
-				gint status=0;
-				args[2] = filename;
-				g_spawn_sync(NULL, (gchar **)args, NULL, 0,
-				 NULL, NULL, NULL, NULL, &status, NULL);
-				debug_print("%s %s exited with status %d\n",
-					args[0], filename, WEXITSTATUS(status));
-				truncate(filename, 0);
+	if (prefs_common_get_use_shred()) {
+		if (found_shred == -1) {
+			/* init */
+			args[0] = g_find_program_in_path("shred");
+			debug_print("found shred: %s\n", args[0]);
+			found_shred = (args[0] != NULL) ? 1:0;
+			args[1] = "-f";
+			args[3] = NULL;
+		}
+		if (found_shred == 1) {
+			if (g_stat(filename, &s) == 0 && S_ISREG(s.st_mode)) {
+				if (s.st_nlink == 1) {
+					gint status=0;
+					args[2] = filename;
+					g_spawn_sync(NULL, (gchar **)args, NULL, 0,
+					 NULL, NULL, NULL, NULL, &status, NULL);
+					debug_print("%s %s exited with status %d\n",
+						args[0], filename, WEXITSTATUS(status));
+					truncate(filename, 0);
+				}
 			}
 		}
 	}
