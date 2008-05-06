@@ -3322,3 +3322,4 @@
 ( cvs diff -u -r 1.83.2.128 -r 1.83.2.129 src/mimeview.c;  ) > 3.4.0cvs24.patchset
 ( cvs diff -u -r 1.94.2.175 -r 1.94.2.176 src/messageview.c;  ) > 3.4.0cvs25.patchset
 ( cvs diff -u -r 1.36.2.138 -r 1.36.2.139 src/common/utils.c;  ) > 3.4.0cvs26.patchset
+( cvs diff -u -r 1.1.2.14 -r 1.1.2.15 tools/claws.i18n.status.pl;  ) > 3.4.0cvs27.patchset

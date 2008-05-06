@@ -1,3 +1,8 @@
+2008-05-06 [paul]	3.4.0cvs27
+
+	* tools/claws.i18n.status.pl
+		add he.po
+
 2008-05-06 [colin]	3.4.0cvs26
 
 	* src/common/utils.c
