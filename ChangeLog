@@ -1,3 +1,8 @@
+2008-05-07 [colin]	3.4.0cvs29
+
+	* configure.ac
+		Fix --enable-maemo (assume --enable-generic-umpc)
+
 2008-05-07 [colin]	3.4.0cvs28
 
 	* configure.ac

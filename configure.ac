@@ -11,7 +11,7 @@ MINOR_VERSION=4
 MICRO_VERSION=0
 INTERFACE_AGE=0
 BINARY_AGE=0
-EXTRA_VERSION=28
+EXTRA_VERSION=29
 EXTRA_RELEASE=
 EXTRA_GTK2_VERSION=
 
@@ -482,6 +482,15 @@ dnl check if GDB is somewhere
 	AC_MSG_RESULT($ac_cv_enable_crash_dialog)
 fi
 
+dnl generic umpc
+AC_ARG_ENABLE(generic-umpc,
+	[  --enable-generic-umpc   Enable generic UMPC code [default=no]],
+	[ac_cv_enable_generic_umpc=$enableval], [ac_cv_enable_generic_umpc=no])
+if test $ac_cv_enable_generic_umpc = yes; then
+	AC_DEFINE(GENERIC_UMPC, 1, Generic UMPC code)
+	AC_MSG_RESULT($ac_cv_enable_generic_umpc)
+fi
+
 dnl Maemo platform
 AC_ARG_ENABLE(maemo,
 	[  --enable-maemo   build for the Maemo platform [default=no]],
@@ -502,21 +511,14 @@ if test $ac_cv_enable_maemo = yes; then
 		else
 			AC_DEFINE(MAEMO, 1, Build for maemo)
 			AC_DEFINE(CHINOOK, 1, Maemo chinook)
+			AC_DEFINE(GENERIC_UMPC, 1, Generic UMPC code)
 			ac_cv_enable_generic_umpc=yes
 		fi
 	else
 		AC_DEFINE(MAEMO, 1, Build for maemo)
+		AC_DEFINE(GENERIC_UMPC, 1, Generic UMPC code)
 		ac_cv_enable_generic_umpc=yes
 	fi
-fi
-
-dnl generic umpc
-AC_ARG_ENABLE(generic-umpc,
-	[  --enable-generic-umpc   Enable generic UMPC code [default=no]],
-	[ac_cv_enable_generic_umpc=$enableval], [ac_cv_enable_generic_umpc=no])
-if test $ac_cv_enable_generic_umpc = yes; then
-	AC_DEFINE(GENERIC_UMPC, 1, Generic UMPC code)
-	AC_MSG_RESULT($ac_cv_enable_generic_umpc)
 fi
 
 PKG_CHECK_MODULES(CONIC, conic, ac_cv_enable_conic=yes,
