@@ -227,7 +227,7 @@ struct {
 	{ "toolbar_compose.xml", NULL}, 
   	{ "toolbar_msgview.xml", NULL}
 };
-#ifndef MAEMO
+#ifndef GENERIC_UMPC
 static GtkItemFactoryEntry reply_entries[] =
 {
 	{N_("/Reply with _quote"), NULL,    toolbar_reply, COMPOSE_REPLY_WITH_QUOTE, NULL},
@@ -499,7 +499,7 @@ static void toolbar_set_default_main(void)
 	struct {
 		gint action;
 	} default_toolbar[] = {
-#ifdef MAEMO
+#ifdef GENERIC_UMPC
 		{ A_GO_FOLDERS},
 		{ A_OPEN_MAIL},		
 		{ A_SEPARATOR}, 
@@ -510,14 +510,14 @@ static void toolbar_set_default_main(void)
 		{ A_COMPOSE_EMAIL},
 		{ A_SEPARATOR},
 		{ A_REPLY_MESSAGE}, 
-#ifndef MAEMO
+#ifndef GENERIC_UMPC
 		{ A_REPLY_ALL},
 		{ A_REPLY_SENDER},
 #endif
 		{ A_FORWARD},
 		{ A_SEPARATOR},
 		{ A_TRASH},
-#ifndef MAEMO
+#ifndef GENERIC_UMPC
 #if (defined(USE_SPAMASSASSIN_PLUGIN) || defined(USE_BOGOFILTER_PLUGIN))
 		{ A_LEARN_SPAM},
 #endif
@@ -558,7 +558,7 @@ static void toolbar_set_default_compose(void)
 	struct {
 		gint action;
 	} default_toolbar[] = {
-#ifdef MAEMO
+#ifdef GENERIC_UMPC
 		{ A_CLOSE},
 		{ A_SEPARATOR}, 
 #endif
@@ -566,7 +566,7 @@ static void toolbar_set_default_compose(void)
 		{ A_SENDL},
 		{ A_DRAFT},
 		{ A_SEPARATOR}, 
-#ifndef MAEMO
+#ifndef GENERIC_UMPC
 		{ A_INSERT},
 #endif
 		{ A_ATTACH},
@@ -606,7 +606,7 @@ static void toolbar_set_default_msgview(void)
 	struct {
 		gint action;
 	} default_toolbar[] = {
-#ifdef MAEMO
+#ifdef GENERIC_UMPC
 		{ A_CLOSE},
 		{ A_SEPARATOR}, 
 #endif
@@ -616,7 +616,7 @@ static void toolbar_set_default_msgview(void)
 		{ A_FORWARD},
 		{ A_SEPARATOR},
 		{ A_TRASH},
-#ifndef MAEMO
+#ifndef GENERIC_UMPC
 #if (defined(USE_SPAMASSASSIN_PLUGIN) || defined(USE_BOGOFILTER_PLUGIN))
 		{ A_LEARN_SPAM},
 #endif
@@ -880,7 +880,7 @@ static void activate_compose_button (Toolbar           *toolbar,
 		gtk_tool_button_set_icon_widget(
 			GTK_TOOL_BUTTON(toolbar->compose_mail_btn),
 			toolbar->compose_news_icon);
-#ifndef MAEMO
+#ifndef GENERIC_UMPC
 		gtk_tool_item_set_tooltip(GTK_TOOL_ITEM(toolbar->compose_mail_btn), GTK_TOOLTIPS(toolbar->tooltips),
 			_("Compose News message"), NULL);
 #endif	
@@ -889,7 +889,7 @@ static void activate_compose_button (Toolbar           *toolbar,
 		gtk_tool_button_set_icon_widget(
 			GTK_TOOL_BUTTON(toolbar->compose_mail_btn),
 			toolbar->compose_mail_icon);
-#ifndef MAEMO
+#ifndef GENERIC_UMPC
 		gtk_tool_item_set_tooltip(GTK_TOOL_ITEM(toolbar->compose_mail_btn), GTK_TOOLTIPS(toolbar->tooltips),
 			_("Compose Email"), NULL);
 #endif	
@@ -921,7 +921,7 @@ static void activate_learn_button (Toolbar           *toolbar,
 		gtk_tool_button_set_label(
 			GTK_TOOL_BUTTON(toolbar->learn_spam_btn),
 			_("Spam"));
-#ifndef MAEMO
+#ifndef GENERIC_UMPC
 		gtk_tool_item_set_tooltip(GTK_TOOL_ITEM(toolbar->learn_spam_btn), GTK_TOOLTIPS(toolbar->tooltips),
 			_("Learn spam"), NULL);	
 #endif
@@ -933,7 +933,7 @@ static void activate_learn_button (Toolbar           *toolbar,
 		gtk_tool_button_set_label(
 			GTK_TOOL_BUTTON(toolbar->learn_spam_btn),
 			_("Ham"));
-#ifndef MAEMO
+#ifndef GENERIC_UMPC
 		gtk_tool_item_set_tooltip(GTK_TOOL_ITEM(toolbar->learn_spam_btn), GTK_TOOLTIPS(toolbar->tooltips),
 			_("Learn ham"), NULL);
 #endif	
@@ -1345,7 +1345,7 @@ static void toolbar_prev_unread_cb(GtkWidget *widget, gpointer data)
 		
 		/* Now we need to update the messageview window */
 		if (msgview->mainwin->summaryview->selected) {
-#ifndef MAEMO
+#ifndef GENERIC_UMPC
 			MsgInfo * msginfo = summary_get_selected_msg(msgview->mainwin->summaryview);
 		       
 			if (msginfo)
@@ -1392,7 +1392,7 @@ static void toolbar_next_unread_cb(GtkWidget *widget, gpointer data)
 
 		/* Now we need to update the messageview window */
 		if (msgview->mainwin->summaryview->selected) {
-#ifndef MAEMO
+#ifndef GENERIC_UMPC
 			MsgInfo * msginfo = summary_get_selected_msg(msgview->mainwin->summaryview);
 			
 			if (msginfo)
@@ -1720,7 +1720,7 @@ static void toolbar_buttons_cb(GtkWidget   *widget,
 		}
 	}
 }
-#ifndef MAEMO
+#ifndef GENERIC_UMPC
 #define TOOLBAR_ITEM(item,icon,text,tooltip) {								\
 	item = GTK_WIDGET(gtk_tool_button_new(icon, text));						\
 	gtk_tool_item_set_homogeneous(GTK_TOOL_ITEM(item), FALSE);					\
@@ -1812,7 +1812,7 @@ Toolbar *toolbar_create(ToolbarType 	 type,
 	GSList *cur;
 	GSList *toolbar_list;
 	Toolbar *toolbar_data;
-#ifndef MAEMO
+#ifndef GENERIC_UMPC
 	GtkTooltips *toolbar_tips;
 	
  	toolbar_tips = gtk_tooltips_new();
@@ -1877,7 +1877,7 @@ Toolbar *toolbar_create(ToolbarType 	 type,
 			toolbar_data->open_mail_btn = item; 
 			break;
 		case A_COMPOSE_EMAIL:
-#ifndef MAEMO
+#ifndef GENERIC_UMPC
 			TOOLBAR_MENUITEM(item,icon_wid,toolbar_item->text,
 				_("Compose Email"),
 				_("Compose with selected Account"));
@@ -1913,7 +1913,7 @@ Toolbar *toolbar_create(ToolbarType 	 type,
 			MAKE_MENU(learn_entries,"<LearnSpam>",toolbar_data->learn_spam_btn);
 			break;
 		case A_REPLY_MESSAGE:
-#ifndef MAEMO
+#ifndef GENERIC_UMPC
 			TOOLBAR_MENUITEM(item,icon_wid,toolbar_item->text,
 				_("Reply to Message"),
 				_("Reply to Message options"));
@@ -1927,7 +1927,7 @@ Toolbar *toolbar_create(ToolbarType 	 type,
 #endif
 			break;
 		case A_REPLY_SENDER:
-#ifndef MAEMO
+#ifndef GENERIC_UMPC
 			TOOLBAR_MENUITEM(item,icon_wid,toolbar_item->text,
 				_("Reply to Sender"),
 				_("Reply to Sender options"));
@@ -1941,7 +1941,7 @@ Toolbar *toolbar_create(ToolbarType 	 type,
 #endif
 			break;
 		case A_REPLY_ALL:
-#ifndef MAEMO
+#ifndef GENERIC_UMPC
 			TOOLBAR_MENUITEM(item,icon_wid,toolbar_item->text,
 				_("Reply to All"),
 				_("Reply to All options"));
@@ -1955,7 +1955,7 @@ Toolbar *toolbar_create(ToolbarType 	 type,
 #endif
 			break;
 		case A_REPLY_ML:
-#ifndef MAEMO
+#ifndef GENERIC_UMPC
 			TOOLBAR_MENUITEM(item,icon_wid,toolbar_item->text,
 				_("Reply to Mailing-list"),
 				_("Reply to Mailing-list options"));
@@ -1969,7 +1969,7 @@ Toolbar *toolbar_create(ToolbarType 	 type,
 #endif
 			break;
 		case A_FORWARD:
-#ifndef MAEMO
+#ifndef GENERIC_UMPC
 			TOOLBAR_MENUITEM(item,icon_wid,toolbar_item->text,
 				_("Forward Message"),
 				_("Forward Message options"));
@@ -2074,13 +2074,13 @@ Toolbar *toolbar_create(ToolbarType 	 type,
 
 	}
 	toolbar_data->toolbar = toolbar;
-#ifndef MAEMO
+#ifndef GENERIC_UMPC
 	toolbar_data->tooltips = toolbar_tips;
 #endif
 	gtk_widget_show_all(toolbar);
 
 	if (type == TOOLBAR_MAIN) {
-#ifdef MAEMO
+#ifdef GENERIC_UMPC
 		MainWindow *mainwin = mainwindow_get_mainwindow();
 		GtkWidget *progressbar = gtk_progress_bar_new();
 		item = GTK_WIDGET(gtk_tool_item_new());
@@ -2131,7 +2131,7 @@ void toolbar_update(ToolbarType type, gpointer data)
 	Compose    *compose = (Compose*)data;
 	MessageView *msgview = (MessageView*)data;
 
-#ifndef MAEMO
+#ifndef GENERIC_UMPC
 	switch(type) {
 	case TOOLBAR_MAIN:
 		toolbar_data = mainwin->toolbar;
@@ -2171,9 +2171,9 @@ void toolbar_update(ToolbarType type, gpointer data)
 	default:
 		return;
 	}
-
+#ifdef MAEMO
 	hildon_window_remove_toolbar(HILDON_WINDOW(handlebox), GTK_TOOLBAR(toolbar_data->toolbar));
-
+#endif
 	toolbar_init(toolbar_data);
  	toolbar_data = toolbar_create(type, handlebox, data);
 #endif

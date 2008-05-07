@@ -764,7 +764,7 @@ static void recursive_add_parts(TextView *textview, GNode *node)
         mimeinfo = (MimeInfo *) node->data;
         
         textview_add_part(textview, mimeinfo);
-#ifdef MAEMO
+#ifdef GENERIC_UMPC
 	textview_set_position(textview, 0);
 #endif        
         if ((mimeinfo->type != MIMETYPE_MULTIPART) &&
@@ -885,14 +885,14 @@ void textview_show_mime_part(TextView *textview, MimeInfo *partinfo)
 		g_free(content_type);
 	}
 	TEXTVIEW_INSERT(_("  The following can be performed on this part\n"));
-#ifndef MAEMO
+#ifndef GENERIC_UMPC
 	TEXTVIEW_INSERT(_("  by right-clicking the icon or list item:"));
 #endif
 	TEXTVIEW_INSERT("\n");
 
 	TEXTVIEW_INSERT(_("     - To save, select "));
 	TEXTVIEW_INSERT_LINK(_("'Save as...'"), "sc://save_as", NULL);
-#ifndef MAEMO
+#ifndef GENERIC_UMPC
 	TEXTVIEW_INSERT(_(" (Shortcut key: 'y')"));
 #endif
 	TEXTVIEW_INSERT("\n");
@@ -900,7 +900,7 @@ void textview_show_mime_part(TextView *textview, MimeInfo *partinfo)
 	TEXTVIEW_INSERT(_("     - To display as text, select "));
 	TEXTVIEW_INSERT_LINK(_("'Display as text'"), "sc://display_as_text", NULL);
 
-#ifndef MAEMO
+#ifndef GENERIC_UMPC
 	TEXTVIEW_INSERT(_(" (Shortcut key: 't')"));
 #endif
 	TEXTVIEW_INSERT("\n");
@@ -908,7 +908,7 @@ void textview_show_mime_part(TextView *textview, MimeInfo *partinfo)
 	TEXTVIEW_INSERT(_("     - To open with an external program, select "));
 	TEXTVIEW_INSERT_LINK(_("'Open'"), "sc://open", NULL);
 
-#ifndef MAEMO
+#ifndef GENERIC_UMPC
 	TEXTVIEW_INSERT(_(" (Shortcut key: 'l')\n"));
 	TEXTVIEW_INSERT(_("       (alternately double-click, or click the middle "));
 	TEXTVIEW_INSERT(_("mouse button)\n"));

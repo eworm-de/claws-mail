@@ -771,7 +771,7 @@ static void prefs_toolbar_create(ToolbarPage *prefs_toolbar)
 	GtkWidget *reg_hbox;
 	GtkWidget *arrow;
 	GtkWidget *btn_hbox;
-#ifdef MAEMO
+#ifdef GENERIC_UMPC
 	GtkWidget *hbox;
 #endif
 	GtkWidget *reg_btn;
@@ -918,7 +918,7 @@ static void prefs_toolbar_create(ToolbarPage *prefs_toolbar)
 			  prefs_toolbar);
 
 	default_btn = gtk_button_new_with_label(_(" Use default "));
-#ifndef MAEMO
+#ifndef GENERIC_UMPC
 	gtk_box_pack_end(GTK_BOX(reg_hbox), default_btn, FALSE, TRUE, 0);
 #else
 	hbox = gtk_hbox_new(FALSE, 0);

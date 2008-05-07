@@ -267,7 +267,7 @@ static void prefs_template_window_create(void)
 		}
 	}
 	gtk_widget_show(text_value);
-#ifndef MAEMO
+#ifndef GENERIC_UMPC
 	gtk_widget_set_size_request(text_value, -1, 120);
 #else
 	gtk_widget_set_size_request(text_value, -1, 60);

@@ -1567,7 +1567,7 @@ sctree_is_hot_spot (GtkSCTree     *sctree,
      yu = (ROW_TOP_YPIXEL (clist, row) + (clist->row_height/2 - PM_SIZE) / 2 -
 	(clist->row_height/2 - 1) % 2);
 
-#ifndef MAEMO
+#ifndef GENERIC_UMPC
   if (clist->column[ctree->tree_column].justification == GTK_JUSTIFY_RIGHT)
     xl = (clist->column[ctree->tree_column].area.x + 
 	  clist->column[ctree->tree_column].area.width - 1 + clist->hoffset -
@@ -1798,7 +1798,7 @@ gtk_sctree_motion (GtkWidget *widget, GdkEventMotion *event)
 
 	/* This is the same threshold value that is used in gtkdnd.c */
 
-#ifndef MAEMO
+#ifndef GENERIC_UMPC
 #define THRESHOLD 3
 #else
 #define THRESHOLD 8

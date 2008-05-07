@@ -11,7 +11,7 @@ MINOR_VERSION=4
 MICRO_VERSION=0
 INTERFACE_AGE=0
 BINARY_AGE=0
-EXTRA_VERSION=27
+EXTRA_VERSION=28
 EXTRA_RELEASE=
 EXTRA_GTK2_VERSION=
 
@@ -502,11 +502,23 @@ if test $ac_cv_enable_maemo = yes; then
 		else
 			AC_DEFINE(MAEMO, 1, Build for maemo)
 			AC_DEFINE(CHINOOK, 1, Maemo chinook)
+			ac_cv_enable_generic_umpc=yes
 		fi
 	else
 		AC_DEFINE(MAEMO, 1, Build for maemo)
+		ac_cv_enable_generic_umpc=yes
 	fi
 fi
+
+dnl generic umpc
+AC_ARG_ENABLE(generic-umpc,
+	[  --enable-generic-umpc   Enable generic UMPC code [default=no]],
+	[ac_cv_enable_generic_umpc=$enableval], [ac_cv_enable_generic_umpc=no])
+if test $ac_cv_enable_generic_umpc = yes; then
+	AC_DEFINE(GENERIC_UMPC, 1, Generic UMPC code)
+	AC_MSG_RESULT($ac_cv_enable_generic_umpc)
+fi
+
 PKG_CHECK_MODULES(CONIC, conic, ac_cv_enable_conic=yes,
 	  ac_cv_enable_conic=no)
 AC_SUBST(CONIC_CFLAGS)
@@ -1033,6 +1045,7 @@ echo "LibSM             : $ac_cv_enable_libsm"
 echo "NetworkManager    : $enable_networkmanager_support"
 echo "Manual            : $ac_cv_enable_manual"
 echo "Plugins           : $PLUGINS"
+echo "Generic UMPC code : $ac_cv_enable_generic_umpc"
 echo "Maemo  build      : $ac_cv_enable_maemo"
 echo "Config dir        : $ac_cv_with_config_dir"
 echo ""

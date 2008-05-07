@@ -274,7 +274,7 @@ static GtkWidget *summary_ctree_create	(SummaryView	*summaryview);
 static gint summary_toggle_pressed	(GtkWidget		*eventbox,
 					 GdkEventButton		*event,
 					 SummaryView		*summaryview);
-#ifdef MAEMO
+#ifdef GENERIC_UMPC
 static void summary_toggle_multiple_pressed
 					(GtkWidget		*widget,
 					 SummaryView		*summaryview);
@@ -313,7 +313,7 @@ static void summary_col_resized		(GtkCList		*clist,
 static void summary_reply_cb		(SummaryView		*summaryview,
 					 guint			 action,
 					 GtkWidget		*widget);
-#ifndef MAEMO
+#ifndef GENERIC_UMPC
 static void summary_show_all_header_cb	(SummaryView		*summaryview,
 					 guint			 action,
 					 GtkWidget		*widget);
@@ -325,7 +325,7 @@ static void summary_add_address_cb	(SummaryView		*summaryview,
 static void summary_create_filter_cb	(SummaryView		*summaryview,
 					 guint			 action,
 					 GtkWidget		*widget);
-#ifndef MAEMO
+#ifndef GENERIC_UMPC
 static void summary_create_processing_cb(SummaryView		*summaryview,
 					 guint			 action,
 					 GtkWidget		*widget);
@@ -458,7 +458,7 @@ GtkTargetEntry summary_drag_types[2] =
 static GtkItemFactoryEntry summary_popup_entries[] =
 {
 	{N_("/_Reply"),			"<control>R", summary_reply_cb,	COMPOSE_REPLY, NULL},
-#ifndef MAEMO
+#ifndef GENERIC_UMPC
 	{N_("/Repl_y to"),		NULL, NULL,		0, "<Branch>"},
 	{N_("/Repl_y to/_all"),		"<shift><control>R", summary_reply_cb,	COMPOSE_REPLY_TO_ALL, NULL},
 	{N_("/Repl_y to/_sender"),	NULL, summary_reply_cb,	COMPOSE_REPLY_TO_SENDER, NULL},
@@ -467,7 +467,7 @@ static GtkItemFactoryEntry summary_popup_entries[] =
 	{"/---",			NULL, NULL,		0, "<Separator>"},
 #endif
 	{N_("/_Forward"),		"<control><alt>F", summary_reply_cb, COMPOSE_FORWARD_INLINE, NULL},
-#ifndef MAEMO
+#ifndef GENERIC_UMPC
 	{N_("/For_ward as attachment"),	NULL, summary_reply_cb, COMPOSE_FORWARD_AS_ATTACH, NULL},
 	{N_("/Redirect"),	        NULL, summary_reply_cb, COMPOSE_REDIRECT, NULL},
 #endif
@@ -475,7 +475,7 @@ static GtkItemFactoryEntry summary_popup_entries[] =
 	{N_("/M_ove..."),		"<control>O", summary_move_to,	0, NULL},
 	{N_("/_Copy..."),		"<shift><control>O", summary_copy_to,	0, NULL},
 	{N_("/Move to _trash"),		"<control>D", summary_delete_trash,	0, NULL},
-#ifndef MAEMO
+#ifndef GENERIC_UMPC
 	{N_("/_Delete..."),		NULL, summary_delete, 0, NULL},
 #endif
 	{"/---",			NULL, NULL,		0, "<Separator>"},
@@ -500,7 +500,7 @@ static GtkItemFactoryEntry summary_popup_entries[] =
 	{N_("/Ta_gs"),			NULL, NULL, 		0, NULL},
 
 	{"/---",			NULL, NULL,		0, "<Separator>"},
-#ifndef MAEMO
+#ifndef GENERIC_UMPC
 	{N_("/Add sender to address boo_k"),
 					NULL, summary_add_address_cb, 0, NULL},
 #endif
@@ -513,7 +513,7 @@ static GtkItemFactoryEntry summary_popup_entries[] =
 					NULL, summary_create_filter_cb, FILTER_BY_TO, NULL},
 	{N_("/Create f_ilter rule/by _Subject"),
 					NULL, summary_create_filter_cb, FILTER_BY_SUBJECT, NULL},
-#ifndef MAEMO
+#ifndef GENERIC_UMPC
 	{N_("/Create processing rule"),	NULL, NULL,		0, "<Branch>"},
 	{N_("/Create processing rule/_Automatically"),
 					NULL, summary_create_processing_cb, FILTER_BY_AUTO, NULL},
@@ -529,12 +529,12 @@ static GtkItemFactoryEntry summary_popup_entries[] =
 	{N_("/_View/Open in new _window"),
 					"<control><alt>N", summary_open_msg,	0, NULL},
 	{N_("/_View/Message _source"),	"<control>U", summary_view_source, 0, NULL},
-#ifndef MAEMO
+#ifndef GENERIC_UMPC
 	{N_("/_View/All _headers"),	"<control>H", summary_show_all_header_cb, 0, "<ToggleItem>"},
 #endif
 	{"/---",			NULL, NULL,		0, "<Separator>"},
 	{N_("/_Save as..."),		"<control>S", summary_save_as,   0, NULL},
-#ifndef MAEMO
+#ifndef GENERIC_UMPC
 	{N_("/_Print..."),		"<control>P", summary_print,   0, NULL},
 #endif
 };  /* see also list in menu_connect_identical_items() in menu.c if this changes */
@@ -620,7 +620,7 @@ SummaryView *summary_create(void)
 	GtkWidget *statlabel_msgs;
 	GtkWidget *hbox_spc;
 	GtkWidget *toggle_eventbox;
-#ifdef MAEMO
+#ifdef GENERIC_UMPC
 	GtkWidget *multiple_sel_togbtn;
 #endif
 	GtkWidget *toggle_arrow;
@@ -689,7 +689,7 @@ SummaryView *summary_create(void)
 			 G_CALLBACK(summary_toggle_pressed),
 			 summaryview);
 
-#ifdef MAEMO
+#ifdef GENERIC_UMPC
 	multiple_sel_togbtn = gtk_toggle_button_new();
 	gtk_widget_show(multiple_sel_togbtn);
 	gtk_box_pack_end(GTK_BOX(hbox), multiple_sel_togbtn, FALSE, FALSE, 4);
@@ -717,7 +717,7 @@ SummaryView *summary_create(void)
 	summaryview->mainwidget_book = gtk_notebook_new();
         gtk_notebook_set_show_tabs(GTK_NOTEBOOK(summaryview->mainwidget_book), FALSE);
         gtk_notebook_set_show_border(GTK_NOTEBOOK(summaryview->mainwidget_book), FALSE);
-#ifndef MAEMO
+#ifndef GENERIC_UMPC
 	gtk_container_add(GTK_CONTAINER(summaryview->mainwidget_book),
 		scrolledwin);
 	gtk_box_pack_start(GTK_BOX(vbox), summaryview->mainwidget_book, TRUE, TRUE, 0);
@@ -743,7 +743,7 @@ SummaryView *summary_create(void)
 	quicksearch = quicksearch_new();
 	gtk_box_pack_start(GTK_BOX(vbox), quicksearch_get_widget(quicksearch), FALSE, FALSE, 0);
 
-#ifdef MAEMO
+#ifdef GENERIC_UMPC
 	gtk_container_add(GTK_CONTAINER(summaryview->mainwidget_book),
 		scrolledwin);
 	gtk_box_pack_start(GTK_BOX(vbox), summaryview->mainwidget_book, TRUE, TRUE, 0);
@@ -773,7 +773,7 @@ SummaryView *summary_create(void)
 	summaryview->statlabel_msgs = statlabel_msgs;
 	summaryview->toggle_eventbox = toggle_eventbox;
 	summaryview->toggle_arrow = toggle_arrow;
-#ifdef MAEMO
+#ifdef GENERIC_UMPC
 	summaryview->multiple_sel_togbtn = multiple_sel_togbtn;
 #endif
 	summaryview->toggle_search = toggle_search;
@@ -996,7 +996,7 @@ void summary_init(SummaryView *summaryview)
 	gtk_widget_show(pixmap);
 	summaryview->quick_search_pixmap = pixmap;
 	
-#ifdef MAEMO
+#ifdef GENERIC_UMPC
 	pixmap = stock_pixmap_widget(summaryview->hbox, STOCK_PIXMAP_SELECTION);
 	gtk_container_add(GTK_CONTAINER(summaryview->multiple_sel_togbtn), pixmap);
 	gtk_widget_show(pixmap);
@@ -1640,7 +1640,7 @@ void summary_set_menu_sensitive(SummaryView *summaryview)
 	GtkItemFactory *ifactory = summaryview->popupfactory;
 	SensitiveCond state;
 	gboolean sensitive;
-#ifndef MAEMO
+#ifndef GENERIC_UMPC
 	GtkWidget *menuitem;
 #endif
 	gint i;
@@ -1650,7 +1650,7 @@ void summary_set_menu_sensitive(SummaryView *summaryview)
 		SensitiveCond cond;
 	} entry[] = {
 		{"/Reply"			, M_HAVE_ACCOUNT|M_TARGET_EXIST},
-#ifndef MAEMO
+#ifndef GENERIC_UMPC
 		{"/Reply to"			, M_HAVE_ACCOUNT|M_TARGET_EXIST},
 		{"/Reply to/all"		, M_HAVE_ACCOUNT|M_TARGET_EXIST},
 		{"/Reply to/sender"             , M_HAVE_ACCOUNT|M_TARGET_EXIST},
@@ -1658,7 +1658,7 @@ void summary_set_menu_sensitive(SummaryView *summaryview)
 #endif
 
 		{"/Forward"			, M_HAVE_ACCOUNT|M_TARGET_EXIST},
-#ifndef MAEMO
+#ifndef GENERIC_UMPC
 		{"/Forward as attachment"	, M_HAVE_ACCOUNT|M_TARGET_EXIST},
         	{"/Redirect"			, M_HAVE_ACCOUNT|M_TARGET_EXIST},
 #endif
@@ -1666,7 +1666,7 @@ void summary_set_menu_sensitive(SummaryView *summaryview)
 		{"/Move..."			, M_TARGET_EXIST|M_ALLOW_DELETE|M_NOT_NEWS},
 		{"/Copy..."			, M_TARGET_EXIST|M_EXEC},
 		{"/Move to trash"		, M_TARGET_EXIST|M_ALLOW_DELETE|M_NOT_NEWS},
-#ifndef MAEMO
+#ifndef GENERIC_UMPC
 		{"/Delete..."			, M_TARGET_EXIST|M_ALLOW_DELETE},
 #endif
 
@@ -1684,22 +1684,22 @@ void summary_set_menu_sensitive(SummaryView *summaryview)
 		{"/Color label"			, M_TARGET_EXIST},
 		{"/Tags"			, M_TARGET_EXIST},
 
-#ifndef MAEMO
+#ifndef GENERIC_UMPC
 		{"/Add sender to address book"	, M_SINGLE_TARGET_EXIST},
 #endif
 		{"/Create filter rule"		, M_SINGLE_TARGET_EXIST|M_UNLOCKED},
-#ifndef MAEMO
+#ifndef GENERIC_UMPC
 		{"/Create processing rule"	, M_SINGLE_TARGET_EXIST|M_UNLOCKED},
 #endif
 
 		{"/View"			, M_SINGLE_TARGET_EXIST},
 		{"/View/Open in new window"     , M_SINGLE_TARGET_EXIST},
 		{"/View/Message source"		, M_SINGLE_TARGET_EXIST},
-#ifndef MAEMO
+#ifndef GENERIC_UMPC
 		{"/View/All headers"		, M_SINGLE_TARGET_EXIST},
 #endif
 		{"/Save as..."			, M_TARGET_EXIST},
-#ifndef MAEMO
+#ifndef GENERIC_UMPC
 		{"/Print..."			, M_TARGET_EXIST},
 #endif
 		{NULL, 0}
@@ -1716,7 +1716,7 @@ void summary_set_menu_sensitive(SummaryView *summaryview)
 
 
 	summary_lock(summaryview);
-#ifndef MAEMO
+#ifndef GENERIC_UMPC
 	menuitem = gtk_item_factory_get_widget(ifactory, "/View/All headers");
 	if (summaryview->messageview 
 	&&  summaryview->messageview->mimeview
@@ -2693,7 +2693,7 @@ static void summary_set_column_titles(SummaryView *summaryview)
 
 		hbox  = gtk_hbox_new(FALSE, 4);
 		label = gtk_label_new(title);
-#ifdef MAEMO
+#ifdef GENERIC_UMPC
 	gtk_widget_set_size_request(hbox, -1, 20);
 #endif
 
@@ -5857,7 +5857,7 @@ static gboolean summary_popup_menu(GtkWidget *widget, gpointer data)
 	return TRUE;
 }
 
-#if GTK_CHECK_VERSION(2,12,0) && !MAEMO
+#if GTK_CHECK_VERSION(2,12,0) && !GENERIC_UMPC
 static gchar *summaryview_get_tooltip_text(SummaryView *summaryview, MsgInfo *info, gint column)
 {
 	MsgFlags flags;
@@ -6171,7 +6171,7 @@ static GtkWidget *summary_ctree_create(SummaryView *summaryview)
 			 G_CALLBACK(summary_drag_motion_cb),
 			 summaryview);
 
-#if GTK_CHECK_VERSION(2,12,0) && !MAEMO
+#if GTK_CHECK_VERSION(2,12,0) && !GENERIC_UMPC
 	g_object_set (G_OBJECT(ctree), "has-tooltip", TRUE, NULL);
 	g_signal_connect(G_OBJECT(ctree), "query-tooltip", 
 			 G_CALLBACK(tooltip_cb),
@@ -6235,7 +6235,7 @@ static gint summary_toggle_pressed(GtkWidget *eventbox, GdkEventButton *event,
 		summary_toggle_view(summaryview);
 	return TRUE;
 }
-#ifdef MAEMO
+#ifdef GENERIC_UMPC
 static void summary_toggle_multiple_pressed(GtkWidget *widget,
 				   SummaryView *summaryview)
 {
@@ -6335,7 +6335,7 @@ static gboolean summary_key_pressed(GtkWidget *widget, GdkEventKey *event,
 		case GDK_KP_Enter:
 			handled = TRUE;
 			if (summaryview->displayed != summaryview->selected) {
-#ifndef MAEMO
+#ifndef GENERIC_UMPC
 				summary_display_msg(summaryview,
 						    summaryview->selected);
 #else
@@ -6659,7 +6659,7 @@ static void summary_reply_cb(SummaryView *summaryview, guint action,
 	compose_reply_from_messageview(msgview, msginfo_list, action);
 	g_slist_free(msginfo_list);
 }
-#ifndef MAEMO
+#ifndef GENERIC_UMPC
 static void summary_show_all_header_cb(SummaryView *summaryview,
 				       guint action, GtkWidget *widget)
 {
@@ -6680,7 +6680,7 @@ static void summary_create_filter_cb(SummaryView *summaryview,
 {
 	summary_filter_open(summaryview, (PrefsFilterType)action, 0);
 }
-#ifndef MAEMO
+#ifndef GENERIC_UMPC
 static void summary_create_processing_cb(SummaryView *summaryview,
 					 guint action, GtkWidget *widget)
 {
@@ -7373,7 +7373,7 @@ void summary_reflect_prefs_pixmap_theme(SummaryView *summaryview)
 	gtk_widget_show(pixmap);
 	summaryview->quick_search_pixmap = pixmap;
 
-#ifdef MAEMO
+#ifdef GENERIC_UMPC
 	pixmap = stock_pixmap_widget(summaryview->hbox, STOCK_PIXMAP_SELECTION);
 	gtk_container_remove (GTK_CONTAINER(summaryview->multiple_sel_togbtn), 
 			      summaryview->multiple_sel_image);

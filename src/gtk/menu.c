@@ -210,18 +210,18 @@ void menu_connect_identical_items(void)
 		const gchar *path2;
 	} pairs[] = {
 		{"<Main>/Message/Reply",  			"<SummaryView>/Reply"},
-#ifndef MAEMO
+#ifndef GENERIC_UMPC
 		{"<Main>/Message/Reply to/all",  		"<SummaryView>/Reply to/all"},
 		{"<Main>/Message/Reply to/sender", 		"<SummaryView>/Reply to/sender"},
 		{"<Main>/Message/Reply to/mailing list",	"<SummaryView>/Reply to/mailing list"},
 #endif
 		{"<Main>/Message/Forward",		 	"<SummaryView>/Forward"},
-#ifndef MAEMO
+#ifndef GENERIC_UMPC
 		{"<Main>/Message/Redirect",			"<SummaryView>/Redirect"},
 #endif
 		{"<Main>/Message/Move...",			"<SummaryView>/Move..."},
 		{"<Main>/Message/Copy...",			"<SummaryView>/Copy..."},
-#ifndef MAEMO
+#ifndef GENERIC_UMPC
 		{"<Main>/Message/Delete...",			"<SummaryView>/Delete..."},
 #endif
 		{"<Main>/Message/Mark/Mark",			"<SummaryView>/Mark/Mark"},
@@ -229,7 +229,7 @@ void menu_connect_identical_items(void)
 		{"<Main>/Message/Mark/Mark as unread",		"<SummaryView>/Mark/Mark as unread"},
 		{"<Main>/Message/Mark/Mark as read",		"<SummaryView>/Mark/Mark as read"},
 		{"<Main>/Message/Mark/Mark all read",		"<SummaryView>/Mark/Mark all read"},
-#ifndef MAEMO
+#ifndef GENERIC_UMPC
 		{"<Main>/Tools/Add sender to address book",	"<SummaryView>/Add sender to address book"},
 #endif
 		{"<Main>/Tools/Create filter rule/Automatically",	
@@ -237,7 +237,7 @@ void menu_connect_identical_items(void)
 		{"<Main>/Tools/Create filter rule/by From",	"<SummaryView>/Create filter rule/by From"},
 		{"<Main>/Tools/Create filter rule/by To",	"<SummaryView>/Create filter rule/by To"},
 		{"<Main>/Tools/Create filter rule/by Subject",	"<SummaryView>/Create filter rule/by Subject"},
-#ifndef MAEMO
+#ifndef GENERIC_UMPC
 		{"<Main>/Tools/Create processing rule/Automatically",
 								"<SummaryView>/Create processing rule/Automatically"},
 		{"<Main>/Tools/Create processing rule/by From",	"<SummaryView>/Create processing rule/by From"},
@@ -247,7 +247,7 @@ void menu_connect_identical_items(void)
 #endif
 		{"<Main>/View/Open in new window",		"<SummaryView>/View/Open in new window"},
 		{"<Main>/View/Message source",			"<SummaryView>/View/Message source"},
-#ifndef MAEMO
+#ifndef GENERIC_UMPC
 		{"<Main>/View/All headers",			"<SummaryView>/View/All headers"},
 #endif
 	};

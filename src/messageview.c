@@ -495,7 +495,7 @@ static void messageview_add_toolbar(MessageView *msgview, GtkWidget *window)
  	GtkWidget *handlebox;
 	GtkWidget *vbox;
 	GtkWidget *menubar;
-#ifndef MAEMO
+#ifndef GENERIC_UMPC
 	GtkWidget *statusbar = NULL;
 #endif
 	guint n_menu_entries;
@@ -525,12 +525,17 @@ static void messageview_add_toolbar(MessageView *msgview, GtkWidget *window)
 #else
 	msgview->toolbar = toolbar_create(TOOLBAR_MSGVIEW, handlebox,
 					  (gpointer)msgview);
+#ifndef GENERIC_UMPC
 	statusbar = gtk_statusbar_new();
 	gtk_widget_show(statusbar);
 	gtk_box_pack_end(GTK_BOX(vbox), statusbar, FALSE, FALSE, 0);
 	msgview->statusbar = statusbar;
 	msgview->statusbar_cid = gtk_statusbar_get_context_id
 		(GTK_STATUSBAR(statusbar), "Message View");
+#else
+	msgview->statusbar = NULL;
+	msgview->statusbar_cid = 0;
+#endif
 #endif
 
 
@@ -1104,7 +1109,7 @@ gint messageview_show(MessageView *messageview, MsgInfo *msginfo,
 	}
 	mimeview_show_message(messageview->mimeview, mimeinfo, file);
 	
-#ifndef MAEMO
+#ifndef GENERIC_UMPC
 	messageview_set_position(messageview, 0);
 #endif
 
@@ -1294,7 +1299,7 @@ void messageview_delete(MessageView *msgview)
 			/* NOTE: does not update to next message in summaryview */
 		}
 	}
-#ifdef MAEMO
+#ifdef GENERIC_UMPC
 	if (msgview->window && !prefs_common.always_show_msg) {
 		messageview_destroy(msgview);
 	}
@@ -1916,7 +1921,7 @@ static void prev_cb(gpointer data, guint action, GtkWidget *widget)
 		return;
 	}
 	if (messageview->mainwin->summaryview->selected) {
-#ifndef MAEMO
+#ifndef GENERIC_UMPC
 		MsgInfo * msginfo = summary_get_selected_msg(messageview->mainwin->summaryview);
 		       
 		if (msginfo)
@@ -1941,7 +1946,7 @@ static void next_cb(gpointer data, guint action, GtkWidget *widget)
 		return;
 	}
 	if (messageview->mainwin->summaryview->selected) {
-#ifndef MAEMO
+#ifndef GENERIC_UMPC
 		MsgInfo * msginfo = summary_get_selected_msg(messageview->mainwin->summaryview);
 		       
 		if (msginfo)
@@ -1966,7 +1971,7 @@ static void prev_unread_cb(gpointer data, guint action, GtkWidget *widget)
 		return;
 	}
 	if (messageview->mainwin->summaryview->selected) {
-#ifndef MAEMO
+#ifndef GENERIC_UMPC
 		MsgInfo * msginfo = summary_get_selected_msg(messageview->mainwin->summaryview);
 		       
 		if (msginfo)
@@ -1991,7 +1996,7 @@ static void next_unread_cb(gpointer data, guint action, GtkWidget *widget)
 		return;
 	}
 	if (messageview->mainwin->summaryview->selected) {
-#ifndef MAEMO
+#ifndef GENERIC_UMPC
 		MsgInfo * msginfo = summary_get_selected_msg(messageview->mainwin->summaryview);
 		       
 		if (msginfo)
@@ -2016,7 +2021,7 @@ static void prev_new_cb(gpointer data, guint action, GtkWidget *widget)
 		return;
 	}
 	if (messageview->mainwin->summaryview->selected) {
-#ifndef MAEMO
+#ifndef GENERIC_UMPC
 		MsgInfo * msginfo = summary_get_selected_msg(messageview->mainwin->summaryview);
 		       
 		if (msginfo)
@@ -2041,7 +2046,7 @@ static void next_new_cb(gpointer data, guint action, GtkWidget *widget)
 		return;
 	}
 	if (messageview->mainwin->summaryview->selected) {
-#ifndef MAEMO
+#ifndef GENERIC_UMPC
 		MsgInfo * msginfo = summary_get_selected_msg(messageview->mainwin->summaryview);
 		       
 		if (msginfo)
@@ -2066,7 +2071,7 @@ static void prev_marked_cb(gpointer data, guint action, GtkWidget *widget)
 		return;
 	}
 	if (messageview->mainwin->summaryview->selected) {
-#ifndef MAEMO
+#ifndef GENERIC_UMPC
 		MsgInfo * msginfo = summary_get_selected_msg(messageview->mainwin->summaryview);
 		       
 		if (msginfo)
@@ -2091,7 +2096,7 @@ static void next_marked_cb(gpointer data, guint action, GtkWidget *widget)
 		return;
 	}
 	if (messageview->mainwin->summaryview->selected) {
-#ifndef MAEMO
+#ifndef GENERIC_UMPC
 		MsgInfo * msginfo = summary_get_selected_msg(messageview->mainwin->summaryview);
 		       
 		if (msginfo)
@@ -2116,7 +2121,7 @@ static void prev_labeled_cb(gpointer data, guint action, GtkWidget *widget)
 		return;
 	}
 	if (messageview->mainwin->summaryview->selected) {
-#ifndef MAEMO
+#ifndef GENERIC_UMPC
 		MsgInfo * msginfo = summary_get_selected_msg(messageview->mainwin->summaryview);
 		       
 		if (msginfo)
@@ -2141,7 +2146,7 @@ static void next_labeled_cb(gpointer data, guint action, GtkWidget *widget)
 		return;
 	}
 	if (messageview->mainwin->summaryview->selected) {
-#ifndef MAEMO
+#ifndef GENERIC_UMPC
 		MsgInfo * msginfo = summary_get_selected_msg(messageview->mainwin->summaryview);
 		       
 		if (msginfo)
@@ -2166,7 +2171,7 @@ static void last_read_cb(gpointer data, guint action, GtkWidget *widget)
 		return;
 	}
 	if (messageview->mainwin->summaryview->selected) {
-#ifndef MAEMO
+#ifndef GENERIC_UMPC
 		MsgInfo * msginfo = summary_get_selected_msg(messageview->mainwin->summaryview);
 		       
 		if (msginfo)
@@ -2191,7 +2196,7 @@ static void parent_cb(gpointer data, guint action, GtkWidget *widget)
 		return;
 	}
 	if (messageview->mainwin->summaryview->selected) {
-#ifndef MAEMO
+#ifndef GENERIC_UMPC
 		MsgInfo * msginfo = summary_get_selected_msg(messageview->mainwin->summaryview);
 		       
 		if (msginfo)
@@ -2216,7 +2221,7 @@ static void goto_unread_folder_cb(gpointer data, guint action, GtkWidget *widget
 		return;
 	}
 	if (messageview->mainwin->summaryview->selected) {
-#ifndef MAEMO
+#ifndef GENERIC_UMPC
 		MsgInfo * msginfo = summary_get_selected_msg(messageview->mainwin->summaryview);
 		       
 		if (msginfo)
@@ -2246,7 +2251,7 @@ static void goto_folder_cb(gpointer data, guint action, GtkWidget *widget)
 			return;
 		}
 		if (messageview->mainwin->summaryview->selected) {
-#ifndef MAEMO
+#ifndef GENERIC_UMPC
 			MsgInfo * msginfo = summary_get_selected_msg(messageview->mainwin->summaryview);
 		       
 			if (msginfo)

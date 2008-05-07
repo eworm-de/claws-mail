@@ -114,7 +114,7 @@ static void main_window_menu_callback_block	(MainWindow	*mainwin);
 static void main_window_menu_callback_unblock	(MainWindow	*mainwin);
 
 static void main_window_show_cur_account	(MainWindow	*mainwin);
-#ifndef MAEMO
+#ifndef GENERIC_UMPC
 static void main_window_separation_change	(MainWindow	*mainwin,
 						 LayoutType	 layout_mode);
 #endif
@@ -127,7 +127,7 @@ static void toolbar_child_attached		(GtkWidget	*widget,
 static void toolbar_child_detached		(GtkWidget	*widget,
 						 GtkWidget	*child,
 						 gpointer	 data);
-#ifndef MAEMO
+#ifndef GENERIC_UMPC
 static gboolean ac_label_button_pressed		(GtkWidget	*widget,
 						 GdkEventButton	*event,
 						 gpointer	 data);
@@ -197,7 +197,7 @@ static void toggle_toolbar_cb	 (MainWindow	*mainwin,
 static void toggle_col_headers_cb(MainWindow	*mainwin,
 				  guint		 action,
 				  GtkWidget	*widget);
-#ifndef MAEMO
+#ifndef GENERIC_UMPC
 static void toggle_statusbar_cb	 (MainWindow	*mainwin,
 				  guint		 action,
 				  GtkWidget	*widget);
@@ -461,7 +461,7 @@ static void account_selector_menu_cb	 (GtkMenuItem	*menuitem,
 					  gpointer	 data);
 static void account_receive_menu_cb	 (GtkMenuItem	*menuitem,
 					  gpointer	 data);
-#ifndef MAEMO
+#ifndef GENERIC_UMPC
 static void account_compose_menu_cb	 (GtkMenuItem	*menuitem,
 					  gpointer	 data);
 #endif
@@ -577,13 +577,13 @@ static GtkItemFactoryEntry mainwin_entries[] =
 						NULL, toggle_toolbar_cb, TOOLBAR_ICON, "/View/Show or hide/Toolbar/Text below icons"},
 	{N_("/_View/Show or hi_de/_Toolbar/_Text only"),
 						NULL, toggle_toolbar_cb, TOOLBAR_TEXT, "/View/Show or hide/Toolbar/Text below icons"},
-#ifndef MAEMO
+#ifndef GENERIC_UMPC
 	{N_("/_View/Show or hi_de/_Toolbar/_Hide"),
 						NULL, toggle_toolbar_cb, TOOLBAR_NONE, "/View/Show or hide/Toolbar/Text below icons"},
 #endif
 	{N_("/_View/Show or hi_de/_Message view"),
 						"V", toggle_message_cb, 0, "<ToggleItem>"},
-#ifndef MAEMO
+#ifndef GENERIC_UMPC
 	{N_("/_View/Show or hi_de/Status _bar"),
 						NULL, toggle_statusbar_cb, 0, "<ToggleItem>"},
 #endif
@@ -594,7 +594,7 @@ static GtkItemFactoryEntry mainwin_entries[] =
 	{N_("/_View/Set displayed _columns/in _Message list..."),NULL, set_summary_display_item_cb, 0, NULL},
 
 	{N_("/_View/---"),			NULL, NULL, 0, "<Separator>"},
-#ifndef MAEMO
+#ifndef GENERIC_UMPC
 	{N_("/_View/La_yout"),			NULL, NULL, 0, "<Branch>"},
 	{N_("/_View/Layout/_Standard"),		NULL, set_layout_cb, NORMAL_LAYOUT, "<RadioItem>"},
 	{N_("/_View/Layout/_Three columns"),	NULL, set_layout_cb, VERTICAL_LAYOUT, "/View/Layout/Standard"},
@@ -1309,7 +1309,7 @@ static void mainwindow_tags_menu_create(MainWindow *mainwin, gboolean refresh)
 	gtk_menu_item_set_submenu(GTK_MENU_ITEM(label_menuitem), menu);
 	mainwin->tags_menu = menu;
 }
-#ifndef MAEMO
+#ifndef GENERIC_UMPC
 static gboolean warning_icon_pressed(GtkWidget *widget, GdkEventButton *evt,
 				    MainWindow *mainwindow)
 {
@@ -1515,7 +1515,7 @@ MainWindow *main_window_create()
 	GtkWidget *menubar;
 	GtkWidget *handlebox;
 	GtkWidget *vbox_body;
-#ifndef MAEMO
+#ifndef GENERIC_UMPC
 	GtkWidget *hbox_stat;
 	GtkWidget *statusbar;
 	GtkWidget *progressbar;
@@ -1551,7 +1551,7 @@ MainWindow *main_window_create()
 	window = GTK_WIDGET(gtkut_window_new(GTK_WINDOW_TOPLEVEL, "mainwindow"));
 	gtk_window_set_title(GTK_WINDOW(window), PROG_VERSION);
 	gtk_window_set_resizable(GTK_WINDOW(window), TRUE);
-#ifdef MAEMO
+#ifdef GENERIC_UMPC
 	prefs_common.layout_mode = SMALL_LAYOUT;
 #endif
 	if (!geometry.min_height) {
@@ -1631,7 +1631,7 @@ MainWindow *main_window_create()
 	gtk_container_set_border_width(GTK_CONTAINER(vbox_body), BORDER_WIDTH);
 	gtk_box_pack_start(GTK_BOX(vbox), vbox_body, TRUE, TRUE, 0);
 
-#ifndef MAEMO
+#ifndef GENERIC_UMPC
 	hbox_stat = gtk_hbox_new(FALSE, 2);
 	gtk_box_pack_end(GTK_BOX(vbox_body), hbox_stat, FALSE, FALSE, 0);
 
@@ -1760,7 +1760,7 @@ MainWindow *main_window_create()
 	mainwin->vbox_body      = vbox_body;
 	mainwin->online_switch  = online_switch;
 	mainwin->offline_switch    = offline_switch;
-#ifndef MAEMO
+#ifndef GENERIC_UMPC
 	messageview->statusbar  = statusbar;
 	mainwin->statusbar      = statusbar;
 	mainwin->hbox_stat      = hbox_stat;
@@ -1861,7 +1861,7 @@ MainWindow *main_window_create()
 	}
 	gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM(menuitem), TRUE);
 
-#ifndef MAEMO
+#ifndef GENERIC_UMPC
 	gtk_widget_hide(mainwin->hbox_stat);
 	menuitem = gtk_item_factory_get_item
 		(ifactory, "/View/Show or hide/Status bar");
@@ -1900,7 +1900,7 @@ MainWindow *main_window_create()
 	   menu items in different menus             */
 	menu_connect_identical_items();
 
-#ifndef MAEMO
+#ifndef GENERIC_UMPC
 	gtk_window_iconify(GTK_WINDOW(mainwin->window));
 #endif
 
@@ -2030,7 +2030,7 @@ static gboolean reflect_prefs_timeout_cb(gpointer data)
 	gboolean pixmap_theme_changed = GPOINTER_TO_INT(data);
 	GList *cur;
 	MainWindow *mainwin;
-#ifndef MAEMO
+#ifndef GENERIC_UMPC
 	GtkWidget *pixmap;
 #endif
 	for (cur = mainwin_list; cur != NULL; cur = cur->next) {
@@ -2047,7 +2047,7 @@ static gboolean reflect_prefs_timeout_cb(gpointer data)
 			compose_reflect_prefs_pixmap_theme();
 			folderview_reflect_prefs_pixmap_theme(mainwin->folderview);
 			summary_reflect_prefs_pixmap_theme(mainwin->summaryview);
-#ifndef MAEMO
+#ifndef GENERIC_UMPC
 			pixmap = stock_pixmap_widget(mainwin->hbox_stat, STOCK_PIXMAP_ONLINE);
 			gtk_container_remove(GTK_CONTAINER(mainwin->online_switch), 
 					     mainwin->online_pixmap);
@@ -2069,7 +2069,7 @@ static gboolean reflect_prefs_timeout_cb(gpointer data)
 		textview_reflect_prefs(mainwin->messageview->mimeview->textview);
 		folderview_reflect_prefs();
 		summary_reflect_prefs();
-#ifndef MAEMO
+#ifndef GENERIC_UMPC
 		summary_redisplay_msg(mainwin->summaryview);
 #endif
 		if (prefs_common.layout_mode == SMALL_LAYOUT) {
@@ -2275,7 +2275,7 @@ static void main_window_set_toolbar_combo_receive_menu(MainWindow *mainwin,
 static void main_window_set_toolbar_combo_compose_menu(MainWindow *mainwin,
 						       GList *account_list)
 {
-#ifndef MAEMO
+#ifndef GENERIC_UMPC
 	GList *cur_ac;
 	GtkWidget *menuitem;
 	PrefsAccount *ac_prefs;
@@ -2349,13 +2349,14 @@ static void main_window_show_cur_account(MainWindow *mainwin)
 	gtk_window_set_title(GTK_WINDOW(mainwin->window), buf);
 	g_free(buf);
 
-	gtk_label_set_text(GTK_LABEL(mainwin->ac_label), ac_name);
+	if (mainwin->ac_label)
+		gtk_label_set_text(GTK_LABEL(mainwin->ac_label), ac_name);
 	if (mainwin->ac_button)
 		gtk_widget_queue_resize(mainwin->ac_button);
 
 	g_free(ac_name);
 }
-#ifndef MAEMO
+#ifndef GENERIC_UMPC
 static void main_window_separation_change(MainWindow *mainwin, LayoutType layout_mode)
 {
 	GtkWidget *folder_wid  = GTK_WIDGET_PTR(mainwin->folderview);
@@ -3167,7 +3168,7 @@ void main_window_show(MainWindow *mainwin)
 {
 	gtk_widget_show(mainwin->window);
 	gtk_widget_show(mainwin->vbox_body);
-#ifndef MAEMO
+#ifndef GENERIC_UMPC
         gtk_widget_set_uposition(mainwin->window,
                                  prefs_common.mainwin_x,
                                  prefs_common.mainwin_y);
@@ -3225,7 +3226,7 @@ static void main_window_set_widgets(MainWindow *mainwin, LayoutType layout_mode)
 				    prefs_common.msgview_height);
 	}
 
-#ifndef MAEMO
+#ifndef GENERIC_UMPC
 	mainwin->messageview->statusbar = mainwin->statusbar;
 	mainwin->messageview->statusbar_cid = mainwin->messageview_cid;
 #endif
@@ -3391,7 +3392,7 @@ static void main_window_set_widgets(MainWindow *mainwin, LayoutType layout_mode)
 	gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM(menuitem), active); \
 }
 
-#ifndef MAEMO
+#ifndef GENERIC_UMPC
 	switch (prefs_common.layout_mode) {
 	case NORMAL_LAYOUT:
 		SET_CHECK_MENU_ACTIVE("/View/Layout/Standard", TRUE);
@@ -3463,7 +3464,7 @@ static void toolbar_child_detached(GtkWidget *widget, GtkWidget *child,
 {
 	gtk_widget_set_size_request(child, -1, -1);
 }
-#ifndef MAEMO
+#ifndef GENERIC_UMPC
 static gboolean ac_label_button_pressed(GtkWidget *widget, GdkEventButton *event,
 				    gpointer data)
 {
@@ -3671,7 +3672,7 @@ static void toggle_col_headers_cb(MainWindow *mainwin, guint action,
 	}
 }
 
-#ifndef MAEMO
+#ifndef GENERIC_UMPC
 static void toggle_statusbar_cb(MainWindow *mainwin, guint action,
 				GtkWidget *widget)
 {
@@ -3787,7 +3788,7 @@ static void online_switch_clicked (GtkButton *btn, gpointer data)
 	g_return_if_fail(menuitem != NULL);
 	
 	if (btn == GTK_BUTTON(mainwin->online_switch)) {
-#ifndef MAEMO
+#ifndef GENERIC_UMPC
 		gtk_widget_hide (mainwin->online_switch);
 		gtk_widget_show (mainwin->offline_switch);
 #endif
@@ -3807,7 +3808,7 @@ static void online_switch_clicked (GtkButton *btn, gpointer data)
 		/*go online */
 		if (!prefs_common.work_offline)
 			return;
-#ifndef MAEMO
+#ifndef GENERIC_UMPC
 		gtk_widget_hide (mainwin->offline_switch);
 		gtk_widget_show (mainwin->online_switch);
 #endif
@@ -4436,7 +4437,7 @@ static void account_receive_menu_cb(GtkMenuItem *menuitem, gpointer data)
 
 	inc_account_mail(mainwin, account);
 }
-#ifndef MAEMO
+#ifndef GENERIC_UMPC
 static void account_compose_menu_cb(GtkMenuItem *menuitem, gpointer data)
 {
 	PrefsAccount *account = (PrefsAccount *)data;

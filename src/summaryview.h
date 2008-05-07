@@ -103,7 +103,7 @@ struct _SummaryView
 	GtkWidget *statlabel_msgs;
 	GtkWidget *toggle_eventbox;
 	GtkWidget *toggle_arrow;
-#ifdef MAEMO
+#ifdef GENERIC_UMPC
 	GtkWidget *multiple_sel_togbtn;
 	GtkWidget *multiple_sel_image;
 #endif

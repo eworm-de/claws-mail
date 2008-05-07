@@ -359,7 +359,7 @@ MimeView *mimeview_create(MainWindow *mainwin)
 
 	gtk_widget_show(hbox);
 	gtk_widget_hide(ctree_mainbox);
-#ifdef MAEMO
+#ifdef GENERIC_UMPC
 	gtk_widget_set_size_request(mime_toggle, -1, arrow->requisition.height + 8);
 #endif
 	mimeview->hbox          = hbox;
@@ -2279,7 +2279,7 @@ static void icon_list_append_icon (MimeView *mimeview, MimeInfo *mimeinfo)
 	g_signal_connect(G_OBJECT(button), "drag_data_get",
 			 G_CALLBACK(mimeview_drag_data_get), mimeview);
 	gtk_box_pack_start(GTK_BOX(vbox), button, FALSE, FALSE, 0);
-#ifdef MAEMO
+#ifdef GENERIC_UMPC
 	gtk_widget_set_size_request(vbox, -1, pixmap->requisition.height + 8);
 	gtk_widget_set_size_request(button, -1, pixmap->requisition.height + 4);
 #endif

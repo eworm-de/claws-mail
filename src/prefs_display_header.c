@@ -111,7 +111,7 @@ static void drag_end	(GtkTreeView *list_view,
 			 GdkDragContext *context,
 			 gpointer data);
 
-#ifndef MAEMO
+#ifndef GENERIC_UMPC
 static gchar *defaults[] =
 {
 	"From",

@@ -263,7 +263,7 @@ static void folderview_drag_received_cb  (GtkWidget        *widget,
 					  guint             info,
 					  guint             time,
 					  FolderView       *folderview);
-#ifndef MAEMO
+#ifndef GENERIC_UMPC
 static void folderview_start_drag	 (GtkWidget *widget, gint button, GdkEvent *event,
 			                  FolderView       *folderview);
 #endif
@@ -429,7 +429,7 @@ static void folderview_column_set_titles(FolderView *folderview)
 	gtk_widget_show_all(hbox_unread);
 	gtk_widget_show_all(hbox_total);
 
-#ifdef MAEMO
+#ifdef GENERIC_UMPC
 	gtk_widget_set_size_request(hbox_new, -1, 20);
 	gtk_widget_set_size_request(hbox_unread, -1, 20);
 	gtk_widget_set_size_request(hbox_total, -1, 20);
@@ -440,7 +440,7 @@ static void folderview_column_set_titles(FolderView *folderview)
 	gtk_clist_set_column_widget(GTK_CLIST(ctree),col_pos[F_COL_UNREAD],hbox_unread);
 	gtk_clist_set_column_widget(GTK_CLIST(ctree),col_pos[F_COL_TOTAL],hbox_total);
 
-#ifdef MAEMO
+#ifdef GENERIC_UMPC
 	GTK_EVENTS_FLUSH();
 #endif
 
@@ -558,7 +558,7 @@ static GtkWidget *folderview_ctree_create(FolderView *folderview)
 			 folderview);
 	g_signal_connect(G_OBJECT(ctree), "tree_select_row",
 			 G_CALLBACK(folderview_selected), folderview);
-#ifndef MAEMO
+#ifndef GENERIC_UMPC
 	/* drag-n-dropping folders on maemo is impractical as this 
 	 * opens the folder almost everytime */
 	g_signal_connect(G_OBJECT(ctree), "start_drag",
@@ -2080,7 +2080,7 @@ static gboolean folderview_key_pressed(GtkWidget *widget, GdkEventKey *event,
 
 	switch (event->keyval) {
 	case GDK_Right:
-#ifndef MAEMO
+#ifndef GENERIC_UMPC
 	case GDK_Return:
 	case GDK_KP_Enter:
 #endif
@@ -2089,7 +2089,7 @@ static gboolean folderview_key_pressed(GtkWidget *widget, GdkEventKey *event,
 					       folderview->selected);
 		}
 		break;
-#ifdef MAEMO
+#ifdef GENERIC_UMPC
 	case GDK_Return:
 		if (folderview->selected && GTK_CTREE_ROW(folderview->selected)->children) {
 			gtk_ctree_toggle_expansion(
@@ -2811,7 +2811,7 @@ static void drag_state_start(FolderView *folderview, GtkCTreeNode *node, FolderI
 		folderview->drag_item = item;
 	}			 
 }
-#ifndef MAEMO
+#ifndef GENERIC_UMPC
 static void folderview_start_drag(GtkWidget *widget, gint button, GdkEvent *event,
 			          FolderView       *folderview)
 {

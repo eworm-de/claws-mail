@@ -1,3 +1,34 @@
+2008-05-07 [colin]	3.4.0cvs28
+
+	* configure.ac
+	* src/account.c
+	* src/addr_compl.c
+	* src/compose.c
+	* src/editaddress.c
+	* src/folderview.c
+	* src/mainwindow.c
+	* src/messageview.c
+	* src/mimeview.c
+	* src/prefs_account.c
+	* src/prefs_common.c
+	* src/prefs_display_header.c
+	* src/prefs_filtering.c
+	* src/prefs_summaries.c
+	* src/prefs_template.c
+	* src/prefs_toolbar.c
+	* src/stock_pixmap.c
+	* src/summaryview.c
+	* src/summaryview.h
+	* src/textview.c
+	* src/toolbar.c
+	* src/gtk/about.c
+	* src/gtk/gtksctree.c
+	* src/gtk/menu.c
+	* src/gtk/prefswindow.c
+	* src/gtk/sslcertwindow.c
+		Separate generic UMPC code (layouts, ...) from 
+		MAEMO code (Hildon, ...)
+
 2008-05-06 [paul]	3.4.0cvs27
 
 	* tools/claws.i18n.status.pl

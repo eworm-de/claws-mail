@@ -156,7 +156,7 @@ static GtkWidget *about_create_child_page_info(void)
 	gtk_text_buffer_create_tag(buffer, "underlined-list-title",
 				"underline", PANGO_UNDERLINE_SINGLE,
 				NULL);
-#ifdef MAEMO
+#ifdef GENERIC_UMPC
 	gtk_text_buffer_insert(buffer, &iter, _(
 				"\n\nCopyright (C) 1999-2008\nHiroyuki Yamamoto <hiro-y@kcn.ne.jp>\n"
 				"and the Claws Mail team"), -1);
@@ -752,7 +752,7 @@ static void about_create(void)
 
 	button = gtkut_get_link_btn(window, HOMEPAGE_URI, " "HOMEPAGE_URI" ");
 	gtk_box_pack_start(GTK_BOX(vbox2), button, FALSE, FALSE, 0);
-#ifndef MAEMO
+#ifndef GENERIC_UMPC
 	label = gtk_label_new
 		(_("Copyright (C) 1999-2008\nHiroyuki Yamamoto <hiro-y@kcn.ne.jp>\n"
 		 "and the Claws Mail team"));

@@ -132,7 +132,7 @@ static void close_all_pages(GSList *prefs_pages)
 	}	
 }
 
-#ifdef MAEMO
+#ifdef GENERIC_UMPC
 static void prefs_show_sections(PrefsWindow *prefswindow)
 {
 	gint max;
@@ -167,7 +167,7 @@ static void apply_button_clicked(GtkButton *button, gpointer user_data)
 	PrefsWindow *prefswindow = (PrefsWindow *) user_data;
 
 	save_all_pages(prefswindow->prefs_pages);
-#ifdef MAEMO
+#ifdef GENERIC_UMPC
 	prefs_show_sections(prefswindow);
 #endif
 }
@@ -209,7 +209,7 @@ static gboolean window_closed(GtkWidget *widget, GdkEvent *event, gpointer user_
 {
 	PrefsWindow *prefswindow = (PrefsWindow *) user_data;
 
-#ifdef MAEMO
+#ifdef GENERIC_UMPC
 	save_all_pages(prefswindow->prefs_pages);
 #endif
 	close_prefs_window(prefswindow);
@@ -317,7 +317,7 @@ static void prefswindow_build_tree(GtkWidget *tree_view, GSList *prefs_pages,
 			(GTK_TREE_VIEW(tree_view)));
 	GSList *cur;
 	gint index; /* index in pages list */
-#ifndef MAEMO
+#ifndef GENERIC_UMPC
 	GtkTreeSelection *selection;
 	GtkTreeIter iter;
 #endif
@@ -399,7 +399,7 @@ static void prefswindow_build_tree(GtkWidget *tree_view, GSList *prefs_pages,
 		prefswindow_build_all_pages(prefswindow, prefs_pages);
 
 	/* select first one or its first child if necessary */
-#ifndef MAEMO
+#ifndef GENERIC_UMPC
 	selection = gtk_tree_view_get_selection(GTK_TREE_VIEW(tree_view));
 	if (gtk_tree_model_get_iter_first(GTK_TREE_MODEL(store), &iter)) {
 		if (activate_child && gtk_tree_model_iter_has_child(GTK_TREE_MODEL(store), &iter)) {
@@ -518,7 +518,7 @@ void prefswindow_open_full(const gchar *title, GSList *prefs_pages,
 
 	gtk_widget_grab_focus(prefswindow->tree_view);
 
-#ifndef MAEMO
+#ifndef GENERIC_UMPC
 	gtkut_stock_button_set_create(&prefswindow->confirm_area,
 				      &prefswindow->apply_btn,	GTK_STOCK_APPLY,
 				      &prefswindow->cancel_btn,	GTK_STOCK_CANCEL,
@@ -536,7 +536,7 @@ void prefswindow_open_full(const gchar *title, GSList *prefs_pages,
 
 	gtk_box_pack_start(GTK_BOX(prefswindow->vbox), prefswindow->confirm_area, FALSE, FALSE, 0);
 
-#ifndef MAEMO
+#ifndef GENERIC_UMPC
 	g_signal_connect(G_OBJECT(prefswindow->ok_btn), "clicked", 
 			 G_CALLBACK(ok_button_clicked), prefswindow);
 	g_signal_connect(G_OBJECT(prefswindow->cancel_btn), "clicked", 
@@ -583,7 +583,7 @@ void prefswindow_open_full(const gchar *title, GSList *prefs_pages,
 					    *(prefswindow->save_height));
 	}
 
-#ifdef MAEMO
+#ifdef GENERIC_UMPC
 	prefs_show_sections(prefswindow);
 #endif
 	gtk_widget_show(prefswindow->window);
@@ -691,7 +691,7 @@ static gboolean prefswindow_row_selected(GtkTreeSelection *selector,
 	GtkTreeIter iter;
 	GtkAdjustment *adj;
 
-#ifndef MAEMO
+#ifndef GENERIC_UMPC
 	if (currently_selected) 
 		return TRUE;
 #endif
@@ -739,7 +739,7 @@ static gboolean prefswindow_row_selected(GtkTreeSelection *selector,
 	gtk_adjustment_set_value(adj, adj->lower);
 	gtk_adjustment_changed(adj);
 
-#ifdef MAEMO
+#ifdef GENERIC_UMPC
 	prefs_show_page(prefswindow);
 #endif
 	return TRUE;

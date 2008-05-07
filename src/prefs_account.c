@@ -415,7 +415,7 @@ static PrefParam receive_param[] = {
 	 &receive_page.rmmail_checkbtn,
 	 prefs_set_data_from_toggle, prefs_set_toggle},
 
-#ifndef MAEMO
+#ifndef GENERIC_UMPC
 	{"message_leave_time", "7", &tmp_ac_prefs.msg_leave_time, P_INT,
 	 &receive_page.leave_time_spinbtn,
 	 prefs_set_data_from_spinbtn, prefs_set_spinbtn},
@@ -956,7 +956,7 @@ static void basic_create_widget_func(PrefsPage * _page,
 
 	default_checkbtn = gtk_check_button_new_with_label (_("Set as default"));
 	gtk_widget_show (default_checkbtn);
-#ifndef MAEMO
+#ifndef GENERIC_UMPC
 	gtk_box_pack_end (GTK_BOX (hbox), default_checkbtn, TRUE, FALSE, 0);
 #else
 	gtk_box_pack_start (GTK_BOX (vbox1), default_checkbtn, FALSE, FALSE, 0);
@@ -1114,7 +1114,7 @@ static void basic_create_widget_func(PrefsPage * _page,
 	pass_entry = gtk_entry_new ();
 	gtk_widget_show (pass_entry);
 	gtk_widget_set_size_request (pass_entry, DEFAULT_ENTRY_WIDTH, -1);
-#ifndef MAEMO
+#ifndef GENERIC_UMPC
 	gtk_table_attach (GTK_TABLE (serv_table), uid_entry, 1, 2, 7, 8,
 			  GTK_EXPAND | GTK_SHRINK | GTK_FILL,
 			  GTK_EXPAND | GTK_SHRINK | GTK_FILL, 0, 0);
@@ -1187,7 +1187,7 @@ static void basic_create_widget_func(PrefsPage * _page,
 
 	pass_label = gtk_label_new (_("Password"));
 	gtk_widget_show (pass_label);
-#ifndef MAEMO
+#ifndef GENERIC_UMPC
 	gtk_table_attach (GTK_TABLE (serv_table), pass_label, 2, 3, 7, 8,
 			  0, 0, 0, 0);
 #else
@@ -1685,7 +1685,7 @@ static void send_create_widget_func(PrefsPage * _page,
 	gtk_widget_set_size_request (smtp_uid_entry, DEFAULT_ENTRY_WIDTH, -1);
 	gtk_box_pack_start (GTK_BOX (hbox), smtp_uid_entry, TRUE, TRUE, 0);
 
-#ifdef MAEMO
+#ifdef GENERIC_UMPC
 	PACK_VSPACER(vbox4, vbox_spc, VSPACING_NARROW_2);
 	hbox = gtk_hbox_new (FALSE, 8);
 	gtk_widget_show (hbox);

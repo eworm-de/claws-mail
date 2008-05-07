@@ -192,7 +192,7 @@ static PrefParam param[] = {
 	 NULL, NULL, NULL},
 	{"confirm_send_queued_messages", "FALSE", &prefs_common.confirm_send_queued_messages,
 	 P_BOOL, NULL, NULL, NULL},
-#ifndef MAEMO
+#ifndef GENERIC_UMPC
 	{"send_dialog_mode", "0", &prefs_common.send_dialog_invisible, P_BOOL,
 	 NULL, NULL, NULL},
 #else
@@ -282,7 +282,7 @@ static PrefParam param[] = {
 	{"default_reply_list", "TRUE", &prefs_common.default_reply_list, P_BOOL,
 	 NULL, NULL, NULL},
 
-#ifndef MAEMO
+#ifndef GENERIC_UMPC
 	{"show_ruler", "TRUE", &prefs_common.show_ruler, P_BOOL,
 	 NULL, NULL, NULL},
 #else
@@ -321,7 +321,7 @@ static PrefParam param[] = {
 	  &prefs_common.normalfont_gtk1,	P_STRING, NULL, NULL, NULL},
 
 	/* new fonts */
-#ifndef MAEMO
+#ifndef GENERIC_UMPC
 	{"widget_font_gtk2",	NULL,
 	  &SPECIFIC_PREFS.widgetfont,		P_STRING, NULL, NULL, NULL},
 	{"message_font_gtk2",	"Monospace 9",
@@ -447,7 +447,7 @@ static PrefParam param[] = {
 
 	{"enable_thread", "TRUE", &prefs_common.enable_thread, P_BOOL,
 	 NULL, NULL, NULL},
-#ifndef MAEMO
+#ifndef GENERIC_UMPC
 	{"toolbar_style", "3", &prefs_common.toolbar_style, P_ENUM,
 	 NULL, NULL, NULL},
 #else
@@ -458,7 +458,7 @@ static PrefParam param[] = {
 	 NULL, NULL, NULL},
 	{"show_col_headers", "TRUE", &prefs_common.show_col_headers, P_BOOL,
 	 NULL, NULL, NULL},
-#ifndef MAEMO
+#ifndef GENERIC_UMPC
 	{"show_statusbar", "TRUE", &prefs_common.show_statusbar, P_BOOL,
 	 NULL, NULL, NULL},
 	{"show_searchbar", "TRUE", &prefs_common.show_searchbar, P_BOOL,
@@ -526,7 +526,7 @@ static PrefParam param[] = {
 	 &prefs_common.summary_col_size[S_COL_STATUS], P_INT, NULL, NULL, NULL},
 	{"summary_col_size_mime", "10",
 	 &prefs_common.summary_col_size[S_COL_MIME], P_INT, NULL, NULL, NULL},
-#ifndef MAEMO
+#ifndef GENERIC_UMPC
 	{"summary_col_size_subject", "200",
 	 &prefs_common.summary_col_size[S_COL_SUBJECT], P_INT, NULL, NULL, NULL},
 	{"summary_col_size_from", "120",
@@ -585,7 +585,7 @@ static PrefParam param[] = {
 	{"folder_col_pos_total", "3",
 	 &prefs_common.folder_col_pos[F_COL_TOTAL], P_INT, NULL, NULL, NULL},
 
-#ifndef MAEMO
+#ifndef GENERIC_UMPC
 	{"folder_col_size_folder", "120",
 	 &prefs_common.folder_col_size[F_COL_FOLDER], P_INT, NULL, NULL, NULL},
 	{"folder_col_size_new", "32",
@@ -634,7 +634,7 @@ static PrefParam param[] = {
 	 NULL, NULL, NULL},
 	{"mainwin_maximised", "FALSE", &prefs_common.mainwin_maximised, P_BOOL,
 	 NULL, NULL, NULL},
-#ifndef MAEMO
+#ifndef GENERIC_UMPC
 	{"mainwin_width", "800", &prefs_common.mainwin_width, P_INT,
 	 NULL, NULL, NULL},
 	{"mainwin_height", "600", &prefs_common.mainwin_height, P_INT,
@@ -744,7 +744,7 @@ static PrefParam param[] = {
 	 &SPECIFIC_PREFS.mime_open_cmd,     P_STRING, NULL, NULL, NULL},
 
 	/* Interface */
-#ifndef MAEMO
+#ifndef GENERIC_UMPC
 	{"layout_mode", "0", &prefs_common.layout_mode, P_INT,
 	 NULL, NULL, NULL},
 #else
@@ -831,7 +831,7 @@ static PrefParam param[] = {
 	 NULL, NULL, NULL},
 	{"summary_quicksearch_type", "0", &prefs_common.summary_quicksearch_type, P_INT,
 	 NULL, NULL, NULL},
-#ifndef MAEMO
+#ifndef GENERIC_UMPC
 	{"summary_quicksearch_recurse", "1", &prefs_common.summary_quicksearch_recurse, P_INT,
 	 NULL, NULL, NULL},
 #else
@@ -855,7 +855,7 @@ static PrefParam param[] = {
 	 NULL, NULL, NULL},
 	{"log_length", "500", &prefs_common.loglength, P_INT,
 	 NULL, NULL, NULL},
-#ifndef MAEMO
+#ifndef GENERIC_UMPC
     	{"enable_log_standard", "TRUE", &prefs_common.enable_log_standard, P_BOOL,
 	 NULL, NULL, NULL},
     	{"enable_log_warning", "TRUE", &prefs_common.enable_log_warning, P_BOOL,
@@ -1041,7 +1041,7 @@ static PrefParam param[] = {
 	 NULL, NULL, NULL},
 	{"hover_timeout", "500", &prefs_common.hover_timeout, P_INT,
 	 NULL, NULL, NULL},
-#ifndef MAEMO
+#ifndef GENERIC_UMPC
 	{"cache_max_mem_usage", "4096", &prefs_common.cache_max_mem_usage, P_INT,
 	 NULL, NULL, NULL},
 	{"cache_min_keep_time", "15", &prefs_common.cache_min_keep_time, P_INT,
@@ -1078,7 +1078,7 @@ static PrefParam param[] = {
 	 NULL, NULL, NULL},
 	{"unsafe_ssl_certs", "FALSE", &prefs_common.unsafe_ssl_certs, P_BOOL,
 	 NULL, NULL, NULL},
-#ifndef MAEMO
+#ifndef GENERIC_UMPC
 	{"real_time_sync", "FALSE", &prefs_common.real_time_sync, P_BOOL,
 	 NULL, NULL, NULL},
 #else

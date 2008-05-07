@@ -321,7 +321,7 @@ static void prefs_filtering_create(void)
 	GtkWidget *top_btn;
 	GtkWidget *up_btn;
 	GtkWidget *down_btn;
-#ifndef MAEMO
+#ifndef GENERIC_UMPC
 	GtkWidget *page_up_btn;
 	GtkWidget *page_down_btn;
 #endif
@@ -525,7 +525,7 @@ static void prefs_filtering_create(void)
 	gtk_tooltips_set_tip(GTK_TOOLTIPS(tooltips), top_btn,
 			_("Move the selected rule to the top"), NULL);
 
-#ifndef MAEMO
+#ifndef GENERIC_UMPC
 	page_up_btn = gtk_button_new_with_mnemonic (_("Page up"));
 	gtk_button_set_image(GTK_BUTTON(page_up_btn),
 			gtk_image_new_from_stock(GTK_STOCK_GO_UP,GTK_ICON_SIZE_BUTTON));
@@ -553,7 +553,7 @@ static void prefs_filtering_create(void)
 	gtk_tooltips_set_tip(GTK_TOOLTIPS(tooltips), down_btn,
 			_("Move the selected rule down"), NULL);
 
-#ifndef MAEMO
+#ifndef GENERIC_UMPC
 	page_down_btn = gtk_button_new_with_mnemonic (_("Page down"));
 	gtk_button_set_image(GTK_BUTTON(page_down_btn),
 			gtk_image_new_from_stock(GTK_STOCK_GO_DOWN,GTK_ICON_SIZE_BUTTON));
@@ -1752,7 +1752,7 @@ static GtkItemFactoryEntry prefs_filtering_popup_entries[] =
 	{N_("/_Delete"),		NULL, prefs_filtering_delete_cb, 0, NULL, NULL},
 	{N_("/Delete _all"),		NULL, prefs_filtering_delete_all_cb, 0, NULL, NULL},
 	{N_("/D_uplicate"),		NULL, prefs_filtering_duplicate_cb, 0, NULL, NULL},
-#ifdef MAEMO
+#ifdef GENERIC_UMPC
 	{N_("/---"),			NULL, NULL, 0, "<Separator>", NULL},
 	{N_("/Move one page up"),		NULL, prefs_filtering_page_up, 0, NULL, NULL},
 	{N_("/Move one page down"),		NULL, prefs_filtering_page_down, 0, NULL, NULL},
@@ -1833,7 +1833,7 @@ static GtkWidget *prefs_filtering_list_view_create(void)
 
 	list_view = GTK_TREE_VIEW(gtk_tree_view_new_with_model(GTK_TREE_MODEL
 		(prefs_filtering_create_data_store())));
-#ifdef MAEMO
+#ifdef GENERIC_UMPC
 	g_object_set(list_view, "allow-checkbox-mode", FALSE, NULL);
 #endif
 

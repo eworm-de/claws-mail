@@ -70,7 +70,7 @@ typedef enum {
 #define EDITPERSON_WIDTH      520
 #define EDITPERSON_HEIGHT     320
 
-#ifndef MAEMO
+#ifndef GENERIC_UMPC
 # define EMAIL_N_COLS          3
 # define EMAIL_COL_WIDTH_EMAIL 180
 # define EMAIL_COL_WIDTH_ALIAS 80
@@ -80,7 +80,7 @@ typedef enum {
 # define EMAIL_COL_WIDTH_ALIAS 130
 #endif
 
-#ifndef MAEMO
+#ifndef GENERIC_UMPC
 # define ATTRIB_N_COLS          2
 # define ATTRIB_COL_WIDTH_NAME  240
 # define ATTRIB_COL_WIDTH_VALUE 0
@@ -102,7 +102,7 @@ static gchar* edit_person_get_common_name_from_widgets(void)
 {
 	gchar *cn = NULL; /* cn must be freed by caller */
 
-#ifndef MAEMO
+#ifndef GENERIC_UMPC
 	{
 		cn = gtk_editable_get_chars( GTK_EDITABLE(personeditdlg.entry_name), 0, -1 );
 		if ( cn == NULL || *cn == '\0' ) {
@@ -157,7 +157,7 @@ static void edit_person_ok(GtkWidget *widget, gboolean *cancelled) {
 		gint val;
 
 		val = alertpanel( _("Add New Person"),
-#ifndef MAEMO
+#ifndef GENERIC_UMPC
 				_("Adding a new person requires at least one of the\n"
 				  "following values to be set:\n"
 				  " - Display Name\n"
@@ -304,7 +304,7 @@ static void edit_person_load_email( ItemPerson *person ) {
 		ItemEMail *email = addritem_copyfull_item_email( emorig );
 		gint row;
 		text[ EMAIL_COL_EMAIL   ] = email->address;
-#ifndef MAEMO
+#ifndef GENERIC_UMPC
 		text[ EMAIL_COL_ALIAS   ] = email->obj.name;
 		text[ EMAIL_COL_REMARKS ] = email->remarks;
 #endif
@@ -448,7 +448,7 @@ static void edit_person_email_add( gpointer data ) {
 	if( ! errFlg ) {
 		gchar *text[ EMAIL_N_COLS ];
 		text[ EMAIL_COL_EMAIL   ] = email->address;
-#ifndef MAEMO
+#ifndef GENERIC_UMPC
 		text[ EMAIL_COL_ALIAS   ] = email->obj.name;
 		text[ EMAIL_COL_REMARKS ] = email->remarks;
 #endif
@@ -955,7 +955,7 @@ static void addressbook_edit_person_page_basic( gint pageNum, gchar *pageLbl ) {
 	entry = gtk_entry_new(); \
 }
 
-#ifndef MAEMO
+#ifndef GENERIC_UMPC
 	ATTACH_ROW(_("Display Name"), entry_name);
 #else
 	ATTACH_HIDDEN_ROW(_("Display Name"), entry_name);
@@ -971,7 +971,7 @@ static void addressbook_edit_person_page_basic( gint pageNum, gchar *pageLbl ) {
 		ATTACH_ROW(_("First Name"), entry_fn);
 		ATTACH_ROW(_("Last Name"), entry_ln);
 	}
-#ifndef MAEMO
+#ifndef GENERIC_UMPC
 	ATTACH_ROW(_("Nickname"), entry_nn);
 #else
 	ATTACH_HIDDEN_ROW(_("Nickname"), entry_nn);
@@ -1057,7 +1057,7 @@ static void addressbook_edit_person_page_email( gint pageNum, gchar *pageLbl ) {
 	gint i;
 
 	titles[ EMAIL_COL_EMAIL   ] = _("Email Address");
-#ifndef MAEMO
+#ifndef GENERIC_UMPC
 	titles[ EMAIL_COL_ALIAS   ] = _("Alias");
 	titles[ EMAIL_COL_REMARKS ] = _("Remarks");
 #endif
@@ -1099,7 +1099,7 @@ static void addressbook_edit_person_page_email( gint pageNum, gchar *pageLbl ) {
 	/* Data entry area */
 	table = gtk_table_new( 4, 2, FALSE);
 
-#ifndef MAEMO
+#ifndef GENERIC_UMPC
 	gtk_container_add( GTK_CONTAINER(vboxl), clist_swin );
 	gtk_box_pack_start(GTK_BOX(vboxl), table, FALSE, FALSE, 0);
 #else
@@ -1123,7 +1123,7 @@ static void addressbook_edit_person_page_email( gint pageNum, gchar *pageLbl ) {
 
 	gtk_table_attach(GTK_TABLE(table), entry_email, 1, 2, top, (top + 1), GTK_EXPAND|GTK_SHRINK|GTK_FILL, 0, 0, 0);
 
-#ifndef MAEMO
+#ifndef GENERIC_UMPC
 	/* Next row */
 	++top;
 	label = gtk_label_new(_("Alias"));
@@ -1159,7 +1159,7 @@ static void addressbook_edit_person_page_email( gint pageNum, gchar *pageLbl ) {
 	buttonAdd = gtk_button_new_from_stock(GTK_STOCK_ADD);
 	
 
-#ifndef MAEMO
+#ifndef GENERIC_UMPC
 	gtk_container_add( GTK_CONTAINER(vbuttonbox), buttonUp );
 
 	gtk_container_add( GTK_CONTAINER(vbuttonbox), buttonDown );
@@ -1307,7 +1307,7 @@ static void addressbook_edit_person_page_attrib( gint pageNum, gchar *pageLbl ) 
 		GTK_WIDGET_UNSET_FLAGS(GTK_CLIST(clist)->column[i].button, GTK_CAN_FOCUS);
 
 	/* Data entry area */
-#ifndef MAEMO
+#ifndef GENERIC_UMPC
 	table = gtk_table_new( 4, 2, FALSE);
 	gtk_container_add( GTK_CONTAINER(vboxl), clist_swin );
 	gtk_box_pack_start(GTK_BOX(vboxl), table, FALSE, FALSE, 0);
@@ -1323,7 +1323,7 @@ static void addressbook_edit_person_page_attrib( gint pageNum, gchar *pageLbl ) 
 
 	/* First row */
 	top = 0;
-#ifndef MAEMO
+#ifndef GENERIC_UMPC
 	label = gtk_label_new(_("Name"));
 	gtk_table_attach(GTK_TABLE(table), label, 0, 1, top, (top + 1), GTK_FILL, 0, 0, 0);
 	gtk_misc_set_alignment(GTK_MISC(label), 0, 0.5);

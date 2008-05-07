@@ -83,7 +83,7 @@
 #include "pixmaps/queue_open.xpm"
 #include "pixmaps/queue_open_hrm.xpm"
 #include "pixmaps/claws-mail_icon.xpm"
-#ifndef MAEMO
+#ifndef GENERIC_UMPC
 #include "pixmaps/claws-mail_logo.xpm"
 #else
 #include "pixmaps/claws-mail_logo-small.xpm"
@@ -362,7 +362,7 @@ static StockPixmapData pixmaps[] =
 	{claws_mail_icon_xpm			, NULL, NULL, "claws_mail_icon", NULL},
 	{read_xpm				, NULL, NULL, "read", NULL},
 	{trash_btn_xpm				, NULL, NULL, "trash_btn", NULL},
-#ifndef MAEMO
+#ifndef GENERIC_UMPC
 	{claws_mail_logo_xpm			, NULL, NULL, "claws_mail_logo", NULL},
 #else
 	{claws_mail_logo_small_xpm		, NULL, NULL, "claws_mail_logo_small", NULL},

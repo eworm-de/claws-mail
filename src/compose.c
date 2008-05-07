@@ -4422,7 +4422,7 @@ static void compose_set_title(Compose *compose)
 	subject = gtk_editable_get_chars(
 			GTK_EDITABLE(compose->subject_entry), 0, -1);
 
-#ifndef MAEMO
+#ifndef GENERIC_UMPC
 	if (subject && strlen(subject))
 		str = g_strdup_printf(_("%s - Compose message%s"),
 				      subject, edited);	
@@ -6762,7 +6762,7 @@ static Compose *compose_create(PrefsAccount *account,
 	gtk_window_set_geometry_hints(GTK_WINDOW(window), NULL,
 				      &geometry, GDK_HINT_MIN_SIZE);
 
-#ifndef MAEMO	
+#ifndef GENERIC_UMPC	
 	if (compose_force_window_origin)
 		gtk_widget_set_uposition(window, prefs_common.compose_x, 
 				 prefs_common.compose_y);
@@ -9281,7 +9281,7 @@ static void entry_allsel(GtkWidget *entry)
 static void compose_cut_cb(Compose *compose)
 {
 	if (compose->focused_editable 
-#ifndef MAEMO
+#ifndef GENERIC_UMPC
 	    && GTK_WIDGET_HAS_FOCUS(compose->focused_editable)
 #endif
 	    )
@@ -9291,7 +9291,7 @@ static void compose_cut_cb(Compose *compose)
 static void compose_copy_cb(Compose *compose)
 {
 	if (compose->focused_editable 
-#ifndef MAEMO
+#ifndef GENERIC_UMPC
 	    && GTK_WIDGET_HAS_FOCUS(compose->focused_editable)
 #endif
 	    )
@@ -9315,7 +9315,7 @@ static void compose_paste_as_quote_cb(Compose *compose)
 {
 	gint wrap_quote = prefs_common.linewrap_quote;
 	if (compose->focused_editable 
-#ifndef MAEMO
+#ifndef GENERIC_UMPC
 	    && GTK_WIDGET_HAS_FOCUS(compose->focused_editable)
 #endif
 	    ) {
@@ -9343,7 +9343,7 @@ static void compose_paste_no_wrap_cb(Compose *compose)
 	GtkTextBuffer *buffer;
 	BLOCK_WRAP();
 	if (compose->focused_editable 
-#ifndef MAEMO
+#ifndef GENERIC_UMPC
 	    && GTK_WIDGET_HAS_FOCUS(compose->focused_editable)
 #endif
 	    )
@@ -9358,7 +9358,7 @@ static void compose_paste_wrap_cb(Compose *compose)
 	GtkTextBuffer *buffer;
 	BLOCK_WRAP();
 	if (compose->focused_editable 
-#ifndef MAEMO
+#ifndef GENERIC_UMPC
 	    && GTK_WIDGET_HAS_FOCUS(compose->focused_editable)
 #endif
 	    )
@@ -9370,7 +9370,7 @@ static void compose_paste_wrap_cb(Compose *compose)
 static void compose_allsel_cb(Compose *compose)
 {
 	if (compose->focused_editable 
-#ifndef MAEMO
+#ifndef GENERIC_UMPC
 	    && GTK_WIDGET_HAS_FOCUS(compose->focused_editable)
 #endif
 	    )
@@ -9693,7 +9693,7 @@ static void compose_grab_focus_cb(GtkWidget *widget, Compose *compose)
 	if (GTK_IS_EDITABLE(widget) || GTK_IS_TEXT_VIEW(widget))
 		compose->focused_editable = widget;
 	
-#ifdef MAEMO
+#ifdef GENERIC_UMPC
 	if (GTK_IS_TEXT_VIEW(widget) 
 	    && gtk_paned_get_child1(GTK_PANED(compose->paned)) != compose->edit_vbox) {
 		gtk_widget_ref(compose->notebook);
@@ -9735,7 +9735,7 @@ static void compose_grab_focus_cb(GtkWidget *widget, Compose *compose)
 static void compose_changed_cb(GtkTextBuffer *textbuf, Compose *compose)
 {
 	compose->modified = TRUE;
-#ifndef MAEMO
+#ifndef GENERIC_UMPC
 	compose_set_title(compose);
 #endif
 }
