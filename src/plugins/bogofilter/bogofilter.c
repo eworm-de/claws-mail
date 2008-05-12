@@ -216,7 +216,7 @@ static void bogofilter_do_filter(BogoFilterData *data)
 			gchar *ab_folderpath;
 
 			if (*config.whitelist_ab_folder == '\0' ||
-				strcasecmp(config.whitelist_ab_folder, _("Any")) == 0) {
+				strcasecmp(config.whitelist_ab_folder, "Any") == 0) {
 				/* match the whole addressbook */
 				ab_folderpath = NULL;
 			} else {

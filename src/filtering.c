@@ -489,7 +489,7 @@ static gboolean filteringaction_apply(FilteringAction * action, MsgInfo * info)
 				gchar *path = NULL;
 
 				if (action->destination == NULL ||
-						strcasecmp(action->destination, _("Any")) == 0 ||
+						strcasecmp(action->destination, "Any") == 0 ||
 						*(action->destination) == '\0')
 					path = NULL;
 				else

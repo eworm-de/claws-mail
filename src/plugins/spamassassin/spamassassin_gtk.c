@@ -482,9 +482,20 @@ static void spamassassin_create_widget_func(PrefsPage * _page,
 		gtk_entry_set_text(GTK_ENTRY(spamd_hostname_entry), config->hostname);
 	if (config->socket != NULL)
 		gtk_entry_set_text(GTK_ENTRY(spamd_socket_entry), config->socket);
-	if (config->whitelist_ab_folder != NULL)
-		gtk_entry_set_text(GTK_ENTRY(GTK_BIN(whitelist_ab_folder_combo)->child),
-				config->whitelist_ab_folder);
+	if (config->whitelist_ab_folder != NULL) {
+		/* translate "Any" (stored UNtranslated) */
+		if (strcasecmp(config->whitelist_ab_folder, "Any") == 0)
+			gtk_entry_set_text(GTK_ENTRY(GTK_BIN(whitelist_ab_folder_combo)->child),
+					config->whitelist_ab_folder);
+		else
+		/* backward compatibility (when translated "Any" was stored) */
+		if (g_utf8_collate(config->whitelist_ab_folder, _("Any")) == 0)
+			gtk_entry_set_text(GTK_ENTRY(GTK_BIN(whitelist_ab_folder_combo)->child),
+					config->whitelist_ab_folder);
+		else
+			gtk_entry_set_text(GTK_ENTRY(GTK_BIN(whitelist_ab_folder_combo)->child),
+					config->whitelist_ab_folder);
+	}
 	gtk_spin_button_set_value(GTK_SPIN_BUTTON(spamd_port_spinbtn), (float) config->port);
 	gtk_spin_button_set_value(GTK_SPIN_BUTTON(max_size_spinbtn), (float) config->max_size);
 	gtk_spin_button_set_value(GTK_SPIN_BUTTON(timeout_spinbtn), (float) config->timeout);
@@ -600,6 +611,11 @@ static void spamassassin_save_func(PrefsPage *_page)
 	g_free(config->whitelist_ab_folder);
 	config->whitelist_ab_folder = gtk_editable_get_chars(
 				GTK_EDITABLE(GTK_BIN(page->whitelist_ab_folder_combo)->child), 0, -1);
+	/* store UNtranslated "Any" */
+	if (g_utf8_collate(config->whitelist_ab_folder, _("Any")) == 0) {
+		g_free(config->whitelist_ab_folder);
+		config->whitelist_ab_folder = g_strdup("Any");
+	}
 
 	if (config->process_emails) {
 		spamassassin_register_hook();

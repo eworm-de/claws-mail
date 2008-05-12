@@ -1,3 +1,20 @@
+2008-05-12 [wwp]	3.4.0cvs30
+
+	* src/addressbook.c
+	* src/addressbook_foldersel.c
+	* src/filtering.c
+	* src/matcher.c
+	* src/prefs_matcher.c
+	* src/plugins/bogofilter/bogofilter.c
+	* src/plugins/bogofilter/bogofilter_gtk.c
+	* src/plugins/dillo_viewer/dillo_prefs.c
+	* src/plugins/spamassassin/spamassassin.c
+	* src/plugins/spamassassin/spamassassin_gtk.c
+		Fix for bug 1604 "found_in_addressbook in Any in non English local",
+		based on a patch submitted by Paul CtrlAltBs. Also fix storing of
+		translated string "Any" in plugins (whitelisting) and
+		UTF8 comparisons.
+
 2008-05-07 [colin]	3.4.0cvs29
 
 	* configure.ac

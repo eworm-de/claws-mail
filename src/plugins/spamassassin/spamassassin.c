@@ -251,7 +251,7 @@ static gboolean mail_filtering_hook(gpointer source, gpointer data)
 		gboolean whitelisted = FALSE;
 
 		if (*config.whitelist_ab_folder == '\0' ||
-			strcasecmp(config.whitelist_ab_folder, _("Any")) == 0) {
+			strcasecmp(config.whitelist_ab_folder, "Any") == 0) {
 			/* match the whole addressbook */
 			ab_folderpath = NULL;
 		} else {

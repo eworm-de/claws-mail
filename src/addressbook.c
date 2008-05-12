@@ -5181,7 +5181,7 @@ gboolean addressbook_peek_folder_exists( gchar *folderpath,
 	if ( folderpath == NULL )
 		return FALSE;
 
-	if ( strcasecmp(folderpath, _("Any")) == 0 || *folderpath == '\0' )
+	if ( strcasecmp(folderpath, "Any") == 0 || *folderpath == '\0' )
 		return TRUE;
 
 	/* split the folder path we've received, we'll try to match this path, subpath by

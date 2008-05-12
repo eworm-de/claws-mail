@@ -1454,27 +1454,27 @@ static MatcherProp *prefs_matcher_dialog_to_matcher(void)
 		if (*expr == '\0') {
 			gchar *tmp;
 
-			if (strcasecmp(header, Q_("Filtering Matcher Menu|All")) == 0)
+			if (g_utf8_collate(header, Q_("Filtering Matcher Menu|All")) == 0)
 				tmp = g_strdup(_("all addresses in all headers"));
 			else
-			if (strcasecmp(header, _("Any")) == 0)
+			if (g_utf8_collate(header, _("Any")) == 0)
 				tmp = g_strdup(_("any address in any header"));
 			else
 				tmp = g_strdup_printf(_("the address(es) in header '%s'"), header);
 			alertpanel_error(_("Book/folder path is not set.\n\n"
 						"If you want to match %s against the whole address book, "
-						"you have to select 'Any' from the book/folder drop-down list."),
-						tmp);
+						"you have to select '%s' from the book/folder drop-down list."),
+						tmp, _("Any"));
 			g_free(tmp);
 		    return NULL;
 		}
-		/* don't store translated "Any"/"All" in matcher expressions */
-		if (strcasecmp(header, Q_("Filtering Matcher Menu|All")) == 0)
+		/* store UNtranslated "Any"/"All" in matcher expressions */
+		if (g_utf8_collate(header, Q_("Filtering Matcher Menu|All")) == 0)
 			header = "All";
 		else
-			if (strcasecmp(header, _("Any")) == 0)
+			if (g_utf8_collate(header, _("Any")) == 0)
 				header = "Any";
-		if (strcasecmp(expr, _("Any")) == 0)
+		if (g_utf8_collate(expr, _("Any")) == 0)
 			expr = "Any";
 		break;
 	}

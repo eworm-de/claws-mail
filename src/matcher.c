@@ -357,7 +357,7 @@ static gboolean match_with_addresses_in_addressbook
 				g_slist_length(address_list), folderpath?folderpath:"(null)");
 
 	if (folderpath == NULL ||
-		strcasecmp(folderpath, _("Any")) == 0 ||
+		strcasecmp(folderpath, "Any") == 0 ||
 		*folderpath == '\0')
 		path = NULL;
 	else
@@ -1274,9 +1274,9 @@ static gboolean matcherprop_match_one_header(MatcherProp *matcher,
 			gboolean found = FALSE;
 
 			/* how many address headers are me trying to mach? */
-			if (strcasecmp(matcher->header, _("Any")) == 0)
+			if (strcasecmp(matcher->header, "Any") == 0)
 				match = MATCH_ANY;
-			else if (strcasecmp(matcher->header, Q_("Filtering Matcher Menu|All")) == 0)
+			else if (strcasecmp(matcher->header, "All") == 0)
 					match = MATCH_ALL;
 
 			if (match == MATCH_ONE) {
@@ -1407,9 +1407,9 @@ static gboolean matcherlist_match_headers(MatcherList *matchers, FILE *fp)
 					 procheader_headername_equal(header->name, "Reply-To") ||
 					 procheader_headername_equal(header->name, "Sender"))) {
 
-					if (strcasecmp(matcher->header, _("Any")) == 0)
+					if (strcasecmp(matcher->header, "Any") == 0)
 						match = MATCH_ANY;
-					else if (strcasecmp(matcher->header, Q_("Filtering Matcher Menu|All")) == 0)
+					else if (strcasecmp(matcher->header, "All") == 0)
 						match = MATCH_ALL;
 					else
 						match = MATCH_ONE;

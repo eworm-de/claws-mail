@@ -205,9 +205,20 @@ static void create_dillo_prefs_page(PrefsPage *page,
 	gtk_box_pack_start (GTK_BOX (hbox_whitelist), whitelist_ab_select_btn, FALSE, FALSE, 0);
 
 	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(whitelist_ab_checkbtn), dillo_prefs.whitelist_ab);
-	if (dillo_prefs.whitelist_ab_folder != NULL)
-		gtk_entry_set_text(GTK_ENTRY(GTK_BIN(whitelist_ab_folder_combo)->child),
-				dillo_prefs.whitelist_ab_folder);
+	if (dillo_prefs.whitelist_ab_folder != NULL) {
+		/* translate "Any" (stored UNtranslated) */
+		if (strcasecmp(dillo_prefs.whitelist_ab_folder, "Any") == 0)
+			gtk_entry_set_text(GTK_ENTRY(GTK_BIN(whitelist_ab_folder_combo)->child),
+					_("Any"));
+		else
+		/* backward compatibility (when translated "Any" was stored) */
+		if (g_utf8_collate(dillo_prefs.whitelist_ab_folder, _("Any")) == 0)
+			gtk_entry_set_text(GTK_ENTRY(GTK_BIN(whitelist_ab_folder_combo)->child),
+					dillo_prefs.whitelist_ab_folder);
+		else
+			gtk_entry_set_text(GTK_ENTRY(GTK_BIN(whitelist_ab_folder_combo)->child),
+					dillo_prefs.whitelist_ab_folder);
+	}
 
 	full_tooltip = gtk_tooltips_new();
         full_checkbox = gtk_check_button_new_with_label
@@ -265,7 +276,12 @@ static void save_dillo_prefs(PrefsPage *page)
 	g_free(dillo_prefs.whitelist_ab_folder);
 	dillo_prefs.whitelist_ab_folder = gtk_editable_get_chars(
 				GTK_EDITABLE(GTK_BIN(prefs_page->whitelist_ab_folder_combo)->child), 0, -1);
-        
+	/* store UNtranslated "Any" */
+	if (g_utf8_collate(dillo_prefs.whitelist_ab_folder, _("Any")) == 0) {
+		g_free(dillo_prefs.whitelist_ab_folder);
+		dillo_prefs.whitelist_ab_folder = g_strdup("Any");
+	}
+    
         pref_file = prefs_write_open(rc_file_path);
         g_free(rc_file_path);
         
