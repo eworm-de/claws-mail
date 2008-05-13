@@ -1,3 +1,8 @@
+2008-05-13 [paul]	3.4.0cvs33
+
+	* src/ldapupdate.c
+		fix the build warnings the easy way for now
+
 2008-05-13 [colin]	3.4.0cvs32
 
 	* src/prefs_themes.c

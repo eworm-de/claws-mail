@@ -39,6 +39,8 @@
 
 #ifdef USE_LDAP
 
+#define LDAP_DEPRECATED 1
+
 #include <glib.h>
 #include <glib/gi18n.h>
 #include <sys/time.h>
