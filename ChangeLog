@@ -1,3 +1,8 @@
+2008-05-13 [wwp]	3.4.0cvs31
+
+	* src/addressbook_foldersel.c
+		Fix wrong check (completes 3.4.0.cvs30).
+
 2008-05-12 [wwp]	3.4.0cvs30
 
 	* src/addressbook.c

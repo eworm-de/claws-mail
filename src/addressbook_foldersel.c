@@ -388,7 +388,7 @@ gboolean addressbook_foldersel_selection( AddressIndex *addrIndex,
        corresponds to what we received */
 
 	if ( path != NULL ) {
-		if ( g_utf8_collate(path, _("Any")) == 0 || strcasecmp(path, "Any") || *path == '\0' )
+		if ( g_utf8_collate(path, _("Any")) == 0 || strcasecmp(path, "Any") ==0 || *path == '\0' )
 			/* consider "Any" (both translated or untranslated forms) and ""
 			   as valid addressbook roots */
 			folder_path_match.matched = TRUE;
