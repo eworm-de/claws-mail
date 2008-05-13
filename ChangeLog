@@ -1,3 +1,9 @@
+2008-05-13 [colin]	3.4.0cvs32
+
+	* src/prefs_themes.c
+		Count .png files as icons too (fixes part
+		of bug 1609, 'Icon issues')
+
 2008-05-13 [wwp]	3.4.0cvs31
 
 	* src/addressbook_foldersel.c

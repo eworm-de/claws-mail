@@ -168,8 +168,10 @@ static void prefs_themes_file_stats(const gchar *filename, gpointer data)
 		di->files++;
 		len = strlen(filename);
 		if (len > 4) {
-			if (filename[len - 1] == 'm' && filename[len - 2] == 'p' &&
-			    filename[len - 3] == 'x' && filename[len - 4] == '.')
+			const gchar *extension = filename+(len-4);
+			if (!strcmp(extension, ".xpm"))
+				di->pixms++;
+			else if (!strcmp(extension, ".png"))
 				di->pixms++;
 		}
 	}
