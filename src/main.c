@@ -1551,10 +1551,6 @@ static void exit_claws(MainWindow *mainwin)
 	debug_print("shutting down\n");
 	inc_autocheck_timer_remove();
 
-	if (prefs_common.clean_on_exit && !emergency_exit) {
-		main_window_empty_trash(mainwin, prefs_common.ask_on_clean);
-	}
-
 #ifdef HAVE_NETWORKMANAGER_SUPPORT
 	if (prefs_common.work_offline && went_offline_nm)
 		prefs_common.work_offline = FALSE;

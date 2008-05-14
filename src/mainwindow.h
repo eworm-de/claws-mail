@@ -171,8 +171,6 @@ void main_window_get_position		(MainWindow	*mainwin);
 
 void main_window_progress_on		(MainWindow	*mainwin);
 void main_window_progress_off		(MainWindow	*mainwin);
-void main_window_empty_trash		(MainWindow	*mainwin,
-					 gboolean	 confirm);
 
 void main_window_set_menu_sensitive	(MainWindow	*mainwin);
 

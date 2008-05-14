@@ -2585,14 +2585,20 @@ void main_window_progress_off(MainWindow *mainwin)
 	gtk_progress_bar_set_text(GTK_PROGRESS_BAR(mainwin->progressbar), "");
 }
 
-void main_window_empty_trash(MainWindow *mainwin, gboolean confirm)
+static gboolean main_window_empty_trash(MainWindow *mainwin, gboolean confirm)
 {
 	if (confirm && procmsg_have_trashed_mails_fast()) {
-		if (alertpanel(_("Empty trash"),
+		AlertValue val = alertpanel(_("Empty trash"),
 			       _("Delete all messages in trash folders?"),
-			       GTK_STOCK_NO, "+" GTK_STOCK_YES, NULL)
-		    != G_ALERTALTERNATE)
-			return;
+			       GTK_STOCK_NO, "+" GTK_STOCK_YES, _("Don't quit"));
+		if (val == G_ALERTALTERNATE) {
+			debug_print("will empty trash\n");
+		} else if (val == G_ALERTDEFAULT) {
+			debug_print("will not empty trash\n");
+			return TRUE;
+		} else {
+			return FALSE; /* cancel exit */
+		}
 		manage_window_focus_in(mainwin->window, NULL, NULL);
 	}
 
@@ -2601,6 +2607,7 @@ void main_window_empty_trash(MainWindow *mainwin, gboolean confirm)
 	if (mainwin->summaryview->folder_item &&
 	    mainwin->summaryview->folder_item->stype == F_TRASH)
 		gtk_widget_grab_focus(mainwin->folderview->ctree);
+	return TRUE;
 }
 
 static void main_window_add_mailbox(MainWindow *mainwin)
@@ -3600,6 +3607,11 @@ static void page_setup_cb(MainWindow *mainwin, guint action, GtkWidget *widget)
 
 static void app_exit_cb(MainWindow *mainwin, guint action, GtkWidget *widget)
 {
+	if (prefs_common.clean_on_exit) {
+		if (!main_window_empty_trash(mainwin, prefs_common.ask_on_clean))
+			return;
+	}
+
 	if (prefs_common.confirm_on_exit) {
 		if (alertpanel(_("Exit"), _("Exit Claws Mail?"),
 			       GTK_STOCK_CANCEL, GTK_STOCK_QUIT,  NULL)
