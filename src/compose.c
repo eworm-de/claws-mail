@@ -5140,6 +5140,7 @@ static gint compose_write_to_file(Compose *compose, FILE *fp, gint action, gbool
 	EncodingType encoding;
 	MimeInfo *mimemsg, *mimetext;
 	gint line;
+	const gchar *src_codeset = CS_INTERNAL;
 
 	if (action == COMPOSE_WRITE_FOR_SEND)
 		attach_parts = TRUE;
@@ -5158,91 +5159,84 @@ static gint compose_write_to_file(Compose *compose, FILE *fp, gint action, gbool
 	gtk_text_buffer_get_start_iter(buffer, &start);
 	gtk_text_buffer_get_end_iter(buffer, &end);
 	chars = gtk_text_buffer_get_text(buffer, &start, &end, FALSE);
-	if (is_ascii_str(chars)) {
-		buf = chars;
-		chars = NULL;
+
+	out_codeset = conv_get_charset_str(compose->out_encoding);
+
+	if (!out_codeset && is_ascii_str(chars)) {
 		out_codeset = CS_US_ASCII;
-		encoding = ENC_7BIT;
+	}
+
+	if (!out_codeset) {
+		gchar *test_conv_global_out = NULL;
+		gchar *test_conv_reply = NULL;
+
+		/* automatic mode. be automatic. */
+		codeconv_set_strict(TRUE);
+
+		out_codeset = conv_get_outgoing_charset_str();
+		if (out_codeset) {
+			debug_print("trying to convert to %s\n", out_codeset);
+			test_conv_global_out = conv_codeset_strdup(chars, src_codeset, out_codeset);
+		}
+
+		if (!test_conv_global_out && compose->orig_charset
+		&&  strcmp(compose->orig_charset, CS_US_ASCII)) {
+			out_codeset = compose->orig_charset;
+			debug_print("failure; trying to convert to %s\n", out_codeset);
+			test_conv_reply = conv_codeset_strdup(chars, src_codeset, out_codeset);
+		}
+
+		if (!test_conv_global_out && !test_conv_reply) {
+			/* we're lost */
+			out_codeset = CS_INTERNAL;
+			debug_print("failure; finally using %s\n", out_codeset);
+		}
+		g_free(test_conv_global_out);
+		g_free(test_conv_reply);
+		codeconv_set_strict(FALSE);
+	}
+
+	if (prefs_common.encoding_method == CTE_BASE64)
+		encoding = ENC_BASE64;
+	else if (prefs_common.encoding_method == CTE_QUOTED_PRINTABLE)
+		encoding = ENC_QUOTED_PRINTABLE;
+	else if (prefs_common.encoding_method == CTE_8BIT)
+		encoding = ENC_8BIT;
+	else
+		encoding = procmime_get_encoding_for_charset(out_codeset);
+
+	debug_print("src encoding = %s, out encoding = %s, transfer encoding = %s\n",
+		    src_codeset, out_codeset, procmime_get_encoding_str(encoding));
+
+	if (action == COMPOSE_WRITE_FOR_SEND) {
+		codeconv_set_strict(TRUE);
+		buf = conv_codeset_strdup(chars, src_codeset, out_codeset);
+		codeconv_set_strict(FALSE);
+
+		if (!buf) {
+			AlertValue aval;
+			gchar *msg;
+
+			msg = g_strdup_printf(_("Can't convert the character encoding of the message \n"
+						"to the specified %s charset.\n"
+						"Send it as %s?"), out_codeset, src_codeset);
+			aval = alertpanel_full(_("Error"), msg, GTK_STOCK_CANCEL, _("+_Send"), NULL, FALSE,
+					      NULL, ALERT_ERROR, G_ALERTDEFAULT);
+			g_free(msg);
+
+			if (aval != G_ALERTALTERNATE) {
+				g_free(chars);
+				return -3;
+			} else {
+				buf = chars;
+				out_codeset = src_codeset;
+				chars = NULL;
+			}
+		}
 	} else {
-		const gchar *src_codeset = CS_INTERNAL;
-
-		out_codeset = conv_get_charset_str(compose->out_encoding);
-
-		if (!out_codeset) {
-			gchar *test_conv_global_out = NULL;
-			gchar *test_conv_reply = NULL;
-
-			/* automatic mode. be automatic. */
-			codeconv_set_strict(TRUE);
-			
-			out_codeset = conv_get_outgoing_charset_str();
-			if (out_codeset) {
-				debug_print("trying to convert to %s\n", out_codeset);
-				test_conv_global_out = conv_codeset_strdup(chars, src_codeset, out_codeset);
-			}
-			
-			if (!test_conv_global_out && compose->orig_charset
-			&&  strcmp(compose->orig_charset, CS_US_ASCII)) {
-				out_codeset = compose->orig_charset;
-				debug_print("failure; trying to convert to %s\n", out_codeset);
-				test_conv_reply = conv_codeset_strdup(chars, src_codeset, out_codeset);
-			}
-			
-			if (!test_conv_global_out && !test_conv_reply) {
-				/* we're lost */
-				out_codeset = CS_INTERNAL;
-				debug_print("failure; finally using %s\n", out_codeset);
-			}
-			g_free(test_conv_global_out);
-			g_free(test_conv_reply);
-			codeconv_set_strict(FALSE);
-		}
-
-		if (!g_ascii_strcasecmp(out_codeset, CS_US_ASCII))
-			out_codeset = CS_ISO_8859_1;
-
-		if (prefs_common.encoding_method == CTE_BASE64)
-			encoding = ENC_BASE64;
-		else if (prefs_common.encoding_method == CTE_QUOTED_PRINTABLE)
-			encoding = ENC_QUOTED_PRINTABLE;
-		else if (prefs_common.encoding_method == CTE_8BIT)
-			encoding = ENC_8BIT;
-		else
-			encoding = procmime_get_encoding_for_charset(out_codeset);
-
-		debug_print("src encoding = %s, out encoding = %s, transfer encoding = %s\n",
-			    src_codeset, out_codeset, procmime_get_encoding_str(encoding));
-
-		if (action == COMPOSE_WRITE_FOR_SEND) {
-			codeconv_set_strict(TRUE);
-			buf = conv_codeset_strdup(chars, src_codeset, out_codeset);
-			codeconv_set_strict(FALSE);
-
-			if (!buf) {
-				AlertValue aval;
-				gchar *msg;
-
-				msg = g_strdup_printf(_("Can't convert the character encoding of the message \n"
-							"to the specified %s charset.\n"
-							"Send it as %s?"), out_codeset, src_codeset);
-				aval = alertpanel_full(_("Error"), msg, GTK_STOCK_CANCEL, _("+_Send"), NULL, FALSE,
-						      NULL, ALERT_ERROR, G_ALERTDEFAULT);
-				g_free(msg);
-
-				if (aval != G_ALERTALTERNATE) {
-					g_free(chars);
-					return -3;
-				} else {
-					buf = chars;
-					out_codeset = src_codeset;
-					chars = NULL;
-				}
-			}
-		} else {
-			buf = chars;
-			out_codeset = src_codeset;
-			chars = NULL;
-		}
+		buf = chars;
+		out_codeset = src_codeset;
+		chars = NULL;
 	}
 	g_free(chars);
 

@@ -1,3 +1,9 @@
+2008-05-14 [colin]	3.4.0cvs34
+
+	* src/compose.c
+		Always use the specified encoding and charset if it is
+		specified, even if the mail is ASCII.
+
 2008-05-13 [paul]	3.4.0cvs33
 
 	* src/ldapupdate.c
