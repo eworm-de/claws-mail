@@ -123,6 +123,7 @@ struct _PrefsCommon
 	gint sendwin_height;
 	gchar *outgoing_charset;
 	TransferEncodingMethod encoding_method;
+	gboolean outgoing_fallback_to_ascii;
 
 	gboolean allow_jisx0201_kana;
 

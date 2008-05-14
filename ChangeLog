@@ -1,3 +1,14 @@
+2008-05-14 [colin]	3.4.0cvs35
+
+	* src/compose.c
+	* src/prefs_common.c
+	* src/prefs_common.h
+	* src/prefs_send.c
+		Add a preference to be able to specify an
+		outgoing charset/encoding but still fallback
+		to 7bit US-ASCII when possible (default TRUE,
+		same behavior as pre-cvs34)
+
 2008-05-14 [colin]	3.4.0cvs34
 
 	* src/compose.c

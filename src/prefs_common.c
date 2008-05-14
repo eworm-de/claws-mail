@@ -208,6 +208,8 @@ static PrefParam param[] = {
 	 NULL, NULL, NULL},
 	{"encoding_method", "0", &prefs_common.encoding_method, P_ENUM,
 	 NULL, NULL, NULL},
+	{"outgoing_fallback_to_ascii", "TRUE", &prefs_common.outgoing_fallback_to_ascii, P_BOOL,
+	 NULL, NULL, NULL},
 
 	{"allow_jisx0201_kana", "FALSE", &prefs_common.allow_jisx0201_kana,
 	 P_BOOL, NULL, NULL, NULL},

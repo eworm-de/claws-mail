@@ -5137,7 +5137,7 @@ static gint compose_write_to_file(Compose *compose, FILE *fp, gint action, gbool
 	gchar *chars;
 	gchar *buf;
 	const gchar *out_codeset;
-	EncodingType encoding;
+	EncodingType encoding = ENC_UNKNOWN;
 	MimeInfo *mimemsg, *mimetext;
 	gint line;
 	const gchar *src_codeset = CS_INTERNAL;
@@ -5164,6 +5164,10 @@ static gint compose_write_to_file(Compose *compose, FILE *fp, gint action, gbool
 
 	if (!out_codeset && is_ascii_str(chars)) {
 		out_codeset = CS_US_ASCII;
+	} else if (prefs_common.outgoing_fallback_to_ascii &&
+		   is_ascii_str(chars)) {
+		out_codeset = CS_US_ASCII;
+		encoding = ENC_7BIT;
 	}
 
 	if (!out_codeset) {
@@ -5196,14 +5200,16 @@ static gint compose_write_to_file(Compose *compose, FILE *fp, gint action, gbool
 		codeconv_set_strict(FALSE);
 	}
 
-	if (prefs_common.encoding_method == CTE_BASE64)
-		encoding = ENC_BASE64;
-	else if (prefs_common.encoding_method == CTE_QUOTED_PRINTABLE)
-		encoding = ENC_QUOTED_PRINTABLE;
-	else if (prefs_common.encoding_method == CTE_8BIT)
-		encoding = ENC_8BIT;
-	else
-		encoding = procmime_get_encoding_for_charset(out_codeset);
+	if (encoding == ENC_UNKNOWN) {
+		if (prefs_common.encoding_method == CTE_BASE64)
+			encoding = ENC_BASE64;
+		else if (prefs_common.encoding_method == CTE_QUOTED_PRINTABLE)
+			encoding = ENC_QUOTED_PRINTABLE;
+		else if (prefs_common.encoding_method == CTE_8BIT)
+			encoding = ENC_8BIT;
+		else
+			encoding = procmime_get_encoding_for_charset(out_codeset);
+	}
 
 	debug_print("src encoding = %s, out encoding = %s, transfer encoding = %s\n",
 		    src_codeset, out_codeset, procmime_get_encoding_str(encoding));
