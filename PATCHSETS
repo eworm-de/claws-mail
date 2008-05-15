@@ -3332,3 +3332,4 @@
 ( cvs diff -u -r 1.382.2.448 -r 1.382.2.449 src/compose.c;  ) > 3.4.0cvs34.patchset
 ( cvs diff -u -r 1.382.2.449 -r 1.382.2.450 src/compose.c;  cvs diff -u -r 1.204.2.169 -r 1.204.2.170 src/prefs_common.c;  cvs diff -u -r 1.103.2.107 -r 1.103.2.108 src/prefs_common.h;  cvs diff -u -r 1.1.2.20 -r 1.1.2.21 src/prefs_send.c;  ) > 3.4.0cvs35.patchset
 ( cvs diff -u -r 1.115.2.194 -r 1.115.2.195 src/main.c;  cvs diff -u -r 1.274.2.240 -r 1.274.2.241 src/mainwindow.c;  cvs diff -u -r 1.39.2.44 -r 1.39.2.45 src/mainwindow.h;  ) > 3.4.0cvs36.patchset
+( cvs diff -u -r 1.1.2.47 -r 1.1.2.48 manual/advanced.xml;  cvs diff -u -r 1.1.2.21 -r 1.1.2.22 src/prefs_send.c;  ) > 3.4.0cvs37.patchset

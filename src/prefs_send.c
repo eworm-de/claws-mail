@@ -53,7 +53,6 @@ typedef struct _SendPage
 	GtkWidget *checkbtn_senddialog;
 	GtkWidget *combobox_charset;
 	GtkWidget *combobox_encoding_method;
-	GtkWidget *checkbtn_outgoing_fallback_to_ascii;
 } SendPage;
 
 static gchar * prefs_common_charset_set_data_from_optmenu(GtkWidget *widget)
@@ -135,7 +134,6 @@ static void prefs_send_create_widget(PrefsPage *_page, GtkWindow *window,
 	GtkWidget *vbox1;
 	GtkWidget *vbox2;
 	GtkWidget *checkbtn_savemsg;
-	GtkWidget *checkbtn_outgoing_fallback_to_ascii;
 	GtkWidget *label_outcharset;
 	GtkWidget *combobox_charset;
 	GtkListStore *optmenu;
@@ -170,7 +168,7 @@ static void prefs_send_create_widget(PrefsPage *_page, GtkWindow *window,
 	PACK_CHECK_BUTTON(vbox2, checkbtn_senddialog,
 			_("Show send dialog"));
 
-	table = gtk_table_new(2, 3, FALSE);
+	table = gtk_table_new(2, 2, FALSE);
 	gtk_widget_show(table);
 	gtk_container_add (GTK_CONTAINER (vbox1), table);
 	gtk_table_set_row_spacings(GTK_TABLE(table), 4);
@@ -296,15 +294,6 @@ static void prefs_send_create_widget(PrefsPage *_page, GtkWindow *window,
 	COMBOBOX_ADD(optmenu, "quoted-printable", CTE_QUOTED_PRINTABLE);
 	COMBOBOX_ADD(optmenu, "8bit",		 CTE_8BIT);
 
-	checkbtn_outgoing_fallback_to_ascii = gtk_check_button_new_with_label(
-			_("Fallback to 7bit US-ASCII when possible"));
-	gtk_widget_show(checkbtn_outgoing_fallback_to_ascii);
-	gtk_table_attach(GTK_TABLE(table), checkbtn_outgoing_fallback_to_ascii, 
-			0, 3, 3, 4,
-			(GtkAttachOptions) (GTK_FILL),
-			(GtkAttachOptions) (0), 0, 0);
-	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(checkbtn_outgoing_fallback_to_ascii),
-		prefs_common.outgoing_fallback_to_ascii);
 	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(checkbtn_savemsg),
 		prefs_common.savemsg);
 	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(checkbtn_confirm_send_queued_messages),
@@ -321,7 +310,6 @@ static void prefs_send_create_widget(PrefsPage *_page, GtkWindow *window,
 	prefs_send->window			= GTK_WIDGET(window);
 	
 	prefs_send->checkbtn_savemsg = checkbtn_savemsg;
-	prefs_send->checkbtn_outgoing_fallback_to_ascii = checkbtn_outgoing_fallback_to_ascii;
 	prefs_send->checkbtn_confirm_send_queued_messages = checkbtn_confirm_send_queued_messages;
  	prefs_send->checkbtn_never_send_retrcpt = checkbtn_never_send_retrcpt;
 	prefs_send->checkbtn_senddialog = checkbtn_senddialog;
@@ -337,8 +325,6 @@ static void prefs_send_save(PrefsPage *_page)
 
 	prefs_common.savemsg = gtk_toggle_button_get_active(
 		GTK_TOGGLE_BUTTON(page->checkbtn_savemsg));
-	prefs_common.outgoing_fallback_to_ascii = gtk_toggle_button_get_active(
-		GTK_TOGGLE_BUTTON(page->checkbtn_outgoing_fallback_to_ascii));
 	prefs_common.confirm_send_queued_messages = gtk_toggle_button_get_active(
 		GTK_TOGGLE_BUTTON(page->checkbtn_confirm_send_queued_messages));
 	prefs_common.never_send_retrcpt = gtk_toggle_button_get_active(

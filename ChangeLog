@@ -1,3 +1,9 @@
+2008-05-15 [paul]	3.4.0cvs37
+
+	* manual/advanced.xml
+	* src/prefs_send.c
+		make outgoing_fallback_to_ascii a hidden pref
+
 2008-05-14 [colin]	3.4.0cvs36
 
 	* src/main.c
