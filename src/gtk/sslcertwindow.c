@@ -64,7 +64,8 @@ static GtkWidget *cert_presenter(SSLCertificate *cert)
 	
 	char *issuer_commonname, *issuer_location, *issuer_organization;
 	char *subject_commonname, *subject_location, *subject_organization;
-	char *fingerprint, *sig_status, *exp_date;
+	char *sig_status, *exp_date;
+	char *md5_fingerprint, *sha1_fingerprint, *fingerprint;
 	unsigned int n;
 	char buf[100];
 	unsigned char md[128];	
@@ -202,14 +203,18 @@ static GtkWidget *cert_presenter(SSLCertificate *cert)
 	/* fingerprint */
 #if USE_OPENSSL
 	X509_digest(cert->x509_cert, EVP_md5(), md, &n);
-	fingerprint = readable_fingerprint(md, (int)n);
+	md5_fingerprint = readable_fingerprint(md, (int)n);
+	X509_digest(cert->x509_cert, EVP_sha1(), md, &n);
+	sha1_fingerprint = readable_fingerprint(md, (int)n);
 
 	/* signature */
 	sig_status = ssl_certificate_check_signer(cert->x509_cert);
 #else
 	n = 128;
 	gnutls_x509_crt_get_fingerprint(cert->x509_cert, GNUTLS_DIG_MD5, md, &n);
-	fingerprint = readable_fingerprint(md, (int)n);
+	md5_fingerprint = readable_fingerprint(md, (int)n);
+	gnutls_x509_crt_get_fingerprint(cert->x509_cert, GNUTLS_DIG_SHA1, md, &n);
+	sha1_fingerprint = readable_fingerprint(md, (int)n);
 
 	/* signature */
 	sig_status = ssl_certificate_check_signer(cert->x509_cert, cert->status);
@@ -277,10 +282,13 @@ static GtkWidget *cert_presenter(SSLCertificate *cert)
 	gtk_misc_set_alignment (GTK_MISC (label), 0, 0.5);
 	gtk_table_attach(signer_table, label, 1, 2, 2, 3, GTK_EXPAND|GTK_FILL, 0, 0, 0);
 
-	label = gtk_label_new(_("Fingerprint: "));
+	label = gtk_label_new(_("Fingerprint: \n"));
 	gtk_misc_set_alignment (GTK_MISC (label), 1, 0.5);
 	gtk_table_attach(status_table, label, 0, 1, 0, 1, GTK_EXPAND|GTK_FILL, 0, 0, 0);
+	fingerprint = g_strdup_printf("MD5: %s\nSHA1: %s", 
+			md5_fingerprint, sha1_fingerprint);
 	label = gtk_label_new(fingerprint);
+	g_free(fingerprint);
 	gtk_label_set_selectable(GTK_LABEL(label), TRUE);
 	gtk_misc_set_alignment (GTK_MISC (label), 0, 0.5);
 	gtk_table_attach(status_table, label, 1, 2, 0, 1, GTK_EXPAND|GTK_FILL, 0, 0, 0);
@@ -316,7 +324,8 @@ static GtkWidget *cert_presenter(SSLCertificate *cert)
 	g_free(subject_commonname);
 	g_free(subject_location);
 	g_free(subject_organization);
-	g_free(fingerprint);
+	g_free(md5_fingerprint);
+	g_free(sha1_fingerprint);
 	g_free(sig_status);
 	g_free(exp_date);
 	return vbox;

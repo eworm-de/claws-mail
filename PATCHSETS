@@ -3336,3 +3336,4 @@
 ( cvs diff -u -r 1.1.2.48 -r 1.1.2.49 manual/advanced.xml;  ) > 3.4.0cvs38.patchset
 ( cvs diff -u -r 1.179.2.217 -r 1.179.2.218 src/imap.c;  ) > 3.4.0cvs39.patchset
 ( cvs diff -u -r 1.179.2.218 -r 1.179.2.219 src/imap.c;  cvs diff -u -r 1.9.2.20 -r 1.9.2.21 src/gtk/sslcertwindow.c;  ) > 3.4.0cvs40.patchset
+( cvs diff -u -r 1.9.2.21 -r 1.9.2.22 src/gtk/sslcertwindow.c;  ) > 3.4.0cvs41.patchset
