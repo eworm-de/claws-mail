@@ -1,3 +1,9 @@
+2008-05-15 [colin]	3.4.0cvs39
+
+	* src/imap.c
+		Fix double free when STARTTLS fails (for
+		example due to refusing the certificate)
+
 2008-05-15 [paul]	3.4.0cvs38
 
 	* manual/advanced.xml

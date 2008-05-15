@@ -1128,8 +1128,10 @@ static IMAPSession *imap_session_new(Folder * folder,
 		ok = imap_cmd_starttls(session);
 		if (ok != MAILIMAP_NO_ERROR) {
 			log_warning(LOG_PROTOCOL, _("Can't start TLS session.\n"));
-			SESSION(session)->sock = NULL;
-			session_destroy(SESSION(session));
+			if (!is_fatal(ok)) {
+				SESSION(session)->sock = NULL;
+				session_destroy(SESSION(session));
+			}
 			return NULL;
 		}
 
