@@ -1,7 +1,12 @@
 2008-05-15 [colin]	3.4.0cvs40
 
 	* src/imap.c
-		Fix certificate port on TLS
+		Fix certificate port on TLS. It was 
+		previously always 0.
+		**IMPORTANT INFORMATION**: this will trigger 
+		one wrong "New certificate" warning at the 
+		first connection with this fix, if using STARTTLS
+		on IMAP.
 	* src/gtk/sslcertwindow.c
 		Make labels selectable
 
