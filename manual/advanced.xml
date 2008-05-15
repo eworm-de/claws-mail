@@ -651,7 +651,7 @@
 	0 or 1. The outgoing encoding of a message will use 7bit US-ASCII
 	whenever it is suitable for the message content, ignoring the
 	Outgoing Encoding option unless it is necessary. Turning this
-	option off forces the user-defined content to be used, regardless
+	option off forces the user-defined encoding to be used, regardless
 	of message content. Default is 1, turned on.
 	  </para>
 	</listitem>
