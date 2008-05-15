@@ -1106,6 +1106,7 @@ static IMAPSession *imap_session_new(Folder * folder,
 	session_init(SESSION(session));
 	SESSION(session)->type             = SESSION_IMAP;
 	SESSION(session)->server           = g_strdup(account->recv_server);
+	SESSION(session)->port		   = port;
  	SESSION(session)->sock             = NULL;
 	
 	SESSION(session)->destroy          = imap_session_destroy;

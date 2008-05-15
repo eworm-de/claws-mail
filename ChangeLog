@@ -1,3 +1,10 @@
+2008-05-15 [colin]	3.4.0cvs40
+
+	* src/imap.c
+		Fix certificate port on TLS
+	* src/gtk/sslcertwindow.c
+		Make labels selectable
+
 2008-05-15 [colin]	3.4.0cvs39
 
 	* src/imap.c
