@@ -1,3 +1,8 @@
+2008-05-16 [colin]	3.4.0cvs42
+
+	* src/gtk/sslcertwindow.c
+		Fix SHA1 fingerprint with GnuTLS
+
 2008-05-15 [colin]	3.4.0cvs41
 
 	* src/gtk/sslcertwindow.c

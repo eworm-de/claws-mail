@@ -213,6 +213,7 @@ static GtkWidget *cert_presenter(SSLCertificate *cert)
 	n = 128;
 	gnutls_x509_crt_get_fingerprint(cert->x509_cert, GNUTLS_DIG_MD5, md, &n);
 	md5_fingerprint = readable_fingerprint(md, (int)n);
+	n = 128;
 	gnutls_x509_crt_get_fingerprint(cert->x509_cert, GNUTLS_DIG_SHA1, md, &n);
 	sha1_fingerprint = readable_fingerprint(md, (int)n);
 
