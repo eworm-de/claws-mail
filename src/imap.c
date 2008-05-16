@@ -188,7 +188,7 @@ static void	 imap_folder_destroy	(Folder		*folder);
 
 static IMAPSession *imap_session_new	(Folder         *folder,
 					 const PrefsAccount 	*account);
-static void 	imap_session_authenticate(IMAPSession 		*session,
+static gint 	imap_session_authenticate(IMAPSession 		*session,
 				      	  const PrefsAccount 	*account);
 static void 	imap_session_destroy	(Session 	*session);
 
@@ -971,14 +971,16 @@ static IMAPSession *imap_session_get(Folder *folder)
 
 	/* Make sure session is authenticated */
 	if (!IMAP_SESSION(session)->authenticated)
-		imap_session_authenticate(IMAP_SESSION(session), folder->account);
+		r = imap_session_authenticate(IMAP_SESSION(session), folder->account);
 	
-	if (!IMAP_SESSION(session)->authenticated) {
-		imap_threaded_disconnect(session->folder);
+	if (r != MAILIMAP_NO_ERROR || (!is_fatal(r) && !IMAP_SESSION(session)->authenticated)) {
 		rfolder->session = NULL;
-		SESSION(session)->state = SESSION_DISCONNECTED;
-		SESSION(session)->sock = NULL;
-		session_destroy(SESSION(session));
+		if (!is_fatal(r)) {
+			imap_threaded_disconnect(session->folder);
+			SESSION(session)->state = SESSION_DISCONNECTED;
+			SESSION(session)->sock = NULL;
+			session_destroy(SESSION(session));
+		}
 		rfolder->last_failure = time(NULL);
 		rfolder->connecting = FALSE;
 		return NULL;
@@ -1148,12 +1150,12 @@ static IMAPSession *imap_session_new(Folder * folder,
 	return session;
 }
 
-static void imap_session_authenticate(IMAPSession *session, 
+static gint imap_session_authenticate(IMAPSession *session, 
 				      const PrefsAccount *account)
 {
 	gchar *pass, *acc_pass;
 	gboolean failed = FALSE;
-
+	gint ok = MAILIMAP_NO_ERROR;
 	g_return_if_fail(account->userid != NULL);
 	acc_pass = account->passwd;
 try_again:
@@ -1162,18 +1164,18 @@ try_again:
 		gchar *tmp_pass;
 		tmp_pass = input_dialog_query_password(account->recv_server, account->userid);
 		if (!tmp_pass)
-			return;
-		Xstrdup_a(pass, tmp_pass, {g_free(tmp_pass); return;});
+			return MAILIMAP_NO_ERROR;
+		Xstrdup_a(pass, tmp_pass, {g_free(tmp_pass); return MAILIMAP_NO_ERROR;});
 		g_free(tmp_pass);
 	} else if (account->imap_auth_type == IMAP_AUTH_ANON) {
 		pass = "";
 	}
 	statuswindow_print_all(_("Connecting to IMAP4 server %s...\n"),
 				account->recv_server);
-	if (imap_auth(session, account->userid, pass, account->imap_auth_type) != MAILIMAP_NO_ERROR) {
+	if ((ok = imap_auth(session, account->userid, pass, account->imap_auth_type)) != MAILIMAP_NO_ERROR) {
 		statusbar_pop_all();
 		
-		if (!failed) {
+		if (!failed && !is_fatal(ok)) {
 			acc_pass = NULL;
 			failed = TRUE;
 			goto try_again;
@@ -1185,12 +1187,12 @@ try_again:
 				alertpanel_error_log(_("Couldn't login to IMAP server %s."), account->recv_server);
 		}		
 
-		return;
+		return ok;
 	} 
 
 	statuswindow_pop_all();
 	session->authenticated = TRUE;
-	return;
+	return MAILIMAP_NO_ERROR;
 }
 
 static void imap_session_destroy(Session *session)

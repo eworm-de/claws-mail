@@ -1,3 +1,9 @@
+2008-05-16 [colin]	3.4.0cvs47
+
+	* src/imap.c
+		Fix another possible crash (on fatal errors
+		at login, like stream error).
+
 2008-05-16 [paul]	3.4.0cvs46
 
 	* tools/thunderbird-filters-convertor.pl
