@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE article SYSTEM "dtd/sdocbook.dtd" [
+  <!ENTITY ch_intro    SYSTEM "intro.xml">
+  <!ENTITY ch_starting SYSTEM "starting.xml">
+  <!ENTITY ch_handling SYSTEM "handling.xml">
+  <!ENTITY ch_account  SYSTEM "account.xml">
+  <!ENTITY ch_advanced SYSTEM "advanced.xml">
+  <!ENTITY ch_plugins  SYSTEM "plugins.xml">
+  <!ENTITY ch_addrbook SYSTEM "addrbook.xml">
+  <!ENTITY ap_faq      SYSTEM "faq.xml">
+  <!ENTITY ap_keyboard SYSTEM "keyboard.xml">
+  <!ENTITY ap_glossary SYSTEM "glossary.xml">
+  <!ENTITY ap_ack      SYSTEM "ack.xml">
+  <!ENTITY ap_gpl      SYSTEM "gpl.xml">
+]>
+<article>
+  <title>Claws Mail: Manuale Utente</title>
+  <subtitle></subtitle>
+  <articleinfo>
+    <corpauthor>
+	    <ulink url="http://www.claws-mail.org/">Il Team di Claws Mail</ulink>
+    </corpauthor>
+    <copyright>
+      <year>2006/2007</year>
+      <holder>Il Team di Claws Mail.</holder>
+    </copyright>
+    <legalnotice id="license">
+      <para>
+	Questo programma è free software; è lecito redistribuirlo e/o modificarlo secondo i termini della Licenza Pubblica Generale GNU 
+	come è pubblicata dalla Free Software Foundation; o la versione 2 della licenza o (a propria scelta) una versione successiva. 
+      </para>
+      <para>
+	Questo programma è distribuito nella speranza che sia utile, ma SENZA ALCUNA GARANZIA; senza neppure la garanzia implicita di 
+	NEGOZIABILITÀ o di APPLICABILITÀ PER UN PARTICOLARE SCOPO. Si veda la Licenza Pubblica Generale GNU per avere maggiori dettagli.
+      </para>
+      <para>
+	Ognuno dovrebbe avere ricevuto una copia della Licenza Pubblica Generale GNU insieme a questo programma; in caso contrario, si 
+	scriva alla Free Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 Stati Uniti.
+      </para>
+    </legalnotice>
+  </articleinfo>
+  <?hard-pagebreak?>
+  &ch_intro;
+  <?hard-pagebreak?>
+  &ch_starting;
+  <?hard-pagebreak?>
+  &ch_handling;
+  <?hard-pagebreak?>
+  &ch_account;
+  <?hard-pagebreak?>
+  &ch_addrbook;
+  <?hard-pagebreak?>
+  &ch_advanced;
+  <?hard-pagebreak?>
+  &ch_plugins;
+  <?hard-pagebreak?>
+  &ap_faq;
+  <?hard-pagebreak?>
+  &ap_keyboard;
+  <?hard-pagebreak?>
+  &ap_ack;
+  <?hard-pagebreak?>
+  &ap_glossary;
+  <?hard-pagebreak?>
+  &ap_gpl;
+</article>
+

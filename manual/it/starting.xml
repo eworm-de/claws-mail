@@ -1,0 +1,152 @@
+<?xml version="1.0" encoding="utf-8"?>
+<section id="ch_starting">
+<title>Primi passi con Claws Mail</title>
+
+  <section id="start_wizard">
+    <title>La finestra del Wizard iniziale</title>
+    <para>
+	La prima volta che Claws Mail viene avviato, verranno poste alcune 
+	domande in modo da impostare il primo account. Queste domande sono
+	di facile risposta e sono raggruppate in poche brevi pagine.
+    </para><para>
+	Per primo ti sarà chiesto di inserire il tuo nome, (<emphasis>di solito 
+	il sistema operativo lo trova in automatico</emphasis>), l'indirizzo di
+	posta elettronica ed il nome della tua organizzazione, (<emphasis>opzionale</emphasis>).
+    </para><para>
+	La pagina seguente ti permetterà di inserire i dettagli su come recuperare la tua
+	posta elettronica. Il formato della pagina sarà determinato da: 
+	<quote>Tipo di Server</quote>:
+    </para>
+    <blockquote>
+      <variablelist>
+	<varlistentry>
+	  <term>POP3</term>
+	  <listitem>
+	    <para>
+	Se scegli POP3, dovrai inserire l'indirizzo del server, il nome utente e
+	la password. La password  è opzionale, se non viene specificata verrà 
+	richiesta ogni volta che sarà necessaria.
+	    </para>
+	  </listitem>
+	</varlistentry>
+	<varlistentry>
+	  <term>IMAP</term>
+	  <listitem>
+	    <para>
+	Se si sceglie IMAP, bisognerà inserire l'indirizzo del server, 
+	il nome utente, la password, e la directory sul server IMAP server. 
+	La password è opzionale, se non viene specificata verrà richiesta ogni
+	volta che sarà necessaria. La directory sul server IMAP è anch'essa opzionale, 
+	spesso non è richiesta e può essere lasciata vuota.
+	</para>
+	  </listitem>
+	</varlistentry>
+	<varlistentry>
+	  <term>File mbox locale</term>
+	  <listitem>
+	    <para>
+	Se si sceglie un file mbox locale, sarà necessario inserire il percorso del 
+	file di spool della mailbox. Questo percorso dipende dal tuo Sistema Operativo,
+	ma generalmente valori quali <filename>/var/mail/username</filename> o
+	<filename>/var/spool/mail/username</filename> sono comuni, dove 
+	<literal>username</literal> è il login di sistema.
+	    </para>
+	  </listitem>
+	</varlistentry>
+      </variablelist>
+    </blockquote>
+    <para>
+	Nella pagina successiva verrà chiesto di inserire l'indirizzo del server SMTP, 
+	(<emphasis>a volte ci si riferisce ad esso come 
+	<quote>Server in uscita</quote></emphasis>). Si può anche richiedere il permesso di 
+	autenticazione quando si invia la posta; spesso questo non è il caso in cui si 
+	configura un ISP per la connessione a Internet, ma piuttosto quando si configura 
+	un account professionale.
+    </para><para>
+	In ogni caso, se si scegli POP3 o il file mbox locale, la pagina successiva
+	ti chiederà dove vuoi salvare la tua posta sul disco. Il percorso predefinito è
+	<quote>Mail</quote>, generalmente va bene e salverà la tua posta in una cartella 
+	chiamata <filename>Mail</filename> nella tua cartella home.
+    </para><para>
+	Se Claws Mail è compilato con il supporto a openSSL, allora vedrai successivamente 
+	la pagina <quote>Sicurezza</quote>, dove sarà possibile scegliere se usare il metodo
+	di criptaggio SSL per inviare e ricevere la posta. La maggior parte degli ISP non lo 
+	abilita, ma molte ditte lo fanno; se non sei sicuro puoi comunque non selezionare 
+	l'opzione.
+    </para><para>
+	Ora è possibile cliccare sul bottone Salva, e finalmente eseguire Claws Mail.
+    </para>
+  </section>
+
+  <section id="start_getting">
+    <title>Ricezione della posta</title>
+    <para>
+	La ricezione della posta può essere effettuata dal bottone presente nella toolbar
+	chiamato <quote>Ricevi</quote> o dal sottomenù <quote>Ricezione</quote> del menù 
+	<quote>Messaggio</quote>.
+    </para><para>
+	Se si desidera che Claws Mail controlli automaticamente la posta ad intervalli 
+	regolari, si può impostare dalla pagina delle preferenze 
+	<quote>Gestione della posta: Ricezione</quote> che si trova nel menù
+	<quote>Configurazione/Preferenze...</quote>. Bisogna cliccare su 
+	<quote>Controlla automaticamente se ci sono nuovi messaggi ogni [...] minuti</quote>
+	, ed impostare l'intervallo a piacere.
+    </para>
+  </section>
+
+  <section id="start_reading">
+    <title>Lettura della posta</title>
+    <para>
+	Appena ricevuta la posta, verrà elencata nella cartella In entrata. 
+	Il numero totale di messaggi contenuti in una cartella verrà mostrato
+	sulla destra del nome della cartella, insieme al numero di messaggi non
+	letti e la nuova posta. Per poterli vedere, bisogna cliccare sulla cartella
+	corrente nella lista delle cartelle e verranno mostrati nel pannello Lista messaggi.
+	E' quindi possibile selezionare un messaggio usando il mouse, oppure navigando nella
+	lista usando i tasti di direzione, sù e giù. Per visualizzare il messaggio e farlo 
+	scorrere per tutta la sua lunghezza si usa la barra spaziatrice. E' inoltre possibile
+	usare altri tasti di navigazione quali, P ed N (precedente e successivo, in inglese 
+	previous e next). 
+    </para>
+  </section>
+
+  <section id="start_writing">
+    <title>Come scrivere un messaggio</title>
+    <para>
+	Cliccando sul bottone <quote>Composizione</quote> visibile sulla barra, verrà 
+	visualizzata una finestra di composizione. Questa finestra contiene diversi campi
+	di facile comprensione: se si hanno account multipli, il campo Da può essere 
+	usato per selezionare l'account da usare; il campo A distingue il destinatario
+	a cui il messaggio viene destinato. Quando il campo viene riempito, il campo sottostante
+	A verrà reso visibile, così da poter inviare il messaggio a destinatari multipli.
+	Si può anche cambiare il campo A con il campo Cc o altri tipi di campi, usando il menù
+	a cascata, o scrivendo direttamente il campo necessario. Sarà poi possibile impostare
+	l'oggetto del messaggio e dunque il corpo.
+    </para><para>
+	Una piccola nota sull' oggetto del messaggio: Claws Mail chiederà conferma se si cerca 
+	di inviare un messaggio con l'oggetto vuoto. Questo succede perchè è una cattiva 
+	abitudine scrivere messaggi senza oggetto in quanto risulta molto difficoltoso 
+	gestirli, per questo è altamente consigliato scrivere sempre l'oggetto di un messaggio.
+    </para>
+  </section>
+
+  <section id="start_sending">
+    <title>Come inviare un messaggio</title>
+    <para>
+	Appena si è conclusa la scrittura del messaggio, è possibile inviarlo immediatamente
+	premendo il bottone <quote>Invio</quote>, oppure se si preferisce inviarlo in 
+	seguito è possibile premere il bottone <quote>Invia più tardi</quote>. 
+	Quando si usa <quote>Invio</quote>, la finestra di composizione si chiuderà non 
+	appena il messaggio sarà inviato; rimarrà aperta nel caso ci sia un errore. 
+	Se invece si usa <quote>Invia più tardi</quote>, la finestra di composizione si
+	chiuderà immediatamente, ed il tuo messaggio sarà salvato nella cartella dei messaggi
+	in Coda. Verrà eventualmente inviato quando userai il bottone <quote>Invio</quote> dalla 
+	barra nel menù principale.
+    </para><para>
+	Tutti i messaggi che vengono inviati sono salvati nella cartella Inviati, così che è 
+	possibile ricordarsi a chi si è scritto, oppure si può utilizzare il messaggio già
+	inviato come modello per scriverne uno nuovo.
+    </para>
+  </section>
+</section>
+

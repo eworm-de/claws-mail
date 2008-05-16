@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<appendix id="ap_ack">
+<title>Ringraziamenti</title>
+    <para>
+	Il manuale di Claws Mail è stato scritto da:
+    </para>
+    <itemizedlist>
+    <listitem><para>
+	<ulink url="mailto:colin@colino.net">Colin Leroy</ulink>
+    </para></listitem>
+    <listitem><para>
+	<ulink url="mailto:paul@claws-mail.org">Paul Mangan</ulink>
+    </para></listitem>
+    <listitem><para>
+	<ulink url="mailto:ricardo@mones.org">Ricardo Mones</ulink>
+    </para></listitem>
+    <listitem><para>
+	<ulink url="mailto:wwp@claws-mail.org">Tristan Chabredier</ulink>
+    </para></listitem>
+    </itemizedlist>
+    <para>
+	Grazie a:
+    </para>
+    <itemizedlist>
+    <listitem><para>
+    	Hiroyuki Yamamoto per aver iniziato il progetto Sylpheed, e a tutti i 
+precedenti e correnti collaboratori.
+    </para></listitem>
+    <listitem><para>
+    Caroline, Clo e Silvia per la loro tolleranza alle lunghe sessioni di hacking!
+    </para></listitem>
+    <listitem><para>
+	Norman Walsh, per il suo prezioso aiuto tecnico e aiutando anche alla
+realizzazione della versione in PDF di questo manuale PDF
+    </para></listitem>
+    <listitem><para>
+    	...
+    </para></listitem>
+    </itemizedlist>
+</appendix>
+

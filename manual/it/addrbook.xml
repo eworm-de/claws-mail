@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="utf-8"?>
+<section id="ch_addrbook">
+<title>Rubrica</title>
+
+  <section id="addrbk_basic">
+    <title>Gestione di base</title>
+    <para>
+	La rubrica è raggiungibile dal menù <quote>Strumenti/Rubrica</quote>. E' suddivisa in varie sezioni: <quote>Rubrica</quote> e le sottosezioni, che contengono i contatti che hai aggiungi localmente; la sezione vCard, contiene le vCard importate; e, se il supporto è stato aggiunto in fase di compilazione, si hanno le funzionalità di LDAP e JPilot con le relative sezioni, che contengono contatti relativi a server LDAP e dispositivi mobili.
+    </para><para>
+	Nella sezione <quote>Rubrica</quote>, è possibile creare rubriche multiple; ognuna di esse può contenere indirizzi e/o cartelle. Questo ti permette di organizzare i contatti per categoria. In aggiunta è possibile creare gruppi di indirizzi che possono essere usati quando si scrive un messaggio, permettendo di inviarlo a più persone contemporaneamente.
+	I meù presenti nella finestra della rubrica ti permettono di fare quanto detto. Ad esempio, è possibile creare una cartella <emphasis>Famiglia</emphasis> nella tua rubrica personale <quote>Indirizzi personali</quote>, usando dal menù <quote>Rubrica/Nuova cartella</quote> quando <quote>Indirizzi personali</quote> è selezionato, o cliccando con il tasto destro su di esso. Allo stesso modo, è possibile aggiungere contatti ad una rubrica o cartella usando il menù <quote>Indirizzo</quote>, o cliccando con il tasto destro sull'elemento della lista nella parte destra della finestra. 
+	Quando si aggiunge un contatto, apparirà una nuova finestra, dalla quale potrai specificare i dettagli del contatto nella prima linguetta (<emphasis>Nome visualizzato, Nome, ...</emphasis>), ed una lista degli indirizzi email nella seconda.
+    </para><para>
+	Un modo più semplice per salvare i contatti nella rubrica è quello di salvarli quando si leggono i messaggi ricevuti usando il menù <quote>Strumenti/Aggingi destinatario alla rubrica</quote> attivabile cliccando con il tasto destro sul messaggio che si sta leggendo.
+    </para>
+  </section>
+
+  <section id="addrbk_expimp">
+    <title>Esportare ed importare indirizzi</title>
+    <para>
+	Claws Mail può facilmente importare rubriche nei formati della maggior parte dei programmi di posta elettronica. Dal menù <quote>Strumenti</quote> nella rubrica, sarà possibile importare rubriche da Pine o Mutt. Siccome questi formati non sono così diffusi, è possibile importare anche file LDIF. LDIF è un formato largamente usato e la maggiorparte dei programmi di posta elettronica può esportare la rubrica in questo formato. 
+	Per importare un file LDIF bisogna usare <quote>Strumenti/Importa file LDIF</quote> e l'operazione si risolve in tre passi: seleziona il file da importare e il nome della rubrica, seleziona i campi che vuoi importare se non vanno bene quelli predefiniti, ed infine usa il bottone <quote>Salva</quote>.
+    </para>
+  </section>
+
+  <section id="addrbk_filtering">
+    <title>Usare i filtri con la rubrica</title>
+    <para>
+	E' possibile filtrare i messaggi confrontando gli indirizzi trovati nelle
+	intestazioni con quelli della rubrica. Questo è possibile usando la regola di 
+	confronto <quote>Solo per i mittenti presenti nella rubrica</quote> nella definizione 
+	di un'espressione condizionale in una regola di filtraggio. Bisogna selezionare l'indirizzo 
+	nell'intestazione da confrontare con una parte della rubrica. L'indirizzo presente
+	nell'intestazione può essere A, Da, Cc, Rispondi al mittente (se almeno un indirizzo
+	nell'intestazione del messaggio combacia, la regola viene applicata). Ci sono vari casi 
+	in cui è possibile far confrontare almeno un indirizzo trovato in <quote>Qualsiasi</quote> 
+	intestazione del messaggio, o far confrontare <quote>Tutti</quote> gli indirizzi trovati 
+	in tutte le intestazioni del messaggio. Premi il bottone <quote>Seleziona...</quote> per 
+	scegliere la parte della rubrica in cui cercare (può essere una rubrica o sottocartella), 
+	o scegli <quote>Qualsiasi</quote> per cercare in tutta la rubrica.
+    </para>
+  </section>
+
+  <section id="addrbk_advanced">
+    <title>Caratteristiche avanzate</title>
+
+    <section id="addrbk_adv_ldap">
+      <title>Uso dei server LDAP</title>
+      <para>
+	      I server LDAP sono usati per condividere rubriche attraverso la rete. Sono molto comuni nei posti di lavoro in cui si ha accesso ad una rete condivisa. Abilitare un server LDAP in Claws Mail è molto semplice. Scegli <quote>Rubrica/Nuovo server LDAP</quote> nel menù <quote>Rubrica</quote>, ed in seguito scegli il nome da assegnare al server LDAP. Inserisci l'hostname del server (<emphasis>es. <quote>ldap.claws-mail.org</quote></emphasis>), la sua porta, se richiesta (<emphasis>la porta predefinita è la 389</emphasis>). Inoltre si può riempire il campo <quote>Base di ricerca</quote> se si conosce già il contenuto da inserire, altrimenti cliccando su <quote>Verifica Server</quote> Claws Mail prova ad indovinarlo automaticamente. Se il server richiede autenticazione, è possibile impostarla nella linguetta <quote>Esteso</quote>.
+	Quando si chiude la finestra cliccando su <quote>Ok</quote>, il server sarà visibile nella rubrica dalla parte sinistra, sotto <quote>Server LDAP</quote>. Quando si seleziona un server, nella parte destra sarà visibile una lista di contatti vuota. Sebbene a prima vista sembra essere un comportamento non atteso, viene spiegato dalla necessità di evitare una ricerca completa sul server, che potrebbe richiedere un tempo variabile(ndt), senza che venga espressamente richiesta dall'utente. E' possibile cercare i contatti usando la maschera <quote>Cerca</quote> alla fine della lista. Se vuoi comunque la lista completa, ti basta cercare con <quote>*</quote>.
+      </para>
+    </section>
+
+    <section id="addrbk_adv_jpilot">
+      <title>Integrazione con jPilot</title>
+      <para>
+	Claws Mail può usare gli indirizzi memorizzati nel tuo dispositivo mobile. 
+      </para>
+    </section>
+
+    <section id="addrbk_adv_vcard">
+      <title>Supporto vCard</title>
+      <para>
+	Claws Mail può importare VCard presenti nei tuoi contatti, usando <quote>Rubrica/Nuova vCard</quote>.
+      </para>
+    </section>
+    
+  </section>
+
+</section>
+

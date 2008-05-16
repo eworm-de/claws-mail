@@ -1,3 +1,19 @@
+2008-05-16 [paul]	3.4.0cvs43
+
+	* manual/de/account.xml
+	* manual/it/account.xml
+	* manual/it/ack.xml
+	* manual/it/addrbook.xml
+	* manual/it/claws-mail-manual.xml
+	* manual/it/gpl.xml
+	* manual/it/intro.xml
+	* manual/it/starting.xml
+		add pages towards German and Italian manuals.
+		(just for storage, they are not built yet, due
+		to being incomplete.) submitted by Speckmade
+		<Speckmade@gmx.net> and Salvatore De Paolis
+		<iwkse@claws-mail.org>
+
 2008-05-16 [colin]	3.4.0cvs42
 
 	* src/gtk/sslcertwindow.c

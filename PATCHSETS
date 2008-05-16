@@ -3338,3 +3338,4 @@
 ( cvs diff -u -r 1.179.2.218 -r 1.179.2.219 src/imap.c;  cvs diff -u -r 1.9.2.20 -r 1.9.2.21 src/gtk/sslcertwindow.c;  ) > 3.4.0cvs40.patchset
 ( cvs diff -u -r 1.9.2.21 -r 1.9.2.22 src/gtk/sslcertwindow.c;  ) > 3.4.0cvs41.patchset
 ( cvs diff -u -r 1.9.2.22 -r 1.9.2.23 src/gtk/sslcertwindow.c;  ) > 3.4.0cvs42.patchset
+( diff -u /dev/null manual/de/account.xml;  diff -u /dev/null manual/it/account.xml;  diff -u /dev/null manual/it/ack.xml;  diff -u /dev/null manual/it/addrbook.xml;  diff -u /dev/null manual/it/claws-mail-manual.xml;  diff -u /dev/null manual/it/gpl.xml;  diff -u /dev/null manual/it/intro.xml;  diff -u /dev/null manual/it/starting.xml;  ) > 3.4.0cvs43.patchset

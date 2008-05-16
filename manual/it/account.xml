@@ -1,0 +1,185 @@
+<?xml version="1.0" encoding="utf-8"?>
+<section id="ch_account">
+<title>Personalizzazione Account</title>
+
+  <section id="account_basic">
+    <title>Impostazioni di base</title>
+    <para>
+	Nella prima linguetta delle preferenze dell'account, <quote>Generale</quote>,
+	ci sono le impostazioni di base dell'account. In questa linguetta è possibile
+	specificare il tuo nome, l'indirizzo email, l'organizzazione ed i dati di base
+	sulla connessione. Il nome dell'account sarà quello che Claws Mail userà per 
+	riferirsi all'account, ad esempio, nel selezionatore di account nell'angolo
+	in basso a destra della finestra principale. Le informazioni sul server
+	permettono di specificare il protocollo in ricezione da usare (non modificabile
+	per gli account già creati), il server o i server usati per ricevere o inviare
+	messaggi (solitamente <literal>pop.isp.it</literal> e <literal
+	>smtp.isp.it</literal>) ed i dati di accesso sul server di ricezione.  
+    </para>
+    <para>
+	Nella linguetta <quote>Ricezione</quote> sarà possibile modificare il comportamento
+	predefinito di Claws Mail durante la ricezione dei messaggi. Ad esempio, poter
+	lasciare i messaggi sul server per un periodo di tempo prestabilito, evitare il
+	download dei messaggi che sono troppo grandi, o specificare se si vogliono applicare
+	delle regole/filtri ai messaggi relativi all'account. La <quote>Dimensione massima di
+	ricezione</quote> è usata per limitare il tempo trascorso nello scaricare messaggi di
+	grandi dimensioni. Quando si ricevo messaggi più grandi del limite impostato, il messaggio
+	sarà scaricato parzialmente fino al raggiungimento del limite ed in seguito si avrà la
+	possibilità di scaricarlo interamente o di cancellarlo dal server. Questa opzione sarà
+	visibile all'utente all'apertura del messaggio.
+    </para>
+    <para>
+	La linguetta <quote>Invio</quote> contiene le impostazioni per le intestazioni
+	particolari dei messaggi che si vorrebbero aggiungere ai messaggi in uscita,
+	quali, le intestazioni X-Face o Face, informazioni sull'autenticazione in
+	uscita dei messaggi. Spesso, l' ISP permette l'invio tramite il server SMTP 
+	senza autenticazione, ma in alcuni casi, bisogna fornire i dati di accesso
+	per poter inviare i messaggi. Ci sono modi diversi per poterlo fare. Il
+	migliore, se disponibile, è SMTP AUTH. Se non disponibile, di solito si
+	userà POP-prima di-SMTP, il cui funzionamento prevede la la connessione al server POP,
+	(che è con autenticazione), la disconnessione, ed infine l'invio del messaggio.
+    </para>
+    <para>
+	La linguetta <quote>Composizione</quote>  include le opzioni per cambiare il
+	comportamento della finestra di composizione quando utilizzata con l'account.
+	Si può specificare una firma da inserire in automatico, ed impostare gli
+	indirizzi predefiniti per Cc, Bcc o Rispondi a.
+    </para>
+    <para>
+	Nella linguetta <quote>Privacy</quote> si può scegliere il livello predefinito
+	di sicurezza per l' account selezionando vari livelli di paranoia.
+	Si può, quindi, decidere se firmare o/e criptare tutte i messaggi in uscita. 
+	Firmare tutti i messaggi in uscita,non solo quelli importanti, permetterà ad
+	esempio la protezione contro i messaggi contraffatti inviati a tua insaputa
+	a colleghi di lavoro o persone presenti in rubrica. Questo può essere d'aiuto
+	per evitare situazioni imbarazzanti.
+    </para>
+    <para>
+	La linguetta <quote>SSL</quote> si riferesce anche alla sicurezza, anche se in
+	questo caso le impostazioni vengono applicate a chi si occupa di smistare i
+	messaggi piuttosto che al proprio contenuto. Semplificando, se si usa la connessione
+	sicura SSL la connessione tra l'utente ed il server verrà criptata, prevenendo la 
+	intrusione da parte di estrane e la possibilità di leggere i messaggi e la password
+	dell'utente. SSL dovrebbe essere sempre usata quando disponibile.
+    </para>
+    <para>
+	In fine, nella linguetta <quote>Avanzate</quote> è possibile specificare le porte e
+	i domini se si sceglie di non usare i valori predefiniti. Nella normalità è possibile
+	lasciare questi campi vuoti. Da qui è anche possibile specificare le cartelle per la posta
+	inviata, in coda, bozza e quella dei messaggi eliminati.
+	</para>
+  </section>
+
+  <section id="account_types">
+    <title>Tipi di Account</title>
+    <para>
+	Come abbiamo appena visto, una volta creato un account non è più possibile
+	cambiare il tipo di protocollo. Questo avviene perchè le impostazioni per i
+	vari tipi di protocollo non sono proprio le stesse: la maggior parte delle
+	opzioni di POP3 sono irrilevanti per IMAP, ad esempio.
+    </para>
+    <section id="pop3">
+    <title>POP3</title>
+    <para>
+	POP3 è uno de due protocolli più usati ed è supportato da quasi tutti gli
+	ISP sulla faccia della terra. Il suo vantaggio principale è quello di 
+	permettere il download dei messaggi direttamente sul proprio computer,
+	il che significa che accedere ai messaggi risulterà molto più veloce visto
+	che sono salvati localmente sul disco fisso. Lo svantaggio di POP3 è quello
+	di rendere difficile la sincronizzazione della posta su computer multipli,
+	(si dovrà lasciare i messaggi di posta sul server per qualche giorno), e
+	comunque non sarà facile tenere traccia dei messaggi già letti, quelli già
+	con risposta, ecc., quando si userà un computer diverso.
+    </para>
+    <para>
+     La posta ricevuta da un account POP3 verrà salvata in una cartella MH mailbox
+	 nell'albero delle cartelle.
+    </para>
+    </section>
+    <section id="imap">
+    <title>IMAP</title>
+    <para>
+	Il protocollo IMAP è il secondo per ordine di diffusione ed il suo scopo è
+	quello di superare i limiti imposti da POP3. Usando un server IMAP, le cartelle
+	e la posta sono mantenute su un server centrale. A differenza di POP3 la
+	lettura dei messaggi sarà più lenta proprio perchè verranno scaricati su richiesta
+	ad ogni singola apertura, ma se si userà un altro computer, o programma di posta,
+	i messaggi rifletteranno gli ultimi cambiamenti così come sono stati lasciati
+	includendo il loro stato (letti, non letti, risposto, ecc.).
+    </para>
+    <para>
+	Quando si crea un account IMAP viene creata una mailbox relativa nell'albero delle
+	cartelle.
+    </para>
+    </section>
+    <section id="news">
+    <title>News</title>
+    <para>
+	Il protocollo News (NNTP) viene usato su USENET per inviare e ricevere messaggi (annunci).
+	I messaggi sono mantenuti su un server centrale e scaricati su richiesta. Gli utenti
+	non possono cancellare i messaggi.
+    </para>
+    <para>
+	Quando si crea un account News una mailbox News viene creata nell'albero delle directory.
+    </para>
+    </section>
+    <section id="local">
+    <title>Locale</title>
+    <para>
+	Il tipo di account <quote>mbox Locale</quote> può essere usato quando si dispone
+	di un server SMTP sul proprio computer e/o si vuole ricevere più facilmente i log.
+    </para>
+    <para>
+	La posta ricevuta da un account Locale viene salvata in una mailbox MH nell'albero
+	delle cartelle.
+    </para>
+    </section>
+    <section id="smtp_only">
+    <title>Solo SMTP</title>
+    <para>
+	Il tipo di account <quote>Nessuno, (solo SMTP)</quote> è un tipo speciale di account
+	che non permette di scaricare la posta, ma da la possibilità di creare identità
+	differenti che, ad esempio, possono essere usate per inviare la posta con alias differenti.
+    </para>
+    </section>
+  </section>
+
+  <section id="account_multiple">
+    <title>Account Multipli</title>
+    <para>
+	In Claws Mail è possibile creare facilmente account multipli. Per gli
+	account POP, si può scegliere di salvare tutti i messaggi relativi a 
+	diversi account nella stessa cartella, impostando dalla linguetta Ricezione
+	nelle preferenze.  Gli account IMAP e News dispongono di mailbox separata
+	nell'albero delle cartelle.
+    </para>
+    <para>
+	E' possibile scegliere quale account verrà controllato per la presenza di
+	nuova posta quando si usa il comando <quote>Ricevi Tutti</quote> 
+	(o "Ricevi" nella barra degli strumenti) e nelle preferenze degli account
+	segnando la casella relativa alla colonna <quote>G</quote> nella lista degli account.
+    </para>
+  </section>
+
+  <section id="account_morefilt">
+    <title>Più Filtri</title>
+    <para>
+	Le regole di filtraggio di default sono globali, ma è anche possibile assegnarle
+	ad un account specifico. Durante la ricezione della posta, ogni regola assegnata
+	ad un account specifico verrà applicata univocamente ai messaggi per quell' account.   
+    </para>
+    <para>
+	La posta di un qualsiasi account può essere filtrata nelle cartelle di altri account,
+	ad esempio, un messaggio ricevuto da POP3 potrebbe essere filtrato nella cartella 
+	dell'account IMAP, e vice-versa. Questa per alcuni può essere una funzionalità utile mentre
+	per altri può essere fastidiosa, dipendentemente dal tipo di obiettivo che si pone di raggiungere.
+	Se si preferisce evitare questo comportamenteo, ma si vuole comunque ordinare automaticamente la
+	posta in entrata, la cosa migliore da fare è quella di disabilitare i Filtri su alcuni account,
+	e usare le Regole di Elaborazione nella cartella specificata come In Entrata, visto che le Regole
+	di Elaborazione sono applicate automaticamente quando si apre una cartella e possono essere anche
+	applicate manualmente dal menu a cascata della cartella di appartenenza.
+    </para>
+  </section>
+
+</section>
+

@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8"?>
+<section id="ch_intro">
+<title>Introduzione</title>
+
+  <section id="intro_what">
+    <title>Cos'è Claws Mail?</title>
+    <para>
+	Claws Mail è un programma di posta elettronica che aspira ad essere veloce, potente e di facile uso. Principalmente è indipendente da qualsiasi	Desktop, ma cerca di integrarsi con il tuo desktop nel miglior modo possibile. Gli sviluppatori di Claws Mail vogliono fortemente tenerlo leggero, così da renderlo usabile anche sui vecchi computer con poca memoria o potenza di CPU.
+    </para>
+  </section>
+
+  <section id="intro_whatnot">
+    <title>Cosa non è Claws Mail</title>
+    <para>
+	Claws Mail non è un PIM (gestore di dati personali) completo come Evolution o Outlook, sebbene i plugin esterni possono integrare queste funzionalità. Claws Mail non permette di scrivere ed inviare posta elettronica in formato HTML o altre simili seccature, quindi potrebbe non essere il software adatto al tuo particolare contesto lavorativo.
+    </para>
+  </section>
+
+  <section id="intro_features"> 
+    <title>Caratteristiche principali</title>
+    <para>
+	Claws Mail offre tutto quello che un ottimo programma di posta elettronica può offrire. Ricezione di posta elettronica con POP3, IMAP4, mbox locale, su SSL; supporto per vari schemi di autenticazione. Gestisce account e caselle di posta multipli, filtri potenti e funzione di ricerca, capacità di importare/esportare usando vari formati, supporto per GnuPG (firma digitale e criptaggio). Supporta i plugin, una toolbar customizzabile, controllo ortografico, un insieme di misure per prevenire la perdita accidentale di dati, preferenze applicabili per cartella, e molto di più.	Una lista completa delle caratteristiche può essere raggiunta qui <ulink url="http://www.claws-mail.org/features.php">http://www.claws-mail.org/features.php</ulink>.
+    </para>
+  </section>
+
+  <section id="intro_history">
+    <title>La storia di Claws Mail</title>
+    <para>
+	Claws Mail esiste dall' Aprile del 2001. Inizialmente viene chiamato Sylpheed-Claws e nel Novembre 2006 il suo nome cambia in Claws Mail. Lo scopo	primario di Sylpheed-Claws è quello di essere il banco di prova per nuove funzioni da poter includere, potenzialmente, in Sylpheed (<ulink	url="http://sylpheed.good-day.net/">http://sylpheed.good-day.net/</ulink>), senza compromettere al tempo stesso la sua stabilità. 
+	Gli sviluppatori di Sylpheed-Claws sincronizzano regolarmente il loro codice con quello di Sylpheed, e l' autore di Sylpheed, Hiroyuki Yamamoto, riprende parti di codice che gli aggradano appena diventano stabili. Non sempre l'autore è favorevole all'integrazione di nuove funzionalità, ragion per cui i due progetti prendono inevitabilmente, col passar del tempo, strade separate.(ndt)
+    </para><para>
+	In origine sia Sylpheed che Claws Mail si basano su GTK1. Il lavoro di porting verso GTK2 ha inizio all'incirca nel 2003 e la prima versione "moderna" (basata su GTK2) di Sylpheed-Claws viene rilasciata nel Marzo 2005. Sin d'ora, gli obbiettivi di Sylpheed e Sylpheed-Claws iniziano a divergere sempre di più e Sylpheed-Claws diventa un progetto unico a parte. Anche per questo motivo il nome diventa Claws Mail.
+    </para>
+  </section>
+
+  <section id="intro_information">
+    <title>Link Utili</title>
+    <para>
+	Sito Web: <ulink url="http://www.claws-mail.org">www.claws-mail.org</ulink>
+    </para>
+    <para>
+	Ultime Notivà: <ulink url="http://www.claws-mail.org/news.php">http://www.claws-mail.org/news.php</ulink>
+    </para>
+    <para>
+	Extra Plugins: <ulink url="http://www.claws-mail.org/plugins.php">http://www.claws-mail.org/plugins.php</ulink>
+    </para>
+    <para>
+	Temi di icone: <ulink url="http://www.claws-mail.org/themes.php">http://www.claws-mail.org/themes.php</ulink>
+    </para>
+    <para>
+	Strumenti: <ulink url="http://www.claws-mail.org/tools.php">http://www.claws-mail.org/tools.php</ulink>
+    </para>
+    <para>
+	Liste: <ulink url="http://www.claws-mail.org/MLs.php">http://www.claws-mail.org/MLs.php</ulink>
+    </para>
+    <para>
+	Bugtracker: <ulink url="http://www.thewildbeast.co.uk/claws-mail/bugzilla/">http://www.thewildbeast.co.uk/claws-mail/bugzilla/</ulink>
+    </para>
+    <para>
+	Progetto: <ulink url="http://sourceforge.net/projects/claws-mail/">http://sourceforge.net/projects/claws-mail/</ulink>
+    </para>
+  </section>
+
+</section>
+
