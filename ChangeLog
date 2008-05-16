@@ -1,3 +1,9 @@
+2008-05-16 [paul]	3.4.0cvs45
+
+	* tools/README
+	* tools/csv2addressbook.pl
+		add support for gmail exported csv address book
+
 2008-05-16 [colin]	3.4.0cvs44
 
 	* configure.ac

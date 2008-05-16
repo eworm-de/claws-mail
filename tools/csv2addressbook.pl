@@ -28,11 +28,13 @@ use Text::CSV_XS;
 #	Thunderbird >= 2.0.0.6
 #	Kmail >= 1.9.7 / Kaddressbook >= 3.5.7		
 #		** kmail bug: can export badly formatted csv **
+#	Gmail
 #
 
 # Becky: full export with titles
 # thunderbird: export as 'comma separated'
 # kmail/kaddressbook: Export CSV list
+# gmail: export Outlook format
 
 ###
 my $quote_char = '"';
@@ -46,7 +48,7 @@ my $csvfile = '';
 my $bookname = '';
 my $iNeedHelp = '';
 
-my $known_types = qr/^(?:becky|thunderbird|kmail)$/;
+my $known_types = qr/^(?:becky|thunderbird|kmail|gmail)$/;
 
 GetOptions("type=s" => \$type,
 	   "csv=s"  => \$csvfile,
@@ -82,6 +84,12 @@ my @kmail_fields = ('Formatted Name','Family Name','Given Name',
 		    'Organisation','Department','Note','Homepage','Profession',
 		    'Assistant\'s Name','Manager\'s Name','Partner\'s Name',
 		    'Office','IM Address','Anniversary','Blog');
+my @gmail_fields = ('Name','E-mail Address','Notes','E-mail 2 Address',
+		    'E-mail 3 Address','Mobile Phone','Pager','Company',
+		    'Job Title','Home Phone','Home Phone 2','Home Fax',
+		    'Home Address','Business Phone','Business Phone 2',
+		    'Business Fax','Business Address','Other Phone','Other Fax',
+		    'Other Address','junk');
 
 if (grep m/claws-mail/ => `ps -U $ENV{USER}`) {
 	die("You must quit claws-mail before running this script\n");
@@ -103,10 +111,10 @@ if ($csvfile eq "" || $type eq "" || $type !~ m/$known_types/ || $iNeedHelp) {
 Usage:
 	$script [OPTIONS]
 Options:
-	--help				Show this screen
-	--type=becky|thunderbird|kmail	Type of exported address book
-	--csv=FILENAME			Full path to CSV file
-	--name="My new address book"	Name of new Claws address book (optional)
+	--help					Show this screen
+	--type=becky|thunderbird|kmail|gmail	Type of exported address book
+	--csv=FILENAME				Full path to CSV file
+	--name="My new address book"		Name of new Claws address book (optional)
 ~;
 exit;
 }
@@ -203,23 +211,30 @@ sub get_book_name {
 		return("Thunderbird address book");
 	} elsif ($type eq "kmail") {
 		return("Kmail address book");
+	} elsif ($type eq "gmail") {
+		return("gmail address book");
 	}
 }
 
 sub check_fields {
 	if ($type eq "becky") {
 		if ($#csvfields != $#becky_fields) {
-			die("ERROR:\n\tNot enough fields!\n"
+			die("ERROR:\n\tInvalid field count!\n"
 			   ."\tYou need to do a Full Export With Titles\n");
 		}
 	} elsif ($type eq "thunderbird") {
 		if ($#csvfields != $#tbird_fields) {
-			die("ERROR:\n\tNot enough fields!\n"
+			die("ERROR:\n\tInvalid field count!\n"
 		    	   ."\tProblem with your exported CSV file\n");
 		}
 	} elsif ($type eq "kmail") {
 		if ($#csvfields != $#kmail_fields) {
-			die("ERROR:\n\tNot enough fields!\n"
+			die("ERROR:\n\tInvalid field count!\n"
+		    	   ."\tProblem with your exported CSV file\n");
+		}
+	} elsif ($type eq "gmail") {
+		if ($#csvfields != $#gmail_fields) {
+			die("ERROR:\n\tInvalid field count!\n"
 		    	   ."\tProblem with your exported CSV file\n");
 		}
 	}
@@ -315,6 +330,8 @@ sub get_items {
 		return ('0','1','3','2','4','5','38');
 	} elsif ($type eq "kmail") {
 		return ('2','1','6','0','28','34');
+	} elsif ($type eq "gmail") {
+		return('0','0','0','0','1','2');
 	}
 }
 
@@ -325,6 +342,8 @@ sub get_fields {
 		return(@tbird_fields);
 	} elsif ($type eq "kmail") {
 		return(@kmail_fields);
+	} elsif ($type eq "gmail") {
+		return(@gmail_fields);
 	}
 }
 
