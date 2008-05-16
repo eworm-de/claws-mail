@@ -1,3 +1,10 @@
+2008-05-16 [colin]	3.4.0cvs44
+
+	* configure.ac
+	* src/ldapupdate.c
+		Fix ldap deprecated calls. Patch by
+		Michael Rasmussen
+
 2008-05-16 [paul]	3.4.0cvs43
 
 	* manual/de/account.xml

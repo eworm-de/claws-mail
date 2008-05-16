@@ -39,8 +39,6 @@
 
 #ifdef USE_LDAP
 
-#define LDAP_DEPRECATED 1
-
 #include <glib.h>
 #include <glib/gi18n.h>
 #include <sys/time.h>
@@ -710,13 +708,33 @@ void ldapsvr_print_ldapmod(LDAPMod *mods[]) {
  */
 void ldapsvr_compare_attr(LDAP *ld, gchar *dn, gint cnt, LDAPMod *mods[]) {
 	int i, rc;
-	
+
+#ifdef OPEN_LDAP_API_AT_LEAST_3000
+
+	struct berval val;
+
+#endif
+
 	g_return_if_fail(ld != NULL || dn != NULL || cnt >= 0 || mods != NULL);
 	for (i = 0; i < cnt; i++) {
 		gchar *value = g_strdup(mods[i]->mod_vals.modv_strvals[0]);
 		if (!value || strcmp(value, "") == 0)
 			value = g_strdup("thisisonlyadummy");
+
+#ifdef OPEN_LDAP_API_AT_LEAST_3000
+
+		val.bv_val = value;
+		val.bv_len = strlen(value);
+
+		rc = ldap_compare_ext_s(ld, dn, mods[i]->mod_type, &val, NULL, NULL);
+
+#else
+
+		/* This is deprecated as of OpenLDAP-2.3.0 */
 		rc = ldap_compare_s(ld, dn, mods[i]->mod_type, value);
+
+#endif
+
 		g_printerr("ldap_compare for (%s:%s)\" failed[0x%x]: %s\n",
         	mods[i]->mod_type, value, rc, ldap_err2string(rc));
 		g_free(value);
@@ -752,7 +770,18 @@ int ldapsvr_compare_manual_attr(LDAP *ld, LdapServer *server, gchar *dn, char *a
 	filter = g_strdup_printf("(&(mail=%s)(%s=*))", mail->value, attr);
 	attrkeyvalue_free(mail);
 	if (ctl) {
-		rc = ldap_search_s(ld, ctl->baseDN, /*LDAP_SCOPE_SUBTREE*/LDAP_SCOPE_ONELEVEL, filter, NULL, 0, &res);
+
+#ifdef OPEN_LDAP_API_AT_LEAST_3000
+
+		rc = ldap_search_ext_s(ld, ctl->baseDN, LDAP_SCOPE_ONELEVEL, filter, NULL, 0, NULL, NULL, NULL, 0, &res);
+
+#else
+
+		/* This is deprecated as of OpenLDAP-2.3.0 */
+		rc = ldap_search_s(ld, ctl->baseDN, LDAP_SCOPE_ONELEVEL, filter, NULL, 0, &res);
+
+#endif
+
 		if (rc) {
 			g_printerr("ldap_search for attr=%s\" failed[0x%x]: %s\n",attr, rc, ldap_err2string(rc));
 			retVal = -2;
@@ -817,6 +846,12 @@ int ldapsvr_deside_operation(LDAP *ld, LdapServer *server, char *dn, char *attr,
 	int rc;
 	gboolean dummy = FALSE;
 
+#ifdef OPEN_LDAP_API_AT_LEAST_3000
+
+	struct berval val;
+
+#endif
+
 	g_return_val_if_fail(ld != NULL || server != NULL || dn != NULL || attr != NULL, -1);
 	if (value == NULL)
 		return -1;
@@ -827,7 +862,21 @@ int ldapsvr_deside_operation(LDAP *ld, LdapServer *server, char *dn, char *attr,
 		value = g_strdup("thisisonlyadummy");
 		dummy = TRUE;
 	}
+
+#ifdef OPEN_LDAP_API_AT_LEAST_3000
+
+	val.bv_val = value;
+	val.bv_len = strlen(value);
+
+	rc = ldap_compare_ext_s(ld, dn, attr, &val, NULL, NULL);
+
+#else
+
+	/* This is deprecated as of OpenLDAP-2.3.0 */
 	rc = ldap_compare_s(ld, dn, attr, value);
+
+#endif
+
 	debug_print("ldap_compare for (%s:%s)\" error_code[0x%x]: %s\n",
        	attr, value, rc, ldap_err2string(rc));
 	switch (rc) {
@@ -1162,7 +1211,18 @@ void ldapsvr_update_contact(LdapServer *server, GHashTable *contact) {
 	if (NoRemove) {
 		/* We are trying to change RDN */
 		gchar *newRdn = g_strdup_printf("%s=%s", NoRemove->attribute, NoRemove->value);
+
+#ifdef OPEN_LDAP_API_AT_LEAST_3000
+
+		int rc = ldap_rename_s(ld, dn, newRdn, NULL, 1, NULL, NULL);
+
+#else
+
+		/* This is deprecated as of OpenLDAP-2.3.0 */
 		int rc = ldap_modrdn2_s(ld, dn, newRdn, 1);
+
+#endif
+
 		if(rc != LDAP_SUCCESS) {
 			if (rc ==  LDAP_ALREADY_EXISTS) {
 				/* We are messing with a contact with more than one listed email

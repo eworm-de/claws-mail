@@ -11,7 +11,7 @@ MINOR_VERSION=4
 MICRO_VERSION=0
 INTERFACE_AGE=0
 BINARY_AGE=0
-EXTRA_VERSION=43
+EXTRA_VERSION=44
 EXTRA_RELEASE=
 EXTRA_GTK2_VERSION=
 
@@ -660,6 +660,29 @@ else
 		if test "$ac_cv_have_tls" = yes; then
 			AC_DEFINE(USE_LDAP_TLS, 1, Define if you want LDAP TLS support in addressbook.)
 		fi
+		dnl As of OpenLDAP API version 3000 a number of functions has
+		dnl been deprecated. As Claws-mail compiles and runs on many
+		dnl platforms and many versions of OpenLDAP we need to be able
+		dnl to switch between the old and new API because new API has
+		dnl added new functions replacing old ones and at the same time
+		dnl old functions has been changed.
+		dnl If cross-compiling defaults to enable deprecated features
+		dnl for maximum portability
+		AC_MSG_CHECKING([The API version of OpenLDAP])
+		AC_RUN_IFELSE(
+			[AC_LANG_PROGRAM(
+			 [#include <ldap.h>],
+			 [if (LDAP_API_VERSION >= 3000)
+					return 1
+			])],
+			[AC_MSG_RESULT([version < 3000])
+			 AC_DEFINE(OPEN_LDAP_API_AT_LEAST_3000, 0, Define if OpenLDAP API is at least version 3000.)],
+			[AC_MSG_RESULT([version >= 3000])
+			 AC_DEFINE(OPEN_LDAP_API_AT_LEAST_3000, 1, Define if OpenLDAP API is at least version 3000.)],
+			[AC_MSG_RESULT([Enabling deprecated features in OpenLDAP])
+			 AC_DEFINE(OPEN_LDAP_API_AT_LEAST_3000, 0, Define if OpenLDAP API is at least version 3000.)
+			 AC_DEFINE(LDAP_DEPRECATED, 1, Define to activate deprecated features in OpenLDAP)]
+		)
 	fi
 fi
 
