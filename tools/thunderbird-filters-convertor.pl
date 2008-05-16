@@ -359,6 +359,7 @@ sub convert_filters {
 					$cond =~ s/\) OR$//;
 					$cond =~ s/\) AND$//;
 					$cond =~ s/\)"$//;
+					$cond =~ s/\\"/"/g;
 					my ($cpart_one, $cpart_two, $cpart_thr) = split(/,/, $cond, 3);
 					if ($cond) {
 						if ($cpart_one =~ m/$exact_matches/) {
@@ -375,7 +376,7 @@ sub convert_filters {
 							$part_one = $claws_condition = $part_three = $part_four = "";
 							next;
 						} else {
-							$claws_condition = "head";
+							$claws_condition = "header $cpart_one";
 						}
 
 						if ($cpart_two eq "doesn't contain") {

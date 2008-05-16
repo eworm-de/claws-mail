@@ -1,3 +1,10 @@
+2008-05-16 [paul]	3.4.0cvs46
+
+	* tools/thunderbird-filters-convertor.pl
+		fix a typo
+		fix reading a tb rule that contains something
+		like that: \"Sender\"
+
 2008-05-16 [paul]	3.4.0cvs45
 
 	* tools/README
