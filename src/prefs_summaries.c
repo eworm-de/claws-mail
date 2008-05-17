@@ -95,6 +95,8 @@ static void date_format_select_row	        (GtkTreeView *list_view,
 						 GtkTreePath *path,
 						 GtkTreeViewColumn *column,
 						 GtkWidget *date_format);
+static void mark_as_read_toggled		(GtkToggleButton *button,
+						 GtkWidget *spinbtn);
 
 static GtkWidget *date_format_create(GtkButton *button, void *data)
 {
@@ -318,6 +320,7 @@ static void prefs_summaries_create_widget(PrefsPage *_page, GtkWindow *window,
 	GtkWidget *spinbtn_ng_abbrev_len;
 	GtkObject *spinbtn_ng_abbrev_len_adj;
 	GtkWidget *vbox2;
+	GtkWidget *vbox3;
 	GtkWidget *checkbtn_useaddrbook;
 	GtkWidget *checkbtn_show_tooltips;
 	GtkWidget *checkbtn_threadsubj;
@@ -331,7 +334,6 @@ static void prefs_summaries_create_widget(PrefsPage *_page, GtkWindow *window,
 	GtkWidget *hbox2;
 	GtkWidget *checkbtn_reopen_last_folder;
 	GtkWidget *checkbtn_always_show_msg;
-	GtkWidget *checkbtn_mark_as_read_on_newwin;
 	GtkWidget *spinbtn_mark_as_read_delay;
 	GtkObject *spinbtn_mark_as_read_delay_adj;
 	GtkWidget *checkbtn_immedexec;
@@ -344,6 +346,8 @@ static void prefs_summaries_create_widget(PrefsPage *_page, GtkWindow *window,
 	GtkWidget *folderview_frame;
 	GtkWidget *summaryview_frame;
 	GtkWidget *button_edit_actions;
+	GtkWidget *radio_mark_as_read_on_select;
+	GtkWidget *radio_mark_as_read_on_new_win;
 
 	GtkTooltips *tooltips;
 
@@ -465,30 +469,35 @@ static void prefs_summaries_create_widget(PrefsPage *_page, GtkWindow *window,
 			     _("Defers moving, copying and deleting of messages"
 		   	       " until you choose 'Tools/Execute'"),
 			     NULL);
-	PACK_CHECK_BUTTON
-		(vbox2, checkbtn_mark_as_read_on_newwin,
-		 _("Only mark message as read when opened \n"
-		   "in a new window, or replied to"));
-		 
-	hbox1 = gtk_hbox_new (FALSE, 8);
-	gtk_widget_show (hbox1);
-	gtk_box_pack_start (GTK_BOX (vbox2), hbox1, FALSE, TRUE, 0);
 
-	gtk_box_pack_start (GTK_BOX (hbox1), gtk_label_new
-		(_("Mark messages as read after")), FALSE, FALSE, 0);
+	vbox3 = gtkut_get_options_frame(vbox2, NULL, _("Mark message as read"));
+
+	radio_mark_as_read_on_select = gtk_radio_button_new_with_label(NULL,
+			_("when selected, after"));
+
+	hbox1 = gtk_hbox_new (FALSE, 8);
+	gtk_box_pack_start (GTK_BOX (hbox1), radio_mark_as_read_on_select, FALSE, FALSE, 0);
 
 	spinbtn_mark_as_read_delay_adj = gtk_adjustment_new (0, 0, 60, 1, 10, 10);
 	spinbtn_mark_as_read_delay = gtk_spin_button_new
-		(GTK_ADJUSTMENT (spinbtn_mark_as_read_delay_adj), 1, 0);
+			(GTK_ADJUSTMENT (spinbtn_mark_as_read_delay_adj), 1, 0);
 	gtk_box_pack_start (GTK_BOX (hbox1), spinbtn_mark_as_read_delay,
 			    FALSE, FALSE, 0);
 	gtk_widget_set_size_request (spinbtn_mark_as_read_delay, 56, -1);
 	gtk_spin_button_set_numeric (GTK_SPIN_BUTTON (spinbtn_mark_as_read_delay),
 				     TRUE);
 	gtk_box_pack_start (GTK_BOX (hbox1), gtk_label_new
-		(_("seconds")), FALSE, FALSE, 0);
-	gtk_widget_show_all(hbox1);
+			(_("seconds")), FALSE, FALSE, 0);
 
+	gtk_box_pack_start (GTK_BOX (vbox3), hbox1, FALSE, FALSE, 0);
+
+	radio_mark_as_read_on_new_win = gtk_radio_button_new_with_label_from_widget(
+			GTK_RADIO_BUTTON(radio_mark_as_read_on_select),
+			_("only when opened in a new window, or replied to"));
+	gtk_box_pack_start (GTK_BOX (vbox3), radio_mark_as_read_on_new_win,
+			FALSE, FALSE, 0);
+	gtk_widget_show_all(vbox3);
+                                                                                             
 	PACK_CHECK_BUTTON
 		(vbox2, checkbtn_useaddrbook,
 		 _("Display sender using address book"));
@@ -560,6 +569,9 @@ static void prefs_summaries_create_widget(PrefsPage *_page, GtkWindow *window,
 	gtk_widget_show (hbox2);
 	gtk_box_pack_start (GTK_BOX (vbox1), hbox2, FALSE, FALSE, 0);
 
+	g_signal_connect(G_OBJECT(radio_mark_as_read_on_select), "toggled",
+			 G_CALLBACK(mark_as_read_toggled),
+			 spinbtn_mark_as_read_delay);
 
 	prefs_summaries->window			= GTK_WIDGET(window);
 	
@@ -582,7 +594,7 @@ static void prefs_summaries_create_widget(PrefsPage *_page, GtkWindow *window,
 			prefs_common.goto_last_folder_on_startup);
 	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(checkbtn_always_show_msg),
 			prefs_common.always_show_msg);
-	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(checkbtn_mark_as_read_on_newwin),
+	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(radio_mark_as_read_on_new_win),
 			prefs_common.mark_as_read_on_new_window);
 	gtk_spin_button_set_value(GTK_SPIN_BUTTON(spinbtn_mark_as_read_delay),
 			prefs_common.mark_as_read_delay);
@@ -604,7 +616,7 @@ static void prefs_summaries_create_widget(PrefsPage *_page, GtkWindow *window,
 
 	prefs_summaries->checkbtn_reopen_last_folder = checkbtn_reopen_last_folder;
 	prefs_summaries->checkbtn_always_show_msg = checkbtn_always_show_msg;
-	prefs_summaries->checkbtn_mark_as_read_on_newwin = checkbtn_mark_as_read_on_newwin;
+	prefs_summaries->checkbtn_mark_as_read_on_newwin = radio_mark_as_read_on_new_win;
 	prefs_summaries->spinbtn_mark_as_read_delay = spinbtn_mark_as_read_delay;
 	prefs_summaries->checkbtn_immedexec = checkbtn_immedexec;
 	prefs_summaries->checkbtn_ask_mark_all_read = checkbtn_ask_mark_all_read;
@@ -809,3 +821,10 @@ static void date_format_select_row(GtkTreeView *list_view,
 
 	g_free(new_format);
 }
+
+static void mark_as_read_toggled(GtkToggleButton *button, GtkWidget *spinbtn)
+{
+       gtk_widget_set_sensitive(spinbtn,
+               gtk_toggle_button_get_active(button));
+}
+ 

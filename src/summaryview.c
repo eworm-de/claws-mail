@@ -3454,7 +3454,8 @@ static void summary_display_msg_full(SummaryView *summaryview,
 	}
 
 	if (val == 0 && MSG_IS_UNREAD(msginfo->flags)) {
-		if (prefs_common.mark_as_read_delay) {
+		if (!prefs_common.mark_as_read_on_new_window &&
+		    prefs_common.mark_as_read_delay) {
 			MarkAsReadData *data = g_new0(MarkAsReadData, 1);
 			data->summaryview = summaryview;
 			data->msginfo = msginfo;

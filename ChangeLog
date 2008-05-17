@@ -1,3 +1,10 @@
+2008-05-17 [colin]	3.4.0cvs48
+
+	* src/prefs_summaries.c
+	* src/summaryview.c
+		Fix bug 1608, 'Inconsistent behaviour of mark as read 
+		options'. Patch by Pawel
+
 2008-05-16 [colin]	3.4.0cvs47
 
 	* src/imap.c
