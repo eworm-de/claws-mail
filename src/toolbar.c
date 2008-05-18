@@ -146,6 +146,8 @@ static void toolbar_draft_cb			(GtkWidget	*widget,
 					 	 gpointer	 data);
 static void toolbar_close_cb			(GtkWidget	*widget,
 					 	 gpointer	 data);
+static void toolbar_preferences_cb		(GtkWidget	*widget,
+					 	 gpointer	 data);
 static void toolbar_open_mail_cb		(GtkWidget	*widget,
 						 gpointer	 data);
 static void toolbar_insert_cb			(GtkWidget	*widget,
@@ -194,6 +196,7 @@ struct {
 	{ "A_PRINT",	     	N_("Print")				   },
 	{ "A_LEARN_SPAM",	N_("Learn Spam or Ham")			   },
 	{ "A_GO_FOLDERS",   	N_("Open folder/Go to folder list")        },
+	{ "A_PREFERENCES",	N_("Preferences")			   },
 
 	{ "A_SEND",          	N_("Send Message")                         },
 	{ "A_SENDL",         	N_("Put into queue folder and send later") },
@@ -332,7 +335,7 @@ GList *toolbar_get_action_items(ToolbarType source)
 					A_TRASH , A_DELETE_REAL,       A_EXECUTE,       A_GOTO_PREV, 
 					A_GOTO_NEXT,	A_IGNORE_THREAD,  A_WATCH_THREAD,	A_PRINT,
 					A_ADDRBOOK, 	A_LEARN_SPAM, A_GO_FOLDERS, 
-					A_CANCEL_INC };
+					A_CANCEL_INC,   A_PREFERENCES };
 
 		for (i = 0; i < sizeof main_items / sizeof main_items[0]; i++)  {
 			items = g_list_append(items, gettext(toolbar_text[main_items[i]].descr));
@@ -433,6 +436,7 @@ const gchar *toolbar_get_short_text(int action) {
 	case A_WATCH_THREAD: 	return _("Watch thread");
 	case A_PRINT:	 	return _("Print");
 	case A_CLOSE: 		return _("Close");
+	case A_PREFERENCES:	return _("Preferences");
 	case A_SEND: 		return _("Send");
 	case A_SENDL: 		return _("Send later");
 	case A_DRAFT: 		return _("Draft");
@@ -475,6 +479,7 @@ gint toolbar_get_icon(int action) {
 	case A_WATCH_THREAD: 	return STOCK_PIXMAP_WATCHTHREAD;
 	case A_PRINT:	 	return STOCK_PIXMAP_PRINTER;
 	case A_CLOSE: 		return STOCK_PIXMAP_CLOSE;
+	case A_PREFERENCES:	return STOCK_PIXMAP_PREFERENCES;
 	case A_SEND: 		return STOCK_PIXMAP_MAIL_SEND;
 	case A_SENDL: 		return STOCK_PIXMAP_MAIL_SEND_QUEUE;
 	case A_DRAFT: 		return STOCK_PIXMAP_MAIL;
@@ -485,7 +490,7 @@ gint toolbar_get_icon(int action) {
 	case A_LINEWRAP_CURRENT:return STOCK_PIXMAP_LINEWRAP_CURRENT;
 	case A_LINEWRAP_ALL:	return STOCK_PIXMAP_LINEWRAP_ALL;
 	case A_ADDRBOOK: 	return STOCK_PIXMAP_ADDRESS_BOOK;
-	case A_CANCEL_INC:	return STOCK_PIXMAP_NOTICE_ERROR;
+	case A_CANCEL_INC:	return STOCK_PIXMAP_CLOSE;
 	case A_EXECUTE:		return STOCK_PIXMAP_EXEC;
 	#ifdef USE_ASPELL
 	case A_CHECK_SPELLING:	return STOCK_PIXMAP_CHECK_SPELLING;
@@ -1524,6 +1529,11 @@ static void toolbar_close_cb(GtkWidget *widget, gpointer data)
 	}
 }
 
+static void toolbar_preferences_cb(GtkWidget *widget, gpointer data)
+{
+	prefs_gtk_open();
+}
+
 static void toolbar_open_mail_cb(GtkWidget *widget, gpointer data)
 {
 	ToolbarItem *toolbar_item = (ToolbarItem*)data;
@@ -1697,6 +1707,7 @@ static void toolbar_buttons_cb(GtkWidget   *widget,
 		{ A_DRAFT,		toolbar_draft_cb      		},
 		{ A_OPEN_MAIL,		toolbar_open_mail_cb		},
 		{ A_CLOSE,		toolbar_close_cb		},
+		{ A_PREFERENCES,	toolbar_preferences_cb		},
 		{ A_INSERT,		toolbar_insert_cb     		},
 		{ A_ATTACH,		toolbar_attach_cb     		},
 		{ A_SIG,		toolbar_sig_cb	      		},
@@ -1871,6 +1882,10 @@ Toolbar *toolbar_create(ToolbarType 	 type,
 		case A_CLOSE:
 			TOOLBAR_ITEM(item,icon_wid,toolbar_item->text,_("Close window"));
 			toolbar_data->close_window_btn = item; 
+			break;
+		case A_PREFERENCES:
+			TOOLBAR_ITEM(item,icon_wid,toolbar_item->text,_("Open preferences"));
+			toolbar_data->preferences_btn = item; 
 			break;
 		case A_OPEN_MAIL:
 			TOOLBAR_ITEM(item,icon_wid,toolbar_item->text,_("Open email"));

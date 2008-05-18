@@ -98,6 +98,8 @@ struct _Toolbar {
 	GtkWidget *open_mail_btn;
 	GtkWidget *close_window_btn;
 
+	GtkWidget *preferences_btn;
+
 	GSList    *action_list;
 	GSList    *item_list;
 
@@ -170,6 +172,7 @@ enum {
 	A_PRINT,
 	A_LEARN_SPAM,
 	A_GO_FOLDERS,
+	A_PREFERENCES,
 
 	/* compose toolbar */
 	A_SEND,

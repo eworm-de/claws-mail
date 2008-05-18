@@ -121,8 +121,10 @@ SignatureStatus sgpgme_sigstat_gpgme_to_privacy(gpgme_ctx_t ctx, gpgme_verify_re
 			return SIGNATURE_CHECK_FAILED;
 		}
 	case GPG_ERR_SIG_EXPIRED:
-	case GPG_ERR_KEY_EXPIRED:
+	case GPG_ERR_CERT_REVOKED:
 		return SIGNATURE_WARN;
+	case GPG_ERR_KEY_EXPIRED:
+		return SIGNATURE_KEY_EXPIRED;
 	case GPG_ERR_BAD_SIGNATURE:
 		return SIGNATURE_INVALID;
 	case GPG_ERR_NO_PUBKEY:

@@ -1,3 +1,16 @@
+2008-05-18 [colin]	3.4.0cvs50
+
+	* src/mimeview.c
+	* src/privacy.h
+	* src/toolbar.c
+	* src/toolbar.h
+	* src/plugins/pgpcore/sgpgme.c
+		Fix more parts of bug 1609:
+		- Make use of specific Expired privacy icon
+		- Use CLOSE instead of NOTICE_ERROR for cancel
+		  receiving
+		- Allow a Preferences button in the main toolbar
+
 2008-05-18 [colin]	3.4.0cvs49
 
 	* src/stock_pixmap.c

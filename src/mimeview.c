@@ -832,6 +832,11 @@ static void update_signature_noticeview(MimeView *mimeview, MimeInfo *mimeinfo,
 		func = display_full_info_cb;
 		icon = STOCK_PIXMAP_PRIVACY_WARN;
 		break;
+	case SIGNATURE_KEY_EXPIRED:
+		button_text = _("View full information");
+		func = display_full_info_cb;
+		icon = STOCK_PIXMAP_PRIVACY_EXPIRED;
+		break;
 	case SIGNATURE_INVALID:
 		button_text = _("View full information");
 		func = display_full_info_cb;
@@ -2209,6 +2214,7 @@ static void icon_list_append_icon (MimeView *mimeview, MimeInfo *mimeinfo)
 			    STOCK_PIXMAP_PRIVACY_EMBLEM_PASSED, OVERLAY_BOTTOM_RIGHT, 6, 3);
 			break;
 		case SIGNATURE_WARN:
+		case SIGNATURE_KEY_EXPIRED:
 			pixmap = stock_pixmap_widget_with_overlay(mimeview->mainwin->window, stockp,
 			    STOCK_PIXMAP_PRIVACY_EMBLEM_WARN, OVERLAY_BOTTOM_RIGHT, 6, 3);
 			break;
