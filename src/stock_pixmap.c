@@ -410,6 +410,7 @@ gint stock_pixbuf_gdk(GtkWidget *window, StockPixmap icon, GdkPixbuf **pixbuf)
 	StockPixmapData *pix_d;
 	static const char *extension[]={".png", ".xpm", NULL};
 	int i = 0;
+	gboolean theme_changed = FALSE;
 
 	if (pixbuf)
 		*pixbuf = NULL;
@@ -418,9 +419,15 @@ gint stock_pixbuf_gdk(GtkWidget *window, StockPixmap icon, GdkPixbuf **pixbuf)
 
 	pix_d = &pixmaps[icon];
 
-	if (!pix_d->pixbuf || (strcmp2(pix_d->icon_path, prefs_common.pixmap_theme_path) != 0)) {
+	theme_changed = (strcmp2(pix_d->icon_path, prefs_common.pixmap_theme_path) != 0);
+	if (!pix_d->pixbuf || theme_changed) {
 		GdkPixbuf *pix = NULL;
-	
+		
+		if (theme_changed && pix_d->pixmap) {
+			g_object_unref(pix_d->pixmap);
+			pix_d->pixmap = NULL;
+		}
+
 		if (strcmp(prefs_common.pixmap_theme_path, DEFAULT_PIXMAP_THEME) != 0) {
 			if (is_dir_exist(prefs_common.pixmap_theme_path)) {
 				char *icon_file_name; 
@@ -479,6 +486,7 @@ gint stock_pixmap_gdk(GtkWidget *window, StockPixmap icon,
 	StockPixmapData *pix_d;
 	static const char *extension[]={".png", ".xpm", NULL};
 	int i = 0;
+	gboolean theme_changed = FALSE;
 
 	if (pixmap) *pixmap = NULL;
 	if (mask)   *mask   = NULL;
@@ -488,9 +496,15 @@ gint stock_pixmap_gdk(GtkWidget *window, StockPixmap icon,
 
 	pix_d = &pixmaps[icon];
 
-	if (!pix_d->pixmap || (strcmp2(pix_d->icon_path, prefs_common.pixmap_theme_path) != 0)) {
+	theme_changed = (strcmp2(pix_d->icon_path, prefs_common.pixmap_theme_path) != 0);
+	if (!pix_d->pixmap || theme_changed) {
 		GdkPixmap *pix = NULL;
-	
+
+		if (theme_changed && pix_d->pixbuf) {
+			g_object_unref(pix_d->pixbuf);
+			pix_d->pixbuf = NULL;
+		}
+
 		if (strcmp(prefs_common.pixmap_theme_path, DEFAULT_PIXMAP_THEME) != 0) {
 			if ( is_dir_exist(prefs_common.pixmap_theme_path) ) {
 				char *icon_file_name; 

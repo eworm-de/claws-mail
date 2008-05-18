@@ -1,3 +1,13 @@
+2008-05-18 [colin]	3.4.0cvs49
+
+	* src/stock_pixmap.c
+		Fix bug with non-updating icons after theme change:
+		If fetching pixbuf for a given icon after a theme
+		change, the next pixmap fetch would return the old
+		cached one, as the theme change was forgotten at 
+		this time. (and vice-versa). This was mostly 
+		visible on open folder icons
+
 2008-05-17 [colin]	3.4.0cvs48
 
 	* src/prefs_summaries.c

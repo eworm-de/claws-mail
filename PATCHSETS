@@ -3344,3 +3344,4 @@
 ( cvs diff -u -r 1.1.2.2 -r 1.1.2.3 tools/thunderbird-filters-convertor.pl;  ) > 3.4.0cvs46.patchset
 ( cvs diff -u -r 1.179.2.219 -r 1.179.2.220 src/imap.c;  ) > 3.4.0cvs47.patchset
 ( cvs diff -u -r 1.1.2.52 -r 1.1.2.53 src/prefs_summaries.c;  cvs diff -u -r 1.395.2.367 -r 1.395.2.368 src/summaryview.c;  ) > 3.4.0cvs48.patchset
+( cvs diff -u -r 1.25.2.54 -r 1.25.2.55 src/stock_pixmap.c;  ) > 3.4.0cvs49.patchset
