@@ -47,7 +47,6 @@
 #define DISABLE_LOG_DURING_LOGIN
 
 static struct etpan_thread_manager * thread_manager = NULL;
-static chash * courier_workaround_hash = NULL;
 static chash * nntp_hash = NULL;
 static chash * session_hash = NULL;
 static guint thread_manager_signal = 0;
@@ -133,7 +132,6 @@ void nntp_main_init(gboolean skip_ssl_cert_check)
 	
 	nntp_hash = chash_new(CHASH_COPYKEY, CHASH_DEFAULTSIZE);
 	session_hash = chash_new(CHASH_COPYKEY, CHASH_DEFAULTSIZE);
-	courier_workaround_hash = chash_new(CHASH_COPYKEY, CHASH_DEFAULTSIZE);
 	
 	thread_manager = etpan_thread_manager_new();
 	

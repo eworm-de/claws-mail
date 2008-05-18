@@ -287,6 +287,7 @@ void imap_main_set_timeout(int sec)
 
 void imap_main_done(void)
 {
+	imap_disconnect_all();
 	etpan_thread_manager_stop(thread_manager);
 #if defined(__NetBSD__) || defined(__OpenBSD__) || defined(__FreeBSD__)
 	return;

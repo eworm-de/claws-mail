@@ -214,6 +214,7 @@ static gint plugin_load_deps(const gchar *filename, gchar **error)
 			dep_plugin = plugin_load(path, error);
 			if (dep_plugin == NULL) {
 				g_free(path);
+				fclose(fp);
 				return -1;
 			}
 		}
@@ -463,6 +464,8 @@ void plugin_load_all(const gchar *type)
 	if ((pfile = prefs_read_open(rcpath)) == NULL ||
 	    (prefs_set_block_label(pfile, block) < 0)) {
 		g_free(rcpath);
+		if (pfile)
+			prefs_file_close(pfile);
 		return;
 	}
 	g_free(block);

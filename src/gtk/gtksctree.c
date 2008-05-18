@@ -1336,10 +1336,19 @@ gtk_sctree_change_focus_row_expansion (GtkCTree          *ctree,
     }
 }
 
+static void gtk_sctree_finalize(GObject *object)
+{
+	GtkSCTree *sctree = GTK_SCTREE(object);
+	g_free(sctree->use_markup);
+	sctree->use_markup = NULL;
+	G_OBJECT_CLASS (parent_class)->finalize (object);
+}
+
 /* Standard class initialization function */
 static void
 gtk_sctree_class_init (GtkSCTreeClass *klass)
 {
+	GObjectClass *gobject_class = G_OBJECT_CLASS (klass);
 	GtkObjectClass *object_class;
 	GtkWidgetClass *widget_class;
 	GtkCListClass *clist_class;
@@ -1409,6 +1418,8 @@ gtk_sctree_class_init (GtkSCTreeClass *klass)
 	widget_class->drag_motion = gtk_sctree_drag_motion;
 	widget_class->drag_drop = gtk_sctree_drag_drop;
 	widget_class->drag_data_received = gtk_sctree_drag_data_received;
+	
+	gobject_class->finalize = gtk_sctree_finalize;
 }
 
 /* Standard object initialization function */
