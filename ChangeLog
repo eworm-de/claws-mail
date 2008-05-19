@@ -1,3 +1,8 @@
+2008-05-19 [colin]	3.4.0cvs52
+
+	* src/mainwindow.c
+		Fix bug 1616, 'strange question while emptying trash'
+
 2008-05-18 [colin]	3.4.0cvs51
 
 	* src/common/plugin.c

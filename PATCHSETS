@@ -3346,4 +3346,5 @@
 ( cvs diff -u -r 1.1.2.52 -r 1.1.2.53 src/prefs_summaries.c;  cvs diff -u -r 1.395.2.367 -r 1.395.2.368 src/summaryview.c;  ) > 3.4.0cvs48.patchset
 ( cvs diff -u -r 1.25.2.54 -r 1.25.2.55 src/stock_pixmap.c;  ) > 3.4.0cvs49.patchset
 ( cvs diff -u -r 1.83.2.130 -r 1.83.2.131 src/mimeview.c;  cvs diff -u -r 1.10.2.15 -r 1.10.2.16 src/privacy.h;  cvs diff -u -r 1.43.2.98 -r 1.43.2.99 src/toolbar.c;  cvs diff -u -r 1.19.2.26 -r 1.19.2.27 src/toolbar.h;  cvs diff -u -r 1.1.2.49 -r 1.1.2.50 src/plugins/pgpcore/sgpgme.c;  ) > 3.4.0cvs50.patchset
-( cvs diff -u -r 1.13.2.34 -r 1.13.2.35 src/common/plugin.c;  cvs diff -u -r 1.1.4.100 -r 1.1.4.101 src/etpan/imap-thread.c;  cvs diff -u -r 1.1.2.5 -r 1.1.2.6 src/etpan/nntp-thread.c;  cvs diff -u -r 1.1.4.44 -r 1.1.4.45 src/gtk/gtksctree.c;  cvs diff -u -r 1.14.2.62 -r 1.14.2.63 src/plugins/trayicon/trayicon.c;  ) > 3.4.0cvs51.patchset
+( cvs diff -u -r 1.13.2.34 -r 1.13.2.35 src/common/plugin.c;  cvs diff -u -r 1.1.4.100 -r 1.1.4.101 src/etpan/imap-thread.c;  cvs diff -u -r 1.1.2.5 -r 1.1.2.6 src/etpan/nntp-thread.c;  cvs diff -u -r 1.1.4.44 -r 1.1.4.45 src/gtk/gtksctree.c; ) > 3.4.0cvs51.patchset
+( cvs diff -u -r 1.274.2.241 -r 1.274.2.242 src/mainwindow.c;  ) > 3.4.0cvs52.patchset

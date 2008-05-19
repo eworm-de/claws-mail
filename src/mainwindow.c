@@ -2585,12 +2585,19 @@ void main_window_progress_off(MainWindow *mainwin)
 	gtk_progress_bar_set_text(GTK_PROGRESS_BAR(mainwin->progressbar), "");
 }
 
-static gboolean main_window_empty_trash(MainWindow *mainwin, gboolean confirm)
+static gboolean main_window_empty_trash(MainWindow *mainwin, gboolean confirm, gboolean for_quit)
 {
 	if (confirm && procmsg_have_trashed_mails_fast()) {
-		AlertValue val = alertpanel(_("Empty trash"),
+		AlertValue val;
+		
+		if (for_quit)
+			val = alertpanel(_("Empty trash"),
 			       _("Delete all messages in trash folders?"),
 			       GTK_STOCK_NO, "+" GTK_STOCK_YES, _("Don't quit"));
+		else
+			val = alertpanel(_("Empty trash"),
+			       _("Delete all messages in trash folders?"),
+			       GTK_STOCK_NO, "+" GTK_STOCK_YES, NULL);
 		if (val == G_ALERTALTERNATE) {
 			debug_print("will empty trash\n");
 		} else if (val == G_ALERTDEFAULT) {
@@ -3579,7 +3586,7 @@ static void export_list_mbox_cb(MainWindow *mainwin, guint action,
 static void empty_trash_cb(MainWindow *mainwin, guint action,
 			   GtkWidget *widget)
 {
-	main_window_empty_trash(mainwin, TRUE);
+	main_window_empty_trash(mainwin, TRUE, FALSE);
 }
 
 static void save_as_cb(MainWindow *mainwin, guint action, GtkWidget *widget)
@@ -3608,7 +3615,7 @@ static void page_setup_cb(MainWindow *mainwin, guint action, GtkWidget *widget)
 static void app_exit_cb(MainWindow *mainwin, guint action, GtkWidget *widget)
 {
 	if (prefs_common.clean_on_exit) {
-		if (!main_window_empty_trash(mainwin, prefs_common.ask_on_clean))
+		if (!main_window_empty_trash(mainwin, prefs_common.ask_on_clean, TRUE))
 			return;
 	}
 
