@@ -258,11 +258,18 @@ gchar *sgpgme_sigstat_info_full(gpgme_ctx_t ctx, gpgme_verify_result_t status)
 	while (sig) {
 		gpgme_user_id_t user = NULL;
 		gpgme_key_t key;
-
+		gpgme_error_t err;
 		const gchar *keytype, *keyid, *uid;
 		
-		gpgme_get_key(ctx, sig->fpr, &key, 0);
+		err = gpgme_get_key(ctx, sig->fpr, &key, 0);
 
+		if (err != GPG_ERR_NO_ERROR) {
+			key = NULL;
+			g_string_append_printf(siginfo, 
+				_("Error checking signature: %s\n"),
+				gpgme_strerror(err));
+			goto bail;
+		}
 		if (key) {
 			user = key->uids;
 			keytype = gpgme_pubkey_algo_name(
@@ -332,7 +339,7 @@ gchar *sgpgme_sigstat_info_full(gpgme_ctx_t ctx, gpgme_verify_result_t status)
 		i++;
 		sig = sig->next;
 	}
-
+bail:
 	ret = siginfo->str;
 	g_string_free(siginfo, FALSE);
 	return ret;

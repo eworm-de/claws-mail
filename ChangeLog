@@ -1,3 +1,10 @@
+2008-05-19 [colin]	3.4.0cvs55
+
+	* src/plugins/pgpcore/sgpgme.c
+		Maybe fix debian bug 481856, 'Segmentation fault 
+		when verifying a GPG signature'. Although it 
+		looks like a race condition...
+
 2008-05-19 [colin]	3.4.0cvs54
 
 	* src/prefs_filtering_action.c
