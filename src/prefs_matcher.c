@@ -50,6 +50,7 @@
 
 #include "matcher_parser.h"
 #include "colorlabel.h"
+#include "tags.h"
 
 static void prefs_matcher_addressbook_select(void);
 static void prefs_matcher_test_info(GtkWidget *widget, GtkWidget *parent);
@@ -514,6 +515,8 @@ static void prefs_matcher_create(void)
 
 	static GdkGeometry geometry;
 	GtkSizeGroup *size_group;
+	GtkListStore *store;
+	GtkTreeIter iter;
 
 	debug_print("Creating matcher configuration window...\n");
 
@@ -581,14 +584,23 @@ static void prefs_matcher_create(void)
 	gtk_table_attach(GTK_TABLE(table), criteria_label, 0, 1, 0, 1, 
 			 GTK_FILL, GTK_SHRINK, 2, 2);
 
-	criteria_combo = combobox_text_new(FALSE, _("All messages"), _("Header"),
-					   _("Age"), _("Phrase"), _("Flags"),
-					   _("Color labels"), _("Thread"), 
-					   _("Score"), _("Size"),
-					   _("Partially downloaded"),
-					   _("Address book"), _("Tags"),
-					   _("External program test"),
-					   NULL);
+	criteria_combo = gtkut_sc_combobox_create(NULL, FALSE);
+	store = GTK_LIST_STORE(gtk_combo_box_get_model(
+				GTK_COMBO_BOX(criteria_combo)));
+	COMBOBOX_ADD(store, _("All messages"), 0);
+	COMBOBOX_ADD(store, _("Header"), 1);
+	COMBOBOX_ADD(store, _("Age"), 2);
+	COMBOBOX_ADD(store, _("Phrase"), 3);
+	COMBOBOX_ADD(store, _("Flags"), 4);
+	COMBOBOX_ADD(store, _("Color labels"), 5);
+	COMBOBOX_ADD(store, _("Thread"), 6);
+	COMBOBOX_ADD(store, _("Score"), 7);
+	COMBOBOX_ADD(store, _("Size"), 8);
+	COMBOBOX_ADD(store, _("Partially downloaded"), 9);
+	COMBOBOX_ADD(store, _("Address book"), 10);
+	COMBOBOX_ADD(store, _("Tags"), 11);
+	COMBOBOX_ADD(store, _("External program test"), 12);
+
 	gtk_widget_set_size_request(criteria_combo, 150, -1);
 	gtk_combo_box_set_active(GTK_COMBO_BOX(criteria_combo), MATCH_ALL);
 	gtk_table_attach(GTK_TABLE(table), criteria_combo, 1, 2, 0, 1,
@@ -894,6 +906,9 @@ static void prefs_matcher_set_dialog(MatcherList *matchers)
 	gtk_combo_box_set_active(GTK_COMBO_BOX(matcher.bool_op_combo), bool_op);
 
 	prefs_matcher_reset_condition();
+	
+	combobox_set_sensitive(GTK_COMBO_BOX(matcher.criteria_combo), MATCH_TAGS,
+			(tags_get_size() > 0) ? TRUE : FALSE);
 }
 
 /*!

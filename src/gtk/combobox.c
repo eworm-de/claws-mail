@@ -191,3 +191,43 @@ gboolean combobox_set_value_from_arrow_key(GtkComboBox *combobox,
 	/* return TRUE if value could be set */
 	return valid;
 }
+
+static void store_set_sensitive(GtkTreeModel *model, GtkTreeIter *iter,
+				const gboolean sensitive)
+{
+	if(GTK_IS_LIST_STORE(model)) {
+		gtk_list_store_set(GTK_LIST_STORE(model), iter,
+				   COMBOBOX_SENS, sensitive,
+				   -1);
+	} else {
+		gtk_tree_store_set(GTK_TREE_STORE(model), iter,
+				   COMBOBOX_SENS, sensitive,
+				   -1);
+	}
+}
+
+void combobox_set_sensitive(GtkComboBox *combobox, const guint index,
+			    const gboolean sensitive)
+{
+	GtkTreeModel *model;
+	GtkTreeIter iter, child;
+	guint i;
+	
+	if((model = gtk_combo_box_get_model(combobox)) == NULL)
+		return;
+	
+	gtk_tree_model_get_iter_first(model, &iter);
+	for(i=0; i<index; i++) {
+		if(gtk_tree_model_iter_next(model, &iter) == FALSE)
+			return;
+	}
+	
+	store_set_sensitive(model, &iter, sensitive);
+
+	if(gtk_tree_model_iter_children(model, &child, &iter) == FALSE)
+		return;
+	
+	do {
+		store_set_sensitive(model, &child, sensitive);
+	} while (gtk_tree_model_iter_next(model, &child) == TRUE);
+}

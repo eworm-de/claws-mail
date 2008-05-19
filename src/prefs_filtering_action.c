@@ -190,6 +190,7 @@ static struct {
 enum {
 	ACTION_COMBO_TEXT,
 	ACTION_COMBO_DATA,
+	ACTION_COMBO_SENS,
 	N_ACTION_COMBO
 };
 
@@ -205,7 +206,8 @@ static GtkTreeModel *prefs_filtering_action_create_model(void)
 	gchar *curr_menu = NULL;
 	gint i;
 	
-	store = gtk_tree_store_new(N_ACTION_COMBO, G_TYPE_STRING, G_TYPE_INT);
+	store = gtk_tree_store_new(N_ACTION_COMBO, G_TYPE_STRING, G_TYPE_INT,
+				   G_TYPE_BOOLEAN);
 	
 	for (i = 0; action_menu[i].menu || action_menu[i].text; i++)
 	{
@@ -215,6 +217,7 @@ static GtkTreeModel *prefs_filtering_action_create_model(void)
 				gtk_tree_store_set(store, &iter,
 						   ACTION_COMBO_TEXT,
 						   gettext(action_menu[i].menu),
+						   ACTION_COMBO_SENS, TRUE,
 						   -1);
 				curr_menu = action_menu[i].menu;
 			} 
@@ -223,6 +226,7 @@ static GtkTreeModel *prefs_filtering_action_create_model(void)
 			gtk_tree_store_set(store, &iter2,
 					   ACTION_COMBO_TEXT, gettext(action_menu[i].text),
 					   ACTION_COMBO_DATA, action_menu[i].action,
+					   ACTION_COMBO_SENS, TRUE,
 					   -1);
 		} else {
 			curr_menu = NULL;
@@ -231,6 +235,7 @@ static GtkTreeModel *prefs_filtering_action_create_model(void)
 			gtk_tree_store_set(store, &iter,
 					   ACTION_COMBO_TEXT, gettext(action_menu[i].text),
 					   ACTION_COMBO_DATA, action_menu[i].action,
+					   ACTION_COMBO_SENS, TRUE,
 					   -1); 
 		}   
 	}
@@ -244,8 +249,9 @@ static void cell_is_sensitive(GtkCellLayout   *cell_layout,
 			      GtkTreeIter     *iter,
 			      gpointer         data)
 {
-	gboolean sensitive = !gtk_tree_model_iter_has_child (tree_model, iter);
-	g_object_set (cell, "sensitive", sensitive, NULL);
+	if(gtk_tree_model_iter_has_child (tree_model, iter)) {
+		g_object_set (cell, "sensitive", FALSE, NULL);
+	}
 }
 
 /*!
@@ -442,6 +448,7 @@ static void prefs_filtering_action_create(void)
 	gtk_cell_layout_pack_start(GTK_CELL_LAYOUT(action_combo), renderer, TRUE);
         gtk_cell_layout_set_attributes(GTK_CELL_LAYOUT(action_combo), renderer,
 				       "text", ACTION_COMBO_TEXT,
+				       "sensitive", ACTION_COMBO_SENS,
 				       NULL);
 	gtk_cell_layout_set_cell_data_func(GTK_CELL_LAYOUT(action_combo), renderer,
 					   cell_is_sensitive, NULL, NULL);
@@ -683,6 +690,9 @@ static void prefs_filtering_action_set_dialog(GSList *action_list)
 	}
 	
         prefs_filtering_action_reset_dialog();
+        
+        combobox_set_sensitive(GTK_COMBO_BOX(filtering_action.action_combo), 9,
+        		(tags_get_size() > 0) ? TRUE : FALSE);
 }
 
 /*!

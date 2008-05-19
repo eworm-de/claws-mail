@@ -30,5 +30,6 @@ void tags_update_tag(gint id, const gchar *tag);
 const gchar *tags_get_tag(gint id);
 gint tags_get_id_for_str(const gchar *str);
 GSList *tags_get_list(void);
+guint tags_get_size(void);
 
 #endif 

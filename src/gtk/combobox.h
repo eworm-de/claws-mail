@@ -65,5 +65,8 @@ void combobox_set_popdown_strings(GtkComboBox		*combobox,
 				 GList       *list);
 gboolean combobox_set_value_from_arrow_key(GtkComboBox *combobox,
 				 guint keyval);
+void combobox_set_sensitive	(GtkComboBox *combobox,
+				 const guint index,
+				 const gboolean sensitive);
 
 #endif /* __COMBOBOX_H__ */

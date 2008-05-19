@@ -240,3 +240,7 @@ GSList *tags_get_list(void)
 	return data.list;
 }
 
+guint tags_get_size(void)
+{
+	return g_hash_table_size(tags_table);
+}

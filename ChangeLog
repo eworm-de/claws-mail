@@ -1,3 +1,13 @@
+2008-05-19 [colin]	3.4.0cvs54
+
+	* src/prefs_filtering_action.c
+	* src/prefs_matcher.c
+	* src/common/tags.c
+	* src/common/tags.h
+	* src/gtk/combobox.c
+	* src/gtk/combobox.h
+		Patch by Pawel: disabled Tags menus in filtering dialogs
+
 2008-05-19 [colin]	3.4.0cvs53
 
 	* src/prefs_account.c
