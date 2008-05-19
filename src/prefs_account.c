@@ -2418,6 +2418,7 @@ static void advanced_create_widget_func(PrefsPage * _page,
 	GtkWidget *trash_folder_checkbtn;
 	GtkWidget *trash_folder_entry;
 	GtkTooltips *tips = gtk_tooltips_new();
+	GtkSizeGroup *size_group = gtk_size_group_new(GTK_SIZE_GROUP_HORIZONTAL);
 #define PACK_HBOX(hbox) \
 	{ \
 	hbox = gtk_hbox_new (FALSE, 8); \
@@ -2444,28 +2445,33 @@ static void advanced_create_widget_func(PrefsPage * _page,
 	PACK_CHECK_BUTTON (hbox1, checkbtn_smtpport, _("SMTP port"));
 	PACK_PORT_SPINBTN (hbox1, spinbtn_smtpport);
 	SET_TOGGLE_SENSITIVITY (checkbtn_smtpport, spinbtn_smtpport);
-
+	gtk_size_group_add_widget(size_group, checkbtn_smtpport);
+	
 	PACK_HBOX (hbox_popport);
 	PACK_CHECK_BUTTON (hbox_popport, checkbtn_popport,
 			   _("POP3 port"));
 	PACK_PORT_SPINBTN (hbox_popport, spinbtn_popport);
 	SET_TOGGLE_SENSITIVITY (checkbtn_popport, spinbtn_popport);
+	gtk_size_group_add_widget(size_group, checkbtn_popport);
 
 	PACK_HBOX (hbox_imapport);
 	PACK_CHECK_BUTTON (hbox_imapport, checkbtn_imapport,
 			   _("IMAP4 port"));
 	PACK_PORT_SPINBTN (hbox_imapport, spinbtn_imapport);
 	SET_TOGGLE_SENSITIVITY (checkbtn_imapport, spinbtn_imapport);
+	gtk_size_group_add_widget(size_group, checkbtn_imapport);
 
 	PACK_HBOX (hbox_nntpport);
 	PACK_CHECK_BUTTON (hbox_nntpport, checkbtn_nntpport,
 			   _("NNTP port"));
 	PACK_PORT_SPINBTN (hbox_nntpport, spinbtn_nntpport);
 	SET_TOGGLE_SENSITIVITY (checkbtn_nntpport, spinbtn_nntpport);
+	gtk_size_group_add_widget(size_group, checkbtn_nntpport);
 
 	PACK_HBOX (hbox1);
 	PACK_CHECK_BUTTON (hbox1, checkbtn_domain, _("Domain name"));
-	
+	gtk_size_group_add_widget(size_group, checkbtn_domain);	
+
 	gtk_tooltips_set_tip(GTK_TOOLTIPS(tips), checkbtn_domain,
 			     _("The domain name will be used in the right part of "
 			       "the generated Message-Ids, and when connecting to "

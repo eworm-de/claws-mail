@@ -1,3 +1,8 @@
+2008-05-19 [colin]	3.4.0cvs53
+
+	* src/prefs_account.c
+		GUI patch by Pawel: align ports entries
+
 2008-05-19 [colin]	3.4.0cvs52
 
 	* src/mainwindow.c
