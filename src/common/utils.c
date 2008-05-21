@@ -484,6 +484,7 @@ gint file_strip_crs(const gchar *file)
 	if (rename_force(out, file) < 0)
 		goto unlinkout;
 	
+	g_free(out);
 	return 0;
 unlinkout:
 	claws_unlink(out);
