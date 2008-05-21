@@ -53,10 +53,11 @@
 #include <sys/utsname.h>
 #endif
 
+#include <fcntl.h>
+
 #ifdef G_OS_WIN32
 #  include <direct.h>
 #  include <io.h>
-#  include <fcntl.h>
 #  include <w32lib.h>
 #endif
 
@@ -3089,11 +3090,62 @@ static gchar *file_read_to_str_full(const gchar *file, gboolean recode)
 {
 	FILE *fp;
 	gchar *str;
+	struct stat s;
+	gint fd, err;
+	struct timeval timeout = {1, 0};
+	fd_set fds;
+	int fflags = 0;
 
 	g_return_val_if_fail(file != NULL, NULL);
 
-	if ((fp = g_fopen(file, "rb")) == NULL) {
-		FILE_OP_ERROR(file, "fopen");
+	if (g_stat(file, &s) != 0) {
+		FILE_OP_ERROR(file, "stat");
+		return NULL;
+	}
+	if (S_ISDIR(s.st_mode)) {
+		g_warning("%s: is a directory\n", file);
+		return NULL;
+	}
+
+	/* test whether the file is readable without blocking */
+	fd = open(file, O_RDONLY | O_NONBLOCK);
+	if (fd == -1) {
+		FILE_OP_ERROR(file, "open");
+		return NULL;
+	}
+	FD_ZERO(&fds);
+	FD_SET(fd, &fds);
+
+	/* allow for one second */
+	err = select(fd+1, &fds, NULL, NULL, &timeout);
+	if (err <= 0 || !FD_ISSET(fd, &fds)) {
+		if (err < 0) {
+			FILE_OP_ERROR(file, "select");
+		} else {
+			g_warning("%s: doesn't seem readable\n", file);
+		}
+		close(fd);
+		return NULL;
+	}
+	
+	/* Now clear O_NONBLOCK */
+	if ((fflags = fcntl(fd, F_GETFL)) < 0) {
+		FILE_OP_ERROR(file, "fcntl (F_GETFL)");
+		close(fd);
+		return NULL;
+	}
+	if (fcntl(fd, F_SETFL, (fflags & ~O_NONBLOCK)) < 0) {
+		FILE_OP_ERROR(file, "fcntl (F_SETFL)");
+		close(fd);
+		return NULL;
+	}
+	
+	/* get the FILE pointer */
+	fp = fdopen(fd, "rb");
+
+	if (fp == NULL) {
+		FILE_OP_ERROR(file, "fdopen");
+		close(fd); /* if fp isn't NULL, we'll use fclose instead! */
 		return NULL;
 	}
 

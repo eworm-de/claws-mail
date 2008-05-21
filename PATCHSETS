@@ -3352,3 +3352,4 @@
 ( cvs diff -u -r 1.1.4.50 -r 1.1.4.51 src/prefs_filtering_action.c;  cvs diff -u -r 1.43.2.72 -r 1.43.2.73 src/prefs_matcher.c;  cvs diff -u -r 1.1.2.6 -r 1.1.2.7 src/common/tags.c;  cvs diff -u -r 1.1.2.3 -r 1.1.2.4 src/common/tags.h;  cvs diff -u -r 1.1.2.12 -r 1.1.2.13 src/gtk/combobox.c;  cvs diff -u -r 1.1.2.10 -r 1.1.2.11 src/gtk/combobox.h;  ) > 3.4.0cvs54.patchset
 ( cvs diff -u -r 1.1.2.50 -r 1.1.2.51 src/plugins/pgpcore/sgpgme.c;  ) > 3.4.0cvs55.patchset
 ( cvs diff -u -r 1.179.2.220 -r 1.179.2.221 src/imap.c;  ) > 3.4.0cvs56.patchset
+( cvs diff -u -r 1.36.2.139 -r 1.36.2.140 src/common/utils.c;  ) > 3.4.0cvs57.patchset
