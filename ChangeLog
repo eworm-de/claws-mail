@@ -1,3 +1,8 @@
+2008-05-21 [colin]	3.4.0cvs58
+
+	* src/imap.c
+		Fix cvs56 (brain fart)
+
 2008-05-21 [colin]	3.4.0cvs57
 
 	* src/common/utils.c
