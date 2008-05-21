@@ -1,3 +1,8 @@
+2008-05-21 [colin]	3.4.0cvs59
+
+	* src/mainwindow.c
+		Don't put SMTP-only accounts in receive menus
+
 2008-05-21 [colin]	3.4.0cvs58
 
 	* src/imap.c

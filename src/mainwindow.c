@@ -2230,6 +2230,9 @@ static void main_window_set_account_receive_menu(MainWindow *mainwin,
 	for (cur_ac = account_list; cur_ac != NULL; cur_ac = cur_ac->next) {
 		ac_prefs = (PrefsAccount *)cur_ac->data;
 
+		if (ac_prefs->protocol == A_NONE)
+			continue;
+
 		menuitem = gtk_menu_item_new_with_label
 			(ac_prefs->account_name ? ac_prefs->account_name
 			 : _("Untitled"));
@@ -2259,6 +2262,9 @@ static void main_window_set_toolbar_combo_receive_menu(MainWindow *mainwin,
 
 	for (cur_ac = account_list; cur_ac != NULL; cur_ac = cur_ac->next) {
 		ac_prefs = (PrefsAccount *)cur_ac->data;
+
+		if (ac_prefs->protocol == A_NONE)
+			continue;
 
 		menuitem = gtk_menu_item_new_with_label
 			(ac_prefs->account_name
