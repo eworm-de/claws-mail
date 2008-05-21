@@ -1156,7 +1156,7 @@ static gint imap_session_authenticate(IMAPSession *session,
 	gchar *pass, *acc_pass;
 	gboolean failed = FALSE;
 	gint ok = MAILIMAP_NO_ERROR;
-	g_return_if_fail(account->userid != NULL);
+	g_return_val_if_fail(account->userid != NULL, -1, MAILIMAP_ERROR_BAD_STATE);
 	acc_pass = account->passwd;
 try_again:
 	pass = acc_pass;
