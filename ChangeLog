@@ -1,3 +1,19 @@
+2008-05-22 [colin]	3.4.0cvs62
+
+	* src/Makefile.am
+	* src/prefs_toolbar.c
+	* src/stock_pixmap.c
+	* src/stock_pixmap.h
+	* src/toolbar.c
+	* src/pixmaps/delete_btn.xpm
+	* src/pixmaps/insert_file.xpm
+	* src/pixmaps/mail_reply_to_list.xpm
+		Fix more of bug 1609:
+		- Add a Delete button icon
+		- Add a Reply to list button icon
+		- Fix Insert file button icon
+		Artwork by Ciprian Popovici.
+
 2008-05-21 [colin]	3.4.0cvs61
 
 	* src/common/utils.c

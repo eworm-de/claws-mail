@@ -97,6 +97,7 @@ static const gint ToolbarIcons[] =
 	STOCK_PIXMAP_MAIL_REPLY,
 	STOCK_PIXMAP_MAIL_REPLY_TO_ALL,
 	STOCK_PIXMAP_MAIL_REPLY_TO_AUTHOR,
+	STOCK_PIXMAP_MAIL_REPLY_TO_LIST,
 	STOCK_PIXMAP_MAIL_SEND,
 	STOCK_PIXMAP_MAIL_SEND_QUEUE,
 	STOCK_PIXMAP_MAIL_SIGN,
@@ -139,7 +140,7 @@ static const gint ToolbarIcons[] =
 	STOCK_PIXMAP_SPAM_BTN,
 	STOCK_PIXMAP_HAM_BTN,
 	STOCK_PIXMAP_TRASH,
-	STOCK_PIXMAP_DELETED,
+	STOCK_PIXMAP_DELETE,
 	STOCK_PIXMAP_EMPTY,              /* last entry */
 };
 
@@ -1099,7 +1100,7 @@ static GtkWidget *create_set_list_view(ToolbarPage *prefs_toolbar)
 	gtk_tree_view_column_set_title(column, _("Icon"));
 	renderer = gtk_cell_renderer_pixbuf_new();
 	gtk_tree_view_column_pack_start(column, renderer, FALSE);
-	
+	gtk_tree_view_set_reorderable(list_view, TRUE);
 	/* tell pixbuf renderer it is only visible if 
 	 * the icon is not represented by text */
 	gtk_tree_view_column_set_cell_data_func(column, renderer,

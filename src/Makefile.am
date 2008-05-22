@@ -344,6 +344,7 @@ EXTRA_DIST = \
 	pixmaps/close.xpm \
 	pixmaps/complete.xpm \
 	pixmaps/continue.xpm \
+	pixmaps/delete_btn.xpm \
 	pixmaps/deleted.xpm \
 	pixmaps/dir_close.xpm \
 	pixmaps/dir_close_hrm.xpm \
@@ -383,6 +384,7 @@ EXTRA_DIST = \
 	pixmaps/mail_receive.xpm \
 	pixmaps/mail_reply_to_all.xpm \
 	pixmaps/mail_reply_to_author.xpm \
+	pixmaps/mail_reply_to_list.xpm \
 	pixmaps/mail_reply.xpm \
 	pixmaps/mail_send_queue.xpm \
 	pixmaps/mail_send.xpm \

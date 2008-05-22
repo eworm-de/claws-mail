@@ -70,6 +70,7 @@
 #include "pixmaps/mail_reply.xpm"
 #include "pixmaps/mail_reply_to_all.xpm"
 #include "pixmaps/mail_reply_to_author.xpm"
+#include "pixmaps/mail_reply_to_list.xpm"
 #include "pixmaps/mail_send.xpm"
 #include "pixmaps/mail_send_queue.xpm"
 #include "pixmaps/mail_sign.xpm"
@@ -143,6 +144,7 @@
 #include "pixmaps/outbox_close.xpm"
 #include "pixmaps/outbox_close_hrm.xpm"
 #include "pixmaps/trash.xpm"
+#include "pixmaps/delete_btn.xpm"
 #include "pixmaps/trash_btn.xpm"
 #include "pixmaps/trash_hrm.xpm"
 #include "pixmaps/drafts_close.xpm"
@@ -285,6 +287,7 @@ static StockPixmapData pixmaps[] =
 	{mail_reply_xpm				, NULL, NULL, "mail_reply", NULL},
 	{mail_reply_to_all_xpm			, NULL, NULL, "mail_reply_to_all", NULL},
 	{mail_reply_to_author_xpm		, NULL, NULL, "mail_reply_to_author", NULL},
+	{mail_reply_to_list_xpm			, NULL, NULL, "mail_reply_to_list", NULL},
 	{mail_send_xpm				, NULL, NULL, "mail_send", NULL},
 	{mail_send_queue_xpm			, NULL, NULL, "mail_send_queue", NULL},
 	{mail_sign_xpm				, NULL, NULL, "mail_sign", NULL},
@@ -361,6 +364,7 @@ static StockPixmapData pixmaps[] =
 	{mime_message_xpm			, NULL, NULL, "mime_message", NULL},
 	{claws_mail_icon_xpm			, NULL, NULL, "claws_mail_icon", NULL},
 	{read_xpm				, NULL, NULL, "read", NULL},
+	{delete_btn_xpm				, NULL, NULL, "delete_btn", NULL},
 	{trash_btn_xpm				, NULL, NULL, "trash_btn", NULL},
 #ifndef GENERIC_UMPC
 	{claws_mail_logo_xpm			, NULL, NULL, "claws_mail_logo", NULL},
