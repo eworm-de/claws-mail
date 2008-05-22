@@ -31,6 +31,7 @@
 typedef struct _combobox_sel_by_data_ctx {
 	GtkComboBox *combobox;
 	gint data;
+	const gchar *cdata;
 } ComboboxSelCtx;
 
 GtkWidget *combobox_text_new(const gboolean with_entry, const gchar *text, ...)
@@ -89,6 +90,45 @@ void combobox_select_by_data(GtkComboBox *combobox, gint data)
 	ctx->data = data;
 
 	gtk_tree_model_foreach(model, (GtkTreeModelForeachFunc)_select_by_data_func, ctx);
+	g_free(ctx);
+}
+
+static gboolean _select_by_text_func(GtkTreeModel *model,	GtkTreePath *path,
+		GtkTreeIter *iter, ComboboxSelCtx *ctx)
+{
+	GtkComboBox *combobox = ctx->combobox;
+	const gchar *data = ctx->cdata;
+	const gchar *curdata;
+
+	gtk_tree_model_get (GTK_TREE_MODEL(model), iter, 0, &curdata, -1);
+	if (!g_utf8_collate(data, curdata)) {
+		gtk_combo_box_set_active_iter(combobox, iter);
+		return TRUE;
+	}
+
+	return FALSE;
+}
+
+void combobox_select_by_text(GtkComboBox *combobox, const gchar *data)
+{
+	GtkTreeModel *model;
+	ComboboxSelCtx *ctx = NULL;
+	GtkComboBoxClass *class;
+
+	g_return_if_fail(combobox != NULL);
+	class = GTK_COMBO_BOX_GET_CLASS (combobox);
+
+	/* we can do that only with gtk_combo_box_next_text() combo boxes */
+	g_return_if_fail(class->get_active_text != NULL);
+
+	model = gtk_combo_box_get_model(combobox);
+
+	ctx = g_new(ComboboxSelCtx,
+			sizeof(ComboboxSelCtx));
+	ctx->combobox = combobox;
+	ctx->cdata = data;
+
+	gtk_tree_model_foreach(model, (GtkTreeModelForeachFunc)_select_by_text_func, ctx);
 	g_free(ctx);
 }
 

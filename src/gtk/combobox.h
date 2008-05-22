@@ -56,7 +56,9 @@ enum {
 GtkWidget *combobox_text_new(const gboolean with_entry, const gchar *text, ...);
 
 void combobox_select_by_data	(GtkComboBox 		*combobox,
-				 gint		 data);
+				 gint			 data);
+void combobox_select_by_text	(GtkComboBox 		*combobox,
+				 const gchar		*data);
 
 gint combobox_get_active_data	(GtkComboBox 		*combobox);
 

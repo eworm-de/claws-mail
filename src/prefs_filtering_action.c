@@ -1609,6 +1609,25 @@ static gboolean prefs_filtering_actions_selected
 			gtk_entry_set_text(GTK_ENTRY(filtering_action.header_entry), "");
 		combobox_select_by_data(GTK_COMBO_BOX(filtering_action.action_combo),
 				     ACTION_ADD_TO_ADDRESSBOOK);
+		break;
+	case MATCHACTION_SET_TAG:
+		combobox_select_by_data(GTK_COMBO_BOX(filtering_action.action_combo),
+				     ACTION_SET_TAG);
+		combobox_select_by_text(GTK_COMBO_BOX(filtering_action.tags_combo),
+					action->destination);
+		break;
+	case MATCHACTION_UNSET_TAG:
+		combobox_select_by_data(GTK_COMBO_BOX(filtering_action.action_combo),
+				     ACTION_UNSET_TAG);
+		combobox_select_by_text(GTK_COMBO_BOX(filtering_action.tags_combo),
+					action->destination);
+		break;
+	case MATCHACTION_CLEAR_TAGS:
+		combobox_select_by_data(GTK_COMBO_BOX(filtering_action.action_combo),
+				     ACTION_CLEAR_TAGS);
+		break;
+	default:
+		g_warning("unhandled case !\n");
 	}
 	if (action->destination)
 		gtk_entry_set_text(GTK_ENTRY(filtering_action.dest_entry), action->destination);
