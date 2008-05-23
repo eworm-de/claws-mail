@@ -32,7 +32,8 @@ typedef struct {  /* Hmm, should be private */
 } MD5_CONTEXT;
 
 void md5_hex_digest(char *hexdigest, const unsigned char *s);
-
+void md5_hex_digest_binary(char *hexdigest, const unsigned char *s, size_t len);
+int md5_hex_digest_file(char *hexdigest, const unsigned char *file);
 void md5_hex_hmac(char *hexdigest,
                   const unsigned char* text, int text_len,
                   const unsigned char* key, int key_len);

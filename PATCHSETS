@@ -3360,3 +3360,4 @@
 ( cvs diff -u -r 1.155.2.85 -r 1.155.2.86 src/Makefile.am;  cvs diff -u -r 1.30.2.50 -r 1.30.2.51 src/prefs_toolbar.c;  cvs diff -u -r 1.25.2.55 -r 1.25.2.56 src/stock_pixmap.c;  cvs diff -u -r 1.18.2.34 -r 1.18.2.35 src/stock_pixmap.h;  cvs diff -u -r 1.43.2.99 -r 1.43.2.100 src/toolbar.c;  diff -u /dev/null src/pixmaps/delete_btn.xpm;  cvs diff -u -r 1.1.2.1 -r 1.1.2.2 src/pixmaps/insert_file.xpm;  diff -u /dev/null src/pixmaps/mail_reply_to_list.xpm;  ) > 3.4.0cvs62.patchset
 ( cvs diff -u -r 1.1.4.51 -r 1.1.4.52 src/prefs_filtering_action.c;  cvs diff -u -r 1.1.2.13 -r 1.1.2.14 src/gtk/combobox.c;  cvs diff -u -r 1.1.2.11 -r 1.1.2.12 src/gtk/combobox.h;  ) > 3.4.0cvs63.patchset
 ( cvs diff -u -r 1.274.2.243 -r 1.274.2.244 src/mainwindow.c;  cvs diff -u -r 1.395.2.368 -r 1.395.2.369 src/summaryview.c;  ) > 3.4.0cvs64.patchset
+( cvs diff -u -r 1.2.2.4 -r 1.2.2.5 src/common/md5.c;  cvs diff -u -r 1.1.4.3 -r 1.1.4.4 src/common/md5.h;  ) > 3.4.0cvs65.patchset

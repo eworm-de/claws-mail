@@ -34,8 +34,12 @@
 #include <stdlib.h>
 #include <string.h>
 #include <assert.h>
+#include <sys/types.h>
+#include <sys/stat.h>
+#include <fcntl.h>
 
 #include "md5.h"
+#include "utils.h"
 
 /****************
  * Rotate a 32 bit integer by n bytes
@@ -328,20 +332,59 @@ md5_final(unsigned char *digest, MD5_CONTEXT *ctx)
  * string S.  hextdigest but be buffer of at lease 33 bytes!
  */
 void
-md5_hex_digest(char *hexdigest, const unsigned char *s)
+md5_hex_digest_binary(char *hexdigest, const unsigned char *s, size_t len)
 {
 	int i;
 	MD5_CONTEXT context;
 	unsigned char digest[16];
 
 	md5_init(&context);
-	md5_update(&context, s, strlen(s));
+	md5_update(&context, s, len);
 	md5_final(digest, &context);
 
 	for (i = 0; i < 16; i++)
 		sprintf(hexdigest + 2 * i, "%02x", digest[i]);
 }
 
+int 
+md5_hex_digest_file(char *hexdigest, const unsigned char *file)
+{
+	int READ_BLOCK_SIZE=4096;
+	int len;
+	char *buf = malloc(READ_BLOCK_SIZE); /* alloc the first block */
+	char *lastp = buf; /* point to the start of the buffer */
+	size_t total = 0; /* total length read */
+	int num_alloc = 1; /* number of blocks allocated */
+	int fd = open(file, O_RDONLY);
+
+	if (fd == -1) {
+		FILE_OP_ERROR(file, "open");
+		return -1;
+	}
+	
+	while ((len = read(fd, lastp, READ_BLOCK_SIZE)) > 0) { /* read one block (which is allocated) */
+		total += len; /* update the total length */
+		num_alloc++; /* increase number of allocs */
+		buf = realloc(buf, READ_BLOCK_SIZE*num_alloc); /* allocate one more block for next read */
+		lastp = buf+total; /* point to the end of read stuff to buf */
+	}
+
+	close(fd);
+	md5_hex_digest_binary(hexdigest, buf, total);
+	free(buf);
+	// printf("%s  %s\n", hexdigest, file);
+	return 0;
+}
+
+/*
+ * Creates a MD5 digest in hex fomrat (lowercase letters) from the
+ * string S.  hextdigest but be buffer of at lease 33 bytes!
+ */
+void
+md5_hex_digest(char *hexdigest, const unsigned char *s)
+{
+	md5_hex_digest_binary(hexdigest, s, strlen(s));
+}
 
 /*
 ** Function: md5_hmac

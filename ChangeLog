@@ -1,3 +1,10 @@
+2008-05-23 [paul]	3.4.0cvs65
+
+	* src/common/md5.c
+	* src/common/md5.h
+		add the possibility to check md5 on binary files,
+		thanks to Colin
+
 2008-05-23 [colin]	3.4.0cvs64
 
 	* src/mainwindow.c
