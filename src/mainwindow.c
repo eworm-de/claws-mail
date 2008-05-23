@@ -2143,7 +2143,7 @@ void main_window_reflect_tags_changes(MainWindow *mainwin)
 
 void main_window_reflect_prefs_all_real(gboolean pixmap_theme_changed)
 {
-	if (prefs_tag == 0 || pixmap_theme_changed) {
+	if (prefs_tag == 0) {
 		prefs_tag = g_timeout_add(500, reflect_prefs_timeout_cb, 
 						GINT_TO_POINTER(pixmap_theme_changed));
 	}

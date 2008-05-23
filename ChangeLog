@@ -1,3 +1,10 @@
+2008-05-23 [colin]	3.4.0cvs64
+
+	* src/mainwindow.c
+	* src/summaryview.c
+		Fix bug 1610, 'claws crash after opening/closing 
+		preferences and window update'
+
 2008-05-22 [colin]	3.4.0cvs63
 
 	* src/prefs_filtering_action.c

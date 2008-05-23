@@ -6208,6 +6208,7 @@ void summary_set_column_order(SummaryView *summaryview)
 
 	summary_select_by_msgnum(summaryview, selected_msgnum);
 
+	summaryview->selected = summary_find_msg_by_msgnum(summaryview, selected_msgnum);
 	summaryview->displayed = summary_find_msg_by_msgnum(summaryview, displayed_msgnum);
 	summaryview->last_displayed = summaryview->displayed;
 	if (!summaryview->displayed)
