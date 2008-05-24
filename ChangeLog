@@ -1,3 +1,16 @@
+2008-05-24 [paul]	3.4.0cvs67
+
+	* src/Makefile.am
+	* src/stock_pixmap.c
+	* src/stock_pixmap.h
+	* src/toolbar.c
+	* src/pixmaps/cancel.xpm
+	* src/pixmaps/close.xpm
+		add a specific icon for A_CANCEL_INC (addresses
+		point 1 of bug 1609 'Icon issues')
+		replace close.xpm with an icon of the standard
+		24x24 size
+
 2008-05-24 [paul]	3.4.0cvs66
 
 	* src/pixmaps/insert_file.xpm

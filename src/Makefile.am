@@ -334,11 +334,16 @@ EXTRA_DIST = \
 	pixmaps/address.xpm \
 	pixmaps/anonymous.xpm \
 	pixmaps/book.xpm \
+	pixmaps/cancel.xpm \
 	pixmaps/category.xpm \
 	pixmaps/checkbox_off.xpm \
 	pixmaps/checkbox_on.xpm \
 	pixmaps/check_spelling.xpm \
 	pixmaps/clipkey.xpm \
+	pixmaps/claws-mail_icon.xpm \
+	pixmaps/claws-mail_logo.xpm \
+	pixmaps/claws-mail_logo-small.xpm \
+	pixmaps/claws-mail.xpm \
 	pixmaps/clip.xpm \
 	pixmaps/clip_gpg_signed.xpm \
 	pixmaps/close.xpm \
@@ -449,10 +454,6 @@ EXTRA_DIST = \
 	pixmaps/selection.xpm \
 	pixmaps/spam.xpm \
 	pixmaps/spam_btn.xpm \
-	pixmaps/claws-mail_icon.xpm \
-	pixmaps/claws-mail_logo.xpm \
-	pixmaps/claws-mail_logo-small.xpm \
-	pixmaps/claws-mail.xpm \
 	pixmaps/trash_hrm.xpm \
 	pixmaps/trash.xpm \
 	pixmaps/trash_btn.xpm \

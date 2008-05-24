@@ -145,6 +145,7 @@
 #include "pixmaps/outbox_close_hrm.xpm"
 #include "pixmaps/trash.xpm"
 #include "pixmaps/delete_btn.xpm"
+#include "pixmaps/cancel.xpm"
 #include "pixmaps/trash_btn.xpm"
 #include "pixmaps/trash_hrm.xpm"
 #include "pixmaps/drafts_close.xpm"
@@ -365,6 +366,7 @@ static StockPixmapData pixmaps[] =
 	{claws_mail_icon_xpm			, NULL, NULL, "claws_mail_icon", NULL},
 	{read_xpm				, NULL, NULL, "read", NULL},
 	{delete_btn_xpm				, NULL, NULL, "delete_btn", NULL},
+	{cancel_xpm				, NULL, NULL, "cancel_btn", NULL},
 	{trash_btn_xpm				, NULL, NULL, "trash_btn", NULL},
 #ifndef GENERIC_UMPC
 	{claws_mail_logo_xpm			, NULL, NULL, "claws_mail_logo", NULL},
