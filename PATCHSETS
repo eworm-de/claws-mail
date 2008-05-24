@@ -3361,3 +3361,4 @@
 ( cvs diff -u -r 1.1.4.51 -r 1.1.4.52 src/prefs_filtering_action.c;  cvs diff -u -r 1.1.2.13 -r 1.1.2.14 src/gtk/combobox.c;  cvs diff -u -r 1.1.2.11 -r 1.1.2.12 src/gtk/combobox.h;  ) > 3.4.0cvs63.patchset
 ( cvs diff -u -r 1.274.2.243 -r 1.274.2.244 src/mainwindow.c;  cvs diff -u -r 1.395.2.368 -r 1.395.2.369 src/summaryview.c;  ) > 3.4.0cvs64.patchset
 ( cvs diff -u -r 1.2.2.4 -r 1.2.2.5 src/common/md5.c;  cvs diff -u -r 1.1.4.3 -r 1.1.4.4 src/common/md5.h;  ) > 3.4.0cvs65.patchset
+( cvs diff -u -r 1.1.2.2 -r 1.1.2.3 src/pixmaps/insert_file.xpm;  ) > 3.4.0cvs66.patchset
