@@ -50,7 +50,7 @@
 #define g_mkdir		mkdir
 #define g_stat		stat
 #define g_lstat		lstat
-#define claws_unlink	unlink
+#define g_unlink	unlink
 #define g_remove	remove
 #define g_rmdir		rmdir
 #define g_fopen		fopen

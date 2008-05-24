@@ -1,3 +1,8 @@
+2008-05-24 [colin]	3.4.0cvs68
+
+	* src/common/utils.h
+		Fix wrong define on old glibs
+
 2008-05-24 [paul]	3.4.0cvs67
 
 	* src/Makefile.am
