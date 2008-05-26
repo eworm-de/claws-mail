@@ -3364,3 +3364,4 @@
 ( cvs diff -u -r 1.1.2.2 -r 1.1.2.3 src/pixmaps/insert_file.xpm;  ) > 3.4.0cvs66.patchset
 ( cvs diff -u -r 1.155.2.86 -r 1.155.2.87 src/Makefile.am;  cvs diff -u -r 1.25.2.56 -r 1.25.2.57 src/stock_pixmap.c;  cvs diff -u -r 1.18.2.35 -r 1.18.2.36 src/stock_pixmap.h;  cvs diff -u -r 1.43.2.100 -r 1.43.2.101 src/toolbar.c;  diff -u /dev/null src/pixmaps/cancel.xpm;  cvs diff -u -r 1.1.14.2 -r 1.1.14.3 src/pixmaps/close.xpm;  ) > 3.4.0cvs67.patchset
 ( cvs diff -u -r 1.20.2.61 -r 1.20.2.62 src/common/utils.h;  ) > 3.4.0cvs68.patchset
+( cvs diff -u -r 1.83.2.131 -r 1.83.2.132 src/mimeview.c;  ) > 3.4.0cvs69.patchset

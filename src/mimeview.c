@@ -1,6 +1,6 @@
 /*
  * Sylpheed -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 1999-2007 Hiroyuki Yamamoto and the Claws Mail team
+ * Copyright (C) 1999-2008 Hiroyuki Yamamoto and the Claws Mail team
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -1644,6 +1644,7 @@ static void mimeview_save_all(MimeView *mimeview)
 		alertpanel_error(_("'%s' is not a directory."),
 				 dirname);
 		g_free(startdir);
+		g_free(dirname);
 		return;
 	}
 
@@ -1677,6 +1678,7 @@ static void mimeview_save_all(MimeView *mimeview)
 	g_free(startdir);
 	prefs_common.attach_save_dir = g_filename_to_utf8(dirname,
 					-1, NULL, NULL, NULL);
+	g_free(dirname);
 }
 
 static MimeInfo *mimeview_get_part_to_use(MimeView *mimeview)
