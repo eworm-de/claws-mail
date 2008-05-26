@@ -1,3 +1,13 @@
+2008-05-26 [colin]	3.4.0cvs70
+
+	* src/mainwindow.c
+	* src/mainwindow.h
+		Define THEME_CHANGED_HOOKLIST and invoke
+		it on theme change
+	* src/plugins/trayicon/trayicon.c
+		Listen to THEME_CHANGED_HOOKLIST and
+		update accordingly
+
 2008-05-26 [paul]	3.4.0cvs69
 
 	* src/mimeview.c

@@ -2061,6 +2061,7 @@ static gboolean reflect_prefs_timeout_cb(gpointer data)
 			gtk_widget_show(pixmap);
 			mainwin->offline_pixmap = pixmap;
 #endif
+			hooks_invoke(THEME_CHANGED_HOOKLIST, NULL);
 		}
 		
 		headerview_set_font(mainwin->messageview->headerview);

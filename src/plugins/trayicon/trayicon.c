@@ -57,21 +57,22 @@ static guint offline_hook_id;
 static guint account_hook_id;
 static guint close_hook_id;
 static guint iconified_hook_id;
+static guint theme_hook_id;
 
-static GdkPixmap *newmail_pixmap[2];
-static GdkPixmap *newmail_bitmap[2];
-static GdkPixmap *unreadmail_pixmap[2];
-static GdkPixmap *unreadmail_bitmap[2];
-static GdkPixmap *newmarkedmail_pixmap[2];
-static GdkPixmap *newmarkedmail_bitmap[2];
-static GdkPixmap *unreadmarkedmail_pixmap[2];
-static GdkPixmap *unreadmarkedmail_bitmap[2];
-static GdkPixmap *nomail_pixmap[2];
-static GdkPixmap *nomail_bitmap[2];
+static GdkPixmap *newmail_pixmap[2] = {NULL, NULL};
+static GdkPixmap *newmail_bitmap[2] = {NULL, NULL};
+static GdkPixmap *unreadmail_pixmap[2] = {NULL, NULL};
+static GdkPixmap *unreadmail_bitmap[2] = {NULL, NULL};
+static GdkPixmap *newmarkedmail_pixmap[2] = {NULL, NULL};
+static GdkPixmap *newmarkedmail_bitmap[2] = {NULL, NULL};
+static GdkPixmap *unreadmarkedmail_pixmap[2] = {NULL, NULL};
+static GdkPixmap *unreadmarkedmail_bitmap[2] = {NULL, NULL};
+static GdkPixmap *nomail_pixmap[2] = {NULL, NULL};
+static GdkPixmap *nomail_bitmap[2] = {NULL, NULL};
 
 static EggTrayIcon *trayicon;
 static GtkWidget *eventbox;
-static GtkWidget *image;
+static GtkWidget *image = NULL;
 static GtkTooltips *tooltips;
 static GtkWidget *traymenu_popup;
 static GtkItemFactory *traymenu_factory;
@@ -349,15 +350,8 @@ static void destroy_cb(GtkWidget *widget, gpointer *data)
 	create_trayicon();
 }
 
-static void create_trayicon()
+static gboolean trayicon_update_theme(gpointer source, gpointer data)
 {
-	gint n_entries = 0;
-
-	trayicon = egg_tray_icon_new("Claws Mail");
-	gtk_widget_realize(GTK_WIDGET(trayicon));
-	gtk_window_set_default_size(GTK_WINDOW(trayicon), 16, 16);
-	gtk_container_set_border_width(GTK_CONTAINER(trayicon), 0);
-
 	stock_pixmap_gdk(GTK_WIDGET(trayicon), STOCK_PIXMAP_TRAY_NOMAIL, &nomail_pixmap[0], &nomail_bitmap[0]);
 	stock_pixmap_gdk(GTK_WIDGET(trayicon), STOCK_PIXMAP_TRAY_UNREADMAIL, &unreadmail_pixmap[0], &unreadmail_bitmap[0]);
 	stock_pixmap_gdk(GTK_WIDGET(trayicon), STOCK_PIXMAP_TRAY_NEWMAIL, &newmail_pixmap[0], &newmail_bitmap[0]);
@@ -370,6 +364,22 @@ static void create_trayicon()
 	stock_pixmap_gdk(GTK_WIDGET(trayicon), STOCK_PIXMAP_TRAY_UNREADMARKEDMAIL_OFFLINE, &unreadmarkedmail_pixmap[1], &unreadmarkedmail_bitmap[1]);
 	stock_pixmap_gdk(GTK_WIDGET(trayicon), STOCK_PIXMAP_TRAY_NEWMARKEDMAIL_OFFLINE, &newmarkedmail_pixmap[1], &newmarkedmail_bitmap[1]);
 
+	if (image != NULL)
+		update(NULL);
+
+	return FALSE;
+}
+
+static void create_trayicon()
+{
+	gint n_entries = 0;
+
+	trayicon = egg_tray_icon_new("Claws Mail");
+	gtk_widget_realize(GTK_WIDGET(trayicon));
+	gtk_window_set_default_size(GTK_WINDOW(trayicon), 16, 16);
+	gtk_container_set_border_width(GTK_CONTAINER(trayicon), 0);
+
+	trayicon_update_theme(NULL, NULL);
 
 	eventbox = gtk_event_box_new();
 	gtk_container_set_border_width(GTK_CONTAINER(eventbox), 0);
@@ -442,6 +452,12 @@ int plugin_init(gchar **error)
 		goto err_out_iconified;
 	}
 
+	theme_hook_id = hooks_register_hook(THEME_CHANGED_HOOKLIST, trayicon_update_theme, NULL);
+	if (theme_hook_id == -1) {
+		*error = g_strdup(_("Failed to register theme change hook"));
+		goto err_out_theme;
+	}
+
 	create_trayicon();
 	trayicon_set_accounts_hook(NULL, NULL);
 
@@ -457,6 +473,8 @@ int plugin_init(gchar **error)
 
 	return 0;
 
+err_out_theme:
+	hooks_unregister_hook(MAIN_WINDOW_GOT_ICONIFIED, iconified_hook_id);
 err_out_iconified:
 	hooks_unregister_hook(MAIN_WINDOW_CLOSE, close_hook_id);
 err_out_close:
@@ -481,6 +499,7 @@ gboolean plugin_done(void)
 	hooks_unregister_hook(ACCOUNT_LIST_CHANGED_HOOKLIST, account_hook_id);
 	hooks_unregister_hook(MAIN_WINDOW_CLOSE, close_hook_id);
 	hooks_unregister_hook(MAIN_WINDOW_GOT_ICONIFIED, iconified_hook_id);
+	hooks_unregister_hook(THEME_CHANGED_HOOKLIST, theme_hook_id);
 
 	if (claws_is_exiting())
 		return TRUE;
