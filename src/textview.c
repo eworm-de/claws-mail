@@ -879,7 +879,7 @@ void textview_show_mime_part(TextView *textview, MimeInfo *partinfo)
 		TEXTVIEW_INSERT(" (");
 		TEXTVIEW_INSERT(content_type);
 		TEXTVIEW_INSERT(", ");
-		TEXTVIEW_INSERT(to_human_readable(partinfo->length));
+		TEXTVIEW_INSERT(to_human_readable((goffset)partinfo->length));
 		TEXTVIEW_INSERT("):\n\n");
 		
 		g_free(content_type);

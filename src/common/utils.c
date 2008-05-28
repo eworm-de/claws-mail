@@ -323,7 +323,7 @@ gchar *itos(gint n)
 	d = (d*100) >> divisor;		\
 }
 
-gchar *to_human_readable(size_t size)
+gchar *to_human_readable(goffset size)
 {
 	static gchar str[14];
 	static gchar *b_format = NULL, *kb_format = NULL, 
@@ -335,20 +335,20 @@ gchar *to_human_readable(size_t size)
 		mb_format = _("%d.%02dMB");
 		gb_format = _("%.2fGB");
 	}
-
-	if (size < (size_t)1024) {
+	
+	if (size < (goffset)1024) {
 		g_snprintf(str, sizeof(str), b_format, (gint)size);
 		return str;
-	} else if (size >> 10 < (size_t)1024) {
+	} else if (size >> 10 < (goffset)1024) {
 		divide(size, 10, t, r);
 		g_snprintf(str, sizeof(str), kb_format, t, r);
 		return str;
-	} else if (size >> 20 < (size_t)1024) {
+	} else if (size >> 20 < (goffset)1024) {
 		divide(size, 20, t, r);
 		g_snprintf(str, sizeof(str), mb_format, t, r);
 		return str;
 	} else {
-		g_snprintf(str, sizeof(str), gb_format, (gfloat)(size) / (1 << 30));
+		g_snprintf(str, sizeof(str), gb_format, (gfloat)(size >> 30));
 		return str;
 	}
 }

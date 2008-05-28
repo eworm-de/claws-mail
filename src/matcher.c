@@ -1033,76 +1033,76 @@ gboolean matcherprop_match(MatcherProp *prop,
 	}
 	case MATCHCRITERIA_SIZE_GREATER:
 	{
-		/* FIXME: info->size is an off_t */
-		gboolean ret = (info->size > (off_t) prop->value);
+		/* FIXME: info->size is a goffset */
+		gboolean ret = (info->size > (goffset) prop->value);
 
 		/* debug output */
 		if (debug_filtering_session
 				&& prefs_common.filtering_debug_level >= FILTERING_DEBUG_LEVEL_HIGH) {
 			if (ret) {
 				log_print(LOG_DEBUG_FILTERING,
-						"message size [ %ld ] is greater than [ %d ]\n",
-						info->size, prop->value);
+						"message size is greater than [ %d ]\n",
+						prop->value);
 			} else {
 				log_print(LOG_DEBUG_FILTERING,
-						"message size [ %ld ] is not greater than [ %d ]\n",
-						info->size, prop->value);
+						"message size is not greater than [ %d ]\n",
+						prop->value);
 			}
 		}
 		return ret;
 	}
 	case MATCHCRITERIA_SIZE_SMALLER:
 	{
-		/* FIXME: info->size is an off_t */
-		gboolean ret = (info->size < (off_t) prop->value);
+		/* FIXME: info->size is a goffset */
+		gboolean ret = (info->size < (goffset) prop->value);
 
 		/* debug output */
 		if (debug_filtering_session
 				&& prefs_common.filtering_debug_level >= FILTERING_DEBUG_LEVEL_HIGH) {
 			if (ret) {
 				log_print(LOG_DEBUG_FILTERING,
-						"message size [ %ld ] is smaller than [ %d ]\n",
-						info->size, prop->value);
+						"message size is smaller than [ %d ]\n",
+						prop->value);
 			} else {
 				log_print(LOG_DEBUG_FILTERING,
-						"message size [ %ld ] is not smaller than [ %d ]\n",
-						info->size, prop->value);
+						"message size is not smaller than [ %d ]\n",
+						prop->value);
 			}
 		}
 		return ret;
 	}
 	case MATCHCRITERIA_SIZE_EQUAL:
 	{
-		/* FIXME: info->size is an off_t */
-		gboolean ret = (info->size == (off_t) prop->value);
+		/* FIXME: info->size is a goffset */
+		gboolean ret = (info->size == (goffset) prop->value);
 
 		/* debug output */
 		if (debug_filtering_session
 				&& prefs_common.filtering_debug_level >= FILTERING_DEBUG_LEVEL_HIGH) {
 			if (ret) {
 				log_print(LOG_DEBUG_FILTERING,
-						"message size [ %ld ] is equal to [ %d ]\n",
-						info->size, prop->value);
+						"message size is equal to [ %d ]\n",
+						prop->value);
 			} else {
 				log_print(LOG_DEBUG_FILTERING,
-						"message size [ %ld ] is not equal to [ %d ]\n",
-						info->size, prop->value);
+						"message size is not equal to [ %d ]\n",
+						prop->value);
 			}
 		}
 		return ret;
 	}
 	case MATCHCRITERIA_PARTIAL:
 	{
-		/* FIXME: info->size is an off_t */
-		gboolean ret = (info->total_size != 0 && info->size != (off_t)info->total_size);
+		/* FIXME: info->size is a goffset */
+		gboolean ret = (info->total_size != 0 && info->size != (goffset)info->total_size);
 
 		/* debug output */
 		if (debug_filtering_session
 				&& prefs_common.filtering_debug_level >= FILTERING_DEBUG_LEVEL_HIGH) {
 			if (ret) {
 				log_print(LOG_DEBUG_FILTERING,
-						"message is partially downloaded, size [ %ld ] is less than total size [ %d ])\n",
-						info->size, info->total_size);
+						"message is partially downloaded, size is less than total size [ %d ])\n",
+						info->total_size);
 			} else {
 				log_print(LOG_DEBUG_FILTERING,
 						"message is not partially downloaded\n");
@@ -1112,8 +1112,8 @@ gboolean matcherprop_match(MatcherProp *prop,
 	}
 	case MATCHCRITERIA_NOT_PARTIAL:
 	{
-		/* FIXME: info->size is an off_t */
-		gboolean ret = (info->total_size == 0 || info->size == (off_t)info->total_size);
+		/* FIXME: info->size is a goffset */
+		gboolean ret = (info->total_size == 0 || info->size == (goffset)info->total_size);
 
 		/* debug output */
 		if (debug_filtering_session
@@ -1123,8 +1123,8 @@ gboolean matcherprop_match(MatcherProp *prop,
 						"message is not partially downloaded\n");
 			} else {
 				log_print(LOG_DEBUG_FILTERING,
-						"message is partially downloaded, size [ %ld ] is less than total size [ %d ])\n",
-						info->size, info->total_size);
+						"message is partially downloaded, size is less than total size [ %d ])\n",
+						info->total_size);
 			}
 		}
 		return ret;

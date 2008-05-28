@@ -109,6 +109,7 @@ GCRY_THREAD_OPTION_PTHREAD_IMPL;
 #include "news_gtk.h"
 #include "matcher.h"
 #include "tags.h"
+
 #ifdef HAVE_LIBETPAN
 #include "imap-thread.h"
 #include "nntp-thread.h"
@@ -934,9 +935,9 @@ int main(int argc, char *argv[])
 	gint num_folder_class = 0;
 	gboolean asked_for_migration = FALSE;
 	gboolean start_done = TRUE;
-
-	START_TIMING("startup");
 	
+	START_TIMING("startup");
+
 	sc_starting = TRUE;
 
 #ifdef G_OS_WIN32

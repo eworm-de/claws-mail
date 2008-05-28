@@ -1514,7 +1514,7 @@ static void messageview_show_partial_display_cb(NoticeView *noticeview, MessageV
 void messageview_show_partial_display(MessageView *messageview, MsgInfo *msginfo,
 					     size_t length)
 {
-	gchar *msg = g_strdup_printf(_("Show all %s."), to_human_readable(length));
+	gchar *msg = g_strdup_printf(_("Show all %s."), to_human_readable((goffset)length));
 	noticeview_set_icon(messageview->noticeview, STOCK_PIXMAP_NOTICE_WARN);
 	noticeview_set_text(messageview->noticeview, _("Only the first megabyte of text is shown."));
 	noticeview_set_button_text(messageview->noticeview, msg);
@@ -1608,7 +1608,7 @@ static void partial_recv_show(NoticeView *noticeview, MsgInfo *msginfo)
 			text = g_strdup_printf(_("This message has been "
 					"partially retrieved;\nit is %s."),
 					to_human_readable(
-						(off_t)(msginfo->total_size)));
+						(goffset)(msginfo->total_size)));
 			button1 = _("Mark for download");
 			button2 = _("Mark for deletion");
 			button1_cb = partial_recv_dload_clicked;
@@ -1619,7 +1619,7 @@ static void partial_recv_show(NoticeView *noticeview, MsgInfo *msginfo)
 					"partially retrieved;\nit is %s and "
 					"will be downloaded."),
 					to_human_readable(
-						(off_t)(msginfo->total_size)));
+						(goffset)(msginfo->total_size)));
 			button1 = _("Unmark");
 			button1_cb = partial_recv_unmark_clicked;
 			button2 = _("Mark for deletion");
@@ -1630,7 +1630,7 @@ static void partial_recv_show(NoticeView *noticeview, MsgInfo *msginfo)
 					"partially retrieved;\nit is %s and "
 					"will be deleted."),
 					to_human_readable(
-						(off_t)(msginfo->total_size)));
+						(goffset)(msginfo->total_size)));
 			button1 = _("Mark for download");
 			button1_cb = partial_recv_dload_clicked;
 			button2 = _("Unmark");

@@ -71,21 +71,6 @@ gint g_chmod	(const gchar	*path,
 
 #endif /* !GLIB_CHECK_VERSION */
 
-/* The AC_CHECK_SIZEOF() in configure fails for some machines.
- * we provide some fallback values here */
-#if !SIZEOF_UNSIGNED_SHORT
-  #undef SIZEOF_UNSIGNED_SHORT
-  #define SIZEOF_UNSIGNED_SHORT 2
-#endif
-#if !SIZEOF_UNSIGNED_INT
-  #undef SIZEOF_UNSIGNED_INT
-  #define SIZEOF_UNSIGNED_INT 4
-#endif
-#if !SIZEOF_UNSIGNED_LONG
-  #undef SIZEOF_UNSIGNED_LONG
-  #define SIZEOF_UNSIGNED_LONG 4
-#endif
-
 #ifndef HAVE_U32_TYPEDEF
   #undef u32	    /* maybe there is a macro with this name */
   typedef guint32 u32;
@@ -243,7 +228,7 @@ gint to_number			(const gchar *nstr);
 gchar *itos_buf			(gchar	     *nstr,
 				 gint	      n);
 gchar *itos			(gint	      n);
-gchar *to_human_readable	(size_t	      size);
+gchar *to_human_readable	(goffset      size);
 
 /* alternative string functions */
 gint strcmp2		(const gchar	*s1,

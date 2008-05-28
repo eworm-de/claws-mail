@@ -763,7 +763,7 @@ static gchar *prefs_themes_get_theme_stats(const gchar *dirname)
 	
 	prefs_themes_foreach_file(dirname, prefs_themes_file_stats, dinfo);
 	stats = g_strdup_printf(_("%d files (%d icons), size: %s"), 
-				dinfo->files, dinfo->pixms, to_human_readable(dinfo->bytes));
+				dinfo->files, dinfo->pixms, to_human_readable((goffset)dinfo->bytes));
 	
 	g_free(dinfo);
 	return stats;

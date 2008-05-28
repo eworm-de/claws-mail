@@ -586,7 +586,7 @@ static GtkCTreeNode *mimeview_append_part(MimeView *mimeview,
 	}
 
 	str[COL_MIMETYPE] = content_type;
-	str[COL_SIZE] = to_human_readable(partinfo->length);
+	str[COL_SIZE] = to_human_readable((goffset)partinfo->length);
 	if (prefs_common.attach_desc)
 		str[COL_NAME] = (gchar *) get_part_description(partinfo);
 	else
@@ -2245,7 +2245,7 @@ static void icon_list_append_icon (MimeView *mimeview, MimeInfo *mimeinfo)
 						     mimeinfo->subtype);
 
 	tip = g_strjoin("\n", content_type,
-			to_human_readable(mimeinfo->length), NULL);
+			to_human_readable((goffset)mimeinfo->length), NULL);
 	g_free(content_type);
 	if (desc && *desc) {
 		gchar *tmp = NULL;

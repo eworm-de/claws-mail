@@ -2443,7 +2443,7 @@ static void summary_status_show(SummaryView *summaryview)
 	GList *rowlist, *cur;
 	guint n_selected = 0, n_new = 0, n_unread = 0, n_total = 0;
 	guint n_marked = 0, n_replied = 0, n_forwarded = 0, n_locked = 0, n_ignored = 0, n_watched = 0;
-	off_t sel_size = 0, n_size = 0;
+	goffset sel_size = 0, n_size = 0;
 	MsgInfo *msginfo;
 	gchar *name;
 #if GTK_CHECK_VERSION(2, 12, 0)
@@ -2538,7 +2538,7 @@ static void summary_status_show(SummaryView *summaryview)
 		spc = "";
 
 	if (n_selected) {
-		sel = g_strdup_printf(" (%s)", to_human_readable(sel_size));
+		sel = g_strdup_printf(" (%s)", to_human_readable((goffset)sel_size));
 		if (n_selected == 1)
 			itstr = g_strdup(_(" item selected"));
 		else
@@ -2562,7 +2562,7 @@ static void summary_status_show(SummaryView *summaryview)
 
 		str = g_strdup_printf(_("%d new, %d unread, %d total (%s)"),
 					      n_new, n_unread, n_total,
-					      to_human_readable(n_size));
+					      to_human_readable((goffset)n_size));
 
 
 		gtk_label_set_text(GTK_LABEL(summaryview->statlabel_msgs), str);
@@ -2580,7 +2580,7 @@ static void summary_status_show(SummaryView *summaryview)
 					    "<b>Ignored:</b> %d\n"
 					    "<b>Watched:</b> %d"),
 					      n_new, n_unread, n_total,
-					      to_human_readable(n_size),
+					      to_human_readable((goffset)n_size),
 					      n_marked,n_replied,n_forwarded,
 					      n_locked,n_ignored,n_watched);
 
@@ -2591,15 +2591,15 @@ static void summary_status_show(SummaryView *summaryview)
 	} else {
 		gchar *ssize, *tsize;
 		if (n_selected) {
-			ssize = g_strdup(to_human_readable(sel_size));
-			tsize = g_strdup(to_human_readable(n_size));
+			ssize = g_strdup(to_human_readable((goffset)sel_size));
+			tsize = g_strdup(to_human_readable((goffset)n_size));
 			str = g_strdup_printf(_("%d/%d selected (%s/%s), %d unread"),
 				n_selected, n_total, ssize, tsize, n_unread);
 			g_free(ssize);
 			g_free(tsize);
 		} else
 			str = g_strdup_printf(_("%d new, %d unread, %d total (%s)"),
-				n_new, n_unread, n_total, to_human_readable(n_size));
+				n_new, n_unread, n_total, to_human_readable((goffset)n_size));
 		g_free(sel);
 		g_free(del);
 		g_free(mv);
@@ -4205,7 +4205,7 @@ void summary_delete(SummaryView *summaryview)
 		GtkCTreeNode *row = GTK_CTREE_NODE(cur->data);
 		msginfo = gtk_ctree_node_get_row_data(ctree, row);
 		if (msginfo && msginfo->total_size != 0 && 
-		    msginfo->size != (off_t)msginfo->total_size)
+		    msginfo->size != (goffset)msginfo->total_size)
 			partial_mark_for_delete(msginfo);
 	}
 

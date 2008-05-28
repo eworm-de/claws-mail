@@ -153,7 +153,7 @@ struct _SummaryView
 
 	/* current message status */
 	gint   unreadmarked;
-	off_t  total_size;
+	goffset total_size;
 	gint   deleted;
 	gint   moved;
 	gint   copied;

@@ -3544,8 +3544,8 @@ static gboolean compose_attach_append(Compose *compose, const gchar *file,
 		ainfo->content_type = g_strdup("application/octet-stream");
 	}
 
-	ainfo->size = size;
-	size_text = to_human_readable(size);
+	ainfo->size = (goffset)size;
+	size_text = to_human_readable((goffset)size);
 
 	store = GTK_LIST_STORE(gtk_tree_view_get_model
 			(GTK_TREE_VIEW(compose->attach_clist)));
@@ -8033,7 +8033,7 @@ static void compose_attach_property(Compose *compose)
 			ainfo->file = file;
 		}
 		if (size)
-			ainfo->size = size;
+			ainfo->size = (goffset)size;
 
 		/* update tree store */
 		text = to_human_readable(ainfo->size);
@@ -8923,7 +8923,7 @@ warn_err:
 		procmsg_msginfo_free(compose->targetinfo);
 		compose->targetinfo = procmsg_msginfo_new();
 		compose->targetinfo->msgnum = msgnum;
-		compose->targetinfo->size = s.st_size;
+		compose->targetinfo->size = (goffset)s.st_size;
 		compose->targetinfo->mtime = s.st_mtime;
 		compose->targetinfo->folder = draft;
 		if (target_locked)

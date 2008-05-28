@@ -5127,7 +5127,7 @@ static MsgInfo *imap_envelope_from_lep(struct imap_fetch_env_info * info,
 {
 	MsgInfo *msginfo = NULL;
 	guint32 uid = 0;
-	size_t size = 0;
+	goffset size = 0;
 	MsgFlags flags = {0, 0};
 	
 	if (info->headers == NULL)
@@ -5142,7 +5142,7 @@ static MsgInfo *imap_envelope_from_lep(struct imap_fetch_env_info * info,
 	flags.perm_flags = info->flags;
 	
 	uid = info->uid;
-	size = info->size;
+	size = (goffset) info->size;
 	msginfo = procheader_parse_str(info->headers, flags, FALSE, FALSE);
 	
 	if (msginfo) {

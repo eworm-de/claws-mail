@@ -1,3 +1,27 @@
+2008-05-28 [colin]	3.4.0cvs71
+
+	* src/compose.c
+	* src/compose.h
+	* src/grouplistdialog.c
+	* src/image_viewer.c
+	* src/imap.c
+	* src/inc.c
+	* src/main.c
+	* src/matcher.c
+	* src/messageview.c
+	* src/mimeview.c
+	* src/prefs_themes.c
+	* src/procmsg.h
+	* src/summaryview.c
+	* src/summaryview.h
+	* src/textview.c
+	* src/common/smtp.c
+	* src/common/utils.c
+	* src/common/utils.h
+		Use goffset instead of off_t for MsgInfo's size
+		Allows using MsgInfo structure from plugins
+		compiled with largefile support
+
 2008-05-26 [colin]	3.4.0cvs70
 
 	* src/mainwindow.c

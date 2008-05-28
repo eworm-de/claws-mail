@@ -205,7 +205,7 @@ struct _MsgInfo
 	guint refcnt;
 
 	guint  msgnum;
-	off_t  size;
+	goffset  size;
 	time_t mtime;
 	time_t date_t;
 	time_t thread_date;

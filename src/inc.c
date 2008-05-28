@@ -627,7 +627,7 @@ static gint inc_start(IncProgressDialog *inc_dialog)
 						 "Done (%d messages (%s) received)",
 					 pop3_session->cur_total_num),
 					 pop3_session->cur_total_num,
-					 to_human_readable(pop3_session->cur_total_recv_bytes));
+					 to_human_readable((goffset)pop3_session->cur_total_recv_bytes));
 			else
 				msg = g_strdup_printf(_("Done (no new messages)"));
 			SET_PIXMAP_AND_TEXT(okpix, msg);
@@ -968,11 +968,11 @@ static void inc_progress_dialog_set_progress(IncProgressDialog *inc_dialog,
 	if (pop3_session->state == POP3_RETR ||
 	    pop3_session->state == POP3_RETR_RECV ||
 	    pop3_session->state == POP3_DELETE) {
-		Xstrdup_a(total_size_str, to_human_readable(total), return);
+		Xstrdup_a(total_size_str, to_human_readable((goffset)total), return);
 		g_snprintf(buf, sizeof(buf),
 			   _("Retrieving message (%d / %d) (%s / %s)"),
 			   pop3_session->cur_msg, pop3_session->count,
-			   to_human_readable(cur_total), total_size_str);
+			   to_human_readable((goffset)cur_total), total_size_str);
 		progress_dialog_set_label(inc_dialog->dialog, buf);
 	}
 
@@ -994,7 +994,7 @@ static void inc_progress_dialog_set_progress(IncProgressDialog *inc_dialog,
 				    pop3_session->cur_total_num),
 			   pop3_session->cur_total_num,
 			   to_human_readable
-			   (pop3_session->cur_total_recv_bytes));
+			   ((goffset)pop3_session->cur_total_recv_bytes));
 		progress_dialog_list_set_status(inc_dialog->dialog,
 						inc_dialog->cur_row,
 						buf);
