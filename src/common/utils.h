@@ -71,6 +71,13 @@ gint g_chmod	(const gchar	*path,
 
 #endif /* !GLIB_CHECK_VERSION */
 
+/* why is this sometimes undefined !? */
+#ifndef G_MAXOFFSET
+typedef gint64 goffset;
+#define G_MINOFFSET	G_MININT64
+#define G_MAXOFFSET	G_MAXINT64
+#endif
+
 #ifndef HAVE_U32_TYPEDEF
   #undef u32	    /* maybe there is a macro with this name */
   typedef guint32 u32;

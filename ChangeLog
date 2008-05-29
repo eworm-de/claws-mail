@@ -1,3 +1,9 @@
+2008-05-29 [colin]	3.4.0cvs72
+
+	* src/common/utils.h
+		Workaround a stupid Glib issue, where
+		goffset happens to be undefined. 
+
 2008-05-28 [colin]	3.4.0cvs71
 
 	* src/compose.c
