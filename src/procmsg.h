@@ -29,6 +29,7 @@
 #include <time.h>
 #include <sys/types.h>
 #include <string.h>
+#include "utils.h"
 
 typedef struct _MsgInfo			MsgInfo;
 typedef struct _MsgFlags		MsgFlags;
