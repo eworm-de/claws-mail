@@ -58,10 +58,10 @@
 	  <row><entry><option>Ctrl+f</option></entry><entry>Find in current message...</entry></row>
 	  <row><entry><option>Shift+Ctrl+f</option></entry><entry>Search folder...</entry></row>
 	  <row><entry><option>Ctrl+t</option></entry><entry>Toggle threaded display</entry></row>
-          <row><entry><option>n</option></entry><entry>Goes to next mail in Message List. The <option>Down</option> arrow does the same.</entry></row>
-          <row><entry><option>p</option></entry><entry>Goes to previous mail. The <option>Up</option> arrow is a synonym.</entry></row>
-	  <row><entry><option>Shift+n</option></entry><entry>Goes to next unread mail.</entry></row>
-          <row><entry><option>Shift+p</option></entry><entry>Goes to previous unread mail.</entry></row>
+          <row><entry><option>n</option></entry><entry>Go to next mail in Message List. The <option>Down</option> arrow does the same.</entry></row>
+          <row><entry><option>p</option></entry><entry>Go to previous mail. The <option>Up</option> arrow is a synonym.</entry></row>
+	  <row><entry><option>Shift+n</option></entry><entry>Go to next unread mail.</entry></row>
+          <row><entry><option>Shift+p</option></entry><entry>Go to previous unread mail.</entry></row>
 	  <row><entry><option>g</option></entry><entry>Go to other folder...</entry></row>
 	  <row><entry><option>Ctrl+u</option></entry><entry>Show message source</entry></row>
 	  <row><entry><option>Ctrl+h</option></entry><entry>Show all message headers</entry></row>
