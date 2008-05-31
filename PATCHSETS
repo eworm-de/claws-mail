@@ -3371,3 +3371,4 @@
 ( cvs diff -u -r 1.60.2.53 -r 1.60.2.54 src/procmsg.h;  ) > 3.4.0cvs73.patchset
 ( cvs diff -u -r 1.1.2.10 -r 1.1.2.11 manual/keyboard.xml;  ) > 3.4.0cvs74.patchset
 ( cvs diff -u -r 1.179.2.223 -r 1.179.2.224 src/imap.c;  ) > 3.4.0cvs75.patchset
+( cvs diff -u -r 1.179.2.224 -r 1.179.2.225 src/imap.c;  ) > 3.4.0cvs76.patchset

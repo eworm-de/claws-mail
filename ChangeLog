@@ -1,3 +1,8 @@
+2008-05-31 [colin]	3.4.0cvs76
+
+	* src/imap.c
+		Fix login issue introduced in cvs75.
+
 2008-05-31 [colin]	3.4.0cvs75
 
 	* src/imap.c

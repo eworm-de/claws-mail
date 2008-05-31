@@ -817,7 +817,7 @@ static gboolean imap_has_capability(IMAPSession *session, const gchar *cap)
 static gint imap_auth(IMAPSession *session, const gchar *user, const gchar *pass,
 		      IMAPAuthType type)
 {
-	gint ok = MAILIMAP_ERROR_BAD_STATE;
+	gint ok = MAILIMAP_ERROR_LOGIN;
 	static time_t last_login_err = 0;
 	gchar *ext_info = "";
 	int r;
@@ -3449,11 +3449,11 @@ static gint imap_cmd_login(IMAPSession *session,
 					"has been compiled without OpenSSL "
 					"support.\n"),
 					SESSION(session)->server);
-			return MAILIMAP_ERROR_BAD_STATE;
+			return MAILIMAP_ERROR_LOGIN;
 #endif
 		} else {
 			log_error(LOG_PROTOCOL, _("Server logins are disabled.\n"));
-			return MAILIMAP_ERROR_BAD_STATE;
+			return MAILIMAP_ERROR_LOGIN;
 		}
 	}
 
