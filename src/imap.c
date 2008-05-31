@@ -311,10 +311,12 @@ static void	imap_commit_tags	(FolderItem 	*item,
 
 static gchar imap_get_path_separator		(IMAPSession	*session,
 						 IMAPFolder	*folder,
-						 const gchar	*path);
+						 const gchar	*path,
+						 gint		*ok);
 static gchar *imap_get_real_path		(IMAPSession	*session,
 						 IMAPFolder	*folder,
-						 const gchar	*path);
+						 const gchar	*path,
+						 gint		*ok);
 #ifdef HAVE_LIBETPAN
 static void imap_synchronise		(FolderItem	*item, gint days);
 #endif
@@ -533,11 +535,9 @@ static void imap_disc_session_destroy(IMAPSession *session)
 		return;
 	if (!session)
 		return;
-	rfolder->session = NULL;
 	log_warning(LOG_PROTOCOL, _("IMAP4 connection broken\n"));
 	SESSION(session)->state = SESSION_DISCONNECTED;
 	SESSION(session)->sock = NULL;
-	session_destroy(SESSION(session));
 }
 
 static gboolean is_fatal(int libetpan_errcode)
@@ -782,8 +782,7 @@ static int imap_get_capabilities(IMAPSession *session)
 	capabilities = imap_threaded_capability(session->folder, &result);
 
 	if (result != MAILIMAP_NO_ERROR) {
-		imap_handle_error(SESSION(session), result);
-		return MAILIMAP_ERROR_CAPABILITY;
+		return result;
 	}
 
 	if (capabilities == NULL) {
@@ -822,10 +821,12 @@ static gint imap_auth(IMAPSession *session, const gchar *user, const gchar *pass
 	static time_t last_login_err = 0;
 	gchar *ext_info = "";
 	int r;
+	gchar *server = NULL;
 	if ((r = imap_get_capabilities(session)) != MAILIMAP_NO_ERROR) {
 		imap_handle_error(SESSION(session), r);
 		return r;
 	}
+	server = g_strdup(SESSION(session)->server);
 	switch(type) {
 	case IMAP_AUTH_ANON:
 		ok = imap_cmd_login(session, user, pass, "ANONYMOUS");
@@ -856,14 +857,11 @@ static gint imap_auth(IMAPSession *session, const gchar *user, const gchar *pass
 			imap_has_capability(session, "GSSAPI"));
 		if (imap_has_capability(session, "CRAM-MD5"))
 			ok = imap_cmd_login(session, user, pass, "CRAM-MD5");
-		if ((ok == MAILIMAP_ERROR_BAD_STATE ||
-		     ok == MAILIMAP_ERROR_LOGIN) && imap_has_capability(session, "DIGEST-MD5"))
+		if (ok == MAILIMAP_ERROR_LOGIN && imap_has_capability(session, "DIGEST-MD5"))
 			ok = imap_cmd_login(session, user, pass, "DIGEST-MD5");
-		if ((ok == MAILIMAP_ERROR_BAD_STATE ||
-		     ok == MAILIMAP_ERROR_LOGIN) && imap_has_capability(session, "GSSAPI"))
+		if (ok == MAILIMAP_ERROR_LOGIN && imap_has_capability(session, "GSSAPI"))
 			ok = imap_cmd_login(session, user, pass, "GSSAPI");
-		if (ok == MAILIMAP_ERROR_BAD_STATE||
-		    ok == MAILIMAP_ERROR_LOGIN) /* we always try LOGIN before giving up */
+		if (ok == MAILIMAP_ERROR_LOGIN) /* we always try LOGIN before giving up */
 			ok = imap_cmd_login(session, user, pass, "LOGIN");
 	}
 
@@ -886,15 +884,16 @@ static gint imap_auth(IMAPSession *session, const gchar *user, const gchar *pass
 			if (!prefs_common.no_recv_err_panel) {
 				alertpanel_error_log(_("Connection to %s failed: "
 					"login refused.%s"),
-					SESSION(session)->server, ext_info);
+					server, ext_info);
 			} else {
 				log_error(LOG_PROTOCOL, _("Connection to %s failed: "
 					"login refused.%s\n"),
-					SESSION(session)->server, ext_info);
+					server, ext_info);
 			}
 		}
 		last_login_err = time(NULL);
 	}
+	g_free(server);
 	return ok;
 }
 
@@ -951,12 +950,17 @@ static IMAPSession *imap_session_get(Folder *folder)
 	}
 
 	/* Make sure we have a session */
-	if (rfolder->session != NULL) {
+	if (rfolder->session != NULL && rfolder->session->state != SESSION_DISCONNECTED) {
 		session = IMAP_SESSION(rfolder->session);
+	} else if (rfolder->session != NULL && rfolder->session->state == SESSION_DISCONNECTED) {
+		session_destroy(SESSION(rfolder->session));
+		rfolder->session = NULL;
+		goto new_conn;
 	} else if (rfolder->connecting) {
 		debug_print("already connecting\n");
 		return NULL;
 	} else {
+new_conn:
 		imap_reset_uid_lists(folder);
 		if (time(NULL) - rfolder->last_failure <= 2)
 			return NULL;
@@ -1181,7 +1185,7 @@ try_again:
 			goto try_again;
 		} else {
 			if (prefs_common.no_recv_err_panel) {
-				log_error(LOG_PROTOCOL, _("Couldn't login to IMAP server %s."), account->recv_server);
+				log_error(LOG_PROTOCOL, _("Couldn't login to IMAP server %s.\n"), account->recv_server);
 				mainwindow_show_error();
 			} else
 				alertpanel_error_log(_("Couldn't login to IMAP server %s."), account->recv_server);
@@ -1282,7 +1286,6 @@ static void imap_commit_tags(FolderItem *item, MsgInfo *msginfo, GSList *tags_se
 			 NULL, NULL, NULL, NULL, &can_create_tags, FALSE);
 
 	if (ok != MAILIMAP_NO_ERROR) {
-		imap_handle_error(SESSION(session), ok);
 		return;
 	}
 
@@ -1576,8 +1579,9 @@ static gint imap_add_msgs(Folder *folder, FolderItem *dest, GSList *file_list,
 	if (!session) {
 		return -1;
 	}
-	destdir = imap_get_real_path(session, IMAP_FOLDER(folder), dest->path);
-
+	destdir = imap_get_real_path(session, IMAP_FOLDER(folder), dest->path, &ok);
+	if (is_fatal(ok))
+		return -1;
 	statusbar_print_all(_("Adding messages..."));
 	total = g_slist_length(file_list);
 	for (cur = file_list; cur != NULL; cur = cur->next) {
@@ -1766,7 +1770,11 @@ static gint imap_do_copy_msgs(Folder *folder, FolderItem *dest,
 
 	unlock_session(session);
 
-	destdir = imap_get_real_path(session, IMAP_FOLDER(folder), dest->path);
+	destdir = imap_get_real_path(session, IMAP_FOLDER(folder), dest->path, &ok);
+
+	if (is_fatal(ok))
+		return ok;
+
 	seq_list = imap_get_lep_set_from_msglist(IMAP_FOLDER(folder), msglist);
 	uid_mapping = g_relation_new(2);
 	g_relation_index(uid_mapping, 0, g_direct_hash, g_direct_equal);
@@ -1946,7 +1954,9 @@ static gint imap_do_remove_msgs(Folder *folder, FolderItem *dest,
 		return ok;
 	}
 
-	destdir = imap_get_real_path(session, IMAP_FOLDER(folder), dest->path);
+	destdir = imap_get_real_path(session, IMAP_FOLDER(folder), dest->path, &ok);
+	if (is_fatal(ok))
+		return ok;
 	for (cur = msglist; cur; cur = cur->next) {
 		msginfo = (MsgInfo *)cur->data;
 		if (!MSG_IS_DELETED(msginfo->flags))
@@ -2061,11 +2071,15 @@ static gint imap_scan_tree_real(Folder *folder, gboolean subs_only)
 		extract_quote(root_folder, '"');
 		subst_char(root_folder,
 			   imap_get_path_separator(session, IMAP_FOLDER(folder),
-						   root_folder),
+						   root_folder, &r),
 			   '/');
+		if (is_fatal(r))
+			return -1;
 		strtailchomp(root_folder, '/');
 		real_path = imap_get_real_path
-			(session, IMAP_FOLDER(folder), root_folder);
+			(session, IMAP_FOLDER(folder), root_folder, &r);
+		if (is_fatal(r))
+			return -1;
 		debug_print("IMAP root directory: %s\n", real_path);
 
 		/* check if root directory exist */
@@ -2141,7 +2155,9 @@ static gint imap_scan_tree_recursive(IMAPSession *session, FolderItem *item, gbo
 	folder = item->folder;
 	imapfolder = IMAP_FOLDER(folder);
 
-	separator = imap_get_path_separator(session, imapfolder, item->path);
+	separator = imap_get_path_separator(session, imapfolder, item->path, &r);
+	if (is_fatal(r))
+		return r;
 
 	if (folder->ui_func)
 		folder->ui_func(folder, item, folder->ui_func_data);
@@ -2150,7 +2166,9 @@ static gint imap_scan_tree_recursive(IMAPSession *session, FolderItem *item, gbo
 		wildcard[0] = separator;
 		wildcard[1] = '%';
 		wildcard[2] = '\0';
-		real_path = imap_get_real_path(session, imapfolder, item->path);
+		real_path = imap_get_real_path(session, imapfolder, item->path, &r);
+		if (is_fatal(r))
+			return r;
 	} else {
 		wildcard[0] = '%';
 		wildcard[1] = '\0';
@@ -2169,6 +2187,7 @@ static gint imap_scan_tree_recursive(IMAPSession *session, FolderItem *item, gbo
 	if (r != MAILIMAP_NO_ERROR) {
 		imap_handle_error(SESSION(session), r);
 		item_list = NULL;
+		return r;
 	}
 	else {
 		item_list = imap_list_from_lep(imapfolder,
@@ -2282,13 +2301,17 @@ GList *imap_scan_subtree(Folder *folder, FolderItem *item, gboolean unsubs_only,
 	if (!session)
 		return NULL;
 
-	separator = imap_get_path_separator(session, IMAP_FOLDER(folder), item->path);
+	separator = imap_get_path_separator(session, IMAP_FOLDER(folder), item->path, &r);
+	if (is_fatal(r))
+		return NULL;
 
 	if (item->path) {
 		wildcard[0] = separator;
 		wildcard[1] = '%';
 		wildcard[2] = '\0';
-		real_path = imap_get_real_path(session, IMAP_FOLDER(folder), item->path);
+		real_path = imap_get_real_path(session, IMAP_FOLDER(folder), item->path, &r);
+		if (is_fatal(r))
+			return NULL;
 	} else {
 		wildcard[0] = '%';
 		wildcard[1] = '\0';
@@ -2325,8 +2348,11 @@ GList *imap_scan_subtree(Folder *folder, FolderItem *item, gboolean unsubs_only,
 		}
 		child_list = g_list_prepend(child_list,
 				imap_get_real_path(session, 
-					IMAP_FOLDER(folder), cur_item->path));
-		
+					IMAP_FOLDER(folder), cur_item->path, &r));
+		if (is_fatal(r)) {
+			statusbar_pop_all();
+			return NULL;
+		}
 		folder_item_destroy(cur_item);
 	}
 	child_list = g_list_reverse(child_list);
@@ -2346,7 +2372,11 @@ GList *imap_scan_subtree(Folder *folder, FolderItem *item, gboolean unsubs_only,
 			FolderItem *cur_item = FOLDER_ITEM(cur->data);
 			GList *oldlitem = NULL;
 			gchar *tmp = imap_get_real_path(session, 
-					IMAP_FOLDER(folder), cur_item->path);
+					IMAP_FOLDER(folder), cur_item->path, &r);
+			if (r) {
+				statusbar_pop_all();
+				return NULL;
+			}
 			folder_item_destroy(cur_item);
 			oldlitem = g_list_find_custom(
 					child_list, tmp, (GCompareFunc)strcmp2);
@@ -2525,7 +2555,9 @@ static FolderItem *imap_create_folder(Folder *folder, FolderItem *parent,
 		g_free(dirpath); 
 		return NULL;});
 
-	separator = imap_get_path_separator(session, IMAP_FOLDER(folder), imap_path);
+	separator = imap_get_path_separator(session, IMAP_FOLDER(folder), imap_path, &ok);
+	if (is_fatal(ok))
+		return NULL;
 	imap_path_separator_subst(imap_path, separator);
 	/* remove trailing / for display */
 	strtailchomp(new_name, '/');
@@ -2643,13 +2675,17 @@ static gint imap_rename_folder(Folder *folder, FolderItem *item,
 		return -1;
 	}
 
-	if (strchr(name, imap_get_path_separator(session, IMAP_FOLDER(folder), item->path)) != NULL) {
+	if (strchr(name, imap_get_path_separator(session, IMAP_FOLDER(folder), item->path, &ok)) != NULL ||
+		is_fatal(ok)) {
 		g_warning(_("New folder name must not contain the namespace "
 			    "path separator"));
 		return -1;
 	}
 
-	real_oldpath = imap_get_real_path(session, IMAP_FOLDER(folder), item->path);
+	real_oldpath = imap_get_real_path(session, IMAP_FOLDER(folder), item->path, &ok);
+	if (is_fatal(ok)) {
+		return -1;
+	}
 
 	g_free(session->mbox);
 	session->mbox = NULL;
@@ -2663,7 +2699,9 @@ static gint imap_rename_folder(Folder *folder, FolderItem *item,
 		return -1;
 	}
 
-	separator = imap_get_path_separator(session, IMAP_FOLDER(folder), item->path);
+	separator = imap_get_path_separator(session, IMAP_FOLDER(folder), item->path, &ok);
+	if (is_fatal(ok))
+		return -1;
 	if (strchr(item->path, G_DIR_SEPARATOR)) {
 		dirpath = g_path_get_dirname(item->path);
 		newpath = g_strconcat(dirpath, G_DIR_SEPARATOR_S, name, NULL);
@@ -2721,8 +2759,8 @@ gint imap_subscribe(Folder *folder, FolderItem *item, gchar *rpath, gboolean sub
 		return -1;
 	}
 	if (item && item->path) {
-		path = imap_get_real_path(session, IMAP_FOLDER(folder), item->path);
-		if (!path)
+		path = imap_get_real_path(session, IMAP_FOLDER(folder), item->path, &r);
+		if (!path || is_fatal(r))
 			return -1;
 		if (!strcmp(path, "INBOX") && sub == FALSE)
 			return -1;
@@ -2753,7 +2791,9 @@ static gint imap_remove_folder_real(Folder *folder, FolderItem *item)
 	if (!session) {
 		return -1;
 	}
-	path = imap_get_real_path(session, IMAP_FOLDER(folder), item->path);
+	path = imap_get_real_path(session, IMAP_FOLDER(folder), item->path, &ok);
+	if (is_fatal(ok))
+		return -1;
 
 	imap_threaded_subscribe(folder, path, FALSE);
 
@@ -2763,17 +2803,17 @@ static gint imap_remove_folder_real(Folder *folder, FolderItem *item)
 		ok = imap_cmd_close(session);
 		if (ok != MAILIMAP_NO_ERROR) {
 			debug_print("close err %d\n", ok);
-			imap_handle_error(SESSION(session), ok);
 			return ok;
 		}
 	}
 	ok = imap_cmd_delete(session, path);
-	if (ok != MAILIMAP_NO_ERROR) {
+	if (ok != MAILIMAP_NO_ERROR && !is_fatal(ok)) {
 		gchar *tmp = g_strdup_printf("%s%c", path, 
-				imap_get_path_separator(session, IMAP_FOLDER(folder), path));
+				imap_get_path_separator(session, IMAP_FOLDER(folder), path, &ok));
 		g_free(path);
 		path = tmp;
-		ok = imap_cmd_delete(session, path);
+		if (!is_fatal(ok))
+			ok = imap_cmd_delete(session, path);
 	}
 
 	if (ok != MAILIMAP_NO_ERROR) {
@@ -3037,7 +3077,7 @@ gchar imap_get_path_separator_for_item(FolderItem *item)
 	IMAPFolder *imap_folder = NULL;
 	IMAPSession *session = NULL;
 	gchar result = '/';
-	
+	gint ok;
 	if (!item)
 		return '/';
 	folder = item->folder;
@@ -3052,11 +3092,11 @@ gchar imap_get_path_separator_for_item(FolderItem *item)
 	
 	debug_print("getting session...");
 	session = imap_session_get(FOLDER(folder));
-	result = imap_get_path_separator(session, imap_folder, item->path);
+	result = imap_get_path_separator(session, imap_folder, item->path, &ok);
 	return result;
 }
 
-static gchar imap_refresh_path_separator(IMAPSession *session, IMAPFolder *folder, const gchar *subfolder)
+static gchar imap_refresh_path_separator(IMAPSession *session, IMAPFolder *folder, const gchar *subfolder, gint *ok)
 {
 	clist * lep_list;
 	int r;
@@ -3068,6 +3108,7 @@ static gchar imap_refresh_path_separator(IMAPSession *session, IMAPFolder *folde
 	if (r != MAILIMAP_NO_ERROR) {
 		imap_handle_error(SESSION(session), r);
 		log_warning(LOG_PROTOCOL, _("LIST failed\n"));
+		*ok = r;
 		return '\0';
 	}
 
@@ -3079,20 +3120,21 @@ static gchar imap_refresh_path_separator(IMAPSession *session, IMAPFolder *folde
 		separator = mb->mb_delimiter;
 		debug_print("got separator: %c\n", folder->last_seen_separator);
 	}
+	*ok = MAILIMAP_NO_ERROR;
 	mailimap_list_result_free(lep_list);
 	return separator;
 }
 
-static gchar imap_get_path_separator(IMAPSession *session, IMAPFolder *folder, const gchar *path)
+static gchar imap_get_path_separator(IMAPSession *session, IMAPFolder *folder, const gchar *path, gint *ok)
 {
 	gchar separator = '/';
 
 	if (folder->last_seen_separator == 0) {
-		folder->last_seen_separator = imap_refresh_path_separator(session, folder, "");
+		folder->last_seen_separator = imap_refresh_path_separator(session, folder, "", ok);
 	}
 
 	if (folder->last_seen_separator == 0) {
-		folder->last_seen_separator = imap_refresh_path_separator(session, folder, "INBOX");
+		folder->last_seen_separator = imap_refresh_path_separator(session, folder, "INBOX", ok);
 	}
 
 	if (folder->last_seen_separator != 0) {
@@ -3103,7 +3145,7 @@ static gchar imap_get_path_separator(IMAPSession *session, IMAPFolder *folder, c
 	return separator;
 }
 
-static gchar *imap_get_real_path(IMAPSession *session, IMAPFolder *folder, const gchar *path)
+static gchar *imap_get_real_path(IMAPSession *session, IMAPFolder *folder, const gchar *path, gint *ok)
 {
 	gchar *real_path;
 	gchar separator;
@@ -3112,7 +3154,7 @@ static gchar *imap_get_real_path(IMAPSession *session, IMAPFolder *folder, const
 	g_return_val_if_fail(path != NULL, NULL);
 
 	real_path = imap_utf8_to_modified_utf7(path, FALSE);
-	separator = imap_get_path_separator(session, folder, path);
+	separator = imap_get_path_separator(session, folder, path, ok);
 	imap_path_separator_subst(real_path, separator);
 
 	return real_path;
@@ -3232,8 +3274,9 @@ static gint imap_select(IMAPSession *session, IMAPFolder *folder,
 	session->recent = 0;
 	session->expunge = 0;
 
-	real_path = imap_get_real_path(session, folder, path);
-
+	real_path = imap_get_real_path(session, folder, path, &ok);
+	if (is_fatal(ok))
+		return ok;		
 	g_slist_free(IMAP_FOLDER_ITEM(item)->ok_flags);
 	IMAP_FOLDER_ITEM(item)->ok_flags = NULL;
 	ok = imap_cmd_select(session, real_path,
@@ -3276,7 +3319,9 @@ static gint imap_status(IMAPSession *session, IMAPFolder *folder,
 	gchar *real_path;
 	guint mask = 0;
 	
-	real_path = imap_get_real_path(session, folder, path);
+	real_path = imap_get_real_path(session, folder, path, &r);
+	if (is_fatal(r))
+		return r;
 
 	if (messages) {
 		mask |= 1 << 0;
@@ -3299,7 +3344,6 @@ static gint imap_status(IMAPSession *session, IMAPFolder *folder,
 	    !strcmp(session->mbox, item->item.path)) {
 		r = imap_cmd_close(session);
 		if (r != MAILIMAP_NO_ERROR) {
-			imap_handle_error(SESSION(session), r);
 			debug_print("close err %d\n", r);
 			return r;
 		}
@@ -3545,7 +3589,6 @@ static gint imap_cmd_create(IMAPSession *session, const gchar *folder)
 	r = imap_threaded_create(session->folder, folder);
 	if (r != MAILIMAP_NO_ERROR) {
 		imap_handle_error(SESSION(session), r);
-		
 		return r;
 	}
 
@@ -3609,7 +3652,7 @@ static void *imap_cmd_fetch_thread(void *data)
 	if (r != MAILIMAP_NO_ERROR) {
 		imap_handle_error(SESSION(session), r);
 		debug_print("fetch err %d\n", r);
-		return GINT_TO_POINTER(MAILIMAP_ERROR_BAD_STATE);
+		return GINT_TO_POINTER(r);
 	}
 	return GINT_TO_POINTER(MAILIMAP_NO_ERROR);
 }
@@ -3765,7 +3808,7 @@ static gboolean imap_rename_folder_func(GNode *node, gpointer data)
 	gchar *new_itempath;
 	gint oldpathlen;
 	IMAPSession *session = imap_session_get(item->folder);
-
+	gint ok;
 	oldpathlen = strlen(oldpath);
 	if (strncmp(oldpath, item->path, oldpathlen) != 0) {
 		g_warning("path doesn't match: %s, %s\n", oldpath, item->path);
@@ -3780,11 +3823,11 @@ static gboolean imap_rename_folder_func(GNode *node, gpointer data)
 		new_itempath = g_strconcat(newpath, G_DIR_SEPARATOR_S, base,
 					   NULL);
 
-	real_oldpath = imap_get_real_path(session, IMAP_FOLDER(item->folder), item->path);
+	real_oldpath = imap_get_real_path(session, IMAP_FOLDER(item->folder), item->path, &ok);
 	g_free(item->path);
 	item->path = new_itempath;
 	
-	real_newpath = imap_get_real_path(session, IMAP_FOLDER(item->folder), item->path);
+	real_newpath = imap_get_real_path(session, IMAP_FOLDER(item->folder), item->path, &ok);
 	
 	imap_threaded_subscribe(item->folder, real_oldpath, FALSE);
 	imap_threaded_subscribe(item->folder, real_newpath, TRUE);

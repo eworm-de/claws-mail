@@ -1,3 +1,10 @@
+2008-05-31 [colin]	3.4.0cvs75
+
+	* src/imap.c
+		Fix more possible double-frees. Also, fix the root cause
+		of these double-frees by just noting the Session is to
+		be destroyed instead of destroying it in flight
+
 2008-05-29 [paul]	3.4.0cvs74
 
 	* manual/keyboard.xml
