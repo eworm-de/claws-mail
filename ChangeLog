@@ -1,3 +1,9 @@
+2008-06-02 [colin]	3.4.0cvs77
+
+	* src/quote_fmt.c
+		Fix sensitivity/alignment, patch from
+		Pawel
+
 2008-05-31 [colin]	3.4.0cvs76
 
 	* src/imap.c

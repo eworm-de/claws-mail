@@ -3372,3 +3372,4 @@
 ( cvs diff -u -r 1.1.2.10 -r 1.1.2.11 manual/keyboard.xml;  ) > 3.4.0cvs74.patchset
 ( cvs diff -u -r 1.179.2.223 -r 1.179.2.224 src/imap.c;  ) > 3.4.0cvs75.patchset
 ( cvs diff -u -r 1.179.2.224 -r 1.179.2.225 src/imap.c;  ) > 3.4.0cvs76.patchset
+( cvs diff -u -r 1.8.2.34 -r 1.8.2.35 src/quote_fmt.c;  ) > 3.4.0cvs77.patchset
