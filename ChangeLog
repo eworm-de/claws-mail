@@ -1,3 +1,8 @@
+2008-06-02 [colin]	3.4.0cvs78
+
+	* src/prefs_actions.c
+		GUI rework, patch by Pawel 
+
 2008-06-02 [colin]	3.4.0cvs77
 
 	* src/quote_fmt.c

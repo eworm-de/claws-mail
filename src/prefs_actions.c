@@ -46,6 +46,9 @@
 #include "gtkutils.h"
 #include "manual.h"
 #include "menu.h"
+#include "filtering.h"
+#include "prefs_filtering_action.h"
+#include "matcher_parser.h"
 
 enum {
 	PREFS_ACTIONS_STRING,	/*!< string pointer managed by list store, 
@@ -63,10 +66,13 @@ static struct Actions
 	GtkWidget *window;
 
 	GtkWidget *ok_btn;
-
+	GtkWidget *filter_btn;
 	GtkWidget *name_entry;
 	GtkWidget *cmd_entry;
-
+	GtkWidget *info_btn;
+	GtkWidget *shell_radiobtn;
+	GtkWidget *filter_radiobtn;
+	
 	GtkWidget *actions_list_view;
 } actions;
 
@@ -117,6 +123,12 @@ static GtkWidget *prefs_actions_list_view_create	(void);
 static void prefs_actions_create_list_view_columns	(GtkWidget *list_view);
 static void prefs_actions_select_row(GtkTreeView *list_view, GtkTreePath *path);
 
+static void prefs_action_filter_radiobtn_cb(GtkWidget *widget, gpointer data);
+static void prefs_action_shell_radiobtn_cb(GtkWidget *widget, gpointer data);
+static void prefs_action_filterbtn_cb(GtkWidget *widget, gpointer data);
+static void prefs_action_define_filter_done(GSList * action_list);
+
+
 void prefs_actions_open(MainWindow *mainwin)
 {
 	inc_lock();
@@ -148,6 +160,7 @@ static void prefs_actions_create(MainWindow *mainwin)
 {
 	GtkWidget *window;
 	GtkWidget *vbox;
+	GtkWidget *filter_hbox;
 	GtkWidget *help_btn;
 	GtkWidget *ok_btn;
 	GtkWidget *cancel_btn;
@@ -156,10 +169,14 @@ static void prefs_actions_create(MainWindow *mainwin)
 	GtkWidget *vbox1;
 	GtkWidget *table;
 
+	GtkWidget *shell_radiobtn;
+	GtkWidget *filter_radiobtn;
+
 	GtkWidget *name_label;
 	GtkWidget *name_entry;
 	GtkWidget *cmd_label;
 	GtkWidget *cmd_entry;
+	GtkWidget *filter_btn;
 
 	GtkWidget *reg_hbox;
 	GtkWidget *btn_hbox;
@@ -223,9 +240,9 @@ static void prefs_actions_create(MainWindow *mainwin)
 	vbox1 = gtk_vbox_new(FALSE, VSPACING);
 	gtk_widget_show(vbox1);
 	gtk_box_pack_start(GTK_BOX(vbox), vbox1, TRUE, TRUE, 0);
-	gtk_container_set_border_width(GTK_CONTAINER(vbox1), 2);
+	gtk_container_set_border_width(GTK_CONTAINER(vbox1), 2);	
 
-	table = gtk_table_new(2, 2, FALSE);
+	table = gtk_table_new(3, 2, FALSE);
 	gtk_table_set_row_spacings (GTK_TABLE (table), VSPACING_NARROW_2);
 	gtk_table_set_col_spacings (GTK_TABLE (table), 4);
 	gtk_widget_show(table);
@@ -242,20 +259,50 @@ static void prefs_actions_create(MainWindow *mainwin)
 	gtk_widget_show (name_entry);
   	gtk_table_attach (GTK_TABLE (table), name_entry, 1, 2, 0, 1,
                     	  (GtkAttachOptions) (GTK_FILL|GTK_EXPAND),
-                    	  (GtkAttachOptions) (0), 0, 0);
+			  (GtkAttachOptions) (0), 0, 0);
 
-	cmd_label = gtk_label_new (_("Command line"));
+	cmd_label = gtk_label_new (_("Command"));
 	gtk_widget_show (cmd_label);
 	gtk_misc_set_alignment (GTK_MISC (cmd_label), 1, 0.5);
-  	gtk_table_attach (GTK_TABLE (table), cmd_label, 0, 1, 1, 2,
+  	gtk_table_attach (GTK_TABLE (table), cmd_label, 0, 1, 2, 3,
                     	  (GtkAttachOptions) (GTK_FILL),
                     	  (GtkAttachOptions) (0), 0, 0);
 
 	cmd_entry = gtk_entry_new ();
 	gtk_widget_show (cmd_entry);
-  	gtk_table_attach (GTK_TABLE (table), cmd_entry, 1, 2, 1, 2,
+  	gtk_table_attach (GTK_TABLE (table), cmd_entry, 1, 2, 2, 3,
                     	  (GtkAttachOptions) (GTK_FILL|GTK_EXPAND),
                     	  (GtkAttachOptions) (0), 0, 0);
+
+	/* radio buttons for filter actions or shell */
+	filter_hbox = gtk_hbox_new(FALSE,4);
+	gtk_table_attach(GTK_TABLE(table), filter_hbox, 1, 2, 3, 4,
+                    	  (GtkAttachOptions) (GTK_FILL|GTK_EXPAND),
+			  (GtkAttachOptions) (0), 0, 0);
+	gtk_widget_show(filter_hbox);
+
+	shell_radiobtn = gtk_radio_button_new_with_label(NULL, _("Shell command"));
+	gtk_box_pack_start(GTK_BOX(filter_hbox), shell_radiobtn, FALSE, FALSE, 0);
+	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(shell_radiobtn), TRUE);
+	gtk_widget_show(shell_radiobtn);
+	
+	g_signal_connect(G_OBJECT(shell_radiobtn), "clicked",
+			 G_CALLBACK(prefs_action_shell_radiobtn_cb), NULL);
+
+	filter_radiobtn =
+		gtk_radio_button_new_with_label_from_widget(GTK_RADIO_BUTTON(shell_radiobtn), 
+							    _("Filter action"));
+	gtk_box_pack_start(GTK_BOX(filter_hbox), filter_radiobtn, FALSE, FALSE, 0);
+	gtk_widget_show(filter_radiobtn);
+	g_signal_connect(G_OBJECT(filter_radiobtn), "clicked",
+			 G_CALLBACK(prefs_action_filter_radiobtn_cb), NULL);
+
+	filter_btn = gtk_button_new_with_label(_("Edit filter action"));
+	gtk_box_pack_start(GTK_BOX(filter_hbox), filter_btn, FALSE, FALSE, 0);
+	gtk_widget_set_sensitive(filter_btn, FALSE);
+	g_signal_connect(G_OBJECT(filter_btn), "clicked",
+			 G_CALLBACK(prefs_action_filterbtn_cb), NULL);
+	gtk_widget_show(filter_btn);
 
 	/* register / substitute / delete */
 
@@ -328,6 +375,8 @@ static void prefs_actions_create(MainWindow *mainwin)
 	gtk_scrolled_window_set_policy(GTK_SCROLLED_WINDOW (cond_scrolledwin),
 				       GTK_POLICY_AUTOMATIC,
 				       GTK_POLICY_AUTOMATIC);
+	gtk_scrolled_window_set_shadow_type(GTK_SCROLLED_WINDOW(cond_scrolledwin),
+					    GTK_SHADOW_ETCHED_IN);
 
 	cond_list_view = prefs_actions_list_view_create();				       
 	gtk_widget_show(cond_list_view);
@@ -367,10 +416,14 @@ static void prefs_actions_create(MainWindow *mainwin)
 
 	actions.window = window;
 	actions.ok_btn = ok_btn;
+	actions.info_btn = info_btn;
 
 	actions.name_entry = name_entry;
 	actions.cmd_entry  = cmd_entry;
-
+	actions.filter_btn = filter_btn;
+	actions.shell_radiobtn = shell_radiobtn;
+	actions.filter_radiobtn = filter_radiobtn;
+	
 	actions.actions_list_view = cond_list_view;
 }
 
@@ -1167,5 +1220,82 @@ static void prefs_actions_select_row(GtkTreeView *list_view, GtkTreePath *path)
 	*cmd = '\0';
 	ENTRY_SET_TEXT(actions.name_entry, buf);
 
+	if(g_str_has_prefix(&cmd[2], "%as{") == TRUE)
+		gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(
+						actions.filter_radiobtn), TRUE);
+	else
+		gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(
+						actions.shell_radiobtn), TRUE);
+
 	return;
+}
+
+static void prefs_action_filter_radiobtn_cb(GtkWidget *widget, gpointer data)
+{
+	if(actions.filter_btn)
+		gtk_widget_set_sensitive(actions.filter_btn, TRUE);
+	if(actions.cmd_entry)
+		gtk_widget_set_sensitive(actions.cmd_entry,FALSE);
+	if(actions.info_btn)
+		gtk_widget_set_sensitive(actions.info_btn,FALSE);
+}
+
+static void prefs_action_shell_radiobtn_cb(GtkWidget *widget, gpointer data)
+{
+	if(actions.filter_btn)
+		gtk_widget_set_sensitive(actions.filter_btn, FALSE);
+	if(actions.cmd_entry)
+		gtk_widget_set_sensitive(actions.cmd_entry,TRUE);
+	if(actions.info_btn)
+		gtk_widget_set_sensitive(actions.info_btn,TRUE);
+}
+
+static void prefs_action_filterbtn_cb(GtkWidget *widget, gpointer data)
+{
+	gchar *action_str, **tokens;
+	GSList *action_list = NULL, *cur;
+
+	if(modified && alertpanel(_("Entry was modified"),
+			_("Opening the filter action dialog will clear current modifications "
+			"of the command line."),
+			GTK_STOCK_CANCEL, _("+_Continue editing"), NULL) == G_ALERTDEFAULT)
+		return;
+
+	action_str = gtk_editable_get_chars(GTK_EDITABLE(actions.cmd_entry), 0, -1);
+	tokens = g_strsplit_set(action_str, "{}", 5);
+
+	if (tokens[1] && *tokens[1] != '\0') {
+		action_list = matcher_parser_get_action_list(tokens[1]);
+		if (action_list == NULL)
+			alertpanel_error(_("Action string is not valid."));
+	}
+		
+	prefs_filtering_action_open(action_list, prefs_action_define_filter_done);
+
+	if (action_list != NULL) {
+		for(cur = action_list ; cur != NULL ; cur = cur->next)
+                        filteringaction_free(cur->data);
+        }
+        
+	g_free(action_str);
+	g_strfreev(tokens);
+}
+
+static void prefs_action_define_filter_done(GSList * action_list)
+{
+	gchar *str;
+
+	if(action_list == NULL)
+		return;
+
+	str = filteringaction_list_to_string(action_list);
+
+	if (str != NULL) {
+		gchar *cmd;
+		cmd = g_strdup_printf("%%as{%s}",str);
+		g_free(str);
+		gtk_entry_set_text(GTK_ENTRY(actions.cmd_entry), cmd);
+		g_free(cmd);
+		modified = TRUE;
+	}
 }
