@@ -152,7 +152,7 @@ static void prefs_message_create_widget(PrefsPage *_page, GtkWindow *window,
 			  _("Render HTML-only messages with plugin if possible"));
 	
 	PACK_CHECK_BUTTON(vbox2, checkbtn_promote_html_part,
-			  _("Show always the HTML part also in multipart messages"));
+			  _("Select the HTML part of multipart/alternative messages"));
 
 	hbox1 = gtk_hbox_new (FALSE, 32);
 	gtk_widget_show (hbox1);

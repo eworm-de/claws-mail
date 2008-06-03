@@ -1,3 +1,8 @@
+2008-06-03 [paul]	3.4.0cvs81
+
+	* src/prefs_message.c
+		make always the english good
+
 2008-06-03 [colin]	3.4.0cvs80
 
 	* src/mainwindow.c

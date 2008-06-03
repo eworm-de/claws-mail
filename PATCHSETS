@@ -3376,3 +3376,4 @@
 ( cvs diff -u -r 1.60.2.56 -r 1.60.2.57 src/prefs_actions.c;  ) > 3.4.0cvs78.patchset
 ( cvs diff -u -r 1.60.2.116 -r 1.60.2.117 src/addressbook.c;  cvs diff -u -r 1.94.2.178 -r 1.94.2.179 src/messageview.c;  cvs diff -u -r 1.204.2.170 -r 1.204.2.171 src/prefs_common.c;  cvs diff -u -r 1.103.2.108 -r 1.103.2.109 src/prefs_common.h;  cvs diff -u -r 1.1.2.25 -r 1.1.2.26 src/prefs_message.c;  ) > 3.4.0cvs79.patchset
 ( cvs diff -u -r 1.274.2.245 -r 1.274.2.246 src/mainwindow.c;  cvs diff -u -r 1.39.2.46 -r 1.39.2.47 src/mainwindow.h;  ) > 3.4.0cvs80.patchset
+( cvs diff -u -r 1.1.2.26 -r 1.1.2.27 src/prefs_message.c;  ) > 3.4.0cvs81.patchset
