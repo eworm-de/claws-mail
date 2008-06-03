@@ -6,7 +6,7 @@
 	* src/prefs_common.c
 	* src/prefs_common.h
 	* src/prefs_message.c
-		Allow by default to show html in multipart/mixed
+		Allow by default to show html in multipart/alternative
 
 2008-06-02 [colin]	3.4.0cvs78
 
