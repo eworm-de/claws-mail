@@ -714,6 +714,8 @@ static PrefParam param[] = {
 	 NULL, NULL, NULL},
 	{"invoke_plugin_on_html", "FALSE", &prefs_common.invoke_plugin_on_html, P_BOOL,
 	 NULL, NULL, NULL},
+	{"promote_html_part", "FALSE", &prefs_common.promote_html_part, P_BOOL,
+	 NULL, NULL, NULL},
 	{"line_space", "2", &prefs_common.line_space, P_INT,
 	 NULL, NULL, NULL},
 	{"never_send_retrcpt", "FALSE", &prefs_common.never_send_retrcpt, P_BOOL,

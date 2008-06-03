@@ -1,3 +1,13 @@
+2008-06-03 [iwkse]	3.4.0cvs79
+
+	* src/addressbook.c
+		Fix little gui bug on button sensitivity
+	* src/messageview.c
+	* src/prefs_common.c
+	* src/prefs_common.h
+	* src/prefs_message.c
+		Allow by default to show html in multipart/mixed
+
 2008-06-02 [colin]	3.4.0cvs78
 
 	* src/prefs_actions.c

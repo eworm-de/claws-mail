@@ -304,6 +304,7 @@ struct _PrefsCommon
 	gint line_space;
 	gboolean render_html;
 	gboolean invoke_plugin_on_html;
+	gboolean promote_html_part;
 	gboolean textview_cursor_visible;
 	gboolean enable_smooth_scroll;
 	gint scroll_step;

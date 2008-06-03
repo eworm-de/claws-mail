@@ -1154,6 +1154,16 @@ gint messageview_show(MessageView *messageview, MsgInfo *msginfo,
 			&& (mimeinfo->type != MIMETYPE_MULTIPART || 
 	    strcasecmp(mimeinfo->subtype, "signed"))) {
 	    	if (strcasecmp(mimeinfo->subtype, "html")) {
+		    	MimeInfo *saved_mimeinfo = mimeinfo;
+			if (!strcasecmp(mimeinfo->subtype, "alternative") && prefs_common.promote_html_part) {
+				for (; mimeinfo; mimeinfo = procmime_mimeinfo_next(mimeinfo)) {
+					if (mimeinfo->type == MIMETYPE_TEXT && !strcasecmp(mimeinfo->subtype, "html")) {
+					mimeview_select_mimepart_icon(messageview->mimeview, mimeinfo);
+					goto done;
+					}
+				}
+			}
+			if (!mimeinfo) mimeinfo = saved_mimeinfo;
 			mimeview_show_part(messageview->mimeview,mimeinfo);
 			goto done;
 		} else if (prefs_common.invoke_plugin_on_html) {

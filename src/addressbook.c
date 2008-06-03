@@ -2437,8 +2437,8 @@ static gboolean addressbook_tree_button_pressed(GtkWidget *ctree,
 	gboolean canTreePaste = FALSE;
 	gboolean canLookup = FALSE;
 	GtkCTreeNode *node = NULL;
-
-	if( ! event ) return FALSE;
+	
+	if( ! event || event->type != GDK_BUTTON_PRESS) return FALSE;
 	addressbook_menubar_set_sensitive( FALSE );
 
 	if( gtk_clist_get_selection_info( clist, event->x, event->y, &row, &column ) ) {

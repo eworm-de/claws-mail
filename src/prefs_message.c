@@ -52,6 +52,7 @@ typedef struct _MessagePage
 
 	GtkWidget *checkbtn_html;
 	GtkWidget *checkbtn_html_plugin;
+	GtkWidget *checkbtn_promote_html_part;
 	GtkWidget *spinbtn_linespc;
 
 	GtkWidget *checkbtn_smoothscroll;
@@ -85,6 +86,7 @@ static void prefs_message_create_widget(PrefsPage *_page, GtkWindow *window,
 	GtkWidget *button_edit_disphdr;
 	GtkWidget *checkbtn_html;
 	GtkWidget *checkbtn_html_plugin;
+	GtkWidget *checkbtn_promote_html_part;
 	GtkWidget *hbox_linespc;
 	GtkWidget *label_linespc;
 	GtkObject *spinbtn_linespc_adj;
@@ -148,6 +150,9 @@ static void prefs_message_create_widget(PrefsPage *_page, GtkWindow *window,
 
 	PACK_CHECK_BUTTON(vbox2, checkbtn_html_plugin,
 			  _("Render HTML-only messages with plugin if possible"));
+	
+	PACK_CHECK_BUTTON(vbox2, checkbtn_promote_html_part,
+			  _("Show always the HTML part also in multipart messages"));
 
 	hbox1 = gtk_hbox_new (FALSE, 32);
 	gtk_widget_show (hbox1);
@@ -225,6 +230,8 @@ static void prefs_message_create_widget(PrefsPage *_page, GtkWindow *window,
 		prefs_common.render_html);
 	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(checkbtn_html_plugin),
 		prefs_common.invoke_plugin_on_html);
+	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(checkbtn_promote_html_part),
+		prefs_common.promote_html_part);
 	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(checkbtn_smoothscroll),
 		prefs_common.enable_smooth_scroll);
 	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(checkbtn_halfpage),
@@ -242,6 +249,7 @@ static void prefs_message_create_widget(PrefsPage *_page, GtkWindow *window,
 	prefs_message->checkbtn_disphdr = checkbtn_disphdr;
 	prefs_message->checkbtn_html = checkbtn_html;
 	prefs_message->checkbtn_html_plugin = checkbtn_html_plugin;
+	prefs_message->checkbtn_promote_html_part = checkbtn_promote_html_part;
 	prefs_message->spinbtn_linespc = spinbtn_linespc;
 	prefs_message->checkbtn_smoothscroll = checkbtn_smoothscroll;
 	prefs_message->spinbtn_scrollstep = spinbtn_scrollstep;
@@ -265,6 +273,8 @@ static void prefs_message_save(PrefsPage *_page)
 		GTK_TOGGLE_BUTTON(page->checkbtn_html));
 	prefs_common.invoke_plugin_on_html = gtk_toggle_button_get_active(
 		GTK_TOGGLE_BUTTON(page->checkbtn_html_plugin));
+	prefs_common.promote_html_part = gtk_toggle_button_get_active(
+		GTK_TOGGLE_BUTTON(page->checkbtn_promote_html_part));
 	prefs_common.enable_smooth_scroll = gtk_toggle_button_get_active(
 		GTK_TOGGLE_BUTTON(page->checkbtn_smoothscroll));
 	prefs_common.scroll_halfpage = gtk_toggle_button_get_active(
