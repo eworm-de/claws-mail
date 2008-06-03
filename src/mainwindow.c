@@ -2752,6 +2752,9 @@ SensitiveCond main_window_get_current_state(MainWindow *mainwin)
 	if (summary_is_list(mainwin->summaryview))
 		state |= M_SUMMARY_ISLIST;
 
+	if (prefs_common.layout_mode != SMALL_LAYOUT || mainwin->in_folder)
+		state |= M_IN_MSGLIST;
+
 	return state;
 }
 
@@ -2781,6 +2784,7 @@ void main_window_set_menu_sensitive(MainWindow *mainwin)
 		{"/Edit/Select thread"		   , M_TARGET_EXIST|M_SUMMARY_ISLIST},
 		{"/Edit/Delete thread"		   , M_TARGET_EXIST|M_SUMMARY_ISLIST},
 		{"/Edit/Find in current message...", M_SINGLE_TARGET_EXIST},
+		{"/Edit/Quick search", 		     M_IN_MSGLIST},
 
 		{"/View/Set displayed columns/in Folder list..."
 						   , M_UNLOCKED|M_SUMMARY_ISLIST}, 
@@ -4713,6 +4717,7 @@ void mainwindow_exit_folder(MainWindow *mainwin) {
 		gtk_widget_grab_focus(mainwin->folderview->ctree);
 	}
 	mainwin->in_folder = FALSE;
+	main_window_set_menu_sensitive(mainwin);
 }
 
 void mainwindow_enter_folder(MainWindow *mainwin) {
@@ -4720,6 +4725,7 @@ void mainwindow_enter_folder(MainWindow *mainwin) {
 		mainwin_paned_show_last(GTK_PANED(mainwin->hpaned));
 	}
 	mainwin->in_folder = TRUE;
+	main_window_set_menu_sensitive(mainwin);
 }
 
 #ifdef MAEMO

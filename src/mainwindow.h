@@ -60,7 +60,8 @@ typedef enum
 	M_WANT_SYNC	      = 1 << 19,
 	M_TAGS_EXIST	      = 1 << 20,
 	M_HAVE_PROCESSING     = 1 << 21,
-	M_SUMMARY_ISLIST      = 1 << 22
+	M_SUMMARY_ISLIST      = 1 << 22,
+	M_IN_MSGLIST	      = 1 << 23
 } SensitiveCond;
 
 typedef enum
