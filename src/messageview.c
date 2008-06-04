@@ -1155,15 +1155,53 @@ gint messageview_show(MessageView *messageview, MsgInfo *msginfo,
 	    strcasecmp(mimeinfo->subtype, "signed"))) {
 	    	if (strcasecmp(mimeinfo->subtype, "html")) {
 		    	MimeInfo *saved_mimeinfo = mimeinfo;
-			if (!strcasecmp(mimeinfo->subtype, "alternative") && prefs_common.promote_html_part) {
+			MimeInfo *alt_parent = mimeinfo;
+
+			/* if multipart/{related,mixed} part, look inside for a multipart/alternative child */
+			if (prefs_common.promote_html_part &&
+			    mimeinfo->type == MIMETYPE_MULTIPART &&
+			    (!strcasecmp(mimeinfo->subtype, "related") ||
+			     !strcasecmp(mimeinfo->subtype, "mixed"))) {
 				for (; mimeinfo; mimeinfo = procmime_mimeinfo_next(mimeinfo)) {
-					if (mimeinfo->type == MIMETYPE_TEXT && !strcasecmp(mimeinfo->subtype, "html")) {
-					mimeview_select_mimepart_icon(messageview->mimeview, mimeinfo);
-					goto done;
+					if (mimeinfo->node->parent != saved_mimeinfo->node) {
+						/* only consider children of the 
+						 * multipart/{related,mixed} part */
+						continue;
+					}
+					if (mimeinfo->type == MIMETYPE_MULTIPART && 
+					    !strcasecmp(mimeinfo->subtype, "alternative")) {
+					    	/* we got an alternative part */
+					    	alt_parent = mimeinfo;
+						break;
 					}
 				}
 			}
-			if (!mimeinfo) mimeinfo = saved_mimeinfo;
+
+			/* if we now have a multipart/alternative part (possibly inside a
+			 * multipart/{related,mixed} part, look for an HTML part inside */
+			if (prefs_common.promote_html_part && mimeinfo && 
+			    mimeinfo->type == MIMETYPE_MULTIPART &&
+			    !strcasecmp(mimeinfo->subtype, "alternative")) {
+				for (; mimeinfo; mimeinfo = procmime_mimeinfo_next(mimeinfo)) {
+					if (mimeinfo->node->parent != alt_parent->node) {
+						/* only consider children of the 
+						 * multipart/alternative part, so as
+						 * not to show html attachments */
+						continue;
+					}
+					if (mimeinfo->type == MIMETYPE_TEXT && 
+					    !strcasecmp(mimeinfo->subtype, "html")) {
+					    	/* we got it */
+						mimeview_select_mimepart_icon(messageview->mimeview, mimeinfo);
+						goto done;
+					}
+				}
+			}
+			
+			/* if we didn't find anything, go back to start */
+			if (!mimeinfo) 
+				mimeinfo = saved_mimeinfo;
+
 			mimeview_show_part(messageview->mimeview,mimeinfo);
 			goto done;
 		} else if (prefs_common.invoke_plugin_on_html) {
