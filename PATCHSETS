@@ -3379,3 +3379,4 @@
 ( cvs diff -u -r 1.1.2.26 -r 1.1.2.27 src/prefs_message.c;  ) > 3.4.0cvs81.patchset
 ( cvs diff -u -r 1.94.2.179 -r 1.94.2.180 src/messageview.c;  ) > 3.4.0cvs82.patchset
 ( cvs diff -u -r 1.60.2.44 -r 1.60.2.45 src/filtering.c;  ) > 3.4.0cvs83.patchset
+( cvs diff -u -r 1.115.2.196 -r 1.115.2.197 src/main.c;  ) > 3.4.0cvs84.patchset

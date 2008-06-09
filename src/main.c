@@ -1891,6 +1891,10 @@ void app_will_exit(GtkWidget *widget, gpointer data)
 {
 	MainWindow *mainwin = data;
 	
+	if (gtk_main_level() == 0) {
+		debug_print("not even started\n");
+		return;
+	}
 	if (sc_exiting == TRUE) {
 		debug_print("exit pending\n");
 		return;

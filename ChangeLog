@@ -1,3 +1,9 @@
+2008-06-09 [colin]	3.4.0cvs84
+
+	* src/main.c
+		Fix bug 1447, 'If user tries to close while starting 
+		up, it will not close ever.'
+
 2008-06-09 [colin]	3.4.0cvs83
 
 	* src/filtering.c
