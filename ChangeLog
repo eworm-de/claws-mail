@@ -1,3 +1,14 @@
+2008-06-09 [colin]	3.4.0cvs85
+
+	* src/main.c
+		Integrate AWN information bubble if dbus is
+		available
+	* src/folder.c
+		Fix crash when calling scan_required() on 
+		folder classes that don't implement them
+	* src/common/session.c
+		Fix a little typo
+
 2008-06-09 [colin]	3.4.0cvs84
 
 	* src/main.c

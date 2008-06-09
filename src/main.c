@@ -57,8 +57,10 @@ GCRY_THREAD_OPTION_PTHREAD_IMPL;
 # include <gdk/gdkx.h>
 #endif
 
-#ifdef HAVE_NETWORKMANAGER_SUPPORT
+#ifdef HAVE_DBUS_GLIB
 #include <dbus/dbus-glib.h>
+#endif
+#ifdef HAVE_NETWORKMANAGER_SUPPORT
 #include <NetworkManager.h>
 #endif
 
@@ -109,6 +111,7 @@ GCRY_THREAD_OPTION_PTHREAD_IMPL;
 #include "news_gtk.h"
 #include "matcher.h"
 #include "tags.h"
+#include "hooks.h"
 
 #ifdef HAVE_LIBETPAN
 #include "imap-thread.h"
@@ -160,6 +163,10 @@ static GnomeVFSVolumeMonitor *volmon;
 #ifdef HAVE_NETWORKMANAGER_SUPPORT
 /* Went offline due to NetworkManager */
 static gboolean went_offline_nm;
+#endif
+
+#ifdef HAVE_DBUS_GLIB
+static DBusGProxy *awn_proxy = NULL;
 #endif
 
 gchar *prog_version;
@@ -916,16 +923,118 @@ static void main_dump_features_list(gboolean show_debug_only)
 #endif
 }
 
+#ifdef HAVE_DBUS_GLIB
+static guint dbus_item_hook_id = -1;
+static guint dbus_folder_hook_id = -1;
+
+static void uninstall_dbus_status_handler(void)
+{
+	if(awn_proxy)
+		g_object_unref(awn_proxy);
+	awn_proxy = NULL;
+	if (dbus_item_hook_id != -1)
+		hooks_unregister_hook(FOLDER_ITEM_UPDATE_HOOKLIST, dbus_item_hook_id);
+	if (dbus_folder_hook_id != -1)
+		hooks_unregister_hook(FOLDER_UPDATE_HOOKLIST, dbus_folder_hook_id);
+}
+
+static void dbus_update(FolderItem *removed_item)
+{
+	guint new, unread, unreadmarked, marked, total;
+	guint replied, forwarded, locked, ignored, watched;
+	gchar *buf;
+	GError *error = NULL;
+
+	folder_count_total_msgs(&new, &unread, &unreadmarked, &marked, &total,
+				&replied, &forwarded, &locked, &ignored,
+				&watched);
+	if (removed_item) {
+		total -= removed_item->total_msgs;
+		new -= removed_item->new_msgs;
+		unread -= removed_item->unread_msgs;
+	}
+
+	if (new > 0) {
+		buf = g_strdup_printf("%d", new);
+		dbus_g_proxy_call(awn_proxy, "SetInfoByName", &error,
+			G_TYPE_STRING, "claws-mail",
+			G_TYPE_STRING, buf,
+			G_TYPE_INVALID, G_TYPE_INVALID);
+		g_free(buf);
+		
+	} else {
+		dbus_g_proxy_call(awn_proxy, "UnsetInfoByName", &error, G_TYPE_STRING,
+			"claws-mail", G_TYPE_INVALID, G_TYPE_INVALID);
+	}
+	if (error) {
+		debug_print(error->message);
+		g_error_free(error);
+	}
+}
+
+static gboolean dbus_status_update_folder_hook(gpointer source, gpointer data)
+{
+	FolderUpdateData *hookdata;
+	hookdata = source;
+	if (hookdata->update_flags & FOLDER_REMOVE_FOLDERITEM)
+		dbus_update(hookdata->item);
+	else
+		dbus_update(NULL);
+
+	return FALSE;
+}
+
+static gboolean dbus_status_update_item_hook(gpointer source, gpointer data)
+{
+	dbus_update(NULL);
+
+	return FALSE;
+}
+
+static void install_dbus_status_handler(void)
+{
+	GError *tmp_error = NULL;
+	DBusGConnection *connection = dbus_g_bus_get(DBUS_BUS_SESSION, &tmp_error);
+	
+	if(!connection) {
+		/* If calling code doesn't do error checking, at least print some debug */
+		debug_print("Failed to open connection to session bus: %s\n",
+				 tmp_error->message);
+		g_error_free(tmp_error);
+		return;
+	}
+	awn_proxy = dbus_g_proxy_new_for_name(connection,
+			"com.google.code.Awn",
+			"/com/google/code/Awn",
+			"com.google.code.Awn");
+	dbus_item_hook_id = hooks_register_hook (FOLDER_ITEM_UPDATE_HOOKLIST, dbus_status_update_item_hook, NULL);
+	if (dbus_item_hook_id == -1) {
+		g_warning(_("Failed to register folder item update hook"));
+		uninstall_dbus_status_handler();
+		return;
+	}
+
+	dbus_folder_hook_id = hooks_register_hook (FOLDER_UPDATE_HOOKLIST, dbus_status_update_folder_hook, NULL);
+	if (dbus_folder_hook_id == -1) {
+		g_warning(_("Failed to register folder update hook"));
+		uninstall_dbus_status_handler();
+		return;
+	}
+}
+#endif
+
 int main(int argc, char *argv[])
 {
 #ifdef MAEMO
 	osso_context_t *osso_context;
 	osso_return_t result;
 #endif
-#ifdef HAVE_NETWORKMANAGER_SUPPORT
+#ifdef HAVE_DBUS_GLIB
 	DBusGConnection *connection;
-  GError *error;
-  DBusGProxy *proxy;
+	GError *error;
+#endif
+#ifdef HAVE_NETWORKMANAGER_SUPPORT
+	DBusGProxy *nm_proxy;
 #endif
 	gchar *userrc;
 	MainWindow *mainwin;
@@ -1005,23 +1114,30 @@ int main(int argc, char *argv[])
 
 #ifdef HAVE_NETWORKMANAGER_SUPPORT
 	went_offline_nm = FALSE;
+	nm_proxy = NULL;
+#endif
+#ifdef HAVE_DBUS_GLIB
 	error = NULL;
-	proxy = NULL;
-  connection = dbus_g_bus_get(DBUS_BUS_SYSTEM, &error);
+	connection = dbus_g_bus_get(DBUS_BUS_SYSTEM, &error);
 
-  if(!connection) {
+	if(!connection) {
 		debug_print("Failed to open connection to system bus: %s\n", error->message);
 		g_error_free(error);
 	}
 	else {
-		proxy = dbus_g_proxy_new_for_name(connection,
-																			"org.freedesktop.NetworkManager",
-																			"/org/freedesktop/NetworkManager",
-																			"org.freedesktop.NetworkManager");
-		dbus_g_proxy_add_signal(proxy,"StateChange", G_TYPE_UINT, G_TYPE_INVALID);
-		dbus_g_proxy_connect_signal(proxy, "StateChange",
-			G_CALLBACK(networkmanager_state_change_cb),
-			NULL,NULL);
+#ifdef HAVE_NETWORKMANAGER_SUPPORT
+		nm_proxy = dbus_g_proxy_new_for_name(connection,
+			"org.freedesktop.NetworkManager",
+			"/org/freedesktop/NetworkManager",
+			"org.freedesktop.NetworkManager");
+		if (nm_proxy) {
+			dbus_g_proxy_add_signal(nm_proxy, "StateChange", G_TYPE_UINT, G_TYPE_INVALID);
+			dbus_g_proxy_connect_signal(nm_proxy, "StateChange",
+				G_CALLBACK(networkmanager_state_change_cb),
+				NULL,NULL);
+		}
+#endif
+		install_dbus_status_handler();
 	}
 #endif
 
@@ -1210,7 +1326,7 @@ int main(int argc, char *argv[])
 	mainwin = main_window_create();
 
 #ifdef HAVE_NETWORKMANAGER_SUPPORT
-		networkmanager_state_change_cb(proxy,NULL,mainwin);
+	networkmanager_state_change_cb(nm_proxy,NULL,mainwin);
 #endif
 
 #ifdef MAEMO
@@ -1516,8 +1632,11 @@ int main(int argc, char *argv[])
 	osso_deinitialize(osso_context);
 #endif
 #ifdef HAVE_NETWORKMANAGER_SUPPORT
-	if(proxy)
-		g_object_unref(proxy);
+	if(nm_proxy)
+		g_object_unref(nm_proxy);
+#endif
+#ifdef HAVE_DBUS_GLIB
+	uninstall_dbus_status_handler();
 	if(connection)
 		dbus_g_connection_unref(connection);
 #endif
@@ -1778,7 +1897,7 @@ static void parse_cmd_opt(int argc, char *argv[])
 			cmd.target = argv[i+1];
 		} else if (i == 1 && argc == 2) {
 			/* only one parameter. Do something intelligent about it */
-			if (strstr(argv[i], "@") && !strstr(argv[i], "://")) {
+			if ((strstr(argv[i], "@")||!strncmp(argv[i], "mailto:", 7)) && !strstr(argv[i], "://")) {
 				const gchar *p = argv[i];
 
 				cmd.compose = TRUE;
@@ -2407,7 +2526,7 @@ gboolean networkmanager_is_online(GError **error)
 {
 	DBusGConnection *connection;
 	DBusGProxy *proxy;
-	GError *tmp_error;
+	GError *tmp_error = NULL;
 	gboolean retVal;
 	guint32 state;
 

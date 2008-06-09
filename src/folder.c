@@ -2587,7 +2587,10 @@ void folder_item_write_cache(FolderItem *item)
 		return;
 
 	last_mtime = item->mtime;
-	need_scan = item->folder->klass->scan_required(item->folder, item);
+	if (item->folder->klass->scan_required)
+		need_scan = item->folder->klass->scan_required(item->folder, item);
+	else
+		need_scan = TRUE;
 
 	id = folder_item_get_identifier(item);
 	debug_print("Save cache for folder %s\n", id);
