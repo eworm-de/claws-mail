@@ -604,8 +604,8 @@ static gboolean filtering_match_condition(FilteringProp *filtering, MsgInfo *inf
 						log_status_skip(LOG_DEBUG_FILTERING,
 								_("rule is account-based [id=%d, name='%s'], "
 								"not matching the account currently used to retrieve messages [id=%d, name='%s']\n"),
-								filtering->account_id, account->account_name,
-								ac_prefs->account_id, ac_prefs->account_name);
+								filtering->account_id, account?account->account_name:_("NON_EXISTENT"),
+								ac_prefs->account_id, ac_prefs?ac_prefs->account_name:_("NON_EXISTENT"));
 					}
 				}
 			}
@@ -629,7 +629,7 @@ static gboolean filtering_match_condition(FilteringProp *filtering, MsgInfo *inf
 						log_status_ok(LOG_DEBUG_FILTERING,
 								_("rule is account-based [id=%d, name='%s'], "
 								"but all rules are applied on user request\n"),
-								filtering->account_id, account->account_name);
+								filtering->account_id, account?account->account_name:_("NON_EXISTENT"));
 					}
 				}
 			}
@@ -647,7 +647,7 @@ static gboolean filtering_match_condition(FilteringProp *filtering, MsgInfo *inf
 						log_status_skip(LOG_DEBUG_FILTERING,
 								_("rule is account-based [id=%d, name='%s'], "
 								"skipped on user request\n"),
-								filtering->account_id, account->account_name);
+								filtering->account_id, account?account->account_name:_("NON_EXISTENT"));
 					} else {
 						log_status_skip(LOG_DEBUG_FILTERING,
 								_("rule is account-based, "
@@ -674,8 +674,8 @@ static gboolean filtering_match_condition(FilteringProp *filtering, MsgInfo *inf
 						log_status_skip(LOG_DEBUG_FILTERING,
 								_("rule is account-based [id=%d, name='%s'], "
 								"not matching current account [id=%d, name='%s']\n"),
-								filtering->account_id, account->account_name,
-								cur_account->account_id, cur_account->account_name);
+								filtering->account_id, account?account->account_name:_("NON_EXISTENT"),
+								cur_account->account_id, cur_account?cur_account->account_name:_("NON_EXISTENT"));
 					} else {
 						log_status_skip(LOG_DEBUG_FILTERING,
 								_("rule is account-based, "
@@ -692,8 +692,8 @@ static gboolean filtering_match_condition(FilteringProp *filtering, MsgInfo *inf
 							log_status_ok(LOG_DEBUG_FILTERING,
 									_("rule is account-based [id=%d, name='%s'], "
 									"current account [id=%d, name='%s']\n"),
-									account->account_id, account->account_name,
-									cur_account->account_id, cur_account->account_name);
+									account->account_id, account?account->account_name:_("NON_EXISTENT"),
+									cur_account->account_id, cur_account?cur_account->account_name:_("NON_EXISTENT"));
 						}
 					}
 				}
