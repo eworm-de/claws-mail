@@ -28,8 +28,6 @@ Mailbox conversion:
   convert_mbox.pl               Import mbox files
   kmail-mailbox2claws-mail.pl   Convert a kmail mailbox to a Claws Mail mailbox
   tbird2claws.py                Integrate a Thunderbird folder tree into Claws
-  convert_mbox.sh               Convert arbitrary Evolution mail folders (mbox 
-                                format + subfolders) - uses convert_mbox.pl
 
 Other tools:
   acroread2claws-mail.pl        Send PDFs from Adobe Reader 7

@@ -32,8 +32,7 @@ EXTRA_TOOLS = \
 	uuooffice \
 	vcard2xml.py \
 	kdeservicemenu/install.sh \
-	kdeservicemenu/claws-mail-kdeservicemenu.pl \
-	convert_mbox.sh
+	kdeservicemenu/claws-mail-kdeservicemenu.pl
 
 EXTRA_DIST = \
 	README \
