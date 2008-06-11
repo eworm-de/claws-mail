@@ -3385,3 +3385,4 @@
 ( cvs diff -u -r 1.25.2.25 -r 1.25.2.26 tools/Makefile.am;  ) > 3.4.0cvs87.patchset
 ( cvs diff -u -r 1.42.2.38 -r 1.42.2.39 po/fr.po;  ) > 3.4.0cvs88.patchset
 ( cvs diff -u -r 1.100.2.61 -r 1.100.2.62 AUTHORS;  cvs diff -u -r 1.25.2.26 -r 1.25.2.27 tools/Makefile.am;  cvs diff -u -r 1.30.2.30 -r 1.30.2.31 tools/README;  cvs diff -u -r -1.1.2.1 -r -1.1.2.2 tools/convert_mbox.sh;  ) > 3.4.0cvs89.patchset
+( cvs diff -u -r 1.213.2.183 -r 1.213.2.184 src/folder.c;  ) > 3.4.0cvs90.patchset

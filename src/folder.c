@@ -2117,7 +2117,8 @@ gint folder_item_scan_full(FolderItem *item, gboolean filtering)
 			}
 
 			/* Move to next folder number */
-			folder_list_cur = folder_list_cur->next;
+			if (folder_list_cur)
+				folder_list_cur = folder_list_cur->next;
 
 			if (folder_list_cur != NULL)
 				folder_cur_num = GPOINTER_TO_INT(folder_list_cur->data);
@@ -2136,7 +2137,8 @@ gint folder_item_scan_full(FolderItem *item, gboolean filtering)
 			debug_print("Removed message %d from cache.\n", cache_cur_num);
 
 			/* Move to next cache number */
-			cache_list_cur = cache_list_cur->next;
+			if (cache_list_cur)
+				cache_list_cur = cache_list_cur->next;
 
 			if (cache_list_cur != NULL)
 				cache_cur_num = ((MsgInfo *)cache_list_cur->data)->msgnum;
@@ -2173,8 +2175,11 @@ gint folder_item_scan_full(FolderItem *item, gboolean filtering)
 			}
 			
 			/* Move to next folder and cache number */
-			cache_list_cur = cache_list_cur->next;
-			folder_list_cur = folder_list_cur->next;
+			if (cache_list_cur)
+				cache_list_cur = cache_list_cur->next;
+			
+			if (folder_list_cur)
+				folder_list_cur = folder_list_cur->next;
 
 			if (cache_list_cur != NULL)
 				cache_cur_num = ((MsgInfo *)cache_list_cur->data)->msgnum;

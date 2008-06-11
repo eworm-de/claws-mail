@@ -1,3 +1,9 @@
+2008-06-11 [colin]	3.4.0cvs90
+
+	* src/folder.c
+		Maybe fix bug 1623, 'exits with segfault when 
+		logging in to certain imap-servers'
+
 2008-06-10 [mones]	3.4.0cvs89
 
 	* AUTHORS
