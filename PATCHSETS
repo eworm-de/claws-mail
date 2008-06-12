@@ -3386,3 +3386,4 @@
 ( cvs diff -u -r 1.42.2.38 -r 1.42.2.39 po/fr.po;  ) > 3.4.0cvs88.patchset
 ( cvs diff -u -r 1.100.2.61 -r 1.100.2.62 AUTHORS;  cvs diff -u -r 1.25.2.26 -r 1.25.2.27 tools/Makefile.am;  cvs diff -u -r 1.30.2.30 -r 1.30.2.31 tools/README;  cvs diff -u -r -1.1.2.1 -r -1.1.2.2 tools/convert_mbox.sh;  ) > 3.4.0cvs89.patchset
 ( cvs diff -u -r 1.213.2.183 -r 1.213.2.184 src/folder.c;  ) > 3.4.0cvs90.patchset
+( cvs diff -u -r 1.382.2.451 -r 1.382.2.452 src/compose.c;  cvs diff -u -r 1.50.2.46 -r 1.50.2.47 src/compose.h;  cvs diff -u -r 1.207.2.200 -r 1.207.2.201 src/folderview.c;  ) > 3.4.0cvs91.patchset

@@ -1,3 +1,13 @@
+2008-06-12 [colin]	3.4.0cvs91
+
+	* src/compose.c
+	* src/compose.h
+		Fix bug 1635, 'Last character of message is truncated 
+		when changing accounts w/ sigs'
+	* src/folderview.c
+		Fix bug 1636, 'Can't select "properties" on "folders 
+		only" folders'
+
 2008-06-11 [colin]	3.4.0cvs90
 
 	* src/folder.c

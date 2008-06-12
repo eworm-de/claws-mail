@@ -192,6 +192,7 @@ struct _Compose
 	UndoMain *undostruct;
 
 	gchar *sig_str;
+	gboolean sig_inserted;
 
 	/* external editor */
 	gchar      *exteditor_file;

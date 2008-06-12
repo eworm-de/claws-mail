@@ -1964,7 +1964,7 @@ static void folderview_set_sens_and_popup_menu(FolderView *folderview, gint row,
 	SET_SENS("/Mark all read", item->unread_msgs >= 1);
 	SET_SENS("/Search folder...", item->total_msgs >= 1 && 
 		 folderview->selected == folderview->opened);
-	SET_SENS("/Properties...", !item->no_select);
+	SET_SENS("/Properties...", TRUE);
 
 	SET_SENS("/Run processing rules", item->prefs->processing &&
 		 item->total_msgs >= 1 && !item->processing_pending);

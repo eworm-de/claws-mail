@@ -3266,7 +3266,7 @@ static void compose_insert_sig(Compose *compose, gboolean replace)
 
 		if (found) {
 			/* include previous \n\n */
-			gtk_text_iter_backward_chars(&first_iter, 2);
+			gtk_text_iter_backward_chars(&first_iter, 1);
 			start_iter = first_iter;
 			end_iter = first_iter;
 			/* skip re-start */
@@ -3290,10 +3290,15 @@ static void compose_insert_sig(Compose *compose, gboolean replace)
 		g_free(compose->sig_str);
 		compose->sig_str = NULL;
 	} else {
+		if (compose->sig_inserted == FALSE)
+			gtk_text_buffer_insert(buffer, &iter, "\n", -1);
+		compose->sig_inserted = TRUE;
+
+		cur_pos = gtk_text_iter_get_offset(&iter);
 		gtk_text_buffer_insert(buffer, &iter, compose->sig_str, -1);
 		/* remove \n\n */
 		gtk_text_buffer_get_iter_at_offset(buffer, &iter, cur_pos);
-		gtk_text_iter_forward_chars(&iter, 2);
+		gtk_text_iter_forward_chars(&iter, 1);
 		gtk_text_buffer_get_end_iter(buffer, &iter_end);
 		gtk_text_buffer_apply_tag_by_name(buffer,"signature",&iter, &iter_end);
 
@@ -3348,11 +3353,11 @@ static gchar *compose_get_signature_str(Compose *compose)
 	}
 
 	if (compose->account->sig_sep) {
-		sig_str = g_strconcat("\n\n", compose->account->sig_sep, "\n", sig_body,
+		sig_str = g_strconcat("\n", compose->account->sig_sep, "\n", sig_body,
 				      NULL);
 		g_free(sig_body);
 	} else
-		sig_str = g_strconcat("\n\n", sig_body, NULL);
+		sig_str = g_strconcat("\n", sig_body, NULL);
 
 	if (sig_str) {
 		if (g_utf8_validate(sig_str, -1, NULL) == TRUE)
