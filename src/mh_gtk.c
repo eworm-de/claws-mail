@@ -37,6 +37,7 @@
 #include "inputdialog.h"
 #include "mh.h"
 #include "foldersel.h"
+#include "prefs_common.h"
 
 static void new_folder_cb(FolderView *folderview, guint action, GtkWidget *widget);
 static void delete_folder_cb(FolderView *folderview, guint action, GtkWidget *widget);
@@ -127,9 +128,11 @@ static void new_folder_cb(FolderView *folderview, guint action,
 	g_return_if_fail(item != NULL);
 	g_return_if_fail(item->folder != NULL);
 
-	new_folder = input_dialog(_("New folder"),
-				  _("Input the name of new folder:"),
-				  _("NewFolder"));
+	new_folder = input_dialog_with_checkbtn(_("New folder"),
+						_("Input the name of new folder:"),
+						_("NewFolder"),
+						_("Inherit properties from parent folder"),
+						&(prefs_common.inherit_folder_props));
 	if (!new_folder) return;
 	AUTORELEASE_STR(new_folder, {g_free(new_folder); return;});
 
@@ -153,6 +156,10 @@ static void new_folder_cb(FolderView *folderview, guint action,
 	if (!new_item) {
 		alertpanel_error(_("Can't create the folder '%s'."), name);
 		return;
+	}
+
+	if(prefs_common.inherit_folder_props) {
+		folder_item_prefs_copy_prefs(item, new_item);
 	}
 
 	folder_write_list();

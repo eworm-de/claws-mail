@@ -25,6 +25,11 @@
 gchar *input_dialog			(const gchar	*title,
 					 const gchar	*message,
 					 const gchar	*default_string);
+gchar *input_dialog_with_checkbtn(const gchar	*title,
+				   const gchar	*message,
+				   const gchar	*default_string,
+				   const gchar  *checkbtn_label,
+				   gboolean *checkbtn_state);
 gchar *input_dialog_with_invisible	(const gchar	*title,
 					 const gchar	*message,
 					 const gchar	*default_string);

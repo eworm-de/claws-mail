@@ -46,6 +46,8 @@
 #include "gtkutils.h"
 #include "utils.h"
 #include "combobox.h"
+#include "prefs_common.h"
+
 
 #define INPUT_DIALOG_WIDTH	420
 
@@ -73,7 +75,9 @@ static gboolean is_pass = FALSE;
 static void input_dialog_create	(gboolean is_password);
 static gchar *input_dialog_open	(const gchar	*title,
 				 const gchar	*message,
+				 const gchar  *checkbtn_label,
 				 const gchar	*default_string,
+				 gboolean default_checkbtn_state,
 				 gboolean	*remember);
 static void input_dialog_set	(const gchar	*title,
 				 const gchar	*message,
@@ -116,7 +120,7 @@ gchar *input_dialog(const gchar *title, const gchar *message,
 		HILDON_GTK_INPUT_MODE_FULL | HILDON_GTK_INPUT_MODE_AUTOCAP);
 #endif
 
-	return input_dialog_open(title, message, default_string, NULL);
+	return input_dialog_open(title, message, NULL, default_string, FALSE, NULL);
 }
 
 gchar *input_dialog_with_invisible(const gchar *title, const gchar *message,
@@ -141,7 +145,7 @@ gchar *input_dialog_with_invisible(const gchar *title, const gchar *message,
 		HILDON_GTK_INPUT_MODE_FULL | HILDON_GTK_INPUT_MODE_INVISIBLE);
 #endif
 
-	return input_dialog_open(title, message, default_string, NULL);
+	return input_dialog_open(title, message, NULL, default_string, FALSE, NULL);
 }
 
 gchar *input_dialog_combo(const gchar *title, const gchar *message,
@@ -177,7 +181,40 @@ gchar *input_dialog_combo_remember(const gchar *title, const gchar *message,
 	combobox_unset_popdown_strings(GTK_COMBO_BOX(combo));
 	combobox_set_popdown_strings(GTK_COMBO_BOX(combo), list);
 
-	return input_dialog_open(title, message, default_string, remember);
+	return input_dialog_open(title, message, NULL, default_string, FALSE, remember);
+}
+
+gchar *input_dialog_with_checkbtn(const gchar	*title,
+				   const gchar	*message,
+				   const gchar	*default_string,
+				   const gchar  *checkbtn_label,
+				   gboolean *checkbtn_state)
+{
+	if (dialog && GTK_WIDGET_VISIBLE(dialog)) return NULL;
+
+	if (!dialog)
+		input_dialog_create(FALSE);
+
+	type = INPUT_DIALOG_NORMAL;
+	gtk_widget_hide(combo);
+	gtk_widget_show(entry);
+
+	if(checkbtn_label && checkbtn_state)
+		gtk_widget_show(remember_checkbtn);
+	else
+		gtk_widget_hide(remember_checkbtn);
+
+	gtk_widget_show(icon_q);
+	gtk_widget_hide(icon_p);
+	is_pass = FALSE;
+	gtk_entry_set_visibility(GTK_ENTRY(entry), TRUE);
+#ifdef MAEMO
+	hildon_gtk_entry_set_input_mode(GTK_ENTRY(entry), 
+		HILDON_GTK_INPUT_MODE_FULL | HILDON_GTK_INPUT_MODE_AUTOCAP);
+#endif
+
+	return input_dialog_open(title, message, checkbtn_label, default_string, 
+	       			 prefs_common.inherit_folder_props, checkbtn_state);
 }
 
 gchar *input_dialog_query_password(const gchar *server, const gchar *user)
@@ -308,7 +345,10 @@ static void input_dialog_create(gboolean is_password)
 }
 
 static gchar *input_dialog_open(const gchar *title, const gchar *message,
-				const gchar *default_string, gboolean *remember)
+				const gchar *checkbtn_label,
+				const gchar *default_string,
+				gboolean default_checkbtn_state,
+				gboolean *remember)
 {
 	gchar *str;
 
@@ -317,10 +357,16 @@ static gchar *input_dialog_open(const gchar *title, const gchar *message,
 	if (!dialog)
 		input_dialog_create(FALSE);
 
+	if(checkbtn_label)
+		gtk_button_set_label(GTK_BUTTON(remember_checkbtn), checkbtn_label);
+	else
+		gtk_button_set_label(GTK_BUTTON(remember_checkbtn), _("Remember this"));
+
 	input_dialog_set(title, message, default_string);
 	gtk_widget_show(dialog);
 
-	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(remember_checkbtn), FALSE);
+	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(remember_checkbtn),
+				     default_checkbtn_state);
 	if (remember)
 		gtk_widget_show(remember_checkbtn);
 	else

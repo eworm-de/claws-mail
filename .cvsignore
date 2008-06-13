@@ -25,3 +25,4 @@ claws-mail.pc
 patches
 commitHelper.tmp
 *.patchset
+.project

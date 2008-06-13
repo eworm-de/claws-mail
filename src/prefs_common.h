@@ -489,6 +489,7 @@ struct _PrefsCommon
 	gboolean use_networkmanager;
 	gboolean use_shred;
 	gboolean two_line_vert;
+	gboolean inherit_folder_props;
 
 };
 

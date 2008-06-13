@@ -1116,6 +1116,9 @@ static PrefParam param[] = {
 	{"two_line_vertical", "TRUE", &prefs_common.two_line_vert,
 	P_BOOL, NULL, NULL, NULL },
 
+	{"inherit_folder_properties", "FALSE", &prefs_common.inherit_folder_props, P_BOOL,
+	 NULL, NULL, NULL},
+
 	{NULL, NULL, NULL, P_OTHER, NULL, NULL, NULL}
 };
 

@@ -154,12 +154,15 @@ static void new_folder_cb(FolderView *folderview, guint action,
 	g_return_if_fail(item->folder != NULL);
 	g_return_if_fail(item->folder->account != NULL);
 
-	new_folder = input_dialog
+	new_folder = input_dialog_with_checkbtn
 		(_("New folder"),
 		 _("Input the name of new folder:\n"
 		   "(if you want to create a folder to store subfolders\n"
 		   "only and no mail, append '/' to the folder name)"),
-		 _("NewFolder"));
+		 _("NewFolder"),
+		 _("Inherit properties from parent folder"),
+		 &(prefs_common.inherit_folder_props));
+
 	if (!new_folder) return;
 	AUTORELEASE_STR(new_folder, {g_free(new_folder); return;});
 
@@ -192,6 +195,11 @@ static void new_folder_cb(FolderView *folderview, guint action,
 		alertpanel_error(_("Can't create the folder '%s'."), name);
 		return;
 	}
+
+	if(prefs_common.inherit_folder_props) {
+		folder_item_prefs_copy_prefs(item, new_item);
+	}
+
 	folder_write_list();
 }
 

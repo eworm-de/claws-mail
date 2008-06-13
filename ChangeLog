@@ -1,3 +1,19 @@
+2008-06-13 [holger]	3.4.0cvs94
+
+	* .cvsignore
+		More files to ignore
+	* src/gtk/inputdialog.c
+	* src/gtk/inputdialog.h
+		Make input dialog more generic so that a checkbox
+		with custom text can be used in addition to the
+		"remember this" checkbox
+	* src/imap_gtk.c
+	* src/mh_gtk.c
+	* src/prefs_common.c
+	* src/prefs_common.h
+		Allow new folders to inherit the properties of the
+		parent folder during folder creation
+
 2008-06-13 [wwp]	3.4.0cvs93
 
 	* src/addressbook.c
