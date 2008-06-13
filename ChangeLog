@@ -1,3 +1,9 @@
+2008-06-13 [wwp]	3.4.0cvs93
+
+	* src/addressbook.c
+		a better fix for this string, won't break up translations,
+		and is conform to other similar ones.
+
 2008-06-13 [wwp]	3.4.0cvs92
 
 	* src/addrduplicates.c

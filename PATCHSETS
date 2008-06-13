@@ -3388,3 +3388,4 @@
 ( cvs diff -u -r 1.213.2.183 -r 1.213.2.184 src/folder.c;  ) > 3.4.0cvs90.patchset
 ( cvs diff -u -r 1.382.2.451 -r 1.382.2.452 src/compose.c;  cvs diff -u -r 1.50.2.46 -r 1.50.2.47 src/compose.h;  cvs diff -u -r 1.207.2.200 -r 1.207.2.201 src/folderview.c;  ) > 3.4.0cvs91.patchset
 ( cvs diff -u -r 1.1.2.10 -r 1.1.2.11 src/addrduplicates.c;  cvs diff -u -r 1.9.2.22 -r 1.9.2.23 src/addressadd.c;  cvs diff -u -r 1.60.2.117 -r 1.60.2.118 src/addressbook.c;  cvs diff -u -r 1.1.2.10 -r 1.1.2.11 src/addressbook_foldersel.c;  cvs diff -u -r 1.11.2.18 -r 1.11.2.19 src/editgroup.c;  cvs diff -u -r 1.26.2.35 -r 1.26.2.36 src/foldersel.c;  ) > 3.4.0cvs92.patchset
+( cvs diff -u -r 1.60.2.118 -r 1.60.2.119 src/addressbook.c;  ) > 3.4.0cvs93.patchset

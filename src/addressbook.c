@@ -2877,7 +2877,7 @@ static void addressbook_treenode_delete_cb(
 		}
 		else {
 			message = g_strdup_printf
-				( _( "Do you want to delete '%s'? "
+				( _( "Do you want to delete '%s' ? "
 			    	     "If you delete the folder only, the addresses it contains will be moved into the parent folder." ),
 			 	 obj->name );
 			aval = alertpanel( _("Delete folder"), message,
