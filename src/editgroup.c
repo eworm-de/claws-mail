@@ -352,6 +352,16 @@ static void addressbook_edit_group_create( gboolean *cancelled ) {
 
 	clist_group = gtk_sctree_new_with_titles( GROUP_N_COLS, GROUP_N_COLS, titles );
 	gtk_container_add( GTK_CONTAINER(clist_swin), clist_group );
+	if (prefs_common.enable_dotted_lines) {
+		gtk_ctree_set_line_style(GTK_CTREE(clist_group), GTK_CTREE_LINES_DOTTED);
+		gtk_ctree_set_expander_style(GTK_CTREE(clist_group),
+				     GTK_CTREE_EXPANDER_SQUARE);
+	} else {
+		gtk_ctree_set_line_style(GTK_CTREE(clist_group), GTK_CTREE_LINES_NONE);
+		gtk_ctree_set_expander_style(GTK_CTREE(clist_group),
+				     GTK_CTREE_EXPANDER_TRIANGLE);
+	}
+	gtk_sctree_set_stripes(GTK_SCTREE(clist_group), prefs_common.use_stripes_in_summaries);
 	gtk_clist_set_selection_mode( GTK_CLIST(clist_group), GTK_SELECTION_EXTENDED );
 	gtk_clist_set_column_width( GTK_CLIST(clist_group), GROUP_COL_NAME, GROUP_COL_WIDTH_NAME );
 	gtk_clist_set_column_width( GTK_CLIST(clist_group), GROUP_COL_EMAIL, GROUP_COL_WIDTH_EMAIL );

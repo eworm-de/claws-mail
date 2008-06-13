@@ -117,10 +117,10 @@ static void addressbook_foldersel_cancel( GtkWidget *widget, gboolean *cancelled
 	gtk_main_quit();
 }
 
-static void addressbook_foldersel_folder_select( GtkCTree *ctree, gint row, gint column,
-					GdkEvent *event, gpointer data )
+static void addressbook_foldersel_folder_select( GtkCTree *ctree, GtkCTreeNode *node,
+				      gint column, gpointer data )
 {
-	addressbook_foldersel_dlg.fiSelected = gtk_clist_get_row_data( GTK_CLIST(ctree), row );
+	addressbook_foldersel_dlg.fiSelected = gtk_ctree_node_get_row_data( ctree, node );
 }
 
 static gboolean addressbook_foldersel_tree_button( GtkCTree *ctree, GdkEventButton *event, gpointer data )
@@ -158,6 +158,7 @@ static void addressbook_foldersel_create( void )
 	GtkWidget *ok_btn;
 	GtkWidget *cancel_btn;
 	static GdkGeometry geometry;
+	gchar *titles[1];
 
 	window = gtkut_window_new(GTK_WINDOW_TOPLEVEL, "addressbook_foldersel" );
 	gtk_container_set_border_width( GTK_CONTAINER(window), 0 );
@@ -186,13 +187,22 @@ static void addressbook_foldersel_create( void )
 				        GTK_POLICY_AUTOMATIC );
 	gtk_box_pack_start( GTK_BOX(vlbox), tree_win, TRUE, TRUE, 0 );
 
-	tree_folder = gtk_ctree_new( 1, 0 );
+	titles[0] = _( "Address Book") ;
+
+	tree_folder = gtk_sctree_new_with_titles( 1, 0, titles );
 	gtk_container_add( GTK_CONTAINER(tree_win), tree_folder );
 	gtk_clist_column_titles_show( GTK_CLIST(tree_folder) );
-	gtk_clist_set_column_title( GTK_CLIST(tree_folder), 0, _( "Address Book" ) );
-	gtk_ctree_set_line_style( GTK_CTREE(tree_folder), GTK_CTREE_LINES_DOTTED );
+	if (prefs_common.enable_dotted_lines) {
+		gtk_ctree_set_line_style(GTK_CTREE(tree_folder), GTK_CTREE_LINES_DOTTED);
+		gtk_ctree_set_expander_style(GTK_CTREE(tree_folder),
+				     GTK_CTREE_EXPANDER_SQUARE);
+	} else {
+		gtk_ctree_set_line_style(GTK_CTREE(tree_folder), GTK_CTREE_LINES_NONE);
+		gtk_ctree_set_expander_style(GTK_CTREE(tree_folder),
+				     GTK_CTREE_EXPANDER_TRIANGLE);
+	}
+	gtk_sctree_set_stripes(GTK_SCTREE(tree_folder), prefs_common.use_stripes_everywhere);
 	gtk_clist_set_selection_mode( GTK_CLIST(tree_folder), GTK_SELECTION_BROWSE );
-	gtk_ctree_set_expander_style( GTK_CTREE(tree_folder), GTK_CTREE_EXPANDER_SQUARE );
 	gtk_ctree_set_indent( GTK_CTREE(tree_folder), CTREE_INDENT );
 	gtk_clist_set_auto_sort( GTK_CLIST(tree_folder), TRUE );
 
@@ -208,7 +218,7 @@ static void addressbook_foldersel_create( void )
 			 G_CALLBACK(addressbook_foldersel_ok), NULL );
 	g_signal_connect( G_OBJECT(cancel_btn), "clicked",
 			 G_CALLBACK(addressbook_foldersel_cancel), NULL );
-	g_signal_connect( G_OBJECT(tree_folder), "select_row",
+	g_signal_connect( G_OBJECT(tree_folder), "tree_select_row",
 			 G_CALLBACK(addressbook_foldersel_folder_select), NULL );
 	g_signal_connect( G_OBJECT(tree_folder), "button_press_event",
 			 G_CALLBACK(addressbook_foldersel_tree_button), NULL );

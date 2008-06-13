@@ -445,6 +445,7 @@ static GtkWidget* create_email_view(GtkListStore *store)
 	GtkCellRenderer *renderer;
 
 	view = gtk_tree_view_new_with_model(GTK_TREE_MODEL(store));
+	gtk_tree_view_set_rules_hint(GTK_TREE_VIEW(view), prefs_common.use_stripes_everywhere);
 	renderer = gtk_cell_renderer_text_new();
 	gtk_tree_view_insert_column_with_attributes(GTK_TREE_VIEW(view),
 	        -1,
@@ -464,6 +465,7 @@ static GtkWidget* create_detail_view(GtkListStore *store)
 	GList *walk;
 
 	view = gtk_tree_view_new_with_model(GTK_TREE_MODEL(store));
+	gtk_tree_view_set_rules_hint(GTK_TREE_VIEW(view), prefs_common.use_stripes_everywhere);
 	renderer = gtk_cell_renderer_text_new();
 
 	/* col 1 */

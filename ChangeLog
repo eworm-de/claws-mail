@@ -1,3 +1,22 @@
+2008-06-13 [wwp]	3.4.0cvs92
+
+	* src/addrduplicates.c
+	* src/addressadd.c
+	* src/addressbook.c
+	* src/addressbook_foldersel.c
+	* src/editgroup.c
+		use tree decorations everywhere AB folders are used (AB tree pane,
+		    add address to AB, select AB folder, edit group, custom attr, find dup
+		    results), in order to match global style
+		make double-clicks in AB's tree pane behave like in MW's folder tree pane:
+		    double clicking on groups in tree pane does open the group edit dialog
+		    double clicking on other items in tree pane does expand/collapse
+		fix a missing space in AB's delete-folder dialog
+		fix again edit button sensitivity (thanks to iwkse, this reworks cvs79)
+
+	* src/foldersel.c
+		make foldersel dialog show dotted lines according to global (hidden) prefs
+
 2008-06-12 [colin]	3.4.0cvs91
 
 	* src/compose.c
