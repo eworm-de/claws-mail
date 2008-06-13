@@ -385,7 +385,7 @@ static void prefs_filtering_action_create(void)
 	gtk_widget_grab_default(ok_btn);
 
 	gtk_window_set_title(GTK_WINDOW(window),
-			     _("Filtering action configuration"));
+			     _("Action configuration"));
 	g_signal_connect(G_OBJECT(window), "delete_event",
 			 G_CALLBACK(prefs_filtering_action_deleted), NULL);
 	g_signal_connect(G_OBJECT(window), "size_allocate",

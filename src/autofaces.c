@@ -33,7 +33,7 @@ gint get_content_for_any_face(gchar *buf, gint len, gchar *anyname, gint maxlen)
 	gchar *xfile;
 	gint  lastc;
 
-	xfile = g_strconcat(get_rc_dir(), G_DIR_SEPARATOR, AUTOFACES_DIR,
+	xfile = g_strconcat(get_rc_dir(), G_DIR_SEPARATOR_S, AUTOFACES_DIR,
 	                    G_DIR_SEPARATOR_S, anyname, NULL);
 	buf[0] = '\0';
 	if ((xfp = fopen(xfile, "rb")) == NULL) {

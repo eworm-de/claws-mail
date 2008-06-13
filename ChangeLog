@@ -1,3 +1,10 @@
+2008-06-13 [mones]	3.4.0cvs96
+
+	* src/autofaces.c
+		Fix crasher ;-)
+	* src/prefs_filtering_action.c
+		Fixed cosmetic bug, processing also displays "Filtering"
+
 2008-06-13 [mones]	3.4.0cvs95
 
 	* src/Makefile.am
