@@ -171,7 +171,8 @@ claws_mail_SOURCES = \
 	unmime.c \
 	uri_opener.c \
 	vcard.c \
-	wizard.c
+	wizard.c \
+	autofaces.c
 
 claws_mailincludedir = $(pkgincludedir)
 claws_mailinclude_HEADERS = \
@@ -319,7 +320,8 @@ claws_mailinclude_HEADERS = \
 	unmime.h \
 	uri_opener.h \
 	vcard.h \
-	wizard.h
+	wizard.h \
+	autofaces.h
 
 BUILT_SOURCES = \
 	matcher_parser_parse.h \

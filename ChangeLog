@@ -1,3 +1,12 @@
+2008-06-13 [mones]	3.4.0cvs95
+
+	* src/Makefile.am
+	* src/autofaces.c	** NEW FILE **	
+	* src/autofaces.h	** NEW FILE **
+	* src/compose.c
+		Allow setting Faces and X-Faces globally and per-account
+		from configuration files under ~/.claws-mail/autofaces
+
 2008-06-13 [holger]	3.4.0cvs94
 
 	* .cvsignore
