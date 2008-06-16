@@ -1,3 +1,10 @@
+2008-06-16 [paul]	3.4.0cvs98
+
+	* src/imap_gtk.c
+	* src/mh_gtk.c
+	* src/gtk/inputdialog.c
+		really fussy coding style fixes
+
 2008-06-16 [paul]	3.4.0cvs97
 
 	* src/Makefile.am

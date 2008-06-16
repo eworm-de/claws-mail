@@ -199,7 +199,7 @@ gchar *input_dialog_with_checkbtn(const gchar	*title,
 	gtk_widget_hide(combo);
 	gtk_widget_show(entry);
 
-	if(checkbtn_label && checkbtn_state)
+	if (checkbtn_label && checkbtn_state)
 		gtk_widget_show(remember_checkbtn);
 	else
 		gtk_widget_hide(remember_checkbtn);
@@ -357,7 +357,7 @@ static gchar *input_dialog_open(const gchar *title, const gchar *message,
 	if (!dialog)
 		input_dialog_create(FALSE);
 
-	if(checkbtn_label)
+	if (checkbtn_label)
 		gtk_button_set_label(GTK_BUTTON(remember_checkbtn), checkbtn_label);
 	else
 		gtk_button_set_label(GTK_BUTTON(remember_checkbtn), _("Remember this"));

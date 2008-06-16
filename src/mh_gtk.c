@@ -158,7 +158,7 @@ static void new_folder_cb(FolderView *folderview, guint action,
 		return;
 	}
 
-	if(prefs_common.inherit_folder_props) {
+	if (prefs_common.inherit_folder_props) {
 		folder_item_prefs_copy_prefs(item, new_item);
 	}
 
