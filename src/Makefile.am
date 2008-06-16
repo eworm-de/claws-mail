@@ -48,6 +48,7 @@ claws_mail_SOURCES = \
 	addrselect.c \
 	addrduplicates.c \
 	alertpanel.c \
+	autofaces.c \
 	browseldap.c \
 	codeconv.c \
 	compose.c \
@@ -171,8 +172,7 @@ claws_mail_SOURCES = \
 	unmime.c \
 	uri_opener.c \
 	vcard.c \
-	wizard.c \
-	autofaces.c
+	wizard.c
 
 claws_mailincludedir = $(pkgincludedir)
 claws_mailinclude_HEADERS = \
@@ -197,6 +197,7 @@ claws_mailinclude_HEADERS = \
 	addrselect.h \
 	addrduplicates.h \
 	alertpanel.h \
+	autofaces.h \
 	browseldap.h \
 	codeconv.h \
 	compose.h \
@@ -320,8 +321,7 @@ claws_mailinclude_HEADERS = \
 	unmime.h \
 	uri_opener.h \
 	vcard.h \
-	wizard.h \
-	autofaces.h
+	wizard.h
 
 BUILT_SOURCES = \
 	matcher_parser_parse.h \
