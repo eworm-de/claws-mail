@@ -3233,7 +3233,7 @@ static void compose_insert_sig(Compose *compose, gboolean replace)
 	GtkTextBuffer *buffer = gtk_text_view_get_buffer(text);
 	GtkTextMark *mark;
 	GtkTextIter iter, iter_end;
-	gint cur_pos;
+	gint cur_pos, ins_pos;
 	gboolean prev_autowrap;
 	gboolean found = FALSE;
 	gboolean exists = FALSE;
@@ -3249,6 +3249,7 @@ static void compose_insert_sig(Compose *compose, gboolean replace)
 	mark = gtk_text_buffer_get_insert(buffer);
 	gtk_text_buffer_get_iter_at_mark(buffer, &iter, mark);
 	cur_pos = gtk_text_iter_get_offset (&iter);
+	ins_pos = cur_pos;
 
 	gtk_text_buffer_get_end_iter(buffer, &iter);
 
@@ -3306,10 +3307,11 @@ static void compose_insert_sig(Compose *compose, gboolean replace)
 		if (cur_pos > gtk_text_buffer_get_char_count (buffer))
 			cur_pos = gtk_text_buffer_get_char_count (buffer);
 	}
+
 	/* put the cursor where it should be 
-	 * either where the quote_fmt says, either before the signature */
+	 * either where the quote_fmt says, either where it was */
 	if (compose->set_cursor_pos < 0)
-		gtk_text_buffer_get_iter_at_offset(buffer, &iter, cur_pos);
+		gtk_text_buffer_get_iter_at_offset(buffer, &iter, ins_pos);
 	else
 		gtk_text_buffer_get_iter_at_offset(buffer, &iter, 
 			compose->set_cursor_pos);

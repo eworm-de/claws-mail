@@ -1,3 +1,8 @@
+2008-06-16 [colin]	3.4.0cvs99
+
+	* src/compose.c
+		Fix cursor placing on signature change
+
 2008-06-16 [paul]	3.4.0cvs98
 
 	* src/imap_gtk.c
