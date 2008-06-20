@@ -527,6 +527,13 @@
 	following, and change them while Claws Mail is not running, in 
 	<filename>~/.claws-mail/clawsrc</filename>.
     </para>
+    <para>
+	There's a small tool written in Perl-GTK called Clawsker which 
+	provides a user-friendly GUI for tweaking these settings instead of
+	direct editing of <filename>clawsrc</filename>. You can read more
+	about it on the <ulink url="http://www.claws-mail.org/clawsker">Clawsker
+	page</ulink>.
+    </para>
     <variablelist>
       <varlistentry>
 	<term><literal>addressbook_use_editaddress_dialog</literal></term>
@@ -650,8 +657,8 @@
 	  <para>
 	0 or 1. The outgoing encoding of a message will use 7bit US-ASCII
 	whenever it is suitable for the message content, ignoring the
-	Outgoing Encoding option unless it is necessary. Turning this
-	option off forces the user-defined encoding to be used, regardless
+	<quote>Outgoing encoding</quote> option unless it is necessary. Turning
+	this option off forces the user-defined encoding to be used, regardless
 	of message content. Default is 1, turned on.
 	  </para>
 	</listitem>
@@ -788,6 +795,37 @@
 	</listitem>
       </varlistentry>
     </variablelist>
+  </section>
+  <section id="adv_autofaces">
+    <title>Autofaces</title>
+    <para>
+	Claws Mail allows setting the Face and X-Face headers directly
+	from files, either globally for all defined accounts 
+	or on a per-account basis. These files must be placed in the
+	<filename>~/.claws-mail/autofaces/</filename> directory.
+    </para>
+    <para>
+	If they exist, the global Face and/or X-Face headers for all
+	accounts are taken from the <filename>face</filename> and/or
+	<filename>xface</filename> files respectively. In a similar
+	manner, Face and/or X-Face headers for a specific account can
+	be provided by <filename>face.<emphasis>accountname</emphasis></filename>
+	and/or <filename>xface.<emphasis>accountname</emphasis></filename>,
+	where <emphasis>accountname</emphasis> is the name of the account you 
+	want this header to be associated with.
+   </para>
+   <para>
+	If the name of the account contains characters which may be unsuitable 
+	for the underlying filesystem (including spaces) these are replaced by 
+	underscores (<quote>_</quote>) when searching for the autofaces of 
+	that account. For example, if your account is called 
+	<quote>&lt;My Mail&gt;</quote>, the name for the X-Face filename for
+	that account would be
+	<filename>~/.claws-mail/autofaces/xface._My_Mail_</filename>.
+	Be aware that this feature doesn't check the content of the files,
+	or for duplication of headers, (most mailers, including Claws 
+	Mail, will ignore duplicates and display the last one only). 
+    </para>
   </section>
 </section>
 

@@ -12,7 +12,7 @@
 	<quote>esconder</quote> lo que escriba usando ROT-13, aplicar parches
 	contenidos en los correos directamente, etc. El único límite es su
 	imaginación. Las acciones se pueden configurar a través del menú
-	<quote>Herramientas</quote>.
+	<quote>/Configuración/Acciones...</quote>.
     </para>
     <para>
 	El menú <quote>Herramientas/Acciones</quote> contendrá un elemento
@@ -27,10 +27,11 @@
 	acciones. Para ello abra el menú 
 	<quote>Configuración/Preferencias</quote> y seleccione
 	<quote>Configurar barras de herramientas/Ventana principal</quote>.
-	En la lista de iconos disponibles seleccione el que desee y después en
-	<quote>Evento ejecutado al pulsar</quote> seleccione <quote>Acciones
-	de Claws Mail</quote> y la acción a ejecutar en el menú desplegable
-	<quote>Acción de Claws Mail</quote>.
+	Seleccione <quote>Acción de usuario</quote> en el menú desplegable
+	<quote>Tipo de ítem</quote>, después seleccione la acción en el 
+	desplegable <quote>Evento ejecutado al pulsar</quote> y, finalmente,
+	pulse en el botón <quote>Icono</quote> para seleccionar el icono que
+	desee utilizar.
     </para>
     <blockquote>
       <example>
@@ -559,6 +560,13 @@
 	<filename>~/.claws-mail/sylpheedrc</filename>, y cambiarlas 
 	mientras &SC; no esté ejecutándose.
     </para>
+    <para>
+	Existe una pequeña herramienta gráfica escrita en Perl-GTK denominada 
+	Clawsker que permite un ajuste más amigable de estas preferencias en
+	lugar de la edición directa de <filename>clawsrc</filename>.
+	Puede leer más sobre ella en la <ulink 
+	url="http://www.claws-mail.org/clawsker">página de Clawsker</ulink>.
+    </para>
     <variablelist>
       <varlistentry>
 	<term><literal>bold_unread</literal></term>
@@ -623,11 +631,29 @@
 	</listitem>
       </varlistentry>
       <varlistentry>
+	<term><literal>two_line_vertical</literal></term>
+	<listitem>
+	  <para>
+	Distribuye en dos líneas la información de la lista de mensajes
+	cuando se utiliza el aspecto de tres columnas. 
+	  </para>
+	</listitem>
+      </varlistentry>
+      <varlistentry>
         <term><literal>unsafe_ssl_certs</literal></term>
 	<listitem>
 	  <para>
 	Permite a &SC; recordar múltiples certificados SSL para un 
 	servidor/puerto dado. Está deshabilitado por omisión.
+	  </para>
+	</listitem>
+      </varlistentry>
+      <varlistentry>
+	<term><literal>use_networkmanager</literal></term>
+	<listitem>
+	  <para>
+	Utilizar NetworkManager para desconectar automáticamente. Esta
+	opción está activada por defecto.
 	  </para>
 	</listitem>
       </varlistentry>
@@ -700,6 +726,20 @@
 	</listitem>
       </varlistentry>
       <varlistentry>
+        <term><literal>outgoing_fallback_to_ascii</literal></term>
+	<listitem>
+	  <para>
+	0 o 1. La codificación de los mensajes enviados usará ASCII de
+	7 bits cuando sea adecuada al contenido del mensaje, ignorando la
+	opción <quote>Codificación de caracteres para enviar</quote> a menos
+	que sea necesaria. Desactivando esta opción se utilizará la
+	codificación definida por el usuario de manera obligatoria, 
+	independientemente del contenido del mensaje. Por omisión es 1, 
+	activado.
+	  </para>
+	</listitem>
+      </varlistentry>
+      <varlistentry>
         <term><literal>respect_flowed_format</literal></term>
         <listitem>
           <para>
@@ -709,6 +749,15 @@
 	que de otra manera serían cortadas. Por omisión es 0, desactivado.
           </para>
         </listitem>
+      </varlistentry>
+      <varlistentry>
+        <term><literal>save_parts_readwrite</literal></term>
+	<listitem>
+	  <para>
+	Al abrir los adjuntos guarda los ficheros temporales con permiso
+	de escritura activado.
+	  </para>
+	</listitem>
       </varlistentry>
       <varlistentry>
 	<term><literal>skip_ssl_cert_check</literal></term>
@@ -770,5 +819,37 @@
 	</listitem>
       </varlistentry>
     </variablelist>
+  </section>
+  <section id="adv_autofaces">
+    <title>Autofaces</title>
+    <para>
+	&SC; permite establecer el contenido de las cabeceras Face y X-Face 
+	directamente desde ficheros, bien globalmente para todas las cuentas 
+	definidas o bien para cada cuenta en particular. Estos ficheros deben 
+	ubicarse en el directorio <filename>~/.claws-mail/autofaces</filename>.
+    </para>
+    <para>
+	Si existen, las Face y/o X-Face para todas las cuentas se obtienen
+	de los ficheros <filename>face</filename> y/o <filename>xface</filename>
+	respectivamente. De manera similar, si existen, las Face y/o X-Face
+	para una cuenta concreta se obtienen de
+	<filename>face.<emphasis>nombredecuenta</emphasis></filename> y/o
+	<filename>xface.<emphasis>nombredecuenta</emphasis></filename>, donde
+	<emphasis>nombredecuenta</emphasis> es el nombre de la cuenta con la
+	que desea asociar esta cabecera.
+   </para>
+   <para>
+	Si el nombre de la cuenta contiene caracteres que pueden resultar
+	inadecuados al sistema de ficheros subyacente (incluidos los espacios)
+	éstos se sustituirán por subrayados (<quote>_</quote>) al buscar los
+	autofaces de dicha cuenta. Por ejemplo, si su cuenta se llama
+	<quote>&lt;Mi Correo&gt;</quote>, el nombre para la cabecera
+	X-Face de esa cuenta sería
+	<filename>~/.claws-mail/autofaces/xface._Mi_Correo_</filename>.
+	Nótese que esta funcionalidad no comprueba el contenido de los 
+	ficheros, ni la existencia de cabeceras duplicadas (la mayoría de los 
+	clientes de correo, incluyendo &SC;, ignorarán los duplicados y sólo 
+	mostrarán la última de ellas).
+    </para>
   </section>
 </section>

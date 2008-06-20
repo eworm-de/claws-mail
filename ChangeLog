@@ -1,3 +1,11 @@
+2008-06-20 [mones]	3.4.0cvs100
+
+	* manual/advanced.xml
+		Added autofaces documentation, note about clawsker in hidden
+		preferences, minor markup fix. Thanks Paul for proofreading
+	* manual/es/advanced.xml
+		Synchronised Spanish manual
+
 2008-06-16 [colin]	3.4.0cvs99
 
 	* src/compose.c

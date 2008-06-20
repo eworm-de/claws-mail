@@ -3395,3 +3395,4 @@
 ( cvs diff -u -r 1.155.2.88 -r 1.155.2.89 src/Makefile.am;  ) > 3.4.0cvs97.patchset
 ( cvs diff -u -r 1.1.2.57 -r 1.1.2.58 src/imap_gtk.c;  cvs diff -u -r 1.2.2.31 -r 1.2.2.32 src/mh_gtk.c;  cvs diff -u -r 1.2.2.28 -r 1.2.2.29 src/gtk/inputdialog.c;  ) > 3.4.0cvs98.patchset
 ( cvs diff -u -r 1.382.2.453 -r 1.382.2.454 src/compose.c;  ) > 3.4.0cvs99.patchset
+( cvs diff -u -r 1.1.2.49 -r 1.1.2.50 manual/advanced.xml;  cvs diff -u -r 1.1.2.12 -r 1.1.2.13 manual/es/advanced.xml;  ) > 3.4.0cvs100.patchset
