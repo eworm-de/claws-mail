@@ -598,11 +598,11 @@ static GtkWidget *about_create_child_page_license(void)
 
 	gtk_text_buffer_insert(buffer, &iter,
 		_("You should have received a copy of the GNU General Public License "
-		  "along with this program. If not, see "), -1);
+		  "along with this program. If not, see <"), -1);
 	gtk_text_buffer_insert_with_tags_by_name(buffer, &iter, 
 		"http://www.gnu.org/licenses/", -1,
 		"link", NULL);
-	gtk_text_buffer_insert(buffer, &iter, ".\n\n", -1);
+	gtk_text_buffer_insert(buffer, &iter, _(">. \n\n"), -1);
 #ifdef USE_OPENSSL
 	gtk_text_buffer_insert(buffer, &iter,
 		_("This product includes software developed by the OpenSSL Project "
