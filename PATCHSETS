@@ -3398,3 +3398,4 @@
 ( cvs diff -u -r 1.1.2.49 -r 1.1.2.50 manual/advanced.xml;  cvs diff -u -r 1.1.2.12 -r 1.1.2.13 manual/es/advanced.xml;  ) > 3.4.0cvs100.patchset
 ( cvs diff -u -r 1.1.2.50 -r 1.1.2.51 manual/advanced.xml;  cvs diff -u -r 1.1.2.13 -r 1.1.2.14 manual/es/advanced.xml;  cvs diff -u -r 1.4.2.62 -r 1.4.2.63 src/gtk/about.c;  ) > 3.4.0cvs101.patchset
 ( cvs diff -u -r 1.4.2.63 -r 1.4.2.64 src/gtk/about.c;  ) > 3.4.0cvs102.patchset
+( cvs diff -u -r 1.1.2.21 -r 1.1.2.22 manual/plugins.xml;  ) > 3.4.0cvs103.patchset

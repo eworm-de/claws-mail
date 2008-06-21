@@ -1,3 +1,8 @@
+2008-06-21 [paul]	3.4.0cvs103
+
+	* manual/plugins.xml
+		add an entry for the new Mail Archiver plugin
+
 2008-06-21 [paul]	3.4.0cvs102
 
 	* src/gtk/about.c

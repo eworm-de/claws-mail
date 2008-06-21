@@ -185,6 +185,15 @@
 	</listitem>
       </varlistentry>
       <varlistentry>
+	<term>Mail Archiver</term>
+	<listitem>
+	  <para>
+	Enables folders and subfolders to be archived in several different
+	formats.
+	  </para>
+	</listitem>
+      </varlistentry>
+      <varlistentry>
 	<term>mailMBOX</term>
 	<listitem>
 	  <para>
