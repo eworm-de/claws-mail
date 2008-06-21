@@ -833,8 +833,8 @@
 	de los ficheros <filename>face</filename> y/o <filename>xface</filename>
 	respectivamente. De manera similar, si existen, las Face y/o X-Face
 	para una cuenta concreta se obtienen de
-	<filename>face.<emphasis>nombredecuenta</emphasis></filename> y/o
-	<filename>xface.<emphasis>nombredecuenta</emphasis></filename>, donde
+	<filename>face.</filename><emphasis>nombredecuenta</emphasis> y/o
+	<filename>xface.</filename><emphasis>nombredecuenta</emphasis>, donde
 	<emphasis>nombredecuenta</emphasis> es el nombre de la cuenta con la
 	que desea asociar esta cabecera.
    </para>

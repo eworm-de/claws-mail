@@ -809,8 +809,8 @@
 	accounts are taken from the <filename>face</filename> and/or
 	<filename>xface</filename> files respectively. In a similar
 	manner, Face and/or X-Face headers for a specific account can
-	be provided by <filename>face.<emphasis>accountname</emphasis></filename>
-	and/or <filename>xface.<emphasis>accountname</emphasis></filename>,
+	be provided by <filename>face.</filename><emphasis>accountname</emphasis>
+	and/or <filename>xface.</filename><emphasis>accountname</emphasis>,
 	where <emphasis>accountname</emphasis> is the name of the account you 
 	want this header to be associated with.
    </para>

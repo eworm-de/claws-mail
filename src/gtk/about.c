@@ -598,11 +598,11 @@ static GtkWidget *about_create_child_page_license(void)
 
 	gtk_text_buffer_insert(buffer, &iter,
 		_("You should have received a copy of the GNU General Public License "
-		  "along with this program. If not, see <"), -1);
+		  "along with this program. If not, see "), -1);
 	gtk_text_buffer_insert_with_tags_by_name(buffer, &iter, 
 		"http://www.gnu.org/licenses/", -1,
 		"link", NULL);
-	gtk_text_buffer_insert(buffer, &iter, _(">. \n\n"), -1);
+	gtk_text_buffer_insert(buffer, &iter, ".\n\n", -1);
 #ifdef USE_OPENSSL
 	gtk_text_buffer_insert(buffer, &iter,
 		_("This product includes software developed by the OpenSSL Project "
@@ -610,6 +610,7 @@ static GtkWidget *about_create_child_page_license(void)
 	gtk_text_buffer_insert_with_tags_by_name(buffer, &iter, OPENSSL_URI, -1,
 		"link", NULL);
 	gtk_text_buffer_insert(buffer, &iter, _(").\n"), -1);
+#endif
 
 	g_signal_connect(G_OBJECT(tag), "event",
 				G_CALLBACK(about_textview_uri_clicked), text);
@@ -617,7 +618,6 @@ static GtkWidget *about_create_child_page_license(void)
 			 G_CALLBACK(about_textview_motion_notify), text);
 	g_signal_connect(G_OBJECT(text), "leave-notify-event",
 				G_CALLBACK(about_textview_leave_notify), text);
-#endif
 
 	return scrolledwin;
 }

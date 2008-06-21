@@ -1,3 +1,13 @@
+2008-06-21 [paul]	3.4.0cvs101
+
+	* manual/advanced.xml
+	* manual/es/advanced.xml
+		fix build warning: <emphasis> cannot be contained
+		within <filename>
+	* src/gtk/about.c
+		fix non-clickable link on License page and drop
+		the containing < > symbols to match other links
+
 2008-06-20 [mones]	3.4.0cvs100
 
 	* manual/advanced.xml
