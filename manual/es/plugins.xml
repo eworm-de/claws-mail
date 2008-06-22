@@ -191,6 +191,14 @@
 	</listitem>
       </varlistentry>
       <varlistentry>
+	<term>Archivador de correo</term>
+	<listitem>
+	  <para>
+	Permite archivar carpetas y subcarpetas en varios formatos diferentes.
+	  </para>
+	</listitem>
+      </varlistentry>
+      <varlistentry>
 	<term>mailMBOX</term>
 	<listitem>
 	  <para>

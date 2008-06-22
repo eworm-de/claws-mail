@@ -1,3 +1,8 @@
+2008-06-22 [mones]	3.4.0cvs105
+
+	* manual/es/plugins.xml
+		Synced new entry for Mail Archiver plugin
+
 2008-06-22 [colin]	3.4.0cvs104
 
 	* src/compose.c
