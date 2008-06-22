@@ -1,3 +1,8 @@
+2008-06-22 [colin]	3.4.0cvs104
+
+	* src/compose.c
+		Fix initial cursor pos
+
 2008-06-21 [paul]	3.4.0cvs103
 
 	* manual/plugins.xml

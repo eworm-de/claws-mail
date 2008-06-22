@@ -2923,10 +2923,10 @@ static gchar *compose_quote_fmt(Compose *compose, MsgInfo *msginfo,
 	}
 
 	cursor_pos = quote_fmt_get_cursor_pos();
+	if (cursor_pos == -1)
+		cursor_pos = gtk_text_iter_get_offset(&iter);
 	compose->set_cursor_pos = cursor_pos;
-	if (cursor_pos == -1) {
-		cursor_pos = 0;
-	}
+
 	gtk_text_buffer_get_start_iter(buffer, &iter);
 	gtk_text_buffer_get_iter_at_offset(buffer, &iter, cursor_pos);
 	gtk_text_buffer_place_cursor(buffer, &iter);
