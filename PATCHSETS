@@ -3402,3 +3402,4 @@
 ( cvs diff -u -r 1.382.2.454 -r 1.382.2.455 src/compose.c;  ) > 3.4.0cvs104.patchset
 ( cvs diff -u -r 1.1.2.5 -r 1.1.2.6 manual/es/plugins.xml;  ) > 3.4.0cvs105.patchset
 ( cvs diff -u -r 1.60.2.52 -r 1.60.2.53 po/es.po;  ) > 3.4.0cvs106.patchset
+( cvs diff -u -r 1.42.2.39 -r 1.42.2.40 po/fr.po;  ) > 3.4.0cvs107.patchset
