@@ -38,7 +38,7 @@ gint get_content_for_any_face(gchar *buf, gint len, gchar *anyname, gint maxlen)
 	buf[0] = '\0';
 	if ((xfp = fopen(xfile, "rb")) == NULL) {
 	        g_free(xfile);
-		g_warning("header content file '%s' not found\n", anyname);
+		debug_print("header content file '%s' not found\n", anyname);
 	        return -1;
 	}
 	if (fgets(buf, (len < maxlen)? len: maxlen, xfp) == NULL) {
