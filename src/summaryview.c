@@ -856,12 +856,7 @@ void summary_relayout(SummaryView *summaryview)
 		break;
 	}
 	summary_set_column_order(summaryview);
-	if (prefs_common.layout_mode == VERTICAL_LAYOUT &&
-	    prefs_common.two_line_vert) {
-		gtk_clist_set_row_height(GTK_CLIST(summaryview->ctree), 2*normal_row_height + 2);		
-	} else {
-		gtk_clist_set_row_height(GTK_CLIST(summaryview->ctree), 0);		
-	}
+
 	gtk_widget_unref(summaryview->hbox_l);
 	gtk_widget_unref(summaryview->statlabel_msgs);
 	quicksearch_relayout(summaryview->quicksearch);
@@ -6215,6 +6210,13 @@ void summary_set_column_order(SummaryView *summaryview)
 		messageview_clear(summaryview->messageview);
 	else
 		summary_redisplay_msg(summaryview);
+
+	if (prefs_common.layout_mode == VERTICAL_LAYOUT &&
+	    prefs_common.two_line_vert) {
+		gtk_clist_set_row_height(GTK_CLIST(summaryview->ctree), 2*normal_row_height + 2);		
+	} else {
+		gtk_clist_set_row_height(GTK_CLIST(summaryview->ctree), 0);		
+	}
 }
 
 

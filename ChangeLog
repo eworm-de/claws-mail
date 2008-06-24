@@ -1,3 +1,9 @@
+2008-06-24 [colin]	3.4.0cvs109
+
+	* src/summaryview.c
+		Fix bug 1650, Message line too small after 
+		changing columns in "three columns" layout
+
 2008-06-24 [colin]	3.4.0cvs108
 
 	* src/messageview.c
