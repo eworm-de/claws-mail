@@ -1026,10 +1026,18 @@ gint messageview_show(MessageView *messageview, MsgInfo *msginfo,
 			 MSG_IS_SPAM(msginfo->flags)?LEARN_HAM:LEARN_SPAM);
 
 	if (messageview->toolbar) {
-		if (messageview->toolbar->learn_spam_btn)
+		if (messageview->toolbar->learn_spam_btn) {
+			gboolean can_learn = FALSE;
+			if (procmsg_spam_can_learn() &&
+			    (msginfo->folder &&
+			     msginfo->folder->folder->klass->type != F_UNKNOWN &&
+			     msginfo->folder->folder->klass->type != F_NEWS))
+				can_learn = TRUE;
+
 			gtk_widget_set_sensitive(
 				messageview->toolbar->learn_spam_btn, 
-				procmsg_spam_can_learn());
+				can_learn);
+		}
 	}
 	
 	noticeview_hide(messageview->noticeview);

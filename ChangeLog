@@ -1,3 +1,8 @@
+2008-06-24 [colin]	3.4.0cvs108
+
+	* src/messageview.c
+		Fix Spam button sensitivity in newsgroups
+
 2008-06-23 [wwp]	3.4.0cvs107
 
 	* po/fr.po

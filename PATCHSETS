@@ -3403,3 +3403,4 @@
 ( cvs diff -u -r 1.1.2.5 -r 1.1.2.6 manual/es/plugins.xml;  ) > 3.4.0cvs105.patchset
 ( cvs diff -u -r 1.60.2.52 -r 1.60.2.53 po/es.po;  ) > 3.4.0cvs106.patchset
 ( cvs diff -u -r 1.42.2.39 -r 1.42.2.40 po/fr.po;  ) > 3.4.0cvs107.patchset
+( cvs diff -u -r 1.94.2.180 -r 1.94.2.181 src/messageview.c;  ) > 3.4.0cvs108.patchset
