@@ -1,3 +1,11 @@
+2008-06-25 [colin]	3.4.0cvs111
+
+	* src/gtk/gtkaspell.c
+		Fix non-UTF8 in the replace with dialog
+	* src/prefs_actions.c
+		Fix possible crasher
+		Patches by Pawel
+
 2008-06-24 [mones]	3.4.0cvs110
 
 	* src/autofaces.c

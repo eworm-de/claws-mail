@@ -1523,7 +1523,7 @@ static void replace_with_create_dialog_cb(GtkWidget *w, gpointer data)
 	GtkWidget *cancel_button;
 	GtkWidget *confirm_area;
 	GtkWidget *icon;
-	gchar *thelabel;
+	gchar *utf8buf, *thelabel;
 	gint xx, yy;
 	GtkAspell *gtkaspell = (GtkAspell *) data;
 
@@ -1549,9 +1549,13 @@ static void replace_with_create_dialog_cb(GtkWidget *w, gpointer data)
 	gtk_box_pack_start (GTK_BOX (GTK_DIALOG (dialog)->vbox), hbox,
 			    FALSE, FALSE, 0);
 
+	utf8buf  = conv_codeset_strdup(gtkaspell->theword,
+				conv_get_locale_charset_str(),
+				CS_UTF_8);
+
 	thelabel = g_strdup_printf(_("<span weight=\"bold\" "
 					"size=\"larger\">Replace \"%s\" with: </span>"), 
-				   gtkaspell->theword);
+				   utf8buf);
 	/* for title label */
 	w_hbox = gtk_hbox_new(FALSE, 0);
 	
@@ -1587,12 +1591,13 @@ static void replace_with_create_dialog_cb(GtkWidget *w, gpointer data)
 	
 	entry = gtk_entry_new();
 	gtkaspell->replace_entry = entry;
-	gtk_entry_set_text(GTK_ENTRY(entry), gtkaspell->theword);
+	gtk_entry_set_text(GTK_ENTRY(entry), utf8buf);
 	gtk_editable_select_region(GTK_EDITABLE(entry), 0, -1);
 	g_signal_connect(G_OBJECT(dialog),
 			"key_press_event",
 		       	G_CALLBACK(replace_key_pressed), gtkaspell);
 	gtk_box_pack_start(GTK_BOX(vbox), entry, FALSE, FALSE, 0);
+	g_free(utf8buf);  
 
 	label = gtk_label_new(_("Holding down Control key while pressing "
 				"Enter\nwill learn from mistake.\n"));

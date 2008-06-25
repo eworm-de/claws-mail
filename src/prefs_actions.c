@@ -1264,7 +1264,7 @@ static void prefs_action_filterbtn_cb(GtkWidget *widget, gpointer data)
 	action_str = gtk_editable_get_chars(GTK_EDITABLE(actions.cmd_entry), 0, -1);
 	tokens = g_strsplit_set(action_str, "{}", 5);
 
-	if (tokens[1] && *tokens[1] != '\0') {
+	if (tokens[0] && tokens[1] && *tokens[1] != '\0') {
 		action_list = matcher_parser_get_action_list(tokens[1]);
 		if (action_list == NULL)
 			alertpanel_error(_("Action string is not valid."));

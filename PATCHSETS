@@ -3406,3 +3406,4 @@
 ( cvs diff -u -r 1.94.2.180 -r 1.94.2.181 src/messageview.c;  ) > 3.4.0cvs108.patchset
 ( cvs diff -u -r 1.395.2.370 -r 1.395.2.371 src/summaryview.c;  ) > 3.4.0cvs109.patchset
 ( cvs diff -u -r 1.1.2.2 -r 1.1.2.3 src/autofaces.c;  ) > 3.4.0cvs110.patchset
+( cvs diff -u -r 1.9.2.55 -r 1.9.2.56 src/gtk/gtkaspell.c;  cvs diff -u -r 1.60.2.57 -r 1.60.2.58 src/prefs_actions.c;  ) > 3.4.0cvs111.patchset
