@@ -189,6 +189,13 @@
     <para>
 	  Il existe un certain nombre de préférences cachées dans Claws Mail dont certains utilisateurs, auxquels nous voulions faire plaisir, ne pouvaient pas se passer mais qui n'avaient pas leur place, selon nous, dans l'interface graphique. Vous pouvez changer les options suivantes pendant que Claws Mail ne s'exécute pas dans le fichier ~/.claws-mail/sylpheedrc.
     </para>
+    <para>
+	Un petit outil nommé Clawsker, écrit en Perl-GTK, permet d'éditer les options
+	cachées de Claws Mail en passant par une interface utilisateur classique
+	au lieu d'avoir à éditer manuellement le fichier <filename>clawsrc</filename>.
+	Pour en savoir plus, consulter <ulink url="http://www.claws-mail.org/clawsker">
+	la page dédiée à Clawsker</ulink>.
+    </para>
     <variablelist>
        <varlistentry>
 			<term><literal>addressbook_use_editaddress_dialog</literal></term>
@@ -207,14 +214,21 @@
             <varlistentry><term>compose_no_markup</term>
                     <listitem><para>Ne pas utiliser de gras ni d'italique dans le sélecteur de compte de la fenêtre de composition.</para></listitem>
             </varlistentry>
+	    <varlistentry><term>emphasis_color</term>
+		    <listitem><para>
+			Couleur utilisée pour mettre en évidence l'en-tête X-Mailer quand sa
+			valeur est Claws Mail.
+			</para></listitem>
+	    </varlistentry>
+	    <varlistentry><term>enable_dotted_lines</term>
+		    <listitem><para>
+			Utilise le <emphasis>vieux</emphasis> style de lignes en pointillés dans
+			les composants de type GtkTreeView (Liste de Dossiers et Liste de Messages),
+			au lieu du style <emphasis>moderne</emphasis>, sans lignes ni pointillés.
+			</para></listitem>
+	    </varlistentry>
 	    <varlistentry><term>enable_hscrollbar</term>
 		    <listitem><para>Active la barre de défilement horizontale dans la liste de messages.</para></listitem>
-	    </varlistentry>
-	    <varlistentry><term>use_stripes_everywhere</term>
-		    <listitem><para>Active les lignes alternées dans les GtkTreeViews (dialogues de filtrage, des traitements, etc.).</para></listitem>
-	    </varlistentry>
-	    <varlistentry><term>use_stripes_in_summaries</term>
-		    <listitem><para>Active les lignes alternées dans les GtkTreeViews de la fenêtre principale (liste des dossiers et liste des messages). L'emploi de cette option (valeur 0) n'a de sens que lorsque l'option cachée use_stripes_everywhere est activée (valeur 1).</para></listitem>
 	    </varlistentry>
 	    <varlistentry><term>enable_swap_from</term>
 		    <listitem><para>Affiche l'adresse électronique de l'expéditeur dans la colonne <quote>De</quote> dans le dossier <quote>Envoyés</quote> au lieu des destinataires.</para></listitem>
@@ -231,11 +245,43 @@
 	    <varlistentry><term>log_error_color</term><term>log_in_color</term><term>log_msg_color</term><term>log_out_color</term><term>log_warn_color</term>
 			<listitem><para>Couleurs utilisées dans la fenêtre de traces</para></listitem>
 	    </varlistentry>
+	    <varlistentry><term>outgoing_fallback_to_ascii</term>
+		    <listitem><para>
+			0 ou 1. Les messages envoyés seront encodés en 7bit US-ASCII si le
+			contenu le permet, ignorant l'option <quote>Jeux de caractères</quote>
+			pour l'envoi, uniquement si c'est si possible.
+			Si l'option est mise à 0, l'encodage défini par l'utilisateur sera
+			utilisé, quel que soit le contenu du message. La valeur par défaut est 1,
+			option activée.
+			</para></listitem>
+	    </varlistentry>
+	    <varlistentry><term>respect_flowed_format</term>
+		    <listitem><para>
+			0 ou 1. Tient compte du format=flowed des parties de type text/plain d'un message.
+			Par conséquence, ce type de contenu pourra comporter de longues lignes à l'affichage
+			mais liens (URLs) ne seront pas coupés sur plusieurs lignes.
+			La valeur par défaut est 0, option désactivée.
+			</para></listitem>
+	    </varlistentry>
+	    <varlistentry><term>save_parts_readwrite</term>
+		    <listitem><para>
+			Les fichiers temporaires nécessaires afin d'ouvrir les pièces jointes
+			sont enregistrés avec la permission d'écriture activée.
+			</para></listitem>
+	    </varlistentry>
 	    <varlistentry><term>skip_ssl_cert_check</term>
 		    <listitem><para>Permet de ne pas faire la vérification des certificats SSL</para></listitem>
 	    </varlistentry>
 	    <varlistentry><term>statusbar_update_step</term>
 		    <listitem><para>Étapes de progression lors de la mise à jour dans les barres de progression.</para></listitem>
+	    </varlistentry>
+	    <varlistentry><term>stripes_color_offset</term>
+		    <listitem><para>
+			Valeur de contraste utilisé pour alterner les couleurs entre chaque
+			ligne dans les composants de type GtkTreeView. Une valeur faible
+			indique un contraste faible et donc peu de différence de couleur entre
+			les lignes.
+			</para></listitem>
 	    </varlistentry>
 	    <varlistentry><term>textview_cursor_visible</term>
 		    <listitem><para>Affiche un curseur dans la vue du message.</para></listitem>
@@ -245,6 +291,32 @@
 	    </varlistentry>
 	    <varlistentry><term>toolbar_detachable</term>
 		    <listitem><para>Cache les poignées des barres d'outils détachables, qui ne le sont plus par la suite.</para></listitem>
+	    </varlistentry>
+	    <varlistentry><term>two_line_vertical</term>
+		    <listitem><para>
+			Chaque message occupe deux lignes (au lieu d'un message par ligne)
+			quand le mode trois-colonnes est utilisé.
+			</para></listitem>
+	    </varlistentry>
+	    <varlistentry><term>unsafe_ssl_certs</term>
+		    <listitem><para>
+			Fait en sorte que Claws Mail accepte de se souvenir de plusieurs
+			certificats sécurisés (SSL) pour un server/port donné. Cette option
+			est désactivée par défaut.
+			</para></listitem>
+	    </varlistentry>
+	    <varlistentry><term>use_networkmanager</term>
+		    <listitem><para>
+			Prend en compte le NetworkManager (Gestionnaire Réseau) afin de passer
+			en mode déconnecté (hors ligne) automatiquement. Cette option est activée
+			par défaut.
+			</para></listitem>
+	    </varlistentry>
+	    <varlistentry><term>use_stripes_everywhere</term>
+		    <listitem><para>Active les lignes alternées dans les GtkTreeViews (dialogues de filtrage, des traitements, etc.).</para></listitem>
+	    </varlistentry>
+	    <varlistentry><term>use_stripes_in_summaries</term>
+		    <listitem><para>Active les lignes alternées dans les GtkTreeViews de la fenêtre principale (liste des dossiers et liste des messages). L'emploi de cette option (valeur 0) n'a de sens que lorsque l'option cachée use_stripes_everywhere est activée (valeur 1).</para></listitem>
 	    </varlistentry>
 	    <varlistentry><term>utf8_instead_of_locale_for_broken_mail</term>
 		    <listitem><para>Utilise l'encodage UTF-8 encoding pour les courriels cassés à la place de la localisation courante.</para></listitem>

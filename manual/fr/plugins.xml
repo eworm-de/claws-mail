@@ -41,6 +41,14 @@
     <varlistentry><term>Acpi Notifier</term>
 	    <listitem><para>Permet l'indication de nouveaux messages avec la diode Email de certains ordinateurs portables, comme ceux de marque Acer, Asus, Fujitsu ou IBM.</para></listitem>
     </varlistentry>
+    <varlistentry>
+	<term>Archivage de messages</term>
+	<listitem>
+	  <para>
+	    Permet l'archivage de dossiers et sous-dossiers sous différents formats.
+	  </para>
+	</listitem>
+	</varlistentry>
     <varlistentry><term>AttRemover</term>
 	    <listitem><para> Ce module vous permet d'effacer les pièces jointes dans les messages.</para></listitem>
     </varlistentry>

@@ -1,3 +1,11 @@
+2008-06-26 [wwp]	3.4.0cvs112
+
+	* manual/fr/advanced.xml
+	* manual/fr/plugins.xml
+		Updated French version of the manual (completed
+		hidden options list, added note about Clawsker
+		and new mail archiver plugin).
+
 2008-06-25 [colin]	3.4.0cvs111
 
 	* src/gtk/gtkaspell.c
