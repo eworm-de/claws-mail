@@ -326,4 +326,34 @@
 	    </varlistentry>
     </variablelist>
   </section>
+  <section id="adv_autofaces">
+    <title>Autofaces</title>
+    <para>
+	Il est possible de créer des en-têtes Face et X-Face directement
+	à partir de fichiers, soit avec un fichier par en-tête de façon
+	globale, soit un pour chaque compte. Ces fichiers doivent être
+	placés dans le répertoire <filename>~/.claws-mail/autofaces/</filename>.
+    </para>
+    <para>
+	Les fichiers éventuels contenant les valeurs pour les en-têtes Face ou X-Face
+	doivent être nommés ainsi: <filename>face</filename> et/ou
+	<filename>xface</filename> pour qu'ils soient pris en compte de façon
+	globale, ou <filename>face.</filename><emphasis>nomducompte</emphasis>
+	et/ou <filename>xface.</filename><emphasis>nomducompte</emphasis>
+	pour qu'ils soient spécifiques à un compte en particulier
+	(<emphasis>nomducompte</emphasis>).
+   </para>
+   <para>
+    Si le nom du compte contient des espaces ou des caractères non supportés par le
+	système de fichier où il est stocké, il doivent être remplacés par un <quote>_</quote>.
+	Par exemple, si votre compte est nommé <quote>&lt;Mon Compte&gt;</quote>, le nom d'un
+	éventuel fichier X-Face associé à ce compte sera
+	<filename>~/.claws-mail/autofaces/xface._mon_compte_</filename>.
+	Attention, cette fonctionnalité nécessite que le contenu des fichier face ou xface
+	soit correct. Assurez-vous aussi que les en-têtes Face et X-Face ne sont pas définis
+	plusieurs fois dans les options des comptes et les fichiers AutoFaces (la plupart
+	des clients de messagerie, Claws Mail y compris, ignorent les en-têtes redondants et
+	n'affichent que le dernier trouvé).
+    </para>
+  </section>
 </section>
