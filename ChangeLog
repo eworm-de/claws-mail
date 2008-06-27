@@ -1,3 +1,11 @@
+2008-06-27 [paul]	3.4.0cvs114
+
+	* po/de.po
+	* po/fi.po
+	* po/pt_BR.po
+		updated by Stephan Sachse, Flammie Pirinen, and
+		Frederico Goncalves Guimaraes
+
 2008-06-26 [wwp]	3.4.0cvs113
 
 	* manual/fr/advanced.xml

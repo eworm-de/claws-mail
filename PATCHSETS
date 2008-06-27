@@ -3409,3 +3409,4 @@
 ( cvs diff -u -r 1.9.2.55 -r 1.9.2.56 src/gtk/gtkaspell.c;  cvs diff -u -r 1.60.2.57 -r 1.60.2.58 src/prefs_actions.c;  ) > 3.4.0cvs111.patchset
 ( cvs diff -u -r 1.1.2.16 -r 1.1.2.17 manual/fr/advanced.xml;  cvs diff -u -r 1.1.2.9 -r 1.1.2.10 manual/fr/plugins.xml;  ) > 3.4.0cvs112.patchset
 ( cvs diff -u -r 1.1.2.17 -r 1.1.2.18 manual/fr/advanced.xml;  ) > 3.4.0cvs113.patchset
+( cvs diff -u -r 1.58.2.39 -r 1.58.2.40 po/de.po;  cvs diff -u -r 1.1.2.18 -r 1.1.2.19 po/fi.po;  cvs diff -u -r 1.50.2.31 -r 1.50.2.32 po/pt_BR.po;  ) > 3.4.0cvs114.patchset
