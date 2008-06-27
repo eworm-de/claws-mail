@@ -3411,3 +3411,4 @@
 ( cvs diff -u -r 1.1.2.17 -r 1.1.2.18 manual/fr/advanced.xml;  ) > 3.4.0cvs113.patchset
 ( cvs diff -u -r 1.58.2.39 -r 1.58.2.40 po/de.po;  cvs diff -u -r 1.1.2.18 -r 1.1.2.19 po/fi.po;  cvs diff -u -r 1.50.2.31 -r 1.50.2.32 po/pt_BR.po;  ) > 3.4.0cvs114.patchset
 ( cvs diff -u -r 1.654.2.3471 -r 1.654.2.3472 configure.ac;  cvs diff -u -r 1.1.2.47 -r 1.1.2.48 src/gtk/authors.h;  ) > 3.4.0cvs115.patchset
+( cvs diff -u -r 1.1.2.48 -r 1.1.2.49 src/gtk/authors.h;  ) > 3.4.0cvs116.patchset

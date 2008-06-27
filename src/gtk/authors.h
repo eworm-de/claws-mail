@@ -31,7 +31,6 @@ NULL
 
 static char *TRANS_TEAM_LIST[] = {
 "[ca] Miquel Oliete <ktalanet@yahoo.es>",
-"[cs] Tim <timbrain@post.cz>",
 "[de] Stephan Sachse <white@dev-zero.com>",
 "[en_GB] Paul Mangan <paul@claws-mail.org>",
 "[es] Ricardo Mones Lastra <ricardo@mones.org>",
