@@ -30,33 +30,21 @@ NULL
 };
 
 static char *TRANS_TEAM_LIST[] = {
-"[bg] Yasen Pramatarov <yasen@lindeas.com>",
 "[ca] Miquel Oliete <ktalanet@yahoo.es>",
 "[cs] Tim <timbrain@post.cz>",
-"[cs] Petr Vanek <vanous@penguin.cz>",
 "[de] Stephan Sachse <white@dev-zero.com>",
 "[en_GB] Paul Mangan <paul@claws-mail.org>",
-"[el] Stavros Giannouris <stavrosg2002@freemail.gr>",
 "[es] Ricardo Mones Lastra <ricardo@mones.org>",
 "[fi] Flammie Pirinen <flammie@iki.fi>",
-"[fr] Fabien Vantard <fzzzzz@gmail.com>",
-"[he] Ofer <oc666@netvision.net.il>",
-"[hr] Dragan <drleskov@inet.hr>",
+"[fr] Tristan Chabredier <wwp@claws-mail.org>",
 "[hu] Pader Rezso <rezso@rezso.net>",
 "[it] Andrea Spadaccini <a.spadaccini@catania.linux.it>",
-"[ja] Rui Hirokawa <rui_hirokawa@ybb.ne.jp>",
-"[ko] SungHyun Nam <namsh@kldp.org>",
-"[nb] Geir Helland <pjallabais@users.sf.net>",
-"[nl] Tim Dijkstra <tim@famdijkstra.org>",
 "[pl] Emilian Nowak <eminowbl@posejdon.wpk.p.lodz.pl>",
 "[pl] Quar <Quar@sylpheed.quar.org>",
 "[pt_BR] Frederico Goncalves Guimaraes <fggdebian@yahoo.com.br>",
-"[ru] Pavlo Bohmat <bohm@ukr.net>",
 "[sk] Andrej Kacian <andrej@kacian.sk>",
 "[sr] Aleksandar Urosevic <urke@users.sf.net>",
-"[sv] Anders Trobäck <sylpheed@troback.com>",
 "[zh_CN] Ralgh Young <bamanzi@gmail.com>",
-"[zh_TW] Wei-Lun Chao <chaoweilun@pcmail.com.tw>",
 NULL
 };
 
