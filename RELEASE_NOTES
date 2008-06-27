@@ -1,4 +1,4 @@
-18th April 2008                                      Claws Mail 3.4.0
+27th June 2008                                       Claws Mail 3.5.0
 
 		    CLAWS MAIL  RELEASE NOTES
                     http://www.claws-mail.org
@@ -6,89 +6,124 @@
 Claws Mail is a GTK+ based, user-friendly, lightweight, and fast 
 email client.
 
+Notes for this release:
+~~~~~~~~~~~~~~~~~~~~~~~
+
+* IMAP with STARTTLS
+  The certificate port on TLS was fixed, however this will trigger
+  one wrong 'New certificate' warning on the first connection.
+
 New in this release:
 ~~~~~~~~~~~~~~~~~~~~
 
-* Added support for /dev/mem_notify. This Linux kernel feature
-  will allow applications to be notified that memory has to be
-  freed before getting OOM-killed.
-  For more information: http://lwn.net/Articles/267013/
+* Added an option, "Use secure file deletion if possible", which
+  enables shredding of temporary files and messages instead of
+  just removing them. This is available on the Other preferences
+  page.
 
-* Enabled moving/copying folders to root folders when using the
-  folder selection dialogue.
+* Added an option, "Select the HTML part of multipart/alternative
+  messages". This is available on the Message View/Text Options
+  preferences page. 
 
-* Global and per-folder templates can now override the From name.
+* Added an option to the 'Create new folder' dialogue which enables
+  new folders to inherit the properties of their parent folders
+  during folder creation.
 
-* Added a tooltip with extended folder stats. (Hover the cursor over
-  the short stats on the right, below the message list.)
+* Added a hidden option, "two_line_vertical", which toggles the
+  2-line view in the message list when using the 3-column layout.
+  Defaults to '1', show 2 lines.
 
-* Implemented 2-line items in the message list when in three column
-  mode.
+* Added a hidden option, "outgoing_fallback_to_ascii", which allows
+  the user to specify an outgoing charset/encoding, but still fall
+  back to 7bit US-ASCII when possible.
+  Defaults to '1', fallback when possible.
 
-* Added support for png themes.
+* Added support for the Avant Window Navgator (Awn) information
+  bubble. This is automatically enabled if dbus is available.
 
-* Added an icon for attached patches (text/x-patch and text/x-diff).
+* Face and X-Face headers can now be added globally and per-account
+  from configuration files under ~/.claws-mail/autofaces/. Further
+  information is provided in the manual.
 
-* When viewing a message that has a large amount of text, show a
-  maximum of 1MB of text and add a noticeview to show optionally show
-  the whole message.
+* The SHA1 fingerprint is now shown on the SSL certificate dialogue
+  and the labels are now selectable.
 
-* Added a button to the templates preferences to restore defaults for
-  current language.
+* Several GUI improvements have been made, (Address book, filtering
+  dialogue, Actions dialogue, and Account preferences).
 
-* Added search in filtering rules list.
+* New icons have been added for 'Reply to list' and 'Cancel'. The
+  'Insert file' and 'Close' icons have been improved, as have the
+  tray icons.	
 
-* Bogofilter Plugin:
-  Added a "learn from whitelist" preference.
+* Added the Trash and Delete icons to the Custom Toolbars options.
 
-* MAEMO:
-  Added information when fetching large messages.
+* SMTP-only accounts are now not shown in the Receive menus and
+  Account lists in filtering/processing, as they are irrelevant here.
 
 * tools/csv2addressbook.pl
-  Added support for Kmail/Kaddressbook.
+  Support for a gmail exported csv address book was added.
+
+* Updated English, French, and Spanish manuals.
 
 * Updated translations: Brazilian Portuguese, Finnish, French,
-  German, and Italian.
+  German, and Spanish.
+
+* Removed unmaintained translations: Bulgarian, Croatian, Czech,
+  Dutch, Greek, Hebrew, Japanese, Korean, Norwegian, Russian,
+  Swedish, and Taiwanese. (New maintainers are very welcome,
+  contact paul@claws-mail.org)
 
 * Bug fixes:
-	o bug 1494, 'Trayicon plugin breaks UI...' (MAEMO)
-	o bug 1515, 'large messages crash claws when syncing for
-		     offline mode'
-	o bug 1532, '"login refused" message insufficiently 
-		     detailed'
-	o bug 1533, 'Claws is unable to mark messages as "read" in
-		     IMAP shared folders'
-	o bug 1534, 'Segmentation fault when doing some draft saving
-		     and then throwing away'
-	o bug 1539, 'Program crashes':
-		    Setup Gcrypt's thread functions when built with
-		    GnuTLS
-	o bug 1541, 'Deleting message from within read window
-		     displays next message then closes.' (MAEMO)
-	o bug 1553, 'File lock not respected'
-	o bug 1555, 'Bug with the feature "save a copy of outgoing
-		     messages in this folder"'
-	o bug 1559, 'Claws Mail crashed deleting all common contacts'
-	o bug 1561, 'Crashes leaving unsubscribed folder after
-		     ticking "Show only subscribed"'
-	o bug 1562, 'Claws-Mail does not completely respect settings
-		     in GTK2_RC_FILES environment'
-	o Fix blinking of the taskbar entry.
-	o Fix folder view's scrollbar at startup if starting hidden.
-	o If no MH mailbox and no account exists, when creating a
-	  POP/Local account, just create it and use the default one
-	  instead of bailing with a "Mailbox doesn't exist" error.
-	o Clean up session disconnection. Possibly fix Ubuntu bug
-	  #204290
-	o Fix RedHat bug 431735, 'segfault if /home is full'
-	o Fix compose template formats (in global preferences)
-	  getting translated under specific conditions.
-	o Fix updating of tags menu.
-	o Fix log size getting out of control (claws-mail getting
-	  SIGXFSZ): rotate if every 10MB.
-	o Fix debian bug 474712, 'claws seg faults when IMAP 
-	  connection breaks after an IMAP protocol error (BAD UID
-	  SEARCH Invalid parameter: $Forwarded)]'
+	o bug 1447, 'If user tries to close while starting up, it
+		     will not close ever.'
+	o bug 1566, 'too short I/O timeout on OpenBSD'
+	o bug 1576, 'Curly brace literals reported as error in
+		     message template'
+	o bug 1581, 'Bad File Format during Import LDIF'
+	o bug 1586, '3-pane vertical layout now and then still shows
+		     sender column'
+	o bug 1587, 'can not replay with quote'
+	o bug 1589, 'tagsdb file not removed when folder deleted'
+	o bug 1597, 'In news folders, "Move Message to Wastebin" icon
+		     isn't grayed although ineffective'
+	o bug 1598, 'Leading slash while translating "Unsubscribe"'
+	o bug 1599, 'attach multiple files with the same name from
+		     one mail to another'
+	o bug 1602, 'Crash when sending return receipt for messages
+		     with no subject'
+	o bug 1604, 'found_in_addressbook "From" in "Any" in non
+		     english local'
+	o bug 1608, 'Inconsistent behaviour of mark as read options'
+	o bug 1610, 'claws crash after opening/closing preferences
+		     and window update'
+	o bug 1613, 'Various memory leaks'
+	o bug 1615, 'hang on FIFO when the other end's not opened'
+	o bug 1616, 'strange question while emptying trash'
+	o bug 1623, 'exits with segfault when logging in to certain
+		     imap-servers'
+	o bug 1624, '[PATCH] Quick search should be disabled for
+		     folder view'
+	o bug 1628, 'Claws Mail crashes when filtering selected
+		     messages'
+	o bug 1635, 'Last character of message is truncated when
+		     changing accounts w/ sigs'
+	o bug 1636, 'Can't select "properties" on "folders only"
+		     folders'
+	o bug 1650, 'Message line too small after changing columns in
+		     "three columns" layout'
+	o Use g_(un)setenv instead of (un)setenv which doesn't exist
+	  on IRIX 6.5.
+	o Fix 'Delete line' and 'Delete to end of line' on the last
+	  line.
+	o Fix double free when STARTTLS fails
+	o Fix ldap deprecated calls
+	o Fix debian bug 481856, 'Segmentation fault when verifying a
+	  GPG signature'
+	o Fix cursor placing on signature change
+	o tools/thunderbird-filters-convertor.pl
+  	  Fix reading a tb rule that contains something like that:
+	  \"Sender\"
+
 
 For further details of the numbered bugs listed above consult
 http://www.thewildbeast.co.uk/claws-mail/bugzilla/index.cgi

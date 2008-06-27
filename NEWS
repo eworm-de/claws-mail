@@ -1,5 +1,57 @@
 Changes of the  Claws Mail GTK2 branch
 
+* 3.5.0
+-------
+
+* Added an option, "Use secure file deletion if possible", which
+  enables shredding of temporary files and messages instead of
+  just removing them. This is available on the Other preferences
+  page.
+
+* Added an option, "Select the HTML part of multipart/alternative
+  messages". This is available on the Message View/Text Options
+  preferences page. 
+
+* Added an option to the 'Create new folder' dialogue which enables
+  new folders to inherit the properties of their parent folders
+  during folder creation.
+
+* Added a hidden option, "two_line_vertical", which toggles the
+  2-line view in the message list when using the 3-column layout.
+  Defaults to '1', show 2 lines.
+
+* Added a hidden option, "outgoing_fallback_to_ascii", which allows
+  the user to specify an outgoing charset/encoding, but still fall
+  back to 7bit US-ASCII when possible.
+  Defaults to '1', fallback when possible.
+
+* Added support for the Avant Window Navgator (Awn) information
+  bubble. This is automatically enabled if dbus is available.
+
+* Face and X-Face headers can now be added globally and per-account
+  from configuration files under ~/.claws-mail/autofaces/. Further
+  information is provided in the manual.
+
+* The SHA1 fingerprint is now shown on the SSL certificate dialogue
+  and the labels are now selectable.
+
+* Several GUI improvements have been made, (Address book, filtering
+  dialogue, Actions dialogue, and Account preferences).
+
+* New icons have been added for 'Reply to list' and 'Cancel'. The
+  'Insert file' and 'Close' icons have been improved, as have the
+  tray icons.	
+
+* Added the Trash and Delete icons to the Custom Toolbars options.
+
+* SMTP-only accounts are now not shown in the Receive menus and
+  Account lists in filtering/processing, as they are irrelevant here.
+
+* tools/csv2addressbook.pl
+  Support for a gmail exported csv address book was added.
+
+* Updated English, French, and Spanish manuals.
+
 * 3.4.0
 -------
 
