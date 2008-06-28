@@ -1,3 +1,8 @@
+2008-06-28 [colin]	3.5.0cvs1
+
+	* src/foldersel.c
+		Fix compilation with older GTKs
+
 2008-06-27 [paul]	3.5.0
 
 	* NEWS

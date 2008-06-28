@@ -269,8 +269,10 @@ static void foldersel_create(void)
 	gtk_tree_view_set_headers_visible(GTK_TREE_VIEW(treeview), FALSE);
 	gtk_tree_view_set_rules_hint(GTK_TREE_VIEW(treeview),
 	                             prefs_common.use_stripes_everywhere);
+#if GTK_CHECK_VERSION(2,10,0)
 	gtk_tree_view_set_enable_tree_lines(GTK_TREE_VIEW(treeview),
 							prefs_common.enable_dotted_lines);
+#endif
 	gtk_tree_view_set_search_column(GTK_TREE_VIEW(treeview),
 					FOLDERSEL_FOLDERNAME);
 
