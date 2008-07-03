@@ -37,6 +37,8 @@
 #include <glib.h>
 
 #define SSLCERT_ASK_HOOKLIST "sslcert_ask"
+#define SSLCERT_GET_CLIENT_CERT_HOOKLIST "sslcert_get_client_cert"
+#define SSL_CERT_GET_PASSWORD "sslcert_get_password"
 
 typedef struct _SSLCertificate SSLCertificate;
 
@@ -82,5 +84,19 @@ time_t asn1toTime(ASN1_TIME *asn1Time);
 char *ssl_certificate_check_signer (gnutls_x509_crt cert, guint status);
 #endif
 
+#if USE_OPENSSL
+X509 *ssl_certificate_get_x509_from_pem_file(const gchar *file);
+EVP_PKEY *ssl_certificate_get_pkey_from_pem_file(const gchar *file);
+void ssl_certificate_get_x509_and_pkey_from_p12_file(const gchar *file, 
+			const gchar *password, X509 **x509, EVP_PKEY **pkey);
+#endif
+#ifdef USE_GNUTLS
+gnutls_x509_crt ssl_certificate_get_x509_from_pem_file(const gchar *file);
+gnutls_x509_privkey ssl_certificate_get_pkey_from_pem_file(const gchar *file);
+void ssl_certificate_get_x509_and_pkey_from_p12_file(const gchar *file, 
+			const gchar *password, gnutls_x509_crt *crt, gnutls_x509_privkey *key);
+size_t i2d_X509(gnutls_x509_crt x509_cert, unsigned char **output);
+size_t i2d_PrivateKey(gnutls_x509_privkey pkey, unsigned char **output);
+#endif
 #endif /* USE_OPENSSL */
 #endif /* SSL_CERTIFICATE_H */

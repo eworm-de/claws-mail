@@ -520,7 +520,7 @@ Session *pop3_session_new(PrefsAccount *account)
 
 	session = g_new0(Pop3Session, 1);
 
-	session_init(SESSION(session));
+	session_init(SESSION(session), account, FALSE);
 
 	SESSION(session)->type = SESSION_POP3;
 

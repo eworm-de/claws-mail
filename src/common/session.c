@@ -60,7 +60,7 @@ static gboolean session_write_data_cb	(SockInfo	*source,
 					 gpointer	 data);
 
 
-void session_init(Session *session)
+void session_init(Session *session, const void *prefs_account, gboolean is_smtp)
 {
 	session->type = SESSION_UNKNOWN;
 	session->sock = NULL;
@@ -97,6 +97,8 @@ void session_init(Session *session)
 	session->timeout_interval = 0;
 
 	session->data = NULL;
+	session->account = prefs_account;
+	session->is_smtp = is_smtp;
 }
 
 /*!
@@ -134,6 +136,7 @@ gint session_connect(Session *session, const gchar *server, gushort port)
 	session->port = port;
 
 	sock = sock_connect(server, port);
+	sock->is_smtp = session->is_smtp;
 	if (sock == NULL) {
 		g_warning("can't connect to server.");
 		session_close(session);
@@ -157,7 +160,8 @@ static gint session_connect_cb(SockInfo *sock, gpointer data)
 	}
 
 	session->sock = sock;
-
+	sock->account = session->account;
+	sock->is_smtp = session->is_smtp;
 #if (defined(USE_OPENSSL) || defined (USE_GNUTLS))
 	if (session->ssl_type == SSL_TUNNEL) {
 		sock_set_nonblocking_mode(sock, FALSE);

@@ -40,6 +40,7 @@ typedef enum {
 #include <openssl/ssl.h>
 #include <openssl/err.h>
 #include <openssl/evp.h>
+#include <openssl/pkcs12.h>
 #else
 #include <gnutls/gnutls.h>
 #include <gnutls/x509.h>
@@ -57,6 +58,15 @@ gboolean ssl_init_socket		(SockInfo	*sockinfo);
 gboolean ssl_init_socket_with_method	(SockInfo	*sockinfo,
 					 SSLMethod	 method);
 void ssl_done_socket			(SockInfo	*sockinfo);
+
+typedef struct _SSLClientCertHookData SSLClientCertHookData;
+struct _SSLClientCertHookData
+{
+	void *account;
+	const gchar *cert_path;
+	const gchar *password;
+	gboolean is_smtp;
+};
 
 #endif /* USE_OPENSSL */
 

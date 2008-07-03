@@ -63,6 +63,8 @@ struct _SockInfo
 #elif USE_GNUTLS
 	gnutls_session ssl;
 	gnutls_certificate_credentials_t xcred;
+	gnutls_x509_crt client_crt;
+	gnutls_x509_privkey client_key;
 #endif
 	guint g_source;
 	GIOChannel *sock_ch;
@@ -75,6 +77,9 @@ struct _SockInfo
 	SockFunc callback;
 	GIOCondition condition;
 	gchar *canonical_name;
+	
+	void *account;
+	gboolean is_smtp;
 };
 
 void refresh_resolvers			(void);

@@ -294,7 +294,7 @@ static Session *news_session_new(Folder *folder, const gchar *server, gushort po
 	log_message(LOG_PROTOCOL, _("creating NNTP connection to %s:%d ...\n"), server, port);
 
 	session = g_new0(NewsSession, 1);
-	session_init(SESSION(session));
+	session_init(SESSION(session), folder->account, FALSE);
 	SESSION(session)->type             = SESSION_NEWS;
 	SESSION(session)->server           = g_strdup(server);
  	SESSION(session)->sock             = NULL;

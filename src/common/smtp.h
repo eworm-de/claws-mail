@@ -120,7 +120,7 @@ struct _SMTPSession
 	void *dialog;
 };
 
-Session *smtp_session_new	(void);
+Session *smtp_session_new	(void *prefs_account);
 gint smtp_from(SMTPSession *session);
 gint smtp_quit(SMTPSession *session);
 

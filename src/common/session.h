@@ -154,9 +154,14 @@ struct _Session
 	gpointer recv_data_notify_data;
 	gpointer send_data_progressive_notify_data;
 	gpointer send_data_notify_data;
+	
+	void *account;
+	gboolean is_smtp;
 };
 
-void session_init		(Session	*session);
+void session_init		(Session	*session, 
+				 const void 	*prefs_account,
+				 gboolean	 is_smtp);
 gint session_connect		(Session	*session,
 				 const gchar	*server,
 				 gushort	 port);

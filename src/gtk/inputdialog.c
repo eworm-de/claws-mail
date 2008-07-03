@@ -222,8 +222,17 @@ gchar *input_dialog_query_password(const gchar *server, const gchar *user)
 	gchar *message;
 	gchar *pass;
 
-	message = g_strdup_printf(_("Input password for %s on %s:"),
+	if (server && user)
+		message = g_strdup_printf(_("Input password for %s on %s:"),
 				  user, server);
+	else if (server)
+		message = g_strdup_printf(_("Input password for %s:"),
+				  server);
+	else if (user)
+		message = g_strdup_printf(_("Input password for %s:"),
+				  user);
+	else
+		message = g_strdup_printf(_("Input password:"));
 	pass = input_dialog_with_invisible(_("Input password"), message, NULL);
 	g_free(message);
 

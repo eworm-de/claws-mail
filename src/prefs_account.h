@@ -78,6 +78,12 @@ struct _PrefsAccount
 	SSLType ssl_imap;
 	SSLType ssl_nntp;
 	SSLType ssl_smtp;
+	
+	gchar *out_ssl_client_cert_file;
+	gchar *out_ssl_client_cert_pass;
+	gchar *in_ssl_client_cert_file;
+	gchar *in_ssl_client_cert_pass;
+
 	gboolean use_nonblocking_ssl;
 
 	/* Temporarily preserved password */

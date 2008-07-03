@@ -40,6 +40,7 @@
 #include "etpan-thread-manager.h"
 #include "utils.h"
 #include "mainwindow.h"
+#include "ssl.h"
 #include "ssl_certificate.h"
 #include "socket.h"
 #include "remotefolder.h"
@@ -438,6 +439,7 @@ static void threaded_run(Folder * folder, void * param, void * result,
 
 struct connect_param {
 	mailimap * imap;
+	PrefsAccount *account;
 	const char * server;
 	int port;
 };
@@ -557,6 +559,55 @@ static int etpan_certificate_check(const unsigned char *certificate, int len, vo
 	return 0;
 }
 
+static void connect_ssl_context_cb(struct mailstream_ssl_context * ssl_context, void * data)
+{
+#if (defined(USE_OPENSSL) || defined(USE_GNUTLS))
+	PrefsAccount *account = (PrefsAccount *)data;
+	const gchar *cert_path = NULL;
+	const gchar *password = NULL;
+#ifdef USE_OPENSSL
+	X509 *x509 = NULL;
+	EVP_PKEY *pkey = NULL;
+#else
+	gnutls_x509_crt x509 = NULL;
+	gnutls_x509_privkey pkey = NULL;
+#endif
+
+	if (account->in_ssl_client_cert_file && *account->in_ssl_client_cert_file)
+		cert_path = account->in_ssl_client_cert_file;
+	if (account->in_ssl_client_cert_pass && *account->in_ssl_client_cert_pass)
+		password = account->in_ssl_client_cert_pass;
+	
+	if (mailstream_ssl_set_client_certificate_data(ssl_context, NULL, 0) < 0 ||
+	    mailstream_ssl_set_client_private_key_data(ssl_context, NULL, 0) < 0)
+		debug_print("Impossible to set the client certificate.\n");
+	x509 = ssl_certificate_get_x509_from_pem_file(cert_path);
+	pkey = ssl_certificate_get_pkey_from_pem_file(cert_path);
+	if (!(x509 && pkey)) {
+		/* try pkcs12 format */
+		ssl_certificate_get_x509_and_pkey_from_p12_file(cert_path, password, &x509, &pkey);
+	}
+	if (x509 && pkey) {
+		unsigned char *x509_der = NULL, *pkey_der = NULL;
+		size_t x509_len, pkey_len;
+		
+		x509_len = (size_t)i2d_X509(x509, &x509_der);
+		pkey_len = (size_t)i2d_PrivateKey(pkey, &pkey_der);
+		if (x509_len > 0 && pkey_len > 0) {
+			if (mailstream_ssl_set_client_certificate_data(ssl_context, x509_der, x509_len) < 0 ||
+			    mailstream_ssl_set_client_private_key_data(ssl_context, pkey_der, pkey_len) < 0) 
+				log_error(LOG_PROTOCOL, "Impossible to set the client certificate.\n");
+			g_free(x509_der);
+			g_free(pkey_der);
+		}
+#ifdef USE_GNUTLS
+		gnutls_x509_crt_deinit(x509);
+		gnutls_x509_privkey_deinit(pkey);
+#endif
+	}
+#endif
+}
+
 static void connect_ssl_run(struct etpan_thread_op * op)
 {
 	int r;
@@ -568,8 +619,9 @@ static void connect_ssl_run(struct etpan_thread_op * op)
 	
 	CHECK_IMAP();
 
-	r = mailimap_ssl_connect(param->imap,
-				 param->server, param->port);
+	r = mailimap_ssl_connect_with_callback(param->imap,
+				 		param->server, param->port,
+						connect_ssl_context_cb, param->account);
 	result->error = r;
 }
 
@@ -601,7 +653,8 @@ int imap_threaded_connect_ssl(Folder * folder, const char * server, int port)
 	param.imap = imap;
 	param.server = server;
 	param.port = port;
-	
+	param.account = folder->account;
+
 	refresh_resolvers();
 	threaded_run(folder, &param, &result, connect_ssl_run);
 
@@ -1119,7 +1172,7 @@ static void starttls_run(struct etpan_thread_op * op)
 			return;
 		}
 
-		tls_low = mailstream_low_tls_open(fd);
+		tls_low = mailstream_low_tls_open_with_callback(fd, connect_ssl_context_cb, param->account);
 		if (tls_low == NULL) {
 			debug_print("imap starttls run - can't tls_open\n");
 			result->error = MAILIMAP_ERROR_STREAM;
@@ -1142,7 +1195,8 @@ int imap_threaded_starttls(Folder * folder, const gchar *host, int port)
 	param.imap = get_imap(folder);
 	param.server = host;
 	param.port = port;
-	
+	param.account = folder->account;
+
 	threaded_run(folder, &param, &result, starttls_run);
 	
 	debug_print("imap starttls - end\n");

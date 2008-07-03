@@ -1,3 +1,27 @@
+2008-07-03 [colin]	3.5.0cvs2
+
+	* src/imap.c
+	* src/news.c
+	* src/pop.c
+	* src/prefs_account.c
+	* src/prefs_account.h
+	* src/prefs_common.c
+	* src/send_message.c
+	* src/common/session.c
+	* src/common/session.h
+	* src/common/smtp.c
+	* src/common/smtp.h
+	* src/common/socket.h
+	* src/common/ssl.c
+	* src/common/ssl.h
+	* src/common/ssl_certificate.c
+	* src/common/ssl_certificate.h
+	* src/etpan/imap-thread.c
+	* src/etpan/nntp-thread.c
+	* src/gtk/inputdialog.c
+		Add support for SSL client certificates (either PEM files
+		with certificate and private key, either PKCS12 files)
+
 2008-06-28 [colin]	3.5.0cvs1
 
 	* src/foldersel.c

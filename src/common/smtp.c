@@ -61,13 +61,13 @@ static gint smtp_session_recv_msg(Session *session, const gchar *msg);
 static gint smtp_session_send_data_finished(Session *session, guint len);
 
 
-Session *smtp_session_new(void)
+Session *smtp_session_new(void *prefs_account)
 {
 	SMTPSession *session;
 
 	session = g_new0(SMTPSession, 1);
 
-	session_init(SESSION(session));
+	session_init(SESSION(session), prefs_account, TRUE);
 
 	SESSION(session)->type             = SESSION_SMTP;
 

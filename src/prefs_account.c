@@ -57,6 +57,9 @@
 #include "combobox.h"
 #include "setup.h"
 #include "quote_fmt.h"
+#include "hooks.h"
+#include "inputdialog.h"
+#include "ssl_certificate.h"
 
 static gboolean cancelled;
 static gboolean new_account;
@@ -68,6 +71,13 @@ static GtkWidget *sigcmd_radiobtn;
 static GtkWidget *entry_sigpath;
 static GtkWidget *signature_browse_button;
 static GtkWidget *signature_edit_button;
+
+#if (defined(USE_OPENSSL) || defined (USE_GNUTLS))
+static GtkWidget *entry_in_cert_file;
+static GtkWidget *entry_out_cert_file;
+static GtkWidget *in_ssl_cert_browse_button;
+static GtkWidget *out_ssl_cert_browse_button;
+#endif
 
 static GSList *prefs_pages = NULL;
 
@@ -241,6 +251,11 @@ typedef struct SSLPage
 	GtkWidget *smtp_nossl_radiobtn;
 	GtkWidget *smtp_ssltunnel_radiobtn;
 	GtkWidget *smtp_starttls_radiobtn;
+
+	GtkWidget *entry_in_cert_file;
+	GtkWidget *entry_in_cert_pass;
+	GtkWidget *entry_out_cert_file;
+	GtkWidget *entry_out_cert_pass;
 
 	GtkWidget *use_nonblocking_ssl_checkbtn;
 } SSLPage;
@@ -680,6 +695,18 @@ static PrefParam ssl_param[] = {
 	{"use_nonblocking_ssl", "1", &tmp_ac_prefs.use_nonblocking_ssl, P_BOOL,
 	 &ssl_page.use_nonblocking_ssl_checkbtn,
 	 prefs_set_data_from_toggle, prefs_set_toggle},
+
+	{"in_ssl_client_cert_file", "", &tmp_ac_prefs.in_ssl_client_cert_file, P_STRING,
+	 &ssl_page.entry_in_cert_file, prefs_set_data_from_entry, prefs_set_entry},
+
+	{"in_ssl_client_cert_pass", "", &tmp_ac_prefs.in_ssl_client_cert_pass, P_PASSWORD,
+	 &ssl_page.entry_in_cert_pass, prefs_set_data_from_entry, prefs_set_entry},
+
+	{"out_ssl_client_cert_file", "", &tmp_ac_prefs.out_ssl_client_cert_file, P_STRING,
+	 &ssl_page.entry_out_cert_file, prefs_set_data_from_entry, prefs_set_entry},
+
+	{"out_ssl_client_cert_pass", "", &tmp_ac_prefs.out_ssl_client_cert_pass, P_PASSWORD,
+	 &ssl_page.entry_out_cert_pass, prefs_set_data_from_entry, prefs_set_entry},
 #else
 	{"ssl_pop", "0", &tmp_ac_prefs.ssl_pop, P_ENUM,
 	 NULL, NULL, NULL},
@@ -691,6 +718,18 @@ static PrefParam ssl_param[] = {
 	 NULL, NULL, NULL},
 
 	{"ssl_smtp", "0", &tmp_ac_prefs.ssl_smtp, P_ENUM,
+	 NULL, NULL, NULL},
+
+	{"in_ssl_client_cert_file", "", &tmp_ac_prefs.in_ssl_client_cert_file, P_STRING,
+	 NULL, NULL, NULL},
+
+	{"in_ssl_client_cert_pass", "", &tmp_ac_prefs.in_ssl_client_cert_pass, P_PASSWORD,
+	 NULL, NULL, NULL},
+
+	{"out_ssl_client_cert_file", "", &tmp_ac_prefs.out_ssl_client_cert_file, P_STRING,
+	 NULL, NULL, NULL},
+
+	{"out_ssl_client_cert_pass", "", &tmp_ac_prefs.out_ssl_client_cert_pass, P_PASSWORD,
 	 NULL, NULL, NULL},
 
 	{"use_nonblocking_ssl", "1", &tmp_ac_prefs.use_nonblocking_ssl, P_BOOL,
@@ -801,6 +840,12 @@ static void prefs_account_sigcmd_radiobtn_cb	(GtkWidget	*widget,
 						 gpointer	 data);
 
 static void prefs_account_signature_browse_cb	(GtkWidget	*widget,
+						 gpointer	 data);
+
+static void prefs_account_in_cert_browse_cb	(GtkWidget	*widget,
+						 gpointer	 data);
+
+static void prefs_account_out_cert_browse_cb	(GtkWidget	*widget,
 						 gpointer	 data);
 
 static void prefs_account_signature_edit_cb	(GtkWidget	*widget,
@@ -2254,11 +2299,18 @@ static void ssl_create_widget_func(PrefsPage * _page,
 	GtkWidget *smtp_ssltunnel_radiobtn;
 	GtkWidget *smtp_starttls_radiobtn;
 
+	GtkWidget *cert_frame;
 	GtkWidget *vbox6;
+	GtkWidget *cert_table;
+	GtkWidget *entry_in_cert_pass;
+	GtkWidget *entry_out_cert_pass;
+
+	GtkWidget *vbox7;
 	GtkWidget *use_nonblocking_ssl_checkbtn;
 	GtkWidget *hbox;
 	GtkWidget *hbox_spc;
 	GtkWidget *label;
+	GtkTooltips *tips = gtk_tooltips_new();
 
 	vbox1 = gtk_vbox_new (FALSE, VSPACING);
 	gtk_widget_show (vbox1);
@@ -2276,7 +2328,7 @@ static void ssl_create_widget_func(PrefsPage * _page,
 			     pop_starttls_radiobtn,
 			     _("Use STARTTLS command to start SSL session"),
 			     SSL_STARTTLS);
-
+	
 	vbox3 = gtkut_get_options_frame(vbox1, &imap_frame, _("IMAP4"));
 
 	CREATE_RADIO_BUTTONS(vbox3,
@@ -2317,16 +2369,63 @@ static void ssl_create_widget_func(PrefsPage * _page,
 			     _("Use STARTTLS command to start SSL session"),
 			     SSL_STARTTLS);
 
-	vbox6 = gtk_vbox_new (FALSE, 0);
-	gtk_widget_show (vbox6);
-	gtk_box_pack_start (GTK_BOX (vbox1), vbox6, FALSE, FALSE, 0);
+	vbox6 = gtkut_get_options_frame(vbox1, &cert_frame, _("Client certificates"));
+	cert_table = gtk_table_new(4,3, FALSE);
+	
+	label = gtk_label_new("Reception certificate");
+	gtk_misc_set_alignment(GTK_MISC(label), 1, 0.5);
+	entry_in_cert_file = gtk_entry_new();
+	in_ssl_cert_browse_button = gtkut_get_browse_file_btn(_("Browse"));
+	gtk_tooltips_set_tip(GTK_TOOLTIPS(tips), label, _("Client certificate file as a PKCS12 or PEM file."), NULL);	
+	gtk_tooltips_set_tip(GTK_TOOLTIPS(tips), entry_in_cert_file, _("Client certificate file as a PKCS12 or PEM file."), NULL);	
+	gtk_table_attach (GTK_TABLE (cert_table), label, 0, 1, 0, 1, GTK_FILL, 0, 0, 0);
+	gtk_table_attach (GTK_TABLE (cert_table), entry_in_cert_file, 1, 2, 0, 1, GTK_EXPAND|GTK_FILL, 0, 0, 0);
+	gtk_table_attach (GTK_TABLE (cert_table), in_ssl_cert_browse_button, 2, 3, 0, 1, GTK_FILL, 0, 0, 0);
 
-	PACK_CHECK_BUTTON(vbox6, use_nonblocking_ssl_checkbtn,
+	label = gtk_label_new("Certificate password");
+	gtk_misc_set_alignment(GTK_MISC(label), 1, 0.5);
+	entry_in_cert_pass = gtk_entry_new();
+	gtk_entry_set_visibility(GTK_ENTRY(entry_in_cert_pass), FALSE);
+	gtk_table_attach (GTK_TABLE (cert_table), label, 0, 1, 1, 2, GTK_FILL, 0, 0, 0);
+	gtk_table_attach (GTK_TABLE (cert_table), entry_in_cert_pass, 1, 2, 1, 2, GTK_FILL, 0, 0, 0);
+
+	label = gtk_label_new("Send certificate");
+	gtk_misc_set_alignment(GTK_MISC(label), 1, 0.5);
+	entry_out_cert_file = gtk_entry_new();
+	out_ssl_cert_browse_button = gtkut_get_browse_file_btn(_("Browse"));
+	gtk_tooltips_set_tip(GTK_TOOLTIPS(tips), label, _("Client certificate file as a PKCS12 or PEM file."), NULL);	
+	gtk_tooltips_set_tip(GTK_TOOLTIPS(tips), entry_out_cert_file, _("Client certificate file as a PKCS12 or PEM file."), NULL);	
+	gtk_table_attach (GTK_TABLE (cert_table), label, 0, 1, 2, 3, GTK_FILL, 0, 0, 0);
+	gtk_table_attach (GTK_TABLE (cert_table), entry_out_cert_file, 1, 2, 2, 3, GTK_EXPAND|GTK_FILL, 0, 0, 0);
+	gtk_table_attach (GTK_TABLE (cert_table), out_ssl_cert_browse_button, 2, 3, 2, 3, GTK_FILL, 0, 0, 0);
+
+	label = gtk_label_new("Certificate password");
+	gtk_misc_set_alignment(GTK_MISC(label), 1, 0.5);
+	entry_out_cert_pass = gtk_entry_new();
+	gtk_entry_set_visibility(GTK_ENTRY(entry_out_cert_pass), FALSE);
+	gtk_table_attach (GTK_TABLE (cert_table), label, 0, 1, 3, 4, GTK_FILL, 0, 0, 0);
+	gtk_table_attach (GTK_TABLE (cert_table), entry_out_cert_pass, 1, 2, 3, 4, GTK_FILL, 0, 0, 0);
+	hbox = gtk_hbox_new (FALSE, 0);
+	gtk_widget_show (hbox);
+	gtk_box_pack_start (GTK_BOX (vbox6), hbox, TRUE, TRUE, 0);
+	gtk_box_pack_start (GTK_BOX (hbox), cert_table, TRUE, TRUE, 0);
+	gtk_widget_show_all(vbox6);
+
+	g_signal_connect(G_OBJECT(in_ssl_cert_browse_button), "clicked",
+			 G_CALLBACK(prefs_account_in_cert_browse_cb), NULL);
+	g_signal_connect(G_OBJECT(out_ssl_cert_browse_button), "clicked",
+			 G_CALLBACK(prefs_account_out_cert_browse_cb), NULL);
+	
+	vbox7 = gtk_vbox_new (FALSE, 0);
+	gtk_widget_show (vbox7);
+	gtk_box_pack_start (GTK_BOX (vbox1), vbox7, FALSE, FALSE, 0);
+
+	PACK_CHECK_BUTTON(vbox7, use_nonblocking_ssl_checkbtn,
 			  _("Use non-blocking SSL"));
 
 	hbox = gtk_hbox_new (FALSE, 0);
 	gtk_widget_show (hbox);
-	gtk_box_pack_start (GTK_BOX (vbox6), hbox, FALSE, FALSE, 0);
+	gtk_box_pack_start (GTK_BOX (vbox7), hbox, FALSE, FALSE, 0);
 
 	hbox_spc = gtk_hbox_new (FALSE, 0);
 	gtk_widget_show (hbox_spc);
@@ -2357,6 +2456,11 @@ static void ssl_create_widget_func(PrefsPage * _page,
 	page->smtp_nossl_radiobtn     = smtp_nossl_radiobtn;
 	page->smtp_ssltunnel_radiobtn = smtp_ssltunnel_radiobtn;
 	page->smtp_starttls_radiobtn  = smtp_starttls_radiobtn;
+
+	page->entry_in_cert_file      = entry_in_cert_file;
+	page->entry_in_cert_pass      = entry_in_cert_pass;
+	page->entry_out_cert_file     = entry_out_cert_file;
+	page->entry_out_cert_pass     = entry_out_cert_pass;
 
 	page->use_nonblocking_ssl_checkbtn = use_nonblocking_ssl_checkbtn;
 
@@ -3102,6 +3206,69 @@ static void register_ssl_page(void)
 }
 #endif
 
+static gboolean sslcert_get_client_cert_hook(gpointer source, gpointer data)
+{
+	SSLClientCertHookData *hookdata = (SSLClientCertHookData *)source;
+	PrefsAccount *account = (PrefsAccount *)hookdata->account;
+
+	hookdata->cert_path = NULL;
+	hookdata->password = NULL;
+
+	if (!g_list_find(account_get_list(), account)) {
+		g_warning("can't find sock account\n");
+		return TRUE;
+	}
+	
+	if (hookdata->is_smtp) {
+		if (account->out_ssl_client_cert_file && *account->out_ssl_client_cert_file)
+			hookdata->cert_path = account->out_ssl_client_cert_file;
+		if (account->out_ssl_client_cert_pass && *account->out_ssl_client_cert_pass)
+			hookdata->password = account->out_ssl_client_cert_pass;
+	} else {
+		if (account->in_ssl_client_cert_file && *account->in_ssl_client_cert_file)
+			hookdata->cert_path = account->in_ssl_client_cert_file;
+		if (account->in_ssl_client_cert_pass && *account->in_ssl_client_cert_pass)
+			hookdata->password = account->in_ssl_client_cert_pass;
+	}
+	return TRUE;
+}
+
+struct GetPassData {
+	GCond *cond;
+	GMutex* mutex;
+	gchar **pass;
+};
+
+
+static gboolean do_get_pass(gpointer data)
+{
+	struct GetPassData *pass_data = (struct GetPassData *)data;
+	g_mutex_lock(pass_data->mutex);
+	*(pass_data->pass) = input_dialog_query_password("the PKCS12 client certificate", NULL);
+	g_cond_signal(pass_data->cond);
+	g_mutex_unlock(pass_data->mutex);
+	return FALSE;
+}
+static gboolean sslcert_get_password(gpointer source, gpointer data)
+{ 
+	struct GetPassData pass_data;
+	/* do complicated stuff to be able to call GTK from the mainloop */
+	pass_data.cond = g_cond_new();
+	pass_data.mutex = g_mutex_new();
+	pass_data.pass = (gchar **)source;
+
+	g_mutex_lock(pass_data.mutex);
+
+	g_idle_add(do_get_pass, &pass_data);
+
+	g_cond_wait(pass_data.cond, pass_data.mutex);
+	g_cond_free(pass_data.cond);
+	g_mutex_unlock(pass_data.mutex);
+	g_mutex_free(pass_data.mutex);
+
+	return TRUE;
+}
+
 static void register_advanced_page(void)
 {
 	static gchar *path[3];
@@ -3130,6 +3297,8 @@ void prefs_account_init()
 	register_privacy_page();
 #if (defined(USE_OPENSSL) || defined (USE_GNUTLS))
 	register_ssl_page();
+	hooks_register_hook(SSLCERT_GET_CLIENT_CERT_HOOKLIST, sslcert_get_client_cert_hook, NULL);
+	hooks_register_hook(SSL_CERT_GET_PASSWORD, sslcert_get_password, NULL);
 #endif
 	register_advanced_page();
 }
@@ -3502,6 +3671,42 @@ static void prefs_account_signature_browse_cb(GtkWidget *widget, gpointer data)
 	gtk_entry_set_text(GTK_ENTRY(entry_sigpath), utf8_filename);
 	g_free(utf8_filename);
 }
+
+#if (defined(USE_OPENSSL) || defined (USE_GNUTLS))
+static void prefs_account_in_cert_browse_cb(GtkWidget *widget, gpointer data)
+{
+	gchar *filename;
+	gchar *utf8_filename;
+
+	filename = filesel_select_file_open(_("Select certificate file"), NULL);
+	if (!filename) return;
+
+	utf8_filename = g_filename_to_utf8(filename, -1, NULL, NULL, NULL);
+	if (!utf8_filename) {
+		g_warning("prefs_account_cert_browse_cb(): failed to convert character set.");
+		utf8_filename = g_strdup(filename);
+	}
+	gtk_entry_set_text(GTK_ENTRY(entry_in_cert_file), utf8_filename);
+	g_free(utf8_filename);
+}
+
+static void prefs_account_out_cert_browse_cb(GtkWidget *widget, gpointer data)
+{
+	gchar *filename;
+	gchar *utf8_filename;
+
+	filename = filesel_select_file_open(_("Select certificate file"), NULL);
+	if (!filename) return;
+
+	utf8_filename = g_filename_to_utf8(filename, -1, NULL, NULL, NULL);
+	if (!utf8_filename) {
+		g_warning("prefs_account_cert_browse_cb(): failed to convert character set.");
+		utf8_filename = g_strdup(filename);
+	}
+	gtk_entry_set_text(GTK_ENTRY(entry_out_cert_file), utf8_filename);
+	g_free(utf8_filename);
+}
+#endif
 
 static void prefs_account_signature_edit_cb(GtkWidget *widget, gpointer data)
 {

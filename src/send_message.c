@@ -232,7 +232,7 @@ gint send_message_smtp_full(PrefsAccount *ac_prefs, GSList *to_list, FILE *fp, g
 
 	if (!ac_prefs->session) {
 		/* we can't reuse a previously initialised session */
-		session = smtp_session_new();
+		session = smtp_session_new(ac_prefs);
 		smtp_session = SMTP_SESSION(session);
 
 		if (ac_prefs->set_domain && ac_prefs->domain && strlen(ac_prefs->domain)) {

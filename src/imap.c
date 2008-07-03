@@ -680,12 +680,10 @@ static void imap_handle_error(Session *session, int libetpan_errcode)
 	case MAILIMAP_ERROR_SASL:
 		log_warning(LOG_PROTOCOL, _("IMAP error: SASL error\n"));
 		break;
-#if (LIBETPAN_VERSION_MAJOR > 0 || LIBETPAN_VERSION_MINOR > 48)
 #if (defined(USE_OPENSSL) || defined (USE_GNUTLS))
 	case MAILIMAP_ERROR_SSL:
 		log_warning(LOG_PROTOCOL, _("IMAP error: SSL error\n"));
 		break;
-#endif
 #endif
 	default:
 		log_warning(LOG_PROTOCOL, _("IMAP error: Unknown error [%d]\n"),
@@ -1088,12 +1086,10 @@ static IMAPSession *imap_session_new(Folder * folder,
 		authenticated = FALSE;
 	}
 	else {
-#if (LIBETPAN_VERSION_MAJOR > 0 || LIBETPAN_VERSION_MINOR > 48)
 #if (defined(USE_OPENSSL) || defined (USE_GNUTLS))
 		if (r == MAILIMAP_ERROR_SSL)
 			log_error(LOG_PROTOCOL, _("SSL handshake failed\n"));
 		else
-#endif
 #endif
 			imap_handle_error(NULL, r);
 
@@ -1109,7 +1105,7 @@ static IMAPSession *imap_session_new(Folder * folder,
 	}
 	
 	session = g_new0(IMAPSession, 1);
-	session_init(SESSION(session));
+	session_init(SESSION(session), account, FALSE);
 	SESSION(session)->type             = SESSION_IMAP;
 	SESSION(session)->server           = g_strdup(account->recv_server);
 	SESSION(session)->port		   = port;

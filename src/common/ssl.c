@@ -31,6 +31,7 @@
 #include "utils.h"
 #include "ssl.h"
 #include "ssl_certificate.h"
+#include "hooks.h"
 
 #ifdef HAVE_LIBETPAN
 #include <libetpan/mailstream_ssl.h>
@@ -56,6 +57,84 @@ typedef struct _thread_data {
 static SSL_CTX *ssl_ctx;
 #endif
 
+#ifdef USE_OPENSSL
+static int openssl_client_cert_cb(SSL *ssl, X509 **x509, EVP_PKEY **pkey)
+{
+	SSLClientCertHookData hookdata;
+	SockInfo *sockinfo = (SockInfo *)SSL_CTX_get_app_data(ssl->ctx);
+	
+	if (x509 == NULL || pkey == NULL) {
+		return 0;
+	}
+
+	if (sockinfo == NULL)
+		return 0;
+
+	hookdata.account = sockinfo->account;
+	hookdata.cert_path = NULL;
+	hookdata.password = NULL;
+	hookdata.is_smtp = sockinfo->is_smtp;
+	hooks_invoke(SSLCERT_GET_CLIENT_CERT_HOOKLIST, &hookdata);	
+
+	if (hookdata.cert_path == NULL)
+		return 0;
+
+	*x509 = ssl_certificate_get_x509_from_pem_file(hookdata.cert_path);
+	*pkey = ssl_certificate_get_pkey_from_pem_file(hookdata.cert_path);
+	if (!(*x509 && *pkey)) {
+		/* try pkcs12 format */
+		ssl_certificate_get_x509_and_pkey_from_p12_file(hookdata.cert_path, hookdata.password, x509, pkey);
+	}
+	if (*x509 && *pkey)
+		return 1;
+	else
+		return 0;
+}
+#endif
+#ifdef USE_GNUTLS
+static int gnutls_client_cert_cb(gnutls_session session,
+                               const gnutls_datum *req_ca_rdn, int nreqs,
+                               const gnutls_pk_algorithm *sign_algos,
+                               int sign_algos_length, gnutls_retr_st *st)
+{
+	SSLClientCertHookData hookdata;
+	SockInfo *sockinfo = (SockInfo *)gnutls_session_get_ptr(session);
+	gnutls_certificate_type type = gnutls_certificate_type_get(session);
+	gnutls_x509_crt crt;
+	gnutls_x509_privkey key;
+
+	st->ncerts = 0;
+
+	hookdata.account = sockinfo->account;
+	hookdata.cert_path = NULL;
+	hookdata.password = NULL;
+	hookdata.is_smtp = sockinfo->is_smtp;
+	hooks_invoke(SSLCERT_GET_CLIENT_CERT_HOOKLIST, &hookdata);	
+
+	if (hookdata.cert_path == NULL)
+		return 0;
+
+	sockinfo->client_crt = ssl_certificate_get_x509_from_pem_file(hookdata.cert_path);
+	sockinfo->client_key = ssl_certificate_get_pkey_from_pem_file(hookdata.cert_path);
+	if (!(sockinfo->client_crt && sockinfo->client_key)) {
+		/* try pkcs12 format */
+		ssl_certificate_get_x509_and_pkey_from_p12_file(hookdata.cert_path, hookdata.password, 
+			&crt, &key);
+		sockinfo->client_crt = crt;
+		sockinfo->client_key = key;
+	}
+
+	if (type == GNUTLS_CRT_X509 && sockinfo->client_crt && sockinfo->client_key) {
+		st->ncerts = 1;
+		st->type = type;
+		st->cert.x509 = &(sockinfo->client_crt);
+		st->key.x509 = sockinfo->client_key;
+		st->deinit_all = 0;
+		return 0;
+	}
+	return -1;
+}
+#endif
 void ssl_init(void)
 {
 #ifdef USE_OPENSSL
@@ -64,6 +143,9 @@ void ssl_init(void)
 	/* Global system initialization*/
 	SSL_library_init();
 	SSL_load_error_strings();
+	OpenSSL_add_all_algorithms();
+	OpenSSL_add_all_ciphers();
+	OpenSSL_add_all_digests();
 
 #ifdef HAVE_LIBETPAN
 	mailstream_openssl_init_not_required();
@@ -72,6 +154,9 @@ void ssl_init(void)
 	/* Create our context*/
 	meth = SSLv23_client_method();
 	ssl_ctx = SSL_CTX_new(meth);
+
+	
+	SSL_CTX_set_client_cert_cb(ssl_ctx, openssl_client_cert_cb);
 
 	/* Set default certificate paths */
 	SSL_CTX_set_default_verify_paths(ssl_ctx);
@@ -228,6 +313,7 @@ gboolean ssl_init_socket_with_method(SockInfo *sockinfo, SSLMethod method)
 		break;
 	}
 
+	SSL_CTX_set_app_data(ssl_ctx, sockinfo);
 	SSL_set_fd(ssl, sockinfo->sock);
 	if (SSL_connect_nb(ssl) == -1) {
 		g_warning(_("SSL connect failed (%s)\n"),
@@ -257,6 +343,7 @@ gboolean ssl_init_socket_with_method(SockInfo *sockinfo, SSLMethod method)
 
 	X509_free(server_cert);
 	sockinfo->ssl = ssl;
+	
 #else
 	gnutls_session session;
 	int r;
@@ -300,8 +387,9 @@ gboolean ssl_init_socket_with_method(SockInfo *sockinfo, SSLMethod method)
 
 	gnutls_certificate_set_verify_flags (xcred, GNUTLS_VERIFY_ALLOW_X509_V1_CA_CRT);
 
-	gnutls_transport_set_ptr(session, (gnutls_transport_ptr) 
-		sockinfo->sock);
+	gnutls_transport_set_ptr(session, (gnutls_transport_ptr) sockinfo->sock);
+	gnutls_session_set_ptr(session, sockinfo);
+	gnutls_certificate_client_set_retrieve_function(xcred, gnutls_client_cert_cb);
 
 	gnutls_dh_set_prime_bits(session, 512);
 
@@ -350,6 +438,12 @@ void ssl_done_socket(SockInfo *sockinfo)
 #else
 		gnutls_certificate_free_credentials(sockinfo->xcred);
 		gnutls_deinit(sockinfo->ssl);
+		if (sockinfo->client_crt)
+			gnutls_x509_crt_deinit(sockinfo->client_crt);
+		if (sockinfo->client_key)
+			gnutls_x509_privkey_deinit(sockinfo->client_key);
+		sockinfo->client_key = NULL;
+		sockinfo->client_crt = NULL;
 #endif
 		sockinfo->ssl = NULL;
 	}

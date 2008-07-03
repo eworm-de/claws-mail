@@ -28,6 +28,7 @@
 #else
 #include <gnutls/gnutls.h>
 #include <gnutls/x509.h>
+#include <gnutls/pkcs12.h>
 #include <sys/stat.h>
 #include <unistd.h>
 #include <string.h>
@@ -281,7 +282,46 @@ static void i2d_X509_fp(FILE *fp, gnutls_x509_crt x509_cert)
 		g_warning("failed to write cert\n");
 	}
 }
-static gnutls_x509_crt d2i_X509_fp(FILE *fp, int unused)
+
+size_t i2d_X509(gnutls_x509_crt x509_cert, unsigned char **output)
+{
+	size_t cert_size = 10*1024;
+	int r;
+	
+	if (output == NULL)
+		return 0;
+	
+	*output = malloc(cert_size);
+
+	if ((r = gnutls_x509_crt_export(x509_cert, GNUTLS_X509_FMT_DER, *output, &cert_size)) < 0) {
+		g_warning("couldn't export cert %s (%d)\n", gnutls_strerror(r), cert_size);
+		free(*output);
+		*output = NULL;
+		return 0;
+	}
+	return cert_size;
+}
+
+size_t i2d_PrivateKey(gnutls_x509_privkey pkey, unsigned char **output)
+{
+	size_t key_size = 10*1024;
+	int r;
+	
+	if (output == NULL)
+		return 0;
+	
+	*output = malloc(key_size);
+
+	if ((r = gnutls_x509_privkey_export(pkey, GNUTLS_X509_FMT_DER, *output, &key_size)) < 0) {
+		g_warning("couldn't export key %s (%d)\n", gnutls_strerror(r), key_size);
+		free(*output);
+		*output = NULL;
+		return 0;
+	}
+	return key_size;
+}
+
+static gnutls_x509_crt d2i_X509_fp(FILE *fp, int format)
 {
 	gnutls_x509_crt cert = NULL;
 	gnutls_datum tmp;
@@ -296,18 +336,82 @@ static gnutls_x509_crt d2i_X509_fp(FILE *fp, int unused)
 	tmp.size = s.st_size;
 	if (fread (tmp.data, 1, s.st_size, fp) < s.st_size) {
 		perror("fread");
+		free(tmp.data);
 		return NULL;
 	}
 
 	gnutls_x509_crt_init(&cert);
-	if ((r = gnutls_x509_crt_import(cert, &tmp, GNUTLS_X509_FMT_DER)) < 0) {
-		g_warning("import failed: %s\n", gnutls_strerror(r));
+	if ((r = gnutls_x509_crt_import(cert, &tmp, (format == 0)?GNUTLS_X509_FMT_DER:GNUTLS_X509_FMT_PEM)) < 0) {
+		debug_print("cert import failed: %s\n", gnutls_strerror(r));
 		gnutls_x509_crt_deinit(cert);
 		cert = NULL;
 	}
+	free(tmp.data);
 	debug_print("got cert! %p\n", cert);
 	return cert;
 }
+
+static gnutls_x509_privkey d2i_key_fp(FILE *fp, int format)
+{
+	gnutls_x509_privkey key = NULL;
+	gnutls_datum tmp;
+	struct stat s;
+	int r;
+	if (fstat(fileno(fp), &s) < 0) {
+		perror("fstat");
+		return NULL;
+	}
+	tmp.data = malloc(s.st_size);
+	memset(tmp.data, 0, s.st_size);
+	tmp.size = s.st_size;
+	if (fread (tmp.data, 1, s.st_size, fp) < s.st_size) {
+		perror("fread");
+		free(tmp.data);
+		return NULL;
+	}
+
+	gnutls_x509_privkey_init(&key);
+	if ((r = gnutls_x509_privkey_import(key, &tmp, (format == 0)?GNUTLS_X509_FMT_DER:GNUTLS_X509_FMT_PEM)) < 0) {
+		debug_print("key import failed: %s\n", gnutls_strerror(r));
+		gnutls_x509_privkey_deinit(key);
+		key = NULL;
+	}
+	free(tmp.data);
+	debug_print("got key! %p\n", key);
+	return key;
+}
+
+static gnutls_pkcs12_t d2i_PKCS12_fp(FILE *fp, int format)
+{
+	gnutls_pkcs12_t p12 = NULL;
+	gnutls_datum tmp;
+	struct stat s;
+	int r;
+	if (fstat(fileno(fp), &s) < 0) {
+		perror("fstat");
+		return NULL;
+	}
+	tmp.data = malloc(s.st_size);
+	memset(tmp.data, 0, s.st_size);
+	tmp.size = s.st_size;
+	if (fread (tmp.data, 1, s.st_size, fp) < s.st_size) {
+		perror("fread");
+		free(tmp.data);
+		return NULL;
+	}
+
+	gnutls_pkcs12_init(&p12);
+
+	if ((r = gnutls_pkcs12_import(p12, &tmp, (format == 0)?GNUTLS_X509_FMT_DER:GNUTLS_X509_FMT_PEM,0)) < 0) {
+		g_warning("p12 import failed: %s\n", gnutls_strerror(r));
+		gnutls_pkcs12_deinit(p12);
+		p12 = NULL;
+	}
+	free(tmp.data);
+	debug_print("got p12! %p\n", p12);
+	return p12;
+}
+
 #endif
 
 static void ssl_certificate_save (SSLCertificate *cert)
@@ -675,4 +779,276 @@ gboolean ssl_certificate_check (gnutls_x509_crt x509_cert, guint status, gchar *
 	return TRUE;
 }
 
+#if USE_OPENSSL
+X509 *ssl_certificate_get_x509_from_pem_file(const gchar *file)
+{
+	X509 *x509 = NULL;
+	if (!file)
+		return NULL;
+	if (is_file_exist(file)) {
+		FILE *fp = g_fopen(file, "r");
+		if (fp) {
+			x509 = PEM_read_X509(fp, NULL, NULL, NULL);
+			fclose(fp);
+			return x509;
+		}
+	} else {
+		log_error(LOG_PROTOCOL, "Can not open certificate file %s\n", file);
+	}
+	return NULL;
+}
+
+static int ssl_pkey_password_cb(char *buf, int max_len, int flag, void *pwd)
+{
+	return 0;
+}
+
+EVP_PKEY *ssl_certificate_get_pkey_from_pem_file(const gchar *file)
+{
+	EVP_PKEY *pkey = NULL;
+	if (!file)
+		return NULL;
+	if (is_file_exist(file)) {
+		FILE *fp = g_fopen(file, "r");
+		if (fp) {
+			pkey = PEM_read_PrivateKey(fp, NULL, ssl_pkey_password_cb, NULL);
+			fclose(fp);
+			return pkey;
+		}
+	} else {
+		log_error(LOG_PROTOCOL, "Can not open private key file %s\n", file);
+	}
+	return NULL;
+}
+
+void ssl_certificate_get_x509_and_pkey_from_p12_file(const gchar *file, const gchar *password,
+			X509 **x509, EVP_PKEY **pkey)
+{
+	PKCS12 *p12 = NULL;
+	*x509 = NULL;
+	*pkey = NULL;
+
+	if (!file)
+		return;
+
+	if (is_file_exist(file)) {
+		FILE *fp = g_fopen(file, "r");
+		if (fp) {
+			p12 = d2i_PKCS12_fp(fp, NULL);
+			fclose(fp);
+		}
+	} else {
+		log_error(LOG_PROTOCOL, "Can not open certificate file %s\n", file);
+	}
+	if (p12 != NULL) {
+		if (PKCS12_parse(p12, password, pkey, x509, NULL) == 1) {
+			/* we got the correct password */
+		} else {
+			gchar *tmp = NULL;
+			hooks_invoke(SSL_CERT_GET_PASSWORD, &tmp);
+			if (PKCS12_parse(p12, tmp, pkey, x509, NULL) == 1) {
+				debug_print("got p12\n");
+			} else {
+				log_error(LOG_PROTOCOL, "%s\n", ERR_error_string(ERR_get_error(),NULL));
+			}
+		}
+		PKCS12_free(p12);
+	}
+}
+#endif
+
+#ifdef USE_GNUTLS
+gnutls_x509_crt ssl_certificate_get_x509_from_pem_file(const gchar *file)
+{
+	gnutls_x509_crt x509 = NULL;
+	if (!file)
+		return NULL;
+	
+	if (is_file_exist(file)) {
+		FILE *fp = g_fopen(file, "r");
+		if (fp) {
+			x509 = d2i_X509_fp(fp, 1);
+			fclose(fp);
+			return x509;
+		}
+	} else {
+		log_error(LOG_PROTOCOL, "Can not open certificate file %s\n", file);
+	}
+	return NULL;
+}
+
+gnutls_x509_privkey ssl_certificate_get_pkey_from_pem_file(const gchar *file)
+{
+	gnutls_x509_privkey key = NULL;
+	if (!file)
+		return NULL;
+	
+	if (is_file_exist(file)) {
+		FILE *fp = g_fopen(file, "r");
+		if (fp) {
+			key = d2i_key_fp(fp, 1);
+			fclose(fp);
+			return key;
+		}
+	} else {
+		log_error(LOG_PROTOCOL, "Can not open key file %s\n", file);
+	}
+	return NULL;
+}
+
+/* From GnuTLS lib/gnutls_x509.c */
+static int
+parse_pkcs12 (gnutls_pkcs12_t p12,
+	      const char *password,
+	      gnutls_x509_privkey * key,
+	      gnutls_x509_crt_t * cert)
+{
+  gnutls_pkcs12_bag bag = NULL;
+  int index = 0;
+  int ret;
+
+  for (;;)
+    {
+      int elements_in_bag;
+      int i;
+
+      ret = gnutls_pkcs12_bag_init (&bag);
+      if (ret < 0)
+	{
+	  bag = NULL;
+	  goto done;
+	}
+
+      ret = gnutls_pkcs12_get_bag (p12, index, bag);
+      if (ret == GNUTLS_E_REQUESTED_DATA_NOT_AVAILABLE)
+	break;
+      if (ret < 0)
+	{
+	  goto done;
+	}
+
+      ret = gnutls_pkcs12_bag_get_type (bag, 0);
+      if (ret < 0)
+	{
+	  goto done;
+	}
+
+      if (ret == GNUTLS_BAG_ENCRYPTED)
+	{
+	  ret = gnutls_pkcs12_bag_decrypt (bag, password);
+	  if (ret < 0)
+	    {
+	      goto done;
+	    }
+	}
+
+      elements_in_bag = gnutls_pkcs12_bag_get_count (bag);
+      if (elements_in_bag < 0)
+	{
+	  goto done;
+	}
+
+      for (i = 0; i < elements_in_bag; i++)
+	{
+	  int type;
+	  gnutls_datum data;
+
+	  type = gnutls_pkcs12_bag_get_type (bag, i);
+	  if (type < 0)
+	    {
+	      goto done;
+	    }
+
+	  ret = gnutls_pkcs12_bag_get_data (bag, i, &data);
+	  if (ret < 0)
+	    {
+	      goto done;
+	    }
+
+	  switch (type)
+	    {
+	    case GNUTLS_BAG_PKCS8_ENCRYPTED_KEY:
+	    case GNUTLS_BAG_PKCS8_KEY:
+	      ret = gnutls_x509_privkey_init (key);
+	      if (ret < 0)
+		{
+		  goto done;
+		}
+
+	      ret = gnutls_x509_privkey_import_pkcs8
+		(*key, &data, GNUTLS_X509_FMT_DER, password,
+		 type == GNUTLS_BAG_PKCS8_KEY ? GNUTLS_PKCS_PLAIN : 0);
+	      if (ret < 0)
+		{
+		  goto done;
+		}
+	      break;
+
+	    case GNUTLS_BAG_CERTIFICATE:
+	      ret = gnutls_x509_crt_init (cert);
+	      if (ret < 0)
+		{
+		  goto done;
+		}
+
+	      ret =
+		gnutls_x509_crt_import (*cert, &data, GNUTLS_X509_FMT_DER);
+	      if (ret < 0)
+		{
+		  goto done;
+		}
+	      break;
+
+	    case GNUTLS_BAG_ENCRYPTED:
+	      /* XXX Bother to recurse one level down?  Unlikely to
+	         use the same password anyway. */
+	    case GNUTLS_BAG_EMPTY:
+	    default:
+	      break;
+	    }
+	}
+
+      index++;
+      gnutls_pkcs12_bag_deinit (bag);
+    }
+
+  ret = 0;
+
+done:
+  if (bag)
+    gnutls_pkcs12_bag_deinit (bag);
+
+  return ret;
+}
+void ssl_certificate_get_x509_and_pkey_from_p12_file(const gchar *file, const gchar *password,
+			gnutls_x509_crt *x509, gnutls_x509_privkey *pkey)
+{
+	gnutls_pkcs12_t p12 = NULL;
+
+	int r;
+
+	*x509 = NULL;
+	*pkey = NULL;
+	if (!file)
+		return;
+
+	if (is_file_exist(file)) {
+		FILE *fp = g_fopen(file, "r");
+		if (fp) {
+			p12 = d2i_PKCS12_fp(fp, 0);
+			fclose(fp);
+		}
+	} else {
+		log_error(LOG_PROTOCOL, "Can not open certificate file %s\n", file);
+	}
+	if (p12 != NULL) {
+		if ((r = parse_pkcs12(p12, password, pkey, x509)) == 0) {
+			debug_print("got p12\n");
+		} else {
+			log_error(LOG_PROTOCOL, "%s\n", gnutls_strerror(r));
+		}
+		gnutls_pkcs12_deinit(p12);
+	}
+}
+#endif
 #endif /* USE_OPENSSL */
