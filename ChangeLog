@@ -1,3 +1,9 @@
+2008-07-04 [paul]	3.5.0cvs3
+
+	* src/prefs_account.c
+		layout/engrish fixes to the 'Client
+		certificates' frame
+
 2008-07-03 [colin]	3.5.0cvs2
 
 	* src/imap.c

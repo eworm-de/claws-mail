@@ -2300,7 +2300,6 @@ static void ssl_create_widget_func(PrefsPage * _page,
 	GtkWidget *smtp_starttls_radiobtn;
 
 	GtkWidget *cert_frame;
-	GtkWidget *vbox6;
 	GtkWidget *cert_table;
 	GtkWidget *entry_in_cert_pass;
 	GtkWidget *entry_out_cert_pass;
@@ -2369,47 +2368,58 @@ static void ssl_create_widget_func(PrefsPage * _page,
 			     _("Use STARTTLS command to start SSL session"),
 			     SSL_STARTTLS);
 
-	vbox6 = gtkut_get_options_frame(vbox1, &cert_frame, _("Client certificates"));
+	PACK_FRAME(vbox1, cert_frame, _("Client certificates"));
+
 	cert_table = gtk_table_new(4,3, FALSE);
+	gtk_container_add(GTK_CONTAINER(cert_frame), cert_table);
+	gtk_container_set_border_width(GTK_CONTAINER(cert_table), 8);
+	gtk_table_set_row_spacings(GTK_TABLE(cert_table), VSPACING_NARROW_2);
+	gtk_table_set_col_spacings(GTK_TABLE(cert_table), 8);
 	
-	label = gtk_label_new("Reception certificate");
+	label = gtk_label_new(_("Certificate for receiving"));
 	gtk_misc_set_alignment(GTK_MISC(label), 1, 0.5);
 	entry_in_cert_file = gtk_entry_new();
 	in_ssl_cert_browse_button = gtkut_get_browse_file_btn(_("Browse"));
-	gtk_tooltips_set_tip(GTK_TOOLTIPS(tips), label, _("Client certificate file as a PKCS12 or PEM file."), NULL);	
-	gtk_tooltips_set_tip(GTK_TOOLTIPS(tips), entry_in_cert_file, _("Client certificate file as a PKCS12 or PEM file."), NULL);	
-	gtk_table_attach (GTK_TABLE (cert_table), label, 0, 1, 0, 1, GTK_FILL, 0, 0, 0);
-	gtk_table_attach (GTK_TABLE (cert_table), entry_in_cert_file, 1, 2, 0, 1, GTK_EXPAND|GTK_FILL, 0, 0, 0);
-	gtk_table_attach (GTK_TABLE (cert_table), in_ssl_cert_browse_button, 2, 3, 0, 1, GTK_FILL, 0, 0, 0);
+	gtk_tooltips_set_tip(GTK_TOOLTIPS(tips), label,
+			     _("Client certificate file as a PKCS12 or PEM file"), NULL);	
+	gtk_tooltips_set_tip(GTK_TOOLTIPS(tips), entry_in_cert_file,
+			     _("Client certificate file as a PKCS12 or PEM file"), NULL);	
+	gtk_table_attach(GTK_TABLE(cert_table), label, 0, 1, 0, 1, GTK_FILL, 0, 0, 0);
+	gtk_table_attach(GTK_TABLE(cert_table), entry_in_cert_file, 1, 2, 0, 1,
+			 GTK_EXPAND|GTK_FILL, 0, 0, 0);
+	gtk_table_attach(GTK_TABLE(cert_table), in_ssl_cert_browse_button, 2, 3, 0, 1,
+			 GTK_FILL, 0, 0, 0);
 
-	label = gtk_label_new("Certificate password");
+	label = gtk_label_new(_("Password"));
 	gtk_misc_set_alignment(GTK_MISC(label), 1, 0.5);
 	entry_in_cert_pass = gtk_entry_new();
 	gtk_entry_set_visibility(GTK_ENTRY(entry_in_cert_pass), FALSE);
-	gtk_table_attach (GTK_TABLE (cert_table), label, 0, 1, 1, 2, GTK_FILL, 0, 0, 0);
-	gtk_table_attach (GTK_TABLE (cert_table), entry_in_cert_pass, 1, 2, 1, 2, GTK_FILL, 0, 0, 0);
+	gtk_table_attach(GTK_TABLE(cert_table), label, 0, 1, 1, 2, GTK_FILL, 0, 0, 0);
+	gtk_table_attach(GTK_TABLE(cert_table), entry_in_cert_pass, 1, 2, 1, 2,
+			 GTK_FILL, 0, 0, 0);
 
-	label = gtk_label_new("Send certificate");
+	label = gtk_label_new(_("Certificate for sending"));
 	gtk_misc_set_alignment(GTK_MISC(label), 1, 0.5);
 	entry_out_cert_file = gtk_entry_new();
 	out_ssl_cert_browse_button = gtkut_get_browse_file_btn(_("Browse"));
-	gtk_tooltips_set_tip(GTK_TOOLTIPS(tips), label, _("Client certificate file as a PKCS12 or PEM file."), NULL);	
-	gtk_tooltips_set_tip(GTK_TOOLTIPS(tips), entry_out_cert_file, _("Client certificate file as a PKCS12 or PEM file."), NULL);	
-	gtk_table_attach (GTK_TABLE (cert_table), label, 0, 1, 2, 3, GTK_FILL, 0, 0, 0);
-	gtk_table_attach (GTK_TABLE (cert_table), entry_out_cert_file, 1, 2, 2, 3, GTK_EXPAND|GTK_FILL, 0, 0, 0);
-	gtk_table_attach (GTK_TABLE (cert_table), out_ssl_cert_browse_button, 2, 3, 2, 3, GTK_FILL, 0, 0, 0);
+	gtk_tooltips_set_tip(GTK_TOOLTIPS(tips), label,
+			     _("Client certificate file as a PKCS12 or PEM file"), NULL);	
+	gtk_tooltips_set_tip(GTK_TOOLTIPS(tips), entry_out_cert_file,
+			     _("Client certificate file as a PKCS12 or PEM file."), NULL);	
+	gtk_table_attach(GTK_TABLE(cert_table), label, 0, 1, 2, 3, GTK_FILL, 0, 0, 0);
+	gtk_table_attach(GTK_TABLE(cert_table), entry_out_cert_file, 1, 2, 2, 3,
+			 GTK_EXPAND|GTK_FILL, 0, 0, 0);
+	gtk_table_attach(GTK_TABLE(cert_table), out_ssl_cert_browse_button, 2, 3, 2, 3,
+			 GTK_FILL, 0, 0, 0);
 
-	label = gtk_label_new("Certificate password");
+	label = gtk_label_new(_("Password"));
 	gtk_misc_set_alignment(GTK_MISC(label), 1, 0.5);
 	entry_out_cert_pass = gtk_entry_new();
 	gtk_entry_set_visibility(GTK_ENTRY(entry_out_cert_pass), FALSE);
-	gtk_table_attach (GTK_TABLE (cert_table), label, 0, 1, 3, 4, GTK_FILL, 0, 0, 0);
-	gtk_table_attach (GTK_TABLE (cert_table), entry_out_cert_pass, 1, 2, 3, 4, GTK_FILL, 0, 0, 0);
-	hbox = gtk_hbox_new (FALSE, 0);
-	gtk_widget_show (hbox);
-	gtk_box_pack_start (GTK_BOX (vbox6), hbox, TRUE, TRUE, 0);
-	gtk_box_pack_start (GTK_BOX (hbox), cert_table, TRUE, TRUE, 0);
-	gtk_widget_show_all(vbox6);
+	gtk_table_attach(GTK_TABLE(cert_table), label, 0, 1, 3, 4, GTK_FILL, 0, 0, 0);
+	gtk_table_attach(GTK_TABLE(cert_table), entry_out_cert_pass, 1, 2, 3, 4,
+			 GTK_FILL, 0, 0, 0);
+	gtk_widget_show_all(cert_table);
 
 	g_signal_connect(G_OBJECT(in_ssl_cert_browse_button), "clicked",
 			 G_CALLBACK(prefs_account_in_cert_browse_cb), NULL);
