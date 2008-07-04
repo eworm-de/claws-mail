@@ -2405,7 +2405,7 @@ static void ssl_create_widget_func(PrefsPage * _page,
 	gtk_tooltips_set_tip(GTK_TOOLTIPS(tips), label,
 			     _("Client certificate file as a PKCS12 or PEM file"), NULL);	
 	gtk_tooltips_set_tip(GTK_TOOLTIPS(tips), entry_out_cert_file,
-			     _("Client certificate file as a PKCS12 or PEM file."), NULL);	
+			     _("Client certificate file as a PKCS12 or PEM file"), NULL);	
 	gtk_table_attach(GTK_TABLE(cert_table), label, 0, 1, 2, 3, GTK_FILL, 0, 0, 0);
 	gtk_table_attach(GTK_TABLE(cert_table), entry_out_cert_file, 1, 2, 2, 3,
 			 GTK_EXPAND|GTK_FILL, 0, 0, 0);

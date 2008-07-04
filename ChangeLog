@@ -1,3 +1,8 @@
+2008-07-04 [paul]	3.5.0cvs4
+
+	* src/prefs_account.c
+		remove 1 forgotten '.'
+
 2008-07-04 [paul]	3.5.0cvs3
 
 	* src/prefs_account.c
