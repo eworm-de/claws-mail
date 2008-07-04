@@ -68,6 +68,10 @@ struct _SSLClientCertHookData
 	gboolean is_smtp;
 };
 
+#ifdef USE_OPENSSL
+SSL_CTX *ssl_get_ctx(void);
+#endif
+		
 #endif /* USE_OPENSSL */
 
 #endif /* __SSL_H__ */

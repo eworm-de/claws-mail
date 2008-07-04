@@ -135,6 +135,66 @@ static int gnutls_client_cert_cb(gnutls_session session,
 	return -1;
 }
 #endif
+
+#ifdef USE_OPENSSL
+SSL_CTX *ssl_get_ctx(void)
+{
+	return ssl_ctx;
+}
+#endif
+
+const gchar *claws_ssl_get_cert_file(void)
+{
+	const char *cert_files[]={
+		"/etc/pki/tls/certs/ca-bundle.crt",
+		"/etc/certs/ca-bundle.crt",
+		"/usr/share/ssl/certs/ca-bundle.crt",
+		"/etc/ssl/certs/ca-certificates.crt",
+		"/usr/local/ssl/certs/ca-bundle.crt",
+		"/etc/apache/ssl.crt/ca-bundle.crt",
+		"/usr/share/curl/curl-ca-bundle.crt",
+		NULL};
+	int i;
+
+    	if (g_getenv("SSL_CERT_FILE"))
+		return g_getenv("SSL_CERT_FILE");
+#ifndef G_OS_WIN32
+	for (i = 0; cert_files[i]; i++) {
+		if (is_file_exist(cert_files[i]))
+			return cert_files[i];
+	}
+	return NULL;
+#else
+	return "put_what_s_needed_here";
+#endif
+}
+
+const gchar *claws_ssl_get_cert_dir(void)
+{
+	const char *cert_dirs[]={
+		"/etc/pki/tls/certs",
+		"/etc/certs",
+		"/usr/share/ssl/certs",
+		"/etc/ssl/certs",
+		"/usr/local/ssl/certs",
+		"/etc/apache/ssl.crt",
+		"/usr/share/curl",
+		NULL};
+	int i;
+
+    	if (g_getenv("SSL_CERT_FILE"))
+		return g_getenv("SSL_CERT_FILE");
+#ifndef G_OS_WIN32
+	for (i = 0; cert_dirs[i]; i++) {
+		if (is_dir_exist(cert_dirs[i]))
+			return cert_dirs[i];
+	}
+	return NULL;
+#else
+	return "put_what_s_needed_here";
+#endif
+}
+
 void ssl_init(void)
 {
 #ifdef USE_OPENSSL
@@ -159,8 +219,17 @@ void ssl_init(void)
 	SSL_CTX_set_client_cert_cb(ssl_ctx, openssl_client_cert_cb);
 
 	/* Set default certificate paths */
-	SSL_CTX_set_default_verify_paths(ssl_ctx);
-	
+	if (claws_ssl_get_cert_file() || claws_ssl_get_cert_dir()) {
+		int r = SSL_CTX_load_verify_locations(ssl_ctx, claws_ssl_get_cert_file(), claws_ssl_get_cert_dir());
+		if (r != 1) {
+			g_warning("can't set cert file %s dir %s: %s\n",
+					claws_ssl_get_cert_file(), claws_ssl_get_cert_dir(), ERR_error_string(ERR_get_error(), NULL));
+			SSL_CTX_set_default_verify_paths(ssl_ctx);
+		}
+	} else {
+		g_warning("cant");
+		SSL_CTX_set_default_verify_paths(ssl_ctx);
+	}
 #if (OPENSSL_VERSION_NUMBER < 0x0090600fL)
 	SSL_CTX_set_verify_depth(ssl_ctx,1);
 #endif
@@ -275,19 +344,6 @@ gboolean ssl_init_socket(SockInfo *sockinfo)
 	return ssl_init_socket_with_method(sockinfo, SSL_METHOD_SSLv23);
 }
 
-#ifdef USE_GNUTLS
-static const gchar *ssl_get_cert_file(void)
-{
-	if (g_getenv("SSL_CERT_FILE"))
-		return g_getenv("SSL_CERT_FILE");
-#ifndef G_OS_WIN32
-	return "/etc/ssl/certs/ca-certificates.crt";
-#else
-	return "put_what_s_needed_here";
-#endif
-}
-#endif
-
 gboolean ssl_init_socket_with_method(SockInfo *sockinfo, SSLMethod method)
 {
 #ifdef USE_OPENSSL
@@ -379,12 +435,15 @@ gboolean ssl_init_socket_with_method(SockInfo *sockinfo, SSLMethod method)
 
 	gnutls_credentials_set(session, GNUTLS_CRD_CERTIFICATE, xcred);
 
-	r = gnutls_certificate_set_x509_trust_file(xcred, ssl_get_cert_file(),  GNUTLS_X509_FMT_PEM);
-	if (r < 0)
-		g_warning("Can't read SSL_CERT_FILE %s: %s\n",
-			ssl_get_cert_file(), 
-			gnutls_strerror(r));
-
+	if (claws_ssl_get_cert_file()) {
+		r = gnutls_certificate_set_x509_trust_file(xcred, claws_ssl_get_cert_file(),  GNUTLS_X509_FMT_PEM);
+		if (r < 0)
+			g_warning("Can't read SSL_CERT_FILE %s: %s\n",
+				claws_ssl_get_cert_file(), 
+				gnutls_strerror(r));
+	} else {
+		debug_print("Can't find SSL ca-certificates file\n");
+	}
 	gnutls_certificate_set_verify_flags (xcred, GNUTLS_VERIFY_ALLOW_X509_V1_CA_CRT);
 
 	gnutls_transport_set_ptr(session, (gnutls_transport_ptr) sockinfo->sock);

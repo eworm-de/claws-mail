@@ -1,3 +1,11 @@
+2008-07-04 [colin]	3.5.0cvs6
+
+	* src/common/ssl.c
+	* src/common/ssl.h
+	* src/common/ssl_certificate.c
+		Workaround distro bugs and fix certificate checking
+		with OpenSSL
+
 2008-07-04 [colin]	3.5.0cvs5
 
 	* src/filtering.c

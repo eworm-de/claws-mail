@@ -623,19 +623,14 @@ static gboolean ssl_certificate_compare (SSLCertificate *cert_a, SSLCertificate 
 char *ssl_certificate_check_signer (X509 *cert) 
 {
 	X509_STORE_CTX store_ctx;
-	X509_STORE *store;
+	X509_STORE *store = SSL_CTX_get_cert_store(ssl_get_ctx());
 	char *err_msg = NULL;
 
-	store = X509_STORE_new();
 	if (store == NULL) {
 		g_print("Can't create X509_STORE\n");
 		return NULL;
 	}
-	if (!X509_STORE_set_default_paths(store)) {
-		X509_STORE_free (store);
-		return g_strdup(_("Couldn't load X509 default paths"));
-	}
-	
+
 	X509_STORE_CTX_init (&store_ctx, store, cert, NULL);
 
 	if(!X509_verify_cert (&store_ctx)) {
@@ -643,12 +638,10 @@ char *ssl_certificate_check_signer (X509 *cert)
 					X509_STORE_CTX_get_error(&store_ctx)));
 		debug_print("Can't check signer: %s\n", err_msg);
 		X509_STORE_CTX_cleanup (&store_ctx);
-		X509_STORE_free (store);
 		return err_msg;
 			
 	}
 	X509_STORE_CTX_cleanup (&store_ctx);
-	X509_STORE_free (store);
 	return NULL;
 }
 #else
