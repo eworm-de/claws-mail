@@ -1,3 +1,16 @@
+2008-07-04 [colin]	3.5.0cvs5
+
+	* src/filtering.c
+	* src/common/ssl_certificate.c
+	* src/common/ssl_certificate.h
+	* src/etpan/imap-thread.c
+	* src/etpan/nntp-thread.c
+		Fix some leaks, thanks to Martin Zwickel
+		Rename gnutls functions that do the same
+		as OpenSSL ones, to avoid symbol clashing
+		when Claws is built against GnuTLS and
+		libetpan against OpenSSL
+
 2008-07-04 [paul]	3.5.0cvs4
 
 	* src/prefs_account.c

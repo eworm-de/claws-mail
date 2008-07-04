@@ -794,6 +794,7 @@ static gboolean filter_msginfo(GSList * filtering_list, MsgInfo * info, PrefsAcc
 						_("processing rule <unnamed> [ %s ]\n"),
 						buf);
 				}
+				g_free(buf);
 			}
 
 			if (filtering_match_condition(filtering, info, ac_prefs)) {

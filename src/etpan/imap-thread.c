@@ -591,8 +591,13 @@ static void connect_ssl_context_cb(struct mailstream_ssl_context * ssl_context, 
 		unsigned char *x509_der = NULL, *pkey_der = NULL;
 		size_t x509_len, pkey_len;
 		
+#ifndef USE_GNUTLS
 		x509_len = (size_t)i2d_X509(x509, &x509_der);
 		pkey_len = (size_t)i2d_PrivateKey(pkey, &pkey_der);
+#else
+		x509_len = (size_t)gnutls_i2d_X509(x509, &x509_der);
+		pkey_len = (size_t)gnutls_i2d_PrivateKey(pkey, &pkey_der);
+#endif
 		if (x509_len > 0 && pkey_len > 0) {
 			if (mailstream_ssl_set_client_certificate_data(ssl_context, x509_der, x509_len) < 0 ||
 			    mailstream_ssl_set_client_private_key_data(ssl_context, pkey_der, pkey_len) < 0) 
