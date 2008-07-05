@@ -41,9 +41,11 @@
 #include "inc.h"
 #include "news.h"
 #include "statusbar.h"
+#include "inputdialog.h"
 
 static void subscribe_newsgroup_cb(FolderView *folderview, guint action, GtkWidget *widget);
 static void unsubscribe_newsgroup_cb(FolderView *folderview, guint action, GtkWidget *widget);
+static void rename_newsgroup_cb(FolderView *folderview, guint action, GtkWidget *widget);
 static void update_tree_cb(FolderView *folderview, guint action, GtkWidget *widget);
 static void download_cb(FolderView *folderview, guint action, GtkWidget *widget);
 static void sync_cb(FolderView *folderview, guint action, GtkWidget *widget);
@@ -55,6 +57,7 @@ static GtkItemFactoryEntry news_popup_entries[] =
 	{"/---",				NULL, NULL,                      0, "<Separator>"},
 	{N_("/Synchronise"),			NULL, sync_cb,      	0, NULL},
 	{N_("/Down_load messages"),		NULL, download_cb,               0, NULL},
+	{N_("/_Rename folder..."),	 	NULL, rename_newsgroup_cb,	 0, NULL},
 	{"/---",				NULL, NULL,                      0, "<Separator>"},
 	{N_("/_Check for new messages"),	NULL, update_tree_cb,            0, NULL},
 	{"/---",				NULL, NULL,                      0, "<Separator>"},
@@ -104,7 +107,10 @@ static void set_sensitivity(GtkItemFactory *factory, FolderItem *item)
 	SET_SENS("/Synchronise",    
 		 item ? (folder_item_parent(item) != NULL && folder_want_synchronise(item->folder))
 			 : FALSE);
-
+	SET_SENS("/Rename folder...", 
+		 folder_item_parent(item) != NULL 
+		 && mainwin->lock_count == 0
+		 && news_folder_locked(item->folder) == 0);
 #undef SET_SENS
 }
 
@@ -248,6 +254,65 @@ static void unsubscribe_newsgroup_cb(FolderView *folderview, guint action,
 	
 	prefs_filtering_delete_path(old_id);
 	g_free(old_id);
+}
+
+static FolderItem *find_child_by_name(FolderItem *item, const gchar *name)
+{
+	GNode *node;
+	FolderItem *child;
+
+	for (node = item->node->children; node != NULL; node = node->next) {
+		child = FOLDER_ITEM(node->data);
+		if (strcmp2(child->name, name) == 0) {
+			return child;
+		}
+	}
+
+	return NULL;
+}
+
+static void rename_newsgroup_cb(FolderView *folderview, guint action,
+			     	GtkWidget *widget)
+{
+	FolderItem *item;
+	gchar *new_folder;
+	gchar *name;
+	gchar *message;
+
+	item = folderview_get_selected_item(folderview);
+	g_return_if_fail(item != NULL);
+	g_return_if_fail(item->path != NULL);
+	g_return_if_fail(item->folder != NULL);
+
+	name = trim_string(item->name, 32);
+	message = g_strdup_printf(_("Input new name for '%s':"), name);
+	new_folder = input_dialog(_("Rename newsgroup folder"), message, item->name);
+	g_free(message);
+	g_free(name);
+
+	if (!new_folder) return;
+	AUTORELEASE_STR(new_folder, {g_free(new_folder); return;});
+
+	if (strchr(new_folder, G_DIR_SEPARATOR) != NULL) {
+		alertpanel_error(_("'%c' can't be included in folder name."),
+				 G_DIR_SEPARATOR);
+		return;
+	}
+
+	if (find_child_by_name(folder_item_parent(item), new_folder)) {
+		name = trim_string(new_folder, 32);
+		alertpanel_error(_("The folder '%s' already exists."), name);
+		g_free(name);
+		return;
+	}
+
+	if (folder_item_rename(item, new_folder) < 0) {
+		alertpanel_error(_("The folder could not be renamed.\n"
+				   "The new folder name is not allowed."));
+		return;
+	}
+
+	folder_write_list();
 }
 
 static void update_tree_cb(FolderView *folderview, guint action,

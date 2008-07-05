@@ -1,3 +1,11 @@
+2008-07-05 [colin]	3.5.0cvs11
+
+	* src/news.c
+	* src/news_gtk.c
+		Provide ability to rename newsgroups. Closes
+		bug 1444, 'Add GUI option for renaming 
+		newsgroups'. Patch by Pawel Pekala
+
 2008-07-05 [colin]	3.5.0cvs10
 
 	* src/plugins/pgpcore/passphrase.c

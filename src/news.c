@@ -37,7 +37,6 @@
 
 #include "nntp-thread.h"
 #include "news.h"
-#include "news.h"
 #include "news_gtk.h"
 #include "socket.h"
 #include "recv.h"
@@ -147,6 +146,9 @@ static void news_synchronise		 (FolderItem	*item, gint days);
 static int news_remove_msg		 (Folder 	*folder, 
 					  FolderItem 	*item, 
 					  gint 		 msgnum);
+static gint news_rename_folder		 (Folder *folder,
+					  FolderItem *item,
+					  const gchar *name);
 static gint news_remove_folder		 (Folder	*folder,
 					  FolderItem	*item);
 static FolderClass news_class;
@@ -166,6 +168,7 @@ FolderClass *news_get_class(void)
 		news_class.item_get_path = news_item_get_path;
 		news_class.get_num_list = news_get_num_list;
 		news_class.scan_required = news_scan_required;
+		news_class.rename_folder = news_rename_folder;
 		news_class.remove_folder = news_remove_folder;
 
 		/* Message functions */
@@ -1210,6 +1213,26 @@ static gboolean news_scan_required(Folder *folder, FolderItem *item)
 void news_synchronise(FolderItem *item, gint days) 
 {
 	news_gtk_synchronise(item, days);
+}
+
+static gint news_rename_folder(Folder *folder, FolderItem *item,
+				const gchar *name)
+{
+	gchar *path;
+	 
+	g_return_val_if_fail(folder != NULL, -1);
+	g_return_val_if_fail(item != NULL, -1);
+	g_return_val_if_fail(item->path != NULL, -1);
+	g_return_val_if_fail(name != NULL, -1);
+
+	path = folder_item_get_path(item);
+	if (!is_dir_exist(path))
+		make_dir_hier(path);
+
+	g_free(item->name);
+	item->name = g_strdup(name);
+
+	return 0;
 }
 
 static gint news_remove_folder(Folder *folder, FolderItem *item)
