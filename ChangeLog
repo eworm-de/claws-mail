@@ -1,3 +1,12 @@
+2008-07-05 [colin]	3.5.0cvs10
+
+	* src/plugins/pgpcore/passphrase.c
+	* src/plugins/pgpcore/prefs_gpg.c
+	* src/plugins/pgpcore/select-keys.c
+		Simplify GTK includes (with the advantage
+		of compiling against GTK+2.13); patch by
+		Charles A Edwards
+
 2008-07-05 [colin]	3.5.0cvs9
 
 	* src/wizard.c

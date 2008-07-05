@@ -3421,3 +3421,4 @@
 ( cvs diff -u -r 1.105.2.135 -r 1.105.2.136 src/prefs_account.c;  ) > 3.5.0cvs7.patchset
 ( cvs diff -u -r 1.105.2.136 -r 1.105.2.137 src/prefs_account.c;  cvs diff -u -r 1.8.2.12 -r 1.8.2.13 src/common/session.h;  cvs diff -u -r 1.9.2.30 -r 1.9.2.31 src/common/ssl.c;  ) > 3.5.0cvs8.patchset
 ( cvs diff -u -r 1.1.2.69 -r 1.1.2.70 src/wizard.c;  ) > 3.5.0cvs9.patchset
+( cvs diff -u -r 1.1.2.29 -r 1.1.2.30 src/plugins/pgpcore/passphrase.c;  cvs diff -u -r 1.1.2.28 -r 1.1.2.29 src/plugins/pgpcore/prefs_gpg.c;  cvs diff -u -r 1.1.2.19 -r 1.1.2.20 src/plugins/pgpcore/select-keys.c;  ) > 3.5.0cvs10.patchset

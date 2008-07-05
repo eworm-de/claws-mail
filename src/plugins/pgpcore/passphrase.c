@@ -30,17 +30,7 @@
 #ifdef GDK_WINDOWING_X11
 #  include <gdk/gdkx.h>
 #endif /* GDK_WINDOWING_X11 */
-#include <gtk/gtkmain.h>
-#include <gtk/gtkwidget.h>
-#include <gtk/gtkwindow.h>
-#include <gtk/gtkvbox.h>
-#include <gtk/gtktable.h>
-#include <gtk/gtklabel.h>
-#include <gtk/gtkentry.h>
-#include <gtk/gtkhbbox.h>
-#include <gtk/gtkbutton.h>
-#include <gtk/gtkfilesel.h>
-#include <gtk/gtksignal.h>
+#include <gtk/gtk.h> 
 #include <string.h>
 #include <sys/types.h>
 #ifdef G_OS_WIN32

@@ -22,8 +22,7 @@
 #include <glib/gi18n.h>
 
 #include "defs.h"
-#include "utils.h"
-#include "gtk/gtkutils.h"
+#include "utils.h" 
 #include "prefs.h"
 #include "prefs_gtk.h"
 #include "prefs_gpg.h"
