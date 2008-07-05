@@ -2773,6 +2773,9 @@ SensitiveCond main_window_get_current_state(MainWindow *mainwin)
 	if (item && item->prefs->processing && selection != SUMMARY_NONE)
 		state |= M_HAVE_PROCESSING;
 
+	if (g_list_length(account_list) > 1)
+		state |= M_HAVE_MULTI_ACCOUNT;
+
 	for ( ; account_list != NULL; account_list = account_list->next) {
 		if (((PrefsAccount*)account_list->data)->protocol == A_NNTP) {
 			state |= M_HAVE_NEWS_ACCOUNT;
@@ -2901,6 +2904,7 @@ void main_window_set_menu_sensitive(MainWindow *mainwin)
 		{"/Tools/Delete duplicated messages/In selected folder"   , M_MSG_EXIST|M_ALLOW_DELETE},
 
 		{"/Configuration", M_UNLOCKED},
+		{"/Configuration/Change current account", M_HAVE_MULTI_ACCOUNT},
 		{"/Configuration/Preferences for current account...", M_UNLOCKED},
 		{"/Configuration/Create new account...", M_UNLOCKED},
 		{"/Configuration/Edit accounts...", M_UNLOCKED},

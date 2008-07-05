@@ -3424,3 +3424,4 @@
 ( cvs diff -u -r 1.1.2.29 -r 1.1.2.30 src/plugins/pgpcore/passphrase.c;  cvs diff -u -r 1.1.2.28 -r 1.1.2.29 src/plugins/pgpcore/prefs_gpg.c;  cvs diff -u -r 1.1.2.19 -r 1.1.2.20 src/plugins/pgpcore/select-keys.c;  ) > 3.5.0cvs10.patchset
 ( cvs diff -u -r 1.101.2.51 -r 1.101.2.52 src/news.c;  cvs diff -u -r 1.2.2.25 -r 1.2.2.26 src/news_gtk.c;  ) > 3.5.0cvs11.patchset
 ( cvs diff -u -r 1.274.2.246 -r 1.274.2.247 src/mainwindow.c;  ) > 3.5.0cvs12.patchset
+( cvs diff -u -r 1.274.2.247 -r 1.274.2.248 src/mainwindow.c;  cvs diff -u -r 1.39.2.47 -r 1.39.2.48 src/mainwindow.h;  cvs diff -u -r 1.1.2.29 -r 1.1.2.30 src/plugins/pgpcore/prefs_gpg.c;  ) > 3.5.0cvs13.patchset

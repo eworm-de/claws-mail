@@ -1,3 +1,12 @@
+2008-07-05 [paul]	3.5.0cvs13
+
+	* src/mainwindow.c
+	* src/mainwindow.h
+		fix bug 1398, '"Change current account" is
+		available even when there's only one account'
+	* src/plugins/pgpcore/prefs_gpg.c
+		put back a needed include, removed in error
+
 2008-07-05 [colin]	3.5.0cvs12
 
 	* src/mainwindow.c
