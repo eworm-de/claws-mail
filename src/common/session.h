@@ -155,7 +155,7 @@ struct _Session
 	gpointer send_data_progressive_notify_data;
 	gpointer send_data_notify_data;
 	
-	void *account;
+	const void *account;
 	gboolean is_smtp;
 };
 

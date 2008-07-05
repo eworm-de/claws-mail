@@ -153,6 +153,8 @@ const gchar *claws_ssl_get_cert_file(void)
 		"/usr/local/ssl/certs/ca-bundle.crt",
 		"/etc/apache/ssl.crt/ca-bundle.crt",
 		"/usr/share/curl/curl-ca-bundle.crt",
+		"/usr/share/curl/curl-ca-bundle.crt",
+		"/usr/lib/ssl/cert.pem",
 		NULL};
 	int i;
 
@@ -179,6 +181,7 @@ const gchar *claws_ssl_get_cert_dir(void)
 		"/usr/local/ssl/certs",
 		"/etc/apache/ssl.crt",
 		"/usr/share/curl",
+		"/usr/lib/ssl/certs",
 		NULL};
 	int i;
 

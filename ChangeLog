@@ -1,3 +1,11 @@
+2008-07-05 [colin]	3.5.0cvs8
+
+	* src/prefs_account.c
+	* src/common/session.h
+		Fix warnings
+	* src/common/ssl.c
+		Add one path for certs
+
 2008-07-05 [colin]	3.5.0cvs7
 
 	* src/prefs_account.c

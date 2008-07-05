@@ -841,13 +841,13 @@ static void prefs_account_sigcmd_radiobtn_cb	(GtkWidget	*widget,
 
 static void prefs_account_signature_browse_cb	(GtkWidget	*widget,
 						 gpointer	 data);
-
+#if (defined(USE_OPENSSL) || defined (USE_GNUTLS))
 static void prefs_account_in_cert_browse_cb	(GtkWidget	*widget,
 						 gpointer	 data);
 
 static void prefs_account_out_cert_browse_cb	(GtkWidget	*widget,
 						 gpointer	 data);
-
+#endif
 static void prefs_account_signature_edit_cb	(GtkWidget	*widget,
 						 gpointer	 data);
 
