@@ -3214,7 +3214,6 @@ static void register_ssl_page(void)
 
 	prefs_account_register_page((PrefsPage *) &ssl_page);
 }
-#endif
 
 static gboolean sslcert_get_client_cert_hook(gpointer source, gpointer data)
 {
@@ -3278,6 +3277,7 @@ static gboolean sslcert_get_password(gpointer source, gpointer data)
 
 	return TRUE;
 }
+#endif
 
 static void register_advanced_page(void)
 {

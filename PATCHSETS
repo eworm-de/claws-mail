@@ -3418,3 +3418,4 @@
 ( cvs diff -u -r 1.105.2.134 -r 1.105.2.135 src/prefs_account.c;  ) > 3.5.0cvs4.patchset
 ( cvs diff -u -r 1.60.2.45 -r 1.60.2.46 src/filtering.c;  cvs diff -u -r 1.4.2.28 -r 1.4.2.29 src/common/ssl_certificate.c;  cvs diff -u -r 1.1.4.11 -r 1.1.4.12 src/common/ssl_certificate.h;  cvs diff -u -r 1.1.4.102 -r 1.1.4.103 src/etpan/imap-thread.c;  cvs diff -u -r 1.1.2.7 -r 1.1.2.8 src/etpan/nntp-thread.c;  ) > 3.5.0cvs5.patchset
 ( cvs diff -u -r 1.9.2.29 -r 1.9.2.30 src/common/ssl.c;  cvs diff -u -r 1.2.2.8 -r 1.2.2.9 src/common/ssl.h;  cvs diff -u -r 1.4.2.29 -r 1.4.2.30 src/common/ssl_certificate.c;  ) > 3.5.0cvs6.patchset
+( cvs diff -u -r 1.105.2.135 -r 1.105.2.136 src/prefs_account.c;  ) > 3.5.0cvs7.patchset
