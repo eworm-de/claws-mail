@@ -1399,6 +1399,54 @@ static gboolean mainwindow_key_pressed (GtkWidget *widget, GdkEventKey *event,
                 	gtk_window_fullscreen(GTK_WINDOW(widget));
                 }
 		break;
+	case GDK_F7:
+		{
+			PangoFontDescription *font_desc;
+			int size;
+			font_desc = pango_font_description_from_string(prefs_common.normalfont);
+			size = pango_font_description_get_size(font_desc)/PANGO_SCALE;
+			if (size < 30) {
+				size++; pango_font_description_set_size(font_desc, size*PANGO_SCALE);
+				g_free(prefs_common.normalfont); 
+				prefs_common.normalfont = pango_font_description_to_string(font_desc);
+				main_window_reflect_prefs_all();
+			}
+			pango_font_description_free(font_desc);
+			font_desc = pango_font_description_from_string(prefs_common.textfont);
+			size = pango_font_description_get_size(font_desc)/PANGO_SCALE;
+			if (size < 30) {
+				size++; pango_font_description_set_size(font_desc, size*PANGO_SCALE);
+				g_free(prefs_common.textfont); 
+				prefs_common.textfont = pango_font_description_to_string(font_desc);
+				main_window_reflect_prefs_all();
+			}
+			pango_font_description_free(font_desc);
+		}
+		break;
+	case GDK_F8:
+		{
+			PangoFontDescription *font_desc;
+			int size;
+			font_desc = pango_font_description_from_string(prefs_common.normalfont);
+			size = pango_font_description_get_size(font_desc)/PANGO_SCALE;
+			if (size > 5) {
+				size--; pango_font_description_set_size(font_desc, size*PANGO_SCALE);
+				g_free(prefs_common.normalfont); 
+				prefs_common.normalfont = pango_font_description_to_string(font_desc);
+				main_window_reflect_prefs_all();
+			}
+			pango_font_description_free(font_desc);
+			font_desc = pango_font_description_from_string(prefs_common.textfont);
+			size = pango_font_description_get_size(font_desc)/PANGO_SCALE;
+			if (size > 5) {
+				size--; pango_font_description_set_size(font_desc, size*PANGO_SCALE);
+				g_free(prefs_common.textfont); 
+				prefs_common.textfont = pango_font_description_to_string(font_desc);
+				main_window_reflect_prefs_all();
+			}
+			pango_font_description_free(font_desc);
+		}
+		break;
 	case GDK_Escape:
 		if (mainwin->summaryview && 
 		    mainwin->summaryview->ext_messageview && 
@@ -2145,7 +2193,7 @@ void main_window_reflect_tags_changes(MainWindow *mainwin)
 void main_window_reflect_prefs_all_real(gboolean pixmap_theme_changed)
 {
 	if (prefs_tag == 0) {
-		prefs_tag = g_timeout_add(500, reflect_prefs_timeout_cb, 
+		prefs_tag = g_timeout_add(100, reflect_prefs_timeout_cb, 
 						GINT_TO_POINTER(pixmap_theme_changed));
 	}
 }

@@ -1,3 +1,8 @@
+2008-07-05 [colin]	3.5.0cvs12
+
+	* src/mainwindow.c
+		MAEMO: Fix bug 1620, 'Can't use hardware zoom buttons'
+
 2008-07-05 [colin]	3.5.0cvs11
 
 	* src/news.c
