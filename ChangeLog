@@ -1,3 +1,8 @@
+2008-07-05 [colin]	3.5.0cvs9
+
+	* src/wizard.c
+		Add SSL client certificates
+
 2008-07-05 [colin]	3.5.0cvs8
 
 	* src/prefs_account.c

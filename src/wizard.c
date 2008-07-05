@@ -57,6 +57,7 @@
 #include "setup.h"
 #include "folder.h"
 #include "alertpanel.h"
+#include "filesel.h"
 #if (defined(USE_OPENSSL) || defined (USE_GNUTLS))
 #include "ssl.h"
 #endif
@@ -122,6 +123,12 @@ typedef struct
 	GtkWidget *recv_use_ssl;
 	GtkWidget *smtp_use_tls;
 	GtkWidget *recv_use_tls;
+	GtkWidget *smtp_ssl_cert_file;
+	GtkWidget *recv_ssl_cert_file;
+	GtkWidget *smtp_ssl_cert_pass;
+	GtkWidget *recv_ssl_cert_pass;
+	GtkWidget *smtp_cert_table;
+	GtkWidget *recv_cert_table;
 #endif
 
 #ifdef MAEMO
@@ -159,6 +166,10 @@ typedef struct _AccountTemplate {
 	gchar *mailbox;
 	gboolean smtpssl;
 	gboolean recvssl;
+	gchar *smtpssl_cert;
+	gchar *recvssl_cert;
+	gchar *smtpssl_cert_pass;
+	gchar *recvssl_cert_pass;
 } AccountTemplate;
 
 static AccountTemplate tmpl;
@@ -200,6 +211,14 @@ static PrefParam template_params[] = {
 	 &tmpl.smtpssl, P_INT, NULL, NULL, NULL},
 	{"recvssl", "0",
 	 &tmpl.recvssl, P_INT, NULL, NULL, NULL},
+	{"smtpssl_cert", "",
+	 &tmpl.smtpssl_cert, P_STRING, NULL, NULL, NULL},
+	{"recvssl_cert", "",
+	 &tmpl.recvssl_cert, P_STRING, NULL, NULL, NULL},
+	{"smtpssl_cert_pass", "",
+	 &tmpl.smtpssl_cert, P_STRING, NULL, NULL, NULL},
+	{"recvssl_cert_pass", "",
+	 &tmpl.recvssl_cert, P_STRING, NULL, NULL, NULL},
 	{NULL, NULL, NULL, P_INT, NULL, NULL, NULL}
 };
 
@@ -225,7 +244,7 @@ static gchar *accountrc_tmpl =
 	"#organization=\n"
 	"\n"
 	"#you can use $DOMAIN here \n"
-	"#the default is stmp.$DOMAIN\n"
+	"#the default is smtp.$DOMAIN\n"
 	"#smtpserver=\n"
 	"\n"
 	"#Whether to use smtp authentication\n"
@@ -276,13 +295,30 @@ static gchar *accountrc_tmpl =
 	"#default is \"Mail\"\n"
 	"#mailbox=\n"
 	"\n"
-	"#whether to use ssl on STMP connections\n"
+	"#whether to use ssl on smtp connections\n"
 	"#default is 0, 1 is ssl, 2 is starttls\n"
 	"#smtpssl=\n"
 	"\n"
 	"#whether to use ssl on pop or imap connections\n"
 	"#default is 0, 1 is ssl, 2 is starttls\n"
-	"#recvssl=\n";
+	"#recvssl=\n"
+	"\n"
+	"#SSL client certificate path for SMTP\n"
+	"#default is empty (no certificate)\n"
+	"#smtpssl_cert=\n"
+	"\n"
+	"#SSL client certificate path for POP/IMAP\n"
+	"#default is empty (no certificate)\n"
+	"#recvssl_cert=\n"
+	"\n"
+	"#SSL client certificate password for SMTP\n"
+	"#default is empty (no password)\n"
+	"#smtpssl_cert_pass=\n"
+	"\n"
+	"#SSL client certificate password for POP/IMAP\n"
+	"#default is empty (no password)\n"
+	"#recvssl_cert_pass=\n"
+	;
 
 static gchar *wizard_get_default_domain_name(void)
 {
@@ -782,6 +818,14 @@ static gboolean wizard_write_config(WizardWindow *wizard)
 	else
 		prefs_account->ssl_pop = recv_ssl_type;
 
+	prefs_account->out_ssl_client_cert_file = g_strdup(
+				gtk_entry_get_text(GTK_ENTRY(wizard->smtp_ssl_cert_file)));
+	prefs_account->out_ssl_client_cert_pass = g_strdup(
+				gtk_entry_get_text(GTK_ENTRY(wizard->smtp_ssl_cert_pass)));
+	prefs_account->in_ssl_client_cert_file = g_strdup(
+				gtk_entry_get_text(GTK_ENTRY(wizard->recv_ssl_cert_file)));
+	prefs_account->in_ssl_client_cert_pass = g_strdup(
+				gtk_entry_get_text(GTK_ENTRY(wizard->recv_ssl_cert_pass)));
 #endif
 	if (prefs_account->protocol == A_IMAP4) {
 		gchar *directory = gtk_editable_get_chars(
@@ -1166,11 +1210,34 @@ static void smtp_auth_changed (GtkWidget *btn, gpointer data)
 	gtk_widget_set_sensitive(wizard->smtp_password_label, do_auth);
 }
 
+#if (defined(USE_OPENSSL) || defined (USE_GNUTLS))
+static void cert_browse_cb(GtkWidget *widget, gpointer data)
+{
+	GtkEntry *dest = GTK_ENTRY(data);
+	gchar *filename;
+	gchar *utf8_filename;
+
+	filename = filesel_select_file_open(_("Select certificate file"), NULL);
+	if (!filename) return;
+
+	utf8_filename = g_filename_to_utf8(filename, -1, NULL, NULL, NULL);
+	if (!utf8_filename) {
+		g_warning("cert_browse_cb(): failed to convert character set.");
+		utf8_filename = g_strdup(filename);
+	}
+	gtk_entry_set_text(dest, utf8_filename);
+	g_free(utf8_filename);
+}
+#endif
+
 static GtkWidget* smtp_page (WizardWindow * wizard)
 {
 	GtkWidget *table = gtk_table_new(1, 1, FALSE);
 	GtkWidget *vbox;
 	GtkWidget *hbox;
+	GtkWidget *label;
+	GtkWidget *button;
+	GtkWidget *smtp_cert_table;
 	GtkTooltips *tips = gtk_tooltips_new();
 	gchar *text;
 	
@@ -1258,6 +1325,39 @@ static GtkWidget* smtp_page (WizardWindow * wizard)
 			tmpl.smtpssl == 2);
 	gtk_box_pack_start(GTK_BOX(hbox), wizard->smtp_use_tls, FALSE, FALSE, 0);
 	SET_TOGGLE_SENSITIVITY (wizard->smtp_use_ssl, wizard->smtp_use_tls);
+	
+	smtp_cert_table = gtk_table_new(3,3, FALSE);
+	gtk_container_set_border_width(GTK_CONTAINER(smtp_cert_table), 8);
+	gtk_box_pack_start (GTK_BOX(vbox), smtp_cert_table, FALSE, FALSE, 0);
+	label = gtk_label_new(_("Client SSL certificate (optional)"));
+	gtk_misc_set_alignment(GTK_MISC(label), 0, 0.5);
+	gtk_table_attach(GTK_TABLE(smtp_cert_table), label, 0, 3, 0, 1, GTK_FILL, 0, 0, 0);
+	label = gtk_label_new(_("File"));
+	gtk_misc_set_alignment(GTK_MISC(label), 1, 0.5);
+	gtk_table_attach(GTK_TABLE(smtp_cert_table), label, 0, 1, 1, 2, GTK_FILL, 0, 0, 0);
+	wizard->smtp_ssl_cert_file = gtk_entry_new();
+	gtk_entry_set_text(GTK_ENTRY(wizard->smtp_ssl_cert_file), tmpl.smtpssl_cert?tmpl.smtpssl_cert:"");
+	gtk_table_attach(GTK_TABLE(smtp_cert_table), wizard->smtp_ssl_cert_file, 1, 2, 1, 2, GTK_FILL, 0, 0, 0);
+	button = gtkut_get_browse_file_btn(_("Browse"));
+	gtk_table_attach(GTK_TABLE(smtp_cert_table), button, 2, 3, 1, 2, GTK_FILL, 0, 0, 0);
+	SET_TOGGLE_SENSITIVITY (wizard->smtp_use_ssl, label);
+	SET_TOGGLE_SENSITIVITY (wizard->smtp_use_ssl, wizard->smtp_ssl_cert_file);
+	SET_TOGGLE_SENSITIVITY (wizard->smtp_use_ssl, button);
+	g_signal_connect(G_OBJECT(button), "clicked",
+			 G_CALLBACK(cert_browse_cb), wizard->smtp_ssl_cert_file);
+
+	hbox = gtk_hbox_new(FALSE, VSPACING_NARROW);
+	gtk_box_pack_start (GTK_BOX(vbox), hbox, FALSE, FALSE, 0);
+	label = gtk_label_new(_("Password"));
+	gtk_misc_set_alignment(GTK_MISC(label), 1, 0.5);
+	gtk_table_attach(GTK_TABLE(smtp_cert_table), label, 0, 1, 2, 3, GTK_FILL, 0, 0, 0);
+	wizard->smtp_ssl_cert_pass = gtk_entry_new();
+	gtk_entry_set_visibility(GTK_ENTRY(wizard->smtp_ssl_cert_pass), FALSE);
+	gtk_entry_set_text(GTK_ENTRY(wizard->smtp_ssl_cert_pass), tmpl.smtpssl_cert_pass?tmpl.smtpssl_cert_pass:"");
+	gtk_table_attach(GTK_TABLE(smtp_cert_table), wizard->smtp_ssl_cert_pass, 1, 2, 2, 3, GTK_FILL, 0, 0, 0);
+	SET_TOGGLE_SENSITIVITY (wizard->smtp_use_ssl, label);
+	SET_TOGGLE_SENSITIVITY (wizard->smtp_use_ssl, wizard->smtp_ssl_cert_pass);
+	wizard->smtp_cert_table = smtp_cert_table;
 #endif
 	smtp_auth_changed(NULL, wizard);
 	return table;
@@ -1281,6 +1381,7 @@ static void wizard_protocol_change(WizardWindow *wizard, RecvProtocol protocol)
 #if (defined(USE_OPENSSL) || defined (USE_GNUTLS))
 		gtk_widget_show(wizard->recv_use_ssl);
 		gtk_widget_show(wizard->recv_use_tls);
+		gtk_widget_show(wizard->recv_cert_table);
 #endif
 		gtk_label_set_text(GTK_LABEL(wizard->recv_label), _("<span weight=\"bold\">Server address:</span>"));
 		gtk_label_set_use_markup(GTK_LABEL(wizard->recv_label), TRUE);
@@ -1305,6 +1406,7 @@ static void wizard_protocol_change(WizardWindow *wizard, RecvProtocol protocol)
 #if (defined(USE_OPENSSL) || defined (USE_GNUTLS))
 		gtk_widget_show(wizard->recv_use_ssl);
 		gtk_widget_show(wizard->recv_use_tls);
+		gtk_widget_show(wizard->recv_cert_table);
 #endif
 		gtk_label_set_text(GTK_LABEL(wizard->recv_label), _("<span weight=\"bold\">Server address:</span>"));
 		gtk_label_set_use_markup(GTK_LABEL(wizard->recv_label), TRUE);
@@ -1330,6 +1432,7 @@ static void wizard_protocol_change(WizardWindow *wizard, RecvProtocol protocol)
 #if (defined(USE_OPENSSL) || defined (USE_GNUTLS))
 		gtk_widget_hide(wizard->recv_use_ssl);
 		gtk_widget_hide(wizard->recv_use_tls);
+		gtk_widget_hide(wizard->recv_cert_table);
 #endif
 		gtk_dialog_set_response_sensitive (GTK_DIALOG(wizard->window), GO_FORWARD, FALSE);
 #endif
@@ -1348,6 +1451,7 @@ static void wizard_protocol_change(WizardWindow *wizard, RecvProtocol protocol)
 #if (defined(USE_OPENSSL) || defined (USE_GNUTLS))
 		gtk_widget_hide(wizard->recv_use_ssl);
 		gtk_widget_hide(wizard->recv_use_tls);
+		gtk_widget_hide(wizard->recv_cert_table);
 #endif
 		if (wizard->create_mailbox) {
 			gtk_widget_show(wizard->mailbox_label);
@@ -1371,6 +1475,9 @@ static GtkWidget* recv_page (WizardWindow * wizard)
 	GtkTooltips *tips = gtk_tooltips_new();
 	GtkWidget *vbox;
 	GtkWidget *hbox;
+	GtkWidget *label;
+	GtkWidget *button;
+	GtkWidget *recv_cert_table;
 	GtkListStore *store;
 	GtkTreeIter iter;
 	gchar *text;
@@ -1480,6 +1587,39 @@ static GtkWidget* recv_page (WizardWindow * wizard)
 			tmpl.recvssl == 2);
 	gtk_box_pack_start(GTK_BOX(hbox), wizard->recv_use_tls, FALSE, FALSE, 0);
 	SET_TOGGLE_SENSITIVITY (wizard->recv_use_ssl, wizard->recv_use_tls);
+
+	recv_cert_table = gtk_table_new(3,3, FALSE);
+	gtk_container_set_border_width(GTK_CONTAINER(recv_cert_table), 8);
+	gtk_box_pack_start (GTK_BOX(vbox), recv_cert_table, FALSE, FALSE, 0);
+	label = gtk_label_new(_("Client SSL certificate (optional)"));
+	gtk_misc_set_alignment(GTK_MISC(label), 0, 0.5);
+	gtk_table_attach(GTK_TABLE(recv_cert_table), label, 0, 3, 0, 1, GTK_FILL, 0, 0, 0);
+	label = gtk_label_new(_("File"));
+	gtk_misc_set_alignment(GTK_MISC(label), 1, 0.5);
+	gtk_table_attach(GTK_TABLE(recv_cert_table), label, 0, 1, 1, 2, GTK_FILL, 0, 0, 0);
+	wizard->recv_ssl_cert_file = gtk_entry_new();
+	gtk_entry_set_text(GTK_ENTRY(wizard->recv_ssl_cert_file), tmpl.recvssl_cert?tmpl.recvssl_cert:"");
+	gtk_table_attach(GTK_TABLE(recv_cert_table), wizard->recv_ssl_cert_file, 1, 2, 1, 2, GTK_FILL, 0, 0, 0);
+	button = gtkut_get_browse_file_btn(_("Browse"));
+	gtk_table_attach(GTK_TABLE(recv_cert_table), button, 2, 3, 1, 2, GTK_FILL, 0, 0, 0);
+	SET_TOGGLE_SENSITIVITY (wizard->recv_use_ssl, label);
+	SET_TOGGLE_SENSITIVITY (wizard->recv_use_ssl, wizard->recv_ssl_cert_file);
+	SET_TOGGLE_SENSITIVITY (wizard->recv_use_ssl, button);
+	g_signal_connect(G_OBJECT(button), "clicked",
+			 G_CALLBACK(cert_browse_cb), wizard->recv_ssl_cert_file);
+
+	hbox = gtk_hbox_new(FALSE, VSPACING_NARROW);
+	gtk_box_pack_start (GTK_BOX(vbox), hbox, FALSE, FALSE, 0);
+	label = gtk_label_new(_("Password"));
+	gtk_misc_set_alignment(GTK_MISC(label), 1, 0.5);
+	gtk_table_attach(GTK_TABLE(recv_cert_table), label, 0, 1, 2, 3, GTK_FILL, 0, 0, 0);
+	wizard->recv_ssl_cert_pass = gtk_entry_new();
+	gtk_entry_set_visibility(GTK_ENTRY(wizard->recv_ssl_cert_pass), FALSE);
+	gtk_entry_set_text(GTK_ENTRY(wizard->recv_ssl_cert_pass), tmpl.recvssl_cert_pass?tmpl.recvssl_cert_pass:"");
+	gtk_table_attach(GTK_TABLE(recv_cert_table), wizard->recv_ssl_cert_pass, 1, 2, 2, 3, GTK_FILL, 0, 0, 0);
+	SET_TOGGLE_SENSITIVITY (wizard->recv_use_ssl, label);
+	SET_TOGGLE_SENSITIVITY (wizard->recv_use_ssl, wizard->recv_ssl_cert_pass);
+	wizard->recv_cert_table = recv_cert_table;
 #endif	
 	hbox = gtk_hbox_new(FALSE, VSPACING_NARROW);
 	gtk_box_pack_start (GTK_BOX(vbox), hbox, FALSE, FALSE, 0);
@@ -1629,6 +1769,7 @@ gboolean run_wizard(MainWindow *mainwin, gboolean create_mailbox) {
 			GTK_STOCK_SAVE, FINISHED,
 			GTK_STOCK_CANCEL, CANCEL,
 			NULL);
+	gtk_widget_set_size_request(wizard->window, -1, 480);
 
 	g_signal_connect(wizard->window, "response", 
 			  G_CALLBACK(wizard_response_cb), wizard);
