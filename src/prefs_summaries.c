@@ -64,7 +64,7 @@ typedef struct _SummariesPage
 	GtkWidget *entry_datefmt;
 
 	GtkWidget *checkbtn_reopen_last_folder;
-	GtkWidget *checkbtn_always_show_msg;
+	GtkWidget *optmenu_always_show_msg;
 	GtkWidget *checkbtn_mark_as_read_on_newwin;
 	GtkWidget *spinbtn_mark_as_read_delay;
 	GtkWidget *checkbtn_immedexec;
@@ -333,7 +333,7 @@ static void prefs_summaries_create_widget(PrefsPage *_page, GtkWindow *window,
 
 	GtkWidget *hbox2;
 	GtkWidget *checkbtn_reopen_last_folder;
-	GtkWidget *checkbtn_always_show_msg;
+	GtkWidget *optmenu_always_show_msg;
 	GtkWidget *spinbtn_mark_as_read_delay;
 	GtkObject *spinbtn_mark_as_read_delay_adj;
 	GtkWidget *checkbtn_immedexec;
@@ -453,9 +453,24 @@ static void prefs_summaries_create_widget(PrefsPage *_page, GtkWindow *window,
 
 	gtk_box_pack_start(GTK_BOX(hbox1), optmenu_nextunreadmsgdialog, FALSE, FALSE, 0);
 
-	PACK_CHECK_BUTTON
-		(vbox2, checkbtn_always_show_msg,
-		 _("Always open message when selected"));
+	/* Open message on select policy */
+	hbox1 = gtk_hbox_new (FALSE, 10);
+	gtk_widget_show (hbox1);
+	gtk_box_pack_start (GTK_BOX (vbox2), hbox1, FALSE, FALSE, 0);	
+	label = gtk_label_new (_("Open message when selected"));
+	gtk_widget_show (label);
+	gtk_box_pack_start(GTK_BOX(hbox1), label, FALSE, FALSE, 0);
+
+	optmenu_always_show_msg = gtkut_sc_combobox_create(NULL, FALSE);
+	menu = GTK_LIST_STORE(gtk_combo_box_get_model(
+				GTK_COMBO_BOX(optmenu_always_show_msg)));
+	gtk_widget_show (optmenu_always_show_msg);
+	COMBOBOX_ADD (menu, _("Never"), OPENMSG_REQUEST_ONLY);
+	COMBOBOX_ADD (menu, _("Always"), OPENMSG_ALWAYS);
+	COMBOBOX_ADD (menu, _("When message preview is visible"),
+			OPENMSG_WHEN_VIEW_VISIBLE);
+	gtk_box_pack_start(GTK_BOX(hbox1), optmenu_always_show_msg, FALSE, FALSE, 0);
+
 	PACK_CHECK_BUTTON
 		(vbox2, checkbtn_threadsubj,
 		 _("Thread using subject in addition to standard headers"));
@@ -592,7 +607,7 @@ static void prefs_summaries_create_widget(PrefsPage *_page, GtkWindow *window,
 
 	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(checkbtn_reopen_last_folder),
 			prefs_common.goto_last_folder_on_startup);
-	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(checkbtn_always_show_msg),
+	combobox_select_by_data(GTK_COMBO_BOX(optmenu_always_show_msg),
 			prefs_common.always_show_msg);
 	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(radio_mark_as_read_on_new_win),
 			prefs_common.mark_as_read_on_new_window);
@@ -615,7 +630,7 @@ static void prefs_summaries_create_widget(PrefsPage *_page, GtkWindow *window,
 	prefs_summaries->entry_datefmt = entry_datefmt;
 
 	prefs_summaries->checkbtn_reopen_last_folder = checkbtn_reopen_last_folder;
-	prefs_summaries->checkbtn_always_show_msg = checkbtn_always_show_msg;
+	prefs_summaries->optmenu_always_show_msg = optmenu_always_show_msg;
 	prefs_summaries->checkbtn_mark_as_read_on_newwin = radio_mark_as_read_on_new_win;
 	prefs_summaries->spinbtn_mark_as_read_delay = spinbtn_mark_as_read_delay;
 	prefs_summaries->checkbtn_immedexec = checkbtn_immedexec;
@@ -651,8 +666,8 @@ static void prefs_summaries_save(PrefsPage *_page)
 
 	prefs_common.goto_last_folder_on_startup = gtk_toggle_button_get_active(
 		GTK_TOGGLE_BUTTON(page->checkbtn_reopen_last_folder));
-	prefs_common.always_show_msg = gtk_toggle_button_get_active(
-		GTK_TOGGLE_BUTTON(page->checkbtn_always_show_msg));
+	prefs_common.always_show_msg = combobox_get_active_data(
+		GTK_COMBO_BOX(page->optmenu_always_show_msg));
 	prefs_common.mark_as_read_on_new_window = gtk_toggle_button_get_active(
 		GTK_TOGGLE_BUTTON(page->checkbtn_mark_as_read_on_newwin));
 	prefs_common.immediate_exec = gtk_toggle_button_get_active(

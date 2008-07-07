@@ -4365,7 +4365,9 @@ void summary_move_selected_to(SummaryView *summaryview, FolderItem *to_folder)
 	}
 	END_LONG_OPERATION(summaryview);
 
-	summaryview->display_msg = prefs_common.always_show_msg;
+	summaryview->display_msg = (prefs_common.always_show_msg == OPENMSG_ALWAYS) ||
+		((prefs_common.always_show_msg == OPENMSG_WHEN_VIEW_VISIBLE &&
+				messageview_is_visible(summaryview->messageview)));
 	
 	if (prefs_common.immediate_exec) {
 		summary_execute(summaryview);
@@ -4373,7 +4375,7 @@ void summary_move_selected_to(SummaryView *summaryview, FolderItem *to_folder)
 		GtkCTreeNode *node = summary_find_next_msg(summaryview, sel_last);
 		if (!node)
 			node = summary_find_prev_msg(summaryview, sel_last);
-		summary_select_node(summaryview, node, prefs_common.always_show_msg, TRUE);
+		summary_select_node(summaryview, node, summaryview->display_msg, TRUE);
 		summary_status_show(summaryview);
 	}
 	
@@ -4381,7 +4383,7 @@ void summary_move_selected_to(SummaryView *summaryview, FolderItem *to_folder)
 		GtkCTreeNode *node = gtk_ctree_node_nth (GTK_CTREE(summaryview->ctree), 
 							 GTK_CLIST(summaryview->ctree)->rows - 1);
 		if (node)
-			summary_select_node(summaryview, node, prefs_common.always_show_msg, TRUE);
+			summary_select_node(summaryview, node, summaryview->display_msg, TRUE);
 	}
 
 }

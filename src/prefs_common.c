@@ -759,7 +759,7 @@ static PrefParam param[] = {
 	 NULL, NULL, NULL}, */
 	{"always_show_message_when_selected", "FALSE",
 	 &prefs_common.always_show_msg,
-	 P_BOOL, NULL, NULL, NULL},
+	 P_ENUM, NULL, NULL, NULL},
 	{"select_on_entry", "3", &prefs_common.select_on_entry,
 	 P_ENUM, NULL, NULL, NULL},
 	{"show_tooltips", "TRUE", &prefs_common.show_tooltips,
