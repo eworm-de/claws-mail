@@ -1,3 +1,8 @@
+2008-07-07 [paul]	3.5.0cvs21
+
+	* src/mainwindow.c
+		fix typo (missing ")
+
 2008-07-07 [paul]	3.5.0cvs20
 
 	* src/mainwindow.c

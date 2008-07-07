@@ -854,7 +854,7 @@ static GtkItemFactoryEntry mainwin_entries[] =
 	{N_("/_Tools/_Address book..."),	"<shift><control>A", addressbook_open_cb, 0, NULL},
 	{N_("/_Tools/Add sender to address boo_k"),
 						NULL, add_address_cb, 0, NULL},
-	{N_("/_Tools/C_ollect addresses),	NULL, NULL, 0, "<Branch>"},
+	{N_("/_Tools/C_ollect addresses"),	NULL, NULL, 0, "<Branch>"},
 	{N_("/_Tools/C_ollect addresses/from Current _folder..."),
 						NULL, addr_harvest_cb, 0, NULL},
 	{N_("/_Tools/C_ollect addresses/from Selected _messages..."),
