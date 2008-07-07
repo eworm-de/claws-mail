@@ -757,7 +757,7 @@ static PrefParam param[] = {
 #endif
 	/* {"emulate_emacs", "FALSE", &prefs_common.emulate_emacs, P_BOOL,
 	 NULL, NULL, NULL}, */
-	{"always_show_message_when_selected", "FALSE",
+	{"always_show_message_when_selected", "0",
 	 &prefs_common.always_show_msg,
 	 P_ENUM, NULL, NULL, NULL},
 	{"select_on_entry", "3", &prefs_common.select_on_entry,
