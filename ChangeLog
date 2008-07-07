@@ -1,3 +1,10 @@
+2008-07-07 [colin]	3.5.0cvs18
+
+	* src/mainwindow.c
+	* src/prefs_toolbar.c
+	* src/stock_pixmap.c
+		Finish fixing bug 1609, 'Icon issues'
+
 2008-07-07 [colin]	3.5.0cvs17
 
 	* src/prefs_common.c

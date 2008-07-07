@@ -3864,7 +3864,7 @@ static void online_switch_clicked (GtkButton *btn, gpointer data)
 	mainwin = (MainWindow *) data;
 	
 	ifactory = gtk_item_factory_from_widget(mainwin->menubar);
-	menuitem = GTK_CHECK_MENU_ITEM (gtk_item_factory_get_widget(ifactory, "/File/Work offline"));
+	menuitem = GTK_CHECK_MENU_ITEM (gtk_item_factory_get_widget(ifactory, "/File/Offline mode"));
 	
 	g_return_if_fail(mainwin != NULL);
 	g_return_if_fail(menuitem != NULL);
