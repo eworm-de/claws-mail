@@ -544,11 +544,22 @@ static void prefs_themes_btn_install_clicked_cb(GtkWidget *widget, gpointer data
 					  themename, NULL);
 	}
 	if (TRUE == is_dir_exist(cinfo->dest)) {
-		alertpanel_error(_("A theme with the same name is\nalready installed in this location"));
-		goto end_inst;
+		AlertValue val = alertpanel_full(_("Theme exists"),
+				_("A theme with the same name is\nalready installed in this location.\n\n"
+				  "Do you want to replace it?"),
+				GTK_STOCK_CANCEL, _("Overwrite"), NULL, FALSE,
+				NULL, ALERT_WARNING, G_ALERTDEFAULT);
+		if (val == G_ALERTALTERNATE) {
+			if (remove_dir_recursive(cinfo->dest) < 0) {
+				alertpanel_error(_("Couldn't delete the old theme in %s."), cinfo->dest);
+				goto end_inst;
+			}
+		} else {
+			goto end_inst;
+		}
 	}
 	if (0 != make_dir_hier(cinfo->dest)) {
-		alertpanel_error(_("Couldn't create destination directory"));
+		alertpanel_error(_("Couldn't create destination directory %s."), cinfo->dest);
 		goto end_inst;
 	}
 	prefs_themes_foreach_file(source, prefs_themes_file_install, cinfo);
@@ -561,7 +572,7 @@ static void prefs_themes_btn_install_clicked_cb(GtkWidget *widget, gpointer data
 					    (gpointer)(cinfo->dest), 
 					    (GCompareFunc)strcmp2);
 		if (NULL != insted) {
-			alertpanel_notice(_("Theme installed successfully"));
+			alertpanel_notice(_("Theme installed successfully."));
 			tdata->displayed = (gchar *)(insted->data);
 			prefs_themes_set_themes_menu(GTK_COMBO_BOX(tdata->page->op_menu), tdata);
 			prefs_themes_display_global_stats(tdata);

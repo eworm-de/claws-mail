@@ -1,3 +1,8 @@
+2008-07-07 [colin]	3.5.0cvs19
+
+	* src/prefs_themes.c
+		Make upgrading themes easier
+
 2008-07-07 [colin]	3.5.0cvs18
 
 	* src/mainwindow.c
