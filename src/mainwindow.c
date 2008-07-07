@@ -854,10 +854,10 @@ static GtkItemFactoryEntry mainwin_entries[] =
 	{N_("/_Tools/_Address book..."),	"<shift><control>A", addressbook_open_cb, 0, NULL},
 	{N_("/_Tools/Add sender to address boo_k"),
 						NULL, add_address_cb, 0, NULL},
-	{N_("/_Tools/C_ollect addresses from"),	NULL, NULL, 0, "<Branch>"},
-	{N_("/_Tools/C_ollect addresses from/Current _folder..."),
+	{N_("/_Tools/C_ollect addresses),	NULL, NULL, 0, "<Branch>"},
+	{N_("/_Tools/C_ollect addresses/from Current _folder..."),
 						NULL, addr_harvest_cb, 0, NULL},
-	{N_("/_Tools/C_ollect addresses from/Selected _messages..."),
+	{N_("/_Tools/C_ollect addresses/from Selected _messages..."),
 						NULL, addr_harvest_msg_cb, 0, NULL},
 	{N_("/_Tools/---"),			NULL, NULL, 0, "<Separator>"},
 	{N_("/_Tools/_Filter all messages in folder"),
@@ -2890,8 +2890,8 @@ void main_window_set_menu_sensitive(MainWindow *mainwin)
 		{"/Message/Re-edit"               , M_HAVE_ACCOUNT|M_ALLOW_REEDIT},
 
 		{"/Tools/Add sender to address book"   , M_SINGLE_TARGET_EXIST},
-		{"/Tools/Collect addresses from"       , M_MSG_EXIST|M_SUMMARY_ISLIST},
-		{"/Tools/Collect addresses from/Selected messages..."
+		{"/Tools/Collect addresses"       , M_MSG_EXIST|M_SUMMARY_ISLIST},
+		{"/Tools/Collect addresses/from Selected messages..."
 						       , M_TARGET_EXIST},
 		{"/Tools/Filter all messages in folder", M_MSG_EXIST|M_EXEC},
 		{"/Tools/Filter selected messages"     , M_TARGET_EXIST|M_EXEC},

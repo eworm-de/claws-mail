@@ -1,3 +1,8 @@
+2008-07-07 [paul]	3.5.0cvs20
+
+	* src/mainwindow.c
+		fit the menu style a bit better
+
 2008-07-07 [colin]	3.5.0cvs19
 
 	* src/prefs_themes.c
