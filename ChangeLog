@@ -1,3 +1,9 @@
+2008-07-07 [colin]	3.5.0cvs16
+
+	* src/prefs_summaries.c
+		Revert my fix to the string, the correct term
+		is indeed Message View
+
 2008-07-07 [colin]	3.5.0cvs15
 
 	* AUTHORS

@@ -467,7 +467,7 @@ static void prefs_summaries_create_widget(PrefsPage *_page, GtkWindow *window,
 	gtk_widget_show (optmenu_always_show_msg);
 	COMBOBOX_ADD (menu, _("Never"), OPENMSG_REQUEST_ONLY);
 	COMBOBOX_ADD (menu, _("Always"), OPENMSG_ALWAYS);
-	COMBOBOX_ADD (menu, _("When message preview is visible"),
+	COMBOBOX_ADD (menu, _("When message view is visible"),
 			OPENMSG_WHEN_VIEW_VISIBLE);
 	gtk_box_pack_start(GTK_BOX(hbox1), optmenu_always_show_msg, FALSE, FALSE, 0);
 
