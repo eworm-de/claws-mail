@@ -3434,3 +3434,4 @@
 ( cvs diff -u -r 1.274.2.250 -r 1.274.2.251 src/mainwindow.c;  ) > 3.5.0cvs20.patchset
 ( cvs diff -u -r 1.274.2.251 -r 1.274.2.252 src/mainwindow.c;  ) > 3.5.0cvs21.patchset
 ( cvs diff -u -r 1.207.2.201 -r 1.207.2.202 src/folderview.c;  cvs diff -u -r 1.395.2.372 -r 1.395.2.373 src/summaryview.c;  ) > 3.5.0cvs22.patchset
+( cvs diff -u -r 1.382.2.455 -r 1.382.2.456 src/compose.c;  ) > 3.5.0cvs23.patchset

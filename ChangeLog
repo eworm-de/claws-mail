@@ -1,3 +1,9 @@
+2008-07-08 [colin]	3.5.0cvs23
+
+	* src/compose.c
+		Possibly fix po-headers appearing on empty
+		templates
+
 2008-07-08 [colin]	3.5.0cvs22
 
 	* src/folderview.c

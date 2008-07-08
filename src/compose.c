@@ -1592,7 +1592,10 @@ static Compose *compose_generic_reply(MsgInfo *msginfo,
 
 		} else {
 			qmark = prefs_common.quotemark;
-			body_fmt = gettext(prefs_common.quotefmt);
+			if (prefs_common.quotefmt && *prefs_common.quotefmt)
+				body_fmt = gettext(prefs_common.quotefmt);
+			else
+				body_fmt = "";
 		}
 	}
 
@@ -1747,9 +1750,14 @@ Compose *compose_forward(PrefsAccount *account, MsgInfo *msginfo,
 		g_free(msgfile);
 	} else {
 		const gchar *qmark = NULL;
-		const gchar *body_fmt = gettext(prefs_common.fw_quotefmt);
+		const gchar *body_fmt = NULL;
 		MsgInfo *full_msginfo;
 
+		if (prefs_common.fw_quotefmt && *prefs_common.fw_quotefmt)
+			body_fmt = gettext(prefs_common.fw_quotefmt);
+		else
+			body_fmt = "";
+	
 		full_msginfo = procmsg_msginfo_get_full_info(msginfo);
 		if (!full_msginfo)
 			full_msginfo = procmsg_msginfo_copy(msginfo);
@@ -1768,7 +1776,10 @@ Compose *compose_forward(PrefsAccount *account, MsgInfo *msginfo,
 
 		} else {
 			qmark = prefs_common.fw_quotemark;
-			body_fmt = gettext(prefs_common.fw_quotefmt);
+			if (prefs_common.fw_quotefmt && *prefs_common.fw_quotefmt)
+				body_fmt = gettext(prefs_common.fw_quotefmt);
+			else
+				body_fmt = "";
 		}
 
 		/* empty quotemark is not allowed */
