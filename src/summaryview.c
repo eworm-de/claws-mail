@@ -1486,10 +1486,12 @@ gboolean summary_show(SummaryView *summaryview, FolderItem *item)
 		}
 
 		summary_unlock(summaryview);
-		if (node)
-			summary_select_node(summaryview, node,
-				    prefs_common.always_show_msg,
-				    TRUE);
+		if (node) {
+			gboolean show = (prefs_common.always_show_msg == OPENMSG_ALWAYS) ||
+				(prefs_common.always_show_msg == OPENMSG_WHEN_VIEW_VISIBLE &&
+						messageview_is_visible(summaryview->messageview));
+			summary_select_node(summaryview, node, show, TRUE);
+		}
 		summary_lock(summaryview);
 	}
 

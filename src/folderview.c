@@ -953,7 +953,7 @@ void folderview_select_next_marked(FolderView *folderview)
 	gboolean last_open = prefs_common.always_show_msg;
 	
 	prefs_common.summary_select_prio[0] = ACTION_MARKED;
-	prefs_common.always_show_msg = TRUE;
+	prefs_common.always_show_msg = OPENMSG_ALWAYS;
 
 	if ((node = folderview_find_next_marked(ctree, folderview->opened))
 	    != NULL) {
@@ -1001,7 +1001,7 @@ void folderview_select_next_unread(FolderView *folderview, gboolean force_open)
 	gboolean last_open = prefs_common.always_show_msg;
 	
 	prefs_common.summary_select_prio[0] = ACTION_UNREAD;
-	prefs_common.always_show_msg = force_open ? TRUE : last_open;
+	prefs_common.always_show_msg = force_open ? OPENMSG_ALWAYS : last_open;
 
 	if ((node = folderview_find_next_unread(ctree, folderview->opened))
 	    != NULL) {
@@ -1049,7 +1049,7 @@ void folderview_select_next_new(FolderView *folderview)
 	gboolean last_open = prefs_common.always_show_msg;
 	
 	prefs_common.summary_select_prio[0] = ACTION_NEW;
-	prefs_common.always_show_msg = TRUE;
+	prefs_common.always_show_msg = OPENMSG_ALWAYS;
 
 	if ((node = folderview_find_next_new(ctree, folderview->opened))
 	    != NULL) {

@@ -1,3 +1,10 @@
+2008-07-08 [colin]	3.5.0cvs22
+
+	* src/folderview.c
+	* src/summaryview.c
+		Finish the always_open tristate patch, by Jonathan
+		Corbet.
+
 2008-07-07 [paul]	3.5.0cvs21
 
 	* src/mainwindow.c
