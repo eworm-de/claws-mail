@@ -3216,6 +3216,18 @@ static void mailing_list_compose (GtkWidget *w, gpointer *data)
  	open_uri (mailto, prefs_common_get_uri_cmd());
 } 
 	
+static void fix_folderview_scroll(MainWindow *mainwin)
+{
+	static gboolean fix_done = FALSE;
+
+	if (fix_done)
+		return;
+
+	gtk_widget_queue_resize(mainwin->folderview->ctree);
+
+	fix_done = TRUE;
+}
+
 void main_window_popup(MainWindow *mainwin)
 {
 	static gboolean first_start = TRUE;
@@ -3239,6 +3251,7 @@ void main_window_popup(MainWindow *mainwin)
 			mainwindow_exit_folder(mainwin);
 		}
 	}
+	fix_folderview_scroll(mainwin);
 }
 
 void main_window_show(MainWindow *mainwin)

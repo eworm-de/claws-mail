@@ -1,3 +1,10 @@
+2008-07-16 [colin]	3.5.0cvs24
+
+	* src/mainwindow.c
+		Fix folderview's scrolbar when starting minimised
+		to tray, and popping up the mainwindow by calling
+		claws-mail from the command line
+
 2008-07-08 [colin]	3.5.0cvs23
 
 	* src/compose.c
