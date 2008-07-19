@@ -21,25 +21,7 @@
 #include <glib.h>
 #include <glib/gi18n.h>
 #include <gdk/gdkkeysyms.h>
-#include <gtk/gtkmain.h>
-#include <gtk/gtkwindow.h>
-#include <gtk/gtkwidget.h>
-#include <gtk/gtksignal.h>
-#include <gtk/gtkvbox.h>
-#include <gtk/gtkcontainer.h>
-#include <gtk/gtkstatusbar.h>
-#include <gtk/gtkprogressbar.h>
-#include <gtk/gtkhpaned.h>
-#include <gtk/gtkvpaned.h>
-#include <gtk/gtkcheckmenuitem.h>
-#include <gtk/gtkitemfactory.h>
-#include <gtk/gtkeditable.h>
-#include <gtk/gtkmenu.h>
-#include <gtk/gtkmenuitem.h>
-#include <gtk/gtkhandlebox.h>
-#include <gtk/gtktoolbar.h>
-#include <gtk/gtkbutton.h>
-#include <gtk/gtktooltips.h>
+#include <gtk/gtk.h>
 #include <string.h>
 
 #include "main.h"
@@ -1572,9 +1554,9 @@ MainWindow *main_window_create()
 	GtkWidget *ac_label;
  	GtkWidget *online_pixmap;
 	GtkWidget *offline_pixmap;
-	GtkTooltips *tips;
 	GtkWidget *warning_icon;
 	GtkWidget *warning_btn;
+	CLAWS_TIP_DECL();
 #endif
 	GtkWidget *online_switch;
 	GtkWidget *offline_switch;
@@ -1683,8 +1665,6 @@ MainWindow *main_window_create()
 	hbox_stat = gtk_hbox_new(FALSE, 2);
 	gtk_box_pack_end(GTK_BOX(vbox_body), hbox_stat, FALSE, FALSE, 0);
 
-	tips = gtk_tooltips_new();
-
 	warning_icon = gtk_image_new_from_stock
                         (GTK_STOCK_DIALOG_WARNING, GTK_ICON_SIZE_SMALL_TOOLBAR);
 	warning_btn = gtk_event_box_new();
@@ -1706,8 +1686,8 @@ MainWindow *main_window_create()
 
 	gtk_container_add (GTK_CONTAINER(warning_btn), warning_icon);
 
-	gtk_tooltips_set_tip(GTK_TOOLTIPS(tips),warning_btn, 
-			     _("Some error(s) happened. Click here to view log."), NULL);
+	CLAWS_SET_TIP(warning_btn, 
+			     _("Some error(s) happened. Click here to view log."));
 	gtk_box_pack_start(GTK_BOX(hbox_stat), warning_btn, FALSE, FALSE, 0);
 
 	statusbar = statusbar_create();
@@ -1720,12 +1700,11 @@ MainWindow *main_window_create()
 	online_pixmap = stock_pixmap_widget(hbox_stat, STOCK_PIXMAP_ONLINE);
 	offline_pixmap = stock_pixmap_widget(hbox_stat, STOCK_PIXMAP_OFFLINE);
 	online_switch = gtk_button_new ();
-	gtk_tooltips_set_tip(GTK_TOOLTIPS(tips),online_switch, 
-			     _("You are online. Click the icon to go offline"), NULL);
+	CLAWS_SET_TIP(online_switch, 
+			     _("You are online. Click the icon to go offline"));
 	offline_switch = gtk_button_new ();
-	gtk_tooltips_set_tip(GTK_TOOLTIPS(tips),offline_switch, 
-			     _("You are offline. Click the icon to go online"),
-			     NULL);
+	CLAWS_SET_TIP(offline_switch, 
+			     _("You are offline. Click the icon to go online"));
 	gtk_container_add (GTK_CONTAINER(online_switch), online_pixmap);
 	gtk_button_set_relief (GTK_BUTTON(online_switch), GTK_RELIEF_NONE);
 	g_signal_connect (G_OBJECT(online_switch), "clicked", G_CALLBACK(online_switch_clicked), mainwin);
@@ -1739,8 +1718,7 @@ MainWindow *main_window_create()
 	gtk_box_pack_start(GTK_BOX(hbox_stat), statuslabel, FALSE, FALSE, 0);
 
 	ac_button = gtk_button_new();
-	gtk_tooltips_set_tip(GTK_TOOLTIPS(tips),
-			     ac_button, _("Select account"), NULL);
+	CLAWS_SET_TIP(ac_button, _("Select account"));
 	GTK_WIDGET_UNSET_FLAGS(ac_button, GTK_CAN_FOCUS);
 	gtk_widget_set_size_request(ac_button, -1, 0);
 	gtk_box_pack_end(GTK_BOX(hbox_stat), ac_button, FALSE, FALSE, 0);

@@ -874,10 +874,35 @@ static void toolbar_action_execute(GtkWidget    *widget,
 		g_warning ("Error: did not find Claws Action to execute");
 }
 
+#if !(GTK_CHECK_VERSION(2,12,0))
+#define CLAWS_SET_TOOL_ITEM_TIP(widget,tip) { \
+	gtk_tool_item_set_tooltip(GTK_TOOL_ITEM(widget), GTK_TOOLTIPS(toolbar_tips),	\
+			tip, NULL);								\
+}
+#else
+#define CLAWS_SET_TOOL_ITEM_TIP(widget,tip) { \
+	gtk_tool_item_set_tooltip_text(GTK_TOOL_ITEM(widget), tip);				\
+}
+#endif	
+
+#if !(GTK_CHECK_VERSION(2,12,0))
+#define CLAWS_SET_ARROW_TIP(widget,tip) { \
+	gtk_menu_tool_button_set_arrow_tooltip(GTK_MENU_TOOL_BUTTON(widget), GTK_TOOLTIPS(toolbar_tips),	\
+			tip, NULL);								\
+}
+#else
+#define CLAWS_SET_ARROW_TIP(widget,tip) { \
+	gtk_menu_tool_button_set_arrow_tooltip_text(GTK_MENU_TOOL_BUTTON(widget), tip);				\
+}
+#endif	
+
 static void activate_compose_button (Toolbar           *toolbar,
 				     ToolbarStyle      style,
 				     ComposeButtonType type)
 {
+#if !(GTK_CHECK_VERSION(2,12,0))
+	GtkTooltips *toolbar_tips = toolbar->tooltips;
+#endif
 	if ((!toolbar->compose_mail_btn))
 		return;
 
@@ -886,8 +911,7 @@ static void activate_compose_button (Toolbar           *toolbar,
 			GTK_TOOL_BUTTON(toolbar->compose_mail_btn),
 			toolbar->compose_news_icon);
 #ifndef GENERIC_UMPC
-		gtk_tool_item_set_tooltip(GTK_TOOL_ITEM(toolbar->compose_mail_btn), GTK_TOOLTIPS(toolbar->tooltips),
-			_("Compose News message"), NULL);
+		CLAWS_SET_TOOL_ITEM_TIP(GTK_TOOL_ITEM(toolbar->compose_mail_btn), _("Compose News message"));
 #endif	
 		gtk_widget_show(toolbar->compose_news_icon);
 	} else {
@@ -895,8 +919,7 @@ static void activate_compose_button (Toolbar           *toolbar,
 			GTK_TOOL_BUTTON(toolbar->compose_mail_btn),
 			toolbar->compose_mail_icon);
 #ifndef GENERIC_UMPC
-		gtk_tool_item_set_tooltip(GTK_TOOL_ITEM(toolbar->compose_mail_btn), GTK_TOOLTIPS(toolbar->tooltips),
-			_("Compose Email"), NULL);
+		CLAWS_SET_TOOL_ITEM_TIP(GTK_TOOL_ITEM(toolbar->compose_mail_btn), _("Compose Email"));
 #endif	
 		gtk_widget_show(toolbar->compose_mail_icon);
 	}
@@ -916,6 +939,9 @@ static void activate_learn_button (Toolbar           *toolbar,
 				     ToolbarStyle      style,
 				     LearnButtonType type)
 {
+#if !(GTK_CHECK_VERSION(2,12,0))
+	GtkTooltips *toolbar_tips = toolbar->tooltips;
+#endif
 	if ((!toolbar->learn_spam_btn))
 		return;
 
@@ -927,8 +953,7 @@ static void activate_learn_button (Toolbar           *toolbar,
 			GTK_TOOL_BUTTON(toolbar->learn_spam_btn),
 			_("Spam"));
 #ifndef GENERIC_UMPC
-		gtk_tool_item_set_tooltip(GTK_TOOL_ITEM(toolbar->learn_spam_btn), GTK_TOOLTIPS(toolbar->tooltips),
-			_("Learn spam"), NULL);	
+		CLAWS_SET_TOOL_ITEM_TIP(GTK_TOOL_ITEM(toolbar->learn_spam_btn), _("Learn spam"));	
 #endif
 		gtk_widget_show(toolbar->learn_spam_icon);
 	} else {
@@ -939,8 +964,7 @@ static void activate_learn_button (Toolbar           *toolbar,
 			GTK_TOOL_BUTTON(toolbar->learn_spam_btn),
 			_("Ham"));
 #ifndef GENERIC_UMPC
-		gtk_tool_item_set_tooltip(GTK_TOOL_ITEM(toolbar->learn_spam_btn), GTK_TOOLTIPS(toolbar->tooltips),
-			_("Learn ham"), NULL);
+		CLAWS_SET_TOOL_ITEM_TIP(GTK_TOOL_ITEM(toolbar->learn_spam_btn), _("Learn ham"));
 #endif	
 		gtk_widget_show(toolbar->learn_ham_icon);
 	}
@@ -1738,8 +1762,8 @@ static void toolbar_buttons_cb(GtkWidget   *widget,
 	gtk_tool_item_set_is_important(GTK_TOOL_ITEM(item), TRUE);					\
 	g_signal_connect (G_OBJECT(item), "clicked", G_CALLBACK(toolbar_buttons_cb), toolbar_item);	\
 	gtk_toolbar_insert(GTK_TOOLBAR(toolbar), GTK_TOOL_ITEM(item), -1);				\
-	gtk_tool_item_set_tooltip(GTK_TOOL_ITEM(item), GTK_TOOLTIPS(toolbar_tips),			\
-			tooltip, NULL);									\
+	CLAWS_SET_TOOL_ITEM_TIP(GTK_TOOL_ITEM(item), 							\
+			tooltip);									\
 }
 
 #define TOOLBAR_MENUITEM(item,icon,text,tooltip,menutip) {						\
@@ -1750,10 +1774,9 @@ static void toolbar_buttons_cb(GtkWidget   *widget,
 	gtk_tool_item_set_is_important(GTK_TOOL_ITEM(item), TRUE);					\
 	g_signal_connect (G_OBJECT(item), "clicked", G_CALLBACK(toolbar_buttons_cb), toolbar_item);	\
 	gtk_toolbar_insert(GTK_TOOLBAR(toolbar), GTK_TOOL_ITEM(item), -1);				\
-	gtk_tool_item_set_tooltip(GTK_TOOL_ITEM(item), GTK_TOOLTIPS(toolbar_tips),			\
-			tooltip, NULL);									\
-	gtk_menu_tool_button_set_arrow_tooltip(GTK_MENU_TOOL_BUTTON(item), 				\
-				GTK_TOOLTIPS(toolbar_tips), menutip, NULL);				\
+	CLAWS_SET_TOOL_ITEM_TIP(GTK_TOOL_ITEM(item), 							\
+			tooltip);									\
+	CLAWS_SET_ARROW_TIP(GTK_MENU_TOOL_BUTTON(item), menutip);					\
 	child = gtk_bin_get_child(GTK_BIN(item)); 							\
 	gchild = gtk_container_get_children(								\
 			GTK_CONTAINER(child)); 								\
@@ -1824,9 +1847,9 @@ Toolbar *toolbar_create(ToolbarType 	 type,
 	GSList *toolbar_list;
 	Toolbar *toolbar_data;
 #ifndef GENERIC_UMPC
-	GtkTooltips *toolbar_tips;
-	
- 	toolbar_tips = gtk_tooltips_new();
+#if !(GTK_CHECK_VERSION(2,12,0))
+	GtkTooltips *toolbar_tips = gtk_tooltips_new();
+#endif
 #endif	
 	toolbar_read_config_file(type);
 	toolbar_list = toolbar_get_list(type);
@@ -2090,7 +2113,9 @@ Toolbar *toolbar_create(ToolbarType 	 type,
 	}
 	toolbar_data->toolbar = toolbar;
 #ifndef GENERIC_UMPC
+#if !(GTK_CHECK_VERSION(2,12,0))
 	toolbar_data->tooltips = toolbar_tips;
+#endif
 #endif
 	gtk_widget_show_all(toolbar);
 

@@ -26,20 +26,7 @@
 #include <glib.h>
 #include <glib/gi18n.h>
 #include <gdk/gdkkeysyms.h>
-#include <gtk/gtknotebook.h>
-#include <gtk/gtkscrolledwindow.h>
-#include <gtk/gtkctree.h>
-#include <gtk/gtkvbox.h>
-#include <gtk/gtkhbox.h>
-#include <gtk/gtkvpaned.h>
-#include <gtk/gtktext.h>
-#include <gtk/gtksignal.h>
-#include <gtk/gtkmenu.h>
-#include <gtk/gtkdnd.h>
-#include <gtk/gtkselection.h>
-#include <gtk/gtktooltips.h>
-#include <gtk/gtkcontainer.h>
-#include <gtk/gtkbutton.h>
+#include <gtk/gtk.h>
 #include <stdio.h>
 #include <sys/types.h>
 #include <sys/stat.h>
@@ -236,12 +223,12 @@ MimeView *mimeview_create(MainWindow *mainwin)
 	GtkWidget *arrow;
 	GtkWidget *scrollbutton;
 	GtkWidget *hbox;
-	GtkTooltips *tooltips;
 	GtkItemFactory *popupfactory;
 	NoticeView *siginfoview;
 	gchar *titles[N_MIMEVIEW_COLS];
 	gint n_entries;
 	gint i;
+	CLAWS_TIP_DECL();
 
 	if (!hand_cursor)
 		hand_cursor = gdk_cursor_new(GDK_HAND2);
@@ -337,8 +324,6 @@ MimeView *mimeview_create(MainWindow *mainwin)
  		sizeof(mimeview_popup_entries[0]);
  	popupmenu = menu_create_items(mimeview_popup_entries, n_entries,
  				      "<MimeView>", &popupfactory, mimeview);
-	tooltips = gtk_tooltips_new();
-
 	vbox = gtk_vbox_new(FALSE, 0);
 	gtk_widget_show(vbox);
 	siginfoview = noticeview_create(mainwin);
@@ -376,7 +361,9 @@ MimeView *mimeview_create(MainWindow *mainwin)
 	mimeview->icon_mainbox  = icon_mainbox;
 	mimeview->icon_count    = 0;
 	mimeview->mainwin       = mainwin;
-	mimeview->tooltips      = tooltips;
+#if !(GTK_CHECK_VERSION(2,12,0))
+	mimeview->tooltips      = tips;
+#endif
 	mimeview->oldsize       = 60;
 	mimeview->mime_toggle   = mime_toggle;
 	mimeview->siginfoview	= siginfoview;
@@ -2131,6 +2118,9 @@ static void icon_list_append_icon (MimeView *mimeview, MimeInfo *mimeinfo)
 	MimeInfo *partinfo;
 	MimeInfo *siginfo = NULL;
 	MimeInfo *encrypted = NULL;
+#if !(GTK_CHECK_VERSION(2,12,0))
+	GtkTooltips *tips = mimeview->tooltips;
+#endif
 	
 	vbox = mimeview->icon_vbox;
 	mimeview->icon_count++;
@@ -2266,7 +2256,7 @@ static void icon_list_append_icon (MimeView *mimeview, MimeInfo *mimeinfo)
 	}
 	g_free(sigshort);
 
-	gtk_tooltips_set_tip(mimeview->tooltips, button, tip, NULL);
+	CLAWS_SET_TIP(button, tip);
 	g_free(tip);
 	gtk_widget_show_all(button);
 	gtk_drag_source_set(button, GDK_BUTTON1_MASK|GDK_BUTTON3_MASK, 

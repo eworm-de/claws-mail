@@ -72,7 +72,7 @@ NoticeView *noticeview_create(MainWindow *mainwin)
 	GtkWidget  *widget;
 	GtkWidget  *widget2;
 	GtkWidget  *evtbox;
-	GtkTooltips *tooltips;
+	CLAWS_TIP_DECL();
 
 	debug_print("Creating notice view...\n");
 	noticeview = g_new0(NoticeView, 1);
@@ -129,8 +129,6 @@ NoticeView *noticeview_create(MainWindow *mainwin)
 			 (gpointer) noticeview);
 	gtk_box_pack_start(GTK_BOX(hbox), widget2, FALSE, FALSE, 0);
 	
-	tooltips = gtk_tooltips_new();
-	
 	noticeview->vbox   = vbox;
 	noticeview->hsep   = hsep;
 	noticeview->hbox   = hbox;
@@ -140,8 +138,9 @@ NoticeView *noticeview_create(MainWindow *mainwin)
 	noticeview->button2= widget2;
 	noticeview->evtbox = evtbox;
 	noticeview->visible= TRUE;
-	noticeview->tooltips = tooltips;
-
+#if !(GTK_CHECK_VERSION(2,12,0))
+	noticeview->tooltips = tips;
+#endif
 	return noticeview;
 }
 
@@ -290,9 +289,10 @@ void noticeview_set_icon_clickable(NoticeView *noticeview, gboolean setting)
 
 void noticeview_set_tooltip (NoticeView *noticeview, const gchar *text)
 {
-	gtk_tooltips_set_tip(GTK_TOOLTIPS(noticeview->tooltips), 
-			noticeview->evtbox,
-			text,
-			NULL);
+#if !(GTK_CHECK_VERSION(2,12,0))
+	GtkTooltips *tips = noticeview->tooltips;
+#endif
+	CLAWS_SET_TIP(noticeview->evtbox,
+			text);
 
 }

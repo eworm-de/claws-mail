@@ -549,7 +549,7 @@ QuickSearch *quicksearch_new()
 	GtkWidget *clear_search;
 	GtkWidget *search_condition_expression;
 	GtkWidget *menuitem;
-	GtkTooltips *tips = gtk_tooltips_new();
+	CLAWS_TIP_DECL();
 	GtkWidget *vbox;
 
 	quicksearch = g_new0(QuickSearch, 1);
@@ -669,9 +669,8 @@ QuickSearch *quicksearch_new()
 			   FALSE, FALSE, 0);
 	g_signal_connect(G_OBJECT(clear_search), "clicked",
 			 G_CALLBACK(clear_search_cb), quicksearch);
-	gtk_tooltips_set_tip(GTK_TOOLTIPS(tips),
-			     clear_search,
-			     _("Clear the current search"), NULL);
+	CLAWS_SET_TIP(clear_search,
+			     _("Clear the current search"));
 	gtk_widget_show(clear_search);
 
 #if GTK_CHECK_VERSION(2, 8, 0)
@@ -684,9 +683,8 @@ QuickSearch *quicksearch_new()
 	g_signal_connect(G_OBJECT (search_condition_expression), "clicked",
 			 G_CALLBACK(search_condition_expr),
 			 quicksearch);
-	gtk_tooltips_set_tip(GTK_TOOLTIPS(tips),
-			     search_condition_expression,
-			     _("Edit search criteria"), NULL);
+	CLAWS_SET_TIP(search_condition_expression,
+			     _("Edit search criteria"));
 	gtk_widget_show(search_condition_expression);
 
 #if GTK_CHECK_VERSION(2, 8, 0)
@@ -698,9 +696,8 @@ QuickSearch *quicksearch_new()
 			   FALSE, FALSE, 0);
 	g_signal_connect(G_OBJECT(search_description), "clicked",
 			 G_CALLBACK(search_description_cb), NULL);
-	gtk_tooltips_set_tip(GTK_TOOLTIPS(tips),
-			     search_description,
-			     _("Information about extended symbols"), NULL);
+	CLAWS_SET_TIP(search_description,
+			     _("Information about extended symbols"));
 	gtk_widget_show(search_description);
 
 	gtk_box_pack_start(GTK_BOX(hbox_search), search_hbox, FALSE, FALSE, 2);

@@ -327,10 +327,8 @@ static void prefs_summaries_create_widget(PrefsPage *_page, GtkWindow *window,
 	GtkWidget *label_datefmt;
 	GtkWidget *button_datefmt;
 	GtkWidget *entry_datefmt;
-	GtkTooltips *tip_datefmt;
 	GtkWidget *hbox_dispitem;
 	GtkWidget *button_dispitem;
-
 	GtkWidget *hbox2;
 	GtkWidget *checkbtn_reopen_last_folder;
 	GtkWidget *optmenu_always_show_msg;
@@ -338,7 +336,6 @@ static void prefs_summaries_create_widget(PrefsPage *_page, GtkWindow *window,
 	GtkObject *spinbtn_mark_as_read_delay_adj;
 	GtkWidget *checkbtn_immedexec;
 	GtkWidget *checkbtn_ask_mark_all_read;
-	GtkTooltips *immedexec_tooltip;
 	GtkWidget *label, *label_fill;
 	GtkListStore *menu;
 	GtkTreeIter iter;
@@ -348,10 +345,7 @@ static void prefs_summaries_create_widget(PrefsPage *_page, GtkWindow *window,
 	GtkWidget *button_edit_actions;
 	GtkWidget *radio_mark_as_read_on_select;
 	GtkWidget *radio_mark_as_read_on_new_win;
-
-	GtkTooltips *tooltips;
-
-	tooltips = gtk_tooltips_new();
+	CLAWS_TIP_DECL();
 
 	vbox1 = gtk_vbox_new (FALSE, VSPACING);
 	gtk_widget_show (vbox1);
@@ -475,15 +469,12 @@ static void prefs_summaries_create_widget(PrefsPage *_page, GtkWindow *window,
 		(vbox2, checkbtn_threadsubj,
 		 _("Thread using subject in addition to standard headers"));
 
-	immedexec_tooltip = gtk_tooltips_new();
-
 	PACK_CHECK_BUTTON
 		(vbox2, checkbtn_immedexec,
 		 _("Execute immediately when moving or deleting messages"));
-	gtk_tooltips_set_tip(GTK_TOOLTIPS(immedexec_tooltip), checkbtn_immedexec,
+	CLAWS_SET_TIP(checkbtn_immedexec,
 			     _("Defers moving, copying and deleting of messages"
-		   	       " until you choose 'Tools/Execute'"),
-			     NULL);
+		   	       " until you choose 'Tools/Execute'"));
 
 	vbox3 = gtkut_get_options_frame(vbox2, NULL, _("Mark message as read"));
 
@@ -551,10 +542,8 @@ static void prefs_summaries_create_widget(PrefsPage *_page, GtkWindow *window,
 	label_fill = gtk_label_new(" ");
 	gtk_box_pack_start(GTK_BOX(hbox2), label_fill, TRUE, FALSE, 0);
 	
-	tip_datefmt = gtk_tooltips_new();
-	gtk_tooltips_set_tip(GTK_TOOLTIPS(tip_datefmt),
-			     button_datefmt,
-			     _("Date format help"), NULL);
+	CLAWS_SET_TIP(button_datefmt,
+			     _("Date format help"));
 			     
 	hbox_dispitem = gtk_hbox_new (FALSE, 8);
 	gtk_widget_show (hbox_dispitem);
@@ -576,9 +565,9 @@ static void prefs_summaries_create_widget(PrefsPage *_page, GtkWindow *window,
 	PACK_CHECK_BUTTON
 		(vbox1, checkbtn_transhdr,
 		 _("Translate header names"));
-	gtk_tooltips_set_tip(tooltips, checkbtn_transhdr,
+	CLAWS_SET_TIP(checkbtn_transhdr,
 			     _("The display of standard headers (such as 'From:', 'Subject:') "
-			     "will be translated into your language."), NULL);
+			     "will be translated into your language."));
 	
 	hbox2 = gtk_hbox_new (FALSE, 8);
 	gtk_widget_show (hbox2);

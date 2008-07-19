@@ -286,8 +286,8 @@ void pluginwindow_create()
 	GtkWidget *vbox3;
 	GtkWidget *hbox_info;
 	static GdkGeometry geometry;
-	GtkTooltips *tooltips;
-	
+	CLAWS_TIP_DECL();	
+
 	debug_print("Creating plugins window...\n");
 
 	pluginwindow = g_new0(PluginWindow, 1);
@@ -403,15 +403,11 @@ void pluginwindow_create()
 	g_signal_connect(G_OBJECT(window), "delete_event",
 			 G_CALLBACK(pluginwindow_delete_cb), pluginwindow);
 
-	tooltips = gtk_tooltips_new();
+	CLAWS_SET_TIP(load_btn,
+			_("Click here to load one or more plugins"));
 
-	gtk_tooltips_set_tip(GTK_TOOLTIPS(tooltips),
-			load_btn,
-			_("Click here to load one or more plugins"), NULL);
-
-	gtk_tooltips_set_tip(GTK_TOOLTIPS(tooltips),
-			unload_btn,
-			_("Unload the selected plugin"), NULL);
+	CLAWS_SET_TIP(unload_btn,
+			_("Unload the selected plugin"));
 
 	pluginwindow->window = window;
 	pluginwindow->plugin_list_view = plugin_list_view;

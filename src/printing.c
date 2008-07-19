@@ -324,8 +324,9 @@ static gboolean cb_preview(GtkPrintOperation        *operation,
   GtkToolItem *separator;
   static GdkGeometry geometry;
   GtkWidget *dialog = NULL;
-  GtkTooltips *toolbar_tips = gtk_tooltips_new();
   GtkWidget *statusbar = gtk_hbox_new(2, FALSE);
+  CLAWS_TIP_DECL();
+
   debug_print("Creating internal print preview\n");
 
   print_data = (PrintData*) data;
@@ -373,14 +374,25 @@ static gboolean cb_preview(GtkPrintOperation        *operation,
 	
   gtk_box_pack_start(GTK_BOX(vbox), toolbar, FALSE, FALSE, 0);
 
+#if !(GTK_CHECK_VERSION(2,12,0))
+#define CLAWS_SET_TOOL_ITEM_TIP(widget,tip) { \
+	gtk_tool_item_set_tooltip(GTK_TOOL_ITEM(widget), GTK_TOOLTIPS(tips),			\
+			tip, NULL);								\
+}
+#else
+#define CLAWS_SET_TOOL_ITEM_TIP(widget,tip) { \
+	gtk_tool_item_set_tooltip_text(GTK_TOOL_ITEM(widget), tip);				\
+}
+#endif	
+
 #define TOOLBAR_ITEM(item,text,tooltip,cb,cbdata) {								\
 	item = GTK_WIDGET(gtk_tool_button_new_from_stock(text));					\
 	gtk_tool_item_set_homogeneous(GTK_TOOL_ITEM(item), FALSE);					\
 	gtk_tool_item_set_is_important(GTK_TOOL_ITEM(item), TRUE);					\
 	gtk_toolbar_insert(GTK_TOOLBAR(toolbar), GTK_TOOL_ITEM(item), -1);				\
 	g_signal_connect (G_OBJECT(item), "clicked", G_CALLBACK(cb), cbdata);				\
-	gtk_tool_item_set_tooltip(GTK_TOOL_ITEM(item), GTK_TOOLTIPS(toolbar_tips),			\
-			tooltip, NULL);									\
+	CLAWS_SET_TOOL_ITEM_TIP(GTK_TOOL_ITEM(item),		\
+			tooltip);									\
 }
 
   TOOLBAR_ITEM(preview_data->first, GTK_STOCK_GOTO_FIRST, _("First page"), cb_preview_go_first, preview_data);

@@ -1104,7 +1104,7 @@ static GtkWidget* mailbox_page (WizardWindow * wizard)
 	gchar *uri, *mount_path;
 #endif
 	GtkWidget *hbox;
-	GtkTooltips *tips = gtk_tooltips_new();
+	CLAWS_TIP_DECL();
 
 	gtk_table_set_row_spacings(GTK_TABLE(table), 4);
 	gtk_table_set_col_spacings(GTK_TABLE(table), 8);
@@ -1126,10 +1126,8 @@ static GtkWidget* mailbox_page (WizardWindow * wizard)
 
 	gtk_entry_set_text(GTK_ENTRY(wizard->mailbox_name), tmpl.mailbox?tmpl.mailbox:"");
 
-	gtk_tooltips_set_tip(GTK_TOOLTIPS(tips), wizard->mailbox_name,
-			     _("You can also specify an absolute path, for example: "
-			       "\"/home/john/Documents/Mail\""),
-			     NULL);
+	CLAWS_SET_TIP(wizard->mailbox_name, _("You can also specify an absolute path, for example: "
+			       "\"/home/john/Documents/Mail\""));
 
 	gtk_box_pack_start(GTK_BOX(hbox), wizard->mailbox_label, FALSE, FALSE, 0);
 	gtk_box_pack_start(GTK_BOX(hbox), wizard->mailbox_name, TRUE, TRUE, 0);
@@ -1238,8 +1236,8 @@ static GtkWidget* smtp_page (WizardWindow * wizard)
 	GtkWidget *label;
 	GtkWidget *button;
 	GtkWidget *smtp_cert_table;
-	GtkTooltips *tips = gtk_tooltips_new();
 	gchar *text;
+	CLAWS_TIP_DECL();
 	
 	gtk_table_set_row_spacings(GTK_TABLE(table), 4);
 	gtk_table_set_col_spacings(GTK_TABLE(table), 8);
@@ -1257,10 +1255,9 @@ static GtkWidget* smtp_page (WizardWindow * wizard)
 	gtk_entry_set_text(GTK_ENTRY(wizard->smtp_server), text);
 	g_free(text);
 
-	gtk_tooltips_set_tip(GTK_TOOLTIPS(tips), wizard->smtp_server,
+	CLAWS_SET_TIP(wizard->smtp_server,
 			     _("You can specify the port number by appending it at the end: "
-			       "\"mail.example.com:25\""),
-			     NULL);
+			       "\"mail.example.com:25\""));
 
 	PACK_BOX(hbox, _("<span weight=\"bold\">SMTP server address:</span>"),
 		 wizard->smtp_server);
@@ -1472,7 +1469,6 @@ static void wizard_protocol_changed(GtkComboBox *combo, gpointer data)
 static GtkWidget* recv_page (WizardWindow * wizard)
 {
 	GtkWidget *table = gtk_table_new(1,1, FALSE);
-	GtkTooltips *tips = gtk_tooltips_new();
 	GtkWidget *vbox;
 	GtkWidget *hbox;
 	GtkWidget *label;
@@ -1482,6 +1478,7 @@ static GtkWidget* recv_page (WizardWindow * wizard)
 	GtkTreeIter iter;
 	gchar *text;
 	gint index = 0;
+	CLAWS_TIP_DECL();
 
 	gtk_table_set_row_spacings(GTK_TABLE(table), 4);
 	gtk_table_set_col_spacings(GTK_TABLE(table), 8);
@@ -1529,10 +1526,9 @@ static GtkWidget* recv_page (WizardWindow * wizard)
 	gtk_entry_set_text(GTK_ENTRY(wizard->recv_server), text);
 	g_free(text);
 	
-	gtk_tooltips_set_tip(GTK_TOOLTIPS(tips), wizard->recv_server,
+	CLAWS_SET_TIP(wizard->recv_server,
 			     _("You can specify the port number by appending it at the end: "
-			       "\"mail.example.com:110\""),
-			     NULL);
+			       "\"mail.example.com:110\""));
 
 	wizard->recv_label = gtk_label_new(_("<span weight=\"bold\">Server address:</span>"));
 	gtk_label_set_use_markup(GTK_LABEL(wizard->recv_label), TRUE);

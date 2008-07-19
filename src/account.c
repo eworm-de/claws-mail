@@ -1497,7 +1497,7 @@ static void account_create_list_view_columns(GtkWidget *list_view)
 {
 	GtkTreeViewColumn *column;
 	GtkCellRenderer *renderer;
-	GtkTooltips *tooltips = gtk_tooltips_new();
+	CLAWS_TIP_DECL();
 
 	renderer = gtk_cell_renderer_toggle_new();
 	g_object_set(renderer, 
@@ -1510,8 +1510,8 @@ static void account_create_list_view_columns(GtkWidget *list_view)
 		 NULL);
 	gtk_tree_view_append_column(GTK_TREE_VIEW(list_view), column);		
 	gtk_tree_view_column_set_alignment (column, 0.5);
-	gtk_tooltips_set_tip(GTK_TOOLTIPS(tooltips), column->button,
-			_("'Get Mail' retrieves mail from the checked accounts"), NULL);
+	CLAWS_SET_TIP(column->button,
+			_("'Get Mail' retrieves mail from the checked accounts"));
 	g_signal_connect(G_OBJECT(renderer), "toggled", 		     
 			 G_CALLBACK(account_get_all_toggled),
 			 list_view);

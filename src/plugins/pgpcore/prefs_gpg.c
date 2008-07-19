@@ -88,9 +88,7 @@ static void prefs_gpg_create_widget_func(PrefsPage *_page,
 	GtkWidget *spinbtn_store_passphrase;
 	GtkWidget *label_expire2;
 	GtkWidget *frame_passphrase;
-	GtkTooltips *tooltips;
-	
-	tooltips = gtk_tooltips_new();
+	CLAWS_TIP_DECL();
 
 	vbox1 = gtk_vbox_new (FALSE, VSPACING);
 	gtk_widget_show (vbox1);
@@ -134,10 +132,9 @@ static void prefs_gpg_create_widget_func(PrefsPage *_page,
 	gtk_box_pack_start(GTK_BOX(hbox1), spinbtn_store_passphrase, FALSE,
 			   FALSE, 0);
 	gtk_widget_set_size_request(spinbtn_store_passphrase, 64, -1);
-	gtk_tooltips_set_tip(tooltips, spinbtn_store_passphrase,
+	CLAWS_SET_TIP(spinbtn_store_passphrase,
 			     _
-			     ("Setting to '0' will store the passphrase for the whole session"),
-			     NULL);
+			     ("Setting to '0' will store the passphrase for the whole session"));
 	gtk_spin_button_set_numeric(GTK_SPIN_BUTTON
 				    (spinbtn_store_passphrase), TRUE);
 

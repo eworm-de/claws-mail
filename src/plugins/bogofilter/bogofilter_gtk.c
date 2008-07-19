@@ -128,12 +128,9 @@ static void bogofilter_create_widget_func(PrefsPage * _page,
 
 	GtkWidget *mark_as_read_checkbtn;
 
-	GtkTooltips *tooltips;
-
 	GtkWidget *whitelist_ab_folder_combo;
 	GtkWidget *whitelist_ab_select_btn;
-
-	tooltips = gtk_tooltips_new();
+	CLAWS_TIP_DECL();
 
 	vbox1 = gtk_vbox_new (FALSE, VSPACING);
 	gtk_widget_show (vbox1);
@@ -164,8 +161,8 @@ static void bogofilter_create_widget_func(PrefsPage * _page,
 	max_size_spinbtn = gtk_spin_button_new(GTK_ADJUSTMENT(max_size_spinbtn_adj), 1, 0);
 	gtk_widget_show(max_size_spinbtn);
 	gtk_box_pack_start(GTK_BOX(hbox_max_size), max_size_spinbtn, FALSE, FALSE, 0);
-	gtk_tooltips_set_tip(tooltips, max_size_spinbtn,
-			_("Messages larger than this will not be checked"), NULL);
+	CLAWS_SET_TIP(max_size_spinbtn,
+			_("Messages larger than this will not be checked"));
 	gtk_spin_button_set_numeric(GTK_SPIN_BUTTON(max_size_spinbtn), TRUE);
 
 	max_size_kb_label = gtk_label_new(_("KB"));
@@ -183,16 +180,14 @@ static void bogofilter_create_widget_func(PrefsPage * _page,
 	save_spam_folder_entry = gtk_entry_new();
 	gtk_widget_show (save_spam_folder_entry);
 	gtk_box_pack_start (GTK_BOX (hbox_save_spam), save_spam_folder_entry, TRUE, TRUE, 0);
-	gtk_tooltips_set_tip(tooltips, save_spam_folder_entry,
-			_("Folder for storing identified spam. Leave empty to use the trash folder."),
-			NULL);
+	CLAWS_SET_TIP(save_spam_folder_entry,
+			_("Folder for storing identified spam. Leave empty to use the trash folder."));
 
 	save_spam_folder_select = gtkut_get_browse_directory_btn(_("_Browse"));
 	gtk_widget_show (save_spam_folder_select);
 	gtk_box_pack_start (GTK_BOX (hbox_save_spam), save_spam_folder_select, FALSE, FALSE, 0);
-	gtk_tooltips_set_tip(tooltips, save_spam_folder_select,
-			_("Click this button to select a folder for storing spam"),
-			NULL);
+	CLAWS_SET_TIP(save_spam_folder_select,
+			_("Click this button to select a folder for storing spam"));
 
 	hbox_save_unsure = gtk_hbox_new(FALSE, 8);
 	gtk_widget_show(hbox_save_unsure);
@@ -205,23 +200,20 @@ static void bogofilter_create_widget_func(PrefsPage * _page,
 	save_unsure_folder_entry = gtk_entry_new();
 	gtk_widget_show (save_unsure_folder_entry);
 	gtk_box_pack_start (GTK_BOX (hbox_save_unsure), save_unsure_folder_entry, TRUE, TRUE, 0);
-	gtk_tooltips_set_tip(tooltips, save_unsure_folder_entry,
-			_("Folder for storing mail for which spam status is Unsure. Leave empty to use the Inbox folder."),
-			NULL);
+	CLAWS_SET_TIP(save_unsure_folder_entry,
+			_("Folder for storing mail for which spam status is Unsure. Leave empty to use the Inbox folder."));
 
 	save_unsure_folder_select = gtkut_get_browse_directory_btn(_("_Browse"));
 	gtk_widget_show (save_unsure_folder_select);
 	gtk_box_pack_start (GTK_BOX (hbox_save_unsure), save_unsure_folder_select, FALSE, FALSE, 0);
-	gtk_tooltips_set_tip(tooltips, save_unsure_folder_select,
-			_("Click this button to select a folder for storing Unsure mails."),
-			NULL);
+	CLAWS_SET_TIP(save_unsure_folder_select,
+			_("Click this button to select a folder for storing Unsure mails."));
 
 	insert_header_checkbtn = gtk_check_button_new_with_label(_("Insert X-Bogosity header"));
 	gtk_widget_show(insert_header_checkbtn);
 	gtk_box_pack_start(GTK_BOX(vbox2), insert_header_checkbtn, FALSE, FALSE, 0);
-	gtk_tooltips_set_tip(tooltips, insert_header_checkbtn,
-			_("Only done for messages in MH folders"),
-			NULL);
+	CLAWS_SET_TIP(insert_header_checkbtn,
+			_("Only done for messages in MH folders"));
 
 	hbox_whitelist = gtk_hbox_new(FALSE, 8);
 	gtk_widget_show(hbox_whitelist);
@@ -230,8 +222,8 @@ static void bogofilter_create_widget_func(PrefsPage * _page,
 	whitelist_ab_checkbtn = gtk_check_button_new_with_label(_("Whitelist senders found in address book/folder"));
 	gtk_widget_show(whitelist_ab_checkbtn);
 	gtk_box_pack_start(GTK_BOX(hbox_whitelist), whitelist_ab_checkbtn, FALSE, FALSE, 0);
-	gtk_tooltips_set_tip(tooltips, whitelist_ab_checkbtn,
-			_("Messages coming from your address book contacts will be received in the normal folder even if detected as spam"), NULL);
+	CLAWS_SET_TIP(whitelist_ab_checkbtn,
+			_("Messages coming from your address book contacts will be received in the normal folder even if detected as spam"));
 
 	whitelist_ab_folder_combo = combobox_text_new(TRUE, _("Any"), NULL);
 	gtk_widget_set_size_request(whitelist_ab_folder_combo, 100, -1);
@@ -240,14 +232,13 @@ static void bogofilter_create_widget_func(PrefsPage * _page,
 	whitelist_ab_select_btn = gtk_button_new_with_label(_("Select ..."));
 	gtk_widget_show (whitelist_ab_select_btn);
 	gtk_box_pack_start (GTK_BOX (hbox_whitelist), whitelist_ab_select_btn, FALSE, FALSE, 0);
-	gtk_tooltips_set_tip(tooltips, whitelist_ab_select_btn,
-			_("Click this button to select a book or folder in the address book"),
-			NULL);
+	CLAWS_SET_TIP(whitelist_ab_select_btn,
+			_("Click this button to select a book or folder in the address book"));
 
 	learn_from_whitelist_chkbtn = gtk_check_button_new_with_label(_("Learn whitelisted emails as ham"));
-	gtk_tooltips_set_tip(tooltips, learn_from_whitelist_chkbtn,
+	CLAWS_SET_TIP(learn_from_whitelist_chkbtn,
 			_("If Bogofilter thought an email was spam or unsure, but it was whitelisted, "
-			  "learn it as ham."), NULL);
+			  "learn it as ham."));
 	gtk_widget_show(learn_from_whitelist_chkbtn);
 	gtk_box_pack_start (GTK_BOX (vbox2), learn_from_whitelist_chkbtn, TRUE, TRUE, 0);
 
@@ -262,9 +253,8 @@ static void bogofilter_create_widget_func(PrefsPage * _page,
 	bogopath_entry = gtk_entry_new();
 	gtk_widget_show(bogopath_entry);
 	gtk_box_pack_start(GTK_BOX(hbox_bogopath), bogopath_entry, FALSE, FALSE, 0);
-	gtk_tooltips_set_tip(tooltips, bogopath_entry,
-			_("Path to bogofilter executable"),
-			NULL);
+	CLAWS_SET_TIP(bogopath_entry,
+			_("Path to bogofilter executable"));
 
 	hbox_mark_as_read = gtk_hbox_new(FALSE, 8);
 	gtk_widget_show(hbox_mark_as_read);

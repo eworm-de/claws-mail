@@ -6257,6 +6257,9 @@ static void compose_create_header_entry(Compose *compose)
 	const gchar *header = NULL;
 	ComposeHeaderEntry *headerentry;
 	gboolean standard_header = FALSE;
+#if !(GTK_CHECK_VERSION(2,12,0))
+	GtkTooltips *tips = compose->tooltips;
+#endif
 	
 	headerentry = g_new0(ComposeHeaderEntry, 1);
 
@@ -6306,8 +6309,8 @@ static void compose_create_header_entry(Compose *compose)
 	/* Entry field */
 	entry = gtk_entry_new(); 
 	gtk_widget_show(entry);
-	gtk_tooltips_set_tip(compose->tooltips, entry,
-		_("Use <tab> to autocomplete from addressbook"), NULL);
+	CLAWS_SET_TIP(entry,
+		_("Use <tab> to autocomplete from addressbook"));
 	gtk_table_attach(GTK_TABLE(compose->header_table), entry, 1, 2,
 			compose->header_nextrow, compose->header_nextrow+1,
 			GTK_EXPAND | GTK_FILL, GTK_FILL, 0, 0);
@@ -6740,6 +6743,7 @@ static Compose *compose_create(PrefsAccount *account,
 	GtkWidget *text;
 	GtkTextBuffer *buffer;
 	GtkClipboard *clipboard;
+	CLAWS_TIP_DECL();
 
 	UndoMain *undostruct;
 
@@ -6774,7 +6778,9 @@ static Compose *compose_create(PrefsAccount *account,
 	compose->mutex = g_mutex_new();
 	compose->set_cursor_pos = -1;
 
-	compose->tooltips = gtk_tooltips_new();
+#if !(GTK_CHECK_VERSION(2,12,0))
+	compose->tooltips = tips;
+#endif
 
 	window = gtkut_window_new(GTK_WINDOW_TOPLEVEL, "compose");
 
@@ -7182,6 +7188,9 @@ static GtkWidget *compose_account_option_menu_create(Compose *compose)
 	GtkListStore *menu;
 	GtkTreeIter iter;
 	GtkWidget *from_name = NULL;
+#if !(GTK_CHECK_VERSION(2,12,0))
+	GtkTooltips *tips = compose->tooltips;
+#endif
 
 	gint num = 0, def_menu = 0;
 	
@@ -7237,10 +7246,10 @@ static GtkWidget *compose_account_option_menu_create(Compose *compose)
 	gtk_box_pack_start(GTK_BOX(hbox), optmenubox, FALSE, FALSE, 0);
 	gtk_box_pack_start(GTK_BOX(hbox), from_name, TRUE, TRUE, 0);
 	
-	gtk_tooltips_set_tip(compose->tooltips, optmenubox,
-		_("Account to use for this email"), NULL);
-	gtk_tooltips_set_tip(compose->tooltips, from_name,
-		_("Sender address to be used"), NULL);
+	CLAWS_SET_TIP(optmenubox,
+		_("Account to use for this email"));
+	CLAWS_SET_TIP(from_name,
+		_("Sender address to be used"));
 
 	compose->from_name = from_name;
 	

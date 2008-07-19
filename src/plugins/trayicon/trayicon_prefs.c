@@ -95,45 +95,40 @@ static void create_trayicon_prefs_page(PrefsPage *page,
 
         GtkWidget *vbox;
         GtkWidget *hide_at_startup_checkbox;
-	GtkTooltips *hide_at_startup_tooltip;
         GtkWidget *close_to_tray_checkbox;
-	GtkTooltips *close_to_tray_tooltip;
         GtkWidget *hide_when_iconified_checkbox;
-	GtkTooltips *hide_when_iconified_tooltip;
+	CLAWS_TIP_DECL();
 
         vbox = gtk_vbox_new(FALSE, 3);
         gtk_container_set_border_width(GTK_CONTAINER(vbox), VBOX_BORDER);
         gtk_widget_show(vbox);
         
-	hide_at_startup_tooltip = gtk_tooltips_new();
         hide_at_startup_checkbox = gtk_check_button_new_with_label
 				(_("Hide at start-up"));
         gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(hide_at_startup_checkbox),
                                      trayicon_prefs.hide_at_startup);
         gtk_box_pack_start(GTK_BOX(vbox), hide_at_startup_checkbox, FALSE, FALSE, 0);
         gtk_widget_show(hide_at_startup_checkbox);
-	gtk_tooltips_set_tip(GTK_TOOLTIPS(hide_at_startup_tooltip), hide_at_startup_checkbox,
-			     _("Hide Claws Mail at start-up"), NULL);
+	CLAWS_SET_TIP(hide_at_startup_checkbox,
+			     _("Hide Claws Mail at start-up"));
         
-	close_to_tray_tooltip = gtk_tooltips_new();
         close_to_tray_checkbox = gtk_check_button_new_with_label
 				(_("Close to tray"));
         gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(close_to_tray_checkbox),
                                      trayicon_prefs.close_to_tray);
         gtk_box_pack_start(GTK_BOX(vbox), close_to_tray_checkbox, FALSE, FALSE, 0);
         gtk_widget_show(close_to_tray_checkbox);
-	gtk_tooltips_set_tip(GTK_TOOLTIPS(close_to_tray_tooltip), close_to_tray_checkbox,
-			     _("Hide Claws Mail using the tray icon instead of closing it\nwhen the window close button is clicked"), NULL);
+	CLAWS_SET_TIP(close_to_tray_checkbox,
+			     _("Hide Claws Mail using the tray icon instead of closing it\nwhen the window close button is clicked"));
 
-	hide_when_iconified_tooltip = gtk_tooltips_new();
         hide_when_iconified_checkbox = gtk_check_button_new_with_label
 				(_("Minimize to tray"));
         gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(hide_when_iconified_checkbox),
                                      trayicon_prefs.hide_when_iconified);
         gtk_box_pack_start(GTK_BOX(vbox), hide_when_iconified_checkbox, FALSE, FALSE, 0);
         gtk_widget_show(hide_when_iconified_checkbox);
-	gtk_tooltips_set_tip(GTK_TOOLTIPS(hide_when_iconified_tooltip), hide_when_iconified_checkbox,
-			     _("Hide Claws Mail using the tray icon instead of minimizing it"), NULL);
+	CLAWS_SET_TIP(hide_when_iconified_checkbox,
+			     _("Hide Claws Mail using the tray icon instead of minimizing it"));
 
         prefs_page->hide_at_startup = hide_at_startup_checkbox;
         prefs_page->close_to_tray = close_to_tray_checkbox;

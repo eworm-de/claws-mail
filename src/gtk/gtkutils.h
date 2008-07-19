@@ -26,15 +26,7 @@
 
 #include <glib.h>
 #include <gdk/gdk.h>
-#include <gtk/gtkmain.h>
-#include <gtk/gtkwidget.h>
-#include <gtk/gtkcontainer.h>
-#include <gtk/gtkeditable.h>
-#include <gtk/gtkctree.h>
-#include <gtk/gtkcombo.h>
-#include <gtk/gtktextview.h>
-#include <gtk/gtkitemfactory.h>
-#include <gtk/gtktreemodel.h>
+#include <gtk/gtk.h>
 #include <stdlib.h>
 #if HAVE_WCHAR_H
 #  include <wchar.h>
@@ -224,4 +216,23 @@ gboolean gtkut_tree_model_get_iter_last(GtkTreeModel *model,
 gint gtkut_list_view_get_selected_row(GtkWidget *list_view);
 gboolean gtkut_list_view_select_row(GtkWidget *list, gint row);
 
+#if GTK_CHECK_VERSION(2,12,0)
+#define CLAWS_TIP_DECL() {}
+#define CLAWS_SET_TIP(widget,tip) { 					\
+	if (tip != NULL)						\
+		gtk_widget_set_tooltip_text(GTK_WIDGET(widget), tip); 	\
+	else								\
+		gtk_widget_set_has_tooltip(GTK_WIDGET(widget), FALSE);	\
+}
+
+#else
+#define CLAWS_TIP_DECL() \
+	GtkTooltips *tips = gtk_tooltips_new();
+
+#define CLAWS_SET_TIP(widget,tip) { 				\
+	gtk_tooltips_set_tip(GTK_TOOLTIPS(tips), widget, 	\
+			    tip, NULL);				\
+}
+
+#endif
 #endif /* __GTKUTILS_H__ */

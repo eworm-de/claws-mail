@@ -1,3 +1,50 @@
+2008-07-19 [colin]	3.5.0cvs25
+
+	* src/account.c
+	* src/addrgather.c
+	* src/compose.c
+	* src/editldap.c
+	* src/expldifdlg.c
+	* src/importldif.c
+	* src/main.c
+	* src/mainwindow.c
+	* src/mimeview.c
+	* src/noticeview.c
+	* src/prefs_account.c
+	* src/prefs_actions.c
+	* src/prefs_ext_prog.c
+	* src/prefs_filtering.c
+	* src/prefs_folder_item.c
+	* src/prefs_image_viewer.c
+	* src/prefs_logging.c
+	* src/prefs_msg_colors.c
+	* src/prefs_other.c
+	* src/prefs_send.c
+	* src/prefs_spelling.c
+	* src/prefs_summaries.c
+	* src/prefs_template.c
+	* src/printing.c
+	* src/quote_fmt.c
+	* src/summary_search.c
+	* src/summaryview.c
+	* src/toolbar.c
+	* src/wizard.c
+	* src/common/Makefile.am
+	* src/gtk/gtksctree.c
+	* src/gtk/gtkutils.h
+	* src/gtk/pluginwindow.c
+	* src/gtk/quicksearch.c
+	* src/plugins/bogofilter/bogofilter_gtk.c
+	* src/plugins/dillo_viewer/dillo_prefs.c
+	* src/plugins/pgpcore/prefs_gpg.c
+	* src/plugins/spamassassin/spamassassin_gtk.c
+	* src/plugins/trayicon/trayicon.c
+	* src/plugins/trayicon/trayicon_prefs.c
+		Use the shiny new GTK tooltips API when possible (GTK+ 2.12 
+		or greater). Use the old deprecated one on GTK+ < 2.12.
+		Easy! Straightforward! I'm not annoyed at all! It's not a loss
+		of time!
+
 2008-07-16 [colin]	3.5.0cvs24
 
 	* src/mainwindow.c

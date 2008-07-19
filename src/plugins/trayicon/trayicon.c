@@ -73,7 +73,10 @@ static GdkPixmap *nomail_bitmap[2] = {NULL, NULL};
 static EggTrayIcon *trayicon;
 static GtkWidget *eventbox;
 static GtkWidget *image = NULL;
+
+#if !(GTK_CHECK_VERSION(2,12,0))
 static GtkTooltips *tooltips;
+#endif
 static GtkWidget *traymenu_popup;
 static GtkItemFactory *traymenu_factory;
 static gboolean updating_menu = FALSE;
@@ -202,7 +205,11 @@ static void update(FolderItem *removed_item)
 
 	buf = g_strdup_printf(_("New %d, Unread: %d, Total: %d"), new, unread, total);
 
+#if !(GTK_CHECK_VERSION(2,12,0))
         gtk_tooltips_set_tip(tooltips, eventbox, buf, "");
+#else
+	gtk_widget_set_tooltip_text(eventbox, buf);
+#endif
 	g_free(buf);
 
 	if (new > 0 && unreadmarked > 0) {
@@ -396,9 +403,10 @@ static void create_trayicon()
 	g_signal_connect(G_OBJECT(eventbox), "button-press-event",
 		G_CALLBACK(click_cb), NULL);
 
+#if !(GTK_CHECK_VERSION(2,12,0))
 	tooltips = gtk_tooltips_new();
 	gtk_tooltips_enable(tooltips);
-
+#endif
 	n_entries = sizeof(trayicon_popup_menu_entries) /
 	sizeof(trayicon_popup_menu_entries[0]);
 	traymenu_popup = menu_create_items(trayicon_popup_menu_entries,

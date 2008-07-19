@@ -96,13 +96,11 @@ static void prefs_logging_create_widget(PrefsPage *_page, GtkWindow *window,
 	GtkWidget *checkbtn_clip_network_log;
 	GtkWidget *spinbtn_network_log_length;
 	GtkObject *spinbtn_network_log_length_adj;
-	GtkTooltips *network_log_length_tooltip;
 	GtkWidget *vbox1_filtering_log;
 	GtkWidget *hbox_clip_filtering_log;
 	GtkWidget *checkbtn_clip_filtering_log;
 	GtkWidget *spinbtn_filtering_log_length;
 	GtkObject *spinbtn_filtering_log_length_adj;
-	GtkTooltips *filtering_log_length_tooltip;
 	GtkWidget *hbox_filtering_log;
 	GtkWidget *checkbtn_filtering_log;
 	GtkWidget *frame_filtering_log;
@@ -113,13 +111,11 @@ static void prefs_logging_create_widget(PrefsPage *_page, GtkWindow *window,
 	GtkWidget *checkbtn_filtering_log_folder_proc;
 	GtkWidget *checkbtn_filtering_log_pre_proc;
 	GtkWidget *checkbtn_filtering_log_post_proc;
-	GtkTooltips *filtering_log_tooltip;
 	GtkWidget *hbox_filtering_log_level;
 	GtkWidget *label_filtering_log_level;
 	GtkWidget *optmenu_filtering_log_level;
 	GtkListStore *menu;
 	GtkTreeIter iter;
-	GtkTooltips *filtering_log_level_tooltip;
 	GtkWidget *frame_disk_log;
 	GtkWidget *vbox_disk_log;
 	GtkWidget *label;
@@ -130,6 +126,7 @@ static void prefs_logging_create_widget(PrefsPage *_page, GtkWindow *window,
 	GtkWidget *checkbtn_log_status;
 	GtkSizeGroup *log_size_group;
 	GtkSizeGroup *filter_size_group;
+	CLAWS_TIP_DECL();
 	
 	vbox1 = gtk_vbox_new (FALSE, VSPACING);
 	gtk_widget_show (vbox1);
@@ -145,8 +142,6 @@ static void prefs_logging_create_widget(PrefsPage *_page, GtkWindow *window,
 	PACK_CHECK_BUTTON (hbox_clip_network_log, checkbtn_clip_network_log,
 			   _("Restrict the log window to"));
 	
-	network_log_length_tooltip = gtk_tooltips_new();
-
 	spinbtn_network_log_length_adj = gtk_adjustment_new (500, 0, G_MAXINT, 1, 10, 10);
 	spinbtn_network_log_length = gtk_spin_button_new
 		(GTK_ADJUSTMENT (spinbtn_network_log_length_adj), 1, 0);
@@ -156,9 +151,8 @@ static void prefs_logging_create_widget(PrefsPage *_page, GtkWindow *window,
 	gtk_widget_set_size_request (GTK_WIDGET (spinbtn_network_log_length), 64, -1);
 	gtk_spin_button_set_numeric (GTK_SPIN_BUTTON (spinbtn_network_log_length), TRUE);
 
-	gtk_tooltips_set_tip(GTK_TOOLTIPS(network_log_length_tooltip), spinbtn_network_log_length,
-			     _("0 to stop logging in the log window"),
-			     NULL);
+	CLAWS_SET_TIP(spinbtn_network_log_length,
+			     _("0 to stop logging in the log window"));
 
 	label = gtk_label_new(_("lines"));
 	gtk_widget_show (label);
@@ -177,15 +171,12 @@ static void prefs_logging_create_widget(PrefsPage *_page, GtkWindow *window,
 	gtk_container_add (GTK_CONTAINER (vbox1_filtering_log), hbox_filtering_log);
 	gtk_widget_show (hbox_filtering_log);
 
-	filtering_log_tooltip = gtk_tooltips_new();
-	gtk_tooltips_set_tip(GTK_TOOLTIPS(filtering_log_tooltip),
-			     checkbtn_filtering_log,
+	CLAWS_SET_TIP(checkbtn_filtering_log,
 			     _("If checked, turns on logging of filtering and processing rules.\n"
 				"The log is accessible from 'Tools/Filtering log'.\n"
 				"Caution: enabling this option will slow down the filtering/processing, "
 				"this might be critical when applying many rules upon thousands of "
-				"messages."),
-				NULL);
+				"messages."));
 
 	vbox2_filtering_log = gtkut_get_options_frame(vbox1_filtering_log, &frame_filtering_log,
 							_("Log filtering/processing when..."));
@@ -238,9 +229,7 @@ static void prefs_logging_create_widget(PrefsPage *_page, GtkWindow *window,
 
 	gtk_box_pack_start(GTK_BOX(hbox_filtering_log_level), optmenu_filtering_log_level, FALSE, FALSE, 0);
 
-	filtering_log_level_tooltip = gtk_tooltips_new();
-	gtk_tooltips_set_tip(GTK_TOOLTIPS(filtering_log_level_tooltip),
-			     optmenu_filtering_log_level,
+	CLAWS_SET_TIP(optmenu_filtering_log_level,
 			     _("Select the level of detail of the logging.\n"
 				"Choose Low to see when rules are applied, which "
 				"conditions match or don't match and what actions are "
@@ -251,8 +240,7 @@ static void prefs_logging_create_widget(PrefsPage *_page, GtkWindow *window,
 				"rules are processed or skipped, and why all conditions "
 				"are matched or not matched.\n"
 				"Caution: the higher the level, the greater the "
-				"impact on performance."),
-			     NULL);
+				"impact on performance."));
 
 	hbox_clip_filtering_log = gtk_hbox_new (FALSE, 8);
 	gtk_container_add (GTK_CONTAINER (vbox1_filtering_log), hbox_clip_filtering_log);
@@ -260,8 +248,6 @@ static void prefs_logging_create_widget(PrefsPage *_page, GtkWindow *window,
 	PACK_CHECK_BUTTON (hbox_clip_filtering_log, checkbtn_clip_filtering_log,
 			   _("Restrict the log window to"));
 	
-	filtering_log_length_tooltip = gtk_tooltips_new();
-
 	spinbtn_filtering_log_length_adj = gtk_adjustment_new (500, 0, G_MAXINT, 1, 10, 10);
 	spinbtn_filtering_log_length = gtk_spin_button_new
 		(GTK_ADJUSTMENT (spinbtn_filtering_log_length_adj), 1, 0);
@@ -271,9 +257,8 @@ static void prefs_logging_create_widget(PrefsPage *_page, GtkWindow *window,
 	gtk_widget_set_size_request (GTK_WIDGET (spinbtn_filtering_log_length), 64, -1);
 	gtk_spin_button_set_numeric (GTK_SPIN_BUTTON (spinbtn_filtering_log_length), TRUE);
 
-	gtk_tooltips_set_tip(GTK_TOOLTIPS(filtering_log_length_tooltip), spinbtn_filtering_log_length,
-			     _("0 to stop logging in the log window"),
-			     NULL);
+	CLAWS_SET_TIP(spinbtn_filtering_log_length,
+			     _("0 to stop logging in the log window"));
 
 	label = gtk_label_new(_("lines"));
 	gtk_widget_show (label);

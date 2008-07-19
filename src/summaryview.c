@@ -629,11 +629,14 @@ SummaryView *summary_create(void)
 	GtkItemFactory *popupfactory;
 	gint n_entries;
 	QuickSearch *quicksearch;
+	CLAWS_TIP_DECL();
 
 	debug_print("Creating summary view...\n");
 	summaryview = g_new0(SummaryView, 1);
 
-	summaryview->tips = gtk_tooltips_new();
+#if !(GTK_CHECK_VERSION(2,12,0))
+	summaryview->tips = tips;
+#endif
 #define SUMMARY_VBOX_SPACING 3
 	vbox = gtk_vbox_new(FALSE, SUMMARY_VBOX_SPACING);
 	
@@ -655,9 +658,7 @@ SummaryView *summary_create(void)
 				     prefs_common.show_searchbar);
 	gtk_widget_show(toggle_search);
 
-	gtk_tooltips_set_tip(GTK_TOOLTIPS(summaryview->tips),
-			     toggle_search,
-			     _("Toggle quick search bar"), NULL);
+	CLAWS_SET_TIP(toggle_search, _("Toggle quick search bar"));
 	
 	gtk_box_pack_start(GTK_BOX(hbox), toggle_search, FALSE, FALSE, 2);	
 
@@ -693,9 +694,8 @@ SummaryView *summary_create(void)
 	multiple_sel_togbtn = gtk_toggle_button_new();
 	gtk_widget_show(multiple_sel_togbtn);
 	gtk_box_pack_end(GTK_BOX(hbox), multiple_sel_togbtn, FALSE, FALSE, 4);
-	gtk_tooltips_set_tip(GTK_TOOLTIPS(summaryview->tips),
-			     multiple_sel_togbtn,
-			     _("Toggle multiple selection"), NULL);
+	CLAWS_SET_TIP(multiple_sel_togbtn,
+			     _("Toggle multiple selection"));
 	g_signal_connect(G_OBJECT(multiple_sel_togbtn), "toggled",
 			 G_CALLBACK(summary_toggle_multiple_pressed),
 			 summaryview);
@@ -7525,13 +7525,15 @@ void summary_update_unread(SummaryView *summaryview, FolderItem *removed_item)
 	guint new, unread, unreadmarked, marked, total;
 	guint replied, forwarded, locked, ignored, watched;
 	static gboolean tips_initialized = FALSE;
+#if !(GTK_CHECK_VERSION(2,12,0))
+	GtkTooltips *tips = summaryview->tips;
+#endif
 
 	if (prefs_common.layout_mode != SMALL_LAYOUT) {
 		if (tips_initialized) {
 			summary_set_folder_pixmap(summaryview, STOCK_PIXMAP_DIR_OPEN);
-			gtk_tooltips_set_tip(GTK_TOOLTIPS(summaryview->tips),
-			     summaryview->folder_pixmap_eventbox,
-			     NULL, NULL);
+			CLAWS_SET_TIP(summaryview->folder_pixmap_eventbox,
+			     NULL);
 			tips_initialized = FALSE;
 		} 
 		return;
@@ -7548,15 +7550,13 @@ void summary_update_unread(SummaryView *summaryview, FolderItem *removed_item)
 	if (new > 0 || unread > 0) {
 		tips_initialized = TRUE;
 		summary_set_folder_pixmap(summaryview, STOCK_PIXMAP_DIR_OPEN_HRM);
-		gtk_tooltips_set_tip(GTK_TOOLTIPS(summaryview->tips),
-			     summaryview->folder_pixmap_eventbox,
-			     _("Go back to the folder list (You have unread messages)"), NULL);
+		CLAWS_SET_TIP(summaryview->folder_pixmap_eventbox,
+			     _("Go back to the folder list (You have unread messages)"));
 	} else {
 		tips_initialized = TRUE;
 		summary_set_folder_pixmap(summaryview, STOCK_PIXMAP_DIR_OPEN);
-		gtk_tooltips_set_tip(GTK_TOOLTIPS(summaryview->tips),
-			     summaryview->folder_pixmap_eventbox,
-			     _("Go back to the folder list"), NULL);
+		CLAWS_SET_TIP(summaryview->folder_pixmap_eventbox,
+			     _("Go back to the folder list"));
 	}
 }
 

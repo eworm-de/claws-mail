@@ -329,9 +329,7 @@ static void addrgather_page_fields(gint pageNum, gchar *pageLbl)
 	GtkWidget *checkRecurse;
 	gint top;
 	gint i;
-	GtkTooltips *tooltips;
-
-	tooltips = gtk_tooltips_new();
+	CLAWS_TIP_DECL();
 
 	/* Container */
 	vbox = gtk_vbox_new(FALSE, 6);
@@ -377,8 +375,8 @@ static void addrgather_page_fields(gint pageNum, gchar *pageLbl)
 	label = gtk_label_new(_("Address book folder size:"));
 	gtk_table_attach( GTK_TABLE(table), label, 0, 1, top, (top + 1), GTK_FILL, 0, 0, 0 );
 	gtk_misc_set_alignment( GTK_MISC(label), 1.0, 0.5 );
-	gtk_tooltips_set_tip(GTK_TOOLTIPS(tooltips), label,
-			_("Maximum amount of entries per folder within the newly created address book"), NULL);
+	CLAWS_SET_TIP(label,
+			_("Maximum amount of entries per folder within the newly created address book"));
 
 	hboxs = gtk_hbox_new(FALSE, 8);
 	adjFolder = gtk_adjustment_new(DFL_FOLDER_SIZE, MIN_FOLDER_SIZE, G_MAXINT, 1, 10, 100);
@@ -387,8 +385,8 @@ static void addrgather_page_fields(gint pageNum, gchar *pageLbl)
 	gtk_widget_set_size_request(spinbtnFolder, 100, -1);
 	gtk_spin_button_set_numeric(GTK_SPIN_BUTTON(spinbtnFolder), TRUE);
 	gtk_table_attach(GTK_TABLE(table), hboxs, 1, 2, top, (top + 1), GTK_FILL, 0, 0, 0);
-	gtk_tooltips_set_tip(GTK_TOOLTIPS(tooltips), spinbtnFolder,
-			_("Maximum amount of entries per folder within the newly created address book"), NULL);
+	CLAWS_SET_TIP(spinbtnFolder,
+			_("Maximum amount of entries per folder within the newly created address book"));
 
 	/* Fourth row */
 	top = 3;

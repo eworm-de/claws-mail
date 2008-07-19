@@ -420,17 +420,16 @@ static gboolean migrate_old_config(const gchar *old_cfg_dir, const gchar *new_cf
 	gint r = 0;
 	GtkWidget *window = NULL;
 	GtkWidget *keep_backup_chk;
-	GtkTooltips *tips = gtk_tooltips_new();
+	CLAWS_TIP_DECL();
 	gboolean backup = TRUE;
 
 	keep_backup_chk = gtk_check_button_new_with_label (_("Keep old configuration"));
 	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(keep_backup_chk), TRUE);
-	gtk_tooltips_set_tip(GTK_TOOLTIPS(tips), keep_backup_chk,
+	CLAWS_SET_TIP(keep_backup_chk,
 			     _("Keeping a backup will allow you to go back to an "
 			       "older version, but may take a while if you have "
 			       "cached IMAP or News data, and will take some extra "
-			       "room on your disk."),
-			     NULL);
+			       "room on your disk."));
 
 	g_signal_connect(G_OBJECT(keep_backup_chk), "toggled", 
 			G_CALLBACK(chk_update_val), &backup);

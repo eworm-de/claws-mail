@@ -251,13 +251,10 @@ static void spamassassin_create_widget_func(PrefsPage * _page,
 
 	GtkWidget *mark_as_read_checkbtn;
 
-	GtkTooltips *tooltips;
-	
 	GtkListStore *store;
 	GtkCellRenderer *renderer;
 	GtkTreeIter iter;
-
-	tooltips = gtk_tooltips_new();
+	CLAWS_TIP_DECL();
 
 	vbox1 = gtk_vbox_new (FALSE, VSPACING);
 	gtk_widget_show (vbox1);
@@ -313,8 +310,7 @@ static void spamassassin_create_widget_func(PrefsPage * _page,
 	gtk_table_attach (GTK_TABLE (table_transport), user_entry, 1, 2, 1, 2,
 			(GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
 			(GtkAttachOptions) (0), 0, 0);
-	gtk_tooltips_set_tip(tooltips, user_entry, _("User to use with spamd server"),
-			NULL);
+	CLAWS_SET_TIP(user_entry, _("User to use with spamd server"));
 
 	spamd_label = gtk_label_new(_("spamd"));
 	gtk_widget_show(spamd_label);
@@ -333,8 +329,8 @@ static void spamassassin_create_widget_func(PrefsPage * _page,
 	spamd_hostname_entry = gtk_entry_new();
 	gtk_widget_show(spamd_hostname_entry);
 	gtk_box_pack_start(GTK_BOX(hbox_spamd), spamd_hostname_entry, TRUE, TRUE, 0);
-	gtk_tooltips_set_tip(tooltips, spamd_hostname_entry,
-			_("Hostname or IP address of spamd server"), NULL);
+	CLAWS_SET_TIP(spamd_hostname_entry,
+			_("Hostname or IP address of spamd server"));
 
 	spamd_colon_label = gtk_label_new(":");
 	gtk_widget_show(spamd_colon_label);
@@ -344,15 +340,14 @@ static void spamassassin_create_widget_func(PrefsPage * _page,
 	spamd_port_spinbtn = gtk_spin_button_new(GTK_ADJUSTMENT(spamd_port_spinbtn_adj), 1, 0);
 	gtk_widget_show(spamd_port_spinbtn);
 	gtk_box_pack_start(GTK_BOX(hbox_spamd), spamd_port_spinbtn, FALSE, FALSE, 0);
-	gtk_tooltips_set_tip(tooltips, spamd_port_spinbtn,
-			_("Port of spamd server"), NULL);
+	CLAWS_SET_TIP(spamd_port_spinbtn,
+			_("Port of spamd server"));
 	gtk_spin_button_set_numeric(GTK_SPIN_BUTTON(spamd_port_spinbtn), TRUE);
 
 	spamd_socket_entry = gtk_entry_new();
 	gtk_widget_show(spamd_socket_entry);
 	gtk_box_pack_start(GTK_BOX(hbox_spamd), spamd_socket_entry, TRUE, TRUE, 0);
-	gtk_tooltips_set_tip(tooltips, spamd_socket_entry, _("Path of Unix socket"),
-			NULL);
+	CLAWS_SET_TIP(spamd_socket_entry, _("Path of Unix socket"));
 
 	hbox_max_size = gtk_hbox_new(FALSE, 8);
 	gtk_widget_show(hbox_max_size);
@@ -366,8 +361,8 @@ static void spamassassin_create_widget_func(PrefsPage * _page,
 	max_size_spinbtn = gtk_spin_button_new(GTK_ADJUSTMENT(max_size_spinbtn_adj), 1, 0);
 	gtk_widget_show(max_size_spinbtn);
 	gtk_box_pack_start(GTK_BOX(hbox_max_size), max_size_spinbtn, FALSE, FALSE, 0);
-	gtk_tooltips_set_tip(tooltips, max_size_spinbtn,
-			_("Messages larger than this will not be checked"), NULL);
+	CLAWS_SET_TIP(max_size_spinbtn,
+			_("Messages larger than this will not be checked"));
 	gtk_spin_button_set_numeric(GTK_SPIN_BUTTON(max_size_spinbtn), TRUE);
 
 	max_size_kb_label = gtk_label_new(_("KB"));
@@ -386,10 +381,9 @@ static void spamassassin_create_widget_func(PrefsPage * _page,
 	timeout_spinbtn = gtk_spin_button_new(GTK_ADJUSTMENT(timeout_spinbtn_adj), 1, 0);
 	gtk_widget_show(timeout_spinbtn);
 	gtk_box_pack_start(GTK_BOX(hbox_timeout), timeout_spinbtn, FALSE, FALSE, 0);
-	gtk_tooltips_set_tip(tooltips, timeout_spinbtn,
+	CLAWS_SET_TIP(timeout_spinbtn,
 			_("Maximum time allowed for checking. If the check takes longer "
-				"it will be aborted."),
-			NULL);
+				"it will be aborted."));
 	gtk_spin_button_set_numeric(GTK_SPIN_BUTTON(timeout_spinbtn), TRUE);
 
 	timeout_seconds_label = gtk_label_new(_("seconds"));
@@ -416,16 +410,14 @@ static void spamassassin_create_widget_func(PrefsPage * _page,
 	save_spam_folder_entry = gtk_entry_new();
 	gtk_widget_show (save_spam_folder_entry);
 	gtk_box_pack_start (GTK_BOX (hbox_save_spam), save_spam_folder_entry, TRUE, TRUE, 0);
-	gtk_tooltips_set_tip(tooltips, save_spam_folder_entry,
-			_("Folder for storing identified spam. Leave empty to use the trash folder."),
-			NULL);
+	CLAWS_SET_TIP(save_spam_folder_entry,
+			_("Folder for storing identified spam. Leave empty to use the trash folder."));
 
 	save_spam_folder_select = gtkut_get_browse_directory_btn(_("_Browse"));
 	gtk_widget_show (save_spam_folder_select);
 	gtk_box_pack_start (GTK_BOX (hbox_save_spam), save_spam_folder_select, FALSE, FALSE, 0);
-	gtk_tooltips_set_tip(tooltips, save_spam_folder_select,
-			_("Click this button to select a folder for storing spam"),
-			NULL);
+	CLAWS_SET_TIP(save_spam_folder_select,
+			_("Click this button to select a folder for storing spam"));
 
 	hbox_mark_as_read = gtk_hbox_new(FALSE, 8);
 	gtk_widget_show(hbox_mark_as_read);
@@ -443,8 +435,8 @@ static void spamassassin_create_widget_func(PrefsPage * _page,
 	whitelist_ab_checkbtn = gtk_check_button_new_with_label(_("Whitelist senders found in address book/folder"));
 	gtk_widget_show(whitelist_ab_checkbtn);
 	gtk_box_pack_start(GTK_BOX(hbox_whitelist), whitelist_ab_checkbtn, FALSE, FALSE, 0);
-	gtk_tooltips_set_tip(tooltips, whitelist_ab_checkbtn,
-			_("Messages coming from your address book contacts will be received in the normal folder even if detected as spam"), NULL);
+	CLAWS_SET_TIP(whitelist_ab_checkbtn,
+			_("Messages coming from your address book contacts will be received in the normal folder even if detected as spam"));
 
 	whitelist_ab_folder_combo = combobox_text_new(TRUE, _("Any"), NULL);
 	gtk_widget_set_size_request(whitelist_ab_folder_combo, 100, -1);
@@ -453,9 +445,8 @@ static void spamassassin_create_widget_func(PrefsPage * _page,
 	whitelist_ab_select_btn = gtk_button_new_with_label(_("Select ..."));
 	gtk_widget_show (whitelist_ab_select_btn);
 	gtk_box_pack_start (GTK_BOX (hbox_whitelist), whitelist_ab_select_btn, FALSE, FALSE, 0);
-	gtk_tooltips_set_tip(tooltips, whitelist_ab_select_btn,
-			_("Click this button to select a book or folder in the address book"),
-			NULL);
+	CLAWS_SET_TIP(whitelist_ab_select_btn,
+			_("Click this button to select a book or folder in the address book"));
 
 	SET_TOGGLE_SENSITIVITY(enable_sa_checkbtn, frame_transport);
 	SET_TOGGLE_SENSITIVITY(enable_sa_checkbtn, hbox_max_size);

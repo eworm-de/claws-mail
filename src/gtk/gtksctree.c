@@ -3260,12 +3260,14 @@ void gtk_sctree_set_column_tooltip	    (GtkSCTree		*sctree,
 					     int		 column,
 					     const gchar 	*tip)
 {
+#if !(GTK_CHECK_VERSION(2,12,0))
+	GtkTooltips *tips;
 	if (!sctree->tips)
 		sctree->tips = gtk_tooltips_new();
-		
-	gtk_tooltips_set_tip(GTK_TOOLTIPS(sctree->tips), 
-		GTK_CLIST(sctree)->column[column].button,
-			tip, NULL);
+	tips = sctree->tips;
+#endif
 
+	CLAWS_SET_TIP(GTK_CLIST(sctree)->column[column].button,
+			tip);
 }
 

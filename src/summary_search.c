@@ -222,9 +222,8 @@ static void summary_search_create(void)
 	GtkWidget *next_btn;
 	GtkWidget *close_btn;
 	GtkWidget *stop_btn;
-	GtkTooltips *tooltip;
-
 	gboolean is_searching = FALSE;
+	CLAWS_TIP_DECL();
 
 	window = gtkut_window_new(GTK_WINDOW_TOPLEVEL, "summary_search");
 	gtk_window_set_title(GTK_WINDOW (window), _("Search messages"));
@@ -349,9 +348,9 @@ static void summary_search_create(void)
 			  GTK_FILL, 0, 0, 0);
 	g_signal_connect(G_OBJECT (adv_condition_btn), "clicked",
 			 G_CALLBACK(adv_condition_btn_clicked), search_window.window);
-	tooltip = gtk_tooltips_new();
-	gtk_tooltips_set_tip(GTK_TOOLTIPS(tooltip), adv_condition_btn,
-			     _("Edit search criteria"), NULL);
+
+	CLAWS_SET_TIP(adv_condition_btn,
+			     _("Edit search criteria"));
 
 	from_label = gtk_label_new (_("From:"));
 	gtk_widget_show (from_label);

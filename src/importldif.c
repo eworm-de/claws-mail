@@ -634,7 +634,7 @@ static void imp_ldif_page_file( gint pageNum, gchar *pageLbl ) {
 	GtkWidget *entryFile;
 	GtkWidget *entryName;
 	GtkWidget *btnFile;
-	GtkTooltips *toolTip;
+	CLAWS_TIP_DECL();
 	gint top;
 
 	vbox = gtk_vbox_new(FALSE, 8);
@@ -666,11 +666,9 @@ static void imp_ldif_page_file( gint pageNum, gchar *pageLbl ) {
 	gtk_table_attach(GTK_TABLE(table), entryName, 1, 2, top, (top + 1),
 		GTK_EXPAND|GTK_SHRINK|GTK_FILL, 0, 0, 0);
 
-	toolTip = gtk_tooltips_new();
-	gtk_tooltips_set_tip( toolTip, entryName, _( 
+	CLAWS_SET_TIP(entryName, _( 
 		"Specify the name for the address book that will " \
-		"be created from the LDIF file data." ),
-		NULL );
+		"be created from the LDIF file data." ));
 
 	/* Second row */
 	top = 1;
@@ -683,19 +681,15 @@ static void imp_ldif_page_file( gint pageNum, gchar *pageLbl ) {
 	gtk_table_attach(GTK_TABLE(table), entryFile, 1, 2, top, (top + 1),
 		GTK_EXPAND|GTK_SHRINK|GTK_FILL, 0, 0, 0);
 
-	toolTip = gtk_tooltips_new();
-	gtk_tooltips_set_tip( toolTip, entryFile,
-		_( "The full file specification of the LDIF file to import." ),
-		NULL );
+	CLAWS_SET_TIP(entryFile,
+		_( "The full file specification of the LDIF file to import." ));
 
 	btnFile = gtkut_get_browse_file_btn(_("B_rowse"));
 	gtk_table_attach(GTK_TABLE(table), btnFile, 2, 3, top, (top + 1),
 		GTK_FILL, 0, 3, 0);
 
-	toolTip = gtk_tooltips_new();
-	gtk_tooltips_set_tip( toolTip, btnFile,
-		_( "Select the LDIF file to import." ),
-		NULL );
+	CLAWS_SET_TIP(btnFile,
+		_( "Select the LDIF file to import." ));
 
 	gtk_widget_show_all(vbox);
 
@@ -726,7 +720,7 @@ static void imp_ldif_page_fields( gint pageNum, gchar *pageLbl ) {
 	GtkWidget *checkSelect;
 	GtkWidget *btnModify;
 	GtkWidget *eventBox;
-	GtkTooltips *toolTip;
+	CLAWS_TIP_DECL();
 	gint top;
 
 	gchar *titles[ FIELDS_N_COLS ];
@@ -813,8 +807,7 @@ static void imp_ldif_page_fields( gint pageNum, gchar *pageLbl ) {
 	gtk_table_attach(GTK_TABLE(table), eventBox, 0, 1, top, (top + 1),
 		GTK_FILL, 0, 0, 0);
 
-	toolTip = gtk_tooltips_new();
-	gtk_tooltips_set_tip( toolTip, eventBox, _(
+	CLAWS_SET_TIP(eventBox, _(
 		"Choose the LDIF field that will be renamed or selected " \
 		"for import in the list above. Reserved fields (marked " \
 		"with a tick in the \"R\" column), are automatically " \
@@ -823,17 +816,14 @@ static void imp_ldif_page_fields( gint pageNum, gchar *pageLbl ) {
 		"with a tick. A single click anywhere in the row will " \
 		"select that field for rename in the input area below " \
 		"the list. A double click anywhere in the row will also " \
-		"select the field for import."
-		), NULL );
+		"select the field for import."));
 
 	entryAttrib = gtk_entry_new();
 	gtk_table_attach(GTK_TABLE(table), entryAttrib, 1, 3, top, (top + 1),
 		GTK_EXPAND|GTK_SHRINK|GTK_FILL, 0, 0, 0);
 
-	toolTip = gtk_tooltips_new();
-	gtk_tooltips_set_tip( toolTip, entryAttrib,
-		_( "The LDIF field can be renamed to the User Attribute name." ),
-		NULL );
+	CLAWS_SET_TIP(entryAttrib,
+		_( "The LDIF field can be renamed to the User Attribute name." ));
 
 	/* Next row */
 	++top;
@@ -842,19 +832,15 @@ static void imp_ldif_page_fields( gint pageNum, gchar *pageLbl ) {
 	gtk_table_attach(GTK_TABLE(table), checkSelect, 1, 2, top, (top + 1),
 		GTK_EXPAND|GTK_SHRINK|GTK_FILL, 0, 0, 0);
 
-	toolTip = gtk_tooltips_new();
-	gtk_tooltips_set_tip( toolTip, checkSelect,
-		_( "Select the LDIF field for import into the address book." ),
-		NULL );
+	CLAWS_SET_TIP(checkSelect,
+		_( "Select the LDIF field for import into the address book." ));
 
 	btnModify = gtk_button_new_with_label( _(" Modify "));
 	gtk_table_attach(GTK_TABLE(table), btnModify, 2, 3, top, (top + 1),
 		GTK_FILL, 0, 3, 0);
 
-	toolTip = gtk_tooltips_new();
-	gtk_tooltips_set_tip( toolTip, btnModify,
-		_( "This button will update the list above with the data supplied." ),
-		NULL );
+	CLAWS_SET_TIP(btnModify,
+		_( "This button will update the list above with the data supplied." ));
 
 	gtk_widget_show_all(vbox);
 

@@ -156,6 +156,8 @@ void quotefmt_create_new_msg_fmt_widgets(GtkWindow *parent_window,
 	gtk_container_set_border_width (GTK_CONTAINER (vbox_format), 8);
 
 	if (override_from_format) {
+		CLAWS_TIP_DECL();
+
 		hbox2_format = gtk_hbox_new (FALSE, 8);
 		gtk_widget_show (hbox2_format);
 		gtk_box_pack_start (GTK_BOX (vbox_format), hbox2_format, FALSE, FALSE, 0);
@@ -171,9 +173,8 @@ void quotefmt_create_new_msg_fmt_widgets(GtkWindow *parent_window,
 		gtk_box_pack_start (GTK_BOX (hbox2_format), entry_from, TRUE, TRUE, 0);
 		gtk_widget_set_size_request (entry_from, 100, -1);
 
-		gtk_tooltips_set_tip(gtk_tooltips_new(), entry_from,
-				_("Override From header. This doesn't change the account used to compose the new message."),
-				NULL);
+		CLAWS_SET_TIP(entry_from,
+				_("Override From header. This doesn't change the account used to compose the new message."));
 	}
 
 	hbox_format = gtk_hbox_new (FALSE, 8);
@@ -283,6 +284,8 @@ void quotefmt_create_reply_fmt_widgets(GtkWindow *parent_window,
 	gtk_container_set_border_width (GTK_CONTAINER (vbox_quote), 8);
 
 	if (override_from_format) {
+		CLAWS_TIP_DECL();
+
 		hbox3 = gtk_hbox_new (FALSE, 8);
 		gtk_widget_show (hbox3);
 		gtk_box_pack_start (GTK_BOX (vbox_quote), hbox3, FALSE, FALSE, 0);
@@ -298,9 +301,8 @@ void quotefmt_create_reply_fmt_widgets(GtkWindow *parent_window,
 		gtk_box_pack_start (GTK_BOX (hbox3), entry_from, TRUE, TRUE, 0);
 		gtk_widget_set_size_request (entry_from, 100, -1);
 
-		gtk_tooltips_set_tip(gtk_tooltips_new(), entry_from,
-				_("Override From header. This doesn't change the account used to reply."),
-				NULL);
+		CLAWS_SET_TIP(entry_from,
+				_("Override From header. This doesn't change the account used to reply."));
 	}
 
 	hbox1 = gtk_hbox_new (FALSE, 32);
@@ -414,6 +416,8 @@ void quotefmt_create_forward_fmt_widgets(GtkWindow *parent_window,
 	gtk_container_set_border_width (GTK_CONTAINER (vbox_quote), 8);
 
 	if (override_from_format) {
+		CLAWS_TIP_DECL();
+
 		hbox3 = gtk_hbox_new (FALSE, 8);
 		gtk_widget_show (hbox3);
 		gtk_box_pack_start (GTK_BOX (vbox_quote), hbox3, FALSE, FALSE, 0);
@@ -429,9 +433,8 @@ void quotefmt_create_forward_fmt_widgets(GtkWindow *parent_window,
 		gtk_box_pack_start (GTK_BOX (hbox3), entry_from, TRUE, TRUE, 0);
 		gtk_widget_set_size_request (entry_from, 100, -1);
 
-		gtk_tooltips_set_tip(gtk_tooltips_new(), entry_from,
-				_("Override From header. This doesn't change the account used to forward."),
-				NULL);
+		CLAWS_SET_TIP(entry_from,
+				_("Override From header. This doesn't change the account used to forward."));
 	}
 
 	hbox1 = gtk_hbox_new (FALSE, 32);

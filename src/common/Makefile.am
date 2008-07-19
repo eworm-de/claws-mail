@@ -77,7 +77,8 @@ AM_CPPFLAGS = \
 	$(OPENSSL_CFLAGS) \
 	$(MAEMO_CFLAGS) \
 	-DLOCALEDIR=\""$(localedir)"\" \
-	-DPLUGINDIR=\"$(PLUGINDIR)\" 
+	-DPLUGINDIR=\"$(PLUGINDIR)\" \
+	-DGTK_DISABLE_DEPRECATED
 
 libclawscommon_la_LIBADD = \
 	$(GLIB_LIBS) \

@@ -468,7 +468,7 @@ static void export_ldif_page_dn( gint pageNum, gchar *pageLbl ) {
 	GtkWidget *checkEMail;
 	GtkListStore *store;
 	GtkTreeIter iter;
-	GtkTooltips *toolTip;
+	CLAWS_TIP_DECL();
 	gint top;
 
 	vbox = gtk_vbox_new(FALSE, 8);
@@ -500,15 +500,12 @@ static void export_ldif_page_dn( gint pageNum, gchar *pageLbl ) {
 	gtk_table_attach(GTK_TABLE(table), entrySuffix, 1, 2, top, (top + 1),
 		GTK_EXPAND|GTK_SHRINK|GTK_FILL, 0, 0, 0);
 
-	toolTip = gtk_tooltips_new();
-	gtk_tooltips_set_tip(
-		GTK_TOOLTIPS(toolTip), entrySuffix, _(
+	CLAWS_SET_TIP(entrySuffix, _(
 		"The suffix is used to create a \"Distinguished Name\" " \
 		"(or DN) for an LDAP entry. Examples include:\n" \
 		"  dc=claws-mail,dc=org\n" \
 		"  ou=people,dc=domainname,dc=com\n" \
-		"  o=Organization Name,c=Country\n"
-		), NULL );
+		"  o=Organization Name,c=Country\n"));
 
 	/* Second row */
 	top++;
@@ -527,9 +524,7 @@ static void export_ldif_page_dn( gint pageNum, gchar *pageLbl ) {
 	gtk_table_attach(GTK_TABLE(table), optmenuRDN, 1, 2, top, (top + 1),
 		GTK_FILL, 0, 0, 0);
 
-	toolTip = gtk_tooltips_new();
-	gtk_tooltips_set_tip(
-		GTK_TOOLTIPS(toolTip), optmenuRDN, _(
+	CLAWS_SET_TIP(optmenuRDN, _(
 		"The LDIF file contains several data records that " \
 		"are usually loaded into an LDAP server. Each data " \
 		"record in the LDIF file is uniquely identified by " \
@@ -537,8 +532,7 @@ static void export_ldif_page_dn( gint pageNum, gchar *pageLbl ) {
 		"appended to the \"Relative Distinguished Name\" "\
 		"(or RDN) to create the DN. Please select one of " \
 		"the available RDN options that will be used to " \
-		"create the DN."
-		), NULL );
+		"create the DN."));
 	
 	/* Third row*/
 	top++;
@@ -555,16 +549,13 @@ static void export_ldif_page_dn( gint pageNum, gchar *pageLbl ) {
 	gtk_table_attach(GTK_TABLE(table), checkUseDN, 1, 2, top, (top + 1),
 		GTK_FILL, 0, 0, 0);
 
-	toolTip = gtk_tooltips_new();
-	gtk_tooltips_set_tip(
-		GTK_TOOLTIPS(toolTip), checkUseDN, _(
+	CLAWS_SET_TIP(checkUseDN, _(
 		"The addressbook may contain entries that were " \
 		"previously imported from an LDIF file. The " \
 		"\"Distinguished Name\" (DN) user attribute, if " \
 		"present in the address book data, may be used in " \
 		"the exported LDIF file. The RDN selected above " \
-		"will be used if the DN user attribute is not found."
-		), NULL );
+		"will be used if the DN user attribute is not found."));
 
 	/* Fifth row */
 	top++;
@@ -573,13 +564,10 @@ static void export_ldif_page_dn( gint pageNum, gchar *pageLbl ) {
 	gtk_table_attach(GTK_TABLE(table), checkEMail, 1, 2, top, (top + 1),
 		GTK_FILL, 0, 0, 0);
 
-	toolTip = gtk_tooltips_new();
-	gtk_tooltips_set_tip(
-		GTK_TOOLTIPS(toolTip), checkEMail, _(
+	CLAWS_SET_TIP(checkEMail, _(
 		"An addressbook may contain entries without " \
 		"Email Addresses. Check this option to ignore " \
-		"these records."
-		), NULL );
+		"these records."));
 
 
 	gtk_widget_show_all(vbox);

@@ -329,11 +329,9 @@ static void prefs_filtering_create(void)
 	GtkWidget *bottom_btn;
 	GtkWidget *table;
 	static GdkGeometry geometry;
-	GtkTooltips *tooltips;
+	CLAWS_TIP_DECL();
 
 	debug_print("Creating filtering configuration window...\n");
-
-	tooltips = gtk_tooltips_new();
 
 	window = gtkut_window_new(GTK_WINDOW_TOPLEVEL, "prefs_filtering");
 	gtk_container_set_border_width (GTK_CONTAINER (window), 8);
@@ -469,8 +467,8 @@ static void prefs_filtering_create(void)
 	gtk_box_pack_start (GTK_BOX (btn_hbox), reg_btn, FALSE, TRUE, 0);
 	g_signal_connect(G_OBJECT (reg_btn), "clicked",
 			 G_CALLBACK(prefs_filtering_register_cb), NULL);
-	gtk_tooltips_set_tip(GTK_TOOLTIPS(tooltips), reg_btn,
-			_("Append the new rule above to the list"), NULL);
+	CLAWS_SET_TIP(reg_btn,
+			_("Append the new rule above to the list"));
 
 	subst_btn = gtkut_get_replace_btn (_("Replace"));
 	gtk_widget_show (subst_btn);
@@ -478,24 +476,24 @@ static void prefs_filtering_create(void)
 	g_signal_connect(G_OBJECT (subst_btn), "clicked",
 			 G_CALLBACK(prefs_filtering_substitute_cb),
 			 NULL);
-	gtk_tooltips_set_tip(GTK_TOOLTIPS(tooltips), subst_btn,
-			_("Replace the selected rule in list with the rule above"), NULL);
+	CLAWS_SET_TIP(subst_btn,
+			_("Replace the selected rule in list with the rule above"));
 
 	del_btn = gtk_button_new_from_stock (GTK_STOCK_DELETE);
 	gtk_widget_show (del_btn);
 	gtk_box_pack_start (GTK_BOX (btn_hbox), del_btn, FALSE, TRUE, 0);
 	g_signal_connect(G_OBJECT (del_btn), "clicked",
 			G_CALLBACK(prefs_filtering_delete_cb), NULL);
-	gtk_tooltips_set_tip(GTK_TOOLTIPS(tooltips), del_btn,
-			_("Delete the selected rule from the list"), NULL);
+	CLAWS_SET_TIP(del_btn,
+			_("Delete the selected rule from the list"));
 
 	clear_btn = gtk_button_new_from_stock (GTK_STOCK_CLEAR);
 	gtk_widget_show (clear_btn);
 	gtk_box_pack_start (GTK_BOX (btn_hbox), clear_btn, FALSE, TRUE, 0);
 	g_signal_connect(G_OBJECT (clear_btn), "clicked",
 			G_CALLBACK(prefs_filtering_clear_cb), NULL);
-	gtk_tooltips_set_tip(GTK_TOOLTIPS(tooltips), clear_btn,
-			_("Clear all the input fields in the dialog"), NULL);
+	CLAWS_SET_TIP(clear_btn,
+			_("Clear all the input fields in the dialog"));
 
 	cond_hbox = gtk_hbox_new (FALSE, 8);
 	gtk_widget_show (cond_hbox);
@@ -523,8 +521,8 @@ static void prefs_filtering_create(void)
 	gtk_box_pack_start (GTK_BOX (btn_vbox), top_btn, FALSE, FALSE, 0);
 	g_signal_connect(G_OBJECT (top_btn), "clicked",
 			 G_CALLBACK(prefs_filtering_top), NULL);
-	gtk_tooltips_set_tip(GTK_TOOLTIPS(tooltips), top_btn,
-			_("Move the selected rule to the top"), NULL);
+	CLAWS_SET_TIP(top_btn,
+			_("Move the selected rule to the top"));
 
 #ifndef GENERIC_UMPC
 	page_up_btn = gtk_button_new_with_mnemonic (_("Page up"));
@@ -534,8 +532,8 @@ static void prefs_filtering_create(void)
 	gtk_box_pack_start (GTK_BOX (btn_vbox), page_up_btn, FALSE, FALSE, 0);
 	g_signal_connect(G_OBJECT (page_up_btn), "clicked",
 			 G_CALLBACK(prefs_filtering_page_up), NULL);
-	gtk_tooltips_set_tip(GTK_TOOLTIPS(tooltips), page_up_btn,
-			_("Move the selected rule one page up"), NULL);
+	CLAWS_SET_TIP(page_up_btn,
+			_("Move the selected rule one page up"));
 #endif
 
 	up_btn = gtk_button_new_from_stock (GTK_STOCK_GO_UP);
@@ -543,16 +541,16 @@ static void prefs_filtering_create(void)
 	gtk_box_pack_start (GTK_BOX (btn_vbox), up_btn, FALSE, FALSE, 0);
 	g_signal_connect(G_OBJECT (up_btn), "clicked",
 			 G_CALLBACK(prefs_filtering_up), NULL);
-	gtk_tooltips_set_tip(GTK_TOOLTIPS(tooltips), up_btn,
-			_("Move the selected rule up"), NULL);
+	CLAWS_SET_TIP(up_btn,
+			_("Move the selected rule up"));
 
 	down_btn = gtk_button_new_from_stock (GTK_STOCK_GO_DOWN);
 	gtk_widget_show (down_btn);
 	gtk_box_pack_start (GTK_BOX (btn_vbox), down_btn, FALSE, FALSE, 0);
 	g_signal_connect(G_OBJECT (down_btn), "clicked",
 			 G_CALLBACK(prefs_filtering_down), NULL);
-	gtk_tooltips_set_tip(GTK_TOOLTIPS(tooltips), down_btn,
-			_("Move the selected rule down"), NULL);
+	CLAWS_SET_TIP(down_btn,
+			_("Move the selected rule down"));
 
 #ifndef GENERIC_UMPC
 	page_down_btn = gtk_button_new_with_mnemonic (_("Page down"));
@@ -562,8 +560,8 @@ static void prefs_filtering_create(void)
 	gtk_box_pack_start (GTK_BOX (btn_vbox), page_down_btn, FALSE, FALSE, 0);
 	g_signal_connect(G_OBJECT (page_down_btn), "clicked",
 			 G_CALLBACK(prefs_filtering_page_down), NULL);
-	gtk_tooltips_set_tip(GTK_TOOLTIPS(tooltips), page_down_btn,
-			_("Move the selected rule one page down"), NULL);
+	CLAWS_SET_TIP(page_down_btn,
+			_("Move the selected rule one page down"));
 #endif
 
 	bottom_btn = gtk_button_new_from_stock (GTK_STOCK_GOTO_BOTTOM);
@@ -571,8 +569,8 @@ static void prefs_filtering_create(void)
 	gtk_box_pack_start (GTK_BOX (btn_vbox), bottom_btn, FALSE, FALSE, 0);
 	g_signal_connect(G_OBJECT (bottom_btn), "clicked",
 			 G_CALLBACK(prefs_filtering_bottom), NULL);
-	gtk_tooltips_set_tip(GTK_TOOLTIPS(tooltips), bottom_btn,
-			_("Move the selected rule to the bottom"), NULL);
+	CLAWS_SET_TIP(bottom_btn,
+			_("Move the selected rule to the bottom"));
 
 	if (!geometry.min_height) {
 		geometry.min_width = 500;

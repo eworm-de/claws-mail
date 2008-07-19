@@ -234,9 +234,8 @@ static void prefs_folder_item_general_create_widget_func(PrefsPage * page_,
 	GtkWidget *enable_processing_when_opening_rec_checkbtn;
 	GtkWidget *newmailcheck_rec_checkbtn;
 	GtkWidget *offlinesync_rec_checkbtn;
-	GtkTooltips *tooltips;
+	CLAWS_TIP_DECL();
 
-	tooltips = gtk_tooltips_new();
 	page->item	   = item;
 
 	/* Table */
@@ -411,8 +410,8 @@ static void prefs_folder_item_general_create_widget_func(PrefsPage * page_,
 	folder_color_btn = gtk_button_new_with_label("");
 	gtk_widget_set_size_request(folder_color_btn, 36, 26);
   	gtk_box_pack_start (GTK_BOX(hbox), folder_color_btn, FALSE, FALSE, 0);
-	gtk_tooltips_set_tip(tooltips, folder_color_btn,
-			     _("Pick color for folder"), NULL);
+	CLAWS_SET_TIP(folder_color_btn,
+			     _("Pick color for folder"));
 
 	page->folder_color = item->prefs->color;
 
@@ -460,10 +459,10 @@ static void prefs_folder_item_general_create_widget_func(PrefsPage * page_,
 
 	/* Check folder for new mail */
 	checkbtn_newmailcheck = gtk_check_button_new_with_label(_("Scan for new mail"));
-	gtk_tooltips_set_tip(tooltips, checkbtn_newmailcheck,
+	CLAWS_SET_TIP(checkbtn_newmailcheck,
 			     _("Turn this option on if mail is delivered directly "
 			       "to this folder by server side filtering on IMAP or "
-			       "by an external application"), NULL);
+			       "by an external application"));
 	gtk_table_attach(GTK_TABLE(table), checkbtn_newmailcheck, 0, 2,
 			 rowcount, rowcount+1, GTK_EXPAND | GTK_FILL, GTK_FILL, 0, 0);
 	
@@ -504,7 +503,7 @@ static void prefs_folder_item_general_create_widget_func(PrefsPage * page_,
 	entry_offlinesync = gtk_entry_new();
 	gtk_widget_set_size_request (entry_offlinesync, 64, -1);
 	gtk_widget_show (entry_offlinesync);
-	gtk_tooltips_set_tip(tooltips, entry_offlinesync, _("0: all bodies"), NULL);
+	CLAWS_SET_TIP(entry_offlinesync, _("0: all bodies"));
 	gtk_box_pack_start (GTK_BOX (hbox), entry_offlinesync, FALSE, FALSE, 0);
 
 	label_end_offlinesync = gtk_label_new(_("days"));

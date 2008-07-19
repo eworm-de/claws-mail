@@ -1324,13 +1324,11 @@ static void receive_create_widget_func(PrefsPage * _page,
 	GtkWidget *use_apop_checkbtn;
 	GtkWidget *rmmail_checkbtn;
 	GtkWidget *hbox_spc;
-	GtkTooltips *leave_time_tooltip;
 	GtkWidget *leave_time_label;
 	GtkWidget *leave_time_spinbtn;
 	GtkWidget *hbox1;
 	GtkWidget *size_limit_checkbtn;
 	GtkWidget *size_limit_spinbtn;
-	GtkTooltips *size_limit_tooltip;
 	GtkWidget *label;
 	GtkWidget *filter_on_recv_checkbtn;
 	GtkWidget *filterhook_on_recv_checkbtn;
@@ -1338,7 +1336,6 @@ static void receive_create_widget_func(PrefsPage * _page,
 	GtkWidget *inbox_label;
 	GtkWidget *inbox_entry;
 	GtkWidget *inbox_btn;
-	GtkTooltips *inbox_tooltip;
 	GtkWidget *imap_frame;
  	GtkWidget *imapdir_label;
 	GtkWidget *imapdir_entry;
@@ -1361,10 +1358,7 @@ static void receive_create_widget_func(PrefsPage * _page,
 	GtkWidget *maxarticle_label;
 	GtkWidget *maxarticle_spinbtn;
 	GtkObject *maxarticle_spinbtn_adj;
-	GtkTooltips *maxarticle_tool_tip;
-
-	inbox_tooltip = gtk_tooltips_new();
-	size_limit_tooltip = gtk_tooltips_new();
+	CLAWS_TIP_DECL();
 
 	vbox1 = gtk_vbox_new (FALSE, VSPACING);
 	gtk_widget_show (vbox1);
@@ -1382,17 +1376,15 @@ static void receive_create_widget_func(PrefsPage * _page,
 
 	local_inbox_entry = gtk_entry_new ();
 	gtk_widget_show (local_inbox_entry);
-	gtk_tooltips_set_tip(GTK_TOOLTIPS(inbox_tooltip), local_inbox_entry,
-			     _("Unfiltered messages will be stored in this folder"),
-			     NULL);
+	CLAWS_SET_TIP(local_inbox_entry,
+			     _("Unfiltered messages will be stored in this folder"));
 	gtk_widget_set_size_request (local_inbox_entry, DEFAULT_ENTRY_WIDTH, -1);
 	gtk_box_pack_start (GTK_BOX (local_hbox), local_inbox_entry, TRUE, TRUE, 0);
 
 	local_inbox_btn = gtkut_get_browse_file_btn(_("Bro_wse"));
 	gtk_widget_show (local_inbox_btn);
-	gtk_tooltips_set_tip(GTK_TOOLTIPS(inbox_tooltip), local_inbox_btn,
-			     _("Unfiltered messages will be stored in this folder"),
-			     NULL);
+	CLAWS_SET_TIP(local_inbox_btn,
+			     _("Unfiltered messages will be stored in this folder"));
 	gtk_box_pack_start (GTK_BOX (local_hbox), local_inbox_btn, FALSE, FALSE, 0);
 	g_signal_connect (G_OBJECT (local_inbox_btn), "clicked",
 			  G_CALLBACK (prefs_account_select_folder_cb),
@@ -1418,12 +1410,10 @@ static void receive_create_widget_func(PrefsPage * _page,
 	gtk_widget_show (leave_time_label);
 	gtk_box_pack_start (GTK_BOX (hbox1), leave_time_label, FALSE, FALSE, 0);
 
-	leave_time_tooltip = gtk_tooltips_new();
-
 	leave_time_spinbtn = gtk_spin_button_new_with_range(0, 365, 1);
 	gtk_widget_show (leave_time_spinbtn);
-	gtk_tooltips_set_tip(GTK_TOOLTIPS(leave_time_tooltip), leave_time_spinbtn,
-			     _("0 days: remove immediately"), NULL);
+	CLAWS_SET_TIP(leave_time_spinbtn,
+			     _("0 days: remove immediately"));
 	gtk_box_pack_start (GTK_BOX (hbox1), leave_time_spinbtn, FALSE, FALSE, 0);
 
 	leave_time_label = gtk_label_new (_("days"));
@@ -1438,11 +1428,10 @@ static void receive_create_widget_func(PrefsPage * _page,
 
 	PACK_CHECK_BUTTON (hbox1, size_limit_checkbtn, _("Receive size limit"));
 
-	gtk_tooltips_set_tip(GTK_TOOLTIPS(size_limit_tooltip), size_limit_checkbtn,
+	CLAWS_SET_TIP(size_limit_checkbtn,
 			     _("Messages over this limit will be partially retrieved. "
 		   	       "When selecting them you will be able to download them fully "
-			       "or delete them."),
-			     NULL);
+			       "or delete them."));
 
 	size_limit_spinbtn = gtk_spin_button_new_with_range(0, 100000, 1);
 	gtk_widget_show (size_limit_spinbtn);
@@ -1466,17 +1455,15 @@ static void receive_create_widget_func(PrefsPage * _page,
 
 	inbox_entry = gtk_entry_new ();
 	gtk_widget_show (inbox_entry);
-	gtk_tooltips_set_tip(GTK_TOOLTIPS(inbox_tooltip), inbox_entry,
-			     _("Unfiltered messages will be stored in this folder"),
-			     NULL);
+	CLAWS_SET_TIP(inbox_entry,
+			     _("Unfiltered messages will be stored in this folder"));
 	gtk_widget_set_size_request (inbox_entry, DEFAULT_ENTRY_WIDTH, -1);
 	gtk_box_pack_start (GTK_BOX (hbox1), inbox_entry, TRUE, TRUE, 0);
 
 	inbox_btn = gtkut_get_browse_file_btn(_("Bro_wse"));
 	gtk_widget_show (inbox_btn);
-	gtk_tooltips_set_tip(GTK_TOOLTIPS(inbox_tooltip), inbox_btn,
-			     _("Unfiltered messages will be stored in this folder"),
-			     NULL);
+	CLAWS_SET_TIP(inbox_btn,
+			     _("Unfiltered messages will be stored in this folder"));
 	gtk_box_pack_start (GTK_BOX (hbox1), inbox_btn, FALSE, FALSE, 0);
 	g_signal_connect (G_OBJECT (inbox_btn), "clicked",
 			  G_CALLBACK (prefs_account_select_folder_cb),
@@ -1493,15 +1480,13 @@ static void receive_create_widget_func(PrefsPage * _page,
 	gtk_widget_show (maxarticle_label);
 	gtk_box_pack_start (GTK_BOX (hbox2), maxarticle_label, FALSE, FALSE, 0);
 
-	maxarticle_tool_tip = gtk_tooltips_new();
-
 	maxarticle_spinbtn_adj =
 		gtk_adjustment_new (300, 0, 10000, 10, 100, 100);
 	maxarticle_spinbtn = gtk_spin_button_new
 		(GTK_ADJUSTMENT (maxarticle_spinbtn_adj), 10, 0);
 	gtk_widget_show (maxarticle_spinbtn);
-	gtk_tooltips_set_tip(maxarticle_tool_tip, maxarticle_spinbtn,
-			     _("unlimited if 0 is specified"), NULL);
+	CLAWS_SET_TIP(maxarticle_spinbtn,
+			     _("unlimited if 0 is specified"));
 	gtk_box_pack_start (GTK_BOX (hbox2), maxarticle_spinbtn,
 			    FALSE, FALSE, 0);
 	gtk_widget_set_size_request (maxarticle_spinbtn, 64, -1);
@@ -1561,9 +1546,8 @@ static void receive_create_widget_func(PrefsPage * _page,
 
 	PACK_CHECK_BUTTON (hbox1, low_bandwidth_checkbtn,
 			   _("Bandwidth-efficient mode (prevents retrieving remote tags)"));
-	gtk_tooltips_set_tip(GTK_TOOLTIPS(inbox_tooltip), low_bandwidth_checkbtn,
-			     _("This mode uses less bandwidth, but can be slower with some servers."),
-			     NULL);
+	CLAWS_SET_TIP(low_bandwidth_checkbtn,
+			     _("This mode uses less bandwidth, but can be slower with some servers."));
 
 	PACK_CHECK_BUTTON (vbox1, filter_on_recv_checkbtn,
 			   _("Filter messages on receiving"));
@@ -2309,7 +2293,7 @@ static void ssl_create_widget_func(PrefsPage * _page,
 	GtkWidget *hbox;
 	GtkWidget *hbox_spc;
 	GtkWidget *label;
-	GtkTooltips *tips = gtk_tooltips_new();
+	CLAWS_TIP_DECL();
 
 	vbox1 = gtk_vbox_new (FALSE, VSPACING);
 	gtk_widget_show (vbox1);
@@ -2380,10 +2364,10 @@ static void ssl_create_widget_func(PrefsPage * _page,
 	gtk_misc_set_alignment(GTK_MISC(label), 1, 0.5);
 	entry_in_cert_file = gtk_entry_new();
 	in_ssl_cert_browse_button = gtkut_get_browse_file_btn(_("Browse"));
-	gtk_tooltips_set_tip(GTK_TOOLTIPS(tips), label,
-			     _("Client certificate file as a PKCS12 or PEM file"), NULL);	
-	gtk_tooltips_set_tip(GTK_TOOLTIPS(tips), entry_in_cert_file,
-			     _("Client certificate file as a PKCS12 or PEM file"), NULL);	
+	CLAWS_SET_TIP(label,
+			     _("Client certificate file as a PKCS12 or PEM file"));
+	CLAWS_SET_TIP(entry_in_cert_file,
+			     _("Client certificate file as a PKCS12 or PEM file"));	
 	gtk_table_attach(GTK_TABLE(cert_table), label, 0, 1, 0, 1, GTK_FILL, 0, 0, 0);
 	gtk_table_attach(GTK_TABLE(cert_table), entry_in_cert_file, 1, 2, 0, 1,
 			 GTK_EXPAND|GTK_FILL, 0, 0, 0);
@@ -2402,10 +2386,10 @@ static void ssl_create_widget_func(PrefsPage * _page,
 	gtk_misc_set_alignment(GTK_MISC(label), 1, 0.5);
 	entry_out_cert_file = gtk_entry_new();
 	out_ssl_cert_browse_button = gtkut_get_browse_file_btn(_("Browse"));
-	gtk_tooltips_set_tip(GTK_TOOLTIPS(tips), label,
-			     _("Client certificate file as a PKCS12 or PEM file"), NULL);	
-	gtk_tooltips_set_tip(GTK_TOOLTIPS(tips), entry_out_cert_file,
-			     _("Client certificate file as a PKCS12 or PEM file"), NULL);	
+	CLAWS_SET_TIP(label,
+			     _("Client certificate file as a PKCS12 or PEM file"));
+	CLAWS_SET_TIP(entry_out_cert_file,
+			     _("Client certificate file as a PKCS12 or PEM file"));
 	gtk_table_attach(GTK_TABLE(cert_table), label, 0, 1, 2, 3, GTK_FILL, 0, 0, 0);
 	gtk_table_attach(GTK_TABLE(cert_table), entry_out_cert_file, 1, 2, 2, 3,
 			 GTK_EXPAND|GTK_FILL, 0, 0, 0);
@@ -2531,7 +2515,7 @@ static void advanced_create_widget_func(PrefsPage * _page,
 	GtkWidget *draft_folder_entry;
 	GtkWidget *trash_folder_checkbtn;
 	GtkWidget *trash_folder_entry;
-	GtkTooltips *tips = gtk_tooltips_new();
+	CLAWS_TIP_DECL();
 	GtkSizeGroup *size_group = gtk_size_group_new(GTK_SIZE_GROUP_HORIZONTAL);
 #define PACK_HBOX(hbox) \
 	{ \
@@ -2586,21 +2570,19 @@ static void advanced_create_widget_func(PrefsPage * _page,
 	PACK_CHECK_BUTTON (hbox1, checkbtn_domain, _("Domain name"));
 	gtk_size_group_add_widget(size_group, checkbtn_domain);	
 
-	gtk_tooltips_set_tip(GTK_TOOLTIPS(tips), checkbtn_domain,
+	CLAWS_SET_TIP(checkbtn_domain,
 			     _("The domain name will be used in the right part of "
 			       "the generated Message-Ids, and when connecting to "
-			       "SMTP servers."),
-			     NULL);
+			       "SMTP servers."));
 
 	entry_domain = gtk_entry_new ();
 	gtk_widget_show (entry_domain);
 	gtk_box_pack_start (GTK_BOX (hbox1), entry_domain, TRUE, TRUE, 0);
 	SET_TOGGLE_SENSITIVITY (checkbtn_domain, entry_domain);
-	gtk_tooltips_set_tip(GTK_TOOLTIPS(tips), entry_domain,
+	CLAWS_SET_TIP(entry_domain,
 			     _("The domain name will be used in the right part of "
 			       "the generated Message-Ids, and when connecting to "
-			       "SMTP servers."),
-			     NULL);
+			       "SMTP servers."));
 
 
 #ifndef G_OS_WIN32	

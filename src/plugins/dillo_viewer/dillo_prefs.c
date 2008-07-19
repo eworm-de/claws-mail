@@ -153,27 +153,24 @@ static void create_dillo_prefs_page(PrefsPage *page,
         GtkWidget *local_checkbox;
         GtkWidget *full_checkbox;
         GtkWidget *label;
-	GtkTooltips *local_tooltip;
-	GtkTooltips *full_tooltip;
 	GtkWidget *whitelist_ab_checkbtn;
 	GtkWidget *whitelist_ab_folder_combo;
 	GtkWidget *whitelist_ab_select_btn;
 	GtkWidget *hbox_whitelist, *spacer;
-
+	CLAWS_TIP_DECL();
 
         vbox = gtk_vbox_new(FALSE, 3);
         gtk_container_set_border_width(GTK_CONTAINER(vbox), VBOX_BORDER);
         gtk_widget_show(vbox);
         
-	local_tooltip = gtk_tooltips_new();
         local_checkbox = gtk_check_button_new_with_label
 				(_("Load remote links in mails"));
         gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(local_checkbox),
                                      !dillo_prefs.local);
         gtk_box_pack_start(GTK_BOX(vbox), local_checkbox, FALSE, FALSE, 0);
         gtk_widget_show(local_checkbox);
-	gtk_tooltips_set_tip(GTK_TOOLTIPS(local_tooltip), local_checkbox,
-			     _("Equivalent to Dillo's '--local' option"), NULL);
+	CLAWS_SET_TIP(local_checkbox,
+			     _("Equivalent to Dillo's '--local' option"));
         
 	label = gtk_label_new(_("You can still load remote links "
 			      "by reloading the page"));
@@ -220,16 +217,14 @@ static void create_dillo_prefs_page(PrefsPage *page,
 					dillo_prefs.whitelist_ab_folder);
 	}
 
-	full_tooltip = gtk_tooltips_new();
         full_checkbox = gtk_check_button_new_with_label
 				(_("Full window mode (hide controls)"));
         gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(full_checkbox),
                                       dillo_prefs.full);
         gtk_box_pack_start(GTK_BOX(vbox), full_checkbox, FALSE, FALSE, 0);
         gtk_widget_show(full_checkbox);
-	gtk_tooltips_set_tip(GTK_TOOLTIPS(full_tooltip), full_checkbox,
-			     _("Equivalent to Dillo's '--fullwindow' option"),
-			     NULL);
+	CLAWS_SET_TIP(full_checkbox,
+			     _("Equivalent to Dillo's '--fullwindow' option"));
 
 	g_signal_connect(G_OBJECT(local_checkbox), "toggled",
 			 G_CALLBACK(local_checkbox_toggled),

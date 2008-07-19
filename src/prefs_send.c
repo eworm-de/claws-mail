@@ -139,14 +139,13 @@ static void prefs_send_create_widget(PrefsPage *_page, GtkWindow *window,
 	GtkListStore *optmenu;
 	GtkTreeIter iter;
 	GtkCellRenderer *rend;
-	GtkTooltips *charset_tooltip;
 	GtkWidget *combobox_encoding;
 	GtkWidget *label_encoding;
-	GtkTooltips *encoding_tooltip;
 	GtkWidget *checkbtn_senddialog;
 	GtkWidget *checkbtn_confirm_send_queued_messages;
 	GtkWidget *checkbtn_never_send_retrcpt;
 	GtkWidget *table;
+	CLAWS_TIP_DECL();
 
 	vbox1 = gtk_vbox_new (FALSE, VSPACING);
 	gtk_widget_show (vbox1);
@@ -182,8 +181,6 @@ static void prefs_send_create_widget(PrefsPage *_page, GtkWindow *window,
 	gtk_label_set_justify(GTK_LABEL(label_outcharset), GTK_JUSTIFY_RIGHT);
 	gtk_misc_set_alignment(GTK_MISC(label_outcharset), 1, 0.5);
 
-	charset_tooltip = gtk_tooltips_new();
-
 	optmenu = gtk_list_store_new(2,
 			G_TYPE_STRING,		/* Menu label */
 			G_TYPE_STRING);		/* Actual charset data string */
@@ -200,10 +197,9 @@ static void prefs_send_create_widget(PrefsPage *_page, GtkWindow *window,
 			(GtkTreeViewRowSeparatorFunc)_combobox_separator_func, NULL, NULL);
 
 	gtk_widget_show (combobox_charset);
-	gtk_tooltips_set_tip(GTK_TOOLTIPS(charset_tooltip), combobox_charset,
+	CLAWS_SET_TIP(combobox_charset,
 			     _("If 'Automatic' is selected, the optimal encoding"
-		   	       " for the current locale will be used"),
-			     NULL);
+		   	       " for the current locale will be used"));
 	gtk_table_attach(GTK_TABLE(table), combobox_charset, 1, 2, 1, 2,
 			(GtkAttachOptions) (GTK_FILL),
 			(GtkAttachOptions) (0), 0, 0);
@@ -274,14 +270,11 @@ static void prefs_send_create_widget(PrefsPage *_page, GtkWindow *window,
 	gtk_label_set_justify(GTK_LABEL(label_encoding), GTK_JUSTIFY_RIGHT);
 	gtk_misc_set_alignment(GTK_MISC(label_encoding), 1, 0.5);
 
-	encoding_tooltip = gtk_tooltips_new();
-
 	combobox_encoding = gtkut_sc_combobox_create(NULL, FALSE);
 	gtk_widget_show (combobox_encoding);
-	gtk_tooltips_set_tip(GTK_TOOLTIPS(encoding_tooltip), combobox_encoding,
+	CLAWS_SET_TIP(combobox_encoding,
 			     _("Specify Content-Transfer-Encoding used when"
-		   	       " message body contains non-ASCII characters"),
-			     NULL);
+		   	       " message body contains non-ASCII characters"));
 	gtk_table_attach(GTK_TABLE(table), combobox_encoding, 1, 2, 2, 3,
 			(GtkAttachOptions) (GTK_FILL),
 			(GtkAttachOptions) (0), 0, 0);
