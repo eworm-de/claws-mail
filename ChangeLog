@@ -1,3 +1,16 @@
+2008-07-19 [ticho]	3.5.0cvs26
+
+	* src/edittags.c
+	* src/main.c
+	* src/mimeview.c
+	* src/mimeview.h
+	* src/gtk/gtkutils.c
+	* src/gtk/gtkutils.h
+	* src/gtk/menu.c
+	* src/gtk/menu.h
+		Use GtkUIManager for mimeview and tag edit dialog popup menus,
+		instead of deprecated GtkItemFactory.
+
 2008-07-19 [colin]	3.5.0cvs25
 
 	* src/account.c

@@ -112,6 +112,7 @@ GCRY_THREAD_OPTION_PTHREAD_IMPL;
 #include "matcher.h"
 #include "tags.h"
 #include "hooks.h"
+#include "menu.h"
 
 #ifdef HAVE_LIBETPAN
 #include "imap-thread.h"
@@ -1043,6 +1044,7 @@ int main(int argc, char *argv[])
 	gint num_folder_class = 0;
 	gboolean asked_for_migration = FALSE;
 	gboolean start_done = TRUE;
+	GtkUIManager *gui_manager = NULL;
 	
 	START_TIMING("startup");
 
@@ -1152,6 +1154,11 @@ int main(int argc, char *argv[])
 	gdk_rgb_init();
 	gtk_widget_set_default_colormap(gdk_rgb_get_colormap());
 	gtk_widget_set_default_visual(gdk_rgb_get_visual());
+
+	gui_manager = gtkut_create_ui_manager();
+
+	/* Create container for all the menus we will be adding */
+	MENUITEM_ADDUI("/", "Menus", NULL, GTK_UI_MANAGER_MENUBAR);
 
 	if (!g_thread_supported()) {
 		g_error(_("g_thread is not supported by glib.\n"));

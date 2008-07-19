@@ -197,10 +197,9 @@ static void apply_window_create_list_view_columns(GtkWidget *list_view)
 
 }
 
-static GtkItemFactory *apply_popup_factory = NULL;
 static GtkWidget *apply_popup_menu = NULL;
 
-static void apply_popup_delete (void *obj, guint action, void *data)
+static void apply_popup_delete (GtkAction *action, gpointer data)
 {
 	GtkTreeIter sel;
 	GtkTreeModel *model;
@@ -234,7 +233,7 @@ static void apply_popup_delete (void *obj, guint action, void *data)
 	APPLYWINDOW_UNLOCK();
 }
 
-static void apply_popup_delete_all (void *obj, guint action, void *data)
+static void apply_popup_delete_all (GtkAction *action, gpointer data)
 {
 	GSList *cur;
 	GtkTreeModel *model;
@@ -264,15 +263,19 @@ static void apply_popup_delete_all (void *obj, guint action, void *data)
 	APPLYWINDOW_UNLOCK();
 }
 
-static GtkItemFactoryEntry apply_popup_entries[] =
+static const GtkActionEntry apply_popup_actions[] =
 {
-	{N_("/_Delete"),		NULL, apply_popup_delete, 0, NULL, NULL},
-	{N_("/Delete _all"),	NULL, apply_popup_delete_all, 0, NULL, NULL},
+	{ "EditTags", NULL, "EditTags" },
+	{ "EditTags/Delete", NULL, N_("_Delete"), NULL, "Delete tag", G_CALLBACK(apply_popup_delete) },
+	{ "EditTags/DeleteAll", NULL, N_("Delete _all"), NULL, "Delete all tags", G_CALLBACK(apply_popup_delete_all) }
 };
 
 static gint apply_list_btn_pressed(GtkWidget *widget, GdkEventButton *event,
 				    GtkTreeView *list_view)
 {
+	GtkActionGroup *actions;
+	GtkUIManager *gui_manager = gtkut_ui_manager();
+
 	if (applywindow.busy)
 		return FALSE;
 
@@ -282,17 +285,25 @@ static gint apply_list_btn_pressed(GtkWidget *widget, GdkEventButton *event,
 		gboolean non_empty;
 
 		if (!apply_popup_menu) {
-			gint n_entries = sizeof(apply_popup_entries) /
-				sizeof(apply_popup_entries[0]);
-			apply_popup_menu = menu_create_items(apply_popup_entries, n_entries,
-						      "<TagPopupMenu>", &apply_popup_factory,
-						      list_view);
+			actions = gtk_action_group_new("EditTags");
+			gtk_action_group_add_actions(actions, apply_popup_actions,
+					G_N_ELEMENTS(apply_popup_actions), (gpointer)list_view);
+			gtk_ui_manager_insert_action_group(gui_manager, actions, 0);
+
+			MENUITEM_ADDUI("/Menus", "EditTags", "EditTags", GTK_UI_MANAGER_MENU)
+			MENUITEM_ADDUI("/Menus/EditTags", "Delete", "EditTags/Delete",
+					GTK_UI_MANAGER_MENUITEM)
+			MENUITEM_ADDUI("/Menus/EditTags", "DeleteAll", "EditTags/DeleteAll",
+					GTK_UI_MANAGER_MENUITEM)
+
+			apply_popup_menu = gtk_menu_item_get_submenu(GTK_MENU_ITEM(
+						gtk_ui_manager_get_widget(gui_manager, "/Menus/EditTags")) );
 		}
 
 		/* grey out popup menu items if list is empty */
 		non_empty = gtk_tree_model_get_iter_first(model, &iter);
-		menu_set_sensitive(apply_popup_factory, "/Delete", non_empty);
-		menu_set_sensitive(apply_popup_factory, "/Delete all", non_empty);
+		cm_menu_set_sensitive("EditTags/Delete", non_empty);
+		cm_menu_set_sensitive("EditTags/DeleteAll", non_empty);
 
 		gtk_menu_popup(GTK_MENU(apply_popup_menu), 
 			       NULL, NULL, NULL, NULL, 
@@ -464,7 +475,7 @@ static void apply_window_del_tag_cb(GtkWidget *widget,
 {
 	if (applywindow.busy)
 		return;
-	apply_popup_delete(NULL, 0, NULL);
+	apply_popup_delete(NULL, NULL);
 	gtk_widget_grab_focus(applywindow.taglist);
 }
 
@@ -475,7 +486,7 @@ static gboolean apply_window_key_pressed(GtkWidget *widget, GdkEventKey *event, 
 	if (event && event->keyval == GDK_Escape)
 		apply_window_close();
 	else if (event && event->keyval == GDK_Delete)
-		apply_popup_delete(NULL, 0, NULL);
+		apply_popup_delete(NULL, NULL);
 	return FALSE;
 }
 

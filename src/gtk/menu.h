@@ -46,6 +46,11 @@
 				  GINT_TO_POINTER(data)); 	 \
 }
 
+#define MENUITEM_ADDUI(path, name, action, type)	\
+	gtk_ui_manager_add_ui(gui_manager,	\
+			gtk_ui_manager_new_merge_id(gui_manager),	\
+			path, name, action, type, FALSE);
+
 #define menu_set_insensitive_all(menu_shell) \
 	menu_set_sensitive_all(menu_shell, FALSE);
 
@@ -64,6 +69,8 @@ gchar *menu_translate		(const gchar *path, gpointer data);
 void menu_set_sensitive		(GtkItemFactory		*ifactory,
 				 const gchar		*path,
 				 gboolean		 sensitive);
+
+void cm_menu_set_sensitive(gchar *menu, gboolean sensitive);
 
 void menu_set_active		(GtkItemFactory		*ifactory,
 				 const gchar		*path,

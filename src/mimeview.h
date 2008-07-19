@@ -73,7 +73,6 @@ struct _MimeView
 	gboolean ctree_mode;
 
 	GtkWidget *popupmenu;
-	GtkItemFactory *popupfactory;
 
 	GtkCTreeNode *opened;
 

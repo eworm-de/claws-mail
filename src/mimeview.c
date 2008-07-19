@@ -155,20 +155,47 @@ static void icon_scroll_size_allocate_cb(GtkWidget 	*widget,
 					 MimeView 	*mimeview);
 static MimeInfo *mimeview_get_part_to_use(MimeView *mimeview);
 
-static void mimeview_launch_cb(MimeView *mimeview)
+static void mimeview_launch_cb(GtkAction *action, gpointer data)
 {
+	MimeView *mimeview = (MimeView *)data;
 	mimeview_launch(mimeview, mimeview_get_part_to_use(mimeview));
 }
-static GtkItemFactoryEntry mimeview_popup_entries[] =
+
+static void mimeview_open_with_cb(GtkAction *action, gpointer data)
 {
-	{N_("/_Open (l)"),		  NULL, mimeview_launch_cb,	  0, NULL},
+	mimeview_open_with((MimeView *)data);
+}
+
+static void mimeview_display_as_text_cb(GtkAction *action, gpointer data)
+{
+	mimeview_display_as_text((MimeView *)data);
+}
+
+static void mimeview_save_as_cb(GtkAction *action, gpointer data)
+{
+	mimeview_save_as((MimeView *)data);
+}
+
+static void mimeview_save_all_cb(GtkAction *action, gpointer data)
+{
+	mimeview_save_all((MimeView *)data);
+}
+
+static void mimeview_select_next_part_cb(GtkAction *action, gpointer data)
+{
+	mimeview_select_next_part((MimeView *)data);
+}
+
+static const GtkActionEntry mimeview_menu_actions[] = {
+	{ "MimeView", NULL, "MimeView" },
+	{ "MimeView/Open", NULL, N_("_Open (l)"), NULL, "Open MIME part", G_CALLBACK(mimeview_launch_cb) },
 #ifndef MAEMO
-	{N_("/Open _with (o)..."),	  NULL, mimeview_open_with,	  0, NULL},
+	{ "MimeView/OpenWith", NULL, N_("Open _with (o)..."), NULL, "Open MIME part with...", G_CALLBACK(mimeview_open_with_cb) },
 #endif
-	{N_("/_Display as text (t)"), 	  NULL, mimeview_display_as_text, 0, NULL},
-	{N_("/_Save as (y)..."),	  NULL, mimeview_save_as,	  0, NULL},
-	{N_("/Save _all..."),	 	  NULL, mimeview_save_all,	  0, NULL},
-	{N_("/Next part (a)"),	 	  NULL, mimeview_select_next_part,0, NULL},
+	{ "MimeView/DisplayAsText", NULL, N_("_Display as text (t)"), NULL, "Display as text", G_CALLBACK(mimeview_display_as_text_cb) },
+	{ "MimeView/SaveAs", NULL, N_("_Save as (y)..."), NULL, "Save as", G_CALLBACK(mimeview_save_as_cb) },
+	{ "MimeView/SaveAll", NULL, N_("Save _all..."), NULL, "Save all parts", G_CALLBACK(mimeview_save_all_cb) },
+	{ "MimeView/NextPart", NULL, N_("Next part (a)"), NULL, "Next part", G_CALLBACK(mimeview_select_next_part_cb) }
 };
 
 static GtkTargetEntry mimeview_mime_types[] =
@@ -223,10 +250,10 @@ MimeView *mimeview_create(MainWindow *mainwin)
 	GtkWidget *arrow;
 	GtkWidget *scrollbutton;
 	GtkWidget *hbox;
-	GtkItemFactory *popupfactory;
+	GtkUIManager *gui_manager = gtkut_ui_manager();
+	GtkActionGroup *actions;
 	NoticeView *siginfoview;
 	gchar *titles[N_MIMEVIEW_COLS];
-	gint n_entries;
 	gint i;
 	CLAWS_TIP_DECL();
 
@@ -320,10 +347,31 @@ MimeView *mimeview_create(MainWindow *mainwin)
 	ctree_mainbox = gtk_hbox_new(FALSE, 0);	
 	gtk_box_pack_start(GTK_BOX(ctree_mainbox), scrolledwin, TRUE, TRUE, 0);
 
- 	n_entries = sizeof(mimeview_popup_entries) /
- 		sizeof(mimeview_popup_entries[0]);
- 	popupmenu = menu_create_items(mimeview_popup_entries, n_entries,
- 				      "<MimeView>", &popupfactory, mimeview);
+	actions = gtk_action_group_new("MimeView");
+	gtk_action_group_add_actions(actions, mimeview_menu_actions,
+			G_N_ELEMENTS(mimeview_menu_actions), (gpointer)mimeview);
+	gtk_ui_manager_insert_action_group(gui_manager, actions, 0);
+
+	MENUITEM_ADDUI("/Menus/", "MimeView", "MimeView", GTK_UI_MANAGER_MENU);
+	MENUITEM_ADDUI("/Menus/MimeView/", "Open", "MimeView/Open",
+			GTK_UI_MANAGER_MENUITEM);
+#ifndef MAEMO
+	MENUITEM_ADDUI("/Menus/MimeView/", "OpenWith", "MimeView/OpenWith",
+			GTK_UI_MANAGER_MENUITEM);
+#endif
+	MENUITEM_ADDUI("/Menus/MimeView/", "DisplayAsText", "MimeView/DisplayAsText",
+			GTK_UI_MANAGER_MENUITEM);
+	MENUITEM_ADDUI("/Menus/MimeView/", "SaveAs", "MimeView/SaveAs",
+			GTK_UI_MANAGER_MENUITEM);
+	MENUITEM_ADDUI("/Menus/MimeView/", "SaveAll", "MimeView/SaveAll",
+			GTK_UI_MANAGER_MENUITEM);
+	MENUITEM_ADDUI("/Menus/MimeView/", "NextPart", "MimeView/NextPart",
+			GTK_UI_MANAGER_MENUITEM);
+
+	popupmenu = gtk_menu_item_get_submenu(GTK_MENU_ITEM(
+				gtk_ui_manager_get_widget(gui_manager, "/Menus/MimeView")) );
+
+
 	vbox = gtk_vbox_new(FALSE, 0);
 	gtk_widget_show(vbox);
 	siginfoview = noticeview_create(mainwin);
@@ -353,7 +401,6 @@ MimeView *mimeview_create(MainWindow *mainwin)
 	mimeview->ctree         = ctree;
 	mimeview->mime_notebook = mime_notebook;
 	mimeview->popupmenu     = popupmenu;
-	mimeview->popupfactory  = popupfactory;
 	mimeview->type          = -1;
 	mimeview->ctree_mainbox = ctree_mainbox;
 	mimeview->icon_scroll   = icon_scroll;
@@ -1248,19 +1295,15 @@ static gboolean part_button_pressed(MimeView *mimeview, GdkEventButton *event,
 		if (partinfo && (partinfo->type == MIMETYPE_MESSAGE ||
 				 partinfo->type == MIMETYPE_IMAGE ||
 				 partinfo->type == MIMETYPE_MULTIPART))
-			menu_set_sensitive(mimeview->popupfactory,
-					   "/Display as text (t)", FALSE);
+			cm_menu_set_sensitive("MimeView/DisplayAsText", FALSE);
 		else
-			menu_set_sensitive(mimeview->popupfactory,
-					   "/Display as text (t)", TRUE);
+			cm_menu_set_sensitive("MimeView/DisplayAsText", TRUE);
 		if (partinfo &&
 		    partinfo->type == MIMETYPE_APPLICATION &&
 		    !g_ascii_strcasecmp(partinfo->subtype, "octet-stream"))
-			menu_set_sensitive(mimeview->popupfactory,
-					   "/Open (l)", FALSE);
+			cm_menu_set_sensitive("MimeView/Open", FALSE);
 		else
-			menu_set_sensitive(mimeview->popupfactory,
-					   "/Open (l)", TRUE);
+			cm_menu_set_sensitive("MimeView/Open", TRUE);
 
 		g_object_set_data(G_OBJECT(mimeview->popupmenu),
 				  "pop_partinfo", partinfo);

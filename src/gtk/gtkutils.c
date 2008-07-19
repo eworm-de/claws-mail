@@ -1579,3 +1579,16 @@ gboolean gtkut_list_view_select_row(GtkWidget *list, gint row)
 	return TRUE;
 }
 
+static GtkUIManager *gui_manager = NULL;
+
+GtkUIManager *gtkut_create_ui_manager(void)
+{
+	g_return_val_if_fail(gui_manager == NULL, gui_manager);
+	return (gui_manager = gtk_ui_manager_new());
+}
+
+GtkUIManager *gtkut_ui_manager(void)
+{
+	return gui_manager;
+}
+

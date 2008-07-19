@@ -31,9 +31,11 @@
 #include <gtk/gtkitemfactory.h>
 #include <gtk/gtkbutton.h>
 #include <gtk/gtkwindow.h>
+#include <gtk/gtkutils.h>
 
 #include "menu.h"
 #include "utils.h"
+#include "gtkutils.h"
 
 #ifdef MAEMO
 #ifdef CHINOOK
@@ -102,6 +104,25 @@ void menu_set_sensitive(GtkItemFactory *ifactory, const gchar *path,
 	g_return_if_fail(widget != NULL);
 
 	gtk_widget_set_sensitive(widget, sensitive);
+}
+
+void cm_menu_set_sensitive(gchar *menu, gboolean sensitive)
+{
+	GtkUIManager *gui_manager = gtkut_ui_manager();
+	GtkWidget *widget;
+	gchar *path = g_strdup_printf("/Menus/%s/", menu);
+
+	widget = gtk_ui_manager_get_widget(gui_manager, path);
+	if( !GTK_IS_WIDGET(widget) ) {
+		g_message("Blah, '%s' is not a widget.\n", path);
+	}
+
+	if( !GTK_IS_MENU_ITEM(widget) ) {
+		g_message("Blah, '%s' is not a menu item.\n", path);
+	}
+
+	gtk_widget_set_sensitive(widget, sensitive);
+	g_free(path);
 }
 
 void menu_set_sensitive_all(GtkMenuShell *menu_shell, gboolean sensitive)
