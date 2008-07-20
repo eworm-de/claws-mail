@@ -2768,6 +2768,10 @@ SensitiveCond main_window_get_current_state(MainWindow *mainwin)
 		state |= M_CAN_LEARN_SPAM;
 	}
 
+	if (mainwin->summaryview->folder_item) {
+		state |= M_FOLDER_SELECTED;
+	}
+
 	if (inc_is_active())
 		state |= M_INC_ACTIVE;
 	if (imap_cancel_all_enabled())
@@ -2868,7 +2872,9 @@ void main_window_set_menu_sensitive(MainWindow *mainwin)
 		{"/Message/Re-edit"               , M_HAVE_ACCOUNT|M_ALLOW_REEDIT},
 
 		{"/Tools/Add sender to address book"   , M_SINGLE_TARGET_EXIST},
-		{"/Tools/Collect addresses"       , M_MSG_EXIST|M_SUMMARY_ISLIST},
+		{"/Tools/Collect addresses"            , M_FOLDER_SELECTED},
+		{"/Tools/Collect addresses/from Current folder..."
+						       , M_FOLDER_SELECTED},
 		{"/Tools/Collect addresses/from Selected messages..."
 						       , M_TARGET_EXIST},
 		{"/Tools/Filter all messages in folder", M_MSG_EXIST|M_EXEC},

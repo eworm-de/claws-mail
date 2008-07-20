@@ -1,3 +1,12 @@
+2008-07-20 [paul]	3.5.0cvs27
+
+	* src/addrgather.c
+		remove now redundant code
+	* src/mainwindow.c
+	* src/mainwindow.h
+		fix bug 1673, 'Tools/Harvest adresses is
+		grayed out if folder is empty'
+
 2008-07-19 [ticho]	3.5.0cvs26
 
 	* src/edittags.c

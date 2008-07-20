@@ -57,9 +57,8 @@
 #include "addrindex.h"
 #include "addrbook.h"
 
-#define PAGE_WARNING    0
-#define PAGE_FIELDS     1
-#define PAGE_FINISH     2
+#define PAGE_FIELDS     0
+#define PAGE_FINISH     1
 
 #define NUM_FIELDS      6
 
@@ -253,59 +252,6 @@ static void addrgather_dlg_cancel( GtkWidget *widget, gpointer data ) {
 	checkbtn = gtk_check_button_new_with_label(label); \
 	gtk_widget_show(checkbtn); \
 	gtk_box_pack_start(GTK_BOX(box), checkbtn, FALSE, TRUE, 0); \
-}
-
-/*
- * Create notebook page for warning message.
- * Enter: pageNum Page number.
- *        pageLbl Page label.
- */
-static void addrgather_page_warning( gint pageNum, gchar *pageLbl ) {
-	GtkWidget *vbox;
-	GtkWidget *table;
-	GtkWidget *label;
-	gint top;
-
-	vbox = gtk_vbox_new(FALSE, 8);
-	gtk_container_add( GTK_CONTAINER( addrgather_dlg.notebook ), vbox );
-	gtk_container_set_border_width( GTK_CONTAINER (vbox), BORDER_WIDTH );
-
-	label = gtk_label_new( pageLbl );
-	gtk_widget_show( label );
-	gtk_notebook_set_tab_label(
-		GTK_NOTEBOOK( addrgather_dlg.notebook ),
-		gtk_notebook_get_nth_page( GTK_NOTEBOOK( addrgather_dlg.notebook ), pageNum ),
-		label );
-
-	table = gtk_table_new(3, 2, FALSE);
-	gtk_box_pack_start(GTK_BOX(vbox), table, FALSE, FALSE, 0);
-	gtk_container_set_border_width( GTK_CONTAINER(table), 8 );
-	gtk_table_set_row_spacings(GTK_TABLE(table), 8);
-	gtk_table_set_col_spacings(GTK_TABLE(table), 8 );
-
-	/* First row */
-	top = 0;
-	label = gtk_label_new("");
-	gtk_table_attach(GTK_TABLE(table), label, 0, 1, top, (top + 1), GTK_FILL, 0, 0, 0);
-	gtk_misc_set_alignment(GTK_MISC(label), 0, 0.5);
-
-	/* First row */
-	top++;
-	label = gtk_label_new( _("No folder or message was selected." ) );
-	gtk_table_attach(GTK_TABLE(table), label, 0, 1, top, (top + 1), GTK_FILL, 0, 0, 0);
-	gtk_label_set_justify( GTK_LABEL(label), GTK_JUSTIFY_LEFT );
-	gtk_misc_set_alignment( GTK_MISC(label), 0, 0.5 );
-
-	/* Second row */
-	top++;
-	label = gtk_label_new( _(
-			"Please select a folder to process from the folder\n"
-			"list. Alternatively, select one or messages from\n"
-			"the message list." ) );
-
-	gtk_table_attach( GTK_TABLE(table), label, 0, 1, top, (top + 1), GTK_FILL, 0, 0, 0);
-	gtk_label_set_justify( GTK_LABEL(label), GTK_JUSTIFY_LEFT );
-	gtk_misc_set_alignment( GTK_MISC(label), 0, 0.5 );
 }
 
 /*
@@ -533,7 +479,6 @@ static void addrgather_dlg_create(void)
 								 "Collect Email Address Dialog");
 
 	/* Create notebook pages */
-	addrgather_page_warning(PAGE_WARNING, _("Warning"));
 	addrgather_page_fields(PAGE_FIELDS, _("Header Fields"));
 	addrgather_page_finish(PAGE_FINISH, _("Finish"));
 	gtk_widget_show_all(addrgather_dlg.window);
@@ -603,13 +548,7 @@ AddressBookFile *addrgather_dlg_execute(FolderItem *folderItem, AddressIndex *ad
 	addrgather_dlg_status_show("");
 	gtk_widget_show(addrgather_dlg.window);
 
-	if (errFlag) {
-		gtk_notebook_set_current_page(GTK_NOTEBOOK(addrgather_dlg.notebook), PAGE_WARNING);
-		gtk_widget_set_sensitive(addrgather_dlg.btnOk, FALSE);
-		gtk_widget_grab_default(addrgather_dlg.btnCancel);
-	} else {
-		gtk_widget_grab_focus(addrgather_dlg.entryBook);
-	}
+	gtk_widget_grab_focus(addrgather_dlg.entryBook);
 	manage_window_set_transient(GTK_WINDOW(addrgather_dlg.window));
 	gtk_main();
 
