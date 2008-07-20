@@ -3441,3 +3441,4 @@
 ( cvs diff -u -r 1.5.10.22 -r 1.5.10.23 src/addrgather.c;  cvs diff -u -r 1.274.2.254 -r 1.274.2.255 src/mainwindow.c;  cvs diff -u -r 1.39.2.48 -r 1.39.2.49 src/mainwindow.h;  ) > 3.5.0cvs27.patchset
 ( cvs diff -u -r 1.5.10.23 -r 1.5.10.24 src/addrgather.c;  ) > 3.5.0cvs28.patchset
 ( cvs diff -u -r 1.207.2.202 -r 1.207.2.203 src/folderview.c;  cvs diff -u -r 1.1.2.58 -r 1.1.2.59 src/imap_gtk.c;  cvs diff -u -r 1.2.2.26 -r 1.2.2.27 src/news_gtk.c;  ) > 3.5.0cvs29.patchset
+( cvs diff -u -r 1.1.4.8 -r 1.1.4.9 src/plugins/trayicon/libeggtrayicon/eggtrayicon.c;  ) > 3.5.0cvs30.patchset

@@ -402,12 +402,8 @@ egg_tray_icon_manager_window_destroyed (EggTrayIcon *icon)
   
   g_return_if_fail (icon->manager_window != None);
 
-#if GTK_CHECK_VERSION(2,1,0)
   gdkwin = gdk_window_lookup_for_display (gtk_widget_get_display (GTK_WIDGET (icon)),
 					  icon->manager_window);
-#else
-  gdkwin = gdk_window_lookup (icon->manager_window);
-#endif
 
   gdk_window_remove_filter (gdkwin, egg_tray_icon_manager_filter, icon);
 
@@ -454,19 +450,13 @@ egg_tray_icon_realize (GtkWidget *widget)
   egg_tray_icon_update_manager_window (icon, FALSE);
   egg_tray_icon_send_dock_request (icon);
 
-#if GTK_CHECK_VERSION(2,1,0)
   root_window = gdk_screen_get_root_window (gtk_widget_get_screen (widget));
-#else
-  root_window = gdk_window_lookup (gdk_x11_get_default_root_xwindow ());
-#endif
  
   /* Add a root window filter so that we get changes on MANAGER */
   gdk_window_add_filter (root_window,
 			 egg_tray_icon_manager_filter, icon);
 }
 
-
-#if GTK_CHECK_VERSION(2,1,0)
 EggTrayIcon *
 egg_tray_icon_new_for_screen (GdkScreen *screen, const char *name)
 {
@@ -474,7 +464,6 @@ egg_tray_icon_new_for_screen (GdkScreen *screen, const char *name)
 
   return g_object_new (EGG_TYPE_TRAY_ICON, "screen", screen, "title", name, NULL);
 }
-#endif
 
 EggTrayIcon*
 egg_tray_icon_new (const gchar *name)
