@@ -125,6 +125,7 @@ static void set_sensitivity(GtkItemFactory *factory, FolderItem *item)
 	SET_SENS("/Check for new messages", folder_item_parent(item) == NULL);
 	SET_SENS("/Check for new folders",  folder_item_parent(item) == NULL);
 	SET_SENS("/Rebuild folder tree",    folder_item_parent(item) == NULL);
+	SET_SENS("/Download messages",      !item->no_select);
 	
 	SET_SENS("/Subscriptions/Unsubscribe...",    item->stype == F_NORMAL && folder_item_parent(item) != NULL);
 	SET_SENS("/Subscriptions/Subscribe...",    TRUE);

@@ -93,24 +93,29 @@ static void set_sensitivity(GtkItemFactory *factory, FolderItem *item)
 	menu_set_sensitive(factory, name, sens)
 
 	SET_SENS("/Subscribe to newsgroup...", 
-		 folder_item_parent(item) == NULL 
-		 && mainwin->lock_count == 0
-		 && news_folder_locked(item->folder) == 0);
+			folder_item_parent(item) == NULL 
+			&& mainwin->lock_count == 0
+			&& news_folder_locked(item->folder) == 0);
 	SET_SENS("/Unsubscribe newsgroup",     
-		 folder_item_parent(item) != NULL 
-		 && mainwin->lock_count == 0
-		 && news_folder_locked(item->folder) == 0);
+			folder_item_parent(item) != NULL 
+			&& mainwin->lock_count == 0
+			&& news_folder_locked(item->folder) == 0);
 	SET_SENS("/Check for new messages",    
-		 folder_item_parent(item) == NULL 
-		 && mainwin->lock_count == 0
-		 && news_folder_locked(item->folder) == 0);
+			folder_item_parent(item) == NULL 
+			&& mainwin->lock_count == 0
+			&& news_folder_locked(item->folder) == 0);
 	SET_SENS("/Synchronise",    
-		 item ? (folder_item_parent(item) != NULL && folder_want_synchronise(item->folder))
-			 : FALSE);
-	SET_SENS("/Rename folder...", 
-		 folder_item_parent(item) != NULL 
-		 && mainwin->lock_count == 0
-		 && news_folder_locked(item->folder) == 0);
+			item ? (folder_item_parent(item) != NULL
+			&& folder_want_synchronise(item->folder))
+			: FALSE);
+	SET_SENS("/Download messages",
+			item ? (folder_item_parent(item) != NULL
+			&& !item->no_select)
+			: FALSE);
+	SET_SENS("/Rename folder...",
+			folder_item_parent(item) != NULL 
+			&& mainwin->lock_count == 0
+			&& news_folder_locked(item->folder) == 0);
 #undef SET_SENS
 }
 
