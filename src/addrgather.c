@@ -495,7 +495,6 @@ static void addrgather_dlg_create(void)
 AddressBookFile *addrgather_dlg_execute(FolderItem *folderItem, AddressIndex *addrIndex,
 					gboolean sourceInd, GList *msgList)
 {
-	gboolean errFlag;
 	gint i;
 
 	_harv_addressIndex_ = addrIndex;
@@ -508,36 +507,29 @@ AddressBookFile *addrgather_dlg_execute(FolderItem *folderItem, AddressIndex *ad
 	
 	addrgather_dlg.done = FALSE;
 
-	errFlag = TRUE;
-	if (folderItem && folderItem->path) {
-		gtk_notebook_set_current_page(GTK_NOTEBOOK(addrgather_dlg.notebook), PAGE_FIELDS);
-		addrgather_dlg.folderPath = folder_item_get_path(folderItem);
+	gtk_notebook_set_current_page(GTK_NOTEBOOK(addrgather_dlg.notebook), PAGE_FIELDS);
+	addrgather_dlg.folderPath = folder_item_get_path(folderItem);
 
-		/* Setup some default values */
-		gtk_label_set_text(GTK_LABEL(addrgather_dlg.labelFolder), folderItem->path);
-		gtk_entry_set_text(GTK_ENTRY(addrgather_dlg.entryBook), folderItem->path);
+	/* Setup some default values */
+	gtk_label_set_text(GTK_LABEL(addrgather_dlg.labelFolder), folderItem->path);
+	gtk_entry_set_text(GTK_ENTRY(addrgather_dlg.entryBook), folderItem->path);
 
-		for (i = 0; i < NUM_FIELDS; i++) {
+	for (i = 0; i < NUM_FIELDS; i++) {
+		gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(addrgather_dlg.checkHeader[i]),
+					     FALSE);
+		if (g_utf8_collate(_harv_headerNames_[i], HEADER_FROM) == 0)
 			gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(addrgather_dlg.checkHeader[i]),
-						     FALSE);
-			if (g_utf8_collate(_harv_headerNames_[i], HEADER_FROM) == 0)
-				gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(addrgather_dlg.checkHeader[i]),
-							     TRUE);
-		}
-
-		gtk_widget_set_sensitive(addrgather_dlg.btnOk, TRUE);
-		gtk_widget_grab_default(addrgather_dlg.btnOk);
-		errFlag = FALSE;
+						    TRUE);
 	}
+
+	gtk_widget_set_sensitive(addrgather_dlg.btnOk, TRUE);
+	gtk_widget_grab_default(addrgather_dlg.btnOk);
 
 	/* Apply window title */
 	if (sourceInd) {
 		gtk_window_set_title(GTK_WINDOW(addrgather_dlg.window),
 				     _("Collect email addresses from selected messages"));
 		gtk_widget_set_sensitive(addrgather_dlg.checkRecurse, FALSE);
-		if (msgList == NULL) {
-			errFlag = TRUE;
-		}
 	} else {
 		gtk_window_set_title(GTK_WINDOW(addrgather_dlg.window),
 				     _("Collect email addresses from folder"));
@@ -552,10 +544,8 @@ AddressBookFile *addrgather_dlg_execute(FolderItem *folderItem, AddressIndex *ad
 	manage_window_set_transient(GTK_WINDOW(addrgather_dlg.window));
 	gtk_main();
 
-	if (!errFlag) {
-		g_free(addrgather_dlg.folderPath);
-		addrgather_dlg.folderPath = NULL;
-	}
+	g_free(addrgather_dlg.folderPath);
+	addrgather_dlg.folderPath = NULL;
 	gtk_widget_hide(addrgather_dlg.window);
 	_harv_addressIndex_ = NULL;
 

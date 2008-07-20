@@ -1,3 +1,8 @@
+2008-07-20 [paul]	3.5.0cvs28
+
+	* src/addrgather.c
+		remove more redundant code following cvs27
+
 2008-07-20 [paul]	3.5.0cvs27
 
 	* src/addrgather.c
