@@ -1,3 +1,10 @@
+2008-07-23 [colin]	3.5.0cvs31
+
+	* src/plugins/pgpcore/pgp_viewer.c
+	* src/plugins/pgpcore/sgpgme.c
+		Fix bug 1681, 'GnuPG Plugin does not compile on solaris'
+		Patch by Thomas Wiegner <wiegner@gmx.de>
+
 2008-07-20 [paul]	3.5.0cvs30
 
 	* src/plugins/trayicon/libeggtrayicon/eggtrayicon.c
