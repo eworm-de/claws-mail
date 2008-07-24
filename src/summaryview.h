@@ -25,10 +25,7 @@
 
 #include <glib.h>
 #include <gdk/gdk.h>
-#include <gtk/gtkwidget.h>
-#include <gtk/gtkitemfactory.h>
-#include <gtk/gtkctree.h>
-#include <gtk/gtkdnd.h>
+#include <gtk/gtk.h>
 
 typedef struct _SummaryView		SummaryView;
 typedef struct _SummaryColumnState	SummaryColumnState;
@@ -113,7 +110,7 @@ struct _SummaryView
 	GtkWidget *colorlabel_menu;
 	GtkWidget *tags_menu;
 
-	GtkItemFactory *popupfactory;
+	GtkActionGroup *action_group;
 
 	GtkWidget *window;
 

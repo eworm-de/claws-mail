@@ -1,3 +1,13 @@
+2008-07-24 [colin]	3.5.0cvs32
+
+	* src/mimeview.c
+		Fix a gtk warning on clear
+	* src/mainwindow.c
+	* src/summaryview.c
+	* src/summaryview.h
+		Switch the message list popup menu to
+		GtkUIManager
+
 2008-07-23 [colin]	3.5.0cvs31
 
 	* src/plugins/pgpcore/pgp_viewer.c

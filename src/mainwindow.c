@@ -1920,12 +1920,10 @@ MainWindow *main_window_create()
 		       	G_CALLBACK(main_window_accel_activate), mainwin);
 			 
 	
-	ADD_MENU_ACCEL_GROUP_TO_WINDOW(summaryview->popupmenu, mainwin->window);
+/*	ADD_MENU_ACCEL_GROUP_TO_WINDOW(summaryview->popupmenu, mainwin->window);
 	
-	/* connect the accelerators for equivalent 
-	   menu items in different menus             */
 	menu_connect_identical_items();
-
+*/
 #ifndef GENERIC_UMPC
 	gtk_window_iconify(GTK_WINDOW(mainwin->window));
 #endif
