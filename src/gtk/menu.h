@@ -46,10 +46,22 @@
 				  GINT_TO_POINTER(data)); 	 \
 }
 
-#define MENUITEM_ADDUI(path, name, action, type)	\
-	gtk_ui_manager_add_ui(gui_manager,	\
-			gtk_ui_manager_new_merge_id(gui_manager),	\
+#define MENUITEM_ADDUI(path, name, action, type)		 \
+	gtk_ui_manager_add_ui(gtkut_ui_manager(),		 \
+			gtk_ui_manager_new_merge_id(gui_manager),\
 			path, name, action, type, FALSE);
+
+#define MENUITEM_ADDUI_ID(path, name, action, type,id)		 \
+	id = gtk_ui_manager_new_merge_id(gtkut_ui_manager());	 \
+	gtk_ui_manager_add_ui(gtkut_ui_manager(),		 \
+			id,					 \
+			path, name, action, type, FALSE);
+
+#define MENUITEM_REMUI(action_group,name,id) {			\
+	GtkAction *action = gtk_action_group_get_action(action_group, name); \
+	if (action) gtk_action_group_remove_action(action_group, action);	\
+	if (id) gtk_ui_manager_remove_ui(gtkut_ui_manager(), id);	\
+}
 
 #define menu_set_insensitive_all(menu_shell) \
 	menu_set_sensitive_all(menu_shell, FALSE);

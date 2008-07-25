@@ -1,3 +1,9 @@
+2008-07-25 [colin]	3.5.0cvs33
+
+	* src/gtk/menu.h
+		Add a macro to remove menu items
+		Make the gui_manager variable useless
+
 2008-07-24 [colin]	3.5.0cvs32
 
 	* src/mimeview.c
