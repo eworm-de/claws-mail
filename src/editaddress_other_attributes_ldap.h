@@ -77,8 +77,6 @@ struct _PersonEdit_dlg {
 	gboolean editNew;
 	gboolean read_only;
 	gboolean ldap;
-	GtkItemFactory *editaddr_popupfactory;
-	GtkWidget *editaddr_popupmenu;
 };
 
 #ifdef USE_LDAP

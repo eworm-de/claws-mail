@@ -347,10 +347,8 @@ MimeView *mimeview_create(MainWindow *mainwin)
 	ctree_mainbox = gtk_hbox_new(FALSE, 0);	
 	gtk_box_pack_start(GTK_BOX(ctree_mainbox), scrolledwin, TRUE, TRUE, 0);
 
-	actions = gtk_action_group_new("MimeView");
-	gtk_action_group_add_actions(actions, mimeview_menu_actions,
+	actions = cm_menu_create_action_group("MimeView", mimeview_menu_actions,
 			G_N_ELEMENTS(mimeview_menu_actions), (gpointer)mimeview);
-	gtk_ui_manager_insert_action_group(gui_manager, actions, 0);
 
 	MENUITEM_ADDUI("/Menus/", "MimeView", "MimeView", GTK_UI_MANAGER_MENU);
 	MENUITEM_ADDUI("/Menus/MimeView/", "Open", "MimeView/Open",

@@ -100,29 +100,29 @@ static void prefs_filtering_set_list	(void);
 static gboolean prefs_filtering_search_func_cb (GtkTreeModel *model, gint column, 
 						const gchar *key, GtkTreeIter *iter, 
 						gpointer search_data);
-static void prefs_filtering_register_cb	(void);
-static void prefs_filtering_substitute_cb	(void);
-static void prefs_filtering_delete_cb	(void);
-static void prefs_filtering_delete_all_cb(void);
-static void prefs_filtering_clear_cb(void);
-static void prefs_filtering_duplicate_cb(void);
-static void prefs_filtering_top		(void);
-static void prefs_filtering_page_up(void);
-static void prefs_filtering_up		(void);
-static void prefs_filtering_down	(void);
-static void prefs_filtering_page_down(void);
-static void prefs_filtering_bottom	(void);
+static void prefs_filtering_register_cb	(gpointer action, gpointer data);
+static void prefs_filtering_substitute_cb	(gpointer action, gpointer data);
+static void prefs_filtering_delete_cb	(gpointer action, gpointer data);
+static void prefs_filtering_delete_all_cb(gpointer action, gpointer data);
+static void prefs_filtering_clear_cb(gpointer action, gpointer data);
+static void prefs_filtering_duplicate_cb(gpointer action, gpointer data);
+static void prefs_filtering_top		(gpointer action, gpointer data);
+static void prefs_filtering_page_up	(gpointer action, gpointer data);
+static void prefs_filtering_up		(gpointer action, gpointer data);
+static void prefs_filtering_down	(gpointer action, gpointer data);
+static void prefs_filtering_page_down	(gpointer action, gpointer data);
+static void prefs_filtering_bottom	(gpointer action, gpointer data);
 static gint prefs_filtering_deleted	(GtkWidget	*widget,
 					 GdkEventAny	*event,
 					 gpointer	 data);
 static gboolean prefs_filtering_key_pressed(GtkWidget	*widget,
 					 GdkEventKey	*event,
 					 gpointer	 data);
-static void prefs_filtering_cancel	(void);
-static void prefs_filtering_ok		(void);
+static void prefs_filtering_cancel	(gpointer action, gpointer data);
+static void prefs_filtering_ok		(gpointer action, gpointer data);
 
-static void prefs_filtering_condition_define	(void);
-static void prefs_filtering_action_define(void);
+static void prefs_filtering_condition_define	(gpointer action, gpointer data);
+static void prefs_filtering_action_define	(gpointer action, gpointer data);
 static gint prefs_filtering_list_view_set_row	(gint row, FilteringProp * prop);
 					  
 static void prefs_filtering_reset_dialog	(void);
@@ -1083,7 +1083,7 @@ static void prefs_filtering_condition_define_done(MatcherList * matchers)
 	}
 }
 
-static void prefs_filtering_condition_define(void)
+static void prefs_filtering_condition_define(gpointer action, gpointer data)
 {
 	gchar * cond_str;
 	MatcherList * matchers = NULL;
@@ -1119,7 +1119,7 @@ static void prefs_filtering_action_define_done(GSList * action_list)
 	}
 }
 
-static void prefs_filtering_action_define(void)
+static void prefs_filtering_action_define(gpointer action, gpointer data)
 {
 	gchar * action_str;
 	GSList * action_list = NULL;
@@ -1200,7 +1200,7 @@ fail:
 	return prop;
 }
 
-static void prefs_filtering_register_cb(void)
+static void prefs_filtering_register_cb(gpointer action, gpointer data)
 {
 	FilteringProp *prop;
 	
@@ -1215,7 +1215,7 @@ static void prefs_filtering_register_cb(void)
 	modified = TRUE;
 }
 
-static void prefs_filtering_substitute_cb(void)
+static void prefs_filtering_substitute_cb(gpointer action, gpointer data)
 {
 	gint selected_row = gtkut_list_view_get_selected_row
 		(filtering.cond_list_view);
@@ -1247,7 +1247,7 @@ static void prefs_filtering_substitute_cb(void)
 	modified = TRUE;
 }
 
-static void prefs_filtering_delete_cb(void)
+static void prefs_filtering_delete_cb(gpointer action, gpointer data)
 {
 	GtkTreeView *list_view = GTK_TREE_VIEW(filtering.cond_list_view);
 	GtkTreeModel *model;
@@ -1273,7 +1273,7 @@ static void prefs_filtering_delete_cb(void)
 	modified = TRUE;
 }
 
-static void prefs_filtering_delete_all_cb(void)
+static void prefs_filtering_delete_all_cb(gpointer action, gpointer data)
 {
 	GtkListStore *list_store;
 	
@@ -1289,12 +1289,12 @@ static void prefs_filtering_delete_all_cb(void)
 	modified = TRUE;
 }
 
-static void prefs_filtering_clear_cb(void)
+static void prefs_filtering_clear_cb(gpointer action, gpointer data)
 {
 	prefs_filtering_reset_dialog();
 }
 
-static void prefs_filtering_duplicate_cb(void)
+static void prefs_filtering_duplicate_cb(gpointer action, gpointer data)
 {
 	gint selected_row = gtkut_list_view_get_selected_row
 		(filtering.cond_list_view);	
@@ -1325,7 +1325,7 @@ static void prefs_filtering_duplicate_cb(void)
 	modified = TRUE;
 }
 
-static void prefs_filtering_top(void)
+static void prefs_filtering_top(gpointer action, gpointer data)
 {
 	gint row;
 	GtkTreeIter top, sel;
@@ -1346,7 +1346,7 @@ static void prefs_filtering_top(void)
 	modified = TRUE;
 }
 
-static void prefs_filtering_page_up(void)
+static void prefs_filtering_page_up(gpointer action, gpointer data)
 {
 	gint row, target_row, n_rows;
 	GtkTreeIter selected, target;
@@ -1378,7 +1378,7 @@ static void prefs_filtering_page_up(void)
 	gtkut_list_view_select_row(filtering.cond_list_view, target_row);
 	modified = TRUE;
 }
-static void prefs_filtering_up(void)
+static void prefs_filtering_up(gpointer action, gpointer data)
 {
 	gint row;
 	GtkTreeIter top, sel;
@@ -1399,7 +1399,7 @@ static void prefs_filtering_up(void)
 	modified = TRUE;
 }
 
-static void prefs_filtering_down(void)
+static void prefs_filtering_down(gpointer action, gpointer data)
 {
 	gint row, n_rows;
 	GtkTreeIter top, sel;
@@ -1420,7 +1420,7 @@ static void prefs_filtering_down(void)
 	modified = TRUE;
 }
 
-static void prefs_filtering_page_down(void)
+static void prefs_filtering_page_down(gpointer action, gpointer data)
 {
 	gint row, target_row, n_rows;
 	GtkTreeIter selected, target;
@@ -1453,7 +1453,7 @@ static void prefs_filtering_page_down(void)
 	modified = TRUE;
 }
 
-static void prefs_filtering_bottom(void)
+static void prefs_filtering_bottom(gpointer action, gpointer data)
 {
 	gint row, n_rows;
 	GtkTreeIter top, sel;
@@ -1506,7 +1506,7 @@ static void prefs_filtering_select_set(FilteringProp *prop)
 static gint prefs_filtering_deleted(GtkWidget *widget, GdkEventAny *event,
 				 gpointer data)
 {
-	prefs_filtering_cancel();
+	prefs_filtering_cancel(NULL, NULL);
 	return TRUE;
 }
 
@@ -1514,7 +1514,7 @@ static gboolean prefs_filtering_key_pressed(GtkWidget *widget, GdkEventKey *even
 				     gpointer data)
 {
 	if (event && event->keyval == GDK_Escape) {
-		prefs_filtering_cancel();
+		prefs_filtering_cancel(NULL, NULL);
 		return TRUE;			
 	}
 	return FALSE;
@@ -1592,7 +1592,7 @@ static gboolean prefs_filtering_check_mod(gboolean check_changed_list)
 	return FALSE;
 }
 
-static void prefs_filtering_ok(void)
+static void prefs_filtering_ok(gpointer action, gpointer data)
 {
 	if (prefs_filtering_check_mod(FALSE))
 		return;
@@ -1602,7 +1602,7 @@ static void prefs_filtering_ok(void)
 	prefs_filtering_close();
 }
 
-static void prefs_filtering_cancel(void)
+static void prefs_filtering_cancel(gpointer action, gpointer data)
 {
 	if (prefs_filtering_check_mod(TRUE))
 		return;
@@ -1743,18 +1743,19 @@ static void prefs_filtering_list_view_get_rule_info(GtkWidget *list, gint row,
 	}
 }
 
-static GtkItemFactory *prefs_filtering_popup_factory = NULL;
+static GtkActionGroup *prefs_filtering_popup_action = NULL;
 static GtkWidget *prefs_filtering_popup_menu = NULL;
 
-static GtkItemFactoryEntry prefs_filtering_popup_entries[] =
+static GtkActionEntry prefs_filtering_popup_entries[] =
 {
-	{N_("/_Delete"),		NULL, prefs_filtering_delete_cb, 0, NULL, NULL},
-	{N_("/Delete _all"),		NULL, prefs_filtering_delete_all_cb, 0, NULL, NULL},
-	{N_("/D_uplicate"),		NULL, prefs_filtering_duplicate_cb, 0, NULL, NULL},
+	{"PrefsFilteringPopup",			NULL, "PrefsFilteringPopup" },
+	{"PrefsFilteringPopup/Delete",		NULL, N_("_Delete"), NULL, NULL, G_CALLBACK(prefs_filtering_delete_cb) },
+	{"PrefsFilteringPopup/DeleteAll",	NULL, N_("Delete _all"), NULL, NULL, G_CALLBACK(prefs_filtering_delete_all_cb) },
+	{"PrefsFilteringPopup/Duplicate",	NULL, N_("D_uplicate"), NULL, NULL, G_CALLBACK(prefs_filtering_duplicate_cb) },
 #ifdef GENERIC_UMPC
-	{N_("/---"),			NULL, NULL, 0, "<Separator>", NULL},
-	{N_("/Move one page up"),		NULL, prefs_filtering_page_up, 0, NULL, NULL},
-	{N_("/Move one page down"),		NULL, prefs_filtering_page_down, 0, NULL, NULL},
+	{"PrefsFilteringPopup/---",		NULL, "---", NULL, NULL, NULL },
+	{"PrefsFilteringPopup/PageUp",		NULL, N_("Move one page up"), NULL, NULL, G_CALLBACK(prefs_filtering_page_up) },
+	{"PrefsFilteringPopup/PageDown",	NULL, N_("Move one page down"), NULL, NULL, G_CALLBACK(prefs_filtering_page_down) },
 #endif
 };
 
@@ -1782,24 +1783,32 @@ static gint prefs_filtering_list_btn_pressed(GtkWidget *widget, GdkEventButton *
 			gint row;
 
 			if (!prefs_filtering_popup_menu) {
-				gint n_entries = sizeof(prefs_filtering_popup_entries) /
-						sizeof(prefs_filtering_popup_entries[0]);
-				prefs_filtering_popup_menu = menu_create_items(prefs_filtering_popup_entries,
-								  n_entries, "<PrefsFilteringPopupMenu>",
-								  &prefs_filtering_popup_factory, list_view);
+				prefs_filtering_popup_action = cm_menu_create_action_group("PrefsFilteringPopup", prefs_filtering_popup_entries,
+					G_N_ELEMENTS(prefs_filtering_popup_entries), (gpointer)list_view);
+				MENUITEM_ADDUI("/Menus", "PrefsFilteringPopup", "PrefsFilteringPopup", GTK_UI_MANAGER_MENU)
+				MENUITEM_ADDUI("/Menus/PrefsFilteringPopup", "Delete", "PrefsFilteringPopup/Delete", GTK_UI_MANAGER_MENUITEM)
+				MENUITEM_ADDUI("/Menus/PrefsFilteringPopup", "DeleteAll", "PrefsFilteringPopup/DeleteAll", GTK_UI_MANAGER_MENUITEM)
+				MENUITEM_ADDUI("/Menus/PrefsFilteringPopup", "Duplicate", "PrefsFilteringPopup/Duplicate", GTK_UI_MANAGER_MENUITEM)
+#ifdef GENERIC_UMPC
+				MENUITEM_ADDUI("/Menus/PrefsFilteringPopup", "Separator1", "PrefsFilteringPopup/---", GTK_UI_MANAGER_SEPARATOR)
+				MENUITEM_ADDUI("/Menus/PrefsFilteringPopup", "PageUp", "PrefsFilteringPopup/PageUp", GTK_UI_MANAGER_MENUITEM)
+				MENUITEM_ADDUI("/Menus/PrefsFilteringPopup", "PageDown", "PrefsFilteringPopup/PageDown", GTK_UI_MANAGER_MENUITEM)
+#endif
+				prefs_filtering_popup_menu = gtk_menu_item_get_submenu(GTK_MENU_ITEM(
+					gtk_ui_manager_get_widget(gtkut_ui_manager(), "/Menus/PrefsFilteringPopup")) );
 			}
 
 			/* grey out some popup menu items if there is no selected row */
 			row = gtkut_list_view_get_selected_row(GTK_WIDGET(list_view));
-			menu_set_sensitive(prefs_filtering_popup_factory, "/Delete", (row > 0));
-			menu_set_sensitive(prefs_filtering_popup_factory, "/Duplicate", (row > 0));
+			cm_menu_set_sensitive("PrefsFilteringPopup/Delete", (row > 0));
+			cm_menu_set_sensitive("PrefsFilteringPopup/Duplicate", (row > 0));
 
 			/* grey out seom popup menu items if there is no row
 			   (not counting the (New) one at row 0) */
 			non_empty = gtk_tree_model_get_iter_first(model, &iter);
 			if (non_empty)
 				non_empty = gtk_tree_model_iter_next(model, &iter);
-			menu_set_sensitive(prefs_filtering_popup_factory, "/Delete all", non_empty);
+			cm_menu_set_sensitive("PrefsFilteringPopup/DeleteAll", non_empty);
 
 			gtk_menu_popup(GTK_MENU(prefs_filtering_popup_menu), 
 			    	   NULL, NULL, NULL, NULL, 

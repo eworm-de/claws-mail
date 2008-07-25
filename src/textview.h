@@ -57,12 +57,12 @@ struct _TextView
 	GtkWidget *scrolledwin;
 	GtkWidget *text;
 
+	GtkActionGroup *link_action_group;
 	GtkWidget *link_popup_menu;
-	GtkItemFactory *link_popup_factory;
+	GtkActionGroup *mail_action_group;
 	GtkWidget *mail_popup_menu;
-	GtkItemFactory *mail_popup_factory;
+	GtkActionGroup *file_action_group;
 	GtkWidget *file_popup_menu;
-	GtkItemFactory *file_popup_factory;
 
 	gboolean default_text;
 	gboolean is_in_signature;

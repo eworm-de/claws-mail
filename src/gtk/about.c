@@ -64,8 +64,6 @@ static gboolean key_pressed(GtkWidget *widget, GdkEventKey *event);
 static gboolean about_textview_uri_clicked(GtkTextTag *tag, GObject *obj,
 					GdkEvent *event, GtkTextIter *iter,
 					GtkWidget *textview);
-static void about_open_link_cb(GtkWidget *widget, guint action, void *data);
-static void about_copy_link_cb(GtkWidget *widget, guint action, void *data);
 static gboolean about_textview_motion_notify(GtkWidget *widget,
 					GdkEventMotion *event,
 					GtkWidget *textview);
@@ -73,12 +71,6 @@ static gboolean about_textview_leave_notify(GtkWidget *widget,
 					GdkEventCrossing *event,
 					GtkWidget *textview);
 static void about_textview_uri_update(GtkWidget *textview, gint x, gint y);
-
-static GtkItemFactoryEntry textview_link_popup_entries[] = 
-{
-	{N_("/_Open with Web browser"),	NULL, about_open_link_cb, 0, NULL},
-	{N_("/Copy this _link"),	NULL, about_copy_link_cb, 0, NULL},
-};
 
 static GtkWidget *link_popupmenu;
 
@@ -862,19 +854,12 @@ static gboolean about_textview_uri_clicked(GtkTextTag *tag, GObject *obj,
 
 	} else {
 		if (bevent->button == 3 && event->type == GDK_BUTTON_PRESS) {
-			GtkItemFactory *link_popupfactory;
-			gint n_entries;
-
-			n_entries = sizeof(textview_link_popup_entries) /
-					sizeof(textview_link_popup_entries[0]);
-			link_popupmenu = menu_create_items(
-							textview_link_popup_entries, n_entries,
-				    		"<UriPopupMenu>", &link_popupfactory,
-				    		textview);
+			link_popupmenu = gtk_menu_item_get_submenu(GTK_MENU_ITEM(
+				gtk_ui_manager_get_widget(gtkut_ui_manager(), "/Menus/TextviewPopupLink")));
 
 			g_object_set_data(
 					G_OBJECT(link_popupmenu),
-					"menu_button", link);
+					"raw_url", link);
 			gtk_menu_popup(GTK_MENU(link_popupmenu), 
 					NULL, NULL, NULL, NULL, 
 					bevent->button, bevent->time);
@@ -883,34 +868,6 @@ static gboolean about_textview_uri_clicked(GtkTextTag *tag, GObject *obj,
 		}
 	}
 	return FALSE;
-}
-
-static void about_open_link_cb(GtkWidget *widget, guint action, void *data)
-{
-	gchar *link = g_object_get_data(G_OBJECT(link_popupmenu),
-					   "menu_button");
-
-	if (link == NULL) {
-		return;
-	}
-
-	open_uri(link, prefs_common_get_uri_cmd());
-	g_object_set_data(G_OBJECT(link_popupmenu), "menu_button",
-			  NULL);
-}
-
-static void about_copy_link_cb(GtkWidget *widget, guint action, void *data)
-{
-	gchar *link = g_object_get_data(G_OBJECT(link_popupmenu),
-					   "menu_button");
-
-	if (link == NULL) {
-		return;
-	}
-
-	gtk_clipboard_set_text(gtk_clipboard_get(GDK_SELECTION_PRIMARY), link, -1);
-	gtk_clipboard_set_text(gtk_clipboard_get(GDK_SELECTION_CLIPBOARD), link, -1);
-	g_object_set_data(G_OBJECT(link_popupmenu), "menu_button", NULL);
 }
 
 static gboolean about_textview_motion_notify(GtkWidget *widget,

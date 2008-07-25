@@ -187,46 +187,42 @@ static void textview_toggle_quote		(TextView 	*textview,
 						 ClickableText 	*uri,
 						 gboolean	 expand_only);
 
-static void open_uri_cb				(TextView 	*textview,
-						 guint		 action,
-						 void		*data);
-static void copy_uri_cb				(TextView 	*textview,
-						 guint		 action,
-						 void		*data);
-static void add_uri_to_addrbook_cb 		(TextView 	*textview, 
-						 guint 		 action, 
-						 void 		*data);
-static void mail_to_uri_cb 			(TextView 	*textview, 
-						 guint 		 action, 
-						 void 		*data);
-static void copy_mail_to_uri_cb			(TextView 	*textview,
-						 guint		 action,
-						 void		*data);
-static void save_file_cb			(TextView 	*textview,
-						 guint		 action,
-						 void		*data);
-static void open_image_cb			(TextView 	*textview,
-						 guint		 action,
-						 void		*data);
+static void open_uri_cb				(GtkAction	*action,
+						 TextView	*textview);
+static void copy_uri_cb				(GtkAction	*action,
+						 TextView	*textview);
+static void add_uri_to_addrbook_cb 		(GtkAction	*action,
+						 TextView	*textview);
+static void mail_to_uri_cb 			(GtkAction	*action,
+						 TextView	*textview);
+static void copy_mail_to_uri_cb			(GtkAction	*action,
+						 TextView	*textview);
+static void save_file_cb			(GtkAction	*action,
+						 TextView	*textview);
+static void open_image_cb			(GtkAction	*action,
+						 TextView	*textview);
 static void textview_show_tags(TextView *textview);
 
-static GtkItemFactoryEntry textview_link_popup_entries[] = 
+static GtkActionEntry textview_link_popup_entries[] = 
 {
-	{N_("/_Open with Web browser"),	NULL, open_uri_cb, 0, NULL},
-	{N_("/Copy this _link"),	NULL, copy_uri_cb, 0, NULL},
+	{"TextviewPopupLink",			NULL, "TextviewPopupLink" },
+	{"TextviewPopupLink/Open",		NULL, N_("_Open in web browser"), NULL, NULL, G_CALLBACK(open_uri_cb) },
+	{"TextviewPopupLink/Copy",		NULL, N_("Copy this _link"), NULL, NULL, G_CALLBACK(copy_uri_cb) },
 };
 
-static GtkItemFactoryEntry textview_mail_popup_entries[] = 
+static GtkActionEntry textview_mail_popup_entries[] = 
 {
-	{N_("/Compose _new message"),	NULL, mail_to_uri_cb, 0, NULL},
-	{N_("/Add to _address book"),	NULL, add_uri_to_addrbook_cb, 0, NULL},
-	{N_("/Copy this add_ress"),	NULL, copy_mail_to_uri_cb, 0, NULL},
+	{"TextviewPopupMail",			NULL, "TextviewPopupMail" },
+	{"TextviewPopupMail/Compose",		NULL, N_("Compose _new message"), NULL, NULL, G_CALLBACK(mail_to_uri_cb) },
+	{"TextviewPopupMail/AddAB",		NULL, N_("Add to _Address book"), NULL, NULL, G_CALLBACK(add_uri_to_addrbook_cb) },
+	{"TextviewPopupMail/Copy",		NULL, N_("Copy this add_ress"), NULL, NULL, G_CALLBACK(copy_mail_to_uri_cb) },
 };
 
-static GtkItemFactoryEntry textview_file_popup_entries[] = 
+static GtkActionEntry textview_file_popup_entries[] = 
 {
-	{N_("/_Open image"),		NULL, open_image_cb, 0, NULL},
-	{N_("/_Save image..."),		NULL, save_file_cb, 0, NULL},
+	{"TextviewPopupFile",			NULL, "TextviewPopupFile" },
+	{"TextviewPopupFile/Open",		NULL, N_("_Open image"), NULL, NULL, G_CALLBACK(open_image_cb) },
+	{"TextviewPopupFile/Save",		NULL, N_("_Save image..."), NULL, NULL, G_CALLBACK(save_file_cb) },
 };
 
 static void scrolled_cb (GtkAdjustment *adj, TextView *textview)
@@ -261,10 +257,7 @@ TextView *textview_create(void)
 	GtkWidget *text;
 	GtkTextBuffer *buffer;
 	GtkClipboard *clipboard;
-	GtkItemFactory *link_popupfactory, *mail_popupfactory, *file_popupfactory;
-	GtkWidget *link_popupmenu, *mail_popupmenu, *file_popupmenu;
 	GtkAdjustment *adj;
-	gint n_entries;
 
 	debug_print("Creating text view...\n");
 	textview = g_new0(TextView, 1);
@@ -322,23 +315,35 @@ TextView *textview_create(void)
 
 	gtk_widget_show(vbox);
 
-	n_entries = sizeof(textview_link_popup_entries) /
-		sizeof(textview_link_popup_entries[0]);
-	link_popupmenu = menu_create_items(textview_link_popup_entries, n_entries,
-				      "<UriPopupMenu>", &link_popupfactory,
-				      textview);
+	
+	textview->link_action_group = cm_menu_create_action_group("TextviewPopupLink",
+			textview_link_popup_entries,
+			G_N_ELEMENTS(textview_link_popup_entries), (gpointer)textview);
+	textview->mail_action_group = cm_menu_create_action_group("TextviewPopupMail",
+			textview_mail_popup_entries,
+			G_N_ELEMENTS(textview_mail_popup_entries), (gpointer)textview);
+	textview->file_action_group = cm_menu_create_action_group("TextviewPopupFile",
+			textview_file_popup_entries,
+			G_N_ELEMENTS(textview_file_popup_entries), (gpointer)textview);
 
-	n_entries = sizeof(textview_mail_popup_entries) /
-		sizeof(textview_mail_popup_entries[0]);
-	mail_popupmenu = menu_create_items(textview_mail_popup_entries, n_entries,
-				      "<UriPopupMenu>", &mail_popupfactory,
-				      textview);
+	MENUITEM_ADDUI("/Menus", "TextviewPopupLink", "TextviewPopupLink", GTK_UI_MANAGER_MENU)
+	MENUITEM_ADDUI("/Menus", "TextviewPopupMail", "TextviewPopupMail", GTK_UI_MANAGER_MENU)
+	MENUITEM_ADDUI("/Menus", "TextviewPopupFile", "TextviewPopupFile", GTK_UI_MANAGER_MENU)
 
-	n_entries = sizeof(textview_file_popup_entries) /
-		sizeof(textview_file_popup_entries[0]);
-	file_popupmenu = menu_create_items(textview_file_popup_entries, n_entries,
-				      "<FilePopupMenu>", &file_popupfactory,
-				      textview);
+	MENUITEM_ADDUI("/Menus/TextviewPopupLink", "Open", "TextviewPopupLink/Open", GTK_UI_MANAGER_MENUITEM)
+	MENUITEM_ADDUI("/Menus/TextviewPopupLink", "Copy", "TextviewPopupLink/Copy", GTK_UI_MANAGER_MENUITEM)
+	MENUITEM_ADDUI("/Menus/TextviewPopupMail", "Compose", "TextviewPopupMail/Compose", GTK_UI_MANAGER_MENUITEM)
+	MENUITEM_ADDUI("/Menus/TextviewPopupMail", "AddAB", "TextviewPopupMail/AddAB", GTK_UI_MANAGER_MENUITEM)
+	MENUITEM_ADDUI("/Menus/TextviewPopupMail", "Copy", "TextviewPopupMail/Copy", GTK_UI_MANAGER_MENUITEM)
+	MENUITEM_ADDUI("/Menus/TextviewPopupFile", "Open", "TextviewPopupFile/Open", GTK_UI_MANAGER_MENUITEM)
+	MENUITEM_ADDUI("/Menus/TextviewPopupFile", "Save", "TextviewPopupFile/Save", GTK_UI_MANAGER_MENUITEM)
+
+	textview->link_popup_menu = gtk_menu_item_get_submenu(GTK_MENU_ITEM(
+				gtk_ui_manager_get_widget(gtkut_ui_manager(), "/Menus/TextviewPopupLink")) );
+	textview->mail_popup_menu = gtk_menu_item_get_submenu(GTK_MENU_ITEM(
+				gtk_ui_manager_get_widget(gtkut_ui_manager(), "/Menus/TextviewPopupMail")) );
+	textview->file_popup_menu = gtk_menu_item_get_submenu(GTK_MENU_ITEM(
+				gtk_ui_manager_get_widget(gtkut_ui_manager(), "/Menus/TextviewPopupFile")) );
 
 	textview->vbox               = vbox;
 	textview->scrolledwin        = scrolledwin;
@@ -347,12 +352,6 @@ TextView *textview_create(void)
 	textview->body_pos           = 0;
 	textview->show_all_headers   = FALSE;
 	textview->last_buttonpress   = GDK_NOTHING;
-	textview->link_popup_menu    = link_popupmenu;
-	textview->link_popup_factory = link_popupfactory;
-	textview->mail_popup_menu    = mail_popupmenu;
-	textview->mail_popup_factory = mail_popupfactory;
-	textview->file_popup_menu    = file_popupmenu;
-	textview->file_popup_factory = file_popupfactory;
 	textview->image		     = NULL;
 	return textview;
 }
@@ -2806,21 +2805,28 @@ static void textview_uri_list_remove_all(GSList *uri_list)
 	g_slist_free(uri_list);
 }
 
-static void open_uri_cb (TextView *textview, guint action, void *data)
+static void open_uri_cb (GtkAction *action, TextView *textview)
 {
 	ClickableText *uri = g_object_get_data(G_OBJECT(textview->link_popup_menu),
 					   "menu_button");
-	if (uri == NULL)
-		return;
+	const gchar *raw_url = g_object_get_data(G_OBJECT(textview->link_popup_menu),
+					   "raw_url");
 
-	if (textview_uri_security_check(textview, uri) == TRUE) 
-		open_uri(uri->uri,
-			 prefs_common_get_uri_cmd());
-	g_object_set_data(G_OBJECT(textview->link_popup_menu), "menu_button",
-			  NULL);
+	if (uri) {
+		if (textview_uri_security_check(textview, uri) == TRUE) 
+			open_uri(uri->uri,
+				 prefs_common_get_uri_cmd());
+		g_object_set_data(G_OBJECT(textview->link_popup_menu), "menu_button",
+				  NULL);
+	}
+	if (raw_url) {
+		open_uri(raw_url, prefs_common_get_uri_cmd());
+		g_object_set_data(G_OBJECT(textview->link_popup_menu), "raw_url",
+				  NULL);
+	}
 }
 
-static void open_image_cb (TextView *textview, guint action, void *data)
+static void open_image_cb (GtkAction *action, TextView *textview)
 {
 	ClickableText *uri = g_object_get_data(G_OBJECT(textview->file_popup_menu),
 					   "menu_button");
@@ -2882,7 +2888,7 @@ static void open_image_cb (TextView *textview, guint action, void *data)
 			  NULL);
 }
 
-static void save_file_cb (TextView *textview, guint action, void *data)
+static void save_file_cb (GtkAction *action, TextView *textview)
 {
 	ClickableText *uri = g_object_get_data(G_OBJECT(textview->file_popup_menu),
 					   "menu_button");
@@ -2950,20 +2956,27 @@ static void save_file_cb (TextView *textview, guint action, void *data)
 			  NULL);
 }
 
-static void copy_uri_cb	(TextView *textview, guint action, void *data)
+static void copy_uri_cb	(GtkAction *action, TextView *textview)
 {
 	ClickableText *uri = g_object_get_data(G_OBJECT(textview->link_popup_menu),
 					   "menu_button");
-	if (uri == NULL)
-		return;
-
-	gtk_clipboard_set_text(gtk_clipboard_get(GDK_SELECTION_PRIMARY), uri->uri, -1);
-	gtk_clipboard_set_text(gtk_clipboard_get(GDK_SELECTION_CLIPBOARD), uri->uri, -1);
-	g_object_set_data(G_OBJECT(textview->link_popup_menu), "menu_button",
+	const gchar *raw_url =  g_object_get_data(G_OBJECT(textview->link_popup_menu),
+					   "raw_url");
+	if (uri) {
+		gtk_clipboard_set_text(gtk_clipboard_get(GDK_SELECTION_PRIMARY), uri->uri, -1);
+		gtk_clipboard_set_text(gtk_clipboard_get(GDK_SELECTION_CLIPBOARD), uri->uri, -1);
+		g_object_set_data(G_OBJECT(textview->link_popup_menu), "menu_button",
 			  NULL);
+	}
+	if (raw_url) {
+		gtk_clipboard_set_text(gtk_clipboard_get(GDK_SELECTION_PRIMARY), raw_url, -1);
+		gtk_clipboard_set_text(gtk_clipboard_get(GDK_SELECTION_CLIPBOARD), raw_url, -1);
+		g_object_set_data(G_OBJECT(textview->link_popup_menu), "raw_url",
+			  NULL);
+	}
 }
 
-static void add_uri_to_addrbook_cb (TextView *textview, guint action, void *data)
+static void add_uri_to_addrbook_cb (GtkAction *action, TextView *textview)
 {
 	gchar *fromname, *fromaddress;
 	ClickableText *uri = g_object_get_data(G_OBJECT(textview->mail_popup_menu),
@@ -3009,7 +3022,7 @@ static void add_uri_to_addrbook_cb (TextView *textview, guint action, void *data
 	g_free(fromname);
 }
 
-static void mail_to_uri_cb (TextView *textview, guint action, void *data)
+static void mail_to_uri_cb (GtkAction *action, TextView *textview)
 {
 	PrefsAccount *account = NULL;
 	ClickableText *uri = g_object_get_data(G_OBJECT(textview->mail_popup_menu),
@@ -3031,7 +3044,7 @@ static void mail_to_uri_cb (TextView *textview, guint action, void *data)
 	}
 }
 
-static void copy_mail_to_uri_cb	(TextView *textview, guint action, void *data)
+static void copy_mail_to_uri_cb	(GtkAction *action, TextView *textview)
 {
 	ClickableText *uri = g_object_get_data(G_OBJECT(textview->mail_popup_menu),
 					   "menu_button");

@@ -38,7 +38,7 @@
 #include "addrbook.h"
 #include "editaddress.h"
 
-static GtkItemFactory *custom_attr_popup_factory = NULL;
+static GtkActionGroup *custom_attr_popup_action = NULL;
 static GtkWidget *custom_attr_popup_menu = NULL;
 
 static struct CustomAttrWindow
@@ -162,12 +162,12 @@ static void custom_attr_window_list_view_clear_list(GtkWidget *list_view, gboole
 	}
 }
 
-static void custom_attr_popup_clear_list (void *obj, guint action, void *data)
+static void custom_attr_popup_clear_list (void *obj, void *data)
 {
 	custom_attr_window_list_view_clear_list(custom_attr_window.attr_list, TRUE);
 }
 
-static void custom_attr_popup_delete (void *obj, guint action, void *data)
+static void custom_attr_popup_delete (void *obj, void *data)
 {
 	GtkTreeIter sel;
 	GtkTreeModel *model;
@@ -185,7 +185,7 @@ static void custom_attr_popup_delete (void *obj, guint action, void *data)
 	}
 }
 
-static void custom_attr_popup_factory_defaults (void *obj, guint action, void *data)
+static void custom_attr_popup_factory_defaults (void *obj, void *data)
 {
 	if (alertpanel(_("Reset to default"),
 		       _("Do you really want to replace all attribute names\nwith the default set?"),
@@ -205,11 +205,12 @@ static void custom_attr_popup_factory_defaults (void *obj, guint action, void *d
 	}
 }
 
-static GtkItemFactoryEntry custom_attr_popup_entries[] =
+static GtkActionEntry custom_attr_popup_entries[] =
 {
-	{N_("/_Delete"),			NULL, custom_attr_popup_delete, 0, NULL, NULL},
-	{N_("/Delete _all"),		NULL, custom_attr_popup_clear_list, 0, NULL, NULL},
-	{N_("/_Reset to default"),	NULL, custom_attr_popup_factory_defaults, 0, NULL, NULL},
+	{"CustomAttrPopup",			NULL, "CustomAttrPopup" },
+	{"CustomAttrPopup/Delete",		NULL, N_("_Delete"), NULL, NULL, G_CALLBACK(custom_attr_popup_delete) },
+	{"CustomAttrPopup/DeleteAll",		NULL, N_("Delete _all"), NULL, NULL, G_CALLBACK(custom_attr_popup_clear_list) },
+	{"CustomAttrPopup/Reset",		NULL, N_("_Reset to default"), NULL, NULL, G_CALLBACK(custom_attr_popup_factory_defaults) },
 };
 
 static gint custom_attr_list_btn_pressed(GtkWidget *widget, GdkEventButton *event,
@@ -221,17 +222,20 @@ static gint custom_attr_list_btn_pressed(GtkWidget *widget, GdkEventButton *even
 		gboolean non_empty;
 
 		if (!custom_attr_popup_menu) {
-			gint n_entries = sizeof(custom_attr_popup_entries) /
-					sizeof(custom_attr_popup_entries[0]);
-			custom_attr_popup_menu = menu_create_items(custom_attr_popup_entries,
-							  n_entries, "<CustomAttrPopupMenu>",
-							  &custom_attr_popup_factory, list_view);
+				custom_attr_popup_action = cm_menu_create_action_group("CustomAttrPopup", custom_attr_popup_entries,
+					G_N_ELEMENTS(custom_attr_popup_entries), (gpointer)list_view);
+				MENUITEM_ADDUI("/Menus", "CustomAttrPopup", "CustomAttrPopup", GTK_UI_MANAGER_MENU)
+				MENUITEM_ADDUI("/Menus/CustomAttrPopup", "Delete", "CustomAttrPopup/Delete", GTK_UI_MANAGER_MENUITEM)
+				MENUITEM_ADDUI("/Menus/CustomAttrPopup", "DeleteAll", "CustomAttrPopup/DeleteAll", GTK_UI_MANAGER_MENUITEM)
+				MENUITEM_ADDUI("/Menus/CustomAttrPopup", "Reset", "CustomAttrPopup/Reset", GTK_UI_MANAGER_MENUITEM)
+				custom_attr_popup_menu = gtk_menu_item_get_submenu(GTK_MENU_ITEM(
+					gtk_ui_manager_get_widget(gtkut_ui_manager(), "/Menus/CustomAttrPopup")) );
 		}
 
 		/* grey out popup menu items if list is empty */
 		non_empty = gtk_tree_model_get_iter_first(model, &iter);
-		menu_set_sensitive(custom_attr_popup_factory, "/Delete", non_empty);
-		menu_set_sensitive(custom_attr_popup_factory, "/Delete all", non_empty);
+		cm_menu_set_sensitive("CustomAttrPopup/Delete", non_empty);
+		cm_menu_set_sensitive("CustomAttrPopup/DeleteAll", non_empty);
 
 		gtk_menu_popup(GTK_MENU(custom_attr_popup_menu), 
 			       NULL, NULL, NULL, NULL, 
@@ -421,7 +425,7 @@ static void custom_attr_window_add_attr_cb(GtkWidget *widget,
 static void custom_attr_window_del_attr_cb(GtkWidget *widget,
 			         gpointer data) 
 {
-	custom_attr_popup_delete(NULL, 0, NULL);
+	custom_attr_popup_delete(NULL, NULL);
 	gtk_widget_grab_focus(custom_attr_window.attr_list);
 }
 
@@ -431,7 +435,7 @@ static gboolean custom_attr_window_key_pressed(GtkWidget *widget,
 	if (event && event->keyval == GDK_Escape)
 		custom_attr_window_close();
 	else if (event && event->keyval == GDK_Delete)
-		custom_attr_popup_delete(NULL, 0, NULL);
+		custom_attr_popup_delete(NULL, NULL);
 	return FALSE;
 }
 

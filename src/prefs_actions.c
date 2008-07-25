@@ -91,13 +91,10 @@ static void prefs_actions_register_cb	(GtkWidget	*w,
 					 gpointer	 data);
 static void prefs_actions_substitute_cb	(GtkWidget	*w,
 					 gpointer	 data);
-static void prefs_actions_delete_cb	(GtkWidget	*w,
-					 gpointer	 data);
-static void prefs_actions_delete_all_cb	(GtkWidget	*w,
-					 gpointer	 data);
-static void prefs_actions_clear_cb	(void);
-static void prefs_actions_duplicate_cb	(GtkWidget	*w,
-					 gpointer	 data);
+static void prefs_actions_delete_cb	(gpointer gtk_action, gpointer data);
+static void prefs_actions_delete_all_cb	(gpointer gtk_action, gpointer data);
+static void prefs_actions_clear_cb	(gpointer gtk_action, gpointer data);
+static void prefs_actions_duplicate_cb	(gpointer gtk_action, gpointer data);
 static void prefs_actions_up		(GtkWidget	*w,
 					 gpointer	 data);
 static void prefs_actions_down		(GtkWidget	*w,
@@ -697,7 +694,7 @@ static void prefs_actions_substitute_cb(GtkWidget *w, gpointer data)
 	modified_list = TRUE;
 }
 
-static void prefs_actions_delete_cb(GtkWidget *w, gpointer data)
+static void prefs_actions_delete_cb(gpointer gtk_action, gpointer data)
 {
 	GtkTreeIter sel;
 	GtkTreeModel *model;
@@ -730,7 +727,7 @@ static void prefs_actions_delete_cb(GtkWidget *w, gpointer data)
 	modified_list = TRUE;
 }
 
-static void prefs_actions_delete_all_cb(GtkWidget *w, gpointer data)
+static void prefs_actions_delete_all_cb(gpointer gtk_action, gpointer data)
 {
 	GtkListStore *list_store;
 
@@ -747,7 +744,7 @@ static void prefs_actions_delete_all_cb(GtkWidget *w, gpointer data)
 	modified_list = TRUE;
 }
 
-static void prefs_actions_clear_cb(void)
+static void prefs_actions_clear_cb(gpointer gtk_action, gpointer data)
 {
 	gint row;
 
@@ -759,7 +756,7 @@ static void prefs_actions_clear_cb(void)
 		modified = TRUE;
 }
 
-static void prefs_actions_duplicate_cb(GtkWidget *w, gpointer data)
+static void prefs_actions_duplicate_cb(gpointer gtk_action, gpointer data)
 {
 	gint row;
 	
@@ -1056,14 +1053,15 @@ static void prefs_actions_list_view_insert_action(GtkWidget *list_view,
 	}
 }
 
-static GtkItemFactory *prefs_actions_popup_factory = NULL;
+static GtkActionGroup *prefs_actions_popup_action = NULL;
 static GtkWidget *prefs_actions_popup_menu = NULL;
 
-static GtkItemFactoryEntry prefs_actions_popup_entries[] =
+static GtkActionEntry prefs_actions_popup_entries[] =
 {
-   {N_("/_Delete"),		NULL, prefs_actions_delete_cb, 0, NULL, NULL},
-   {N_("/Delete _all"),	NULL, prefs_actions_delete_all_cb, 0, NULL, NULL},
-   {N_("/D_uplicate"),	NULL, prefs_actions_duplicate_cb, 0, NULL, NULL},
+ 	{"PrefsActionsPopup",			NULL, "PrefsActionsPopup" },
+	{"PrefsActionsPopup/Delete",		NULL, N_("_Delete"), NULL, NULL, G_CALLBACK(prefs_actions_delete_cb) },
+	{"PrefsActionsPopup/DeleteAll",	NULL, N_("Delete _all"), NULL, NULL, G_CALLBACK(prefs_actions_delete_all_cb) },
+	{"PrefsActionsPopup/Duplicate",	NULL, N_("D_uplicate"), NULL, NULL, G_CALLBACK(prefs_actions_duplicate_cb) },
 };
 
 static gint prefs_actions_list_btn_pressed(GtkWidget *widget, GdkEventButton *event,
@@ -1089,24 +1087,27 @@ static gint prefs_actions_list_btn_pressed(GtkWidget *widget, GdkEventButton *ev
 		   gint row;
 
 		   if (!prefs_actions_popup_menu) {
-			   gint n_entries = sizeof(prefs_actions_popup_entries) /
-					   sizeof(prefs_actions_popup_entries[0]);
-			   prefs_actions_popup_menu = menu_create_items(prefs_actions_popup_entries,
-								 n_entries, "<PrefsActionsPopupMenu>",
-								 &prefs_actions_popup_factory, list_view);
+				prefs_actions_popup_action = cm_menu_create_action_group("PrefsActionsPopup", prefs_actions_popup_entries,
+					G_N_ELEMENTS(prefs_actions_popup_entries), (gpointer)list_view);
+				MENUITEM_ADDUI("/Menus", "PrefsActionsPopup", "PrefsActionsPopup", GTK_UI_MANAGER_MENU)
+				MENUITEM_ADDUI("/Menus/PrefsActionsPopup", "Delete", "PrefsActionsPopup/Delete", GTK_UI_MANAGER_MENUITEM)
+				MENUITEM_ADDUI("/Menus/PrefsActionsPopup", "DeleteAll", "PrefsActionsPopup/DeleteAll", GTK_UI_MANAGER_MENUITEM)
+				MENUITEM_ADDUI("/Menus/PrefsActionsPopup", "Duplicate", "PrefsActionsPopup/Duplicate", GTK_UI_MANAGER_MENUITEM)
+				prefs_actions_popup_menu = gtk_menu_item_get_submenu(GTK_MENU_ITEM(
+					gtk_ui_manager_get_widget(gtkut_ui_manager(), "/Menus/PrefsActionsPopup")) );
 		   }
 
 		   /* grey out some popup menu items if there is no selected row */
 		   row = gtkut_list_view_get_selected_row(GTK_WIDGET(list_view));
-		   menu_set_sensitive(prefs_actions_popup_factory, "/Delete", (row > 0));
-		   menu_set_sensitive(prefs_actions_popup_factory, "/Duplicate", (row > 0));
+			cm_menu_set_sensitive("PrefsActionsPopup/Delete", (row > 0));
+			cm_menu_set_sensitive("PrefsActionsPopup/Duplicate", (row > 0));
 
 		   /* grey out seom popup menu items if there is no row
 			  (not counting the (New) one at row 0) */
 		   non_empty = gtk_tree_model_get_iter_first(model, &iter);
 		   if (non_empty)
 			   non_empty = gtk_tree_model_iter_next(model, &iter);
-		   menu_set_sensitive(prefs_actions_popup_factory, "/Delete all", non_empty);
+			cm_menu_set_sensitive("PrefsActionsPopup/DeleteAll", non_empty);
 
 		   gtk_menu_popup(GTK_MENU(prefs_actions_popup_menu), 
 					  NULL, NULL, NULL, NULL, 

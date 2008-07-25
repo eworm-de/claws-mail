@@ -815,8 +815,7 @@ static void addressbook_edit_person_set_picture(void)
 			return;
 		}
 		personeditdlg.picture_set = TRUE;
-		menu_set_sensitive(personeditdlg.editaddr_popupfactory,
-				"/Unset picture", personeditdlg.picture_set);
+		cm_menu_set_sensitive("EditAddressPopup/UnsetPicture", personeditdlg.picture_set);
 		g_free(filename);
 		gtk_image_set_from_pixbuf(GTK_IMAGE(personeditdlg.image), pixbuf);
 		g_object_unref(pixbuf);
@@ -829,25 +828,26 @@ static void addressbook_edit_person_clear_picture(void)
 
 	stock_pixbuf_gdk(NULL, STOCK_PIXMAP_ANONYMOUS, &pixbuf);
 	personeditdlg.picture_set = FALSE;
-	menu_set_sensitive(personeditdlg.editaddr_popupfactory,
-			"/Unset picture", personeditdlg.picture_set);
+	cm_menu_set_sensitive("EditAddressPopup/UnsetPicture", personeditdlg.picture_set);
 	gtk_image_set_from_pixbuf(GTK_IMAGE(personeditdlg.image), pixbuf);
 }
 
-static void addressbook_edit_person_set_picture_menu_cb (void *obj, guint action, void *data)
+static void addressbook_edit_person_set_picture_menu_cb (GtkAction *action, gpointer data)
 {
 	addressbook_edit_person_set_picture();
 }
 
-static void addressbook_edit_person_unset_picture_menu_cb (void *obj, guint action, void *data)
+static void addressbook_edit_person_unset_picture_menu_cb (GtkAction *action, gpointer data)
 {
 	addressbook_edit_person_clear_picture();
 }
 
-static GtkItemFactoryEntry editaddr_popup_entries[] =
+static GtkWidget *editaddr_popup_menu = NULL;
+static GtkActionEntry editaddr_popup_entries[] =
 {
-	{N_("/_Set picture"),		NULL, addressbook_edit_person_set_picture_menu_cb, 0, NULL, NULL},
-	{N_("/_Unset picture"),		NULL, addressbook_edit_person_unset_picture_menu_cb, 0, NULL, NULL},
+	{"EditAddressPopup",			NULL, "EditAddressPopup" },
+	{"EditAddressPopup/SetPicture",		NULL, N_("_Set picture"), NULL, NULL, G_CALLBACK(addressbook_edit_person_set_picture_menu_cb) },
+	{"EditAddressPopup/UnsetPicture",	NULL, N_("_Unset picture"), NULL, NULL, G_CALLBACK(addressbook_edit_person_unset_picture_menu_cb) },
 };
 
 static void addressbook_edit_person_set_picture_cb(GtkWidget *widget, 
@@ -856,7 +856,7 @@ static void addressbook_edit_person_set_picture_cb(GtkWidget *widget,
 	if (event->button == 1) {
 		addressbook_edit_person_set_picture();
 	} else {
-		gtk_menu_popup(GTK_MENU(personeditdlg.editaddr_popupmenu), 
+		gtk_menu_popup(GTK_MENU(editaddr_popup_menu), 
 			       NULL, NULL, NULL, NULL, 
 			       event->button, event->time);
 	}
@@ -887,19 +887,23 @@ static void addressbook_edit_person_page_basic( gint pageNum, gchar *pageLbl ) {
 	GtkWidget *entry_nn;
 	const gchar *locale;
 	gint top = 0;
-	gint n_entries;
+	GtkActionGroup *action_group;
+
 	vbox = gtk_vbox_new( FALSE, 20 );
 	hbox = gtk_hbox_new( FALSE, 8 );
 
 	gtk_widget_show( vbox );	
 
-	/* set up picture context menu before we call addressbook_edit_person_clear_picture() */	
-	n_entries = sizeof(editaddr_popup_entries) /
-		sizeof(editaddr_popup_entries[0]);
-	personeditdlg.editaddr_popupmenu = menu_create_items(editaddr_popup_entries, n_entries,
-				      "<EditAddrPopupMenu>", &personeditdlg.editaddr_popupfactory,
-				      NULL);
+	if (!editaddr_popup_menu) {
+		action_group = cm_menu_create_action_group("EditAddressPopup", editaddr_popup_entries,
+			G_N_ELEMENTS(editaddr_popup_entries), (gpointer)NULL);
+		MENUITEM_ADDUI("/Menus", "EditAddressPopup", "EditAddressPopup", GTK_UI_MANAGER_MENU)
+		MENUITEM_ADDUI("/Menus/EditAddressPopup", "SetPicture", "EditAddressPopup/SetPicture", GTK_UI_MANAGER_MENUITEM)
+		MENUITEM_ADDUI("/Menus/EditAddressPopup", "UnsetPicture", "EditAddressPopup/UnsetPicture", GTK_UI_MANAGER_MENUITEM)
 
+		editaddr_popup_menu = gtk_menu_item_get_submenu(GTK_MENU_ITEM(
+			gtk_ui_manager_get_widget(gtkut_ui_manager(), "/Menus/EditAddressPopup")) );
+	}
 	/* User's picture */
 	ebox_picture = gtk_event_box_new();
 	frame_picture = gtk_frame_new(_("Photo"));
@@ -1677,10 +1681,8 @@ ItemPerson *addressbook_edit_person( AddressBookFile *abf, ItemFolder *parent_fo
 		if( ADDRITEM_NAME(current_person) )
 			gtk_entry_set_text(GTK_ENTRY(personeditdlg.entry_name), ADDRITEM_NAME(person) );
 
-		menu_set_sensitive(personeditdlg.editaddr_popupfactory,
-				"/Set picture", !personeditdlg.ldap);
-		menu_set_sensitive(personeditdlg.editaddr_popupfactory,
-				"/Unset picture", !personeditdlg.ldap);
+		cm_menu_set_sensitive("EditAddressPopup/SetPicture", !personeditdlg.ldap);
+		cm_menu_set_sensitive("EditAddressPopup/UnsetPicture", !personeditdlg.ldap);
 		if( current_person->picture ) {	
 			filename = g_strconcat( get_rc_dir(), G_DIR_SEPARATOR_S, ADDRBOOK_DIR, G_DIR_SEPARATOR_S, 
 							current_person->picture, ".png", NULL );
@@ -1693,8 +1695,7 @@ ItemPerson *addressbook_edit_person( AddressBookFile *abf, ItemFolder *parent_fo
 					goto no_img;
 				}
 				personeditdlg.picture_set = TRUE;
-				menu_set_sensitive(personeditdlg.editaddr_popupfactory,
-						"/Unset picture", !personeditdlg.ldap && personeditdlg.picture_set);
+				cm_menu_set_sensitive("EditAddressPopup/UnsetPicture", !personeditdlg.ldap && personeditdlg.picture_set);
 			} else {
 				goto no_img;
 			}

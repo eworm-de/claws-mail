@@ -99,18 +99,18 @@ static gint prefs_template_deleted_cb		(GtkWidget	*widget,
 static gboolean prefs_template_key_pressed_cb	(GtkWidget	*widget,
 						 GdkEventKey	*event,
 						 gpointer	 data);
-static void prefs_template_cancel_cb		(void);
-static void prefs_template_ok_cb		(void);
-static void prefs_template_register_cb		(void);
-static void prefs_template_substitute_cb	(void);
-static void prefs_template_delete_cb		(void);
-static void prefs_template_delete_all_cb	(void);
-static void prefs_template_clear_cb		(void);
-static void prefs_template_duplicate_cb	(void);
-static void prefs_template_top_cb		(void);
-static void prefs_template_up_cb		(void);
-static void prefs_template_down_cb	(void);
-static void prefs_template_bottom_cb	(void);
+static void prefs_template_cancel_cb		(gpointer action, gpointer data);
+static void prefs_template_ok_cb		(gpointer action, gpointer data);
+static void prefs_template_register_cb		(gpointer action, gpointer data);
+static void prefs_template_substitute_cb	(gpointer action, gpointer data);
+static void prefs_template_delete_cb		(gpointer action, gpointer data);
+static void prefs_template_delete_all_cb	(gpointer action, gpointer data);
+static void prefs_template_clear_cb		(gpointer action, gpointer data);
+static void prefs_template_duplicate_cb		(gpointer action, gpointer data);
+static void prefs_template_top_cb		(gpointer action, gpointer data);
+static void prefs_template_up_cb		(gpointer action, gpointer data);
+static void prefs_template_down_cb		(gpointer action, gpointer data);
+static void prefs_template_bottom_cb		(gpointer action, gpointer data);
 
 static GtkListStore* prefs_template_create_data_store	(void);
 static void prefs_template_list_view_insert_template	(GtkWidget *list_view,
@@ -238,10 +238,6 @@ static void prefs_template_window_create(void)
 				(GtkAttachOptions) 0, 0, 0);
 		CLAWS_SET_TIP(*(widgets_table[i].entry),
 				widgets_table[i].tooltips);
-
-		if (widgets_table[i].compl)
-			address_completion_register_entry(
-				GTK_ENTRY(*(widgets_table[i].entry)), TRUE);
 	}
 
 	/* template content */
@@ -423,8 +419,6 @@ static void prefs_template_window_create(void)
 			 G_CALLBACK(manual_open_with_anchor_cb),
 			 MANUAL_ANCHOR_TEMPLATES);
 
-	address_completion_start(window);
-
 	if (!geometry.min_height) {
 		geometry.min_width = 500;
 		geometry.min_height = 540;
@@ -474,6 +468,7 @@ static void prefs_template_window_setup(void)
 	GSList *tmpl_list;
 	GSList *cur;
 	Template *tmpl;
+	int i;
 
 	manage_window_set_transient(GTK_WINDOW(templates.window));
 	gtk_widget_grab_focus(templates.ok_btn);
@@ -481,6 +476,14 @@ static void prefs_template_window_setup(void)
 	prefs_template_clear_list();
 	
 	tmpl_list = template_read_config();
+
+	address_completion_start(templates.window);
+
+	for (i=0; widgets_table[i].label; i++) {
+		if (widgets_table[i].compl)
+			address_completion_register_entry(
+				GTK_ENTRY(*(widgets_table[i].entry)), TRUE);
+	}
 
 	for (cur = tmpl_list; cur != NULL; cur = cur->next) {
 		tmpl = (Template *)cur->data;
@@ -497,7 +500,7 @@ static void prefs_template_window_setup(void)
 static gint prefs_template_deleted_cb(GtkWidget *widget, GdkEventAny *event,
 				      gpointer data)
 {
-	prefs_template_cancel_cb();
+	prefs_template_cancel_cb(NULL, NULL);
 	return TRUE;
 }
 
@@ -505,7 +508,7 @@ static gboolean prefs_template_key_pressed_cb(GtkWidget *widget,
 					      GdkEventKey *event, gpointer data)
 {
 	if (event && event->keyval == GDK_Escape)
-		prefs_template_cancel_cb();
+		prefs_template_cancel_cb(NULL, NULL);
 	else {
 		GtkWidget *focused = gtkut_get_focused_child(
 					GTK_CONTAINER(widget));
@@ -528,7 +531,7 @@ static void prefs_template_address_completion_end(void)
 	address_completion_end(templates.window);
 }
 
-static void prefs_template_ok_cb(void)
+static void prefs_template_ok_cb(gpointer action, gpointer data)
 {
 	GSList *tmpl_list;
 	GtkListStore *store;
@@ -554,7 +557,7 @@ static void prefs_template_ok_cb(void)
 	inc_unlock();
 }
 
-static void prefs_template_cancel_cb(void)
+static void prefs_template_cancel_cb(gpointer action, gpointer data)
 {
 	GtkListStore *store;
 
@@ -799,13 +802,13 @@ static gboolean prefs_template_list_view_set_row(gint row)
 	return TRUE;
 }
 
-static void prefs_template_register_cb(void)
+static void prefs_template_register_cb(gpointer action, gpointer data)
 {
 	modified = !prefs_template_list_view_set_row(-1);
 	modified_list = TRUE;
 }
 
-static void prefs_template_substitute_cb(void)
+static void prefs_template_substitute_cb(gpointer action, gpointer data)
 {
 	Template *tmpl;
 	gint row;
@@ -828,7 +831,7 @@ static void prefs_template_substitute_cb(void)
 	modified_list = TRUE;
 }
 
-static void prefs_template_delete_cb(void)
+static void prefs_template_delete_cb(gpointer action, gpointer data)
 {
 	Template *tmpl;
 	gint row;
@@ -857,7 +860,7 @@ static void prefs_template_delete_cb(void)
 	modified_list = TRUE;	
 }
 
-static void prefs_template_delete_all_cb(void)
+static void prefs_template_delete_all_cb(gpointer action, gpointer data)
 {
 	GtkListStore *list_store;
 
@@ -874,7 +877,7 @@ static void prefs_template_delete_all_cb(void)
 	modified_list = TRUE;
 }
 
-static void prefs_template_duplicate_cb(void)
+static void prefs_template_duplicate_cb(gpointer action, gpointer data)
 {
 	Template *tmpl;
 	gint row;
@@ -896,12 +899,12 @@ static void prefs_template_duplicate_cb(void)
 	modified_list = !prefs_template_list_view_set_row(-row-2);
 }
 
-static void prefs_template_clear_cb(void)
+static void prefs_template_clear_cb(gpointer action, gpointer data)
 {
    prefs_template_reset_dialog();
 }
 
-static void prefs_template_top_cb(void)
+static void prefs_template_top_cb(gpointer action, gpointer data)
 {
 	gint row;
 	GtkTreeIter top, sel;
@@ -922,7 +925,7 @@ static void prefs_template_top_cb(void)
 	modified_list = TRUE;
 }
 
-static void prefs_template_up_cb(void)
+static void prefs_template_up_cb(gpointer action, gpointer data)
 {
 	gint row;
 	GtkTreeIter top, sel;
@@ -943,7 +946,7 @@ static void prefs_template_up_cb(void)
 	modified_list = TRUE;
 }
 
-static void prefs_template_down_cb(void)
+static void prefs_template_down_cb(gpointer action, gpointer data)
 {
 	gint row, n_rows;
 	GtkTreeIter top, sel;
@@ -964,7 +967,7 @@ static void prefs_template_down_cb(void)
 	modified_list = TRUE;
 }
 
-static void prefs_template_bottom_cb(void)
+static void prefs_template_bottom_cb(gpointer action, gpointer data)
 {
 	gint row, n_rows;
 	GtkTreeIter top, sel;
@@ -1050,14 +1053,15 @@ static void prefs_template_list_view_insert_template(GtkWidget *list_view,
 	}
 }
 
-static GtkItemFactory *prefs_template_popup_factory = NULL;
+static GtkActionGroup *prefs_template_popup_action = NULL;
 static GtkWidget *prefs_template_popup_menu = NULL;
 
-static GtkItemFactoryEntry prefs_template_popup_entries[] =
+static GtkActionEntry prefs_template_popup_entries[] =
 {
-   {N_("/_Delete"),		NULL, prefs_template_delete_cb, 0, NULL, NULL},
-   {N_("/Delete _all"),	NULL, prefs_template_delete_all_cb, 0, NULL, NULL},
-   {N_("/D_uplicate"),	NULL, prefs_template_duplicate_cb, 0, NULL, NULL},
+	{"PrefsTemplatePopup",			NULL, "PrefsTemplatePopup" },
+	{"PrefsTemplatePopup/Delete",		NULL, N_("_Delete"), NULL, NULL, G_CALLBACK(prefs_template_delete_cb) },
+	{"PrefsTemplatePopup/DeleteAll",	NULL, N_("Delete _all"), NULL, NULL, G_CALLBACK(prefs_template_delete_all_cb) },
+	{"PrefsTemplatePopup/Duplicate",	NULL, N_("D_uplicate"), NULL, NULL, G_CALLBACK(prefs_template_duplicate_cb) },
 };
 
 static gint prefs_template_list_btn_pressed(GtkWidget *widget, GdkEventButton *event,
@@ -1083,24 +1087,27 @@ static gint prefs_template_list_btn_pressed(GtkWidget *widget, GdkEventButton *e
 		   gint row;
 
 		   if (!prefs_template_popup_menu) {
-			   gint n_entries = sizeof(prefs_template_popup_entries) /
-					   sizeof(prefs_template_popup_entries[0]);
-			   prefs_template_popup_menu = menu_create_items(prefs_template_popup_entries,
-								 n_entries, "<PrefsTemplatePopupMenu>",
-								 &prefs_template_popup_factory, list_view);
+				prefs_template_popup_action = cm_menu_create_action_group("PrefsTemplatePopup", prefs_template_popup_entries,
+					G_N_ELEMENTS(prefs_template_popup_entries), (gpointer)list_view);
+				MENUITEM_ADDUI("/Menus", "PrefsTemplatePopup", "PrefsTemplatePopup", GTK_UI_MANAGER_MENU)
+				MENUITEM_ADDUI("/Menus/PrefsTemplatePopup", "Delete", "PrefsTemplatePopup/Delete", GTK_UI_MANAGER_MENUITEM)
+				MENUITEM_ADDUI("/Menus/PrefsTemplatePopup", "DeleteAll", "PrefsTemplatePopup/DeleteAll", GTK_UI_MANAGER_MENUITEM)
+				MENUITEM_ADDUI("/Menus/PrefsTemplatePopup", "Duplicate", "PrefsTemplatePopup/Duplicate", GTK_UI_MANAGER_MENUITEM)
+				prefs_template_popup_menu = gtk_menu_item_get_submenu(GTK_MENU_ITEM(
+					gtk_ui_manager_get_widget(gtkut_ui_manager(), "/Menus/PrefsTemplatePopup")) );
 		   }
 
 		   /* grey out some popup menu items if there is no selected row */
 		   row = gtkut_list_view_get_selected_row(GTK_WIDGET(list_view));
-		   menu_set_sensitive(prefs_template_popup_factory, "/Delete", (row > 0));
-		   menu_set_sensitive(prefs_template_popup_factory, "/Duplicate", (row > 0));
+			cm_menu_set_sensitive("PrefsTemplatePopup/Delete", (row > 0));
+			cm_menu_set_sensitive("PrefsTemplatePopup/Duplicate", (row > 0));
 
 		   /* grey out seom popup menu items if there is no row
 			  (not counting the (New) one at row 0) */
 		   non_empty = gtk_tree_model_get_iter_first(model, &iter);
 		   if (non_empty)
 			   non_empty = gtk_tree_model_iter_next(model, &iter);
-		   menu_set_sensitive(prefs_template_popup_factory, "/Delete all", non_empty);
+			cm_menu_set_sensitive("PrefsTemplatePopup/DeleteAll", non_empty);
 
 		   gtk_menu_popup(GTK_MENU(prefs_template_popup_menu), 
 					  NULL, NULL, NULL, NULL, 

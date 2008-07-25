@@ -1,3 +1,26 @@
+2008-07-25 [colin]	3.5.0cvs34
+
+	* src/addrcustomattr.c
+	* src/addressbook.c
+	* src/compose.c
+	* src/editaddress.c
+	* src/editaddress_other_attributes_ldap.h
+	* src/edittags.c
+	* src/mainwindow.c
+	* src/mimeview.c
+	* src/prefs_actions.c
+	* src/prefs_filtering.c
+	* src/prefs_template.c
+	* src/summaryview.c
+	* src/textview.c
+	* src/textview.h
+	* src/toolbar.c
+	* src/gtk/about.c
+	* src/gtk/menu.c
+	* src/gtk/menu.h
+	* src/plugins/trayicon/trayicon.c
+		More changes from GtkItemFactory to GtkUIManager
+
 2008-07-25 [colin]	3.5.0cvs33
 
 	* src/gtk/menu.h

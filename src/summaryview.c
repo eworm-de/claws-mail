@@ -802,14 +802,12 @@ SummaryView *summary_create(void)
 			  G_CALLBACK(tog_searchbar_cb), summaryview);
 
 	/* create popup menu */
-	summaryview->action_group = gtk_action_group_new("SummaryViewPopup");
-	gtk_action_group_add_actions(summaryview->action_group, summary_popup_entries,
+	summaryview->action_group = cm_menu_create_action_group("SummaryViewPopup", summary_popup_entries,
 			G_N_ELEMENTS(summary_popup_entries), (gpointer)summaryview);
 #ifndef GENERIC_UMPC
 	gtk_action_group_add_toggle_actions(summaryview->action_group, summary_popup_toggleentries,
 			G_N_ELEMENTS(summary_popup_toggleentries), (gpointer)summaryview);
 #endif
-	gtk_ui_manager_insert_action_group(gtkut_ui_manager(), summaryview->action_group, 0);
 
 	MENUITEM_ADDUI("/Menus", "SummaryViewPopup", "SummaryViewPopup", GTK_UI_MANAGER_MENU)
 	MENUITEM_ADDUI("/Menus/SummaryViewPopup", "Reply", "SummaryViewPopup/Reply", GTK_UI_MANAGER_MENUITEM)
@@ -1771,9 +1769,6 @@ void summary_set_menu_sensitive(SummaryView *summaryview)
 {
 	SensitiveCond state;
 	gboolean sensitive;
-#ifndef GENERIC_UMPC
-	GtkWidget *menuitem;
-#endif
 	gint i;
 
 	static const struct {
@@ -1850,13 +1845,11 @@ void summary_set_menu_sensitive(SummaryView *summaryview)
 
 	summary_lock(summaryview);
 #ifndef GENERIC_UMPC
-	menuitem = gtk_ui_manager_get_widget(gtkut_ui_manager(), "/Menus/SummaryViewPopup/View/AllHeaders");
 	if (summaryview->messageview 
 	&&  summaryview->messageview->mimeview
 	&&  summaryview->messageview->mimeview->textview)
-		gtk_check_menu_item_set_active
-			(GTK_CHECK_MENU_ITEM(menuitem),
-			 summaryview->messageview->mimeview->textview->show_all_headers);
+		cm_toggle_menu_set_active("SummaryViewPopup/View/AllHeaders",
+			summaryview->messageview->mimeview->textview->show_all_headers);
 #endif
 	summary_unlock(summaryview);
 }

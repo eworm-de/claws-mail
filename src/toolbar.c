@@ -91,9 +91,9 @@ static void activate_compose_button 		(Toolbar	*toolbar,
 
 /* toolbar callbacks */
 static void toolbar_reply			(gpointer 	 data, 
-						 guint 		 action);
+						 guint		 action);
 static void toolbar_learn			(gpointer 	 data, 
-						 guint 		 action);
+						 guint		 action);
 static void toolbar_delete_cb			(GtkWidget	*widget,
 					 	 gpointer        data);
 static void toolbar_trash_cb			(GtkWidget	*widget,
@@ -230,40 +230,6 @@ struct {
 	{ "toolbar_compose.xml", NULL}, 
   	{ "toolbar_msgview.xml", NULL}
 };
-#ifndef GENERIC_UMPC
-static GtkItemFactoryEntry reply_entries[] =
-{
-	{N_("/Reply with _quote"), NULL,    toolbar_reply, COMPOSE_REPLY_WITH_QUOTE, NULL},
-	{N_("/_Reply without quote"), NULL, toolbar_reply, COMPOSE_REPLY_WITHOUT_QUOTE, NULL}
-};
-static GtkItemFactoryEntry replyall_entries[] =
-{
-	{N_("/Reply to all with _quote"), "<shift>A", toolbar_reply, COMPOSE_REPLY_TO_ALL_WITH_QUOTE, NULL},
-	{N_("/_Reply to all without quote"), "a",     toolbar_reply, COMPOSE_REPLY_TO_ALL_WITHOUT_QUOTE, NULL}
-};
-static GtkItemFactoryEntry replylist_entries[] =
-{
-	{N_("/Reply to list with _quote"),    NULL, toolbar_reply, COMPOSE_REPLY_TO_LIST_WITH_QUOTE, NULL},
-	{N_("/_Reply to list without quote"), NULL, toolbar_reply, COMPOSE_REPLY_TO_LIST_WITHOUT_QUOTE, NULL}
-};
-static GtkItemFactoryEntry replysender_entries[] =
-{
-	{N_("/Reply to sender with _quote"),    NULL, toolbar_reply, COMPOSE_REPLY_TO_SENDER_WITH_QUOTE, NULL},
-	{N_("/_Reply to sender without quote"), NULL, toolbar_reply, COMPOSE_REPLY_TO_SENDER_WITHOUT_QUOTE, NULL}
-};
-static GtkItemFactoryEntry forward_entries[] =
-{
-	{N_("/_Forward"),		"f", 	    toolbar_reply, COMPOSE_FORWARD_INLINE, NULL},
-	{N_("/For_ward as attachment"), "<shift>F", toolbar_reply, COMPOSE_FORWARD_AS_ATTACH, NULL},
-	{N_("/Redirec_t"),		NULL, 	    toolbar_reply, COMPOSE_REDIRECT, NULL}
-};
-#endif
-static GtkItemFactoryEntry learn_entries[] =
-{
-	{N_("/Learn as _Spam"),		NULL,	toolbar_learn, TRUE, NULL},
-	{N_("/Learn as _Ham"), 		NULL,	toolbar_learn, FALSE, NULL}
-};
-
 
 gint toolbar_ret_val_from_descr(const gchar *descr)
 {
@@ -1273,8 +1239,8 @@ static void toolbar_learn_cb(GtkWidget *widget, gpointer data)
  */
 static void toolbar_reply_cb(GtkWidget *widget, gpointer data)
 {
-	toolbar_reply(data, prefs_common.reply_with_quote ? 
-		      COMPOSE_REPLY_WITH_QUOTE : COMPOSE_REPLY_WITHOUT_QUOTE);
+	toolbar_reply(data, (prefs_common.reply_with_quote ? 
+		      COMPOSE_REPLY_WITH_QUOTE : COMPOSE_REPLY_WITHOUT_QUOTE));
 }
 
 
@@ -1284,8 +1250,8 @@ static void toolbar_reply_cb(GtkWidget *widget, gpointer data)
 static void toolbar_reply_to_all_cb(GtkWidget *widget, gpointer data)
 {
 	toolbar_reply(data,
-		      prefs_common.reply_with_quote ? COMPOSE_REPLY_TO_ALL_WITH_QUOTE 
-		      : COMPOSE_REPLY_TO_ALL_WITHOUT_QUOTE);
+		      (prefs_common.reply_with_quote ? COMPOSE_REPLY_TO_ALL_WITH_QUOTE 
+		      : COMPOSE_REPLY_TO_ALL_WITHOUT_QUOTE));
 }
 
 
@@ -1295,8 +1261,8 @@ static void toolbar_reply_to_all_cb(GtkWidget *widget, gpointer data)
 static void toolbar_reply_to_list_cb(GtkWidget *widget, gpointer data)
 {
 	toolbar_reply(data, 
-		      prefs_common.reply_with_quote ? COMPOSE_REPLY_TO_LIST_WITH_QUOTE 
-		      : COMPOSE_REPLY_TO_LIST_WITHOUT_QUOTE);
+		      (prefs_common.reply_with_quote ? COMPOSE_REPLY_TO_LIST_WITH_QUOTE 
+		      : COMPOSE_REPLY_TO_LIST_WITHOUT_QUOTE));
 }
 
 
@@ -1306,8 +1272,8 @@ static void toolbar_reply_to_list_cb(GtkWidget *widget, gpointer data)
 static void toolbar_reply_to_sender_cb(GtkWidget *widget, gpointer data)
 {
 	toolbar_reply(data, 
-		      prefs_common.reply_with_quote ? COMPOSE_REPLY_TO_SENDER_WITH_QUOTE 
-		      : COMPOSE_REPLY_TO_SENDER_WITHOUT_QUOTE);
+		      (prefs_common.reply_with_quote ? COMPOSE_REPLY_TO_SENDER_WITH_QUOTE 
+		      : COMPOSE_REPLY_TO_SENDER_WITHOUT_QUOTE));
 }
 
 /*
@@ -1340,7 +1306,7 @@ static void toolbar_addrbook_cb(GtkWidget *widget, gpointer data)
  */
 static void toolbar_forward_cb(GtkWidget *widget, gpointer data)
 {
-	toolbar_reply(data, COMPOSE_FORWARD);
+	toolbar_reply(data, (COMPOSE_FORWARD));
 }
 
 /*
@@ -1816,11 +1782,30 @@ static void toolbar_buttons_cb(GtkWidget   *widget,
 }
 #endif
 
-#define MAKE_MENU(entries,path,btn) {									\
-	n_menu_entries = sizeof(entries) /								\
-		sizeof(entries[0]);									\
-	menu = menu_create_items(entries, n_menu_entries, path, &factory, toolbar_item);		\
-	gtk_menu_tool_button_set_menu(GTK_MENU_TOOL_BUTTON(btn), menu);					\
+#define ADD_MENU_ITEM(name,cb,data) {							\
+	item = gtk_menu_item_new_with_mnemonic(name);					\
+	gtk_menu_shell_append(GTK_MENU_SHELL(menu), item);				\
+	g_signal_connect(G_OBJECT(item), "activate",					\
+			 G_CALLBACK(cb),						\
+			   toolbar_item);						\
+	g_object_set_data(G_OBJECT(item), "int-value", GINT_TO_POINTER(data));		\
+	gtk_widget_show(item);								\
+}
+
+static void toolbar_reply_menu_cb(GtkWidget *widget, gpointer data)
+{
+	gpointer int_value = g_object_get_data(G_OBJECT(widget), "int-value");
+	ToolbarItem *toolbar_item = (ToolbarItem *)data;
+	
+	toolbar_reply(toolbar_item, GPOINTER_TO_INT(int_value));
+}
+
+static void toolbar_learn_menu_cb(GtkWidget *widget, gpointer data)
+{
+	gpointer int_value = g_object_get_data(G_OBJECT(widget), "int-value");
+	ToolbarItem *toolbar_item = (ToolbarItem *)data;
+	
+	toolbar_learn(toolbar_item, GPOINTER_TO_INT(int_value));
 }
 
 /**
@@ -1839,13 +1824,11 @@ Toolbar *toolbar_create(ToolbarType 	 type,
 	GtkWidget *icon_news;
 	GtkWidget *icon_ham;
 	GtkWidget *item;
-	GtkWidget *menu;
-	guint n_menu_entries;
-	GtkItemFactory *factory;
 	ToolbarClawsActions *action_item;
 	GSList *cur;
 	GSList *toolbar_list;
 	Toolbar *toolbar_data;
+	GtkWidget *menu;
 #ifndef GENERIC_UMPC
 #if !(GTK_CHECK_VERSION(2,12,0))
 	GtkTooltips *toolbar_tips = gtk_tooltips_new();
@@ -1948,7 +1931,10 @@ Toolbar *toolbar_create(ToolbarType 	 type,
 			toolbar_data->learn_ham_icon = icon_ham; 
 			g_object_ref(toolbar_data->learn_ham_icon);
 
-			MAKE_MENU(learn_entries,"<LearnSpam>",toolbar_data->learn_spam_btn);
+			menu = gtk_menu_new();
+			ADD_MENU_ITEM(_("Learn as _Spam"), toolbar_learn_menu_cb, TRUE);
+			ADD_MENU_ITEM(_("Learn as _Ham"), toolbar_learn_menu_cb, FALSE);
+			gtk_menu_tool_button_set_menu(GTK_MENU_TOOL_BUTTON(toolbar_data->learn_spam_btn), menu);
 			break;
 		case A_REPLY_MESSAGE:
 #ifndef GENERIC_UMPC
@@ -1957,7 +1943,10 @@ Toolbar *toolbar_create(ToolbarType 	 type,
 				_("Reply to Message options"));
 			toolbar_data->reply_btn = item;
 
-			MAKE_MENU(reply_entries,"<Reply>",toolbar_data->reply_btn);
+			menu = gtk_menu_new();
+			ADD_MENU_ITEM(_("_Reply with quote"), toolbar_reply_menu_cb, COMPOSE_REPLY_WITH_QUOTE);
+			ADD_MENU_ITEM(_("Reply without _quote"), toolbar_reply_menu_cb, COMPOSE_REPLY_WITHOUT_QUOTE);
+			gtk_menu_tool_button_set_menu(GTK_MENU_TOOL_BUTTON(toolbar_data->reply_btn), menu);
 #else
 			TOOLBAR_ITEM(item,icon_wid,toolbar_item->text,
 				_("Reply to Message"));
@@ -1971,7 +1960,10 @@ Toolbar *toolbar_create(ToolbarType 	 type,
 				_("Reply to Sender options"));
 			toolbar_data->replysender_btn = item;
 
-			MAKE_MENU(replysender_entries,"<ReplySender>",toolbar_data->replysender_btn);
+			menu = gtk_menu_new();
+			ADD_MENU_ITEM(_("_Reply with quote"), toolbar_reply_menu_cb, COMPOSE_REPLY_TO_SENDER_WITH_QUOTE);
+			ADD_MENU_ITEM(_("Reply without _quote"), toolbar_reply_menu_cb, COMPOSE_REPLY_TO_SENDER_WITHOUT_QUOTE);
+			gtk_menu_tool_button_set_menu(GTK_MENU_TOOL_BUTTON(toolbar_data->replysender_btn), menu);
 #else
 			TOOLBAR_ITEM(item,icon_wid,toolbar_item->text,
 				_("Reply to Sender"));
@@ -1985,7 +1977,10 @@ Toolbar *toolbar_create(ToolbarType 	 type,
 				_("Reply to All options"));
 			toolbar_data->replyall_btn = item;
 
-			MAKE_MENU(replyall_entries,"<ReplyAll>",toolbar_data->replyall_btn);
+			menu = gtk_menu_new();
+			ADD_MENU_ITEM(_("_Reply with quote"), toolbar_reply_menu_cb, COMPOSE_REPLY_TO_ALL_WITH_QUOTE);
+			ADD_MENU_ITEM(_("Reply without _quote"), toolbar_reply_menu_cb, COMPOSE_REPLY_TO_ALL_WITHOUT_QUOTE);
+			gtk_menu_tool_button_set_menu(GTK_MENU_TOOL_BUTTON(toolbar_data->replyall_btn), menu);
 #else
 			TOOLBAR_ITEM(item,icon_wid,toolbar_item->text,
 				_("Reply to All"));
@@ -1999,7 +1994,10 @@ Toolbar *toolbar_create(ToolbarType 	 type,
 				_("Reply to Mailing-list options"));
 			toolbar_data->replylist_btn = item;
 
-			MAKE_MENU(replylist_entries,"<ReplyList>",toolbar_data->replylist_btn);
+			menu = gtk_menu_new();
+			ADD_MENU_ITEM(_("_Reply with quote"), toolbar_reply_menu_cb, COMPOSE_REPLY_TO_LIST_WITH_QUOTE);
+			ADD_MENU_ITEM(_("Reply without _quote"), toolbar_reply_menu_cb, COMPOSE_REPLY_TO_LIST_WITHOUT_QUOTE);
+			gtk_menu_tool_button_set_menu(GTK_MENU_TOOL_BUTTON(toolbar_data->replylist_btn), menu);
 #else
 			TOOLBAR_ITEM(item,icon_wid,toolbar_item->text,
 				_("Reply to Mailing-list"));
@@ -2013,7 +2011,11 @@ Toolbar *toolbar_create(ToolbarType 	 type,
 				_("Forward Message options"));
 			toolbar_data->fwd_btn = item;
 
-			MAKE_MENU(forward_entries,"<Forward>",toolbar_data->fwd_btn);
+			menu = gtk_menu_new();
+			ADD_MENU_ITEM(_("_Forward"), toolbar_reply_menu_cb, COMPOSE_FORWARD_INLINE);
+			ADD_MENU_ITEM(_("For_ward as attachment"), toolbar_reply_menu_cb, COMPOSE_FORWARD_AS_ATTACH);
+			ADD_MENU_ITEM(_("Redirec_t"), toolbar_reply_menu_cb, COMPOSE_REDIRECT);
+			gtk_menu_tool_button_set_menu(GTK_MENU_TOOL_BUTTON(toolbar_data->fwd_btn), menu);
 #else
 			TOOLBAR_ITEM(item,icon_wid,toolbar_item->text,
 				_("Forward Message"));

@@ -285,10 +285,8 @@ static gint apply_list_btn_pressed(GtkWidget *widget, GdkEventButton *event,
 		gboolean non_empty;
 
 		if (!apply_popup_menu) {
-			actions = gtk_action_group_new("EditTags");
-			gtk_action_group_add_actions(actions, apply_popup_actions,
+			actions = cm_menu_create_action_group("EditTags", apply_popup_actions,
 					G_N_ELEMENTS(apply_popup_actions), (gpointer)list_view);
-			gtk_ui_manager_insert_action_group(gui_manager, actions, 0);
 
 			MENUITEM_ADDUI("/Menus", "EditTags", "EditTags", GTK_UI_MANAGER_MENU)
 			MENUITEM_ADDUI("/Menus/EditTags", "Delete", "EditTags/Delete",

@@ -84,6 +84,16 @@ GtkWidget *menu_create_items(GtkItemFactoryEntry *entries,
 	return gtk_item_factory_get_widget(*factory, path);
 }
 
+GtkActionGroup *cm_menu_create_action_group(const gchar *name, GtkActionEntry **entries,
+					    gint num_entries, gpointer data)
+{
+	GtkActionGroup *group = gtk_action_group_new(name);
+	gtk_action_group_set_translate_func(group, menu_translate, NULL, NULL);
+	gtk_action_group_add_actions(group, entries, num_entries, data);
+	gtk_ui_manager_insert_action_group(gtkut_ui_manager(), group, 0);
+	return group;
+}
+
 gchar *menu_translate(const gchar *path, gpointer data)
 {
 	gchar *retval;
@@ -122,6 +132,25 @@ void cm_menu_set_sensitive(gchar *menu, gboolean sensitive)
 	}
 
 	gtk_widget_set_sensitive(widget, sensitive);
+	g_free(path);
+}
+
+void cm_toggle_menu_set_active(gchar *menu, gboolean active)
+{
+	GtkUIManager *gui_manager = gtkut_ui_manager();
+	GtkWidget *widget;
+	gchar *path = g_strdup_printf("/Menus/%s/", menu);
+
+	widget = gtk_ui_manager_get_widget(gui_manager, path);
+	if( !GTK_IS_WIDGET(widget) ) {
+		g_message("Blah, '%s' is not a widget.\n", path);
+	}
+
+	if( !GTK_CHECK_MENU_ITEM(widget) ) {
+		g_message("Blah, '%s' is not a check menu item.\n", path);
+	}
+
+	gtk_check_menu_item_set_active(widget, active);
 	g_free(path);
 }
 

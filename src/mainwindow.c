@@ -1914,16 +1914,15 @@ MainWindow *main_window_create()
 #define	ADD_MENU_ACCEL_GROUP_TO_WINDOW(menu,win)			\
 	gtk_window_add_accel_group					\
 		(GTK_WINDOW(win), 					\
-		 gtk_item_factory_from_widget(menu)->accel_group); 	\
-	g_signal_connect(G_OBJECT(gtk_item_factory_from_widget(menu)->accel_group), \
+		 gtk_ui_manager_get_accel_group(gtkut_ui_manager())); 	\
+	g_signal_connect(G_OBJECT(gtk_ui_manager_get_accel_group(gtkut_ui_manager())), \
 			"accel_activate", 				\
 		       	G_CALLBACK(main_window_accel_activate), mainwin);
-			 
+
+	ADD_MENU_ACCEL_GROUP_TO_WINDOW(summaryview->popupmenu, mainwin->window);
 	
-/*	ADD_MENU_ACCEL_GROUP_TO_WINDOW(summaryview->popupmenu, mainwin->window);
-	
-	menu_connect_identical_items();
-*/
+/* FIXME	menu_connect_identical_items(); */
+
 #ifndef GENERIC_UMPC
 	gtk_window_iconify(GTK_WINDOW(mainwin->window));
 #endif
