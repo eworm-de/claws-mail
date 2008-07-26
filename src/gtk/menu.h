@@ -82,7 +82,7 @@ void menu_set_sensitive		(GtkItemFactory		*ifactory,
 				 const gchar		*path,
 				 gboolean		 sensitive);
 
-GtkActionGroup *cm_menu_create_action_group(const gchar *name, GtkActionEntry **entries,
+GtkActionGroup *cm_menu_create_action_group(const gchar *name, GtkActionEntry *entries,
 					    gint num_entries, gpointer data);
 void cm_menu_set_sensitive(gchar *menu, gboolean sensitive);
 void cm_toggle_menu_set_active(gchar *menu, gboolean active);

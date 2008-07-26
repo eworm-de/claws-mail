@@ -1,3 +1,9 @@
+2008-07-26 [colin]	3.5.0cvs35
+
+	* src/gtk/menu.c
+	* src/gtk/menu.h
+		Fix prototype
+
 2008-07-25 [colin]	3.5.0cvs34
 
 	* src/addrcustomattr.c

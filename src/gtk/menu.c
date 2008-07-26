@@ -84,7 +84,7 @@ GtkWidget *menu_create_items(GtkItemFactoryEntry *entries,
 	return gtk_item_factory_get_widget(*factory, path);
 }
 
-GtkActionGroup *cm_menu_create_action_group(const gchar *name, GtkActionEntry **entries,
+GtkActionGroup *cm_menu_create_action_group(const gchar *name, GtkActionEntry *entries,
 					    gint num_entries, gpointer data)
 {
 	GtkActionGroup *group = gtk_action_group_new(name);
