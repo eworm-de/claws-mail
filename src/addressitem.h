@@ -82,9 +82,6 @@ struct _AddressBook_win
 
 	GtkWidget *tree_popup;
 	GtkWidget *list_popup;
-	GtkItemFactory *tree_factory;
-	GtkItemFactory *list_factory;
-	GtkItemFactory *menu_factory;
 
 	GtkCTreeNode *treeSelected;
 	GtkCTreeNode *opened;

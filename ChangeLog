@@ -1,3 +1,21 @@
+2008-07-29 [colin]	3.5.0cvs38
+
+	* src/account.c
+	* src/account.h
+	* src/action.c
+	* src/action.h
+	* src/addressitem.h
+	* src/compose.c
+	* src/edittags.c
+	* src/mainwindow.c
+	* src/mainwindow.h
+	* src/mimeview.c
+	* src/summaryview.c
+	* src/gtk/menu.c
+	* src/gtk/menu.h
+		Switch the main menu to GtkUIManager
+		Warning fixes
+
 2008-07-29 [colin]	3.5.0cvs37
 
 	* src/news.c

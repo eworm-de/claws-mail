@@ -371,7 +371,7 @@ GList *account_get_list(void)
 	return account_list;
 }
 
-void account_edit_open(void)
+void account_edit_open(gpointer a, gpointer b)
 {
 	inc_lock();
 

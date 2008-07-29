@@ -52,7 +52,7 @@ void actions_execute		(gpointer	data,
 				 GtkWidget	*widget,
 				 gint		source);
 
-void action_update_mainwin_menu	(GtkItemFactory	*ifactory,
+void action_update_mainwin_menu	(GtkUIManager 	*ui_manager,
 				 gchar		*branch_path,
 				 MainWindow	*mainwin);
 void action_update_msgview_menu	(GtkUIManager 	*ui_manager,

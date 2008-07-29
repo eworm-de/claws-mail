@@ -46,7 +46,7 @@ void	      account_set_menu_only_toolbar	(void);
 
 GList	     *account_get_list		(void);
 
-void	      account_edit_open		(void);
+void	      account_edit_open		(gpointer a, gpointer b);
 void	      account_add		(void);
 void	      account_open		(PrefsAccount	*ac_prefs);
 void	      account_set_as_recv_at_get_all	(PrefsAccount	*ac_prefs);

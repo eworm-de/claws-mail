@@ -263,7 +263,7 @@ static void apply_popup_delete_all (GtkAction *action, gpointer data)
 	APPLYWINDOW_UNLOCK();
 }
 
-static const GtkActionEntry apply_popup_actions[] =
+static GtkActionEntry apply_popup_actions[] =
 {
 	{ "EditTags", NULL, "EditTags" },
 	{ "EditTags/Delete", NULL, N_("_Delete"), NULL, "Delete tag", G_CALLBACK(apply_popup_delete) },

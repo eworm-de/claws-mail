@@ -7532,7 +7532,7 @@ static void compose_set_template_menu(Compose *compose)
 		g_object_set_data(G_OBJECT(item), "template", tmpl);
 		gtk_widget_show(item);
 		accel_path = g_strconcat("<ComposeTemplates>" , "/", tmpl->name, NULL);
-		gtk_menu_item_set_accel_path(item, accel_path);
+		gtk_menu_item_set_accel_path(GTK_MENU_ITEM(item), accel_path);
 		g_free(accel_path);
 	}
 

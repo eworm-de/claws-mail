@@ -129,7 +129,6 @@ void menu_set_sensitive(GtkItemFactory *ifactory, const gchar *path,
 void cm_menu_set_sensitive(gchar *menu, gboolean sensitive)
 {
 	GtkUIManager *gui_manager = gtkut_ui_manager();
-	GtkWidget *widget;
 	gchar *path = g_strdup_printf("Menus/%s", menu);
 
 	cm_menu_set_sensitive_full(gui_manager, path, sensitive);
@@ -139,7 +138,6 @@ void cm_menu_set_sensitive(gchar *menu, gboolean sensitive)
 void cm_toggle_menu_set_active(gchar *menu, gboolean active)
 {
 	GtkUIManager *gui_manager = gtkut_ui_manager();
-	GtkWidget *widget;
 	gchar *path = g_strdup_printf("Menus/%s", menu);
 
 	cm_toggle_menu_set_active_full(gui_manager, path, active);
@@ -178,7 +176,7 @@ void cm_toggle_menu_set_active_full(GtkUIManager *gui_manager, gchar *menu, gboo
 		g_message("Blah, '%s' is not a check menu item.\n", path);
 	}
 
-	gtk_check_menu_item_set_active(widget, active);
+	gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM(widget), active);
 	g_free(path);
 }
 

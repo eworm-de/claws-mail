@@ -68,6 +68,18 @@
 	if (id) gtk_ui_manager_remove_ui(gtkut_ui_manager(), id);	\
 }
 
+#define MENUITEM_ADDUI_ID_MANAGER(manager,path,name,action,type,id)		 \
+	id = gtk_ui_manager_new_merge_id(manager);	 \
+	gtk_ui_manager_add_ui(manager,		 \
+			id,					 \
+			path, name, action, type, FALSE);
+
+#define MENUITEM_REMUI_MANAGER(manager,action_group,name,id) {			\
+	GtkAction *action = gtk_action_group_get_action(action_group, name); \
+	if (action) gtk_action_group_remove_action(action_group, action);	\
+	if (id) gtk_ui_manager_remove_ui(manager, id);	\
+}
+
 #define menu_set_insensitive_all(menu_shell) \
 	menu_set_sensitive_all(menu_shell, FALSE);
 

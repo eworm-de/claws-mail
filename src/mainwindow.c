@@ -128,316 +128,224 @@ static void message_window_size_allocate_cb	(GtkWidget	*widget,
 						 GtkAllocation	*allocation,
 						 gpointer	 data);
 
-static void update_folderview_cb (MainWindow	*mainwin,
-				  guint		 action,
-				  GtkWidget	*widget);
-static void add_mailbox_cb	 (MainWindow	*mainwin,
-				  guint		 action,
-				  GtkWidget	*widget);
-static void foldersort_cb	 (MainWindow 	*mainwin,
-				  guint		 action,
-                        	  GtkWidget 	*widget);
-static void import_mbox_cb	 (MainWindow	*mainwin,
-				  guint		 action,
-				  GtkWidget	*widget);
-static void export_mbox_cb	 (MainWindow	*mainwin,
-				  guint		 action,
-				  GtkWidget	*widget);
-static void export_list_mbox_cb  (MainWindow 	*mainwin, 
-				  guint 	 action,
-				  GtkWidget 	*widget);
-static void empty_trash_cb	 (MainWindow	*mainwin,
-				  guint		 action,
-				  GtkWidget	*widget);
-
-static void save_as_cb		 (MainWindow	*mainwin,
-				  guint		 action,
-				  GtkWidget	*widget);
+static void update_folderview_cb (GtkAction	*action,
+				  gpointer	 data);
+static void add_mailbox_cb	 (GtkAction	*action,
+				  gpointer	 data);
+static void foldersort_cb	 (GtkAction	*action,
+				  gpointer	 data);
+static void import_mbox_cb	 (GtkAction	*action,
+				  gpointer	 data);
+static void export_mbox_cb	 (GtkAction	*action,
+				  gpointer	 data);
+static void export_list_mbox_cb  (GtkAction	*action,
+				  gpointer	 data);
+static void empty_trash_cb	 (GtkAction	*action,
+				  gpointer	 data);
+static void save_as_cb		 (GtkAction	*action,
+				  gpointer	 data);
 #if GTK_CHECK_VERSION(2,10,0) && !defined(USE_GNOMEPRINT)
-static void page_setup_cb	 (MainWindow	*mainwin,
-				  guint		 action,
-				  GtkWidget	*widget);
+static void page_setup_cb	 (GtkAction	*action,
+				  gpointer	 data);
 #endif
+static void print_cb		 (GtkAction	*action,
+				  gpointer	 data);
+static void app_exit_cb		 (GtkAction	*action,
+				  gpointer	 data);
 
-static void print_cb		 (MainWindow	*mainwin,
-				  guint		 action,
-				  GtkWidget	*widget);
-static void app_exit_cb		 (MainWindow	*mainwin,
-				  guint		 action,
-				  GtkWidget	*widget);
 
-static void search_cb		 (MainWindow	*mainwin,
-				  guint		 action,
-				  GtkWidget	*widget);
+static void search_cb		 (GtkAction	*action,
+				  gpointer	 data);
+static void search_folder_cb	 (GtkAction	*action,
+				  gpointer	 data);
 
-static void toggle_message_cb	 (MainWindow	*mainwin,
-				  guint		 action,
-				  GtkWidget	*widget);
-static void toggle_toolbar_cb	 (MainWindow	*mainwin,
-				  guint		 action,
-				  GtkWidget	*widget);
-static void toggle_col_headers_cb(MainWindow	*mainwin,
-				  guint		 action,
-				  GtkWidget	*widget);
+static void toggle_message_cb	 (GtkAction	*action,
+				  gpointer	 data);
+static void toggle_toolbar_cb	 (GtkAction *action, GtkRadioAction *current, gpointer data);
+static void toggle_col_headers_cb(GtkAction	*action,
+				  gpointer	 data);
 #ifndef GENERIC_UMPC
-static void toggle_statusbar_cb	 (MainWindow	*mainwin,
-				  guint		 action,
-				  GtkWidget	*widget);
-static void set_layout_cb	 (MainWindow	*mainwin,
-				  guint		 action,
-				  GtkWidget	*widget);
+static void toggle_statusbar_cb	 (GtkAction	*action,
+				  gpointer	 data);
+static void set_layout_cb	 (GtkAction *action, GtkRadioAction *current, gpointer data);
 #endif
-static void addressbook_open_cb	(MainWindow	*mainwin,
-				 guint		 action,
-				 GtkWidget	*widget);
-static void log_window_show_cb	(MainWindow	*mainwin,
-				 guint		 action,
-				 GtkWidget	*widget);
-static void filtering_debug_window_show_cb	(MainWindow	*mainwin,
-				 guint		 action,
-				 GtkWidget	*widget);
+static void addressbook_open_cb	(GtkAction	*action,
+				  gpointer	 data);
+static void log_window_show_cb	(GtkAction	*action,
+				  gpointer	 data);
+static void filtering_debug_window_show_cb	(GtkAction	*action,
+				  gpointer	 data);
 
-static void inc_cancel_cb		(MainWindow	*mainwin,
-					 guint		 action,
-					 GtkWidget	*widget);
+static void inc_cancel_cb		(GtkAction	*action,
+				  gpointer	 data);
 
-static void open_msg_cb			(MainWindow	*mainwin,
-					 guint		 action,
-					 GtkWidget	*widget);
+static void open_msg_cb			(GtkAction	*action,
+				  gpointer	 data);
 
-static void view_source_cb		(MainWindow	*mainwin,
-					 guint		 action,
-					 GtkWidget	*widget);
+static void view_source_cb		(GtkAction	*action,
+				  gpointer	 data);
 
-static void show_all_header_cb		(MainWindow	*mainwin,
-					 guint		 action,
-					 GtkWidget	*widget);
+static void show_all_header_cb		(GtkAction	*action,
+				  gpointer	 data);
 
-static void hide_quotes_cb(MainWindow	*mainwin,
-					 guint		 action,
-					 GtkWidget	*widget);
+static void hide_quotes_cb(GtkAction	*action,
+				  gpointer	 data);
 
-static void move_to_cb			(MainWindow	*mainwin,
-					 guint		 action,
-					 GtkWidget	*widget);
-static void copy_to_cb			(MainWindow	*mainwin,
-					 guint		 action,
-					 GtkWidget	*widget);
-static void delete_cb			(MainWindow	*mainwin,
-					 guint		 action,
-					 GtkWidget	*widget);
-static void delete_trash_cb			(MainWindow	*mainwin,
-					 guint		 action,
-					 GtkWidget	*widget);
+static void move_to_cb			(GtkAction	*action,
+				  gpointer	 data);
+static void copy_to_cb			(GtkAction	*action,
+				  gpointer	 data);
+static void delete_cb			(GtkAction	*action,
+				  gpointer	 data);
+static void delete_trash_cb			(GtkAction	*action,
+				  gpointer	 data);
 
-static void cancel_cb                   (MainWindow     *mainwin,
-					 guint           action,
-					 GtkWidget      *widget);
+static void cancel_cb                   (GtkAction	*action,
+				  gpointer	 data);
 
-static void mark_cb			(MainWindow	*mainwin,
-					 guint		 action,
-					 GtkWidget	*widget);
-static void unmark_cb			(MainWindow	*mainwin,
-					 guint		 action,
-					 GtkWidget	*widget);
+static void mark_cb			(GtkAction	*action,
+				  gpointer	 data);
+static void unmark_cb			(GtkAction	*action,
+				  gpointer	 data);
 
-static void mark_as_unread_cb		(MainWindow	*mainwin,
-					 guint		 action,
-					 GtkWidget	*widget);
-static void mark_as_read_cb		(MainWindow	*mainwin,
-					 guint		 action,
-					 GtkWidget	*widget);
-static void mark_all_read_cb		(MainWindow	*mainwin,
-					 guint		 action,
-					 GtkWidget	*widget);
-static void mark_as_spam_cb		(MainWindow 	*mainwin, 
-					 guint 		 action,
-			     		 GtkWidget 	*widget);
+static void mark_as_unread_cb		(GtkAction	*action,
+				  gpointer	 data);
+static void mark_as_read_cb		(GtkAction	*action,
+				  gpointer	 data);
+static void mark_all_read_cb		(GtkAction	*action,
+				  gpointer	 data);
+static void mark_as_spam_cb		(GtkAction	*action,
+				  gpointer	 data);
+static void mark_as_ham_cb		(GtkAction	*action,
+				  gpointer	 data);
 
-static void ignore_thread_cb		(MainWindow 	*mainwin, 
-					 guint 		 action,
-			     		 GtkWidget 	*widget);
-static void unignore_thread_cb		(MainWindow 	*mainwin, 
-					 guint 		 action,
-			     		 GtkWidget 	*widget);
-static void watch_thread_cb		(MainWindow 	*mainwin, 
-					 guint 		 action,
-			     		 GtkWidget 	*widget);
-static void unwatch_thread_cb		(MainWindow 	*mainwin, 
-					 guint 		 action,
-			     		 GtkWidget 	*widget);
-static void lock_msgs_cb		(MainWindow 	*mainwin, 
-					 guint 		 action,
-			     		 GtkWidget 	*widget);
-static void unlock_msgs_cb		(MainWindow 	*mainwin, 
-					 guint 		 action,
-			     		 GtkWidget 	*widget);
+static void ignore_thread_cb		(GtkAction	*action,
+				  gpointer	 data);
+static void unignore_thread_cb		(GtkAction	*action,
+				  gpointer	 data);
+static void watch_thread_cb		(GtkAction	*action,
+				  gpointer	 data);
+static void unwatch_thread_cb		(GtkAction	*action,
+				  gpointer	 data);
+static void lock_msgs_cb		(GtkAction	*action,
+				  gpointer	 data);
+static void unlock_msgs_cb		(GtkAction	*action,
+				  gpointer	 data);
 
-static void reedit_cb			(MainWindow	*mainwin,
-					 guint		 action,
-					 GtkWidget	*widget);
+static void reedit_cb			(GtkAction	*action,
+				  gpointer	 data);
 
-static void add_address_cb		(MainWindow	*mainwin,
-					 guint		 action,
-					 GtkWidget	*widget);
+static void add_address_cb		(GtkAction	*action,
+				  gpointer	 data);
 
-static void set_charset_cb		(MainWindow	*mainwin,
-					 guint		 action,
-					 GtkWidget	*widget);
+static void set_charset_cb		(GtkAction *action, GtkRadioAction *current, gpointer data);
 
-static void set_decode_cb		(MainWindow	*mainwin,
-					 guint		 action,
-					 GtkWidget	*widget);
+static void set_decode_cb		(GtkAction *action, GtkRadioAction *current, gpointer data);
 
-static void hide_read_messages   (MainWindow	*mainwin,
-				  guint		 action,
-				  GtkWidget	*widget);
+static void hide_read_messages   (GtkAction	*action,
+				  gpointer	 data);
 
-static void thread_cb		 (MainWindow	*mainwin,
-				  guint		 action,
-				  GtkWidget	*widget);
-static void expand_threads_cb	 (MainWindow	*mainwin,
-				  guint		 action,
-				  GtkWidget	*widget);
-static void collapse_threads_cb	 (MainWindow	*mainwin,
-				  guint		 action,
-				  GtkWidget	*widget);
+static void thread_cb		 (GtkAction	*action,
+				  gpointer	 data);
+static void expand_threads_cb	 (GtkAction	*action,
+				  gpointer	 data);
+static void collapse_threads_cb	 (GtkAction	*action,
+				  gpointer	 data);
 
-static void set_summary_display_item_cb	 (MainWindow	*mainwin,
-				  guint		 action,
-				  GtkWidget	*widget);
-static void set_folder_display_item_cb	 (MainWindow	*mainwin,
-				  guint		 action,
-				  GtkWidget	*widget);
-static void sort_summary_cb	 (MainWindow	*mainwin,
-				  guint		 action,
-				  GtkWidget	*widget);
-static void sort_summary_type_cb (MainWindow	*mainwin,
-				  guint		 action,
-				  GtkWidget	*widget);
-static void attract_by_subject_cb(MainWindow	*mainwin,
-				  guint		 action,
-				  GtkWidget	*widget);
+static void set_summary_display_item_cb	 (GtkAction	*action,
+				  gpointer	 data);
+static void set_folder_display_item_cb	 (GtkAction	*action,
+				  gpointer	 data);
+static void sort_summary_cb	 (GtkAction *action, GtkRadioAction *current, gpointer data);
+static void sort_summary_type_cb (GtkAction *action, GtkRadioAction *current, gpointer data);
+static void attract_by_subject_cb(GtkAction	*action,
+				  gpointer	 data);
 
-static void delete_duplicated_cb (MainWindow	*mainwin,
-				  guint		 action,
-				  GtkWidget	*widget);
-static void delete_duplicated_all_cb (MainWindow	*mainwin,
-				  guint		 action,
-				  GtkWidget	*widget);
-static void filter_cb		 (MainWindow	*mainwin,
-				  guint		 action,
-				  GtkWidget	*widget);
-static void process_cb		 (MainWindow	*mainwin,
-				  guint		 action,
-				  GtkWidget	*widget);
-static void execute_summary_cb	 (MainWindow	*mainwin,
-				  guint		 action,
-				  GtkWidget	*widget);
-static void update_summary_cb	 (MainWindow	*mainwin,
-				  guint		 action,
-				  GtkWidget	*widget);
+static void delete_duplicated_cb (GtkAction	*action,
+				  gpointer	 data);
+static void delete_duplicated_all_cb (GtkAction	*action,
+				  gpointer	 data);
+static void filter_cb		 (GtkAction	*action,
+				  gpointer	 data);
+static void filter_list_cb	 (GtkAction	*action,
+				  gpointer	 data);
+static void process_cb		 (GtkAction	*action,
+				  gpointer	 data);
+static void execute_summary_cb	 (GtkAction	*action,
+				  gpointer	 data);
+static void update_summary_cb	 (GtkAction	*action,
+				  gpointer	 data);
 
-static void prev_cb		 (MainWindow	*mainwin,
-				  guint		 action,
-				  GtkWidget	*widget);
-static void next_cb		 (MainWindow	*mainwin,
-				  guint		 action,
-				  GtkWidget	*widget);
-static void next_unread_cb	 (MainWindow	*mainwin,
-				  guint		 action,
-				  GtkWidget	*widget);
-static void prev_unread_cb	 (MainWindow	*mainwin,
-				  guint		 action,
-				  GtkWidget	*widget);
+static void prev_cb		 (GtkAction	*action,
+				  gpointer	 data);
+static void next_cb		 (GtkAction	*action,
+				  gpointer	 data);
+static void next_unread_cb	 (GtkAction	*action,
+				  gpointer	 data);
+static void prev_unread_cb	 (GtkAction	*action,
+				  gpointer	 data);
 
-static void prev_new_cb		 (MainWindow	*mainwin,
-				  guint		 action,
-				  GtkWidget	*widget);
-static void next_new_cb		 (MainWindow	*mainwin,
-				  guint		 action,
-				  GtkWidget	*widget);
-static void prev_marked_cb	 (MainWindow	*mainwin,
-				  guint		 action,
-				  GtkWidget	*widget);
-static void next_marked_cb	 (MainWindow	*mainwin,
-				  guint		 action,
-				  GtkWidget	*widget);
-static void prev_labeled_cb	 (MainWindow	*mainwin,
-				  guint		 action,
-				  GtkWidget	*widget);
-static void next_labeled_cb	 (MainWindow	*mainwin,
-				  guint		 action,
-				  GtkWidget	*widget);
-static void last_read_cb	 (MainWindow	*mainwin,
-				  guint		 action,
-				  GtkWidget	*widget);
-static void parent_cb		 (MainWindow	*mainwin,
-				  guint		 action,
-				  GtkWidget	*widget);
+static void prev_new_cb		 (GtkAction	*action,
+				  gpointer	 data);
+static void next_new_cb		 (GtkAction	*action,
+				  gpointer	 data);
+static void prev_marked_cb	 (GtkAction	*action,
+				  gpointer	 data);
+static void next_marked_cb	 (GtkAction	*action,
+				  gpointer	 data);
+static void prev_labeled_cb	 (GtkAction	*action,
+				  gpointer	 data);
+static void next_labeled_cb	 (GtkAction	*action,
+				  gpointer	 data);
+static void last_read_cb	 (GtkAction	*action,
+				  gpointer	 data);
+static void parent_cb		 (GtkAction	*action,
+				  gpointer	 data);
 
-static void goto_folder_cb	 (MainWindow	*mainwin,
-				  guint		 action,
-				  GtkWidget	*widget);
-static void goto_unread_folder_cb(MainWindow	*mainwin,
-				  guint		 action,
-				  GtkWidget	*widget);
+static void goto_folder_cb	 (GtkAction	*action,
+				  gpointer	 data);
+static void goto_unread_folder_cb(GtkAction	*action,
+				  gpointer	 data);
 
-static void copy_cb		 (MainWindow	*mainwin,
-				  guint		 action,
-				  GtkWidget	*widget);
-static void allsel_cb		 (MainWindow	*mainwin,
-				  guint		 action,
-				  GtkWidget	*widget);
-static void select_thread_cb	 (MainWindow	*mainwin,
-				  guint		 action,
-				  GtkWidget	*widget);
-static void delete_thread_cb	 (MainWindow	*mainwin,
-				  guint		 action,
-				  GtkWidget	*widget);
+static void copy_cb		 (GtkAction	*action,
+				  gpointer	 data);
+static void allsel_cb		 (GtkAction	*action,
+				  gpointer	 data);
+static void select_thread_cb	 (GtkAction	*action,
+				  gpointer	 data);
+static void delete_thread_cb	 (GtkAction	*action,
+				  gpointer	 data);
 
-static void create_filter_cb	 (MainWindow	*mainwin,
-				  guint		 action,
-				  GtkWidget	*widget);
-static void create_processing_cb (MainWindow	*mainwin,
-				  guint		 action,
-				  GtkWidget	*widget);
-static void open_urls_cb	 (MainWindow	*mainwin,
-				  guint		 action,
-				  GtkWidget	*widget);
+static void create_filter_cb	 (GtkAction	*action,
+				  gpointer	 data);
+static void create_processing_cb (GtkAction	*action,
+				  gpointer	 data);
+static void open_urls_cb	 (GtkAction	*action,
+				  gpointer	 data);
 
-static void prefs_template_open_cb	(MainWindow	*mainwin,
-					 guint		 action,
-					 GtkWidget	*widget);
-static void prefs_actions_open_cb	(MainWindow	*mainwin,
-					 guint		 action,
-					 GtkWidget	*widget);
-static void prefs_tags_open_cb		(MainWindow	*mainwin,
-					 guint		 action,
-					 GtkWidget	*widget);
-static void prefs_account_open_cb	(MainWindow	*mainwin,
-					 guint		 action,
-					 GtkWidget	*widget);
+static void prefs_template_open_cb	(GtkAction	*action,
+				  gpointer	 data);
+static void prefs_actions_open_cb	(GtkAction	*action,
+				  gpointer	 data);
+static void prefs_tags_open_cb		(GtkAction	*action,
+				  gpointer	 data);
+static void prefs_account_open_cb	(GtkAction	*action,
+				  gpointer	 data);
 
-static void prefs_pre_processing_open_cb  (MainWindow	*mainwin,
-				  	   guint	 action,
-				  	   GtkWidget	*widget);
+static void prefs_pre_processing_open_cb  (GtkAction	*action,
+				  gpointer	 data);
 
-static void prefs_post_processing_open_cb (MainWindow	*mainwin,
-				  	   guint	 action,
-				  	   GtkWidget	*widget);
+static void prefs_post_processing_open_cb (GtkAction	*action,
+				  gpointer	 data);
 
-static void prefs_filtering_open_cb 	(MainWindow	*mainwin,
-				  	 guint		 action,
-				  	 GtkWidget	*widget);
+static void prefs_filtering_open_cb 	(GtkAction	*action,
+				  gpointer	 data);
 #if (defined(USE_OPENSSL) || defined (USE_GNUTLS))
-static void ssl_manager_open_cb 	(MainWindow	*mainwin,
-				  	 guint		 action,
-				  	 GtkWidget	*widget);
+static void ssl_manager_open_cb 	(GtkAction	*action,
+				  gpointer	 data);
 #endif
-static void new_account_cb	 (MainWindow	*mainwin,
-				  guint		 action,
-				  GtkWidget	*widget);
+static void new_account_cb	 (GtkAction	*action,
+				  gpointer	 data);
 
 static void account_selector_menu_cb	 (GtkMenuItem	*menuitem,
 					  gpointer	 data);
@@ -447,37 +355,36 @@ static void account_receive_menu_cb	 (GtkMenuItem	*menuitem,
 static void account_compose_menu_cb	 (GtkMenuItem	*menuitem,
 					  gpointer	 data);
 #endif
-static void prefs_open_cb	(GtkMenuItem	*menuitem,
-				 gpointer 	 data);
-static void plugins_open_cb	(GtkMenuItem	*menuitem,
-				 gpointer 	 data);
+static void prefs_open_cb	(GtkAction	*action,
+				  gpointer	 data);
+static void plugins_open_cb	(GtkAction	*action,
+				  gpointer	 data);
 
 static void online_switch_clicked(GtkButton     *btn, 
 				  gpointer data);
 
-static void manual_open_cb	 (MainWindow	*mainwin,
-				  guint		 action,
-				  GtkWidget	*widget);
+static void manual_open_cb	 (GtkAction	*action,
+				  gpointer	 data);
+static void manual_faq_open_cb	 (GtkAction	*action,
+				  gpointer	 data);
 
-static void legend_open_cb	 (GtkMenuItem	*menuitem,
-				  gpointer 	 data);
+static void legend_open_cb	 (GtkAction	*action,
+				  gpointer	 data);
 
 static void scan_tree_func	 (Folder	*folder,
 				  FolderItem	*item,
 				  gpointer	 data);
 				  
-static void toggle_work_offline_cb(MainWindow *mainwin, guint action, GtkWidget *widget);
+static void toggle_work_offline_cb(GtkAction	*action,
+				  gpointer	 data);
 
-static void addr_harvest_cb	 ( MainWindow  *mainwin,
-				   guint       action,
-				   GtkWidget   *widget );
+static void addr_harvest_cb	 ( GtkAction	*action,
+				  gpointer	 data );
 
-static void addr_harvest_msg_cb	 ( MainWindow  *mainwin,
-				   guint       action,
-				   GtkWidget   *widget );
-static void sync_cb		 ( MainWindow *mainwin, 
-				   guint action, 
-				   GtkWidget *widget );
+static void addr_harvest_msg_cb	 ( GtkAction	*action,
+				  gpointer	 data );
+static void sync_cb		 ( GtkAction	*action,
+				  gpointer	 data );
 
 static gboolean mainwindow_focus_in_event	(GtkWidget	*widget, 
 						 GdkEventFocus	*focus,
@@ -488,13 +395,12 @@ static gboolean mainwindow_visibility_event_cb	(GtkWidget	*widget,
 static gboolean mainwindow_state_event_cb	(GtkWidget	*widget, 
 						 GdkEventWindowState	*state,
 						 gpointer	 data);
-static void main_window_reply_cb			(MainWindow 	*mainwin, 
-						 guint 		 action,
-						 GtkWidget 	*widget);
+static void main_window_reply_cb			(GtkAction	*action,
+				  gpointer	 data);
 static gboolean mainwindow_progressindicator_hook	(gpointer 	 source,
 						 gpointer 	 userdata);
 
-static gint mailing_list_create_submenu(GtkItemFactory *ifactory,
+static gint mailing_list_create_submenu(MainWindow *mainwindow,
 				       MsgInfo *msginfo);
 
 static gint mailing_list_populate_submenu(GtkWidget *menu, const gchar * list_header);
@@ -505,422 +411,412 @@ static void mailing_list_compose(GtkWidget *w, gpointer *data);
  
 static void mailing_list_open_uri(GtkWidget *w, gpointer *data);
 #define  SEPARATE_ACTION 500 
-static void mainwindow_quicksearch		(MainWindow 	*mainwin, 
-						 guint 		 action, 
-						 GtkWidget 	*widget);
+static void mainwindow_quicksearch		(GtkAction	*action,
+				  gpointer	 data);
 static gboolean any_folder_want_synchronise(void);
 
-static GtkItemFactoryEntry mainwin_entries[] =
+#define DO_ACTION(name, act)	{ if (!strcmp(a_name, name)) action = act; }
+
+static void mainwindow_nothing_cb	   (GtkAction *action, gpointer data)
 {
-	{N_("/_File"),				NULL, NULL, 0, "<Branch>"},
-	{N_("/_File/_Add mailbox"),		NULL, NULL, 0, "<Branch>"},
-	{N_("/_File/_Add mailbox/MH..."),	NULL, add_mailbox_cb, 0, NULL},
-	{N_("/_File/---"),			NULL, NULL, 0, "<Separator>"},
-	{N_("/_File/Change folder order..."),	NULL, foldersort_cb,  0, NULL},
-	{N_("/_File/---"),			NULL, NULL, 0, "<Separator>"},
-	{N_("/_File/_Import mbox file..."),	NULL, import_mbox_cb, 0, NULL},
-	{N_("/_File/_Export to mbox file..."),	NULL, export_mbox_cb, 0, NULL},
-	{N_("/_File/Exp_ort selected to mbox file..."),	
-						NULL, export_list_mbox_cb, 0, NULL},
-	{N_("/_File/---"),			NULL, NULL, 0, "<Separator>"},
-	{N_("/_File/Empty all _Trash folders"),	"<shift>D", empty_trash_cb, 0, NULL},
-	{N_("/_File/---"),			NULL, NULL, 0, "<Separator>"},
-	{N_("/_File/_Save as..."),		"<control>S", save_as_cb, 0, NULL},
+
+}
+
+static void about_cb(GtkAction *gaction, gpointer data)
+{
+	about_show();
+}
+
+static void	mw_inc_mail_cb			(GtkAction *gaction, gpointer data)
+{
+	inc_mail_cb(data, 0, NULL);
+}
+static void 	mw_inc_all_account_mail_cb		(GtkAction *gaction, gpointer data)
+{
+	inc_all_account_mail_cb(data, 0, NULL);
+}
+static void 	mw_send_queue_cb			(GtkAction *gaction, gpointer data)
+{
+	send_queue_cb(data, 0, NULL);
+}
+static void 	mw_compose_mail_cb			(GtkAction *gaction, gpointer data)
+{
+	compose_mail_cb(data, 0, NULL);
+}
+static void 	mw_compose_news_cb			(GtkAction *gaction, gpointer data)
+{
+	compose_news_cb(data, 0, NULL);
+}
+
+static GtkActionEntry mainwin_entries[] =
+{
+	{"Menu",				NULL, "Menu" },
+/* menus */
+	{"File",				NULL, N_("_File") },
+	{"Edit",				NULL, N_("_Edit") },
+	{"View",				NULL, N_("_View") },
+	{"Message",				NULL, N_("_Message") },
+	{"Tools",				NULL, N_("_Tools") },
+	{"Configuration",			NULL, N_("_Configuration") },
+	{"Help",				NULL, N_("_Help") },
+
+/* File menu */
+	{"File/AddMailbox",			NULL, N_("_Add mailbox") },
+	{"File/AddMailbox/MH",			NULL, N_("MH..."), NULL, NULL, G_CALLBACK(add_mailbox_cb) },
+	{"File/---",				NULL, "---" },
+
+	{"File/SortFolders",			NULL, N_("Change folder order..."), NULL, NULL, G_CALLBACK(foldersort_cb) },
+
+	/* {"File/---",				NULL, "---" }, */
+	{"File/ImportMbox",			NULL, N_("_Import mbox file..."), NULL, NULL, G_CALLBACK(import_mbox_cb) },
+	{"File/ExportMbox",			NULL, N_("_Export to mbox file..."), NULL, NULL, G_CALLBACK(export_mbox_cb) },
+	{"File/ExportSelMbox",			NULL, N_("_Export selected to mbox file..."), NULL, NULL, G_CALLBACK(export_list_mbox_cb) },
+	/* {"File/---",				NULL, "---" }, */
+	{"File/EmptyTrashes",			NULL, N_("Empty all _Trash folders"), "<shift>D", NULL, G_CALLBACK(empty_trash_cb) },
+	/* {"File/---",				NULL, "---" }, */
+
+	{"File/SaveAs",				NULL, N_("_Save as..."), "<control>S", NULL, G_CALLBACK(save_as_cb) },
+
 #if GTK_CHECK_VERSION(2,10,0) && !defined(USE_GNOMEPRINT)
-	{N_("/_File/Page setup..."),		NULL, page_setup_cb, 0, NULL},
+	{"File/PageSetup",			NULL, N_("Page setup..."), NULL, NULL, G_CALLBACK(page_setup_cb) },
 #endif
-	{N_("/_File/_Print..."),		"<control>P", print_cb, 0, NULL},
-	{N_("/_File/---"),			NULL, NULL, 0, "<Separator>"},
-	{N_("/_File/Offline _mode"),		"<control>W", toggle_work_offline_cb, 0, "<ToggleItem>"},
-	{N_("/_File/Synchronise folders"),   	"<control><shift>S", sync_cb, 0, NULL},
-	{N_("/_File/---"),			NULL, NULL, 0, "<Separator>"},
-	/* {N_("/_File/_Close"),		"<alt>W", app_exit_cb, 0, NULL}, */
-	{N_("/_File/E_xit"),			"<control>Q", app_exit_cb, 0, NULL},
+	{"File/Print",				NULL, N_("_Print..."), "<control>P", NULL, G_CALLBACK(print_cb) },
+	/* {"File/---",				NULL, "---" }, */
+	{"File/SynchroniseFolders",		NULL, N_("Synchronise folders"), "<control><shift>S", NULL, G_CALLBACK(sync_cb) }, 
+	/* {"File/---",				NULL, "---" }, */
+	{"File/Exit",				NULL, N_("E_xit"), "<control>Q", NULL, G_CALLBACK(app_exit_cb) }, 
 
-	{N_("/_Edit"),				NULL, NULL, 0, "<Branch>"},
-	{N_("/_Edit/_Copy"),			"<control>C", copy_cb, 0, NULL},
-	{N_("/_Edit/Select _all"),		"<control>A", allsel_cb, 0, NULL},
-	{N_("/_Edit/Select _thread"),		NULL, select_thread_cb, 0, NULL},
-	{N_("/_Edit/_Delete thread"),		NULL, delete_thread_cb, 0, NULL},
-	{N_("/_Edit/---"),			NULL, NULL, 0, "<Separator>"},
-	{N_("/_Edit/_Find in current message..."),
-						"<control>F", search_cb, 0, NULL},
-	{N_("/_Edit/_Search folder..."),	"<shift><control>F", search_cb, 1, NULL},
-	{N_("/_Edit/_Quick search"),		"slash", mainwindow_quicksearch, 0, NULL},
-	{N_("/_View"),				NULL, NULL, 0, "<Branch>"},
-	{N_("/_View/Show or hi_de"),		NULL, NULL, 0, "<Branch>"},
-	{N_("/_View/Show or hi_de/_Toolbar"),
-						NULL, NULL, 0, "<Branch>"},
-	{N_("/_View/Show or hi_de/_Toolbar/Text _below icons"),
-						NULL, toggle_toolbar_cb, TOOLBAR_BOTH, "<RadioItem>"},
-	{N_("/_View/Show or hi_de/_Toolbar/Text be_side icons"),
-						NULL, toggle_toolbar_cb, TOOLBAR_BOTH_HORIZ, "/View/Show or hide/Toolbar/Text below icons"},
-	{N_("/_View/Show or hi_de/_Toolbar/_Icons only"),
-						NULL, toggle_toolbar_cb, TOOLBAR_ICON, "/View/Show or hide/Toolbar/Text below icons"},
-	{N_("/_View/Show or hi_de/_Toolbar/_Text only"),
-						NULL, toggle_toolbar_cb, TOOLBAR_TEXT, "/View/Show or hide/Toolbar/Text below icons"},
+/* Edit menu */
+	{"Edit/Copy",				NULL, N_("_Copy"), "<control>C", NULL, G_CALLBACK(copy_cb) }, 
+	{"Edit/SelectAll",			NULL, N_("Select _all"), "<control>A", NULL, G_CALLBACK(allsel_cb) }, 
+	{"Edit/SelectThread",			NULL, N_("Select _thread"), NULL, NULL, G_CALLBACK(select_thread_cb) }, 
+	{"Edit/DeleteThread",			NULL, N_("_Delete thread"), NULL, NULL, G_CALLBACK(delete_thread_cb) }, 
+	{"Edit/---",				NULL, "---" },
+	{"Edit/Find",				NULL, N_("_Find in current message..."), "<control>F", NULL, G_CALLBACK(search_cb) },
+	{"Edit/SearchFolder",			NULL, N_("_Search folder..."), "<shift><control>F", NULL, G_CALLBACK(search_folder_cb) },
+	{"Edit/QuickSearch",			NULL, N_("_Quick search"), "slash", NULL, G_CALLBACK(mainwindow_quicksearch) },
+
+/* View menu */
+	{"View/ShowHide",			NULL, N_("Show or hi_de") },
+	{"View/ShowHide/Toolbar",		NULL, N_("_Toolbar") },
+
+	{"View/SetColumns",			NULL, N_("Set displayed _columns") },
+	{"View/SetColumns/Folderlist",		NULL, N_("in _Folder list..."), NULL, NULL, G_CALLBACK(set_folder_display_item_cb) },
+	{"View/SetColumns/Messagelist",		NULL, N_("in _Message list..."), NULL, NULL, G_CALLBACK(set_summary_display_item_cb) },
+	{"View/---",				NULL, "---" },
+
+
 #ifndef GENERIC_UMPC
-	{N_("/_View/Show or hi_de/_Toolbar/_Hide"),
-						NULL, toggle_toolbar_cb, TOOLBAR_NONE, "/View/Show or hide/Toolbar/Text below icons"},
+	{"View/Layout",				NULL, N_("La_yout") },
+
 #endif
-	{N_("/_View/Show or hi_de/_Message view"),
-						"V", toggle_message_cb, 0, "<ToggleItem>"},
-#ifndef GENERIC_UMPC
-	{N_("/_View/Show or hi_de/Status _bar"),
-						NULL, toggle_statusbar_cb, 0, "<ToggleItem>"},
-#endif
-	{N_("/_View/Show or hi_de/Column headers"),
-						NULL, toggle_col_headers_cb, 0, "<ToggleItem>"},
-	{N_("/_View/Set displayed _columns"),	NULL, NULL, 0, "<Branch>"},
-	{N_("/_View/Set displayed _columns/in _Folder list..."),	NULL, set_folder_display_item_cb, 0, NULL},
-	{N_("/_View/Set displayed _columns/in _Message list..."),NULL, set_summary_display_item_cb, 0, NULL},
+	{"View/Sort",				NULL, N_("_Sort") },
+	{"View/Sort/---",			NULL, "---" }, 
+	{"View/Sort/AttractSubj",		NULL, N_("_Attract by subject"), NULL, NULL, G_CALLBACK(attract_by_subject_cb) }, 
 
-	{N_("/_View/---"),			NULL, NULL, 0, "<Separator>"},
-#ifndef GENERIC_UMPC
-	{N_("/_View/La_yout"),			NULL, NULL, 0, "<Branch>"},
-	{N_("/_View/Layout/_Standard"),		NULL, set_layout_cb, NORMAL_LAYOUT, "<RadioItem>"},
-	{N_("/_View/Layout/_Three columns"),	NULL, set_layout_cb, VERTICAL_LAYOUT, "/View/Layout/Standard"},
-	{N_("/_View/Layout/_Wide message"),	NULL, set_layout_cb, WIDE_LAYOUT, "/View/Layout/Standard"},
-	{N_("/_View/Layout/W_ide message list"),NULL, set_layout_cb, WIDE_MSGLIST_LAYOUT, "/View/Layout/Standard"},
-	{N_("/_View/Layout/S_mall screen"),	NULL, set_layout_cb, SMALL_LAYOUT, "/View/Layout/Standard"},
-	{N_("/_View/---"),			NULL, NULL, 0, "<Separator>"},
-#endif
-	{N_("/_View/_Sort"),			NULL, NULL, 0, "<Branch>"},
-	{N_("/_View/_Sort/by _number"),		NULL, sort_summary_cb, SORT_BY_NUMBER, "<RadioItem>"},
-	{N_("/_View/_Sort/by S_ize"),		NULL, sort_summary_cb, SORT_BY_SIZE, "/View/Sort/by number"},
-	{N_("/_View/_Sort/by _Date"),		NULL, sort_summary_cb, SORT_BY_DATE, "/View/Sort/by number"},
-	{N_("/_View/_Sort/by Thread date"),	NULL, sort_summary_cb, SORT_BY_THREAD_DATE, "/View/Sort/by number"},
-	{N_("/_View/_Sort/by _From"),		NULL, sort_summary_cb, SORT_BY_FROM, "/View/Sort/by number"},
-	{N_("/_View/_Sort/by _To"),		NULL, sort_summary_cb, SORT_BY_TO, "/View/Sort/by number"},
-	{N_("/_View/_Sort/by S_ubject"),	NULL, sort_summary_cb, SORT_BY_SUBJECT, "/View/Sort/by number"},
-	{N_("/_View/_Sort/by _color label"),	NULL, sort_summary_cb, SORT_BY_LABEL, "/View/Sort/by number"},
-	{N_("/_View/_Sort/by tag"),		NULL, sort_summary_cb, SORT_BY_TAGS, "/View/Sort/by number"},
-	{N_("/_View/_Sort/by _mark"),		NULL, sort_summary_cb, SORT_BY_MARK, "/View/Sort/by number"},
-	{N_("/_View/_Sort/by _status"),		NULL, sort_summary_cb, SORT_BY_STATUS, "/View/Sort/by number"},
-	{N_("/_View/_Sort/by a_ttachment"),
-						NULL, sort_summary_cb, SORT_BY_MIME, "/View/Sort/by number"},
-	{N_("/_View/_Sort/by score"),		NULL, sort_summary_cb, SORT_BY_SCORE, "/View/Sort/by number"},
-	{N_("/_View/_Sort/by locked"),		NULL, sort_summary_cb, SORT_BY_LOCKED, "/View/Sort/by number"},
-	{N_("/_View/_Sort/D_on't sort"),	NULL, sort_summary_cb, SORT_BY_NONE, "/View/Sort/by number"},
-	{N_("/_View/_Sort/---"),		NULL, NULL, 0, "<Separator>"},
-	{N_("/_View/_Sort/Ascending"),		NULL, sort_summary_type_cb, SORT_ASCENDING, "<RadioItem>"},
-	{N_("/_View/_Sort/Descending"),		NULL, sort_summary_type_cb, SORT_DESCENDING, "/View/Sort/Ascending"},
-	{N_("/_View/_Sort/---"),		NULL, NULL, 0, "<Separator>"},
-	{N_("/_View/_Sort/_Attract by subject"),
-						NULL, attract_by_subject_cb, 0, NULL},
-	{N_("/_View/Th_read view"),		"<control>T", thread_cb, 0, "<ToggleItem>"},
-	{N_("/_View/E_xpand all threads"),	NULL, expand_threads_cb, 0, NULL},
-	{N_("/_View/Co_llapse all threads"),	NULL, collapse_threads_cb, 0, NULL},
-	{N_("/_View/_Hide read messages"),	NULL, hide_read_messages, 0, "<ToggleItem>"},
+	{"View/ExpandThreads",			NULL, N_("E_xpand all threads"), NULL, NULL, G_CALLBACK(expand_threads_cb) }, 
+	{"View/CollapseThreads",		NULL, N_("Co_llapse all threads"), NULL, NULL, G_CALLBACK(collapse_threads_cb) }, 
 
-	{N_("/_View/---"),			NULL, NULL, 0, "<Separator>"},
-	{N_("/_View/_Go to"),			NULL, NULL, 0, "<Branch>"},
-	{N_("/_View/_Go to/_Previous message"),	"P", prev_cb, 0, NULL},
-	{N_("/_View/_Go to/_Next message"),	"N", next_cb, 0, NULL},
-	{N_("/_View/_Go to/---"),		NULL, NULL, 0, "<Separator>"},
-	{N_("/_View/_Go to/P_revious unread message"),
-						"<shift>P", prev_unread_cb, 0, NULL},
-	{N_("/_View/_Go to/N_ext unread message"),
-						"<shift>N", next_unread_cb, 0, NULL},
-	{N_("/_View/_Go to/---"),		NULL, NULL, 0, "<Separator>"},
-	{N_("/_View/_Go to/Previous ne_w message"),	NULL, prev_new_cb, 0, NULL},
-	{N_("/_View/_Go to/Ne_xt new message"),	NULL, next_new_cb, 0, NULL},
-	{N_("/_View/_Go to/---"),		NULL, NULL, 0, "<Separator>"},
-	{N_("/_View/_Go to/Previous _marked message"),
-						NULL, prev_marked_cb, 0, NULL},
-	{N_("/_View/_Go to/Next m_arked message"),
-						NULL, next_marked_cb, 0, NULL},
-	{N_("/_View/_Go to/---"),		NULL, NULL, 0, "<Separator>"},
-	{N_("/_View/_Go to/Previous _labeled message"),
-						NULL, prev_labeled_cb, 0, NULL},
-	{N_("/_View/_Go to/Next la_beled message"),
-						NULL, next_labeled_cb, 0, NULL},
-	{N_("/_View/_Go to/---"),		NULL, NULL, 0, "<Separator>"},
-	{N_("/_View/_Go to/Last read message"),
-						NULL, last_read_cb, 0, NULL},
-	{N_("/_View/_Go to/Parent message"),
-						"<control>Up", parent_cb, 0, NULL},
-	{N_("/_View/_Go to/---"),		NULL, NULL, 0, "<Separator>"},
-	{N_("/_View/_Go to/Next unread _folder"),	"<shift>G", goto_unread_folder_cb, 0, NULL},
-	{N_("/_View/_Go to/_Other folder..."),	"G", goto_folder_cb, 0, NULL},
-	{N_("/_View/---"),			NULL, NULL, 0, "<Separator>"},
+	{"View/Goto",				NULL, N_("_Go to") },
+	{"View/Goto/Prev",			NULL, N_("_Previous message"), "P", NULL, G_CALLBACK(prev_cb) },
+	{"View/Goto/Next",			NULL, N_("_Next message"), "N", NULL, G_CALLBACK(next_cb) },
+	{"View/Goto/---",			NULL, "---", NULL, NULL, NULL },
+	{"View/Goto/PrevUnread",		NULL, N_("P_revious unread message"), "<shift>P", NULL, G_CALLBACK(prev_unread_cb) },
+	{"View/Goto/NextUnread",		NULL, N_("N_ext unread message"), "<shift>N", NULL, G_CALLBACK(next_unread_cb) },
+	/* {"View/Goto/---",			NULL, "---", NULL, NULL, NULL }, */
+	{"View/Goto/PrevNew",			NULL, N_("Previous ne_w message"), NULL, NULL, G_CALLBACK(prev_new_cb) },
+	{"View/Goto/NextNew",			NULL, N_("Ne_xt new message"), NULL, NULL, G_CALLBACK(next_new_cb) },
+	/* {"View/Goto/---",			NULL, "---", NULL, NULL, NULL }, */
+	{"View/Goto/PrevMarked",		NULL, N_("Previous _marked message"), NULL, NULL, G_CALLBACK(prev_marked_cb) },
+	{"View/Goto/NextMarked",		NULL, N_("Next m_arked message"), NULL, NULL, G_CALLBACK(next_marked_cb) },
+	/* {"View/Goto/---",			NULL, "---", NULL, NULL, NULL }, */
+	{"View/Goto/PrevLabeled",		NULL, N_("Previous _labeled message"), NULL, NULL, G_CALLBACK(prev_labeled_cb) },
+	{"View/Goto/NextLabeled",		NULL, N_("Next la_beled message"), NULL, NULL, G_CALLBACK(next_labeled_cb) },
+	/* {"View/Goto/---",			NULL, "---", NULL, NULL, NULL }, */
+	{"View/Goto/LastRead",			NULL, N_("Last read message"), NULL, NULL, G_CALLBACK(last_read_cb) },
+	{"View/Goto/ParentMessage",		NULL, N_("Parent message"), "<control>Up", NULL, G_CALLBACK(parent_cb) },
+	/* {"View/Goto/---",			NULL, "---", NULL, NULL, NULL }, */
+	{"View/Goto/NextUnreadFolder",		NULL, N_("Next unread _folder"), "<shift>G", NULL, G_CALLBACK(goto_unread_folder_cb) },
+	{"View/Goto/OtherFolder",		NULL, N_("_Other folder..."), "G", NULL, G_CALLBACK(goto_folder_cb) },
+	/* {"View/---",				NULL, "---", NULL, NULL, NULL }, */
 
-#define ENC_SEPARATOR \
-	{N_("/_View/Character _encoding/---"),		NULL, NULL, 0, "<Separator>"}
-#define ENC_ACTION(action) \
-	 NULL, set_charset_cb, action, "/View/Character encoding/Auto detect"
+	{"View/Encoding",			NULL, N_("Character _encoding") }, /* set_charset_cb */
+	{"View/Encoding/---",			NULL, "---" },
+#define ENC_ACTION(cs_char,c_char,string) \
+	{ "View/Encoding/" cs_char, NULL, N_(string), NULL, NULL, c_char }
 
-	{N_("/_View/Character _encoding"),		NULL, NULL, 0, "<Branch>"},
-	{N_("/_View/Character _encoding/_Auto detect"),
-	 NULL, set_charset_cb, C_AUTO, "<RadioItem>"},
-	ENC_SEPARATOR,
+	{"View/Encoding/Western",		NULL, N_("Western European") },
+	{"View/Encoding/Baltic",		NULL, N_("Baltic") },
+	{"View/Encoding/Hebrew",		NULL, N_("Hebrew") },
+	{"View/Encoding/Arabic",		NULL, N_("Arabic") },
+	{"View/Encoding/Cyrillic",		NULL, N_("Cyrillic") },
+	{"View/Encoding/Japanese",		NULL, N_("Japanese") },
+	{"View/Encoding/Chinese",		NULL, N_("Chinese") },
+	{"View/Encoding/Korean",		NULL, N_("Korean") },
+	{"View/Encoding/Thai",			NULL, N_("Thai") },
 
-	{N_("/_View/Character _encoding/7bit ASCII (US-ASC_II)"),
-	 ENC_ACTION(C_US_ASCII)},
-	{N_("/_View/Character _encoding/Unicode (_UTF-8)"),
-	 ENC_ACTION(C_UTF_8)},
-	ENC_SEPARATOR,
+	{"View/Decode",				NULL, N_("Decode") }, /* set_decode_cb */
+	{"View/Decode/---",			NULL, "---" },
 
-	{N_("/_View/Character _encoding/Western European"),NULL, NULL, 0, "<Branch>"},
-	{N_("/_View/Character _encoding/Western European/ISO-8859-_1"),
-	 ENC_ACTION(C_ISO_8859_1)},
-	{N_("/_View/Character _encoding/Western European/ISO-8859-15"),
-	 ENC_ACTION(C_ISO_8859_15)},
-	{N_("/_View/Character _encoding/Western European/Windows-1252"),
-	 ENC_ACTION(C_WINDOWS_1252)},
+#define DEC_ACTION(cs_type,c_type,string) \
+	{ "View/Decode/" cs_type, NULL, N_(string), NULL, NULL, c_type }
 
-	{N_("/_View/Character _encoding/Central European (ISO-8859-_2)"),
-	 ENC_ACTION(C_ISO_8859_2)},
+	/* {"View/---",				NULL, "---", NULL, NULL, NULL }, */
+	{"View/OpenNewWindow",			NULL, N_("Open in new _window"), "<control><alt>N", NULL, G_CALLBACK(open_msg_cb) },
+	{"View/MessageSource",			NULL, N_("Mess_age source"), "<control>U", NULL, G_CALLBACK(view_source_cb) },
+	{"View/Quotes",				NULL, N_("Quotes") }, 
+	/* {"View/---",				NULL, "---", NULL, NULL, NULL }, */
+	{"View/UpdateSummary",			NULL, N_("_Update summary"), "<control><alt>U", NULL, G_CALLBACK(update_summary_cb) },
 
-	{N_("/_View/Character _encoding/Baltic"),	NULL, NULL, 0, "<Branch>"},
-	{N_("/_View/Character _encoding/Baltic/ISO-8859-13"),
-	 ENC_ACTION(C_ISO_8859_13)},
-	{N_("/_View/Character _encoding/Baltic/ISO-8859-_4"),
-	 ENC_ACTION(C_ISO_8859_4)},
+/* Message menu */
+	{"Message/Receive",			NULL, N_("Recei_ve") },
+	{"Message/Receive/CurrentAccount",	NULL, N_("Get from _current account"), "<control>I", NULL, G_CALLBACK(mw_inc_mail_cb) },
+	{"Message/Receive/AllAccounts",		NULL, N_("Get from _all accounts"), "<shift><control>I", NULL, G_CALLBACK(mw_inc_all_account_mail_cb) },
+	{"Message/Receive/CancelReceiving",	NULL, N_("Cancel receivin_g"), NULL, NULL, G_CALLBACK(inc_cancel_cb) },
+	{"Message/Receive/---",			NULL, "---" },
+	{"Message/Receive/PlaceHolder",		NULL, "PlaceHolder,", NULL, NULL, G_CALLBACK(mainwindow_nothing_cb) },
+	{"Message/SendQueue",			NULL, N_("_Send queued messages"), NULL, NULL, G_CALLBACK(mw_send_queue_cb) },
 
-	{N_("/_View/Character _encoding/Greek (ISO-8859-_7)"),
-	 ENC_ACTION(C_ISO_8859_7)},
+	{"Message/---",				NULL, "---" },
 
-	{N_("/_View/Character _encoding/Hebrew"),	NULL, NULL, 0, "<Branch>"},
-	{N_("/_View/Character _encoding/Hebrew/ISO-8859-_8"),
-	 ENC_ACTION(C_ISO_8859_8)},
-	{N_("/_View/Character _encoding/Hebrew/Windows-1255"),
-	 ENC_ACTION(C_CP1255)},
+	{"Message/ComposeEmail",		NULL, N_("Compose a_n email message"), "<control>M", NULL, G_CALLBACK(mw_compose_mail_cb) },
+	{"Message/ComposeNews",			NULL, N_("Compose a news message"), NULL, NULL, G_CALLBACK(mw_compose_news_cb) },
 
-	{N_("/_View/Character _encoding/Arabic"),	NULL, NULL, 0, "<Branch>"},
-	{N_("/_View/Character _encoding/Arabic/ISO-8859-_6"),
-	 ENC_ACTION(C_ISO_8859_6)},
-	{N_("/_View/Character _encoding/Arabic/Windows-1256"),
-	 ENC_ACTION(C_CP1256)},
+	{"Message/Reply",			NULL, N_("_Reply"), "<control>R", NULL, G_CALLBACK(main_window_reply_cb) }, /* COMPOSE_REPLY */
+	{"Message/ReplyTo",			NULL, N_("Repl_y to") }, 
+	{"Message/ReplyTo/All",			NULL, N_("_all"), "<control><shift>R", NULL, G_CALLBACK(main_window_reply_cb) }, /* COMPOSE_REPLY_TO_ALL */
+	{"Message/ReplyTo/Sender",		NULL, N_("_sender"), NULL, NULL, G_CALLBACK(main_window_reply_cb) }, /* COMPOSE_REPLY_TO_SENDER */
+	{"Message/ReplyTo/List",		NULL, N_("mailing _list"), "<control>L", NULL, G_CALLBACK(main_window_reply_cb) }, /* COMPOSE_REPLY_TO_LIST */
+	{"Message/FollowupReply",		NULL, N_("Follow-up and reply to"), NULL, NULL, G_CALLBACK(main_window_reply_cb) }, /* COMPOSE_FOLLOWUP_AND_REPLY_TO */
+	/*{"Message/---",			NULL, "---" },*/
 
-	{N_("/_View/Character _encoding/Turkish (ISO-8859-_9)"),
-	 ENC_ACTION(C_ISO_8859_9)},
+	{"Message/Forward",			NULL, N_("_Forward"), "<control><alt>F", NULL, G_CALLBACK(main_window_reply_cb) }, /* COMPOSE_FORWARD_INLINE */
+	{"Message/ForwardAtt",			NULL, N_("For_ward as attachment"), NULL, NULL, G_CALLBACK(main_window_reply_cb) }, /* COMPOSE_FORWARD_AS_ATTACH */
+	{"Message/Redirect",			NULL, N_("Redirec_t"), NULL, NULL, G_CALLBACK(main_window_reply_cb) }, /* COMPOSE_REDIRECT */
 
-	{N_("/_View/Character _encoding/Cyrillic"),	NULL, NULL, 0, "<Branch>"},
-	{N_("/_View/Character _encoding/Cyrillic/ISO-8859-_5"),
-	 ENC_ACTION(C_ISO_8859_5)},
-	{N_("/_View/Character _encoding/Cyrillic/KOI8-_R"),
-	 ENC_ACTION(C_KOI8_R)},
-	{N_("/_View/Character _encoding/Cyrillic/KOI8-U"),
-	 ENC_ACTION(C_KOI8_U)},
-	{N_("/_View/Character _encoding/Cyrillic/Windows-1251"),
-	 ENC_ACTION(C_CP1251)},
+	{"Message/MailingList",			NULL, N_("Mailing-_List") }, 
+	{"Message/MailingList/Post",		NULL, N_("Post") }, 
+	{"Message/MailingList/Post/PlaceHolder",	NULL, "Placeholder", NULL, NULL, G_CALLBACK(mainwindow_nothing_cb) },
+	{"Message/MailingList/Help",		NULL, N_("Help") }, 
+	{"Message/MailingList/Help/PlaceHolder",	NULL, "Placeholder", NULL, NULL, G_CALLBACK(mainwindow_nothing_cb) },
+	{"Message/MailingList/Subscribe",	NULL, N_("Subscribe") }, 
+	{"Message/MailingList/Subscribe/PlaceHolder",	NULL, "Placeholder", NULL, NULL, G_CALLBACK(mainwindow_nothing_cb) },
+	{"Message/MailingList/Unsubscribe",	NULL, N_("Unsubscribe") }, 
+	{"Message/MailingList/Unsubscribe/PlaceHolder",	NULL, "Placeholder", NULL, NULL, G_CALLBACK(mainwindow_nothing_cb) },
+	{"Message/MailingList/ViewArchive",	NULL, N_("View archive") }, 
+	{"Message/MailingList/ViewArchive/PlaceHolder",	NULL, "Placeholder", NULL, NULL, G_CALLBACK(mainwindow_nothing_cb) },
+	{"Message/MailingList/ContactOwner",	NULL, N_("Contact owner") }, 
+	{"Message/MailingList/ContactOwner/PlaceHolder",	NULL, "Placeholder", NULL, NULL, G_CALLBACK(mainwindow_nothing_cb) },
+	/*{"Message/---",			NULL, "---" },*/
 
-	{N_("/_View/Character _encoding/Japanese"),	NULL, NULL, 0, "<Branch>"},
-	{N_("/_View/Character _encoding/Japanese/ISO-2022-_JP"),
-	 ENC_ACTION(C_ISO_2022_JP)},
-	{N_("/_View/Character _encoding/Japanese/ISO-2022-JP-2"),
-	 ENC_ACTION(C_ISO_2022_JP_2)},
-	{N_("/_View/Character _encoding/Japanese/_EUC-JP"),
-	 ENC_ACTION(C_EUC_JP)},
-	{N_("/_View/Character _encoding/Japanese/_Shift__JIS"),
-	 ENC_ACTION(C_SHIFT_JIS)},
-
-	{N_("/_View/Character _encoding/Chinese"),	NULL, NULL, 0, "<Branch>"},
-	{N_("/_View/Character _encoding/Chinese/Simplified (_GB2312)"),
-	 ENC_ACTION(C_GB2312)},
-	{N_("/_View/Character _encoding/Chinese/Simplified (GBK)"),
-	 ENC_ACTION(C_GBK)},
-	{N_("/_View/Character _encoding/Chinese/Traditional (_Big5)"),
-	 ENC_ACTION(C_BIG5)},
-	{N_("/_View/Character _encoding/Chinese/Traditional (EUC-_TW)"),
-	 ENC_ACTION(C_EUC_TW)},
-	{N_("/_View/Character _encoding/Chinese/ISO-2022-_CN"),
-	 ENC_ACTION(C_ISO_2022_CN)},
-
-	{N_("/_View/Character _encoding/Korean"),	NULL, NULL, 0, "<Branch>"},
-	{N_("/_View/Character _encoding/Korean/EUC-_KR"),
-	 ENC_ACTION(C_EUC_KR)},
-	{N_("/_View/Character _encoding/Korean/ISO-2022-KR"),
-	 ENC_ACTION(C_ISO_2022_KR)},
-
-	{N_("/_View/Character _encoding/Thai"),		NULL, NULL, 0, "<Branch>"},
-	{N_("/_View/Character _encoding/Thai/TIS-620"),
-	 ENC_ACTION(C_TIS_620)},
-	{N_("/_View/Character _encoding/Thai/Windows-874"),
-	 ENC_ACTION(C_WINDOWS_874)},
-
-#undef ENC_SEPARATOR
-#undef ENC_ACTION
-
-#define DEC_SEPARATOR \
-	{N_("/_View/Decode/---"),		NULL, NULL, 0, "<Separator>"}
-#define DEC_ACTION(action) \
-	 NULL, set_decode_cb, action, "/View/Decode/Auto detect"
-	{N_("/_View/Decode"),		NULL, NULL, 0, "<Branch>"},
-	{N_("/_View/Decode/_Auto detect"),
-	 NULL, set_decode_cb, 0, "<RadioItem>"},
-	{N_("/_View/Decode/---"),		NULL, NULL, 0, "<Separator>"},
-	{N_("/_View/Decode/_8bit"), 		DEC_ACTION(ENC_8BIT)},
-	{N_("/_View/Decode/_Quoted printable"),	DEC_ACTION(ENC_QUOTED_PRINTABLE)},
-	{N_("/_View/Decode/_Base64"), 		DEC_ACTION(ENC_BASE64)},
-	{N_("/_View/Decode/_Uuencode"),		DEC_ACTION(ENC_X_UUENCODE)},
-
-#undef DEC_SEPARATOR
-#undef DEC_ACTION
-
-	{N_("/_View/---"),			NULL, NULL, 0, "<Separator>"},
-	{N_("/_View/Open in new _window"),	"<control><alt>N", open_msg_cb, 0, NULL},
-	{N_("/_View/Mess_age source"),		"<control>U", view_source_cb, 0, NULL},
-	{N_("/_View/All headers"),		"<control>H", show_all_header_cb, 0, "<ToggleItem>"},
-	{N_("/_View/Quotes"),			NULL, NULL, 0, "<Branch>"},
-	{N_("/_View/Quotes/_Fold all"),		"<control><shift>Q", hide_quotes_cb, 1, "<ToggleItem>"},
-	{N_("/_View/Quotes/Fold from level _2"),NULL, hide_quotes_cb, 2, "<ToggleItem>"},
-	{N_("/_View/Quotes/Fold from level _3"),NULL, hide_quotes_cb, 3, "<ToggleItem>"},
-	{N_("/_View/---"),			NULL, NULL, 0, "<Separator>"},
-	{N_("/_View/_Update summary"),		"<control><alt>U", update_summary_cb,  0, NULL},
-
-	{N_("/_Message"),			NULL, NULL, 0, "<Branch>"},
-	{N_("/_Message/Recei_ve"),		NULL, NULL, 0, "<Branch>"},
-	{N_("/_Message/Recei_ve/Get from _current account"),
-						"<control>I",	inc_mail_cb, 0, NULL},
-	{N_("/_Message/Recei_ve/Get from _all accounts"),
-						"<shift><control>I", inc_all_account_mail_cb, 0, NULL},
-	{N_("/_Message/Recei_ve/Cancel receivin_g"),
-						NULL, inc_cancel_cb, 0, NULL},
-	{N_("/_Message/Recei_ve/---"),		NULL, NULL, 0, "<Separator>"},
-	{N_("/_Message/_Send queued messages"), NULL, send_queue_cb, 0, NULL},
-	{N_("/_Message/---"),			NULL, NULL, 0, "<Separator>"},
-	{N_("/_Message/Compose a_n email message"),	"<control>M", compose_mail_cb, 0, NULL},
-	{N_("/_Message/Compose a news message"),	NULL,	compose_news_cb, 0, NULL},
-	{N_("/_Message/_Reply"),		"<control>R", 	main_window_reply_cb, COMPOSE_REPLY, NULL},
-	{N_("/_Message/Repl_y to"),		NULL, NULL, 0, "<Branch>"},
-	{N_("/_Message/Repl_y to/_all"),	"<shift><control>R", main_window_reply_cb, COMPOSE_REPLY_TO_ALL, NULL},
-	{N_("/_Message/Repl_y to/_sender"),	NULL, main_window_reply_cb, COMPOSE_REPLY_TO_SENDER, NULL},
-	{N_("/_Message/Repl_y to/mailing _list"),
-						"<control>L", main_window_reply_cb, COMPOSE_REPLY_TO_LIST, NULL},
-	{N_("/_Message/Follow-up and reply to"),NULL, main_window_reply_cb, COMPOSE_FOLLOWUP_AND_REPLY_TO, NULL},
-	{N_("/_Message/---"),			NULL, NULL, 0, "<Separator>"},
-	{N_("/_Message/_Forward"),		"<control><alt>F", main_window_reply_cb, COMPOSE_FORWARD_INLINE, NULL},
-	{N_("/_Message/For_ward as attachment"),	NULL, main_window_reply_cb, COMPOSE_FORWARD_AS_ATTACH, NULL},
-	{N_("/_Message/Redirect"),		NULL, main_window_reply_cb, COMPOSE_REDIRECT, NULL},
-
-	{N_("/_Message/Mailing-_List"),			NULL, NULL, 0, "<Branch>"},
-	{N_("/_Message/Mailing-_List/Post"),		NULL, NULL, 0, "<Branch>"},
-	{N_("/_Message/Mailing-_List/Help"),		NULL, NULL, 0, "<Branch>"},
- 	{N_("/_Message/Mailing-_List/Subscribe"),	NULL, NULL, 0, "<Branch>"},
- 	{N_("/_Message/Mailing-_List/Unsubscribe"),	NULL, NULL, 0, "<Branch>"},
-	{N_("/_Message/Mailing-_List/View archive"),	NULL, NULL, 0, "<Branch>"},
- 	{N_("/_Message/Mailing-_List/Contact owner"),	NULL, NULL, 0, "<Branch>"},
+	{"Message/Move",			NULL, N_("M_ove..."), "<control>O", NULL, G_CALLBACK(move_to_cb) },
+	{"Message/Copy",			NULL, N_("_Copy..."), "<shift><control>O", NULL, G_CALLBACK(copy_to_cb) },
+	{"Message/Trash",			NULL, N_("Move to _trash"), "<control>D", NULL, G_CALLBACK(delete_trash_cb) },
+	{"Message/Delete",			NULL, N_("_Delete..."), NULL, NULL, G_CALLBACK(delete_cb) },
+	{"Message/CancelNews",			NULL, N_("Cancel a news message"), NULL, NULL, G_CALLBACK(cancel_cb) },
+	/*{"Message/---",			NULL, "---" },*/
  	
-	{N_("/_Message/---"),			NULL, NULL, 0, "<Separator>"},
-	{N_("/_Message/M_ove..."),		"<control>O", move_to_cb, 0, NULL},
-	{N_("/_Message/_Copy..."),		"<shift><control>O", copy_to_cb, 0, NULL},
-	{N_("/_Message/Move to _trash"),	"<control>D", delete_trash_cb,  0, NULL},
-	{N_("/_Message/_Delete..."),		NULL, delete_cb,  0, NULL},
-	{N_("/_Message/Cancel a news message"), "", cancel_cb,  0, NULL},
-	{N_("/_Message/---"),			NULL, NULL, 0, "<Separator>"},
-	{N_("/_Message/_Mark"),			NULL, NULL, 0, "<Branch>"},
-	{N_("/_Message/_Mark/_Mark"),		"<shift>asterisk", mark_cb, 0, NULL},
-	{N_("/_Message/_Mark/_Unmark"),		"U", unmark_cb, 0, NULL},
-	{N_("/_Message/_Mark/---"),		NULL, NULL, 0, "<Separator>"},
-	{N_("/_Message/_Mark/Mark as unr_ead"),	"<shift>exclam", mark_as_unread_cb, 0, NULL},
-	{N_("/_Message/_Mark/Mark as rea_d"),	NULL, mark_as_read_cb, 0, NULL},
-	{N_("/_Message/_Mark/Mark all _read"),	NULL, mark_all_read_cb, 0, NULL},
-	{N_("/_Message/_Mark/Ignore thread"),	NULL, ignore_thread_cb, 0, NULL},
-	{N_("/_Message/_Mark/Unignore thread"),	NULL, unignore_thread_cb, 0, NULL},
-	{N_("/_Message/_Mark/Watch thread"),	NULL, watch_thread_cb, 0, NULL},
-	{N_("/_Message/_Mark/Unwatch thread"),	NULL, unwatch_thread_cb, 0, NULL},
-	{N_("/_Message/_Mark/---"),		NULL, NULL, 0, "<Separator>"},
-	{N_("/_Message/_Mark/Mark as _spam"),	NULL, mark_as_spam_cb, 1, NULL},
-	{N_("/_Message/_Mark/Mark as _ham"),	NULL, mark_as_spam_cb, 0, NULL},
-	{N_("/_Message/_Mark/---"),		NULL, NULL, 0, "<Separator>"},
-	{N_("/_Message/_Mark/Lock"),		NULL, lock_msgs_cb, 0, NULL},
-	{N_("/_Message/_Mark/Unlock"),		NULL, unlock_msgs_cb, 0, NULL},
-	{N_("/_Message/Color la_bel"),		NULL, NULL, 	       0, NULL},
-	{N_("/_Message/T_ags"),			NULL, NULL, 	       0, NULL},
-	{N_("/_Message/---"),			NULL, NULL, 0, "<Separator>"},
-	{N_("/_Message/Re-_edit"),		NULL, reedit_cb, 0, NULL},
+	{"Message/Mark",			NULL, "_Mark" },
+	{"Message/Mark/Mark",			NULL, N_("_Mark"), "<shift>asterisk", NULL, G_CALLBACK(mark_cb) },
+	{"Message/Mark/Unmark",			NULL, N_("_Unmark"), "U", NULL, G_CALLBACK(unmark_cb) },
+	{"Message/Mark/---",			NULL, "---", NULL, NULL, NULL },
 
-	{N_("/_Tools"),				NULL, NULL, 0, "<Branch>"},
-	{N_("/_Tools/_Address book..."),	"<shift><control>A", addressbook_open_cb, 0, NULL},
-	{N_("/_Tools/Add sender to address boo_k"),
-						NULL, add_address_cb, 0, NULL},
-	{N_("/_Tools/C_ollect addresses"),	NULL, NULL, 0, "<Branch>"},
-	{N_("/_Tools/C_ollect addresses/from Current _folder..."),
-						NULL, addr_harvest_cb, 0, NULL},
-	{N_("/_Tools/C_ollect addresses/from Selected _messages..."),
-						NULL, addr_harvest_msg_cb, 0, NULL},
-	{N_("/_Tools/---"),			NULL, NULL, 0, "<Separator>"},
-	{N_("/_Tools/_Filter all messages in folder"),
-						NULL, filter_cb, 0, NULL},
-	{N_("/_Tools/Filter _selected messages"),
-						NULL, filter_cb, 1, NULL},
-	{N_("/_Tools/Run folder pr_ocessing rules"),
-						NULL, process_cb, 0, NULL},
-	{N_("/_Tools/_Create filter rule"),	NULL, NULL, 0, "<Branch>"},
-	{N_("/_Tools/_Create filter rule/_Automatically"),
-						NULL, create_filter_cb, FILTER_BY_AUTO, NULL},
-	{N_("/_Tools/_Create filter rule/by _From"),
-						NULL, create_filter_cb, FILTER_BY_FROM, NULL},
-	{N_("/_Tools/_Create filter rule/by _To"),
-						NULL, create_filter_cb, FILTER_BY_TO, NULL},
-	{N_("/_Tools/_Create filter rule/by _Subject"),
-						NULL, create_filter_cb, FILTER_BY_SUBJECT, NULL},
-	{N_("/_Tools/C_reate processing rule"),	NULL, NULL, 0, "<Branch>"},
-	{N_("/_Tools/C_reate processing rule/_Automatically"),
-						NULL, create_processing_cb, FILTER_BY_AUTO, NULL},
-	{N_("/_Tools/C_reate processing rule/by _From"),
-						NULL, create_processing_cb, FILTER_BY_FROM, NULL},
-	{N_("/_Tools/C_reate processing rule/by _To"),
-						NULL, create_processing_cb, FILTER_BY_TO, NULL},
-	{N_("/_Tools/C_reate processing rule/by _Subject"),
-						NULL, create_processing_cb, FILTER_BY_SUBJECT, NULL},
-	{N_("/_Tools/---"),			NULL, NULL, 0, "<Separator>"},
-	{N_("/_Tools/List _URLs..."),		"<shift><control>U", open_urls_cb, 0, NULL},
-	{N_("/_Tools/---"),			NULL, NULL, 0, "<Separator>"},
-	{N_("/_Tools/Actio_ns"),		NULL, NULL, 0, "<Branch>"},
-	{N_("/_Tools/---"),			NULL, NULL, 0, "<Separator>"},
-	{N_("/_Tools/Ch_eck for new messages in all folders"),
-						NULL, update_folderview_cb, 0, NULL},
-	{N_("/_Tools/Delete du_plicated messages"),
-						NULL, NULL, 0, "<Branch>"},
-	{N_("/_Tools/Delete du_plicated messages/In selected folder"),
-						NULL, delete_duplicated_cb,   0, NULL},
-	{N_("/_Tools/Delete du_plicated messages/In all folders"),
-						NULL, delete_duplicated_all_cb,   0, NULL},
-	{N_("/_Tools/---"),			NULL, NULL, 0, "<Separator>"},
-	{N_("/_Tools/E_xecute"),		"X", execute_summary_cb, 0, NULL},
+	{"Message/Mark/MarkUnread",		NULL, N_("Mark as unr_ead"), "<shift>exclam", NULL, G_CALLBACK(mark_as_unread_cb) },
+	{"Message/Mark/MarkRead",		NULL, N_("Mark as rea_d"), NULL, NULL, G_CALLBACK(mark_as_read_cb) },
+	{"Message/Mark/MarkAllRead",		NULL, N_("Mark all read"), NULL, NULL, G_CALLBACK(mark_all_read_cb) },
+	{"Message/Mark/IgnoreThread",		NULL, N_("Ignore thread"), NULL, NULL, G_CALLBACK(ignore_thread_cb) },
+	{"Message/Mark/UnignoreThread",		NULL, N_("Unignore thread"), NULL, NULL, G_CALLBACK(unignore_thread_cb) },
+	{"Message/Mark/WatchThread",		NULL, N_("Watch thread"), NULL, NULL, G_CALLBACK(watch_thread_cb) },
+	{"Message/Mark/UnwatchThread",		NULL, N_("Unwatch thread"), NULL, NULL, G_CALLBACK(unwatch_thread_cb) },
+	/* separation */
+
+	{"Message/Mark/MarkSpam",		NULL, N_("Mark as spam"), NULL, NULL, G_CALLBACK(mark_as_spam_cb) },
+	{"Message/Mark/MarkHam",		NULL, N_("Mark as ham"), NULL, NULL, G_CALLBACK(mark_as_ham_cb) },
+	/* separation */
+
+	{"Message/Mark/Lock",			NULL, N_("Lock"), NULL, NULL, G_CALLBACK(lock_msgs_cb) },
+	{"Message/Mark/Unlock",			NULL, N_("Unlock"), NULL, NULL, G_CALLBACK(unlock_msgs_cb) },
+
+	{"Message/ColorLabel",			NULL, "Color la_bel" },
+	{"Message/Tags",			NULL, "Ta_gs" },
+	/*{"Message/---",			NULL, "---" },*/
+
+	{"Message/Reedit",			NULL, N_("Re-_edit"), NULL, NULL, G_CALLBACK(reedit_cb) },
+
+/* Tools menu */
+
+	{"Tools/AddressBook",			NULL, N_("_Address book"), "<control><shift>A", NULL, G_CALLBACK(addressbook_open_cb) }, 
+	{"Tools/AddSenderToAB",			NULL, N_("Add sender to address boo_k"), NULL, NULL, G_CALLBACK(add_address_cb) }, 
+
+	{"Tools/CollectAddresses",		NULL, N_("C_ollect addresses") }, 
+	{"Tools/CollectAddresses/FromFolder",	NULL, N_("from Current _folder..."), NULL, NULL, G_CALLBACK(addr_harvest_cb) }, 
+	{"Tools/CollectAddresses/FromSelected",	NULL, N_("from Selected _messages..."), NULL, NULL, G_CALLBACK(addr_harvest_msg_cb) }, 
+	{"Tools/---",				NULL, "---", NULL, NULL, NULL },
+
+	{"Tools/FilterFolder",			NULL, N_("_Filter all messages in folder"), NULL, NULL, G_CALLBACK(filter_cb) }, 
+	{"Tools/FilterSelected",		NULL, N_("Filter _selected messages"), NULL, NULL, G_CALLBACK(filter_list_cb) }, 
+	{"Tools/RunProcessing",			NULL, N_("Run folder pr_ocessing rules"), NULL, NULL, G_CALLBACK(process_cb) }, 
+
+	{"Tools/CreateFilterRule",		NULL, N_("_Create filter rule") },
+	{"Tools/CreateFilterRule/Automatically",NULL, N_("_Automatically"), NULL, NULL, G_CALLBACK(create_filter_cb) }, /* FILTER_BY_AUTO */
+	{"Tools/CreateFilterRule/ByFrom",	NULL, N_("By _From"), NULL, NULL, G_CALLBACK(create_filter_cb) }, /* FILTER_BY_FROM */
+	{"Tools/CreateFilterRule/ByTo",		NULL, N_("By _To"), NULL, NULL, G_CALLBACK(create_filter_cb) }, /* FILTER_BY_TO     */
+	{"Tools/CreateFilterRule/BySubject",	NULL, N_("By _Subject"), NULL, NULL, G_CALLBACK(create_filter_cb) }, /* FILTER_BY_SUBJECT */
+
+	{"Tools/CreateProcessingRule",		NULL, N_("Create processing rule") },
+	{"Tools/CreateProcessingRule/Automatically",	NULL, N_("_Automatically"), NULL, NULL, G_CALLBACK(create_processing_cb) }, 
+	{"Tools/CreateProcessingRule/ByFrom",	NULL, N_("By _From"), NULL, NULL, G_CALLBACK(create_processing_cb) }, 
+	{"Tools/CreateProcessingRule/ByTo",	NULL, N_("By _To"), NULL, NULL, G_CALLBACK(create_processing_cb) }, 
+	{"Tools/CreateProcessingRule/BySubject",NULL, N_("By _Subject"), NULL, NULL, G_CALLBACK(create_processing_cb) }, 
+	/* {"Tools/---",			NULL, "---", NULL, NULL, NULL }, */
+
+	{"Tools/ListUrls",			NULL, N_("List _URLs..."), "<control><shift>U", NULL, G_CALLBACK(open_urls_cb) }, 
+
+	/* {"Tools/---",			NULL, "---", NULL, NULL, NULL }, */
+	{"Tools/Actions",			NULL, N_("Actio_ns") },
+	{"Tools/Actions/PlaceHolder",		NULL, "Placeholder", NULL, NULL, G_CALLBACK(mainwindow_nothing_cb) },
+	/* {"Tools/---",			NULL, "---", NULL, NULL, NULL }, */
+
+	{"Tools/CheckNewMessages",		NULL, N_("Ch_eck for new messages in all folders"), NULL, NULL, G_CALLBACK(update_folderview_cb) }, 
+	{"Tools/DeleteDuplicates",		NULL, N_("Delete du_plicated messages") },
+	{"Tools/DeleteDuplicates/SelFolder",	NULL, N_("In selected folder"), NULL, NULL, G_CALLBACK(delete_duplicated_cb) },
+	{"Tools/DeleteDuplicates/AllFolders",	NULL, N_("In all folders"), NULL, NULL, G_CALLBACK(delete_duplicated_all_cb) },
+	/* {"Tools/---",			NULL, "---", NULL, NULL, NULL }, */
+
+	{"Tools/Execute",			NULL, N_("E_xecute"), "X", NULL, G_CALLBACK(execute_summary_cb) }, 
 #if (defined(USE_OPENSSL) || defined (USE_GNUTLS))
-	{N_("/_Tools/---"),			NULL, NULL, 0, "<Separator>"},
-	{N_("/_Tools/SSL cer_tificates..."),	
-						NULL, ssl_manager_open_cb, 0, NULL},
+	/* {"Tools/---",			NULL, "---", NULL, NULL, NULL }, */
+	{"Tools/SSLCertificates",		NULL, N_("SSL cer_tificates"), NULL, NULL, G_CALLBACK(ssl_manager_open_cb) }, 
 #endif
-	{N_("/_Tools/---"),			NULL, NULL, 0, "<Separator>"},
-	{N_("/_Tools/Filtering Lo_g"),		NULL, filtering_debug_window_show_cb, 0, NULL},
-	{N_("/_Tools/Network _Log"),		"<shift><control>L", log_window_show_cb, 0, NULL},
+	/* {"Tools/---",			NULL, "---", NULL, NULL, NULL }, */
+	{"Tools/FilteringLog",			NULL, N_("Filtering Lo_g"), NULL, NULL, G_CALLBACK(filtering_debug_window_show_cb) }, 
+	{"Tools/NetworkLog",			NULL, N_("Network _Log"), "<shift><control>L", NULL, G_CALLBACK(log_window_show_cb) }, 
 
-	{N_("/_Configuration"),			NULL, NULL, 0, "<Branch>"},
-	{N_("/_Configuration/C_hange current account"),
-						NULL, NULL, 0, "<Branch>"},
-	{N_("/_Configuration/_Preferences for current account..."),
-						NULL, prefs_account_open_cb, 0, NULL},
-	{N_("/_Configuration/Create _new account..."),
-						NULL, new_account_cb, 0, NULL},
-	{N_("/_Configuration/_Edit accounts..."),
-						NULL, account_edit_open, 0, NULL},
-	{N_("/_Configuration/---"),		NULL, NULL, 0, "<Separator>"},
-	{N_("/_Configuration/P_references..."),
-						NULL, prefs_open_cb, 0, NULL},
-	{N_("/_Configuration/Pre-pr_ocessing..."),
-						NULL, prefs_pre_processing_open_cb, 0, NULL},
-	{N_("/_Configuration/Post-pro_cessing..."),
-						NULL, prefs_post_processing_open_cb, 0, NULL},
-	{N_("/_Configuration/_Filtering..."),
-						NULL, prefs_filtering_open_cb, 0, NULL},
-	{N_("/_Configuration/_Templates..."),	NULL, prefs_template_open_cb, 0, NULL},
-	{N_("/_Configuration/_Actions..."),	NULL, prefs_actions_open_cb, 0, NULL},
-	{N_("/_Configuration/Tag_s..."),	NULL, prefs_tags_open_cb, 0, NULL},
-	{N_("/_Configuration/---"),		NULL, NULL, 0, "<Separator>"},
-	{N_("/_Configuration/Plu_gins..."),  	NULL, plugins_open_cb, 0, NULL},
+/* Configuration menu */	
+	{"Configuration/ChangeAccount",		NULL, N_("C_hange current account") },
+	{"Configuration/ChangeAccount/PlaceHolder",	NULL, "Placeholder", NULL, NULL, G_CALLBACK(mainwindow_nothing_cb) },
+	{"Configuration/AccountPrefs",		NULL, N_("_Preferences for current account..."), NULL, NULL, G_CALLBACK(prefs_account_open_cb) },
+	{"Configuration/CreateAccount",		NULL, N_("Create _new account..."), NULL, NULL, G_CALLBACK(new_account_cb) },
+	{"Configuration/EditAccounts",		NULL, N_("_Edit accounts..."), NULL, NULL, G_CALLBACK(account_edit_open) },
+	{"Configuration/---",			NULL, "---", NULL, NULL, NULL }, 
 
-	{N_("/_Help"),				NULL, NULL, 0, "<Branch>"},
-	{N_("/_Help/_Manual"),			NULL, manual_open_cb, MANUAL_MANUAL_CLAWS, NULL},
-	{N_("/_Help/_Online User-contributed FAQ"),	
-						NULL, manual_open_cb, MANUAL_FAQ_CLAWS, NULL},
-	{N_("/_Help/Icon _Legend"),		NULL, legend_open_cb, 0, NULL},
-	{N_("/_Help/---"),			NULL, NULL, 0, "<Separator>"},
-	{N_("/_Help/_About"),			NULL, about_show, 0, NULL}
+	{"Configuration/Preferences",		NULL, N_("P_references..."), NULL, NULL, G_CALLBACK(prefs_open_cb) },
+	{"Configuration/PreProcessing",		NULL, N_("Pre-pr_ocessing..."), NULL, NULL, G_CALLBACK(prefs_pre_processing_open_cb) },
+	{"Configuration/PostProcessing",	NULL, N_("Post-pro_cessing..."), NULL, NULL, G_CALLBACK(prefs_post_processing_open_cb) },
+	{"Configuration/Filtering",		NULL, N_("_Filtering..."), NULL, NULL, G_CALLBACK(prefs_filtering_open_cb) },
+	{"Configuration/Templates",		NULL, N_("_Templates..."), NULL, NULL, G_CALLBACK(prefs_template_open_cb) },
+	{"Configuration/Actions",		NULL, N_("_Actions..."), NULL, NULL, G_CALLBACK(prefs_actions_open_cb) },
+	{"Configuration/Tags",			NULL, N_("Tag_s..."), NULL, NULL, G_CALLBACK(prefs_tags_open_cb) },
+	/*{"Configuration/---",			NULL, "---", NULL, NULL, NULL }, */
+	{"Configuration/Plugins",		NULL, N_("Plu_gins..."), NULL, NULL, G_CALLBACK(plugins_open_cb) },
+
+/* Help menu */
+	{"Help/Manual",				NULL, N_("_Manual"), NULL, NULL, G_CALLBACK(manual_open_cb) }, 
+	{"Help/FAQ",				NULL, N_("_Online User-contributed FAQ"), NULL, NULL, G_CALLBACK(manual_faq_open_cb) }, 
+	{"Help/IconLegend",			NULL, N_("Icon _Legend"), NULL, NULL, G_CALLBACK(legend_open_cb) }, 
+	{"Help/---",				NULL, "---" }, 
+	{"Help/About",				NULL, N_("_About"), NULL, NULL, G_CALLBACK(about_cb) }, 
+};
+
+static GtkToggleActionEntry mainwin_toggle_entries[] = {
+	{"File/OfflineMode",			NULL, N_("Offline _mode"), "<control>W", NULL, G_CALLBACK(toggle_work_offline_cb) }, /*toggle*/
+	{"View/ShowHide/MessageView",		NULL, N_("_Message view"), NULL, NULL, G_CALLBACK(toggle_message_cb) }, /* toggle */
+#ifndef GENERIC_UMPC
+	{"View/ShowHide/StatusBar",		NULL, N_("Status _bar"), NULL, NULL, G_CALLBACK(toggle_statusbar_cb) }, /* toggle */
+#endif
+	{"View/ShowHide/ColumnHeaders",		NULL, N_("Column headers"), NULL, NULL, G_CALLBACK(toggle_col_headers_cb) }, /* toggle */
+	{"View/ThreadView",			NULL, N_("Th_read view"), "<control>T", NULL, G_CALLBACK(thread_cb) }, /* toggle */
+	{"View/HideReadMessages",		NULL, N_("_Hide read messages"), NULL, NULL, G_CALLBACK(hide_read_messages) }, /* toggle */
+	{"View/AllHeaders",			NULL, N_("Show all _headers"), "<control>H", NULL, G_CALLBACK(show_all_header_cb) }, /* toggle */
+	{"View/Quotes/FoldAll",			NULL, N_("_Fold all"), "<control><shift>Q", NULL, G_CALLBACK(hide_quotes_cb) }, /* 1 toggle */
+	{"View/Quotes/Fold2",			NULL, N_("Fold from level _2"), NULL, NULL, G_CALLBACK(hide_quotes_cb) }, /* 2 toggle */
+	{"View/Quotes/Fold3",			NULL, N_("Fold from level _3"), NULL, NULL, G_CALLBACK(hide_quotes_cb) }, /* 3 toggle */
+};
+
+static GtkRadioActionEntry mainwin_showhide_radio_entries[] = { /* toggle_toolbar_cb */
+	{"View/ShowHide/Toolbar/TextBelowIcon",	NULL, N_("Text _below icons"), NULL, NULL, TOOLBAR_BOTH }, /* radio TOOLBAR_BOTH */
+	{"View/ShowHide/Toolbar/TextBesideIcon",NULL, N_("Text be_side icons"), NULL, NULL, TOOLBAR_BOTH_HORIZ }, /* radio TOOLBAR_BOTH_HORIZ */
+	{"View/ShowHide/Toolbar/IconOnly",	NULL, N_("_Icons only"), NULL, NULL, TOOLBAR_ICON }, /* radio TOOLBAR_ICON */
+	{"View/ShowHide/Toolbar/TextOnly",	NULL, N_("_Text only"), NULL, NULL, TOOLBAR_TEXT }, /* radio TOOLBAR_TEXT */
+#ifndef GENERIC_UMPC
+	{"View/ShowHide/Toolbar/Hide",		NULL, N_("_Hide"), NULL, NULL, TOOLBAR_NONE }, /* radio TOOLBAR_NONE */
+#endif
+};
+
+static GtkRadioActionEntry mainwin_layout_radio_entries[] = { /* set_layout_cb */
+	{"View/Layout/Standard",		NULL, N_("_Standard"), NULL, NULL, NORMAL_LAYOUT }, /* radio NORMAL_LAYOUT */
+	{"View/Layout/ThreeColumns",		NULL, N_("_Three columns"), NULL, NULL, VERTICAL_LAYOUT }, /* radio VERTICAL_LAYOUT */
+	{"View/Layout/WideMessage",		NULL, N_("_Wide message"), NULL, NULL, WIDE_LAYOUT }, /* radio WIDE_LAYOUT */
+	{"View/Layout/WideMessageList",		NULL, N_("W_ide message list"), NULL, NULL, WIDE_MSGLIST_LAYOUT }, /* radio WIDE_MSGLIST_LAYOUT */
+	{"View/Layout/SmallScreen",		NULL, N_("S_mall screen"), NULL, NULL, SMALL_LAYOUT }, /* radio SMALL_LAYOUT */
+};
+
+static GtkRadioActionEntry mainwin_sort_radio_entries[] = { /* sort_summary_cb */
+	{"View/Sort/Number",			NULL, N_("by _Number"), NULL, NULL, SORT_BY_NUMBER }, /* radio SORT_BY_NUMBER */
+	{"View/Sort/Size",			NULL, N_("by S_ize"), NULL, NULL, SORT_BY_SIZE }, /* radio SORT_BY_SIZE */
+	{"View/Sort/Date",			NULL, N_("by _Date"), NULL, NULL, SORT_BY_DATE }, /* radio SORT_BY_DATE */
+	{"View/Sort/ThreadDate",		NULL, N_("by Thread date"), NULL, NULL, SORT_BY_THREAD_DATE }, /* radio SORT_BY_THREAD_DATE */
+	{"View/Sort/From",			NULL, N_("by _From"), NULL, NULL, SORT_BY_FROM }, /* radio SORT_BY_FROM */
+	{"View/Sort/To",			NULL, N_("by _To"), NULL, NULL, SORT_BY_TO }, /* radio SORT_BY_TO */
+	{"View/Sort/Subject",			NULL, N_("by S_ubject"), NULL, NULL, SORT_BY_SUBJECT }, /* radio SORT_BY_SUBJECT */
+	{"View/Sort/Color",			NULL, N_("by _Color label"), NULL, NULL, SORT_BY_LABEL }, /* radio SORT_BY_LABEL */
+	{"View/Sort/Tag",			NULL, N_("by Tag"), NULL, NULL, SORT_BY_TAGS }, /* radio SORT_BY_TAGS */
+	{"View/Sort/Mark",			NULL, N_("by _Mark"), NULL, NULL, SORT_BY_MARK }, /* radio SORT_BY_MARK */
+	{"View/Sort/Status",			NULL, N_("by _Status"), NULL, NULL, SORT_BY_STATUS }, /* radio SORT_BY_STATUS */
+	{"View/Sort/Attachment",		NULL, N_("by A_ttachment"), NULL, NULL, SORT_BY_MIME }, /* radio SORT_BY_MIME */
+	{"View/Sort/Score",			NULL, N_("by Score"), NULL, NULL, SORT_BY_SCORE }, /* radio SORT_BY_SCORE */
+	{"View/Sort/Locked",			NULL, N_("by Locked"), NULL, NULL, SORT_BY_LOCKED }, /* radio SORT_BY_LOCKED */
+	{"View/Sort/DontSort",			NULL, N_("D_on't sort"), NULL, NULL, SORT_BY_NONE }, /* radio SORT_BY_NONE */
+};
+
+static GtkRadioActionEntry mainwin_sorttype_radio_entries[] = { /* sort_summary_type_cb */
+	{"View/Sort/Ascending",			NULL, N_("Ascending"), NULL, NULL, SORT_ASCENDING }, /* radio SORT_ASCENDING */
+	{"View/Sort/Descending",		NULL, N_("Descending"), NULL, NULL, SORT_DESCENDING }, /* radio SORT_DESCENDING */
+};
+
+static GtkRadioActionEntry mainwin_radio_enc_entries[] =
+{
+	ENC_ACTION(CS_AUTO, C_AUTO, "_Automatic"), /* RADIO set_charset_cb */
+	ENC_ACTION(CS_US_ASCII, C_US_ASCII, "7bit ASCII (US-ASC_II)"), /* RADIO set_charset_cb */
+	ENC_ACTION(CS_UTF_8, C_UTF_8, "Unicode (_UTF-8)"), /* RADIO set_charset_cb */
+	ENC_ACTION("Western/"CS_ISO_8859_1, C_ISO_8859_1, "ISO-8859-_1"), /* RADIO set_charset_cb */
+	ENC_ACTION("Western/"CS_ISO_8859_15, C_ISO_8859_15, "ISO-8859-15"), /* RADIO set_charset_cb */
+	ENC_ACTION("Western/"CS_WINDOWS_1252, C_WINDOWS_1252, "Windows-1252"), /* RADIO set_charset_cb */
+	ENC_ACTION(CS_ISO_8859_2, C_ISO_8859_2, "Central European (ISO-8859-_2)"), /* RADIO set_charset_cb */
+	ENC_ACTION("Baltic/"CS_ISO_8859_13, C_ISO_8859_13, "ISO-8859-13"), /* RADIO set_charset_cb */
+	ENC_ACTION("Baltic/"CS_ISO_8859_4, C_ISO_8859_14, "ISO-8859-_4"), /* RADIO set_charset_cb */
+	ENC_ACTION(CS_ISO_8859_7, C_ISO_8859_7, "Greek (ISO-8859-_7)"), /* RADIO set_charset_cb */
+	ENC_ACTION("Hebrew/"CS_ISO_8859_8, C_ISO_8859_8, "ISO-8859-_8"), /* RADIO set_charset_cb */
+	ENC_ACTION("Hebrew/"CS_WINDOWS_1255, C_WINDOWS_1255, "Windows-1255"), /* RADIO set_charset_cb */
+	ENC_ACTION("Arabic/"CS_ISO_8859_6, C_ISO_8859_6, "ISO-8859-_6"), /* RADIO set_charset_cb */
+	ENC_ACTION("Arabic/"CS_WINDOWS_1256, C_WINDOWS_1256, "Windows-1256"), /* RADIO set_charset_cb */
+	ENC_ACTION(CS_ISO_8859_9, C_ISO_8859_9, "Turkish (ISO-8859-_9)"), /* RADIO set_charset_cb */
+	ENC_ACTION("Cyrillic/"CS_ISO_8859_5, C_ISO_8859_5, "ISO-8859-_5"), /* RADIO set_charset_cb */
+	ENC_ACTION("Cyrillic/"CS_KOI8_R, C_KOI8_R, "KOI8-_R"), /* RADIO set_charset_cb */
+	ENC_ACTION("Cyrillic/"CS_KOI8_U, C_KOI8_U, "KOI8-_U"), /* RADIO set_charset_cb */
+	ENC_ACTION("Cyrillic/"CS_WINDOWS_1251, C_WINDOWS_1251, "Windows-1251"), /* RADIO set_charset_cb */
+	ENC_ACTION("Japanese/"CS_ISO_2022_JP, C_ISO_2022_JP, "ISO-2022-_JP"), /* RADIO set_charset_cb */
+	ENC_ACTION("Japanese/"CS_ISO_2022_JP_2, C_ISO_2022_JP_2, "ISO-2022-JP-_2"), /* RADIO set_charset_cb */
+	ENC_ACTION("Japanese/"CS_EUC_JP, C_EUC_JP, "_EUC-JP"), /* RADIO set_charset_cb */
+	ENC_ACTION("Japanese/"CS_SHIFT_JIS, C_SHIFT_JIS, "_Shift-JIS"), /* RADIO set_charset_cb */
+	ENC_ACTION("Chinese/"CS_GB2312, C_GB2312, "_GB2312"), /* RADIO set_charset_cb */
+	ENC_ACTION("Chinese/"CS_GBK, C_GBK, "GB_K"), /* RADIO set_charset_cb */
+	ENC_ACTION("Chinese/"CS_BIG5, C_BIG5, "_Big5-JP"), /* RADIO set_charset_cb */
+	ENC_ACTION("Chinese/"CS_EUC_TW, C_EUC_TW, "EUC-_TW"), /* RADIO set_charset_cb */
+	ENC_ACTION("Korean/"CS_EUC_KR, C_EUC_KR, "_EUC-KR"), /* RADIO set_charset_cb */
+	ENC_ACTION("Korean/"CS_ISO_2022_KR, C_ISO_2022_KR, "_ISO-2022-KR"), /* RADIO set_charset_cb */
+	ENC_ACTION("Thai/"CS_TIS_620, C_TIS_620, "_TIS-620-KR"), /* RADIO set_charset_cb */
+	ENC_ACTION("Thai/"CS_WINDOWS_874, C_WINDOWS_874, "_Windows-874"), /* RADIO set_charset_cb */
+};
+
+static GtkRadioActionEntry mainwin_radio_dec_entries[] =
+{
+	DEC_ACTION("AutoDetect", 0, "_Auto detect"),	/* set_decode_cb */
+	/* --- */
+	DEC_ACTION("8bit", ENC_8BIT, "_8bit"),
+	DEC_ACTION("QP", ENC_QUOTED_PRINTABLE, "_Quoted printable"),
+	DEC_ACTION("B64", ENC_BASE64, "_Base64"),
+	DEC_ACTION("Uuencode", ENC_X_UUENCODE, "_Uuencode"),
 };
 
 static gboolean offline_ask_sync = TRUE;
@@ -1141,15 +1037,17 @@ static void mainwindow_colorlabel_menu_create(MainWindow *mainwin, gboolean refr
 	GtkWidget *menu;
 	GtkWidget *item;
 	gint i;
+	gchar *accel_path = NULL;
 
-	label_menuitem = gtk_item_factory_get_item(mainwin->menu_factory,
-						   "/Message/Color label");
+	label_menuitem = gtk_ui_manager_get_widget(mainwin->ui_manager, "/Menu/Message/ColorLabel");
 	g_signal_connect(G_OBJECT(label_menuitem), "activate",
 			 G_CALLBACK(mainwindow_colorlabel_menu_item_activate_item_cb),
 			   mainwin);
 	gtk_widget_show(label_menuitem);
 
 	menu = gtk_menu_new();
+	gtk_menu_set_accel_group (GTK_MENU (menu), 
+		gtk_ui_manager_get_accel_group(mainwin->ui_manager));
 
 	/* create sub items. for the menu item activation callback we pass the
 	 * index of label_colors[] as data parameter. for the None color we
@@ -1165,7 +1063,7 @@ static void mainwindow_colorlabel_menu_create(MainWindow *mainwin, gboolean refr
 	gtk_widget_show(item);
 
 	gtk_widget_add_accelerator(item, "activate", 
-				   mainwin->menu_factory->accel_group, 
+				   gtk_ui_manager_get_accel_group(mainwin->ui_manager), 
 				   GDK_0, GDK_CONTROL_MASK,
 				   GTK_ACCEL_LOCKED | GTK_ACCEL_VISIBLE);
 
@@ -1184,9 +1082,12 @@ static void mainwindow_colorlabel_menu_create(MainWindow *mainwin, gboolean refr
 		g_object_set_data(G_OBJECT(item), "mainwin",
 				  mainwin);
 		gtk_widget_show(item);
+		accel_path = g_strdup_printf("<ClawsColorLabels>/%d", i);
+		gtk_menu_item_set_accel_path(GTK_MENU_ITEM(item), accel_path);
+		g_free(accel_path);
 		if (i < 9)
 			gtk_widget_add_accelerator(item, "activate", 
-				   mainwin->menu_factory->accel_group, 
+				   gtk_ui_manager_get_accel_group(mainwin->ui_manager), 
 				   GDK_1+i, GDK_CONTROL_MASK,
 				   GTK_ACCEL_LOCKED | GTK_ACCEL_VISIBLE);
 	}
@@ -1236,11 +1137,10 @@ static void mainwindow_tags_menu_create(MainWindow *mainwin, gboolean refresh)
 	GSList *cur = tags_get_list();
 	GSList *orig = NULL;
 	gboolean existing_tags = FALSE;
-
+	gchar *accel_path;
 	cur = orig = g_slist_sort(cur, mainwin_tag_cmp_list);
 
-	label_menuitem = gtk_item_factory_get_item(mainwin->menu_factory,
-						   "/Message/Tags");
+	label_menuitem = gtk_ui_manager_get_widget(mainwin->ui_manager, "/Menu/Message/Tags");
 	g_signal_connect(G_OBJECT(label_menuitem), "activate",
 			 G_CALLBACK(mainwindow_tags_menu_item_activate_item_cb),
 			   mainwin);
@@ -1248,6 +1148,8 @@ static void mainwindow_tags_menu_create(MainWindow *mainwin, gboolean refresh)
 	gtk_widget_show(label_menuitem);
 
 	menu = gtk_menu_new();
+	gtk_menu_set_accel_group (GTK_MENU (menu), 
+		gtk_ui_manager_get_accel_group(mainwin->ui_manager));
 
 	/* create tags menu items */
 	for (; cur; cur = cur->next) {
@@ -1264,6 +1166,9 @@ static void mainwindow_tags_menu_create(MainWindow *mainwin, gboolean refresh)
 		g_object_set_data(G_OBJECT(item), "tag_id",
 				  GINT_TO_POINTER(id));
 		gtk_widget_show(item);
+		accel_path = g_strconcat("<ClawsTags>/",tag, NULL);
+		gtk_menu_item_set_accel_path(GTK_MENU_ITEM(item), accel_path);
+		g_free(accel_path);
 		existing_tags = TRUE;
 	}
 	if (existing_tags) {
@@ -1275,7 +1180,7 @@ static void mainwindow_tags_menu_create(MainWindow *mainwin, gboolean refresh)
 
 	item = gtk_menu_item_new_with_label(_("Apply tags..."));
 	gtk_widget_add_accelerator(item, "activate", 
-		   mainwin->menu_factory->accel_group, 
+		   gtk_ui_manager_get_accel_group(mainwin->ui_manager), 
 		   GDK_T, GDK_CONTROL_MASK|GDK_SHIFT_MASK,
 		   GTK_ACCEL_LOCKED | GTK_ACCEL_VISIBLE);
 	gtk_menu_shell_append(GTK_MENU_SHELL(menu), item);
@@ -1358,7 +1263,7 @@ static gboolean mainwindow_key_pressed (GtkWidget *widget, GdkEventKey *event,
 	case GDK_Q:             /* Quit */
 		BREAK_ON_MODIFIER_KEY();
 
-		app_exit_cb(mainwin, 0, NULL);
+		app_exit_cb(NULL, mainwin);
 		return FALSE;
 	case GDK_space:
 		if (gtk_window_is_active(GTK_WINDOW(mainwin->window))) {
@@ -1545,6 +1450,7 @@ MainWindow *main_window_create()
 	GtkWidget *menubar;
 	GtkWidget *handlebox;
 	GtkWidget *vbox_body;
+	GtkWidget *menuitem;
 #ifndef GENERIC_UMPC
 	GtkWidget *hbox_stat;
 	GtkWidget *statusbar;
@@ -1566,11 +1472,8 @@ MainWindow *main_window_create()
 	GdkColormap *colormap;
 	GdkColor color[4];
 	gboolean success[4];
-	GtkItemFactory *ifactory;
 	GtkWidget *ac_menu;
-	GtkWidget *menuitem;
 	gint i;
-	guint n_menu_entries;
 
 	static GdkGeometry geometry;
 
@@ -1611,19 +1514,375 @@ MainWindow *main_window_create()
 	gtk_container_add(GTK_CONTAINER(window), vbox);
 
 	/* menu bar */
-	n_menu_entries = sizeof(mainwin_entries) / sizeof(mainwin_entries[0]);
-	menubar = menubar_create(window, mainwin_entries, 
-				 n_menu_entries, "<Main>", mainwin);
-	gtk_widget_show(menubar);
+
+	mainwin->ui_manager = gtk_ui_manager_new();
+	mainwin->action_group = cm_menu_create_action_group_full(mainwin->ui_manager,"Menu", mainwin_entries,
+			G_N_ELEMENTS(mainwin_entries), (gpointer)mainwin);
+	gtk_action_group_add_toggle_actions(mainwin->action_group, mainwin_toggle_entries,
+			G_N_ELEMENTS(mainwin_toggle_entries), (gpointer)mainwin);
+	gtk_action_group_add_radio_actions(mainwin->action_group, mainwin_showhide_radio_entries,
+			G_N_ELEMENTS(mainwin_showhide_radio_entries), C_AUTO, G_CALLBACK(toggle_toolbar_cb), (gpointer)mainwin);
+	gtk_action_group_add_radio_actions(mainwin->action_group, mainwin_layout_radio_entries,
+			G_N_ELEMENTS(mainwin_layout_radio_entries), C_AUTO, G_CALLBACK(set_layout_cb), (gpointer)mainwin);
+	gtk_action_group_add_radio_actions(mainwin->action_group, mainwin_sort_radio_entries,
+			G_N_ELEMENTS(mainwin_sort_radio_entries), C_AUTO, G_CALLBACK(sort_summary_cb), (gpointer)mainwin);
+	gtk_action_group_add_radio_actions(mainwin->action_group, mainwin_sorttype_radio_entries,
+			G_N_ELEMENTS(mainwin_sorttype_radio_entries), C_AUTO, G_CALLBACK(sort_summary_type_cb), (gpointer)mainwin);
+	gtk_action_group_add_radio_actions(mainwin->action_group, mainwin_radio_enc_entries,
+			G_N_ELEMENTS(mainwin_radio_enc_entries), C_AUTO, G_CALLBACK(set_charset_cb), (gpointer)mainwin);
+	gtk_action_group_add_radio_actions(mainwin->action_group, mainwin_radio_dec_entries,
+			G_N_ELEMENTS(mainwin_radio_dec_entries), C_AUTO, G_CALLBACK(set_decode_cb), (gpointer)mainwin);
+
+	MENUITEM_ADDUI_MANAGER(mainwin->ui_manager, "/", "Menu", NULL, GTK_UI_MANAGER_MENUBAR)
+
+	MENUITEM_ADDUI_MANAGER(mainwin->ui_manager, "/Menu", "File", "File", GTK_UI_MANAGER_MENU)
+	MENUITEM_ADDUI_MANAGER(mainwin->ui_manager, "/Menu", "Edit", "Edit", GTK_UI_MANAGER_MENU)
+	MENUITEM_ADDUI_MANAGER(mainwin->ui_manager, "/Menu", "View", "View", GTK_UI_MANAGER_MENU)
+	MENUITEM_ADDUI_MANAGER(mainwin->ui_manager, "/Menu", "Message", "Message", GTK_UI_MANAGER_MENU)
+	MENUITEM_ADDUI_MANAGER(mainwin->ui_manager, "/Menu", "Tools", "Tools", GTK_UI_MANAGER_MENU)
+	MENUITEM_ADDUI_MANAGER(mainwin->ui_manager, "/Menu", "Configuration", "Configuration", GTK_UI_MANAGER_MENU)
+	MENUITEM_ADDUI_MANAGER(mainwin->ui_manager, "/Menu", "Help", "Help", GTK_UI_MANAGER_MENU)
+
+/* File menu */
+	MENUITEM_ADDUI_MANAGER(mainwin->ui_manager, "/Menu/File", "AddMailbox", "File/AddMailbox", GTK_UI_MANAGER_MENU)
+	MENUITEM_ADDUI_MANAGER(mainwin->ui_manager, "/Menu/File/AddMailbox", "MH", "File/AddMailbox/MH", GTK_UI_MANAGER_MENUITEM)
+	MENUITEM_ADDUI_MANAGER(mainwin->ui_manager, "/Menu/File", "Separator1", "File/---", GTK_UI_MANAGER_SEPARATOR)
+	MENUITEM_ADDUI_MANAGER(mainwin->ui_manager, "/Menu/File", "SortFolders", "File/SortFolders", GTK_UI_MANAGER_MENUITEM)
+	MENUITEM_ADDUI_MANAGER(mainwin->ui_manager, "/Menu/File", "Separator2", "File/---", GTK_UI_MANAGER_SEPARATOR)
+	MENUITEM_ADDUI_MANAGER(mainwin->ui_manager, "/Menu/File", "ImportMbox", "File/ImportMbox", GTK_UI_MANAGER_MENUITEM)
+	MENUITEM_ADDUI_MANAGER(mainwin->ui_manager, "/Menu/File", "ExportMbox", "File/ExportMbox", GTK_UI_MANAGER_MENUITEM)
+	MENUITEM_ADDUI_MANAGER(mainwin->ui_manager, "/Menu/File", "ExportSelMbox", "File/ExportSelMbox", GTK_UI_MANAGER_MENUITEM)
+	MENUITEM_ADDUI_MANAGER(mainwin->ui_manager, "/Menu/File", "Separator3", "File/---", GTK_UI_MANAGER_SEPARATOR)
+	MENUITEM_ADDUI_MANAGER(mainwin->ui_manager, "/Menu/File", "EmptyTrashes", "File/EmptyTrashes", GTK_UI_MANAGER_MENUITEM)
+	MENUITEM_ADDUI_MANAGER(mainwin->ui_manager, "/Menu/File", "Separator4", "File/---", GTK_UI_MANAGER_SEPARATOR)
+	MENUITEM_ADDUI_MANAGER(mainwin->ui_manager, "/Menu/File", "SaveAs", "File/SaveAs", GTK_UI_MANAGER_MENUITEM)
+#if GTK_CHECK_VERSION(2,10,0) && !defined(USE_GNOMEPRINT)
+	MENUITEM_ADDUI_MANAGER(mainwin->ui_manager, "/Menu/File", "PageSetup", "File/PageSetup", GTK_UI_MANAGER_MENUITEM)
+#endif
+	MENUITEM_ADDUI_MANAGER(mainwin->ui_manager, "/Menu/File", "Print", "File/Print", GTK_UI_MANAGER_MENUITEM)
+	MENUITEM_ADDUI_MANAGER(mainwin->ui_manager, "/Menu/File", "Separator5", "File/---", GTK_UI_MANAGER_SEPARATOR)
+	MENUITEM_ADDUI_MANAGER(mainwin->ui_manager, "/Menu/File", "OfflineMode", "File/OfflineMode", GTK_UI_MANAGER_MENUITEM)
+	MENUITEM_ADDUI_MANAGER(mainwin->ui_manager, "/Menu/File", "SynchroniseFolders", "File/SynchroniseFolders", GTK_UI_MANAGER_MENUITEM)
+	MENUITEM_ADDUI_MANAGER(mainwin->ui_manager, "/Menu/File", "Separator6", "File/---", GTK_UI_MANAGER_SEPARATOR)
+	MENUITEM_ADDUI_MANAGER(mainwin->ui_manager, "/Menu/File", "Exit", "File/Exit", GTK_UI_MANAGER_MENUITEM)
+
+/* Edit menu */
+	MENUITEM_ADDUI_MANAGER(mainwin->ui_manager, "/Menu/Edit", "Copy", "Edit/Copy", GTK_UI_MANAGER_MENUITEM)
+	MENUITEM_ADDUI_MANAGER(mainwin->ui_manager, "/Menu/Edit", "SelectAll", "Edit/SelectAll", GTK_UI_MANAGER_MENUITEM)
+	MENUITEM_ADDUI_MANAGER(mainwin->ui_manager, "/Menu/Edit", "SelectThread", "Edit/SelectThread", GTK_UI_MANAGER_MENUITEM)
+	MENUITEM_ADDUI_MANAGER(mainwin->ui_manager, "/Menu/Edit", "DeleteThread", "Edit/DeleteThread", GTK_UI_MANAGER_MENUITEM)
+	MENUITEM_ADDUI_MANAGER(mainwin->ui_manager, "/Menu/Edit", "Separator1", "Edit/---", GTK_UI_MANAGER_SEPARATOR)
+	MENUITEM_ADDUI_MANAGER(mainwin->ui_manager, "/Menu/Edit", "Find", "Edit/Find", GTK_UI_MANAGER_MENUITEM)
+	MENUITEM_ADDUI_MANAGER(mainwin->ui_manager, "/Menu/Edit", "SearchFolder", "Edit/SearchFolder", GTK_UI_MANAGER_MENUITEM)
+	MENUITEM_ADDUI_MANAGER(mainwin->ui_manager, "/Menu/Edit", "QuickSearch", "Edit/QuickSearch", GTK_UI_MANAGER_MENUITEM)
+
+/* View menu */
+	MENUITEM_ADDUI_MANAGER(mainwin->ui_manager, "/Menu/View", "ShowHide", "View/ShowHide", GTK_UI_MANAGER_MENU)
+	MENUITEM_ADDUI_MANAGER(mainwin->ui_manager, "/Menu/View/ShowHide", "Toolbar", "View/ShowHide/Toolbar", GTK_UI_MANAGER_MENU)
+	MENUITEM_ADDUI_MANAGER(mainwin->ui_manager, "/Menu/View/ShowHide/Toolbar", "TextBelowIcon", "View/ShowHide/Toolbar/TextBelowIcon", GTK_UI_MANAGER_MENUITEM)
+	MENUITEM_ADDUI_MANAGER(mainwin->ui_manager, "/Menu/View/ShowHide/Toolbar", "TextBesideIcon", "View/ShowHide/Toolbar/TextBesideIcon", GTK_UI_MANAGER_MENUITEM)
+	MENUITEM_ADDUI_MANAGER(mainwin->ui_manager, "/Menu/View/ShowHide/Toolbar", "IconOnly", "View/ShowHide/Toolbar/IconOnly", GTK_UI_MANAGER_MENUITEM)
+	MENUITEM_ADDUI_MANAGER(mainwin->ui_manager, "/Menu/View/ShowHide/Toolbar", "TextOnly", "View/ShowHide/Toolbar/TextOnly", GTK_UI_MANAGER_MENUITEM)
+#ifndef GENERIC_UMPC
+	MENUITEM_ADDUI_MANAGER(mainwin->ui_manager, "/Menu/View/ShowHide/Toolbar", "Hide", "View/ShowHide/Toolbar/Hide", GTK_UI_MANAGER_MENUITEM)
+#endif
+	MENUITEM_ADDUI_MANAGER(mainwin->ui_manager, "/Menu/View/ShowHide", "MessageView", "View/ShowHide/MessageView", GTK_UI_MANAGER_MENUITEM)
+#ifndef GENERIC_UMPC
+	MENUITEM_ADDUI_MANAGER(mainwin->ui_manager, "/Menu/View/ShowHide", "StatusBar", "View/ShowHide/StatusBar", GTK_UI_MANAGER_MENUITEM)
+#endif
+	MENUITEM_ADDUI_MANAGER(mainwin->ui_manager, "/Menu/View/ShowHide", "ColumnHeaders", "View/ShowHide/ColumnHeaders", GTK_UI_MANAGER_MENUITEM)
+	MENUITEM_ADDUI_MANAGER(mainwin->ui_manager, "/Menu/View", "SetColumns", "View/SetColumns", GTK_UI_MANAGER_MENU)
+	MENUITEM_ADDUI_MANAGER(mainwin->ui_manager, "/Menu/View/SetColumns", "Folderlist", "View/SetColumns/Folderlist", GTK_UI_MANAGER_MENUITEM)
+	MENUITEM_ADDUI_MANAGER(mainwin->ui_manager, "/Menu/View/SetColumns", "Messagelist", "View/SetColumns/Messagelist", GTK_UI_MANAGER_MENUITEM)
+	MENUITEM_ADDUI_MANAGER(mainwin->ui_manager, "/Menu/View", "Separator1", "View/---", GTK_UI_MANAGER_SEPARATOR)
+
+#ifndef GENERIC_UMPC
+	MENUITEM_ADDUI_MANAGER(mainwin->ui_manager, "/Menu/View", "Layout", "View/Layout", GTK_UI_MANAGER_MENU)
+	MENUITEM_ADDUI_MANAGER(mainwin->ui_manager, "/Menu/View/Layout", "Standard", "View/Layout/Standard", GTK_UI_MANAGER_MENUITEM)
+	MENUITEM_ADDUI_MANAGER(mainwin->ui_manager, "/Menu/View/Layout", "ThreeColumns", "View/Layout/ThreeColumns", GTK_UI_MANAGER_MENUITEM)
+	MENUITEM_ADDUI_MANAGER(mainwin->ui_manager, "/Menu/View/Layout", "WideMessage", "View/Layout/WideMessage", GTK_UI_MANAGER_MENUITEM)
+	MENUITEM_ADDUI_MANAGER(mainwin->ui_manager, "/Menu/View/Layout", "WideMessageList", "View/Layout/WideMessageList", GTK_UI_MANAGER_MENUITEM)
+	MENUITEM_ADDUI_MANAGER(mainwin->ui_manager, "/Menu/View/Layout", "SmallScreen", "View/Layout/SmallScreen", GTK_UI_MANAGER_MENUITEM)
+	MENUITEM_ADDUI_MANAGER(mainwin->ui_manager, "/Menu/View", "Separator2", "View/---", GTK_UI_MANAGER_SEPARATOR)
+#endif
+
+	MENUITEM_ADDUI_MANAGER(mainwin->ui_manager, "/Menu/View", "Sort", "View/Sort", GTK_UI_MANAGER_MENU)
+	MENUITEM_ADDUI_MANAGER(mainwin->ui_manager, "/Menu/View/Sort", "Number", "View/Sort/Number", GTK_UI_MANAGER_MENUITEM)
+	MENUITEM_ADDUI_MANAGER(mainwin->ui_manager, "/Menu/View/Sort", "Size", "View/Sort/Size", GTK_UI_MANAGER_MENUITEM)
+	MENUITEM_ADDUI_MANAGER(mainwin->ui_manager, "/Menu/View/Sort", "Date", "View/Sort/Date", GTK_UI_MANAGER_MENUITEM)
+	MENUITEM_ADDUI_MANAGER(mainwin->ui_manager, "/Menu/View/Sort", "ThreadDate", "View/Sort/ThreadDate", GTK_UI_MANAGER_MENUITEM)
+	MENUITEM_ADDUI_MANAGER(mainwin->ui_manager, "/Menu/View/Sort", "From", "View/Sort/From", GTK_UI_MANAGER_MENUITEM)
+	MENUITEM_ADDUI_MANAGER(mainwin->ui_manager, "/Menu/View/Sort", "To", "View/Sort/To", GTK_UI_MANAGER_MENUITEM)
+	MENUITEM_ADDUI_MANAGER(mainwin->ui_manager, "/Menu/View/Sort", "Subject", "View/Sort/Subject", GTK_UI_MANAGER_MENUITEM)
+	MENUITEM_ADDUI_MANAGER(mainwin->ui_manager, "/Menu/View/Sort", "Color", "View/Sort/Color", GTK_UI_MANAGER_MENUITEM)
+	MENUITEM_ADDUI_MANAGER(mainwin->ui_manager, "/Menu/View/Sort", "Tag", "View/Sort/Tag", GTK_UI_MANAGER_MENUITEM)
+	MENUITEM_ADDUI_MANAGER(mainwin->ui_manager, "/Menu/View/Sort", "Mark", "View/Sort/Mark", GTK_UI_MANAGER_MENUITEM)
+	MENUITEM_ADDUI_MANAGER(mainwin->ui_manager, "/Menu/View/Sort", "Status", "View/Sort/Status", GTK_UI_MANAGER_MENUITEM)
+	MENUITEM_ADDUI_MANAGER(mainwin->ui_manager, "/Menu/View/Sort", "Attachment", "View/Sort/Attachment", GTK_UI_MANAGER_MENUITEM)
+	MENUITEM_ADDUI_MANAGER(mainwin->ui_manager, "/Menu/View/Sort", "Score", "View/Sort/Score", GTK_UI_MANAGER_MENUITEM)
+	MENUITEM_ADDUI_MANAGER(mainwin->ui_manager, "/Menu/View/Sort", "Locked", "View/Sort/Locked", GTK_UI_MANAGER_MENUITEM)
+	MENUITEM_ADDUI_MANAGER(mainwin->ui_manager, "/Menu/View/Sort", "DontSort", "View/Sort/DontSort", GTK_UI_MANAGER_MENUITEM)
+	MENUITEM_ADDUI_MANAGER(mainwin->ui_manager, "/Menu/View/Sort", "Separator1", "View/Sort/---", GTK_UI_MANAGER_SEPARATOR)
+	MENUITEM_ADDUI_MANAGER(mainwin->ui_manager, "/Menu/View/Sort", "Ascending", "View/Sort/Ascending", GTK_UI_MANAGER_MENUITEM)
+	MENUITEM_ADDUI_MANAGER(mainwin->ui_manager, "/Menu/View/Sort", "Descending", "View/Sort/Descending", GTK_UI_MANAGER_MENUITEM)
+	MENUITEM_ADDUI_MANAGER(mainwin->ui_manager, "/Menu/View/Sort", "Separator2", "View/Sort/---", GTK_UI_MANAGER_SEPARATOR)
+	MENUITEM_ADDUI_MANAGER(mainwin->ui_manager, "/Menu/View/Sort", "AttractSubj", "View/Sort/AttractSubj", GTK_UI_MANAGER_MENUITEM)
+
+	MENUITEM_ADDUI_MANAGER(mainwin->ui_manager, "/Menu/View", "ThreadView", "View/ThreadView", GTK_UI_MANAGER_MENUITEM)
+	MENUITEM_ADDUI_MANAGER(mainwin->ui_manager, "/Menu/View", "ExpandThreads", "View/ExpandThreads", GTK_UI_MANAGER_MENUITEM)
+	MENUITEM_ADDUI_MANAGER(mainwin->ui_manager, "/Menu/View", "CollapseThreads", "View/CollapseThreads", GTK_UI_MANAGER_MENUITEM)
+	MENUITEM_ADDUI_MANAGER(mainwin->ui_manager, "/Menu/View", "HideReadMessages", "View/HideReadMessages", GTK_UI_MANAGER_MENUITEM)
+	MENUITEM_ADDUI_MANAGER(mainwin->ui_manager, "/Menu/View", "Separator3", "View/---", GTK_UI_MANAGER_SEPARATOR)
+
+	MENUITEM_ADDUI_MANAGER(mainwin->ui_manager, "/Menu/View", "Goto", "View/Goto", GTK_UI_MANAGER_MENU)
+	MENUITEM_ADDUI_MANAGER(mainwin->ui_manager, "/Menu/View/Goto", "Prev", "View/Goto/Prev", GTK_UI_MANAGER_MENUITEM)
+	MENUITEM_ADDUI_MANAGER(mainwin->ui_manager, "/Menu/View/Goto", "Next", "View/Goto/Next", GTK_UI_MANAGER_MENUITEM)
+	MENUITEM_ADDUI_MANAGER(mainwin->ui_manager, "/Menu/View/Goto", "Separator1", "View/Goto/---", GTK_UI_MANAGER_MENUITEM)
+	MENUITEM_ADDUI_MANAGER(mainwin->ui_manager, "/Menu/View/Goto", "PrevUnread", "View/Goto/PrevUnread", GTK_UI_MANAGER_MENUITEM)
+	MENUITEM_ADDUI_MANAGER(mainwin->ui_manager, "/Menu/View/Goto", "NextUnread", "View/Goto/NextUnread", GTK_UI_MANAGER_MENUITEM)
+	MENUITEM_ADDUI_MANAGER(mainwin->ui_manager, "/Menu/View/Goto", "Separator2", "View/Goto/---", GTK_UI_MANAGER_MENUITEM)
+	MENUITEM_ADDUI_MANAGER(mainwin->ui_manager, "/Menu/View/Goto", "PrevNew", "View/Goto/PrevNew", GTK_UI_MANAGER_MENUITEM)
+	MENUITEM_ADDUI_MANAGER(mainwin->ui_manager, "/Menu/View/Goto", "NextNew", "View/Goto/NextNew", GTK_UI_MANAGER_MENUITEM)
+	MENUITEM_ADDUI_MANAGER(mainwin->ui_manager, "/Menu/View/Goto", "Separator3", "View/Goto/---", GTK_UI_MANAGER_MENUITEM)
+	MENUITEM_ADDUI_MANAGER(mainwin->ui_manager, "/Menu/View/Goto", "PrevMarked", "View/Goto/PrevMarked", GTK_UI_MANAGER_MENUITEM)
+	MENUITEM_ADDUI_MANAGER(mainwin->ui_manager, "/Menu/View/Goto", "NextMarked", "View/Goto/NextMarked", GTK_UI_MANAGER_MENUITEM)
+	MENUITEM_ADDUI_MANAGER(mainwin->ui_manager, "/Menu/View/Goto", "Separator4", "View/Goto/---", GTK_UI_MANAGER_MENUITEM)
+	MENUITEM_ADDUI_MANAGER(mainwin->ui_manager, "/Menu/View/Goto", "PrevLabeled", "View/Goto/PrevLabeled", GTK_UI_MANAGER_MENUITEM)
+	MENUITEM_ADDUI_MANAGER(mainwin->ui_manager, "/Menu/View/Goto", "NextLabeled", "View/Goto/NextLabeled", GTK_UI_MANAGER_MENUITEM)
+	MENUITEM_ADDUI_MANAGER(mainwin->ui_manager, "/Menu/View/Goto", "Separator5", "View/Goto/---", GTK_UI_MANAGER_MENUITEM)
+	MENUITEM_ADDUI_MANAGER(mainwin->ui_manager, "/Menu/View/Goto", "LastRead", "View/Goto/LastRead", GTK_UI_MANAGER_MENUITEM)
+	MENUITEM_ADDUI_MANAGER(mainwin->ui_manager, "/Menu/View/Goto", "ParentMessage", "View/Goto/ParentMessage", GTK_UI_MANAGER_MENUITEM)
+	MENUITEM_ADDUI_MANAGER(mainwin->ui_manager, "/Menu/View/Goto", "Separator6", "View/Goto/---", GTK_UI_MANAGER_MENUITEM)
+	MENUITEM_ADDUI_MANAGER(mainwin->ui_manager, "/Menu/View/Goto", "NextUnreadFolder", "View/Goto/NextUnreadFolder", GTK_UI_MANAGER_MENUITEM)
+	MENUITEM_ADDUI_MANAGER(mainwin->ui_manager, "/Menu/View/Goto", "OtherFolder", "View/Goto/OtherFolder", GTK_UI_MANAGER_MENUITEM)
+	MENUITEM_ADDUI_MANAGER(mainwin->ui_manager, "/Menu/View", "Separator4", "View/---", GTK_UI_MANAGER_SEPARATOR)
+
+	MENUITEM_ADDUI_MANAGER(mainwin->ui_manager, "/Menu/View", "Encoding", "View/Encoding", GTK_UI_MANAGER_MENU)
+	MENUITEM_ADDUI_MANAGER(mainwin->ui_manager, "/Menu/View/Encoding", CS_AUTO, "View/Encoding/"CS_AUTO, GTK_UI_MANAGER_MENUITEM)
+	MENUITEM_ADDUI_MANAGER(mainwin->ui_manager, "/Menu/View/Encoding", "Separator1", "View/Encoding/---", GTK_UI_MANAGER_SEPARATOR)
+	MENUITEM_ADDUI_MANAGER(mainwin->ui_manager, "/Menu/View/Encoding", CS_US_ASCII, "View/Encoding/"CS_US_ASCII, GTK_UI_MANAGER_MENUITEM)
+	MENUITEM_ADDUI_MANAGER(mainwin->ui_manager, "/Menu/View/Encoding", CS_UTF_8, "View/Encoding/"CS_UTF_8, GTK_UI_MANAGER_MENUITEM)
+	MENUITEM_ADDUI_MANAGER(mainwin->ui_manager, "/Menu/View/Encoding", "Separator2", "View/Encoding/---", GTK_UI_MANAGER_SEPARATOR)
+
+	MENUITEM_ADDUI_MANAGER(mainwin->ui_manager, "/Menu/View/Encoding", "Western", "View/Encoding/Western", GTK_UI_MANAGER_MENU)
+	MENUITEM_ADDUI_MANAGER(mainwin->ui_manager, "/Menu/View/Encoding/Western", CS_ISO_8859_1, "View/Encoding/Western/"CS_ISO_8859_1, GTK_UI_MANAGER_MENUITEM)
+	MENUITEM_ADDUI_MANAGER(mainwin->ui_manager, "/Menu/View/Encoding/Western", CS_ISO_8859_15, "View/Encoding/Western/"CS_ISO_8859_15, GTK_UI_MANAGER_MENUITEM)
+	MENUITEM_ADDUI_MANAGER(mainwin->ui_manager, "/Menu/View/Encoding/Western", CS_WINDOWS_1252, "View/Encoding/Western/"CS_WINDOWS_1252, GTK_UI_MANAGER_MENUITEM)
+
+	MENUITEM_ADDUI_MANAGER(mainwin->ui_manager, "/Menu/View/Encoding", CS_ISO_8859_2, "View/Encoding/"CS_ISO_8859_2, GTK_UI_MANAGER_MENUITEM)
+
+	MENUITEM_ADDUI_MANAGER(mainwin->ui_manager, "/Menu/View/Encoding", "Baltic", "View/Encoding/Baltic", GTK_UI_MANAGER_MENU)
+	MENUITEM_ADDUI_MANAGER(mainwin->ui_manager, "/Menu/View/Encoding/Baltic", CS_ISO_8859_13, "View/Encoding/Baltic/"CS_ISO_8859_13, GTK_UI_MANAGER_MENUITEM)
+	MENUITEM_ADDUI_MANAGER(mainwin->ui_manager, "/Menu/View/Encoding/Baltic", CS_ISO_8859_4, "View/Encoding/Baltic/"CS_ISO_8859_4, GTK_UI_MANAGER_MENUITEM)
+
+	MENUITEM_ADDUI_MANAGER(mainwin->ui_manager, "/Menu/View/Encoding", CS_ISO_8859_7, "View/Encoding/"CS_ISO_8859_7, GTK_UI_MANAGER_MENUITEM)
+
+	MENUITEM_ADDUI_MANAGER(mainwin->ui_manager, "/Menu/View/Encoding", "Hebrew", "View/Encoding/Hebrew", GTK_UI_MANAGER_MENU)
+	MENUITEM_ADDUI_MANAGER(mainwin->ui_manager, "/Menu/View/Encoding/Hebrew", CS_ISO_8859_8, "View/Encoding/Hebrew/"CS_ISO_8859_8, GTK_UI_MANAGER_MENUITEM)
+	MENUITEM_ADDUI_MANAGER(mainwin->ui_manager, "/Menu/View/Encoding/Hebrew", CS_WINDOWS_1255, "View/Encoding/Hebrew/"CS_WINDOWS_1255, GTK_UI_MANAGER_MENUITEM)
+
+	MENUITEM_ADDUI_MANAGER(mainwin->ui_manager, "/Menu/View/Encoding", "Arabic", "View/Encoding/Arabic", GTK_UI_MANAGER_MENU)
+	MENUITEM_ADDUI_MANAGER(mainwin->ui_manager, "/Menu/View/Encoding/Arabic", CS_ISO_8859_6, "View/Encoding/Arabic/"CS_ISO_8859_6, GTK_UI_MANAGER_MENUITEM)
+	MENUITEM_ADDUI_MANAGER(mainwin->ui_manager, "/Menu/View/Encoding/Arabic", CS_WINDOWS_1256, "View/Encoding/Arabic/"CS_WINDOWS_1256, GTK_UI_MANAGER_MENUITEM)
+
+	MENUITEM_ADDUI_MANAGER(mainwin->ui_manager, "/Menu/View/Encoding", CS_ISO_8859_9, "View/Encoding/"CS_ISO_8859_9, GTK_UI_MANAGER_MENUITEM)
+
+	MENUITEM_ADDUI_MANAGER(mainwin->ui_manager, "/Menu/View/Encoding", "Cyrillic", "View/Encoding/Cyrillic", GTK_UI_MANAGER_MENU)
+	MENUITEM_ADDUI_MANAGER(mainwin->ui_manager, "/Menu/View/Encoding/Cyrillic", CS_ISO_8859_5, "View/Encoding/Cyrillic/"CS_ISO_8859_5, GTK_UI_MANAGER_MENUITEM)
+	MENUITEM_ADDUI_MANAGER(mainwin->ui_manager, "/Menu/View/Encoding/Cyrillic", CS_KOI8_R, "View/Encoding/Cyrillic/"CS_KOI8_R, GTK_UI_MANAGER_MENUITEM)
+	MENUITEM_ADDUI_MANAGER(mainwin->ui_manager, "/Menu/View/Encoding/Cyrillic", CS_KOI8_U, "View/Encoding/Cyrillic/"CS_KOI8_U, GTK_UI_MANAGER_MENUITEM)
+	MENUITEM_ADDUI_MANAGER(mainwin->ui_manager, "/Menu/View/Encoding/Cyrillic", CS_WINDOWS_1251, "View/Encoding/Cyrillic/"CS_WINDOWS_1251, GTK_UI_MANAGER_MENUITEM)
+
+	MENUITEM_ADDUI_MANAGER(mainwin->ui_manager, "/Menu/View/Encoding", "Japanese", "View/Encoding/Japanese", GTK_UI_MANAGER_MENU)
+	MENUITEM_ADDUI_MANAGER(mainwin->ui_manager, "/Menu/View/Encoding/Japanese", CS_ISO_2022_JP, "View/Encoding/Japanese/"CS_ISO_2022_JP, GTK_UI_MANAGER_MENUITEM)
+	MENUITEM_ADDUI_MANAGER(mainwin->ui_manager, "/Menu/View/Encoding/Japanese", CS_ISO_2022_JP_2, "View/Encoding/Japanese/"CS_ISO_2022_JP_2, GTK_UI_MANAGER_MENUITEM)
+	MENUITEM_ADDUI_MANAGER(mainwin->ui_manager, "/Menu/View/Encoding/Japanese", CS_EUC_JP, "View/Encoding/Japanese/"CS_EUC_JP, GTK_UI_MANAGER_MENUITEM)
+	MENUITEM_ADDUI_MANAGER(mainwin->ui_manager, "/Menu/View/Encoding/Japanese", CS_SHIFT_JIS, "View/Encoding/Japanese/"CS_SHIFT_JIS, GTK_UI_MANAGER_MENUITEM)
+
+	MENUITEM_ADDUI_MANAGER(mainwin->ui_manager, "/Menu/View/Encoding", "Chinese", "View/Encoding/Chinese", GTK_UI_MANAGER_MENU)
+	MENUITEM_ADDUI_MANAGER(mainwin->ui_manager, "/Menu/View/Encoding/Chinese", CS_GB2312, "View/Encoding/Chinese/"CS_GB2312, GTK_UI_MANAGER_MENUITEM)
+	MENUITEM_ADDUI_MANAGER(mainwin->ui_manager, "/Menu/View/Encoding/Chinese", CS_GBK, "View/Encoding/Chinese/"CS_GBK, GTK_UI_MANAGER_MENUITEM)
+	MENUITEM_ADDUI_MANAGER(mainwin->ui_manager, "/Menu/View/Encoding/Chinese", CS_BIG5, "View/Encoding/Chinese/"CS_BIG5, GTK_UI_MANAGER_MENUITEM)
+	MENUITEM_ADDUI_MANAGER(mainwin->ui_manager, "/Menu/View/Encoding/Chinese", CS_EUC_TW, "View/Encoding/Chinese/"CS_EUC_TW, GTK_UI_MANAGER_MENUITEM)
+
+	MENUITEM_ADDUI_MANAGER(mainwin->ui_manager, "/Menu/View/Encoding", "Korean", "View/Encoding/Korean", GTK_UI_MANAGER_MENU)
+	MENUITEM_ADDUI_MANAGER(mainwin->ui_manager, "/Menu/View/Encoding/Korean", CS_EUC_KR, "View/Encoding/Korean/"CS_EUC_KR, GTK_UI_MANAGER_MENUITEM)
+	MENUITEM_ADDUI_MANAGER(mainwin->ui_manager, "/Menu/View/Encoding/Korean", CS_ISO_2022_KR, "View/Encoding/Korean/"CS_ISO_2022_KR, GTK_UI_MANAGER_MENUITEM)
+
+	MENUITEM_ADDUI_MANAGER(mainwin->ui_manager, "/Menu/View/Encoding", "Thai", "View/Encoding/Thai", GTK_UI_MANAGER_MENU)
+	MENUITEM_ADDUI_MANAGER(mainwin->ui_manager, "/Menu/View/Encoding/Thai", CS_TIS_620, "View/Encoding/Thai/"CS_TIS_620, GTK_UI_MANAGER_MENUITEM)
+	MENUITEM_ADDUI_MANAGER(mainwin->ui_manager, "/Menu/View/Encoding/Thai", CS_WINDOWS_874, "View/Encoding/Thai/"CS_WINDOWS_874, GTK_UI_MANAGER_MENUITEM)
+
+	MENUITEM_ADDUI_MANAGER(mainwin->ui_manager, "/Menu/View", "Decode", "View/Decode", GTK_UI_MANAGER_MENU)
+	MENUITEM_ADDUI_MANAGER(mainwin->ui_manager, "/Menu/View/Decode", "AutoDetect", "View/Decode/AutoDetect", GTK_UI_MANAGER_MENUITEM)
+	MENUITEM_ADDUI_MANAGER(mainwin->ui_manager, "/Menu/View/Decode", "Separator1", "View/Decode/---", GTK_UI_MANAGER_SEPARATOR)
+	MENUITEM_ADDUI_MANAGER(mainwin->ui_manager, "/Menu/View/Decode", "8bit", "View/Decode/8bit", GTK_UI_MANAGER_MENUITEM)
+	MENUITEM_ADDUI_MANAGER(mainwin->ui_manager, "/Menu/View/Decode", "QP", "View/Decode/QP", GTK_UI_MANAGER_MENUITEM)
+	MENUITEM_ADDUI_MANAGER(mainwin->ui_manager, "/Menu/View/Decode", "B64", "View/Decode/B64", GTK_UI_MANAGER_MENUITEM)
+	MENUITEM_ADDUI_MANAGER(mainwin->ui_manager, "/Menu/View/Decode", "Uuencode", "View/Decode/Uuencode", GTK_UI_MANAGER_MENUITEM)
+	MENUITEM_ADDUI_MANAGER(mainwin->ui_manager, "/Menu/View", "Separator5", "View/---", GTK_UI_MANAGER_SEPARATOR)
+
+	MENUITEM_ADDUI_MANAGER(mainwin->ui_manager, "/Menu/View", "OpenNewWindow", "View/OpenNewWindow", GTK_UI_MANAGER_MENUITEM)
+	MENUITEM_ADDUI_MANAGER(mainwin->ui_manager, "/Menu/View", "MessageSource", "View/MessageSource", GTK_UI_MANAGER_MENUITEM)
+	MENUITEM_ADDUI_MANAGER(mainwin->ui_manager, "/Menu/View", "AllHeaders", "View/AllHeaders", GTK_UI_MANAGER_MENUITEM)
+	MENUITEM_ADDUI_MANAGER(mainwin->ui_manager, "/Menu/View", "Quotes", "View/Quotes", GTK_UI_MANAGER_MENU)
+	MENUITEM_ADDUI_MANAGER(mainwin->ui_manager, "/Menu/View/Quotes", "FoldAll", "View/Quotes/FoldAll", GTK_UI_MANAGER_MENUITEM)
+	MENUITEM_ADDUI_MANAGER(mainwin->ui_manager, "/Menu/View/Quotes", "Fold2", "View/Quotes/Fold2", GTK_UI_MANAGER_MENUITEM)
+	MENUITEM_ADDUI_MANAGER(mainwin->ui_manager, "/Menu/View/Quotes", "Fold3", "View/Quotes/Fold3", GTK_UI_MANAGER_MENUITEM)
+	MENUITEM_ADDUI_MANAGER(mainwin->ui_manager, "/Menu/View", "Separator6", "View/---", GTK_UI_MANAGER_SEPARATOR)
+	MENUITEM_ADDUI_MANAGER(mainwin->ui_manager, "/Menu/View", "UpdateSummary", "View/UpdateSummary", GTK_UI_MANAGER_MENUITEM)
+
+/* Message menu */
+	MENUITEM_ADDUI_MANAGER(mainwin->ui_manager, "/Menu/Message", "Receive", "Message/Receive", GTK_UI_MANAGER_MENU)
+	MENUITEM_ADDUI_MANAGER(mainwin->ui_manager, "/Menu/Message/Receive", "CurrentAccount", "Message/Receive/CurrentAccount", GTK_UI_MANAGER_MENUITEM)
+	MENUITEM_ADDUI_MANAGER(mainwin->ui_manager, "/Menu/Message/Receive", "AllAccounts", "Message/Receive/AllAccounts", GTK_UI_MANAGER_MENUITEM)
+	MENUITEM_ADDUI_MANAGER(mainwin->ui_manager, "/Menu/Message/Receive", "CancelReceiving", "Message/Receive/CancelReceiving", GTK_UI_MANAGER_MENUITEM)
+	MENUITEM_ADDUI_MANAGER(mainwin->ui_manager, "/Menu/Message/Receive", "Separator1", "Message/Receive/---", GTK_UI_MANAGER_SEPARATOR)
+	MENUITEM_ADDUI_MANAGER(mainwin->ui_manager, "/Menu/Message/Receive", "PlaceHolder", "Message/Receive/PlaceHolder", GTK_UI_MANAGER_MENUITEM)
+	MENUITEM_ADDUI_MANAGER(mainwin->ui_manager, "/Menu/Message", "SendQueue", "Message/SendQueue", GTK_UI_MANAGER_MENUITEM)
+	MENUITEM_ADDUI_MANAGER(mainwin->ui_manager, "/Menu/Message", "Separator1", "Message/---", GTK_UI_MANAGER_SEPARATOR)
+
+	MENUITEM_ADDUI_MANAGER(mainwin->ui_manager, "/Menu/Message", "ComposeEmail", "Message/ComposeEmail", GTK_UI_MANAGER_MENUITEM)
+	MENUITEM_ADDUI_MANAGER(mainwin->ui_manager, "/Menu/Message", "ComposeNews", "Message/ComposeNews", GTK_UI_MANAGER_MENUITEM)
+	MENUITEM_ADDUI_MANAGER(mainwin->ui_manager, "/Menu/Message", "Reply", "Message/Reply", GTK_UI_MANAGER_MENUITEM)
+	MENUITEM_ADDUI_MANAGER(mainwin->ui_manager, "/Menu/Message", "ReplyTo", "Message/ReplyTo", GTK_UI_MANAGER_MENU)
+	MENUITEM_ADDUI_MANAGER(mainwin->ui_manager, "/Menu/Message/ReplyTo", "All", "Message/ReplyTo/All", GTK_UI_MANAGER_MENUITEM)
+	MENUITEM_ADDUI_MANAGER(mainwin->ui_manager, "/Menu/Message/ReplyTo", "Sender", "Message/ReplyTo/Sender", GTK_UI_MANAGER_MENUITEM)
+	MENUITEM_ADDUI_MANAGER(mainwin->ui_manager, "/Menu/Message/ReplyTo", "List", "Message/ReplyTo/List", GTK_UI_MANAGER_MENUITEM)
+	MENUITEM_ADDUI_MANAGER(mainwin->ui_manager, "/Menu/Message", "FollowupReply", "Message/FollowupReply", GTK_UI_MANAGER_MENUITEM)
+	MENUITEM_ADDUI_MANAGER(mainwin->ui_manager, "/Menu/Message", "Separator2", "Message/---", GTK_UI_MANAGER_SEPARATOR)
+
+	MENUITEM_ADDUI_MANAGER(mainwin->ui_manager, "/Menu/Message", "Forward", "Message/Forward", GTK_UI_MANAGER_MENUITEM)
+	MENUITEM_ADDUI_MANAGER(mainwin->ui_manager, "/Menu/Message", "ForwardAtt", "Message/ForwardAtt", GTK_UI_MANAGER_MENUITEM)
+	MENUITEM_ADDUI_MANAGER(mainwin->ui_manager, "/Menu/Message", "Redirect", "Message/Redirect", GTK_UI_MANAGER_MENUITEM)
+	MENUITEM_ADDUI_MANAGER(mainwin->ui_manager, "/Menu/Message", "MailingList", "Message/MailingList", GTK_UI_MANAGER_MENU)
+	MENUITEM_ADDUI_MANAGER(mainwin->ui_manager, "/Menu/Message/MailingList", "Post", "Message/MailingList/Post", GTK_UI_MANAGER_MENU)
+	MENUITEM_ADDUI_MANAGER(mainwin->ui_manager, "/Menu/Message/MailingList", "Help", "Message/MailingList/Help", GTK_UI_MANAGER_MENU)
+	MENUITEM_ADDUI_MANAGER(mainwin->ui_manager, "/Menu/Message/MailingList", "Subscribe", "Message/MailingList/Subscribe", GTK_UI_MANAGER_MENU)
+	MENUITEM_ADDUI_MANAGER(mainwin->ui_manager, "/Menu/Message/MailingList", "Unsubscribe", "Message/MailingList/Unsubscribe", GTK_UI_MANAGER_MENU)
+	MENUITEM_ADDUI_MANAGER(mainwin->ui_manager, "/Menu/Message/MailingList", "ViewArchive", "Message/MailingList/ViewArchive", GTK_UI_MANAGER_MENU)
+	MENUITEM_ADDUI_MANAGER(mainwin->ui_manager, "/Menu/Message/MailingList", "ContactOwner", "Message/MailingList/ContactOwner", GTK_UI_MANAGER_MENU)
+	MENUITEM_ADDUI_MANAGER(mainwin->ui_manager, "/Menu/Message/MailingList/Post", "PlaceHolder", "Message/MailingList/Post/PlaceHolder", GTK_UI_MANAGER_MENUITEM)
+	MENUITEM_ADDUI_MANAGER(mainwin->ui_manager, "/Menu/Message/MailingList/Help", "PlaceHolder", "Message/MailingList/Help/PlaceHolder", GTK_UI_MANAGER_MENUITEM)
+	MENUITEM_ADDUI_MANAGER(mainwin->ui_manager, "/Menu/Message/MailingList/Subscribe", "PlaceHolder", "Message/MailingList/Subscribe/PlaceHolder", GTK_UI_MANAGER_MENUITEM)
+	MENUITEM_ADDUI_MANAGER(mainwin->ui_manager, "/Menu/Message/MailingList/Unsubscribe", "PlaceHolder", "Message/MailingList/Unsubscribe/PlaceHolder", GTK_UI_MANAGER_MENUITEM)
+	MENUITEM_ADDUI_MANAGER(mainwin->ui_manager, "/Menu/Message/MailingList/ViewArchive", "PlaceHolder", "Message/MailingList/ViewArchive/PlaceHolder", GTK_UI_MANAGER_MENUITEM)
+	MENUITEM_ADDUI_MANAGER(mainwin->ui_manager, "/Menu/Message/MailingList/ContactOwner", "PlaceHolder", "Message/MailingList/ContactOwner/PlaceHolder", GTK_UI_MANAGER_MENUITEM)
+	MENUITEM_ADDUI_MANAGER(mainwin->ui_manager, "/Menu/Message", "Separator3", "Message/---", GTK_UI_MANAGER_SEPARATOR)
+
+	MENUITEM_ADDUI_MANAGER(mainwin->ui_manager, "/Menu/Message", "Move", "Message/Move", GTK_UI_MANAGER_MENUITEM)
+	MENUITEM_ADDUI_MANAGER(mainwin->ui_manager, "/Menu/Message", "Copy", "Message/Copy", GTK_UI_MANAGER_MENUITEM)
+	MENUITEM_ADDUI_MANAGER(mainwin->ui_manager, "/Menu/Message", "Trash", "Message/Trash", GTK_UI_MANAGER_MENUITEM)
+	MENUITEM_ADDUI_MANAGER(mainwin->ui_manager, "/Menu/Message", "Delete", "Message/Delete", GTK_UI_MANAGER_MENUITEM)
+	MENUITEM_ADDUI_MANAGER(mainwin->ui_manager, "/Menu/Message", "CancelNews", "Message/CancelNews", GTK_UI_MANAGER_MENUITEM)
+	MENUITEM_ADDUI_MANAGER(mainwin->ui_manager, "/Menu/Message", "Separator4", "Message/---", GTK_UI_MANAGER_SEPARATOR)
+
+	MENUITEM_ADDUI_MANAGER(mainwin->ui_manager, "/Menu/Message", "Mark", "Message/Mark", GTK_UI_MANAGER_MENU)
+	MENUITEM_ADDUI_MANAGER(mainwin->ui_manager, "/Menu/Message/Mark", "Mark", "Message/Mark/Mark", GTK_UI_MANAGER_MENUITEM)
+	MENUITEM_ADDUI_MANAGER(mainwin->ui_manager, "/Menu/Message/Mark", "Unmark", "Message/Mark/Unmark", GTK_UI_MANAGER_MENUITEM)
+	MENUITEM_ADDUI_MANAGER(mainwin->ui_manager, "/Menu/Message/Mark", "---", "Message/Mark/---", GTK_UI_MANAGER_SEPARATOR)
+	MENUITEM_ADDUI_MANAGER(mainwin->ui_manager, "/Menu/Message/Mark", "MarkUnread", "Message/Mark/MarkUnread", GTK_UI_MANAGER_MENUITEM)
+	MENUITEM_ADDUI_MANAGER(mainwin->ui_manager, "/Menu/Message/Mark", "MarkRead", "Message/Mark/MarkRead", GTK_UI_MANAGER_MENUITEM)
+	MENUITEM_ADDUI_MANAGER(mainwin->ui_manager, "/Menu/Message/Mark", "MarkAllRead", "Message/Mark/MarkAllRead", GTK_UI_MANAGER_MENUITEM)
+	MENUITEM_ADDUI_MANAGER(mainwin->ui_manager, "/Menu/Message/Mark", "IgnoreThread", "Message/Mark/IgnoreThread", GTK_UI_MANAGER_MENUITEM)
+	MENUITEM_ADDUI_MANAGER(mainwin->ui_manager, "/Menu/Message/Mark", "UnignoreThread", "Message/Mark/UnignoreThread", GTK_UI_MANAGER_MENUITEM)
+	MENUITEM_ADDUI_MANAGER(mainwin->ui_manager, "/Menu/Message/Mark", "WatchThread", "Message/Mark/WatchThread", GTK_UI_MANAGER_MENUITEM)
+	MENUITEM_ADDUI_MANAGER(mainwin->ui_manager, "/Menu/Message/Mark", "UnwatchThread", "Message/Mark/UnwatchThread", GTK_UI_MANAGER_MENUITEM)
+	MENUITEM_ADDUI_MANAGER(mainwin->ui_manager, "/Menu/Message/Mark", "---", "Message/Mark/---", GTK_UI_MANAGER_SEPARATOR)
+	MENUITEM_ADDUI_MANAGER(mainwin->ui_manager, "/Menu/Message/Mark", "MarkSpam", "Message/Mark/MarkSpam", GTK_UI_MANAGER_MENUITEM)
+	MENUITEM_ADDUI_MANAGER(mainwin->ui_manager, "/Menu/Message/Mark", "MarkHam", "Message/Mark/MarkHam", GTK_UI_MANAGER_MENUITEM)
+	MENUITEM_ADDUI_MANAGER(mainwin->ui_manager, "/Menu/Message/Mark", "---", "Message/Mark/---", GTK_UI_MANAGER_SEPARATOR)
+	MENUITEM_ADDUI_MANAGER(mainwin->ui_manager, "/Menu/Message/Mark", "Lock", "Message/Mark/Lock", GTK_UI_MANAGER_MENUITEM)
+	MENUITEM_ADDUI_MANAGER(mainwin->ui_manager, "/Menu/Message/Mark", "Unlock", "Message/Mark/Unlock", GTK_UI_MANAGER_MENUITEM)
+	MENUITEM_ADDUI_MANAGER(mainwin->ui_manager, "/Menu/Message", "ColorLabel", "Message/ColorLabel", GTK_UI_MANAGER_MENUITEM)
+	MENUITEM_ADDUI_MANAGER(mainwin->ui_manager, "/Menu/Message", "Tags", "Message/Tags", GTK_UI_MANAGER_MENUITEM)
+	MENUITEM_ADDUI_MANAGER(mainwin->ui_manager, "/Menu/Message", "Separator5", "Message/---", GTK_UI_MANAGER_SEPARATOR)
+
+	MENUITEM_ADDUI_MANAGER(mainwin->ui_manager, "/Menu/Message", "Reedit", "Message/Reedit", GTK_UI_MANAGER_MENUITEM)
+	MENUITEM_ADDUI_MANAGER(mainwin->ui_manager, "/Menu/Message", "Separator6", "Message/---", GTK_UI_MANAGER_SEPARATOR)
+
+/* Tools menu */
+	MENUITEM_ADDUI_MANAGER(mainwin->ui_manager, "/Menu/Tools", "AddressBook", "Tools/AddressBook", GTK_UI_MANAGER_MENUITEM)
+	MENUITEM_ADDUI_MANAGER(mainwin->ui_manager, "/Menu/Tools", "AddSenderToAB", "Tools/AddSenderToAB", GTK_UI_MANAGER_MENUITEM)
+	MENUITEM_ADDUI_MANAGER(mainwin->ui_manager, "/Menu/Tools", "CollectAddresses", "Tools/CollectAddresses", GTK_UI_MANAGER_MENU)
+	MENUITEM_ADDUI_MANAGER(mainwin->ui_manager, "/Menu/Tools/CollectAddresses", "FromFolder", "Tools/CollectAddresses/FromFolder", GTK_UI_MANAGER_MENUITEM)
+	MENUITEM_ADDUI_MANAGER(mainwin->ui_manager, "/Menu/Tools/CollectAddresses", "FromSelected", "Tools/CollectAddresses/FromSelected", GTK_UI_MANAGER_MENUITEM)
+	MENUITEM_ADDUI_MANAGER(mainwin->ui_manager, "/Menu/Tools", "Separator1", "Tools/---", GTK_UI_MANAGER_SEPARATOR)
+
+	MENUITEM_ADDUI_MANAGER(mainwin->ui_manager, "/Menu/Tools", "FilterFolder", "Tools/FilterFolder", GTK_UI_MANAGER_MENUITEM)
+	MENUITEM_ADDUI_MANAGER(mainwin->ui_manager, "/Menu/Tools", "FilterSelected", "Tools/FilterSelected", GTK_UI_MANAGER_MENUITEM)
+	MENUITEM_ADDUI_MANAGER(mainwin->ui_manager, "/Menu/Tools", "RunProcessing", "Tools/RunProcessing", GTK_UI_MANAGER_MENUITEM)
+	MENUITEM_ADDUI_MANAGER(mainwin->ui_manager, "/Menu/Tools", "CreateFilterRule", "Tools/CreateFilterRule", GTK_UI_MANAGER_MENU)
+	MENUITEM_ADDUI_MANAGER(mainwin->ui_manager, "/Menu/Tools/CreateFilterRule", "Automatically", "Tools/CreateFilterRule/Automatically", GTK_UI_MANAGER_MENUITEM)
+	MENUITEM_ADDUI_MANAGER(mainwin->ui_manager, "/Menu/Tools/CreateFilterRule", "ByFrom", "Tools/CreateFilterRule/ByFrom", GTK_UI_MANAGER_MENUITEM)
+	MENUITEM_ADDUI_MANAGER(mainwin->ui_manager, "/Menu/Tools/CreateFilterRule", "ByTo", "Tools/CreateFilterRule/ByTo", GTK_UI_MANAGER_MENUITEM)
+	MENUITEM_ADDUI_MANAGER(mainwin->ui_manager, "/Menu/Tools/CreateFilterRule", "BySubject", "Tools/CreateFilterRule/BySubject", GTK_UI_MANAGER_MENUITEM)
+
+	MENUITEM_ADDUI_MANAGER(mainwin->ui_manager, "/Menu/Tools", "CreateProcessingRule", "Tools/CreateProcessingRule", GTK_UI_MANAGER_MENU)
+	MENUITEM_ADDUI_MANAGER(mainwin->ui_manager, "/Menu/Tools/CreateProcessingRule", "Automatically", "Tools/CreateProcessingRule/Automatically", GTK_UI_MANAGER_MENUITEM)
+	MENUITEM_ADDUI_MANAGER(mainwin->ui_manager, "/Menu/Tools/CreateProcessingRule", "ByFrom", "Tools/CreateProcessingRule/ByFrom", GTK_UI_MANAGER_MENUITEM)
+	MENUITEM_ADDUI_MANAGER(mainwin->ui_manager, "/Menu/Tools/CreateProcessingRule", "ByTo", "Tools/CreateProcessingRule/ByTo", GTK_UI_MANAGER_MENUITEM)
+	MENUITEM_ADDUI_MANAGER(mainwin->ui_manager, "/Menu/Tools/CreateProcessingRule", "BySubject", "Tools/CreateProcessingRule/BySubject", GTK_UI_MANAGER_MENUITEM)
+	MENUITEM_ADDUI_MANAGER(mainwin->ui_manager, "/Menu/Tools", "Separator2", "Tools/---", GTK_UI_MANAGER_SEPARATOR)
+	
+	MENUITEM_ADDUI_MANAGER(mainwin->ui_manager, "/Menu/Tools", "ListUrls", "Tools/ListUrls", GTK_UI_MANAGER_MENUITEM)
+	MENUITEM_ADDUI_MANAGER(mainwin->ui_manager, "/Menu/Tools", "Separator3", "Tools/---", GTK_UI_MANAGER_SEPARATOR)
+
+	MENUITEM_ADDUI_MANAGER(mainwin->ui_manager, "/Menu/Tools", "Actions", "Tools/Actions", GTK_UI_MANAGER_MENU)
+	MENUITEM_ADDUI_MANAGER(mainwin->ui_manager, "/Menu/Tools/Actions", "PlaceHolder", "Tools/Actions/PlaceHolder", GTK_UI_MANAGER_MENUITEM)
+	MENUITEM_ADDUI_MANAGER(mainwin->ui_manager, "/Menu/Tools", "Separator4", "Tools/---", GTK_UI_MANAGER_SEPARATOR)
+
+	MENUITEM_ADDUI_MANAGER(mainwin->ui_manager, "/Menu/Tools", "CheckNewMessages", "Tools/CheckNewMessages", GTK_UI_MANAGER_MENUITEM)
+	MENUITEM_ADDUI_MANAGER(mainwin->ui_manager, "/Menu/Tools", "DeleteDuplicates", "Tools/DeleteDuplicates", GTK_UI_MANAGER_MENU)
+	MENUITEM_ADDUI_MANAGER(mainwin->ui_manager, "/Menu/Tools/DeleteDuplicates", "SelFolder", "Tools/DeleteDuplicates/SelFolder", GTK_UI_MANAGER_MENUITEM)
+	MENUITEM_ADDUI_MANAGER(mainwin->ui_manager, "/Menu/Tools/DeleteDuplicates", "AllFolders", "Tools/DeleteDuplicates/AllFolders", GTK_UI_MANAGER_MENUITEM)
+	MENUITEM_ADDUI_MANAGER(mainwin->ui_manager, "/Menu/Tools", "Separator5", "Tools/---", GTK_UI_MANAGER_SEPARATOR)
+
+	MENUITEM_ADDUI_MANAGER(mainwin->ui_manager, "/Menu/Tools", "Execute", "Tools/Execute", GTK_UI_MANAGER_MENUITEM)
+#if (defined(USE_OPENSSL) || defined (USE_GNUTLS))
+	MENUITEM_ADDUI_MANAGER(mainwin->ui_manager, "/Menu/Tools", "Separator6", "Tools/---", GTK_UI_MANAGER_SEPARATOR)
+	MENUITEM_ADDUI_MANAGER(mainwin->ui_manager, "/Menu/Tools", "SSLCertificates", "Tools/SSLCertificates", GTK_UI_MANAGER_MENUITEM)
+#endif
+	MENUITEM_ADDUI_MANAGER(mainwin->ui_manager, "/Menu/Tools", "Separator7", "Tools/---", GTK_UI_MANAGER_SEPARATOR)
+	MENUITEM_ADDUI_MANAGER(mainwin->ui_manager, "/Menu/Tools", "FilteringLog", "Tools/FilteringLog", GTK_UI_MANAGER_MENUITEM)
+	MENUITEM_ADDUI_MANAGER(mainwin->ui_manager, "/Menu/Tools", "NetworkLog", "Tools/NetworkLog", GTK_UI_MANAGER_MENUITEM)
+		MENUITEM_ADDUI_MANAGER(mainwin->ui_manager, "/Menu/Tools", "Separator8", "Tools/---", GTK_UI_MANAGER_SEPARATOR)
+
+/* Configuration menu */
+	MENUITEM_ADDUI_MANAGER(mainwin->ui_manager, "/Menu/Configuration", "ChangeAccount", "Configuration/ChangeAccount", GTK_UI_MANAGER_MENU)
+	MENUITEM_ADDUI_MANAGER(mainwin->ui_manager, "/Menu/Configuration/ChangeAccount", "PlaceHolder", "Configuration/ChangeAccount/PlaceHolder", GTK_UI_MANAGER_MENUITEM)
+	MENUITEM_ADDUI_MANAGER(mainwin->ui_manager, "/Menu/Configuration", "AccountPrefs", "Configuration/AccountPrefs", GTK_UI_MANAGER_MENUITEM)
+	MENUITEM_ADDUI_MANAGER(mainwin->ui_manager, "/Menu/Configuration", "CreateAccount", "Configuration/CreateAccount", GTK_UI_MANAGER_MENUITEM)
+	MENUITEM_ADDUI_MANAGER(mainwin->ui_manager, "/Menu/Configuration", "EditAccounts", "Configuration/EditAccounts", GTK_UI_MANAGER_MENUITEM)
+	MENUITEM_ADDUI_MANAGER(mainwin->ui_manager, "/Menu/Configuration", "Separator1", "Configuration/---", GTK_UI_MANAGER_SEPARATOR)
+
+	MENUITEM_ADDUI_MANAGER(mainwin->ui_manager, "/Menu/Configuration", "Preferences", "Configuration/Preferences", GTK_UI_MANAGER_MENUITEM)
+	MENUITEM_ADDUI_MANAGER(mainwin->ui_manager, "/Menu/Configuration", "PreProcessing", "Configuration/PreProcessing", GTK_UI_MANAGER_MENUITEM)
+	MENUITEM_ADDUI_MANAGER(mainwin->ui_manager, "/Menu/Configuration", "PostProcessing", "Configuration/PostProcessing", GTK_UI_MANAGER_MENUITEM)
+	MENUITEM_ADDUI_MANAGER(mainwin->ui_manager, "/Menu/Configuration", "Filtering", "Configuration/Filtering", GTK_UI_MANAGER_MENUITEM)
+	MENUITEM_ADDUI_MANAGER(mainwin->ui_manager, "/Menu/Configuration", "Templates", "Configuration/Templates", GTK_UI_MANAGER_MENUITEM)
+	MENUITEM_ADDUI_MANAGER(mainwin->ui_manager, "/Menu/Configuration", "Actions", "Configuration/Actions", GTK_UI_MANAGER_MENUITEM)
+	MENUITEM_ADDUI_MANAGER(mainwin->ui_manager, "/Menu/Configuration", "Tags", "Configuration/Tags", GTK_UI_MANAGER_MENUITEM)
+
+	MENUITEM_ADDUI_MANAGER(mainwin->ui_manager, "/Menu/Configuration", "Separator2", "Configuration/---", GTK_UI_MANAGER_SEPARATOR)
+	MENUITEM_ADDUI_MANAGER(mainwin->ui_manager, "/Menu/Configuration", "Plugins", "Configuration/Plugins", GTK_UI_MANAGER_MENUITEM)
+
+/* Help menu */
+	MENUITEM_ADDUI_MANAGER(mainwin->ui_manager, "/Menu/Help", "Manual", "Help/Manual", GTK_UI_MANAGER_MENUITEM)
+	MENUITEM_ADDUI_MANAGER(mainwin->ui_manager, "/Menu/Help", "FAQ", "Help/FAQ", GTK_UI_MANAGER_MENUITEM)
+	MENUITEM_ADDUI_MANAGER(mainwin->ui_manager, "/Menu/Help", "IconLegend", "Help/IconLegend", GTK_UI_MANAGER_MENUITEM)
+	MENUITEM_ADDUI_MANAGER(mainwin->ui_manager, "/Menu/Help", "Separator1", "Help/---", GTK_UI_MANAGER_SEPARATOR)
+	MENUITEM_ADDUI_MANAGER(mainwin->ui_manager, "/Menu/Help", "About", "Help/About", GTK_UI_MANAGER_MENUITEM)
+
+
+	menubar = gtk_ui_manager_get_widget(mainwin->ui_manager, "/Menu");
+	gtk_widget_show_all(menubar);
+	gtk_window_add_accel_group(GTK_WINDOW(window), gtk_ui_manager_get_accel_group(mainwin->ui_manager));
 
 #ifndef MAEMO
 	gtk_box_pack_start(GTK_BOX(vbox), menubar, FALSE, TRUE, 0);
 #endif
 
-	ifactory = gtk_item_factory_from_widget(menubar);
-
-/*	gtk_widget_show(gtk_item_factory_get_item(ifactory,"/Message/Mailing-List"));
-	main_create_mailing_list_menu (mainwin, NULL); */
 
 	if (prefs_common.toolbar_detachable) {
 		handlebox = gtk_handle_box_new();
@@ -1781,7 +2040,6 @@ MainWindow *main_window_create()
 
 	mainwin->vbox           = vbox;
 	mainwin->menubar        = menubar;
-	mainwin->menu_factory   = ifactory;
 	mainwin->handlebox      = handlebox;
 	mainwin->vbox_body      = vbox_body;
 	mainwin->online_switch  = online_switch;
@@ -1859,48 +2117,38 @@ MainWindow *main_window_create()
 			 mainwin);
 
 	/* set menu items */
-	menuitem = gtk_item_factory_get_item
-		(ifactory, "/View/Character encoding/Auto detect");
-	gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM(menuitem), TRUE);
+	cm_toggle_menu_set_active_full(mainwin->ui_manager, "Menu/View/Encoding/"CS_AUTO, TRUE);
 
+	menuitem = NULL;
 	switch (prefs_common.toolbar_style) {
 	case TOOLBAR_NONE:
-		menuitem = gtk_item_factory_get_item
-			(ifactory, "/View/Show or hide/Toolbar/Hide");
+		menuitem = gtk_ui_manager_get_widget(mainwin->ui_manager, "/Menu/View/ShowHide/Toolbar/Hide");
 		break;
 	case TOOLBAR_ICON:
-		menuitem = gtk_item_factory_get_item
-			(ifactory, "/View/Show or hide/Toolbar/Icons only");
+		menuitem = gtk_ui_manager_get_widget(mainwin->ui_manager, "/Menu/View/ShowHide/Toolbar/IconOnly");
 		break;
 	case TOOLBAR_TEXT:
-		menuitem = gtk_item_factory_get_item
-			(ifactory, "/View/Show or hide/Toolbar/Text only");
+		menuitem = gtk_ui_manager_get_widget(mainwin->ui_manager, "/Menu/View/ShowHide/Toolbar/TextOnly");
 		break;
 	case TOOLBAR_BOTH:
-		menuitem = gtk_item_factory_get_item
-			(ifactory, "/View/Show or hide/Toolbar/Text below icons");
+		menuitem = gtk_ui_manager_get_widget(mainwin->ui_manager, "/Menu/View/ShowHide/Toolbar/TextBelowIcon");
 		break;
 	case TOOLBAR_BOTH_HORIZ:
-		menuitem = gtk_item_factory_get_item
-			(ifactory,
-			 "/View/Show or hide/Toolbar/Text beside icons");
+		menuitem = gtk_ui_manager_get_widget(mainwin->ui_manager, "/Menu/View/ShowHide/Toolbar/TextBesideIcon");
 	}
 	gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM(menuitem), TRUE);
 
 #ifndef GENERIC_UMPC
 	gtk_widget_hide(mainwin->hbox_stat);
-	menuitem = gtk_item_factory_get_item
-		(ifactory, "/View/Show or hide/Status bar");
+	menuitem = gtk_ui_manager_get_widget(mainwin->ui_manager, "/Menu/View/ShowHide/StatusBar");
 	gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM(menuitem),
 				       prefs_common.show_statusbar);
 #endif	
-	menuitem = gtk_item_factory_get_item
-		(ifactory, "/View/Show or hide/Column headers");
+	menuitem = gtk_ui_manager_get_widget(mainwin->ui_manager, "/Menu/View/ShowHide/ColumnHeaders");
 	gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM(menuitem),
 				       prefs_common.show_col_headers);
 	/* set account selection menu */
-	ac_menu = gtk_item_factory_get_widget
-		(ifactory, "/Configuration/Change current account");
+	ac_menu = gtk_ui_manager_get_widget(mainwin->ui_manager, "/Menu/Configuration/ChangeAccount");
 	mainwin->ac_menu = ac_menu;
 
 	toolbar_main_set_sensitive(mainwin);
@@ -1975,10 +2223,7 @@ MainWindow *main_window_create()
 
 void main_window_update_actions_menu(MainWindow *mainwin)
 {
-	GtkItemFactory *ifactory;
-
-	ifactory = gtk_item_factory_from_widget(mainwin->menubar);
-	action_update_mainwin_menu(ifactory, "/Tools/Actions", mainwin);
+	action_update_mainwin_menu(mainwin->ui_manager, "/Menu/Tools/Actions", mainwin);
 }
 
 void main_window_cursor_wait(MainWindow *mainwin)
@@ -2198,17 +2443,15 @@ void main_window_set_folder_column(void)
 static void main_window_set_account_selector_menu(MainWindow *mainwin,
 						  GList *account_list)
 {
-	GList *cur_ac, *cur_item;
+	GList *cur_ac;
 	GtkWidget *menuitem;
 	PrefsAccount *ac_prefs;
+	GtkWidget *menu;
+	gchar *accel_path;
 
-	/* destroy all previous menu item */
-	cur_item = GTK_MENU_SHELL(mainwin->ac_menu)->children;
-	while (cur_item != NULL) {
-		GList *next = cur_item->next;
-		gtk_widget_destroy(GTK_WIDGET(cur_item->data));
-		cur_item = next;
-	}
+	menu = gtk_menu_new();
+	gtk_menu_set_accel_group (GTK_MENU (menu), 
+		gtk_ui_manager_get_accel_group(mainwin->ui_manager));
 
 	for (cur_ac = account_list; cur_ac != NULL; cur_ac = cur_ac->next) {
 		ac_prefs = (PrefsAccount *)cur_ac->data;
@@ -2217,11 +2460,16 @@ static void main_window_set_account_selector_menu(MainWindow *mainwin,
 			(ac_prefs->account_name
 			 ? ac_prefs->account_name : _("Untitled"));
 		gtk_widget_show(menuitem);
-		gtk_menu_append(GTK_MENU(mainwin->ac_menu), menuitem);
+		gtk_menu_append(GTK_MENU(menu), menuitem);
 		g_signal_connect(G_OBJECT(menuitem), "activate",
 				 G_CALLBACK(account_selector_menu_cb),
 				 ac_prefs);
+		accel_path = g_strconcat("<Actions>/Menu/Configuration/ChangeAccount/",(ac_prefs->account_name
+			 ? ac_prefs->account_name : _("Untitled")), NULL );
+		gtk_menu_item_set_accel_path(GTK_MENU_ITEM(menuitem), accel_path);
+		g_free(accel_path);
 	}
+	gtk_menu_item_set_submenu(GTK_MENU_ITEM(mainwin->ac_menu), menu);
 }
 
 static void main_window_set_account_receive_menu(MainWindow *mainwin,
@@ -2232,13 +2480,13 @@ static void main_window_set_account_receive_menu(MainWindow *mainwin,
 	GtkWidget *menuitem;
 	PrefsAccount *ac_prefs;
 
-	menu = gtk_item_factory_get_widget(mainwin->menu_factory,
-					   "/Message/Receive");
+	menu = gtk_menu_item_get_submenu(GTK_MENU_ITEM(
+		gtk_ui_manager_get_widget(mainwin->ui_manager, "/Menu/Message/Receive")));
 
 	/* search for separator */
 	for (cur_item = GTK_MENU_SHELL(menu)->children; cur_item != NULL;
 	     cur_item = cur_item->next) {
-		if (GTK_BIN(cur_item->data)->child == NULL) {
+		if (cur_item->data == gtk_ui_manager_get_widget(mainwin->ui_manager, "/Menu/Message/Receive/Separator1")) {
 			cur_item = cur_item->next;
 			break;
 		}
@@ -2792,103 +3040,100 @@ SensitiveCond main_window_get_current_state(MainWindow *mainwin)
 
 void main_window_set_menu_sensitive(MainWindow *mainwin)
 {
-	GtkItemFactory *ifactory = mainwin->menu_factory;
 	SensitiveCond state;
 	gboolean sensitive;
-	GtkWidget *menu;
-	GtkWidget *menuitem;
 	SummaryView *summaryview;
 	gchar *menu_path;
-	gint i;
+	GtkWidget *menu;
 	GList *cur_item;
+	gint i;
 
 	static const struct {
 		gchar *const entry;
 		SensitiveCond cond;
 	} entry[] = {
-		{"/File/Save as...", M_TARGET_EXIST},
-		{"/File/Print..."  , M_TARGET_EXIST},
-		{"/File/Synchronise folders", M_WANT_SYNC},
-		{"/File/Exit"      , M_UNLOCKED},
+		{"Menu/File/SaveAs", M_TARGET_EXIST},
+		{"Menu/File/Print"  , M_TARGET_EXIST},
+		{"Menu/File/SynchroniseFolders", M_WANT_SYNC},
+		{"Menu/File/Exit"      , M_UNLOCKED},
 
-		{"/Edit/Select thread"		   , M_TARGET_EXIST|M_SUMMARY_ISLIST},
-		{"/Edit/Delete thread"		   , M_TARGET_EXIST|M_SUMMARY_ISLIST},
-		{"/Edit/Find in current message...", M_SINGLE_TARGET_EXIST},
-		{"/Edit/Quick search", 		     M_IN_MSGLIST},
+		{"Menu/Edit/SelectThread"		   , M_TARGET_EXIST|M_SUMMARY_ISLIST},
+		{"Menu/Edit/DeleteThread"		   , M_TARGET_EXIST|M_SUMMARY_ISLIST},
+		{"Menu/Edit/Find", M_SINGLE_TARGET_EXIST},
+		{"Menu/Edit/QuickSearch", 		     M_IN_MSGLIST},
 
-		{"/View/Set displayed columns/in Folder list..."
-						   , M_UNLOCKED|M_SUMMARY_ISLIST}, 
-		{"/View/Sort"                      , M_EXEC|M_SUMMARY_ISLIST},
-		{"/View/Thread view"               , M_EXEC|M_SUMMARY_ISLIST},
-		{"/View/Expand all threads"        , M_MSG_EXIST|M_SUMMARY_ISLIST},
-		{"/View/Collapse all threads"      , M_MSG_EXIST|M_SUMMARY_ISLIST},
-		{"/View/Hide read messages"	   , M_HIDE_READ_MSG|M_SUMMARY_ISLIST},
-		{"/View/Go to/Previous message"        , M_MSG_EXIST},
-		{"/View/Go to/Next message"        , M_MSG_EXIST},
-		{"/View/Go to/Previous unread message" , M_MSG_EXIST},
-		{"/View/Go to/Previous new message"    , M_MSG_EXIST},
-		{"/View/Go to/Previous marked message" , M_MSG_EXIST},
-		{"/View/Go to/Previous labeled message", M_MSG_EXIST},
-		{"/View/Go to/Next labeled message", M_MSG_EXIST},
-		{"/View/Go to/Last read message"   , M_SINGLE_TARGET_EXIST},
-		{"/View/Go to/Parent message"      , M_SINGLE_TARGET_EXIST},
-		{"/View/Open in new window"        , M_SINGLE_TARGET_EXIST},
-		{"/View/Message source"            , M_SINGLE_TARGET_EXIST},
-		{"/View/All headers"          	   , M_SINGLE_TARGET_EXIST},
-		{"/View/Quotes"                    , M_SINGLE_TARGET_EXIST},
+		{"Menu/View/SetColumns/Folderlist"	, M_UNLOCKED|M_SUMMARY_ISLIST}, 
+		{"Menu/View/Sort"                      , M_EXEC|M_SUMMARY_ISLIST},
+		{"Menu/View/ThreadView"               , M_EXEC|M_SUMMARY_ISLIST},
+		{"Menu/View/ExpandThreads"        , M_MSG_EXIST|M_SUMMARY_ISLIST},
+		{"Menu/View/CollapseThreads"      , M_MSG_EXIST|M_SUMMARY_ISLIST},
+		{"Menu/View/HideReadMessages"	   , M_HIDE_READ_MSG|M_SUMMARY_ISLIST},
+		{"Menu/View/Goto/Prev"        , M_MSG_EXIST},
+		{"Menu/View/Goto/Next"        , M_MSG_EXIST},
+		{"Menu/View/Goto/PrevUnread" , M_MSG_EXIST},
+		{"Menu/View/Goto/PrevNew"    , M_MSG_EXIST},
+		{"Menu/View/Goto/PrevMarked" , M_MSG_EXIST},
+		{"Menu/View/Goto/PrevLabeled", M_MSG_EXIST},
+		{"Menu/View/Goto/NextLabeled", M_MSG_EXIST},
+		{"Menu/View/Goto/LastRead"   , M_SINGLE_TARGET_EXIST},
+		{"Menu/View/Goto/ParentMessage"      , M_SINGLE_TARGET_EXIST},
+		{"Menu/View/OpenNewWindow"        , M_SINGLE_TARGET_EXIST},
+		{"Menu/View/MessageSource"            , M_SINGLE_TARGET_EXIST},
+		{"Menu/View/AllHeaders"          	   , M_SINGLE_TARGET_EXIST},
+		{"Menu/View/Quotes"                    , M_SINGLE_TARGET_EXIST},
 
-		{"/Message/Receive/Get from current account"
+		{"Menu/Message/Receive/CurrentAccount"
 						 , M_HAVE_ACCOUNT|M_UNLOCKED},
-		{"/Message/Receive/Get from all accounts"
+		{"Menu/Message/Receive/AllAccounts"
 						 , M_HAVE_ACCOUNT|M_UNLOCKED},
-		{"/Message/Receive/Cancel receiving"
+		{"Menu/Message/Receive/CancelReceiving"
 						 , M_INC_ACTIVE},
-		{"/Message/Send queued messages"  , M_HAVE_ACCOUNT|M_HAVE_QUEUED_MAILS},
-		{"/Message/Compose an email message", M_HAVE_ACCOUNT},
-		{"/Message/Compose a news message", M_HAVE_NEWS_ACCOUNT},
-		{"/Message/Reply"                 , M_HAVE_ACCOUNT|M_TARGET_EXIST|M_SUMMARY_ISLIST},
-		{"/Message/Reply to"              , M_HAVE_ACCOUNT|M_TARGET_EXIST|M_SUMMARY_ISLIST},
-		{"/Message/Follow-up and reply to", M_HAVE_ACCOUNT|M_TARGET_EXIST|M_NEWS|M_SUMMARY_ISLIST},
-		{"/Message/Forward"               , M_HAVE_ACCOUNT|M_TARGET_EXIST|M_SUMMARY_ISLIST},
-		{"/Message/Forward as attachment" , M_HAVE_ACCOUNT|M_TARGET_EXIST|M_SUMMARY_ISLIST},
-        	{"/Message/Redirect"		  , M_HAVE_ACCOUNT|M_TARGET_EXIST|M_SUMMARY_ISLIST},
-		{"/Message/Move..."		  , M_TARGET_EXIST|M_ALLOW_DELETE},
-		{"/Message/Copy..."		  , M_TARGET_EXIST|M_EXEC},
-		{"/Message/Move to trash"	  , M_TARGET_EXIST|M_ALLOW_DELETE|M_NOT_NEWS},
-		{"/Message/Delete..." 		  , M_TARGET_EXIST|M_ALLOW_DELETE},
-		{"/Message/Cancel a news message" , M_TARGET_EXIST|M_ALLOW_DELETE|M_NEWS},
-		{"/Message/Mark"   		  , M_TARGET_EXIST|M_SUMMARY_ISLIST},
-		{"/Message/Mark/Mark as spam"	  , M_TARGET_EXIST|M_CAN_LEARN_SPAM},
-		{"/Message/Mark/Mark as ham" 	  , M_TARGET_EXIST|M_CAN_LEARN_SPAM},
-		{"/Message/Mark/Ignore thread"    , M_TARGET_EXIST},
-		{"/Message/Mark/Unignore thread"  , M_TARGET_EXIST},
-		{"/Message/Mark/Lock"   	  , M_TARGET_EXIST},
-		{"/Message/Mark/Unlock"   	  , M_TARGET_EXIST},
-		{"/Message/Color label"		  , M_TARGET_EXIST},
-		{"/Message/Tags"		  , M_TARGET_EXIST},
-		{"/Message/Re-edit"               , M_HAVE_ACCOUNT|M_ALLOW_REEDIT},
+		{"Menu/Message/SendQueue"  , M_HAVE_ACCOUNT|M_HAVE_QUEUED_MAILS},
+		{"Menu/Message/ComposeEmail", M_HAVE_ACCOUNT},
+		{"Menu/Message/ComposeNews", M_HAVE_NEWS_ACCOUNT},
+		{"Menu/Message/Reply"                 , M_HAVE_ACCOUNT|M_TARGET_EXIST|M_SUMMARY_ISLIST},
+		{"Menu/Message/ReplyTo"              , M_HAVE_ACCOUNT|M_TARGET_EXIST|M_SUMMARY_ISLIST},
+		{"Menu/Message/FollowupReply", M_HAVE_ACCOUNT|M_TARGET_EXIST|M_NEWS|M_SUMMARY_ISLIST},
+		{"Menu/Message/Forward"               , M_HAVE_ACCOUNT|M_TARGET_EXIST|M_SUMMARY_ISLIST},
+		{"Menu/Message/ForwardAtt" , M_HAVE_ACCOUNT|M_TARGET_EXIST|M_SUMMARY_ISLIST},
+        	{"Menu/Message/Redirect"		  , M_HAVE_ACCOUNT|M_TARGET_EXIST|M_SUMMARY_ISLIST},
+		{"Menu/Message/Move"		  , M_TARGET_EXIST|M_ALLOW_DELETE},
+		{"Menu/Message/Copy"		  , M_TARGET_EXIST|M_EXEC},
+		{"Menu/Message/Trash"	  , M_TARGET_EXIST|M_ALLOW_DELETE|M_NOT_NEWS},
+		{"Menu/Message/Delete" 		  , M_TARGET_EXIST|M_ALLOW_DELETE},
+		{"Menu/Message/CancelNews" , M_TARGET_EXIST|M_ALLOW_DELETE|M_NEWS},
+		{"Menu/Message/Mark"   		  , M_TARGET_EXIST|M_SUMMARY_ISLIST},
+		{"Menu/Message/Mark/MarkSpam"	  , M_TARGET_EXIST|M_CAN_LEARN_SPAM},
+		{"Menu/Message/Mark/MarkHam" 	  , M_TARGET_EXIST|M_CAN_LEARN_SPAM},
+		{"Menu/Message/Mark/IgnoreThread"    , M_TARGET_EXIST},
+		{"Menu/Message/Mark/UnignoreThread"  , M_TARGET_EXIST},
+		{"Menu/Message/Mark/Lock"   	  , M_TARGET_EXIST},
+		{"Menu/Message/Mark/Unlock"   	  , M_TARGET_EXIST},
+		{"Menu/Message/ColorLabel"		  , M_TARGET_EXIST},
+		{"Menu/Message/Tags"		  , M_TARGET_EXIST},
+		{"Menu/Message/Reedit"               , M_HAVE_ACCOUNT|M_ALLOW_REEDIT},
 
-		{"/Tools/Add sender to address book"   , M_SINGLE_TARGET_EXIST},
-		{"/Tools/Collect addresses"            , M_FOLDER_SELECTED},
-		{"/Tools/Collect addresses/from Current folder..."
+		{"Menu/Tools/AddSenderToAB"   , M_SINGLE_TARGET_EXIST},
+		{"Menu/Tools/CollectAddresses"            , M_FOLDER_SELECTED},
+		{"Menu/Tools/CollectAddresses/FromFolder"
 						       , M_FOLDER_SELECTED},
-		{"/Tools/Collect addresses/from Selected messages..."
+		{"Menu/Tools/CollectAddresses/FromSelected"
 						       , M_TARGET_EXIST},
-		{"/Tools/Filter all messages in folder", M_MSG_EXIST|M_EXEC},
-		{"/Tools/Filter selected messages"     , M_TARGET_EXIST|M_EXEC},
-		{"/Tools/Run folder processing rules"  , M_HAVE_PROCESSING},
-		{"/Tools/Create filter rule"           , M_SINGLE_TARGET_EXIST|M_UNLOCKED},
-		{"/Tools/Create processing rule"       , M_SINGLE_TARGET_EXIST|M_UNLOCKED},
-		{"/Tools/List URLs..."                 , M_TARGET_EXIST},
-		{"/Tools/Actions"                      , M_TARGET_EXIST|M_ACTIONS_EXIST},
-		{"/Tools/Execute"                      , M_DELAY_EXEC},
-		{"/Tools/Delete duplicated messages/In selected folder"   , M_MSG_EXIST|M_ALLOW_DELETE},
+		{"Menu/Tools/FilterFolder", M_MSG_EXIST|M_EXEC},
+		{"Menu/Tools/FilterSelected"     , M_TARGET_EXIST|M_EXEC},
+		{"Menu/Tools/RunProcessing"  , M_HAVE_PROCESSING},
+		{"Menu/Tools/CreateFilterRule"           , M_SINGLE_TARGET_EXIST|M_UNLOCKED},
+		{"Menu/Tools/CreateProcessingRule"       , M_SINGLE_TARGET_EXIST|M_UNLOCKED},
+		{"Menu/Tools/ListUrls"                 , M_TARGET_EXIST},
+		{"Menu/Tools/Actions"                      , M_TARGET_EXIST|M_ACTIONS_EXIST},
+		{"Menu/Tools/Execute"                      , M_DELAY_EXEC},
+		{"Menu/Tools/DeleteDuplicates/SelFolder"   , M_MSG_EXIST|M_ALLOW_DELETE},
 
-		{"/Configuration", M_UNLOCKED},
-		{"/Configuration/Change current account", M_HAVE_MULTI_ACCOUNT},
-		{"/Configuration/Preferences for current account...", M_UNLOCKED},
-		{"/Configuration/Create new account...", M_UNLOCKED},
-		{"/Configuration/Edit accounts...", M_UNLOCKED},
+		{"Menu/Configuration", M_UNLOCKED},
+		{"Menu/Configuration/ChangeAccount", M_HAVE_MULTI_ACCOUNT},
+		{"Menu/Configuration/AccountPrefs", M_UNLOCKED},
+		{"Menu/Configuration/CreateAccount", M_UNLOCKED},
+		{"Menu/Configuration/EditAccounts", M_UNLOCKED},
 
 		{NULL, 0}
 	};
@@ -2897,15 +3142,15 @@ void main_window_set_menu_sensitive(MainWindow *mainwin)
 
 	for (i = 0; entry[i].entry != NULL; i++) {
 		sensitive = ((entry[i].cond & state) == entry[i].cond);
-		menu_set_sensitive(ifactory, entry[i].entry, sensitive);
+		cm_menu_set_sensitive_full(mainwin->ui_manager, entry[i].entry, sensitive);
 	}
 
-	menu = gtk_item_factory_get_widget(ifactory, "/Message/Receive");
+	menu = gtk_menu_item_get_submenu(GTK_MENU_ITEM(
+		gtk_ui_manager_get_widget(mainwin->ui_manager, "/Menu/Message/Receive")));
 
-	/* search for separator */
 	for (cur_item = GTK_MENU_SHELL(menu)->children; cur_item != NULL;
 	     cur_item = cur_item->next) {
-		if (GTK_BIN(cur_item->data)->child == NULL) {
+		if (cur_item->data == gtk_ui_manager_get_widget(mainwin->ui_manager, "/Menu/Message/Receive/Separator1")) {
 			cur_item = cur_item->next;
 			break;
 		}
@@ -2918,116 +3163,98 @@ void main_window_set_menu_sensitive(MainWindow *mainwin)
 
 	main_window_menu_callback_block(mainwin);
 
-#define SET_CHECK_MENU_ACTIVE(path, active) \
-{ \
-	menuitem = gtk_item_factory_get_widget(ifactory, path); \
-	gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM(menuitem), active); \
-}
-
-	SET_CHECK_MENU_ACTIVE("/View/Show or hide/Message view",
+	cm_menu_set_sensitive_full(mainwin->ui_manager, "Menu/View/ShowHide/MessageView",
 			      messageview_is_visible(mainwin->messageview));
 
 	summaryview = mainwin->summaryview;
-	menu_path = "/View/Sort/Don't sort";
+	menu_path = "Menu/View/Sort/DontSort";
 
 	switch (summaryview->sort_key) {
 	case SORT_BY_NUMBER:
-		menu_path = "/View/Sort/by number"; break;
+		menu_path = "Menu/View/Sort/Number"; break;
 	case SORT_BY_SIZE:
-		menu_path = "/View/Sort/by Size"; break;
+		menu_path = "Menu/View/Sort/Size"; break;
 	case SORT_BY_DATE:
-		menu_path = "/View/Sort/by Date"; break;
+		menu_path = "Menu/View/Sort/Date"; break;
 	case SORT_BY_THREAD_DATE:
-		menu_path = "/View/Sort/by Thread date"; break;
+		menu_path = "Menu/View/Sort/ThreadDate"; break;
 	case SORT_BY_FROM:
-		menu_path = "/View/Sort/by From"; break;
+		menu_path = "Menu/View/Sort/From"; break;
 	case SORT_BY_TO:
-		menu_path = "/View/Sort/by To"; break;
+		menu_path = "Menu/View/Sort/To"; break;
 	case SORT_BY_SUBJECT:
-		menu_path = "/View/Sort/by Subject"; break;
+		menu_path = "Menu/View/Sort/Subject"; break;
 	case SORT_BY_LABEL:
-		menu_path = "/View/Sort/by color label"; break;
+		menu_path = "Menu/View/Sort/Color"; break;
 	case SORT_BY_MARK:
-		menu_path = "/View/Sort/by mark"; break;
+		menu_path = "Menu/View/Sort/Mark"; break;
 	case SORT_BY_STATUS:
-		menu_path = "/View/Sort/by status"; break;
+		menu_path = "Menu/View/Sort/Status"; break;
 	case SORT_BY_MIME:
-		menu_path = "/View/Sort/by attachment"; break;
+		menu_path = "Menu/View/Sort/Attachment"; break;
 	case SORT_BY_SCORE:
-		menu_path = "/View/Sort/by score"; break;
+		menu_path = "Menu/View/Sort/Score"; break;
 	case SORT_BY_LOCKED:
-		menu_path = "/View/Sort/by locked"; break;
+		menu_path = "Menu/View/Sort/Locked"; break;
 	case SORT_BY_TAGS:
-		menu_path = "/View/Sort/by tag"; break;
+		menu_path = "Menu/View/Sort/Tag"; break;
 	case SORT_BY_NONE:
 	default:
-		menu_path = "/View/Sort/Don't sort"; break;
+		menu_path = "Menu/View/Sort/DontSort"; break;
 	}
-	SET_CHECK_MENU_ACTIVE(menu_path, TRUE);
+	cm_menu_set_sensitive_full(mainwin->ui_manager, menu_path, TRUE);
 
 	if (summaryview->sort_type == SORT_ASCENDING) {
-		SET_CHECK_MENU_ACTIVE("/View/Sort/Ascending", TRUE);
+		cm_menu_set_sensitive_full(mainwin->ui_manager, "Menu/View/Sort/Ascending", TRUE);
 	} else {
-		SET_CHECK_MENU_ACTIVE("/View/Sort/Descending", TRUE);
+		cm_menu_set_sensitive_full(mainwin->ui_manager, "Menu/View/Sort/Descending", TRUE);
 	}
 
 	if (summaryview->sort_key != SORT_BY_NONE) {
-		menu_set_sensitive(ifactory, "/View/Sort/Ascending", TRUE);
-		menu_set_sensitive(ifactory, "/View/Sort/Descending", TRUE);
+		cm_menu_set_sensitive_full(mainwin->ui_manager, "Menu/View/Sort/Ascending", TRUE);
+		cm_menu_set_sensitive_full(mainwin->ui_manager, "Menu/View/Sort/Descending", TRUE);
 	} else {
-		menu_set_sensitive(ifactory, "/View/Sort/Ascending", FALSE);
-		menu_set_sensitive(ifactory, "/View/Sort/Descending", FALSE);
+		cm_menu_set_sensitive_full(mainwin->ui_manager, "Menu/View/Sort/Ascending", FALSE);
+		cm_menu_set_sensitive_full(mainwin->ui_manager, "Menu/View/Sort/Descending", FALSE);
 	}
 
 	if (mainwin->messageview 
 	&&  mainwin->messageview->mimeview
 	&&  mainwin->messageview->mimeview->textview)
-		SET_CHECK_MENU_ACTIVE("/View/All headers",
+		cm_menu_set_sensitive_full(mainwin->ui_manager, "Menu/View/AllHeaders",
 			      mainwin->messageview->mimeview->textview->show_all_headers);
-	SET_CHECK_MENU_ACTIVE("/View/Thread view", (state & M_THREADED) != 0);
-	SET_CHECK_MENU_ACTIVE("/View/Quotes/Fold all", FALSE);
-	SET_CHECK_MENU_ACTIVE("/View/Quotes/Fold from level 2", FALSE);
-	SET_CHECK_MENU_ACTIVE("/View/Quotes/Fold from level 3", FALSE);
-	if (prefs_common.hide_quotes == 1)
-		SET_CHECK_MENU_ACTIVE("/View/Quotes/Fold all", TRUE);
-	if (prefs_common.hide_quotes == 2)
-		SET_CHECK_MENU_ACTIVE("/View/Quotes/Fold from level 2", TRUE);
-	if (prefs_common.hide_quotes == 3)
-		SET_CHECK_MENU_ACTIVE("/View/Quotes/Fold from level 3", TRUE);
-
-#undef SET_CHECK_MENU_ACTIVE
+	cm_toggle_menu_set_active_full(mainwin->ui_manager, "Menu/View/ThreadView", (state & M_THREADED) != 0);
+	cm_toggle_menu_set_active_full(mainwin->ui_manager, "Menu/View/Quotes/FoldAll", (prefs_common.hide_quotes == 1));
+	cm_toggle_menu_set_active_full(mainwin->ui_manager, "Menu/View/Quotes/Fold2", (prefs_common.hide_quotes == 2));
+	cm_toggle_menu_set_active_full(mainwin->ui_manager, "Menu/View/Quotes/Fold3", (prefs_common.hide_quotes == 3));
 
 	main_window_menu_callback_unblock(mainwin);
 }
 
 void main_create_mailing_list_menu (MainWindow *mainwin, MsgInfo *msginfo)
 {
-	GtkItemFactory *ifactory;
 	gint is_menu = 0;
-	ifactory = gtk_item_factory_from_widget(mainwin->menubar);
 	
 	if (msginfo) 
-		is_menu = mailing_list_create_submenu (ifactory, msginfo);
+		is_menu = mailing_list_create_submenu (mainwin, msginfo);
 	if (is_menu)
-		gtk_widget_set_sensitive (gtk_item_factory_get_item
-				(ifactory,"/Message/Mailing-List"), TRUE);
+		cm_menu_set_sensitive_full(mainwin->ui_manager, "Menu/Message/MailingList", TRUE);
 	else
-		gtk_widget_set_sensitive (gtk_item_factory_get_item
-				(ifactory,"/Message/Mailing-List"), FALSE);
+		cm_menu_set_sensitive_full(mainwin->ui_manager, "Menu/Message/MailingList", FALSE);
 }
 
-static gint mailing_list_create_submenu (GtkItemFactory *ifactory, MsgInfo *msginfo)
+static gint mailing_list_create_submenu (MainWindow *mainwin, MsgInfo *msginfo)
 {
 	gint menu_nb = 0;
 	GtkWidget *menuitem;
 	
 	if (!msginfo || !msginfo->extradata) {
-		menu_set_sensitive(ifactory, "/Message/Mailing-List/Post", FALSE);
-		menu_set_sensitive(ifactory, "/Message/Mailing-List/Help", FALSE);
-		menu_set_sensitive(ifactory, "/Message/Mailing-List/Subscribe", FALSE);
-		menu_set_sensitive(ifactory, "/Message/Mailing-List/Unsubscribe", FALSE);
-		menu_set_sensitive(ifactory, "/Message/Mailing-List/View archive", FALSE);
-		menu_set_sensitive(ifactory, "/Message/Mailing-List/Contact owner", FALSE);
+		cm_menu_set_sensitive_full(mainwin->ui_manager, "Menu/Message/MailingList/Post", FALSE);
+		cm_menu_set_sensitive_full(mainwin->ui_manager, "Menu/Message/MailingList/Help", FALSE);
+		cm_menu_set_sensitive_full(mainwin->ui_manager, "Menu/Message/MailingList/Subscribe", FALSE);
+		cm_menu_set_sensitive_full(mainwin->ui_manager, "Menu/Message/MailingList/Unsubscribe", FALSE);
+		cm_menu_set_sensitive_full(mainwin->ui_manager, "Menu/Message/MailingList/ViewArchive", FALSE);
+		cm_menu_set_sensitive_full(mainwin->ui_manager, "Menu/Message/MailingList/ContactOwner", FALSE);
 		return 0;
 	}
 		
@@ -3036,32 +3263,32 @@ static gint mailing_list_create_submenu (GtkItemFactory *ifactory, MsgInfo *msgi
 		g_free(msginfo->extradata->list_post);
 		msginfo->extradata->list_post = g_strdup (_("No posting allowed"));
  	}
- 	menuitem = gtk_item_factory_get_item (ifactory, "/Message/Mailing-List/Post");
+ 	menuitem = gtk_ui_manager_get_widget(mainwin->ui_manager, "/Menu/Message/MailingList/Post");
  		
  	menu_nb += mailing_list_populate_submenu (menuitem, msginfo->extradata->list_post);
  
  	/* Mailing list help */
-	menuitem = gtk_item_factory_get_item (ifactory, "/Message/Mailing-List/Help");
+	menuitem = gtk_ui_manager_get_widget(mainwin->ui_manager, "/Menu/Message/MailingList/Help");
 	
 	menu_nb += mailing_list_populate_submenu (menuitem, msginfo->extradata->list_help);
 
 	/* Mailing list subscribe */
-	menuitem = gtk_item_factory_get_item (ifactory, "/Message/Mailing-List/Subscribe");
+	menuitem = gtk_ui_manager_get_widget(mainwin->ui_manager, "/Menu/Message/MailingList/Subscribe");
 	
 	menu_nb += mailing_list_populate_submenu (menuitem, msginfo->extradata->list_subscribe);
 		
 	/* Mailing list unsubscribe */
-	menuitem = gtk_item_factory_get_item (ifactory, "/Message/Mailing-List/Unsubscribe");
+	menuitem = gtk_ui_manager_get_widget(mainwin->ui_manager, "/Menu/Message/MailingList/Unsubscribe");
 	
 	menu_nb += mailing_list_populate_submenu (menuitem, msginfo->extradata->list_unsubscribe);
 	
 	/* Mailing list view archive */
-	menuitem = gtk_item_factory_get_item (ifactory, "/Message/Mailing-List/View archive");
+	menuitem = gtk_ui_manager_get_widget(mainwin->ui_manager, "/Menu/Message/MailingList/ViewArchive");
 	
 	menu_nb += mailing_list_populate_submenu (menuitem, msginfo->extradata->list_archive);
 	
 	/* Mailing list contact owner */
-	menuitem = gtk_item_factory_get_item (ifactory, "/Message/Mailing-List/Contact owner");
+	menuitem = gtk_ui_manager_get_widget(mainwin->ui_manager, "/Menu/Message/MailingList/ContactOwner");
 	
 	menu_nb += mailing_list_populate_submenu (menuitem, msginfo->extradata->list_owner);
 	
@@ -3272,8 +3499,6 @@ static void main_window_set_widgets(MainWindow *mainwin, LayoutType layout_mode)
 	GtkWidget *hpaned;
 	GtkWidget *vpaned;
 	GtkWidget *vbox_body = mainwin->vbox_body;
-	GtkItemFactory *ifactory = mainwin->menu_factory;
-	GtkWidget *menuitem;
 	gboolean first_set = (mainwin->hpaned == NULL);
 	debug_print("Setting widgets... ");
 
@@ -3309,7 +3534,7 @@ static void main_window_set_widgets(MainWindow *mainwin, LayoutType layout_mode)
 			gtk_widget_destroy(mainwin->hpaned);
 	}
 
-	menu_set_sensitive(ifactory, "/View/Show or hide/Message view", 
+	cm_menu_set_sensitive_full(mainwin->ui_manager, "Menu/View/ShowHide/MessageView", 
 		(layout_mode != WIDE_MSGLIST_LAYOUT && layout_mode != SMALL_LAYOUT));
 	switch (layout_mode) {
 	case VERTICAL_LAYOUT:
@@ -3451,38 +3676,28 @@ static void main_window_set_widgets(MainWindow *mainwin, LayoutType layout_mode)
 
 	prefs_common.layout_mode = layout_mode;
 
-	menuitem = gtk_item_factory_get_item
-		(ifactory, "/View/Show or hide/Message view");
-	gtk_check_menu_item_set_active
-		(GTK_CHECK_MENU_ITEM(menuitem),
+	cm_toggle_menu_set_active_full(mainwin->ui_manager, "Menu/View/ShowHide/MessageView", 
 		 messageview_is_visible(mainwin->messageview));
-
-#define SET_CHECK_MENU_ACTIVE(path, active) \
-{ \
-	menuitem = gtk_item_factory_get_widget(ifactory, path); \
-	gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM(menuitem), active); \
-}
 
 #ifndef GENERIC_UMPC
 	switch (prefs_common.layout_mode) {
 	case NORMAL_LAYOUT:
-		SET_CHECK_MENU_ACTIVE("/View/Layout/Standard", TRUE);
+		cm_toggle_menu_set_active_full(mainwin->ui_manager, "Menu/View/Layout/Standard", TRUE);
 		break;
 	case VERTICAL_LAYOUT:
-		SET_CHECK_MENU_ACTIVE("/View/Layout/Three columns", TRUE);
+		cm_toggle_menu_set_active_full(mainwin->ui_manager, "Menu/View/Layout/ThreeColumns", TRUE);
 		break;
 	case WIDE_LAYOUT:
-		SET_CHECK_MENU_ACTIVE("/View/Layout/Wide message", TRUE);
+		cm_toggle_menu_set_active_full(mainwin->ui_manager, "Menu/View/Layout/WideMessage", TRUE);
 		break;
 	case WIDE_MSGLIST_LAYOUT:
-		SET_CHECK_MENU_ACTIVE("/View/Layout/Wide message list", TRUE);
+		cm_toggle_menu_set_active_full(mainwin->ui_manager, "Menu/View/Layout/WideMessageList", TRUE);
 		break;
 	case SMALL_LAYOUT:
-		SET_CHECK_MENU_ACTIVE("/View/Layout/Small screen", TRUE);
+		cm_toggle_menu_set_active_full(mainwin->ui_manager, "Menu/View/Layout/SmallScreen", TRUE);
 		break;
 	}
 #endif
-#undef SET_CHECK_MENU_ACTIVE
 
 	if (folderwin) {
 		g_signal_connect
@@ -3563,7 +3778,7 @@ static gint main_window_close_cb(GtkWidget *widget, GdkEventAny *event,
 	hooks_invoke(MAIN_WINDOW_CLOSE, &close_allowed);
 
 	if (close_allowed && mainwin->lock_count == 0)
-		app_exit_cb(data, 0, widget);
+		app_exit_cb(NULL, data);
 
 	return TRUE;
 }
@@ -3594,83 +3809,84 @@ static void message_window_size_allocate_cb(GtkWidget *widget,
 	main_window_get_size(mainwin);
 }
 
-static void add_mailbox_cb(MainWindow *mainwin, guint action,
-			   GtkWidget *widget)
+static void add_mailbox_cb(GtkAction *action, gpointer data)
 {
+	MainWindow *mainwin = (MainWindow *)data;
 	main_window_add_mailbox(mainwin);
 }
 
-static void update_folderview_cb(MainWindow *mainwin, guint action,
-				 GtkWidget *widget)
+static void update_folderview_cb(GtkAction *action, gpointer data)
 {
+	MainWindow *mainwin = (MainWindow *)data;
 	summary_show(mainwin->summaryview, NULL);
 	folderview_check_new_all();
 }
 
-static void foldersort_cb(MainWindow *mainwin, guint action,
-                           GtkWidget *widget)
+static void foldersort_cb(GtkAction *action, gpointer data)
 {
 	foldersort_open();
 }
 
-static void import_mbox_cb(MainWindow *mainwin, guint action,
-			   GtkWidget *widget)
+static void import_mbox_cb(GtkAction *action, gpointer data)
 {
+	MainWindow *mainwin = (MainWindow *)data;
 	/* only notify if import has failed */
 	if (import_mbox(mainwin->summaryview->folder_item) == -1) {
 		alertpanel_error(_("Mbox import has failed."));
 	}
 }
 
-static void export_mbox_cb(MainWindow *mainwin, guint action,
-			   GtkWidget *widget)
+static void export_mbox_cb(GtkAction *action, gpointer data)
 {
+	MainWindow *mainwin = (MainWindow *)data;
 	/* only notify if export has failed */
 	if (export_mbox(mainwin->summaryview->folder_item) == -1) {
 		alertpanel_error(_("Export to mbox has failed."));
 	}
 }
 
-static void export_list_mbox_cb(MainWindow *mainwin, guint action,
-				GtkWidget *widget)
+static void export_list_mbox_cb(GtkAction *action, gpointer data)
 {
+	MainWindow *mainwin = (MainWindow *)data;
 	/* only notify if export has failed */
 	if (summaryview_export_mbox_list(mainwin->summaryview) == -1) {
 		alertpanel_error(_("Export to mbox has failed."));
 	}
 }
 
-static void empty_trash_cb(MainWindow *mainwin, guint action,
-			   GtkWidget *widget)
+static void empty_trash_cb(GtkAction *action, gpointer data)
 {
+	MainWindow *mainwin = (MainWindow *)data;
 	main_window_empty_trash(mainwin, TRUE, FALSE);
 }
 
-static void save_as_cb(MainWindow *mainwin, guint action, GtkWidget *widget)
+static void save_as_cb(GtkAction *action, gpointer data)
 {
+	MainWindow *mainwin = (MainWindow *)data;
 	summary_save_as(mainwin->summaryview);
 }
 
-static void print_cb(MainWindow *mainwin, guint action, GtkWidget *widget)
+static void print_cb(GtkAction *action, gpointer data)
 {
+	MainWindow *mainwin = (MainWindow *)data;
 	summary_print(mainwin->summaryview);
 }
 
 #if GTK_CHECK_VERSION(2,10,0) && !defined(USE_GNOMEPRINT)
-static void page_setup_cb(MainWindow *mainwin, guint action, GtkWidget *widget)
+static void page_setup_cb(GtkAction *action, gpointer data)
 {
-	MainWindow *mainwindow;
+	MainWindow *mainwin = (MainWindow *)data;
 	GtkWindow *win;
 
-	mainwindow = mainwindow_get_mainwindow();
-	win = (mainwindow ? GTK_WINDOW(mainwindow->window) : NULL);
+	win = (mainwin ? GTK_WINDOW(mainwin->window) : NULL);
 
 	printing_page_setup(win);
 }
 #endif
 
-static void app_exit_cb(MainWindow *mainwin, guint action, GtkWidget *widget)
+static void app_exit_cb(GtkAction *action, gpointer data)
 {
+	MainWindow *mainwin = (MainWindow *)data;
 	if (prefs_common.clean_on_exit) {
 		if (!main_window_empty_trash(mainwin, prefs_common.ask_on_clean, TRUE))
 			return;
@@ -3684,44 +3900,61 @@ static void app_exit_cb(MainWindow *mainwin, guint action, GtkWidget *widget)
 		manage_window_focus_in(mainwin->window, NULL, NULL);
 	}
 
-	app_will_exit(widget, mainwin);
+	app_will_exit(NULL, mainwin);
 }
 
-static void search_cb(MainWindow *mainwin, guint action, GtkWidget *widget)
+static void search_cb(GtkAction *action, gpointer data)
 {
-	if (action == 1)
-		summary_search(mainwin->summaryview);
-	else
-		message_search(mainwin->messageview);
+	MainWindow *mainwin = (MainWindow *)data;
+	message_search(mainwin->messageview);
 }
 
-static void mainwindow_quicksearch(MainWindow *mainwin, guint action, GtkWidget *widget)
+static void search_folder_cb(GtkAction *action, gpointer data)
 {
+	MainWindow *mainwin = (MainWindow *)data;
+	summary_search(mainwin->summaryview);
+}
+
+static void mainwindow_quicksearch(GtkAction *action, gpointer data)
+{
+	MainWindow *mainwin = (MainWindow *)data;
 	summaryview_activate_quicksearch(mainwin->summaryview, TRUE);
 }
 
-static void toggle_message_cb(MainWindow *mainwin, guint action,
-			      GtkWidget *widget)
+static void toggle_message_cb(GtkAction *action, gpointer data)
 {
+	MainWindow *mainwin = (MainWindow *)data;
 	gboolean active;
 
-	active = GTK_CHECK_MENU_ITEM(widget)->active;
+	active = gtk_toggle_action_get_active (GTK_TOGGLE_ACTION (action));
 
 	if (active != messageview_is_visible(mainwin->messageview))
 		summary_toggle_view(mainwin->summaryview);
 }
 
-static void toggle_toolbar_cb(MainWindow *mainwin, guint action,
-			      GtkWidget *widget)
+static void toggle_toolbar_cb(GtkAction *action, GtkRadioAction *current, gpointer data)
 {
-	toolbar_toggle(action, mainwin);
+	gint value = gtk_radio_action_get_current_value (GTK_RADIO_ACTION (current));
+	MainWindow *mainwin = (MainWindow *)data;
+	toolbar_toggle(value, mainwin);
 }
 
-static void main_window_reply_cb(MainWindow *mainwin, guint action,
-			  GtkWidget *widget)
+static void main_window_reply_cb(GtkAction *gaction, gpointer data)
 {
+	MainWindow *mainwin = (MainWindow *)data;
 	MessageView *msgview = (MessageView*)mainwin->messageview;
 	GSList *msginfo_list = NULL;
+	gint action = COMPOSE_REPLY;
+	const gchar *a_name = gtk_action_get_name(gaction);
+
+	DO_ACTION("Message/Reply", COMPOSE_REPLY);
+	DO_ACTION("Message/ReplyTo/All", COMPOSE_REPLY_TO_ALL);
+	DO_ACTION("Message/ReplyTo/Sender", COMPOSE_REPLY_TO_SENDER);
+	DO_ACTION("Message/ReplyTo/List", COMPOSE_REPLY_TO_LIST);
+	DO_ACTION("Message/Forward", COMPOSE_FORWARD_INLINE);
+	DO_ACTION("Message/ForwardAtt", COMPOSE_FORWARD_AS_ATTACH);
+	DO_ACTION("Message/Redirect", COMPOSE_REDIRECT);
+	DO_ACTION("Message/FollowupReply", COMPOSE_FOLLOWUP_AND_REPLY_TO);
 
 	g_return_if_fail(msgview != NULL);
 
@@ -3731,13 +3964,13 @@ static void main_window_reply_cb(MainWindow *mainwin, guint action,
 	g_slist_free(msginfo_list);
 }
 
-static void toggle_col_headers_cb(MainWindow *mainwin, guint action,
-				GtkWidget *widget)
+static void toggle_col_headers_cb(GtkAction *gaction, gpointer data)
 {
+	MainWindow *mainwin = (MainWindow *)data;
 	FolderView *folderview = mainwin->folderview;
 	SummaryView *summaryview = mainwin->summaryview;
 
-	if (GTK_CHECK_MENU_ITEM(widget)->active) {
+	if (gtk_toggle_action_get_active (GTK_TOGGLE_ACTION (gaction))) {
 		gtk_clist_column_titles_show(GTK_CLIST(folderview->ctree));
 		gtk_clist_column_titles_show(GTK_CLIST(summaryview->ctree));
 		prefs_common.show_col_headers = TRUE;
@@ -3749,10 +3982,10 @@ static void toggle_col_headers_cb(MainWindow *mainwin, guint action,
 }
 
 #ifndef GENERIC_UMPC
-static void toggle_statusbar_cb(MainWindow *mainwin, guint action,
-				GtkWidget *widget)
+static void toggle_statusbar_cb(GtkAction *gaction, gpointer data)
 {
-	if (GTK_CHECK_MENU_ITEM(widget)->active) {
+	MainWindow *mainwin = (MainWindow *)data;
+	if (gtk_toggle_action_get_active (GTK_TOGGLE_ACTION (gaction))) {
 		gtk_widget_show(mainwin->hbox_stat);
 		prefs_common.show_statusbar = TRUE;
 	} else {
@@ -3761,15 +3994,16 @@ static void toggle_statusbar_cb(MainWindow *mainwin, guint action,
 	}
 }
 
-static void set_layout_cb(MainWindow *mainwin, guint action,
-			       GtkWidget *widget)
+static void set_layout_cb(GtkAction *action, GtkRadioAction *current, gpointer data)
 {
-	LayoutType layout_mode = action;
+	MainWindow *mainwin = (MainWindow *)data;
+	gint value = gtk_radio_action_get_current_value (GTK_RADIO_ACTION (current));
+	LayoutType layout_mode = value;
 	LayoutType old_layout_mode = prefs_common.layout_mode;
 	if (mainwin->menu_lock_count) {
 		return;
 	}
-	if (!GTK_CHECK_MENU_ITEM(widget)->active) {
+	if (!gtk_toggle_action_get_active (GTK_TOGGLE_ACTION (current))) {
 		return;
 	}
 	
@@ -3807,9 +4041,10 @@ void main_window_toggle_work_offline (MainWindow *mainwin, gboolean offline,
 	offline_ask_sync = TRUE;
 }
 
-static void toggle_work_offline_cb (MainWindow *mainwin, guint action, GtkWidget *widget)
+static void toggle_work_offline_cb (GtkAction *action, gpointer data)
 {
-	main_window_toggle_work_offline(mainwin, GTK_CHECK_MENU_ITEM(widget)->active, TRUE);
+	MainWindow *mainwin = (MainWindow *)data;
+	main_window_toggle_work_offline(mainwin, gtk_toggle_action_get_active (GTK_TOGGLE_ACTION (action)), TRUE);
 }
 
 static gboolean any_folder_want_synchronise(void)
@@ -3845,8 +4080,6 @@ static void mainwindow_check_synchronise(MainWindow *mainwin, gboolean ask)
 static void online_switch_clicked (GtkButton *btn, gpointer data) 
 {
 	MainWindow *mainwin;
-	GtkItemFactory *ifactory;
-	GtkCheckMenuItem *menuitem;
 	gboolean have_connectivity;
 
 #ifdef HAVE_NETWORKMANAGER
@@ -3857,18 +4090,15 @@ static void online_switch_clicked (GtkButton *btn, gpointer data)
 
 	mainwin = (MainWindow *) data;
 	
-	ifactory = gtk_item_factory_from_widget(mainwin->menubar);
-	menuitem = GTK_CHECK_MENU_ITEM (gtk_item_factory_get_widget(ifactory, "/File/Offline mode"));
-	
 	g_return_if_fail(mainwin != NULL);
-	g_return_if_fail(menuitem != NULL);
 	
 	if (btn == GTK_BUTTON(mainwin->online_switch)) {
 #ifndef GENERIC_UMPC
 		gtk_widget_hide (mainwin->online_switch);
 		gtk_widget_show (mainwin->offline_switch);
 #endif
-		menuitem->active = TRUE;
+		cm_toggle_menu_set_active_full(mainwin->ui_manager, "Menu/File/OfflineMode", TRUE);
+
 		inc_autocheck_timer_remove();
 			
 		/* go offline */
@@ -3888,7 +4118,7 @@ static void online_switch_clicked (GtkButton *btn, gpointer data)
 		gtk_widget_hide (mainwin->offline_switch);
 		gtk_widget_show (mainwin->online_switch);
 #endif
-		menuitem->active = FALSE;
+		cm_toggle_menu_set_active_full(mainwin->ui_manager, "Menu/File/OfflineMode", FALSE);
 		prefs_common.work_offline = FALSE;
 		inc_autocheck_timer_set();
 		refresh_resolvers();
@@ -3896,182 +4126,192 @@ static void online_switch_clicked (GtkButton *btn, gpointer data)
 	}
 }
 
-static void addressbook_open_cb(MainWindow *mainwin, guint action,
-				GtkWidget *widget)
+static void addressbook_open_cb(GtkAction *action, gpointer data)
 {
 	addressbook_open(NULL);
 }
 
-static void log_window_show_cb(MainWindow *mainwin, guint action,
-			       GtkWidget *widget)
+static void log_window_show_cb(GtkAction *action, gpointer data)
 {
+	MainWindow *mainwin = (MainWindow *)data;
 	log_window_show(mainwin->logwin);
 }
 
-static void filtering_debug_window_show_cb(MainWindow *mainwin, guint action,
-			       GtkWidget *widget)
+static void filtering_debug_window_show_cb(GtkAction *action, gpointer data)
 {
+	MainWindow *mainwin = (MainWindow *)data;
 	log_window_show(mainwin->filtering_debugwin);
 }
 
-static void inc_cancel_cb(MainWindow *mainwin, guint action, GtkWidget *widget)
+static void inc_cancel_cb(GtkAction *action, gpointer data)
 {
 	inc_cancel_all();
 	imap_cancel_all();
 }
 
-static void move_to_cb(MainWindow *mainwin, guint action, GtkWidget *widget)
+static void move_to_cb(GtkAction *action, gpointer data)
 {
+	MainWindow *mainwin = (MainWindow *)data;
 	summary_move_to(mainwin->summaryview);
 }
 
-static void copy_to_cb(MainWindow *mainwin, guint action, GtkWidget *widget)
+static void copy_to_cb(GtkAction *action, gpointer data)
 {
+	MainWindow *mainwin = (MainWindow *)data;
 	summary_copy_to(mainwin->summaryview);
 }
 
-static void delete_cb(MainWindow *mainwin, guint action, GtkWidget *widget)
+static void delete_cb(GtkAction *action, gpointer data)
 {
+	MainWindow *mainwin = (MainWindow *)data;
 	summary_delete(mainwin->summaryview);
 }
 
-static void delete_trash_cb(MainWindow *mainwin, guint action, GtkWidget *widget)
+static void delete_trash_cb(GtkAction *action, gpointer data)
 {
+	MainWindow *mainwin = (MainWindow *)data;
 	summary_delete_trash(mainwin->summaryview);
 }
 
-static void cancel_cb(MainWindow *mainwin, guint action, GtkWidget *widget)
+static void cancel_cb(GtkAction *action, gpointer data)
 {
+	MainWindow *mainwin = (MainWindow *)data;
 	summary_cancel(mainwin->summaryview);
 }
 
-static void open_msg_cb(MainWindow *mainwin, guint action, GtkWidget *widget)
+static void open_msg_cb(GtkAction *action, gpointer data)
 {
+	MainWindow *mainwin = (MainWindow *)data;
 	summary_open_msg(mainwin->summaryview);
 }
 
-static void view_source_cb(MainWindow *mainwin, guint action,
-			   GtkWidget *widget)
+static void view_source_cb(GtkAction *action, gpointer data)
 {
+	MainWindow *mainwin = (MainWindow *)data;
 	summary_view_source(mainwin->summaryview);
 }
 
-static void show_all_header_cb(MainWindow *mainwin, guint action,
-			       GtkWidget *widget)
+static void show_all_header_cb(GtkAction *action, gpointer data)
 {
+	MainWindow *mainwin = (MainWindow *)data;
 	if (mainwin->menu_lock_count) return;
 	mainwin->summaryview->messageview->all_headers = 
-			GTK_CHECK_MENU_ITEM(widget)->active;
+			gtk_toggle_action_get_active (GTK_TOGGLE_ACTION (action));
 	summary_display_msg_selected(mainwin->summaryview,
-				     GTK_CHECK_MENU_ITEM(widget)->active);
+				     gtk_toggle_action_get_active (GTK_TOGGLE_ACTION (action)));
 }
 
-#define SET_CHECK_MENU_ACTIVE(path, active) \
-{ \
-	menuitem = gtk_item_factory_get_widget(ifactory, path); \
-	gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM(menuitem), active); \
-}
-
-static void hide_quotes_cb(MainWindow *mainwin, guint action,
-			       GtkWidget *widget)
+static void hide_quotes_cb(GtkAction *action, gpointer data)
 {
-	GtkWidget *menuitem;
-	GtkItemFactory *ifactory = mainwin->menu_factory;
+	MainWindow *mainwin = (MainWindow *)data;
 
 	if (mainwin->menu_lock_count) return;
 
-	prefs_common.hide_quotes = 
-			GTK_CHECK_MENU_ITEM(widget)->active ? action : 0;
+	if (gtk_toggle_action_get_active (GTK_TOGGLE_ACTION (action))) {
+		const gchar *a_name = gtk_action_get_name(GTK_ACTION(action));
+		if (!strcmp(a_name, "View/Quotes/FoldAll")) prefs_common.hide_quotes = 1;
+		else if (!strcmp(a_name, "View/Quotes/Fold2")) prefs_common.hide_quotes = 2;
+		else if (!strcmp(a_name, "View/Quotes/Fold3")) prefs_common.hide_quotes = 3;
+	} else
+		prefs_common.hide_quotes = 0;
 
 	mainwin->menu_lock_count++;
-	SET_CHECK_MENU_ACTIVE("/View/Quotes/Fold all", FALSE);
-	SET_CHECK_MENU_ACTIVE("/View/Quotes/Fold from level 2", FALSE);
-	SET_CHECK_MENU_ACTIVE("/View/Quotes/Fold from level 3", FALSE);
-	gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM(widget), prefs_common.hide_quotes > 0);
+	cm_toggle_menu_set_active_full(mainwin->ui_manager, "Menu/View/Quotes/FoldAll", (prefs_common.hide_quotes == 1));
+	cm_toggle_menu_set_active_full(mainwin->ui_manager, "Menu/View/Quotes/Fold2", (prefs_common.hide_quotes == 2));
+	cm_toggle_menu_set_active_full(mainwin->ui_manager, "Menu/View/Quotes/Fold3", (prefs_common.hide_quotes == 3));
 	mainwin->menu_lock_count--;
 
 	summary_redisplay_msg(mainwin->summaryview);
 }
 
-#undef SET_CHECK_MENU_ACTIVE
-static void mark_cb(MainWindow *mainwin, guint action, GtkWidget *widget)
+static void mark_cb(GtkAction *action, gpointer data)
 {
+	MainWindow *mainwin = (MainWindow *)data;
 	summary_mark(mainwin->summaryview);
 }
 
-static void unmark_cb(MainWindow *mainwin, guint action, GtkWidget *widget)
+static void unmark_cb(GtkAction *action, gpointer data)
 {
+	MainWindow *mainwin = (MainWindow *)data;
 	summary_unmark(mainwin->summaryview);
 }
 
-static void mark_as_unread_cb(MainWindow *mainwin, guint action,
-			      GtkWidget *widget)
+static void mark_as_unread_cb(GtkAction *action, gpointer data)
 {
+	MainWindow *mainwin = (MainWindow *)data;
 	summary_mark_as_unread(mainwin->summaryview);
 }
 
-static void mark_as_read_cb(MainWindow *mainwin, guint action,
-			    GtkWidget *widget)
+static void mark_as_read_cb(GtkAction *action, gpointer data)
 {
+	MainWindow *mainwin = (MainWindow *)data;
 	summary_mark_as_read(mainwin->summaryview);
 }
 
-static void mark_all_read_cb(MainWindow *mainwin, guint action,
-			     GtkWidget *widget)
+static void mark_all_read_cb(GtkAction *action, gpointer data)
 {
+	MainWindow *mainwin = (MainWindow *)data;
 	summary_mark_all_read(mainwin->summaryview);
 }
 
-static void mark_as_spam_cb(MainWindow *mainwin, guint action,
-			     GtkWidget *widget)
+static void mark_as_spam_cb(GtkAction *action, gpointer data)
 {
-	summary_mark_as_spam(mainwin->summaryview, action, NULL);
+	MainWindow *mainwin = (MainWindow *)data;
+	summary_mark_as_spam(mainwin->summaryview, TRUE, NULL);
 }
 
-static void ignore_thread_cb(MainWindow *mainwin, guint action,
-			    GtkWidget *widget)
+static void mark_as_ham_cb(GtkAction *action, gpointer data)
 {
+	MainWindow *mainwin = (MainWindow *)data;
+	summary_mark_as_spam(mainwin->summaryview, FALSE, NULL);
+}
+
+static void ignore_thread_cb(GtkAction *action, gpointer data)
+{
+	MainWindow *mainwin = (MainWindow *)data;
 	summary_ignore_thread(mainwin->summaryview);
 }
 
-static void unignore_thread_cb(MainWindow *mainwin, guint action,
-			    GtkWidget *widget)
+static void unignore_thread_cb(GtkAction *action, gpointer data)
 {
+	MainWindow *mainwin = (MainWindow *)data;
 	summary_unignore_thread(mainwin->summaryview);
 }
 
-static void watch_thread_cb(MainWindow *mainwin, guint action,
-			    GtkWidget *widget)
+static void watch_thread_cb(GtkAction *action, gpointer data)
 {
+	MainWindow *mainwin = (MainWindow *)data;
 	summary_watch_thread(mainwin->summaryview);
 }
 
-static void unwatch_thread_cb(MainWindow *mainwin, guint action,
-			    GtkWidget *widget)
+static void unwatch_thread_cb(GtkAction *action, gpointer data)
 {
+	MainWindow *mainwin = (MainWindow *)data;
 	summary_unwatch_thread(mainwin->summaryview);
 }
 
-static void lock_msgs_cb(MainWindow *mainwin, guint action,
-			    GtkWidget *widget)
+static void lock_msgs_cb(GtkAction *action, gpointer data)
 {
+	MainWindow *mainwin = (MainWindow *)data;
 	summary_msgs_lock(mainwin->summaryview);
 }
 
-static void unlock_msgs_cb(MainWindow *mainwin, guint action,
-			    GtkWidget *widget)
+static void unlock_msgs_cb(GtkAction *action, gpointer data)
 {
+	MainWindow *mainwin = (MainWindow *)data;
 	summary_msgs_unlock(mainwin->summaryview);
 }
 
 
-static void reedit_cb(MainWindow *mainwin, guint action, GtkWidget *widget)
+static void reedit_cb(GtkAction *action, gpointer data)
 {
+	MainWindow *mainwin = (MainWindow *)data;
 	summary_reedit(mainwin->summaryview);
 }
 
-static void open_urls_cb(MainWindow *mainwin, guint action, GtkWidget *widget)
+static void open_urls_cb(GtkAction *action, gpointer data)
 {
+	MainWindow *mainwin = (MainWindow *)data;
 	if (!mainwin->summaryview->displayed && mainwin->summaryview->selected) {
 		summary_display_msg_selected(mainwin->summaryview, 
 			mainwin->messageview->mimeview->textview->show_all_headers);
@@ -4079,19 +4319,20 @@ static void open_urls_cb(MainWindow *mainwin, guint action, GtkWidget *widget)
 	messageview_list_urls(mainwin->messageview);
 }
 
-static void add_address_cb(MainWindow *mainwin, guint action,
-			   GtkWidget *widget)
+static void add_address_cb(GtkAction *action, gpointer data)
 {
+	MainWindow *mainwin = (MainWindow *)data;
 	summary_add_address(mainwin->summaryview);
 }
 
-static void set_charset_cb(MainWindow *mainwin, guint action,
-			   GtkWidget *widget)
+static void set_charset_cb(GtkAction *action, GtkRadioAction *current, gpointer data)
 {
+	MainWindow *mainwin = (MainWindow *)data;
+	gint value = gtk_radio_action_get_current_value (GTK_RADIO_ACTION (current));
 	const gchar *str;
 
-	if (GTK_CHECK_MENU_ITEM(widget)->active) {
-		str = conv_get_charset_str((CharSet)action);
+	if (gtk_toggle_action_get_active (GTK_TOGGLE_ACTION (current))) {
+		str = conv_get_charset_str((CharSet)value);
 		
 		g_free(mainwin->messageview->forced_charset);
 		mainwin->messageview->forced_charset = str ? g_strdup(str) : NULL;
@@ -4103,34 +4344,37 @@ static void set_charset_cb(MainWindow *mainwin, guint action,
 	}
 }
 
-static void set_decode_cb(MainWindow *mainwin, guint action,
-			   GtkWidget *widget)
+static void set_decode_cb(GtkAction *action, GtkRadioAction *current, gpointer data)
 {
-	if (GTK_CHECK_MENU_ITEM(widget)->active) {
-		mainwin->messageview->forced_encoding = (EncodingType)action;
+	MainWindow *mainwin = (MainWindow *)data;
+	gint value = gtk_radio_action_get_current_value (GTK_RADIO_ACTION (current));
+	if (gtk_toggle_action_get_active (GTK_TOGGLE_ACTION (current))) {
+		mainwin->messageview->forced_encoding = (EncodingType)value;
 		
 		summary_redisplay_msg(mainwin->summaryview);
 		
-		debug_print("forced encoding: %d\n", action);
+		debug_print("forced encoding: %d\n", value);
 	}
 }
 
-static void hide_read_messages (MainWindow *mainwin, guint action,
-				GtkWidget *widget)
+static void hide_read_messages (GtkAction *action, gpointer data)
 {
+	MainWindow *mainwin = (MainWindow *)data;
+	GtkWidget *menuitem = gtk_ui_manager_get_widget(mainwin->ui_manager, "/Menu/View/HideReadMessages");
 	if (!mainwin->summaryview->folder_item
-	    || g_object_get_data(G_OBJECT(widget), "dont_toggle"))
+	    || g_object_get_data(G_OBJECT(menuitem), "dont_toggle"))
 		return;
 	summary_toggle_show_read_messages(mainwin->summaryview);
 }
 
-static void thread_cb(MainWindow *mainwin, guint action, GtkWidget *widget)
+static void thread_cb(GtkAction *action, gpointer data)
 {
+	MainWindow *mainwin = (MainWindow *)data;
 	gboolean threaded = FALSE;
 	if (mainwin->menu_lock_count) return;
 	if (!mainwin->summaryview->folder_item) return;
 
-	threaded = GTK_CHECK_MENU_ITEM(widget)->active;
+	threaded = gtk_toggle_action_get_active (GTK_TOGGLE_ACTION (action));
 
 	mainwin->summaryview->folder_item->threaded = threaded; 
 
@@ -4140,69 +4384,65 @@ static void thread_cb(MainWindow *mainwin, guint action, GtkWidget *widget)
 			mainwin->summaryview->folder_item);
 }
 
-static void expand_threads_cb(MainWindow *mainwin, guint action,
-			      GtkWidget *widget)
+static void expand_threads_cb(GtkAction *action, gpointer data)
 {
+	MainWindow *mainwin = (MainWindow *)data;
 	summary_expand_threads(mainwin->summaryview);
 }
 
-static void collapse_threads_cb(MainWindow *mainwin, guint action,
-				GtkWidget *widget)
+static void collapse_threads_cb(GtkAction *action, gpointer data)
 {
+	MainWindow *mainwin = (MainWindow *)data;
 	summary_collapse_threads(mainwin->summaryview);
 }
 
-static void set_summary_display_item_cb(MainWindow *mainwin, guint action,
-				GtkWidget *widget)
+static void set_summary_display_item_cb(GtkAction *action, gpointer data)
 {
 	prefs_summary_column_open();
 }
 
-static void set_folder_display_item_cb(MainWindow *mainwin, guint action,
-				GtkWidget *widget)
+static void set_folder_display_item_cb(GtkAction *action, gpointer data)
 {
 	prefs_folder_column_open();
 }
 
-static void sort_summary_cb(MainWindow *mainwin, guint action,
-			    GtkWidget *widget)
+static void sort_summary_cb(GtkAction *action, GtkRadioAction *current, gpointer data)
 {
+	MainWindow *mainwin = (MainWindow *)data;
 	FolderItem *item = mainwin->summaryview->folder_item;
-	GtkWidget *menuitem;
+	gint value = gtk_radio_action_get_current_value (GTK_RADIO_ACTION (current));
 
 	if (mainwin->menu_lock_count) return;
 
-	if (GTK_CHECK_MENU_ITEM(widget)->active && item) {
-		menuitem = gtk_item_factory_get_item
-			(mainwin->menu_factory, "/View/Sort/Ascending");
-		summary_sort(mainwin->summaryview, (FolderSortKey)action,
-			     GTK_CHECK_MENU_ITEM(menuitem)->active
-			     ? SORT_ASCENDING : SORT_DESCENDING);
-		item->sort_key = action;
+	if (gtk_toggle_action_get_active (GTK_TOGGLE_ACTION (current)) && item) {
+		summary_sort(mainwin->summaryview, (FolderSortKey)value,
+			     item->sort_type);
+		item->sort_key = value;
 	}
 }
 
-static void sort_summary_type_cb(MainWindow *mainwin, guint action,
-				 GtkWidget *widget)
+static void sort_summary_type_cb(GtkAction *gaction, GtkRadioAction *current, gpointer data)
 {
+	MainWindow *mainwin = (MainWindow *)data;
 	FolderItem *item = mainwin->summaryview->folder_item;
+	gint value = gtk_radio_action_get_current_value (GTK_RADIO_ACTION (current));
 
 	if (mainwin->menu_lock_count) return;
 
-	if (GTK_CHECK_MENU_ITEM(widget)->active && item)
+	if (gtk_toggle_action_get_active (GTK_TOGGLE_ACTION (current)) && item)
 		summary_sort(mainwin->summaryview,
-			     item->sort_key, (FolderSortType)action);
+			     item->sort_key, (FolderSortType)value);
 }
 
-static void attract_by_subject_cb(MainWindow *mainwin, guint action,
-				  GtkWidget *widget)
+static void attract_by_subject_cb(GtkAction *action, gpointer data)
 {
+	MainWindow *mainwin = (MainWindow *)data;
 	summary_attract_by_subject(mainwin->summaryview);
 }
 
-static void delete_duplicated_cb(MainWindow *mainwin, guint action,
-				 GtkWidget *widget)
+static void delete_duplicated_cb(GtkAction *action, gpointer data)
 {
+	MainWindow *mainwin = (MainWindow *)data;
 	FolderItem *item;
 
 	item = folderview_get_selected_item(mainwin->folderview);
@@ -4236,9 +4476,9 @@ static void deldup_all(FolderItem *item, gpointer _data)
 	}
 }
 
-static void delete_duplicated_all_cb(MainWindow *mainwin, guint action,
-				 GtkWidget *widget)
+static void delete_duplicated_all_cb(GtkAction *action, gpointer mw)
 {
+	MainWindow *mainwin = (MainWindow *)mw;
 	struct DelDupsData data = {0, 0};
 
 	main_window_cursor_wait(mainwin);
@@ -4251,13 +4491,21 @@ static void delete_duplicated_all_cb(MainWindow *mainwin, guint action,
 			  data.dups, data.folders);
 }
 
-static void filter_cb(MainWindow *mainwin, guint action, GtkWidget *widget)
+static void filter_cb(GtkAction *action, gpointer data)
 {
-	summary_filter(mainwin->summaryview, (gboolean)action);
+	MainWindow *mainwin = (MainWindow *)data;
+	summary_filter(mainwin->summaryview, FALSE);
 }
 
-static void process_cb(MainWindow *mainwin, guint action, GtkWidget *widget)
+static void filter_list_cb(GtkAction *action, gpointer data)
 {
+	MainWindow *mainwin = (MainWindow *)data;
+	summary_filter(mainwin->summaryview, TRUE);
+}
+
+static void process_cb(GtkAction *action, gpointer data)
+{
+	MainWindow *mainwin = (MainWindow *)data;
 	FolderItem *item = mainwin->summaryview->folder_item;	
 	g_return_if_fail(item != NULL);
 
@@ -4266,15 +4514,15 @@ static void process_cb(MainWindow *mainwin, guint action, GtkWidget *widget)
 	item->processing_pending = FALSE;
 }
 
-static void execute_summary_cb(MainWindow *mainwin, guint action,
-			       GtkWidget *widget)
+static void execute_summary_cb(GtkAction *action, gpointer data)
 {
+	MainWindow *mainwin = (MainWindow *)data;
 	summary_execute(mainwin->summaryview);
 }
 
-static void update_summary_cb(MainWindow *mainwin, guint action,
-			      GtkWidget *widget)
+static void update_summary_cb(GtkAction *action, gpointer data)
 {
+	MainWindow *mainwin = (MainWindow *)data;
 	FolderItem *fitem;
 	FolderView *folderview = mainwin->folderview;
 
@@ -4291,77 +4539,81 @@ static void update_summary_cb(MainWindow *mainwin, guint action,
 	summary_show(mainwin->summaryview, fitem);
 }
 
-static void prev_cb(MainWindow *mainwin, guint action, GtkWidget *widget)
+static void prev_cb(GtkAction *action, gpointer data)
 {
+	MainWindow *mainwin = (MainWindow *)data;
 	summary_step(mainwin->summaryview, GTK_SCROLL_STEP_BACKWARD);
 }
 
-static void next_cb(MainWindow *mainwin, guint action, GtkWidget *widget)
+static void next_cb(GtkAction *action, gpointer data)
 {
+	MainWindow *mainwin = (MainWindow *)data;
 	summary_step(mainwin->summaryview, GTK_SCROLL_STEP_FORWARD);
 }
 
-static void prev_unread_cb(MainWindow *mainwin, guint action,
-			   GtkWidget *widget)
+static void prev_unread_cb(GtkAction *action, gpointer data)
 {
+	MainWindow *mainwin = (MainWindow *)data;
 	summary_select_prev_unread(mainwin->summaryview);
 }
 
-static void next_unread_cb(MainWindow *mainwin, guint action,
-			   GtkWidget *widget)
+static void next_unread_cb(GtkAction *action, gpointer data)
 {
+	MainWindow *mainwin = (MainWindow *)data;
 	summary_select_next_unread(mainwin->summaryview);
 }
 
-static void prev_new_cb(MainWindow *mainwin, guint action, GtkWidget *widget)
+static void prev_new_cb(GtkAction *action, gpointer data)
 {
+	MainWindow *mainwin = (MainWindow *)data;
 	summary_select_prev_new(mainwin->summaryview);
 }
 
-static void next_new_cb(MainWindow *mainwin, guint action, GtkWidget *widget)
+static void next_new_cb(GtkAction *action, gpointer data)
 {
+	MainWindow *mainwin = (MainWindow *)data;
 	summary_select_next_new(mainwin->summaryview);
 }
 
-static void prev_marked_cb(MainWindow *mainwin, guint action,
-			   GtkWidget *widget)
+static void prev_marked_cb(GtkAction *action, gpointer data)
 {
+	MainWindow *mainwin = (MainWindow *)data;
 	summary_select_prev_marked(mainwin->summaryview);
 }
 
-static void next_marked_cb(MainWindow *mainwin, guint action,
-			   GtkWidget *widget)
+static void next_marked_cb(GtkAction *action, gpointer data)
 {
+	MainWindow *mainwin = (MainWindow *)data;
 	summary_select_next_marked(mainwin->summaryview);
 }
 
-static void prev_labeled_cb(MainWindow *mainwin, guint action,
-			    GtkWidget *widget)
+static void prev_labeled_cb(GtkAction *action, gpointer data)
 {
+	MainWindow *mainwin = (MainWindow *)data;
 	summary_select_prev_labeled(mainwin->summaryview);
 }
 
-static void next_labeled_cb(MainWindow *mainwin, guint action,
-			    GtkWidget *widget)
+static void next_labeled_cb(GtkAction *action, gpointer data)
 {
+	MainWindow *mainwin = (MainWindow *)data;
 	summary_select_next_labeled(mainwin->summaryview);
 }
 
-static void last_read_cb(MainWindow *mainwin, guint action,
-			    GtkWidget *widget)
+static void last_read_cb(GtkAction *action, gpointer data)
 {
+	MainWindow *mainwin = (MainWindow *)data;
 	summary_select_last_read(mainwin->summaryview);
 }
 
-static void parent_cb(MainWindow *mainwin, guint action,
-			    GtkWidget *widget)
+static void parent_cb(GtkAction *action, gpointer data)
 {
+	MainWindow *mainwin = (MainWindow *)data;
 	summary_select_parent(mainwin->summaryview);
 }
 
-static void goto_folder_cb(MainWindow *mainwin, guint action,
-			   GtkWidget *widget)
+static void goto_folder_cb(GtkAction *action, gpointer data)
 {
+	MainWindow *mainwin = (MainWindow *)data;
 	FolderItem *to_folder;
 
 	to_folder = foldersel_folder_sel(NULL, FOLDER_SEL_ALL, NULL, FALSE);
@@ -4370,19 +4622,21 @@ static void goto_folder_cb(MainWindow *mainwin, guint action,
 		folderview_select(mainwin->folderview, to_folder);
 }
 
-static void goto_unread_folder_cb(MainWindow *mainwin, guint action,
-			   GtkWidget *widget)
+static void goto_unread_folder_cb(GtkAction *action, gpointer data)
 {
+	MainWindow *mainwin = (MainWindow *)data;
 	folderview_select_next_unread(mainwin->folderview, FALSE);
 }
 
-static void copy_cb(MainWindow *mainwin, guint action, GtkWidget *widget)
+static void copy_cb(GtkAction *action, gpointer data)
 {
+	MainWindow *mainwin = (MainWindow *)data;
 	messageview_copy_clipboard(mainwin->messageview);
 }
 
-static void allsel_cb(MainWindow *mainwin, guint action, GtkWidget *widget)
+static void allsel_cb(GtkAction *action, gpointer data)
 {
+	MainWindow *mainwin = (MainWindow *)data;
 	MessageView *msgview = mainwin->messageview;
 
 	if (messageview_is_visible(msgview) &&
@@ -4392,32 +4646,45 @@ static void allsel_cb(MainWindow *mainwin, guint action, GtkWidget *widget)
 		summary_select_all(mainwin->summaryview);
 }
 
-static void select_thread_cb(MainWindow *mainwin, guint action,
-			     GtkWidget *widget)
+static void select_thread_cb(GtkAction *action, gpointer data)
 {
+	MainWindow *mainwin = (MainWindow *)data;
 	summary_select_thread(mainwin->summaryview, FALSE);
 }
 
-static void delete_thread_cb(MainWindow *mainwin, guint action,
-			     GtkWidget *widget)
+static void delete_thread_cb(GtkAction *action, gpointer data)
 {
+	MainWindow *mainwin = (MainWindow *)data;
 	summary_select_thread(mainwin->summaryview, TRUE);
 }
 
-static void create_filter_cb(MainWindow *mainwin, guint action,
-			     GtkWidget *widget)
+static void create_filter_cb(GtkAction *gaction, gpointer data)
 {
+	MainWindow *mainwin = (MainWindow *)data;
+	const gchar *a_name = gtk_action_get_name(gaction);
+	gint action = -1;
+
+	DO_ACTION("Tools/CreateFilterRule/Automatically", FILTER_BY_AUTO);
+	DO_ACTION("Tools/CreateFilterRule/ByFrom", FILTER_BY_FROM);
+	DO_ACTION("Tools/CreateFilterRule/ByTo", FILTER_BY_TO);
+	DO_ACTION("Tools/CreateFilterRule/BySubject", FILTER_BY_SUBJECT);
 	summary_filter_open(mainwin->summaryview, (PrefsFilterType)action, 0);
 }
 
-static void create_processing_cb(MainWindow *mainwin, guint action,
-			     GtkWidget *widget)
+static void create_processing_cb(GtkAction *gaction, gpointer data)
 {
+	MainWindow *mainwin = (MainWindow *)data;
+	const gchar *a_name = gtk_action_get_name(gaction);
+	gint action = -1;
+
+	DO_ACTION("Tools/CreateProcessingRule/Automatically", FILTER_BY_AUTO);
+	DO_ACTION("Tools/CreateProcessingRule/ByFrom", FILTER_BY_FROM);
+	DO_ACTION("Tools/CreateProcessingRule/ByTo", FILTER_BY_TO);
+	DO_ACTION("Tools/CreateProcessingRule/BySubject", FILTER_BY_SUBJECT);
 	summary_filter_open(mainwin->summaryview, (PrefsFilterType)action, 1);
 }
 
-static void prefs_pre_processing_open_cb(MainWindow *mainwin, guint action,
-				         GtkWidget *widget)
+static void prefs_pre_processing_open_cb(GtkAction *action, gpointer data)
 {
 	prefs_filtering_open(&pre_global_processing,
 			     _("Processing rules to apply before folder rules"),
@@ -4425,8 +4692,7 @@ static void prefs_pre_processing_open_cb(MainWindow *mainwin, guint action,
 			     NULL, NULL, FALSE);
 }
 
-static void prefs_post_processing_open_cb(MainWindow *mainwin, guint action,
-				          GtkWidget *widget)
+static void prefs_post_processing_open_cb(GtkAction *action, gpointer data)
 {
 	prefs_filtering_open(&post_global_processing,
 			     _("Processing rules to apply after folder rules"),
@@ -4434,8 +4700,7 @@ static void prefs_post_processing_open_cb(MainWindow *mainwin, guint action,
 			     NULL, NULL, FALSE);
 }
 
-static void prefs_filtering_open_cb(MainWindow *mainwin, guint action,
-				    GtkWidget *widget)
+static void prefs_filtering_open_cb(GtkAction *action, gpointer data)
 {
 	prefs_filtering_open(&filtering_rules,
 			     _("Filtering configuration"),
@@ -4443,45 +4708,43 @@ static void prefs_filtering_open_cb(MainWindow *mainwin, guint action,
 			     NULL, NULL, TRUE);
 }
 
-static void prefs_template_open_cb(MainWindow *mainwin, guint action,
-				   GtkWidget *widget)
+static void prefs_template_open_cb(GtkAction *action, gpointer data)
 {
 	prefs_template_open();
 }
 
-static void prefs_actions_open_cb(MainWindow *mainwin, guint action,
-				  GtkWidget *widget)
+static void prefs_actions_open_cb(GtkAction *action, gpointer data)
 {
+	MainWindow *mainwin = (MainWindow *)data;
 	prefs_actions_open(mainwin);
 }
 
-static void prefs_tags_open_cb(MainWindow *mainwin, guint action,
-				  GtkWidget *widget)
+static void prefs_tags_open_cb(GtkAction *action, gpointer data)
 {
+	MainWindow *mainwin = (MainWindow *)data;
 	GSList * list = summary_get_selected_msg_list(mainwin->summaryview);
 	tag_apply_open(list);
 }
 #if (defined(USE_OPENSSL) || defined (USE_GNUTLS))
-static void ssl_manager_open_cb(MainWindow *mainwin, guint action,
-				  GtkWidget *widget)
+static void ssl_manager_open_cb(GtkAction *action, gpointer data)
 {
+	MainWindow *mainwin = (MainWindow *)data;
 	ssl_manager_open(mainwin);
 }
 #endif
-static void prefs_account_open_cb(MainWindow *mainwin, guint action,
-				  GtkWidget *widget)
+static void prefs_account_open_cb(GtkAction *action, gpointer data)
 {
+	MainWindow *mainwin = (MainWindow *)data;
 	if (!cur_account) {
-		new_account_cb(mainwin, 0, widget);
+		new_account_cb(NULL, mainwin);
 	} else {
 		account_open(cur_account);
 	}
 }
 
-static void new_account_cb(MainWindow *mainwin, guint action,
-			   GtkWidget *widget)
+static void new_account_cb(GtkAction *action, gpointer data)
 {
-	account_edit_open();
+	account_edit_open(NULL, NULL);
 	if (!compose_get_compose_list()) account_add();
 }
 
@@ -4521,23 +4784,27 @@ static void account_compose_menu_cb(GtkMenuItem *menuitem, gpointer data)
 	compose_new_with_folderitem(account, NULL, NULL);
 }
 #endif
-static void prefs_open_cb(GtkMenuItem *menuitem, gpointer data)
+static void prefs_open_cb(GtkAction *action, gpointer data)
 {
 	prefs_gtk_open();
 }
 
-static void plugins_open_cb(GtkMenuItem *menuitem, gpointer data)
+static void plugins_open_cb(GtkAction *action, gpointer data)
 {
 	pluginwindow_create();
 }
 
-static void manual_open_cb(MainWindow *mainwin, guint action,
-			   GtkWidget *widget)
+static void manual_open_cb(GtkAction *action, gpointer data)
 {
-	manual_open((ManualType)action, NULL);
+	manual_open(MANUAL_MANUAL_CLAWS, NULL);
 }
 
-static void legend_open_cb(GtkMenuItem *menuitem, gpointer data)
+static void manual_faq_open_cb(GtkAction *action, gpointer data)
+{
+	manual_open(MANUAL_FAQ_CLAWS, NULL);
+}
+
+static void legend_open_cb(GtkAction *action, gpointer data)
 {
 	legend_show();
 }
@@ -4613,20 +4880,18 @@ gboolean mainwindow_is_obscured(void)
 /*
  * Harvest addresses for selected folder.
  */
-static void addr_harvest_cb( MainWindow *mainwin,
-			    guint action,
-			    GtkWidget *widget )
+static void addr_harvest_cb( GtkAction *action, gpointer data)
 {
+	MainWindow *mainwin = (MainWindow *)data;
 	addressbook_harvest( mainwin->summaryview->folder_item, FALSE, NULL );
 }
 
 /*
  * Harvest addresses for selected messages in summary view.
  */
-static void addr_harvest_msg_cb( MainWindow *mainwin,
-			    guint action,
-			    GtkWidget *widget )
+static void addr_harvest_msg_cb( GtkAction *action, gpointer data)
 {
+	MainWindow *mainwin = (MainWindow *)data;
 	summary_harvest_address( mainwin->summaryview );
 }
 
@@ -4664,8 +4929,9 @@ static gboolean mainwindow_progressindicator_hook(gpointer source, gpointer user
 	return FALSE;
 }
 
-static void sync_cb(MainWindow *mainwin, guint action, GtkWidget *widget)
+static void sync_cb(GtkAction *action, gpointer data)
 {
+	MainWindow *mainwin = (MainWindow *)data;
 	mainwindow_check_synchronise(mainwin, FALSE);
 }
 

@@ -186,7 +186,7 @@ static void mimeview_select_next_part_cb(GtkAction *action, gpointer data)
 	mimeview_select_next_part((MimeView *)data);
 }
 
-static const GtkActionEntry mimeview_menu_actions[] = {
+static GtkActionEntry mimeview_menu_actions[] = {
 	{ "MimeView", NULL, "MimeView" },
 	{ "MimeView/Open", NULL, N_("_Open (l)"), NULL, "Open MIME part", G_CALLBACK(mimeview_launch_cb) },
 #ifndef MAEMO

@@ -557,14 +557,14 @@ static GtkActionEntry summary_popup_entries[] =
 #ifndef GENERIC_UMPC
 	{"SummaryViewPopup/AddSenderToAB",			NULL, N_("Add sender to address boo_k"), NULL, NULL, G_CALLBACK(summary_menu_cb) }, 
 #endif
-	{"SummaryViewPopup/CreateFilterRule",			NULL, "Create f_ilter rule" },
+	{"SummaryViewPopup/CreateFilterRule",			NULL, N_("Create f_ilter rule") },
 	{"SummaryViewPopup/CreateFilterRule/Automatically",	NULL, N_("_Automatically"), NULL, NULL, G_CALLBACK(summary_menu_cb) }, 
 	{"SummaryViewPopup/CreateFilterRule/ByFrom",		NULL, N_("By _From"), NULL, NULL, G_CALLBACK(summary_menu_cb) }, 
 	{"SummaryViewPopup/CreateFilterRule/ByTo",		NULL, N_("By _To"), NULL, NULL, G_CALLBACK(summary_menu_cb) }, 
 	{"SummaryViewPopup/CreateFilterRule/BySubject",		NULL, N_("By _Subject"), NULL, NULL, G_CALLBACK(summary_menu_cb) }, 
 
 #ifndef GENERIC_UMPC
-	{"SummaryViewPopup/CreateProcessingRule",			NULL, "Create processing rule" },
+	{"SummaryViewPopup/CreateProcessingRule",			NULL, N_("Create processing rule") },
 	{"SummaryViewPopup/CreateProcessingRule/Automatically",	NULL, N_("_Automatically"), NULL, NULL, G_CALLBACK(summary_menu_cb) }, 
 	{"SummaryViewPopup/CreateProcessingRule/ByFrom",		NULL, N_("By _From"), NULL, NULL, G_CALLBACK(summary_menu_cb) }, 
 	{"SummaryViewPopup/CreateProcessingRule/ByTo",		NULL, N_("By _To"), NULL, NULL, G_CALLBACK(summary_menu_cb) }, 
@@ -676,7 +676,6 @@ SummaryView *summary_create(void)
 	GtkWidget *toggle_arrow;
 	GtkWidget *toggle_search;
 	QuickSearch *quicksearch;
-	GtkUIManager *gui_manager = gtkut_ui_manager();
 	CLAWS_TIP_DECL();
 
 	debug_print("Creating summary view...\n");
@@ -7471,9 +7470,8 @@ static void summary_set_hide_read_msgs_menu (SummaryView *summaryview,
  					     guint action)
 {
  	GtkWidget *widget;
- 
- 	widget = gtk_item_factory_get_item(gtk_item_factory_from_widget(summaryview->mainwin->menubar),
- 					   "/View/Hide read messages");
+
+ 	widget = gtk_ui_manager_get_widget(summaryview->mainwin->ui_manager, "/Menu/View/HideReadMessages");
  	g_object_set_data(G_OBJECT(widget), "dont_toggle",
  			  GINT_TO_POINTER(1));
  	gtk_check_menu_item_set_active (GTK_CHECK_MENU_ITEM(widget), action);

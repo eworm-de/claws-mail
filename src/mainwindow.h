@@ -93,8 +93,6 @@ struct _MainWindow
 	GtkWidget *vbox;
 	GtkWidget *menubar;
 
-	GtkItemFactory *menu_factory;
-
 	/* Toolbar handlebox */
 	GtkWidget *handlebox;
 	Toolbar *toolbar;
@@ -141,6 +139,9 @@ struct _MainWindow
 	gpointer smc_conn;
 #endif
 	gboolean	 in_folder;
+	GtkActionGroup	*action_group;
+	GtkUIManager	*ui_manager;
+	
 };
 
 MainWindow *main_window_create		(void);
