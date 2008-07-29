@@ -24,8 +24,7 @@ typedef struct _Compose		Compose;
 typedef struct _AttachInfo	AttachInfo;
 
 #include <glib.h>
-#include <gtk/gtkwidget.h>
-#include <gtk/gtkitemfactory.h>
+#include <gtk/gtk.h>
 
 #include "procmsg.h"
 #include "procmime.h"
@@ -129,8 +128,6 @@ struct _Compose
 
 	GtkWidget *popupmenu;
 
-	GtkItemFactory *popupfactory;
-
 	GtkWidget *tmpl_menu;
 
 	ComposeMode mode;
@@ -233,6 +230,8 @@ struct _Compose
 	ComposeMode rmode;
 	GtkWidget *first_combo;
 	GtkWidget *first_entry;
+	
+	GtkUIManager *ui_manager;
 };
 
 struct _AttachInfo

@@ -5915,6 +5915,7 @@ static void summary_tags_menu_create(SummaryView *summaryview, gboolean refresh)
 	GSList *cur = tags_get_list();
 	GSList *orig = NULL;
 	gboolean existing_tags = FALSE;
+	gchar *accel_path = NULL;
 
 	cur = orig = g_slist_sort(cur, summary_tag_cmp_list);
 	label_menuitem = gtk_ui_manager_get_widget(gtkut_ui_manager(), "/Menus/SummaryViewPopup/Tags");
@@ -5926,11 +5927,13 @@ static void summary_tags_menu_create(SummaryView *summaryview, gboolean refresh)
 
 	menu = gtk_menu_new();
 
+	gtk_menu_set_accel_group (GTK_MENU (menu), 
+		gtk_ui_manager_get_accel_group(gtkut_ui_manager()));
+
 	/* create tags menu items */
 	for (; cur; cur = cur->next) {
 		gint id = GPOINTER_TO_INT(cur->data);
 		const gchar *tag = tags_get_tag(id);
-
 		item = gtk_check_menu_item_new_with_label(tag);
 		gtk_menu_shell_append(GTK_MENU_SHELL(menu), item);
 		g_signal_connect(G_OBJECT(item), "activate",
@@ -5941,6 +5944,9 @@ static void summary_tags_menu_create(SummaryView *summaryview, gboolean refresh)
 		g_object_set_data(G_OBJECT(item), "tag_id",
 				  GINT_TO_POINTER(id));
 		gtk_widget_show(item);
+		accel_path = g_strconcat("<ClawsTags>/",tag, NULL);
+		gtk_menu_item_set_accel_path(GTK_MENU_ITEM(item), accel_path);
+		g_free(accel_path);
 		existing_tags = TRUE;
 	}
 	if (existing_tags) {
@@ -5958,6 +5964,9 @@ static void summary_tags_menu_create(SummaryView *summaryview, gboolean refresh)
 	g_object_set_data(G_OBJECT(item), "summaryview",
 			  summaryview);
 	gtk_widget_show(item);
+	accel_path = g_strconcat("<ClawsTags>/","Apply tags...", NULL);
+	gtk_menu_item_set_accel_path(GTK_MENU_ITEM(item), accel_path);
+	g_free(accel_path);
 
 	g_slist_free(orig);
 	gtk_widget_show(menu);

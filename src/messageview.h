@@ -76,6 +76,7 @@ struct _MessageView
 	gboolean deferred_destroy;
 	
 	gboolean show_full_text;
+	GtkUIManager *ui_manager;
 };
 
 MessageView *messageview_create			(MainWindow	*mainwin);

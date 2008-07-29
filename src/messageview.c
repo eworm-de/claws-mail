@@ -97,333 +97,265 @@ static void partial_recv_del_clicked 	(NoticeView	*noticeview,
                                          MsgInfo        *msginfo);
 static void partial_recv_unmark_clicked (NoticeView	*noticeview, 
                                          MsgInfo        *msginfo);
-static void save_as_cb			(gpointer	 data,
-					 guint		 action,
-					 GtkWidget	*widget);
+static void save_as_cb			(GtkAction	*action,
+					 gpointer	 data);
 #if GTK_CHECK_VERSION(2,10,0) && !defined(USE_GNOMEPRINT)
-static void page_setup_cb		(gpointer	 data,
-					 guint		 action,
-					 GtkWidget	*widget);
+static void page_setup_cb		(GtkAction	*action,
+					 gpointer	 data);
 #endif
-static void print_cb			(gpointer	 data,
-					 guint		 action,
-					 GtkWidget	*widget);
-static void close_cb			(gpointer	 data,
-					 guint		 action,
-					 GtkWidget	*widget);
-static void copy_cb			(gpointer	 data,
-					 guint		 action,
-					 GtkWidget	*widget);
-static void allsel_cb			(gpointer	 data,
-					 guint		 action,
-					 GtkWidget	*widget);
-static void search_cb			(gpointer	 data,
-					 guint		 action,
-					 GtkWidget	*widget);
+static void print_cb			(GtkAction	*action,
+					 gpointer	 data);
+static void close_cb			(GtkAction	*action,
+					 gpointer	 data);
+static void copy_cb			(GtkAction	*action,
+					 gpointer	 data);
+static void allsel_cb			(GtkAction	*action,
+					 gpointer	 data);
+static void search_cb			(GtkAction	*action,
+					 gpointer	 data);
 
-static void prev_cb			(gpointer	 data,
-					 guint		 action,
-					 GtkWidget	*widget);
-static void next_cb			(gpointer	 data,
-					 guint		 action,
-					 GtkWidget	*widget);
-static void prev_unread_cb		(gpointer	 data,
-					 guint		 action,
-					 GtkWidget	*widget);
-static void next_unread_cb		(gpointer	 data,
-					 guint		 action,
-					 GtkWidget	*widget);
-static void prev_new_cb			(gpointer	 data,
-					 guint		 action,
-					 GtkWidget	*widget);
-static void next_new_cb			(gpointer	 data,
-					 guint		 action,
-					 GtkWidget	*widget);
-static void prev_marked_cb		(gpointer	 data,
-					 guint		 action,
-					 GtkWidget	*widget);
-static void next_marked_cb		(gpointer	 data,
-					 guint		 action,
-					 GtkWidget	*widget);
-static void prev_labeled_cb		(gpointer	 data,
-					 guint		 action,
-					 GtkWidget	*widget);
-static void next_labeled_cb		(gpointer	 data,
-					 guint		 action,
-					 GtkWidget	*widget);
-static void last_read_cb		(gpointer	 data,
-					 guint		 action,
-					 GtkWidget	*widget);
-static void parent_cb			(gpointer	 data,
-					 guint		 action,
-					 GtkWidget	*widget);
-static void goto_unread_folder_cb	(gpointer	 data,
-					 guint		 action,
-					 GtkWidget	*widget);
-static void goto_folder_cb		(gpointer	 data,
-					 guint		 action,
-					 GtkWidget	*widget);
+static void prev_cb			(GtkAction	*action,
+					 gpointer	 data);
+static void next_cb			(GtkAction	*action,
+					 gpointer	 data);
+static void prev_unread_cb		(GtkAction	*action,
+					 gpointer	 data);
+static void next_unread_cb		(GtkAction	*action,
+					 gpointer	 data);
+static void prev_new_cb			(GtkAction	*action,
+					 gpointer	 data);
+static void next_new_cb			(GtkAction	*action,
+					 gpointer	 data);
+static void prev_marked_cb		(GtkAction	*action,
+					 gpointer	 data);
+static void next_marked_cb		(GtkAction	*action,
+					 gpointer	 data);
+static void prev_labeled_cb		(GtkAction	*action,
+					 gpointer	 data);
+static void next_labeled_cb		(GtkAction	*action,
+					 gpointer	 data);
+static void last_read_cb		(GtkAction	*action,
+					 gpointer	 data);
+static void parent_cb			(GtkAction	*action,
+					 gpointer	 data);
+static void goto_unread_folder_cb	(GtkAction	*action,
+					 gpointer	 data);
+static void goto_folder_cb		(GtkAction	*action,
+					 gpointer	 data);
 
-static void set_charset_cb		(gpointer	 data,
-					 guint		 action,
-					 GtkWidget	*widget);
-static void set_decode_cb		(gpointer	 data,
-					 guint		 action,
-					 GtkWidget	*widget);
-static void view_source_cb		(gpointer	 data,
-					 guint		 action,
-					 GtkWidget	*widget);
-static void show_all_header_cb		(gpointer	 data,
-					 guint		 action,
-					 GtkWidget	*widget);
-static void msg_hide_quotes_cb		(gpointer	 data,
-					 guint		 action,
-					 GtkWidget	*widget);
+static void set_charset_cb		(GtkAction *action, GtkRadioAction *current, gpointer data);
+static void set_decode_cb		(GtkAction *action, GtkRadioAction *current, gpointer data);
 
-static void compose_cb			(gpointer	 data,
-					 guint		 action,
-					 GtkWidget	*widget);
-static void reply_cb			(gpointer	 data,
-					 guint		 action,
-					 GtkWidget	*widget);
+static void view_source_cb		(GtkAction	*action,
+					 gpointer	 data);
+
+static void show_all_header_cb		(GtkToggleAction	*action,
+					 gpointer	 data);
+static void msg_hide_quotes_cb		(GtkToggleAction	*action,
+					 gpointer	 data);
+
+static void compose_cb			(GtkAction	*action,
+					 gpointer	 data);
+static void reply_cb			(GtkAction	*action,
+					 gpointer	 data);
 
 static PrefsAccount *select_account_from_list
 					(GList		*ac_list);
-static void addressbook_open_cb		(gpointer	 data,
-					 guint		 action,
-					 GtkWidget	*widget);
-static void add_address_cb		(gpointer	 data,
-					 guint		 action,
-					 GtkWidget	*widget);
-static void create_filter_cb		(gpointer	 data,
-					 guint		 action,
-					 GtkWidget	*widget);
-static void create_processing_cb	(gpointer	 data,
-					 guint		 action,
-					 GtkWidget	*widget);
-static void open_urls_cb		(gpointer	 data,
-					 guint		 action,
-					 GtkWidget	*widget);
+static void addressbook_open_cb		(GtkAction	*action,
+					 gpointer	 data);
+static void add_address_cb		(GtkAction	*action,
+					 gpointer	 data);
+static void create_filter_cb		(GtkAction	*action,
+					 gpointer	 data);
+static void create_processing_cb	(GtkAction	*action,
+					 gpointer	 data);
+static void open_urls_cb		(GtkAction	*action,
+					 gpointer	 data);
 
-static void about_cb			(gpointer	 data,
-					 guint		 action,
-					 GtkWidget	*widget);
+static void about_cb			(GtkAction	*action,
+					 gpointer	 data);
 static void messageview_update		(MessageView	*msgview,
 					 MsgInfo	*old_msginfo);
 static gboolean messageview_update_msg	(gpointer source, gpointer data);
 
-static GList *msgview_list = NULL;
-static GtkItemFactoryEntry msgview_entries[] =
+static void messageview_nothing_cb	   (GtkAction *action, gpointer data)
 {
-	{N_("/_File"),			NULL, NULL, 0, "<Branch>"},
-	{N_("/_File/_Save as..."),	"<control>S", save_as_cb, 0, NULL},
+
+}
+
+static GList *msgview_list = NULL;
+static GtkActionEntry msgview_entries[] =
+{
+	{"Menu",			NULL, "Menu" },
+/* menus */
+	{"File",			NULL, N_("_File") },
+	{"Edit",			NULL, N_("_Edit") },
+	{"View",			NULL, N_("_View") },
+	{"Message",			NULL, N_("_Message") },
+	{"Tools",			NULL, N_("_Tools") },
+	{"Help",			NULL, N_("_Help") },
+	{"PlaceHolder",			NULL, "Placeholder", NULL, NULL, G_CALLBACK(messageview_nothing_cb) },
+
+/* File menu */
+	{"File/SaveAs",			NULL, N_("_Save as..."), "<control>S", NULL, G_CALLBACK(save_as_cb) },
 #if GTK_CHECK_VERSION(2,10,0) && !defined(USE_GNOMEPRINT)
-	{N_("/_File/Page setup..."),	NULL, page_setup_cb, 0, NULL},
+	{"File/PageSetup",		NULL, N_("Page setup..."), NULL, NULL, G_CALLBACK(page_setup_cb) },
 #endif
-	{N_("/_File/_Print..."),	"<control>P", print_cb, 0, NULL},
-	{N_("/_File/---"),		NULL, NULL, 0, "<Separator>"},
-	{N_("/_File/_Close"),		"<control>W", close_cb, 0, NULL},
+	{"File/Print",			NULL, N_("_Print..."), "<control>P", NULL, G_CALLBACK(print_cb) },
+	{"File/---",			NULL, "---", NULL, NULL, NULL },
+	{"File/Close",			NULL, N_("_Close"), "<control>W", NULL, G_CALLBACK(close_cb) },
 
-	{N_("/_Edit"),			NULL, NULL, 0, "<Branch>"},
-	{N_("/_Edit/_Copy"),		"<control>C", copy_cb, 0, NULL},
-	{N_("/_Edit/Select _all"),	"<control>A", allsel_cb, 0, NULL},
-	{N_("/_Edit/---"),		NULL, NULL, 0, "<Separator>"},
-	{N_("/_Edit/_Find in current message..."),
-					"<control>F", search_cb, 0, NULL},
+/* Edit menu */
+	{"Edit/Copy",			NULL, N_("_Copy"), "<control>C", NULL, G_CALLBACK(copy_cb) },
+	{"Edit/SelectAll",		NULL, N_("_Select all"), "<control>A", NULL, G_CALLBACK(allsel_cb) },
+	{"Edit/---",			NULL, "---", NULL, NULL, NULL },
+	{"Edit/Find",			NULL, N_("_Find"), "<control>F", NULL, G_CALLBACK(search_cb) },
+	
+/* View menu */
+	{"View/Goto",			NULL, N_("_Go to") },
+	{"View/Goto/Prev",		NULL, N_("_Previous message"), "P", NULL, G_CALLBACK(prev_cb) },
+	{"View/Goto/Next",		NULL, N_("_Next message"), "N", NULL, G_CALLBACK(next_cb) },
+	{"View/Goto/---",		NULL, "---", NULL, NULL, NULL },
+	{"View/Goto/PrevUnread",	NULL, N_("P_revious unread message"), "<shift>P", NULL, G_CALLBACK(prev_unread_cb) },
+	{"View/Goto/NextUnread",	NULL, N_("N_ext unread message"), "<shift>N", NULL, G_CALLBACK(next_unread_cb) },
+	/* {"View/Goto/---",		NULL, "---", NULL, NULL, NULL }, */
+	{"View/Goto/PrevNew",		NULL, N_("Previous ne_w message"), NULL, NULL, G_CALLBACK(prev_new_cb) },
+	{"View/Goto/NextNew",		NULL, N_("Ne_xt new message"), NULL, NULL, G_CALLBACK(next_new_cb) },
+	/* {"View/Goto/---",		NULL, "---", NULL, NULL, NULL }, */
+	{"View/Goto/PrevMarked",	NULL, N_("Previous _marked message"), NULL, NULL, G_CALLBACK(prev_marked_cb) },
+	{"View/Goto/NextMarked",	NULL, N_("Next m_arked message"), NULL, NULL, G_CALLBACK(next_marked_cb) },
+	/* {"View/Goto/---",		NULL, "---", NULL, NULL, NULL }, */
+	{"View/Goto/PrevLabeled",	NULL, N_("Previous _labeled message"), NULL, NULL, G_CALLBACK(prev_labeled_cb) },
+	{"View/Goto/NextLabeled",	NULL, N_("Next la_beled message"), NULL, NULL, G_CALLBACK(next_labeled_cb) },
+	/* {"View/Goto/---",		NULL, "---", NULL, NULL, NULL }, */
+	{"View/Goto/LastRead",		NULL, N_("Last read message"), NULL, NULL, G_CALLBACK(last_read_cb) },
+	{"View/Goto/ParentMessage",	NULL, N_("Parent message"), "<control>Up", NULL, G_CALLBACK(parent_cb) },
+	/* {"View/Goto/---",		NULL, "---", NULL, NULL, NULL }, */
+	{"View/Goto/NextUnreadFolder",	NULL, N_("Next unread _folder"), "<shift>G", NULL, G_CALLBACK(goto_unread_folder_cb) },
+	{"View/Goto/OtherFolder",	NULL, N_("_Other folder..."), "G", NULL, G_CALLBACK(goto_folder_cb) },
+	/* {"View/Goto/---",		NULL, "---", NULL, NULL, NULL }, */
 
-	{N_("/_View"),			NULL, NULL, 0, "<Branch>"},
-	{N_("/_View/_Go to"),			NULL, NULL, 0, "<Branch>"},
-	{N_("/_View/_Go to/_Previous message"),	"P", prev_cb, 0, NULL},
-	{N_("/_View/_Go to/_Next message"),	"N", next_cb, 0, NULL},
-	{N_("/_View/_Go to/---"),		NULL, NULL, 0, "<Separator>"},
-	{N_("/_View/_Go to/P_revious unread message"),
-						"<shift>P", prev_unread_cb, 0, NULL},
-	{N_("/_View/_Go to/N_ext unread message"),
-						"<shift>N", next_unread_cb, 0, NULL},
-	{N_("/_View/_Go to/---"),		NULL, NULL, 0, "<Separator>"},
-	{N_("/_View/_Go to/Previous ne_w message"),	NULL, prev_new_cb, 0, NULL},
-	{N_("/_View/_Go to/Ne_xt new message"),	NULL, next_new_cb, 0, NULL},
-	{N_("/_View/_Go to/---"),		NULL, NULL, 0, "<Separator>"},
-	{N_("/_View/_Go to/Previous _marked message"),
-						NULL, prev_marked_cb, 0, NULL},
-	{N_("/_View/_Go to/Next m_arked message"),
-						NULL, next_marked_cb, 0, NULL},
-	{N_("/_View/_Go to/---"),		NULL, NULL, 0, "<Separator>"},
-	{N_("/_View/_Go to/Previous _labeled message"),
-						NULL, prev_labeled_cb, 0, NULL},
-	{N_("/_View/_Go to/Next la_beled message"),
-						NULL, next_labeled_cb, 0, NULL},
-	{N_("/_View/_Go to/---"),		NULL, NULL, 0, "<Separator>"},
-	{N_("/_View/_Go to/Last read message"),
-						NULL, last_read_cb, 0, NULL},
-	{N_("/_View/_Go to/Parent message"),
-						"<control>Up", parent_cb, 0, NULL},
-	{N_("/_View/_Go to/---"),		NULL, NULL, 0, "<Separator>"},
-	{N_("/_View/_Go to/Next unread _folder"),	"<shift>G", goto_unread_folder_cb, 0, NULL},
-	{N_("/_View/_Go to/_Other folder..."),	"G", goto_folder_cb, 0, NULL},
-	{N_("/_View/---"),			NULL, NULL, 0, "<Separator>"},
+	{"View/Encoding",		NULL, N_("Character _encoding") }, /* set_charset_cb */
+	{"View/Encoding/---",		NULL, "---" },
+#define ENC_ACTION(cs_char,c_char,string) \
+	{ "View/Encoding/" cs_char, NULL, N_(string), NULL, NULL, c_char }
 
-#define ENC_SEPARATOR \
-	{N_("/_View/Character _encoding/---"),	NULL, NULL, 0, "<Separator>"}
-#define ENC_ACTION(action) \
-	NULL, set_charset_cb, action, "/View/Character encoding/Auto detect"
+	{"View/Encoding/Western",	NULL, N_("Western European") },
+	{"View/Encoding/Baltic",	NULL, N_("Baltic") },
+	{"View/Encoding/Hebrew",	NULL, N_("Hebrew") },
+	{"View/Encoding/Arabic",	NULL, N_("Arabic") },
+	{"View/Encoding/Cyrillic",	NULL, N_("Cyrillic") },
+	{"View/Encoding/Japanese",	NULL, N_("Japanese") },
+	{"View/Encoding/Chinese",	NULL, N_("Chinese") },
+	{"View/Encoding/Korean",	NULL, N_("Korean") },
+	{"View/Encoding/Thai",		NULL, N_("Thai") },
 
-	{N_("/_View/Character _encoding"),	NULL, NULL, 0, "<Branch>"},
-	{N_("/_View/Character _encoding/_Auto detect"),
-					NULL, set_charset_cb, C_AUTO, "<RadioItem>"},
-	ENC_SEPARATOR,
-	{N_("/_View/Character _encoding/7bit ASCII (US-ASC_II)"),
-	 ENC_ACTION(C_US_ASCII)},
+	{"View/Decode",			NULL, N_("Decode") }, /* set_decode_cb */
+	{"View/Decode/---",		NULL, "---" },
 
-	{N_("/_View/Character _encoding/Unicode (_UTF-8)"),
-	 ENC_ACTION(C_UTF_8)},
-	ENC_SEPARATOR,
-	{N_("/_View/Character _encoding/Western European (ISO-8859-_1)"),
-	 ENC_ACTION(C_ISO_8859_1)},
-	{N_("/_View/Character _encoding/Western European (ISO-8859-15)"),
-	 ENC_ACTION(C_ISO_8859_15)},
-	{N_("/_View/Character _encoding/Western European (Windows-1252)"),
-	 ENC_ACTION(C_WINDOWS_1252)},
-	ENC_SEPARATOR,
-	{N_("/_View/Character _encoding/Central European (ISO-8859-_2)"),
-	 ENC_ACTION(C_ISO_8859_2)},
-	ENC_SEPARATOR,
-	{N_("/_View/Character _encoding/_Baltic (ISO-8859-13)"),
-	 ENC_ACTION(C_ISO_8859_13)},
-	{N_("/_View/Character _encoding/Baltic (ISO-8859-_4)"),
-	 ENC_ACTION(C_ISO_8859_4)},
-	ENC_SEPARATOR,
-	{N_("/_View/Character _encoding/Greek (ISO-8859-_7)"),
-	 ENC_ACTION(C_ISO_8859_7)},
-	ENC_SEPARATOR,
-	{N_("/_View/Character _encoding/Hebrew (ISO-8859-_8)"),
-	 ENC_ACTION(C_ISO_8859_8)},
-	{N_("/_View/Character _encoding/Hebrew (Windows-1255)"),
-	 ENC_ACTION(C_CP1255)},
-	ENC_SEPARATOR,
-	{N_("/_View/Character _encoding/Arabic (ISO-8859-_6)"),
-	 ENC_ACTION(C_ISO_8859_6)},
-	{N_("/_View/Character _encoding/Arabic (Windows-1256)"),
-	 ENC_ACTION(C_CP1256)},
-	ENC_SEPARATOR,
-	{N_("/_View/Character _encoding/Turkish (ISO-8859-_9)"),
-	 ENC_ACTION(C_ISO_8859_9)},
-	ENC_SEPARATOR,
-	{N_("/_View/Character _encoding/Cyrillic (ISO-8859-_5)"),
-	 ENC_ACTION(C_ISO_8859_5)},
-	{N_("/_View/Character _encoding/Cyrillic (KOI8-_R)"),
-	 ENC_ACTION(C_KOI8_R)},
-	{N_("/_View/Character _encoding/Cyrillic (KOI8-U)"),
-	 ENC_ACTION(C_KOI8_U)},
-	{N_("/_View/Character _encoding/Cyrillic (Windows-1251)"),
-	 ENC_ACTION(C_CP1251)},
-	ENC_SEPARATOR,
-	{N_("/_View/Character _encoding/Japanese (ISO-2022-_JP)"),
-	 ENC_ACTION(C_ISO_2022_JP)},
-	{N_("/_View/Character _encoding/Japanese (ISO-2022-JP-2)"),
-	 ENC_ACTION(C_ISO_2022_JP_2)},
-	{N_("/_View/Character _encoding/Japanese (_EUC-JP)"),
-	 ENC_ACTION(C_EUC_JP)},
-	{N_("/_View/Character _encoding/Japanese (_Shift__JIS)"),
-	 ENC_ACTION(C_SHIFT_JIS)},
-	ENC_SEPARATOR,
-	{N_("/_View/Character _encoding/Simplified Chinese (_GB2312)"),
-	 ENC_ACTION(C_GB2312)},
-	{N_("/_View/Character _encoding/Simplified Chinese (GBK)"),
-	 ENC_ACTION(C_GBK)},
-	{N_("/_View/Character _encoding/Traditional Chinese (_Big5)"),
-	 ENC_ACTION(C_BIG5)},
-	{N_("/_View/Character _encoding/Traditional Chinese (EUC-_TW)"),
-	 ENC_ACTION(C_EUC_TW)},
-	{N_("/_View/Character _encoding/Chinese (ISO-2022-_CN)"),
-	 ENC_ACTION(C_ISO_2022_CN)},
-	ENC_SEPARATOR,
-	{N_("/_View/Character _encoding/Korean (EUC-_KR)"),
-	 ENC_ACTION(C_EUC_KR)},
-	{N_("/_View/Character _encoding/Korean (ISO-2022-KR)"),
-	 ENC_ACTION(C_ISO_2022_KR)},
-	ENC_SEPARATOR,
-	{N_("/_View/Character _encoding/Thai (TIS-620)"),
-	 ENC_ACTION(C_TIS_620)},
-	{N_("/_View/Character _encoding/Thai (Windows-874)"),
-	 ENC_ACTION(C_WINDOWS_874)},
+#define DEC_ACTION(cs_type,c_type,string) \
+	{ "View/Decode/" cs_type, NULL, N_(string), NULL, NULL, c_type }
 
-#undef ENC_SEPARATOR
-#undef ENC_ACTION
+	{"View/---",			NULL, "---", NULL, NULL, NULL },
+	{"View/MessageSource",		NULL, N_("Mess_age source"), "<control>U", NULL, G_CALLBACK(view_source_cb) },
 
-#define DEC_SEPARATOR \
-	{N_("/_View/Decode/---"),		NULL, NULL, 0, "<Separator>"}
-#define DEC_ACTION(action) \
-	 NULL, set_decode_cb, action, "/View/Decode/Auto detect"
-	{N_("/_View/Decode"),		NULL, NULL, 0, "<Branch>"},
-	{N_("/_View/Decode/_Auto detect"),
-	 NULL, set_decode_cb, 0, "<RadioItem>"},
-	{N_("/_View/Decode/---"),		NULL, NULL, 0, "<Separator>"},
-	{N_("/_View/Decode/_8bit"), 		DEC_ACTION(ENC_8BIT)},
-	{N_("/_View/Decode/_Quoted printable"),	DEC_ACTION(ENC_QUOTED_PRINTABLE)},
-	{N_("/_View/Decode/_Base64"), 		DEC_ACTION(ENC_BASE64)},
-	{N_("/_View/Decode/_Uuencode"),		DEC_ACTION(ENC_X_UUENCODE)},
+	{"View/Quotes",			NULL, N_("Quotes") }, 
 
-#undef DEC_SEPARATOR
-#undef DEC_ACTION
+/* Message menu */
+	{"Message/Compose",		NULL, N_("Compose _new message"), "<control>M", NULL, G_CALLBACK(compose_cb) },
+	{"Message/---",			NULL, "---", NULL, NULL, NULL },
 
-	{N_("/_View/---"),		NULL, NULL, 0, "<Separator>"},
-	{N_("/_View/Mess_age source"),	"<control>U", view_source_cb, 0, NULL},
-	{N_("/_View/Show all _headers"),"<control>H", show_all_header_cb, 0, "<ToggleItem>"},
-	{N_("/_View/Quotes"),			NULL, NULL, 0, "<Branch>"},
-	{N_("/_View/Quotes/_Fold all"),		"<control><shift>Q", msg_hide_quotes_cb, 1, "<ToggleItem>"},
-	{N_("/_View/Quotes/Fold from level _2"),NULL, msg_hide_quotes_cb, 2, "<ToggleItem>"},
-	{N_("/_View/Quotes/Fold from level _3"),NULL, msg_hide_quotes_cb, 3, "<ToggleItem>"},
+	{"Message/Reply",		NULL, N_("_Reply"), "<control>R", NULL, G_CALLBACK(reply_cb) }, /* COMPOSE_REPLY */
+	{"Message/ReplyTo",		NULL, N_("Repl_y to") }, 
+	{"Message/ReplyTo/All",		NULL, N_("_all"), "<control><shift>R", NULL, G_CALLBACK(reply_cb) }, /* COMPOSE_REPLY_TO_ALL */
+	{"Message/ReplyTo/Sender",	NULL, N_("_sender"), NULL, NULL, G_CALLBACK(reply_cb) }, /* COMPOSE_REPLY_TO_SENDER */
+	{"Message/ReplyTo/List",	NULL, N_("mailing _list"), "<control>L", NULL, G_CALLBACK(reply_cb) }, /* COMPOSE_REPLY_TO_LIST */
+	/* {"Message/---",			NULL, "---", NULL, NULL, NULL }, */
 
-	{N_("/_Message"),		NULL, NULL, 0, "<Branch>"},
-	{N_("/_Message/Compose _new message"),
-					"<control>M", compose_cb, 0, NULL},
-	{N_("/_Message/---"),		NULL, NULL, 0, "<Separator>"},
-	{N_("/_Message/_Reply"),	"<control>R", reply_cb, COMPOSE_REPLY, NULL},
-	{N_("/_Message/Repl_y to/_all"),
-					"<control><shift>R", reply_cb, COMPOSE_REPLY_TO_ALL, NULL},
-	{N_("/_Message/Repl_y to/_sender"),
-					NULL, reply_cb, COMPOSE_REPLY_TO_SENDER, NULL},
-	{N_("/_Message/Repl_y to/mailing _list"),
-					"<control>L", reply_cb, COMPOSE_REPLY_TO_LIST, NULL},
-	{N_("/_Message/---"),		NULL, NULL, 0, "<Separator>"},
-	{N_("/_Message/_Forward"),	"<control><alt>F", reply_cb, COMPOSE_FORWARD_INLINE, NULL},
-	{N_("/_Message/For_ward as attachment"),
-					NULL, reply_cb, COMPOSE_FORWARD_AS_ATTACH, NULL},
-	{N_("/_Message/Redirec_t"),	NULL, reply_cb, COMPOSE_REDIRECT, NULL},
+	{"Message/Forward",		NULL, N_("_Forward"), "<control><alt>F", NULL, G_CALLBACK(reply_cb) }, /* COMPOSE_FORWARD_INLINE */
+	{"Message/ForwardAtt",		NULL, N_("For_ward as attachment"), NULL, NULL, G_CALLBACK(reply_cb) }, /* COMPOSE_FORWARD_AS_ATTACH */
+	{"Message/Redirect",		NULL, N_("Redirec_t"), NULL, NULL, G_CALLBACK(reply_cb) }, /* COMPOSE_REDIRECT */
 
-	{N_("/_Tools"),			NULL, NULL, 0, "<Branch>"},
-	{N_("/_Tools/_Address book"),	"<control><shift>A", addressbook_open_cb, 0, NULL},
-	{N_("/_Tools/Add sender to address boo_k"),
-					NULL, add_address_cb, 0, NULL},
-	{N_("/_Tools/---"),		NULL, NULL, 0, "<Separator>"},
-	{N_("/_Tools/_Create filter rule"),
-					NULL, NULL, 0, "<Branch>"},
-	{N_("/_Tools/_Create filter rule/_Automatically"),
-					NULL, create_filter_cb, FILTER_BY_AUTO, NULL},
-	{N_("/_Tools/_Create filter rule/by _From"),
-					NULL, create_filter_cb, FILTER_BY_FROM, NULL},
-	{N_("/_Tools/_Create filter rule/by _To"),
-					NULL, create_filter_cb, FILTER_BY_TO, NULL},
-	{N_("/_Tools/_Create filter rule/by _Subject"),
-					NULL, create_filter_cb, FILTER_BY_SUBJECT, NULL},
-	{N_("/_Tools/Create processing rule"),
-					NULL, NULL, 0, "<Branch>"},
-	{N_("/_Tools/Create processing rule/_Automatically"),
-					NULL, create_processing_cb, FILTER_BY_AUTO, NULL},
-	{N_("/_Tools/Create processing rule/by _From"),
-					NULL, create_processing_cb, FILTER_BY_FROM, NULL},
-	{N_("/_Tools/Create processing rule/by _To"),
-					NULL, create_processing_cb, FILTER_BY_TO, NULL},
-	{N_("/_Tools/Create processing rule/by _Subject"),
-					NULL, create_processing_cb, FILTER_BY_SUBJECT, NULL},
-	{N_("/_Tools/---"),		NULL, NULL, 0, "<Separator>"},
-	{N_("/_Tools/List _URLs..."),	"<shift><control>U", open_urls_cb, 0, NULL},
-	{N_("/_Tools/---"),		NULL, NULL, 0, "<Separator>"},
-	{N_("/_Tools/Actio_ns"),	NULL, NULL, 0, "<Branch>"},
+/* Tools menu */	
+	{"Tools/AddressBook",		NULL, N_("_Address book"), "<control><shift>A", NULL, G_CALLBACK(addressbook_open_cb) }, 
+	{"Tools/AddSenderToAB",		NULL, N_("Add sender to address boo_k"), NULL, NULL, G_CALLBACK(add_address_cb) }, 
+	{"Tools/---",			NULL, "---", NULL, NULL, NULL },
 
-	{N_("/_Help"),			NULL, NULL, 0, "<Branch>"},
-	{N_("/_Help/_About"),		NULL, about_cb, 0, NULL}
+	{"Tools/CreateFilterRule",			NULL, "_Create filter rule" },
+	{"Tools/CreateFilterRule/Automatically",	NULL, N_("_Automatically"), NULL, NULL, G_CALLBACK(create_filter_cb) }, /* FILTER_BY_AUTO */
+	{"Tools/CreateFilterRule/ByFrom",		NULL, N_("By _From"), NULL, NULL, G_CALLBACK(create_filter_cb) }, /* FILTER_BY_FROM */
+	{"Tools/CreateFilterRule/ByTo",			NULL, N_("By _To"), NULL, NULL, G_CALLBACK(create_filter_cb) }, /* FILTER_BY_TO     */
+	{"Tools/CreateFilterRule/BySubject",		NULL, N_("By _Subject"), NULL, NULL, G_CALLBACK(create_filter_cb) }, /* FILTER_BY_SUBJECT */
+
+	{"Tools/CreateProcessingRule",			NULL, "Create processing rule" },
+	{"Tools/CreateProcessingRule/Automatically",	NULL, N_("_Automatically"), NULL, NULL, G_CALLBACK(create_processing_cb) }, 
+	{"Tools/CreateProcessingRule/ByFrom",		NULL, N_("By _From"), NULL, NULL, G_CALLBACK(create_processing_cb) }, 
+	{"Tools/CreateProcessingRule/ByTo",		NULL, N_("By _To"), NULL, NULL, G_CALLBACK(create_processing_cb) }, 
+	{"Tools/CreateProcessingRule/BySubject",		NULL, N_("By _Subject"), NULL, NULL, G_CALLBACK(create_processing_cb) }, 
+
+	/* {"Tools/---",			NULL, "---", NULL, NULL, NULL }, */
+
+	{"Tools/ListUrls",		NULL, N_("List _URLs..."), "<control><shift>U", NULL, G_CALLBACK(open_urls_cb) }, 
+
+	/* {"Tools/---",			NULL, "---", NULL, NULL, NULL }, */
+	{"Tools/Actions",	NULL, N_("Actio_ns") },
+	{"Tools/Actions/PlaceHolder",	NULL, "Placeholder", NULL, NULL, G_CALLBACK(messageview_nothing_cb) },
+
+/* Help menu */
+	{"Help/About",		NULL, N_("_About"), NULL, NULL, G_CALLBACK(about_cb) }, 
+};
+
+static GtkToggleActionEntry msgview_toggle_entries[] =
+{
+	{"View/AllHeaders",		NULL, N_("Show all _headers"), "<control>H", NULL, G_CALLBACK(show_all_header_cb) }, /* toggle */
+	{"View/Quotes/FoldAll",		NULL, N_("_Fold all"), "<control><shift>Q", NULL, G_CALLBACK(msg_hide_quotes_cb) }, /* 1 toggle */
+	{"View/Quotes/Fold2",		NULL, N_("Fold from level _2"), NULL, NULL, G_CALLBACK(msg_hide_quotes_cb) }, /* 2 toggle */
+	{"View/Quotes/Fold3",		NULL, N_("Fold from level _3"), NULL, NULL, G_CALLBACK(msg_hide_quotes_cb) }, /* 3 toggle */
+};
+
+static GtkRadioActionEntry msgview_radio_enc_entries[] =
+{
+	ENC_ACTION(CS_AUTO, C_AUTO, "_Automatic"), /* RADIO set_charset_cb */
+	ENC_ACTION(CS_US_ASCII, C_US_ASCII, "7bit ASCII (US-ASC_II)"), /* RADIO set_charset_cb */
+	ENC_ACTION(CS_UTF_8, C_UTF_8, "Unicode (_UTF-8)"), /* RADIO set_charset_cb */
+	ENC_ACTION("Western/"CS_ISO_8859_1, C_ISO_8859_1, "ISO-8859-_1"), /* RADIO set_charset_cb */
+	ENC_ACTION("Western/"CS_ISO_8859_15, C_ISO_8859_15, "ISO-8859-15"), /* RADIO set_charset_cb */
+	ENC_ACTION("Western/"CS_WINDOWS_1252, C_WINDOWS_1252, "Windows-1252"), /* RADIO set_charset_cb */
+	ENC_ACTION(CS_ISO_8859_2, C_ISO_8859_2, "Central European (ISO-8859-_2)"), /* RADIO set_charset_cb */
+	ENC_ACTION("Baltic/"CS_ISO_8859_13, C_ISO_8859_13, "ISO-8859-13"), /* RADIO set_charset_cb */
+	ENC_ACTION("Baltic/"CS_ISO_8859_4, C_ISO_8859_14, "ISO-8859-_4"), /* RADIO set_charset_cb */
+	ENC_ACTION(CS_ISO_8859_7, C_ISO_8859_7, "Greek (ISO-8859-_7)"), /* RADIO set_charset_cb */
+	ENC_ACTION("Hebrew/"CS_ISO_8859_8, C_ISO_8859_8, "ISO-8859-_8"), /* RADIO set_charset_cb */
+	ENC_ACTION("Hebrew/"CS_WINDOWS_1255, C_WINDOWS_1255, "Windows-1255"), /* RADIO set_charset_cb */
+	ENC_ACTION("Arabic/"CS_ISO_8859_6, C_ISO_8859_6, "ISO-8859-_6"), /* RADIO set_charset_cb */
+	ENC_ACTION("Arabic/"CS_WINDOWS_1256, C_WINDOWS_1256, "Windows-1256"), /* RADIO set_charset_cb */
+	ENC_ACTION(CS_ISO_8859_9, C_ISO_8859_9, "Turkish (ISO-8859-_9)"), /* RADIO set_charset_cb */
+	ENC_ACTION("Cyrillic/"CS_ISO_8859_5, C_ISO_8859_5, "ISO-8859-_5"), /* RADIO set_charset_cb */
+	ENC_ACTION("Cyrillic/"CS_KOI8_R, C_KOI8_R, "KOI8-_R"), /* RADIO set_charset_cb */
+	ENC_ACTION("Cyrillic/"CS_KOI8_U, C_KOI8_U, "KOI8-_U"), /* RADIO set_charset_cb */
+	ENC_ACTION("Cyrillic/"CS_WINDOWS_1251, C_WINDOWS_1251, "Windows-1251"), /* RADIO set_charset_cb */
+	ENC_ACTION("Japanese/"CS_ISO_2022_JP, C_ISO_2022_JP, "ISO-2022-_JP"), /* RADIO set_charset_cb */
+	ENC_ACTION("Japanese/"CS_ISO_2022_JP_2, C_ISO_2022_JP_2, "ISO-2022-JP-_2"), /* RADIO set_charset_cb */
+	ENC_ACTION("Japanese/"CS_EUC_JP, C_EUC_JP, "_EUC-JP"), /* RADIO set_charset_cb */
+	ENC_ACTION("Japanese/"CS_SHIFT_JIS, C_SHIFT_JIS, "_Shift-JIS"), /* RADIO set_charset_cb */
+	ENC_ACTION("Chinese/"CS_GB2312, C_GB2312, "_GB2312"), /* RADIO set_charset_cb */
+	ENC_ACTION("Chinese/"CS_GBK, C_GBK, "GB_K"), /* RADIO set_charset_cb */
+	ENC_ACTION("Chinese/"CS_BIG5, C_BIG5, "_Big5-JP"), /* RADIO set_charset_cb */
+	ENC_ACTION("Chinese/"CS_EUC_TW, C_EUC_TW, "EUC-_TW"), /* RADIO set_charset_cb */
+	ENC_ACTION("Korean/"CS_EUC_KR, C_EUC_KR, "_EUC-KR"), /* RADIO set_charset_cb */
+	ENC_ACTION("Korean/"CS_ISO_2022_KR, C_ISO_2022_KR, "_ISO-2022-KR"), /* RADIO set_charset_cb */
+	ENC_ACTION("Thai/"CS_TIS_620, C_TIS_620, "_TIS-620-KR"), /* RADIO set_charset_cb */
+	ENC_ACTION("Thai/"CS_WINDOWS_874, C_WINDOWS_874, "_Windows-874"), /* RADIO set_charset_cb */
+};
+
+static GtkRadioActionEntry msgview_radio_dec_entries[] =
+{
+	DEC_ACTION("AutoDetect", 0, "_Auto detect"),	/* set_decode_cb */
+	/* --- */
+	DEC_ACTION("8bit", ENC_8BIT, "_8bit"),
+	DEC_ACTION("QP", ENC_QUOTED_PRINTABLE, "_Quoted printable"),
+	DEC_ACTION("B64", ENC_BASE64, "_Base64"),
+	DEC_ACTION("Uuencode", ENC_X_UUENCODE, "_Uuencode"),
 };
 
 MessageView *messageview_create(MainWindow *mainwin)
@@ -481,13 +413,10 @@ GList *messageview_get_msgview_list(void)
 
 void messageview_update_actions_menu(MessageView *msgview)
 {
-	GtkItemFactory *ifactory;
-
 	/* Messages opened in a new window do not have a menu bar */
 	if (msgview->menubar == NULL)
 		return;
-	ifactory = gtk_item_factory_from_widget(msgview->menubar);
-	action_update_msgview_menu(ifactory, "/Tools/Actions", msgview);
+	action_update_msgview_menu(msgview->ui_manager, "/Menu/Tools/Actions", msgview);
 }
 
 static void messageview_add_toolbar(MessageView *msgview, GtkWidget *window) 
@@ -498,16 +427,189 @@ static void messageview_add_toolbar(MessageView *msgview, GtkWidget *window)
 #ifndef GENERIC_UMPC
 	GtkWidget *statusbar = NULL;
 #endif
-	guint n_menu_entries;
+	GtkActionGroup *action_group;
+
 
 	vbox = gtk_vbox_new(FALSE, 0);
 	gtk_widget_show(vbox);
 	gtk_container_add(GTK_CONTAINER(window), vbox);	
 
-	n_menu_entries = sizeof(msgview_entries) / sizeof(msgview_entries[0]);
-	menubar = menubar_create(window, msgview_entries,
-				 n_menu_entries, "<MessageView>", msgview);
-	gtk_widget_show(menubar);
+	msgview->ui_manager = gtk_ui_manager_new();
+	action_group = cm_menu_create_action_group_full(msgview->ui_manager,"Menu", msgview_entries,
+			G_N_ELEMENTS(msgview_entries), (gpointer)msgview);
+	gtk_action_group_add_toggle_actions(action_group, msgview_toggle_entries,
+			G_N_ELEMENTS(msgview_toggle_entries), (gpointer)msgview);
+	gtk_action_group_add_radio_actions(action_group, msgview_radio_enc_entries,
+			G_N_ELEMENTS(msgview_radio_enc_entries), C_AUTO, G_CALLBACK(set_charset_cb), (gpointer)msgview);
+	gtk_action_group_add_radio_actions(action_group, msgview_radio_dec_entries,
+			G_N_ELEMENTS(msgview_radio_dec_entries), C_AUTO, G_CALLBACK(set_decode_cb), (gpointer)msgview);
+
+	MENUITEM_ADDUI_MANAGER(msgview->ui_manager, "/", "Menu", NULL, GTK_UI_MANAGER_MENUBAR)
+
+	MENUITEM_ADDUI_MANAGER(msgview->ui_manager, "/Menu", "File", "File", GTK_UI_MANAGER_MENU)
+	MENUITEM_ADDUI_MANAGER(msgview->ui_manager, "/Menu", "Edit", "Edit", GTK_UI_MANAGER_MENU)
+	MENUITEM_ADDUI_MANAGER(msgview->ui_manager, "/Menu", "View", "View", GTK_UI_MANAGER_MENU)
+	MENUITEM_ADDUI_MANAGER(msgview->ui_manager, "/Menu", "Message", "Message", GTK_UI_MANAGER_MENU)
+	MENUITEM_ADDUI_MANAGER(msgview->ui_manager, "/Menu", "Tools", "Tools", GTK_UI_MANAGER_MENU)
+	MENUITEM_ADDUI_MANAGER(msgview->ui_manager, "/Menu", "Help", "Help", GTK_UI_MANAGER_MENU)
+
+/* File menu */
+	MENUITEM_ADDUI_MANAGER(msgview->ui_manager, "/Menu/File", "SaveAs", "File/SaveAs", GTK_UI_MANAGER_MENUITEM)
+#if GTK_CHECK_VERSION(2,10,0) && !defined(USE_GNOMEPRINT)
+	MENUITEM_ADDUI_MANAGER(msgview->ui_manager, "/Menu/File", "PageSetup", "File/PageSetup", GTK_UI_MANAGER_MENUITEM)
+#endif
+	MENUITEM_ADDUI_MANAGER(msgview->ui_manager, "/Menu/File", "Print", "File/Print", GTK_UI_MANAGER_MENUITEM)
+	MENUITEM_ADDUI_MANAGER(msgview->ui_manager, "/Menu/File", "Separator1", "File/---", GTK_UI_MANAGER_SEPARATOR)
+	MENUITEM_ADDUI_MANAGER(msgview->ui_manager, "/Menu/File", "Close", "File/Close", GTK_UI_MANAGER_MENUITEM)
+
+/* Edit menu */
+	MENUITEM_ADDUI_MANAGER(msgview->ui_manager, "/Menu/Edit", "Copy", "Edit/Copy", GTK_UI_MANAGER_MENUITEM)
+	MENUITEM_ADDUI_MANAGER(msgview->ui_manager, "/Menu/Edit", "SelectAll", "Edit/SelectAll", GTK_UI_MANAGER_MENUITEM)
+	MENUITEM_ADDUI_MANAGER(msgview->ui_manager, "/Menu/Edit", "Separator1", "Edit/---", GTK_UI_MANAGER_SEPARATOR)
+	MENUITEM_ADDUI_MANAGER(msgview->ui_manager, "/Menu/Edit", "Find", "Edit/Find", GTK_UI_MANAGER_MENUITEM)
+
+/* View menu */
+	MENUITEM_ADDUI_MANAGER(msgview->ui_manager, "/Menu/View", "Goto", "View/Goto", GTK_UI_MANAGER_MENU)
+	MENUITEM_ADDUI_MANAGER(msgview->ui_manager, "/Menu/View/Goto", "Prev", "View/Goto/Prev", GTK_UI_MANAGER_MENUITEM)
+	MENUITEM_ADDUI_MANAGER(msgview->ui_manager, "/Menu/View/Goto", "Next", "View/Goto/Next", GTK_UI_MANAGER_MENUITEM)
+	MENUITEM_ADDUI_MANAGER(msgview->ui_manager, "/Menu/View/Goto", "Separator1", "View/Goto/---", GTK_UI_MANAGER_MENUITEM)
+	MENUITEM_ADDUI_MANAGER(msgview->ui_manager, "/Menu/View/Goto", "PrevUnread", "View/Goto/PrevUnread", GTK_UI_MANAGER_MENUITEM)
+	MENUITEM_ADDUI_MANAGER(msgview->ui_manager, "/Menu/View/Goto", "NextUnread", "View/Goto/NextUnread", GTK_UI_MANAGER_MENUITEM)
+	MENUITEM_ADDUI_MANAGER(msgview->ui_manager, "/Menu/View/Goto", "Separator2", "View/Goto/---", GTK_UI_MANAGER_MENUITEM)
+	MENUITEM_ADDUI_MANAGER(msgview->ui_manager, "/Menu/View/Goto", "PrevNew", "View/Goto/PrevNew", GTK_UI_MANAGER_MENUITEM)
+	MENUITEM_ADDUI_MANAGER(msgview->ui_manager, "/Menu/View/Goto", "NextNew", "View/Goto/NextNew", GTK_UI_MANAGER_MENUITEM)
+	MENUITEM_ADDUI_MANAGER(msgview->ui_manager, "/Menu/View/Goto", "Separator3", "View/Goto/---", GTK_UI_MANAGER_MENUITEM)
+	MENUITEM_ADDUI_MANAGER(msgview->ui_manager, "/Menu/View/Goto", "PrevMarked", "View/Goto/PrevMarked", GTK_UI_MANAGER_MENUITEM)
+	MENUITEM_ADDUI_MANAGER(msgview->ui_manager, "/Menu/View/Goto", "NextMarked", "View/Goto/NextMarked", GTK_UI_MANAGER_MENUITEM)
+	MENUITEM_ADDUI_MANAGER(msgview->ui_manager, "/Menu/View/Goto", "Separator4", "View/Goto/---", GTK_UI_MANAGER_MENUITEM)
+	MENUITEM_ADDUI_MANAGER(msgview->ui_manager, "/Menu/View/Goto", "PrevLabeled", "View/Goto/PrevLabeled", GTK_UI_MANAGER_MENUITEM)
+	MENUITEM_ADDUI_MANAGER(msgview->ui_manager, "/Menu/View/Goto", "NextLabeled", "View/Goto/NextLabeled", GTK_UI_MANAGER_MENUITEM)
+	MENUITEM_ADDUI_MANAGER(msgview->ui_manager, "/Menu/View/Goto", "Separator5", "View/Goto/---", GTK_UI_MANAGER_MENUITEM)
+	MENUITEM_ADDUI_MANAGER(msgview->ui_manager, "/Menu/View/Goto", "LastRead", "View/Goto/LastRead", GTK_UI_MANAGER_MENUITEM)
+	MENUITEM_ADDUI_MANAGER(msgview->ui_manager, "/Menu/View/Goto", "ParentMessage", "View/Goto/ParentMessage", GTK_UI_MANAGER_MENUITEM)
+	MENUITEM_ADDUI_MANAGER(msgview->ui_manager, "/Menu/View/Goto", "Separator6", "View/Goto/---", GTK_UI_MANAGER_MENUITEM)
+	MENUITEM_ADDUI_MANAGER(msgview->ui_manager, "/Menu/View/Goto", "NextUnreadFolder", "View/Goto/NextUnreadFolder", GTK_UI_MANAGER_MENUITEM)
+	MENUITEM_ADDUI_MANAGER(msgview->ui_manager, "/Menu/View/Goto", "OtherFolder", "View/Goto/OtherFolder", GTK_UI_MANAGER_MENUITEM)
+
+	MENUITEM_ADDUI_MANAGER(msgview->ui_manager, "/Menu/View", "Separator1", "View/---", GTK_UI_MANAGER_SEPARATOR)
+
+	MENUITEM_ADDUI_MANAGER(msgview->ui_manager, "/Menu/View", "Encoding", "View/Encoding", GTK_UI_MANAGER_MENU)
+	MENUITEM_ADDUI_MANAGER(msgview->ui_manager, "/Menu/View/Encoding", CS_AUTO, "View/Encoding/"CS_AUTO, GTK_UI_MANAGER_MENUITEM)
+	MENUITEM_ADDUI_MANAGER(msgview->ui_manager, "/Menu/View/Encoding", "Separator1", "View/Encoding/---", GTK_UI_MANAGER_SEPARATOR)
+	MENUITEM_ADDUI_MANAGER(msgview->ui_manager, "/Menu/View/Encoding", CS_US_ASCII, "View/Encoding/"CS_US_ASCII, GTK_UI_MANAGER_MENUITEM)
+	MENUITEM_ADDUI_MANAGER(msgview->ui_manager, "/Menu/View/Encoding", CS_UTF_8, "View/Encoding/"CS_UTF_8, GTK_UI_MANAGER_MENUITEM)
+	MENUITEM_ADDUI_MANAGER(msgview->ui_manager, "/Menu/View/Encoding", "Separator2", "View/Encoding/---", GTK_UI_MANAGER_SEPARATOR)
+
+	MENUITEM_ADDUI_MANAGER(msgview->ui_manager, "/Menu/View/Encoding", "Western", "View/Encoding/Western", GTK_UI_MANAGER_MENU)
+	MENUITEM_ADDUI_MANAGER(msgview->ui_manager, "/Menu/View/Encoding/Western", CS_ISO_8859_1, "View/Encoding/Western/"CS_ISO_8859_1, GTK_UI_MANAGER_MENUITEM)
+	MENUITEM_ADDUI_MANAGER(msgview->ui_manager, "/Menu/View/Encoding/Western", CS_ISO_8859_15, "View/Encoding/Western/"CS_ISO_8859_15, GTK_UI_MANAGER_MENUITEM)
+	MENUITEM_ADDUI_MANAGER(msgview->ui_manager, "/Menu/View/Encoding/Western", CS_WINDOWS_1252, "View/Encoding/Western/"CS_WINDOWS_1252, GTK_UI_MANAGER_MENUITEM)
+
+	MENUITEM_ADDUI_MANAGER(msgview->ui_manager, "/Menu/View/Encoding", CS_ISO_8859_2, "View/Encoding/"CS_ISO_8859_2, GTK_UI_MANAGER_MENUITEM)
+
+	MENUITEM_ADDUI_MANAGER(msgview->ui_manager, "/Menu/View/Encoding", "Baltic", "View/Encoding/Baltic", GTK_UI_MANAGER_MENU)
+	MENUITEM_ADDUI_MANAGER(msgview->ui_manager, "/Menu/View/Encoding/Baltic", CS_ISO_8859_13, "View/Encoding/Baltic/"CS_ISO_8859_13, GTK_UI_MANAGER_MENUITEM)
+	MENUITEM_ADDUI_MANAGER(msgview->ui_manager, "/Menu/View/Encoding/Baltic", CS_ISO_8859_4, "View/Encoding/Baltic/"CS_ISO_8859_4, GTK_UI_MANAGER_MENUITEM)
+
+	MENUITEM_ADDUI_MANAGER(msgview->ui_manager, "/Menu/View/Encoding", CS_ISO_8859_7, "View/Encoding/"CS_ISO_8859_7, GTK_UI_MANAGER_MENUITEM)
+
+	MENUITEM_ADDUI_MANAGER(msgview->ui_manager, "/Menu/View/Encoding", "Hebrew", "View/Encoding/Hebrew", GTK_UI_MANAGER_MENU)
+	MENUITEM_ADDUI_MANAGER(msgview->ui_manager, "/Menu/View/Encoding/Hebrew", CS_ISO_8859_8, "View/Encoding/Hebrew/"CS_ISO_8859_8, GTK_UI_MANAGER_MENUITEM)
+	MENUITEM_ADDUI_MANAGER(msgview->ui_manager, "/Menu/View/Encoding/Hebrew", CS_WINDOWS_1255, "View/Encoding/Hebrew/"CS_WINDOWS_1255, GTK_UI_MANAGER_MENUITEM)
+
+	MENUITEM_ADDUI_MANAGER(msgview->ui_manager, "/Menu/View/Encoding", "Arabic", "View/Encoding/Arabic", GTK_UI_MANAGER_MENU)
+	MENUITEM_ADDUI_MANAGER(msgview->ui_manager, "/Menu/View/Encoding/Arabic", CS_ISO_8859_6, "View/Encoding/Arabic/"CS_ISO_8859_6, GTK_UI_MANAGER_MENUITEM)
+	MENUITEM_ADDUI_MANAGER(msgview->ui_manager, "/Menu/View/Encoding/Arabic", CS_WINDOWS_1256, "View/Encoding/Arabic/"CS_WINDOWS_1256, GTK_UI_MANAGER_MENUITEM)
+
+	MENUITEM_ADDUI_MANAGER(msgview->ui_manager, "/Menu/View/Encoding", CS_ISO_8859_9, "View/Encoding/"CS_ISO_8859_9, GTK_UI_MANAGER_MENUITEM)
+
+	MENUITEM_ADDUI_MANAGER(msgview->ui_manager, "/Menu/View/Encoding", "Cyrillic", "View/Encoding/Cyrillic", GTK_UI_MANAGER_MENU)
+	MENUITEM_ADDUI_MANAGER(msgview->ui_manager, "/Menu/View/Encoding/Cyrillic", CS_ISO_8859_5, "View/Encoding/Cyrillic/"CS_ISO_8859_5, GTK_UI_MANAGER_MENUITEM)
+	MENUITEM_ADDUI_MANAGER(msgview->ui_manager, "/Menu/View/Encoding/Cyrillic", CS_KOI8_R, "View/Encoding/Cyrillic/"CS_KOI8_R, GTK_UI_MANAGER_MENUITEM)
+	MENUITEM_ADDUI_MANAGER(msgview->ui_manager, "/Menu/View/Encoding/Cyrillic", CS_KOI8_U, "View/Encoding/Cyrillic/"CS_KOI8_U, GTK_UI_MANAGER_MENUITEM)
+	MENUITEM_ADDUI_MANAGER(msgview->ui_manager, "/Menu/View/Encoding/Cyrillic", CS_WINDOWS_1251, "View/Encoding/Cyrillic/"CS_WINDOWS_1251, GTK_UI_MANAGER_MENUITEM)
+
+	MENUITEM_ADDUI_MANAGER(msgview->ui_manager, "/Menu/View/Encoding", "Japanese", "View/Encoding/Japanese", GTK_UI_MANAGER_MENU)
+	MENUITEM_ADDUI_MANAGER(msgview->ui_manager, "/Menu/View/Encoding/Japanese", CS_ISO_2022_JP, "View/Encoding/Japanese/"CS_ISO_2022_JP, GTK_UI_MANAGER_MENUITEM)
+	MENUITEM_ADDUI_MANAGER(msgview->ui_manager, "/Menu/View/Encoding/Japanese", CS_ISO_2022_JP_2, "View/Encoding/Japanese/"CS_ISO_2022_JP_2, GTK_UI_MANAGER_MENUITEM)
+	MENUITEM_ADDUI_MANAGER(msgview->ui_manager, "/Menu/View/Encoding/Japanese", CS_EUC_JP, "View/Encoding/Japanese/"CS_EUC_JP, GTK_UI_MANAGER_MENUITEM)
+	MENUITEM_ADDUI_MANAGER(msgview->ui_manager, "/Menu/View/Encoding/Japanese", CS_SHIFT_JIS, "View/Encoding/Japanese/"CS_SHIFT_JIS, GTK_UI_MANAGER_MENUITEM)
+
+	MENUITEM_ADDUI_MANAGER(msgview->ui_manager, "/Menu/View/Encoding", "Chinese", "View/Encoding/Chinese", GTK_UI_MANAGER_MENU)
+	MENUITEM_ADDUI_MANAGER(msgview->ui_manager, "/Menu/View/Encoding/Chinese", CS_GB2312, "View/Encoding/Chinese/"CS_GB2312, GTK_UI_MANAGER_MENUITEM)
+	MENUITEM_ADDUI_MANAGER(msgview->ui_manager, "/Menu/View/Encoding/Chinese", CS_GBK, "View/Encoding/Chinese/"CS_GBK, GTK_UI_MANAGER_MENUITEM)
+	MENUITEM_ADDUI_MANAGER(msgview->ui_manager, "/Menu/View/Encoding/Chinese", CS_BIG5, "View/Encoding/Chinese/"CS_BIG5, GTK_UI_MANAGER_MENUITEM)
+	MENUITEM_ADDUI_MANAGER(msgview->ui_manager, "/Menu/View/Encoding/Chinese", CS_EUC_TW, "View/Encoding/Chinese/"CS_EUC_TW, GTK_UI_MANAGER_MENUITEM)
+
+	MENUITEM_ADDUI_MANAGER(msgview->ui_manager, "/Menu/View/Encoding", "Korean", "View/Encoding/Korean", GTK_UI_MANAGER_MENU)
+	MENUITEM_ADDUI_MANAGER(msgview->ui_manager, "/Menu/View/Encoding/Korean", CS_EUC_KR, "View/Encoding/Korean/"CS_EUC_KR, GTK_UI_MANAGER_MENUITEM)
+	MENUITEM_ADDUI_MANAGER(msgview->ui_manager, "/Menu/View/Encoding/Korean", CS_ISO_2022_KR, "View/Encoding/Korean/"CS_ISO_2022_KR, GTK_UI_MANAGER_MENUITEM)
+
+	MENUITEM_ADDUI_MANAGER(msgview->ui_manager, "/Menu/View/Encoding", "Thai", "View/Encoding/Thai", GTK_UI_MANAGER_MENU)
+	MENUITEM_ADDUI_MANAGER(msgview->ui_manager, "/Menu/View/Encoding/Thai", CS_TIS_620, "View/Encoding/Thai/"CS_TIS_620, GTK_UI_MANAGER_MENUITEM)
+	MENUITEM_ADDUI_MANAGER(msgview->ui_manager, "/Menu/View/Encoding/Thai", CS_WINDOWS_874, "View/Encoding/Thai/"CS_WINDOWS_874, GTK_UI_MANAGER_MENUITEM)
+
+	MENUITEM_ADDUI_MANAGER(msgview->ui_manager, "/Menu/View", "Decode", "View/Decode", GTK_UI_MANAGER_MENU)
+	MENUITEM_ADDUI_MANAGER(msgview->ui_manager, "/Menu/View/Decode", "AutoDetect", "View/Decode/AutoDetect", GTK_UI_MANAGER_MENUITEM)
+	MENUITEM_ADDUI_MANAGER(msgview->ui_manager, "/Menu/View/Decode", "Separator1", "View/Decode/---", GTK_UI_MANAGER_SEPARATOR)
+	MENUITEM_ADDUI_MANAGER(msgview->ui_manager, "/Menu/View/Decode", "8bit", "View/Decode/8bit", GTK_UI_MANAGER_MENUITEM)
+	MENUITEM_ADDUI_MANAGER(msgview->ui_manager, "/Menu/View/Decode", "QP", "View/Decode/QP", GTK_UI_MANAGER_MENUITEM)
+	MENUITEM_ADDUI_MANAGER(msgview->ui_manager, "/Menu/View/Decode", "B64", "View/Decode/B64", GTK_UI_MANAGER_MENUITEM)
+	MENUITEM_ADDUI_MANAGER(msgview->ui_manager, "/Menu/View/Decode", "Uuencode", "View/Decode/Uuencode", GTK_UI_MANAGER_MENUITEM)
+
+	MENUITEM_ADDUI_MANAGER(msgview->ui_manager, "/Menu/View", "Separator2", "View/---", GTK_UI_MANAGER_SEPARATOR)
+
+	MENUITEM_ADDUI_MANAGER(msgview->ui_manager, "/Menu/View", "MessageSource", "View/MessageSource", GTK_UI_MANAGER_MENUITEM)
+	MENUITEM_ADDUI_MANAGER(msgview->ui_manager, "/Menu/View", "AllHeaders", "View/AllHeaders", GTK_UI_MANAGER_MENUITEM)
+	MENUITEM_ADDUI_MANAGER(msgview->ui_manager, "/Menu/View", "Quotes", "View/Quotes", GTK_UI_MANAGER_MENU)
+	MENUITEM_ADDUI_MANAGER(msgview->ui_manager, "/Menu/View/Quotes", "FoldAll", "View/Quotes/FoldAll", GTK_UI_MANAGER_MENUITEM)
+	MENUITEM_ADDUI_MANAGER(msgview->ui_manager, "/Menu/View/Quotes", "Fold2", "View/Quotes/Fold2", GTK_UI_MANAGER_MENUITEM)
+	MENUITEM_ADDUI_MANAGER(msgview->ui_manager, "/Menu/View/Quotes", "Fold3", "View/Quotes/Fold3", GTK_UI_MANAGER_MENUITEM)
+
+/* Message menu */
+	MENUITEM_ADDUI_MANAGER(msgview->ui_manager, "/Menu/Message", "Compose", "Message/Compose", GTK_UI_MANAGER_MENUITEM)
+	MENUITEM_ADDUI_MANAGER(msgview->ui_manager, "/Menu/Message", "Separator1", "Message/---", GTK_UI_MANAGER_SEPARATOR)
+	MENUITEM_ADDUI_MANAGER(msgview->ui_manager, "/Menu/Message", "Reply", "Message/Reply", GTK_UI_MANAGER_MENUITEM)
+	MENUITEM_ADDUI_MANAGER(msgview->ui_manager, "/Menu/Message", "ReplyTo", "Message/ReplyTo", GTK_UI_MANAGER_MENU)
+	MENUITEM_ADDUI_MANAGER(msgview->ui_manager, "/Menu/Message/ReplyTo", "All", "Message/ReplyTo/All", GTK_UI_MANAGER_MENUITEM)
+	MENUITEM_ADDUI_MANAGER(msgview->ui_manager, "/Menu/Message/ReplyTo", "Sender", "Message/ReplyTo/Sender", GTK_UI_MANAGER_MENUITEM)
+	MENUITEM_ADDUI_MANAGER(msgview->ui_manager, "/Menu/Message/ReplyTo", "List", "Message/ReplyTo/List", GTK_UI_MANAGER_MENUITEM)
+	MENUITEM_ADDUI_MANAGER(msgview->ui_manager, "/Menu/Message", "Separator2", "Message/---", GTK_UI_MANAGER_SEPARATOR)
+	MENUITEM_ADDUI_MANAGER(msgview->ui_manager, "/Menu/Message", "Forward", "Message/Forward", GTK_UI_MANAGER_MENUITEM)
+	MENUITEM_ADDUI_MANAGER(msgview->ui_manager, "/Menu/Message", "ForwardAtt", "Message/ForwardAtt", GTK_UI_MANAGER_MENUITEM)
+	MENUITEM_ADDUI_MANAGER(msgview->ui_manager, "/Menu/Message", "Redirect", "Message/Redirect", GTK_UI_MANAGER_MENUITEM)
+
+/* Tools menu */
+	MENUITEM_ADDUI_MANAGER(msgview->ui_manager, "/Menu/Tools", "AddressBook", "Tools/AddressBook", GTK_UI_MANAGER_MENUITEM)
+	MENUITEM_ADDUI_MANAGER(msgview->ui_manager, "/Menu/Tools", "AddSenderToAB", "Tools/AddSenderToAB", GTK_UI_MANAGER_MENUITEM)
+	MENUITEM_ADDUI_MANAGER(msgview->ui_manager, "/Menu/Tools", "Separator1", "Tools/---", GTK_UI_MANAGER_SEPARATOR)
+
+	MENUITEM_ADDUI_MANAGER(msgview->ui_manager, "/Menu/Tools", "CreateFilterRule", "Tools/CreateFilterRule", GTK_UI_MANAGER_MENU)
+	MENUITEM_ADDUI_MANAGER(msgview->ui_manager, "/Menu/Tools/CreateFilterRule", "Automatically", "Tools/CreateFilterRule/Automatically", GTK_UI_MANAGER_MENUITEM)
+	MENUITEM_ADDUI_MANAGER(msgview->ui_manager, "/Menu/Tools/CreateFilterRule", "ByFrom", "Tools/CreateFilterRule/ByFrom", GTK_UI_MANAGER_MENUITEM)
+	MENUITEM_ADDUI_MANAGER(msgview->ui_manager, "/Menu/Tools/CreateFilterRule", "ByTo", "Tools/CreateFilterRule/ByTo", GTK_UI_MANAGER_MENUITEM)
+	MENUITEM_ADDUI_MANAGER(msgview->ui_manager, "/Menu/Tools/CreateFilterRule", "BySubject", "Tools/CreateFilterRule/BySubject", GTK_UI_MANAGER_MENUITEM)
+
+	MENUITEM_ADDUI_MANAGER(msgview->ui_manager, "/Menu/Tools", "CreateProcessingRule", "Tools/CreateProcessingRule", GTK_UI_MANAGER_MENU)
+	MENUITEM_ADDUI_MANAGER(msgview->ui_manager, "/Menu/Tools/CreateProcessingRule", "Automatically", "Tools/CreateProcessingRule/Automatically", GTK_UI_MANAGER_MENUITEM)
+	MENUITEM_ADDUI_MANAGER(msgview->ui_manager, "/Menu/Tools/CreateProcessingRule", "ByFrom", "Tools/CreateProcessingRule/ByFrom", GTK_UI_MANAGER_MENUITEM)
+	MENUITEM_ADDUI_MANAGER(msgview->ui_manager, "/Menu/Tools/CreateProcessingRule", "ByTo", "Tools/CreateProcessingRule/ByTo", GTK_UI_MANAGER_MENUITEM)
+	MENUITEM_ADDUI_MANAGER(msgview->ui_manager, "/Menu/Tools/CreateProcessingRule", "BySubject", "Tools/CreateProcessingRule/BySubject", GTK_UI_MANAGER_MENUITEM)
+	MENUITEM_ADDUI_MANAGER(msgview->ui_manager, "/Menu/Tools", "Separator2", "Tools/---", GTK_UI_MANAGER_SEPARATOR)
+	
+	MENUITEM_ADDUI_MANAGER(msgview->ui_manager, "/Menu/Tools", "ListUrls", "Tools/ListUrls", GTK_UI_MANAGER_MENUITEM)
+	MENUITEM_ADDUI_MANAGER(msgview->ui_manager, "/Menu/Tools", "Separator3", "Tools/---", GTK_UI_MANAGER_SEPARATOR)
+
+	MENUITEM_ADDUI_MANAGER(msgview->ui_manager, "/Menu/Tools", "Actions", "Tools/Actions", GTK_UI_MANAGER_MENU)
+	MENUITEM_ADDUI_MANAGER(msgview->ui_manager, "/Menu/Tools/Actions", "PlaceHolder", "Tools/Actions/PlaceHolder", GTK_UI_MANAGER_MENUITEM)
+
+/* Help menu */
+	MENUITEM_ADDUI_MANAGER(msgview->ui_manager, "/Menu/Help", "About", "Help/About", GTK_UI_MANAGER_MENUITEM)
+
+	menubar = gtk_ui_manager_get_widget(msgview->ui_manager, "/Menu");
+	gtk_widget_show_all(menubar);
+	gtk_window_add_accel_group(GTK_WINDOW(window), gtk_ui_manager_get_accel_group(msgview->ui_manager));
+
 	gtk_box_pack_start(GTK_BOX(vbox), menubar, FALSE, TRUE, 0);
 
 	if (prefs_common.toolbar_detachable) {
@@ -1815,7 +1917,7 @@ gchar *messageview_get_selection(MessageView *msgview)
 	return text;
 }
 
-static void save_as_cb(gpointer data, guint action, GtkWidget *widget)
+static void save_as_cb(GtkAction *action, gpointer data)
 {
 	MessageView *messageview = (MessageView *)data;
 	messageview_save_as(messageview);
@@ -1896,7 +1998,7 @@ void messageview_print(MsgInfo *msginfo, gboolean all_headers,
 #endif
 
 #if GTK_CHECK_VERSION(2,10,0) && !defined(USE_GNOMEPRINT)
-static void page_setup_cb(gpointer data, guint action, GtkWidget *widget)
+static void page_setup_cb(GtkAction *action, gpointer data)
 {
 	MessageView *messageview = (MessageView *)data;
 	printing_page_setup(messageview ?
@@ -1904,7 +2006,7 @@ static void page_setup_cb(gpointer data, guint action, GtkWidget *widget)
 }
 #endif
 
-static void print_cb(gpointer data, guint action, GtkWidget *widget)
+static void print_cb(GtkAction *action, gpointer data)
 {
 	MessageView *messageview = (MessageView *)data;
 #if !defined(USE_GNOMEPRINT) && !GTK_CHECK_VERSION(2,10,0)
@@ -1940,31 +2042,31 @@ static void print_cb(gpointer data, guint action, GtkWidget *widget)
 #endif
 }
 
-static void close_cb(gpointer data, guint action, GtkWidget *widget)
+static void close_cb(GtkAction *action, gpointer data)
 {
 	MessageView *messageview = (MessageView *)data;
 	messageview_destroy(messageview);
 }
 
-static void copy_cb(gpointer data, guint action, GtkWidget *widget)
+static void copy_cb(GtkAction *action, gpointer data)
 {
 	MessageView *messageview = (MessageView *)data;
 	messageview_copy_clipboard(messageview);
 }
 
-static void allsel_cb(gpointer data, guint action, GtkWidget *widget)
+static void allsel_cb(GtkAction *action, gpointer data)
 {
 	MessageView *messageview = (MessageView *)data;
 	messageview_select_all(messageview);
 }
 
-static void search_cb(gpointer data, guint action, GtkWidget *widget)
+static void search_cb(GtkAction *action, gpointer data)
 {
 	MessageView *messageview = (MessageView *)data;
 	message_search(messageview);
 }
 
-static void prev_cb(gpointer data, guint action, GtkWidget *widget)
+static void prev_cb(GtkAction *action, gpointer data)
 {
 	MessageView *messageview = (MessageView *)data;
 	messageview->updating = TRUE;
@@ -1989,7 +2091,7 @@ static void prev_cb(gpointer data, guint action, GtkWidget *widget)
 	}
 }
 
-static void next_cb(gpointer data, guint action, GtkWidget *widget)
+static void next_cb(GtkAction *action, gpointer data)
 {
 	MessageView *messageview = (MessageView *)data;
 	messageview->updating = TRUE;
@@ -2014,7 +2116,7 @@ static void next_cb(gpointer data, guint action, GtkWidget *widget)
 	}
 }
 
-static void prev_unread_cb(gpointer data, guint action, GtkWidget *widget)
+static void prev_unread_cb(GtkAction *action, gpointer data)
 {
 	MessageView *messageview = (MessageView *)data;
 	messageview->updating = TRUE;
@@ -2039,7 +2141,7 @@ static void prev_unread_cb(gpointer data, guint action, GtkWidget *widget)
 	}
 }
 
-static void next_unread_cb(gpointer data, guint action, GtkWidget *widget)
+static void next_unread_cb(GtkAction *action, gpointer data)
 {
 	MessageView *messageview = (MessageView *)data;
 	messageview->updating = TRUE;
@@ -2064,7 +2166,7 @@ static void next_unread_cb(gpointer data, guint action, GtkWidget *widget)
 	}
 }
 
-static void prev_new_cb(gpointer data, guint action, GtkWidget *widget)
+static void prev_new_cb(GtkAction *action, gpointer data)
 {
 	MessageView *messageview = (MessageView *)data;
 	messageview->updating = TRUE;
@@ -2089,7 +2191,7 @@ static void prev_new_cb(gpointer data, guint action, GtkWidget *widget)
 	}
 }
 
-static void next_new_cb(gpointer data, guint action, GtkWidget *widget)
+static void next_new_cb(GtkAction *action, gpointer data)
 {
 	MessageView *messageview = (MessageView *)data;
 	messageview->updating = TRUE;
@@ -2114,7 +2216,7 @@ static void next_new_cb(gpointer data, guint action, GtkWidget *widget)
 	}
 }
 
-static void prev_marked_cb(gpointer data, guint action, GtkWidget *widget)
+static void prev_marked_cb(GtkAction *action, gpointer data)
 {
 	MessageView *messageview = (MessageView *)data;
 	messageview->updating = TRUE;
@@ -2139,7 +2241,7 @@ static void prev_marked_cb(gpointer data, guint action, GtkWidget *widget)
 	}
 }
 
-static void next_marked_cb(gpointer data, guint action, GtkWidget *widget)
+static void next_marked_cb(GtkAction *action, gpointer data)
 {
 	MessageView *messageview = (MessageView *)data;
 	messageview->updating = TRUE;
@@ -2164,7 +2266,7 @@ static void next_marked_cb(gpointer data, guint action, GtkWidget *widget)
 	}
 }
 
-static void prev_labeled_cb(gpointer data, guint action, GtkWidget *widget)
+static void prev_labeled_cb(GtkAction *action, gpointer data)
 {
 	MessageView *messageview = (MessageView *)data;
 	messageview->updating = TRUE;
@@ -2189,7 +2291,7 @@ static void prev_labeled_cb(gpointer data, guint action, GtkWidget *widget)
 	}
 }
 
-static void next_labeled_cb(gpointer data, guint action, GtkWidget *widget)
+static void next_labeled_cb(GtkAction *action, gpointer data)
 {
 	MessageView *messageview = (MessageView *)data;
 	messageview->updating = TRUE;
@@ -2214,7 +2316,7 @@ static void next_labeled_cb(gpointer data, guint action, GtkWidget *widget)
 	}
 }
 
-static void last_read_cb(gpointer data, guint action, GtkWidget *widget)
+static void last_read_cb(GtkAction *action, gpointer data)
 {
 	MessageView *messageview = (MessageView *)data;
 	messageview->updating = TRUE;
@@ -2239,7 +2341,7 @@ static void last_read_cb(gpointer data, guint action, GtkWidget *widget)
 	}
 }
 
-static void parent_cb(gpointer data, guint action, GtkWidget *widget)
+static void parent_cb(GtkAction *action, gpointer data)
 {
 	MessageView *messageview = (MessageView *)data;
 	messageview->updating = TRUE;
@@ -2264,7 +2366,7 @@ static void parent_cb(gpointer data, guint action, GtkWidget *widget)
 	}
 }
 
-static void goto_unread_folder_cb(gpointer data, guint action, GtkWidget *widget)
+static void goto_unread_folder_cb(GtkAction *action, gpointer data)
 {
 	MessageView *messageview = (MessageView *)data;
 	messageview->updating = TRUE;
@@ -2289,7 +2391,7 @@ static void goto_unread_folder_cb(gpointer data, guint action, GtkWidget *widget
 	}
 }
 
-static void goto_folder_cb(gpointer data, guint action, GtkWidget *widget)
+static void goto_folder_cb(GtkAction *action, gpointer data)
 {
 	MessageView *messageview = (MessageView *)data;
 	messageview->updating = TRUE;
@@ -2320,13 +2422,15 @@ static void goto_folder_cb(gpointer data, guint action, GtkWidget *widget)
 	}
 }
 
-static void set_charset_cb(gpointer data, guint action, GtkWidget *widget)
+static void set_charset_cb(GtkAction *action, GtkRadioAction *current, gpointer data)
 {
 	MessageView *messageview = (MessageView *)data;
+	gboolean active = gtk_toggle_action_get_active (GTK_TOGGLE_ACTION (current));
+	gint value = gtk_radio_action_get_current_value (GTK_RADIO_ACTION (current));
 	const gchar *charset;
 
-	if (GTK_CHECK_MENU_ITEM(widget)->active) {
-		charset = conv_get_charset_str((CharSet)action);
+	if (active) {
+		charset = conv_get_charset_str((CharSet)value);
 		g_free(messageview->forced_charset);
 		messageview->forced_charset = g_strdup(charset);
 		procmime_force_charset(charset);
@@ -2335,20 +2439,22 @@ static void set_charset_cb(gpointer data, guint action, GtkWidget *widget)
 	}
 }
 
-static void set_decode_cb(gpointer data, guint action, GtkWidget *widget)
+static void set_decode_cb(GtkAction *action, GtkRadioAction *current, gpointer data)
 {
 	MessageView *messageview = (MessageView *)data;
-	if (GTK_CHECK_MENU_ITEM(widget)->active) {
-		messageview->forced_encoding = (EncodingType)action;
+	gboolean active = gtk_toggle_action_get_active (GTK_TOGGLE_ACTION (current));
+	gint value = gtk_radio_action_get_current_value (GTK_RADIO_ACTION (current));
+
+	if (active) {
+		messageview->forced_encoding = (EncodingType)value;
 
 		messageview_show(messageview, messageview->msginfo, FALSE);
-		
-		debug_print("forced encoding: %d\n", action);
+		debug_print("forced encoding: %d\n", value);
 	}
 }
 
 
-static void view_source_cb(gpointer data, guint action, GtkWidget *widget)
+static void view_source_cb(GtkAction *action, gpointer data)
 {
 	MessageView *messageview = (MessageView *)data;
 	SourceWindow *srcwin;
@@ -2360,7 +2466,7 @@ static void view_source_cb(gpointer data, guint action, GtkWidget *widget)
 	source_window_show(srcwin);
 }
 
-static void show_all_header_cb(gpointer data, guint action, GtkWidget *widget)
+static void show_all_header_cb(GtkToggleAction *action, gpointer data)
 {
 	MessageView *messageview = (MessageView *)data;
 	MsgInfo *msginfo = messageview->msginfo;
@@ -2373,39 +2479,36 @@ static void show_all_header_cb(gpointer data, guint action, GtkWidget *widget)
 		return;
 
 	messageview->all_headers = 
-			GTK_CHECK_MENU_ITEM(widget)->active;
+			gtk_toggle_action_get_active (GTK_TOGGLE_ACTION (action));
 	if (!msginfo) return;
 	messageview->msginfo = NULL;
-	messageview_show(messageview, msginfo,
-			 GTK_CHECK_MENU_ITEM(widget)->active);
+	messageview_show(messageview, msginfo,gtk_toggle_action_get_active (GTK_TOGGLE_ACTION (action)));
 	procmsg_msginfo_free(msginfo);
 	main_window_set_menu_sensitive(messageview->mainwin);
 }
 
-#define SET_CHECK_MENU_ACTIVE(path, active) \
-{ \
-	menuitem = gtk_item_factory_get_widget(ifactory, path); \
-	gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM(menuitem), active); \
-}
-
-static void msg_hide_quotes_cb(gpointer data, guint action, GtkWidget *widget)
+static void msg_hide_quotes_cb(GtkToggleAction *action, gpointer data)
 {
 	MessageView *messageview = (MessageView *)data;
 	MsgInfo *msginfo = messageview->msginfo;
 	static gboolean updating_menu = FALSE;
-	GtkItemFactory *ifactory = gtk_item_factory_from_widget(messageview->menubar);
-	GtkWidget *menuitem;
+
 	if (updating_menu)
 		return;
-
-	prefs_common.hide_quotes = 
-			GTK_CHECK_MENU_ITEM(widget)->active ? action : 0;
+	if (gtk_toggle_action_get_active (GTK_TOGGLE_ACTION (action))) {
+		const gchar *a_name = gtk_action_get_name(GTK_ACTION(action));
+		if (!strcmp(a_name, "View/Quotes/FoldAll")) prefs_common.hide_quotes = 1;
+		else if (!strcmp(a_name, "View/Quotes/Fold2")) prefs_common.hide_quotes = 2;
+		else if (!strcmp(a_name, "View/Quotes/Fold3")) prefs_common.hide_quotes = 3;
+	} else
+		prefs_common.hide_quotes = 0;
 	
 	updating_menu=TRUE;
-	SET_CHECK_MENU_ACTIVE("/View/Quotes/Fold all", FALSE);
-	SET_CHECK_MENU_ACTIVE("/View/Quotes/Fold from level 2", FALSE);
-	SET_CHECK_MENU_ACTIVE("/View/Quotes/Fold from level 3", FALSE);
-	gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM(widget), prefs_common.hide_quotes > 0);	
+	
+	cm_toggle_menu_set_active_full(messageview->ui_manager, "Menu/View/Quotes/FoldAll", (prefs_common.hide_quotes == 1));
+	cm_toggle_menu_set_active_full(messageview->ui_manager, "Menu/View/Quotes/Fold2", (prefs_common.hide_quotes == 2));
+	cm_toggle_menu_set_active_full(messageview->ui_manager, "Menu/View/Quotes/Fold3", (prefs_common.hide_quotes == 3));
+
 	updating_menu=FALSE;
 	if (!msginfo) return;
 	messageview->msginfo = NULL;
@@ -2419,7 +2522,7 @@ static void msg_hide_quotes_cb(gpointer data, guint action, GtkWidget *widget)
 }
 #undef SET_CHECK_MENU_ACTIVE
 
-static void compose_cb(gpointer data, guint action, GtkWidget *widget)
+static void compose_cb(GtkAction *action, gpointer data)
 {
 	MessageView *messageview = (MessageView *)data;
 	PrefsAccount *ac = NULL;
@@ -2440,24 +2543,36 @@ static void compose_cb(gpointer data, guint action, GtkWidget *widget)
 	compose_new(ac, NULL, NULL);
 }
 
-static void reply_cb(gpointer data, guint action, GtkWidget *widget)
+#define DO_ACTION(name, act)	{ if (!strcmp(a_name, name)) action = act; }
+
+static void reply_cb(GtkAction *gaction, gpointer data)
 {
 	MessageView *messageview = (MessageView *)data;
 	GSList *msginfo_list = NULL;
-
+	gint action = COMPOSE_REPLY;
+	const gchar *a_name = gtk_action_get_name(gaction);
+	
 	g_return_if_fail(messageview->msginfo);
+
+	DO_ACTION("Message/Reply", COMPOSE_REPLY);
+	DO_ACTION("Message/ReplyTo/All", COMPOSE_REPLY_TO_ALL);
+	DO_ACTION("Message/ReplyTo/Sender", COMPOSE_REPLY_TO_SENDER);
+	DO_ACTION("Message/ReplyTo/List", COMPOSE_REPLY_TO_LIST);
+	DO_ACTION("Message/Forward", COMPOSE_FORWARD_INLINE);
+	DO_ACTION("Message/ForwardAtt", COMPOSE_FORWARD_AS_ATTACH);
+	DO_ACTION("Message/Redirect", COMPOSE_REDIRECT);
 
 	msginfo_list = g_slist_append(msginfo_list, messageview->msginfo);
 	compose_reply_from_messageview(messageview, msginfo_list, action);
 	g_slist_free(msginfo_list);
 }
 
-static void addressbook_open_cb(gpointer data, guint action, GtkWidget *widget)
+static void addressbook_open_cb(GtkAction *action, gpointer data)
 {
 	addressbook_open(NULL);
 }
 
-static void add_address_cb(gpointer data, guint action, GtkWidget *widget)
+static void add_address_cb(GtkAction *action, gpointer data)
 {
 	MessageView *messageview = (MessageView *)data;
 	MsgInfo *msginfo, *full_msginfo;
@@ -2498,38 +2613,51 @@ static void add_address_cb(gpointer data, guint action, GtkWidget *widget)
 		gtk_widget_destroy(image);
 }
 
-static void create_filter_cb(gpointer data, guint action, GtkWidget *widget)
+static void create_filter_cb(GtkAction *gaction, gpointer data)
 {
 	MessageView *messageview = (MessageView *)data;
 	FolderItem * item;
-	
+	gint action = -1;
+	const gchar *a_name = gtk_action_get_name(gaction);
+
 	if (!messageview->msginfo) return;
+
+	DO_ACTION("Tools/CreateFilterRule/Automatically", FILTER_BY_AUTO);
+	DO_ACTION("Tools/CreateFilterRule/ByFrom", FILTER_BY_FROM);
+	DO_ACTION("Tools/CreateFilterRule/ByTo", FILTER_BY_TO);
+	DO_ACTION("Tools/CreateFilterRule/BySubject", FILTER_BY_SUBJECT);
 	
 	item = messageview->msginfo->folder;
 	summary_msginfo_filter_open(item,  messageview->msginfo,
 				    (PrefsFilterType)action, 0);
 }
 
-static void create_processing_cb(gpointer data, guint action,
-				 GtkWidget *widget)
+static void create_processing_cb(GtkAction *gaction, gpointer data)
 {
 	MessageView *messageview = (MessageView *)data;
 	FolderItem * item;
+	gint action = -1;
+	const gchar *a_name = gtk_action_get_name(gaction);
 	
 	if (!messageview->msginfo) return;
 	
+	DO_ACTION("Tools/CreateProcessingRule/Automatically", FILTER_BY_AUTO);
+	DO_ACTION("Tools/CreateProcessingRule/ByFrom", FILTER_BY_FROM);
+	DO_ACTION("Tools/CreateProcessingRule/ByTo", FILTER_BY_TO);
+	DO_ACTION("Tools/CreateProcessingRule/BySubject", FILTER_BY_SUBJECT);
+
 	item = messageview->msginfo->folder;
 	summary_msginfo_filter_open(item,  messageview->msginfo,
 				    (PrefsFilterType)action, 1);
 }
 
-static void open_urls_cb(gpointer data, guint action, GtkWidget *widget)
+static void open_urls_cb(GtkAction *action, gpointer data)
 {
 	MessageView *messageview = (MessageView *)data;
 	messageview_list_urls(messageview);
 }
 
-static void about_cb(gpointer data, guint action, GtkWidget *widget)
+static void about_cb(GtkAction *gaction, gpointer data)
 {
 	about_show();
 }
@@ -2553,31 +2681,14 @@ static gboolean messageview_update_msg(gpointer source, gpointer data)
 
 void messageview_set_menu_sensitive(MessageView *messageview)
 {
-	GtkItemFactory *ifactory;
-	GtkWidget *menuitem = NULL;
-
 	if (!messageview || !messageview->new_window) 
 		return;
 	/* do some smart things */
 	if (!messageview->menubar) return;
-	ifactory = gtk_item_factory_from_widget(messageview->menubar);
-	if (!ifactory) return;
 
-	if (prefs_common.hide_quotes) {
-		menuitem = NULL;
-		if (prefs_common.hide_quotes == 1)
-			menuitem = gtk_item_factory_get_widget(ifactory, 
-					"/View/Quotes/Fold all");
-		if (prefs_common.hide_quotes == 2)
-			menuitem = gtk_item_factory_get_widget(ifactory, 
-					"/View/Quotes/Fold from level 2");
-		if (prefs_common.hide_quotes == 3)
-			menuitem = gtk_item_factory_get_widget(ifactory, 
-					"/View/Quotes/Fold from level 3");
-		gtk_check_menu_item_set_active
-			(GTK_CHECK_MENU_ITEM(menuitem),
-			 TRUE);
-	}
+	cm_toggle_menu_set_active_full(messageview->ui_manager, "Menu/View/Quotes/FoldAll", (prefs_common.hide_quotes == 1));
+	cm_toggle_menu_set_active_full(messageview->ui_manager, "Menu/View/Quotes/Fold2", (prefs_common.hide_quotes == 2));
+	cm_toggle_menu_set_active_full(messageview->ui_manager, "Menu/View/Quotes/Fold3", (prefs_common.hide_quotes == 3));
 }
 
 void messageview_learn (MessageView *msgview, gboolean is_spam)

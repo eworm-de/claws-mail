@@ -1,3 +1,18 @@
+2008-07-29 [colin]	3.5.0cvs36
+
+	* src/action.c
+	* src/action.h
+	* src/addressbook.c
+	* src/addressitem.h
+	* src/compose.c
+	* src/compose.h
+	* src/messageview.c
+	* src/messageview.h
+	* src/summaryview.c
+	* src/gtk/menu.c
+	* src/gtk/menu.h
+		More switches to GtkUIManager
+
 2008-07-26 [colin]	3.5.0cvs35
 
 	* src/gtk/menu.c

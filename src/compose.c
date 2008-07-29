@@ -294,9 +294,11 @@ static void compose_convert_header		(Compose	*compose,
 						 gboolean	 addr_field);
 
 static void compose_attach_info_free		(AttachInfo	*ainfo);
-static void compose_attach_remove_selected	(Compose	*compose);
+static void compose_attach_remove_selected	(GtkAction	*action,
+						 gpointer	 data);
 
-static void compose_attach_property		(Compose	*compose);
+static void compose_attach_property		(GtkAction	*action,
+						 gpointer	 data);
 static void compose_attach_property_create	(gboolean	*cancelled);
 static void attach_property_ok			(GtkWidget	*widget,
 						 gboolean	*cancelled);
@@ -353,61 +355,59 @@ static gboolean attach_button_pressed	(GtkWidget	*widget,
 static gboolean attach_key_pressed	(GtkWidget	*widget,
 					 GdkEventKey	*event,
 					 gpointer	 data);
-static void compose_send_cb		(gpointer	 data,
-					 guint		 action,
-					 GtkWidget	*widget);
-static void compose_send_later_cb	(gpointer	 data,
-					 guint		 action,
-					 GtkWidget	*widget);
+static void compose_send_cb		(GtkAction	*action, gpointer data);
+static void compose_send_later_cb	(GtkAction	*action, gpointer data);
 
-static void compose_draft_cb		(gpointer	 data,
-					 guint		 action,
-					 GtkWidget	*widget);
+static void compose_save_cb		(GtkAction	*action,
+					 gpointer	 data);
 
-static void compose_attach_cb		(gpointer	 data,
-					 guint		 action,
-					 GtkWidget	*widget);
-static void compose_insert_file_cb	(gpointer	 data,
-					 guint		 action,
-					 GtkWidget	*widget);
-static void compose_insert_sig_cb	(gpointer	 data,
-					 guint		 action,
-					 GtkWidget	*widget);
+static void compose_attach_cb		(GtkAction	*action,
+					 gpointer	 data);
+static void compose_insert_file_cb	(GtkAction	*action,
+					 gpointer	 data);
+static void compose_insert_sig_cb	(GtkAction	*action,
+					 gpointer	 data);
 
-static void compose_close_cb		(gpointer	 data,
-					 guint		 action,
-					 GtkWidget	*widget);
+static void compose_close_cb		(GtkAction	*action,
+					 gpointer	 data);
 
-static void compose_set_encoding_cb	(gpointer	 data,
-					 guint		 action,
-					 GtkWidget	*widget);
+static void compose_set_encoding_cb	(GtkAction	*action, GtkRadioAction *current, gpointer data);
 
-static void compose_address_cb		(gpointer	 data,
-					 guint		 action,
-					 GtkWidget	*widget);
+static void compose_address_cb		(GtkAction	*action,
+					 gpointer	 data);
+static void about_show_cb		(GtkAction	*action,
+					 gpointer	 data);
 static void compose_template_activate_cb(GtkWidget	*widget,
 					 gpointer	 data);
 
-static void compose_ext_editor_cb	(gpointer	 data,
-					 guint		 action,
-					 GtkWidget	*widget);
+static void compose_ext_editor_cb	(GtkAction	*action,
+					 gpointer	 data);
 
 static gint compose_delete_cb		(GtkWidget	*widget,
 					 GdkEventAny	*event,
 					 gpointer	 data);
 
-static void compose_undo_cb		(Compose	*compose);
-static void compose_redo_cb		(Compose	*compose);
-static void compose_cut_cb		(Compose	*compose);
-static void compose_copy_cb		(Compose	*compose);
-static void compose_paste_cb		(Compose	*compose);
-static void compose_paste_as_quote_cb	(Compose	*compose);
-static void compose_paste_no_wrap_cb	(Compose	*compose);
-static void compose_paste_wrap_cb	(Compose	*compose);
-static void compose_allsel_cb		(Compose	*compose);
+static void compose_undo_cb		(GtkAction	*action,
+					 gpointer	 data);
+static void compose_redo_cb		(GtkAction	*action,
+					 gpointer	 data);
+static void compose_cut_cb		(GtkAction	*action,
+					 gpointer	 data);
+static void compose_copy_cb		(GtkAction	*action,
+					 gpointer	 data);
+static void compose_paste_cb		(GtkAction	*action,
+					 gpointer	 data);
+static void compose_paste_as_quote_cb	(GtkAction	*action,
+					 gpointer	 data);
+static void compose_paste_no_wrap_cb	(GtkAction	*action,
+					 gpointer	 data);
+static void compose_paste_wrap_cb	(GtkAction	*action,
+					 gpointer	 data);
+static void compose_allsel_cb		(GtkAction	*action,
+					 gpointer	 data);
 
-static void compose_advanced_action_cb	(Compose		   *compose,
-					 ComposeCallAdvancedAction  action);
+static void compose_advanced_action_cb	(GtkAction	*action,
+					 gpointer	 data);
 
 static void compose_grab_focus_cb	(GtkWidget	*widget,
 					 Compose	*compose);
@@ -415,43 +415,35 @@ static void compose_grab_focus_cb	(GtkWidget	*widget,
 static void compose_changed_cb		(GtkTextBuffer	*textbuf,
 					 Compose	*compose);
 
-static void compose_wrap_cb		(gpointer	 data,
-					 guint		 action,
-					 GtkWidget	*widget);
-static void compose_find_cb		(gpointer	 data,
-					 guint		 action,
-					 GtkWidget	*widget);
-static void compose_toggle_autowrap_cb	(gpointer	 data,
-					 guint		 action,
-					 GtkWidget	*widget);
+static void compose_wrap_cb		(GtkAction	*action,
+					 gpointer	 data);
+static void compose_wrap_all_cb		(GtkAction	*action,
+					 gpointer	 data);
+static void compose_find_cb		(GtkAction	*action,
+					 gpointer	 data);
+static void compose_toggle_autowrap_cb	(GtkToggleAction *action,
+					 gpointer	 data);
 
-static void compose_toggle_ruler_cb	(gpointer	 data,
-					 guint		 action,
-					 GtkWidget	*widget);
-static void compose_toggle_sign_cb	(gpointer	 data,
-					 guint		 action,
-					 GtkWidget	*widget);
-static void compose_toggle_encrypt_cb	(gpointer	 data,
-					 guint		 action,
-					 GtkWidget	*widget);
-static void compose_set_privacy_system_cb(GtkWidget      *widget,
-					  gpointer        data);
+static void compose_toggle_ruler_cb	(GtkToggleAction *action,
+					 gpointer	 data);
+static void compose_toggle_sign_cb	(GtkToggleAction *action,
+					 gpointer	 data);
+static void compose_toggle_encrypt_cb	(GtkToggleAction *action,
+					 gpointer	 data);
+static void compose_set_privacy_system_cb(GtkWidget *widget, gpointer data);
 static void compose_update_privacy_system_menu_item(Compose * compose, gboolean warn);
 static void activate_privacy_system     (Compose *compose, 
                                          PrefsAccount *account,
 					 gboolean warn);
 static void compose_use_signing(Compose *compose, gboolean use_signing);
 static void compose_use_encryption(Compose *compose, gboolean use_encryption);
-static void compose_toggle_return_receipt_cb(gpointer data, guint action,
-					     GtkWidget *widget);
-static void compose_toggle_remove_refs_cb(gpointer data, guint action,
-					     GtkWidget *widget);
-static void compose_set_priority_cb	(gpointer 	 data,
-					 guint 		 action,
-					 GtkWidget 	*widget);
-static void compose_reply_change_mode	(gpointer 	 data,
-					 ComposeMode	action,
-					 GtkWidget 	*widget);
+static void compose_toggle_return_receipt_cb(GtkToggleAction *action,
+					 gpointer	 data);
+static void compose_toggle_remove_refs_cb(GtkToggleAction *action,
+					 gpointer	 data);
+static void compose_set_priority_cb	(GtkAction *action, GtkRadioAction *current, gpointer data);
+static void compose_reply_change_mode	(Compose *compose, ComposeMode action);
+static void compose_reply_change_mode_cb(GtkAction *action, GtkRadioAction *current, gpointer data);
 
 static void compose_attach_drag_received_cb (GtkWidget		*widget,
 					     GdkDragContext	*drag_context,
@@ -506,11 +498,16 @@ static void compose_show_first_last_header (Compose *compose, gboolean show_firs
 
 static void compose_allow_user_actions (Compose *compose, gboolean allow);
 
+static void compose_nothing_cb		   (GtkAction *action, gpointer data)
+{
+
+}
+
 #if USE_ASPELL
-static void compose_check_all		   (Compose *compose);
-static void compose_highlight_all	   (Compose *compose);
-static void compose_check_backwards	   (Compose *compose);
-static void compose_check_forwards_go	   (Compose *compose);
+static void compose_check_all		   (GtkAction *action, gpointer data);
+static void compose_highlight_all	   (GtkAction *action, gpointer data);
+static void compose_check_backwards	   (GtkAction *action, gpointer data);
+static void compose_check_forwards_go	   (GtkAction *action, gpointer data);
 #endif
 
 static gint compose_defer_auto_save_draft	(Compose	*compose);
@@ -526,266 +523,189 @@ static void compose_attach_update_label(Compose *compose);
 
 static void compose_attach_from_list(Compose *compose, GList *file_list, gboolean free_data);
 
-static GtkItemFactoryEntry compose_popup_entries[] =
+static GtkActionEntry compose_popup_entries[] =
 {
-	{N_("/_Add..."),	NULL, compose_attach_cb, 0, NULL},
-	{N_("/_Remove"),	NULL, compose_attach_remove_selected, 0, NULL},
-	{"/---",		NULL, NULL, 0, "<Separator>"},
-	{N_("/_Properties..."),	NULL, compose_attach_property, 0, NULL}
+	{"Compose",			NULL, "Compose" },
+	{"Compose/Add",			NULL, N_("_Add..."), NULL, NULL, G_CALLBACK(compose_attach_cb) },
+	{"Compose/Remove",			NULL, N_("_Remove"), NULL, NULL, G_CALLBACK(compose_attach_remove_selected) },
+	{"Compose/---",			NULL, "---", NULL, NULL, NULL },
+	{"Compose/Properties",		NULL, N_("_Properties..."), NULL, NULL, G_CALLBACK(compose_attach_property) },
 };
 
-static GtkItemFactoryEntry compose_entries[] =
+static GtkActionEntry compose_entries[] =
 {
-	{N_("/_Message"),				NULL, NULL, 0, "<Branch>"},
-	{N_("/_Message/S_end"),		"<control>Return",
-					compose_send_cb, 0, NULL},
-	{N_("/_Message/Send _later"),	"<shift><control>S",
-					compose_send_later_cb,  0, NULL},
-	{N_("/_Message/---"),			NULL, NULL, 0, "<Separator>"},
-	{N_("/_Message/_Attach file"),		"<control>M", compose_attach_cb,      0, NULL},
-	{N_("/_Message/_Insert file"),		"<control>I", compose_insert_file_cb, 0, NULL},
-	{N_("/_Message/Insert si_gnature"),	"<control>G", compose_insert_sig_cb,  0, NULL},
-	{N_("/_Message/---"),			NULL, NULL, 0, "<Separator>"},
-	{N_("/_Message/_Save"),
-						"<control>S", compose_draft_cb, COMPOSE_KEEP_EDITING, NULL},
-	{N_("/_Message/---"),			NULL, NULL, 0, "<Separator>"},
-	{N_("/_Message/_Close"),			"<control>W", compose_close_cb, 0, NULL},
-
-	{N_("/_Edit"),			NULL, NULL, 0, "<Branch>"},
-	{N_("/_Edit/_Undo"),		"<control>Z", compose_undo_cb, 0, NULL},
-	{N_("/_Edit/_Redo"),		"<control>Y", compose_redo_cb, 0, NULL},
-	{N_("/_Edit/---"),		NULL, NULL, 0, "<Separator>"},
-	{N_("/_Edit/Cu_t"),		"<control>X", compose_cut_cb,    0, NULL},
-	{N_("/_Edit/_Copy"),		"<control>C", compose_copy_cb,   0, NULL},
-	{N_("/_Edit/_Paste"),		"<control>V", compose_paste_cb,  0, NULL},
-	{N_("/_Edit/Special paste"),	NULL, NULL, 0, "<Branch>"},
-	{N_("/_Edit/Special paste/as _quotation"),
-					NULL, compose_paste_as_quote_cb, 0, NULL},
-	{N_("/_Edit/Special paste/_wrapped"),
-					NULL, compose_paste_wrap_cb, 0, NULL},
-	{N_("/_Edit/Special paste/_unwrapped"),
-					NULL, compose_paste_no_wrap_cb, 0, NULL},
-	{N_("/_Edit/Select _all"),	"<control>A", compose_allsel_cb, 0, NULL},
-	{N_("/_Edit/A_dvanced"),	NULL, NULL, 0, "<Branch>"},
-	{N_("/_Edit/A_dvanced/Move a character backward"),
-					"<shift><control>B",
-					compose_advanced_action_cb,
-					COMPOSE_CALL_ADVANCED_ACTION_MOVE_BACKWARD_CHARACTER,
-					NULL},
-	{N_("/_Edit/A_dvanced/Move a character forward"),
-					"<shift><control>F",
-					compose_advanced_action_cb,
-					COMPOSE_CALL_ADVANCED_ACTION_MOVE_FORWARD_CHARACTER,
-					NULL},
-	{N_("/_Edit/A_dvanced/Move a word backward"),
-					NULL, /* "<alt>B" */
-					compose_advanced_action_cb,
-					COMPOSE_CALL_ADVANCED_ACTION_MOVE_BACKWARD_WORD,
-					NULL},
-	{N_("/_Edit/A_dvanced/Move a word forward"),
-					NULL, /* "<alt>F" */
-					compose_advanced_action_cb,
-					COMPOSE_CALL_ADVANCED_ACTION_MOVE_FORWARD_WORD,
-					NULL},
-	{N_("/_Edit/A_dvanced/Move to beginning of line"),
-					NULL, /* "<control>A" */
-					compose_advanced_action_cb,
-					COMPOSE_CALL_ADVANCED_ACTION_MOVE_BEGINNING_OF_LINE,
-					NULL},
-	{N_("/_Edit/A_dvanced/Move to end of line"),
-					"<control>E",
-					compose_advanced_action_cb,
-					COMPOSE_CALL_ADVANCED_ACTION_MOVE_END_OF_LINE,
-					NULL},
-	{N_("/_Edit/A_dvanced/Move to previous line"),
-					"<control>P",
-					compose_advanced_action_cb,
-					COMPOSE_CALL_ADVANCED_ACTION_MOVE_PREVIOUS_LINE,
-					NULL},
-	{N_("/_Edit/A_dvanced/Move to next line"),
-					"<control>N",
-					compose_advanced_action_cb,
-					COMPOSE_CALL_ADVANCED_ACTION_MOVE_NEXT_LINE,
-					NULL},
-	{N_("/_Edit/A_dvanced/Delete a character backward"),
-					"<control>H",
-					compose_advanced_action_cb,
-					COMPOSE_CALL_ADVANCED_ACTION_DELETE_BACKWARD_CHARACTER,
-					NULL},
-	{N_("/_Edit/A_dvanced/Delete a character forward"),
-					"<control>D",
-					compose_advanced_action_cb,
-					COMPOSE_CALL_ADVANCED_ACTION_DELETE_FORWARD_CHARACTER,
-					NULL},
-	{N_("/_Edit/A_dvanced/Delete a word backward"),
-					NULL, /* "<control>W" */
-					compose_advanced_action_cb,
-					COMPOSE_CALL_ADVANCED_ACTION_DELETE_BACKWARD_WORD,
-					NULL},
-	{N_("/_Edit/A_dvanced/Delete a word forward"),
-					NULL, /* "<alt>D", */
-					compose_advanced_action_cb,
-					COMPOSE_CALL_ADVANCED_ACTION_DELETE_FORWARD_WORD,
-					NULL},
-	{N_("/_Edit/A_dvanced/Delete line"),
-					"<control>U",
-					compose_advanced_action_cb,
-					COMPOSE_CALL_ADVANCED_ACTION_DELETE_LINE,
-					NULL},
-	{N_("/_Edit/A_dvanced/Delete to end of line"),
-					"<control>K",
-					compose_advanced_action_cb,
-					COMPOSE_CALL_ADVANCED_ACTION_DELETE_TO_LINE_END,
-					NULL},
-	{N_("/_Edit/---"),		NULL, NULL, 0, "<Separator>"},
-	{N_("/_Edit/_Find"),
-					"<control>F", compose_find_cb, 0, NULL},
-	{N_("/_Edit/---"),			NULL, NULL, 0, "<Separator>"},
-	{N_("/_Edit/_Wrap current paragraph"),
-					"<control>L", compose_wrap_cb, 0, NULL},
-	{N_("/_Edit/Wrap all long _lines"),
-					"<control><alt>L", compose_wrap_cb, 1, NULL},
-	{N_("/_Edit/Aut_o wrapping"),	"<shift><control>L", compose_toggle_autowrap_cb, 0, "<ToggleItem>"},
-	{N_("/_Edit/---"),		NULL, NULL, 0, "<Separator>"},
-	{N_("/_Edit/Edit with e_xternal editor"),
-					"<shift><control>X", compose_ext_editor_cb, 0, NULL},
+	{"Menu",				NULL, "Menu" },
+/* menus */
+	{"Message",			NULL, N_("_Message") },
+	{"Edit",			NULL, N_("_Edit") },
 #if USE_ASPELL
-	{N_("/_Spelling"),		NULL, NULL, 0, "<Branch>"},
-	{N_("/_Spelling/_Check all or check selection"),
-					NULL, compose_check_all, 0, NULL},
-	{N_("/_Spelling/_Highlight all misspelled words"),
-					NULL, compose_highlight_all, 0, NULL},
-	{N_("/_Spelling/Check _backwards misspelled word"),
-					NULL, compose_check_backwards , 0, NULL},
-	{N_("/_Spelling/_Forward to next misspelled word"),
-					NULL, compose_check_forwards_go, 0, NULL},
-	{N_("/_Spelling/---"),		NULL, NULL, 0, "<Separator>"},
-	{N_("/_Spelling/Options"),
-					NULL, NULL, 0, "<Branch>"},
+	{"Spelling",			NULL, N_("_Spelling") },
 #endif
-	{N_("/_Options"),		NULL, NULL, 0, "<Branch>"},
-	{N_("/_Options/Reply _mode"),		NULL, NULL,   0, "<Branch>"},
-	{N_("/_Options/Reply _mode/_Normal"),	NULL, compose_reply_change_mode,   COMPOSE_REPLY, "<RadioItem>"},
-	{N_("/_Options/Reply _mode/_All"),		NULL, compose_reply_change_mode,   COMPOSE_REPLY_TO_ALL, "/Options/Reply mode/Normal"},
-	{N_("/_Options/Reply _mode/_Sender"),		NULL, compose_reply_change_mode,   COMPOSE_REPLY_TO_SENDER, "/Options/Reply mode/Normal"},
-	{N_("/_Options/Reply _mode/_Mailing-list"), 	NULL, compose_reply_change_mode,   COMPOSE_REPLY_TO_LIST, "/Options/Reply mode/Normal"},
-	{N_("/_Options/---"),		NULL,		NULL,	0, "<Separator>"},
-	{N_("/_Options/Privacy _System"),		NULL, NULL,   0, "<Branch>"},
-	{N_("/_Options/Privacy _System/None"),	NULL, NULL,   0, "<RadioItem>"},
-	{N_("/_Options/Si_gn"),   	NULL, compose_toggle_sign_cb   , 0, "<ToggleItem>"},
-	{N_("/_Options/_Encrypt"),	NULL, compose_toggle_encrypt_cb, 0, "<ToggleItem>"},
-	{N_("/_Options/---"),		NULL,		NULL,	0, "<Separator>"},
-	{N_("/_Options/_Priority"),	NULL,		NULL,   0, "<Branch>"},
-	{N_("/_Options/Priority/_Highest"), NULL, compose_set_priority_cb, PRIORITY_HIGHEST, "<RadioItem>"},
-	{N_("/_Options/Priority/Hi_gh"),    NULL, compose_set_priority_cb, PRIORITY_HIGH, "/Options/Priority/Highest"},
-	{N_("/_Options/Priority/_Normal"),  NULL, compose_set_priority_cb, PRIORITY_NORMAL, "/Options/Priority/Highest"},
-	{N_("/_Options/Priority/Lo_w"),	   NULL, compose_set_priority_cb, PRIORITY_LOW, "/Options/Priority/Highest"},
-	{N_("/_Options/Priority/_Lowest"),  NULL, compose_set_priority_cb, PRIORITY_LOWEST, "/Options/Priority/Highest"},
-	{N_("/_Options/---"),		NULL,		NULL,	0, "<Separator>"},
-	{N_("/_Options/_Request Return Receipt"),	NULL, compose_toggle_return_receipt_cb, 0, "<ToggleItem>"},
-	{N_("/_Options/---"),		NULL,		NULL,	0, "<Separator>"},
-	{N_("/_Options/Remo_ve references"),	NULL, compose_toggle_remove_refs_cb, 0, "<ToggleItem>"},
-	{N_("/_Options/---"),		NULL,		NULL,	0, "<Separator>"},
+	{"Options",			NULL, N_("_Options") },
+	{"Tools",			NULL, N_("_Tools") },
+	{"Help",			NULL, N_("_Help") },
+/* Message menu */
+	{"Message/Send",		NULL, N_("S_end"), "<control>Return", NULL, G_CALLBACK(compose_send_cb) },
+	{"Message/SendLater",		NULL, N_("Send _later"), "<shift><control>S", NULL, G_CALLBACK(compose_send_later_cb) },
+	{"Message/---",			NULL, "---" },
 
-#define ENC_ACTION(action) \
-	NULL, compose_set_encoding_cb, action, \
-	"/Options/Character encoding/Automatic"
+	{"Message/AttachFile",		NULL, N_("_Attach file"), "<control>M", NULL, G_CALLBACK(compose_attach_cb) },
+	{"Message/InsertFile",		NULL, N_("_Insert file"), "<control>I", NULL, G_CALLBACK(compose_insert_file_cb) },
+	{"Message/InsertSig",		NULL, N_("Insert si_gnature"), "<control>G", NULL, G_CALLBACK(compose_insert_sig_cb) },
+	/* {"Message/---",		NULL, "---" }, */
+	{"Message/Save",		NULL, N_("_Save"), "<control>S", NULL, G_CALLBACK(compose_save_cb) }, /*COMPOSE_KEEP_EDITING*/
+	/* {"Message/---",		NULL, "---" }, */
+	{"Message/Close",		NULL, N_("_Close"), "<control>W", NULL, G_CALLBACK(compose_close_cb) },
 
-	{N_("/_Options/Character _encoding"), NULL, NULL, 0, "<Branch>"},
-	{N_("/_Options/Character _encoding/_Automatic"),
-			NULL, compose_set_encoding_cb, C_AUTO, "<RadioItem>"},
-	{N_("/_Options/Character _encoding/---"), NULL, NULL, 0, "<Separator>"},
+/* Edit menu */
+	{"Edit/Undo",			NULL, N_("_Undo"), "<control>Z", NULL, G_CALLBACK(compose_undo_cb) },
+	{"Edit/Redo",			NULL, N_("_Redo"), "<control>Y", NULL, G_CALLBACK(compose_redo_cb) },
+	{"Edit/---",			NULL, "---" },
 
-	{N_("/_Options/Character _encoding/7bit ASCII (US-ASC_II)"),
-	 ENC_ACTION(C_US_ASCII)},
-	{N_("/_Options/Character _encoding/Unicode (_UTF-8)"),
-	 ENC_ACTION(C_UTF_8)},
-	{N_("/_Options/Character _encoding/---"), NULL, NULL, 0, "<Separator>"},
+	{"Edit/Cut",			NULL, N_("Cu_t"), "<control>X", NULL, G_CALLBACK(compose_cut_cb) },
+	{"Edit/Copy",			NULL, N_("_Copy"), "<control>C", NULL, G_CALLBACK(compose_copy_cb) },
+	{"Edit/Paste",			NULL, N_("_Paste"), "<control>V", NULL, G_CALLBACK(compose_paste_cb) },
 
-	{N_("/_Options/Character _encoding/Western European"), NULL, NULL, 0, "<Branch>"},
-	{N_("/_Options/Character _encoding/Western European/ISO-8859-_1"),
-	 ENC_ACTION(C_ISO_8859_1)},
-	{N_("/_Options/Character _encoding/Western European/ISO-8859-15"),
-	 ENC_ACTION(C_ISO_8859_15)},
-	{N_("/_Options/Character _encoding/Western European/Windows-1252"),
-	 ENC_ACTION(C_WINDOWS_1252)},
+	{"Edit/SpecialPaste",		NULL, N_("Special paste") },
+	{"Edit/SpecialPaste/AsQuotation",	NULL, N_("as _quotation"), NULL, NULL, G_CALLBACK(compose_paste_as_quote_cb) },
+	{"Edit/SpecialPaste/Wrapped",	NULL, N_("_wrapped"), NULL, NULL, G_CALLBACK(compose_paste_wrap_cb) },
+	{"Edit/SpecialPaste/Unwrapped",	NULL, N_("_unwrapped"), NULL, NULL, G_CALLBACK(compose_paste_no_wrap_cb) },
 
-	{N_("/_Options/Character _encoding/Central European (ISO-8859-_2)"),
-	 ENC_ACTION(C_ISO_8859_2)},
+	{"Edit/SelectAll",		NULL, N_("Select _all"), "<control>A", NULL, G_CALLBACK(compose_allsel_cb) },
 
-	{N_("/_Options/Character _encoding/Baltic"), NULL, NULL, 0, "<Branch>"},
-	{N_("/_Options/Character _encoding/Baltic/ISO-8859-13"),
-	 ENC_ACTION(C_ISO_8859_13)},
-	{N_("/_Options/Character _encoding/Baltic/ISO-8859-_4"),
-	 ENC_ACTION(C_ISO_8859_4)},
+	{"Edit/Advanced",		NULL, N_("A_dvanced") },
+	{"Edit/Advanced/BackChar",	NULL, N_("Move a character backward"), "<shift><control>B", NULL, G_CALLBACK(compose_advanced_action_cb) }, /*COMPOSE_CALL_ADVANCED_ACTION_MOVE_BACKWARD_CHARACTER*/
+	{"Edit/Advanced/ForwChar",	NULL, N_("Move a character forward"), "<shift><control>F", NULL, G_CALLBACK(compose_advanced_action_cb) }, /*COMPOSE_CALL_ADVANCED_ACTION_MOVE_FORWARD_CHARACTER*/
+	{"Edit/Advanced/BackWord",	NULL, N_("Move a word backward"), NULL, NULL, G_CALLBACK(compose_advanced_action_cb) }, /*COMPOSE_CALL_ADVANCED_ACTION_MOVE_BACKWARD_WORD*/
+	{"Edit/Advanced/ForwWord",	NULL, N_("Move a word forward"), NULL, NULL, G_CALLBACK(compose_advanced_action_cb) }, /*COMPOSE_CALL_ADVANCED_ACTION_MOVE_FORWARD_WORD*/
+	{"Edit/Advanced/BegLine",	NULL, N_("Move to beginning of line"), NULL, NULL, G_CALLBACK(compose_advanced_action_cb) }, /*COMPOSE_CALL_ADVANCED_ACTION_MOVE_BEGINNING_OF_LINE*/
+	{"Edit/Advanced/EndLine",	NULL, N_("Move to end of line"), NULL, NULL, G_CALLBACK(compose_advanced_action_cb) }, /*COMPOSE_CALL_ADVANCED_ACTION_MOVE_END_OF_LINE*/
+	{"Edit/Advanced/PrevLine",	NULL, N_("Move to previous line"), "<control>P", NULL, G_CALLBACK(compose_advanced_action_cb) }, /*COMPOSE_CALL_ADVANCED_ACTION_MOVE_PREVIOUS_LINE*/
+	{"Edit/Advanced/NextLine",	NULL, N_("Move to next line"), "<control>N", NULL, G_CALLBACK(compose_advanced_action_cb) }, /*COMPOSE_CALL_ADVANCED_ACTION_MOVE_NEXT_LINE*/
+	{"Edit/Advanced/DelBackChar",	NULL, N_("Delete a character backward"), "<control>H", NULL, G_CALLBACK(compose_advanced_action_cb) }, /*COMPOSE_CALL_ADVANCED_ACTION_DELETE_BACKWARD_CHARACTER*/
+	{"Edit/Advanced/DelForwChar",	NULL, N_("Delete a character forward"), "<control>D", NULL, G_CALLBACK(compose_advanced_action_cb) }, /*COMPOSE_CALL_ADVANCED_ACTION_DELETE_FORWARD_CHARACTER*/
+	{"Edit/Advanced/DelBackWord",	NULL, N_("Delete a word backward"), NULL, NULL, G_CALLBACK(compose_advanced_action_cb) }, /*COMPOSE_CALL_ADVANCED_ACTION_DELETE_BACKWARD_WORD*/
+	{"Edit/Advanced/DelForwWord",	NULL, N_("Delete a word forward"), NULL, NULL, G_CALLBACK(compose_advanced_action_cb) }, /*COMPOSE_CALL_ADVANCED_ACTION_DELETE_FORWARD_WORD*/
+	{"Edit/Advanced/DelLine",	NULL, N_("Delete line"), "<control>U", NULL, G_CALLBACK(compose_advanced_action_cb) }, /*COMPOSE_CALL_ADVANCED_ACTION_DELETE_LINE*/
+	{"Edit/Advanced/DelEndLine",	NULL, N_("Delete to end of line"), "<control>K", NULL, G_CALLBACK(compose_advanced_action_cb) }, /*COMPOSE_CALL_ADVANCED_ACTION_DELETE_TO_LINE_END*/
 
-	{N_("/_Options/Character _encoding/Greek (ISO-8859-_7)"),
-	 ENC_ACTION(C_ISO_8859_7)},
+	/* {"Edit/---",			NULL, "---" }, */
+	{"Edit/Find",		NULL, N_("_Find"), "<control>F", NULL, G_CALLBACK(compose_find_cb) },
 
-	{N_("/_Options/Character _encoding/Hebrew"), NULL, NULL, 0, "<Branch>"},
-	{N_("/_Options/Character _encoding/Hebrew/ISO-8859-_8"),
-	 ENC_ACTION(C_ISO_8859_8)},
-	{N_("/_Options/Character _encoding/Hebrew/Windows-1255"),
-	 ENC_ACTION(C_WINDOWS_1255)},
+	/* {"Edit/---",			NULL, "---" }, */
+	{"Edit/WrapPara",		NULL, N_("_Wrap current paragraph"), "<control>L", NULL, G_CALLBACK(compose_wrap_cb) }, /* 0 */
+	{"Edit/WrapAllLines",		NULL, N_("Wrap all long _lines"), "<control><alt>L", NULL, G_CALLBACK(compose_wrap_all_cb) }, /* 1 */
+	/* {"Edit/---",			NULL, "---" }, */
+	{"Edit/ExtEditor",		NULL, N_("Edit with e_xternal editor"), "<shift><control>X", NULL, G_CALLBACK(compose_ext_editor_cb) },
+#if USE_ASPELL
+/* Spelling menu */
+	{"Spelling/CheckAllSel",	NULL, N_("_Check all or check selection"), NULL, NULL, G_CALLBACK(compose_check_all) },
+	{"Spelling/HighlightAll",	NULL, N_("_Highlight all misspelled words"), NULL, NULL, G_CALLBACK(compose_highlight_all) },
+	{"Spelling/CheckBackwards",	NULL, N_("Check _backwards misspelled word"), NULL, NULL, G_CALLBACK(compose_check_backwards) },
+	{"Spelling/ForwardNext",	NULL, N_("_Forward to next misspelled word"), NULL, NULL, G_CALLBACK(compose_check_forwards_go) },
 
-	{N_("/_Options/Character _encoding/Arabic"), NULL, NULL, 0, "<Branch>"},
-	{N_("/_Options/Character _encoding/Arabic/ISO-8859-_6"),
-	 ENC_ACTION(C_ISO_8859_6)},
-	{N_("/_Options/Character _encoding/Arabic/Windows-1256"),
-	 ENC_ACTION(C_CP1256)},
+	{"Spelling/---",		NULL, "---" },
+	{"Spelling/Options",		NULL, N_("_Options") },
+#endif
 
-	{N_("/_Options/Character _encoding/Turkish (ISO-8859-_9)"),
-	 ENC_ACTION(C_ISO_8859_9)},
+/* Options menu */
 
-	{N_("/_Options/Character _encoding/Cyrillic"), NULL, NULL, 0, "<Branch>"},
-	{N_("/_Options/Character _encoding/Cyrillic/ISO-8859-_5"),
-	 ENC_ACTION(C_ISO_8859_5)},
-	{N_("/_Options/Character _encoding/Cyrillic/KOI8-_R"),
-	 ENC_ACTION(C_KOI8_R)},
-	{N_("/_Options/Character _encoding/Cyrillic/KOI8-U"),
-	 ENC_ACTION(C_KOI8_U)},
-	{N_("/_Options/Character _encoding/Cyrillic/Windows-1251"),
-	 ENC_ACTION(C_WINDOWS_1251)},
+	{"Options/ReplyMode",		NULL, N_("Reply _mode") },
+	{"Options/---",			NULL, "---" },
+	{"Options/PrivacySystem",	NULL, N_("Privacy _System") },
+	{"Options/PrivacySystem/PlaceHolder",	NULL, "Placeholder", NULL, NULL, G_CALLBACK(compose_nothing_cb) },
 
-	{N_("/_Options/Character _encoding/Japanese"), NULL, NULL, 0, "<Branch>"},
-	{N_("/_Options/Character _encoding/Japanese/ISO-2022-_JP"),
-	 ENC_ACTION(C_ISO_2022_JP)},
-	{N_("/_Options/Character _encoding/Japanese/ISO-2022-JP-2"),
-	 ENC_ACTION(C_ISO_2022_JP_2)},
-	{N_("/_Options/Character _encoding/Japanese/_EUC-JP"),
-	 ENC_ACTION(C_EUC_JP)},
-	{N_("/_Options/Character _encoding/Japanese/_Shift__JIS"),
-	 ENC_ACTION(C_SHIFT_JIS)},
+	/* {"Options/---",		NULL, "---" }, */
 
-	{N_("/_Options/Character _encoding/Chinese"), NULL, NULL, 0, "<Branch>"},
-	{N_("/_Options/Character _encoding/Chinese/Simplified (_GB2312)"),
-	 ENC_ACTION(C_GB2312)},
-	{N_("/_Options/Character _encoding/Chinese/Simplified (GBK)"),
-	 ENC_ACTION(C_GBK)},
-	{N_("/_Options/Character _encoding/Chinese/Traditional (_Big5)"),
-	 ENC_ACTION(C_BIG5)},
-	{N_("/_Options/Character _encoding/Chinese/Traditional (EUC-_TW)"),
-	 ENC_ACTION(C_EUC_TW)},
+	{"Options/Priority",		NULL, N_("_Priority") },
 
-	{N_("/_Options/Character _encoding/Korean"), NULL, NULL, 0, "<Branch>"},
-	{N_("/_Options/Character _encoding/Korean/EUC-_KR"),
-	 ENC_ACTION(C_EUC_KR)},
-	{N_("/_Options/Character _encoding/Korean/ISO-2022-KR"),
-	 ENC_ACTION(C_ISO_2022_KR)},
+	{"Options/Encoding",		NULL, N_("Character _encoding") },
+	{"Options/Encoding/---",	NULL, "---" },
+#define ENC_ACTION(cs_char,c_char,string) \
+	{ "Options/Encoding/" cs_char, NULL, N_(string), NULL, NULL, c_char }
 
-	{N_("/_Options/Character _encoding/Thai"), NULL, NULL, 0, "<Branch>"},
-	{N_("/_Options/Character _encoding/Thai/TIS-620"),
-	 ENC_ACTION(C_TIS_620)},
-	{N_("/_Options/Character _encoding/Thai/Windows-874"),
-	 ENC_ACTION(C_WINDOWS_874)},
+	{"Options/Encoding/Western",	NULL, N_("Western European") },
+	{"Options/Encoding/Baltic",	NULL, N_("Baltic") },
+	{"Options/Encoding/Hebrew",	NULL, N_("Hebrew") },
+	{"Options/Encoding/Arabic",	NULL, N_("Arabic") },
+	{"Options/Encoding/Cyrillic",	NULL, N_("Cyrillic") },
+	{"Options/Encoding/Japanese",	NULL, N_("Japanese") },
+	{"Options/Encoding/Chinese",	NULL, N_("Chinese") },
+	{"Options/Encoding/Korean",	NULL, N_("Korean") },
+	{"Options/Encoding/Thai",	NULL, N_("Thai") },
 
-	{N_("/_Tools"),			NULL, NULL, 0, "<Branch>"},
-	{N_("/_Tools/Show _ruler"),	NULL, compose_toggle_ruler_cb, 0, "<ToggleItem>"},
-	{N_("/_Tools/_Address book"),	"<shift><control>A", compose_address_cb , 0, NULL},
-	{N_("/_Tools/_Template"),	NULL, NULL, 0, "<Branch>"},
-	{N_("/_Tools/Actio_ns"),	NULL, NULL, 0, "<Branch>"},
-	{N_("/_Help"),			NULL, NULL, 0, "<Branch>"},
-	{N_("/_Help/_About"),		NULL, about_show, 0, NULL}
+/* Tools menu */
+	{"Tools/AddressBook",		NULL, N_("_Address book"), NULL, NULL, G_CALLBACK(compose_address_cb) }, 
+
+	{"Tools/Template",	NULL, N_("_Template") },
+	{"Tools/Template/PlaceHolder",	NULL, "Placeholder", NULL, NULL, G_CALLBACK(compose_nothing_cb) },
+	{"Tools/Actions",	NULL, N_("Actio_ns") },
+	{"Tools/Actions/PlaceHolder",	NULL, "Placeholder", NULL, NULL, G_CALLBACK(compose_nothing_cb) },
+
+/* Help menu */
+	{"Help/About",		NULL, N_("_About"), NULL, NULL, G_CALLBACK(about_show_cb) }, 
+};
+
+static GtkToggleActionEntry compose_toggle_entries[] =
+{
+	{"Edit/AutoWrap",		NULL, N_("Aut_o wrapping"), "<shift><control>L", NULL, G_CALLBACK(compose_toggle_autowrap_cb) }, /* TOGGLE */
+	{"Options/Sign",		NULL, N_("Si_gn"), NULL, NULL, G_CALLBACK(compose_toggle_sign_cb) }, /* Toggle */
+	{"Options/Encrypt",		NULL, N_("_Encrypt"), NULL, NULL, G_CALLBACK(compose_toggle_encrypt_cb) }, /* Toggle */
+	{"Options/RequestRetRcpt",	NULL, N_("_Request Return Receipt"), NULL, NULL, G_CALLBACK(compose_toggle_return_receipt_cb) }, /* TOGGLE */
+	{"Options/RemoveReferences",	NULL, N_("Remo_ve references"), NULL, NULL, G_CALLBACK(compose_toggle_remove_refs_cb) }, /* TOGGLE */
+	{"Tools/ShowRuler",		NULL, N_("Show _ruler"), NULL, NULL, G_CALLBACK(compose_toggle_ruler_cb) }, /* Toggle */
+};
+
+static GtkRadioActionEntry compose_radio_rm_entries[] =
+{
+	{"Options/ReplyMode/Normal",	NULL, N_("_Normal"), NULL, NULL, COMPOSE_REPLY }, /* RADIO compose_reply_change_mode_cb */
+	{"Options/ReplyMode/All",	NULL, N_("_All"), NULL, NULL, COMPOSE_REPLY_TO_ALL }, /* RADIO compose_reply_change_mode_cb */
+	{"Options/ReplyMode/Sender",	NULL, N_("_Sender"), NULL, NULL, COMPOSE_REPLY_TO_SENDER }, /* RADIO compose_reply_change_mode_cb */
+	{"Options/ReplyMode/List",	NULL, N_("_Mailing-list"), NULL, NULL, COMPOSE_REPLY_TO_LIST }, /* RADIO compose_reply_change_mode_cb */
+};
+
+static GtkRadioActionEntry compose_radio_prio_entries[] =
+{
+	{"Options/Priority/Highest",	NULL, N_("_Highest"), NULL, NULL, PRIORITY_HIGHEST }, /* RADIO compose_set_priority_cb */
+	{"Options/Priority/High",	NULL, N_("Hi_gh"), NULL, NULL, PRIORITY_HIGH }, /* RADIO compose_set_priority_cb */
+	{"Options/Priority/Normal",	NULL, N_("_Normal"), NULL, NULL, PRIORITY_NORMAL }, /* RADIO compose_set_priority_cb */
+	{"Options/Priority/Low",	NULL, N_("Lo_w"), NULL, NULL, PRIORITY_LOW }, /* RADIO compose_set_priority_cb */
+	{"Options/Priority/Lowest",	NULL, N_("Lowest"), NULL, NULL, PRIORITY_LOWEST }, /* RADIO compose_set_priority_cb */
+};
+
+static GtkRadioActionEntry compose_radio_enc_entries[] =
+{
+	ENC_ACTION(CS_AUTO, C_AUTO, "_Automatic"), /* RADIO compose_set_encoding_cb */
+	ENC_ACTION(CS_US_ASCII, C_US_ASCII, "7bit ASCII (US-ASC_II)"), /* RADIO compose_set_encoding_cb */
+	ENC_ACTION(CS_UTF_8, C_UTF_8, "Unicode (_UTF-8)"), /* RADIO compose_set_encoding_cb */
+	ENC_ACTION("Western/"CS_ISO_8859_1, C_ISO_8859_1, "ISO-8859-_1"), /* RADIO compose_set_encoding_cb */
+	ENC_ACTION("Western/"CS_ISO_8859_15, C_ISO_8859_15, "ISO-8859-15"), /* RADIO compose_set_encoding_cb */
+	ENC_ACTION("Western/"CS_WINDOWS_1252, C_WINDOWS_1252, "Windows-1252"), /* RADIO compose_set_encoding_cb */
+	ENC_ACTION(CS_ISO_8859_2, C_ISO_8859_2, "Central European (ISO-8859-_2)"), /* RADIO compose_set_encoding_cb */
+	ENC_ACTION("Baltic/"CS_ISO_8859_13, C_ISO_8859_13, "ISO-8859-13"), /* RADIO compose_set_encoding_cb */
+	ENC_ACTION("Baltic/"CS_ISO_8859_4, C_ISO_8859_14, "ISO-8859-_4"), /* RADIO compose_set_encoding_cb */
+	ENC_ACTION(CS_ISO_8859_7, C_ISO_8859_7, "Greek (ISO-8859-_7)"), /* RADIO compose_set_encoding_cb */
+	ENC_ACTION("Hebrew/"CS_ISO_8859_8, C_ISO_8859_8, "ISO-8859-_8"), /* RADIO compose_set_encoding_cb */
+	ENC_ACTION("Hebrew/"CS_WINDOWS_1255, C_WINDOWS_1255, "Windows-1255"), /* RADIO compose_set_encoding_cb */
+	ENC_ACTION("Arabic/"CS_ISO_8859_6, C_ISO_8859_6, "ISO-8859-_6"), /* RADIO compose_set_encoding_cb */
+	ENC_ACTION("Arabic/"CS_WINDOWS_1256, C_WINDOWS_1256, "Windows-1256"), /* RADIO compose_set_encoding_cb */
+	ENC_ACTION(CS_ISO_8859_9, C_ISO_8859_9, "Turkish (ISO-8859-_9)"), /* RADIO compose_set_encoding_cb */
+	ENC_ACTION("Cyrillic/"CS_ISO_8859_5, C_ISO_8859_5, "ISO-8859-_5"), /* RADIO compose_set_encoding_cb */
+	ENC_ACTION("Cyrillic/"CS_KOI8_R, C_KOI8_R, "KOI8-_R"), /* RADIO compose_set_encoding_cb */
+	ENC_ACTION("Cyrillic/"CS_KOI8_U, C_KOI8_U, "KOI8-_U"), /* RADIO compose_set_encoding_cb */
+	ENC_ACTION("Cyrillic/"CS_WINDOWS_1251, C_WINDOWS_1251, "Windows-1251"), /* RADIO compose_set_encoding_cb */
+	ENC_ACTION("Japanese/"CS_ISO_2022_JP, C_ISO_2022_JP, "ISO-2022-_JP"), /* RADIO compose_set_encoding_cb */
+	ENC_ACTION("Japanese/"CS_ISO_2022_JP_2, C_ISO_2022_JP_2, "ISO-2022-JP-_2"), /* RADIO compose_set_encoding_cb */
+	ENC_ACTION("Japanese/"CS_EUC_JP, C_EUC_JP, "_EUC-JP"), /* RADIO compose_set_encoding_cb */
+	ENC_ACTION("Japanese/"CS_SHIFT_JIS, C_SHIFT_JIS, "_Shift-JIS"), /* RADIO compose_set_encoding_cb */
+	ENC_ACTION("Chinese/"CS_GB2312, C_GB2312, "_GB2312"), /* RADIO compose_set_encoding_cb */
+	ENC_ACTION("Chinese/"CS_GBK, C_GBK, "GB_K"), /* RADIO compose_set_encoding_cb */
+	ENC_ACTION("Chinese/"CS_BIG5, C_BIG5, "_Big5-JP"), /* RADIO compose_set_encoding_cb */
+	ENC_ACTION("Chinese/"CS_EUC_TW, C_EUC_TW, "EUC-_TW"), /* RADIO compose_set_encoding_cb */
+	ENC_ACTION("Korean/"CS_EUC_KR, C_EUC_KR, "_EUC-KR"), /* RADIO compose_set_encoding_cb */
+	ENC_ACTION("Korean/"CS_ISO_2022_KR, C_ISO_2022_KR, "_ISO-2022-KR"), /* RADIO compose_set_encoding_cb */
+	ENC_ACTION("Thai/"CS_TIS_620, C_TIS_620, "_TIS-620-KR"), /* RADIO compose_set_encoding_cb */
+	ENC_ACTION("Thai/"CS_WINDOWS_874, C_WINDOWS_874, "_Windows-874"), /* RADIO compose_set_encoding_cb */
 };
 
 static GtkTargetEntry compose_mime_types[] =
@@ -971,7 +891,6 @@ Compose *compose_generic_new(PrefsAccount *account, const gchar *mailto, FolderI
 	GtkTextView *textview;
 	GtkTextBuffer *textbuf;
 	GtkTextIter iter;
-	GtkItemFactory *ifactory;
 	const gchar *subject_format = NULL;
 	const gchar *body_format = NULL;
 	gchar *mailto_from = NULL;
@@ -1039,8 +958,6 @@ Compose *compose_generic_new(PrefsAccount *account, const gchar *mailto, FolderI
 			g_free(tmp);
 		}
 
-	ifactory = gtk_item_factory_from_widget(compose->menubar);
-
 	compose->replyinfo = NULL;
 	compose->fwdinfo   = NULL;
 
@@ -1067,7 +984,7 @@ Compose *compose_generic_new(PrefsAccount *account, const gchar *mailto, FolderI
 			compose_entry_mark_default_to(compose, item->prefs->default_to);
 		}
 		if (item && item->ret_rcpt) {
-			menu_set_active(ifactory, "/Options/Request Return Receipt", TRUE);
+			cm_toggle_menu_set_active_full(compose->ui_manager, "Menu/Options/RequestRetRcpt", TRUE);
 		}
 	} else {
 		if (mailto && *mailto != '\0') {
@@ -1082,7 +999,7 @@ Compose *compose_generic_new(PrefsAccount *account, const gchar *mailto, FolderI
 		 * CLAWS: just don't allow return receipt request, even if the user
 		 * may want to send an email. simple but foolproof.
 		 */
-		menu_set_sensitive(ifactory, "/Options/Request Return Receipt", FALSE); 
+		cm_menu_set_sensitive_full(compose->ui_manager, "Menu/Options/RequestRetRcpt", FALSE); 
 	}
 	compose_add_field_list( compose, listAddress );
 
@@ -1260,7 +1177,6 @@ static Compose *compose_reply_mode(ComposeMode mode, GSList *msginfo_list, gchar
 	MsgInfo *msginfo;
 	guint list_len;
 	Compose *compose = NULL;
-	GtkItemFactory *ifactory = NULL;
 	
 	g_return_val_if_fail(msginfo_list != NULL, NULL);
 
@@ -1353,7 +1269,6 @@ static Compose *compose_reply_mode(ComposeMode mode, GSList *msginfo_list, gchar
 		alertpanel_error(_("Unable to reply. The original email probably doesn't exist."));
 		return NULL;
 	}
-	ifactory = gtk_item_factory_from_widget(compose->menubar);
 
 	compose->rmode = mode;
 	switch (compose->rmode) {
@@ -1362,26 +1277,26 @@ static Compose *compose_reply_mode(ComposeMode mode, GSList *msginfo_list, gchar
 	case COMPOSE_REPLY_WITHOUT_QUOTE:
 	case COMPOSE_FOLLOWUP_AND_REPLY_TO:
 		debug_print("reply mode Normal\n");
-		menu_set_active(ifactory, "/Options/Reply mode/Normal", TRUE);
-		compose_reply_change_mode(compose, COMPOSE_REPLY, NULL); /* force update */
+		cm_toggle_menu_set_active_full(compose->ui_manager, "Menu/Options/ReplyMode/Normal", TRUE);
+		compose_reply_change_mode(compose, COMPOSE_REPLY); /* force update */
 		break;
 	case COMPOSE_REPLY_TO_SENDER:
 	case COMPOSE_REPLY_TO_SENDER_WITH_QUOTE:
 	case COMPOSE_REPLY_TO_SENDER_WITHOUT_QUOTE:
 		debug_print("reply mode Sender\n");
-		menu_set_active(ifactory, "/Options/Reply mode/Sender", TRUE);
+		cm_toggle_menu_set_active_full(compose->ui_manager, "Menu/Options/ReplyMode/Sender", TRUE);
 		break;
 	case COMPOSE_REPLY_TO_ALL:
 	case COMPOSE_REPLY_TO_ALL_WITH_QUOTE:
 	case COMPOSE_REPLY_TO_ALL_WITHOUT_QUOTE:
 		debug_print("reply mode All\n");
-		menu_set_active(ifactory, "/Options/Reply mode/All", TRUE);
+		cm_toggle_menu_set_active_full(compose->ui_manager, "Menu/Options/ReplyMode/All", TRUE);
 		break;
 	case COMPOSE_REPLY_TO_LIST:
 	case COMPOSE_REPLY_TO_LIST_WITH_QUOTE:
 	case COMPOSE_REPLY_TO_LIST_WITHOUT_QUOTE:
 		debug_print("reply mode List\n");
-		menu_set_active(ifactory, "/Options/Reply mode/Mailing-list", TRUE);
+		cm_toggle_menu_set_active_full(compose->ui_manager, "Menu/Options/ReplyMode/List", TRUE);
 		break;
 	default:
 		break;
@@ -1459,7 +1374,6 @@ static Compose *compose_generic_reply(MsgInfo *msginfo,
 				  gboolean followup_and_reply_to,
 				  const gchar *body)
 {
-	GtkItemFactory *ifactory;
 	Compose *compose;
 	PrefsAccount *account = NULL;
 	GtkTextView *textview;
@@ -1479,10 +1393,8 @@ static Compose *compose_generic_reply(MsgInfo *msginfo,
 
 	compose->updating = TRUE;
 
-	ifactory = gtk_item_factory_from_widget(compose->menubar);
-
-	menu_set_active(ifactory, "/Options/Remove references", FALSE);
-	menu_set_sensitive(ifactory, "/Options/Remove references", TRUE);
+	cm_toggle_menu_set_active_full(compose->ui_manager, "Menu/Options/RemoveReferences", FALSE);
+	cm_menu_set_sensitive_full(compose->ui_manager, "Menu/Options/RemoveReferences", TRUE);
 
 	compose->replyinfo = procmsg_msginfo_get_full_info(msginfo);
 	if (!compose->replyinfo)
@@ -1491,7 +1403,7 @@ static Compose *compose_generic_reply(MsgInfo *msginfo,
 	compose_extract_original_charset(compose);
 	
     	if (msginfo->folder && msginfo->folder->ret_rcpt)
-		menu_set_active(ifactory, "/Options/Request Return Receipt", TRUE);
+		cm_toggle_menu_set_active_full(compose->ui_manager, "Menu/Options/RequestRetRcpt", TRUE);
 
 	/* Set save folder */
 	if (msginfo->folder && msginfo->folder->prefs && msginfo->folder->prefs->save_copy_to_folder) {
@@ -2193,9 +2105,7 @@ Compose *compose_reedit(MsgInfo *msginfo, gboolean batch)
 		if (!procheader_get_header_from_msginfo(msginfo, queueheader_buf, sizeof(queueheader_buf), "RRCPT:")) {
 			gint active = atoi(&queueheader_buf[strlen("RRCPT:")]);
 			if (active) {
-				GtkItemFactory *ifactory;
-				ifactory = gtk_item_factory_from_widget(compose->menubar);
-				menu_set_active(ifactory, "/Options/Request Return Receipt", TRUE);
+				cm_toggle_menu_set_active_full(compose->ui_manager, "Menu/Options/RequestRetRcpt", TRUE);
 			}
 		}
 	}
@@ -2277,7 +2187,6 @@ Compose *compose_redirect(PrefsAccount *account, MsgInfo *msginfo,
 {
 	Compose *compose;
 	gchar *filename;
-	GtkItemFactory *ifactory;
 	FolderItem *item;
 
 	g_return_val_if_fail(msginfo != NULL, NULL);
@@ -2291,7 +2200,6 @@ Compose *compose_redirect(PrefsAccount *account, MsgInfo *msginfo,
 
 	compose->updating = TRUE;
 
-	ifactory = gtk_item_factory_from_widget(compose->menubar);
 	compose_create_tags(GTK_TEXT_VIEW(compose->text), compose);
 	compose->replyinfo = NULL;
 	compose->fwdinfo = NULL;
@@ -2336,20 +2244,19 @@ Compose *compose_redirect(PrefsAccount *account, MsgInfo *msginfo,
 
 	compose_colorize_signature(compose);
 
-	ifactory = gtk_item_factory_from_widget(compose->popupmenu);
-	menu_set_sensitive(ifactory, "/Add...", FALSE);
-	menu_set_sensitive(ifactory, "/Remove", FALSE);
-	menu_set_sensitive(ifactory, "/Properties...", FALSE);
+	
+	cm_menu_set_sensitive_full(compose->ui_manager, "Popup/Compose/Add", FALSE);
+	cm_menu_set_sensitive_full(compose->ui_manager, "Popup/Compose/Remove", FALSE);
+	cm_menu_set_sensitive_full(compose->ui_manager, "Popup/Compose/Properties", FALSE);
 
-	ifactory = gtk_item_factory_from_widget(compose->menubar);
-	menu_set_sensitive(ifactory, "/Message/Save", FALSE);
-	menu_set_sensitive(ifactory, "/Message/Insert file", FALSE);
-	menu_set_sensitive(ifactory, "/Message/Attach file", FALSE);
-	menu_set_sensitive(ifactory, "/Message/Insert signature", FALSE);
-	menu_set_sensitive(ifactory, "/Edit", FALSE);
-	menu_set_sensitive(ifactory, "/Options", FALSE);
-	menu_set_sensitive(ifactory, "/Tools/Show ruler", FALSE);
-	menu_set_sensitive(ifactory, "/Tools/Actions", FALSE);
+	cm_menu_set_sensitive_full(compose->ui_manager, "Menu/Message/Save", FALSE);
+	cm_menu_set_sensitive_full(compose->ui_manager, "Menu/Message/InsertFile", FALSE);
+	cm_menu_set_sensitive_full(compose->ui_manager, "Menu/Message/AttachFile", FALSE);
+	cm_menu_set_sensitive_full(compose->ui_manager, "Menu/Message/InsertSig", FALSE);
+	cm_menu_set_sensitive_full(compose->ui_manager, "Menu/Edit", FALSE);
+	cm_menu_set_sensitive_full(compose->ui_manager, "Menu/Options", FALSE);
+	cm_menu_set_sensitive_full(compose->ui_manager, "Menu/Tools/ShowRuler", FALSE);
+	cm_menu_set_sensitive_full(compose->ui_manager, "Menu/Tools/Actions", FALSE);
 	
 	if (compose->toolbar->draft_btn)
 		gtk_widget_set_sensitive(compose->toolbar->draft_btn, FALSE);
@@ -2492,25 +2399,25 @@ void compose_toolbar_cb(gint action, gpointer data)
 
 	switch(action) {
 	case A_SEND:
-		compose_send_cb(compose, 0, NULL);
+		compose_send_cb(NULL, compose);
 		break;
 	case A_SENDL:
-		compose_send_later_cb(compose, 0, NULL);
+		compose_send_later_cb(NULL, compose);
 		break;
 	case A_DRAFT:
-		compose_draft_cb(compose, COMPOSE_QUIT_EDITING, NULL);
+		compose_draft(compose, COMPOSE_QUIT_EDITING);
 		break;
 	case A_INSERT:
-		compose_insert_file_cb(compose, 0, NULL);
+		compose_insert_file_cb(NULL, compose);
 		break;
 	case A_ATTACH:
-		compose_attach_cb(compose, 0, NULL);
+		compose_attach_cb(NULL, compose);
 		break;
 	case A_SIG:
 		compose_insert_sig(compose, FALSE);
 		break;
 	case A_EXTEDITOR:
-		compose_ext_editor_cb(compose, 0, NULL);
+		compose_ext_editor_cb(NULL, compose);
 		break;
 	case A_LINEWRAP_CURRENT:
 		compose_beautify_paragraph(compose, NULL, TRUE);
@@ -2519,11 +2426,11 @@ void compose_toolbar_cb(gint action, gpointer data)
 		compose_wrap_all_full(compose, TRUE);
 		break;
 	case A_ADDRBOOK:
-		compose_address_cb(compose, 0, NULL);
+		compose_address_cb(NULL, compose);
 		break;
 #ifdef USE_ASPELL
 	case A_CHECK_SPELLING:
-		compose_check_all(compose);
+		compose_check_all(NULL, compose);
 		break;
 #endif
 	default:
@@ -3560,29 +3467,14 @@ static gboolean compose_attach_append(Compose *compose, const gchar *file,
 
 static void compose_use_signing(Compose *compose, gboolean use_signing)
 {
-	GtkItemFactory *ifactory;
-	GtkWidget *menuitem = NULL;
-
 	compose->use_signing = use_signing;
-	ifactory = gtk_item_factory_from_widget(compose->menubar);
-	menuitem = gtk_item_factory_get_item
-		(ifactory, "/Options/Sign");
-	gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM(menuitem), 
-				       use_signing);
+	cm_toggle_menu_set_active_full(compose->ui_manager, "Menu/Options/Sign", use_signing);
 }
 
 static void compose_use_encryption(Compose *compose, gboolean use_encryption)
 {
-	GtkItemFactory *ifactory;
-	GtkWidget *menuitem = NULL;
-
 	compose->use_encryption = use_encryption;
-	ifactory = gtk_item_factory_from_widget(compose->menubar);
-	menuitem = gtk_item_factory_get_item
-		(ifactory, "/Options/Encrypt");
-
-	gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM(menuitem), 
-				       use_encryption);
+	cm_toggle_menu_set_active_full(compose->ui_manager, "Menu/Options/Encrypt", use_encryption);
 }
 
 #define NEXT_PART_NOT_CHILD(info)  \
@@ -4515,7 +4407,6 @@ compose_current_mail_account(void)
 static void compose_select_account(Compose *compose, PrefsAccount *account,
 				   gboolean init)
 {
-	GtkItemFactory *ifactory;
 	gchar *from = NULL;
 
 	g_return_if_fail(account != NULL);
@@ -4538,16 +4429,14 @@ static void compose_select_account(Compose *compose, PrefsAccount *account,
 
 	compose_set_title(compose);
 
-	ifactory = gtk_item_factory_from_widget(compose->menubar);
-
 	if (account->default_sign && compose->mode != COMPOSE_REDIRECT)
-		menu_set_active(ifactory, "/Options/Sign", TRUE);
+		cm_toggle_menu_set_active_full(compose->ui_manager, "Menu/Options/Sign", TRUE);
 	else
-		menu_set_active(ifactory, "/Options/Sign", FALSE);
+		cm_toggle_menu_set_active_full(compose->ui_manager, "Menu/Options/Sign", FALSE);
 	if (account->default_encrypt && compose->mode != COMPOSE_REDIRECT)
-		menu_set_active(ifactory, "/Options/Encrypt", TRUE);
+		cm_toggle_menu_set_active_full(compose->ui_manager, "Menu/Options/Encrypt", TRUE);
 	else
-		menu_set_active(ifactory, "/Options/Encrypt", FALSE);
+		cm_toggle_menu_set_active_full(compose->ui_manager, "Menu/Options/Encrypt", FALSE);
 				       
 	activate_privacy_system(compose, account, FALSE);
 
@@ -6637,14 +6526,13 @@ static void compose_spell_menu_changed(void *data)
 	GtkWidget *menuitem;
 	GtkWidget *parent_item;
 	GtkMenu *menu = GTK_MENU(gtk_menu_new());
-	GtkItemFactory *ifactory = gtk_item_factory_from_widget(compose->menubar);
 	GSList *spell_menu;
 
 	if (compose->gtkaspell == NULL)
 		return;
 
-	parent_item = gtk_item_factory_get_item(ifactory, 
-			"/Spelling/Options");
+	parent_item = gtk_ui_manager_get_widget(compose->ui_manager, 
+			"/Menu/Spelling/Options");
 
 	/* setting the submenu removes /Spelling/Options from the factory 
 	 * so we need to save it */
@@ -6723,13 +6611,9 @@ static Compose *compose_create(PrefsAccount *account,
 	UndoMain *undostruct;
 
 	gchar *titles[N_ATTACH_COLS];
-	guint n_menu_entries;
 	GtkWidget *popupmenu;
-	GtkItemFactory *popupfactory;
-	GtkItemFactory *ifactory;
 	GtkWidget *tmpl_menu;
-	gint n_entries;
-	GtkWidget *menuitem;
+	GtkActionGroup *action_group = NULL;
 
 #if USE_ASPELL
         GtkAspell * gtkaspell = NULL;
@@ -6791,9 +6675,195 @@ static Compose *compose_create(PrefsAccount *account,
 	vbox = gtk_vbox_new(FALSE, 0);
 	gtk_container_add(GTK_CONTAINER(window), vbox);
 
-	n_menu_entries = sizeof(compose_entries) / sizeof(compose_entries[0]);
-	menubar = menubar_create(window, compose_entries,
-				 n_menu_entries, "<Compose>", compose);
+	compose->ui_manager = gtk_ui_manager_new();
+	action_group = cm_menu_create_action_group_full(compose->ui_manager,"Menu", compose_entries,
+			G_N_ELEMENTS(compose_entries), (gpointer)compose);
+	gtk_action_group_add_toggle_actions(action_group, compose_toggle_entries,
+			G_N_ELEMENTS(compose_toggle_entries), (gpointer)compose);
+	gtk_action_group_add_radio_actions(action_group, compose_radio_rm_entries,
+			G_N_ELEMENTS(compose_radio_rm_entries), COMPOSE_REPLY, G_CALLBACK(compose_reply_change_mode_cb), (gpointer)compose);
+	gtk_action_group_add_radio_actions(action_group, compose_radio_prio_entries,
+			G_N_ELEMENTS(compose_radio_prio_entries), PRIORITY_NORMAL, G_CALLBACK(compose_set_priority_cb), (gpointer)compose);
+	gtk_action_group_add_radio_actions(action_group, compose_radio_enc_entries,
+			G_N_ELEMENTS(compose_radio_enc_entries), C_AUTO, G_CALLBACK(compose_set_encoding_cb), (gpointer)compose);
+
+	MENUITEM_ADDUI_MANAGER(compose->ui_manager, "/", "Menu", NULL, GTK_UI_MANAGER_MENUBAR)
+
+	MENUITEM_ADDUI_MANAGER(compose->ui_manager, "/Menu", "Message", "Message", GTK_UI_MANAGER_MENU)
+	MENUITEM_ADDUI_MANAGER(compose->ui_manager, "/Menu", "Edit", "Edit", GTK_UI_MANAGER_MENU)
+#ifdef USE_ASPELL
+	MENUITEM_ADDUI_MANAGER(compose->ui_manager, "/Menu", "Spelling", "Spelling", GTK_UI_MANAGER_MENU)
+#endif
+	MENUITEM_ADDUI_MANAGER(compose->ui_manager, "/Menu", "Options", "Options", GTK_UI_MANAGER_MENU)
+	MENUITEM_ADDUI_MANAGER(compose->ui_manager, "/Menu", "Tools", "Tools", GTK_UI_MANAGER_MENU)
+	MENUITEM_ADDUI_MANAGER(compose->ui_manager, "/Menu", "Help", "Help", GTK_UI_MANAGER_MENU)
+
+/* Compose menu */
+	MENUITEM_ADDUI_MANAGER(compose->ui_manager, "/Menu/Message", "Send", "Message/Send", GTK_UI_MANAGER_MENUITEM)
+	MENUITEM_ADDUI_MANAGER(compose->ui_manager, "/Menu/Message", "SendLater", "Message/SendLater", GTK_UI_MANAGER_MENUITEM)
+	MENUITEM_ADDUI_MANAGER(compose->ui_manager, "/Menu/Message", "Separator1", "Message/---", GTK_UI_MANAGER_SEPARATOR)
+	MENUITEM_ADDUI_MANAGER(compose->ui_manager, "/Menu/Message", "AttachFile", "Message/AttachFile", GTK_UI_MANAGER_MENUITEM)
+	MENUITEM_ADDUI_MANAGER(compose->ui_manager, "/Menu/Message", "InsertFile", "Message/InsertFile", GTK_UI_MANAGER_MENUITEM)
+	MENUITEM_ADDUI_MANAGER(compose->ui_manager, "/Menu/Message", "InsertSig", "Message/InsertSig", GTK_UI_MANAGER_MENUITEM)
+	MENUITEM_ADDUI_MANAGER(compose->ui_manager, "/Menu/Message", "Separator2", "Message/---", GTK_UI_MANAGER_SEPARATOR)
+	MENUITEM_ADDUI_MANAGER(compose->ui_manager, "/Menu/Message", "Save", "Message/Save", GTK_UI_MANAGER_MENUITEM)
+	MENUITEM_ADDUI_MANAGER(compose->ui_manager, "/Menu/Message", "Separator3", "Message/---", GTK_UI_MANAGER_SEPARATOR)
+	MENUITEM_ADDUI_MANAGER(compose->ui_manager, "/Menu/Message", "Close", "Message/Close", GTK_UI_MANAGER_MENUITEM)
+
+/* Edit menu */
+	MENUITEM_ADDUI_MANAGER(compose->ui_manager, "/Menu/Edit", "Undo", "Edit/Undo", GTK_UI_MANAGER_MENUITEM)
+	MENUITEM_ADDUI_MANAGER(compose->ui_manager, "/Menu/Edit", "Redo", "Edit/Redo", GTK_UI_MANAGER_MENUITEM)
+	MENUITEM_ADDUI_MANAGER(compose->ui_manager, "/Menu/Edit", "Separator1", "Edit/---", GTK_UI_MANAGER_SEPARATOR)
+
+	MENUITEM_ADDUI_MANAGER(compose->ui_manager, "/Menu/Edit", "Cut", "Edit/Cut", GTK_UI_MANAGER_MENUITEM)
+	MENUITEM_ADDUI_MANAGER(compose->ui_manager, "/Menu/Edit", "Copy", "Edit/Copy", GTK_UI_MANAGER_MENUITEM)
+	MENUITEM_ADDUI_MANAGER(compose->ui_manager, "/Menu/Edit", "Paste", "Edit/Paste", GTK_UI_MANAGER_MENUITEM)
+
+	MENUITEM_ADDUI_MANAGER(compose->ui_manager, "/Menu/Edit", "SpecialPaste", "Edit/SpecialPaste", GTK_UI_MANAGER_MENU)
+	MENUITEM_ADDUI_MANAGER(compose->ui_manager, "/Menu/Edit/SpecialPaste", "AsQuotation", "Edit/SpecialPaste/AsQuotation", GTK_UI_MANAGER_MENUITEM)
+	MENUITEM_ADDUI_MANAGER(compose->ui_manager, "/Menu/Edit/SpecialPaste", "Wrapped", "Edit/SpecialPaste/Wrapped", GTK_UI_MANAGER_MENUITEM)
+	MENUITEM_ADDUI_MANAGER(compose->ui_manager, "/Menu/Edit/SpecialPaste", "Unwrapped", "Edit/SpecialPaste/Unwrapped", GTK_UI_MANAGER_MENUITEM)
+
+	MENUITEM_ADDUI_MANAGER(compose->ui_manager, "/Menu/Edit", "SelectAll", "Edit/SelectAll", GTK_UI_MANAGER_MENUITEM)
+
+	MENUITEM_ADDUI_MANAGER(compose->ui_manager, "/Menu/Edit", "Advanced", "Edit/Advanced", GTK_UI_MANAGER_MENU)
+	MENUITEM_ADDUI_MANAGER(compose->ui_manager, "/Menu/Edit/Advanced", "BackChar", "Edit/Advanced/BackChar", GTK_UI_MANAGER_MENUITEM)
+	MENUITEM_ADDUI_MANAGER(compose->ui_manager, "/Menu/Edit/Advanced", "ForwChar", "Edit/Advanced/ForwChar", GTK_UI_MANAGER_MENUITEM)
+	MENUITEM_ADDUI_MANAGER(compose->ui_manager, "/Menu/Edit/Advanced", "BackWord", "Edit/Advanced/BackWord", GTK_UI_MANAGER_MENUITEM)
+	MENUITEM_ADDUI_MANAGER(compose->ui_manager, "/Menu/Edit/Advanced", "ForwWord", "Edit/Advanced/ForwWord", GTK_UI_MANAGER_MENUITEM)
+	MENUITEM_ADDUI_MANAGER(compose->ui_manager, "/Menu/Edit/Advanced", "BegLine", "Edit/Advanced/BegLine", GTK_UI_MANAGER_MENUITEM)
+	MENUITEM_ADDUI_MANAGER(compose->ui_manager, "/Menu/Edit/Advanced", "EndLine", "Edit/Advanced/EndLine", GTK_UI_MANAGER_MENUITEM)
+	MENUITEM_ADDUI_MANAGER(compose->ui_manager, "/Menu/Edit/Advanced", "PrevLine", "Edit/Advanced/PrevLine", GTK_UI_MANAGER_MENUITEM)
+	MENUITEM_ADDUI_MANAGER(compose->ui_manager, "/Menu/Edit/Advanced", "NextLine", "Edit/Advanced/NextLine", GTK_UI_MANAGER_MENUITEM)
+	MENUITEM_ADDUI_MANAGER(compose->ui_manager, "/Menu/Edit/Advanced", "DelBackChar", "Edit/Advanced/DelBackChar", GTK_UI_MANAGER_MENUITEM)
+	MENUITEM_ADDUI_MANAGER(compose->ui_manager, "/Menu/Edit/Advanced", "DelForwChar", "Edit/Advanced/DelForwChar", GTK_UI_MANAGER_MENUITEM)
+	MENUITEM_ADDUI_MANAGER(compose->ui_manager, "/Menu/Edit/Advanced", "DelBackWord", "Edit/Advanced/DelBackWord", GTK_UI_MANAGER_MENUITEM)
+	MENUITEM_ADDUI_MANAGER(compose->ui_manager, "/Menu/Edit/Advanced", "DelForwWord", "Edit/Advanced/DelForwWord", GTK_UI_MANAGER_MENUITEM)
+	MENUITEM_ADDUI_MANAGER(compose->ui_manager, "/Menu/Edit/Advanced", "DelLine", "Edit/Advanced/DelLine", GTK_UI_MANAGER_MENUITEM)
+	MENUITEM_ADDUI_MANAGER(compose->ui_manager, "/Menu/Edit/Advanced", "DelEndLine", "Edit/Advanced/DelEndLine", GTK_UI_MANAGER_MENUITEM)
+
+	MENUITEM_ADDUI_MANAGER(compose->ui_manager, "/Menu/Edit", "Separator2", "Edit/---", GTK_UI_MANAGER_SEPARATOR)
+
+	MENUITEM_ADDUI_MANAGER(compose->ui_manager, "/Menu/Edit", "Find", "Edit/Find", GTK_UI_MANAGER_MENUITEM)
+	MENUITEM_ADDUI_MANAGER(compose->ui_manager, "/Menu/Edit", "WrapPara", "Edit/WrapPara", GTK_UI_MANAGER_MENUITEM)
+	MENUITEM_ADDUI_MANAGER(compose->ui_manager, "/Menu/Edit", "WrapAllLines", "Edit/WrapAllLines", GTK_UI_MANAGER_MENUITEM)
+	MENUITEM_ADDUI_MANAGER(compose->ui_manager, "/Menu/Edit", "AutoWrap", "Edit/AutoWrap", GTK_UI_MANAGER_MENUITEM)
+
+	MENUITEM_ADDUI_MANAGER(compose->ui_manager, "/Menu/Edit", "Separator3", "Edit/---", GTK_UI_MANAGER_SEPARATOR)
+
+	MENUITEM_ADDUI_MANAGER(compose->ui_manager, "/Menu/Edit", "ExtEditor", "Edit/ExtEditor", GTK_UI_MANAGER_MENUITEM)
+
+#if USE_ASPELL
+/* Spelling menu */
+	MENUITEM_ADDUI_MANAGER(compose->ui_manager, "/Menu/Spelling", "CheckAllSel", "Spelling/CheckAllSel", GTK_UI_MANAGER_MENUITEM)
+	MENUITEM_ADDUI_MANAGER(compose->ui_manager, "/Menu/Spelling", "HighlightAll", "Spelling/HighlightAll", GTK_UI_MANAGER_MENUITEM)
+	MENUITEM_ADDUI_MANAGER(compose->ui_manager, "/Menu/Spelling", "CheckBackwards", "Spelling/CheckBackwards", GTK_UI_MANAGER_MENUITEM)
+	MENUITEM_ADDUI_MANAGER(compose->ui_manager, "/Menu/Spelling", "ForwardNext", "Spelling/ForwardNext", GTK_UI_MANAGER_MENUITEM)
+	MENUITEM_ADDUI_MANAGER(compose->ui_manager, "/Menu/Spelling", "Separator1", "Spelling/---", GTK_UI_MANAGER_SEPARATOR)
+	MENUITEM_ADDUI_MANAGER(compose->ui_manager, "/Menu/Spelling", "Options", "Spelling/Options", GTK_UI_MANAGER_MENU)
+#endif
+
+/* Options menu */
+	MENUITEM_ADDUI_MANAGER(compose->ui_manager, "/Menu/Options", "ReplyMode", "Options/ReplyMode", GTK_UI_MANAGER_MENU)
+	MENUITEM_ADDUI_MANAGER(compose->ui_manager, "/Menu/Options/ReplyMode", "Normal", "Options/ReplyMode/Normal", GTK_UI_MANAGER_MENUITEM)
+	MENUITEM_ADDUI_MANAGER(compose->ui_manager, "/Menu/Options/ReplyMode", "All", "Options/ReplyMode/All", GTK_UI_MANAGER_MENUITEM)
+	MENUITEM_ADDUI_MANAGER(compose->ui_manager, "/Menu/Options/ReplyMode", "Sender", "Options/ReplyMode/Sender", GTK_UI_MANAGER_MENUITEM)
+	MENUITEM_ADDUI_MANAGER(compose->ui_manager, "/Menu/Options/ReplyMode", "List", "Options/ReplyMode/List", GTK_UI_MANAGER_MENUITEM)
+
+	MENUITEM_ADDUI_MANAGER(compose->ui_manager, "/Menu/Options", "Separator1", "Options/---", GTK_UI_MANAGER_SEPARATOR)
+	MENUITEM_ADDUI_MANAGER(compose->ui_manager, "/Menu/Options", "PrivacySystem", "Options/PrivacySystem", GTK_UI_MANAGER_MENU)
+	MENUITEM_ADDUI_MANAGER(compose->ui_manager, "/Menu/Options/PrivacySystem", "PlaceHolder", "Options/PrivacySystem/PlaceHolder", GTK_UI_MANAGER_MENUITEM)
+	MENUITEM_ADDUI_MANAGER(compose->ui_manager, "/Menu/Options", "Sign", "Options/Sign", GTK_UI_MANAGER_MENUITEM)
+	MENUITEM_ADDUI_MANAGER(compose->ui_manager, "/Menu/Options", "Encrypt", "Options/Encrypt", GTK_UI_MANAGER_MENUITEM)
+
+	
+	MENUITEM_ADDUI_MANAGER(compose->ui_manager, "/Menu/Options", "Separator2", "Options/---", GTK_UI_MANAGER_SEPARATOR)
+	MENUITEM_ADDUI_MANAGER(compose->ui_manager, "/Menu/Options", "Priority", "Options/Priority", GTK_UI_MANAGER_MENU)
+	MENUITEM_ADDUI_MANAGER(compose->ui_manager, "/Menu/Options/Priority", "Highest", "Options/Priority/Highest", GTK_UI_MANAGER_MENUITEM)
+	MENUITEM_ADDUI_MANAGER(compose->ui_manager, "/Menu/Options/Priority", "High", "Options/Priority/High", GTK_UI_MANAGER_MENUITEM)
+	MENUITEM_ADDUI_MANAGER(compose->ui_manager, "/Menu/Options/Priority", "Normal", "Options/Priority/Normal", GTK_UI_MANAGER_MENUITEM)
+	MENUITEM_ADDUI_MANAGER(compose->ui_manager, "/Menu/Options/Priority", "Low", "Options/Priority/Low", GTK_UI_MANAGER_MENUITEM)
+	MENUITEM_ADDUI_MANAGER(compose->ui_manager, "/Menu/Options/Priority", "Lowest", "Options/Priority/Lowest", GTK_UI_MANAGER_MENUITEM)
+
+	MENUITEM_ADDUI_MANAGER(compose->ui_manager, "/Menu/Options", "Separator3", "Options/---", GTK_UI_MANAGER_SEPARATOR)
+	MENUITEM_ADDUI_MANAGER(compose->ui_manager, "/Menu/Options", "RequestRetRcpt", "Options/RequestRetRcpt", GTK_UI_MANAGER_MENUITEM)
+	MENUITEM_ADDUI_MANAGER(compose->ui_manager, "/Menu/Options", "Separator4", "Options/---", GTK_UI_MANAGER_SEPARATOR)
+	MENUITEM_ADDUI_MANAGER(compose->ui_manager, "/Menu/Options", "RemoveReferences", "Options/RemoveReferences", GTK_UI_MANAGER_MENUITEM)
+	MENUITEM_ADDUI_MANAGER(compose->ui_manager, "/Menu/Options", "Separator5", "Options/---", GTK_UI_MANAGER_SEPARATOR)
+
+	MENUITEM_ADDUI_MANAGER(compose->ui_manager, "/Menu/Options", "Encoding", "Options/Encoding", GTK_UI_MANAGER_MENU)
+
+	MENUITEM_ADDUI_MANAGER(compose->ui_manager, "/Menu/Options/Encoding", CS_AUTO, "Options/Encoding/"CS_AUTO, GTK_UI_MANAGER_MENUITEM)
+	MENUITEM_ADDUI_MANAGER(compose->ui_manager, "/Menu/Options/Encoding", "Separator1", "Options/Encoding/---", GTK_UI_MANAGER_SEPARATOR)
+	MENUITEM_ADDUI_MANAGER(compose->ui_manager, "/Menu/Options/Encoding", CS_US_ASCII, "Options/Encoding/"CS_US_ASCII, GTK_UI_MANAGER_MENUITEM)
+	MENUITEM_ADDUI_MANAGER(compose->ui_manager, "/Menu/Options/Encoding", CS_UTF_8, "Options/Encoding/"CS_UTF_8, GTK_UI_MANAGER_MENUITEM)
+	MENUITEM_ADDUI_MANAGER(compose->ui_manager, "/Menu/Options/Encoding", "Separator2", "Options/Encoding/---", GTK_UI_MANAGER_SEPARATOR)
+
+	MENUITEM_ADDUI_MANAGER(compose->ui_manager, "/Menu/Options/Encoding", "Western", "Options/Encoding/Western", GTK_UI_MANAGER_MENU)
+	MENUITEM_ADDUI_MANAGER(compose->ui_manager, "/Menu/Options/Encoding/Western", CS_ISO_8859_1, "Options/Encoding/Western/"CS_ISO_8859_1, GTK_UI_MANAGER_MENUITEM)
+	MENUITEM_ADDUI_MANAGER(compose->ui_manager, "/Menu/Options/Encoding/Western", CS_ISO_8859_15, "Options/Encoding/Western/"CS_ISO_8859_15, GTK_UI_MANAGER_MENUITEM)
+	MENUITEM_ADDUI_MANAGER(compose->ui_manager, "/Menu/Options/Encoding/Western", CS_WINDOWS_1252, "Options/Encoding/Western/"CS_WINDOWS_1252, GTK_UI_MANAGER_MENUITEM)
+
+	MENUITEM_ADDUI_MANAGER(compose->ui_manager, "/Menu/Options/Encoding", CS_ISO_8859_2, "Options/Encoding/"CS_ISO_8859_2, GTK_UI_MANAGER_MENUITEM)
+
+	MENUITEM_ADDUI_MANAGER(compose->ui_manager, "/Menu/Options/Encoding", "Baltic", "Options/Encoding/Baltic", GTK_UI_MANAGER_MENU)
+	MENUITEM_ADDUI_MANAGER(compose->ui_manager, "/Menu/Options/Encoding/Baltic", CS_ISO_8859_13, "Options/Encoding/Baltic/"CS_ISO_8859_13, GTK_UI_MANAGER_MENUITEM)
+	MENUITEM_ADDUI_MANAGER(compose->ui_manager, "/Menu/Options/Encoding/Baltic", CS_ISO_8859_4, "Options/Encoding/Baltic/"CS_ISO_8859_4, GTK_UI_MANAGER_MENUITEM)
+
+	MENUITEM_ADDUI_MANAGER(compose->ui_manager, "/Menu/Options/Encoding", CS_ISO_8859_7, "Options/Encoding/"CS_ISO_8859_7, GTK_UI_MANAGER_MENUITEM)
+
+	MENUITEM_ADDUI_MANAGER(compose->ui_manager, "/Menu/Options/Encoding", "Hebrew", "Options/Encoding/Hebrew", GTK_UI_MANAGER_MENU)
+	MENUITEM_ADDUI_MANAGER(compose->ui_manager, "/Menu/Options/Encoding/Hebrew", CS_ISO_8859_8, "Options/Encoding/Hebrew/"CS_ISO_8859_8, GTK_UI_MANAGER_MENUITEM)
+	MENUITEM_ADDUI_MANAGER(compose->ui_manager, "/Menu/Options/Encoding/Hebrew", CS_WINDOWS_1255, "Options/Encoding/Hebrew/"CS_WINDOWS_1255, GTK_UI_MANAGER_MENUITEM)
+
+	MENUITEM_ADDUI_MANAGER(compose->ui_manager, "/Menu/Options/Encoding", "Arabic", "Options/Encoding/Arabic", GTK_UI_MANAGER_MENU)
+	MENUITEM_ADDUI_MANAGER(compose->ui_manager, "/Menu/Options/Encoding/Arabic", CS_ISO_8859_6, "Options/Encoding/Arabic/"CS_ISO_8859_6, GTK_UI_MANAGER_MENUITEM)
+	MENUITEM_ADDUI_MANAGER(compose->ui_manager, "/Menu/Options/Encoding/Arabic", CS_WINDOWS_1256, "Options/Encoding/Arabic/"CS_WINDOWS_1256, GTK_UI_MANAGER_MENUITEM)
+
+	MENUITEM_ADDUI_MANAGER(compose->ui_manager, "/Menu/Options/Encoding", CS_ISO_8859_9, "Options/Encoding/"CS_ISO_8859_9, GTK_UI_MANAGER_MENUITEM)
+
+	MENUITEM_ADDUI_MANAGER(compose->ui_manager, "/Menu/Options/Encoding", "Cyrillic", "Options/Encoding/Cyrillic", GTK_UI_MANAGER_MENU)
+	MENUITEM_ADDUI_MANAGER(compose->ui_manager, "/Menu/Options/Encoding/Cyrillic", CS_ISO_8859_5, "Options/Encoding/Cyrillic/"CS_ISO_8859_5, GTK_UI_MANAGER_MENUITEM)
+	MENUITEM_ADDUI_MANAGER(compose->ui_manager, "/Menu/Options/Encoding/Cyrillic", CS_KOI8_R, "Options/Encoding/Cyrillic/"CS_KOI8_R, GTK_UI_MANAGER_MENUITEM)
+	MENUITEM_ADDUI_MANAGER(compose->ui_manager, "/Menu/Options/Encoding/Cyrillic", CS_KOI8_U, "Options/Encoding/Cyrillic/"CS_KOI8_U, GTK_UI_MANAGER_MENUITEM)
+	MENUITEM_ADDUI_MANAGER(compose->ui_manager, "/Menu/Options/Encoding/Cyrillic", CS_WINDOWS_1251, "Options/Encoding/Cyrillic/"CS_WINDOWS_1251, GTK_UI_MANAGER_MENUITEM)
+
+	MENUITEM_ADDUI_MANAGER(compose->ui_manager, "/Menu/Options/Encoding", "Japanese", "Options/Encoding/Japanese", GTK_UI_MANAGER_MENU)
+	MENUITEM_ADDUI_MANAGER(compose->ui_manager, "/Menu/Options/Encoding/Japanese", CS_ISO_2022_JP, "Options/Encoding/Japanese/"CS_ISO_2022_JP, GTK_UI_MANAGER_MENUITEM)
+	MENUITEM_ADDUI_MANAGER(compose->ui_manager, "/Menu/Options/Encoding/Japanese", CS_ISO_2022_JP_2, "Options/Encoding/Japanese/"CS_ISO_2022_JP_2, GTK_UI_MANAGER_MENUITEM)
+	MENUITEM_ADDUI_MANAGER(compose->ui_manager, "/Menu/Options/Encoding/Japanese", CS_EUC_JP, "Options/Encoding/Japanese/"CS_EUC_JP, GTK_UI_MANAGER_MENUITEM)
+	MENUITEM_ADDUI_MANAGER(compose->ui_manager, "/Menu/Options/Encoding/Japanese", CS_SHIFT_JIS, "Options/Encoding/Japanese/"CS_SHIFT_JIS, GTK_UI_MANAGER_MENUITEM)
+
+	MENUITEM_ADDUI_MANAGER(compose->ui_manager, "/Menu/Options/Encoding", "Chinese", "Options/Encoding/Chinese", GTK_UI_MANAGER_MENU)
+	MENUITEM_ADDUI_MANAGER(compose->ui_manager, "/Menu/Options/Encoding/Chinese", CS_GB2312, "Options/Encoding/Chinese/"CS_GB2312, GTK_UI_MANAGER_MENUITEM)
+	MENUITEM_ADDUI_MANAGER(compose->ui_manager, "/Menu/Options/Encoding/Chinese", CS_GBK, "Options/Encoding/Chinese/"CS_GBK, GTK_UI_MANAGER_MENUITEM)
+	MENUITEM_ADDUI_MANAGER(compose->ui_manager, "/Menu/Options/Encoding/Chinese", CS_BIG5, "Options/Encoding/Chinese/"CS_BIG5, GTK_UI_MANAGER_MENUITEM)
+	MENUITEM_ADDUI_MANAGER(compose->ui_manager, "/Menu/Options/Encoding/Chinese", CS_EUC_TW, "Options/Encoding/Chinese/"CS_EUC_TW, GTK_UI_MANAGER_MENUITEM)
+
+	MENUITEM_ADDUI_MANAGER(compose->ui_manager, "/Menu/Options/Encoding", "Korean", "Options/Encoding/Korean", GTK_UI_MANAGER_MENU)
+	MENUITEM_ADDUI_MANAGER(compose->ui_manager, "/Menu/Options/Encoding/Korean", CS_EUC_KR, "Options/Encoding/Korean/"CS_EUC_KR, GTK_UI_MANAGER_MENUITEM)
+	MENUITEM_ADDUI_MANAGER(compose->ui_manager, "/Menu/Options/Encoding/Korean", CS_ISO_2022_KR, "Options/Encoding/Korean/"CS_ISO_2022_KR, GTK_UI_MANAGER_MENUITEM)
+
+	MENUITEM_ADDUI_MANAGER(compose->ui_manager, "/Menu/Options/Encoding", "Thai", "Options/Encoding/Thai", GTK_UI_MANAGER_MENU)
+	MENUITEM_ADDUI_MANAGER(compose->ui_manager, "/Menu/Options/Encoding/Thai", CS_TIS_620, "Options/Encoding/Thai/"CS_TIS_620, GTK_UI_MANAGER_MENUITEM)
+	MENUITEM_ADDUI_MANAGER(compose->ui_manager, "/Menu/Options/Encoding/Thai", CS_WINDOWS_874, "Options/Encoding/Thai/"CS_WINDOWS_874, GTK_UI_MANAGER_MENUITEM)
+/* phew. */
+
+/* Tools menu */
+	MENUITEM_ADDUI_MANAGER(compose->ui_manager, "/Menu/Tools", "ShowRuler", "Tools/ShowRuler", GTK_UI_MANAGER_MENUITEM)
+	MENUITEM_ADDUI_MANAGER(compose->ui_manager, "/Menu/Tools", "AddressBook", "Tools/AddressBook", GTK_UI_MANAGER_MENUITEM)
+	MENUITEM_ADDUI_MANAGER(compose->ui_manager, "/Menu/Tools", "Template", "Tools/Template", GTK_UI_MANAGER_MENU)
+	MENUITEM_ADDUI_MANAGER(compose->ui_manager, "/Menu/Tools/Template", "PlaceHolder", "Tools/Template/PlaceHolder", GTK_UI_MANAGER_MENUITEM)
+	MENUITEM_ADDUI_MANAGER(compose->ui_manager, "/Menu/Tools", "Actions", "Tools/Actions", GTK_UI_MANAGER_MENU)
+	MENUITEM_ADDUI_MANAGER(compose->ui_manager, "/Menu/Tools/Actions", "PlaceHolder", "Tools/Actions/PlaceHolder", GTK_UI_MANAGER_MENUITEM)
+
+/* Help menu */
+	MENUITEM_ADDUI_MANAGER(compose->ui_manager, "/Menu/Help", "About", "Help/About", GTK_UI_MANAGER_MENUITEM)
+
+	menubar = gtk_ui_manager_get_widget(compose->ui_manager, "/Menu");
+	gtk_widget_show_all(menubar);
+
+	gtk_window_add_accel_group(GTK_WINDOW(window), gtk_ui_manager_get_accel_group(compose->ui_manager));
 	gtk_box_pack_start(GTK_BOX(vbox), menubar, FALSE, TRUE, 0);
 
 	if (prefs_common.toolbar_detachable) {
@@ -6963,22 +7033,26 @@ static Compose *compose_create(PrefsAccount *account,
 		}
 	}
 
-	n_entries = sizeof(compose_popup_entries) /
-		sizeof(compose_popup_entries[0]);
-	popupmenu = menu_create_items(compose_popup_entries, n_entries,
-				      "<Compose>", &popupfactory,
-				      compose);
+	gtk_action_group_add_actions(action_group, compose_popup_entries,
+			G_N_ELEMENTS(compose_popup_entries), (gpointer)compose);
+	MENUITEM_ADDUI_MANAGER(compose->ui_manager, "/", "Popup", NULL, GTK_UI_MANAGER_MENUBAR)
+	MENUITEM_ADDUI_MANAGER(compose->ui_manager, "/Popup", "Compose", "Compose", GTK_UI_MANAGER_MENU)
+	MENUITEM_ADDUI_MANAGER(compose->ui_manager, "/Popup/Compose", "Add", "Compose/Add", GTK_UI_MANAGER_MENUITEM)
+	MENUITEM_ADDUI_MANAGER(compose->ui_manager, "/Popup/Compose", "Remove", "Compose/Remove", GTK_UI_MANAGER_MENUITEM)
+	MENUITEM_ADDUI_MANAGER(compose->ui_manager, "/Popup/Compose", "Separator1", "Compose/---", GTK_UI_MANAGER_SEPARATOR)
+	MENUITEM_ADDUI_MANAGER(compose->ui_manager, "/Popup/Compose", "Properties", "Compose/Properties", GTK_UI_MANAGER_MENUITEM)
+	
+	popupmenu = gtk_menu_item_get_submenu(GTK_MENU_ITEM(gtk_ui_manager_get_widget(compose->ui_manager, "/Popup/Compose")));
 
-	ifactory = gtk_item_factory_from_widget(menubar);
-	menu_set_sensitive(ifactory, "/Edit/Undo", FALSE);
-	menu_set_sensitive(ifactory, "/Edit/Redo", FALSE);
-	menu_set_sensitive(ifactory, "/Options/Remove references", FALSE);
+	cm_menu_set_sensitive_full(compose->ui_manager, "Menu/Edit/Undo", FALSE);
+	cm_menu_set_sensitive_full(compose->ui_manager, "Menu/Edit/Redo", FALSE);
+	cm_menu_set_sensitive_full(compose->ui_manager, "Menu/Options/RemoveReferences", FALSE);
 
-	tmpl_menu = gtk_item_factory_get_item(ifactory, "/Tools/Template");
+	tmpl_menu = gtk_ui_manager_get_widget(compose->ui_manager, "/Menu/Tools/Template");
 
 	undostruct = undo_init(text);
 	undo_set_change_state_func(undostruct, &compose_undo_state_changed,
-				   menubar);
+				   compose);
 
 	address_completion_start(window);
 
@@ -7003,7 +7077,6 @@ static Compose *compose_create(PrefsAccount *account,
 	compose->focused_editable = NULL;
 
 	compose->popupmenu    = popupmenu;
-	compose->popupfactory = popupfactory;
 
 	compose->tmpl_menu = tmpl_menu;
 
@@ -7049,7 +7122,7 @@ static Compose *compose_create(PrefsAccount *account,
 	compose->draft_timeout_tag = -2; /* inhibit auto-drafting while loading */
 
 #if USE_ASPELL
-	menu_set_sensitive(ifactory, "/Spelling", FALSE);
+	cm_menu_set_sensitive_full(compose->ui_manager, "Menu/Spelling", FALSE);
 	if (mode != COMPOSE_REDIRECT) {
         	if (prefs_common.enable_aspell && prefs_common.dictionary &&
 	    	    strcmp(prefs_common.dictionary, "")) {
@@ -7080,7 +7153,7 @@ static Compose *compose_create(PrefsAccount *account,
 					gtkaspell_checkers_reset_error();
 				}
 
-				menu_set_sensitive(ifactory, "/Spelling", TRUE);
+				cm_menu_set_sensitive_full(compose->ui_manager, "Menu/Spelling", TRUE);
 			}
         	}
 	}
@@ -7090,7 +7163,8 @@ static Compose *compose_create(PrefsAccount *account,
 
 	compose_select_account(compose, account, TRUE);
 
-	menu_set_active(ifactory, "/Edit/Auto wrapping", prefs_common.autowrap);
+	cm_toggle_menu_set_active_full(compose->ui_manager, "Menu/Edit/AutoWrap", prefs_common.autowrap);
+
 	if (account->set_autocc && account->auto_cc && mode != COMPOSE_REEDIT)
 		compose_entry_append(compose, account->auto_cc, COMPOSE_CC);
 
@@ -7100,8 +7174,7 @@ static Compose *compose_create(PrefsAccount *account,
 	if (account->set_autoreplyto && account->auto_replyto && mode != COMPOSE_REEDIT)
 		compose_entry_append(compose, account->auto_replyto, COMPOSE_REPLYTO);
 
-	menu_set_sensitive(ifactory, "/Options/Reply mode", compose->mode == COMPOSE_REPLY);
-
+	cm_menu_set_sensitive_full(compose->ui_manager, "Menu/Options/ReplyMode", compose->mode == COMPOSE_REPLY);
 	if (account->protocol != A_NNTP)
 		gtk_entry_set_text(GTK_ENTRY(GTK_BIN(compose->header_last->combo)->child),
 				prefs_common_translated_header_name("To:"));
@@ -7114,8 +7187,7 @@ static Compose *compose_create(PrefsAccount *account,
 	if (mode != COMPOSE_REDIRECT)
 		compose_set_template_menu(compose);
 	else {
-		menuitem = gtk_item_factory_get_item(ifactory, "/Tools/Template");
-		menu_set_sensitive(ifactory, "/Tools/Template", FALSE);
+		cm_menu_set_sensitive_full(compose->ui_manager, "Menu/Tools/Template", FALSE);
 	}
 
 	compose_list = g_list_append(compose_list, compose);
@@ -7123,9 +7195,7 @@ static Compose *compose_create(PrefsAccount *account,
 	if (!prefs_common.show_ruler)
 		gtk_widget_hide(ruler_hbox);
 		
-	menuitem = gtk_item_factory_get_item(ifactory, "/Tools/Show ruler");
-	gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM(menuitem),
-				       prefs_common.show_ruler);
+	cm_toggle_menu_set_active_full(compose->ui_manager, "Menu/Tools/ShowRuler", prefs_common.show_ruler);
 
 	/* Priority */
 	compose->priority = PRIORITY_NORMAL;
@@ -7231,19 +7301,20 @@ static GtkWidget *compose_account_option_menu_create(Compose *compose)
 	return hbox;
 }
 
-static void compose_set_priority_cb(gpointer data,
-				    guint action,
-				    GtkWidget *widget)
+static void compose_set_priority_cb(GtkAction *action, GtkRadioAction *current, gpointer data)
 {
+	gboolean active = gtk_toggle_action_get_active (GTK_TOGGLE_ACTION (current));
+	gint value = gtk_radio_action_get_current_value (GTK_RADIO_ACTION (current));
 	Compose *compose = (Compose *) data;
-	compose->priority = action;
+	if (active) {
+		printf("activated %d\n", value);
+		compose->priority = value;
+	}
 }
 
-static void compose_reply_change_mode(gpointer data,
-				    ComposeMode action,
-				    GtkWidget *widget)
+static void compose_reply_change_mode(Compose *compose,
+				    ComposeMode action)
 {
-	Compose *compose = (Compose *) data;
 	gboolean was_modified = compose->modified;
 
 	gboolean all = FALSE, ml = FALSE, sender = FALSE, followup = FALSE;
@@ -7276,33 +7347,39 @@ static void compose_reply_change_mode(gpointer data,
 	compose_set_title(compose);
 }
 
+static void compose_reply_change_mode_cb(GtkAction *action, GtkRadioAction *current, gpointer data)
+{
+	gboolean active = gtk_toggle_action_get_active (GTK_TOGGLE_ACTION (current));
+	gint value = gtk_radio_action_get_current_value (GTK_RADIO_ACTION (current));
+	Compose *compose = (Compose *) data;
+	
+	if (active)
+		compose_reply_change_mode(compose, value);
+}
+
 static void compose_update_priority_menu_item(Compose * compose)
 {
-	GtkItemFactory *ifactory;
 	GtkWidget *menuitem = NULL;
-
-	ifactory = gtk_item_factory_from_widget(compose->menubar);
-	
 	switch (compose->priority) {
 		case PRIORITY_HIGHEST:
-			menuitem = gtk_item_factory_get_item
-				(ifactory, "/Options/Priority/Highest");
+			menuitem = gtk_ui_manager_get_widget
+				(compose->ui_manager, "/Menu/Options/Priority/Highest");
 			break;
 		case PRIORITY_HIGH:
-			menuitem = gtk_item_factory_get_item
-				(ifactory, "/Options/Priority/High");
+			menuitem = gtk_ui_manager_get_widget
+				(compose->ui_manager, "/Menu/Options/Priority/High");
 			break;
 		case PRIORITY_NORMAL:
-			menuitem = gtk_item_factory_get_item
-				(ifactory, "/Options/Priority/Normal");
+			menuitem = gtk_ui_manager_get_widget
+				(compose->ui_manager, "/Menu/Options/Priority/Normal");
 			break;
 		case PRIORITY_LOW:
-			menuitem = gtk_item_factory_get_item
-				(ifactory, "/Options/Priority/Low");
+			menuitem = gtk_ui_manager_get_widget
+				(compose->ui_manager, "/Menu/Options/Priority/Low");
 			break;
 		case PRIORITY_LOWEST:
-			menuitem = gtk_item_factory_get_item
-				(ifactory, "/Options/Priority/Lowest");
+			menuitem = gtk_ui_manager_get_widget
+				(compose->ui_manager, "/Menu/Options/Priority/Lowest");
 			break;
 	}
 	gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM(menuitem), TRUE);
@@ -7312,7 +7389,6 @@ static void compose_set_privacy_system_cb(GtkWidget *widget, gpointer data)
 {
 	Compose *compose = (Compose *) data;
 	gchar *systemid;
-	GtkItemFactory *ifactory;
 	gboolean can_sign = FALSE, can_encrypt = FALSE;
 
 	g_return_if_fail(GTK_IS_CHECK_MENU_ITEM(widget));
@@ -7332,25 +7408,22 @@ static void compose_set_privacy_system_cb(GtkWidget *widget, gpointer data)
 
 	debug_print("activated privacy system: %s\n", systemid != NULL ? systemid : "None");
 
-	ifactory = gtk_item_factory_from_widget(compose->menubar);
-	menu_set_sensitive(ifactory, "/Options/Sign", can_sign);
-	menu_set_sensitive(ifactory, "/Options/Encrypt", can_encrypt);
+	cm_menu_set_sensitive_full(compose->ui_manager, "Menu/Options/Sign", can_sign);
+	cm_menu_set_sensitive_full(compose->ui_manager, "Menu/Options/Encrypt", can_encrypt);
 }
 
 static void compose_update_privacy_system_menu_item(Compose * compose, gboolean warn)
 {
-	static gchar *branch_path = "/Options/Privacy System";
-	GtkItemFactory *ifactory;
+	static gchar *branch_path = "/Menu/Options/PrivacySystem";
 	GtkWidget *menuitem = NULL;
 	GList *amenu;
 	gboolean can_sign = FALSE, can_encrypt = FALSE;
 	gboolean found = FALSE;
 
-	ifactory = gtk_item_factory_from_widget(compose->menubar);
-
 	if (compose->privacy_system != NULL) {
 		gchar *systemid;
-		menuitem = gtk_item_factory_get_widget(ifactory, branch_path);
+		menuitem = gtk_menu_item_get_submenu(GTK_MENU_ITEM(
+				gtk_ui_manager_get_widget(compose->ui_manager, branch_path)));
 		g_return_if_fail(menuitem != NULL);
 
 		amenu = GTK_MENU_SHELL(menuitem)->children;
@@ -7389,43 +7462,51 @@ static void compose_update_privacy_system_menu_item(Compose * compose, gboolean 
 		}
 	} 
 
-	menu_set_sensitive(ifactory, "/Options/Sign", can_sign);
-	menu_set_sensitive(ifactory, "/Options/Encrypt", can_encrypt);
+	cm_menu_set_sensitive_full(compose->ui_manager, "Menu/Options/Sign", can_sign);
+	cm_menu_set_sensitive_full(compose->ui_manager, "Menu/Options/Encrypt", can_encrypt);
 }	
  
 static void compose_set_out_encoding(Compose *compose)
 {
-	GtkItemFactoryEntry *entry;
-	GtkItemFactory *ifactory;
 	CharSet out_encoding;
-	gchar *path, *p, *q;
-	GtkWidget *item;
-
+	const gchar *branch = NULL;
 	out_encoding = conv_get_charset_from_str(prefs_common.outgoing_charset);
-	ifactory = gtk_item_factory_from_widget(compose->menubar);
 
-	for (entry = compose_entries; entry->callback != compose_address_cb;
-	     entry++) {
-		if (entry->callback == compose_set_encoding_cb &&
-		    (CharSet)entry->callback_action == out_encoding) {
-			p = q = path = g_strdup(entry->path);
-			while (*p) {
-				if (*p == '_') {
-					if (p[1] == '_') {
-						p++;
-						*q++ = '_';
-					}
-				} else
-					*q++ = *p;
-				p++;
-			}
-			*q = '\0';
-			item = gtk_item_factory_get_item(ifactory, path);
-			gtk_widget_activate(item);
-			g_free(path);
-			break;
-		}
+	switch(out_encoding) {
+		case C_AUTO: branch = "Menu/Options/Encoding/" CS_AUTO; break;
+		case C_US_ASCII: branch = "Menu/Options/Encoding/" CS_US_ASCII; break;
+		case C_UTF_8: branch = "Menu/Options/Encoding/" CS_UTF_8; break;
+		case C_ISO_8859_2: branch = "Menu/Options/Encoding/" CS_ISO_8859_2; break;
+		case C_ISO_8859_7: branch = "Menu/Options/Encoding/" CS_ISO_8859_7; break;
+		case C_ISO_8859_9: branch = "Menu/Options/Encoding/" CS_ISO_8859_9; break;
+		case C_ISO_8859_1: branch = "Menu/Options/Encoding/Western/" CS_ISO_8859_1; break;
+		case C_ISO_8859_15: branch = "Menu/Options/Encoding/Western/" CS_ISO_8859_15; break;
+		case C_WINDOWS_1252: branch = "Menu/Options/Encoding/Western/" CS_WINDOWS_1252; break;
+		case C_ISO_8859_13: branch = "Menu/Options/Encoding/Baltic/" CS_ISO_8859_13; break;
+		case C_ISO_8859_4: branch = "Menu/Options/Encoding/Baltic" CS_ISO_8859_4; break;
+		case C_ISO_8859_8: branch = "Menu/Options/Encoding/Hebrew/" CS_ISO_8859_8; break;
+		case C_WINDOWS_1255: branch = "Menu/Options/Encoding/Hebrew/" CS_WINDOWS_1255; break;
+		case C_ISO_8859_6: branch = "Menu/Options/Encoding/Arabic/" CS_ISO_8859_6; break;
+		case C_WINDOWS_1256: branch = "Menu/Options/Encoding/Arabic/" CS_WINDOWS_1256; break;
+		case C_ISO_8859_5: branch = "Menu/Options/Encoding/Cyrillic/" CS_ISO_8859_5; break;
+		case C_KOI8_R: branch = "Menu/Options/Encoding/Cyrillic/" CS_KOI8_R; break;
+		case C_KOI8_U: branch = "Menu/Options/Encoding/Cyrillic/" CS_KOI8_U; break;
+		case C_WINDOWS_1251: branch = "Menu/Options/Encoding/Cyrillic/" CS_WINDOWS_1251; break;
+		case C_ISO_2022_JP: branch = "Menu/Options/Encoding/Japanese/" CS_ISO_2022_JP; break;
+		case C_ISO_2022_JP_2: branch = "Menu/Options/Encoding/Japanese/" CS_ISO_2022_JP_2; break;
+		case C_EUC_JP: branch = "Menu/Options/Encoding/Japanese/" CS_EUC_JP; break;
+		case C_SHIFT_JIS: branch = "Menu/Options/Encoding/Japanese/" CS_SHIFT_JIS; break;
+		case C_GB2312: branch = "Menu/Options/Encoding/Chinese/" CS_GB2312; break;
+		case C_GBK: branch = "Menu/Options/Encoding/Chinese/" CS_GBK; break;
+		case C_BIG5: branch = "Menu/Options/Encoding/Chinese/" CS_BIG5; break;
+		case C_EUC_TW: branch = "Menu/Options/Encoding/Chinese/" CS_EUC_TW; break;
+		case C_EUC_KR: branch = "Menu/Options/Encoding/Korean/" CS_EUC_KR; break;
+		case C_ISO_2022_KR: branch = "Menu/Options/Encoding/Korean/" CS_ISO_2022_KR; break;
+		case C_TIS_620: branch = "Menu/Options/Encoding/Thai/" CS_TIS_620; break;
+		case C_WINDOWS_874: branch = "Menu/Options/Encoding/Thai/" CS_WINDOWS_874; break;
+		default: branch = "Menu/Options/Encoding/" CS_AUTO; break;
 	}
+	cm_toggle_menu_set_active_full(compose->ui_manager, (gchar *)branch, TRUE);
 }
 
 static void compose_set_template_menu(Compose *compose)
@@ -7438,9 +7519,11 @@ static void compose_set_template_menu(Compose *compose)
 
 	menu = gtk_menu_new();
 
+	gtk_menu_set_accel_group (GTK_MENU (menu), 
+		gtk_ui_manager_get_accel_group(compose->ui_manager));
 	for (cur = tmpl_list; cur != NULL; cur = cur->next) {
 		Template *tmpl = (Template *)cur->data;
-
+		gchar *accel_path = NULL;
 		item = gtk_menu_item_new_with_label(tmpl->name);
 		gtk_menu_shell_append(GTK_MENU_SHELL(menu), item);
 		g_signal_connect(G_OBJECT(item), "activate",
@@ -7448,6 +7531,9 @@ static void compose_set_template_menu(Compose *compose)
 				 compose);
 		g_object_set_data(G_OBJECT(item), "template", tmpl);
 		gtk_widget_show(item);
+		accel_path = g_strconcat("<ComposeTemplates>" , "/", tmpl->name, NULL);
+		gtk_menu_item_set_accel_path(item, accel_path);
+		g_free(accel_path);
 	}
 
 	gtk_widget_show(menu);
@@ -7456,41 +7542,27 @@ static void compose_set_template_menu(Compose *compose)
 
 void compose_update_actions_menu(Compose *compose)
 {
-	GtkItemFactory *ifactory;
-
-	ifactory = gtk_item_factory_from_widget(compose->menubar);
-	action_update_compose_menu(ifactory, "/Tools/Actions", compose);
+	action_update_compose_menu(compose->ui_manager, "/Menu/Tools/Actions", compose);
 }
 
 static void compose_update_privacy_systems_menu(Compose *compose)
 {
-	static gchar *branch_path = "/Options/Privacy System";
-	GtkItemFactory *ifactory;
-	GtkWidget *menuitem;
+	static gchar *branch_path = "/Menu/Options/PrivacySystem";
 	GSList *systems, *cur;
-	GList *amenu;
 	GtkWidget *widget;
 	GtkWidget *system_none;
 	GSList *group;
+	GtkWidget *privacy_menuitem = gtk_ui_manager_get_widget(compose->ui_manager, branch_path);
+	GtkWidget *privacy_menu = gtk_menu_new();
 
-	ifactory = gtk_item_factory_from_widget(compose->menubar);
-
-	/* remove old entries */
-	menuitem = gtk_item_factory_get_widget(ifactory, branch_path);
-	g_return_if_fail(menuitem != NULL);
-
-	amenu = GTK_MENU_SHELL(menuitem)->children->next;
-	while (amenu != NULL) {
-		GList *alist = amenu->next;
-		gtk_widget_destroy(GTK_WIDGET(amenu->data));
-		amenu = alist;
-	}
-
-	system_none = gtk_item_factory_get_widget(ifactory,
-		"/Options/Privacy System/None");
+	system_none = gtk_radio_menu_item_new_with_mnemonic(NULL, _("_None"));
+	g_object_set_data_full(G_OBJECT(system_none), "privacy_system", NULL, NULL);
 
 	g_signal_connect(G_OBJECT(system_none), "activate",
 		G_CALLBACK(compose_set_privacy_system_cb), compose);
+
+	gtk_menu_shell_append(GTK_MENU_SHELL(privacy_menu), system_none);
+	gtk_widget_show(system_none);
 
 	systems = privacy_get_system_ids();
 	for (cur = systems; cur != NULL; cur = g_slist_next(cur)) {
@@ -7504,11 +7576,14 @@ static void compose_update_privacy_systems_menu(Compose *compose)
 		g_signal_connect(G_OBJECT(widget), "activate",
 			G_CALLBACK(compose_set_privacy_system_cb), compose);
 
-		gtk_menu_append(GTK_MENU(system_none->parent), widget);
+		gtk_menu_shell_append(GTK_MENU_SHELL(privacy_menu), widget);
 		gtk_widget_show(widget);
 		g_free(systemid);
 	}
 	g_slist_free(systems);
+	gtk_menu_item_set_submenu(GTK_MENU_ITEM(privacy_menuitem), privacy_menu);
+	gtk_widget_show_all(privacy_menu);
+	gtk_widget_show_all(privacy_menuitem);
 }
 
 void compose_reflect_prefs_all(void)
@@ -7886,8 +7961,9 @@ static void compose_attach_update_label(Compose *compose)
 	g_free(text);
 }
 
-static void compose_attach_remove_selected(Compose *compose)
+static void compose_attach_remove_selected(GtkAction *action, gpointer data)
 {
+	Compose *compose = (Compose *)data;
 	GtkTreeView *tree_view = GTK_TREE_VIEW(compose->attach_clist);
 	GtkTreeSelection *selection;
 	GList *sel, *cur;
@@ -7939,8 +8015,9 @@ static void gtk_tree_path_free_(gpointer ptr, gpointer data)
 	gtk_tree_path_free((GtkTreePath *)ptr);
 }
 
-static void compose_attach_property(Compose *compose)
+static void compose_attach_property(GtkAction *action, gpointer data)
 {
+	Compose *compose = (Compose *)data;
 	GtkTreeView *tree_view = GTK_TREE_VIEW(compose->attach_clist);
 	AttachInfo *ainfo;
 	GtkComboBox *optmenu;
@@ -8442,18 +8519,13 @@ static gboolean compose_input_cb(GIOChannel *source, GIOCondition condition,
 static void compose_set_ext_editor_sensitive(Compose *compose,
 					     gboolean sensitive)
 {
-	GtkItemFactory *ifactory;
-
-	ifactory = gtk_item_factory_from_widget(compose->menubar);
-
-	menu_set_sensitive(ifactory, "/Message/Send", sensitive);
-	menu_set_sensitive(ifactory, "/Message/Send later", sensitive);
-	menu_set_sensitive(ifactory, "/Message/Insert file", sensitive);
-	menu_set_sensitive(ifactory, "/Message/Insert signature", sensitive);
-	menu_set_sensitive(ifactory, "/Edit/Wrap current paragraph", sensitive);
-	menu_set_sensitive(ifactory, "/Edit/Wrap all long lines", sensitive);
-	menu_set_sensitive(ifactory, "/Edit/Edit with external editor",
-			   sensitive);
+	cm_menu_set_sensitive_full(compose->ui_manager, "Menu/Message/Send", sensitive);
+	cm_menu_set_sensitive_full(compose->ui_manager, "Menu/Message/SendLater", sensitive);
+	cm_menu_set_sensitive_full(compose->ui_manager, "Menu/Message/InsertFile", sensitive);
+	cm_menu_set_sensitive_full(compose->ui_manager, "Menu/Message/InsertSig", sensitive);
+	cm_menu_set_sensitive_full(compose->ui_manager, "Menu/Edit/WrapPara", sensitive);
+	cm_menu_set_sensitive_full(compose->ui_manager, "Menu/Edit/WrapAllLines", sensitive);
+	cm_menu_set_sensitive_full(compose->ui_manager, "Menu/Edit/ExtEditor", sensitive);
 
 	gtk_widget_set_sensitive(compose->text,                       sensitive);
 	if (compose->toolbar->send_btn)
@@ -8483,31 +8555,25 @@ static void compose_set_ext_editor_sensitive(Compose *compose,
 static void compose_undo_state_changed(UndoMain *undostruct, gint undo_state,
 				       gint redo_state, gpointer data)
 {
-	GtkWidget *widget = GTK_WIDGET(data);
-	GtkItemFactory *ifactory;
-
-	g_return_if_fail(widget != NULL);
-
-	ifactory = gtk_item_factory_from_widget(widget);
+	Compose *compose = (Compose *)data;
 
 	switch (undo_state) {
 	case UNDO_STATE_TRUE:
 		if (!undostruct->undo_state) {
 			undostruct->undo_state = TRUE;
-			menu_set_sensitive(ifactory, "/Edit/Undo", TRUE);
+			cm_menu_set_sensitive_full(compose->ui_manager, "Menu/Edit/Undo", TRUE);
 		}
 		break;
 	case UNDO_STATE_FALSE:
 		if (undostruct->undo_state) {
 			undostruct->undo_state = FALSE;
-			menu_set_sensitive(ifactory, "/Edit/Undo", FALSE);
+			cm_menu_set_sensitive_full(compose->ui_manager, "Menu/Edit/Undo", FALSE);
 		}
 		break;
 	case UNDO_STATE_UNCHANGED:
 		break;
 	case UNDO_STATE_REFRESH:
-		menu_set_sensitive(ifactory, "/Edit/Undo",
-				   undostruct->undo_state);
+		cm_menu_set_sensitive_full(compose->ui_manager, "Menu/Edit/Undo", undostruct->undo_state);
 		break;
 	default:
 		g_warning("Undo state not recognized");
@@ -8518,20 +8584,19 @@ static void compose_undo_state_changed(UndoMain *undostruct, gint undo_state,
 	case UNDO_STATE_TRUE:
 		if (!undostruct->redo_state) {
 			undostruct->redo_state = TRUE;
-			menu_set_sensitive(ifactory, "/Edit/Redo", TRUE);
+			cm_menu_set_sensitive_full(compose->ui_manager, "Menu/Edit/Redo", TRUE);
 		}
 		break;
 	case UNDO_STATE_FALSE:
 		if (undostruct->redo_state) {
 			undostruct->redo_state = FALSE;
-			menu_set_sensitive(ifactory, "/Edit/Redo", FALSE);
+			cm_menu_set_sensitive_full(compose->ui_manager, "Menu/Edit/Redo", FALSE);
 		}
 		break;
 	case UNDO_STATE_UNCHANGED:
 		break;
 	case UNDO_STATE_REFRESH:
-		menu_set_sensitive(ifactory, "/Edit/Redo",
-				   undostruct->redo_state);
+		cm_menu_set_sensitive_full(compose->ui_manager, "Menu/Edit/Redo", undostruct->redo_state);
 		break;
 	default:
 		g_warning("Redo state not recognized");
@@ -8607,7 +8672,7 @@ static void account_activated(GtkComboBox *optmenu, gpointer data)
 static void attach_selected(GtkTreeView *tree_view, GtkTreePath *tree_path,
 			    GtkTreeViewColumn *column, Compose *compose)
 {
-	compose_attach_property(compose);
+	compose_attach_property(NULL, compose);
 }
 
 static gboolean attach_button_pressed(GtkWidget *widget, GdkEventButton *event,
@@ -8616,22 +8681,20 @@ static gboolean attach_button_pressed(GtkWidget *widget, GdkEventButton *event,
 	Compose *compose = (Compose *)data;
 	GtkTreeSelection *attach_selection;
 	gint attach_nr_selected;
-	GtkItemFactory *ifactory;
 	
 	if (!event) return FALSE;
 
 	if (event->button == 3) {
 		attach_selection = gtk_tree_view_get_selection(GTK_TREE_VIEW(widget));
 		attach_nr_selected = gtk_tree_selection_count_selected_rows(attach_selection);
-		ifactory = gtk_item_factory_from_widget(compose->popupmenu);
 			
 		if (attach_nr_selected > 0)
 		{
-			menu_set_sensitive(ifactory, "/Remove", TRUE);
-			menu_set_sensitive(ifactory, "/Properties...", TRUE);
+			cm_menu_set_sensitive_full(compose->ui_manager, "Popup/Compose/Remove", TRUE);
+			cm_menu_set_sensitive_full(compose->ui_manager, "Popup/Compose/Properties", TRUE);
 		} else {
-			menu_set_sensitive(ifactory, "/Remove", FALSE);
-			menu_set_sensitive(ifactory, "/Properties...", FALSE);
+			cm_menu_set_sensitive_full(compose->ui_manager, "Popup/Compose/Remove", FALSE);
+			cm_menu_set_sensitive_full(compose->ui_manager, "Popup/Compose/Properties", FALSE);
 		}
 			
 		gtk_menu_popup(GTK_MENU(compose->popupmenu), NULL, NULL,
@@ -8651,7 +8714,7 @@ static gboolean attach_key_pressed(GtkWidget *widget, GdkEventKey *event,
 
 	switch (event->keyval) {
 	case GDK_Delete:
-		compose_attach_remove_selected(compose);
+		compose_attach_remove_selected(NULL, compose);
 		break;
 	}
 	return FALSE;
@@ -8659,22 +8722,21 @@ static gboolean attach_key_pressed(GtkWidget *widget, GdkEventKey *event,
 
 static void compose_allow_user_actions (Compose *compose, gboolean allow)
 {
-	GtkItemFactory *ifactory = gtk_item_factory_from_widget(compose->menubar);
 	toolbar_comp_set_sensitive(compose, allow);
-	menu_set_sensitive(ifactory, "/Message", allow);
-	menu_set_sensitive(ifactory, "/Edit", allow);
+	cm_menu_set_sensitive_full(compose->ui_manager, "Menu/Message", allow);
+	cm_menu_set_sensitive_full(compose->ui_manager, "Menu/Edit", allow);
 #if USE_ASPELL
-	menu_set_sensitive(ifactory, "/Spelling", allow);
+	cm_menu_set_sensitive_full(compose->ui_manager, "Menu/Spelling", allow);
 #endif	
-	menu_set_sensitive(ifactory, "/Options", allow);
-	menu_set_sensitive(ifactory, "/Tools", allow);
-	menu_set_sensitive(ifactory, "/Help", allow);
+	cm_menu_set_sensitive_full(compose->ui_manager, "Menu/Options", allow);
+	cm_menu_set_sensitive_full(compose->ui_manager, "Menu/Tools", allow);
+	cm_menu_set_sensitive_full(compose->ui_manager, "Menu/Help", allow);
 	
 	gtk_text_view_set_editable(GTK_TEXT_VIEW(compose->text), allow);
 
 }
 
-static void compose_send_cb(gpointer data, guint action, GtkWidget *widget)
+static void compose_send_cb(GtkAction *action, gpointer data)
 {
 	Compose *compose = (Compose *)data;
 	
@@ -8692,8 +8754,7 @@ static void compose_send_cb(gpointer data, guint action, GtkWidget *widget)
 	compose_send(compose);
 }
 
-static void compose_send_later_cb(gpointer data, guint action,
-				  GtkWidget *widget)
+static void compose_send_later_cb(GtkAction *action, gpointer data)
 {
 	Compose *compose = (Compose *)data;
 	gint val;
@@ -8996,9 +9057,9 @@ void compose_reopen_exit_drafts(void)
 	compose_clear_exit_drafts();
 }
 
-static void compose_draft_cb(gpointer data, guint action, GtkWidget *widget)
+static void compose_save_cb(GtkAction *action, gpointer data)
 {
-	compose_draft(data, action);
+	compose_draft(data, COMPOSE_KEEP_EDITING);
 }
 
 static void compose_attach_from_list(Compose *compose, GList *file_list, gboolean free_data)
@@ -9020,7 +9081,7 @@ static void compose_attach_from_list(Compose *compose, GList *file_list, gboolea
 	}
 }
 
-static void compose_attach_cb(gpointer data, guint action, GtkWidget *widget)
+static void compose_attach_cb(GtkAction *action, gpointer data)
 {
 	Compose *compose = (Compose *)data;
 	GList *file_list;
@@ -9036,8 +9097,7 @@ static void compose_attach_cb(gpointer data, guint action, GtkWidget *widget)
 	}
 }
 
-static void compose_insert_file_cb(gpointer data, guint action,
-				   GtkWidget *widget)
+static void compose_insert_file_cb(GtkAction *action, gpointer data)
 {
 	Compose *compose = (Compose *)data;
 	GList *file_list;
@@ -9068,8 +9128,7 @@ static void compose_insert_file_cb(gpointer data, guint action,
 	}
 }
 
-static void compose_insert_sig_cb(gpointer data, guint action,
-				  GtkWidget *widget)
+static void compose_insert_sig_cb(GtkAction *action, gpointer data)
 {
 	Compose *compose = (Compose *)data;
 
@@ -9088,16 +9147,16 @@ static gint compose_delete_cb(GtkWidget *widget, GdkEventAny *event,
 
 	if (compose->sending || compose->updating)
 		return TRUE;
-	compose_close_cb(compose, 0, NULL);
+	compose_close_cb(NULL, compose);
 	return TRUE;
 }
 
 void compose_close_toolbar(Compose *compose)
 {
-	compose_close_cb(compose, 0, NULL);
+	compose_close_cb(NULL, compose);
 }
 
-static void compose_close_cb(gpointer data, guint action, GtkWidget *widget)
+static void compose_close_cb(GtkAction *action, gpointer data)
 {
 	Compose *compose = (Compose *)data;
 	AlertValue val;
@@ -9128,7 +9187,7 @@ static void compose_close_cb(gpointer data, guint action, GtkWidget *widget)
 				compose_remove_draft(compose);			
 			break;
 		case G_ALERTALTERNATE:
-			compose_draft_cb(data, COMPOSE_QUIT_EDITING, NULL);
+			compose_draft(data, COMPOSE_QUIT_EDITING);
 			return;
 		default:
 			return;
@@ -9138,20 +9197,26 @@ static void compose_close_cb(gpointer data, guint action, GtkWidget *widget)
 	compose_close(compose);
 }
 
-static void compose_set_encoding_cb(gpointer data, guint action,
-				    GtkWidget *widget)
+static void compose_set_encoding_cb(GtkAction *action, GtkRadioAction *current, gpointer data)
 {
-	Compose *compose = (Compose *)data;
+	gboolean active = gtk_toggle_action_get_active (GTK_TOGGLE_ACTION (current));
+	gint value = gtk_radio_action_get_current_value (GTK_RADIO_ACTION (current));
+	Compose *compose = (Compose *) data;
 
-	if (GTK_CHECK_MENU_ITEM(widget)->active)
-		compose->out_encoding = (CharSet)action;
+	if (active)
+		compose->out_encoding = (CharSet)value;
 }
 
-static void compose_address_cb(gpointer data, guint action, GtkWidget *widget)
+static void compose_address_cb(GtkAction *action, gpointer data)
 {
 	Compose *compose = (Compose *)data;
 
 	addressbook_open(compose);
+}
+
+static void about_show_cb(GtkAction *action, gpointer data)
+{
+	about_show();
 }
 
 static void compose_template_activate_cb(GtkWidget *widget, gpointer data)
@@ -9176,16 +9241,16 @@ static void compose_template_activate_cb(GtkWidget *widget, gpointer data)
 		compose_template_apply(compose, tmpl, FALSE);
 }
 
-static void compose_ext_editor_cb(gpointer data, guint action,
-				  GtkWidget *widget)
+static void compose_ext_editor_cb(GtkAction *action, gpointer data)
 {
 	Compose *compose = (Compose *)data;
 
 	compose_exec_ext_editor(compose);
 }
 
-static void compose_undo_cb(Compose *compose)
+static void compose_undo_cb(GtkAction *action, gpointer data)
 {
+	Compose *compose = (Compose *)data;
 	gboolean prev_autowrap = compose->autowrap;
 
 	compose->autowrap = FALSE;
@@ -9193,8 +9258,9 @@ static void compose_undo_cb(Compose *compose)
 	compose->autowrap = prev_autowrap;
 }
 
-static void compose_redo_cb(Compose *compose)
+static void compose_redo_cb(GtkAction *action, gpointer data)
 {
+	Compose *compose = (Compose *)data;
 	gboolean prev_autowrap = compose->autowrap;
 	
 	compose->autowrap = FALSE;
@@ -9295,8 +9361,9 @@ static void entry_allsel(GtkWidget *entry)
 	}
 }
 
-static void compose_cut_cb(Compose *compose)
+static void compose_cut_cb(GtkAction *action, gpointer data)
 {
+	Compose *compose = (Compose *)data;
 	if (compose->focused_editable 
 #ifndef GENERIC_UMPC
 	    && GTK_WIDGET_HAS_FOCUS(compose->focused_editable)
@@ -9305,8 +9372,9 @@ static void compose_cut_cb(Compose *compose)
 		entry_cut_clipboard(compose->focused_editable);
 }
 
-static void compose_copy_cb(Compose *compose)
+static void compose_copy_cb(GtkAction *action, gpointer data)
 {
+	Compose *compose = (Compose *)data;
 	if (compose->focused_editable 
 #ifndef GENERIC_UMPC
 	    && GTK_WIDGET_HAS_FOCUS(compose->focused_editable)
@@ -9315,8 +9383,9 @@ static void compose_copy_cb(Compose *compose)
 		entry_copy_clipboard(compose->focused_editable);
 }
 
-static void compose_paste_cb(Compose *compose)
+static void compose_paste_cb(GtkAction *action, gpointer data)
 {
+	Compose *compose = (Compose *)data;
 	gint prev_autowrap;
 	GtkTextBuffer *buffer;
 	BLOCK_WRAP();
@@ -9328,8 +9397,9 @@ static void compose_paste_cb(Compose *compose)
 	UNBLOCK_WRAP();
 }
 
-static void compose_paste_as_quote_cb(Compose *compose)
+static void compose_paste_as_quote_cb(GtkAction *action, gpointer data)
 {
+	Compose *compose = (Compose *)data;
 	gint wrap_quote = prefs_common.linewrap_quote;
 	if (compose->focused_editable 
 #ifndef GENERIC_UMPC
@@ -9354,8 +9424,9 @@ static void compose_paste_as_quote_cb(Compose *compose)
 	}
 }
 
-static void compose_paste_no_wrap_cb(Compose *compose)
+static void compose_paste_no_wrap_cb(GtkAction *action, gpointer data)
 {
+	Compose *compose = (Compose *)data;
 	gint prev_autowrap;
 	GtkTextBuffer *buffer;
 	BLOCK_WRAP();
@@ -9369,8 +9440,9 @@ static void compose_paste_no_wrap_cb(Compose *compose)
 	UNBLOCK_WRAP();
 }
 
-static void compose_paste_wrap_cb(Compose *compose)
+static void compose_paste_wrap_cb(GtkAction *action, gpointer data)
 {
+	Compose *compose = (Compose *)data;
 	gint prev_autowrap;
 	GtkTextBuffer *buffer;
 	BLOCK_WRAP();
@@ -9384,8 +9456,9 @@ static void compose_paste_wrap_cb(Compose *compose)
 	UNBLOCK_WRAP();
 }
 
-static void compose_allsel_cb(Compose *compose)
+static void compose_allsel_cb(GtkAction *action, gpointer data)
 {
+	Compose *compose = (Compose *)data;
 	if (compose->focused_editable 
 #ifndef GENERIC_UMPC
 	    && GTK_WIDGET_HAS_FOCUS(compose->focused_editable)
@@ -9640,10 +9713,39 @@ static void textview_delete_to_line_end (GtkTextView *text)
 	gtk_text_buffer_delete(buffer, &ins, &end_iter);
 }
 
-static void compose_advanced_action_cb(Compose *compose,
-					ComposeCallAdvancedAction action)
+#define DO_ACTION(name, act) {						\
+	if(!strcmp(name, a_name)) {					\
+		return act;						\
+	}								\
+}
+static ComposeCallAdvancedAction compose_call_advanced_action_from_path(GtkAction *action)
 {
+	const gchar *a_name = gtk_action_get_name(action);
+	DO_ACTION("Edit/Advanced/BackChar", COMPOSE_CALL_ADVANCED_ACTION_MOVE_BACKWARD_CHARACTER);
+	DO_ACTION("Edit/Advanced/ForwChar", COMPOSE_CALL_ADVANCED_ACTION_MOVE_FORWARD_CHARACTER);
+	DO_ACTION("Edit/Advanced/BackWord", COMPOSE_CALL_ADVANCED_ACTION_MOVE_BACKWARD_WORD);
+	DO_ACTION("Edit/Advanced/ForwWord", COMPOSE_CALL_ADVANCED_ACTION_MOVE_FORWARD_WORD);
+	DO_ACTION("Edit/Advanced/BegLine", COMPOSE_CALL_ADVANCED_ACTION_MOVE_BEGINNING_OF_LINE);
+	DO_ACTION("Edit/Advanced/EndLine", COMPOSE_CALL_ADVANCED_ACTION_MOVE_END_OF_LINE);
+	DO_ACTION("Edit/Advanced/PrevLine", COMPOSE_CALL_ADVANCED_ACTION_MOVE_PREVIOUS_LINE);
+	DO_ACTION("Edit/Advanced/NextLine", COMPOSE_CALL_ADVANCED_ACTION_MOVE_NEXT_LINE);
+	DO_ACTION("Edit/Advanced/DelBackChar", COMPOSE_CALL_ADVANCED_ACTION_DELETE_BACKWARD_CHARACTER);
+	DO_ACTION("Edit/Advanced/DelForwChar", COMPOSE_CALL_ADVANCED_ACTION_DELETE_FORWARD_CHARACTER);
+	DO_ACTION("Edit/Advanced/DelBackWord", COMPOSE_CALL_ADVANCED_ACTION_DELETE_BACKWARD_WORD);
+	DO_ACTION("Edit/Advanced/DelForwWord", COMPOSE_CALL_ADVANCED_ACTION_DELETE_FORWARD_WORD);
+	DO_ACTION("Edit/Advanced/DelLine", COMPOSE_CALL_ADVANCED_ACTION_DELETE_LINE);
+	DO_ACTION("Edit/Advanced/DelEndLine", COMPOSE_CALL_ADVANCED_ACTION_DELETE_TO_LINE_END);
+	return -1;
+}
+
+static void compose_advanced_action_cb(GtkAction *gaction, gpointer data)
+{
+	Compose *compose = (Compose *)data;
 	GtkTextView *text = GTK_TEXT_VIEW(compose->text);
+	ComposeCallAdvancedAction action = -1;
+	
+	action = compose_call_advanced_action_from_path(gaction);
+
 	static struct {
 		void (*do_action) (GtkTextView *text);
 	} action_table[] = {
@@ -9757,53 +9859,47 @@ static void compose_changed_cb(GtkTextBuffer *textbuf, Compose *compose)
 #endif
 }
 
-static void compose_wrap_cb(gpointer data, guint action, GtkWidget *widget)
+static void compose_wrap_cb(GtkAction *action, gpointer data)
 {
 	Compose *compose = (Compose *)data;
-
-	if (action == 1)
-		compose_wrap_all_full(compose, TRUE);
-	else
-		compose_beautify_paragraph(compose, NULL, TRUE);
+	compose_beautify_paragraph(compose, NULL, TRUE);
 }
 
-static void compose_find_cb(gpointer data, guint action, GtkWidget *widget)
+static void compose_wrap_all_cb(GtkAction *action, gpointer data)
+{
+	Compose *compose = (Compose *)data;
+	compose_wrap_all_full(compose, TRUE);
+}
+
+static void compose_find_cb(GtkAction *action, gpointer data)
 {
 	Compose *compose = (Compose *)data;
 
 	message_search_compose(compose);
 }
 
-static void compose_toggle_autowrap_cb(gpointer data, guint action,
-				       GtkWidget *widget)
+static void compose_toggle_autowrap_cb(GtkToggleAction *action,
+					 gpointer	 data)
 {
 	Compose *compose = (Compose *)data;
-	compose->autowrap = GTK_CHECK_MENU_ITEM(widget)->active;
+	compose->autowrap = gtk_toggle_action_get_active (GTK_TOGGLE_ACTION (action));
 	if (compose->autowrap)
 		compose_wrap_all_full(compose, TRUE);
-	compose->autowrap = GTK_CHECK_MENU_ITEM(widget)->active;
+	compose->autowrap = gtk_toggle_action_get_active (GTK_TOGGLE_ACTION (action));
 }
 
-static void compose_toggle_sign_cb(gpointer data, guint action,
-				   GtkWidget *widget)
+static void compose_toggle_sign_cb(GtkToggleAction *action, gpointer data)
 {
 	Compose *compose = (Compose *)data;
 
-	if (GTK_CHECK_MENU_ITEM(widget)->active)
-		compose->use_signing = TRUE;
-	else
-		compose->use_signing = FALSE;
+	compose->use_signing = gtk_toggle_action_get_active (GTK_TOGGLE_ACTION (action));
 }
 
-static void compose_toggle_encrypt_cb(gpointer data, guint action,
-				      GtkWidget *widget)
+static void compose_toggle_encrypt_cb(GtkToggleAction *action, gpointer data)
 {
 	Compose *compose = (Compose *)data;
 
-	if (GTK_CHECK_MENU_ITEM(widget)->active)
-		compose->use_encryption = TRUE;
-	else
-		compose->use_encryption = FALSE;
+	compose->use_encryption = gtk_toggle_action_get_active (GTK_TOGGLE_ACTION (action));
 }
 
 static void activate_privacy_system(Compose *compose, PrefsAccount *account, gboolean warn) 
@@ -9814,12 +9910,11 @@ static void activate_privacy_system(Compose *compose, PrefsAccount *account, gbo
 	compose_update_privacy_system_menu_item(compose, warn);
 }
 
-static void compose_toggle_ruler_cb(gpointer data, guint action,
-				    GtkWidget *widget)
+static void compose_toggle_ruler_cb(GtkToggleAction *action, gpointer data)
 {
 	Compose *compose = (Compose *)data;
 
-	if (GTK_CHECK_MENU_ITEM(widget)->active) {
+	if (gtk_toggle_action_get_active (GTK_TOGGLE_ACTION (action))) {
 		gtk_widget_show(compose->ruler_hbox);
 		prefs_common.show_ruler = TRUE;
 	} else {
@@ -10019,23 +10114,21 @@ static void compose_header_drag_received_cb (GtkWidget		*widget,
 	gtk_drag_finish(drag_context, TRUE, FALSE, time);
 }
 
-static void compose_toggle_return_receipt_cb(gpointer data, guint action,
-					     GtkWidget *widget)
+static void compose_toggle_return_receipt_cb(GtkToggleAction *action, gpointer data)
 {
 	Compose *compose = (Compose *)data;
 
-	if (GTK_CHECK_MENU_ITEM(widget)->active)
+	if (gtk_toggle_action_get_active (GTK_TOGGLE_ACTION (action)))
 		compose->return_receipt = TRUE;
 	else
 		compose->return_receipt = FALSE;
 }
 
-static void compose_toggle_remove_refs_cb(gpointer data, guint action,
-					     GtkWidget *widget)
+static void compose_toggle_remove_refs_cb(GtkToggleAction *action, gpointer data)
 {
 	Compose *compose = (Compose *)data;
 
-	if (GTK_CHECK_MENU_ITEM(widget)->active)
+	if (gtk_toggle_action_get_active (GTK_TOGGLE_ACTION (action)))
 		compose->remove_references = TRUE;
 	else
 		compose->remove_references = FALSE;
@@ -10201,44 +10294,42 @@ static void text_inserted(GtkTextBuffer *buffer, GtkTextIter *iter,
 static gint compose_defer_auto_save_draft(Compose *compose)
 {
 	compose->draft_timeout_tag = -1;
-	compose_draft_cb((gpointer)compose, COMPOSE_AUTO_SAVE, NULL);
+	compose_draft((gpointer)compose, COMPOSE_AUTO_SAVE);
 	return FALSE;
 }
 
 #if USE_ASPELL
-static void compose_check_all(Compose *compose)
+static void compose_check_all(GtkAction *action, gpointer data)
 {
+	Compose *compose = (Compose *)data;
 	if (compose->gtkaspell)
 		gtkaspell_check_all(compose->gtkaspell);
 }
 
-static void compose_highlight_all(Compose *compose)
+static void compose_highlight_all(GtkAction *action, gpointer data)
 {
+	Compose *compose = (Compose *)data;
 	if (compose->gtkaspell)
 		gtkaspell_highlight_all(compose->gtkaspell);
 }
 
-static void compose_check_backwards(Compose *compose)
+static void compose_check_backwards(GtkAction *action, gpointer data)
 {
+	Compose *compose = (Compose *)data;
 	if (compose->gtkaspell)	
 		gtkaspell_check_backwards(compose->gtkaspell);
 	else {
-		GtkItemFactory *ifactory;
-		ifactory = gtk_item_factory_from_widget(compose->popupmenu);
-		menu_set_sensitive(ifactory, "/Edit/Check backwards misspelled word", FALSE);
-		menu_set_sensitive(ifactory, "/Edit/Forward to next misspelled word", FALSE);
+		cm_menu_set_sensitive_full(compose->ui_manager, "Menu/Spelling", FALSE);
 	}
 }
 
-static void compose_check_forwards_go(Compose *compose)
+static void compose_check_forwards_go(GtkAction *action, gpointer data)
 {
+	Compose *compose = (Compose *)data;
 	if (compose->gtkaspell)	
 		gtkaspell_check_forwards_go(compose->gtkaspell);
 	else {
-		GtkItemFactory *ifactory;
-		ifactory = gtk_item_factory_from_widget(compose->popupmenu);
-		menu_set_sensitive(ifactory, "/Edit/Check backwards misspelled word", FALSE);
-		menu_set_sensitive(ifactory, "/Edit/Forward to next misspelled word", FALSE);
+		cm_menu_set_sensitive_full(compose->ui_manager, "Menu/Spelling", FALSE);
 	}
 }
 #endif

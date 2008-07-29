@@ -94,6 +94,16 @@ GtkActionGroup *cm_menu_create_action_group(const gchar *name, GtkActionEntry *e
 	return group;
 }
 
+GtkActionGroup *cm_menu_create_action_group_full(GtkUIManager *manager, const gchar *name, GtkActionEntry *entries,
+					    gint num_entries, gpointer data)
+{
+	GtkActionGroup *group = gtk_action_group_new(name);
+	gtk_action_group_set_translate_func(group, menu_translate, NULL, NULL);
+	gtk_action_group_add_actions(group, entries, num_entries, data);
+	gtk_ui_manager_insert_action_group(manager, group, 0);
+	return group;
+}
+
 gchar *menu_translate(const gchar *path, gpointer data)
 {
 	gchar *retval;
@@ -120,7 +130,26 @@ void cm_menu_set_sensitive(gchar *menu, gboolean sensitive)
 {
 	GtkUIManager *gui_manager = gtkut_ui_manager();
 	GtkWidget *widget;
-	gchar *path = g_strdup_printf("/Menus/%s/", menu);
+	gchar *path = g_strdup_printf("Menus/%s", menu);
+
+	cm_menu_set_sensitive_full(gui_manager, path, sensitive);
+	g_free(path);
+}
+
+void cm_toggle_menu_set_active(gchar *menu, gboolean active)
+{
+	GtkUIManager *gui_manager = gtkut_ui_manager();
+	GtkWidget *widget;
+	gchar *path = g_strdup_printf("Menus/%s", menu);
+
+	cm_toggle_menu_set_active_full(gui_manager, path, active);
+	g_free(path);
+}
+
+void cm_menu_set_sensitive_full(GtkUIManager *gui_manager, gchar *menu, gboolean sensitive)
+{
+	GtkWidget *widget;
+	gchar *path = g_strdup_printf("/%s/", menu);
 
 	widget = gtk_ui_manager_get_widget(gui_manager, path);
 	if( !GTK_IS_WIDGET(widget) ) {
@@ -135,11 +164,10 @@ void cm_menu_set_sensitive(gchar *menu, gboolean sensitive)
 	g_free(path);
 }
 
-void cm_toggle_menu_set_active(gchar *menu, gboolean active)
+void cm_toggle_menu_set_active_full(GtkUIManager *gui_manager, gchar *menu, gboolean active)
 {
-	GtkUIManager *gui_manager = gtkut_ui_manager();
 	GtkWidget *widget;
-	gchar *path = g_strdup_printf("/Menus/%s/", menu);
+	gchar *path = g_strdup_printf("/%s/", menu);
 
 	widget = gtk_ui_manager_get_widget(gui_manager, path);
 	if( !GTK_IS_WIDGET(widget) ) {

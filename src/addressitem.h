@@ -92,6 +92,7 @@ struct _AddressBook_win
 
 	Compose *target_compose;
 	gint status_cid;
+	GtkUIManager *ui_manager;
 };
 
 typedef struct _AddressTypeControlItem	AddressTypeControlItem;

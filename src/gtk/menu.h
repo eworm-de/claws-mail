@@ -51,6 +51,11 @@
 			gtk_ui_manager_new_merge_id(gtkut_ui_manager()),\
 			path, name, action, type, FALSE);
 
+#define MENUITEM_ADDUI_MANAGER(ui_manager, path, name, action, type)	\
+	gtk_ui_manager_add_ui(ui_manager,			 \
+			gtk_ui_manager_new_merge_id(ui_manager), \
+			path, name, action, type, FALSE);
+
 #define MENUITEM_ADDUI_ID(path, name, action, type,id)		 \
 	id = gtk_ui_manager_new_merge_id(gtkut_ui_manager());	 \
 	gtk_ui_manager_add_ui(gtkut_ui_manager(),		 \
@@ -84,8 +89,13 @@ void menu_set_sensitive		(GtkItemFactory		*ifactory,
 
 GtkActionGroup *cm_menu_create_action_group(const gchar *name, GtkActionEntry *entries,
 					    gint num_entries, gpointer data);
+GtkActionGroup *cm_menu_create_action_group_full(GtkUIManager *ui_manager,
+					    const gchar *name, GtkActionEntry *entries,
+					    gint num_entries, gpointer data);
 void cm_menu_set_sensitive(gchar *menu, gboolean sensitive);
 void cm_toggle_menu_set_active(gchar *menu, gboolean active);
+void cm_menu_set_sensitive_full(GtkUIManager *gui_manager, gchar *menu, gboolean sensitive);
+void cm_toggle_menu_set_active_full(GtkUIManager *gui_manager, gchar *menu, gboolean active);
 
 void menu_set_active		(GtkItemFactory		*ifactory,
 				 const gchar		*path,

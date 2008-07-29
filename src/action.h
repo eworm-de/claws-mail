@@ -55,10 +55,10 @@ void actions_execute		(gpointer	data,
 void action_update_mainwin_menu	(GtkItemFactory	*ifactory,
 				 gchar		*branch_path,
 				 MainWindow	*mainwin);
-void action_update_msgview_menu	(GtkItemFactory	*ifactory,
+void action_update_msgview_menu	(GtkUIManager 	*ui_manager,
 				 gchar		*branch_path,
 				 MessageView	*msgview);
-void action_update_compose_menu	(GtkItemFactory	*ifactory,
+void action_update_compose_menu	(GtkUIManager 	*ui_manager,
 				 gchar		*branch_path,
 				 Compose	*compose);
 

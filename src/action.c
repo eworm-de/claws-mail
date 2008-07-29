@@ -107,18 +107,27 @@ struct _ChildInfo
 };
 
 static void action_update_menu		(GtkItemFactory	*ifactory,
+					 GtkUIManager   *ui_manager,
+					 const gchar	*accel_group,
 					 gchar		*branch_path,
 					 gpointer	 callback,
 					 gpointer	 data);
-static void compose_actions_execute_cb	(Compose	*compose,
+static void compose_actions_execute_cb	(GtkWidget 	*widget, 
+					 gpointer 	 data);
+static void compose_actions_execute 	(Compose	*compose,
 					 guint		 action_nb,
-					 GtkWidget	*widget);
+					 GtkWidget 	*widget);
+
 static void mainwin_actions_execute_cb 	(MainWindow	*mainwin,
 					 guint		 action_nb,
 					 GtkWidget 	*widget);
-static void msgview_actions_execute_cb	(MessageView	*msgview,
+
+static void msgview_actions_execute_cb	(GtkWidget 	*widget, 
+					 gpointer 	 data);
+static void msgview_actions_execute 	(MessageView	*msgview,
 					 guint		 action_nb,
-					 GtkWidget	*widget);
+					 GtkWidget 	*widget);
+
 static void message_actions_execute	(MessageView	*msgview,
 					 guint		 action_nb,
 					 GSList		*msg_list);
@@ -428,36 +437,80 @@ void actions_execute(gpointer data,
 	if (source == TOOLBAR_MAIN) 
 		mainwin_actions_execute_cb((MainWindow*)data, action_nb, widget);
 	else if (source == TOOLBAR_COMPOSE)
-		compose_actions_execute_cb((Compose*)data, action_nb, widget);
+		compose_actions_execute((Compose*)data, action_nb, widget);
 	else if (source == TOOLBAR_MSGVIEW)
-		msgview_actions_execute_cb((MessageView*)data, action_nb, widget);	
+		msgview_actions_execute((MessageView*)data, action_nb, widget);	
 }
 
 void action_update_mainwin_menu(GtkItemFactory *ifactory,
 				gchar *branch_path,
 				MainWindow *mainwin)
 {
-	action_update_menu(ifactory, branch_path,
+	action_update_menu(ifactory, NULL, "<MainwinActions>", branch_path,
 			   mainwin_actions_execute_cb, mainwin);
 }
 
-void action_update_msgview_menu(GtkItemFactory *ifactory,
+void action_update_msgview_menu(GtkUIManager 	*ui_manager,
 				gchar *branch_path,
 				MessageView *msgview)
 {
-	action_update_menu(ifactory, branch_path,
+	action_update_menu(NULL, ui_manager, "<MsgviewActions>", branch_path,
 			   msgview_actions_execute_cb, msgview);
 }
 
-void action_update_compose_menu(GtkItemFactory *ifactory, 
+void action_update_compose_menu(GtkUIManager *ui_manager, 
 				gchar *branch_path,
 				Compose *compose)
 {
-	action_update_menu(ifactory, branch_path,
+	action_update_menu(NULL, ui_manager, "<ComposeActions>", branch_path,
 			   compose_actions_execute_cb, compose);
 }
 
-static void action_update_menu(GtkItemFactory *ifactory, 
+static GtkWidget *find_item_in_menu(GtkWidget *menu, gchar *name)
+{
+	GList *amenu = GTK_MENU_SHELL(menu)->children;
+	const gchar *existing_name;
+	while (amenu) {
+		GtkWidget *item = GTK_WIDGET(amenu->data);
+		if ((existing_name = g_object_get_data(G_OBJECT(item), "s_name")) != NULL &&
+		    !strcmp2(name, existing_name))
+			 return item;
+		amenu = amenu->next;
+	}
+	return NULL;
+}
+
+static GtkWidget *create_submenus(GtkWidget *menu, const gchar *action)
+{
+	gchar *submenu = g_strdup(action);
+	GtkWidget *new_menu = NULL;
+	
+	if (strchr(submenu, '/')) {
+		const gchar *end = (strchr(submenu, '/')+1);
+		GtkWidget *menu_item = NULL;
+		if (end && *end) {
+			*strchr(submenu, '/') = '\0';
+			if ((menu_item = find_item_in_menu(menu, submenu)) == NULL) {
+				menu_item = gtk_menu_item_new_with_mnemonic(submenu);
+				g_object_set_data_full(G_OBJECT(menu_item), "s_name", g_strdup(submenu), g_free);
+				gtk_widget_show(menu_item);
+				gtk_menu_shell_append(GTK_MENU_SHELL(menu), menu_item);		
+				new_menu = gtk_menu_new();
+				gtk_widget_show(new_menu);
+				gtk_menu_item_set_submenu(GTK_MENU_ITEM(menu_item), new_menu);
+			} else {
+				new_menu = gtk_menu_item_get_submenu(GTK_MENU_ITEM(menu_item));
+			}
+			new_menu = create_submenus(new_menu, end);
+		}
+	}
+	g_free(submenu);
+	return new_menu ? new_menu : menu;
+}
+
+static void action_update_menu(GtkItemFactory *ifactory,
+			       GtkUIManager *ui_manager,
+			       const gchar *accel_group,
 			       gchar *branch_path,
 			       gpointer callback, gpointer data)
 {
@@ -467,44 +520,91 @@ static void action_update_menu(GtkItemFactory *ifactory,
 	gchar *action, *action_p;
 	GList *amenu;
 	GtkItemFactoryEntry ifentry = {NULL, NULL, NULL, 0, "<Branch>"};
+	int callback_action = 0;
 
-	ifentry.path = branch_path;
-	menuitem = gtk_item_factory_get_widget(ifactory, branch_path);
-	g_return_if_fail(menuitem != NULL);
-
-	amenu = GTK_MENU_SHELL(menuitem)->children;
-	while (amenu != NULL) {
-		GList *alist = amenu->next;
-		gtk_widget_destroy(GTK_WIDGET(amenu->data));
-		amenu = alist;
-	}
-
-	ifentry.accelerator     = NULL;
-	ifentry.callback_action = 0;
-	ifentry.callback        = callback;
-	ifentry.item_type       = NULL;
-
-	for (cur = prefs_common.actions_list; cur; cur = cur->next) {
-		action   = g_strdup((gchar *)cur->data);
-		action_p = strstr(action, ": ");
-		if (action_p && action_p[2] &&
-		    (action_get_type(&action_p[2]) != ACTION_ERROR) &&
-		    (action[0] != '/')) {
-			action_p[0] = '\0';
-			menu_path = g_strdup_printf("%s/%s", branch_path,
-						    action);
-			ifentry.path = menu_path;
-			gtk_item_factory_create_item(ifactory, &ifentry, data,
-						     1);
-			g_free(menu_path);
+	if (ifactory) {
+		ifentry.path = branch_path;
+		menuitem = gtk_item_factory_get_widget(ifactory, branch_path);
+		ifentry.accelerator     = NULL;
+		ifentry.callback_action = 0;
+		ifentry.callback        = callback;
+		ifentry.item_type       = NULL;
+		g_return_if_fail(menuitem != NULL);
+		amenu = GTK_MENU_SHELL(menuitem)->children;
+		while (amenu != NULL) {
+			GList *alist = amenu->next;
+			gtk_widget_destroy(GTK_WIDGET(amenu->data));
+			amenu = alist;
 		}
-		g_free(action);
-		ifentry.callback_action++;
+
+		for (cur = prefs_common.actions_list; cur; cur = cur->next) {
+			action   = g_strdup((gchar *)cur->data);
+			action_p = strstr(action, ": ");
+			if (action_p && action_p[2] &&
+			    (action_get_type(&action_p[2]) != ACTION_ERROR) &&
+			    (action[0] != '/')) {
+				action_p[0] = '\0';
+				menu_path = g_strdup_printf("%s/%s", branch_path,
+							    action);
+				ifentry.path = menu_path;
+				gtk_item_factory_create_item(ifactory, &ifentry, data,
+							     1);
+				g_free(menu_path);
+			}
+			g_free(action);
+			ifentry.callback_action++;
+		}
+	} else {
+		GtkWidget *menu = gtk_menu_new();
+		GtkWidget *item;
+		for (cur = prefs_common.actions_list; cur != NULL; cur = cur->next) {
+			GtkWidget *cur_menu = menu;
+			const gchar *action_name = NULL;
+			action   = g_strdup((gchar *)cur->data);
+			action_p = strstr(action, ": ");
+			if (action_p && action_p[2] &&
+			    (action_get_type(&action_p[2]) != ACTION_ERROR) &&
+			    (action[0] != '/')) {
+			    	gchar *accel_path = NULL;
+
+				action_p[0] = '\0';
+				if (strchr(action, '/')) {
+					cur_menu = create_submenus(cur_menu, action);
+					action_name = strrchr(action, '/')+1;
+				} else {
+					action_name = action;
+				}
+				gtk_menu_set_accel_group (GTK_MENU (cur_menu), 
+					gtk_ui_manager_get_accel_group(ui_manager));
+				item = gtk_menu_item_new_with_label(action_name);
+				gtk_menu_shell_append(GTK_MENU_SHELL(cur_menu), item);
+				g_signal_connect(G_OBJECT(item), "activate",
+						 G_CALLBACK(callback), data);
+				g_object_set_data(G_OBJECT(item), "action_num", GINT_TO_POINTER(callback_action));
+				gtk_widget_show(item);
+				accel_path = g_strconcat(accel_group,branch_path, "/", action, NULL);
+				gtk_menu_item_set_accel_path(GTK_MENU_ITEM(item), accel_path);
+				g_free(accel_path);
+
+			}
+			g_free(action);
+			callback_action++;
+		}
+
+		gtk_widget_show(menu);
+		gtk_menu_item_set_submenu(GTK_MENU_ITEM(gtk_ui_manager_get_widget(ui_manager, branch_path)), menu);
+
 	}
 }
 
-static void compose_actions_execute_cb(Compose *compose, guint action_nb,
-				       GtkWidget *widget)
+static void compose_actions_execute_cb(GtkWidget *widget, gpointer data)
+{
+	Compose *compose = (Compose *)data;
+	gint action_nb = GPOINTER_TO_INT(g_object_get_data(G_OBJECT(widget), "action_num"));
+	compose_actions_execute(compose, action_nb, NULL);
+}
+
+static void compose_actions_execute(Compose *compose, guint action_nb, GtkWidget *widget)
 {
 	gchar *buf, *action;
 	ActionType action_type;
@@ -541,7 +641,14 @@ static void mainwin_actions_execute_cb(MainWindow *mainwin, guint action_nb,
 	g_slist_free(msg_list);
 }
 
-static void msgview_actions_execute_cb(MessageView *msgview, guint action_nb,
+static void msgview_actions_execute_cb(GtkWidget *widget, gpointer data)
+{
+	MessageView *msgview = (MessageView *)data;
+	gint action_nb = GPOINTER_TO_INT(g_object_get_data(G_OBJECT(widget), "action_num"));
+	msgview_actions_execute(msgview, action_nb, NULL);
+}
+
+static void msgview_actions_execute(MessageView *msgview, guint action_nb,
 				       GtkWidget *widget)
 {
 	GSList *msg_list = NULL;
