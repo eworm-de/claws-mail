@@ -1,3 +1,9 @@
+2008-07-29 [colin]	3.5.0cvs37
+
+	* src/news.c
+		Fix bug 1684, 'view news messages with large 
+		attachements segfaults'
+
 2008-07-29 [colin]	3.5.0cvs36
 
 	* src/action.c
