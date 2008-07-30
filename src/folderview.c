@@ -22,18 +22,7 @@
 #include <glib.h>
 #include <glib/gi18n.h>
 #include <gdk/gdkkeysyms.h>
-#include <gtk/gtkwidget.h>
-#include <gtk/gtkscrolledwindow.h>
-#include <gtk/gtkctree.h>
-#include <gtk/gtkcontainer.h>
-#include <gtk/gtkclist.h>
-#include <gtk/gtkstyle.h>
-#include <gtk/gtksignal.h>
-#include <gtk/gtkmain.h>
-#include <gtk/gtkstatusbar.h>
-#include <gtk/gtkmenu.h>
-#include <gtk/gtkmenuitem.h>
-#include <gtk/gtkitemfactory.h>
+#include <gtk/gtk.h>
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
@@ -222,28 +211,22 @@ static void folderview_col_resized	(GtkCList	*clist,
 					 gint		 width,
 					 FolderView	*folderview);
 
-static void mark_all_read_cb            (FolderView    *folderview,
-                                         guint           action,
-                                         GtkWidget      *widget);
+static void mark_all_read_cb            (GtkAction 	*action,
+					 gpointer	 data);
 
-static void folderview_empty_trash_cb	(FolderView	*folderview,
-					 guint		 action,
-					 GtkWidget	*widget);
+static void folderview_empty_trash_cb	(GtkAction 	*action,
+					 gpointer	 data);
 
-static void folderview_send_queue_cb	(FolderView	*folderview,
-					 guint		 action,
-					 GtkWidget	*widget);
+static void folderview_send_queue_cb	(GtkAction 	*action,
+					 gpointer	 data);
 
-static void folderview_search_cb	(FolderView	*folderview,
-					 guint		 action,
-					 GtkWidget	*widget);
-static void folderview_run_processing_cb(FolderView	*folderview,
-					 guint		 action,
-					 GtkWidget	*widget);
+static void folderview_search_cb	(GtkAction 	*action,
+					 gpointer	 data);
+static void folderview_run_processing_cb(GtkAction 	*action,
+					 gpointer	 data);
 
-static void folderview_property_cb	(FolderView	*folderview,
-					 guint		 action,
-					 GtkWidget	*widget);
+static void folderview_property_cb	(GtkAction 	*action,
+					 gpointer	 data);
 
 static gboolean folderview_drag_motion_cb(GtkWidget      *widget,
 					  GdkDragContext *context,
@@ -283,33 +266,25 @@ static gboolean folderview_update_folder	 (gpointer 	    source,
 					  gpointer 	    userdata);
 static gboolean folderview_update_item_claws	 (gpointer 	    source,
 					  gpointer	    data);
-static void folderview_processing_cb(FolderView *folderview, guint action,
-				     GtkWidget *widget);
+static void folderview_processing_cb(GtkAction *action, gpointer data);
 static void folderview_set_sens_and_popup_menu(FolderView *folderview, gint row, 
 				GdkEventButton *event);
 
 GHashTable *folderview_popups;
 
-static GtkItemFactoryEntry folderview_common_popup_entries[] =
+static GtkActionEntry folderview_common_popup_entries[] = 
 {
-	{N_("/Mark all re_ad"),		NULL, mark_all_read_cb, 0, NULL},
-	{"/---",                     	NULL, NULL, 0, "<Separator>"},
-	{N_("/R_un processing rules"),	NULL, folderview_run_processing_cb, 0, NULL},
-	{N_("/_Search folder..."),	NULL, folderview_search_cb, 0, NULL},
-	{N_("/_Properties..."),		NULL, folderview_property_cb, 0, NULL},
-	{N_("/Process_ing..."),		NULL, folderview_processing_cb, 0, NULL},
+	{"FolderViewPopup",			NULL, "FolderViewPopup" },
+	{"FolderViewPopup/MarkAllRead",		NULL, N_("Mark all re_ad"), NULL, NULL, G_CALLBACK(mark_all_read_cb) },
+	{"FolderViewPopup/---",			NULL, "---" },
+	{"FolderViewPopup/RunProcessing",	NULL, N_("R_un processing rules"), NULL, NULL, G_CALLBACK(folderview_run_processing_cb) },
+	{"FolderViewPopup/SearchFolder",	NULL, N_("_Search folder..."), NULL, NULL, G_CALLBACK(folderview_search_cb) },
+	{"FolderViewPopup/Properties",		NULL, N_("_Properties..."), NULL, NULL, G_CALLBACK(folderview_property_cb) },
+	{"FolderViewPopup/Processing",		NULL, N_("Process_ing..."), NULL, NULL, G_CALLBACK(folderview_processing_cb) },
+	{"FolderViewPopup/EmptyTrash",		NULL, N_("Empty _trash..."), NULL, NULL, G_CALLBACK(folderview_empty_trash_cb) },
+	{"FolderViewPopup/SendQueue",		NULL, N_("Send _queue..."), NULL, NULL, G_CALLBACK(folderview_send_queue_cb) },
+	
 };
-
-static GtkItemFactoryEntry folder_view_trash_popup_entries[] = {
-	{"/------trashsep",		NULL, NULL, 0, "<Separator>"},
-	{N_("/Empty _trash..."),	NULL, folderview_empty_trash_cb, 0, NULL},
-};
-
-static GtkItemFactoryEntry folder_view_queue_popup_entries[] = {
-	{"/------queuesep",	NULL, NULL, 0, "<Separator>"},
-	{N_("/Send _queue..."),	NULL, folderview_send_queue_cb, 0, NULL},
-};
-
 
 GtkTargetEntry folderview_drag_types[] =
 {
@@ -320,60 +295,66 @@ GtkTargetEntry folderview_drag_types[] =
 void folderview_initialize(void)
 {
 	FolderViewPopup *fpopup;
-	guint i, n_entries;
-	GSList *entries = NULL;
 
 	fpopup = g_new0(FolderViewPopup, 1);
 
-	n_entries = sizeof(folderview_common_popup_entries) /
-		sizeof(folderview_common_popup_entries[0]);
-	for (i = 0; i < n_entries; i++)
-		entries = g_slist_append(entries, &folderview_common_popup_entries[i]);
-
 	fpopup->klass = "common";
 	fpopup->path = "<CommonFolder>";
-	fpopup->entries = entries;
+	fpopup->entries = folderview_common_popup_entries;
+	fpopup->n_entries = G_N_ELEMENTS(folderview_common_popup_entries);
 	fpopup->set_sensitivity = NULL;
 
 	folderview_popups = g_hash_table_new(g_str_hash, g_str_equal);
 	g_hash_table_insert(folderview_popups, "common", fpopup);
 }
 
-static GtkItemFactory *create_ifactory(FolderView *folderview, FolderViewPopup *fpopup)
+static GtkActionGroup *create_action_group(FolderView *folderview, FolderViewPopup *fpopup)
 {
-	GSList *entries;
-	GtkItemFactory *factory;
 	FolderViewPopup *fpopup_common;
-	GtkWidget *popup;
+	GtkActionGroup *action_group;
+	
+	action_group = cm_menu_create_action_group(
+				fpopup->path, 
+				fpopup->entries, fpopup->n_entries, 
+				(gpointer)folderview);
 
-	factory = gtk_item_factory_new(GTK_TYPE_MENU, fpopup->path, NULL);
-	gtk_item_factory_set_translate_func(factory, menu_translate,
-    					    NULL, NULL);
-
-	for (entries = fpopup->entries; entries != NULL; entries = g_slist_next(entries))
-		gtk_item_factory_create_item(factory, entries->data, folderview, 1);
+	if (fpopup->toggle_entries)
+		gtk_action_group_add_toggle_actions(action_group, fpopup->toggle_entries,
+				fpopup->n_toggle_entries,
+				(gpointer)folderview);
+	if (fpopup->radio_entries)
+		gtk_action_group_add_radio_actions(action_group, fpopup->radio_entries,
+				fpopup->n_radio_entries, fpopup->radio_default, 
+				G_CALLBACK(fpopup->radio_callback), 
+				(gpointer)folderview);
 
 	fpopup_common = g_hash_table_lookup(folderview_popups, "common");
-	if (fpopup_common != fpopup)
-		for (entries = fpopup_common->entries; entries != NULL; entries = g_slist_next(entries))
-			gtk_item_factory_create_item(factory, entries->data, folderview, 1);
+	if (fpopup_common != fpopup) {
+		gtk_action_group_add_actions(action_group, fpopup_common->entries,
+				fpopup_common->n_entries,
+				(gpointer)folderview);
+		if (fpopup_common->toggle_entries)
+			gtk_action_group_add_toggle_actions(action_group, fpopup_common->toggle_entries,
+					fpopup_common->n_toggle_entries,
+					(gpointer)folderview);
+		if (fpopup_common->radio_entries)
+			gtk_action_group_add_radio_actions(action_group, fpopup_common->radio_entries,
+					fpopup_common->n_radio_entries, fpopup_common->radio_default, 
+					G_CALLBACK(fpopup_common->radio_callback), 
+					(gpointer)folderview);
+	}
 
-	popup = gtk_item_factory_get_widget(factory, fpopup->path);
-        g_signal_connect(G_OBJECT(popup), "selection_done",
-                         G_CALLBACK(folderview_popup_close),
-                         folderview);
-
-	return factory;
+	return action_group;
 }
 
-static void create_ifactories(gpointer key, gpointer value, gpointer data)
+static void create_action_groups(gpointer key, gpointer value, gpointer data)
 {
 	FolderView *folderview = data;
 	FolderViewPopup *fpopup = value;
-	GtkItemFactory *factory;
+	GtkActionGroup *group;
 
-	factory = create_ifactory(folderview, fpopup);
-	g_hash_table_insert(folderview->popups, fpopup->klass, factory);
+	group = create_action_group(folderview, fpopup);
+	g_hash_table_insert(folderview->popups, fpopup->klass, group);
 }
 
 static void folderview_column_set_titles(FolderView *folderview)
@@ -658,7 +639,7 @@ FolderView *folderview_create(void)
 	
 	/* create popup factories */
 	folderview->popups = g_hash_table_new(g_str_hash, g_str_equal);
-	g_hash_table_foreach(folderview_popups, create_ifactories, folderview);
+	g_hash_table_foreach(folderview_popups, create_action_groups, folderview);
 
 	folderview->ctree        = ctree;
 
@@ -856,9 +837,9 @@ void folderview_select(FolderView *folderview, FolderItem *item)
 		folder_update_op_count();
 }
 
-static void mark_all_read_cb(FolderView *folderview, guint action,
-                             GtkWidget *widget)
+static void mark_all_read_cb(GtkAction *action, gpointer data)
 {
+	FolderView *folderview = (FolderView *)data;
 	FolderItem *item;
 	AlertValue val;
 	
@@ -1906,11 +1887,16 @@ static void folderview_set_sens_and_popup_menu(FolderView *folderview, gint row,
 	FolderItem *item;
 	Folder *folder;
 	FolderViewPopup *fpopup;
-	GtkItemFactory *fpopup_factory;
+	GtkActionGroup *action_group;
 	GtkWidget *popup;
 	FolderItem *special_trash = NULL, *special_queue = NULL;
 	PrefsAccount *ac;
+	GtkUIManager *ui_manager = gtk_ui_manager_new();
+	
+	if (folderview->ui_manager)
+		g_object_unref(folderview->ui_manager);
 
+	folderview->ui_manager = ui_manager;
 	item = folderview_get_selected_item(folderview);
 
 	g_return_if_fail(item != NULL);
@@ -1918,15 +1904,30 @@ static void folderview_set_sens_and_popup_menu(FolderView *folderview, gint row,
 	folder = item->folder;
 
 	fpopup = g_hash_table_lookup(folderview_popups, folder->klass->idstr);
+
 	if (fpopup != NULL)
-		fpopup_factory = g_hash_table_lookup(folderview->popups, folder->klass->idstr);
+		action_group = g_hash_table_lookup(folderview->popups, folder->klass->idstr);
 	else {
 		fpopup = g_hash_table_lookup(folderview_popups, "common");
-		fpopup_factory = g_hash_table_lookup(folderview->popups, "common");
+		action_group = g_hash_table_lookup(folderview->popups, "common");
 	}
+	
+	gtk_ui_manager_insert_action_group(ui_manager, action_group, 0);
+	MENUITEM_ADDUI_MANAGER(ui_manager, "/", "Popup", "Popup", GTK_UI_MANAGER_MENUBAR)
+	MENUITEM_ADDUI_MANAGER(ui_manager, "/Popup", "FolderViewPopup", "FolderViewPopup", GTK_UI_MANAGER_MENU)
+	
+	if (fpopup->add_menuitems)	
+		fpopup->add_menuitems(ui_manager, item);
+
+	MENUITEM_ADDUI_MANAGER(ui_manager, "/Popup/FolderViewPopup", "MarkAllRead", "FolderViewPopup/MarkAllRead", GTK_UI_MANAGER_MENUITEM)
+	MENUITEM_ADDUI_MANAGER(ui_manager, "/Popup/FolderViewPopup", "Separator1", "FolderViewPopup/---", GTK_UI_MANAGER_SEPARATOR)
+	MENUITEM_ADDUI_MANAGER(ui_manager, "/Popup/FolderViewPopup", "RunProcessing", "FolderViewPopup/RunProcessing", GTK_UI_MANAGER_MENUITEM)
+	MENUITEM_ADDUI_MANAGER(ui_manager, "/Popup/FolderViewPopup", "SearchFolder", "FolderViewPopup/SearchFolder", GTK_UI_MANAGER_MENUITEM)
+	MENUITEM_ADDUI_MANAGER(ui_manager, "/Popup/FolderViewPopup", "Properties", "FolderViewPopup/Properties", GTK_UI_MANAGER_MENUITEM)
+	MENUITEM_ADDUI_MANAGER(ui_manager, "/Popup/FolderViewPopup", "Processing", "FolderViewPopup/Processing", GTK_UI_MANAGER_MENUITEM)
 
 	if (fpopup->set_sensitivity != NULL)
-		fpopup->set_sensitivity(fpopup_factory, item);
+		fpopup->set_sensitivity(ui_manager, item);
 
 	if (NULL != (ac = account_find_from_item(item))) {
 		special_trash = account_get_special_folder(ac, F_TRASH);
@@ -1934,55 +1935,49 @@ static void folderview_set_sens_and_popup_menu(FolderView *folderview, gint row,
 	}
 	
 	if ((item == folder->trash || item == special_trash
-	     || folder_has_parent_of_type(item, F_TRASH)) &&
-	    gtk_item_factory_get_item(fpopup_factory, "/Empty trash...") == NULL) {
-		gtk_item_factory_create_item(fpopup_factory, &folder_view_trash_popup_entries[0], folderview, 1);
-		gtk_item_factory_create_item(fpopup_factory, &folder_view_trash_popup_entries[1], folderview, 1);
-	} else if (item != folder->trash && (special_trash == NULL || item != special_trash)
-	        && !folder_has_parent_of_type(item, F_TRASH)) {
-		gtk_item_factory_delete_entry(fpopup_factory, &folder_view_trash_popup_entries[0]);
-		gtk_item_factory_delete_entry(fpopup_factory, &folder_view_trash_popup_entries[1]);
-	}
+	     || folder_has_parent_of_type(item, F_TRASH))) {
+		MENUITEM_ADDUI_MANAGER(ui_manager, "/Popup/FolderViewPopup", "SeparatorTrash", "FolderViewPopup/---", GTK_UI_MANAGER_SEPARATOR)
+		MENUITEM_ADDUI_MANAGER(ui_manager, "/Popup/FolderViewPopup", "EmptyTrash", "FolderViewPopup/EmptyTrash", GTK_UI_MANAGER_MENUITEM)
+	} 
 	
 	if ((item == folder->queue || item == special_queue
-	     || folder_has_parent_of_type(item, F_QUEUE)) &&
-	    gtk_item_factory_get_item(fpopup_factory, "/Send queue...") == NULL) {
-		gtk_item_factory_create_item(fpopup_factory, &folder_view_queue_popup_entries[0], folderview, 1);
-		gtk_item_factory_create_item(fpopup_factory, &folder_view_queue_popup_entries[1], folderview, 1);
-	} else if (item != folder->queue && (special_queue == NULL || item != special_queue)
-	        && !folder_has_parent_of_type(item, F_QUEUE)) {
-		gtk_item_factory_delete_entry(fpopup_factory, &folder_view_queue_popup_entries[0]);
-		gtk_item_factory_delete_entry(fpopup_factory, &folder_view_queue_popup_entries[1]);
-	}
+	     || folder_has_parent_of_type(item, F_QUEUE))) {
+		MENUITEM_ADDUI_MANAGER(ui_manager, "/Popup/FolderViewPopup", "SeparatorQueue", "FolderViewPopup/---", GTK_UI_MANAGER_SEPARATOR)
+		MENUITEM_ADDUI_MANAGER(ui_manager, "/Popup/FolderViewPopup", "SendQueue", "FolderViewPopup/SendQueue", GTK_UI_MANAGER_MENUITEM)
+	} 
 	
 #define SET_SENS(name, sens) \
-	menu_set_sensitive(fpopup_factory, name, sens)
+	cm_menu_set_sensitive_full(ui_manager, "Popup/"name, sens)
 
-	SET_SENS("/Mark all read", item->unread_msgs >= 1);
-	SET_SENS("/Search folder...", item->total_msgs >= 1 && 
+	SET_SENS("FolderViewPopup/MarkAllRead", item->unread_msgs >= 1);
+	SET_SENS("FolderViewPopup/SearchFolder", item->total_msgs >= 1 && 
 		 folderview->selected == folderview->opened);
-	SET_SENS("/Properties...", TRUE);
+	SET_SENS("FolderViewPopup/Properties", TRUE);
 
-	SET_SENS("/Run processing rules", item->prefs->processing &&
+	SET_SENS("FolderViewPopup/RunProcessing", item->prefs->processing &&
 		 item->total_msgs >= 1 && !item->processing_pending);
-	SET_SENS("/Processing...", item->node->parent != NULL && 
+	SET_SENS("FolderViewPopup/Processing", item->node->parent != NULL && 
 		!item->no_select && !item->processing_pending);
 
 	if (item == folder->trash || item == special_trash
 	    || folder_has_parent_of_type(item, F_TRASH)) {
 		GSList *msglist = folder_item_get_msg_list(item);
-		SET_SENS("/Empty trash...", msglist != NULL);
+		SET_SENS("FolderViewPopup/EmptyTrash", msglist != NULL);
 		procmsg_msg_list_free(msglist);
 	}
 	if (item == folder->queue || item == special_queue
 	    || folder_has_parent_of_type(item, F_QUEUE)) {
 		GSList *msglist = folder_item_get_msg_list(item);
-		SET_SENS("/Send queue...", msglist != NULL);
+		SET_SENS("FolderViewPopup/SendQueue", msglist != NULL);
 		procmsg_msg_list_free(msglist);
 	}
 #undef SET_SENS
 
-	popup = gtk_item_factory_get_widget(fpopup_factory, fpopup->path);
+	popup = gtk_menu_item_get_submenu(GTK_MENU_ITEM(
+			gtk_ui_manager_get_widget(ui_manager, "/Popup/FolderViewPopup")) );
+        g_signal_connect(G_OBJECT(popup), "selection_done",
+                         G_CALLBACK(folderview_popup_close),
+                         folderview);
 	gtk_menu_popup(GTK_MENU(popup), NULL, NULL, NULL, NULL,
 		       event->button, event->time);
 }
@@ -2395,9 +2390,9 @@ static void folderview_create_folder_node(FolderView *folderview, FolderItem *it
 	gtk_clist_thaw(GTK_CLIST(ctree));
 }
 
-static void folderview_empty_trash_cb(FolderView *folderview, guint action,
-				      GtkWidget *widget)
+static void folderview_empty_trash_cb(GtkAction *action, gpointer data)
 {
+	FolderView *folderview = (FolderView *)data;
 	GtkCTree *ctree = GTK_CTREE(folderview->ctree);
 	FolderItem *item;
 	GSList *mlist = NULL;
@@ -2439,9 +2434,9 @@ static void folderview_empty_trash_cb(FolderView *folderview, guint action,
 	folder_item_remove_all_msg(item);
 }
 
-static void folderview_send_queue_cb(FolderView *folderview, guint action,
-				      GtkWidget *widget)
+static void folderview_send_queue_cb(GtkAction *action, gpointer data)
 {
+	FolderView *folderview = (FolderView *)data;
 	GtkCTree *ctree = GTK_CTREE(folderview->ctree);
 	FolderItem *item;
 	FolderItem *special_queue = NULL;
@@ -2495,15 +2490,15 @@ static void folderview_send_queue_cb(FolderView *folderview, guint action,
 	}
 }
 
-static void folderview_search_cb(FolderView *folderview, guint action,
-				 GtkWidget *widget)
+static void folderview_search_cb(GtkAction *action, gpointer data)
 {
+	FolderView *folderview = (FolderView *)data;
 	summary_search(folderview->summaryview);
 }
 
-static void folderview_run_processing_cb(FolderView *folderview, guint action,
-				 GtkWidget *widget)
+static void folderview_run_processing_cb(GtkAction *action, gpointer data)
 {
+	FolderView *folderview = (FolderView *)data;
 	GtkCTree *ctree = GTK_CTREE(folderview->ctree);
 	FolderItem *item;
 
@@ -2518,9 +2513,9 @@ static void folderview_run_processing_cb(FolderView *folderview, guint action,
 	item->processing_pending = FALSE;
 }
 
-static void folderview_property_cb(FolderView *folderview, guint action,
-				   GtkWidget *widget)
+static void folderview_property_cb(GtkAction *action, gpointer data)
 {
+	FolderView *folderview = (FolderView *)data;
 	GtkCTree *ctree = GTK_CTREE(folderview->ctree);
 	FolderItem *item;
 
@@ -2662,9 +2657,9 @@ static gint folderview_clist_compare(GtkCList *clist,
 	return g_utf8_collate(item1->name, item2->name);
 }
 
-static void folderview_processing_cb(FolderView *folderview, guint action,
-				     GtkWidget *widget)
+static void folderview_processing_cb(GtkAction *action, gpointer data)
 {
+	FolderView *folderview = (FolderView *)data;
 	GtkCTree *ctree = GTK_CTREE(folderview->ctree);
 	FolderItem *item;
 	gchar *id, *title;
@@ -3159,9 +3154,9 @@ void folderview_register_popup(FolderViewPopup *fpopup)
 
 	for (folderviews = folderview_list; folderviews != NULL; folderviews = g_list_next(folderviews)) {
 		FolderView *folderview = folderviews->data;
-		GtkItemFactory *factory;
+		GtkActionGroup *factory;
 
-		factory = create_ifactory(folderview, fpopup);
+		factory = create_action_group(folderview, fpopup);
 		g_hash_table_insert(folderview->popups, fpopup->klass, factory);
 	}	
 	g_hash_table_insert(folderview_popups, fpopup->klass, fpopup);
@@ -3170,6 +3165,7 @@ void folderview_register_popup(FolderViewPopup *fpopup)
 void folderview_unregister_popup(FolderViewPopup *fpopup)
 {
 	GList *folderviews;
+
 
 	for (folderviews = folderview_list; folderviews != NULL; folderviews = g_list_next(folderviews)) {
 		FolderView *folderview = folderviews->data;

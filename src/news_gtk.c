@@ -43,84 +43,96 @@
 #include "statusbar.h"
 #include "inputdialog.h"
 
-static void subscribe_newsgroup_cb(FolderView *folderview, guint action, GtkWidget *widget);
-static void unsubscribe_newsgroup_cb(FolderView *folderview, guint action, GtkWidget *widget);
-static void rename_newsgroup_cb(FolderView *folderview, guint action, GtkWidget *widget);
-static void update_tree_cb(FolderView *folderview, guint action, GtkWidget *widget);
-static void download_cb(FolderView *folderview, guint action, GtkWidget *widget);
-static void sync_cb(FolderView *folderview, guint action, GtkWidget *widget);
+static void subscribe_newsgroup_cb(GtkAction *action, gpointer data);
+static void unsubscribe_newsgroup_cb(GtkAction *action, gpointer data);
+static void rename_newsgroup_cb(GtkAction *action, gpointer data);
+static void update_tree_cb(GtkAction *action, gpointer data);
+static void download_cb(GtkAction *action, gpointer data);
+static void sync_cb(GtkAction *action, gpointer data);
 
-static GtkItemFactoryEntry news_popup_entries[] =
+static GtkActionEntry news_popup_entries[] =
 {
-	{N_("/_Subscribe to newsgroup..."),	NULL, subscribe_newsgroup_cb,    0, NULL},
-	{N_("/_Unsubscribe newsgroup"),		NULL, unsubscribe_newsgroup_cb,  0, NULL},
-	{"/---",				NULL, NULL,                      0, "<Separator>"},
-	{N_("/Synchronise"),			NULL, sync_cb,      	0, NULL},
-	{N_("/Down_load messages"),		NULL, download_cb,               0, NULL},
-	{N_("/_Rename folder..."),	 	NULL, rename_newsgroup_cb,	 0, NULL},
-	{"/---",				NULL, NULL,                      0, "<Separator>"},
-	{N_("/_Check for new messages"),	NULL, update_tree_cb,            0, NULL},
-	{"/---",				NULL, NULL,                      0, "<Separator>"},
+	{"FolderViewPopup/Subscribe",		NULL, N_("_Subscribe to newsgroup..."), NULL, NULL, G_CALLBACK(subscribe_newsgroup_cb) },
+	{"FolderViewPopup/Unsubscribe",		NULL, N_("_Unsubscribe newsgroup"), NULL, NULL, G_CALLBACK(unsubscribe_newsgroup_cb) },
+
+	{"FolderViewPopup/Synchronise",		NULL, N_("Synchronise"), NULL, NULL, G_CALLBACK(sync_cb) },
+	{"FolderViewPopup/DownloadMessages",	NULL, N_("Down_load messages"), NULL, NULL, G_CALLBACK(download_cb) },
+	{"FolderViewPopup/RenameFolder",	NULL, N_("_Rename folder..."), NULL, NULL, G_CALLBACK(rename_newsgroup_cb) },
+
+	{"FolderViewPopup/CheckNewMessages",	NULL, N_("_Check for new messages"), NULL, NULL, G_CALLBACK(update_tree_cb) },
+
 };
 
-static void set_sensitivity(GtkItemFactory *factory, FolderItem *item);
+static void set_sensitivity(GtkUIManager *ui_manager, FolderItem *item);
+static void add_menuitems(GtkUIManager *ui_manager, FolderItem *item);
 
 static FolderViewPopup news_popup =
 {
 	"news",
 	"<NewsFolder>",
-	NULL,
+	news_popup_entries,
+	G_N_ELEMENTS(news_popup_entries),
+	NULL, 0,
+	NULL, 0, 0, NULL,
+	add_menuitems,
 	set_sensitivity
 };
 
 void news_gtk_init(void)
 {
-	guint i, n_entries;
-
-	n_entries = sizeof(news_popup_entries) /
-		sizeof(news_popup_entries[0]);
-	for (i = 0; i < n_entries; i++)
-		news_popup.entries = g_slist_append(news_popup.entries, &news_popup_entries[i]);
-
 	folderview_register_popup(&news_popup);
 }
 
-static void set_sensitivity(GtkItemFactory *factory, FolderItem *item)
+static void add_menuitems(GtkUIManager *ui_manager, FolderItem *item)
+{
+	MENUITEM_ADDUI_MANAGER(ui_manager, "/Popup/FolderViewPopup", "Subscribe", "FolderViewPopup/Subscribe", GTK_UI_MANAGER_MENUITEM)
+	MENUITEM_ADDUI_MANAGER(ui_manager, "/Popup/FolderViewPopup", "Unsubscribe", "FolderViewPopup/Unsubscribe", GTK_UI_MANAGER_MENUITEM)
+	MENUITEM_ADDUI_MANAGER(ui_manager, "/Popup/FolderViewPopup", "SeparatorNews1", "FolderViewPopup/---", GTK_UI_MANAGER_SEPARATOR)
+	MENUITEM_ADDUI_MANAGER(ui_manager, "/Popup/FolderViewPopup", "Synchronise", "FolderViewPopup/Synchronise", GTK_UI_MANAGER_MENUITEM)
+	MENUITEM_ADDUI_MANAGER(ui_manager, "/Popup/FolderViewPopup", "DownloadMessages", "FolderViewPopup/DownloadMessages", GTK_UI_MANAGER_MENUITEM)
+	MENUITEM_ADDUI_MANAGER(ui_manager, "/Popup/FolderViewPopup", "RenameFolder", "FolderViewPopup/RenameFolder", GTK_UI_MANAGER_MENUITEM)
+	MENUITEM_ADDUI_MANAGER(ui_manager, "/Popup/FolderViewPopup", "SeparatorNews2", "FolderViewPopup/---", GTK_UI_MANAGER_SEPARATOR)
+	MENUITEM_ADDUI_MANAGER(ui_manager, "/Popup/FolderViewPopup", "CheckNewMessages", "FolderViewPopup/CheckNewMessages", GTK_UI_MANAGER_MENUITEM)
+	MENUITEM_ADDUI_MANAGER(ui_manager, "/Popup/FolderViewPopup", "SeparatorNews3", "FolderViewPopup/---", GTK_UI_MANAGER_SEPARATOR)
+}
+	
+static void set_sensitivity(GtkUIManager *ui_manager, FolderItem *item)
 {
 	MainWindow *mainwin = mainwindow_get_mainwindow();
 	
 #define SET_SENS(name, sens) \
-	menu_set_sensitive(factory, name, sens)
+	cm_menu_set_sensitive_full(ui_manager, "Popup/"name, sens)
 
-	SET_SENS("/Subscribe to newsgroup...", 
+	SET_SENS("FolderViewPopup/Subscribe", 
 			folder_item_parent(item) == NULL 
 			&& mainwin->lock_count == 0
 			&& news_folder_locked(item->folder) == 0);
-	SET_SENS("/Unsubscribe newsgroup",     
+	SET_SENS("FolderViewPopup/Unsubscribe",     
 			folder_item_parent(item) != NULL 
 			&& mainwin->lock_count == 0
 			&& news_folder_locked(item->folder) == 0);
-	SET_SENS("/Check for new messages",    
+	SET_SENS("FolderViewPopup/CheckNewMessages",    
 			folder_item_parent(item) == NULL 
 			&& mainwin->lock_count == 0
 			&& news_folder_locked(item->folder) == 0);
-	SET_SENS("/Synchronise",    
+	SET_SENS("FolderViewPopup/Synchronise",    
 			item ? (folder_item_parent(item) != NULL
 			&& folder_want_synchronise(item->folder))
 			: FALSE);
-	SET_SENS("/Download messages",
+	SET_SENS("FolderViewPopup/DownloadMessages",
 			item ? (folder_item_parent(item) != NULL
 			&& !item->no_select)
 			: FALSE);
-	SET_SENS("/Rename folder...",
+	SET_SENS("FolderViewPopup/RenameFolder",
 			folder_item_parent(item) != NULL 
 			&& mainwin->lock_count == 0
 			&& news_folder_locked(item->folder) == 0);
 #undef SET_SENS
 }
 
-static void subscribe_newsgroup_cb(FolderView *folderview, guint action, GtkWidget *widget)
+static void subscribe_newsgroup_cb(GtkAction *action, gpointer data)
 {
+	FolderView *folderview = (FolderView *)data;
 	GtkCTree *ctree = GTK_CTREE(folderview->ctree);
 	GtkCTreeNode *servernode, *node;
 	Folder *folder;
@@ -209,9 +221,9 @@ static void subscribe_newsgroup_cb(FolderView *folderview, guint action, GtkWidg
 	folder_write_list();
 }
 
-static void unsubscribe_newsgroup_cb(FolderView *folderview, guint action,
-				     GtkWidget *widget)
+static void unsubscribe_newsgroup_cb(GtkAction *action, gpointer data)
 {
+	FolderView *folderview = (FolderView *)data;
 	GtkCTree *ctree = GTK_CTREE(folderview->ctree);
 	FolderItem *item;
 	gchar *name;
@@ -276,9 +288,9 @@ static FolderItem *find_child_by_name(FolderItem *item, const gchar *name)
 	return NULL;
 }
 
-static void rename_newsgroup_cb(FolderView *folderview, guint action,
-			     	GtkWidget *widget)
+static void rename_newsgroup_cb(GtkAction *action, gpointer data)
 {
+	FolderView *folderview = (FolderView *)data;
 	FolderItem *item;
 	gchar *new_folder;
 	gchar *name;
@@ -320,9 +332,9 @@ static void rename_newsgroup_cb(FolderView *folderview, guint action,
 	folder_write_list();
 }
 
-static void update_tree_cb(FolderView *folderview, guint action,
-			   GtkWidget *widget)
+static void update_tree_cb(GtkAction *action, gpointer data)
 {
+	FolderView *folderview = (FolderView *)data;
 	FolderItem *item;
 	MainWindow *mainwin = mainwindow_get_mainwindow();
 	
@@ -339,9 +351,9 @@ static void update_tree_cb(FolderView *folderview, guint action,
 	folderview_check_new(item->folder);
 }
 
-static void sync_cb(FolderView *folderview, guint action,
-			   GtkWidget *widget)
+static void sync_cb(GtkAction *action, gpointer data)
 {
+	FolderView *folderview = (FolderView *)data;
 	FolderItem *item;
 
 	item = folderview_get_selected_item(folderview);
@@ -395,9 +407,9 @@ void news_gtk_synchronise(FolderItem *item, gint days)
 	main_window_cursor_normal(mainwin);
 }
 
-static void download_cb(FolderView *folderview, guint action,
-			GtkWidget *widget)
+static void download_cb(GtkAction *action, gpointer data)
 {
+	FolderView *folderview = (FolderView *)data;
 	GtkCTree *ctree = GTK_CTREE(folderview->ctree);
 	FolderItem *item;
 

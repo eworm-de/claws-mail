@@ -80,14 +80,25 @@ struct _FolderView
 	gint col_pos[N_FOLDER_COLS];
 	gint deferred_refresh_id;
 	Folder *scanning_folder;
+	GtkUIManager *ui_manager;
+	GtkActionGroup *popup_common_action_group;
+	GtkActionGroup *popup_specific_action_group;
 };
 
 struct _FolderViewPopup
 {
-	gchar		 *klass;
-	gchar		 *path;
-	GSList		 *entries;
-	void		(*set_sensitivity)	(GtkItemFactory *menu, FolderItem *item);
+	gchar			 *klass;
+	gchar			 *path;
+	GtkActionEntry		 *entries;
+	gint		 	  n_entries;
+	GtkToggleActionEntry	 *toggle_entries;
+	gint		 	  n_toggle_entries;
+	GtkRadioActionEntry	 *radio_entries;
+	gint		  	  n_radio_entries;
+	gint			  radio_default;
+	void		  	(*radio_callback)	(GtkAction *action, GtkRadioAction *current, gpointer data);
+	void			(*add_menuitems)	(GtkUIManager *ui_manager, FolderItem *item);
+	void			(*set_sensitivity)	(GtkUIManager *ui_manager, FolderItem *item);
 };
 
 void folderview_initialize		(void);

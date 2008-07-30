@@ -1,3 +1,12 @@
+2008-07-30 [colin]	3.5.0cvs39
+
+	* src/folderview.c
+	* src/folderview.h
+	* src/imap_gtk.c
+	* src/mh_gtk.c
+	* src/news_gtk.c
+		Move the folderview popup menu to GtkUIManager
+
 2008-07-29 [colin]	3.5.0cvs38
 
 	* src/account.c
