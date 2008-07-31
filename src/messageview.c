@@ -444,7 +444,11 @@ static void messageview_add_toolbar(MessageView *msgview, GtkWidget *window)
 	gtk_action_group_add_radio_actions(action_group, msgview_radio_dec_entries,
 			G_N_ELEMENTS(msgview_radio_dec_entries), C_AUTO, G_CALLBACK(set_decode_cb), (gpointer)msgview);
 
+#ifndef MAEMO
 	MENUITEM_ADDUI_MANAGER(msgview->ui_manager, "/", "Menu", NULL, GTK_UI_MANAGER_MENUBAR)
+#else
+	MENUITEM_ADDUI_MANAGER(msgview->ui_manager, "/", "Menu", NULL, GTK_UI_MANAGER_MENU)
+#endif
 
 	MENUITEM_ADDUI_MANAGER(msgview->ui_manager, "/Menu", "File", "File", GTK_UI_MANAGER_MENU)
 	MENUITEM_ADDUI_MANAGER(msgview->ui_manager, "/Menu", "Edit", "Edit", GTK_UI_MANAGER_MENU)
@@ -610,7 +614,11 @@ static void messageview_add_toolbar(MessageView *msgview, GtkWidget *window)
 	gtk_widget_show_all(menubar);
 	gtk_window_add_accel_group(GTK_WINDOW(window), gtk_ui_manager_get_accel_group(msgview->ui_manager));
 
+#ifndef MAEMO
 	gtk_box_pack_start(GTK_BOX(vbox), menubar, FALSE, TRUE, 0);
+#else
+	hildon_window_set_menu(HILDON_WINDOW(window), GTK_MENU(menubar));
+#endif
 
 	if (prefs_common.toolbar_detachable) {
 		handlebox = gtk_handle_box_new();

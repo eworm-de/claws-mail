@@ -1533,8 +1533,11 @@ MainWindow *main_window_create()
 	gtk_action_group_add_radio_actions(mainwin->action_group, mainwin_radio_dec_entries,
 			G_N_ELEMENTS(mainwin_radio_dec_entries), C_AUTO, G_CALLBACK(set_decode_cb), (gpointer)mainwin);
 
+#ifndef MAEMO
 	MENUITEM_ADDUI_MANAGER(mainwin->ui_manager, "/", "Menu", NULL, GTK_UI_MANAGER_MENUBAR)
-
+#else
+	MENUITEM_ADDUI_MANAGER(mainwin->ui_manager, "/", "Menu", NULL, GTK_UI_MANAGER_MENU)
+#endif
 	MENUITEM_ADDUI_MANAGER(mainwin->ui_manager, "/Menu", "File", "File", GTK_UI_MANAGER_MENU)
 	MENUITEM_ADDUI_MANAGER(mainwin->ui_manager, "/Menu", "Edit", "Edit", GTK_UI_MANAGER_MENU)
 	MENUITEM_ADDUI_MANAGER(mainwin->ui_manager, "/Menu", "View", "View", GTK_UI_MANAGER_MENU)
@@ -1881,6 +1884,8 @@ MainWindow *main_window_create()
 
 #ifndef MAEMO
 	gtk_box_pack_start(GTK_BOX(vbox), menubar, FALSE, TRUE, 0);
+#else
+	hildon_window_set_menu(HILDON_WINDOW(window), GTK_MENU(menubar));
 #endif
 
 

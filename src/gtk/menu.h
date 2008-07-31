@@ -21,11 +21,7 @@
 #define __MENU_H__
 
 #include <glib.h>
-#include <gtk/gtkwidget.h>
-#include <gtk/gtkitemfactory.h>
-#include <gtk/gtkmenu.h>
-#include <gtk/gtkmenushell.h>
-#include <gtk/gtkoptionmenu.h>
+#include <gtk/gtk.h>
 
 #define MENU_VAL_ID "Claws::Menu::ValueID"
 #define MENU_VAL_DATA "Claws::Menu::ValueDATA"
@@ -83,21 +79,7 @@
 #define menu_set_insensitive_all(menu_shell) \
 	menu_set_sensitive_all(menu_shell, FALSE);
 
-GtkWidget *menubar_create	(GtkWidget		*window,
-				 GtkItemFactoryEntry	*entries,
-				 guint			 n_entries,
-				 const gchar		*path,
-				 gpointer		 data);
-GtkWidget *menu_create_items	(GtkItemFactoryEntry	*entries,
-				 guint			 n_entries,
-				 const gchar		*path,
-				 GtkItemFactory	       **factory,
-				 gpointer		 data);
 gchar *menu_translate		(const gchar *path, gpointer data);
-
-void menu_set_sensitive		(GtkItemFactory		*ifactory,
-				 const gchar		*path,
-				 gboolean		 sensitive);
 
 GtkActionGroup *cm_menu_create_action_group(const gchar *name, GtkActionEntry *entries,
 					    gint num_entries, gpointer data);
@@ -109,9 +91,6 @@ void cm_toggle_menu_set_active(gchar *menu, gboolean active);
 void cm_menu_set_sensitive_full(GtkUIManager *gui_manager, gchar *menu, gboolean sensitive);
 void cm_toggle_menu_set_active_full(GtkUIManager *gui_manager, gchar *menu, gboolean active);
 
-void menu_set_active		(GtkItemFactory		*ifactory,
-				 const gchar		*path,
-				 gboolean		 is_active);
 void menu_button_position	(GtkMenu		*menu,
 				 gint			*x,
 				 gint			*y,

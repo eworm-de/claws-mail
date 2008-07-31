@@ -24,14 +24,6 @@
 #include <glib.h>
 #include <glib/gi18n.h>
 #include <gtk/gtk.h>
-#include <gtk/gtkwidget.h>
-#include <gtk/gtkmenu.h>
-#include <gtk/gtkmenubar.h>
-#include <gtk/gtkcheckmenuitem.h>
-#include <gtk/gtkitemfactory.h>
-#include <gtk/gtkbutton.h>
-#include <gtk/gtkwindow.h>
-#include <gtk/gtkutils.h>
 
 #include "menu.h"
 #include "utils.h"
@@ -48,41 +40,6 @@
 
 static void connect_accel_change_signals(GtkWidget* widget, GtkWidget *wid2) ;
 
-
-GtkWidget *menubar_create(GtkWidget *window, GtkItemFactoryEntry *entries,
-			  guint n_entries, const gchar *path, gpointer data)
-{
-	GtkItemFactory *factory;
-	GtkWidget *menubar;
-	
-#ifdef MAEMO
-	factory = gtk_item_factory_new(GTK_TYPE_MENU, path, NULL);
-#else
-	factory = gtk_item_factory_new(GTK_TYPE_MENU_BAR, path, NULL);
-#endif
-	gtk_item_factory_set_translate_func(factory, menu_translate,
-					    NULL, NULL);
-	gtk_item_factory_create_items(factory, n_entries, entries, data);
-	gtk_window_add_accel_group (GTK_WINDOW (window), factory->accel_group);
-
-	menubar  = gtk_item_factory_get_widget(factory, path);
-#ifdef MAEMO
-	hildon_window_set_menu(HILDON_WINDOW(window), GTK_MENU(menubar));
-#endif
-	return menubar;
-}
-
-GtkWidget *menu_create_items(GtkItemFactoryEntry *entries,
-			     guint n_entries, const gchar *path,
-			     GtkItemFactory **factory, gpointer data)
-{
-	*factory = gtk_item_factory_new(GTK_TYPE_MENU, path, NULL);
-	gtk_item_factory_set_translate_func(*factory, menu_translate,
-					    NULL, NULL);
-	gtk_item_factory_create_items(*factory, n_entries, entries, data);
-
-	return gtk_item_factory_get_widget(*factory, path);
-}
 
 GtkActionGroup *cm_menu_create_action_group(const gchar *name, GtkActionEntry *entries,
 					    gint num_entries, gpointer data)
@@ -111,19 +68,6 @@ gchar *menu_translate(const gchar *path, gpointer data)
 	retval = gettext(path);
 
 	return retval;
-}
-
-void menu_set_sensitive(GtkItemFactory *ifactory, const gchar *path,
-			gboolean sensitive)
-{
-	GtkWidget *widget;
-
-	g_return_if_fail(ifactory != NULL);
-
-	widget = gtk_item_factory_get_item(ifactory, path);
-	g_return_if_fail(widget != NULL);
-
-	gtk_widget_set_sensitive(widget, sensitive);
 }
 
 void cm_menu_set_sensitive(gchar *menu, gboolean sensitive)
@@ -186,23 +130,6 @@ void menu_set_sensitive_all(GtkMenuShell *menu_shell, gboolean sensitive)
 
 	for (cur = menu_shell->children; cur != NULL; cur = cur->next)
 		gtk_widget_set_sensitive(GTK_WIDGET(cur->data), sensitive);
-}
-
-void menu_set_active(GtkItemFactory *ifactory, const gchar *path,
-		     gboolean is_active)
-{
-	GtkWidget *widget;
-
-	g_return_if_fail(ifactory != NULL);
-
-	widget = gtk_item_factory_get_item(ifactory, path);
-	g_return_if_fail(widget != NULL);
-
-	if (!GTK_IS_CHECK_MENU_ITEM(widget)) {
-		debug_print("%s not check_menu_item\n", path?path:"(null)");
-		return;
-	}	
-	gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM(widget), is_active);
 }
 
 void menu_button_position(GtkMenu *menu, gint *x, gint *y, gboolean *push_in,

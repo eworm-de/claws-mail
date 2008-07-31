@@ -6687,7 +6687,11 @@ static Compose *compose_create(PrefsAccount *account,
 	gtk_action_group_add_radio_actions(action_group, compose_radio_enc_entries,
 			G_N_ELEMENTS(compose_radio_enc_entries), C_AUTO, G_CALLBACK(compose_set_encoding_cb), (gpointer)compose);
 
+#ifndef MAEMO
 	MENUITEM_ADDUI_MANAGER(compose->ui_manager, "/", "Menu", NULL, GTK_UI_MANAGER_MENUBAR)
+#else
+	MENUITEM_ADDUI_MANAGER(compose->ui_manager, "/", "Menu", NULL, GTK_UI_MANAGER_MENU)
+#endif
 
 	MENUITEM_ADDUI_MANAGER(compose->ui_manager, "/Menu", "Message", "Message", GTK_UI_MANAGER_MENU)
 	MENUITEM_ADDUI_MANAGER(compose->ui_manager, "/Menu", "Edit", "Edit", GTK_UI_MANAGER_MENU)
@@ -6864,7 +6868,11 @@ static Compose *compose_create(PrefsAccount *account,
 	gtk_widget_show_all(menubar);
 
 	gtk_window_add_accel_group(GTK_WINDOW(window), gtk_ui_manager_get_accel_group(compose->ui_manager));
+#ifndef MAEMO
 	gtk_box_pack_start(GTK_BOX(vbox), menubar, FALSE, TRUE, 0);
+#else
+	hildon_window_set_menu(HILDON_WINDOW(window), GTK_MENU(menubar));
+#endif
 
 	if (prefs_common.toolbar_detachable) {
 		handlebox = gtk_handle_box_new();

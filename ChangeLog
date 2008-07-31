@@ -1,3 +1,14 @@
+2008-07-31 [colin]	3.5.0cvs40
+
+	* src/addressbook.c
+	* src/compose.c
+	* src/mainwindow.c
+	* src/messageview.c
+		Some Maemo fixes
+	* src/gtk/menu.c
+	* src/gtk/menu.h
+		Remove deprecated helper funcs
+
 2008-07-30 [colin]	3.5.0cvs39
 
 	* src/folderview.c
