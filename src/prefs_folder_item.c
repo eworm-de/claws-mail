@@ -367,7 +367,7 @@ static void prefs_folder_item_general_create_widget_func(PrefsPage * page_,
 	entry_regexp_test_result = gtk_entry_new();
 	gtk_box_pack_end (GTK_BOX(hbox_regexp), entry_regexp_test_result, TRUE, TRUE, 0);
 	SET_TOGGLE_SENSITIVITY(checkbtn_simplify_subject, entry_regexp_test_result);
-	gtk_entry_set_editable(GTK_ENTRY(entry_regexp_test_result), FALSE);
+	gtk_editable_set_editable(GTK_EDITABLE(entry_regexp_test_result), FALSE);
 
 	rowcount++;
 
@@ -1176,7 +1176,6 @@ static void prefs_folder_item_templates_create_widget_func(PrefsPage * page_,
 	/* Notebook */
 	notebook = gtk_notebook_new();
 	gtk_widget_show(notebook);
-	gtk_notebook_set_homogeneous_tabs(GTK_NOTEBOOK(notebook), TRUE);
 	gtk_box_pack_start(GTK_BOX(page_vbox), notebook, TRUE, TRUE, 0);
 
 	/* compose format */

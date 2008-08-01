@@ -6539,7 +6539,7 @@ static void compose_spell_menu_changed(void *data)
 
 	if (parent_item == NULL) {
 		parent_item = compose->aspell_options_menu;
-		gtk_menu_item_remove_submenu(GTK_MENU_ITEM(parent_item));
+		gtk_menu_item_set_submenu(GTK_MENU_ITEM(parent_item), NULL);
 	} else
 		compose->aspell_options_menu = parent_item;
 

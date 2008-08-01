@@ -2862,7 +2862,7 @@ void summary_reflect_tags_changes(SummaryView *summaryview)
 
 	/* clear items. get item pointers. */
 	for (cur = menu->children; cur != NULL && cur->data != NULL; cur = cur->next) {
-		gtk_menu_item_remove_submenu(GTK_MENU_ITEM(cur->data));
+		gtk_menu_item_set_submenu(GTK_MENU_ITEM(cur->data), NULL);
 	}
 	summary_tags_menu_create(summaryview, TRUE);
 
@@ -7536,7 +7536,7 @@ void summary_reflect_prefs_custom_colors(SummaryView *summaryview)
 
 	/* clear items. get item pointers. */
 	for (cur = menu->children; cur != NULL && cur->data != NULL; cur = cur->next) {
-		gtk_menu_item_remove_submenu(GTK_MENU_ITEM(cur->data));
+		gtk_menu_item_set_submenu(GTK_MENU_ITEM(cur->data), NULL);
 	}
 	summary_colorlabel_menu_create(summaryview, TRUE);
 }

@@ -1171,7 +1171,7 @@ static gboolean check_next_prev(GtkAspell *gtkaspell, gboolean forward)
 		list = make_sug_menu(gtkaspell);
 		menu = gtk_menu_new();
 		for (cur = list; cur; cur = cur->next)
-			gtk_menu_append(menu, GTK_WIDGET(cur->data));
+			gtk_menu_shell_append(GTK_MENU_SHELL(menu), GTK_WIDGET(cur->data));
 		g_slist_free(list);
 		gtk_menu_popup(GTK_MENU(menu), NULL, NULL,
 				set_menu_pos, gtkaspell, 0, GDK_CURRENT_TIME);
@@ -1477,7 +1477,7 @@ static void check_with_alternate_cb(GtkWidget *w, gpointer data)
 			list = make_sug_menu(gtkaspell);
 			menu = gtk_menu_new();
 			for (cur = list; cur; cur = cur->next)
-				gtk_menu_append(menu, GTK_WIDGET(cur->data));
+				gtk_menu_shell_append(GTK_MENU_SHELL(menu), GTK_WIDGET(cur->data));
 			g_slist_free(list);
 			gtk_menu_popup(GTK_MENU(menu), NULL, NULL,
 				       set_menu_pos, gtkaspell, 0,
@@ -2029,7 +2029,7 @@ static GSList *make_sug_menu(GtkAspell *gtkaspell)
 				item = gtk_menu_item_new_with_label(_("More..."));
 				gtk_widget_show(item);
 				if (curmenu)
-					gtk_menu_append(GTK_MENU(curmenu), item);
+					gtk_menu_shell_append(GTK_MENU_SHELL(curmenu), item);
 				else 
 					list = g_slist_append(list, item);
 
@@ -2047,7 +2047,7 @@ static GSList *make_sug_menu(GtkAspell *gtkaspell)
 			if (curmenu == NULL) {
 				list = g_slist_append(list, item);
 			} else {
-				gtk_menu_append(GTK_MENU(curmenu), item);
+				gtk_menu_shell_append(GTK_MENU_SHELL(curmenu), item);
 			}
 			g_signal_connect(G_OBJECT(item), "activate",
 					 G_CALLBACK(replace_word_cb),
@@ -2209,7 +2209,7 @@ static GSList *populate_submenu(GtkAspell *gtkaspell)
 				gtk_menu_item_set_submenu(GTK_MENU_ITEM(item), 
 							  newmenu);
 				
-				gtk_menu_append(GTK_MENU(curmenu), item);
+				gtk_menu_shell_append(GTK_MENU_SHELL(curmenu), item);
 				gtk_widget_show(item);
 				curmenu = newmenu;
 				count = 0;
@@ -2230,7 +2230,7 @@ static GSList *populate_submenu(GtkAspell *gtkaspell)
 					 G_CALLBACK(change_dict_cb),
 					 gtkaspell);
 			gtk_widget_show(item);
-			gtk_menu_append(GTK_MENU(curmenu), item);
+			gtk_menu_shell_append(GTK_MENU_SHELL(curmenu), item);
 			
 			count++;
 		}

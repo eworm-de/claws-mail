@@ -1,3 +1,17 @@
+2008-08-01 [colin]	3.5.0cvs42
+
+	* src/compose.c
+	* src/foldersel.c
+	* src/mainwindow.c
+	* src/prefs_account.c
+	* src/prefs_folder_item.c
+	* src/prefs_quote.c
+	* src/summaryview.c
+	* src/gtk/gtkaspell.c
+	* src/gtk/gtkutils.c
+	* src/gtk/gtkvscrollbutton.c
+		Replace a few deprecated function calls
+
 2008-08-01 [paul]	3.5.0cvs41
 
 	* src/action.c

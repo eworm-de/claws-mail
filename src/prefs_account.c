@@ -2064,7 +2064,6 @@ static void templates_create_widget_func(PrefsPage * _page,
 	
 	notebook = gtk_notebook_new();
 	gtk_widget_show(notebook);
-	gtk_notebook_set_homogeneous_tabs(GTK_NOTEBOOK(notebook), TRUE);
 	gtk_box_pack_start(GTK_BOX(vbox), notebook, TRUE, TRUE, 0);
 
 	/* compose format */

@@ -2374,7 +2374,7 @@ void main_window_reflect_prefs_custom_colors(MainWindow *mainwin)
 
 	/* clear items. get item pointers. */
 	for (cur = menu->children; cur != NULL && cur->data != NULL; cur = cur->next) {
-		gtk_menu_item_remove_submenu(GTK_MENU_ITEM(cur->data));
+		gtk_menu_item_set_submenu(GTK_MENU_ITEM(cur->data), NULL);
 	}
 	mainwindow_colorlabel_menu_create(mainwin, TRUE);
 	summary_reflect_prefs_custom_colors(mainwin->summaryview);
@@ -2398,7 +2398,7 @@ static gboolean main_window_reflect_tags_changes_real(gpointer data)
 
 	/* clear items. get item pointers. */
 	for (cur = menu->children; cur != NULL && cur->data != NULL; cur = cur->next) {
-		gtk_menu_item_remove_submenu(GTK_MENU_ITEM(cur->data));
+		gtk_menu_item_set_submenu(GTK_MENU_ITEM(cur->data), NULL);
 	}
 	mainwindow_tags_menu_create(mainwin, TRUE);
 	summary_reflect_tags_changes(mainwin->summaryview);
@@ -2465,7 +2465,7 @@ static void main_window_set_account_selector_menu(MainWindow *mainwin,
 			(ac_prefs->account_name
 			 ? ac_prefs->account_name : _("Untitled"));
 		gtk_widget_show(menuitem);
-		gtk_menu_append(GTK_MENU(menu), menuitem);
+		gtk_menu_shell_append(GTK_MENU_SHELL(menu), menuitem);
 		g_signal_connect(G_OBJECT(menuitem), "activate",
 				 G_CALLBACK(account_selector_menu_cb),
 				 ac_prefs);
@@ -2514,7 +2514,7 @@ static void main_window_set_account_receive_menu(MainWindow *mainwin,
 			(ac_prefs->account_name ? ac_prefs->account_name
 			 : _("Untitled"));
 		gtk_widget_show(menuitem);
-		gtk_menu_append(GTK_MENU(menu), menuitem);
+		gtk_menu_shell_append(GTK_MENU_SHELL(menu), menuitem);
 		g_signal_connect(G_OBJECT(menuitem), "activate",
 				 G_CALLBACK(account_receive_menu_cb),
 				 ac_prefs);
@@ -2547,7 +2547,7 @@ static void main_window_set_toolbar_combo_receive_menu(MainWindow *mainwin,
 			(ac_prefs->account_name
 			 ? ac_prefs->account_name : _("Untitled"));
 		gtk_widget_show(menuitem);
-		gtk_menu_append(GTK_MENU(menu), menuitem);
+		gtk_menu_shell_append(GTK_MENU_SHELL(menu), menuitem);
 		g_signal_connect(G_OBJECT(menuitem), "activate",
 				 G_CALLBACK(account_receive_menu_cb),
 				 ac_prefs);
@@ -2579,7 +2579,7 @@ static void main_window_set_toolbar_combo_compose_menu(MainWindow *mainwin,
 			(ac_prefs->account_name
 			 ? ac_prefs->account_name : _("Untitled"));
 		gtk_widget_show(menuitem);
-		gtk_menu_append(GTK_MENU(menu), menuitem);
+		gtk_menu_shell_append(GTK_MENU_SHELL(menu), menuitem);
 		g_signal_connect(G_OBJECT(menuitem), "activate",
 				 G_CALLBACK(account_compose_menu_cb),
 				 ac_prefs);
@@ -3337,7 +3337,7 @@ static gint mailing_list_populate_submenu (GtkWidget *menuitem, const gchar * li
 						 NULL);
 			} 
 			if (item) {
-				gtk_menu_append (GTK_MENU(menu), item);
+				gtk_menu_shell_append(GTK_MENU_SHELL(menu), item);
 				gtk_widget_show (item);
 				menu_nb++;
 			}
@@ -3414,19 +3414,21 @@ static void get_url_part (const gchar **buffer, gchar *url_decoded, gint maxlen)
 	
 static void mailing_list_compose (GtkWidget *w, gpointer *data)
 {
-	gchar *mailto;
+	const gchar *mailto;
 
-	gtk_label_get (GTK_LABEL (GTK_BIN (w)->child), (gchar **) &mailto);
-	compose_new(NULL, mailto+7, NULL);
+	mailto = gtk_label_get_text(GTK_LABEL (GTK_BIN (w)->child));
+	if (mailto)
+		compose_new(NULL, mailto+7, NULL);
 }
  
  static void mailing_list_open_uri (GtkWidget *w, gpointer *data)
 {
  
- 	gchar *mailto;
+ 	const gchar *mailto;
  
- 	gtk_label_get (GTK_LABEL (GTK_BIN (w)->child), (gchar **) &mailto);
- 	open_uri (mailto, prefs_common_get_uri_cmd());
+	mailto = gtk_label_get_text(GTK_LABEL (GTK_BIN (w)->child));
+	if (mailto)
+ 		open_uri (mailto, prefs_common_get_uri_cmd());
 } 
 	
 static void fix_folderview_scroll(MainWindow *mainwin)
