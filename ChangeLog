@@ -1,3 +1,9 @@
+2008-08-01 [colin]	3.5.0cvs43
+
+	* src/gtk/gtkutils.c
+	* src/gtk/gtkvscrollbutton.c
+		Oups, fix build
+
 2008-08-01 [colin]	3.5.0cvs42
 
 	* src/compose.c
