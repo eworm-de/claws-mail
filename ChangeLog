@@ -1,3 +1,9 @@
+2008-08-01 [paul]	3.5.0cvs41
+
+	* src/action.c
+		fix crash that occurs because of recent GtkUIManager
+		changes. Thanks to Colin
+
 2008-07-31 [colin]	3.5.0cvs40
 
 	* src/addressbook.c

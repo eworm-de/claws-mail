@@ -117,7 +117,9 @@ static void compose_actions_execute 	(Compose	*compose,
 					 guint		 action_nb,
 					 GtkWidget 	*widget);
 
-static void mainwin_actions_execute_cb 	(MainWindow	*mainwin,
+static void mainwin_actions_execute_cb	(GtkWidget 	*widget, 
+					 gpointer 	 data);
+static void mainwin_actions_execute 	(MainWindow	*mainwin,
 					 guint		 action_nb,
 					 GtkWidget 	*widget);
 
@@ -434,7 +436,7 @@ void actions_execute(gpointer data,
 		     gint source)
 {
 	if (source == TOOLBAR_MAIN) 
-		mainwin_actions_execute_cb((MainWindow*)data, action_nb, widget);
+		mainwin_actions_execute((MainWindow*)data, action_nb, widget);
 	else if (source == TOOLBAR_COMPOSE)
 		compose_actions_execute((Compose*)data, action_nb, widget);
 	else if (source == TOOLBAR_MSGVIEW)
@@ -590,7 +592,14 @@ static void compose_actions_execute(Compose *compose, guint action_nb, GtkWidget
 		compose_action_cb, compose);
 }
 
-static void mainwin_actions_execute_cb(MainWindow *mainwin, guint action_nb,
+static void mainwin_actions_execute_cb(GtkWidget *widget, gpointer data)
+{
+	MainWindow *mainwin = (MainWindow *)data;
+	gint action_nb = GPOINTER_TO_INT(g_object_get_data(G_OBJECT(widget), "action_num"));
+	mainwin_actions_execute(mainwin, action_nb, NULL);
+}
+
+static void mainwin_actions_execute(MainWindow *mainwin, guint action_nb,
 				       GtkWidget *widget)
 {
 	GSList *msg_list;
