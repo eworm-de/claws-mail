@@ -188,7 +188,7 @@ gint g_chmod(const gchar *path, gint mode)
 
 
 #ifdef G_OS_WIN32
-gint mkstemp_name(const gchar *template, gchar **name_used)
+gint mkstemp_name(gchar *template, gchar **name_used)
 {
 	static gulong count=0; /* W32-_mktemp only supports up to 27
 				  tempfiles... */
@@ -209,7 +209,7 @@ gint mkstemp_name(const gchar *template, gchar **name_used)
 #endif /* G_OS_WIN32 */
 
 #ifdef G_OS_WIN32
-gint mkstemp(const gchar *template)
+gint mkstemp(gchar *template)
 {
 	gchar *dummyname;
 	gint res = mkstemp_name(template, &dummyname);
@@ -2926,7 +2926,9 @@ FILE *my_tmpfile(void)
 	gchar *fname;
 	gint fd;
 	FILE *fp;
+#ifndef G_OS_WIN32
 	gchar buf[2]="\0";
+#endif
 
 	tmpdir = get_tmp_dir();
 	tmplen = strlen(tmpdir);
@@ -3092,10 +3094,12 @@ static gchar *file_read_to_str_full(const gchar *file, gboolean recode)
 	FILE *fp;
 	gchar *str;
 	struct stat s;
+#ifndef G_OS_WIN32
 	gint fd, err;
 	struct timeval timeout = {1, 0};
 	fd_set fds;
 	int fflags = 0;
+#endif
 
 	g_return_val_if_fail(file != NULL, NULL);
 
@@ -3108,12 +3112,21 @@ static gchar *file_read_to_str_full(const gchar *file, gboolean recode)
 		return NULL;
 	}
 
+#ifdef G_OS_WIN32
+	fp = fopen (file, "rb");
+	if (fp == NULL) {
+		FILE_OP_ERROR(file, "open");
+		return NULL;
+	}
+#else	  
+	fd = open(file, O_RDONLY | O_NONBLOCK);
 	/* test whether the file is readable without blocking */
 	fd = open(file, O_RDONLY | O_NONBLOCK);
 	if (fd == -1) {
 		FILE_OP_ERROR(file, "open");
 		return NULL;
 	}
+
 	FD_ZERO(&fds);
 	FD_SET(fd, &fds);
 
@@ -3149,6 +3162,7 @@ static gchar *file_read_to_str_full(const gchar *file, gboolean recode)
 		close(fd); /* if fp isn't NULL, we'll use fclose instead! */
 		return NULL;
 	}
+#endif
 
 	str = file_read_stream_to_str_full(fp, recode);
 
@@ -3443,7 +3457,9 @@ time_t tzoffset_sec(time_t *now)
 {
 	struct tm gmt, *lt;
 	gint off;
+#ifndef G_OS_WIN32
 	struct tm buf1, buf2;
+#endif
 	
 	gmt = *gmtime_r(now, &buf1);
 	lt = localtime_r(now, &buf2);
@@ -3474,7 +3490,9 @@ gchar *tzoffset(time_t *now)
 	struct tm gmt, *lt;
 	gint off;
 	gchar sign = '+';
+#ifndef G_OS_WIN32
 	struct tm buf1, buf2;
+#endif
 
 	gmt = *gmtime_r(now, &buf1);
 	lt = localtime_r(now, &buf2);
@@ -3509,8 +3527,10 @@ void get_rfc822_date(gchar *buf, gint len)
 	time_t t;
 	gchar day[4], mon[4];
 	gint dd, hh, mm, ss, yyyy;
+#ifndef G_OS_WIN32
 	struct tm buf1;
 	gchar buf2[BUFFSIZE];
+#endif
 
 	t = time(NULL);
 	lt = localtime_r(&t, &buf1);
@@ -3695,7 +3715,9 @@ gchar *generate_msgid(gchar *buf, gint len)
 	struct tm *lt;
 	time_t t;
 	gchar *addr;
+#ifndef G_OS_WIN32
 	struct tm buft;
+#endif
 
 	t = time(NULL);
 	lt = localtime_r(&t, &buft);
@@ -5065,6 +5087,11 @@ size_t fast_strftime(gchar *buf, gint buflen, const gchar *format, struct tm *lt
 }
 
 gboolean prefs_common_get_use_shred(void);
+
+
+#ifdef G_OS_WIN32
+#define WEXITSTATUS(x) (x)
+#endif
 
 int claws_unlink(const gchar *filename) 
 {

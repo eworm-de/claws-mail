@@ -1,3 +1,11 @@
+2008-08-01 [paul]	3.5.0cvs44
+
+	* src/common/utils.c
+	* src/plugins/pgpcore/claws.def
+	* src/plugins/pgpinline/claws.def
+		fix compilation problems on mingw32,
+		(bug 1688) Patch by Marcus Brinkmann
+
 2008-08-01 [colin]	3.5.0cvs43
 
 	* src/gtk/gtkutils.c

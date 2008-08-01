@@ -1,5 +1,6 @@
 LIBRARY CLAWS-MAIL.EXE
 EXPORTS
+claws_unlink
 check_plugin_version
 codeconv_set_strict
 conv_codeset_strdup

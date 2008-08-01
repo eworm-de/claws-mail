@@ -5,6 +5,7 @@ alertpanel
 alertpanel_error
 alertpanel_full
 check_plugin_version
+claws_unlink
 copy_file_part
 debug_print_real
 debug_srcname
