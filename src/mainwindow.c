@@ -3168,9 +3168,6 @@ void main_window_set_menu_sensitive(MainWindow *mainwin)
 
 	main_window_menu_callback_block(mainwin);
 
-	cm_menu_set_sensitive_full(mainwin->ui_manager, "Menu/View/ShowHide/MessageView",
-			      messageview_is_visible(mainwin->messageview));
-
 	summaryview = mainwin->summaryview;
 	menu_path = "Menu/View/Sort/DontSort";
 

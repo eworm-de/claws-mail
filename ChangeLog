@@ -1,3 +1,9 @@
+2008-08-02 [paul]	3.5.0cvs45
+
+	* src/mainwindow.c
+		fix sensitivity of
+		/View/Show or hide/Message View
+
 2008-08-01 [paul]	3.5.0cvs44
 
 	* src/common/utils.c
