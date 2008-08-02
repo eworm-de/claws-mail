@@ -3168,6 +3168,9 @@ void main_window_set_menu_sensitive(MainWindow *mainwin)
 
 	main_window_menu_callback_block(mainwin);
 
+	cm_toggle_menu_set_active_full(mainwin->ui_manager, "Menu/View/ShowHide/MessageView",
+			      messageview_is_visible(mainwin->messageview));
+
 	summaryview = mainwin->summaryview;
 	menu_path = "Menu/View/Sort/DontSort";
 
@@ -3204,12 +3207,12 @@ void main_window_set_menu_sensitive(MainWindow *mainwin)
 	default:
 		menu_path = "Menu/View/Sort/DontSort"; break;
 	}
-	cm_menu_set_sensitive_full(mainwin->ui_manager, menu_path, TRUE);
+	cm_toggle_menu_set_active_full(mainwin->ui_manager, menu_path, TRUE);
 
 	if (summaryview->sort_type == SORT_ASCENDING) {
-		cm_menu_set_sensitive_full(mainwin->ui_manager, "Menu/View/Sort/Ascending", TRUE);
+		cm_toggle_menu_set_active_full(mainwin->ui_manager, "Menu/View/Sort/Ascending", TRUE);
 	} else {
-		cm_menu_set_sensitive_full(mainwin->ui_manager, "Menu/View/Sort/Descending", TRUE);
+		cm_toggle_menu_set_active_full(mainwin->ui_manager, "Menu/View/Sort/Descending", TRUE);
 	}
 
 	if (summaryview->sort_key != SORT_BY_NONE) {
@@ -3223,7 +3226,7 @@ void main_window_set_menu_sensitive(MainWindow *mainwin)
 	if (mainwin->messageview 
 	&&  mainwin->messageview->mimeview
 	&&  mainwin->messageview->mimeview->textview)
-		cm_menu_set_sensitive_full(mainwin->ui_manager, "Menu/View/AllHeaders",
+		cm_toggle_menu_set_active_full(mainwin->ui_manager, "Menu/View/AllHeaders",
 			      mainwin->messageview->mimeview->textview->show_all_headers);
 	cm_toggle_menu_set_active_full(mainwin->ui_manager, "Menu/View/ThreadView", (state & M_THREADED) != 0);
 	cm_toggle_menu_set_active_full(mainwin->ui_manager, "Menu/View/Quotes/FoldAll", (prefs_common.hide_quotes == 1));

@@ -3457,3 +3457,4 @@
 ( cvs diff -u -r 1.5.2.77 -r 1.5.2.78 src/gtk/gtkutils.c;  cvs diff -u -r 1.5.2.12 -r 1.5.2.13 src/gtk/gtkvscrollbutton.c;  ) > 3.5.0cvs43.patchset
 ( cvs diff -u -r 1.36.2.142 -r 1.36.2.143 src/common/utils.c;  cvs diff -u -r 1.1.2.2 -r 1.1.2.3 src/plugins/pgpcore/claws.def;  cvs diff -u -r 1.1.2.2 -r 1.1.2.3 src/plugins/pgpinline/claws.def;  ) > 3.5.0cvs44.patchset
 ( cvs diff -u -r 1.274.2.260 -r 1.274.2.261 src/mainwindow.c;  ) > 3.5.0cvs45.patchset
+( cvs diff -u -r 1.274.2.261 -r 1.274.2.262 src/mainwindow.c;  ) > 3.5.0cvs46.patchset

@@ -1,3 +1,9 @@
+2008-08-02 [colin]	3.5.0cvs46
+
+	* src/mainwindow.c
+		Fix toggle menu activation state
+		(thanks to cvs45 ;)
+
 2008-08-02 [paul]	3.5.0cvs45
 
 	* src/mainwindow.c
