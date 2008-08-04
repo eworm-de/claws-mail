@@ -269,18 +269,18 @@ static void browse_create( void ) {
 				        GTK_POLICY_AUTOMATIC );
 	gtk_box_pack_start( GTK_BOX(vlbox), tree_win, TRUE, TRUE, 0 );
 
-	list_entry = gtk_clist_new( N_COLS );
+	list_entry = gtk_cmclist_new( N_COLS );
 	gtk_container_add( GTK_CONTAINER(tree_win), list_entry );
-	gtk_clist_column_titles_show( GTK_CLIST(list_entry) );
-	gtk_clist_set_column_title(
-		GTK_CLIST(list_entry), COL_NAME, _( "LDAP Name" ) );
-	gtk_clist_set_column_title(
-		GTK_CLIST(list_entry), COL_VALUE, _( "Attribute Value" ) );
-	gtk_clist_set_selection_mode(
-		GTK_CLIST(list_entry), GTK_SELECTION_BROWSE );
-	gtk_clist_set_column_width( GTK_CLIST(list_entry),
+	gtk_cmclist_column_titles_show( GTK_CMCLIST(list_entry) );
+	gtk_cmclist_set_column_title(
+		GTK_CMCLIST(list_entry), COL_NAME, _( "LDAP Name" ) );
+	gtk_cmclist_set_column_title(
+		GTK_CMCLIST(list_entry), COL_VALUE, _( "Attribute Value" ) );
+	gtk_cmclist_set_selection_mode(
+		GTK_CMCLIST(list_entry), GTK_SELECTION_BROWSE );
+	gtk_cmclist_set_column_width( GTK_CMCLIST(list_entry),
 		COL_NAME, COL_WIDTH_NAME );
-	gtk_clist_set_auto_sort( GTK_CLIST(list_entry), TRUE );
+	gtk_cmclist_set_auto_sort( GTK_CMCLIST(list_entry), TRUE );
 
 	/* Button panel */
 	gtkut_stock_button_set_create(&hbbox, &close_btn, GTK_STOCK_CLOSE,
@@ -329,8 +329,8 @@ static gboolean browse_idle( gpointer data ) {
 			debug_print("Adding row to list: %s->%s\n",
 						nvp->name?nvp->name:"null",
 						nvp->value?nvp->value:"null");
-			gtk_clist_append(
-				GTK_CLIST(browseldap_dlg.list_entry), text );
+			gtk_cmclist_append(
+				GTK_CMCLIST(browseldap_dlg.list_entry), text );
 
 			/* Free up entry */
 			ldapqry_free_name_value( nvp );
@@ -347,8 +347,8 @@ static gboolean browse_idle( gpointer data ) {
 		if( _browseIdleID_ != 0 ) {
 			g_source_remove( _browseIdleID_ );
 			_browseIdleID_ = 0;
-			gtk_clist_select_row(
-				GTK_CLIST( browseldap_dlg.list_entry ), 0, 0 );
+			gtk_cmclist_select_row(
+				GTK_CMCLIST( browseldap_dlg.list_entry ), 0, 0 );
 		}
 	}
 
@@ -374,7 +374,7 @@ gboolean browseldap_entry( AddressDataSource *ds, const gchar *dn ) {
 	gtk_widget_show(browseldap_dlg.window);
 	manage_window_set_transient(GTK_WINDOW(browseldap_dlg.window));
 
-	gtk_clist_select_row( GTK_CLIST( browseldap_dlg.list_entry ), 0, 0 );
+	gtk_cmclist_select_row( GTK_CMCLIST( browseldap_dlg.list_entry ), 0, 0 );
 	gtk_widget_show(browseldap_dlg.window);
 
 	gtk_label_set_text( GTK_LABEL(browseldap_dlg.label_address ), "" );
@@ -411,7 +411,7 @@ gboolean browseldap_entry( AddressDataSource *ds, const gchar *dn ) {
 		_browseIdleID_ = 0;
 	}
 	browse_clear_queue();
-	gtk_clist_clear( GTK_CLIST( browseldap_dlg.list_entry ) );
+	gtk_cmclist_clear( GTK_CMCLIST( browseldap_dlg.list_entry ) );
 
 	return TRUE;
 }

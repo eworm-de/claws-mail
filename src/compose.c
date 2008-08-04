@@ -6662,7 +6662,7 @@ static Compose *compose_create(PrefsAccount *account,
 
 #ifndef GENERIC_UMPC	
 	if (compose_force_window_origin)
-		gtk_widget_set_uposition(window, prefs_common.compose_x, 
+		gtk_window_move(GTK_WINDOW(window), prefs_common.compose_x, 
 				 prefs_common.compose_y);
 #endif
 	g_signal_connect(G_OBJECT(window), "delete_event",
@@ -7017,7 +7017,6 @@ static Compose *compose_create(PrefsAccount *account,
 
 	/* pane between attach clist and text */
 	paned = gtk_vpaned_new();
-	gtk_paned_set_gutter_size(GTK_PANED(paned), 12);
 	gtk_container_add(GTK_CONTAINER(vbox2), paned);
 #ifdef MAEMO
 	if( maemo_mainwindow_is_fullscreen(mainwindow_get_mainwindow()->window) )
@@ -9823,14 +9822,14 @@ static void compose_grab_focus_cb(GtkWidget *widget, Compose *compose)
 #ifdef GENERIC_UMPC
 	if (GTK_IS_TEXT_VIEW(widget) 
 	    && gtk_paned_get_child1(GTK_PANED(compose->paned)) != compose->edit_vbox) {
-		gtk_widget_ref(compose->notebook);
-		gtk_widget_ref(compose->edit_vbox);
+		g_object_ref(compose->notebook);
+		g_object_ref(compose->edit_vbox);
 		gtk_container_remove(GTK_CONTAINER(compose->paned), compose->notebook);
 		gtk_container_remove(GTK_CONTAINER(compose->paned), compose->edit_vbox);
 		gtk_paned_add1(GTK_PANED(compose->paned), compose->edit_vbox);
 		gtk_paned_add2(GTK_PANED(compose->paned), compose->notebook);
-		gtk_widget_unref(compose->notebook);
-		gtk_widget_unref(compose->edit_vbox);
+		g_object_unref(compose->notebook);
+		g_object_unref(compose->edit_vbox);
 		g_signal_handlers_block_by_func(G_OBJECT(widget),
 					G_CALLBACK(compose_grab_focus_cb),
 					compose);
@@ -9840,14 +9839,14 @@ static void compose_grab_focus_cb(GtkWidget *widget, Compose *compose)
 					compose);
 	} else if (!GTK_IS_TEXT_VIEW(widget) 
 		   && gtk_paned_get_child1(GTK_PANED(compose->paned)) != compose->notebook) {
-		gtk_widget_ref(compose->notebook);
-		gtk_widget_ref(compose->edit_vbox);
+		g_object_ref(compose->notebook);
+		g_object_ref(compose->edit_vbox);
 		gtk_container_remove(GTK_CONTAINER(compose->paned), compose->notebook);
 		gtk_container_remove(GTK_CONTAINER(compose->paned), compose->edit_vbox);
 		gtk_paned_add1(GTK_PANED(compose->paned), compose->notebook);
 		gtk_paned_add2(GTK_PANED(compose->paned), compose->edit_vbox);
-		gtk_widget_unref(compose->notebook);
-		gtk_widget_unref(compose->edit_vbox);
+		g_object_unref(compose->notebook);
+		g_object_unref(compose->edit_vbox);
 		g_signal_handlers_block_by_func(G_OBJECT(widget),
 					G_CALLBACK(compose_grab_focus_cb),
 					compose);

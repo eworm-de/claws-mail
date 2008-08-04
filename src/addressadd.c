@@ -113,13 +113,13 @@ static void addressadd_cancel( GtkWidget *widget, gboolean *cancelled ) {
 	gtk_main_quit();
 }
 
-static void addressadd_folder_select( GtkCTree *ctree, GtkCTreeNode *node,
+static void addressadd_folder_select( GtkCMCTree *ctree, GtkCMCTreeNode *node,
 				      gint column, gpointer data )
 {
-	addressadd_dlg.fiSelected = gtk_ctree_node_get_row_data( ctree, node );
+	addressadd_dlg.fiSelected = gtk_cmctree_node_get_row_data( ctree, node );
 }
 
-static gboolean addressadd_tree_button( GtkCTree *ctree, GdkEventButton *event, gpointer data ) {
+static gboolean addressadd_tree_button( GtkCMCTree *ctree, GdkEventButton *event, gpointer data ) {
 	if( ! event )
 		return FALSE;
 	if( event->button == 1 ) {
@@ -241,20 +241,20 @@ static void addressadd_create( void ) {
 
 	tree_folder = gtk_sctree_new_with_titles( 1, 0, titles );
 	gtk_container_add( GTK_CONTAINER(tree_win), tree_folder );
-	gtk_clist_column_titles_show( GTK_CLIST(tree_folder) );
+	gtk_cmclist_column_titles_show( GTK_CMCLIST(tree_folder) );
 	if (prefs_common.enable_dotted_lines) {
-		gtk_ctree_set_line_style(GTK_CTREE(tree_folder), GTK_CTREE_LINES_DOTTED);
-		gtk_ctree_set_expander_style(GTK_CTREE(tree_folder),
-				     GTK_CTREE_EXPANDER_SQUARE);
+		gtk_cmctree_set_line_style(GTK_CMCTREE(tree_folder), GTK_CMCTREE_LINES_DOTTED);
+		gtk_cmctree_set_expander_style(GTK_CMCTREE(tree_folder),
+				     GTK_CMCTREE_EXPANDER_SQUARE);
 	} else {
-		gtk_ctree_set_line_style(GTK_CTREE(tree_folder), GTK_CTREE_LINES_NONE);
-		gtk_ctree_set_expander_style(GTK_CTREE(tree_folder),
-				     GTK_CTREE_EXPANDER_TRIANGLE);
+		gtk_cmctree_set_line_style(GTK_CMCTREE(tree_folder), GTK_CMCTREE_LINES_NONE);
+		gtk_cmctree_set_expander_style(GTK_CMCTREE(tree_folder),
+				     GTK_CMCTREE_EXPANDER_TRIANGLE);
 	}
 	gtk_sctree_set_stripes(GTK_SCTREE(tree_folder), prefs_common.use_stripes_everywhere);
-	gtk_clist_set_selection_mode( GTK_CLIST(tree_folder), GTK_SELECTION_BROWSE );
-	gtk_ctree_set_indent( GTK_CTREE(tree_folder), CTREE_INDENT );
-	gtk_clist_set_auto_sort( GTK_CLIST(tree_folder), TRUE );
+	gtk_cmclist_set_selection_mode( GTK_CMCLIST(tree_folder), GTK_SELECTION_BROWSE );
+	gtk_cmctree_set_indent( GTK_CMCTREE(tree_folder), CTREE_INDENT );
+	gtk_cmclist_set_auto_sort( GTK_CMCLIST(tree_folder), TRUE );
 
 	/* Button panel */
 	gtkut_stock_button_set_create(&hbbox, &cancel_btn, GTK_STOCK_CANCEL,
@@ -299,15 +299,15 @@ static void addressadd_create( void ) {
 			  &folderXpm, &folderXpmMask );
 }
 
-static void addressadd_load_folder( GtkCTreeNode *parentNode, ItemFolder *parentFolder,
+static void addressadd_load_folder( GtkCMCTreeNode *parentNode, ItemFolder *parentFolder,
 					FolderInfo *fiParent )
 {
-	GtkCTree *tree = GTK_CTREE( addressadd_dlg.tree_folder );
+	GtkCMCTree *tree = GTK_CMCTREE( addressadd_dlg.tree_folder );
 	GList *list;
 	ItemFolder *folder;
 	gchar *fName;
 	gchar **name;
-	GtkCTreeNode *node;
+	GtkCMCTreeNode *node;
 	FolderInfo *fi;
 
 	list = parentFolder->listFolder;
@@ -320,7 +320,7 @@ static void addressadd_load_folder( GtkCTreeNode *parentNode, ItemFolder *parent
 				FALSE, TRUE );
 		g_free( fName );
 		fi = addressadd_create_folderinfo( fiParent->book, folder );
-		gtk_ctree_node_set_row_data_full( tree, node, fi,
+		gtk_cmctree_node_set_row_data_full( tree, node, fi,
 				( GtkDestroyNotify ) addressadd_free_folderinfo );
 		addressadd_load_folder( node, folder, fi );
 		list = g_list_next( list );
@@ -335,10 +335,10 @@ static void addressadd_load_data( AddressIndex *addrIndex ) {
 	ItemFolder *rootFolder;
 	AddressBookFile *abf;
 	FolderInfo *fi;
-	GtkCTree *tree = GTK_CTREE( addressadd_dlg.tree_folder );
-	GtkCTreeNode *node;
+	GtkCMCTree *tree = GTK_CMCTREE( addressadd_dlg.tree_folder );
+	GtkCMCTreeNode *node;
 
-	gtk_clist_clear( GTK_CLIST( tree ) );
+	gtk_cmclist_clear( GTK_CMCLIST( tree ) );
 	list = addrindex_get_interface_list( addrIndex );
 	while( list ) {
 		AddressInterface *interface = list->data;
@@ -357,14 +357,14 @@ static void addressadd_load_data( AddressIndex *addrIndex ) {
 				/* Add node for address book */
 				abf = ds->rawDataSource;
 				name = &dsName;
-				node = gtk_ctree_insert_node( tree, NULL, NULL,
+				node = gtk_cmctree_insert_node( tree, NULL, NULL,
 						name, FOLDER_SPACING, bookXpm,
 						bookXpmMask, bookXpm, bookXpmMask,
 						FALSE, TRUE );
 				g_free( dsName );
 
 				fi = addressadd_create_folderinfo( abf, NULL );
-				gtk_ctree_node_set_row_data_full( tree, node, fi,
+				gtk_cmctree_node_set_row_data_full( tree, node, fi,
 						( GtkDestroyNotify ) addressadd_free_folderinfo );
 
 				rootFolder = addrindex_ds_get_root_folder( ds );
@@ -391,7 +391,7 @@ gboolean addressadd_selection( AddressIndex *addrIndex, const gchar *name,
 
 	addressadd_dlg.fiSelected = NULL;
 	addressadd_load_data( addrIndex );
-	gtk_clist_select_row( GTK_CLIST( addressadd_dlg.tree_folder ), 0, 0 );
+	gtk_cmclist_select_row( GTK_CMCLIST( addressadd_dlg.tree_folder ), 0, 0 );
 	gtk_widget_show(addressadd_dlg.window);
 
 	gtk_entry_set_text( GTK_ENTRY(addressadd_dlg.entry_name ), "" );
@@ -459,7 +459,7 @@ gboolean addressadd_selection( AddressIndex *addrIndex, const gchar *name,
 		}
 	}
 
-	gtk_clist_clear( GTK_CLIST( addressadd_dlg.tree_folder ) );
+	gtk_cmclist_clear( GTK_CMCLIST( addressadd_dlg.tree_folder ) );
 
 	return retVal;
 }

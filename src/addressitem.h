@@ -83,9 +83,9 @@ struct _AddressBook_win
 	GtkWidget *tree_popup;
 	GtkWidget *list_popup;
 
-	GtkCTreeNode *treeSelected;
-	GtkCTreeNode *opened;
-	GtkCTreeNode *listSelected;
+	GtkCMCTreeNode *treeSelected;
+	GtkCMCTreeNode *opened;
+	GtkCMCTreeNode *listSelected;
 
 	Compose *target_compose;
 	gint status_cid;
@@ -121,7 +121,7 @@ struct _AdapterInterface {
 	AddressTypeControlItem *atci;
 	gboolean enabled;
 	gboolean haveLibrary;
-	GtkCTreeNode *treeNode;
+	GtkCMCTreeNode *treeNode;
 };
 
 typedef struct _AdapterDSource AdapterDSource;

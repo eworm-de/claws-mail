@@ -56,7 +56,7 @@ typedef struct {
 	gchar **folder_path;
 	gboolean matched;
 	gint index;
-	GtkCTreeNode *node;
+	GtkCMCTreeNode *node;
 } FolderPathMatch;
 
 static struct _AddressBookFolderSel_dlg {
@@ -117,13 +117,13 @@ static void addressbook_foldersel_cancel( GtkWidget *widget, gboolean *cancelled
 	gtk_main_quit();
 }
 
-static void addressbook_foldersel_folder_select( GtkCTree *ctree, GtkCTreeNode *node,
+static void addressbook_foldersel_folder_select( GtkCMCTree *ctree, GtkCMCTreeNode *node,
 				      gint column, gpointer data )
 {
-	addressbook_foldersel_dlg.fiSelected = gtk_ctree_node_get_row_data( ctree, node );
+	addressbook_foldersel_dlg.fiSelected = gtk_cmctree_node_get_row_data( ctree, node );
 }
 
-static gboolean addressbook_foldersel_tree_button( GtkCTree *ctree, GdkEventButton *event, gpointer data )
+static gboolean addressbook_foldersel_tree_button( GtkCMCTree *ctree, GdkEventButton *event, gpointer data )
 {
 	if ( ! event )
 		return FALSE;
@@ -191,20 +191,20 @@ static void addressbook_foldersel_create( void )
 
 	tree_folder = gtk_sctree_new_with_titles( 1, 0, titles );
 	gtk_container_add( GTK_CONTAINER(tree_win), tree_folder );
-	gtk_clist_column_titles_show( GTK_CLIST(tree_folder) );
+	gtk_cmclist_column_titles_show( GTK_CMCLIST(tree_folder) );
 	if (prefs_common.enable_dotted_lines) {
-		gtk_ctree_set_line_style(GTK_CTREE(tree_folder), GTK_CTREE_LINES_DOTTED);
-		gtk_ctree_set_expander_style(GTK_CTREE(tree_folder),
-				     GTK_CTREE_EXPANDER_SQUARE);
+		gtk_cmctree_set_line_style(GTK_CMCTREE(tree_folder), GTK_CMCTREE_LINES_DOTTED);
+		gtk_cmctree_set_expander_style(GTK_CMCTREE(tree_folder),
+				     GTK_CMCTREE_EXPANDER_SQUARE);
 	} else {
-		gtk_ctree_set_line_style(GTK_CTREE(tree_folder), GTK_CTREE_LINES_NONE);
-		gtk_ctree_set_expander_style(GTK_CTREE(tree_folder),
-				     GTK_CTREE_EXPANDER_TRIANGLE);
+		gtk_cmctree_set_line_style(GTK_CMCTREE(tree_folder), GTK_CMCTREE_LINES_NONE);
+		gtk_cmctree_set_expander_style(GTK_CMCTREE(tree_folder),
+				     GTK_CMCTREE_EXPANDER_TRIANGLE);
 	}
 	gtk_sctree_set_stripes(GTK_SCTREE(tree_folder), prefs_common.use_stripes_everywhere);
-	gtk_clist_set_selection_mode( GTK_CLIST(tree_folder), GTK_SELECTION_BROWSE );
-	gtk_ctree_set_indent( GTK_CTREE(tree_folder), CTREE_INDENT );
-	gtk_clist_set_auto_sort( GTK_CLIST(tree_folder), TRUE );
+	gtk_cmclist_set_selection_mode( GTK_CMCLIST(tree_folder), GTK_SELECTION_BROWSE );
+	gtk_cmctree_set_indent( GTK_CMCTREE(tree_folder), CTREE_INDENT );
+	gtk_cmclist_set_auto_sort( GTK_CMCLIST(tree_folder), TRUE );
 
 	/* Button panel */
 	gtkut_stock_button_set_create( &hbbox, &cancel_btn, GTK_STOCK_CANCEL,
@@ -247,15 +247,15 @@ static void addressbook_foldersel_create( void )
 			  &folderXpm, &folderXpmMask );
 }
 
-static void addressbook_foldersel_load_folder( GtkCTreeNode *parentNode, ItemFolder *parentFolder,
+static void addressbook_foldersel_load_folder( GtkCMCTreeNode *parentNode, ItemFolder *parentFolder,
 					FolderInfo *fiParent, FolderPathMatch *match )
 {
-	GtkCTree *tree = GTK_CTREE( addressbook_foldersel_dlg.tree_folder );
+	GtkCMCTree *tree = GTK_CMCTREE( addressbook_foldersel_dlg.tree_folder );
 	GList *list;
 	ItemFolder *folder;
 	gchar *fName;
 	gchar **name;
-	GtkCTreeNode *node;
+	GtkCMCTreeNode *node;
 	FolderInfo *fi;
 	FolderPathMatch *nextmatch = NULL;
 
@@ -265,7 +265,7 @@ static void addressbook_foldersel_load_folder( GtkCTreeNode *parentNode, ItemFol
 		fName = g_strdup( ADDRITEM_NAME(folder) );
 
 		name = &fName;
-		node = gtk_ctree_insert_node( tree, parentNode, NULL, name, FOLDER_SPACING,
+		node = gtk_cmctree_insert_node( tree, parentNode, NULL, name, FOLDER_SPACING,
 				folderXpm, folderXpmMask, folderXpm, folderXpmMask,
 				FALSE, TRUE );
 
@@ -295,7 +295,7 @@ static void addressbook_foldersel_load_folder( GtkCTreeNode *parentNode, ItemFol
 		g_free( fName );
 
 		fi = addressbook_foldersel_create_folderinfo( fiParent->book, folder );
-		gtk_ctree_node_set_row_data_full( tree, node, fi,
+		gtk_cmctree_node_set_row_data_full( tree, node, fi,
 				( GtkDestroyNotify ) addressbook_foldersel_free_folderinfo );
 		addressbook_foldersel_load_folder( node, folder, fi, nextmatch );
 		list = g_list_next( list );
@@ -312,11 +312,11 @@ static void addressbook_foldersel_load_data( AddressIndex *addrIndex,
 	ItemFolder *rootFolder;
 	AddressBookFile *abf;
 	FolderInfo *fi;
-	GtkCTree *tree = GTK_CTREE( addressbook_foldersel_dlg.tree_folder );
-	GtkCTreeNode *node;
+	GtkCMCTree *tree = GTK_CMCTREE( addressbook_foldersel_dlg.tree_folder );
+	GtkCMCTreeNode *node;
 	FolderPathMatch *nextmatch;
 
-	gtk_clist_clear( GTK_CLIST( tree ) );
+	gtk_cmclist_clear( GTK_CMCLIST( tree ) );
 	list = addrindex_get_interface_list( addrIndex );
 	while ( list ) {
 		AddressInterface *interface = list->data;
@@ -334,7 +334,7 @@ static void addressbook_foldersel_load_data( AddressIndex *addrIndex,
 				/* Add node for address book */
 				abf = ds->rawDataSource;
 				name = &dsName;
-				node = gtk_ctree_insert_node( tree, NULL, NULL,
+				node = gtk_cmctree_insert_node( tree, NULL, NULL,
 						name, FOLDER_SPACING, bookXpm,
 						bookXpmMask, bookXpm, bookXpmMask,
 						FALSE, TRUE );
@@ -364,7 +364,7 @@ static void addressbook_foldersel_load_data( AddressIndex *addrIndex,
 				}
 
 				fi = addressbook_foldersel_create_folderinfo( abf, NULL );
-				gtk_ctree_node_set_row_data_full( tree, node, fi,
+				gtk_cmctree_node_set_row_data_full( tree, node, fi,
 						( GtkDestroyNotify ) addressbook_foldersel_free_folderinfo );
 
 				rootFolder = addrindex_ds_get_root_folder( ds );
@@ -414,10 +414,10 @@ gboolean addressbook_foldersel_selection( AddressIndex *addrIndex,
 	g_strfreev( folder_path_match.folder_path );
 
 	if ( folder_path_match.node != NULL)
-		gtk_ctree_select( GTK_CTREE( addressbook_foldersel_dlg.tree_folder ),
-							GTK_CTREE_NODE( folder_path_match.node ) );
+		gtk_cmctree_select( GTK_CMCTREE( addressbook_foldersel_dlg.tree_folder ),
+							GTK_CMCTREE_NODE( folder_path_match.node ) );
 	else
-		gtk_clist_select_row( GTK_CLIST( addressbook_foldersel_dlg.tree_folder ), 0, 0 );
+		gtk_cmclist_select_row( GTK_CMCLIST( addressbook_foldersel_dlg.tree_folder ), 0, 0 );
 	gtk_widget_show(addressbook_foldersel_dlg.window);
 
 	gtk_main();
@@ -435,7 +435,7 @@ gboolean addressbook_foldersel_selection( AddressIndex *addrIndex,
 		}
 	}
 
-	gtk_clist_clear( GTK_CLIST( addressbook_foldersel_dlg.tree_folder ) );
+	gtk_cmclist_clear( GTK_CMCLIST( addressbook_foldersel_dlg.tree_folder ) );
 
 	return retVal;
 }

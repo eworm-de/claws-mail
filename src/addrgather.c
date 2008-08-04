@@ -140,7 +140,7 @@ static gboolean addrgather_dlg_key_pressed(
 #define FMT_BUFSIZE 32
 
 static gboolean addrgather_dlg_harvest() {
-	GtkCList *clist;
+	GtkCMCList *clist;
 	gchar *text[ FIELDS_N_COLS ];
 	AddressHarvester *harvester;
 	AddressBookFile *abf;
@@ -203,8 +203,8 @@ static gboolean addrgather_dlg_harvest() {
 	_harv_addressBook_ = abf;
 
 	/* Update summary count */
-	clist = GTK_CLIST(addrgather_dlg.clistCount);
-	gtk_clist_clear( clist );
+	clist = GTK_CMCLIST(addrgather_dlg.clistCount);
+	gtk_cmclist_clear( clist );
 	for( i = 0; i < NUM_FIELDS; i++ ) {
 		cnt = addrharvest_get_count( harvester, _harv_headerNames_[i] );
 		if( cnt < 1 ) {
@@ -215,7 +215,7 @@ static gboolean addrgather_dlg_harvest() {
 		}
 		text[ FIELD_COL_HEADER ] = _harv_headerNames_[i];
 		text[ FIELD_COL_COUNT  ] = str;
-		gtk_clist_append( clist, text );
+		gtk_cmclist_append( clist, text );
 	}
 
 	addrharvest_free( harvester );
@@ -398,16 +398,16 @@ static void addrgather_page_finish( gint pageNum, gchar *pageLbl ) {
 				       GTK_POLICY_AUTOMATIC,
 				       GTK_POLICY_AUTOMATIC);
 
-	clistCount = gtk_clist_new_with_titles( FIELDS_N_COLS, titles );
+	clistCount = gtk_cmclist_new_with_titles( FIELDS_N_COLS, titles );
 	gtk_container_add( GTK_CONTAINER(clistSWin), clistCount );
-	gtk_clist_set_selection_mode( GTK_CLIST(clistCount), GTK_SELECTION_BROWSE );
-	gtk_clist_set_column_width(
-			GTK_CLIST(clistCount), FIELD_COL_HEADER, FIELDS_COL_WIDTH_HEADER );
-	gtk_clist_set_column_width(
-			GTK_CLIST(clistCount), FIELD_COL_COUNT, FIELDS_COL_WIDTH_COUNT );
+	gtk_cmclist_set_selection_mode( GTK_CMCLIST(clistCount), GTK_SELECTION_BROWSE );
+	gtk_cmclist_set_column_width(
+			GTK_CMCLIST(clistCount), FIELD_COL_HEADER, FIELDS_COL_WIDTH_HEADER );
+	gtk_cmclist_set_column_width(
+			GTK_CMCLIST(clistCount), FIELD_COL_COUNT, FIELDS_COL_WIDTH_COUNT );
 
 	for( i = 0; i < FIELDS_N_COLS; i++ )
-		GTK_WIDGET_UNSET_FLAGS(GTK_CLIST(clistCount)->column[i].button, GTK_CAN_FOCUS);
+		GTK_WIDGET_UNSET_FLAGS(GTK_CMCLIST(clistCount)->column[i].button, GTK_CAN_FOCUS);
 
 	addrgather_dlg.clistCount = clistCount;
 }
