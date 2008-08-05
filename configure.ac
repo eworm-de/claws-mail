@@ -142,19 +142,11 @@ then
 fi
 
 CFLAGS="$CFLAGS -Wall"
-<<<<<<< configure.ac
 
 if test $USE_MAINTAINER_MODE = yes; then
 	CFLAGS="$CFLAGS -DGTK_DISABLE_DEPRECATED -DGDK_DISABLE_DEPRECATED"
 fi
 
-=======
-
-if test $USE_MAINTAINER_MODE = yes; then
-	CFLAGS="$CFLAGS -DGTK_DISABLE_DEPRECATED"
-fi
-
->>>>>>> 1.654.2.3521
 pthread_name=
 case "$target" in
 *-darwin*)
