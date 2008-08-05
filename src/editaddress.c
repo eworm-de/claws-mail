@@ -297,7 +297,7 @@ static void edit_person_switch_page( GtkNotebook *notebook, GtkNotebookPage *pag
 */
 static void edit_person_load_email( ItemPerson *person ) {
 	GList *node = person->listEMail;
-	GtkCList *clist = GTK_CLIST(personeditdlg.clist_email);
+	GtkCMCList *clist = GTK_CMCLIST(personeditdlg.clist_email);
 	gchar *text[ EMAIL_N_COLS ];
 	while( node ) {
 		ItemEMail *emorig = ( ItemEMail * ) node->data;
@@ -308,14 +308,14 @@ static void edit_person_load_email( ItemPerson *person ) {
 		text[ EMAIL_COL_ALIAS   ] = email->obj.name;
 		text[ EMAIL_COL_REMARKS ] = email->remarks;
 #endif
-		row = gtk_clist_append( clist, text );
-		gtk_clist_set_row_data( clist, row, email );
+		row = gtk_cmclist_append( clist, text );
+		gtk_cmclist_set_row_data( clist, row, email );
 		node = g_list_next( node );
 	}
 }
 
-static void edit_person_email_list_selected( GtkCList *clist, gint row, gint column, GdkEvent *event, gpointer data ) {
-	ItemEMail *email = gtk_clist_get_row_data( clist, row );
+static void edit_person_email_list_selected( GtkCMCList *clist, gint row, gint column, GdkEvent *event, gpointer data ) {
+	ItemEMail *email = gtk_cmclist_get_row_data( clist, row );
 	if( email ) {
 		if( email->address )
 			gtk_entry_set_text( GTK_ENTRY(personeditdlg.entry_email), email->address );
@@ -326,7 +326,7 @@ static void edit_person_email_list_selected( GtkCList *clist, gint row, gint col
 		if (!personeditdlg.read_only) {
 			gtk_widget_set_sensitive(personeditdlg.email_del, TRUE);
 			gtk_widget_set_sensitive(personeditdlg.email_up, row > 0);
-			gtk_widget_set_sensitive(personeditdlg.email_down, gtk_clist_get_row_data(clist, row + 1) != NULL);
+			gtk_widget_set_sensitive(personeditdlg.email_down, gtk_cmclist_get_row_data(clist, row + 1) != NULL);
 		}
 	} else {
 		gtk_widget_set_sensitive(personeditdlg.email_del, FALSE);
@@ -338,15 +338,15 @@ static void edit_person_email_list_selected( GtkCList *clist, gint row, gint col
 }
 
 static void edit_person_email_move( gint dir ) {
-	GtkCList *clist = GTK_CLIST(personeditdlg.clist_email);
+	GtkCMCList *clist = GTK_CMCLIST(personeditdlg.clist_email);
 	gint row = personeditdlg.rowIndEMail + dir;
-	ItemEMail *email = gtk_clist_get_row_data( clist, row );
+	ItemEMail *email = gtk_cmclist_get_row_data( clist, row );
 	if( email ) {
-		gtk_clist_row_move( clist, personeditdlg.rowIndEMail, row );
+		gtk_cmclist_row_move( clist, personeditdlg.rowIndEMail, row );
 		personeditdlg.rowIndEMail = row;
 		if (!personeditdlg.read_only) {
 			gtk_widget_set_sensitive(personeditdlg.email_up, row > 0);
-			gtk_widget_set_sensitive(personeditdlg.email_down, gtk_clist_get_row_data(clist, row + 1) != NULL);
+			gtk_widget_set_sensitive(personeditdlg.email_down, gtk_cmclist_get_row_data(clist, row + 1) != NULL);
 		}
 	} else {
 		gtk_widget_set_sensitive(personeditdlg.email_up, FALSE);
@@ -365,26 +365,26 @@ static void edit_person_email_move_down( gpointer data ) {
 }
 
 static void edit_person_email_delete( gpointer data ) {
-	GtkCList *clist = GTK_CLIST(personeditdlg.clist_email);
+	GtkCMCList *clist = GTK_CMCLIST(personeditdlg.clist_email);
 	gint row = personeditdlg.rowIndEMail;
-	ItemEMail *email = gtk_clist_get_row_data( clist, row );
+	ItemEMail *email = gtk_cmclist_get_row_data( clist, row );
 	edit_person_email_clear( NULL );
 	if( email ) {
 		/* Remove list entry */
-		gtk_clist_remove( clist, row );
+		gtk_cmclist_remove( clist, row );
 		addritem_free_item_email( email );
 		email = NULL;
 	}
 
 	/* Position hilite bar */
-	email = gtk_clist_get_row_data( clist, row );
+	email = gtk_cmclist_get_row_data( clist, row );
 	if( ! email ) {
 		personeditdlg.rowIndEMail = -1 + row;
 	}
 	if (!personeditdlg.read_only) {
-		gtk_widget_set_sensitive(personeditdlg.email_del, gtk_clist_get_row_data(clist, 0) != NULL);
-		gtk_widget_set_sensitive(personeditdlg.email_up, gtk_clist_get_row_data(clist, personeditdlg.rowIndEMail + 1) != NULL);
-		gtk_widget_set_sensitive(personeditdlg.email_down, gtk_clist_get_row_data(clist, personeditdlg.rowIndEMail - 1) != NULL);
+		gtk_widget_set_sensitive(personeditdlg.email_del, gtk_cmclist_get_row_data(clist, 0) != NULL);
+		gtk_widget_set_sensitive(personeditdlg.email_up, gtk_cmclist_get_row_data(clist, personeditdlg.rowIndEMail + 1) != NULL);
+		gtk_widget_set_sensitive(personeditdlg.email_down, gtk_cmclist_get_row_data(clist, personeditdlg.rowIndEMail - 1) != NULL);
 	}
 	edit_person_status_show( NULL );
 }
@@ -423,26 +423,26 @@ static ItemEMail *edit_person_email_edit( gboolean *error, ItemEMail *email ) {
 
 static void edit_person_email_modify( gpointer data ) {
 	gboolean errFlg = FALSE;
-	GtkCList *clist = GTK_CLIST(personeditdlg.clist_email);
+	GtkCMCList *clist = GTK_CMCLIST(personeditdlg.clist_email);
 	gint row = personeditdlg.rowIndEMail;
-	ItemEMail *email = gtk_clist_get_row_data( clist, row );
+	ItemEMail *email = gtk_cmclist_get_row_data( clist, row );
 	if( email ) {
 		edit_person_email_edit( &errFlg, email );
 		if( ! errFlg ) {
-			gtk_clist_set_text( clist, row, EMAIL_COL_EMAIL, email->address );
-			gtk_clist_set_text( clist, row, EMAIL_COL_ALIAS, email->obj.name );
-			gtk_clist_set_text( clist, row, EMAIL_COL_REMARKS, email->remarks );
+			gtk_cmclist_set_text( clist, row, EMAIL_COL_EMAIL, email->address );
+			gtk_cmclist_set_text( clist, row, EMAIL_COL_ALIAS, email->obj.name );
+			gtk_cmclist_set_text( clist, row, EMAIL_COL_REMARKS, email->remarks );
 			edit_person_email_clear( NULL );
 		}
 	}
 }
 
 static void edit_person_email_add( gpointer data ) {
-	GtkCList *clist = GTK_CLIST(personeditdlg.clist_email);
+	GtkCMCList *clist = GTK_CMCLIST(personeditdlg.clist_email);
 	gboolean errFlg = FALSE;
 	ItemEMail *email = NULL;
 	gint row = personeditdlg.rowIndEMail;
-	if( gtk_clist_get_row_data( clist, row ) == NULL ) row = 0;
+	if( gtk_cmclist_get_row_data( clist, row ) == NULL ) row = 0;
 
 	email = edit_person_email_edit( &errFlg, NULL );
 	if( ! errFlg ) {
@@ -452,9 +452,9 @@ static void edit_person_email_add( gpointer data ) {
 		text[ EMAIL_COL_ALIAS   ] = email->obj.name;
 		text[ EMAIL_COL_REMARKS ] = email->remarks;
 #endif
-		row = gtk_clist_insert( clist, 1 + row, text );
-		gtk_clist_set_row_data( clist, row, email );
-		gtk_clist_select_row( clist, row, 0 );
+		row = gtk_cmclist_insert( clist, 1 + row, text );
+		gtk_cmclist_set_row_data( clist, row, email );
+		gtk_cmclist_select_row( clist, row, 0 );
 		edit_person_email_clear( NULL );
 	}
 }
@@ -464,10 +464,10 @@ static void edit_person_email_add( gpointer data ) {
 * address index widget.
 */
 static gint edit_person_attrib_compare_func(
-	GtkCList *clist, gconstpointer ptr1, gconstpointer ptr2 )
+	GtkCMCList *clist, gconstpointer ptr1, gconstpointer ptr2 )
 {
-	GtkCell *cell1 = ((GtkCListRow *)ptr1)->cell;
-	GtkCell *cell2 = ((GtkCListRow *)ptr2)->cell;
+	GtkCMCell *cell1 = ((GtkCMCListRow *)ptr1)->cell;
+	GtkCMCell *cell2 = ((GtkCMCListRow *)ptr2)->cell;
 	gchar *name1 = NULL, *name2 = NULL;
 
 	if( cell1 ) name1 = cell1->u.text;
@@ -479,12 +479,12 @@ static gint edit_person_attrib_compare_func(
 
 static gboolean list_find_attribute(const gchar *attr)
 {
-	GtkCList *clist = GTK_CLIST(personeditdlg.clist_attrib);
+	GtkCMCList *clist = GTK_CMCLIST(personeditdlg.clist_attrib);
 	UserAttribute *attrib;
 	gint row = 0;
-	while( (attrib = gtk_clist_get_row_data( clist, row )) ) {
+	while( (attrib = gtk_cmclist_get_row_data( clist, row )) ) {
 		if (!g_ascii_strcasecmp(attrib->name, attr)) {
-			gtk_clist_select_row(clist, row, 0);
+			gtk_cmclist_select_row(clist, row, 0);
 			return TRUE;
 		}
 		row++;
@@ -494,12 +494,12 @@ static gboolean list_find_attribute(const gchar *attr)
 
 static gboolean list_find_email(const gchar *addr)
 {
-	GtkCList *clist = GTK_CLIST(personeditdlg.clist_email);
+	GtkCMCList *clist = GTK_CMCLIST(personeditdlg.clist_email);
 	ItemEMail *email;
 	gint row = 0;
-	while( (email = gtk_clist_get_row_data( clist, row )) ) {
+	while( (email = gtk_cmclist_get_row_data( clist, row )) ) {
 		if (!g_ascii_strcasecmp(email->address, addr)) {
-			gtk_clist_select_row(clist, row, 0);
+			gtk_cmclist_select_row(clist, row, 0);
 			return TRUE;
 		}
 		row++;
@@ -512,7 +512,7 @@ static gboolean list_find_email(const gchar *addr)
 */
 static void edit_person_load_attrib( ItemPerson *person ) {
 	GList *node = person->listAttrib;
-	GtkCList *clist = GTK_CLIST(personeditdlg.clist_attrib);
+	GtkCMCList *clist = GTK_CMCLIST(personeditdlg.clist_attrib);
 	gchar *text[ ATTRIB_N_COLS ];
 	while( node ) {
 		UserAttribute *atorig = ( UserAttribute * ) node->data;
@@ -522,14 +522,14 @@ static void edit_person_load_attrib( ItemPerson *person ) {
 		text[ ATTRIB_COL_NAME  ] = attrib->name;
 		text[ ATTRIB_COL_VALUE ] = attrib->value;
 
-		row = gtk_clist_append( clist, text );
-		gtk_clist_set_row_data( clist, row, attrib );
+		row = gtk_cmclist_append( clist, text );
+		gtk_cmclist_set_row_data( clist, row, attrib );
 		node = g_list_next( node );
 	}
 }
 
-static void edit_person_attrib_list_selected( GtkCList *clist, gint row, gint column, GdkEvent *event, gpointer data ) {
-	UserAttribute *attrib = gtk_clist_get_row_data( clist, row );
+static void edit_person_attrib_list_selected( GtkCMCList *clist, gint row, gint column, GdkEvent *event, gpointer data ) {
+	UserAttribute *attrib = gtk_cmclist_get_row_data( clist, row );
 	if( attrib && !personeditdlg.read_only && !personeditdlg.ldap ) {
 		gtk_entry_set_text( GTK_ENTRY(GTK_BIN(personeditdlg.entry_atname)->child ), attrib->name );
 		gtk_entry_set_text( GTK_ENTRY(personeditdlg.entry_atvalue), attrib->value );
@@ -542,25 +542,25 @@ static void edit_person_attrib_list_selected( GtkCList *clist, gint row, gint co
 }
 
 static void edit_person_attrib_delete( gpointer data ) {
-	GtkCList *clist = GTK_CLIST(personeditdlg.clist_attrib);
+	GtkCMCList *clist = GTK_CMCLIST(personeditdlg.clist_attrib);
 	gint row = personeditdlg.rowIndAttrib;
-	UserAttribute *attrib = gtk_clist_get_row_data( clist, row );
+	UserAttribute *attrib = gtk_cmclist_get_row_data( clist, row );
 	edit_person_attrib_clear( NULL );
 	if( attrib ) {
 		/* Remove list entry */
-		gtk_clist_remove( clist, row );
+		gtk_cmclist_remove( clist, row );
 		addritem_free_attribute( attrib );
 		attrib = NULL;
 	}
 
 	/* Position hilite bar */
-	attrib = gtk_clist_get_row_data( clist, row );
+	attrib = gtk_cmclist_get_row_data( clist, row );
 	if( ! attrib ) {
 		personeditdlg.rowIndAttrib = -1 + row;
 	} 
 	
 	if (!personeditdlg.read_only && !personeditdlg.ldap)
-		gtk_widget_set_sensitive(personeditdlg.attrib_del, gtk_clist_get_row_data(clist, 0) != NULL);
+		gtk_widget_set_sensitive(personeditdlg.attrib_del, gtk_cmclist_get_row_data(clist, 0) != NULL);
 	
 	edit_person_status_show( NULL );
 }
@@ -598,25 +598,25 @@ static UserAttribute *edit_person_attrib_edit( gboolean *error, UserAttribute *a
 
 static void edit_person_attrib_modify( gpointer data ) {
 	gboolean errFlg = FALSE;
-	GtkCList *clist = GTK_CLIST(personeditdlg.clist_attrib);
+	GtkCMCList *clist = GTK_CMCLIST(personeditdlg.clist_attrib);
 	gint row = personeditdlg.rowIndAttrib;
-	UserAttribute *attrib = gtk_clist_get_row_data( clist, row );
+	UserAttribute *attrib = gtk_cmclist_get_row_data( clist, row );
 	if( attrib ) {
 		edit_person_attrib_edit( &errFlg, attrib );
 		if( ! errFlg ) {
-			gtk_clist_set_text( clist, row, ATTRIB_COL_NAME, attrib->name );
-			gtk_clist_set_text( clist, row, ATTRIB_COL_VALUE, attrib->value );
+			gtk_cmclist_set_text( clist, row, ATTRIB_COL_NAME, attrib->name );
+			gtk_cmclist_set_text( clist, row, ATTRIB_COL_VALUE, attrib->value );
 			edit_person_attrib_clear( NULL );
 		}
 	}
 }
 
 static void edit_person_attrib_add( gpointer data ) {
-	GtkCList *clist = GTK_CLIST(personeditdlg.clist_attrib);
+	GtkCMCList *clist = GTK_CMCLIST(personeditdlg.clist_attrib);
 	gboolean errFlg = FALSE;
 	UserAttribute *attrib = NULL;
 	gint row = personeditdlg.rowIndAttrib;
-	if( gtk_clist_get_row_data( clist, row ) == NULL ) row = 0;
+	if( gtk_cmclist_get_row_data( clist, row ) == NULL ) row = 0;
 
 	attrib = edit_person_attrib_edit( &errFlg, NULL );
 	if( ! errFlg ) {
@@ -624,9 +624,9 @@ static void edit_person_attrib_add( gpointer data ) {
 		text[ ATTRIB_COL_NAME  ] = attrib->name;
 		text[ ATTRIB_COL_VALUE ] = attrib->value;
 
-		row = gtk_clist_insert( clist, 1 + row, text );
-		gtk_clist_set_row_data( clist, row, attrib );
-		gtk_clist_select_row( clist, row, 0 );
+		row = gtk_cmclist_insert( clist, 1 + row, text );
+		gtk_cmclist_set_row_data( clist, row, attrib );
+		gtk_cmclist_select_row( clist, row, 0 );
 		edit_person_attrib_clear( NULL );
 	}
 }
@@ -1000,7 +1000,7 @@ static gboolean email_adding = FALSE, email_saving = FALSE;
 
 static void edit_person_entry_email_changed (GtkWidget *entry, gpointer data)
 {
-	gboolean non_empty = gtk_clist_get_row_data(GTK_CLIST(personeditdlg.clist_email), 0) != NULL;
+	gboolean non_empty = gtk_cmclist_get_row_data(GTK_CMCLIST(personeditdlg.clist_email), 0) != NULL;
 
 	if (personeditdlg.read_only)
 		return;
@@ -1090,15 +1090,15 @@ static void addressbook_edit_person_page_email( gint pageNum, gchar *pageLbl ) {
 				       GTK_POLICY_AUTOMATIC,
 				       GTK_POLICY_AUTOMATIC);
 
-	clist = gtk_clist_new_with_titles( EMAIL_N_COLS, titles );
+	clist = gtk_cmclist_new_with_titles( EMAIL_N_COLS, titles );
 
 	gtk_container_add( GTK_CONTAINER(clist_swin), clist );
-	gtk_clist_set_selection_mode( GTK_CLIST(clist), GTK_SELECTION_BROWSE );
-	gtk_clist_set_column_width( GTK_CLIST(clist), EMAIL_COL_EMAIL, EMAIL_COL_WIDTH_EMAIL );
-	gtk_clist_set_column_width( GTK_CLIST(clist), EMAIL_COL_ALIAS, EMAIL_COL_WIDTH_ALIAS );
+	gtk_cmclist_set_selection_mode( GTK_CMCLIST(clist), GTK_SELECTION_BROWSE );
+	gtk_cmclist_set_column_width( GTK_CMCLIST(clist), EMAIL_COL_EMAIL, EMAIL_COL_WIDTH_EMAIL );
+	gtk_cmclist_set_column_width( GTK_CMCLIST(clist), EMAIL_COL_ALIAS, EMAIL_COL_WIDTH_ALIAS );
 
 	for( i = 0; i < EMAIL_N_COLS; i++ )
-		GTK_WIDGET_UNSET_FLAGS(GTK_CLIST(clist)->column[i].button, GTK_CAN_FOCUS);
+		GTK_WIDGET_UNSET_FLAGS(GTK_CMCLIST(clist)->column[i].button, GTK_CAN_FOCUS);
 
 	/* Data entry area */
 	table = gtk_table_new( 4, 2, FALSE);
@@ -1109,7 +1109,7 @@ static void addressbook_edit_person_page_email( gint pageNum, gchar *pageLbl ) {
 #else
 	gtk_box_pack_start(GTK_BOX(vboxl), table, FALSE, FALSE, 0);
 	gtk_container_add( GTK_CONTAINER(vboxl), clist_swin );
-	gtk_clist_column_titles_hide(GTK_CLIST(clist));
+	gtk_cmclist_column_titles_hide(GTK_CMCLIST(clist));
 #endif
 	gtk_container_set_border_width( GTK_CONTAINER(table), 4 );
 	gtk_table_set_row_spacings(GTK_TABLE(table), 4);
@@ -1213,7 +1213,7 @@ static gboolean attrib_adding = FALSE, attrib_saving = FALSE;
 
 static void edit_person_entry_att_changed (GtkWidget *entry, gpointer data)
 {
-	gboolean non_empty = gtk_clist_get_row_data(GTK_CLIST(personeditdlg.clist_attrib), 0) != NULL;
+	gboolean non_empty = gtk_cmclist_get_row_data(GTK_CMCLIST(personeditdlg.clist_attrib), 0) != NULL;
 	const gchar *atname;
 
 	if (personeditdlg.read_only || personeditdlg.ldap)
@@ -1299,16 +1299,16 @@ static void addressbook_edit_person_page_attrib( gint pageNum, gchar *pageLbl ) 
 				       GTK_POLICY_AUTOMATIC,
 				       GTK_POLICY_AUTOMATIC);
 
-	clist = gtk_clist_new_with_titles( ATTRIB_N_COLS, titles );
+	clist = gtk_cmclist_new_with_titles( ATTRIB_N_COLS, titles );
 	gtk_container_add( GTK_CONTAINER(clist_swin), clist );
-	gtk_clist_set_selection_mode( GTK_CLIST(clist), GTK_SELECTION_BROWSE );
-	gtk_clist_set_compare_func( GTK_CLIST(clist), edit_person_attrib_compare_func );
-	gtk_clist_set_auto_sort( GTK_CLIST(clist), TRUE );
-	gtk_clist_set_column_width( GTK_CLIST(clist), ATTRIB_COL_NAME, ATTRIB_COL_WIDTH_NAME );
-	gtk_clist_set_column_width( GTK_CLIST(clist), ATTRIB_COL_VALUE, ATTRIB_COL_WIDTH_VALUE );
+	gtk_cmclist_set_selection_mode( GTK_CMCLIST(clist), GTK_SELECTION_BROWSE );
+	gtk_cmclist_set_compare_func( GTK_CMCLIST(clist), edit_person_attrib_compare_func );
+	gtk_cmclist_set_auto_sort( GTK_CMCLIST(clist), TRUE );
+	gtk_cmclist_set_column_width( GTK_CMCLIST(clist), ATTRIB_COL_NAME, ATTRIB_COL_WIDTH_NAME );
+	gtk_cmclist_set_column_width( GTK_CMCLIST(clist), ATTRIB_COL_VALUE, ATTRIB_COL_WIDTH_VALUE );
 
 	for( i = 0; i < ATTRIB_N_COLS; i++ )
-		GTK_WIDGET_UNSET_FLAGS(GTK_CLIST(clist)->column[i].button, GTK_CAN_FOCUS);
+		GTK_WIDGET_UNSET_FLAGS(GTK_CMCLIST(clist)->column[i].button, GTK_CAN_FOCUS);
 
 	/* Data entry area */
 #ifndef GENERIC_UMPC
@@ -1319,7 +1319,7 @@ static void addressbook_edit_person_page_attrib( gint pageNum, gchar *pageLbl ) 
 	table = gtk_table_new( 2, 4, FALSE);
 	gtk_box_pack_start(GTK_BOX(vboxl), table, FALSE, FALSE, 0);
 	gtk_container_add( GTK_CONTAINER(vboxl), clist_swin );
-	gtk_clist_column_titles_hide(GTK_CLIST(clist));
+	gtk_cmclist_column_titles_hide(GTK_CMCLIST(clist));
 #endif
 	gtk_container_set_border_width( GTK_CONTAINER(table), 4 );
 	gtk_table_set_row_spacings(GTK_TABLE(table), 4);
@@ -1435,11 +1435,11 @@ static void addressbook_edit_person_create( GtkWidget *parent, gboolean *cancell
 * Return list of email items.
 */
 static GList *edit_person_build_email_list() {
-	GtkCList *clist = GTK_CLIST(personeditdlg.clist_email);
+	GtkCMCList *clist = GTK_CMCLIST(personeditdlg.clist_email);
 	GList *listEMail = NULL;
 	ItemEMail *email;
 	gint row = 0;
-	while( (email = gtk_clist_get_row_data( clist, row )) ) {
+	while( (email = gtk_cmclist_get_row_data( clist, row )) ) {
 		listEMail = g_list_append( listEMail, email );
 		row++;
 	}
@@ -1450,11 +1450,11 @@ static GList *edit_person_build_email_list() {
 * Return list of attributes.
 */
 static GList *edit_person_build_attrib_list() {
-	GtkCList *clist = GTK_CLIST(personeditdlg.clist_attrib);
+	GtkCMCList *clist = GTK_CMCLIST(personeditdlg.clist_attrib);
 	GList *listAttrib = NULL;
 	UserAttribute *attrib;
 	gint row = 0;
-	while( (attrib = gtk_clist_get_row_data( clist, row )) ) {
+	while( (attrib = gtk_cmclist_get_row_data( clist, row )) ) {
 		listAttrib = g_list_append( listAttrib, attrib );
 		row++;
 	}
@@ -1526,8 +1526,8 @@ static gboolean addressbook_edit_person_close( gboolean cancelled )
 	if( cancelled ) {
 		addritem_free_list_email( listEMail );
 		addritem_free_list_attribute( listAttrib );
-		gtk_clist_clear( GTK_CLIST(personeditdlg.clist_email) );
-		gtk_clist_clear( GTK_CLIST(personeditdlg.clist_attrib) );
+		gtk_cmclist_clear( GTK_CMCLIST(personeditdlg.clist_email) );
+		gtk_cmclist_clear( GTK_CMCLIST(personeditdlg.clist_attrib) );
 
 		if (!prefs_common.addressbook_use_editaddress_dialog)
 			gtk_widget_hide( personeditdlg.container );
@@ -1608,8 +1608,8 @@ static gboolean addressbook_edit_person_close( gboolean cancelled )
 		g_free( name );
 	}
 
-	gtk_clist_clear( GTK_CLIST(personeditdlg.clist_email) );
-	gtk_clist_clear( GTK_CLIST(personeditdlg.clist_attrib) );
+	gtk_cmclist_clear( GTK_CMCLIST(personeditdlg.clist_email) );
+	gtk_cmclist_clear( GTK_CMCLIST(personeditdlg.clist_attrib) );
 
 	if (!prefs_common.addressbook_use_editaddress_dialog)
 		gtk_widget_hide( personeditdlg.container );
@@ -1667,8 +1667,8 @@ ItemPerson *addressbook_edit_person( AddressBookFile *abf, ItemFolder *parent_fo
 	personeditdlg.rowIndEMail = -1;
 	personeditdlg.rowIndAttrib = -1;
 	edit_person_status_show( "" );
-	gtk_clist_clear( GTK_CLIST(personeditdlg.clist_email) );
-	gtk_clist_clear( GTK_CLIST(personeditdlg.clist_attrib) );
+	gtk_cmclist_clear( GTK_CMCLIST(personeditdlg.clist_email) );
+	gtk_cmclist_clear( GTK_CMCLIST(personeditdlg.clist_attrib) );
 	gtk_entry_set_text(GTK_ENTRY(personeditdlg.entry_name), "" );
 	gtk_entry_set_text(GTK_ENTRY(personeditdlg.entry_first), "" );
 	gtk_entry_set_text(GTK_ENTRY(personeditdlg.entry_last), "" );
@@ -1733,11 +1733,11 @@ no_img:
 		gtk_notebook_set_current_page( GTK_NOTEBOOK(personeditdlg.notebook), PAGE_BASIC );
 	}
 
-	gtk_clist_select_row( GTK_CLIST(personeditdlg.clist_email), 0, 0 );
-	gtk_clist_select_row( GTK_CLIST(personeditdlg.clist_attrib), 0, 0 );
+	gtk_cmclist_select_row( GTK_CMCLIST(personeditdlg.clist_email), 0, 0 );
+	gtk_cmclist_select_row( GTK_CMCLIST(personeditdlg.clist_attrib), 0, 0 );
 	edit_person_email_clear( NULL );
 	if (current_person)
-		edit_person_email_list_selected(GTK_CLIST(personeditdlg.clist_email), 0, 0, NULL, NULL);
+		edit_person_email_list_selected(GTK_CMCLIST(personeditdlg.clist_email), 0, 0, NULL, NULL);
 
 	edit_person_attrib_clear( NULL );
 

@@ -203,7 +203,7 @@ static void imp_ldif_message( void ) {
  * Update list with data for current row.
  * \param clist List to update.
  */
-static void imp_ldif_update_row( GtkCList *clist ) {
+static void imp_ldif_update_row( GtkCMCList *clist ) {
 	Ldif_FieldRec *rec;
 	gchar *text[ FIELDS_N_COLS ];
 	gint row;
@@ -211,31 +211,31 @@ static void imp_ldif_update_row( GtkCList *clist ) {
 	if( impldif_dlg.rowIndSelect < 0 ) return;
 	row = impldif_dlg.rowIndSelect;
 
-	rec = gtk_clist_get_row_data( clist, row );
+	rec = gtk_cmclist_get_row_data( clist, row );
 	text[ FIELD_COL_RESERVED ] = "";
 	text[ FIELD_COL_SELECT   ] = "";
 	text[ FIELD_COL_FIELD    ] = rec->tagName;
 	text[ FIELD_COL_ATTRIB   ] = rec->userName;
 
-	gtk_clist_freeze( clist );
-	gtk_clist_remove( clist, row );
+	gtk_cmclist_freeze( clist );
+	gtk_cmclist_remove( clist, row );
 	if( row == impldif_dlg.rowCount - 1 ) {
-		gtk_clist_append( clist, text );
+		gtk_cmclist_append( clist, text );
 	}
 	else {
-		gtk_clist_insert( clist, row, text );
+		gtk_cmclist_insert( clist, row, text );
 	}
 	if( rec->selected ) {
-		gtk_clist_set_pixmap(
+		gtk_cmclist_set_pixmap(
 			clist, row, FIELD_COL_SELECT, markxpm, markxpmmask );
 	}
 	if( rec->reserved ) {
-		gtk_clist_set_pixmap(
+		gtk_cmclist_set_pixmap(
 			clist, row, FIELD_COL_RESERVED, markxpm, markxpmmask );
 	}
 
-	gtk_clist_set_row_data( clist, row, rec );
-	gtk_clist_thaw( clist );
+	gtk_cmclist_set_row_data( clist, row, rec );
+	gtk_cmclist_thaw( clist );
 }
 
 /**
@@ -243,14 +243,14 @@ static void imp_ldif_update_row( GtkCList *clist ) {
  * \param ldf LDIF control data.
  */
 static void imp_ldif_load_fields( LdifFile *ldf ) {
-	GtkCList *clist = GTK_CLIST(impldif_dlg.clist_field);
+	GtkCMCList *clist = GTK_CMCLIST(impldif_dlg.clist_field);
 	GList *node, *list;
 	gchar *text[ FIELDS_N_COLS ];
 
 	impldif_dlg.rowIndSelect = -1;
 	impldif_dlg.rowCount = 0;
 	if( ! ldf->accessFlag ) return;
-	gtk_clist_clear( clist );
+	gtk_cmclist_clear( clist );
 	list = ldif_get_fieldlist( ldf );
 	node = list;
 	while( node ) {
@@ -261,14 +261,14 @@ static void imp_ldif_load_fields( LdifFile *ldf ) {
 		text[ FIELD_COL_SELECT   ] = "";
 		text[ FIELD_COL_FIELD    ] = rec->tagName;
 		text[ FIELD_COL_ATTRIB   ] = rec->userName;
-		row = gtk_clist_append( clist, text );
-		gtk_clist_set_row_data( clist, row, rec );
+		row = gtk_cmclist_append( clist, text );
+		gtk_cmclist_set_row_data( clist, row, rec );
 		if( rec->selected ) {
-			gtk_clist_set_pixmap( clist, row,
+			gtk_cmclist_set_pixmap( clist, row,
 				FIELD_COL_SELECT, markxpm, markxpmmask );
 		}
 		if( rec->reserved ) {
-			gtk_clist_set_pixmap( clist, row,
+			gtk_cmclist_set_pixmap( clist, row,
 				FIELD_COL_RESERVED, markxpm, markxpmmask );
 		}
 		impldif_dlg.rowCount++;
@@ -288,10 +288,10 @@ static void imp_ldif_load_fields( LdifFile *ldf ) {
  * \param data  User data.
  */
 static void imp_ldif_field_list_selected(
-		GtkCList *clist, gint row, gint column, GdkEvent *event,
+		GtkCMCList *clist, gint row, gint column, GdkEvent *event,
 		gpointer data )
 {
-	Ldif_FieldRec *rec = gtk_clist_get_row_data( clist, row );
+	Ldif_FieldRec *rec = gtk_cmclist_get_row_data( clist, row );
 
 	impldif_dlg.rowIndSelect = row;
 	gtk_entry_set_text( GTK_ENTRY(impldif_dlg.entryAttrib), "" );
@@ -324,7 +324,7 @@ static void imp_ldif_field_list_selected(
  * \param data  Data.
  */
 static gboolean imp_ldif_field_list_toggle(
-		GtkCList *clist, GdkEventButton *event, gpointer data )
+		GtkCMCList *clist, GdkEventButton *event, gpointer data )
 {
 	Ldif_FieldRec *rec;
 	gboolean toggle = FALSE;
@@ -338,7 +338,7 @@ static gboolean imp_ldif_field_list_toggle(
 			gint y = event->y;
 			gint row, col;
 
-			gtk_clist_get_selection_info( clist, x, y, &row, &col );
+			gtk_cmclist_get_selection_info( clist, x, y, &row, &col );
 			if( col != FIELD_COL_SELECT ) return FALSE;
 			if( row > impldif_dlg.rowCount ) return FALSE;
 
@@ -354,7 +354,7 @@ static gboolean imp_ldif_field_list_toggle(
 	}
 	/* Toggle field selection */
 	if( toggle ) {
-		rec = gtk_clist_get_row_data(
+		rec = gtk_cmclist_get_row_data(
 			clist, impldif_dlg.rowIndSelect );
 		if( rec ) {
 			ldif_field_toggle( rec );
@@ -370,20 +370,20 @@ static gboolean imp_ldif_field_list_toggle(
  * \param data   User data.
  */
 static void imp_ldif_modify_pressed( GtkWidget *widget, gpointer data ) {
-	GtkCList *clist = GTK_CLIST(impldif_dlg.clist_field);
+	GtkCMCList *clist = GTK_CMCLIST(impldif_dlg.clist_field);
 	Ldif_FieldRec *rec;
 	gint row;
 
 	if( impldif_dlg.rowIndSelect < 0 ) return;
 	row = impldif_dlg.rowIndSelect;
-	rec = gtk_clist_get_row_data( clist, impldif_dlg.rowIndSelect );
+	rec = gtk_cmclist_get_row_data( clist, impldif_dlg.rowIndSelect );
 
 	ldif_field_set_name( rec, gtk_editable_get_chars(
 		GTK_EDITABLE(impldif_dlg.entryAttrib), 0, -1 ) );
 	ldif_field_set_selected( rec, gtk_toggle_button_get_active(
 		GTK_TOGGLE_BUTTON( impldif_dlg.checkSelect) ) );
 	imp_ldif_update_row( clist );
-	gtk_clist_select_row( clist, row, 0 );
+	gtk_cmclist_select_row( clist, row, 0 );
 	gtk_label_set_text( GTK_LABEL(impldif_dlg.entryField), "" );
 	gtk_entry_set_text( GTK_ENTRY(impldif_dlg.entryAttrib), "" );
 	gtk_toggle_button_set_active(
@@ -752,23 +752,23 @@ static void imp_ldif_page_fields( gint pageNum, gchar *pageLbl ) {
 				       GTK_POLICY_AUTOMATIC,
 				       GTK_POLICY_AUTOMATIC);
 
-	clist_field = gtk_clist_new_with_titles( FIELDS_N_COLS, titles );
+	clist_field = gtk_cmclist_new_with_titles( FIELDS_N_COLS, titles );
 	gtk_container_add( GTK_CONTAINER(clist_swin), clist_field );
-	gtk_clist_set_selection_mode(
-		GTK_CLIST(clist_field), GTK_SELECTION_BROWSE );
-	gtk_clist_set_column_width( GTK_CLIST(clist_field),
+	gtk_cmclist_set_selection_mode(
+		GTK_CMCLIST(clist_field), GTK_SELECTION_BROWSE );
+	gtk_cmclist_set_column_width( GTK_CMCLIST(clist_field),
 		FIELD_COL_RESERVED, FIELDS_COL_WIDTH_RESERVED );
-	gtk_clist_set_column_width( GTK_CLIST(clist_field),
+	gtk_cmclist_set_column_width( GTK_CMCLIST(clist_field),
 		FIELD_COL_SELECT, FIELDS_COL_WIDTH_SELECT );
-	gtk_clist_set_column_width( GTK_CLIST(clist_field),
+	gtk_cmclist_set_column_width( GTK_CMCLIST(clist_field),
 		FIELD_COL_FIELD, FIELDS_COL_WIDTH_FIELD );
-	gtk_clist_set_column_width( GTK_CLIST(clist_field),
+	gtk_cmclist_set_column_width( GTK_CMCLIST(clist_field),
 		FIELD_COL_ATTRIB, FIELDS_COL_WIDTH_ATTRIB );
 
 	/* Remove focus capability for column headers */
 	for( i = 0; i < FIELDS_N_COLS; i++ ) {
 		GTK_WIDGET_UNSET_FLAGS(
-			GTK_CLIST(clist_field)->column[i].button,
+			GTK_CMCLIST(clist_field)->column[i].button,
 			GTK_CAN_FOCUS);
 	}
 
@@ -1055,7 +1055,7 @@ AddressBookFile *addressbook_imp_ldif( AddressIndex *addrIndex ) {
 	gtk_entry_set_text( GTK_ENTRY(impldif_dlg.entryFile), "" );
 	gtk_label_set_text( GTK_LABEL(impldif_dlg.entryField), "" );
 	gtk_entry_set_text( GTK_ENTRY(impldif_dlg.entryAttrib), "" );
-	gtk_clist_clear( GTK_CLIST(impldif_dlg.clist_field) );
+	gtk_cmclist_clear( GTK_CMCLIST(impldif_dlg.clist_field) );
 	gtk_notebook_set_current_page( GTK_NOTEBOOK(impldif_dlg.notebook), PAGE_FILE_INFO );
 	gtk_widget_set_sensitive( impldif_dlg.btnPrev, FALSE );
 	gtk_widget_set_sensitive( impldif_dlg.btnNext, TRUE );

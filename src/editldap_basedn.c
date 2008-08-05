@@ -97,17 +97,17 @@ static void edit_ldap_bdn_cancel( GtkWidget *widget, gboolean *cancelled ) {
 	gtk_main_quit();
 }
 
-static void edit_ldap_bdn_list_select( GtkCList *clist, gint row, gint column, GdkEvent *event, gpointer data ) {
+static void edit_ldap_bdn_list_select( GtkCMCList *clist, gint row, gint column, GdkEvent *event, gpointer data ) {
 	gchar *text = NULL;
 
-	if( gtk_clist_get_text( clist, row, 0, &text ) ) {
+	if( gtk_cmclist_get_text( clist, row, 0, &text ) ) {
 		if( text ) {
 			gtk_entry_set_text(GTK_ENTRY(ldapedit_basedn.basedn_entry), text );
 		}
 	}
 }
 
-static gboolean edit_ldap_bdn_list_button( GtkCList *clist, GdkEventButton *event, gpointer data ) {
+static gboolean edit_ldap_bdn_list_button( GtkCMCList *clist, GdkEventButton *event, gpointer data ) {
 	if( ! event ) return FALSE;
 	if( event->button == 1 ) {
 		if( event->type == GDK_2BUTTON_PRESS ) {
@@ -198,11 +198,11 @@ static void edit_ldap_bdn_create(void) {
 				       GTK_POLICY_AUTOMATIC);
 	gtk_box_pack_start(GTK_BOX(vlbox), lwindow, TRUE, TRUE, 0);
 
-	basedn_list = gtk_clist_new(1);
+	basedn_list = gtk_cmclist_new(1);
 	gtk_container_add(GTK_CONTAINER(lwindow), basedn_list);
-	gtk_clist_column_titles_show( GTK_CLIST(basedn_list) );
-	gtk_clist_set_column_title( GTK_CLIST(basedn_list), 0, _( "Available Search Base(s)" ) );
-	gtk_clist_set_selection_mode(GTK_CLIST(basedn_list), GTK_SELECTION_BROWSE);
+	gtk_cmclist_column_titles_show( GTK_CMCLIST(basedn_list) );
+	gtk_cmclist_set_column_title( GTK_CMCLIST(basedn_list), 0, _( "Available Search Base(s)" ) );
+	gtk_cmclist_set_selection_mode(GTK_CMCLIST(basedn_list), GTK_SELECTION_BROWSE);
 
 	/* Status line */
 	hsbox = gtk_hbox_new(FALSE, 0);
@@ -257,7 +257,7 @@ static void edit_ldap_bdn_load_data(
 	GList *baseDN = NULL;
 
 	edit_ldap_bdn_status_show( "" );
-	gtk_clist_clear(GTK_CLIST(ldapedit_basedn.basedn_list));
+	gtk_cmclist_clear(GTK_CMCLIST(ldapedit_basedn.basedn_list));
 	ldapedit_basedn_bad_server = TRUE;
 	flgConn = flgDN = FALSE;
 	sHost = g_strdup( hostName );
@@ -275,7 +275,7 @@ static void edit_ldap_bdn_load_data(
 
 				while( node ) {
 					text[0] = (gchar *)node->data;
-					gtk_clist_append(GTK_CLIST(ldapedit_basedn.basedn_list), text);
+					gtk_cmclist_append(GTK_CMCLIST(ldapedit_basedn.basedn_list), text);
 					node = g_list_next( node );
 					flgDN = TRUE;
 				}

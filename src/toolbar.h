@@ -103,7 +103,9 @@ struct _Toolbar {
 	GSList    *action_list;
 	GSList    *item_list;
 
+#if !GTK_CHECK_VERSION(2,12,0)
 	GtkTooltips *tooltips;
+#endif
 };
 
 struct _ToolbarItem {

@@ -133,8 +133,8 @@ static void set_sensitivity(GtkUIManager *ui_manager, FolderItem *item)
 static void subscribe_newsgroup_cb(GtkAction *action, gpointer data)
 {
 	FolderView *folderview = (FolderView *)data;
-	GtkCTree *ctree = GTK_CTREE(folderview->ctree);
-	GtkCTreeNode *servernode, *node;
+	GtkCMCTree *ctree = GTK_CMCTREE(folderview->ctree);
+	GtkCMCTreeNode *servernode, *node;
 	Folder *folder;
 	FolderItem *item;
 	FolderItem *rootitem;
@@ -146,7 +146,7 @@ static void subscribe_newsgroup_cb(GtkAction *action, gpointer data)
 	
 	if (!folderview->selected) return;
 
-	item = gtk_ctree_node_get_row_data(ctree, folderview->selected);
+	item = gtk_cmctree_node_get_row_data(ctree, folderview->selected);
 	g_return_if_fail(item != NULL);
 
 	if (mainwin->lock_count || news_folder_locked(item->folder))
@@ -157,12 +157,12 @@ static void subscribe_newsgroup_cb(GtkAction *action, gpointer data)
 	g_return_if_fail(FOLDER_TYPE(folder) == F_NEWS);
 	g_return_if_fail(folder->account != NULL);
 
-	if (GTK_CTREE_ROW(folderview->selected)->parent != NULL)
-		servernode = GTK_CTREE_ROW(folderview->selected)->parent;
+	if (GTK_CMCTREE_ROW(folderview->selected)->parent != NULL)
+		servernode = GTK_CMCTREE_ROW(folderview->selected)->parent;
 	else
 		servernode = folderview->selected;
 
-	rootitem = gtk_ctree_node_get_row_data(ctree, servernode);
+	rootitem = gtk_cmctree_node_get_row_data(ctree, servernode);
 
 	new_subscr = grouplist_dialog(folder);
 
@@ -177,7 +177,7 @@ static void subscribe_newsgroup_cb(GtkAction *action, gpointer data)
 			continue;
 		}
 
-		node = gtk_ctree_find_by_row_data(ctree, servernode, item);
+		node = gtk_cmctree_find_by_row_data(ctree, servernode, item);
 		if (!node) {
 			gnode = next;
 			continue;
@@ -188,13 +188,13 @@ static void subscribe_newsgroup_cb(GtkAction *action, gpointer data)
 			folderview->opened = NULL;
 		}
 
-		gtk_ctree_remove_node(ctree, node);
+		gtk_cmctree_remove_node(ctree, node);
 		folder_item_remove(item);
 
 		gnode = next;
 	}
 
-	gtk_clist_freeze(GTK_CLIST(ctree));
+	gtk_cmclist_freeze(GTK_CMCLIST(ctree));
 
 	/* add subscribed newsgroups */
 	for (cur = new_subscr; cur != NULL; cur = cur->next) {
@@ -213,7 +213,7 @@ static void subscribe_newsgroup_cb(GtkAction *action, gpointer data)
 		hooks_invoke(FOLDER_UPDATE_HOOKLIST, &hookdata);
 	}
 
-	gtk_clist_thaw(GTK_CLIST(ctree));
+	gtk_cmclist_thaw(GTK_CMCLIST(ctree));
 
 	slist_free_strings(new_subscr);
 	g_slist_free(new_subscr);
@@ -224,7 +224,7 @@ static void subscribe_newsgroup_cb(GtkAction *action, gpointer data)
 static void unsubscribe_newsgroup_cb(GtkAction *action, gpointer data)
 {
 	FolderView *folderview = (FolderView *)data;
-	GtkCTree *ctree = GTK_CTREE(folderview->ctree);
+	GtkCMCTree *ctree = GTK_CMCTREE(folderview->ctree);
 	FolderItem *item;
 	gchar *name;
 	gchar *message;
@@ -234,7 +234,7 @@ static void unsubscribe_newsgroup_cb(GtkAction *action, gpointer data)
 	
 	if (!folderview->selected) return;
 
-	item = gtk_ctree_node_get_row_data(ctree, folderview->selected);
+	item = gtk_cmctree_node_get_row_data(ctree, folderview->selected);
 	g_return_if_fail(item != NULL);
 
 	if (mainwin->lock_count || news_folder_locked(item->folder))
@@ -410,11 +410,11 @@ void news_gtk_synchronise(FolderItem *item, gint days)
 static void download_cb(GtkAction *action, gpointer data)
 {
 	FolderView *folderview = (FolderView *)data;
-	GtkCTree *ctree = GTK_CTREE(folderview->ctree);
+	GtkCMCTree *ctree = GTK_CMCTREE(folderview->ctree);
 	FolderItem *item;
 
 	if (!folderview->selected) return;
 
-	item = gtk_ctree_node_get_row_data(ctree, folderview->selected);
+	item = gtk_cmctree_node_get_row_data(ctree, folderview->selected);
 	news_gtk_synchronise(item, 0);
 }

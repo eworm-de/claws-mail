@@ -878,7 +878,7 @@ GtkWidget *stock_pixmap_widget_with_overlay(GtkWidget *window, StockPixmap icon,
 	data->highlight = FALSE;
 
 	widget = gtk_drawing_area_new();
-	gtk_drawing_area_size(GTK_DRAWING_AREA(widget), data->base_width + border_x * 2, 
+	gtk_widget_set_size_request(widget, data->base_width + border_x * 2, 
 			      data->base_height + border_y * 2);
 	g_signal_connect(G_OBJECT(widget), "expose_event", 
 			 G_CALLBACK(pixmap_with_overlay_expose_event_cb), data);

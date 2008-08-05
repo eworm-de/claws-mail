@@ -2653,9 +2653,9 @@ static void main_window_separation_change(MainWindow *mainwin, LayoutType layout
 		    prefs_common.layout_mode, layout_mode);
 
 	/* remove widgets from those containers */
-	gtk_widget_ref(folder_wid);
-	gtk_widget_ref(summary_wid);
-	gtk_widget_ref(message_wid);
+	g_object_ref(folder_wid);
+	g_object_ref(summary_wid);
+	g_object_ref(message_wid);
 	gtkut_container_remove
 		(GTK_CONTAINER(folder_wid->parent), folder_wid);
 	gtkut_container_remove
@@ -2667,9 +2667,9 @@ static void main_window_separation_change(MainWindow *mainwin, LayoutType layout
 	main_window_set_widgets(mainwin, layout_mode);
 	gtk_widget_show(mainwin->window);
 
-	gtk_widget_unref(folder_wid);
-	gtk_widget_unref(summary_wid);
-	gtk_widget_unref(message_wid);
+	g_object_unref(folder_wid);
+	g_object_unref(summary_wid);
+	g_object_unref(message_wid);
 }
 #endif
 void mainwindow_reset_paned(GtkPaned *paned)
@@ -2735,14 +2735,14 @@ void main_window_toggle_message_view(MainWindow *mainwin)
 		if (ppaned->parent != NULL) {
 			mainwin->messageview->visible = FALSE;
 			summaryview->displayed = NULL;
-			gtk_widget_ref(ppaned);
+			g_object_ref(ppaned);
 			gtkut_container_remove(GTK_CONTAINER(container), ppaned);
 			gtk_widget_reparent(GTK_WIDGET_PTR(summaryview), container);
 		} else {
 			mainwin->messageview->visible = TRUE;
 			gtk_widget_reparent(GTK_WIDGET_PTR(summaryview), ppaned);
 			gtk_container_add(GTK_CONTAINER(container), ppaned);
-			gtk_widget_unref(ppaned);
+			g_object_unref(ppaned);
 		}
 		break;
 	case WIDE_LAYOUT:
@@ -2751,12 +2751,12 @@ void main_window_toggle_message_view(MainWindow *mainwin)
 		if (mainwin->messageview->vbox->parent != NULL) {
 			mainwin->messageview->visible = FALSE;
 			summaryview->displayed = NULL;
-			gtk_widget_ref(mainwin->messageview->vbox);
+			g_object_ref(mainwin->messageview->vbox);
 			gtkut_container_remove(GTK_CONTAINER(container), mainwin->messageview->vbox);
 		} else {
 			mainwin->messageview->visible = TRUE;
 			gtk_container_add(GTK_CONTAINER(container), mainwin->messageview->vbox);
-			gtk_widget_unref(mainwin->messageview->vbox);
+			g_object_unref(mainwin->messageview->vbox);
 		}
 		break;
 	case WIDE_MSGLIST_LAYOUT:
@@ -3474,7 +3474,7 @@ void main_window_show(MainWindow *mainwin)
 	gtk_widget_show(mainwin->window);
 	gtk_widget_show(mainwin->vbox_body);
 #ifndef GENERIC_UMPC
-        gtk_widget_set_uposition(mainwin->window,
+        gtk_window_move(GTK_WINDOW(mainwin->window),
                                  prefs_common.mainwin_x,
                                  prefs_common.mainwin_y);
 
@@ -3565,7 +3565,7 @@ static void main_window_set_widgets(MainWindow *mainwin, LayoutType layout_mode)
 		} else {
 			gtk_paned_add2(GTK_PANED(hpaned),
 				       GTK_WIDGET_PTR(mainwin->summaryview));
-			gtk_widget_ref(vpaned);
+			g_object_ref(vpaned);
 		}
 		gtk_paned_add2(GTK_PANED(vpaned),
 			       GTK_WIDGET_PTR(mainwin->messageview));
@@ -3593,7 +3593,7 @@ static void main_window_set_widgets(MainWindow *mainwin, LayoutType layout_mode)
 			gtk_paned_add2(GTK_PANED(vpaned),
 			       GTK_WIDGET_PTR(mainwin->messageview));	
 		} else {
-			gtk_widget_ref(GTK_WIDGET_PTR(mainwin->messageview));
+			g_object_ref(GTK_WIDGET_PTR(mainwin->messageview));
 		}
 		gtk_widget_show(vpaned);
 		gtk_widget_queue_resize(vpaned);
@@ -3615,7 +3615,7 @@ static void main_window_set_widgets(MainWindow *mainwin, LayoutType layout_mode)
 			gtk_paned_add2(GTK_PANED(hpaned),
 			       GTK_WIDGET_PTR(mainwin->messageview));	
 		} else {
-			gtk_widget_ref(GTK_WIDGET_PTR(mainwin->messageview));
+			g_object_ref(GTK_WIDGET_PTR(mainwin->messageview));
 		}
 		gtk_paned_add2(GTK_PANED(vpaned), hpaned);
 
@@ -3978,12 +3978,12 @@ static void toggle_col_headers_cb(GtkAction *gaction, gpointer data)
 	SummaryView *summaryview = mainwin->summaryview;
 
 	if (gtk_toggle_action_get_active (GTK_TOGGLE_ACTION (gaction))) {
-		gtk_clist_column_titles_show(GTK_CLIST(folderview->ctree));
-		gtk_clist_column_titles_show(GTK_CLIST(summaryview->ctree));
+		gtk_cmclist_column_titles_show(GTK_CMCLIST(folderview->ctree));
+		gtk_cmclist_column_titles_show(GTK_CMCLIST(summaryview->ctree));
 		prefs_common.show_col_headers = TRUE;
 	} else {
-		gtk_clist_column_titles_hide(GTK_CLIST(folderview->ctree));
-		gtk_clist_column_titles_hide(GTK_CLIST(summaryview->ctree));
+		gtk_cmclist_column_titles_hide(GTK_CMCLIST(folderview->ctree));
+		gtk_cmclist_column_titles_hide(GTK_CMCLIST(summaryview->ctree));
 		prefs_common.show_col_headers = FALSE;
 	}
 }
@@ -4538,7 +4538,7 @@ static void update_summary_cb(GtkAction *action, gpointer data)
 
 	folder_update_op_count();
 
-	fitem = gtk_ctree_node_get_row_data(GTK_CTREE(folderview->ctree),
+	fitem = gtk_cmctree_node_get_row_data(GTK_CMCTREE(folderview->ctree),
 					    folderview->opened);
 	if (!fitem) return;
 
@@ -4846,8 +4846,8 @@ static gboolean mainwindow_focus_in_event(GtkWidget *widget, GdkEventFocus *focu
 	summary = ((MainWindow *)data)->summaryview;
 	g_return_val_if_fail(summary, FALSE);
 
-	if (GTK_CLIST(summary->ctree)->selection && 
-	    g_list_length(GTK_CLIST(summary->ctree)->selection) > 1)
+	if (GTK_CMCLIST(summary->ctree)->selection && 
+	    g_list_length(GTK_CMCLIST(summary->ctree)->selection) > 1)
 		return FALSE;
 
 	return FALSE;

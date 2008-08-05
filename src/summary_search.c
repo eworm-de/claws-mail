@@ -26,18 +26,8 @@
 #include <glib.h>
 #include <glib/gi18n.h>
 #include <gdk/gdkkeysyms.h>
-#include <gtk/gtkwidget.h>
-#include <gtk/gtkwindow.h>
-#include <gtk/gtkvbox.h>
-#include <gtk/gtktable.h>
-#include <gtk/gtkoptionmenu.h>
-#include <gtk/gtklabel.h>
-#include <gtk/gtkentry.h>
-#include <gtk/gtkhbox.h>
-#include <gtk/gtkcheckbutton.h>
-#include <gtk/gtkhbbox.h>
-#include <gtk/gtkbutton.h>
-#include <gtk/gtkctree.h>
+#include <gtk/gtk.h>
+#include "gtk/gtksctree.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -493,8 +483,8 @@ static void summary_search_create(void)
 static void summary_search_execute(gboolean backward, gboolean search_all)
 {
 	SummaryView *summaryview = search_window.summaryview;
-	GtkCTree *ctree = GTK_CTREE(summaryview->ctree);
-	GtkCTreeNode *node;
+	GtkCMCTree *ctree = GTK_CMCTREE(summaryview->ctree);
+	GtkCMCTreeNode *node;
 	MsgInfo *msginfo;
 	gboolean adv_search;
 	gboolean bool_and = FALSE;
@@ -627,13 +617,13 @@ static void summary_search_execute(gboolean backward, gboolean search_all)
 	if (search_all) {
 		summary_freeze(summaryview);
 		summary_unselect_all(summaryview);
-		node = GTK_CTREE_NODE(GTK_CLIST(ctree)->row_list);
+		node = GTK_CMCTREE_NODE(GTK_CMCLIST(ctree)->row_list);
 		backward = FALSE;
 	} else if (!summaryview->selected) {
 		if (backward) {
-			node = GTK_CTREE_NODE(GTK_CLIST(ctree)->row_list_end);
+			node = GTK_CMCTREE_NODE(GTK_CMCLIST(ctree)->row_list_end);
 		} else {
-			node = GTK_CTREE_NODE(GTK_CLIST(ctree)->row_list);
+			node = GTK_CMCTREE_NODE(GTK_CMCLIST(ctree)->row_list);
 		}
 
 		if (!node) {
@@ -679,11 +669,11 @@ static void summary_search_execute(gboolean backward, gboolean search_all)
 					 GTK_STOCK_NO, "+" GTK_STOCK_YES, NULL);
 			if (G_ALERTALTERNATE == val) {
 				if (backward) {
-					node = GTK_CTREE_NODE
-						(GTK_CLIST(ctree)->row_list_end);
+					node = GTK_CMCTREE_NODE
+						(GTK_CMCLIST(ctree)->row_list_end);
 				} else {
-					node = GTK_CTREE_NODE
-						(GTK_CLIST(ctree)->row_list);
+					node = GTK_CMCTREE_NODE
+						(GTK_CMCLIST(ctree)->row_list);
 				}
 
 				all_searched = TRUE;
@@ -694,7 +684,7 @@ static void summary_search_execute(gboolean backward, gboolean search_all)
 			}
 		}
 
-		msginfo = gtk_ctree_node_get_row_data(ctree, node);
+		msginfo = gtk_cmctree_node_get_row_data(ctree, node);
 		body_matched = FALSE;
 
 		if (adv_search) {
@@ -761,7 +751,7 @@ static void summary_search_execute(gboolean backward, gboolean search_all)
 
 		if (matched) {
 			if (search_all) {
-				gtk_ctree_select(ctree, node);
+				gtk_cmctree_select(ctree, node);
 			} else {
 				if (messageview_is_visible
 					(summaryview->messageview)) {

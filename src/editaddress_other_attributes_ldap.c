@@ -78,12 +78,12 @@ static void edit_person_attrib_clear(gpointer data) {
 
 static gboolean list_find_attribute(const gchar *attr)
 {
-	GtkCList *clist = GTK_CLIST(personEditDlg->clist_attrib);
+	GtkCMCList *clist = GTK_CMCLIST(personEditDlg->clist_attrib);
 	UserAttribute *attrib;
 	gint row = 0;
-	while((attrib = gtk_clist_get_row_data(clist, row))) {
+	while((attrib = gtk_cmclist_get_row_data(clist, row))) {
 		if (!g_ascii_strcasecmp(attrib->name, attr)) {
-			gtk_clist_select_row(clist, row, 0);
+			gtk_cmclist_select_row(clist, row, 0);
 			return TRUE;
 		}
 		row++;
@@ -95,9 +95,9 @@ static gboolean list_find_attribute(const gchar *attr)
 * Comparison using cell contents (text in first column). Used for sort
 * address index widget.
 */
-static gint edit_person_attrib_compare_func(GtkCList *clist, gconstpointer ptr1, gconstpointer ptr2) {
-	GtkCell *cell1 = ((GtkCListRow *)ptr1)->cell;
-	GtkCell *cell2 = ((GtkCListRow *)ptr2)->cell;
+static gint edit_person_attrib_compare_func(GtkCMCList *clist, gconstpointer ptr1, gconstpointer ptr2) {
+	GtkCMCell *cell1 = ((GtkCMCListRow *)ptr1)->cell;
+	GtkCMCell *cell2 = ((GtkCMCListRow *)ptr2)->cell;
 	gchar *name1 = NULL, *name2 = NULL;
 
 	if (cell1) name1 = cell1->u.text;
@@ -109,9 +109,9 @@ static gint edit_person_attrib_compare_func(GtkCList *clist, gconstpointer ptr1,
 
 static void edit_person_combo_box_changed(GtkComboBox *opt_menu, gpointer data)
 {
-	GtkCList *clist = GTK_CLIST(data);
+	GtkCMCList *clist = GTK_CMCLIST(data);
 	gint row = personEditDlg->rowIndAttrib;
-	UserAttribute *attrib = gtk_clist_get_row_data(clist, row);
+	UserAttribute *attrib = gtk_cmclist_get_row_data(clist, row);
 	gint option = gtk_combo_box_get_active(opt_menu);
 	const gchar *str = attrib ? attrib->name:"";
 
@@ -127,8 +127,8 @@ static void edit_person_combo_box_changed(GtkComboBox *opt_menu, gpointer data)
 	}
 }
 
-static void edit_person_attrib_list_selected(GtkCList *clist, gint row, gint column, GdkEvent *event, gpointer data) {
-	UserAttribute *attrib = gtk_clist_get_row_data(clist, row);
+static void edit_person_attrib_list_selected(GtkCMCList *clist, gint row, gint column, GdkEvent *event, gpointer data) {
+	UserAttribute *attrib = gtk_cmclist_get_row_data(clist, row);
 	if (attrib && !personEditDlg->read_only) {
 		int index = get_attribute_index(attrib->name);
 		if (index == -1)
@@ -148,25 +148,25 @@ static void edit_person_attrib_list_selected(GtkCList *clist, gint row, gint col
 }
 
 static void edit_person_attrib_delete(gpointer data) {
-	GtkCList *clist = GTK_CLIST(personEditDlg->clist_attrib);
+	GtkCMCList *clist = GTK_CMCLIST(personEditDlg->clist_attrib);
 	gint row = personEditDlg->rowIndAttrib;
-	UserAttribute *attrib = gtk_clist_get_row_data(clist, row);
+	UserAttribute *attrib = gtk_cmclist_get_row_data(clist, row);
 	edit_person_attrib_clear(NULL);
 	if (attrib) {
 		/* Remove list entry */
-		gtk_clist_remove(clist, row);
+		gtk_cmclist_remove(clist, row);
 		addritem_free_attribute(attrib);
 		attrib = NULL;
 	}
 
 	/* Position hilite bar */
-	attrib = gtk_clist_get_row_data(clist, row);
+	attrib = gtk_cmclist_get_row_data(clist, row);
 	if (!attrib) {
 		personEditDlg->rowIndAttrib = -1 + row;
 	} 
 	
 	if (!personEditDlg->read_only)
-		gtk_widget_set_sensitive(personEditDlg->attrib_del, gtk_clist_get_row_data(clist, 0) != NULL);
+		gtk_widget_set_sensitive(personEditDlg->attrib_del, gtk_cmclist_get_row_data(clist, 0) != NULL);
 	
 	edit_person_status_show(NULL);
 }
@@ -206,25 +206,25 @@ static UserAttribute *edit_person_attrib_edit(gboolean *error, UserAttribute *at
 
 static void edit_person_attrib_modify(gpointer data) {
 	gboolean errFlg = FALSE;
-	GtkCList *clist = GTK_CLIST(personEditDlg->clist_attrib);
+	GtkCMCList *clist = GTK_CMCLIST(personEditDlg->clist_attrib);
 	gint row = personEditDlg->rowIndAttrib;
-	UserAttribute *attrib = gtk_clist_get_row_data(clist, row);
+	UserAttribute *attrib = gtk_cmclist_get_row_data(clist, row);
 	if (attrib) {
 		edit_person_attrib_edit(&errFlg, attrib);
 		if (!errFlg) {
-			gtk_clist_set_text(clist, row, ATTRIB_COL_NAME, attrib->name);
-			gtk_clist_set_text(clist, row, ATTRIB_COL_VALUE, attrib->value);
+			gtk_cmclist_set_text(clist, row, ATTRIB_COL_NAME, attrib->name);
+			gtk_cmclist_set_text(clist, row, ATTRIB_COL_VALUE, attrib->value);
 			edit_person_attrib_clear(NULL);
 		}
 	}
 }
 
 static void edit_person_attrib_add(gpointer data) {
-	GtkCList *clist = GTK_CLIST(personEditDlg->clist_attrib);
+	GtkCMCList *clist = GTK_CMCLIST(personEditDlg->clist_attrib);
 	gboolean errFlg = FALSE;
 	UserAttribute *attrib = NULL;
 	gint row = personEditDlg->rowIndAttrib;
-	if (gtk_clist_get_row_data(clist, row) == NULL) row = 0;
+	if (gtk_cmclist_get_row_data(clist, row) == NULL) row = 0;
 
 	attrib = edit_person_attrib_edit(&errFlg, NULL);
 	if (!errFlg) {
@@ -232,16 +232,16 @@ static void edit_person_attrib_add(gpointer data) {
 		text[ATTRIB_COL_NAME] = attrib->name;
 		text[ATTRIB_COL_VALUE] = attrib->value;
 
-		row = gtk_clist_insert(clist, 1 + row, text);
-		gtk_clist_set_row_data(clist, row, attrib);
-		gtk_clist_select_row(clist, row, 0);
+		row = gtk_cmclist_insert(clist, 1 + row, text);
+		gtk_cmclist_set_row_data(clist, row, attrib);
+		gtk_cmclist_select_row(clist, row, 0);
 		edit_person_attrib_clear(NULL);
 	}
 }
 
 static void edit_person_entry_att_changed (GtkWidget *entry, gpointer data)
 {
-	gboolean non_empty = gtk_clist_get_row_data(GTK_CLIST(personEditDlg->clist_attrib), 0) != NULL;
+	gboolean non_empty = gtk_cmclist_get_row_data(GTK_CMCLIST(personEditDlg->clist_attrib), 0) != NULL;
 	const gchar *sName;
 	int index;
 
@@ -326,16 +326,16 @@ void addressbook_edit_person_page_attrib_ldap(PersonEditDlg *dialog, gint pageNu
 	gtk_scrolled_window_set_policy(GTK_SCROLLED_WINDOW(clist_swin),
 				       GTK_POLICY_AUTOMATIC, GTK_POLICY_AUTOMATIC);
 
-	clist = gtk_clist_new_with_titles(ATTRIB_N_COLS, titles);
+	clist = gtk_cmclist_new_with_titles(ATTRIB_N_COLS, titles);
 	gtk_container_add(GTK_CONTAINER(clist_swin), clist);
-	gtk_clist_set_selection_mode(GTK_CLIST(clist), GTK_SELECTION_BROWSE);
-	gtk_clist_set_column_width(GTK_CLIST(clist), ATTRIB_COL_NAME, ATTRIB_COL_WIDTH_NAME);
-	gtk_clist_set_column_width(GTK_CLIST(clist), ATTRIB_COL_VALUE, ATTRIB_COL_WIDTH_VALUE);
-	gtk_clist_set_compare_func(GTK_CLIST(clist), edit_person_attrib_compare_func);
-	gtk_clist_set_auto_sort(GTK_CLIST(clist), TRUE);
+	gtk_cmclist_set_selection_mode(GTK_CMCLIST(clist), GTK_SELECTION_BROWSE);
+	gtk_cmclist_set_column_width(GTK_CMCLIST(clist), ATTRIB_COL_NAME, ATTRIB_COL_WIDTH_NAME);
+	gtk_cmclist_set_column_width(GTK_CMCLIST(clist), ATTRIB_COL_VALUE, ATTRIB_COL_WIDTH_VALUE);
+	gtk_cmclist_set_compare_func(GTK_CMCLIST(clist), edit_person_attrib_compare_func);
+	gtk_cmclist_set_auto_sort(GTK_CMCLIST(clist), TRUE);
 
 	for (i = 0; i < ATTRIB_N_COLS; i++)
-		GTK_WIDGET_UNSET_FLAGS(GTK_CLIST(clist)->column[i].button, GTK_CAN_FOCUS);
+		GTK_WIDGET_UNSET_FLAGS(GTK_CMCLIST(clist)->column[i].button, GTK_CAN_FOCUS);
 
 	/* Data entry area */
 	table = gtk_table_new(4, 2, FALSE);

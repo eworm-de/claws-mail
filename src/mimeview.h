@@ -26,9 +26,8 @@ typedef struct _MimeViewer 		MimeViewer;
 
 #include <glib.h>
 #include <gdk/gdk.h>
-#include <gtk/gtkwidget.h>
-#include <gtk/gtkctree.h>
-#include <gtk/gtktooltips.h>
+#include <gtk/gtk.h>
+#include "gtk/gtksctree.h"
 #ifdef USE_PTHREAD
 #include <pthread.h>
 #endif
@@ -74,7 +73,7 @@ struct _MimeView
 
 	GtkWidget *popupmenu;
 
-	GtkCTreeNode *opened;
+	GtkCMCTreeNode *opened;
 
 	TextView *textview;
 	MimeViewer *mimeviewer;
@@ -91,7 +90,9 @@ struct _MimeView
 
 	gint icon_count;
 	MainWindow *mainwin;
+#if !GTK_CHECK_VERSION(2,12,0)
 	GtkTooltips *tooltips;
+#endif
 	gint oldsize;
 
 	NoticeView *siginfoview;

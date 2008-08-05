@@ -17,6 +17,7 @@
  * 
  */
 
+#undef GTK_DISABLE_DEPRECATED /*gtk_color_selection_set_color*/
 #ifdef HAVE_CONFIG_H
 #  include "config.h"
 #endif

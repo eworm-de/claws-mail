@@ -221,7 +221,7 @@ static GtkWidget *date_format_create(GtkButton *button, void *data)
 			 NULL);
 	gtk_tree_view_append_column(GTK_TREE_VIEW(datefmt_list_view), column);
 	
-	/* gtk_clist_set_column_width(GTK_CLIST(datefmt_clist), 0, 80); */
+	/* gtk_cmclist_set_column_width(GTK_CMCLIST(datefmt_clist), 0, 80); */
 	selection = gtk_tree_view_get_selection(GTK_TREE_VIEW(datefmt_list_view));
 	gtk_tree_selection_set_mode(selection, GTK_SELECTION_BROWSE);
 

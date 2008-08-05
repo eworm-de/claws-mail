@@ -287,7 +287,7 @@ TextView *textview_create(void)
 
 	gtk_widget_ensure_style(text);
 
-	gtk_widget_ref(scrolledwin);
+	g_object_ref(scrolledwin);
 
 	gtk_container_add(GTK_CONTAINER(scrolledwin), text);
 

@@ -114,9 +114,9 @@ struct _SummaryView
 
 	GtkWidget *window;
 
-	GtkCTreeNode *selected;
-	GtkCTreeNode *displayed;
-	GtkCTreeNode *last_displayed;
+	GtkCMCTreeNode *selected;
+	GtkCMCTreeNode *displayed;
+	GtkCMCTreeNode *last_displayed;
 
 	gboolean display_msg;
 
@@ -172,7 +172,9 @@ private:
 
 	GtkTargetList *target_list; /* DnD */
 	
-	GtkTooltips *tips;
+#if !GTK_CHECK_VERSION(2,12,0)
+	GtkTooltips *tooltips;
+#endif
 };
 
 SummaryView	*summary_create(void);
@@ -209,7 +211,7 @@ void summary_select_by_msgnum	  (SummaryView		*summaryview,
 				   guint		 msgnum);
 guint summary_get_current_msgnum  (SummaryView		*summaryview);
 void summary_select_node	  (SummaryView		*summaryview,
-				   GtkCTreeNode		*node,
+				   GtkCMCTreeNode		*node,
 				   gboolean		 display_msg,
 				   gboolean		 do_refresh);
 
@@ -256,7 +258,7 @@ gboolean summary_step		  (SummaryView		*summaryview,
 void summary_toggle_view	  (SummaryView		*summaryview);
 void summary_set_marks_selected	  (SummaryView		*summaryview);
 guint summary_get_msgnum	  (SummaryView		*summaryview,
-				   GtkCTreeNode		*node);
+				   GtkCMCTreeNode		*node);
 
 void summary_move_selected_to	  (SummaryView		*summaryview,
 				   FolderItem		*to_folder);

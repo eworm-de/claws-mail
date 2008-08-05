@@ -17,6 +17,7 @@
  * 
  */
 
+#undef GTK_DISABLE_DEPRECATED /* Fixme GtkOptionMenu */
 #ifdef HAVE_CONFIG_H
 #  include "config.h"
 #endif

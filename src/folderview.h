@@ -25,8 +25,8 @@ typedef struct _FolderViewPopup	FolderViewPopup;
 typedef struct _FolderColumnState	FolderColumnState;
 
 #include <glib.h>
-#include <gtk/gtkwidget.h>
-#include <gtk/gtkctree.h>
+#include <gtk/gtk.h>
+#include "gtk/gtksctree.h"
 
 #include "mainwindow.h"
 #include "summaryview.h"
@@ -55,8 +55,8 @@ struct _FolderView
 
 	GHashTable *popups;
 
-	GtkCTreeNode *selected;
-	GtkCTreeNode *opened;
+	GtkCMCTreeNode *selected;
+	GtkCMCTreeNode *opened;
 
 	gboolean open_folder;
 
@@ -73,7 +73,7 @@ struct _FolderView
 	GSList *nodes_to_recollapse;
 	guint   drag_timer;		/* timer id */
 	FolderItem *drag_item;		/* dragged item */
-	GtkCTreeNode *drag_node;	/* drag node */
+	GtkCMCTreeNode *drag_node;	/* drag node */
 	
 	GtkTargetList *target_list; /* DnD */
 	FolderColumnState col_state[N_FOLDER_COLS];

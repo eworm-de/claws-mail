@@ -391,7 +391,7 @@ static MimeViewer *image_viewer_create(void)
 	imageviewer->error_msg    = error_msg;
 	imageviewer->error_lbl    = error_lbl;
 
-	gtk_widget_ref(notebook);
+	g_object_ref(notebook);
 
 	g_signal_connect(G_OBJECT(load_button), "clicked",
 			 G_CALLBACK(load_cb), imageviewer);

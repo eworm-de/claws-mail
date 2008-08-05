@@ -173,7 +173,7 @@ static void set_sensitivity(GtkUIManager *ui_manager, FolderItem *item)
 static void new_folder_cb(GtkAction *action, gpointer data)
 {
 	FolderView *folderview = (FolderView *)data;
-	GtkCTree *ctree = GTK_CTREE(folderview->ctree);
+	GtkCMCTree *ctree = GTK_CMCTREE(folderview->ctree);
 	FolderItem *item;
 	FolderItem *new_item;
 	gchar *new_folder;
@@ -183,7 +183,7 @@ static void new_folder_cb(GtkAction *action, gpointer data)
 	
 	if (!folderview->selected) return;
 
-	item = gtk_ctree_node_get_row_data(ctree, folderview->selected);
+	item = gtk_cmctree_node_get_row_data(ctree, folderview->selected);
 	g_return_if_fail(item != NULL);
 	g_return_if_fail(item->folder != NULL);
 	g_return_if_fail(item->folder->account != NULL);
@@ -341,7 +341,7 @@ static void copy_folder_cb(GtkAction *action, gpointer data)
 static void delete_folder_cb(GtkAction *action, gpointer data)
 {
 	FolderView *folderview = (FolderView *)data;
-	GtkCTree *ctree = GTK_CTREE(folderview->ctree);
+	GtkCMCTree *ctree = GTK_CMCTREE(folderview->ctree);
 	FolderItem *item;
 	gchar *message, *name;
 	AlertValue avalue;
@@ -350,7 +350,7 @@ static void delete_folder_cb(GtkAction *action, gpointer data)
 
 	if (!folderview->selected) return;
 
-	item = gtk_ctree_node_get_row_data(ctree, folderview->selected);
+	item = gtk_cmctree_node_get_row_data(ctree, folderview->selected);
 	g_return_if_fail(item != NULL);
 	g_return_if_fail(item->path != NULL);
 	g_return_if_fail(item->folder != NULL);
@@ -371,7 +371,7 @@ static void delete_folder_cb(GtkAction *action, gpointer data)
 	old_id = folder_item_get_identifier(item);
 
 	if (folderview->opened == folderview->selected ||
-	    gtk_ctree_is_ancestor(ctree,
+	    gtk_cmctree_is_ancestor(ctree,
 				  folderview->selected,
 				  folderview->opened)) {
 		summary_clear_all(folderview->summaryview);
@@ -485,7 +485,7 @@ static gboolean imap_gtk_subscribe_func(GNode *node, gpointer data)
 
 static void subscribe_cb_full(FolderView *folderview, guint action)
 {
-	GtkCTree *ctree = GTK_CTREE(folderview->ctree);
+	GtkCMCTree *ctree = GTK_CMCTREE(folderview->ctree);
 	FolderItem *item;
 	gchar *message, *name;
 	AlertValue avalue;
@@ -494,7 +494,7 @@ static void subscribe_cb_full(FolderView *folderview, guint action)
 
 	if (!folderview->selected) return;
 
-	item = gtk_ctree_node_get_row_data(ctree, folderview->selected);
+	item = gtk_cmctree_node_get_row_data(ctree, folderview->selected);
 	g_return_if_fail(item != NULL);
 	g_return_if_fail(item->folder != NULL);
 
@@ -580,7 +580,7 @@ static void subscribe_cb_full(FolderView *folderview, guint action)
 	
 	if (!action) {
 		if (folderview->opened == folderview->selected ||
-		    gtk_ctree_is_ancestor(ctree,
+		    gtk_cmctree_is_ancestor(ctree,
 					  folderview->selected,
 					  folderview->opened)) {
 			summary_clear_all(folderview->summaryview);
@@ -612,8 +612,8 @@ static void unsubscribe_cb(GtkAction *action, gpointer data)
 static void subscribed_cb(GtkAction *action, gpointer data)
 {
 	FolderView *folderview = (FolderView *)data;
-	GtkCTree *ctree = GTK_CTREE(folderview->ctree);
-	FolderItem *item = gtk_ctree_node_get_row_data(ctree, folderview->selected);
+	GtkCMCTree *ctree = GTK_CMCTREE(folderview->ctree);
+	FolderItem *item = gtk_cmctree_node_get_row_data(ctree, folderview->selected);
 	
 	if (!item || !item->folder || !item->folder->account)
 		return;
@@ -621,7 +621,7 @@ static void subscribed_cb(GtkAction *action, gpointer data)
 		return;
 
 	if (folderview->opened == folderview->selected ||
-	    gtk_ctree_is_ancestor(ctree,
+	    gtk_cmctree_is_ancestor(ctree,
 				  folderview->selected,
 				  folderview->opened)) {
 		summary_clear_all(folderview->summaryview);
@@ -635,11 +635,11 @@ static void subscribed_cb(GtkAction *action, gpointer data)
 static void download_cb(GtkAction *action, gpointer data)
 {
 	FolderView *folderview = (FolderView *)data;
-	GtkCTree *ctree = GTK_CTREE(folderview->ctree);
+	GtkCMCTree *ctree = GTK_CMCTREE(folderview->ctree);
 	FolderItem *item;
 
 	if (!folderview->selected) return;
 
-	item = gtk_ctree_node_get_row_data(ctree, folderview->selected);
+	item = gtk_cmctree_node_get_row_data(ctree, folderview->selected);
 	imap_gtk_synchronise(item, 0);
 }

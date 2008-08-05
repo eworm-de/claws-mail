@@ -41,7 +41,9 @@ struct _NoticeView
 	void		(*press2) (NoticeView *, gpointer user_data);
 	gboolean	 icon_clickable;
 	GtkWidget 	*evtbox;
-	GtkTooltips	*tooltips;
+#if !GTK_CHECK_VERSION(2,12,0)
+	GtkTooltips *tooltips;
+#endif
 };
 
 NoticeView	*noticeview_create	(MainWindow 	*mainwin);

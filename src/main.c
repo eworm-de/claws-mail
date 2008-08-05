@@ -323,7 +323,7 @@ static void startup_notification_complete(gboolean with_window)
 		 * if we have been launched from a menu.
 		 * We have to display a window, so let it be very little */
 		hack = gtk_window_new(GTK_WINDOW_POPUP);
-		gtk_widget_set_uposition(hack, 0, 0);
+		gtk_window_move(GTK_WINDOW(hack), 0, 0);
 		gtk_widget_set_size_request(hack, 1, 1);
 		gtk_widget_show(hack);
 	}
@@ -1153,7 +1153,6 @@ int main(int argc, char *argv[])
 #endif	
 	gdk_rgb_init();
 	gtk_widget_set_default_colormap(gdk_rgb_get_colormap());
-	gtk_widget_set_default_visual(gdk_rgb_get_visual());
 
 	gui_manager = gtkut_create_ui_manager();
 
@@ -1365,7 +1364,7 @@ int main(int argc, char *argv[])
 	manage_window_focus_in(mainwin->window, NULL, NULL);
 	folderview = mainwin->folderview;
 
-	gtk_clist_freeze(GTK_CLIST(mainwin->folderview->ctree));
+	gtk_cmclist_freeze(GTK_CMCLIST(mainwin->folderview->ctree));
 	folder_item_update_freeze();
 
 	/* register the callback of unix domain socket input */
@@ -1579,7 +1578,7 @@ int main(int argc, char *argv[])
 #endif
 
 	folder_item_update_thaw();
-	gtk_clist_thaw(GTK_CLIST(mainwin->folderview->ctree));
+	gtk_cmclist_thaw(GTK_CMCLIST(mainwin->folderview->ctree));
 	main_window_cursor_normal(mainwin);
 
 	if (!cmd.target && prefs_common.goto_last_folder_on_startup &&
@@ -1686,7 +1685,7 @@ static void exit_claws(MainWindow *mainwin)
 	if(mainwin->folderview->opened) {
 		FolderItem *item;
 
-		item = gtk_ctree_node_get_row_data(GTK_CTREE(mainwin->folderview->ctree), mainwin->folderview->opened);
+		item = gtk_cmctree_node_get_row_data(GTK_CMCTREE(mainwin->folderview->ctree), mainwin->folderview->opened);
 		summary_save_prefs_to_folderitem(mainwin->folderview->summaryview, item);
 		prefs_common.last_opened_folder = folder_item_get_identifier(item);
 	}
