@@ -17,6 +17,7 @@
  * 
  */
 
+#undef GTK_DISABLE_DEPRECATED /* FIXME set_color */
 #include <gtk/gtk.h>
 #include <gdk/gdkkeysyms.h>
 

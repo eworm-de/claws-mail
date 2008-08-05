@@ -43,16 +43,7 @@
 #include <gtk/gtkmain.h>
 #endif
 
-typedef struct _ComboButton	ComboButton;
-
-struct _ComboButton
-{
-	GtkWidget *arrow;
-	GtkWidget *button;
-	GtkWidget *menu;
-	GtkItemFactory *factory;
-	gpointer data;
-};
+#include "gtkcmctree.h"
 
 #define GTK_EVENTS_FLUSH() \
 { \
@@ -84,14 +75,14 @@ struct _ComboButton
 
 #define GTKUT_CTREE_NODE_SET_ROW_DATA(node, d) \
 { \
-	GTK_CTREE_ROW(node)->row.data = d; \
+	GTK_CMCTREE_ROW(node)->row.data = d; \
 }
 
 #define GTKUT_CTREE_NODE_GET_ROW_DATA(node) \
-	(GTK_CTREE_ROW(node)->row.data)
+	(GTK_CMCTREE_ROW(node)->row.data)
 
 #define GTKUT_CTREE_REFRESH(clist) \
-	GTK_CLIST_GET_CLASS(clist)->refresh(clist)
+	GTK_CMCLIST_GET_CLASS(clist)->refresh(clist)
 
 gboolean gtkut_get_font_size		(GtkWidget	*widget,
 					 gint		*width,
@@ -122,28 +113,28 @@ void gtkut_stock_with_text_button_set_create(GtkWidget **bbox,
 				   GtkWidget **button3, const gchar *label3, const gchar *text3);
 
 void gtkut_ctree_node_move_if_on_the_edge
-					(GtkCTree	*ctree,
-					 GtkCTreeNode	*node,
+					(GtkCMCTree	*ctree,
+					 GtkCMCTreeNode	*node,
 					 gint		 _row);
-gint gtkut_ctree_get_nth_from_node	(GtkCTree	*ctree,
-					 GtkCTreeNode	*node);
-GtkCTreeNode *gtkut_ctree_node_next	(GtkCTree	*ctree,
-					 GtkCTreeNode	*node);
-GtkCTreeNode *gtkut_ctree_node_prev	(GtkCTree	*ctree,
-					 GtkCTreeNode	*node);
-gboolean gtkut_ctree_node_is_selected	(GtkCTree	*ctree,
-					 GtkCTreeNode	*node);
-GtkCTreeNode *gtkut_ctree_find_collapsed_parent
-					(GtkCTree	*ctree,
-					 GtkCTreeNode	*node);
-void gtkut_ctree_expand_parent_all	(GtkCTree	*ctree,
-					 GtkCTreeNode	*node);
-gboolean gtkut_ctree_node_is_parent	(GtkCTreeNode 	*parent, 
-					 GtkCTreeNode 	*node);
-void gtkut_ctree_set_focus_row		(GtkCTree	*ctree,
-					 GtkCTreeNode	*node);
+gint gtkut_ctree_get_nth_from_node	(GtkCMCTree	*ctree,
+					 GtkCMCTreeNode	*node);
+GtkCMCTreeNode *gtkut_ctree_node_next	(GtkCMCTree	*ctree,
+					 GtkCMCTreeNode	*node);
+GtkCMCTreeNode *gtkut_ctree_node_prev	(GtkCMCTree	*ctree,
+					 GtkCMCTreeNode	*node);
+gboolean gtkut_ctree_node_is_selected	(GtkCMCTree	*ctree,
+					 GtkCMCTreeNode	*node);
+GtkCMCTreeNode *gtkut_ctree_find_collapsed_parent
+					(GtkCMCTree	*ctree,
+					 GtkCMCTreeNode	*node);
+void gtkut_ctree_expand_parent_all	(GtkCMCTree	*ctree,
+					 GtkCMCTreeNode	*node);
+gboolean gtkut_ctree_node_is_parent	(GtkCMCTreeNode 	*parent, 
+					 GtkCMCTreeNode 	*node);
+void gtkut_ctree_set_focus_row		(GtkCMCTree	*ctree,
+					 GtkCMCTreeNode	*node);
 
-void gtkut_clist_set_focus_row		(GtkCList	*clist,
+void gtkut_clist_set_focus_row		(GtkCMCList	*clist,
 					 gint		 row);
 
 void gtkut_container_remove		(GtkContainer	*container,

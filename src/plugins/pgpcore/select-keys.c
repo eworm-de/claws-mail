@@ -53,7 +53,7 @@ struct select_keys_s {
     int okay;
     GtkWidget *window;
     GtkLabel *toplabel;
-    GtkCList *clist;
+    GtkCMCList *clist;
     const char *pattern;
     unsigned int num_keys;
     gpgme_key_t *kset;
@@ -65,7 +65,7 @@ struct select_keys_s {
 };
 
 
-static void set_row (GtkCList *clist, gpgme_key_t key, gpgme_protocol_t proto);
+static void set_row (GtkCMCList *clist, gpgme_key_t key, gpgme_protocol_t proto);
 static gpgme_key_t fill_clist (struct select_keys_s *sk, const char *pattern,
 			gpgme_protocol_t proto);
 static void create_dialog (struct select_keys_s *sk);
@@ -126,7 +126,7 @@ gpgmegtk_recipient_selection (GSList *recp_names, SelectionResult *result,
     do {
         sk.pattern = recp_names? recp_names->data:NULL;
 	sk.proto = proto;
-        gtk_clist_clear (sk.clist);
+        gtk_cmclist_clear (sk.clist);
         key = fill_clist (&sk, sk.pattern, proto);
         update_progress (&sk, 0, sk.pattern);
 	if (!key) {
@@ -172,7 +172,7 @@ destroy_key (gpointer data)
 }
 
 static void
-set_row (GtkCList *clist, gpgme_key_t key, gpgme_protocol_t proto)
+set_row (GtkCMCList *clist, gpgme_key_t key, gpgme_protocol_t proto)
 {
     const char *s;
     const char *text[N_COL_TITLES];
@@ -256,16 +256,16 @@ set_row (GtkCList *clist, gpgme_key_t key, gpgme_protocol_t proto)
       }
     text[COL_VALIDITY] = s;
 
-    row = gtk_clist_append (clist, (gchar**)text);
+    row = gtk_cmclist_append (clist, (gchar**)text);
     g_free (algo_buf);
 
-    gtk_clist_set_row_data_full (clist, row, key, destroy_key);
+    gtk_cmclist_set_row_data_full (clist, row, key, destroy_key);
 }
 
 static gpgme_key_t 
 fill_clist (struct select_keys_s *sk, const char *pattern, gpgme_protocol_t proto)
 {
-    GtkCList *clist;
+    GtkCMCList *clist;
     gpgme_ctx_t ctx;
     gpgme_error_t err;
     gpgme_key_t key;
@@ -279,7 +279,7 @@ fill_clist (struct select_keys_s *sk, const char *pattern, gpgme_protocol_t prot
 
     debug_print ("select_keys:fill_clist:  pattern '%s' proto %d\n", pattern, proto);
 
-    /*gtk_clist_freeze (select_keys.clist);*/
+    /*gtk_cmclist_freeze (select_keys.clist);*/
     err = gpgme_new (&ctx);
     g_assert (!err);
 
@@ -343,7 +343,7 @@ fill_clist (struct select_keys_s *sk, const char *pattern, gpgme_protocol_t prot
 	    sk->select_ctx = NULL;
 	    gpgme_release (ctx);
     }
-    /*gtk_clist_thaw (select_keys.clist);*/
+    /*gtk_cmclist_thaw (select_keys.clist);*/
     return (exact_match == TRUE && num_results == 1 ? last_key:NULL);
 }
 
@@ -396,18 +396,18 @@ create_dialog (struct select_keys_s *sk)
     titles[COL_EMAIL]    = _("Address");
     titles[COL_VALIDITY] = _("Val");
 
-    clist = gtk_clist_new_with_titles (N_COL_TITLES, (char**)titles);
+    clist = gtk_cmclist_new_with_titles (N_COL_TITLES, (char**)titles);
     gtk_container_add (GTK_CONTAINER (scrolledwin), clist);
-    gtk_clist_set_column_width (GTK_CLIST(clist), COL_ALGO,      72);
-    gtk_clist_set_column_width (GTK_CLIST(clist), COL_KEYID,     76);
-    gtk_clist_set_column_width (GTK_CLIST(clist), COL_NAME,     130);
-    gtk_clist_set_column_width (GTK_CLIST(clist), COL_EMAIL,    130);
-    gtk_clist_set_column_width (GTK_CLIST(clist), COL_VALIDITY,  20);
-    gtk_clist_set_selection_mode (GTK_CLIST(clist), GTK_SELECTION_BROWSE);
-    g_signal_connect (G_OBJECT(GTK_CLIST(clist)->column[COL_NAME].button),
+    gtk_cmclist_set_column_width (GTK_CMCLIST(clist), COL_ALGO,      72);
+    gtk_cmclist_set_column_width (GTK_CMCLIST(clist), COL_KEYID,     76);
+    gtk_cmclist_set_column_width (GTK_CMCLIST(clist), COL_NAME,     130);
+    gtk_cmclist_set_column_width (GTK_CMCLIST(clist), COL_EMAIL,    130);
+    gtk_cmclist_set_column_width (GTK_CMCLIST(clist), COL_VALIDITY,  20);
+    gtk_cmclist_set_selection_mode (GTK_CMCLIST(clist), GTK_SELECTION_BROWSE);
+    g_signal_connect (G_OBJECT(GTK_CMCLIST(clist)->column[COL_NAME].button),
 		      "clicked",
                       G_CALLBACK(sort_keys_name), sk);
-    g_signal_connect (G_OBJECT(GTK_CLIST(clist)->column[COL_EMAIL].button),
+    g_signal_connect (G_OBJECT(GTK_CMCLIST(clist)->column[COL_EMAIL].button),
 		      "clicked",
                       G_CALLBACK(sort_keys_email), sk);
 
@@ -440,7 +440,7 @@ create_dialog (struct select_keys_s *sk)
 
     sk->window = window;
     sk->toplabel = GTK_LABEL (label);
-    sk->clist  = GTK_CLIST (clist);
+    sk->clist  = GTK_CMCLIST (clist);
 }
 
 
@@ -505,7 +505,7 @@ select_btn_cb (GtkWidget *widget, gpointer data)
         return;
     }
     row = GPOINTER_TO_INT(sk->clist->selection->data);
-    key = gtk_clist_get_row_data(sk->clist, row);
+    key = gtk_cmclist_get_row_data(sk->clist, row);
     if (key) {
         if ( key->uids->validity < GPGME_VALIDITY_FULL ) {
             use_key = use_untrusted(key, sk->proto);
@@ -599,10 +599,10 @@ use_untrusted (gpgme_key_t key, gpgme_protocol_t proto)
 
 
 static gint 
-cmp_name (GtkCList *clist, gconstpointer pa, gconstpointer pb)
+cmp_name (GtkCMCList *clist, gconstpointer pa, gconstpointer pb)
 {
-    gpgme_key_t a = ((GtkCListRow *)pa)->data;
-    gpgme_key_t b = ((GtkCListRow *)pb)->data;
+    gpgme_key_t a = ((GtkCMCListRow *)pa)->data;
+    gpgme_key_t b = ((GtkCMCListRow *)pb)->data;
     const char *sa, *sb;
     
     sa = a? a->uids->name : NULL;
@@ -615,10 +615,10 @@ cmp_name (GtkCList *clist, gconstpointer pa, gconstpointer pb)
 }
 
 static gint 
-cmp_email (GtkCList *clist, gconstpointer pa, gconstpointer pb)
+cmp_email (GtkCMCList *clist, gconstpointer pa, gconstpointer pb)
 {
-    gpgme_key_t a = ((GtkCListRow *)pa)->data;
-    gpgme_key_t b = ((GtkCListRow *)pb)->data;
+    gpgme_key_t a = ((GtkCMCListRow *)pa)->data;
+    gpgme_key_t b = ((GtkCMCListRow *)pb)->data;
     const char *sa, *sb;
     
     sa = a? a->uids->email : NULL;
@@ -633,14 +633,14 @@ cmp_email (GtkCList *clist, gconstpointer pa, gconstpointer pb)
 static void
 sort_keys ( struct select_keys_s *sk, enum col_titles column)
 {
-    GtkCList *clist = sk->clist;
+    GtkCMCList *clist = sk->clist;
 
     switch (column) {
       case COL_NAME:
-        gtk_clist_set_compare_func (clist, cmp_name);
+        gtk_cmclist_set_compare_func (clist, cmp_name);
         break;
       case COL_EMAIL:
-        gtk_clist_set_compare_func (clist, cmp_email);
+        gtk_cmclist_set_compare_func (clist, cmp_email);
         break;
       default:
         return;
@@ -655,8 +655,8 @@ sort_keys ( struct select_keys_s *sk, enum col_titles column)
         sk->sort_type = GTK_SORT_ASCENDING;
 
     sk->sort_column = column;
-    gtk_clist_set_sort_type (clist, sk->sort_type);
-    gtk_clist_sort (clist);
+    gtk_cmclist_set_sort_type (clist, sk->sort_type);
+    gtk_cmclist_sort (clist);
 }
 
 static void

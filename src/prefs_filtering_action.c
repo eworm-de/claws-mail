@@ -33,6 +33,7 @@
 #include <string.h>
 #include <errno.h>
 
+#include "gtkcmoptionmenu.h"
 #include "main.h"
 #include "prefs_gtk.h"
 #include "prefs_filtering_action.h"
@@ -271,7 +272,7 @@ void prefs_filtering_action_open(GSList *action_list,
 		prefs_filtering_action_create();
 	} else {
 		/* update color label menu */
-		gtk_option_menu_set_menu(GTK_OPTION_MENU(filtering_action.color_optmenu),
+		gtk_cmoption_menu_set_menu(GTK_CMOPTION_MENU(filtering_action.color_optmenu),
 				colorlabel_create_color_menu());
 	}
 
@@ -503,9 +504,9 @@ static void prefs_filtering_action_create(void)
 	score_entry = gtk_spin_button_new_with_range(-1000, 1000, 1);
 	gtk_box_pack_start(GTK_BOX(hbox1), score_entry, FALSE, FALSE, 0);
 	
-	color_optmenu = gtk_option_menu_new();
+	color_optmenu = gtk_cmoption_menu_new();
 	gtk_size_group_add_widget(size_action, color_optmenu);
-	gtk_option_menu_set_menu(GTK_OPTION_MENU(color_optmenu),
+	gtk_cmoption_menu_set_menu(GTK_CMOPTION_MENU(color_optmenu),
 				 colorlabel_create_color_menu());
 	prefs_filtering_action_check_widget_width(color_optmenu);
 	gtk_box_pack_start(GTK_BOX(hbox1), color_optmenu, FALSE, FALSE, 0);
@@ -904,7 +905,7 @@ static FilteringAction * prefs_filtering_action_dialog_to_action(gboolean alert)
 		break;
 	case ACTION_COLOR:
 		labelcolor = colorlabel_get_color_menu_active_item(
-			gtk_option_menu_get_menu(GTK_OPTION_MENU(filtering_action.color_optmenu)));
+			gtk_cmoption_menu_get_menu(GTK_CMOPTION_MENU(filtering_action.color_optmenu)));
 		destination = NULL;	
 		break;
         case ACTION_CHANGE_SCORE:
@@ -1273,8 +1274,8 @@ static void prefs_filtering_action_enable_widget(GtkWidget* widget, const gboole
 			gtk_spin_button_set_value(GTK_SPIN_BUTTON(widget), 0);
 		else if(GTK_IS_ENTRY(widget)) {
 			gtk_entry_set_text(GTK_ENTRY(widget), "");
-		} else if(GTK_IS_OPTION_MENU(widget))
-			gtk_option_menu_set_history(GTK_OPTION_MENU(widget), 0);
+		} else if(GTK_IS_CMOPTION_MENU(widget))
+			gtk_cmoption_menu_set_history(GTK_CMOPTION_MENU(widget), 0);
 		
 		gtk_widget_set_sensitive(widget, TRUE);
 		gtk_widget_show(widget);
@@ -1572,7 +1573,7 @@ static gboolean prefs_filtering_actions_selected
 	case MATCHACTION_COLOR:
 		combobox_select_by_data(GTK_COMBO_BOX(filtering_action.action_combo),
 				     ACTION_COLOR);
-		gtk_option_menu_set_history(GTK_OPTION_MENU(filtering_action.color_optmenu),
+		gtk_cmoption_menu_set_history(GTK_CMOPTION_MENU(filtering_action.color_optmenu),
 					    action->labelcolor);     
 		break;
 	case MATCHACTION_CHANGE_SCORE:

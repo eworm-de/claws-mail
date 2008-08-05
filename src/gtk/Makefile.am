@@ -15,7 +15,9 @@ libclawsgtk_la_SOURCES = \
 	filesel.c \
 	foldersort.c \
 	gtkaspell.c \
-	gtksctree.c \
+	gtkcmctree.c \
+	gtkcmclist.c \
+	gtkcmoptionmenu.c \
 	gtkshruler.c \
 	gtksctree.c \
 	gtksourceprintjob.c \
@@ -44,9 +46,11 @@ clawsgtkinclude_HEADERS = \
 	filesel.h \
 	foldersort.h \
 	gtkaspell.h \
+	gtkcmctree.h \
+	gtkcmclist.h \
+	gtkcmoptionmenu.h \
 	gtksctree.h \
 	gtkshruler.h \
-	gtksctree.h \
 	gtksourceprintjob.h \
 	gtkutils.h \
 	gtkvscrollbutton.h \

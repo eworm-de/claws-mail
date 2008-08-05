@@ -33,6 +33,7 @@
 #include <string.h>
 #include <errno.h>
 
+#include "gtkcmoptionmenu.h"
 #include "main.h"
 #include "prefs_gtk.h"
 #include "prefs_matcher.h"
@@ -422,7 +423,7 @@ void prefs_matcher_open(MatcherList *matchers, PrefsMatcherSignal *cb)
 		prefs_matcher_create();
 	} else {
 		/* update color label menu */
-		gtk_option_menu_set_menu(GTK_OPTION_MENU(matcher.color_optmenu),
+		gtk_cmoption_menu_set_menu(GTK_CMOPTION_MENU(matcher.color_optmenu),
 				colorlabel_create_color_menu());
 	}
 
@@ -656,8 +657,8 @@ static void prefs_matcher_create(void)
 	gtk_box_pack_start(GTK_BOX(match_hbox), match_combo, TRUE, TRUE, 0);
 	
 	/* color labels combo */
-	color_optmenu = gtk_option_menu_new();
-	gtk_option_menu_set_menu(GTK_OPTION_MENU(color_optmenu),
+	color_optmenu = gtk_cmoption_menu_new();
+	gtk_cmoption_menu_set_menu(GTK_CMOPTION_MENU(color_optmenu),
 				 colorlabel_create_color_menu());
 	gtk_box_pack_start(GTK_BOX(match_hbox), color_optmenu, FALSE, FALSE, 0);
 	
@@ -868,7 +869,7 @@ static void prefs_matcher_reset_condition(void)
 	gtk_combo_box_set_active(GTK_COMBO_BOX(matcher.criteria_combo2), 0);
 	gtk_combo_box_set_active(GTK_COMBO_BOX(matcher.match_combo), 0);
 	gtk_combo_box_set_active(GTK_COMBO_BOX(matcher.match_combo2), 0);
-	gtk_option_menu_set_history(GTK_OPTION_MENU(matcher.color_optmenu), 0);
+	gtk_cmoption_menu_set_history(GTK_CMOPTION_MENU(matcher.color_optmenu), 0);
 	gtk_spin_button_set_value(GTK_SPIN_BUTTON(matcher.numeric_entry), 0);
 	gtk_entry_set_text(GTK_ENTRY(matcher.header_entry), "");
 	gtk_entry_set_text(GTK_ENTRY(matcher.header_addr_entry), "");
@@ -1440,7 +1441,7 @@ static MatcherProp *prefs_matcher_dialog_to_matcher(void)
 		
 	case CRITERIA_COLORLABEL:
 		value = colorlabel_get_color_menu_active_item
-			(gtk_option_menu_get_menu(GTK_OPTION_MENU
+			(gtk_cmoption_menu_get_menu(GTK_CMOPTION_MENU
 				(matcher.color_optmenu))); 
 		break;
 
@@ -1836,7 +1837,7 @@ static void prefs_matcher_criteria_select(GtkWidget *widget,
 		gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(matcher.case_checkbtn), FALSE);
 		break;
 	case MATCH_LABEL:
-		gtk_option_menu_set_history(GTK_OPTION_MENU(matcher.color_optmenu), 0);
+		gtk_cmoption_menu_set_history(GTK_CMOPTION_MENU(matcher.color_optmenu), 0);
 		prefs_matcher_set_model(matcher.match_combo2, matcher.model_set);
 		gtk_label_set_text(GTK_LABEL(matcher.match_label), _("Label"));
 		gtk_label_set_text(GTK_LABEL(matcher.match_label2), _("is"));
@@ -2394,9 +2395,9 @@ static gboolean prefs_matcher_selected(GtkTreeSelection *selector,
 
 	case MATCHCRITERIA_NOT_COLORLABEL:
 	case MATCHCRITERIA_COLORLABEL:
-		gtk_option_menu_set_history(GTK_OPTION_MENU(matcher.color_optmenu),
+		gtk_cmoption_menu_set_history(GTK_CMOPTION_MENU(matcher.color_optmenu),
 					    prop->value);
-		menu = gtk_option_menu_get_menu(GTK_OPTION_MENU(matcher.color_optmenu));
+		menu = gtk_cmoption_menu_get_menu(GTK_CMOPTION_MENU(matcher.color_optmenu));
 		g_signal_emit_by_name(G_OBJECT(menu), "selection-done", menu);
 		break;
 

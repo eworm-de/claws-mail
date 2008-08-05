@@ -29,6 +29,7 @@
 #include <gtk/gtk.h>
 #include <gdk/gdkkeysyms.h>
 
+#include "gtkcmoptionmenu.h"
 #include "utils.h"
 #include "combobox.h"
 #include "menu.h"
@@ -87,10 +88,10 @@ gboolean quicksearch_is_fast(QuickSearch *quicksearch)
 static void quicksearch_set_type(QuickSearch *quicksearch, gint type)
 {
 	gint index;
-	index = menu_find_option_menu_index(GTK_OPTION_MENU(quicksearch->search_type_opt), 
+	index = menu_find_option_menu_index(GTK_CMOPTION_MENU(quicksearch->search_type_opt), 
 					GINT_TO_POINTER(type),
 					NULL);
-	gtk_option_menu_set_history(GTK_OPTION_MENU(quicksearch->search_type_opt), index);	
+	gtk_cmoption_menu_set_history(GTK_CMOPTION_MENU(quicksearch->search_type_opt), index);	
 }
 
 static gchar *quicksearch_get_text(QuickSearch * quicksearch)
@@ -557,7 +558,7 @@ QuickSearch *quicksearch_new()
 	/* quick search */
 	hbox_search = gtk_hbox_new(FALSE, 0);
 
-	search_type_opt = gtk_option_menu_new();
+	search_type_opt = gtk_cmoption_menu_new();
 	gtk_widget_show(search_type_opt);
 	gtk_box_pack_start(GTK_BOX(hbox_search), search_type_opt, FALSE, FALSE, 0);
 
@@ -638,7 +639,7 @@ QuickSearch *quicksearch_new()
 			 G_CALLBACK(searchtype_autorun_changed),
 			 quicksearch);
 
-	gtk_option_menu_set_menu(GTK_OPTION_MENU(search_type_opt), search_type);
+	gtk_cmoption_menu_set_menu(GTK_CMOPTION_MENU(search_type_opt), search_type);
 
 	quicksearch->search_type_opt = search_type_opt;
 	quicksearch_set_type(quicksearch, prefs_common.summary_quicksearch_type);
@@ -800,7 +801,7 @@ void quicksearch_show(QuickSearch *quicksearch)
 	ctree = summary_get_main_widget(mainwin->summaryview);
 	
 	if (ctree && mainwin->summaryview->selected)
-		gtk_ctree_node_moveto(GTK_CTREE(ctree), 
+		gtk_cmctree_node_moveto(GTK_CMCTREE(ctree), 
 				mainwin->summaryview->selected, 
 				0, 0.5, 0);
 }

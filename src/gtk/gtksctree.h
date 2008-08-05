@@ -4,8 +4,7 @@
 #define __GTK_SCTREE_H__
 
 #include <gtk/gtk.h>
-#include <gtk/gtkclist.h>
-#include <gtk/gtkctree.h>
+#include "gtk/gtkcmctree.h"
 
 /* This code is based on "gtkflist.{h,c}" from mc-4.5.42 .*/
 
@@ -20,10 +19,10 @@ typedef struct _GtkSCTree GtkSCTree;
 typedef struct _GtkSCTreeClass GtkSCTreeClass;
 
 struct _GtkSCTree {
-	GtkCTree ctree;
+	GtkCMCTree ctree;
 
 	/* The anchor row for range selections */
-	GtkCTreeNode *anchor_row;
+	GtkCMCTreeNode *anchor_row;
 
 	/* Mouse button and position saved on button press */
 	gint dnd_press_button;
@@ -38,14 +37,16 @@ struct _GtkSCTree {
 
 	/* (dis)allow fancy color stripes */
 	gboolean show_stripes;
-	GtkTooltips *tips;
+#if !GTK_CHECK_VERSION(2,12,0)
+	GtkTooltips *tooltips;
+#endif
 	gboolean always_expand_recursively;
 	gboolean force_additive_sel;
 	gboolean *use_markup;
 };
 
 struct _GtkSCTreeClass {
-    	GtkCTreeClass parent_class;
+    	GtkCMCTreeClass parent_class;
     
     	/* Signal: invoke the popup menu for rows */
     	void (* row_popup_menu) (GtkSCTree *sctree, GdkEventButton *event);
@@ -67,17 +68,17 @@ GtkWidget *gtk_sctree_new_with_titles	(gint		 columns,
 					 gint		 tree_column, 
 					 gchar		*titles[]);
 void gtk_sctree_select			(GtkSCTree	*sctree,
-					 GtkCTreeNode	*node);
+					 GtkCMCTreeNode	*node);
 void gtk_sctree_select_with_state	(GtkSCTree	*sctree,
-					 GtkCTreeNode	*node,
+					 GtkCMCTreeNode	*node,
 					 int		 state);
 void gtk_sctree_unselect_all		(GtkSCTree	*sctree);
 
 void gtk_sctree_set_anchor_row		(GtkSCTree	*sctree,
-					 GtkCTreeNode	*node);
+					 GtkCMCTreeNode	*node);
 
 void gtk_sctree_remove_node		(GtkSCTree	*sctree,
-					 GtkCTreeNode	*node);
+					 GtkCMCTreeNode	*node);
 
 void gtk_sctree_set_stripes(GtkSCTree  *sctree, gboolean show_stripes);
 void gtk_sctree_set_recursive_expand(GtkSCTree  *sctree, gboolean rec_exp);
@@ -86,13 +87,13 @@ void gtk_sctree_set_recursive_expand(GtkSCTree  *sctree, gboolean rec_exp);
  *             Tree sorting functions                      *
  ***********************************************************/
 
-void gtk_sctree_sort_node (GtkCTree *ctree, GtkCTreeNode *node);
+void gtk_sctree_sort_node (GtkCMCTree *ctree, GtkCMCTreeNode *node);
 
-void gtk_sctree_sort_recursive (GtkCTree *ctree, GtkCTreeNode *node);
+void gtk_sctree_sort_recursive (GtkCMCTree *ctree, GtkCMCTreeNode *node);
 
-GtkCTreeNode* gtk_sctree_insert_node        (GtkCTree *ctree,
-                                             GtkCTreeNode *parent,
-                                             GtkCTreeNode *sibling,
+GtkCMCTreeNode* gtk_sctree_insert_node        (GtkCMCTree *ctree,
+                                             GtkCMCTreeNode *parent,
+                                             GtkCMCTreeNode *sibling,
                                              gchar *text[],
                                              guint8 spacing,
                                              GdkPixmap *pixmap_closed,
@@ -101,8 +102,8 @@ GtkCTreeNode* gtk_sctree_insert_node        (GtkCTree *ctree,
                                              GdkBitmap *mask_opened,
                                              gboolean is_leaf,
                                              gboolean expanded);
-void        gtk_sctree_set_node_info        (GtkCTree *ctree,
-                                             GtkCTreeNode *node,
+void        gtk_sctree_set_node_info        (GtkCMCTree *ctree,
+                                             GtkCMCTreeNode *node,
                                              const gchar *text,
                                              guint8 spacing,
                                              GdkPixmap *pixmap_closed,
@@ -111,12 +112,12 @@ void        gtk_sctree_set_node_info        (GtkCTree *ctree,
                                              GdkBitmap *mask_opened,
                                              gboolean is_leaf,
                                              gboolean expanded);
-GtkCTreeNode *
-gtk_sctree_insert_gnode 		    (GtkCTree          *ctree,
-					     GtkCTreeNode      *parent,
-					     GtkCTreeNode      *sibling,
+GtkCMCTreeNode *
+gtk_sctree_insert_gnode 		    (GtkCMCTree          *ctree,
+					     GtkCMCTreeNode      *parent,
+					     GtkCMCTreeNode      *sibling,
 					     GNode             *gnode,
-					     GtkCTreeGNodeFunc  func,
+					     GtkCMCTreeGNodeFunc  func,
 					     gpointer           data);
 
 void gtk_sctree_set_column_tooltip	    (GtkSCTree		*sctree,

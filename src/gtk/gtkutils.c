@@ -25,13 +25,8 @@
 #include <glib/gi18n.h>
 #include <gdk/gdkkeysyms.h>
 #include <gdk/gdk.h>
-#include <gtk/gtkwidget.h>
-#include <gtk/gtkhbbox.h>
-#include <gtk/gtkbutton.h>
-#include <gtk/gtkctree.h>
-#include <gtk/gtkcombo.h>
-#include <gtk/gtkbindings.h>
-#include <gtk/gtkitemfactory.h>
+#include <gtk/gtk.h>
+#include "gtk/gtksctree.h"
 #include <stdlib.h>
 #include <stdarg.h>
 #include <sys/stat.h>
@@ -221,9 +216,9 @@ void gtkut_stock_with_text_button_set_create(GtkWidget **bbox,
 #define ROW_FROM_YPIXEL(clist, y) (((y) - (clist)->voffset) / \
 				   ((clist)->row_height + CELL_SPACING))
 
-void gtkut_ctree_node_move_if_on_the_edge(GtkCTree *ctree, GtkCTreeNode *node, gint _row)
+void gtkut_ctree_node_move_if_on_the_edge(GtkCMCTree *ctree, GtkCMCTreeNode *node, gint _row)
 {
-	GtkCList *clist = GTK_CLIST(ctree);
+	GtkCMCList *clist = GTK_CMCLIST(ctree);
 	gint row;
 	GtkVisibility row_visibility, prev_row_visibility, next_row_visibility;
 
@@ -233,12 +228,12 @@ void gtkut_ctree_node_move_if_on_the_edge(GtkCTree *ctree, GtkCTreeNode *node, g
 	row = (_row != -1 ? _row : g_list_position(clist->row_list, (GList *)node));
 
 	if (row < 0 || row >= clist->rows || clist->row_height == 0) return;
-	row_visibility = gtk_clist_row_is_visible(clist, row);
-	prev_row_visibility = gtk_clist_row_is_visible(clist, row - 1);
-	next_row_visibility = gtk_clist_row_is_visible(clist, row + 1);
+	row_visibility = gtk_cmclist_row_is_visible(clist, row);
+	prev_row_visibility = gtk_cmclist_row_is_visible(clist, row - 1);
+	next_row_visibility = gtk_cmclist_row_is_visible(clist, row + 1);
 
 	if (row_visibility == GTK_VISIBILITY_NONE) {
-		gtk_clist_moveto(clist, row, -1, 0.5, 0);
+		gtk_cmclist_moveto(clist, row, -1, 0.5, 0);
 		return;
 	}
 	if (row_visibility == GTK_VISIBILITY_FULL &&
@@ -250,11 +245,11 @@ void gtkut_ctree_node_move_if_on_the_edge(GtkCTree *ctree, GtkCTreeNode *node, g
 		return;
 
 	if (prev_row_visibility != GTK_VISIBILITY_FULL) {
-		gtk_clist_moveto(clist, row, -1, 0.2, 0);
+		gtk_cmclist_moveto(clist, row, -1, 0.2, 0);
 		return;
 	}
 	if (next_row_visibility != GTK_VISIBILITY_FULL) {
-		gtk_clist_moveto(clist, row, -1, 0.8, 0);
+		gtk_cmclist_moveto(clist, row, -1, 0.8, 0);
 		return;
 	}
 }
@@ -263,115 +258,115 @@ void gtkut_ctree_node_move_if_on_the_edge(GtkCTree *ctree, GtkCTreeNode *node, g
 #undef ROW_TOP_YPIXEL
 #undef ROW_FROM_YPIXEL
 
-gint gtkut_ctree_get_nth_from_node(GtkCTree *ctree, GtkCTreeNode *node)
+gint gtkut_ctree_get_nth_from_node(GtkCMCTree *ctree, GtkCMCTreeNode *node)
 {
 	g_return_val_if_fail(ctree != NULL, -1);
 	g_return_val_if_fail(node != NULL, -1);
 
-	return g_list_position(GTK_CLIST(ctree)->row_list, (GList *)node);
+	return g_list_position(GTK_CMCLIST(ctree)->row_list, (GList *)node);
 }
 
 /* get the next node, including the invisible one */
-GtkCTreeNode *gtkut_ctree_node_next(GtkCTree *ctree, GtkCTreeNode *node)
+GtkCMCTreeNode *gtkut_ctree_node_next(GtkCMCTree *ctree, GtkCMCTreeNode *node)
 {
-	GtkCTreeNode *parent;
+	GtkCMCTreeNode *parent;
 
 	if (!node) return NULL;
 
-	if (GTK_CTREE_ROW(node)->children)
-		return GTK_CTREE_ROW(node)->children;
+	if (GTK_CMCTREE_ROW(node)->children)
+		return GTK_CMCTREE_ROW(node)->children;
 
-	if (GTK_CTREE_ROW(node)->sibling)
-		return GTK_CTREE_ROW(node)->sibling;
+	if (GTK_CMCTREE_ROW(node)->sibling)
+		return GTK_CMCTREE_ROW(node)->sibling;
 
-	for (parent = GTK_CTREE_ROW(node)->parent; parent != NULL;
-	     parent = GTK_CTREE_ROW(parent)->parent) {
-		if (GTK_CTREE_ROW(parent)->sibling)
-			return GTK_CTREE_ROW(parent)->sibling;
+	for (parent = GTK_CMCTREE_ROW(node)->parent; parent != NULL;
+	     parent = GTK_CMCTREE_ROW(parent)->parent) {
+		if (GTK_CMCTREE_ROW(parent)->sibling)
+			return GTK_CMCTREE_ROW(parent)->sibling;
 	}
 
 	return NULL;
 }
 
 /* get the previous node, including the invisible one */
-GtkCTreeNode *gtkut_ctree_node_prev(GtkCTree *ctree, GtkCTreeNode *node)
+GtkCMCTreeNode *gtkut_ctree_node_prev(GtkCMCTree *ctree, GtkCMCTreeNode *node)
 {
-	GtkCTreeNode *prev;
-	GtkCTreeNode *child;
+	GtkCMCTreeNode *prev;
+	GtkCMCTreeNode *child;
 
 	if (!node) return NULL;
 
-	prev = GTK_CTREE_NODE_PREV(node);
-	if (prev == GTK_CTREE_ROW(node)->parent)
+	prev = GTK_CMCTREE_NODE_PREV(node);
+	if (prev == GTK_CMCTREE_ROW(node)->parent)
 		return prev;
 
 	child = prev;
-	while (GTK_CTREE_ROW(child)->children != NULL) {
-		child = GTK_CTREE_ROW(child)->children;
-		while (GTK_CTREE_ROW(child)->sibling != NULL)
-			child = GTK_CTREE_ROW(child)->sibling;
+	while (GTK_CMCTREE_ROW(child)->children != NULL) {
+		child = GTK_CMCTREE_ROW(child)->children;
+		while (GTK_CMCTREE_ROW(child)->sibling != NULL)
+			child = GTK_CMCTREE_ROW(child)->sibling;
 	}
 
 	return child;
 }
 
-gboolean gtkut_ctree_node_is_selected(GtkCTree *ctree, GtkCTreeNode *node)
+gboolean gtkut_ctree_node_is_selected(GtkCMCTree *ctree, GtkCMCTreeNode *node)
 {
-	GtkCList *clist = GTK_CLIST(ctree);
+	GtkCMCList *clist = GTK_CMCLIST(ctree);
 	GList *cur;
 
 	for (cur = clist->selection; cur != NULL; cur = cur->next) {
-		if (node == GTK_CTREE_NODE(cur->data))
+		if (node == GTK_CMCTREE_NODE(cur->data))
 			return TRUE;
 	}
 
 	return FALSE;
 }
 
-GtkCTreeNode *gtkut_ctree_find_collapsed_parent(GtkCTree *ctree,
-						GtkCTreeNode *node)
+GtkCMCTreeNode *gtkut_ctree_find_collapsed_parent(GtkCMCTree *ctree,
+						GtkCMCTreeNode *node)
 {
 	if (!node) return NULL;
 
-	while ((node = GTK_CTREE_ROW(node)->parent) != NULL) {
-		if (!GTK_CTREE_ROW(node)->expanded)
+	while ((node = GTK_CMCTREE_ROW(node)->parent) != NULL) {
+		if (!GTK_CMCTREE_ROW(node)->expanded)
 			return node;
 	}
 
 	return NULL;
 }
 
-void gtkut_ctree_expand_parent_all(GtkCTree *ctree, GtkCTreeNode *node)
+void gtkut_ctree_expand_parent_all(GtkCMCTree *ctree, GtkCMCTreeNode *node)
 {
 	while ((node = gtkut_ctree_find_collapsed_parent(ctree, node)) != NULL)
-		gtk_ctree_expand(ctree, node);
+		gtk_cmctree_expand(ctree, node);
 }
 
-gboolean gtkut_ctree_node_is_parent(GtkCTreeNode *parent, GtkCTreeNode *node)
+gboolean gtkut_ctree_node_is_parent(GtkCMCTreeNode *parent, GtkCMCTreeNode *node)
 {
-	GtkCTreeNode *tmp;
+	GtkCMCTreeNode *tmp;
 	g_return_val_if_fail(node != NULL, FALSE);
 	g_return_val_if_fail(parent != NULL, FALSE);
 	tmp = node;
 	
 	while (tmp) {
-		if(GTK_CTREE_ROW(tmp)->parent && GTK_CTREE_ROW(tmp)->parent == parent)
+		if(GTK_CMCTREE_ROW(tmp)->parent && GTK_CMCTREE_ROW(tmp)->parent == parent)
 			return TRUE;
-		tmp = GTK_CTREE_ROW(tmp)->parent;
+		tmp = GTK_CMCTREE_ROW(tmp)->parent;
 	}
 	
 	return FALSE;
 }
 
-void gtkut_ctree_set_focus_row(GtkCTree *ctree, GtkCTreeNode *node)
+void gtkut_ctree_set_focus_row(GtkCMCTree *ctree, GtkCMCTreeNode *node)
 {
 	if (node == NULL)
 		return;
-	gtkut_clist_set_focus_row(GTK_CLIST(ctree),
+	gtkut_clist_set_focus_row(GTK_CMCLIST(ctree),
 				  gtkut_ctree_get_nth_from_node(ctree, node));
 }
 
-void gtkut_clist_set_focus_row(GtkCList *clist, gint row)
+void gtkut_clist_set_focus_row(GtkCMCList *clist, gint row)
 {
 	clist->focus_row = row;
 	GTKUT_CTREE_REFRESH(clist);
@@ -652,7 +647,7 @@ static void gtkut_clist_bindings_add(GtkWidget *clist)
 	GtkBindingSet *binding_set;
 
 	binding_set = gtk_binding_set_by_class
-		(GTK_CLIST_GET_CLASS(clist));
+		(GTK_CMCLIST_GET_CLASS(clist));
 
 	gtk_binding_entry_add_signal(binding_set, GDK_n, GDK_CONTROL_MASK,
 				     "scroll_vertical", 2,
@@ -668,13 +663,13 @@ void gtkut_widget_init(void)
 {
 	GtkWidget *clist;
 
-	clist = gtk_clist_new(1);
+	clist = gtk_cmclist_new(1);
 	g_object_ref(GTK_OBJECT(clist));
 	g_object_ref_sink(GTK_OBJECT(clist));
 	gtkut_clist_bindings_add(clist);
 	g_object_unref(GTK_OBJECT(clist));
 
-	clist = gtk_ctree_new(1, 0);
+	clist = gtk_cmctree_new(1, 0);
 	g_object_ref(GTK_OBJECT(clist));
 	g_object_ref_sink(GTK_OBJECT(clist));
 	gtkut_clist_bindings_add(clist);

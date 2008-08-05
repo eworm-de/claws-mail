@@ -25,6 +25,7 @@
 #include <glib/gi18n.h>
 #include <gtk/gtk.h>
 
+#include "gtkcmoptionmenu.h"
 #include "menu.h"
 #include "utils.h"
 #include "gtkutils.h"
@@ -166,7 +167,7 @@ void menu_button_position(GtkMenu *menu, gint *x, gint *y, gboolean *push_in,
 		*y -= mreq.height;
 }
 
-gint menu_find_option_menu_index(GtkOptionMenu *optmenu, gpointer data,
+gint menu_find_option_menu_index(GtkCMOptionMenu *optmenu, gpointer data,
 				 GCompareFunc func)
 {
 	GtkWidget *menu;
@@ -175,7 +176,7 @@ gint menu_find_option_menu_index(GtkOptionMenu *optmenu, gpointer data,
 	GList *cur;
 	gint n;
 
-	menu = gtk_option_menu_get_menu(optmenu);
+	menu = gtk_cmoption_menu_get_menu(optmenu);
 
 	for (cur = GTK_MENU_SHELL(menu)->children, n = 0;
 	     cur != NULL; cur = cur->next, n++) {
@@ -204,6 +205,7 @@ static void connect_accel_change_signals(GtkWidget* widget, GtkWidget *wid2)
 
 void menu_connect_identical_items(void)
 {
+#if 0 /* DEPRECATED */
 	gint n;
 	GtkWidget *item1;
 	GtkWidget *item2;
@@ -273,4 +275,5 @@ void menu_connect_identical_items(void)
 			if (!item2) debug_print(" ** Menu item not found: %s\n",pairs[n].path2);
 		}				
 	}
+#endif
 }

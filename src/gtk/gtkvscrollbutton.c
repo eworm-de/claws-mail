@@ -87,24 +87,27 @@ static gint gtk_real_vscrollbutton_timer	(GtkVScrollbutton *scrollbutton);
 static void gtk_vscrollbutton_set_sensitivity   (GtkAdjustment    *adjustment,
 						 GtkVScrollbutton *scrollbutton);
 
-GtkType gtk_vscrollbutton_get_type(void)
+GType gtk_vscrollbutton_get_type(void)
 {
-    static GtkType vscrollbutton_type = 0;
+    static GType vscrollbutton_type = 0;
 
     if (!vscrollbutton_type) {
-	static const GtkTypeInfo vscrollbutton_info = {
-	    "GtkVScrollbutton",
-	    sizeof(GtkVScrollbutton),
-	    sizeof(GtkVScrollbuttonClass),
-	    (GtkClassInitFunc) gtk_vscrollbutton_class_init,
-	    (GtkObjectInitFunc) gtk_vscrollbutton_init,
-	    /* reserved_1 */ NULL,
-	    /* reserved_2 */ NULL,
-	    (GtkClassInitFunc) NULL,
+	static const GTypeInfo vscrollbutton_info = {
+			sizeof (GtkVScrollbuttonClass),
+
+			(GBaseInitFunc) NULL,
+			(GBaseFinalizeFunc) NULL,
+
+			(GClassInitFunc) gtk_vscrollbutton_class_init,
+			(GClassFinalizeFunc) NULL,
+			NULL,	/* class_data */
+
+			sizeof (GtkVScrollbutton),
+			0,	/* n_preallocs */
+			(GInstanceInitFunc) gtk_vscrollbutton_init,
 	};
 
-	vscrollbutton_type =
-	    gtk_type_unique(GTK_TYPE_VBOX, &vscrollbutton_info);
+	vscrollbutton_type = g_type_register_static (GTK_TYPE_VBOX, "GtkVScrollbutton", &vscrollbutton_info, (GTypeFlags)0);
     }
 
     return vscrollbutton_type;
@@ -206,7 +209,8 @@ static void gtk_vscrollbutton_init(GtkVScrollbutton *scrollbutton)
 GtkWidget *gtk_vscrollbutton_new(GtkAdjustment *adjustment)
 {
     GtkWidget *vscrollbutton;
-    vscrollbutton = GTK_WIDGET(gtk_type_new(gtk_vscrollbutton_get_type()));
+    vscrollbutton = g_object_new (gtk_vscrollbutton_get_type(),
+			NULL);
     gtk_vscrollbutton_set_adjustment(GTK_VSCROLLBUTTON(vscrollbutton),
 				     adjustment);
     g_signal_connect(G_OBJECT(GTK_VSCROLLBUTTON(vscrollbutton)->adjustment),

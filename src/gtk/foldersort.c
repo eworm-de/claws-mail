@@ -53,7 +53,7 @@ static void ok_clicked(GtkWidget *widget, FolderSortDialog *dialog)
 	int i;
 
 	for (i = 0; i < dialog->rows; i++) {
-		folder = gtk_clist_get_row_data(GTK_CLIST(dialog->folderlist), i);
+		folder = gtk_cmclist_get_row_data(GTK_CMCLIST(dialog->folderlist), i);
 
 		folder_set_sort(folder, dialog->rows - i);
 	}
@@ -83,27 +83,27 @@ static void moveup_clicked(GtkWidget *widget, FolderSortDialog *dialog)
 {
 	g_return_if_fail(dialog->selected > 0);
 
-	gtk_clist_swap_rows(GTK_CLIST(dialog->folderlist), dialog->selected, dialog->selected - 1);
+	gtk_cmclist_swap_rows(GTK_CMCLIST(dialog->folderlist), dialog->selected, dialog->selected - 1);
 }
 
 static void movedown_clicked(GtkWidget *widget, FolderSortDialog *dialog)
 {
 	g_return_if_fail(dialog->selected < (dialog->rows - 1));
 
-	gtk_clist_swap_rows(GTK_CLIST(dialog->folderlist), dialog->selected, dialog->selected + 1);
+	gtk_cmclist_swap_rows(GTK_CMCLIST(dialog->folderlist), dialog->selected, dialog->selected + 1);
 }
 
-static void row_selected(GtkCList *clist, gint row, gint column, GdkEventButton *event, FolderSortDialog *dialog)
+static void row_selected(GtkCMCList *clist, gint row, gint column, GdkEventButton *event, FolderSortDialog *dialog)
 {
 	set_selected(dialog, row);
 }
 
-static void row_unselected(GtkCList *clist, gint row, gint column, GdkEventButton *event, FolderSortDialog *dialog)
+static void row_unselected(GtkCMCList *clist, gint row, gint column, GdkEventButton *event, FolderSortDialog *dialog)
 {
 	set_selected(dialog, -1);
 }
 
-static void row_moved(GtkCList *clist, gint srcpos, gint destpos, FolderSortDialog *dialog)
+static void row_moved(GtkCMCList *clist, gint srcpos, gint destpos, FolderSortDialog *dialog)
 {
 	if (dialog->selected == -1)
 		return;
@@ -207,15 +207,15 @@ void foldersort_open()
 				       GTK_POLICY_AUTOMATIC,
 				       GTK_POLICY_AUTOMATIC);
 
-	folderlist = gtk_clist_new(1);
+	folderlist = gtk_cmclist_new(1);
 	gtk_widget_show(folderlist);
 	gtk_container_add(GTK_CONTAINER(scrolledwindow1), folderlist);
-	gtk_clist_set_column_width(GTK_CLIST(folderlist), 0, 80);
-	gtk_clist_column_titles_show(GTK_CLIST(folderlist));
+	gtk_cmclist_set_column_width(GTK_CMCLIST(folderlist), 0, 80);
+	gtk_cmclist_column_titles_show(GTK_CMCLIST(folderlist));
 
 	label2 = gtk_label_new(_("Folders"));
 	gtk_widget_show(label2);
-	gtk_clist_set_column_widget(GTK_CLIST(folderlist), 0, label2);
+	gtk_cmclist_set_column_widget(GTK_CMCLIST(folderlist), 0, label2);
 	gtk_label_set_justify(GTK_LABEL(label2), GTK_JUSTIFY_LEFT);
 	gtk_misc_set_alignment(GTK_MISC(label2), 0, 0.5);
 
@@ -239,7 +239,7 @@ void foldersort_open()
 	gtk_widget_show(window);
 	gtk_widget_set_sensitive(moveup_btn, FALSE);
 	gtk_widget_set_sensitive(movedown_btn, FALSE);
-	gtk_clist_set_reorderable(GTK_CLIST(folderlist), TRUE);
+	gtk_cmclist_set_reorderable(GTK_CMCLIST(folderlist), TRUE);
 
 	g_signal_connect(G_OBJECT(moveup_btn), "clicked",
                          G_CALLBACK(moveup_clicked), dialog);
@@ -261,8 +261,8 @@ void foldersort_open()
 		gchar *text[1];
 
 		text[0] = folder->name;
-		row = gtk_clist_append(GTK_CLIST(folderlist), text);
-		gtk_clist_set_row_data(GTK_CLIST(folderlist), row, folder);
+		row = gtk_cmclist_append(GTK_CMCLIST(folderlist), text);
+		gtk_cmclist_set_row_data(GTK_CMCLIST(folderlist), row, folder);
 		dialog->rows++;
 	}
 

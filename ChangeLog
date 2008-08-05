@@ -1,3 +1,32 @@
+2008-08-05 [colin]	3.5.0cvs49
+
+	* src/prefs_account.c
+	* src/prefs_filtering_action.c
+	* src/prefs_matcher.c
+	* src/gtk/Makefile.am
+	* src/gtk/claws-marshal.list
+	* src/gtk/colorlabel.c
+	* src/gtk/colorsel.c
+	* src/gtk/foldersort.c
+	* src/gtk/gtkaspell.c
+	* src/gtk/gtkcmclist.c
+	* src/gtk/gtkcmclist.h
+	* src/gtk/gtkcmctree.c
+	* src/gtk/gtkcmctree.h
+	* src/gtk/gtkcmoptionmenu.c
+	* src/gtk/gtkcmoptionmenu.h
+	* src/gtk/gtksctree.c
+	* src/gtk/gtksctree.h
+	* src/gtk/gtkutils.c
+	* src/gtk/gtkutils.h
+	* src/gtk/gtkvscrollbutton.c
+	* src/gtk/menu.c
+	* src/gtk/menu.h
+	* src/gtk/quicksearch.c
+	* src/plugins/dillo_viewer/dillo_viewer.c
+	* src/plugins/pgpcore/select-keys.c
+		Try to finish yesterday's commit
+
 2008-08-04 [colin]	3.5.0cvs48
 
 	* src/addressadd.c

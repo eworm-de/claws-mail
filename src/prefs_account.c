@@ -35,7 +35,7 @@
 #include <string.h>
 #include <stdlib.h>
 #include <ctype.h>
-
+#include "gtkcmoptionmenu.h"
 #include "main.h"
 #include "prefs_gtk.h"
 #include "prefs_account.h"
@@ -2601,12 +2601,12 @@ static void advanced_create_widget_func(PrefsPage * _page,
 			  G_CALLBACK (crosspost_color_toggled),
 			  NULL);
 
-	colormenu_crosspost = gtk_option_menu_new();
+	colormenu_crosspost = gtk_cmoption_menu_new();
 	gtk_widget_show (colormenu_crosspost);
 	gtk_box_pack_start (GTK_BOX (hbox1), colormenu_crosspost, FALSE, FALSE, 0);
 
 	menu = colorlabel_create_color_menu();
-	gtk_option_menu_set_menu (GTK_OPTION_MENU(colormenu_crosspost), menu);
+	gtk_cmoption_menu_set_menu (GTK_CMOPTION_MENU(colormenu_crosspost), menu);
 	SET_TOGGLE_SENSITIVITY(checkbtn_crosspost, colormenu_crosspost);
 
 	PACK_HBOX (hbox1);
@@ -3591,7 +3591,7 @@ static void prefs_account_crosspost_set_data_from_colormenu(PrefParam *pparam)
 	GtkWidget *menu;
 	GtkWidget *menuitem;
 
-	menu = gtk_option_menu_get_menu(GTK_OPTION_MENU(advanced_page.crosspost_colormenu));
+	menu = gtk_cmoption_menu_get_menu(GTK_CMOPTION_MENU(advanced_page.crosspost_colormenu));
 	menuitem = gtk_menu_get_active(GTK_MENU(menu));
 	*((gint *)pparam->data) = GPOINTER_TO_INT
 		(g_object_get_data(G_OBJECT(menuitem), "color"));
@@ -3600,12 +3600,12 @@ static void prefs_account_crosspost_set_data_from_colormenu(PrefParam *pparam)
 static void prefs_account_crosspost_set_colormenu(PrefParam *pparam)
 {
 	gint colorlabel = *((gint *)pparam->data);
-	GtkOptionMenu *colormenu = GTK_OPTION_MENU(*pparam->widget);
+	GtkCMOptionMenu *colormenu = GTK_CMOPTION_MENU(*pparam->widget);
 	GtkWidget *menu;
 	GtkWidget *menuitem;
 
-	gtk_option_menu_set_history(colormenu, colorlabel);
-	menu = gtk_option_menu_get_menu(colormenu);
+	gtk_cmoption_menu_set_history(colormenu, colorlabel);
+	menu = gtk_cmoption_menu_get_menu(colormenu);
 	menuitem = gtk_menu_get_active(GTK_MENU(menu));
 	gtk_menu_item_activate(GTK_MENU_ITEM(menuitem));
 }

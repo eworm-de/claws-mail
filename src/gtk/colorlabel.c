@@ -218,7 +218,7 @@ static gboolean colorlabel_drawing_area_expose_event_cb
 			   TRUE, 1, 1, widget->allocation.width - 2,
 			   widget->allocation.height - 2);
 
-	gdk_gc_unref(gc);			   
+	g_object_unref(gc);			   
 	
 	return FALSE;
 }

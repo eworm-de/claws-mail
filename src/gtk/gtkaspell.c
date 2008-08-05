@@ -1536,7 +1536,7 @@ static void replace_with_create_dialog_cb(GtkWidget *w, gpointer data)
 	gtk_window_set_resizable(GTK_WINDOW(dialog), FALSE);
 	gtk_window_set_title(GTK_WINDOW(dialog),_("Replace unknown word"));
 	gtk_dialog_set_has_separator (GTK_DIALOG (dialog), FALSE);
-	gtk_widget_set_uposition(dialog, xx, yy);
+	gtk_window_move(GTK_WINDOW(dialog), xx, yy);
 
 	g_signal_connect_swapped(G_OBJECT(dialog), "destroy",
 				 G_CALLBACK(gtk_widget_destroy), 
@@ -2274,18 +2274,14 @@ static void set_menu_pos(GtkMenu *menu, gint *x, gint *y,
 	wx =  r.width;
 	wy =  r.height;
 
-	*x = rect.x + xx +
-	     gdk_char_width(gtk_style_get_font(GTK_WIDGET(text)->style), ' ');
+	*x = rect.x + xx + 8;
 
 	*y = rect.y + rect.height + yy;
 
 	if (*x + wx > sx)
 		*x = sx - wx;
 	if (*y + wy > sy)
-		*y = *y - wy -
-		     gdk_string_height(gtk_style_get_font(
-						GTK_WIDGET(text)->style),
-				       gtkaspell->theword);
+		*y = *y - wy - 10;
 }
 
 /* change the current dictionary of gtkaspell

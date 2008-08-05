@@ -197,7 +197,7 @@ static void dillo_destroy_viewer(MimeViewer *_viewer)
 		gtk_widget_destroy(viewer->socket);
 	}
 
-	gtk_widget_unref(GTK_WIDGET(viewer->widget));
+	g_object_unref(GTK_WIDGET(viewer->widget));
 	claws_unlink(viewer->filename);
 	g_free(viewer->filename);
     	g_free(viewer);
@@ -219,7 +219,7 @@ static MimeViewer *dillo_viewer_create(void)
 	viewer->widget = gtk_event_box_new();
 
 	gtk_widget_show(viewer->widget);
-	gtk_widget_ref(viewer->widget);
+	g_object_ref(viewer->widget);
 
 	viewer->filename = NULL;
 
