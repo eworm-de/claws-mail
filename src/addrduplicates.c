@@ -279,7 +279,7 @@ static gint collect_emails(ItemPerson *itemperson, AddressDataSource *ds)
 		ItemEMail *email = nodeM->data;
 
 		addr = g_strdup(email->address);
-		g_strdown(addr);
+		g_utf8_strdown(addr, -1);
 		old_val = g_hash_table_lookup(addr_hash, addr);
 		if(old_val)
 			new_val = deep_copy_hash_val(old_val);

@@ -672,7 +672,7 @@ static MimeViewer *get_viewer_for_content_type(MimeView *mimeview, const gchar *
 #ifndef FNM_CASEFOLD
 #define FNM_CASEFOLD 0
 	Xstrdup_a(content_type, content_type, return NULL);
-	g_strdown((gchar *)content_type);
+	g_utf8_strdown((gchar *)content_type, -1);
 #endif
 	
 	for (cur = mimeviewer_factories; cur != NULL; cur = g_slist_next(cur)) {

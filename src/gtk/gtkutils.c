@@ -1587,3 +1587,82 @@ GtkUIManager *gtkut_ui_manager(void)
 	return gui_manager;
 }
 
+#ifdef G_OS_UNIX
+#define READ_CONDITION (G_IO_IN | G_IO_HUP | G_IO_ERR)
+#define WRITE_CONDITION (G_IO_OUT | G_IO_ERR)
+#define EXCEPTION_CONDITION (G_IO_PRI)
+typedef struct _ClawsIOClosure ClawsIOClosure;
+
+struct _ClawsIOClosure
+{
+  GdkInputFunction function;
+  GdkInputCondition condition;
+  GdkDestroyNotify notify;
+  gpointer data;
+};
+
+static gboolean  
+claws_io_invoke (GIOChannel   *source,
+	       GIOCondition  condition,
+	       gpointer      data)
+{
+  ClawsIOClosure *closure = data;
+  GdkInputCondition gdk_cond = 0;
+
+  if (condition & READ_CONDITION)
+    gdk_cond |= GDK_INPUT_READ;
+  if (condition & WRITE_CONDITION)
+    gdk_cond |= GDK_INPUT_WRITE;
+  if (condition & EXCEPTION_CONDITION)
+    gdk_cond |= GDK_INPUT_EXCEPTION;
+
+  if (closure->condition & gdk_cond)
+    closure->function (closure->data, g_io_channel_unix_get_fd (source), gdk_cond);
+
+  return TRUE;
+}
+
+static void
+claws_io_destroy (gpointer data)
+{
+  ClawsIOClosure *closure = data;
+
+  if (closure->notify)
+    closure->notify (closure->data);
+
+  g_free (closure);
+}
+
+gint
+claws_input_add    (gint	      source,
+		    GdkInputCondition condition,
+		    GdkInputFunction  function,
+		    gpointer	      data)
+{
+  guint result;
+  ClawsIOClosure *closure = g_new (ClawsIOClosure, 1);
+  GIOChannel *channel;
+  GIOCondition cond = 0;
+
+  closure->function = function;
+  closure->condition = condition;
+  closure->notify = NULL;
+  closure->data = data;
+
+  if (condition & GDK_INPUT_READ)
+    cond |= READ_CONDITION;
+  if (condition & GDK_INPUT_WRITE)
+    cond |= WRITE_CONDITION;
+  if (condition & GDK_INPUT_EXCEPTION)
+    cond |= EXCEPTION_CONDITION;
+
+  channel = g_io_channel_unix_new (source);
+  result = g_io_add_watch_full (channel, G_PRIORITY_DEFAULT, cond, 
+				claws_io_invoke,
+				closure, claws_io_destroy);
+  g_io_channel_unref (channel);
+
+  return result;
+}
+
+#endif

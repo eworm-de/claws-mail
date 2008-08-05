@@ -297,11 +297,11 @@ static gboolean mail_filtering_hook(gpointer source, gpointer data)
 				running &= ~CHILD_RUNNING;
 			} /* ret == 0 continue */
 	    
-			g_main_iteration(TRUE);
+			g_main_context_iteration(NULL, TRUE);
     		}
 
 		while (running & TIMEOUT_RUNNING)
-			g_main_iteration(TRUE);
+			g_main_context_iteration(NULL, TRUE);
 	}
 
 	fclose(fp);

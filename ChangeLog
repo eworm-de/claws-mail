@@ -1,3 +1,28 @@
+2008-08-05 [colin]	3.5.0cvs50
+
+	* src/action.c
+	* src/addr_compl.c
+	* src/addrbook.c
+	* src/addrcindex.c
+	* src/addrduplicates.c
+	* src/addrharvest.c
+	* src/enriched.c
+	* src/html.c
+	* src/ldif.c
+	* src/main.c
+	* src/mimeview.c
+	* src/mutt.c
+	* src/pine.c
+	* src/procmime.c
+	* src/vcard.c
+	* src/wizard.c
+	* src/common/socket.c
+	* src/gtk/gtkutils.c
+	* src/gtk/gtkutils.h
+	* src/gtk/menu.c
+	* src/plugins/spamassassin/spamassassin.c
+		More undeprecation (Glib)
+
 2008-08-05 [colin]	3.5.0cvs49
 
 	* src/prefs_account.c

@@ -314,7 +314,7 @@ static gchar *ldif_get_tagname( char* line, gboolean *flag64 ) {
 
 			tag = g_strndup( line, len+1 );
 			tag[ len ] = '\0';
-			g_strdown( tag );
+			g_utf8_strdown( tag, -1 );
 			return tag;
 		}
 	}
@@ -526,7 +526,7 @@ static void ldif_add_value(
 	gchar *nm, *val;
 
 	nm = g_strdup( tagName );
-	g_strdown( nm );
+	g_utf8_strdown( nm, -1 );
 	if( tagValue ) {
 		val = g_strdup( tagValue );
 	}

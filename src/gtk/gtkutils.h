@@ -210,6 +210,13 @@ gboolean gtkut_list_view_select_row(GtkWidget *list, gint row);
 GtkUIManager *gtkut_create_ui_manager(void);
 GtkUIManager *gtkut_ui_manager(void);
 
+#ifdef G_OS_UNIX
+gint
+claws_input_add    (gint	      source,
+		    GdkInputCondition condition,
+		    GdkInputFunction  function,
+		    gpointer	      data);
+#endif
 #if GTK_CHECK_VERSION(2,12,0)
 #define CLAWS_TIP_DECL() {}
 #define CLAWS_SET_TIP(widget,tip) { 					\

@@ -118,7 +118,7 @@ static GSList	   *g_completion_addresses;	/* unique addresses found in the
 						   completion cache. */
 static gchar	   *g_completion_prefix;	/* last prefix. (this is cached here
 						 * because the prefix passed to g_completion
-						 * is g_strdown()'ed */
+						 * is g_utf8_strdown()'ed */
 
 static gchar *completion_folder_path = NULL;
 
@@ -1348,7 +1348,7 @@ static void address_completion_create_completion_window( GtkEntry *entry_ )
 		GTK_SHADOW_OUT);
 	/* Use entry widget to create initial window */
 	gdk_window_get_geometry(entry->window, &x, &y, &width, &height, &depth);
-	gdk_window_get_deskrelative_origin (entry->window, &x, &y);
+	gdk_window_get_origin (entry->window, &x, &y);
 	y += height;
 	gtk_window_move(GTK_WINDOW(window), x, y);
 

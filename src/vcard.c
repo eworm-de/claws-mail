@@ -288,7 +288,7 @@ static gchar *vcard_get_tagname( char* line, gchar dlm ) {
 			len = lptr - line;
 			tag = g_strndup( line, len+1 );
 			tag[ len ] = '\0';
-			g_strdown( tag );
+			g_utf8_strdown( tag, -1 );
 			return tag;
 		}
 	}

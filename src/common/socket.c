@@ -842,7 +842,10 @@ gint sock_connect_async_cancel(gint id)
 		if (conn_data->io_tag > 0)
 			g_source_remove(conn_data->io_tag);
 		if (conn_data->channel) {
-			g_io_channel_close(conn_data->channel);
+			GError *err = NULL;
+			g_io_channel_shutdown(conn_data->channel, TRUE, &err);
+			if (err)
+				g_error_free(err);
 			g_io_channel_unref(conn_data->channel);
 		}
 
@@ -918,21 +921,38 @@ static gboolean sock_get_address_info_async_cb(GIOChannel *source,
 	struct sockaddr *addr;
 	gchar *canonical_name = NULL;
 	gchar len = 0;
-
-	if (g_io_channel_read(source, &len, sizeof(len),
-			      &bytes_read) == G_IO_ERROR_NONE) {
+	GError *err = NULL;
+	
+	g_io_channel_set_encoding(source, NULL, &err);
+	if (err) {
+		g_warning("can unset encoding: %s\n", err->message);
+		g_error_free(err);
+		return FALSE;
+	}
+	g_io_channel_set_buffered(source, FALSE);
+	if (g_io_channel_read_chars(source, &len, sizeof(len),
+			      &bytes_read, &err) == G_IO_STATUS_NORMAL) {
+		if (err != NULL) {
+			g_warning("g_io_channel_read_chars: %s\n", err->message);
+			g_error_free(err);
+			return FALSE;
+		} 
 		if (bytes_read == sizeof(len) && len > 0) {
 			gchar *cur = NULL;
 			gint todo = len;
 			canonical_name = g_malloc0(len + 1);
 			cur = canonical_name;
 			while (todo > 0) {
-				if (g_io_channel_read(source, cur, todo,
-				      &bytes_read) != G_IO_ERROR_NONE) {
-				      g_warning("canonical name not read\n");
-				      g_free(canonical_name);
-				      canonical_name = NULL;
-				      break;
+				if (g_io_channel_read_chars(source, cur, todo,
+				      &bytes_read, &err) != G_IO_STATUS_NORMAL) {
+					if (err) {
+					      g_warning("canonical name not read %s\n", err->message);
+					      g_free(canonical_name);
+					      canonical_name = NULL;
+					      g_error_free(err);
+					      err = NULL;
+					      break;
+					}
 				} else {
 					cur += bytes_read;
 					todo -= bytes_read;
@@ -947,12 +967,15 @@ static gboolean sock_get_address_info_async_cb(GIOChannel *source,
 		}	      
 	}
 	for (;;) {
-		if (g_io_channel_read(source, (gchar *)ai_member,
-				      sizeof(ai_member), &bytes_read)
-		    != G_IO_ERROR_NONE) {
-			g_warning("sock_get_address_info_async_cb: "
-				  "address length read error\n");
-			break;
+		if (g_io_channel_read_chars(source, (gchar *)ai_member,
+				      sizeof(ai_member), &bytes_read, &err) 
+		    != G_IO_STATUS_NORMAL) {
+			if (err != NULL) {
+				g_warning("g_io_channel_read_chars: addr len %s\n", err->message);
+				g_error_free(err);
+				err = NULL;
+				break;
+			} 
 		}
 
 		if (bytes_read == 0 || bytes_read != sizeof(ai_member))
@@ -964,13 +987,16 @@ static gboolean sock_get_address_info_async_cb(GIOChannel *source,
 		}
 
 		addr = g_malloc(ai_member[3]);
-		if (g_io_channel_read(source, (gchar *)addr, ai_member[3],
-				      &bytes_read)
-		    != G_IO_ERROR_NONE) {
-			g_warning("sock_get_address_info_async_cb: "
-				  "address data read error\n");
-			g_free(addr);
-			break;
+		if (g_io_channel_read_chars(source, (gchar *)addr, ai_member[3],
+				      &bytes_read, &err) 
+		    != G_IO_STATUS_NORMAL) {
+			if (err != NULL) {
+				g_warning("g_io_channel_read_chars: addr data read %s\n", err->message);
+				g_error_free(err);
+				err = NULL;
+				g_free(addr);
+				break;
+			} 
 		}
 
 		if (bytes_read != ai_member[3]) {
@@ -990,7 +1016,9 @@ static gboolean sock_get_address_info_async_cb(GIOChannel *source,
 		addr_list = g_list_append(addr_list, addr_data);
 	}
 
-	g_io_channel_close(source);
+	g_io_channel_shutdown(source, TRUE, &err);
+	if (err)
+		g_error_free(err);
 	g_io_channel_unref(source);
 
 #ifdef G_OS_WIN32
@@ -1211,7 +1239,11 @@ static gint sock_get_address_info_async_cancel(SockLookupData *lookup_data)
 	if (lookup_data->io_tag > 0)
 		g_source_remove(lookup_data->io_tag);
 	if (lookup_data->channel) {
-		g_io_channel_close(lookup_data->channel);
+		GError *err = NULL;
+		g_io_channel_shutdown(lookup_data->channel, TRUE, &err);
+		if (err)
+			g_error_free(err);
+
 		g_io_channel_unref(lookup_data->channel);
 	}
 

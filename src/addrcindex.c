@@ -129,7 +129,7 @@ void addrcindex_add_entry(
 	entry = g_new0( AddrIndexEntry, 1 );
 	entry->name = g_strdup( name );
 	entry->address = email;
-	g_strdown( entry->name );
+	g_utf8_strdown( entry->name, -1 );
 	index->addressList = g_list_append( index->addressList, entry );
 }
 
@@ -357,7 +357,7 @@ GList *addrcindex_search( AddrCacheIndex *index, const gchar *search ) {
 
 		/* Perform the search */
 		prefix = g_strdup( search );
-		g_strdown( prefix );
+		g_utf8_strdown( prefix, -1 );
 		list = g_completion_complete( index->completion, prefix, NULL );
 		g_free( prefix );
 

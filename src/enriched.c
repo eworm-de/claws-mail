@@ -179,7 +179,7 @@ static ERTFState ertf_parse_tag(ERTFParser *parser)
 	parser->state = ERTF_UNKNOWN;
 	if (buf[0] == '\0') return parser->state;
 
-	g_strdown (buf);
+	g_utf8_strdown (buf, -1);
 
 	if (!strcmp(buf, "nofill")) {
 		parser->pre   = TRUE;

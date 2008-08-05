@@ -39,8 +39,9 @@
 #include <gtk/gtkmain.h>
 #endif
 
+#if 0 /* FIXME */
 static void connect_accel_change_signals(GtkWidget* widget, GtkWidget *wid2) ;
-
+#endif
 
 GtkActionGroup *cm_menu_create_action_group(const gchar *name, GtkActionEntry *entries,
 					    gint num_entries, gpointer data)
@@ -193,15 +194,15 @@ gint menu_find_option_menu_index(GtkCMOptionMenu *optmenu, gpointer data,
 	return -1;
 }
 
+#if 0
 static void connect_accel_change_signals(GtkWidget* widget, GtkWidget *wid2) 
 {
-#if 0
 	g_signal_connect_after(G_OBJECT(widget), "add_accelerator", 
 			       G_CALLBACK(menu_item_add_accel), wid2);
 	g_signal_connect_after(G_OBJECT(widget), "remove_accelerator", 
 			       G_CALLBACK(menu_item_remove_accel), wid2);
-#endif
 }
+#endif
 
 void menu_connect_identical_items(void)
 {

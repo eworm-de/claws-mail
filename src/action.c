@@ -890,7 +890,7 @@ static gboolean execute_actions(gchar *action, GSList *msg_list,
 			child_info->callback = callback;
 			child_info->data = data;
 			child_info->tag_status = 
-				gdk_input_add(child_info->chld_status,
+				claws_input_add(child_info->chld_status,
 					      GDK_INPUT_READ,
 					      catch_status, child_info);
 		}
@@ -1051,9 +1051,9 @@ static ChildInfo *fork_child(gchar *cmd, const gchar *msg_str,
 	child_info->chld_err    = chld_err[0];
 	child_info->chld_status = chld_status[0];
 	child_info->tag_in      = -1;
-	child_info->tag_out     = gdk_input_add(chld_out[0], GDK_INPUT_READ,
+	child_info->tag_out     = claws_input_add(chld_out[0], GDK_INPUT_READ,
 						catch_output, child_info);
-	child_info->tag_err     = gdk_input_add(chld_err[0], GDK_INPUT_READ,
+	child_info->tag_err     = claws_input_add(chld_err[0], GDK_INPUT_READ,
 						catch_output, child_info);
 
 	if (!(children->action_type &
@@ -1137,7 +1137,7 @@ static void send_input(GtkWidget *w, gpointer data)
 	Children *children = (Children *) data;
 	ChildInfo *child_info = (ChildInfo *) children->list->data;
 
-	child_info->tag_in = gdk_input_add(child_info->chld_in,
+	child_info->tag_in = claws_input_add(child_info->chld_in,
 					   GDK_INPUT_WRITE,
 					   catch_input, children);
 }
@@ -1180,11 +1180,11 @@ static void childinfo_close_pipes(ChildInfo *child_info)
 	 * them if necessary
 	 */
 	if (child_info->tag_in > 0)
-		gdk_input_remove(child_info->tag_in);
+		g_source_remove(child_info->tag_in);
 	if (child_info->tag_out > 0)
-		gdk_input_remove(child_info->tag_out);
+		g_source_remove(child_info->tag_out);
 	if (child_info->tag_err > 0)
-		gdk_input_remove(child_info->tag_err);
+		g_source_remove(child_info->tag_err);
 
 	if (child_info->chld_in >= 0)
 		(void)close(child_info->chld_in);
@@ -1430,7 +1430,7 @@ static void catch_status(gpointer data, gint source, GdkInputCondition cond)
 	gchar buf;
 	gint c;
 
-	gdk_input_remove(child_info->tag_status);
+	g_source_remove(child_info->tag_status);
 
 	c = read(source, &buf, 1);
 	debug_print("Child returned %c\n", buf);
@@ -1504,7 +1504,7 @@ static void catch_input(gpointer data, gint source, GdkInputCondition cond)
 	gtk_widget_set_sensitive(children->input_hbox, FALSE);
 	gtk_widget_grab_focus(children->abort_btn);
 
-	gdk_input_remove(child_info->tag_in);
+	g_source_remove(child_info->tag_in);
 	child_info->tag_in = -1;
 
 	input = gtk_editable_get_chars(GTK_EDITABLE(children->input_entry),
@@ -1603,12 +1603,12 @@ static void catch_output(gpointer data, gint source, GdkInputCondition cond)
 	}
 	if (c == 0) {
 		if (source == child_info->chld_out) {
-			gdk_input_remove(child_info->tag_out);
+			g_source_remove(child_info->tag_out);
 			child_info->tag_out = -1;
 			(void)close(child_info->chld_out);
 			child_info->chld_out = -1;
 		} else {
-			gdk_input_remove(child_info->tag_err);
+			g_source_remove(child_info->tag_err);
 			child_info->tag_err = -1;
 			(void)close(child_info->chld_err);
 			child_info->chld_err = -1;

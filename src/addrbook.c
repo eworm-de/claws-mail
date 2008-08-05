@@ -1425,7 +1425,7 @@ void addrbook_update_address_list(AddressBookFile *book, ItemPerson *person,
 			ItemEMail *email = node->data;
 			gchar *addr = g_strdup(email->address);
 			gchar *alias = email->obj.name ;
-			g_strdown(addr);
+			g_utf8_strdown(addr, -1);
 			if (!g_hash_table_lookup(hashEMail, addr)) {
 				g_hash_table_insert(hashEMail, addr, email);
 			}
@@ -1454,7 +1454,7 @@ void addrbook_update_address_list(AddressBookFile *book, ItemPerson *person,
 					ItemEMail *emailNew = NULL;
  					gchar *addr = g_strdup(emailGrp->address);
 					gchar *alias = emailGrp->obj.name;
-					g_strdown(addr);
+					g_utf8_strdown(addr, -1);
 					emailNew = (ItemEMail *)
 						g_hash_table_lookup(hashEMail, addr);
 					g_free( addr );

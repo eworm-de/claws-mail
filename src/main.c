@@ -1151,7 +1151,6 @@ int main(int argc, char *argv[])
 	hildon_program = HILDON_PROGRAM(hildon_program_get_instance());
 	static_osso_context = osso_context;
 #endif	
-	gdk_rgb_init();
 	gtk_widget_set_default_colormap(gdk_rgb_get_colormap());
 
 	gui_manager = gtkut_create_ui_manager();
@@ -1369,7 +1368,7 @@ int main(int argc, char *argv[])
 
 	/* register the callback of unix domain socket input */
 #ifdef G_OS_UNIX
-	lock_socket_tag = gdk_input_add(lock_socket,
+	lock_socket_tag = claws_input_add(lock_socket,
 					GDK_INPUT_READ | GDK_INPUT_EXCEPTION,
 					lock_socket_input_cb,
 					mainwin);
@@ -2229,7 +2228,7 @@ static gint lock_socket_remove(void)
 	}
 
 	if (lock_socket_tag > 0) {
-		gdk_input_remove(lock_socket_tag);
+		g_source_remove(lock_socket_tag);
 	}
 	fd_close(lock_socket);
 	filename = claws_get_socket_name();

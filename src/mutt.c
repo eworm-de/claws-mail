@@ -325,7 +325,7 @@ static ItemEMail *mutt_insert_table(
 
 	/* Test whether address already in hash table */
 	key = g_strdup( address );
-	g_strdown( key );
+	g_utf8_strdown( key, -1 );
 	email = g_hash_table_lookup( muttFile->uniqTable, key );
 
 	if( email == NULL ) {

@@ -300,7 +300,7 @@ static void addrharvest_insert_cache(
 
 	/* Insert address */
 	key = g_strdup( address );
-	g_strdown( key );
+	g_utf8_strdown( key, -1 );
 	person = g_hash_table_lookup( harvester->dupTable, key );
 	if( person ) {
 		/* Update existing person to use longest name */
@@ -808,7 +808,7 @@ gint addrharvest_harvest(
 			gchar *p;
 
 			p = g_strdup( entry->header );
-			g_strdown( p );
+			g_utf8_strdown( p, -1 );
 			listHdr = g_list_append( listHdr, p );
 		}
 		node = g_list_next( node );

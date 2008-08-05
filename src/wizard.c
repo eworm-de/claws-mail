@@ -341,7 +341,7 @@ static gchar *get_name_for_mail(void)
 	gchar *name = g_strdup(tmpl.name);
 	if (name == NULL)
 		return NULL;
-	g_strdown(name);
+	g_utf8_strdown(name, -1);
 	while(strstr(name, " "))
 		*strstr(name, " ")='.';
 	

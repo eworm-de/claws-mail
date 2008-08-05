@@ -531,12 +531,12 @@ static SC_HTMLTag *sc_html_get_tag(const gchar *str)
 		;
 
 	if (*tmpp == '\0') {
-		g_strdown(tmp);
+		g_utf8_strdown(tmp, -1);
 		tag->name = g_strdup(tmp);
 		return tag;
 	} else {
 		*tmpp++ = '\0';
-		g_strdown(tmp);
+		g_utf8_strdown(tmp, -1);
 		tag->name = g_strdup(tmp);
 	}
 
@@ -585,7 +585,7 @@ static SC_HTMLTag *sc_html_get_tag(const gchar *str)
 			attr_value = "";
 
 		g_strchomp(attr_name);
-		g_strdown(attr_name);
+		g_utf8_strdown(attr_name, -1);
 		attr = g_new(SC_HTMLAttr, 1);
 		attr->name = g_strdup(attr_name);
 		attr->value = g_strdup(attr_value);
