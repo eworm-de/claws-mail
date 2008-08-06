@@ -1,3 +1,11 @@
+2008-08-06 [colin]	3.5.0cvs51
+
+	* src/compose.c
+		Fix bug 1690, 'Copy/Paste in edit window may 
+		break Undo'; middle-click pastes aren't 
+		REPLACE_INSERT but just INSERT. 
+		Also, fix privacy menu selection
+
 2008-08-05 [colin]	3.5.0cvs50
 
 	* src/action.c

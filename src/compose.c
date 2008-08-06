@@ -7440,7 +7440,8 @@ static void compose_update_privacy_system_menu_item(Compose * compose, gboolean 
 
 			systemid = g_object_get_data(G_OBJECT(amenu->data), "privacy_system");
 			if (systemid != NULL) {
-				if (strcmp(systemid, compose->privacy_system) == 0) {
+				if (strcmp(systemid, compose->privacy_system) == 0 &&
+				    GTK_IS_CHECK_MENU_ITEM(amenu->data)) {
 					menuitem = GTK_WIDGET(amenu->data);
 
 					can_sign = privacy_system_can_sign(systemid);
@@ -7448,7 +7449,8 @@ static void compose_update_privacy_system_menu_item(Compose * compose, gboolean 
 					found = TRUE;
 					break;
 				} 
-			} else if (strlen(compose->privacy_system) == 0) {
+			} else if (strlen(compose->privacy_system) == 0 && 
+				   GTK_IS_CHECK_MENU_ITEM(amenu->data)) {
 					menuitem = GTK_WIDGET(amenu->data);
 
 					can_sign = FALSE;
@@ -9308,12 +9310,11 @@ static void entry_paste_clipboard(Compose *compose, GtkWidget *entry,
 
 		if (contents == NULL)
 			return;
-
-		undo_paste_clipboard(GTK_TEXT_VIEW(compose->text), compose->undostruct);
-
+	
 		/* we shouldn't delete the selection when middle-click-pasting, or we
 		 * can't mid-click-paste our own selection */
 		if (clip != GDK_SELECTION_PRIMARY) {
+			undo_paste_clipboard(GTK_TEXT_VIEW(compose->text), compose->undostruct);
 			gtk_text_buffer_delete_selection(buffer, FALSE, TRUE);
 		}
 		
