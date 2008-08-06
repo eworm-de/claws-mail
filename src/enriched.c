@@ -166,6 +166,7 @@ static ERTFState ertf_parse_tag(ERTFParser *parser)
 {
 	gchar buf[ERTFBUFSIZE];
 	gchar *p;
+	gchar *down;
 	
 	ertf_get_parenthesis (parser, buf, sizeof(buf));
 	
@@ -179,17 +180,17 @@ static ERTFState ertf_parse_tag(ERTFParser *parser)
 	parser->state = ERTF_UNKNOWN;
 	if (buf[0] == '\0') return parser->state;
 
-	g_utf8_strdown (buf, -1);
+	down = g_utf8_strdown (buf, -1);
 
-	if (!strcmp(buf, "nofill")) {
+	if (!strcmp(down, "nofill")) {
 		parser->pre   = TRUE;
 		parser->state = ERTF_NOFILL;
 	}
-	else if (!strcmp(buf, "/nofill")) {
+	else if (!strcmp(down, "/nofill")) {
 		parser->pre   = FALSE;
 		parser->state = ERTF_NORMAL;
 	}
-	
+	g_free(down);
 	return parser->state;
 }
 		

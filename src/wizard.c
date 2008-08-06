@@ -338,10 +338,10 @@ static gchar *wizard_get_default_domain_name(void)
 
 static gchar *get_name_for_mail(void)
 {
-	gchar *name = g_strdup(tmpl.name);
-	if (name == NULL)
+	gchar *name = NULL;
+	if (tmpl.name == NULL)
 		return NULL;
-	g_utf8_strdown(name, -1);
+	name = g_utf8_strdown(tmpl.name, -1);
 	while(strstr(name, " "))
 		*strstr(name, " ")='.';
 	

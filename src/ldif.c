@@ -293,7 +293,7 @@ static gchar *ldif_get_tagname( char* line, gboolean *flag64 ) {
 	gchar *tag = NULL;
 	gchar *lptr = line;
 	gchar *sptr = NULL;
-
+	gchar *down = NULL;
 	while( *lptr++ ) {
 		/* Check for language tag */
 		if( *lptr == LDIF_LANG_TAG ) {
@@ -314,8 +314,9 @@ static gchar *ldif_get_tagname( char* line, gboolean *flag64 ) {
 
 			tag = g_strndup( line, len+1 );
 			tag[ len ] = '\0';
-			g_utf8_strdown( tag, -1 );
-			return tag;
+			down = g_utf8_strdown( tag, -1 );
+			g_free(tag);
+			return down;
 		}
 	}
 	return tag;

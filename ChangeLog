@@ -1,3 +1,22 @@
+2008-08-06 [colin]	3.5.0cvs52
+
+	* src/addrbook.c
+	* src/addrcindex.c
+	* src/addrduplicates.c
+	* src/addrharvest.c
+	* src/enriched.c
+	* src/html.c
+	* src/ldif.c
+	* src/mimeview.c
+	* src/mutt.c
+	* src/pine.c
+	* src/procmime.c
+	* src/vcard.c
+	* src/wizard.c
+		Fix my use of g_utf8_strdown (it returns
+		a newly allocated string and doesn't
+		change the parameter)
+
 2008-08-06 [colin]	3.5.0cvs51
 
 	* src/compose.c

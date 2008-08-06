@@ -531,13 +531,11 @@ static SC_HTMLTag *sc_html_get_tag(const gchar *str)
 		;
 
 	if (*tmpp == '\0') {
-		g_utf8_strdown(tmp, -1);
-		tag->name = g_strdup(tmp);
+		tag->name = g_utf8_strdown(tmp, -1);
 		return tag;
 	} else {
 		*tmpp++ = '\0';
-		g_utf8_strdown(tmp, -1);
-		tag->name = g_strdup(tmp);
+		tag->name = g_utf8_strdown(tmp, -1);
 	}
 
 	while (*tmpp != '\0') {
@@ -585,9 +583,8 @@ static SC_HTMLTag *sc_html_get_tag(const gchar *str)
 			attr_value = "";
 
 		g_strchomp(attr_name);
-		g_utf8_strdown(attr_name, -1);
 		attr = g_new(SC_HTMLAttr, 1);
-		attr->name = g_strdup(attr_name);
+		attr->name = g_utf8_strdown(attr_name, -1);
 		attr->value = g_strdup(attr_value);
 		tag->attr = g_list_append(tag->attr, attr);
 	}

@@ -976,7 +976,7 @@ gchar *procmime_get_mime_type(const gchar *filename)
 	static GHashTable *mime_type_table = NULL;
 	MimeType *mime_type;
 	const gchar *p;
-	gchar *ext = NULL;
+	gchar *ext = NULL, *ext_down;
 	gchar *base;
 
 	if (!mime_type_table) {
@@ -990,7 +990,8 @@ gchar *procmime_get_mime_type(const gchar *filename)
 	g_free(base);
 	if (!p) return NULL;
 
-	g_utf8_strdown(ext, -1);
+	ext_down = g_utf8_strdown(ext, -1);
+	g_free(ext); ext = ext_down;
 	mime_type = g_hash_table_lookup(mime_type_table, ext);
 	if (mime_type) {
 		gchar *str;
@@ -1048,8 +1049,6 @@ static GHashTable *procmime_get_mime_type_table(void)
 
 		exts = g_strsplit(mime_type->extension, " ", 16);
 		for (i = 0; exts[i] != NULL; i++) {
-			/* make the key case insensitive */
-			g_utf8_strdown(exts[i], -1);
 			/* use previously dup'd key on overwriting */
 			if (g_hash_table_lookup(table, exts[i]))
 				key = exts[i];
@@ -1125,7 +1124,7 @@ GList *procmime_get_mime_type_list(void)
 		}
 
 		if (*p)
-			mime_type->extension = g_strdup(p);
+			mime_type->extension = g_utf8_strdown(p, -1);
 		else
 			mime_type->extension = NULL;
 
@@ -1582,7 +1581,7 @@ static void parse_parameters(const gchar *parameters, GHashTable *table)
 	gchar *params, *param, *next;
 	GSList *convlist = NULL, *concatlist = NULL, *cur;
 
-	params = g_strdup(parameters);
+	params = g_utf8_strdown(parameters, -1);
 	param = params;
 	next = params;
 	for (; next != NULL; param = next) {
@@ -1607,8 +1606,6 @@ static void parse_parameters(const gchar *parameters, GHashTable *table)
 		value++;
 		while (value[0] == ' ')
 			value++;
-
-		g_utf8_strdown(attribute, -1);
 
 		len = strlen(attribute);
 		if (attribute[len - 1] == '*') {

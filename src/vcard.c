@@ -282,14 +282,15 @@ static gchar *vcard_get_tagname( char* line, gchar dlm ) {
 	gint len = 0;
 	gchar *tag = NULL;
 	gchar *lptr = line;
-
+	gchar *down;
 	while( *lptr++ ) {
 		if( *lptr == dlm ) {
 			len = lptr - line;
 			tag = g_strndup( line, len+1 );
 			tag[ len ] = '\0';
-			g_utf8_strdown( tag, -1 );
-			return tag;
+			down = g_utf8_strdown( tag, -1 );
+			g_free(tag);
+			return down;
 		}
 	}
 	return tag;

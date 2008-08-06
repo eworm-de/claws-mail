@@ -663,16 +663,16 @@ static MimeViewer *get_viewer_for_content_type(MimeView *mimeview, const gchar *
 	GSList *cur;
 	MimeViewerFactory *factory = NULL;
 	MimeViewer *viewer = NULL;
+	gchar *real_contenttype = NULL;
 
 /*
  * FNM_CASEFOLD is a GNU extension
- * if its not defined copy the string to the stack and
- * convert the copy to lower case
  */
 #ifndef FNM_CASEFOLD
 #define FNM_CASEFOLD 0
-	Xstrdup_a(content_type, content_type, return NULL);
-	g_utf8_strdown((gchar *)content_type, -1);
+	real_contenttype = g_utf8_strdown((gchar *)content_type, -1);
+#else
+	real_contenttype = g_strdup(content_type);
 #endif
 	
 	for (cur = mimeviewer_factories; cur != NULL; cur = g_slist_next(cur)) {
@@ -680,7 +680,7 @@ static MimeViewer *get_viewer_for_content_type(MimeView *mimeview, const gchar *
 		gint i = 0;
 
 		while (curfactory->content_types[i] != NULL) {
-			if(!fnmatch(curfactory->content_types[i], content_type, FNM_CASEFOLD)) {
+			if(!fnmatch(curfactory->content_types[i], real_contenttype, FNM_CASEFOLD)) {
 				debug_print("%s\n", curfactory->content_types[i]);
 				factory = curfactory;
 				break;
@@ -690,6 +690,7 @@ static MimeViewer *get_viewer_for_content_type(MimeView *mimeview, const gchar *
 		if (factory != NULL)
 			break;
 	}
+	g_free(real_contenttype);
 	if (factory == NULL)
 		return NULL;
 
