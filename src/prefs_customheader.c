@@ -309,7 +309,7 @@ static void prefs_custom_header_create(void)
 	customhdr.cancel_btn = cancel_btn;
 
 	customhdr.hdr_combo  = hdr_combo;
-	customhdr.hdr_entry  = GTK_BIN (hdr_combo)->child;
+	customhdr.hdr_entry  = gtk_bin_get_child(GTK_BIN((hdr_combo)));
 	customhdr.val_entry  = val_entry;
 
 	customhdr.list_view   = list_view;

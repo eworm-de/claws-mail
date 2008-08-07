@@ -96,7 +96,7 @@ static void quicksearch_set_type(QuickSearch *quicksearch, gint type)
 
 static gchar *quicksearch_get_text(QuickSearch * quicksearch)
 {
-	gchar *search_string = gtk_editable_get_chars(GTK_EDITABLE(GTK_BIN(quicksearch->search_string_entry)->child), 0, -1);
+	gchar *search_string = gtk_editable_get_chars(GTK_EDITABLE(gtk_bin_get_child(GTK_BIN((quicksearch->search_string_entry)))), 0, -1);
 
 	g_strstrip(search_string);
 	return search_string;
@@ -704,21 +704,21 @@ QuickSearch *quicksearch_new()
 	gtk_box_pack_start(GTK_BOX(hbox_search), search_hbox, FALSE, FALSE, 2);
 	gtk_widget_show(search_hbox);
 
-	g_signal_connect(G_OBJECT(GTK_BIN(search_string_entry)->child),
+	g_signal_connect(G_OBJECT(gtk_bin_get_child(GTK_BIN((search_string_entry)))),
 			   "key_press_event",
 			   G_CALLBACK(searchbar_pressed),
 			   quicksearch);
 
-	g_signal_connect(G_OBJECT(GTK_BIN(search_string_entry)->child),
+	g_signal_connect(G_OBJECT(gtk_bin_get_child(GTK_BIN((search_string_entry)))),
 			 "changed",
 			 G_CALLBACK(searchbar_changed_cb),
 			 quicksearch);
 
-	g_signal_connect(G_OBJECT(GTK_BIN(search_string_entry)->child),
+	g_signal_connect(G_OBJECT(gtk_bin_get_child(GTK_BIN((search_string_entry)))),
 			 "focus_in_event",
 			 G_CALLBACK(searchbar_focus_evt_in),
 			 quicksearch);
-	g_signal_connect(G_OBJECT(GTK_BIN(search_string_entry)->child),
+	g_signal_connect(G_OBJECT(gtk_bin_get_child(GTK_BIN((search_string_entry)))),
 			 "focus_out_event",
 			 G_CALLBACK(searchbar_focus_evt_out),
 			 quicksearch);
@@ -790,7 +790,7 @@ void quicksearch_show(QuickSearch *quicksearch)
 	gtk_widget_show(quicksearch->hbox_search);
 	update_extended_buttons(quicksearch);
 	gtk_widget_grab_focus(
-		GTK_WIDGET(GTK_BIN(quicksearch->search_string_entry)->child));
+		GTK_WIDGET(gtk_bin_get_child(GTK_BIN((quicksearch->search_string_entry)))));
 
 	GTK_EVENTS_FLUSH();
 
@@ -823,11 +823,11 @@ void quicksearch_set(QuickSearch *quicksearch, QuickSearchType type,
 	if (!matchstring || !(*matchstring))
 		quicksearch->in_typing = FALSE;
 
-	g_signal_handlers_block_by_func(G_OBJECT(GTK_BIN(quicksearch->search_string_entry)->child),
+	g_signal_handlers_block_by_func(G_OBJECT(gtk_bin_get_child(GTK_BIN((quicksearch->search_string_entry)))),
 			G_CALLBACK(searchbar_changed_cb), quicksearch);
-	gtk_entry_set_text(GTK_ENTRY(GTK_BIN(quicksearch->search_string_entry)->child),
+	gtk_entry_set_text(GTK_ENTRY(gtk_bin_get_child(GTK_BIN((quicksearch->search_string_entry)))),
 			   matchstring);
-	g_signal_handlers_unblock_by_func(G_OBJECT(GTK_BIN(quicksearch->search_string_entry)->child),
+	g_signal_handlers_unblock_by_func(G_OBJECT(gtk_bin_get_child(GTK_BIN((quicksearch->search_string_entry)))),
 			G_CALLBACK(searchbar_changed_cb), quicksearch);
 
 	prefs_common.summary_quicksearch_type = type;
@@ -878,20 +878,20 @@ static void quicksearch_set_active(QuickSearch *quicksearch, gboolean active)
 		gtk_widget_set_sensitive(quicksearch->clear_search, TRUE);
 		if (colors_initialised) {
 			gtk_widget_modify_base(
-				GTK_BIN(quicksearch->search_string_entry)->child,
+				gtk_bin_get_child(GTK_BIN((quicksearch->search_string_entry))),
 				GTK_STATE_NORMAL, error ? &red : &yellow);
 			gtk_widget_modify_text(
-				GTK_BIN(quicksearch->search_string_entry)->child,
+				gtk_bin_get_child(GTK_BIN((quicksearch->search_string_entry))),
 				GTK_STATE_NORMAL, &black);
 		}
 	} else {
 		gtk_widget_set_sensitive(quicksearch->clear_search, FALSE);
 		if (colors_initialised) {
 			gtk_widget_modify_base(
-				GTK_BIN(quicksearch->search_string_entry)->child,
+				gtk_bin_get_child(GTK_BIN((quicksearch->search_string_entry))),
 				GTK_STATE_NORMAL, NULL);
 			gtk_widget_modify_text(
-				GTK_BIN(quicksearch->search_string_entry)->child,
+				gtk_bin_get_child(GTK_BIN((quicksearch->search_string_entry))),
 				GTK_STATE_NORMAL, NULL);
 		}
 	}
@@ -1200,7 +1200,7 @@ gboolean quicksearch_is_running(QuickSearch *quicksearch)
 
 void quicksearch_pass_key(QuickSearch *quicksearch, guint val, GdkModifierType mod)
 {
-	GtkEntry *entry = GTK_ENTRY(GTK_BIN(quicksearch->search_string_entry)->child);
+	GtkEntry *entry = GTK_ENTRY(gtk_bin_get_child(GTK_BIN((quicksearch->search_string_entry))));
 	glong curpos = gtk_editable_get_position(GTK_EDITABLE(entry));
 	guint32 c;
 	char *str = g_strdup(gtk_entry_get_text(entry));

@@ -370,7 +370,7 @@ void pluginwindow_create()
 	gtk_box_pack_start(GTK_BOX(hbox_info), desc_lbl, FALSE, FALSE, 0);
 
 	get_more_btn = gtkut_get_link_btn(window, PLUGINS_URI, _("Get more..."));
-	gtk_misc_set_alignment(GTK_MISC(GTK_BIN(get_more_btn)->child), 0, 0.5);
+	gtk_misc_set_alignment(GTK_MISC(gtk_bin_get_child(GTK_BIN((get_more_btn)))), 0, 0.5);
 	gtk_widget_show(get_more_btn);
 	gtk_box_pack_start(GTK_BOX(hbox_info), get_more_btn, FALSE, FALSE, 0);
 	gtk_box_pack_start(GTK_BOX(hbox_info), gtk_label_new(""), TRUE, TRUE, 0);

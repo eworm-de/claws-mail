@@ -17,7 +17,6 @@
  * 
  */
 
-#undef GTK_DISABLE_DEPRECATED /*gtk_color_selection_set_color*/
 #ifdef HAVE_CONFIG_H
 #  include "config.h"
 #endif
@@ -579,7 +578,7 @@ static void quote_color_set_dialog(GtkWidget *widget, gpointer data)
 {
 	gchar *type = (gchar *)data;
 	gchar *title = NULL;
-	gdouble color[4] = {0.0, 0.0, 0.0, 0.0};
+	GdkColor color;
 	gint rgbvalue = 0;
 	GtkColorSelectionDialog *dialog;
 	gint c;
@@ -649,12 +648,12 @@ static void quote_color_set_dialog(GtkWidget *widget, gpointer data)
 			 G_CALLBACK(quote_colors_set_dialog_key_pressed),data);
 
 	/* preselect the previous color in the color selection dialog */
-	color[0] = (gdouble) ((rgbvalue & 0xff0000) >> 16) / 255.0;
-	color[1] = (gdouble) ((rgbvalue & 0x00ff00) >>  8) / 255.0;
-	color[2] = (gdouble)  (rgbvalue & 0x0000ff)        / 255.0;
+
+	gtkut_convert_int_to_gdk_color(rgbvalue, &color);
+
 	dialog = GTK_COLOR_SELECTION_DIALOG(color_dialog);
-	gtk_color_selection_set_color
-		(GTK_COLOR_SELECTION(dialog->colorsel), color);
+	gtk_color_selection_set_current_color
+		(GTK_COLOR_SELECTION(dialog->colorsel), &color);
 
 	gtk_widget_show(color_dialog);
 }
@@ -663,17 +662,13 @@ static void quote_colors_set_dialog_ok(GtkWidget *widget, gpointer data)
 {
 	GtkColorSelection *colorsel = (GtkColorSelection *)
 						((GtkColorSelectionDialog *)color_dialog)->colorsel;
-	gdouble color[4];
-	gint red, green, blue, rgbvalue;
+	GdkColor color;
+	gint rgbvalue;
 	gchar *type = (gchar *)data;
 	gint c;
 
-	gtk_color_selection_get_color(colorsel, color);
-
-	red      = (gint) (color[0] * 255.0);
-	green    = (gint) (color[1] * 255.0);
-	blue     = (gint) (color[2] * 255.0);
-	rgbvalue = (gint) ((red * 0x10000) | (green * 0x100) | blue);
+	gtk_color_selection_get_current_color(colorsel, &color);
+	rgbvalue = gtkut_convert_gdk_color_to_int(&color);
 
 
 	/* custom colors */

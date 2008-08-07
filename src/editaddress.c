@@ -280,7 +280,7 @@ static void edit_person_email_clear( gpointer data ) {
 
 static void edit_person_attrib_clear( gpointer data ) {
 	if (!personeditdlg.ldap) {
-		gtk_entry_set_text( GTK_ENTRY(GTK_BIN(personeditdlg.entry_atname)->child), "" );
+		gtk_entry_set_text( GTK_ENTRY(gtk_bin_get_child(GTK_BIN((personeditdlg.entry_atname)))), "" );
 		gtk_entry_set_text( GTK_ENTRY(personeditdlg.entry_atvalue), "" );
 	}
 }
@@ -531,7 +531,7 @@ static void edit_person_load_attrib( ItemPerson *person ) {
 static void edit_person_attrib_list_selected( GtkCMCList *clist, gint row, gint column, GdkEvent *event, gpointer data ) {
 	UserAttribute *attrib = gtk_cmclist_get_row_data( clist, row );
 	if( attrib && !personeditdlg.read_only && !personeditdlg.ldap ) {
-		gtk_entry_set_text( GTK_ENTRY(GTK_BIN(personeditdlg.entry_atname)->child ), attrib->name );
+		gtk_entry_set_text( GTK_ENTRY(gtk_bin_get_child(GTK_BIN((personeditdlg.entry_atname))) ), attrib->name );
 		gtk_entry_set_text( GTK_ENTRY(personeditdlg.entry_atvalue), attrib->value );
 		gtk_widget_set_sensitive(personeditdlg.attrib_del, TRUE);
 	} else {
@@ -570,7 +570,7 @@ static UserAttribute *edit_person_attrib_edit( gboolean *error, UserAttribute *a
 	gchar *sName, *sValue, *sName_, *sValue_;
 
 	*error = TRUE;
-	sName_ = gtk_editable_get_chars( GTK_EDITABLE(GTK_BIN(personeditdlg.entry_atname)->child), 0, -1 );
+	sName_ = gtk_editable_get_chars( GTK_EDITABLE(gtk_bin_get_child(GTK_BIN((personeditdlg.entry_atname)))), 0, -1 );
 	sValue_ = gtk_editable_get_chars( GTK_EDITABLE(personeditdlg.entry_atvalue), 0, -1 );
 	sName = mgu_email_check_empty( sName_ );
 	sValue = mgu_email_check_empty( sValue_ );
@@ -1219,7 +1219,7 @@ static void edit_person_entry_att_changed (GtkWidget *entry, gpointer data)
 	if (personeditdlg.read_only || personeditdlg.ldap)
 		return;
 
-	atname = gtk_entry_get_text(GTK_ENTRY(GTK_BIN(personeditdlg.entry_atname)->child));
+	atname = gtk_entry_get_text(GTK_ENTRY(gtk_bin_get_child(GTK_BIN((personeditdlg.entry_atname)))));
 	if ( atname == NULL
 	||  strlen(atname) == 0) {
 		gtk_widget_set_sensitive(personeditdlg.attrib_add,FALSE);

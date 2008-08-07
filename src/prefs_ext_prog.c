@@ -175,7 +175,7 @@ static void prefs_ext_prog_create_widget(PrefsPage *_page, GtkWindow *window,
 	gtk_table_attach (GTK_TABLE (table2), uri_combo, 1, 2, i, i+1,
 			  GTK_EXPAND | GTK_FILL, 0, 0, 0);
 
-	uri_entry = GTK_BIN (uri_combo)->child;
+	uri_entry = gtk_bin_get_child(GTK_BIN((uri_combo)));
 	gtk_entry_set_text(GTK_ENTRY(uri_entry), prefs_common.uri_cmd ? prefs_common.uri_cmd : "");
 	
 	exteditor_label = gtk_label_new (_("Text editor"));
@@ -202,7 +202,7 @@ static void prefs_ext_prog_create_widget(PrefsPage *_page, GtkWindow *window,
 	gtk_table_attach (GTK_TABLE (table2), exteditor_combo, 1, 2, i, i+1,
 			  GTK_EXPAND | GTK_FILL, 0, 0, 0);
 
-	exteditor_entry = GTK_BIN (exteditor_combo)->child;
+	exteditor_entry = gtk_bin_get_child(GTK_BIN((exteditor_combo)));
 	gtk_entry_set_text(GTK_ENTRY(exteditor_entry), 
 			   prefs_common.ext_editor_cmd ? prefs_common.ext_editor_cmd : "");
 

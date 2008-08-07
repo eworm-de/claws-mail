@@ -81,14 +81,21 @@ static gboolean key_pressed		(GtkWidget	*widget,
 					 gpointer	 data);
 
 
-#define GTK_BUTTON_SET_SENSITIVE(widget,sensitive) {	\
+#if !GTK_CHECK_VERSION(2,14,0)
+/* Work around http://bugzilla.gnome.org/show_bug.cgi?id=56070 */
+#define GTK_BUTTON_SET_SENSITIVE(widget,sensitive) {					\
 	gboolean in_btn = FALSE;							\
 	if (GTK_IS_BUTTON(widget))							\
-		in_btn = GTK_BUTTON(widget)->in_button;			\
-	gtk_widget_set_sensitive(widget, sensitive);		\
+		in_btn = GTK_BUTTON(widget)->in_button;					\
+	gtk_widget_set_sensitive(widget, sensitive);					\
 	if (GTK_IS_BUTTON(widget))							\
-		GTK_BUTTON(widget)->in_button = in_btn;			\
+		GTK_BUTTON(widget)->in_button = in_btn;					\
 }
+#else
+#define GTK_BUTTON_SET_SENSITIVE(widget,sensitive) {					\
+	gtk_widget_set_sensitive(widget, sensitive);					\
+}
+#endif
 
 static void message_show_stop_button(void)
 {
@@ -188,9 +195,9 @@ static void message_search_create(void)
 	gtk_box_pack_start (GTK_BOX (hbox1), body_entry, TRUE, TRUE, 0);
 	g_signal_connect(G_OBJECT(body_entry), "changed",
 			 G_CALLBACK(body_changed), NULL);
-	g_signal_connect(G_OBJECT(GTK_BIN(body_entry)->child),
+	g_signal_connect(G_OBJECT(gtk_bin_get_child(GTK_BIN((body_entry)))),
 			 "focus_in_event", G_CALLBACK(body_entry_focus_evt_in), NULL);
-	g_signal_connect(G_OBJECT(GTK_BIN(body_entry)->child),
+	g_signal_connect(G_OBJECT(gtk_bin_get_child(GTK_BIN((body_entry)))),
 			 "focus_out_event", G_CALLBACK(body_entry_focus_evt_out), NULL);
 
 	checkbtn_hbox = gtk_hbox_new (FALSE, 8);

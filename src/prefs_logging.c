@@ -75,10 +75,10 @@ static GtkWidget *prefs_logging_create_check_buttons(GtkWidget **checkbtn1,
 	gtk_widget_show(hbox_checkbtn);
 	
 	PACK_CHECK_BUTTON (hbox_checkbtn, *checkbtn1, label1); 
-	gtk_label_set_line_wrap(GTK_LABEL(GTK_BIN(*checkbtn1)->child), TRUE);
+	gtk_label_set_line_wrap(GTK_LABEL(gtk_bin_get_child(GTK_BIN((*checkbtn1)))), TRUE);
 
 	PACK_CHECK_BUTTON (hbox_checkbtn, *checkbtn2, label2);
-	gtk_label_set_line_wrap(GTK_LABEL(GTK_BIN(*checkbtn2)->child), TRUE);
+	gtk_label_set_line_wrap(GTK_LABEL(gtk_bin_get_child(GTK_BIN((*checkbtn2)))), TRUE);
 	
 	return hbox_checkbtn;
 }

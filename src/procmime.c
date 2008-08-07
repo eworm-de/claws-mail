@@ -986,13 +986,11 @@ gchar *procmime_get_mime_type(const gchar *filename)
 
 	base = g_path_get_basename(filename);
 	if ((p = strrchr(base, '.')) != NULL)
-		Xstrdup_a(ext, p + 1, p = NULL );
+		ext = g_utf8_strdown(p + 1, -1);
 	g_free(base);
-	if (!p) return NULL;
 
-	ext_down = g_utf8_strdown(ext, -1);
-	g_free(ext); ext = ext_down;
 	mime_type = g_hash_table_lookup(mime_type_table, ext);
+	g_free(ext);
 	if (mime_type) {
 		gchar *str;
 
@@ -1581,11 +1579,11 @@ static void parse_parameters(const gchar *parameters, GHashTable *table)
 	gchar *params, *param, *next;
 	GSList *convlist = NULL, *concatlist = NULL, *cur;
 
-	params = g_utf8_strdown(parameters, -1);
+	params = g_strdup(parameters);
 	param = params;
 	next = params;
 	for (; next != NULL; param = next) {
-		gchar *attribute, *value, *tmp;
+		gchar *attribute, *value, *tmp, *down_attr;
 		gint len;
 		gboolean convert = FALSE;
 
@@ -1607,12 +1605,14 @@ static void parse_parameters(const gchar *parameters, GHashTable *table)
 		while (value[0] == ' ')
 			value++;
 
-		len = strlen(attribute);
-		if (attribute[len - 1] == '*') {
+		down_attr = g_utf8_strdown(attribute, -1);
+		
+		len = strlen(down_attr);
+		if (down_attr[len - 1] == '*') {
 			gchar *srcpos, *dstpos, *endpos;
 
 			convert = TRUE;
-			attribute[len - 1] = '\0';
+			down_attr[len - 1] = '\0';
 
 			srcpos = value;
 			dstpos = value;
@@ -1640,11 +1640,11 @@ static void parse_parameters(const gchar *parameters, GHashTable *table)
 				*tmp = '\0';
 		}
 
-		if (attribute) {
-			while (attribute[0] == ' ')
-				attribute++;
-			while (attribute[strlen(attribute)-1] == ' ') 
-				attribute[strlen(attribute)-1] = '\0';
+		if (down_attr) {
+			while (down_attr[0] == ' ')
+				down_attr++;
+			while (down_attr[strlen(down_attr)-1] == ' ') 
+				down_attr[strlen(down_attr)-1] = '\0';
 		} 
 		if (value) {
 			while (value[0] == ' ')
@@ -1652,28 +1652,29 @@ static void parse_parameters(const gchar *parameters, GHashTable *table)
 			while (value[strlen(value)-1] == ' ') 
 				value[strlen(value)-1] = '\0';
 		}		
-		if (strrchr(attribute, '*') != NULL) {
+		if (strrchr(down_attr, '*') != NULL) {
 			gchar *tmpattr;
 
-			tmpattr = g_strdup(attribute);
+			tmpattr = g_strdup(down_attr);
 			tmp = strrchr(tmpattr, '*');
 			tmp[0] = '\0';
 
 			if ((tmp[1] == '0') && (tmp[2] == '\0') && 
-			    (g_slist_find_custom(concatlist, attribute, g_str_equal) == NULL))
+			    (g_slist_find_custom(concatlist, down_attr, g_str_equal) == NULL))
 				concatlist = g_slist_prepend(concatlist, g_strdup(tmpattr));
 
-			if (convert && (g_slist_find_custom(convlist, attribute, g_str_equal) == NULL))
+			if (convert && (g_slist_find_custom(convlist, down_attr, g_str_equal) == NULL))
 				convlist = g_slist_prepend(convlist, g_strdup(tmpattr));
 
 			g_free(tmpattr);
 		} else if (convert) {
-			if (g_slist_find_custom(convlist, attribute, g_str_equal) == NULL)
-				convlist = g_slist_prepend(convlist, g_strdup(attribute));
+			if (g_slist_find_custom(convlist, down_attr, g_str_equal) == NULL)
+				convlist = g_slist_prepend(convlist, g_strdup(down_attr));
 		}
 
-		if (g_hash_table_lookup(table, attribute) == NULL)
-			g_hash_table_insert(table, g_strdup(attribute), g_strdup(value));
+		if (g_hash_table_lookup(table, down_attr) == NULL)
+			g_hash_table_insert(table, g_strdup(down_attr), g_strdup(value));
+		g_free(down_attr);
 	}
 
 	for (cur = concatlist; cur != NULL; cur = g_slist_next(cur)) {

@@ -2240,6 +2240,8 @@ void toolbar_update(ToolbarType type, gpointer data)
 	}
 }
 
+#if !GTK_CHECK_VERSION(2,14,0)
+/* Work around http://bugzilla.gnome.org/show_bug.cgi?id=56070 */
 #define GTK_BUTTON_SET_SENSITIVE(widget,sensitive) {		\
 	gboolean in_btn1 = FALSE, in_btn2 = FALSE;		\
 	if (GTK_IS_BUTTON(widget))				\
@@ -2288,6 +2290,11 @@ void toolbar_update(ToolbarType type, gpointer data)
 			GTK_BUTTON(child)->in_button = in_btn1;	\
 	}							\
 }
+#else
+#define GTK_BUTTON_SET_SENSITIVE(widget,sensitive) {		\
+	gtk_widget_set_sensitive(widget, sensitive);		\
+}
+#endif
 
 void toolbar_main_set_sensitive(gpointer data)
 {

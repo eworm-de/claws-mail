@@ -90,6 +90,7 @@ gboolean gtkut_get_font_size		(GtkWidget	*widget,
 
 void gtkut_convert_int_to_gdk_color	(gint		 rgbvalue,
 					 GdkColor	*color);
+gint gtkut_convert_gdk_color_to_int	(GdkColor 	*color);
 
 void gtkut_stock_button_add_help(GtkWidget *bbox, GtkWidget **help_btn);
 

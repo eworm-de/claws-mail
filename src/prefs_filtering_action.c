@@ -17,7 +17,6 @@
  * 
  */
 
-#undef GTK_DISABLE_DEPRECATED /* Fixme GtkOptionMenu */
 #ifdef HAVE_CONFIG_H
 #  include "config.h"
 #endif
@@ -490,7 +489,7 @@ static void prefs_filtering_action_create(void)
 	gtk_size_group_add_widget(size_action, header_combo);
 	gtk_box_pack_start (GTK_BOX (hbox1), header_combo,
 			    FALSE, FALSE, 0);
-	header_entry = GTK_BIN(header_combo)->child;
+	header_entry = gtk_bin_get_child(GTK_BIN((header_combo)));
 
 	/* destination */
 

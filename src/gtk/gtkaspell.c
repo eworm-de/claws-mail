@@ -824,7 +824,7 @@ static void set_sug_mode_cb(GtkMenuItem *w, GtkAspell *gtkaspell)
 {
 	char *themode;
 	
-	themode = (char *) gtk_label_get_text(GTK_LABEL(GTK_BIN(w)->child));
+	themode = (char *) gtk_label_get_text(GTK_LABEL(gtk_bin_get_child(GTK_BIN((w)))));
 	themode = g_strdup(themode);
 	
 	set_real_sug_mode(gtkaspell, themode);
@@ -1321,7 +1321,7 @@ static void replace_word_cb(GtkWidget *w, gpointer data)
 	GtkAspell *gtkaspell = (GtkAspell *) data;
 	GdkEvent *e= (GdkEvent *) gtk_get_current_event();
 
-	newword = (unsigned char *) gtk_label_get_text(GTK_LABEL(GTK_BIN(w)->child));
+	newword = (unsigned char *) gtk_label_get_text(GTK_LABEL(gtk_bin_get_child(GTK_BIN((w)))));
 	newword = (unsigned char *)g_strdup((char *)newword);
 
 	replace_real_word(gtkaspell, (char *)newword);
@@ -1953,7 +1953,7 @@ static GSList *make_sug_menu(GtkAspell *gtkaspell)
 	g_free(utf8buf);
 	gtk_widget_show(item);
 	list = g_slist_append(list, item);
-	gtk_misc_set_alignment(GTK_MISC(GTK_BIN(item)->child), 0.5, 0.5);
+	gtk_misc_set_alignment(GTK_MISC(gtk_bin_get_child(GTK_BIN((item)))), 0.5, 0.5);
 	g_free(caption);
 
 	item = gtk_menu_item_new();
@@ -2093,7 +2093,7 @@ static GSList *populate_submenu(GtkAspell *gtkaspell)
 	dictname = g_strdup_printf(_("Dictionary: %s"),
 				   gtkaspeller->dictionary->dictname);
 	item = gtk_menu_item_new_with_label(dictname);
-	gtk_misc_set_alignment(GTK_MISC(GTK_BIN(item)->child), 0.5, 0.5);
+	gtk_misc_set_alignment(GTK_MISC(gtk_bin_get_child(GTK_BIN((item)))), 0.5, 0.5);
 	g_free(dictname);
 	gtk_widget_show(item);
 	list = g_slist_append(list, item);

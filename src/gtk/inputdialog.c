@@ -317,7 +317,7 @@ static void input_dialog_create(gboolean is_password)
 
 	combo = gtk_combo_box_entry_new_text();
 	gtk_box_pack_start(GTK_BOX(vbox), combo, FALSE, FALSE, 0);
-	g_signal_connect(G_OBJECT(GTK_BIN(combo)->child), "activate",
+	g_signal_connect(G_OBJECT(gtk_bin_get_child(GTK_BIN((combo)))), "activate",
 			 G_CALLBACK(combo_activated), NULL);
 
 	remember_checkbtn = gtk_check_button_new_with_label(_("Remember this"));
@@ -396,7 +396,7 @@ static gchar *input_dialog_open(const gchar *title, const gchar *message,
 		GtkEditable *editable;
 
 		if (type == INPUT_DIALOG_COMBO)
-			editable = GTK_EDITABLE(GTK_BIN(combo)->child);
+			editable = GTK_EDITABLE(gtk_bin_get_child(GTK_BIN((combo))));
 		else
 			editable = GTK_EDITABLE(entry);
 
@@ -426,7 +426,7 @@ static void input_dialog_set(const gchar *title, const gchar *message,
 	GtkWidget *entry_;
 
 	if (type == INPUT_DIALOG_COMBO)
-		entry_ = GTK_BIN(combo)->child;
+		entry_ = gtk_bin_get_child(GTK_BIN((combo)));
 	else
 		entry_ = entry;
 

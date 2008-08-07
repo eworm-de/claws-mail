@@ -1,3 +1,41 @@
+2008-08-07 [colin]	3.5.0cvs54
+
+	* src/compose.c
+	* src/editaddress.c
+	* src/folderview.c
+	* src/mainwindow.c
+	* src/message_search.c
+	* src/mimeview.c
+	* src/noticeview.c
+	* src/prefs_account.c
+	* src/prefs_common.c
+	* src/prefs_customheader.c
+	* src/prefs_ext_prog.c
+	* src/prefs_filtering_action.c
+	* src/prefs_gtk.c
+	* src/prefs_logging.c
+	* src/prefs_matcher.c
+	* src/prefs_msg_colors.c
+	* src/procmime.c
+	* src/summary_search.c
+	* src/summaryview.c
+	* src/toolbar.c
+	* src/gtk/colorsel.c
+	* src/gtk/gtkaspell.c
+	* src/gtk/gtkutils.c
+	* src/gtk/gtkutils.h
+	* src/gtk/inputdialog.c
+	* src/gtk/pluginwindow.c
+	* src/gtk/quicksearch.c
+	* src/plugins/bogofilter/bogofilter_gtk.c
+	* src/plugins/dillo_viewer/dillo_prefs.c
+	* src/plugins/spamassassin/spamassassin_gtk.c
+		- Fix Ctrl-Space shortcut
+		- Fix mime-parsing bug in procmime (cvs52)
+		- Fix double-free in procmime (cvs52)
+		- Use gtk_bin_get_child instead of GTK_BIN()->child
+		- Fix Goto menu in mainwindow
+
 2008-08-07 [mones]	3.5.0cvs53
 
 	* po/es.po

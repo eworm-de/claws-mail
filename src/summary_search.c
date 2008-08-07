@@ -136,14 +136,21 @@ static gboolean key_pressed		(GtkWidget	*widget,
 					 gpointer	 data);
 #endif
 
-#define GTK_BUTTON_SET_SENSITIVE(widget,sensitive) {	\
+#if !GTK_CHECK_VERSION(2,14,0)
+/* Work around http://bugzilla.gnome.org/show_bug.cgi?id=56070 */
+#define GTK_BUTTON_SET_SENSITIVE(widget,sensitive) {					\
 	gboolean in_btn = FALSE;							\
 	if (GTK_IS_BUTTON(widget))							\
-		in_btn = GTK_BUTTON(widget)->in_button;			\
-	gtk_widget_set_sensitive(widget, sensitive);		\
+		in_btn = GTK_BUTTON(widget)->in_button;					\
+	gtk_widget_set_sensitive(widget, sensitive);					\
 	if (GTK_IS_BUTTON(widget))							\
-		GTK_BUTTON(widget)->in_button = in_btn;			\
+		GTK_BUTTON(widget)->in_button = in_btn;					\
 }
+#else
+#define GTK_BUTTON_SET_SENSITIVE(widget,sensitive) {					\
+	gtk_widget_set_sensitive(widget, sensitive);					\
+}
+#endif
 
 void summary_search(SummaryView *summaryview)
 {
@@ -267,9 +274,9 @@ static void summary_search_create(void)
 			  GTK_EXPAND|GTK_FILL, 0, 0, 0);
 	g_signal_connect(G_OBJECT(from_entry), "changed",
 			 G_CALLBACK(from_changed), NULL);
-	g_signal_connect(G_OBJECT(GTK_BIN(from_entry)->child),
+	g_signal_connect(G_OBJECT(gtk_bin_get_child(GTK_BIN((from_entry)))),
 			 "focus_in_event", G_CALLBACK(from_entry_focus_evt_in), NULL);
-	g_signal_connect(G_OBJECT(GTK_BIN(from_entry)->child),
+	g_signal_connect(G_OBJECT(gtk_bin_get_child(GTK_BIN((from_entry)))),
 			 "focus_out_event", G_CALLBACK(from_entry_focus_evt_out), NULL);
 
 	to_entry = gtk_combo_box_entry_new_text ();
@@ -282,9 +289,9 @@ static void summary_search_create(void)
 			  GTK_EXPAND|GTK_FILL, 0, 0, 0);
 	g_signal_connect(G_OBJECT(to_entry), "changed",
 			 G_CALLBACK(to_changed), NULL);
-	g_signal_connect(G_OBJECT(GTK_BIN(to_entry)->child),
+	g_signal_connect(G_OBJECT(gtk_bin_get_child(GTK_BIN((to_entry)))),
 			 "focus_in_event", G_CALLBACK(to_entry_focus_evt_in), NULL);
-	g_signal_connect(G_OBJECT(GTK_BIN(to_entry)->child),
+	g_signal_connect(G_OBJECT(gtk_bin_get_child(GTK_BIN((to_entry)))),
 			 "focus_out_event", G_CALLBACK(to_entry_focus_evt_out), NULL);
 
 	subject_entry = gtk_combo_box_entry_new_text ();
@@ -297,9 +304,9 @@ static void summary_search_create(void)
 			  GTK_EXPAND|GTK_FILL, 0, 0, 0);
 	g_signal_connect(G_OBJECT(subject_entry), "changed",
 			 G_CALLBACK(subject_changed), NULL);
-	g_signal_connect(G_OBJECT(GTK_BIN(subject_entry)->child),
+	g_signal_connect(G_OBJECT(gtk_bin_get_child(GTK_BIN((subject_entry)))),
 			 "focus_in_event", G_CALLBACK(subject_entry_focus_evt_in), NULL);
-	g_signal_connect(G_OBJECT(GTK_BIN(subject_entry)->child),
+	g_signal_connect(G_OBJECT(gtk_bin_get_child(GTK_BIN((subject_entry)))),
 			 "focus_out_event", G_CALLBACK(subject_entry_focus_evt_out), NULL);
 
 	body_entry = gtk_combo_box_entry_new_text ();
@@ -312,9 +319,9 @@ static void summary_search_create(void)
 			  GTK_EXPAND|GTK_FILL, 0, 0, 0);
 	g_signal_connect(G_OBJECT(body_entry), "changed",
 			 G_CALLBACK(body_changed), NULL);
-	g_signal_connect(G_OBJECT(GTK_BIN(body_entry)->child),
+	g_signal_connect(G_OBJECT(gtk_bin_get_child(GTK_BIN((body_entry)))),
 			 "focus_in_event", G_CALLBACK(body_entry_focus_evt_in), NULL);
-	g_signal_connect(G_OBJECT(GTK_BIN(body_entry)->child),
+	g_signal_connect(G_OBJECT(gtk_bin_get_child(GTK_BIN((body_entry)))),
 			 "focus_out_event", G_CALLBACK(body_entry_focus_evt_out), NULL);
 
 	adv_condition_entry = gtk_combo_box_entry_new_text ();
@@ -327,9 +334,9 @@ static void summary_search_create(void)
 			  GTK_EXPAND|GTK_FILL, 0, 0, 0);
 	g_signal_connect(G_OBJECT(adv_condition_entry), "changed",
 			 G_CALLBACK(adv_condition_changed), NULL);
-	g_signal_connect(G_OBJECT(GTK_BIN(adv_condition_entry)->child),
+	g_signal_connect(G_OBJECT(gtk_bin_get_child(GTK_BIN((adv_condition_entry)))),
 			 "focus_in_event", G_CALLBACK(adv_condition_entry_focus_evt_in), NULL);
-	g_signal_connect(G_OBJECT(GTK_BIN(adv_condition_entry)->child),
+	g_signal_connect(G_OBJECT(gtk_bin_get_child(GTK_BIN((adv_condition_entry)))),
 			 "focus_out_event", G_CALLBACK(adv_condition_entry_focus_evt_out), NULL);
 
 	adv_condition_btn = gtk_button_new_with_label(" ... ");
@@ -796,12 +803,12 @@ static void summary_search_clear(GtkButton *button, gpointer data)
 {
 	if (gtk_toggle_button_get_active
 		(GTK_TOGGLE_BUTTON(search_window.adv_search_checkbtn))) {
-		gtk_entry_set_text(GTK_ENTRY(GTK_BIN(search_window.adv_condition_entry)->child), "");
+		gtk_entry_set_text(GTK_ENTRY(gtk_bin_get_child(GTK_BIN((search_window.adv_condition_entry)))), "");
 	} else {
-		gtk_entry_set_text(GTK_ENTRY(GTK_BIN(search_window.from_entry)->child), "");
-		gtk_entry_set_text(GTK_ENTRY(GTK_BIN(search_window.to_entry)->child), "");
-		gtk_entry_set_text(GTK_ENTRY(GTK_BIN(search_window.subject_entry)->child), "");
-		gtk_entry_set_text(GTK_ENTRY(GTK_BIN(search_window.body_entry)->child), "");
+		gtk_entry_set_text(GTK_ENTRY(gtk_bin_get_child(GTK_BIN((search_window.from_entry)))), "");
+		gtk_entry_set_text(GTK_ENTRY(gtk_bin_get_child(GTK_BIN((search_window.to_entry)))), "");
+		gtk_entry_set_text(GTK_ENTRY(gtk_bin_get_child(GTK_BIN((search_window.subject_entry)))), "");
+		gtk_entry_set_text(GTK_ENTRY(gtk_bin_get_child(GTK_BIN((search_window.body_entry)))), "");
 	}
 	/* stop searching */
 	if (search_window.is_searching) {
@@ -838,7 +845,7 @@ static void adv_condition_btn_done(MatcherList * matchers)
 	str = matcherlist_to_string(matchers);
 
 	if (str != NULL) {
-		gtk_entry_set_text(GTK_ENTRY(GTK_BIN(search_window.adv_condition_entry)->child), str);
+		gtk_entry_set_text(GTK_ENTRY(gtk_bin_get_child(GTK_BIN((search_window.adv_condition_entry)))), str);
 		g_free(str);
 	}
 }

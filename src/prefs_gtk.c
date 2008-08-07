@@ -209,8 +209,9 @@ static void prefs_config_parse_one_line(PrefParam *param, const gchar *buf)
 				(gushort)atoi(value);
 			break;
 		case P_COLOR:
-			if (gdk_color_parse(value, &color)) 
+			if (gdk_color_parse(value, &color)) {
 				*((gulong *)param[i].data) = RGB_FROM_GDK_COLOR(color); 
+			}
 			else 
 				/* be compatible and accept ints */
 				*((gulong *)param[i].data) = strtoul(value, 0, 10); 

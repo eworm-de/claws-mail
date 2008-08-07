@@ -4482,7 +4482,7 @@ gboolean compose_check_for_valid_recipient(Compose *compose) {
 	for (list = compose->header_list; list; list = list->next) {
 		gchar *header;
 		gchar *entry;
-		header = gtk_editable_get_chars(GTK_EDITABLE(GTK_BIN(((ComposeHeaderEntry *)list->data)->combo)->child), 0, -1);
+		header = gtk_editable_get_chars(GTK_EDITABLE(gtk_bin_get_child(GTK_BIN((((ComposeHeaderEntry *)list->data)->combo)))), 0, -1);
 		entry = gtk_editable_get_chars(GTK_EDITABLE(((ComposeHeaderEntry *)list->data)->entry), 0, -1);
 		g_strstrip(entry);
 		g_strstrip(header);
@@ -4516,7 +4516,7 @@ static gboolean compose_check_for_set_recipients(Compose *compose)
 			gchar *entry;
 			gchar *header;
 			entry = gtk_editable_get_chars(GTK_EDITABLE(((ComposeHeaderEntry *)list->data)->entry), 0, -1);
-			header = gtk_editable_get_chars(GTK_EDITABLE(GTK_BIN(((ComposeHeaderEntry *)list->data)->combo)->child), 0, -1);
+			header = gtk_editable_get_chars(GTK_EDITABLE(gtk_bin_get_child(GTK_BIN((((ComposeHeaderEntry *)list->data)->combo)))), 0, -1);
 			g_strstrip(entry);
 			g_strstrip(header);
 			if (strcmp(entry, compose->account->auto_cc)
@@ -4548,7 +4548,7 @@ static gboolean compose_check_for_set_recipients(Compose *compose)
 			gchar *entry;
 			gchar *header;
 			entry = gtk_editable_get_chars(GTK_EDITABLE(((ComposeHeaderEntry *)list->data)->entry), 0, -1);
-			header = gtk_editable_get_chars(GTK_EDITABLE(GTK_BIN(((ComposeHeaderEntry *)list->data)->combo)->child), 0, -1);
+			header = gtk_editable_get_chars(GTK_EDITABLE(gtk_bin_get_child(GTK_BIN((((ComposeHeaderEntry *)list->data)->combo)))), 0, -1);
 			g_strstrip(entry);
 			g_strstrip(header);
 			if (strcmp(entry, compose->account->auto_bcc)
@@ -4802,7 +4802,7 @@ static gint compose_redirect_write_headers_from_headerlist(Compose *compose,
 	first_to_address = TRUE;
 	for (list = compose->header_list; list; list = list->next) {
 		headerentry = ((ComposeHeaderEntry *)list->data);
-		headerentryname = gtk_entry_get_text(GTK_ENTRY(GTK_BIN(headerentry->combo)->child));
+		headerentryname = gtk_entry_get_text(GTK_ENTRY(gtk_bin_get_child(GTK_BIN((headerentry->combo)))));
 
 		if (g_utf8_collate(headerentryname, to_hdr) == 0) {
 			const gchar *entstr = gtk_entry_get_text(GTK_ENTRY(headerentry->entry));
@@ -4830,7 +4830,7 @@ static gint compose_redirect_write_headers_from_headerlist(Compose *compose,
 	first_cc_address = TRUE;
 	for (list = compose->header_list; list; list = list->next) {
 		headerentry = ((ComposeHeaderEntry *)list->data);
-		headerentryname = gtk_entry_get_text(GTK_ENTRY(GTK_BIN(headerentry->combo)->child));
+		headerentryname = gtk_entry_get_text(GTK_ENTRY(gtk_bin_get_child(GTK_BIN((headerentry->combo)))));
 
 		if (g_utf8_collate(headerentryname, cc_hdr) == 0) {
 			const gchar *strg = gtk_entry_get_text(GTK_ENTRY(headerentry->entry));
@@ -5700,7 +5700,7 @@ static void compose_add_headerfield_from_headerlist(Compose *compose,
 
 	for (list = compose->header_list; list; list = list->next) {
     		headerentry = ((ComposeHeaderEntry *)list->data);
-		headerentryname = gtk_entry_get_text(GTK_ENTRY(GTK_BIN(headerentry->combo)->child));
+		headerentryname = gtk_entry_get_text(GTK_ENTRY(gtk_bin_get_child(GTK_BIN((headerentry->combo)))));
 
 		if (!g_utf8_collate(trans_fieldname, headerentryname)) {
 			str = gtk_editable_get_chars(GTK_EDITABLE(headerentry->entry), 0, -1);
@@ -5964,7 +5964,7 @@ static gchar *compose_get_header(Compose *compose)
 
 		headerentry = ((ComposeHeaderEntry *)list->data);
 
-		tmp = g_strdup(gtk_entry_get_text(GTK_ENTRY(GTK_BIN(headerentry->combo)->child)));
+		tmp = g_strdup(gtk_entry_get_text(GTK_ENTRY(gtk_bin_get_child(GTK_BIN((headerentry->combo))))));
 		g_strstrip(tmp);
 		if (*tmp == '\0' || strchr(tmp, ' ') != NULL || strchr(tmp, '\r') != NULL || strchr(tmp, '\n') != NULL) {
 			g_free(tmp);
@@ -6136,7 +6136,7 @@ static void compose_create_header_entry(Compose *compose)
 	        string++;
 	}
 	gtk_combo_box_set_active(GTK_COMBO_BOX(combo), 0);
-	g_signal_connect(G_OBJECT(GTK_BIN(combo)->child), "grab_focus",
+	g_signal_connect(G_OBJECT(gtk_bin_get_child(GTK_BIN((combo)))), "grab_focus",
 			 G_CALLBACK(compose_grab_focus_cb), compose);
 	gtk_widget_show(combo);
 	gtk_table_attach(GTK_TABLE(compose->header_table), combo, 0, 1,
@@ -6144,7 +6144,7 @@ static void compose_create_header_entry(Compose *compose)
 			GTK_SHRINK, GTK_FILL, 0, 0);
 	if (compose->header_last) {	
 		const gchar *last_header_entry = gtk_entry_get_text(
-				GTK_ENTRY(GTK_BIN(compose->header_last->combo)->child));
+				GTK_ENTRY(gtk_bin_get_child(GTK_BIN((compose->header_last->combo)))));
 		string = headers;
 		while (*string != NULL) {
 			if (!strcmp(*string, last_header_entry))
@@ -6152,7 +6152,7 @@ static void compose_create_header_entry(Compose *compose)
 			string++;
 		}
 		if (standard_header)
-			header = gtk_entry_get_text(GTK_ENTRY(GTK_BIN(compose->header_last->combo)->child));
+			header = gtk_entry_get_text(GTK_ENTRY(gtk_bin_get_child(GTK_BIN((compose->header_last->combo)))));
 	}
 	if (!compose->header_last || !standard_header) {
 		switch(compose->account->protocol) {
@@ -6165,9 +6165,9 @@ static void compose_create_header_entry(Compose *compose)
 		}								    
 	}
 	if (header)
-		gtk_entry_set_text(GTK_ENTRY(GTK_BIN(combo)->child), header);
+		gtk_entry_set_text(GTK_ENTRY(gtk_bin_get_child(GTK_BIN((combo)))), header);
 
-	g_signal_connect_after(G_OBJECT(GTK_BIN(combo)->child), "grab_focus",
+	g_signal_connect_after(G_OBJECT(gtk_bin_get_child(GTK_BIN((combo)))), "grab_focus",
 			 G_CALLBACK(compose_grab_focus_cb), compose);
 
 	/* Entry field */
@@ -6222,7 +6222,7 @@ static void compose_add_header_entry(Compose *compose, const gchar *header, gcha
 	
 	last_header = compose->header_last;
 
-	gtk_entry_set_text(GTK_ENTRY(GTK_BIN(last_header->combo)->child), header);
+	gtk_entry_set_text(GTK_ENTRY(gtk_bin_get_child(GTK_BIN((last_header->combo)))), header);
 	gtk_entry_set_text(GTK_ENTRY(last_header->entry), text);
 }
 
@@ -6260,7 +6260,7 @@ static GtkWidget *compose_create_header(Compose *compose)
 	gtk_widget_show(header_table);
 	gtk_container_set_border_width(GTK_CONTAINER(header_table), BORDER_WIDTH);
 	gtk_scrolled_window_add_with_viewport(GTK_SCROLLED_WINDOW(header_scrolledwin), header_table);
-	gtk_viewport_set_shadow_type(GTK_VIEWPORT(GTK_BIN(header_scrolledwin)->child), GTK_SHADOW_NONE);
+	gtk_viewport_set_shadow_type(GTK_VIEWPORT(gtk_bin_get_child(GTK_BIN((header_scrolledwin)))), GTK_SHADOW_NONE);
 	count = 0;
 
 	/* option menu for selecting accounts */
@@ -7183,10 +7183,10 @@ static Compose *compose_create(PrefsAccount *account,
 
 	cm_menu_set_sensitive_full(compose->ui_manager, "Menu/Options/ReplyMode", compose->mode == COMPOSE_REPLY);
 	if (account->protocol != A_NNTP)
-		gtk_entry_set_text(GTK_ENTRY(GTK_BIN(compose->header_last->combo)->child),
+		gtk_entry_set_text(GTK_ENTRY(gtk_bin_get_child(GTK_BIN((compose->header_last->combo)))),
 				prefs_common_translated_header_name("To:"));
 	else
-		gtk_entry_set_text(GTK_ENTRY(GTK_BIN(compose->header_last->combo)->child),
+		gtk_entry_set_text(GTK_ENTRY(gtk_bin_get_child(GTK_BIN((compose->header_last->combo)))),
 				prefs_common_translated_header_name("Newsgroups:"));
 
 	addressbook_set_target_compose(compose);
@@ -8237,7 +8237,7 @@ static void compose_attach_property_create(gboolean *cancelled)
 	}
 	g_list_free(strlist);
 	gtk_combo_box_set_active(GTK_COMBO_BOX(mimetype_entry), 0);		 
-	mimetype_entry = GTK_BIN(mimetype_entry)->child;			 
+	mimetype_entry = gtk_bin_get_child(GTK_BIN((mimetype_entry)));			 
 
 	label = gtk_label_new(_("Encoding"));
 	gtk_table_attach(GTK_TABLE(table), label, 0, 1, 1, 2,
@@ -10565,7 +10565,7 @@ static MsgInfo *compose_msginfo_new_from_compose(Compose *compose)
 	for (list = compose->header_list; list; list = list->next) {
 		gchar *header = gtk_editable_get_chars(
 								GTK_EDITABLE(
-								GTK_BIN(((ComposeHeaderEntry *)list->data)->combo)->child), 0, -1);
+								gtk_bin_get_child(GTK_BIN((((ComposeHeaderEntry *)list->data)->combo)))), 0, -1);
 		gchar *entry = gtk_editable_get_chars(
 								GTK_EDITABLE(((ComposeHeaderEntry *)list->data)->entry), 0, -1);
 

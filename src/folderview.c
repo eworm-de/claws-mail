@@ -2062,6 +2062,9 @@ static gboolean folderview_button_released(GtkWidget *ctree, GdkEventButton *eve
 	return FALSE;
 }
 
+#define BREAK_ON_MODIFIER_KEY() \
+	if ((event->state & (GDK_MOD1_MASK|GDK_CONTROL_MASK)) != 0) break
+
 static gboolean folderview_key_pressed(GtkWidget *widget, GdkEventKey *event,
 				       FolderView *folderview)
 {
@@ -2091,6 +2094,7 @@ static gboolean folderview_key_pressed(GtkWidget *widget, GdkEventKey *event,
 		break;	
 #endif
 	case GDK_space:
+		BREAK_ON_MODIFIER_KEY();
 		if (folderview->selected) {
 			if (folderview->opened == folderview->selected &&
 			    (!folderview->summaryview->folder_item ||

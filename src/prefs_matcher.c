@@ -16,7 +16,6 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  * 
  */
-#undef GTK_DISABLE_DEPRECATED /* Fixme GtkOptionMenu */
 
 #ifdef HAVE_CONFIG_H
 #  include "config.h"
@@ -624,7 +623,7 @@ static void prefs_matcher_create(void)
 	headers_combo = gtk_combo_box_entry_new_with_model(matcher.model_headers, 0);
 	gtk_widget_set_size_request(headers_combo, 100, -1);
 	gtk_box_pack_start(GTK_BOX(upper_hbox), headers_combo, TRUE, TRUE, 0);
-	header_entry = GTK_BIN (headers_combo)->child;
+	header_entry = gtk_bin_get_child(GTK_BIN((headers_combo)));
 	
 	criteria_combo2 = gtkut_sc_combobox_create(NULL, TRUE);
 	prefs_matcher_set_model(criteria_combo2, matcher.model_phrase);
@@ -667,7 +666,7 @@ static void prefs_matcher_create(void)
 			      Q_("Filtering Matcher Menu|All"), _("Any"),
 			      "From", "To", "Cc", "Reply-To", "Sender", NULL);
 	gtk_box_pack_start(GTK_BOX(match_hbox), header_addr_combo, FALSE, FALSE, 0);
-	header_addr_entry = GTK_BIN(header_addr_combo)->child;
+	header_addr_entry = gtk_bin_get_child(GTK_BIN((header_addr_combo)));
 	gtk_widget_set_size_request(header_addr_combo, 150, -1);
 	
 	match_label2 = gtk_label_new("");
@@ -874,7 +873,7 @@ static void prefs_matcher_reset_condition(void)
 	gtk_entry_set_text(GTK_ENTRY(matcher.header_entry), "");
 	gtk_entry_set_text(GTK_ENTRY(matcher.header_addr_entry), "");
 	gtk_entry_set_text(GTK_ENTRY(matcher.string_entry), "");
-	gtk_entry_set_text(GTK_ENTRY(GTK_BIN(matcher.addressbook_folder_combo)->child), "");
+	gtk_entry_set_text(GTK_ENTRY(gtk_bin_get_child(GTK_BIN((matcher.addressbook_folder_combo)))), "");
 	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(matcher.regexp_checkbtn), FALSE);
 	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(matcher.case_checkbtn), FALSE);
 }
@@ -1462,7 +1461,7 @@ static MatcherProp *prefs_matcher_dialog_to_matcher(void)
 
 	case CRITERIA_FOUND_IN_ADDRESSBOOK:
 		header = gtk_entry_get_text(GTK_ENTRY(matcher.header_addr_entry));
-		expr = gtk_entry_get_text(GTK_ENTRY(GTK_BIN(matcher.addressbook_folder_combo)->child));
+		expr = gtk_entry_get_text(GTK_ENTRY(gtk_bin_get_child(GTK_BIN((matcher.addressbook_folder_combo)))));
 
 		if (*header == '\0') {
 		    alertpanel_error(_("Header name is not set."));
@@ -2041,10 +2040,10 @@ static void prefs_matcher_addressbook_select(void)
 	const gchar *folderpath = NULL;
 	gchar *new_path = NULL;
 
-	folderpath = gtk_entry_get_text(GTK_ENTRY(GTK_BIN(matcher.addressbook_folder_combo)->child));
+	folderpath = gtk_entry_get_text(GTK_ENTRY(gtk_bin_get_child(GTK_BIN((matcher.addressbook_folder_combo)))));
 	new_path = addressbook_folder_selection(folderpath);
 	if (new_path) {
-		gtk_entry_set_text(GTK_ENTRY(GTK_BIN(matcher.addressbook_folder_combo)->child), new_path);
+		gtk_entry_set_text(GTK_ENTRY(gtk_bin_get_child(GTK_BIN((matcher.addressbook_folder_combo)))), new_path);
 		g_free(new_path);
 	} 
 }
@@ -2346,7 +2345,7 @@ static gboolean prefs_matcher_selected(GtkTreeSelection *selector,
 			expr = prop->expr;
 
 		gtk_entry_set_text(GTK_ENTRY(matcher.header_addr_entry), header);
-		gtk_entry_set_text(GTK_ENTRY(GTK_BIN(matcher.addressbook_folder_combo)->child), expr);
+		gtk_entry_set_text(GTK_ENTRY(gtk_bin_get_child(GTK_BIN((matcher.addressbook_folder_combo)))), expr);
 		break;
 	}
 

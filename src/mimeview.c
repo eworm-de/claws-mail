@@ -2425,7 +2425,7 @@ static gint mime_toggle_button_cb(GtkWidget *button, GdkEventButton *event,
 
 	mimeview->ctree_mode = !mimeview->ctree_mode;
 	if (mimeview->ctree_mode) {
-		gtk_arrow_set(GTK_ARROW(GTK_BIN(button)->child), GTK_ARROW_RIGHT, 
+		gtk_arrow_set(GTK_ARROW(gtk_bin_get_child(GTK_BIN((button)))), GTK_ARROW_RIGHT, 
 					GTK_SHADOW_NONE);
 		gtk_widget_hide(mimeview->icon_mainbox);
 		gtk_widget_show(mimeview->ctree_mainbox);
@@ -2436,7 +2436,7 @@ static gint mime_toggle_button_cb(GtkWidget *button, GdkEventButton *event,
 		gtk_box_pack_end(GTK_BOX(mimeview->ctree_mainbox), 
 				   button, FALSE, FALSE, 0);
 	} else {
-		gtk_arrow_set(GTK_ARROW(GTK_BIN(button)->child), GTK_ARROW_LEFT, 
+		gtk_arrow_set(GTK_ARROW(gtk_bin_get_child(GTK_BIN((button)))), GTK_ARROW_LEFT, 
 			      GTK_SHADOW_NONE);
 		mimeview->oldsize = mimeview->ctree_mainbox->allocation.height;
 		gtk_widget_hide(mimeview->ctree_mainbox);

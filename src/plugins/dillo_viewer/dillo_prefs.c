@@ -83,10 +83,10 @@ static void dillo_whitelist_ab_select_cb(GtkWidget *widget, gpointer data)
 	const gchar *folderpath = NULL;
 	gchar *new_path = NULL;
 
-	folderpath = gtk_entry_get_text(GTK_ENTRY(GTK_BIN(page->whitelist_ab_folder_combo)->child));
+	folderpath = gtk_entry_get_text(GTK_ENTRY(gtk_bin_get_child(GTK_BIN((page->whitelist_ab_folder_combo)))));
 	new_path = addressbook_folder_selection(folderpath);
 	if (new_path) {
-		gtk_entry_set_text(GTK_ENTRY(GTK_BIN(page->whitelist_ab_folder_combo)->child), new_path);
+		gtk_entry_set_text(GTK_ENTRY(gtk_bin_get_child(GTK_BIN((page->whitelist_ab_folder_combo)))), new_path);
 		g_free(new_path);
 	} 
 }
@@ -205,15 +205,15 @@ static void create_dillo_prefs_page(PrefsPage *page,
 	if (dillo_prefs.whitelist_ab_folder != NULL) {
 		/* translate "Any" (stored UNtranslated) */
 		if (strcasecmp(dillo_prefs.whitelist_ab_folder, "Any") == 0)
-			gtk_entry_set_text(GTK_ENTRY(GTK_BIN(whitelist_ab_folder_combo)->child),
+			gtk_entry_set_text(GTK_ENTRY(gtk_bin_get_child(GTK_BIN((whitelist_ab_folder_combo)))),
 					_("Any"));
 		else
 		/* backward compatibility (when translated "Any" was stored) */
 		if (g_utf8_collate(dillo_prefs.whitelist_ab_folder, _("Any")) == 0)
-			gtk_entry_set_text(GTK_ENTRY(GTK_BIN(whitelist_ab_folder_combo)->child),
+			gtk_entry_set_text(GTK_ENTRY(gtk_bin_get_child(GTK_BIN((whitelist_ab_folder_combo)))),
 					dillo_prefs.whitelist_ab_folder);
 		else
-			gtk_entry_set_text(GTK_ENTRY(GTK_BIN(whitelist_ab_folder_combo)->child),
+			gtk_entry_set_text(GTK_ENTRY(gtk_bin_get_child(GTK_BIN((whitelist_ab_folder_combo)))),
 					dillo_prefs.whitelist_ab_folder);
 	}
 
@@ -270,7 +270,7 @@ static void save_dillo_prefs(PrefsPage *page)
 	dillo_prefs.whitelist_ab = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(prefs_page->whitelist_ab));
 	g_free(dillo_prefs.whitelist_ab_folder);
 	dillo_prefs.whitelist_ab_folder = gtk_editable_get_chars(
-				GTK_EDITABLE(GTK_BIN(prefs_page->whitelist_ab_folder_combo)->child), 0, -1);
+				GTK_EDITABLE(gtk_bin_get_child(GTK_BIN((prefs_page->whitelist_ab_folder_combo)))), 0, -1);
 	/* store UNtranslated "Any" */
 	if (g_utf8_collate(dillo_prefs.whitelist_ab_folder, _("Any")) == 0) {
 		g_free(dillo_prefs.whitelist_ab_folder);

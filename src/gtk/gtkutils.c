@@ -109,6 +109,17 @@ void gtkut_convert_int_to_gdk_color(gint rgbvalue, GdkColor *color)
 	color->blue  = (int) (((gdouble) (rgbvalue & 0x0000ff)        / 255.0) * 65535.0);
 }
 
+#define CL(x)	(((gulong) (x) >> (gulong) 8) & 0xFFUL)
+#define RGB_FROM_GDK_COLOR(c) \
+	((CL(c->red)   << (gulong) 16) | \
+	 (CL(c->green) << (gulong)  8) | \
+	 (CL(c->blue)))
+
+gint gtkut_convert_gdk_color_to_int(GdkColor *color)
+{
+	return RGB_FROM_GDK_COLOR(color);
+}
+
 void gtkut_stock_button_add_help(GtkWidget *bbox, GtkWidget **help_btn)
 {
 	g_return_if_fail(bbox != NULL);
@@ -1202,7 +1213,7 @@ GtkWidget *gtkut_get_link_btn(GtkWidget *window, const gchar *url, const gchar *
 
 	btn = gtk_button_new_with_label(label?label:url);
 	gtk_button_set_relief(GTK_BUTTON(btn), GTK_RELIEF_NONE);
-	btn_label = GTK_BIN(btn)->child;
+	btn_label = gtk_bin_get_child(GTK_BIN((btn)));
 	cmap = gdk_drawable_get_colormap(window->window);
 	gdk_colormap_alloc_colors(cmap, uri_color, 2, FALSE, TRUE, success);
 	if (success[0] == TRUE && success[1] == TRUE) {

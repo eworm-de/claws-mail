@@ -6445,8 +6445,10 @@ static gboolean summary_key_pressed(GtkWidget *widget, GdkEventKey *event,
 		switch (event->keyval) {
 		case GDK_space:		/* Page down or go to the next */
 			handled = TRUE;
-			if (event->state & GDK_CONTROL_MASK) 
-				event->state &= ~GDK_CONTROL_MASK;
+			if (event->state & GDK_CONTROL_MASK) {
+				handled = FALSE;
+				break;
+			}
 			if (event->state & GDK_SHIFT_MASK) 
 				mimeview_scroll_page(messageview->mimeview, TRUE);
 			else {

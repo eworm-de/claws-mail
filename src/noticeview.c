@@ -182,7 +182,7 @@ void noticeview_set_button_text(NoticeView *noticeview, const char *text)
 
 	if (text != NULL) {
 		gtk_label_set_text
-			(GTK_LABEL(GTK_BIN(noticeview->button)->child), text);
+			(GTK_LABEL(gtk_bin_get_child(GTK_BIN((noticeview->button)))), text);
 		gtk_widget_show(noticeview->button);
 	} else
 		gtk_widget_hide(noticeview->button);
@@ -250,7 +250,7 @@ void noticeview_set_2ndbutton_text(NoticeView *noticeview, const char *text)
 
 	if (text != NULL) {
 		gtk_label_set_text
-			(GTK_LABEL(GTK_BIN(noticeview->button2)->child), text);
+			(GTK_LABEL(gtk_bin_get_child(GTK_BIN((noticeview->button2)))), text);
 		gtk_widget_show(noticeview->button2);
 	} else
 		gtk_widget_hide(noticeview->button2);
