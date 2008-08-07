@@ -1,3 +1,12 @@
+2008-08-07 [mones]	3.5.0cvs53
+
+	* po/es.po
+		Updated translation (lots of changes!)
+	* src/compose.c
+		Add missing accelerator key
+	* src/mainwindow.c
+		Restored 'v' key function (thanks Colin!)
+
 2008-08-06 [colin]	3.5.0cvs52
 
 	* src/addrbook.c
