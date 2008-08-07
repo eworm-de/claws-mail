@@ -670,7 +670,7 @@ static GtkRadioActionEntry compose_radio_prio_entries[] =
 	{"Options/Priority/High",	NULL, N_("Hi_gh"), NULL, NULL, PRIORITY_HIGH }, /* RADIO compose_set_priority_cb */
 	{"Options/Priority/Normal",	NULL, N_("_Normal"), NULL, NULL, PRIORITY_NORMAL }, /* RADIO compose_set_priority_cb */
 	{"Options/Priority/Low",	NULL, N_("Lo_w"), NULL, NULL, PRIORITY_LOW }, /* RADIO compose_set_priority_cb */
-	{"Options/Priority/Lowest",	NULL, N_("Lowest"), NULL, NULL, PRIORITY_LOWEST }, /* RADIO compose_set_priority_cb */
+	{"Options/Priority/Lowest",	NULL, N_("_Lowest"), NULL, NULL, PRIORITY_LOWEST }, /* RADIO compose_set_priority_cb */
 };
 
 static GtkRadioActionEntry compose_radio_enc_entries[] =

@@ -720,7 +720,7 @@ static GtkActionEntry mainwin_entries[] =
 
 static GtkToggleActionEntry mainwin_toggle_entries[] = {
 	{"File/OfflineMode",			NULL, N_("Offline _mode"), "<control>W", NULL, G_CALLBACK(toggle_work_offline_cb) }, /*toggle*/
-	{"View/ShowHide/MessageView",		NULL, N_("_Message view"), NULL, NULL, G_CALLBACK(toggle_message_cb) }, /* toggle */
+	{"View/ShowHide/MessageView",		NULL, N_("_Message view"), "V", NULL, G_CALLBACK(toggle_message_cb) }, /* toggle */
 #ifndef GENERIC_UMPC
 	{"View/ShowHide/StatusBar",		NULL, N_("Status _bar"), NULL, NULL, G_CALLBACK(toggle_statusbar_cb) }, /* toggle */
 #endif
