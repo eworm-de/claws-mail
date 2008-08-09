@@ -1,3 +1,9 @@
+2008-08-09 [colin]	3.5.0cvs55
+
+	* src/mainwindow.c
+		Fix untranslatable strings, thanks to
+		Stephan Sachse
+
 2008-08-07 [colin]	3.5.0cvs54
 
 	* src/compose.c

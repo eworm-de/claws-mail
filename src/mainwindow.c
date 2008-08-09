@@ -637,8 +637,8 @@ static GtkActionEntry mainwin_entries[] =
 	{"Message/Mark/Lock",			NULL, N_("Lock"), NULL, NULL, G_CALLBACK(lock_msgs_cb) },
 	{"Message/Mark/Unlock",			NULL, N_("Unlock"), NULL, NULL, G_CALLBACK(unlock_msgs_cb) },
 
-	{"Message/ColorLabel",			NULL, "Color la_bel" },
-	{"Message/Tags",			NULL, "Ta_gs" },
+	{"Message/ColorLabel",			NULL, N_("Color la_bel") },
+	{"Message/Tags",			NULL, N_("Ta_gs") },
 	/*{"Message/---",			NULL, "---" },*/
 
 	{"Message/Reedit",			NULL, N_("Re-_edit"), NULL, NULL, G_CALLBACK(reedit_cb) },
@@ -3309,7 +3309,7 @@ static gint mailing_list_populate_submenu (GtkWidget *menuitem, const gchar * li
 	GList *amenu, *alist;
 	gint menu_nb = 0;
 	
-	menu = GTK_WIDGET(GTK_MENU_ITEM(menuitem)->submenu);
+	menu = gtk_menu_item_get_submenu(GTK_MENU_ITEM(menuitem));
 	
 	/* First delete old submenu */
 	/* FIXME: we can optimize this, and only change/add/delete necessary items */
