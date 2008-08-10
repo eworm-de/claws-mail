@@ -5314,9 +5314,13 @@ gtk_cmclist_motion (GtkWidget      *widget,
       if (clist->htimer)
 	return FALSE;
 
+#if GTK_CHECK_VERSION(2,12,0)
       clist->htimer = gdk_threads_add_timeout
 	(SCROLL_TIME, (GSourceFunc) horizontal_timeout, clist);
-
+#else
+      clist->htimer = g_timeout_add
+	(SCROLL_TIME, (GSourceFunc) horizontal_timeout, clist);
+#endif
       if (!((x < 0 && clist->hadjustment->value == 0) ||
 	    (x >= clist->clist_window_width &&
 	     clist->hadjustment->value ==
@@ -5345,10 +5349,13 @@ gtk_cmclist_motion (GtkWidget      *widget,
     {
       if (clist->vtimer)
 	return FALSE;
-
+#if GTK_CHECK_VERSION(2,12,0)
       clist->vtimer = gdk_threads_add_timeout (SCROLL_TIME,
 				     (GSourceFunc) vertical_timeout, clist);
-
+#else
+      clist->vtimer = g_timeout_add (SCROLL_TIME,
+				     (GSourceFunc) vertical_timeout, clist);
+#endif
       if (clist->drag_button &&
 	  ((y < 0 && clist->focus_row == 0) ||
 	   (y >= clist->clist_window_height &&

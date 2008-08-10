@@ -682,7 +682,7 @@ SummaryView *summary_create(void)
 	summaryview = g_new0(SummaryView, 1);
 
 #if !(GTK_CHECK_VERSION(2,12,0))
-	summaryview->tips = tips;
+	summaryview->tooltips = tips;
 #endif
 #define SUMMARY_VBOX_SPACING 3
 	vbox = gtk_vbox_new(FALSE, SUMMARY_VBOX_SPACING);
@@ -7659,7 +7659,7 @@ void summary_update_unread(SummaryView *summaryview, FolderItem *removed_item)
 	guint replied, forwarded, locked, ignored, watched;
 	static gboolean tips_initialized = FALSE;
 #if !(GTK_CHECK_VERSION(2,12,0))
-	GtkTooltips *tips = summaryview->tips;
+	GtkTooltips *tips = summaryview->tooltips;
 #endif
 
 	if (prefs_common.layout_mode != SMALL_LAYOUT) {

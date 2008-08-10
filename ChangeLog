@@ -1,3 +1,10 @@
+2008-08-10 [colin]	3.5.0cvs57
+
+	* src/summaryview.c
+	* src/gtk/gtkcmclist.c
+		Continue fixing GTK < 2.12 build, thanks to
+		Michael Hugues
+
 2008-08-10 [colin]	3.5.0cvs56
 
 	* src/gtk/gtksctree.c
