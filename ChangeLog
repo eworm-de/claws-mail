@@ -1,3 +1,11 @@
+2008-08-13 [colin]	3.5.0cvs58
+
+	* src/messageview.c
+	* src/messageview.h
+	* src/mimeview.c
+		Fix bug 1696, 'Viewing binary attachements 
+		as text over 1 MB' (various buglets)
+
 2008-08-10 [colin]	3.5.0cvs57
 
 	* src/summaryview.c
