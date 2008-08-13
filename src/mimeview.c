@@ -744,6 +744,11 @@ gboolean mimeview_show_part(MimeView *mimeview, MimeInfo *partinfo)
 {
 	MimeViewer *viewer;
 	
+	if (mimeview->messageview->partial_display_shown) {
+		noticeview_hide(mimeview->messageview->noticeview);
+		mimeview->messageview->partial_display_shown = FALSE;
+	}
+
 	viewer = get_viewer_for_mimeinfo(mimeview, partinfo);
 	if (viewer == NULL) {
 		if (mimeview->mimeviewer != NULL)

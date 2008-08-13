@@ -1672,8 +1672,10 @@ static void messageview_show_partial_display_cb(NoticeView *noticeview, MessageV
 {
 	messageview->show_full_text = TRUE;
 	main_window_cursor_wait(mainwindow_get_mainwindow());
+	noticeview_hide(messageview->noticeview);
+	messageview->partial_display_shown = FALSE;
 	GTK_EVENTS_FLUSH();
-	messageview_show(messageview, messageview->msginfo, messageview->all_headers);
+	mimeview_handle_cmd(messageview->mimeview, "sc://display_as_text", NULL, NULL);
 	main_window_cursor_normal(mainwindow_get_mainwindow());
 }
 
@@ -1689,6 +1691,7 @@ void messageview_show_partial_display(MessageView *messageview, MsgInfo *msginfo
 					     G_CALLBACK(messageview_show_partial_display_cb),
 					     (gpointer) messageview);
 	noticeview_show(messageview->noticeview);
+	messageview->partial_display_shown = TRUE;
 }
 
 static void return_receipt_show(NoticeView *noticeview, MsgInfo *msginfo)

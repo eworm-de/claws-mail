@@ -76,6 +76,7 @@ struct _MessageView
 	gboolean deferred_destroy;
 	
 	gboolean show_full_text;
+	gboolean partial_display_shown;
 	GtkUIManager *ui_manager;
 };
 
