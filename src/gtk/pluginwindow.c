@@ -53,6 +53,8 @@ typedef struct _PluginWindow
 	GtkWidget *unload_btn;
 
 	Plugin *selected_plugin;
+	
+	gboolean loading;
 } PluginWindow;
 
 static GtkListStore* pluginwindow_create_data_store	(void);
@@ -66,6 +68,8 @@ static gboolean pluginwindow_selected			(GtkTreeSelection *selector,
 
 static void close_cb(GtkButton *button, PluginWindow *pluginwindow)
 {
+	if (pluginwindow->loading)
+		return;
 	gtk_widget_destroy(pluginwindow->window);
 	g_free(pluginwindow);
 	plugin_save_list();
@@ -75,6 +79,8 @@ static void close_cb(GtkButton *button, PluginWindow *pluginwindow)
 static gint pluginwindow_delete_cb(GtkWidget *widget, GdkEventAny *event,
 				  PluginWindow *pluginwindow)
 {
+	if (pluginwindow->loading)
+		return FALSE;
 	close_cb(NULL,pluginwindow);
 	return TRUE;
 }
@@ -180,7 +186,9 @@ static void unload_cb(GtkButton *button, PluginWindow *pluginwindow)
 	Plugin *plugin = pluginwindow->selected_plugin;
 
 	g_return_if_fail(plugin != NULL);
+	pluginwindow->loading = TRUE;
 	plugin_unload(plugin);
+	pluginwindow->loading = FALSE;
 	pluginwindow->selected_plugin = NULL;
 	set_plugin_list(pluginwindow);
 }
@@ -195,7 +203,7 @@ static void load_cb(GtkButton *button, PluginWindow *pluginwindow)
 
 	if (file_list) {
 		GList *tmp;
-
+		pluginwindow->loading = TRUE;
 		for ( tmp = file_list; tmp; tmp = tmp->next) {
 			gchar *file, *error = NULL;
 
@@ -215,7 +223,7 @@ static void load_cb(GtkButton *button, PluginWindow *pluginwindow)
 			set_plugin_list(pluginwindow);
 			g_free(file);
 		}
-
+		pluginwindow->loading = FALSE;
 		g_list_free(file_list);
 	}		
 }

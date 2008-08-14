@@ -964,6 +964,8 @@ void folder_fast_scan_tree(Folder *folder)
 FolderItem *folder_create_folder(FolderItem *parent, const gchar *name)
 {
 	FolderItem *new_item;
+	
+	g_return_val_if_fail(parent != NULL, NULL);
 
 	new_item = parent->folder->klass->create_folder(parent->folder, parent, name);
 	if (new_item) {
