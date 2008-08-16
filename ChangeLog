@@ -1,3 +1,14 @@
+2008-08-16 [colin]	3.5.0cvs60
+
+	* src/mainwindow.c
+	* src/gtk/gtkcmclist.c
+	* src/gtk/gtkcmclist.h
+	* src/gtk/gtkcmctree.c
+	* src/gtk/gtksctree.c
+	* src/gtk/gtkutils.c
+	* src/gtk/gtkvscrollbutton.c
+		Fix Maemo build (OS2007)
+
 2008-08-14 [colin]	3.5.0cvs59
 
 	* src/folder.c

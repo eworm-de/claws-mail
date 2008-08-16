@@ -742,7 +742,7 @@ static GtkRadioActionEntry mainwin_showhide_radio_entries[] = { /* toggle_toolba
 	{"View/ShowHide/Toolbar/Hide",		NULL, N_("_Hide"), NULL, NULL, TOOLBAR_NONE }, /* radio TOOLBAR_NONE */
 #endif
 };
-
+#ifndef GENERIC_UMPC
 static GtkRadioActionEntry mainwin_layout_radio_entries[] = { /* set_layout_cb */
 	{"View/Layout/Standard",		NULL, N_("_Standard"), NULL, NULL, NORMAL_LAYOUT }, /* radio NORMAL_LAYOUT */
 	{"View/Layout/ThreeColumns",		NULL, N_("_Three columns"), NULL, NULL, VERTICAL_LAYOUT }, /* radio VERTICAL_LAYOUT */
@@ -750,7 +750,7 @@ static GtkRadioActionEntry mainwin_layout_radio_entries[] = { /* set_layout_cb *
 	{"View/Layout/WideMessageList",		NULL, N_("W_ide message list"), NULL, NULL, WIDE_MSGLIST_LAYOUT }, /* radio WIDE_MSGLIST_LAYOUT */
 	{"View/Layout/SmallScreen",		NULL, N_("S_mall screen"), NULL, NULL, SMALL_LAYOUT }, /* radio SMALL_LAYOUT */
 };
-
+#endif
 static GtkRadioActionEntry mainwin_sort_radio_entries[] = { /* sort_summary_cb */
 	{"View/Sort/Number",			NULL, N_("by _Number"), NULL, NULL, SORT_BY_NUMBER }, /* radio SORT_BY_NUMBER */
 	{"View/Sort/Size",			NULL, N_("by S_ize"), NULL, NULL, SORT_BY_SIZE }, /* radio SORT_BY_SIZE */
@@ -1523,8 +1523,10 @@ MainWindow *main_window_create()
 			G_N_ELEMENTS(mainwin_toggle_entries), (gpointer)mainwin);
 	gtk_action_group_add_radio_actions(mainwin->action_group, mainwin_showhide_radio_entries,
 			G_N_ELEMENTS(mainwin_showhide_radio_entries), C_AUTO, G_CALLBACK(toggle_toolbar_cb), (gpointer)mainwin);
+#ifndef GENERIC_UMPC
 	gtk_action_group_add_radio_actions(mainwin->action_group, mainwin_layout_radio_entries,
 			G_N_ELEMENTS(mainwin_layout_radio_entries), C_AUTO, G_CALLBACK(set_layout_cb), (gpointer)mainwin);
+#endif
 	gtk_action_group_add_radio_actions(mainwin->action_group, mainwin_sort_radio_entries,
 			G_N_ELEMENTS(mainwin_sort_radio_entries), C_AUTO, G_CALLBACK(sort_summary_cb), (gpointer)mainwin);
 	gtk_action_group_add_radio_actions(mainwin->action_group, mainwin_sorttype_radio_entries,

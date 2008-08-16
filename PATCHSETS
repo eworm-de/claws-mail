@@ -3471,3 +3471,4 @@
 ( cvs diff -u -r 1.395.2.381 -r 1.395.2.382 src/summaryview.c;  cvs diff -u -r 1.1.2.1 -r 1.1.2.2 src/gtk/gtkcmclist.c;  ) > 3.5.0cvs57.patchset
 ( cvs diff -u -r 1.94.2.183 -r 1.94.2.184 src/messageview.c;  cvs diff -u -r 1.19.2.20 -r 1.19.2.21 src/messageview.h;  cvs diff -u -r 1.83.2.142 -r 1.83.2.143 src/mimeview.c;  ) > 3.5.0cvs58.patchset
 ( cvs diff -u -r 1.213.2.184 -r 1.213.2.185 src/folder.c;  cvs diff -u -r 1.5.2.53 -r 1.5.2.54 src/gtk/pluginwindow.c;  ) > 3.5.0cvs59.patchset
+( cvs diff -u -r 1.274.2.266 -r 1.274.2.267 src/mainwindow.c;  cvs diff -u -r 1.1.2.2 -r 1.1.2.3 src/gtk/gtkcmclist.c;  cvs diff -u -r 1.1.2.1 -r 1.1.2.2 src/gtk/gtkcmclist.h;  cvs diff -u -r 1.1.2.1 -r 1.1.2.2 src/gtk/gtkcmctree.c;  cvs diff -u -r 1.1.4.48 -r 1.1.4.49 src/gtk/gtksctree.c;  cvs diff -u -r 1.5.2.81 -r 1.5.2.82 src/gtk/gtkutils.c;  cvs diff -u -r 1.5.2.14 -r 1.5.2.15 src/gtk/gtkvscrollbutton.c;  ) > 3.5.0cvs60.patchset

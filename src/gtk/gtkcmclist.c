@@ -38,6 +38,9 @@
 /* length of button_actions array */
 #define MAX_BUTTON 5
 
+/* the number rows memchunk expands at a time */
+#define CMCLIST_OPTIMUM_SIZE 64
+
 /* the width of the column resize windows */
 #define DRAG_WIDTH  6
 
@@ -1054,6 +1057,12 @@ gtk_cmclist_init (GtkCMCList *clist)
   GTK_CMCLIST_SET_FLAG (clist, CMCLIST_DRAW_DRAG_LINE);
   GTK_CMCLIST_SET_FLAG (clist, CMCLIST_USE_DRAG_ICONS);
 
+
+#if !GLIB_CHECK_VERSION(2,10,0)
+  clist->row_mem_chunk = NULL;
+  clist->cell_mem_chunk = NULL;
+#endif
+
   clist->freeze_count = 0;
 
   clist->rows = 0;
@@ -1129,6 +1138,22 @@ gtk_cmclist_constructor (GType                  type,
 								construct_properties);
   GtkCMCList *clist = GTK_CMCLIST (object);
   
+#if !GLIB_CHECK_VERSION(2,10,0)
+  if (!clist->row_mem_chunk)
+    clist->row_mem_chunk = g_mem_chunk_new ("clist row mem chunk",
+					    sizeof (GtkCMCListRow),
+					    sizeof (GtkCMCListRow) *
+					    CMCLIST_OPTIMUM_SIZE, 
+					    G_ALLOC_AND_FREE);
+  
+  if (!clist->cell_mem_chunk)
+    clist->cell_mem_chunk = g_mem_chunk_new ("clist cell mem chunk",
+					     sizeof (GtkCMCell) * clist->columns,
+					     sizeof (GtkCMCell) * clist->columns *
+					     CMCLIST_OPTIMUM_SIZE, 
+					     G_ALLOC_AND_FREE);
+#endif
+
   /* allocate memory for columns */
   clist->column = columns_new (clist);
   
@@ -1209,8 +1234,12 @@ gtk_cmclist_set_hadjustment (GtkCMCList      *clist,
 
   if (clist->hadjustment)
     {
+#if GLIB_CHECK_VERSION(2,10,0)
       g_object_ref_sink (clist->hadjustment);
-
+#else
+      gtk_object_ref (GTK_OBJECT (clist->hadjustment));
+      gtk_object_sink (GTK_OBJECT (clist->hadjustment));
+#endif
       g_signal_connect (G_OBJECT (clist->hadjustment), "changed",
 			  G_CALLBACK( hadjustment_changed),
 			  (gpointer) clist);
@@ -1257,7 +1286,12 @@ gtk_cmclist_set_vadjustment (GtkCMCList      *clist,
 
   if (clist->vadjustment)
     {
+#if GLIB_CHECK_VERSION(2,10,0)
       g_object_ref_sink (clist->vadjustment);
+#else
+      gtk_object_ref (GTK_OBJECT (clist->vadjustment));
+      gtk_object_sink (GTK_OBJECT (clist->vadjustment));
+#endif
 
       g_signal_connect (GTK_OBJECT (clist->vadjustment), "changed",
 			  G_CALLBACK(vadjustment_changed),
@@ -4462,6 +4496,10 @@ gtk_cmclist_finalize (GObject *object)
 
   columns_delete (clist);
 
+#if !GLIB_CHECK_VERSION(2,10,0)
+  g_mem_chunk_destroy (clist->cell_mem_chunk);
+  g_mem_chunk_destroy (clist->row_mem_chunk);
+#endif
   G_OBJECT_CLASS (parent_class)->finalize (object);
 }
 
@@ -6405,8 +6443,13 @@ row_new (GtkCMCList *clist)
   int i;
   GtkCMCListRow *clist_row;
 
+#if GLIB_CHECK_VERSION(2,10,0)
   clist_row = g_slice_new (GtkCMCListRow);
   clist_row->cell = g_slice_alloc (sizeof (GtkCMCell) * clist->columns);
+#else
+  clist_row = g_chunk_new (GtkCMCListRow, (GMemChunk *)clist->row_mem_chunk);
+  clist_row->cell = g_chunk_new (GtkCMCell, (GMemChunk *)clist->cell_mem_chunk);
+#endif
 
   for (i = 0; i < clist->columns; i++)
     {
@@ -6455,8 +6498,13 @@ row_delete (GtkCMCList    *clist,
   if (clist_row->destroy)
     clist_row->destroy (clist_row->data);
 
+#if GLIB_CHECK_VERSION(2,10,0)  
   g_slice_free1 (sizeof (GtkCMCell) * clist->columns, clist_row->cell);
   g_slice_free (GtkCMCListRow, clist_row);
+#else
+  g_mem_chunk_free ((GMemChunk *)clist->cell_mem_chunk, clist_row->cell);
+  g_mem_chunk_free ((GMemChunk *)clist->row_mem_chunk, clist_row);
+#endif
 }
 
 /* FOCUS FUNCTIONS

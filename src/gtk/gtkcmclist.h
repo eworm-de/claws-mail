@@ -149,9 +149,13 @@ struct _GtkCMCList
   
   guint16 flags;
   
+#if !GLIB_CHECK_VERSION(2,10,0)
+  GMemChunk *row_mem_chunk;
+  GMemChunk *cell_mem_chunk;
+#else
   gpointer reserved1;
   gpointer reserved2;
-
+#endif
   guint freeze_count;
   
   /* allocation rectangle after the conatiner_border_width

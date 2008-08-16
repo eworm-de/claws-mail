@@ -248,7 +248,12 @@ void gtk_vscrollbutton_set_adjustment(GtkVScrollbutton *scrollbutton,
 
 	scrollbutton->adjustment = adjustment;
 	g_object_ref(G_OBJECT(adjustment));
-	g_object_ref_sink(GTK_OBJECT(adjustment));
+#if GLIB_CHECK_VERSION(2,10,0)
+	g_object_ref_sink (G_OBJECT(adjustment));
+#else
+	gtk_object_ref (GTK_OBJECT (adjustment));
+	gtk_object_sink (GTK_OBJECT (adjustment));
+#endif
     }
 }
 

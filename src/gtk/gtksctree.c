@@ -2705,7 +2705,7 @@ srow_new (GtkCMCTree *ctree)
   int i;
 
   clist = GTK_CMCLIST (ctree);
-#if GTK_CHECK_VERSION(2,9,0)
+#if GLIB_CHECK_VERSION(2,10,0)
   ctree_row = g_slice_new (GtkCMCTreeRow);
   ctree_row->row.cell = g_slice_alloc (sizeof (GtkCMCell) * clist->columns);
 #else
@@ -2796,7 +2796,7 @@ srow_delete (GtkCMCTree    *ctree,
       dnotify (ddata);
     }
 
-#if GTK_CHECK_VERSION(2,9,0)  
+#if GLIB_CHECK_VERSION(2,10,0)  
   g_slice_free1 (sizeof (GtkCMCell) * clist->columns, ctree_row->row.cell);
   g_slice_free (GtkCMCTreeRow, ctree_row);
 #else

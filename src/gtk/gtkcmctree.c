@@ -62,7 +62,11 @@ gtk_cmctree_pos_get_type (void)
       { GTK_CMCTREE_POS_AFTER, "GTK_CMCTREE_POS_AFTER", "after" },
       { 0, NULL, NULL }
     };
+#if GTK_CHECK_VERSION(2,10,0)
     etype = g_enum_register_static (g_intern_static_string ("GtkCMCTreePos"), values);
+#else
+    etype = g_enum_register_static ("GtkCMCTreePos", values);
+#endif
   }
   return etype;
 }
@@ -78,7 +82,11 @@ gtk_cmctree_line_style_get_type (void)
       { GTK_CMCTREE_LINES_TABBED, "GTK_CMCTREE_LINES_TABBED", "tabbed" },
       { 0, NULL, NULL }
     };
+#if GTK_CHECK_VERSION(2,10,0)
     etype = g_enum_register_static (g_intern_static_string ("GtkCMCTreeLineStyle"), values);
+#else
+    etype = g_enum_register_static ("GtkCMCTreeLineStyle", values);
+#endif
   }
   return etype;
 }
@@ -94,7 +102,11 @@ gtk_cmctree_expander_style_get_type (void)
       { GTK_CMCTREE_EXPANDER_CIRCULAR, "GTK_CMCTREE_EXPANDER_CIRCULAR", "circular" },
       { 0, NULL, NULL }
     };
+#if GTK_CHECK_VERSION(2,10,0)
     etype = g_enum_register_static (g_intern_static_string ("GtkCMCTreeExpanderStyle"), values);
+#else
+    etype = g_enum_register_static ("GtkCMCTreeExpanderStyle", values);
+#endif
   }
   return etype;
 }
@@ -112,7 +124,11 @@ gtk_cmctree_expansion_type_get_type (void)
       { GTK_CMCTREE_EXPANSION_TOGGLE_RECURSIVE, "GTK_CMCTREE_EXPANSION_TOGGLE_RECURSIVE", "toggle-recursive" },
       { 0, NULL, NULL }
     };
+#if GTK_CHECK_VERSION(2,10,0)
     etype = g_enum_register_static (g_intern_static_string ("GtkCMCTreeExpansionType"), values);
+#else
+    etype = g_enum_register_static ("GtkCMCTreeExpansionType", values);
+#endif
   }
   return etype;
 }
@@ -3288,8 +3304,13 @@ row_new (GtkCMCTree *ctree)
   int i;
 
   clist = GTK_CMCLIST (ctree);
+#if GLIB_CHECK_VERSION(2,10,0)
   ctree_row = g_slice_new (GtkCMCTreeRow);
   ctree_row->row.cell = g_slice_alloc (sizeof (GtkCMCell) * clist->columns);
+#else
+  ctree_row = g_chunk_new (GtkCMCTreeRow, (GMemChunk *)clist->row_mem_chunk);
+  ctree_row->row.cell = g_chunk_new (GtkCMCell, (GMemChunk *)clist->cell_mem_chunk);
+#endif
 
   for (i = 0; i < clist->columns; i++)
     {
@@ -3375,8 +3396,13 @@ row_delete (GtkCMCTree    *ctree,
       dnotify (ddata);
     }
 
+#if GLIB_CHECK_VERSION(2,10,0)  
   g_slice_free1 (sizeof (GtkCMCell) * clist->columns, ctree_row->row.cell);
-  g_slice_free (GtkCMCTreeRow, ctree_row);
+  g_slice_free (GtkCMCListRow, ctree_row);
+#else
+  g_mem_chunk_free ((GMemChunk *)clist->cell_mem_chunk, ctree_row->row.cell);
+  g_mem_chunk_free ((GMemChunk *)clist->row_mem_chunk, ctree_row);
+#endif
 }
 
 static void
