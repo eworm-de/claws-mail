@@ -1,3 +1,8 @@
+2008-08-16 [colin]	3.5.0cvs61
+
+	* src/editaddress_other_attributes_ldap.h
+		Add 'l' field (localityName)
+
 2008-08-16 [colin]	3.5.0cvs60
 
 	* src/mainwindow.c

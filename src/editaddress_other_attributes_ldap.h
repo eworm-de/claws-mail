@@ -92,6 +92,7 @@ static const char *ATTRIBUTE[] = {
 	"postalCode",
 	"postalAddress",
 	"st", /* state or province */
+	"l", /* locality Name */
 	"departmentNumber",
 	"homePhone",
 	"homePostalAddress",
