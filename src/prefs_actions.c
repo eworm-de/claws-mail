@@ -1217,7 +1217,7 @@ static void prefs_actions_select_row(GtkTreeView *list_view, GtkTreePath *path)
 		return;
 
 	*cmd = '\0';
-	ENTRY_SET_TEXT(actions.name_entry, buf);
+	gtk_entry_set_text(GTK_ENTRY(actions.name_entry), buf);
 
 	if(g_str_has_prefix(&cmd[2], "%as{") == TRUE)
 		gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(

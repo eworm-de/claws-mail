@@ -1233,9 +1233,11 @@ static GtkWidget* smtp_page (WizardWindow * wizard)
 	GtkWidget *table = gtk_table_new(1, 1, FALSE);
 	GtkWidget *vbox;
 	GtkWidget *hbox;
+#if (defined(USE_OPENSSL) || defined (USE_GNUTLS))
 	GtkWidget *label;
 	GtkWidget *button;
 	GtkWidget *smtp_cert_table;
+#endif
 	gchar *text;
 	CLAWS_TIP_DECL();
 	
@@ -1471,9 +1473,11 @@ static GtkWidget* recv_page (WizardWindow * wizard)
 	GtkWidget *table = gtk_table_new(1,1, FALSE);
 	GtkWidget *vbox;
 	GtkWidget *hbox;
+#if (defined(USE_OPENSSL) || defined (USE_GNUTLS))
 	GtkWidget *label;
 	GtkWidget *button;
 	GtkWidget *recv_cert_table;
+#endif
 	GtkListStore *store;
 	GtkTreeIter iter;
 	gchar *text;

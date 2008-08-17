@@ -976,7 +976,7 @@ gchar *procmime_get_mime_type(const gchar *filename)
 	static GHashTable *mime_type_table = NULL;
 	MimeType *mime_type;
 	const gchar *p;
-	gchar *ext = NULL, *ext_down;
+	gchar *ext = NULL;
 	gchar *base;
 
 	if (!mime_type_table) {

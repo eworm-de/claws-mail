@@ -1,3 +1,12 @@
+2008-08-17 [colin]	3.5.0cvs62
+
+	* src/prefs_actions.c
+	* src/procmime.c
+	* src/wizard.c
+	* src/common/socket.h
+	* src/gtk/gtkcmctree.c
+		Fix warnings
+
 2008-08-16 [colin]	3.5.0cvs61
 
 	* src/editaddress_other_attributes_ldap.h

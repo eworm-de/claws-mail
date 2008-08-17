@@ -78,7 +78,7 @@ struct _SockInfo
 	GIOCondition condition;
 	gchar *canonical_name;
 	
-	void *account;
+	const void *account;
 	gboolean is_smtp;
 };
 

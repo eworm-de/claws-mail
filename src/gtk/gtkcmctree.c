@@ -3398,7 +3398,7 @@ row_delete (GtkCMCTree    *ctree,
 
 #if GLIB_CHECK_VERSION(2,10,0)  
   g_slice_free1 (sizeof (GtkCMCell) * clist->columns, ctree_row->row.cell);
-  g_slice_free (GtkCMCListRow, ctree_row);
+  g_slice_free (GtkCMCTreeRow, ctree_row);
 #else
   g_mem_chunk_free ((GMemChunk *)clist->cell_mem_chunk, ctree_row->row.cell);
   g_mem_chunk_free ((GMemChunk *)clist->row_mem_chunk, ctree_row);
