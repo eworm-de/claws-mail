@@ -865,7 +865,7 @@ static void mainwindow_colorlabel_menu_item_activate_item_cb(GtkMenuItem *menu_i
 	Xalloca(items, (N_COLOR_LABELS + 1) * sizeof(GtkWidget *), return);
 
 	/* NOTE: don't return prematurely because we set the "dont_toggle"
-	 * state for check menu items */
+	 * state for check menu items. This would be bad! */
 	g_object_set_data(G_OBJECT(menu), "dont_toggle",
 			  GINT_TO_POINTER(1));
 

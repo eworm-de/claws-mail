@@ -1,3 +1,9 @@
+2008-08-19 [colin]	3.5.0cvs63
+
+	* src/mainwindow.c
+		Fix a comment (in reality, test commit on
+		the new CVS server)
+
 2008-08-17 [colin]	3.5.0cvs62
 
 	* src/prefs_actions.c
