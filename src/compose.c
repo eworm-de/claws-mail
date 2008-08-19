@@ -1958,6 +1958,7 @@ Compose *compose_reedit(MsgInfo *msginfo, gboolean batch)
 	gchar *privacy_system = NULL;
 	int priority = PRIORITY_NORMAL;
 	MsgInfo *replyinfo = NULL, *fwdinfo = NULL;
+	gboolean autowrap = prefs_common.autowrap;
 
 	g_return_val_if_fail(msginfo != NULL, NULL);
 	g_return_val_if_fail(msginfo->folder != NULL, NULL);
@@ -2018,6 +2019,11 @@ Compose *compose_reedit(MsgInfo *msginfo, gboolean batch)
 			param = atoi(&queueheader_buf[strlen("X-Sylpheed-Encrypt:")]);
 			use_encryption = param;
 		}
+		if (!procheader_get_header_from_msginfo(msginfo, queueheader_buf, 
+					     sizeof(queueheader_buf), "X-Claws-Auto-Wrapping:")) {
+			param = atoi(&queueheader_buf[strlen("X-Claws-Auto-Wrapping:")]);
+			autowrap = param;
+		}
                 if (!procheader_get_header_from_msginfo(msginfo, queueheader_buf, 
                                             sizeof(queueheader_buf), "X-Claws-Privacy-System:")) {
                         privacy_system = g_strdup(&queueheader_buf[strlen("X-Claws-Privacy-System:")]);
@@ -2070,7 +2076,9 @@ Compose *compose_reedit(MsgInfo *msginfo, gboolean batch)
 	g_return_val_if_fail(account != NULL, NULL);
 
 	compose = compose_create(account, msginfo->folder, COMPOSE_REEDIT, batch);
-	
+
+	cm_toggle_menu_set_active_full(compose->ui_manager, "Menu/Edit/AutoWrap", autowrap);
+	compose->autowrap = autowrap;
 	compose->replyinfo = replyinfo;
 	compose->fwdinfo = fwdinfo;
 
@@ -4947,6 +4955,7 @@ static gint compose_redirect_write_to_file(Compose *compose, FILE *fdest)
 		"X-Claws-End-Special-Headers:", 		"X-Claws-Account-Id:",
 		"X-Sylpheed-Privacy",	"X-Sylpheed-Sign:",	"X-Sylpheed-Encrypt",
 		"X-Sylpheed-End-Special-Headers:", 		"X-Sylpheed-Account-Id:",
+		"X-Claws-Auto-Wrapping:",
 		NULL
 		};
 	if ((fp = g_fopen(compose->redirect_filename, "rb")) == NULL) {
@@ -5527,6 +5536,8 @@ static gint compose_queue_sub(Compose *compose, gint *msgnum, FolderItem **item,
 		err |= (fprintf(fp, "FMID:%s\t%d\t%s\n", folderid, compose->fwdinfo->msgnum, compose->fwdinfo->msgid) < 0);
 		g_free(folderid);
 	}
+
+	err |= (fprintf(fp, "X-Claws-Auto-Wrapping:%d\n", compose->autowrap) < 0);
 
 	/* end of headers */
 	err |= (fprintf(fp, "X-Claws-End-Special-Headers: 1\n") < 0);
@@ -7314,7 +7325,6 @@ static void compose_set_priority_cb(GtkAction *action, GtkRadioAction *current, 
 	gint value = gtk_radio_action_get_current_value (GTK_RADIO_ACTION (current));
 	Compose *compose = (Compose *) data;
 	if (active) {
-		printf("activated %d\n", value);
 		compose->priority = value;
 	}
 }
@@ -8891,6 +8901,8 @@ gboolean compose_draft (gpointer data, guint action)
 		err |= (fprintf(fp, "FMID:%s\t%d\t%s\n", folderid, compose->fwdinfo->msgnum, compose->fwdinfo->msgid) < 0);
 		g_free(folderid);
 	}
+
+	err |= (fprintf(fp, "X-Claws-Auto-Wrapping:%d\n", compose->autowrap) < 0);
 
 	/* end of headers */
 	err |= (fprintf(fp, "X-Claws-End-Special-Headers: 1\n") < 0);
