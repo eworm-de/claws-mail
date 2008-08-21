@@ -3662,42 +3662,98 @@ static gchar *compose_get_quote_str(GtkTextBuffer *buffer,
 	return NULL;
 }
 
-/* return TRUE if the line is itemized */
-static gboolean compose_is_itemized(GtkTextBuffer *buffer,
+/* return >0 if the line is itemized */
+static int compose_itemized_length(GtkTextBuffer *buffer,
 				    const GtkTextIter *start)
 {
 	GtkTextIter iter = *start;
 	gunichar wc;
 	gchar ch[6];
 	gint clen;
-
+	gint len = 0;
 	if (gtk_text_iter_ends_line(&iter))
-		return FALSE;
+		return 0;
 
 	while (1) {
+		len++;
 		wc = gtk_text_iter_get_char(&iter);
 		if (!g_unichar_isspace(wc))
 			break;
 		gtk_text_iter_forward_char(&iter);
 		if (gtk_text_iter_ends_line(&iter))
-			return FALSE;
+			return 0;
 	}
 
 	clen = g_unichar_to_utf8(wc, ch);
 	if (clen != 1)
-		return FALSE;
+		return 0;
 
 	if (!strchr("*-+", ch[0]))
-		return FALSE;
+		return 0;
 
 	gtk_text_iter_forward_char(&iter);
 	if (gtk_text_iter_ends_line(&iter))
-		return FALSE;
+		return 0;
 	wc = gtk_text_iter_get_char(&iter);
-	if (g_unichar_isspace(wc))
-		return TRUE;
+	if (g_unichar_isspace(wc)) {
+		return len+1;
+	}
+	return 0;
+}
 
-	return FALSE;
+/* return the string at the start of the itemization */
+static gchar * compose_get_itemized_chars(GtkTextBuffer *buffer,
+				    const GtkTextIter *start)
+{
+	GtkTextIter iter = *start;
+	gunichar wc;
+	gint len = 0;
+	GString *item_chars = g_string_new("");
+	gchar *str = NULL;
+
+	if (gtk_text_iter_ends_line(&iter))
+		return NULL;
+
+	while (1) {
+		len++;
+		wc = gtk_text_iter_get_char(&iter);
+		if (!g_unichar_isspace(wc))
+			break;
+		gtk_text_iter_forward_char(&iter);
+		if (gtk_text_iter_ends_line(&iter))
+			break;
+		g_string_append_unichar(item_chars, wc);
+	}
+
+	str = item_chars->str;
+	g_string_free(item_chars, FALSE);
+	return str;
+}
+
+/* return the number of spaces at a line's start */
+static int compose_left_offset_length(GtkTextBuffer *buffer,
+				    const GtkTextIter *start)
+{
+	GtkTextIter iter = *start;
+	gunichar wc;
+	gint len = 0;
+	if (gtk_text_iter_ends_line(&iter))
+		return 0;
+
+	while (1) {
+		wc = gtk_text_iter_get_char(&iter);
+		if (!g_unichar_isspace(wc))
+			break;
+		len++;
+		gtk_text_iter_forward_char(&iter);
+		if (gtk_text_iter_ends_line(&iter))
+			return 0;
+	}
+
+	gtk_text_iter_forward_char(&iter);
+	if (gtk_text_iter_ends_line(&iter))
+		return 0;
+	return len;
 }
 
 static gboolean compose_get_line_break_pos(GtkTextBuffer *buffer,
@@ -3846,7 +3902,7 @@ static gboolean compose_join_next_line(Compose *compose,
 	}
 
 	/* don't join itemized lines */
-	if (compose_is_itemized(buffer, &end)) {
+	if (compose_itemized_length(buffer, &end) > 0) {
 		return FALSE;
 	}
 
@@ -3942,6 +3998,9 @@ static gboolean compose_beautify_paragraph(Compose *compose, GtkTextIter *par_it
 	gboolean modified_before_remove = FALSE;
 	gint lines = 0;
 	gboolean start = TRUE;
+	gint itemized_len = 0, rem_item_len = 0;
+	gchar *itemized_chars = NULL;
+	gboolean item_continuation = FALSE;
 
 	if (force) {
 		modified = TRUE;
@@ -3980,6 +4039,17 @@ static gboolean compose_beautify_paragraph(Compose *compose, GtkTextIter *par_it
 		/* move to line start */
 		gtk_text_iter_set_line_offset(&iter, 0);
 	}
+	
+	itemized_len = compose_itemized_length(buffer, &iter);
+	
+	if (!itemized_len) {
+		itemized_len = compose_left_offset_length(buffer, &iter);
+		item_continuation = TRUE;
+	}
+
+	if (itemized_len)
+		itemized_chars = compose_get_itemized_chars(buffer, &iter);
+
 	/* go until paragraph end (empty line) */
 	while (start || !gtk_text_iter_ends_line(&iter)) {
 		gchar *scanpos = NULL;
@@ -4060,22 +4130,35 @@ static gboolean compose_beautify_paragraph(Compose *compose, GtkTextIter *par_it
 					       prefs_common.linewrap_len,
 					       quote_len)) {
 			GtkTextIter prev, next, cur;
-
 			if (prev_autowrap != FALSE || force) {
 				compose->automatic_break = TRUE;
 				modified = TRUE;
 				gtk_text_buffer_insert(buffer, &break_pos, "\n", 1);
 				compose->automatic_break = FALSE;
+				if (itemized_len) {
+					gtk_text_buffer_insert(buffer, &break_pos, itemized_chars, -1);
+					if (!item_continuation)
+						gtk_text_buffer_insert(buffer, &break_pos, "  ", 2);
+				}
 			} else if (quote_str && wrap_quote) {
 				compose->automatic_break = TRUE;
 				modified = TRUE;
 				gtk_text_buffer_insert(buffer, &break_pos, "\n", 1);
 				compose->automatic_break = FALSE;
+				if (itemized_len) {
+					gtk_text_buffer_insert(buffer, &break_pos, itemized_chars, -1);
+					if (!item_continuation)
+						gtk_text_buffer_insert(buffer, &break_pos, "  ", 2);
+				}
 			} else 
 				goto colorize;
 			/* remove trailing spaces */
 			cur = break_pos;
+			rem_item_len = itemized_len;
+			while (rem_item_len-- > 0)
+				gtk_text_iter_backward_char(&cur);
 			gtk_text_iter_backward_char(&cur);
+
 			prev = next = cur;
 			while (!gtk_text_iter_starts_line(&cur)) {
 				gunichar wc;
@@ -4268,9 +4351,9 @@ colorize:
 			goto end;
 		}
 	}
-
 	debug_print("modified, out after %d lines\n", lines);
 end:
+	g_free(itemized_chars);
 	if (par_iter)
 		*par_iter = iter;
 	undo_wrapping(compose->undostruct, FALSE);

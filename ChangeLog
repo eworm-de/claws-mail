@@ -1,3 +1,8 @@
+2008-08-21 [colin]	3.5.0cvs65
+
+	* src/compose.c
+		Add support for auto-indentation
+
 2008-08-19 [colin]	3.5.0cvs64
 
 	* src/compose.c
