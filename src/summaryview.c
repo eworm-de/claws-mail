@@ -5731,6 +5731,7 @@ static void summary_colorlabel_menu_create(SummaryView *summaryview, gboolean re
 	GtkWidget *menu;
 	GtkWidget *item;
 	gint i;
+	gchar *accel_path = NULL;
 
 	label_menuitem = gtk_ui_manager_get_widget(gtkut_ui_manager(), "/Menus/SummaryViewPopup/ColorLabel");
 	g_signal_connect(G_OBJECT(label_menuitem), "activate",
@@ -5739,6 +5740,9 @@ static void summary_colorlabel_menu_create(SummaryView *summaryview, gboolean re
 	gtk_widget_show(label_menuitem);
 
 	menu = gtk_menu_new();
+
+	gtk_menu_set_accel_group (GTK_MENU (menu), 
+		gtk_ui_manager_get_accel_group(mainwindow_get_mainwindow()->ui_manager));
 
 	/* create sub items. for the menu item activation callback we pass the
 	 * index of label_colors[] as data parameter. for the None color we
@@ -5752,6 +5756,11 @@ static void summary_colorlabel_menu_create(SummaryView *summaryview, gboolean re
 			   GUINT_TO_POINTER(0));
 	g_object_set_data(G_OBJECT(item), "summaryview", summaryview);
 	gtk_widget_show(item);
+
+	accel_path = g_strdup_printf("<ClawsColorLabels>/None");
+	gtk_menu_item_set_accel_path(GTK_MENU_ITEM(item), accel_path);
+	g_free(accel_path);
+	gtk_accel_map_add_entry("<ClawsColorLabels>/None", GDK_0, GDK_CONTROL_MASK);
 
 	item = gtk_menu_item_new();
 	gtk_menu_shell_append(GTK_MENU_SHELL(menu), item);
@@ -5768,6 +5777,11 @@ static void summary_colorlabel_menu_create(SummaryView *summaryview, gboolean re
 		g_object_set_data(G_OBJECT(item), "summaryview",
 				  summaryview);
 		gtk_widget_show(item);
+		accel_path = g_strdup_printf("<ClawsColorLabels>/%d", i);
+		gtk_menu_item_set_accel_path(GTK_MENU_ITEM(item), accel_path);
+		if (i < 9)
+			gtk_accel_map_add_entry(accel_path, GDK_1+i, GDK_CONTROL_MASK);
+		g_free(accel_path);
 	}
 
 	gtk_widget_show(menu);

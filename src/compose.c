@@ -423,6 +423,8 @@ static void compose_find_cb		(GtkAction	*action,
 					 gpointer	 data);
 static void compose_toggle_autowrap_cb	(GtkToggleAction *action,
 					 gpointer	 data);
+static void compose_toggle_autoindent_cb(GtkToggleAction *action,
+					 gpointer	 data);
 
 static void compose_toggle_ruler_cb	(GtkToggleAction *action,
 					 gpointer	 data);
@@ -649,6 +651,7 @@ static GtkActionEntry compose_entries[] =
 static GtkToggleActionEntry compose_toggle_entries[] =
 {
 	{"Edit/AutoWrap",		NULL, N_("Aut_o wrapping"), "<shift><control>L", NULL, G_CALLBACK(compose_toggle_autowrap_cb) }, /* TOGGLE */
+	{"Edit/AutoIndent",		NULL, N_("Follow _indentation"), NULL, NULL, G_CALLBACK(compose_toggle_autoindent_cb) }, /* TOGGLE */
 	{"Options/Sign",		NULL, N_("Si_gn"), NULL, NULL, G_CALLBACK(compose_toggle_sign_cb) }, /* Toggle */
 	{"Options/Encrypt",		NULL, N_("_Encrypt"), NULL, NULL, G_CALLBACK(compose_toggle_encrypt_cb) }, /* Toggle */
 	{"Options/RequestRetRcpt",	NULL, N_("_Request Return Receipt"), NULL, NULL, G_CALLBACK(compose_toggle_return_receipt_cb) }, /* TOGGLE */
@@ -1959,6 +1962,7 @@ Compose *compose_reedit(MsgInfo *msginfo, gboolean batch)
 	int priority = PRIORITY_NORMAL;
 	MsgInfo *replyinfo = NULL, *fwdinfo = NULL;
 	gboolean autowrap = prefs_common.autowrap;
+	gboolean autoindent = prefs_common.auto_indent;
 
 	g_return_val_if_fail(msginfo != NULL, NULL);
 	g_return_val_if_fail(msginfo->folder != NULL, NULL);
@@ -2024,6 +2028,11 @@ Compose *compose_reedit(MsgInfo *msginfo, gboolean batch)
 			param = atoi(&queueheader_buf[strlen("X-Claws-Auto-Wrapping:")]);
 			autowrap = param;
 		}
+		if (!procheader_get_header_from_msginfo(msginfo, queueheader_buf, 
+					     sizeof(queueheader_buf), "X-Claws-Auto-Indent:")) {
+			param = atoi(&queueheader_buf[strlen("X-Claws-Auto-Indent:")]);
+			autoindent = param;
+		}
                 if (!procheader_get_header_from_msginfo(msginfo, queueheader_buf, 
                                             sizeof(queueheader_buf), "X-Claws-Privacy-System:")) {
                         privacy_system = g_strdup(&queueheader_buf[strlen("X-Claws-Privacy-System:")]);
@@ -2078,6 +2087,7 @@ Compose *compose_reedit(MsgInfo *msginfo, gboolean batch)
 	compose = compose_create(account, msginfo->folder, COMPOSE_REEDIT, batch);
 
 	cm_toggle_menu_set_active_full(compose->ui_manager, "Menu/Edit/AutoWrap", autowrap);
+	cm_toggle_menu_set_active_full(compose->ui_manager, "Menu/Edit/AutoIndent", autoindent);
 	compose->autowrap = autowrap;
 	compose->replyinfo = replyinfo;
 	compose->fwdinfo = fwdinfo;
@@ -4135,7 +4145,7 @@ static gboolean compose_beautify_paragraph(Compose *compose, GtkTextIter *par_it
 				modified = TRUE;
 				gtk_text_buffer_insert(buffer, &break_pos, "\n", 1);
 				compose->automatic_break = FALSE;
-				if (itemized_len && prefs_common.auto_indent) {
+				if (itemized_len && compose->autoindent) {
 					gtk_text_buffer_insert(buffer, &break_pos, itemized_chars, -1);
 					if (!item_continuation)
 						gtk_text_buffer_insert(buffer, &break_pos, "  ", 2);
@@ -4145,7 +4155,7 @@ static gboolean compose_beautify_paragraph(Compose *compose, GtkTextIter *par_it
 				modified = TRUE;
 				gtk_text_buffer_insert(buffer, &break_pos, "\n", 1);
 				compose->automatic_break = FALSE;
-				if (itemized_len && prefs_common.auto_indent) {
+				if (itemized_len && compose->autoindent) {
 					gtk_text_buffer_insert(buffer, &break_pos, itemized_chars, -1);
 					if (!item_continuation)
 						gtk_text_buffer_insert(buffer, &break_pos, "  ", 2);
@@ -4155,7 +4165,7 @@ static gboolean compose_beautify_paragraph(Compose *compose, GtkTextIter *par_it
 			/* remove trailing spaces */
 			cur = break_pos;
 			rem_item_len = itemized_len;
-			while (prefs_common.auto_indent && rem_item_len-- > 0)
+			while (compose->autoindent && rem_item_len-- > 0)
 				gtk_text_iter_backward_char(&cur);
 			gtk_text_iter_backward_char(&cur);
 
@@ -5038,7 +5048,7 @@ static gint compose_redirect_write_to_file(Compose *compose, FILE *fdest)
 		"X-Claws-End-Special-Headers:", 		"X-Claws-Account-Id:",
 		"X-Sylpheed-Privacy",	"X-Sylpheed-Sign:",	"X-Sylpheed-Encrypt",
 		"X-Sylpheed-End-Special-Headers:", 		"X-Sylpheed-Account-Id:",
-		"X-Claws-Auto-Wrapping:",
+		"X-Claws-Auto-Wrapping:", "X-Claws-Auto-Indent:",
 		NULL
 		};
 	if ((fp = g_fopen(compose->redirect_filename, "rb")) == NULL) {
@@ -5621,6 +5631,7 @@ static gint compose_queue_sub(Compose *compose, gint *msgnum, FolderItem **item,
 	}
 
 	err |= (fprintf(fp, "X-Claws-Auto-Wrapping:%d\n", compose->autowrap) < 0);
+	err |= (fprintf(fp, "X-Claws-Auto-Indent:%d\n", compose->autoindent) < 0);
 
 	/* end of headers */
 	err |= (fprintf(fp, "X-Claws-End-Special-Headers: 1\n") < 0);
@@ -6846,6 +6857,7 @@ static Compose *compose_create(PrefsAccount *account,
 	MENUITEM_ADDUI_MANAGER(compose->ui_manager, "/Menu/Edit", "WrapPara", "Edit/WrapPara", GTK_UI_MANAGER_MENUITEM)
 	MENUITEM_ADDUI_MANAGER(compose->ui_manager, "/Menu/Edit", "WrapAllLines", "Edit/WrapAllLines", GTK_UI_MANAGER_MENUITEM)
 	MENUITEM_ADDUI_MANAGER(compose->ui_manager, "/Menu/Edit", "AutoWrap", "Edit/AutoWrap", GTK_UI_MANAGER_MENUITEM)
+	MENUITEM_ADDUI_MANAGER(compose->ui_manager, "/Menu/Edit", "AutoIndent", "Edit/AutoIndent", GTK_UI_MANAGER_MENUITEM)
 
 	MENUITEM_ADDUI_MANAGER(compose->ui_manager, "/Menu/Edit", "Separator3", "Edit/---", GTK_UI_MANAGER_SEPARATOR)
 
@@ -7201,7 +7213,7 @@ static Compose *compose_create(PrefsAccount *account,
 	compose->boundary    = NULL;
 
 	compose->autowrap       = prefs_common.autowrap;
-
+	compose->autoindent	= prefs_common.auto_indent;
 	compose->use_signing    = FALSE;
 	compose->use_encryption = FALSE;
 	compose->privacy_system = NULL;
@@ -7265,6 +7277,7 @@ static Compose *compose_create(PrefsAccount *account,
 	compose_select_account(compose, account, TRUE);
 
 	cm_toggle_menu_set_active_full(compose->ui_manager, "Menu/Edit/AutoWrap", prefs_common.autowrap);
+	cm_toggle_menu_set_active_full(compose->ui_manager, "Menu/Edit/AutoIndent", prefs_common.auto_indent);
 
 	if (account->set_autocc && account->auto_cc && mode != COMPOSE_REEDIT)
 		compose_entry_append(compose, account->auto_cc, COMPOSE_CC);
@@ -8986,6 +8999,7 @@ gboolean compose_draft (gpointer data, guint action)
 	}
 
 	err |= (fprintf(fp, "X-Claws-Auto-Wrapping:%d\n", compose->autowrap) < 0);
+	err |= (fprintf(fp, "X-Claws-Auto-Indent:%d\n", compose->autoindent) < 0);
 
 	/* end of headers */
 	err |= (fprintf(fp, "X-Claws-End-Special-Headers: 1\n") < 0);
@@ -9989,6 +10003,13 @@ static void compose_toggle_autowrap_cb(GtkToggleAction *action,
 	if (compose->autowrap)
 		compose_wrap_all_full(compose, TRUE);
 	compose->autowrap = gtk_toggle_action_get_active (GTK_TOGGLE_ACTION (action));
+}
+
+static void compose_toggle_autoindent_cb(GtkToggleAction *action,
+					 gpointer	 data)
+{
+	Compose *compose = (Compose *)data;
+	compose->autoindent = gtk_toggle_action_get_active (GTK_TOGGLE_ACTION (action));
 }
 
 static void compose_toggle_sign_cb(GtkToggleAction *action, gpointer data)

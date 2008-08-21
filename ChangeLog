@@ -1,3 +1,12 @@
+2008-08-21 [colin]	3.5.0cvs67
+
+	* src/compose.c
+	* src/compose.h
+		Add a compose preference for auto-indent
+	* src/mainwindow.c
+	* src/summaryview.c
+		Make colorlabel accels a bit less hacky
+
 2008-08-21 [colin]	3.5.0cvs66
 
 	* src/compose.c

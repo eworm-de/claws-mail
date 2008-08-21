@@ -3478,3 +3478,4 @@
 ( cvs diff -u -r 1.382.2.466 -r 1.382.2.467 src/compose.c;  ) > 3.5.0cvs64.patchset
 ( cvs diff -u -r 1.382.2.467 -r 1.382.2.468 src/compose.c;  ) > 3.5.0cvs65.patchset
 ( cvs diff -u -r 1.382.2.468 -r 1.382.2.469 src/compose.c;  cvs diff -u -r 1.204.2.176 -r 1.204.2.177 src/prefs_common.c;  cvs diff -u -r 1.103.2.111 -r 1.103.2.112 src/prefs_common.h;  cvs diff -u -r 1.1.2.16 -r 1.1.2.17 src/prefs_wrapping.c;  ) > 3.5.0cvs66.patchset
+( cvs diff -u -r 1.382.2.469 -r 1.382.2.470 src/compose.c;  cvs diff -u -r 1.50.2.49 -r 1.50.2.50 src/compose.h;  cvs diff -u -r 1.274.2.268 -r 1.274.2.269 src/mainwindow.c;  cvs diff -u -r 1.395.2.382 -r 1.395.2.383 src/summaryview.c;  ) > 3.5.0cvs67.patchset

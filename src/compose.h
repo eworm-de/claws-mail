@@ -158,6 +158,7 @@ struct _Compose
 	gchar	*boundary;
 
 	gboolean autowrap;
+	gboolean autoindent;
 
 	gboolean use_to;
 	gboolean use_cc;

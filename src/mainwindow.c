@@ -1062,10 +1062,10 @@ static void mainwindow_colorlabel_menu_create(MainWindow *mainwin, gboolean refr
 	g_object_set_data(G_OBJECT(item), "mainwin", mainwin);
 	gtk_widget_show(item);
 
-	gtk_widget_add_accelerator(item, "activate", 
-				   gtk_ui_manager_get_accel_group(mainwin->ui_manager), 
-				   GDK_0, GDK_CONTROL_MASK,
-				   GTK_ACCEL_LOCKED | GTK_ACCEL_VISIBLE);
+	accel_path = g_strdup_printf("<ClawsColorLabels>/None");
+	gtk_menu_item_set_accel_path(GTK_MENU_ITEM(item), accel_path);
+	g_free(accel_path);
+	gtk_accel_map_add_entry("<ClawsColorLabels>/None", GDK_0, GDK_CONTROL_MASK);
 
 	item = gtk_menu_item_new();
 	gtk_menu_shell_append(GTK_MENU_SHELL(menu), item);
@@ -1084,12 +1084,9 @@ static void mainwindow_colorlabel_menu_create(MainWindow *mainwin, gboolean refr
 		gtk_widget_show(item);
 		accel_path = g_strdup_printf("<ClawsColorLabels>/%d", i);
 		gtk_menu_item_set_accel_path(GTK_MENU_ITEM(item), accel_path);
-		g_free(accel_path);
 		if (i < 9)
-			gtk_widget_add_accelerator(item, "activate", 
-				   gtk_ui_manager_get_accel_group(mainwin->ui_manager), 
-				   GDK_1+i, GDK_CONTROL_MASK,
-				   GTK_ACCEL_LOCKED | GTK_ACCEL_VISIBLE);
+			gtk_accel_map_add_entry(accel_path, GDK_1+i, GDK_CONTROL_MASK);
+		g_free(accel_path);
 	}
 	gtk_widget_show(menu);
 	gtk_menu_item_set_submenu(GTK_MENU_ITEM(label_menuitem), menu);
