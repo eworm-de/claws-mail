@@ -49,6 +49,7 @@ typedef struct _WrappingPage
 	GtkWidget *checkbtn_wrapquote;
 	GtkWidget *checkbtn_wrappastes;
 	GtkWidget *checkbtn_autowrap;
+	GtkWidget *checkbtn_autoindent;
 } WrappingPage;
 
 static void prefs_wrapping_create_widget(PrefsPage *_page, GtkWindow *window, 
@@ -64,6 +65,7 @@ static void prefs_wrapping_create_widget(PrefsPage *_page, GtkWindow *window,
 	GtkWidget *checkbtn_wrapquote;
 	GtkWidget *checkbtn_wrappastes;
 	GtkWidget *checkbtn_autowrap;
+	GtkWidget *checkbtn_autoindent;
 	GtkWidget *hbox1;
 
 	vbox1 = gtk_vbox_new (FALSE, VSPACING);
@@ -77,6 +79,7 @@ static void prefs_wrapping_create_widget(PrefsPage *_page, GtkWindow *window,
 	PACK_CHECK_BUTTON (vbox2, checkbtn_autowrap, _("Auto wrapping"));
   	PACK_CHECK_BUTTON (vbox2, checkbtn_wrapquote, _("Wrap quotation"));
   	PACK_CHECK_BUTTON (vbox2, checkbtn_wrappastes, _("Wrap pasted text"));
+  	PACK_CHECK_BUTTON (vbox2, checkbtn_autoindent, _("Follow indentation"));
 
 	hbox1 = gtk_hbox_new (FALSE, 8);
 	gtk_widget_show (hbox1);
@@ -104,6 +107,8 @@ static void prefs_wrapping_create_widget(PrefsPage *_page, GtkWindow *window,
 				     prefs_common.linewrap_quote);
 	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(checkbtn_wrappastes),
 				     prefs_common.linewrap_pastes);
+	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(checkbtn_autoindent),
+				     prefs_common.auto_indent);
 	gtk_spin_button_set_value(GTK_SPIN_BUTTON(spinbtn_linewrap),
 				  prefs_common.linewrap_len);
 
@@ -112,6 +117,7 @@ static void prefs_wrapping_create_widget(PrefsPage *_page, GtkWindow *window,
 	prefs_wrapping->checkbtn_wrapquote	= checkbtn_wrapquote;
 	prefs_wrapping->checkbtn_wrappastes	= checkbtn_wrappastes;
 	prefs_wrapping->checkbtn_autowrap	= checkbtn_autowrap;
+	prefs_wrapping->checkbtn_autoindent	= checkbtn_autoindent;
 
 	prefs_wrapping->page.widget = vbox1;
 }
@@ -128,6 +134,8 @@ static void prefs_wrapping_save(PrefsPage *_page)
 		gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(page->checkbtn_wrappastes));
 	prefs_common.autowrap =
 		gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(page->checkbtn_autowrap));
+	prefs_common.auto_indent =
+		gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(page->checkbtn_autoindent));
 }
 
 static void prefs_wrapping_destroy_widget(PrefsPage *_page)

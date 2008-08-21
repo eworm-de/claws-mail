@@ -4135,7 +4135,7 @@ static gboolean compose_beautify_paragraph(Compose *compose, GtkTextIter *par_it
 				modified = TRUE;
 				gtk_text_buffer_insert(buffer, &break_pos, "\n", 1);
 				compose->automatic_break = FALSE;
-				if (itemized_len) {
+				if (itemized_len && prefs_common.auto_indent) {
 					gtk_text_buffer_insert(buffer, &break_pos, itemized_chars, -1);
 					if (!item_continuation)
 						gtk_text_buffer_insert(buffer, &break_pos, "  ", 2);
@@ -4145,7 +4145,7 @@ static gboolean compose_beautify_paragraph(Compose *compose, GtkTextIter *par_it
 				modified = TRUE;
 				gtk_text_buffer_insert(buffer, &break_pos, "\n", 1);
 				compose->automatic_break = FALSE;
-				if (itemized_len) {
+				if (itemized_len && prefs_common.auto_indent) {
 					gtk_text_buffer_insert(buffer, &break_pos, itemized_chars, -1);
 					if (!item_continuation)
 						gtk_text_buffer_insert(buffer, &break_pos, "  ", 2);
@@ -4155,7 +4155,7 @@ static gboolean compose_beautify_paragraph(Compose *compose, GtkTextIter *par_it
 			/* remove trailing spaces */
 			cur = break_pos;
 			rem_item_len = itemized_len;
-			while (rem_item_len-- > 0)
+			while (prefs_common.auto_indent && rem_item_len-- > 0)
 				gtk_text_iter_backward_char(&cur);
 			gtk_text_iter_backward_char(&cur);
 
@@ -10346,9 +10346,15 @@ static void text_inserted(GtkTextBuffer *buffer, GtkTextIter *iter,
 		gtk_text_buffer_delete_mark(buffer, mark);
 	} else {
 		if (strcmp(text, "\n") || compose->automatic_break
-		|| gtk_text_iter_starts_line(iter))
+		|| gtk_text_iter_starts_line(iter)) {
+			GtkTextIter before_ins;
 			gtk_text_buffer_insert(buffer, iter, text, len);
-		else {
+			if (!strstr(text, "\n") && gtk_text_iter_has_tag(iter, compose->no_join_tag)) {
+				before_ins = *iter; 
+				gtk_text_iter_backward_chars(&before_ins, len);
+				gtk_text_buffer_remove_tag_by_name(buffer, "no_join", &before_ins, iter);
+			}
+		} else {
 			/* check if the preceding is just whitespace or quote */
 			GtkTextIter start_line;
 			gchar *tmp = NULL, *quote = NULL;
@@ -10357,6 +10363,7 @@ static void text_inserted(GtkTextBuffer *buffer, GtkTextIter *iter,
 			gtk_text_iter_set_line_offset(&start_line, 0); 
 			tmp = gtk_text_buffer_get_text(buffer, &start_line, iter, FALSE);
 			g_strstrip(tmp);
+
 			if (*tmp == '\0') {
 				is_normal = 1;
 			} else {

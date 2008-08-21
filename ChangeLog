@@ -1,3 +1,13 @@
+2008-08-21 [colin]	3.5.0cvs66
+
+	* src/compose.c
+	* src/prefs_common.c
+	* src/prefs_common.h
+	* src/prefs_wrapping.c
+		Add a preference for autoindent; fix no_join tag
+		being applied to whole lines instead of just \n when
+		creating a line 
+
 2008-08-21 [colin]	3.5.0cvs65
 
 	* src/compose.c

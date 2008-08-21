@@ -239,6 +239,8 @@ static PrefParam param[] = {
 	 NULL, NULL, NULL},
 	{"linewrap_auto", "TRUE", &prefs_common.autowrap, P_BOOL,
 	 NULL, NULL, NULL},
+	{"auto_indent", "TRUE", &prefs_common.auto_indent, P_BOOL,
+	 NULL, NULL, NULL},
         {"autosave", "TRUE", &prefs_common.autosave,
 	 P_BOOL, NULL, NULL, NULL},
         {"autosave_length", "50", &prefs_common.autosave_length, P_INT,
