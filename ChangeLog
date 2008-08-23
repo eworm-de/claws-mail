@@ -1,3 +1,11 @@
+2008-08-23 [holger]	3.5.0cvs69
+
+	* src/printing.c
+		Fix bug 1699 'Separator line mis-placed when
+		printing some e-mails'. The number of header lines
+		was not correctly calculated when Pango inserts
+		linebreaks
+
 2008-08-23 [colin]	3.5.0cvs68
 
 	* src/mainwindow.c

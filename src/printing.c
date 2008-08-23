@@ -775,7 +775,9 @@ static void printing_textview_cb_begin_print(GtkPrintOperation *op, GtkPrintCont
   int start, ii;
   PangoLayoutIter *iter;
   double start_pos;
+  gint header_end_pos;
   gint num_header_lines;
+  gint dummy;
   gboolean header_done;
   const gchar *text;
   double line_height =0.;
@@ -813,21 +815,24 @@ static void printing_textview_cb_begin_print(GtkPrintOperation *op, GtkPrintCont
   start_pos = 0.;
   iter = pango_layout_get_iter(print_data->layout);
 
-  /* count number of header lines */
-  num_header_lines = 0;
+  /* find the last character of the header */
+  header_end_pos = 0;
   header_done = FALSE;
   text = pango_layout_get_text(print_data->layout);
   if(text && *text && *text != '\n') {
     do {
-      if(text[0] == '\n' && (text[1] != '\0')) {
-	num_header_lines++;
-	if(text[1] == '\n') {
-	  header_done = TRUE;
-	}
-      }
+      if(text[0] == '\n' && (text[1] != '\0') && (text[1] == '\n'))
+	header_done = TRUE;
+      else
+	header_end_pos++;
       text++;
     } while(*text && !header_done);
   }
+  /* find line number for header end */
+  pango_layout_index_to_line_x(print_data->layout, header_end_pos, 1,
+			       &num_header_lines, &dummy);
+  /* line count is zero-based */
+  num_header_lines++;
 
   do {
     PangoRectangle logical_rect;
