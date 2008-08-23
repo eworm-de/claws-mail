@@ -3762,14 +3762,15 @@ static gboolean ac_label_button_pressed(GtkWidget *widget, GdkEventButton *event
 				    gpointer data)
 {
 	MainWindow *mainwin = (MainWindow *)data;
-
+	GtkWidget *menu = NULL;
+	
 	if (!event) return FALSE;
 
 	gtk_button_set_relief(GTK_BUTTON(widget), GTK_RELIEF_NORMAL);
-	g_object_set_data(G_OBJECT(mainwin->ac_menu), "menu_button",
-			  widget);
+	
+	menu = gtk_menu_item_get_submenu(GTK_MENU_ITEM(mainwin->ac_menu));
 
-	gtk_menu_popup(GTK_MENU(mainwin->ac_menu), NULL, NULL,
+	gtk_menu_popup(GTK_MENU(menu), NULL, NULL,
 		       menu_button_position, widget,
 		       event->button, event->time);
 
