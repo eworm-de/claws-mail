@@ -185,8 +185,8 @@ const gchar *claws_ssl_get_cert_dir(void)
 		NULL};
 	int i;
 
-    	if (g_getenv("SSL_CERT_FILE"))
-		return g_getenv("SSL_CERT_FILE");
+    	if (g_getenv("SSL_CERT_DIR"))
+		return g_getenv("SSL_CERT_DIR");
 #ifndef G_OS_WIN32
 	for (i = 0; cert_dirs[i]; i++) {
 		if (is_dir_exist(cert_dirs[i]))

@@ -1,3 +1,8 @@
+2008-08-24 [colin]	3.5.0cvs70
+
+	* src/common/ssl.c
+		Fix typo on SSL_CERT_DIR
+
 2008-08-23 [holger]	3.5.0cvs69
 
 	* src/printing.c
