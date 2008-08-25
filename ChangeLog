@@ -1,3 +1,9 @@
+2008-08-25 [iwkse]	3.5.0cvs72
+
+	* src/image_viewer.c
+		Add animated gif support to the
+		message preview.
+
 2008-08-25 [colin]	3.5.0cvs71
 
 	* src/gtk/gtkcmctree.c

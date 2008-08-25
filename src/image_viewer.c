@@ -56,6 +56,7 @@ struct _ImageViewer
 	GtkWidget *error_lbl;
 	GtkWidget *error_msg;
 	GtkWidget *content_type;
+	GtkWidget *load_button;
 };
 
 static GtkWidget *image_viewer_get_widget(MimeViewer *_mimeviewer)
@@ -97,6 +98,7 @@ static void image_viewer_load_file(ImageViewer *imageviewer, const gchar *imgfil
 		gtk_label_set_text(GTK_LABEL(imageviewer->error_lbl), _("Error:"));
 		gtk_label_set_text(GTK_LABEL(imageviewer->error_msg), error->message);
 		gtk_notebook_set_current_page(GTK_NOTEBOOK(imageviewer->notebook), 0);
+		gtk_widget_hide(imageviewer->load_button);
 		g_error_free(error);
 	}
 	if (!pixbuf) {
@@ -104,9 +106,16 @@ static void image_viewer_load_file(ImageViewer *imageviewer, const gchar *imgfil
 		return;
 	}
 
-	if (!imageviewer->image) {
+	if (!imageviewer->image && !imageviewer->resize_img) {
 		imageviewer->image = gtk_image_new();
 
+		gtk_scrolled_window_add_with_viewport
+			(GTK_SCROLLED_WINDOW(imageviewer->scrolledwin),
+			 imageviewer->image);
+		gtk_image_set_from_pixbuf(GTK_IMAGE(imageviewer->image), pixbuf);
+	}
+	else {
+		imageviewer->image = gtk_image_new_from_file(imgfile);
 		gtk_scrolled_window_add_with_viewport
 			(GTK_SCROLLED_WINDOW(imageviewer->scrolledwin),
 			 imageviewer->image);
@@ -115,7 +124,6 @@ static void image_viewer_load_file(ImageViewer *imageviewer, const gchar *imgfil
 	g_signal_handlers_block_by_func(G_OBJECT(imageviewer->scrolledwin), 
 			 G_CALLBACK(scrolledwin_resize_cb), imageviewer);
 
-	gtk_image_set_from_pixbuf(GTK_IMAGE(imageviewer->image), pixbuf);
 
 	gtk_widget_show(imageviewer->image);
 	GTK_EVENTS_FLUSH();
@@ -390,6 +398,7 @@ static MimeViewer *image_viewer_create(void)
 	imageviewer->content_type = content_type;
 	imageviewer->error_msg    = error_msg;
 	imageviewer->error_lbl    = error_lbl;
+	imageviewer->load_button = load_button;
 
 	g_object_ref(notebook);
 

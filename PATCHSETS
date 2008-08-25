@@ -3483,3 +3483,4 @@
 ( cvs diff -u -r 1.1.2.14 -r 1.1.2.15 src/printing.c;  ) > 3.5.0cvs69.patchset
 ( cvs diff -u -r 1.9.2.31 -r 1.9.2.32 src/common/ssl.c;  ) > 3.5.0cvs70.patchset
 ( cvs diff -u -r 1.1.2.3 -r 1.1.2.4 src/gtk/gtkcmctree.c;  ) > 3.5.0cvs71.patchset
+( cvs diff -u -r 1.1.2.23 -r 1.1.2.24 src/image_viewer.c;  ) > 3.5.0cvs72.patchset
