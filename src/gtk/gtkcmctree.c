@@ -681,12 +681,30 @@ gtk_cmctree_set_arg (GObject *object,
   switch (arg_id)
     {
     case ARG_N_COLUMNS: /* construct-only arg, only set at construction time */
+#if !GLIB_CHECK_VERSION(2,10,0)
+      g_return_if_fail (clist->row_mem_chunk == NULL);
+#endif
       clist->columns = MAX (1, g_value_get_uint (value));
+#if !GLIB_CHECK_VERSION(2,10,0)
+      clist->row_mem_chunk = g_mem_chunk_new ("ctree row mem chunk",
+					      sizeof (GtkCMCTreeRow),
+					      sizeof (GtkCMCTreeRow)
+					      * CLIST_OPTIMUM_SIZE,
+					      G_ALLOC_AND_FREE);
+      clist->cell_mem_chunk = g_mem_chunk_new ("ctree cell mem chunk",
+					       sizeof (GtkCMCell) * clist->columns,
+					       sizeof (GtkCMCell) * clist->columns
+					       * CLIST_OPTIMUM_SIZE,
+					       G_ALLOC_AND_FREE);
+#endif
       ctree->tree_column = CLAMP (ctree->tree_column, 0, clist->columns);
       break;
     case ARG_TREE_COLUMN: /* construct-only arg, only set at construction time */
       ctree->tree_column = g_value_get_uint (value);
-      ctree->tree_column = CLAMP (ctree->tree_column, 0, clist->columns);
+#if !GLIB_CHECK_VERSION(2,10,0)
+      if (clist->row_mem_chunk)
+#endif
+        ctree->tree_column = CLAMP (ctree->tree_column, 0, clist->columns);
       break;
     case ARG_INDENT:
       gtk_cmctree_set_indent (ctree, g_value_get_uint (value));

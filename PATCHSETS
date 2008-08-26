@@ -3485,3 +3485,4 @@
 ( cvs diff -u -r 1.1.2.3 -r 1.1.2.4 src/gtk/gtkcmctree.c;  ) > 3.5.0cvs71.patchset
 ( cvs diff -u -r 1.1.2.23 -r 1.1.2.24 src/image_viewer.c;  ) > 3.5.0cvs72.patchset
 ( cvs diff -u -r 1.36.2.143 -r 1.36.2.144 src/common/utils.c;  ) > 3.5.0cvs73.patchset
+( cvs diff -u -r 1.1.2.4 -r 1.1.2.5 src/gtk/gtkcmctree.c;  ) > 3.5.0cvs74.patchset
