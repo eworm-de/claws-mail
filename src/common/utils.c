@@ -3635,6 +3635,7 @@ int subject_get_prefix_length(const gchar *subject)
 		"Antwort\\:",			/* "Antwort:" (German Lotus Notes) */
 		"Res\\:",			/* "Res:" (Brazilian Outlook) */
 		"Fw\\:",			/* "Fw:" Forward */
+		"Fwd\\:",			/* "Fwd:" Forward */
 		"Enc\\:",			/* "Enc:" Forward (Brazilian Outlook) */
 		"Odp\\:",			/* "Odp:" Re (Polish Outlook) */
 		"Rif\\:",			/* "Rif:" (Italian Outlook) */

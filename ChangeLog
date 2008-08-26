@@ -1,3 +1,8 @@
+2008-08-26 [wwp]	3.5.0cvs73
+
+	* src/common/utils.c
+		Added 'Fwd' to the list of known common subject prefixes.
+
 2008-08-25 [iwkse]	3.5.0cvs72
 
 	* src/image_viewer.c
