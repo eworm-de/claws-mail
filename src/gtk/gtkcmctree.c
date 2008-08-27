@@ -62,7 +62,7 @@ gtk_cmctree_pos_get_type (void)
       { GTK_CMCTREE_POS_AFTER, "GTK_CMCTREE_POS_AFTER", "after" },
       { 0, NULL, NULL }
     };
-#if GTK_CHECK_VERSION(2,10,0)
+#if GLIB_CHECK_VERSION(2,10,0)
     etype = g_enum_register_static (g_intern_static_string ("GtkCMCTreePos"), values);
 #else
     etype = g_enum_register_static ("GtkCMCTreePos", values);
@@ -82,7 +82,7 @@ gtk_cmctree_line_style_get_type (void)
       { GTK_CMCTREE_LINES_TABBED, "GTK_CMCTREE_LINES_TABBED", "tabbed" },
       { 0, NULL, NULL }
     };
-#if GTK_CHECK_VERSION(2,10,0)
+#if GLIB_CHECK_VERSION(2,10,0)
     etype = g_enum_register_static (g_intern_static_string ("GtkCMCTreeLineStyle"), values);
 #else
     etype = g_enum_register_static ("GtkCMCTreeLineStyle", values);
@@ -102,7 +102,7 @@ gtk_cmctree_expander_style_get_type (void)
       { GTK_CMCTREE_EXPANDER_CIRCULAR, "GTK_CMCTREE_EXPANDER_CIRCULAR", "circular" },
       { 0, NULL, NULL }
     };
-#if GTK_CHECK_VERSION(2,10,0)
+#if GLIB_CHECK_VERSION(2,10,0)
     etype = g_enum_register_static (g_intern_static_string ("GtkCMCTreeExpanderStyle"), values);
 #else
     etype = g_enum_register_static ("GtkCMCTreeExpanderStyle", values);
@@ -124,7 +124,7 @@ gtk_cmctree_expansion_type_get_type (void)
       { GTK_CMCTREE_EXPANSION_TOGGLE_RECURSIVE, "GTK_CMCTREE_EXPANSION_TOGGLE_RECURSIVE", "toggle-recursive" },
       { 0, NULL, NULL }
     };
-#if GTK_CHECK_VERSION(2,10,0)
+#if GLIB_CHECK_VERSION(2,10,0)
     etype = g_enum_register_static (g_intern_static_string ("GtkCMCTreeExpansionType"), values);
 #else
     etype = g_enum_register_static ("GtkCMCTreeExpansionType", values);

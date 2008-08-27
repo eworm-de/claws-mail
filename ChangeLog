@@ -1,3 +1,8 @@
+2008-08-27 [colin]	3.5.0cvs75
+
+	* src/gtk/gtkcmctree.c
+		Fix a few ifdefs
+
 2008-08-26 [colin]	3.5.0cvs74
 
 	* src/gtk/gtkcmctree.c
