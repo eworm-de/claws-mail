@@ -1,3 +1,8 @@
+2008-08-27 [colin]	3.5.0cvs76
+
+	* src/main.c
+		Add a bit of info
+
 2008-08-27 [colin]	3.5.0cvs75
 
 	* src/gtk/gtkcmctree.c
