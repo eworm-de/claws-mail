@@ -93,6 +93,7 @@ struct _PrefsAccount
 	gboolean use_apop_auth;
 	gboolean rmmail;
 	gint msg_leave_time;
+	gint msg_leave_hour;
 	gboolean recv_at_getall;
 	gboolean sd_rmmail_on_download;
 	gboolean enable_size_limit;

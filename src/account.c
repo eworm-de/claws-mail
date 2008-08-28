@@ -924,6 +924,7 @@ static void account_clone(GtkWidget *widget, gpointer data)
 	ACP_FASSIGN(use_apop_auth);
 	ACP_FASSIGN(rmmail);
 	ACP_FASSIGN(msg_leave_time);
+	ACP_FASSIGN(msg_leave_hour);
 	ACP_FASSIGN(recv_at_getall);
 	ACP_FASSIGN(sd_rmmail_on_download);
 	ACP_FASSIGN(enable_size_limit);

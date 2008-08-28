@@ -126,6 +126,7 @@ typedef struct ReceivePage
 	GtkWidget *use_apop_checkbtn;
 	GtkWidget *rmmail_checkbtn;
 	GtkWidget *leave_time_spinbtn;
+	GtkWidget *leave_hour_spinbtn;
 	GtkWidget *size_limit_checkbtn;
 	GtkWidget *size_limit_spinbtn;
 	GtkWidget *inbox_label;
@@ -440,6 +441,9 @@ static PrefParam receive_param[] = {
 	 &receive_page.leave_time_spinbtn,
 	 prefs_set_data_from_spinbtn, prefs_set_spinbtn},
 #endif
+	{"message_leave_hour", "0", &tmp_ac_prefs.msg_leave_hour, P_INT,
+	 &receive_page.leave_hour_spinbtn,
+	 prefs_set_data_from_spinbtn, prefs_set_spinbtn},
 
 	{"enable_size_limit", "FALSE", &tmp_ac_prefs.enable_size_limit, P_BOOL,
 	 &receive_page.size_limit_checkbtn,
@@ -1333,6 +1337,8 @@ static void receive_create_widget_func(PrefsPage * _page,
 	GtkWidget *hbox_spc;
 	GtkWidget *leave_time_label;
 	GtkWidget *leave_time_spinbtn;
+	GtkWidget *leave_hour_label;
+	GtkWidget *leave_hour_spinbtn;
 	GtkWidget *hbox1;
 	GtkWidget *size_limit_checkbtn;
 	GtkWidget *size_limit_spinbtn;
@@ -1420,12 +1426,22 @@ static void receive_create_widget_func(PrefsPage * _page,
 	leave_time_spinbtn = gtk_spin_button_new_with_range(0, 365, 1);
 	gtk_widget_show (leave_time_spinbtn);
 	CLAWS_SET_TIP(leave_time_spinbtn,
-			     _("0 days: remove immediately"));
+			     _("0 days and 0 hours : remove immediately"));
 	gtk_box_pack_start (GTK_BOX (hbox1), leave_time_spinbtn, FALSE, FALSE, 0);
 
 	leave_time_label = gtk_label_new (_("days"));
 	gtk_widget_show (leave_time_label);
 	gtk_box_pack_start (GTK_BOX (hbox1), leave_time_label, FALSE, FALSE, 0);
+
+	leave_hour_spinbtn = gtk_spin_button_new_with_range(0, 23, 1);
+	gtk_widget_show (leave_hour_spinbtn);
+	CLAWS_SET_TIP(leave_hour_spinbtn,
+			     _("0 days and 0 hours : remove immediately"));
+	gtk_box_pack_start (GTK_BOX (hbox1), leave_hour_spinbtn, FALSE, FALSE, 0);
+
+	leave_hour_label = gtk_label_new (_("hours"));
+	gtk_widget_show (leave_hour_label);
+	gtk_box_pack_start (GTK_BOX (hbox1), leave_hour_label, FALSE, FALSE, 0);
 
 	SET_TOGGLE_SENSITIVITY (rmmail_checkbtn, hbox1);
 
@@ -1574,6 +1590,7 @@ static void receive_create_widget_func(PrefsPage * _page,
 	page->use_apop_checkbtn          = use_apop_checkbtn;
 	page->rmmail_checkbtn            = rmmail_checkbtn;
 	page->leave_time_spinbtn         = leave_time_spinbtn;
+	page->leave_hour_spinbtn         = leave_hour_spinbtn;
 	page->size_limit_checkbtn        = size_limit_checkbtn;
 	page->size_limit_spinbtn         = size_limit_spinbtn;
 	page->filter_on_recv_checkbtn    = filter_on_recv_checkbtn;

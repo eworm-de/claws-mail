@@ -822,7 +822,8 @@ static Pop3State pop3_lookup_next(Pop3Session *session)
 		    msg->recv_time != RECV_TIME_KEEP &&
 		    msg->partial_recv == POP3_TOTALLY_RECEIVED &&
 		    session->current_time - msg->recv_time >=
-		    ac->msg_leave_time * 24 * 60 * 60) {
+                    ((ac->msg_leave_time * 24 * 60 * 60) +
+                     (ac->msg_leave_hour * 60 * 60))) {
 			log_message(LOG_PROTOCOL, 
 					_("POP3: Deleting expired message %d [%s]\n"),
 					session->cur_msg, msg->uidl?msg->uidl:" ");
@@ -1069,6 +1070,7 @@ static gint pop3_session_recv_data_finished(Session *session, guchar *data,
 
 		if (pop3_session->ac_prefs->rmmail &&
 		    pop3_session->ac_prefs->msg_leave_time == 0 &&
+		    pop3_session->ac_prefs->msg_leave_hour == 0 &&
 		    pop3_session->msg[pop3_session->cur_msg].recv_time
 		    != RECV_TIME_KEEP)
 			pop3_delete_send(pop3_session);
