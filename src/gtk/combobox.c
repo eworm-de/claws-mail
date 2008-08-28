@@ -118,7 +118,7 @@ void combobox_select_by_text(GtkComboBox *combobox, const gchar *data)
 	g_return_if_fail(combobox != NULL);
 	class = GTK_COMBO_BOX_GET_CLASS (combobox);
 
-	/* we can do that only with gtk_combo_box_next_text() combo boxes */
+	/* we can do that only with gtk_combo_box_new_text() combo boxes */
 	g_return_if_fail(class->get_active_text != NULL);
 
 	model = gtk_combo_box_get_model(combobox);
