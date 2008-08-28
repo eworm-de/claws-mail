@@ -113,6 +113,9 @@ static gboolean account_key_pressed	(GtkWidget	*widget,
 					 GdkEventKey	*event,
 					 gpointer	 data);
 #endif
+static gboolean account_search_func_cb (GtkTreeModel *model, gint column, 
+						const gchar *key, GtkTreeIter *iter, 
+						gpointer search_data);
 static void account_list_view_add	(PrefsAccount	*ac_prefs);
 static void account_list_view_set	(void);
 
@@ -1233,6 +1236,24 @@ static gboolean account_key_pressed(GtkWidget *widget, GdkEventKey *event,
 	return FALSE;
 }
 #endif
+
+static gboolean account_search_func_cb (GtkTreeModel *model, gint column, const gchar *key, 
+						GtkTreeIter *iter, gpointer search_data) 
+{
+	gboolean retval;
+	PrefsAccount *ac;
+
+	gtk_tree_model_get (model, iter, ACCOUNT_DATA, &ac, -1);
+
+	if (!ac->name || !key) return FALSE;
+
+	retval = (strncmp (key, ac->account_name, strlen(key)) != 0);
+
+	debug_print("selecting row\n");
+	account_list_view_select_account(edit_account.list_view, ac->account_id);
+
+	return retval;
+}
 static void account_list_view_add(PrefsAccount *ac_prefs)
 {
 	GtkTreeView *list_view = GTK_TREE_VIEW(edit_account.list_view);
@@ -1539,6 +1560,8 @@ static void account_create_list_view_columns(GtkWidget *list_view)
 		 "text", ACCOUNT_SERVER,
 		 "weight", ACCOUNT_IS_DEFAULT,
 		 NULL);
+	gtk_tree_view_set_search_column(GTK_TREE_VIEW(list_view), ACCOUNT_NAME);
+	gtk_tree_view_set_search_equal_func(GTK_TREE_VIEW(list_view), account_search_func_cb , NULL, NULL);
 	gtk_tree_view_append_column(GTK_TREE_VIEW(list_view), column);		 
 }
 

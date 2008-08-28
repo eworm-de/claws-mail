@@ -105,6 +105,9 @@ static gint prefs_actions_deleted	(GtkWidget	*widget,
 static gboolean prefs_actions_key_pressed(GtkWidget	*widget,
 					  GdkEventKey	*event,
 					  gpointer	 data);
+static gboolean prefs_actions_search_func_cb (GtkTreeModel *model, gint column, 
+						const gchar *key, GtkTreeIter *iter, 
+						gpointer search_data);
 static void prefs_actions_cancel	(GtkWidget	*w,
 					 gpointer	 data);
 static void prefs_actions_ok		(GtkWidget	*w,
@@ -869,6 +872,28 @@ static gboolean prefs_actions_key_pressed(GtkWidget *widget, GdkEventKey *event,
 	return FALSE;
 }
 
+static gboolean prefs_actions_search_func_cb (GtkTreeModel *model, gint column, const gchar *key, 
+						GtkTreeIter *iter, gpointer search_data) 
+{
+	gchar *store_string;
+	gboolean retval;
+	GtkTreePath *path;
+
+	gtk_tree_model_get (model, iter, column, &store_string, -1);
+
+	if (!store_string || !key) return FALSE;
+
+
+	retval = (strncmp (key, store_string, strlen(key)) != 0);
+
+	g_free(store_string);
+	debug_print("selecting row\n");
+	path = gtk_tree_model_get_path(model, iter);
+	prefs_actions_select_row(GTK_TREE_VIEW(actions.actions_list_view), path);
+	gtk_tree_path_free(path);
+
+	return retval;
+}
 static void prefs_actions_cancel(GtkWidget *w, gpointer data)
 {
 	GtkListStore *store;
@@ -1176,6 +1201,7 @@ static void prefs_actions_create_list_view_columns(GtkWidget *list_view)
 		 "text", PREFS_ACTIONS_STRING,
 		 NULL);
 	gtk_tree_view_append_column(GTK_TREE_VIEW(list_view), column);		
+	gtk_tree_view_set_search_equal_func(GTK_TREE_VIEW(list_view), prefs_actions_search_func_cb , NULL, NULL);
 }
 
 #define ENTRY_SET_TEXT(entry, str) \

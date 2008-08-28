@@ -1,3 +1,15 @@
+2008-08-28 [iwkse]	3.5.0cvs79
+
+	* src/account.c
+	* src/prefs_actions.c
+	* src/prefs_filtering.c
+	* src/prefs_template.c
+			Add search feature to the account, 
+			template and action dialog.
+			It's turned on selecting one row
+			of the list and typing some random
+			letter. Thanks to wwp, colinl
+
 2008-08-28 [colin]	3.5.0cvs78
 
 	* src/Makefile.am

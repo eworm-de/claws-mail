@@ -970,17 +970,15 @@ static gboolean prefs_filtering_search_func_cb (GtkTreeModel *model, gint column
 						GtkTreeIter *iter, gpointer search_data) 
 {
 	gchar *store_string;
-	gint key_len;
 	gboolean retval;
 	GtkTreePath *path;
 
 	gtk_tree_model_get (model, iter, column, &store_string, -1);
 
-	if (!store_string) return FALSE;
+	if (!store_string || !key) return FALSE;
 
-	key_len = strlen (key);
 
-	retval = (strncmp (key, store_string, key_len) != 0);
+	retval = (strncmp (key, store_string, strlen(key)) != 0);
 
 	g_free(store_string);
 	debug_print("selecting row\n");
@@ -1942,7 +1940,7 @@ static void prefs_filtering_create_list_view_columns(GtkWidget *list_view)
 		 "text", PREFS_FILTERING_RULE,
 		 NULL);
 
-	gtk_tree_view_set_search_column(GTK_TREE_VIEW(list_view), 1);
+	gtk_tree_view_set_search_column(GTK_TREE_VIEW(list_view), PREFS_FILTERING_NAME);
 	gtk_tree_view_set_search_equal_func(GTK_TREE_VIEW(list_view), prefs_filtering_search_func_cb , NULL, NULL);
 	
 	gtk_tree_view_append_column(GTK_TREE_VIEW(list_view), column);		
