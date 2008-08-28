@@ -1,3 +1,9 @@
+2008-08-28 [iwkse]	3.5.0cvs77
+
+	* src/prefs_filtering.c
+		Making the search more useful,
+		jumping directly to the relative rule.
+
 2008-08-27 [colin]	3.5.0cvs76
 
 	* src/main.c

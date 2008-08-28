@@ -972,6 +972,7 @@ static gboolean prefs_filtering_search_func_cb (GtkTreeModel *model, gint column
 	gchar *store_string;
 	gint key_len;
 	gboolean retval;
+	GtkTreePath *path;
 
 	gtk_tree_model_get (model, iter, column, &store_string, -1);
 
@@ -982,6 +983,10 @@ static gboolean prefs_filtering_search_func_cb (GtkTreeModel *model, gint column
 	retval = (strncmp (key, store_string, key_len) != 0);
 
 	g_free(store_string);
+	debug_print("selecting row\n");
+	path = gtk_tree_model_get_path(model, iter);
+	prefs_filtering_select_row(GTK_TREE_VIEW(filtering.cond_list_view), path);
+	gtk_tree_path_free(path);
 
 	return retval;
 }
