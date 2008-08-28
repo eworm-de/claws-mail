@@ -992,6 +992,7 @@ static void account_clone(GtkWidget *widget, gpointer data)
         ACP_FASSIGN(default_encrypt);
 	ACP_FASSIGN(default_encrypt_reply);
         ACP_FASSIGN(default_sign);
+	ACP_FASSIGN(default_sign_reply);
 	ACP_FASSIGN(save_encrypted_as_clear_text);
 	ACP_FASSIGN(encrypt_to_self);
 	

@@ -841,6 +841,8 @@ FILE *procmime_get_first_encrypted_text_content(MsgInfo *msginfo)
 	partinfo = mimeinfo;
 	while (partinfo && partinfo->type != MIMETYPE_TEXT) {
 		partinfo = procmime_mimeinfo_next(partinfo);
+		if (privacy_mimeinfo_is_signed(partinfo))
+			procmsg_msginfo_set_flags(msginfo, 0, MSG_SIGNED);
 	}
 
 	if (partinfo)

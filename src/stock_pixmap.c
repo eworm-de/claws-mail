@@ -50,6 +50,7 @@
 #include "pixmaps/interface.xpm"
 #include "pixmaps/jpilot.xpm"
 #include "pixmaps/key.xpm"
+#include "pixmaps/key_gpg_signed.xpm"
 #include "pixmaps/ldap.xpm"
 #include "pixmaps/linewrap.xpm"
 #include "pixmaps/linewrapcurrent.xpm"
@@ -275,6 +276,7 @@ static StockPixmapData pixmaps[] =
 	{interface_xpm				, NULL, NULL, "interface", NULL},
 	{jpilot_xpm				, NULL, NULL, "jpilot", NULL},
 	{key_xpm				, NULL, NULL, "key", NULL},
+	{key_gpg_signed_xpm			, NULL, NULL, "key_gpg_signed_xpm", NULL},
 	{ldap_xpm				, NULL, NULL, "ldap", NULL},
 	{linewrapcurrent_xpm			, NULL, NULL, "linewrapcurrent", NULL},
 	{linewrap_xpm				, NULL, NULL, "linewrap", NULL},

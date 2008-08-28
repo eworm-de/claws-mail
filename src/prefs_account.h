@@ -152,6 +152,7 @@ struct _PrefsAccount
 	gboolean  default_encrypt;
 	gboolean  default_encrypt_reply;
 	gboolean  default_sign;
+	gboolean  default_sign_reply;
 	gboolean  save_encrypted_as_clear_text;
 	gboolean  encrypt_to_self;
 

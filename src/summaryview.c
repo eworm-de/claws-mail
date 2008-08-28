@@ -122,6 +122,8 @@ static GdkPixmap *keyxpm;
 static GdkBitmap *keyxpmmask;
 static GdkPixmap *clipkeyxpm;
 static GdkBitmap *clipkeyxpmmask;
+static GdkPixmap *keysignxpm;
+static GdkBitmap *keysignxpmmask;
 static GdkPixmap *gpgsignedxpm;
 static GdkBitmap *gpgsignedxpmmask;
 static GdkPixmap *clipgpgsignedxpm;
@@ -1101,6 +1103,8 @@ void summary_init(SummaryView *summaryview)
 			 &watchthreadxpm, &watchthreadxpmmask);
 	stock_pixmap_gdk(summaryview->ctree, STOCK_PIXMAP_CLIP_KEY,
 			 &clipkeyxpm, &clipkeyxpmmask);
+	stock_pixmap_gdk(summaryview->ctree, STOCK_PIXMAP_KEY_SIGN,
+			 &keysignxpm, &keysignxpmmask);
 	stock_pixmap_gdk(summaryview->ctree, STOCK_PIXMAP_KEY,
 			 &keyxpm, &keyxpmmask);
 	stock_pixmap_gdk(summaryview->ctree, STOCK_PIXMAP_GPG_SIGNED,
@@ -3870,8 +3874,13 @@ static void summary_set_row_marks(SummaryView *summaryview, GtkCMCTreeNode *row)
 		gtk_cmctree_node_set_pixmap(ctree, row, col_pos[S_COL_MIME],
 					  clipgpgsignedxpm, clipgpgsignedxpmmask);
 	} else if (MSG_IS_SIGNED(flags)) {
-		gtk_cmctree_node_set_pixmap(ctree, row, col_pos[S_COL_MIME],
-					  gpgsignedxpm, gpgsignedxpmmask);
+		if (MSG_IS_ENCRYPTED(flags)) {
+			gtk_cmctree_node_set_pixmap(ctree, row, col_pos[S_COL_MIME],
+					  keysignxpm, keysignxpmmask);
+		} else {
+			gtk_cmctree_node_set_pixmap(ctree, row, col_pos[S_COL_MIME],
+						  gpgsignedxpm, gpgsignedxpmmask);
+		}
 	} else if (MSG_IS_WITH_ATTACHMENT(flags) && MSG_IS_ENCRYPTED(flags)) {
 		gtk_cmctree_node_set_pixmap(ctree, row, col_pos[S_COL_MIME],
 					  clipkeyxpm, clipkeyxpmmask);
@@ -7513,6 +7522,7 @@ void summary_reflect_prefs_pixmap_theme(SummaryView *summaryview)
 	stock_pixmap_gdk(ctree, STOCK_PIXMAP_WATCHTHREAD, &watchthreadxpm, &watchthreadxpmmask);
 	stock_pixmap_gdk(ctree, STOCK_PIXMAP_CLIP_KEY, &clipkeyxpm, &clipkeyxpmmask);
 	stock_pixmap_gdk(ctree, STOCK_PIXMAP_KEY, &keyxpm, &keyxpmmask);
+	stock_pixmap_gdk(ctree, STOCK_PIXMAP_KEY_SIGN, &keysignxpm, &keysignxpmmask);
 	stock_pixmap_gdk(ctree, STOCK_PIXMAP_GPG_SIGNED, &gpgsignedxpm, &gpgsignedxpmmask);
 	stock_pixmap_gdk(ctree, STOCK_PIXMAP_CLIP_GPG_SIGNED, &clipgpgsignedxpm, &clipgpgsignedxpmmask);
 	stock_pixmap_gdk(ctree, STOCK_PIXMAP_SPAM, &spamxpm, &spamxpmmask);

@@ -147,6 +147,28 @@ try_others:
 	return FALSE;
 }
 
+static void msginfo_set_signed_flag(GNode *node, gpointer data)
+{
+	MsgInfo *msginfo = data;
+	MimeInfo *mimeinfo = node->data;
+	
+	if (privacy_mimeinfo_is_signed(mimeinfo)) {
+		procmsg_msginfo_set_flags(msginfo, 0, MSG_SIGNED);
+	}
+	if (privacy_mimeinfo_is_encrypted(mimeinfo)) {
+		procmsg_msginfo_set_flags(msginfo, 0, MSG_ENCRYPTED);
+	} else {
+		/* searching inside encrypted parts doesn't really make sense */
+		g_node_children_foreach(mimeinfo->node, G_TRAVERSE_ALL, msginfo_set_signed_flag, msginfo);
+	}
+}
+
+void privacy_msginfo_get_signed_state(MsgInfo *msginfo)
+{
+	MimeInfo *mimeinfo = procmime_scan_message(msginfo);
+	g_node_children_foreach(mimeinfo->node, G_TRAVERSE_ALL, msginfo_set_signed_flag, msginfo);
+}
+
 /**
  * Check the signature of a MimeInfo. privacy_mimeinfo_is_signed
  * should be called before otherwise it is done by this function.

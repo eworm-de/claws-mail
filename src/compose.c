@@ -1504,6 +1504,11 @@ static Compose *compose_generic_reply(MsgInfo *msginfo,
 		compose_force_encryption(compose, account, FALSE);
 	}
 
+	privacy_msginfo_get_signed_state(compose->replyinfo);
+	if (MSG_IS_SIGNED(compose->replyinfo->flags) && account->default_sign_reply) {
+		compose_force_signing(compose, account);
+	}
+
 	SIGNAL_BLOCK(textbuf);
 	
 	if (account->auto_sig)
@@ -10558,6 +10563,7 @@ static void compose_reply_from_messageview_real(MessageView *msgview, GSList *ms
 	GSList *new_msglist = NULL;
 	MsgInfo *tmp_msginfo = NULL;
 	gboolean originally_enc = FALSE;
+	gboolean originally_sig = FALSE;
 	Compose *compose = NULL;
 
 	g_return_if_fail(msgview != NULL);
@@ -10576,6 +10582,9 @@ static void compose_reply_from_messageview_real(MessageView *msgview, GSList *ms
 				new_msglist = g_slist_append(NULL, tmp_msginfo);
 
 				originally_enc = MSG_IS_ENCRYPTED(orig_msginfo->flags);
+				privacy_msginfo_get_signed_state(orig_msginfo);
+				originally_sig = MSG_IS_SIGNED(orig_msginfo->flags);
+
 				tmp_msginfo->folder = orig_msginfo->folder;
 				tmp_msginfo->msgnum = orig_msginfo->msgnum; 
 				if (orig_msginfo->tags)
@@ -10596,6 +10605,10 @@ static void compose_reply_from_messageview_real(MessageView *msgview, GSList *ms
 
 	if (compose && originally_enc) {
 		compose_force_encryption(compose, compose->account, FALSE);
+	}
+
+	if (compose && originally_sig && compose->account->default_sign_reply) {
+		compose_force_signing(compose, compose->account);
 	}
 
 	g_free(body);

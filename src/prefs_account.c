@@ -223,6 +223,7 @@ typedef struct PrivacyPage
 	GtkWidget *default_encrypt_checkbtn;
 	GtkWidget *default_encrypt_reply_checkbtn;
 	GtkWidget *default_sign_checkbtn;
+	GtkWidget *default_sign_reply_checkbtn;
 	GtkWidget *save_clear_text_checkbtn;
 	GtkWidget *encrypt_to_self_checkbtn;
 } PrivacyPage;
@@ -656,6 +657,10 @@ static PrefParam privacy_param[] = {
 	 &privacy_page.default_sign_checkbtn,
 	 prefs_set_data_from_toggle, prefs_set_toggle},
 
+	{"default_sign_reply", "TRUE", &tmp_ac_prefs.default_sign_reply, P_BOOL,
+	 &privacy_page.default_sign_reply_checkbtn,
+	 prefs_set_data_from_toggle, prefs_set_toggle},
+
 	{"save_clear_text", "FALSE", &tmp_ac_prefs.save_encrypted_as_clear_text, P_BOOL,
 	 &privacy_page.save_clear_text_checkbtn,
 	 prefs_set_data_from_toggle, prefs_set_toggle},
@@ -887,6 +892,8 @@ static void privacy_system_activated(GtkWidget *combobox)
 	gtk_widget_set_sensitive (privacy_page.default_encrypt_reply_checkbtn,
 			privacy_enabled);
 	gtk_widget_set_sensitive (privacy_page.default_sign_checkbtn,
+			privacy_enabled);
+	gtk_widget_set_sensitive (privacy_page.default_sign_reply_checkbtn,
 			privacy_enabled);
 	gtk_widget_set_sensitive (privacy_page.encrypt_to_self_checkbtn,
 			privacy_enabled);
@@ -2142,6 +2149,7 @@ static void privacy_create_widget_func(PrefsPage * _page,
 	GtkWidget *default_encrypt_checkbtn;
 	GtkWidget *default_encrypt_reply_checkbtn;
 	GtkWidget *default_sign_checkbtn;
+	GtkWidget *default_sign_reply_checkbtn;
 	GtkWidget *save_clear_text_checkbtn;
 	GtkWidget *encrypt_to_self_checkbtn;
 
@@ -2189,6 +2197,9 @@ static void privacy_create_widget_func(PrefsPage * _page,
 			   _("Always sign messages"));
 	PACK_CHECK_BUTTON (vbox2, default_encrypt_checkbtn,
 			   _("Always encrypt messages"));
+	PACK_CHECK_BUTTON (vbox2, default_sign_reply_checkbtn,
+			   _("Always sign messages when replying to a "
+			     "signed message"));
 	PACK_CHECK_BUTTON (vbox2, default_encrypt_reply_checkbtn,
 			   _("Always encrypt messages when replying to an "
 			     "encrypted message"));
@@ -2203,6 +2214,7 @@ static void privacy_create_widget_func(PrefsPage * _page,
 	page->default_privacy_system = default_privacy_system;
 	page->default_encrypt_checkbtn = default_encrypt_checkbtn;
 	page->default_encrypt_reply_checkbtn = default_encrypt_reply_checkbtn;
+	page->default_sign_reply_checkbtn = default_sign_reply_checkbtn;
 	page->default_sign_checkbtn    = default_sign_checkbtn;
 	page->save_clear_text_checkbtn = save_clear_text_checkbtn;
 	page->encrypt_to_self_checkbtn = encrypt_to_self_checkbtn;

@@ -1,3 +1,20 @@
+2008-08-28 [colin]	3.5.0cvs78
+
+	* src/Makefile.am
+	* src/account.c
+	* src/compose.c
+	* src/prefs_account.c
+	* src/prefs_account.h
+	* src/privacy.c
+	* src/privacy.h
+	* src/procmime.c
+	* src/stock_pixmap.c
+	* src/stock_pixmap.h
+	* src/summaryview.c
+	* src/pixmaps/key_gpg_signed.xpm
+		Fix bug 1412, "Sign reply, if mail was signed"
+		Add an account preference to sign replies to signed mails
+
 2008-08-28 [iwkse]	3.5.0cvs77
 
 	* src/prefs_filtering.c

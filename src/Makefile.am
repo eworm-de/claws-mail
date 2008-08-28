@@ -380,6 +380,7 @@ EXTRA_DIST = \
 	pixmaps/insert_file.xpm \
 	pixmaps/jpilot.xpm \
 	pixmaps/key.xpm \
+	pixmaps/key_gpg_signed.xpm \
 	pixmaps/ldap.xpm \
 	pixmaps/linewrap.xpm \
 	pixmaps/linewrapcurrent.xpm \
