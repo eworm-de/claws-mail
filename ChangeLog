@@ -1,3 +1,8 @@
+2008-08-29 [iwkse]	3.5.0cvs84
+
+	* src/summaryview.c
+			Bit of clean:)
+
 2008-08-29 [iwkse]	3.5.0cvs83
 
 	* src/summaryview.c

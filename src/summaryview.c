@@ -6411,8 +6411,6 @@ static gboolean summary_button_pressed(GtkWidget *ctree, GdkEventButton *event,
 	if (event->button == 3) {
 		summaryview->display_msg = messageview_is_visible(summaryview->messageview);
 		/* right clicked */
-
-		/* disable "Move to trash" action if we are in a Trash-like folder */
 		cm_menu_set_sensitive("SummaryViewPopup/Trash", !folder_has_parent_of_type(summaryview->folder_item, F_TRASH));
 		gtk_menu_popup(GTK_MENU(summaryview->popupmenu), NULL, NULL,
 			       NULL, NULL, event->button, event->time);
