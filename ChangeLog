@@ -1,3 +1,10 @@
+2008-08-29 [iwkse]	3.5.0cvs83
+
+	* src/summaryview.c
+			Disable "Move to trash" action if
+			we are in a trash-like folder.
+			Thanks to colinl
+
 2008-08-29 [paul]	3.5.0cvs82
 
 	* configure.ac
