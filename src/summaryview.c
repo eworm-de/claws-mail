@@ -5987,7 +5987,7 @@ static void summary_tags_menu_create(SummaryView *summaryview, gboolean refresh)
 	g_object_set_data(G_OBJECT(item), "summaryview",
 			  summaryview);
 	gtk_widget_show(item);
-	accel_path = g_strconcat("<ClawsTags>/","Apply tags...", NULL);
+	accel_path = g_strdup_printf("<ClawsTags>/ApplyTags");
 	gtk_menu_item_set_accel_path(GTK_MENU_ITEM(item), accel_path);
 	g_free(accel_path);
 

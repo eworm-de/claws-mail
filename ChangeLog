@@ -1,3 +1,9 @@
+2008-08-30 [colin]	3.5.0cvs85
+
+	* src/mainwindow.c
+	* src/summaryview.c
+		Fix "Apply tags..." key shortcut
+
 2008-08-29 [iwkse]	3.5.0cvs84
 
 	* src/summaryview.c

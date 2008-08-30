@@ -1176,10 +1176,6 @@ static void mainwindow_tags_menu_create(MainWindow *mainwin, gboolean refresh)
 	}
 
 	item = gtk_menu_item_new_with_label(_("Apply tags..."));
-	gtk_widget_add_accelerator(item, "activate", 
-		   gtk_ui_manager_get_accel_group(mainwin->ui_manager), 
-		   GDK_T, GDK_CONTROL_MASK|GDK_SHIFT_MASK,
-		   GTK_ACCEL_LOCKED | GTK_ACCEL_VISIBLE);
 	gtk_menu_shell_append(GTK_MENU_SHELL(menu), item);
 	g_signal_connect(G_OBJECT(item), "activate",
 			 G_CALLBACK(mainwindow_tags_menu_item_apply_tags_activate_cb),
@@ -1187,6 +1183,10 @@ static void mainwindow_tags_menu_create(MainWindow *mainwin, gboolean refresh)
 	g_object_set_data(G_OBJECT(item), "mainwin",
 			  mainwin);
 	gtk_widget_show(item);
+	accel_path = g_strdup_printf("<ClawsTags>/ApplyTags");
+	gtk_menu_item_set_accel_path(GTK_MENU_ITEM(item), accel_path);
+	g_free(accel_path);
+	gtk_accel_map_add_entry("<ClawsTags>/ApplyTags", GDK_T, GDK_CONTROL_MASK|GDK_SHIFT_MASK);
 
 	g_slist_free(orig);
 	gtk_widget_show(menu);

@@ -3496,3 +3496,4 @@
 ( cvs diff -u -r 1.654.2.3555 -r 1.654.2.3556 configure.ac;  ) > 3.5.0cvs82.patchset
 ( cvs diff -u -r 1.395.2.384 -r 1.395.2.385 src/summaryview.c;  ) > 3.5.0cvs83.patchset
 ( cvs diff -u -r 1.395.2.385 -r 1.395.2.386 src/summaryview.c;  ) > 3.5.0cvs84.patchset
+( cvs diff -u -r 1.274.2.270 -r 1.274.2.271 src/mainwindow.c;  cvs diff -u -r 1.395.2.386 -r 1.395.2.387 src/summaryview.c;  ) > 3.5.0cvs85.patchset
