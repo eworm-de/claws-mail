@@ -3383,8 +3383,12 @@ static void addressbook_edit_address_post_cb( ItemPerson *person )
 {
 	if( person ) {
 #ifdef USE_LDAP
-		if (strcmp2(person->nickName, ADDRITEM_NAME(person)))
-			addritem_person_set_nick_name( person, ADDRITEM_NAME(person));
+		AddressBookFile *abf = addressbook_get_book_file();
+
+		if (abf && abf->type == ADDR_IF_LDAP) {
+			if (strcmp2(person->nickName, ADDRITEM_NAME(person)))
+				addritem_person_set_nick_name( person, ADDRITEM_NAME(person));
+		}
 #endif
 		addressbook_folder_refresh_one_person( GTK_CMCTREE(addrbook.clist), person );
 		invalidate_address_completion();

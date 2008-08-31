@@ -1,3 +1,10 @@
+2008-08-31 [wwp]	3.5.0cvs86
+
+	* src/addressbook.c
+		Don't break nickname edition for non-LDAP books (nickname
+		value was overwritten when editing existing contact, this
+		came from 3.0.2cvs109).
+
 2008-08-30 [colin]	3.5.0cvs85
 
 	* src/mainwindow.c
