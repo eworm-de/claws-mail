@@ -1,7 +1,12 @@
+2008-08-31 [wwp]	3.5.0cvs87
+
+	* ChangeLog
+		Fix globish edition^Wediting.
+
 2008-08-31 [wwp]	3.5.0cvs86
 
 	* src/addressbook.c
-		Don't break nickname edition for non-LDAP books (nickname
+		Don't break nickname editing for non-LDAP books (nickname
 		value was overwritten when editing existing contact, this
 		came from 3.0.2cvs109).
 
