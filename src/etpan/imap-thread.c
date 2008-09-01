@@ -1446,6 +1446,12 @@ int imap_threaded_select(Folder * folder, const char * mb,
 				case MAILIMAP_FLAG_KEYWORD:
 					if (!strcasecmp(flag->fl_flag->fl_data.fl_keyword, "$Forwarded"))
 						c_flag = IMAP_FLAG_FORWARDED;
+					if (!strcasecmp(flag->fl_flag->fl_data.fl_keyword, "Junk"))
+						c_flag = IMAP_FLAG_SPAM;
+					if (!strcasecmp(flag->fl_flag->fl_data.fl_keyword, "NonJunk") ||
+					    !strcasecmp(flag->fl_flag->fl_data.fl_keyword, "NoJunk") ||
+					    !strcasecmp(flag->fl_flag->fl_data.fl_keyword, "NotJunk"))
+						c_flag = IMAP_FLAG_HAM;
 					break;
 				default:
 					break;
@@ -1668,6 +1674,14 @@ static void search_run(struct etpan_thread_op * op)
 		search_type_key = mailimap_search_key_new(MAILIMAP_SEARCH_KEY_KEYWORD,
 							  NULL, NULL, NULL, NULL, NULL,
 							  strdup("$Forwarded"), NULL, NULL, NULL, NULL,
+							  NULL, NULL, NULL, NULL, 0,
+							  NULL, NULL, NULL, NULL, NULL,
+							  NULL, 0, NULL, NULL, NULL);
+		break;
+	case IMAP_SEARCH_TYPE_SPAM:
+		search_type_key = mailimap_search_key_new(MAILIMAP_SEARCH_KEY_KEYWORD,
+							  NULL, NULL, NULL, NULL, NULL,
+							  strdup("Junk"), NULL, NULL, NULL, NULL,
 							  NULL, NULL, NULL, NULL, 0,
 							  NULL, NULL, NULL, NULL, NULL,
 							  NULL, 0, NULL, NULL, NULL);
@@ -2530,6 +2544,12 @@ static int imap_flags_to_flags(struct mailimap_msg_att_dynamic * att_dyn, GSList
 			case MAILIMAP_FLAG_KEYWORD:
 				if (!strcasecmp(flag_fetch->fl_flag->fl_data.fl_keyword, "$Forwarded"))
 					flags |= MSG_FORWARDED;
+				else if (!strcasecmp(flag_fetch->fl_flag->fl_data.fl_keyword, "Junk")) 
+					flags |= MSG_SPAM;
+				else if (!strcasecmp(flag_fetch->fl_flag->fl_data.fl_keyword, "NonJunk") ||
+					 !strcasecmp(flag_fetch->fl_flag->fl_data.fl_keyword, "NoJunk") ||
+					 !strcasecmp(flag_fetch->fl_flag->fl_data.fl_keyword, "NotJunk")) 
+					flags &= ~MSG_SPAM;
 				else if (s_tags)
 					tags = g_slist_prepend(tags, g_strdup(flag_fetch->fl_flag->fl_data.fl_keyword));
 				break;

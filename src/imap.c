@@ -137,6 +137,8 @@ struct _IMAPNameSpace
 #define IMAP_IS_DELETED(flags)	((flags & IMAP_FLAG_DELETED) != 0)
 #define IMAP_IS_DRAFT(flags)	((flags & IMAP_FLAG_DRAFT) != 0)
 #define IMAP_IS_FORWARDED(flags)	((flags & IMAP_FLAG_FORWARDED) != 0)
+#define IMAP_IS_SPAM(flags)	((flags & IMAP_FLAG_SPAM) != 0)
+#define IMAP_IS_HAM(flags)	((flags & IMAP_FLAG_HAM) != 0)
 
 
 #define IMAP4_PORT	143
@@ -1338,7 +1340,8 @@ static void imap_commit_tags(FolderItem *item, MsgInfo *msginfo, GSList *tags_se
 		for (cur = tags_set; cur; cur = cur->next) {
 			gint cur_tag = GPOINTER_TO_INT(cur->data);
 			const gchar *str = tags_get_tag(cur_tag);
-			list_set = g_slist_prepend(list_set, g_strdup(str));
+			if (strcmp(str, "$Forwarded") && strcmp(str, "Junk") && strcmp(str, "NonJunk") && strcmp(str, "NotJunk") && strcmp(str, "NoJunk") && strcmp(str, "Junk") )
+				list_set = g_slist_prepend(list_set, g_strdup(str));
 		}
 		if (list_set) {
 			ok = imap_set_message_flags(session, 
@@ -1353,7 +1356,8 @@ static void imap_commit_tags(FolderItem *item, MsgInfo *msginfo, GSList *tags_se
 		for (cur = tags_unset; cur; cur = cur->next) {
 			gint cur_tag = GPOINTER_TO_INT(cur->data);
 			const gchar *str = tags_get_tag(cur_tag);
-			list_unset = g_slist_prepend(list_unset, g_strdup(str));
+			if (strcmp(str, "$Forwarded") && strcmp(str, "Junk") && strcmp(str, "NonJunk") && strcmp(str, "NotJunk") && strcmp(str, "NoJunk") && strcmp(str, "Junk") )
+				list_unset = g_slist_prepend(list_unset, g_strdup(str));
 		}
 		if (list_unset) {
 			ok = imap_set_message_flags(session, 
@@ -1596,6 +1600,10 @@ static gint imap_add_msgs(Folder *folder, FolderItem *dest, GSList *file_list,
 				iflags |= IMAP_FLAG_ANSWERED;
 			if (MSG_IS_FORWARDED(*fileinfo->flags))
 				iflags |= IMAP_FLAG_FORWARDED;
+			if (MSG_IS_SPAM(*fileinfo->flags))
+				iflags |= IMAP_FLAG_SPAM;
+			else
+				iflags |= IMAP_FLAG_HAM;
 			if (!MSG_IS_UNREAD(*fileinfo->flags))
 				iflags |= IMAP_FLAG_SEEN;
 			
@@ -4253,6 +4261,14 @@ void imap_change_flags(Folder *folder, FolderItem *item, MsgInfo *msginfo, MsgPe
 	if ( MSG_IS_FORWARDED(msginfo->flags) && !(newflags & MSG_FORWARDED))
 		flags_unset |= IMAP_FLAG_FORWARDED;
 
+	if (!MSG_IS_SPAM(msginfo->flags) &&  (newflags & MSG_SPAM)) {
+		flags_set |= IMAP_FLAG_SPAM;
+		flags_unset |= IMAP_FLAG_HAM;
+	}
+	if ( MSG_IS_SPAM(msginfo->flags) && !(newflags & MSG_SPAM)) {
+		flags_set |= IMAP_FLAG_HAM;
+		flags_unset |= IMAP_FLAG_SPAM;
+	}
 	if (!MSG_IS_DELETED(msginfo->flags) &&  (newflags & MSG_DELETED))
 		flags_set |= IMAP_FLAG_DELETED;
 	if ( MSG_IS_DELETED(msginfo->flags) && !(newflags & MSG_DELETED))
@@ -4446,7 +4462,7 @@ static /*gint*/ void *imap_get_flags_thread(void *data)
 	GHashTable *tags_hash = NULL;
 	gboolean full_search = stuff->full_search;
 	GSList *sorted_list = NULL;
-	GSList *unseen = NULL, *answered = NULL, *flagged = NULL, *deleted = NULL, *forwarded = NULL;
+	GSList *unseen = NULL, *answered = NULL, *flagged = NULL, *deleted = NULL, *forwarded = NULL, *spam = NULL;
 	GSList *seq_list, *cur;
 	gboolean reverse_seen = FALSE;
 	gboolean selected_folder;
@@ -4561,6 +4577,22 @@ static /*gint*/ void *imap_get_flags_thread(void *data)
 					}
 				}
 
+				if (flag_ok(IMAP_FOLDER_ITEM(fitem), IMAP_FLAG_SPAM)) {
+					r = imap_threaded_search(folder, IMAP_SEARCH_TYPE_SPAM,
+								 full_search ? NULL:imapset, &lep_uidlist);
+					if (r == MAILIMAP_NO_ERROR) {
+						GSList * uidlist;
+
+						uidlist = imap_uid_list_from_lep(lep_uidlist);
+						mailimap_search_result_free(lep_uidlist);
+
+						spam = g_slist_concat(spam, uidlist);
+					} else {
+						imap_handle_error(SESSION(session), r);
+						goto bail;
+					}
+				}
+
 				r = imap_threaded_search(folder, IMAP_SEARCH_TYPE_DELETED,
 							 full_search ? NULL:imapset, &lep_uidlist);
 				if (r == MAILIMAP_NO_ERROR) {
@@ -4602,11 +4634,11 @@ bail:
 		msginfo = (MsgInfo *) elem->data;
 		flags = msginfo->flags.perm_flags;
 		wasnew = (flags & MSG_NEW);
-		oldflags = flags & ~(MSG_NEW|MSG_UNREAD|MSG_REPLIED|MSG_FORWARDED|MSG_MARKED|MSG_DELETED);
+		oldflags = flags & ~(MSG_NEW|MSG_UNREAD|MSG_REPLIED|MSG_FORWARDED|MSG_MARKED|MSG_DELETED|MSG_SPAM);
 
 		if (folder->account && folder->account->low_bandwidth) {
 			if (fitem->opened || fitem->processing_pending || fitem == folder->inbox) {
-				flags &= ~((reverse_seen ? 0 : MSG_UNREAD | MSG_NEW) | MSG_REPLIED | MSG_FORWARDED | MSG_MARKED);
+				flags &= ~((reverse_seen ? 0 : MSG_UNREAD | MSG_NEW) | MSG_REPLIED | MSG_FORWARDED | MSG_MARKED | MSG_SPAM);
 			} else {
 				flags &= ~((reverse_seen ? 0 : MSG_UNREAD | MSG_NEW | MSG_MARKED));
 			}
@@ -4634,6 +4666,10 @@ bail:
 					flags |= MSG_FORWARDED;
 				else
 					flags &= ~MSG_FORWARDED;
+				if (gslist_find_next_num(&spam, msginfo->msgnum) == msginfo->msgnum)
+					flags |= MSG_SPAM;
+				else
+					flags &= ~MSG_SPAM;
 				if (gslist_find_next_num(&deleted, msginfo->msgnum) == msginfo->msgnum)
 					flags |= MSG_DELETED;
 				else
@@ -4698,6 +4734,7 @@ bail:
 	g_slist_free(deleted);
 	g_slist_free(answered);
 	g_slist_free(forwarded);
+	g_slist_free(spam);
 	g_slist_free(unseen);
 	g_slist_free(sorted_list);
 
@@ -5230,6 +5267,12 @@ static struct mailimap_flag_list * imap_flag_to_lep(IMAPFolderItem *item, IMAPFl
 	if (IMAP_IS_FORWARDED(flags) && flag_ok(item, IMAP_FLAG_FORWARDED))
 		mailimap_flag_list_add(flag_list,
 				       mailimap_flag_new_flag_keyword(strdup("$Forwarded")));
+	if (IMAP_IS_SPAM(flags) && flag_ok(item, IMAP_FLAG_SPAM))
+		mailimap_flag_list_add(flag_list,
+				       mailimap_flag_new_flag_keyword(strdup("Junk")));
+	else if (IMAP_IS_HAM(flags) && flag_ok(item, IMAP_FLAG_HAM))
+		mailimap_flag_list_add(flag_list,
+				       mailimap_flag_new_flag_keyword(strdup("NonJunk")));
 	
 	for (; cur; cur = cur->next) {
 		gchar *enc_str = 

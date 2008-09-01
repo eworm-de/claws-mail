@@ -33,7 +33,9 @@ typedef enum
 	IMAP_FLAG_FLAGGED	= 1 << 2,
 	IMAP_FLAG_DELETED	= 1 << 3,
 	IMAP_FLAG_DRAFT		= 1 << 4,
-	IMAP_FLAG_FORWARDED	= 1 << 5
+	IMAP_FLAG_FORWARDED	= 1 << 5,
+	IMAP_FLAG_SPAM		= 1 << 6,
+	IMAP_FLAG_HAM		= 1 << 7
 } IMAPFlags;
 
 void imap_main_set_timeout(int sec);
@@ -96,6 +98,7 @@ enum {
 	IMAP_SEARCH_TYPE_FLAGGED,
 	IMAP_SEARCH_TYPE_DELETED,
 	IMAP_SEARCH_TYPE_FORWARDED,
+	IMAP_SEARCH_TYPE_SPAM,
 };
 
 int imap_threaded_search(Folder * folder, int search_type,

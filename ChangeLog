@@ -1,3 +1,13 @@
+2008-09-01 [colin]	3.5.0cvs88
+
+	* src/imap.c
+	* src/summaryview.c
+	* src/common/tags.c
+	* src/etpan/imap-thread.c
+	* src/etpan/imap-thread.h
+		Store spam flag on IMAP (Junk/NonJunk, as 
+		ThunderBird does - this is nonstandard)
+
 2008-08-31 [wwp]	3.5.0cvs87
 
 	* ChangeLog

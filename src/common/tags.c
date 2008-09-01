@@ -77,11 +77,17 @@ void tags_read_tags(void)
 			continue;
 		g_strstrip(tag_name);
 		*(sep) = '\0';
-		id = atoi(tmp);
-		g_hash_table_insert(tags_table,
-				    GINT_TO_POINTER(id), g_strdup(tag_name));
-		g_hash_table_insert(tags_reverse_table,
-				    g_strdup(tag_name), GINT_TO_POINTER(id));		
+		if (strcmp(tag_name, "NonJunk") && 
+		    strcmp(tag_name, "NotJunk") && 
+		    strcmp(tag_name, "NoJunk") && 
+		    strcmp(tag_name, "$Forwarded") && 
+		    strcmp(tag_name, "Junk")) {
+			id = atoi(tmp);
+			g_hash_table_insert(tags_table,
+					    GINT_TO_POINTER(id), g_strdup(tag_name));
+			g_hash_table_insert(tags_reverse_table,
+					    g_strdup(tag_name), GINT_TO_POINTER(id));
+		}
 	}
 	
 	fclose(fp);
@@ -165,13 +171,21 @@ gint tags_add_tag(const gchar *tag)
 	if (g_hash_table_lookup(tags_reverse_table, tag))
 		return -1;
 
-	tag_max_id++;
-	g_hash_table_insert(tags_table, GINT_TO_POINTER(tag_max_id), 
-		g_strdup(tag));
-	g_hash_table_insert(tags_reverse_table, g_strdup(tag),
-		GINT_TO_POINTER(tag_max_id));
-	
-	return tag_max_id;
+	if (strcmp(tag, "NonJunk") && 
+	    strcmp(tag, "NotJunk") && 
+	    strcmp(tag, "NoJunk") && 
+	    strcmp(tag, "$Forwarded") && 
+	    strcmp(tag, "Junk")) {
+		tag_max_id++;
+		g_hash_table_insert(tags_table, GINT_TO_POINTER(tag_max_id), 
+			g_strdup(tag));
+		g_hash_table_insert(tags_reverse_table, g_strdup(tag),
+			GINT_TO_POINTER(tag_max_id));
+
+		return tag_max_id;
+	} else {
+		return -1;
+	}
 }
 
 void tags_remove_tag(gint id)
@@ -191,15 +205,21 @@ void tags_update_tag(gint id, const gchar *tag)
 {
 	gchar *old_tag = g_hash_table_lookup(tags_table, GINT_TO_POINTER(id));
 
-	if (old_tag) {
-		prefs_filtering_rename_tag(old_tag, tag);
-		g_hash_table_remove(tags_reverse_table, old_tag);
-	}
+	if (strcmp(tag, "NonJunk") && 
+	    strcmp(tag, "NotJunk") && 
+	    strcmp(tag, "NoJunk") && 
+	    strcmp(tag, "$Forwarded") && 
+	    strcmp(tag, "Junk")) {
+		if (old_tag) {
+			prefs_filtering_rename_tag(old_tag, tag);
+			g_hash_table_remove(tags_reverse_table, old_tag);
+		}
 
-	g_hash_table_replace(tags_table, GINT_TO_POINTER(id), 
-		g_strdup(tag));
-	g_hash_table_insert(tags_reverse_table, g_strdup(tag),
-		GINT_TO_POINTER(id));
+		g_hash_table_replace(tags_table, GINT_TO_POINTER(id), 
+			g_strdup(tag));
+		g_hash_table_insert(tags_reverse_table, g_strdup(tag),
+			GINT_TO_POINTER(id));
+	}
 }
 
 const gchar *tags_get_tag(gint id)

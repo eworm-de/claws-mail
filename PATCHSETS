@@ -3499,3 +3499,4 @@
 ( cvs diff -u -r 1.274.2.270 -r 1.274.2.271 src/mainwindow.c;  cvs diff -u -r 1.395.2.386 -r 1.395.2.387 src/summaryview.c;  ) > 3.5.0cvs85.patchset
 ( cvs diff -u -r 1.60.2.123 -r 1.60.2.124 src/addressbook.c;  ) > 3.5.0cvs86.patchset
 ( cvs diff -u -r 1.396.2.2646 -r 1.396.2.2647 ChangeLog;  ) > 3.5.0cvs87.patchset
+( cvs diff -u -r 1.179.2.226 -r 1.179.2.227 src/imap.c;  cvs diff -u -r 1.395.2.387 -r 1.395.2.388 src/summaryview.c;  cvs diff -u -r 1.1.2.7 -r 1.1.2.8 src/common/tags.c;  cvs diff -u -r 1.1.4.103 -r 1.1.4.104 src/etpan/imap-thread.c;  cvs diff -u -r 1.1.4.24 -r 1.1.4.25 src/etpan/imap-thread.h;  ) > 3.5.0cvs88.patchset

@@ -4106,6 +4106,7 @@ void summary_mark_as_spam(SummaryView *summaryview, guint action, GtkWidget *wid
 
 	prefs_common.immediate_exec = FALSE;
 	START_LONG_OPERATION(summaryview, FALSE);
+	folder_item_set_batch(summaryview->folder_item, TRUE);
 	for (cur = GTK_CMCLIST(ctree)->selection; cur != NULL && cur->data != NULL; cur = cur->next) {
 		GtkCMCTreeNode *row = GTK_CMCTREE_NODE(cur->data);
 		MsgInfo *msginfo = gtk_cmctree_node_get_row_data(ctree, row);
@@ -4138,7 +4139,7 @@ void summary_mark_as_spam(SummaryView *summaryview, guint action, GtkWidget *wid
 	}
 
 	prefs_common.immediate_exec = immediate_exec;
-
+	folder_item_set_batch(summaryview->folder_item, FALSE);
 	END_LONG_OPERATION(summaryview);
 
 	if (prefs_common.immediate_exec && moved) {
