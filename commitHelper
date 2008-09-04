@@ -139,5 +139,5 @@ if [ "$ans" == "y" ]; then
 		cvs commit -m "`cat /tmp/logentry.$$` "
 	fi;
 	rm -f /tmp/logentry.$$
-	wget -O /dev/null -o /dev/null http://www.colino.net/sylpheed-claws/update.php3
+	wget -O /dev/null -o /dev/null http://www.colino.net/claws-mail/update.php
 fi
