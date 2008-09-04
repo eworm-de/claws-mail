@@ -7107,16 +7107,31 @@ static void summary_drag_data_received(GtkWidget        *widget,
 
 /* custom compare functions for sorting */
 
+static gint summary_cmp_by_date(GtkCMCList *clist,
+		      gconstpointer ptr1, gconstpointer ptr2)
+{
+	MsgInfo *msginfo1 = ((GtkCMCListRow *)ptr1)->data;
+	MsgInfo *msginfo2 = ((GtkCMCListRow *)ptr2)->data;
+	gint res;
+	if (!msginfo1 || !msginfo2)
+		return -1;
+
+	res = (msginfo1->date_t - msginfo2->date_t);
+	return res;
+}
+
 #define CMP_FUNC_DEF(func_name, val)					 \
-static gint func_name(GtkCMCList *clist,					 \
+static gint func_name(GtkCMCList *clist,				 \
 		      gconstpointer ptr1, gconstpointer ptr2)		 \
 {									 \
 	MsgInfo *msginfo1 = ((GtkCMCListRow *)ptr1)->data;		 \
 	MsgInfo *msginfo2 = ((GtkCMCListRow *)ptr2)->data;		 \
+	gint res;							 \
 	if (!msginfo1 || !msginfo2)					 \
 		return -1;						 \
 									 \
-	return (val);							 \
+	res = (val);							 \
+	return (res != 0) ? res:summary_cmp_by_date(clist, ptr1, ptr2);	 \
 }
 
 CMP_FUNC_DEF(summary_cmp_by_mark,
@@ -7134,7 +7149,6 @@ CMP_FUNC_DEF(summary_cmp_by_locked,
 
 CMP_FUNC_DEF(summary_cmp_by_num, msginfo1->msgnum - msginfo2->msgnum)
 CMP_FUNC_DEF(summary_cmp_by_size, msginfo1->size - msginfo2->size)
-CMP_FUNC_DEF(summary_cmp_by_date, msginfo1->date_t - msginfo2->date_t)
 
 #undef CMP_FUNC_DEF
 
@@ -7176,13 +7190,19 @@ static gint summary_cmp_by_from(GtkCMCList *clist, gconstpointer ptr1,
 	const gchar *str1, *str2;
 	const GtkCMCListRow *r1 = (const GtkCMCListRow *) ptr1;
 	const GtkCMCListRow *r2 = (const GtkCMCListRow *) ptr2;
+	MsgInfo *msginfo1 = ((GtkCMCListRow *)ptr1)->data;
+	MsgInfo *msginfo2 = ((GtkCMCListRow *)ptr2)->data;
 	const SummaryView *sv = g_object_get_data(G_OBJECT(clist), "summaryview");
 	gint res;
 
 	g_return_val_if_fail(sv, -1);
-	
-	str1 = GTK_CMCELL_TEXT(r1->cell[sv->col_pos[S_COL_FROM]])->text;
-	str2 = GTK_CMCELL_TEXT(r2->cell[sv->col_pos[S_COL_FROM]])->text;
+	if (sv->col_state[sv->col_pos[S_COL_FROM]].visible) {
+		str1 = GTK_CMCELL_TEXT(r1->cell[sv->col_pos[S_COL_FROM]])->text;
+		str2 = GTK_CMCELL_TEXT(r2->cell[sv->col_pos[S_COL_FROM]])->text;
+	} else {
+		str1 = msginfo1->from;
+		str2 = msginfo2->from;
+	}
 
 	if (!str1)
 		return str2 != NULL;
@@ -7200,12 +7220,19 @@ static gint summary_cmp_by_to(GtkCMCList *clist, gconstpointer ptr1,
 	const gchar *str1, *str2;
 	const GtkCMCListRow *r1 = (const GtkCMCListRow *) ptr1;
 	const GtkCMCListRow *r2 = (const GtkCMCListRow *) ptr2;
+	MsgInfo *msginfo1 = ((GtkCMCListRow *)ptr1)->data;
+	MsgInfo *msginfo2 = ((GtkCMCListRow *)ptr2)->data;
 	const SummaryView *sv = g_object_get_data(G_OBJECT(clist), "summaryview");
 	gint res;
 	g_return_val_if_fail(sv, -1);
 	
-	str1 = GTK_CMCELL_TEXT(r1->cell[sv->col_pos[S_COL_TO]])->text;
-	str2 = GTK_CMCELL_TEXT(r2->cell[sv->col_pos[S_COL_TO]])->text;
+	if (sv->col_state[sv->col_pos[S_COL_TO]].visible) {
+		str1 = GTK_CMCELL_TEXT(r1->cell[sv->col_pos[S_COL_TO]])->text;
+		str2 = GTK_CMCELL_TEXT(r2->cell[sv->col_pos[S_COL_TO]])->text;
+	} else {
+		str1 = msginfo1->to;
+		str2 = msginfo2->to;
+	}
 
 	if (!str1)
 		return str2 != NULL;
@@ -7220,23 +7247,36 @@ static gint summary_cmp_by_to(GtkCMCList *clist, gconstpointer ptr1,
 static gint summary_cmp_by_tags(GtkCMCList *clist, gconstpointer ptr1,
 				gconstpointer ptr2)
 {
-	const gchar *str1, *str2;
+	gchar *str1, *str2;
 	const GtkCMCListRow *r1 = (const GtkCMCListRow *) ptr1;
 	const GtkCMCListRow *r2 = (const GtkCMCListRow *) ptr2;
 	const SummaryView *sv = g_object_get_data(G_OBJECT(clist), "summaryview");
+	MsgInfo *msginfo1 = ((GtkCMCListRow *)ptr1)->data;
+	MsgInfo *msginfo2 = ((GtkCMCListRow *)ptr2)->data;
 	gint res;
 	g_return_val_if_fail(sv, -1);
 	
-	str1 = GTK_CMCELL_TEXT(r1->cell[sv->col_pos[S_COL_TAGS]])->text;
-	str2 = GTK_CMCELL_TEXT(r2->cell[sv->col_pos[S_COL_TAGS]])->text;
+	if (sv->col_state[sv->col_pos[S_COL_TAGS]].visible) {
+		str1 = g_strdup(GTK_CMCELL_TEXT(r1->cell[sv->col_pos[S_COL_TAGS]])->text);
+		str2 = g_strdup(GTK_CMCELL_TEXT(r2->cell[sv->col_pos[S_COL_TAGS]])->text);
+	} else {
+		str1 = procmsg_msginfo_get_tags_str(msginfo1);
+		str2 = procmsg_msginfo_get_tags_str(msginfo2);
+	}
 
-	if (!str1)
-		return str2 != NULL;
- 
-	if (!str2)
+	if (!str1) {
+		res = (str2 != NULL);
+		g_free(str2);
+		return res;
+	}
+	if (!str2) {
+		g_free(str1);
  		return -1;
+	}
  
 	res = g_utf8_collate(str1, str2);
+	g_free(str1);
+	g_free(str2);
 	return (res != 0)? res: summary_cmp_by_date(clist, ptr1, ptr2);
 }
  
@@ -7255,8 +7295,13 @@ static gint summary_cmp_by_simplified_subject
 	g_return_val_if_fail(sv, -1);
 	g_return_val_if_fail(msginfo1 != NULL && msginfo2 != NULL, -1);
 	
-	str1 = GTK_CMCELL_TEXT(r1->cell[sv->col_pos[S_COL_SUBJECT]])->text;
-	str2 = GTK_CMCELL_TEXT(r2->cell[sv->col_pos[S_COL_SUBJECT]])->text;
+	if (sv->col_state[sv->col_pos[S_COL_SUBJECT]].visible) {
+		str1 = GTK_CMCELL_TEXT(r1->cell[sv->col_pos[S_COL_SUBJECT]])->text;
+		str2 = GTK_CMCELL_TEXT(r2->cell[sv->col_pos[S_COL_SUBJECT]])->text;
+	} else {
+		str1 = msginfo1->subject;
+		str2 = msginfo2->subject;
+	}
 
 	if (!str1)
 		return str2 != NULL;

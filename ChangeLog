@@ -1,3 +1,8 @@
+2008-09-04 [colin]	3.5.0cvs89
+
+	* src/summaryview.c
+		Fix bug 1707, 'Segfault when sorting on non-visible column'
+
 2008-09-01 [colin]	3.5.0cvs88
 
 	* src/imap.c
