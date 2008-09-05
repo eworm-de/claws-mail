@@ -9292,6 +9292,7 @@ static void compose_close_cb(GtkAction *action, gpointer data)
 #endif
 
 	if (compose->modified) {
+		gboolean reedit = (compose->rmode == COMPOSE_REEDIT);
 		if (!g_mutex_trylock(compose->mutex)) {
 			/* we don't want to lock the mutex once it's available,
 			 * because as the only other part of compose.c locking
@@ -9300,13 +9301,19 @@ static void compose_close_cb(GtkAction *action, gpointer data)
 			debug_print("couldn't lock mutex, probably sending\n");
 			return;
 		}
-		val = alertpanel(_("Discard message"),
+		if (!reedit) {
+			val = alertpanel(_("Discard message"),
 				 _("This message has been modified. Discard it?"),
 				 _("_Discard"), _("_Save to Drafts"), GTK_STOCK_CANCEL);
+		} else {
+			val = alertpanel(_("Save changes"),
+				 _("This message has been modified. Save the latest changes?"),
+				 _("_Don't save"), _("+_Save to Drafts"), GTK_STOCK_CANCEL);
+		}
 		g_mutex_unlock(compose->mutex);
 		switch (val) {
 		case G_ALERTDEFAULT:
-			if (prefs_common.autosave)
+			if (prefs_common.autosave && !reedit)
 				compose_remove_draft(compose);			
 			break;
 		case G_ALERTALTERNATE:
