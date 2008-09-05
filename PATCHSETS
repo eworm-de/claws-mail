@@ -3502,3 +3502,4 @@
 ( cvs diff -u -r 1.179.2.226 -r 1.179.2.227 src/imap.c;  cvs diff -u -r 1.395.2.387 -r 1.395.2.388 src/summaryview.c;  cvs diff -u -r 1.1.2.7 -r 1.1.2.8 src/common/tags.c;  cvs diff -u -r 1.1.4.103 -r 1.1.4.104 src/etpan/imap-thread.c;  cvs diff -u -r 1.1.4.24 -r 1.1.4.25 src/etpan/imap-thread.h;  ) > 3.5.0cvs88.patchset
 ( cvs diff -u -r 1.395.2.388 -r 1.395.2.389 src/summaryview.c;  ) > 3.5.0cvs89.patchset
 ( cvs diff -u -r 1.382.2.471 -r 1.382.2.472 src/compose.c;  ) > 3.5.0cvs90.patchset
+( cvs diff -u -r 1.49.2.114 -r 1.49.2.115 src/procmime.c;  ) > 3.5.0cvs91.patchset

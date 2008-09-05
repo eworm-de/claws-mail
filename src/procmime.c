@@ -1585,7 +1585,7 @@ static void parse_parameters(const gchar *parameters, GHashTable *table)
 	param = params;
 	next = params;
 	for (; next != NULL; param = next) {
-		gchar *attribute, *value, *tmp, *down_attr;
+		gchar *attribute, *value, *tmp, *down_attr, *orig_down_attr;
 		gint len;
 		gboolean convert = FALSE;
 
@@ -1608,7 +1608,8 @@ static void parse_parameters(const gchar *parameters, GHashTable *table)
 			value++;
 
 		down_attr = g_utf8_strdown(attribute, -1);
-		
+		orig_down_attr = down_attr;
+	
 		len = strlen(down_attr);
 		if (down_attr[len - 1] == '*') {
 			gchar *srcpos, *dstpos, *endpos;
@@ -1676,7 +1677,7 @@ static void parse_parameters(const gchar *parameters, GHashTable *table)
 
 		if (g_hash_table_lookup(table, down_attr) == NULL)
 			g_hash_table_insert(table, g_strdup(down_attr), g_strdup(value));
-		g_free(down_attr);
+		g_free(orig_down_attr);
 	}
 
 	for (cur = concatlist; cur != NULL; cur = g_slist_next(cur)) {
