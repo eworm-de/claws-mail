@@ -1,3 +1,9 @@
+2008-09-07 [colin]	3.5.0cvs92
+
+	* src/textview.c
+		Fix bug 1712, 'invalid "Phishing attempt warning" 
+		when linked text ends with spaces'
+
 2008-09-05 [colin]	3.5.0cvs91
 
 	* src/procmime.c

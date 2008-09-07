@@ -3503,3 +3503,4 @@
 ( cvs diff -u -r 1.395.2.388 -r 1.395.2.389 src/summaryview.c;  ) > 3.5.0cvs89.patchset
 ( cvs diff -u -r 1.382.2.471 -r 1.382.2.472 src/compose.c;  ) > 3.5.0cvs90.patchset
 ( cvs diff -u -r 1.49.2.114 -r 1.49.2.115 src/procmime.c;  ) > 3.5.0cvs91.patchset
+( cvs diff -u -r 1.96.2.204 -r 1.96.2.205 src/textview.c;  ) > 3.5.0cvs92.patchset

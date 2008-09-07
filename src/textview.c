@@ -2749,6 +2749,8 @@ gboolean textview_uri_security_check(TextView *textview, ClickableText *uri)
 	if (visible_str == NULL)
 		return TRUE;
 
+	g_strstrip(visible_str);
+
 	if (strcmp(visible_str, uri->uri) != 0 && is_uri_string(visible_str)) {
 		gchar *uri_path;
 		gchar *visible_uri_path;
