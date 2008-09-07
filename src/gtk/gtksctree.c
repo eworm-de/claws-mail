@@ -2787,7 +2787,7 @@ srow_delete (GtkCMCTree    *ctree,
 
   if (ctree_row->row.destroy)
     {
-      GtkDestroyNotify dnotify = ctree_row->row.destroy;
+      GDestroyNotify dnotify = ctree_row->row.destroy;
       gpointer ddata = ctree_row->row.data;
 
       ctree_row->row.destroy = NULL;

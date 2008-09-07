@@ -48,7 +48,7 @@ struct _PrefsPage
 void prefswindow_open_full		(const gchar *title, 
 					 GSList *prefs_pages,
 					 gpointer data,
-					 GtkDestroyNotify func,
+					 GDestroyNotify func,
 					 gint *save_width, gint *save_height,
 					 gboolean preload_pages, gboolean activate_child,
 					 PrefsOpenCallbackFunc open_cb,

@@ -321,7 +321,7 @@ static void addressadd_load_folder( GtkCMCTreeNode *parentNode, ItemFolder *pare
 		g_free( fName );
 		fi = addressadd_create_folderinfo( fiParent->book, folder );
 		gtk_cmctree_node_set_row_data_full( tree, node, fi,
-				( GtkDestroyNotify ) addressadd_free_folderinfo );
+				( GDestroyNotify ) addressadd_free_folderinfo );
 		addressadd_load_folder( node, folder, fi );
 		list = g_list_next( list );
 	}
@@ -365,7 +365,7 @@ static void addressadd_load_data( AddressIndex *addrIndex ) {
 
 				fi = addressadd_create_folderinfo( abf, NULL );
 				gtk_cmctree_node_set_row_data_full( tree, node, fi,
-						( GtkDestroyNotify ) addressadd_free_folderinfo );
+						( GDestroyNotify ) addressadd_free_folderinfo );
 
 				rootFolder = addrindex_ds_get_root_folder( ds );
 				addressadd_load_folder( node, rootFolder, fi );

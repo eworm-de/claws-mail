@@ -1,3 +1,17 @@
+2008-09-07 [colin]	3.5.0cvs93
+
+	* src/addressadd.c
+	* src/addressbook_foldersel.c
+	* src/gtk/gtkcmclist.c
+	* src/gtk/gtkcmclist.h
+	* src/gtk/gtkcmctree.c
+	* src/gtk/gtkcmctree.h
+	* src/gtk/gtksctree.c
+	* src/gtk/prefswindow.c
+	* src/gtk/prefswindow.h
+		Use GDestroyNotify instead of GtkDestroyNotify
+		(deprecated in GTK+ 2.14)
+
 2008-09-07 [colin]	3.5.0cvs92
 
 	* src/textview.c

@@ -71,7 +71,7 @@ struct _PrefsWindow
 
 	gpointer   	 data;
 	GSList	  	*prefs_pages;
-	GtkDestroyNotify func;
+	GDestroyNotify func;
 };
 
 struct _PrefsTreeNode
@@ -413,7 +413,7 @@ static void prefswindow_build_tree(GtkWidget *tree_view, GSList *prefs_pages,
 }
 
 void prefswindow_open_full(const gchar *title, GSList *prefs_pages,
-							 gpointer data, GtkDestroyNotify func,
+							 gpointer data, GDestroyNotify func,
 							 gint *save_width, gint *save_height,
 							 gboolean preload_pages, gboolean activate_child,
 							 PrefsOpenCallbackFunc open_cb,

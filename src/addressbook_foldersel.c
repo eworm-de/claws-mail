@@ -296,7 +296,7 @@ static void addressbook_foldersel_load_folder( GtkCMCTreeNode *parentNode, ItemF
 
 		fi = addressbook_foldersel_create_folderinfo( fiParent->book, folder );
 		gtk_cmctree_node_set_row_data_full( tree, node, fi,
-				( GtkDestroyNotify ) addressbook_foldersel_free_folderinfo );
+				( GDestroyNotify ) addressbook_foldersel_free_folderinfo );
 		addressbook_foldersel_load_folder( node, folder, fi, nextmatch );
 		list = g_list_next( list );
 	}
@@ -365,7 +365,7 @@ static void addressbook_foldersel_load_data( AddressIndex *addrIndex,
 
 				fi = addressbook_foldersel_create_folderinfo( abf, NULL );
 				gtk_cmctree_node_set_row_data_full( tree, node, fi,
-						( GtkDestroyNotify ) addressbook_foldersel_free_folderinfo );
+						( GDestroyNotify ) addressbook_foldersel_free_folderinfo );
 
 				rootFolder = addrindex_ds_get_root_folder( ds );
 				addressbook_foldersel_load_folder( node, rootFolder, fi, nextmatch );

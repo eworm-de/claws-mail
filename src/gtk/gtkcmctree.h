@@ -399,7 +399,7 @@ void gtk_cmctree_node_set_row_data                 (GtkCMCTree     *ctree,
 void gtk_cmctree_node_set_row_data_full            (GtkCMCTree     *ctree,
 						  GtkCMCTreeNode *node,
 						  gpointer      data,
-						  GtkDestroyNotify destroy);
+						  GDestroyNotify destroy);
 gpointer gtk_cmctree_node_get_row_data             (GtkCMCTree     *ctree,
 						  GtkCMCTreeNode *node);
 void gtk_cmctree_node_moveto                       (GtkCMCTree     *ctree,

@@ -3152,7 +3152,7 @@ void
 gtk_cmclist_set_row_data_full (GtkCMCList         *clist,
 			     gint              row,
 			     gpointer          data,
-			     GtkDestroyNotify  destroy)
+			     GDestroyNotify  destroy)
 {
   GtkCMCListRow *clist_row;
 
