@@ -65,11 +65,11 @@ void		 noticeview_hide	(NoticeView	*noticeview);
 
 void		 noticeview_set_button_press_callback
 					(NoticeView	*noticeview,
-					 GtkSignalFunc   callback,
+					 void 		(*callback)(void),
 					 gpointer	*user_data);
 void		 noticeview_set_2ndbutton_press_callback
 					(NoticeView	*noticeview,
-					 GtkSignalFunc   callback,
+					 void 		(*callback)(void),
 					 gpointer	*user_data);
 void		 noticeview_set_icon_clickable
 					(NoticeView	*noticeview,

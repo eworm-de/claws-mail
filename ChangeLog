@@ -1,3 +1,9 @@
+2008-09-08 [colin]	3.5.0cvs94
+
+	* src/noticeview.c
+	* src/noticeview.h
+		Remove GtkSignalFunc
+
 2008-09-07 [colin]	3.5.0cvs93
 
 	* src/addressadd.c

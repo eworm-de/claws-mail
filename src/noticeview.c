@@ -195,7 +195,7 @@ void noticeview_set_button_text(NoticeView *noticeview, const char *text)
 }
 
 void noticeview_set_button_press_callback(NoticeView	*noticeview,
-				          GtkSignalFunc  callback,
+					  void 		(*callback)(void),
 					  gpointer	*user_data)
 {
 	noticeview->press     = (void (*) (NoticeView *, gpointer)) callback;
@@ -257,7 +257,7 @@ void noticeview_set_2ndbutton_text(NoticeView *noticeview, const char *text)
 }
 
 void noticeview_set_2ndbutton_press_callback(NoticeView	*noticeview,
-				          GtkSignalFunc  callback,
+					  void 		(*callback)(void),
 					  gpointer	*user_data)
 {
 	noticeview->press2     = (void (*) (NoticeView *, gpointer)) callback;
