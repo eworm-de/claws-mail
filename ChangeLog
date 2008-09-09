@@ -1,3 +1,8 @@
+2008-09-09 [colin]	3.5.0cvs95
+
+	* src/gtk/gtkcmclist.h
+		Fix build on GTK+ 2.14
+
 2008-09-08 [colin]	3.5.0cvs94
 
 	* src/noticeview.c

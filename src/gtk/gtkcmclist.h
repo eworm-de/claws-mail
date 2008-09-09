@@ -29,13 +29,7 @@
 #define __GTK_CMCLIST_H__
 
 #include <gdk/gdk.h>
-#include <gtk/gtksignal.h>
-#include <gtk/gtkalignment.h>
-#include <gtk/gtklabel.h>
-#include <gtk/gtkbutton.h>
-#include <gtk/gtkhscrollbar.h>
-#include <gtk/gtkvscrollbar.h>
-#include <gtk/gtkenums.h>
+#include <gtk/gtk.h>
 
 
 G_BEGIN_DECLS
