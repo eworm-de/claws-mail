@@ -104,6 +104,7 @@
 	* src/plugins/trayicon/libeggtrayicon/gtkplugxembed.c
 	* src/plugins/trayicon/libeggtrayicon/gtkplugxembed.h
 		Complete GTK+ 2.14 undeprecation
+		(thanks to "J.A. Magallon" <jamagallon@ono.com>)
 
 2008-09-09 [colin]	3.5.0cvs95
 
