@@ -21,8 +21,7 @@
 #define __STATUSBAR_H__
 
 #include <glib.h>
-#include <gtk/gtkwidget.h>
-#include <gtk/gtkstatusbar.h>
+#include <gtk/gtk.h>
 
 GtkWidget *statusbar_create	(void);
 void statusbar_puts		(GtkStatusbar	*statusbar,

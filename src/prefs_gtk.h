@@ -21,12 +21,7 @@
 #define __PREFS_GTK_H__
 
 #include <glib.h>
-#include <gtk/gtkwidget.h>
-#include <gtk/gtksignal.h>
-#include <gtk/gtklabel.h>
-#include <gtk/gtknotebook.h>
-#include <gtk/gtkcheckbutton.h>
-#include <gtk/gtkbox.h>
+#include <gtk/gtk.h>
 #include <stdio.h>
 
 typedef struct _PrefParam	PrefParam;

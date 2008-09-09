@@ -40,7 +40,6 @@
 #include <hildon-widgets/hildon-window.h>
 #endif
 #include "main.h"
-#include <gtk/gtkmain.h>
 #endif
 
 #include "gtkcmctree.h"

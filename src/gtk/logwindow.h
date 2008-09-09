@@ -21,7 +21,7 @@
 #define __LOGWINDOW_H__
 
 #include <glib.h>
-#include <gtk/gtkwidget.h>
+#include <gtk/gtk.h>
 
 #include "log.h"
 

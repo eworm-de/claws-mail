@@ -48,9 +48,6 @@
 
 #include <gtk/gtk.h>
 #include <gdk/gdk.h>
-#include <gtk/gtkoptionmenu.h>
-#include <gtk/gtkmenu.h>
-#include <gtk/gtkmenuitem.h>
 #include <gdk/gdkkeysyms.h>
 
 #include <aspell.h>

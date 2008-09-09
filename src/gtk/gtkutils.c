@@ -675,37 +675,37 @@ void gtkut_widget_init(void)
 	GtkWidget *clist;
 
 	clist = gtk_cmclist_new(1);
-	g_object_ref(GTK_OBJECT(clist));
+	g_object_ref(G_OBJECT(clist));
 #if GLIB_CHECK_VERSION(2,10,0)
-	g_object_ref_sink (GTK_OBJECT(clist));
+	g_object_ref_sink (G_OBJECT(clist));
 #else
-	gtk_object_ref (GTK_OBJECT(clist));
-	gtk_object_sink (GTK_OBJECT(clist));
+	gtk_object_ref (G_OBJECT(clist));
+	gtk_object_sink (G_OBJECT(clist));
 #endif
 	gtkut_clist_bindings_add(clist);
-	g_object_unref(GTK_OBJECT(clist));
+	g_object_unref(G_OBJECT(clist));
 
 	clist = gtk_cmctree_new(1, 0);
-	g_object_ref(GTK_OBJECT(clist));
+	g_object_ref(G_OBJECT(clist));
 #if GLIB_CHECK_VERSION(2,10,0)
-	g_object_ref_sink (GTK_OBJECT(clist));
+	g_object_ref_sink (G_OBJECT(clist));
 #else
-	gtk_object_ref (GTK_OBJECT(clist));
-	gtk_object_sink (GTK_OBJECT(clist));
+	gtk_object_ref (G_OBJECT(clist));
+	gtk_object_sink (G_OBJECT(clist));
 #endif
 	gtkut_clist_bindings_add(clist);
-	g_object_unref(GTK_OBJECT(clist));
+	g_object_unref(G_OBJECT(clist));
 
 	clist = gtk_sctree_new_with_titles(1, 0, NULL);
-	g_object_ref(GTK_OBJECT(clist));
+	g_object_ref(G_OBJECT(clist));
 #if GLIB_CHECK_VERSION(2,10,0)
-	g_object_ref_sink (GTK_OBJECT(clist));
+	g_object_ref_sink (G_OBJECT(clist));
 #else
-	gtk_object_ref (GTK_OBJECT(clist));
-	gtk_object_sink (GTK_OBJECT(clist));
+	gtk_object_ref (G_OBJECT(clist));
+	gtk_object_sink (G_OBJECT(clist));
 #endif
 	gtkut_clist_bindings_add(clist);
-	g_object_unref(GTK_OBJECT(clist));
+	g_object_unref(G_OBJECT(clist));
 }
 
 void gtkut_widget_set_app_icon(GtkWidget *widget)
@@ -1623,7 +1623,7 @@ struct _ClawsIOClosure
 {
   GdkInputFunction function;
   GdkInputCondition condition;
-  GdkDestroyNotify notify;
+  GDestroyNotify notify;
   gpointer data;
 };
 

@@ -25,7 +25,6 @@
 #include <glib/gi18n.h>
 #include <string.h>
 #include <gtk/gtk.h>
-#include <gtk/gtktext.h>
 #include <gdk/gdkkeysyms.h>
 
 #include "utils.h"

@@ -26,7 +26,6 @@
 
 #include <gtk/gtk.h>
 #include "gtkplugxembed.h"
-#include <gtk/gtkprivate.h>
 
 #include <gdk/gdkkeysyms.h>
 #include <gdk/gdkx.h>
@@ -154,7 +153,7 @@ gtk_plug_xembed_class_init (GtkPlugXEmbedClass *class)
   plug_signals[EMBEDDED] =
 	  g_signal_new ("embedded",
 			GTK_RUN_LAST,
-			GTK_OBJECT_CLASS (class)->type,
+			G_OBJECT_CLASS (class)->type,
 			GTK_STRUCT_OFFSET (GtkPlugXEmbedClass, embedded),
 			gtk_marshal_NONE__NONE,
 			GTK_TYPE_NONE, 0);
@@ -413,7 +412,7 @@ gtk_plug_xembed_finalize (GtkObject *object)
       plug->grabbed_keys = NULL;
     }
   
-  GTK_OBJECT_CLASS (parent_class)->finalize (object);
+  G_OBJECT_CLASS (parent_class)->finalize (object);
 }
 
 static void

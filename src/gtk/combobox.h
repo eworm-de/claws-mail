@@ -21,8 +21,7 @@
 #define __COMBOBOX_H__
 
 #include <glib.h>
-#include <gtk/gtkwidget.h>
-#include <gtk/gtkcombobox.h>
+#include <gtk/gtk.h>
 
 enum {
 	COMBOBOX_TEXT,

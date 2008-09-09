@@ -25,11 +25,7 @@
 
 #include <glib.h>
 #include <glib/gi18n.h>
-#include <gtk/gtkwidget.h>
-#include <gtk/gtkhbox.h>
-#include <gtk/gtkvbox.h>
-#include <gtk/gtklabel.h>
-#include <gtk/gtkpixmap.h>
+#include <gtk/gtk.h>
 #include <stdio.h>
 #include <string.h>
 #include <time.h>

@@ -27,9 +27,7 @@
 #include <glib/gi18n.h>
 #include <gdk/gdk.h>
 #include <gdk/gdkkeysyms.h>
-#include <gtk/gtkvbox.h>
-#include <gtk/gtkscrolledwindow.h>
-#include <gtk/gtksignal.h>
+#include <gtk/gtk.h>
 #include <stdio.h>
 #include <ctype.h>
 #include <string.h>

@@ -25,9 +25,7 @@
 
 #include <glib.h>
 #include <glib/gi18n.h>
-#include <gtk/gtkmain.h>
-#include <gtk/gtksignal.h>
-#include <gtk/gtkwindow.h>
+#include <gtk/gtk.h>
 #include <stdio.h>
 #include <string.h>
 #include <signal.h>

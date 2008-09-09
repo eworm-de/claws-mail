@@ -25,10 +25,7 @@
 
 #include <glib.h>
 #include <glib/gi18n.h>
-#include <gtk/gtkmain.h>
-#include <gtk/gtkwindow.h>
-#include <gtk/gtksignal.h>
-#include <gtk/gtkprogressbar.h>
+#include <gtk/gtk.h>
 #include <stdio.h>
 #include <unistd.h>
 #include <string.h>

@@ -4967,19 +4967,19 @@ size_t fast_strftime(gchar *buf, gint buflen, const gchar *format, struct tm *lt
 			case 'p':
 				if (lt->tm_hour >= 12) {
 					len = strlen(s_pm_up); CHECK_SIZE();
-					snprintf(curpos, buflen-total_done, s_pm_up);
+					snprintf(curpos, buflen-total_done, "%s", s_pm_up);
 				} else {
 					len = strlen(s_am_up); CHECK_SIZE();
-					snprintf(curpos, buflen-total_done, s_am_up);
+					snprintf(curpos, buflen-total_done, "%s", s_am_up);
 				}
 				break;
 			case 'P':
 				if (lt->tm_hour >= 12) {
 					len = strlen(s_pm_low); CHECK_SIZE();
-					snprintf(curpos, buflen-total_done, s_pm_low);
+					snprintf(curpos, buflen-total_done, "%s", s_pm_low);
 				} else {
 					len = strlen(s_am_low); CHECK_SIZE();
-					snprintf(curpos, buflen-total_done, s_am_low);
+					snprintf(curpos, buflen-total_done, "%s", s_am_low);
 				}
 				break;
 			case 'r':
@@ -5121,7 +5121,8 @@ int claws_unlink(const gchar *filename)
 					 NULL, NULL, NULL, NULL, &status, NULL);
 					debug_print("%s %s exited with status %d\n",
 						args[0], filename, WEXITSTATUS(status));
-					truncate(filename, 0);
+					if (truncate(filename, 0) < 0)
+						g_warning("couln't truncate");
 				}
 			}
 		}

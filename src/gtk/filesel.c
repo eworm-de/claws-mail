@@ -23,16 +23,7 @@
 
 #include <glib.h>
 #include <gdk/gdkkeysyms.h>
-#include <gtk/gtkwidget.h>
-#include <gtk/gtkfilesel.h>
-#include <gtk/gtkentry.h>
-#include <gtk/gtkmain.h>
-#include <gtk/gtksignal.h>
-#include <gtk/gtkeditable.h>
-#include <gtk/gtkstock.h>
-#include <gtk/gtkdialog.h>
-#include <gtk/gtkfilechooser.h>
-#include <gtk/gtkfilechooserdialog.h>
+#include <gtk/gtk.h>
 
 #ifdef MAEMO
 #ifdef CHINOOK
@@ -101,11 +92,19 @@ static GList *filesel_create(const gchar *title, const gchar *path,
 #ifdef MAEMO
 	GtkWidget *chooser;
 	if( path && strcmp(path, get_plugin_dir()) == 0 ) {
+#if !GTK_CHECK_VERSION(2,14,0)
 		chooser = gtk_file_chooser_dialog_new_with_backend
 					(title, NULL, action, "gtk+",
 					GTK_STOCK_CANCEL, GTK_RESPONSE_CANCEL,
 					action_btn, GTK_RESPONSE_ACCEPT, 
 					NULL);
+#else
+		chooser = gtk_file_chooser_dialog_new
+					(title, NULL, action,
+					GTK_STOCK_CANCEL, GTK_RESPONSE_CANCEL,
+					action_btn, GTK_RESPONSE_ACCEPT, 
+					NULL);
+#endif
 	}
 	else {
 		chooser = hildon_file_chooser_dialog_new (NULL, action);

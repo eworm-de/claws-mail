@@ -507,7 +507,7 @@ gtk_cmclist_class_init (GtkCMCListClass *klass)
   widget_class = (GtkWidgetClass *) klass;
   container_class = (GtkContainerClass *) klass;
 
-  parent_class = gtk_type_class (GTK_TYPE_CONTAINER);
+  parent_class = g_type_class_peek (GTK_TYPE_CONTAINER);
 
   object_class->finalize = gtk_cmclist_finalize;
   gtk_object_class->destroy = gtk_cmclist_destroy;
@@ -1224,10 +1224,10 @@ gtk_cmclist_set_hadjustment (GtkCMCList      *clist,
 
   if (clist->hadjustment)
     {
-      g_signal_handlers_disconnect_matched(GTK_OBJECT (clist->hadjustment), G_SIGNAL_MATCH_DATA,
+      g_signal_handlers_disconnect_matched(G_OBJECT (clist->hadjustment), G_SIGNAL_MATCH_DATA,
 		      	0, 0, 0, 0, clist);
 
-      g_object_unref (GTK_OBJECT (clist->hadjustment));
+      g_object_unref (G_OBJECT (clist->hadjustment));
     }
 
   clist->hadjustment = adjustment;
@@ -1237,8 +1237,8 @@ gtk_cmclist_set_hadjustment (GtkCMCList      *clist,
 #if GLIB_CHECK_VERSION(2,10,0)
       g_object_ref_sink (clist->hadjustment);
 #else
-      gtk_object_ref (GTK_OBJECT (clist->hadjustment));
-      gtk_object_sink (GTK_OBJECT (clist->hadjustment));
+      gtk_object_ref (G_OBJECT (clist->hadjustment));
+      gtk_object_sink (G_OBJECT (clist->hadjustment));
 #endif
       g_signal_connect (G_OBJECT (clist->hadjustment), "changed",
 			  G_CALLBACK( hadjustment_changed),
@@ -1277,9 +1277,9 @@ gtk_cmclist_set_vadjustment (GtkCMCList      *clist,
 
   if (clist->vadjustment)
     {
-      g_signal_handlers_disconnect_matched(GTK_OBJECT (clist->vadjustment), G_SIGNAL_MATCH_DATA,
+      g_signal_handlers_disconnect_matched(G_OBJECT (clist->vadjustment), G_SIGNAL_MATCH_DATA,
 		      	0, 0, 0, 0, clist);
-      g_object_unref (GTK_OBJECT (clist->vadjustment));
+      g_object_unref (G_OBJECT (clist->vadjustment));
     }
 
   clist->vadjustment = adjustment;
@@ -1289,14 +1289,14 @@ gtk_cmclist_set_vadjustment (GtkCMCList      *clist,
 #if GLIB_CHECK_VERSION(2,10,0)
       g_object_ref_sink (clist->vadjustment);
 #else
-      gtk_object_ref (GTK_OBJECT (clist->vadjustment));
-      gtk_object_sink (GTK_OBJECT (clist->vadjustment));
+      gtk_object_ref (G_OBJECT (clist->vadjustment));
+      gtk_object_sink (G_OBJECT (clist->vadjustment));
 #endif
 
-      g_signal_connect (GTK_OBJECT (clist->vadjustment), "changed",
+      g_signal_connect (G_OBJECT (clist->vadjustment), "changed",
 			  G_CALLBACK(vadjustment_changed),
 			  (gpointer) clist);
-      g_signal_connect (GTK_OBJECT (clist->vadjustment), "value_changed",
+      g_signal_connect (G_OBJECT (clist->vadjustment), "value_changed",
 			  G_CALLBACK(vadjustment_value_changed),
 			  (gpointer) clist);
     }
@@ -1451,7 +1451,7 @@ gtk_cmclist_column_title_active (GtkCMCList *clist,
 
   clist->column[column].button_passive = FALSE;
 
-  g_signal_handlers_disconnect_matched(GTK_OBJECT (clist->column[column].button), G_SIGNAL_MATCH_FUNC,
+  g_signal_handlers_disconnect_matched(G_OBJECT (clist->column[column].button), G_SIGNAL_MATCH_FUNC,
 		    0, 0, 0, column_title_passive_func, 0);
 
   GTK_WIDGET_SET_FLAGS (clist->column[column].button, GTK_CAN_FOCUS);
@@ -1843,7 +1843,7 @@ gtk_cmclist_set_column_width (GtkCMCList *clist,
   if (column < 0 || column >= clist->columns)
     return;
 
-  g_signal_emit (GTK_OBJECT (clist), clist_signals[RESIZE_COLUMN], 0,
+  g_signal_emit (G_OBJECT (clist), clist_signals[RESIZE_COLUMN], 0,
 		   column, width);
 }
 
@@ -2214,7 +2214,7 @@ column_button_create (GtkCMCList *clist,
 				  clist->title_window);
   gtk_widget_set_parent (button, GTK_WIDGET (clist));
 
-  g_signal_connect (GTK_OBJECT (button), "clicked",
+  g_signal_connect (G_OBJECT (button), "clicked",
 		      G_CALLBACK(column_button_clicked),
 		      (gpointer) clist);
   gtk_widget_show (button);
@@ -2237,7 +2237,7 @@ column_button_clicked (GtkWidget *widget,
     if (clist->column[i].button == widget)
       break;
 
-  g_signal_emit (GTK_OBJECT (clist), clist_signals[CLICK_COLUMN], 0, i);
+  g_signal_emit (G_OBJECT (clist), clist_signals[CLICK_COLUMN], 0, i);
 }
 
 static gint
@@ -2890,7 +2890,7 @@ real_remove_row (GtkCMCList *clist,
    * list to reflect the deincrimented indexies of rows after the
    * removal */
   if (clist_row->state == GTK_STATE_SELECTED)
-    g_signal_emit (GTK_OBJECT (clist), clist_signals[UNSELECT_ROW], 0,
+    g_signal_emit (G_OBJECT (clist), clist_signals[UNSELECT_ROW], 0,
 		     row, -1, NULL);
 
   sync_selection (clist, row, SYNC_REMOVE);
@@ -2908,7 +2908,7 @@ real_remove_row (GtkCMCList *clist,
 
   if (clist->selection_mode == GTK_SELECTION_BROWSE && !clist->selection &&
       clist->focus_row >= 0)
-    g_signal_emit (GTK_OBJECT (clist), clist_signals[SELECT_ROW], 0,
+    g_signal_emit (G_OBJECT (clist), clist_signals[SELECT_ROW], 0,
 		     clist->focus_row, -1, NULL);
 
   /* toast the row */
@@ -3240,7 +3240,7 @@ gtk_cmclist_row_move (GtkCMCList *clist,
       source_row == dest_row)
     return;
 
-  g_signal_emit (GTK_OBJECT (clist), clist_signals[ROW_MOVE], 0,
+  g_signal_emit (G_OBJECT (clist), clist_signals[ROW_MOVE], 0,
 		   source_row, dest_row);
 }
 
@@ -3528,7 +3528,7 @@ gtk_cmclist_set_selectable (GtkCMCList *clist,
 	  remove_grab (clist);
 	  GTK_CMCLIST_GET_CLASS (clist)->resync_selection (clist, NULL);
 	}
-      g_signal_emit (GTK_OBJECT (clist), clist_signals[UNSELECT_ROW], 0,
+      g_signal_emit (G_OBJECT (clist), clist_signals[UNSELECT_ROW], 0,
 		       row, -1, NULL);
     }      
 }
@@ -3557,7 +3557,7 @@ gtk_cmclist_select_row (GtkCMCList *clist,
   if (column < -1 || column >= clist->columns)
     return;
 
-  g_signal_emit (GTK_OBJECT (clist), clist_signals[SELECT_ROW], 0,
+  g_signal_emit (G_OBJECT (clist), clist_signals[SELECT_ROW], 0,
 		   row, column, NULL);
 }
 
@@ -3573,7 +3573,7 @@ gtk_cmclist_unselect_row (GtkCMCList *clist,
   if (column < -1 || column >= clist->columns)
     return;
 
-  g_signal_emit (GTK_OBJECT (clist), clist_signals[UNSELECT_ROW], 0,
+  g_signal_emit (G_OBJECT (clist), clist_signals[UNSELECT_ROW], 0,
 		   row, column, NULL);
 }
 
@@ -3600,7 +3600,7 @@ gtk_cmclist_undo_selection (GtkCMCList *clist)
 
   if (clist->selection_mode == GTK_SELECTION_MULTIPLE &&
       (clist->undo_selection || clist->undo_unselection))
-    g_signal_emit (GTK_OBJECT (clist), clist_signals[UNDO_SELECTION], 0);
+    g_signal_emit (G_OBJECT (clist), clist_signals[UNDO_SELECTION], 0);
 }
 
 /* PRIVATE SELECTION FUNCTIONS
@@ -3650,12 +3650,12 @@ toggle_row (GtkCMCList *clist,
 
       if (clist_row->state == GTK_STATE_SELECTED)
 	{
-	  g_signal_emit (GTK_OBJECT (clist), clist_signals[UNSELECT_ROW], 0,
+	  g_signal_emit (G_OBJECT (clist), clist_signals[UNSELECT_ROW], 0,
 			   row, column, event);
 	  return;
 	}
     case GTK_SELECTION_BROWSE:
-      g_signal_emit (GTK_OBJECT (clist), clist_signals[SELECT_ROW], 0,
+      g_signal_emit (G_OBJECT (clist), clist_signals[SELECT_ROW], 0,
 		       row, column, event);
       break;
     default:
@@ -3788,7 +3788,7 @@ real_select_row (GtkCMCList *clist,
 	  if (row == sel_row)
 	    row_selected = TRUE;
 	  else
-	    g_signal_emit (GTK_OBJECT (clist), clist_signals[UNSELECT_ROW], 0,
+	    g_signal_emit (G_OBJECT (clist), clist_signals[UNSELECT_ROW], 0,
 			     sel_row, column, event);
 	}
 
@@ -3905,7 +3905,7 @@ real_unselect_all (GtkCMCList *clist)
     case GTK_SELECTION_BROWSE:
       if (clist->focus_row >= 0)
 	{
-	  g_signal_emit (GTK_OBJECT (clist),
+	  g_signal_emit (G_OBJECT (clist),
 			   clist_signals[SELECT_ROW], 0,
 			   clist->focus_row, -1, NULL);
 	  return;
@@ -3930,7 +3930,7 @@ real_unselect_all (GtkCMCList *clist)
     {
       i = GPOINTER_TO_INT (list->data);
       list = list->next;
-      g_signal_emit (GTK_OBJECT (clist),
+      g_signal_emit (G_OBJECT (clist),
 		       clist_signals[UNSELECT_ROW], 0, i, -1, NULL);
     }
 }
@@ -3995,13 +3995,13 @@ real_undo_selection (GtkCMCList *clist)
     }
 
   for (work = clist->undo_selection; work; work = work->next)
-    g_signal_emit (GTK_OBJECT (clist), clist_signals[SELECT_ROW], 0,
+    g_signal_emit (G_OBJECT (clist), clist_signals[SELECT_ROW], 0,
 		     GPOINTER_TO_INT (work->data), -1, NULL);
 
   for (work = clist->undo_unselection; work; work = work->next)
     {
       /* g_print ("unselect %d\n",GPOINTER_TO_INT (work->data)); */
-      g_signal_emit (GTK_OBJECT (clist), clist_signals[UNSELECT_ROW], 0,
+      g_signal_emit (G_OBJECT (clist), clist_signals[UNSELECT_ROW], 0,
 		       GPOINTER_TO_INT (work->data), -1, NULL);
     }
 
@@ -4095,7 +4095,7 @@ resync_selection (GtkCMCList *clist,
 	      if (clist_row->selectable)
 		{
 		  clist_row->state = GTK_STATE_SELECTED;
-		  g_signal_emit (GTK_OBJECT (clist),
+		  g_signal_emit (G_OBJECT (clist),
 				   clist_signals[UNSELECT_ROW], 0,
 				   row, -1, event);
 		  clist->undo_selection = g_list_prepend
@@ -4116,7 +4116,7 @@ resync_selection (GtkCMCList *clist,
 		if (GTK_CMCLIST_ROW (list)->state == GTK_STATE_NORMAL)
 		  {
 		    GTK_CMCLIST_ROW (list)->state = GTK_STATE_SELECTED;
-		    g_signal_emit (GTK_OBJECT (clist),
+		    g_signal_emit (G_OBJECT (clist),
 				     clist_signals[UNSELECT_ROW], 0,
 				     i, -1, event);
 		    clist->undo_selection =
@@ -4144,7 +4144,7 @@ resync_selection (GtkCMCList *clist,
 		if (GTK_CMCLIST_ROW (list)->state == GTK_STATE_NORMAL)
 		  {
 		    GTK_CMCLIST_ROW (list)->state = GTK_STATE_SELECTED;
-		    g_signal_emit (GTK_OBJECT (clist),
+		    g_signal_emit (G_OBJECT (clist),
 				     clist_signals[UNSELECT_ROW], 0,
 				     e, -1, event);
 		    clist->undo_selection =
@@ -4164,7 +4164,7 @@ resync_selection (GtkCMCList *clist,
   
   clist->undo_unselection = g_list_reverse (clist->undo_unselection);
   for (list = clist->undo_unselection; list; list = list->next)
-    g_signal_emit (GTK_OBJECT (clist), clist_signals[SELECT_ROW], 0,
+    g_signal_emit (G_OBJECT (clist), clist_signals[SELECT_ROW], 0,
 		     GPOINTER_TO_INT (list->data), -1, event);
 
   clist->anchor = -1;
@@ -4458,16 +4458,16 @@ gtk_cmclist_destroy (GtkObject *object)
   /* unref adjustments */
   if (clist->hadjustment)
     {
-      g_signal_handlers_disconnect_matched(GTK_OBJECT (clist->hadjustment), G_SIGNAL_MATCH_DATA,
+      g_signal_handlers_disconnect_matched(G_OBJECT (clist->hadjustment), G_SIGNAL_MATCH_DATA,
 		      	0, 0, 0, 0, clist);
-      g_object_unref (GTK_OBJECT (clist->hadjustment));
+      g_object_unref (G_OBJECT (clist->hadjustment));
       clist->hadjustment = NULL;
     }
   if (clist->vadjustment)
     {
-      g_signal_handlers_disconnect_matched(GTK_OBJECT (clist->vadjustment), G_SIGNAL_MATCH_DATA,
+      g_signal_handlers_disconnect_matched(G_OBJECT (clist->vadjustment), G_SIGNAL_MATCH_DATA,
 		      	0, 0, 0, 0, clist);
-      g_object_unref (GTK_OBJECT (clist->vadjustment));
+      g_object_unref (G_OBJECT (clist->vadjustment));
       clist->vadjustment = NULL;
     }
 
@@ -5041,7 +5041,7 @@ gtk_cmclist_button_press (GtkWidget      *widget,
 		case GTK_SELECTION_SINGLE:
 		  if (event->type != GDK_BUTTON_PRESS)
 		    {
-		      g_signal_emit (GTK_OBJECT (clist),
+		      g_signal_emit (G_OBJECT (clist),
 				       clist_signals[SELECT_ROW], 0,
 				       row, column, event);
 		      clist->anchor = -1;
@@ -5050,7 +5050,7 @@ gtk_cmclist_button_press (GtkWidget      *widget,
 		    clist->anchor = row;
 		  break;
 		case GTK_SELECTION_BROWSE:
-		  g_signal_emit (GTK_OBJECT (clist),
+		  g_signal_emit (G_OBJECT (clist),
 				   clist_signals[SELECT_ROW], 0,
 				   row, column, event);
 		  break;
@@ -5063,7 +5063,7 @@ gtk_cmclist_button_press (GtkWidget      *widget,
 			  GTK_CMCLIST_GET_CLASS (clist)->resync_selection
 			    (clist, (GdkEvent *) event);
 			}
-		      g_signal_emit (GTK_OBJECT (clist),
+		      g_signal_emit (G_OBJECT (clist),
 				       clist_signals[SELECT_ROW], 0,
 				       row, column, event);
 		      break;
@@ -5416,7 +5416,7 @@ gtk_cmclist_motion (GtkWidget      *widget,
       switch (clist->selection_mode)
 	{
 	case GTK_SELECTION_BROWSE:
-	  g_signal_emit (GTK_OBJECT (clist), clist_signals[SELECT_ROW], 0,
+	  g_signal_emit (G_OBJECT (clist), clist_signals[SELECT_ROW], 0,
 			   clist->focus_row, -1, event);
 	  break;
 	case GTK_SELECTION_MULTIPLE:
@@ -6129,10 +6129,10 @@ adjust_adjustments (GtkCMCList *clist,
 	{
 	  clist->vadjustment->value = MAX (0, (LIST_HEIGHT (clist) -
 					       clist->clist_window_height));
-	  g_signal_emit_by_name (GTK_OBJECT (clist->vadjustment),
+	  g_signal_emit_by_name (G_OBJECT (clist->vadjustment),
 				   "value_changed");
 	}
-      g_signal_emit_by_name (GTK_OBJECT (clist->vadjustment), "changed");
+      g_signal_emit_by_name (G_OBJECT (clist->vadjustment), "changed");
     }
 
   if (clist->hadjustment)
@@ -6150,10 +6150,10 @@ adjust_adjustments (GtkCMCList *clist,
 	{
 	  clist->hadjustment->value = MAX (0, (LIST_WIDTH (clist) -
 					       clist->clist_window_width));
-	  g_signal_emit_by_name (GTK_OBJECT (clist->hadjustment),
+	  g_signal_emit_by_name (G_OBJECT (clist->hadjustment),
 				   "value_changed");
 	}
-      g_signal_emit_by_name (GTK_OBJECT (clist->hadjustment), "changed");
+      g_signal_emit_by_name (G_OBJECT (clist->hadjustment), "changed");
     }
 
   if (!block_resize && (!clist->vadjustment || !clist->hadjustment))
@@ -6525,7 +6525,7 @@ gtk_cmclist_focus_content_area (GtkCMCList *clist)
       if ((clist->selection_mode == GTK_SELECTION_BROWSE ||
 	   clist->selection_mode == GTK_SELECTION_MULTIPLE) &&
 	  !clist->selection)
-	g_signal_emit (GTK_OBJECT (clist),
+	g_signal_emit (G_OBJECT (clist),
 			 clist_signals[SELECT_ROW], 0,
 			 clist->focus_row, -1, NULL);
     }
@@ -6646,7 +6646,7 @@ gtk_cmclist_focus_in (GtkWidget     *widget,
 
       list = g_list_nth (clist->row_list, clist->focus_row);
       if (list && GTK_CMCLIST_ROW (list)->selectable)
-	g_signal_emit (GTK_OBJECT (clist), clist_signals[SELECT_ROW], 0,
+	g_signal_emit (G_OBJECT (clist), clist_signals[SELECT_ROW], 0,
 			 clist->focus_row, -1, event);
       else
 	gtk_cmclist_draw_focus (widget);
@@ -7020,7 +7020,7 @@ scroll_vertical (GtkCMCList      *clist,
       if (old_focus_row != clist->focus_row)
 	{
 	  if (clist->selection_mode == GTK_SELECTION_BROWSE)
-	    g_signal_emit (GTK_OBJECT (clist), clist_signals[UNSELECT_ROW], 0,
+	    g_signal_emit (G_OBJECT (clist), clist_signals[UNSELECT_ROW], 0,
 			     old_focus_row, -1, NULL);
 	  else if (!GTK_CMCLIST_ADD_MODE(clist))
 	    {
@@ -7035,7 +7035,7 @@ scroll_vertical (GtkCMCList      *clist,
 	  if (old_focus_row != clist->focus_row &&
 	      !(clist->selection_mode == GTK_SELECTION_MULTIPLE &&
 		GTK_CMCLIST_ADD_MODE(clist)))
-	    g_signal_emit (GTK_OBJECT (clist), clist_signals[SELECT_ROW], 0,
+	    g_signal_emit (G_OBJECT (clist), clist_signals[SELECT_ROW], 0,
 			     clist->focus_row, -1, NULL);
 	  switch (scroll_type)
 	    {
@@ -7079,7 +7079,7 @@ scroll_vertical (GtkCMCList      *clist,
 	  if (old_focus_row != clist->focus_row &&
 	      !(clist->selection_mode == GTK_SELECTION_MULTIPLE &&
 		GTK_CMCLIST_ADD_MODE(clist)))
-	    g_signal_emit (GTK_OBJECT (clist), clist_signals[SELECT_ROW], 0,
+	    g_signal_emit (G_OBJECT (clist), clist_signals[SELECT_ROW], 0,
 			     clist->focus_row, -1, NULL);
 	  break;
 	}

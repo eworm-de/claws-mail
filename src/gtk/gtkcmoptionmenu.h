@@ -29,7 +29,7 @@
 
 
 #include <gdk/gdk.h>
-#include <gtk/gtkbutton.h>
+#include <gtk/gtk.h>
 
 
 G_BEGIN_DECLS

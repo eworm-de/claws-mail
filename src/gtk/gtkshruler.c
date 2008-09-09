@@ -29,7 +29,7 @@
 #include <math.h>
 #include <stdio.h>
 #include <string.h>
-#include <gtk/gtkhruler.h>
+#include <gtk/gtk.h>
 #include "gtkshruler.h"
 
 #define RULER_HEIGHT          14

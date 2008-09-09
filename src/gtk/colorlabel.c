@@ -27,17 +27,6 @@
 #include <glib.h>
 #include <glib/gi18n.h>
 #include <gtk/gtk.h>
-#include <gtk/gtkwidget.h>
-#include <gtk/gtkimage.h>
-#include <gtk/gtkmenu.h>
-#include <gtk/gtkcheckmenuitem.h>
-#include <gtk/gtklabel.h>
-#include <gtk/gtkmenuitem.h>
-#include <gtk/gtkalignment.h>
-#include <gtk/gtkhbox.h>
-#include <gtk/gtkvbox.h>
-#include <gtk/gtkwindow.h>
-#include <gtk/gtkdrawingarea.h>
 
 #include "colorlabel.h"
 #include "utils.h"

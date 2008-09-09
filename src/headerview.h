@@ -21,7 +21,7 @@
 #define __HEADERVIEW_H__
 
 #include <glib.h>
-#include <gtk/gtkwidget.h>
+#include <gtk/gtk.h>
 
 typedef struct _HeaderView	HeaderView;
 

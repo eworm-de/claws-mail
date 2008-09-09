@@ -447,8 +447,8 @@ gtk_cmctree_class_init (GtkCMCTreeClass *klass)
   container_class = (GtkContainerClass *) klass;
   clist_class = (GtkCMCListClass *) klass;
 
-  parent_class = gtk_type_class (GTK_TYPE_CMCLIST);
-  container_class = gtk_type_class (GTK_TYPE_CONTAINER);
+  parent_class = g_type_class_peek (GTK_TYPE_CMCLIST);
+  container_class = g_type_class_peek (GTK_TYPE_CONTAINER);
 
   gobject_class->set_property = gtk_cmctree_set_arg;
   gobject_class->get_property = gtk_cmctree_get_arg;
@@ -3259,7 +3259,7 @@ tree_select (GtkCMCTree     *ctree,
 {
   if (node && GTK_CMCTREE_ROW (node)->row.state != GTK_STATE_SELECTED &&
       GTK_CMCTREE_ROW (node)->row.selectable)
-    g_signal_emit (GTK_OBJECT (ctree), ctree_signals[TREE_SELECT_ROW], 0,
+    g_signal_emit (G_OBJECT (ctree), ctree_signals[TREE_SELECT_ROW], 0,
 		     node, -1);
 }
 
@@ -3269,7 +3269,7 @@ tree_unselect (GtkCMCTree     *ctree,
 	       gpointer      data)
 {
   if (node && GTK_CMCTREE_ROW (node)->row.state == GTK_STATE_SELECTED)
-    g_signal_emit (GTK_OBJECT (ctree), ctree_signals[TREE_UNSELECT_ROW], 0,
+    g_signal_emit (G_OBJECT (ctree), ctree_signals[TREE_UNSELECT_ROW], 0,
 		     node, -1);
 }
 
@@ -3279,7 +3279,7 @@ tree_expand (GtkCMCTree     *ctree,
 	     gpointer      data)
 {
   if (node && !GTK_CMCTREE_ROW (node)->expanded)
-    g_signal_emit (GTK_OBJECT (ctree), ctree_signals[TREE_EXPAND], 0,node);
+    g_signal_emit (G_OBJECT (ctree), ctree_signals[TREE_EXPAND], 0,node);
 }
 
 static void
@@ -3288,7 +3288,7 @@ tree_collapse (GtkCMCTree     *ctree,
 	       gpointer      data)
 {
   if (node && GTK_CMCTREE_ROW (node)->expanded)
-    g_signal_emit (GTK_OBJECT (ctree), ctree_signals[TREE_COLLAPSE], 0,node);
+    g_signal_emit (G_OBJECT (ctree), ctree_signals[TREE_COLLAPSE], 0,node);
 }
 
 static void
@@ -3309,9 +3309,9 @@ tree_toggle_expansion (GtkCMCTree     *ctree,
     return;
 
   if (GTK_CMCTREE_ROW (node)->expanded)
-    g_signal_emit (GTK_OBJECT (ctree), ctree_signals[TREE_COLLAPSE], 0,node);
+    g_signal_emit (G_OBJECT (ctree), ctree_signals[TREE_COLLAPSE], 0,node);
   else
-    g_signal_emit (GTK_OBJECT (ctree), ctree_signals[TREE_EXPAND], 0,node);
+    g_signal_emit (G_OBJECT (ctree), ctree_signals[TREE_EXPAND], 0,node);
 }
 
 static GtkCMCTreeRow *
@@ -3435,7 +3435,7 @@ real_select_row (GtkCMCList *clist,
   
   if ((node = g_list_nth (clist->row_list, row)) &&
       GTK_CMCTREE_ROW (node)->row.selectable)
-    g_signal_emit (GTK_OBJECT (clist), ctree_signals[TREE_SELECT_ROW],0,
+    g_signal_emit (G_OBJECT (clist), ctree_signals[TREE_SELECT_ROW],0,
 		     node, column);
 }
 
@@ -3450,7 +3450,7 @@ real_unselect_row (GtkCMCList *clist,
   g_return_if_fail (GTK_IS_CMCTREE (clist));
 
   if ((node = g_list_nth (clist->row_list, row)))
-    g_signal_emit (GTK_OBJECT (clist), ctree_signals[TREE_UNSELECT_ROW],0,
+    g_signal_emit (G_OBJECT (clist), ctree_signals[TREE_UNSELECT_ROW],0,
 		     node, column);
 }
 
@@ -3488,7 +3488,7 @@ real_tree_select (GtkCMCTree     *ctree,
 	  if (node == sel_row)
 	    node_selected = TRUE;
 	  else
-	    g_signal_emit (GTK_OBJECT (ctree),
+	    g_signal_emit (G_OBJECT (ctree),
 			     ctree_signals[TREE_UNSELECT_ROW], 0, sel_row, column);
 	}
 
@@ -4430,7 +4430,7 @@ gtk_cmctree_move (GtkCMCTree     *ctree,
   g_return_if_fail (GTK_IS_CMCTREE (ctree));
   g_return_if_fail (node != NULL);
   
-  g_signal_emit (GTK_OBJECT (ctree), ctree_signals[TREE_MOVE], 0, node,
+  g_signal_emit (G_OBJECT (ctree), ctree_signals[TREE_MOVE], 0, node,
 		   new_parent, new_sibling);
 }
 
@@ -4444,7 +4444,7 @@ gtk_cmctree_expand (GtkCMCTree     *ctree,
   if (GTK_CMCTREE_ROW (node)->is_leaf)
     return;
 
-  g_signal_emit (GTK_OBJECT (ctree), ctree_signals[TREE_EXPAND], 0, node);
+  g_signal_emit (G_OBJECT (ctree), ctree_signals[TREE_EXPAND], 0, node);
 }
 
 void 
@@ -4511,7 +4511,7 @@ gtk_cmctree_collapse (GtkCMCTree     *ctree,
   if (GTK_CMCTREE_ROW (node)->is_leaf)
     return;
 
-  g_signal_emit (GTK_OBJECT (ctree), ctree_signals[TREE_COLLAPSE], 0, node);
+  g_signal_emit (G_OBJECT (ctree), ctree_signals[TREE_COLLAPSE], 0, node);
 }
 
 void 
@@ -4631,7 +4631,7 @@ gtk_cmctree_select (GtkCMCTree     *ctree,
   g_return_if_fail (node != NULL);
 
   if (GTK_CMCTREE_ROW (node)->row.selectable)
-    g_signal_emit (GTK_OBJECT (ctree), ctree_signals[TREE_SELECT_ROW], 0,
+    g_signal_emit (G_OBJECT (ctree), ctree_signals[TREE_SELECT_ROW], 0,
 		     node, -1);
 }
 
@@ -4642,7 +4642,7 @@ gtk_cmctree_unselect (GtkCMCTree     *ctree,
   g_return_if_fail (GTK_IS_CMCTREE (ctree));
   g_return_if_fail (node != NULL);
 
-  g_signal_emit (GTK_OBJECT (ctree), ctree_signals[TREE_UNSELECT_ROW], 0,
+  g_signal_emit (G_OBJECT (ctree), ctree_signals[TREE_UNSELECT_ROW], 0,
 		   node, -1);
 }
 

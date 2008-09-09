@@ -30,8 +30,7 @@
 
 #include <libgnomeprint/gnome-print-config.h>
 #include <libgnomeprint/gnome-print-job.h>
-#include <gtk/gtktextbuffer.h>
-//#include <gtksourceview/gtksourceview.h>
+#include <gtk/gtk.h>
 
 G_BEGIN_DECLS
 

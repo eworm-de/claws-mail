@@ -37,8 +37,7 @@
 #include "image_viewer.h"
 
 #include <glib/gi18n.h>
-#include <gtk/gtkmain.h>
-#include <gtk/gtktextview.h>
+#include <gtk/gtk.h>
 #include <libgnomeprint/gnome-print-pango.h>
 
 #ifdef ENABLE_PROFILE

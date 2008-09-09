@@ -25,8 +25,7 @@
 #define __ADDRESSITEM_H__
 
 #include <glib.h>
-#include <gtk/gtkwidget.h>
-#include <gtk/gtkctree.h>
+#include <gtk/gtk.h>
 
 #include "compose.h"
 #include "addrindex.h"

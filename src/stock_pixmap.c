@@ -19,8 +19,7 @@
 
 #include "defs.h"
 #include <glib.h>
-#include <gtk/gtkwidget.h>
-#include <gtk/gtkimage.h>
+#include <gtk/gtk.h>
 #include <string.h>
 #include <dirent.h>
 

@@ -32,15 +32,14 @@
 
 
 #include <gdk/gdk.h>
-#include <gtk/gtkwidget.h>
-#include <gtk/gtkvbox.h>
+#include <gtk/gtk.h>
 
 
 #define GTK_TYPE_VSCROLLBUTTON            (gtk_vscrollbutton_get_type ())
-#define GTK_VSCROLLBUTTON(obj)            (GTK_CHECK_CAST ((obj), GTK_TYPE_VSCROLLBUTTON, GtkVScrollbutton))
-#define GTK_VSCROLLBUTTON_CLASS(klass)    (GTK_CHECK_CLASS_CAST ((klass), GTK_TYPE_VSCROLLBUTTON, GtkVScrollbuttonClass))
-#define GTK_IS_VSCROLLBUTTON(obj)         (GTK_CHECK_TYPE ((obj), GTK_TYPE_VSCROLLBUTTON))
-#define GTK_IS_VSCROLLBUTTON_CLASS(klass) (GTK_CHECK_CLASS_TYPE ((klass), GTK_TYPE_VSCROLLBUTTON))
+#define GTK_VSCROLLBUTTON(obj)            (G_TYPE_CHECK_INSTANCE_CAST ((obj), GTK_TYPE_VSCROLLBUTTON, GtkVScrollbutton))
+#define GTK_VSCROLLBUTTON_CLASS(klass)    (G_TYPE_CHECK_CLASS_CAST ((klass), GTK_TYPE_VSCROLLBUTTON, GtkVScrollbuttonClass))
+#define GTK_IS_VSCROLLBUTTON(obj)         (G_TYPE_CHECK_INSTANCE_TYPE ((obj), GTK_TYPE_VSCROLLBUTTON))
+#define GTK_IS_VSCROLLBUTTON_CLASS(klass) (G_TYPE_CHECK_CLASS_TYPE ((klass), GTK_TYPE_VSCROLLBUTTON))
 
 typedef struct _GtkVScrollbutton       GtkVScrollbutton;
 typedef struct _GtkVScrollbuttonClass  GtkVScrollbuttonClass;
@@ -70,7 +69,7 @@ extern "C" {
 #endif /* __cplusplus */
 
 
-GtkType    gtk_vscrollbutton_get_type	(void);
+GType    gtk_vscrollbutton_get_type	(void);
 GtkWidget* gtk_vscrollbutton_new	(GtkAdjustment *adjustment);
 gint 	   gtk_vscrollbutton_scroll	(GtkVScrollbutton *scrollbutton);
 

@@ -21,7 +21,7 @@
 #define __SOURCEWINDOW_H__
 
 #include <glib.h>
-#include <gtk/gtkwidget.h>
+#include <gtk/gtk.h>
 
 #include "procmsg.h"
 

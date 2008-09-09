@@ -1,5 +1,4 @@
 #include <gtk/gtk.h>
-#include <gtk/gtkprivate.h>
 
 #include <gdk/gdkkeysyms.h>
 #include <gdk/gdkx.h>

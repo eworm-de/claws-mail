@@ -9,10 +9,10 @@
 /* This code is based on "gtkflist.{h,c}" from mc-4.5.42 .*/
 
 #define TYPE_GTK_SCTREE			(gtk_sctree_get_type ())
-#define GTK_SCTREE(obj)			(GTK_CHECK_CAST ((obj), TYPE_GTK_SCTREE, GtkSCTree))
-#define GTK_SCTREE_CLASS(klass)		(GTK_CHECK_CLASS_CAST ((klass), TYPE_GTK_SCTREE, GtkSCTreeClass))
-#define GTK_IS_SCTREE(obj)		(GTK_CHECK_TYPE ((obj), TYPE_GTK_SCTREE))
-#define GTK_IS_SCTREE_CLASS(klass)	(GTK_CHECK_CLASS_TYPE ((klass), TYPE_GTK_SCTREE))
+#define GTK_SCTREE(obj)			(G_TYPE_CHECK_INSTANCE_CAST ((obj), TYPE_GTK_SCTREE, GtkSCTree))
+#define GTK_SCTREE_CLASS(klass)		(G_TYPE_CHECK_CLASS_CAST ((klass), TYPE_GTK_SCTREE, GtkSCTreeClass))
+#define GTK_IS_SCTREE(obj)		(G_TYPE_CHECK_INSTANCE_TYPE ((obj), TYPE_GTK_SCTREE))
+#define GTK_IS_SCTREE_CLASS(klass)	(G_TYPE_CHECK_CLASS_TYPE ((klass), TYPE_GTK_SCTREE))
 
 
 typedef struct _GtkSCTree GtkSCTree;

@@ -62,7 +62,7 @@ void ssl_done_socket			(SockInfo	*sockinfo);
 typedef struct _SSLClientCertHookData SSLClientCertHookData;
 struct _SSLClientCertHookData
 {
-	void *account;
+	const void *account;
 	const gchar *cert_path;
 	const gchar *password;
 	gboolean is_smtp;

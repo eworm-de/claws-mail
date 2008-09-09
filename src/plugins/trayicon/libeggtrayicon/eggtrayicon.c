@@ -23,7 +23,7 @@
 #include <time.h>
 #include <glib.h>
 #include <glib/gi18n.h>
-#include <gtk/gtkversion.h>
+#include <gtk/gtk.h>
 
 #include <string.h>
 #include "eggtrayicon.h"

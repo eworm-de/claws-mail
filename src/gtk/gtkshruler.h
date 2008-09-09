@@ -20,7 +20,7 @@
 
 
 #include <gdk/gdk.h>
-#include <gtk/gtkhruler.h>
+#include <gtk/gtk.h>
 
 
 #ifdef __cplusplus
@@ -28,9 +28,9 @@ extern "C" {
 #endif /* __cplusplus */
 
 
-#define GTK_SHRULER(obj)            (GTK_CHECK_CAST ((obj), gtk_shruler_get_type (), GtkSHRuler))
-#define GTK_SHRULER_CLASS(klass)    (GTK_CHECK_CLASS_CAST ((klass), gtk_shruler_get_type (), GtkSHRulerClass))
-#define GTK_IS_SHRULER(obj)         (GTK_CHECK_TYPE ((obj), gtk_shruler_get_type ()))
+#define GTK_SHRULER(obj)            (G_TYPE_CHECK_INSTANCE_CAST ((obj), gtk_shruler_get_type (), GtkSHRuler))
+#define GTK_SHRULER_CLASS(klass)    (G_TYPE_CHECK_CLASS_CAST ((klass), gtk_shruler_get_type (), GtkSHRulerClass))
+#define GTK_IS_SHRULER(obj)         (G_TYPE_CHECK_INSTANCE_TYPE ((obj), gtk_shruler_get_type ()))
 
 
 typedef struct _GtkSHRuler        GtkSHRuler;

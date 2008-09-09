@@ -23,8 +23,7 @@
 #define __UNDO_H__
 
 #include <glib.h>
-#include <gtk/gtktextview.h>
-#include <gtk/gtkitemfactory.h>
+#include <gtk/gtk.h>
 
 typedef enum 
 {

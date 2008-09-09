@@ -37,7 +37,7 @@
 
 #ifdef USE_ASPELL
 
-#include <gtk/gtkoptionmenu.h>
+#include <gtk/gtk.h>
 
 typedef struct _GtkAspell GtkAspell; /* Defined in gtkaspell.c */
 

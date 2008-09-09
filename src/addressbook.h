@@ -21,7 +21,7 @@
 #define __ADDRESSBOOK_H__
 
 #include <glib.h>
-#include <gtk/gtkwidget.h>
+#include <gtk/gtk.h>
 
 #include "compose.h"
 #include "addritem.h"

@@ -21,7 +21,7 @@
 #define __STOCK_PIXMAP_H__
 
 #include <glib.h>
-#include <gtk/gtkwidget.h>
+#include <gtk/gtk.h>
 
 typedef enum
 {

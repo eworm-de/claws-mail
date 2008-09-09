@@ -36,7 +36,6 @@
 #else
 #include <hildon-widgets/hildon-program.h>
 #endif
-#include <gtk/gtkmain.h>
 #endif
 
 #if 0 /* FIXME */

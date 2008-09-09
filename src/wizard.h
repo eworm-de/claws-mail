@@ -23,7 +23,7 @@
 
 #include <glib.h>
 #include <gdk/gdk.h>
-#include <gtk/gtkwidget.h>
+#include <gtk/gtk.h>
 
 #include "mainwindow.h"
 

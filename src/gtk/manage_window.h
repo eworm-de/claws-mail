@@ -21,8 +21,7 @@
 #define __MANAGE_WINDOW_H__
 
 #include <glib.h>
-#include <gtk/gtkwidget.h>
-#include <gtk/gtkwindow.h>
+#include <gtk/gtk.h>
 
 #define MANAGE_WINDOW_SIGNALS_CONNECT(window) \
 { \

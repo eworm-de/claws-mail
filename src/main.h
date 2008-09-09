@@ -21,7 +21,7 @@
 #define __MAIN_H__
 
 #include <glib.h>
-#include <gtk/gtkwidget.h>
+#include <gtk/gtk.h>
 #ifdef MAEMO
 #ifdef CHINOOK
 #include <hildon/hildon-program.h>

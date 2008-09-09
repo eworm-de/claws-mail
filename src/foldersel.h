@@ -21,7 +21,7 @@
 #define __FOLDERSEL_H__
 
 #include <glib.h>
-#include <gtk/gtkwindow.h>
+#include <gtk/gtk.h>
 
 #include "folder.h"
 

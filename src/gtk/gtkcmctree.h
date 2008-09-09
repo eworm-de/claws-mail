@@ -36,11 +36,11 @@
 G_BEGIN_DECLS
 
 #define GTK_TYPE_CMCTREE            (gtk_cmctree_get_type ())
-#define GTK_CMCTREE(obj)            (GTK_CHECK_CAST ((obj), GTK_TYPE_CMCTREE, GtkCMCTree))
-#define GTK_CMCTREE_CLASS(klass)    (GTK_CHECK_CLASS_CAST ((klass), GTK_TYPE_CMCTREE, GtkCMCTreeClass))
-#define GTK_IS_CMCTREE(obj)         (GTK_CHECK_TYPE ((obj), GTK_TYPE_CMCTREE))
-#define GTK_IS_CMCTREE_CLASS(klass) (GTK_CHECK_CLASS_TYPE ((klass), GTK_TYPE_CMCTREE))
-#define GTK_CMCTREE_GET_CLASS(obj)  (GTK_CHECK_GET_CLASS ((obj), GTK_TYPE_CMCTREE, GtkCMCTreeClass))
+#define GTK_CMCTREE(obj)            (G_TYPE_CHECK_INSTANCE_CAST ((obj), GTK_TYPE_CMCTREE, GtkCMCTree))
+#define GTK_CMCTREE_CLASS(klass)    (G_TYPE_CHECK_CLASS_CAST ((klass), GTK_TYPE_CMCTREE, GtkCMCTreeClass))
+#define GTK_IS_CMCTREE(obj)         (G_TYPE_CHECK_INSTANCE_TYPE ((obj), GTK_TYPE_CMCTREE))
+#define GTK_IS_CMCTREE_CLASS(klass) (G_TYPE_CHECK_CLASS_TYPE ((klass), GTK_TYPE_CMCTREE))
+#define GTK_CMCTREE_GET_CLASS(obj)  (G_TYPE_INSTANCE_GET_CLASS ((obj), GTK_TYPE_CMCTREE, GtkCMCTreeClass))
 
 #define GTK_CMCTREE_ROW(_node_) ((GtkCMCTreeRow *)(((GList *)(_node_))->data))
 #define GTK_CMCTREE_NODE(_node_) ((GtkCMCTreeNode *)((_node_)))

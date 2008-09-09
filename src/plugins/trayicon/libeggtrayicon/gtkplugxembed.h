@@ -27,8 +27,7 @@
 
 
 #include <gdk/gdk.h>
-#include <gtk/gtksocket.h>
-#include <gtk/gtkwindow.h>
+#include <gtk/gtk.h>
 
 
 #ifdef __cplusplus

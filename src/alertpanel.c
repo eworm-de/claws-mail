@@ -197,7 +197,7 @@ void alertpanel_error_log(const gchar *format, ...)
 		if (val == G_ALERTALTERNATE)
 			log_window_show(mainwin->logwin);
 	} else
-		alertpanel_error(buf);
+		alertpanel_error("%s", buf);
 }
 
 static void alertpanel_show(void)

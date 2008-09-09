@@ -26,16 +26,7 @@
 #include <glib.h>
 #include <glib/gi18n.h>
 #include <gdk/gdkkeysyms.h>
-#include <gtk/gtkwidget.h>
-#include <gtk/gtkwindow.h>
-#include <gtk/gtksignal.h>
-#include <gtk/gtkvbox.h>
-#include <gtk/gtkhbox.h>
-#include <gtk/gtklabel.h>
-#include <gtk/gtkhseparator.h>
-#include <gtk/gtkscrolledwindow.h>
-#include <gtk/gtktext.h>
-#include <gtk/gtkbutton.h>
+#include <gtk/gtk.h>
 #if HAVE_SYS_UTSNAME_H
 #  include <sys/utsname.h>
 #endif

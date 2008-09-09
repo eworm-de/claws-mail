@@ -33,12 +33,7 @@
 #endif
 
 #include <glib.h>
-#include <gtk/gtksignal.h>
-#include <gtk/gtkbutton.h>
-#include <gtk/gtkmisc.h>
 #include <gtk/gtk.h>
-#include <gtk/gtkbox.h>
-#include <gtk/gtkmain.h>
 
 #include "gtkvscrollbutton.h"
 
@@ -56,7 +51,7 @@ enum {
 static void gtk_vscrollbutton_class_init(GtkVScrollbuttonClass * klass);
 static void gtk_vscrollbutton_init(GtkVScrollbutton * vscrollbutton);
 
-GtkType gtk_vscrollbutton_get_type		(void);
+GType gtk_vscrollbutton_get_type		(void);
 GtkWidget *gtk_vscrollbutton_new		(GtkAdjustment 	  *adjustment);
 
 static gint gtk_vscrollbutton_button_release	(GtkWidget 	  *widget,
@@ -251,8 +246,8 @@ void gtk_vscrollbutton_set_adjustment(GtkVScrollbutton *scrollbutton,
 #if GLIB_CHECK_VERSION(2,10,0)
 	g_object_ref_sink (G_OBJECT(adjustment));
 #else
-	gtk_object_ref (GTK_OBJECT (adjustment));
-	gtk_object_sink (GTK_OBJECT (adjustment));
+	gtk_object_ref (G_OBJECT (adjustment));
+	gtk_object_sink (G_OBJECT (adjustment));
 #endif
     }
 }

@@ -22,7 +22,6 @@
 #include <glib.h>
 #include <glib/gi18n.h>
 #include <gdk/gdkkeysyms.h>
-#include <gtk/gtkscrolledwindow.h>
 #include <gtk/gtk.h>
 
 #include <stdio.h>

@@ -23,8 +23,7 @@
 
 #include <glib.h>
 #include <glib/gi18n.h>
-#include <gtk/gtkscrolledwindow.h>
-#include <gtk/gtkpixmap.h>
+#include <gtk/gtk.h>
 
 #include "procmime.h"
 #include "utils.h"

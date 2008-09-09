@@ -27,13 +27,7 @@
 #include <glib.h>
 #include <glib/gi18n.h>
 #include <gdk/gdkkeysyms.h>
-#include <gtk/gtkwindow.h>
-#include <gtk/gtksignal.h>
-#include <gtk/gtklabel.h>
-#include <gtk/gtkvbox.h>
-#include <gtk/gtkentry.h>
-#include <gtk/gtktable.h>
-#include <gtk/gtkitemfactory.h>
+#include <gtk/gtk.h>
 
 typedef struct _PersonEdit_dlg PersonEditDlg;
 struct _PersonEdit_dlg {

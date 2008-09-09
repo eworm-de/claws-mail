@@ -25,8 +25,7 @@
 
 #include <glib.h>
 #include <glib/gi18n.h>
-#include <gtk/gtkmain.h>
-#include <gtk/gtkrc.h>
+#include <gtk/gtk.h>
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -140,7 +139,6 @@ GCRY_THREAD_OPTION_PTHREAD_IMPL;
 #include <hildon-widgets/hildon-banner.h>
 #include <hildon-widgets/hildon-program.h>
 #endif
-#include <gtk/gtkmain.h>
 #include <libosso.h>
 #include <libgnomevfs/gnome-vfs-volume.h>
 #include <libgnomevfs/gnome-vfs-volume-monitor.h>

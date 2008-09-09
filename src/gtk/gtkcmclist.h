@@ -77,11 +77,11 @@ typedef enum
 } GtkCMButtonAction;
 
 #define GTK_TYPE_CMCLIST            (gtk_cmclist_get_type ())
-#define GTK_CMCLIST(obj)            (GTK_CHECK_CAST ((obj), GTK_TYPE_CMCLIST, GtkCMCList))
-#define GTK_CMCLIST_CLASS(klass)    (GTK_CHECK_CLASS_CAST ((klass), GTK_TYPE_CMCLIST, GtkCMCListClass))
-#define GTK_IS_CMCLIST(obj)         (GTK_CHECK_TYPE ((obj), GTK_TYPE_CMCLIST))
-#define GTK_IS_CMCLIST_CLASS(klass) (GTK_CHECK_CLASS_TYPE ((klass), GTK_TYPE_CMCLIST))
-#define GTK_CMCLIST_GET_CLASS(obj)  (GTK_CHECK_GET_CLASS ((obj), GTK_TYPE_CMCLIST, GtkCMCListClass))
+#define GTK_CMCLIST(obj)            (G_TYPE_CHECK_INSTANCE_CAST ((obj), GTK_TYPE_CMCLIST, GtkCMCList))
+#define GTK_CMCLIST_CLASS(klass)    (G_TYPE_CHECK_CLASS_CAST ((klass), GTK_TYPE_CMCLIST, GtkCMCListClass))
+#define GTK_IS_CMCLIST(obj)         (G_TYPE_CHECK_INSTANCE_TYPE ((obj), GTK_TYPE_CMCLIST))
+#define GTK_IS_CMCLIST_CLASS(klass) (G_TYPE_CHECK_CLASS_TYPE ((klass), GTK_TYPE_CMCLIST))
+#define GTK_CMCLIST_GET_CLASS(obj)  (G_TYPE_INSTANCE_GET_CLASS ((obj), GTK_TYPE_CMCLIST, GtkCMCListClass))
 
 
 #define GTK_CMCLIST_FLAGS(clist)             (GTK_CMCLIST (clist)->flags)

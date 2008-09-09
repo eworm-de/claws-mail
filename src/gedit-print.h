@@ -33,7 +33,7 @@
 
 #ifdef USE_GNOMEPRINT
 
-#include <gtk/gtktextview.h>
+#include <gtk/gtk.h>
 
 void gedit_print 		(GtkTextView* view);
 

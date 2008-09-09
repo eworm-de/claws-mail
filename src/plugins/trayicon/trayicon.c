@@ -390,7 +390,7 @@ static void create_trayicon()
 	destroy_signal_id =
 	g_signal_connect(G_OBJECT(trayicon), "destroy",
 		G_CALLBACK(destroy_cb), NULL);
-	g_signal_connect(GTK_OBJECT(trayicon), "size-request",
+	g_signal_connect(G_OBJECT(trayicon), "size-request",
 		G_CALLBACK(resize_cb), NULL);
 	g_signal_connect(G_OBJECT(eventbox), "button-press-event",
 		G_CALLBACK(click_cb), NULL);

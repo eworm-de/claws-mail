@@ -21,7 +21,7 @@
 #define __ACTION_H__
 
 #include <glib.h>
-#include <gtk/gtkitemfactory.h>
+#include <gtk/gtk.h>
 
 #include "mainwindow.h"
 #include "messageview.h"

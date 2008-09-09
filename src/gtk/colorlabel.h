@@ -21,7 +21,7 @@
 #define COLORLABEL_H__
 
 #include <glib.h>
-#include <gtk/gtkimage.h>
+#include <gtk/gtk.h>
 
 /* max value of color label index (0..max) - see also procmsg.h */
 #define COLORLABELS 15

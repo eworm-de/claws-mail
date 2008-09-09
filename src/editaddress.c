@@ -26,12 +26,7 @@
 #include <glib.h>
 #include <glib/gi18n.h>
 #include <gdk/gdkkeysyms.h>
-#include <gtk/gtkwindow.h>
-#include <gtk/gtksignal.h>
-#include <gtk/gtklabel.h>
-#include <gtk/gtkvbox.h>
-#include <gtk/gtkentry.h>
-#include <gtk/gtktable.h>
+#include <gtk/gtk.h>
 
 #include "alertpanel.h"
 #include "mgutils.h"

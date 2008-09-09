@@ -55,7 +55,7 @@ void description_window_create(DescriptionWindow *dwindow)
 
 		/* in case the description window is closed using the WM's [X] button */
 		g_signal_connect(G_OBJECT(dwindow->window), "destroy",
-				GTK_SIGNAL_FUNC(gtk_widget_destroyed), &dwindow->window);
+				G_CALLBACK(gtk_widget_destroyed), &dwindow->window);
 
 	} else g_print("windows exist\n");
 }

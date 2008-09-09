@@ -1359,7 +1359,7 @@ gtk_sctree_class_init (GtkSCTreeClass *klass)
 	clist_class = (GtkCMCListClass *) klass;
 	ctree_class = (GtkCMCTreeClass *) klass;
 
-	parent_class = gtk_type_class (gtk_cmctree_get_type ());
+	parent_class = g_type_class_peek (gtk_cmctree_get_type ());
 
 	sctree_signals[ROW_POPUP_MENU] =
 		g_signal_new ("row_popup_menu",
