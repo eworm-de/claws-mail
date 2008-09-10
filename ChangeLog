@@ -1,3 +1,13 @@
+2008-09-10 [colin]	3.5.0cvs98
+
+	* src/inc.c
+	* src/summaryview.c
+	* src/common/session.c
+		Use g_timeout_add_seconds instead of g_timeout_add
+		on glib >= 2.14 when we don't need precision on the 
+		delay. This helps reducing power consumption:
+		http://mjg59.livejournal.com/74651.html
+
 2008-09-10 [colin]	3.5.0cvs97
 
 	* src/compose.c

@@ -3588,8 +3588,13 @@ static void summary_display_msg_full(SummaryView *summaryview,
 			MarkAsReadData *data = g_new0(MarkAsReadData, 1);
 			data->summaryview = summaryview;
 			data->msginfo = msginfo;
+#if GLIB_CHECK_VERSION(2,14,0)
+			g_timeout_add_seconds(prefs_common.mark_as_read_delay,
+				msginfo_mark_as_read_timeout, data);
+#else
 			g_timeout_add(prefs_common.mark_as_read_delay * 1000,
 				msginfo_mark_as_read_timeout, data);
+#endif
 		} else if (new_window || !prefs_common.mark_as_read_on_new_window) {
 			msginfo_mark_as_read(summaryview, msginfo, row);
 		}

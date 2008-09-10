@@ -1501,6 +1501,12 @@ static void inc_autocheck_timer_set_interval(guint interval)
 	   the common preferences */
 	if (prefs_common.autochk_newmail && autocheck_data
 	    && prefs_common.work_offline == FALSE) {
+#if GLIB_CHECK_VERSION(2,14,0)
+		if (interval % 1000 == 0)
+			autocheck_timer =
+				g_timeout_add_seconds(interval/1000, inc_autocheck_func, autocheck_data);
+		else
+#endif
 		autocheck_timer = g_timeout_add
 			(interval, inc_autocheck_func, autocheck_data);
 		debug_print("added timer = %d\n", autocheck_timer);
