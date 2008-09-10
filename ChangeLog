@@ -1,3 +1,9 @@
+2008-09-10 [colin]	3.5.0cvs97
+
+	* src/compose.c
+		Don't save window size and position when
+		compose is hidden (filtering action)
+
 2008-09-09 [colin]	3.5.0cvs96
 
 	* src/action.h

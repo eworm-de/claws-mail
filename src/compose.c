@@ -8031,8 +8031,10 @@ static void compose_destroy(Compose *compose)
         }
 #endif
 
-	prefs_common.compose_width = compose->scrolledwin->allocation.width;
-	prefs_common.compose_height = compose->window->allocation.height;
+	if (!compose->batch) {
+		prefs_common.compose_width = compose->scrolledwin->allocation.width;
+		prefs_common.compose_height = compose->window->allocation.height;
+	}
 
 	if (!gtk_widget_get_parent(compose->paned))
 		gtk_widget_destroy(compose->paned);
@@ -9265,9 +9267,10 @@ static gint compose_delete_cb(GtkWidget *widget, GdkEventAny *event,
 	Compose *compose = (Compose *)data;
 
 	gtkut_widget_get_uposition(widget, &x, &y);
-	prefs_common.compose_x = x;
-	prefs_common.compose_y = y;
-
+	if (!compose->batch) {
+		prefs_common.compose_x = x;
+		prefs_common.compose_y = y;
+	}
 	if (compose->sending || compose->updating)
 		return TRUE;
 	compose_close_cb(NULL, compose);
@@ -10540,8 +10543,10 @@ gboolean compose_close(Compose *compose)
 	}
 	g_return_val_if_fail(compose, FALSE);
 	gtkut_widget_get_uposition(compose->window, &x, &y);
-	prefs_common.compose_x = x;
-	prefs_common.compose_y = y;
+	if (!compose->batch) {
+		prefs_common.compose_x = x;
+		prefs_common.compose_y = y;
+	}
 	g_mutex_unlock(compose->mutex);
 	compose_destroy(compose);
 	return FALSE;
