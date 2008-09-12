@@ -47,7 +47,7 @@ int yylex(void);
 
 static MsgInfo *msginfo = NULL;
 static PrefsAccount *account = NULL;
-#ifdef USE_ASPELL
+#ifdef USE_ENCHANT
 static gchar default_dictionary[BUFFSIZE];
 #endif
 static gboolean *visible = NULL;
@@ -184,7 +184,7 @@ void quote_fmt_reset_vartable(void)
 	}
 }
 
-#ifdef USE_ASPELL
+#ifdef USE_ENCHANT
 void quote_fmt_init(MsgInfo *info, const gchar *my_quote_str,
 		    const gchar *my_body, gboolean my_dry_run,
 			PrefsAccount *compose_account,
@@ -201,7 +201,7 @@ void quote_fmt_init(MsgInfo *info, const gchar *my_quote_str,
 	body = my_body;
 	msginfo = info;
 	account = compose_account;
-#ifdef USE_ASPELL
+#ifdef USE_ENCHANT
 	gchar *dict = gtkaspell_get_default_dictionary(compose_gtkaspell);
 	if (dict)
 		strncpy2(default_dictionary, dict, sizeof(default_dictionary));
@@ -788,7 +788,7 @@ special:
 	}
 	| SHOW_ACCOUNT_DICT
 	{
-#ifdef USE_ASPELL
+#ifdef USE_ENCHANT
 		if (account && account->enable_default_dictionary) {
 			gchar *dictname = g_path_get_basename(account->default_dictionary);
 			INSERT(dictname);
@@ -798,7 +798,7 @@ special:
 	}
 	| SHOW_DICT
 	{
-#ifdef USE_ASPELL
+#ifdef USE_ENCHANT
 		INSERT(default_dictionary);
 #endif
 	}
@@ -972,7 +972,7 @@ query:
 	}
 	| QUERY_ACCOUNT_DICT
 	{
-#ifdef USE_ASPELL
+#ifdef USE_ENCHANT
 		add_visibility(account != NULL && account->enable_default_dictionary == TRUE &&
 				account->default_dictionary != NULL && *account->default_dictionary != '\0');
 #else
@@ -985,7 +985,7 @@ query:
 	}
 	| QUERY_DICT
 	{
-#ifdef USE_ASPELL
+#ifdef USE_ENCHANT
 		add_visibility(*default_dictionary != '\0');
 #else
 		add_visibility(FALSE);
@@ -1124,7 +1124,7 @@ query_not:
 	}
 	| QUERY_NOT_ACCOUNT_DICT
 	{
-#ifdef USE_ASPELL
+#ifdef USE_ENCHANT
 		add_visibility(account == NULL || account->enable_default_dictionary == FALSE
 				|| *account->default_dictionary == '\0');
 #else
@@ -1137,7 +1137,7 @@ query_not:
 	}
 	| QUERY_NOT_DICT
 	{
-#ifdef USE_ASPELL
+#ifdef USE_ENCHANT
 		add_visibility(*default_dictionary == '\0');
 #else
 		add_visibility(FALSE);

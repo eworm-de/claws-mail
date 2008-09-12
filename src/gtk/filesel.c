@@ -110,11 +110,19 @@ static GList *filesel_create(const gchar *title, const gchar *path,
 		chooser = hildon_file_chooser_dialog_new (NULL, action);
 	}
 #else
+#if !GTK_CHECK_VERSION(2,14,0)
 	GtkWidget *chooser = gtk_file_chooser_dialog_new_with_backend
 				(title, NULL, action, "gtk+",
 				GTK_STOCK_CANCEL, GTK_RESPONSE_CANCEL,
 				action_btn, GTK_RESPONSE_ACCEPT, 
 				NULL);
+#else
+	GtkWidget *chooser = gtk_file_chooser_dialog_new
+				(title, NULL, action, 
+				GTK_STOCK_CANCEL, GTK_RESPONSE_CANCEL,
+				action_btn, GTK_RESPONSE_ACCEPT, 
+				NULL);
+#endif
 #endif
 	if (filter != NULL) {
 		GtkFileFilter *file_filter = gtk_file_filter_new();

@@ -405,15 +405,15 @@ static GtkWidget *about_create_child_page_features(void)
 	gtk_text_buffer_insert(buffer, &iter, 
 		(gchar *)Q_("compface|adds support for the X-Face header\n"), -1);
 
-#if USE_ASPELL
+#if USE_ENCHANT
 	gtk_text_buffer_insert_pixbuf(buffer, &iter, active_pixbuf);
 #else
 	gtk_text_buffer_insert_pixbuf(buffer, &iter, inactive_pixbuf);
 #endif
-	gtk_text_buffer_insert_with_tags_by_name(buffer, &iter, (" GNU/aspell "), -1,
+	gtk_text_buffer_insert_with_tags_by_name(buffer, &iter, (" Enchant "), -1,
 						 "bold", NULL);
 	gtk_text_buffer_insert(buffer, &iter, 
-		(gchar *)Q_("GNU/aspell|adds support for spell checking\n"), -1);
+		(gchar *)Q_("Enchant|adds support for spell checking\n"), -1);
 
 #if USE_GNUTLS
 	gtk_text_buffer_insert_pixbuf(buffer, &iter, active_pixbuf);

@@ -427,7 +427,7 @@ static const gchar *get_compiled_in_features(void)
 #if USE_JPILOT
 		   " JPilot"
 #endif
-#if USE_ASPELL
+#if USE_ENCHANT
 		   " GNU/aspell"
 #endif
 #if HAVE_LIBETPAN

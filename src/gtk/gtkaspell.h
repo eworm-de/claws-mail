@@ -28,14 +28,14 @@
  *
  */
 
-#ifndef __GTKASPELL_H__
-#define __GTKASPELL_H__
+#ifndef __GTKENCHANT_H__
+#define __GTKENCHANT_H__
 
 #ifdef HAVE_CONFIG_H
 #  include "config.h"
 #endif
 
-#ifdef USE_ASPELL
+#ifdef USE_ENCHANT
 
 #include <gtk/gtk.h>
 
@@ -49,8 +49,7 @@ const char * 	gtkaspell_checkers_strerror	(void);
 
 void 		gtkaspell_checkers_reset_error	(void);
 
-GtkAspell*	gtkaspell_new			(const gchar *dictionary_path,
-						 const gchar *dictionary, 
+GtkAspell*	gtkaspell_new			(const gchar *dictionary, 
 						 const gchar *alt_dictionary, 
 						 const gchar *encoding,
 						 gint  misspelled_color,
@@ -74,22 +73,17 @@ gboolean	gtkaspell_change_alt_dict	(GtkAspell *gtkaspell,
     						 const gchar* alt_dictionary);
 
 
-gboolean 	gtkaspell_set_sug_mode		(GtkAspell *gtkaspell, 
-						 gint  themode);
-
 void 		gtkaspell_check_forwards_go	(GtkAspell *gtkaspell);
 void 		gtkaspell_check_backwards	(GtkAspell *gtkaspell);
 
 void 		gtkaspell_check_all		(GtkAspell *gtkaspell);
 void 		gtkaspell_highlight_all		(GtkAspell *gtkaspell);
 
-GtkWidget*	gtkaspell_dictionary_combo_new	(const gchar *aspell_path,
-						 const gboolean refresh);
+GtkWidget*	gtkaspell_dictionary_combo_new	(const gboolean refresh);
 
-GtkTreeModel*	gtkaspell_dictionary_store_new	(const gchar *aspell_path);
+GtkTreeModel*	gtkaspell_dictionary_store_new	(void);
 GtkTreeModel*	gtkaspell_dictionary_store_new_with_refresh
-							(const gchar *aspell_path,
-							 gboolean     refresh);
+							(gboolean     refresh);
 
 gchar*		gtkaspell_get_dictionary_menu_active_item
 							(GtkComboBox *combo);
@@ -97,11 +91,9 @@ gint		gtkaspell_set_dictionary_menu_active_item
 							(GtkComboBox *combo, 
 							 const gchar *dictionary);
 
-GtkWidget*	gtkaspell_sugmode_combo_new	(gint sugmode);
-
 GSList*		gtkaspell_make_config_menu		(GtkAspell	*gtkaspell);
 
 gchar *gtkaspell_get_default_dictionary(GtkAspell *gtkaspell);
 
-#endif /* USE_ASPELL */
-#endif /* __GTKASPELL_H__ */
+#endif /* USE_ENCHANT */
+#endif /* __GTKENCHANT_H__ */

@@ -681,7 +681,7 @@ gboolean prefs_template_string_is_valid(gchar *string, gint *line, gboolean esca
 			tmp = g_strdup(string);
 		}
 		memset(&dummyinfo, 0, sizeof(MsgInfo));
-#ifdef USE_ASPELL
+#ifdef USE_ENCHANT
 		quote_fmt_init(&dummyinfo, NULL, NULL, TRUE, account, FALSE, NULL);
 #else
 		quote_fmt_init(&dummyinfo, NULL, NULL, TRUE, account, FALSE);

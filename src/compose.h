@@ -38,7 +38,7 @@ typedef struct _AttachInfo	AttachInfo;
 #include "textview.h"
 #include "folder.h"
 
-#ifdef USE_ASPELL
+#ifdef USE_ENCHANT
 #include "gtkaspell.h"
 #endif
 
@@ -200,7 +200,7 @@ struct _Compose
 	GIOChannel *exteditor_ch;
 	gint        exteditor_tag;
 
-#if USE_ASPELL
+#if USE_ENCHANT
         /* GNU/aspell spell checker */
         GtkAspell *gtkaspell;
 	GtkWidget *aspell_options_menu;

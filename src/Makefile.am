@@ -514,7 +514,7 @@ claws_mail_DEPENDENCIES = $(claws_mail_deps) \
 claws_mail_LDADD = \
 	$(etpan_library) \
 	gtk/libclawsgtk.la \
-	$(ASPELL_LIBS) \
+	$(ENCHANT_LIBS) \
 	$(INTLLIBS) \
 	$(GTK_LIBS) \
 	$(GPGME_LIBS) \
@@ -544,7 +544,7 @@ AM_CPPFLAGS = \
 	-DTARGET_ALIAS=\""$(target_triplet)"\" \
 	-DSYSCONFDIR=\""$(sysconfdir)"\" \
 	-DDATAROOTDIR=\""$(datarootdir)"\" \
-	$(ASPELL_CFLAGS) \
+	$(ENCHANT_CFLAGS) \
 	$(GTK_CFLAGS) \
 	$(GPGME_CFLAGS) \
 	$(OPENSSL_CFLAGS) \

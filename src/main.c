@@ -862,7 +862,7 @@ static void main_dump_features_list(gboolean show_debug_only)
 	else
 		g_print(" compface\n");
 #endif
-#if USE_ASPELL
+#if USE_ENCHANT
 	if (show_debug_only)
 		debug_print(" aspell\n");
 	else
@@ -974,7 +974,7 @@ static void dbus_update(FolderItem *removed_item)
 			"claws-mail", G_TYPE_INVALID, G_TYPE_INVALID);
 	}
 	if (error) {
-		debug_print(error->message);
+		debug_print("%s", error->message);
 		g_error_free(error);
 	}
 }
@@ -1052,7 +1052,8 @@ int main(int argc, char *argv[])
 	gboolean asked_for_migration = FALSE;
 	gboolean start_done = TRUE;
 	GtkUIManager *gui_manager = NULL;
-	
+	GSList *plug_list = NULL;
+
 	START_TIMING("startup");
 
 	sc_starting = TRUE;
@@ -1313,7 +1314,7 @@ int main(int argc, char *argv[])
 	prefs_receive_init();
 	prefs_send_init();
 	tags_read_tags();
-#ifdef USE_ASPELL
+#ifdef USE_ENCHANT
 	gtkaspell_checkers_init();
 	prefs_spelling_init();
 #endif
@@ -1504,12 +1505,32 @@ int main(int argc, char *argv[])
 		prefs_matcher_read_config();
 	}
 	
-	if (plugin_get_unloaded_list() != NULL) {
+	if ((plug_list = plugin_get_unloaded_list()) != NULL) {
+		GSList *cur;
+		gchar *list = NULL;
+		gint num_plugins = 0;
+		for (cur = plug_list; cur; cur = cur->next) {
+			Plugin *plugin = (Plugin *)cur->data;
+			gchar *tmp = g_strdup_printf("%s\n%s",
+				list? list:"",
+				plugin_get_name(plugin));
+			g_free(list);
+			list = tmp;
+			num_plugins++;
+		}
 		main_window_cursor_normal(mainwin);
-		alertpanel_warning(_("Some plugin(s) failed to load. "
+		alertpanel_warning(ngettext(
+				     "The following plugin failed to load. "
 				     "Check the Plugins configuration "
-				     "for more information."));
+				     "for more information:\n%s",
+				     "The following plugins failed to load. "
+				     "Check the Plugins configuration "
+				     "for more information:\n%s", 
+				     num_plugins), 
+				     list);
 		main_window_cursor_wait(mainwin);
+		g_free(list);
+		g_slist_free(plug_list);
 	}
 
  	plugin_load_standard_plugins ();
@@ -1758,7 +1779,7 @@ static void exit_claws(MainWindow *mainwin)
 	prefs_logging_done();
 	prefs_send_done();
 	tags_write_tags();
-#ifdef USE_ASPELL       
+#ifdef USE_ENCHANT       
 	prefs_spelling_done();
 	gtkaspell_checkers_quit();
 #endif

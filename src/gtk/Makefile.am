@@ -75,16 +75,16 @@ AM_CPPFLAGS = \
 	-I$(builddir)/.. \
 	$(GTK_CFLAGS) \
 	$(OPENSSL_CFLAGS) \
-	$(ASPELL_CFLAGS) \
 	$(GNOMEPRINT_CFLAGS) \
 	$(MAEMO_CFLAGS) \
+	$(ENCHANT_CFLAGS) \
 	-DPLUGINDIR=\"$(PLUGINDIR)\" \
 	-DDOCDIR=\"$(DOCDIR)\" 
 
 libclawsgtk_la_LIBADD = \
 	../common/libclawscommon.la \
 	$(GTK_LIBS) \
-	$(ASPELL_LIBS) \
+	$(ENCHANT_LIBS) \
 	$(GNOMEPRINT_LIBS) \
 	$(MAEMO_LIBS)
 

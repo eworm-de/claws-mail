@@ -1,3 +1,34 @@
+2008-09-12 [colin]	3.5.0cvs103
+
+	* claws-mail.pc.in
+	* src/Makefile.am
+	* src/compose.c
+	* src/compose.h
+	* src/crash.c
+	* src/folder_item_prefs.c
+	* src/folder_item_prefs.h
+	* src/main.c
+	* src/prefs_account.c
+	* src/prefs_common.c
+	* src/prefs_common.h
+	* src/prefs_folder_item.c
+	* src/prefs_spelling.c
+	* src/prefs_template.c
+	* src/quote_fmt.h
+	* src/quote_fmt_parse.y
+	* src/toolbar.c
+	* src/toolbar.h
+	* src/gtk/Makefile.am
+	* src/gtk/about.c
+	* src/gtk/filesel.c
+	* src/gtk/gtkaspell.c
+	* src/gtk/gtkaspell.h
+	* src/plugins/bogofilter/Makefile.am
+	* src/plugins/dillo_viewer/Makefile.am
+	* src/plugins/spamassassin/Makefile.am
+	* src/plugins/trayicon/Makefile.am
+		Switch spellchecker to Enchant
+
 2008-09-12 [paul]	3.5.0cvs102
 
 	* tools/README

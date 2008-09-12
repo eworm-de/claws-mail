@@ -245,16 +245,12 @@ static PrefParam param[] = {
 	 P_BOOL, NULL, NULL, NULL},
         {"autosave_length", "50", &prefs_common.autosave_length, P_INT,
 	 NULL, NULL, NULL},
-#if USE_ASPELL
+#if USE_ENCHANT
 	{"enable_aspell", "TRUE", &prefs_common.enable_aspell, P_BOOL,
-	 NULL, NULL, NULL},
-	{"aspell_path", ASPELL_PATH, &prefs_common.aspell_path, P_STRING,
 	 NULL, NULL, NULL},
 	{"dictionary",  "", &prefs_common.dictionary, P_STRING,
 	 NULL, NULL, NULL},
 	{"alt_dictionary",  "", &prefs_common.alt_dictionary, P_STRING,
-	 NULL, NULL, NULL},
-	{"aspell_sugmode", "1", &prefs_common.aspell_sugmode, P_INT,
 	 NULL, NULL, NULL},
 	{"use_alternate_dict", "FALSE", &prefs_common.use_alternate, P_BOOL,
 	 NULL, NULL, NULL},

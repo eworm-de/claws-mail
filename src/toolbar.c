@@ -164,7 +164,7 @@ static void toolbar_linewrap_all_cb		(GtkWidget	*widget,
 					 	 gpointer	 data);
 static void toolbar_addrbook_cb   		(GtkWidget   	*widget, 
 					 	 gpointer     	 data);
-#ifdef USE_ASPELL
+#ifdef USE_ENCHANT
 static void toolbar_check_spelling_cb  		(GtkWidget   	*widget, 
 					 	 gpointer     	 data);
 #endif
@@ -208,7 +208,7 @@ struct {
 	{ "A_LINEWRAP_CURRENT",	N_("Wrap long lines of current paragraph") }, 
 	{ "A_LINEWRAP_ALL",     N_("Wrap all long lines")                  }, 
 	{ "A_ADDRBOOK",      	N_("Address book")                         },
-#ifdef USE_ASPELL
+#ifdef USE_ENCHANT
 	{ "A_CHECK_SPELLING",	N_("Check spelling")                       },
 #endif
 	{ "A_CLAWS_ACTIONS",   	N_("Claws Mail Actions Feature")	   }, 
@@ -312,7 +312,7 @@ GList *toolbar_get_action_items(ToolbarType source)
 					A_INSERT,        A_ATTACH,       A_SIG,
 					A_EXTEDITOR,     A_LINEWRAP_CURRENT,     
 					A_LINEWRAP_ALL,  A_ADDRBOOK,
-#ifdef USE_ASPELL
+#ifdef USE_ENCHANT
 					A_CHECK_SPELLING, 
 #endif
 					A_CLOSE };	
@@ -415,7 +415,7 @@ const gchar *toolbar_get_short_text(int action) {
 	case A_ADDRBOOK: 	return _("Address");
 	case A_CANCEL_INC:	return _("Stop");
 	case A_EXECUTE:		return _("Execute");
-	#ifdef USE_ASPELL
+	#ifdef USE_ENCHANT
 	case A_CHECK_SPELLING:	return _("Check spelling");
 	#endif
 	default:		return "";
@@ -458,7 +458,7 @@ gint toolbar_get_icon(int action) {
 	case A_ADDRBOOK: 	return STOCK_PIXMAP_ADDRESS_BOOK;
 	case A_CANCEL_INC:	return STOCK_PIXMAP_CANCEL;
 	case A_EXECUTE:		return STOCK_PIXMAP_EXEC;
-	#ifdef USE_ASPELL
+	#ifdef USE_ENCHANT
 	case A_CHECK_SPELLING:	return STOCK_PIXMAP_CHECK_SPELLING;
 	#endif
 	default:		return -1;
@@ -1575,7 +1575,7 @@ static void toolbar_linewrap_all_cb(GtkWidget *widget, gpointer data)
 	compose_toolbar_cb(A_LINEWRAP_ALL, data);
 }
 
-#ifdef USE_ASPELL
+#ifdef USE_ENCHANT
 static void toolbar_check_spelling_cb(GtkWidget *widget, gpointer data)
 {
 	compose_toolbar_cb(A_CHECK_SPELLING, data);
@@ -1705,7 +1705,7 @@ static void toolbar_buttons_cb(GtkWidget   *widget,
 		{ A_LINEWRAP_CURRENT,	toolbar_linewrap_current_cb   	},
 		{ A_LINEWRAP_ALL,	toolbar_linewrap_all_cb   	},
 		{ A_ADDRBOOK,		toolbar_addrbook_cb		},
-#ifdef USE_ASPELL
+#ifdef USE_ENCHANT
 		{ A_CHECK_SPELLING,     toolbar_check_spelling_cb       },
 #endif
 		{ A_CLAWS_ACTIONS,	toolbar_actions_execute_cb	},
@@ -2084,7 +2084,7 @@ Toolbar *toolbar_create(ToolbarType 	 type,
 			TOOLBAR_ITEM(item,icon_wid,toolbar_item->text,_("Address book"));
 			toolbar_data->addrbook_btn = item;
 			break;
-#ifdef USE_ASPELL
+#ifdef USE_ENCHANT
 		case A_CHECK_SPELLING:
 			TOOLBAR_ITEM(item,icon_wid,toolbar_item->text,_("Check spelling"));
 			toolbar_data->spellcheck_btn = item;
@@ -2451,7 +2451,7 @@ void toolbar_comp_set_sensitive(gpointer data, gboolean sensitive)
 		GTK_BUTTON_SET_SENSITIVE(compose->toolbar->linewrap_all_btn, sensitive);
 	if (compose->toolbar->addrbook_btn)
 		GTK_BUTTON_SET_SENSITIVE(compose->toolbar->addrbook_btn, sensitive);
-#ifdef USE_ASPELL
+#ifdef USE_ENCHANT
 	if (compose->toolbar->spellcheck_btn)
 		GTK_BUTTON_SET_SENSITIVE(compose->toolbar->spellcheck_btn, sensitive);
 #endif
@@ -2497,7 +2497,7 @@ static void toolbar_init(Toolbar * toolbar)
 	toolbar->linewrap_current_btn	= NULL;	
 	toolbar->linewrap_all_btn     	= NULL;	
 	toolbar->addrbook_btn     	= NULL;	
-#ifdef USE_ASPELL
+#ifdef USE_ENCHANT
 	toolbar->spellcheck_btn   	= NULL;
 #endif
 

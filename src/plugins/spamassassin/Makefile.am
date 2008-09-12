@@ -27,7 +27,7 @@ INCLUDES = \
 	-I$(top_srcdir)/src/gtk
 
 AM_CPPFLAGS = \
-	$(ASPELL_CFLAGS) \
+	$(ENCHANT_CFLAGS) \
 	$(GLIB_CFLAGS) \
 	$(GTK_CFLAGS) \
 	$(OPENSSL_CFLAGS) \

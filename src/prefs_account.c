@@ -189,7 +189,7 @@ typedef struct ComposePage
 	GtkWidget *autobcc_entry;
 	GtkWidget *autoreplyto_checkbtn;
 	GtkWidget *autoreplyto_entry;
-#if USE_ASPELL
+#if USE_ENCHANT
 	GtkWidget *checkbtn_enable_default_dictionary;
 	GtkWidget *combo_default_dictionary;
 	GtkWidget *checkbtn_enable_default_alt_dictionary;
@@ -357,7 +357,7 @@ static void prefs_account_mailcmd_toggled(GtkToggleButton *button,
 static void prefs_account_filter_on_recv_toggled(GtkToggleButton *button,
 					  gpointer user_data);
 
-#if USE_ASPELL
+#if USE_ENCHANT
 static void prefs_account_compose_default_dictionary_set_string_from_optmenu
 							(PrefParam *pparam);
 static void prefs_account_compose_default_dictionary_set_optmenu_from_string
@@ -568,7 +568,7 @@ static PrefParam compose_param[] = {
 	 &compose_page.autoreplyto_entry,
 	 prefs_set_data_from_entry, prefs_set_entry},
 
-#if USE_ASPELL
+#if USE_ENCHANT
 	{"enable_default_dictionary", "", &tmp_ac_prefs.enable_default_dictionary, P_BOOL,
 	 &compose_page.checkbtn_enable_default_dictionary,
 	 prefs_set_data_from_toggle, prefs_set_toggle},
@@ -1864,7 +1864,7 @@ static void compose_create_widget_func(PrefsPage * _page,
 	GtkWidget *autobcc_entry;
 	GtkWidget *autoreplyto_checkbtn;
 	GtkWidget *autoreplyto_entry;
-#if USE_ASPELL
+#if USE_ENCHANT
 	GtkWidget *frame_dict;
 	GtkWidget *table_dict;
 	GtkWidget *checkbtn_enable_default_dictionary = NULL;
@@ -1991,7 +1991,7 @@ static void compose_create_widget_func(PrefsPage * _page,
 
 	SET_TOGGLE_SENSITIVITY (autoreplyto_checkbtn, autoreplyto_entry);
 
-#if USE_ASPELL
+#if USE_ENCHANT
 	PACK_FRAME (vbox1, frame_dict, _("Spell check dictionaries"));
 
 	table_dict =  gtk_table_new (2, 2, FALSE);
@@ -2008,8 +2008,7 @@ static void compose_create_widget_func(PrefsPage * _page,
 	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(checkbtn_enable_default_dictionary),
 			tmp_ac_prefs.enable_default_dictionary);
 
-	combo_default_dictionary = gtkaspell_dictionary_combo_new(
-						prefs_common.aspell_path, TRUE);
+	combo_default_dictionary = gtkaspell_dictionary_combo_new(TRUE);
 	gtk_table_attach(GTK_TABLE(table_dict), combo_default_dictionary, 1, 2,
 			0, 1, GTK_EXPAND | GTK_FILL, GTK_SHRINK, 0, 0);
 
@@ -2022,8 +2021,7 @@ static void compose_create_widget_func(PrefsPage * _page,
 	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(checkbtn_enable_default_alt_dictionary),
 			tmp_ac_prefs.enable_default_alt_dictionary);
 
-	combo_default_alt_dictionary = gtkaspell_dictionary_combo_new(
-						prefs_common.aspell_path, FALSE);
+	combo_default_alt_dictionary = gtkaspell_dictionary_combo_new(FALSE);
 	gtk_table_attach(GTK_TABLE(table_dict), combo_default_alt_dictionary, 1, 2,
 			1, 2, GTK_EXPAND | GTK_FILL, GTK_SHRINK, 0, 0);
 
@@ -2043,21 +2041,21 @@ static void compose_create_widget_func(PrefsPage * _page,
 	page->autobcc_entry      = autobcc_entry;
 	page->autoreplyto_checkbtn = autoreplyto_checkbtn;
 	page->autoreplyto_entry  = autoreplyto_entry;
-#ifdef USE_ASPELL
+#ifdef USE_ENCHANT
 	page->checkbtn_enable_default_dictionary = checkbtn_enable_default_dictionary;
 	page->combo_default_dictionary = combo_default_dictionary;
 	page->checkbtn_enable_default_alt_dictionary = checkbtn_enable_default_alt_dictionary;
 	page->combo_default_alt_dictionary = combo_default_alt_dictionary;
 #endif
 
-#ifdef USE_ASPELL
+#ifdef USE_ENCHANT
 	/* reset gtkaspell menus */
 	if (compose_page.combo_default_dictionary != NULL) {
 		gtk_combo_box_set_model(GTK_COMBO_BOX(compose_page.combo_default_dictionary),
-					gtkaspell_dictionary_store_new(prefs_common.aspell_path));
+					gtkaspell_dictionary_store_new());
 		gtk_combo_box_set_model(GTK_COMBO_BOX(compose_page.combo_default_alt_dictionary),
 					gtkaspell_dictionary_store_new_with_refresh(
-						prefs_common.aspell_path, FALSE));
+						FALSE));
 	}
 #endif
 
@@ -4508,7 +4506,7 @@ static void prefs_account_filter_on_recv_toggled(GtkToggleButton *button,
 	gtk_widget_set_sensitive(receive_page.filterhook_on_recv_checkbtn, do_filter);
 }
 
-#if USE_ASPELL
+#if USE_ENCHANT
 static void prefs_account_compose_default_dictionary_set_string_from_optmenu
 							(PrefParam *pparam)
 {
@@ -4535,6 +4533,10 @@ static void prefs_account_compose_default_dictionary_set_optmenu_from_string
 	dictionary = *((gchar **) pparam->data);
 	if (dictionary == NULL)
 		return;
+
+	if (strrchr(dictionary, '/')) {
+		dictionary = g_strdup(strrchr(dictionary, '/')+1);
+	}
 
 	combo = *pparam->widget;
 	if (dictionary)

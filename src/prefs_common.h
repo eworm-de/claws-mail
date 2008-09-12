@@ -166,13 +166,11 @@ struct _PrefsCommon
 	gboolean block_cursor;
 	gchar *quote_chars;
 	
-#if USE_ASPELL
+#if USE_ENCHANT
 	gboolean enable_aspell;
-	gchar *aspell_path;
 	gchar *dictionary;
 	gchar *alt_dictionary;
 	gulong misspelled_col;
-	gint aspell_sugmode;
 	gboolean check_while_typing;
 	gboolean recheck_when_changing_dict;
 	gboolean use_alternate;
