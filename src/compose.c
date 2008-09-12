@@ -1,6 +1,6 @@
 /*
  * Sylpheed -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 1999-2007 Hiroyuki Yamamoto and the Claws Mail team
+ * Copyright (C) 1999-2008 Hiroyuki Yamamoto and the Claws Mail team
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -651,7 +651,7 @@ static GtkActionEntry compose_entries[] =
 static GtkToggleActionEntry compose_toggle_entries[] =
 {
 	{"Edit/AutoWrap",		NULL, N_("Aut_o wrapping"), "<shift><control>L", NULL, G_CALLBACK(compose_toggle_autowrap_cb) }, /* TOGGLE */
-	{"Edit/AutoIndent",		NULL, N_("Follow _indentation"), NULL, NULL, G_CALLBACK(compose_toggle_autoindent_cb) }, /* TOGGLE */
+	{"Edit/AutoIndent",		NULL, N_("Auto _indent"), NULL, NULL, G_CALLBACK(compose_toggle_autoindent_cb) }, /* TOGGLE */
 	{"Options/Sign",		NULL, N_("Si_gn"), NULL, NULL, G_CALLBACK(compose_toggle_sign_cb) }, /* Toggle */
 	{"Options/Encrypt",		NULL, N_("_Encrypt"), NULL, NULL, G_CALLBACK(compose_toggle_encrypt_cb) }, /* Toggle */
 	{"Options/RequestRetRcpt",	NULL, N_("_Request Return Receipt"), NULL, NULL, G_CALLBACK(compose_toggle_return_receipt_cb) }, /* TOGGLE */

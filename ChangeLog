@@ -1,3 +1,9 @@
+2008-09-12 [paul]	3.5.0cvs101
+
+	* src/compose.c
+	* src/prefs_wrapping.c
+		changes to English
+
 2008-09-12 [paul]	3.5.0cvs100
 
 	* configure.ac

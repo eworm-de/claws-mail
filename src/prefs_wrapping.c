@@ -1,6 +1,6 @@
 /*
  * Sylpheed -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 2004-2007 Hiroyuki Yamamoto & The Claws Mail Team
+ * Copyright (C) 2004-2008 Hiroyuki Yamamoto & The Claws Mail Team
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -79,7 +79,7 @@ static void prefs_wrapping_create_widget(PrefsPage *_page, GtkWindow *window,
 	PACK_CHECK_BUTTON (vbox2, checkbtn_autowrap, _("Auto wrapping"));
   	PACK_CHECK_BUTTON (vbox2, checkbtn_wrapquote, _("Wrap quotation"));
   	PACK_CHECK_BUTTON (vbox2, checkbtn_wrappastes, _("Wrap pasted text"));
-  	PACK_CHECK_BUTTON (vbox2, checkbtn_autoindent, _("Follow indentation"));
+  	PACK_CHECK_BUTTON (vbox2, checkbtn_autoindent, _("Auto indent"));
 
 	hbox1 = gtk_hbox_new (FALSE, 8);
 	gtk_widget_show (hbox1);

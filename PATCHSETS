@@ -3512,3 +3512,4 @@
 ( cvs diff -u -r 1.149.2.92 -r 1.149.2.93 src/inc.c;  cvs diff -u -r 1.395.2.390 -r 1.395.2.391 src/summaryview.c;  cvs diff -u -r 1.23.2.18 -r 1.23.2.19 src/common/session.c;  ) > 3.5.0cvs98.patchset
 ( cvs diff -u -r 1.149.2.93 -r 1.149.2.94 src/inc.c;  ) > 3.5.0cvs99.patchset
 ( cvs diff -u -r 1.654.2.3573 -r 1.654.2.3574 configure.ac;  ) > 3.5.0cvs100.patchset
+( cvs diff -u -r 1.382.2.473 -r 1.382.2.474 src/compose.c;  cvs diff -u -r 1.1.2.17 -r 1.1.2.18 src/prefs_wrapping.c;  ) > 3.5.0cvs101.patchset
