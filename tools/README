@@ -14,7 +14,8 @@ Action scripts:
                                 OpenOffice
 
 Addressbook conversion:
-  csv2addressbook.pl		Import Becky, Thunderbird, Kmail Gmail address books
+  csv2addressbook.pl		Import Becky, Thunderbird, Kmail, Gmail and Fox
+				Mail address books
   eud2gc.py                     Convert Eudora address book to Gnomecard
   kmail2claws-mail.pl           Import a Kmail address book (KDE2)
   kmail2claws-mail_v2.pl        Import a Kmail address book (KDE3)
@@ -142,8 +143,8 @@ Address book conversion
 * csv2addressbook.pl
 
   WHAT IT DOES
-	This perl script will import a Becky, Thunderbird, Kmail and Gmail
-	address book.
+	This perl script will import a Becky, Thunderbird, Kmail, Gmail and
+	Fox Mail address book.
 
   HOW TO USE IT
 	(You must run claws-mail at least once before running this script.)
@@ -202,6 +203,18 @@ Address book conversion
 	Addtionally you can use the option '--name="My address book"', if
 	you don't use this option the new Claws address book will be
 	called 'gmail address book'.
+
+	Fox Mail
+	--------
+	Export your Fox Mail address book as CSV with all possible headers.
+
+	Run the script with the following options:
+
+	perl csv2addressbook.pl --type=foxmail --csv=/full/path/to/file.csv
+
+	Addtionally you can use the option '--name="My address book"', if
+	you don't use this option the new Claws address book will be
+	called 'foxmail address book'.
 
 	You can also run the script with '--help' to get a brief usage message.
 

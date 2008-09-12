@@ -3513,3 +3513,4 @@
 ( cvs diff -u -r 1.149.2.93 -r 1.149.2.94 src/inc.c;  ) > 3.5.0cvs99.patchset
 ( cvs diff -u -r 1.654.2.3573 -r 1.654.2.3574 configure.ac;  ) > 3.5.0cvs100.patchset
 ( cvs diff -u -r 1.382.2.473 -r 1.382.2.474 src/compose.c;  cvs diff -u -r 1.1.2.17 -r 1.1.2.18 src/prefs_wrapping.c;  ) > 3.5.0cvs101.patchset
+( cvs diff -u -r 1.30.2.31 -r 1.30.2.32 tools/README;  cvs diff -u -r 1.1.2.3 -r 1.1.2.4 tools/csv2addressbook.pl;  ) > 3.5.0cvs102.patchset

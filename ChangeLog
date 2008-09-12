@@ -1,3 +1,9 @@
+2008-09-12 [paul]	3.5.0cvs102
+
+	* tools/README
+	* tools/csv2addressbook.pl
+		add support for Fox Mail
+
 2008-09-12 [paul]	3.5.0cvs101
 
 	* src/compose.c

@@ -29,12 +29,14 @@ use Text::CSV_XS;
 #	Kmail >= 1.9.7 / Kaddressbook >= 3.5.7		
 #		** kmail bug: can export badly formatted csv **
 #	Gmail
+#	Fox Mail
 #
 
 # Becky: full export with titles
 # thunderbird: export as 'comma separated'
 # kmail/kaddressbook: Export CSV list
 # gmail: export Outlook format
+# foxmail: export with all possible headers
 
 ###
 my $quote_char = '"';
@@ -48,7 +50,7 @@ my $csvfile = '';
 my $bookname = '';
 my $iNeedHelp = '';
 
-my $known_types = qr/^(?:becky|thunderbird|kmail|gmail)$/;
+my $known_types = qr/^(?:becky|thunderbird|kmail|gmail|foxmail)$/;
 
 GetOptions("type=s" => \$type,
 	   "csv=s"  => \$csvfile,
@@ -90,6 +92,15 @@ my @gmail_fields = ('Name','E-mail Address','Notes','E-mail 2 Address',
 		    'Home Address','Business Phone','Business Phone 2',
 		    'Business Fax','Business Address','Other Phone','Other Fax',
 		    'Other Address','junk');
+my @foxmail_fields = ('First Name','Last Name','Name','Nickname','e-mail Address',
+		      'Mobile Phone','Pager Number','QQ','ICQ','Personal Home Page',
+		      'Sex','Birthday','Interest','Home Country','Home Province',
+		      'Home City','Home Postal Code','Home Street Address',
+		      'Home Telephone 1','Home Telephone 2','Home Fax','Office Company',
+		      'Office Country','Office Province','Office City',
+		      'Office Postal Code','Office Address','Office HomePage',
+		      'Office Position','Office Department','Office Telephone 1',
+		      'Office Telephone 2','Office Fax','Memo','foxaddrID');
 
 if (grep m/claws-mail/ => `ps -U $ENV{USER}`) {
 	die("You must quit claws-mail before running this script\n");
@@ -112,7 +123,8 @@ Usage:
 	$script [OPTIONS]
 Options:
 	--help					Show this screen
-	--type=becky|thunderbird|kmail|gmail	Type of exported address book
+	--type=becky|thunderbird|kmail|gmail|foxmail
+						Type of exported address book
 	--csv=FILENAME				Full path to CSV file
 	--name="My new address book"		Name of new Claws address book (optional)
 ~;
@@ -213,6 +225,8 @@ sub get_book_name {
 		return("Kmail address book");
 	} elsif ($type eq "gmail") {
 		return("gmail address book");
+	} elsif ($type eq "foxmail") {
+		return("foxmail address book");
 	}
 }
 
@@ -234,6 +248,11 @@ sub check_fields {
 		}
 	} elsif ($type eq "gmail") {
 		if ($#csvfields != $#gmail_fields) {
+			die("ERROR:\n\tInvalid field count!\n"
+		    	   ."\tProblem with your exported CSV file\n");
+		}
+	} elsif ($type eq "foxmail") {
+		if ($#csvfields != $#foxmail_fields) {
 			die("ERROR:\n\tInvalid field count!\n"
 		    	   ."\tProblem with your exported CSV file\n");
 		}
@@ -294,6 +313,26 @@ sub write_xml {
 				      ."remarks=\"\" />    \n";
 			}
 			$xml .= "    </address-list>    \n";
+		} elsif ($type eq "foxmail") {
+			$xml .= "<address-list>\n      ";
+			if ($fields[$std_items[4]] =~ m/,/) {
+				my @addrs = split(",", $fields[$std_items[4]]);
+				my $addr_one = pop(@addrs);
+				$xml .= "<address uid=\"$time\" alias=\"\" "
+					."email=\"$addr_one\" "
+				     	."remarks=\"$fields[$std_items[5]]\" />    \n";
+				foreach my $eaddr (@addrs) {
+					$time++;
+					$xml .= "<address uid=\"$time\" alias=\"\" "
+						."email=\"$eaddr\" "
+				     		."remarks=\"\" />    \n";
+				}
+			} else {
+			       	$xml .= "<address uid=\"$time\" alias=\"\" "
+					."email=\"$fields[$std_items[4]]\" "
+				     	."remarks=\"$fields[$std_items[5]]\" />    \n";
+			}
+			$xml .= "</address-list>    \n";
 		} else {
 			$xml .= "<address-list>\n      "
 			       ."<address uid=\"$time\" alias=\"\" "
@@ -332,6 +371,8 @@ sub get_items {
 		return ('2','1','6','0','28','34');
 	} elsif ($type eq "gmail") {
 		return('0','0','0','0','1','2');
+	} elsif ($type eq "foxmail") {
+		return ('0','1','3','2','4','33');
 	}
 }
 
@@ -344,6 +385,8 @@ sub get_fields {
 		return(@kmail_fields);
 	} elsif ($type eq "gmail") {
 		return(@gmail_fields);
+	} elsif ($type eq "foxmail") {
+		return(@foxmail_fields);
 	}
 }
 
