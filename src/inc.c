@@ -165,7 +165,7 @@ static void inc_finished(MainWindow *mainwin, gboolean new_messages, gboolean au
 	if (prefs_common.scan_all_after_inc)
 		folderview_check_new(NULL);
 
-	if (!autocheck && prefs_common.open_inbox_on_inc) {
+	if (!autocheck && new_messages && prefs_common.open_inbox_on_inc) {
 		FolderItem *item = NULL;
 
 		if (cur_account && cur_account->inbox)

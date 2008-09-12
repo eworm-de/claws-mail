@@ -11,7 +11,7 @@ MINOR_VERSION=5
 MICRO_VERSION=0
 INTERFACE_AGE=0
 BINARY_AGE=0
-EXTRA_VERSION=98
+EXTRA_VERSION=99
 EXTRA_RELEASE=
 EXTRA_GTK2_VERSION=
 
@@ -460,17 +460,24 @@ AC_ARG_ENABLE(deprecated, [  --disable-deprecated  disable deprecated GTK functi
 AC_SUBST(GTK_CFLAGS)
 AC_SUBST(GTK_LIBS)
 
-dnl GNU/Aspell is used for spell checking
-AC_ARG_ENABLE(aspell,
-	[  --disable-aspell         disable GNU/aspell support],
-	[ac_cv_enable_aspell=$enableval], [ac_cv_enable_aspell=yes])
-AC_MSG_CHECKING([whether to use GNU/aspell])
-if test $ac_cv_enable_aspell = yes; then
-	AC_MSG_RESULT(yes)
-	AM_PATH_ASPELL(0.50, AC_DEFINE(USE_ASPELL, 1, Define if you use ASPELL to support spell checking),
-		      [use_aspell=no ac_cv_enable_aspell=no])
-else
-	AC_MSG_RESULT(no)
+dnl enchant is used for spell checking
+AC_ARG_ENABLE(enchant,
+	[  --disable-enchant         disable enchant support],
+	[ac_cv_enable_enchant=$enableval], [ac_cv_enable_enchant=yes])
+AC_MSG_CHECKING([whether to use enchant])
+if test $ac_cv_enable_enchant = yes; then
+	PKG_CHECK_MODULES(ENCHANT, enchant >= 1.0.0,
+	[
+		AC_DEFINE(USE_ENCHANT, 1, enchant)
+		echo "Building with enchant"
+		ac_cv_enable_enchant=yes
+	],
+	[
+		echo "Building without enchant-notification"
+		ac_cv_enable_enchant=no
+	])
+	AC_SUBST(ENCHANT_CFLAGS)
+	AC_SUBST(ENCHANT_LIBS)
 fi
 
 dnl want crash dialog
@@ -1065,7 +1072,7 @@ echo "gnuTLS            : $ac_cv_enable_gnutls"
 echo "iconv             : $am_cv_func_iconv"
 echo "compface          : $ac_cv_enable_compface"
 echo "IPv6              : $ac_cv_enable_ipv6"
-echo "GNU/aspell        : $ac_cv_enable_aspell"
+echo "enchant           : $ac_cv_enable_enchant"
 echo "IMAP4             : $ac_cv_enable_libetpan"
 echo "NNTP              : $ac_cv_enable_libetpan"
 echo "Crash dialog      : $ac_cv_enable_crash_dialog"

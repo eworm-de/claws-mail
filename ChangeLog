@@ -1,3 +1,9 @@
+2008-09-12 [colin]	3.5.0cvs99
+
+	* src/inc.c
+		Only go to inbox if there are new mails
+		(and fetch was manual)
+
 2008-09-10 [colin]	3.5.0cvs98
 
 	* src/inc.c
