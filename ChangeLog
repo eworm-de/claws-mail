@@ -1,3 +1,8 @@
+2008-09-12 [paul]	3.5.0cvs100
+
+	* configure.ac
+		revert cvs99's libenchant commit error
+
 2008-09-12 [colin]	3.5.0cvs99
 
 	* src/inc.c
