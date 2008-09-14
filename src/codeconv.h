@@ -185,10 +185,6 @@ gchar *conv_codeset_strdup		(const gchar	*inbuf,
 					 const gchar	*src_code,
 					 const gchar	*dest_code);
 
-gchar *conv_iconv_strdup		(const gchar	*inbuf,
-					 const gchar	*src_code,
-					 const gchar	*dest_code);
-
 const gchar *conv_get_charset_str		(CharSet	 charset);
 CharSet conv_get_charset_from_str		(const gchar	*charset);
 const gchar *conv_get_locale_charset_str	(void);

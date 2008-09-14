@@ -114,6 +114,10 @@ static CodeConvFunc conv_get_code_conv_func	(const gchar	*src_charset_str,
 static gchar *conv_iconv_strdup_with_cd	(const gchar	*inbuf,
 					 iconv_t	 cd);
 
+static gchar *conv_iconv_strdup		(const gchar	*inbuf,
+					 const gchar	*src_code,
+					 const gchar	*dest_code);
+
 static CharSet conv_get_locale_charset			(void);
 static CharSet conv_get_outgoing_charset		(void);
 static CharSet conv_guess_ja_encoding(const gchar *str);
@@ -818,7 +822,7 @@ static CodeConvFunc conv_get_code_conv_func(const gchar *src_charset_str,
 	return code_conv;
 }
 
-gchar *conv_iconv_strdup(const gchar *inbuf,
+static gchar *conv_iconv_strdup(const gchar *inbuf,
 			 const gchar *src_code, const gchar *dest_code)
 {
 	iconv_t cd;

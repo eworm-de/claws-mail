@@ -1,3 +1,9 @@
+2008-09-14 [colin]	3.5.0cvs104
+
+	* src/codeconv.c
+	* src/codeconv.h
+		Make conv_iconv_strdup static
+
 2008-09-12 [colin]	3.5.0cvs103
 
 	* claws-mail.pc.in
