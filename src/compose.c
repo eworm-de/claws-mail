@@ -238,7 +238,6 @@ static void compose_reedit_set_entry		(Compose	*compose,
 
 static void compose_insert_sig			(Compose	*compose,
 						 gboolean	 replace);
-static gchar *compose_get_signature_str		(Compose	*compose);
 static ComposeInsertResult compose_insert_file	(Compose	*compose,
 						 const gchar	*file);
 
@@ -3238,58 +3237,6 @@ static void compose_insert_sig(Compose *compose, gboolean replace)
 					compose);
 		
 	UNBLOCK_WRAP();
-}
-
-static gchar *compose_get_signature_str(Compose *compose)
-{
-	gchar *sig_body = NULL;
-	gchar *sig_str = NULL;
-	gchar *utf8_sig_str = NULL;
-
-	g_return_val_if_fail(compose->account != NULL, NULL);
-
-	if (!compose->account->sig_path)
-		return NULL;
-
-	if (compose->account->sig_type == SIG_FILE) {
-		if (!is_file_or_fifo_exist(compose->account->sig_path)) {
-			g_warning("can't open signature file: %s\n",
-				  compose->account->sig_path);
-			return NULL;
-		}
-	}
-
-	if (compose->account->sig_type == SIG_COMMAND)
-		sig_body = get_command_output(compose->account->sig_path);
-	else {
-		gchar *tmp;
-
-		tmp = file_read_to_str(compose->account->sig_path);
-		if (!tmp)
-			return NULL;
-		sig_body = normalize_newlines(tmp);
-		g_free(tmp);
-	}
-
-	if (compose->account->sig_sep) {
-		sig_str = g_strconcat("\n", compose->account->sig_sep, "\n", sig_body,
-				      NULL);
-		g_free(sig_body);
-	} else
-		sig_str = g_strconcat("\n", sig_body, NULL);
-
-	if (sig_str) {
-		if (g_utf8_validate(sig_str, -1, NULL) == TRUE)
-			utf8_sig_str = sig_str;
-		else {
-			utf8_sig_str = conv_codeset_strdup
-				(sig_str, conv_get_locale_charset_str_no_utf8(),
-				 CS_INTERNAL);
-			g_free(sig_str);
-		}
-	}
-
-	return utf8_sig_str;
 }
 
 static ComposeInsertResult compose_insert_file(Compose *compose, const gchar *file)

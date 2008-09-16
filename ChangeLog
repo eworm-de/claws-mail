@@ -1,3 +1,9 @@
+2008-09-16 [wwp]	3.5.0cvs107
+
+	* src/compose.c
+		Complete 3.5.0cvs106 by removing a function that got
+		moved to account.[ch].
+
 2008-09-16 [wwp]	3.5.0cvs106
 
 	* src/account.c
