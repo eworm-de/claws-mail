@@ -2200,7 +2200,7 @@ Compose *compose_reedit(MsgInfo *msginfo, gboolean batch)
 		return NULL;
 	}
 	
-	compose->sig_str = compose_get_signature_str(compose);
+	compose->sig_str = account_get_signature_str(compose->account);
 	
 	return compose;
 }
@@ -3200,7 +3200,7 @@ static void compose_insert_sig(Compose *compose, gboolean replace)
 	} 
 
 	g_free(compose->sig_str);
-	compose->sig_str = compose_get_signature_str(compose);
+	compose->sig_str = account_get_signature_str(compose->account);
 
 	cur_pos = gtk_text_iter_get_offset(&iter);
 

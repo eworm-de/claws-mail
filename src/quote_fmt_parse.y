@@ -36,6 +36,7 @@
 
 #include "quote_fmt.h"
 #include "quote_fmt_lex.h"
+#include "account.h"
 
 /* decl */
 /*
@@ -581,7 +582,7 @@ static gchar *quote_fmt_complete_address(const gchar *addr)
 %token SHOW_QUOTED_MESSAGE_NO_SIGNATURE SHOW_MESSAGE_NO_SIGNATURE
 %token SHOW_EOL SHOW_QUESTION_MARK SHOW_EXCLAMATION_MARK SHOW_PIPE SHOW_OPARENT SHOW_CPARENT
 %token SHOW_ACCOUNT_FULL_NAME SHOW_ACCOUNT_MAIL_ADDRESS SHOW_ACCOUNT_NAME SHOW_ACCOUNT_ORGANIZATION
-%token SHOW_ACCOUNT_DICT
+%token SHOW_ACCOUNT_DICT SHOW_ACCOUNT_SIG SHOW_ACCOUNT_SIGPATH
 %token SHOW_DICT SHOW_TAGS
 %token SHOW_ADDRESSBOOK_COMPLETION_FOR_CC
 %token SHOW_ADDRESSBOOK_COMPLETION_FOR_FROM
@@ -591,6 +592,7 @@ static gchar *quote_fmt_complete_address(const gchar *addr)
 %token QUERY_FULLNAME QUERY_SUBJECT QUERY_TO QUERY_NEWSGROUPS
 %token QUERY_MESSAGEID QUERY_CC QUERY_REFERENCES
 %token QUERY_ACCOUNT_FULL_NAME QUERY_ACCOUNT_ORGANIZATION QUERY_ACCOUNT_DICT
+%token QUERY_ACCOUNT_SIG QUERY_ACCOUNT_SIGPATH
 %token QUERY_DICT
 %token QUERY_CC_FOUND_IN_ADDRESSBOOK
 %token QUERY_FROM_FOUND_IN_ADDRESSBOOK
@@ -600,6 +602,7 @@ static gchar *quote_fmt_complete_address(const gchar *addr)
 %token QUERY_NOT_FULLNAME QUERY_NOT_SUBJECT QUERY_NOT_TO QUERY_NOT_NEWSGROUPS
 %token QUERY_NOT_MESSAGEID QUERY_NOT_CC QUERY_NOT_REFERENCES
 %token QUERY_NOT_ACCOUNT_FULL_NAME QUERY_NOT_ACCOUNT_ORGANIZATION QUERY_NOT_ACCOUNT_DICT
+%token QUERY_NOT_ACCOUNT_SIG QUERY_NOT_ACCOUNT_SIGPATH
 %token QUERY_NOT_DICT
 %token QUERY_NOT_CC_FOUND_IN_ADDRESSBOOK
 %token QUERY_NOT_FROM_FOUND_IN_ADDRESSBOOK
@@ -786,6 +789,17 @@ special:
 		if (account && account->organization)
 			INSERT(account->organization);
 	}
+	| SHOW_ACCOUNT_SIG
+	{
+		gchar *str = account_get_signature_str(account);
+		INSERT(str);
+		g_free(str);
+	}
+	| SHOW_ACCOUNT_SIGPATH
+	{
+		if (account && account->sig_path)
+			INSERT(account->sig_path);
+	}
 	| SHOW_ACCOUNT_DICT
 	{
 #ifdef USE_ENCHANT
@@ -970,6 +984,25 @@ query:
 	{
 		remove_visibility();
 	}
+	| QUERY_ACCOUNT_SIG
+	{
+		gchar *str = account_get_signature_str(account);
+		add_visibility(str != NULL && * str != '\0');
+		g_free(str);
+	}
+	OPARENT quote_fmt CPARENT
+	{
+		remove_visibility();
+	}
+	| QUERY_ACCOUNT_SIGPATH
+	{
+		add_visibility(account != NULL && account->sig_path != NULL
+				&& *account->sig_path != '\0');
+	}
+	OPARENT quote_fmt CPARENT
+	{
+		remove_visibility();
+	}
 	| QUERY_ACCOUNT_DICT
 	{
 #ifdef USE_ENCHANT
@@ -1117,6 +1150,25 @@ query_not:
 	| QUERY_NOT_ACCOUNT_ORGANIZATION
 	{
 		add_visibility(account == NULL || account->organization == NULL);
+	}
+	OPARENT quote_fmt CPARENT
+	{
+		remove_visibility();
+	}
+	| QUERY_NOT_ACCOUNT_SIG
+	{
+		gchar *str = account_get_signature_str(account);
+		add_visibility(str == NULL || *str == '\0');
+		g_free(str);
+	}
+	OPARENT quote_fmt CPARENT
+	{
+		remove_visibility();
+	}
+	| QUERY_NOT_ACCOUNT_SIGPATH
+	{
+		add_visibility(account == NULL || account->sig_path == NULL
+				|| *account->sig_path == '\0');
 	}
 	OPARENT quote_fmt CPARENT
 	{

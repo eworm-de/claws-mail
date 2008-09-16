@@ -60,5 +60,6 @@ PrefsAccount *account_get_reply_account	(MsgInfo 	*msginfo,
 					 gboolean	 reply_autosel);
 void 	      account_rename_path	(const gchar 	*old_id, 
 					 const gchar 	*new_id);
+gchar *account_get_signature_str(PrefsAccount *account);
 
 #endif /* __ACCOUNT_H__ */

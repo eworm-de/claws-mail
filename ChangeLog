@@ -1,3 +1,18 @@
+2008-09-16 [wwp]	3.5.0cvs106
+
+	* src/account.c
+	* src/account.h
+	* src/compose.c
+	* src/quote_fmt.c
+	* src/quote_fmt_lex.l
+	* src/quote_fmt_parse.y
+		Add account signature (path and value string) manipulation
+		keywords to the template processor. It's now possible in
+		all templates to insert the account signature to an
+		arbitrary location or to pass it to a external script for
+		further editing.
+
+
 2008-09-16 [mones]	3.5.0cvs105
 
 	* src/imap.c

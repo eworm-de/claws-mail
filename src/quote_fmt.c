@@ -69,6 +69,8 @@ static gchar *quote_desc_strings[] = {
 	"%account_email (%am)",		N_("account property: your email address"), /* mail address in compose account */
 	"%account_name (%an)",		N_("account property: account name"), /* compose account name itself */
 	"%account_org (%ao)",		N_("account property: organization"), /* organization in compose account */
+	"%account_sig (%as)",		N_("account property: signature"), /* signature set in account prefs */
+	"%account_sigpath (%asp)",	N_("account property: signature path"), /* signature path set in account prefs */
 	"%account_dict (%aT)",		N_("account property: default dictionary"), /* main dict (if enabled) in account */
 	"%addrbook_cc (%ABc)",		N_("address book <span style=\"oblique\">completion</span>: Cc"), /* completion of 'Cc' from address book */
 	"%addrbook_from (%ABf)",	N_("address book <span style=\"oblique\">completion</span>: From"), /* completion of 'From' from address book */
@@ -84,8 +86,8 @@ static gchar *quote_desc_strings[] = {
 	"\\n", 				N_("new line"),
 	"",					NULL,
 	N_("<span weight=\"bold\">commands:</span>"),		NULL,
-	"?x{<span style=\"oblique\">expr</span>}\n\n",		N_("insert <span style=\"oblique\">expr</span> if x is set, where x is one of\nthe [dfNFLIstcnriT, ad, af, ao, aT, ABc, ABf, ABt]\nsymbols (or their long equivalent)"),
-	"!x{<span style=\"oblique\">expr</span>}\n\n",		N_("insert <span style=\"oblique\">expr</span> if x is not set, where x is one of\nthe [dfNFLIstcnriT, ad, af, ao, aT, ABc, ABf, ABt]\nsymbols (or their long equivalent)"),
+	"?x{<span style=\"oblique\">expr</span>}\n\n",		N_("insert <span style=\"oblique\">expr</span> if x is set, where x is one of\nthe [dfNFLIstcnriT, ad, af, ao, as, asp, aT, ABc, ABf, ABt]\nsymbols (or their long equivalent)"),
+	"!x{<span style=\"oblique\">expr</span>}\n\n",		N_("insert <span style=\"oblique\">expr</span> if x is not set, where x is one of\nthe [dfNFLIstcnriT, ad, af, ao, as, asp, aT, ABc, ABf, ABt]\nsymbols (or their long equivalent)"),
 	"|file{<span style=\"oblique\">sub_expr</span>}\n(|f{<span style=\"oblique\">sub_expr</span>})",		N_("insert file:\n<span style=\"oblique\">sub_expr</span> is evaluated as the path of the file to insert"), /* insert file */
 	"|program{<span style=\"oblique\">sub_expr</span>}\n(|p{<span style=\"oblique\">sub_expr</span>})\n",	N_("insert program output:\n<span style=\"oblique\">sub_expr</span> is evaluated as a command-line to get\nthe output from"), /* insert program output */
 	"|input{<span style=\"oblique\">sub_expr</span>}\n(|i{<span style=\"oblique\">sub_expr</span>})\n",		N_("insert user input:\n<span style=\"oblique\">sub_expr</span> is a variable to be replaced by\nuser-entered text"), /* insert user input */
