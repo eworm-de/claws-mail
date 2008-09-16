@@ -87,9 +87,6 @@ struct _PrefsAccount
 
 	gboolean use_nonblocking_ssl;
 
-	/* Temporarily preserved password */
-	gchar *tmp_pass;
-
 	/* Receive */
 	gboolean use_apop_auth;
 	gboolean rmmail;
@@ -115,9 +112,6 @@ struct _PrefsAccount
 	gchar *smtp_userid;
 	gchar *smtp_passwd;
 	gchar *session_smtp_passwd;
-
-	/* Temporarily preserved password */
-	gchar *tmp_smtp_pass;
 
 	gboolean pop_before_smtp;
 	gint pop_before_smtp_timeout;

@@ -246,9 +246,6 @@ gint send_message_smtp_full(PrefsAccount *ac_prefs, GSList *to_list, FILE *fp, g
 				if (ac_prefs->smtp_passwd)
 					smtp_session->pass =
 						g_strdup(ac_prefs->smtp_passwd);
-				else if (ac_prefs->tmp_smtp_pass)
-					smtp_session->pass =
-						g_strdup(ac_prefs->tmp_smtp_pass);
 				else {
 					smtp_session->pass =
 						input_dialog_query_password_keep
@@ -259,16 +256,11 @@ gint send_message_smtp_full(PrefsAccount *ac_prefs, GSList *to_list, FILE *fp, g
 						session_destroy(session);
 						return -1;
 					}
-					ac_prefs->tmp_smtp_pass =
-						g_strdup(smtp_session->pass);
 				}
 			} else {
 				smtp_session->user = g_strdup(ac_prefs->userid);
 				if (ac_prefs->passwd)
 					smtp_session->pass = g_strdup(ac_prefs->passwd);
-				else if (ac_prefs->tmp_pass)
-					smtp_session->pass =
-						g_strdup(ac_prefs->tmp_pass);
 				else {
 					smtp_session->pass =
 						input_dialog_query_password_keep
@@ -279,8 +271,6 @@ gint send_message_smtp_full(PrefsAccount *ac_prefs, GSList *to_list, FILE *fp, g
 						session_destroy(session);
 						return -1;
 					}
-					ac_prefs->tmp_pass =
-						g_strdup(smtp_session->pass);
 				}
 			}
 		} else {
@@ -383,13 +373,6 @@ gint send_message_smtp_full(PrefsAccount *ac_prefs, GSList *to_list, FILE *fp, g
 		gtk_main_iteration();
 
 	if (SMTP_SESSION(session)->error_val == SM_AUTHFAIL) {
-		if (ac_prefs->smtp_userid && ac_prefs->tmp_smtp_pass) {
-			g_free(ac_prefs->tmp_smtp_pass);
-			ac_prefs->tmp_smtp_pass = NULL;
-		} else if (ac_prefs->tmp_pass) {
-			g_free(ac_prefs->tmp_pass);
-			ac_prefs->tmp_pass = NULL;
-		}
 		if (ac_prefs->session_smtp_passwd) {
 			g_free(ac_prefs->session_smtp_passwd);
 			ac_prefs->session_smtp_passwd = NULL;

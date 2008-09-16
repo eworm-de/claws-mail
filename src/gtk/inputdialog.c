@@ -164,7 +164,7 @@ gchar *input_dialog_with_invisible_checkbtn(const gchar *title, const gchar *mes
 		HILDON_GTK_INPUT_MODE_FULL | HILDON_GTK_INPUT_MODE_INVISIBLE);
 #endif
 
-	return input_dialog_open(title, message, checkbtn_label, default_string, FALSE, checkbtn_state);
+	return input_dialog_open(title, message, checkbtn_label, default_string, *checkbtn_state, checkbtn_state);
 }
 
 gchar *input_dialog_combo(const gchar *title, const gchar *message,
@@ -274,12 +274,12 @@ gchar *input_dialog_query_password_keep(const gchar *server, const gchar *user, 
 				  user);
 	else
 		message = g_strdup_printf(_("Input password:"));
-        if (keep && prefs_common.session_passwords) {
+        if (keep) {
 		if (*keep != NULL) {
 			pass = g_strdup (*keep);
 		}
 		else {
-			gboolean state = FALSE;
+			gboolean state = prefs_common.session_passwords;
 			pass = input_dialog_with_invisible_checkbtn(_("Input password"), 
 					message, NULL,
 					_("Remember password for this session"), 
@@ -288,6 +288,7 @@ gchar *input_dialog_query_password_keep(const gchar *server, const gchar *user, 
 				*keep = g_strdup (pass);
 				debug_print("keeping session password for account\n");
 			}
+			prefs_common.session_passwords = state;
 		}
 	}
 	else {

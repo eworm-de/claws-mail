@@ -918,8 +918,6 @@ static void account_clone(GtkWidget *widget, gpointer data)
 	ACP_FASSIGN(ssl_smtp);
 	ACP_FASSIGN(use_nonblocking_ssl);
 	
-	ac_clon->tmp_pass = NULL;
-
 	/* receive */
 	ACP_FASSIGN(use_apop_auth);
 	ACP_FASSIGN(rmmail);
@@ -944,8 +942,6 @@ static void account_clone(GtkWidget *widget, gpointer data)
 	ACP_FASSIGN(smtp_auth_type);
 	ACP_FDUP(smtp_userid);
 	ACP_FDUP(smtp_passwd);
-
-	ac_clon->tmp_smtp_pass = NULL;
 
 	ACP_FASSIGN(pop_before_smtp);
 	ACP_FASSIGN(pop_before_smtp_timeout);

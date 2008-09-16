@@ -1,3 +1,15 @@
+2008-09-16 [colin]	3.5.0cvs109
+
+	* src/account.c
+	* src/inc.c
+	* src/mainwindow.c
+	* src/prefs_account.h
+	* src/prefs_other.c
+	* src/send_message.c
+	* src/gtk/inputdialog.c
+		Don't add a pref to allow remembering passwords
+		(Just not checking the checkbox is enough)
+
 2008-09-16 [colin]	3.5.0cvs108
 
 	* configure.ac

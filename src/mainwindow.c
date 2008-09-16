@@ -3045,15 +3045,11 @@ SensitiveCond main_window_get_current_state(MainWindow *mainwin)
 	if (prefs_common.layout_mode != SMALL_LAYOUT || mainwin->in_folder)
 		state |= M_IN_MSGLIST;
 
-	if (prefs_common.session_passwords) {
-		GList *list = NULL;
-
-		for (list = account_get_list(); list != NULL; list = list->next) {
-			PrefsAccount *account = list->data;
-			if (account->session_passwd || account->session_smtp_passwd) {
-				state |= M_SESSION_PASSWORDS;
-				break;
-			}
+	for (account_list = account_get_list(); account_list != NULL; account_list = account_list->next) {
+		PrefsAccount *account = account_list->data;
+		if (account->session_passwd || account->session_smtp_passwd) {
+			state |= M_SESSION_PASSWORDS;
+			break;
 		}
 	}
 

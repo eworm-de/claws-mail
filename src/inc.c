@@ -555,9 +555,6 @@ static gint inc_start(IncProgressDialog *inc_dialog)
 		if (pop3_session->ac_prefs->passwd)
 			pop3_session->pass =
 				g_strdup(pop3_session->ac_prefs->passwd);
-		else if (pop3_session->ac_prefs->tmp_pass)
-			pop3_session->pass =
-				g_strdup(pop3_session->ac_prefs->tmp_pass);
 		else {
 			gchar *pass;
 
@@ -577,8 +574,6 @@ static gint inc_start(IncProgressDialog *inc_dialog)
 					 NULL, NULL);
 
 			if (pass) {
-				pop3_session->ac_prefs->tmp_pass =
-					g_strdup(pass);
 				pop3_session->pass = pass;
 			}
 		}
@@ -711,12 +706,6 @@ static gint inc_start(IncProgressDialog *inc_dialog)
 		statusbar_pop_all();
 
 		new_msgs += pop3_session->cur_total_num;
-
-		if (pop3_session->error_val == PS_AUTHFAIL &&
-		    pop3_session->ac_prefs->tmp_pass) {
-			g_free(pop3_session->ac_prefs->tmp_pass);
-			pop3_session->ac_prefs->tmp_pass = NULL;
-		}
 
 		pop3_write_uidl_list(pop3_session);
 
