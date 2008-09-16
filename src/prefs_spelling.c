@@ -238,6 +238,12 @@ static void prefs_spelling_create_widget(PrefsPage *_page, GtkWindow *window, gp
 		g_free(prefs_common.alt_dictionary);
 		prefs_common.alt_dictionary = tmp;
 	}
+	if (strchr(prefs_common.dictionary, '-')) {
+		*(strchr(prefs_common.dictionary, '-')) = '\0';
+	}
+	if (strchr(prefs_common.alt_dictionary, '-')) {
+		*(strchr(prefs_common.alt_dictionary, '-')) = '\0';
+	}
 	gtkaspell_set_dictionary_menu_active_item(GTK_COMBO_BOX(default_dict_combo),
 						prefs_common.dictionary);
 

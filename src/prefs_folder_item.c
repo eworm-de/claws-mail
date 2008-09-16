@@ -939,6 +939,9 @@ static void prefs_folder_item_compose_create_widget_func(PrefsPage * page_,
 		item->prefs->default_dictionary = tmp;
 		dictionary = item->prefs->default_dictionary;
 	}
+	if (strchr(item->prefs->default_dictionary, '-')) {
+		*(strchr(item->prefs->default_dictionary, '-')) = '\0';
+	}
 	if (dictionary)
 		gtkaspell_set_dictionary_menu_active_item(
 			GTK_COMBO_BOX(combo_default_dictionary), dictionary);
@@ -968,6 +971,9 @@ static void prefs_folder_item_compose_create_widget_func(PrefsPage * page_,
 		g_free(item->prefs->default_alt_dictionary);
 		item->prefs->default_alt_dictionary = tmp;
 		dictionary = item->prefs->default_alt_dictionary;
+	}
+	if (strchr(item->prefs->default_alt_dictionary, '-')) {
+		*(strchr(item->prefs->default_alt_dictionary, '-')) = '\0';
 	}
 	if (dictionary)
 		gtkaspell_set_dictionary_menu_active_item(

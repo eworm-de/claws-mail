@@ -4538,6 +4538,9 @@ static void prefs_account_compose_default_dictionary_set_optmenu_from_string
 		dictionary = g_strdup(strrchr(dictionary, '/')+1);
 	}
 
+	if (strchr(dictionary, '-')) {
+		*(strchr(dictionary, '-')) = '\0';
+	}
 	combo = *pparam->widget;
 	if (dictionary)
 		gtkaspell_set_dictionary_menu_active_item(GTK_COMBO_BOX(combo), 

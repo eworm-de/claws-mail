@@ -393,6 +393,9 @@ GtkAspell *gtkaspell_new(const gchar *dictionary,
 		dict->dictname = g_strdup(dictionary);
 	}
 
+	if (strchr(dictionary, '-')) {
+		*(strchr(dictionary, '-')) = '\0';
+	}
 	gtkaspeller    = gtkaspeller_new(dict); 
 	dictionary_delete(dict);
 
@@ -417,6 +420,9 @@ GtkAspell *gtkaspell_new(const gchar *dictionary,
 		} else {
 			alt_dict->fullname = g_strdup(alt_dictionary);
 			alt_dict->dictname = g_strdup(alt_dictionary);
+		}
+		if (strchr(alt_dictionary, '-')) {
+			*(strchr(alt_dictionary, '-')) = '\0';
 		}
 
 		alt_gtkaspeller    = gtkaspeller_new(alt_dict);
@@ -2055,6 +2061,10 @@ gboolean gtkaspell_change_dict(GtkAspell *gtkaspell, const gchar *dictionary,
 		dict->dictname = g_strdup(dictionary);
 	}
 
+	if (strchr(dictionary, '-')) {
+		*(strchr(dictionary, '-')) = '\0';
+	}
+
 	gtkaspeller = gtkaspeller_new(dict);
 
 	if (!gtkaspeller) {
@@ -2099,6 +2109,10 @@ gboolean gtkaspell_change_alt_dict(GtkAspell *gtkaspell, const gchar *alt_dictio
 	} else {
 		dict->fullname = g_strdup(alt_dictionary);
 		dict->dictname = g_strdup(alt_dictionary);
+	}
+
+	if (strchr(alt_dictionary, '-')) {
+		*(strchr(alt_dictionary, '-')) = '\0';
 	}
 
 	gtkaspeller = gtkaspeller_new(dict);
