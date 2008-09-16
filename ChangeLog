@@ -1,3 +1,10 @@
+2008-09-16 [colin]	3.5.0cvs108
+
+	* src/messageview.c
+	* src/gtk/inputdialog.c
+	* src/gtk/inputdialog.h
+		Fix warnings
+
 2008-09-16 [wwp]	3.5.0cvs107
 
 	* src/compose.c

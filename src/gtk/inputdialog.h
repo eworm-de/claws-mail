@@ -51,5 +51,5 @@ gchar *input_dialog_query_password	(const gchar	*server,
 					 const gchar	*user);
 gchar *input_dialog_query_password_keep	(const gchar	*server,
 					 const gchar	*user,
-					 const gchar	**keep);
+					 gchar		**keep);
 #endif /* __INPUTDIALOG_H__ */

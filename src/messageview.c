@@ -1710,7 +1710,7 @@ static void return_receipt_show(NoticeView *noticeview, MsgInfo *msginfo)
 	if (from_me) {
 		noticeview_set_icon(noticeview, STOCK_PIXMAP_NOTICE_WARN);
 		if (MSG_IS_RETRCPT_GOT(msginfo->flags)) {
-			noticeview_set_text(noticeview, _("You got a return receipt in this message : "
+			noticeview_set_text(noticeview, _("You got a return receipt for this message : "
 							  "it has been displayed by the recipient."));
 		} else {
 			noticeview_set_text(noticeview, _("You asked for a return receipt in this message."));

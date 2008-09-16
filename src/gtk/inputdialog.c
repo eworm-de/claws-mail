@@ -258,7 +258,7 @@ gchar *input_dialog_query_password(const gchar *server, const gchar *user)
 	return pass;
 }
 
-gchar *input_dialog_query_password_keep(const gchar *server, const gchar *user, const gchar **keep)
+gchar *input_dialog_query_password_keep(const gchar *server, const gchar *user, gchar **keep)
 {
 	gchar *message;
 	gchar *pass;
@@ -276,7 +276,7 @@ gchar *input_dialog_query_password_keep(const gchar *server, const gchar *user, 
 		message = g_strdup_printf(_("Input password:"));
         if (keep && prefs_common.session_passwords) {
 		if (*keep != NULL) {
-			pass = g_strdup (keep);
+			pass = g_strdup (*keep);
 		}
 		else {
 			gboolean state = FALSE;
