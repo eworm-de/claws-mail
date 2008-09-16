@@ -33,6 +33,11 @@ gchar *input_dialog_with_checkbtn(const gchar	*title,
 gchar *input_dialog_with_invisible	(const gchar	*title,
 					 const gchar	*message,
 					 const gchar	*default_string);
+gchar *input_dialog_with_invisible_checkbtn(const gchar	*title,
+					   const gchar	*message,
+					   const gchar	*default_string,
+					   const gchar  *checkbtn_label,
+					   gboolean *checkbtn_state);
 gchar *input_dialog_combo		(const gchar	*title,
 					 const gchar	*message,
 					 const gchar	*default_string,
@@ -44,5 +49,7 @@ gchar *input_dialog_combo_remember	(const gchar	*title,
 					 gboolean	*remember);
 gchar *input_dialog_query_password	(const gchar	*server,
 					 const gchar	*user);
-
+gchar *input_dialog_query_password_keep	(const gchar	*server,
+					 const gchar	*user,
+					 const gchar	**keep);
 #endif /* __INPUTDIALOG_H__ */

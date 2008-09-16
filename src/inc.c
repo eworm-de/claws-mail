@@ -566,9 +566,10 @@ static gint inc_start(IncProgressDialog *inc_dialog)
 					(inc_dialog->dialog->window,
 					 NULL, NULL);
 
-			pass = input_dialog_query_password
+			pass = input_dialog_query_password_keep
 				(pop3_session->ac_prefs->recv_server,
-				 pop3_session->user);
+				 pop3_session->user,
+				 &(pop3_session->ac_prefs->session_passwd));
 
 			if (inc_dialog->show_dialog)
 				manage_window_focus_out
@@ -635,6 +636,10 @@ static gint inc_start(IncProgressDialog *inc_dialog)
 			break;
 		case INC_AUTH_FAILED:
 			SET_PIXMAP_AND_TEXT(errorpix, _("Auth failed"));
+			if (pop3_session->ac_prefs->session_passwd) {
+				g_free(pop3_session->ac_prefs->session_passwd);
+				pop3_session->ac_prefs->session_passwd = NULL;
+			}
 			break;
 		case INC_LOCKED:
 			SET_PIXMAP_AND_TEXT(errorpix, _("Locked"));

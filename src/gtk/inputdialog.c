@@ -133,6 +133,40 @@ gchar *input_dialog_with_invisible(const gchar *title, const gchar *message,
 	return input_dialog_open(title, message, NULL, default_string, FALSE, NULL);
 }
 
+gchar *input_dialog_with_invisible_checkbtn(const gchar *title, const gchar *message,
+				   const gchar *default_string, const gchar *checkbtn_label,
+				   gboolean *checkbtn_state)
+{
+	if (dialog && GTK_WIDGET_VISIBLE(dialog)) return NULL;
+
+	if (!dialog)
+		input_dialog_create(TRUE);
+
+	type = INPUT_DIALOG_INVISIBLE;
+	gtk_widget_hide(combo);
+	gtk_widget_show(entry);
+
+	if (checkbtn_label && checkbtn_state) {
+		gtk_widget_show(remember_checkbtn);
+		gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(remember_checkbtn), *checkbtn_state);
+	}
+	else {
+		gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(remember_checkbtn), FALSE);
+		gtk_widget_hide(remember_checkbtn);
+	}
+
+	gtk_widget_hide(icon_q);
+	gtk_widget_show(icon_p);
+	is_pass = TRUE;
+	gtk_entry_set_visibility(GTK_ENTRY(entry), FALSE);
+#ifdef MAEMO
+	hildon_gtk_entry_set_input_mode(GTK_ENTRY(entry), 
+		HILDON_GTK_INPUT_MODE_FULL | HILDON_GTK_INPUT_MODE_INVISIBLE);
+#endif
+
+	return input_dialog_open(title, message, checkbtn_label, default_string, FALSE, checkbtn_state);
+}
+
 gchar *input_dialog_combo(const gchar *title, const gchar *message,
 			  const gchar *default_string, GList *list)
 {
@@ -219,6 +253,46 @@ gchar *input_dialog_query_password(const gchar *server, const gchar *user)
 	else
 		message = g_strdup_printf(_("Input password:"));
 	pass = input_dialog_with_invisible(_("Input password"), message, NULL);
+	g_free(message);
+
+	return pass;
+}
+
+gchar *input_dialog_query_password_keep(const gchar *server, const gchar *user, const gchar **keep)
+{
+	gchar *message;
+	gchar *pass;
+
+	if (server && user)
+		message = g_strdup_printf(_("Input password for %s on %s:"),
+				  user, server);
+	else if (server)
+		message = g_strdup_printf(_("Input password for %s:"),
+				  server);
+	else if (user)
+		message = g_strdup_printf(_("Input password for %s:"),
+				  user);
+	else
+		message = g_strdup_printf(_("Input password:"));
+        if (keep && prefs_common.session_passwords) {
+		if (*keep != NULL) {
+			pass = g_strdup (keep);
+		}
+		else {
+			gboolean state = FALSE;
+			pass = input_dialog_with_invisible_checkbtn(_("Input password"), 
+					message, NULL,
+					_("Remember password for this session"), 
+					&state);
+			if (state) {
+				*keep = g_strdup (pass);
+				debug_print("keeping session password for account\n");
+			}
+		}
+	}
+	else {
+		pass = input_dialog_with_invisible(_("Input password"), message, NULL);
+	}		
 	g_free(message);
 
 	return pass;

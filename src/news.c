@@ -338,8 +338,9 @@ static Session *news_session_new_for_folder(Folder *folder)
 		if (ac->passwd && ac->passwd[0])
 			passwd = g_strdup(ac->passwd);
 		else
-			passwd = input_dialog_query_password(ac->nntp_server,
-							     userid);
+			passwd = input_dialog_query_password_keep(ac->nntp_server,
+								  userid,
+								  &(ac->session_passwd));
 	}
 
 #if (defined(USE_OPENSSL) || defined (USE_GNUTLS))
@@ -371,6 +372,10 @@ static Session *news_session_new_for_folder(Folder *folder)
 			log_error(LOG_PROTOCOL, _("Error authenticating to %s:%d ...\n"), ac->nntp_server, port);
 			session_destroy(SESSION(session));
 			g_free(passwd);
+			if (ac->session_passwd) {
+				g_free(ac->session_passwd);
+				ac->session_passwd = NULL;
+			}
 			return NULL;
 		}
 	}

@@ -59,6 +59,7 @@ typedef struct _OtherPage
 	GtkWidget *checkbtn_askonfilter;
 	GtkWidget *checkbtn_use_shred;
 	GtkWidget *checkbtn_real_time_sync;
+	GtkWidget *checkbtn_session_passwords;
 } OtherPage;
 
 static struct KeybindDialog {
@@ -508,6 +509,10 @@ static void prefs_other_create_widget(PrefsPage *_page, GtkWindow *window,
 	GtkWidget *checkbtn_askonfilter;
 	GtkWidget *checkbtn_use_shred;
 	GtkWidget *checkbtn_real_time_sync;
+
+	GtkWidget *frame_sess_pass;
+	GtkWidget *vbox_sess_pass;
+	GtkWidget *checkbtn_session_passwords;
 	gchar *shred_binary = NULL;
 	CLAWS_TIP_DECL();
 
@@ -521,6 +526,11 @@ static void prefs_other_create_widget(PrefsPage *_page, GtkWindow *window,
 		(vbox_addr, checkbtn_addaddrbyclick,
 		 _("Add address to destination when double-clicked"));
 
+	vbox_sess_pass = gtkut_get_options_frame(vbox1, &frame_sess_pass, _("Session passwords"));
+	
+	PACK_CHECK_BUTTON
+		(vbox_sess_pass, checkbtn_session_passwords,
+		 _("Enable the option of keeping unsaved account passwords while running"));
 	/* On Exit */
 	vbox_exit = gtkut_get_options_frame(vbox1, &frame_exit, _("On exit"));
 
@@ -609,6 +619,8 @@ static void prefs_other_create_widget(PrefsPage *_page, GtkWindow *window,
 
 	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(checkbtn_addaddrbyclick), 
 		prefs_common.add_address_by_click);
+	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(checkbtn_session_passwords), 
+		prefs_common.session_passwords);
 	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(checkbtn_confonexit), 
 		prefs_common.confirm_on_exit);
 	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(checkbtn_cleanonexit), 
@@ -631,6 +643,7 @@ static void prefs_other_create_widget(PrefsPage *_page, GtkWindow *window,
 		prefs_common.real_time_sync);
 
 	prefs_other->checkbtn_addaddrbyclick = checkbtn_addaddrbyclick;
+	prefs_other->checkbtn_session_passwords = checkbtn_session_passwords;
 	prefs_other->checkbtn_confonexit = checkbtn_confonexit;
 	prefs_other->checkbtn_cleanonexit = checkbtn_cleanonexit;
 	prefs_other->checkbtn_askonclean = checkbtn_askonclean;
@@ -648,9 +661,27 @@ static void prefs_other_save(PrefsPage *_page)
 {
 	OtherPage *page = (OtherPage *) _page;
 	gboolean gtk_can_change_accels;
+	GList * list = NULL;
 
 	prefs_common.add_address_by_click = gtk_toggle_button_get_active(
 		GTK_TOGGLE_BUTTON(page->checkbtn_addaddrbyclick));
+	prefs_common.session_passwords = gtk_toggle_button_get_active(
+		GTK_TOGGLE_BUTTON(page->checkbtn_session_passwords));
+
+	if (!prefs_common.session_passwords) {
+		for (list = account_get_list(); list != NULL; list = list->next) {
+			PrefsAccount *account = list->data;
+			if (account->session_passwd) {
+				g_free(account->session_passwd);
+				account->session_passwd = NULL;
+			}
+			if (account->session_smtp_passwd) {
+				g_free(account->session_smtp_passwd);
+				account->session_smtp_passwd = NULL;
+			}
+		}
+	}
+
 	prefs_common.confirm_on_exit = gtk_toggle_button_get_active(
 		GTK_TOGGLE_BUTTON(page->checkbtn_confonexit));
 	prefs_common.clean_on_exit = gtk_toggle_button_get_active(

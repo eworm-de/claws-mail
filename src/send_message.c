@@ -251,9 +251,10 @@ gint send_message_smtp_full(PrefsAccount *ac_prefs, GSList *to_list, FILE *fp, g
 						g_strdup(ac_prefs->tmp_smtp_pass);
 				else {
 					smtp_session->pass =
-						input_dialog_query_password
+						input_dialog_query_password_keep
 							(ac_prefs->smtp_server,
-							 smtp_session->user);
+							 smtp_session->user,
+							 &(ac_prefs->session_smtp_passwd));
 					if (!smtp_session->pass) {
 						session_destroy(session);
 						return -1;
@@ -270,9 +271,10 @@ gint send_message_smtp_full(PrefsAccount *ac_prefs, GSList *to_list, FILE *fp, g
 						g_strdup(ac_prefs->tmp_pass);
 				else {
 					smtp_session->pass =
-						input_dialog_query_password
+						input_dialog_query_password_keep
 							(ac_prefs->smtp_server,
-							 smtp_session->user);
+							 smtp_session->user,
+							 &(ac_prefs->session_smtp_passwd));
 					if (!smtp_session->pass) {
 						session_destroy(session);
 						return -1;
@@ -387,6 +389,10 @@ gint send_message_smtp_full(PrefsAccount *ac_prefs, GSList *to_list, FILE *fp, g
 		} else if (ac_prefs->tmp_pass) {
 			g_free(ac_prefs->tmp_pass);
 			ac_prefs->tmp_pass = NULL;
+		}
+		if (ac_prefs->session_smtp_passwd) {
+			g_free(ac_prefs->session_smtp_passwd);
+			ac_prefs->session_smtp_passwd = NULL;
 		}
 		ret = -1;
 	} else if (SMTP_SESSION(session)->state == SMTP_MAIL_SENT_OK) {

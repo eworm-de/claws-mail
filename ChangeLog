@@ -1,3 +1,23 @@
+2008-09-16 [mones]	3.5.0cvs105
+
+	* src/imap.c
+	* src/inc.c
+	* src/mainwindow.c
+	* src/mainwindow.h
+	* src/news.c
+	* src/prefs_account.h
+	* src/prefs_common.c
+	* src/prefs_common.h
+	* src/prefs_other.c
+	* src/send_message.c
+	* src/gtk/inputdialog.c
+	* src/gtk/inputdialog.h
+		Implement session passwords: unsaved passwords for receiving
+		or sending of accounts can be remembered while running to 
+		avoid repetitive typing.
+		As keeping passwords in memory is unsafe a new preference 
+		in Other page is added to activate or not such capability.
+
 2008-09-14 [colin]	3.5.0cvs104
 
 	* src/codeconv.c

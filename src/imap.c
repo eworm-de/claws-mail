@@ -190,8 +190,8 @@ static void	 imap_folder_destroy	(Folder		*folder);
 
 static IMAPSession *imap_session_new	(Folder         *folder,
 					 const PrefsAccount 	*account);
-static gint 	imap_session_authenticate(IMAPSession 		*session,
-				      	  const PrefsAccount 	*account);
+static gint 	imap_session_authenticate(IMAPSession 	*session,
+				      	  PrefsAccount 	*account);
 static void 	imap_session_destroy	(Session 	*session);
 
 static gchar   *imap_fetch_msg		(Folder 	*folder, 
@@ -1153,7 +1153,7 @@ static IMAPSession *imap_session_new(Folder * folder,
 }
 
 static gint imap_session_authenticate(IMAPSession *session, 
-				      const PrefsAccount *account)
+				      PrefsAccount *account)
 {
 	gchar *pass, *acc_pass;
 	gboolean failed = FALSE;
@@ -1164,7 +1164,9 @@ try_again:
 	pass = acc_pass;
 	if (!pass && account->imap_auth_type != IMAP_AUTH_ANON) {
 		gchar *tmp_pass;
-		tmp_pass = input_dialog_query_password(account->recv_server, account->userid);
+		tmp_pass = input_dialog_query_password_keep(account->recv_server, 
+							    account->userid,
+							    &(account->session_passwd));
 		if (!tmp_pass)
 			return MAILIMAP_NO_ERROR;
 		Xstrdup_a(pass, tmp_pass, {g_free(tmp_pass); return MAILIMAP_NO_ERROR;});
@@ -1180,6 +1182,10 @@ try_again:
 		if (!failed && !is_fatal(ok)) {
 			acc_pass = NULL;
 			failed = TRUE;
+			if (account->session_passwd != NULL) {
+				g_free(account->session_passwd);
+				account->session_passwd = NULL;
+			}
 			goto try_again;
 		} else {
 			if (prefs_common.no_recv_err_panel) {

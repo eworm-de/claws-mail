@@ -401,6 +401,7 @@ struct _PrefsCommon
     guint filtering_debug_loglength;
 
     gboolean confirm_on_exit;
+	gboolean session_passwords;
 	gboolean clean_on_exit;
 	gboolean ask_on_clean;
 	gboolean warn_queued_on_exit;

@@ -69,6 +69,7 @@ struct _PrefsAccount
 	gboolean use_nntp_auth_onconnect;
 	gchar *userid;
 	gchar *passwd;
+	gchar *session_passwd;
 
 	gchar * local_mbox;
 	gboolean use_mail_command;
@@ -113,6 +114,7 @@ struct _PrefsAccount
 	SMTPAuthType smtp_auth_type;
 	gchar *smtp_userid;
 	gchar *smtp_passwd;
+	gchar *session_smtp_passwd;
 
 	/* Temporarily preserved password */
 	gchar *tmp_smtp_pass;

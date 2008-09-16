@@ -386,6 +386,9 @@ static void addr_harvest_msg_cb	 ( GtkAction	*action,
 static void sync_cb		 ( GtkAction	*action,
 				  gpointer	 data );
 
+static void forget_session_passwords_cb	(GtkAction	*action,
+					 gpointer	 data );
+
 static gboolean mainwindow_focus_in_event	(GtkWidget	*widget, 
 						 GdkEventFocus	*focus,
 						 gpointer	 data);
@@ -691,6 +694,8 @@ static GtkActionEntry mainwin_entries[] =
 	/* {"Tools/---",			NULL, "---", NULL, NULL, NULL }, */
 	{"Tools/FilteringLog",			NULL, N_("Filtering Lo_g"), NULL, NULL, G_CALLBACK(filtering_debug_window_show_cb) }, 
 	{"Tools/NetworkLog",			NULL, N_("Network _Log"), "<shift><control>L", NULL, G_CALLBACK(log_window_show_cb) }, 
+	/* {"Tools/---",			NULL, "---", NULL, NULL, NULL }, */
+	{"Tools/ForgetSessionPasswords",		NULL, N_("_Forget all session passwords"), NULL, NULL, G_CALLBACK(forget_session_passwords_cb) }, 
 
 /* Configuration menu */	
 	{"Configuration/ChangeAccount",		NULL, N_("C_hange current account") },
@@ -1849,7 +1854,9 @@ MainWindow *main_window_create()
 	MENUITEM_ADDUI_MANAGER(mainwin->ui_manager, "/Menu/Tools", "Separator7", "Tools/---", GTK_UI_MANAGER_SEPARATOR)
 	MENUITEM_ADDUI_MANAGER(mainwin->ui_manager, "/Menu/Tools", "FilteringLog", "Tools/FilteringLog", GTK_UI_MANAGER_MENUITEM)
 	MENUITEM_ADDUI_MANAGER(mainwin->ui_manager, "/Menu/Tools", "NetworkLog", "Tools/NetworkLog", GTK_UI_MANAGER_MENUITEM)
-		MENUITEM_ADDUI_MANAGER(mainwin->ui_manager, "/Menu/Tools", "Separator8", "Tools/---", GTK_UI_MANAGER_SEPARATOR)
+	MENUITEM_ADDUI_MANAGER(mainwin->ui_manager, "/Menu/Tools", "Separator8", "Tools/---", GTK_UI_MANAGER_SEPARATOR)
+	MENUITEM_ADDUI_MANAGER(mainwin->ui_manager, "/Menu/Tools", "ForgetSessionPasswords", "Tools/ForgetSessionPasswords", GTK_UI_MANAGER_MENUITEM)
+	MENUITEM_ADDUI_MANAGER(mainwin->ui_manager, "/Menu/Tools", "Separator9", "Tools/---", GTK_UI_MANAGER_SEPARATOR)
 
 /* Configuration menu */
 	MENUITEM_ADDUI_MANAGER(mainwin->ui_manager, "/Menu/Configuration", "ChangeAccount", "Configuration/ChangeAccount", GTK_UI_MANAGER_MENU)
@@ -3038,6 +3045,18 @@ SensitiveCond main_window_get_current_state(MainWindow *mainwin)
 	if (prefs_common.layout_mode != SMALL_LAYOUT || mainwin->in_folder)
 		state |= M_IN_MSGLIST;
 
+	if (prefs_common.session_passwords) {
+		GList *list = NULL;
+
+		for (list = account_get_list(); list != NULL; list = list->next) {
+			PrefsAccount *account = list->data;
+			if (account->session_passwd || account->session_smtp_passwd) {
+				state |= M_SESSION_PASSWORDS;
+				break;
+			}
+		}
+	}
+
 	return state;
 }
 
@@ -3132,6 +3151,7 @@ void main_window_set_menu_sensitive(MainWindow *mainwin)
 		{"Menu/Tools/ListUrls"                 , M_TARGET_EXIST},
 		{"Menu/Tools/Actions"                      , M_TARGET_EXIST|M_ACTIONS_EXIST},
 		{"Menu/Tools/Execute"                      , M_DELAY_EXEC},
+		{"Menu/Tools/ForgetSessionPasswords"	   , M_SESSION_PASSWORDS},
 		{"Menu/Tools/DeleteDuplicates/SelFolder"   , M_MSG_EXIST|M_ALLOW_DELETE},
 
 		{"Menu/Configuration", M_UNLOCKED},
@@ -4941,6 +4961,34 @@ static void sync_cb(GtkAction *action, gpointer data)
 {
 	MainWindow *mainwin = (MainWindow *)data;
 	mainwindow_check_synchronise(mainwin, FALSE);
+}
+
+static void forget_session_passwords_cb(GtkAction *action, gpointer data)
+{
+	MainWindow *mainwin = (MainWindow *)data;
+	GList *list = NULL;
+        gint fgtn = 0;
+	gint accs = 0;
+
+	main_window_lock(mainwin);
+	for (list = account_get_list(); list != NULL; list = list->next) {
+		PrefsAccount *account = list->data;
+		if (account->session_passwd) {
+			g_free(account->session_passwd);
+			account->session_passwd = NULL;
+			++fgtn;
+		}
+		if (account->session_smtp_passwd) {
+			g_free(account->session_smtp_passwd);
+			account->session_smtp_passwd = NULL;
+			++fgtn;
+		}
+		++accs;
+	}
+	main_window_unlock(mainwin);
+	alertpanel_notice(ngettext("Forgotten %d password in %d accounts.\n",
+				   "Forgotten %d passwords in %d accounts.\n",
+				   fgtn), fgtn, accs);	
 }
 
 void mainwindow_learn (MainWindow *mainwin, gboolean is_spam)

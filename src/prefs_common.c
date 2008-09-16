@@ -821,6 +821,8 @@ static PrefParam param[] = {
 	 &prefs_common.cmds_use_system_default, P_BOOL, NULL, NULL, NULL},
 	{"add_address_by_click", "FALSE", &prefs_common.add_address_by_click,
 	 P_BOOL, NULL, NULL, NULL},
+	{"session_passwords", "FALSE", &prefs_common.session_passwords,
+	 P_BOOL, NULL, NULL, NULL},
 	{"confirm_on_exit", "FALSE", &prefs_common.confirm_on_exit, P_BOOL,
 	 NULL, NULL, NULL},
 	{"clean_trash_on_exit", "FALSE", &prefs_common.clean_on_exit, P_BOOL,
