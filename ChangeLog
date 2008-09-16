@@ -1,6 +1,9 @@
 2008-09-16 [colin]	3.5.0cvs108
 
+	* configure.ac
+		Require libetpan 0.56 as 0.55 is crashy
 	* src/messageview.c
+		Fix english
 	* src/gtk/inputdialog.c
 	* src/gtk/inputdialog.h
 		Fix warnings
