@@ -3119,7 +3119,6 @@ static gchar *file_read_to_str_full(const gchar *file, gboolean recode)
 		return NULL;
 	}
 #else	  
-	fd = open(file, O_RDONLY | O_NONBLOCK);
 	/* test whether the file is readable without blocking */
 	fd = open(file, O_RDONLY | O_NONBLOCK);
 	if (fd == -1) {

@@ -1,3 +1,9 @@
+2008-09-17 [colin]	3.5.0cvs111
+
+	* src/common/utils.c
+		Fix double-opening (fixes multiple signatures when
+		using signify)
+
 2008-09-16 [colin]	3.5.0cvs110
 
 	* src/prefs_account.c
