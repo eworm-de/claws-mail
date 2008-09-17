@@ -228,20 +228,24 @@ static void prefs_spelling_create_widget(PrefsPage *_page, GtkWindow *window, gp
 			prefs_common.recheck_when_changing_dict);
 	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(use_alternate_checkbtn),
 			prefs_common.use_alternate);
-	if (strrchr(prefs_common.dictionary, '/')) {
+	if (prefs_common.dictionary && 
+	    strrchr(prefs_common.dictionary, '/')) {
 		gchar *tmp = g_strdup(strrchr(prefs_common.dictionary, '/')+1);
 		g_free(prefs_common.dictionary);
 		prefs_common.dictionary = tmp;
 	}
-	if (strrchr(prefs_common.alt_dictionary, '/')) {
+	if (prefs_common.alt_dictionary &&
+	    strrchr(prefs_common.alt_dictionary, '/')) {
 		gchar *tmp = g_strdup(strrchr(prefs_common.alt_dictionary, '/')+1);
 		g_free(prefs_common.alt_dictionary);
 		prefs_common.alt_dictionary = tmp;
 	}
-	if (strchr(prefs_common.dictionary, '-')) {
+	if (prefs_common.dictionary &&
+	    strchr(prefs_common.dictionary, '-')) {
 		*(strchr(prefs_common.dictionary, '-')) = '\0';
 	}
-	if (strchr(prefs_common.alt_dictionary, '-')) {
+	if (prefs_common.alt_dictionary &&
+	    strchr(prefs_common.alt_dictionary, '-')) {
 		*(strchr(prefs_common.alt_dictionary, '-')) = '\0';
 	}
 	gtkaspell_set_dictionary_menu_active_item(GTK_COMBO_BOX(default_dict_combo),

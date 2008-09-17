@@ -939,7 +939,8 @@ static void prefs_folder_item_compose_create_widget_func(PrefsPage * page_,
 		item->prefs->default_dictionary = tmp;
 		dictionary = item->prefs->default_dictionary;
 	}
-	if (strchr(item->prefs->default_dictionary, '-')) {
+	if (item->prefs->default_dictionary &&
+	    strchr(item->prefs->default_dictionary, '-')) {
 		*(strchr(item->prefs->default_dictionary, '-')) = '\0';
 	}
 	if (dictionary)
@@ -972,7 +973,8 @@ static void prefs_folder_item_compose_create_widget_func(PrefsPage * page_,
 		item->prefs->default_alt_dictionary = tmp;
 		dictionary = item->prefs->default_alt_dictionary;
 	}
-	if (strchr(item->prefs->default_alt_dictionary, '-')) {
+	if (item->prefs->default_alt_dictionary &&
+	    strchr(item->prefs->default_alt_dictionary, '-')) {
 		*(strchr(item->prefs->default_alt_dictionary, '-')) = '\0';
 	}
 	if (dictionary)

@@ -1,3 +1,14 @@
+2008-09-17 [colin]	3.5.0cvs112
+
+	* src/image_viewer.c
+		Fix image loading (multiple childs added to 
+		scrolledwindow, break of the resize functionality)
+	* src/account.c
+	* src/prefs_folder_item.c
+	* src/prefs_spelling.c
+	* src/gtk/gtkaspell.c
+		Better fix problems with dictionaries updates
+
 2008-09-17 [colin]	3.5.0cvs111
 
 	* src/common/utils.c

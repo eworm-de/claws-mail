@@ -393,8 +393,9 @@ GtkAspell *gtkaspell_new(const gchar *dictionary,
 		dict->dictname = g_strdup(dictionary);
 	}
 
-	if (strchr(dictionary, '-')) {
-		*(strchr(dictionary, '-')) = '\0';
+	if (strchr(dict->fullname, '-')) {
+		*(strchr(dict->fullname, '-')) = '\0';
+		*(strchr(dict->dictname, '-')) = '\0';
 	}
 	gtkaspeller    = gtkaspeller_new(dict); 
 	dictionary_delete(dict);
@@ -421,8 +422,9 @@ GtkAspell *gtkaspell_new(const gchar *dictionary,
 			alt_dict->fullname = g_strdup(alt_dictionary);
 			alt_dict->dictname = g_strdup(alt_dictionary);
 		}
-		if (strchr(alt_dictionary, '-')) {
-			*(strchr(alt_dictionary, '-')) = '\0';
+		if (strchr(alt_dict->fullname, '-')) {
+			*(strchr(alt_dict->fullname, '-')) = '\0';
+			*(strchr(alt_dict->dictname, '-')) = '\0';
 		}
 
 		alt_gtkaspeller    = gtkaspeller_new(alt_dict);
@@ -2061,8 +2063,9 @@ gboolean gtkaspell_change_dict(GtkAspell *gtkaspell, const gchar *dictionary,
 		dict->dictname = g_strdup(dictionary);
 	}
 
-	if (strchr(dictionary, '-')) {
-		*(strchr(dictionary, '-')) = '\0';
+	if (strchr(dict->fullname, '-')) {
+		*(strchr(dict->fullname, '-')) = '\0';
+		*(strchr(dict->dictname, '-')) = '\0';
 	}
 
 	gtkaspeller = gtkaspeller_new(dict);
@@ -2111,8 +2114,9 @@ gboolean gtkaspell_change_alt_dict(GtkAspell *gtkaspell, const gchar *alt_dictio
 		dict->dictname = g_strdup(alt_dictionary);
 	}
 
-	if (strchr(alt_dictionary, '-')) {
-		*(strchr(alt_dictionary, '-')) = '\0';
+	if (strchr(dict->fullname, '-')) {
+		*(strchr(dict->fullname, '-')) = '\0';
+		*(strchr(dict->dictname, '-')) = '\0';
 	}
 
 	gtkaspeller = gtkaspeller_new(dict);
