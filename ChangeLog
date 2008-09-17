@@ -6,6 +6,10 @@
 	* src/gtk/gtkaspell.c
 		Better stripping of aspell dictionaries names
 
+2008-09-16 [colin]
+
+	* 3.6.0-rc1 released
+
 2008-09-16 [colin]	3.5.0cvs109
 
 	* src/account.c
