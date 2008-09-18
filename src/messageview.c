@@ -1287,6 +1287,12 @@ gint messageview_show(MessageView *messageview, MsgInfo *msginfo,
 					    	alt_parent = mimeinfo;
 						break;
 					}
+					if (mimeinfo->type == MIMETYPE_TEXT && 
+					    !strcasecmp(mimeinfo->subtype, "html")) {
+					    	/* we got it */
+						mimeview_select_mimepart_icon(messageview->mimeview, mimeinfo);
+						goto done;
+					}
 				}
 			}
 

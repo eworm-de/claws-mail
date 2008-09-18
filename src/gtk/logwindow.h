@@ -50,6 +50,7 @@ struct _LogWindow
 	GtkTextMark *end_mark;
 	gboolean hidden;
 	gboolean never_shown;
+	gboolean has_error;
 };
 
 LogWindow *log_window_create(LogInstance instance);

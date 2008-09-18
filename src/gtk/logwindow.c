@@ -310,6 +310,7 @@ static gboolean log_window_append(gpointer source, gpointer data)
 	case LOG_ERROR:
 		tag = "error";
 		head = "*** ";
+		logwindow->has_error = TRUE;
 		break;
 	case LOG_STATUS_OK:
 		tag = "status_ok";
@@ -410,6 +411,13 @@ static void log_window_clip(LogWindow *logwin, guint clip_length)
 			return;
 		gtk_text_buffer_get_start_iter(textbuf, &start_iter);
 		gtk_text_buffer_delete(textbuf, &start_iter, &end_iter);
+		if (logwin->has_error) {
+			gtk_text_buffer_get_start_iter(textbuf, &start_iter);
+			if (mainwindow_get_mainwindow() && !gtk_text_iter_forward_to_tag_toggle(&start_iter, logwin->error_tag)) {
+				mainwindow_clear_error(mainwindow_get_mainwindow());
+				logwin->has_error = FALSE;
+			}
+		}
 	}
 }
 
