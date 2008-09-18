@@ -932,7 +932,7 @@ static void textview_write_body(TextView *textview, MimeInfo *mimeinfo)
 		charset = textview->messageview->forced_charset;
 	else {
 		charset = procmime_mimeinfo_get_parameter(mimeinfo, "charset");
-		if (!strcasecmp(charset, CS_ISO_8859_1))
+		if (charset && !strcasecmp(charset, CS_ISO_8859_1))
 			charset = CS_WINDOWS_1252;
 	}
 

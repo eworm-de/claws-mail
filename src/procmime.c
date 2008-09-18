@@ -691,7 +691,7 @@ static FILE *procmime_get_text_content(MimeInfo *mimeinfo)
 		      ? forced_charset : 
 		      procmime_mimeinfo_get_parameter(mimeinfo, "charset");
 
-	if (!forced_charset && !strcasecmp(src_codeset, CS_ISO_8859_1))
+	if (!forced_charset && src_codeset && !strcasecmp(src_codeset, CS_ISO_8859_1))
 		src_codeset = CS_WINDOWS_1252;
 
 	if (mimeinfo->type == MIMETYPE_TEXT && !g_ascii_strcasecmp(mimeinfo->subtype, "html")) {

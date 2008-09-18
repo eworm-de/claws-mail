@@ -1,3 +1,9 @@
+2008-09-18 [colin]	3.5.0cvs114
+
+	* src/procmime.c
+	* src/textview.c
+		Check for NULLs before str* functions
+
 2008-09-18 [colin]	3.5.0cvs113
 
 	* src/messageview.c
