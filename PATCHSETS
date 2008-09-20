@@ -3526,3 +3526,4 @@
 ( cvs diff -u -r 1.61.2.86 -r 1.61.2.87 src/account.c;  cvs diff -u -r 1.1.2.25 -r 1.1.2.26 src/image_viewer.c;  cvs diff -u -r 1.52.2.68 -r 1.52.2.69 src/prefs_folder_item.c;  cvs diff -u -r 1.5.2.38 -r 1.5.2.39 src/prefs_spelling.c;  cvs diff -u -r 1.9.2.62 -r 1.9.2.63 src/gtk/gtkaspell.c;  ) > 3.5.0cvs112.patchset
 ( cvs diff -u -r 1.94.2.186 -r 1.94.2.187 src/messageview.c;  cvs diff -u -r 1.49.2.115 -r 1.49.2.116 src/procmime.c;  cvs diff -u -r 1.96.2.206 -r 1.96.2.207 src/textview.c;  cvs diff -u -r 1.1.4.32 -r 1.1.4.33 src/gtk/logwindow.c;  cvs diff -u -r 1.1.4.15 -r 1.1.4.16 src/gtk/logwindow.h;  ) > 3.5.0cvs113.patchset
 ( cvs diff -u -r 1.49.2.116 -r 1.49.2.117 src/procmime.c;  cvs diff -u -r 1.96.2.207 -r 1.96.2.208 src/textview.c;  ) > 3.5.0cvs114.patchset
+( cvs diff -u -r 1.36.2.146 -r 1.36.2.147 src/common/utils.c;  ) > 3.5.0cvs115.patchset

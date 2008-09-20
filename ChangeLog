@@ -1,3 +1,10 @@
+2008-09-20 [colin]	3.5.0cvs115
+
+	* src/common/utils.c
+		Fix bug 1723, "Buffer overflow crash caused by 
+		preview in 'Date format help' dialog box"
+		Also, optimise fast_strftime a bit :)
+
 2008-09-18 [colin]	3.5.0cvs114
 
 	* src/procmime.c
