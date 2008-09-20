@@ -1,3 +1,15 @@
+2008-09-20 [colin]	3.5.0cvs119
+
+	* configure.ac
+	* src/plugins/Makefile.am
+	* src/plugins/smime/Makefile.am
+	* src/plugins/smime/plugin.c
+	* src/plugins/smime/smime.c
+	* src/plugins/smime/smime.deps
+	* src/plugins/smime/smime.h
+		Include S/Mime plugin in the main plugins
+		Will ease the Gpg4win team's work
+
 2008-09-20 [colin]	3.5.0cvs118
 
 	* src/autofaces.c

@@ -11,7 +11,7 @@ MINOR_VERSION=5
 MICRO_VERSION=0
 INTERFACE_AGE=0
 BINARY_AGE=0
-EXTRA_VERSION=118
+EXTRA_VERSION=119
 EXTRA_RELEASE=
 EXTRA_GTK2_VERSION=
 
@@ -892,6 +892,23 @@ else
 fi
 AM_CONDITIONAL(BUILD_PGPINLINE_PLUGIN, test x"$ac_cv_enable_pgpinline_plugin" = xyes)
 
+AC_MSG_CHECKING([whether to build S/Mime plugin])
+AC_ARG_ENABLE(smime-plugin,
+	[  --disable-smime-plugin           do not build S/Mime plugin],
+	[ac_cv_enable_smime_plugin=$enableval], [ac_cv_enable_smime_plugin=yes])
+if test x"$ac_cv_enable_smime_plugin" = xyes; then
+	AC_MSG_RESULT(yes)
+	if test x"$ac_cv_enable_pgpcore_plugin" = xyes; then
+		PLUGINS="smime $PLUGINS"
+	else
+		AC_MSG_WARN([*** S/Mime plugin cannot be built ***])
+		AC_MSG_WARN([*** without the PGP/CORE plugin     ***])
+	fi
+else
+	AC_MSG_RESULT(no)
+fi
+AM_CONDITIONAL(BUILD_SMIME_PLUGIN, test x"$ac_cv_enable_smime_plugin" = xyes)
+
 dnl --- Dillo Viewer ---
 AC_MSG_CHECKING([whether to build Dillo plugin])
 AC_ARG_ENABLE(dillo-viewer-plugin,
@@ -1029,6 +1046,7 @@ src/plugins/trayicon/libeggtrayicon/Makefile
 src/plugins/pgpcore/Makefile
 src/plugins/pgpmime/Makefile
 src/plugins/pgpinline/Makefile
+src/plugins/smime/Makefile
 doc/Makefile
 doc/man/Makefile
 tools/Makefile
