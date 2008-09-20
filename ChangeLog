@@ -1,3 +1,8 @@
+2008-09-20 [colin]	3.5.0cvs117
+
+	* src/imap.c
+		Tell on which server errors happened
+
 2008-09-20 [colin]	3.5.0cvs116
 
 	* src/etpan/etpan-thread-manager.c

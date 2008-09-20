@@ -561,135 +561,135 @@ static void imap_handle_error(Session *session, int libetpan_errcode)
 	case MAILIMAP_NO_ERROR:
 		return;
 	case MAILIMAP_NO_ERROR_AUTHENTICATED:
-		log_warning(LOG_PROTOCOL, _("IMAP error: authenticated\n"));
+		log_warning(LOG_PROTOCOL, _("IMAP error on %s: authenticated\n"), session->server);
 		break;
 	case MAILIMAP_NO_ERROR_NON_AUTHENTICATED:
-		log_warning(LOG_PROTOCOL, _("IMAP error: not authenticated\n"));
+		log_warning(LOG_PROTOCOL, _("IMAP error on %s: not authenticated\n"), session->server);
 		break;
 	case MAILIMAP_ERROR_BAD_STATE:
-		log_warning(LOG_PROTOCOL, _("IMAP error: bad state\n"));
+		log_warning(LOG_PROTOCOL, _("IMAP error on %s: bad state\n"), session->server);
 		break;
 	case MAILIMAP_ERROR_STREAM:
-		log_warning(LOG_PROTOCOL, _("IMAP error: stream error\n"));
+		log_warning(LOG_PROTOCOL, _("IMAP error on %s: stream error\n"), session->server);
 		break;
 	case MAILIMAP_ERROR_PARSE:
-		log_warning(LOG_PROTOCOL, _("IMAP error: parse error "
-					    "(very probably non-RFC compliance from the server)\n"));
+		log_warning(LOG_PROTOCOL, _("IMAP error on %s: parse error "
+					    "(very probably non-RFC compliance from the server)\n"), session->server);
 		break;
 	case MAILIMAP_ERROR_CONNECTION_REFUSED:
-		log_warning(LOG_PROTOCOL, _("IMAP error: connection refused\n"));
+		log_warning(LOG_PROTOCOL, _("IMAP error on %s: connection refused\n"), session->server);
 		break;
 	case MAILIMAP_ERROR_MEMORY:
-		log_warning(LOG_PROTOCOL, _("IMAP error: memory error\n"));
+		log_warning(LOG_PROTOCOL, _("IMAP error on %s: memory error\n"), session->server);
 		break;
 	case MAILIMAP_ERROR_FATAL:
-		log_warning(LOG_PROTOCOL, _("IMAP error: fatal error\n"));
+		log_warning(LOG_PROTOCOL, _("IMAP error on %s: fatal error\n"), session->server);
 		break;
 	case MAILIMAP_ERROR_PROTOCOL:
-		log_warning(LOG_PROTOCOL, _("IMAP error: protocol error"
-					    "(very probably non-RFC compliance from the server)\n"));
+		log_warning(LOG_PROTOCOL, _("IMAP error on %s: protocol error"
+					    "(very probably non-RFC compliance from the server)\n"), session->server);
 		break;
 	case MAILIMAP_ERROR_DONT_ACCEPT_CONNECTION:
-		log_warning(LOG_PROTOCOL, _("IMAP error: connection not accepted\n"));
+		log_warning(LOG_PROTOCOL, _("IMAP error on %s: connection not accepted\n"), session->server);
 		break;
 	case MAILIMAP_ERROR_APPEND:
-		log_warning(LOG_PROTOCOL, _("IMAP error: APPEND error\n"));
+		log_warning(LOG_PROTOCOL, _("IMAP error on %s: APPEND error\n"), session->server);
 		break;
 	case MAILIMAP_ERROR_NOOP:
-		log_warning(LOG_PROTOCOL, _("IMAP error: NOOP error\n"));
+		log_warning(LOG_PROTOCOL, _("IMAP error on %s: NOOP error\n"), session->server);
 		break;
 	case MAILIMAP_ERROR_LOGOUT:
-		log_warning(LOG_PROTOCOL, _("IMAP error: LOGOUT error\n"));
+		log_warning(LOG_PROTOCOL, _("IMAP error on %s: LOGOUT error\n"), session->server);
 		break;
 	case MAILIMAP_ERROR_CAPABILITY:
-		log_warning(LOG_PROTOCOL, _("IMAP error: CAPABILITY error\n"));
+		log_warning(LOG_PROTOCOL, _("IMAP error on %s: CAPABILITY error\n"), session->server);
 		break;
 	case MAILIMAP_ERROR_CHECK:
-		log_warning(LOG_PROTOCOL, _("IMAP error: CHECK error\n"));
+		log_warning(LOG_PROTOCOL, _("IMAP error on %s: CHECK error\n"), session->server);
 		break;
 	case MAILIMAP_ERROR_CLOSE:
-		log_warning(LOG_PROTOCOL, _("IMAP error: CLOSE error\n"));
+		log_warning(LOG_PROTOCOL, _("IMAP error on %s: CLOSE error\n"), session->server);
 		break;
 	case MAILIMAP_ERROR_EXPUNGE:
-		log_warning(LOG_PROTOCOL, _("IMAP error: EXPUNGE error\n"));
+		log_warning(LOG_PROTOCOL, _("IMAP error on %s: EXPUNGE error\n"), session->server);
 		break;
 	case MAILIMAP_ERROR_COPY:
-		log_warning(LOG_PROTOCOL, _("IMAP error: COPY error\n"));
+		log_warning(LOG_PROTOCOL, _("IMAP error on %s: COPY error\n"), session->server);
 		break;
 	case MAILIMAP_ERROR_UID_COPY:
-		log_warning(LOG_PROTOCOL, _("IMAP error: UID COPY error\n"));
+		log_warning(LOG_PROTOCOL, _("IMAP error on %s: UID COPY error\n"), session->server);
 		break;
 	case MAILIMAP_ERROR_CREATE:
-		log_warning(LOG_PROTOCOL, _("IMAP error: CREATE error\n"));
+		log_warning(LOG_PROTOCOL, _("IMAP error on %s: CREATE error\n"), session->server);
 		break;
 	case MAILIMAP_ERROR_DELETE:
-		log_warning(LOG_PROTOCOL, _("IMAP error: DELETE error\n"));
+		log_warning(LOG_PROTOCOL, _("IMAP error on %s: DELETE error\n"), session->server);
 		break;
 	case MAILIMAP_ERROR_EXAMINE:
-		log_warning(LOG_PROTOCOL, _("IMAP error: EXAMINE error\n"));
+		log_warning(LOG_PROTOCOL, _("IMAP error on %s: EXAMINE error\n"), session->server);
 		break;
 	case MAILIMAP_ERROR_FETCH:
-		log_warning(LOG_PROTOCOL, _("IMAP error: FETCH error\n"));
+		log_warning(LOG_PROTOCOL, _("IMAP error on %s: FETCH error\n"), session->server);
 		break;
 	case MAILIMAP_ERROR_UID_FETCH:
-		log_warning(LOG_PROTOCOL, _("IMAP error: UID FETCH error\n"));
+		log_warning(LOG_PROTOCOL, _("IMAP error on %s: UID FETCH error\n"), session->server);
 		break;
 	case MAILIMAP_ERROR_LIST:
-		log_warning(LOG_PROTOCOL, _("IMAP error: LIST error\n"));
+		log_warning(LOG_PROTOCOL, _("IMAP error on %s: LIST error\n"), session->server);
 		break;
 	case MAILIMAP_ERROR_LOGIN:
-		log_warning(LOG_PROTOCOL, _("IMAP error: LOGIN error\n"));
+		log_warning(LOG_PROTOCOL, _("IMAP error on %s: LOGIN error\n"), session->server);
 		break;
 	case MAILIMAP_ERROR_LSUB:
-		log_warning(LOG_PROTOCOL, _("IMAP error: LSUB error\n"));
+		log_warning(LOG_PROTOCOL, _("IMAP error on %s: LSUB error\n"), session->server);
 		break;
 	case MAILIMAP_ERROR_RENAME:
-		log_warning(LOG_PROTOCOL, _("IMAP error: RENAME error\n"));
+		log_warning(LOG_PROTOCOL, _("IMAP error on %s: RENAME error\n"), session->server);
 		break;
 	case MAILIMAP_ERROR_SEARCH:
-		log_warning(LOG_PROTOCOL, _("IMAP error: SEARCH error\n"));
+		log_warning(LOG_PROTOCOL, _("IMAP error on %s: SEARCH error\n"), session->server);
 		break;
 	case MAILIMAP_ERROR_UID_SEARCH:
-		log_warning(LOG_PROTOCOL, _("IMAP error: UID SEARCH error\n"));
+		log_warning(LOG_PROTOCOL, _("IMAP error on %s: UID SEARCH error\n"), session->server);
 		break;
 	case MAILIMAP_ERROR_SELECT:
-		log_warning(LOG_PROTOCOL, _("IMAP error: SELECT error\n"));
+		log_warning(LOG_PROTOCOL, _("IMAP error on %s: SELECT error\n"), session->server);
 		break;
 	case MAILIMAP_ERROR_STATUS:
-		log_warning(LOG_PROTOCOL, _("IMAP error: STATUS error\n"));
+		log_warning(LOG_PROTOCOL, _("IMAP error on %s: STATUS error\n"), session->server);
 		break;
 	case MAILIMAP_ERROR_STORE:
-		log_warning(LOG_PROTOCOL, _("IMAP error: STORE error\n"));
+		log_warning(LOG_PROTOCOL, _("IMAP error on %s: STORE error\n"), session->server);
 		break;
 	case MAILIMAP_ERROR_UID_STORE:
-		log_warning(LOG_PROTOCOL, _("IMAP error: UID STORE error\n"));
+		log_warning(LOG_PROTOCOL, _("IMAP error on %s: UID STORE error\n"), session->server);
 		break;
 	case MAILIMAP_ERROR_SUBSCRIBE:
-		log_warning(LOG_PROTOCOL, _("IMAP error: SUBSCRIBE error\n"));
+		log_warning(LOG_PROTOCOL, _("IMAP error on %s: SUBSCRIBE error\n"), session->server);
 		break;
 	case MAILIMAP_ERROR_UNSUBSCRIBE:
-		log_warning(LOG_PROTOCOL, _("IMAP error: UNSUBSCRIBE error\n"));
+		log_warning(LOG_PROTOCOL, _("IMAP error on %s: UNSUBSCRIBE error\n"), session->server);
 		break;
 	case MAILIMAP_ERROR_STARTTLS:
-		log_warning(LOG_PROTOCOL, _("IMAP error: STARTTLS error\n"));
+		log_warning(LOG_PROTOCOL, _("IMAP error on %s: STARTTLS error\n"), session->server);
 		break;
 	case MAILIMAP_ERROR_INVAL:
-		log_warning(LOG_PROTOCOL, _("IMAP error: INVAL error\n"));
+		log_warning(LOG_PROTOCOL, _("IMAP error on %s: INVAL error\n"), session->server);
 		break;
 	case MAILIMAP_ERROR_EXTENSION:
-		log_warning(LOG_PROTOCOL, _("IMAP error: EXTENSION error\n"));
+		log_warning(LOG_PROTOCOL, _("IMAP error on %s: EXTENSION error\n"), session->server);
 		break;
 	case MAILIMAP_ERROR_SASL:
-		log_warning(LOG_PROTOCOL, _("IMAP error: SASL error\n"));
+		log_warning(LOG_PROTOCOL, _("IMAP error on %s: SASL error\n"), session->server);
 		break;
 #if (defined(USE_OPENSSL) || defined (USE_GNUTLS))
 	case MAILIMAP_ERROR_SSL:
-		log_warning(LOG_PROTOCOL, _("IMAP error: SSL error\n"));
+		log_warning(LOG_PROTOCOL, _("IMAP error on %s: SSL error\n"), session->server);
 		break;
 #endif
 	default:
-		log_warning(LOG_PROTOCOL, _("IMAP error: Unknown error [%d]\n"),
-			libetpan_errcode);
+		log_warning(LOG_PROTOCOL, _("IMAP error on %s: Unknown error [%d]\n"),
+			session->server, libetpan_errcode);
 		break;
 	}
 
@@ -1226,7 +1226,7 @@ static guint get_file_size_with_crs(const gchar *filename)
 	if (filename == NULL)
 		return -1;
 	
-	fp = fopen(filename, "rb");
+	fp = g_fopen(filename, "rb");
 	if (!fp)
 		return -1;
 	

@@ -3528,3 +3528,4 @@
 ( cvs diff -u -r 1.49.2.116 -r 1.49.2.117 src/procmime.c;  cvs diff -u -r 1.96.2.207 -r 1.96.2.208 src/textview.c;  ) > 3.5.0cvs114.patchset
 ( cvs diff -u -r 1.36.2.146 -r 1.36.2.147 src/common/utils.c;  ) > 3.5.0cvs115.patchset
 ( cvs diff -u -r 1.1.4.10 -r 1.1.4.11 src/etpan/etpan-thread-manager.c;  cvs diff -u -r 1.1.4.104 -r 1.1.4.105 src/etpan/imap-thread.c;  cvs diff -u -r 1.1.2.8 -r 1.1.2.9 src/etpan/nntp-thread.c;  ) > 3.5.0cvs116.patchset
+( cvs diff -u -r 1.179.2.228 -r 1.179.2.229 src/imap.c;  ) > 3.5.0cvs117.patchset
