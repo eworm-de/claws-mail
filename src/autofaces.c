@@ -36,7 +36,7 @@ gint get_content_for_any_face(gchar *buf, gint len, gchar *anyname, gint maxlen)
 	xfile = g_strconcat(get_rc_dir(), G_DIR_SEPARATOR_S, AUTOFACES_DIR,
 	                    G_DIR_SEPARATOR_S, anyname, NULL);
 	buf[0] = '\0';
-	if ((xfp = fopen(xfile, "rb")) == NULL) {
+	if ((xfp = g_fopen(xfile, "rb")) == NULL) {
 	        g_free(xfile);
 		debug_print("header content file '%s' not found\n", anyname);
 	        return -1;

@@ -1613,7 +1613,6 @@ GtkUIManager *gtkut_ui_manager(void)
 	return gui_manager;
 }
 
-#ifdef G_OS_UNIX
 #define READ_CONDITION (G_IO_IN | G_IO_HUP | G_IO_ERR)
 #define WRITE_CONDITION (G_IO_OUT | G_IO_ERR)
 #define EXCEPTION_CONDITION (G_IO_PRI)
@@ -1682,7 +1681,11 @@ claws_input_add    (gint	      source,
   if (condition & GDK_INPUT_EXCEPTION)
     cond |= EXCEPTION_CONDITION;
 
+#ifndef G_OS_WIN32
   channel = g_io_channel_unix_new (source);
+#else
+  channel = g_io_channel_win32_new_fd(source);
+#endif
   result = g_io_add_watch_full (channel, G_PRIORITY_DEFAULT, cond, 
 				claws_io_invoke,
 				closure, claws_io_destroy);
@@ -1690,5 +1693,3 @@ claws_input_add    (gint	      source,
 
   return result;
 }
-
-#endif

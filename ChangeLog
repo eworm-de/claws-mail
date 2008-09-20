@@ -1,3 +1,16 @@
+2008-09-20 [colin]	3.5.0cvs118
+
+	* src/autofaces.c
+	* src/compose.c
+	* src/ldapquery.c
+	* src/main.c
+	* src/news.c
+	* src/common/socket.c
+	* src/gtk/gtkutils.c
+	* src/plugins/pgpcore/claws.def
+		Windows: more fixes, thanks to wwp and
+		Marcus Brinkmann
+
 2008-09-20 [colin]	3.5.0cvs117
 
 	* src/imap.c

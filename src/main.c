@@ -802,7 +802,7 @@ static void win32_open_log(void)
 		if (rename_force("claws-win32.log", "claws-win32.log.bak") < 0)
 			FILE_OP_ERROR("claws-win32.log", "rename");
 	}
-	win32_debug_fp = fopen("claws-win32.log", "w");
+	win32_debug_fp = g_fopen("claws-win32.log", "w");
 	if (win32_debug_fp)
 	{
 		g_set_print_handler(win32_print_stdout);

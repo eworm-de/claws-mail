@@ -550,7 +550,7 @@ GSList *news_get_group_list(Folder *folder)
 		gint ok;
 		clist *grouplist = NULL;
 		clistiter *cur;
-		fp = fopen(filename, "wb");
+		fp = g_fopen(filename, "wb");
 		
 		if (!fp) {
 			g_free(filename);

@@ -8402,7 +8402,11 @@ static void compose_exec_ext_editor(Compose *compose)
 
 		compose_set_ext_editor_sensitive(compose, FALSE);
 
+#ifndef G_OS_WIN32
 		compose->exteditor_ch = g_io_channel_unix_new(pipe_fds[0]);
+#else
+		compose->exteditor_ch = g_io_channel_win32_new_fd(pipe_fds[0]);
+#endif
 		compose->exteditor_tag = g_io_add_watch(compose->exteditor_ch,
 							G_IO_IN,
 							compose_input_cb,
@@ -8850,7 +8854,7 @@ static void compose_register_draft(MsgInfo *info)
 {
 	gchar *filepath = g_strconcat(get_rc_dir(), G_DIR_SEPARATOR_S,
 				      DRAFTED_AT_EXIT, NULL);
-	FILE *fp = fopen(filepath, "ab");
+	FILE *fp = g_fopen(filepath, "ab");
 	
 	if (fp) {
 		fprintf(fp, "%s\t%d\n", folder_item_get_identifier(info->folder), 
@@ -9097,7 +9101,7 @@ void compose_reopen_exit_drafts(void)
 {
 	gchar *filepath = g_strconcat(get_rc_dir(), G_DIR_SEPARATOR_S,
 				      DRAFTED_AT_EXIT, NULL);
-	FILE *fp = fopen(filepath, "rb");
+	FILE *fp = g_fopen(filepath, "rb");
 	gchar buf[1024];
 	
 	if (fp) {

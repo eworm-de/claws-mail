@@ -759,7 +759,11 @@ static gboolean sock_connect_async_cb(GIOChannel *source,
 
 	sockinfo = g_new0(SockInfo, 1);
 	sockinfo->sock = fd;
+#ifndef G_OS_WIN32
 	sockinfo->sock_ch = g_io_channel_unix_new(fd);
+#else
+	sockinfo->sock_ch = g_io_channel_win32_new_socket(fd);
+#endif
 	sockinfo->hostname = g_strdup(conn_data->hostname);
 	sockinfo->port = conn_data->port;
 	sockinfo->state = CONN_ESTABLISHED;
@@ -900,7 +904,11 @@ static gint sock_connect_address_list_async(SockConnectData *conn_data)
 
 	conn_data->cur_addr = conn_data->cur_addr->next;
 
+#ifndef G_OS_WIN32
 	conn_data->channel = g_io_channel_unix_new(sock);
+#else
+	conn_data->channel = g_io_channel_win32_new_socket(sock);
+#endif
 	conn_data->io_tag = g_io_add_watch(conn_data->channel, G_IO_IN|G_IO_OUT,
 					   sock_connect_async_cb, conn_data);
 
@@ -1222,7 +1230,11 @@ static SockLookupData *sock_get_address_info_async(const gchar *hostname,
         lookup_data->pipe_fds[1] = -1;
 #endif  /*!G_OS_WIN32 */
         
+#ifndef G_OS_WIN32
         lookup_data->channel = g_io_channel_unix_new(lookup_data->pipe_fds[0]);
+#else
+        lookup_data->channel = g_io_channel_win32_new_fd(lookup_data->pipe_fds[0]);
+#endif
         lookup_data->io_tag = g_io_add_watch(lookup_data->channel, G_IO_IN,
                                              sock_get_address_info_async_cb,
                                              lookup_data);
@@ -1272,7 +1284,11 @@ static SockInfo *sockinfo_from_fd(const gchar *hostname,
 
 	sockinfo = g_new0(SockInfo, 1);
 	sockinfo->sock = sock;
+#ifndef G_OS_WIN32
 	sockinfo->sock_ch = g_io_channel_unix_new(sock);
+#else
+	sockinfo->sock_ch = g_io_channel_win32_new_socket(sock);
+#endif
 	sockinfo->hostname = g_strdup(hostname);
 	sockinfo->port = port;
 	sockinfo->state = CONN_ESTABLISHED;
