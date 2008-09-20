@@ -1,3 +1,10 @@
+2008-09-20 [colin]	3.5.0cvs116
+
+	* src/etpan/etpan-thread-manager.c
+	* src/etpan/imap-thread.c
+	* src/etpan/nntp-thread.c
+		Windows: Fix hang on IMAP/NNTP
+
 2008-09-20 [colin]	3.5.0cvs115
 
 	* src/common/utils.c

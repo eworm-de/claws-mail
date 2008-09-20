@@ -283,10 +283,13 @@ static void manager_notify(struct etpan_thread_manager * manager)
 
 static void manager_ack(struct etpan_thread_manager * manager)
 {
+#ifndef G_OS_WIN32
   char ch;
   ssize_t r;
-  
   r = read(manager->notify_fds[0], &ch, 1);
+#else
+  /* done in the GIOChannel handler in imap-thread.c and nntp-thread.c */
+#endif
 }
 
 static void thread_lock(struct etpan_thread * thread)

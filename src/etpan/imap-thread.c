@@ -81,6 +81,13 @@ static gboolean thread_manager_event(GIOChannel * source,
     GIOCondition condition,
     gpointer data)
 {
+#ifdef G_OS_WIN32
+	gsize bytes_read;
+	gchar ch;
+	
+	if (condition & G_IO_IN)
+		g_io_channel_read_chars(source, &ch, 1, &bytes_read, NULL);
+#endif
 	etpan_thread_manager_loop(thread_manager);
 	
 	return TRUE;
@@ -272,8 +279,11 @@ void imap_main_init(gboolean skip_ssl_cert_check)
 	
 	fd_thread_manager = etpan_thread_manager_get_fd(thread_manager);
 	
+#ifndef G_OS_WIN32
 	io_channel = g_io_channel_unix_new(fd_thread_manager);
-	
+#else
+	io_channel = g_io_channel_win32_new_fd(fd_thread_manager);
+#endif
 	thread_manager_signal = g_io_add_watch_full(io_channel, 0, G_IO_IN,
 						    thread_manager_event,
 						    (gpointer) NULL,
