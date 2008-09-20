@@ -1,3 +1,8 @@
+2008-09-20 [colin]	3.5.0cvs120
+
+	* po/POTFILES.in
+		Add the new files to the translations
+
 2008-09-20 [colin]	3.5.0cvs119
 
 	* configure.ac

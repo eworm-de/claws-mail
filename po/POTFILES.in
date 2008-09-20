@@ -89,6 +89,8 @@ src/plugins/pgpinline/pgpinline.c
 src/plugins/pgpinline/plugin.c
 src/plugins/pgpmime/pgpmime.c
 src/plugins/pgpmime/plugin.c
+src/plugins/smime/plugin.c
+src/plugins/smime/smime.c
 src/plugins/spamassassin/spamassassin.c
 src/plugins/spamassassin/spamassassin_gtk.c
 src/plugins/trayicon/libeggtrayicon/eggtrayicon.c
