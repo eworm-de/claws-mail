@@ -1,3 +1,8 @@
+2008-09-21 [colin]	3.5.0cvs121
+
+	* src/gtk/gtkaspell.c
+		Don't try to use empty dictionaries
+
 2008-09-20 [colin]	3.5.0cvs120
 
 	* po/POTFILES.in

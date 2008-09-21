@@ -2068,6 +2068,10 @@ gboolean gtkaspell_change_dict(GtkAspell *gtkaspell, const gchar *dictionary,
 		*(strchr(dict->dictname, '-')) = '\0';
 	}
 
+	if (!dict->fullname || !(*dict->fullname)) {
+		dictionary_delete(dict);
+		return FALSE;
+	}
 	gtkaspeller = gtkaspeller_new(dict);
 
 	if (!gtkaspeller) {
@@ -2117,6 +2121,11 @@ gboolean gtkaspell_change_alt_dict(GtkAspell *gtkaspell, const gchar *alt_dictio
 	if (strchr(dict->fullname, '-')) {
 		*(strchr(dict->fullname, '-')) = '\0';
 		*(strchr(dict->dictname, '-')) = '\0';
+	}
+
+	if (!dict->fullname || !(*dict->fullname)) {
+		dictionary_delete(dict);
+		return FALSE;
 	}
 
 	gtkaspeller = gtkaspeller_new(dict);
