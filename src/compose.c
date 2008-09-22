@@ -3230,7 +3230,8 @@ static void compose_insert_sig(Compose *compose, gboolean replace)
 	else
 		gtk_text_buffer_get_iter_at_offset(buffer, &iter, 
 			compose->set_cursor_pos);
-		
+	
+	compose->set_cursor_pos = -1;
 	gtk_text_buffer_place_cursor(buffer, &iter);
 	g_signal_handlers_unblock_by_func(G_OBJECT(buffer),
 					G_CALLBACK(compose_changed_cb),

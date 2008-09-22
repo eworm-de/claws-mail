@@ -1795,7 +1795,6 @@ gchar *account_get_signature_str(PrefsAccount *account)
 
 	if (!account->sig_path)
 		return NULL;
-printf("opening %s\n", account->sig_path);
 
 	if (account->sig_type == SIG_FILE) {
 		if (!is_file_or_fifo_exist(account->sig_path)) {

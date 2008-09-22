@@ -1633,7 +1633,6 @@ gint scan_mailto_url(const gchar *mailto, gchar **from, gchar **to, gchar **cc, 
 			if (tmp) {
 				/* attach is correct */
 				num_attach++;
-				printf("realloc my_att %d\n", (num_attach+1));
 				my_att = g_realloc(my_att, (sizeof(char *))*(num_attach+1));
 				my_att[num_attach-1] = tmp;
 				my_att[num_attach] = NULL;

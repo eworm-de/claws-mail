@@ -1,3 +1,15 @@
+2008-09-22 [colin]	3.5.0cvs122
+
+	* src/common/utils.c
+	* src/account.c
+		Remove raw printf
+	* src/compose.c
+		Fix cursor position after changing account
+	* src/imap.c
+	* src/mimeview.c
+	* src/news.c
+		Fix absolute path detection 
+
 2008-09-21 [colin]	3.5.0cvs121
 
 	* src/gtk/gtkaspell.c

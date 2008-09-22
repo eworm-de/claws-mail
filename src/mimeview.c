@@ -1591,7 +1591,7 @@ static gchar *mimeview_get_filename_for_part(MimeInfo *partinfo,
 	subst_for_filename(filename);
 
 	fullname = g_strconcat
-		(basedir, G_DIR_SEPARATOR_S, (filename[0] == G_DIR_SEPARATOR)
+		(basedir, G_DIR_SEPARATOR_S, (g_path_is_absolute(filename))
 		 ? &filename[1] : filename, NULL);
 
 	g_free(filename);

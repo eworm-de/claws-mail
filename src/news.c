@@ -931,7 +931,7 @@ static gchar *news_item_get_path(Folder *folder, FolderItem *item)
 	folder_path = news_folder_get_path(folder);
 
         g_return_val_if_fail(folder_path != NULL, NULL);
-        if (folder_path[0] == G_DIR_SEPARATOR) {
+        if (g_path_is_absolute(folder_path)) {
                 if (item->path)
                         path = g_strconcat(folder_path, G_DIR_SEPARATOR_S,
                                            item->path, NULL);
@@ -947,7 +947,10 @@ static gchar *news_item_get_path(Folder *folder, FolderItem *item)
                                            folder_path, NULL);
         }
         g_free(folder_path);
-
+#ifdef G_OS_WIN32
+	while (strchr(path, '/'))
+		*strchr(path, '/') = '\\';
+#endif
 	return path;
 }
 
