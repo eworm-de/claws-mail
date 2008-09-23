@@ -677,21 +677,21 @@ static GtkRadioActionEntry compose_radio_prio_entries[] =
 
 static GtkRadioActionEntry compose_radio_enc_entries[] =
 {
-	ENC_ACTION(CS_AUTO, C_AUTO, "_Automatic"), /* RADIO compose_set_encoding_cb */
-	ENC_ACTION(CS_US_ASCII, C_US_ASCII, "7bit ASCII (US-ASC_II)"), /* RADIO compose_set_encoding_cb */
-	ENC_ACTION(CS_UTF_8, C_UTF_8, "Unicode (_UTF-8)"), /* RADIO compose_set_encoding_cb */
+	ENC_ACTION(CS_AUTO, C_AUTO, N_("_Automatic")), /* RADIO compose_set_encoding_cb */
+	ENC_ACTION(CS_US_ASCII, C_US_ASCII, N_("7bit ASCII (US-ASC_II)")), /* RADIO compose_set_encoding_cb */
+	ENC_ACTION(CS_UTF_8, C_UTF_8, N_("Unicode (_UTF-8)")), /* RADIO compose_set_encoding_cb */
 	ENC_ACTION("Western/"CS_ISO_8859_1, C_ISO_8859_1, "ISO-8859-_1"), /* RADIO compose_set_encoding_cb */
 	ENC_ACTION("Western/"CS_ISO_8859_15, C_ISO_8859_15, "ISO-8859-15"), /* RADIO compose_set_encoding_cb */
 	ENC_ACTION("Western/"CS_WINDOWS_1252, C_WINDOWS_1252, "Windows-1252"), /* RADIO compose_set_encoding_cb */
-	ENC_ACTION(CS_ISO_8859_2, C_ISO_8859_2, "Central European (ISO-8859-_2)"), /* RADIO compose_set_encoding_cb */
+	ENC_ACTION(CS_ISO_8859_2, C_ISO_8859_2, N_("Central European (ISO-8859-_2)")), /* RADIO compose_set_encoding_cb */
 	ENC_ACTION("Baltic/"CS_ISO_8859_13, C_ISO_8859_13, "ISO-8859-13"), /* RADIO compose_set_encoding_cb */
 	ENC_ACTION("Baltic/"CS_ISO_8859_4, C_ISO_8859_14, "ISO-8859-_4"), /* RADIO compose_set_encoding_cb */
-	ENC_ACTION(CS_ISO_8859_7, C_ISO_8859_7, "Greek (ISO-8859-_7)"), /* RADIO compose_set_encoding_cb */
+	ENC_ACTION(CS_ISO_8859_7, C_ISO_8859_7, N_("Greek (ISO-8859-_7)")), /* RADIO compose_set_encoding_cb */
 	ENC_ACTION("Hebrew/"CS_ISO_8859_8, C_ISO_8859_8, "ISO-8859-_8"), /* RADIO compose_set_encoding_cb */
 	ENC_ACTION("Hebrew/"CS_WINDOWS_1255, C_WINDOWS_1255, "Windows-1255"), /* RADIO compose_set_encoding_cb */
 	ENC_ACTION("Arabic/"CS_ISO_8859_6, C_ISO_8859_6, "ISO-8859-_6"), /* RADIO compose_set_encoding_cb */
 	ENC_ACTION("Arabic/"CS_WINDOWS_1256, C_WINDOWS_1256, "Windows-1256"), /* RADIO compose_set_encoding_cb */
-	ENC_ACTION(CS_ISO_8859_9, C_ISO_8859_9, "Turkish (ISO-8859-_9)"), /* RADIO compose_set_encoding_cb */
+	ENC_ACTION(CS_ISO_8859_9, C_ISO_8859_9, N_("Turkish (ISO-8859-_9)")), /* RADIO compose_set_encoding_cb */
 	ENC_ACTION("Cyrillic/"CS_ISO_8859_5, C_ISO_8859_5, "ISO-8859-_5"), /* RADIO compose_set_encoding_cb */
 	ENC_ACTION("Cyrillic/"CS_KOI8_R, C_KOI8_R, "KOI8-_R"), /* RADIO compose_set_encoding_cb */
 	ENC_ACTION("Cyrillic/"CS_KOI8_U, C_KOI8_U, "KOI8-_U"), /* RADIO compose_set_encoding_cb */

@@ -1,3 +1,10 @@
+2008-09-23 [paul]	3.5.0cvs124
+
+	* src/compose.c
+	* src/mainwindow.c
+	* src/messageview.c
+		offer these strings to translators too 
+
 2008-09-23 [colin]	3.5.0cvs123
 
 	* configure.ac
