@@ -55,6 +55,7 @@ typedef struct _LoggingPage
 	GtkWidget *checkbtn_log_warning;
 	GtkWidget *checkbtn_log_error;
 	GtkWidget *checkbtn_log_status;
+#ifndef G_OS_WIN32
 	GtkWidget *checkbtn_clip_filtering_log;
 	GtkWidget *spinbtn_filtering_log_length;
 	GtkWidget *checkbtn_filtering_log;
@@ -64,6 +65,7 @@ typedef struct _LoggingPage
 	GtkWidget *checkbtn_filtering_log_pre_proc;
 	GtkWidget *checkbtn_filtering_log_post_proc;
 	GtkWidget *optmenu_filtering_log_level;
+#endif
 } LoggingPage;
 
 static GtkWidget *prefs_logging_create_check_buttons(GtkWidget **checkbtn1,
@@ -96,6 +98,8 @@ static void prefs_logging_create_widget(PrefsPage *_page, GtkWindow *window,
 	GtkWidget *checkbtn_clip_network_log;
 	GtkWidget *spinbtn_network_log_length;
 	GtkObject *spinbtn_network_log_length_adj;
+	GtkWidget *hbox_checkbtn;
+#ifndef G_OS_WIN32
 	GtkWidget *vbox1_filtering_log;
 	GtkWidget *hbox_clip_filtering_log;
 	GtkWidget *checkbtn_clip_filtering_log;
@@ -105,7 +109,6 @@ static void prefs_logging_create_widget(PrefsPage *_page, GtkWindow *window,
 	GtkWidget *checkbtn_filtering_log;
 	GtkWidget *frame_filtering_log;
 	GtkWidget *vbox2_filtering_log;
-	GtkWidget *hbox_checkbtn;
 	GtkWidget *checkbtn_filtering_log_inc;
 	GtkWidget *checkbtn_filtering_log_manual;
 	GtkWidget *checkbtn_filtering_log_folder_proc;
@@ -114,8 +117,10 @@ static void prefs_logging_create_widget(PrefsPage *_page, GtkWindow *window,
 	GtkWidget *hbox_filtering_log_level;
 	GtkWidget *label_filtering_log_level;
 	GtkWidget *optmenu_filtering_log_level;
+	GtkSizeGroup *filter_size_group;
 	GtkListStore *menu;
 	GtkTreeIter iter;
+#endif
 	GtkWidget *frame_disk_log;
 	GtkWidget *vbox_disk_log;
 	GtkWidget *label;
@@ -125,7 +130,6 @@ static void prefs_logging_create_widget(PrefsPage *_page, GtkWindow *window,
 	GtkWidget *checkbtn_log_error;
 	GtkWidget *checkbtn_log_status;
 	GtkSizeGroup *log_size_group;
-	GtkSizeGroup *filter_size_group;
 	CLAWS_TIP_DECL();
 	
 	vbox1 = gtk_vbox_new (FALSE, VSPACING);
@@ -161,6 +165,7 @@ static void prefs_logging_create_widget(PrefsPage *_page, GtkWindow *window,
 	SET_TOGGLE_SENSITIVITY(checkbtn_clip_network_log, spinbtn_network_log_length);
 	SET_TOGGLE_SENSITIVITY(checkbtn_clip_network_log, label);
 
+#ifndef G_OS_WIN32
 	/* Filtering/processing debug log */
 	vbox1_filtering_log = gtkut_get_options_frame(vbox1,
 				&frame_logging, _("Filtering/processing log"));
@@ -270,7 +275,7 @@ static void prefs_logging_create_widget(PrefsPage *_page, GtkWindow *window,
 	SET_TOGGLE_SENSITIVITY(checkbtn_filtering_log, optmenu_filtering_log_level);
 	SET_TOGGLE_SENSITIVITY(checkbtn_filtering_log, checkbtn_clip_filtering_log);
 	SET_TOGGLE_SENSITIVITY(checkbtn_filtering_log, label_filtering_log_level);
-
+#endif
 	/* disk log */
 	vbox_disk_log = gtkut_get_options_frame(vbox1, &frame_disk_log, _("Disk log"));
 
@@ -297,8 +302,10 @@ static void prefs_logging_create_widget(PrefsPage *_page, GtkWindow *window,
 
 	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(checkbtn_clip_network_log), 
 		prefs_common.cliplog);
+#ifndef G_OS_WIN32
 	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(checkbtn_clip_filtering_log), 
 		prefs_common.filtering_debug_cliplog);
+#endif
 	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(checkbtn_log_standard), 
 		prefs_common.enable_log_standard);
 	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(checkbtn_log_warning), 
@@ -307,6 +314,7 @@ static void prefs_logging_create_widget(PrefsPage *_page, GtkWindow *window,
 		prefs_common.enable_log_error);
 	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(checkbtn_log_status), 
 		prefs_common.enable_log_status);
+#ifndef G_OS_WIN32
 	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(checkbtn_filtering_log), 
 		prefs_common.enable_filtering_debug);
 	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(checkbtn_filtering_log_inc), 
@@ -319,14 +327,15 @@ static void prefs_logging_create_widget(PrefsPage *_page, GtkWindow *window,
 		prefs_common.enable_filtering_debug_pre_proc);
 	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(checkbtn_filtering_log_post_proc), 
 		prefs_common.enable_filtering_debug_post_proc);
-
+#endif
 	gtk_spin_button_set_value(GTK_SPIN_BUTTON(spinbtn_network_log_length),
 		prefs_common.loglength);
+#ifndef G_OS_WIN32
 	gtk_spin_button_set_value(GTK_SPIN_BUTTON(spinbtn_filtering_log_length),
 		prefs_common.filtering_debug_loglength);
-
 	combobox_select_by_data(GTK_COMBO_BOX(optmenu_filtering_log_level),
 			prefs_common.filtering_debug_level);
+#endif
 
 	prefs_logging->checkbtn_clip_network_log = checkbtn_clip_network_log;
 	prefs_logging->spinbtn_network_log_length = spinbtn_network_log_length;
@@ -334,6 +343,7 @@ static void prefs_logging_create_widget(PrefsPage *_page, GtkWindow *window,
 	prefs_logging->checkbtn_log_warning = checkbtn_log_warning;
 	prefs_logging->checkbtn_log_error = checkbtn_log_error;
 	prefs_logging->checkbtn_log_status = checkbtn_log_status;
+#ifndef G_OS_WIN32
 	prefs_logging->checkbtn_clip_filtering_log = checkbtn_clip_filtering_log;
 	prefs_logging->spinbtn_filtering_log_length = spinbtn_filtering_log_length;
 	prefs_logging->checkbtn_filtering_log = checkbtn_filtering_log;
@@ -343,7 +353,7 @@ static void prefs_logging_create_widget(PrefsPage *_page, GtkWindow *window,
 	prefs_logging->checkbtn_filtering_log_pre_proc = checkbtn_filtering_log_pre_proc;
 	prefs_logging->checkbtn_filtering_log_post_proc = checkbtn_filtering_log_post_proc;
 	prefs_logging->optmenu_filtering_log_level = optmenu_filtering_log_level;
-
+#endif
 	prefs_logging->page.widget = vbox1;
 }
 
@@ -351,10 +361,11 @@ static void prefs_logging_save(PrefsPage *_page)
 {
 	LoggingPage *page = (LoggingPage *) _page;
 	MainWindow *mainwindow;
+#ifndef G_OS_WIN32
 	gboolean filtering_debug_enabled;
-
 	prefs_common.filtering_debug_level =
 		combobox_get_active_data(GTK_COMBO_BOX(page->optmenu_filtering_log_level));
+#endif
 
 	prefs_common.cliplog = gtk_toggle_button_get_active(
 		GTK_TOGGLE_BUTTON(page->checkbtn_clip_network_log));
@@ -368,6 +379,7 @@ static void prefs_logging_save(PrefsPage *_page)
 		GTK_TOGGLE_BUTTON(page->checkbtn_log_error));
 	prefs_common.enable_log_status = gtk_toggle_button_get_active(
 		GTK_TOGGLE_BUTTON(page->checkbtn_log_status));
+#ifndef G_OS_WIN32
 	prefs_common.filtering_debug_cliplog = gtk_toggle_button_get_active(
 		GTK_TOGGLE_BUTTON(page->checkbtn_clip_filtering_log));
 	prefs_common.filtering_debug_loglength = gtk_spin_button_get_value_as_int(
@@ -391,12 +403,14 @@ static void prefs_logging_save(PrefsPage *_page)
 		GTK_TOGGLE_BUTTON(page->checkbtn_filtering_log_pre_proc));
 	prefs_common.enable_filtering_debug_post_proc = gtk_toggle_button_get_active(
 		GTK_TOGGLE_BUTTON(page->checkbtn_filtering_log_post_proc));
-
+#endif
 	mainwindow = mainwindow_get_mainwindow();
 	log_window_set_clipping(mainwindow->logwin, prefs_common.cliplog,
 				prefs_common.loglength);
+#ifndef G_OS_WIN32
 	log_window_set_clipping(mainwindow->filtering_debugwin, prefs_common.filtering_debug_cliplog,
 				prefs_common.filtering_debug_loglength);
+#endif
 }
 
 static void prefs_logging_destroy_widget(PrefsPage *_page)

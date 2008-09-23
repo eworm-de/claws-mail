@@ -547,13 +547,15 @@ void sgpgme_init()
 #endif
 		if (!gpgme_get_engine_info(&engineInfo)) {
 			while (engineInfo) {
+#ifndef G_OS_WIN32
 				debug_print("GpgME Protocol: %s\n"
 					    "Version: %s (req %s)\n"
 					    "Executable: %s\n",
-					gpgme_get_protocol_name(engineInfo->protocol),
+					gpgme_get_protocol_name(engineInfo->protocol) ? gpgme_get_protocol_name(engineInfo->protocol):"???",
 					engineInfo->version ? engineInfo->version:"???",
 					engineInfo->req_version ? engineInfo->req_version:"???",
 					engineInfo->file_name ? engineInfo->file_name:"???");
+#endif
 				if (engineInfo->protocol == GPGME_PROTOCOL_OpenPGP
 				&&  gpgme_engine_check_version(engineInfo->protocol) != 
 					GPG_ERR_NO_ERROR) {

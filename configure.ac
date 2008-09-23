@@ -11,7 +11,7 @@ MINOR_VERSION=5
 MICRO_VERSION=0
 INTERFACE_AGE=0
 BINARY_AGE=0
-EXTRA_VERSION=122
+EXTRA_VERSION=123
 EXTRA_RELEASE=
 EXTRA_GTK2_VERSION=
 
@@ -750,17 +750,21 @@ fi
 dnl #######################################################################
 dnl # Check for D-Bus support
 dnl #######################################################################
-PKG_CHECK_MODULES(DBUS, [dbus-1 >= 0.60, dbus-glib-1 >= 0.60],
-[
-	AC_DEFINE(HAVE_DBUS_GLIB, 1, [Define if glib bindings of D-Bus are available])
-	enable_dbus_glib=yes
-],
-[
-	echo "D-Bus requirements not met. D-Bus support not activated."
-	enable_dbus_glib=no
-])
-AC_SUBST(DBUS_CFLAGS)
-AC_SUBST(DBUS_LIBS)
+AC_ARG_ENABLE(dbus, [  --disable-dbus    disable dbus support],,enable_dbus=yes)
+
+if test "x$enable_dbus" = "xyes"; then
+	PKG_CHECK_MODULES(DBUS, [dbus-1 >= 0.60, dbus-glib-1 >= 0.60],
+	[
+		AC_DEFINE(HAVE_DBUS_GLIB, 1, [Define if glib bindings of D-Bus are available])
+		enable_dbus_glib=yes
+	],
+	[
+		echo "D-Bus requirements not met. D-Bus support not activated."
+		enable_dbus_glib=no
+	])
+	AC_SUBST(DBUS_CFLAGS)
+	AC_SUBST(DBUS_LIBS)
+fi
 
 dnl #######################################################################
 dnl # Check for NetworkManager support
@@ -1097,6 +1101,7 @@ echo "Crash dialog      : $ac_cv_enable_crash_dialog"
 echo "Libgnomeprint     : $ac_cv_enable_gnomeprint"
 echo "GTK+ print support: $ac_cv_have_gtk210"
 echo "LibSM             : $ac_cv_enable_libsm"
+echo "DBUS              : $enable_dbus"
 echo "NetworkManager    : $enable_networkmanager_support"
 echo "Manual            : $ac_cv_enable_manual"
 echo "Plugins           : $PLUGINS"

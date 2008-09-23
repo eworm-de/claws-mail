@@ -1,3 +1,21 @@
+2008-09-23 [colin]	3.5.0cvs123
+
+	* configure.ac
+		Add a --disable-dbus flag in case we want
+		no DBUS even if headers are available (like
+		for building gpg4win)
+	* src/filtering.c
+	* src/mainwindow.c
+	* src/prefs_logging.c
+	* src/common/utils.c
+	* src/plugins/pgpcore/sgpgme.c
+	* src/plugins/smime/claws.def
+		Windows fixes:
+		- disable filtering log (it's crashy for
+		  some reason)
+		- fix gmtime_r when time is -1 (before 01/01/70)
+		- add symbols for smime
+
 2008-09-22 [colin]	3.5.0cvs122
 
 	* src/common/utils.c

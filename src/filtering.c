@@ -468,7 +468,7 @@ static gboolean filteringaction_apply(FilteringAction * action, MsgInfo * info)
 			gint errors = 0;
 
 			if (!addressbook_peek_folder_exists(action->destination, &book, &folder)) {
-				g_warning("addressbook folder not found '%s'\n", action->destination);
+				g_warning("addressbook folder not found '%s'\n", action->destination?action->destination:"(null)");
 				return FALSE;
 			}
 			if (!book) {
@@ -518,7 +518,7 @@ static gboolean filteringaction_apply(FilteringAction * action, MsgInfo * info)
 				g_slist_free(address_list);
 				end_address_completion();
 			} else {
-				g_warning("header '%s' not set or empty\n", action->header);
+				g_warning("header '%s' not set or empty\n", action->header?action->header:"(null)");
 			}
 			return (errors == 0);
 		}
@@ -587,7 +587,7 @@ static gboolean filtering_match_condition(FilteringProp *filtering, MsgInfo *inf
 						log_status_ok(LOG_DEBUG_FILTERING,
 								_("rule is account-based [id=%d, name='%s'], "
 								"matching the account currently used to retrieve messages\n"),
-								ac_prefs->account_id, ac_prefs->account_name);
+								ac_prefs->account_id, ac_prefs?ac_prefs->account_name:_("NON_EXISTENT"));
 					}
 				}
 			}
@@ -851,7 +851,7 @@ gboolean filter_message_by_msginfo(GSList *flist, MsgInfo *info, PrefsAccount* a
 
 	if (prefs_common.enable_filtering_debug) {
 		gchar *tmp = _("undetermined");
-
+#ifndef G_OS_WIN32
 		switch (context) {
 		case FILTERING_INCORPORATION:
 			tmp = _("incorporation");
@@ -877,6 +877,9 @@ gboolean filter_message_by_msginfo(GSList *flist, MsgInfo *info, PrefsAccount* a
 			debug_filtering_session = FALSE;
 			break;
 		}
+#else
+		debug_filtering_session = FALSE;
+#endif
 		if (debug_filtering_session) {
 			gchar *file = procmsg_get_message_file_path(info);
 			gchar *spc = g_strnfill(LOG_TIME_LEN + 1, ' ');
