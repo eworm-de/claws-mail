@@ -1857,17 +1857,7 @@ gboolean rc_dir_is_alt(void) {
 
 const gchar *get_mail_base_dir(void)
 {
-#ifdef G_OS_WIN32
-	static gchar *mail_base_dir = NULL;
-
-	if (!mail_base_dir)
-		mail_base_dir = g_strconcat(get_rc_dir(), G_DIR_SEPARATOR_S,
-					    "Mailboxes", NULL);
-
-	return mail_base_dir;
-#else
 	return get_home_dir();
-#endif
 }
 
 #ifdef MAEMO

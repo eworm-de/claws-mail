@@ -1,3 +1,9 @@
+2008-09-24 [colin]	3.5.0cvs126
+
+	* src/common/utils.c
+		Fix get_mail_base_dir() on windows
+		(was synced from main ages ago)
+
 2008-09-24 [colin]	3.5.0cvs125
 
 	* src/main.c

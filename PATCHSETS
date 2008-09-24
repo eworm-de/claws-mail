@@ -3537,3 +3537,4 @@
 ( cvs diff -u -r 1.654.2.3596 -r 1.654.2.3597 configure.ac;  cvs diff -u -r 1.60.2.46 -r 1.60.2.47 src/filtering.c;  cvs diff -u -r 1.274.2.273 -r 1.274.2.274 src/mainwindow.c;  cvs diff -u -r 1.1.2.15 -r 1.1.2.16 src/prefs_logging.c;  cvs diff -u -r 1.36.2.148 -r 1.36.2.149 src/common/utils.c;  cvs diff -u -r 1.1.2.52 -r 1.1.2.53 src/plugins/pgpcore/sgpgme.c;  diff -u /dev/null src/plugins/smime/claws.def;  ) > 3.5.0cvs123.patchset
 ( cvs diff -u -r 1.382.2.479 -r 1.382.2.480 src/compose.c;  cvs diff -u -r 1.274.2.274 -r 1.274.2.275 src/mainwindow.c;  cvs diff -u -r 1.94.2.187 -r 1.94.2.188 src/messageview.c;  ) > 3.5.0cvs124.patchset
 ( cvs diff -u -r 1.115.2.206 -r 1.115.2.207 src/main.c;  cvs diff -u -r 1.1.2.75 -r 1.1.2.76 src/wizard.c;  ) > 3.5.0cvs125.patchset
+( cvs diff -u -r 1.36.2.149 -r 1.36.2.150 src/common/utils.c;  ) > 3.5.0cvs126.patchset
