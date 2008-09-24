@@ -1,3 +1,9 @@
+2008-09-24 [colin]	3.5.0cvs125
+
+	* src/main.c
+	* src/wizard.c
+		Integrate better with Windows' style
+
 2008-09-23 [paul]	3.5.0cvs124
 
 	* src/compose.c

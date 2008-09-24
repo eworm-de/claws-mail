@@ -1121,6 +1121,13 @@ int main(int argc, char *argv[])
 	gtk_set_locale();
 	gtk_init(&argc, &argv);
 
+#ifdef G_OS_WIN32
+	gtk_settings_set_string_property(gtk_settings_get_default(),
+			"gtk-theme-name",
+			"MS-Windows",
+			"XProperty");
+#endif
+
 #ifdef HAVE_NETWORKMANAGER_SUPPORT
 	went_offline_nm = FALSE;
 	nm_proxy = NULL;

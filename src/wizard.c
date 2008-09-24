@@ -452,7 +452,20 @@ static void initialize_fonts(WizardWindow *wizard)
 			widget->style->font_desc)
 		      /PANGO_SCALE;
 	gchar *tmp, *new;
-	
+#ifdef G_OS_WIN32
+	PangoFontDescription *bold_desc;
+	gchar *curfont = pango_font_description_to_string(widget->style->font_desc);
+	g_free(prefs_common.smallfont);
+	g_free(prefs_common.normalfont);
+	g_free(prefs_common.boldfont);
+	prefs_common.smallfont = g_strdup(curfont);
+	prefs_common.normalfont = g_strdup(curfont);
+	bold_desc = pango_font_description_from_string(curfont);
+	pango_font_description_set_weight(bold_desc, PANGO_WEIGHT_BOLD);
+	prefs_common.boldfont = pango_font_description_to_string(bold_desc);
+	pango_font_description_free(bold_desc);
+	g_free(curfont);
+#endif	
 	tmp = g_strdup(prefs_common.textfont);
 	if (strrchr(tmp, ' ')) {
 		*(strrchr(tmp, ' ')) = '\0';
