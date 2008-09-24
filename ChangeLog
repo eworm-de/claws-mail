@@ -1,3 +1,8 @@
+2008-09-24 [colin]	3.5.0cvs127
+
+	* src/codeconv.c
+		Add nb_NO's charset (iso-8859-1)
+
 2008-09-24 [colin]	3.5.0cvs126
 
 	* src/common/utils.c

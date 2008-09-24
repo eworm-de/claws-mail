@@ -3538,3 +3538,4 @@
 ( cvs diff -u -r 1.382.2.479 -r 1.382.2.480 src/compose.c;  cvs diff -u -r 1.274.2.274 -r 1.274.2.275 src/mainwindow.c;  cvs diff -u -r 1.94.2.187 -r 1.94.2.188 src/messageview.c;  ) > 3.5.0cvs124.patchset
 ( cvs diff -u -r 1.115.2.206 -r 1.115.2.207 src/main.c;  cvs diff -u -r 1.1.2.75 -r 1.1.2.76 src/wizard.c;  ) > 3.5.0cvs125.patchset
 ( cvs diff -u -r 1.36.2.149 -r 1.36.2.150 src/common/utils.c;  ) > 3.5.0cvs126.patchset
+( cvs diff -u -r 1.65.2.60 -r 1.65.2.61 src/codeconv.c;  ) > 3.5.0cvs127.patchset
