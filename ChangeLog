@@ -1,3 +1,8 @@
+2008-09-25 [colin]	3.5.0cvs128
+
+	* src/codeconv.c
+		Fix build...
+
 2008-09-24 [colin]	3.5.0cvs127
 
 	* src/codeconv.c

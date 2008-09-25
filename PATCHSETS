@@ -3539,3 +3539,4 @@
 ( cvs diff -u -r 1.115.2.206 -r 1.115.2.207 src/main.c;  cvs diff -u -r 1.1.2.75 -r 1.1.2.76 src/wizard.c;  ) > 3.5.0cvs125.patchset
 ( cvs diff -u -r 1.36.2.149 -r 1.36.2.150 src/common/utils.c;  ) > 3.5.0cvs126.patchset
 ( cvs diff -u -r 1.65.2.60 -r 1.65.2.61 src/codeconv.c;  ) > 3.5.0cvs127.patchset
+( cvs diff -u -r 1.65.2.61 -r 1.65.2.62 src/codeconv.c;  ) > 3.5.0cvs128.patchset

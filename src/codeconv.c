@@ -1107,7 +1107,7 @@ static const struct {
 	{"ms_MY"	, C_ISO_8859_1	, C_ISO_8859_1},
 	{"nl_BE"	, C_ISO_8859_1	, C_ISO_8859_1},
 	{"nl_NL"	, C_ISO_8859_1	, C_ISO_8859_1},
-	{"nb_NO",	, C_ISO_8859_1  , C_ISO_8859_1},
+	{"nb_NO"	, C_ISO_8859_1  , C_ISO_8859_1},
 	{"nn_NO"	, C_ISO_8859_1	, C_ISO_8859_1},
 	{"no_NO"	, C_ISO_8859_1	, C_ISO_8859_1},
 	{"oc_FR"	, C_ISO_8859_1	, C_ISO_8859_1},
