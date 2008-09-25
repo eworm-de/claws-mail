@@ -1,3 +1,10 @@
+2008-09-25 [colin]	3.5.0cvs131
+
+	* src/main.c
+		Fix bug 1725, 'useless lines in clawsrc'
+	* src/plugins/smime/mypgpcore.def
+		Add a missing symbol
+
 2008-09-25 [paul]	3.5.0cvs130
 
 	* src/plugins/smime/mypgpcore.def

@@ -1053,7 +1053,7 @@ int main(int argc, char *argv[])
 	gboolean start_done = TRUE;
 	GtkUIManager *gui_manager = NULL;
 	GSList *plug_list = NULL;
-	gboolean never_ran = TRUE;
+	gboolean never_ran = FALSE;
 
 	START_TIMING("startup");
 
@@ -1543,9 +1543,10 @@ int main(int argc, char *argv[])
 		g_slist_free(plug_list);
 	}
 
-	if (never_ran)
+	if (never_ran) {
+		prefs_common_write_config();
 	 	plugin_load_standard_plugins ();
-      
+	}
 	/* if not crashed, show window now */
 	if (!claws_crashed()) {
 		/* apart if something told not to show */
