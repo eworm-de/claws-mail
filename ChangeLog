@@ -1,3 +1,11 @@
+2008-09-25 [paul]	3.5.0cvs130
+
+	* src/plugins/smime/mypgpcore.def
+	* src/plugins/smime/plugin.def
+	* src/plugins/smime/version.rc
+		add these windows-specific files
+		(Thanks to Colin)
+
 2008-09-25 [colin]	3.5.0cvs129
 
 	* src/main.c
