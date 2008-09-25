@@ -1053,6 +1053,7 @@ int main(int argc, char *argv[])
 	gboolean start_done = TRUE;
 	GtkUIManager *gui_manager = NULL;
 	GSList *plug_list = NULL;
+	gboolean never_ran = TRUE;
 
 	START_TIMING("startup");
 
@@ -1416,6 +1417,7 @@ int main(int argc, char *argv[])
 		}
 		main_window_reflect_prefs_all_now();
 		folder_write_list();
+		never_ran = TRUE;
 	}
 
 	if (!account_get_list()) {
@@ -1435,6 +1437,7 @@ int main(int argc, char *argv[])
 #endif
 			exit(1);
 		}
+		never_ran = TRUE;
 	}
 
 	
@@ -1540,7 +1543,8 @@ int main(int argc, char *argv[])
 		g_slist_free(plug_list);
 	}
 
- 	plugin_load_standard_plugins ();
+	if (never_ran)
+	 	plugin_load_standard_plugins ();
       
 	/* if not crashed, show window now */
 	if (!claws_crashed()) {
