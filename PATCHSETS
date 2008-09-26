@@ -3545,3 +3545,4 @@
 ( cvs diff -u -r 1.115.2.208 -r 1.115.2.209 src/main.c;  cvs diff -u -r 1.1.2.1 -r 1.1.2.2 src/plugins/smime/mypgpcore.def;  ) > 3.5.0cvs131.patchset
 ( cvs diff -u -r 1.204.2.179 -r 1.204.2.180 src/prefs_common.c;  cvs diff -u -r 1.103.2.114 -r 1.103.2.115 src/prefs_common.h;  cvs diff -u -r 1.1.2.14 -r 1.1.2.15 src/plugins/pgpcore/pgp_viewer.c;  ) > 3.5.0cvs132.patchset
 ( cvs diff -u -r 1.1.2.4 -r 1.1.2.5 src/plugins/pgpcore/claws.def;  ) > 3.5.0cvs133.patchset
+( cvs diff -u -r 1.60.2.54 -r 1.60.2.55 po/es.po;  ) > 3.5.0cvs134.patchset
