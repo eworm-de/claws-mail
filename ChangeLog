@@ -1,3 +1,8 @@
+2008-09-26 [colin]	3.5.0cvs133
+
+	* src/plugins/pgpcore/claws.def
+		Fix symbol
+
 2008-09-26 [colin]	3.5.0cvs132
 
 	* src/prefs_common.c

@@ -56,7 +56,7 @@ prefs_account_set_privacy_prefs
 prefs_account_unregister_page
 prefs_button_toggled
 prefs_button_toggled_reverse
-prefs_common
+prefs_common_get_prefs
 prefs_file_close
 prefs_file_close_revert
 prefs_gtk_register_page
