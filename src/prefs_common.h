@@ -502,6 +502,8 @@ struct _PrefsCommon
 
 extern PrefsCommon prefs_common;
 
+PrefsCommon *prefs_common_get_prefs(void);
+
 GList *prefs_common_read_history_from_dir_with_defaults(const gchar *dirname, const gchar *history,
 															  GList *default_list);
 void prefs_common_read_config	(void);

@@ -116,7 +116,7 @@ static void pgpview_show_mime_part(TextView *textview, MimeInfo *partinfo)
 	if (!key) {
 		gchar *cmd = g_strdup_printf("gpg --no-tty --recv-keys %s", sig->fpr);
 		AlertValue val = G_ALERTDEFAULT;
-		if (!prefs_common.work_offline) {
+		if (!prefs_common_get_prefs()->work_offline) {
 			val = alertpanel(_("Key import"),
 				_("This key is not in your keyring. Do you want "
 				  "Claws Mail to try and import it from a "
@@ -130,7 +130,7 @@ static void pgpview_show_mime_part(TextView *textview, MimeInfo *partinfo)
 			TEXTVIEW_INSERT(":\n\n");
 			TEXTVIEW_INSERT(_("   This key is not in your keyring.\n"));
 			TEXTVIEW_INSERT(_("   It should be possible to import it "));
-			if (prefs_common.work_offline)
+			if (prefs_common_get_prefs()->work_offline)
 				TEXTVIEW_INSERT(_("when working online,\n   or "));
 			TEXTVIEW_INSERT(_("with the following command: \n\n     "));
 			TEXTVIEW_INSERT(cmd);

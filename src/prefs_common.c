@@ -1552,3 +1552,8 @@ gboolean prefs_common_get_use_shred(void)
 {
 	return prefs_common.use_shred;
 }
+
+PrefsCommon *prefs_common_get_prefs(void)
+{
+	return &prefs_common;
+}

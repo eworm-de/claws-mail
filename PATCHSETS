@@ -3543,3 +3543,4 @@
 ( cvs diff -u -r 1.115.2.207 -r 1.115.2.208 src/main.c;  ) > 3.5.0cvs129.patchset
 ( diff -u /dev/null src/plugins/smime/mypgpcore.def;  diff -u /dev/null src/plugins/smime/plugin.def;  diff -u /dev/null src/plugins/smime/version.rc;  ) > 3.5.0cvs130.patchset
 ( cvs diff -u -r 1.115.2.208 -r 1.115.2.209 src/main.c;  cvs diff -u -r 1.1.2.1 -r 1.1.2.2 src/plugins/smime/mypgpcore.def;  ) > 3.5.0cvs131.patchset
+( cvs diff -u -r 1.204.2.179 -r 1.204.2.180 src/prefs_common.c;  cvs diff -u -r 1.103.2.114 -r 1.103.2.115 src/prefs_common.h;  cvs diff -u -r 1.1.2.14 -r 1.1.2.15 src/plugins/pgpcore/pgp_viewer.c;  ) > 3.5.0cvs132.patchset
