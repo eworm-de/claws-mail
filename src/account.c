@@ -1836,3 +1836,8 @@ gchar *account_get_signature_str(PrefsAccount *account)
 
 	return utf8_sig_str;
 }
+
+PrefsAccount *account_get_cur_account (void)
+{
+	return cur_account;
+}

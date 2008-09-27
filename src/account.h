@@ -31,6 +31,7 @@ typedef gint	(*AccountFunc)	(PrefsAccount	*ac_prefs,
 
 extern PrefsAccount *cur_account;
 
+PrefsAccount *account_get_cur_account   (void);
 void	      account_read_config_all	(void);
 void	      account_write_config_all	(void);
 

@@ -1,3 +1,9 @@
+2008-09-27 [colin]	3.5.0cvs136
+
+	* src/account.c
+	* src/account.h
+		Add accessor for cur_account
+
 2008-09-27 [colin]	3.5.0cvs135
 
 	* src/imap.c
