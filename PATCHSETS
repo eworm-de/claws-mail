@@ -3548,3 +3548,4 @@
 ( cvs diff -u -r 1.60.2.54 -r 1.60.2.55 po/es.po;  ) > 3.5.0cvs134.patchset
 ( cvs diff -u -r 1.179.2.230 -r 1.179.2.231 src/imap.c;  ) > 3.5.0cvs135.patchset
 ( cvs diff -u -r 1.61.2.88 -r 1.61.2.89 src/account.c;  cvs diff -u -r 1.11.2.12 -r 1.11.2.13 src/account.h;  ) > 3.5.0cvs136.patchset
+( cvs diff -u -r 1.12.2.17 -r 1.12.2.18 po/en_GB.po;  ) > 3.5.0cvs137.patchset
