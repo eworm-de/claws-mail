@@ -3619,19 +3619,25 @@ void subject_table_remove(GHashTable *subject_table, gchar * subject)
  *		for a "clean" subject line. If no prefix was found, 0
  *		is returned.
  */
+ 
+#ifndef G_OS_WIN32
 static regex_t u_regex;
 static gboolean u_init_;
+#endif
 
 void utils_free_regex(void)
 {
+#ifndef G_OS_WIN32
 	if (u_init_) {
 		regfree(&u_regex);
 		u_init_ = FALSE;
 	}
+#endif
 }
 
 int subject_get_prefix_length(const gchar *subject)
 {
+#ifndef G_OS_WIN32
 	/*!< Array with allowable reply prefixes regexps. */
 	static const gchar * const prefixes[] = {
 		"Re\\:",			/* "Re:" */
@@ -3690,8 +3696,38 @@ int subject_get_prefix_length(const gchar *subject)
 		return pos.rm_eo;
 	else
 		return 0;
-}
+#else
+	/*!< Array with allowable reply prefixes regexps. */
+	static const gchar * const prefixes[] = {
+		"Re:",			/* "Re:" */
+		"Antw:",			/* "Antw:" (Dutch / German Outlook) */
+		"Aw:",			/* "Aw:"   (German) */
+		"Antwort:",			/* "Antwort:" (German Lotus Notes) */
+		"Res:",			/* "Res:" (Brazilian Outlook) */
+		"Fw:",			/* "Fw:" Forward */
+		"Fwd:",			/* "Fwd:" Forward */
+		"Enc:",			/* "Enc:" Forward (Brazilian Outlook) */
+		"Odp:",			/* "Odp:" Re (Polish Outlook) */
+		"Rif:",			/* "Rif:" (Italian Outlook) */
+		"Sv:",			/* "Sv" (Norwegian) */
+		"Vs:",			/* "Vs" (Norwegian) */
+		"Ad:",			/* "Ad" (Norwegian) */
+		/* add more */
+	};
+	const int PREFIXES = sizeof prefixes / sizeof prefixes[0];
+	int n;
 
+	if (!subject) return 0;
+	if (!*subject) return 0;
+
+	for (n = 0; n < PREFIXES; n++) {
+		int len = strlen(prefixes[n]);
+		if (!strncmp(subject, prefixes[n], len))
+			return len;
+	}
+	return 0;
+#endif
+}
 static guint g_stricase_hash(gconstpointer gptr)
 {
 	guint hash_result = 0;

@@ -90,7 +90,9 @@ static struct Matcher {
 	GtkWidget *numeric_label;
 	GtkWidget *addressbook_folder_combo;
 	GtkWidget *case_checkbtn;
+#ifndef G_OS_WIN32
 	GtkWidget *regexp_checkbtn;
+#endif
 	GtkWidget *color_optmenu;
 
 	GtkWidget *test_btn;
@@ -491,7 +493,9 @@ static void prefs_matcher_create(void)
 	GtkWidget *numeric_entry;
 	GtkWidget *numeric_label;
 	
+#ifndef G_OS_WIN32
 	GtkWidget *regexp_checkbtn;
+#endif
 	GtkWidget *case_checkbtn;
 
 	GtkWidget *reg_hbox;
@@ -694,7 +698,9 @@ static void prefs_matcher_create(void)
 	hbox = gtk_hbox_new(FALSE, HSPACING_NARROW);
 	gtk_size_group_add_widget(size_group, hbox);
 	PACK_CHECK_BUTTON(hbox, case_checkbtn, _("Case sensitive"));
+#ifndef G_OS_WIN32
 	PACK_CHECK_BUTTON(hbox, regexp_checkbtn, _("Use regexp"));
+#endif
 	gtk_box_pack_end(GTK_BOX(hbox), gtk_label_new(""), TRUE, TRUE, 0);
 	gtk_table_attach(GTK_TABLE(table), hbox, 2, 3, 2, 3,
 			 GTK_FILL, GTK_SHRINK, 4, 0);
@@ -810,7 +816,9 @@ static void prefs_matcher_create(void)
 	matcher.addressbook_folder_combo = addressbook_folder_combo;
 	matcher.match_combo = match_combo;
 	matcher.case_checkbtn = case_checkbtn;
+#ifndef G_OS_WIN32
 	matcher.regexp_checkbtn = regexp_checkbtn;
+#endif
 	matcher.bool_op_combo = bool_op_combo;
 	matcher.test_btn = test_btn;
 	matcher.addressbook_select_btn = addressbook_select_btn;
@@ -874,7 +882,9 @@ static void prefs_matcher_reset_condition(void)
 	gtk_entry_set_text(GTK_ENTRY(matcher.header_addr_entry), "");
 	gtk_entry_set_text(GTK_ENTRY(matcher.string_entry), "");
 	gtk_entry_set_text(GTK_ENTRY(gtk_bin_get_child(GTK_BIN((matcher.addressbook_folder_combo)))), "");
+#ifndef G_OS_WIN32
 	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(matcher.regexp_checkbtn), FALSE);
+#endif
 	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(matcher.case_checkbtn), FALSE);
 }
 
@@ -1345,7 +1355,11 @@ static MatcherProp *prefs_matcher_dialog_to_matcher(void)
 	if(value_pred)
 		criteria = prefs_matcher_not_criteria(criteria);
 
+#ifndef G_OS_WIN32
 	use_regexp = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(matcher.regexp_checkbtn));
+#else
+	use_regexp = FALSE;
+#endif
 	case_sensitive = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(matcher.case_checkbtn));
 
 	if (use_regexp) {
@@ -1709,15 +1723,19 @@ static void prefs_matcher_second_criteria_sel(GtkWidget *widget,
 			prefs_matcher_enable_widget(matcher.match_label2, TRUE);
 			prefs_matcher_enable_widget(matcher.string_entry, FALSE);
 			prefs_matcher_enable_widget(matcher.case_checkbtn, FALSE);
+#ifndef G_OS_WIN32
 			prefs_matcher_enable_widget(matcher.regexp_checkbtn, FALSE);
+#endif
 		} else {
 			prefs_matcher_enable_widget(matcher.upper_filler, TRUE);
 			prefs_matcher_enable_widget(matcher.match_label2, FALSE);
 			prefs_matcher_enable_widget(matcher.string_entry, TRUE);
 			prefs_matcher_enable_widget(matcher.case_checkbtn, TRUE);
+#ifndef G_OS_WIN32
 			prefs_matcher_enable_widget(matcher.regexp_checkbtn, TRUE);
 			gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(
 						matcher.regexp_checkbtn), FALSE);
+#endif
 			gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(
 						matcher.case_checkbtn), FALSE);
 		}
@@ -1788,8 +1806,10 @@ static void prefs_matcher_criteria_select(GtkWidget *widget,
 				    MATCH_COMBO_IS_ENABLED(value));
 	prefs_matcher_enable_widget(matcher.case_checkbtn,
 				    MATCH_CASE_REGEXP(value));
+#ifndef G_OS_WIN32
 	prefs_matcher_enable_widget(matcher.regexp_checkbtn,
 				    MATCH_CASE_REGEXP(value));
+#endif
 	prefs_matcher_enable_widget(matcher.test_btn,
 				    (value == MATCH_TEST));
 	prefs_matcher_enable_widget(matcher.addressbook_select_btn,
@@ -1832,7 +1852,9 @@ static void prefs_matcher_criteria_select(GtkWidget *widget,
 		prefs_matcher_set_model(matcher.match_combo, matcher.model_contain);
 		gtk_label_set_text(GTK_LABEL(matcher.criteria_label2), _("Name:"));
 		gtk_label_set_text(GTK_LABEL(matcher.match_label), _("Header"));
+#ifndef G_OS_WIN32
 		gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(matcher.regexp_checkbtn), FALSE);
+#endif
 		gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(matcher.case_checkbtn), FALSE);
 		break;
 	case MATCH_LABEL:
@@ -1849,7 +1871,9 @@ static void prefs_matcher_criteria_select(GtkWidget *widget,
 		prefs_matcher_set_model(matcher.criteria_combo2, matcher.model_phrase);
 		prefs_matcher_set_model(matcher.match_combo, matcher.model_contain);
 		gtk_label_set_text(GTK_LABEL(matcher.criteria_label2), _("in"));
+#ifndef G_OS_WIN32
 		gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(matcher.regexp_checkbtn), FALSE);
+#endif
 		gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(matcher.case_checkbtn), FALSE);
 		prefs_matcher_second_criteria_sel(NULL, NULL);
 		break;	
@@ -2460,22 +2484,30 @@ static gboolean prefs_matcher_selected(GtkTreeSelection *selector,
 
 	switch(prop->matchtype) {
 	case MATCHTYPE_MATCH:
+#ifndef G_OS_WIN32
 		gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(matcher.regexp_checkbtn), FALSE);
+#endif
 		gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(matcher.case_checkbtn), TRUE);
 		break;
 
 	case MATCHTYPE_MATCHCASE:
+#ifndef G_OS_WIN32
 		gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(matcher.regexp_checkbtn), FALSE);
+#endif
 		gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(matcher.case_checkbtn), FALSE);
 		break;
 
 	case MATCHTYPE_REGEXP:
+#ifndef G_OS_WIN32
 		gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(matcher.regexp_checkbtn), TRUE);
+#endif
 		gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(matcher.case_checkbtn), TRUE);
 		break;
 
 	case MATCHTYPE_REGEXPCASE:
+#ifndef G_OS_WIN32
 		gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(matcher.regexp_checkbtn), TRUE);
+#endif
 		gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(matcher.case_checkbtn), FALSE);
 		break;
 	}

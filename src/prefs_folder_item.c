@@ -77,10 +77,12 @@ struct _FolderItemGeneralPage
 	GtkWidget *table;
 	GtkWidget *no_save_warning;
 	GtkWidget *folder_type;
+#ifndef G_OS_WIN32
 	GtkWidget *checkbtn_simplify_subject;
 	GtkWidget *entry_simplify_subject;
 	GtkWidget *entry_regexp_test_string;
 	GtkWidget *entry_regexp_test_result;
+#endif
 	GtkWidget *checkbtn_folder_chmod;
 	GtkWidget *entry_folder_chmod;
 	GtkWidget *folder_color_btn;
@@ -94,7 +96,9 @@ struct _FolderItemGeneralPage
 	GtkWidget *checkbtn_remove_old_offlinesync;
 	
 	/* apply to sub folders */
+#ifndef G_OS_WIN32
 	GtkWidget *simplify_subject_rec_checkbtn;
+#endif
 	GtkWidget *folder_chmod_rec_checkbtn;
 	GtkWidget *folder_color_rec_checkbtn;
 	GtkWidget *enable_processing_rec_checkbtn;
@@ -181,9 +185,10 @@ static gint prefs_folder_item_chmod_mode		(gchar *folder_chmod);
 
 static void folder_color_set_dialog(GtkWidget *widget, gpointer data);
 static void clean_cache_cb(GtkWidget *widget, gpointer data);
+#ifndef G_OS_WIN32
 static void folder_regexp_test_cb(GtkWidget *widget, gpointer data);
 static void folder_regexp_set_subject_example_cb(GtkWidget *widget, gpointer data);
-
+#endif
 #define SAFE_STRING(str) \
 	(str) ? (str) : ""
 
@@ -206,6 +211,7 @@ static void prefs_folder_item_general_create_widget_func(PrefsPage * page_,
 	SpecialFolderItemType type;
 	
 	GtkWidget *no_save_warning = NULL;
+#ifndef G_OS_WIN32
 	GtkWidget *checkbtn_simplify_subject;
 	GtkWidget *entry_simplify_subject;
 	GtkWidget *hbox_regexp;
@@ -213,7 +219,7 @@ static void prefs_folder_item_general_create_widget_func(PrefsPage * page_,
 	GtkWidget *entry_regexp_test_string;
 	GtkWidget *left_arrow;
 	GtkWidget *entry_regexp_test_result;
-
+#endif
 	GtkWidget *checkbtn_folder_chmod;
 	GtkWidget *entry_folder_chmod;
 	GtkWidget *folder_color;
@@ -227,7 +233,9 @@ static void prefs_folder_item_general_create_widget_func(PrefsPage * page_,
 	GtkWidget *label_end_offlinesync;
 	GtkWidget *checkbtn_remove_old_offlinesync;
 
+#ifndef G_OS_WIN32
 	GtkWidget *simplify_subject_rec_checkbtn;
+#endif
 	GtkWidget *folder_chmod_rec_checkbtn;
 	GtkWidget *folder_color_rec_checkbtn;
 	GtkWidget *enable_processing_rec_checkbtn;
@@ -313,6 +321,7 @@ static void prefs_folder_item_general_create_widget_func(PrefsPage * page_,
 
 	rowcount++;
 
+#ifndef G_OS_WIN32
 	/* Simplify Subject */
 	checkbtn_simplify_subject = gtk_check_button_new_with_label(_("Simplify Subject RegExp"));
 	gtk_table_attach(GTK_TABLE(table), checkbtn_simplify_subject, 0, 1, 
@@ -370,7 +379,7 @@ static void prefs_folder_item_general_create_widget_func(PrefsPage * page_,
 	gtk_editable_set_editable(GTK_EDITABLE(entry_regexp_test_result), FALSE);
 
 	rowcount++;
-
+#endif
 	/* Folder chmod */
 	checkbtn_folder_chmod = gtk_check_button_new_with_label(_("Folder chmod"));
 	gtk_table_attach(GTK_TABLE(table), checkbtn_folder_chmod, 0, 1, 
@@ -564,10 +573,12 @@ static void prefs_folder_item_general_create_widget_func(PrefsPage * page_,
 	page->table = table;
 	page->folder_type = folder_type;
 	page->no_save_warning = no_save_warning;
+#ifndef G_OS_WIN32
 	page->checkbtn_simplify_subject = checkbtn_simplify_subject;
 	page->entry_simplify_subject = entry_simplify_subject;
 	page->entry_regexp_test_string = entry_regexp_test_string;
 	page->entry_regexp_test_result = entry_regexp_test_result;
+#endif
 	page->checkbtn_folder_chmod = checkbtn_folder_chmod;
 	page->entry_folder_chmod = entry_folder_chmod;
 	page->folder_color_btn = folder_color_btn;
@@ -580,7 +591,9 @@ static void prefs_folder_item_general_create_widget_func(PrefsPage * page_,
 	page->label_end_offlinesync = label_end_offlinesync;
 	page->checkbtn_remove_old_offlinesync = checkbtn_remove_old_offlinesync;
 
+#ifndef G_OS_WIN32
 	page->simplify_subject_rec_checkbtn  = simplify_subject_rec_checkbtn;
+#endif
 	page->folder_chmod_rec_checkbtn	     = folder_chmod_rec_checkbtn;
 	page->folder_color_rec_checkbtn	     = folder_color_rec_checkbtn;
 	page->enable_processing_rec_checkbtn = enable_processing_rec_checkbtn;
@@ -590,7 +603,9 @@ static void prefs_folder_item_general_create_widget_func(PrefsPage * page_,
 
 	page->page.widget = table;
 
+#ifndef G_OS_WIN32
 	folder_regexp_set_subject_example_cb(NULL, page);
+#endif
 }
 
 static void prefs_folder_item_general_destroy_widget_func(PrefsPage *page_) 
@@ -623,13 +638,14 @@ static void general_save_folder_prefs(FolderItem *folder, FolderItemGeneralPage 
 		folder_item_change_type(folder, type);
 	}
 
+#ifndef G_OS_WIN32
 	if (all || gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(page->simplify_subject_rec_checkbtn))) {
 		prefs->enable_simplify_subject =
 			gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(page->checkbtn_simplify_subject));
 		ASSIGN_STRING(prefs->simplify_subject_regexp,
 			      gtk_editable_get_chars(GTK_EDITABLE(page->entry_simplify_subject), 0, -1));
 	}
-	
+#endif	
 	if (all || gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(page->folder_chmod_rec_checkbtn))) {
 		prefs->enable_folder_chmod = 
 			gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(page->checkbtn_folder_chmod));
@@ -688,7 +704,10 @@ static gboolean general_save_recurse_func(GNode *node, gpointer data)
 	   check boxes are selected - and optimise the checking by only doing
 	   it once */
 	if ((node == page->item->node) &&
-	    !(gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(page->simplify_subject_rec_checkbtn)) ||
+	    !(
+#ifndef G_OS_WIN32
+	      gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(page->simplify_subject_rec_checkbtn)) ||
+#endif
 	      gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(page->folder_chmod_rec_checkbtn)) ||
 	      gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(page->folder_color_rec_checkbtn)) ||
 	      gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(page->enable_processing_rec_checkbtn)) ||
@@ -1466,6 +1485,7 @@ static void clean_cache_cb(GtkWidget *widget, gpointer data)
 		folderview_select(folderview,item);
 }
 
+#ifndef G_OS_WIN32
 static regex_t *summary_compile_simplify_regexp(gchar *simplify_subject_regexp)
 {
 	int err;
@@ -1562,7 +1582,7 @@ static void folder_regexp_set_subject_example_cb(GtkWidget *widget, gpointer dat
 		}
 	}
 }
-
+#endif
 static void register_general_page()
 {
 	static gchar *pfi_general_path[3];

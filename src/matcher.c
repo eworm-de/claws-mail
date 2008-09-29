@@ -463,6 +463,7 @@ static gboolean matcherprop_string_match(MatcherProp *prop, const gchar *str,
 	switch (prop->matchtype) {
 	case MATCHTYPE_REGEXPCASE:
 	case MATCHTYPE_REGEXP:
+#ifndef G_OS_WIN32
 		if (!prop->preg && (prop->error == 0)) {
 			prop->preg = g_new0(regex_t, 1);
 			/* if regexp then don't use the escaped string */
@@ -505,7 +506,7 @@ static gboolean matcherprop_string_match(MatcherProp *prop, const gchar *str,
 			g_free(stripped);
 		}
 		break;
-			
+#endif			
 	case MATCHTYPE_MATCHCASE:
 	case MATCHTYPE_MATCH:
 		ret = (strstr(str1, down_expr) != NULL);

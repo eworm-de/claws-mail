@@ -44,8 +44,10 @@ static PrefParam param[] = {
 	 NULL, NULL, NULL},
 	{"enable_simplify_subject", "", &tmp_prefs.enable_simplify_subject, P_BOOL,
 	 NULL, NULL, NULL},
+#ifndef G_OS_WIN32
 	{"simplify_subject_regexp", "", &tmp_prefs.simplify_subject_regexp, P_STRING,
 	 NULL, NULL, NULL},
+#endif
 	{"enable_folder_chmod", "", &tmp_prefs.enable_folder_chmod, P_BOOL,
 	 NULL, NULL, NULL},
 	{"folder_chmod", "", &tmp_prefs.folder_chmod, P_INT,
@@ -157,7 +159,9 @@ static FolderItemPrefs *folder_item_prefs_clear(FolderItemPrefs *prefs)
 	prefs->enable_default_reply_to = FALSE;
 	prefs->default_reply_to = NULL;
 	prefs->enable_simplify_subject = FALSE;
+#ifndef G_OS_WIN32
 	prefs->simplify_subject_regexp = NULL;
+#endif
 	prefs->enable_folder_chmod = FALSE;
 	prefs->folder_chmod = 0;
 	prefs->enable_default_account = FALSE;
@@ -253,7 +257,9 @@ void folder_item_prefs_copy_prefs(FolderItem * src, FolderItem * dest)
 	tmp_prefs.enable_default_reply_to	= src->prefs->enable_default_reply_to;
 	tmp_prefs.default_reply_to		= g_strdup(src->prefs->default_reply_to);
 	tmp_prefs.enable_simplify_subject	= src->prefs->enable_simplify_subject;
+#ifndef G_OS_WIN32
 	tmp_prefs.simplify_subject_regexp	= g_strdup(src->prefs->simplify_subject_regexp);
+#endif
 	tmp_prefs.enable_folder_chmod		= src->prefs->enable_folder_chmod;
 	tmp_prefs.folder_chmod			= src->prefs->folder_chmod;
 	tmp_prefs.enable_default_account	= src->prefs->enable_default_account;

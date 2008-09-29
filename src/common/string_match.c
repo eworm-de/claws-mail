@@ -51,7 +51,9 @@ gchar *string_remove_match(gchar *buf, gint buflen, gchar * txt, regex_t *preg)
 	regmatch_t match;
 	int notfound;
 	gint i, j ,k;
-
+#ifdef G_OS_WIN32
+	return txt;
+#else
 	if (!preg)
 		return txt;
 	if (*txt != 0x00) {
@@ -83,5 +85,6 @@ gchar *string_remove_match(gchar *buf, gint buflen, gchar * txt, regex_t *preg)
 		return buf;		
 	}
 	return txt;
+#endif
 }
 
