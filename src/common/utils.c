@@ -3699,19 +3699,19 @@ int subject_get_prefix_length(const gchar *subject)
 #else
 	/*!< Array with allowable reply prefixes regexps. */
 	static const gchar * const prefixes[] = {
-		"Re:",			/* "Re:" */
-		"Antw:",			/* "Antw:" (Dutch / German Outlook) */
-		"Aw:",			/* "Aw:"   (German) */
-		"Antwort:",			/* "Antwort:" (German Lotus Notes) */
-		"Res:",			/* "Res:" (Brazilian Outlook) */
-		"Fw:",			/* "Fw:" Forward */
-		"Fwd:",			/* "Fwd:" Forward */
-		"Enc:",			/* "Enc:" Forward (Brazilian Outlook) */
-		"Odp:",			/* "Odp:" Re (Polish Outlook) */
-		"Rif:",			/* "Rif:" (Italian Outlook) */
-		"Sv:",			/* "Sv" (Norwegian) */
-		"Vs:",			/* "Vs" (Norwegian) */
-		"Ad:",			/* "Ad" (Norwegian) */
+		"re:",			/* "Re:" */
+		"antw:",			/* "Antw:" (Dutch / German Outlook) */
+		"aw:",			/* "Aw:"   (German) */
+		"antwort:",			/* "Antwort:" (German Lotus Notes) */
+		"res:",			/* "Res:" (Brazilian Outlook) */
+		"fw:",			/* "Fw:" Forward */
+		"fwd:",			/* "Fwd:" Forward */
+		"enc:",			/* "Enc:" Forward (Brazilian Outlook) */
+		"odp:",			/* "Odp:" Re (Polish Outlook) */
+		"rif:",			/* "Rif:" (Italian Outlook) */
+		"sv:",			/* "Sv" (Norwegian) */
+		"vs:",			/* "Vs" (Norwegian) */
+		"ad:",			/* "Ad" (Norwegian) */
 		/* add more */
 	};
 	const int PREFIXES = sizeof prefixes / sizeof prefixes[0];
@@ -3722,7 +3722,7 @@ int subject_get_prefix_length(const gchar *subject)
 
 	for (n = 0; n < PREFIXES; n++) {
 		int len = strlen(prefixes[n]);
-		if (!strncmp(subject, prefixes[n], len))
+		if (!strncasecmp(subject, prefixes[n], len))
 			return len;
 	}
 	return 0;
