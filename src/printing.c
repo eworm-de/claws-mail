@@ -229,7 +229,7 @@ void printing_print_full(GtkWindow *parent, PrintRenderer *renderer, gpointer re
   if(res == GTK_PRINT_OPERATION_RESULT_ERROR) {
     GError *error = NULL;
     gtk_print_operation_get_error(op, &error);
-    debug_print("Error printing message: %s",
+    debug_print("Error printing message: %s\n",
 	    error ? error->message : "no details");
   }
   else if(res == GTK_PRINT_OPERATION_RESULT_APPLY) {

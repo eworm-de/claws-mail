@@ -974,7 +974,7 @@ static void dbus_update(FolderItem *removed_item)
 			"claws-mail", G_TYPE_INVALID, G_TYPE_INVALID);
 	}
 	if (error) {
-		debug_print("%s", error->message);
+		debug_print("%s\n", error->message);
 		g_error_free(error);
 	}
 }

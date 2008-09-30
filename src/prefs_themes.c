@@ -233,7 +233,7 @@ static void prefs_themes_foreach_file(const gchar *dirname, const FileFunc func,
 	g_return_if_fail(func != NULL);
 	
 	if ((dp = opendir(dirname)) == NULL) {
-		debug_print("directory %s not found", dirname);
+		debug_print("directory %s not found\n", dirname);
 		return;
 	}
 

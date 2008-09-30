@@ -142,7 +142,7 @@ void ldapctl_set_bind_password( LdapControl* ctl, const gchar *value ) {
 		return;
 
 	g_strstrip( ctl->bindPass );
-	debug_print("setting bindPassword");
+	debug_print("setting bindPassword\n");
 }
 
 /**

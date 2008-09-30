@@ -1,3 +1,11 @@
+2008-09-30 [mones]	3.5.0cvs141
+
+	* src/ldapctrl.c
+	* src/main.c
+	* src/prefs_themes.c
+	* src/printing.c
+		Fix output of some debug messages
+
 2008-09-30 [colin]	3.5.0cvs140
 
 	* src/addrbook.c
