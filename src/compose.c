@@ -5687,7 +5687,7 @@ static void compose_add_attachments(Compose *compose, MimeInfo *parent)
 		mimepart->tmp = FALSE; /* or we destroy our attachment */
 		mimepart->offset = 0;
 
-		stat(ainfo->file, &statbuf);
+		g_stat(ainfo->file, &statbuf);
 		mimepart->length = statbuf.st_size;
 
     		type = g_strdup(ainfo->content_type);

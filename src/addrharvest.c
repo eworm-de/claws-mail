@@ -720,7 +720,7 @@ static void addrharvest_harvest_dir(
 	/* Process directory */
 	chdir( dir );
 	while( ( d = readdir( dp ) ) != NULL ) {
-		stat( d->d_name, &s );
+		g_stat( d->d_name, &s );
 		if( S_ISDIR( s.st_mode ) ) {
 			if( harvester->folderRecurse ) {
 				if( strstr( DIR_IGNORE, d->d_name ) != NULL )

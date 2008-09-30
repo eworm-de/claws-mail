@@ -1847,7 +1847,7 @@ GList *addrbook_get_bookfile_list(AddressBookFile *book) {
 
 		strcpy(buf, adbookdir);
 		strcat( buf, dir_name );
-		stat(buf, &statbuf);
+		g_stat(buf, &statbuf);
 		if (S_ISREG(statbuf.st_mode)) {
 			if (strncmp(
 				dir_name,

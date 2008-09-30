@@ -163,7 +163,7 @@ static void prefs_themes_file_stats(const gchar *filename, gpointer data)
 	DirInfo    *di = (DirInfo *)data;
 	gint        len;
 	
-	if (0 == stat(filename, &s) && 0 != S_ISREG(s.st_mode)) {
+	if (0 == g_stat(filename, &s) && 0 != S_ISREG(s.st_mode)) {
 		di->bytes += s.st_size;
 		di->files++;
 		len = strlen(filename);

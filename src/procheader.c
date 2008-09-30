@@ -327,7 +327,7 @@ MsgInfo *procheader_parse_file(const gchar *file, MsgFlags flags,
 	FILE *fp;
 	MsgInfo *msginfo;
 
-	if (stat(file, &s) < 0) {
+	if (g_stat(file, &s) < 0) {
 		FILE_OP_ERROR(file, "stat");
 		return NULL;
 	}
@@ -966,7 +966,12 @@ void procheader_date_get_localtime(gchar *dest, gint len, const time_t timer)
 	const gchar *src_codeset, *dest_codeset;
 	struct tm buf;
 
-	lt = localtime_r(&timer, &buf);
+	if (timer > 0)
+		lt = localtime_r(&timer, &buf);
+	else {
+		time_t dummy = 1;
+		lt = localtime_r(&dummy, &buf);
+	}
 
 	if (prefs_common.date_format)
 		fast_strftime(dest, len, prefs_common.date_format, lt);

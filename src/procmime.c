@@ -436,7 +436,7 @@ gboolean procmime_decode_content(MimeInfo *mimeinfo)
 		return FALSE;
 	}
 
-	stat(tmpfilename, &statbuf);
+	g_stat(tmpfilename, &statbuf);
 	if (mimeinfo->tmp && (mimeinfo->data.filename != NULL))
 		claws_unlink(mimeinfo->data.filename);
 	g_free(mimeinfo->data.filename);
@@ -586,7 +586,7 @@ gboolean procmime_encode_content(MimeInfo *mimeinfo, EncodingType encoding)
 			g_free(mimeinfo->data.mem);
 	}
 
-	stat(tmpfilename, &statbuf);
+	g_stat(tmpfilename, &statbuf);
 	mimeinfo->content = MIMECONTENT_FILE;
 	mimeinfo->data.filename = tmpfilename;
 	mimeinfo->tmp = TRUE;
@@ -2007,7 +2007,7 @@ static MimeInfo *procmime_scan_file_with_offset(const gchar *filename, int offse
 	MimeInfo *mimeinfo;
 	struct stat buf;
 
-	stat(filename, &buf);
+	g_stat(filename, &buf);
 
 	mimeinfo = procmime_mimeinfo_new();
 	mimeinfo->content = MIMECONTENT_FILE;

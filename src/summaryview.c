@@ -3307,7 +3307,7 @@ static inline void summary_set_header(SummaryView *summaryview, gchar *text[],
 	/* slow! */
 	if (summaryview->col_state[summaryview->col_pos[S_COL_DATE]].visible || 
 	    (vert && prefs_common.two_line_vert)) {
-		if (msginfo->date_t) {
+		if (msginfo->date_t && msginfo->date_t > 0) {
 			procheader_date_get_localtime(date_modified,
 						      sizeof(date_modified),
 						      msginfo->date_t);

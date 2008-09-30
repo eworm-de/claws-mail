@@ -3461,7 +3461,7 @@ time_t tzoffset_sec(time_t *now)
 	struct tm buf1, buf2;
 #endif
 #ifdef G_OS_WIN32
-	if (now && *now == -1)
+	if (now && *now < 0)
 		return 0;
 #endif	
 	gmt = *gmtime_r(now, &buf1);
@@ -3497,7 +3497,7 @@ gchar *tzoffset(time_t *now)
 	struct tm buf1, buf2;
 #endif
 #ifdef G_OS_WIN32
-	if (now && *now == -1)
+	if (now && *now < 0)
 		return 0;
 #endif
 	gmt = *gmtime_r(now, &buf1);

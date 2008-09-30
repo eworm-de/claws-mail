@@ -363,7 +363,7 @@ static gboolean jpilot_mark_files( JPilotFile *pilotFile ) {
 	pilotFile->pc3ModifyTime = 0;
 	pcFile = jpilot_get_pc3_file( pilotFile );
 	if( pcFile == NULL ) return retVal;
-	if( 0 == stat( pcFile, &filestat ) ) {
+	if( 0 == g_stat( pcFile, &filestat ) ) {
 		pilotFile->havePC3 = TRUE;
 		pilotFile->pc3ModifyTime = filestat.st_mtime;
 		retVal = TRUE;
@@ -392,7 +392,7 @@ static gboolean jpilot_check_files( JPilotFile *pilotFile ) {
 	pcFile = jpilot_get_pc3_file( pilotFile );
 	if( pcFile == NULL ) return FALSE;
 
-	if( 0 == stat( pcFile, &filestat ) ) {
+	if( 0 == g_stat( pcFile, &filestat ) ) {
 		if( filestat.st_mtime == pilotFile->pc3ModifyTime ) retVal = FALSE;
 	}
 	g_free( pcFile );

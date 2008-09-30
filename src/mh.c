@@ -212,7 +212,7 @@ gboolean mh_scan_required(Folder *folder, FolderItem *item)
 	path = folder_item_get_path(item);
 	g_return_val_if_fail(path != NULL, FALSE);
 
-	if (stat(path, &s) < 0) {
+	if (g_stat(path, &s) < 0) {
 		FILE_OP_ERROR(path, "stat");
 		g_free(path);
 		return FALSE;
@@ -1453,7 +1453,7 @@ static void mh_set_mtime(Folder *folder, FolderItem *item)
 
 	g_return_if_fail(path != NULL);
 
-	if (stat(path, &s) < 0) {
+	if (g_stat(path, &s) < 0) {
 		FILE_OP_ERROR(path, "stat");
 		g_free(path);
 		return;
