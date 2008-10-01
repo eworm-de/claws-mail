@@ -1,3 +1,8 @@
+2008-10-01 [colin]	3.5.0cvs143
+
+	* src/imap.c
+		Real fix for FS-unsafe chars on win32
+
 2008-10-01 [colin]	3.5.0cvs142
 
 	* src/imap.c

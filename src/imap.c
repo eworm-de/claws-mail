@@ -2487,6 +2487,36 @@ static gchar *imap_folder_get_path(Folder *folder)
 	return folder_path;
 }
 
+#ifdef G_OS_WIN32
+static gchar *imap_encode_unsafe_chars(const gchar *str)
+{
+	gchar *ret = NULL, *o_ret;
+	gchar *i;
+	if (!str) 
+		return NULL;
+	ret = g_malloc(3*strlen(str)+1);
+	o_ret = ret;
+	for (i = str; *i; i++) {
+		switch(*i) {
+			case ':':
+			case '|':
+			case '<':
+			case '>':
+			case '*':
+			case '?':
+			case '#':
+				*ret++ = '%';
+				*ret++ = '0'+(*i/10);
+				*ret++ = '0'+(*i%10);
+				break;
+			default:
+				*ret++ = *i;
+		}
+	}
+	*ret++ = '\0';
+	return o_ret;
+}
+#endif
 static gchar *imap_item_get_path(Folder *folder, FolderItem *item)
 {
 	gchar *folder_path, *path;
@@ -2497,22 +2527,11 @@ static gchar *imap_item_get_path(Folder *folder, FolderItem *item)
 	folder_path = imap_folder_get_path(folder);
 
 	g_return_val_if_fail(folder_path != NULL, NULL);
-	item_path = g_strdup(item->path);
 
-#ifdef G_OS_WIN32
-	if (strchr(item_path, ':') ||
-	    strchr(item_path, '|') ||
-	    strchr(item_path, '<') ||
-	    strchr(item_path, '>') ||
-	    strchr(item_path, '*') ||
-	    strchr(item_path, '?') ||
-	    strchr(item_path, '#') ||
-	    strchr(item_path, ':')
-	    ) {
-		g_free(item_path);
-		item_path = g_malloc(strlen(item->path)*3 +1);
-		qp_encode_line(item_path, item->path);
-	}
+#ifdef G_OS_UNIX
+	item_path = g_strdup(item->path);
+#else
+	item_path = imap_encode_unsafe_chars(item->path);
 #endif	
 
         if (g_path_is_absolute(folder_path)) {
