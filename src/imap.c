@@ -2490,28 +2490,48 @@ static gchar *imap_folder_get_path(Folder *folder)
 static gchar *imap_item_get_path(Folder *folder, FolderItem *item)
 {
 	gchar *folder_path, *path;
-
+	gchar *item_path = NULL;
+	
 	g_return_val_if_fail(folder != NULL, NULL);
 	g_return_val_if_fail(item != NULL, NULL);
 	folder_path = imap_folder_get_path(folder);
 
 	g_return_val_if_fail(folder_path != NULL, NULL);
+	item_path = g_strdup(item->path);
+
+#ifdef G_OS_WIN32
+	if (strchr(item_path, ':') ||
+	    strchr(item_path, '|') ||
+	    strchr(item_path, '<') ||
+	    strchr(item_path, '>') ||
+	    strchr(item_path, '*') ||
+	    strchr(item_path, '?') ||
+	    strchr(item_path, '#') ||
+	    strchr(item_path, ':')
+	    ) {
+		g_free(item_path);
+		item_path = g_malloc(strlen(item->path)*3 +1);
+		qp_encode_line(item_path, item->path);
+	}
+#endif	
+
         if (g_path_is_absolute(folder_path)) {
-                if (item->path)
+                if (item_path)
                         path = g_strconcat(folder_path, G_DIR_SEPARATOR_S,
-                                           item->path, NULL);
+                                           item_path, NULL);
                 else
                         path = g_strdup(folder_path);
         } else {
-                if (item->path)
+                if (item_path)
                         path = g_strconcat(get_home_dir(), G_DIR_SEPARATOR_S,
                                            folder_path, G_DIR_SEPARATOR_S,
-                                           item->path, NULL);
+                                           item_path, NULL);
                 else
                         path = g_strconcat(get_home_dir(), G_DIR_SEPARATOR_S,
                                            folder_path, NULL);
         }
         g_free(folder_path);
+        g_free(item_path);
 #ifdef G_OS_WIN32
 	while (strchr(path, '/'))
 		*strchr(path, '/') = '\\';
