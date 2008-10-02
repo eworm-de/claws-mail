@@ -136,12 +136,12 @@ gint session_connect(Session *session, const gchar *server, gushort port)
 	session->port = port;
 
 	sock = sock_connect(server, port);
-	sock->is_smtp = session->is_smtp;
 	if (sock == NULL) {
 		g_warning("can't connect to server.");
 		session_close(session);
 		return -1;
 	}
+	sock->is_smtp = session->is_smtp;
 
 	return session_connect_cb(sock, session);
 #endif

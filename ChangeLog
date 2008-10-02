@@ -1,3 +1,8 @@
+2008-10-02 [colin]	3.5.0cvs144
+
+	* src/common/session.c
+		Fix crash when connection fails on windows
+
 2008-10-01 [colin]	3.5.0cvs143
 
 	* src/imap.c

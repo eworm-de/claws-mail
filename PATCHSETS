@@ -3555,3 +3555,4 @@
 ( cvs diff -u -r 1.2.2.16 -r 1.2.2.17 src/ldapctrl.c;  cvs diff -u -r 1.115.2.209 -r 1.115.2.210 src/main.c;  cvs diff -u -r 1.3.2.59 -r 1.3.2.60 src/prefs_themes.c;  cvs diff -u -r 1.1.2.15 -r 1.1.2.16 src/printing.c;  ) > 3.5.0cvs141.patchset
 ( cvs diff -u -r 1.179.2.231 -r 1.179.2.232 src/imap.c;  ) > 3.5.0cvs142.patchset
 ( cvs diff -u -r 1.179.2.232 -r 1.179.2.233 src/imap.c;  ) > 3.5.0cvs143.patchset
+( cvs diff -u -r 1.23.2.19 -r 1.23.2.20 src/common/session.c;  ) > 3.5.0cvs144.patchset
