@@ -642,8 +642,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Claws-Mail-3.3.1cvs57 (3.4.0)\n"
 "Report-Msgid-Bugs-To: paul@claws-mail.org\n"
-"POT-Creation-Date: 2008-09-30 19:55+0200\n"
-"PO-Revision-Date: 2008-10-03 10:17+0100\n"
+"POT-Creation-Date: 2008-10-03 16:21+0200\n"
+"PO-Revision-Date: 2008-10-03 20:05+0100\n"
 "Last-Translator: Tristan Chabredier (wwp) <subscript@free.fr>\n"
 "Language-Team:  <claws-mail-translators@dotsrc.org>\n"
 "MIME-Version: 1.0\n"
@@ -743,7 +743,7 @@ msgstr "Serveur"
 #: src/action.c:373
 #, c-format
 msgid "Could not get message file %d"
-msgstr "Échec lors de la récupération du fichier correspondant au message %d."
+msgstr "Échec lors de la récupération du fichier correspondant au message %d"
 
 #: src/action.c:404
 msgid "Could not get message part."
@@ -1169,7 +1169,7 @@ msgstr "Personnaliser les _attributs..."
 #: src/mainwindow.c:725
 #: src/messageview.c:300
 msgid "_About"
-msgstr "_A propos"
+msgstr "À _propos"
 
 #: src/addressbook.c:500
 msgid "_Browse Entry"
@@ -2370,7 +2370,7 @@ msgstr "À l'_expéditeur"
 
 #: src/compose.c:666
 msgid "_Mailing-list"
-msgstr "À la _liste"
+msgstr "La _liste"
 
 #: src/compose.c:671
 msgid "_Highest"
@@ -4047,7 +4047,7 @@ msgstr "Exéc_uter les règles de traitement"
 #: src/folderview.c:281
 #: src/mainwindow.c:499
 msgid "_Search folder..."
-msgstr "_Chercher dans le dossier..."
+msgstr "Chercher dans le _dossier..."
 
 #: src/folderview.c:283
 msgid "Process_ing..."
@@ -4103,7 +4103,7 @@ msgid "Do you really want to mark all mails in this folder as read ?"
 msgstr "Voulez-vous vraiment marquer tous les messages de ce dossier comme lus ?"
 
 #: src/folderview.c:1075
-#: src/imap.c:3972
+#: src/imap.c:4011
 #: src/mainwindow.c:4846
 #: src/setup.c:90
 #, c-format
@@ -4111,7 +4111,7 @@ msgid "Scanning folder %s%c%s ..."
 msgstr "Analyse du dossier %s%c%s..."
 
 #: src/folderview.c:1079
-#: src/imap.c:3977
+#: src/imap.c:4016
 #: src/mainwindow.c:4851
 #: src/setup.c:95
 #, c-format
@@ -4142,7 +4142,7 @@ msgstr "Impossible d'ouvrir le dossier '%s'\n"
 
 #: src/folderview.c:1309
 msgid "Checking for new messages in all folders..."
-msgstr "Examen de tous les dossiers pour nouveaux messages..."
+msgstr "Examiner tous les dossiers pour nouveaux messages..."
 
 #: src/folderview.c:2144
 #, c-format
@@ -6243,11 +6243,11 @@ msgid "IMAP4 connection to %s has been disconnected. Reconnecting...\n"
 msgstr "La connexion IMAP4 vers %s a été coupée. Reconnexion...\n"
 
 #: src/imap.c:948
-#: src/imap.c:3044
-#: src/imap.c:3690
-#: src/imap.c:3784
-#: src/imap.c:3961
-#: src/imap.c:4772
+#: src/imap.c:3083
+#: src/imap.c:3729
+#: src/imap.c:3823
+#: src/imap.c:4000
+#: src/imap.c:4811
 msgid "Claws Mail needs network access in order to access the IMAP server."
 msgstr "Claws Mail nécessite un accès réseau pour accéder au serveur IMAP."
 
@@ -6294,7 +6294,7 @@ msgid "Can't connect to IMAP4 server: %s:%d\n"
 msgstr "Impossible de se connecter au serveur IMAP4 %s:%d\n"
 
 #: src/imap.c:1136
-#: src/imap.c:3450
+#: src/imap.c:3489
 msgid "Can't start TLS session.\n"
 msgstr "Impossible d'initier la session TLS.\n"
 
@@ -6327,7 +6327,7 @@ msgid "can't set deleted flags\n"
 msgstr "Impossible de marquer pour la suppression\n"
 
 #: src/imap.c:1991
-#: src/imap.c:4398
+#: src/imap.c:4437
 msgid "can't expunge\n"
 msgstr "Impossible de purger\n"
 
@@ -6341,67 +6341,67 @@ msgstr "Recherche des dossiers non inscrits dans %s..."
 msgid "Looking for subfolders of %s..."
 msgstr "Recherche des sous-dossiers de %s..."
 
-#: src/imap.c:2589
+#: src/imap.c:2628
 msgid "can't create mailbox: LIST failed\n"
 msgstr "Impossible de créer la boîte aux lettres : LIST échoué.\n"
 
-#: src/imap.c:2604
+#: src/imap.c:2643
 msgid "can't create mailbox\n"
 msgstr "Impossible de créer la boîte aux lettres\n"
 
-#: src/imap.c:2695
+#: src/imap.c:2734
 msgid "New folder name must not contain the namespace path separator"
 msgstr "Le nouveau nom de dossier ne doit pas contenir le séparateur de chemin."
 
-#: src/imap.c:2732
+#: src/imap.c:2771
 #, c-format
 msgid "can't rename mailbox: %s to %s\n"
 msgstr "Impossible de renommer la boîte aux lettres %s en %s.\n"
 
-#: src/imap.c:2835
+#: src/imap.c:2874
 msgid "can't delete mailbox\n"
 msgstr "Impossible de supprimer la boîte aux lettres.\n"
 
-#: src/imap.c:3125
+#: src/imap.c:3164
 msgid "LIST failed\n"
 msgstr "commande LIST échouée\n"
 
-#: src/imap.c:3207
+#: src/imap.c:3246
 msgid "Flagging messages..."
 msgstr "Marquage des messages en cours..."
 
-#: src/imap.c:3301
+#: src/imap.c:3340
 #, c-format
 msgid "can't select folder: %s\n"
 msgstr "Impossible de sélectionner le dossier : %s.\n"
 
-#: src/imap.c:3447
+#: src/imap.c:3486
 msgid "Server requires TLS to log in.\n"
 msgstr "Le serveur nécessite TLS pour s'y connecter.\n"
 
-#: src/imap.c:3457
+#: src/imap.c:3496
 msgid "Can't refresh capabilities.\n"
 msgstr "Impossible de rafraîchir la liste des facilités IMAP.\n"
 
-#: src/imap.c:3462
+#: src/imap.c:3501
 #, c-format
 msgid "Connection to %s failed: server requires TLS, but Claws Mail has been compiled without OpenSSL support.\n"
 msgstr "La connection vers %s a échoué : le serveur nécessite TLS, mais Claws Mail a été compilé sans le support OpenSSL.\n"
 
-#: src/imap.c:3470
+#: src/imap.c:3509
 msgid "Server logins are disabled.\n"
 msgstr "Les connections au serveur sont désactivées.\n"
 
-#: src/imap.c:3695
+#: src/imap.c:3734
 msgid "Fetching message..."
 msgstr "Lecture du message en cours..."
 
-#: src/imap.c:4384
+#: src/imap.c:4423
 #, c-format
 msgid "can't set deleted flags: %d\n"
 msgstr "Impossible de marquer pour la suppression : %d.\n"
 
-#: src/imap.c:5428
+#: src/imap.c:5467
 msgid ""
 "You have one or more IMAP accounts defined. However this version of Claws Mail has been built without IMAP support; your IMAP account(s) are disabled.\n"
 "\n"
@@ -7308,7 +7308,7 @@ msgstr "_Configuration"
 
 #: src/mainwindow.c:467
 msgid "_Add mailbox"
-msgstr "_ajouter une boîte aux lettres"
+msgstr "_Ajouter une boîte aux lettres"
 
 #: src/mainwindow.c:468
 msgid "MH..."
@@ -7320,11 +7320,11 @@ msgstr "_Changer l'ordre des boîtes aux lettres..."
 
 #: src/mainwindow.c:474
 msgid "_Import mbox file..."
-msgstr "_Importer un fichier mbox"
+msgstr "I_mporter un fichier mbox..."
 
 #: src/mainwindow.c:475
 msgid "_Export to mbox file..."
-msgstr "_Exporter la sélection en fichier mbox"
+msgstr "E_xporter vers un fichier mbox..."
 
 #: src/mainwindow.c:476
 msgid "_Export selected to mbox file..."
@@ -7332,7 +7332,7 @@ msgstr "_Exporter la sélection en fichier mbox..."
 
 #: src/mainwindow.c:478
 msgid "Empty all _Trash folders"
-msgstr "_Vider toutes les corbeilles..."
+msgstr "_Vider toutes les corbeilles"
 
 #: src/mainwindow.c:481
 #: src/messageview.c:195
@@ -7388,11 +7388,11 @@ msgstr "Sélect_ion des éléments affichés"
 
 #: src/mainwindow.c:507
 msgid "in _Folder list..."
-msgstr "dans la liste des _dossiers..."
+msgstr "Dans la liste des _dossiers..."
 
 #: src/mainwindow.c:508
 msgid "in _Message list..."
-msgstr "dans la liste des _messages..."
+msgstr "Dans la liste des _messages..."
 
 #: src/mainwindow.c:513
 msgid "La_yout"
@@ -7556,18 +7556,18 @@ msgstr "Rép_ondre à"
 #: src/messageview.c:265
 #: src/summaryview.c:514
 msgid "_all"
-msgstr "_tous"
+msgstr "_Tous"
 
 #: src/mainwindow.c:591
 #: src/messageview.c:266
 #: src/summaryview.c:515
 msgid "_sender"
-msgstr "l'_expéditeur"
+msgstr "L'_expéditeur"
 
 #: src/mainwindow.c:592
 #: src/messageview.c:267
 msgid "mailing _list"
-msgstr "à la _liste"
+msgstr "La _liste"
 
 #: src/mainwindow.c:593
 msgid "Follow-up and reply to"
@@ -7595,7 +7595,7 @@ msgstr "Rediri_ger"
 
 #: src/mainwindow.c:600
 msgid "Mailing-_List"
-msgstr "à la _liste"
+msgstr "_Liste de diffusion"
 
 #: src/mainwindow.c:601
 msgid "Post"
@@ -7659,12 +7659,12 @@ msgstr "Marquer comme _non lu"
 #: src/mainwindow.c:628
 #: src/summaryview.c:539
 msgid "Mark as rea_d"
-msgstr "_tous"
+msgstr "Marquer comme _lu"
 
 #: src/mainwindow.c:629
 #: src/summaryview.c:540
 msgid "Mark all read"
-msgstr "Marquer tous comme _lus"
+msgstr "Marquer _tous comme lus"
 
 #: src/mainwindow.c:630
 #: src/prefs_filtering_action.c:184
@@ -7672,7 +7672,7 @@ msgstr "Marquer tous comme _lus"
 #: src/toolbar.c:194
 #: src/toolbar.c:401
 msgid "Ignore thread"
-msgstr "Ignorer du fil de discussion"
+msgstr "Ignorer du f_il de discussion"
 
 #: src/mainwindow.c:631
 #: src/summaryview.c:542
@@ -7685,7 +7685,7 @@ msgstr "Inclure dans _fil de discussion"
 #: src/toolbar.c:195
 #: src/toolbar.c:402
 msgid "Watch thread"
-msgstr "Suivre le fil de discussion"
+msgstr "_Suivre le fil de discussion"
 
 #: src/mainwindow.c:633
 #: src/summaryview.c:544
@@ -7708,7 +7708,7 @@ msgstr "Marquer comme courrier légitime"
 #: src/prefs_filtering_action.c:168
 #: src/summaryview.c:551
 msgid "Lock"
-msgstr "Bloquer"
+msgstr "_Bloquer"
 
 #: src/mainwindow.c:641
 #: src/prefs_filtering_action.c:169
@@ -7718,7 +7718,7 @@ msgstr "Débloquer"
 
 #: src/mainwindow.c:643
 msgid "Color la_bel"
-msgstr "Co_lorier"
+msgstr "C_olorier"
 
 #: src/mainwindow.c:644
 msgid "Ta_gs"
@@ -7736,11 +7736,11 @@ msgstr "A_jouter l'expéditeur au carnet d'adresses"
 
 #: src/mainwindow.c:654
 msgid "C_ollect addresses"
-msgstr "Récupération d'adresses"
+msgstr "Récupération des adresses"
 
 #: src/mainwindow.c:655
 msgid "from Current _folder..."
-msgstr "Créer un _nouveau dossier..."
+msgstr "À partir du dossier actuel..."
 
 #: src/mainwindow.c:656
 msgid "from Selected _messages..."
@@ -7760,7 +7760,7 @@ msgstr "Exéc_uter les règles de traitement du dossier courant"
 
 #: src/mainwindow.c:663
 msgid "_Create filter rule"
-msgstr "Créer une règle de filtr_age"
+msgstr "Créer une _règle de filtrage"
 
 #: src/mainwindow.c:664
 #: src/mainwindow.c:670
@@ -7801,7 +7801,7 @@ msgstr "Par _Sujet"
 #: src/mainwindow.c:669
 #: src/summaryview.c:568
 msgid "Create processing rule"
-msgstr "Créer une règle de traiteme_nt"
+msgstr "Créer une règle de traite_ment"
 
 #: src/mainwindow.c:676
 #: src/messageview.c:293
@@ -7830,11 +7830,11 @@ msgstr "E_xécuter"
 
 #: src/mainwindow.c:692
 msgid "SSL cer_tificates"
-msgstr "Certificats _SSL"
+msgstr "C_ertificats SSL"
 
 #: src/mainwindow.c:696
 msgid "Filtering Lo_g"
-msgstr "Traces du _filtrage"
+msgstr "Traces de _filtrage"
 
 #: src/mainwindow.c:698
 msgid "Network _Log"
@@ -7862,15 +7862,15 @@ msgstr "Édition des _comptes"
 
 #: src/mainwindow.c:710
 msgid "P_references..."
-msgstr "_Préférences"
+msgstr "_Préférences..."
 
 #: src/mainwindow.c:711
 msgid "Pre-pr_ocessing..."
-msgstr "_Traitement..."
+msgstr "P_ré-traitement..."
 
 #: src/mainwindow.c:712
 msgid "Post-pro_cessing..."
-msgstr "_Traitement..."
+msgstr "P_ost-traitement..."
 
 #: src/mainwindow.c:713
 msgid "_Filtering..."
@@ -7878,19 +7878,19 @@ msgstr "_Filtrage des messages..."
 
 #: src/mainwindow.c:714
 msgid "_Templates..."
-msgstr "_Modèles"
+msgstr "_Modèles..."
 
 #: src/mainwindow.c:715
 msgid "_Actions..."
-msgstr "_Actions"
+msgstr "_Actions..."
 
 #: src/mainwindow.c:716
 msgid "Tag_s..."
-msgstr "L_abels"
+msgstr "_Labels..."
 
 #: src/mainwindow.c:718
 msgid "Plu_gins..."
-msgstr "M_odules"
+msgstr "Mo_dules..."
 
 #: src/mainwindow.c:721
 msgid "_Manual"
@@ -7902,11 +7902,11 @@ msgstr "_FAQ en ligne autogérée"
 
 #: src/mainwindow.c:723
 msgid "Icon _Legend"
-msgstr "Légende des _icônes"
+msgstr "_Légende des icônes"
 
 #: src/mainwindow.c:729
 msgid "Offline _mode"
-msgstr "Travailler hors-ligne"
+msgstr "_Travailler hors-ligne"
 
 #: src/mainwindow.c:730
 msgid "_Message view"
@@ -7966,11 +7966,11 @@ msgstr "_Texte seul"
 
 #: src/mainwindow.c:749
 msgid "_Hide"
-msgstr "Cac_her"
+msgstr "_Pas de barre d'outils"
 
 #: src/mainwindow.c:754
 msgid "_Standard"
-msgstr "_Standard"
+msgstr "_Classique"
 
 #: src/mainwindow.c:755
 msgid "_Three columns"
@@ -7978,11 +7978,11 @@ msgstr "_Trois colonnes"
 
 #: src/mainwindow.c:756
 msgid "_Wide message"
-msgstr "_Vue de message large"
+msgstr "Vue des _messages étendue"
 
 #: src/mainwindow.c:757
 msgid "W_ide message list"
-msgstr "_Liste des messages large"
+msgstr "_Liste des messages étendue"
 
 #: src/mainwindow.c:758
 msgid "S_mall screen"
@@ -7990,63 +7990,63 @@ msgstr "_Petit écran"
 
 #: src/mainwindow.c:762
 msgid "by _Number"
-msgstr "par _Numéro"
+msgstr "Par _numéro"
 
 #: src/mainwindow.c:763
 msgid "by S_ize"
-msgstr "par T_aille"
+msgstr "Par _taille"
 
 #: src/mainwindow.c:764
 msgid "by _Date"
-msgstr "par _Date"
+msgstr "Par _date"
 
 #: src/mainwindow.c:765
 msgid "by Thread date"
-msgstr "par date du _fil"
+msgstr "Par date du _fil"
 
 #: src/mainwindow.c:766
 msgid "by _From"
-msgstr "par É_metteur"
+msgstr "Par é_metteur"
 
 #: src/mainwindow.c:767
 msgid "by _To"
-msgstr "par d_estinataire"
+msgstr "Par d_estinataire"
 
 #: src/mainwindow.c:768
 msgid "by S_ubject"
-msgstr "par _Sujet"
+msgstr "Par _sujet"
 
 #: src/mainwindow.c:769
 msgid "by _Color label"
-msgstr "par _Couleur"
+msgstr "Par _couleur"
 
 #: src/mainwindow.c:770
 msgid "by Tag"
-msgstr "par _Label"
+msgstr "Par _label"
 
 #: src/mainwindow.c:771
 msgid "by _Mark"
-msgstr "_Marquer"
+msgstr "Par _marque"
 
 #: src/mainwindow.c:772
 msgid "by _Status"
-msgstr "par É_tat"
+msgstr "Par ét_at"
 
 #: src/mainwindow.c:773
 msgid "by A_ttachment"
-msgstr "par _Pièces jointes"
+msgstr "Par _pièce jointe"
 
 #: src/mainwindow.c:774
 msgid "by Score"
-msgstr "par Sc_ore"
+msgstr "Par sc_ore"
 
 #: src/mainwindow.c:775
 msgid "by Locked"
-msgstr "par _Bloqués"
+msgstr "Par _bloqués"
 
 #: src/mainwindow.c:776
 msgid "D_on't sort"
-msgstr "Ne pas trier"
+msgstr "Ne pas tr_ier"
 
 #: src/mainwindow.c:780
 msgid "Ascending"
