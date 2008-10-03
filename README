@@ -29,17 +29,16 @@ Summary:
  2. Plugins
  3. Actions
  4. Icon Themes
- 5. Spell Checking
- 6. Quick Search
- 7. Custom toolbar
- 8. Partial downloading of POP3 mails
- 9. Hidden Options
-10. Tools
-11. How to contribute
-12. How to request features
-13. Installing Claws from CVS
-14. Release History
-15. Useful Links
+ 5. Quick Search
+ 6. Custom toolbar
+ 7. Partial downloading of POP3 mails
+ 8. Hidden Options
+ 9. Tools
+10. How to contribute
+11. How to request features
+12. Installing Claws from CVS
+13. Release History
+14. Useful Links
 
 
 1. What is Claws Mail?
@@ -70,6 +69,14 @@ and have a suffix of '.so'
 To load a plugin go to '/Configuration/Plugins' and click
 the 'Load Plugin' button.
 Select the plugin that you want and click 'OK'
+
+  o Bogofilter
+    Enables the scanning of incoming mail received from a POP,
+    IMAP, or LOCAL account using Bogofilter. It can optionally
+    delete mail identified as spam or save it to a designated folder.
+    Bogofilter is a pure Bayesian filter, therefore it has better
+    speed performance than SpamAssassin but might catch less spam.
+    Bogofilter is available from http://bogofilter.sourceforge.net/ 
  
   o Dillo HTML Viewer 
     Enables the viewing of html messages using the Dillo web
@@ -92,6 +99,10 @@ Select the plugin that you want and click 'OK'
     Handles PGP/MIME signed and/or encrypted mails. You can
     decrypt mails, verify signatures or sign and encrypt your
     own mails. Uses GnuPG/GPGME, <ftp://ftp.gnupg.org/gcrypt/gpgme/>
+
+  o S/MIME
+    This plugin handles S/MIME signed and/or encrypted mails. You can
+    decrypt mails, verify signatures or sign and encrypt your own mails.
 
   o SpamAssassin
     Enables the scanning of incoming mail received from a POP,
@@ -235,108 +246,9 @@ http://www.claws-mail.org/plugins.php
   to select them, /Configuration/Preferences/Display/Themes
 
   This interface can also be used to install new themes.
-
-
-
-5. Spell Checking
------------------
-  a. Requirements
-  b. Configuration and installation
-  c. Usage
-  d. Known problems
-
-  a. Requirements
-  ---------------
-
-  The spell checker in Claws Mail requires the GNU/aspell library
-  (http://www.gnu.org/software/aspell), version 0.50 or newer.
-
-  You also need the dictionaries. Check GNU/aspell home page for how
-  to download and install them.
-  
-  NB: The old dictionaries used by the old aspell will not work.
-
-  b. Configuring Claws
-  --------------------
-
-  Spell checking is enabled automatically if the aspell executable is
-  found. If it is in unusual places, use '--with-aspell-prefix' to state
-  the path to the aspell executable.  E.g., if aspell's full path is
-  /foo/bar/bin/aspell, then use:
-
-  ./configure --with-aspell-prefix=/foo/bar
-
-  The '--with-aspell-prefix=PREFIX' option will let the configure
-  script search for includes and libraries in PREFIX/include and PREFIX/lib.
-
-  You can also manually specify the includes and libraries path by using
-  either following options:
-
-  --with-aspell-includes=/foo/bar/include
-
-  and/or 
-
-  --with-aspell-libs=/rab/oof/lib
-
-  as appropriate.
-
-  The configure script summarizes the options compiled in.  Check that
-  it lists 'GNU/aspell = yes'.
-
-  Then proceed as usual, with 'make' and 'make install'.
-
-  c. Usage
-  --------
-
-  After successful compiling, you need to tell Claws Mail where your
-  dictionaries reside. The configure script should have found it, but in
-  case it did not, run 'aspell config dict-dir' on the shell to get the
-  path to the dictionaries.
-
-  Then run claws-mail and go to /Configuration/Preferences/Compose/Spell Checking.
-  Check the box 'Enable spell checker' and use the directory selector to select
-  the path where the dictionaries reside.  Within the file selector, go to that
-  directory and select *any* file in the file lists.  Click OK. Then, you should
-  be able to select your default dictionary.
-
-  When composing, misspelled words are highlighted.  Click on any
-  highlighted word with the right mouse button to get a list of
-  suggestions.  The first entry of the menu just displays the unknown
-  word.  Selecting 'Accept in this session' (or hitting MOD1-Space, 
-  where MOD1 is usually the ALT key) will ignore this word and accept
-  it in this message.  Selecting the next entry, "Add to dictionary", which
-  is bound to MOD1-Enter combination, will add the unknown word to your
-  personal dictionary to learn it.  The next entries are the suggested words. 
-  The first 15 suggestions can be accessed by typing one of the first letters
-  of Latin alphabet (if this does not suit your language, please send
-  a mail to melvin.hadasht@free.fr).  Aspell has a 'learn from mistake'
-  function that can be used by pressing the MOD1 key and selecting the 
-  suggestion (with the keyboard or with the mouse).  See GNU/aspell manual
-  §6.3 for an explanation of this feature (also called 'replacement storing'). 
-
-  If you click with the right mouse button everywhere else, or if you
-  shift-right-click even on a misspelled word, you get the
-  configuration menu.  'Check all' highlights all misspelled words.
-  With this menu, you can also change the dictionary while editing.
-  Finally, you can change the suggestion mode, and the learn from
-  misktakes feature.
-
-  Spell checking can also be done using keyboard shortcuts.  In the
-  'Edit' menu of the compose window, there are two menus 'Check backwards
-  misspelled word' and 'Forward to next misspelled word'.  Add to them 
-  appropriate keyboard shortcuts.  'Check backwards misspelled word' 
-  checks backwards from cursor position for the first misspelled word.
-  If it finds one, it displays the suggestions lists which can be handled
-  with the keyboard as described before. When the suggestion menu is 
-  closed, the cursor returns to its original position to be able to 
-  continue editing.  The 'Forward to next misspelled word' do the same 
-  thing in the other direction but moves the cursor at the end of the
-  misspelled word.  This way, you can spell check easily a whole message
-  starting from its beginning and using the 'Forward to next misspelled
-  word' keyboard short cut.
   
 
-6. Quick Search with extended search
+5. Quick Search with extended search
 ------------------------------------
     Quick Search, with its powerful Extended search function,
     enables searching through folder's messages.
@@ -370,6 +282,7 @@ http://www.claws-mail.org/plugins.php
     h        S          messages which contain header S
     i        S          messages which contain S in Message-Id header
     I        S          messages which contain S in inreplyto header
+    k	     #		messages which are marked with color #
     L                   locked messages
     n        S          messages which are in newsgroup S
     N                   new messages
@@ -384,10 +297,21 @@ http://www.claws-mail.org/plugins.php
     Sg       #          messages whose size is greater than #
     Ss       #          messages whose size is smaller than #
     t        S          messages which have been sent to S
+    tg       S		messages with tags containing S
+    tagged		messages which are tagged
     T                   marked messages
     U                   unread messages
     x        S          messages which contain S in References header
+    x        "cmd args" messages returning 0 when passed to command
+			- %F is message file
     y        S          messages which contain S in X-Label header
+
+    &	     logical AND operator
+    |        logical OR operator
+    ! or ~   logical NOT operator
+    %        case sensitive search
+
+    all filtering expressions are allowed
 
     # means number
     S means regexp string
@@ -403,7 +327,7 @@ http://www.claws-mail.org/plugins.php
     f foo & ~s bar     messages from foo that do not have bar in thesubject
 
 
-7. Custom toolbar
+6. Custom toolbar
 -----------------
 
    /Configuration/Preferences/Customize Toolbars lets you define the
@@ -422,7 +346,7 @@ http://www.claws-mail.org/plugins.php
 
 
     
-8. Partial downloading of POP3 mails
+7. Partial downloading of POP3 mails
 ------------------------------------
   Messages over the configured size limit, (/[Account preferences]/
   Receive/Message size limit), will be partially retrieved. These
@@ -439,10 +363,16 @@ http://www.claws-mail.org/plugins.php
   Trash folder has been emptied.
 
 
-
-
-9. Hidden options
+8. Hidden options
 -----------------
+
+    It is recommnede that you use Clawsker to edit these options,
+    http://www.claws-mail.org/clawsker
+
+    addressbook_use_editaddress_dialog	(default: 1)
+          Use a separate dialogue to edit a person's details. '0'
+          will use a form embedded in the addressbook's main
+          window.
 
     bold_unread			(default: 1)
 	show unread messages using bold font in summary view
@@ -469,6 +399,10 @@ http://www.claws-mail.org/plugins.php
 	prevent italic and bold text in the Compose dialog
 	account selector
 	0: normal (markup) 1: no markup
+
+    emphasis_color		(default: #0000CF)
+          The colour used for the X-Mailer line when its value is
+          Claws Mail.
 
     enable_dotted_lines		(default: 0)
 	Use the old dotted line look in the main window
@@ -501,15 +435,23 @@ http://www.claws-mail.org/plugins.php
     log_warn_color
 	The colours used in the log window.  
 
-    mark_as_read_delay			(default: 0)
-	Number of seconds to wait before marking an opened mail
-	as read.
+    outgoing_fallback_to_ascii		(default: 1)
+	0 or 1. The outgoing encoding of a message will use 7bit
+	US-ASCII whenever it is suitable for the message
+	content, ignoring the "Outgoing encoding" option unless
+	it is necessary. Turning this option off forces the
+	user-defined encoding to be used, regardless of message
+	content. Default is 1, turned on.
 
     respect_flowed_format		(default: 0)
 	Respect format=flowed on text/plain message parts. This will
 	cause some mails to have long lines, but will fix some URLs
 	that would otherwise be wrapped.
  
+    save_parts_readwrite		(default: 0)
+	Saves temporary files when opening attachment with write
+	bit set.
+
     skip_ssl_cert_check			(default: 0)
 	Disables the verification of SSL certificates. 
 
@@ -534,6 +476,17 @@ http://www.claws-mail.org/plugins.php
 	hide handles in the toolbar
 	0: off  1: on
 
+    two_line_vertical			(default: 1)
+	Spread message list information over two lines when
+	using the three column layout.
+
+    unsafe_ssl_certs			(default: 0)
+	Allows Claws to remember multiple SSL certificates for a
+	given server/port.
+
+    use_networkmanager			(default: 1)
+	Use NetworkManager to switch offline automatically.
+
     use_stripes_everywhere		(default: 1)
 	Enable alternately coloured lines in GtkTreeView components. 
 
@@ -552,7 +505,7 @@ http://www.claws-mail.org/plugins.php
 	display a confirmation dialog on drag n drop of folders
 	0: off  1: on
 
-10. Tools
+9. Tools
 --------- 
   You will find all of these tools in the 'tools' directory:
 
@@ -560,8 +513,13 @@ http://www.claws-mail.org/plugins.php
 	send PDFs from Adobe Reader 7
   calypso_convert.pl 
 	import mbox files exported by calypso
+  claws-mail-compose-insert-files.pl
+	insert files into a new Compose window
   convert_mbox.pl
   	convert mbox format to MH format
+  csv2addressbook.pl
+	import Becky, Thunderbird, Kmail, Gmail and Fox Mail
+	address books
   eud2gc.py
 	convert a Eudora (v.3?) addressbook to vCard 
 	(GnomeCard) format
@@ -596,6 +554,11 @@ http://www.claws-mail.org/plugins.php
 	for newer versions of Kmail/Kaddressbook
   kmail-mailbox2claws-mail.pl
   	convert a Kmail mailbox into a Claws mail mailbox
+  mairix.sh
+	a wrapper to mairix, to enable global searches in mail
+	folders
+  mew2claws-mail.pl
+	import a Mew address book
   multiwebsearch.pl
   	search any searchable website for the selected text
   nautilus2claws-mail.sh
@@ -607,6 +570,8 @@ http://www.claws-mail.org/plugins.php
   outlook2claws-mail.pl
 	convert an Outlook contacts list to a Claws Mail
 	addressbook
+  popfile-link.sh
+	open messages in POPFile control center to edit their status
   sylprint.pl
 	process a Claws Mail message and print it using enscript
 	if available or lpr if not
@@ -632,12 +597,13 @@ http://www.claws-mail.org/plugins.php
 	import an Evolution vCard
 
 
-11. How to contribute
+10. How to contribute
 ---------------------
 
-You are encourged to send patches via the Claws Mail sourceforge
-project's Patch Tracker.
-http://sourceforge.net/tracker/?atid=384600&group_id=25528&func=browse
+You are encourged to send patches via the Claws Mail bugzilla at
+http://www.thewildbeast.co.uk/claws-mail/bugzilla/index.cgi
+But please first read the patch guidelines here:
+http://www.claws-mail.org/devel.php
 
 If that's too troublesome, either contact Paul Mangan
 <paul@claws-mail.org> or consider posting to the
@@ -657,20 +623,19 @@ Claws Mail CVS tree.
 
 
 
-12. How to request features
+11. How to request features
 ---------------------------
 
 Ask around in Claws Mail-users ML. Note that some developers may
-have already thought about your feature, may,perhaps, be implementing it,
-or the feature was already discussed and rejected for whatever reason.
+have already thought about your feature and may, perhaps, be implementing
+it, or the feature was already discussed and rejected for whatever reason.
 You might want to go ahead and hack a patch for it. (That would be very
-cool!) Another possibility is to use the Feature Request Tracker at the
-sourceforge project.
-http://sourceforge.net/tracker/?group_id=25528&atid=384601
+cool!) Another possibility is to add a request to our bugzilla, (severity:
+'enhancement'), at
+http://www.thewildbeast.co.uk/claws-mail/bugzilla/index.cgi
 
 
-
-13. Installing Claws Mail from CVS
+12. Installing Claws Mail from CVS
 --------------------------------------
 
   a. Downloading
@@ -679,14 +644,14 @@ http://sourceforge.net/tracker/?group_id=25528&atid=384601
   To download the latest cvs cd to the directory where you wish to download
   to and type the following information:
 
-  cvs -z3 -d:pserver:cvs@sunsite.dk:/pack/anoncvs login
+  export CVS_RSH=ssh
+  cvs -z3 -d:ext:cvs@scm.dotsrc.org:/srv/cvs/claws-mail co -r gtk2 claws 
 
-  The password is cvs
+  Later, when you want to update your local repository, you'll just have to
+  go back to the 'claws' directory, and type:
 
-  After logging in:
-
-   cvs -z3 -d:pserver:cvs@sunsite.dk:/pack/anoncvs co -r gtk2 sylpheedclaws/sylpheed-claws
-
+  export CVS_RSH=ssh
+  cvs -z3 update -dPR 
 
   b. Installing
   -------------
@@ -702,11 +667,12 @@ http://sourceforge.net/tracker/?group_id=25528&atid=384601
 
 
 
-14. Release History
+13. Release History
 -------------------
 
 GTK 2 Version
 -------------
+2008-10-03	3.6.0
 2008-06-27	3.5.0
 2008-04-18	3.4.0
 2008-02-23	3.3.1
@@ -806,7 +772,7 @@ GTK 1 Version
 
 
 
-15. Useful links
+14. Useful links
 ----------------
 Homepage
     http://www.claws-mail.org/
@@ -821,19 +787,15 @@ Extra Plugins
 Icon Themes
     http://www.claws-mail.org/themes.php
 CVS webview
-    http://cvs.sunsite.dk/viewcvs.cgi/sylpheedclaws/sylpheed-claws/?only_with_tag=gtk2
+    http://scm.dotsrc.org/viewvc.cgi/claws-mail/claws/?pathrev=gtk2
 Mailing Lists
     http://www.claws-mail.org/MLs.php
 Users Mailing List archive
     http://lists.sunsite.dk/cgi-bin/ezmlm-cgi/28
 Commits Announcement List archive
     http://lists.sunsite.dk/cgi-bin/ezmlm-cgi/27
-Bug Tracker
+Bug/Patch/Feature Request Tracker
     http://www.thewildbeast.co.uk/claws-mail/bugzilla/index.cgi
-Feature Request Tracker
-    http://sourceforge.net/tracker/?group_id=25528&atid=384601
-Patch Tracker
-    http://sourceforge.net/tracker/?group_id=25528&atid=384600
 Internationalisation Status
     http://www.claws-mail.org/i18n.php
 Donations

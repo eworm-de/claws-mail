@@ -1,5 +1,60 @@
 Changes of the  Claws Mail GTK2 branch
 
+* 3.6.0
+-------
+
+* Claws Mail now requires libetpan 0.56 for IMAP and NNTP
+
+* Spell checking is now provided by Enchant instead of Aspell. To
+  build spell checker support, you will need the libenchant headers.
+
+* The S/MIME plugin is now part of this package.
+
+* IMAP, NNTP, and SSL are now supported in the Windows port.
+
+* Support for client SSL certificates.
+
+* Better support of SSL certificate stores, to be able to verify
+  server certificates.
+
+* Renaming of newsgroups is possible.
+
+* "Always open message when selected" can now have three values:
+  'Never', 'Always' and 'When message view is visible'.
+
+* Unsaved server passwords can now be temporarily saved for the
+  duration of the session. They can be cleared before the session
+  expires by using '/Tools/Forget all session passwords'.
+
+* Auto-wrapping settings are now saved in drafted messages.
+
+* Support for basic auto-indentation in the Compose window.
+
+* Support for animated GIFs in the message view.
+
+* Type-ahead search in Filtering, Templates, Actions dialogs now
+  select the result of the search.
+
+* Finer granularity in POP3 accounts' Remove After delay - hours in
+  addition to days.
+
+* Spam/Ham flag is now stored on IMAP server when possible, using
+  "Junk" and "NonJunk" keywords. 
+
+* Use less precise intervals when possible for auto-checking, thus
+  the CPU is woken up less frequently.
+
+* The warning icon in the main window is cleared when the error it
+  relates to is clipped from the network log.
+
+* IMAP errors now reveal the server on which they happen.
+
+* All deprecated GTK interfaces have been replaced with their
+  non-deprecated equivalents.
+
+* csv2addressbook.pl: Added support for FoxMail.
+
+
 * 3.5.0
 -------
 
