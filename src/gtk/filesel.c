@@ -124,6 +124,11 @@ static GList *filesel_create(const gchar *title, const gchar *path,
 				NULL);
 #endif
 #endif
+
+#if GLIB_CHECK_VERSION(2,16,0)
+	gtk_file_chooser_set_local_only(GTK_FILE_CHOOSER(chooser), FALSE);
+#endif
+
 	if (filter != NULL) {
 		GtkFileFilter *file_filter = gtk_file_filter_new();
 		gtk_file_filter_add_pattern(file_filter, filter);
