@@ -35,6 +35,10 @@
 #include "gtkcmctree.h"
 #include "claws-marshal.h"
 
+#if !GTK_CHECK_VERSION(2,10,0)
+#define gdk_atom_intern_static_string(str) gdk_atom_intern(str, FALSE)
+#endif
+
 #define PM_SIZE                    8
 #define TAB_SIZE                   (PM_SIZE + 6)
 #define CELL_SPACING               1
