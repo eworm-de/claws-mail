@@ -1,3 +1,24 @@
+2008-10-03 [paul]	3.5.0cvs145
+
+	* configure.ac
+	* po/bg.po
+	* po/nl.po
+	* po/ru.po
+	* po/sv.po
+		new translations. added by Yasen Pramatarov,
+		Marcel Pol, Aleksei Miheev, and Lars Persson Fink
+	* po/ca.po
+	* po/de.po
+	* po/fi.po
+	* po/fr.po
+	* po/hu.po
+	* po/it.po
+	* po/pl.po
+	* po/zh_CN.po
+		updated translations. submitted by Miquel Oliete,
+		Stephan Sachse, Flammie Pirinen, wwp, Pader Rezo,
+		Andrea Spadaccini, Emilian Nowak, and Ralph Young
+
 2008-10-02 [colin]	3.5.0cvs144
 
 	* src/common/session.c

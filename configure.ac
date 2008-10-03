@@ -11,7 +11,7 @@ MINOR_VERSION=5
 MICRO_VERSION=0
 INTERFACE_AGE=0
 BINARY_AGE=0
-EXTRA_VERSION=144
+EXTRA_VERSION=145
 EXTRA_RELEASE=
 EXTRA_GTK2_VERSION=
 
@@ -178,7 +178,7 @@ AC_CHECK_FUNCS(bind_textdomain_codeset)
 LIBS=$syl_save_LIBS
 
 dnl for gettext
-ALL_LINGUAS="ca de en_GB es fi fr hu it pl pt_BR sk sr zh_CN"
+ALL_LINGUAS="bg ca de en_GB es fi fr hu it nl pl pt_BR ru sk sr sv zh_CN"
 GETTEXT_PACKAGE=claws-mail
 AC_SUBST(GETTEXT_PACKAGE)
 AC_DEFINE_UNQUOTED(GETTEXT_PACKAGE,"$GETTEXT_PACKAGE", [Define text domain.])
