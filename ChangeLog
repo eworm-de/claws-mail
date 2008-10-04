@@ -1,3 +1,9 @@
+2008-10-04 [colin]	3.6.0cvs6
+
+	* src/mimeview.c
+		Fix bug 1742, 'Attachment list contents not 
+		visible/scrollable'
+
 2008-10-04 [paul]	3.6.0cvs5
 
 	* src/mainwindow.c
