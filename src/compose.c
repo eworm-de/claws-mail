@@ -6748,7 +6748,7 @@ static Compose *compose_create(PrefsAccount *account,
 #ifndef MAEMO
 	MENUITEM_ADDUI_MANAGER(compose->ui_manager, "/", "Menu", NULL, GTK_UI_MANAGER_MENUBAR)
 #else
-	MENUITEM_ADDUI_MANAGER(compose->ui_manager, "/", "Menu", NULL, GTK_UI_MANAGER_MENU)
+	MENUITEM_ADDUI_MANAGER(compose->ui_manager, "/", "Menu", NULL, GTK_UI_MANAGER_POPUP)
 #endif
 
 	MENUITEM_ADDUI_MANAGER(compose->ui_manager, "/Menu", "Message", "Message", GTK_UI_MANAGER_MENU)

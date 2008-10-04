@@ -442,7 +442,7 @@ static void messageview_add_toolbar(MessageView *msgview, GtkWidget *window)
 #ifndef MAEMO
 	MENUITEM_ADDUI_MANAGER(msgview->ui_manager, "/", "Menu", NULL, GTK_UI_MANAGER_MENUBAR)
 #else
-	MENUITEM_ADDUI_MANAGER(msgview->ui_manager, "/", "Menu", NULL, GTK_UI_MANAGER_MENU)
+	MENUITEM_ADDUI_MANAGER(msgview->ui_manager, "/", "Menu", NULL, GTK_UI_MANAGER_POPUP)
 #endif
 
 	MENUITEM_ADDUI_MANAGER(msgview->ui_manager, "/Menu", "File", "File", GTK_UI_MANAGER_MENU)

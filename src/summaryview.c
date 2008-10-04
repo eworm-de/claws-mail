@@ -811,8 +811,10 @@ SummaryView *summary_create(void)
 
 	MENUITEM_ADDUI("/Menus", "SummaryViewPopup", "SummaryViewPopup", GTK_UI_MANAGER_MENU)
 	MENUITEM_ADDUI("/Menus/SummaryViewPopup", "Reply", "SummaryViewPopup/Reply", GTK_UI_MANAGER_MENUITEM)
+#ifndef GENERIC_UMPC
 	MENUITEM_ADDUI("/Menus/SummaryViewPopup", "ReplyTo", "SummaryViewPopup/ReplyTo", GTK_UI_MANAGER_MENU)
 	MENUITEM_ADDUI("/Menus/SummaryViewPopup", "Separator1", "SummaryViewPopup/---", GTK_UI_MANAGER_SEPARATOR)
+#endif
 	MENUITEM_ADDUI("/Menus/SummaryViewPopup", "Forward", "SummaryViewPopup/Forward", GTK_UI_MANAGER_MENUITEM)
 #ifndef GENERIC_UMPC
 	MENUITEM_ADDUI("/Menus/SummaryViewPopup", "ForwardAsAtt", "SummaryViewPopup/ForwardAsAtt", GTK_UI_MANAGER_MENUITEM)

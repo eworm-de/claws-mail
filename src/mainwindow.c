@@ -1543,7 +1543,7 @@ MainWindow *main_window_create()
 #ifndef MAEMO
 	MENUITEM_ADDUI_MANAGER(mainwin->ui_manager, "/", "Menu", NULL, GTK_UI_MANAGER_MENUBAR)
 #else
-	MENUITEM_ADDUI_MANAGER(mainwin->ui_manager, "/", "Menu", NULL, GTK_UI_MANAGER_MENU)
+	MENUITEM_ADDUI_MANAGER(mainwin->ui_manager, "/", "Menu", NULL, GTK_UI_MANAGER_POPUP)
 #endif
 	MENUITEM_ADDUI_MANAGER(mainwin->ui_manager, "/Menu", "File", "File", GTK_UI_MANAGER_MENU)
 	MENUITEM_ADDUI_MANAGER(mainwin->ui_manager, "/Menu", "Edit", "Edit", GTK_UI_MANAGER_MENU)

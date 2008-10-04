@@ -1,3 +1,12 @@
+2008-10-04 [colin]	3.6.0cvs4
+
+	* src/addressbook.c
+	* src/compose.c
+	* src/mainwindow.c
+	* src/messageview.c
+	* src/summaryview.c
+		Maemo: Fix bug 1737, Crashes upon opening
+
 2008-10-04 [paul]	3.6.0cvs3
 
 	* po/pt_BR.po

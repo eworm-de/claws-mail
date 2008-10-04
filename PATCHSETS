@@ -3560,3 +3560,4 @@
 ( cvs diff -u -r 1.2.2.38 -r 1.2.2.39 src/gtk/filesel.c;  ) > 3.6.0cvs1.patchset
 ( cvs diff -u -r 1.42.2.41 -r 1.42.2.42 po/fr.po;  ) > 3.6.0cvs2.patchset
 ( cvs diff -u -r 1.50.2.32 -r 1.50.2.33 po/pt_BR.po;  ) > 3.6.0cvs3.patchset
+( cvs diff -u -r 1.60.2.124 -r 1.60.2.125 src/addressbook.c;  cvs diff -u -r 1.382.2.481 -r 1.382.2.482 src/compose.c;  cvs diff -u -r 1.274.2.275 -r 1.274.2.276 src/mainwindow.c;  cvs diff -u -r 1.94.2.188 -r 1.94.2.189 src/messageview.c;  cvs diff -u -r 1.395.2.393 -r 1.395.2.394 src/summaryview.c;  ) > 3.6.0cvs4.patchset
