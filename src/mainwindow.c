@@ -2154,6 +2154,9 @@ MainWindow *main_window_create()
 	}
 	gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM(menuitem), TRUE);
 
+	toolbar_set_style(mainwin->toolbar->toolbar, 
+			  mainwin->handlebox, 
+			  prefs_common.toolbar_style);
 #ifndef GENERIC_UMPC
 	gtk_widget_hide(mainwin->hbox_stat);
 	menuitem = gtk_ui_manager_get_widget(mainwin->ui_manager, "/Menu/View/ShowHide/StatusBar");

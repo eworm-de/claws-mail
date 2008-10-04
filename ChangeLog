@@ -1,3 +1,8 @@
+2008-10-04 [paul]	3.6.0cvs5
+
+	* src/mainwindow.c
+		fix failure of Hide toolbar option on restart
+
 2008-10-04 [colin]	3.6.0cvs4
 
 	* src/addressbook.c
