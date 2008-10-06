@@ -3563,3 +3563,4 @@
 ( cvs diff -u -r 1.60.2.124 -r 1.60.2.125 src/addressbook.c;  cvs diff -u -r 1.382.2.481 -r 1.382.2.482 src/compose.c;  cvs diff -u -r 1.274.2.275 -r 1.274.2.276 src/mainwindow.c;  cvs diff -u -r 1.94.2.188 -r 1.94.2.189 src/messageview.c;  cvs diff -u -r 1.395.2.393 -r 1.395.2.394 src/summaryview.c;  ) > 3.6.0cvs4.patchset
 ( cvs diff -u -r 1.274.2.276 -r 1.274.2.277 src/mainwindow.c;  ) > 3.6.0cvs5.patchset
 ( cvs diff -u -r 1.83.2.144 -r 1.83.2.145 src/mimeview.c;  ) > 3.6.0cvs6.patchset
+( cvs diff -u -r 1.9.2.32 -r 1.9.2.33 src/common/ssl.c;  ) > 3.6.0cvs7.patchset

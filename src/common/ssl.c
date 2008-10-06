@@ -132,7 +132,7 @@ static int gnutls_client_cert_cb(gnutls_session session,
 		st->deinit_all = 0;
 		return 0;
 	}
-	return -1;
+	return 0;
 }
 #endif
 
@@ -157,8 +157,8 @@ const gchar *claws_ssl_get_cert_file(void)
 		"/usr/lib/ssl/cert.pem",
 		NULL};
 	int i;
-
-    	if (g_getenv("SSL_CERT_FILE"))
+    	
+	if (g_getenv("SSL_CERT_FILE"))
 		return g_getenv("SSL_CERT_FILE");
 #ifndef G_OS_WIN32
 	for (i = 0; cert_files[i]; i++) {
@@ -184,8 +184,8 @@ const gchar *claws_ssl_get_cert_dir(void)
 		"/usr/lib/ssl/certs",
 		NULL};
 	int i;
-
-    	if (g_getenv("SSL_CERT_DIR"))
+    	
+	if (g_getenv("SSL_CERT_DIR"))
 		return g_getenv("SSL_CERT_DIR");
 #ifndef G_OS_WIN32
 	for (i = 0; cert_dirs[i]; i++) {

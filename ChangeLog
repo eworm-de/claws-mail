@@ -1,3 +1,8 @@
+2008-10-06 [colin]	3.6.0cvs7
+
+	* src/common/ssl.c
+		Fix return value when setting client cert
+
 2008-10-04 [colin]	3.6.0cvs6
 
 	* src/mimeview.c
