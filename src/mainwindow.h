@@ -142,7 +142,8 @@ struct _MainWindow
 	gboolean	 in_folder;
 	GtkActionGroup	*action_group;
 	GtkUIManager	*ui_manager;
-	
+
+        gboolean        fullscreen;
 };
 
 MainWindow *main_window_create		(void);

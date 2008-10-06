@@ -1,3 +1,10 @@
+2008-10-06 [colin]	3.6.0cvs8
+
+	* src/mainwindow.c
+	* src/mainwindow.h
+		Handle fullscreen via F11. Patch by
+		Michael Rasmussen
+
 2008-10-06 [colin]	3.6.0cvs7
 
 	* src/common/ssl.c

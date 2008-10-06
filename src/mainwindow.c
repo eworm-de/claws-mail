@@ -1283,6 +1283,19 @@ static gboolean mainwindow_key_pressed (GtkWidget *widget, GdkEventKey *event,
 			}
 		}
 		break;
+#ifndef MAEMO
+        case GDK_F11:
+                if (mainwin->fullscreen) {
+                    gtk_window_unfullscreen(GTK_WINDOW(mainwin->window));
+                    mainwin->fullscreen = FALSE;
+                }
+                else {
+                    gtk_window_fullscreen(GTK_WINDOW(mainwin->window));
+                    mainwin->fullscreen = TRUE;
+                }
+                break;
+#endif
+
 #ifdef MAEMO
 	case GDK_F6:
 		if (maemo_mainwindow_is_fullscreen(widget)) {
@@ -2237,6 +2250,8 @@ MainWindow *main_window_create()
 #ifdef MAEMO
 	main_window_install_maemo_hooks(mainwin);
 #endif
+        mainwin->fullscreen = FALSE;
+
 	return mainwin;
 }
 
@@ -2813,8 +2828,12 @@ void main_window_get_size(MainWindow *mainwin)
 	}
 
 	allocation = &(GTK_WIDGET_PTR(mainwin->summaryview)->allocation);
-
-	if (allocation->width > 1 && allocation->height > 1) {
+	
+	if (mainwin->fullscreen) {
+		debug_print("mainwin in full screen state. "
+			    "Keeping original settings\n");
+	}
+	if (allocation->width > 1 && allocation->height > 1 && !mainwin->fullscreen) {
 		prefs_common.summaryview_width = allocation->width;
 
 		if (messageview_is_visible(mainwin->messageview))
@@ -2825,20 +2844,22 @@ void main_window_get_size(MainWindow *mainwin)
 
 	allocation = &mainwin->window->allocation;
 	if (allocation->width > 1 && allocation->height > 1 &&
-	    !prefs_common.mainwin_maximised) {
+	    !prefs_common.mainwin_maximised && !mainwin->fullscreen) {
 		prefs_common.mainview_height = allocation->height;
 		prefs_common.mainwin_width   = allocation->width;
 		prefs_common.mainwin_height  = allocation->height;
 	}
 
 	allocation = &(GTK_WIDGET_PTR(mainwin->folderview)->allocation);
-	if (allocation->width > 1 && allocation->height > 1) {
+	if (allocation->width > 1 && allocation->height > 1 &&
+	    !mainwin->fullscreen) {
 		prefs_common.folderview_width  = allocation->width;
 		prefs_common.folderview_height = allocation->height;
 	}
 
 	allocation = &(GTK_WIDGET_PTR(mainwin->messageview)->allocation);
-	if (allocation->width > 1 && allocation->height > 1) {
+	if (allocation->width > 1 && allocation->height > 1 &&
+	    !mainwin->fullscreen) {
 		prefs_common.msgview_width = allocation->width;
 		prefs_common.msgview_height = allocation->height;
 	}
@@ -2858,7 +2879,7 @@ void main_window_get_position(MainWindow *mainwin)
 {
 	gint x, y;
 
-	if (prefs_common.mainwin_maximised)
+	if (prefs_common.mainwin_maximised || mainwin->fullscreen)
 		return;
 
 	gtkut_widget_get_uposition(mainwin->window, &x, &y);
