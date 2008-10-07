@@ -142,8 +142,6 @@ struct _MainWindow
 	gboolean	 in_folder;
 	GtkActionGroup	*action_group;
 	GtkUIManager	*ui_manager;
-
-        gboolean        fullscreen;
 };
 
 MainWindow *main_window_create		(void);
@@ -213,5 +211,8 @@ void maemo_window_full_screen_if_needed               (GtkWindow *window);
 void maemo_connect_key_press_to_mainwindow    (GtkWindow *window);
 void mainwindow_maemo_led_set(gboolean state);
 #endif
+
+void mainwin_accel_changed_cb (GtkAccelGroup *accelgroup, guint keyval, GdkModifierType modifier,
+				  GClosure *closure, GtkMenuItem *item);
 
 #endif /* __MAINWINDOW_H__ */

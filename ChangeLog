@@ -1,3 +1,16 @@
+2008-10-07 [colin]	3.6.0cvs12
+
+	* src/mainwindow.c
+	* src/mainwindow.h
+	* src/prefs_common.c
+	* src/prefs_common.h
+	* src/summaryview.c
+	* src/gtk/colorlabel.c
+		Fix bug 1749, 'Shortcut keys for color labels 
+		not changeable'
+		Make fullscreen a setting remembered between
+		sessions
+
 2008-10-07 [colin]	3.6.0cvs11
 
 	* src/prefs_other.c

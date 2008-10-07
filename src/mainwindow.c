@@ -1043,6 +1043,27 @@ static void mainwindow_tags_menu_item_activate_cb(GtkWidget *widget,
 	summary_set_tag(mainwin->summaryview, id, NULL);
 }
 
+void mainwin_accel_changed_cb (GtkAccelGroup *accelgroup, guint keyval, GdkModifierType modifier,
+				  GClosure *closure, GtkMenuItem *item)
+{
+	GList *closures = gtk_widget_list_accel_closures(GTK_WIDGET(item));
+	GList *cur;
+	for (cur = closures; cur; cur = cur->next) {
+		if (closure == cur->data) {
+			GtkLabel *label = g_object_get_data(G_OBJECT(item), "accel_label");
+			gchar *new_accel;
+			
+			if (keyval == GDK_BackSpace) {
+				keyval = 0; modifier = 0;
+				gtk_accel_map_change_entry (gtk_menu_item_get_accel_path(item), keyval, modifier, TRUE);
+			}
+			new_accel = gtk_accelerator_get_label(keyval, modifier);
+			gtk_label_set_text(label, new_accel);
+			g_free(new_accel);
+		}
+	}
+}
+
 static void mainwindow_colorlabel_menu_create(MainWindow *mainwin, gboolean refresh)
 {
 	GtkWidget *label_menuitem;
@@ -1094,11 +1115,15 @@ static void mainwindow_colorlabel_menu_create(MainWindow *mainwin, gboolean refr
 		g_object_set_data(G_OBJECT(item), "mainwin",
 				  mainwin);
 		gtk_widget_show(item);
-		accel_path = g_strdup_printf("<ClawsColorLabels>/%d", i);
+		accel_path = g_strdup_printf("<ClawsColorLabels>/%d", i+1);
 		gtk_menu_item_set_accel_path(GTK_MENU_ITEM(item), accel_path);
 		if (i < 9)
 			gtk_accel_map_add_entry(accel_path, GDK_1+i, GDK_CONTROL_MASK);
 		g_free(accel_path);
+		g_signal_connect (gtk_ui_manager_get_accel_group(mainwin->ui_manager), 
+			"accel-changed", G_CALLBACK (mainwin_accel_changed_cb), item);
+
+
 	}
 	gtk_widget_show(menu);
 	gtk_menu_item_set_submenu(GTK_MENU_ITEM(label_menuitem), menu);
@@ -1908,7 +1933,6 @@ MainWindow *main_window_create()
 	hildon_window_set_menu(HILDON_WINDOW(window), GTK_MENU(menubar));
 #endif
 
-
 	if (prefs_common.toolbar_detachable) {
 		handlebox = gtk_handle_box_new();
 		gtk_widget_show(handlebox);
@@ -2246,8 +2270,13 @@ MainWindow *main_window_create()
 #ifdef MAEMO
 	main_window_install_maemo_hooks(mainwin);
 #endif
-        mainwin->fullscreen = FALSE;
-
+#ifndef MAEMO
+	if (prefs_common.mainwin_fullscreen) {
+		cm_toggle_menu_set_active_full(mainwin->ui_manager, 
+			"Menu/View/FullScreen",
+			TRUE);
+	}
+#endif
 	return mainwin;
 }
 
@@ -2825,11 +2854,11 @@ void main_window_get_size(MainWindow *mainwin)
 
 	allocation = &(GTK_WIDGET_PTR(mainwin->summaryview)->allocation);
 	
-	if (mainwin->fullscreen) {
+	if (prefs_common.mainwin_fullscreen) {
 		debug_print("mainwin in full screen state. "
 			    "Keeping original settings\n");
 	}
-	if (allocation->width > 1 && allocation->height > 1 && !mainwin->fullscreen) {
+	if (allocation->width > 1 && allocation->height > 1 && !prefs_common.mainwin_fullscreen) {
 		prefs_common.summaryview_width = allocation->width;
 
 		if (messageview_is_visible(mainwin->messageview))
@@ -2840,7 +2869,7 @@ void main_window_get_size(MainWindow *mainwin)
 
 	allocation = &mainwin->window->allocation;
 	if (allocation->width > 1 && allocation->height > 1 &&
-	    !prefs_common.mainwin_maximised && !mainwin->fullscreen) {
+	    !prefs_common.mainwin_maximised && !prefs_common.mainwin_fullscreen) {
 		prefs_common.mainview_height = allocation->height;
 		prefs_common.mainwin_width   = allocation->width;
 		prefs_common.mainwin_height  = allocation->height;
@@ -2848,14 +2877,14 @@ void main_window_get_size(MainWindow *mainwin)
 
 	allocation = &(GTK_WIDGET_PTR(mainwin->folderview)->allocation);
 	if (allocation->width > 1 && allocation->height > 1 &&
-	    !mainwin->fullscreen) {
+	    !prefs_common.mainwin_fullscreen) {
 		prefs_common.folderview_width  = allocation->width;
 		prefs_common.folderview_height = allocation->height;
 	}
 
 	allocation = &(GTK_WIDGET_PTR(mainwin->messageview)->allocation);
 	if (allocation->width > 1 && allocation->height > 1 &&
-	    !mainwin->fullscreen) {
+	    !prefs_common.mainwin_fullscreen) {
 		prefs_common.msgview_width = allocation->width;
 		prefs_common.msgview_height = allocation->height;
 	}
@@ -2875,7 +2904,7 @@ void main_window_get_position(MainWindow *mainwin)
 {
 	gint x, y;
 
-	if (prefs_common.mainwin_maximised || mainwin->fullscreen)
+	if (prefs_common.mainwin_maximised || prefs_common.mainwin_fullscreen)
 		return;
 
 	gtkut_widget_get_uposition(mainwin->window, &x, &y);
@@ -4255,10 +4284,10 @@ static void toggle_fullscreen_cb(GtkAction *action, gpointer data)
 	if (mainwin->menu_lock_count) return;
 	if (!gtk_toggle_action_get_active (GTK_TOGGLE_ACTION (action))) {
 		gtk_window_unfullscreen(GTK_WINDOW(mainwin->window));
-		mainwin->fullscreen = FALSE;
+		prefs_common.mainwin_fullscreen = FALSE;
 	}
 	else {
-		mainwin->fullscreen = TRUE;
+		prefs_common.mainwin_fullscreen = TRUE;
 		gtk_window_fullscreen(GTK_WINDOW(mainwin->window));
 	}
 }
