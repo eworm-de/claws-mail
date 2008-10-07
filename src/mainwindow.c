@@ -1054,8 +1054,14 @@ void mainwin_accel_changed_cb (GtkAccelGroup *accelgroup, guint keyval, GdkModif
 			gchar *new_accel;
 			
 			if (keyval == GDK_BackSpace) {
+				const gchar *accel_path;
+#if GTK_CHECK_VERSION(2,14,0)
+				accel_path = gtk_menu_item_get_accel_path(item);
+#else
+				accel_path = GTK_MENU_ITEM(item)->accel_path;
+#endif
 				keyval = 0; modifier = 0;
-				gtk_accel_map_change_entry (gtk_menu_item_get_accel_path(item), keyval, modifier, TRUE);
+				gtk_accel_map_change_entry (accel_path, keyval, modifier, TRUE);
 			}
 			new_accel = gtk_accelerator_get_label(keyval, modifier);
 			gtk_label_set_text(label, new_accel);
