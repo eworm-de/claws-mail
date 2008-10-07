@@ -3565,3 +3565,4 @@
 ( cvs diff -u -r 1.83.2.144 -r 1.83.2.145 src/mimeview.c;  ) > 3.6.0cvs6.patchset
 ( cvs diff -u -r 1.9.2.32 -r 1.9.2.33 src/common/ssl.c;  ) > 3.6.0cvs7.patchset
 ( cvs diff -u -r 1.274.2.277 -r 1.274.2.278 src/mainwindow.c;  cvs diff -u -r 1.39.2.51 -r 1.39.2.52 src/mainwindow.h;  ) > 3.6.0cvs8.patchset
+( cvs diff -u -r 1.274.2.278 -r 1.274.2.279 src/mainwindow.c;  ) > 3.6.0cvs9.patchset

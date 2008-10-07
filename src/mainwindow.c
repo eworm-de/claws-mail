@@ -1290,8 +1290,8 @@ static gboolean mainwindow_key_pressed (GtkWidget *widget, GdkEventKey *event,
                     mainwin->fullscreen = FALSE;
                 }
                 else {
-                    gtk_window_fullscreen(GTK_WINDOW(mainwin->window));
                     mainwin->fullscreen = TRUE;
+                    gtk_window_fullscreen(GTK_WINDOW(mainwin->window));
                 }
                 break;
 #endif

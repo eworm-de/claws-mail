@@ -1,3 +1,9 @@
+2008-10-07 [colin]	3.6.0cvs9
+
+	* src/mainwindow.c
+		Make sure we won't save size when
+		fullscreening
+
 2008-10-06 [colin]	3.6.0cvs8
 
 	* src/mainwindow.c
