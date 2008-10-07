@@ -187,6 +187,8 @@ static void view_source_cb		(GtkAction	*action,
 
 static void show_all_header_cb		(GtkAction	*action,
 				  gpointer	 data);
+static void toggle_fullscreen_cb	(GtkAction	*action,
+				  gpointer	 data);
 
 static void hide_quotes_cb(GtkAction	*action,
 				  gpointer	 data);
@@ -734,6 +736,9 @@ static GtkToggleActionEntry mainwin_toggle_entries[] = {
 	{"View/ShowHide/ColumnHeaders",		NULL, N_("Column headers"), NULL, NULL, G_CALLBACK(toggle_col_headers_cb) }, /* toggle */
 	{"View/ThreadView",			NULL, N_("Th_read view"), "<control>T", NULL, G_CALLBACK(thread_cb) }, /* toggle */
 	{"View/HideReadMessages",		NULL, N_("_Hide read messages"), NULL, NULL, G_CALLBACK(hide_read_messages) }, /* toggle */
+#ifndef MAEMO
+	{"View/FullScreen",			NULL, N_("_Fullscreen"), "F11", NULL, G_CALLBACK(toggle_fullscreen_cb) }, /* toggle */
+#endif
 	{"View/AllHeaders",			NULL, N_("Show all _headers"), "<control>H", NULL, G_CALLBACK(show_all_header_cb) }, /* toggle */
 	{"View/Quotes/FoldAll",			NULL, N_("_Fold all"), "<control><shift>Q", NULL, G_CALLBACK(hide_quotes_cb) }, /* 1 toggle */
 	{"View/Quotes/Fold2",			NULL, N_("Fold from level _2"), NULL, NULL, G_CALLBACK(hide_quotes_cb) }, /* 2 toggle */
@@ -1283,18 +1288,6 @@ static gboolean mainwindow_key_pressed (GtkWidget *widget, GdkEventKey *event,
 			}
 		}
 		break;
-#ifndef MAEMO
-        case GDK_F11:
-                if (mainwin->fullscreen) {
-                    gtk_window_unfullscreen(GTK_WINDOW(mainwin->window));
-                    mainwin->fullscreen = FALSE;
-                }
-                else {
-                    mainwin->fullscreen = TRUE;
-                    gtk_window_fullscreen(GTK_WINDOW(mainwin->window));
-                }
-                break;
-#endif
 
 #ifdef MAEMO
 	case GDK_F6:
@@ -1619,6 +1612,9 @@ MainWindow *main_window_create()
 	MENUITEM_ADDUI_MANAGER(mainwin->ui_manager, "/Menu/View/SetColumns", "Messagelist", "View/SetColumns/Messagelist", GTK_UI_MANAGER_MENUITEM)
 	MENUITEM_ADDUI_MANAGER(mainwin->ui_manager, "/Menu/View", "Separator1", "View/---", GTK_UI_MANAGER_SEPARATOR)
 
+#ifndef MAEMO
+	MENUITEM_ADDUI_MANAGER(mainwin->ui_manager, "/Menu/View", "FullScreen", "View/FullScreen", GTK_UI_MANAGER_MENUITEM)
+#endif
 #ifndef GENERIC_UMPC
 	MENUITEM_ADDUI_MANAGER(mainwin->ui_manager, "/Menu/View", "Layout", "View/Layout", GTK_UI_MANAGER_MENU)
 	MENUITEM_ADDUI_MANAGER(mainwin->ui_manager, "/Menu/View/Layout", "Standard", "View/Layout/Standard", GTK_UI_MANAGER_MENUITEM)
@@ -4251,6 +4247,20 @@ static void show_all_header_cb(GtkAction *action, gpointer data)
 			gtk_toggle_action_get_active (GTK_TOGGLE_ACTION (action));
 	summary_display_msg_selected(mainwin->summaryview,
 				     gtk_toggle_action_get_active (GTK_TOGGLE_ACTION (action)));
+}
+
+static void toggle_fullscreen_cb(GtkAction *action, gpointer data)
+{
+	MainWindow *mainwin = (MainWindow *)data;
+	if (mainwin->menu_lock_count) return;
+	if (!gtk_toggle_action_get_active (GTK_TOGGLE_ACTION (action))) {
+		gtk_window_unfullscreen(GTK_WINDOW(mainwin->window));
+		mainwin->fullscreen = FALSE;
+	}
+	else {
+		mainwin->fullscreen = TRUE;
+		gtk_window_fullscreen(GTK_WINDOW(mainwin->window));
+	}
 }
 
 static void hide_quotes_cb(GtkAction *action, gpointer data)

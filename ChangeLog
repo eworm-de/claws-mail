@@ -1,3 +1,8 @@
+2008-10-07 [colin]	3.6.0cvs10
+
+	* src/mainwindow.c
+		Make fullscreen a real menu item
+
 2008-10-07 [colin]	3.6.0cvs9
 
 	* src/mainwindow.c
