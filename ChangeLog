@@ -1,3 +1,9 @@
+2008-10-07 [colin]	3.6.0cvs11
+
+	* src/prefs_other.c
+		Fix bug 1747, 'Wanderlust keybindings no longer 
+		working (regression)'
+
 2008-10-07 [colin]	3.6.0cvs10
 
 	* src/mainwindow.c
