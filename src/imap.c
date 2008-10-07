@@ -1163,7 +1163,7 @@ static gint imap_session_authenticate(IMAPSession *session,
 	acc_pass = account->passwd;
 try_again:
 	pass = acc_pass;
-	if (!pass && account->imap_auth_type != IMAP_AUTH_ANON && account->imap_auth_type != IMAP_AUTH_GSSAPI) {
+	if (!pass && account->imap_auth_type != IMAP_AUTH_ANON) {
 		gchar *tmp_pass;
 		tmp_pass = input_dialog_query_password_keep(account->recv_server, 
 							    account->userid,
@@ -1172,7 +1172,7 @@ try_again:
 			return MAILIMAP_NO_ERROR;
 		Xstrdup_a(pass, tmp_pass, {g_free(tmp_pass); return MAILIMAP_NO_ERROR;});
 		g_free(tmp_pass);
-	} else if (account->imap_auth_type == IMAP_AUTH_ANON || account->imap_auth_type == IMAP_AUTH_GSSAPI) {
+	} else if (account->imap_auth_type == IMAP_AUTH_ANON) {
 		pass = "";
 	}
 	statuswindow_print_all(_("Connecting to IMAP4 server %s...\n"),

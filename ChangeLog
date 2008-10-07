@@ -1,3 +1,10 @@
+2008-10-07 [colin]	3.6.0cvs15
+
+	* src/imap.c
+		After thinking, revert this. It's only a minor
+		annoyance to GSSAPI users, and I can't test this
+		right now. Postponed until after next good release.
+
 2008-10-07 [colin]	3.6.0cvs14
 
 	* src/imap.c
