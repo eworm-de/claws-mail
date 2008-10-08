@@ -1,3 +1,8 @@
+2008-10-08 [colin]	3.6.0cvs16
+
+	* src/addressbook.c
+		Fix wrong menu title
+
 2008-10-07 [colin]	3.6.0cvs15
 
 	* src/imap.c

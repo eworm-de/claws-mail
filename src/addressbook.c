@@ -408,7 +408,7 @@ static GtkActionEntry addressbook_entries[] =
 {
 	{"Menu",				NULL, "Menu" },
 /* menus */
-	{"Book",			NULL, N_("_Message") },
+	{"Book",			NULL, N_("_Book") },
 	{"Address",			NULL, N_("_Edit") },
 	{"Tools",			NULL, N_("_Tools") },
 	{"Help",			NULL, N_("_Help") },
