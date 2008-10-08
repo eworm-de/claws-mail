@@ -1431,6 +1431,7 @@ static GtkWidget *prefs_filtering_action_list_view_create(void)
 	g_object_unref(model);	
 	
 	gtk_tree_view_set_rules_hint(list_view, prefs_common.use_stripes_everywhere);
+	gtk_tree_view_set_reorderable(list_view, TRUE);
 
 	selector = gtk_tree_view_get_selection(list_view);
 	gtk_tree_selection_set_mode(selector, GTK_SELECTION_BROWSE);

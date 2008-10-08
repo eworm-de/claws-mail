@@ -1,3 +1,10 @@
+2008-10-08 [paul]	3.6.0cvs17
+
+	* src/prefs_filtering_action.c
+	* src/prefs_matcher.c
+		enable re-ordering of the filtering/processing
+		condition and actions lists by drag'n'drop
+
 2008-10-08 [colin]	3.6.0cvs16
 
 	* src/addressbook.c

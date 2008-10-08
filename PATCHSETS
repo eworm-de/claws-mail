@@ -3573,3 +3573,4 @@
 ( cvs diff -u -r 1.179.2.233 -r 1.179.2.234 src/imap.c;  ) > 3.6.0cvs14.patchset
 ( cvs diff -u -r 1.179.2.234 -r 1.179.2.235 src/imap.c;  ) > 3.6.0cvs15.patchset
 ( cvs diff -u -r 1.60.2.125 -r 1.60.2.126 src/addressbook.c;  ) > 3.6.0cvs16.patchset
+( cvs diff -u -r 1.1.4.56 -r 1.1.4.57 src/prefs_filtering_action.c;  cvs diff -u -r 1.43.2.77 -r 1.43.2.78 src/prefs_matcher.c;  ) > 3.6.0cvs17.patchset
