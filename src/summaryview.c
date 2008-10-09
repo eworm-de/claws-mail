@@ -71,6 +71,7 @@
 #include "partial_download.h"
 #include "tags.h"
 #include "timing.h"
+#include "gedit-print.h"
 #include "log.h"
 #include "edittags.h"
 #include "manual.h"
@@ -4802,7 +4803,7 @@ void summary_save_as(SummaryView *summaryview)
 void summary_print(SummaryView *summaryview)
 {
 	GtkCMCList *clist = GTK_CMCLIST(summaryview->ctree);
-#if !GTK_CHECK_VERSION(2,10,0)
+#if !defined(USE_GNOMEPRINT) && !GTK_CHECK_VERSION(2,10,0)
 	GtkCMCTree *ctree = GTK_CMCTREE(summaryview->ctree);
 	MsgInfo *msginfo;
 	gchar *cmdline = NULL;
@@ -4822,7 +4823,7 @@ void summary_print(SummaryView *summaryview)
 	g_free(msg);
 
 	if (clist->selection == NULL) return;
-#if !GTK_CHECK_VERSION(2,10,0)
+#if !defined(USE_GNOMEPRINT) && !GTK_CHECK_VERSION(2,10,0)
 	cmdline = input_dialog(_("Print"),
 			       _("Enter the print command line:\n"
 				 "('%s' will be replaced with file name)"),

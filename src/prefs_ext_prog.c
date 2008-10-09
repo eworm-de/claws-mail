@@ -230,7 +230,7 @@ static void prefs_ext_prog_create_widget(PrefsPage *_page, GtkWindow *window,
 			   prefs_common.mime_textviewer ? prefs_common.mime_textviewer : "");
 
 	printcmd_label = gtk_label_new (_("Print command"));
-#if !GTK_CHECK_VERSION(2,10,0)
+#if !defined(USE_GNOMEPRINT) && !GTK_CHECK_VERSION(2,10,0)
 	gtk_widget_show(printcmd_label);
 #endif
 	i++;
@@ -241,7 +241,7 @@ static void prefs_ext_prog_create_widget(PrefsPage *_page, GtkWindow *window,
 	gtk_misc_set_alignment(GTK_MISC (printcmd_label), 1, 0.5);
 
 	printcmd_entry = gtk_entry_new ();
-#if !GTK_CHECK_VERSION(2,10,0)
+#if !defined(USE_GNOMEPRINT) && !GTK_CHECK_VERSION(2,10,0)
 	gtk_widget_show(printcmd_entry);
 #endif
 	gtk_table_attach(GTK_TABLE (table2), printcmd_entry, 1, 2, i, i+1,

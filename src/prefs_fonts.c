@@ -47,7 +47,7 @@ typedef struct _FontsPage
 	GtkWidget *entry_folderview_boldfont;
 	GtkWidget *entry_messageviewfont;
 	GtkWidget *derive_from_normalfont_checkbutton;
-#if GTK_CHECK_VERSION(2,10,0)
+#if defined(USE_GNOMEPRINT) || GTK_CHECK_VERSION(2,10,0)
 	GtkWidget *print_checkbutton;
 	GtkWidget *entry_messageprintfont;
 #endif
@@ -64,7 +64,7 @@ static void prefs_fonts_create_widget(PrefsPage *_page, GtkWindow *window,
 	GtkWidget *entry_folderview_boldfont;
 	GtkWidget *entry_messageviewfont;
 	GtkWidget *tmplabel;
-#if GTK_CHECK_VERSION(2,10,0)
+#if defined(USE_GNOMEPRINT) || GTK_CHECK_VERSION(2,10,0)
 	GtkWidget *entry_messageprintfont;
 	GtkWidget *print_checkbutton;
 #endif
@@ -179,7 +179,7 @@ static void prefs_fonts_create_widget(PrefsPage *_page, GtkWindow *window,
 	SET_TOGGLE_SENSITIVITY_REVERSE (derive_from_normalfont_checkbutton, entry_folderview_boldfont);
 	row++;
 
-#if GTK_CHECK_VERSION(2,10,0)
+#if defined(USE_GNOMEPRINT) || GTK_CHECK_VERSION(2,10,0)
 	/* print check button */
 	print_checkbutton = gtk_check_button_new_with_label(_("Use different font for printing"));
 	gtk_widget_show(print_checkbutton);
@@ -219,7 +219,7 @@ static void prefs_fonts_create_widget(PrefsPage *_page, GtkWindow *window,
 	prefs_fonts->entry_folderview_boldfont   = entry_folderview_boldfont;
 	prefs_fonts->entry_messageviewfont	= entry_messageviewfont;
 	prefs_fonts->derive_from_normalfont_checkbutton = derive_from_normalfont_checkbutton;
-#if GTK_CHECK_VERSION(2,10,0)
+#if defined(USE_GNOMEPRINT) || GTK_CHECK_VERSION(2,10,0)
 	prefs_fonts->entry_messageprintfont	= entry_messageprintfont;
 	prefs_fonts->print_checkbutton	   	= print_checkbutton;
 #endif
@@ -250,7 +250,7 @@ static void prefs_fonts_save(PrefsPage *_page)
 	prefs_common.derive_from_normal_font = gtk_toggle_button_get_active
 			(GTK_TOGGLE_BUTTON(fonts->derive_from_normalfont_checkbutton));
 
-#if GTK_CHECK_VERSION(2,10,0)
+#if defined(USE_GNOMEPRINT) || GTK_CHECK_VERSION(2,10,0)
 	g_free(prefs_common.printfont);		
 	prefs_common.printfont   = g_strdup(gtk_font_button_get_font_name
 		(GTK_FONT_BUTTON(fonts->entry_messageprintfont)));

@@ -26,7 +26,7 @@
 #  include "config.h"
 #endif
 
-#if GTK_CHECK_VERSION(2,10,0)
+#if GTK_CHECK_VERSION(2,10,0) && !defined(USE_GNOMEPRINT)
 
 typedef struct _PrintData		PrintData;
 

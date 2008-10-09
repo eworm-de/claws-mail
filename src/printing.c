@@ -24,7 +24,7 @@
 #include "printing.h"
 #include "image_viewer.h"
 
-#if GTK_CHECK_VERSION(2,10,0)
+#if GTK_CHECK_VERSION(2,10,0) && !defined(USE_GNOMEPRINT)
 
 #include "gtkutils.h"
 #include "toolbar.h"
