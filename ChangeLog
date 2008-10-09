@@ -1,3 +1,8 @@
+2008-10-09 [colin]	3.6.0cvs18
+
+	* configure.ac
+		Require libetpan 0.57 (important fixes)
+
 2008-10-08 [paul]	3.6.0cvs17
 
 	* src/prefs_filtering_action.c
