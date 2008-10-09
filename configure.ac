@@ -368,7 +368,7 @@ fi
 
 dnl GNUTLS
 AC_ARG_ENABLE(openssl,    [ --enable-openssl      enable GnuTLS support],
-            [ac_cv_enable_openssl=$enableval], [ac_cv_enable_openssl=yes])
+            [ac_cv_enable_openssl=$enableval], [ac_cv_enable_openssl=no])
 AC_ARG_ENABLE(gnutls,    [ --enable-gnutls      enable GnuTLS support],
             [ac_cv_enable_gnutls=$enableval], [ac_cv_enable_gnutls=yes])
 
