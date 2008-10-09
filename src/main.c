@@ -922,12 +922,6 @@ static void main_dump_features_list(gboolean show_debug_only)
 	else
 		g_print(" NetworkManager\n");
 #endif
-#if USE_OPENSSL
-	if (show_debug_only)
-		debug_print(" openssl\n");
-	else
-		g_print(" openssl\n");
-#endif
 }
 
 #ifdef HAVE_DBUS_GLIB

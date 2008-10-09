@@ -1,3 +1,14 @@
+2008-10-09 [colin]	3.6.0cvs21
+
+	* configure.ac
+	* COPYING
+	* src/crash.c
+	* src/main.c
+	* src/gtk/about.c
+		Disable OpenSSL due to requirement of
+		OpenSSL exception. Code not removed yet,
+		just in case, but disabled.
+
 2008-10-09 [colin]	3.6.0cvs20
 
 	* configure.ac

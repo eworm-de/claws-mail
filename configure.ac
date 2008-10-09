@@ -11,7 +11,7 @@ MINOR_VERSION=6
 MICRO_VERSION=0
 INTERFACE_AGE=0
 BINARY_AGE=0
-EXTRA_VERSION=20
+EXTRA_VERSION=21
 EXTRA_RELEASE=
 EXTRA_GTK2_VERSION=
 
@@ -366,36 +366,18 @@ else
 	AC_MSG_RESULT(no)
 fi
 
-dnl Check for OpenSSL
-AC_ARG_ENABLE(openssl,
-	[  --disable-openssl    disable OpenSSL support.],
-	[ac_cv_enable_openssl=$enableval], [ac_cv_enable_openssl=yes])
 dnl GNUTLS
+AC_ARG_ENABLE(openssl,    [ --enable-openssl      enable GnuTLS support],
+            [ac_cv_enable_openssl=$enableval], [ac_cv_enable_openssl=yes])
 AC_ARG_ENABLE(gnutls,    [ --enable-gnutls      enable GnuTLS support],
-            [ac_cv_enable_gnutls=$enableval], [ac_cv_enable_gnutls=no])
-if test x$ac_cv_enable_openssl = xyes && test x$ac_cv_enable_gnutls != xyes; then
-	ac_cv_enable_gnutls="no"
-fi
-if test x$ac_cv_enable_gnutls = xyes; then
-	  ac_cv_enable_openssl="no"
-fi
+            [ac_cv_enable_gnutls=$enableval], [ac_cv_enable_gnutls=yes])
 
-AC_MSG_CHECKING([whether to use OpenSSL])
-if test x"$ac_cv_enable_openssl" = xyes; then
-	AC_MSG_RESULT(yes)
-	PKG_CHECK_MODULES(OPENSSL, openssl >= 0.9.7, :, ac_cv_enable_openssl=no)
-	if test x$ac_cv_enable_openssl = xyes; then
-		AC_DEFINE(USE_OPENSSL, 1, Define if you want OpenSSL support)
-	else
-		AC_MSG_RESULT(not found)
-		AC_MSG_WARN([*** OpenSSL will not be supported ***])
+if test "x$ac_cv_enable_gnutls" != "xyes"; then
+	if test "x$ac_cv_enable_openssl" = "xyes"; then
+		AC_MSG_WARN(*** Using GnuTLS instead of OpenSSL due to licensing ***)
+		ac_cv_enable_gnutls="yes"
 	fi
-else
-	AC_MSG_RESULT(no)
 fi
-AC_SUBST(OPENSSL_CFLAGS)
-AC_SUBST(OPENSSL_LIBS)
-
 AC_MSG_CHECKING([whether to use GnuTLS])
 if test "x$ac_cv_enable_gnutls" != "xno"; then
   OCPPFLAGS="$CPPFLAGS"
@@ -1089,7 +1071,6 @@ echo "$PACKAGE $VERSION"
 echo ""
 echo "JPilot            : $ac_cv_enable_jpilot"
 echo "LDAP              : $ac_cv_enable_ldap"
-echo "OpenSSL           : $ac_cv_enable_openssl"
 echo "gnuTLS            : $ac_cv_enable_gnutls"
 echo "iconv             : $am_cv_func_iconv"
 echo "compface          : $ac_cv_enable_compface"
