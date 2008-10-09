@@ -1,3 +1,26 @@
+2008-10-09 [colin]	3.6.0cvs19
+
+	* configure.ac
+	* src/Makefile.am
+	* src/crash.c
+	* src/gedit-print.c
+	* src/gedit-print.h
+	* src/main.c
+	* src/mainwindow.c
+	* src/messageview.c
+	* src/prefs_ext_prog.c
+	* src/prefs_fonts.c
+	* src/prefs_image_viewer.c
+	* src/printing.c
+	* src/printing.h
+	* src/summaryview.c
+	* src/gtk/Makefile.am
+	* src/gtk/about.c
+	* src/gtk/gtksourceprintjob.c
+	* src/gtk/gtksourceprintjob.h
+		Remove the libgnomeprint interface (deprecated,
+		and fixes Debian's #501570, 'Copyright confusion')
+
 2008-10-09 [colin]	3.6.0cvs18
 
 	* configure.ac

@@ -433,9 +433,6 @@ static const gchar *get_compiled_in_features(void)
 #if HAVE_LIBETPAN
 		   " libetpan"
 #endif
-#if USE_GNOMEPRINT
-		   " libgnomeprint"
-#endif
 #if HAVE_LIBSM
 		   " libSM"
 #endif

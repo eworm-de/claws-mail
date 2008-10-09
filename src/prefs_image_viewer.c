@@ -87,7 +87,7 @@ static void imageviewer_create_widget_func(PrefsPage * _page,
 			 (GtkAttachOptions) (0), 0, 0);
 	
 	print_imgs = gtk_check_button_new_with_label(_("Print images"));
-#if !defined(USE_GNOMEPRINT) && GTK_CHECK_VERSION(2,10,0)
+#if GTK_CHECK_VERSION(2,10,0)
 	gtk_widget_show(print_imgs);
 #endif
 	gtk_table_attach(GTK_TABLE(table), print_imgs, 0, 1, 3, 4,

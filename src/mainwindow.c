@@ -144,7 +144,7 @@ static void empty_trash_cb	 (GtkAction	*action,
 				  gpointer	 data);
 static void save_as_cb		 (GtkAction	*action,
 				  gpointer	 data);
-#if GTK_CHECK_VERSION(2,10,0) && !defined(USE_GNOMEPRINT)
+#if GTK_CHECK_VERSION(2,10,0)
 static void page_setup_cb	 (GtkAction	*action,
 				  gpointer	 data);
 #endif
@@ -482,7 +482,7 @@ static GtkActionEntry mainwin_entries[] =
 
 	{"File/SaveAs",				NULL, N_("_Save as..."), "<control>S", NULL, G_CALLBACK(save_as_cb) },
 
-#if GTK_CHECK_VERSION(2,10,0) && !defined(USE_GNOMEPRINT)
+#if GTK_CHECK_VERSION(2,10,0)
 	{"File/PageSetup",			NULL, N_("Page setup..."), NULL, NULL, G_CALLBACK(page_setup_cb) },
 #endif
 	{"File/Print",				NULL, N_("_Print..."), "<control>P", NULL, G_CALLBACK(print_cb) },
@@ -1603,7 +1603,7 @@ MainWindow *main_window_create()
 	MENUITEM_ADDUI_MANAGER(mainwin->ui_manager, "/Menu/File", "EmptyTrashes", "File/EmptyTrashes", GTK_UI_MANAGER_MENUITEM)
 	MENUITEM_ADDUI_MANAGER(mainwin->ui_manager, "/Menu/File", "Separator4", "File/---", GTK_UI_MANAGER_SEPARATOR)
 	MENUITEM_ADDUI_MANAGER(mainwin->ui_manager, "/Menu/File", "SaveAs", "File/SaveAs", GTK_UI_MANAGER_MENUITEM)
-#if GTK_CHECK_VERSION(2,10,0) && !defined(USE_GNOMEPRINT)
+#if GTK_CHECK_VERSION(2,10,0)
 	MENUITEM_ADDUI_MANAGER(mainwin->ui_manager, "/Menu/File", "PageSetup", "File/PageSetup", GTK_UI_MANAGER_MENUITEM)
 #endif
 	MENUITEM_ADDUI_MANAGER(mainwin->ui_manager, "/Menu/File", "Print", "File/Print", GTK_UI_MANAGER_MENUITEM)
@@ -3955,7 +3955,7 @@ static void print_cb(GtkAction *action, gpointer data)
 	summary_print(mainwin->summaryview);
 }
 
-#if GTK_CHECK_VERSION(2,10,0) && !defined(USE_GNOMEPRINT)
+#if GTK_CHECK_VERSION(2,10,0)
 static void page_setup_cb(GtkAction *action, gpointer data)
 {
 	MainWindow *mainwin = (MainWindow *)data;

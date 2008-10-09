@@ -904,12 +904,6 @@ static void main_dump_features_list(gboolean show_debug_only)
 	else
 		g_print(" libetpan %d.%d\n", LIBETPAN_VERSION_MAJOR, LIBETPAN_VERSION_MINOR);
 #endif
-#if USE_GNOMEPRINT
-	if (show_debug_only)
-		debug_print(" gnomeprint\n");
-	else
-		g_print(" gnomeprint\n");
-#endif
 #if HAVE_LIBSM
 	if (show_debug_only)
 		debug_print(" libsm\n");
