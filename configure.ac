@@ -11,7 +11,7 @@ MINOR_VERSION=6
 MICRO_VERSION=0
 INTERFACE_AGE=0
 BINARY_AGE=0
-EXTRA_VERSION=21
+EXTRA_VERSION=22
 EXTRA_RELEASE=
 EXTRA_GTK2_VERSION=
 
@@ -374,8 +374,7 @@ AC_ARG_ENABLE(gnutls,    [ --enable-gnutls      enable GnuTLS support],
 
 if test "x$ac_cv_enable_gnutls" != "xyes"; then
 	if test "x$ac_cv_enable_openssl" = "xyes"; then
-		AC_MSG_WARN(*** Using GnuTLS instead of OpenSSL due to licensing ***)
-		ac_cv_enable_gnutls="yes"
+		AC_MSG_ERROR(*** Use GnuTLS instead of OpenSSL, due to licensing ***)
 	fi
 fi
 AC_MSG_CHECKING([whether to use GnuTLS])
