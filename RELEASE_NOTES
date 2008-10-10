@@ -1,4 +1,4 @@
-3rd October 2008                                       Claws Mail 3.6.0
+10th October 2008                                    Claws Mail 3.6.1
 
 		    CLAWS MAIL  RELEASE NOTES
                     http://www.claws-mail.org
@@ -9,121 +9,30 @@ email client.
 Notes for this release:
 ~~~~~~~~~~~~~~~~~~~~~~~
 
-* Claws Mail now requires libetpan 0.56 for IMAP and NNTP
+* Claws Mail now requires libetpan 0.57 for IMAP and NNTP.
 
-* Spell checking is now provided by Enchant instead of Aspell. To
-  build spell checker support, you will need the libenchant headers.
-
-* The S/MIME plugin is now part of this package.
-
-* IMAP, NNTP, and SSL are now supported in the Windows port.
+* SSL support is now provided by gnuTLS exclusively. OpenSSL support
+  has been dropped due to licensing issues.
 
 New in this release:
 ~~~~~~~~~~~~~~~~~~~~
 
-* Support for client SSL certificates.
+* Added /View/Fullscreen option.
 
-* Better support of SSL certificate stores, to be able to verify
-  server certificates.
+* Re-ordering of the filtering/processing condition and actions lists
+  is now possible using drag'n'drop.
 
-* Renaming of newsgroups is possible.
-
-* "Always open message when selected" can now have three values:
-  'Never', 'Always' and 'When message view is visible'.
-
-* Unsaved server passwords can now be temporarily saved for the
-  duration of the session. They can be cleared before the session
-  expires by using '/Tools/Forget all session passwords'.
-
-* Auto-wrapping settings are now saved in drafted messages.
-
-* Support for basic auto-indentation in the Compose window.
-
-* Support for animated GIFs in the message view.
-
-* Type-ahead search in Filtering, Templates, Actions dialogs now
-  select the result of the search.
-
-* Finer granularity in POP3 accounts' Remove After delay - hours in
-  addition to days.
-
-* Spam/Ham flag is now stored on IMAP server when possible, using
-  "Junk" and "NonJunk" keywords. 
-
-* Use less precise intervals when possible for auto-checking, thus
-  the CPU is woken up less frequently.
-
-* The warning icon in the main window is cleared when the error it
-  relates to is clipped from the network log.
-
-* IMAP errors now reveal the server on which they happen.
-
-* All deprecated GTK interfaces have been replaced with their
-  non-deprecated equivalents.
-
-* csv2addressbook.pl: Added support for FoxMail.
-
-* Updated translations: British English, Bulgarian, Catalan, Dutch,
-  Finnish, French, German, Hungarian, Italian, Polish, Russian,
-  Simplified Chinese, Spanish, and Swedish.
+* Updated Brazilian Portuguese and French translations.
 
 * Bug fixes:
-	o bug 1620, 'Can't use hardware zoom buttons' (MAEMO)
-	o bug 1398, 'Change current account available even when
-		     there's only one account'
-	o bug 1609, 'Icon issues'
-	o bug 1673, 'Tools/Harvest Addresses is greyed out if
-		     folder is empty'
-	o bug 1681, 'GnuPG plugin doesn't compile on Solaris"
-	o bug 1684, 'View news messages with large attachments
-		     segfaults'
-	o bug 1688, 'Compilation problems on MingW32'
-	o bug 1690, 'Copy/paste in edit window may break Undo'
-	o bug 1696, 'Viewing binary attachments as text over
-		     1MB' (various buglets)
-	o bug 1699, 'Separator line misplaced when printing
-		     emails with long header lines'
-	o bug 1412, 'Sign reply if mail was signed'
-	o bug 1707, 'Segfault when sorting on hidden column'
-	o bug 1710, 'User misreads Discard Message as Discard
-		     Changes'. Closing a modified re-edited draft will
-		     now ask whether to discard changes
-	o bug 1712, 'Invalid Phishing attempt warning when linked
-		     text ends with spaces'
-	o bug 1723, 'Buffer overflow crash caused by 
-		     preview in 'Date format help' dialog box'
-	o bug 1725, 'useless lines in clawsrc'
-	o Fixed compilation with GTK 2.14
-	o Fixed some memory leaks
-	o Fixed upgrading of themes
-	o Fixed po-headers appearing on empty templates
-	o Fixed folderview's scrollbar state when starting minimized,
-	  and popping up is done via command line
-	o Fixed race condition when closing the Plugins window while a
-	  plugin is loading
-	o Fixed missing localityName (l) field in LDAP
-	o Fixed wild rewrapping when adding text to start of some long
-	  lines
-	o Added "Fwd" to the list of known subject prefixes
-	o Fixed nickname edition in non-LDAP address books 
-	o Fixed compose window size saving, which changed when using
-	  compose-related filtering actions
-	o Fixed English usage
-	o Don't go to Inbox after manual mail retrieval if there are no
-	  new mails
-	o Fixed migration problems from Aspell to Enchant dictionaries
-	o Fixed double opening of file, leading to multiple signatures
-	  when using signify
-	o Fixed image viewer (wrong image displayed, break of resizing
-	  functionality
-	o Fixed handling of HTML parts in multipart/related parts
-	o Workaround to decode correctly mails in Windows-1252 codeset 
-	  advertised as ISO-8859-1
-	o Added the nb_NO locale's default charset (ISO-8859-1)
-	o IMAP: Fixed crash when error happen on session establishment
-	o Fixed a lot of Windows-only bugs (bugs 1041, 1042, 1051, 
-	  problems with folders that have non-ASCII characters, the 
-	  huge memory leak, crash on connection failures)
+	o bug 1737, 'Claws-Mail 3.6.0-1 crashes upon opening.'
+		    (MAEMO)
+	o bug 1742, 'Attachment list contents not visible/scrollable'
+		    (MAEMO)
+	o bug 1747, 'Wanderlust keybindings no longer working
+		    (regression)'
+	o bug 1749, 'Shortcut keys for color labels not changeable'
+	o fix failure of Hide toolbar option on restart.
 
 For further details of the numbered bugs listed above consult
 http://www.thewildbeast.co.uk/claws-mail/bugzilla/index.cgi

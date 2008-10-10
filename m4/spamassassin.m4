@@ -5,7 +5,6 @@ AC_DEFUN([AC_SPAMASSASSIN],
 
 AC_CHECK_HEADERS(sys/time.h syslog.h unistd.h errno.h sys/errno.h)
 AC_CHECK_HEADERS(time.h sysexits.h sys/socket.h netdb.h netinet/in.h)
-AC_CHECK_HEADERS(openssl/crypto.h)
 
 AC_CACHE_CHECK([for SHUT_RD],
        shutrd, [
@@ -80,10 +79,6 @@ AC_CACHE_CHECK([for EX__MAX],
         ])
 if test $haveexmax = yes ; then
   AC_DEFINE(HAVE_EX__MAX, 1, HAVE_EX__MAX)
-fi
-
-if test x$ac_cv_enable_openssl = xyes; then
-    AC_DEFINE(SPAMC_SSL, 1, Compile libspamc with OpenSSL support)
 fi
 
 ])

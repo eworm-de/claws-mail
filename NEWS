@@ -1,5 +1,18 @@
 Changes of the  Claws Mail GTK2 branch
 
+* 3.6.1
+-------
+
+* Claws Mail now requires libetpan 0.57 for IMAP and NNTP.
+
+* SSL support is now provided by gnuTLS exclusively. OpenSSL support
+  has been dropped due to licensing issues.
+
+* Added /View/Fullscreen option.
+
+* Re-ordering of the filtering/processing condition and actions lists
+  is now possible using drag'n'drop.
+
 * 3.6.0
 -------
 
