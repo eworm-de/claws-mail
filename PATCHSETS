@@ -3581,3 +3581,4 @@
 ( cvs diff -u -r 1.654.2.3641 -r 1.654.2.3642 configure.ac;  ) > 3.6.0cvs22.patchset
 ( cvs diff -u -r 1.654.2.3642 -r 1.654.2.3643 configure.ac;  ) > 3.6.0cvs23.patchset
 ( cvs diff -u -r 1.1.2.2 -r 1.1.2.3 claws-mail.pc.in;  ) > 3.6.0cvs24.patchset
+( cvs diff -u -r 1.9.2.33 -r 1.9.2.34 src/common/ssl.c;  ) > 3.6.0cvs25.patchset

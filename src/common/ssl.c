@@ -237,6 +237,9 @@ void ssl_init(void)
 	SSL_CTX_set_verify_depth(ssl_ctx,1);
 #endif
 #else
+#ifdef HAVE_LIBETPAN
+	mailstream_gnutls_init_not_required();
+#endif	
 	gnutls_global_init();
 #endif
 }

@@ -1,3 +1,9 @@
+2008-10-10 [colin]	3.6.0cvs25
+
+	* src/common/ssl.c
+		Tell libetpan it doesn't need to init
+		GnuTLS
+
 2008-10-10 [colin]	3.6.0cvs24
 
 	* claws-mail.pc.in
