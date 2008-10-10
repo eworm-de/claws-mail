@@ -66,7 +66,11 @@ static GtkWidget *cert_presenter(SSLCertificate *cert)
 	char *subject_commonname, *subject_location, *subject_organization;
 	char *sig_status, *exp_date;
 	char *md5_fingerprint, *sha1_fingerprint, *fingerprint;
+#if USE_OPENSSL
 	unsigned int n;
+#else
+	size_t n;
+#endif
 	char buf[100];
 	unsigned char md[128];	
 #if USE_OPENSSL

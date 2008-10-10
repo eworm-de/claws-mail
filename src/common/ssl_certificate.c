@@ -236,7 +236,11 @@ static SSLCertificate *ssl_certificate_new_lookup(gnutls_x509_crt x509_cert, gch
 #endif
 {
 	SSLCertificate *cert = g_new0(SSLCertificate, 1);
+#if USE_OPENSSL
 	unsigned int n;
+#else
+	size_t n;
+#endif
 	unsigned char md[128];	
 
 	if (host == NULL || x509_cert == NULL) {
@@ -275,7 +279,7 @@ static void gnutls_i2d_X509_fp(FILE *fp, gnutls_x509_crt x509_cert)
 	int r;
 	
 	if ((r = gnutls_x509_crt_export(x509_cert, GNUTLS_X509_FMT_DER, output, &cert_size)) < 0) {
-		g_warning("couldn't export cert %s (%d)\n", gnutls_strerror(r), cert_size);
+		g_warning("couldn't export cert %s (%zd)\n", gnutls_strerror(r), cert_size);
 		return;
 	}
 	debug_print("writing %zd bytes\n",cert_size);
@@ -295,7 +299,7 @@ size_t gnutls_i2d_X509(gnutls_x509_crt x509_cert, unsigned char **output)
 	*output = malloc(cert_size);
 
 	if ((r = gnutls_x509_crt_export(x509_cert, GNUTLS_X509_FMT_DER, *output, &cert_size)) < 0) {
-		g_warning("couldn't export cert %s (%d)\n", gnutls_strerror(r), cert_size);
+		g_warning("couldn't export cert %s (%zd)\n", gnutls_strerror(r), cert_size);
 		free(*output);
 		*output = NULL;
 		return 0;
@@ -314,7 +318,7 @@ size_t gnutls_i2d_PrivateKey(gnutls_x509_privkey pkey, unsigned char **output)
 	*output = malloc(key_size);
 
 	if ((r = gnutls_x509_privkey_export(pkey, GNUTLS_X509_FMT_DER, *output, &key_size)) < 0) {
-		g_warning("couldn't export key %s (%d)\n", gnutls_strerror(r), key_size);
+		g_warning("couldn't export key %s (%zd)\n", gnutls_strerror(r), key_size);
 		free(*output);
 		*output = NULL;
 		return 0;
@@ -601,7 +605,7 @@ static gboolean ssl_certificate_compare (SSLCertificate *cert_a, SSLCertificate 
 		return FALSE;
 	}
 	if (cert_size_a != cert_size_b) {
-		g_warning("size differ %d %d\n", cert_size_a, cert_size_b);
+		g_warning("size differ %zd %zd\n", cert_size_a, cert_size_b);
 		g_free(output_a);
 		g_free(output_b);
 		return FALSE;
@@ -677,7 +681,11 @@ gboolean ssl_certificate_check (gnutls_x509_crt x509_cert, guint status, gchar *
 	SSLCertHookData cert_hook_data;
 	gchar *fqdn_host = NULL;	
 	gchar *fingerprint;
+#ifdef USE_OPENSSL
 	unsigned int n;
+#else
+	size_t n;
+#endif
 	unsigned char md[128];	
 
 	if (fqdn)
@@ -707,7 +715,7 @@ gboolean ssl_certificate_check (gnutls_x509_crt x509_cert, guint status, gchar *
 #else
 	n = 128;
 	gnutls_x509_crt_get_fingerprint(x509_cert, GNUTLS_DIG_MD5, md, &n);
-	fingerprint = readable_fingerprint(md, (int)n);
+	fingerprint = readable_fingerprint(md, n);
 #endif
 
 	known_cert = ssl_certificate_find_lookup (fqdn_host, port, fingerprint, FALSE);
