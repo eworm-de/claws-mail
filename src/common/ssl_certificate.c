@@ -649,11 +649,71 @@ char *ssl_certificate_check_signer (X509 *cert)
 	return NULL;
 }
 #else
+guint check_cert(gnutls_x509_crt cert)
+{
+	gnutls_x509_crt *ca_list;
+	unsigned int max = 512;
+	unsigned int flags = 0;
+	gnutls_datum tmp;
+	struct stat s;
+	int r, i;
+	unsigned int status;
+	FILE *fp;
+
+	if (claws_ssl_get_cert_file())
+		fp = fopen(claws_ssl_get_cert_file(), "r");
+	else
+		return (guint)-1;
+
+	if (fstat(fileno(fp), &s) < 0) {
+		perror("fstat");
+		fclose(fp);
+		return (guint)-1;
+	}
+
+	ca_list=(gnutls_x509_crt_t*)malloc(max*sizeof(gnutls_x509_crt_t));
+	tmp.data = malloc(s.st_size);
+	memset(tmp.data, 0, s.st_size);
+	tmp.size = s.st_size;
+	if (fread (tmp.data, 1, s.st_size, fp) < s.st_size) {
+		perror("fread");
+		free(tmp.data);
+		free(ca_list);
+		fclose(fp);
+		return (guint)-1;
+	}
+
+	if ((r = gnutls_x509_crt_list_import(ca_list, &max, 
+			&tmp, GNUTLS_X509_FMT_PEM, flags)) < 0) {
+		debug_print("cert import failed: %s\n", gnutls_strerror(r));
+		free(tmp.data);
+		free(ca_list);
+		fclose(fp);
+		return (guint)-1;
+	}
+	free(tmp.data);
+	debug_print("got %d certs in ca_list! %p\n", max, &ca_list);
+	r = gnutls_x509_crt_verify(cert, ca_list, max, flags, &status);
+	fclose(fp);
+
+	for (i = 0; i < max; i++)
+		gnutls_x509_crt_deinit(ca_list[i]);
+	free(ca_list);
+
+	if (r < 0)
+		return (guint)-1;
+	else
+		return status;
+
+}
+
 char *ssl_certificate_check_signer (gnutls_x509_crt cert, guint status) 
 {
-	if (status == (guint)-1)
-		return g_strdup(_("Uncheckable"));
-
+	if (status == (guint)-1) {
+		status = check_cert(cert);
+		if (status == -1)
+			return g_strdup(_("Uncheckable"));
+	}
 	if (status & GNUTLS_CERT_INVALID) {
 		if (gnutls_x509_crt_check_issuer(cert, cert))
 			return g_strdup(_("Self-signed certificate"));

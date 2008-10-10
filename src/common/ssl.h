@@ -72,6 +72,7 @@ struct _SSLClientCertHookData
 SSL_CTX *ssl_get_ctx(void);
 #endif
 		
+const gchar *claws_ssl_get_cert_file(void);
 #endif /* USE_OPENSSL */
 
 #endif /* __SSL_H__ */

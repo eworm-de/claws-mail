@@ -3583,3 +3583,4 @@
 ( cvs diff -u -r 1.1.2.2 -r 1.1.2.3 claws-mail.pc.in;  ) > 3.6.0cvs24.patchset
 ( cvs diff -u -r 1.9.2.33 -r 1.9.2.34 src/common/ssl.c;  ) > 3.6.0cvs25.patchset
 ( cvs diff -u -r 1.4.2.30 -r 1.4.2.31 src/common/ssl_certificate.c;  cvs diff -u -r 1.9.2.24 -r 1.9.2.25 src/gtk/sslcertwindow.c;  ) > 3.6.1cvs1.patchset
+( cvs diff -u -r 1.2.2.10 -r 1.2.2.11 src/common/ssl.h;  cvs diff -u -r 1.4.2.31 -r 1.4.2.32 src/common/ssl_certificate.c;  cvs diff -u -r 1.9.2.25 -r 1.9.2.26 src/gtk/sslcertwindow.c;  ) > 3.6.1cvs2.patchset

@@ -229,7 +229,7 @@ static GtkWidget *cert_presenter(SSLCertificate *cert)
 #endif
 
 	if (sig_status==NULL)
-		sig_status = g_strdup(_("correct"));
+		sig_status = g_strdup(_("Correct"));
 
 	vbox = gtk_vbox_new(FALSE, 5);
 	hbox = gtk_hbox_new(FALSE, 5);
@@ -398,7 +398,7 @@ static gboolean sslcertwindow_ask_new_cert(SSLCertificate *cert)
 	sig_status = ssl_certificate_check_signer(cert->x509_cert, cert->status);
 #endif
 	if (sig_status==NULL)
-		sig_status = g_strdup(_("correct"));
+		sig_status = g_strdup(_("Correct"));
 
 	buf = g_strdup_printf(_("Signature status: %s"), sig_status);
 	label = gtk_label_new(buf);
@@ -443,7 +443,7 @@ static gboolean sslcertwindow_ask_expired_cert(SSLCertificate *cert)
 #endif
 
 	if (sig_status==NULL)
-		sig_status = g_strdup(_("correct"));
+		sig_status = g_strdup(_("Correct"));
 
 	buf = g_strdup_printf(_("Signature status: %s"), sig_status);
 	label = gtk_label_new(buf);
@@ -502,7 +502,7 @@ static gboolean sslcertwindow_ask_changed_cert(SSLCertificate *old_cert, SSLCert
 #endif
 
 	if (sig_status==NULL)
-		sig_status = g_strdup(_("correct"));
+		sig_status = g_strdup(_("Correct"));
 
 	buf = g_strdup_printf(_("Signature status: %s"), sig_status);
 	label = gtk_label_new(buf);

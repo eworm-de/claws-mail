@@ -1,3 +1,12 @@
+2008-10-10 [colin]	3.6.1cvs2
+
+	* src/common/ssl.h
+	* src/common/ssl_certificate.c
+	* src/gtk/sslcertwindow.c
+		Add offline certificate verification,
+		thanks to Nikos Mavrogiannopoulos for the
+		hints
+
 2008-10-10 [colin]	3.6.1cvs1
 
 	* src/common/ssl_certificate.c
