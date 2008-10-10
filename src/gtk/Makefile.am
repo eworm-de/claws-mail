@@ -74,7 +74,6 @@ AM_CPPFLAGS = \
 	-I$(srcdir)/.. \
 	-I$(builddir)/.. \
 	$(GTK_CFLAGS) \
-	$(OPENSSL_CFLAGS) \
 	$(GNOMEPRINT_CFLAGS) \
 	$(MAEMO_CFLAGS) \
 	$(ENCHANT_CFLAGS) \

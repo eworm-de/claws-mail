@@ -74,7 +74,6 @@ INCLUDES = \
 
 AM_CPPFLAGS = \
 	$(GLIB_CFLAGS) \
-	$(OPENSSL_CFLAGS) \
 	$(MAEMO_CFLAGS) \
 	-DLOCALEDIR=\""$(localedir)"\" \
 	-DPLUGINDIR=\"$(PLUGINDIR)\" \
@@ -82,7 +81,6 @@ AM_CPPFLAGS = \
 
 libclawscommon_la_LIBADD = \
 	$(GLIB_LIBS) \
-	$(OPENSSL_LIBS) \
 	$(CRYPT_LIBS) \
 	$(PTHREAD_LIBS) \
 	$(MAEMO_LIBS)

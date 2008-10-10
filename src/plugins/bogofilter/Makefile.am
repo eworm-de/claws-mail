@@ -16,7 +16,6 @@ cygwin_export_lib =
 endif
 bogofilter_la_LIBADD = $(cygwin_export_lib) \
 	$(GTK_LIBS)	\
-	$(OPENSSL_LIBS) \
 	$(MAEMO_LIBS)
 
 INCLUDES = \
@@ -28,5 +27,4 @@ AM_CPPFLAGS = \
 	$(ENCHANT_CFLAGS) \
 	$(GLIB_CFLAGS) \
 	$(GTK_CFLAGS) \
-	$(OPENSSL_CFLAGS) \
 	$(MAEMO_CFLAGS)
