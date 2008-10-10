@@ -3580,3 +3580,4 @@
 ( cvs diff -u -r 1.654.2.3640 -r 1.654.2.3641 configure.ac;  cvs diff -u -r 1.5.10.7 -r 1.5.10.8 COPYING;  cvs diff -u -r 1.23.2.32 -r 1.23.2.33 src/crash.c;  cvs diff -u -r 1.115.2.212 -r 1.115.2.213 src/main.c;  cvs diff -u -r 1.4.2.69 -r 1.4.2.70 src/gtk/about.c;  ) > 3.6.0cvs21.patchset
 ( cvs diff -u -r 1.654.2.3641 -r 1.654.2.3642 configure.ac;  ) > 3.6.0cvs22.patchset
 ( cvs diff -u -r 1.654.2.3642 -r 1.654.2.3643 configure.ac;  ) > 3.6.0cvs23.patchset
+( cvs diff -u -r 1.1.2.2 -r 1.1.2.3 claws-mail.pc.in;  ) > 3.6.0cvs24.patchset
