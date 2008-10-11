@@ -55,12 +55,12 @@
 #include "remotefolder.h"
 #include "alertpanel.h"
 #include "inc.h"
-#if (defined(USE_OPENSSL) || defined (USE_GNUTLS))
+#ifdef USE_GNUTLS
 #  include "ssl.h"
 #endif
 
 #define NNTP_PORT	119
-#if (defined(USE_OPENSSL) || defined (USE_GNUTLS))
+#ifdef USE_GNUTLS
 #define NNTPS_PORT	563
 #endif
 
@@ -99,7 +99,7 @@ static gchar *news_fetch_msg		(Folder		*folder,
 static void news_remove_cached_msg	(Folder 	*folder, 
 					 FolderItem 	*item, 
 					 MsgInfo 	*msginfo);
-#if (defined(USE_OPENSSL) || defined (USE_GNUTLS))
+#ifdef USE_GNUTLS
 static Session *news_session_new	 (Folder 	*folder,
 					  const gchar	*server,
 					  gushort	 port,
@@ -281,7 +281,7 @@ static void news_session_destroy(Session *session)
 		g_free(news_session->group);
 }
 
-#if (defined(USE_OPENSSL) || defined (USE_GNUTLS))
+#ifdef USE_GNUTLS
 static Session *news_session_new(Folder *folder, const gchar *server, gushort port,
 				 const gchar *userid, const gchar *passwd,
 				 SSLType ssl_type)
@@ -305,7 +305,7 @@ static Session *news_session_new(Folder *folder, const gchar *server, gushort po
 	
 	nntp_init(folder);
 
-#if (defined(USE_OPENSSL) || defined (USE_GNUTLS))
+#ifdef USE_GNUTLS
 	if (ssl_type != SSL_NONE)
 		r = nntp_threaded_connect_ssl(folder, server, port);
 	else
@@ -343,7 +343,7 @@ static Session *news_session_new_for_folder(Folder *folder)
 								  &(ac->session_passwd));
 	}
 
-#if (defined(USE_OPENSSL) || defined (USE_GNUTLS))
+#ifdef USE_GNUTLS
 	port = ac->set_nntpport ? ac->nntpport
 		: ac->ssl_nntp ? NNTPS_PORT : NNTP_PORT;
 	session = news_session_new(folder, ac->nntp_server, port, userid, passwd,

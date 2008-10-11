@@ -342,7 +342,7 @@ static void prefs_post_processing_open_cb (GtkAction	*action,
 
 static void prefs_filtering_open_cb 	(GtkAction	*action,
 				  gpointer	 data);
-#if (defined(USE_OPENSSL) || defined (USE_GNUTLS))
+#ifdef USE_GNUTLS
 static void ssl_manager_open_cb 	(GtkAction	*action,
 				  gpointer	 data);
 #endif
@@ -689,7 +689,7 @@ static GtkActionEntry mainwin_entries[] =
 	/* {"Tools/---",			NULL, "---", NULL, NULL, NULL }, */
 
 	{"Tools/Execute",			NULL, N_("E_xecute"), "X", NULL, G_CALLBACK(execute_summary_cb) }, 
-#if (defined(USE_OPENSSL) || defined (USE_GNUTLS))
+#ifdef USE_GNUTLS
 	/* {"Tools/---",			NULL, "---", NULL, NULL, NULL }, */
 	{"Tools/SSLCertificates",		NULL, N_("SSL cer_tificates"), NULL, NULL, G_CALLBACK(ssl_manager_open_cb) }, 
 #endif
@@ -1889,7 +1889,7 @@ MainWindow *main_window_create()
 	MENUITEM_ADDUI_MANAGER(mainwin->ui_manager, "/Menu/Tools", "Separator5", "Tools/---", GTK_UI_MANAGER_SEPARATOR)
 
 	MENUITEM_ADDUI_MANAGER(mainwin->ui_manager, "/Menu/Tools", "Execute", "Tools/Execute", GTK_UI_MANAGER_MENUITEM)
-#if (defined(USE_OPENSSL) || defined (USE_GNUTLS))
+#ifdef USE_GNUTLS
 	MENUITEM_ADDUI_MANAGER(mainwin->ui_manager, "/Menu/Tools", "Separator6", "Tools/---", GTK_UI_MANAGER_SEPARATOR)
 	MENUITEM_ADDUI_MANAGER(mainwin->ui_manager, "/Menu/Tools", "SSLCertificates", "Tools/SSLCertificates", GTK_UI_MANAGER_MENUITEM)
 #endif
@@ -2251,7 +2251,7 @@ MainWindow *main_window_create()
 	folderview_init(folderview);
 	summary_init(summaryview);
 	messageview_init(messageview);
-#if (defined(USE_OPENSSL) || defined (USE_GNUTLS))
+#ifdef USE_GNUTLS
 	sslcertwindow_register_hook();
 #endif
 	mainwin->lock_count = 0;
@@ -4822,7 +4822,7 @@ static void prefs_tags_open_cb(GtkAction *action, gpointer data)
 	GSList * list = summary_get_selected_msg_list(mainwin->summaryview);
 	tag_apply_open(list);
 }
-#if (defined(USE_OPENSSL) || defined (USE_GNUTLS))
+#ifdef USE_GNUTLS
 static void ssl_manager_open_cb(GtkAction *action, gpointer data)
 {
 	MainWindow *mainwin = (MainWindow *)data;

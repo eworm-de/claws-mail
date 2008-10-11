@@ -90,7 +90,7 @@ struct _SMTPSession
 
 	SMTPState state;
 
-#if (defined(USE_OPENSSL) || defined (USE_GNUTLS))
+#ifdef USE_GNUTLS
 	gboolean tls_init_done;
 #endif
 

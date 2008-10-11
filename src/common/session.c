@@ -66,7 +66,7 @@ void session_init(Session *session, const void *prefs_account, gboolean is_smtp)
 	session->sock = NULL;
 	session->server = NULL;
 	session->port = 0;
-#if (defined(USE_OPENSSL) || defined (USE_GNUTLS))
+#ifdef USE_GNUTLS
 	session->ssl_type = SSL_NONE;
 #endif
 	session->nonblocking = TRUE;
@@ -162,7 +162,7 @@ static gint session_connect_cb(SockInfo *sock, gpointer data)
 	session->sock = sock;
 	sock->account = session->account;
 	sock->is_smtp = session->is_smtp;
-#if (defined(USE_OPENSSL) || defined (USE_GNUTLS))
+#ifdef USE_GNUTLS
 	if (session->ssl_type == SSL_TUNNEL) {
 		sock_set_nonblocking_mode(sock, FALSE);
 		if (!ssl_init_socket(sock)) {
@@ -345,7 +345,7 @@ static gint session_close(Session *session)
 	return 0;
 }
 
-#if (defined(USE_OPENSSL) || defined (USE_GNUTLS))
+#ifdef USE_GNUTLS
 gint session_start_tls(Session *session)
 {
 	gboolean nb_mode;

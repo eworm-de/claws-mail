@@ -35,7 +35,7 @@
 
 typedef struct _SockInfo	SockInfo;
 
-#if (defined(USE_OPENSSL) || defined (USE_GNUTLS))
+#ifdef USE_GNUTLS
 #  include "ssl.h"
 #endif
 
@@ -58,9 +58,7 @@ typedef gboolean (*SockFunc)		(SockInfo	*sock,
 struct _SockInfo
 {
 	gint sock;
-#if USE_OPENSSL
-	SSL *ssl;
-#elif USE_GNUTLS
+#if USE_GNUTLS
 	gnutls_session ssl;
 	gnutls_certificate_credentials_t xcred;
 	gnutls_x509_crt client_crt;

@@ -49,7 +49,7 @@
 #include "folder.h"
 #include "alertpanel.h"
 #include "filesel.h"
-#if (defined(USE_OPENSSL) || defined (USE_GNUTLS))
+#ifdef USE_GNUTLS
 #include "ssl.h"
 #endif
 #include "prefs_common.h"
@@ -109,7 +109,7 @@ typedef struct
 	GtkWidget *recv_imap_subdir;
 	GtkWidget *subsonly_checkbtn;
 	GtkWidget *no_imap_warning;
-#if (defined(USE_OPENSSL) || defined (USE_GNUTLS))
+#ifdef USE_GNUTLS
 	GtkWidget *smtp_use_ssl;
 	GtkWidget *recv_use_ssl;
 	GtkWidget *smtp_use_tls;
@@ -623,7 +623,7 @@ static gboolean wizard_write_config(WizardWindow *wizard)
 	GList *account_list = NULL;
 	gchar *smtp_server, *recv_server;
 	gint smtp_port, recv_port;
-#if (defined(USE_OPENSSL) || defined (USE_GNUTLS))
+#ifdef USE_GNUTLS
 	SSLType smtp_ssl_type, recv_ssl_type;
 #endif
 
@@ -798,7 +798,7 @@ static gboolean wizard_write_config(WizardWindow *wizard)
 		prefs_account->use_smtp_auth = TRUE;
 	}
 
-#if (defined(USE_OPENSSL) || defined (USE_GNUTLS))
+#ifdef USE_GNUTLS
 	smtp_ssl_type = SSL_NONE;
 	recv_ssl_type = SSL_NONE;	
 
@@ -1212,7 +1212,7 @@ static void smtp_auth_changed (GtkWidget *btn, gpointer data)
 	gtk_widget_set_sensitive(wizard->smtp_password_label, do_auth);
 }
 
-#if (defined(USE_OPENSSL) || defined (USE_GNUTLS))
+#ifdef USE_GNUTLS
 static void cert_browse_cb(GtkWidget *widget, gpointer data)
 {
 	GtkEntry *dest = GTK_ENTRY(data);
@@ -1237,7 +1237,7 @@ static GtkWidget* smtp_page (WizardWindow * wizard)
 	GtkWidget *table = gtk_table_new(1, 1, FALSE);
 	GtkWidget *vbox;
 	GtkWidget *hbox;
-#if (defined(USE_OPENSSL) || defined (USE_GNUTLS))
+#ifdef USE_GNUTLS
 	GtkWidget *label;
 	GtkWidget *button;
 	GtkWidget *smtp_cert_table;
@@ -1311,7 +1311,7 @@ static GtkWidget* smtp_page (WizardWindow * wizard)
 		gtk_misc_set_alignment(GTK_MISC(wizard->smtp_password_label), 1, 0.5);	      
 	gtk_box_pack_start(GTK_BOX(hbox), wizard->smtp_password_label, FALSE, FALSE, 0);
 	gtk_box_pack_start(GTK_BOX(hbox), wizard->smtp_password, TRUE, TRUE, 0);
-#if (defined(USE_OPENSSL) || defined (USE_GNUTLS))
+#ifdef USE_GNUTLS
 	hbox = gtk_hbox_new(FALSE, VSPACING_NARROW);
 	gtk_box_pack_start (GTK_BOX(vbox), hbox, FALSE, FALSE, 0);
 	wizard->smtp_use_ssl = gtk_check_button_new_with_label(
@@ -1381,7 +1381,7 @@ static void wizard_protocol_change(WizardWindow *wizard, RecvProtocol protocol)
 		gtk_widget_show(wizard->recv_username_label);
 		gtk_widget_show(wizard->recv_password_label);
 		gtk_widget_hide(wizard->no_imap_warning);
-#if (defined(USE_OPENSSL) || defined (USE_GNUTLS))
+#ifdef USE_GNUTLS
 		gtk_widget_show(wizard->recv_use_ssl);
 		gtk_widget_show(wizard->recv_use_tls);
 		gtk_widget_show(wizard->recv_cert_table);
@@ -1406,7 +1406,7 @@ static void wizard_protocol_change(WizardWindow *wizard, RecvProtocol protocol)
 		gtk_widget_show(wizard->recv_username_label);
 		gtk_widget_show(wizard->recv_password_label);
 		gtk_widget_hide(wizard->no_imap_warning);
-#if (defined(USE_OPENSSL) || defined (USE_GNUTLS))
+#ifdef USE_GNUTLS
 		gtk_widget_show(wizard->recv_use_ssl);
 		gtk_widget_show(wizard->recv_use_tls);
 		gtk_widget_show(wizard->recv_cert_table);
@@ -1432,7 +1432,7 @@ static void wizard_protocol_change(WizardWindow *wizard, RecvProtocol protocol)
 			gtk_widget_hide(wizard->mailbox_label);
 			gtk_widget_hide(wizard->mailbox_name);
 		}
-#if (defined(USE_OPENSSL) || defined (USE_GNUTLS))
+#ifdef USE_GNUTLS
 		gtk_widget_hide(wizard->recv_use_ssl);
 		gtk_widget_hide(wizard->recv_use_tls);
 		gtk_widget_hide(wizard->recv_cert_table);
@@ -1451,7 +1451,7 @@ static void wizard_protocol_change(WizardWindow *wizard, RecvProtocol protocol)
 		gtk_widget_hide(wizard->recv_password);
 		gtk_widget_hide(wizard->recv_username_label);
 		gtk_widget_hide(wizard->recv_password_label);
-#if (defined(USE_OPENSSL) || defined (USE_GNUTLS))
+#ifdef USE_GNUTLS
 		gtk_widget_hide(wizard->recv_use_ssl);
 		gtk_widget_hide(wizard->recv_use_tls);
 		gtk_widget_hide(wizard->recv_cert_table);
@@ -1477,7 +1477,7 @@ static GtkWidget* recv_page (WizardWindow * wizard)
 	GtkWidget *table = gtk_table_new(1,1, FALSE);
 	GtkWidget *vbox;
 	GtkWidget *hbox;
-#if (defined(USE_OPENSSL) || defined (USE_GNUTLS))
+#ifdef USE_GNUTLS
 	GtkWidget *label;
 	GtkWidget *button;
 	GtkWidget *recv_cert_table;
@@ -1574,7 +1574,7 @@ static GtkWidget* recv_page (WizardWindow * wizard)
 	gtk_box_pack_start(GTK_BOX(hbox), wizard->recv_password_label, FALSE, FALSE, 0);
 	gtk_box_pack_start(GTK_BOX(hbox), wizard->recv_password, TRUE, TRUE, 0);
 	
-#if (defined(USE_OPENSSL) || defined (USE_GNUTLS))
+#ifdef USE_GNUTLS
 	hbox = gtk_hbox_new(FALSE, VSPACING_NARROW);
 	gtk_box_pack_start (GTK_BOX(vbox), hbox, FALSE, FALSE, 0);
 	wizard->recv_use_ssl = gtk_check_button_new_with_label(

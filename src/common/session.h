@@ -92,7 +92,7 @@ struct _Session
 	gchar *server;
 	gushort port;
 
-#if (defined(USE_OPENSSL) || defined (USE_GNUTLS))
+#ifdef USE_GNUTLS
 	SSLType ssl_type;
 #endif
 
@@ -192,7 +192,7 @@ void session_set_send_data_notify	(Session	*session,
 					 SendDataNotify	 notify_func,
 					 gpointer	 data);
 
-#if (defined(USE_OPENSSL) || defined (USE_GNUTLS))
+#ifdef USE_GNUTLS
 gint session_start_tls	(Session	*session);
 #endif
 

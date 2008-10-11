@@ -121,7 +121,7 @@ GCRY_THREAD_OPTION_PTHREAD_IMPL;
 #ifdef HAVE_VALGRIND
 #include "valgrind.h"
 #endif
-#if (defined(USE_OPENSSL) || defined (USE_GNUTLS))
+#ifdef USE_GNUTLS
 #  include "ssl.h"
 #endif
 

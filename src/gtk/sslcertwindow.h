@@ -25,13 +25,7 @@
 #  include "config.h"
 #endif
 
-#if (defined(USE_OPENSSL) || defined (USE_GNUTLS))
-#ifdef USE_OPENSSL
-#include <openssl/ssl.h>
-#include <openssl/objects.h>
-#else
-/* GNUTLS */
-#endif
+#ifdef USE_GNUTLS
 #include <glib.h>
 #include <gtk/gtk.h>
 #include "ssl_certificate.h"
@@ -39,5 +33,5 @@
 void sslcertwindow_show_cert(SSLCertificate *cert);
 void sslcertwindow_register_hook(void);
 
-#endif /* USE_OPENSSL */
+#endif /* USE_GNUTLS */
 #endif /* __SSL_CERTWINDOW_H__ */

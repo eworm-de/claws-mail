@@ -25,14 +25,9 @@
 #  include "config.h"
 #endif
 
-#if (defined(USE_OPENSSL) || defined (USE_GNUTLS))
-#if USE_OPENSSL
-#include <openssl/ssl.h>
-#include <openssl/objects.h>
-#else
+#ifdef USE_GNUTLS
 #include <gnutls/gnutls.h>
 #include <gnutls/x509.h>
-#endif
 
 #include <glib.h>
 
@@ -44,17 +39,11 @@ typedef struct _SSLCertificate SSLCertificate;
 
 struct _SSLCertificate
 {
-#if USE_OPENSSL
-	X509 *x509_cert;
-#else
 	gnutls_x509_crt x509_cert;
-#endif
 	gchar *host;
 	gushort port;
 	gchar *fingerprint;
-#if USE_GNUTLS
 	guint status;
-#endif
 };
 
 typedef struct _SSLCertHookData SSLCertHookData;
@@ -69,27 +58,12 @@ struct _SSLCertHookData
 
 SSLCertificate *ssl_certificate_find (gchar *host, gushort port, const gchar *fingerprint);
 SSLCertificate *ssl_certificate_find_lookup (gchar *host, gushort port, const gchar *fingerprint, gboolean lookup);
-#if USE_OPENSSL
-gboolean ssl_certificate_check (X509 *x509_cert, gchar *fqdn, gchar *host, gushort port);
-#else
 gboolean ssl_certificate_check (gnutls_x509_crt x509_cert, guint status, gchar *fqdn, gchar *host, gushort port);
-#endif
 void ssl_certificate_destroy(SSLCertificate *cert);
 void ssl_certificate_delete_from_disk(SSLCertificate *cert);
 char * readable_fingerprint(unsigned char *src, int len);
-#if USE_OPENSSL
-char *ssl_certificate_check_signer (X509 *cert);
-time_t asn1toTime(ASN1_TIME *asn1Time);
-#else
 char *ssl_certificate_check_signer (gnutls_x509_crt cert, guint status);
-#endif
 
-#if USE_OPENSSL
-X509 *ssl_certificate_get_x509_from_pem_file(const gchar *file);
-EVP_PKEY *ssl_certificate_get_pkey_from_pem_file(const gchar *file);
-void ssl_certificate_get_x509_and_pkey_from_p12_file(const gchar *file, 
-			const gchar *password, X509 **x509, EVP_PKEY **pkey);
-#endif
 #ifdef USE_GNUTLS
 gnutls_x509_crt ssl_certificate_get_x509_from_pem_file(const gchar *file);
 gnutls_x509_privkey ssl_certificate_get_pkey_from_pem_file(const gchar *file);
@@ -98,5 +72,5 @@ void ssl_certificate_get_x509_and_pkey_from_p12_file(const gchar *file,
 size_t gnutls_i2d_X509(gnutls_x509_crt x509_cert, unsigned char **output);
 size_t gnutls_i2d_PrivateKey(gnutls_x509_privkey pkey, unsigned char **output);
 #endif
-#endif /* USE_OPENSSL */
+#endif /* USE_GNUTLS */
 #endif /* SSL_CERTIFICATE_H */

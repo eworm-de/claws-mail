@@ -91,7 +91,6 @@
 #define USERS_ML_ADDR		"claws-mail-users@dotsrc.org"
 #define GPL_URI			"http://www.gnu.org/licenses/gpl.html"
 #define DONATE_URI		"http://www.claws-mail.org/sponsors.php"
-#define OPENSSL_URI		"http://www.openssl.org/"
 #define RELEASE_NOTES_FILE	"RELEASE_NOTES"
 #define THEMEINFO_FILE		".claws_themeinfo"
 #define FOLDER_LIST		"folderlist.xml"

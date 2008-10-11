@@ -22,17 +22,13 @@
 #  include "config.h"
 #endif
 
-#if (defined(USE_OPENSSL) || defined (USE_GNUTLS))
-#if USE_OPENSSL
-#include <openssl/ssl.h>
-#else
+#ifdef USE_GNUTLS
 #include <gnutls/gnutls.h>
 #include <gnutls/x509.h>
 #include <gnutls/pkcs12.h>
 #include <sys/stat.h>
 #include <unistd.h>
 #include <string.h>
-#endif
 #include <sys/types.h>
 #include <stdio.h>
 #include <glib.h>
@@ -67,59 +63,7 @@ static gchar *get_certificate_path(const gchar *host, const gchar *port, const g
 			  host, ".", port, ".cert", NULL);
 }
 
-#if USE_OPENSSL
-static SSLCertificate *ssl_certificate_new_lookup(X509 *x509_cert, gchar *host, gushort port, gboolean lookup);
-#else
 static SSLCertificate *ssl_certificate_new_lookup(gnutls_x509_crt x509_cert, gchar *host, gushort port, gboolean lookup);
-#endif
-#if USE_OPENSSL
-/* from Courier */
-time_t asn1toTime(ASN1_TIME *asn1Time)
-{
-	struct tm tm;
-	int offset;
-
-	if (asn1Time == NULL || asn1Time->length < 13)
-		return 0;
-
-	memset(&tm, 0, sizeof(tm));
-
-#define N2(n)	((asn1Time->data[n]-'0')*10 + asn1Time->data[(n)+1]-'0')
-
-#define CPY(f,n) (tm.f=N2(n))
-
-	CPY(tm_year,0);
-
-	if(tm.tm_year < 50)
-		tm.tm_year += 100; /* Sux */
-
-	CPY(tm_mon, 2);
-	--tm.tm_mon;
-	CPY(tm_mday, 4);
-	CPY(tm_hour, 6);
-	CPY(tm_min, 8);
-	CPY(tm_sec, 10);
-
-	offset=0;
-
-	if (asn1Time->data[12] != 'Z')
-	{
-		if (asn1Time->length < 17)
-			return 0;
-
-		offset=N2(13)*3600+N2(15)*60;
-
-		if (asn1Time->data[12] == '-')
-			offset= -offset;
-	}
-
-#undef N2
-#undef CPY
-
-	return mktime(&tm)-offset;
-}
-#endif
-
 static char * get_fqdn(char *host)
 {
 #ifdef INET6
@@ -229,30 +173,18 @@ static gnutls_x509_crt x509_crt_copy(gnutls_x509_crt src)
 }
 #endif
 
-#if USE_OPENSSL
-static SSLCertificate *ssl_certificate_new_lookup(X509 *x509_cert, gchar *host, gushort port, gboolean lookup)
-#else
 static SSLCertificate *ssl_certificate_new_lookup(gnutls_x509_crt x509_cert, gchar *host, gushort port, gboolean lookup)
-#endif
 {
 	SSLCertificate *cert = g_new0(SSLCertificate, 1);
-#if USE_OPENSSL
-	unsigned int n;
-#else
 	size_t n;
-#endif
 	unsigned char md[128];	
 
 	if (host == NULL || x509_cert == NULL) {
 		ssl_certificate_destroy(cert);
 		return NULL;
 	}
-#if USE_OPENSSL
-	cert->x509_cert = X509_dup(x509_cert);
-#else
 	cert->x509_cert = x509_crt_copy(x509_cert);
 	cert->status = (guint)-1;
-#endif
 	if (lookup)
 		cert->host = get_fqdn(host);
 	else
@@ -260,14 +192,9 @@ static SSLCertificate *ssl_certificate_new_lookup(gnutls_x509_crt x509_cert, gch
 	cert->port = port;
 	
 	/* fingerprint */
-#if USE_OPENSSL
-	X509_digest(cert->x509_cert, EVP_md5(), md, &n);
-	cert->fingerprint = readable_fingerprint(md, (int)n);
-#else
 	n = 128;
 	gnutls_x509_crt_get_fingerprint(cert->x509_cert, GNUTLS_DIG_MD5, md, &n);
 	cert->fingerprint = readable_fingerprint(md, (int)n);
-#endif
 	return cert;
 }
 
@@ -457,11 +384,7 @@ void ssl_certificate_destroy(SSLCertificate *cert)
 		return;
 
 	if (cert->x509_cert)
-#if USE_OPENSSL
-		X509_free(cert->x509_cert);
-#else
 		gnutls_x509_crt_deinit(cert->x509_cert);
-#endif
 	g_free(cert->host);
 	g_free(cert->fingerprint);
 	g_free(cert);
@@ -490,11 +413,7 @@ SSLCertificate *ssl_certificate_find_lookup (gchar *host, gushort port, const gc
 	gchar *buf;
 	gchar *fqdn_host;
 	SSLCertificate *cert = NULL;
-#if USE_OPENSSL
-	X509 *tmp_x509;
-#else
 	gnutls_x509_crt tmp_x509;
-#endif
 	FILE *fp = NULL;
 	gboolean must_rename = FALSE;
 
@@ -530,18 +449,10 @@ SSLCertificate *ssl_certificate_find_lookup (gchar *host, gushort port, const gc
 		return NULL;
 	}
 	
-#if USE_OPENSSL
-	if ((tmp_x509 = d2i_X509_fp(fp, 0)) != NULL) {
-#else
 	if ((tmp_x509 = gnutls_d2i_X509_fp(fp, 0)) != NULL) {
-#endif
 		cert = ssl_certificate_new_lookup(tmp_x509, fqdn_host, port, lookup);
 		debug_print("got cert %p\n", cert);
-#if USE_OPENSSL
-		X509_free(tmp_x509);
-#else
 		gnutls_x509_crt_deinit(tmp_x509);
-#endif
 	}
 	fclose(fp);
 	g_free(file);
@@ -562,14 +473,6 @@ SSLCertificate *ssl_certificate_find_lookup (gchar *host, gushort port, const gc
 
 static gboolean ssl_certificate_compare (SSLCertificate *cert_a, SSLCertificate *cert_b)
 {
-#ifdef USE_OPENSSL
- 	if (cert_a == NULL || cert_b == NULL)
- 		return FALSE;
-	else if (!X509_cmp(cert_a->x509_cert, cert_b->x509_cert))
-		return TRUE;
-	else
-		return FALSE;
-#else
 	char *output_a;
 	char *output_b;
 	size_t cert_size_a = 0, cert_size_b = 0;
@@ -620,35 +523,8 @@ static gboolean ssl_certificate_compare (SSLCertificate *cert_a, SSLCertificate 
 	g_free(output_b);
 	
 	return TRUE;
-#endif
 }
 
-#if USE_OPENSSL
-char *ssl_certificate_check_signer (X509 *cert) 
-{
-	X509_STORE_CTX store_ctx;
-	X509_STORE *store = SSL_CTX_get_cert_store(ssl_get_ctx());
-	char *err_msg = NULL;
-
-	if (store == NULL) {
-		g_print("Can't create X509_STORE\n");
-		return NULL;
-	}
-
-	X509_STORE_CTX_init (&store_ctx, store, cert, NULL);
-
-	if(!X509_verify_cert (&store_ctx)) {
-		err_msg = g_strdup(X509_verify_cert_error_string(
-					X509_STORE_CTX_get_error(&store_ctx)));
-		debug_print("Can't check signer: %s\n", err_msg);
-		X509_STORE_CTX_cleanup (&store_ctx);
-		return err_msg;
-			
-	}
-	X509_STORE_CTX_cleanup (&store_ctx);
-	return NULL;
-}
-#else
 static guint check_cert(gnutls_x509_crt cert)
 {
 	gnutls_x509_crt *ca_list;
@@ -728,24 +604,15 @@ char *ssl_certificate_check_signer (gnutls_x509_crt cert, guint status)
 
 	return NULL;
 }
-#endif
 
-#if USE_OPENSSL
-gboolean ssl_certificate_check (X509 *x509_cert, gchar *fqdn, gchar *host, gushort port)
-#else
 gboolean ssl_certificate_check (gnutls_x509_crt x509_cert, guint status, gchar *fqdn, gchar *host, gushort port)
-#endif
 {
 	SSLCertificate *current_cert = NULL;
 	SSLCertificate *known_cert;
 	SSLCertHookData cert_hook_data;
 	gchar *fqdn_host = NULL;	
 	gchar *fingerprint;
-#ifdef USE_OPENSSL
-	unsigned int n;
-#else
 	size_t n;
-#endif
 	unsigned char md[128];	
 
 	if (fqdn)
@@ -765,18 +632,11 @@ gboolean ssl_certificate_check (gnutls_x509_crt x509_cert, guint status, gchar *
 		return FALSE;
 	}
 
-#if USE_GNUTLS
 	current_cert->status = status;
-#endif
 	/* fingerprint */
-#if USE_OPENSSL
-	X509_digest(x509_cert, EVP_md5(), md, &n);
-	fingerprint = readable_fingerprint(md, (int)n);
-#else
 	n = 128;
 	gnutls_x509_crt_get_fingerprint(x509_cert, GNUTLS_DIG_MD5, md, &n);
 	fingerprint = readable_fingerprint(md, n);
-#endif
 
 	known_cert = ssl_certificate_find_lookup (fqdn_host, port, fingerprint, FALSE);
 
@@ -817,11 +677,7 @@ gboolean ssl_certificate_check (gnutls_x509_crt x509_cert, guint status, gchar *
 			ssl_certificate_destroy(known_cert);
 			return TRUE;
 		}
-#if USE_OPENSSL
-	} else if (asn1toTime(X509_get_notAfter(current_cert->x509_cert)) < time(NULL)) {
-#else
 	} else if (gnutls_x509_crt_get_expiration_time(current_cert->x509_cert) < time(NULL)) {
-#endif
 		gchar *tmp = g_strdup_printf("%s:%d", current_cert->host, current_cert->port);
 		
 		if (warned_expired == NULL)
@@ -859,85 +715,6 @@ gboolean ssl_certificate_check (gnutls_x509_crt x509_cert, guint status, gchar *
 	return TRUE;
 }
 
-#if USE_OPENSSL
-X509 *ssl_certificate_get_x509_from_pem_file(const gchar *file)
-{
-	X509 *x509 = NULL;
-	if (!file)
-		return NULL;
-	if (is_file_exist(file)) {
-		FILE *fp = g_fopen(file, "r");
-		if (fp) {
-			x509 = PEM_read_X509(fp, NULL, NULL, NULL);
-			fclose(fp);
-			return x509;
-		}
-	} else {
-		log_error(LOG_PROTOCOL, "Can not open certificate file %s\n", file);
-	}
-	return NULL;
-}
-
-static int ssl_pkey_password_cb(char *buf, int max_len, int flag, void *pwd)
-{
-	return 0;
-}
-
-EVP_PKEY *ssl_certificate_get_pkey_from_pem_file(const gchar *file)
-{
-	EVP_PKEY *pkey = NULL;
-	if (!file)
-		return NULL;
-	if (is_file_exist(file)) {
-		FILE *fp = g_fopen(file, "r");
-		if (fp) {
-			pkey = PEM_read_PrivateKey(fp, NULL, ssl_pkey_password_cb, NULL);
-			fclose(fp);
-			return pkey;
-		}
-	} else {
-		log_error(LOG_PROTOCOL, "Can not open private key file %s\n", file);
-	}
-	return NULL;
-}
-
-void ssl_certificate_get_x509_and_pkey_from_p12_file(const gchar *file, const gchar *password,
-			X509 **x509, EVP_PKEY **pkey)
-{
-	PKCS12 *p12 = NULL;
-	*x509 = NULL;
-	*pkey = NULL;
-
-	if (!file)
-		return;
-
-	if (is_file_exist(file)) {
-		FILE *fp = g_fopen(file, "r");
-		if (fp) {
-			p12 = d2i_PKCS12_fp(fp, NULL);
-			fclose(fp);
-		}
-	} else {
-		log_error(LOG_PROTOCOL, "Can not open certificate file %s\n", file);
-	}
-	if (p12 != NULL) {
-		if (PKCS12_parse(p12, password, pkey, x509, NULL) == 1) {
-			/* we got the correct password */
-		} else {
-			gchar *tmp = NULL;
-			hooks_invoke(SSL_CERT_GET_PASSWORD, &tmp);
-			if (PKCS12_parse(p12, tmp, pkey, x509, NULL) == 1) {
-				debug_print("got p12\n");
-			} else {
-				log_error(LOG_PROTOCOL, "%s\n", ERR_error_string(ERR_get_error(),NULL));
-			}
-		}
-		PKCS12_free(p12);
-	}
-}
-#endif
-
-#ifdef USE_GNUTLS
 gnutls_x509_crt ssl_certificate_get_x509_from_pem_file(const gchar *file)
 {
 	gnutls_x509_crt x509 = NULL;
@@ -1130,5 +907,4 @@ void ssl_certificate_get_x509_and_pkey_from_p12_file(const gchar *file, const gc
 		gnutls_pkcs12_deinit(p12);
 	}
 }
-#endif
-#endif /* USE_OPENSSL */
+#endif /* USE_GNUTLS */

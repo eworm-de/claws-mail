@@ -45,7 +45,7 @@
 #  include <iconv.h>
 #endif
 
-#if (defined(USE_OPENSSL) || defined (USE_GNUTLS))
+#ifdef USE_GNUTLS
 #  include "ssl.h"
 #endif
 
@@ -142,7 +142,7 @@ struct _IMAPNameSpace
 
 
 #define IMAP4_PORT	143
-#if (defined(USE_OPENSSL) || defined (USE_GNUTLS))
+#ifdef USE_GNUTLS
 #define IMAPS_PORT	993
 #endif
 
@@ -332,7 +332,7 @@ static gint imap_cmd_login	(IMAPSession	*session,
 				 const gchar	*pass,
 				 const gchar 	*type);
 static gint imap_cmd_noop	(IMAPSession	*session);
-#if (defined(USE_OPENSSL) || defined (USE_GNUTLS))
+#ifdef USE_GNUTLS
 static gint imap_cmd_starttls	(IMAPSession	*session);
 #endif
 static gint imap_cmd_select	(IMAPSession	*session,
@@ -683,7 +683,7 @@ static void imap_handle_error(Session *session, int libetpan_errcode)
 	case MAILIMAP_ERROR_SASL:
 		log_warning(LOG_PROTOCOL, _("IMAP error on %s: SASL error\n"), session_server);
 		break;
-#if (defined(USE_OPENSSL) || defined (USE_GNUTLS))
+#ifdef USE_GNUTLS
 	case MAILIMAP_ERROR_SSL:
 		log_warning(LOG_PROTOCOL, _("IMAP error on %s: SSL error\n"), session_server);
 		break;
@@ -1029,7 +1029,7 @@ static IMAPSession *imap_session_new(Folder * folder,
 	int r;
 	int authenticated = FALSE;
 	
-#if (defined(USE_OPENSSL) || defined (USE_GNUTLS))
+#ifdef USE_GNUTLS
 	/* FIXME: IMAP over SSL only... */ 
 	SSLType ssl_type;
 
@@ -1066,7 +1066,7 @@ static IMAPSession *imap_session_new(Folder * folder,
 	else 
 #endif
 	{
-#if (defined(USE_OPENSSL) || defined (USE_GNUTLS))
+#ifdef USE_GNUTLS
 		if (ssl_type == SSL_TUNNEL) {
 			r = imap_threaded_connect_ssl(folder,
 						      account->recv_server,
@@ -1089,7 +1089,7 @@ static IMAPSession *imap_session_new(Folder * folder,
 		authenticated = FALSE;
 	}
 	else {
-#if (defined(USE_OPENSSL) || defined (USE_GNUTLS))
+#ifdef USE_GNUTLS
 		if (r == MAILIMAP_ERROR_SSL)
 			log_error(LOG_PROTOCOL, _("SSL handshake failed\n"));
 		else
@@ -1127,7 +1127,7 @@ static IMAPSession *imap_session_new(Folder * folder,
 	session->folder = folder;
 	IMAP_FOLDER(session->folder)->last_seen_separator = 0;
 
-#if (defined(USE_OPENSSL) || defined (USE_GNUTLS))
+#ifdef USE_GNUTLS
 	if (account->ssl_imap == SSL_STARTTLS) {
 		gint ok;
 
@@ -3482,7 +3482,7 @@ static gint imap_cmd_login(IMAPSession *session,
 	if (!strcmp(type, "LOGIN") && imap_has_capability(session, "LOGINDISABLED")) {
 		gint ok = MAILIMAP_ERROR_BAD_STATE;
 		if (imap_has_capability(session, "STARTTLS")) {
-#if (defined(USE_OPENSSL) || defined (USE_GNUTLS))
+#ifdef USE_GNUTLS
 			log_warning(LOG_PROTOCOL, _("Server requires TLS to log in.\n"));
 			ok = imap_cmd_starttls(session);
 			if (ok != MAILIMAP_NO_ERROR) {
@@ -3568,7 +3568,7 @@ static gint imap_cmd_noop(IMAPSession *session)
 	return MAILIMAP_NO_ERROR;
 }
 
-#if (defined(USE_OPENSSL) || defined (USE_GNUTLS))
+#ifdef USE_GNUTLS
 static gint imap_cmd_starttls(IMAPSession *session)
 {
 	int r;

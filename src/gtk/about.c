@@ -576,14 +576,6 @@ static GtkWidget *about_create_child_page_license(void)
 		"http://www.gnu.org/licenses/", -1,
 		"link", NULL);
 	gtk_text_buffer_insert(buffer, &iter, _(">. \n\n"), -1);
-#ifdef USE_OPENSSL
-	gtk_text_buffer_insert(buffer, &iter,
-		_("This product includes software developed by the OpenSSL Project "
-		  "for use in the OpenSSL Toolkit ("), -1);
-	gtk_text_buffer_insert_with_tags_by_name(buffer, &iter, OPENSSL_URI, -1,
-		"link", NULL);
-	gtk_text_buffer_insert(buffer, &iter, _(").\n"), -1);
-#endif
 
 	g_signal_connect(G_OBJECT(tag), "event",
 				G_CALLBACK(about_textview_uri_clicked), text);

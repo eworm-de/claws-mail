@@ -20,7 +20,7 @@
 
 #ifndef SSL_MANAGER_H
 #define SSL_MANAGER_H
-#if (defined(USE_OPENSSL) || defined (USE_GNUTLS))
+#ifdef USE_GNUTLS
 #include "mainwindow.h"
 
 void ssl_manager_create (void); 

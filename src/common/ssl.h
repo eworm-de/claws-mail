@@ -30,21 +30,11 @@ typedef enum {
 	SSL_STARTTLS
 } SSLType;
 
-#if (defined(USE_OPENSSL) || defined (USE_GNUTLS))
+#ifdef USE_GNUTLS
 #include <glib.h>
 
-#if USE_OPENSSL
-#include <openssl/crypto.h>
-#include <openssl/x509.h>
-#include <openssl/pem.h>
-#include <openssl/ssl.h>
-#include <openssl/err.h>
-#include <openssl/evp.h>
-#include <openssl/pkcs12.h>
-#else
 #include <gnutls/gnutls.h>
 #include <gnutls/x509.h>
-#endif
 #include "socket.h"
 
 typedef enum {
@@ -68,11 +58,7 @@ struct _SSLClientCertHookData
 	gboolean is_smtp;
 };
 
-#ifdef USE_OPENSSL
-SSL_CTX *ssl_get_ctx(void);
-#endif
-		
 const gchar *claws_ssl_get_cert_file(void);
-#endif /* USE_OPENSSL */
+#endif /* USE_GNUTLS */
 
 #endif /* __SSL_H__ */

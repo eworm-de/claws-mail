@@ -1,3 +1,36 @@
+2008-10-11 [colin]	3.6.1cvs4
+
+	* src/account.c
+	* src/imap.c
+	* src/inc.c
+	* src/main.c
+	* src/mainwindow.c
+	* src/news.c
+	* src/pop.c
+	* src/pop.h
+	* src/prefs_account.c
+	* src/send_message.c
+	* src/send_message.h
+	* src/ssl_manager.c
+	* src/ssl_manager.h
+	* src/wizard.c
+	* src/common/claws.c
+	* src/common/defs.h
+	* src/common/session.c
+	* src/common/session.h
+	* src/common/smtp.c
+	* src/common/smtp.h
+	* src/common/socket.c
+	* src/common/socket.h
+	* src/common/ssl.c
+	* src/common/ssl.h
+	* src/common/ssl_certificate.c
+	* src/common/ssl_certificate.h
+	* src/gtk/about.c
+	* src/gtk/sslcertwindow.c
+	* src/gtk/sslcertwindow.h
+		Remove OpenSSL code
+
 2008-10-11 [colin]	3.6.1cvs3
 
 	* src/common/ssl_certificate.c

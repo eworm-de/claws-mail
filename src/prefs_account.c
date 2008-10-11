@@ -72,7 +72,7 @@ static GtkWidget *entry_sigpath;
 static GtkWidget *signature_browse_button;
 static GtkWidget *signature_edit_button;
 
-#if (defined(USE_OPENSSL) || defined (USE_GNUTLS))
+#ifdef USE_GNUTLS
 static GtkWidget *entry_in_cert_file;
 static GtkWidget *entry_out_cert_file;
 static GtkWidget *in_ssl_cert_browse_button;
@@ -305,7 +305,7 @@ static SendPage send_page;
 static ComposePage compose_page;
 static TemplatesPage templates_page;
 static PrivacyPage privacy_page;
-#if (defined(USE_OPENSSL) || defined (USE_GNUTLS))
+#ifdef USE_GNUTLS
 static SSLPage ssl_page;
 #endif
 static AdvancedPage advanced_page;
@@ -680,7 +680,7 @@ static PrefParam privacy_param[] = {
 };
 
 static PrefParam ssl_param[] = {
-#if (defined(USE_OPENSSL) || defined (USE_GNUTLS))
+#ifdef USE_GNUTLS
 	{"ssl_pop", "0", &tmp_ac_prefs.ssl_pop, P_ENUM,
 	 &ssl_page.pop_nossl_radiobtn,
 	 prefs_account_enum_set_data_from_radiobtn,
@@ -743,7 +743,7 @@ static PrefParam ssl_param[] = {
 
 	{"use_nonblocking_ssl", "1", &tmp_ac_prefs.use_nonblocking_ssl, P_BOOL,
 	 NULL, NULL, NULL},
-#endif /* USE_OPENSSL */
+#endif /* USE_GNUTLS */
 
 	{NULL, NULL, NULL, P_OTHER, NULL, NULL, NULL}
 };
@@ -850,7 +850,7 @@ static void prefs_account_sigcmd_radiobtn_cb	(GtkWidget	*widget,
 
 static void prefs_account_signature_browse_cb	(GtkWidget	*widget,
 						 gpointer	 data);
-#if (defined(USE_OPENSSL) || defined (USE_GNUTLS))
+#ifdef USE_GNUTLS
 static void prefs_account_in_cert_browse_cb	(GtkWidget	*widget,
 						 gpointer	 data);
 
@@ -2248,7 +2248,7 @@ static void privacy_create_widget_func(PrefsPage * _page,
 	page->page.widget = vbox1;
 }
 	
-#if (defined(USE_OPENSSL) || defined (USE_GNUTLS))
+#ifdef USE_GNUTLS
 
 #define CREATE_RADIO_BUTTON(box, btn, btn_p, label, data)		\
 {									\
@@ -2498,7 +2498,7 @@ static void ssl_create_widget_func(PrefsPage * _page,
 
 #undef CREATE_RADIO_BUTTONS
 #undef CREATE_RADIO_BUTTON
-#endif /* USE_OPENSSL */
+#endif /* USE_GNUTLS */
 	
 static void advanced_create_widget_func(PrefsPage * _page,
                                            GtkWindow * window,
@@ -2856,7 +2856,7 @@ static gint prefs_privacy_apply(void)
 	return 0;
 }
 
-#if (defined(USE_OPENSSL) || defined (USE_GNUTLS))
+#ifdef USE_GNUTLS
 static gint prefs_ssl_apply(void)
 {
 	prefs_set_data_from_dialog(ssl_param);
@@ -2900,7 +2900,7 @@ static void privacy_destroy_widget_func(PrefsPage *_page)
 	/* PrivacyPage *page = (PrivacyPage *) _page; */
 }
 
-#if (defined(USE_OPENSSL) || defined (USE_GNUTLS))
+#ifdef USE_GNUTLS
 static void ssl_destroy_widget_func(PrefsPage *_page)
 {
 	/* SSLPage *page = (SSLPage *) _page; */
@@ -2972,7 +2972,7 @@ static gboolean privacy_can_close_func(PrefsPage *_page)
 	return prefs_privacy_apply() >= 0;
 }
 
-#if (defined(USE_OPENSSL) || defined (USE_GNUTLS))
+#ifdef USE_GNUTLS
 static gboolean ssl_can_close_func(PrefsPage *_page)
 {
 	SSLPage *page = (SSLPage *) _page;
@@ -3072,7 +3072,7 @@ static void privacy_save_func(PrefsPage *_page)
 		cancelled = FALSE;
 }
 
-#if (defined(USE_OPENSSL) || defined (USE_GNUTLS))
+#ifdef USE_GNUTLS
 static void ssl_save_func(PrefsPage *_page)
 {
 	SSLPage *page = (SSLPage *) _page;
@@ -3204,7 +3204,7 @@ static void register_privacy_page(void)
 	prefs_account_register_page((PrefsPage *) &privacy_page);
 }
 
-#if (defined(USE_OPENSSL) || defined (USE_GNUTLS))
+#ifdef USE_GNUTLS
 static void register_ssl_page(void)
 {
 	static gchar *path[3];
@@ -3313,7 +3313,7 @@ void prefs_account_init()
 	register_compose_page();
 	register_templates_page();
 	register_privacy_page();
-#if (defined(USE_OPENSSL) || defined (USE_GNUTLS))
+#ifdef USE_GNUTLS
 	register_ssl_page();
 	hooks_register_hook(SSLCERT_GET_CLIENT_CERT_HOOKLIST, sslcert_get_client_cert_hook, NULL);
 	hooks_register_hook(SSL_CERT_GET_PASSWORD, sslcert_get_password, NULL);
@@ -3690,7 +3690,7 @@ static void prefs_account_signature_browse_cb(GtkWidget *widget, gpointer data)
 	g_free(utf8_filename);
 }
 
-#if (defined(USE_OPENSSL) || defined (USE_GNUTLS))
+#ifdef USE_GNUTLS
 static void prefs_account_in_cert_browse_cb(GtkWidget *widget, gpointer data)
 {
 	gchar *filename;
@@ -4055,7 +4055,7 @@ static void prefs_account_protocol_changed(GtkComboBox *combobox, gpointer data)
 				 FALSE);
 		}
 
-#if (defined(USE_OPENSSL) || defined (USE_GNUTLS))
+#ifdef USE_GNUTLS
 		gtk_widget_hide(ssl_page.pop_frame);
 		gtk_widget_hide(ssl_page.imap_frame);
 		gtk_widget_show(ssl_page.nntp_frame);
@@ -4149,7 +4149,7 @@ static void prefs_account_protocol_changed(GtkComboBox *combobox, gpointer data)
 				 TRUE);
 		}
 
-#if (defined(USE_OPENSSL) || defined (USE_GNUTLS))
+#ifdef USE_GNUTLS
 		gtk_widget_hide(ssl_page.pop_frame);
 		gtk_widget_hide(ssl_page.imap_frame);
 		gtk_widget_hide(ssl_page.nntp_frame);
@@ -4252,7 +4252,7 @@ static void prefs_account_protocol_changed(GtkComboBox *combobox, gpointer data)
 				 FALSE);
 		}
 
-#if (defined(USE_OPENSSL) || defined (USE_GNUTLS))
+#ifdef USE_GNUTLS
 		gtk_widget_hide(ssl_page.pop_frame);
 		gtk_widget_show(ssl_page.imap_frame);
 		gtk_widget_hide(ssl_page.nntp_frame);
@@ -4344,7 +4344,7 @@ static void prefs_account_protocol_changed(GtkComboBox *combobox, gpointer data)
 		gtk_toggle_button_set_active
 			(GTK_TOGGLE_BUTTON(receive_page.recvatgetall_checkbtn), FALSE);
 
-#if (defined(USE_OPENSSL) || defined (USE_GNUTLS))
+#ifdef USE_GNUTLS
 		gtk_widget_hide(ssl_page.pop_frame);
 		gtk_widget_hide(ssl_page.imap_frame);
 		gtk_widget_hide(ssl_page.nntp_frame);
@@ -4442,7 +4442,7 @@ static void prefs_account_protocol_changed(GtkComboBox *combobox, gpointer data)
 				 TRUE);
 		}
 
-#if (defined(USE_OPENSSL) || defined (USE_GNUTLS))
+#ifdef USE_GNUTLS
 		gtk_widget_show(ssl_page.pop_frame);
 		gtk_widget_hide(ssl_page.imap_frame);
 		gtk_widget_hide(ssl_page.nntp_frame);

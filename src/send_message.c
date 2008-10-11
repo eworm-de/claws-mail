@@ -278,7 +278,7 @@ gint send_message_smtp_full(PrefsAccount *ac_prefs, GSList *to_list, FILE *fp, g
 			smtp_session->pass = NULL;
 		}
 
-#if (defined(USE_OPENSSL) || defined (USE_GNUTLS))
+#ifdef USE_GNUTLS
 		port = ac_prefs->set_smtpport ? ac_prefs->smtpport :
 			ac_prefs->ssl_smtp == SSL_TUNNEL ? SSMTP_PORT : SMTP_PORT;
 		session->ssl_type = ac_prefs->ssl_smtp;

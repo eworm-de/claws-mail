@@ -40,7 +40,7 @@
 static void smtp_session_destroy(Session *session);
 
 static gint smtp_auth(SMTPSession *session);
-#if (defined(USE_OPENSSL) || defined (USE_GNUTLS))
+#ifdef USE_GNUTLS
 static gint smtp_starttls(SMTPSession *session);
 #endif
 static gint smtp_auth_cram_md5(SMTPSession *session);
@@ -80,7 +80,7 @@ Session *smtp_session_new(void *prefs_account)
 
 	session->state                     = SMTP_READY;
 
-#if (defined(USE_OPENSSL) || defined (USE_GNUTLS))
+#ifdef USE_GNUTLS
 	session->tls_init_done             = FALSE;
 #endif
 
@@ -330,7 +330,7 @@ static gint smtp_ehlo_recv(SMTPSession *session, const gchar *msg)
 	return SM_ERROR;
 }
 
-#if (defined(USE_OPENSSL) || defined (USE_GNUTLS))
+#ifdef USE_GNUTLS
 static gint smtp_starttls(SMTPSession *session)
 {
 	session->state = SMTP_STARTTLS;
@@ -580,7 +580,7 @@ static gint smtp_session_recv_msg(Session *session, const gchar *msg)
 		if (strstr(msg, "ESMTP"))
 			smtp_session->is_esmtp = TRUE;
 	case SMTP_CONNECTED:
-#if (defined(USE_OPENSSL) || defined (USE_GNUTLS))
+#ifdef USE_GNUTLS
 		if (smtp_session->user || session->ssl_type != SSL_NONE ||
 		    smtp_session->is_esmtp)
 #else
@@ -608,7 +608,7 @@ static gint smtp_session_recv_msg(Session *session, const gchar *msg)
 			smtp_session->error_val = SM_ERROR;
 			return -1;
 		}
-#if (defined(USE_OPENSSL) || defined (USE_GNUTLS))
+#ifdef USE_GNUTLS
 		if (session->ssl_type == SSL_STARTTLS &&
 		    smtp_session->tls_init_done == FALSE) {
 			ret = smtp_starttls(smtp_session);
@@ -617,7 +617,7 @@ static gint smtp_session_recv_msg(Session *session, const gchar *msg)
 #endif
 		if (smtp_session->user) {
 			if (smtp_auth(smtp_session) != SM_OK) {
-#if (defined(USE_OPENSSL) || defined (USE_GNUTLS))
+#ifdef USE_GNUTLS
 				if (session->ssl_type == SSL_NONE
 				&&  smtp_session->tls_init_done == FALSE
 				&&  (smtp_session->avail_auth_type & SMTPAUTH_TLS_AVAILABLE))
@@ -630,7 +630,7 @@ static gint smtp_session_recv_msg(Session *session, const gchar *msg)
 			ret = smtp_from(smtp_session);
 		break;
 	case SMTP_STARTTLS:
-#if (defined(USE_OPENSSL) || defined (USE_GNUTLS))
+#ifdef USE_GNUTLS
 		if (session_start_tls(session) < 0) {
 			log_warning(LOG_PROTOCOL, _("couldn't start TLS session\n"));
 			smtp_session->state = SMTP_ERROR;

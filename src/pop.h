@@ -47,7 +47,7 @@ typedef struct _MailReceiveData	MailReceiveData;
 typedef enum {
 	POP3_READY,
 	POP3_GREETING,
-#if (defined(USE_OPENSSL) || defined (USE_GNUTLS))
+#ifdef USE_GNUTLS
 	POP3_STLS,
 #endif
 	POP3_GETAUTH_USER,
