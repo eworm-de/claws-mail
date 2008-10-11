@@ -1,3 +1,9 @@
+2008-10-11 [colin]	3.6.1cvs5
+
+	* src/gtk/authors.h
+		Fix bug 1756, "Outdated translators list in About 
+		dialogue". Patch by Aleksei Miheev.
+
 2008-10-11 [colin]	3.6.1cvs4
 
 	* src/account.c

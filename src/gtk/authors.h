@@ -30,6 +30,7 @@ NULL
 };
 
 static char *TRANS_TEAM_LIST[] = {
+"[bg] Yasen Pramatarov <yasen@lindeas.com>",
 "[ca] Miquel Oliete <ktalanet@yahoo.es>",
 "[de] Stephan Sachse <white@dev-zero.com>",
 "[en_GB] Paul Mangan <paul@claws-mail.org>",
@@ -38,11 +39,13 @@ static char *TRANS_TEAM_LIST[] = {
 "[fr] Tristan Chabredier <wwp@claws-mail.org>",
 "[hu] Pader Rezso <rezso@rezso.net>",
 "[it] Andrea Spadaccini <a.spadaccini@catania.linux.it>",
-"[pl] Emilian Nowak <eminowbl@posejdon.wpk.p.lodz.pl>",
-"[pl] Quar <Quar@sylpheed.quar.org>",
+"[nl] Marcel Pol <mpol@gmx.net>",
+"[pl] Emilian Nowak <emil5@go2.pl>",
 "[pt_BR] Frederico Goncalves Guimaraes <fggdebian@yahoo.com.br>",
+"[ru] Aleksei Miheev <aleksei@miheev.info>",
 "[sk] Andrej Kacian <andrej@kacian.sk>",
 "[sr] Aleksandar Urosevic <urke@users.sf.net>",
+"[sv] Lars Persson Fink <lars.p.fink@gmail.com>",
 "[zh_CN] Ralgh Young <bamanzi@gmail.com>",
 NULL
 };
