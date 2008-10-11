@@ -1,3 +1,8 @@
+2008-10-11 [colin]	3.6.1cvs3
+
+	* src/common/ssl_certificate.c
+		Make local function static
+
 2008-10-10 [colin]	3.6.1cvs2
 
 	* src/common/ssl.h

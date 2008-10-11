@@ -649,7 +649,7 @@ char *ssl_certificate_check_signer (X509 *cert)
 	return NULL;
 }
 #else
-guint check_cert(gnutls_x509_crt cert)
+static guint check_cert(gnutls_x509_crt cert)
 {
 	gnutls_x509_crt *ca_list;
 	unsigned int max = 512;
