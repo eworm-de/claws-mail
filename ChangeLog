@@ -1,3 +1,8 @@
+2008-10-13 [wwp]	3.6.1cvs6
+
+	* po/fr.po
+		Updated French translation.
+
 2008-10-11 [colin]	3.6.1cvs5
 
 	* src/gtk/authors.h
