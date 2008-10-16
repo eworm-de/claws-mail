@@ -26,34 +26,43 @@ Additional libraries
 ====================
 only needed if you require the additional functionality
 
-Aspell (>= 0.50) (and dictionaries)
-    for spell-checker support
-    http://aspell.sourceforge.net/
+Bogofilter
+    for Bogofilter plugin support
+    http://bogofilter.sourceforge.net/
 compface
     for X-Face support
     http://freshmeat.net/projects/compface/
+D-Bus
+    for interprocess communication support
+    http://www.freedesktop.org/wiki/Software/dbus
 Dillo (>= 0.7.0)
     for Dillo HTML viewer plugin support
     http://www.dillo.org/
+Enchant (and dictionaries)
+    for spell-checker support
+    http://www.abisource.com/enchant/
 GnuPG (>= 1.2.1) and GPGME (>=  0.4.5)
-    for GnuPG plugin support
+    for GnuPG and S/MIME plugin support
     http://www.gnupg.org/
     ftp://ftp.gnupg.org/gcrypt/gpgme/
 J-Pilot
     for J-Pilot support
     http://www.jpilot.org/
-libEtPan! (>= 0.52)
-    for IMAP4 support
+libEtPan! (>= 0.57)
+    for IMAP4 and NNTP support
     http://www.etpan.org
-libgnomeprint (>= 2.2)
+GTK+ >= 2.10 or libgnomeprint (>= 2.2)
     for extended printing support
     http://www.gnome.org
+Network Manager
+    for support for detection of network connection changes
+    http://www.gnome.org/projects/NetworkManager/
 OpenLDAP (>= 2.0.7)
     for LDAP support
     http://www.openldap.org/
-OpenSSL (>= 0.9.7)
+GnuTLS (>= 0.4.2)
     for SSL support
-    http://www.openssl.org/
+    http://www.gnu.org/software/gnutls/
 SpamAssassin
     for SpamAssassin plugin support
     http://spamassassin.apache.org/
@@ -66,21 +75,27 @@ are matched.
   --with-config-dir=RCDIR      	    local config dir (default: ~/.claws-mail)
   --disable-compface  		    disable compface (X-Face) support
   --disable-ipv6      		    disable IPv6 support
-  --disable-openssl    		    disable OpenSSL support
-  --disable-libetpan		    disable IMAP4 support
+  --disable-gnutls    		    disable GnuTLS support
+  --disable-libetpan		    disable IMAP4 and NNTP support
   --disable-gnomeprint		    disable libgnomeprint support
-  --disable-aspell     		    disable GNU/aspell support
+  --disable-enchant     	    disable Enchant support
   --disable-ldap       		    disable LDAP support
   --disable-jpilot     		    disable JPilot support
-  --enable-crash-dialog   	    enable crash dialog
+  --disable-startup-notification    disable startup notification support
+  --disable-valgrind                disable valgrind support for debugging
+ --enable-crash-dialog   	    enable crash dialog
   --disable-startup-notification    disable startup notification support
   --disable-trayicon-plugin         do not build System Tray Icon plugin
-  --enable-spamassassin-plugin      build SpamAssassin plugin
+  --disable-spamassassin-plugin     do not build SpamAssassin plugin
   --disable-pgpcore-plugin	    do not build PGP/Core plugin
   --disable-pgpmime-plugin          do not build PGP/MIME plugin
   --disable-pgpinline-plugin        do not build PGP/Inline plugin
+  --disable-smime-plugin            do not build S/Mime plugin
   --disable-dillo-viewer-plugin     do not build Dillo plugin
- 
+  --disable-bogofilter-plugin       do not build bogofilter plugin
+  --disable-manual		    do not build user manuals
+  --disable-nls           	    do not use Native Language Support
+
 For other options, refer to ./configure --help .
 
 
