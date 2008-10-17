@@ -289,13 +289,13 @@ gchar *sgpgme_sigstat_info_full(gpgme_ctx_t ctx, gpgme_verify_result_t status)
 		case GPG_ERR_NO_ERROR:
 		case GPG_ERR_KEY_EXPIRED:
 			g_string_append_printf(siginfo,
-				_("Good signature from \"%s\" (Trust: %s)\n"),
-				uid, get_validity_str(sig->validity));
+				_("Good signature from uid \"%s\" (Validity: %s)\n"),
+				uid, get_validity_str(user->validity));
 			break;
 		case GPG_ERR_SIG_EXPIRED:
 			g_string_append_printf(siginfo,
-				_("Expired signature from \"%s\"\n"),
-				uid);
+				_("Expired signature from uid \"%s\" (Validity: %s)\n"),
+				uid, get_validity_str(user->validity));
 			break;
 		case GPG_ERR_BAD_SIGNATURE:
 			g_string_append_printf(siginfo,
@@ -310,8 +310,9 @@ gchar *sgpgme_sigstat_info_full(gpgme_ctx_t ctx, gpgme_verify_result_t status)
 			user = user ? user->next : NULL;
 			while (user != NULL) {
 				g_string_append_printf(siginfo,
-					_("                aka \"%s\"\n"),
-					user->uid);
+					_("                    uid \"%s\" (Validity: %s)\n"),
+					user->uid,
+					get_validity_str(user->validity));
 				j++;
 				user = user->next;
 			}

@@ -1,3 +1,8 @@
+2008-10-17 [paul]	3.6.1cvs8
+
+	* src/plugins/pgpcore/sgpgme.c
+		when listing the uid's, show the uid validity
+
 2008-10-16 [paul]	3.6.1cvs7
 
 	* INSTALL

@@ -3589,3 +3589,4 @@
 ( cvs diff -u -r 1.1.2.50 -r 1.1.2.51 src/gtk/authors.h;  ) > 3.6.1cvs5.patchset
 ( cvs diff -u -r 1.42.2.42 -r 1.42.2.43 po/fr.po;  ) > 3.6.1cvs6.patchset
 ( cvs diff -u -r 1.29.2.11 -r 1.29.2.12 INSTALL;  ) > 3.6.1cvs7.patchset
+( cvs diff -u -r 1.1.2.53 -r 1.1.2.54 src/plugins/pgpcore/sgpgme.c;  ) > 3.6.1cvs8.patchset
