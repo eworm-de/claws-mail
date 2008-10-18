@@ -10,20 +10,13 @@
 %langname = (
 	'bg.po' => 'Bulgarian',
 	'ca.po'	=> 'Catalan',
-	'cs.po' => 'Czech',
 	'de.po' => 'German',
-	'el.po' => 'Greek',
 	'en_GB.po' => 'British English',
 	'es.po' => 'Spanish',
 	'fi.po'	=> 'Finnish',
 	'fr.po' => 'French',
-	'he.po' => 'Hebrew',
-	'hr.po' => 'Croatian',
 	'hu.po' => 'Hungarian',
 	'it.po' => 'Italian',
-	'ja.po' => 'Japanese',
-	'ko.po' => 'Korean',
-	'nb.po' => 'Norwegian',
 	'nl.po' => 'Dutch',
 	'pl.po' => 'Polish',
 	'pt_BR.po' => 'Brazilian Portuguese',
@@ -32,35 +25,26 @@
 	'sr.po' => 'Serbian',
 	'sv.po' => 'Swedish',
 	'zh_CN.po' => 'Simpilified Chinese',
-	'zh_TW.po' => 'Taiwanese',
 );
 
 %lasttranslator = (
 	'bg.po' => 'Yasen Pramatarov <yasen@lindeas.com>',
 	'ca.po'	=> 'Miquel Oliete <ktalanet@yahoo.es>',
-	'cs.po' => 'Tim <timbrain@post.cz>',
 	'de.po' => 'Stephan Sachse <white@dev-zero.com>',
-	'el.po' => 'Stavros Giannouris 	<stavrosg2002@freemail.gr>',
 	'en_GB.po' => 'Paul Mangan <paul@claws-mail.org>',
 	'es.po' => 'Ricardo Mones Lastra <ricardo@mones.org>',
 	'fi.po'	=> 'Flammie Pirinen <flammie@iki.fi>',
-	'fr.po' => 'Fabien Vantard <fzzzzz@gmail.com>',
-	'he.po' => 'S.D.O.C. LTD <sdocdb@gmail.com>',
-	'hr.po' => 'Dragan Leskovar <drleskov@inet.hr>',
-	'hu.po' => 'Pader Rezso <rezso@rezso.net>',
+	'fr.po' => 'Tristan Chabredier <wwp@claws-mail.org>',
+	'hu.po' => 'P&aacute;der Rezs&#337; <rezso@rezso.net>',
 	'it.po' => 'Andrea Spadaccini <a.spadaccini@catania.linux.it>',
-	'ja.po' => 'Rui Hirokawa <rui_hirokawa@ybb.ne.jp>',
-	'ko.po' => 'ChiDeok, Hwang <hwang@mizi.co.kr>',
-	'nb.po' => 'Geir Helland <pjallabais@users.sourceforge.net>',
-	'nl.po' => 'Tim Dijkstra <tim@famdijkstra.org>',
-	'pl.po' => 'Pawel Pekala <c0rn@o2.pl>',
+	'nl.po' => 'Marcel Pol <mpol@gmx.net>',
+	'pl.po' => 'Emilian Nowak <emil5@go2.pl>',
 	'pt_BR.po' => 'Frederico Goncalves Guimaraes <fggdebian@yahoo.com.br>',
-	'ru.po' => 'Pavlo Bohmat <bohm@ukr.net>',
+	'ru.po' => 'Aleksei Miheev <aleksei@miheev.info>',
 	'sk.po' => 'Andrej Kacian <andrej@kacian.sk>',
-	'sr.po' => 'urke <urke@users.sourceforge.net>',
-	'sv.po' => 'Anders Trob&auml;ck <sylpheed@troback.com>',
+	'sr.po' => 'Aleksandar Urosevic <urke@users.sf.net>',
+	'sv.po' => 'Lars Persson Fink <lars.p.fink@gmail.com>',
 	'zh_CN.po' => 'Ralgh Young <bamanzi@gmail.com>',
-	'zh_TW.po' => 'Wei-Lun Chao <chaoweilun@pcmail.com.tw>',
 );
 
 %barcolornorm = (
@@ -193,7 +177,7 @@ closedir(PODIR);
 $alang = $atran = $afuzz = $auntr = $oddeven = 0;
 foreach $pofile (@sorted_pofiles) {
 	$_ = $pofile;
-	if (/.+\.po$/) {
+	if (/.+\.po$/ && defined($langname{$pofile}) ) {
 		print STDERR "Processing $_\n"; # be a little informative
 		++$alang;
 		$transage = $tran = $fuzz = $untr = 0;

@@ -1,3 +1,9 @@
+2008-10-18 [paul]	3.6.1cvs9
+
+	* tools/claws.i18n.status.pl
+		updated with latest translator info.
+		only print for languages defined in %langname
+
 2008-10-17 [paul]	3.6.1cvs8
 
 	* src/plugins/pgpcore/sgpgme.c
