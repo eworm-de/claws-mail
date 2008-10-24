@@ -6,18 +6,23 @@ DESKTOP="claws-mail-attach-files.desktop"
 SERVICEMENU_DIR="share/apps/konqueror/servicemenus"
 
 function check_environ {
-echo "Checking for kde-config..."
-if [ -z "$(type 'kde-config' 2> /dev/null)" ]; then
-  echo "kde-config not found, checking for \$KDEDIR to compensate..."
-  if [ ! -z $KDEDIR ]; then
-    export PATH=$PATH:$KDEDIR/bin
+echo "Checking for kde4-config..."
+if [ ! -z "$(type 'kde4-config' 2> /dev/null)" ]; then
+  echo "Found kde4-config..."
+  KDECONFIG="kde4-config"
+else
+  echo "kde4-config not found..."
+  echo "Checking for kde-config..."
+  if [ ! -z "$(type 'kde-config' 2> /dev/null)" ]; then
+      echo "Found kde-config..."
+      KDECONFIG="kde-config"
   else
-    KDEDIR=$(kdialog --title "Where is KDE installed?" --getexistingdirectory / )
-    test -z $KDEDIR && exit 1
-    export PATH=$PATH:$KDEDIR/bin
+    echo "kde-config not found..."
+    echo "asking user to find kde4-config or kde-config..."
+    KDECONFIG=$(kdialog --title "Locate kde-config or kde4-config" --getopenfilename / )
+    test -z $KDECONFIG && exit 1
   fi
 fi
-echo "OK"
 }
 
 function install_all {
@@ -26,6 +31,11 @@ SED_PREFIX=${PREFIX//\//\\\/}
 sed "s/SCRIPT_PATH/$SED_PREFIX\\/bin\\/$PERL_SCRIPT/" $DESKTOP_TEMPLATE > $DESKTOP
 echo "Installing $PREFIX/$SERVICEMENU_DIR/$DESKTOP"
 mv -f $DESKTOP $PREFIX/$SERVICEMENU_DIR/$DESKTOP
+if [[ $? -ne 0 ]]
+then
+  kdialog --error "Could not complete installation."
+  exit
+fi
 echo "Installing $PREFIX/bin/$PERL_SCRIPT"
 cp -f $PERL_SCRIPT $PREFIX/bin/
 echo "Setting permissions ..."
@@ -38,6 +48,11 @@ kdialog --msgbox "Finished installation."
 function uninstall_all {
 echo "Removing $PREFIX/$SERVICEMENU_DIR/$DESKTOP"
 rm $PREFIX/$SERVICEMENU_DIR/$DESKTOP
+if [[ $? -ne 0 ]]
+then
+  kdialog --error "Could not complete uninstall."
+  exit
+fi
 echo "Removing $PREFIX/bin/$PERL_SCRIPT"
 rm $PREFIX/bin/$PERL_SCRIPT
 echo "Finished uninstall."
@@ -67,8 +82,8 @@ fi
 case $option in
   "--global" )
     check_environ
-    PREFIX=$(kde-config --prefix)
-    echo "Installing in $PREFIX ..."
+    PREFIX=$($KDECONFIG --prefix)
+    echo "Installing in $PREFIX/$SERVICEMENU_DIR ..."
     if [ "$(id -u)" != "0" ]; then
 	exec kdesu "$0 --global"
     fi
@@ -76,8 +91,8 @@ case $option in
     ;;
   "--local" )
     check_environ
-    PREFIX=$(kde-config --localprefix)
-    echo "Installing in $PREFIX ..."
+    PREFIX=$($KDECONFIG --localprefix)
+    echo "Installing in $PREFIX$SERVICEMENU_DIR ..."
     if [ ! -d $PREFIX/bin ]; then
       mkdir $PREFIX/bin
     fi
@@ -88,8 +103,8 @@ case $option in
     ;;
   "--uninstall-global" )
     check_environ
-    PREFIX=$(kde-config --prefix)
-    echo "Uninstalling in $PREFIX ..."
+    PREFIX=$($KDECONFIG --prefix)
+    echo "Uninstalling from $PREFIX/$SERVICEMENU_DIR ..."
     if [ "$(id -u)" != "0" ]; then
 	exec kdesu "$0 --uninstall-global"
     fi
@@ -97,8 +112,8 @@ case $option in
     ;;
   "--uninstall-local" )
     check_environ
-    PREFIX=$(kde-config --localprefix)
-    echo "Uninstalling in $PREFIX ..."
+    PREFIX=$($KDECONFIG --localprefix)
+    echo "Uninstalling from $PREFIX$SERVICEMENU_DIR ..."
     uninstall_all
     ;;
   "-h" )

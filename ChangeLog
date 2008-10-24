@@ -1,3 +1,13 @@
+2008-10-24 [paul]	3.6.1cvs10
+
+	* tools/kdeservicemenu/README
+	* tools/kdeservicemenu/install.sh
+		add support for kde4 in addition to kde3.
+		a rework involving checking for kde4-config, then
+		kde-config, finally prompting the user for the
+		location of either if they cannot be found
+		
+
 2008-10-18 [paul]	3.6.1cvs9
 
 	* tools/claws.i18n.status.pl
