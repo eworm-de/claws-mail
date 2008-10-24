@@ -1,3 +1,11 @@
+2008-10-24 [paul]	3.6.1cvs12
+
+	* tools/Makefile.am
+	* tools/kdeservicemenu/claws-mail-attach-files.desktop.kde4template
+	* tools/kdeservicemenu/install.sh
+		another, possibly the final?, attempt on getting this
+		sorted for kde4
+
 2008-10-24 [paul]	3.6.1cvs11
 
 	* tools/kdeservicemenu/install.sh

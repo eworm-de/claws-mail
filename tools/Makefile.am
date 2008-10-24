@@ -39,6 +39,7 @@ EXTRA_DIST = \
 	multiwebsearch.conf \
 	kdeservicemenu/README \
 	kdeservicemenu/claws-mail-attach-files.desktop.template \
+	kdeservicemenu/claws-mail-attach-files.desktop.kde4template \
 	$(EXTRA_TOOLS)
 
 MAKE_EXE = chmod u+x $(EXTRA_TOOLS)
