@@ -1,3 +1,8 @@
+2008-10-24 [paul]	3.6.1cvs11
+
+	* tools/kdeservicemenu/install.sh
+		fix servicemenu installation directory on kde4
+
 2008-10-24 [paul]	3.6.1cvs10
 
 	* tools/kdeservicemenu/README

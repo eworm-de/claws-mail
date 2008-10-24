@@ -3,24 +3,30 @@
 PERL_SCRIPT="claws-mail-kdeservicemenu.pl"
 DESKTOP_TEMPLATE="claws-mail-attach-files.desktop.template"
 DESKTOP="claws-mail-attach-files.desktop"
-SERVICEMENU_DIR="share/apps/konqueror/servicemenus"
 
 function check_environ {
 echo "Checking for kde4-config..."
 if [ ! -z "$(type 'kde4-config' 2> /dev/null)" ]; then
   echo "Found kde4-config..."
+  SERVICEMENU_DIR="share/kde4/services/ServiceMenus"
   KDECONFIG="kde4-config"
 else
   echo "kde4-config not found..."
   echo "Checking for kde-config..."
   if [ ! -z "$(type 'kde-config' 2> /dev/null)" ]; then
       echo "Found kde-config..."
+      SERVICEMENU_DIR="share/apps/konqueror/servicemenus"
       KDECONFIG="kde-config"
   else
     echo "kde-config not found..."
     echo "asking user to find kde4-config or kde-config..."
     KDECONFIG=$(kdialog --title "Locate kde-config or kde4-config" --getopenfilename / )
     test -z $KDECONFIG && exit 1
+    if [[ $KDECONFIG == *4-config ]]; then
+      SERVICEMENU_DIR="share/kde4/services/ServiceMenus"
+    else
+      SERVICEMENU_DIR="share/apps/konqueror/servicemenus"
+    fi 
   fi
 fi
 }

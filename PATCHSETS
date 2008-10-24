@@ -3592,3 +3592,4 @@
 ( cvs diff -u -r 1.1.2.53 -r 1.1.2.54 src/plugins/pgpcore/sgpgme.c;  ) > 3.6.1cvs8.patchset
 ( cvs diff -u -r 1.1.2.15 -r 1.1.2.16 tools/claws.i18n.status.pl;  ) > 3.6.1cvs9.patchset
 ( cvs diff -u -r 1.2.2.12 -r 1.2.2.13 tools/kdeservicemenu/README;  cvs diff -u -r 1.2.2.6 -r 1.2.2.7 tools/kdeservicemenu/install.sh;  ) > 3.6.1cvs10.patchset
+( cvs diff -u -r 1.2.2.7 -r 1.2.2.8 tools/kdeservicemenu/install.sh;  ) > 3.6.1cvs11.patchset
