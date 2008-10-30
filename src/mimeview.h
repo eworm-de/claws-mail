@@ -101,6 +101,8 @@ struct _MimeView
 	SigCheckData *check_data;
 #endif
 	MimeInfo *spec_part;
+	GtkUIManager *ui_manager;
+	GtkActionGroup *action_group;
 };
 
 struct _MimeViewerFactory

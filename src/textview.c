@@ -314,34 +314,49 @@ TextView *textview_create(void)
 	gtk_widget_show(vbox);
 
 	
-	textview->link_action_group = cm_menu_create_action_group("TextviewPopupLink",
+	textview->ui_manager = gtk_ui_manager_new();
+	textview->link_action_group = cm_menu_create_action_group_full(textview->ui_manager,
+			"TextviewPopupLink",
 			textview_link_popup_entries,
 			G_N_ELEMENTS(textview_link_popup_entries), (gpointer)textview);
-	textview->mail_action_group = cm_menu_create_action_group("TextviewPopupMail",
+	textview->mail_action_group = cm_menu_create_action_group_full(textview->ui_manager,
+			"TextviewPopupMail",
 			textview_mail_popup_entries,
 			G_N_ELEMENTS(textview_mail_popup_entries), (gpointer)textview);
-	textview->file_action_group = cm_menu_create_action_group("TextviewPopupFile",
+	textview->file_action_group = cm_menu_create_action_group_full(textview->ui_manager,
+			"TextviewPopupFile",
 			textview_file_popup_entries,
 			G_N_ELEMENTS(textview_file_popup_entries), (gpointer)textview);
 
-	MENUITEM_ADDUI("/Menus", "TextviewPopupLink", "TextviewPopupLink", GTK_UI_MANAGER_MENU)
-	MENUITEM_ADDUI("/Menus", "TextviewPopupMail", "TextviewPopupMail", GTK_UI_MANAGER_MENU)
-	MENUITEM_ADDUI("/Menus", "TextviewPopupFile", "TextviewPopupFile", GTK_UI_MANAGER_MENU)
+	MENUITEM_ADDUI_MANAGER(textview->ui_manager, "/", "Menus", "Menus", GTK_UI_MANAGER_MENUBAR)
+	MENUITEM_ADDUI_MANAGER(textview->ui_manager, 
+			"/Menus", "TextviewPopupLink", "TextviewPopupLink", GTK_UI_MANAGER_MENU)
+	MENUITEM_ADDUI_MANAGER(textview->ui_manager, 
+			"/Menus", "TextviewPopupMail", "TextviewPopupMail", GTK_UI_MANAGER_MENU)
+	MENUITEM_ADDUI_MANAGER(textview->ui_manager, 
+			"/Menus", "TextviewPopupFile", "TextviewPopupFile", GTK_UI_MANAGER_MENU)
 
-	MENUITEM_ADDUI("/Menus/TextviewPopupLink", "Open", "TextviewPopupLink/Open", GTK_UI_MANAGER_MENUITEM)
-	MENUITEM_ADDUI("/Menus/TextviewPopupLink", "Copy", "TextviewPopupLink/Copy", GTK_UI_MANAGER_MENUITEM)
-	MENUITEM_ADDUI("/Menus/TextviewPopupMail", "Compose", "TextviewPopupMail/Compose", GTK_UI_MANAGER_MENUITEM)
-	MENUITEM_ADDUI("/Menus/TextviewPopupMail", "AddAB", "TextviewPopupMail/AddAB", GTK_UI_MANAGER_MENUITEM)
-	MENUITEM_ADDUI("/Menus/TextviewPopupMail", "Copy", "TextviewPopupMail/Copy", GTK_UI_MANAGER_MENUITEM)
-	MENUITEM_ADDUI("/Menus/TextviewPopupFile", "Open", "TextviewPopupFile/Open", GTK_UI_MANAGER_MENUITEM)
-	MENUITEM_ADDUI("/Menus/TextviewPopupFile", "Save", "TextviewPopupFile/Save", GTK_UI_MANAGER_MENUITEM)
+	MENUITEM_ADDUI_MANAGER(textview->ui_manager, 
+			"/Menus/TextviewPopupLink", "Open", "TextviewPopupLink/Open", GTK_UI_MANAGER_MENUITEM)
+	MENUITEM_ADDUI_MANAGER(textview->ui_manager, 
+			"/Menus/TextviewPopupLink", "Copy", "TextviewPopupLink/Copy", GTK_UI_MANAGER_MENUITEM)
+	MENUITEM_ADDUI_MANAGER(textview->ui_manager, 
+			"/Menus/TextviewPopupMail", "Compose", "TextviewPopupMail/Compose", GTK_UI_MANAGER_MENUITEM)
+	MENUITEM_ADDUI_MANAGER(textview->ui_manager, 
+			"/Menus/TextviewPopupMail", "AddAB", "TextviewPopupMail/AddAB", GTK_UI_MANAGER_MENUITEM)
+	MENUITEM_ADDUI_MANAGER(textview->ui_manager, 
+			"/Menus/TextviewPopupMail", "Copy", "TextviewPopupMail/Copy", GTK_UI_MANAGER_MENUITEM)
+	MENUITEM_ADDUI_MANAGER(textview->ui_manager, 
+			"/Menus/TextviewPopupFile", "Open", "TextviewPopupFile/Open", GTK_UI_MANAGER_MENUITEM)
+	MENUITEM_ADDUI_MANAGER(textview->ui_manager, 
+			"/Menus/TextviewPopupFile", "Save", "TextviewPopupFile/Save", GTK_UI_MANAGER_MENUITEM)
 
 	textview->link_popup_menu = gtk_menu_item_get_submenu(GTK_MENU_ITEM(
-				gtk_ui_manager_get_widget(gtkut_ui_manager(), "/Menus/TextviewPopupLink")) );
+				gtk_ui_manager_get_widget(textview->ui_manager, "/Menus/TextviewPopupLink")) );
 	textview->mail_popup_menu = gtk_menu_item_get_submenu(GTK_MENU_ITEM(
-				gtk_ui_manager_get_widget(gtkut_ui_manager(), "/Menus/TextviewPopupMail")) );
+				gtk_ui_manager_get_widget(textview->ui_manager, "/Menus/TextviewPopupMail")) );
 	textview->file_popup_menu = gtk_menu_item_get_submenu(GTK_MENU_ITEM(
-				gtk_ui_manager_get_widget(gtkut_ui_manager(), "/Menus/TextviewPopupFile")) );
+				gtk_ui_manager_get_widget(textview->ui_manager, "/Menus/TextviewPopupFile")) );
 
 	textview->vbox               = vbox;
 	textview->scrolledwin        = scrolledwin;

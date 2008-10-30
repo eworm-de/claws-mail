@@ -250,8 +250,6 @@ MimeView *mimeview_create(MainWindow *mainwin)
 	GtkWidget *arrow;
 	GtkWidget *scrollbutton;
 	GtkWidget *hbox;
-	GtkUIManager *gui_manager = gtkut_ui_manager();
-	GtkActionGroup *actions;
 	NoticeView *siginfoview;
 	GtkRequisition r;
 
@@ -350,27 +348,37 @@ MimeView *mimeview_create(MainWindow *mainwin)
 	ctree_mainbox = gtk_hbox_new(FALSE, 0);	
 	gtk_box_pack_start(GTK_BOX(ctree_mainbox), scrolledwin, TRUE, TRUE, 0);
 
-	actions = cm_menu_create_action_group("MimeView", mimeview_menu_actions,
+	mimeview->ui_manager = gtk_ui_manager_new();
+	mimeview->action_group = cm_menu_create_action_group_full(mimeview->ui_manager,
+			"MimeView", mimeview_menu_actions,
 			G_N_ELEMENTS(mimeview_menu_actions), (gpointer)mimeview);
 
-	MENUITEM_ADDUI("/Menus/", "MimeView", "MimeView", GTK_UI_MANAGER_MENU);
-	MENUITEM_ADDUI("/Menus/MimeView/", "Open", "MimeView/Open",
+	MENUITEM_ADDUI_MANAGER(mimeview->ui_manager, "/", "Menus", "Menus", GTK_UI_MANAGER_MENUBAR)
+	MENUITEM_ADDUI_MANAGER(mimeview->ui_manager, 
+			"/Menus/", "MimeView", "MimeView", GTK_UI_MANAGER_MENU);
+	MENUITEM_ADDUI_MANAGER(mimeview->ui_manager, 
+			"/Menus/MimeView/", "Open", "MimeView/Open",
 			GTK_UI_MANAGER_MENUITEM);
 #ifndef MAEMO
-	MENUITEM_ADDUI("/Menus/MimeView/", "OpenWith", "MimeView/OpenWith",
+	MENUITEM_ADDUI_MANAGER(mimeview->ui_manager, 
+			"/Menus/MimeView/", "OpenWith", "MimeView/OpenWith",
 			GTK_UI_MANAGER_MENUITEM);
 #endif
-	MENUITEM_ADDUI("/Menus/MimeView/", "DisplayAsText", "MimeView/DisplayAsText",
+	MENUITEM_ADDUI_MANAGER(mimeview->ui_manager, 
+			"/Menus/MimeView/", "DisplayAsText", "MimeView/DisplayAsText",
 			GTK_UI_MANAGER_MENUITEM);
-	MENUITEM_ADDUI("/Menus/MimeView/", "SaveAs", "MimeView/SaveAs",
+	MENUITEM_ADDUI_MANAGER(mimeview->ui_manager, 
+			"/Menus/MimeView/", "SaveAs", "MimeView/SaveAs",
 			GTK_UI_MANAGER_MENUITEM);
-	MENUITEM_ADDUI("/Menus/MimeView/", "SaveAll", "MimeView/SaveAll",
+	MENUITEM_ADDUI_MANAGER(mimeview->ui_manager, 
+			"/Menus/MimeView/", "SaveAll", "MimeView/SaveAll",
 			GTK_UI_MANAGER_MENUITEM);
-	MENUITEM_ADDUI("/Menus/MimeView/", "NextPart", "MimeView/NextPart",
+	MENUITEM_ADDUI_MANAGER(mimeview->ui_manager, 
+			"/Menus/MimeView/", "NextPart", "MimeView/NextPart",
 			GTK_UI_MANAGER_MENUITEM);
 
 	popupmenu = gtk_menu_item_get_submenu(GTK_MENU_ITEM(
-				gtk_ui_manager_get_widget(gui_manager, "/Menus/MimeView")) );
+				gtk_ui_manager_get_widget(mimeview->ui_manager, "/Menus/MimeView")) );
 
 
 	vbox = gtk_vbox_new(FALSE, 0);
@@ -1301,15 +1309,15 @@ static gboolean part_button_pressed(MimeView *mimeview, GdkEventButton *event,
 		if (partinfo && (partinfo->type == MIMETYPE_MESSAGE ||
 				 partinfo->type == MIMETYPE_IMAGE ||
 				 partinfo->type == MIMETYPE_MULTIPART))
-			cm_menu_set_sensitive("MimeView/DisplayAsText", FALSE);
+			cm_menu_set_sensitive_full(mimeview->ui_manager, "Menus/MimeView/DisplayAsText", FALSE);
 		else
-			cm_menu_set_sensitive("MimeView/DisplayAsText", TRUE);
+			cm_menu_set_sensitive_full(mimeview->ui_manager, "Menus/MimeView/DisplayAsText", TRUE);
 		if (partinfo &&
 		    partinfo->type == MIMETYPE_APPLICATION &&
 		    !g_ascii_strcasecmp(partinfo->subtype, "octet-stream"))
-			cm_menu_set_sensitive("MimeView/Open", FALSE);
+			cm_menu_set_sensitive_full(mimeview->ui_manager, "Menus/MimeView/Open", FALSE);
 		else
-			cm_menu_set_sensitive("MimeView/Open", TRUE);
+			cm_menu_set_sensitive_full(mimeview->ui_manager, "Menus/MimeView/Open", TRUE);
 
 		g_object_set_data(G_OBJECT(mimeview->popupmenu),
 				  "pop_partinfo", partinfo);

@@ -56,6 +56,7 @@ struct _TextView
 	GtkWidget *scrolledwin;
 	GtkWidget *text;
 
+	GtkUIManager *ui_manager;
 	GtkActionGroup *link_action_group;
 	GtkWidget *link_popup_menu;
 	GtkActionGroup *mail_action_group;
