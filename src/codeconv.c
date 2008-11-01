@@ -725,6 +725,9 @@ gchar *conv_codeset_strdup(const gchar *inbuf,
 
 	src_code = conv_get_fallback_for_private_encoding(src_code);
 	conv_func = conv_get_code_conv_func(src_code, dest_code);
+	if (conv_func == conv_ustodisp && strict_mode && !is_ascii_str(inbuf))
+		return NULL;
+
 	if (conv_func != conv_noconv) {
 		len = (strlen(inbuf) + 1) * 3;
 		buf = g_malloc(len);

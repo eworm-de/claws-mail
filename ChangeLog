@@ -1,3 +1,10 @@
+2008-11-01 [colin]	3.6.1cvs14
+
+	* src/codeconv.c
+		Fix wrongly converted non-ascii characters
+		when locale's charset is US-ASCII (strict-mode
+		was failing in this case)
+
 2008-10-30 [colin]	3.6.1cvs13
 
 	* src/mimeview.c
