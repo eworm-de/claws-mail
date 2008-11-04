@@ -48,14 +48,14 @@ typedef struct _ExtProgPage
 	GtkWidget *window;		/* do not modify */
 
 	GtkWidget *cmds_use_system_default_checkbtn;
-
+#ifndef G_OS_WIN32
 	GtkWidget *uri_label;
 	GtkWidget *uri_combo;
 	GtkWidget *uri_entry;
 	
 	GtkWidget *printcmd_label;
 	GtkWidget *printcmd_entry;
-	
+#endif
 	GtkWidget *exteditor_label;
 	GtkWidget *exteditor_combo;
 	GtkWidget *exteditor_entry;
@@ -74,16 +74,18 @@ static void prefs_ext_prog_create_widget(PrefsPage *_page, GtkWindow *window,
 	GtkWidget *hint_label;
 	GtkWidget *table2;
 	GtkWidget *cmds_use_system_default_checkbtn;
+#ifndef G_OS_WIN32
 	GtkWidget *uri_label;
 	GtkWidget *uri_combo;
 	GtkWidget *uri_entry;
+	GtkWidget *printcmd_label;
+	GtkWidget *printcmd_entry;
+#endif
 	GtkWidget *exteditor_label;
 	GtkWidget *exteditor_combo;
 	GtkWidget *exteditor_entry;
 	GtkWidget *astextviewer_label;
 	GtkWidget *astextviewer_entry;
-	GtkWidget *printcmd_label;
-	GtkWidget *printcmd_entry;
 	CLAWS_TIP_DECL();
 	int i = 0;
 	gchar *tmp;
@@ -144,6 +146,7 @@ static void prefs_ext_prog_create_widget(PrefsPage *_page, GtkWindow *window,
                     	 (GtkAttachOptions) (GTK_FILL),
                     	 (GtkAttachOptions) (0), 0, 2);
 	
+#ifndef G_OS_WIN32
 	uri_label = gtk_label_new (_("Web browser"));
 	gtk_widget_show(uri_label);
 #ifdef MAEMO
@@ -177,7 +180,7 @@ static void prefs_ext_prog_create_widget(PrefsPage *_page, GtkWindow *window,
 
 	uri_entry = gtk_bin_get_child(GTK_BIN((uri_combo)));
 	gtk_entry_set_text(GTK_ENTRY(uri_entry), prefs_common.uri_cmd ? prefs_common.uri_cmd : "");
-	
+#endif	
 	exteditor_label = gtk_label_new (_("Text editor"));
 	gtk_widget_show(exteditor_label);
 
@@ -229,6 +232,7 @@ static void prefs_ext_prog_create_widget(PrefsPage *_page, GtkWindow *window,
 	gtk_entry_set_text(GTK_ENTRY(astextviewer_entry), 
 			   prefs_common.mime_textviewer ? prefs_common.mime_textviewer : "");
 
+#ifndef G_OS_WIN32
 	printcmd_label = gtk_label_new (_("Print command"));
 #if !defined(USE_GNOMEPRINT) && !GTK_CHECK_VERSION(2,10,0)
 	gtk_widget_show(printcmd_label);
@@ -248,9 +252,12 @@ static void prefs_ext_prog_create_widget(PrefsPage *_page, GtkWindow *window,
                     	 (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
                     	 (GtkAttachOptions) (0), 0, 0);
 	gtk_entry_set_text(GTK_ENTRY(printcmd_entry), prefs_common.print_cmd ? prefs_common.print_cmd : "");
+#endif
 
+#ifndef G_OS_WIN32
 	SET_TOGGLE_SENSITIVITY_REVERSE (cmds_use_system_default_checkbtn, uri_label);
 	SET_TOGGLE_SENSITIVITY_REVERSE (cmds_use_system_default_checkbtn, uri_combo);
+#endif
 #if 0 /* we should do that, but it detaches the editor and breaks
 	 compose.c's external composition. */
 	SET_TOGGLE_SENSITIVITY_REVERSE (cmds_use_system_default_checkbtn, exteditor_label);
@@ -258,10 +265,12 @@ static void prefs_ext_prog_create_widget(PrefsPage *_page, GtkWindow *window,
 #endif
 
 	prefs_ext_prog->window			= GTK_WIDGET(window);
+#ifndef G_OS_WIN32
 	prefs_ext_prog->uri_entry		= uri_entry;
+	prefs_ext_prog->printcmd_entry		= printcmd_entry;
+#endif
 	prefs_ext_prog->exteditor_entry		= exteditor_entry;
 	prefs_ext_prog->astextviewer_entry	= astextviewer_entry;
-	prefs_ext_prog->printcmd_entry		= printcmd_entry;
 	prefs_ext_prog->cmds_use_system_default_checkbtn = cmds_use_system_default_checkbtn;
 	prefs_ext_prog->page.widget = table;
 }
@@ -270,10 +279,12 @@ static void prefs_ext_prog_save(PrefsPage *_page)
 {
 	ExtProgPage *ext_prog = (ExtProgPage *) _page;
 
+#ifndef G_OS_WIN32
 	prefs_common.uri_cmd = gtk_editable_get_chars
 		(GTK_EDITABLE(ext_prog->uri_entry), 0, -1);
 	prefs_common.print_cmd = gtk_editable_get_chars
 		(GTK_EDITABLE(ext_prog->printcmd_entry), 0, -1);
+#endif
 	prefs_common.ext_editor_cmd = gtk_editable_get_chars
 		(GTK_EDITABLE(ext_prog->exteditor_entry), 0, -1);
 	prefs_common.mime_textviewer = gtk_editable_get_chars

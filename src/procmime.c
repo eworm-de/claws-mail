@@ -978,33 +978,42 @@ static GList *mime_type_list = NULL;
 
 gchar *procmime_get_mime_type(const gchar *filename)
 {
-	static GHashTable *mime_type_table = NULL;
-	MimeType *mime_type;
 	const gchar *p;
 	gchar *ext = NULL;
 	gchar *base;
+#ifndef G_OS_WIN32
+	static GHashTable *mime_type_table = NULL;
+	MimeType *mime_type;
 
 	if (!mime_type_table) {
 		mime_type_table = procmime_get_mime_type_table();
 		if (!mime_type_table) return NULL;
 	}
+#endif
 
 	base = g_path_get_basename(filename);
 	if ((p = strrchr(base, '.')) != NULL)
 		ext = g_utf8_strdown(p + 1, -1);
 	g_free(base);
 
+#ifndef G_OS_WIN32
 	mime_type = g_hash_table_lookup(mime_type_table, ext);
-	g_free(ext);
+	
 	if (mime_type) {
 		gchar *str;
-
 		str = g_strconcat(mime_type->type, "/", mime_type->sub_type,
 				  NULL);
+		debug_print("got type %s for %s\n", str, ext);
+		g_free(ext);
 		return str;
-	}
-
+	} 
 	return NULL;
+#else
+	gchar *str = get_content_type_from_registry_with_ext(ext);
+
+	g_free(ext);
+	return str;
+#endif
 }
 
 static guint procmime_str_hash(gconstpointer gptr)

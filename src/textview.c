@@ -924,9 +924,11 @@ void textview_show_mime_part(TextView *textview, MimeInfo *partinfo)
 	TEXTVIEW_INSERT(_(" (Shortcut key: 'l')\n"));
 	TEXTVIEW_INSERT(_("       (alternately double-click, or click the middle "));
 	TEXTVIEW_INSERT(_("mouse button)\n"));
+#ifndef G_OS_WIN32
 	TEXTVIEW_INSERT(_("     - Or use "));
 	TEXTVIEW_INSERT_LINK(_("'Open with...'"), "sc://open_with", NULL);
 	TEXTVIEW_INSERT(_(" (Shortcut key: 'o')"));
+#endif
 #endif
 	TEXTVIEW_INSERT("\n");
 

@@ -209,6 +209,8 @@ int pclose( FILE *stream );
 int w32_is_administrator (void);
 
 /*** misc ***/
+int write_w32_registry_string( char *parent, char *section, char *value, char *data );
+int write_w32_registry_dword( char *parent, char *section, char *value, int data );
 char *read_w32_registry_string( char *parent, char *section, char *key );
 char *get_content_type_from_registry_with_ext( char *ext );
 

@@ -119,10 +119,12 @@ static void mimeview_save_as		(MimeView	*mimeview);
 static void mimeview_save_all		(MimeView	*mimeview);
 static void mimeview_launch		(MimeView	*mimeview,
 					 MimeInfo	*partinfo);
+#ifndef G_OS_WIN32
 static void mimeview_open_with		(MimeView	*mimeview);
 static void mimeview_open_part_with	(MimeView	*mimeview,
 					 MimeInfo	*partinfo,
 					 gboolean	 automatic);
+#endif
 static void mimeview_select_next_part	(MimeView	*mimeview);
 static void mimeview_select_prev_part	(MimeView	*mimeview);
 static void mimeview_view_file		(const gchar	*filename,
@@ -161,10 +163,12 @@ static void mimeview_launch_cb(GtkAction *action, gpointer data)
 	mimeview_launch(mimeview, mimeview_get_part_to_use(mimeview));
 }
 
+#ifndef G_OS_WIN32
 static void mimeview_open_with_cb(GtkAction *action, gpointer data)
 {
 	mimeview_open_with((MimeView *)data);
 }
+#endif
 
 static void mimeview_display_as_text_cb(GtkAction *action, gpointer data)
 {
@@ -189,7 +193,7 @@ static void mimeview_select_next_part_cb(GtkAction *action, gpointer data)
 static GtkActionEntry mimeview_menu_actions[] = {
 	{ "MimeView", NULL, "MimeView" },
 	{ "MimeView/Open", NULL, N_("_Open (l)"), NULL, "Open MIME part", G_CALLBACK(mimeview_launch_cb) },
-#ifndef MAEMO
+#if (!defined MAEMO && !defined G_OS_WIN32)
 	{ "MimeView/OpenWith", NULL, N_("Open _with (o)..."), NULL, "Open MIME part with...", G_CALLBACK(mimeview_open_with_cb) },
 #endif
 	{ "MimeView/DisplayAsText", NULL, N_("_Display as text (t)"), NULL, "Display as text", G_CALLBACK(mimeview_display_as_text_cb) },
@@ -359,7 +363,7 @@ MimeView *mimeview_create(MainWindow *mainwin)
 	MENUITEM_ADDUI_MANAGER(mimeview->ui_manager, 
 			"/Menus/MimeView/", "Open", "MimeView/Open",
 			GTK_UI_MANAGER_MENUITEM);
-#ifndef MAEMO
+#if (!defined MAEMO && !defined G_OS_WIN32)
 	MENUITEM_ADDUI_MANAGER(mimeview->ui_manager, 
 			"/Menus/MimeView/", "OpenWith", "MimeView/OpenWith",
 			GTK_UI_MANAGER_MENUITEM);
@@ -1312,11 +1316,13 @@ static gboolean part_button_pressed(MimeView *mimeview, GdkEventButton *event,
 			cm_menu_set_sensitive_full(mimeview->ui_manager, "Menus/MimeView/DisplayAsText", FALSE);
 		else
 			cm_menu_set_sensitive_full(mimeview->ui_manager, "Menus/MimeView/DisplayAsText", TRUE);
+#ifndef G_OS_WIN32
 		if (partinfo &&
 		    partinfo->type == MIMETYPE_APPLICATION &&
 		    !g_ascii_strcasecmp(partinfo->subtype, "octet-stream"))
 			cm_menu_set_sensitive_full(mimeview->ui_manager, "Menus/MimeView/Open", FALSE);
 		else
+#endif
 			cm_menu_set_sensitive_full(mimeview->ui_manager, "Menus/MimeView/Open", TRUE);
 
 		g_object_set_data(G_OBJECT(mimeview->popupmenu),
@@ -1445,11 +1451,13 @@ static gint mimeview_key_pressed(GtkWidget *widget, GdkEventKey *event,
 		KEY_PRESS_EVENT_STOP();
 		mimeview_launch(mimeview, NULL);
 		return TRUE;
+#ifndef G_OS_WIN32
 	case GDK_o:
 		BREAK_ON_MODIFIER_KEY();
 		KEY_PRESS_EVENT_STOP();
 		mimeview_open_with(mimeview);
 		return TRUE;
+#endif
 	case GDK_c:
 		BREAK_ON_MODIFIER_KEY();
 		KEY_PRESS_EVENT_STOP();
@@ -1846,6 +1854,7 @@ static void mimeview_launch(MimeView *mimeview, MimeInfo *partinfo)
 	g_free(filename);
 }
 
+#ifndef G_OS_WIN32
 static void mimeview_open_with(MimeView *mimeview)
 {
 	MimeInfo *partinfo;
@@ -1976,10 +1985,12 @@ out:
 	g_free(content_type);
 	g_free(filename);
 }
+#endif
 
 static void mimeview_view_file(const gchar *filename, MimeInfo *partinfo,
 			       const gchar *cmd, MimeView *mimeview)
 {
+#ifndef G_OS_WIN32
 	gchar *p;
 	gchar buf[BUFFSIZE];
 	if (cmd == NULL)
@@ -2002,6 +2013,24 @@ static void mimeview_view_file(const gchar *filename, MimeInfo *partinfo,
 			mimeview_open_part_with(mimeview, partinfo, FALSE);
 		}
 	}
+#else
+	SHFILEINFO file_info;
+	if ((SHGetFileInfo(filename, 0, &file_info, sizeof(SHFILEINFO), SHGFI_EXETYPE)) != 0) {
+		AlertValue val = alertpanel_full(_("Execute untrusted binary?"), 
+				      _("This attachment is an executable file. Executing "
+				        "untrusted binaries is dangerous and could probably "
+					"lead to compromission of your computer.\n\n"
+					"Do you want to run this file?"), GTK_STOCK_CANCEL, 
+					_("Run binary"),
+		      		      NULL, FALSE, NULL, ALERT_WARNING, G_ALERTDEFAULT);
+		if (val == G_ALERTALTERNATE) {
+			debug_print("executing binary\n");
+			ShellExecute(NULL, "open", filename, NULL, NULL, SW_SHOW);
+		}
+	} else
+		ShellExecute(NULL, "open", filename, NULL, NULL, SW_SHOW);
+	
+#endif
 }
 
 void mimeview_register_viewer_factory(MimeViewerFactory *factory)
@@ -2127,10 +2156,12 @@ static gint icon_key_pressed(GtkWidget *button, GdkEventKey *event,
 		BREAK_ON_MODIFIER_KEY();
 		mimeview_launch(mimeview, NULL);
 		return TRUE;
+#ifndef G_OS_WIN32
 	case GDK_o:
 		BREAK_ON_MODIFIER_KEY();
 		mimeview_open_with(mimeview);
 		return TRUE;
+#endif
 	case GDK_c:
 		BREAK_ON_MODIFIER_KEY();
 		mimeview_check_signature(mimeview);
@@ -2509,8 +2540,10 @@ void mimeview_handle_cmd(MimeView *mimeview, const gchar *cmd, GdkEventButton *e
 		mimeview_save_as(mimeview);
 	else if (!strcmp(cmd, "sc://display_as_text"))
 		mimeview_display_as_text(mimeview);
+#ifndef G_OS_WIN32
 	else if (!strcmp(cmd, "sc://open_with"))
 		mimeview_open_with(mimeview);
+#endif
 	else if (!strcmp(cmd, "sc://open"))
 		mimeview_launch(mimeview, NULL);
 	else if (!strcmp(cmd, "sc://select_attachment") && data != NULL) {

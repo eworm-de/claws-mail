@@ -1,3 +1,23 @@
+2008-11-04 [colin]	3.6.1cvs15
+
+	* src/procmime.c
+		w32: Fix getting content-type 
+	* src/mimeview.c
+	* src/prefs_common.c
+	* src/prefs_common.h
+	* src/prefs_ext_prog.c
+	* src/textview.c
+		w32: better integration (use the
+		standard file associations instead
+		of our platform-unadapted open
+		dialog)
+	* src/mainwindow.c
+	* src/common/utils.c
+	* src/common/w32_reg.c
+	* src/common/w32lib.h
+		w32: better integration (allow 
+		setting Claws as default MUA)
+
 2008-11-01 [colin]	3.6.1cvs14
 
 	* src/codeconv.c

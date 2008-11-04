@@ -19,17 +19,12 @@
  */
 
 #include <windows.h>
+#include "utils.h"
 #include "w32lib.h"
 
-char *read_w32_registry_string( char *parent, char *section, char *key )
+static HKEY get_root_key_from_str(char *parent)
 {
-	HKEY hKey, rootKey;
-	char *str;
-	int ret;
-
-	char buf[ MAX_PATH ];
-	DWORD bufsiz = sizeof( buf );
-
+	HKEY rootKey = NULL;
 	if (!parent || !strlen(parent))
 		rootKey = HKEY_CURRENT_USER ;
 	else if (!strcmp(parent, "HKCR") || !strcmp(parent,"HKEY_CLASSES_ROOT"))
@@ -42,7 +37,66 @@ char *read_w32_registry_string( char *parent, char *section, char *key )
 		rootKey = HKEY_USERS ;
 	else if (!strcmp(parent, "HKCC") || !strcmp(parent,"HKEY_CURRENT_CONFIG"))
 		rootKey = HKEY_CURRENT_CONFIG ;
-        else 
+	return rootKey;
+
+}
+
+int write_w32_registry_string( char *parent, char *section, char *value, char *data )
+{
+	HKEY hKey, rootKey;
+	int ret;
+
+	rootKey = get_root_key_from_str(parent);
+	ret = RegCreateKeyEx(rootKey, section, 0, NULL, 
+		REG_OPTION_NON_VOLATILE, KEY_WRITE, NULL, &hKey, NULL);
+	if (ret != ERROR_SUCCESS) {
+		debug_print("can't write key %s\\%s: %d\n", parent, section, ret);
+		return -1;
+	}
+	ret = RegSetValueEx(hKey, value, 0, REG_SZ, (LPVOID)data, strlen(data));
+	if (ret != ERROR_SUCCESS) {
+		RegCloseKey(hKey);
+		debug_print("can't write key %s\\%s: %d\n", parent, section, ret);
+		return -1;
+	}
+	RegCloseKey(hKey);
+	return 0;
+}
+
+int write_w32_registry_dword( char *parent, char *section, char *value, int data )
+{
+	HKEY hKey, rootKey;
+	int ret;
+
+	rootKey = get_root_key_from_str(parent);
+	ret = RegCreateKeyEx(rootKey, section, 0, NULL, 
+		REG_OPTION_NON_VOLATILE, KEY_WRITE, NULL, &hKey, NULL);
+	if (ret != ERROR_SUCCESS) {
+		debug_print("can't write key %s\\%s: %d\n", parent, section, ret);
+		return -1;
+	}
+	ret = RegSetValueEx(hKey, value, 0, REG_DWORD, (LPBYTE)&data, sizeof(data));
+	if (ret != ERROR_SUCCESS) {
+		RegCloseKey(hKey);
+		debug_print("can't write key %s\\%s: %d\n", parent, section, ret);
+		return -1;
+	}
+	RegCloseKey(hKey);
+	return 0;
+}
+
+char *read_w32_registry_string( char *parent, char *section, char *key )
+{
+	HKEY hKey, rootKey;
+	char *str;
+	int ret;
+
+	char buf[ MAX_PATH ];
+	DWORD bufsiz = sizeof( buf );
+
+	rootKey = get_root_key_from_str(parent);
+
+        if (!rootKey) 
           return NULL;
 
 	str = NULL;

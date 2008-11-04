@@ -121,10 +121,6 @@ static PrefParam param_os_specific[] = {
 	 &prefs_common.pixmap_theme_path, P_STRING, NULL, NULL, NULL},
 
 	/* Other */
-	{"uri_open_command", NULL,
-	 &prefs_common.uri_cmd, P_STRING, NULL, NULL, NULL},
-	{"print_command", "notepad /p %s",
-	 &prefs_common.print_cmd, P_STRING, NULL, NULL, NULL},
 	{"ext_editor_command", "notepad %s",
 	 &prefs_common.ext_editor_cmd, P_STRING, NULL, NULL, NULL},
 
@@ -813,10 +809,12 @@ static PrefParam param[] = {
 	 P_INT, NULL, NULL, NULL},
 
 	/* Other */
+#ifndef G_OS_WIN32
 	{"uri_open_command", DEFAULT_BROWSER_CMD,
 	 &SPECIFIC_PREFS.uri_cmd, P_STRING, NULL, NULL, NULL},
 	{"print_command", "lpr %s",
 	 &SPECIFIC_PREFS.print_cmd, P_STRING, NULL, NULL, NULL},
+#endif
 	{"ext_editor_command", DEFAULT_EDITOR_CMD,
 	 &SPECIFIC_PREFS.ext_editor_cmd, P_STRING, NULL, NULL, NULL},
 	{"cmds_use_system_default", "FALSE",
@@ -1518,6 +1516,9 @@ const gchar *prefs_common_translated_header_name(const gchar *header_name)
 
 const gchar *prefs_common_get_uri_cmd(void)
 {
+#ifdef G_OS_WIN32
+	return NULL;
+#else
 	gchar *tmp = NULL;
 	
 	if (!prefs_common.cmds_use_system_default)
@@ -1529,6 +1530,7 @@ const gchar *prefs_common_get_uri_cmd(void)
 	
 	g_free(tmp);
 	return "xdg-open %s";
+#endif
 }
 
 const gchar *prefs_common_get_ext_editor_cmd(void)

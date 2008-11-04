@@ -3331,6 +3331,7 @@ static void encode_uri(gchar *encoded_uri, gint bufsize, const gchar *uri)
 gint open_uri(const gchar *uri, const gchar *cmdline)
 {
 #ifndef MAEMO
+#ifndef G_OS_WIN32
 	gchar buf[BUFFSIZE];
 	gchar *p;
 	gchar encoded_uri[BUFFSIZE];
@@ -3352,6 +3353,9 @@ gint open_uri(const gchar *uri, const gchar *cmdline)
 	}
 
 	execute_command_line(buf, TRUE);
+#else
+	ShellExecute(NULL, "open", uri, NULL, NULL, SW_SHOW);
+#endif
 #else
 	extern osso_context_t *get_osso_context(void);
 	osso_rpc_run_with_defaults(get_osso_context(), "osso_browser",
