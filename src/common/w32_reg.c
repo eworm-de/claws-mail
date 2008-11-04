@@ -53,7 +53,7 @@ int write_w32_registry_string( char *parent, char *section, char *value, char *d
 		debug_print("can't write key %s\\%s: %d\n", parent, section, ret);
 		return -1;
 	}
-	ret = RegSetValueEx(hKey, value, 0, REG_SZ, (LPVOID)data, strlen(data));
+	ret = RegSetValueEx(hKey, value, 0, REG_SZ, (LPVOID)data, strlen(data)+1);
 	if (ret != ERROR_SUCCESS) {
 		RegCloseKey(hKey);
 		debug_print("can't write key %s\\%s: %d\n", parent, section, ret);
