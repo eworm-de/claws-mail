@@ -4932,10 +4932,11 @@ static void set_default_client_cb(GtkAction *action, gpointer data)
 	binary_compose = g_strconcat(exename, " --compose %1", NULL);
 	binary_run = g_strconcat(exename, NULL);
 
-	r = write_w32_registry_string("HKCU", "Software\\Clients\\Mail", 
+	/* Try to set the Mail Start menu item to Claws. It may fail if we're not root; we don't care */
+	r = write_w32_registry_string("HKLM", "Software\\Clients\\Mail", 
 			"", "Claws Mail");
-	if (!r)
-		r = write_w32_registry_string("HKCU", "Software\\Clients\\Mail\\Claws Mail", 
+	
+	r = write_w32_registry_string("HKCU", "Software\\Clients\\Mail\\Claws Mail", 
 				"", "Claws Mail");
 	if (!r)
 		r = write_w32_registry_string("HKCU", "Software\\Clients\\Mail\\Claws Mail", 
