@@ -35,6 +35,7 @@
 #  ifndef EINPROGRESS
 #    define EINPROGRESS WSAEINPROGRESS
 #  endif
+#  include "w32lib.h"
 #else
 #  if HAVE_SYS_WAIT_H
 #    include <sys/wait.h>
@@ -231,6 +232,11 @@ void refresh_resolvers(void)
 #endif /*G_OS_UNIX*/
 }
 
+#ifdef G_OS_WIN32
+#define SOCKET_IS_VALID(s)      ((s) != INVALID_SOCKET)
+#else
+#define SOCKET_IS_VALID(s) 	TRUE
+#endif
 
 /* Due to the fact that socket under Windows are not represented by
    standard file descriptors, we sometimes need to check whether a
@@ -248,6 +254,78 @@ static int fd_is_w32_socket(gint fd)
 #endif 
 }
 
+gint fd_connect_inet(gushort port)
+{
+	gint sock;
+	struct sockaddr_in addr;
+
+	sock = socket(AF_INET, SOCK_STREAM, 0);
+	if (!SOCKET_IS_VALID(sock)) {
+#ifdef G_OS_WIN32
+		debug_print("fd_connect_inet(): socket() failed: %d\n",
+			  WSAGetLastError());
+#else
+		perror("fd_connect_inet(): socket");
+#endif
+		return -1;
+	}
+
+	memset(&addr, 0, sizeof(addr));
+	addr.sin_family = AF_INET;
+	addr.sin_port = htons(port);
+	addr.sin_addr.s_addr = htonl(INADDR_LOOPBACK);
+
+	if (connect(sock, (struct sockaddr *)&addr, sizeof(addr)) < 0) {
+		fd_close(sock);
+		return -1;
+	}
+
+	return sock;
+}
+gint fd_open_inet(gushort port)
+{
+	gint sock;
+	struct sockaddr_in addr;
+	gint val;
+
+	sock = socket(AF_INET, SOCK_STREAM, 0);
+	if (!SOCKET_IS_VALID(sock)) {
+#ifdef G_OS_WIN32
+		g_warning("fd_open_inet(): socket() failed: %d\n",
+			  WSAGetLastError());
+#else
+		perror("fd_open_inet(): socket");
+#endif
+		return -1;
+	}
+
+	val = 1;
+	if (setsockopt(sock, SOL_SOCKET, SO_REUSEADDR, (char *)&val,
+		       sizeof(val)) < 0) {
+		perror("setsockopt");
+		fd_close(sock);
+		return -1;
+	}
+
+	memset(&addr, 0, sizeof(addr));
+	addr.sin_family = AF_INET;
+	addr.sin_port = htons(port);
+	addr.sin_addr.s_addr = htonl(INADDR_LOOPBACK);
+
+	if (bind(sock, (struct sockaddr *)&addr, sizeof(addr)) < 0) {
+		perror("bind");
+		fd_close(sock);
+		return -1;
+	}
+
+	if (listen(sock, 1) < 0) {
+		perror("listen");
+		fd_close(sock);
+		return -1;
+	}
+
+	return sock;
+}
 
 gint fd_connect_unix(const gchar *path)
 {

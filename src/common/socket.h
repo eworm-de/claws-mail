@@ -110,6 +110,9 @@ gint fd_connect_unix	(const gchar *path);
 gint fd_open_unix	(const gchar *path);
 gint fd_accept		(gint sock);
 
+gint fd_connect_inet(gushort port);
+gint fd_open_inet(gushort port);
+
 gint fd_write		(gint sock, const gchar *buf, gint len);
 gint fd_write_all	(gint sock, const gchar *buf, gint len);
 gint fd_gets		(gint sock, gchar *buf, gint len);

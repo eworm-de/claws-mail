@@ -1,3 +1,18 @@
+2008-11-05 [colin]	3.6.1cvs18
+
+	* src/action.c
+	* src/main.c
+	* src/mainwindow.c
+	* src/common/socket.c
+	* src/common/socket.h
+	* src/gtk/gtkutils.c
+	* src/gtk/gtkutils.h
+		w32: Implement single launch (lock
+		socket); always put debug log to
+		the rc_dir; fix Start menu update
+		after registering as default Mail 
+		app
+
 2008-11-05 [colin]	3.6.1cvs17
 
 	* src/mainwindow.c

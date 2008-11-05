@@ -1662,7 +1662,8 @@ gint
 claws_input_add    (gint	      source,
 		    GdkInputCondition condition,
 		    GdkInputFunction  function,
-		    gpointer	      data)
+		    gpointer	      data,
+		    gboolean	      is_sock)
 {
   guint result;
   ClawsIOClosure *closure = g_new (ClawsIOClosure, 1);
@@ -1684,7 +1685,10 @@ claws_input_add    (gint	      source,
 #ifndef G_OS_WIN32
   channel = g_io_channel_unix_new (source);
 #else
-  channel = g_io_channel_win32_new_fd(source);
+  if (is_sock)
+    channel = g_io_channel_win32_new_socket(source);
+  else
+    channel = g_io_channel_win32_new_fd(source);
 #endif
   result = g_io_add_watch_full (channel, G_PRIORITY_DEFAULT, cond, 
 				claws_io_invoke,

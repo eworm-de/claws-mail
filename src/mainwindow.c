@@ -81,6 +81,9 @@
 #include "imap.h"
 #include "socket.h"
 #include "printing.h"
+#ifdef G_OS_WIN32
+#include "w32lib.h"
+#endif
 
 #define AC_LABEL_WIDTH	240
 
@@ -4977,6 +4980,7 @@ static void set_default_client_cb(GtkAction *action, gpointer data)
 				"", binary_compose);
 	
 	if (!r) {
+		SendMessage(HWND_BROADCAST, WM_SETTINGCHANGE, 0, (LPARAM)"Software\\Clients\\Mail");
 		alertpanel_notice(_("Claws Mail has been registered as default client."));
 	} else {
 		alertpanel_error(_("Can not register as default client: impossible to write to the registry."));

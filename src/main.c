@@ -798,11 +798,16 @@ static void win32_log(const gchar *log_domain, GLogLevelFlags log_level, const g
 
 static void win32_open_log(void)
 {
-	if (is_file_exist("claws-win32.log")) {
-		if (rename_force("claws-win32.log", "claws-win32.log.bak") < 0)
-			FILE_OP_ERROR("claws-win32.log", "rename");
+	gchar *logfile = g_strconcat(get_rc_dir(), G_DIR_SEPARATOR_S, "claws-win32.log", NULL);
+	gchar *oldlogfile = g_strconcat(get_rc_dir(), G_DIR_SEPARATOR_S, "claws-win32.log.bak", NULL);
+
+	if (is_file_exist(logfile)) {
+		if (rename_force(logfile, oldlogfile) < 0)
+			FILE_OP_ERROR(logfile, "rename");
 	}
-	win32_debug_fp = g_fopen("claws-win32.log", "w");
+	win32_debug_fp = g_fopen(logfile, "w");
+	g_free(logfile);
+	g_free(oldlogfile);
 	if (win32_debug_fp)
 	{
 		g_set_print_handler(win32_print_stdout);
@@ -1091,7 +1096,6 @@ int main(int argc, char *argv[])
 	sock_init();
 
 	/* check and create unix domain socket for remote operation */
-#ifdef G_OS_UNIX
 	lock_socket = prohibit_duplicate_launch();
 	if (lock_socket < 0) {
 #ifdef HAVE_STARTUP_NOTIFICATION
@@ -1109,7 +1113,6 @@ int main(int argc, char *argv[])
 	
 	if (cmd.exit)
 		return 0;
-#endif
 	if (!g_thread_supported())
 		g_thread_init(NULL);
 
@@ -1377,12 +1380,10 @@ int main(int argc, char *argv[])
 	folder_item_update_freeze();
 
 	/* register the callback of unix domain socket input */
-#ifdef G_OS_UNIX
 	lock_socket_tag = claws_input_add(lock_socket,
 					GDK_INPUT_READ | GDK_INPUT_EXCEPTION,
 					lock_socket_input_cb,
-					mainwin);
-#endif
+					mainwin, TRUE);
 
 
 	prefs_account_init();
@@ -1803,7 +1804,7 @@ static void parse_cmd_opt(int argc, char *argv[])
 		} else if (!strncmp(argv[i], "--receive", 9)) {
 			cmd.receive = TRUE;
 		} else if (!strncmp(argv[i], "--compose", 9)) {
-			const gchar *p = argv[i + 1];
+			const gchar *p = (i+1 < argc)?argv[i+1]:NULL;
 
 			cmd.compose = TRUE;
 			cmd.compose_mailto = NULL;
@@ -1816,13 +1817,13 @@ static void parse_cmd_opt(int argc, char *argv[])
 				i++;
 			}
 		} else if (!strncmp(argv[i], "--subscribe", 11)) {
-			const gchar *p = argv[i + 1];
+			const gchar *p = (i+1 < argc)?argv[i+1]:NULL;
 			if (p && *p != '\0' && *p != '-') {
 				cmd.subscribe = TRUE;
 				cmd.subscribe_uri = p;
 			}
 		} else if (!strncmp(argv[i], "--attach", 8)) {
-			const gchar *p = argv[i + 1];
+			const gchar *p = (i+1 < argc)?argv[i+1]:NULL;
 			gchar *file = NULL;
 
 			while (p && *p != '\0' && *p != '-') {
@@ -1844,7 +1845,7 @@ static void parse_cmd_opt(int argc, char *argv[])
 				}
 				g_ptr_array_add(cmd.attach_files, file);
 				i++;
-				p = argv[i + 1];
+				p = (i+1 < argc)?argv[i+1]:NULL;
 			}
 		} else if (!strncmp(argv[i], "--send", 6)) {
 			cmd.send = TRUE;
@@ -1858,7 +1859,7 @@ static void parse_cmd_opt(int argc, char *argv[])
 			g_print("Claws Mail version " VERSION "\n");
 			exit(0);
  		} else if (!strncmp(argv[i], "--status-full", 13)) {
- 			const gchar *p = argv[i + 1];
+ 			const gchar *p = (i+1 < argc)?argv[i+1]:NULL;
  
  			cmd.status_full = TRUE;
  			while (p && *p != '\0' && *p != '-') {
@@ -1869,10 +1870,10 @@ static void parse_cmd_opt(int argc, char *argv[])
  				g_ptr_array_add(cmd.status_full_folders,
  						g_strdup(p));
  				i++;
- 				p = argv[i + 1];
+ 				p = (i+1 < argc)?argv[i+1]:NULL;
  			}
   		} else if (!strncmp(argv[i], "--status", 8)) {
- 			const gchar *p = argv[i + 1];
+ 			const gchar *p = (i+1 < argc)?argv[i+1]:NULL;
  
   			cmd.status = TRUE;
  			while (p && *p != '\0' && *p != '-') {
@@ -1881,7 +1882,7 @@ static void parse_cmd_opt(int argc, char *argv[])
  				g_ptr_array_add(cmd.status_folders,
  						g_strdup(p));
  				i++;
- 				p = argv[i + 1];
+ 				p = (i+1 < argc)?argv[i+1]:NULL;
  			}
 		} else if (!strncmp(argv[i], "--online", 8)) {
 			cmd.online_mode = ONLINE_MODE_ONLINE;
@@ -1920,7 +1921,7 @@ static void parse_cmd_opt(int argc, char *argv[])
 			exit(1);
 		} else if (!strncmp(argv[i], "--crash", 7)) {
 			cmd.crash = TRUE;
-			cmd.crash_params = g_strdup(argv[i + 1]);
+			cmd.crash_params = g_strdup((i+1 < argc)?argv[i+1]:NULL);
 			i++;
 		} else if (!strncmp(argv[i], "--config-dir", sizeof "--config-dir" - 1)) {
 			g_print(RC_DIR "\n");
@@ -2140,6 +2141,7 @@ static gchar *get_crashfile_name(void)
 static gint prohibit_duplicate_launch(void)
 {
 	gint uxsock;
+#ifdef G_OS_UNIX
 	gchar *path;
 
 	path = claws_get_socket_name();
@@ -2152,7 +2154,25 @@ static gint prohibit_duplicate_launch(void)
 		claws_unlink(path);
 		return fd_open_unix(path);
 	}
+#else
+        HANDLE hmutex;
 
+        hmutex = CreateMutexA(NULL, FALSE, "ClawsMail");
+        if (!hmutex) {
+                debug_print("cannot create Mutex\n");
+                return -1;
+        }
+        if (GetLastError() != ERROR_ALREADY_EXISTS) {
+                uxsock = fd_open_inet(50216);
+                if (uxsock < 0)
+                        return 0;
+                return uxsock;
+        }
+
+        uxsock = fd_connect_inet(50216);
+        if (uxsock < 0)
+                return -1;
+#endif
 	/* remote command mode */
 
 	debug_print("another Claws Mail instance is already running.\n");
@@ -2234,6 +2254,7 @@ static gint prohibit_duplicate_launch(void)
 		fd_write_all(uxsock, str, strlen(str));
 		g_free(str);
 	} else {
+#ifndef G_OS_WIN32
 		gchar buf[BUFSIZ];
 		fd_write_all(uxsock, "get_display\n", 12);
 		memset(buf, 0, sizeof(buf));
@@ -2246,6 +2267,9 @@ static gint prohibit_duplicate_launch(void)
 			uxsock = fd_connect_unix(path);
 			fd_write_all(uxsock, "popup\n", 6);
 		}
+#else
+		fd_write_all(uxsock, "popup\n", 6);
+#endif
 	}
 
 	fd_close(uxsock);
@@ -2256,7 +2280,7 @@ static gint lock_socket_remove(void)
 {
 #ifdef G_OS_UNIX
 	gchar *filename;
-
+#endif
 	if (lock_socket < 0) {
 		return -1;
 	}
@@ -2265,6 +2289,8 @@ static gint lock_socket_remove(void)
 		g_source_remove(lock_socket_tag);
 	}
 	fd_close(lock_socket);
+
+#ifdef G_OS_UNIX
 	filename = claws_get_socket_name();
 	claws_unlink(filename);
 #endif

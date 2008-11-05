@@ -892,7 +892,8 @@ static gboolean execute_actions(gchar *action, GSList *msg_list,
 			child_info->tag_status = 
 				claws_input_add(child_info->chld_status,
 					      GDK_INPUT_READ,
-					      catch_status, child_info);
+					      catch_status, child_info,
+					      FALSE);
 		}
 
 		create_io_dialog(children);
@@ -1052,9 +1053,9 @@ static ChildInfo *fork_child(gchar *cmd, const gchar *msg_str,
 	child_info->chld_status = chld_status[0];
 	child_info->tag_in      = -1;
 	child_info->tag_out     = claws_input_add(chld_out[0], GDK_INPUT_READ,
-						catch_output, child_info);
+						catch_output, child_info, FALSE);
 	child_info->tag_err     = claws_input_add(chld_err[0], GDK_INPUT_READ,
-						catch_output, child_info);
+						catch_output, child_info, FALSE);
 
 	if (!(children->action_type &
 	      (ACTION_PIPE_IN | ACTION_PIPE_OUT | ACTION_INSERT)))
@@ -1139,7 +1140,7 @@ static void send_input(GtkWidget *w, gpointer data)
 
 	child_info->tag_in = claws_input_add(child_info->chld_in,
 					   GDK_INPUT_WRITE,
-					   catch_input, children);
+					   catch_input, children, FALSE);
 }
 
 static gint delete_io_dialog_cb(GtkWidget *w, GdkEvent *e, gpointer data)
