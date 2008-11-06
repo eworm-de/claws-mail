@@ -1936,8 +1936,10 @@ MainWindow *main_window_create()
 	MENUITEM_ADDUI_MANAGER(mainwin->ui_manager, "/Menu/Help", "Manual", "Help/Manual", GTK_UI_MANAGER_MENUITEM)
 	MENUITEM_ADDUI_MANAGER(mainwin->ui_manager, "/Menu/Help", "FAQ", "Help/FAQ", GTK_UI_MANAGER_MENUITEM)
 	MENUITEM_ADDUI_MANAGER(mainwin->ui_manager, "/Menu/Help", "IconLegend", "Help/IconLegend", GTK_UI_MANAGER_MENUITEM)
+#ifdef G_OS_WIN32
 	MENUITEM_ADDUI_MANAGER(mainwin->ui_manager, "/Menu/Help", "Separator1", "Help/---", GTK_UI_MANAGER_SEPARATOR)
 	MENUITEM_ADDUI_MANAGER(mainwin->ui_manager, "/Menu/Help", "SetDefault", "Help/SetDefault", GTK_UI_MANAGER_MENUITEM)
+#endif
 	MENUITEM_ADDUI_MANAGER(mainwin->ui_manager, "/Menu/Help", "Separator2", "Help/---", GTK_UI_MANAGER_SEPARATOR)
 	MENUITEM_ADDUI_MANAGER(mainwin->ui_manager, "/Menu/Help", "About", "Help/About", GTK_UI_MANAGER_MENUITEM)
 

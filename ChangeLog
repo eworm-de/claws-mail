@@ -1,3 +1,10 @@
+2008-11-06 [mones]	3.6.1cvs19
+
+	* src/mainwindow.c
+		Fix missing "About" in Help menu
+	* tools/claws.i18n.status.pl
+		Fix header
+
 2008-11-05 [colin]	3.6.1cvs18
 
 	* src/action.c

@@ -2,7 +2,8 @@
 #
 # claws.i18n.stats.pl - Generate statistics for Claws Mail po directory.
 # 
-# (c) 2003 by Ricardo Mones Lastra <mones@aic.uniovi.es>
+# Copyright (C) 2003-2008 by Ricardo Mones <ricardo@mones.org>, 
+#                            Paul Mangan <paul@claws-mail.org>
 # This program is released under the GNU General Public License.
 #
 # constants -----------------------------------------------------------------
