@@ -461,7 +461,7 @@ static void addressbook_edit_ldap_page_basic( gint pageNum, gchar *pageLbl ) {
 	gtk_misc_set_alignment(GTK_MISC(label), 0, 0.5);
 
 	hbox_spin = gtk_hbox_new (FALSE, 8);
-	spinbtn_port_adj = gtk_adjustment_new (389, 1, 65535, 1, 1000, 1000);
+	spinbtn_port_adj = gtk_adjustment_new (389, 1, 65535, 1, 1000, 0);
 	spinbtn_port = gtk_spin_button_new(GTK_ADJUSTMENT (spinbtn_port_adj), 1, 0);
 	gtk_box_pack_start (GTK_BOX (hbox_spin), spinbtn_port, TRUE, FALSE, 0);
 	gtk_widget_set_size_request (spinbtn_port, 64, -1);
@@ -605,7 +605,7 @@ static void addressbook_edit_ldap_page_search( gint pageNum, gchar *pageLbl ) {
 
 	hbox_spin = gtk_hbox_new (FALSE, 8);
 	spinbtn_queryage_adj = gtk_adjustment_new(
-		LDAPCTL_DFL_QUERY_AGE, 1, LDAPCTL_MAX_QUERY_AGE, 10, 1000, 1000 );
+		LDAPCTL_DFL_QUERY_AGE, 1, LDAPCTL_MAX_QUERY_AGE, 10, 1000, 0 );
 	spinbtn_queryage = gtk_spin_button_new(GTK_ADJUSTMENT (spinbtn_queryage_adj), 1, 0);
 	gtk_box_pack_start (GTK_BOX (hbox_spin), spinbtn_queryage, FALSE, FALSE, 0);
 	gtk_widget_set_size_request (spinbtn_queryage, 64, -1);
@@ -741,7 +741,7 @@ static void addressbook_edit_ldap_page_extended( gint pageNum, gchar *pageLbl ) 
 	gtk_misc_set_alignment(GTK_MISC(label), 0, 0.5);
 
 	hbox_spin = gtk_hbox_new (FALSE, 8);
-	spinbtn_timeout_adj = gtk_adjustment_new (0, 0, 300, 1, 10, 10);
+	spinbtn_timeout_adj = gtk_adjustment_new (0, 0, 300, 1, 10, 0);
 	spinbtn_timeout = gtk_spin_button_new(GTK_ADJUSTMENT (spinbtn_timeout_adj), 1, 0);
 	gtk_box_pack_start (GTK_BOX (hbox_spin), spinbtn_timeout, FALSE, FALSE, 0);
 	gtk_widget_set_size_request (spinbtn_timeout, 64, -1);
@@ -759,7 +759,7 @@ static void addressbook_edit_ldap_page_extended( gint pageNum, gchar *pageLbl ) 
 	gtk_misc_set_alignment(GTK_MISC(label), 0, 0.5);
 
 	hbox_spin = gtk_hbox_new (FALSE, 8);
-	spinbtn_maxentry_adj = gtk_adjustment_new (0, 0, 500, 1, 10, 10);
+	spinbtn_maxentry_adj = gtk_adjustment_new (0, 0, 500, 1, 10, 0);
 	spinbtn_maxentry = gtk_spin_button_new(GTK_ADJUSTMENT (spinbtn_maxentry_adj), 1, 0);
 	gtk_box_pack_start (GTK_BOX (hbox_spin), spinbtn_maxentry, FALSE, FALSE, 0);
 	gtk_widget_set_size_request (spinbtn_maxentry, 64, -1);

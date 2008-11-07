@@ -157,7 +157,7 @@ static void bogofilter_create_widget_func(PrefsPage * _page,
 	gtk_widget_show(max_size_label);
 	gtk_box_pack_start(GTK_BOX(hbox_max_size), max_size_label, FALSE, FALSE, 0);
 
-	max_size_spinbtn_adj = gtk_adjustment_new(250, 0, 10000, 10, 10, 10);
+	max_size_spinbtn_adj = gtk_adjustment_new(250, 0, 10000, 10, 10, 0);
 	max_size_spinbtn = gtk_spin_button_new(GTK_ADJUSTMENT(max_size_spinbtn_adj), 1, 0);
 	gtk_widget_show(max_size_spinbtn);
 	gtk_box_pack_start(GTK_BOX(hbox_max_size), max_size_spinbtn, FALSE, FALSE, 0);

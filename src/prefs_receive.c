@@ -161,7 +161,7 @@ static void prefs_receive_create_widget(PrefsPage *_page, GtkWindow *window,
 	PACK_CHECK_BUTTON (hbox_autochk, checkbtn_autochk,
 			   _("Automatically check for new mail every"));
 
-	spinbtn_autochk_adj = gtk_adjustment_new (5, 1, 100, 1, 10, 10);
+	spinbtn_autochk_adj = gtk_adjustment_new (5, 1, 100, 1, 10, 0);
 	spinbtn_autochk = gtk_spin_button_new
 		(GTK_ADJUSTMENT (spinbtn_autochk_adj), 1, 0);
 	gtk_widget_show (spinbtn_autochk);

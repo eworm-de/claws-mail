@@ -336,7 +336,7 @@ static void spamassassin_create_widget_func(PrefsPage * _page,
 	gtk_widget_show(spamd_colon_label);
 	gtk_box_pack_start(GTK_BOX(hbox_spamd), spamd_colon_label, FALSE, FALSE, 0);
 
-	spamd_port_spinbtn_adj = gtk_adjustment_new(783, 1, 65535, 1, 10, 10);
+	spamd_port_spinbtn_adj = gtk_adjustment_new(783, 1, 65535, 1, 10, 0);
 	spamd_port_spinbtn = gtk_spin_button_new(GTK_ADJUSTMENT(spamd_port_spinbtn_adj), 1, 0);
 	gtk_widget_show(spamd_port_spinbtn);
 	gtk_box_pack_start(GTK_BOX(hbox_spamd), spamd_port_spinbtn, FALSE, FALSE, 0);
@@ -357,7 +357,7 @@ static void spamassassin_create_widget_func(PrefsPage * _page,
 	gtk_widget_show(max_size_label);
 	gtk_box_pack_start(GTK_BOX(hbox_max_size), max_size_label, FALSE, FALSE, 0);
 
-	max_size_spinbtn_adj = gtk_adjustment_new(250, 0, 10000, 10, 10, 10);
+	max_size_spinbtn_adj = gtk_adjustment_new(250, 0, 10000, 10, 10, 0);
 	max_size_spinbtn = gtk_spin_button_new(GTK_ADJUSTMENT(max_size_spinbtn_adj), 1, 0);
 	gtk_widget_show(max_size_spinbtn);
 	gtk_box_pack_start(GTK_BOX(hbox_max_size), max_size_spinbtn, FALSE, FALSE, 0);
@@ -377,7 +377,7 @@ static void spamassassin_create_widget_func(PrefsPage * _page,
 	gtk_widget_show(timeout_label);
 	gtk_box_pack_start(GTK_BOX(hbox_timeout), timeout_label, FALSE, FALSE, 0);
 
-	timeout_spinbtn_adj = gtk_adjustment_new(60, 0, 10000, 10, 10, 10);
+	timeout_spinbtn_adj = gtk_adjustment_new(60, 0, 10000, 10, 10, 0);
 	timeout_spinbtn = gtk_spin_button_new(GTK_ADJUSTMENT(timeout_spinbtn_adj), 1, 0);
 	gtk_widget_show(timeout_spinbtn);
 	gtk_box_pack_start(GTK_BOX(hbox_timeout), timeout_spinbtn, FALSE, FALSE, 0);

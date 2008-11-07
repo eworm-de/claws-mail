@@ -1504,7 +1504,7 @@ static void receive_create_widget_func(PrefsPage * _page,
 	gtk_box_pack_start (GTK_BOX (hbox2), maxarticle_label, FALSE, FALSE, 0);
 
 	maxarticle_spinbtn_adj =
-		gtk_adjustment_new (300, 0, 10000, 10, 100, 100);
+		gtk_adjustment_new (300, 0, 10000, 10, 100, 0);
 	maxarticle_spinbtn = gtk_spin_button_new
 		(GTK_ADJUSTMENT (maxarticle_spinbtn_adj), 10, 0);
 	gtk_widget_show (maxarticle_spinbtn);

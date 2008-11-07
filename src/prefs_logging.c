@@ -146,7 +146,7 @@ static void prefs_logging_create_widget(PrefsPage *_page, GtkWindow *window,
 	PACK_CHECK_BUTTON (hbox_clip_network_log, checkbtn_clip_network_log,
 			   _("Restrict the log window to"));
 	
-	spinbtn_network_log_length_adj = gtk_adjustment_new (500, 0, G_MAXINT, 1, 10, 10);
+	spinbtn_network_log_length_adj = gtk_adjustment_new (500, 0, G_MAXINT, 1, 10, 0);
 	spinbtn_network_log_length = gtk_spin_button_new
 		(GTK_ADJUSTMENT (spinbtn_network_log_length_adj), 1, 0);
 	gtk_widget_show (spinbtn_network_log_length);
@@ -253,7 +253,7 @@ static void prefs_logging_create_widget(PrefsPage *_page, GtkWindow *window,
 	PACK_CHECK_BUTTON (hbox_clip_filtering_log, checkbtn_clip_filtering_log,
 			   _("Restrict the log window to"));
 	
-	spinbtn_filtering_log_length_adj = gtk_adjustment_new (500, 0, G_MAXINT, 1, 10, 10);
+	spinbtn_filtering_log_length_adj = gtk_adjustment_new (500, 0, G_MAXINT, 1, 10, 0);
 	spinbtn_filtering_log_length = gtk_spin_button_new
 		(GTK_ADJUSTMENT (spinbtn_filtering_log_length_adj), 1, 0);
 	gtk_widget_show (spinbtn_filtering_log_length);

@@ -7625,6 +7625,10 @@ void summary_reflect_prefs_custom_colors(SummaryView *summaryview)
 
 	/* clear items. get item pointers. */
 	for (cur = menu->children; cur != NULL && cur->data != NULL; cur = cur->next) {
+		g_signal_handlers_disconnect_matched
+			 (gtk_ui_manager_get_accel_group(summaryview->mainwin->ui_manager), 
+			 G_SIGNAL_MATCH_DATA|G_SIGNAL_MATCH_FUNC,
+			 0, 0, NULL, mainwin_accel_changed_cb, cur->data);
 		gtk_menu_item_set_submenu(GTK_MENU_ITEM(cur->data), NULL);
 	}
 	summary_colorlabel_menu_create(summaryview, TRUE);

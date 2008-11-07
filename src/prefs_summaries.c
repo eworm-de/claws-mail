@@ -385,7 +385,7 @@ static void prefs_summaries_create_widget(PrefsPage *_page, GtkWindow *window,
 	gtk_widget_show (label_ng_abbrev);
 	gtk_box_pack_start (GTK_BOX (hbox1), label_ng_abbrev, FALSE, FALSE, 0);
 
-	spinbtn_ng_abbrev_len_adj = gtk_adjustment_new (16, 0, 999, 1, 10, 10);
+	spinbtn_ng_abbrev_len_adj = gtk_adjustment_new (16, 0, 999, 1, 10, 0);
 	spinbtn_ng_abbrev_len = gtk_spin_button_new
 		(GTK_ADJUSTMENT (spinbtn_ng_abbrev_len_adj), 1, 0);
 	gtk_widget_show (spinbtn_ng_abbrev_len);
@@ -484,7 +484,7 @@ static void prefs_summaries_create_widget(PrefsPage *_page, GtkWindow *window,
 	hbox1 = gtk_hbox_new (FALSE, 8);
 	gtk_box_pack_start (GTK_BOX (hbox1), radio_mark_as_read_on_select, FALSE, FALSE, 0);
 
-	spinbtn_mark_as_read_delay_adj = gtk_adjustment_new (0, 0, 60, 1, 10, 10);
+	spinbtn_mark_as_read_delay_adj = gtk_adjustment_new (0, 0, 60, 1, 10, 0);
 	spinbtn_mark_as_read_delay = gtk_spin_button_new
 			(GTK_ADJUSTMENT (spinbtn_mark_as_read_delay_adj), 1, 0);
 	gtk_box_pack_start (GTK_BOX (hbox1), spinbtn_mark_as_read_delay,

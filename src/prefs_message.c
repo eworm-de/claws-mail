@@ -156,7 +156,7 @@ static void prefs_message_create_widget(PrefsPage *_page, GtkWindow *window,
 
 	hbox1 = gtk_hbox_new (FALSE, 32);
 	gtk_widget_show (hbox1);
-	gtk_box_pack_start (GTK_BOX (vbox2), hbox1, FALSE, TRUE, 0);
+	gtk_box_pack_start (GTK_BOX (vbox1), hbox1, FALSE, TRUE, 0);
 
 	hbox_linespc = gtk_hbox_new (FALSE, 8);
 	gtk_widget_show (hbox1);
@@ -167,7 +167,7 @@ static void prefs_message_create_widget(PrefsPage *_page, GtkWindow *window,
 	gtk_box_pack_start (GTK_BOX (hbox_linespc), label_linespc,
 			    FALSE, FALSE, 0);
 
-	spinbtn_linespc_adj = gtk_adjustment_new (2, 0, 16, 1, 1, 16);
+	spinbtn_linespc_adj = gtk_adjustment_new (2, 0, 16, 1, 1, 0);
 	spinbtn_linespc = gtk_spin_button_new
 		(GTK_ADJUSTMENT (spinbtn_linespc_adj), 1, 0);
 	gtk_widget_show (spinbtn_linespc);
@@ -180,6 +180,7 @@ static void prefs_message_create_widget(PrefsPage *_page, GtkWindow *window,
 	gtk_widget_show (label_linespc);
 	gtk_box_pack_start (GTK_BOX (hbox_linespc), label_linespc,
 			    FALSE, FALSE, 0);
+	gtk_widget_show_all (hbox1);
 
 	vbox_scr = gtkut_get_options_frame(vbox1, &frame, _("Scroll"));
 
@@ -199,7 +200,7 @@ static void prefs_message_create_widget(PrefsPage *_page, GtkWindow *window,
 	gtk_widget_show (label_scr);
 	gtk_box_pack_start (GTK_BOX (hbox_scr), label_scr, FALSE, FALSE, 0);
 
-	spinbtn_scrollstep_adj = gtk_adjustment_new (1, 1, 100, 1, 10, 10);
+	spinbtn_scrollstep_adj = gtk_adjustment_new (1, 1, 100, 1, 10, 0);
 	spinbtn_scrollstep = gtk_spin_button_new
 		(GTK_ADJUSTMENT (spinbtn_scrollstep_adj), 1, 0);
 	gtk_widget_show (spinbtn_scrollstep);

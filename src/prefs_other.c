@@ -511,7 +511,7 @@ static void prefs_other_create_widget(PrefsPage *_page, GtkWindow *window,
 	gtk_widget_show (label_iotimeout);
 	gtk_box_pack_start (GTK_BOX (hbox1), label_iotimeout, FALSE, FALSE, 0);
 
-	spinbtn_iotimeout_adj = gtk_adjustment_new (60, 0, 1000, 1, 10, 10);
+	spinbtn_iotimeout_adj = gtk_adjustment_new (60, 0, 1000, 1, 10, 0);
 	spinbtn_iotimeout = gtk_spin_button_new
 		(GTK_ADJUSTMENT (spinbtn_iotimeout_adj), 1, 0);
 	gtk_widget_show (spinbtn_iotimeout);

@@ -1,3 +1,25 @@
+2008-11-07 [colin]	3.6.1cvs20
+
+	* src/mainwindow.c
+	* src/summaryview.c
+		Fix crash when rebuilding colorlabel
+		menu
+	* src/addrgather.c
+	* src/editldap.c
+	* src/prefs_account.c
+	* src/prefs_compose_writing.c
+	* src/prefs_logging.c
+	* src/prefs_message.c
+	* src/prefs_other.c
+	* src/prefs_receive.c
+	* src/prefs_summaries.c
+	* src/prefs_wrapping.c
+	* src/plugins/bogofilter/bogofilter_gtk.c
+	* src/plugins/pgpcore/prefs_gpg.c
+	* src/plugins/spamassassin/spamassassin_gtk.c
+		Fix deprecated use of page_size in 
+		gtkspinbutton adjustments
+
 2008-11-06 [mones]	3.6.1cvs19
 
 	* src/mainwindow.c
