@@ -3362,6 +3362,16 @@ static inline void summary_set_header(SummaryView *summaryview, gchar *text[],
 	if (!should_swap) {
 		text[col_pos[S_COL_FROM]] = from_text;
 	} else {
+		if (prefs_common.use_addr_book) {
+			gchar *tmp = summary_complete_address(to_text);
+			if (tmp) {
+				strncpy2(buf, tmp, sizeof(buf));
+				g_free(tmp);
+				to_text = buf;
+			} else {
+				to_text = to_text ? to_text : _("(No From)");
+			}
+		}
 		snprintf(tmp2, BUFFSIZE-1, "--> %s", to_text);
 		tmp2[BUFFSIZE-1]='\0';
 		text[col_pos[S_COL_FROM]] = tmp2;

@@ -1,3 +1,10 @@
+2008-11-11 [colin]	3.6.1cvs22
+
+	* src/summaryview.c
+		Fix "display sender using addressbook" when
+		prefs_common.swap_from is in use. Patch by
+		H. Merijn Brand
+
 2008-11-11 [colin]	3.6.1cvs21
 
 	* src/autofaces.c
