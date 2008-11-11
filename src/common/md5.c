@@ -331,7 +331,7 @@ md5_final(unsigned char *digest, MD5_CONTEXT *ctx)
  * Creates a MD5 digest in hex fomrat (lowercase letters) from the
  * string S.  hextdigest but be buffer of at lease 33 bytes!
  */
-void
+static void
 md5_hex_digest_binary(char *hexdigest, const unsigned char *s, size_t len)
 {
 	int i;

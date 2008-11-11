@@ -1,3 +1,10 @@
+2008-11-11 [colin]	3.6.1cvs21
+
+	* src/autofaces.c
+	* src/common/md5.c
+	* src/common/md5.h
+		Make a few functions static
+
 2008-11-07 [colin]	3.6.1cvs20
 
 	* src/mainwindow.c

@@ -27,7 +27,7 @@
 #include "utils.h"
 #include "autofaces.h"
 
-gint get_content_for_any_face(gchar *buf, gint len, gchar *anyname, gint maxlen)
+static gint get_content_for_any_face(gchar *buf, gint len, gchar *anyname, gint maxlen)
 {
 	FILE  *xfp;
 	gchar *xfile;
@@ -55,7 +55,7 @@ gint get_content_for_any_face(gchar *buf, gint len, gchar *anyname, gint maxlen)
 	return 0;
 }
 
-gchar * get_any_face_filename_for_account(gchar *facetype, gchar *accountname)
+static gchar * get_any_face_filename_for_account(gchar *facetype, gchar *accountname)
 {
 	gchar *name = NULL;
 	gchar *what = NULL;
