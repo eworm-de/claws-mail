@@ -1,3 +1,10 @@
+2008-11-12 [colin]	3.6.1cvs23
+
+	* src/prefs_gtk.h
+		Fix bug 1771, 'Folder template gets 
+		truncated when exiting the application'
+		Use a 32k buffer for string preferences
+
 2008-11-11 [colin]	3.6.1cvs22
 
 	* src/summaryview.c
