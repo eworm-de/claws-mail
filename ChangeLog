@@ -1,3 +1,9 @@
+2008-11-13 [colin]	3.6.1cvs25
+
+	* src/account.c
+	* src/filtering.c
+		Fix redefinition of PREFSBUFSIZE
+
 2008-11-13 [wwp]	3.6.1cvs24
 
 	* tools/popfile-link.sh

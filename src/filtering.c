@@ -39,8 +39,6 @@
 #include "tags.h"
 #include "log.h"
 
-#define PREFSBUFSIZE		1024
-
 GSList * pre_global_processing = NULL;
 GSList * post_global_processing = NULL;
 GSList * filtering_rules = NULL;
