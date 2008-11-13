@@ -1,3 +1,8 @@
+2008-11-13 [wwp]	3.6.1cvs24
+
+	* tools/popfile-link.sh
+		Add support for reusing existing POPFile session ID.
+
 2008-11-12 [colin]	3.6.1cvs23
 
 	* src/prefs_gtk.h

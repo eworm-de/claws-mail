@@ -3605,3 +3605,4 @@
 ( cvs diff -u -r 1.1.2.4 -r 1.1.2.5 src/autofaces.c;  cvs diff -u -r 1.2.2.5 -r 1.2.2.6 src/common/md5.c;  cvs diff -u -r 1.1.4.4 -r 1.1.4.5 src/common/md5.h;  ) > 3.6.1cvs21.patchset
 ( cvs diff -u -r 1.395.2.398 -r 1.395.2.399 src/summaryview.c;  ) > 3.6.1cvs22.patchset
 ( cvs diff -u -r 1.5.2.17 -r 1.5.2.18 src/prefs_gtk.h;  ) > 3.6.1cvs23.patchset
+( cvs diff -u -r 1.1.2.1 -r 1.1.2.2 tools/popfile-link.sh;  ) > 3.6.1cvs24.patchset

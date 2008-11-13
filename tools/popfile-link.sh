@@ -26,10 +26,20 @@
 
 function open_page()
 {
-	TMPCMD=$(echo $OPEN_CMD | sed "s:%s:$1:")
+	TMPCMD=$(echo $OPEN_CMD | sed "s|\"%s\"|$1|")
 	$TMPCMD &
 }
 
+
+SESSION_ID=""
+if [ "$1" == "--ask-session-id" ]
+then
+	shift
+	SESSION_ID=$(gxmessage -entry -center -wrap -buttons "OK:0,Cancel:1" -default "OK" \
+		-name "popfile-link" -title "POPFile session ID" "Type in the ID of a running POPFile session to use")
+	test -z "$SESSION_ID" -o $? -ne 0 && \
+		exit 0
+fi
 
 test -z "$1" && \
 	exit 1
@@ -39,7 +49,7 @@ test -z "$CM_DIR" -o ! -d "$HOME/$CM_DIR" && \
 	exit 1
 
 OPEN_CMD=$(grep -Em 1 "^uri_open_command=" "$HOME/$CM_DIR/clawsrc" | cut -d '=' -f 2-)
-test -z "$OPEN_CMD" || \
+test -z "$OPEN_CMD" && \
 	exit 1
 
 while [ -n "$1" ]
@@ -48,7 +58,12 @@ do
 	if [ -n "$LINK" ]
 	then
 		LINK=${LINK:16}
-		open_page "$LINK"
+		if [ -n "$SESSION_ID" ]
+		then
+			open_page "${LINK}\\&session=$SESSION_ID"
+		else
+			open_page "$LINK"
+		fi
 	fi
 	shift
 done
