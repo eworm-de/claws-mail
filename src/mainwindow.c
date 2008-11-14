@@ -2069,7 +2069,7 @@ MainWindow *main_window_create()
 #endif
 	/* create views */
 	mainwin->folderview  = folderview  = folderview_create();
-	mainwin->summaryview = summaryview = summary_create();
+	mainwin->summaryview = summaryview = summary_create(mainwin);
 	mainwin->messageview = messageview = messageview_create(mainwin);
 
 	/* init log instances data before creating log views */
@@ -2242,8 +2242,6 @@ MainWindow *main_window_create()
 
 	ADD_MENU_ACCEL_GROUP_TO_WINDOW(summaryview->popupmenu, mainwin->window);
 	
-/* FIXME	menu_connect_identical_items(); */
-
 #ifndef GENERIC_UMPC
 	gtk_window_iconify(GTK_WINDOW(mainwin->window));
 #endif

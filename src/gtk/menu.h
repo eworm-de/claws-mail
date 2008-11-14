@@ -102,6 +102,5 @@ void menu_button_position	(GtkMenu		*menu,
 				 gpointer		 user_data);
 
 void menu_set_sensitive_all(GtkMenuShell *menu_shell, gboolean sensitive);
-void menu_connect_identical_items(void);
 
 #endif /* __MENU_H__ */

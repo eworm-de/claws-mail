@@ -295,26 +295,6 @@ static void summary_col_resized		(GtkCMCList		*clist,
 					 gint			 column,
 					 gint			 width,
 					 SummaryView		*summaryview);
-static void summary_reply_cb		(SummaryView		*summaryview,
-					 guint			 action,
-					 GtkWidget		*widget);
-#ifndef GENERIC_UMPC
-static void summary_show_all_header_cb	(SummaryView		*summaryview,
-					 guint			 action,
-					 GtkWidget		*widget);
-
-static void summary_add_address_cb	(SummaryView		*summaryview,
-					 guint			 action,
-					 GtkWidget		*widget);
-#endif
-static void summary_create_filter_cb	(SummaryView		*summaryview,
-					 guint			 action,
-					 GtkWidget		*widget);
-#ifndef GENERIC_UMPC
-static void summary_create_processing_cb(SummaryView		*summaryview,
-					 guint			 action,
-					 GtkWidget		*widget);
-#endif
 static void summary_mark_clicked	(GtkWidget		*button,
 					 SummaryView		*summaryview);
 static void summary_status_clicked	(GtkWidget		*button,
@@ -446,149 +426,19 @@ GtkTargetEntry summary_drag_types[2] =
 	}								\
 }
 
-static void summary_menu_cb(GtkAction *action, gpointer data)
-{
-	SummaryView *summaryview = (SummaryView *)data;
-	const gchar *a_name = gtk_action_get_name(action);
-	
-	DO_ACTION("SummaryViewPopup/Reply", summary_reply_cb(summaryview, COMPOSE_REPLY, NULL));
-#ifndef GENERIC_UMPC
-	DO_ACTION("SummaryViewPopup/ReplyTo/All", summary_reply_cb(summaryview, COMPOSE_REPLY_TO_ALL, NULL));
-	DO_ACTION("SummaryViewPopup/ReplyTo/Sender", summary_reply_cb(summaryview, COMPOSE_REPLY_TO_SENDER, NULL));
-	DO_ACTION("SummaryViewPopup/ReplyTo/MailingList", summary_reply_cb(summaryview, COMPOSE_REPLY_TO_LIST, NULL));
-#endif
-	DO_ACTION("SummaryViewPopup/Forward", summary_reply_cb(summaryview, COMPOSE_FORWARD_INLINE, NULL));
-#ifndef GENERIC_UMPC
-	DO_ACTION("SummaryViewPopup/ForwardAsAtt", summary_reply_cb(summaryview, COMPOSE_FORWARD_AS_ATTACH, NULL));
-	DO_ACTION("SummaryViewPopup/Redirect", summary_reply_cb(summaryview, COMPOSE_REDIRECT, NULL));
-#endif
-	DO_ACTION("SummaryViewPopup/Move", summary_move_to(summaryview));
-	DO_ACTION("SummaryViewPopup/Copy", summary_copy_to(summaryview));
-	DO_ACTION("SummaryViewPopup/Trash", summary_delete_trash(summaryview));
-#ifndef GENERIC_UMPC
-	DO_ACTION("SummaryViewPopup/Delete", summary_delete(summaryview));
-#endif
-	DO_ACTION("SummaryViewPopup/Mark/Mark", summary_mark(summaryview));
-	DO_ACTION("SummaryViewPopup/Mark/Unmark", summary_unmark(summaryview));
-	DO_ACTION("SummaryViewPopup/Mark/MarkUnread", summary_mark_as_unread(summaryview));
-	DO_ACTION("SummaryViewPopup/Mark/MarkRead", summary_mark_as_read(summaryview));
-	DO_ACTION("SummaryViewPopup/Mark/MarkAllRead", summary_mark_all_read(summaryview));
-	DO_ACTION("SummaryViewPopup/Mark/IgnoreThread", summary_ignore_thread(summaryview));
-	DO_ACTION("SummaryViewPopup/Mark/UnignoreThread", summary_unignore_thread(summaryview));
-	DO_ACTION("SummaryViewPopup/Mark/WatchThread", summary_watch_thread(summaryview));
-	DO_ACTION("SummaryViewPopup/Mark/UnwatchThread", summary_unwatch_thread(summaryview));
-	DO_ACTION("SummaryViewPopup/Mark/MarkSpam", summary_mark_as_spam(summaryview, 1, NULL));
-	DO_ACTION("SummaryViewPopup/Mark/MarkHam", summary_mark_as_spam(summaryview, 0, NULL));
-	DO_ACTION("SummaryViewPopup/Mark/Lock", summary_msgs_lock(summaryview));
-	DO_ACTION("SummaryViewPopup/Mark/Unlock", summary_msgs_unlock(summaryview));
-#ifndef GENERIC_UMPC
-	DO_ACTION("SummaryViewPopup/AddSenderToAB", summary_add_address_cb(summaryview, 0, 0)); 
-#endif
-	DO_ACTION("SummaryViewPopup/CreateFilterRule/Automatically", summary_create_filter_cb(summaryview, FILTER_BY_AUTO, NULL)); 
-	DO_ACTION("SummaryViewPopup/CreateFilterRule/ByFrom", summary_create_filter_cb(summaryview, FILTER_BY_FROM, NULL)); 
-	DO_ACTION("SummaryViewPopup/CreateFilterRule/ByTo", summary_create_filter_cb(summaryview, FILTER_BY_TO, NULL)); 
-	DO_ACTION("SummaryViewPopup/CreateFilterRule/BySubject", summary_create_filter_cb(summaryview, FILTER_BY_SUBJECT, NULL)); 
-#ifndef GENERIC_UMPC
-	DO_ACTION("SummaryViewPopup/CreateProcessingRule/Automatically", summary_create_processing_cb(summaryview, FILTER_BY_AUTO, NULL)); 
-	DO_ACTION("SummaryViewPopup/CreateProcessingRule/ByFrom", summary_create_processing_cb(summaryview, FILTER_BY_FROM, NULL)); 
-	DO_ACTION("SummaryViewPopup/CreateProcessingRule/ByTo", summary_create_processing_cb(summaryview, FILTER_BY_TO, NULL)); 
-	DO_ACTION("SummaryViewPopup/CreateProcessingRule/BySubject", summary_create_processing_cb(summaryview, FILTER_BY_SUBJECT, NULL)); 
-#endif
-	DO_ACTION("SummaryViewPopup/View/OpenInNewWindow", summary_open_msg(summaryview)); 
-	DO_ACTION("SummaryViewPopup/View/MessageSource", summary_view_source(summaryview)); 
-	DO_ACTION("SummaryViewPopup/SaveAs", summary_save_as(summaryview)); 
-#ifndef GENERIC_UMPC
-	DO_ACTION("SummaryViewPopup/Print", summary_print(summaryview)); 
-#endif
-#ifndef GENERIC_UMPC
-	DO_ACTION("SummaryViewPopup/View/AllHeaders", summary_show_all_header_cb(summaryview, 0, 0)); 
-#endif
-}
-
 static GtkActionEntry summary_popup_entries[] =
 {
 	{"SummaryViewPopup",				NULL, "SummaryViewPopup" },
-	{"SummaryViewPopup/Reply",			NULL, N_("_Reply"), "<control>R", NULL, G_CALLBACK(summary_menu_cb) },
-#ifndef GENERIC_UMPC
 	{"SummaryViewPopup/ReplyTo",			NULL, "Repl_y to" },
-	{"SummaryViewPopup/ReplyTo/All",		NULL, N_("_all"), "<shift><control>R", NULL, G_CALLBACK(summary_menu_cb) },
-	{"SummaryViewPopup/ReplyTo/Sender",		NULL, N_("_sender"), NULL, NULL, G_CALLBACK(summary_menu_cb) },
-	{"SummaryViewPopup/ReplyTo/MailingList",	NULL, N_("_mailing list"), "<control>L", NULL, G_CALLBACK(summary_menu_cb) },
-	{"SummaryViewPopup/---",			NULL, "---", NULL, NULL, NULL },
-#endif
-
-	{"SummaryViewPopup/Forward",			NULL, N_("_Forward"), "<control><alt>F", NULL, G_CALLBACK(summary_menu_cb) }, /* inline */
-#ifndef GENERIC_UMPC
-	{"SummaryViewPopup/ForwardAsAtt",		NULL, N_("For_ward as attachment"), NULL, NULL, G_CALLBACK(summary_menu_cb) }, /* as attach */
-	{"SummaryViewPopup/Redirect",			NULL, N_("Redirect"), NULL, NULL, G_CALLBACK(summary_menu_cb) }, 
-#endif
-	/* separation */
-	{"SummaryViewPopup/Move",			NULL, N_("M_ove..."), "<control>O", NULL, G_CALLBACK(summary_menu_cb) }, 
-	{"SummaryViewPopup/Copy",			NULL, N_("_Copy..."), "<shift><control>O", NULL, G_CALLBACK(summary_menu_cb) }, 
-	{"SummaryViewPopup/Trash",			NULL, N_("Move to _trash"), "<control>D", NULL, G_CALLBACK(summary_menu_cb) }, 
-#ifndef GENERIC_UMPC
-	{"SummaryViewPopup/Delete",			NULL, N_("_Delete..."), NULL, NULL, G_CALLBACK(summary_menu_cb) },
-#endif
-	/* separation */
 	{"SummaryViewPopup/Mark",			NULL, "_Mark" },
-	{"SummaryViewPopup/Mark/Mark",			NULL, N_("_Mark"), NULL, NULL, G_CALLBACK(summary_menu_cb) },
-	{"SummaryViewPopup/Mark/Unmark",		NULL, N_("_Unmark"), NULL, NULL, G_CALLBACK(summary_menu_cb) },
-	{"SummaryViewPopup/Mark/---",			NULL, "---", NULL, NULL, NULL },
-
-	{"SummaryViewPopup/Mark/MarkUnread",		NULL, N_("Mark as unr_ead"), NULL, NULL, G_CALLBACK(summary_menu_cb) },
-	{"SummaryViewPopup/Mark/MarkRead",		NULL, N_("Mark as rea_d"), NULL, NULL, G_CALLBACK(summary_menu_cb) },
-	{"SummaryViewPopup/Mark/MarkAllRead",		NULL, N_("Mark all read"), NULL, NULL, G_CALLBACK(summary_menu_cb) },
-	{"SummaryViewPopup/Mark/IgnoreThread",		NULL, N_("Ignore thread"), NULL, NULL, G_CALLBACK(summary_menu_cb) },
-	{"SummaryViewPopup/Mark/UnignoreThread",	NULL, N_("Unignore thread"), NULL, NULL, G_CALLBACK(summary_menu_cb) },
-	{"SummaryViewPopup/Mark/WatchThread",		NULL, N_("Watch thread"), NULL, NULL, G_CALLBACK(summary_menu_cb) },
-	{"SummaryViewPopup/Mark/UnwatchThread",		NULL, N_("Unwatch thread"), NULL, NULL, G_CALLBACK(summary_menu_cb) },
-	/* separation */
-
-	{"SummaryViewPopup/Mark/MarkSpam",		NULL, N_("Mark as spam"), NULL, NULL, G_CALLBACK(summary_menu_cb) },
-	{"SummaryViewPopup/Mark/MarkHam",		NULL, N_("Mark as ham"), NULL, NULL, G_CALLBACK(summary_menu_cb) },
-	/* separation */
-
-	{"SummaryViewPopup/Mark/Lock",			NULL, N_("Lock"), NULL, NULL, G_CALLBACK(summary_menu_cb) },
-	{"SummaryViewPopup/Mark/Unlock",		NULL, N_("Unlock"), NULL, NULL, G_CALLBACK(summary_menu_cb) },
-
 	{"SummaryViewPopup/ColorLabel",			NULL, "Color la_bel" },
 	{"SummaryViewPopup/Tags",			NULL, "Ta_gs" },
-
-	/* separation */
+	{"SummaryViewPopup/CreateFilterRule",		NULL, "Create _filter rule" },
 #ifndef GENERIC_UMPC
-	{"SummaryViewPopup/AddSenderToAB",			NULL, N_("Add sender to address boo_k"), NULL, NULL, G_CALLBACK(summary_menu_cb) }, 
+	{"SummaryViewPopup/CreateProcessingRule",	NULL, "Create processing rule" },
 #endif
-	{"SummaryViewPopup/CreateFilterRule",			NULL, N_("Create f_ilter rule") },
-	{"SummaryViewPopup/CreateFilterRule/Automatically",	NULL, N_("_Automatically"), NULL, NULL, G_CALLBACK(summary_menu_cb) }, 
-	{"SummaryViewPopup/CreateFilterRule/ByFrom",		NULL, N_("By _From"), NULL, NULL, G_CALLBACK(summary_menu_cb) }, 
-	{"SummaryViewPopup/CreateFilterRule/ByTo",		NULL, N_("By _To"), NULL, NULL, G_CALLBACK(summary_menu_cb) }, 
-	{"SummaryViewPopup/CreateFilterRule/BySubject",		NULL, N_("By _Subject"), NULL, NULL, G_CALLBACK(summary_menu_cb) }, 
-
-#ifndef GENERIC_UMPC
-	{"SummaryViewPopup/CreateProcessingRule",			NULL, N_("Create processing rule") },
-	{"SummaryViewPopup/CreateProcessingRule/Automatically",	NULL, N_("_Automatically"), NULL, NULL, G_CALLBACK(summary_menu_cb) }, 
-	{"SummaryViewPopup/CreateProcessingRule/ByFrom",		NULL, N_("By _From"), NULL, NULL, G_CALLBACK(summary_menu_cb) }, 
-	{"SummaryViewPopup/CreateProcessingRule/ByTo",		NULL, N_("By _To"), NULL, NULL, G_CALLBACK(summary_menu_cb) }, 
-	{"SummaryViewPopup/CreateProcessingRule/BySubject",		NULL, N_("By _Subject"), NULL, NULL, G_CALLBACK(summary_menu_cb) }, 
-
-#endif
-	/* separation */
 	{"SummaryViewPopup/View",			NULL, "_View" },
-	{"SummaryViewPopup/View/OpenInNewWindow",	NULL, N_("Open in new _window"), "<control><alt>N", NULL, G_CALLBACK(summary_menu_cb) }, 
-	{"SummaryViewPopup/View/MessageSource",		NULL, N_("Message _source"), "<control>U", NULL, G_CALLBACK(summary_menu_cb) }, 
-	/* separation */
-	{"SummaryViewPopup/SaveAs",			NULL, N_("_Save as..."), "<control>S", NULL, G_CALLBACK(summary_menu_cb) }, 
-#ifndef GENERIC_UMPC
-	{"SummaryViewPopup/Print",			NULL, N_("Print..."), "<control>P", NULL, G_CALLBACK(summary_menu_cb) }, 
-#endif
-};  /* see also list in menu_connect_identical_items() in menu.c if this changes */
-
-#ifndef GENERIC_UMPC
-static GtkToggleActionEntry summary_popup_toggleentries[] =
-{
-	{"SummaryViewPopup/View/AllHeaders",		NULL, N_("All _headers"), "<control>H", NULL, G_CALLBACK(summary_menu_cb) }, 
 };
-#endif
 
 static const gchar *const col_label[N_SUMMARY_COLS] = {
 	"",		/* S_COL_MARK    */
@@ -655,7 +505,7 @@ GtkWidget *summary_get_main_widget(SummaryView *summaryview)
 		summary_update_msg, (gpointer) summaryview);	\
 }
 
-SummaryView *summary_create(void)
+SummaryView *summary_create(MainWindow *mainwin)
 {
 	SummaryView *summaryview;
 	GtkWidget *vbox;
@@ -802,99 +652,97 @@ SummaryView *summary_create(void)
 			  G_CALLBACK(tog_searchbar_cb), summaryview);
 
 	/* create popup menu */
-	summaryview->action_group = cm_menu_create_action_group("SummaryViewPopup", summary_popup_entries,
+	
+	gtk_action_group_add_actions(mainwin->action_group, summary_popup_entries,
 			G_N_ELEMENTS(summary_popup_entries), (gpointer)summaryview);
-#ifndef GENERIC_UMPC
-	gtk_action_group_add_toggle_actions(summaryview->action_group, summary_popup_toggleentries,
-			G_N_ELEMENTS(summary_popup_toggleentries), (gpointer)summaryview);
-#endif
 
-	MENUITEM_ADDUI("/Menus", "SummaryViewPopup", "SummaryViewPopup", GTK_UI_MANAGER_MENU)
-	MENUITEM_ADDUI("/Menus/SummaryViewPopup", "Reply", "SummaryViewPopup/Reply", GTK_UI_MANAGER_MENUITEM)
+	MENUITEM_ADDUI_MANAGER(mainwin->ui_manager, "/", "Menus", "Menus", GTK_UI_MANAGER_MENUBAR)
+	MENUITEM_ADDUI_MANAGER(mainwin->ui_manager, "/Menus", "SummaryViewPopup", "SummaryViewPopup", GTK_UI_MANAGER_MENU)
+	MENUITEM_ADDUI_MANAGER(mainwin->ui_manager, "/Menus/SummaryViewPopup", "Reply", "Message/Reply", GTK_UI_MANAGER_MENUITEM)
 #ifndef GENERIC_UMPC
-	MENUITEM_ADDUI("/Menus/SummaryViewPopup", "ReplyTo", "SummaryViewPopup/ReplyTo", GTK_UI_MANAGER_MENU)
-	MENUITEM_ADDUI("/Menus/SummaryViewPopup", "Separator1", "SummaryViewPopup/---", GTK_UI_MANAGER_SEPARATOR)
+	MENUITEM_ADDUI_MANAGER(mainwin->ui_manager, "/Menus/SummaryViewPopup", "ReplyTo", "SummaryViewPopup/ReplyTo", GTK_UI_MANAGER_MENU)
+	MENUITEM_ADDUI_MANAGER(mainwin->ui_manager, "/Menus/SummaryViewPopup", "Separator1", "Message/---", GTK_UI_MANAGER_SEPARATOR)
 #endif
-	MENUITEM_ADDUI("/Menus/SummaryViewPopup", "Forward", "SummaryViewPopup/Forward", GTK_UI_MANAGER_MENUITEM)
+	MENUITEM_ADDUI_MANAGER(mainwin->ui_manager, "/Menus/SummaryViewPopup", "Forward", "Message/Forward", GTK_UI_MANAGER_MENUITEM)
 #ifndef GENERIC_UMPC
-	MENUITEM_ADDUI("/Menus/SummaryViewPopup", "ForwardAsAtt", "SummaryViewPopup/ForwardAsAtt", GTK_UI_MANAGER_MENUITEM)
-	MENUITEM_ADDUI("/Menus/SummaryViewPopup", "Redirect", "SummaryViewPopup/Redirect", GTK_UI_MANAGER_MENUITEM)
+	MENUITEM_ADDUI_MANAGER(mainwin->ui_manager, "/Menus/SummaryViewPopup", "ForwardAtt", "Message/ForwardAtt", GTK_UI_MANAGER_MENUITEM)
+	MENUITEM_ADDUI_MANAGER(mainwin->ui_manager, "/Menus/SummaryViewPopup", "Redirect", "Message/Redirect", GTK_UI_MANAGER_MENUITEM)
 #endif
-	MENUITEM_ADDUI("/Menus/SummaryViewPopup", "Separator2", "SummaryViewPopup/---", GTK_UI_MANAGER_SEPARATOR)
-	MENUITEM_ADDUI("/Menus/SummaryViewPopup", "Move", "SummaryViewPopup/Move", GTK_UI_MANAGER_MENUITEM)
-	MENUITEM_ADDUI("/Menus/SummaryViewPopup", "Copy", "SummaryViewPopup/Copy", GTK_UI_MANAGER_MENUITEM)
-	MENUITEM_ADDUI("/Menus/SummaryViewPopup", "Trash", "SummaryViewPopup/Trash", GTK_UI_MANAGER_MENUITEM)
+	MENUITEM_ADDUI_MANAGER(mainwin->ui_manager, "/Menus/SummaryViewPopup", "Separator2", "Message/---", GTK_UI_MANAGER_SEPARATOR)
+	MENUITEM_ADDUI_MANAGER(mainwin->ui_manager, "/Menus/SummaryViewPopup", "Move", "Message/Move", GTK_UI_MANAGER_MENUITEM)
+	MENUITEM_ADDUI_MANAGER(mainwin->ui_manager, "/Menus/SummaryViewPopup", "Copy", "Message/Copy", GTK_UI_MANAGER_MENUITEM)
+	MENUITEM_ADDUI_MANAGER(mainwin->ui_manager, "/Menus/SummaryViewPopup", "Trash", "Message/Trash", GTK_UI_MANAGER_MENUITEM)
 #ifndef GENERIC_UMPC
-	MENUITEM_ADDUI("/Menus/SummaryViewPopup", "Delete", "SummaryViewPopup/Delete", GTK_UI_MANAGER_MENUITEM)
+	MENUITEM_ADDUI_MANAGER(mainwin->ui_manager, "/Menus/SummaryViewPopup", "Delete", "Message/Delete", GTK_UI_MANAGER_MENUITEM)
 #endif
-	MENUITEM_ADDUI("/Menus/SummaryViewPopup", "Separator3", "SummaryViewPopup/---", GTK_UI_MANAGER_SEPARATOR)
-	MENUITEM_ADDUI("/Menus/SummaryViewPopup", "Mark", "SummaryViewPopup/Mark", GTK_UI_MANAGER_MENU)
-	MENUITEM_ADDUI("/Menus/SummaryViewPopup", "ColorLabel", "SummaryViewPopup/ColorLabel", GTK_UI_MANAGER_MENU)
-	MENUITEM_ADDUI("/Menus/SummaryViewPopup", "Tags", "SummaryViewPopup/Tags", GTK_UI_MANAGER_MENU)
+	MENUITEM_ADDUI_MANAGER(mainwin->ui_manager, "/Menus/SummaryViewPopup", "Separator3", "Message/---", GTK_UI_MANAGER_SEPARATOR)
+	MENUITEM_ADDUI_MANAGER(mainwin->ui_manager, "/Menus/SummaryViewPopup", "Mark", "SummaryViewPopup/Mark", GTK_UI_MANAGER_MENU)
+	MENUITEM_ADDUI_MANAGER(mainwin->ui_manager, "/Menus/SummaryViewPopup", "ColorLabel", "SummaryViewPopup/ColorLabel", GTK_UI_MANAGER_MENU)
+	MENUITEM_ADDUI_MANAGER(mainwin->ui_manager, "/Menus/SummaryViewPopup", "Tags", "SummaryViewPopup/Tags", GTK_UI_MANAGER_MENU)
 
-	MENUITEM_ADDUI("/Menus/SummaryViewPopup", "Separator4", "SummaryViewPopup/---", GTK_UI_MANAGER_SEPARATOR)
+	MENUITEM_ADDUI_MANAGER(mainwin->ui_manager, "/Menus/SummaryViewPopup", "Separator4", "Message/---", GTK_UI_MANAGER_SEPARATOR)
 #ifndef GENERIC_UMPC
-	MENUITEM_ADDUI("/Menus/SummaryViewPopup", "AddSenderToAB", "SummaryViewPopup/AddSenderToAB", GTK_UI_MANAGER_MENUITEM)
+	MENUITEM_ADDUI_MANAGER(mainwin->ui_manager, "/Menus/SummaryViewPopup", "AddSenderToAB", "Tools/AddSenderToAB", GTK_UI_MANAGER_MENUITEM)
 #endif
-	MENUITEM_ADDUI("/Menus/SummaryViewPopup", "CreateFilterRule", "SummaryViewPopup/CreateFilterRule", GTK_UI_MANAGER_MENU)
+	MENUITEM_ADDUI_MANAGER(mainwin->ui_manager, "/Menus/SummaryViewPopup", "CreateFilterRule", "SummaryViewPopup/CreateFilterRule", GTK_UI_MANAGER_MENU)
 #ifndef GENERIC_UMPC
-	MENUITEM_ADDUI("/Menus/SummaryViewPopup", "CreateProcessingRule", "SummaryViewPopup/CreateProcessingRule", GTK_UI_MANAGER_MENU)
+	MENUITEM_ADDUI_MANAGER(mainwin->ui_manager, "/Menus/SummaryViewPopup", "CreateProcessingRule", "SummaryViewPopup/CreateProcessingRule", GTK_UI_MANAGER_MENU)
 #endif
-	MENUITEM_ADDUI("/Menus/SummaryViewPopup", "Separator5", "SummaryViewPopup/---", GTK_UI_MANAGER_SEPARATOR)
-	MENUITEM_ADDUI("/Menus/SummaryViewPopup", "View", "SummaryViewPopup/View", GTK_UI_MANAGER_MENU)
-	MENUITEM_ADDUI("/Menus/SummaryViewPopup", "SaveAs", "SummaryViewPopup/SaveAs", GTK_UI_MANAGER_MENUITEM)
+	MENUITEM_ADDUI_MANAGER(mainwin->ui_manager, "/Menus/SummaryViewPopup", "Separator5", "Tools/---", GTK_UI_MANAGER_SEPARATOR)
+	MENUITEM_ADDUI_MANAGER(mainwin->ui_manager, "/Menus/SummaryViewPopup", "View", "SummaryViewPopup/View", GTK_UI_MANAGER_MENU)
+	MENUITEM_ADDUI_MANAGER(mainwin->ui_manager, "/Menus/SummaryViewPopup", "SaveAs", "File/SaveAs", GTK_UI_MANAGER_MENUITEM)
 #ifndef GENERIC_UMPC
-	MENUITEM_ADDUI("/Menus/SummaryViewPopup", "Print", "SummaryViewPopup/Print", GTK_UI_MANAGER_MENUITEM)
+	MENUITEM_ADDUI_MANAGER(mainwin->ui_manager, "/Menus/SummaryViewPopup", "Print", "File/Print", GTK_UI_MANAGER_MENUITEM)
 #endif
 	/* last separator, for plugins */
-	MENUITEM_ADDUI("/Menus/SummaryViewPopup", "Separator6", "SummaryViewPopup/---", GTK_UI_MANAGER_SEPARATOR)
+	MENUITEM_ADDUI_MANAGER(mainwin->ui_manager, "/Menus/SummaryViewPopup", "Separator6", "File/---", GTK_UI_MANAGER_SEPARATOR)
 
 	/* submenus - replyto */
-	MENUITEM_ADDUI("/Menus/SummaryViewPopup/ReplyTo", "All", "SummaryViewPopup/ReplyTo/All", GTK_UI_MANAGER_MENUITEM)
-	MENUITEM_ADDUI("/Menus/SummaryViewPopup/ReplyTo", "Sender", "SummaryViewPopup/ReplyTo/Sender", GTK_UI_MANAGER_MENUITEM)
-	MENUITEM_ADDUI("/Menus/SummaryViewPopup/ReplyTo", "MailingList", "SummaryViewPopup/ReplyTo/MailingList", GTK_UI_MANAGER_MENUITEM)
+	MENUITEM_ADDUI_MANAGER(mainwin->ui_manager, "/Menus/SummaryViewPopup/ReplyTo", "All", "Message/ReplyTo/All", GTK_UI_MANAGER_MENUITEM)
+	MENUITEM_ADDUI_MANAGER(mainwin->ui_manager, "/Menus/SummaryViewPopup/ReplyTo", "Sender", "Message/ReplyTo/Sender", GTK_UI_MANAGER_MENUITEM)
+	MENUITEM_ADDUI_MANAGER(mainwin->ui_manager, "/Menus/SummaryViewPopup/ReplyTo", "MailingList", "Message/ReplyTo/List", GTK_UI_MANAGER_MENUITEM)
 
 	/* submenus - mark */
-	MENUITEM_ADDUI("/Menus/SummaryViewPopup/Mark", "Mark", "SummaryViewPopup/Mark/Mark", GTK_UI_MANAGER_MENUITEM)
-	MENUITEM_ADDUI("/Menus/SummaryViewPopup/Mark", "Unmark", "SummaryViewPopup/Mark/Unmark", GTK_UI_MANAGER_MENUITEM)
-	MENUITEM_ADDUI("/Menus/SummaryViewPopup/Mark", "Separator1", "SummaryViewPopup/Mark/---", GTK_UI_MANAGER_SEPARATOR)
-	MENUITEM_ADDUI("/Menus/SummaryViewPopup/Mark", "MarkUnread", "SummaryViewPopup/Mark/MarkUnread", GTK_UI_MANAGER_MENUITEM)
-	MENUITEM_ADDUI("/Menus/SummaryViewPopup/Mark", "MarkRead", "SummaryViewPopup/Mark/MarkRead", GTK_UI_MANAGER_MENUITEM)
-	MENUITEM_ADDUI("/Menus/SummaryViewPopup/Mark", "MarkAllRead", "SummaryViewPopup/Mark/MarkAllRead", GTK_UI_MANAGER_MENUITEM)
-	MENUITEM_ADDUI("/Menus/SummaryViewPopup/Mark", "IgnoreThread", "SummaryViewPopup/Mark/IgnoreThread", GTK_UI_MANAGER_MENUITEM)
-	MENUITEM_ADDUI("/Menus/SummaryViewPopup/Mark", "UnignoreThread", "SummaryViewPopup/Mark/UnignoreThread", GTK_UI_MANAGER_MENUITEM)
-	MENUITEM_ADDUI("/Menus/SummaryViewPopup/Mark", "WatchThread", "SummaryViewPopup/Mark/WatchThread", GTK_UI_MANAGER_MENUITEM)
-	MENUITEM_ADDUI("/Menus/SummaryViewPopup/Mark", "UnwatchThread", "SummaryViewPopup/Mark/UnwatchThread", GTK_UI_MANAGER_MENUITEM)
-	MENUITEM_ADDUI("/Menus/SummaryViewPopup/Mark", "Separator2", "SummaryViewPopup/Mark/---", GTK_UI_MANAGER_SEPARATOR)
-	MENUITEM_ADDUI("/Menus/SummaryViewPopup/Mark", "MarkSpam", "SummaryViewPopup/Mark/MarkSpam", GTK_UI_MANAGER_MENUITEM)
-	MENUITEM_ADDUI("/Menus/SummaryViewPopup/Mark", "MarkHam", "SummaryViewPopup/Mark/MarkHam", GTK_UI_MANAGER_MENUITEM)
-	MENUITEM_ADDUI("/Menus/SummaryViewPopup/Mark", "Separator3", "SummaryViewPopup/Mark/---", GTK_UI_MANAGER_SEPARATOR)
-	MENUITEM_ADDUI("/Menus/SummaryViewPopup/Mark", "Lock", "SummaryViewPopup/Mark/Lock", GTK_UI_MANAGER_MENUITEM)
-	MENUITEM_ADDUI("/Menus/SummaryViewPopup/Mark", "Unlock", "SummaryViewPopup/Mark/Unlock", GTK_UI_MANAGER_MENUITEM)
+	MENUITEM_ADDUI_MANAGER(mainwin->ui_manager, "/Menus/SummaryViewPopup/Mark", "Mark", "Message/Mark/Mark", GTK_UI_MANAGER_MENUITEM)
+	MENUITEM_ADDUI_MANAGER(mainwin->ui_manager, "/Menus/SummaryViewPopup/Mark", "Unmark", "Message/Mark/Unmark", GTK_UI_MANAGER_MENUITEM)
+	MENUITEM_ADDUI_MANAGER(mainwin->ui_manager, "/Menus/SummaryViewPopup/Mark", "Separator1", "Message/Mark/---", GTK_UI_MANAGER_SEPARATOR)
+	MENUITEM_ADDUI_MANAGER(mainwin->ui_manager, "/Menus/SummaryViewPopup/Mark", "MarkUnread", "Message/Mark/MarkUnread", GTK_UI_MANAGER_MENUITEM)
+	MENUITEM_ADDUI_MANAGER(mainwin->ui_manager, "/Menus/SummaryViewPopup/Mark", "MarkRead", "Message/Mark/MarkRead", GTK_UI_MANAGER_MENUITEM)
+	MENUITEM_ADDUI_MANAGER(mainwin->ui_manager, "/Menus/SummaryViewPopup/Mark", "MarkAllRead", "Message/Mark/MarkAllRead", GTK_UI_MANAGER_MENUITEM)
+	MENUITEM_ADDUI_MANAGER(mainwin->ui_manager, "/Menus/SummaryViewPopup/Mark", "IgnoreThread", "Message/Mark/IgnoreThread", GTK_UI_MANAGER_MENUITEM)
+	MENUITEM_ADDUI_MANAGER(mainwin->ui_manager, "/Menus/SummaryViewPopup/Mark", "UnignoreThread", "Message/Mark/UnignoreThread", GTK_UI_MANAGER_MENUITEM)
+	MENUITEM_ADDUI_MANAGER(mainwin->ui_manager, "/Menus/SummaryViewPopup/Mark", "WatchThread", "Message/Mark/WatchThread", GTK_UI_MANAGER_MENUITEM)
+	MENUITEM_ADDUI_MANAGER(mainwin->ui_manager, "/Menus/SummaryViewPopup/Mark", "UnwatchThread", "Message/Mark/UnwatchThread", GTK_UI_MANAGER_MENUITEM)
+	MENUITEM_ADDUI_MANAGER(mainwin->ui_manager, "/Menus/SummaryViewPopup/Mark", "Separator2", "Message/Mark/---", GTK_UI_MANAGER_SEPARATOR)
+	MENUITEM_ADDUI_MANAGER(mainwin->ui_manager, "/Menus/SummaryViewPopup/Mark", "MarkSpam", "Message/Mark/MarkSpam", GTK_UI_MANAGER_MENUITEM)
+	MENUITEM_ADDUI_MANAGER(mainwin->ui_manager, "/Menus/SummaryViewPopup/Mark", "MarkHam", "Message/Mark/MarkHam", GTK_UI_MANAGER_MENUITEM)
+	MENUITEM_ADDUI_MANAGER(mainwin->ui_manager, "/Menus/SummaryViewPopup/Mark", "Separator3", "Message/Mark/---", GTK_UI_MANAGER_SEPARATOR)
+	MENUITEM_ADDUI_MANAGER(mainwin->ui_manager, "/Menus/SummaryViewPopup/Mark", "Lock", "Message/Mark/Lock", GTK_UI_MANAGER_MENUITEM)
+	MENUITEM_ADDUI_MANAGER(mainwin->ui_manager, "/Menus/SummaryViewPopup/Mark", "Unlock", "Message/Mark/Unlock", GTK_UI_MANAGER_MENUITEM)
 
 	/* submenus - colorlabel and tags are dynamic */
 	/* submenus - createfilterrule */
-	MENUITEM_ADDUI("/Menus/SummaryViewPopup/CreateFilterRule", "Automatically", "SummaryViewPopup/CreateFilterRule/Automatically", GTK_UI_MANAGER_MENUITEM)
-	MENUITEM_ADDUI("/Menus/SummaryViewPopup/CreateFilterRule", "ByFrom", "SummaryViewPopup/CreateFilterRule/ByFrom", GTK_UI_MANAGER_MENUITEM)
-	MENUITEM_ADDUI("/Menus/SummaryViewPopup/CreateFilterRule", "ByTo", "SummaryViewPopup/CreateFilterRule/ByTo", GTK_UI_MANAGER_MENUITEM)
-	MENUITEM_ADDUI("/Menus/SummaryViewPopup/CreateFilterRule", "BySubject", "SummaryViewPopup/CreateFilterRule/BySubject", GTK_UI_MANAGER_MENUITEM)
+	MENUITEM_ADDUI_MANAGER(mainwin->ui_manager, "/Menus/SummaryViewPopup/CreateFilterRule", "Automatically", "Tools/CreateFilterRule/Automatically", GTK_UI_MANAGER_MENUITEM)
+	MENUITEM_ADDUI_MANAGER(mainwin->ui_manager, "/Menus/SummaryViewPopup/CreateFilterRule", "ByFrom", "Tools/CreateFilterRule/ByFrom", GTK_UI_MANAGER_MENUITEM)
+	MENUITEM_ADDUI_MANAGER(mainwin->ui_manager, "/Menus/SummaryViewPopup/CreateFilterRule", "ByTo", "Tools/CreateFilterRule/ByTo", GTK_UI_MANAGER_MENUITEM)
+	MENUITEM_ADDUI_MANAGER(mainwin->ui_manager, "/Menus/SummaryViewPopup/CreateFilterRule", "BySubject", "Tools/CreateFilterRule/BySubject", GTK_UI_MANAGER_MENUITEM)
 		
 #ifndef GENERIC_UMPC
 	/* submenus - createprocessingrule */
-	MENUITEM_ADDUI("/Menus/SummaryViewPopup/CreateProcessingRule", "Automatically", "SummaryViewPopup/CreateProcessingRule/Automatically", GTK_UI_MANAGER_MENUITEM)
-	MENUITEM_ADDUI("/Menus/SummaryViewPopup/CreateProcessingRule", "ByFrom", "SummaryViewPopup/CreateProcessingRule/ByFrom", GTK_UI_MANAGER_MENUITEM)
-	MENUITEM_ADDUI("/Menus/SummaryViewPopup/CreateProcessingRule", "ByTo", "SummaryViewPopup/CreateProcessingRule/ByTo", GTK_UI_MANAGER_MENUITEM)
-	MENUITEM_ADDUI("/Menus/SummaryViewPopup/CreateProcessingRule", "BySubject", "SummaryViewPopup/CreateProcessingRule/BySubject", GTK_UI_MANAGER_MENUITEM)
+	MENUITEM_ADDUI_MANAGER(mainwin->ui_manager, "/Menus/SummaryViewPopup/CreateProcessingRule", "Automatically", "Tools/CreateProcessingRule/Automatically", GTK_UI_MANAGER_MENUITEM)
+	MENUITEM_ADDUI_MANAGER(mainwin->ui_manager, "/Menus/SummaryViewPopup/CreateProcessingRule", "ByFrom", "Tools/CreateProcessingRule/ByFrom", GTK_UI_MANAGER_MENUITEM)
+	MENUITEM_ADDUI_MANAGER(mainwin->ui_manager, "/Menus/SummaryViewPopup/CreateProcessingRule", "ByTo", "Tools/CreateProcessingRule/ByTo", GTK_UI_MANAGER_MENUITEM)
+	MENUITEM_ADDUI_MANAGER(mainwin->ui_manager, "/Menus/SummaryViewPopup/CreateProcessingRule", "BySubject", "Tools/CreateProcessingRule/BySubject", GTK_UI_MANAGER_MENUITEM)
 #endif
 		
 	/* submenus - view */
-	MENUITEM_ADDUI("/Menus/SummaryViewPopup/View", "OpenInNewWindow", "SummaryViewPopup/View/OpenInNewWindow", GTK_UI_MANAGER_MENUITEM)
-	MENUITEM_ADDUI("/Menus/SummaryViewPopup/View", "MessageSource", "SummaryViewPopup/View/MessageSource", GTK_UI_MANAGER_MENUITEM)
+	MENUITEM_ADDUI_MANAGER(mainwin->ui_manager, "/Menus/SummaryViewPopup/View", "OpenNewWindow", "View/OpenNewWindow", GTK_UI_MANAGER_MENUITEM)
+	MENUITEM_ADDUI_MANAGER(mainwin->ui_manager, "/Menus/SummaryViewPopup/View", "MessageSource", "View/MessageSource", GTK_UI_MANAGER_MENUITEM)
 #ifndef GENERIC_UMPC
-	MENUITEM_ADDUI("/Menus/SummaryViewPopup/View", "AllHeaders", "SummaryViewPopup/View/AllHeaders", GTK_UI_MANAGER_MENUITEM)
+	MENUITEM_ADDUI_MANAGER(mainwin->ui_manager, "/Menus/SummaryViewPopup/View", "AllHeaders", "View/AllHeaders", GTK_UI_MANAGER_MENUITEM)
 #endif		
 	summaryview->popupmenu = gtk_menu_item_get_submenu(GTK_MENU_ITEM(
-				gtk_ui_manager_get_widget(gtkut_ui_manager(), "/Menus/SummaryViewPopup")) );
+				gtk_ui_manager_get_widget(mainwin->ui_manager, "/Menus/SummaryViewPopup")) );
 
 
 	summaryview->vbox = vbox;
@@ -1780,61 +1628,61 @@ void summary_set_menu_sensitive(SummaryView *summaryview)
 		gchar *const entry;
 		SensitiveCond cond;
 	} entry[] = {
-		{"SummaryViewPopup/Reply"			, M_HAVE_ACCOUNT|M_TARGET_EXIST},
+		{"Menus/SummaryViewPopup/Reply"			, M_HAVE_ACCOUNT|M_TARGET_EXIST},
 #ifndef GENERIC_UMPC
-		{"SummaryViewPopup/ReplyTo"			, M_HAVE_ACCOUNT|M_TARGET_EXIST},
-		{"SummaryViewPopup/ReplyTo/All"		, M_HAVE_ACCOUNT|M_TARGET_EXIST},
-		{"SummaryViewPopup/ReplyTo/Sender"             , M_HAVE_ACCOUNT|M_TARGET_EXIST},
-		{"SummaryViewPopup/ReplyTo/MailingList"       , M_HAVE_ACCOUNT|M_TARGET_EXIST},
+		{"Menus/SummaryViewPopup/ReplyTo"			, M_HAVE_ACCOUNT|M_TARGET_EXIST},
+		{"Menus/SummaryViewPopup/ReplyTo/All"		, M_HAVE_ACCOUNT|M_TARGET_EXIST},
+		{"Menus/SummaryViewPopup/ReplyTo/Sender"             , M_HAVE_ACCOUNT|M_TARGET_EXIST},
+		{"Menus/SummaryViewPopup/ReplyTo/MailingList"       , M_HAVE_ACCOUNT|M_TARGET_EXIST},
 #endif
 
-		{"SummaryViewPopup/Forward"			, M_HAVE_ACCOUNT|M_TARGET_EXIST},
+		{"Menus/SummaryViewPopup/Forward"			, M_HAVE_ACCOUNT|M_TARGET_EXIST},
 #ifndef GENERIC_UMPC
-		{"SummaryViewPopup/ForwardAsAtt"	, M_HAVE_ACCOUNT|M_TARGET_EXIST},
-        	{"SummaryViewPopup/Redirect"			, M_HAVE_ACCOUNT|M_TARGET_EXIST},
+		{"Menus/SummaryViewPopup/ForwardAtt"	, M_HAVE_ACCOUNT|M_TARGET_EXIST},
+        	{"Menus/SummaryViewPopup/Redirect"			, M_HAVE_ACCOUNT|M_TARGET_EXIST},
 #endif
 
-		{"SummaryViewPopup/Move"			, M_TARGET_EXIST|M_ALLOW_DELETE|M_NOT_NEWS},
-		{"SummaryViewPopup/Copy"			, M_TARGET_EXIST|M_EXEC},
-		{"SummaryViewPopup/Trash"		, M_TARGET_EXIST|M_ALLOW_DELETE|M_NOT_NEWS},
+		{"Menus/SummaryViewPopup/Move"			, M_TARGET_EXIST|M_ALLOW_DELETE|M_NOT_NEWS},
+		{"Menus/SummaryViewPopup/Copy"			, M_TARGET_EXIST|M_EXEC},
+		{"Menus/SummaryViewPopup/Trash"		, M_TARGET_EXIST|M_ALLOW_DELETE|M_NOT_NEWS},
 #ifndef GENERIC_UMPC
-		{"SummaryViewPopup/Delete"			, M_TARGET_EXIST|M_ALLOW_DELETE},
+		{"Menus/SummaryViewPopup/Delete"			, M_TARGET_EXIST|M_ALLOW_DELETE},
 #endif
 
-		{"SummaryViewPopup/Mark"			, M_TARGET_EXIST},
-		{"SummaryViewPopup/Mark/Mark"   		, M_TARGET_EXIST},
-		{"SummaryViewPopup/Mark/Unmark"   		, M_TARGET_EXIST},
-		{"SummaryViewPopup/Mark/MarkUnread"   	, M_TARGET_EXIST},
-		{"SummaryViewPopup/Mark/MarkRead"   	, M_TARGET_EXIST},
-		{"SummaryViewPopup/Mark/MarkAllRead"   	, M_TARGET_EXIST},
-		{"SummaryViewPopup/Mark/IgnoreThread"   	, M_TARGET_EXIST},
-		{"SummaryViewPopup/Mark/UnignoreThread"   	, M_TARGET_EXIST},
-		{"SummaryViewPopup/Mark/WatchThread"   		, M_TARGET_EXIST},
-		{"SummaryViewPopup/Mark/UnwatchThread"   	, M_TARGET_EXIST},
-		{"SummaryViewPopup/Mark/Unlock"   		, M_TARGET_EXIST},
-		{"SummaryViewPopup/Mark/Lock"   		, M_TARGET_EXIST},
-		{"SummaryViewPopup/Mark/MarkSpam"	  	, M_TARGET_EXIST|M_CAN_LEARN_SPAM},
-		{"SummaryViewPopup/Mark/MarkHam" 		, M_TARGET_EXIST|M_CAN_LEARN_SPAM},
-		{"SummaryViewPopup/ColorLabel"			, M_TARGET_EXIST},
-		{"SummaryViewPopup/Tags"			, M_TARGET_EXIST},
+		{"Menus/SummaryViewPopup/Mark"			, M_TARGET_EXIST},
+		{"Menus/SummaryViewPopup/Mark/Mark"   		, M_TARGET_EXIST},
+		{"Menus/SummaryViewPopup/Mark/Unmark"   		, M_TARGET_EXIST},
+		{"Menus/SummaryViewPopup/Mark/MarkUnread"   	, M_TARGET_EXIST},
+		{"Menus/SummaryViewPopup/Mark/MarkRead"   	, M_TARGET_EXIST},
+		{"Menus/SummaryViewPopup/Mark/MarkAllRead"   	, M_TARGET_EXIST},
+		{"Menus/SummaryViewPopup/Mark/IgnoreThread"   	, M_TARGET_EXIST},
+		{"Menus/SummaryViewPopup/Mark/UnignoreThread"   	, M_TARGET_EXIST},
+		{"Menus/SummaryViewPopup/Mark/WatchThread"   		, M_TARGET_EXIST},
+		{"Menus/SummaryViewPopup/Mark/UnwatchThread"   	, M_TARGET_EXIST},
+		{"Menus/SummaryViewPopup/Mark/Unlock"   		, M_TARGET_EXIST},
+		{"Menus/SummaryViewPopup/Mark/Lock"   		, M_TARGET_EXIST},
+		{"Menus/SummaryViewPopup/Mark/MarkSpam"	  	, M_TARGET_EXIST|M_CAN_LEARN_SPAM},
+		{"Menus/SummaryViewPopup/Mark/MarkHam" 		, M_TARGET_EXIST|M_CAN_LEARN_SPAM},
+		{"Menus/SummaryViewPopup/ColorLabel"			, M_TARGET_EXIST},
+		{"Menus/SummaryViewPopup/Tags"			, M_TARGET_EXIST},
 
 #ifndef GENERIC_UMPC
-		{"SummaryViewPopup/AddSenderToAB"	, M_SINGLE_TARGET_EXIST},
+		{"Menus/SummaryViewPopup/AddSenderToAB"	, M_SINGLE_TARGET_EXIST},
 #endif
-		{"SummaryViewPopup/CreateFilterRule"		, M_SINGLE_TARGET_EXIST|M_UNLOCKED},
+		{"Menus/SummaryViewPopup/CreateFilterRule"		, M_SINGLE_TARGET_EXIST|M_UNLOCKED},
 #ifndef GENERIC_UMPC
-		{"SummaryViewPopup/CreateProcessingRule"	, M_SINGLE_TARGET_EXIST|M_UNLOCKED},
+		{"Menus/SummaryViewPopup/CreateProcessingRule"	, M_SINGLE_TARGET_EXIST|M_UNLOCKED},
 #endif
 
-		{"SummaryViewPopup/View"			, M_SINGLE_TARGET_EXIST},
-		{"SummaryViewPopup/View/OpenInNewWindow"     , M_SINGLE_TARGET_EXIST},
-		{"SummaryViewPopup/View/MessageSource"		, M_SINGLE_TARGET_EXIST},
+		{"Menus/SummaryViewPopup/View"			, M_SINGLE_TARGET_EXIST},
+		{"Menus/SummaryViewPopup/View/OpenNewWindow"     , M_SINGLE_TARGET_EXIST},
+		{"Menus/SummaryViewPopup/View/MessageSource"		, M_SINGLE_TARGET_EXIST},
 #ifndef GENERIC_UMPC
-		{"SummaryViewPopup/View/AllHeaders"		, M_SINGLE_TARGET_EXIST},
+		{"Menus/SummaryViewPopup/View/AllHeaders"		, M_SINGLE_TARGET_EXIST},
 #endif
-		{"SummaryViewPopup/SaveAs"			, M_TARGET_EXIST},
+		{"Menus/SummaryViewPopup/SaveAs"			, M_TARGET_EXIST},
 #ifndef GENERIC_UMPC
-		{"SummaryViewPopup/Print"			, M_TARGET_EXIST},
+		{"Menus/SummaryViewPopup/Print"			, M_TARGET_EXIST},
 #endif
 		{NULL, 0}
 	};
@@ -1845,7 +1693,7 @@ void summary_set_menu_sensitive(SummaryView *summaryview)
 
 	for (i = 0; entry[i].entry != NULL; i++) {
 		sensitive = ((entry[i].cond & state) == entry[i].cond);
-		cm_menu_set_sensitive(entry[i].entry, sensitive);
+		cm_menu_set_sensitive_full(summaryview->mainwin->ui_manager, entry[i].entry, sensitive);
 	}
 
 	summary_lock(summaryview);
@@ -1853,7 +1701,7 @@ void summary_set_menu_sensitive(SummaryView *summaryview)
 	if (summaryview->messageview 
 	&&  summaryview->messageview->mimeview
 	&&  summaryview->messageview->mimeview->textview)
-		cm_toggle_menu_set_active("SummaryViewPopup/View/AllHeaders",
+		cm_toggle_menu_set_active_full(summaryview->mainwin->ui_manager, "Menus/SummaryViewPopup/View/AllHeaders",
 			summaryview->messageview->mimeview->textview->show_all_headers);
 #endif
 	summary_unlock(summaryview);
@@ -5764,7 +5612,7 @@ static void summary_colorlabel_menu_create(SummaryView *summaryview, gboolean re
 	gint i;
 	gchar *accel_path = NULL;
 
-	label_menuitem = gtk_ui_manager_get_widget(gtkut_ui_manager(), "/Menus/SummaryViewPopup/ColorLabel");
+	label_menuitem = gtk_ui_manager_get_widget(summaryview->mainwin->ui_manager, "/Menus/SummaryViewPopup/ColorLabel");
 	g_signal_connect(G_OBJECT(label_menuitem), "activate",
 			 G_CALLBACK(summary_colorlabel_menu_item_activate_item_cb),
 			   summaryview);
@@ -5967,7 +5815,7 @@ static void summary_tags_menu_create(SummaryView *summaryview, gboolean refresh)
 	gchar *accel_path = NULL;
 
 	cur = orig = g_slist_sort(cur, summary_tag_cmp_list);
-	label_menuitem = gtk_ui_manager_get_widget(gtkut_ui_manager(), "/Menus/SummaryViewPopup/Tags");
+	label_menuitem = gtk_ui_manager_get_widget(summaryview->mainwin->ui_manager, "/Menus/SummaryViewPopup/Tags");
 	g_signal_connect(G_OBJECT(label_menuitem), "activate",
 			 G_CALLBACK(summary_tags_menu_item_activate_item_cb),
 			   summaryview);
@@ -5977,7 +5825,7 @@ static void summary_tags_menu_create(SummaryView *summaryview, gboolean refresh)
 	menu = gtk_menu_new();
 
 	gtk_menu_set_accel_group (GTK_MENU (menu), 
-		gtk_ui_manager_get_accel_group(gtkut_ui_manager()));
+		gtk_ui_manager_get_accel_group(summaryview->mainwin->ui_manager));
 
 	/* create tags menu items */
 	for (; cur; cur = cur->next) {
@@ -6437,7 +6285,8 @@ static gboolean summary_button_pressed(GtkWidget *ctree, GdkEventButton *event,
 	if (event->button == 3) {
 		summaryview->display_msg = messageview_is_visible(summaryview->messageview);
 		/* right clicked */
-		cm_menu_set_sensitive("SummaryViewPopup/Trash", !folder_has_parent_of_type(summaryview->folder_item, F_TRASH));
+		cm_menu_set_sensitive_full(summaryview->mainwin->ui_manager, "Menus/SummaryViewPopup/Trash", 
+			!folder_has_parent_of_type(summaryview->folder_item, F_TRASH) && summaryview->selected);
 		gtk_menu_popup(GTK_MENU(summaryview->popupmenu), NULL, NULL,
 			       NULL, NULL, event->button, event->time);
 	} else if (event->button == 2) {
@@ -6835,50 +6684,6 @@ GSList *summary_get_selection(SummaryView *summaryview)
 	return g_slist_reverse(msginfo_list);
 }
 
-static void summary_reply_cb(SummaryView *summaryview, guint action,
-			     GtkWidget *widget)
-{
-	MessageView *msgview = (MessageView*)summaryview->messageview;
-	GSList *msginfo_list;
-
-	g_return_if_fail(msgview != NULL);
-
-	msginfo_list = summary_get_selection(summaryview);
-	g_return_if_fail(msginfo_list != NULL);
-	compose_reply_from_messageview(msgview, msginfo_list, action);
-	g_slist_free(msginfo_list);
-}
-#ifndef GENERIC_UMPC
-static void summary_show_all_header_cb(SummaryView *summaryview,
-				       guint action, GtkWidget *widget)
-{
-	GtkWidget *menuitem = gtk_ui_manager_get_widget(gtkut_ui_manager(), "/Menus/SummaryViewPopup/View/AllHeaders");
-	if (!menuitem)
-		return;
-	summaryview->messageview->all_headers =
-			GTK_CHECK_MENU_ITEM(menuitem)->active;
-	summary_display_msg_selected(summaryview,
-				     GTK_CHECK_MENU_ITEM(menuitem)->active);
-}
-
-static void summary_add_address_cb(SummaryView *summaryview,
-				   guint action, GtkWidget *widget)
-{
-	summary_add_address(summaryview);
-}
-#endif
-static void summary_create_filter_cb(SummaryView *summaryview,
-				     guint action, GtkWidget *widget)
-{
-	summary_filter_open(summaryview, (PrefsFilterType)action, 0);
-}
-#ifndef GENERIC_UMPC
-static void summary_create_processing_cb(SummaryView *summaryview,
-					 guint action, GtkWidget *widget)
-{
-	summary_filter_open(summaryview, (PrefsFilterType)action, 1);
-}
-#endif
 static void summary_sort_by_column_click(SummaryView *summaryview,
 					 FolderSortKey sort_key)
 {

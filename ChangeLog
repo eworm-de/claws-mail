@@ -1,3 +1,15 @@
+2008-11-14 [colin]	3.6.1cvs27
+
+	* src/mainwindow.c
+	* src/summaryview.c
+	* src/summaryview.h
+	* src/gtk/menu.c
+	* src/gtk/menu.h
+		Share summaryview's context menu actions with
+		the equivalent menu items of the main menu;
+		this allows to share accelerators and de-
+		duplicate code.
+
 2008-11-14 [colin]	3.6.1cvs26
 
 	* src/plugins/pgpcore/sgpgme.c

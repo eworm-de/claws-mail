@@ -110,8 +110,6 @@ struct _SummaryView
 	GtkWidget *colorlabel_menu;
 	GtkWidget *tags_menu;
 
-	GtkActionGroup *action_group;
-
 	GtkWidget *window;
 
 	GtkCMCTreeNode *selected;
@@ -177,7 +175,7 @@ private:
 #endif
 };
 
-SummaryView	*summary_create(void);
+SummaryView	*summary_create(MainWindow *mainwin);
 void summaryview_destroy(SummaryView *summaryview);
 void summary_init		  (SummaryView		*summaryview);
 gboolean summary_show		  (SummaryView		*summaryview,

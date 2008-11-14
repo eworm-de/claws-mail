@@ -3608,3 +3608,4 @@
 ( cvs diff -u -r 1.1.2.1 -r 1.1.2.2 tools/popfile-link.sh;  ) > 3.6.1cvs24.patchset
 ( cvs diff -u -r 1.61.2.90 -r 1.61.2.91 src/account.c;  cvs diff -u -r 1.60.2.47 -r 1.60.2.48 src/filtering.c;  ) > 3.6.1cvs25.patchset
 ( cvs diff -u -r 1.1.2.54 -r 1.1.2.55 src/plugins/pgpcore/sgpgme.c;  ) > 3.6.1cvs26.patchset
+( cvs diff -u -r 1.274.2.290 -r 1.274.2.291 src/mainwindow.c;  cvs diff -u -r 1.395.2.399 -r 1.395.2.400 src/summaryview.c;  cvs diff -u -r 1.68.2.49 -r 1.68.2.50 src/summaryview.h;  cvs diff -u -r 1.5.2.37 -r 1.5.2.38 src/gtk/menu.c;  cvs diff -u -r 1.4.2.20 -r 1.4.2.21 src/gtk/menu.h;  ) > 3.6.1cvs27.patchset

@@ -38,10 +38,6 @@
 #endif
 #endif
 
-#if 0 /* FIXME */
-static void connect_accel_change_signals(GtkWidget* widget, GtkWidget *wid2) ;
-#endif
-
 GtkActionGroup *cm_menu_create_action_group(const gchar *name, GtkActionEntry *entries,
 					    gint num_entries, gpointer data)
 {
@@ -191,89 +187,4 @@ gint menu_find_option_menu_index(GtkCMOptionMenu *optmenu, gpointer data,
 	}
 
 	return -1;
-}
-
-#if 0
-static void connect_accel_change_signals(GtkWidget* widget, GtkWidget *wid2) 
-{
-	g_signal_connect_after(G_OBJECT(widget), "add_accelerator", 
-			       G_CALLBACK(menu_item_add_accel), wid2);
-	g_signal_connect_after(G_OBJECT(widget), "remove_accelerator", 
-			       G_CALLBACK(menu_item_remove_accel), wid2);
-}
-#endif
-
-void menu_connect_identical_items(void)
-{
-#if 0 /* DEPRECATED */
-	gint n;
-	GtkWidget *item1;
-	GtkWidget *item2;
-
-	static const struct {	
-		const gchar *path1;
-		const gchar *path2;
-	} pairs[] = {
-		{"<Main>/Message/Reply",  			"<SummaryView>/Reply"},
-#ifndef GENERIC_UMPC
-		{"<Main>/Message/Reply to/all",  		"<SummaryView>/Reply to/all"},
-		{"<Main>/Message/Reply to/sender", 		"<SummaryView>/Reply to/sender"},
-		{"<Main>/Message/Reply to/mailing list",	"<SummaryView>/Reply to/mailing list"},
-#endif
-		{"<Main>/Message/Forward",		 	"<SummaryView>/Forward"},
-#ifndef GENERIC_UMPC
-		{"<Main>/Message/Redirect",			"<SummaryView>/Redirect"},
-#endif
-		{"<Main>/Message/Move...",			"<SummaryView>/Move..."},
-		{"<Main>/Message/Copy...",			"<SummaryView>/Copy..."},
-#ifndef GENERIC_UMPC
-		{"<Main>/Message/Delete...",			"<SummaryView>/Delete..."},
-#endif
-		{"<Main>/Message/Mark/Mark",			"<SummaryView>/Mark/Mark"},
-		{"<Main>/Message/Mark/Unmark",			"<SummaryView>/Mark/Unmark"},
-		{"<Main>/Message/Mark/Mark as unread",		"<SummaryView>/Mark/Mark as unread"},
-		{"<Main>/Message/Mark/Mark as read",		"<SummaryView>/Mark/Mark as read"},
-		{"<Main>/Message/Mark/Mark all read",		"<SummaryView>/Mark/Mark all read"},
-#ifndef GENERIC_UMPC
-		{"<Main>/Tools/Add sender to address book",	"<SummaryView>/Add sender to address book"},
-#endif
-		{"<Main>/Tools/Create filter rule/Automatically",	
-								"<SummaryView>/Create filter rule/Automatically"},
-		{"<Main>/Tools/Create filter rule/by From",	"<SummaryView>/Create filter rule/by From"},
-		{"<Main>/Tools/Create filter rule/by To",	"<SummaryView>/Create filter rule/by To"},
-		{"<Main>/Tools/Create filter rule/by Subject",	"<SummaryView>/Create filter rule/by Subject"},
-#ifndef GENERIC_UMPC
-		{"<Main>/Tools/Create processing rule/Automatically",
-								"<SummaryView>/Create processing rule/Automatically"},
-		{"<Main>/Tools/Create processing rule/by From",	"<SummaryView>/Create processing rule/by From"},
-		{"<Main>/Tools/Create processing rule/by To",	"<SummaryView>/Create processing rule/by To"},
-		{"<Main>/Tools/Create processing rule/by Subject",
-								"<SummaryView>/Create processing rule/by Subject"},
-#endif
-		{"<Main>/View/Open in new window",		"<SummaryView>/View/Open in new window"},
-		{"<Main>/View/Message source",			"<SummaryView>/View/Message source"},
-#ifndef GENERIC_UMPC
-		{"<Main>/View/All headers",			"<SummaryView>/View/All headers"},
-#endif
-	};
-
-	const gint numpairs = sizeof pairs / sizeof pairs[0];
-	for (n = 0; n < numpairs; n++) {
-		/* get widgets from the paths */
-
-		item1 = gtk_item_factory_get_widget
-				(gtk_item_factory_from_path(pairs[n].path1),pairs[n].path1);		
-		item2 = gtk_item_factory_get_widget
-				(gtk_item_factory_from_path(pairs[n].path2),pairs[n].path2);		
-
-		if (item1 && item2) {
-			/* connect widgets both ways around */
-			connect_accel_change_signals(item2,item1);
-			connect_accel_change_signals(item1,item2);
-		} else { 
-			if (!item1) debug_print(" ** Menu item not found: %s\n",pairs[n].path1);
-			if (!item2) debug_print(" ** Menu item not found: %s\n",pairs[n].path2);
-		}				
-	}
-#endif
 }
