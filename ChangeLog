@@ -1,3 +1,8 @@
+2008-11-14 [colin]	3.6.1cvs28
+
+	* src/prefs_actions.c
+		Comment out bogus (IMO) warning
+
 2008-11-14 [colin]	3.6.1cvs27
 
 	* src/mainwindow.c

@@ -1280,12 +1280,15 @@ static void prefs_action_filterbtn_cb(GtkWidget *widget, gpointer data)
 	gchar *action_str, **tokens;
 	GSList *action_list = NULL, *cur;
 
+/* I think this warning is useless - it's logical to clear the field when
+   changing its type.
+
 	if(modified && alertpanel(_("Entry was modified"),
 			_("Opening the filter action dialog will clear current modifications "
 			"of the command line."),
 			GTK_STOCK_CANCEL, _("+_Continue editing"), NULL) == G_ALERTDEFAULT)
 		return;
-
+*/
 	action_str = gtk_editable_get_chars(GTK_EDITABLE(actions.cmd_entry), 0, -1);
 	tokens = g_strsplit_set(action_str, "{}", 5);
 
