@@ -72,7 +72,6 @@ gpgme_verify_result_t sgpgme_verify_signature(gpgme_ctx_t ctx, gpgme_data_t sig,
 		debug_print("op_verify err %s\n", gpgme_strerror(err));
 		privacy_set_error("%s", gpgme_strerror(err));
 		return GINT_TO_POINTER(-GPG_ERR_SYSTEM_ERROR);
-		
 	}
 	status = gpgme_op_verify_result(ctx);
 	if (status && status->signatures == NULL) {
@@ -201,6 +200,9 @@ gchar *sgpgme_sigstat_info_short(gpgme_ctx_t ctx, gpgme_verify_result_t status)
 		else
 			g_warning(_("PGP Core: Can't get key - no gpg-agent running."));
 		warned = TRUE;
+	} else {
+		return g_strdup_printf(_("The signature can't be checked - %s"), 
+			gpgme_strerror(err));
 	}
 	if (key)
 		uname = extract_name(key->uids->uid);

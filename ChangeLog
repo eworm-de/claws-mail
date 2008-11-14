@@ -1,3 +1,9 @@
+2008-11-14 [colin]	3.6.1cvs26
+
+	* src/plugins/pgpcore/sgpgme.c
+		Fix bug 1768, 'claws-mail crashes while 
+		checking smime bad signature'
+
 2008-11-13 [colin]	3.6.1cvs25
 
 	* src/account.c

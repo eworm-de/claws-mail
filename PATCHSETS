@@ -3607,3 +3607,4 @@
 ( cvs diff -u -r 1.5.2.17 -r 1.5.2.18 src/prefs_gtk.h;  ) > 3.6.1cvs23.patchset
 ( cvs diff -u -r 1.1.2.1 -r 1.1.2.2 tools/popfile-link.sh;  ) > 3.6.1cvs24.patchset
 ( cvs diff -u -r 1.61.2.90 -r 1.61.2.91 src/account.c;  cvs diff -u -r 1.60.2.47 -r 1.60.2.48 src/filtering.c;  ) > 3.6.1cvs25.patchset
+( cvs diff -u -r 1.1.2.54 -r 1.1.2.55 src/plugins/pgpcore/sgpgme.c;  ) > 3.6.1cvs26.patchset
