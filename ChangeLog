@@ -1,3 +1,9 @@
+2008-11-15 [colin]	3.6.1cvs29
+
+	* src/plugins/pgpcore/sgpgme.c
+		Fix wrong error display, thanks to
+		Charles A. Edwards
+
 2008-11-14 [colin]	3.6.1cvs28
 
 	* src/prefs_actions.c
