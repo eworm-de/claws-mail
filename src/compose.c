@@ -8557,6 +8557,7 @@ static gboolean compose_input_cb(GIOChannel *source, GIOCondition condition,
 		gtk_text_buffer_set_text(buffer, "", -1);
 		compose_insert_file(compose, compose->exteditor_file);
 		compose_changed_cb(NULL, compose);
+		compose_draft((gpointer)compose, COMPOSE_AUTO_SAVE);
 
 		if (claws_unlink(compose->exteditor_file) < 0)
 			FILE_OP_ERROR(compose->exteditor_file, "unlink");

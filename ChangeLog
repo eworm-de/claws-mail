@@ -1,3 +1,8 @@
+2008-11-15 [colin]	3.6.1cvs30
+
+	* src/compose.c
+		Auto-save draft after external editor quits
+
 2008-11-15 [colin]	3.6.1cvs29
 
 	* src/plugins/pgpcore/sgpgme.c
