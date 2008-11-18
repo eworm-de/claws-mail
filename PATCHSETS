@@ -3613,3 +3613,4 @@
 ( cvs diff -u -r 1.1.2.55 -r 1.1.2.56 src/plugins/pgpcore/sgpgme.c;  ) > 3.6.1cvs29.patchset
 ( cvs diff -u -r 1.382.2.482 -r 1.382.2.483 src/compose.c;  ) > 3.6.1cvs30.patchset
 ( cvs diff -u -r 1.382.2.483 -r 1.382.2.484 src/compose.c;  ) > 3.6.1cvs31.patchset
+( cvs diff -u -r 1.49.2.119 -r 1.49.2.120 src/procmime.c;  cvs diff -u -r 1.1.2.4 -r 1.1.2.5 src/common/w32_reg.c;  ) > 3.6.1cvs32.patchset

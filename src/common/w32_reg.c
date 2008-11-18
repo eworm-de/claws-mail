@@ -120,6 +120,9 @@ char *get_content_type_from_registry_with_ext( char *ext )
 	DWORD bufsiz;
 	char *section, *key, *value;
 
+	if (ext == NULL)
+		return NULL;
+
 	// parent	: HKEY_CLASSES_ROOT
 	// section	: ".txt"
 	parent = HKEY_CLASSES_ROOT;

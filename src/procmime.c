@@ -991,6 +991,9 @@ gchar *procmime_get_mime_type(const gchar *filename)
 	}
 #endif
 
+	if (filename == NULL)
+		return NULL;
+
 	base = g_path_get_basename(filename);
 	if ((p = strrchr(base, '.')) != NULL)
 		ext = g_utf8_strdown(p + 1, -1);
