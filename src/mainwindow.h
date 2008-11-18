@@ -136,12 +136,13 @@ struct _MainWindow
 	GtkWidget	*warning_btn;
 	GtkWidget 	*tags_menu;
 	
-#ifdef HAVE_LIBSM
-	gpointer smc_conn;
-#endif
 	gboolean	 in_folder;
 	GtkActionGroup	*action_group;
 	GtkUIManager	*ui_manager;
+
+#ifdef HAVE_LIBSM
+	gpointer smc_conn;
+#endif
 };
 
 MainWindow *main_window_create		(void);

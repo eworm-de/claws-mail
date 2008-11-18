@@ -1,3 +1,8 @@
+2008-11-18 [colin]	3.6.1cvs33
+
+	* src/mainwindow.h
+		Put back conditional at the end of struct
+
 2008-11-18 [colin]	3.6.1cvs32
 
 	* src/procmime.c

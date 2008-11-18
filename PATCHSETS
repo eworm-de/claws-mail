@@ -3614,3 +3614,4 @@
 ( cvs diff -u -r 1.382.2.482 -r 1.382.2.483 src/compose.c;  ) > 3.6.1cvs30.patchset
 ( cvs diff -u -r 1.382.2.483 -r 1.382.2.484 src/compose.c;  ) > 3.6.1cvs31.patchset
 ( cvs diff -u -r 1.49.2.119 -r 1.49.2.120 src/procmime.c;  cvs diff -u -r 1.1.2.4 -r 1.1.2.5 src/common/w32_reg.c;  ) > 3.6.1cvs32.patchset
+( cvs diff -u -r 1.39.2.53 -r 1.39.2.54 src/mainwindow.h;  ) > 3.6.1cvs33.patchset
