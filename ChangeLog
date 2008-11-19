@@ -1,3 +1,11 @@
+2008-11-19 [colin]	3.6.1cvs34
+
+	* src/folderview.c
+		Always give focus to summaryview, even if
+		the folder is empty, in small screen layout.
+		Allows to go back to folderlist using the
+		keyboard.
+
 2008-11-18 [colin]	3.6.1cvs33
 
 	* src/mainwindow.h
