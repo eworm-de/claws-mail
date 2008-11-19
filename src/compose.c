@@ -9397,7 +9397,8 @@ static void entry_paste_clipboard(Compose *compose, GtkWidget *entry,
 			 * used for mid-click-pasting */
 			start = gtk_text_iter_get_offset(insert_place);
 			gtk_text_buffer_insert(buffer, insert_place, contents, strlen(contents));
-			gtk_text_buffer_select_range(buffer, insert_place, insert_place);
+			if (prefs_common.primary_paste_unselects)
+				gtk_text_buffer_select_range(buffer, insert_place, insert_place);
 		}
 		
 		if (!wrap) {

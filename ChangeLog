@@ -1,3 +1,13 @@
+2008-11-19 [colin]	3.6.1cvs35
+
+	* src/compose.c
+	* src/prefs_common.c
+	* src/prefs_common.h
+		Add primary_paste_unselects hidden preference
+		to change how middle-click pasting changes
+		the selection and insert point; defaults to
+		pre-3.6.1cvs31
+
 2008-11-19 [colin]	3.6.1cvs34
 
 	* src/folderview.c
