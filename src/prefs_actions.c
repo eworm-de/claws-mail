@@ -736,7 +736,7 @@ static void prefs_actions_delete_all_cb(gpointer gtk_action, gpointer data)
 
 	if (alertpanel(_("Delete all actions"),
 			  _("Do you really want to delete all the actions?"),
-			  GTK_STOCK_CANCEL, "+"GTK_STOCK_DELETE, NULL) == G_ALERTDEFAULT)
+			  GTK_STOCK_CANCEL, GTK_STOCK_DELETE, NULL) != G_ALERTDEFAULT)
 	   return;
 
 	list_store = GTK_LIST_STORE(gtk_tree_view_get_model(GTK_TREE_VIEW(actions.actions_list_view)));
@@ -1287,7 +1287,7 @@ static void prefs_action_filterbtn_cb(GtkWidget *widget, gpointer data)
 	if(modified && alertpanel(_("Entry was modified"),
 			_("Opening the filter action dialog will clear current modifications "
 			"of the command line."),
-			GTK_STOCK_CANCEL, _("+_Continue editing"), NULL) == G_ALERTDEFAULT)
+			GTK_STOCK_CANCEL, _("+_Continue editing"), NULL) != G_ALERTDEFAULT)
 		return;
 */
 	action_str = gtk_editable_get_chars(GTK_EDITABLE(actions.cmd_entry), 0, -1);
@@ -1314,7 +1314,7 @@ static void prefs_action_define_filter_done(GSList * action_list)
 {
 	gchar *str;
 
-	if(action_list == NULL)
+	if (action_list == NULL)
 		return;
 
 	str = filteringaction_list_to_string(action_list);

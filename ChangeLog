@@ -1,3 +1,9 @@
+2008-11-19 [wwp]	3.6.1cvs37
+
+	* src/prefs_actions.c
+		Fixed wrong behaviour when pressing Escape (was not cancelling
+		the action).
+
 2008-11-19 [wwp]	3.6.1cvs36
 
 	* src/compose.c
