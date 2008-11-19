@@ -1954,14 +1954,14 @@ static void mimeview_open_part_with(MimeView *mimeview, MimeInfo *partinfo, gboo
 		if (content_type != NULL)
 			cmd = input_dialog_combo_remember
 				(_("Open with"),
-				 _("Enter the command line to open file:\n"
+				 _("Enter the command-line to open file:\n"
 				   "('%s' will be replaced with file name)"),
 				 mime_command ? mime_command : prefs_common.mime_open_cmd,
 				 prefs_common.mime_open_cmd_history, &remember);
 		else
 			cmd = input_dialog_combo
 				(_("Open with"),
-				 _("Enter the command line to open file:\n"
+				 _("Enter the command-line to open file:\n"
 				   "('%s' will be replaced with file name)"),
 				 mime_command ? mime_command : prefs_common.mime_open_cmd,
 				 prefs_common.mime_open_cmd_history);
@@ -2004,7 +2004,7 @@ static void mimeview_view_file(const gchar *filename, MimeInfo *partinfo,
 			else
 				g_chmod(filename, S_IRUSR|S_IWUSR);
  		} else {
-			g_warning("MIME viewer command line is invalid: '%s'", cmd);
+			g_warning("MIME viewer command-line is invalid: '%s'", cmd);
 			mimeview_open_part_with(mimeview, partinfo, FALSE);
  		}
 		if (execute_command_line(buf, TRUE) != 0) {

@@ -1,3 +1,18 @@
+2008-11-19 [wwp]	3.6.1cvs36
+
+	* src/compose.c
+	* src/matcher.c
+	* src/messageview.c
+	* src/mimeview.c
+	* src/prefs_actions.c
+	* src/prefs_filtering_action.c
+	* src/procmsg.c
+	* src/summaryview.c
+	* src/textview.c
+	* src/common/utils.c
+		Replace occurrences of "command line" with "command-line" everywhere.
+		Enforce code style (mostly indentation) in prefs_actions.c.
+
 2008-11-19 [colin]	3.6.1cvs35
 
 	* src/compose.c

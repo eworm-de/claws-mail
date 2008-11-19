@@ -644,7 +644,7 @@ static gint prefs_actions_clist_set_row(gint row)
 	GET_ENTRY(actions.cmd_entry);
 
 	if (entry_text[0] == '\0') {
-		alertpanel_error(_("Command line not set."));
+		alertpanel_error(_("Command-line not set."));
 		return -1;
 	}
 
@@ -864,10 +864,9 @@ static gboolean prefs_actions_key_pressed(GtkWidget *widget, GdkEventKey *event,
 		prefs_actions_cancel(widget, data);
 	else {
 		GtkWidget *focused = gtkut_get_focused_child(
-					GTK_CONTAINER(widget));
-		if (focused && GTK_IS_EDITABLE(focused)) {
+				GTK_CONTAINER(widget));
+		if (focused && GTK_IS_EDITABLE(focused))
 			modified = TRUE;
-		}
 	}
 	return FALSE;
 }
@@ -881,7 +880,8 @@ static gboolean prefs_actions_search_func_cb (GtkTreeModel *model, gint column, 
 
 	gtk_tree_model_get (model, iter, column, &store_string, -1);
 
-	if (!store_string || !key) return FALSE;
+	if (!store_string || !key)
+		return FALSE;
 
 
 	retval = (strncmp (key, store_string, strlen(key)) != 0);
@@ -972,7 +972,7 @@ static gchar *actions_desc_strings[] = {
 	N_("<span weight=\"bold\" underline=\"single\">Menu name:</span>"), NULL,
 	N_("Use / in menu name to make submenus."), NULL,
 	"", NULL,
-	N_("<span weight=\"bold\" underline=\"single\">Command line:</span>"), NULL,
+	N_("<span weight=\"bold\" underline=\"single\">Command-line:</span>"), NULL,
 	N_("<span weight=\"bold\">Begin with:</span>"), NULL,
 	"     |",   N_("to send message body or selection to command's standard input"),
 	"     &gt;",   N_("to send user provided text to command's standard input"),
@@ -1092,52 +1092,53 @@ static GtkActionEntry prefs_actions_popup_entries[] =
 static gint prefs_actions_list_btn_pressed(GtkWidget *widget, GdkEventButton *event,
 				   GtkTreeView *list_view)
 {
-   if (event) {
-	   /* left- or right-button click */
-	   if (event->button == 1 || event->button == 3) {
-		   GtkTreePath *path = NULL;
-		   if (gtk_tree_view_get_path_at_pos( list_view, event->x, event->y,
-							   &path, NULL, NULL, NULL)) {
-			   prefs_actions_select_row(list_view, path);
-		   }
-		   if (path)
-			   gtk_tree_path_free(path);
-	   }
+	if (event) {
+		/* left- or right-button click */
+		if (event->button == 1 || event->button == 3) {
+			GtkTreePath *path = NULL;
+			if (gtk_tree_view_get_path_at_pos( list_view, event->x, event->y,
+					&path, NULL, NULL, NULL)) {
+				prefs_actions_select_row(list_view, path);
+		}
+		if (path)
+			gtk_tree_path_free(path);
+		}
 
-	   /* right-button click */
-	   if (event->button == 3) {
-		   GtkTreeModel *model = gtk_tree_view_get_model(list_view);
-		   GtkTreeIter iter;
-		   gboolean non_empty;
-		   gint row;
+		/* right-button click */
+		if (event->button == 3) {
+			GtkTreeModel *model = gtk_tree_view_get_model(list_view);
+			GtkTreeIter iter;
+			gboolean non_empty;
+			gint row;
 
-		   if (!prefs_actions_popup_menu) {
-				prefs_actions_popup_action = cm_menu_create_action_group("PrefsActionsPopup", prefs_actions_popup_entries,
-					G_N_ELEMENTS(prefs_actions_popup_entries), (gpointer)list_view);
+			if (!prefs_actions_popup_menu) {
+				prefs_actions_popup_action = cm_menu_create_action_group("PrefsActionsPopup",
+						prefs_actions_popup_entries, G_N_ELEMENTS(prefs_actions_popup_entries),
+						(gpointer)list_view);
 				MENUITEM_ADDUI("/Menus", "PrefsActionsPopup", "PrefsActionsPopup", GTK_UI_MANAGER_MENU)
 				MENUITEM_ADDUI("/Menus/PrefsActionsPopup", "Delete", "PrefsActionsPopup/Delete", GTK_UI_MANAGER_MENUITEM)
 				MENUITEM_ADDUI("/Menus/PrefsActionsPopup", "DeleteAll", "PrefsActionsPopup/DeleteAll", GTK_UI_MANAGER_MENUITEM)
 				MENUITEM_ADDUI("/Menus/PrefsActionsPopup", "Duplicate", "PrefsActionsPopup/Duplicate", GTK_UI_MANAGER_MENUITEM)
 				prefs_actions_popup_menu = gtk_menu_item_get_submenu(GTK_MENU_ITEM(
-					gtk_ui_manager_get_widget(gtkut_ui_manager(), "/Menus/PrefsActionsPopup")) );
-		   }
+						gtk_ui_manager_get_widget(gtkut_ui_manager(), "/Menus/PrefsActionsPopup")) );
+			}
 
-		   /* grey out some popup menu items if there is no selected row */
-		   row = gtkut_list_view_get_selected_row(GTK_WIDGET(list_view));
+			/* grey out some popup menu items if there is no selected row */
+			row = gtkut_list_view_get_selected_row(GTK_WIDGET(list_view));
 			cm_menu_set_sensitive("PrefsActionsPopup/Delete", (row > 0));
 			cm_menu_set_sensitive("PrefsActionsPopup/Duplicate", (row > 0));
 
-		   /* grey out seom popup menu items if there is no row
-			  (not counting the (New) one at row 0) */
-		   non_empty = gtk_tree_model_get_iter_first(model, &iter);
-		   if (non_empty)
-			   non_empty = gtk_tree_model_iter_next(model, &iter);
+			/* grey out seom popup menu items if there is no row
+			(not counting the (New) one at row 0) */
+			non_empty = gtk_tree_model_get_iter_first(model, &iter);
+			if (non_empty)
+				non_empty = gtk_tree_model_iter_next(model, &iter);
 			cm_menu_set_sensitive("PrefsActionsPopup/DeleteAll", non_empty);
 
-		   gtk_menu_popup(GTK_MENU(prefs_actions_popup_menu), 
-					  NULL, NULL, NULL, NULL, 
-					  event->button, event->time);
-	   }
+			gtk_menu_popup(GTK_MENU(prefs_actions_popup_menu), 
+					NULL, NULL, NULL, NULL, 
+					event->button, event->time);
+		}
    }
    return FALSE;
 }
@@ -1245,7 +1246,7 @@ static void prefs_actions_select_row(GtkTreeView *list_view, GtkTreePath *path)
 	*cmd = '\0';
 	gtk_entry_set_text(GTK_ENTRY(actions.name_entry), buf);
 
-	if(g_str_has_prefix(&cmd[2], "%as{") == TRUE)
+	if (g_str_has_prefix(&cmd[2], "%as{") == TRUE)
 		gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(
 						actions.filter_radiobtn), TRUE);
 	else
@@ -1257,22 +1258,22 @@ static void prefs_actions_select_row(GtkTreeView *list_view, GtkTreePath *path)
 
 static void prefs_action_filter_radiobtn_cb(GtkWidget *widget, gpointer data)
 {
-	if(actions.filter_btn)
+	if (actions.filter_btn)
 		gtk_widget_set_sensitive(actions.filter_btn, TRUE);
-	if(actions.cmd_entry)
-		gtk_widget_set_sensitive(actions.cmd_entry,FALSE);
-	if(actions.info_btn)
-		gtk_widget_set_sensitive(actions.info_btn,FALSE);
+	if (actions.cmd_entry)
+		gtk_widget_set_sensitive(actions.cmd_entry, FALSE);
+	if (actions.info_btn)
+		gtk_widget_set_sensitive(actions.info_btn, FALSE);
 }
 
 static void prefs_action_shell_radiobtn_cb(GtkWidget *widget, gpointer data)
 {
-	if(actions.filter_btn)
+	if (actions.filter_btn)
 		gtk_widget_set_sensitive(actions.filter_btn, FALSE);
-	if(actions.cmd_entry)
-		gtk_widget_set_sensitive(actions.cmd_entry,TRUE);
-	if(actions.info_btn)
-		gtk_widget_set_sensitive(actions.info_btn,TRUE);
+	if (actions.cmd_entry)
+		gtk_widget_set_sensitive(actions.cmd_entry, TRUE);
+	if (actions.info_btn)
+		gtk_widget_set_sensitive(actions.info_btn, TRUE);
 }
 
 static void prefs_action_filterbtn_cb(GtkWidget *widget, gpointer data)

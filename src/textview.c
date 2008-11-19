@@ -2882,7 +2882,7 @@ static void open_image_cb (GtkAction *action, TextView *textview)
 		gboolean remember = FALSE;
 		cmd = input_dialog_combo_remember
 			(_("Open with"),
-			 _("Enter the command line to open file:\n"
+			 _("Enter the command-line to open file:\n"
 			   "('%s' will be replaced with file name)"),
 			 prefs_common.mime_open_cmd,
 			 prefs_common.mime_open_cmd_history,
@@ -2895,7 +2895,7 @@ static void open_image_cb (GtkAction *action, TextView *textview)
 	    !strchr(p + 2, '%'))
 		g_snprintf(buf, sizeof(buf), cmd, filename);
 	else {
-		g_warning("Image viewer command line is invalid: '%s'", cmd);
+		g_warning("Image viewer command-line is invalid: '%s'", cmd);
 		return;
 	}
 

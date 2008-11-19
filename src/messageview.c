@@ -2032,13 +2032,13 @@ static void print_cb(GtkAction *action, gpointer data)
 
 #if !defined(USE_GNOMEPRINT) && !GTK_CHECK_VERSION(2,10,0)
 	cmdline = input_dialog(_("Print"),
-			       _("Enter the print command line:\n"
+			       _("Enter the print command-line:\n"
 				 "('%s' will be replaced with file name)"),
 			       prefs_common.print_cmd);
 	if (!cmdline) return;
 	if (!(p = strchr(cmdline, '%')) || *(p + 1) != 's' ||
 	    strchr(p + 2, '%')) {
-		alertpanel_error(_("Print command line is invalid:\n'%s'"),
+		alertpanel_error(_("Print command-line is invalid:\n'%s'"),
 				 cmdline);
 		g_free(cmdline);
 		return;

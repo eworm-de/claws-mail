@@ -2002,9 +2002,9 @@ static void add_str_default(gchar ** dest,
 
 /* matching_build_command() - preferably cmd should be unescaped */
 /*!
- *\brief	Build the command line to execute
+ *\brief	Build the command-line to execute
  *
- *\param	cmd String with command line specifiers
+ *\param	cmd String with command-line specifiers
  *\param	info Message info to use for command
  *
  *\return	gchar * Newly allocated string

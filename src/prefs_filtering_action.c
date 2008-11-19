@@ -885,7 +885,7 @@ static FilteringAction * prefs_filtering_action_dialog_to_action(gboolean alert)
 		if (*destination == '\0') {
 			if (alert)
                                 alertpanel_error(action_id == ACTION_EXECUTE 
-						 ? _("Command line not set")
+						 ? _("Command-line not set")
 						 : _("Destination is not set."));
 			g_free(destination);
 			return NULL;

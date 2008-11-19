@@ -3346,7 +3346,7 @@ gint open_uri(const gchar *uri, const gchar *cmdline)
 		g_snprintf(buf, sizeof(buf), cmdline, encoded_uri);
 	else {
 		if (cmdline)
-			g_warning("Open URI command line is invalid "
+			g_warning("Open URI command-line is invalid "
 				  "(there must be only one '%%s'): %s",
 				  cmdline);
 		g_snprintf(buf, sizeof(buf), DEFAULT_BROWSER_CMD, encoded_uri);
@@ -3378,7 +3378,7 @@ gint open_txt_editor(const gchar *filepath, const gchar *cmdline)
 		g_snprintf(buf, sizeof(buf), cmdline, filepath);
 	else {
 		if (cmdline)
-			g_warning("Open Text Editor command line is invalid "
+			g_warning("Open Text Editor command-line is invalid "
 				  "(there must be only one '%%s'): %s",
 				  cmdline);
 		g_snprintf(buf, sizeof(buf), DEFAULT_EDITOR_CMD, filepath);
