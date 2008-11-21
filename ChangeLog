@@ -1,3 +1,13 @@
+2008-11-21 [colin]	3.6.1cvs40
+
+	* src/compose.c
+	* src/procmime.c
+		Fix bug 1776, 'use encoded name parameters 
+		for attachments instead of ascii'.
+		Break the RFC 2047 by using B-encoded 
+		filename parameter, like everyone does,
+		following advice from the RFC author.
+
 2008-11-21 [colin]	3.6.1cvs39
 
 	* src/common/socket.c

@@ -5708,8 +5708,10 @@ static void compose_add_attachments(Compose *compose, MimeInfo *parent)
 			mimepart->disposition = DISPOSITIONTYPE_INLINE;
 		} else {
 			if (ainfo->name) {
-				g_hash_table_insert(mimepart->typeparameters,
-					    g_strdup("name"), g_strdup(ainfo->name));
+				if (mimepart->type == MIMETYPE_APPLICATION && 
+				   !strcmp2(mimepart->subtype, "octet-stream"))
+					g_hash_table_insert(mimepart->typeparameters,
+						    g_strdup("name"), g_strdup(ainfo->name));
 				g_hash_table_insert(mimepart->dispositionparameters,
 					    g_strdup("filename"), g_strdup(ainfo->name));
 				mimepart->disposition = DISPOSITIONTYPE_ATTACHMENT;

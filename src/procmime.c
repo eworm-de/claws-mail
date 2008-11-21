@@ -2111,13 +2111,12 @@ typedef enum {
     ENC_AS_TOKEN,
     ENC_AS_QUOTED_STRING,
     ENC_AS_EXTENDED,
-    ENC_TO_ASCII,
+    ENC_AS_B64
 } EncodeAs;
 
 typedef struct _ParametersData {
 	FILE *fp;
 	guint len;
-	guint ascii_only;
 	gint error;
 } ParametersData;
 
@@ -2127,12 +2126,13 @@ static void write_parameters(gpointer key, gpointer value, gpointer user_data)
 	gchar *val = value, *valpos, *tmp;
 	ParametersData *pdata = (ParametersData *)user_data;
 	GString *buf = g_string_new("");
+	gint len;
 
 	EncodeAs encas = ENC_AS_TOKEN;
 
 	for (valpos = val; *valpos != 0; valpos++) {
-		if (!IS_ASCII(*valpos) || *valpos == '"') {
-			encas = ENC_AS_EXTENDED;
+		if (!IS_ASCII(*valpos)) {
+			encas = ENC_AS_B64;
 			break;
 		}
 	    
@@ -2154,7 +2154,7 @@ static void write_parameters(gpointer key, gpointer value, gpointer user_data)
 		case ';':
 		case ':':
 		case '\\':
-		case '\'':
+		case '"':
         	case '/':
 		case '[':
 		case ']':
@@ -2165,23 +2165,9 @@ static void write_parameters(gpointer key, gpointer value, gpointer user_data)
 		}
 	}
 	
-	if (encas == ENC_AS_EXTENDED && pdata->ascii_only == TRUE) 
-		encas = ENC_TO_ASCII;
-
 	switch (encas) {
 	case ENC_AS_TOKEN:
 		g_string_append_printf(buf, "%s=%s", param, val);
-		break;
-
-	case ENC_TO_ASCII:
-		tmp = g_strdup(val);
-		g_strcanon(tmp, 
-			" ()<>@,';:\\/[]?=.0123456789"
-			"ABCDEFGHIJKLMNOPQRSTUVWXYZ"
-			"abcdefghijklmnopqrstuvwxyz",
-			'_');
-		g_string_append_printf(buf, "%s=\"%s\"", param, tmp);
-		g_free(tmp);
 		break;
 
 	case ENC_AS_QUOTED_STRING:
@@ -2205,6 +2191,15 @@ static void write_parameters(gpointer key, gpointer value, gpointer user_data)
 			}
 		}
 		break;		
+
+	case ENC_AS_B64:
+		len = strlen(val)*6;
+		tmp = g_malloc(len+1);
+		base64_encode(tmp, val, strlen(val));
+		g_string_append_printf(buf, "%s=\"=?UTF-8?B?%s?=\"", param, tmp);
+		g_free(tmp);
+		break;
+
 	}
 	
 	if (buf->str && strlen(buf->str)) {
@@ -2234,7 +2229,6 @@ int procmime_write_mime_header(MimeInfo *mimeinfo, FILE *fp)
 	debug_print("procmime_write_mime_header\n");
 	
 	pdata->fp = fp;
-	pdata->ascii_only = FALSE;
 	pdata->error = FALSE;
 	for (type_table = mime_type_table; type_table->str != NULL; type_table++)
 		if (mimeinfo->type == type_table->type) {
@@ -2246,7 +2240,6 @@ int procmime_write_mime_header(MimeInfo *mimeinfo, FILE *fp)
 				return -1;
 			}
 			pdata->len = strlen(buf);
-			pdata->ascii_only = TRUE;
 			g_free(buf);
 			break;
 		}
@@ -2290,7 +2283,6 @@ int procmime_write_mime_header(MimeInfo *mimeinfo, FILE *fp)
 		g_free(buf);
 
 		pdata->fp = fp;
-		pdata->ascii_only = FALSE;
 		pdata->error = FALSE;
 		g_hash_table_foreach(mimeinfo->dispositionparameters, write_parameters, pdata);
 		if (pdata->error == TRUE) {
