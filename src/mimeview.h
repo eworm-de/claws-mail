@@ -97,12 +97,12 @@ struct _MimeView
 
 	NoticeView *siginfoview;
 	MimeInfo *siginfo;
-#ifdef USE_PTHREAD
-	SigCheckData *check_data;
-#endif
 	MimeInfo *spec_part;
 	GtkUIManager *ui_manager;
 	GtkActionGroup *action_group;
+#ifdef USE_PTHREAD
+	SigCheckData *check_data;
+#endif
 };
 
 struct _MimeViewerFactory

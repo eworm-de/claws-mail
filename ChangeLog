@@ -1,3 +1,12 @@
+2008-11-21 [colin]	3.6.1cvs38
+
+	* src/mimeview.h
+	* src/toolbar.h
+	* src/common/session.h
+	* src/common/smtp.h
+		Move conditional-compilation members to
+		end of structs
+
 2008-11-19 [wwp]	3.6.1cvs37
 
 	* src/prefs_actions.c

@@ -92,10 +92,6 @@ struct _Session
 	gchar *server;
 	gushort port;
 
-#ifdef USE_GNUTLS
-	SSLType ssl_type;
-#endif
-
 	gboolean nonblocking;
 
 	SessionState state;
@@ -157,6 +153,10 @@ struct _Session
 	
 	const void *account;
 	gboolean is_smtp;
+
+#ifdef USE_GNUTLS
+	SSLType ssl_type;
+#endif
 };
 
 void session_init		(Session	*session, 

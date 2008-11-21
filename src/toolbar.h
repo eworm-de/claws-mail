@@ -91,9 +91,6 @@ struct _Toolbar {
 	GtkWidget *linewrap_current_btn;
 	GtkWidget *linewrap_all_btn;
 	GtkWidget *addrbook_btn;
-#ifdef USE_ENCHANT
-	GtkWidget *spellcheck_btn;
-#endif
 
 	GtkWidget *open_mail_btn;
 	GtkWidget *close_window_btn;
@@ -103,6 +100,9 @@ struct _Toolbar {
 	GSList    *action_list;
 	GSList    *item_list;
 
+#ifdef USE_ENCHANT
+	GtkWidget *spellcheck_btn;
+#endif
 #if !GTK_CHECK_VERSION(2,12,0)
 	GtkTooltips *tooltips;
 #endif
