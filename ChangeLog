@@ -1,3 +1,8 @@
+2008-11-21 [colin]	3.6.1cvs39
+
+	* src/common/socket.c
+		Rehandshake if server asks to
+
 2008-11-21 [colin]	3.6.1cvs38
 
 	* src/mimeview.h

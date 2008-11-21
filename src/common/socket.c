@@ -1385,11 +1385,15 @@ static gint ssl_read(gnutls_session ssl, gchar *buf, gint len)
 		case 0: /* closed connection */
 			return -1;
 
+		case GNUTLS_E_REHANDSHAKE:
+			do {
+				r = gnutls_handshake(ssl);
+			} while (r == GNUTLS_E_AGAIN || r == GNUTLS_E_INTERRUPTED);
+			break; /* re-receive */
 		case GNUTLS_E_AGAIN:
 		case GNUTLS_E_INTERRUPTED:
 			errno = EAGAIN;
 			return -1;
-		break;
 
 		default:
 			return -1;
