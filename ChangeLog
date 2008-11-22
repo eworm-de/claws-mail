@@ -1,3 +1,9 @@
+2008-11-22 [paul]	3.6.1cvs41
+
+	* src/compose.c
+		grab Return key press in attachments Properties
+		dialog
+
 2008-11-21 [colin]	3.6.1cvs40
 
 	* src/compose.c

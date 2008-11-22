@@ -8371,6 +8371,10 @@ static gboolean attach_property_key_pressed(GtkWidget *widget,
 		*cancelled = TRUE;
 		gtk_main_quit();
 	}
+	if (event && event->keyval == GDK_Return) {
+		*cancelled = FALSE;
+		gtk_main_quit();
+	}
 	return FALSE;
 }
 
