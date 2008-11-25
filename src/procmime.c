@@ -2111,7 +2111,7 @@ typedef enum {
     ENC_AS_TOKEN,
     ENC_AS_QUOTED_STRING,
     ENC_AS_EXTENDED,
-    ENC_AS_B64
+    ENC_AS_ENCWORD
 } EncodeAs;
 
 typedef struct _ParametersData {
@@ -2132,7 +2132,7 @@ static void write_parameters(gpointer key, gpointer value, gpointer user_data)
 
 	for (valpos = val; *valpos != 0; valpos++) {
 		if (!IS_ASCII(*valpos)) {
-			encas = ENC_AS_B64;
+			encas = ENC_AS_ENCWORD;
 			break;
 		}
 	    
@@ -2192,18 +2192,42 @@ static void write_parameters(gpointer key, gpointer value, gpointer user_data)
 		}
 		break;		
 
-	case ENC_AS_B64:
-		len = strlen(val)*6;
+	case ENC_AS_ENCWORD:
+		len = MAX(strlen(val)*6, 512);
 		tmp = g_malloc(len+1);
-		base64_encode(tmp, val, strlen(val));
-		g_string_append_printf(buf, "%s=\"=?UTF-8?B?%s?=\"", param, tmp);
+		codeconv_set_strict(TRUE);
+		conv_encode_header_full(tmp, len, val, pdata->len + strlen(param) + 4 , FALSE,
+			prefs_common.outgoing_charset);
+		codeconv_set_strict(FALSE);
+		if (!tmp || !*tmp) {
+			codeconv_set_strict(TRUE);
+			conv_encode_header_full(tmp, len, val, pdata->len + strlen(param) + 4 , FALSE,
+				conv_get_outgoing_charset_str());
+			codeconv_set_strict(FALSE);
+		}
+		if (!tmp || !*tmp) {
+			codeconv_set_strict(TRUE);
+			conv_encode_header_full(tmp, len, val, pdata->len + strlen(param) + 4 , FALSE,
+				CS_UTF_8);
+			codeconv_set_strict(FALSE);
+		}
+		if (!tmp || !*tmp) {
+			conv_encode_header_full(tmp, len, val, pdata->len + strlen(param) + 4 , FALSE,
+				CS_UTF_8);
+		}
+		g_string_append_printf(buf, "%s=\"%s\"", param, tmp);
 		g_free(tmp);
 		break;
 
 	}
 	
 	if (buf->str && strlen(buf->str)) {
-		if (pdata->len + strlen(buf->str) + 2 > 76) {
+		tmp = strstr(buf->str, "\n");
+		if (tmp)
+			len = (tmp - buf->str);
+		else
+			len = strlen(buf->str);
+		if (pdata->len + len > 76) {
 			if (fprintf(pdata->fp, ";\n %s", buf->str) < 0)
 				pdata->error = TRUE;
 			pdata->len = strlen(buf->str) + 1;

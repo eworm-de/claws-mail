@@ -3623,3 +3623,4 @@
 ( cvs diff -u -r 1.13.2.41 -r 1.13.2.42 src/common/socket.c;  ) > 3.6.1cvs39.patchset
 ( cvs diff -u -r 1.382.2.486 -r 1.382.2.487 src/compose.c;  cvs diff -u -r 1.49.2.120 -r 1.49.2.121 src/procmime.c;  ) > 3.6.1cvs40.patchset
 ( cvs diff -u -r 1.382.2.487 -r 1.382.2.488 src/compose.c;  ) > 3.6.1cvs41.patchset
+( cvs diff -u -r 1.49.2.121 -r 1.49.2.122 src/procmime.c;  ) > 3.6.1cvs42.patchset
