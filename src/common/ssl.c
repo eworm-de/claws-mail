@@ -26,6 +26,10 @@
 
 #include <glib.h>
 #include <glib/gi18n.h>
+#include <errno.h>
+#include <pthread.h>
+#include <gcrypt.h>
+GCRY_THREAD_OPTION_PTHREAD_IMPL;
 
 #include "claws.h"
 #include "utils.h"
@@ -148,6 +152,7 @@ const gchar *claws_ssl_get_cert_dir(void)
 
 void ssl_init(void)
 {
+	gcry_control (GCRYCTL_SET_THREAD_CBS, &gcry_threads_pthread);
 #ifdef HAVE_LIBETPAN
 	mailstream_gnutls_init_not_required();
 #endif	

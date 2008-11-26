@@ -3625,3 +3625,4 @@
 ( cvs diff -u -r 1.382.2.487 -r 1.382.2.488 src/compose.c;  ) > 3.6.1cvs41.patchset
 ( cvs diff -u -r 1.49.2.121 -r 1.49.2.122 src/procmime.c;  ) > 3.6.1cvs42.patchset
 ( cvs diff -u -r 1.179.2.236 -r 1.179.2.237 src/imap.c;  cvs diff -u -r 1.101.2.57 -r 1.101.2.58 src/news.c;  cvs diff -u -r 1.1.4.105 -r 1.1.4.106 src/etpan/imap-thread.c;  ) > 3.6.1cvs43.patchset
+( cvs diff -u -r 1.115.2.215 -r 1.115.2.216 src/main.c;  cvs diff -u -r 1.1.2.5 -r 1.1.2.6 src/common/claws.c;  cvs diff -u -r 1.9.2.35 -r 1.9.2.36 src/common/ssl.c;  ) > 3.6.1cvs44.patchset

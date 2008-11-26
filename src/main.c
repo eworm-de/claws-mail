@@ -43,11 +43,6 @@
 #ifdef HAVE_LIBSM
 #include <X11/SM/SMlib.h>
 #endif
-#ifdef USE_GNUTLS
-#include <pthread.h>
-#include <gcrypt.h>
-GCRY_THREAD_OPTION_PTHREAD_IMPL;
-#endif
 
 #include "wizard.h"
 #ifdef HAVE_STARTUP_NOTIFICATION
@@ -1053,7 +1048,6 @@ int main(int argc, char *argv[])
 	GtkUIManager *gui_manager = NULL;
 	GSList *plug_list = NULL;
 	gboolean never_ran = FALSE;
-
 	START_TIMING("startup");
 
 	sc_starting = TRUE;
@@ -1443,10 +1437,6 @@ int main(int argc, char *argv[])
 	 * sees what's happening */
 	if (claws_crashed())
 		main_window_popup(mainwin);
-
-#ifdef USE_GNUTLS
-	gcry_control (GCRYCTL_SET_THREAD_CBS, &gcry_threads_pthread);
-#endif
 
 #ifdef HAVE_LIBETPAN
 	imap_main_init(prefs_common.skip_ssl_cert_check);

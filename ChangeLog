@@ -1,3 +1,11 @@
+2008-11-26 [colin]	3.6.1cvs44
+
+	* src/main.c
+	* src/common/claws.c
+	* src/common/ssl.c
+		Make sure libgcrypt's threading is initialised
+		before gnutls. See also old bug 1539.
+
 2008-11-26 [colin]	3.6.1cvs43
 
 	* src/imap.c

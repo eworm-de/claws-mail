@@ -91,6 +91,9 @@ gboolean claws_init(int *argc, char ***argv)
 	if (claws_initialized)
 		return TRUE;
 
+#ifdef USE_GNUTLS
+	ssl_init();
+#endif
 	startup_dir = g_get_current_dir();
 
 	parse_parameter(argc, argv);
@@ -114,10 +117,6 @@ gboolean claws_init(int *argc, char ***argv)
 	}
 
 	srand((gint) time(NULL));
-
-#ifdef USE_GNUTLS
-	ssl_init();
-#endif
 
 	claws_initialized = TRUE;
 
