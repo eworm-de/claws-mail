@@ -786,7 +786,7 @@ static int imap_get_capabilities(IMAPSession *session)
 		return result;
 	}
 
-	if (capabilities == NULL) {
+	if (capabilities == NULL || capabilities->cap_list == NULL) {
 		return MAILIMAP_NO_ERROR;
 	}
 
@@ -1697,6 +1697,9 @@ static GSList *flatten_mailimap_set(struct mailimap_set * set)
 	clistiter *list;
 	int start, end, t;
 	GSList *cur;
+
+	if (!set || !set->set_list)
+		return NULL;
 
 	for (list = clist_begin(set->set_list); list; list = clist_next(list)) {
 		struct mailimap_set_item *item = (struct mailimap_set_item *)clist_content(list);
@@ -3166,7 +3169,7 @@ static gchar imap_refresh_path_separator(IMAPSession *session, IMAPFolder *folde
 		return '\0';
 	}
 
-	if (clist_count(lep_list) > 0) {
+	if (lep_list != NULL && clist_count(lep_list) > 0) {
 		clistiter * iter = clist_begin(lep_list); 
 		struct mailimap_mailbox_list * mb;
 		mb = clist_content(iter);
@@ -3247,8 +3250,12 @@ static gint imap_set_message_flags(IMAPSession *session,
 
 	for(cur = seq_list ; cur != NULL ; cur = g_slist_next(cur)) {
 		struct mailimap_set * imapset = (struct mailimap_set *)cur->data;
-		struct mailimap_set_item *set_item = clist_content(
-							clist_begin(imapset->set_list));
+		struct mailimap_set_item *set_item = NULL;
+		
+		if (imapset->set_list)
+			set_item = clist_content(clist_begin(imapset->set_list));
+		else
+			continue;
 
 		statusbar_progress_all(set_item->set_first, total, 1);
 
@@ -3420,39 +3427,41 @@ static gint imap_status(IMAPSession *session, IMAPFolder *folder,
 	}
 	
 	got_values = 0;
-	for(iter = clist_begin(data_status->st_info_list) ; iter != NULL ;
-	    iter = clist_next(iter)) {
-		struct mailimap_status_info * info;		
-		
-		info = clist_content(iter);
-		switch (info->st_att) {
-		case MAILIMAP_STATUS_ATT_MESSAGES:
-			if (messages) {
-				* messages = info->st_value;
-				got_values |= 1 << 0;
+	if (data_status->st_info_list) {
+		for(iter = clist_begin(data_status->st_info_list) ; iter != NULL ;
+		    iter = clist_next(iter)) {
+			struct mailimap_status_info * info;		
+
+			info = clist_content(iter);
+			switch (info->st_att) {
+			case MAILIMAP_STATUS_ATT_MESSAGES:
+				if (messages) {
+					* messages = info->st_value;
+					got_values |= 1 << 0;
+				}
+				break;
+
+			case MAILIMAP_STATUS_ATT_UIDNEXT:
+				if (uid_next) {
+					* uid_next = info->st_value;
+					got_values |= 1 << 2;
+				}
+				break;
+
+			case MAILIMAP_STATUS_ATT_UIDVALIDITY:
+				if (uid_validity) {
+					* uid_validity = info->st_value;
+					got_values |= 1 << 3;
+				}
+				break;
+
+			case MAILIMAP_STATUS_ATT_UNSEEN:
+				if (unseen) {
+					* unseen = info->st_value;
+					got_values |= 1 << 4;
+				}
+				break;
 			}
-			break;
-			
-		case MAILIMAP_STATUS_ATT_UIDNEXT:
-			if (uid_next) {
-				* uid_next = info->st_value;
-				got_values |= 1 << 2;
-			}
-			break;
-			
-		case MAILIMAP_STATUS_ATT_UIDVALIDITY:
-			if (uid_validity) {
-				* uid_validity = info->st_value;
-				got_values |= 1 << 3;
-			}
-			break;
-			
-		case MAILIMAP_STATUS_ATT_UNSEEN:
-			if (unseen) {
-				* unseen = info->st_value;
-				got_values |= 1 << 4;
-			}
-			break;
 		}
 	}
 	mailimap_mailbox_data_status_free(data_status);
@@ -5014,19 +5023,20 @@ static int imap_flags_to_flags(struct mailimap_mbx_list_flags * imap_flags)
     }
   }
   
-  for(cur = clist_begin(imap_flags->mbf_oflags) ; cur != NULL ;
-      cur = clist_next(cur)) {
-    struct mailimap_mbx_list_oflag * oflag;
-    
-    oflag = clist_content(cur);
-    
-    switch (oflag->of_type) {
-    case MAILIMAP_MBX_LIST_OFLAG_NOINFERIORS:
-      flags |= ETPAN_IMAP_MB_NOINFERIORS;
-      break;
+  if (imap_flags->mbf_oflags) {
+    for(cur = clist_begin(imap_flags->mbf_oflags) ; cur != NULL ;
+	cur = clist_next(cur)) {
+      struct mailimap_mbx_list_oflag * oflag;
+
+      oflag = clist_content(cur);
+
+      switch (oflag->of_type) {
+      case MAILIMAP_MBX_LIST_OFLAG_NOINFERIORS:
+	flags |= ETPAN_IMAP_MB_NOINFERIORS;
+	break;
+      }
     }
-  }
-  
+  }  
   return flags;
 }
 
@@ -5036,74 +5046,75 @@ static GSList * imap_list_from_lep(IMAPFolder * folder,
 	clistiter * iter;
 	GSList * item_list = NULL, *llast = NULL;
 	
-	for(iter = clist_begin(list) ; iter != NULL ;
-	    iter = clist_next(iter)) {
-		struct mailimap_mailbox_list * mb;
-		int flags;
-		char delimiter;
-		char * name;
-		char * dup_name;
-		gchar * base;
-		gchar * loc_name;
-		gchar * loc_path;
-		FolderItem *new_item;
-		
-		mb = clist_content(iter);
+	if (list) {
+		for(iter = clist_begin(list) ; iter != NULL ;
+		    iter = clist_next(iter)) {
+			struct mailimap_mailbox_list * mb;
+			int flags;
+			char delimiter;
+			char * name;
+			char * dup_name;
+			gchar * base;
+			gchar * loc_name;
+			gchar * loc_path;
+			FolderItem *new_item;
 
-		if (mb == NULL)
-			continue;
+			mb = clist_content(iter);
 
-		flags = 0;
-		if (mb->mb_flag != NULL)
-			flags = imap_flags_to_flags(mb->mb_flag);
-		
-		delimiter = mb->mb_delimiter;
-		name = mb->mb_name;
-		
-		dup_name = strdup(name);		
-		if (delimiter != '\0')
-			subst_char(dup_name, delimiter, '/');
-		
-		base = g_path_get_basename(dup_name);
-		if (base[0] == '.') {
+			if (mb == NULL)
+				continue;
+
+			flags = 0;
+			if (mb->mb_flag != NULL)
+				flags = imap_flags_to_flags(mb->mb_flag);
+
+			delimiter = mb->mb_delimiter;
+			name = mb->mb_name;
+
+			dup_name = strdup(name);		
+			if (delimiter != '\0')
+				subst_char(dup_name, delimiter, '/');
+
+			base = g_path_get_basename(dup_name);
+			if (base[0] == '.') {
+				g_free(base);
+				free(dup_name);
+				continue;
+			}
+			if (!all && path_cmp(name, real_path) == 0) {
+				g_free(base);
+				free(dup_name);
+				continue;
+			}
+
+			if (!all && dup_name[strlen(dup_name)-1] == '/') {
+				dup_name[strlen(dup_name)-1] = '\0';
+			}
+
+			loc_name = imap_modified_utf7_to_utf8(base, FALSE);
+			loc_path = imap_modified_utf7_to_utf8(dup_name, FALSE);
+
+			new_item = folder_item_new(FOLDER(folder), loc_name, loc_path);
+			if ((flags & ETPAN_IMAP_MB_NOINFERIORS) != 0)
+				new_item->no_sub = TRUE;
+			if (strcmp(dup_name, "INBOX") != 0 &&
+			    ((flags & ETPAN_IMAP_MB_NOSELECT) != 0))
+				new_item->no_select = TRUE;
+
+			if (item_list == NULL)
+				llast = item_list = g_slist_append(item_list, new_item);
+			else {
+				llast = g_slist_append(llast, new_item);
+				llast = llast->next;
+			}
+			debug_print("folder '%s' found.\n", loc_path);
 			g_free(base);
-			free(dup_name);
-			continue;
-		}
-		if (!all && path_cmp(name, real_path) == 0) {
-			g_free(base);
-			free(dup_name);
-			continue;
-		}
+			g_free(loc_path);
+			g_free(loc_name);
 
-		if (!all && dup_name[strlen(dup_name)-1] == '/') {
-			dup_name[strlen(dup_name)-1] = '\0';
+			free(dup_name);
 		}
-		
-		loc_name = imap_modified_utf7_to_utf8(base, FALSE);
-		loc_path = imap_modified_utf7_to_utf8(dup_name, FALSE);
-		
-		new_item = folder_item_new(FOLDER(folder), loc_name, loc_path);
-		if ((flags & ETPAN_IMAP_MB_NOINFERIORS) != 0)
-			new_item->no_sub = TRUE;
-		if (strcmp(dup_name, "INBOX") != 0 &&
-		    ((flags & ETPAN_IMAP_MB_NOSELECT) != 0))
-			new_item->no_select = TRUE;
-		
-		if (item_list == NULL)
-			llast = item_list = g_slist_append(item_list, new_item);
-		else {
-			llast = g_slist_append(llast, new_item);
-			llast = llast->next;
-		}
-		debug_print("folder '%s' found.\n", loc_path);
-		g_free(base);
-		g_free(loc_path);
-		g_free(loc_name);
-		
-		free(dup_name);
-	}
-	
+	}	
 	return item_list;
 }
 
@@ -5196,15 +5207,16 @@ static GSList * imap_uid_list_from_lep(clist * list)
 	
 	result = NULL;
 	
-	for(iter = clist_begin(list) ; iter != NULL ;
-	    iter = clist_next(iter)) {
-		uint32_t * puid;
-		
-		puid = clist_content(iter);
-		result = g_slist_prepend(result, GINT_TO_POINTER(* puid));
-	}
-	
-	result = g_slist_reverse(result);
+	if (list) {
+		for(iter = clist_begin(list) ; iter != NULL ;
+		    iter = clist_next(iter)) {
+			uint32_t * puid;
+
+			puid = clist_content(iter);
+			result = g_slist_prepend(result, GINT_TO_POINTER(* puid));
+		}
+		result = g_slist_reverse(result);
+	}	
 	return result;
 }
 

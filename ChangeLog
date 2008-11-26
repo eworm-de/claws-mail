@@ -1,3 +1,11 @@
+2008-11-26 [colin]	3.6.1cvs43
+
+	* src/imap.c
+	* src/news.c
+	* src/etpan/imap-thread.c
+		Fix possible crashes due to clist_begin()
+		not checking for NULLs (it should!)
+
 2008-11-25 [colin]	3.6.1cvs42
 
 	* src/procmime.c

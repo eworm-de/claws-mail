@@ -1425,8 +1425,10 @@ int imap_threaded_select(Folder * folder, const char * mb,
 
 	if (imap->imap_selection_info->sel_perm_flags) {
 		GSList *t_flags = NULL;
-		clistiter *cur =
-			clist_begin(imap->imap_selection_info->sel_perm_flags);
+		clistiter *cur = NULL;
+		if (imap->imap_selection_info->sel_perm_flags)
+			cur = clist_begin(imap->imap_selection_info->sel_perm_flags);
+
 		for (; cur; cur = clist_next(cur)) {
 			struct mailimap_flag_perm *flag = (struct mailimap_flag_perm *)clist_content(cur);
 			if (flag->fl_type == MAILIMAP_FLAG_PERM_ALL)
@@ -1768,7 +1770,7 @@ static int imap_get_msg_att_info(struct mailimap_msg_att * msg_att,
 static int
 result_to_uid_list(clist * fetch_result, carray ** result)
 {
-	clistiter * cur;
+	clistiter * cur = NULL;
 	int r;
 	int res;
 	carray * tab;
@@ -1779,8 +1781,10 @@ result_to_uid_list(clist * fetch_result, carray ** result)
 		goto err;
 	}
 	
-	for(cur = clist_begin(fetch_result) ; cur != NULL ;
-	    cur = clist_next(cur)) {
+	if (fetch_result)
+		cur = clist_begin(fetch_result);
+
+	for(; cur != NULL ; cur = clist_next(cur)) {
 		struct mailimap_msg_att * msg_att;
 		uint32_t uid;
 		uint32_t * puid;
@@ -1968,7 +1972,7 @@ static int imap_flags_to_flags(struct mailimap_msg_att_dynamic * att_dyn, GSList
 static int
 result_to_uid_flags_list(clist * fetch_result, carray ** result)
 {
-	clistiter * cur;
+	clistiter * cur = NULL;
 	int r;
 	int res;
 	carray * tab;
@@ -1979,9 +1983,11 @@ result_to_uid_flags_list(clist * fetch_result, carray ** result)
 		res = MAILIMAP_ERROR_MEMORY;
 		goto err;
 	}
-	
-	for(cur = clist_begin(fetch_result) ; cur != NULL ;
-	    cur = clist_next(cur)) {
+
+	if (fetch_result)
+		cur = clist_begin(fetch_result);
+
+	for(; cur != NULL ; cur = clist_next(cur)) {
 		struct mailimap_msg_att * msg_att;
 		uint32_t uid;
 		uint32_t * puid;
@@ -2260,7 +2266,7 @@ static int imap_fetch(mailimap * imap,
 		return r;
 	}
   
-	if (clist_begin(fetch_result) == NULL) {
+	if (fetch_result == NULL || clist_begin(fetch_result) == NULL) {
 		mailimap_fetch_list_free(fetch_result);
 		return MAILIMAP_ERROR_FETCH;
 	}
@@ -2270,8 +2276,12 @@ static int imap_fetch(mailimap * imap,
 	text = NULL;
 	text_length = 0;
 
-	for(cur = clist_begin(msg_att->att_list) ; cur != NULL ;
-	    cur = clist_next(cur)) {
+	if (msg_att->att_list)
+		cur = clist_begin(msg_att->att_list);
+	else
+		cur = NULL;
+
+	for(; cur != NULL ; cur = clist_next(cur)) {
 		msg_att_item = clist_content(cur);
 
 		if (msg_att_item->att_type == MAILIMAP_MSG_ATT_ITEM_STATIC) {
@@ -2362,7 +2372,7 @@ static int imap_fetch_header(mailimap * imap,
     return r;
   }
 
-  if (clist_begin(fetch_result) == NULL) {
+  if (fetch_result == NULL || clist_begin(fetch_result) == NULL) {
     mailimap_fetch_list_free(fetch_result);
     return MAILIMAP_ERROR_FETCH;
   }
@@ -2372,8 +2382,12 @@ static int imap_fetch_header(mailimap * imap,
   text = NULL;
   text_length = 0;
 
-  for(cur = clist_begin(msg_att->att_list) ; cur != NULL ;
-      cur = clist_next(cur)) {
+  if (msg_att->att_list)
+     cur = clist_begin(msg_att->att_list);
+  else
+     cur = NULL;
+
+  for(; cur != NULL ; cur = clist_next(cur)) {
     msg_att_item = clist_content(cur);
 
     if (msg_att_item->att_type == MAILIMAP_MSG_ATT_ITEM_STATIC) {
@@ -2588,8 +2602,11 @@ static int imap_get_msg_att_info(struct mailimap_msg_att * msg_att,
   ref_size = 0;
   att_dyn = NULL;
 
-  for(item_cur = clist_begin(msg_att->att_list) ; item_cur != NULL ;
-      item_cur = clist_next(item_cur)) {
+  if (msg_att->att_list)
+     item_cur = clist_begin(msg_att->att_list);
+  else
+     item_cur = NULL;
+  for(; item_cur != NULL ; item_cur = clist_next(item_cur)) {
     struct mailimap_msg_att_item * item;
 
     item = clist_content(item_cur);
@@ -2666,23 +2683,26 @@ imap_fetch_result_to_envelop_list(clist * fetch_result,
 	i = 0;
 	env_list = carray_new(16);
   
-	for(cur = clist_begin(fetch_result) ; cur != NULL ;
-	    cur = clist_next(cur)) {
-		struct mailimap_msg_att * msg_att;
-		struct imap_fetch_env_info * env_info;
-	    	GSList *tags = NULL;
+  	if (fetch_result) {
+		for(cur = clist_begin(fetch_result) ; cur != NULL ;
+		    cur = clist_next(cur)) {
+			struct mailimap_msg_att * msg_att;
+			struct imap_fetch_env_info * env_info;
+	    		GSList *tags = NULL;
 
-		msg_att = clist_content(cur);
+			msg_att = clist_content(cur);
 
-		env_info = fetch_to_env_info(msg_att, &tags);
-		if (!env_info)
-			return MAILIMAP_ERROR_MEMORY;
-		carray_add(env_list, env_info, NULL);
-		carray_add(env_list, tags, NULL);
+			env_info = fetch_to_env_info(msg_att, &tags);
+			if (!env_info)
+				return MAILIMAP_ERROR_MEMORY;
+			carray_add(env_list, env_info, NULL);
+			carray_add(env_list, tags, NULL);
+		}
+		* p_env_list = env_list;
+  	} else {
+		* p_env_list = NULL;
 	}
-  
-	* p_env_list = env_list;
-  
+
 	return MAIL_NO_ERROR;
 }
 
@@ -2784,7 +2804,7 @@ imap_get_envelopes_list(mailimap * imap, struct mailimap_set * set,
 		return r;
 	}
 	
-	if (clist_begin(fetch_result) == NULL) {
+	if (fetch_result == NULL || clist_begin(fetch_result) == NULL) {
 		res = MAILIMAP_ERROR_FETCH;
 		debug_print("clist_begin = NULL\n");
 		goto err;

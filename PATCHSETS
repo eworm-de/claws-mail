@@ -3624,3 +3624,4 @@
 ( cvs diff -u -r 1.382.2.486 -r 1.382.2.487 src/compose.c;  cvs diff -u -r 1.49.2.120 -r 1.49.2.121 src/procmime.c;  ) > 3.6.1cvs40.patchset
 ( cvs diff -u -r 1.382.2.487 -r 1.382.2.488 src/compose.c;  ) > 3.6.1cvs41.patchset
 ( cvs diff -u -r 1.49.2.121 -r 1.49.2.122 src/procmime.c;  ) > 3.6.1cvs42.patchset
+( cvs diff -u -r 1.179.2.236 -r 1.179.2.237 src/imap.c;  cvs diff -u -r 1.101.2.57 -r 1.101.2.58 src/news.c;  cvs diff -u -r 1.1.4.105 -r 1.1.4.106 src/etpan/imap-thread.c;  ) > 3.6.1cvs43.patchset

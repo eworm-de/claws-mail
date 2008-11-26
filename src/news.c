@@ -575,25 +575,26 @@ GSList *news_get_group_list(Folder *folder)
 			return NULL;
 		}
 		
-		for (cur = clist_begin(grouplist); cur; cur = clist_next(cur)) {
-			struct newsnntp_group_info *info = (struct newsnntp_group_info *)
-								clist_content(cur);
-			if (fprintf(fp, "%s %d %d %c\n",
-				info->grp_name,
-				info->grp_last,
-				info->grp_first,
-				info->grp_type) < 0) {
-				log_error(LOG_PROTOCOL, ("Can't write newsgroup list\n"));
-				session_destroy(SESSION(session));
-				REMOTE_FOLDER(folder)->session = NULL;
-				fclose(fp);
-				g_free(filename);
-				newsnntp_list_free(grouplist);
-				return NULL;
+		if (grouplist) {
+			for (cur = clist_begin(grouplist); cur; cur = clist_next(cur)) {
+				struct newsnntp_group_info *info = (struct newsnntp_group_info *)
+									clist_content(cur);
+				if (fprintf(fp, "%s %d %d %c\n",
+					info->grp_name,
+					info->grp_last,
+					info->grp_first,
+					info->grp_type) < 0) {
+					log_error(LOG_PROTOCOL, ("Can't write newsgroup list\n"));
+					session_destroy(SESSION(session));
+					REMOTE_FOLDER(folder)->session = NULL;
+					fclose(fp);
+					g_free(filename);
+					newsnntp_list_free(grouplist);
+					return NULL;
+				}
 			}
+			newsnntp_list_free(grouplist);
 		}
-		newsnntp_list_free(grouplist);
-
 		if (fclose(fp) == EOF) {
 			log_error(LOG_PROTOCOL, ("Can't write newsgroup list\n"));
 			session_destroy(SESSION(session));
@@ -844,6 +845,9 @@ static gchar *news_parse_xhdr(clist *hdrlist, MsgInfo *msginfo)
 {
 	struct newsnntp_xhdr_resp_item *hdr;
 	
+	if (!hdrlist)
+		return NULL;
+
 	hdr = clist_content(clist_begin(hdrlist));
 	if (hdr->hdr_article != msginfo->msgnum)
 		return NULL;
@@ -1127,28 +1131,30 @@ static GSList *news_get_msginfos_for_range(NewsSession *session, FolderItem *ite
 		return NULL;
 	}
 
-	for (cur = clist_begin(msglist); cur; cur = clist_next(cur)) {
-		struct newsnntp_xover_resp_item *ritem = (struct newsnntp_xover_resp_item *)clist_content(cur);
-		msginfo = news_parse_xover(ritem);
-		
-		if (!msginfo) {
-			log_warning(LOG_PROTOCOL, _("invalid xover line\n"));
-			continue;
-		}
+	if (msglist) {
+		for (cur = clist_begin(msglist); cur; cur = clist_next(cur)) {
+			struct newsnntp_xover_resp_item *ritem = (struct newsnntp_xover_resp_item *)clist_content(cur);
+			msginfo = news_parse_xover(ritem);
+			
+			if (!msginfo) {
+				log_warning(LOG_PROTOCOL, _("invalid xover line\n"));
+				continue;
+			}
 
-		msginfo->folder = item;
-		news_set_msg_flags(item, msginfo);
-		msginfo->flags.tmp_flags |= MSG_NEWS;
-		msginfo->newsgroups = g_strdup(item->path);
+			msginfo->folder = item;
+			news_set_msg_flags(item, msginfo);
+			msginfo->flags.tmp_flags |= MSG_NEWS;
+			msginfo->newsgroups = g_strdup(item->path);
 
-		if (!newlist)
-			llast = newlist = g_slist_append(newlist, msginfo);
-		else {
-			llast = g_slist_append(llast, msginfo);
-			llast = llast->next;
+			if (!newlist)
+				llast = newlist = g_slist_append(newlist, msginfo);
+			else {
+				llast = g_slist_append(llast, msginfo);
+				llast = llast->next;
+			}
 		}
+		newsnntp_xover_resp_list_free(msglist);
 	}
-	newsnntp_xover_resp_list_free(msglist);
 
 	news_folder_unlock(NEWS_FOLDER(item->folder));
 
