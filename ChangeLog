@@ -1,3 +1,8 @@
+2008-11-26 [colin]	3.6.1cvs46
+
+	* src/common/ssl.c
+		Fix new warning
+
 2008-11-26 [colin]	3.6.1cvs45
 
 	* src/plugins/pgpcore/select-keys.c

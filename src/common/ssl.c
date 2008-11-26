@@ -24,6 +24,7 @@
 #ifdef USE_GNUTLS
 #include "defs.h"
 
+#include <stdlib.h>
 #include <glib.h>
 #include <glib/gi18n.h>
 #include <errno.h>
