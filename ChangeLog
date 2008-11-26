@@ -1,3 +1,11 @@
+2008-11-26 [colin]	3.6.1cvs45
+
+	* src/plugins/pgpcore/select-keys.c
+	* src/plugins/pgpcore/sgpgme.c
+		Fix bug 1591, 'S/MIME: better key 
+		handling/selection dialog'
+		Really ignore revoked/expired keys
+
 2008-11-26 [colin]	3.6.1cvs44
 
 	* src/main.c

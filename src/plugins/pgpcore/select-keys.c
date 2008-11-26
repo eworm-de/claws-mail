@@ -183,8 +183,9 @@ set_row (GtkCMCList *clist, gpgme_key_t key, gpgme_protocol_t proto)
 
     /* first check whether the key is capable of encryption which is not
      * the case for revoked, expired or sign-only keys */
-    if (!key->can_encrypt)
+    if (!key->can_encrypt || key->revoked || key->expired)
         return;
+
     algo_buf = g_strdup_printf ("%du/%s", 
          key->subkeys->length,
          gpgme_pubkey_algo_name(key->subkeys->pubkey_algo) );
@@ -235,23 +236,23 @@ set_row (GtkCMCList *clist, gpgme_key_t key, gpgme_protocol_t proto)
     switch (key->uids->validity)
       {
       case GPGME_VALIDITY_UNDEFINED:
-        s = "q";
+        s = _("Undefined");
         break;
       case GPGME_VALIDITY_NEVER:
-        s = "n";
+        s = _("Never");
         break;
       case GPGME_VALIDITY_MARGINAL:
-        s = "m";
+        s = _("Marginal");
         break;
       case GPGME_VALIDITY_FULL:
-        s = "f";
+        s = _("Full");
         break;
       case GPGME_VALIDITY_ULTIMATE:
-        s = "u";
+        s = _("Ultimate");
         break;
       case GPGME_VALIDITY_UNKNOWN:
       default:
-        s = "?";
+        s = _("Unknown");
         break;
       }
     text[COL_VALIDITY] = s;
@@ -301,7 +302,7 @@ fill_clist (struct select_keys_s *sk, const char *pattern, gpgme_protocol_t prot
     update_progress (sk, ++running, pattern);
     while ( !(err = gpgme_op_keylist_next ( ctx, &key )) ) {
 	gpgme_user_id_t uid = key->uids;
-	if (!key->can_encrypt)
+	if (!key->can_encrypt || key->revoked || key->expired)
 		continue;
         debug_print ("%% %s:%d:  insert\n", __FILE__ ,__LINE__ );
         set_row (clist, key, proto ); 
@@ -312,7 +313,7 @@ fill_clist (struct select_keys_s *sk, const char *pattern, gpgme_protocol_t prot
 			continue;
 		raw_mail = g_strdup(uid->email);
 		extract_address(raw_mail);
-		if (!strcmp(pattern, raw_mail)) {
+		if (!strcasecmp(pattern, raw_mail)) {
 			exact_match = TRUE;
 			g_free(raw_mail);
 			break;
@@ -394,7 +395,7 @@ create_dialog (struct select_keys_s *sk)
     titles[COL_KEYID]    = _("Key ID");
     titles[COL_NAME]     = _("Name");
     titles[COL_EMAIL]    = _("Address");
-    titles[COL_VALIDITY] = _("Val");
+    titles[COL_VALIDITY] = _("Trust");
 
     clist = gtk_cmclist_new_with_titles (N_COL_TITLES, (char**)titles);
     gtk_container_add (GTK_CONTAINER (scrolledwin), clist);

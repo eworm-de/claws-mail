@@ -503,16 +503,44 @@ gboolean sgpgme_setup_signers(gpgme_ctx_t ctx, PrefsAccount *account)
 			goto bail;
 
 		err = gpgme_op_keylist_start(ctx, keyid, 1);
-		if (!err)
-			err = gpgme_op_keylist_next(ctx, &key);
+		if (!err) {
+			do {
+				err = gpgme_op_keylist_next(ctx, &key);
+				if (!err && key && key->protocol == gpgme_get_protocol(ctx) &&
+				    !key->expired && !key->revoked)
+					break;
+				if (!err && key && key->protocol != gpgme_get_protocol(ctx)) {
+					debug_print("skipping a key (wrong protocol %d)\n", key->protocol);
+					gpgme_key_release(key);
+				}
+				if (!err && key && (key->expired || key->revoked)) {
+					debug_print("skipping a key (%s)\n", key->expired?"expired":"revoked");
+					gpgme_key_release(key);
+				}
+			} while (!err);
+		}
 		if (err) {
 			g_warning("setup_signers start: %s", gpgme_strerror(err));
 			privacy_set_error(_("Secret key not found (%s)"), gpgme_strerror(err));
 			goto bail;
 		}
 		
-		err = gpgme_op_keylist_next(ctx, &key2);
+		do {
+			err = gpgme_op_keylist_next(ctx, &key2);
+			if (!err && key2 && key2->protocol == gpgme_get_protocol(ctx) &&
+			    !key2->expired && !key2->revoked)
+				break;
+			if (!err && key && key2->protocol != gpgme_get_protocol(ctx)) {
+				debug_print("skipping a key (wrong protocol %d)\n", key2->protocol);
+				gpgme_key_release(key2);
+			}
+			if (!err && key && (key2->expired || key2->revoked)) {
+				debug_print("skipping a key (%s)\n", key2->expired?"expired":"revoked");
+				gpgme_key_release(key2);
+			}
+		} while (!err);
 		if (!err) {
+			gpgme_key_release(key2);
 			g_warning("ambiguous specification of secret key '%s'\n",
 				keyid);
 			privacy_set_error(_("Secret key specification is ambiguous"));
@@ -521,6 +549,8 @@ gboolean sgpgme_setup_signers(gpgme_ctx_t ctx, PrefsAccount *account)
 		
 		gpgme_op_keylist_end(ctx);
 		err = gpgme_signers_add(ctx, key);
+		debug_print("got key (proto %d (pgp %d, smime %d).\n", key->protocol,
+				GPGME_PROTOCOL_OpenPGP, GPGME_PROTOCOL_CMS);
 		gpgme_key_release(key);
 		
 		if (err) {
