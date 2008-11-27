@@ -174,6 +174,7 @@ void filteringprop_free(FilteringProp * prop)
         for (tmp = prop->action_list ; tmp != NULL ; tmp = tmp->next) {
                 filteringaction_free(tmp->data);
         }
+	g_slist_free(prop->action_list);
 	g_free(prop->name);
 	g_free(prop);
 }

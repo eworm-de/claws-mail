@@ -1210,6 +1210,7 @@ void matcherlist_free(MatcherList *cond)
 	for (l = cond->matchers ; l != NULL ; l = g_slist_next(l)) {
 		matcherprop_free((MatcherProp *) l->data);
 	}
+	g_slist_free(cond->matchers);
 	g_free(cond);
 }
 
