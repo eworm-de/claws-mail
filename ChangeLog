@@ -1,3 +1,8 @@
+2008-11-28 [colin]	3.6.1cvs52
+
+	* src/mimeview.c
+		Fix leak
+
 2008-11-28 [colin]	3.6.1cvs51
 
 	* po/fr.po

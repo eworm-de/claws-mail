@@ -3633,3 +3633,4 @@
 ( cvs diff -u -r 1.6.2.9 -r 1.6.2.10 po/Makefile.in.in;  ) > 3.6.1cvs49.patchset
 ( cvs diff -u -r 1.274.2.291 -r 1.274.2.292 src/mainwindow.c;  ) > 3.6.1cvs50.patchset
 ( cvs diff -u -r 1.42.2.43 -r 1.42.2.44 po/fr.po;  ) > 3.6.1cvs51.patchset
+( cvs diff -u -r 1.83.2.148 -r 1.83.2.149 src/mimeview.c;  ) > 3.6.1cvs52.patchset

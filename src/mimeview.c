@@ -2377,15 +2377,15 @@ static void icon_list_append_icon (MimeView *mimeview, MimeInfo *mimeinfo)
 
 static void icon_list_clear (MimeView *mimeview)
 {
-	GList     *child;
+	GList     *child, *orig;
 	GtkAdjustment *adj;
 		
-	child = gtk_container_get_children(GTK_CONTAINER(mimeview->icon_vbox));
-	for (; child != NULL; child = g_list_next(child)) {
+	orig = gtk_container_get_children(GTK_CONTAINER(mimeview->icon_vbox));
+	for (child = orig; child != NULL; child = g_list_next(child)) {
 		gtkut_container_remove(GTK_CONTAINER(mimeview->icon_vbox), 
 				       GTK_WIDGET(child->data));
 	}
-	g_list_free(child);
+	g_list_free(orig);
 	mimeview->icon_count = 0;
 	adj  = gtk_layout_get_vadjustment(GTK_LAYOUT(mimeview->icon_scroll));
 	gtk_adjustment_set_value(adj, adj->lower);
