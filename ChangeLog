@@ -1,3 +1,8 @@
+2008-11-28 [paul]	3.6.1cvs49
+
+	* po/Makefile.in.in
+		automatically remove obsolete strings
+
 2008-11-28 [colin]	3.6.1cvs48
 
 	* src/plugins/pgpcore/sgpgme.c

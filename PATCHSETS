@@ -3630,3 +3630,4 @@
 ( cvs diff -u -r 1.9.2.36 -r 1.9.2.37 src/common/ssl.c;  ) > 3.6.1cvs46.patchset
 ( cvs diff -u -r 1.60.2.48 -r 1.60.2.49 src/filtering.c;  cvs diff -u -r 1.75.2.62 -r 1.75.2.63 src/matcher.c;  ) > 3.6.1cvs47.patchset
 ( cvs diff -u -r 1.1.2.57 -r 1.1.2.58 src/plugins/pgpcore/sgpgme.c;  ) > 3.6.1cvs48.patchset
+( cvs diff -u -r 1.6.2.9 -r 1.6.2.10 po/Makefile.in.in;  ) > 3.6.1cvs49.patchset

@@ -47,6 +47,7 @@ XGETTEXT_yes = @XGETTEXT_015@
 XGETTEXT = $(XGETTEXT_$(USE_MSGCTXT))
 MSGMERGE = msgmerge
 MSGMERGE_UPDATE = @MSGMERGE@ --update
+MSGATTRIB = msgattrib --no-obsolete
 MSGINIT = msginit
 MSGCONV = msgconv
 MSGFILTER = msgfilter
@@ -159,6 +160,8 @@ $(POFILES): $(srcdir)/$(DOMAIN).pot
 	  test "$(srcdir)" = . && cdcmd="" || cdcmd="cd $(srcdir) && "; \
 	  echo "$${cdcmd}$(MSGMERGE_UPDATE) $${lang}.po $(DOMAIN).pot"; \
 	  cd $(srcdir) && $(MSGMERGE_UPDATE) $${lang}.po $(DOMAIN).pot; \
+	  echo "$(MSGATTRIB) -o $${lang}.po $${lang}.po"; \
+	  $(MSGATTRIB) -o $${lang}.po $${lang}.po; \
 	else \
 	  $(MAKE) $${lang}.po-create; \
 	fi
