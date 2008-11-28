@@ -1,3 +1,8 @@
+2008-11-28 [colin]	3.6.1cvs48
+
+	* src/plugins/pgpcore/sgpgme.c
+		Fix error message when key isn't available.
+
 2008-11-27 [colin]	3.6.1cvs47
 
 	* src/filtering.c

@@ -200,7 +200,7 @@ gchar *sgpgme_sigstat_info_short(gpgme_ctx_t ctx, gpgme_verify_result_t status)
 		else
 			g_warning(_("PGP Core: Can't get key - no gpg-agent running."));
 		warned = TRUE;
-	} else if (gpg_err_code(err) != GPG_ERR_NO_ERROR) {
+	} else if (gpg_err_code(err) != GPG_ERR_NO_ERROR && gpg_err_code(err) != GPG_ERR_EOF) {
 		return g_strdup_printf(_("The signature can't be checked - %s"), 
 			gpgme_strerror(err));
 	}
