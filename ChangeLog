@@ -1,3 +1,9 @@
+2008-11-28 [colin]	3.6.1cvs50
+
+	* src/mainwindow.c
+		Fix account selection in Mailing list
+		menu
+
 2008-11-28 [paul]	3.6.1cvs49
 
 	* po/Makefile.in.in

@@ -3507,10 +3507,19 @@ static void get_url_part (const gchar **buffer, gchar *url_decoded, gint maxlen)
 static void mailing_list_compose (GtkWidget *w, gpointer *data)
 {
 	const gchar *mailto;
+	PrefsAccount *account = NULL;
+	FolderItem   *folder_item = NULL;
 
 	mailto = gtk_label_get_text(GTK_LABEL (gtk_bin_get_child(GTK_BIN((w)))));
+	if (mainwindow_get_mainwindow()) {
+		folder_item = mainwindow_get_mainwindow()->summaryview->folder_item;
+		if (folder_item && folder_item->prefs && folder_item->prefs->enable_default_account)
+			account = account_find_from_id(folder_item->prefs->default_account);
+		if (folder_item && !account)
+			account = account_find_from_item(folder_item);
+	}
 	if (mailto)
-		compose_new(NULL, mailto+7, NULL);
+		compose_new_with_folderitem(account, folder_item, mailto+7);
 }
  
  static void mailing_list_open_uri (GtkWidget *w, gpointer *data)
