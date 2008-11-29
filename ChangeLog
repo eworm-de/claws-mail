@@ -1,3 +1,13 @@
+2008-11-29 [paul]	3.6.1cvs53
+
+	* README
+		add the new 'primary_paste_unselects' hidden
+		option, add missing 'log_[...]_color' options,
+		and reformat the text
+	* manual/advanced.xml
+		add the new 'primary_paste_unselects' hidden
+                option, add missing 'log_[...]_color' options
+
 2008-11-28 [colin]	3.6.1cvs52
 
 	* src/mimeview.c

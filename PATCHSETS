@@ -3634,3 +3634,4 @@
 ( cvs diff -u -r 1.274.2.291 -r 1.274.2.292 src/mainwindow.c;  ) > 3.6.1cvs50.patchset
 ( cvs diff -u -r 1.42.2.43 -r 1.42.2.44 po/fr.po;  ) > 3.6.1cvs51.patchset
 ( cvs diff -u -r 1.83.2.148 -r 1.83.2.149 src/mimeview.c;  ) > 3.6.1cvs52.patchset
+( cvs diff -u -r 1.8.2.52 -r 1.8.2.53 README;  cvs diff -u -r 1.1.2.51 -r 1.1.2.52 manual/advanced.xml;  ) > 3.6.1cvs53.patchset

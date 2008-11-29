@@ -645,6 +645,9 @@
 	<term><literal>log_msg_color</literal></term>
 	<term><literal>log_out_color</literal></term>
 	<term><literal>log_warn_color</literal></term>
+	<term><literal>log_status_ok_color</literal></term>
+	<term><literal>log_status_nok_color</literal></term>
+	<term><literal>log_status_skip_color</literal></term>
 	<listitem>
 	  <para>
 	The colours used in the log window.
@@ -660,6 +663,16 @@
 	<quote>Outgoing encoding</quote> option unless it is necessary. Turning
 	this option off forces the user-defined encoding to be used, regardless
 	of message content. Default is 1, turned on.
+	  </para>
+	</listitem>
+      </varlistentry>
+      <varlistentry>
+	<term><literal>primary_paste_unselects</literal></term>
+	<listitem>
+	  <para>
+	0 or 1. Causes the primary buffer to be cleared and the insertion
+	point to be repositioned when the middle mouse button is used
+	for pasting text. Default is 0, turned off.
 	  </para>
 	</listitem>
       </varlistentry>
