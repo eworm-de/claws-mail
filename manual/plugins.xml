@@ -36,7 +36,7 @@
 	You can train Bogofilter by marking messages as spam or ham from the 
 	Message List contextual menu, or using the relevant toolbar button in 
 	the main window or the message window (see 
-	<quote>Configuration/Preferences/Customize toolbars</quote>). Messages 
+	<quote>Configuration/Preferences/Toolbars</quote>). Messages 
 	marked as spam are optionally saved to a designated folder.
 	  </para><para>
 	Plugin preferences can be found in 
@@ -89,7 +89,7 @@
 	You can train SpamAssassin by marking messages as spam or ham from the 
 	Message List contextual menu, or using the relevant toolbar button in 
 	the main window or the message window (see 
-	<quote>Configuration/Preferences/Customize toolbars</quote>). Messages 
+	<quote>Configuration/Preferences/Toolbars</quote>). Messages 
 	marked as spam are optionally saved to a designated folder.
 	  </para><para>
 	Plugin preferences can be found in 

@@ -25,7 +25,7 @@
     <para>
         Additionally, it is possible to add toolbar entries for your
         actions. To do so, open the <quote>Configuration/Preferences</quote>
-        menu and select <quote>Customize Toolbars/Main Window</quote>.
+        menu and select <quote>Toolbars/Main Window</quote>.
 	Select <quote>User Action</quote> in the <quote>Item type</quote>
 	dropdown menu, then select the Action in the <quote>Event executed on click</quote>
 	dropdown menu, and click the <quote>Icon</quote> button to select the
