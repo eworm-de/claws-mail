@@ -690,6 +690,8 @@ static gboolean prefswindow_row_selected(GtkTreeSelection *selector,
 	GtkTreeIter iter;
 	GtkAdjustment *adj;
 
+	if (gtk_tree_path_get_depth(path) < 2)
+		return FALSE;
 #ifndef GENERIC_UMPC
 	if (currently_selected) 
 		return TRUE;

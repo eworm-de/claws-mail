@@ -1,3 +1,10 @@
+2008-11-30 [paul]	3.6.1cvs54
+
+	* src/prefs_other.c
+		move Other/ page to Other/Miscellaneous
+	* src/gtk/prefswindow.c
+		make parent page unselectable
+
 2008-11-29 [paul]	3.6.1cvs53
 
 	* README

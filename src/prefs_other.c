@@ -646,10 +646,11 @@ OtherPage *prefs_other;
 void prefs_other_init(void)
 {
 	OtherPage *page;
-	static gchar *path[2];
+	static gchar *path[3];
 
 	path[0] = _("Other");
-	path[1] = NULL;
+	path[1] = _("Miscellaneous");
+	path[2] = NULL;
 
 	page = g_new0(OtherPage, 1);
 	page->page.path = path;
