@@ -1,3 +1,10 @@
+2008-12-01 [colin]	3.6.1cvs56
+
+	* src/plugins/pgpinline/pgpinline.c
+		Fix bug 1779, 'PGP Inline badly handles 
+		multipart'. Properly dump the current part
+		instead of running around with scissors
+
 2008-11-30 [paul]	3.6.1cvs55
 
 	* manual/advanced.xml

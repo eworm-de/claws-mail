@@ -119,18 +119,29 @@ static gchar *fp_read_noconv(FILE *fp)
 static gchar *get_part_as_string(MimeInfo *mimeinfo)
 {
 	gchar *textdata = NULL;
-	gchar *real_data = NULL;
+	gchar *filename = NULL;
+	FILE *fp;
+
 	g_return_val_if_fail(mimeinfo != NULL, 0);
 	procmime_decode_content(mimeinfo);
+	
 	if (mimeinfo->content == MIMECONTENT_MEM)
 		textdata = g_strdup(mimeinfo->data.mem);
 	else {
-		/* equals file_read_to_str but without conversion */
-		FILE *fp = fopen(mimeinfo->data.filename, "r");
-		if (!fp)
+		filename = procmime_get_tmp_file_name(mimeinfo);
+		if (procmime_get_part(filename, mimeinfo) < 0) {
+			printf("error dumping file\n");
 			return NULL;
+		}
+		fp = fopen(filename,"rb");
+		if (!fp) {
+			printf("error reading file\n");
+			return NULL;
+		}
 		textdata = fp_read_noconv(fp);
 		fclose(fp);
+		g_unlink(filename);
+		g_free(filename);
 	}
 
 	if (!g_utf8_validate(textdata, -1, NULL)) {
@@ -158,20 +169,6 @@ static gchar *get_part_as_string(MimeInfo *mimeinfo)
 		}
 	}
 
-	if (textdata && mimeinfo->offset && 
-	    mimeinfo->offset+ mimeinfo->length <= g_utf8_strlen(textdata, -1)) {
-		real_data = g_strdup(textdata + mimeinfo->offset);
-		g_free(textdata);
-		textdata = real_data;
-	} else if (textdata && mimeinfo->offset && 
-	    mimeinfo->offset+ mimeinfo->length <= strlen(textdata)) {
-		real_data = g_strdup(textdata + mimeinfo->offset);
-		real_data[mimeinfo->length] = '\0';
-		g_free(textdata);
-		textdata = real_data;
-	} else if (textdata && mimeinfo->offset) {
-		debug_print("got data shorter than what it should be\n");
-	}
 	return textdata;	
 }
 
