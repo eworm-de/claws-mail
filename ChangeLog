@@ -1,3 +1,8 @@
+2008-12-01 [colin]	3.6.1cvs57
+
+	* src/gtk/gtkcmclist.c
+		Fix column headers
+
 2008-12-01 [colin]	3.6.1cvs56
 
 	* src/plugins/pgpinline/pgpinline.c

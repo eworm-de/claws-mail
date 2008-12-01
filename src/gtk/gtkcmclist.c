@@ -2210,6 +2210,10 @@ column_button_create (GtkCMCList *clist,
 
   gtk_widget_push_composite_child ();
   button = clist->column[column].button = gtk_button_new ();
+  GtkRcStyle *style = gtk_rc_style_new();
+  style->ythickness = 0;
+  gtk_widget_modify_style(clist->column[column].button, style);
+  g_object_unref(style);
   gtk_container_set_border_width(GTK_CONTAINER(button), 0);
   gtk_widget_pop_composite_child ();
 
@@ -4889,10 +4893,11 @@ gtk_cmclist_expose (GtkWidget      *widget,
 	  
 	  for (i = 0; i < clist->columns; i++)
 	    {
-	      if (clist->column[i].button)
+	      if (clist->column[i].button) {
 		gtk_container_propagate_expose (GTK_CONTAINER (clist),
 						clist->column[i].button,
 						event);
+	      }
 	    }
 	}
     }
@@ -5468,9 +5473,9 @@ gtk_cmclist_size_request (GtkWidget      *widget,
 				   &child_requisition);
 	  clist->column_title_area.height =
 	    MAX (clist->column_title_area.height,
-		 child_requisition.height - 2);
+		 child_requisition.height);
 	}
-    clist->column_title_area.height = font_height;
+    //clist->column_title_area.height = font_height;
   }
   requisition->width += (widget->style->xthickness +
 			 GTK_CONTAINER (widget)->border_width) * 2;
