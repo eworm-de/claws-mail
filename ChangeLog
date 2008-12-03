@@ -1,3 +1,12 @@
+2008-12-03 [colin]	3.6.1cvs59
+
+	* src/msgcache.c
+		Speed up cache reading (about 10% gain)
+	* src/summaryview.c
+	* src/gtk/gtksctree.c
+		Speed up expand/collapse all threads
+		(about 95% gain)
+
 2008-12-03 [paul]	3.6.1cvs58
 
 	* configure.ac

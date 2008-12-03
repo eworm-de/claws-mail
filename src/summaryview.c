@@ -5144,10 +5144,12 @@ void summary_expand_threads(SummaryView *summaryview)
 {
 	GtkCMCTree *ctree = GTK_CMCTREE(summaryview->ctree);
 	GtkCMCTreeNode *node = GTK_CMCTREE_NODE(GTK_CMCLIST(ctree)->row_list);
+	GtkCMCTreeNode *focus_node = GTK_CMCTREE_NODE (g_list_nth (GTK_CMCLIST(ctree)->row_list, GTK_CMCLIST(ctree)->focus_row));
 
 	g_signal_handlers_block_by_func(G_OBJECT(ctree),
 				       G_CALLBACK(summary_tree_expanded), summaryview);
 	summary_freeze(summaryview);
+	GTK_SCTREE(ctree)->sorting = TRUE;
 
 	while (node) {
 		if (GTK_CMCTREE_ROW(node)->children) {
@@ -5157,7 +5159,12 @@ void summary_expand_threads(SummaryView *summaryview)
 		node = GTK_CMCTREE_NODE_NEXT(node);
 	}
 
+	GTK_SCTREE(ctree)->sorting = FALSE;
+	if (focus_node) {
+		GTK_CMCLIST(ctree)->focus_row = g_list_position (GTK_CMCLIST(ctree)->row_list,(GList *)focus_node);
+	}
 	summary_thaw(summaryview);
+
 	g_signal_handlers_unblock_by_func(G_OBJECT(ctree),
 					 G_CALLBACK(summary_tree_expanded), summaryview);
 
@@ -5169,16 +5176,30 @@ void summary_expand_threads(SummaryView *summaryview)
 void summary_collapse_threads(SummaryView *summaryview)
 {
 	GtkCMCTree *ctree = GTK_CMCTREE(summaryview->ctree);
-	GtkCMCTreeNode *node = GTK_CMCTREE_NODE(GTK_CMCLIST(ctree)->row_list);
+	GtkCMCTreeNode *node = NULL;
+	GtkCMCTreeNode *focus_node = GTK_CMCTREE_NODE (g_list_nth (GTK_CMCLIST(ctree)->row_list, GTK_CMCLIST(ctree)->focus_row));
 
 	summary_freeze(summaryview);
+	GTK_SCTREE(ctree)->sorting = TRUE;
 
+	node = focus_node;
+	while (node && GTK_CMCTREE_ROW(node)->parent) {
+		focus_node = node = GTK_CMCTREE_ROW(node)->parent;
+	}
+	gtk_sctree_select(GTK_SCTREE(ctree), focus_node);
+	node = GTK_CMCTREE_NODE(GTK_CMCLIST(ctree)->row_list);
 	while (node) {
 		if (GTK_CMCTREE_ROW(node)->children)
 			gtk_cmctree_collapse(ctree, node);
 		node = GTK_CMCTREE_ROW(node)->sibling;
 	}
 
+	GTK_SCTREE(ctree)->sorting = FALSE;
+	if (focus_node) {
+		GTK_CMCLIST(ctree)->focus_row = g_list_position (GTK_CMCLIST(ctree)->row_list,(GList *)focus_node);
+	}
+	GTK_SCTREE(ctree)->anchor_row =
+			gtk_cmctree_node_nth(ctree, GTK_CMCLIST(ctree)->focus_row);
 	summary_thaw(summaryview);
 	
 	summaryview->thread_collapsed = TRUE;

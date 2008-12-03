@@ -520,8 +520,7 @@ static gint msgcache_get_cache_data_str(gchar *src, gchar **str, gint len,
 		return -1;
 	}
 
-	strncpy(tmpstr, src, len);
-
+	memcpy(tmpstr, src, len);
 	tmpstr[len] = 0;
 
 	if (conv != NULL) {

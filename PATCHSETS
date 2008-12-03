@@ -3640,3 +3640,4 @@
 ( cvs diff -u -r 1.1.2.39 -r 1.1.2.40 src/plugins/pgpinline/pgpinline.c;  ) > 3.6.1cvs56.patchset
 ( cvs diff -u -r 1.1.2.6 -r 1.1.2.7 src/gtk/gtkcmclist.c;  ) > 3.6.1cvs57.patchset
 ( cvs diff -u -r 1.654.2.3704 -r 1.654.2.3705 configure.ac;  ) > 3.6.1cvs58.patchset
+( cvs diff -u -r 1.16.2.62 -r 1.16.2.63 src/msgcache.c;  cvs diff -u -r 1.395.2.401 -r 1.395.2.402 src/summaryview.c;  cvs diff -u -r 1.1.4.51 -r 1.1.4.52 src/gtk/gtksctree.c;  ) > 3.6.1cvs59.patchset
