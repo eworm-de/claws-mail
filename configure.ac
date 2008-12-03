@@ -11,7 +11,7 @@ MINOR_VERSION=6
 MICRO_VERSION=1
 INTERFACE_AGE=0
 BINARY_AGE=0
-EXTRA_VERSION=57
+EXTRA_VERSION=58
 EXTRA_RELEASE=
 EXTRA_GTK2_VERSION=
 
@@ -139,6 +139,16 @@ AM_CONDITIONAL(CYGWIN, test x"$env_cygwin" = x"yes")
 if test "$GCC" = "yes"
 then
 	CFLAGS="$CFLAGS -Wno-unused-function"
+fi
+
+AC_MSG_CHECKING([if gcc supports -Wno-pointer-sign])
+_gcc_cflags_save=$CFLAGS
+CFLAGS="-Wno-pointer-sign"
+AC_COMPILE_IFELSE(AC_LANG_PROGRAM([]),_gcc_psign=yes,_gcc_psign=no)
+AC_MSG_RESULT($_gcc_psign)
+CFLAGS=$_gcc_cflags_save;
+if test x"$_gcc_psign" = xyes ; then
+	CFLAGS="$CFLAGS -Wno-pointer-sign"
 fi
 
 CFLAGS="$CFLAGS -Wall"
@@ -367,6 +377,7 @@ else
 fi
 
 dnl GNUTLS
+AC_MSG_CHECKING([whether to use GnuTLS])
 AC_ARG_ENABLE(openssl,    [ --enable-openssl      enable GnuTLS support],
             [ac_cv_enable_openssl=$enableval], [ac_cv_enable_openssl=no])
 AC_ARG_ENABLE(gnutls,    [ --enable-gnutls      enable GnuTLS support],
@@ -377,24 +388,38 @@ if test "x$ac_cv_enable_gnutls" != "xyes"; then
 		AC_MSG_ERROR(*** Use GnuTLS instead of OpenSSL due to licensing ***)
 	fi
 fi
-AC_MSG_CHECKING([whether to use GnuTLS])
+AC_MSG_RESULT($ac_cv_enable_gnutls)
 if test "x$ac_cv_enable_gnutls" != "xno"; then
   OCPPFLAGS="$CPPFLAGS"
   OLDFLAGS="$LDFLAGS"
   GNUTLS_LIBS=""
   AC_CHECK_HEADER(gnutls/gnutls.h, [
-	AC_CHECK_LIB(gnutls, gnutls_global_deinit, 
-		[AC_DEFINE(USE_GNUTLS, 1, Define to use GnuTLS.)],
+	AC_CHECK_LIB(gnutls, gnutls_global_deinit,,
 		[ac_cv_enable_gnutls=no])
   ],[ac_cv_enable_gnutls=no])
-  if test "x$ac_cv_enable_gnutls" != "xyes"; then
+  if test "x$ac_cv_enable_gnutls" = "xyes"; then
+   AC_CHECK_HEADER(gpg-error.h,
+   	[AC_CHECK_LIB(gpg-error, gpg_strerror,,
+		[ac_cv_enable_gnutls=no])
+  	],[ac_cv_enable_gnutls=no])
+  fi
+  if test "x$ac_cv_enable_gnutls" = "xyes"; then
+   GCRYPT_LIBS="-lgpg-error"
+   AC_CHECK_HEADER(gcrypt.h,
+     	[AC_CHECK_LIB(gcrypt, gcry_control,,
+		[ac_cv_enable_gnutls=no])
+  	],[ac_cv_enable_gnutls=no])
+  fi
+  if test "x$ac_cv_enable_gnutls" = "xyes"; then
+	GNUTLS_LIBS="-lgnutls -lgcrypt -lz ${GCRYPT_LIBS}"
+  fi
+else
    CPPFLAGS="$OCPPFLAGS"
    LDFLAGS="$OLDFLAGS"
-  fi
 fi
+
 if test "x$ac_cv_enable_gnutls" = "xyes"; then
   AC_DEFINE([USE_GNUTLS],1, [Define to use GnuTLS])
-  GNUTLS_LIBS="-lgnutls"
 else
   GNUTLS_LIBS=""
 fi
@@ -442,10 +467,11 @@ AC_SUBST(GTK_CFLAGS)
 AC_SUBST(GTK_LIBS)
 
 dnl enchant is used for spell checking
+AC_MSG_CHECKING([whether to use enchant])
 AC_ARG_ENABLE(enchant,
 	[  --disable-enchant         disable enchant support],
 	[ac_cv_enable_enchant=$enableval], [ac_cv_enable_enchant=yes])
-AC_MSG_CHECKING([whether to use enchant])
+AC_MSG_RESULT($ac_cv_enable_enchant)
 if test $ac_cv_enable_enchant = yes; then
 	PKG_CHECK_MODULES(ENCHANT, enchant >= 1.0.0,
 	[

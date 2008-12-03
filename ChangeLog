@@ -1,3 +1,9 @@
+2008-12-03 [paul]	3.6.1cvs58
+
+	* configure.ac
+		eradicate gcc4's signedness warnings
+		fix building with gnuTLS on (Open)Solaris
+
 2008-12-01 [colin]	3.6.1cvs57
 
 	* src/gtk/gtkcmclist.c

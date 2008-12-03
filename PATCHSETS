@@ -3639,3 +3639,4 @@
 ( cvs diff -u -r 1.1.2.52 -r 1.1.2.53 manual/advanced.xml;  cvs diff -u -r 1.1.2.22 -r 1.1.2.23 manual/plugins.xml;  cvs diff -u -r 1.30.2.53 -r 1.30.2.54 src/prefs_toolbar.c;  ) > 3.6.1cvs55.patchset
 ( cvs diff -u -r 1.1.2.39 -r 1.1.2.40 src/plugins/pgpinline/pgpinline.c;  ) > 3.6.1cvs56.patchset
 ( cvs diff -u -r 1.1.2.6 -r 1.1.2.7 src/gtk/gtkcmclist.c;  ) > 3.6.1cvs57.patchset
+( cvs diff -u -r 1.654.2.3704 -r 1.654.2.3705 configure.ac;  ) > 3.6.1cvs58.patchset
