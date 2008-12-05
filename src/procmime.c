@@ -1707,6 +1707,7 @@ static void parse_parameters(const gchar *parameters, GHashTable *table)
 		while ((partvalue = g_hash_table_lookup(table, attrwnum)) != NULL) {
 			g_string_append(value, partvalue);
 
+			g_hash_table_remove(table, attrwnum);
 			g_free(attrwnum);
 			n++;
 			attrwnum = g_strdup_printf("%s*%d", attribute, n);

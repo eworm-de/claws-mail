@@ -1,3 +1,10 @@
+2008-12-05 [colin]	3.6.1cvs61
+
+	* src/codeconv.c
+	* src/procmime.c
+		Fix bug 1788, 'CM crashes re-encoding 
+		encoded parameters' (introduced in cvs40)
+
 2008-12-05 [paul]	3.6.1cvs60
 
 	* src/prefs_common.h

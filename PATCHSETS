@@ -3642,3 +3642,4 @@
 ( cvs diff -u -r 1.654.2.3704 -r 1.654.2.3705 configure.ac;  ) > 3.6.1cvs58.patchset
 ( cvs diff -u -r 1.16.2.62 -r 1.16.2.63 src/msgcache.c;  cvs diff -u -r 1.395.2.401 -r 1.395.2.402 src/summaryview.c;  cvs diff -u -r 1.1.4.51 -r 1.1.4.52 src/gtk/gtksctree.c;  ) > 3.6.1cvs59.patchset
 ( cvs diff -u -r 1.103.2.118 -r 1.103.2.119 src/prefs_common.h;  ) > 3.6.1cvs60.patchset
+( cvs diff -u -r 1.65.2.63 -r 1.65.2.64 src/codeconv.c;  cvs diff -u -r 1.49.2.122 -r 1.49.2.123 src/procmime.c;  ) > 3.6.1cvs61.patchset

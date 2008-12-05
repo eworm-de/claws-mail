@@ -1710,7 +1710,7 @@ gchar *conv_filename_from_utf8(const gchar *utf8_file)
 
 	fs_file = g_filename_from_utf8(utf8_file, -1, NULL, NULL, &error);
 	if (error) {
-		g_warning("failed to convert encoding of file name: %s\n",
+		debug_print("failed to convert encoding of file name: %s\n",
 			  error->message);
 		g_error_free(error);
 	}
