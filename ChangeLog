@@ -1,3 +1,8 @@
+2008-12-05 [paul]	3.6.1cvs60
+
+	* src/prefs_common.h
+		remove gpg prefs that are no longer needed here
+
 2008-12-03 [colin]	3.6.1cvs59
 
 	* src/msgcache.c
