@@ -536,8 +536,6 @@ static void prefs_actions_set_dialog(void)
 {
 	GtkListStore *store;
 	GSList *cur;
-	GtkTreeSelection *selection;
-	GtkTreeIter iter;
 
 	store = GTK_LIST_STORE(gtk_tree_view_get_model
 				(GTK_TREE_VIEW(actions.actions_list_view)));
@@ -550,13 +548,6 @@ static void prefs_actions_set_dialog(void)
 		prefs_actions_list_view_insert_action(actions.actions_list_view,
 						      -1, action, TRUE);
 	}
-
-	/* select first entry */
-	selection = gtk_tree_view_get_selection
-		(GTK_TREE_VIEW(actions.actions_list_view));
-	if (gtk_tree_model_get_iter_first(GTK_TREE_MODEL(store),
-					  &iter))
-		gtk_tree_selection_select_iter(selection, &iter);
 }
 
 static void prefs_actions_set_list(void)

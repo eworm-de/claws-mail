@@ -1,3 +1,12 @@
+2008-12-07 [paul]	3.6.1cvs63
+
+	* src/prefs_actions.c
+		don't auto-select first entry (same as other
+		similar dialogs)
+	* src/gtk/pluginwindow.c
+		these parents don't have children so don't look
+		for them
+
 2008-12-07 [paul]	3.6.1cvs62
 
 	* src/prefs_account.c
