@@ -136,11 +136,16 @@ static void set_plugin_list(PluginWindow *pluginwindow)
 				   -1);
 	}
 
-	if (pluginwindow->selected_plugin == NULL) { 
-		selection = gtk_tree_view_get_selection(GTK_TREE_VIEW
-				(pluginwindow->plugin_list_view));
-		gtk_tree_selection_unselect_all(selection);				
-	}		
+	selection = gtk_tree_view_get_selection(GTK_TREE_VIEW(pluginwindow->plugin_list_view));
+	if (gtk_tree_model_get_iter_first(GTK_TREE_MODEL(store), &iter)) {
+		if (gtk_tree_model_iter_has_child(GTK_TREE_MODEL(store), &iter)) {
+			GtkTreeIter parent = iter;
+			if (!gtk_tree_model_iter_children(GTK_TREE_MODEL(store), &iter, &parent))
+				iter = parent;
+		}
+		gtk_tree_selection_select_iter(selection, &iter);
+	}
+		
 	g_slist_free(plugins);
 }
 

@@ -1,3 +1,11 @@
+2008-12-07 [paul]	3.6.1cvs62
+
+	* src/prefs_account.c
+	* src/gtk/pluginwindow.c
+	* src/gtk/prefswindow.c
+	* src/gtk/prefswindow.h
+		auto-select first page
+
 2008-12-05 [colin]	3.6.1cvs61
 
 	* src/codeconv.c

@@ -50,7 +50,7 @@ void prefswindow_open_full		(const gchar *title,
 					 gpointer data,
 					 GDestroyNotify func,
 					 gint *save_width, gint *save_height,
-					 gboolean preload_pages, gboolean activate_child,
+					 gboolean preload_pages,
 					 PrefsOpenCallbackFunc open_cb,
 					 PrefsCloseCallbackFunc close_cb);
 

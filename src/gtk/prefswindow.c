@@ -309,8 +309,7 @@ static void prefswindow_build_all_pages(PrefsWindow *prefswindow, GSList *prefs_
 
 static void prefswindow_build_tree(GtkWidget *tree_view, GSList *prefs_pages,
 									PrefsWindow *prefswindow,
-									gboolean preload_pages,
-									gboolean activate_child)
+									gboolean preload_pages)
 {
 	GtkTreeStore *store = GTK_TREE_STORE(gtk_tree_view_get_model
 			(GTK_TREE_VIEW(tree_view)));
@@ -401,7 +400,7 @@ static void prefswindow_build_tree(GtkWidget *tree_view, GSList *prefs_pages,
 #ifndef GENERIC_UMPC
 	selection = gtk_tree_view_get_selection(GTK_TREE_VIEW(tree_view));
 	if (gtk_tree_model_get_iter_first(GTK_TREE_MODEL(store), &iter)) {
-		if (activate_child && gtk_tree_model_iter_has_child(GTK_TREE_MODEL(store), &iter)) {
+		if (gtk_tree_model_iter_has_child(GTK_TREE_MODEL(store), &iter)) {
 			GtkTreeIter parent = iter;
 			if (!gtk_tree_model_iter_children(GTK_TREE_MODEL(store), &iter, &parent))
 				iter = parent;
@@ -414,7 +413,7 @@ static void prefswindow_build_tree(GtkWidget *tree_view, GSList *prefs_pages,
 void prefswindow_open_full(const gchar *title, GSList *prefs_pages,
 							 gpointer data, GDestroyNotify func,
 							 gint *save_width, gint *save_height,
-							 gboolean preload_pages, gboolean activate_child,
+							 gboolean preload_pages,
 							 PrefsOpenCallbackFunc open_cb,
 							 PrefsCloseCallbackFunc close_cb)
 {
@@ -510,7 +509,7 @@ void prefswindow_open_full(const gchar *title, GSList *prefs_pages,
 	gtk_container_add(GTK_CONTAINER(prefswindow->notebook), prefswindow->empty_page);
 
 	prefswindow_build_tree(prefswindow->tree_view, prefs_pages, prefswindow,
-							preload_pages, activate_child);
+							preload_pages);
 
 	if (open_cb)
 		open_cb(GTK_WINDOW(prefswindow->window));
@@ -609,7 +608,7 @@ void prefswindow_open(const gchar *title, GSList *prefs_pages, gpointer data,
 					 PrefsCloseCallbackFunc close_cb)
 {
 	prefswindow_open_full(title, prefs_pages, data, NULL, save_width, save_height,
-						  FALSE, FALSE, open_cb, close_cb);
+						  FALSE, open_cb, close_cb);
 }
 
 /*!
