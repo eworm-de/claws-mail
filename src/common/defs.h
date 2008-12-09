@@ -72,6 +72,7 @@
 #define SUMMARY_SEARCH_BODY_HISTORY	"summary_searchbody_history"
 #define SUMMARY_SEARCH_ADV_CONDITION_HISTORY	"summarysearch_adv_history"
 #define MESSAGE_SEARCH_HISTORY	"messagesearch_history"
+#define COMPOSE_SAVE_TO_HISTORY	"compose_save_to_history"
 #define ADDRESSBOOK_CUSTOM_ATTRIBUTES "attributesrc"
 #define TEMPLATE_DIR		"templates"
 #define TMP_DIR			"tmp"

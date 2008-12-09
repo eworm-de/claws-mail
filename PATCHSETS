@@ -3647,3 +3647,4 @@
 ( cvs diff -u -r 1.60.2.66 -r 1.60.2.67 src/prefs_actions.c;  cvs diff -u -r 1.5.2.55 -r 1.5.2.56 src/gtk/pluginwindow.c;  ) > 3.6.1cvs63.patchset
 ( cvs diff -u -r 1.59.2.74 -r 1.59.2.75 src/prefs_filtering.c;  ) > 3.6.1cvs64.patchset
 ( cvs diff -u -r 1.94.2.192 -r 1.94.2.193 src/messageview.c;  ) > 3.6.1cvs65.patchset
+( cvs diff -u -r 1.382.2.488 -r 1.382.2.489 src/compose.c;  cvs diff -u -r 1.50.2.51 -r 1.50.2.52 src/compose.h;  cvs diff -u -r 1.2.2.19 -r 1.2.2.20 src/folder_item_prefs.h;  cvs diff -u -r 1.204.2.183 -r 1.204.2.184 src/prefs_common.c;  cvs diff -u -r 1.103.2.119 -r 1.103.2.120 src/prefs_common.h;  cvs diff -u -r 1.9.2.46 -r 1.9.2.47 src/common/defs.h;  ) > 3.6.1cvs66.patchset

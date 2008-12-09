@@ -886,6 +886,41 @@ Compose *compose_new_with_list( PrefsAccount *account, GList *listAddress )
 		cmark);						\
 }
 
+static void compose_set_save_to(Compose *compose, const gchar *folderidentifier)
+{
+	GtkEditable *entry;
+	if (folderidentifier) {
+		combobox_unset_popdown_strings(GTK_COMBO_BOX(compose->savemsg_combo));
+		prefs_common.compose_save_to_history = add_history(
+				prefs_common.compose_save_to_history, folderidentifier);
+		combobox_set_popdown_strings(GTK_COMBO_BOX(compose->savemsg_combo),
+				prefs_common.compose_save_to_history);
+	}
+
+	entry = GTK_EDITABLE(gtk_bin_get_child(GTK_BIN(compose->savemsg_combo)));
+	if (folderidentifier)
+		gtk_entry_set_text(GTK_ENTRY(entry), folderidentifier);
+	else
+		gtk_entry_set_text(GTK_ENTRY(entry), "");
+}
+
+static gchar *compose_get_save_to(Compose *compose)
+{
+	GtkEditable *entry;
+	gchar *result = NULL;
+	entry = GTK_EDITABLE(gtk_bin_get_child(GTK_BIN(compose->savemsg_combo)));
+	result = gtk_editable_get_chars(entry, 0, -1);
+	
+	if (result) {
+		combobox_unset_popdown_strings(GTK_COMBO_BOX(compose->savemsg_combo));
+		prefs_common.compose_save_to_history = add_history(
+				prefs_common.compose_save_to_history, result);
+		combobox_set_popdown_strings(GTK_COMBO_BOX(compose->savemsg_combo),
+				prefs_common.compose_save_to_history);
+	}
+	return result;
+}
+
 Compose *compose_generic_new(PrefsAccount *account, const gchar *mailto, FolderItem *item,
 			     GPtrArray *attach_files, GList *listAddress )
 {
@@ -1102,7 +1137,7 @@ Compose *compose_generic_new(PrefsAccount *account, const gchar *mailto, FolderI
 
     		gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(compose->savemsg_checkbtn), prefs_common.savemsg);
 		folderidentifier = folder_item_get_identifier(item);
-		gtk_entry_set_text(GTK_ENTRY(compose->savemsg_entry), folderidentifier);
+		compose_set_save_to(compose, folderidentifier);
 		g_free(folderidentifier);
 	}
 	
@@ -1413,7 +1448,7 @@ static Compose *compose_generic_reply(MsgInfo *msginfo,
 
     		gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(compose->savemsg_checkbtn), TRUE);
 		folderidentifier = folder_item_get_identifier(msginfo->folder);
-		gtk_entry_set_text(GTK_ENTRY(compose->savemsg_entry), folderidentifier);
+		compose_set_save_to(compose, folderidentifier);
 		g_free(folderidentifier);
 	}
 
@@ -1713,7 +1748,7 @@ Compose *compose_forward(PrefsAccount *account, MsgInfo *msginfo,
 
     		gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(compose->savemsg_checkbtn), TRUE);
 		folderidentifier = folder_item_get_identifier(msginfo->folder);
-		gtk_entry_set_text(GTK_ENTRY(compose->savemsg_entry), folderidentifier);
+		compose_set_save_to(compose, folderidentifier);
 		g_free(folderidentifier);
 	}
 
@@ -2118,11 +2153,8 @@ Compose *compose_reedit(MsgInfo *msginfo, gboolean batch)
 
 		/* Set message save folder */
 		if (!procheader_get_header_from_msginfo(msginfo, queueheader_buf, sizeof(queueheader_buf), "SCF:")) {
-			gint startpos = 0;
-
 			gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(compose->savemsg_checkbtn), TRUE);
-			gtk_editable_delete_text(GTK_EDITABLE(compose->savemsg_entry), 0, -1);
-			gtk_editable_insert_text(GTK_EDITABLE(compose->savemsg_entry), &queueheader_buf[4], strlen(&queueheader_buf[4]), &startpos);
+			compose_set_save_to(compose, &queueheader_buf[4]);
 		}
 		if (!procheader_get_header_from_msginfo(msginfo, queueheader_buf, sizeof(queueheader_buf), "RRCPT:")) {
 			gint active = atoi(&queueheader_buf[strlen("RRCPT:")]);
@@ -2248,7 +2280,7 @@ Compose *compose_redirect(PrefsAccount *account, MsgInfo *msginfo,
 
     		gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(compose->savemsg_checkbtn), prefs_common.savemsg);
 		folderidentifier = folder_item_get_identifier(item);
-		gtk_entry_set_text(GTK_ENTRY(compose->savemsg_entry), folderidentifier);
+		compose_set_save_to(compose, folderidentifier);
 		g_free(folderidentifier);
 	}
 
@@ -5558,7 +5590,7 @@ static gint compose_queue_sub(Compose *compose, gint *msgnum, FolderItem **item,
 	if (gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(compose->savemsg_checkbtn))) {
 		gchar *savefolderid;
 		
-		savefolderid = gtk_editable_get_chars(GTK_EDITABLE(compose->savemsg_entry), 0, -1);
+		savefolderid = compose_get_save_to(compose);
 		err |= (fprintf(fp, "SCF:%s\n", savefolderid) < 0);
 		g_free(savefolderid);
 	}
@@ -6444,7 +6476,7 @@ static GtkWidget *compose_create_others(Compose *compose)
 {
 	GtkWidget *table;
 	GtkWidget *savemsg_checkbtn;
-	GtkWidget *savemsg_entry;
+	GtkWidget *savemsg_combo;
 	GtkWidget *savemsg_select;
 	
 	guint rowcount = 0;
@@ -6467,16 +6499,23 @@ static GtkWidget *compose_create_others(Compose *compose)
 	g_signal_connect(G_OBJECT(savemsg_checkbtn), "toggled",
 			 G_CALLBACK(compose_savemsg_checkbtn_cb), compose);
 
-	savemsg_entry = gtk_entry_new();
-	gtk_widget_show(savemsg_entry);
-	gtk_table_attach_defaults(GTK_TABLE(table), savemsg_entry, 1, 2, rowcount, rowcount + 1);
-	gtk_editable_set_editable(GTK_EDITABLE(savemsg_entry), prefs_common.savemsg);
-	g_signal_connect_after(G_OBJECT(savemsg_entry), "grab_focus",
+	savemsg_combo = gtk_combo_box_entry_new_text();
+	compose->savemsg_checkbtn = savemsg_checkbtn;
+	compose->savemsg_combo = savemsg_combo;
+	gtk_widget_show(savemsg_combo);
+
+	if (prefs_common.compose_save_to_history)
+		combobox_set_popdown_strings(GTK_COMBO_BOX(savemsg_combo),
+				prefs_common.compose_save_to_history);
+
+	gtk_table_attach(GTK_TABLE(table), savemsg_combo, 1, 2, rowcount, rowcount + 1, GTK_FILL|GTK_EXPAND, GTK_SHRINK, 0, 0);
+	gtk_widget_set_sensitive(GTK_WIDGET(savemsg_combo), prefs_common.savemsg);
+	g_signal_connect_after(G_OBJECT(savemsg_combo), "grab_focus",
 			 G_CALLBACK(compose_grab_focus_cb), compose);
 	if (account_get_special_folder(compose->account, F_OUTBOX)) {
 		folderidentifier = folder_item_get_identifier(account_get_special_folder
 				  (compose->account, F_OUTBOX));
-		gtk_entry_set_text(GTK_ENTRY(savemsg_entry), folderidentifier);
+		compose_set_save_to(compose, folderidentifier);
 		g_free(folderidentifier);
 	}
 
@@ -6489,15 +6528,12 @@ static GtkWidget *compose_create_others(Compose *compose)
 
 	rowcount++;
 
-	compose->savemsg_checkbtn = savemsg_checkbtn;
-	compose->savemsg_entry = savemsg_entry;
-
 	return table;	
 }
 
 static void compose_savemsg_checkbtn_cb(GtkWidget *widget, Compose *compose) 
 {
-	gtk_editable_set_editable(GTK_EDITABLE(compose->savemsg_entry),
+	gtk_widget_set_sensitive(GTK_WIDGET(compose->savemsg_combo),
 		gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(compose->savemsg_checkbtn)));
 }
 
@@ -6511,7 +6547,7 @@ static void compose_savemsg_select_cb(GtkWidget *widget, Compose *compose)
 
 	path = folder_item_get_identifier(dest);
 
-	gtk_entry_set_text(GTK_ENTRY(compose->savemsg_entry), path);
+	compose_set_save_to(compose, path);
 	g_free(path);
 }
 
@@ -8732,11 +8768,11 @@ static void account_activated(GtkComboBox *optmenu, gpointer data)
 	g_signal_connect(G_OBJECT(compose->savemsg_checkbtn), "toggled",
 			 G_CALLBACK(compose_savemsg_checkbtn_cb), compose);
 			   
-	gtk_editable_delete_text(GTK_EDITABLE(compose->savemsg_entry), 0, -1);
+	compose_set_save_to(compose, NULL);
 	if (account_get_special_folder(compose->account, F_OUTBOX)) {
 		folderidentifier = folder_item_get_identifier(account_get_special_folder
 				  (compose->account, F_OUTBOX));
-		gtk_entry_set_text(GTK_ENTRY(compose->savemsg_entry), folderidentifier);
+		compose_set_save_to(compose, folderidentifier);
 		g_free(folderidentifier);
 	}
 }
@@ -8925,7 +8961,7 @@ gboolean compose_draft (gpointer data, guint action)
 	if (gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(compose->savemsg_checkbtn))) {
 		gchar *savefolderid;
 
-		savefolderid = gtk_editable_get_chars(GTK_EDITABLE(compose->savemsg_entry), 0, -1);
+		savefolderid = compose_get_save_to(compose);
 		err |= (fprintf(fp, "SCF:%s\n", savefolderid) < 0);
 		g_free(savefolderid);
 	}

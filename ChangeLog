@@ -1,3 +1,16 @@
+2008-12-09 [colin]	3.6.1cvs66
+
+	* src/compose.c
+	* src/compose.h
+	* src/folder_item_prefs.h
+	* src/prefs_common.c
+	* src/prefs_common.h
+	* src/common/defs.h
+		Fix bug 1792, '"Save Message to" should 
+		retain list of recently selected folders'
+		Also, make Enchant-related prefs stick
+		even if the build doesn't enable enchant
+
 2008-12-09 [paul]	3.6.1cvs65
 
 	* src/messageview.c

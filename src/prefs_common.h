@@ -167,7 +167,6 @@ struct _PrefsCommon
 	gboolean block_cursor;
 	gchar *quote_chars;
 	
-#if USE_ENCHANT
 	gboolean enable_aspell;
 	gchar *dictionary;
 	gchar *alt_dictionary;
@@ -176,7 +175,6 @@ struct _PrefsCommon
 	gboolean recheck_when_changing_dict;
 	gboolean use_alternate;
 	gboolean use_both_dicts;
-#endif
         
 	/* Display */
 	/* obsolete fonts */
@@ -426,6 +424,7 @@ struct _PrefsCommon
 	GList *summary_search_body_history;
 	GList *summary_search_adv_condition_history;
 	GList *message_search_history;
+	GList *compose_save_to_history;
 
 	gint filteringwin_width;
 	gint filteringwin_height;

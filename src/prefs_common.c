@@ -243,7 +243,7 @@ static PrefParam param[] = {
 	 P_BOOL, NULL, NULL, NULL},
         {"autosave_length", "50", &prefs_common.autosave_length, P_INT,
 	 NULL, NULL, NULL},
-#if USE_ENCHANT
+
 	{"enable_aspell", "TRUE", &prefs_common.enable_aspell, P_BOOL,
 	 NULL, NULL, NULL},
 	{"dictionary",  "", &prefs_common.dictionary, P_STRING,
@@ -260,7 +260,7 @@ static PrefParam param[] = {
 	 NULL, NULL, NULL},
 	{"use_both_dicts", "FALSE", &prefs_common.use_both_dicts, P_BOOL,
 	 NULL, NULL, NULL},
-#endif
+
 	{"reply_with_quote", "TRUE", &prefs_common.reply_with_quote, P_BOOL,
 	 NULL, NULL, NULL},
 	{"compose_dnd_insert_or_attach", "0", &prefs_common.compose_dnd_mode, P_ENUM,
@@ -1212,6 +1212,8 @@ void prefs_common_read_config(void)
 		prefs_common_read_history(SUMMARY_SEARCH_ADV_CONDITION_HISTORY);
 	prefs_common.message_search_history =
 		prefs_common_read_history(MESSAGE_SEARCH_HISTORY);
+	prefs_common.compose_save_to_history =
+		prefs_common_read_history(COMPOSE_SAVE_TO_HISTORY);
 
 	prefs_common.addressbook_custom_attributes = addressbook_update_custom_attr_from_prefs();
 
@@ -1308,6 +1310,8 @@ void prefs_common_write_config(void)
 		prefs_common.summary_search_adv_condition_history);
 	prefs_common_save_history(MESSAGE_SEARCH_HISTORY, 
 		prefs_common.message_search_history);
+	prefs_common_save_history(COMPOSE_SAVE_TO_HISTORY, 
+		prefs_common.compose_save_to_history);
 
 	prefs_common_save_history_to_dir(ADDRBOOK_DIR,
 		ADDRESSBOOK_CUSTOM_ATTRIBUTES, 

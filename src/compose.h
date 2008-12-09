@@ -110,7 +110,7 @@ struct _Compose
 
 	/* Others */
 	GtkWidget *savemsg_checkbtn;
-	GtkWidget *savemsg_entry;
+	GtkWidget *savemsg_combo;
 
 	/* Headers notebook */
 	GtkWidget *notebook;
@@ -200,12 +200,6 @@ struct _Compose
 	GIOChannel *exteditor_ch;
 	gint        exteditor_tag;
 
-#if USE_ENCHANT
-        /* GNU/aspell spell checker */
-        GtkAspell *gtkaspell;
-	GtkWidget *aspell_options_menu;
-#endif
-
  	/* Priority */
  	gint priority;
 
@@ -235,6 +229,11 @@ struct _Compose
 	GtkWidget *first_entry;
 	
 	GtkUIManager *ui_manager;
+#if USE_ENCHANT
+        /* GNU/aspell spell checker */
+        GtkAspell *gtkaspell;
+	GtkWidget *aspell_options_menu;
+#endif
 };
 
 struct _AttachInfo
