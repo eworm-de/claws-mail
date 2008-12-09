@@ -1193,6 +1193,8 @@ gint messageview_show(MessageView *messageview, MsgInfo *msginfo,
 			noticeview_set_icon(messageview->noticeview,
 					    STOCK_PIXMAP_NOTICE_WARN);
 			noticeview_set_text(messageview->noticeview, text);
+			gtk_widget_hide(messageview->noticeview->button);
+			gtk_widget_hide(messageview->noticeview->button2);
 			g_free(text);
 			break;
 		}
