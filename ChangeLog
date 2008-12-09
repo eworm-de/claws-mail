@@ -1,3 +1,11 @@
+2008-12-09 [colin]	3.6.1cvs64
+
+	* src/prefs_filtering.c
+		Fix bug 1789, 'filtering account selection 
+		(regression)'. Filtering on sending-only
+		accounts can be a little useful when using
+		filtering via Tools menu.
+
 2008-12-07 [paul]	3.6.1cvs63
 
 	* src/prefs_actions.c
