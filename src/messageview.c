@@ -1107,6 +1107,7 @@ static MimeInfo *find_encrypted_part(MimeInfo *rootinfo)
 gint messageview_show(MessageView *messageview, MsgInfo *msginfo,
 		      gboolean all_headers)
 {
+	gchar *text = NULL;
 	gchar *file;
 	MimeInfo *mimeinfo, *encinfo;
 	gchar *subject = NULL;
@@ -1186,8 +1187,13 @@ gint messageview_show(MessageView *messageview, MsgInfo *msginfo,
 	while ((encinfo = find_encrypted_part(mimeinfo)) != NULL) {
 		debug_print("decrypting message part\n");
 		if (privacy_mimeinfo_decrypt(encinfo) < 0) {
-			alertpanel_error(_("Couldn't decrypt: %s"),
-				privacy_get_error());
+			text = g_strdup_printf(_("Couldn't decrypt: %s"),
+					       privacy_get_error());
+			noticeview_show(messageview->noticeview);
+			noticeview_set_icon(messageview->noticeview,
+					    STOCK_PIXMAP_NOTICE_WARN);
+			noticeview_set_text(messageview->noticeview, text);
+			g_free(text);
 			break;
 		}
 	}
