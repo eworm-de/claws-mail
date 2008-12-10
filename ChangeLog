@@ -1,3 +1,8 @@
+2008-12-10 [colin]	3.6.1cvs69
+
+	* manual/faq.xml
+		Correct bug submission guidelines
+
 2008-12-10 [colin]	3.6.1cvs68
 
 	* src/plugins/pgpcore/pgp_viewer.c

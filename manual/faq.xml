@@ -22,9 +22,9 @@
     <title>How can I submit patches, report bugs, and talk about Claws Mail
 	with others?</title>
     <para>
-	Patches should be submitted via the SourceForge project Patch Tracker at 
-	<ulink url='http://sourceforge.net/tracker/?group_id=25528&amp;atid=384600'>
-	http://sourceforge.net/tracker/?group_id=25528&amp;atid=384600</ulink>, 
+	Patches should be submitted via our Bugzilla, 
+	<ulink url='http://www.thewildbeast.co.uk/claws-mail/bugzilla/'>
+	http://www.thewildbeast.co.uk/claws-mail/bugzilla/</ulink>, 
 	but please follow the patch guidelines at 
 	<ulink url="http://www.claws-mail.org/devel.php">
 	http://www.claws-mail.org/devel.php</ulink>.
