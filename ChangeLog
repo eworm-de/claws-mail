@@ -1,3 +1,10 @@
+2008-12-10 [colin]	3.6.1cvs68
+
+	* src/plugins/pgpcore/pgp_viewer.c
+		Fix bug 1736, 'Key import does not work'
+		Kill the correct pid (and not the parent
+		shell), and increase the timeout a bit.
+
 2008-12-09 [paul]	3.6.1cvs67
 
 	* src/messageview.c

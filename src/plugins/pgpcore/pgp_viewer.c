@@ -144,6 +144,7 @@ static void pgpview_show_mime_part(TextView *textview, MimeInfo *partinfo)
 			TEXTVIEW_INSERT(":\n\n");
 
 			main_window_cursor_wait(mainwindow_get_mainwindow());
+			textview_cursor_wait(textview);
 			GTK_EVENTS_FLUSH();
 
 			pid = fork();
@@ -151,9 +152,10 @@ static void pgpview_show_mime_part(TextView *textview, MimeInfo *partinfo)
 				res = -1;
 			} else if (pid == 0) {
 				/* son */
-				res = system(cmd);
-				res = WEXITSTATUS(res);
-				_exit(res);
+				gchar **argv;
+				argv = strsplit_with_quote(cmd, " ", 0);
+				res = execvp(argv[0], argv);
+				exit(255);
 			} else {
 				int status = 0;
 				time_t start_wait = time(NULL);
@@ -165,22 +167,25 @@ static void pgpview_show_mime_part(TextView *textview, MimeInfo *partinfo)
 						res = WEXITSTATUS(status);
 						break;
 					}
-					if (time(NULL) - start_wait > 5) {
-						debug_print("SIGTERM'ing gpg\n");
+					if (time(NULL) - start_wait > 9) {
+						debug_print("SIGTERM'ing gpg %d\n", pid);
 						kill(pid, SIGTERM);
 					}
-					if (time(NULL) - start_wait > 6) {
-						debug_print("SIGKILL'ing gpg\n");
+					if (time(NULL) - start_wait > 10) {
+						debug_print("SIGKILL'ing gpg %d\n", pid);
 						kill(pid, SIGKILL);
 						break;
 					}
 				} while(1);
 			}
 			main_window_cursor_normal(mainwindow_get_mainwindow());
+			textview_cursor_normal(textview);
+			debug_print("res %d\n", res);
 			if (res == 0) {
 				TEXTVIEW_INSERT(_("   This key has been imported to your keyring.\n"));
 			} else {
 				TEXTVIEW_INSERT(_("   This key couldn't be imported to your keyring.\n"));
+				TEXTVIEW_INSERT(_("   Key servers are sometimes slow.\n"));
 				TEXTVIEW_INSERT(_("   You can try to import it manually with the command:\n\n     "));
 				TEXTVIEW_INSERT(cmd);
 			}
