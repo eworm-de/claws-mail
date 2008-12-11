@@ -4,9 +4,26 @@
   <section id="adv_actions">
     <title>Actions</title>
     <para>
-	  Les actions permettent l'utilisation de toute la puissance de la ligne de commande Unix avec vos messages. Vous pouvez définir de nombreuses commandes, prenant des paramètres, comme par exemple le fichier courriel courant, le texte actuellement sélectionné et ainsi de suite. De cette façon vous serez à même d'exécuter des tâches variées comme éditer un courriel brut dans un éditeur de texte, "cacher" ce que vous voulez dire en utilisant ROT-13, utiliser les patches contenus dans vos messages directement. La seule limitation est votre propre imagination. Vous pouvez configurer les actions via le menu <quote>Outils</quote>.
+	  Les actions permettent l'utilisation de toute la puissance de la 
+	  ligne de commande Unix avec vos messages. Vous pouvez définir de 
+	  nombreuses commandes, prenant des paramètres, comme par exemple 
+	  le fichier courriel courant, le texte actuellement sélectionné 
+	  et ainsi de suite. De cette façon vous serez à même d'exécuter 
+	  des tâches variées comme éditer un courriel brut dans un éditeur 
+	  de texte, "cacher" ce que vous voulez dire en utilisant ROT-13, 
+	  utiliser les patches contenus dans vos messages directement. La 
+	  seule limitation est votre propre imagination. Vous pouvez 
+	  configurer les actions via le menu <quote>Outils</quote>.
     </para>
-	
+    <para>
+    	D'autre part, il est possible d'ajouter des actions sur la barre d'outils.
+	Pour cela, allez dans le menu <quote>Configuration/Préférences</quote>
+	et sélectionnez <quote>Barres d'outils/Vue principale</quote>.
+	Sélectionnez <quote>Action</quote> dans le menu déroulant <quote>Type
+	d'élément</quote>, puis sélectionnez l'action dans le menu déroulant
+	<quote>Fonction à exécuter</quote> ; enfin, cliquez sur le bouton
+	<quote>Icône</quote> pour choisir l'icône à utiliser.
+    </para>	
     <blockquote>
     	<example><title>Un <quote>Ouvrir Avec...</quote> simple</title>
 	 	<variablelist>
@@ -242,8 +259,16 @@
 	    <varlistentry><term>live_dangerously</term>
 			<listitem><para>Ne pas demander confirmation avant suppression définitive de messages</para></listitem>
 	    </varlistentry>
-	    <varlistentry><term>log_error_color</term><term>log_in_color</term><term>log_msg_color</term><term>log_out_color</term><term>log_warn_color</term>
-			<listitem><para>Couleurs utilisées dans la fenêtre de traces</para></listitem>
+	    <varlistentry>
+	    	<term>log_error_color</term>
+		<term>log_in_color</term>
+		<term>log_msg_color</term>
+		<term>log_out_color</term>
+		<term>log_warn_color</term>
+		<term>log_status_ok_color</term>
+		<term>log_status_nok_color</term>
+		<term>log_status_skip_color</term>
+		<listitem><para>Couleurs utilisées dans la fenêtre de traces</para></listitem>
 	    </varlistentry>
 	    <varlistentry><term>outgoing_fallback_to_ascii</term>
 		    <listitem><para>
@@ -255,6 +280,15 @@
 			option activée.
 			</para></listitem>
 	    </varlistentry>
+	<varlistentry><term>primary_paste_unselects</term>
+	<listitem>
+	  <para>
+	0 ou 1. Vide la sélection primaire et repositionne le curseur
+	lors d'un collage par clic du milieu. La valeur par défaut est 0, 
+	option désactivée.
+	  </para>
+	</listitem>
+      </varlistentry>
 	    <varlistentry><term>respect_flowed_format</term>
 		    <listitem><para>
 			0 ou 1. Tient compte du format=flowed des parties de type text/plain d'un message.

@@ -1,3 +1,9 @@
+2008-12-11 [colin]	3.6.1cvs70
+
+	* po/fr.po
+	* manual/fr/advanced.xml
+		Update french translations
+
 2008-12-10 [colin]	3.6.1cvs69
 
 	* manual/faq.xml
