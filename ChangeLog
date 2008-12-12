@@ -1,3 +1,15 @@
+2008-12-12 [paul]	3.6.1cvs71
+
+	* src/imap.c
+	* src/mh.c
+	* src/partial_download.c
+	* src/textview.c
+	* src/common/claws.c
+	* src/common/prefs.c
+	* src/common/utils.c
+		win32: fix unlinking, renaming and bug with
+		non-ascii username
+
 2008-12-11 [colin]	3.6.1cvs70
 
 	* po/fr.po

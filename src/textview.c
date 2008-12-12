@@ -1038,14 +1038,14 @@ static void textview_write_body(TextView *textview, MimeInfo *mimeinfo)
 			if (textview->stop_loading) {
 				fclose(tmpfp);
 				waitpid(pid, pfd, 0);
-				unlink(fname);
+				g_unlink(fname);
 				return;
 			}
 		}
 
 		fclose(tmpfp);
 		waitpid(pid, pfd, 0);
-		unlink(fname);
+		g_unlink(fname);
 #endif
 	} else {
 textview_default:

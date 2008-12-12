@@ -110,7 +110,7 @@ gboolean claws_init(int *argc, char ***argv)
 
 	/* backup if old rc file exists */
 	if (is_file_exist(RC_DIR)) {
-		if (rename(RC_DIR, RC_DIR ".bak") < 0) {
+		if (g_rename(RC_DIR, RC_DIR ".bak") < 0) {
 			FILE_OP_ERROR(RC_DIR, "rename");
 			return FALSE;
 		}

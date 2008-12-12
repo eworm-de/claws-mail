@@ -826,7 +826,7 @@ static gchar *mh_item_get_path(Folder *folder, FolderItem *item)
 	if (!is_dir_exist(real_path) && is_dir_exist(path)) {
 		/* mmh, older version did put utf8 filenames instead of
 		 * the correct encoding */
-		rename(path, real_path);
+		g_rename(path, real_path);
 		folder_item_scan(item);
 	}
 

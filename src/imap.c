@@ -2790,7 +2790,7 @@ static gint imap_rename_folder(Folder *folder, FolderItem *item,
 
 	if (is_dir_exist(old_cache_dir)) {
 		new_cache_dir = folder_item_get_path(item);
-		if (rename(old_cache_dir, new_cache_dir) < 0) {
+		if (g_rename(old_cache_dir, new_cache_dir) < 0) {
 			FILE_OP_ERROR(old_cache_dir, "rename");
 		}
 		g_free(new_cache_dir);

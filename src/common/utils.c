@@ -1732,7 +1732,7 @@ w32_shgetfolderpath (HWND a, int b, HANDLE c, DWORD d, LPSTR e)
 	  handle = dlopen (dllnames[i], RTLD_LAZY);
 	  if (handle)
 	    {
-	      func = dlsym (handle, "SHGetFolderPathA");
+	      func = dlsym (handle, "SHGetFolderPathW");
 	      if (!func)
 		{
 		  dlclose (handle);
@@ -1793,15 +1793,16 @@ const gchar *get_locale_dir(void)
 const gchar *get_home_dir(void)
 {
 #ifdef G_OS_WIN32
-	static char home_dir[MAX_PATH] = "";
-
-	if (home_dir[0] == '\0') {
+	static char home_dir_utf16[MAX_PATH] = "";
+	static gchar *home_dir_utf8 = NULL;
+	if (home_dir_utf16[0] == '\0') {
 		if (w32_shgetfolderpath
 			    (NULL, CSIDL_APPDATA|CSIDL_FLAG_CREATE,
-			     NULL, 0, home_dir) < 0)
-				strcpy (home_dir, "C:\\Sylpheed");
+			     NULL, 0, home_dir_utf16) < 0)
+				strcpy (home_dir_utf16, "C:\\Sylpheed");
+		home_dir_utf8 = g_utf16_to_utf8 ((const gunichar *)home_dir_utf16, -1, NULL, NULL, NULL);
 	}
-	return home_dir;
+	return home_dir_utf8;
 #else
 	static const gchar *homeenv = NULL;
 

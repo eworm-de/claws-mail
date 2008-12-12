@@ -175,7 +175,7 @@ gint prefs_file_close(PrefFile *pfile)
 #ifdef G_OS_WIN32
                 claws_unlink(bakpath);
 #endif
-		if (rename(path, bakpath) < 0) {
+		if (g_rename(path, bakpath) < 0) {
 			FILE_OP_ERROR(path, "rename");
 			claws_unlink(tmppath);
 			g_free(path);
@@ -188,7 +188,7 @@ gint prefs_file_close(PrefFile *pfile)
 #ifdef G_OS_WIN32
         claws_unlink(path);
 #endif
-	if (rename(tmppath, path) < 0) {
+	if (g_rename(tmppath, path) < 0) {
 		FILE_OP_ERROR(tmppath, "rename");
 		claws_unlink(tmppath);
 		g_free(path);
