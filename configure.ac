@@ -412,9 +412,9 @@ if test "x$ac_cv_enable_gnutls" != "xno"; then
   fi
   if test "x$ac_cv_enable_gnutls" = "xyes"; then
   	if test x"$platform_win32" = "xyes"; then
-		GNUTLS_LIBS="-lgnutls -lgcrypt -lz ${GCRYPT_LIBS}"
-	else
 		GNUTLS_LIBS="-lgnutls -lgcrypt ${GCRYPT_LIBS}"
+	else
+		GNUTLS_LIBS="-lgnutls -lgcrypt -lz ${GCRYPT_LIBS}"
 	fi
   fi
 else
