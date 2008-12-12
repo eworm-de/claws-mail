@@ -9,6 +9,7 @@
 	* src/common/utils.c
 		win32: fix unlinking, renaming and bug with
 		non-ascii username
+		Patch by Colin
 
 2008-12-11 [colin]	3.6.1cvs70
 
