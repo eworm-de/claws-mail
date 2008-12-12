@@ -1,3 +1,9 @@
+2008-12-12 [colin]	3.6.1cvs72
+
+	* configure.ac
+	* src/plugins/pgpinline/claws.def
+		Windows build fixes
+
 2008-12-12 [paul]	3.6.1cvs71
 
 	* src/imap.c

@@ -11,7 +11,7 @@ MINOR_VERSION=6
 MICRO_VERSION=1
 INTERFACE_AGE=0
 BINARY_AGE=0
-EXTRA_VERSION=71
+EXTRA_VERSION=72
 EXTRA_RELEASE=
 EXTRA_GTK2_VERSION=
 
@@ -411,7 +411,11 @@ if test "x$ac_cv_enable_gnutls" != "xno"; then
   	],[ac_cv_enable_gnutls=no])
   fi
   if test "x$ac_cv_enable_gnutls" = "xyes"; then
-	GNUTLS_LIBS="-lgnutls -lgcrypt -lz ${GCRYPT_LIBS}"
+  	if test x"$platform_win32" = "xyes"; then
+		GNUTLS_LIBS="-lgnutls -lgcrypt -lz ${GCRYPT_LIBS}"
+	else
+		GNUTLS_LIBS="-lgnutls -lgcrypt ${GCRYPT_LIBS}"
+	fi
   fi
 else
    CPPFLAGS="$OCPPFLAGS"
