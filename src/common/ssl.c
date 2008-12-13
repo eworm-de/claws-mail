@@ -120,13 +120,7 @@ const gchar *claws_ssl_get_cert_file(void)
 	}
 	return NULL;
 #else
-	const gchar *cert_file = NULL;
-	if (cert_file == NULL)
-		cert_file = g_strconcat(DATAROOTDIR, 
-				G_DIR_SEPARATOR_S,
-				"ca-certificates.crt",
-				NULL);
-	return cert_file;
+	return get_cert_file();
 #endif
 }
 

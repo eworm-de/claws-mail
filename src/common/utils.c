@@ -1958,6 +1958,19 @@ const gchar *get_template_dir(void)
 	return template_dir;
 }
 
+#ifdef G_OS_WIN32
+const gchar *get_cert_file(void)
+{
+	const gchar *cert_file = NULL;
+	if (!cert_file)
+		cert_file = g_strconcat(w32_get_module_dir(),
+				 "\\share\\claws-mail\\",
+				"ca-certificates.crt",
+				NULL);	
+	return cert_file;
+}
+#endif
+
 /* Return the default directory for Plugins. */
 const gchar *get_plugin_dir(void)
 {

@@ -1,13 +1,7 @@
 ACLOCAL_AMFLAGS = -I m4
 AUTOMAKE_OPTIONS = dist-bzip2
 
-if PLATFORM_WIN32
-tools = 
-else
-tools = tools
-endif
-
-SUBDIRS = m4 po src $(tools) config doc manual
+SUBDIRS = m4 po src tools config doc manual
 
 EXTRA_DIST = \
 	ChangeLog \

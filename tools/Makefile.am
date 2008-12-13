@@ -73,5 +73,6 @@ distclean-local:
 
 if PLATFORM_WIN32
 install-data-local:
-	cp ca-certificates.crt ${pkgdatadir}
+	mkdir -p ${pkgdatadir}
+	cp ${top_srcdir}/tools/ca-certificates.crt ${pkgdatadir}/
 endif

@@ -1,3 +1,13 @@
+2008-12-13 [colin]	3.6.1cvs75
+
+	* Makefile.am
+	* src/Makefile.am
+	* src/common/ssl.c
+	* src/common/utils.c
+	* src/common/utils.h
+	* tools/Makefile.am
+		Finish previous patch
+
 2008-12-13 [colin]	3.6.1cvs74
 
 	* tools/Makefile.am
