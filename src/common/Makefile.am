@@ -77,6 +77,7 @@ AM_CPPFLAGS = \
 	$(MAEMO_CFLAGS) \
 	-DLOCALEDIR=\""$(localedir)"\" \
 	-DPLUGINDIR=\"$(PLUGINDIR)\" \
+	-DDATAROOTDIR=\""$(datarootdir)"\" \
 	-DGTK_DISABLE_DEPRECATED
 
 libclawscommon_la_LIBADD = \
