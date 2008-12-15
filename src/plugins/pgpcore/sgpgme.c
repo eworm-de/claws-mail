@@ -470,12 +470,16 @@ gchar *sgpgme_get_encrypt_data(GSList *recp_names, gpgme_protocol_t proto)
 	return ret;
 }
 
-gboolean sgpgme_setup_signers(gpgme_ctx_t ctx, PrefsAccount *account)
+gboolean sgpgme_setup_signers(gpgme_ctx_t ctx, PrefsAccount *account,
+			      const gchar *from_addr)
 {
 	GPGAccountConfig *config;
+	const gchar *signer_addr = account->address;
 
 	gpgme_signers_clear(ctx);
 
+	if (from_addr)
+		signer_addr = from_addr;
 	config = prefs_gpg_account_get_config(account);
 
 	switch(config->sign_key) {
@@ -483,7 +487,7 @@ gboolean sgpgme_setup_signers(gpgme_ctx_t ctx, PrefsAccount *account)
 		debug_print("using default gnupg key\n");
 		break;
 	case SIGN_KEY_BY_FROM:
-		debug_print("using key for %s\n", account->address);
+		debug_print("using key for %s\n", signer_addr);
 		break;
 	case SIGN_KEY_CUSTOM:
 		debug_print("using key for %s\n", config->sign_key_id);
@@ -496,7 +500,7 @@ gboolean sgpgme_setup_signers(gpgme_ctx_t ctx, PrefsAccount *account)
 		gpgme_error_t err;
 
 		if (config->sign_key == SIGN_KEY_BY_FROM)
-			keyid = account->address;
+			keyid = signer_addr;
 		else if (config->sign_key == SIGN_KEY_CUSTOM)
 			keyid = config->sign_key_id;
 		else

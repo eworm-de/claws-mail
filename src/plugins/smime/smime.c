@@ -516,7 +516,7 @@ static MimeInfo *smime_decrypt(MimeInfo *mimeinfo)
 	return decinfo;
 }
 
-gboolean smime_sign(MimeInfo *mimeinfo, PrefsAccount *account)
+gboolean smime_sign(MimeInfo *mimeinfo, PrefsAccount *account, const gchar *from_addr)
 {
 	MimeInfo *msgcontent, *sigmultipart, *newinfo;
 	gchar *textstr, *micalg;
@@ -602,7 +602,7 @@ gboolean smime_sign(MimeInfo *mimeinfo, PrefsAccount *account)
 		return FALSE;
 	}
 
-	if (!sgpgme_setup_signers(ctx, account)) {
+	if (!sgpgme_setup_signers(ctx, account, from_addr)) {
 		debug_print("setup_signers failed\n");
 		gpgme_data_release(gpgtext);
 		gpgme_release(ctx);

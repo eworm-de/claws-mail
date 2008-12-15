@@ -566,7 +566,7 @@ static MimeInfo *pgpinline_decrypt(MimeInfo *mimeinfo)
 	return decinfo;
 }
 
-static gboolean pgpinline_sign(MimeInfo *mimeinfo, PrefsAccount *account)
+static gboolean pgpinline_sign(MimeInfo *mimeinfo, PrefsAccount *account, const gchar *from_addr)
 {
 	MimeInfo *msgcontent;
 	gchar *textstr, *tmp;
@@ -613,7 +613,7 @@ static gboolean pgpinline_sign(MimeInfo *mimeinfo, PrefsAccount *account)
 	gpgme_set_textmode(ctx, 1);
 	gpgme_set_armor(ctx, 1);
 
-	if (!sgpgme_setup_signers(ctx, account)) {
+	if (!sgpgme_setup_signers(ctx, account, from_addr)) {
 		gpgme_release(ctx);
 		return FALSE;
 	}

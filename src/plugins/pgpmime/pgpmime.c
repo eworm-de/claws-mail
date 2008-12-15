@@ -419,7 +419,7 @@ static MimeInfo *pgpmime_decrypt(MimeInfo *mimeinfo)
 	return decinfo;
 }
 
-gboolean pgpmime_sign(MimeInfo *mimeinfo, PrefsAccount *account)
+gboolean pgpmime_sign(MimeInfo *mimeinfo, PrefsAccount *account, const gchar *from_addr)
 {
 	MimeInfo *msgcontent, *sigmultipart, *newinfo;
 	gchar *textstr, *micalg;
@@ -497,7 +497,7 @@ gboolean pgpmime_sign(MimeInfo *mimeinfo, PrefsAccount *account)
 	gpgme_set_armor(ctx, 1);
 	gpgme_signers_clear (ctx);
 
-	if (!sgpgme_setup_signers(ctx, account)) {
+	if (!sgpgme_setup_signers(ctx, account, from_addr)) {
 		gpgme_release(ctx);
 		return FALSE;
 	}

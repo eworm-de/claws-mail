@@ -60,7 +60,8 @@ gboolean privacy_system_can_encrypt		(const gchar *);
 
 gboolean privacy_sign				(const gchar  *system,
 						 MimeInfo     *mimeinfo,
-						 PrefsAccount *account);
+						 PrefsAccount *account,
+						 const gchar *from_addr);
 gchar *privacy_get_encrypt_data			(const gchar  *system,
 						 GSList       *recp_names);
 const gchar *privacy_get_encrypt_warning	(const gchar  *system);
@@ -92,7 +93,8 @@ struct _PrivacySystem {
 
 	gboolean	   can_sign;
 	gboolean	 (*sign)		(MimeInfo *mimeinfo,
-						 PrefsAccount *account);
+						 PrefsAccount *account, 
+						 const gchar *from_addr);
 
 	gboolean	   can_encrypt;
 	gchar		*(*get_encrypt_data)	(GSList *recp_names);

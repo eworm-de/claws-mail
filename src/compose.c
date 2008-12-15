@@ -5111,6 +5111,8 @@ static gint compose_write_to_file(Compose *compose, FILE *fp, gint action, gbool
 	MimeInfo *mimemsg, *mimetext;
 	gint line;
 	const gchar *src_codeset = CS_INTERNAL;
+	gchar *from_addr = NULL;
+	gchar *from_name = NULL;
 
 	if (action == COMPOSE_WRITE_FOR_SEND)
 		attach_parts = TRUE;
@@ -5294,12 +5296,31 @@ static gint compose_write_to_file(Compose *compose, FILE *fp, gint action, gbool
 
 	g_free(buf);
 
+	if (strlen(gtk_entry_get_text(GTK_ENTRY(compose->from_name))) != 0) {
+		gchar *spec = gtk_editable_get_chars(GTK_EDITABLE(compose->from_name), 0, -1);
+		/* extract name and address */
+		if (strstr(spec, " <") && strstr(spec, ">")) {
+			from_addr = g_strdup(strrchr(spec, '<')+1);
+			*(strrchr(from_addr, '>')) = '\0';
+			from_name = g_strdup(spec);
+			*(strrchr(from_name, '<')) = '\0';
+		} else {
+			from_name = NULL;
+			from_addr = NULL;
+		}
+		g_free(spec);
+	}
 	/* sign message if sending */
 	if (action == COMPOSE_WRITE_FOR_SEND && compose->use_signing && 
 	    privacy_system_can_sign(compose->privacy_system))
-		if (!privacy_sign(compose->privacy_system, mimemsg, compose->account))
+		if (!privacy_sign(compose->privacy_system, mimemsg, 
+			compose->account, from_addr)) {
+			g_free(from_name);
+			g_free(from_addr);
 			return -2;
-
+	}
+	g_free(from_name);
+	g_free(from_addr);
 	procmime_write_mimeinfo(mimemsg, fp);
 	
 	procmime_mimeinfo_free_all(mimemsg);

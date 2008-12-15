@@ -1,3 +1,17 @@
+2008-12-15 [colin]	3.6.1cvs78
+
+	* src/compose.c
+	* src/privacy.c
+	* src/privacy.h
+	* src/plugins/pgpcore/sgpgme.c
+	* src/plugins/pgpcore/sgpgme.h
+	* src/plugins/pgpinline/pgpinline.c
+	* src/plugins/pgpmime/pgpmime.c
+	* src/plugins/smime/smime.c
+		Fix bug 1796, 'PGP/MIME setting: "select key by your 
+		email address" doesn't work'. Use custom from address
+		if set
+
 2008-12-15 [colin]	3.6.1cvs77
 
 	* src/common/utils.c

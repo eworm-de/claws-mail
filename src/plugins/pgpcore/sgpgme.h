@@ -44,7 +44,8 @@ gpgme_data_t sgpgme_decrypt_verify	(gpgme_data_t cipher,
 					 gpgme_ctx_t ctx);
 gchar *sgpgme_get_encrypt_data		(GSList *recp_names,
 					 gpgme_protocol_t proto);
-gboolean sgpgme_setup_signers(gpgme_ctx_t ctx, PrefsAccount *account);
+gboolean sgpgme_setup_signers(gpgme_ctx_t ctx, PrefsAccount *account,
+			      const gchar *from_addr);
 void sgpgme_check_create_key(void);
 gboolean sgpgme_has_secret_key(void);
 void sgpgme_create_secret_key(PrefsAccount *account, gboolean ask_create);
