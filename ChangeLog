@@ -1,3 +1,8 @@
+2008-12-15 [paul]	3.6.1cvs76
+
+	* m4/spamassassin.m4
+		fix warnings thrown up by autoconf-2.6.3
+
 2008-12-13 [colin]	3.6.1cvs75
 
 	* Makefile.am
