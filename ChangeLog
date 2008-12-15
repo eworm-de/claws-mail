@@ -1,3 +1,9 @@
+2008-12-15 [colin]	3.6.1cvs77
+
+	* src/common/utils.c
+		Fix bug 1746, 'Makes a mailto link from several 
+		paragraphs'
+
 2008-12-15 [paul]	3.6.1cvs76
 
 	* m4/spamassassin.m4

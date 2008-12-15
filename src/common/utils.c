@@ -4476,7 +4476,7 @@ search_again:
 			POP_STACK();
 			continue;
 		}
-		if (*bp_ == '\'' || *bp_ == '"') {
+		if (!IN_STACK() && (*bp_ == '\'' || *bp_ == '"')) {
 			PUSH_STACK(*bp_);
 			continue;
 		}

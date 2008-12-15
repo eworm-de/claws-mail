@@ -3658,3 +3658,4 @@
 ( cvs diff -u -r 1.25.2.29 -r 1.25.2.30 tools/Makefile.am;  ) > 3.6.1cvs74.patchset
 ( cvs diff -u -r 1.24.2.24 -r 1.24.2.25 Makefile.am;  cvs diff -u -r 1.155.2.94 -r 1.155.2.95 src/Makefile.am;  cvs diff -u -r 1.9.2.38 -r 1.9.2.39 src/common/ssl.c;  cvs diff -u -r 1.36.2.156 -r 1.36.2.157 src/common/utils.c;  cvs diff -u -r 1.20.2.64 -r 1.20.2.65 src/common/utils.h;  cvs diff -u -r 1.25.2.30 -r 1.25.2.31 tools/Makefile.am;  ) > 3.6.1cvs75.patchset
 ( cvs diff -u -r 1.1.4.3 -r 1.1.4.4 m4/spamassassin.m4;  ) > 3.6.1cvs76.patchset
+( cvs diff -u -r 1.36.2.157 -r 1.36.2.158 src/common/utils.c;  ) > 3.6.1cvs77.patchset
