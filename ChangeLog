@@ -1,3 +1,8 @@
+2008-12-16 [colin]	3.6.1cvs79
+
+	* src/plugins/pgpcore/sgpgme.c
+		Fix warning
+
 2008-12-15 [colin]	3.6.1cvs78
 
 	* src/compose.c

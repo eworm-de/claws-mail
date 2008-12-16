@@ -495,7 +495,7 @@ gboolean sgpgme_setup_signers(gpgme_ctx_t ctx, PrefsAccount *account,
 	}
 
 	if (config->sign_key != SIGN_KEY_DEFAULT) {
-		gchar *keyid;
+		const gchar *keyid;
 		gpgme_key_t key, key2;
 		gpgme_error_t err;
 
