@@ -57,7 +57,12 @@ New in this release:
 
 * The user manuals have been updated.
 
-* Updated French translations.
+* Updated Brazilian Portuguese, Bulgarian, Catalan, Finnish, French,
+  German, Hungarian, and Swedish translations.
+
+* Added Czech translation.
+
+* Removed unmaintained Serbian and Slovak translations.
 
 * Bug fixes:
 	o bug 1591, 'S/MIME: better key handling/selection dialog'
