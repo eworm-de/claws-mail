@@ -1,5 +1,54 @@
 Changes of the  Claws Mail GTK2 branch
 
+* 3.7.0
+-------
+
+* Expanding/Collapsing of threads is now approximately 95% faster.
+
+* Cache reading is now approximately 10% faster. 
+
+* The shortcut key settings of the main window and the message list
+  context menus are now connected.
+
+* The preferences on the 'Other' page have now been moved to
+  Other/Miscellaneous. The parent pages are now unselectable and the
+  first page is automatically selected on opening the preferences.
+
+* In the Compose window, on the Others tab, the 'Save message to'
+  entry now has a drop-down list of the previous save locations.
+
+*  In the Compose window, the Attachments Properties window is now
+   confirmed and closed with the Return key.
+
+* When using an external editor to compose messages, the message is
+  automatically saved to Drafts when the external editor is closed. 
+
+* A hidden option has been added, 'primary_paste_unselects' which
+  causes the primary buffer to be cleared and the insertion point to
+  be repositioned when the middle mouse button is used for pasting
+  text. It is turned off by default.
+
+* In the Actions window, the Escape key now cancels the action
+  editing.
+
+* Offline SSL certificate verification has been added.
+
+* Privacy plugins: The decryption failure messages are now shown
+  in the NoticeView just above the message text rather than in a
+  popup window.
+
+* Privacy plugins: when listing the UIDs during a signature check,
+  show the UID validity
+
+* tools/popfile-link.sh
+  Support for reusing existing POPFile session ID has been added.
+
+* tools/kdeservicemenu
+  Support for kde4 has been added.
+
+* win32: better integration has been implemented by using the
+  standard file associations.
+
 * 3.6.1
 -------
 
