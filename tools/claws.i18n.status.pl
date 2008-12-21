@@ -11,6 +11,7 @@
 %langname = (
 	'bg.po' => 'Bulgarian',
 	'ca.po'	=> 'Catalan',
+	'cs.po'	=> 'Czech',
 	'de.po' => 'German',
 	'en_GB.po' => 'British English',
 	'es.po' => 'Spanish',
@@ -22,8 +23,6 @@
 	'pl.po' => 'Polish',
 	'pt_BR.po' => 'Brazilian Portuguese',
 	'ru.po' => 'Russian',
-	'sk.po' => 'Slovak',
-	'sr.po' => 'Serbian',
 	'sv.po' => 'Swedish',
 	'zh_CN.po' => 'Simpilified Chinese',
 );
@@ -31,6 +30,7 @@
 %lasttranslator = (
 	'bg.po' => 'Yasen Pramatarov <yasen@lindeas.com>',
 	'ca.po'	=> 'Miquel Oliete <ktalanet@yahoo.es>',
+	'cs.po'	=> 'David Vachulka <david@konstrukce-cad.com>',
 	'de.po' => 'Stephan Sachse <white@dev-zero.com>',
 	'en_GB.po' => 'Paul Mangan <paul@claws-mail.org>',
 	'es.po' => 'Ricardo Mones Lastra <ricardo@mones.org>',
@@ -42,8 +42,6 @@
 	'pl.po' => 'Emilian Nowak <emil5@go2.pl>',
 	'pt_BR.po' => 'Frederico Goncalves Guimaraes <fggdebian@yahoo.com.br>',
 	'ru.po' => 'Aleksei Miheev <aleksei@miheev.info>',
-	'sk.po' => 'Andrej Kacian <andrej@kacian.sk>',
-	'sr.po' => 'Aleksandar Urosevic <urke@users.sf.net>',
 	'sv.po' => 'Lars Persson Fink <lars.p.fink@gmail.com>',
 	'zh_CN.po' => 'Ralgh Young <bamanzi@gmail.com>',
 );
