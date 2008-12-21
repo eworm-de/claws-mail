@@ -3,16 +3,21 @@ Claws Mail (http://www.claws-mail.org)
 	Holger Berndt		<berndth@users.sf.net>
 	Tristan Chabredier	<wwp@claws-mail.org>
 	Hoa viet Dinh		<dinh.viet.hoa@free.fr>
+	Andrej Kacian		<andrej@kacian.sk> 
+	Darko Koruga		<darko@users.sourceforge.net>
+	Colin Leroy		<colin@colino.net>
+	Paul Mangan		<paul@claws-mail.org>
+	Ricardo Mones Lastra 	<ricardo@mones.org>
+	Salvatore De Paolis	<iwkse@claws-mail.org>
+ 
+	Ex Team Members
 	Keith Edmunds 		<keith@midnighthax.com>	
 	Match Grun		<match@dimensional.com>
 	Melvin Hadasht		<melvin.hadasht@free.fr>
 	Oliver Haertel 		<o.h.a@gmx.net>
 	Christoph Hohmann	<reboot@gmx.ch>
 	Alfons Hoogervorst	<alfons@proteus.demon.nl>
-	Darko Koruga		<darko@users.sourceforge.net>
-	Colin Leroy		<colin@colino.net>
-	Paul Mangan		<paul@claws-mail.org>
-	Ricardo Mones Lastra 	<ricardo@mones.org>
+	Thorsten Maerz		<torte@netztorte.de>
 	Leandro A. F. Pereira 	<leandro@linuxmag.com.br>
 	Luke Plant 		<L.Plant.98@cantab.net>
 	Martin Schaaf		<mascha@ma-scha.de>
@@ -24,24 +29,23 @@ Claws Mail (http://www.claws-mail.org)
 Claws Mail-w32 (http://www.gpg4win.org)
 
 	Werner Koch		<wk@gnupg.org>
-	Thorsten Maerz		<torte@netztorte.de>
+	Colin Leroy		<colin@colino.net>
 
 Claws Mail on Maemo
 	
-	Jean-Luc Biord		<jl.biord@free.fr>
+	Colin Leroy		<colin@colino.net>
 
 Claws Mail translation team
 
 	[bg]	Yasen Pramatarov 	<yasen@lindeas.com>
 	[ca]	Miquel Oliete 		<ktalanet@yahoo.es>
-	[cs] 	Tim 			<timbrain@post.cz>
-	[cs] 	Petr Vanek 		<vanous@penguin.cz>
+	[cs] 	David Vachulka 		<david@konstrukce-cad.com>
 	[de]	Stephan Sachse 		<white@dev-zero.com>
 	[en_GB]	Paul Mangan		<paul@claws-mail.org>
 	[el] 	Stavros Giannouris 	<stavrosg2002@freemail.gr>
 	[es]	Ricardo Mones Lastra 	<ricardo@mones.org>
 	[fi]	Flammie Pirinen 	<flammie@iki.fi>
-	[fr]	Fabien Vantard 		<fzzzzz@gmail.com>
+	[fr]	Tristan Chabredier	<wwp@claws-mail.org>
 	[he] 	Ofer 			<oc666@netvision.net.il>
 	[hr]	Dragan 			<drleskov@inet.hr>
 	[hu] 	Pader Rezso 		<rezso@rezso.net>
@@ -49,15 +53,14 @@ Claws Mail translation team
 	[ja]	Rui Hirokawa 		<rui_hirokawa@ybb.ne.jp>
 	[ko]	SungHyun Nam 		<namsh@kldp.org>
 	[nb]	Geir Helland 		<pjallabais@users.sourceforge.net>
-	[nl]	Tim Dijkstra 		<tim@famdijkstra.org>
+	[nl]	Marcel Pol		<mpol@gmx.net>
 	[pl]	Emilian Nowak		<eminowbl@posejdon.wpk.p.lodz.pl>
-	[pl]	Quar 			<Quar@sylpheed.quar.org>
 	[pt_BR] Frederico Goncalves Guimaraes 
 					<fggdebian@yahoo.com.br>
-	[ru]	Pavlo Bohmat 		<bohm@ukr.net>
+	[ru]	Aleksei Miheev		<aleksei@miheev.info>
 	[sk]	Andrej Kacian 		<andrej@kacian.sk>
 	[sr]	Aleksandar Urosevic 	<urke@users.sourceforge.net>
-	[sv]	Anders Troback 		<sylpheed@troback.com>
+	[sv]	Lars Persson Fink	<lars.p.fink@gmail.com>
 	[zh_CN] Ralgh Young 		<bamanzi@gmail.com>
 	[zh_TW]	Wei-Lun Chao 		<chaoweilun@pcmail.com.tw>
 
@@ -256,3 +259,15 @@ contributors (in addition to the above; based on Changelog)
 	Marius Glauser
 	Christian Cornelssen
 	Jonathan Corbet
+	Jean-Luc Biord
+	Petr Vanek
+	Stavros Giannouris
+	Rui Hirokawa
+	SungHyun Nam
+	Geir Helland
+	Tim Dijkstra
+	Quar
+	Pavlo Bohmat
+	Aleksandar Urosevic
+	Anders Troback
+	Wei-Lun Chao
