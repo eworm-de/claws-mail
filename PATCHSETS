@@ -3663,3 +3663,4 @@
 ( cvs diff -u -r 1.1.2.59 -r 1.1.2.60 src/plugins/pgpcore/sgpgme.c;  ) > 3.6.1cvs79.patchset
 ( cvs diff -u -r 1.654.2.3727 -r 1.654.2.3728 configure.ac;  cvs diff -u -r 1.21.2.7 -r 1.21.2.8 po/bg.po;  cvs diff -u -r 1.1.2.15 -r 1.1.2.16 po/ca.po;  cvs diff -u -r 1.9.2.13 -r 1.9.2.14 po/cs.po;  cvs diff -u -r 1.58.2.41 -r 1.58.2.42 po/de.po;  cvs diff -u -r 1.1.2.20 -r 1.1.2.21 po/fi.po;  cvs diff -u -r 1.5.2.11 -r 1.5.2.12 po/hu.po;  cvs diff -u -r 1.50.2.33 -r 1.50.2.34 po/pt_BR.po;  cvs diff -u -r 1.4.2.9 -r 1.4.2.10 po/sv.po;  ) > 3.6.1cvs80.patchset
 ( cvs diff -u -r 1.100.2.63 -r 1.100.2.64 AUTHORS;  cvs diff -u -r 1.1.2.51 -r 1.1.2.52 src/gtk/authors.h;  ) > 3.7.0cvs1.patchset
+( cvs diff -u -r 1.100.2.64 -r 1.100.2.65 AUTHORS;  cvs diff -u -r 1.1.2.52 -r 1.1.2.53 src/gtk/authors.h;  ) > 3.7.0cvs2.patchset
