@@ -9191,7 +9191,9 @@ void compose_reopen_exit_drafts(void)
 
 static void compose_save_cb(GtkAction *action, gpointer data)
 {
-	compose_draft(data, COMPOSE_KEEP_EDITING);
+	Compose *compose = (Compose *)data;
+	compose_draft(compose, COMPOSE_KEEP_EDITING);
+	compose->rmode = COMPOSE_REEDIT;
 }
 
 static void compose_attach_from_list(Compose *compose, GList *file_list, gboolean free_data)

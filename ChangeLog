@@ -1,3 +1,10 @@
+2008-12-22 [colin]	3.7.0cvs4
+
+	* src/compose.c
+		Fix bug 1799, '"Discard message" deletes manually 
+		saved draft'. Switch rmode to REEDIT after 
+		manually saving.
+
 2008-12-21 [paul]	3.7.0cvs3
 
 	* tools/claws.i18n.status.pl
