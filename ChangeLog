@@ -1,3 +1,8 @@
+2008-12-28 [colin]	3.7.0cvs5
+
+	* src/compose.c
+		Set minimum height to 440 instead of 480
+
 2008-12-22 [colin]	3.7.0cvs4
 
 	* src/compose.c

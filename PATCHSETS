@@ -3666,3 +3666,4 @@
 ( cvs diff -u -r 1.100.2.64 -r 1.100.2.65 AUTHORS;  cvs diff -u -r 1.1.2.52 -r 1.1.2.53 src/gtk/authors.h;  ) > 3.7.0cvs2.patchset
 ( cvs diff -u -r 1.1.2.17 -r 1.1.2.18 tools/claws.i18n.status.pl;  ) > 3.7.0cvs3.patchset
 ( cvs diff -u -r 1.382.2.490 -r 1.382.2.491 src/compose.c;  ) > 3.7.0cvs4.patchset
+( cvs diff -u -r 1.382.2.491 -r 1.382.2.492 src/compose.c;  ) > 3.7.0cvs5.patchset

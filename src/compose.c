@@ -6772,7 +6772,7 @@ static Compose *compose_create(PrefsAccount *account,
 				      &geometry, GDK_HINT_MAX_SIZE);
 	if (!geometry.min_width) {
 		geometry.min_width = 600;
-		geometry.min_height = 480;
+		geometry.min_height = 440;
 	}
 	gtk_window_set_geometry_hints(GTK_WINDOW(window), NULL,
 				      &geometry, GDK_HINT_MIN_SIZE);
