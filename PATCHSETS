@@ -3667,3 +3667,4 @@
 ( cvs diff -u -r 1.1.2.17 -r 1.1.2.18 tools/claws.i18n.status.pl;  ) > 3.7.0cvs3.patchset
 ( cvs diff -u -r 1.382.2.490 -r 1.382.2.491 src/compose.c;  ) > 3.7.0cvs4.patchset
 ( cvs diff -u -r 1.382.2.491 -r 1.382.2.492 src/compose.c;  ) > 3.7.0cvs5.patchset
+( cvs diff -u -r 1.150.2.110 -r 1.150.2.111 src/procmsg.c;  ) > 3.7.0cvs6.patchset

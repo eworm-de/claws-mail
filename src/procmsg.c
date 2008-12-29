@@ -580,7 +580,10 @@ void procmsg_get_filter_keyword(MsgInfo *msginfo, gchar **header, gchar **key,
 	hentry[idx].body = NULL;	\
 }
 
-		if (hentry[H_X_BEENTHERE].body != NULL) {
+		if (hentry[H_LIST_ID].body != NULL) {
+			SET_FILTER_KEY("header \"List-Id\"", H_LIST_ID);
+			extract_list_id_str(*key);
+		} else if (hentry[H_X_BEENTHERE].body != NULL) {
 			SET_FILTER_KEY("header \"X-BeenThere\"", H_X_BEENTHERE);
 		} else if (hentry[H_X_ML_NAME].body != NULL) {
 			SET_FILTER_KEY("header \"X-ML-Name\"", H_X_ML_NAME);
@@ -588,10 +591,7 @@ void procmsg_get_filter_keyword(MsgInfo *msginfo, gchar **header, gchar **key,
 			SET_FILTER_KEY("header \"X-List\"", H_X_LIST);
 		} else if (hentry[H_X_MAILING_LIST].body != NULL) {
 			SET_FILTER_KEY("header \"X-Mailing-List\"", H_X_MAILING_LIST);
-		} else if (hentry[H_LIST_ID].body != NULL) {
-			SET_FILTER_KEY("header \"List-Id\"", H_LIST_ID);
-			extract_list_id_str(*key);
-		} else if (hentry[H_X_SEQUENCE].body != NULL) {
+		} else  if (hentry[H_X_SEQUENCE].body != NULL) {
 			gchar *p;
 
 			SET_FILTER_KEY("X-Sequence", H_X_SEQUENCE);
