@@ -1,3 +1,8 @@
+2008-12-30 [paul]	3.7.0cvs7
+
+	* src/textview.c
+		no need to prematurely trim the uri in the statusbar
+
 2008-12-29 [paul]	3.7.0cvs6
 
 	* src/procmsg.c

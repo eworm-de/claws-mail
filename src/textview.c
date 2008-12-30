@@ -2443,17 +2443,12 @@ static void textview_uri_update(TextView *textview, gint x, gint y)
 		TEXTVIEW_STATUSBAR_POP(textview);
 
 		if (uri) {
-			char *trimmed_uri;
-
 			if (!uri->is_quote)
 				gtk_text_buffer_apply_tag_by_name(buffer,
 							  "link-hover",
 							  &start_iter,
 							  &end_iter);
-
-			trimmed_uri = trim_string(uri->uri, 60);
-			TEXTVIEW_STATUSBAR_PUSH(textview, trimmed_uri);
-			g_free(trimmed_uri);
+			TEXTVIEW_STATUSBAR_PUSH(textview, uri->uri);
 		}
 	}
 }
