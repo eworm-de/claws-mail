@@ -100,10 +100,8 @@ struct _AddressTypeControlItem {
 	gboolean treeExpand;
 	gboolean treeLeaf;
 	gchar *menuCommand;
-	GdkPixmap *iconXpm;
-	GdkBitmap *maskXpm;
-	GdkPixmap *iconXpmOpen;
-	GdkBitmap *maskXpmOpen;
+	GdkPixbuf *iconXpm;
+	GdkPixbuf *iconXpmOpen;
 };
 
 typedef struct _AddressObject	AddressObject;

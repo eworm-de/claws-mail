@@ -59,16 +59,11 @@ static guint close_hook_id;
 static guint iconified_hook_id;
 static guint theme_hook_id;
 
-static GdkPixmap *newmail_pixmap[2] = {NULL, NULL};
-static GdkPixmap *newmail_bitmap[2] = {NULL, NULL};
-static GdkPixmap *unreadmail_pixmap[2] = {NULL, NULL};
-static GdkPixmap *unreadmail_bitmap[2] = {NULL, NULL};
-static GdkPixmap *newmarkedmail_pixmap[2] = {NULL, NULL};
-static GdkPixmap *newmarkedmail_bitmap[2] = {NULL, NULL};
-static GdkPixmap *unreadmarkedmail_pixmap[2] = {NULL, NULL};
-static GdkPixmap *unreadmarkedmail_bitmap[2] = {NULL, NULL};
-static GdkPixmap *nomail_pixmap[2] = {NULL, NULL};
-static GdkPixmap *nomail_bitmap[2] = {NULL, NULL};
+static GdkPixbuf *newmail_pixmap[2] = {NULL, NULL};
+static GdkPixbuf *unreadmail_pixmap[2] = {NULL, NULL};
+static GdkPixbuf *newmarkedmail_pixmap[2] = {NULL, NULL};
+static GdkPixbuf *unreadmarkedmail_pixmap[2] = {NULL, NULL};
+static GdkPixbuf *nomail_pixmap[2] = {NULL, NULL};
 
 static EggTrayIcon *trayicon;
 static GtkWidget *eventbox;
@@ -148,30 +143,24 @@ static gboolean trayicon_set_accounts_hook(gpointer source, gpointer data)
 
 static void set_trayicon_pixmap(TrayIconType icontype)
 {
-	GdkPixmap *pixmap = NULL;
-	GdkBitmap *bitmap = NULL;
-	static GdkPixmap *last_pixmap = NULL;
+	GdkPixbuf *pixmap = NULL;
+	static GdkPixbuf *last_pixmap = NULL;
 
 	switch(icontype) {
 	case TRAYICON_NEW:
 		pixmap = newmail_pixmap[prefs_common.work_offline];
-		bitmap = newmail_bitmap[prefs_common.work_offline];
 		break;
 	case TRAYICON_NEWMARKED:
 		pixmap = newmarkedmail_pixmap[prefs_common.work_offline];
-		bitmap = newmarkedmail_bitmap[prefs_common.work_offline];
 		break;
 	case TRAYICON_UNREAD:
 		pixmap = unreadmail_pixmap[prefs_common.work_offline];
-		bitmap = unreadmail_bitmap[prefs_common.work_offline];
 		break;
 	case TRAYICON_UNREADMARKED:
 		pixmap = unreadmarkedmail_pixmap[prefs_common.work_offline];
-		bitmap = unreadmarkedmail_bitmap[prefs_common.work_offline];
 		break;
 	default:
 		pixmap = nomail_pixmap[prefs_common.work_offline];
-		bitmap = nomail_bitmap[prefs_common.work_offline];
 		break;
 	}
 
@@ -179,7 +168,7 @@ static void set_trayicon_pixmap(TrayIconType icontype)
 		return;
 	}
 
-	gtk_image_set_from_pixmap(GTK_IMAGE(image), pixmap, bitmap);
+	gtk_image_set_from_pixbuf(GTK_IMAGE(image), pixmap);
 
 	last_pixmap = pixmap;
 }
@@ -352,17 +341,17 @@ static void destroy_cb(GtkWidget *widget, gpointer *data)
 
 static gboolean trayicon_update_theme(gpointer source, gpointer data)
 {
-	stock_pixmap_gdk(GTK_WIDGET(trayicon), STOCK_PIXMAP_TRAY_NOMAIL, &nomail_pixmap[0], &nomail_bitmap[0]);
-	stock_pixmap_gdk(GTK_WIDGET(trayicon), STOCK_PIXMAP_TRAY_UNREADMAIL, &unreadmail_pixmap[0], &unreadmail_bitmap[0]);
-	stock_pixmap_gdk(GTK_WIDGET(trayicon), STOCK_PIXMAP_TRAY_NEWMAIL, &newmail_pixmap[0], &newmail_bitmap[0]);
-	stock_pixmap_gdk(GTK_WIDGET(trayicon), STOCK_PIXMAP_TRAY_UNREADMARKEDMAIL, &unreadmarkedmail_pixmap[0], &unreadmarkedmail_bitmap[0]);
-	stock_pixmap_gdk(GTK_WIDGET(trayicon), STOCK_PIXMAP_TRAY_NEWMARKEDMAIL, &newmarkedmail_pixmap[0], &newmarkedmail_bitmap[0]);
+	stock_pixbuf_gdk(GTK_WIDGET(trayicon), STOCK_PIXMAP_TRAY_NOMAIL, &nomail_pixmap[0]);
+	stock_pixbuf_gdk(GTK_WIDGET(trayicon), STOCK_PIXMAP_TRAY_UNREADMAIL, &unreadmail_pixmap[0]);
+	stock_pixbuf_gdk(GTK_WIDGET(trayicon), STOCK_PIXMAP_TRAY_NEWMAIL, &newmail_pixmap[0]);
+	stock_pixbuf_gdk(GTK_WIDGET(trayicon), STOCK_PIXMAP_TRAY_UNREADMARKEDMAIL, &unreadmarkedmail_pixmap[0]);
+	stock_pixbuf_gdk(GTK_WIDGET(trayicon), STOCK_PIXMAP_TRAY_NEWMARKEDMAIL, &newmarkedmail_pixmap[0]);
 
-	stock_pixmap_gdk(GTK_WIDGET(trayicon), STOCK_PIXMAP_TRAY_NOMAIL_OFFLINE, &nomail_pixmap[1], &nomail_bitmap[1]);
-	stock_pixmap_gdk(GTK_WIDGET(trayicon), STOCK_PIXMAP_TRAY_UNREADMAIL_OFFLINE, &unreadmail_pixmap[1], &unreadmail_bitmap[1]);
-	stock_pixmap_gdk(GTK_WIDGET(trayicon), STOCK_PIXMAP_TRAY_NEWMAIL_OFFLINE, &newmail_pixmap[1], &newmail_bitmap[1]);
-	stock_pixmap_gdk(GTK_WIDGET(trayicon), STOCK_PIXMAP_TRAY_UNREADMARKEDMAIL_OFFLINE, &unreadmarkedmail_pixmap[1], &unreadmarkedmail_bitmap[1]);
-	stock_pixmap_gdk(GTK_WIDGET(trayicon), STOCK_PIXMAP_TRAY_NEWMARKEDMAIL_OFFLINE, &newmarkedmail_pixmap[1], &newmarkedmail_bitmap[1]);
+	stock_pixbuf_gdk(GTK_WIDGET(trayicon), STOCK_PIXMAP_TRAY_NOMAIL_OFFLINE, &nomail_pixmap[1]);
+	stock_pixbuf_gdk(GTK_WIDGET(trayicon), STOCK_PIXMAP_TRAY_UNREADMAIL_OFFLINE, &unreadmail_pixmap[1]);
+	stock_pixbuf_gdk(GTK_WIDGET(trayicon), STOCK_PIXMAP_TRAY_NEWMAIL_OFFLINE, &newmail_pixmap[1]);
+	stock_pixbuf_gdk(GTK_WIDGET(trayicon), STOCK_PIXMAP_TRAY_UNREADMARKEDMAIL_OFFLINE, &unreadmarkedmail_pixmap[1]);
+	stock_pixbuf_gdk(GTK_WIDGET(trayicon), STOCK_PIXMAP_TRAY_NEWMARKEDMAIL_OFFLINE, &newmarkedmail_pixmap[1]);
 
 	if (image != NULL)
 		update(NULL);
@@ -384,7 +373,7 @@ static void create_trayicon()
 	gtk_container_set_border_width(GTK_CONTAINER(eventbox), 0);
 	gtk_container_add(GTK_CONTAINER(trayicon), GTK_WIDGET(eventbox));
 
-	image = gtk_image_new_from_pixmap(nomail_pixmap[0], nomail_bitmap[0]);
+	image = gtk_image_new_from_pixbuf(nomail_pixmap[0]);
 	gtk_container_add(GTK_CONTAINER(eventbox), image);
 
 	destroy_signal_id =

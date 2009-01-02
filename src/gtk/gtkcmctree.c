@@ -200,11 +200,10 @@ static void ctree_attach_styles         (GtkCMCTree       *ctree,
 static void ctree_detach_styles         (GtkCMCTree       *ctree,
 					 GtkCMCTreeNode   *node, 
 					 gpointer        data);
-static gint draw_cell_pixmap            (GdkWindow      *window,
+static gint draw_cell_pixbuf            (GdkWindow      *window,
 					 GdkRectangle   *clip_rectangle,
 					 GdkGC          *fg_gc,
-					 GdkPixmap      *pixmap,
-					 GdkBitmap      *mask,
+					 GdkPixbuf      *pixbuf,
 					 gint            x,
 					 gint            y,
 					 gint            width,
@@ -247,16 +246,13 @@ static void set_cell_contents           (GtkCMCList      *clist,
 					 GtkCMCellType    type,
 					 const gchar   *text,
 					 guint8         spacing,
-					 GdkPixmap     *pixmap,
-					 GdkBitmap     *mask);
+					 GdkPixbuf     *pixbuf);
 static void set_node_info               (GtkCMCTree      *ctree,
 					 GtkCMCTreeNode  *node,
 					 const gchar   *text,
 					 guint8         spacing,
-					 GdkPixmap     *pixmap_closed,
-					 GdkBitmap     *mask_closed,
-					 GdkPixmap     *pixmap_opened,
-					 GdkBitmap     *mask_opened,
+					 GdkPixbuf     *pixbuf_closed,
+					 GdkPixbuf     *pixbuf_opened,
 					 gboolean       is_leaf,
 					 gboolean       expanded);
 static GtkCMCTreeRow *row_new             (GtkCMCTree      *ctree);
@@ -1124,11 +1120,10 @@ draw_drag_highlight (GtkCMCList        *clist,
 }
 
 static gint
-draw_cell_pixmap (GdkWindow    *window,
+draw_cell_pixbuf (GdkWindow    *window,
 		  GdkRectangle *clip_rectangle,
 		  GdkGC        *fg_gc,
-		  GdkPixmap    *pixmap,
-		  GdkBitmap    *mask,
+		  GdkPixbuf    *pixbuf,
 		  gint          x,
 		  gint          y,
 		  gint          width,
@@ -1137,11 +1132,7 @@ draw_cell_pixmap (GdkWindow    *window,
   gint xsrc = 0;
   gint ysrc = 0;
 
-  if (mask)
-    {
-      gdk_gc_set_clip_mask (fg_gc, mask);
-      gdk_gc_set_clip_origin (fg_gc, x, y);
-    }
+  gdk_gc_set_clip_origin (fg_gc, x, y);
   if (x < clip_rectangle->x)
     {
       xsrc = clip_rectangle->x - x;
@@ -1161,13 +1152,9 @@ draw_cell_pixmap (GdkWindow    *window,
     height = clip_rectangle->y + clip_rectangle->height - y;
 
   if (width > 0 && height > 0)
-    gdk_draw_drawable (window, fg_gc, pixmap, xsrc, ysrc, x, y, width, height);
+    gdk_draw_pixbuf (window, fg_gc, pixbuf, xsrc, ysrc, x, y, width, height, GDK_RGB_DITHER_NONE, 0, 0);
 
-  if (mask)
-    {
-      gdk_gc_set_clip_rectangle (fg_gc, NULL);
-      gdk_gc_set_clip_origin (fg_gc, 0, 0);
-    }
+  gdk_gc_set_clip_origin (fg_gc, 0, 0);
 
   return x + MAX (width, 0);
 }
@@ -1923,7 +1910,7 @@ draw_row (GtkCMCList     *clist,
 
       gint width;
       gint height;
-      gint pixmap_width;
+      gint pixbuf_width;
       gint string_width;
       gint old_offset;
 
@@ -1943,7 +1930,8 @@ draw_row (GtkCMCList     *clist,
       cell_rectangle.height = clip_rectangle.height;
 
       string_width = 0;
-      pixmap_width = 0;
+      pixbuf_width = 0;
+      height = 0;
 
       if (area && !gdk_rectangle_intersect (area, &cell_rectangle,
 					    &intersect_rectangle))
@@ -1968,23 +1956,21 @@ draw_row (GtkCMCList     *clist,
 
 	  switch (clist_row->cell[i].type)
 	    {
-	    case GTK_CMCELL_PIXMAP:
-	      gdk_drawable_get_size
-		(GTK_CMCELL_PIXMAP (clist_row->cell[i])->pixmap, &pixmap_width,
-		 &height);
-	      width += pixmap_width;
+	    case GTK_CMCELL_PIXBUF:
+	      pixbuf_width = gdk_pixbuf_get_width(GTK_CMCELL_PIXBUF (clist_row->cell[i])->pixbuf);
+	      height = gdk_pixbuf_get_height(GTK_CMCELL_PIXBUF (clist_row->cell[i])->pixbuf);
+	      width += pixbuf_width;
 	      break;
 	    case GTK_CMCELL_PIXTEXT:
-	      if (GTK_CMCELL_PIXTEXT (clist_row->cell[i])->pixmap)
+	      if (GTK_CMCELL_PIXTEXT (clist_row->cell[i])->pixbuf)
 		{
-		  gdk_drawable_get_size 
-		    (GTK_CMCELL_PIXTEXT (clist_row->cell[i])->pixmap,
-		     &pixmap_width, &height);
-		  width += pixmap_width;
+		  pixbuf_width = gdk_pixbuf_get_width(GTK_CMCELL_PIXTEXT (clist_row->cell[i])->pixbuf);
+		  height = gdk_pixbuf_get_height(GTK_CMCELL_PIXTEXT (clist_row->cell[i])->pixbuf);
+		  width += pixbuf_width;
 		}
 
 	      if (GTK_CMCELL_PIXTEXT (clist_row->cell[i])->text &&
-		  GTK_CMCELL_PIXTEXT (clist_row->cell[i])->pixmap)
+		  GTK_CMCELL_PIXTEXT (clist_row->cell[i])->pixbuf)
 		width +=  GTK_CMCELL_PIXTEXT (clist_row->cell[i])->spacing;
 
 	      if (i == ctree->tree_column)
@@ -2016,25 +2002,23 @@ draw_row (GtkCMCList     *clist,
 	      offset += clist_row->cell[i].horizontal;
 	      switch (clist_row->cell[i].type)
 		{
-		case GTK_CMCELL_PIXMAP:
-		  draw_cell_pixmap
+		case GTK_CMCELL_PIXBUF:
+		  draw_cell_pixbuf
 		    (clist->clist_window, &clip_rectangle, fg_gc,
-		     GTK_CMCELL_PIXMAP (clist_row->cell[i])->pixmap,
-		     GTK_CMCELL_PIXMAP (clist_row->cell[i])->mask,
+		     GTK_CMCELL_PIXBUF (clist_row->cell[i])->pixbuf,
 		     offset,
 		     clip_rectangle.y + clist_row->cell[i].vertical +
 		     (clip_rectangle.height - height) / 2,
-		     pixmap_width, height);
+		     pixbuf_width, height);
 		  break;
 		case GTK_CMCELL_PIXTEXT:
-		  offset = draw_cell_pixmap
+		  offset = draw_cell_pixbuf
 		    (clist->clist_window, &clip_rectangle, fg_gc,
-		     GTK_CMCELL_PIXTEXT (clist_row->cell[i])->pixmap,
-		     GTK_CMCELL_PIXTEXT (clist_row->cell[i])->mask,
+		     GTK_CMCELL_PIXTEXT (clist_row->cell[i])->pixbuf,
 		     offset,
 		     clip_rectangle.y + clist_row->cell[i].vertical +
 		     (clip_rectangle.height - height) / 2,
-		     pixmap_width, height);
+		     pixbuf_width, height);
 		  offset += GTK_CMCELL_PIXTEXT (clist_row->cell[i])->spacing;
 
 		  /* Fall through */
@@ -2089,18 +2073,17 @@ draw_row (GtkCMCList     *clist,
 	offset += ctree->tree_spacing;
 
       if (clist->column[i].justification == GTK_JUSTIFY_RIGHT)
-	offset -= (pixmap_width + clist_row->cell[i].horizontal);
+	offset -= (pixbuf_width + clist_row->cell[i].horizontal);
       else
 	offset += clist_row->cell[i].horizontal;
 
       old_offset = offset;
-      offset = draw_cell_pixmap (clist->clist_window, &clip_rectangle, fg_gc,
-				 GTK_CMCELL_PIXTEXT (clist_row->cell[i])->pixmap,
-				 GTK_CMCELL_PIXTEXT (clist_row->cell[i])->mask,
+      offset = draw_cell_pixbuf (clist->clist_window, &clip_rectangle, fg_gc,
+				 GTK_CMCELL_PIXTEXT (clist_row->cell[i])->pixbuf,
 				 offset, 
 				 clip_rectangle.y + clist_row->cell[i].vertical
 				 + (clip_rectangle.height - height) / 2,
-				 pixmap_width, height);
+				 pixbuf_width, height);
 
       if (layout)
 	{
@@ -2109,12 +2092,12 @@ draw_row (GtkCMCList     *clist,
 	  if (clist->column[i].justification == GTK_JUSTIFY_RIGHT)
 	    {
 	      offset = (old_offset - string_width);
-	      if (GTK_CMCELL_PIXTEXT (clist_row->cell[i])->pixmap)
+	      if (GTK_CMCELL_PIXTEXT (clist_row->cell[i])->pixbuf)
 		offset -= GTK_CMCELL_PIXTEXT (clist_row->cell[i])->spacing;
 	    }
 	  else
 	    {
-	      if (GTK_CMCELL_PIXTEXT (clist_row->cell[i])->pixmap)
+	      if (GTK_CMCELL_PIXTEXT (clist_row->cell[i])->pixbuf)
 		offset += GTK_CMCELL_PIXTEXT (clist_row->cell[i])->spacing;
 	    }
 	  
@@ -2668,39 +2651,24 @@ real_tree_expand (GtkCMCTree     *ctree,
     GTK_CMCLIST_GET_CLASS (clist)->cell_size_request
       (clist, &GTK_CMCTREE_ROW (node)->row, ctree->tree_column, &requisition);
 
-  /* unref/unset closed pixmap */
+  /* unref/unset closed pixbuf */
   if (GTK_CMCELL_PIXTEXT 
-      (GTK_CMCTREE_ROW (node)->row.cell[ctree->tree_column])->pixmap)
+      (GTK_CMCTREE_ROW (node)->row.cell[ctree->tree_column])->pixbuf)
     {
       g_object_unref
 	(GTK_CMCELL_PIXTEXT
-	 (GTK_CMCTREE_ROW (node)->row.cell[ctree->tree_column])->pixmap);
+	 (GTK_CMCTREE_ROW (node)->row.cell[ctree->tree_column])->pixbuf);
       
       GTK_CMCELL_PIXTEXT
-	(GTK_CMCTREE_ROW (node)->row.cell[ctree->tree_column])->pixmap = NULL;
-      
-      if (GTK_CMCELL_PIXTEXT 
-	  (GTK_CMCTREE_ROW (node)->row.cell[ctree->tree_column])->mask)
-	{
-	  g_object_unref
-	    (GTK_CMCELL_PIXTEXT 
-	     (GTK_CMCTREE_ROW (node)->row.cell[ctree->tree_column])->mask);
-	  GTK_CMCELL_PIXTEXT 
-	    (GTK_CMCTREE_ROW (node)->row.cell[ctree->tree_column])->mask = NULL;
-	}
+	(GTK_CMCTREE_ROW (node)->row.cell[ctree->tree_column])->pixbuf = NULL;
     }
 
-  /* set/ref opened pixmap */
-  if (GTK_CMCTREE_ROW (node)->pixmap_opened)
+  /* set/ref opened pixbuf */
+  if (GTK_CMCTREE_ROW (node)->pixbuf_opened)
     {
       GTK_CMCELL_PIXTEXT 
-	(GTK_CMCTREE_ROW (node)->row.cell[ctree->tree_column])->pixmap = 
-	g_object_ref (GTK_CMCTREE_ROW (node)->pixmap_opened);
-
-      if (GTK_CMCTREE_ROW (node)->mask_opened) 
-	GTK_CMCELL_PIXTEXT 
-	  (GTK_CMCTREE_ROW (node)->row.cell[ctree->tree_column])->mask = 
-	  g_object_ref (GTK_CMCTREE_ROW (node)->mask_opened);
+	(GTK_CMCTREE_ROW (node)->row.cell[ctree->tree_column])->pixbuf = 
+	g_object_ref (GTK_CMCTREE_ROW (node)->pixbuf_opened);
     }
 
 
@@ -2812,39 +2780,24 @@ real_tree_collapse (GtkCMCTree     *ctree,
     GTK_CMCLIST_GET_CLASS (clist)->cell_size_request
       (clist, &GTK_CMCTREE_ROW (node)->row, ctree->tree_column, &requisition);
 
-  /* unref/unset opened pixmap */
+  /* unref/unset opened pixbuf */
   if (GTK_CMCELL_PIXTEXT 
-      (GTK_CMCTREE_ROW (node)->row.cell[ctree->tree_column])->pixmap)
+      (GTK_CMCTREE_ROW (node)->row.cell[ctree->tree_column])->pixbuf)
     {
       g_object_unref
 	(GTK_CMCELL_PIXTEXT
-	 (GTK_CMCTREE_ROW (node)->row.cell[ctree->tree_column])->pixmap);
+	 (GTK_CMCTREE_ROW (node)->row.cell[ctree->tree_column])->pixbuf);
       
       GTK_CMCELL_PIXTEXT
-	(GTK_CMCTREE_ROW (node)->row.cell[ctree->tree_column])->pixmap = NULL;
-      
-      if (GTK_CMCELL_PIXTEXT 
-	  (GTK_CMCTREE_ROW (node)->row.cell[ctree->tree_column])->mask)
-	{
-	  g_object_unref
-	    (GTK_CMCELL_PIXTEXT 
-	     (GTK_CMCTREE_ROW (node)->row.cell[ctree->tree_column])->mask);
-	  GTK_CMCELL_PIXTEXT 
-	    (GTK_CMCTREE_ROW (node)->row.cell[ctree->tree_column])->mask = NULL;
-	}
+	(GTK_CMCTREE_ROW (node)->row.cell[ctree->tree_column])->pixbuf = NULL;
     }
 
-  /* set/ref closed pixmap */
-  if (GTK_CMCTREE_ROW (node)->pixmap_closed)
+  /* set/ref closed pixbuf */
+  if (GTK_CMCTREE_ROW (node)->pixbuf_closed)
     {
       GTK_CMCELL_PIXTEXT 
-	(GTK_CMCTREE_ROW (node)->row.cell[ctree->tree_column])->pixmap = 
-	g_object_ref (GTK_CMCTREE_ROW (node)->pixmap_closed);
-
-      if (GTK_CMCTREE_ROW (node)->mask_closed) 
-	GTK_CMCELL_PIXTEXT 
-	  (GTK_CMCTREE_ROW (node)->row.cell[ctree->tree_column])->mask = 
-	  g_object_ref (GTK_CMCTREE_ROW (node)->mask_closed);
+	(GTK_CMCTREE_ROW (node)->row.cell[ctree->tree_column])->pixbuf = 
+	g_object_ref (GTK_CMCTREE_ROW (node)->pixbuf_closed);
     }
 
   work = GTK_CMCTREE_ROW (node)->children;
@@ -2992,11 +2945,10 @@ cell_size_request (GtkCMCList       *clist,
   switch (clist_row->cell[column].type)
     {
     case GTK_CMCELL_PIXTEXT:
-      if (GTK_CMCELL_PIXTEXT (clist_row->cell[column])->pixmap)
+      if (GTK_CMCELL_PIXTEXT (clist_row->cell[column])->pixbuf)
 	{
-	  gdk_drawable_get_size (GTK_CMCELL_PIXTEXT
-			       (clist_row->cell[column])->pixmap,
-			       &width, &height);
+	  width = gdk_pixbuf_get_width(GTK_CMCELL_PIXTEXT (clist_row->cell[column])->pixbuf);
+	  height = gdk_pixbuf_get_height(GTK_CMCELL_PIXTEXT (clist_row->cell[column])->pixbuf);
 	  width += GTK_CMCELL_PIXTEXT (clist_row->cell[column])->spacing;
 	}
       else
@@ -3025,9 +2977,9 @@ cell_size_request (GtkCMCList       *clist,
 	    requisition->width += 3;
 	}
       break;
-    case GTK_CMCELL_PIXMAP:
-      gdk_drawable_get_size (GTK_CMCELL_PIXMAP (clist_row->cell[column])->pixmap,
-			   &width, &height);
+    case GTK_CMCELL_PIXBUF:
+      width = gdk_pixbuf_get_width(GTK_CMCELL_PIXBUF (clist_row->cell[column])->pixbuf);
+      height = gdk_pixbuf_get_height(GTK_CMCELL_PIXBUF (clist_row->cell[column])->pixbuf);
       requisition->width += width;
       requisition->height = MAX (requisition->height, height);
       break;
@@ -3046,15 +2998,13 @@ set_cell_contents (GtkCMCList    *clist,
 		   GtkCMCellType  type,
 		   const gchar *text,
 		   guint8       spacing,
-		   GdkPixmap   *pixmap,
-		   GdkBitmap   *mask)
+		   GdkPixbuf   *pixbuf)
 {
   gboolean visible = FALSE;
   GtkCMCTree *ctree;
   GtkRequisition requisition;
   gchar *old_text = NULL;
-  GdkPixmap *old_pixmap = NULL;
-  GdkBitmap *old_mask = NULL;
+  GdkPixbuf *old_pixbuf = NULL;
 
   g_return_if_fail (GTK_IS_CMCTREE (clist));
   g_return_if_fail (clist_row != NULL);
@@ -3083,14 +3033,12 @@ set_cell_contents (GtkCMCList    *clist,
     case GTK_CMCELL_TEXT:
       old_text = GTK_CMCELL_TEXT (clist_row->cell[column])->text;
       break;
-    case GTK_CMCELL_PIXMAP:
-      old_pixmap = GTK_CMCELL_PIXMAP (clist_row->cell[column])->pixmap;
-      old_mask = GTK_CMCELL_PIXMAP (clist_row->cell[column])->mask;
+    case GTK_CMCELL_PIXBUF:
+      old_pixbuf = GTK_CMCELL_PIXBUF (clist_row->cell[column])->pixbuf;
       break;
     case GTK_CMCELL_PIXTEXT:
       old_text = GTK_CMCELL_PIXTEXT (clist_row->cell[column])->text;
-      old_pixmap = GTK_CMCELL_PIXTEXT (clist_row->cell[column])->pixmap;
-      old_mask = GTK_CMCELL_PIXTEXT (clist_row->cell[column])->mask;
+      old_pixbuf = GTK_CMCELL_PIXTEXT (clist_row->cell[column])->pixbuf;
       break;
     case GTK_CMCELL_WIDGET:
       /* unimplemented */
@@ -3104,7 +3052,7 @@ set_cell_contents (GtkCMCList    *clist,
   if (column == ctree->tree_column && type != GTK_CMCELL_EMPTY)
     type = GTK_CMCELL_PIXTEXT;
 
-  /* Note that pixmap and mask were already ref'ed by the caller
+  /* Note that pixbuf and mask were already ref'ed by the caller
    */
   switch (type)
     {
@@ -3115,13 +3063,11 @@ set_cell_contents (GtkCMCList    *clist,
 	  GTK_CMCELL_TEXT (clist_row->cell[column])->text = g_strdup (text);
 	}
       break;
-    case GTK_CMCELL_PIXMAP:
-      if (pixmap)
+    case GTK_CMCELL_PIXBUF:
+      if (pixbuf)
 	{
-	  clist_row->cell[column].type = GTK_CMCELL_PIXMAP;
-	  GTK_CMCELL_PIXMAP (clist_row->cell[column])->pixmap = pixmap;
-	  /* We set the mask even if it is NULL */
-	  GTK_CMCELL_PIXMAP (clist_row->cell[column])->mask = mask;
+	  clist_row->cell[column].type = GTK_CMCELL_PIXBUF;
+	  GTK_CMCELL_PIXBUF (clist_row->cell[column])->pixbuf = pixbuf;
 	}
       break;
     case GTK_CMCELL_PIXTEXT:
@@ -3133,24 +3079,21 @@ set_cell_contents (GtkCMCList    *clist,
 	    GTK_CMCELL_PIXTEXT (clist_row->cell[column])->text = g_strdup (text);
 	  else
 	    GTK_CMCELL_PIXTEXT (clist_row->cell[column])->text = NULL;
-	  if (pixmap)
+	  if (pixbuf)
 	    {
-	      GTK_CMCELL_PIXTEXT (clist_row->cell[column])->pixmap = pixmap;
-	      GTK_CMCELL_PIXTEXT (clist_row->cell[column])->mask = mask;
+	      GTK_CMCELL_PIXTEXT (clist_row->cell[column])->pixbuf = pixbuf;
 	    }
 	  else
 	    {
-	      GTK_CMCELL_PIXTEXT (clist_row->cell[column])->pixmap = NULL;
-	      GTK_CMCELL_PIXTEXT (clist_row->cell[column])->mask = NULL;
+	      GTK_CMCELL_PIXTEXT (clist_row->cell[column])->pixbuf = NULL;
 	    }
 	}
-      else if (text && pixmap)
+      else if (text && pixbuf)
 	{
 	  clist_row->cell[column].type = GTK_CMCELL_PIXTEXT;
 	  GTK_CMCELL_PIXTEXT (clist_row->cell[column])->text = g_strdup (text);
 	  GTK_CMCELL_PIXTEXT (clist_row->cell[column])->spacing = spacing;
-	  GTK_CMCELL_PIXTEXT (clist_row->cell[column])->pixmap = pixmap;
-	  GTK_CMCELL_PIXTEXT (clist_row->cell[column])->mask = mask;
+	  GTK_CMCELL_PIXTEXT (clist_row->cell[column])->pixbuf = pixbuf;
 	}
       break;
     default:
@@ -3162,10 +3105,8 @@ set_cell_contents (GtkCMCList    *clist,
     column_auto_resize (clist, clist_row, column, requisition.width);
 
   g_free (old_text);
-  if (old_pixmap)
-    g_object_unref (old_pixmap);
-  if (old_mask)
-    g_object_unref (old_mask);
+  if (old_pixbuf)
+    g_object_unref (old_pixbuf);
 }
 
 static void 
@@ -3173,42 +3114,30 @@ set_node_info (GtkCMCTree     *ctree,
 	       GtkCMCTreeNode *node,
 	       const gchar  *text,
 	       guint8        spacing,
-	       GdkPixmap    *pixmap_closed,
-	       GdkBitmap    *mask_closed,
-	       GdkPixmap    *pixmap_opened,
-	       GdkBitmap    *mask_opened,
+	       GdkPixbuf    *pixbuf_closed,
+	       GdkPixbuf    *pixbuf_opened,
 	       gboolean      is_leaf,
 	       gboolean      expanded)
 {
-  if (GTK_CMCTREE_ROW (node)->pixmap_opened)
+  if (GTK_CMCTREE_ROW (node)->pixbuf_opened)
     {
-      g_object_unref (GTK_CMCTREE_ROW (node)->pixmap_opened);
-      if (GTK_CMCTREE_ROW (node)->mask_opened) 
-	g_object_unref (GTK_CMCTREE_ROW (node)->mask_opened);
+      g_object_unref (GTK_CMCTREE_ROW (node)->pixbuf_opened);
     }
-  if (GTK_CMCTREE_ROW (node)->pixmap_closed)
+  if (GTK_CMCTREE_ROW (node)->pixbuf_closed)
     {
-      g_object_unref (GTK_CMCTREE_ROW (node)->pixmap_closed);
-      if (GTK_CMCTREE_ROW (node)->mask_closed) 
-	g_object_unref (GTK_CMCTREE_ROW (node)->mask_closed);
+      g_object_unref (GTK_CMCTREE_ROW (node)->pixbuf_closed);
     }
 
-  GTK_CMCTREE_ROW (node)->pixmap_opened = NULL;
-  GTK_CMCTREE_ROW (node)->mask_opened   = NULL;
-  GTK_CMCTREE_ROW (node)->pixmap_closed = NULL;
-  GTK_CMCTREE_ROW (node)->mask_closed   = NULL;
+  GTK_CMCTREE_ROW (node)->pixbuf_opened = NULL;
+  GTK_CMCTREE_ROW (node)->pixbuf_closed = NULL;
 
-  if (pixmap_closed)
+  if (pixbuf_closed)
     {
-      GTK_CMCTREE_ROW (node)->pixmap_closed = g_object_ref (pixmap_closed);
-      if (mask_closed) 
-	GTK_CMCTREE_ROW (node)->mask_closed = g_object_ref (mask_closed);
+      GTK_CMCTREE_ROW (node)->pixbuf_closed = g_object_ref (pixbuf_closed);
     }
-  if (pixmap_opened)
+  if (pixbuf_opened)
     {
-      GTK_CMCTREE_ROW (node)->pixmap_opened = g_object_ref (pixmap_opened);
-      if (mask_opened) 
-	GTK_CMCTREE_ROW (node)->mask_opened = g_object_ref (mask_opened);
+      GTK_CMCTREE_ROW (node)->pixbuf_opened = g_object_ref (pixbuf_opened);
     }
 
   GTK_CMCTREE_ROW (node)->is_leaf  = is_leaf;
@@ -3216,10 +3145,10 @@ set_node_info (GtkCMCTree     *ctree,
 
   if (GTK_CMCTREE_ROW (node)->expanded)
     gtk_cmctree_node_set_pixtext (ctree, node, ctree->tree_column,
-				text, spacing, pixmap_opened, mask_opened);
+				text, spacing, pixbuf_opened);
   else 
     gtk_cmctree_node_set_pixtext (ctree, node, ctree->tree_column,
-				text, spacing, pixmap_closed, mask_closed);
+				text, spacing, pixbuf_closed);
 }
 
 static void
@@ -3357,10 +3286,8 @@ row_new (GtkCMCTree *ctree)
   ctree_row->parent        = NULL;
   ctree_row->sibling       = NULL;
   ctree_row->children      = NULL;
-  ctree_row->pixmap_closed = NULL;
-  ctree_row->mask_closed   = NULL;
-  ctree_row->pixmap_opened = NULL;
-  ctree_row->mask_opened   = NULL;
+  ctree_row->pixbuf_closed = NULL;
+  ctree_row->pixbuf_opened = NULL;
   
   return ctree_row;
 }
@@ -3377,7 +3304,7 @@ row_delete (GtkCMCTree    *ctree,
   for (i = 0; i < clist->columns; i++)
     {
       GTK_CMCLIST_GET_CLASS (clist)->set_cell_contents
-	(clist, &(ctree_row->row), i, GTK_CMCELL_EMPTY, NULL, 0, NULL, NULL);
+	(clist, &(ctree_row->row), i, GTK_CMCELL_EMPTY, NULL, 0, NULL);
       if (ctree_row->row.cell[i].style)
 	{
 	  if (GTK_WIDGET_REALIZED (ctree))
@@ -3393,18 +3320,14 @@ row_delete (GtkCMCTree    *ctree,
       g_object_unref (ctree_row->row.style);
     }
 
-  if (ctree_row->pixmap_closed)
+  if (ctree_row->pixbuf_closed)
     {
-      g_object_unref (ctree_row->pixmap_closed);
-      if (ctree_row->mask_closed)
-	g_object_unref (ctree_row->mask_closed);
+      g_object_unref (ctree_row->pixbuf_closed);
     }
 
-  if (ctree_row->pixmap_opened)
+  if (ctree_row->pixbuf_opened)
     {
-      g_object_unref (ctree_row->pixmap_opened);
-      if (ctree_row->mask_opened)
-	g_object_unref (ctree_row->mask_opened);
+      g_object_unref (ctree_row->pixbuf_opened);
     }
 
   if (ctree_row->row.destroy)
@@ -3757,7 +3680,7 @@ real_insert_row (GtkCMCList *clist,
     parent = GTK_CMCTREE_ROW (sibling)->parent;
 
   node = gtk_cmctree_insert_node (GTK_CMCTREE (clist), parent, sibling, text, 5,
-				NULL, NULL, NULL, NULL, TRUE, FALSE);
+				NULL, NULL, TRUE, FALSE);
 
   if (GTK_CMCLIST_AUTO_SORT (clist) || !sibling)
     return g_list_position (clist->row_list, (GList *) node);
@@ -3771,10 +3694,8 @@ gtk_cmctree_insert_node (GtkCMCTree     *ctree,
 		       GtkCMCTreeNode *sibling,
 		       gchar        *text[],
 		       guint8        spacing,
-		       GdkPixmap    *pixmap_closed,
-		       GdkBitmap    *mask_closed,
-		       GdkPixmap    *pixmap_opened,
-		       GdkBitmap    *mask_opened,
+		       GdkPixbuf    *pixbuf_closed,
+		       GdkPixbuf    *pixbuf_opened,
 		       gboolean      is_leaf,
 		       gboolean      expanded)
 {
@@ -3803,11 +3724,11 @@ gtk_cmctree_insert_node (GtkCMCTree     *ctree,
     for (i = 0; i < clist->columns; i++)
       if (text[i] && i != ctree->tree_column)
 	GTK_CMCLIST_GET_CLASS (clist)->set_cell_contents
-	  (clist, &(new_row->row), i, GTK_CMCELL_TEXT, text[i], 0, NULL, NULL);
+	  (clist, &(new_row->row), i, GTK_CMCELL_TEXT, text[i], 0, NULL);
 
   set_node_info (ctree, node, text ?
-		 text[ctree->tree_column] : NULL, spacing, pixmap_closed,
-		 mask_closed, pixmap_opened, mask_opened, is_leaf, expanded);
+		 text[ctree->tree_column] : NULL, spacing, pixbuf_closed,
+		 pixbuf_opened, is_leaf, expanded);
 
   /* sorted insertion */
   if (GTK_CMCLIST_AUTO_SORT (clist))
@@ -3878,7 +3799,7 @@ gtk_cmctree_insert_gnode (GtkCMCTree          *ctree,
 
   gtk_cmclist_freeze (clist);
 
-  set_node_info (ctree, cnode, "", 0, NULL, NULL, NULL, NULL, TRUE, FALSE);
+  set_node_info (ctree, cnode, "", 0, NULL, NULL, TRUE, FALSE);
 
   if (!func (ctree, depth, gnode, cnode, data))
     {
@@ -4733,36 +4654,33 @@ gtk_cmctree_node_set_text (GtkCMCTree     *ctree,
 
   GTK_CMCLIST_GET_CLASS (clist)->set_cell_contents
     (clist, &(GTK_CMCTREE_ROW (node)->row), column, GTK_CMCELL_TEXT,
-     text, 0, NULL, NULL);
+     text, 0, NULL);
 
   tree_draw_node (ctree, node);
 }
 
 void 
-gtk_cmctree_node_set_pixmap (GtkCMCTree     *ctree,
+gtk_cmctree_node_set_pixbuf (GtkCMCTree     *ctree,
 			   GtkCMCTreeNode *node,
 			   gint          column,
-			   GdkPixmap    *pixmap,
-			   GdkBitmap    *mask)
+			   GdkPixbuf    *pixbuf)
 {
   GtkCMCList *clist;
 
   g_return_if_fail (GTK_IS_CMCTREE (ctree));
   g_return_if_fail (node != NULL);
-  g_return_if_fail (pixmap != NULL);
+  g_return_if_fail (pixbuf != NULL);
 
   if (column < 0 || column >= GTK_CMCLIST (ctree)->columns)
     return;
 
-  g_object_ref (pixmap);
-  if (mask) 
-    g_object_ref (mask);
+  g_object_ref (pixbuf);
 
   clist = GTK_CMCLIST (ctree);
 
   GTK_CMCLIST_GET_CLASS (clist)->set_cell_contents
-    (clist, &(GTK_CMCTREE_ROW (node)->row), column, GTK_CMCELL_PIXMAP,
-     NULL, 0, pixmap, mask);
+    (clist, &(GTK_CMCTREE_ROW (node)->row), column, GTK_CMCELL_PIXBUF,
+     NULL, 0, pixbuf);
 
   tree_draw_node (ctree, node);
 }
@@ -4773,30 +4691,27 @@ gtk_cmctree_node_set_pixtext (GtkCMCTree     *ctree,
 			    gint          column,
 			    const gchar  *text,
 			    guint8        spacing,
-			    GdkPixmap    *pixmap,
-			    GdkBitmap    *mask)
+			    GdkPixbuf    *pixbuf)
 {
   GtkCMCList *clist;
 
   g_return_if_fail (GTK_IS_CMCTREE (ctree));
   g_return_if_fail (node != NULL);
   if (column != ctree->tree_column)
-    g_return_if_fail (pixmap != NULL);
+    g_return_if_fail (pixbuf != NULL);
   if (column < 0 || column >= GTK_CMCLIST (ctree)->columns)
     return;
 
   clist = GTK_CMCLIST (ctree);
 
-  if (pixmap)
+  if (pixbuf)
     {
-      g_object_ref (pixmap);
-      if (mask) 
-	g_object_ref (mask);
+      g_object_ref (pixbuf);
     }
 
   GTK_CMCLIST_GET_CLASS (clist)->set_cell_contents
     (clist, &(GTK_CMCTREE_ROW (node)->row), column, GTK_CMCELL_PIXTEXT,
-     text, spacing, pixmap, mask);
+     text, spacing, pixbuf);
 
   tree_draw_node (ctree, node);
 }
@@ -4806,10 +4721,8 @@ gtk_cmctree_set_node_info (GtkCMCTree     *ctree,
 			 GtkCMCTreeNode *node,
 			 const gchar  *text,
 			 guint8        spacing,
-			 GdkPixmap    *pixmap_closed,
-			 GdkBitmap    *mask_closed,
-			 GdkPixmap    *pixmap_opened,
-			 GdkBitmap    *mask_opened,
+			 GdkPixbuf    *pixbuf_closed,
+			 GdkPixbuf    *pixbuf_opened,
 			 gboolean      is_leaf,
 			 gboolean      expanded)
 {
@@ -4836,8 +4749,8 @@ gtk_cmctree_set_node_info (GtkCMCTree     *ctree,
 	}
     }
 
-  set_node_info (ctree, node, text, spacing, pixmap_closed, mask_closed,
-		 pixmap_opened, mask_opened, is_leaf, expanded);
+  set_node_info (ctree, node, text, spacing, pixbuf_closed,
+		 pixbuf_opened, is_leaf, expanded);
 
   if (!is_leaf && !old_leaf)
     {
@@ -4991,11 +4904,10 @@ gtk_cmctree_node_get_text (GtkCMCTree      *ctree,
 }
 
 gboolean
-gtk_cmctree_node_get_pixmap (GtkCMCTree     *ctree,
+gtk_cmctree_node_get_pixbuf (GtkCMCTree     *ctree,
 			   GtkCMCTreeNode *node,
 			   gint          column,
-			   GdkPixmap   **pixmap,
-			   GdkBitmap   **mask)
+			   GdkPixbuf   **pixbuf)
 {
   g_return_val_if_fail (GTK_IS_CMCTREE (ctree), FALSE);
   g_return_val_if_fail (node != NULL, FALSE);
@@ -5003,13 +4915,11 @@ gtk_cmctree_node_get_pixmap (GtkCMCTree     *ctree,
   if (column < 0 || column >= GTK_CMCLIST (ctree)->columns)
     return FALSE;
 
-  if (GTK_CMCTREE_ROW (node)->row.cell[column].type != GTK_CMCELL_PIXMAP)
+  if (GTK_CMCTREE_ROW (node)->row.cell[column].type != GTK_CMCELL_PIXBUF)
     return FALSE;
 
-  if (pixmap)
-    *pixmap = GTK_CMCELL_PIXMAP (GTK_CMCTREE_ROW (node)->row.cell[column])->pixmap;
-  if (mask)
-    *mask = GTK_CMCELL_PIXMAP (GTK_CMCTREE_ROW (node)->row.cell[column])->mask;
+  if (pixbuf)
+    *pixbuf = GTK_CMCELL_PIXBUF (GTK_CMCTREE_ROW (node)->row.cell[column])->pixbuf;
 
   return TRUE;
 }
@@ -5020,8 +4930,7 @@ gtk_cmctree_node_get_pixtext (GtkCMCTree      *ctree,
 			    gint           column,
 			    gchar        **text,
 			    guint8        *spacing,
-			    GdkPixmap    **pixmap,
-			    GdkBitmap    **mask)
+			    GdkPixbuf    **pixbuf)
 {
   g_return_val_if_fail (GTK_IS_CMCTREE (ctree), FALSE);
   g_return_val_if_fail (node != NULL, FALSE);
@@ -5037,11 +4946,9 @@ gtk_cmctree_node_get_pixtext (GtkCMCTree      *ctree,
   if (spacing)
     *spacing = GTK_CMCELL_PIXTEXT (GTK_CMCTREE_ROW 
 				 (node)->row.cell[column])->spacing;
-  if (pixmap)
-    *pixmap = GTK_CMCELL_PIXTEXT (GTK_CMCTREE_ROW 
-				(node)->row.cell[column])->pixmap;
-  if (mask)
-    *mask = GTK_CMCELL_PIXTEXT (GTK_CMCTREE_ROW (node)->row.cell[column])->mask;
+  if (pixbuf)
+    *pixbuf = GTK_CMCELL_PIXTEXT (GTK_CMCTREE_ROW 
+				(node)->row.cell[column])->pixbuf;
   
   return TRUE;
 }
@@ -5051,10 +4958,8 @@ gtk_cmctree_get_node_info (GtkCMCTree      *ctree,
 			 GtkCMCTreeNode  *node,
 			 gchar        **text,
 			 guint8        *spacing,
-			 GdkPixmap    **pixmap_closed,
-			 GdkBitmap    **mask_closed,
-			 GdkPixmap    **pixmap_opened,
-			 GdkBitmap    **mask_opened,
+			 GdkPixbuf    **pixbuf_closed,
+			 GdkPixbuf    **pixbuf_opened,
 			 gboolean      *is_leaf,
 			 gboolean      *expanded)
 {
@@ -5067,14 +4972,10 @@ gtk_cmctree_get_node_info (GtkCMCTree      *ctree,
   if (spacing)
     *spacing = GTK_CMCELL_PIXTEXT 
       (GTK_CMCTREE_ROW (node)->row.cell[ctree->tree_column])->spacing;
-  if (pixmap_closed)
-    *pixmap_closed = GTK_CMCTREE_ROW (node)->pixmap_closed;
-  if (mask_closed)
-    *mask_closed = GTK_CMCTREE_ROW (node)->mask_closed;
-  if (pixmap_opened)
-    *pixmap_opened = GTK_CMCTREE_ROW (node)->pixmap_opened;
-  if (mask_opened)
-    *mask_opened = GTK_CMCTREE_ROW (node)->mask_opened;
+  if (pixbuf_closed)
+    *pixbuf_closed = GTK_CMCTREE_ROW (node)->pixbuf_closed;
+  if (pixbuf_opened)
+    *pixbuf_opened = GTK_CMCTREE_ROW (node)->pixbuf_opened;
   if (is_leaf)
     *is_leaf = GTK_CMCTREE_ROW (node)->is_leaf;
   if (expanded)
@@ -6036,22 +5937,6 @@ gtk_cmctree_drag_begin (GtkWidget	     *widget,
       GTK_CMCLIST_SET_FLAG (clist, CMCLIST_USE_DRAG_ICONS);
       node = GTK_CMCTREE_NODE (g_list_nth (clist->row_list,
 					 clist->click_cell.row));
-      if (node)
-	{
-	  if (GTK_CMCELL_PIXTEXT
-	      (GTK_CMCTREE_ROW (node)->row.cell[ctree->tree_column])->pixmap)
-	    {
-	      gtk_drag_set_icon_pixmap
-		(context,
-		 gtk_widget_get_colormap (widget),
-		 GTK_CMCELL_PIXTEXT
-		 (GTK_CMCTREE_ROW (node)->row.cell[ctree->tree_column])->pixmap,
-		 GTK_CMCELL_PIXTEXT
-		 (GTK_CMCTREE_ROW (node)->row.cell[ctree->tree_column])->mask,
-		 -2, -2);
-	      return;
-	    }
-	}
       gtk_drag_set_icon_default (context);
     }
 }

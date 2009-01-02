@@ -159,10 +159,8 @@ struct _GtkCMCTreeRow
   GtkCMCTreeNode *sibling;
   GtkCMCTreeNode *children;
   
-  GdkPixmap *pixmap_closed;
-  GdkBitmap *mask_closed;
-  GdkPixmap *pixmap_opened;
-  GdkBitmap *mask_opened;
+  GdkPixbuf *pixbuf_closed;
+  GdkPixbuf *pixbuf_opened;
   
   guint16 level;
   
@@ -190,10 +188,8 @@ GtkCMCTreeNode * gtk_cmctree_insert_node             (GtkCMCTree     *ctree,
 						  GtkCMCTreeNode *sibling,
 						  gchar        *text[],
 						  guint8        spacing,
-						  GdkPixmap    *pixmap_closed,
-						  GdkBitmap    *mask_closed,
-						  GdkPixmap    *pixmap_opened,
-						  GdkBitmap    *mask_opened,
+						  GdkPixbuf    *pixbuf_closed,
+						  GdkPixbuf    *pixbuf_opened,
 						  gboolean      is_leaf,
 						  gboolean      expanded);
 void gtk_cmctree_remove_node                       (GtkCMCTree     *ctree, 
@@ -314,26 +310,22 @@ void gtk_cmctree_node_set_text                     (GtkCMCTree     *ctree,
 						  GtkCMCTreeNode *node,
 						  gint          column,
 						  const gchar  *text);
-void gtk_cmctree_node_set_pixmap                   (GtkCMCTree     *ctree,
+void gtk_cmctree_node_set_pixbuf                   (GtkCMCTree     *ctree,
 						  GtkCMCTreeNode *node,
 						  gint          column,
-						  GdkPixmap    *pixmap,
-						  GdkBitmap    *mask);
+						  GdkPixbuf    *pixbuf);
 void gtk_cmctree_node_set_pixtext                  (GtkCMCTree     *ctree,
 						  GtkCMCTreeNode *node,
 						  gint          column,
 						  const gchar  *text,
 						  guint8        spacing,
-						  GdkPixmap    *pixmap,
-						  GdkBitmap    *mask);
+						  GdkPixbuf    *pixbuf);
 void gtk_cmctree_set_node_info                     (GtkCMCTree     *ctree,
 						  GtkCMCTreeNode *node,
 						  const gchar  *text,
 						  guint8        spacing,
-						  GdkPixmap    *pixmap_closed,
-						  GdkBitmap    *mask_closed,
-						  GdkPixmap    *pixmap_opened,
-						  GdkBitmap    *mask_opened,
+						  GdkPixbuf    *pixbuf_closed,
+						  GdkPixbuf    *pixbuf_opened,
 						  gboolean      is_leaf,
 						  gboolean      expanded);
 void gtk_cmctree_node_set_shift                    (GtkCMCTree     *ctree,
@@ -353,26 +345,22 @@ gboolean gtk_cmctree_node_get_text                 (GtkCMCTree     *ctree,
 						  GtkCMCTreeNode *node,
 						  gint          column,
 						  gchar       **text);
-gboolean gtk_cmctree_node_get_pixmap               (GtkCMCTree     *ctree,
+gboolean gtk_cmctree_node_get_pixbuf               (GtkCMCTree     *ctree,
 						  GtkCMCTreeNode *node,
 						  gint          column,
-						  GdkPixmap   **pixmap,
-						  GdkBitmap   **mask);
+						  GdkPixbuf   **pixbuf);
 gboolean gtk_cmctree_node_get_pixtext              (GtkCMCTree     *ctree,
 						  GtkCMCTreeNode *node,
 						  gint          column,
 						  gchar       **text,
 						  guint8       *spacing,
-						  GdkPixmap   **pixmap,
-						  GdkBitmap   **mask);
+						  GdkPixbuf   **pixbuf);
 gboolean gtk_cmctree_get_node_info                 (GtkCMCTree     *ctree,
 						  GtkCMCTreeNode *node,
 						  gchar       **text,
 						  guint8       *spacing,
-						  GdkPixmap   **pixmap_closed,
-						  GdkBitmap   **mask_closed,
-						  GdkPixmap   **pixmap_opened,
-						  GdkBitmap   **mask_opened,
+						  GdkPixbuf   **pixbuf_closed,
+						  GdkPixbuf   **pixbuf_opened,
 						  gboolean     *is_leaf,
 						  gboolean     *expanded);
 void gtk_cmctree_node_set_row_style                (GtkCMCTree     *ctree,

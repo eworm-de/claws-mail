@@ -382,11 +382,10 @@ static void get_cell_style   (GtkCMCList      *clist,
 			      GtkStyle     **style,
 			      GdkGC        **fg_gc,
 			      GdkGC        **bg_gc);
-static gint draw_cell_pixmap (GdkWindow     *window,
+static gint draw_cell_pixbuf (GdkWindow     *window,
 			      GdkRectangle  *clip_rectangle,
 			      GdkGC         *fg_gc,
-			      GdkPixmap     *pixmap,
-			      GdkBitmap     *mask,
+			      GdkPixbuf     *pixbuf,
 			      gint           x,
 			      gint           y,
 			      gint           width,
@@ -424,8 +423,7 @@ static void set_cell_contents      (GtkCMCList      *clist,
 				    GtkCMCellType    type,
 				    const gchar   *text,
 				    guint8         spacing,
-				    GdkPixmap     *pixmap,
-				    GdkBitmap     *mask);
+				    GdkPixbuf     *pixbuf);
 static gint real_insert_row        (GtkCMCList      *clist,
 				    gint           row,
 				    gchar         *text[]);
@@ -2276,8 +2274,8 @@ column_title_passive_func (GtkWidget *widget,
  *   gtk_cmclist_get_cell_type
  *   gtk_cmclist_set_text
  *   gtk_cmclist_get_text
- *   gtk_cmclist_set_pixmap
- *   gtk_cmclist_get_pixmap
+ *   gtk_cmclist_set_pixbuf
+ *   gtk_cmclist_get_pixbuf
  *   gtk_cmclist_set_pixtext
  *   gtk_cmclist_get_pixtext
  *   gtk_cmclist_set_shift
@@ -2320,7 +2318,7 @@ gtk_cmclist_set_text (GtkCMCList    *clist,
 
   /* if text is null, then the cell is empty */
   GTK_CMCLIST_GET_CLASS (clist)->set_cell_contents
-    (clist, clist_row, column, GTK_CMCELL_TEXT, text, 0, NULL, NULL);
+    (clist, clist_row, column, GTK_CMCELL_TEXT, text, 0, NULL);
 
   /* redraw the list if it's not frozen */
   if (CLIST_UNFROZEN (clist))
@@ -2357,11 +2355,10 @@ gtk_cmclist_get_text (GtkCMCList  *clist,
 }
 
 void
-gtk_cmclist_set_pixmap (GtkCMCList  *clist,
+gtk_cmclist_set_pixbuf (GtkCMCList  *clist,
 		      gint       row,
 		      gint       column,
-		      GdkPixmap *pixmap,
-		      GdkBitmap *mask)
+		      GdkPixbuf *pixbuf)
 {
   GtkCMCListRow *clist_row;
 
@@ -2374,12 +2371,10 @@ gtk_cmclist_set_pixmap (GtkCMCList  *clist,
 
   clist_row = ROW_ELEMENT (clist, row)->data;
   
-  g_object_ref (pixmap);
-  
-  if (mask) g_object_ref (mask);
+  g_object_ref (pixbuf);
   
   GTK_CMCLIST_GET_CLASS (clist)->set_cell_contents
-    (clist, clist_row, column, GTK_CMCELL_PIXMAP, NULL, 0, pixmap, mask);
+    (clist, clist_row, column, GTK_CMCELL_PIXBUF, NULL, 0, pixbuf);
 
   /* redraw the list if it's not frozen */
   if (CLIST_UNFROZEN (clist))
@@ -2390,11 +2385,10 @@ gtk_cmclist_set_pixmap (GtkCMCList  *clist,
 }
 
 gint
-gtk_cmclist_get_pixmap (GtkCMCList   *clist,
+gtk_cmclist_get_pixbuf (GtkCMCList   *clist,
 		      gint        row,
 		      gint        column,
-		      GdkPixmap **pixmap,
-		      GdkBitmap **mask)
+		      GdkPixbuf **pixbuf)
 {
   GtkCMCListRow *clist_row;
 
@@ -2407,14 +2401,12 @@ gtk_cmclist_get_pixmap (GtkCMCList   *clist,
 
   clist_row = ROW_ELEMENT (clist, row)->data;
 
-  if (clist_row->cell[column].type != GTK_CMCELL_PIXMAP)
+  if (clist_row->cell[column].type != GTK_CMCELL_PIXBUF)
     return 0;
 
-  if (pixmap)
+  if (pixbuf)
   {
-    *pixmap = GTK_CMCELL_PIXMAP (clist_row->cell[column])->pixmap;
-    /* mask can be NULL */
-    *mask = GTK_CMCELL_PIXMAP (clist_row->cell[column])->mask;
+    *pixbuf = GTK_CMCELL_PIXBUF (clist_row->cell[column])->pixbuf;
   }
 
   return 1;
@@ -2426,8 +2418,7 @@ gtk_cmclist_set_pixtext (GtkCMCList    *clist,
 		       gint         column,
 		       const gchar *text,
 		       guint8       spacing,
-		       GdkPixmap   *pixmap,
-		       GdkBitmap   *mask)
+		       GdkPixbuf   *pixbuf)
 {
   GtkCMCListRow *clist_row;
 
@@ -2440,10 +2431,9 @@ gtk_cmclist_set_pixtext (GtkCMCList    *clist,
 
   clist_row = ROW_ELEMENT (clist, row)->data;
   
-  g_object_ref (pixmap);
-  if (mask) g_object_ref (mask);
+  g_object_ref (pixbuf);
   GTK_CMCLIST_GET_CLASS (clist)->set_cell_contents
-    (clist, clist_row, column, GTK_CMCELL_PIXTEXT, text, spacing, pixmap, mask);
+    (clist, clist_row, column, GTK_CMCELL_PIXTEXT, text, spacing, pixbuf);
 
   /* redraw the list if it's not frozen */
   if (CLIST_UNFROZEN (clist))
@@ -2459,8 +2449,7 @@ gtk_cmclist_get_pixtext (GtkCMCList   *clist,
 		       gint        column,
 		       gchar     **text,
 		       guint8     *spacing,
-		       GdkPixmap **pixmap,
-		       GdkBitmap **mask)
+		       GdkPixbuf **pixbuf)
 {
   GtkCMCListRow *clist_row;
 
@@ -2480,12 +2469,8 @@ gtk_cmclist_get_pixtext (GtkCMCList   *clist,
     *text = GTK_CMCELL_PIXTEXT (clist_row->cell[column])->text;
   if (spacing)
     *spacing = GTK_CMCELL_PIXTEXT (clist_row->cell[column])->spacing;
-  if (pixmap)
-    *pixmap = GTK_CMCELL_PIXTEXT (clist_row->cell[column])->pixmap;
-
-  /* mask can be NULL */
-  if (mask)
-    *mask = GTK_CMCELL_PIXTEXT (clist_row->cell[column])->mask;
+  if (pixbuf)
+    *pixbuf = GTK_CMCELL_PIXTEXT (clist_row->cell[column])->pixbuf;
 
   return 1;
 }
@@ -2534,13 +2519,11 @@ set_cell_contents (GtkCMCList    *clist,
 		   GtkCMCellType  type,
 		   const gchar *text,
 		   guint8       spacing,
-		   GdkPixmap   *pixmap,
-		   GdkBitmap   *mask)
+		   GdkPixbuf   *pixbuf)
 {
   GtkRequisition requisition;
   gchar *old_text = NULL;
-  GdkPixmap *old_pixmap = NULL;
-  GdkBitmap *old_mask = NULL;
+  GdkPixbuf *old_pixbuf = NULL;
   
   g_return_if_fail (GTK_IS_CMCLIST (clist));
   g_return_if_fail (clist_row != NULL);
@@ -2557,14 +2540,12 @@ set_cell_contents (GtkCMCList    *clist,
     case GTK_CMCELL_TEXT:
       old_text = GTK_CMCELL_TEXT (clist_row->cell[column])->text;
       break;
-    case GTK_CMCELL_PIXMAP:
-      old_pixmap = GTK_CMCELL_PIXMAP (clist_row->cell[column])->pixmap;
-      old_mask = GTK_CMCELL_PIXMAP (clist_row->cell[column])->mask;
+    case GTK_CMCELL_PIXBUF:
+      old_pixbuf = GTK_CMCELL_PIXBUF (clist_row->cell[column])->pixbuf;
       break;
     case GTK_CMCELL_PIXTEXT:
       old_text = GTK_CMCELL_PIXTEXT (clist_row->cell[column])->text;
-      old_pixmap = GTK_CMCELL_PIXTEXT (clist_row->cell[column])->pixmap;
-      old_mask = GTK_CMCELL_PIXTEXT (clist_row->cell[column])->mask;
+      old_pixbuf = GTK_CMCELL_PIXTEXT (clist_row->cell[column])->pixbuf;
       break;
     case GTK_CMCELL_WIDGET:
       /* unimplemented */
@@ -2575,7 +2556,7 @@ set_cell_contents (GtkCMCList    *clist,
 
   clist_row->cell[column].type = GTK_CMCELL_EMPTY;
 
-  /* Note that pixmap and mask were already ref'ed by the caller
+  /* Note that pixbuf and mask were already ref'ed by the caller
    */
   switch (type)
     {
@@ -2586,23 +2567,20 @@ set_cell_contents (GtkCMCList    *clist,
 	  GTK_CMCELL_TEXT (clist_row->cell[column])->text = g_strdup (text);
 	}
       break;
-    case GTK_CMCELL_PIXMAP:
-      if (pixmap)
+    case GTK_CMCELL_PIXBUF:
+      if (pixbuf)
 	{
-	  clist_row->cell[column].type = GTK_CMCELL_PIXMAP;
-	  GTK_CMCELL_PIXMAP (clist_row->cell[column])->pixmap = pixmap;
-	  /* We set the mask even if it is NULL */
-	  GTK_CMCELL_PIXMAP (clist_row->cell[column])->mask = mask;
+	  clist_row->cell[column].type = GTK_CMCELL_PIXBUF;
+	  GTK_CMCELL_PIXBUF (clist_row->cell[column])->pixbuf = pixbuf;
 	}
       break;
     case GTK_CMCELL_PIXTEXT:
-      if (text && pixmap)
+      if (text && pixbuf)
 	{
 	  clist_row->cell[column].type = GTK_CMCELL_PIXTEXT;
 	  GTK_CMCELL_PIXTEXT (clist_row->cell[column])->text = g_strdup (text);
 	  GTK_CMCELL_PIXTEXT (clist_row->cell[column])->spacing = spacing;
-	  GTK_CMCELL_PIXTEXT (clist_row->cell[column])->pixmap = pixmap;
-	  GTK_CMCELL_PIXTEXT (clist_row->cell[column])->mask = mask;
+	  GTK_CMCELL_PIXTEXT (clist_row->cell[column])->pixbuf = pixbuf;
 	}
       break;
     default:
@@ -2614,10 +2592,8 @@ set_cell_contents (GtkCMCList    *clist,
     column_auto_resize (clist, clist_row, column, requisition.width);
 
   g_free (old_text);
-  if (old_pixmap)
-    g_object_unref (old_pixmap);
-  if (old_mask)
-    g_object_unref (old_mask);
+  if (old_pixbuf)
+    g_object_unref (old_pixbuf);
 }
 
 PangoLayout *
@@ -2695,14 +2671,14 @@ cell_size_request (GtkCMCList       *clist,
   switch (clist_row->cell[column].type)
     {
     case GTK_CMCELL_PIXTEXT:
-      gdk_drawable_get_size (GTK_CMCELL_PIXTEXT (clist_row->cell[column])->pixmap,
-			   &width, &height);
+      width = gdk_pixbuf_get_width(GTK_CMCELL_PIXTEXT (clist_row->cell[column])->pixbuf);
+      height = gdk_pixbuf_get_height(GTK_CMCELL_PIXTEXT (clist_row->cell[column])->pixbuf);
       requisition->width += width;
       requisition->height = MAX (requisition->height, height);      
       break;
-    case GTK_CMCELL_PIXMAP:
-      gdk_drawable_get_size (GTK_CMCELL_PIXMAP (clist_row->cell[column])->pixmap,
-			   &width, &height);
+    case GTK_CMCELL_PIXBUF:
+      width = gdk_pixbuf_get_width(GTK_CMCELL_PIXBUF (clist_row->cell[column])->pixbuf);
+      height = gdk_pixbuf_get_height(GTK_CMCELL_PIXBUF (clist_row->cell[column])->pixbuf);
       requisition->width += width;
       requisition->height = MAX (requisition->height, height);
       break;
@@ -2799,7 +2775,7 @@ real_insert_row (GtkCMCList *clist,
   for (i = 0; i < clist->columns; i++)
     if (text[i])
       GTK_CMCLIST_GET_CLASS (clist)->set_cell_contents
-	(clist, clist_row, i, GTK_CMCELL_TEXT, text[i], 0, NULL ,NULL);
+	(clist, clist_row, i, GTK_CMCELL_TEXT, text[i], 0, NULL);
 
   if (!clist->rows)
     {
@@ -5596,7 +5572,7 @@ gtk_cmclist_forall (GtkContainer *container,
 
 /* PRIVATE DRAWING FUNCTIONS
  *   get_cell_style
- *   draw_cell_pixmap
+ *   draw_cell_pixbuf
  *   draw_row
  *   draw_rows
  *   draw_xor_line
@@ -5669,11 +5645,10 @@ get_cell_style (GtkCMCList     *clist,
 }
 
 static gint
-draw_cell_pixmap (GdkWindow    *window,
+draw_cell_pixbuf (GdkWindow    *window,
 		  GdkRectangle *clip_rectangle,
 		  GdkGC        *fg_gc,
-		  GdkPixmap    *pixmap,
-		  GdkBitmap    *mask,
+		  GdkPixbuf    *pixbuf,
 		  gint          x,
 		  gint          y,
 		  gint          width,
@@ -5682,11 +5657,7 @@ draw_cell_pixmap (GdkWindow    *window,
   gint xsrc = 0;
   gint ysrc = 0;
 
-  if (mask)
-    {
-      gdk_gc_set_clip_mask (fg_gc, mask);
-      gdk_gc_set_clip_origin (fg_gc, x, y);
-    }
+  gdk_gc_set_clip_origin (fg_gc, x, y);
 
   if (x < clip_rectangle->x)
     {
@@ -5706,10 +5677,8 @@ draw_cell_pixmap (GdkWindow    *window,
   if (y + height > clip_rectangle->y + clip_rectangle->height)
     height = clip_rectangle->y + clip_rectangle->height - y;
 
-  gdk_draw_drawable (window, fg_gc, pixmap, xsrc, ysrc, x, y, width, height);
+  gdk_draw_pixbuf (window, fg_gc, pixbuf, xsrc, ysrc, x, y, width, height, GDK_RGB_DITHER_NONE, 0, 0);
   gdk_gc_set_clip_origin (fg_gc, 0, 0);
-  if (mask)
-    gdk_gc_set_clip_mask (fg_gc, NULL);
 
   return x + MAX (width, 0);
 }
@@ -5847,7 +5816,7 @@ draw_row (GtkCMCList     *clist,
 
       gint width;
       gint height;
-      gint pixmap_width;
+      gint pixbuf_width;
       gint offset = 0;
 
       if (!clist->column[i].visible)
@@ -5886,19 +5855,20 @@ draw_row (GtkCMCList     *clist,
       else
 	width = 0;
 
-      pixmap_width = 0;
+      pixbuf_width = 0;
+      height = 0;
       offset = 0;
       switch (clist_row->cell[i].type)
 	{
-	case GTK_CMCELL_PIXMAP:
-	  gdk_drawable_get_size (GTK_CMCELL_PIXMAP (clist_row->cell[i])->pixmap,
-			       &pixmap_width, &height);
-	  width += pixmap_width;
+	case GTK_CMCELL_PIXBUF:
+	  pixbuf_width = gdk_pixbuf_get_width(GTK_CMCELL_PIXBUF (clist_row->cell[i])->pixbuf);
+	  height = gdk_pixbuf_get_height(GTK_CMCELL_PIXBUF (clist_row->cell[i])->pixbuf);
+	  width += pixbuf_width;
 	  break;
 	case GTK_CMCELL_PIXTEXT:
-	  gdk_drawable_get_size (GTK_CMCELL_PIXTEXT (clist_row->cell[i])->pixmap,
-			       &pixmap_width, &height);
-	  width += pixmap_width + GTK_CMCELL_PIXTEXT (clist_row->cell[i])->spacing;
+	  pixbuf_width = gdk_pixbuf_get_width(GTK_CMCELL_PIXTEXT (clist_row->cell[i])->pixbuf);
+	  height = gdk_pixbuf_get_height(GTK_CMCELL_PIXTEXT (clist_row->cell[i])->pixbuf);
+	  width += pixbuf_width + GTK_CMCELL_PIXTEXT (clist_row->cell[i])->spacing;
 	  break;
 	default:
 	  break;
@@ -5920,27 +5890,25 @@ draw_row (GtkCMCList     *clist,
 	  break;
 	};
 
-      /* Draw Text and/or Pixmap */
+      /* Draw Text and/or Pixbuf */
       switch (clist_row->cell[i].type)
 	{
-	case GTK_CMCELL_PIXMAP:
-	  draw_cell_pixmap (clist->clist_window, &clip_rectangle, fg_gc,
-			    GTK_CMCELL_PIXMAP (clist_row->cell[i])->pixmap,
-			    GTK_CMCELL_PIXMAP (clist_row->cell[i])->mask,
+	case GTK_CMCELL_PIXBUF:
+	  draw_cell_pixbuf (clist->clist_window, &clip_rectangle, fg_gc,
+			    GTK_CMCELL_PIXBUF (clist_row->cell[i])->pixbuf,
 			    offset,
 			    clip_rectangle.y + clist_row->cell[i].vertical +
 			    (clip_rectangle.height - height) / 2,
-			    pixmap_width, height);
+			    pixbuf_width, height);
 	  break;
 	case GTK_CMCELL_PIXTEXT:
 	  offset =
-	    draw_cell_pixmap (clist->clist_window, &clip_rectangle, fg_gc,
-			      GTK_CMCELL_PIXTEXT (clist_row->cell[i])->pixmap,
-			      GTK_CMCELL_PIXTEXT (clist_row->cell[i])->mask,
+	    draw_cell_pixbuf (clist->clist_window, &clip_rectangle, fg_gc,
+			      GTK_CMCELL_PIXTEXT (clist_row->cell[i])->pixbuf,
 			      offset,
 			      clip_rectangle.y + clist_row->cell[i].vertical+
 			      (clip_rectangle.height - height) / 2,
-			      pixmap_width, height);
+			      pixbuf_width, height);
 	  offset += GTK_CMCELL_PIXTEXT (clist_row->cell[i])->spacing;
 
 	  /* Fall through */
@@ -6488,7 +6456,7 @@ row_delete (GtkCMCList    *clist,
   for (i = 0; i < clist->columns; i++)
     {
       GTK_CMCLIST_GET_CLASS (clist)->set_cell_contents
-	(clist, clist_row, i, GTK_CMCELL_EMPTY, NULL, 0, NULL, NULL);
+	(clist, clist_row, i, GTK_CMCELL_EMPTY, NULL, 0, NULL);
       if (clist_row->cell[i].style)
 	{
 	  if (GTK_WIDGET_REALIZED (clist))

@@ -89,44 +89,26 @@ static GtkStyle *small_style;
 static GtkStyle *small_marked_style;
 static GtkStyle *small_deleted_style;
 
-static GdkPixmap *markxpm;
-static GdkBitmap *markxpmmask;
-static GdkPixmap *deletedxpm;
-static GdkBitmap *deletedxpmmask;
-static GdkPixmap *movedxpm;
-static GdkBitmap *movedxpmmask;
-static GdkPixmap *copiedxpm;
-static GdkBitmap *copiedxpmmask;
+static GdkPixbuf *markxpm;
+static GdkPixbuf *deletedxpm;
+static GdkPixbuf *movedxpm;
+static GdkPixbuf *copiedxpm;
 
-static GdkPixmap *newxpm;
-static GdkBitmap *newxpmmask;
-static GdkPixmap *unreadxpm;
-static GdkBitmap *unreadxpmmask;
-static GdkPixmap *repliedxpm;
-static GdkBitmap *repliedxpmmask;
-static GdkPixmap *forwardedxpm;
-static GdkBitmap *forwardedxpmmask;
-static GdkPixmap *ignorethreadxpm;
-static GdkBitmap *ignorethreadxpmmask;
-static GdkPixmap *watchthreadxpm;
-static GdkBitmap *watchthreadxpmmask;
-static GdkPixmap *lockedxpm;
-static GdkBitmap *lockedxpmmask;
-static GdkPixmap *spamxpm;
-static GdkBitmap *spamxpmmask;
+static GdkPixbuf *newxpm;
+static GdkPixbuf *unreadxpm;
+static GdkPixbuf *repliedxpm;
+static GdkPixbuf *forwardedxpm;
+static GdkPixbuf *ignorethreadxpm;
+static GdkPixbuf *watchthreadxpm;
+static GdkPixbuf *lockedxpm;
+static GdkPixbuf *spamxpm;
 
-static GdkPixmap *clipxpm;
-static GdkBitmap *clipxpmmask;
-static GdkPixmap *keyxpm;
-static GdkBitmap *keyxpmmask;
-static GdkPixmap *clipkeyxpm;
-static GdkBitmap *clipkeyxpmmask;
-static GdkPixmap *keysignxpm;
-static GdkBitmap *keysignxpmmask;
-static GdkPixmap *gpgsignedxpm;
-static GdkBitmap *gpgsignedxpmmask;
-static GdkPixmap *clipgpgsignedxpm;
-static GdkBitmap *clipgpgsignedxpmmask;
+static GdkPixbuf *clipxpm;
+static GdkPixbuf *keyxpm;
+static GdkPixbuf *clipkeyxpm;
+static GdkPixbuf *keysignxpm;
+static GdkPixbuf *gpgsignedxpm;
+static GdkPixbuf *clipgpgsignedxpm;
 
 static void summary_free_msginfo_func	(GtkCMCTree		*ctree,
 					 GtkCMCTreeNode		*node,
@@ -930,42 +912,42 @@ void summary_init(SummaryView *summaryview)
 	GtkWidget *pixmap;
 
 	gtk_widget_realize(summaryview->ctree);
-	stock_pixmap_gdk(summaryview->ctree, STOCK_PIXMAP_MARK,
-			 &markxpm, &markxpmmask);
-	stock_pixmap_gdk(summaryview->ctree, STOCK_PIXMAP_DELETED,
-			 &deletedxpm, &deletedxpmmask);
-	stock_pixmap_gdk(summaryview->ctree, STOCK_PIXMAP_NEW,
-			 &newxpm, &newxpmmask);
-	stock_pixmap_gdk(summaryview->ctree, STOCK_PIXMAP_UNREAD,
-			 &unreadxpm, &unreadxpmmask);
-	stock_pixmap_gdk(summaryview->ctree, STOCK_PIXMAP_REPLIED,
-			 &repliedxpm, &repliedxpmmask);
-	stock_pixmap_gdk(summaryview->ctree, STOCK_PIXMAP_FORWARDED,
-			 &forwardedxpm, &forwardedxpmmask);
-	stock_pixmap_gdk(summaryview->ctree, STOCK_PIXMAP_CLIP,
-			 &clipxpm, &clipxpmmask);
-	stock_pixmap_gdk(summaryview->ctree, STOCK_PIXMAP_LOCKED,
-			 &lockedxpm, &lockedxpmmask);
-	stock_pixmap_gdk(summaryview->ctree, STOCK_PIXMAP_IGNORETHREAD,
-			 &ignorethreadxpm, &ignorethreadxpmmask);
-	stock_pixmap_gdk(summaryview->ctree, STOCK_PIXMAP_WATCHTHREAD,
-			 &watchthreadxpm, &watchthreadxpmmask);
-	stock_pixmap_gdk(summaryview->ctree, STOCK_PIXMAP_CLIP_KEY,
-			 &clipkeyxpm, &clipkeyxpmmask);
-	stock_pixmap_gdk(summaryview->ctree, STOCK_PIXMAP_KEY_SIGN,
-			 &keysignxpm, &keysignxpmmask);
-	stock_pixmap_gdk(summaryview->ctree, STOCK_PIXMAP_KEY,
-			 &keyxpm, &keyxpmmask);
-	stock_pixmap_gdk(summaryview->ctree, STOCK_PIXMAP_GPG_SIGNED,
-			 &gpgsignedxpm, &gpgsignedxpmmask);
-	stock_pixmap_gdk(summaryview->ctree, STOCK_PIXMAP_CLIP_GPG_SIGNED,
-			 &clipgpgsignedxpm, &clipgpgsignedxpmmask);
-	stock_pixmap_gdk(summaryview->ctree, STOCK_PIXMAP_SPAM,
-			 &spamxpm, &spamxpmmask);
-	stock_pixmap_gdk(summaryview->ctree, STOCK_PIXMAP_MOVED,
-			 &movedxpm, &movedxpmmask);
-	stock_pixmap_gdk(summaryview->ctree, STOCK_PIXMAP_COPIED,
-			 &copiedxpm, &copiedxpmmask);
+	stock_pixbuf_gdk(summaryview->ctree, STOCK_PIXMAP_MARK,
+			 &markxpm);
+	stock_pixbuf_gdk(summaryview->ctree, STOCK_PIXMAP_DELETED,
+			 &deletedxpm);
+	stock_pixbuf_gdk(summaryview->ctree, STOCK_PIXMAP_NEW,
+			 &newxpm);
+	stock_pixbuf_gdk(summaryview->ctree, STOCK_PIXMAP_UNREAD,
+			 &unreadxpm);
+	stock_pixbuf_gdk(summaryview->ctree, STOCK_PIXMAP_REPLIED,
+			 &repliedxpm);
+	stock_pixbuf_gdk(summaryview->ctree, STOCK_PIXMAP_FORWARDED,
+			 &forwardedxpm);
+	stock_pixbuf_gdk(summaryview->ctree, STOCK_PIXMAP_CLIP,
+			 &clipxpm);
+	stock_pixbuf_gdk(summaryview->ctree, STOCK_PIXMAP_LOCKED,
+			 &lockedxpm);
+	stock_pixbuf_gdk(summaryview->ctree, STOCK_PIXMAP_IGNORETHREAD,
+			 &ignorethreadxpm);
+	stock_pixbuf_gdk(summaryview->ctree, STOCK_PIXMAP_WATCHTHREAD,
+			 &watchthreadxpm);
+	stock_pixbuf_gdk(summaryview->ctree, STOCK_PIXMAP_CLIP_KEY,
+			 &clipkeyxpm);
+	stock_pixbuf_gdk(summaryview->ctree, STOCK_PIXMAP_KEY_SIGN,
+			 &keysignxpm);
+	stock_pixbuf_gdk(summaryview->ctree, STOCK_PIXMAP_KEY,
+			 &keyxpm);
+	stock_pixbuf_gdk(summaryview->ctree, STOCK_PIXMAP_GPG_SIGNED,
+			 &gpgsignedxpm);
+	stock_pixbuf_gdk(summaryview->ctree, STOCK_PIXMAP_CLIP_GPG_SIGNED,
+			 &clipgpgsignedxpm);
+	stock_pixbuf_gdk(summaryview->ctree, STOCK_PIXMAP_SPAM,
+			 &spamxpm);
+	stock_pixbuf_gdk(summaryview->ctree, STOCK_PIXMAP_MOVED,
+			 &movedxpm);
+	stock_pixbuf_gdk(summaryview->ctree, STOCK_PIXMAP_COPIED,
+			 &copiedxpm);
 
 	summary_set_fonts(summaryview);
 
@@ -2647,19 +2629,19 @@ static void summary_set_column_titles(SummaryView *summaryview)
 		}
 
 		if (type == S_COL_MIME) {
-			label = gtk_image_new_from_pixmap(clipxpm, clipxpmmask);
+			label = gtk_image_new_from_pixbuf(clipxpm);
 			gtk_widget_show(label);
 			gtk_cmclist_set_column_widget(clist, pos, label);
 			gtk_sctree_set_column_tooltip(GTK_SCTREE(clist), pos, _("Attachment"));
 			continue;
 		} else if (type == S_COL_MARK) {
-			label = gtk_image_new_from_pixmap(markxpm, markxpmmask);
+			label = gtk_image_new_from_pixbuf(markxpm);
 			gtk_widget_show(label);
 			gtk_cmclist_set_column_widget(clist, pos, label);
 			gtk_sctree_set_column_tooltip(GTK_SCTREE(clist), pos, _("Mark"));
 			continue;
 		} else if (type == S_COL_LOCKED) {
-			label = gtk_image_new_from_pixmap(lockedxpm, lockedxpmmask);
+			label = gtk_image_new_from_pixbuf(lockedxpm);
 			gtk_widget_show(label);
 			gtk_cmclist_set_column_widget(clist, pos, label);
 			gtk_sctree_set_column_tooltip(GTK_SCTREE(clist), pos, _("Locked"));
@@ -2909,7 +2891,7 @@ static gboolean summary_insert_gnode_func(GtkCMCTree *ctree, guint depth, GNode 
 	summary_set_header(summaryview, text, msginfo);
 
 	gtk_sctree_set_node_info(ctree, cnode, text[col_pos[S_COL_SUBJECT]], 2,
-				NULL, NULL, NULL, NULL, FALSE, summaryview->threaded && !summaryview->thread_collapsed);
+				NULL, NULL, FALSE, summaryview->threaded && !summaryview->thread_collapsed);
 #define SET_TEXT(col) {						\
 	gtk_cmctree_node_set_text(ctree, cnode, col_pos[col], 	\
 				text[col_pos[col]]);		\
@@ -3008,7 +2990,7 @@ static void summary_set_ctree_from_list(SummaryView *summaryview,
 
 			node = gtk_sctree_insert_node
 				(ctree, NULL, node, text, 2,
-				 NULL, NULL, NULL, NULL,
+				 NULL, NULL,
 				 FALSE, FALSE);
 			if (vert && prefs_common.two_line_vert)
 				g_free(text[summaryview->col_pos[S_COL_SUBJECT]]);
@@ -3661,26 +3643,26 @@ static void summary_set_row_marks(SummaryView *summaryview, GtkCMCTreeNode *row)
 
 	/* set new/unread column */
 	if (MSG_IS_IGNORE_THREAD(flags)) {
-		gtk_cmctree_node_set_pixmap(ctree, row, col_pos[S_COL_STATUS],
-					  ignorethreadxpm, ignorethreadxpmmask);
+		gtk_cmctree_node_set_pixbuf(ctree, row, col_pos[S_COL_STATUS],
+					  ignorethreadxpm);
 	} else if (MSG_IS_WATCH_THREAD(flags)) {
-		gtk_cmctree_node_set_pixmap(ctree, row, col_pos[S_COL_STATUS],
-					  watchthreadxpm, watchthreadxpmmask);
+		gtk_cmctree_node_set_pixbuf(ctree, row, col_pos[S_COL_STATUS],
+					  watchthreadxpm);
 	} else if (MSG_IS_SPAM(flags)) {
-		gtk_cmctree_node_set_pixmap(ctree, row, col_pos[S_COL_STATUS],
-					  spamxpm, spamxpmmask);
+		gtk_cmctree_node_set_pixbuf(ctree, row, col_pos[S_COL_STATUS],
+					  spamxpm);
 	} else if (MSG_IS_NEW(flags)) {
-		gtk_cmctree_node_set_pixmap(ctree, row, col_pos[S_COL_STATUS],
-					  newxpm, newxpmmask);
+		gtk_cmctree_node_set_pixbuf(ctree, row, col_pos[S_COL_STATUS],
+					  newxpm);
 	} else if (MSG_IS_UNREAD(flags)) {
-		gtk_cmctree_node_set_pixmap(ctree, row, col_pos[S_COL_STATUS],
-					  unreadxpm, unreadxpmmask);
+		gtk_cmctree_node_set_pixbuf(ctree, row, col_pos[S_COL_STATUS],
+					  unreadxpm);
 	} else if (MSG_IS_REPLIED(flags)) {
-		gtk_cmctree_node_set_pixmap(ctree, row, col_pos[S_COL_STATUS],
-					  repliedxpm, repliedxpmmask);
+		gtk_cmctree_node_set_pixbuf(ctree, row, col_pos[S_COL_STATUS],
+					  repliedxpm);
 	} else if (MSG_IS_FORWARDED(flags)) {
-		gtk_cmctree_node_set_pixmap(ctree, row, col_pos[S_COL_STATUS],
-					  forwardedxpm, forwardedxpmmask);
+		gtk_cmctree_node_set_pixbuf(ctree, row, col_pos[S_COL_STATUS],
+					  forwardedxpm);
 	} else {
 		gtk_cmctree_node_set_text(ctree, row, col_pos[S_COL_STATUS],
 					"");
@@ -3695,8 +3677,8 @@ static void summary_set_row_marks(SummaryView *summaryview, GtkCMCTreeNode *row)
 
 	/* set mark column */
 	if (MSG_IS_DELETED(flags)) {
-		gtk_cmctree_node_set_pixmap(ctree, row, col_pos[S_COL_MARK],
-					  deletedxpm, deletedxpmmask);
+		gtk_cmctree_node_set_pixbuf(ctree, row, col_pos[S_COL_MARK],
+					  deletedxpm);
 		if (style)
 			style = bold_deleted_style;
 		else {
@@ -3705,11 +3687,11 @@ static void summary_set_row_marks(SummaryView *summaryview, GtkCMCTreeNode *row)
 			gtk_cmctree_node_set_foreground
 				(ctree, row, &summaryview->color_dim);
 	} else if (MSG_IS_MARKED(flags)) {
-		gtk_cmctree_node_set_pixmap(ctree, row, col_pos[S_COL_MARK],
-					  markxpm, markxpmmask);
+		gtk_cmctree_node_set_pixbuf(ctree, row, col_pos[S_COL_MARK],
+					  markxpm);
 	} else if (MSG_IS_MOVE(flags)) {
-		gtk_cmctree_node_set_pixmap(ctree, row, col_pos[S_COL_MARK],
-					  movedxpm, movedxpmmask);
+		gtk_cmctree_node_set_pixbuf(ctree, row, col_pos[S_COL_MARK],
+					  movedxpm);
 		if (style)
 			style = bold_marked_style;
 		else {
@@ -3718,8 +3700,8 @@ static void summary_set_row_marks(SummaryView *summaryview, GtkCMCTreeNode *row)
 			gtk_cmctree_node_set_foreground
 				(ctree, row, &summaryview->color_marked);
 	} else if (MSG_IS_COPY(flags)) {
-		gtk_cmctree_node_set_pixmap(ctree, row, col_pos[S_COL_MARK],
-					  copiedxpm, copiedxpmmask);
+		gtk_cmctree_node_set_pixbuf(ctree, row, col_pos[S_COL_MARK],
+					  copiedxpm);
 		if (style)
 			style = bold_marked_style;
 		else {
@@ -3732,33 +3714,33 @@ static void summary_set_row_marks(SummaryView *summaryview, GtkCMCTreeNode *row)
 	}
 
 	if (MSG_IS_LOCKED(flags)) {
-		gtk_cmctree_node_set_pixmap(ctree, row, col_pos[S_COL_LOCKED],
-					  lockedxpm, lockedxpmmask);
+		gtk_cmctree_node_set_pixbuf(ctree, row, col_pos[S_COL_LOCKED],
+					  lockedxpm);
 	}
 	else {
 		gtk_cmctree_node_set_text(ctree, row, col_pos[S_COL_LOCKED], "");
 	}
 
 	if (MSG_IS_WITH_ATTACHMENT(flags) && MSG_IS_SIGNED(flags)) {
-		gtk_cmctree_node_set_pixmap(ctree, row, col_pos[S_COL_MIME],
-					  clipgpgsignedxpm, clipgpgsignedxpmmask);
+		gtk_cmctree_node_set_pixbuf(ctree, row, col_pos[S_COL_MIME],
+					  clipgpgsignedxpm);
 	} else if (MSG_IS_SIGNED(flags)) {
 		if (MSG_IS_ENCRYPTED(flags)) {
-			gtk_cmctree_node_set_pixmap(ctree, row, col_pos[S_COL_MIME],
-					  keysignxpm, keysignxpmmask);
+			gtk_cmctree_node_set_pixbuf(ctree, row, col_pos[S_COL_MIME],
+					  keysignxpm);
 		} else {
-			gtk_cmctree_node_set_pixmap(ctree, row, col_pos[S_COL_MIME],
-						  gpgsignedxpm, gpgsignedxpmmask);
+			gtk_cmctree_node_set_pixbuf(ctree, row, col_pos[S_COL_MIME],
+						  gpgsignedxpm);
 		}
 	} else if (MSG_IS_WITH_ATTACHMENT(flags) && MSG_IS_ENCRYPTED(flags)) {
-		gtk_cmctree_node_set_pixmap(ctree, row, col_pos[S_COL_MIME],
-					  clipkeyxpm, clipkeyxpmmask);
+		gtk_cmctree_node_set_pixbuf(ctree, row, col_pos[S_COL_MIME],
+					  clipkeyxpm);
 	} else if (MSG_IS_ENCRYPTED(flags)) {
-		gtk_cmctree_node_set_pixmap(ctree, row, col_pos[S_COL_MIME],
-					  keyxpm, keyxpmmask);
+		gtk_cmctree_node_set_pixbuf(ctree, row, col_pos[S_COL_MIME],
+					  keyxpm);
 	} else if (MSG_IS_WITH_ATTACHMENT(flags)) {
-		gtk_cmctree_node_set_pixmap(ctree, row, col_pos[S_COL_MIME],
-					  clipxpm, clipxpmmask);
+		gtk_cmctree_node_set_pixbuf(ctree, row, col_pos[S_COL_MIME],
+					  clipxpm);
 	} else {
 		gtk_cmctree_node_set_text(ctree, row, col_pos[S_COL_MIME], "");
 	}
@@ -6009,7 +5991,7 @@ static gboolean tooltip_cb (GtkWidget  *widget,
 			break;
 		case GTK_CMCELL_PIXTEXT:
 			if (gtk_cmctree_node_get_pixtext(ctree, node, column, &text, 
-				NULL, NULL, NULL) != TRUE)
+				NULL, NULL) != TRUE)
 				return FALSE;
 			break;
 		default: 
@@ -7408,24 +7390,24 @@ void summary_reflect_prefs_pixmap_theme(SummaryView *summaryview)
 	GtkWidget *ctree = summaryview->ctree;
 	GtkWidget *pixmap; 
 
-	stock_pixmap_gdk(ctree, STOCK_PIXMAP_MARK, &markxpm, &markxpmmask);
-	stock_pixmap_gdk(ctree, STOCK_PIXMAP_DELETED, &deletedxpm, &deletedxpmmask);
-	stock_pixmap_gdk(ctree, STOCK_PIXMAP_NEW, &newxpm, &newxpmmask);
-	stock_pixmap_gdk(ctree, STOCK_PIXMAP_UNREAD, &unreadxpm, &unreadxpmmask);
-	stock_pixmap_gdk(ctree, STOCK_PIXMAP_REPLIED, &repliedxpm, &repliedxpmmask);
-	stock_pixmap_gdk(ctree, STOCK_PIXMAP_FORWARDED, &forwardedxpm, &forwardedxpmmask);
-	stock_pixmap_gdk(ctree, STOCK_PIXMAP_CLIP, &clipxpm, &clipxpmmask);
-	stock_pixmap_gdk(ctree, STOCK_PIXMAP_LOCKED, &lockedxpm, &lockedxpmmask);
-	stock_pixmap_gdk(ctree, STOCK_PIXMAP_IGNORETHREAD, &ignorethreadxpm, &ignorethreadxpmmask);
-	stock_pixmap_gdk(ctree, STOCK_PIXMAP_WATCHTHREAD, &watchthreadxpm, &watchthreadxpmmask);
-	stock_pixmap_gdk(ctree, STOCK_PIXMAP_CLIP_KEY, &clipkeyxpm, &clipkeyxpmmask);
-	stock_pixmap_gdk(ctree, STOCK_PIXMAP_KEY, &keyxpm, &keyxpmmask);
-	stock_pixmap_gdk(ctree, STOCK_PIXMAP_KEY_SIGN, &keysignxpm, &keysignxpmmask);
-	stock_pixmap_gdk(ctree, STOCK_PIXMAP_GPG_SIGNED, &gpgsignedxpm, &gpgsignedxpmmask);
-	stock_pixmap_gdk(ctree, STOCK_PIXMAP_CLIP_GPG_SIGNED, &clipgpgsignedxpm, &clipgpgsignedxpmmask);
-	stock_pixmap_gdk(ctree, STOCK_PIXMAP_SPAM, &spamxpm, &spamxpmmask);
-	stock_pixmap_gdk(ctree, STOCK_PIXMAP_MOVED, &movedxpm, &movedxpmmask);
-	stock_pixmap_gdk(ctree, STOCK_PIXMAP_COPIED, &copiedxpm, &copiedxpmmask);
+	stock_pixbuf_gdk(ctree, STOCK_PIXMAP_MARK, &markxpm);
+	stock_pixbuf_gdk(ctree, STOCK_PIXMAP_DELETED, &deletedxpm);
+	stock_pixbuf_gdk(ctree, STOCK_PIXMAP_NEW, &newxpm);
+	stock_pixbuf_gdk(ctree, STOCK_PIXMAP_UNREAD, &unreadxpm);
+	stock_pixbuf_gdk(ctree, STOCK_PIXMAP_REPLIED, &repliedxpm);
+	stock_pixbuf_gdk(ctree, STOCK_PIXMAP_FORWARDED, &forwardedxpm);
+	stock_pixbuf_gdk(ctree, STOCK_PIXMAP_CLIP, &clipxpm);
+	stock_pixbuf_gdk(ctree, STOCK_PIXMAP_LOCKED, &lockedxpm);
+	stock_pixbuf_gdk(ctree, STOCK_PIXMAP_IGNORETHREAD, &ignorethreadxpm);
+	stock_pixbuf_gdk(ctree, STOCK_PIXMAP_WATCHTHREAD, &watchthreadxpm);
+	stock_pixbuf_gdk(ctree, STOCK_PIXMAP_CLIP_KEY, &clipkeyxpm);
+	stock_pixbuf_gdk(ctree, STOCK_PIXMAP_KEY, &keyxpm);
+	stock_pixbuf_gdk(ctree, STOCK_PIXMAP_KEY_SIGN, &keysignxpm);
+	stock_pixbuf_gdk(ctree, STOCK_PIXMAP_GPG_SIGNED, &gpgsignedxpm);
+	stock_pixbuf_gdk(ctree, STOCK_PIXMAP_CLIP_GPG_SIGNED, &clipgpgsignedxpm);
+	stock_pixbuf_gdk(ctree, STOCK_PIXMAP_SPAM, &spamxpm);
+	stock_pixbuf_gdk(ctree, STOCK_PIXMAP_MOVED, &movedxpm);
+	stock_pixbuf_gdk(ctree, STOCK_PIXMAP_COPIED, &copiedxpm);
 
 	summary_set_folder_pixmap(summaryview, STOCK_PIXMAP_DIR_OPEN);
 

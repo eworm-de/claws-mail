@@ -296,7 +296,7 @@ static GtkCMCTreeNode *grouplist_create_parent(const gchar *name,
 	node = parent ? GTK_CMCTREE_ROW(parent)->children
 		: GTK_CMCTREE_NODE(GTK_CMCLIST(ctree)->row_list);
 	node = gtk_sctree_insert_node(GTK_CMCTREE(ctree), parent, node,
-				     cols, 0, NULL, NULL, NULL, NULL,
+				     cols, 0, NULL, NULL,
 				     FALSE, FALSE);
 	if (parent && g_pattern_match_simple(pattern, parent_name) == FALSE)
 		gtk_cmctree_expand(GTK_CMCTREE(ctree), parent);
@@ -341,14 +341,14 @@ static GtkCMCTreeNode *grouplist_create_branch(NewsGroupInfo *ginfo,
 	node = grouplist_hash_get_branch_node(name);
 	if (node) {
 		gtk_sctree_set_node_info(GTK_CMCTREE(ctree), node, cols[0], 0,
-					NULL, NULL, NULL, NULL, FALSE, FALSE);
+					NULL, NULL, FALSE, FALSE);
 		gtk_cmctree_node_set_text(GTK_CMCTREE(ctree), node, 1, cols[1]);
 		gtk_cmctree_node_set_text(GTK_CMCTREE(ctree), node, 2, cols[2]);
 	} else {
 		node = parent ? GTK_CMCTREE_ROW(parent)->children
 			: GTK_CMCTREE_NODE(GTK_CMCLIST(ctree)->row_list);
 		node = gtk_sctree_insert_node(GTK_CMCTREE(ctree), parent, node,
-					     cols, 0, NULL, NULL, NULL, NULL,
+					     cols, 0, NULL, NULL,
 					     TRUE, FALSE);
 		if (parent &&
 		    g_pattern_match_simple(pattern, parent_name) == FALSE)

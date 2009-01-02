@@ -100,8 +100,7 @@ static AddressBookFile *_importedBook_;
 static AddressIndex *_imp_addressIndex_;
 static LdifFile *_ldifFile_ = NULL;
 
-static GdkPixmap *markxpm;
-static GdkBitmap *markxpmmask;
+static GdkPixbuf *markxpm;
 
 /**
  * Structure of error message table.
@@ -221,12 +220,12 @@ static void imp_ldif_update_row( GtkCMCList *clist ) {
 		gtk_cmclist_insert( clist, row, text );
 	}
 	if( rec->selected ) {
-		gtk_cmclist_set_pixmap(
-			clist, row, FIELD_COL_SELECT, markxpm, markxpmmask );
+		gtk_cmclist_set_pixbuf(
+			clist, row, FIELD_COL_SELECT, markxpm );
 	}
 	if( rec->reserved ) {
-		gtk_cmclist_set_pixmap(
-			clist, row, FIELD_COL_RESERVED, markxpm, markxpmmask );
+		gtk_cmclist_set_pixbuf(
+			clist, row, FIELD_COL_RESERVED, markxpm );
 	}
 
 	gtk_cmclist_set_row_data( clist, row, rec );
@@ -259,12 +258,12 @@ static void imp_ldif_load_fields( LdifFile *ldf ) {
 		row = gtk_cmclist_append( clist, text );
 		gtk_cmclist_set_row_data( clist, row, rec );
 		if( rec->selected ) {
-			gtk_cmclist_set_pixmap( clist, row,
-				FIELD_COL_SELECT, markxpm, markxpmmask );
+			gtk_cmclist_set_pixbuf( clist, row,
+				FIELD_COL_SELECT, markxpm );
 		}
 		if( rec->reserved ) {
-			gtk_cmclist_set_pixmap( clist, row,
-				FIELD_COL_RESERVED, markxpm, markxpmmask );
+			gtk_cmclist_set_pixbuf( clist, row,
+				FIELD_COL_RESERVED, markxpm );
 		}
 		impldif_dlg.rowCount++;
 		node = g_list_next( node );
@@ -1054,8 +1053,8 @@ AddressBookFile *addressbook_imp_ldif( AddressIndex *addrIndex ) {
 	gtk_notebook_set_current_page( GTK_NOTEBOOK(impldif_dlg.notebook), PAGE_FILE_INFO );
 	gtk_widget_set_sensitive( impldif_dlg.btnPrev, FALSE );
 	gtk_widget_set_sensitive( impldif_dlg.btnNext, TRUE );
-	stock_pixmap_gdk( impldif_dlg.window, STOCK_PIXMAP_MARK,
-			  &markxpm, &markxpmmask );
+	stock_pixbuf_gdk( impldif_dlg.window, STOCK_PIXMAP_MARK,
+			  &markxpm );
 	imp_ldif_message();
 	gtk_widget_grab_focus(impldif_dlg.entryFile);
 

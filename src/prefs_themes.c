@@ -73,8 +73,7 @@ typedef struct _ThemesPage
 	GtkWidget *btn_use;
 	GtkWidget *btn_remove;
 
-	GdkPixmap *pixmaps[PREVIEW_ICONS];
-	GdkBitmap *masks[PREVIEW_ICONS];
+	GdkPixbuf *pixbufs[PREVIEW_ICONS];
 
 	/* gchar     *theme_path; */
 } ThemesPage;
@@ -651,10 +650,10 @@ static void prefs_themes_display_theme_info(ThemesData *tdata, const ThemeInfo *
 	save_prefs_path = prefs_common.pixmap_theme_path;
 	prefs_common.pixmap_theme_path = tdata->displayed;
 	for (i = 0; i < PREVIEW_ICONS; ++i) {
-		stock_pixmap_gdk(theme->window, prefs_themes_icons[i], 
-				&(theme->pixmaps[i]), &(theme->masks[i]));
-		gtk_image_set_from_pixmap(GTK_IMAGE(theme->icons[i]),
-				theme->pixmaps[i], theme->masks[i]);
+		stock_pixbuf_gdk(theme->window, prefs_themes_icons[i], 
+				&(theme->pixbufs[i]));
+		gtk_image_set_from_pixbuf(GTK_IMAGE(theme->icons[i]),
+				theme->pixbufs[i]);
 	}
 	prefs_common.pixmap_theme_path = save_prefs_path;
 

@@ -1,3 +1,27 @@
+2009-01-02 [colin]	3.7.0cvs8
+
+	* src/addressadd.c
+	* src/addressbook.c
+	* src/addressbook_foldersel.c
+	* src/addressitem.h
+	* src/folderview.c
+	* src/grouplistdialog.c
+	* src/importldif.c
+	* src/mimeview.c
+	* src/summaryview.c
+	* src/gtk/gtkcmclist.c
+	* src/gtk/gtkcmclist.h
+	* src/gtk/gtkcmctree.c
+	* src/gtk/gtkcmctree.h
+	* src/gtk/gtksctree.c
+	* src/gtk/gtksctree.h
+		Implement pixbuf rendering in tree widgets
+		instead of pixmaps
+	* src/plugins/trayicon/trayicon.c
+	* src/noticeview.c
+	* src/prefs_themes.c
+		Use pixbuf rendering here too
+
 2008-12-30 [paul]	3.7.0cvs7
 
 	* src/textview.c

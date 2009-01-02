@@ -62,10 +62,8 @@ static struct _AddressAdd_dlg {
 	FolderInfo *fiSelected;
 } addressadd_dlg;
 
-static GdkPixmap *folderXpm;
-static GdkBitmap *folderXpmMask;
-static GdkPixmap *bookXpm;
-static GdkBitmap *bookXpmMask;
+static GdkPixbuf *folderXpm;
+static GdkPixbuf *bookXpm;
 
 static gboolean addressadd_cancelled;
 
@@ -288,9 +286,9 @@ static void addressadd_create( void ) {
 
 	gtk_widget_show_all( window );
 
-	stock_pixmap_gdk( window, STOCK_PIXMAP_BOOK, &bookXpm, &bookXpmMask );
-	stock_pixmap_gdk( window, STOCK_PIXMAP_DIR_OPEN,
-			  &folderXpm, &folderXpmMask );
+	stock_pixbuf_gdk( window, STOCK_PIXMAP_BOOK, &bookXpm );
+	stock_pixbuf_gdk( window, STOCK_PIXMAP_DIR_OPEN,
+			  &folderXpm );
 }
 
 static void addressadd_load_folder( GtkCMCTreeNode *parentNode, ItemFolder *parentFolder,
@@ -310,7 +308,7 @@ static void addressadd_load_folder( GtkCMCTreeNode *parentNode, ItemFolder *pare
 		fName = g_strdup( ADDRITEM_NAME(folder) );
 		name = &fName;
 		node = gtk_sctree_insert_node( tree, parentNode, NULL, name, FOLDER_SPACING,
-				folderXpm, folderXpmMask, folderXpm, folderXpmMask,
+				folderXpm, folderXpm,
 				FALSE, TRUE );
 		g_free( fName );
 		fi = addressadd_create_folderinfo( fiParent->book, folder );
@@ -353,7 +351,7 @@ static void addressadd_load_data( AddressIndex *addrIndex ) {
 				name = &dsName;
 				node = gtk_cmctree_insert_node( tree, NULL, NULL,
 						name, FOLDER_SPACING, bookXpm,
-						bookXpmMask, bookXpm, bookXpmMask,
+						bookXpm,
 						FALSE, TRUE );
 				g_free( dsName );
 

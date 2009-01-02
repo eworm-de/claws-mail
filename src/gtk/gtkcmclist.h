@@ -55,7 +55,7 @@ typedef enum
 {
   GTK_CMCELL_EMPTY,
   GTK_CMCELL_TEXT,
-  GTK_CMCELL_PIXMAP,
+  GTK_CMCELL_PIXBUF,
   GTK_CMCELL_PIXTEXT,
   GTK_CMCELL_WIDGET
 } GtkCMCellType;
@@ -103,7 +103,7 @@ typedef enum
 
 /* pointer casting for cells */
 #define GTK_CMCELL_TEXT(cell)     (((GtkCMCellText *) &(cell)))
-#define GTK_CMCELL_PIXMAP(cell)   (((GtkCMCellPixmap *) &(cell)))
+#define GTK_CMCELL_PIXBUF(cell)   (((GtkCMCellPixbuf *) &(cell)))
 #define GTK_CMCELL_PIXTEXT(cell)  (((GtkCMCellPixText *) &(cell)))
 #define GTK_CMCELL_WIDGET(cell)   (((GtkCMCellWidget *) &(cell)))
 
@@ -114,7 +114,7 @@ typedef struct _GtkCMCListRow GtkCMCListRow;
 
 typedef struct _GtkCMCell GtkCMCell;
 typedef struct _GtkCMCellText GtkCMCellText;
-typedef struct _GtkCMCellPixmap GtkCMCellPixmap;
+typedef struct _GtkCMCellPixbuf GtkCMCellPixbuf;
 typedef struct _GtkCMCellPixText GtkCMCellPixText;
 typedef struct _GtkCMCellWidget GtkCMCellWidget;
 
@@ -309,8 +309,7 @@ struct _GtkCMCListClass
 				 GtkCMCellType     type,
 				 const gchar    *text,
 				 guint8          spacing,
-				 GdkPixmap      *pixmap,
-				 GdkBitmap      *mask);
+				 GdkPixbuf      *pixbuf);
   void   (*cell_size_request)   (GtkCMCList       *clist,
 				 GtkCMCListRow    *clist_row,
 				 gint            column,
@@ -369,7 +368,7 @@ struct _GtkCMCellText
   gchar *text;
 };
 
-struct _GtkCMCellPixmap
+struct _GtkCMCellPixbuf
 {
   GtkCMCellType type;
   
@@ -378,8 +377,7 @@ struct _GtkCMCellPixmap
   
   GtkStyle *style;
 
-  GdkPixmap *pixmap;
-  GdkBitmap *mask;
+  GdkPixbuf *pixbuf;
 };
 
 struct _GtkCMCellPixText
@@ -393,8 +391,7 @@ struct _GtkCMCellPixText
 
   gchar *text;
   guint8 spacing;
-  GdkPixmap *pixmap;
-  GdkBitmap *mask;
+  GdkPixbuf *pixbuf;
 };
 
 struct _GtkCMCellWidget
@@ -422,15 +419,13 @@ struct _GtkCMCell
     gchar *text;
     
     struct {
-      GdkPixmap *pixmap;
-      GdkBitmap *mask;
+      GdkPixbuf *pixbuf;
     } pm;
     
     struct {
       gchar *text;
       guint8 spacing;
-      GdkPixmap *pixmap;
-      GdkBitmap *mask;
+      GdkPixbuf *pixbuf;
     } pt;
     
     GtkWidget *widget;
@@ -593,35 +588,31 @@ gint gtk_cmclist_get_text (GtkCMCList  *clist,
 			 gint       column,
 			 gchar    **text);
 
-/* sets a given cell's pixmap, replacing its current contents */
-void gtk_cmclist_set_pixmap (GtkCMCList  *clist,
+/* sets a given cell's pixbuf, replacing its current contents */
+void gtk_cmclist_set_pixbuf (GtkCMCList  *clist,
 			   gint       row,
 			   gint       column,
-			   GdkPixmap *pixmap,
-			   GdkBitmap *mask);
+			   GdkPixbuf *pixbuf);
 
-gint gtk_cmclist_get_pixmap (GtkCMCList   *clist,
+gint gtk_cmclist_get_pixbuf (GtkCMCList   *clist,
 			   gint        row,
 			   gint        column,
-			   GdkPixmap **pixmap,
-			   GdkBitmap **mask);
+			   GdkPixbuf **pixbuf);
 
-/* sets a given cell's pixmap and text, replacing its current contents */
+/* sets a given cell's pixbuf and text, replacing its current contents */
 void gtk_cmclist_set_pixtext (GtkCMCList    *clist,
 			    gint         row,
 			    gint         column,
 			    const gchar *text,
 			    guint8       spacing,
-			    GdkPixmap   *pixmap,
-			    GdkBitmap   *mask);
+			    GdkPixbuf   *pixbuf);
 
 gint gtk_cmclist_get_pixtext (GtkCMCList   *clist,
 			    gint        row,
 			    gint        column,
 			    gchar     **text,
 			    guint8     *spacing,
-			    GdkPixmap **pixmap,
-			    GdkBitmap **mask);
+			    GdkPixbuf **pixbuf);
 
 /* sets the foreground color of a row, the color must already
  * be allocated

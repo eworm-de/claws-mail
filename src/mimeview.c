@@ -639,7 +639,7 @@ static GtkCMCTreeNode *mimeview_append_part(MimeView *mimeview,
 		str[COL_NAME] = (gchar *) get_part_name(partinfo);
 
 	node = gtk_sctree_insert_node(ctree, parent, NULL, str, 0,
-				     NULL, NULL, NULL, NULL,
+				     NULL, NULL,
 				     FALSE, TRUE);
 	gtk_cmctree_node_set_row_data(ctree, node, partinfo);
 

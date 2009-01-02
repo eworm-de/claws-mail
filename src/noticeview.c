@@ -269,13 +269,12 @@ static void noticeview_2ndbutton_pressed(GtkButton *button, NoticeView *noticevi
 
 void noticeview_set_icon(NoticeView *noticeview, StockPixmap icon)
 {
-	GdkPixmap *pixmap;
-	GdkBitmap *bitmap;
+	GdkPixbuf *pixbuf;
 	
-	if (stock_pixmap_gdk(noticeview->window, icon, &pixmap, &bitmap) < 0)
+	if (stock_pixbuf_gdk(noticeview->window, icon, &pixbuf) < 0)
 		return;
 	
-	gtk_image_set_from_pixmap(GTK_IMAGE(noticeview->icon), pixmap, bitmap);
+	gtk_image_set_from_pixbuf(GTK_IMAGE(noticeview->icon), pixbuf);
 }
 
 void noticeview_set_icon_clickable(NoticeView *noticeview, gboolean setting)
