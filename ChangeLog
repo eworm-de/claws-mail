@@ -1,3 +1,11 @@
+2009-01-02 [colin]	3.7.0cvs12
+
+	* src/folderview.c
+		Fix (+) sign after collapsed folder names that 
+		have quicksearch-matching children.
+		Fixes bug 1506, 'Recursive search in collapsed 
+		folders'
+
 2009-01-02 [colin]	3.7.0cvs11
 
 	* src/stock_pixmap.c

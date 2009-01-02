@@ -1553,7 +1553,7 @@ static void folderview_update_node(FolderView *folderview, GtkCMCTreeNode *node)
 							(add_unread_mark || add_sub_match_mark) ? "+" : "", 
 							(item->unreadmarked_msgs > 0) ? "!" : "");
 			}
-	} else {
+		} else {
 			if (prefs_common.display_folder_unread == 1) {
 				if (item->unread_msgs > 0) {
 					/* show unread number and signs */
@@ -1582,14 +1582,24 @@ static void folderview_update_node(FolderView *folderview, GtkCMCTreeNode *node)
 		}
 	}
 	if (str == NULL) {
-		/* last fallback, folder name only or with ! sign */
-		str = g_strdup_printf("%s%s",
-					name, (item->unreadmarked_msgs > 0) ? " (!)" : "");
+		/* last fallback, folder name only or with +! sign */
+		if (item->unreadmarked_msgs > 0 && add_sub_match_mark) {
+			str = g_strdup_printf("%s%s",
+						name, " (+!)");
+		} else if (item->unreadmarked_msgs > 0) {
+			str = g_strdup_printf("%s%s",
+						name, " (!)");
+		} else if (add_sub_match_mark) {
+			str = g_strdup_printf("%s%s",
+						name, " (+)");
+		} else {
+			str = g_strdup_printf("%s", name);
+		}
 	}
-		gtk_sctree_set_node_info(ctree, node, str, FOLDER_SPACING,
-					xpm, openxpm, 
-					FALSE, GTK_CMCTREE_ROW(node)->expanded);
-		g_free(str);
+	gtk_sctree_set_node_info(ctree, node, str, FOLDER_SPACING,
+				xpm, openxpm, 
+				FALSE, GTK_CMCTREE_ROW(node)->expanded);
+	g_free(str);
 	g_free(name);
 
 	if (!folder_item_parent(item)) {
