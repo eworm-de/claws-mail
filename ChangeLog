@@ -1,3 +1,10 @@
+2009-01-02 [colin]	3.7.0cvs10
+
+	* src/gtk/gtkutils.c
+	* src/pixmaps/claws-mail_icon.xpm
+		Use pixbuf for app icon, and make the app icon
+		a bit nicer
+
 2009-01-02 [colin]	3.7.0cvs9
 
 	* src/uri_opener.c

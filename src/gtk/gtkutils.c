@@ -710,30 +710,28 @@ void gtkut_widget_init(void)
 
 void gtkut_widget_set_app_icon(GtkWidget *widget)
 {
-#include "pixmaps/claws-mail.xpm"
-	static GdkPixmap *sylpheedclawsxpm;
-	static GdkBitmap *sylpheedclawsxpmmask;
+	static GdkPixbuf *icon = NULL;
 	
 	g_return_if_fail(widget != NULL);
 	g_return_if_fail(widget->window != NULL);
-	if (!sylpheedclawsxpm) {
-		PIXMAP_CREATE(widget, sylpheedclawsxpm, sylpheedclawsxpmmask,
-			      claws_mail_xpm);
+	if (!icon) {
+		stock_pixbuf_gdk(widget, STOCK_PIXMAP_CLAWS_MAIL_ICON, &icon);
 	}		
-	gdk_window_set_icon(widget->window, NULL, sylpheedclawsxpm, sylpheedclawsxpmmask);
+	if (icon)
+		gtk_window_set_icon(GTK_WINDOW(widget), icon);
 }
 
 void gtkut_widget_set_composer_icon(GtkWidget *widget)
 {
-	static GdkPixmap *xpm;
-	static GdkBitmap *bmp;
-
+	static GdkPixbuf *icon = NULL;
+	
 	g_return_if_fail(widget != NULL);
 	g_return_if_fail(widget->window != NULL);
-	if (!xpm) {
-		stock_pixmap_gdk(widget, STOCK_PIXMAP_MAIL_COMPOSE, &xpm, &bmp);
-	}
-	gdk_window_set_icon(widget->window, NULL, xpm, bmp);	
+	if (!icon) {
+		stock_pixbuf_gdk(widget, STOCK_PIXMAP_MAIL_COMPOSE, &icon);
+	}		
+	if (icon)
+		gtk_window_set_icon(GTK_WINDOW(widget), icon);
 }
 
 static gboolean move_bar = FALSE;
