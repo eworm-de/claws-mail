@@ -205,10 +205,6 @@ GtkWidget *stock_pixmap_widget	(GtkWidget	 *window,
 				 StockPixmap	  icon);
 gint stock_pixbuf_gdk		(GtkWidget *window, StockPixmap icon, 
 				 GdkPixbuf **pixbuf);
-gint stock_pixmap_gdk		(GtkWidget	 *window,
-				 StockPixmap	  icon,
-				 GdkPixmap	**pixmap,
-				 GdkBitmap	**mask);
 
 GList *stock_pixmap_themes_list_new	(void);
 void stock_pixmap_themes_list_free	(GList *list);
