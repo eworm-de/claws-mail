@@ -122,7 +122,7 @@ static void uri_opener_create_list_view_columns(GtkWidget *list_view)
 	column = gtk_tree_view_column_new_with_attributes
 		(_("Available URLs:"),
 		 renderer,
-		 "text", URI_OPENER_URL,
+		 "markup", URI_OPENER_URL,
 		 NULL);
 	gtk_tree_view_append_column(GTK_TREE_VIEW(list_view), column);		
 }
@@ -241,20 +241,28 @@ static void uri_opener_list_view_insert_uri(GtkWidget *list_view,
 					(GTK_TREE_VIEW(list_view)));
 	gchar *visible = textview_get_visible_uri(opener.msgview->mimeview->textview, uri);
 	
+	gchar *label = NULL;
+	
+	if (visible && strcmp(visible, uri->uri))
+		label = g_markup_printf_escaped("<b>%s</b>\n%s", visible, uri->uri);
+	else
+		label = g_markup_printf_escaped("\n%s", uri->uri);
+
 	if (row_iter == NULL) {
 		/* append new */
 		gtk_list_store_append(list_store, &iter);
 		gtk_list_store_set(list_store, &iter,
-				   URI_OPENER_URL, visible?visible:uri->uri,
+				   URI_OPENER_URL, label,
 				   URI_OPENER_DATA, uri,
 				   -1);
 	} else {
 		gtk_list_store_set(list_store, row_iter,
-				   URI_OPENER_URL, visible?visible:uri->uri,
+				   URI_OPENER_URL, label,
 				   URI_OPENER_DATA, uri,
 				   -1);
 	}
 	g_free(visible);
+	g_free(label);
 }
 
 static void uri_opener_list_view_clear_uris(GtkWidget *list_view)
