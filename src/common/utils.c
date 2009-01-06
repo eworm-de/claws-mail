@@ -3660,11 +3660,10 @@ int subject_get_prefix_length(const gchar *subject)
 	static const gchar * const prefixes[] = {
 		"Re\\:",			/* "Re:" */
 		"Re\\[[1-9][0-9]*\\]\\:",	/* "Re[XXX]:" (non-conforming news mail clients) */
-		"Res\\:",			/* "Res:" (Spanish Outlook) */
 		"Antw\\:",			/* "Antw:" (Dutch / German Outlook) */
 		"Aw\\:",			/* "Aw:"   (German) */
 		"Antwort\\:",			/* "Antwort:" (German Lotus Notes) */
-		"Res\\:",			/* "Res:" (Brazilian Outlook) */
+		"Res\\:",			/* "Res:" (Spanish/Brazilian Outlook) */
 		"Fw\\:",			/* "Fw:" Forward */
 		"Fwd\\:",			/* "Fwd:" Forward */
 		"Enc\\:",			/* "Enc:" Forward (Brazilian Outlook) */
@@ -3722,7 +3721,7 @@ int subject_get_prefix_length(const gchar *subject)
 		"antw:",			/* "Antw:" (Dutch / German Outlook) */
 		"aw:",			/* "Aw:"   (German) */
 		"antwort:",			/* "Antwort:" (German Lotus Notes) */
-		"res:",			/* "Res:" (Brazilian Outlook) */
+		"res:",			/* "Res:" (Spanish/Brazilian Outlook) */
 		"fw:",			/* "Fw:" Forward */
 		"fwd:",			/* "Fwd:" Forward */
 		"enc:",			/* "Enc:" Forward (Brazilian Outlook) */
