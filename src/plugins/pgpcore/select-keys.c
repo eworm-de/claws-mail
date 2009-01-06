@@ -415,6 +415,9 @@ create_dialog (struct select_keys_s *sk)
     hbox = gtk_hbox_new (FALSE, 8);
     gtk_box_pack_end (GTK_BOX (vbox), hbox, FALSE, FALSE, 0);
 
+    /* TRANSLATORS: check that the accelerators in _Select, _Other and
+     * Do_n't encrypt are different than the one in the stock Cancel
+     * button */
     gtkut_stock_button_set_create (&bbox, 
                                    &select_btn, _("_Select"),
 		   		   &other_btn, _("_Other"),

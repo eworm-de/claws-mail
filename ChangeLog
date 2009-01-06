@@ -1,3 +1,9 @@
+2009-01-06 [colin]	3.7.0cvs16
+
+	* src/plugins/pgpcore/select-keys.c
+		Warn translators the usual way about
+		accels
+
 2009-01-06 [colin]	3.7.0cvs15
 
 	* src/mainwindow.c
