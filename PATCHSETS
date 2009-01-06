@@ -3674,3 +3674,4 @@
 ( cvs diff -u -r 1.5.2.85 -r 1.5.2.86 src/gtk/gtkutils.c;  cvs diff -u -r 1.1.2.1 -r 1.1.2.2 src/pixmaps/claws-mail_icon.xpm;  ) > 3.7.0cvs10.patchset
 ( cvs diff -u -r 1.25.2.61 -r 1.25.2.62 src/stock_pixmap.c;  cvs diff -u -r 1.18.2.38 -r 1.18.2.39 src/stock_pixmap.h;  ) > 3.7.0cvs11.patchset
 ( cvs diff -u -r 1.207.2.208 -r 1.207.2.209 src/folderview.c;  ) > 3.7.0cvs12.patchset
+( cvs diff -u -r 1.36.2.158 -r 1.36.2.159 src/common/utils.c;  ) > 3.7.0cvs13.patchset

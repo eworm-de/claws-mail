@@ -1,3 +1,8 @@
+2009-01-06 [wwp]	3.7.0cvs13
+
+	* src/common/utils.c
+		Better support for Spanish Outlook replies (RES).
+
 2009-01-02 [colin]	3.7.0cvs12
 
 	* src/folderview.c
