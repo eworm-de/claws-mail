@@ -2927,7 +2927,7 @@ static void save_file_cb (GtkAction *action, TextView *textview)
 
 	subst_for_filename(filename);
 	
-	if (prefs_common.attach_save_dir)
+	if (prefs_common.attach_save_dir && *prefs_common.attach_save_dir)
 		filepath = g_strconcat(prefs_common.attach_save_dir,
 				       G_DIR_SEPARATOR_S, filename, NULL);
 	else

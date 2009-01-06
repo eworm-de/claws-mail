@@ -1,3 +1,17 @@
+2009-01-06 [colin]	3.7.0cvs15
+
+	* src/mainwindow.c
+		Fix synchronisation dialog that shouldn't
+		appear when network goes down (Network
+		Manager)
+	* src/mimeview.c
+	* src/textview.c
+		Fix save as when attach_save_dir isn't set
+		fixes bug 1804, 'attach_save_directory does 
+		not default to $HOME'
+	* src/plugins/pgpcore/select-keys.c
+		Add mnemonics to buttons - warn translators!
+
 2009-01-06 [wwp]	3.7.0cvs14
 
 	* src/common/utils.c

@@ -416,9 +416,9 @@ create_dialog (struct select_keys_s *sk)
     gtk_box_pack_end (GTK_BOX (vbox), hbox, FALSE, FALSE, 0);
 
     gtkut_stock_button_set_create (&bbox, 
-                                   &select_btn, _("Select"),
-		   		   &other_btn, _("Other"),
-		    		   &dont_encrypt_btn, _("Don't encrypt"));
+                                   &select_btn, _("_Select"),
+		   		   &other_btn, _("_Other"),
+		    		   &dont_encrypt_btn, _("Do_n't encrypt"));
     
     cancel_btn = gtk_button_new_from_stock(GTK_STOCK_CANCEL);
     GTK_WIDGET_SET_FLAGS(cancel_btn, GTK_CAN_DEFAULT);

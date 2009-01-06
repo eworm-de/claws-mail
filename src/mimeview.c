@@ -1791,7 +1791,7 @@ static void mimeview_save_as(MimeView *mimeview)
 
 	subst_for_filename(partname);
 	
-	if (prefs_common.attach_save_dir)
+	if (prefs_common.attach_save_dir && *prefs_common.attach_save_dir)
 		filepath = g_strconcat(prefs_common.attach_save_dir,
 				       G_DIR_SEPARATOR_S, partname, NULL);
 	else

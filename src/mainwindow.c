@@ -4191,7 +4191,7 @@ static void online_switch_clicked (GtkButton *btn, gpointer data)
 	MainWindow *mainwin;
 	gboolean have_connectivity;
 
-#ifdef HAVE_NETWORKMANAGER
+#ifdef HAVE_NETWORKMANAGER_SUPPORT
 	have_connectivity = networkmanager_is_online(NULL); 
 #else
 	have_connectivity = TRUE;
@@ -4217,7 +4217,8 @@ static void online_switch_clicked (GtkButton *btn, gpointer data)
 		if(have_connectivity)
 			mainwindow_check_synchronise(mainwin, TRUE);
 		prefs_common.work_offline = TRUE;
-		imap_disconnect_all();
+		if(have_connectivity)
+			imap_disconnect_all();
 		hooks_invoke(OFFLINE_SWITCH_HOOKLIST, NULL);
 	} else {
 		/*go online */
