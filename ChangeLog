@@ -1,3 +1,9 @@
+2009-01-07 [colin]	3.7.0cvs17
+
+	* src/html.c
+		Fix bug 1432, '&amp; not escaped in links (HTML 
+		rendered as text)'
+
 2009-01-06 [colin]	3.7.0cvs16
 
 	* src/plugins/pgpcore/select-keys.c

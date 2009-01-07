@@ -441,6 +441,9 @@ static SC_HTMLState sc_html_read_line(SC_HTMLParser *parser)
 	gchar buf2[SC_HTMLBUFSIZE];
 	gint index;
 
+	if (parser->fp == NULL)
+		return SC_HTML_EOF;
+
 	if (fgets(buf, sizeof(buf), parser->fp) == NULL) {
 		parser->state = SC_HTML_EOF;
 		return SC_HTML_EOF;
@@ -607,6 +610,24 @@ static void sc_html_free_tag(SC_HTMLTag *tag)
 	g_free(tag);
 }
 
+static void decode_href(SC_HTMLParser *parser)
+{
+	gchar *tmp;
+	SC_HTMLParser *tparser = g_new0(SC_HTMLParser, 1);
+
+	tparser->str = g_string_new(NULL);
+	tparser->buf = g_string_new(parser->href);
+	tparser->bufp = tparser->buf->str;
+	tparser->symbol_table = default_symbol_table;
+	
+	tmp = sc_html_parse(tparser);
+	
+	g_free(parser->href);
+	parser->href = g_strdup(tmp);
+
+	sc_html_parser_destroy(tparser);
+}
+
 static SC_HTMLState sc_html_parse_tag(SC_HTMLParser *parser)
 {
 	gchar buf[SC_HTMLBUFSIZE];
@@ -629,6 +650,7 @@ static SC_HTMLState sc_html_parse_tag(SC_HTMLParser *parser)
 			if (cur->data && !strcmp(((SC_HTMLAttr *)cur->data)->name, "href")) {
 				g_free(parser->href);
 				parser->href = g_strdup(((SC_HTMLAttr *)cur->data)->value);
+				decode_href(parser);
 				parser->state = SC_HTML_HREF_BEG;
 				break;
 			}
