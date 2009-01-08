@@ -3679,3 +3679,4 @@
 ( cvs diff -u -r 1.274.2.292 -r 1.274.2.293 src/mainwindow.c;  cvs diff -u -r 1.83.2.150 -r 1.83.2.151 src/mimeview.c;  cvs diff -u -r 1.96.2.213 -r 1.96.2.214 src/textview.c;  cvs diff -u -r 1.1.2.22 -r 1.1.2.23 src/plugins/pgpcore/select-keys.c;  ) > 3.7.0cvs15.patchset
 ( cvs diff -u -r 1.1.2.23 -r 1.1.2.24 src/plugins/pgpcore/select-keys.c;  ) > 3.7.0cvs16.patchset
 ( cvs diff -u -r 1.12.2.25 -r 1.12.2.26 src/html.c;  ) > 3.7.0cvs17.patchset
+( cvs diff -u -r 1.83.2.151 -r 1.83.2.152 src/mimeview.c;  ) > 3.7.0cvs18.patchset

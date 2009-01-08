@@ -1451,13 +1451,13 @@ static gint mimeview_key_pressed(GtkWidget *widget, GdkEventKey *event,
 		KEY_PRESS_EVENT_STOP();
 		mimeview_launch(mimeview, NULL);
 		return TRUE;
-#ifndef G_OS_WIN32
 	case GDK_o:
 		BREAK_ON_MODIFIER_KEY();
 		KEY_PRESS_EVENT_STOP();
+#ifndef G_OS_WIN32
 		mimeview_open_with(mimeview);
-		return TRUE;
 #endif
+		return TRUE;
 	case GDK_c:
 		BREAK_ON_MODIFIER_KEY();
 		KEY_PRESS_EVENT_STOP();

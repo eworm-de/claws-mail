@@ -1,3 +1,9 @@
+2009-01-08 [colin]	3.7.0cvs18
+
+	* src/mimeview.c
+		Win32: Fix bug 1810, 'Pressing 'o' key 
+		crashes CM'
+
 2009-01-07 [colin]	3.7.0cvs17
 
 	* src/html.c
