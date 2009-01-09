@@ -1,3 +1,12 @@
+2009-01-09 [colin]	3.7.0cvs19
+
+	* src/prefs_themes.c
+	* src/stock_pixmap.c
+	* src/stock_pixmap.h
+	* src/common/utils.c
+	* src/common/utils.h
+		Win32: Fix bug 1813, 'Installing Theme Creates Error'
+
 2009-01-08 [colin]	3.7.0cvs18
 
 	* src/mimeview.c

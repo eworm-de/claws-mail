@@ -527,6 +527,19 @@ static void stock_pixmap_find_themes_in_dir(GList **list, const gchar *dirname)
 	closedir(dp);
 }
 
+gchar *stock_pixmap_get_system_theme_dir_for_theme(const gchar *theme)
+{
+	const gchar *sep = NULL;
+	if (theme && *theme)
+		sep = G_DIR_SEPARATOR_S;
+#ifndef G_OS_WIN32
+	return g_strconcat(PACKAGE_DATA_DIR, G_DIR_SEPARATOR_S,
+	        	   PIXMAP_THEME_DIR, sep, theme, NULL);
+#else
+	return g_strconcat(get_themes_dir(), sep, theme, NULL);
+#endif
+}
+
 GList *stock_pixmap_themes_list_new(void)
 {
 	gchar *defaulttheme;
@@ -537,11 +550,9 @@ GList *stock_pixmap_themes_list_new(void)
 	defaulttheme = g_strdup(DEFAULT_PIXMAP_THEME);
 	userthemes   = g_strconcat(get_rc_dir(), G_DIR_SEPARATOR_S, 
 				   PIXMAP_THEME_DIR, NULL);
-	systemthemes = g_strconcat(PACKAGE_DATA_DIR, G_DIR_SEPARATOR_S,
-				   PIXMAP_THEME_DIR, NULL);
+	systemthemes = stock_pixmap_get_system_theme_dir_for_theme(NULL);
 
 	list = g_list_append(list, defaulttheme);
-	
 	stock_pixmap_find_themes_in_dir(&list, userthemes);
 	stock_pixmap_find_themes_in_dir(&list, systemthemes);
 

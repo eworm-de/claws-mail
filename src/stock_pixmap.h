@@ -216,5 +216,6 @@ GtkWidget *stock_pixmap_widget_with_overlay (GtkWidget		*window,
 					     OverlayPosition	 pos,
 					     gint		 border_x,
 					     gint		 border_y);
+gchar *stock_pixmap_get_system_theme_dir_for_theme(const gchar *theme);
 
 #endif /* __STOCK_PIXMAP_H__ */

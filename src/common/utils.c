@@ -1996,6 +1996,21 @@ const gchar *get_plugin_dir(void)
 #endif
 }
 
+
+#ifdef G_OS_WIN32
+/* Return the default directory for Themes. */
+const gchar *get_themes_dir(void)
+{
+	static gchar *themes_dir = NULL;
+
+	if (!themes_dir)
+		themes_dir = g_strconcat(w32_get_module_dir(),
+					 "\\share\\claws-mail\\themes",
+					 NULL);
+	return themes_dir;
+}
+#endif
+
 const gchar *get_tmp_dir(void)
 {
 	static gchar *tmp_dir = NULL;

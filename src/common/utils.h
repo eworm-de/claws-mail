@@ -359,7 +359,8 @@ const gchar *get_locale_dir		(void);
 gchar *get_tmp_file			(void);
 const gchar *get_domain_name		(void);
 #ifdef G_OS_WIN32
-const gchar *get_cert_file(void);
+const gchar *get_themes_dir             (void);
+const gchar *get_cert_file		(void);
 #endif
 /* file / directory handling */
 off_t get_file_size		(const gchar	*file);

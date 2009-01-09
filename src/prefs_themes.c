@@ -253,14 +253,19 @@ static void prefs_themes_foreach_file(const gchar *dirname, const FileFunc func,
 static gboolean prefs_themes_is_system_theme(const gchar *dirname)
 {
 	gint len;
-	
+	gchar *system_theme_dir;
+	gboolean is_sys = FALSE;
+
 	g_return_val_if_fail(dirname != NULL, FALSE);
 
-	len = strlen(PACKAGE_DATA_DIR);
-	if (strlen(dirname) > len && 0 == strncmp(dirname, PACKAGE_DATA_DIR, len))
-		return TRUE;
+	system_theme_dir = stock_pixmap_get_system_theme_dir_for_theme(NULL);
+	len = strlen(system_theme_dir);
+	if (strlen(dirname) > len && 0 == strncmp(dirname, system_theme_dir, len))
+		is_sys = TRUE;
 	
-	return FALSE;
+	g_free(system_theme_dir);
+
+	return is_sys;
 }
 
 static void prefs_themes_set_themes_menu(GtkComboBox *combo, const ThemesData *tdata)
@@ -526,9 +531,8 @@ static void prefs_themes_btn_install_clicked_cb(GtkWidget *widget, gpointer data
 				 GTK_STOCK_NO, GTK_STOCK_YES, NULL);
 		switch (val) {
 		case G_ALERTALTERNATE:
-			cinfo->dest = g_strconcat(PACKAGE_DATA_DIR, G_DIR_SEPARATOR_S,
-						  PIXMAP_THEME_DIR, G_DIR_SEPARATOR_S, 
-						  themename, NULL);
+			cinfo->dest = stock_pixmap_get_system_theme_dir_for_theme(
+						themename);
 			break;
 		case G_ALERTDEFAULT:
 			break;
