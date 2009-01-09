@@ -674,6 +674,9 @@ static MessageView *messageview_create_with_new_window_visible(MainWindow *mainw
 
 	gtk_widget_set_size_request(window, prefs_common.msgwin_width,
 				    prefs_common.msgwin_height);
+#ifdef G_OS_WIN32
+	gtk_window_move(GTK_WINDOW(window), 48, 48);
+#endif
 
 	msgview = messageview_create(mainwin);
 

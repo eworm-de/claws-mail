@@ -1,3 +1,9 @@
+2009-01-09 [colin]	3.7.0cvs20
+
+	* src/messageview.c
+		Fix bug 1814, 'Windows' WM badly places 
+		message view'
+
 2009-01-09 [colin]	3.7.0cvs19
 
 	* src/prefs_themes.c
