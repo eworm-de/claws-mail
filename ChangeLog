@@ -1,3 +1,10 @@
+2009-01-09 [colin]	3.7.0cvs25
+
+	* src/foldersel.c
+		Fix bug 1817, 'Changing Themes does not 
+		update the pixmaps in "Select folder" 
+		dialog box'
+
 2009-01-09 [colin]	3.7.0cvs24
 
 	* src/main.c

@@ -62,9 +62,9 @@ struct _FolderItemSearch
 	GtkTreeIter iter;
 };
 
-static GdkPixbuf *folder_pixbuf;
-static GdkPixbuf *folderopen_pixbuf;
-static GdkPixbuf *foldernoselect_pixbuf;
+static GdkPixbuf *folder_pixbuf = NULL;
+static GdkPixbuf *folderopen_pixbuf = NULL;
+static GdkPixbuf *foldernoselect_pixbuf = NULL;
 
 static GtkWidget *window;
 static GtkWidget *treeview;
@@ -343,6 +343,16 @@ static void foldersel_init(void)
 			 &folderopen_pixbuf);
 	stock_pixbuf_gdk(treeview, STOCK_PIXMAP_DIR_NOSELECT,
 			 &foldernoselect_pixbuf);
+}
+
+void foldersel_reflect_prefs_pixmap_theme(void){
+	if (folder_pixbuf)
+		g_object_unref(folder_pixbuf);
+	if (folderopen_pixbuf)
+		g_object_unref(folderopen_pixbuf);
+	if (foldernoselect_pixbuf)
+		g_object_unref(foldernoselect_pixbuf);
+	foldersel_init();
 }
 
 static void foldersel_append_item(GtkTreeStore *store, FolderItem *item,
