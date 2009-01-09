@@ -1,3 +1,11 @@
+2009-01-09 [colin]	3.7.0cvs26
+
+	* src/compose.c
+	* src/mainwindow.c
+	* src/common/utils.c
+		Win32: Fix bug 1815, 'Drag-n-Drop of files on 
+		Compose Window does not attach'
+
 2009-01-09 [colin]	3.7.0cvs25
 
 	* src/foldersel.c

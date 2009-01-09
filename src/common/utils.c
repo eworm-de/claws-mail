@@ -1396,6 +1396,7 @@ GList *uri_list_extract_filenames(const gchar *uri_list)
 		     * g_filename_from_uri() rejects escaped/locale encoded uri
 		     * string which come from Nautilus.
 		     */
+#ifndef G_OS_WIN32
 					if (g_utf8_validate(file, -1, NULL))
 						locale_file
 							= conv_codeset_strdup(
@@ -1404,6 +1405,9 @@ GList *uri_list_extract_filenames(const gchar *uri_list)
 								conv_get_locale_charset_str());
 					if (!locale_file)
 						locale_file = g_strdup(file + 5);
+#else
+					locale_file = g_filename_from_uri(file, NULL, NULL);
+#endif
 					result = g_list_append(result, locale_file);
 				}
 			}

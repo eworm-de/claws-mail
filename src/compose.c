@@ -10086,9 +10086,11 @@ static void compose_attach_drag_received_cb (GtkWidget		*widget,
 	Compose *compose = (Compose *)user_data;
 	GList *list, *tmp;
 
-	if (gdk_atom_name(data->type) && 
-	    !strcmp(gdk_atom_name(data->type), "text/uri-list")
-	    && gtk_drag_get_source_widget(context) != 
+	if (((gdk_atom_name(data->type) && !strcmp(gdk_atom_name(data->type), "text/uri-list"))
+#ifdef G_OS_WIN32
+	 || (gdk_atom_name(data->type) && !strcmp(gdk_atom_name(data->type), "DROPFILES_DND"))
+#endif
+	   ) && gtk_drag_get_source_widget(context) != 
 	        summary_get_main_widget(mainwindow_get_mainwindow()->summaryview)) {
 		list = uri_list_extract_filenames((const gchar *)data->data);
 		for (tmp = list; tmp != NULL; tmp = tmp->next) {
@@ -10153,11 +10155,18 @@ static void compose_insert_drag_received_cb (GtkWidget		*widget,
 
 	/* strangely, testing data->type == gdk_atom_intern("text/uri-list", TRUE)
 	 * does not work */
+	debug_print("drop: %s (%s)\n", gdk_atom_name(data->type)?gdk_atom_name(data->type):"nul",
+		data->data?data->data:"nul");
+#ifndef G_OS_WIN32
 	if (gdk_atom_name(data->type) && !strcmp(gdk_atom_name(data->type), "text/uri-list")) {
+#else
+	if (gdk_atom_name(data->type) && !strcmp(gdk_atom_name(data->type), "DROPFILES_DND")) {
+#endif
 		AlertValue val = G_ALERTDEFAULT;
 
 		list = uri_list_extract_filenames((const gchar *)data->data);
-
+		debug_print("list: %p (%s)\n", list, 
+			data->data?data->data:"nul");
 		if (list == NULL && strstr((gchar *)(data->data), "://")) {
 			/* Assume a list of no files, and data has ://, is a remote link */
 			gchar *tmpdata = g_strstrip(g_strdup((const gchar *)data->data));

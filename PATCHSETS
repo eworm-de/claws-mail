@@ -3687,3 +3687,4 @@
 ( cvs diff -u -r 1.4.2.72 -r 1.4.2.73 src/gtk/about.c;  ) > 3.7.0cvs23.patchset
 ( cvs diff -u -r 1.115.2.217 -r 1.115.2.218 src/main.c;  ) > 3.7.0cvs24.patchset
 ( cvs diff -u -r 1.26.2.40 -r 1.26.2.41 src/foldersel.c;  ) > 3.7.0cvs25.patchset
+( cvs diff -u -r 1.382.2.493 -r 1.382.2.494 src/compose.c;  cvs diff -u -r 1.274.2.294 -r 1.274.2.295 src/mainwindow.c;  cvs diff -u -r 1.36.2.162 -r 1.36.2.163 src/common/utils.c;  ) > 3.7.0cvs26.patchset
