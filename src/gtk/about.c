@@ -719,7 +719,7 @@ static void about_create(void)
 	gtk_box_pack_start(GTK_BOX(vbox2), button, FALSE, FALSE, 0);
 #ifndef GENERIC_UMPC
 	label = gtk_label_new
-		(_("Copyright (C) 1999-2008\nHiroyuki Yamamoto <hiro-y@kcn.ne.jp>\n"
+		(_("Copyright (C) 1999-2009\nHiroyuki Yamamoto <hiro-y@kcn.ne.jp>\n"
 		 "and the Claws Mail team"));
 	gtk_label_set_selectable(GTK_LABEL(label), TRUE);
 	gtk_label_set_justify(GTK_LABEL(label), GTK_JUSTIFY_CENTER);

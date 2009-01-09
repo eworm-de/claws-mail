@@ -1,3 +1,8 @@
+2009-01-09 [paul]	3.7.0cvs23
+
+	* src/gtk/about.c
+		forgot this '2009' in last commit
+
 2009-01-09 [paul]	3.7.0cvs22
 
 	* src/*/*.[c,h]
