@@ -2341,10 +2341,9 @@ static void lock_socket_input_cb(gpointer data,
 		mailto = g_strdup(buf + strlen("compose_attach") + 1);
 		files = g_ptr_array_new();
 		while (fd_gets(sock, buf, sizeof(buf)) > 0) {
-			if (buf[0] == '.' && buf[1] == '\n') {
-				break;
-			}
 			strretchomp(buf);
+			if (!strcmp2(buf, "."))
+				break;
 			g_ptr_array_add(files, g_strdup(buf));
 		}
 		open_compose_new(mailto, files);

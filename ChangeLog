@@ -1,3 +1,9 @@
+2009-01-09 [colin]	3.7.0cvs24
+
+	* src/main.c
+		Win32: Fix bug 1816, 'Attaching files with 
+		command-line generates error after attaching'
+
 2009-01-09 [paul]	3.7.0cvs23
 
 	* src/gtk/about.c
