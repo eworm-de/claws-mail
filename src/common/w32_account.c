@@ -1,5 +1,5 @@
 /* w32_account.c - Account related W32 functions.
-   Copyright (C) 2007 g10 Code GmbH 
+   Copyright (C) 2007-2009 g10 Code GmbH 
    Copyright (C) 1999-2005 Nullsoft, Inc.
 
    This software is provided 'as-is', without any express or implied

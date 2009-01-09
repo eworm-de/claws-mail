@@ -1,5 +1,5 @@
 /*
- * This file Copyright (C) 2005-2007 Paul Mangan <paul@claws-mail.org>
+ * This file Copyright (C) 2005-2009 Paul Mangan <paul@claws-mail.org>
  * and the Claws Mail team
  *
  * This program is free software; you can redistribute it and/or modify

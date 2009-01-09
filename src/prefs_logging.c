@@ -1,6 +1,6 @@
 /*
  * Claws Mail -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 1999-2007 Tristan Chabredier <wwp@claws-mail.org> and 
+ * Copyright (C) 1999-2009 Tristan Chabredier <wwp@claws-mail.org> and 
  * the Claws Mail team
  *
  * This program is free software; you can redistribute it and/or modify
