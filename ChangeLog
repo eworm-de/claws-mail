@@ -1,3 +1,12 @@
+2009-01-10 [colin]	3.7.0cvs27
+
+	* src/codeconv.c
+		Fix bug 1811, '[mime] Crash when there's no 
+		room for filename's start on the same line'
+		Make sure we can at least output one char
+		to the line, or insert the line break 
+		directly.
+
 2009-01-09 [colin]	3.7.0cvs26
 
 	* src/compose.c

@@ -1519,6 +1519,16 @@ gchar *conv_unmime_header(const gchar *str, const gchar *default_encoding)
 				*destp++ = ' ';				\
 				left = MAX_LINELEN - 1;			\
 			}						\
+		} else if (destp == (guchar *)dest && left < 7) {	\
+			if (isspace(*(destp - 1)))			\
+				destp--;				\
+			else if (is_plain_text && isspace(*srcp))	\
+				srcp++;					\
+			if (*srcp) {					\
+				*destp++ = '\n';			\
+				*destp++ = ' ';				\
+				left = MAX_LINELEN - 1;			\
+			}						\
 		}							\
 	}								\
 }
