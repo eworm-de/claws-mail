@@ -3,9 +3,13 @@
 	* src/codeconv.c
 		Fix bug 1811, '[mime] Crash when there's no 
 		room for filename's start on the same line'
-		Make sure we can at least output one char
-		to the line, or insert the line break 
-		directly.
+		When the mimetype of the attachment is very 
+		long, there's no room at all to start the 
+		name=... parameter on the same line. This
+		caused an infinite loop as 0 characters of
+		the filename could be appended.
+		In such cases, insert linebreak before the
+		name parameter.
 
 2009-01-09 [colin]	3.7.0cvs26
 
