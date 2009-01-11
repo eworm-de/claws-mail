@@ -1,3 +1,10 @@
+2009-01-11 [colin]	3.7.0cvs31
+
+	* src/addrindex.c
+		Revert part of patch 3.7.0cvs29 
+		This function is used when jpilot
+		support is disabled
+
 2009-01-11 [colin]	3.7.0cvs30
 
 	* src/folder.c
