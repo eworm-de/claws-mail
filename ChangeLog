@@ -1,3 +1,9 @@
+2009-01-11 [paul]	3.7.0cvs28
+
+	* src/gtk/about.c
+		don't even mention printing support, assume its
+		presence, unless building with GTK+ < 2.10.0
+
 2009-01-10 [colin]	3.7.0cvs27
 
 	* src/codeconv.c
