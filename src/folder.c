@@ -1324,14 +1324,10 @@ FolderItem *folder_find_child_item_by_name(FolderItem *item, const gchar *name)
 	FolderItem *child;
 
 	for (node = item->node->children; node != NULL; node = node->next) {
-		gchar *base;
 		child = FOLDER_ITEM(node->data);
-		base = g_path_get_basename(child->path);
-		if (strcmp2(base, name) == 0) {
-			g_free(base);
+		if (strcmp2(child->name, name) == 0) {
 			return child;
 		}
-		g_free(base);
 	}
 
 	return NULL;
