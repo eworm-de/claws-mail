@@ -3693,3 +3693,4 @@
 ( cvs diff -u -r 1.5.2.8 -r 1.5.2.9 src/addrclip.c;  cvs diff -u -r 1.28.2.38 -r 1.28.2.39 src/addrindex.c;  cvs diff -u -r 1.13.2.18 -r 1.13.2.19 src/addritem.c;  cvs diff -u -r 1.4.12.8 -r 1.4.12.9 src/foldersel.h;  cvs diff -u -r 1.207.2.210 -r 1.207.2.211 src/folderview.c;  cvs diff -u -r 1.52.2.71 -r 1.52.2.72 src/prefs_folder_item.c;  ) > 3.7.0cvs29.patchset
 ( cvs diff -u -r 1.213.2.186 -r 1.213.2.187 src/folder.c;  ) > 3.7.0cvs30.patchset
 ( cvs diff -u -r 1.28.2.39 -r 1.28.2.40 src/addrindex.c;  ) > 3.7.0cvs31.patchset
+( cvs diff -u -r 1.28.2.40 -r 1.28.2.41 src/addrindex.c;  ) > 3.7.0cvs32.patchset

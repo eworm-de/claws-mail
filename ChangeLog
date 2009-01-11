@@ -1,3 +1,8 @@
+2009-01-11 [paul]	3.7.0cvs32
+
+	* src/addrindex.c
+		clean up some build warnings
+
 2009-01-11 [colin]	3.7.0cvs31
 
 	* src/addrindex.c

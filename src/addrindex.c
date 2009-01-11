@@ -979,6 +979,7 @@ static int addrindex_write_attr( FILE *fp, const gchar *name, const gchar *value
 	return 0;
 }
 
+#if !defined(USE_LDAP) || !defined(USE_JPILOT)
 /**
  * Return DOM fragment for current XML tag from file.
  * \param  file XML file being processed.
@@ -1087,7 +1088,7 @@ static int addrindex_write_fragment(
 	
 	return 0;
 }
-
+#endif
 /**
  * Read/parse address index file, creating a data source for a regular
  * intrinsic XML addressbook.
