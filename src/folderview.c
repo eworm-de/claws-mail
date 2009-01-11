@@ -2276,27 +2276,6 @@ static void folderview_col_resized(GtkCMCList *clist, gint column, gint width,
 	prefs_common.folder_col_size[type] = width;
 }
 
-static void folderview_create_folder_node_recursive(FolderView *folderview, FolderItem *item)
-{
-	GNode *srcnode;
-
-	folderview_create_folder_node(folderview, item);
-
-	if (!item || !item->folder || !item->folder->node)
-		return;
-
-	srcnode = item->folder->node;	
-	srcnode = g_node_find(srcnode, G_PRE_ORDER, G_TRAVERSE_ALL, item);
-	srcnode = srcnode->children;
-	while (srcnode != NULL) {
-		if (srcnode && srcnode->data) {
-			FolderItem *next_item = (FolderItem*) srcnode->data;
-			folderview_create_folder_node_recursive(folderview, next_item);
-		}
-		srcnode = srcnode->next;
-	}
-}
-
 static void folderview_create_folder_node(FolderView *folderview, FolderItem *item)
 {
 	GtkCMCTree *ctree = GTK_CMCTREE(folderview->ctree);

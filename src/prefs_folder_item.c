@@ -61,7 +61,6 @@
 	}
 
 static void prefs_folder_item_register_page	(PrefsPage 	*page);
-static void prefs_folder_item_unregister_page	(PrefsPage 	*page);
 
 typedef struct _FolderItemGeneralPage FolderItemGeneralPage;
 typedef struct _FolderItemComposePage FolderItemComposePage;
@@ -1676,9 +1675,4 @@ void prefs_folder_item_open(FolderItem *item)
 static void prefs_folder_item_register_page(PrefsPage *page)
 {
 	prefs_pages = g_slist_append(prefs_pages, page);
-}
-
-static void prefs_folder_item_unregister_page(PrefsPage *page)
-{
-	prefs_pages = g_slist_remove(prefs_pages, page);
 }

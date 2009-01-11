@@ -857,28 +857,6 @@ void addritem_free_item_folder( ItemFolder *folder ) {
 }
 
 /**
- * Free up folders recursively. Note: this only frees up the lists of
- * children and *NOT* the children objects (folders, groups and person).
- * This should be done prior to calling this function.
- * \param parent Parent folder object to be processed.
- */
-static void addritem_free_item_folder_recurse( ItemFolder *parent ) {
-	GList *node = parent->listFolder;
-
-	while( node ) {
-		ItemFolder *folder = node->data;
-		addritem_free_item_folder_recurse( folder );
-		node = g_list_next( node );
-	}
-	g_list_free( parent->listPerson );
-	g_list_free( parent->listGroup );
-	g_list_free( parent->listFolder );
-	parent->listPerson = NULL;
-	parent->listGroup = NULL;
-	parent->listFolder = NULL;
-}
-
-/**
  * Add person into folder.
  * \param  folder Folder.
  * \param  item   Person to add.

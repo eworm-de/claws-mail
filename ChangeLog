@@ -1,3 +1,13 @@
+2009-01-11 [paul]	3.7.0cvs29
+
+	* src/addrclip.c
+	* src/addrindex.c
+	* src/addritem.c
+	* src/foldersel.h
+	* src/folderview.c
+	* src/prefs_folder_item.c
+		clean up some build warnings
+
 2009-01-11 [paul]	3.7.0cvs28
 
 	* src/gtk/about.c
