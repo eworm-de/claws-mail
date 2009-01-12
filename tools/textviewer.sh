@@ -133,7 +133,7 @@ case "$FNAME" in
 	*.xls)	TYPE=EXCEL	;;
 esac
 
-if [ "$TYPE" == "" ]	
+if [ "$TYPE" = "" ]
 then
 	case $FILETYPE in 
 		*"HTML"*)	TYPE=HTML ;;

@@ -24,7 +24,7 @@
 # the web browser set in Claws Mail prefs.
 
 
-function open_page()
+open_page()
 {
 	TMPCMD=$(echo $OPEN_CMD | sed "s|\"%s\"|$1|")
 	$TMPCMD &
@@ -32,7 +32,7 @@ function open_page()
 
 
 SESSION_ID=""
-if [ "$1" == "--ask-session-id" ]
+if [ "$1" = "--ask-session-id" ]
 then
 	shift
 	SESSION_ID=$(gxmessage -entry -center -wrap -buttons "OK:0,Cancel:1" -default "OK" \

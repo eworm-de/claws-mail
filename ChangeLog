@@ -1,3 +1,11 @@
+2009-01-12 [wwp]	3.7.0cvs33
+
+	* tools/fix_date.sh
+	* tools/popfile-link.sh
+	* tools/textviewer.sh
+		Fix bashisms and other portability glitches (thanks to
+		Steven M. Bellovin).
+
 2009-01-11 [paul]	3.7.0cvs32
 
 	* src/addrindex.c

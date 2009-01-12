@@ -26,16 +26,16 @@
 # If no X-Original-Date already exist, the former Date value will be set
 # in such field.
 
-VERSION="0.0.4"
+VERSION="0.0.5"
 
 
-function version()
+version()
 {
 	echo "$VERSION"
 	exit 0
 }
 
-function usage()
+usage()
 {
 	echo "usage:"
 	echo "  ${0##*/} [<switches>] <filename> [<filename> ..]"
@@ -50,7 +50,7 @@ function usage()
 	exit $1
 }
 
-function date_valid()
+date_valid()
 {
 	test $STRICT -eq 1 && \
 		REGEXP="$DATE_REGEXP_STRICT" || \
