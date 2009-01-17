@@ -3697,3 +3697,4 @@
 ( cvs diff -u -r 1.1.2.5 -r 1.1.2.6 tools/fix_date.sh;  cvs diff -u -r 1.1.2.2 -r 1.1.2.3 tools/popfile-link.sh;  cvs diff -u -r 1.4.2.4 -r 1.4.2.5 tools/textviewer.sh;  ) > 3.7.0cvs33.patchset
 ( cvs diff -u -r 1.60.2.55 -r 1.60.2.56 po/es.po;  ) > 3.7.0cvs34.patchset
 ( cvs diff -u -r 1.52.2.72 -r 1.52.2.73 src/prefs_folder_item.c;  ) > 3.7.0cvs35.patchset
+( cvs diff -u -r 1.1.2.18 -r 1.1.2.19 manual/faq.xml;  ) > 3.7.0cvs36.patchset

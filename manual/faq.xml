@@ -68,7 +68,7 @@
     <para>
 	If you do not ever want to send Return Receipts then you can use the
 	option <quote>Never send Return Receipts</quote> in the
-	<quote>Configuration/Preferences/Other</quote> page.
+	<quote>Configuration/Preferences/Mail Handling/Sending</quote> page.
     </para></section>
     <section>
     <title>How can I make Claws Mail notify me when new mail

@@ -1,3 +1,8 @@
+2009-01-17 [paul]	3.7.0cvs36
+
+	* manual/faq.xml
+		update an old, outdated piece of info
+
 2009-01-17 [paul]	3.7.0cvs35
 
 	* src/prefs_folder_item.c
