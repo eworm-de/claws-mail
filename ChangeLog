@@ -1,3 +1,24 @@
+2009-01-17 [colin]	3.7.0cvs37
+
+	* src/addressbook.c
+	* src/compose.c
+	* src/foldersel.c
+	* src/main.c
+	* src/mainwindow.c
+	* src/mbox.c
+	* src/common/md5.c
+	* src/common/ssl_certificate.c
+	* src/common/tags.c
+	* src/common/utils.c
+	* src/etpan/imap-thread.c
+	* src/plugins/bogofilter/bogofilter.c
+	* src/plugins/pgpinline/pgpinline.c
+	* src/plugins/smime/smime.c
+		Probably fix bug 1825, 'Unable to fetch messages from 
+		IMAP folders named with non-ASCII string'
+		Change remaining occurences of fopen and open with
+		g_fopen and g_open
+
 2009-01-17 [paul]	3.7.0cvs36
 
 	* manual/faq.xml

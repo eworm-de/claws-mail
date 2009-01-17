@@ -10156,7 +10156,7 @@ static void compose_insert_drag_received_cb (GtkWidget		*widget,
 	/* strangely, testing data->type == gdk_atom_intern("text/uri-list", TRUE)
 	 * does not work */
 	debug_print("drop: %s (%s)\n", gdk_atom_name(data->type)?gdk_atom_name(data->type):"nul",
-		data->data?data->data:"nul");
+		(gchar *)(data->data?data->data:"nul"));
 #ifndef G_OS_WIN32
 	if (gdk_atom_name(data->type) && !strcmp(gdk_atom_name(data->type), "text/uri-list")) {
 #else
@@ -10166,7 +10166,7 @@ static void compose_insert_drag_received_cb (GtkWidget		*widget,
 
 		list = uri_list_extract_filenames((const gchar *)data->data);
 		debug_print("list: %p (%s)\n", list, 
-			data->data?data->data:"nul");
+			(gchar *)(data->data?data->data:"nul"));
 		if (list == NULL && strstr((gchar *)(data->data), "://")) {
 			/* Assume a list of no files, and data has ://, is a remote link */
 			gchar *tmpdata = g_strstrip(g_strdup((const gchar *)data->data));

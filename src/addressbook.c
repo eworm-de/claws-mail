@@ -132,17 +132,17 @@ static gchar *list_titles[] = { N_("Name"),
 
 #define ADDRESSBOOK_MSGBUF_SIZE 2048
 
-static GdkPixbuf *folderxpm;
-static GdkPixbuf *folderopenxpm;
-static GdkPixbuf *groupxpm;
-static GdkPixbuf *interfacexpm;
-static GdkPixbuf *bookxpm;
-static GdkPixbuf *addressxpm;
-static GdkPixbuf *vcardxpm;
-static GdkPixbuf *jpilotxpm;
-static GdkPixbuf *categoryxpm;
-static GdkPixbuf *ldapxpm;
-static GdkPixbuf *addrsearchxpm;
+static GdkPixbuf *folderxpm = NULL;
+static GdkPixbuf *folderopenxpm = NULL;
+static GdkPixbuf *groupxpm = NULL;
+static GdkPixbuf *interfacexpm = NULL;
+static GdkPixbuf *bookxpm = NULL;
+static GdkPixbuf *addressxpm = NULL;
+static GdkPixbuf *vcardxpm = NULL;
+static GdkPixbuf *jpilotxpm = NULL;
+static GdkPixbuf *categoryxpm = NULL;
+static GdkPixbuf *ldapxpm = NULL;
+static GdkPixbuf *addrsearchxpm = NULL;
 
 /* Message buffer */
 static gchar addressbook_msgbuf[ ADDRESSBOOK_MSGBUF_SIZE ];
@@ -1231,8 +1231,6 @@ static void addressbook_create(void)
 			 G_CALLBACK(addressbook_close_clicked), NULL);
 
 	/* Build icons for interface */
-	stock_pixbuf_gdk( window, STOCK_PIXMAP_INTERFACE,
-			  &interfacexpm );
 
 	/* Build control tables */
 	addrbookctl_build_map(window);
@@ -4766,13 +4764,35 @@ ItemObjectType addressbook_type2item( AddressObjectType abType ) {
 	return ioType;
 }
 
+#define UPDATE_ICON_ATCI(id,icon,iconopen) {			\
+	atci = addrbookctl_lookup(id);				\
+	if (atci) {						\
+		atci->iconXpm = icon;				\
+		atci->iconXpmOpen = iconopen;			\
+	} else {						\
+		g_warning("can't get atci %d\n", id);		\
+	}							\
+}
+
 /*
 * Build table that controls the rendering of object types.
 */
-static void addrbookctl_build_map( GtkWidget *window ) {
+static void addrbookctl_build_icons( GtkWidget *window ) {
 	AddressTypeControlItem *atci;
 
 	/* Build icons */
+	g_object_unref(interfacexpm);
+	g_object_unref(folderxpm);
+	g_object_unref(folderopenxpm);
+	g_object_unref(groupxpm);
+	g_object_unref(vcardxpm);
+	g_object_unref(bookxpm);
+	g_object_unref(addressxpm);
+	g_object_unref(jpilotxpm);
+	g_object_unref(categoryxpm);
+	g_object_unref(ldapxpm);
+	g_object_unref(addrsearchxpm);
+	stock_pixbuf_gdk(window, STOCK_PIXMAP_INTERFACE, &interfacexpm );
 	stock_pixbuf_gdk(window, STOCK_PIXMAP_DIR_CLOSE, &folderxpm);
 	stock_pixbuf_gdk(window, STOCK_PIXMAP_DIR_OPEN, &folderopenxpm);
 	stock_pixbuf_gdk(window, STOCK_PIXMAP_GROUP, &groupxpm);
@@ -4783,6 +4803,26 @@ static void addrbookctl_build_map( GtkWidget *window ) {
 	stock_pixbuf_gdk(window, STOCK_PIXMAP_CATEGORY, &categoryxpm);
 	stock_pixbuf_gdk(window, STOCK_PIXMAP_LDAP, &ldapxpm);
 	stock_pixbuf_gdk(window, STOCK_PIXMAP_ADDRESS_SEARCH, &addrsearchxpm);
+	
+	UPDATE_ICON_ATCI(ADDR_INTERFACE,folderxpm,folderopenxpm);
+	UPDATE_ICON_ATCI(ADDR_BOOK,bookxpm,bookxpm);
+	UPDATE_ICON_ATCI(ADDR_ITEM_PERSON,NULL,NULL);
+	UPDATE_ICON_ATCI(ADDR_ITEM_EMAIL,addressxpm,addressxpm);
+	UPDATE_ICON_ATCI(ADDR_ITEM_GROUP,groupxpm,groupxpm);
+	UPDATE_ICON_ATCI(ADDR_ITEM_FOLDER,folderxpm,folderopenxpm);
+	UPDATE_ICON_ATCI(ADDR_VCARD,vcardxpm,vcardxpm);
+	UPDATE_ICON_ATCI(ADDR_JPILOT,jpilotxpm,jpilotxpm);
+	UPDATE_ICON_ATCI(ADDR_CATEGORY,categoryxpm,categoryxpm);
+	UPDATE_ICON_ATCI(ADDR_LDAP,ldapxpm,ldapxpm);
+	UPDATE_ICON_ATCI(ADDR_LDAP_QUERY,addrsearchxpm,addrsearchxpm);
+
+}
+
+/*
+* Build table that controls the rendering of object types.
+*/
+static void addrbookctl_build_map( GtkWidget *window ) {
+	AddressTypeControlItem *atci;
 
 	_addressBookTypeHash_ = g_hash_table_new( g_int_hash, g_int_equal );
 	_addressBookTypeList_ = NULL;
@@ -4795,8 +4835,6 @@ static void addrbookctl_build_map( GtkWidget *window ) {
 	atci->treeExpand = TRUE;
 	atci->treeLeaf = FALSE;
 	atci->displayName = _( "Interface" );
-	atci->iconXpm = folderxpm;
-	atci->iconXpmOpen = folderopenxpm;
 	atci->menuCommand = NULL;
 	g_hash_table_insert( _addressBookTypeHash_, &atci->objectType, atci );
 	_addressBookTypeList_ = g_list_append( _addressBookTypeList_, atci );
@@ -4809,8 +4847,6 @@ static void addrbookctl_build_map( GtkWidget *window ) {
 	atci->treeExpand = TRUE;
 	atci->treeLeaf = FALSE;
 	atci->displayName = _( "Address Book" );
-	atci->iconXpm = bookxpm;
-	atci->iconXpmOpen = bookxpm;
 	atci->menuCommand = "Menu/Book/NewBook";
 	g_hash_table_insert( _addressBookTypeHash_, &atci->objectType, atci );
 	_addressBookTypeList_ = g_list_append( _addressBookTypeList_, atci );
@@ -4823,8 +4859,6 @@ static void addrbookctl_build_map( GtkWidget *window ) {
 	atci->treeExpand = FALSE;
 	atci->treeLeaf = FALSE;
 	atci->displayName = _( "Person" );
-	atci->iconXpm = NULL;
-	atci->iconXpmOpen = NULL;
 	atci->menuCommand = NULL;
 	g_hash_table_insert( _addressBookTypeHash_, &atci->objectType, atci );
 	_addressBookTypeList_ = g_list_append( _addressBookTypeList_, atci );
@@ -4837,8 +4871,6 @@ static void addrbookctl_build_map( GtkWidget *window ) {
 	atci->treeExpand = FALSE;
 	atci->treeLeaf = TRUE;
 	atci->displayName = _( "Email Address" );
-	atci->iconXpm = addressxpm;
-	atci->iconXpmOpen = addressxpm;
 	atci->menuCommand = NULL;
 	g_hash_table_insert( _addressBookTypeHash_, &atci->objectType, atci );
 	_addressBookTypeList_ = g_list_append( _addressBookTypeList_, atci );
@@ -4851,8 +4883,6 @@ static void addrbookctl_build_map( GtkWidget *window ) {
 	atci->treeExpand = FALSE;
 	atci->treeLeaf = FALSE;
 	atci->displayName = _( "Group" );
-	atci->iconXpm = groupxpm;
-	atci->iconXpmOpen = groupxpm;
 	atci->menuCommand = NULL;
 	g_hash_table_insert( _addressBookTypeHash_, &atci->objectType, atci );
 	_addressBookTypeList_ = g_list_append( _addressBookTypeList_, atci );
@@ -4865,8 +4895,6 @@ static void addrbookctl_build_map( GtkWidget *window ) {
 	atci->treeExpand = FALSE;
 	atci->treeLeaf = FALSE;
 	atci->displayName = _( "Folder" );
-	atci->iconXpm = folderxpm;
-	atci->iconXpmOpen = folderopenxpm;
 	atci->menuCommand = NULL;
 	g_hash_table_insert( _addressBookTypeHash_, &atci->objectType, atci );
 	_addressBookTypeList_ = g_list_append( _addressBookTypeList_, atci );
@@ -4879,8 +4907,6 @@ static void addrbookctl_build_map( GtkWidget *window ) {
 	atci->treeExpand = TRUE;
 	atci->treeLeaf = TRUE;
 	atci->displayName = _( "vCard" );
-	atci->iconXpm = vcardxpm;
-	atci->iconXpmOpen = vcardxpm;
 	atci->menuCommand = "Menu/Book/NewVCard";
 	g_hash_table_insert( _addressBookTypeHash_, &atci->objectType, atci );
 	_addressBookTypeList_ = g_list_append( _addressBookTypeList_, atci );
@@ -4893,8 +4919,6 @@ static void addrbookctl_build_map( GtkWidget *window ) {
 	atci->treeExpand = TRUE;
 	atci->treeLeaf = FALSE;
 	atci->displayName = _( "JPilot" );
-	atci->iconXpm = jpilotxpm;
-	atci->iconXpmOpen = jpilotxpm;
 	atci->menuCommand = "Menu/Book/NewJPilot";
 	g_hash_table_insert( _addressBookTypeHash_, &atci->objectType, atci );
 	_addressBookTypeList_ = g_list_append( _addressBookTypeList_, atci );
@@ -4907,8 +4931,6 @@ static void addrbookctl_build_map( GtkWidget *window ) {
 	atci->treeExpand = TRUE;
 	atci->treeLeaf = TRUE;
 	atci->displayName = _( "JPilot" );
-	atci->iconXpm = categoryxpm;
-	atci->iconXpmOpen = categoryxpm;
 	atci->menuCommand = NULL;
 	g_hash_table_insert( _addressBookTypeHash_, &atci->objectType, atci );
 	_addressBookTypeList_ = g_list_append( _addressBookTypeList_, atci );
@@ -4921,8 +4943,6 @@ static void addrbookctl_build_map( GtkWidget *window ) {
 	atci->treeExpand = TRUE;
 	atci->treeLeaf = FALSE;
 	atci->displayName = _( "LDAP servers" );
-	atci->iconXpm = ldapxpm;
-	atci->iconXpmOpen = ldapxpm;
 	atci->menuCommand = "Menu/Book/NewLDAPServer";
 	g_hash_table_insert( _addressBookTypeHash_, &atci->objectType, atci );
 	_addressBookTypeList_ = g_list_append( _addressBookTypeList_, atci );
@@ -4935,12 +4955,17 @@ static void addrbookctl_build_map( GtkWidget *window ) {
 	atci->treeExpand = FALSE;
 	atci->treeLeaf = TRUE;
 	atci->displayName = _( "LDAP Query" );
-	atci->iconXpm = addrsearchxpm;
-	atci->iconXpmOpen = addrsearchxpm;
 	atci->menuCommand = NULL;
 	g_hash_table_insert( _addressBookTypeHash_, &atci->objectType, atci );
 	_addressBookTypeList_ = g_list_append( _addressBookTypeList_, atci );
 
+	addrbookctl_build_icons(window);
+}
+
+void addressbook_reflect_prefs_pixmap_theme(void)
+{
+	if (addrbook.window)
+		addrbookctl_build_icons(addrbook.window);
 }
 
 /*

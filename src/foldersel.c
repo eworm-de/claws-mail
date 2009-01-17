@@ -345,7 +345,8 @@ static void foldersel_init(void)
 			 &foldernoselect_pixbuf);
 }
 
-void foldersel_reflect_prefs_pixmap_theme(void){
+void foldersel_reflect_prefs_pixmap_theme(void)
+{
 	if (folder_pixbuf)
 		g_object_unref(folder_pixbuf);
 	if (folderopen_pixbuf)

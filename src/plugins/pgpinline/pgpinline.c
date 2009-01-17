@@ -133,7 +133,7 @@ static gchar *get_part_as_string(MimeInfo *mimeinfo)
 			printf("error dumping file\n");
 			return NULL;
 		}
-		fp = fopen(filename,"rb");
+		fp = g_fopen(filename,"rb");
 		if (!fp) {
 			printf("error reading file\n");
 			return NULL;

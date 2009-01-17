@@ -430,7 +430,7 @@ static MimeInfo *smime_decrypt(MimeInfo *mimeinfo)
 		get_mime_tmp_dir(), G_DIR_SEPARATOR, ++id);
 
     	if ((dstfp = g_fopen(fname, "wb")) == NULL) {
-        	FILE_OP_ERROR(fname, "fopen");
+        	FILE_OP_ERROR(fname, "g_fopen");
         	g_free(fname);
         	gpgme_data_release(plain);
 		gpgme_release(ctx);
@@ -795,7 +795,7 @@ gboolean smime_encrypt(MimeInfo *mimeinfo, const gchar *encrypt_data)
 
 	/* write message content to temporary file */
 	tmpfile = get_tmp_file();
-	fp = fopen(tmpfile, "wb");
+	fp = g_fopen(tmpfile, "wb");
 	if (fp == NULL) {
 		perror("get_tmp_file");
 		return FALSE;
@@ -805,7 +805,7 @@ gboolean smime_encrypt(MimeInfo *mimeinfo, const gchar *encrypt_data)
 	procmime_write_mimeinfo(msgcontent, fp);
 	fclose(fp);
 	canonicalize_file_replace(tmpfile);
-	fp = fopen(tmpfile, "rb");
+	fp = g_fopen(tmpfile, "rb");
 	if (fp == NULL) {
 		perror("get_tmp_file");
 		return FALSE;
@@ -834,7 +834,7 @@ gboolean smime_encrypt(MimeInfo *mimeinfo, const gchar *encrypt_data)
 	}
 
 	tmpfile = get_tmp_file();
-	fp = fopen(tmpfile, "wb");
+	fp = g_fopen(tmpfile, "wb");
 	if (fp) {
 		if (fwrite(enccontent, 1, len, fp) < len) {
 			FILE_OP_ERROR(tmpfile, "fwrite");

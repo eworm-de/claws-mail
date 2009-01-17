@@ -537,7 +537,7 @@ static guint check_cert(gnutls_x509_crt cert)
 	FILE *fp;
 
 	if (claws_ssl_get_cert_file())
-		fp = fopen(claws_ssl_get_cert_file(), "r");
+		fp = g_fopen(claws_ssl_get_cert_file(), "r");
 	else
 		return (guint)-1;
 

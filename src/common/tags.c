@@ -50,7 +50,7 @@ void tags_read_tags(void)
 			TAGS_RC, NULL);
 	gchar tmp[255];
 	gint id;
-	FILE *fp = fopen(file, "rb");
+	FILE *fp = g_fopen(file, "rb");
 	
 	g_free(file);
 
@@ -122,10 +122,10 @@ void tags_write_tags(void)
 			TAGS_RC, NULL);
 	TagWriteData data;
 
-	FILE *fp = fopen(file, "wb");
+	FILE *fp = g_fopen(file, "wb");
 			
 	if (!fp) {
-		FILE_OP_ERROR(file, "fopen");
+		FILE_OP_ERROR(file, "g_fopen");
 		g_free(file);
 		g_free(file_new);
 		return;

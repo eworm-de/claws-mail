@@ -358,9 +358,9 @@ gint lock_mbox(const gchar *base, LockType type)
 #endif
 
 #if HAVE_FLOCK
-		if ((lockfd = open(base, O_RDWR)) < 0) {
+		if ((lockfd = g_open(base, O_RDWR)) < 0) {
 #else
-		if ((lockfd = open(base, O_RDWR)) < 0) {
+		if ((lockfd = g_open(base, O_RDWR)) < 0) {
 #endif
 			FILE_OP_ERROR(base, "open");
 			return -1;

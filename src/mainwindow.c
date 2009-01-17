@@ -2394,6 +2394,7 @@ static gboolean reflect_prefs_timeout_cb(gpointer data)
 			folderview_reflect_prefs_pixmap_theme(mainwin->folderview);
 			summary_reflect_prefs_pixmap_theme(mainwin->summaryview);
 			foldersel_reflect_prefs_pixmap_theme();
+			addressbook_reflect_prefs_pixmap_theme();
 #ifndef GENERIC_UMPC
 			pixmap = stock_pixmap_widget(mainwin->hbox_stat, STOCK_PIXMAP_ONLINE);
 			gtk_container_remove(GTK_CONTAINER(mainwin->online_switch), 

@@ -196,6 +196,17 @@ FILE* g_fopen(const gchar *filename, const gchar *mode)
 	return fopen(filename, mode);
 #endif
 }
+int g_open(const gchar *filename, int flags, int mode)
+{
+#ifdef G_OS_WIN32
+	char *name = g_win32_locale_filename_from_utf8(filename);
+	int fd = open(name, flags, mode);
+	g_free(name);
+	return fp;
+#else
+	return open(filename, flags, mode);
+#endif
+}
 #endif /* GLIB_CHECK_VERSION && G_OS_UNIX */
 
 
@@ -207,7 +218,7 @@ gint mkstemp_name(gchar *template, gchar **name_used)
 	int tmpfd;
 
 	*name_used = g_strdup_printf("%s.%ld",_mktemp(template),count++);
-	tmpfd = open (*name_used, (O_CREAT | O_RDWR | O_BINARY),
+	tmpfd = g_open (*name_used, (O_CREAT | O_RDWR | O_BINARY),
 				    (S_IRUSR | S_IWUSR));
 
 	tempfiles=g_slist_append(tempfiles, g_strdup(*name_used));
@@ -469,11 +480,11 @@ gint file_strip_crs(const gchar *file)
 	if (file == NULL)
 		goto freeout;
 
-	fp = fopen(file, "rb");
+	fp = g_fopen(file, "rb");
 	if (!fp)
 		goto freeout;
 
-	outfp = fopen(out, "wb");
+	outfp = g_fopen(out, "wb");
 	if (!outfp) {
 		fclose(fp);
 		goto freeout;
@@ -2098,7 +2109,7 @@ off_t get_file_size_as_crlf(const gchar *file)
 	gchar buf[BUFFSIZE];
 
 	if ((fp = g_fopen(file, "rb")) == NULL) {
-		FILE_OP_ERROR(file, "fopen");
+		FILE_OP_ERROR(file, "g_fopen");
 		return -1;
 	}
 
@@ -2489,12 +2500,12 @@ gint append_file(const gchar *src, const gchar *dest, gboolean keep_backup)
 	gboolean err = FALSE;
 
 	if ((src_fp = g_fopen(src, "rb")) == NULL) {
-		FILE_OP_ERROR(src, "fopen");
+		FILE_OP_ERROR(src, "g_fopen");
 		return -1;
 	}
 
 	if ((dest_fp = g_fopen(dest, "ab")) == NULL) {
-		FILE_OP_ERROR(dest, "fopen");
+		FILE_OP_ERROR(dest, "g_fopen");
 		fclose(src_fp);
 		return -1;
 	}
@@ -2543,7 +2554,7 @@ gint copy_file(const gchar *src, const gchar *dest, gboolean keep_backup)
 	gboolean err = FALSE;
 
 	if ((src_fp = g_fopen(src, "rb")) == NULL) {
-		FILE_OP_ERROR(src, "fopen");
+		FILE_OP_ERROR(src, "g_fopen");
 		return -1;
 	}
 	if (is_file_exist(dest)) {
@@ -2557,7 +2568,7 @@ gint copy_file(const gchar *src, const gchar *dest, gboolean keep_backup)
 	}
 
 	if ((dest_fp = g_fopen(dest, "wb")) == NULL) {
-		FILE_OP_ERROR(dest, "fopen");
+		FILE_OP_ERROR(dest, "g_fopen");
 		fclose(src_fp);
 		if (dest_bak) {
 			if (rename_force(dest_bak, dest) < 0)
@@ -2678,7 +2689,7 @@ gint copy_file_part(FILE *fp, off_t offset, size_t length, const gchar *dest)
 	gboolean err = FALSE;
 
 	if ((dest_fp = g_fopen(dest, "wb")) == NULL) {
-		FILE_OP_ERROR(dest, "fopen");
+		FILE_OP_ERROR(dest, "g_fopen");
 		return -1;
 	}
 
@@ -2749,12 +2760,12 @@ gint canonicalize_file(const gchar *src, const gchar *dest)
 	gboolean last_linebreak = FALSE;
 
 	if ((src_fp = g_fopen(src, "rb")) == NULL) {
-		FILE_OP_ERROR(src, "fopen");
+		FILE_OP_ERROR(src, "g_fopen");
 		return -1;
 	}
 
 	if ((dest_fp = g_fopen(dest, "wb")) == NULL) {
-		FILE_OP_ERROR(dest, "fopen");
+		FILE_OP_ERROR(dest, "g_fopen");
 		fclose(src_fp);
 		return -1;
 	}
@@ -3056,7 +3067,7 @@ gint str_write_to_file(const gchar *str, const gchar *file)
 	g_return_val_if_fail(file != NULL, -1);
 
 	if ((fp = g_fopen(file, "wb")) == NULL) {
-		FILE_OP_ERROR(file, "fopen");
+		FILE_OP_ERROR(file, "g_fopen");
 		return -1;
 	}
 
@@ -3147,14 +3158,14 @@ static gchar *file_read_to_str_full(const gchar *file, gboolean recode)
 	}
 
 #ifdef G_OS_WIN32
-	fp = fopen (file, "rb");
+	fp = g_fopen (file, "rb");
 	if (fp == NULL) {
 		FILE_OP_ERROR(file, "open");
 		return NULL;
 	}
 #else	  
 	/* test whether the file is readable without blocking */
-	fd = open(file, O_RDONLY | O_NONBLOCK);
+	fd = g_open(file, O_RDONLY | O_NONBLOCK);
 	if (fd == -1) {
 		FILE_OP_ERROR(file, "open");
 		return NULL;
@@ -4572,7 +4583,7 @@ gchar *make_http_string(const gchar *bp, const gchar *ep)
 
 static gchar *mailcap_get_command_in_file(const gchar *path, const gchar *type, const gchar *file_to_open)
 {
-	FILE *fp = fopen(path, "rb");
+	FILE *fp = g_fopen(path, "rb");
 	gchar buf[BUFFSIZE];
 	gchar *result = NULL;
 	if (!fp)
@@ -4685,8 +4696,8 @@ void mailcap_update_default(const gchar *type, const gchar *command)
 	gchar *path = NULL, *outpath = NULL;
 	path = g_strconcat(get_home_dir(), G_DIR_SEPARATOR_S, ".mailcap", NULL);
 	outpath = g_strconcat(get_home_dir(), G_DIR_SEPARATOR_S, ".mailcap.new", NULL);
-	FILE *fp = fopen(path, "rb");
-	FILE *outfp = fopen(outpath, "wb");
+	FILE *fp = g_fopen(path, "rb");
+	FILE *outfp = g_fopen(outpath, "wb");
 	gchar buf[BUFFSIZE];
 	gboolean err = FALSE;
 

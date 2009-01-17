@@ -272,8 +272,8 @@ static void bogofilter_do_filter(BogoFilterData *data)
 					    FOLDER_TYPE(msginfo->folder->folder) == F_MH &&
 					    config.insert_header) {
 						gchar *tmpfile = get_tmp_file();
-						FILE *input = fopen(file, "r");
-						FILE *output = fopen(tmpfile, "w");
+						FILE *input = g_fopen(file, "r");
+						FILE *output = g_fopen(tmpfile, "w");
 						if (strstr(parts[2], "\n"))
 							*(strstr(parts[2], "\n")) = '\0';
 						if (input && !output) 
