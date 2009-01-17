@@ -1,3 +1,10 @@
+2009-01-17 [paul]	3.7.0cvs35
+
+	* src/prefs_folder_item.c
+		fix bug where saving General Folder Properties
+		of a sub-folder of outbox, queue, draft or trash
+		would change its parent's folder type to normal
+
 2009-01-12 [mones]	3.7.0cvs34
 
 	* po/es.po

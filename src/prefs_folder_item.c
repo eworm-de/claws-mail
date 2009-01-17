@@ -633,7 +633,7 @@ static void general_save_folder_prefs(FolderItem *folder, FolderItemGeneralPage 
 		all = TRUE;
 
 	type = combobox_get_active_data(GTK_COMBO_BOX(page->folder_type));
-	if (all && folder->stype != type) {
+	if (all && folder->stype != type && page->item->parent_stype == F_NORMAL) {
 		folder_item_change_type(folder, type);
 	}
 
