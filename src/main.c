@@ -2493,7 +2493,7 @@ static void install_memory_sighandler()
 	struct sigaction act;
 	int flags;
 
-	mem_notify_fd = g_open("/dev/mem_notify", O_RDONLY|O_NONBLOCK);
+	mem_notify_fd = g_open("/dev/mem_notify", O_RDONLY|O_NONBLOCK, 0);
 	if (mem_notify_fd == -1) {
 		debug_print("/dev/mem_notify not available (%s)\n", 
 			strerror(errno));

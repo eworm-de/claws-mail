@@ -1,3 +1,12 @@
+2009-01-17 [colin]	3.7.0cvs38
+
+	* src/main.c
+	* src/mbox.c
+	* src/common/md5.c
+	* src/common/utils.c
+	* src/etpan/imap-thread.c
+		Fix g_open calls (which don't ignore mode)
+
 2009-01-17 [colin]	3.7.0cvs37
 
 	* src/addressbook.c

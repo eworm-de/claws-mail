@@ -355,7 +355,7 @@ md5_hex_digest_file(char *hexdigest, const unsigned char *file)
 	char *lastp = buf; /* point to the start of the buffer */
 	size_t total = 0; /* total length read */
 	int num_alloc = 1; /* number of blocks allocated */
-	int fd = g_open(file, O_RDONLY);
+	int fd = g_open(file, O_RDONLY, 0);
 
 	if (fd == -1) {
 		FILE_OP_ERROR(file, "open");

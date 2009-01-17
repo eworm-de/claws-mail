@@ -2960,7 +2960,7 @@ static void append_run(struct etpan_thread_op * op)
 	}
 	size = stat_buf.st_size;
 	
-	fd = g_open(param->filename, O_RDONLY);
+	fd = g_open(param->filename, O_RDONLY, 0);
 	if (fd < 0) {
 		result->error = MAILIMAP_ERROR_APPEND;
 		return;
@@ -3246,7 +3246,7 @@ static void do_exec_command(int fd, const char * command,
 	/* Detach from the controlling tty if we have one. Otherwise,
 	   SSH might do something stupid like trying to use it instead
 	   of running $SSH_ASKPASS. Doh. */
-	fd = g_open("/dev/tty", O_RDONLY);
+	fd = g_open("/dev/tty", O_RDONLY, 0);
 	if (fd != -1) {
 		ioctl(fd, TIOCNOTTY, NULL);
 		close(fd);
