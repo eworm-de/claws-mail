@@ -1339,6 +1339,9 @@ static void addressbook_create(void)
 				      GDK_HINT_MIN_SIZE);
 	gtk_widget_set_size_request(window, prefs_common.addressbookwin_width,
 				    prefs_common.addressbookwin_height);
+#ifdef G_OS_WIN32
+	gtk_window_move(GTK_WINDOW(window), 48, 48);
+#endif
 
 	if (!prefs_common.addressbook_use_editaddress_dialog) {
 		if (prefs_common.addressbook_vpaned_pos > 0)

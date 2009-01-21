@@ -824,6 +824,9 @@ static void account_edit_create(void)
 				      GDK_HINT_MIN_SIZE);
 	gtk_widget_set_size_request(window, prefs_common.accountswin_width,
 				    prefs_common.accountswin_height);
+#ifdef G_OS_WIN32
+	gtk_window_move(GTK_WINDOW(window), 48, 48);
+#endif
 
 	edit_account.window    = window;
 	edit_account.list_view = list_view;

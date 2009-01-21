@@ -1,3 +1,9 @@
+2009-01-21 [colin]	3.7.0cvs40
+
+	* src/account.c
+	* src/addressbook.c
+		Win32: Fix window placement
+
 2009-01-21 [paul]	3.7.0cvs39
 
 	* src/inc.c
