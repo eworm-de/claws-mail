@@ -63,6 +63,7 @@ void addressbook_address_list_set_focus( void );
 void addressbook_address_list_disable_some_actions( void );
 void addressbook_refresh( void );
 gchar *addressbook_set_col_name_guard(gchar *value);
+void addressbook_reflect_prefs_pixmap_theme(void);
 
 #endif /* __ADDRESSBOOK_H__ */
 

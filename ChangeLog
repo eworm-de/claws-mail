@@ -1,3 +1,9 @@
+2009-01-21 [colin]	3.7.0cvs41
+
+	* src/addressbook.h
+		Fix warning (on-the-fly theming of
+		addressbook isn't complete yet)
+
 2009-01-21 [colin]	3.7.0cvs40
 
 	* src/account.c

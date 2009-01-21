@@ -3702,3 +3702,4 @@
 ( cvs diff -u -r 1.115.2.219 -r 1.115.2.220 src/main.c;  cvs diff -u -r 1.28.2.45 -r 1.28.2.46 src/mbox.c;  cvs diff -u -r 1.2.2.7 -r 1.2.2.8 src/common/md5.c;  cvs diff -u -r 1.36.2.164 -r 1.36.2.165 src/common/utils.c;  cvs diff -u -r 1.1.4.108 -r 1.1.4.109 src/etpan/imap-thread.c;  ) > 3.7.0cvs38.patchset
 ( cvs diff -u -r 1.149.2.98 -r 1.149.2.99 src/inc.c;  ) > 3.7.0cvs39.patchset
 ( cvs diff -u -r 1.61.2.92 -r 1.61.2.93 src/account.c;  cvs diff -u -r 1.60.2.129 -r 1.60.2.130 src/addressbook.c;  ) > 3.7.0cvs40.patchset
+( cvs diff -u -r 1.18.2.15 -r 1.18.2.16 src/addressbook.h;  ) > 3.7.0cvs41.patchset
