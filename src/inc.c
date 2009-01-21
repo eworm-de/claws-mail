@@ -1206,7 +1206,7 @@ static void inc_put_error(IncState istate, Pop3Session *session)
 	case INC_TIMEOUT:
 		log_msg = _("Session timed out. You may be able to "
 			    "recover by increasing the timeout value in "
-			    "Preferences/Other.");
+			    "Preferences/Other/Miscellaneous.");
 		if (prefs_common.no_recv_err_panel)
 			break;
 		err_msg = g_strdup_printf(_("Connection to %s:%d timed out."), 
