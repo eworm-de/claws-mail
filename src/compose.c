@@ -1157,9 +1157,9 @@ Compose *compose_generic_new(PrefsAccount *account, const gchar *mailto, FolderI
 }
 
 static void compose_force_encryption(Compose *compose, PrefsAccount *account,
-		gboolean override_pref)
+		gboolean override_pref, const gchar *system)
 {
-	gchar *privacy = NULL;
+	const gchar *privacy = NULL;
 
 	g_return_if_fail(compose != NULL);
 	g_return_if_fail(account != NULL);
@@ -1167,7 +1167,9 @@ static void compose_force_encryption(Compose *compose, PrefsAccount *account,
 	if (override_pref == FALSE && account->default_encrypt_reply == FALSE)
 		return;
 
-	if (account->default_privacy_system
+	if (system)
+		privacy = system;
+	else if (account->default_privacy_system
 	&&  strlen(account->default_privacy_system)) {
 		privacy = account->default_privacy_system;
 	} else {
@@ -1177,6 +1179,10 @@ static void compose_force_encryption(Compose *compose, PrefsAccount *account,
 		}
 	}
 	if (privacy != NULL) {
+		if (system) {
+			g_free(compose->privacy_system);
+			compose->privacy_system = NULL;
+		}
 		if (compose->privacy_system == NULL)
 			compose->privacy_system = g_strdup(privacy);
 		else if (*(compose->privacy_system) == '\0') {
@@ -1188,11 +1194,13 @@ static void compose_force_encryption(Compose *compose, PrefsAccount *account,
 	}
 }	
 
-static void compose_force_signing(Compose *compose, PrefsAccount *account)
+static void compose_force_signing(Compose *compose, PrefsAccount *account, const gchar *system)
 {
 	gchar *privacy = NULL;
 
-	if (account->default_privacy_system
+	if (system)
+		privacy = system;
+	else if (account->default_privacy_system
 	&&  strlen(account->default_privacy_system)) {
 		privacy = account->default_privacy_system;
 	} else {
@@ -1201,7 +1209,12 @@ static void compose_force_signing(Compose *compose, PrefsAccount *account)
 			privacy = (gchar *)(privacy_avail->data);
 		}
 	}
+
 	if (privacy != NULL) {
+		if (system) {
+			g_free(compose->privacy_system);
+			compose->privacy_system = NULL;
+		}
 		if (compose->privacy_system == NULL)
 			compose->privacy_system = g_strdup(privacy);
 		compose_update_privacy_system_menu_item(compose, FALSE);
@@ -1418,6 +1431,7 @@ static Compose *compose_generic_reply(MsgInfo *msginfo,
 	gboolean quote = FALSE;
 	const gchar *qmark = NULL;
 	const gchar *body_fmt = NULL;
+	gchar *s_system = NULL;
 	START_TIMING("");
 	g_return_val_if_fail(msginfo != NULL, NULL);
 	g_return_val_if_fail(msginfo->folder != NULL, NULL);
@@ -1535,13 +1549,14 @@ static Compose *compose_generic_reply(MsgInfo *msginfo,
 	}
 
 	if (MSG_IS_ENCRYPTED(compose->replyinfo->flags)) {
-		compose_force_encryption(compose, account, FALSE);
+		compose_force_encryption(compose, account, FALSE, s_system);
 	}
 
-	privacy_msginfo_get_signed_state(compose->replyinfo);
+	privacy_msginfo_get_signed_state(compose->replyinfo, &s_system);
 	if (MSG_IS_SIGNED(compose->replyinfo->flags) && account->default_sign_reply) {
-		compose_force_signing(compose, account);
+		compose_force_signing(compose, account, s_system);
 	}
+	g_free(s_system);
 
 	SIGNAL_BLOCK(textbuf);
 	
@@ -2185,7 +2200,7 @@ Compose *compose_reedit(MsgInfo *msginfo, gboolean batch)
 	if (MSG_IS_ENCRYPTED(msginfo->flags)) {
 		fp = procmime_get_first_encrypted_text_content(msginfo);
 		if (fp) {
-			compose_force_encryption(compose, account, TRUE);
+			compose_force_encryption(compose, account, TRUE, NULL);
 		}
 	} else {
 		fp = procmime_get_first_text_content(msginfo);
@@ -3563,7 +3578,7 @@ static void compose_attach_parts(Compose *compose, MsgInfo *msginfo)
 				compose_attach_append(compose, outfile, 
 						      partname, content_type);
 			} else {
-				compose_force_signing(compose, compose->account);
+				compose_force_signing(compose, compose->account, NULL);
 			}
 			g_free(content_type);
 		}
@@ -10597,6 +10612,7 @@ static void compose_reply_from_messageview_real(MessageView *msgview, GSList *ms
 	gboolean originally_enc = FALSE;
 	gboolean originally_sig = FALSE;
 	Compose *compose = NULL;
+	gchar *s_system = NULL;
 
 	g_return_if_fail(msgview != NULL);
 
@@ -10614,7 +10630,7 @@ static void compose_reply_from_messageview_real(MessageView *msgview, GSList *ms
 				new_msglist = g_slist_append(NULL, tmp_msginfo);
 
 				originally_enc = MSG_IS_ENCRYPTED(orig_msginfo->flags);
-				privacy_msginfo_get_signed_state(orig_msginfo);
+				privacy_msginfo_get_signed_state(orig_msginfo, &s_system);
 				originally_sig = MSG_IS_SIGNED(orig_msginfo->flags);
 
 				tmp_msginfo->folder = orig_msginfo->folder;
@@ -10636,13 +10652,13 @@ static void compose_reply_from_messageview_real(MessageView *msgview, GSList *ms
 		compose = compose_reply_mode((ComposeMode)action, msginfo_list, body);
 
 	if (compose && originally_enc) {
-		compose_force_encryption(compose, compose->account, FALSE);
+		compose_force_encryption(compose, compose->account, FALSE, s_system);
 	}
 
 	if (compose && originally_sig && compose->account->default_sign_reply) {
-		compose_force_signing(compose, compose->account);
+		compose_force_signing(compose, compose->account, s_system);
 	}
-
+	g_free(s_system);
 	g_free(body);
 }
 

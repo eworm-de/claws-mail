@@ -1,3 +1,13 @@
+2009-01-22 [colin]	3.7.0cvs42
+
+	* src/compose.c
+	* src/privacy.c
+	* src/privacy.h
+		When replying to signed/encrypted mail and the
+		preference to sign/encrypt in this case is set,
+		choose the original mail's privacy system (if
+		available).
+
 2009-01-21 [colin]	3.7.0cvs41
 
 	* src/addressbook.h

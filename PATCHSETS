@@ -3703,3 +3703,4 @@
 ( cvs diff -u -r 1.149.2.98 -r 1.149.2.99 src/inc.c;  ) > 3.7.0cvs39.patchset
 ( cvs diff -u -r 1.61.2.92 -r 1.61.2.93 src/account.c;  cvs diff -u -r 1.60.2.129 -r 1.60.2.130 src/addressbook.c;  ) > 3.7.0cvs40.patchset
 ( cvs diff -u -r 1.18.2.15 -r 1.18.2.16 src/addressbook.h;  ) > 3.7.0cvs41.patchset
+( cvs diff -u -r 1.382.2.495 -r 1.382.2.496 src/compose.c;  cvs diff -u -r 1.10.2.18 -r 1.10.2.19 src/privacy.c;  cvs diff -u -r 1.10.2.19 -r 1.10.2.20 src/privacy.h;  ) > 3.7.0cvs42.patchset

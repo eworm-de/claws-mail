@@ -147,26 +147,40 @@ try_others:
 	return FALSE;
 }
 
+struct SignedState {
+	MsgInfo *msginfo;
+	gchar **system;
+};
+
 static void msginfo_set_signed_flag(GNode *node, gpointer data)
 {
-	MsgInfo *msginfo = data;
+	struct SignedState *sstate = (struct SignedState *)data;
+	MsgInfo *msginfo = sstate->msginfo;
 	MimeInfo *mimeinfo = node->data;
 	
 	if (privacy_mimeinfo_is_signed(mimeinfo)) {
 		procmsg_msginfo_set_flags(msginfo, 0, MSG_SIGNED);
+		if (sstate->system && !*(sstate->system) && mimeinfo->privacy)
+			*(sstate->system) = g_strdup(mimeinfo->privacy->system->id);
 	}
 	if (privacy_mimeinfo_is_encrypted(mimeinfo)) {
 		procmsg_msginfo_set_flags(msginfo, 0, MSG_ENCRYPTED);
+		if (sstate->system && !*(sstate->system) && mimeinfo->privacy)
+			*(sstate->system) = g_strdup(mimeinfo->privacy->system->id);
 	} else {
 		/* searching inside encrypted parts doesn't really make sense */
-		g_node_children_foreach(mimeinfo->node, G_TRAVERSE_ALL, msginfo_set_signed_flag, msginfo);
+		g_node_children_foreach(mimeinfo->node, G_TRAVERSE_ALL, msginfo_set_signed_flag, sstate);
 	}
 }
 
-void privacy_msginfo_get_signed_state(MsgInfo *msginfo)
+void privacy_msginfo_get_signed_state(MsgInfo *msginfo, gchar **system)
 {
+	struct SignedState sstate;
 	MimeInfo *mimeinfo = procmime_scan_message(msginfo);
-	g_node_children_foreach(mimeinfo->node, G_TRAVERSE_ALL, msginfo_set_signed_flag, msginfo);
+
+	sstate.msginfo = msginfo;
+	sstate.system = system;
+	g_node_children_foreach(mimeinfo->node, G_TRAVERSE_ALL, msginfo_set_signed_flag, &sstate);
 }
 
 /**

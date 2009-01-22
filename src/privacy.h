@@ -43,7 +43,7 @@ void privacy_unregister_system			(PrivacySystem *system);
 
 void privacy_free_privacydata			(PrivacyData *);
 
-void privacy_msginfo_get_signed_state		(MsgInfo *);
+void privacy_msginfo_get_signed_state		(MsgInfo *, gchar **system);
 gboolean privacy_mimeinfo_is_signed		(MimeInfo *);
 gint privacy_mimeinfo_check_signature		(MimeInfo *);
 SignatureStatus privacy_mimeinfo_get_sig_status	(MimeInfo *);
