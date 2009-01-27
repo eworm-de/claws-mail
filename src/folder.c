@@ -4428,6 +4428,8 @@ gboolean folder_has_parent_of_type(FolderItem *item,
 {
 	FolderItem *cur = item;
 
+	if (!item)
+		return FALSE;
 	/* if we already know it, make it short */
 	if (item->parent_stype != -1) {
 		return (item->parent_stype == type);
