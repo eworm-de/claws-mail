@@ -1,3 +1,9 @@
+2009-01-27 [paul]	3.7.0cvs44
+
+	* src/messageview.c
+		always select text/calendar mimepart if suitable
+		plugin (i.e. vCalendar) is available
+
 2009-01-27 [paul]	3.7.0cvs43
 
 	* src/folder.c

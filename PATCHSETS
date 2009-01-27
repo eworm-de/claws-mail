@@ -3705,3 +3705,4 @@
 ( cvs diff -u -r 1.18.2.15 -r 1.18.2.16 src/addressbook.h;  ) > 3.7.0cvs41.patchset
 ( cvs diff -u -r 1.382.2.495 -r 1.382.2.496 src/compose.c;  cvs diff -u -r 1.10.2.18 -r 1.10.2.19 src/privacy.c;  cvs diff -u -r 1.10.2.19 -r 1.10.2.20 src/privacy.h;  ) > 3.7.0cvs42.patchset
 ( cvs diff -u -r 1.213.2.187 -r 1.213.2.188 src/folder.c;  ) > 3.7.0cvs43.patchset
+( cvs diff -u -r 1.94.2.196 -r 1.94.2.197 src/messageview.c;  ) > 3.7.0cvs44.patchset
