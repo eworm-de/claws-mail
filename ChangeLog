@@ -1,3 +1,10 @@
+2009-01-28 [paul]	3.7.0cvs45
+
+	* tools/filter_conv_new.pl
+		move 'move' and 'delete' to end of @actions
+		so that they are always final actions in the
+		generated filtering rule
+
 2009-01-27 [paul]	3.7.0cvs44
 
 	* src/messageview.c

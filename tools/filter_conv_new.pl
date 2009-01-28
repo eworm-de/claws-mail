@@ -113,8 +113,8 @@ my $xmlobj = XML::SimpleObject->new($parser->parsefile($old_filters));
 my @conditions = ('match-header','match-to-or-cc','match-any-header',
 		  'match-body-text','command-test','size','age');
 
-my @actions = ('move','copy','not-receive','delete','mark','color-label',
-	       'mark-as-read','exec','stop-eval');
+my @actions = ('copy','not-receive','mark','color-label','mark-as-read',
+	       'exec','stop-eval','move','delete');
 
 my $standard_headers = qr/^(?:Subject|From|To|Cc)$/;
 my $negative_matches = qr/^(?:not-contain|is-not|not-regex)$/;
