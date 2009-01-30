@@ -3707,3 +3707,4 @@
 ( cvs diff -u -r 1.213.2.187 -r 1.213.2.188 src/folder.c;  ) > 3.7.0cvs43.patchset
 ( cvs diff -u -r 1.94.2.196 -r 1.94.2.197 src/messageview.c;  ) > 3.7.0cvs44.patchset
 ( cvs diff -u -r 1.1.2.6 -r 1.1.2.7 tools/filter_conv_new.pl;  ) > 3.7.0cvs45.patchset
+( cvs diff -u -r 1.395.2.404 -r 1.395.2.405 src/summaryview.c;  ) > 3.7.0cvs46.patchset
