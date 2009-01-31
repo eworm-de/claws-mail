@@ -6522,6 +6522,7 @@ static void summary_tree_expanded(GtkCMCTree *ctree, GtkCMCTreeNode *node,
 static void summary_tree_collapsed(GtkCMCTree *ctree, GtkCMCTreeNode *node,
 				   SummaryView *summaryview)
 {
+	gtk_sctree_select(GTK_SCTREE(ctree), node);
 	summary_set_row_marks(summaryview, node);
 }
 

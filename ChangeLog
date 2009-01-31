@@ -1,3 +1,8 @@
+2009-01-31 [paul]	3.7.0cvs48
+
+	* src/summaryview.c
+		fix bug 1834, '"semi"-selection when collapsing thread'
+
 2009-01-31 [paul]	3.7.0cvs47
 
 	* src/prefs_compose_writing.c

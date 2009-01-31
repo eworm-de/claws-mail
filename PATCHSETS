@@ -3709,3 +3709,4 @@
 ( cvs diff -u -r 1.1.2.6 -r 1.1.2.7 tools/filter_conv_new.pl;  ) > 3.7.0cvs45.patchset
 ( cvs diff -u -r 1.395.2.404 -r 1.395.2.405 src/summaryview.c;  ) > 3.7.0cvs46.patchset
 ( cvs diff -u -r 1.1.2.25 -r 1.1.2.26 src/prefs_compose_writing.c;  cvs diff -u -r 1.1.2.29 -r 1.1.2.30 src/prefs_message.c;  ) > 3.7.0cvs47.patchset
+( cvs diff -u -r 1.395.2.405 -r 1.395.2.406 src/summaryview.c;  ) > 3.7.0cvs48.patchset
