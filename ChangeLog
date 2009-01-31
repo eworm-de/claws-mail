@@ -1,3 +1,14 @@
+2009-01-31 [paul]	3.7.0cvs49
+
+	* src/compose.c
+		fix bug 1836, 'Quoted text still blue after
+		removal of quote-character'
+		comment out some debug_print's that needlessly
+		slow things down
+	* src/undo.c
+		comment out a debug_print that needlessly slows
+		things down
+
 2009-01-31 [paul]	3.7.0cvs48
 
 	* src/summaryview.c

@@ -526,7 +526,7 @@ void undo_unblock(UndoMain *undostruct)
 
 void undo_wrapping(UndoMain *undostruct, gboolean wrap)
 {
-	debug_print("undo wrapping now %d\n", wrap);
+//	debug_print("undo wrapping now %d\n", wrap);
 	undostruct->wrap = wrap;
 }
 

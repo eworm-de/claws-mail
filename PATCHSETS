@@ -3710,3 +3710,4 @@
 ( cvs diff -u -r 1.395.2.404 -r 1.395.2.405 src/summaryview.c;  ) > 3.7.0cvs46.patchset
 ( cvs diff -u -r 1.1.2.25 -r 1.1.2.26 src/prefs_compose_writing.c;  cvs diff -u -r 1.1.2.29 -r 1.1.2.30 src/prefs_message.c;  ) > 3.7.0cvs47.patchset
 ( cvs diff -u -r 1.395.2.405 -r 1.395.2.406 src/summaryview.c;  ) > 3.7.0cvs48.patchset
+( cvs diff -u -r 1.382.2.496 -r 1.382.2.497 src/compose.c;  cvs diff -u -r 1.13.2.18 -r 1.13.2.19 src/undo.c;  ) > 3.7.0cvs49.patchset

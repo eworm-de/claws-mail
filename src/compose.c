@@ -3866,7 +3866,7 @@ static gboolean compose_get_line_break_pos(GtkTextBuffer *buffer,
 		can_break = TRUE;
 	}
 
-	debug_print("compose_get_line_break_pos(): do_break = %d, pos = %d, col = %d\n", do_break, pos, col);
+//	debug_print("compose_get_line_break_pos(): do_break = %d, pos = %d, col = %d\n", do_break, pos, col);
 
 	g_free(attrs);
 	g_free(str);
@@ -4111,7 +4111,7 @@ static gboolean compose_beautify_paragraph(Compose *compose, GtkTextIter *par_it
 		quote_str = compose_get_quote_str(buffer, &iter, &quote_len);
 
 		if (quote_str) {
-			debug_print("compose_beautify_paragraph(): quote_str = '%s'\n", quote_str);
+//			debug_print("compose_beautify_paragraph(): quote_str = '%s'\n", quote_str);
 			if (startq_offset == -1) 
 				startq_offset = gtk_text_iter_get_offset(&iter);
 			quotelevel = get_quote_level(quote_str, prefs_common.quote_chars);
@@ -4357,11 +4357,11 @@ colorize:
 			}
 		}
 		if (!modified) {
-			debug_print("not modified, out after %d lines\n", lines);
+//			debug_print("not modified, out after %d lines\n", lines);
 			goto end;
 		}
 	}
-	debug_print("modified, out after %d lines\n", lines);
+//	debug_print("modified, out after %d lines\n", lines);
 end:
 	g_free(itemized_chars);
 	if (par_iter)
@@ -10012,6 +10012,7 @@ static void compose_grab_focus_cb(GtkWidget *widget, Compose *compose)
 static void compose_changed_cb(GtkTextBuffer *textbuf, Compose *compose)
 {
 	compose->modified = TRUE;
+	compose_beautify_paragraph(compose, NULL, TRUE);
 #ifndef GENERIC_UMPC
 	compose_set_title(compose);
 #endif
