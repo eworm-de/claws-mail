@@ -1,3 +1,9 @@
+2009-01-31 [paul]	3.7.0cvs53
+
+	* src/compose.c
+		revert 3.7.0cvs49, until there is time to find out
+		why it causes a nasty crash!
+
 2009-01-31 [paul]	3.7.0cvs52
 
 	* src/mainwindow.c

@@ -10012,7 +10012,7 @@ static void compose_grab_focus_cb(GtkWidget *widget, Compose *compose)
 static void compose_changed_cb(GtkTextBuffer *textbuf, Compose *compose)
 {
 	compose->modified = TRUE;
-	compose_beautify_paragraph(compose, NULL, TRUE);
+//	compose_beautify_paragraph(compose, NULL, TRUE);
 #ifndef GENERIC_UMPC
 	compose_set_title(compose);
 #endif
