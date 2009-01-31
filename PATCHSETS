@@ -3712,3 +3712,4 @@
 ( cvs diff -u -r 1.395.2.405 -r 1.395.2.406 src/summaryview.c;  ) > 3.7.0cvs48.patchset
 ( cvs diff -u -r 1.382.2.496 -r 1.382.2.497 src/compose.c;  cvs diff -u -r 1.13.2.18 -r 1.13.2.19 src/undo.c;  ) > 3.7.0cvs49.patchset
 ( cvs diff -u -r 1.12.2.51 -r 1.12.2.52 src/gtk/prefswindow.c;  ) > 3.7.0cvs50.patchset
+( cvs diff -u -r 1.94.2.197 -r 1.94.2.198 src/messageview.c;  ) > 3.7.0cvs51.patchset

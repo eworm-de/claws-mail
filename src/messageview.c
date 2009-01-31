@@ -276,13 +276,13 @@ static GtkActionEntry msgview_entries[] =
 	{"Tools/AddSenderToAB",		NULL, N_("Add sender to address boo_k"), NULL, NULL, G_CALLBACK(add_address_cb) }, 
 	{"Tools/---",			NULL, "---", NULL, NULL, NULL },
 
-	{"Tools/CreateFilterRule",			NULL, "_Create filter rule" },
+	{"Tools/CreateFilterRule",			NULL, N_("_Create filter rule") },
 	{"Tools/CreateFilterRule/Automatically",	NULL, N_("_Automatically"), NULL, NULL, G_CALLBACK(create_filter_cb) }, /* FILTER_BY_AUTO */
 	{"Tools/CreateFilterRule/ByFrom",		NULL, N_("By _From"), NULL, NULL, G_CALLBACK(create_filter_cb) }, /* FILTER_BY_FROM */
 	{"Tools/CreateFilterRule/ByTo",			NULL, N_("By _To"), NULL, NULL, G_CALLBACK(create_filter_cb) }, /* FILTER_BY_TO     */
 	{"Tools/CreateFilterRule/BySubject",		NULL, N_("By _Subject"), NULL, NULL, G_CALLBACK(create_filter_cb) }, /* FILTER_BY_SUBJECT */
 
-	{"Tools/CreateProcessingRule",			NULL, "Create processing rule" },
+	{"Tools/CreateProcessingRule",			NULL, N_("Create processing rule") },
 	{"Tools/CreateProcessingRule/Automatically",	NULL, N_("_Automatically"), NULL, NULL, G_CALLBACK(create_processing_cb) }, 
 	{"Tools/CreateProcessingRule/ByFrom",		NULL, N_("By _From"), NULL, NULL, G_CALLBACK(create_processing_cb) }, 
 	{"Tools/CreateProcessingRule/ByTo",		NULL, N_("By _To"), NULL, NULL, G_CALLBACK(create_processing_cb) }, 
