@@ -1,3 +1,9 @@
+2009-01-31 [paul]	3.7.0cvs47
+
+	* src/prefs_compose_writing.c
+	* src/prefs_message.c
+		move 'quote_chars' pref to where it should be
+
 2009-01-30 [paul]	3.7.0cvs46
 
 	* src/summaryview.c

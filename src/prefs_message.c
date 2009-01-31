@@ -60,6 +60,7 @@ typedef struct _MessagePage
 	GtkWidget *checkbtn_halfpage;
 
 	GtkWidget *checkbtn_attach_desc;
+	GtkWidget *entry_quote_chars;
 } MessagePage;
 
 static void disphdr_pane_toggled(GtkToggleButton *toggle_btn, GtkWidget *widget)
@@ -102,6 +103,12 @@ static void prefs_message_create_widget(PrefsPage *_page, GtkWindow *window,
 	GtkWidget *checkbtn_halfpage;
 
 	GtkWidget *checkbtn_attach_desc;
+	
+	GtkWidget *frame_quote;
+	GtkWidget *hbox2;
+	GtkWidget *vbox_quote;
+	GtkWidget *entry_quote_chars;
+	GtkWidget *label_quote_chars;
 
 	vbox1 = gtk_vbox_new (FALSE, VSPACING);
 	gtk_widget_show (vbox1);
@@ -219,6 +226,32 @@ static void prefs_message_create_widget(PrefsPage *_page, GtkWindow *window,
 	PACK_CHECK_BUTTON(vbox1, checkbtn_attach_desc,
 			  _("Show attachment descriptions (rather than names)"));
 
+	/* quote chars */
+	PACK_FRAME (vbox1, frame_quote, _("Quotation characters"));
+
+	vbox_quote = gtk_vbox_new (FALSE, VSPACING_NARROW);
+	gtk_widget_show (vbox_quote);
+	gtk_container_add (GTK_CONTAINER (frame_quote), vbox_quote);
+	gtk_container_set_border_width (GTK_CONTAINER (vbox_quote), 8);
+
+	hbox1 = gtk_hbox_new (FALSE, 32);
+	gtk_widget_show (hbox1);
+	gtk_box_pack_start (GTK_BOX (vbox_quote), hbox1, FALSE, FALSE, 0);
+
+	hbox2 = gtk_hbox_new (FALSE, 8);
+	gtk_widget_show (hbox2);
+	gtk_box_pack_start (GTK_BOX (hbox1), hbox2, FALSE, FALSE, 0);
+
+	label_quote_chars = gtk_label_new (_("Treat these characters as quotation marks: "));
+	gtk_widget_show (label_quote_chars);
+	gtk_box_pack_start (GTK_BOX (hbox2), label_quote_chars, FALSE, FALSE, 0);
+
+	entry_quote_chars = gtk_entry_new ();
+	gtk_widget_show (entry_quote_chars);
+	gtk_box_pack_start (GTK_BOX (hbox2), entry_quote_chars,
+			    FALSE, FALSE, 0);
+	gtk_widget_set_size_request (entry_quote_chars, 64, -1);
+
 	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(checkbtn_disphdrpane),
 		prefs_common.display_header_pane);
 
@@ -243,6 +276,8 @@ static void prefs_message_create_widget(PrefsPage *_page, GtkWindow *window,
 		prefs_common.line_space);
 	gtk_spin_button_set_value(GTK_SPIN_BUTTON(spinbtn_scrollstep),
 		prefs_common.scroll_step);
+	gtk_entry_set_text(GTK_ENTRY(entry_quote_chars), 
+			prefs_common.quote_chars?prefs_common.quote_chars:"");
 		
 	prefs_message->window = GTK_WIDGET(window);
 	prefs_message->checkbtn_disphdrpane = checkbtn_disphdrpane;
@@ -256,6 +291,7 @@ static void prefs_message_create_widget(PrefsPage *_page, GtkWindow *window,
 	prefs_message->spinbtn_scrollstep = spinbtn_scrollstep;
 	prefs_message->checkbtn_halfpage = checkbtn_halfpage;
 	prefs_message->checkbtn_attach_desc = checkbtn_attach_desc;
+	prefs_message->entry_quote_chars = entry_quote_chars;
 	
 	prefs_message->page.widget = vbox1;
 }
@@ -286,6 +322,11 @@ static void prefs_message_save(PrefsPage *_page)
 		GTK_SPIN_BUTTON(page->spinbtn_linespc));
 	prefs_common.scroll_step = gtk_spin_button_get_value_as_int(
 		GTK_SPIN_BUTTON(page->spinbtn_scrollstep));
+
+	g_free(prefs_common.quote_chars); 
+	prefs_common.quote_chars = gtk_editable_get_chars(
+			GTK_EDITABLE(page->entry_quote_chars), 0, -1);
+	remove_space(prefs_common.quote_chars);
 
 	main_window_reflect_prefs_all_real(FALSE);
 }

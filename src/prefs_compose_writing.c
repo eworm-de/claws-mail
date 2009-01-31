@@ -64,7 +64,6 @@ typedef struct _WritingPage
 	GtkWidget *checkbtn_autosave;
 	GtkWidget *spinbtn_autosave_length;
 	GtkWidget *optmenu_dnd_insert_or_attach;
-	GtkWidget *entry_quote_chars;
 } WritingPage;
 
 static void prefs_compose_writing_create_widget(PrefsPage *_page, GtkWindow *window, 
@@ -105,13 +104,6 @@ static void prefs_compose_writing_create_widget(PrefsPage *_page, GtkWindow *win
 	GtkWidget *optmenu_dnd_insert_or_attach;
 	GtkListStore *menu;
 	GtkTreeIter iter;
-
-	GtkWidget *frame_quote;
-	GtkWidget *hbox1;
-	GtkWidget *hbox2;
-	GtkWidget *vbox_quote;
-	GtkWidget *entry_quote_chars;
-	GtkWidget *label_quote_chars;
 
 	vbox1 = gtk_vbox_new (FALSE, VSPACING);
 	gtk_widget_show (vbox1);
@@ -213,33 +205,6 @@ static void prefs_compose_writing_create_widget(PrefsPage *_page, GtkWindow *win
 	SET_TOGGLE_SENSITIVITY (checkbtn_autosave, spinbtn_autosave_length);
 	SET_TOGGLE_SENSITIVITY (checkbtn_autosave, label_autosave_length);
 
-	/* quote chars */
-
-	PACK_FRAME (vbox1, frame_quote, _("Quotation characters"));
-
-	vbox_quote = gtk_vbox_new (FALSE, VSPACING_NARROW);
-	gtk_widget_show (vbox_quote);
-	gtk_container_add (GTK_CONTAINER (frame_quote), vbox_quote);
-	gtk_container_set_border_width (GTK_CONTAINER (vbox_quote), 8);
-
-	hbox1 = gtk_hbox_new (FALSE, 32);
-	gtk_widget_show (hbox1);
-	gtk_box_pack_start (GTK_BOX (vbox_quote), hbox1, FALSE, FALSE, 0);
-
-	hbox2 = gtk_hbox_new (FALSE, 8);
-	gtk_widget_show (hbox2);
-	gtk_box_pack_start (GTK_BOX (hbox1), hbox2, FALSE, FALSE, 0);
-
-	label_quote_chars = gtk_label_new (_("Treat these characters as quotation marks: "));
-	gtk_widget_show (label_quote_chars);
-	gtk_box_pack_start (GTK_BOX (hbox2), label_quote_chars, FALSE, FALSE, 0);
-
-	entry_quote_chars = gtk_entry_new ();
-	gtk_widget_show (entry_quote_chars);
-	gtk_box_pack_start (GTK_BOX (hbox2), entry_quote_chars,
-			    FALSE, FALSE, 0);
-	gtk_widget_set_size_request (entry_quote_chars, 64, -1);
-
 
 	prefs_writing->checkbtn_autoextedit = checkbtn_autoextedit;
 
@@ -260,7 +225,6 @@ static void prefs_compose_writing_create_widget(PrefsPage *_page, GtkWindow *win
 
 	prefs_writing->optmenu_dnd_insert_or_attach = optmenu_dnd_insert_or_attach;
 
-	prefs_writing->entry_quote_chars	= entry_quote_chars;
 
 	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(prefs_writing->checkbtn_autoextedit),
 		prefs_common.auto_exteditor);
@@ -286,8 +250,6 @@ static void prefs_compose_writing_create_widget(PrefsPage *_page, GtkWindow *win
 		prefs_common.default_reply_list);
 	combobox_select_by_data(GTK_COMBO_BOX(optmenu_dnd_insert_or_attach),
 		prefs_common.compose_dnd_mode);
-	gtk_entry_set_text(GTK_ENTRY(entry_quote_chars), 
-			prefs_common.quote_chars?prefs_common.quote_chars:"");
 
 	prefs_writing->page.widget = vbox1;
 }
@@ -322,11 +284,6 @@ static void prefs_compose_writing_save(PrefsPage *_page)
 	
 	prefs_common.compose_dnd_mode = combobox_get_active_data(
 			GTK_COMBO_BOX(page->optmenu_dnd_insert_or_attach));
-
-	g_free(prefs_common.quote_chars); 
-	prefs_common.quote_chars = gtk_editable_get_chars(
-			GTK_EDITABLE(page->entry_quote_chars), 0, -1);
-	remove_space(prefs_common.quote_chars);
 }
 
 static void prefs_compose_writing_destroy_widget(PrefsPage *_page)
