@@ -629,7 +629,7 @@ static GtkActionEntry mainwin_entries[] =
 	{"Message/CancelNews",			NULL, N_("Cancel a news message"), NULL, NULL, G_CALLBACK(cancel_cb) },
 	/*{"Message/---",			NULL, "---" },*/
  	
-	{"Message/Mark",			NULL, "_Mark" },
+	{"Message/Mark",			NULL, N_("_Mark") },
 	{"Message/Mark/Mark",			NULL, N_("_Mark"), "<shift>asterisk", NULL, G_CALLBACK(mark_cb) },
 	{"Message/Mark/Unmark",			NULL, N_("_Unmark"), "U", NULL, G_CALLBACK(unmark_cb) },
 	{"Message/Mark/---",			NULL, "---", NULL, NULL, NULL },
