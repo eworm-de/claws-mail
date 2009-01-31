@@ -337,7 +337,7 @@ static void prefswindow_build_tree(GtkWidget *tree_view, GSList *prefs_pages,
 			gtk_tree_model_foreach(GTK_TREE_MODEL(store), 
 					       (GtkTreeModelForeachFunc) find_node_by_name,
 					       &find_name);
-			if (find_name.found) {
+			if (find_name.found && page->path[i] != page->path[i-1]) {
 				node = find_name.node;
 				gtk_tree_model_get(GTK_TREE_MODEL(store), &node,
 						   PREFS_PAGE_DATA, &prefs_node,

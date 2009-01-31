@@ -1,3 +1,11 @@
+2009-01-31 [paul]	3.7.0cvs50
+
+	* src/gtk/prefswindow.c
+		build prefs tree in a slightly smarter way -
+		fix bug where if path[0] had same name as
+		path[1], (like in the de translation), path[1]
+		was lost and not shown in the window
+
 2009-01-31 [paul]	3.7.0cvs49
 
 	* src/compose.c
