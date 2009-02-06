@@ -116,6 +116,8 @@ static void     printing_layout_set_text_attributes(PrintData*, GtkPrintContext 
 static gboolean printing_is_pango_gdk_color_equal(PangoColor*, GdkColor*); 
 static gint     printing_text_iter_get_offset_bytes(PrintData *, const GtkTextIter*);
 
+#define PAGE_SETUP_STORAGE_FILE "print_page_setup"
+#define PAGE_MARGIN_STORAGE_UNIT GTK_UNIT_MM
 #define PREVIEW_SCALE 72
 #define PREVIEW_SHADOW_OFFSET 3
 #define PREVIEW_ZOOM_FAC 1.41
@@ -175,13 +177,58 @@ void printing_store_settings(GtkPrintSettings *new_settings)
 GtkPageSetup *printing_get_page_setup(void)
 {
   if (page_setup == NULL) {
+    gboolean read_from_file;
+    char *page_setup_filename;
+    GKeyFile *keyfile;
+    gboolean key_file_read;
+    
     page_setup = gtk_page_setup_new();
-    if (prefs_common.print_paper_type && *prefs_common.print_paper_type) {
-      GtkPaperSize *paper = gtk_paper_size_new(prefs_common.print_paper_type);
-      gtk_page_setup_set_paper_size(page_setup, paper);
-      gtk_paper_size_free(paper);
+
+    read_from_file = FALSE;
+
+#if GTK_CHECK_VERSION(2,14,0)
+    /* try reading the page setup from file */
+    page_setup_filename = g_strconcat(get_rc_dir(), G_DIR_SEPARATOR_S, PAGE_SETUP_STORAGE_FILE, NULL);
+    keyfile = g_key_file_new();
+    key_file_read = g_key_file_load_from_file(keyfile, page_setup_filename, 0, NULL);
+    g_free(page_setup_filename);
+    
+    if(key_file_read)
+      read_from_file = gtk_page_setup_load_key_file(page_setup, keyfile, NULL, NULL);
+    g_key_file_free(keyfile);
+
+    if(read_from_file) {
+      debug_print("Printing: Read page setup from key file\n");
     }
-    gtk_page_setup_set_orientation(page_setup, prefs_common.print_paper_orientation);
+    else {
+      debug_print("Printing: Could not read page setup from key file\n");
+    }
+#else
+    key_file_read = FALSE;
+    keyfile = NULL;
+    page_setup_filename = NULL;
+#endif
+
+    /* if reading from file did not work, or has not been tried (GTK+ < 2.14), use prefs */
+    if(!read_from_file) {
+      /* paper size */
+      if (prefs_common.print_paper_type && *prefs_common.print_paper_type) {
+        GtkPaperSize *paper = gtk_paper_size_new(prefs_common.print_paper_type);
+        gtk_page_setup_set_paper_size(page_setup, paper);
+        gtk_paper_size_free(paper);
+      }
+      /* orientation */
+      gtk_page_setup_set_orientation(page_setup, prefs_common.print_paper_orientation);
+      /* margins */
+      if(prefs_common.print_margin_top != -1)
+        gtk_page_setup_set_top_margin(page_setup, 0.01*prefs_common.print_margin_top, PAGE_MARGIN_STORAGE_UNIT);
+      if(prefs_common.print_margin_bottom != -1)
+        gtk_page_setup_set_bottom_margin(page_setup, 0.01*prefs_common.print_margin_bottom, PAGE_MARGIN_STORAGE_UNIT);
+      if(prefs_common.print_margin_left != -1)
+        gtk_page_setup_set_left_margin(page_setup, 0.01*prefs_common.print_margin_left, PAGE_MARGIN_STORAGE_UNIT);
+      if(prefs_common.print_margin_right != -1)
+        gtk_page_setup_set_right_margin(page_setup, 0.01*prefs_common.print_margin_right, PAGE_MARGIN_STORAGE_UNIT);
+    }
   }
   return page_setup;
 }
@@ -290,6 +337,9 @@ void printing_print(GtkTextView *text_view, GtkWindow *parent, gint sel_start, g
 void printing_page_setup(GtkWindow *parent)
 {
   GtkPageSetup *new_page_setup;
+  char *keyfile;
+
+  keyfile = NULL;
 
   printing_get_settings();
   printing_get_page_setup();
@@ -305,6 +355,20 @@ void printing_page_setup(GtkWindow *parent)
   prefs_common.print_paper_type = g_strdup(gtk_paper_size_get_name(
   		gtk_page_setup_get_paper_size(page_setup)));
   prefs_common.print_paper_orientation = gtk_page_setup_get_orientation(page_setup);
+  /* store 100th millimeters */
+  prefs_common.print_margin_top    = (int) (100*gtk_page_setup_get_top_margin(page_setup, PAGE_MARGIN_STORAGE_UNIT));
+  prefs_common.print_margin_bottom = (int) (100*gtk_page_setup_get_bottom_margin(page_setup, PAGE_MARGIN_STORAGE_UNIT));
+  prefs_common.print_margin_left   = (int) (100*gtk_page_setup_get_left_margin(page_setup, PAGE_MARGIN_STORAGE_UNIT));
+  prefs_common.print_margin_right  = (int) (100*gtk_page_setup_get_right_margin(page_setup, PAGE_MARGIN_STORAGE_UNIT));
+
+#if GTK_CHECK_VERSION(2,14,0)
+  /* save to file */
+    keyfile = g_strconcat(get_rc_dir(), G_DIR_SEPARATOR_S, PAGE_SETUP_STORAGE_FILE, NULL);
+    if(!gtk_page_setup_to_file(page_setup, keyfile, NULL)) {
+      debug_print("Printing: Could not store page setup in file `%s'\n", keyfile);
+    }
+    g_free(keyfile);
+#endif
 }
 
 static gboolean cb_preview(GtkPrintOperation        *operation,

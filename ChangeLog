@@ -1,3 +1,13 @@
+2009-02-06 [holger]	3.7.0cvs55
+
+	* src/prefs_common.c
+	* src/prefs_common.h
+	* src/printing.c
+		Fix restoring of custom page setups for printing by
+		temporarily caching the settings.
+		This is a workaround for Gnome Bug #39018, and fixes
+		Claws Mail Bug #1840.
+
 2009-02-06 [colin]	3.7.0cvs54
 
 	* src/mainwindow.c

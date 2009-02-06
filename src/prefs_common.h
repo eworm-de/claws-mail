@@ -478,6 +478,11 @@ struct _PrefsCommon
 	
 	gchar *print_paper_type;
 	gint print_paper_orientation;
+  gint print_margin_top;
+  gint print_margin_bottom;
+  gint print_margin_left;
+  gint print_margin_right;
+  
 	gint print_use_color;
 	gint print_use_collate;
 	gint print_use_reverse;
