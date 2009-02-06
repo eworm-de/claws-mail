@@ -1312,9 +1312,13 @@ static gboolean mainwindow_key_pressed (GtkWidget *widget, GdkEventKey *event,
 
 	switch (event->keyval) {
 	case GDK_Q:             /* Quit */
+#ifndef MAEMO
 		BREAK_ON_MODIFIER_KEY();
 
-		app_exit_cb(NULL, mainwin);
+		if (gtk_window_is_active(GTK_WINDOW(mainwin->window))) {
+			app_exit_cb(NULL, mainwin);
+		}
+#endif
 		return FALSE;
 	case GDK_space:
 		BREAK_ON_MODIFIER_KEY();
