@@ -1,3 +1,8 @@
+2009-02-08 [mones]	3.7.0cvs56
+
+	* src/matcher.h
+		Fix build for bison 2.4.1
+
 2009-02-06 [holger]	3.7.0cvs55
 
 	* src/prefs_common.c
