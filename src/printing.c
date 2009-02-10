@@ -21,6 +21,8 @@
 #  include "config.h"
 #endif
 
+#include "defs.h"
+
 #include "printing.h"
 #include "image_viewer.h"
 
@@ -116,7 +118,6 @@ static void     printing_layout_set_text_attributes(PrintData*, GtkPrintContext 
 static gboolean printing_is_pango_gdk_color_equal(PangoColor*, GdkColor*); 
 static gint     printing_text_iter_get_offset_bytes(PrintData *, const GtkTextIter*);
 
-#define PAGE_SETUP_STORAGE_FILE "print_page_setup"
 #define PAGE_MARGIN_STORAGE_UNIT GTK_UNIT_MM
 #define PREVIEW_SCALE 72
 #define PREVIEW_SHADOW_OFFSET 3
@@ -188,7 +189,7 @@ GtkPageSetup *printing_get_page_setup(void)
 
 #if GTK_CHECK_VERSION(2,14,0)
     /* try reading the page setup from file */
-    page_setup_filename = g_strconcat(get_rc_dir(), G_DIR_SEPARATOR_S, PAGE_SETUP_STORAGE_FILE, NULL);
+    page_setup_filename = g_strconcat(get_rc_dir(), G_DIR_SEPARATOR_S, PRINTING_PAGE_SETUP_STORAGE_FILE, NULL);
     keyfile = g_key_file_new();
     key_file_read = g_key_file_load_from_file(keyfile, page_setup_filename, 0, NULL);
     g_free(page_setup_filename);
@@ -363,7 +364,7 @@ void printing_page_setup(GtkWindow *parent)
 
 #if GTK_CHECK_VERSION(2,14,0)
   /* save to file */
-    keyfile = g_strconcat(get_rc_dir(), G_DIR_SEPARATOR_S, PAGE_SETUP_STORAGE_FILE, NULL);
+    keyfile = g_strconcat(get_rc_dir(), G_DIR_SEPARATOR_S, PRINTING_PAGE_SETUP_STORAGE_FILE, NULL);
     if(!gtk_page_setup_to_file(page_setup, keyfile, NULL)) {
       debug_print("Printing: Could not store page setup in file `%s'\n", keyfile);
     }
