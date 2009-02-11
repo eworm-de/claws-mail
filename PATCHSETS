@@ -3719,3 +3719,4 @@
 ( cvs diff -u -r 1.204.2.185 -r 1.204.2.186 src/prefs_common.c;  cvs diff -u -r 1.103.2.121 -r 1.103.2.122 src/prefs_common.h;  cvs diff -u -r 1.1.2.19 -r 1.1.2.20 src/printing.c;  ) > 3.7.0cvs55.patchset
 ( cvs diff -u -r 1.39.2.16 -r 1.39.2.17 src/matcher.h;  ) > 3.7.0cvs56.patchset
 ( cvs diff -u -r 1.1.2.20 -r 1.1.2.21 src/printing.c;  cvs diff -u -r 1.9.2.48 -r 1.9.2.49 src/common/defs.h;  ) > 3.7.0cvs57.patchset
+( cvs diff -u -r 1.382.2.498 -r 1.382.2.499 src/compose.c;  cvs diff -u -r 1.20.2.21 -r 1.20.2.22 src/gtk/Makefile.am;  cvs diff -u -r 1.9.2.64 -r 1.9.2.65 src/gtk/gtkaspell.c;  cvs diff -u -r 1.5.2.16 -r 1.5.2.17 src/gtk/gtkaspell.h;  ) > 3.7.0cvs58.patchset

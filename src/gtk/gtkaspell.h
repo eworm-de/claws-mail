@@ -38,8 +38,71 @@
 #ifdef USE_ENCHANT
 
 #include <gtk/gtk.h>
+#include <enchant/enchant.h>
 
-typedef struct _GtkAspell GtkAspell; /* Defined in gtkaspell.c */
+#define GTKASPELLWORDSIZE 1024
+
+typedef struct _Dictionary {
+	gchar *fullname;
+	gchar *dictname;
+} Dictionary;
+
+typedef struct _GtkAspeller {
+	Dictionary	*dictionary;
+	EnchantBroker 	*broker;
+	EnchantDict 	*speller;
+} GtkAspeller;
+
+typedef void (*ContCheckFunc) (gpointer *gtkaspell);
+
+struct _WidgetContext
+{
+	void		(*set_position)(gpointer data, gint pos);
+	void		(*set_menu_pos)(GtkMenu *menu, gint *x, gint *y,
+				gboolean *push_in, gpointer user_data);
+	gboolean	(*find_misspelled)(gpointer data, gboolean forward);
+	gboolean	(*check_word)(gpointer data);
+	void		(*replace_word)(gpointer data, const gchar *newword);
+	gpointer	*data; 
+};
+
+typedef struct _WidgetContext WidgetContext;
+
+struct _GtkAspell
+{
+	GtkAspeller	*gtkaspeller;
+	GtkAspeller	*alternate_speller;
+	gchar 		 theword[GTKASPELLWORDSIZE];
+	gint  		 start_pos;
+	gint  		 end_pos;
+        gint 		 orig_pos;
+	gint		 end_check_pos;
+	gboolean	 misspelled;
+	gboolean	 check_while_typing;
+	gboolean	 recheck_when_changing_dict;
+	gboolean	 use_alternate;
+	gboolean	 use_both_dicts;
+
+	ContCheckFunc 	 continue_check; 
+
+	GtkWidget	*replace_entry;
+	GtkWidget 	*parent_window;
+
+	gint		 max_sug;
+	GList		*suggestions_list;
+
+	GtkTextView	*gtktext;
+	GdkColor 	 highlight;
+	GtkAccelGroup	*accel_group;
+	void		(*dict_changed_cb)(void *data);
+	void 		(*menu_changed_cb)(void *data);
+	void 		*menu_changed_data;
+	
+	WidgetContext	ctx;
+};
+
+typedef struct _GtkAspell GtkAspell;
+
 
 void		gtkaspell_checkers_init		(void);
 
@@ -59,6 +122,7 @@ GtkAspell*	gtkaspell_new			(const gchar *dictionary,
 						 gboolean use_both_dicts,  
 						 GtkTextView *gtktext,
 						 GtkWindow *parent_win,
+						 void (*dict_changed_cd)(void *data), 
 						 void (*spell_menu_cb)(void *data),
 						 void *data);
 
@@ -71,8 +135,10 @@ gboolean	gtkaspell_change_dict		(GtkAspell *gtkaspell,
 
 gboolean	gtkaspell_change_alt_dict	(GtkAspell *gtkaspell,
     						 const gchar* alt_dictionary);
+void		gtkaspell_use_alternate_dict	(GtkAspell *gtkaspell);
 
-
+gboolean 	gtkaspell_check_next_prev	(GtkAspell *gtkaspell,
+						 gboolean forward);
 void 		gtkaspell_check_forwards_go	(GtkAspell *gtkaspell);
 void 		gtkaspell_check_backwards	(GtkAspell *gtkaspell);
 
@@ -93,7 +159,17 @@ gint		gtkaspell_set_dictionary_menu_active_item
 
 GSList*		gtkaspell_make_config_menu		(GtkAspell	*gtkaspell);
 
-gchar *gtkaspell_get_default_dictionary(GtkAspell *gtkaspell);
+gchar*		gtkaspell_get_default_dictionary	(GtkAspell *gtkaspell);
+
+void		gtkaspell_make_context_menu		(GtkMenu	*menu,
+							 GtkAspell	*gtkaspell);
+
+int 		gtkaspell_misspelled_test		(GtkAspell *gtkaspell,
+							 char *word);
+void		gtkaspell_dict_changed			(GtkAspell *gtkaspell);
+void		gtkaspell_context_set			(GtkAspell *gtkaspell);
+void		gtkaspell_free_suggestions_list		(GtkAspell *gtkaspell);
+
 
 #endif /* USE_ENCHANT */
 #endif /* __GTKENCHANT_H__ */

@@ -100,6 +100,7 @@
 #include "privacy.h"
 #include "timing.h"
 #include "autofaces.h"
+#include "spell_entry.h"
 
 enum
 {
@@ -333,6 +334,7 @@ static void compose_remove_header_entries(Compose *compose);
 static void compose_update_priority_menu_item(Compose * compose);
 #if USE_ENCHANT
 static void compose_spell_menu_changed	(void *data);
+static void compose_dict_changed	(void *data);
 #endif
 static void compose_add_field_list	( Compose *compose,
 					  GList *listAddress );
@@ -6687,7 +6689,18 @@ static void compose_spell_menu_changed(void *data)
 	g_slist_free(spell_menu);
 
 	gtk_menu_item_set_submenu(GTK_MENU_ITEM(parent_item), GTK_WIDGET(menu));
-	
+	gtk_widget_show(parent_item);
+}
+
+static void compose_dict_changed(void *data)
+{
+	Compose *compose = (Compose *) data;
+
+	if(compose->gtkaspell->recheck_when_changing_dict == FALSE)
+		return;
+
+	gtkaspell_highlight_all(compose->gtkaspell);
+	claws_spell_entry_recheck_all(CLAWS_SPELL_ENTRY(compose->subject_entry));
 }
 #endif
 
@@ -7073,7 +7086,11 @@ static Compose *compose_create(PrefsAccount *account,
 	gtk_box_pack_start(GTK_BOX(subject), label, FALSE, FALSE, 0);
 	gtk_widget_show(label);
 
+#ifdef USE_ENCHANT
+	subject_entry = claws_spell_entry_new();
+#else
 	subject_entry = gtk_entry_new();
+#endif
 	gtk_box_pack_start(GTK_BOX(subject), subject_entry, TRUE, TRUE, 0);
 	g_signal_connect_after(G_OBJECT(subject_entry), "grab_focus",
 			 G_CALLBACK(compose_grab_focus_cb), compose);
@@ -7276,6 +7293,7 @@ static Compose *compose_create(PrefsAccount *account,
 						  prefs_common.use_both_dicts,
 						  GTK_TEXT_VIEW(text),
 						  GTK_WINDOW(compose->window),
+						  compose_dict_changed,
 						  compose_spell_menu_changed,
 						  compose);
 			if (!gtkaspell) {
@@ -7290,6 +7308,7 @@ static Compose *compose_create(PrefsAccount *account,
 	}
         compose->gtkaspell = gtkaspell;
 	compose_spell_menu_changed(compose);
+	claws_spell_entry_set_gtkaspell(CLAWS_SPELL_ENTRY(subject_entry), gtkaspell);
 #endif
 
 	compose_select_account(compose, account, TRUE);
@@ -10484,35 +10503,54 @@ static gint compose_defer_auto_save_draft(Compose *compose)
 static void compose_check_all(GtkAction *action, gpointer data)
 {
 	Compose *compose = (Compose *)data;
-	if (compose->gtkaspell)
+	if (!compose->gtkaspell)
+		return;
+		
+	if (GTK_WIDGET_HAS_FOCUS(compose->subject_entry))
+		claws_spell_entry_check_all(
+			CLAWS_SPELL_ENTRY(compose->subject_entry));		
+	else
 		gtkaspell_check_all(compose->gtkaspell);
 }
 
 static void compose_highlight_all(GtkAction *action, gpointer data)
 {
 	Compose *compose = (Compose *)data;
-	if (compose->gtkaspell)
+	if (compose->gtkaspell) {
+		claws_spell_entry_recheck_all(
+			CLAWS_SPELL_ENTRY(compose->subject_entry));
 		gtkaspell_highlight_all(compose->gtkaspell);
+	}
 }
 
 static void compose_check_backwards(GtkAction *action, gpointer data)
 {
 	Compose *compose = (Compose *)data;
-	if (compose->gtkaspell)	
-		gtkaspell_check_backwards(compose->gtkaspell);
-	else {
+	if (!compose->gtkaspell) {
 		cm_menu_set_sensitive_full(compose->ui_manager, "Menu/Spelling", FALSE);
+		return;
 	}
+
+	if (GTK_WIDGET_HAS_FOCUS(compose->subject_entry))
+		claws_spell_entry_check_backwards(
+			CLAWS_SPELL_ENTRY(compose->subject_entry));
+	else
+		gtkaspell_check_backwards(compose->gtkaspell);
 }
 
 static void compose_check_forwards_go(GtkAction *action, gpointer data)
 {
 	Compose *compose = (Compose *)data;
-	if (compose->gtkaspell)	
-		gtkaspell_check_forwards_go(compose->gtkaspell);
-	else {
+	if (!compose->gtkaspell) {
 		cm_menu_set_sensitive_full(compose->ui_manager, "Menu/Spelling", FALSE);
+		return;
 	}
+
+	if (GTK_WIDGET_HAS_FOCUS(compose->subject_entry))
+		claws_spell_entry_check_forwards_go(
+			CLAWS_SPELL_ENTRY(compose->subject_entry));
+	else
+		gtkaspell_check_forwards_go(compose->gtkaspell);
 }
 #endif
 

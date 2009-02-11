@@ -32,6 +32,7 @@ libclawsgtk_la_SOURCES = \
 	prefswindow.c \
 	progressdialog.c \
 	quicksearch.c \
+	spell_entry.c \
 	sslcertwindow.c \
 	claws-marshal.c
 
@@ -65,6 +66,7 @@ clawsgtkinclude_HEADERS = \
 	gtkvscrollbutton.h \
 	progressdialog.h \
 	quicksearch.h \
+	spell_entry.h \
 	sslcertwindow.h \
 	claws-marshal.h
 

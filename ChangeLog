@@ -1,3 +1,12 @@
+2009-02-11 [colin]	3.7.0cvs58
+
+	* src/compose.c
+	* src/gtk/Makefile.am
+	* src/gtk/gtkaspell.c
+	* src/gtk/gtkaspell.h
+		Add spellcheck to subject. Patch by
+		Pawel.
+
 2009-02-10 [holger]	3.7.0cvs57
 
 	* src/printing.c
