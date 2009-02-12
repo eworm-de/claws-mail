@@ -38,10 +38,7 @@
 
 #include <string.h>
 #include <glib.h>
-#include <gtk/gtkwidget.h>
-#include <gtk/gtkentry.h>
-#include <gtk/gtkseparator.h>
-#include <gtk/gtkmenuitem.h>
+#include <gtk/gtk.h>
 
 #include "spell_entry.h"
 #include "prefs_common.h"

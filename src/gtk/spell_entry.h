@@ -39,9 +39,7 @@ typedef struct _ClawsSpellEntry ClawsSpellEntry;
 typedef struct _ClawsSpellEntryClass ClawsSpellEntryClass;
 typedef struct _ClawsSpellEntryPriv ClawsSpellEntryPriv;
 
-#include <gtk/gtkentry.h>
-#include <gtk/gtktextview.h>
-#include <gtk/gtkcombobox.h>
+#include <gtk/gtk.h>
 #include "gtkaspell.h"
 
 #define CLAWS_TYPE_SPELL_ENTRY            (claws_spell_entry_get_type())
