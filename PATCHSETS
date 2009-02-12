@@ -3724,3 +3724,4 @@
 ( cvs diff -u -r 1.1.2.1 -r 1.1.2.2 src/gtk/spell_entry.c;  cvs diff -u -r 1.1.2.1 -r 1.1.2.2 src/gtk/spell_entry.h;  ) > 3.7.0cvs60.patchset
 ( cvs diff -u -r 1.1.2.2 -r 1.1.2.3 src/gtk/spell_entry.c;  cvs diff -u -r 1.1.2.2 -r 1.1.2.3 src/gtk/spell_entry.h;  ) > 3.7.0cvs61.patchset
 ( cvs diff -u -r 1.1.2.3 -r 1.1.2.4 src/gtk/spell_entry.c;  cvs diff -u -r 1.1.2.3 -r 1.1.2.4 src/gtk/spell_entry.h;  ) > 3.7.0cvs62.patchset
+( cvs diff -u -r 1.1.4.24 -r 1.1.4.25 src/gtk/progressdialog.c;  cvs diff -u -r 1.1.4.14 -r 1.1.4.15 src/gtk/progressdialog.h;  ) > 3.7.0cvs63.patchset
