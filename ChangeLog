@@ -1,3 +1,9 @@
+2009-02-12 [paul]	3.7.0cvs61
+
+	* src/gtk/spell_entry.c
+	* src/gtk/spell_entry.h
+		changes to copyright header
+
 2009-02-12 [paul]	3.7.0cvs60
 
 	* src/gtk/spell_entry.c

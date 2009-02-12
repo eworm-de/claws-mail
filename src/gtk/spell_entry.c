@@ -21,7 +21,11 @@
  */
 
 /* 
-   Adapted for Claws Mail (c) 2009 Pawel Pekala
+ * Adapted for Claws Mail (c) 2009 Pawel Pekala and the Claws Mail team
+ *
+ * The adaptations for Claws Mail are released under the terms of the 
+ * GNU General Public License as published by  the Free Software Foundation;
+ * either version 3 of the License, or (at your option) any later version.
  */
 
 #ifdef HAVE_CONFIG_H
