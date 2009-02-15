@@ -2619,6 +2619,8 @@ void folderview_set_target_folder_color(gint color_op)
 static gchar *last_smallfont = NULL;
 static gchar *last_normalfont = NULL;
 static gchar *last_boldfont = NULL;
+static gboolean last_derive = 0;
+
 void folderview_reflect_prefs_pixmap_theme(FolderView *folderview)
 {
 	/* force reinit */
@@ -2641,7 +2643,8 @@ void folderview_reflect_prefs(void)
 
 	if (!last_smallfont || strcmp(last_smallfont, SMALL_FONT) ||
 			!last_normalfont || strcmp(last_normalfont, NORMAL_FONT) ||
-			!last_boldfont || strcmp(last_boldfont, BOLD_FONT))
+			!last_boldfont || strcmp(last_boldfont, BOLD_FONT) ||
+			last_derive != prefs_common.derive_from_normal_font)
 		update_font = TRUE;
 
 	g_free(last_smallfont);
@@ -2650,6 +2653,7 @@ void folderview_reflect_prefs(void)
 	last_normalfont = g_strdup(NORMAL_FONT);
 	g_free(last_boldfont);
 	last_boldfont = g_strdup(BOLD_FONT);
+	last_derive = prefs_common.derive_from_normal_font;
 
 	if (update_font) {		
 		normal_style = normal_color_style = bold_style = 

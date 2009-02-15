@@ -1,3 +1,10 @@
+2009-02-15 [colin]	3.7.0cvs65
+
+	* src/folderview.c
+	* src/summaryview.c
+		Fix font updating after changing 
+		prefs_common.derive_from_normal_font
+
 2009-02-12 [paul]	3.7.0cvs64
 
 	* src/addressitem.h

@@ -2720,6 +2720,7 @@ void summary_reflect_prefs(void)
 	static gchar *last_smallfont = NULL;
 	static gchar *last_normalfont = NULL;
 	static gchar *last_boldfont = NULL;
+	static gboolean last_derive = 0;
 	gboolean update_font = FALSE;
 	SummaryView *summaryview = NULL;
 
@@ -2729,7 +2730,8 @@ void summary_reflect_prefs(void)
 
 	if (!last_smallfont || strcmp(last_smallfont, SMALL_FONT) ||
 			!last_normalfont || strcmp(last_normalfont, NORMAL_FONT) ||
-			!last_boldfont || strcmp(last_boldfont, BOLD_FONT))
+			!last_boldfont || strcmp(last_boldfont, BOLD_FONT) ||
+			last_derive != prefs_common.derive_from_normal_font)
 		update_font = TRUE;
 
 	g_free(last_smallfont);
@@ -2738,6 +2740,7 @@ void summary_reflect_prefs(void)
 	last_normalfont = g_strdup(NORMAL_FONT);
 	g_free(last_boldfont);
 	last_boldfont = g_strdup(BOLD_FONT);
+	last_derive = prefs_common.derive_from_normal_font;
 
 	if (update_font) {	
 		bold_style = bold_marked_style = bold_deleted_style = 
