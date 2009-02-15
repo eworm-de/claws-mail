@@ -1,3 +1,10 @@
+2009-02-15 [colin]	3.7.0cvs66
+
+	* src/privacy.c
+	* src/plugins/pgpcore/select-keys.c
+	* src/plugins/pgpcore/sgpgme.c
+		Disable use of disabled keys
+
 2009-02-15 [colin]	3.7.0cvs65
 
 	* src/folderview.c

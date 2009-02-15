@@ -417,6 +417,8 @@ gboolean privacy_sign(const gchar *id, MimeInfo *target, PrefsAccount *account, 
 gchar *privacy_get_encrypt_data(const gchar *id, GSList *recp_names)
 {
 	PrivacySystem *system;
+	gchar *ret = NULL;
+	GSList *uniq_names = NULL, *cur;
 
 	g_return_val_if_fail(id != NULL, NULL);
 	g_return_val_if_fail(recp_names != NULL, NULL);
@@ -429,7 +431,15 @@ gchar *privacy_get_encrypt_data(const gchar *id, GSList *recp_names)
 	if (system->get_encrypt_data == NULL)
 		return NULL;
 
-	return system->get_encrypt_data(recp_names);
+	for (cur = recp_names; cur; cur = cur->next) {
+		if (!g_slist_find_custom(uniq_names, cur->data, (GCompareFunc)strcmp)) {
+			uniq_names = g_slist_prepend(uniq_names, cur->data);
+		}
+	}
+	ret = system->get_encrypt_data(uniq_names);
+	
+	g_slist_free(uniq_names);
+	return ret;
 }
 
 const gchar *privacy_get_encrypt_warning(const gchar *id)

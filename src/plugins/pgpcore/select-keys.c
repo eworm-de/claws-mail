@@ -183,7 +183,7 @@ set_row (GtkCMCList *clist, gpgme_key_t key, gpgme_protocol_t proto)
 
     /* first check whether the key is capable of encryption which is not
      * the case for revoked, expired or sign-only keys */
-    if (!key->can_encrypt || key->revoked || key->expired)
+    if (!key->can_encrypt || key->revoked || key->expired || key->disabled)
         return;
 
     algo_buf = g_strdup_printf ("%du/%s", 
@@ -302,7 +302,7 @@ fill_clist (struct select_keys_s *sk, const char *pattern, gpgme_protocol_t prot
     update_progress (sk, ++running, pattern);
     while ( !(err = gpgme_op_keylist_next ( ctx, &key )) ) {
 	gpgme_user_id_t uid = key->uids;
-	if (!key->can_encrypt || key->revoked || key->expired)
+	if (!key->can_encrypt || key->revoked || key->expired || key->disabled)
 		continue;
         debug_print ("%% %s:%d:  insert\n", __FILE__ ,__LINE__ );
         set_row (clist, key, proto ); 
