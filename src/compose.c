@@ -8923,7 +8923,9 @@ static void compose_send_later_cb(GtkAction *action, gpointer data)
 	gint val;
 
 	inc_lock();
+	compose_allow_user_actions(compose, FALSE);
 	val = compose_queue_sub(compose, NULL, NULL, NULL, TRUE, TRUE);
+	compose_allow_user_actions(compose, TRUE);
 	inc_unlock();
 
 	if (!val) {
