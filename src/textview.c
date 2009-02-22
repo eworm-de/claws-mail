@@ -1535,16 +1535,18 @@ do_quote:
 			} else {
 				g_print("oops (%d %d)\n",
 					real_quotelevel, textview->prev_quote_level);
-			}		
-			if (lasturi->is_quote == FALSE) {
-				textview->prev_quote_level = -1;
-				goto do_quote;
+			}	
+			if (lasturi) {	
+				if (lasturi->is_quote == FALSE) {
+					textview->prev_quote_level = -1;
+					goto do_quote;
+				}
+				e_len = lasturi->data ? strlen(lasturi->data):0;
+				n_len = strlen(buf);
+				lasturi->data = g_realloc((gchar *)lasturi->data, e_len + n_len + 1);
+				strcpy((gchar *)lasturi->data + e_len, buf);
+				*((gchar *)lasturi->data + e_len + n_len) = '\0';
 			}
-			e_len = lasturi->data ? strlen(lasturi->data):0;
-			n_len = strlen(buf);
-			lasturi->data = g_realloc((gchar *)lasturi->data, e_len + n_len + 1);
-			strcpy((gchar *)lasturi->data + e_len, buf);
-			*((gchar *)lasturi->data + e_len + n_len) = '\0';
 		}
 	} else {
 		textview_make_clickable_parts(textview, fg_color, "link", buf, FALSE);

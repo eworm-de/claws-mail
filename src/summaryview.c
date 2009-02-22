@@ -5003,7 +5003,7 @@ static void summary_thread_build(SummaryView *summaryview)
 			}
 		}
 
-		if (prefs_common.thread_by_subject && parent == NULL) {
+		if (msginfo && prefs_common.thread_by_subject && parent == NULL) {
 			parent = subject_table_lookup
 				(summaryview->subject_table,
 				 msginfo->subject);
@@ -6315,6 +6315,8 @@ static gboolean summary_button_released(GtkWidget *ctree, GdkEventButton *event,
 
 gboolean summary_pass_key_press_event(SummaryView *summaryview, GdkEventKey *event)
 {
+	if (!summaryview)
+		return FALSE;
 	if (summary_is_list(summaryview))
 		return summary_key_pressed(summaryview->ctree, event, summaryview);
 	else

@@ -1437,7 +1437,7 @@ int imap_threaded_select(Folder * folder, const char * mb,
 					flag->fl_flag->fl_type == 6 &&
 					!strcmp(flag->fl_flag->fl_data.fl_extension, "*"))
 				*can_create_flags = TRUE; 
-			if (ok_flags) {
+			if (flag->fl_flag && ok_flags) {
 				MsgPermFlags c_flag = 0;
 				switch (flag->fl_flag->fl_type) {
 				case MAILIMAP_FLAG_ANSWERED:

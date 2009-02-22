@@ -499,8 +499,8 @@ static void addrharvest_parse_address(
 
 		/* Copy into buffer */
 		bufLen = ( size_t ) ( ep - bp );
-		if( bufLen > ADDR_BUFFSIZE ) {
-			bufLen = ADDR_BUFFSIZE;
+		if( bufLen > ADDR_BUFFSIZE -1 ) {
+			bufLen = ADDR_BUFFSIZE - 1;
 		}
 		strncpy( buffer, bp, bufLen );
 		buffer[ bufLen ] = '\0';

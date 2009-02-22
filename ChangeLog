@@ -1,3 +1,47 @@
+2009-02-22 [colin]	3.7.0cvs68
+
+	* src/addrduplicates.c
+	* src/addressbook.c
+	* src/addrharvest.c
+	* src/codeconv.c
+	* src/compose.c
+	* src/filtering.c
+	* src/folder.c
+	* src/imap.c
+	* src/imap_gtk.c
+	* src/importldif.c
+	* src/jpilot.c
+	* src/mainwindow.c
+	* src/matcher.c
+	* src/mbox.c
+	* src/messageview.c
+	* src/mh_gtk.c
+	* src/prefs_common.c
+	* src/prefs_filtering.c
+	* src/prefs_gtk.c
+	* src/printing.c
+	* src/privacy.c
+	* src/procmime.c
+	* src/procmsg.c
+	* src/summaryview.c
+	* src/textview.c
+	* src/undo.c
+	* src/wizard.c
+	* src/common/md5.c
+	* src/common/socket.c
+	* src/common/template.c
+	* src/etpan/imap-thread.c
+	* src/gtk/gtkaspell.c
+	* src/gtk/gtkcmctree.c
+	* src/gtk/gtksctree.c
+	* src/gtk/inputdialog.c
+	* src/plugins/pgpcore/sgpgme.c
+	* src/plugins/pgpmime/pgpmime.c
+	* src/plugins/smime/smime.c
+	* src/plugins/spamassassin/spamassassin.c
+		Fix errors caught by Coverity: NULL checks, leaks, overruns,
+		uninitialised accesses
+
 2009-02-17 [colin]	3.7.0cvs67
 
 	* src/compose.c

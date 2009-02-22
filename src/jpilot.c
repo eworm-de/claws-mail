@@ -758,11 +758,11 @@ static gint jpilot_read_db_files( JPilotFile *pilotFile, GList **records ) {
 	char *buf;
 	GList *temp_list;
 	int num_records, recs_returned, i, num, r;
-	unsigned int offset, prev_offset, next_offset, rec_size;
+	unsigned int offset, prev_offset, next_offset = 0, rec_size;
 	int out_of_order;
 	long fpos;  /*file position indicator */
-	unsigned char attrib;
-	unsigned int unique_id;
+	unsigned char attrib = '\0';
+	unsigned int unique_id = 0;
 	mem_rec_header *mem_rh, *temp_mem_rh, *last_mem_rh;
 	record_header rh;
 	RawDBHeader rdbh;

@@ -965,10 +965,12 @@ static void prefs_destroy_file_cache(gpointer to_free)
 
 static int prefs_cache_sections(GHashTable *file_cache, const gchar *rcfile)
 {
-	FILE *fp = g_fopen(rcfile, "rb");
+	FILE *fp = NULL;
 	gchar buf[PREFSBUFSIZE];
 	GHashTable *section_cache = NULL;
 
+	if (rcfile)
+		fp = g_fopen(rcfile, "rb");
 	if (!fp) {
 		debug_print("cache: %s: %s\n", rcfile?rcfile:"(null)", strerror(errno));
 		return -1;

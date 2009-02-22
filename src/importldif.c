@@ -206,6 +206,9 @@ static void imp_ldif_update_row( GtkCMCList *clist ) {
 	row = impldif_dlg.rowIndSelect;
 
 	rec = gtk_cmclist_get_row_data( clist, row );
+	if (!rec)
+		return;
+
 	text[ FIELD_COL_RESERVED ] = "";
 	text[ FIELD_COL_SELECT   ] = "";
 	text[ FIELD_COL_FIELD    ] = rec->tagName;

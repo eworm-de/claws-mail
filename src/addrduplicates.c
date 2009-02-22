@@ -177,7 +177,7 @@ static void destroy_addr_hash_val(gpointer value)
 
 	for(walk = list; walk; walk = walk->next) {
 		AddrDupListEntry *entry = (AddrDupListEntry*) walk->data;
-		if(entry->book_path)
+		if(entry && entry->book_path)
 			g_free(entry->book_path);
 		if(entry)
 			g_free(entry);
@@ -843,10 +843,11 @@ gboolean addrduplicates_delete_item_person(ItemPerson *item, AddressDataSource *
 {
 	AddressBookFile *abf;
 	AddressInterface *iface;
-
+	if (!ds)
+		return FALSE;
 	/* Test for read only */
 	iface = ds->interface;
-	if( iface->readOnly ) {
+	if( iface && iface->readOnly ) {
 		alertpanel( _("Delete address"),
 		            _("This address data is readonly and cannot be deleted."),
 		            GTK_STOCK_CLOSE, NULL, NULL );

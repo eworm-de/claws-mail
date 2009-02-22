@@ -177,7 +177,8 @@ void privacy_msginfo_get_signed_state(MsgInfo *msginfo, gchar **system)
 {
 	struct SignedState sstate;
 	MimeInfo *mimeinfo = procmime_scan_message(msginfo);
-
+	if (!mimeinfo)
+		return;
 	sstate.msginfo = msginfo;
 	sstate.system = system;
 	g_node_children_foreach(mimeinfo->node, G_TRAVERSE_ALL, msginfo_set_signed_flag, &sstate);

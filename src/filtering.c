@@ -1016,6 +1016,9 @@ gchar * filteringprop_to_string(FilteringProp * prop)
 	gchar *action_list_str;
 	gchar *filtering_str;
 
+	if (prop == NULL)
+		return NULL;
+
         action_list_str = filteringaction_list_to_string(prop->action_list);
 
 	if (action_list_str == NULL)

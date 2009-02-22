@@ -267,6 +267,7 @@ static gboolean mail_filtering_hook(gpointer source, gpointer data)
 		
 		if (whitelisted) {
 			debug_print("message is ham (whitelisted)\n");
+			fclose(fp);
 			return FALSE;
 		}
 	}

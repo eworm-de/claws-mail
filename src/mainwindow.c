@@ -1323,7 +1323,7 @@ static gboolean mainwindow_key_pressed (GtkWidget *widget, GdkEventKey *event,
 	case GDK_space:
 		BREAK_ON_MODIFIER_KEY();
 		if (gtk_window_is_active(GTK_WINDOW(mainwin->window))) {
-			if (mainwin->folderview && mainwin->summaryview
+			if (mainwin->folderview != NULL && mainwin->summaryview != NULL
 			    && ((!mainwin->summaryview->displayed
 		        	&& !mainwin->summaryview->selected) 
 				|| (mainwin->summaryview->folder_item

@@ -2557,8 +2557,6 @@ static gboolean addressbook_tree_button_pressed(GtkWidget *ctree,
 
 	if (obj->type == ADDR_INTERFACE) {
 		AdapterInterface *adapter = ADAPTER_INTERFACE(obj);
-		if( !adapter )
-			goto just_set_sens;
 		iface = adapter->interface;
 		if( !iface )
 			goto just_set_sens;
@@ -3216,7 +3214,8 @@ static void addressbook_new_address_cb( GtkAction *action, gpointer data ) {
 
 				pobj = gtk_cmctree_node_get_row_data(GTK_CMCTREE(addrbook.ctree), addrbook.treeSelected);
 				ds = addressbook_find_datasource( GTK_CMCTREE_NODE(addrbook.treeSelected) );
-				abf = ds->rawDataSource;
+				if (ds)
+					abf = ds->rawDataSource;
 			}
 #endif
 			person = addressbook_edit_person( abf, folder, NULL, FALSE,
@@ -3266,7 +3265,8 @@ static void addressbook_new_address_cb( GtkAction *action, gpointer data ) {
 				return;
 			pobj = gtk_cmctree_node_get_row_data(GTK_CMCTREE(addrbook.ctree), addrbook.treeSelected);
 			ds = addressbook_find_datasource( GTK_CMCTREE_NODE(addrbook.treeSelected) );
-			abf = ds->rawDataSource;
+			if (ds)
+				abf = ds->rawDataSource;
 		}
 #endif
 		person = addressbook_edit_person( abf, folder, NULL, FALSE,
@@ -4325,14 +4325,18 @@ static GtkCMCTreeNode *addressbook_node_add_folder(
 	ItemFolder *rootFolder;
 
 	/* Only visible folders */
-	if( itemFolder->isHidden ) return NULL;
+	if( itemFolder == NULL || itemFolder->isHidden ) 
+		return NULL;
 
-	if( ds == NULL ) return NULL;
-	if( node == NULL || itemFolder == NULL ) return NULL;
+	if( ds == NULL ) 
+		return NULL;
+	if( node == NULL || itemFolder == NULL ) 
+		return NULL;
 
 	/* Determine object type */
 	atci = addrbookctl_lookup( otype );
-	if( atci == NULL ) return NULL;
+	if( atci == NULL ) 
+		return NULL;
 
 	rootFolder = addrindex_ds_get_root_folder( ds );
 	if( itemFolder == rootFolder ) {
@@ -4718,7 +4722,7 @@ static void addressbook_browse_entry_cb( GtkAction *action, gpointer data)
 		return;
 
 	iface = ds->interface;
-	if(! iface->haveLibrary )
+	if(!iface || !iface->haveLibrary )
 		return;
 
 	person = NULL;

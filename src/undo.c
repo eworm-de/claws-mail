@@ -552,8 +552,9 @@ void undo_insert_text_cb(GtkTextBuffer *textbuf, GtkTextIter *iter,
 			last_undo->text = gtk_text_buffer_get_text(textbuf, &start, &end, FALSE);
 			debug_print("add:undo upd %d-%d\n", last_undo->start_pos, last_undo->end_pos);
 			return;
-		} else debug_print("add:last: %d, %d-%d (%d)\n", last_undo->action,
-			last_undo->start_pos, last_undo->end_pos, pos);
+		} else if (last_undo)
+			debug_print("add:last: %d, %d-%d (%d)\n", last_undo->action,
+				last_undo->start_pos, last_undo->end_pos, pos);
 	} 
 	Xstrndup_a(text_to_insert, new_text, new_text_length, return);
 	debug_print("add:undo add %d-%ld\n", pos, pos + g_utf8_strlen(text_to_insert, -1));
@@ -588,8 +589,9 @@ void undo_delete_text_cb(GtkTextBuffer *textbuf, GtkTextIter *start,
 			last_undo->text = gtk_text_buffer_get_text(textbuf, &start, &end, FALSE);
 			debug_print("del:undo upd %d-%d\n", last_undo->start_pos, last_undo->end_pos);
 			return;
-		} else debug_print("del:last: %d, %d-%d (%d)\n", last_undo->action,
-			last_undo->start_pos, last_undo->end_pos, start_pos);
+		} else if (last_undo)
+			debug_print("del:last: %d, %d-%d (%d)\n", last_undo->action,
+				last_undo->start_pos, last_undo->end_pos, start_pos);
 		
 	} 
 	debug_print("del:undo add %d-%d\n", start_pos, end_pos);

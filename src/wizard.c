@@ -317,7 +317,8 @@ static gchar *wizard_get_default_domain_name(void)
 	
 	if (domain_name == NULL) {
 		domain_name = g_strdup(get_domain_name());
-		if (strchr(domain_name, '.') != strrchr(domain_name, '.')
+		if (strchr(domain_name, '.') != NULL 
+		&& strchr(domain_name, '.') != strrchr(domain_name, '.')
 		&& strlen(strchr(domain_name, '.')) > 6) {
 			gchar *tmp = g_strdup(strchr(domain_name, '.')+1);
 			g_free(domain_name);

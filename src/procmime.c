@@ -476,15 +476,18 @@ gboolean procmime_encode_content(MimeInfo *mimeinfo, EncodingType encoding)
 		return FALSE;
 	}
 
-	if (mimeinfo->content == MIMECONTENT_FILE) {
+	if (mimeinfo->content == MIMECONTENT_FILE && mimeinfo->data.filename) {
 		if ((infp = g_fopen(mimeinfo->data.filename, "rb")) == NULL) {
 			g_warning("Can't open file %s\n", mimeinfo->data.filename);
+			fclose(outfp);
 			return FALSE;
 		}
 	} else if (mimeinfo->content == MIMECONTENT_MEM) {
 		infp = str_open_as_stream(mimeinfo->data.mem);
-		if (infp == NULL)
+		if (infp == NULL) {
+			fclose(outfp);
 			return FALSE;
+		}
 	}
 
 	if (encoding == ENC_BASE64) {
@@ -499,6 +502,7 @@ gboolean procmime_encode_content(MimeInfo *mimeinfo, EncodingType encoding)
 				if (canonicalize_file(mimeinfo->data.filename, tmp_file) < 0) {
 					g_free(tmp_file);
 					fclose(infp);
+					fclose(outfp);
 					return FALSE;
 				}
 				if ((tmp_fp = g_fopen(tmp_file, "rb")) == NULL) {
@@ -506,6 +510,7 @@ gboolean procmime_encode_content(MimeInfo *mimeinfo, EncodingType encoding)
 					claws_unlink(tmp_file);
 					g_free(tmp_file);
 					fclose(infp);
+					fclose(outfp);
 					return FALSE;
 				}
 			} else {
@@ -514,8 +519,10 @@ gboolean procmime_encode_content(MimeInfo *mimeinfo, EncodingType encoding)
 				infp = str_open_as_stream(out);
 				tmp_fp = infp;
 				g_free(out);
-				if (infp == NULL)
+				if (infp == NULL) {
+					fclose(outfp);
 					return FALSE;
+				}
 			}
 		}
 
@@ -1625,8 +1632,8 @@ static void parse_parameters(const gchar *parameters, GHashTable *table)
 		down_attr = g_utf8_strdown(attribute, -1);
 		orig_down_attr = down_attr;
 	
-		len = strlen(down_attr);
-		if (down_attr[len - 1] == '*') {
+		len = down_attr ? strlen(down_attr):0;
+		if (len > 0 && down_attr[len - 1] == '*') {
 			gchar *srcpos, *dstpos, *endpos;
 
 			convert = TRUE;

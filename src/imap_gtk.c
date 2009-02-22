@@ -142,10 +142,10 @@ static void set_sensitivity(GtkUIManager *ui_manager, FolderItem *item)
 #define SET_SENS(name, sens) \
 	cm_menu_set_sensitive_full(ui_manager, "Popup/"name, sens)
 
-	SET_SENS("FolderViewPopup/CreateNewFolder",   item->no_sub == FALSE);
-	SET_SENS("FolderViewPopup/RenameFolder",       item->stype == F_NORMAL && folder_item_parent(item) != NULL);
-	SET_SENS("FolderViewPopup/MoveFolder", 	    folder_is_normal && folder_item_parent(item) != NULL);
-	SET_SENS("FolderViewPopup/DeleteFolder", 	    item->stype == F_NORMAL && folder_item_parent(item) != NULL);
+	SET_SENS("FolderViewPopup/CreateNewFolder",   item && item->no_sub == FALSE);
+	SET_SENS("FolderViewPopup/RenameFolder",       item && item->stype == F_NORMAL && folder_item_parent(item) != NULL);
+	SET_SENS("FolderViewPopup/MoveFolder", 	    item && folder_is_normal && folder_item_parent(item) != NULL);
+	SET_SENS("FolderViewPopup/DeleteFolder", 	    item && item->stype == F_NORMAL && folder_item_parent(item) != NULL);
 
 	SET_SENS("FolderViewPopup/CheckNewMessages", folder_item_parent(item) == NULL);
 	SET_SENS("FolderViewPopup/CheckNewFolders",  folder_item_parent(item) == NULL);
@@ -155,15 +155,15 @@ static void set_sensitivity(GtkUIManager *ui_manager, FolderItem *item)
 			item ? (folder_item_parent(item) != NULL
 			&& folder_want_synchronise(item->folder))
 			: FALSE);
-	SET_SENS("FolderViewPopup/DownloadMessages", !item->no_select);
+	SET_SENS("FolderViewPopup/DownloadMessages", item && !item->no_select);
 
 	SET_SENS("FolderViewPopup/CheckNewMessages", folder_item_parent(item) == NULL);
 	SET_SENS("FolderViewPopup/CheckNewFolders",  folder_item_parent(item) == NULL);
 	SET_SENS("FolderViewPopup/RebuildTree",    folder_item_parent(item) == NULL);
 	
-	SET_SENS("FolderViewPopup/Subscriptions/Unsubscribe",    item->stype == F_NORMAL && folder_item_parent(item) != NULL);
+	SET_SENS("FolderViewPopup/Subscriptions/Unsubscribe",    item && item->stype == F_NORMAL && folder_item_parent(item) != NULL);
 	SET_SENS("FolderViewPopup/Subscriptions/Subscribe",    TRUE);
-	if (item->folder && item->folder->account)
+	if (item && item->folder && item->folder->account)
 		cm_toggle_menu_set_active_full(ui_manager, "Popup/FolderViewPopup/Subscriptions/ShowOnlySubs",
 			item->folder->account->imap_subsonly);
 

@@ -254,9 +254,17 @@ gchar *sgpgme_sigstat_info_full(gpgme_ctx_t ctx, gpgme_verify_result_t status)
 	gint i = 0;
 	gchar *ret;
 	GString *siginfo;
-	gpgme_signature_t sig = status->signatures;
-	
+	gpgme_signature_t sig = NULL;
+
 	siginfo = g_string_sized_new(64);
+	if (status == NULL) {
+		g_string_append_printf(siginfo,
+			_("Error checking signature: no status\n"));
+		goto bail;
+	 }
+
+	sig = status->signatures;
+	
 	while (sig) {
 		gpgme_user_id_t user = NULL;
 		gpgme_key_t key;
@@ -292,12 +300,12 @@ gchar *sgpgme_sigstat_info_full(gpgme_ctx_t ctx, gpgme_verify_result_t status)
 		case GPG_ERR_KEY_EXPIRED:
 			g_string_append_printf(siginfo,
 				_("Good signature from uid \"%s\" (Validity: %s)\n"),
-				uid, get_validity_str(user->validity));
+				uid, get_validity_str(user?user->validity:GPGME_VALIDITY_UNKNOWN));
 			break;
 		case GPG_ERR_SIG_EXPIRED:
 			g_string_append_printf(siginfo,
 				_("Expired signature from uid \"%s\" (Validity: %s)\n"),
-				uid, get_validity_str(user->validity));
+				uid, get_validity_str(user?user->validity:GPGME_VALIDITY_UNKNOWN));
 			break;
 		case GPG_ERR_BAD_SIGNATURE:
 			g_string_append_printf(siginfo,
@@ -542,11 +550,11 @@ gboolean sgpgme_setup_signers(gpgme_ctx_t ctx, PrefsAccount *account,
 			if (!err && key2 && key2->protocol == gpgme_get_protocol(ctx) &&
 			    !key2->expired && !key2->revoked && !key2->disabled)
 				break;
-			if (!err && key && key2->protocol != gpgme_get_protocol(ctx)) {
+			if (!err && key2 && key2->protocol != gpgme_get_protocol(ctx)) {
 				debug_print("skipping a key (wrong protocol %d)\n", key2->protocol);
 				gpgme_key_release(key2);
 			}
-			if (!err && key && (key2->expired || key2->revoked || key2->disabled)) {
+			if (!err && key2 && (key2->expired || key2->revoked || key2->disabled)) {
 					debug_print("skipping a key");
 					if (key2->expired) 
 						debug_print(" expired");

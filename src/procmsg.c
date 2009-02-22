@@ -1647,7 +1647,7 @@ send_mail:
 	}
 
 	fseek(fp, filepos, SEEK_SET);
-	if (newsgroup_list && (mailval == 0)) {
+	if (newsgroup_list && newsac && (mailval == 0)) {
 		Folder *folder;
 		gchar *tmp = NULL;
 		FILE *tmpfp;

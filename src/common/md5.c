@@ -359,6 +359,7 @@ md5_hex_digest_file(char *hexdigest, const unsigned char *file)
 
 	if (fd == -1) {
 		FILE_OP_ERROR(file, "open");
+		g_free(buf);
 		return -1;
 	}
 	

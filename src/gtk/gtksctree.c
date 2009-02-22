@@ -2986,7 +2986,7 @@ gtk_sctree_real_tree_expand (GtkCMCTree     *ctree,
       list = (GList *)node;
       list->next = (GList *)(GTK_CMCTREE_ROW (node)->children);
 
-      if (visible)
+      if (visible && !GTK_CMCLIST_AUTO_RESIZE_BLOCKED (clist))
 	{
 	  /* resize auto_resize columns if needed */
 	  for (i = 0; i < clist->columns; i++)

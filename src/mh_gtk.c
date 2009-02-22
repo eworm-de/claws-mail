@@ -110,9 +110,9 @@ static void set_sensitivity(GtkUIManager *ui_manager, FolderItem *item)
 	cm_menu_set_sensitive_full(ui_manager, "Popup/"name, sens)
 
 	SET_SENS("FolderViewPopup/CreateNewFolder",   TRUE);
-	SET_SENS("FolderViewPopup/RenameFolder",       item->stype == F_NORMAL && folder_item_parent(item) != NULL);
+	SET_SENS("FolderViewPopup/RenameFolder",       item && item->stype == F_NORMAL && folder_item_parent(item) != NULL);
 	SET_SENS("FolderViewPopup/MoveFolder", 	    folder_is_normal && folder_item_parent(item) != NULL);
-	SET_SENS("FolderViewPopup/DeleteFolder", 	    item->stype == F_NORMAL && folder_item_parent(item) != NULL);
+	SET_SENS("FolderViewPopup/DeleteFolder", 	    item && item->stype == F_NORMAL && folder_item_parent(item) != NULL);
 
 	SET_SENS("FolderViewPopup/CheckNewMessages", folder_item_parent(item) == NULL);
 	SET_SENS("FolderViewPopup/CheckNewFolders",  folder_item_parent(item) == NULL);

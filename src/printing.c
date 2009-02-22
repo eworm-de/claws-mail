@@ -1131,7 +1131,7 @@ static void printing_layout_set_text_attributes(PrintData *print_data, GtkPrintC
     gboolean fg_set, bg_set, under_set, strike_set, weight_set;
     GSList *tags, *tag_walk;
     GtkTextTag *tag;
-    GdkColor *color;
+    GdkColor *color = NULL;
     PangoUnderline underline;
     gboolean strikethrough;
     gint weight;
@@ -1186,7 +1186,7 @@ static void printing_layout_set_text_attributes(PrintData *print_data, GtkPrintC
 	    if(attr->klass->type == PANGO_ATTR_FOREGROUND) {
 	      attr_color = (PangoAttrColor*) attr;
 	      g_object_get(G_OBJECT(tag), "foreground_gdk", &color, NULL);
-	      if(printing_is_pango_gdk_color_equal(&(attr_color->color), color)) {
+	      if(color && printing_is_pango_gdk_color_equal(&(attr_color->color), color)) {
 		attr->end_index = printing_text_iter_get_offset_bytes(print_data, &iter);
 		pango_attr_list_insert(attr_list, attr);
 		found = TRUE;
@@ -1300,6 +1300,7 @@ static void printing_layout_set_text_attributes(PrintData *print_data, GtkPrintC
 		     "foreground-set", &fg_set,
 		     "underline-set", &under_set,
 		     "strikethrough-set", &strike_set,
+		     "weight-set", &weight_set,
 		     NULL);
 	if(fg_set) {
 	  g_object_get(G_OBJECT(tag), "foreground-gdk", &color, NULL);

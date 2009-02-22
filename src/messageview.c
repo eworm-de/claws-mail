@@ -1680,7 +1680,7 @@ static gboolean key_pressed(GtkWidget *widget, GdkEventKey *event,
 		return TRUE;
 	}
 
-	if ((event->state & (GDK_MOD1_MASK|GDK_CONTROL_MASK|GDK_SHIFT_MASK)) != 0)
+	if (event && (event->state & (GDK_MOD1_MASK|GDK_CONTROL_MASK|GDK_SHIFT_MASK)) != 0)
 		return FALSE;
 
 	g_signal_stop_emission_by_name(G_OBJECT(widget),

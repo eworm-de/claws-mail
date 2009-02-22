@@ -199,6 +199,7 @@ static gint pgpmime_check_signature(MimeInfo *mimeinfo)
 	boundary = g_hash_table_lookup(parent->typeparameters, "boundary");
 	if (!boundary) {
 		privacy_set_error(_("Signature boundary not found."));
+		fclose(fp);
 		return 0;
 	}
 	textstr = get_canonical_content(fp, boundary);
@@ -350,6 +351,7 @@ static MimeInfo *pgpmime_decrypt(MimeInfo *mimeinfo)
 
 	if (fprintf(dstfp, "MIME-Version: 1.0\n") < 0) {
         	FILE_OP_ERROR(fname, "fprintf");
+		fclose(dstfp);
 		privacy_set_error(_("Couldn't write to decrypted file %s"), fname);
         	g_free(fname);
         	gpgme_data_release(plain);
@@ -362,6 +364,7 @@ static MimeInfo *pgpmime_decrypt(MimeInfo *mimeinfo)
 	if (len > 0) {
 		if (fwrite(chars, 1, len, dstfp) < len) {
         		FILE_OP_ERROR(fname, "fwrite");
+			fclose(dstfp);
 			privacy_set_error(_("Couldn't write to decrypted file %s"), fname);
         		g_free(fname);
         		gpgme_data_release(plain);

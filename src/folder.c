@@ -2156,13 +2156,13 @@ gint folder_item_scan_full(FolderItem *item, gboolean filtering)
 			MsgInfo *msginfo;
 
 			msginfo = msgcache_get_msg(item->cache, folder_cur_num);
-			if (folder->klass->is_msg_changed && folder->klass->is_msg_changed(folder, item, msginfo)) {
+			if (msginfo && folder->klass->is_msg_changed && folder->klass->is_msg_changed(folder, item, msginfo)) {
 				msgcache_remove_msg(item->cache, msginfo->msgnum);
 				new_list = g_slist_prepend(new_list, GINT_TO_POINTER(msginfo->msgnum));
 				procmsg_msginfo_free(msginfo);
 
 				debug_print("Remembering message %d to update...\n", folder_cur_num);
-			} else {
+			} else if (msginfo) {
 				exists_list = g_slist_prepend(exists_list, msginfo);
 
 				if(prefs_common.thread_by_subject &&
@@ -3405,7 +3405,7 @@ static gint do_copy_msgs(FolderItem *dest, GSList *msglist, gboolean remove_sour
                 GTuples *tuples;
 
                 tuples = g_relation_select(relation, msginfo, 0);
-		if (tuples->len > 0) {
+		if (tuples && tuples->len > 0) {
 	                num = GPOINTER_TO_INT(g_tuples_index(tuples, 0, 1));
         	        g_tuples_destroy(tuples);
 		} else {

@@ -1454,8 +1454,8 @@ gchar *pref_get_pref_from_textview(GtkTextView *textview)
 	gtk_text_buffer_get_iter_at_offset(buffer, &end, -1);
 	tmp = gtk_text_buffer_get_text(buffer, &start, &end, FALSE);
 	out = malloc(2*strlen(tmp)+1);
-	
-	pref_get_escaped_pref(out, tmp);
+	if (out)
+		pref_get_escaped_pref(out, tmp);
 	g_free(tmp);
 
 	return out?out:"";
@@ -1471,8 +1471,9 @@ gchar *pref_get_pref_from_entry(GtkEntry *entry)
 
 	tmp = gtk_editable_get_chars(GTK_EDITABLE(entry), 0, -1);
 	out = malloc(2*strlen(tmp)+1);
-
-	pref_get_escaped_pref(out, tmp);
+	
+	if (out)
+		pref_get_escaped_pref(out, tmp);
 	g_free(tmp);
 
 	return out?out:"";

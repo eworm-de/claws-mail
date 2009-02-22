@@ -468,10 +468,12 @@ static gboolean sock_check(GSource *source)
 	SockInfo *sock = ((SockSource *)source)->sock;
 	struct timeval timeout = {0, 0};
 	fd_set fds;
-	GIOCondition condition = sock->condition;
+	GIOCondition condition = 0;
         
 	if (!sock || !sock->sock)
 		return FALSE;
+
+	condition = sock->condition;
 
 	FD_ZERO(&fds);
 	FD_SET(sock->sock, &fds);

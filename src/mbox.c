@@ -322,9 +322,15 @@ gint lock_mbox(const gchar *base, LockType type)
 			return -1;
 		}
 
-		if (fprintf(lockfp, "%d\n", getpid()) < 0 ||
-		    fclose(lockfp) == EOF) {
-			FILE_OP_ERROR(lockfile, "fopen||fclose");
+		if (fprintf(lockfp, "%d\n", getpid()) < 0) {
+			FILE_OP_ERROR(lockfile, "fprintf");
+			g_free(lockfile);
+			fclose(lockfp);
+			return -1;
+		}
+
+		if (fclose(lockfp) == EOF) {
+			FILE_OP_ERROR(lockfile, "fclose");
 			g_free(lockfile);
 			return -1;
 		}

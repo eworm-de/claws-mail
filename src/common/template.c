@@ -74,6 +74,7 @@ static Template *template_load(gchar *filename)
 	if (!tmpl->name) {
 		g_warning("wrong template format\n");
 		template_free(tmpl);
+		fclose(fp);
 		return NULL;
 	}
 
@@ -81,6 +82,7 @@ static Template *template_load(gchar *filename)
 		if (ferror(fp)) {
 			FILE_OP_ERROR(filename, "fread");
 			template_free(tmpl);
+			fclose(fp);
 			return NULL;
 		}
 	}
@@ -204,6 +206,17 @@ if (!(func)) \
 } \
 }
 
+#define TRY_NO_CLOSE(func) { \
+if (!(func)) \
+{ \
+	g_warning("Failed to write template to file\n"); \
+	if (new) claws_unlink(new); \
+	g_free(new); \
+	g_free(filename); \
+	return; \
+} \
+}
+
 static void template_write_config(GSList *tmpl_list)
 {
 	const gchar *path;
@@ -264,7 +277,7 @@ static void template_write_config(GSList *tmpl_list)
 		} else {
 			TRY(fwrite("", sizeof(gchar), 1, fp) == 1);
 		}
-		TRY(fclose(fp) != EOF);
+		TRY_NO_CLOSE(fclose(fp) != EOF);
 
 		if (new) {
 			claws_unlink(filename);

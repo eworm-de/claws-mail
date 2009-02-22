@@ -1034,14 +1034,15 @@ static void prefs_filtering_set_list(void)
 static gint prefs_filtering_list_view_set_row(gint row, FilteringProp * prop)
 {
 	GtkTreeView *list_view = GTK_TREE_VIEW(filtering.cond_list_view);
-	gchar *str;
+	gchar *str = NULL;
 	GtkListStore *list_store;
 	gchar *name = NULL;
 	gint account_id = 0;
 	gchar *account_name = (gchar *)Q_("Filtering Account Menu|All");
 	gboolean enabled = TRUE;
 
-	str = filteringprop_to_string(prop);
+	if (prop)
+		str = filteringprop_to_string(prop);
 	if (str == NULL)
 		return -1;
 

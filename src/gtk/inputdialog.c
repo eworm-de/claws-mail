@@ -164,7 +164,7 @@ gchar *input_dialog_with_invisible_checkbtn(const gchar *title, const gchar *mes
 		HILDON_GTK_INPUT_MODE_FULL | HILDON_GTK_INPUT_MODE_INVISIBLE);
 #endif
 
-	return input_dialog_open(title, message, checkbtn_label, default_string, *checkbtn_state, checkbtn_state);
+	return input_dialog_open(title, message, checkbtn_label, default_string, (checkbtn_state? *checkbtn_state:FALSE), checkbtn_state);
 }
 
 gchar *input_dialog_combo(const gchar *title, const gchar *message,

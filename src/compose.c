@@ -1198,7 +1198,7 @@ static void compose_force_encryption(Compose *compose, PrefsAccount *account,
 
 static void compose_force_signing(Compose *compose, PrefsAccount *account, const gchar *system)
 {
-	gchar *privacy = NULL;
+	const gchar *privacy = NULL;
 
 	if (system)
 		privacy = system;
@@ -1816,8 +1816,15 @@ static Compose *compose_forward_multiple(PrefsAccount *account, GSList *msginfo_
 	g_return_val_if_fail(account != NULL, NULL);
 
 	for (msginfo = msginfo_list; msginfo != NULL; msginfo = msginfo->next) {
-		MSG_UNSET_PERM_FLAGS(((MsgInfo *)msginfo->data)->flags, MSG_REPLIED);
-		MSG_SET_PERM_FLAGS(((MsgInfo *)msginfo->data)->flags, MSG_FORWARDED);
+		if (msginfo->data) {
+			MSG_UNSET_PERM_FLAGS(((MsgInfo *)msginfo->data)->flags, MSG_REPLIED);
+			MSG_SET_PERM_FLAGS(((MsgInfo *)msginfo->data)->flags, MSG_FORWARDED);
+		}
+	}
+
+	if (msginfo_list == NULL || msginfo_list->data == NULL) {
+		g_warning("no msginfo_list");
+		return NULL;
 	}
 
 	compose = compose_create(account, ((MsgInfo *)msginfo_list->data)->folder, COMPOSE_FORWARD, FALSE);
@@ -3528,15 +3535,16 @@ static void compose_attach_parts(Compose *compose, MsgInfo *msginfo)
 	while (child && child->node->children && (child->type == MIMETYPE_MULTIPART))
 		child = (MimeInfo *)child->node->children->data;
 
-	if (child->type == MIMETYPE_TEXT) {
-		firsttext = child;
-		debug_print("First text part found\n");
-	} else if (compose->mode == COMPOSE_REEDIT &&
-		 child->type == MIMETYPE_APPLICATION &&
-		 !g_ascii_strcasecmp(child->subtype, "pgp-encrypted")) {
-		encrypted = (MimeInfo *)child->node->parent->data;
+	if (child) {
+		if (child->type == MIMETYPE_TEXT) {
+			firsttext = child;
+			debug_print("First text part found\n");
+		} else if (compose->mode == COMPOSE_REEDIT &&
+			 child->type == MIMETYPE_APPLICATION &&
+			 !g_ascii_strcasecmp(child->subtype, "pgp-encrypted")) {
+			encrypted = (MimeInfo *)child->node->parent->data;
+		}
 	}
-     
 	child = (MimeInfo *) mimeinfo->node->children->data;
 	while (child != NULL) {
 		gint err;
@@ -5514,9 +5522,9 @@ static gint compose_queue_sub(Compose *compose, gint *msgnum, FolderItem **item,
 	if (compose->newsgroup_list) {
                 if (compose->account->protocol == A_NNTP)
                         newsac = compose->account;
-                else if (!newsac->protocol != A_NNTP) {
+                else {
 			lock = FALSE;
-			alertpanel_error(_("No account for posting news available!"));
+			alertpanel_error(_("Selected account isn't NNTP: Posting is impossible."));
 			return -1;
 		}			
 	}
@@ -10192,8 +10200,6 @@ static void compose_insert_drag_received_cb (GtkWidget		*widget,
 
 	/* strangely, testing data->type == gdk_atom_intern("text/uri-list", TRUE)
 	 * does not work */
-	debug_print("drop: %s (%s)\n", gdk_atom_name(data->type)?gdk_atom_name(data->type):"nul",
-		(gchar *)(data->data?data->data:"nul"));
 #ifndef G_OS_WIN32
 	if (gdk_atom_name(data->type) && !strcmp(gdk_atom_name(data->type), "text/uri-list")) {
 #else
@@ -10202,8 +10208,6 @@ static void compose_insert_drag_received_cb (GtkWidget		*widget,
 		AlertValue val = G_ALERTDEFAULT;
 
 		list = uri_list_extract_filenames((const gchar *)data->data);
-		debug_print("list: %p (%s)\n", list, 
-			(gchar *)(data->data?data->data:"nul"));
 		if (list == NULL && strstr((gchar *)(data->data), "://")) {
 			/* Assume a list of no files, and data has ://, is a remote link */
 			gchar *tmpdata = g_strstrip(g_strdup((const gchar *)data->data));

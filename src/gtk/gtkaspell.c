@@ -2074,7 +2074,7 @@ gboolean gtkaspell_change_dict(GtkAspell *gtkaspell, const gchar *dictionary,
 		dict->dictname = g_strdup(dictionary);
 	}
 
-	if (strchr(dict->fullname, '-')) {
+	if (dict->fullname && strchr(dict->fullname, '-')) {
 		*(strchr(dict->fullname, '-')) = '\0';
 		*(strchr(dict->dictname, '-')) = '\0';
 	}
@@ -2129,7 +2129,7 @@ gboolean gtkaspell_change_alt_dict(GtkAspell *gtkaspell, const gchar *alt_dictio
 		dict->dictname = g_strdup(alt_dictionary);
 	}
 
-	if (strchr(dict->fullname, '-')) {
+	if (dict->fullname && strchr(dict->fullname, '-')) {
 		*(strchr(dict->fullname, '-')) = '\0';
 		*(strchr(dict->dictname, '-')) = '\0';
 	}

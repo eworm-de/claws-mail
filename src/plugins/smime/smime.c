@@ -236,7 +236,7 @@ static gint smime_check_signature(MimeInfo *mimeinfo)
 	} else {
 		textstr = get_canonical_content(fp, boundary);
 	}
-	err = gpgme_data_new_from_mem(&textdata, textstr, strlen(textstr), 0);
+	err = gpgme_data_new_from_mem(&textdata, textstr, textstr?strlen(textstr):0, 0);
 	
 	if (err) {
 		debug_print ("gpgme_data_new_from_mem failed: %s\n",
@@ -271,6 +271,10 @@ static gint smime_check_signature(MimeInfo *mimeinfo)
 				newinfo = procmime_scan_file(tmp_file);
 				decinfo = g_node_first_child(newinfo->node) != NULL ?
 					g_node_first_child(newinfo->node)->data : NULL;
+
+				if (decinfo == NULL)
+					return -1;
+
 				g_node_unlink(decinfo->node);
 				procmime_mimeinfo_free_all(newinfo);
 				decinfo->tmp = TRUE;
@@ -442,6 +446,7 @@ static MimeInfo *smime_decrypt(MimeInfo *mimeinfo)
 	if (fprintf(dstfp, "MIME-Version: 1.0\n") < 0) {
         	FILE_OP_ERROR(fname, "fprintf");
         	g_free(fname);
+		fclose(dstfp);
         	gpgme_data_release(plain);
 		gpgme_release(ctx);
 		debug_print("can't close!\n");
@@ -586,7 +591,7 @@ gboolean smime_sign(MimeInfo *mimeinfo, PrefsAccount *account, const gchar *from
 
 	fclose(fp);
 
-	gpgme_data_new_from_mem(&gpgtext, textstr, strlen(textstr), 0);
+	gpgme_data_new_from_mem(&gpgtext, textstr, textstr?strlen(textstr):0, 0);
 	gpgme_data_new(&gpgsig);
 	gpgme_new(&ctx);
 	gpgme_set_armor(ctx, TRUE);
@@ -818,7 +823,7 @@ gboolean smime_encrypt(MimeInfo *mimeinfo, const gchar *encrypt_data)
 	fclose(fp);
 
 	/* encrypt data */
-	gpgme_data_new_from_mem(&gpgtext, textstr, strlen(textstr), 0);
+	gpgme_data_new_from_mem(&gpgtext, textstr, textstr?strlen(textstr):0, 0);
 	gpgme_data_new(&gpgenc);
 	gpgme_data_rewind(gpgtext);
 	
