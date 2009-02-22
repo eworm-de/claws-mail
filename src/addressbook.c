@@ -3223,7 +3223,7 @@ static void addressbook_new_address_cb( GtkAction *action, gpointer data ) {
 								  addressbook_new_address_from_book_post_cb,
 								  TRUE );
 #ifdef USE_LDAP
-			if (abf && abf->type == ADDR_IF_LDAP) {
+			if (ds && abf && abf->type == ADDR_IF_LDAP) {
 				LdapServer *server = ds->rawDataSource;
 				ldapsvr_set_modified(server, TRUE);
 				ldapsvr_update_book(server, NULL);
@@ -3274,7 +3274,7 @@ static void addressbook_new_address_cb( GtkAction *action, gpointer data ) {
 							  addressbook_new_address_from_folder_post_cb,
 							  TRUE );
 #ifdef USE_LDAP
-		if (abf && abf->type == ADDR_IF_LDAP) {
+		if (ds && abf && abf->type == ADDR_IF_LDAP) {
 			LdapServer *server = ds->rawDataSource;
 			ldapsvr_set_modified(server, TRUE);
 			ldapsvr_update_book(server, NULL);

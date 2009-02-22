@@ -1677,7 +1677,7 @@ static void parse_parameters(const gchar *parameters, GHashTable *table)
 			while (value[strlen(value)-1] == ' ') 
 				value[strlen(value)-1] = '\0';
 		}		
-		if (strrchr(down_attr, '*') != NULL) {
+		if (down_attr && strrchr(down_attr, '*') != NULL) {
 			gchar *tmpattr;
 
 			tmpattr = g_strdup(down_attr);
@@ -2182,6 +2182,7 @@ static void write_parameters(gpointer key, gpointer value, gpointer user_data)
 		g_string_append_printf(buf, "%s=\"%s\"", param, val);
 		break;
 
+#if 0 /* we don't use that for now */
 	case ENC_AS_EXTENDED:
 		if (!g_utf8_validate(val, -1, NULL))
 			g_string_append_printf(buf, "%s*=%s''", param,
@@ -2199,7 +2200,7 @@ static void write_parameters(gpointer key, gpointer value, gpointer user_data)
 			}
 		}
 		break;		
-
+#endif
 	case ENC_AS_ENCWORD:
 		len = MAX(strlen(val)*6, 512);
 		tmp = g_malloc(len+1);
