@@ -3238,7 +3238,7 @@ static gchar *imap_get_real_path(IMAPSession *session, IMAPFolder *folder, const
 
 	real_path = imap_utf8_to_modified_utf7(path, FALSE);
 	separator = imap_get_path_separator(session, folder, path, ok);
-	if (ok == MAILIMAP_NO_ERROR)
+	if (*ok == MAILIMAP_NO_ERROR)
 		imap_path_separator_subst(real_path, separator);
 
 	return real_path;
