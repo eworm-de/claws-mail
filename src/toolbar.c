@@ -245,7 +245,7 @@ gint toolbar_ret_val_from_descr(const gchar *descr)
 
 gchar *toolbar_ret_descr_from_val(gint val)
 {
-	g_return_val_if_fail(val >=0 && val < N_ACTION_VAL, NULL);
+	cm_return_val_if_fail(val >=0 && val < N_ACTION_VAL, NULL);
 
 	return gettext(toolbar_text[val].descr);
 }
@@ -264,7 +264,7 @@ static gint toolbar_ret_val_from_text(const gchar *text)
 
 static gchar *toolbar_ret_text_from_val(gint val)
 {
-	g_return_val_if_fail(val >=0 && val < N_ACTION_VAL, NULL);
+	cm_return_val_if_fail(val >=0 && val < N_ACTION_VAL, NULL);
 
 	return toolbar_text[val].index_str;
 }
@@ -505,7 +505,10 @@ static void toolbar_set_default_main(void)
 		
 		if (default_toolbar[i].action != A_SEPARATOR) {
 			
-			gchar *file = stock_pixmap_get_name((StockPixmap)toolbar_get_icon(default_toolbar[i].action));
+			gchar *file = NULL;
+			if (toolbar_get_icon(default_toolbar[i].action) > -1) {
+				file = stock_pixmap_get_name((StockPixmap)toolbar_get_icon(default_toolbar[i].action));
+			}
 			
 			toolbar_item->file  = g_strdup(file);
 			toolbar_item->index = default_toolbar[i].action;
@@ -553,8 +556,10 @@ static void toolbar_set_default_compose(void)
 		
 		if (default_toolbar[i].action != A_SEPARATOR) {
 			
-			gchar *file = stock_pixmap_get_name((StockPixmap)toolbar_get_icon(default_toolbar[i].action));
-			
+			gchar *file = NULL;
+			if (toolbar_get_icon(default_toolbar[i].action) > -1) {
+				file = stock_pixmap_get_name((StockPixmap)toolbar_get_icon(default_toolbar[i].action));
+			}
 			toolbar_item->file  = g_strdup(file);
 			toolbar_item->index = default_toolbar[i].action;
 			toolbar_item->text  = g_strdup(toolbar_get_short_text(default_toolbar[i].action));
@@ -602,8 +607,10 @@ static void toolbar_set_default_msgview(void)
 		ToolbarItem *toolbar_item = g_new0(ToolbarItem, 1);
 		
 		if (default_toolbar[i].action != A_SEPARATOR) {
-			
-			gchar *file = stock_pixmap_get_name((StockPixmap)toolbar_get_icon(default_toolbar[i].action));
+			gchar *file = NULL;
+			if (toolbar_get_icon(default_toolbar[i].action) > -1) {
+				file = stock_pixmap_get_name((StockPixmap)toolbar_get_icon(default_toolbar[i].action));
+			}
 			
 			toolbar_item->file  = g_strdup(file);
 			toolbar_item->index = default_toolbar[i].action;
@@ -952,7 +959,7 @@ void toolbar_toggle(guint action, gpointer data)
 	GList *list;
 	GList *cur;
 
-	g_return_if_fail(mainwin != NULL);
+	cm_return_if_fail(mainwin != NULL);
 
 	toolbar_style(TOOLBAR_MAIN, action, mainwin);
 
@@ -1012,7 +1019,7 @@ static void toolbar_style(ToolbarType type, guint action, gpointer data)
 	Compose    *compose = (Compose*)data;
 	MessageView *msgview = (MessageView*)data;
 	
-	g_return_if_fail(data != NULL);
+	cm_return_if_fail(data != NULL);
 	
 	switch (type) {
 	case TOOLBAR_MAIN:
@@ -1041,7 +1048,7 @@ static void toolbar_inc_cb(GtkWidget	*widget,
 	ToolbarItem *toolbar_item = (ToolbarItem*)data;
 	MainWindow *mainwin;
 
-	g_return_if_fail(toolbar_item != NULL);
+	cm_return_if_fail(toolbar_item != NULL);
 
 	switch (toolbar_item->type) {
 	case TOOLBAR_MAIN:
@@ -1059,7 +1066,7 @@ static void toolbar_inc_all_cb(GtkWidget	*widget,
 	ToolbarItem *toolbar_item = (ToolbarItem*)data;
 	MainWindow *mainwin;
 
-	g_return_if_fail(toolbar_item != NULL);
+	cm_return_if_fail(toolbar_item != NULL);
 
 	switch (toolbar_item->type) {
 	case TOOLBAR_MAIN:
@@ -1076,7 +1083,7 @@ static void toolbar_send_queued_cb(GtkWidget *widget,gpointer data)
 	ToolbarItem *toolbar_item = (ToolbarItem*)data;
 	MainWindow *mainwin;
 
-	g_return_if_fail(toolbar_item != NULL);
+	cm_return_if_fail(toolbar_item != NULL);
 
 	switch (toolbar_item->type) {
 	case TOOLBAR_MAIN:
@@ -1093,7 +1100,7 @@ static void toolbar_exec_cb(GtkWidget	*widget,
 {
 	MainWindow *mainwin = get_mainwin(data);
 
-	g_return_if_fail(mainwin != NULL);
+	cm_return_if_fail(mainwin != NULL);
 	summary_execute(mainwin->summaryview);
 }
 
@@ -1105,8 +1112,8 @@ static void toolbar_trash_cb(GtkWidget *widget, gpointer data)
 	ToolbarItem *toolbar_item = (ToolbarItem*)data;
 	MainWindow *mainwin;
 
-	g_return_if_fail(toolbar_item != NULL);
-	g_return_if_fail(toolbar_item->parent);
+	cm_return_if_fail(toolbar_item != NULL);
+	cm_return_if_fail(toolbar_item->parent);
 	
 	switch (toolbar_item->type) {
 	case TOOLBAR_MSGVIEW:
@@ -1130,8 +1137,8 @@ static void toolbar_delete_cb(GtkWidget *widget, gpointer data)
 	ToolbarItem *toolbar_item = (ToolbarItem*)data;
 	MainWindow *mainwin;
 
-	g_return_if_fail(toolbar_item != NULL);
-	g_return_if_fail(toolbar_item->parent);
+	cm_return_if_fail(toolbar_item != NULL);
+	cm_return_if_fail(toolbar_item->parent);
 	
 	switch (toolbar_item->type) {
 	case TOOLBAR_MSGVIEW:
@@ -1157,7 +1164,7 @@ static void toolbar_compose_cb(GtkWidget *widget, gpointer data)
 	MainWindow *mainwin;
 	MessageView *msgview;
 
-	g_return_if_fail(toolbar_item != NULL);
+	cm_return_if_fail(toolbar_item != NULL);
 
 	switch (toolbar_item->type) {
 	case TOOLBAR_MAIN:
@@ -1183,7 +1190,7 @@ static void toolbar_learn(gpointer data, guint as_spam)
 	MainWindow *mainwin;
 	MessageView *msgview;
 
-	g_return_if_fail(toolbar_item != NULL);
+	cm_return_if_fail(toolbar_item != NULL);
 
 	switch (toolbar_item->type) {
 	case TOOLBAR_MAIN:
@@ -1211,7 +1218,7 @@ static void toolbar_learn_cb(GtkWidget *widget, gpointer data)
 	MainWindow *mainwin;
 	MessageView *msgview;
 
-	g_return_if_fail(toolbar_item != NULL);
+	cm_return_if_fail(toolbar_item != NULL);
 
 	switch (toolbar_item->type) {
 	case TOOLBAR_MAIN:
@@ -1284,7 +1291,7 @@ static void toolbar_addrbook_cb(GtkWidget *widget, gpointer data)
 	ToolbarItem *toolbar_item = (ToolbarItem*)data;
 	Compose *compose;
 
-	g_return_if_fail(toolbar_item != NULL);
+	cm_return_if_fail(toolbar_item != NULL);
 
 	switch (toolbar_item->type) {
 	case TOOLBAR_MAIN:
@@ -1318,7 +1325,7 @@ static void toolbar_prev_unread_cb(GtkWidget *widget, gpointer data)
 	MainWindow *mainwin;
 	MessageView *msgview;
 
-	g_return_if_fail(toolbar_item != NULL);
+	cm_return_if_fail(toolbar_item != NULL);
 
 	switch (toolbar_item->type) {
 	case TOOLBAR_MAIN:
@@ -1365,7 +1372,7 @@ static void toolbar_next_unread_cb(GtkWidget *widget, gpointer data)
 	MainWindow *mainwin;
 	MessageView *msgview;
 
-	g_return_if_fail(toolbar_item != NULL);
+	cm_return_if_fail(toolbar_item != NULL);
 
 	switch (toolbar_item->type) {
 	case TOOLBAR_MAIN:
@@ -1408,7 +1415,7 @@ static void toolbar_ignore_thread_cb(GtkWidget *widget, gpointer data)
 	ToolbarItem *toolbar_item = (ToolbarItem*)data;
 	MainWindow *mainwin;
 
-	g_return_if_fail(toolbar_item != NULL);
+	cm_return_if_fail(toolbar_item != NULL);
 
 	switch (toolbar_item->type) {
 	case TOOLBAR_MAIN:
@@ -1430,7 +1437,7 @@ static void toolbar_watch_thread_cb(GtkWidget *widget, gpointer data)
 	ToolbarItem *toolbar_item = (ToolbarItem*)data;
 	MainWindow *mainwin;
 
-	g_return_if_fail(toolbar_item != NULL);
+	cm_return_if_fail(toolbar_item != NULL);
 
 	switch (toolbar_item->type) {
 	case TOOLBAR_MAIN:
@@ -1451,7 +1458,7 @@ static void toolbar_cancel_inc_cb(GtkWidget *widget, gpointer data)
 {
 	ToolbarItem *toolbar_item = (ToolbarItem*)data;
 
-	g_return_if_fail(toolbar_item != NULL);
+	cm_return_if_fail(toolbar_item != NULL);
 	inc_cancel_all();
 	imap_cancel_all();
 }
@@ -1462,7 +1469,7 @@ static void toolbar_print_cb(GtkWidget *widget, gpointer data)
 	ToolbarItem *toolbar_item = (ToolbarItem*)data;
 	MainWindow *mainwin;
 
-	g_return_if_fail(toolbar_item != NULL);
+	cm_return_if_fail(toolbar_item != NULL);
 
 	switch (toolbar_item->type) {
 	case TOOLBAR_MAIN:
@@ -1501,7 +1508,7 @@ static void toolbar_close_cb(GtkWidget *widget, gpointer data)
 	MessageView *messageview;
 	Compose *compose;
 
-	g_return_if_fail(toolbar_item != NULL);
+	cm_return_if_fail(toolbar_item != NULL);
 
 	switch (toolbar_item->type) {
 	case TOOLBAR_MAIN:
@@ -1529,7 +1536,7 @@ static void toolbar_open_mail_cb(GtkWidget *widget, gpointer data)
 	ToolbarItem *toolbar_item = (ToolbarItem*)data;
 	MainWindow *mainwin;
 
-	g_return_if_fail(toolbar_item != NULL);
+	cm_return_if_fail(toolbar_item != NULL);
 
 	switch (toolbar_item->type) {
 	case TOOLBAR_MAIN:
@@ -1593,7 +1600,7 @@ static void toolbar_actions_execute_cb(GtkWidget *widget, gpointer data)
 	MessageView *msgview;
 	gpointer parent = toolbar_item->parent;
 
-	g_return_if_fail(toolbar_item != NULL);
+	cm_return_if_fail(toolbar_item != NULL);
 
 	switch (toolbar_item->type) {
 	case TOOLBAR_MAIN:
@@ -1621,7 +1628,7 @@ static MainWindow *get_mainwin(gpointer data)
 	MainWindow *mainwin = NULL;
 	MessageView *msgview;
 
-	g_return_val_if_fail(toolbar_item != NULL, NULL);
+	cm_return_val_if_fail(toolbar_item != NULL, NULL);
 
 	switch(toolbar_item->type) {
 	case TOOLBAR_MAIN:
@@ -2513,7 +2520,7 @@ static void toolbar_reply(gpointer data, guint action)
 	MessageView *msgview;
 	GSList *msginfo_list = NULL;
 
-	g_return_if_fail(toolbar_item != NULL);
+	cm_return_if_fail(toolbar_item != NULL);
 
 	switch (toolbar_item->type) {
 	case TOOLBAR_MAIN:
@@ -2523,15 +2530,15 @@ static void toolbar_reply(gpointer data, guint action)
 		break;
 	case TOOLBAR_MSGVIEW:
 		msgview = (MessageView*)toolbar_item->parent;
-		g_return_if_fail(msgview != NULL);	
+		cm_return_if_fail(msgview != NULL);	
 		msginfo_list = g_slist_append(msginfo_list, msgview->msginfo);
 		break;
 	default:
 		return;
 	}
 
-	g_return_if_fail(msgview != NULL);
-	g_return_if_fail(msginfo_list != NULL);
+	cm_return_if_fail(msgview != NULL);
+	cm_return_if_fail(msginfo_list != NULL);
 	compose_reply_from_messageview(msgview, msginfo_list, action);
 	g_slist_free(msginfo_list);
 

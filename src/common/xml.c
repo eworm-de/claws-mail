@@ -77,7 +77,7 @@ XMLFile *xml_open_file(const gchar *path)
 {
 	XMLFile *newfile;
 
-	g_return_val_if_fail(path != NULL, NULL);
+	cm_return_val_if_fail(path != NULL, NULL);
 
 	newfile = g_new(XMLFile, 1);
 
@@ -103,7 +103,7 @@ XMLFile *xml_open_file(const gchar *path)
 
 void xml_close_file(XMLFile *file)
 {
-	g_return_if_fail(file != NULL);
+	cm_return_if_fail(file != NULL);
 
 	if (file->fp) fclose(file->fp);
 
@@ -153,7 +153,7 @@ GNode *xml_parse_file(const gchar *path)
 	GNode *node;
 
 	file = xml_open_file(path);
-	g_return_val_if_fail(file != NULL, NULL);
+	cm_return_val_if_fail(file != NULL, NULL);
 
 	xml_get_dtd(file);
 
@@ -337,7 +337,7 @@ next:
 
 static void xml_push_tag(XMLFile *file, XMLTag *tag)
 {
-	g_return_if_fail(tag != NULL);
+	cm_return_if_fail(tag != NULL);
 
 	file->tag_stack = g_list_prepend(file->tag_stack, tag);
 	file->level++;
@@ -577,7 +577,7 @@ gint xml_file_put_escape_str(FILE *fp, const gchar *str)
 {
 	const gchar *p;
 	int result = 0;
-	g_return_val_if_fail(fp != NULL, -1);
+	cm_return_val_if_fail(fp != NULL, -1);
 
 	if (!str) return 0;
 
@@ -608,7 +608,7 @@ gint xml_file_put_escape_str(FILE *fp, const gchar *str)
 
 gint xml_file_put_xml_decl(FILE *fp)
 {
-	g_return_val_if_fail(fp != NULL, -1);
+	cm_return_val_if_fail(fp != NULL, -1);
 	XML_STRING_TABLE_CREATE();
 
 	return fprintf(fp, "<?xml version=\"1.0\" encoding=\"%s\"?>\n", CS_INTERNAL);
@@ -633,7 +633,7 @@ static gboolean xml_free_func(GNode *node, gpointer data)
 
 void xml_free_tree(GNode *node)
 {
-	g_return_if_fail(node != NULL);
+	cm_return_if_fail(node != NULL);
 
 	g_node_traverse(node, G_PRE_ORDER, G_TRAVERSE_ALL, -1, xml_free_func,
 			NULL);
@@ -693,8 +693,8 @@ static int xml_write_tree_recursive(GNode *node, FILE *fp)
 	XMLTag *tag;
 	GList *cur;
 
-	g_return_val_if_fail(node != NULL, -1);
-	g_return_val_if_fail(fp != NULL, -1);
+	cm_return_val_if_fail(node != NULL, -1);
+	cm_return_val_if_fail(fp != NULL, -1);
 
 	depth = g_node_depth(node) - 1;
 	for (i = 0; i < depth; i++)

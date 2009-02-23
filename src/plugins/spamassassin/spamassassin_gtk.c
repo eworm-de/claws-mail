@@ -192,7 +192,7 @@ static void transport_sel_cb(GtkMenuItem *menuitem, gpointer data)
 	GtkTreeModel *model;
 	GtkTreeIter iter;
 	
-	g_return_if_fail(gtk_combo_box_get_active_iter(
+	cm_return_if_fail(gtk_combo_box_get_active_iter(
 			GTK_COMBO_BOX(page->transport_optmenu), &iter));
 	
 	model = gtk_combo_box_get_model(GTK_COMBO_BOX(page->transport_optmenu));			

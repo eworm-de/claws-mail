@@ -557,7 +557,7 @@ static gboolean cb_preview_close(GtkWidget *widget, GdkEventAny *event,
 static void cb_preview_size_allocate(GtkWidget *widget,
 				     GtkAllocation *allocation)
 {
-  g_return_if_fail(allocation != NULL);
+  cm_return_if_fail(allocation != NULL);
 
   prefs_common.print_previewwin_width = allocation->width;
   prefs_common.print_previewwin_height = allocation->height;

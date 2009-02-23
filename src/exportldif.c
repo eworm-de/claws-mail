@@ -90,7 +90,7 @@ ExportLdifCtl *exportldif_create( void ) {
  * \return ctl Export control data.
  */
 void exportldif_free( ExportLdifCtl *ctl ) {
-	g_return_if_fail( ctl != NULL );
+	cm_return_if_fail( ctl != NULL );
 
 	g_free( ctl->path );
 	g_free( ctl->fileLdif );
@@ -119,7 +119,7 @@ void exportldif_free( ExportLdifCtl *ctl ) {
  * \param value Suffix.
  */
 void exportldif_set_suffix( ExportLdifCtl *ctl, const char *value ) {
-	g_return_if_fail( ctl != NULL );
+	cm_return_if_fail( ctl != NULL );
 	ctl->suffix = mgu_replace_string( ctl->suffix, value );
 	g_strstrip( ctl->suffix );
 }
@@ -135,7 +135,7 @@ void exportldif_set_suffix( ExportLdifCtl *ctl, const char *value ) {
  * </ul>
  */
 void exportldif_set_rdn( ExportLdifCtl *ctl, const gint value ) {
-	g_return_if_fail( ctl != NULL );
+	cm_return_if_fail( ctl != NULL );
 	ctl->rdnIndex = value;
 }
 
@@ -146,7 +146,7 @@ void exportldif_set_rdn( ExportLdifCtl *ctl, const gint value ) {
  * \param value <i>TRUE</i> if DN should be used.
  */
 void exportldif_set_use_dn( ExportLdifCtl *ctl, const gboolean value ) {
-	g_return_if_fail( ctl != NULL );
+	cm_return_if_fail( ctl != NULL );
 	ctl->useDN = value;
 }
 
@@ -156,7 +156,7 @@ void exportldif_set_use_dn( ExportLdifCtl *ctl, const gboolean value ) {
  * \param value <i>TRUE</i> if records without E-Mail should be excluded.
  */
 void exportldif_set_exclude_email( ExportLdifCtl *ctl, const gboolean value ) {
-	g_return_if_fail( ctl != NULL );
+	cm_return_if_fail( ctl != NULL );
 	ctl->excludeEMail = value;
 }
 

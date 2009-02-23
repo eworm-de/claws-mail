@@ -461,8 +461,8 @@ void mimeview_show_message(MimeView *mimeview, MimeInfo *mimeinfo,
 
 	mimeview_clear(mimeview);
 
-	g_return_if_fail(file != NULL);
-	g_return_if_fail(mimeinfo != NULL);
+	cm_return_if_fail(file != NULL);
+	cm_return_if_fail(mimeinfo != NULL);
 
 	mimeview->mimeinfo = mimeinfo;
 
@@ -575,7 +575,7 @@ static void mimeview_set_multipart_tree(MimeView *mimeview,
 {
 	GtkCMCTreeNode *node;
 
-	g_return_if_fail(mimeinfo != NULL);
+	cm_return_if_fail(mimeinfo != NULL);
 
 	while (mimeinfo != NULL) {
 		node = mimeview_append_part(mimeview, mimeinfo, parent);
@@ -860,8 +860,8 @@ static void update_signature_noticeview(MimeView *mimeview, MimeInfo *mimeinfo,
 	StockPixmap icon = STOCK_PIXMAP_PRIVACY_SIGNED;
 	SignatureStatus mycode = SIGNATURE_UNCHECKED;
 	
-	g_return_if_fail(mimeview != NULL);
-	g_return_if_fail(mimeinfo != NULL);
+	cm_return_if_fail(mimeview != NULL);
+	cm_return_if_fail(mimeinfo != NULL);
 	
 	if (special)
 		mycode = code;
@@ -1171,8 +1171,8 @@ static void update_signature_info(MimeView *mimeview, MimeInfo *selected)
 	MimeInfo *siginfo;
 	MimeInfo *first_text;
 	
-	g_return_if_fail(mimeview != NULL);
-	g_return_if_fail(selected != NULL);
+	cm_return_if_fail(mimeview != NULL);
+	cm_return_if_fail(selected != NULL);
 	
 	if (selected->type == MIMETYPE_MESSAGE 
 	&&  !g_ascii_strcasecmp(selected->subtype, "rfc822")) {
@@ -1251,7 +1251,7 @@ static void mimeview_start_drag(GtkWidget *widget, gint button,
 	GdkDragContext *context;
 	MimeInfo *partinfo;
 
-	g_return_if_fail(mimeview != NULL);
+	cm_return_if_fail(mimeview != NULL);
 
 	partinfo = mimeview_get_selected_part(mimeview);
 	if (partinfo->disposition == DISPOSITIONTYPE_INLINE) return;
@@ -1769,7 +1769,7 @@ static void mimeview_save_as(MimeView *mimeview)
 
 	partinfo = mimeview_get_part_to_use(mimeview);
 
-	g_return_if_fail(partinfo != NULL);
+	cm_return_if_fail(partinfo != NULL);
 	
 	if (get_part_name(partinfo) == NULL) {
 		return;
@@ -1825,7 +1825,7 @@ static void mimeview_display_as_text(MimeView *mimeview)
 
 	partinfo = mimeview_get_part_to_use(mimeview);
 	mimeview_select_mimepart_icon(mimeview, partinfo);
-	g_return_if_fail(partinfo != NULL);
+	cm_return_if_fail(partinfo != NULL);
 	mimeview_show_message_part(mimeview, partinfo);
 }
 
@@ -1840,7 +1840,7 @@ static void mimeview_launch(MimeView *mimeview, MimeInfo *partinfo)
 	if (!partinfo)
 		partinfo = mimeview_get_part_to_use(mimeview);
 
-	g_return_if_fail(partinfo != NULL);
+	cm_return_if_fail(partinfo != NULL);
 
 	filename = procmime_get_tmp_file_name(partinfo);
 
@@ -1883,7 +1883,7 @@ static void mimeview_open_part_with(MimeView *mimeview, MimeInfo *partinfo, gboo
 	gchar *uri;
 	int r = 0;
 #endif
-	g_return_if_fail(partinfo != NULL);
+	cm_return_if_fail(partinfo != NULL);
 
 	filename = procmime_get_tmp_file_name(partinfo);
 
@@ -2421,7 +2421,7 @@ static void icon_list_create(MimeView *mimeview, MimeInfo *mimeinfo)
 {
 	GtkRequisition size;
 
-	g_return_if_fail(mimeinfo != NULL);
+	cm_return_if_fail(mimeinfo != NULL);
 
 	while (mimeinfo != NULL) {
 		if (mimeinfo->type != MIMETYPE_MULTIPART)

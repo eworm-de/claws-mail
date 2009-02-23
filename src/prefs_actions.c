@@ -150,7 +150,7 @@ void prefs_actions_open(MainWindow *mainwin)
 static void prefs_actions_size_allocate_cb(GtkWidget *widget,
 					 GtkAllocation *allocation)
 {
-	g_return_if_fail(allocation != NULL);
+	cm_return_if_fail(allocation != NULL);
 
 	prefs_common.actionswin_width = allocation->width;
 	prefs_common.actionswin_height = allocation->height;

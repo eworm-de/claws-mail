@@ -730,8 +730,8 @@ static void notification_convert_header(gchar *dest, gint len,
 {
 	char *src;
 
-	g_return_if_fail(src_ != NULL);
-	g_return_if_fail(dest != NULL);
+	cm_return_if_fail(src_ != NULL);
+	cm_return_if_fail(dest != NULL);
 
 	if (len < 1) return;
 
@@ -1114,7 +1114,7 @@ gint messageview_show(MessageView *messageview, MsgInfo *msginfo,
 	gchar *file;
 	MimeInfo *mimeinfo, *encinfo;
 	gchar *subject = NULL;
-	g_return_val_if_fail(msginfo != NULL, -1);
+	cm_return_val_if_fail(msginfo != NULL, -1);
 
 	if (msginfo != messageview->msginfo)
 		messageview->show_full_text = FALSE;
@@ -1461,7 +1461,7 @@ void messageview_delete(MessageView *msgview)
 	} else {		
 		msginfo = msgview->msginfo;
 
-		g_return_if_fail(msginfo != NULL);
+		cm_return_if_fail(msginfo != NULL);
 
 		/* to get the trash folder, we have to choose either
 		 * the folder's or account's trash default - we prefer
@@ -1476,7 +1476,7 @@ void messageview_delete(MessageView *msgview)
 				trash =	folder_get_default_trash();
 		}	
 
-		g_return_if_fail(trash != NULL);
+		cm_return_if_fail(trash != NULL);
 
 		if (prefs_common.immediate_exec)
 			/* TODO: Delete from trash */
@@ -1503,7 +1503,7 @@ static void messageview_update(MessageView *msgview, MsgInfo *old_msginfo)
 {
 	SummaryView *summaryview = (SummaryView*)msgview->mainwin->summaryview;
 
-	g_return_if_fail(summaryview != NULL);
+	cm_return_if_fail(summaryview != NULL);
 	
 	if (summaryview->selected) {
 		MsgInfo *msginfo = summary_get_selected_msg(summaryview);
@@ -1666,7 +1666,7 @@ static gint messageview_delete_cb(GtkWidget *widget, GdkEventAny *event,
 static void messageview_size_allocate_cb(GtkWidget *widget,
 					 GtkAllocation *allocation)
 {
-	g_return_if_fail(allocation != NULL);
+	cm_return_if_fail(allocation != NULL);
 
 	prefs_common.msgwin_width  = allocation->width;
 	prefs_common.msgwin_height = allocation->height;
@@ -1880,8 +1880,8 @@ static PrefsAccount *select_account_from_list(GList *ac_list)
 	GtkWidget *optmenu;
 	gint account_id;
 
-	g_return_val_if_fail(ac_list != NULL, NULL);
-	g_return_val_if_fail(ac_list->data != NULL, NULL);
+	cm_return_val_if_fail(ac_list != NULL, NULL);
+	cm_return_val_if_fail(ac_list->data != NULL, NULL);
 	
 	optmenu = gtkut_account_menu_new(ac_list,
 			G_CALLBACK(select_account_cb),
@@ -1917,7 +1917,7 @@ gchar *messageview_get_selection(MessageView *msgview)
 	GtkTextBuffer *textbuf;
 	gint body_pos = 0;
 	
-	g_return_val_if_fail(msgview != NULL, NULL);
+	cm_return_val_if_fail(msgview != NULL, NULL);
 
 	if (msgview->mimeview->type == MIMEVIEW_VIEWER) {
 		MimeViewer *viewer = msgview->mimeview->mimeviewer;
@@ -1929,10 +1929,10 @@ gchar *messageview_get_selection(MessageView *msgview)
 	}
 
 	textview = messageview_get_current_textview(msgview);
-	g_return_val_if_fail(textview != NULL, NULL);
+	cm_return_val_if_fail(textview != NULL, NULL);
 
 	edit = GTK_TEXT_VIEW(textview->text);
-	g_return_val_if_fail(edit != NULL, NULL);
+	cm_return_val_if_fail(edit != NULL, NULL);
 	body_pos = textview->body_pos;
 
 	textbuf = gtk_text_view_get_buffer(edit);
@@ -2585,7 +2585,7 @@ static void reply_cb(GtkAction *gaction, gpointer data)
 	gint action = COMPOSE_REPLY;
 	const gchar *a_name = gtk_action_get_name(gaction);
 	
-	g_return_if_fail(messageview->msginfo);
+	cm_return_if_fail(messageview->msginfo);
 
 	DO_ACTION("Message/Reply", COMPOSE_REPLY);
 	DO_ACTION("Message/ReplyTo/All", COMPOSE_REPLY_TO_ALL);

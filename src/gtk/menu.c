@@ -140,8 +140,8 @@ void menu_button_position(GtkMenu *menu, gint *x, gint *y, gboolean *push_in,
 	GdkRectangle monitor;
 	gint monitor_num;
 
-	g_return_if_fail(x && y);
- 	g_return_if_fail(GTK_IS_BUTTON(user_data));
+	cm_return_if_fail(x && y);
+ 	cm_return_if_fail(GTK_IS_BUTTON(user_data));
 
 	widget = GTK_WIDGET(user_data);
 

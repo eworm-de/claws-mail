@@ -400,8 +400,8 @@ GtkWidget *stock_pixmap_widget(GtkWidget *window, StockPixmap icon)
 {
 	GdkPixbuf *pixbuf;
 
-	g_return_val_if_fail(window != NULL, NULL);
-	g_return_val_if_fail(icon >= 0 && icon < N_STOCK_PIXMAPS, NULL);
+	cm_return_val_if_fail(window != NULL, NULL);
+	cm_return_val_if_fail(icon >= 0 && icon < N_STOCK_PIXMAPS, NULL);
 
 	if (stock_pixbuf_gdk(window, icon, &pixbuf) != -1)
 		return gtk_image_new_from_pixbuf(pixbuf);
@@ -422,7 +422,7 @@ gint stock_pixbuf_gdk(GtkWidget *window, StockPixmap icon, GdkPixbuf **pixbuf)
 	if (pixbuf)
 		*pixbuf = NULL;
 		
-	g_return_val_if_fail(icon >= 0 && icon < N_STOCK_PIXMAPS, -1);
+	cm_return_val_if_fail(icon >= 0 && icon < N_STOCK_PIXMAPS, -1);
 
 	pix_d = &pixmaps[icon];
 
@@ -476,7 +476,7 @@ try_next_extension:
 		}
 	}
 
-	g_return_val_if_fail(pix_d->pixbuf != NULL, -1);
+	cm_return_val_if_fail(pix_d->pixbuf != NULL, -1);
 
 	if (pixbuf)
 		*pixbuf = pix_d->pixbuf;
@@ -599,10 +599,10 @@ static gboolean pixmap_with_overlay_expose_event_cb(GtkWidget *widget, GdkEventE
 	gint top = 0;
 
 	if (data->is_pixmap) {
-		g_return_val_if_fail(data->base_pixmap != NULL, FALSE);
-		g_return_val_if_fail(data->base_mask != NULL, FALSE);
+		cm_return_val_if_fail(data->base_pixmap != NULL, FALSE);
+		cm_return_val_if_fail(data->base_mask != NULL, FALSE);
 	} else {
-		g_return_val_if_fail(data->base_pixbuf != NULL, FALSE);
+		cm_return_val_if_fail(data->base_pixbuf != NULL, FALSE);
 	}
 	gc_pix = gdk_gc_new((GdkWindow *)drawable);
 						 
@@ -690,8 +690,8 @@ static gboolean pixmap_with_overlay_expose_event_cb(GtkWidget *widget, GdkEventE
 	}
 	if (data->position != OVERLAY_NONE) {
 		if (data->is_pixmap) {
-			g_return_val_if_fail(data->overlay_pixmap != NULL, FALSE);
-			g_return_val_if_fail(data->overlay_mask != NULL, FALSE);
+			cm_return_val_if_fail(data->overlay_pixmap != NULL, FALSE);
+			cm_return_val_if_fail(data->overlay_mask != NULL, FALSE);
 			gdk_gc_set_tile(gc_pix, data->overlay_pixmap);
 			gdk_gc_set_clip_mask(gc_pix, data->overlay_mask);
 
@@ -701,7 +701,7 @@ static gboolean pixmap_with_overlay_expose_event_cb(GtkWidget *widget, GdkEventE
 			gdk_draw_rectangle(drawable, gc_pix, TRUE, left, top, 
 				   data->overlay_width, data->overlay_height);
 		} else {
-			g_return_val_if_fail(data->overlay_pixbuf != NULL, FALSE);
+			cm_return_val_if_fail(data->overlay_pixbuf != NULL, FALSE);
 			gdk_draw_pixbuf(drawable, gc_pix, data->overlay_pixbuf, 
 				0, 0, left, top,
 				-1, -1, GDK_RGB_DITHER_NONE, 0, 0);

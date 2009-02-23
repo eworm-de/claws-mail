@@ -293,7 +293,7 @@ void ptr_array_free_strings(GPtrArray *array)
 	gint i;
 	gchar *str;
 
-	g_return_if_fail(array != NULL);
+	cm_return_if_fail(array != NULL);
 
 	for (i = 0; i < array->len; i++) {
 		str = g_ptr_array_index(array, i);
@@ -991,7 +991,7 @@ GList *add_history(GList *list, const gchar *str)
 {
 	GList *old;
 
-	g_return_val_if_fail(str != NULL, list);
+	cm_return_val_if_fail(str != NULL, list);
 
 	old = g_list_find_custom(list, (gpointer)str, (GCompareFunc)strcmp2);
 	if (old) {
@@ -1265,8 +1265,8 @@ gchar **strsplit_with_quote(const gchar *str, const gchar *delim,
 	gchar **str_array, *s, *new_str;
 	guint i, n = 1, len;
 
-	g_return_val_if_fail(str != NULL, NULL);
-	g_return_val_if_fail(delim != NULL, NULL);
+	cm_return_val_if_fail(str != NULL, NULL);
+	cm_return_val_if_fail(delim != NULL, NULL);
 
 	if (max_tokens < 1)
 		max_tokens = G_MAXINT;
@@ -1325,7 +1325,7 @@ gchar *get_abbrev_newsgroup_name(const gchar *group, gint len)
 	const gchar *p = group;
 	const gchar *last;
 
-	g_return_val_if_fail(group != NULL, NULL);
+	cm_return_val_if_fail(group != NULL, NULL);
 
 	last = group + strlen(group);
 	abbrev_group = ap = g_malloc(strlen(group) + 1);
@@ -2759,6 +2759,9 @@ gint canonicalize_file(const gchar *src, const gchar *dest)
 	gboolean err = FALSE;
 	gboolean last_linebreak = FALSE;
 
+	if (src == NULL || dest == NULL)
+		return -1;
+
 	if ((src_fp = g_fopen(src, "rb")) == NULL) {
 		FILE_OP_ERROR(src, "g_fopen");
 		return -1;
@@ -3037,7 +3040,7 @@ FILE *str_open_as_stream(const gchar *str)
 	FILE *fp;
 	size_t len;
 
-	g_return_val_if_fail(str != NULL, NULL);
+	cm_return_val_if_fail(str != NULL, NULL);
 
 	fp = my_tmpfile();
 	if (!fp) {
@@ -3063,8 +3066,8 @@ gint str_write_to_file(const gchar *str, const gchar *file)
 	FILE *fp;
 	size_t len;
 
-	g_return_val_if_fail(str != NULL, -1);
-	g_return_val_if_fail(file != NULL, -1);
+	cm_return_val_if_fail(str != NULL, -1);
+	cm_return_val_if_fail(file != NULL, -1);
 
 	if ((fp = g_fopen(file, "wb")) == NULL) {
 		FILE_OP_ERROR(file, "g_fopen");
@@ -3100,7 +3103,7 @@ static gchar *file_read_stream_to_str_full(FILE *fp, gboolean recode)
 	gint n_read;
 	gchar *str;
 
-	g_return_val_if_fail(fp != NULL, NULL);
+	cm_return_val_if_fail(fp != NULL, NULL);
 
 	array = g_byte_array_new();
 
@@ -3146,7 +3149,7 @@ static gchar *file_read_to_str_full(const gchar *file, gboolean recode)
 	int fflags = 0;
 #endif
 
-	g_return_val_if_fail(file != NULL, NULL);
+	cm_return_val_if_fail(file != NULL, NULL);
 
 	if (g_stat(file, &s) != 0) {
 		FILE_OP_ERROR(file, "stat");
@@ -3266,7 +3269,7 @@ char *fgets_crlf(char *buf, int size, FILE *stream)
 
 static gint execute_async(gchar *const argv[])
 {
-	g_return_val_if_fail(argv != NULL && argv[0] != NULL, -1);
+	cm_return_val_if_fail(argv != NULL && argv[0] != NULL, -1);
 
 	if (g_spawn_async(NULL, (gchar **)argv, NULL, G_SPAWN_SEARCH_PATH,
 			  NULL, NULL, NULL, FALSE) == FALSE) {
@@ -3281,7 +3284,7 @@ static gint execute_sync(gchar *const argv[])
 {
 	gint status;
 
-	g_return_val_if_fail(argv != NULL && argv[0] != NULL, -1);
+	cm_return_val_if_fail(argv != NULL && argv[0] != NULL, -1);
 
 	if (g_spawn_sync(NULL, (gchar **)argv, NULL, G_SPAWN_SEARCH_PATH,
 			 NULL, NULL, NULL, NULL, &status, NULL) == FALSE) {
@@ -3323,7 +3326,7 @@ gchar *get_command_output(const gchar *cmdline)
 	gchar *child_stdout;
 	gint status;
 
-	g_return_val_if_fail(cmdline != NULL, NULL);
+	cm_return_val_if_fail(cmdline != NULL, NULL);
 
 	debug_print("get_command_output(): executing: %s\n", cmdline);
 
@@ -3379,7 +3382,7 @@ gint open_uri(const gchar *uri, const gchar *cmdline)
 	gchar buf[BUFFSIZE];
 	gchar *p;
 	gchar encoded_uri[BUFFSIZE];
-	g_return_val_if_fail(uri != NULL, -1);
+	cm_return_val_if_fail(uri != NULL, -1);
 
 	/* an option to choose whether to use encode_uri or not ? */
 	encode_uri(encoded_uri, BUFFSIZE, uri);
@@ -3414,7 +3417,7 @@ gint open_txt_editor(const gchar *filepath, const gchar *cmdline)
 	gchar buf[BUFFSIZE];
 	gchar *p;
 
-	g_return_val_if_fail(filepath != NULL, -1);
+	cm_return_val_if_fail(filepath != NULL, -1);
 
 	if (cmdline &&
 	    (p = strchr(cmdline, '%')) && *(p + 1) == 's' &&
@@ -3918,8 +3921,8 @@ GNode *g_node_map(GNode *node, GNodeMapFunc func, gpointer data)
 	GNode *root;
 	GNodeMapData mapdata;
 
-	g_return_val_if_fail(node != NULL, NULL);
-	g_return_val_if_fail(func != NULL, NULL);
+	cm_return_val_if_fail(node != NULL, NULL);
+	cm_return_val_if_fail(func != NULL, NULL);
 
 	root = g_node_new(func(node->data, data));
 
@@ -4196,10 +4199,10 @@ gboolean get_uri_part(const gchar *start, const gchar *scanpos,
 	const gchar *ep_;
 	gint parenthese_cnt = 0;
 
-	g_return_val_if_fail(start != NULL, FALSE);
-	g_return_val_if_fail(scanpos != NULL, FALSE);
-	g_return_val_if_fail(bp != NULL, FALSE);
-	g_return_val_if_fail(ep != NULL, FALSE);
+	cm_return_val_if_fail(start != NULL, FALSE);
+	cm_return_val_if_fail(scanpos != NULL, FALSE);
+	cm_return_val_if_fail(bp != NULL, FALSE);
+	cm_return_val_if_fail(ep != NULL, FALSE);
 
 	*bp = scanpos;
 
@@ -4292,7 +4295,7 @@ static GHashTable *create_domain_tab(void)
 	gint n;
 	GHashTable *htab = g_hash_table_new(g_stricase_hash, g_stricase_equal);
 
-	g_return_val_if_fail(htab, NULL);
+	cm_return_val_if_fail(htab, NULL);
 	for (n = 0; n < sizeof toplvl_domains / sizeof toplvl_domains[0]; n++)
 		g_hash_table_insert(htab, (gpointer) toplvl_domains[n], (gpointer) toplvl_domains[n]);
 	return htab;
@@ -4335,10 +4338,10 @@ gboolean get_email_part(const gchar *start, const gchar *scanpos,
 	gchar closure_stack[128];
 	gchar *ptr = closure_stack;
 
-	g_return_val_if_fail(start != NULL, FALSE);
-	g_return_val_if_fail(scanpos != NULL, FALSE);
-	g_return_val_if_fail(bp != NULL, FALSE);
-	g_return_val_if_fail(ep != NULL, FALSE);
+	cm_return_val_if_fail(start != NULL, FALSE);
+	cm_return_val_if_fail(scanpos != NULL, FALSE);
+	cm_return_val_if_fail(bp != NULL, FALSE);
+	cm_return_val_if_fail(ep != NULL, FALSE);
 
 	if (hdr) {
 		const gchar *start_quote = NULL;
@@ -4404,7 +4407,7 @@ search_again:
 
 	if (!dom_tab)
 		dom_tab = create_domain_tab();
-	g_return_val_if_fail(dom_tab, FALSE);
+	cm_return_val_if_fail(dom_tab, FALSE);
 
 	/* scan start of address */
 	for (bp_ = scanpos - 1;

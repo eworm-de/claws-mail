@@ -42,7 +42,7 @@ PrefFile *prefs_read_open(const gchar *path)
 	PrefFile *pfile;
 	FILE *fp;
 
-	g_return_val_if_fail(path != NULL, NULL);
+	cm_return_val_if_fail(path != NULL, NULL);
 
 	if ((fp = g_fopen(path, "rb")) == NULL) {
 		FILE_OP_ERROR(path, "fopen");
@@ -73,7 +73,7 @@ PrefFile *prefs_write_open(const gchar *path)
 	gchar *tmppath;
 	FILE *fp;
 
-	g_return_val_if_fail(path != NULL, NULL);
+	cm_return_val_if_fail(path != NULL, NULL);
 
 	if (prefs_is_readonly(path)) {
 		g_warning("no permission - %s\n", path);
@@ -124,7 +124,7 @@ gint prefs_file_close(PrefFile *pfile)
 	gchar *bakpath = NULL;
 	gchar buf[BUFFSIZE];
 
-	g_return_val_if_fail(pfile != NULL, -1);
+	cm_return_val_if_fail(pfile != NULL, -1);
 
 	fp = pfile->fp;
 	orig_fp = pfile->orig_fp;
@@ -214,7 +214,7 @@ gint prefs_file_close_revert(PrefFile *pfile)
 {
 	gchar *tmppath = NULL;
 
-	g_return_val_if_fail(pfile != NULL, -1);
+	cm_return_val_if_fail(pfile != NULL, -1);
 
 	if (pfile->orig_fp)
 		fclose(pfile->orig_fp);

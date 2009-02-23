@@ -134,9 +134,9 @@ gint base64_decoder_decode(Base64Decoder *decoder,
 	gint buf_len;
 	gchar buf[4];
 
-	g_return_val_if_fail(decoder != NULL, -1);
-	g_return_val_if_fail(in != NULL, -1);
-	g_return_val_if_fail(out != NULL, -1);
+	cm_return_val_if_fail(decoder != NULL, -1);
+	cm_return_val_if_fail(in != NULL, -1);
+	cm_return_val_if_fail(out != NULL, -1);
 
 	buf_len = decoder->buf_len;
 	memcpy(buf, decoder->buf, sizeof(buf));

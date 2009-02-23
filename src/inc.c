@@ -396,7 +396,7 @@ void inc_all_account_mail(MainWindow *mainwin, gboolean autocheck,
 static void inc_progress_dialog_size_allocate_cb(GtkWidget *widget,
 					 GtkAllocation *allocation)
 {
-	g_return_if_fail(allocation != NULL);
+	cm_return_if_fail(allocation != NULL);
 
 	prefs_common.receivewin_width = allocation->width;
 	prefs_common.receivewin_height = allocation->height;
@@ -485,7 +485,7 @@ static void inc_progress_dialog_clear(IncProgressDialog *inc_dialog)
 
 static void inc_progress_dialog_destroy(IncProgressDialog *inc_dialog)
 {
-	g_return_if_fail(inc_dialog != NULL);
+	cm_return_if_fail(inc_dialog != NULL);
 
 	inc_dialog_list = g_list_remove(inc_dialog_list, inc_dialog);
 
@@ -500,7 +500,7 @@ static IncSession *inc_session_new(PrefsAccount *account)
 {
 	IncSession *session;
 
-	g_return_val_if_fail(account != NULL, NULL);
+	cm_return_val_if_fail(account != NULL, NULL);
 
 	if (account->protocol != A_POP3)
 		return NULL;
@@ -525,7 +525,7 @@ static IncSession *inc_session_new(PrefsAccount *account)
 
 static void inc_session_destroy(IncSession *session)
 {
-	g_return_if_fail(session != NULL);
+	cm_return_if_fail(session != NULL);
 
 	session_destroy(session->session);
 	g_free(session);
@@ -899,7 +899,7 @@ static void inc_progress_dialog_set_label(IncProgressDialog *inc_dialog,
 	ProgressDialog *dialog = inc_dialog->dialog;
 	Pop3Session *session;
 
-	g_return_if_fail(inc_session != NULL);
+	cm_return_if_fail(inc_session != NULL);
 
 	session = POP3_SESSION(inc_session->session);
 
@@ -1024,7 +1024,7 @@ static gint inc_recv_data_progressive(Session *session, guint cur_len,
 	IncProgressDialog *inc_dialog;
 	gint cur_total;
 
-	g_return_val_if_fail(inc_session != NULL, -1);
+	cm_return_val_if_fail(inc_session != NULL, -1);
 
 	if (pop3_session->state != POP3_RETR &&
 	    pop3_session->state != POP3_RETR_RECV &&
@@ -1049,7 +1049,7 @@ static gint inc_recv_data_finished(Session *session, guint len, gpointer data)
 	IncSession *inc_session = (IncSession *)data;
 	IncProgressDialog *inc_dialog;
 
-	g_return_val_if_fail(inc_session != NULL, -1);
+	cm_return_val_if_fail(inc_session != NULL, -1);
 
 	inc_dialog = (IncProgressDialog *)inc_session->data;
 
@@ -1067,7 +1067,7 @@ static gint inc_recv_message(Session *session, const gchar *msg, gpointer data)
 	IncSession *inc_session = (IncSession *)data;
 	IncProgressDialog *inc_dialog;
 
-	g_return_val_if_fail(inc_session != NULL, -1);
+	cm_return_val_if_fail(inc_session != NULL, -1);
 
 	inc_dialog = (IncProgressDialog *)inc_session->data;
 
@@ -1101,7 +1101,7 @@ static gint inc_drop_message(Pop3Session *session, const gchar *file)
 	IncSession *inc_session = (IncSession *)(SESSION(session)->data);
 	gint msgnum;
 
-	g_return_val_if_fail(inc_session != NULL, -1);
+	cm_return_val_if_fail(inc_session != NULL, -1);
 
 	if (session->ac_prefs->inbox) {
 		inbox = folder_find_item_from_identifier
@@ -1236,7 +1236,7 @@ static void inc_cancel(IncProgressDialog *dialog)
 {
 	IncSession *session;
 
-	g_return_if_fail(dialog != NULL);
+	cm_return_if_fail(dialog != NULL);
 
 	if (dialog->queue_list == NULL) {
 		inc_progress_dialog_destroy(dialog);
@@ -1345,9 +1345,9 @@ static gint get_spool(FolderItem *dest, const gchar *mbox, PrefsAccount *account
 	gint lockfd;
 	gchar tmp_mbox[MAXPATHLEN + 1];
 
-	g_return_val_if_fail(dest != NULL, -1);
-	g_return_val_if_fail(mbox != NULL, -1);
-	g_return_val_if_fail(account != NULL, -1);
+	cm_return_val_if_fail(dest != NULL, -1);
+	cm_return_val_if_fail(mbox != NULL, -1);
+	cm_return_val_if_fail(account != NULL, -1);
 
 	if (!is_file_exist(mbox) || (size = get_file_size(mbox)) == 0) {
 		debug_print("%s: no messages in local mailbox.\n", mbox);

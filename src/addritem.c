@@ -113,7 +113,7 @@ void addritem_email_set_remarks( ItemEMail *email, const gchar *value ) {
  * \param item E-Mail item to free.
  */
 void addritem_free_item_email( ItemEMail *item ) {
-	g_return_if_fail( item != NULL );
+	cm_return_if_fail( item != NULL );
 
 	/* Free internal stuff */
 	g_free( ADDRITEM_ID(item) );
@@ -166,7 +166,7 @@ UserAttribute *addritem_copy_attribute( UserAttribute *item ) {
  * \param value ID.
  */
 void addritem_attrib_set_id( UserAttribute *item, const gchar *value ) {
-	g_return_if_fail( item != NULL );
+	cm_return_if_fail( item != NULL );
 	item->uid = mgu_replace_string( item->uid, value );
 }
 
@@ -176,7 +176,7 @@ void addritem_attrib_set_id( UserAttribute *item, const gchar *value ) {
  * \param value Name.
  */
 void addritem_attrib_set_name( UserAttribute *item, const gchar *value ) {
-	g_return_if_fail( item != NULL );
+	cm_return_if_fail( item != NULL );
 	item->name = mgu_replace_string( item->name, value );
 }
 
@@ -186,7 +186,7 @@ void addritem_attrib_set_name( UserAttribute *item, const gchar *value ) {
  * \param value Value.
  */
 void addritem_attrib_set_value( UserAttribute *item, const gchar *value ) {
-	g_return_if_fail( item != NULL );
+	cm_return_if_fail( item != NULL );
 	item->value = mgu_replace_string( item->value, value );
 }
 
@@ -195,7 +195,7 @@ void addritem_attrib_set_value( UserAttribute *item, const gchar *value ) {
  * \param item Attribute object to free.
  */
 void addritem_free_attribute( UserAttribute *item ) {
-	g_return_if_fail( item != NULL );
+	cm_return_if_fail( item != NULL );
 	g_free( item->uid );
 	g_free( item->name );
 	g_free( item->value );
@@ -410,7 +410,7 @@ void addritem_free_list_attribute( GList *list ) {
  * \param person Person object to free.
  */
 void addritem_free_item_person( ItemPerson *person ) {
-	g_return_if_fail( person != NULL );
+	cm_return_if_fail( person != NULL );
 
 	/* Free internal stuff */
 	g_free( ADDRITEM_ID(person) );
@@ -445,7 +445,7 @@ void addritem_free_item_person( ItemPerson *person ) {
  * \param stream Output stream.
  */
 void addritem_print_item_email( ItemEMail *item, FILE *stream ) {
-	g_return_if_fail( item != NULL );
+	cm_return_if_fail( item != NULL );
 	fprintf( stream, "\t\tt/id: %d : '%s'\n", ADDRITEM_TYPE(item), ADDRITEM_ID(item) );
 	fprintf( stream, "\t\tsubty: %d\n", ADDRITEM_SUBTYPE(item) );
 	fprintf( stream, "\t\talis: '%s'\n", ADDRITEM_NAME(item) );
@@ -460,7 +460,7 @@ void addritem_print_item_email( ItemEMail *item, FILE *stream ) {
  * \param stream Output stream.
  */
 static void addritem_print_attribute( UserAttribute *item, FILE *stream ) {
-	g_return_if_fail( item != NULL );
+	cm_return_if_fail( item != NULL );
 	fprintf( stream, "\t\tuid  : '%s'\n", item->uid );
 	fprintf( stream, "\t\tname : '%s'\n", item->name );
 	fprintf( stream, "\t\tvalue: '%s'\n", item->value );
@@ -474,7 +474,7 @@ static void addritem_print_attribute( UserAttribute *item, FILE *stream ) {
  */
 void addritem_print_item_person( ItemPerson *person, FILE *stream ) {
 	GList *node;
-	g_return_if_fail( person != NULL );
+	cm_return_if_fail( person != NULL );
 	fprintf( stream, "Person:\n" );
 	fprintf( stream, "\tt/uid: %d : '%s'\n", ADDRITEM_TYPE(person), ADDRITEM_ID(person) );
 	fprintf( stream, "\tsubty: %d\n", ADDRITEM_SUBTYPE(person) );
@@ -521,8 +521,8 @@ void addritem_print_item_person( ItemPerson *person, FILE *stream ) {
 gboolean addritem_person_add_email( ItemPerson *person, ItemEMail *email ) {
 	GList *node;
 
-	g_return_val_if_fail( person != NULL, FALSE );
-	g_return_val_if_fail( email != NULL, FALSE );
+	cm_return_val_if_fail( person != NULL, FALSE );
+	cm_return_val_if_fail( email != NULL, FALSE );
 
 	node = person->listEMail;
 	while( node ) {
@@ -545,7 +545,7 @@ ItemEMail *addritem_person_remove_email( ItemPerson *person, ItemEMail *email ) 
 	gboolean found = FALSE;
 	GList *node;
 
-	g_return_val_if_fail( person != NULL, NULL );
+	cm_return_val_if_fail( person != NULL, NULL );
 	if( email == NULL ) return NULL;
 
 	/* Look for email */
@@ -579,7 +579,7 @@ ItemEMail *addritem_person_remove_email( ItemPerson *person, ItemEMail *email ) 
 void addritem_person_add_attribute(
 			ItemPerson *person, UserAttribute *attrib )
 {
-	g_return_if_fail( person != NULL );
+	cm_return_if_fail( person != NULL );
 	person->listAttrib = g_list_append( person->listAttrib, attrib );
 }
 
@@ -589,7 +589,7 @@ void addritem_person_add_attribute(
  * \param  attrib Attribute to remove.
  */
 void addritem_person_remove_attribute(	ItemPerson *person, const gchar *attrib ) {
-	g_return_if_fail( person != NULL || attrib != NULL );
+	cm_return_if_fail( person != NULL || attrib != NULL );
 	GList *attrib_list;
 
 	attrib_list = person->listAttrib;
@@ -653,7 +653,7 @@ void addritem_group_set_name( ItemGroup *group, const gchar *value ) {
  * \param group Group to free.
  */
 void addritem_free_item_group( ItemGroup *group ) {
-	g_return_if_fail( group != NULL );
+	cm_return_if_fail( group != NULL );
 
 	/* Free internal stuff */
 	g_free( ADDRITEM_ID(group) );
@@ -684,8 +684,8 @@ void addritem_free_item_group( ItemGroup *group ) {
 gboolean addritem_group_add_email( ItemGroup *group, ItemEMail *email ) {
 	GList *node;
 
-	g_return_val_if_fail( group != NULL, FALSE );
-	g_return_val_if_fail( email != NULL, FALSE );
+	cm_return_val_if_fail( group != NULL, FALSE );
+	cm_return_val_if_fail( email != NULL, FALSE );
 
 	node = group->listEMail;
 	while( node ) {
@@ -728,7 +728,7 @@ void addritem_print_item_group( ItemGroup *group, FILE *stream ) {
 	GList *node;
 	ItemPerson *person;
 	ItemEMail *item;
-	g_return_if_fail( group != NULL );
+	cm_return_if_fail( group != NULL );
 	fprintf( stream, "Group:\n" );
 	fprintf( stream, "\tt/u: %d : '%s'\n", ADDRITEM_TYPE(group), ADDRITEM_ID(group) );
 	fprintf( stream, "\tsub: %d\n", ADDRITEM_SUBTYPE(group) );
@@ -829,7 +829,7 @@ void addritem_folder_set_hidden( ItemFolder *folder, const gboolean value ) {
  * \param folder Folder to free.
  */
 void addritem_free_item_folder( ItemFolder *folder ) {
-	g_return_if_fail( folder != NULL );
+	cm_return_if_fail( folder != NULL );
 
 	/* Free internal stuff */
 	g_free( ADDRITEM_ID(folder) );
@@ -863,8 +863,8 @@ void addritem_free_item_folder( ItemFolder *folder ) {
  * \return <i>TRUE</i> if person added.
  */
 gboolean addritem_folder_add_person( ItemFolder *folder, ItemPerson *item ) {
-	g_return_val_if_fail( folder != NULL, FALSE );
-	g_return_val_if_fail( item != NULL, FALSE );
+	cm_return_val_if_fail( folder != NULL, FALSE );
+	cm_return_val_if_fail( item != NULL, FALSE );
 
 	folder->listPerson = g_list_append( folder->listPerson, item );
 	ADDRITEM_PARENT(item) = ADDRITEM_OBJECT(folder);
@@ -878,8 +878,8 @@ gboolean addritem_folder_add_person( ItemFolder *folder, ItemPerson *item ) {
  * \return <i>TRUE</i> if folder added.
  */
 gboolean addritem_folder_add_folder( ItemFolder *folder, ItemFolder *item ) {
-	g_return_val_if_fail( folder != NULL, FALSE );
-	g_return_val_if_fail( item != NULL, FALSE );
+	cm_return_val_if_fail( folder != NULL, FALSE );
+	cm_return_val_if_fail( item != NULL, FALSE );
 
 	folder->listFolder = g_list_append( folder->listFolder, item );
 	ADDRITEM_PARENT(item) = ADDRITEM_OBJECT(folder);
@@ -893,8 +893,8 @@ gboolean addritem_folder_add_folder( ItemFolder *folder, ItemFolder *item ) {
  * \return <i>TRUE</i> if group added.
  */
 gboolean addritem_folder_add_group( ItemFolder *folder, ItemGroup *item ) {
-	g_return_val_if_fail( folder != NULL, FALSE );
-	g_return_val_if_fail( item != NULL, FALSE );
+	cm_return_val_if_fail( folder != NULL, FALSE );
+	cm_return_val_if_fail( item != NULL, FALSE );
 
 	folder->listGroup = g_list_append( folder->listGroup, item );
 	ADDRITEM_PARENT(item) = ADDRITEM_OBJECT(folder);
@@ -911,7 +911,7 @@ void addritem_print_item_folder( ItemFolder *folder, FILE *stream ) {
 	/* ItemPerson *person; */
 	ItemFolder *parent;
 
-	g_return_if_fail( folder != NULL );
+	cm_return_if_fail( folder != NULL );
 
 	fprintf( stream, "Folder:\n" );
 	fprintf( stream, "\tt/u: %d : '%s'\n", ADDRITEM_TYPE(folder), ADDRITEM_ID(folder) );
@@ -989,7 +989,7 @@ GList *addritem_folder_get_person_list( ItemFolder *folder ) {
 	GList *list = NULL;
 	GList *node = NULL;
 
-	g_return_val_if_fail( folder != NULL, NULL );
+	cm_return_val_if_fail( folder != NULL, NULL );
 
 	node = folder->listPerson;
 	while( node ) {
@@ -1012,7 +1012,7 @@ GList *addritem_folder_get_group_list( ItemFolder *folder ) {
 	GList *list = NULL;
 	GList *node = NULL;
 
-	g_return_val_if_fail( folder != NULL, NULL );
+	cm_return_val_if_fail( folder != NULL, NULL );
 
 	node = folder->listGroup;
 	while( node ) {
@@ -1033,7 +1033,7 @@ void addritem_parse_first_last( ItemPerson *person ) {
 	gchar *p;
 	gint len, i;
 
-	g_return_if_fail( person != NULL );
+	cm_return_if_fail( person != NULL );
 
 	name = ADDRITEM_NAME(person);
 	if( name == NULL ) return;

@@ -28,6 +28,7 @@
 
 #include "mgutils.h"
 #include "addrquery.h"
+#include "utils.h"
 
 /**
  * Query list for tracking current queries.
@@ -51,7 +52,7 @@ static gint _currentQueryID_ = 0;
 static void qryreq_clear( QueryRequest *req ) {
 	GList *node;
 
-	g_return_if_fail( req != NULL );
+	cm_return_if_fail( req != NULL );
 	g_free( req->searchTerm );
 	req->queryID = 0;
 	req->searchType = ADDRSEARCH_NONE;
@@ -74,7 +75,7 @@ static void qryreq_clear( QueryRequest *req ) {
  * \param req Request query object.
  */
 static void qryreq_free( QueryRequest *req ) {
-	g_return_if_fail( req != NULL );
+	cm_return_if_fail( req != NULL );
 	qryreq_clear( req );
 	g_free( req );
 }
@@ -85,7 +86,7 @@ static void qryreq_free( QueryRequest *req ) {
  * \param value Type.
  */
 void qryreq_set_search_type( QueryRequest *req, const AddrSearchType value ) {
-	g_return_if_fail( req != NULL );
+	cm_return_if_fail( req != NULL );
 	req->searchType = value;
 }
 
@@ -95,8 +96,8 @@ void qryreq_set_search_type( QueryRequest *req, const AddrSearchType value ) {
  * \param aqo  Address query object that performs the search.
  */
 void qryreq_add_query( QueryRequest *req, AddrQueryObject *aqo ) {
-	g_return_if_fail( req != NULL );
-	g_return_if_fail( aqo != NULL );
+	cm_return_if_fail( req != NULL );
+	cm_return_if_fail( aqo != NULL );
 	req->queryList = g_list_append( req->queryList, aqo );
 }
 

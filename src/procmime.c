@@ -156,8 +156,8 @@ void procmime_mimeinfo_free_all(MimeInfo *mimeinfo)
 
 MimeInfo *procmime_mimeinfo_parent(MimeInfo *mimeinfo)
 {
-	g_return_val_if_fail(mimeinfo != NULL, NULL);
-	g_return_val_if_fail(mimeinfo->node != NULL, NULL);
+	cm_return_val_if_fail(mimeinfo != NULL, NULL);
+	cm_return_val_if_fail(mimeinfo->node != NULL, NULL);
 
 	if (mimeinfo->node->parent == NULL)
 		return NULL;
@@ -166,8 +166,8 @@ MimeInfo *procmime_mimeinfo_parent(MimeInfo *mimeinfo)
 
 MimeInfo *procmime_mimeinfo_next(MimeInfo *mimeinfo)
 {
-	g_return_val_if_fail(mimeinfo != NULL, NULL);
-	g_return_val_if_fail(mimeinfo->node != NULL, NULL);
+	cm_return_val_if_fail(mimeinfo != NULL, NULL);
+	cm_return_val_if_fail(mimeinfo->node != NULL, NULL);
 
 	if (mimeinfo->node->children)
 		return (MimeInfo *) mimeinfo->node->children->data;
@@ -242,8 +242,8 @@ const gchar *procmime_mimeinfo_get_parameter(MimeInfo *mimeinfo, const gchar *na
 {
 	const gchar *value;
 
-	g_return_val_if_fail(mimeinfo != NULL, NULL);
-	g_return_val_if_fail(name != NULL, NULL);
+	cm_return_val_if_fail(mimeinfo != NULL, NULL);
+	cm_return_val_if_fail(name != NULL, NULL);
 
 	value = g_hash_table_lookup(mimeinfo->dispositionparameters, name);
 	if (value == NULL)
@@ -291,7 +291,7 @@ gboolean procmime_decode_content(MimeInfo *mimeinfo)
 	gchar lastline[BUFFSIZE];
 	memset(lastline, 0, BUFFSIZE);
 		   
-	g_return_val_if_fail(mimeinfo != NULL, FALSE);
+	cm_return_val_if_fail(mimeinfo != NULL, FALSE);
 
 	if (prefs_common.respect_flowed_format &&
 	    mimeinfo->type == MIMETYPE_TEXT && 
@@ -611,8 +611,8 @@ gint procmime_get_part(const gchar *outfile, MimeInfo *mimeinfo)
 	gint restlength, readlength;
 	gint saved_errno = 0;
 
-	g_return_val_if_fail(outfile != NULL, -1);
-	g_return_val_if_fail(mimeinfo != NULL, -1);
+	cm_return_val_if_fail(outfile != NULL, -1);
+	cm_return_val_if_fail(mimeinfo != NULL, -1);
 
 	if (mimeinfo->encoding_type != ENC_BINARY && !procmime_decode_content(mimeinfo))
 		return -EINVAL;
@@ -667,7 +667,7 @@ static FILE *procmime_get_text_content(MimeInfo *mimeinfo)
 	gchar *tmpfile;
 	gboolean err = FALSE;
 
-	g_return_val_if_fail(mimeinfo != NULL, NULL);
+	cm_return_val_if_fail(mimeinfo != NULL, NULL);
 
 	if (!procmime_decode_content(mimeinfo))
 		return NULL;
@@ -764,7 +764,7 @@ FILE *procmime_get_first_text_content(MsgInfo *msginfo)
 	MimeInfo *mimeinfo, *partinfo;
 	gboolean empty_ok = FALSE, short_scan = TRUE;
 	START_TIMING("");
-	g_return_val_if_fail(msginfo != NULL, NULL);
+	cm_return_val_if_fail(msginfo != NULL, NULL);
 
 	/* first we try to short-scan (for speed), refusing empty parts */
 scan_again:
@@ -832,7 +832,7 @@ FILE *procmime_get_first_encrypted_text_content(MsgInfo *msginfo)
 	FILE *outfp = NULL;
 	MimeInfo *mimeinfo, *partinfo, *encinfo;
 
-	g_return_val_if_fail(msginfo != NULL, NULL);
+	cm_return_val_if_fail(msginfo != NULL, NULL);
 
 	mimeinfo = procmime_scan_message(msginfo);
 	if (!mimeinfo) {
@@ -868,7 +868,7 @@ gboolean procmime_msginfo_is_encrypted(MsgInfo *msginfo)
 	MimeInfo *mimeinfo, *partinfo;
 	gboolean result = FALSE;
 
-	g_return_val_if_fail(msginfo != NULL, FALSE);
+	cm_return_val_if_fail(msginfo != NULL, FALSE);
 
 	mimeinfo = procmime_scan_message(msginfo);
 	if (!mimeinfo) {
@@ -888,10 +888,10 @@ static gboolean procmime_find_string_part(MimeInfo *mimeinfo, const gchar *filen
 	FILE *outfp;
 	gchar buf[BUFFSIZE];
 
-	g_return_val_if_fail(mimeinfo != NULL, FALSE);
-	g_return_val_if_fail(mimeinfo->type == MIMETYPE_TEXT, FALSE);
-	g_return_val_if_fail(str != NULL, FALSE);
-	g_return_val_if_fail(find_func != NULL, FALSE);
+	cm_return_val_if_fail(mimeinfo != NULL, FALSE);
+	cm_return_val_if_fail(mimeinfo->type == MIMETYPE_TEXT, FALSE);
+	cm_return_val_if_fail(str != NULL, FALSE);
+	cm_return_val_if_fail(find_func != NULL, FALSE);
 
 	outfp = procmime_get_text_content(mimeinfo);
 
@@ -919,9 +919,9 @@ gboolean procmime_find_string(MsgInfo *msginfo, const gchar *str,
 	gchar *filename;
 	gboolean found = FALSE;
 
-	g_return_val_if_fail(msginfo != NULL, FALSE);
-	g_return_val_if_fail(str != NULL, FALSE);
-	g_return_val_if_fail(find_func != NULL, FALSE);
+	cm_return_val_if_fail(msginfo != NULL, FALSE);
+	cm_return_val_if_fail(str != NULL, FALSE);
+	cm_return_val_if_fail(find_func != NULL, FALSE);
 
 	filename = procmsg_get_message_file(msginfo);
 	if (!filename) return FALSE;
@@ -951,7 +951,7 @@ gchar *procmime_get_tmp_file_name(MimeInfo *mimeinfo)
 	gchar *filename;
 	gchar f_prefix[10];
 
-	g_return_val_if_fail(mimeinfo != NULL, NULL);
+	cm_return_val_if_fail(mimeinfo != NULL, NULL);
 
 	g_snprintf(f_prefix, sizeof(f_prefix), "%08x.", id++);
 
@@ -1764,8 +1764,8 @@ static void parse_parameters(const gchar *parameters, GHashTable *table)
 
 static void procmime_parse_content_type(const gchar *content_type, MimeInfo *mimeinfo)
 {
-	g_return_if_fail(content_type != NULL);
-	g_return_if_fail(mimeinfo != NULL);
+	cm_return_if_fail(content_type != NULL);
+	cm_return_if_fail(mimeinfo != NULL);
 
 	/* RFC 2045, page 13 says that the mime subtype is MANDATORY;
 	 * if it's not available we use the default Content-Type */
@@ -1805,8 +1805,8 @@ static void procmime_parse_content_disposition(const gchar *content_disposition,
 {
 	gchar *tmp, *params;
 
-	g_return_if_fail(content_disposition != NULL);
-	g_return_if_fail(mimeinfo != NULL);
+	cm_return_if_fail(content_disposition != NULL);
+	cm_return_if_fail(mimeinfo != NULL);
 
 	tmp = g_strdup(content_disposition);
 	if ((params = strchr(tmp, ';')) != NULL) {
@@ -1870,7 +1870,7 @@ void procmime_mimeparser_unregister(MimeParser *parser)
 
 static gboolean procmime_mimeparser_parse(MimeParser *parser, MimeInfo *mimeinfo)
 {
-	g_return_val_if_fail(parser->parse != NULL, FALSE);
+	cm_return_val_if_fail(parser->parse != NULL, FALSE);
 	return parser->parse(parser, mimeinfo);	
 }
 
@@ -2049,7 +2049,7 @@ static MimeInfo *procmime_scan_file_full(const gchar *filename, gboolean short_s
 {
 	MimeInfo *mimeinfo;
 
-	g_return_val_if_fail(filename != NULL, NULL);
+	cm_return_val_if_fail(filename != NULL, NULL);
 
 	mimeinfo = procmime_scan_file_with_offset(filename, 0, short_scan);
 
@@ -2073,7 +2073,7 @@ static MimeInfo *procmime_scan_queue_file_full(const gchar *filename, gboolean s
 	gchar buf[BUFFSIZE];
 	gint offset = 0;
 
-	g_return_val_if_fail(filename != NULL, NULL);
+	cm_return_val_if_fail(filename != NULL, NULL);
 
 	/* Open file */
 	if ((fp = g_fopen(filename, "rb")) == NULL)

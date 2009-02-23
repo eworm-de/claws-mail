@@ -710,7 +710,7 @@ static gboolean key_pressed(GtkWidget *widget, GdkEventKey *event, gpointer data
 static void addressbook_size_allocate_cb(GtkWidget *widget,
 					 GtkAllocation *allocation)
 {
-	g_return_if_fail(allocation != NULL);
+	cm_return_if_fail(allocation != NULL);
 
 	prefs_common.addressbookwin_width = allocation->width;
 	prefs_common.addressbookwin_height = allocation->height;
@@ -1459,7 +1459,7 @@ static void addressbook_del_clicked(GtkButton *button, gpointer data)
 	gboolean refreshList = FALSE;
 	
 	pobj = gtk_cmctree_node_get_row_data(ctree, addrbook.opened );
-	g_return_if_fail(pobj != NULL);
+	cm_return_if_fail(pobj != NULL);
 
 	/* Test whether anything selected for deletion */
 	nodeList = addrbook.listSelected;
@@ -2902,7 +2902,7 @@ static void addressbook_treenode_delete_cb(GtkAction *action, gpointer data)
 	if( GTK_CMCTREE_ROW(node)->level == 1 ) return;
 
 	obj = gtk_cmctree_node_get_row_data( ctree, node );
-	g_return_if_fail(obj != NULL);
+	cm_return_if_fail(obj != NULL);
 
 	if( obj->type == ADDR_DATASOURCE ) {
 		ads = ADAPTER_DSOURCE(obj);
@@ -3417,7 +3417,7 @@ static void addressbook_edit_address( gpointer data, guint action, GtkWidget *wi
 
 	if( addrbook.listSelected == NULL ) return;
 	obj = gtk_cmctree_node_get_row_data( clist, addrbook.listSelected );
-	g_return_if_fail(obj != NULL);
+	cm_return_if_fail(obj != NULL);
 
        	ctree = GTK_CMCTREE( addrbook.ctree );
 	pobj = gtk_cmctree_node_get_row_data( ctree, addrbook.treeSelected );
@@ -3844,7 +3844,7 @@ static AddressDataSource *addressbook_find_datasource( GtkCMCTreeNode *node ) {
 	AddressDataSource *ds = NULL;
 	AddressObject *ao;
 
-	g_return_val_if_fail(addrbook.ctree != NULL, NULL);
+	cm_return_val_if_fail(addrbook.ctree != NULL, NULL);
 
 	while( node ) {
 		if( GTK_CMCTREE_ROW(node)->level < 2 ) return NULL;
@@ -4228,11 +4228,11 @@ static GtkCMCTreeNode *addressbook_add_object(GtkCMCTreeNode *node,
 	AddressObjectType otype;
 	AddressTypeControlItem *atci = NULL;
 
-	g_return_val_if_fail(node != NULL, NULL);
-	g_return_val_if_fail(obj  != NULL, NULL);
+	cm_return_val_if_fail(node != NULL, NULL);
+	cm_return_val_if_fail(obj  != NULL, NULL);
 
 	pobj = gtk_cmctree_node_get_row_data(ctree, node);
-	g_return_val_if_fail(pobj != NULL, NULL);
+	cm_return_val_if_fail(pobj != NULL, NULL);
 
 	/* Determine object type to be displayed */
 	if( obj->type == ADDR_DATASOURCE ) {
@@ -5166,7 +5166,7 @@ gchar *addressbook_folder_selection( const gchar *folderpath)
 	ItemFolder *folder = NULL;
 	gchar *path = NULL;
 
-	g_return_val_if_fail( folderpath != NULL, NULL);
+	cm_return_val_if_fail( folderpath != NULL, NULL);
 
 	if ( addressbook_foldersel_selection( _addressIndex_, &book, &folder, folderpath )
 		&& book != NULL ) {

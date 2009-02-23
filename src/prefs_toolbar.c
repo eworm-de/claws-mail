@@ -378,7 +378,7 @@ static gboolean is_duplicate(ToolbarPage *prefs_toolbar, gchar *chosen_action)
 	GtkTreeIter iter;
 	gboolean result;
 
-	g_return_val_if_fail(chosen_action != NULL, TRUE);
+	cm_return_val_if_fail(chosen_action != NULL, TRUE);
 
 	if (!gtk_tree_model_iter_n_children(model_set, NULL))
 		return FALSE;
@@ -1262,7 +1262,7 @@ static void icon_chooser_ok_clicked(GtkButton *button,
 	GdkPixbuf *pix;
 	gchar *icon_file;
 	
-	g_return_if_fail(prefs_toolbar != NULL);
+	cm_return_if_fail(prefs_toolbar != NULL);
 
 	model = gtk_icon_view_get_model(GTK_ICON_VIEW(prefs_toolbar->icon_chooser_view));
 	list = gtk_icon_view_get_selected_items(GTK_ICON_VIEW(prefs_toolbar->icon_chooser_view));
@@ -1296,7 +1296,7 @@ static void icon_chooser_ok_clicked(GtkButton *button,
 static void icon_chooser_cancel_clicked(GtkButton *button,
 					ToolbarPage *prefs_toolbar)
 {
-	g_return_if_fail(prefs_toolbar != NULL);
+	cm_return_if_fail(prefs_toolbar != NULL);
 
 	gtk_widget_destroy(prefs_toolbar->icon_chooser_win);
 	prefs_toolbar->icon_chooser_win = NULL;

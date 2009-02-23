@@ -627,7 +627,7 @@ static void general_save_folder_prefs(FolderItem *folder, FolderItemGeneralPage 
 	if (folder->path == NULL)
 		return;
 
-	g_return_if_fail(prefs != NULL);
+	cm_return_if_fail(prefs != NULL);
 
 	if (page->item == folder) 
 		all = TRUE;
@@ -694,8 +694,8 @@ static gboolean general_save_recurse_func(GNode *node, gpointer data)
 	FolderItem *item = (FolderItem *) node->data;
 	FolderItemGeneralPage *page = (FolderItemGeneralPage *) data;
 
-	g_return_val_if_fail(item != NULL, TRUE);
-	g_return_val_if_fail(page != NULL, TRUE);
+	cm_return_val_if_fail(item != NULL, TRUE);
+	cm_return_val_if_fail(page != NULL, TRUE);
 
 	general_save_folder_prefs(item, page);
 
@@ -1068,7 +1068,7 @@ static void compose_save_folder_prefs(FolderItem *folder, FolderItemComposePage 
 	if (page->item == folder) 
 		all = TRUE;
 
-	g_return_if_fail(prefs != NULL);
+	cm_return_if_fail(prefs != NULL);
 
 	if (item_protocol(folder) != A_NNTP) {
 		if (all || gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(page->request_return_receipt_rec_checkbtn))) {
@@ -1138,8 +1138,8 @@ static gboolean compose_save_recurse_func(GNode *node, gpointer data)
 	FolderItem *item = (FolderItem *) node->data;
 	FolderItemComposePage *page = (FolderItemComposePage *) data;
 
-	g_return_val_if_fail(item != NULL, TRUE);
-	g_return_val_if_fail(page != NULL, TRUE);
+	cm_return_val_if_fail(item != NULL, TRUE);
+	cm_return_val_if_fail(page != NULL, TRUE);
 
 	compose_save_folder_prefs(item, page);
 
@@ -1346,7 +1346,7 @@ static void templates_save_folder_prefs(FolderItem *folder, FolderItemTemplatesP
 	if (page->item == folder) 
 		all = TRUE;
 
-	g_return_if_fail(prefs != NULL);
+	cm_return_if_fail(prefs != NULL);
 
 	/* save and check formats */
 
@@ -1404,8 +1404,8 @@ static gboolean templates_save_recurse_func(GNode *node, gpointer data)
 	FolderItem *item = (FolderItem *) node->data;
 	FolderItemTemplatesPage *page = (FolderItemTemplatesPage *) data;
 
-	g_return_val_if_fail(item != NULL, TRUE);
-	g_return_val_if_fail(page != NULL, TRUE);
+	cm_return_val_if_fail(item != NULL, TRUE);
+	cm_return_val_if_fail(page != NULL, TRUE);
 
 	templates_save_folder_prefs(item, page);
 

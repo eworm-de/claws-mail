@@ -96,7 +96,7 @@ struct _Rdn {
  */
 void ldapsvr_retrieve_item_group(ItemGroup *group, GHashTable *array) {
 	/* Not implemented in this release */
-	g_return_if_fail(group != NULL);
+	cm_return_if_fail(group != NULL);
 }
 
 /**
@@ -150,7 +150,7 @@ void attrkeyvalue_free(AttrKeyValue *akv) {
  */
 EmailKeyValue *ldapsvr_retrieve_item_email(ItemEMail *item) {
 	EmailKeyValue *newItem;
-	g_return_val_if_fail(item != NULL, NULL);
+	cm_return_val_if_fail(item != NULL, NULL);
 	newItem = emailkeyvalue_create();		
 	newItem->alias = g_strdup(ADDRITEM_NAME(item));
 	newItem->mail = g_strdup(item->address);
@@ -165,7 +165,7 @@ EmailKeyValue *ldapsvr_retrieve_item_email(ItemEMail *item) {
  */
 AttrKeyValue *ldapsvr_retrieve_attribute(UserAttribute *item) {
 	AttrKeyValue *newItem;
-	g_return_val_if_fail(item != NULL, NULL);
+	cm_return_val_if_fail(item != NULL, NULL);
 	newItem = attrkeyvalue_create();
 	newItem->key = g_strdup(item->name);
 	newItem->value = g_strdup(item->value);
@@ -181,7 +181,7 @@ AttrKeyValue *ldapsvr_retrieve_attribute(UserAttribute *item) {
 gboolean ldapsvr_retrieve_item_person(ItemPerson *person, GHashTable *array) {
 	GList *node, *attr;
 
-	g_return_val_if_fail(person != NULL, FALSE);
+	cm_return_val_if_fail(person != NULL, FALSE);
 	switch (person->status) {
 		case NONE: return FALSE;
 		case ADD_ENTRY: g_hash_table_insert(array, "status", "new"); break;
@@ -297,7 +297,7 @@ void ldapsvr_free_hashtable(GList *list) {
  */
 ItemPerson *ldapsvr_get_contact(LdapServer *server, gchar *uid) {
 	AddrItemObject *aio;
-	g_return_val_if_fail(server != NULL || uid != NULL, NULL);
+	cm_return_val_if_fail(server != NULL || uid != NULL, NULL);
 	aio = addrcache_get_object(server->addressCache, uid);
 	if (aio) {
 		if(aio->type == ITEMTYPE_PERSON) {
@@ -318,7 +318,7 @@ LDAP *ldapsvr_connect(LdapControl *ctl) {
 	gint version;
 	gchar *uri = NULL;
 
-	g_return_val_if_fail(ctl != NULL, NULL);
+	cm_return_val_if_fail(ctl != NULL, NULL);
 
 	ldapsrv_set_options (ctl->timeOut, NULL);
 	uri = g_strdup_printf("ldap%s://%s:%d",
@@ -375,7 +375,7 @@ LDAP *ldapsvr_connect(LdapControl *ctl) {
  */
 void ldapsvr_disconnect(LDAP *ld) {
 	/* Disconnect */
-	g_return_if_fail(ld != NULL);
+	cm_return_if_fail(ld != NULL);
 	ldap_unbind_ext(ld, NULL, NULL);
 }
 
@@ -439,7 +439,7 @@ Rdn *ldapsvr_modify_dn(GHashTable *hash, gchar *dn) {
 	gchar *pos, *compare;
 	gchar *rest;
 	gchar *val;
-	g_return_val_if_fail(hash != NULL || dn != NULL, NULL);
+	cm_return_val_if_fail(hash != NULL || dn != NULL, NULL);
 	
 	pos = g_strstr_len(dn, strlen(dn), "=");
 	compare = g_strndup(dn, pos - dn);
@@ -575,7 +575,7 @@ AttrKeyValue *get_cn(gchar *dn) {
 	gchar *end;
 	gchar *item;
 	gchar **key_value;
-	g_return_val_if_fail(dn != NULL, NULL);
+	cm_return_val_if_fail(dn != NULL, NULL);
 	
 	cn = attrkeyvalue_create();
 	start = g_strstr_len(dn, strlen(dn), "cn");
@@ -609,7 +609,7 @@ AttrKeyValue *get_mail(gchar *dn) {
 	gchar *end;
 	gchar *item;
 	gchar **key_value;
-	g_return_val_if_fail(dn != NULL, NULL);
+	cm_return_val_if_fail(dn != NULL, NULL);
 	
 	mail = attrkeyvalue_create();
 	start = g_strstr_len(dn, strlen(dn), "mail");
@@ -644,7 +644,7 @@ AttrKeyValue *get_ou(gchar *dn) {
 	gchar *item;
 	gchar **key_value;
 	
-	g_return_val_if_fail(dn != NULL, NULL);
+	cm_return_val_if_fail(dn != NULL, NULL);
 	ou = attrkeyvalue_create();
 	start = g_strstr_len(dn, strlen(dn), ",o=");
 	if (start == NULL)
@@ -677,7 +677,7 @@ void ldapsvr_print_ldapmod(LDAPMod *mods[]) {
 	gchar *mod_op;
 	int i;
 
-	g_return_if_fail(mods != NULL);
+	cm_return_if_fail(mods != NULL);
 	g_printerr( "Type\n");
 	for (i = 0; NULL != mods[i]; i++) {
 		LDAPMod *mod = (LDAPMod *) mods[i];
@@ -715,7 +715,7 @@ void ldapsvr_compare_attr(LDAP *ld, gchar *dn, gint cnt, LDAPMod *mods[]) {
 
 #endif
 
-	g_return_if_fail(ld != NULL || dn != NULL || cnt >= 0 || mods != NULL);
+	cm_return_if_fail(ld != NULL || dn != NULL || cnt >= 0 || mods != NULL);
 	for (i = 0; i < cnt; i++) {
 		gchar *value = g_strdup(mods[i]->mod_vals.modv_strvals[0]);
 		if (!value || strcmp(value, "") == 0)
@@ -762,7 +762,7 @@ int ldapsvr_compare_manual_attr(LDAP *ld, LdapServer *server, gchar *dn, char *a
 	int retVal = -2, i;
 	AttrKeyValue *mail;
 
-	g_return_val_if_fail(ld != NULL || server != NULL || attr != NULL, -1);
+	cm_return_val_if_fail(ld != NULL || server != NULL || attr != NULL, -1);
 	ctl = server->control;
 	mail = get_mail(dn);
 	if (! mail)
@@ -852,7 +852,7 @@ int ldapsvr_deside_operation(LDAP *ld, LdapServer *server, char *dn, char *attr,
 
 #endif
 
-	g_return_val_if_fail(ld != NULL || server != NULL || dn != NULL || attr != NULL, -1);
+	cm_return_val_if_fail(ld != NULL || server != NULL || dn != NULL || attr != NULL, -1);
 	if (value == NULL)
 		return -1;
 	/* value containing empty string cause invalid syntax. A bug in
@@ -932,7 +932,7 @@ void ldapsvr_handle_other_attributes(LDAP *ld, LdapServer *server, char *dn, GHa
 	char *attr[ATTRIBUTE_SIZE + 1][2];
 	int mod_op, rc, i;
 
-	g_return_if_fail(server != NULL || dn != NULL || contact != NULL);
+	cm_return_if_fail(server != NULL || dn != NULL || contact != NULL);
 	for (i = 0; i <= ATTRIBUTE_SIZE; i++) {
 		CHECKED_ATTRIBUTE[i] = FALSE;
 		attr[i][0] = attr[i][1] = NULL;
@@ -1072,7 +1072,7 @@ void ldapsvr_add_contact(LdapServer *server, GHashTable *contact) {
 	gchar *base_dn;
 	GList *mailList;
 
-	g_return_if_fail(server != NULL || contact != NULL);
+	cm_return_if_fail(server != NULL || contact != NULL);
 	node = g_hash_table_lookup(contact , "mail");
 	if (node) {
 		EmailKeyValue *newEmail = node->data;
@@ -1195,7 +1195,7 @@ void ldapsvr_update_contact(LdapServer *server, GHashTable *contact) {
 	GList *mailList;
 	int mod_op;
 
-	g_return_if_fail(server != NULL || contact != NULL);
+	cm_return_if_fail(server != NULL || contact != NULL);
 	ld = ldapsvr_connect(server->control);
 	if (ld == NULL) {
 		clean_up(ld, server, contact);
@@ -1418,7 +1418,7 @@ void ldapsvr_delete_contact(LdapServer *server, GHashTable *contact) {
 	gchar *dn;
 	int rc;
 
-	g_return_if_fail(server != NULL || contact != NULL);
+	cm_return_if_fail(server != NULL || contact != NULL);
 	ld = ldapsvr_connect(server->control);
 	if (ld == NULL) {
 		clean_up(ld, server, contact);
@@ -1450,7 +1450,7 @@ void ldapsvr_update_book(LdapServer *server, ItemPerson *item) {
 	GHashTable *contact = NULL;
 	GList *contacts = NULL, *head = NULL;
 
-	g_return_if_fail(server != NULL);
+	cm_return_if_fail(server != NULL);
 	debug_print("updating ldap addressbook\n");
 
 	contact = g_hash_table_new(g_str_hash, g_str_equal);

@@ -274,9 +274,9 @@ fill_clist (struct select_keys_s *sk, const char *pattern, gpgme_protocol_t prot
     int num_results = 0;
     gboolean exact_match = FALSE;
     gpgme_key_t last_key = NULL;
-    g_return_val_if_fail (sk, NULL);
+    cm_return_val_if_fail (sk, NULL);
     clist = sk->clist;
-    g_return_val_if_fail (clist, NULL);
+    cm_return_val_if_fail (clist, NULL);
 
     debug_print ("select_keys:fill_clist:  pattern '%s' proto %d\n", pattern, proto);
 
@@ -463,7 +463,7 @@ open_dialog (struct select_keys_s *sk)
 static void
 close_dialog (struct select_keys_s *sk)
 {
-    g_return_if_fail (sk);
+    cm_return_if_fail (sk);
     gtk_widget_destroy (sk->window);
     sk->window = NULL;
 }
@@ -486,7 +486,7 @@ key_pressed_cb (GtkWidget *widget, GdkEventKey *event, gpointer data)
 {
     struct select_keys_s *sk = data;
 
-    g_return_val_if_fail (sk, FALSE);
+    cm_return_val_if_fail (sk, FALSE);
     if (event && event->keyval == GDK_Escape) {
         sk->okay = 0;
         gtk_main_quit ();
@@ -503,7 +503,7 @@ select_btn_cb (GtkWidget *widget, gpointer data)
     gboolean use_key;
     gpgme_key_t key;
 
-    g_return_if_fail (sk);
+    cm_return_if_fail (sk);
     if (!sk->clist->selection) {
         debug_print ("** nothing selected");
         return;
@@ -535,7 +535,7 @@ cancel_btn_cb (GtkWidget *widget, gpointer data)
 {
     struct select_keys_s *sk = data;
 
-    g_return_if_fail (sk);
+    cm_return_if_fail (sk);
     sk->okay = 0;
     sk->result = KEY_SELECTION_CANCEL;
     if (sk->select_ctx)
@@ -548,7 +548,7 @@ dont_encrypt_btn_cb (GtkWidget *widget, gpointer data)
 {
     struct select_keys_s *sk = data;
 
-    g_return_if_fail (sk);
+    cm_return_if_fail (sk);
     sk->okay = 0;
     sk->result = KEY_SELECTION_DONT;
     if (sk->select_ctx)
@@ -562,7 +562,7 @@ other_btn_cb (GtkWidget *widget, gpointer data)
     struct select_keys_s *sk = data;
     char *uid;
 
-    g_return_if_fail (sk);
+    cm_return_if_fail (sk);
     uid = input_dialog ( _("Add key"),
                          _("Enter another user or key ID:"),
                          NULL );

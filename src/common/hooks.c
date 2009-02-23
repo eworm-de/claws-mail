@@ -53,14 +53,14 @@ guint hooks_register_hook(const gchar *hooklist_name,
 	GHookList *hooklist;
 	GHook *hook;
 
-	g_return_val_if_fail(hooklist_name != NULL, (guint)-1);
-	g_return_val_if_fail(hook_func != NULL, (guint)-1);
+	cm_return_val_if_fail(hooklist_name != NULL, (guint)-1);
+	cm_return_val_if_fail(hook_func != NULL, (guint)-1);
 	
 	hooklist = hooks_get_hooklist(hooklist_name);
-	g_return_val_if_fail(hooklist != NULL, (guint)-1);
+	cm_return_val_if_fail(hooklist != NULL, (guint)-1);
 
 	hook = g_hook_alloc(hooklist);
-	g_return_val_if_fail(hook != NULL, (guint)-1);
+	cm_return_val_if_fail(hook != NULL, (guint)-1);
 
 	hook->func = hook_func;
 	hook->data = userdata;
@@ -78,13 +78,13 @@ void hooks_unregister_hook(const gchar *hooklist_name,
 	GHookList *hooklist;
 	GHook *hook;
 
-	g_return_if_fail(hooklist_name != NULL);
+	cm_return_if_fail(hooklist_name != NULL);
 
 	hooklist = hooks_get_hooklist(hooklist_name);
-	g_return_if_fail(hooklist != NULL);
+	cm_return_if_fail(hooklist != NULL);
 
 	hook = g_hook_get(hooklist, hook_id);
-	g_return_if_fail(hook != NULL);
+	cm_return_if_fail(hook != NULL);
 
 	debug_print("unregisted hook %lu in '%s'\n", hook->hook_id, hooklist_name);
 
@@ -114,10 +114,10 @@ gboolean hooks_invoke(const gchar *hooklist_name,
 	GHookList *hooklist;
 	struct MarshalData marshal_data;
 	
-	g_return_val_if_fail(hooklist_name != NULL, FALSE);
+	cm_return_val_if_fail(hooklist_name != NULL, FALSE);
 
 	hooklist = hooks_get_hooklist(hooklist_name);
-	g_return_val_if_fail(hooklist != NULL, FALSE);
+	cm_return_val_if_fail(hooklist != NULL, FALSE);
 
 	marshal_data.source = source;
 	marshal_data.abort = FALSE;

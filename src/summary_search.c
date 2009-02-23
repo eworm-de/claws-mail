@@ -835,7 +835,7 @@ static void adv_condition_btn_done(MatcherList * matchers)
 {
 	gchar *str;
 
-	g_return_if_fail(
+	cm_return_if_fail(
 			mainwindow_get_mainwindow()->summaryview->quicksearch != NULL);
 
 	if (matchers == NULL) {
@@ -860,7 +860,7 @@ static void adv_condition_btn_clicked(GtkButton *button, gpointer data)
 	const gchar * cond_str;
 	MatcherList * matchers = NULL;
 
-	g_return_if_fail( search_window.window != NULL );
+	cm_return_if_fail( search_window.window != NULL );
 
 	/* re-use the current search value if it's a condition expression,
 	   otherwise ignore it silently */

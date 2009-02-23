@@ -75,9 +75,9 @@ void prefs_read_config(PrefParam *param, const gchar *label,
 	gchar buf[PREFSBUFSIZE];
 	gchar *block_label;
 
-	g_return_if_fail(param != NULL);
-	g_return_if_fail(label != NULL);
-	g_return_if_fail(rcfile != NULL);
+	cm_return_if_fail(param != NULL);
+	cm_return_if_fail(label != NULL);
+	cm_return_if_fail(rcfile != NULL);
 
 	if (encoding != NULL)
 		g_warning("Encoding is ignored\n");
@@ -259,9 +259,9 @@ void prefs_write_config(PrefParam *param, const gchar *label,
 	gchar *block_label = NULL;
 	gboolean block_matched = FALSE;
 
-	g_return_if_fail(param != NULL);
-	g_return_if_fail(label != NULL);
-	g_return_if_fail(rcfile != NULL);
+	cm_return_if_fail(param != NULL);
+	cm_return_if_fail(label != NULL);
+	cm_return_if_fail(rcfile != NULL);
 
 	rcpath = g_strconcat(get_rc_dir(), G_DIR_SEPARATOR_S, rcfile, NULL);
 	if ((orig_fp = g_fopen(rcpath, "rb")) == NULL) {
@@ -422,7 +422,7 @@ void prefs_set_default(PrefParam *param)
 	gint i;
 	GdkColor color;
 
-	g_return_if_fail(param != NULL);
+	cm_return_if_fail(param != NULL);
 
 	for (i = 0; param[i].name != NULL; i++) {
 		if (!param[i].data) continue;
@@ -521,7 +521,7 @@ void prefs_free(PrefParam *param)
 {
 	gint i;
 
-	g_return_if_fail(param != NULL);
+	cm_return_if_fail(param != NULL);
 
 	for (i = 0; param[i].name != NULL; i++) {
 		if (!param[i].data) continue;
@@ -656,7 +656,7 @@ void prefs_set_data_from_entry(PrefParam *pparam)
 	gchar **str;
 	const gchar *entry_str;
 
-	g_return_if_fail(*pparam->widget != NULL);
+	cm_return_if_fail(*pparam->widget != NULL);
 
 	entry_str = gtk_entry_get_text(GTK_ENTRY(*pparam->widget));
 
@@ -683,7 +683,7 @@ void prefs_set_escaped_data_from_entry(PrefParam *pparam)
 {
 	gchar **str;
 
-	g_return_if_fail(*pparam->widget != NULL);
+	cm_return_if_fail(*pparam->widget != NULL);
 
 	switch (pparam->type) {
 	case P_STRING:
@@ -701,7 +701,7 @@ void prefs_set_entry(PrefParam *pparam)
 {
 	gchar **str;
 
-	g_return_if_fail(*pparam->widget != NULL);
+	cm_return_if_fail(*pparam->widget != NULL);
 
 	switch (pparam->type) {
 	case P_STRING:
@@ -728,7 +728,7 @@ void prefs_set_entry_from_escaped(PrefParam *pparam)
 {
 	gchar **str;
 
-	g_return_if_fail(*pparam->widget != NULL);
+	cm_return_if_fail(*pparam->widget != NULL);
 
 	switch (pparam->type) {
 	case P_STRING:
@@ -748,7 +748,7 @@ void prefs_set_data_from_text(PrefParam *pparam)
 	gchar *text = NULL, *tp = NULL;
 	gchar *tmp, *tmpp;
 
-	g_return_if_fail(*pparam->widget != NULL);
+	cm_return_if_fail(*pparam->widget != NULL);
 
 	switch (pparam->type) {
 	case P_STRING:
@@ -767,7 +767,7 @@ void prefs_set_data_from_text(PrefParam *pparam)
 			tp = text = gtk_text_buffer_get_text(buffer, &start, &end, FALSE);
 		}
 
-		g_return_if_fail (tp && text);
+		cm_return_if_fail (tp && text);
 
 		if (text[0] == '\0') {
 			*str = NULL;
@@ -799,7 +799,7 @@ void prefs_set_escaped_data_from_text(PrefParam *pparam)
 {
 	gchar **str;
 
-	g_return_if_fail(*pparam->widget != NULL);
+	cm_return_if_fail(*pparam->widget != NULL);
 
 	switch (pparam->type) {
 	case P_STRING:
@@ -821,7 +821,7 @@ void prefs_set_text(PrefParam *pparam)
 	GtkTextBuffer *buffer;
 	GtkTextIter iter;
 
-	g_return_if_fail(*pparam->widget != NULL);
+	cm_return_if_fail(*pparam->widget != NULL);
 
 	switch (pparam->type) {
 	case P_STRING:
@@ -860,7 +860,7 @@ void prefs_set_text_from_escaped(PrefParam *pparam)
 {
 	gchar **str;
 
-	g_return_if_fail(*pparam->widget != NULL);
+	cm_return_if_fail(*pparam->widget != NULL);
 
 	switch (pparam->type) {
 	case P_STRING:
@@ -876,8 +876,8 @@ void prefs_set_text_from_escaped(PrefParam *pparam)
 
 void prefs_set_data_from_toggle(PrefParam *pparam)
 {
-	g_return_if_fail(pparam->type == P_BOOL);
-	g_return_if_fail(*pparam->widget != NULL);
+	cm_return_if_fail(pparam->type == P_BOOL);
+	cm_return_if_fail(*pparam->widget != NULL);
 	
 	*((gboolean *)pparam->data) =
 		gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(*pparam->widget));
@@ -885,8 +885,8 @@ void prefs_set_data_from_toggle(PrefParam *pparam)
 
 void prefs_set_toggle(PrefParam *pparam)
 {
-	g_return_if_fail(pparam->type == P_BOOL);
-	g_return_if_fail(*pparam->widget != NULL);
+	cm_return_if_fail(pparam->type == P_BOOL);
+	cm_return_if_fail(*pparam->widget != NULL);
 
 	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(*pparam->widget),
 				     *((gboolean *)pparam->data));
@@ -894,7 +894,7 @@ void prefs_set_toggle(PrefParam *pparam)
 
 void prefs_set_data_from_spinbtn(PrefParam *pparam)
 {
-	g_return_if_fail(*pparam->widget != NULL);
+	cm_return_if_fail(*pparam->widget != NULL);
 
 	switch (pparam->type) {
 	case P_INT:
@@ -915,7 +915,7 @@ void prefs_set_data_from_spinbtn(PrefParam *pparam)
 
 void prefs_set_spinbtn(PrefParam *pparam)
 {
-	g_return_if_fail(*pparam->widget != NULL);
+	cm_return_if_fail(*pparam->widget != NULL);
 
 	switch (pparam->type) {
 	case P_INT:

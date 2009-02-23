@@ -427,7 +427,7 @@ static gint set_nonblocking_mode(gint fd, gboolean nonblock)
 
 gint sock_set_nonblocking_mode(SockInfo *sock, gboolean nonblock)
 {
-	g_return_val_if_fail(sock != NULL, -1);
+	cm_return_val_if_fail(sock != NULL, -1);
 
 	return set_nonblocking_mode(sock->sock, nonblock);
 }
@@ -451,7 +451,7 @@ static gboolean is_nonblocking_mode(gint fd)
 
 gboolean sock_is_nonblocking_mode(SockInfo *sock)
 {
-	g_return_val_if_fail(sock != NULL, FALSE);
+	cm_return_val_if_fail(sock != NULL, FALSE);
 
 	return is_nonblocking_mode(sock->sock);
 }
@@ -1409,7 +1409,7 @@ gint sock_read(SockInfo *sock, gchar *buf, gint len)
 {
 	gint ret;
 
-	g_return_val_if_fail(sock != NULL, -1);
+	cm_return_val_if_fail(sock != NULL, -1);
 
 #ifdef USE_GNUTLS
 	if (sock->ssl)
@@ -1461,7 +1461,7 @@ gint sock_write(SockInfo *sock, const gchar *buf, gint len)
 {
 	gint ret;
 
-	g_return_val_if_fail(sock != NULL, -1);
+	cm_return_val_if_fail(sock != NULL, -1);
 
 #ifdef USE_GNUTLS
 	if (sock->ssl)
@@ -1524,7 +1524,7 @@ gint sock_write_all(SockInfo *sock, const gchar *buf, gint len)
 {
 	gint ret;
 
-	g_return_val_if_fail(sock != NULL, -1);
+	cm_return_val_if_fail(sock != NULL, -1);
 
 #ifdef USE_GNUTLS
 	if (sock->ssl)

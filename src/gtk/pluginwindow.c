@@ -184,7 +184,7 @@ static void unload_cb(GtkButton *button, PluginWindow *pluginwindow)
 {
 	Plugin *plugin = pluginwindow->selected_plugin;
 
-	g_return_if_fail(plugin != NULL);
+	cm_return_if_fail(plugin != NULL);
 	pluginwindow->loading = TRUE;
 	plugin_unload(plugin);
 	pluginwindow->loading = FALSE;
@@ -262,7 +262,7 @@ static gboolean pluginwindow_key_pressed(GtkWidget *widget, GdkEventKey *event,
 static void pluginwindow_size_allocate_cb(GtkWidget *widget,
 					 GtkAllocation *allocation)
 {
-	g_return_if_fail(allocation != NULL);
+	cm_return_if_fail(allocation != NULL);
 
 	prefs_common.pluginswin_width = allocation->width;
 	prefs_common.pluginswin_height = allocation->height;

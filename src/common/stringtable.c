@@ -51,7 +51,7 @@ static StringEntry *string_entry_new(const gchar *str)
 
 static void string_entry_free(StringEntry *entry)
 {
-	g_return_if_fail(entry != NULL);
+	cm_return_if_fail(entry != NULL);
 
 	g_free(entry->string);
 	g_free(entry);
@@ -62,9 +62,9 @@ StringTable *string_table_new(void)
 	StringTable *strtable;
 
 	strtable = g_new0(StringTable, 1);
-	g_return_val_if_fail(strtable != NULL, NULL);
+	cm_return_val_if_fail(strtable != NULL, NULL);
 	strtable->hash_table = g_hash_table_new(g_str_hash, g_str_equal);
-	g_return_val_if_fail(strtable->hash_table, NULL);
+	cm_return_val_if_fail(strtable->hash_table, NULL);
 	return strtable;
 }
 
@@ -112,8 +112,8 @@ void string_table_free_string(StringTable *table, const gchar *str)
 static gboolean string_table_remove_for_each_fn(gchar *key, StringEntry *entry,
 						gpointer user_data)
 {
-	g_return_val_if_fail(key != NULL, TRUE);
-	g_return_val_if_fail(entry != NULL, TRUE);
+	cm_return_val_if_fail(key != NULL, TRUE);
+	cm_return_val_if_fail(entry != NULL, TRUE);
 
 	string_entry_free(entry);
 
@@ -122,8 +122,8 @@ static gboolean string_table_remove_for_each_fn(gchar *key, StringEntry *entry,
 
 void string_table_free(StringTable *table)
 {
-	g_return_if_fail(table != NULL);
-	g_return_if_fail(table->hash_table != NULL);
+	cm_return_if_fail(table != NULL);
+	cm_return_if_fail(table->hash_table != NULL);
 
 	g_hash_table_foreach_remove(table->hash_table,
 				    (GHRFunc)string_table_remove_for_each_fn,

@@ -1546,8 +1546,8 @@ void conv_encode_header_full(gchar *dest, gint len, const gchar *src,
 	guchar *destp = dest;
 	gboolean use_base64;
 
-	g_return_if_fail(g_utf8_validate(src, -1, NULL) == TRUE);
-	g_return_if_fail(destp != NULL);
+	cm_return_if_fail(g_utf8_validate(src, -1, NULL) == TRUE);
+	cm_return_if_fail(destp != NULL);
 
 	if (MB_CUR_MAX > 1) {
 		use_base64 = TRUE;

@@ -954,7 +954,7 @@ Compose *compose_generic_new(PrefsAccount *account, const gchar *mailto, FolderI
 
 	/* if no account prefs set, fallback to the current one */
  	if (!account) account = cur_account;
-	g_return_val_if_fail(account != NULL, NULL);
+	cm_return_val_if_fail(account != NULL, NULL);
 
 	compose = compose_create(account, item, COMPOSE_NEW, FALSE);
 
@@ -1018,7 +1018,7 @@ Compose *compose_generic_new(PrefsAccount *account, const gchar *mailto, FolderI
 		if (mailto && *mailto != '\0') {
 			compose_entries_set(compose, mailto, COMPOSE_TO);
 
-		} else if (item && item->prefs->enable_default_to) {
+		} else if (item && item->prefs && item->prefs->enable_default_to) {
 			compose_entry_append(compose, item->prefs->default_to, COMPOSE_TO);
 			compose_entry_mark_default_to(compose, item->prefs->default_to);
 		}
@@ -1163,8 +1163,8 @@ static void compose_force_encryption(Compose *compose, PrefsAccount *account,
 {
 	const gchar *privacy = NULL;
 
-	g_return_if_fail(compose != NULL);
-	g_return_if_fail(account != NULL);
+	cm_return_if_fail(compose != NULL);
+	cm_return_if_fail(account != NULL);
 
 	if (override_pref == FALSE && account->default_encrypt_reply == FALSE)
 		return;
@@ -1230,10 +1230,10 @@ static Compose *compose_reply_mode(ComposeMode mode, GSList *msginfo_list, gchar
 	guint list_len;
 	Compose *compose = NULL;
 	
-	g_return_val_if_fail(msginfo_list != NULL, NULL);
+	cm_return_val_if_fail(msginfo_list != NULL, NULL);
 
 	msginfo = (MsgInfo*)g_slist_nth_data(msginfo_list, 0);
-	g_return_val_if_fail(msginfo != NULL, NULL);
+	cm_return_val_if_fail(msginfo != NULL, NULL);
 
 	list_len = g_slist_length(msginfo_list);
 
@@ -1435,12 +1435,12 @@ static Compose *compose_generic_reply(MsgInfo *msginfo,
 	const gchar *body_fmt = NULL;
 	gchar *s_system = NULL;
 	START_TIMING("");
-	g_return_val_if_fail(msginfo != NULL, NULL);
-	g_return_val_if_fail(msginfo->folder != NULL, NULL);
+	cm_return_val_if_fail(msginfo != NULL, NULL);
+	cm_return_val_if_fail(msginfo->folder != NULL, NULL);
 
 	account = account_get_reply_account(msginfo, prefs_common.reply_account_autosel);
 
-	g_return_val_if_fail(account != NULL, NULL);
+	cm_return_val_if_fail(account != NULL, NULL);
 
 	compose = compose_create(account, msginfo->folder, COMPOSE_REPLY, FALSE);
 
@@ -1608,8 +1608,8 @@ Compose *compose_forward(PrefsAccount *account, MsgInfo *msginfo,
 	GtkTextBuffer *textbuf;
 	GtkTextIter iter;
 
-	g_return_val_if_fail(msginfo != NULL, NULL);
-	g_return_val_if_fail(msginfo->folder != NULL, NULL);
+	cm_return_val_if_fail(msginfo != NULL, NULL);
+	cm_return_val_if_fail(msginfo->folder != NULL, NULL);
 
 	if (!account && 
 	    !(account = compose_guess_forward_account_from_msginfo
@@ -1798,7 +1798,7 @@ static Compose *compose_forward_multiple(PrefsAccount *account, GSList *msginfo_
 	gchar *msgfile;
 	gboolean single_mail = TRUE;
 	
-	g_return_val_if_fail(msginfo_list != NULL, NULL);
+	cm_return_val_if_fail(msginfo_list != NULL, NULL);
 
 	if (g_slist_length(msginfo_list) > 1)
 		single_mail = FALSE;
@@ -1813,7 +1813,7 @@ static Compose *compose_forward_multiple(PrefsAccount *account, GSList *msginfo_
 				(msginfo_list->data)))
 		account = cur_account;
 
-	g_return_val_if_fail(account != NULL, NULL);
+	cm_return_val_if_fail(account != NULL, NULL);
 
 	for (msginfo = msginfo_list; msginfo != NULL; msginfo = msginfo->next) {
 		if (msginfo->data) {
@@ -2027,8 +2027,8 @@ Compose *compose_reedit(MsgInfo *msginfo, gboolean batch)
 	gboolean autowrap = prefs_common.autowrap;
 	gboolean autoindent = prefs_common.auto_indent;
 
-	g_return_val_if_fail(msginfo != NULL, NULL);
-	g_return_val_if_fail(msginfo->folder != NULL, NULL);
+	cm_return_val_if_fail(msginfo != NULL, NULL);
+	cm_return_val_if_fail(msginfo->folder != NULL, NULL);
 
 	if (compose_put_existing_to_front(msginfo)) {
 		return NULL;
@@ -2145,7 +2145,7 @@ Compose *compose_reedit(MsgInfo *msginfo, gboolean batch)
         if (!account) {
         	account = cur_account;
         }
-	g_return_val_if_fail(account != NULL, NULL);
+	cm_return_val_if_fail(account != NULL, NULL);
 
 	compose = compose_create(account, msginfo->folder, COMPOSE_REEDIT, batch);
 
@@ -2267,12 +2267,12 @@ Compose *compose_redirect(PrefsAccount *account, MsgInfo *msginfo,
 	gchar *filename;
 	FolderItem *item;
 
-	g_return_val_if_fail(msginfo != NULL, NULL);
+	cm_return_val_if_fail(msginfo != NULL, NULL);
 
 	if (!account)
 		account = account_get_reply_account(msginfo,
 					prefs_common.reply_account_autosel);
-	g_return_val_if_fail(account != NULL, NULL);
+	cm_return_val_if_fail(account != NULL, NULL);
 
 	compose = compose_create(account, msginfo->folder, COMPOSE_REDIRECT, batch);
 
@@ -2473,7 +2473,7 @@ void compose_toolbar_cb(gint action, gpointer data)
 	ToolbarItem *toolbar_item = (ToolbarItem*)data;
 	Compose *compose = (Compose*)toolbar_item->parent;
 	
-	g_return_if_fail(compose != NULL);
+	cm_return_if_fail(compose != NULL);
 
 	switch(action) {
 	case A_SEND:
@@ -2632,7 +2632,7 @@ static gint compose_parse_header(Compose *compose, MsgInfo *msginfo)
 
 	FILE *fp;
 
-	g_return_val_if_fail(msginfo != NULL, -1);
+	cm_return_val_if_fail(msginfo != NULL, -1);
 
 	if ((fp = procmsg_open_message(msginfo)) == NULL) return -1;
 	procheader_get_header_fields(fp, hentry);
@@ -2985,8 +2985,8 @@ static void compose_reply_set_entry(Compose *compose, MsgInfo *msginfo,
 	gboolean reply_to_ml = FALSE;
 	gboolean default_reply_to = FALSE;
 
-	g_return_if_fail(compose->account != NULL);
-	g_return_if_fail(msginfo != NULL);
+	cm_return_if_fail(compose->account != NULL);
+	cm_return_if_fail(msginfo != NULL);
 
 	reply_to_ml = to_ml && compose->ml_post;
 
@@ -3179,7 +3179,7 @@ static void compose_reply_set_entry(Compose *compose, MsgInfo *msginfo,
 
 static void compose_reedit_set_entry(Compose *compose, MsgInfo *msginfo)
 {
-	g_return_if_fail(msginfo != NULL);
+	cm_return_if_fail(msginfo != NULL);
 
 	SET_ENTRY(subject_entry, msginfo->subject);
 	SET_ENTRY(from_name, msginfo->from);
@@ -3209,7 +3209,7 @@ static void compose_insert_sig(Compose *compose, gboolean replace)
 	gboolean found = FALSE;
 	gboolean exists = FALSE;
 	
-	g_return_if_fail(compose->account != NULL);
+	cm_return_if_fail(compose->account != NULL);
 
 	BLOCK_WRAP();
 
@@ -3309,7 +3309,7 @@ static ComposeInsertResult compose_insert_file(Compose *compose, const gchar *fi
 	gboolean prev_autowrap;
 	gboolean badtxt = FALSE;
 
-	g_return_val_if_fail(file != NULL, COMPOSE_INSERT_NO_FILE);
+	cm_return_val_if_fail(file != NULL, COMPOSE_INSERT_NO_FILE);
 
 	if ((fp = g_fopen(file, "rb")) == NULL) {
 		FILE_OP_ERROR(file, "fopen");
@@ -4520,7 +4520,7 @@ static void compose_select_account(Compose *compose, PrefsAccount *account,
 {
 	gchar *from = NULL;
 
-	g_return_if_fail(account != NULL);
+	cm_return_if_fail(account != NULL);
 
 	compose->account = account;
 
@@ -4977,9 +4977,9 @@ static gint compose_redirect_write_headers(Compose *compose, FILE *fp)
 	/* struct utsname utsbuf; */
 	gboolean err = FALSE;
 
-	g_return_val_if_fail(fp != NULL, -1);
-	g_return_val_if_fail(compose->account != NULL, -1);
-	g_return_val_if_fail(compose->account->address != NULL, -1);
+	cm_return_val_if_fail(fp != NULL, -1);
+	cm_return_val_if_fail(compose->account != NULL, -1);
+	cm_return_val_if_fail(compose->account->address != NULL, -1);
 
 	/* Resent-Date */
 	get_rfc822_date(buf, sizeof(buf));
@@ -5408,14 +5408,14 @@ static gint compose_remove_reedit_target(Compose *compose, gboolean force)
 	FolderItem *item;
 	MsgInfo *msginfo = compose->targetinfo;
 
-	g_return_val_if_fail(compose->mode == COMPOSE_REEDIT, -1);
+	cm_return_val_if_fail(compose->mode == COMPOSE_REEDIT, -1);
 	if (!msginfo) return -1;
 
 	if (!force && MSG_IS_LOCKED(msginfo->flags))
 		return 0;
 
 	item = msginfo->folder;
-	g_return_val_if_fail(item != NULL, -1);
+	cm_return_val_if_fail(item != NULL, -1);
 
 	if (procmsg_msg_exist(msginfo) &&
 	    (folder_has_parent_of_type(item, F_QUEUE) ||
@@ -5489,7 +5489,7 @@ static gint compose_queue_sub(Compose *compose, gint *msgnum, FolderItem **item,
 	gboolean err = FALSE;
 
 	debug_print("queueing message...\n");
-	g_return_val_if_fail(compose->account != NULL, -1);
+	cm_return_val_if_fail(compose->account != NULL, -1);
 
         lock = TRUE;
 	
@@ -5881,8 +5881,8 @@ static gchar *compose_get_header(Compose *compose)
 	gchar *from_name = NULL, *from_address = NULL;
 	gchar *tmp;
 
-	g_return_val_if_fail(compose->account != NULL, NULL);
-	g_return_val_if_fail(compose->account->address != NULL, NULL);
+	cm_return_val_if_fail(compose->account != NULL, NULL);
+	cm_return_val_if_fail(compose->account->address != NULL, NULL);
 
 	header = g_string_sized_new(64);
 
@@ -6150,8 +6150,8 @@ static void compose_convert_header(Compose *compose, gchar *dest, gint len, gcha
 	gchar *tmpstr = NULL;
 	const gchar *out_codeset = NULL;
 
-	g_return_if_fail(src != NULL);
-	g_return_if_fail(dest != NULL);
+	cm_return_if_fail(src != NULL);
+	cm_return_if_fail(dest != NULL);
 
 	if (len < 1) return;
 
@@ -6211,7 +6211,7 @@ static void compose_add_to_addressbook_cb(GtkMenuItem *menuitem, gpointer user_d
 {
 	gchar *address;
 
-	g_return_if_fail(user_data != NULL);
+	cm_return_if_fail(user_data != NULL);
 
 	address = g_strdup(gtk_entry_get_text(GTK_ENTRY(user_data)));
 	g_strstrip(address);
@@ -6228,8 +6228,8 @@ static void compose_entry_popup_extend(GtkEntry *entry, GtkMenu *menu, gpointer 
 	GtkWidget *menuitem;
 	gchar *address;
 
-	g_return_if_fail(menu != NULL);
-	g_return_if_fail(GTK_IS_MENU_SHELL(menu));
+	cm_return_if_fail(menu != NULL);
+	cm_return_if_fail(GTK_IS_MENU_SHELL(menu));
 
 	menuitem = gtk_separator_menu_item_new();
 	gtk_menu_shell_prepend(GTK_MENU_SHELL(menu), menuitem);
@@ -6774,7 +6774,7 @@ static Compose *compose_create(PrefsAccount *account,
 
 	static GdkGeometry geometry;
 
-	g_return_val_if_fail(account != NULL, NULL);
+	cm_return_val_if_fail(account != NULL, NULL);
 
 	debug_print("Creating compose window...\n");
 	compose = g_new0(Compose, 1);
@@ -7399,7 +7399,7 @@ static GtkWidget *compose_account_option_menu_create(Compose *compose)
 	gint num = 0, def_menu = 0;
 	
 	accounts = account_get_list();
-	g_return_val_if_fail(accounts != NULL, NULL);
+	cm_return_val_if_fail(accounts != NULL, NULL);
 
 	optmenubox = gtk_event_box_new();
 	optmenu = gtkut_sc_combobox_create(optmenubox, FALSE);
@@ -7477,7 +7477,7 @@ static void compose_reply_change_mode(Compose *compose,
 
 	gboolean all = FALSE, ml = FALSE, sender = FALSE, followup = FALSE;
 	
-	g_return_if_fail(compose->replyinfo != NULL);
+	cm_return_if_fail(compose->replyinfo != NULL);
 	
 	if (action == COMPOSE_REPLY && prefs_common.default_reply_list)
 		ml = TRUE;
@@ -7549,7 +7549,7 @@ static void compose_set_privacy_system_cb(GtkWidget *widget, gpointer data)
 	gchar *systemid;
 	gboolean can_sign = FALSE, can_encrypt = FALSE;
 
-	g_return_if_fail(GTK_IS_CHECK_MENU_ITEM(widget));
+	cm_return_if_fail(GTK_IS_CHECK_MENU_ITEM(widget));
 
 	if (!GTK_CHECK_MENU_ITEM(widget)->active)
 		return;
@@ -7582,7 +7582,7 @@ static void compose_update_privacy_system_menu_item(Compose * compose, gboolean 
 		gchar *systemid;
 		menuitem = gtk_menu_item_get_submenu(GTK_MENU_ITEM(
 				gtk_ui_manager_get_widget(compose->ui_manager, branch_path)));
-		g_return_if_fail(menuitem != NULL);
+		cm_return_if_fail(menuitem != NULL);
 
 		amenu = GTK_MENU_SHELL(menuitem)->children;
 		menuitem = NULL;
@@ -7772,7 +7772,7 @@ static const gchar *compose_quote_char_from_context(Compose *compose)
 {
 	const gchar *qmark = NULL;
 
-	g_return_val_if_fail(compose != NULL, NULL);
+	cm_return_val_if_fail(compose != NULL, NULL);
 
 	switch (compose->mode) {
 		/* use forward-specific quote char */
@@ -8558,7 +8558,7 @@ static gint compose_exec_ext_editor_real(const gchar *file)
 	gchar **cmdline;
 	pid_t pid;
 
-	g_return_val_if_fail(file != NULL, -1);
+	cm_return_val_if_fail(file != NULL, -1);
 
 	if ((pid = fork()) < 0) {
 		perror("fork");
@@ -8819,7 +8819,7 @@ static void account_activated(GtkComboBox *optmenu, gpointer data)
 	gtk_tree_model_get(menu, &iter, 1, &account_id, -1);
 
 	ac = account_find_from_id(account_id);
-	g_return_if_fail(ac != NULL);
+	cm_return_if_fail(ac != NULL);
 
 	if (ac != compose->account)
 		compose_select_account(compose, ac, FALSE);
@@ -8993,7 +8993,7 @@ gboolean compose_draft (gpointer data, guint action)
 		return TRUE;
 
 	draft = account_get_special_folder(compose->account, F_DRAFT);
-	g_return_val_if_fail(draft != NULL, FALSE);
+	cm_return_val_if_fail(draft != NULL, FALSE);
 	
 	if (!g_mutex_trylock(compose->mutex)) {
 		/* we don't want to lock the mutex once it's available,
@@ -9413,7 +9413,7 @@ static void compose_template_activate_cb(GtkWidget *widget, gpointer data)
 	AlertValue val;
 
 	tmpl = g_object_get_data(G_OBJECT(widget), "template");
-	g_return_if_fail(tmpl != NULL);
+	cm_return_if_fail(tmpl != NULL);
 
 	msg = g_strdup_printf(_("Do you want to apply the template '%s' ?"),
 			      tmpl->name);
@@ -9660,7 +9660,7 @@ static void textview_move_beginning_of_line (GtkTextView *text)
 	GtkTextMark *mark;
 	GtkTextIter ins;
 
-	g_return_if_fail(GTK_IS_TEXT_VIEW(text));
+	cm_return_if_fail(GTK_IS_TEXT_VIEW(text));
 
 	buffer = gtk_text_view_get_buffer(GTK_TEXT_VIEW(text));
 	mark = gtk_text_buffer_get_insert(buffer);
@@ -9675,7 +9675,7 @@ static void textview_move_forward_character (GtkTextView *text)
 	GtkTextMark *mark;
 	GtkTextIter ins;
 
-	g_return_if_fail(GTK_IS_TEXT_VIEW(text));
+	cm_return_if_fail(GTK_IS_TEXT_VIEW(text));
 
 	buffer = gtk_text_view_get_buffer(GTK_TEXT_VIEW(text));
 	mark = gtk_text_buffer_get_insert(buffer);
@@ -9690,7 +9690,7 @@ static void textview_move_backward_character (GtkTextView *text)
 	GtkTextMark *mark;
 	GtkTextIter ins;
 
-	g_return_if_fail(GTK_IS_TEXT_VIEW(text));
+	cm_return_if_fail(GTK_IS_TEXT_VIEW(text));
 
 	buffer = gtk_text_view_get_buffer(GTK_TEXT_VIEW(text));
 	mark = gtk_text_buffer_get_insert(buffer);
@@ -9706,7 +9706,7 @@ static void textview_move_forward_word (GtkTextView *text)
 	GtkTextIter ins;
 	gint count;
 
-	g_return_if_fail(GTK_IS_TEXT_VIEW(text));
+	cm_return_if_fail(GTK_IS_TEXT_VIEW(text));
 
 	buffer = gtk_text_view_get_buffer(GTK_TEXT_VIEW(text));
 	mark = gtk_text_buffer_get_insert(buffer);
@@ -9725,7 +9725,7 @@ static void textview_move_backward_word (GtkTextView *text)
 	GtkTextIter ins;
 	gint count;
 
-	g_return_if_fail(GTK_IS_TEXT_VIEW(text));
+	cm_return_if_fail(GTK_IS_TEXT_VIEW(text));
 
 	buffer = gtk_text_view_get_buffer(GTK_TEXT_VIEW(text));
 	mark = gtk_text_buffer_get_insert(buffer);
@@ -9741,7 +9741,7 @@ static void textview_move_end_of_line (GtkTextView *text)
 	GtkTextMark *mark;
 	GtkTextIter ins;
 
-	g_return_if_fail(GTK_IS_TEXT_VIEW(text));
+	cm_return_if_fail(GTK_IS_TEXT_VIEW(text));
 
 	buffer = gtk_text_view_get_buffer(GTK_TEXT_VIEW(text));
 	mark = gtk_text_buffer_get_insert(buffer);
@@ -9757,7 +9757,7 @@ static void textview_move_next_line (GtkTextView *text)
 	GtkTextIter ins;
 	gint offset;
 
-	g_return_if_fail(GTK_IS_TEXT_VIEW(text));
+	cm_return_if_fail(GTK_IS_TEXT_VIEW(text));
 
 	buffer = gtk_text_view_get_buffer(GTK_TEXT_VIEW(text));
 	mark = gtk_text_buffer_get_insert(buffer);
@@ -9776,7 +9776,7 @@ static void textview_move_previous_line (GtkTextView *text)
 	GtkTextIter ins;
 	gint offset;
 
-	g_return_if_fail(GTK_IS_TEXT_VIEW(text));
+	cm_return_if_fail(GTK_IS_TEXT_VIEW(text));
 
 	buffer = gtk_text_view_get_buffer(GTK_TEXT_VIEW(text));
 	mark = gtk_text_buffer_get_insert(buffer);
@@ -9794,7 +9794,7 @@ static void textview_delete_forward_character (GtkTextView *text)
 	GtkTextMark *mark;
 	GtkTextIter ins, end_iter;
 
-	g_return_if_fail(GTK_IS_TEXT_VIEW(text));
+	cm_return_if_fail(GTK_IS_TEXT_VIEW(text));
 
 	buffer = gtk_text_view_get_buffer(GTK_TEXT_VIEW(text));
 	mark = gtk_text_buffer_get_insert(buffer);
@@ -9811,7 +9811,7 @@ static void textview_delete_backward_character (GtkTextView *text)
 	GtkTextMark *mark;
 	GtkTextIter ins, end_iter;
 
-	g_return_if_fail(GTK_IS_TEXT_VIEW(text));
+	cm_return_if_fail(GTK_IS_TEXT_VIEW(text));
 
 	buffer = gtk_text_view_get_buffer(GTK_TEXT_VIEW(text));
 	mark = gtk_text_buffer_get_insert(buffer);
@@ -9828,7 +9828,7 @@ static void textview_delete_forward_word (GtkTextView *text)
 	GtkTextMark *mark;
 	GtkTextIter ins, end_iter;
 
-	g_return_if_fail(GTK_IS_TEXT_VIEW(text));
+	cm_return_if_fail(GTK_IS_TEXT_VIEW(text));
 
 	buffer = gtk_text_view_get_buffer(GTK_TEXT_VIEW(text));
 	mark = gtk_text_buffer_get_insert(buffer);
@@ -9845,7 +9845,7 @@ static void textview_delete_backward_word (GtkTextView *text)
 	GtkTextMark *mark;
 	GtkTextIter ins, end_iter;
 
-	g_return_if_fail(GTK_IS_TEXT_VIEW(text));
+	cm_return_if_fail(GTK_IS_TEXT_VIEW(text));
 
 	buffer = gtk_text_view_get_buffer(GTK_TEXT_VIEW(text));
 	mark = gtk_text_buffer_get_insert(buffer);
@@ -9862,7 +9862,7 @@ static void textview_delete_line (GtkTextView *text)
 	GtkTextMark *mark;
 	GtkTextIter ins, start_iter, end_iter;
 
-	g_return_if_fail(GTK_IS_TEXT_VIEW(text));
+	cm_return_if_fail(GTK_IS_TEXT_VIEW(text));
 
 	buffer = gtk_text_view_get_buffer(GTK_TEXT_VIEW(text));
 	mark = gtk_text_buffer_get_insert(buffer);
@@ -9887,7 +9887,7 @@ static void textview_delete_to_line_end (GtkTextView *text)
 	GtkTextMark *mark;
 	GtkTextIter ins, end_iter;
 
-	g_return_if_fail(GTK_IS_TEXT_VIEW(text));
+	cm_return_if_fail(GTK_IS_TEXT_VIEW(text));
 
 	buffer = gtk_text_view_get_buffer(GTK_TEXT_VIEW(text));
 	mark = gtk_text_buffer_get_insert(buffer);
@@ -10386,9 +10386,9 @@ static void compose_show_first_last_header(Compose *compose, gboolean show_first
 {
 	GtkAdjustment *vadj;
 
-	g_return_if_fail(compose);
-	g_return_if_fail(GTK_IS_WIDGET(compose->header_table));
-	g_return_if_fail(GTK_IS_VIEWPORT(compose->header_table->parent));
+	cm_return_if_fail(compose);
+	cm_return_if_fail(GTK_IS_WIDGET(compose->header_table));
+	cm_return_if_fail(GTK_IS_VIEWPORT(compose->header_table->parent));
 
 	vadj = gtk_viewport_get_vadjustment(GTK_VIEWPORT(compose->header_table->parent));
 	gtk_adjustment_set_value(vadj, (show_first ? vadj->lower : vadj->upper));
@@ -10402,7 +10402,7 @@ static void text_inserted(GtkTextBuffer *buffer, GtkTextIter *iter,
 				(G_OBJECT(compose->text), "paste_as_quotation"));
 	GtkTextMark *mark;
 
-	g_return_if_fail(text != NULL);
+	cm_return_if_fail(text != NULL);
 
 	g_signal_handlers_block_by_func(G_OBJECT(buffer),
 					G_CALLBACK(text_inserted),
@@ -10568,9 +10568,9 @@ static PrefsAccount *compose_guess_forward_account_from_msginfo(MsgInfo *msginfo
 {
 	PrefsAccount *account = NULL;
 	
-	g_return_val_if_fail(msginfo, NULL);
-	g_return_val_if_fail(msginfo->folder, NULL);
-	g_return_val_if_fail(msginfo->folder->prefs, NULL);
+	cm_return_val_if_fail(msginfo, NULL);
+	cm_return_val_if_fail(msginfo->folder, NULL);
+	cm_return_val_if_fail(msginfo->folder->prefs, NULL);
 
 	if (msginfo->folder->prefs->enable_default_account)
 		account = account_find_from_id(msginfo->folder->prefs->default_account);
@@ -10621,7 +10621,7 @@ gboolean compose_close(Compose *compose)
 		g_timeout_add (500, (GSourceFunc) compose_close, compose);
 		return FALSE;
 	}
-	g_return_val_if_fail(compose, FALSE);
+	cm_return_val_if_fail(compose, FALSE);
 	gtkut_widget_get_uposition(compose->window, &x, &y);
 	if (!compose->batch) {
 		prefs_common.compose_x = x;
@@ -10659,9 +10659,9 @@ static void compose_reply_from_messageview_real(MessageView *msgview, GSList *ms
 	Compose *compose = NULL;
 	gchar *s_system = NULL;
 
-	g_return_if_fail(msgview != NULL);
+	cm_return_if_fail(msgview != NULL);
 
-	g_return_if_fail(msginfo_list != NULL);
+	cm_return_if_fail(msginfo_list != NULL);
 
 	if (g_slist_length(msginfo_list) == 1 && !opening_multiple) {
 		MimeInfo *mimeinfo = messageview_get_selected_mime_part(msgview);
@@ -10772,7 +10772,7 @@ static MsgInfo *compose_msginfo_new_from_compose(Compose *compose)
 	GSList *list;
 	gchar buf[BUFFSIZE];
 
-	g_return_val_if_fail( compose != NULL, NULL );
+	cm_return_val_if_fail( compose != NULL, NULL );
 
 	newmsginfo = procmsg_msginfo_new();
 
@@ -10841,7 +10841,7 @@ static MsgInfo *compose_msginfo_new_from_compose(Compose *compose)
 static void compose_set_dictionaries_from_folder_prefs(Compose *compose,
 						FolderItem *folder_item)
 {
-	g_return_if_fail(compose != NULL);
+	cm_return_if_fail(compose != NULL);
 
 	if (compose->gtkaspell && folder_item && folder_item->prefs) {
 		FolderItemPrefs *prefs = folder_item->prefs;

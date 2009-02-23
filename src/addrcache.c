@@ -84,31 +84,31 @@ AddressCache *addrcache_create() {
 * Properties.
 */
 ItemFolder *addrcache_get_root_folder( AddressCache *cache ) {
-	g_return_val_if_fail( cache != NULL, NULL );
+	cm_return_val_if_fail( cache != NULL, NULL );
 	return cache->rootFolder;
 }
 GList *addrcache_get_list_folder( AddressCache *cache ) {
-	g_return_val_if_fail( cache != NULL, NULL );
+	cm_return_val_if_fail( cache != NULL, NULL );
 	return cache->rootFolder->listFolder;
 }
 GList *addrcache_get_list_person( AddressCache *cache ) {
-	g_return_val_if_fail( cache != NULL, NULL );
+	cm_return_val_if_fail( cache != NULL, NULL );
 	return cache->rootFolder->listPerson;
 }
 gboolean addrcache_get_dirty( AddressCache *cache ) {
-	g_return_val_if_fail( cache != NULL, FALSE );
+	cm_return_val_if_fail( cache != NULL, FALSE );
 	return cache->dirtyFlag;
 }
 void addrcache_set_dirty( AddressCache *cache, const gboolean value ) {
-	g_return_if_fail( cache != NULL );
+	cm_return_if_fail( cache != NULL );
 	cache->dirtyFlag = value;
 }
 gchar *addrcache_get_name( AddressCache *cache ) {
-	g_return_val_if_fail( cache != NULL, NULL );
+	cm_return_val_if_fail( cache != NULL, NULL );
 	return cache->name;
 }
 void addrcache_set_name( AddressCache *cache, const gchar *value ) {
-	g_return_if_fail( cache != NULL );
+	cm_return_if_fail( cache != NULL );
 	cache->name = mgu_replace_string( cache->name, value );
 	g_strstrip( cache->name );
 	cache->dirtyFlag = TRUE;
@@ -118,7 +118,7 @@ void addrcache_set_name( AddressCache *cache, const gchar *value ) {
 * Generate next ID.
 */
 static void addrcache_next_id( AddressCache *cache ) {
-	g_return_if_fail( cache != NULL );
+	cm_return_if_fail( cache != NULL );
 	cache->nextID++;
 }
 
@@ -159,7 +159,7 @@ static gint addrcache_free_item_vis( gpointer key, gpointer value, gpointer data
 * Free hash table of address cache items.
 */
 static void addrcache_free_item_hash( GHashTable *table ) {
-	g_return_if_fail( table != NULL );
+	cm_return_if_fail( table != NULL );
 	g_hash_table_foreach_remove( table, addrcache_free_item_vis, NULL );
 }
 
@@ -190,7 +190,7 @@ static void addrcache_free_all_folders( ItemFolder *parent ) {
 * Clear the address cache.
 */
 void addrcache_clear( AddressCache *cache ) {
-	g_return_if_fail( cache != NULL );
+	cm_return_if_fail( cache != NULL );
 
 	/* g_print( "...addrcache_clear :%s:\n", cache->name ); */
 	/* Free up folders and hash table */
@@ -217,7 +217,7 @@ void addrcache_clear( AddressCache *cache ) {
 * Free address cache.
 */
 void addrcache_free( AddressCache *cache ) {
-	g_return_if_fail( cache != NULL );
+	cm_return_if_fail( cache != NULL );
 
 	cache->dirtyFlag = FALSE;
 	addrcache_free_all_folders( cache->rootFolder );
@@ -272,7 +272,7 @@ gboolean addrcache_mark_file( AddressCache *cache, gchar *path ) {
 * Dump entire address cache hash table contents.
 */
 void addrcache_print( AddressCache *cache, FILE *stream ) {
-	g_return_if_fail( cache != NULL );
+	cm_return_if_fail( cache != NULL );
 	fprintf( stream, "AddressCache:\n" );
 	fprintf( stream, "cache id : %s\n",  cache->cacheID );
 	fprintf( stream, "next id  : %d\n",  cache->nextID );
@@ -286,8 +286,8 @@ void addrcache_print( AddressCache *cache, FILE *stream ) {
  * Allocate ID for person.
  */
 void addrcache_id_person( AddressCache *cache, ItemPerson *person ) {
-	g_return_if_fail( cache != NULL );
-	g_return_if_fail( person != NULL );
+	cm_return_if_fail( cache != NULL );
+	cm_return_if_fail( person != NULL );
 	if( ADDRITEM_ID(person) ) return;
 	addrcache_next_id( cache );
 	ADDRITEM_ID(person) = g_strdup_printf( "%d", cache->nextID );
@@ -297,8 +297,8 @@ void addrcache_id_person( AddressCache *cache, ItemPerson *person ) {
  * Allocate ID for group.
  */
 void addrcache_id_group( AddressCache *cache, ItemGroup *group ) {
-	g_return_if_fail( cache != NULL );
-	g_return_if_fail( group != NULL );
+	cm_return_if_fail( cache != NULL );
+	cm_return_if_fail( group != NULL );
 	if( ADDRITEM_ID(group) ) return;
 	addrcache_next_id( cache );
 	ADDRITEM_ID(group) = g_strdup_printf( "%d", cache->nextID );
@@ -308,8 +308,8 @@ void addrcache_id_group( AddressCache *cache, ItemGroup *group ) {
  * Allocate ID for folder.
  */
 void addrcache_id_folder( AddressCache *cache, ItemFolder *folder ) {
-	g_return_if_fail( cache != NULL );
-	g_return_if_fail( folder != NULL );
+	cm_return_if_fail( cache != NULL );
+	cm_return_if_fail( folder != NULL );
 	if( ADDRITEM_ID(folder) ) return;
 	addrcache_next_id( cache );
 	ADDRITEM_ID(folder) = g_strdup_printf( "%d", cache->nextID );
@@ -319,8 +319,8 @@ void addrcache_id_folder( AddressCache *cache, ItemFolder *folder ) {
  * Allocate ID for email address.
  */
 void addrcache_id_email( AddressCache *cache, ItemEMail *email ) {
-	g_return_if_fail( cache != NULL );
-	g_return_if_fail( email != NULL );
+	cm_return_if_fail( cache != NULL );
+	cm_return_if_fail( email != NULL );
 	if( ADDRITEM_ID(email) ) return;
 	addrcache_next_id( cache );
 	ADDRITEM_ID(email) = g_strdup_printf( "%d", cache->nextID );
@@ -330,8 +330,8 @@ void addrcache_id_email( AddressCache *cache, ItemEMail *email ) {
  * Allocate ID for user attribute.
  */
 void addrcache_id_attribute( AddressCache *cache, UserAttribute *attrib ) {
-	g_return_if_fail( cache != NULL );
-	g_return_if_fail( attrib != NULL );
+	cm_return_if_fail( cache != NULL );
+	cm_return_if_fail( attrib != NULL );
 	if( attrib->uid ) return;
 	addrcache_next_id( cache );
 	attrib->uid = g_strdup_printf( "%d", cache->nextID );
@@ -366,8 +366,8 @@ static gboolean addrcache_hash_add_email( AddressCache *cache, ItemEMail *email 
 * return: TRUE if item added.
 */
 gboolean addrcache_hash_add_group( AddressCache *cache, ItemGroup *group ) {
-	g_return_val_if_fail( cache != NULL, FALSE );
-	g_return_val_if_fail( group != NULL, FALSE );
+	cm_return_val_if_fail( cache != NULL, FALSE );
+	cm_return_val_if_fail( group != NULL, FALSE );
 
 	if( g_hash_table_lookup( cache->itemHash, ADDRITEM_ID(group) ) ) {
 		return FALSE;
@@ -381,8 +381,8 @@ gboolean addrcache_hash_add_group( AddressCache *cache, ItemGroup *group ) {
 * return: TRUE if item added.
 */
 gboolean addrcache_hash_add_folder( AddressCache *cache, ItemFolder *folder ) {
-	g_return_val_if_fail( cache != NULL, FALSE );
-	g_return_val_if_fail( folder != NULL, FALSE );
+	cm_return_val_if_fail( cache != NULL, FALSE );
+	cm_return_val_if_fail( folder != NULL, FALSE );
 
 	if( g_hash_table_lookup( cache->itemHash, ADDRITEM_ID(folder) ) ) {
 		return FALSE;
@@ -397,9 +397,9 @@ gboolean addrcache_hash_add_folder( AddressCache *cache, ItemFolder *folder ) {
 gboolean addrcache_folder_add_person( AddressCache *cache, ItemFolder *folder, ItemPerson *item ) {
 	gboolean retVal = FALSE;
 
-	g_return_val_if_fail( cache != NULL, FALSE );
-	g_return_val_if_fail( folder != NULL, FALSE );
-	g_return_val_if_fail( item != NULL, FALSE );
+	cm_return_val_if_fail( cache != NULL, FALSE );
+	cm_return_val_if_fail( folder != NULL, FALSE );
+	cm_return_val_if_fail( item != NULL, FALSE );
 
 	retVal = addrcache_hash_add_person( cache, item );
 	if( retVal ) {
@@ -415,9 +415,9 @@ gboolean addrcache_folder_add_person( AddressCache *cache, ItemFolder *folder, I
 gboolean addrcache_folder_add_folder( AddressCache *cache, ItemFolder *folder, ItemFolder *item ) {
 	gboolean retVal = FALSE;
 
-	g_return_val_if_fail( cache != NULL, FALSE );
-	g_return_val_if_fail( folder != NULL, FALSE );
-	g_return_val_if_fail( item != NULL, FALSE );
+	cm_return_val_if_fail( cache != NULL, FALSE );
+	cm_return_val_if_fail( folder != NULL, FALSE );
+	cm_return_val_if_fail( item != NULL, FALSE );
 
 	retVal = addrcache_hash_add_folder( cache, item );
 	if( retVal ) {
@@ -433,9 +433,9 @@ gboolean addrcache_folder_add_folder( AddressCache *cache, ItemFolder *folder, I
 gboolean addrcache_folder_add_group( AddressCache *cache, ItemFolder *folder, ItemGroup *item ) {
 	gboolean retVal = FALSE;
 
-	g_return_val_if_fail( cache != NULL, FALSE );
-	g_return_val_if_fail( folder != NULL, FALSE );
-	g_return_val_if_fail( item != NULL, FALSE );
+	cm_return_val_if_fail( cache != NULL, FALSE );
+	cm_return_val_if_fail( folder != NULL, FALSE );
+	cm_return_val_if_fail( item != NULL, FALSE );
 
 	retVal = addrcache_hash_add_group( cache, item );
 	if( retVal ) {
@@ -452,8 +452,8 @@ gboolean addrcache_folder_add_group( AddressCache *cache, ItemFolder *folder, It
 gboolean addrcache_add_person( AddressCache *cache, ItemPerson *person ) {
 	gboolean retVal = FALSE;
 
-	g_return_val_if_fail( cache != NULL, FALSE );
-	g_return_val_if_fail( person != NULL, FALSE );
+	cm_return_val_if_fail( cache != NULL, FALSE );
+	cm_return_val_if_fail( person != NULL, FALSE );
 
 	retVal = addrcache_hash_add_person( cache, person );
 	if( retVal ) {
@@ -470,9 +470,9 @@ gboolean addrcache_add_person( AddressCache *cache, ItemPerson *person ) {
 gboolean addrcache_person_add_email( AddressCache *cache, ItemPerson *person, ItemEMail *email ) {
 	gboolean retVal = FALSE;
 
-	g_return_val_if_fail( cache != NULL, FALSE );
-	g_return_val_if_fail( person != NULL, FALSE );
-	g_return_val_if_fail( email != NULL, FALSE );
+	cm_return_val_if_fail( cache != NULL, FALSE );
+	cm_return_val_if_fail( person != NULL, FALSE );
+	cm_return_val_if_fail( email != NULL, FALSE );
 
 	retVal = addrcache_hash_add_email( cache, email );
 	if( retVal ) {
@@ -489,8 +489,8 @@ gboolean addrcache_person_add_email( AddressCache *cache, ItemPerson *person, It
 gboolean addrcache_add_group( AddressCache *cache, ItemGroup *group ) {
 	gboolean retVal = FALSE;
 
-	g_return_val_if_fail( cache != NULL, FALSE );
-	g_return_val_if_fail( group != NULL, FALSE );
+	cm_return_val_if_fail( cache != NULL, FALSE );
+	cm_return_val_if_fail( group != NULL, FALSE );
 
 	retVal = addrcache_hash_add_group( cache, group );
 	if( retVal ) {
@@ -505,9 +505,9 @@ gboolean addrcache_add_group( AddressCache *cache, ItemGroup *group ) {
 * return: TRUE if item added.
 */
 gboolean addrcache_group_add_email( AddressCache *cache, ItemGroup *group, ItemEMail *email ) {
-	g_return_val_if_fail( cache != NULL, FALSE );
-	g_return_val_if_fail( group != NULL, FALSE );
-	g_return_val_if_fail( email != NULL, FALSE );
+	cm_return_val_if_fail( cache != NULL, FALSE );
+	cm_return_val_if_fail( group != NULL, FALSE );
+	cm_return_val_if_fail( email != NULL, FALSE );
 
 	addritem_group_add_email( group, email );
 	cache->dirtyFlag = TRUE;
@@ -521,8 +521,8 @@ gboolean addrcache_group_add_email( AddressCache *cache, ItemGroup *group, ItemE
 gboolean addrcache_add_folder( AddressCache *cache, ItemFolder *folder ) {
 	gboolean retVal = FALSE;
 
-	g_return_val_if_fail( cache != NULL, FALSE );
-	g_return_val_if_fail( folder != NULL, FALSE );
+	cm_return_val_if_fail( cache != NULL, FALSE );
+	cm_return_val_if_fail( folder != NULL, FALSE );
 
 	retVal = addrcache_hash_add_folder( cache, folder );
 	if( retVal ) {
@@ -543,8 +543,8 @@ void addrcache_folder_move_person(
 {
 	ItemFolder *parent;
 
-	g_return_if_fail( cache != NULL );
-	g_return_if_fail( person != NULL );
+	cm_return_if_fail( cache != NULL );
+	cm_return_if_fail( person != NULL );
 
 	parent = ( ItemFolder * ) ADDRITEM_PARENT(person);
 	if( ! parent ) parent = cache->rootFolder;
@@ -565,8 +565,8 @@ void addrcache_folder_move_group(
 {
 	ItemFolder *parent;
 
-	g_return_if_fail( cache != NULL );
-	g_return_if_fail( group != NULL );
+	cm_return_if_fail( cache != NULL );
+	cm_return_if_fail( group != NULL );
 
 	parent = ( ItemFolder * ) ADDRITEM_PARENT(group);
 	if( ! parent ) parent = cache->rootFolder;
@@ -587,8 +587,8 @@ void addrcache_folder_move_folder(
 {
 	ItemFolder *parent;
 
-	g_return_if_fail( cache != NULL );
-	g_return_if_fail( folder != NULL );
+	cm_return_if_fail( cache != NULL );
+	cm_return_if_fail( folder != NULL );
 
 	parent = ( ItemFolder * ) ADDRITEM_PARENT(folder);
 	if( ! parent ) parent = cache->rootFolder;
@@ -607,7 +607,7 @@ AddrItemObject *addrcache_get_object( AddressCache *cache, const gchar *uid ) {
 	AddrItemObject *obj = NULL;
 	gchar *uidH;
 
-	g_return_val_if_fail( cache != NULL, NULL );
+	cm_return_val_if_fail( cache != NULL, NULL );
 
 	if( uid == NULL || *uid == '\0' ) return NULL;
 	obj = ( AddrItemObject * ) g_hash_table_lookup( cache->itemHash, uid );
@@ -646,7 +646,7 @@ ItemEMail *addrcache_get_email( AddressCache *cache, const gchar *eid ) {
 ItemGroup *addrcache_remove_group( AddressCache *cache, ItemGroup *group ) {
 	AddrItemObject *obj = NULL;
 
-	g_return_val_if_fail( cache != NULL, NULL );
+	cm_return_val_if_fail( cache != NULL, NULL );
 
 	if( group ) {
 		gchar *uid = ADDRITEM_ID(group);
@@ -675,7 +675,7 @@ ItemGroup *addrcache_remove_group( AddressCache *cache, ItemGroup *group ) {
 ItemEMail *addrcache_remove_email( AddressCache *cache, ItemEMail *email ) {
 	AddrItemObject *obj = NULL;
 
-	g_return_val_if_fail( cache != NULL, NULL );
+	cm_return_val_if_fail( cache != NULL, NULL );
 
 	if( email ) {
 		gchar *eid = ADDRITEM_ID(email);
@@ -719,7 +719,7 @@ ItemPerson *addrcache_remove_person( AddressCache *cache, ItemPerson *person ) {
 	AddrItemObject *obj = NULL;
 	gchar *uid;
 
-	g_return_val_if_fail( cache != NULL, NULL );
+	cm_return_val_if_fail( cache != NULL, NULL );
 
 	if( person ) {
 		uid = ADDRITEM_ID(person);
@@ -767,7 +767,7 @@ ItemPerson *addrcache_remove_person( AddressCache *cache, ItemPerson *person ) {
 ItemEMail *addrcache_person_remove_email( AddressCache *cache, ItemPerson *person, ItemEMail *email ) {
 	ItemEMail *found = NULL;
 
-	g_return_val_if_fail( cache != NULL, NULL );
+	cm_return_val_if_fail( cache != NULL, NULL );
 
 	if( person && email ) {
 		found = addritem_person_remove_email( person, email );
@@ -817,7 +817,7 @@ static void addrcache_get_grp_person_vis( gpointer key, gpointer value, gpointer
 GList *addrcache_get_group_for_person( AddressCache *cache, ItemPerson *person ) {
 	GList *list = NULL;
 
-	g_return_val_if_fail( cache != NULL, NULL );
+	cm_return_val_if_fail( cache != NULL, NULL );
 
 	cache->tempList = NULL;
 	cache->tempList = g_list_append( cache->tempList, person );
@@ -849,7 +849,7 @@ static void addrcache_get_all_persons_vis( gpointer key, gpointer value, gpointe
 GList *addrcache_get_all_persons( AddressCache *cache ) {
 	GList *list = NULL;
 
-	g_return_val_if_fail( cache != NULL, NULL );
+	cm_return_val_if_fail( cache != NULL, NULL );
 
 	cache->tempList = NULL;
 	g_hash_table_foreach( cache->itemHash, addrcache_get_all_persons_vis, cache );
@@ -879,7 +879,7 @@ static void addrcache_get_all_groups_vis( gpointer key, gpointer value, gpointer
 GList *addrcache_get_all_groups( AddressCache *cache ) {
 	GList *list = NULL;
 
-	g_return_val_if_fail( cache != NULL, NULL );
+	cm_return_val_if_fail( cache != NULL, NULL );
 
 	cache->tempList = NULL;
 	g_hash_table_foreach( cache->itemHash, addrcache_get_all_groups_vis, cache );
@@ -896,7 +896,7 @@ GList *addrcache_get_all_groups( AddressCache *cache ) {
 ItemFolder *addrcache_remove_folder( AddressCache *cache, ItemFolder *folder ) {
 	AddrItemObject *obj = NULL;
 
-	g_return_val_if_fail( cache != NULL, NULL );
+	cm_return_val_if_fail( cache != NULL, NULL );
 
 	if( folder ) {
 		gchar *uid = ADDRITEM_ID(folder);
@@ -950,7 +950,7 @@ ItemFolder *addrcache_remove_folder( AddressCache *cache, ItemFolder *folder ) {
 ItemFolder *addrcache_remove_folder_delete( AddressCache *cache, ItemFolder *folder ) {
 	AddrItemObject *obj = NULL;
 
-	g_return_val_if_fail( cache != NULL, NULL );
+	cm_return_val_if_fail( cache != NULL, NULL );
 
 	if( folder ) {
 		gchar *uid = ADDRITEM_ID(folder);
@@ -1019,7 +1019,7 @@ ItemPerson *addrcache_add_contact(
 	ItemEMail *email = NULL;
 	ItemFolder *f = folder;
 
-	g_return_val_if_fail( cache != NULL, NULL );
+	cm_return_val_if_fail( cache != NULL, NULL );
 
 	if( ! f ) f = cache->rootFolder;
 
@@ -1053,7 +1053,7 @@ ItemFolder *addrcache_add_new_folder( AddressCache *cache, ItemFolder *parent )
 	ItemFolder *folder;
 	ItemFolder *p = parent;
 
-	g_return_val_if_fail( cache != NULL, NULL );
+	cm_return_val_if_fail( cache != NULL, NULL );
 
 	if( !p ) p = cache->rootFolder;
 	folder = addritem_create_item_folder();

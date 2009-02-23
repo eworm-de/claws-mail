@@ -160,7 +160,7 @@ static gboolean addr_compl_defer_select_destruct(CompletionWindow *window);
  */
 static gchar *completion_func(gpointer data)
 {
-	g_return_val_if_fail(data != NULL, NULL);
+	cm_return_val_if_fail(data != NULL, NULL);
 
 	return ((completion_entry *)data)->string;
 } 
@@ -171,7 +171,7 @@ static gchar *completion_func(gpointer data)
 static void init_all(void)
 {
 	g_completion = g_completion_new(completion_func);
-	g_return_if_fail(g_completion != NULL);
+	cm_return_if_fail(g_completion != NULL);
 }
 
 static void free_all_addresses(void)
@@ -267,7 +267,7 @@ static gint add_address(const gchar *name, const gchar *address,
 
 	ae = g_new0(address_entry, 1);
 
-	g_return_val_if_fail(ae != NULL, -1);
+	cm_return_val_if_fail(ae != NULL, -1);
 
 	ae->name    = g_strdup(name);
 	ae->address = g_strdup(address);		
@@ -499,7 +499,7 @@ guint complete_address(const gchar *str)
 	guint  cpl = 0;
 	completion_entry *ce = NULL;
 
-	g_return_val_if_fail(str != NULL, 0);
+	cm_return_val_if_fail(str != NULL, 0);
 
 	/* g_completion is case sensitive */
 	d = g_utf8_strdown(str, -1);
@@ -549,7 +549,7 @@ guint complete_matches_found(const gchar *str)
 	GList *result = NULL;
 	gchar *d = NULL;
 
-	g_return_val_if_fail(str != NULL, 0);
+	cm_return_val_if_fail(str != NULL, 0);
 
 	/* g_completion is case sensitive */
 	d = g_utf8_strdown(str, -1);
@@ -815,7 +815,7 @@ static void completion_window_advance_selection(GtkTreeView *list_view, gboolean
 	GtkTreeIter iter;
 	GtkTreeModel *model;
 
-	g_return_if_fail(list_view != NULL);
+	cm_return_if_fail(list_view != NULL);
 
 	selection = gtk_tree_view_get_selection(list_view);
 	if (!gtk_tree_selection_get_selected(selection, &model, &iter))
@@ -1081,8 +1081,8 @@ static void completion_window_apply_selection(GtkTreeView *list_view,
 	GtkTreeModel *model;
 	GtkTreeIter iter;
 	gboolean is_group = FALSE;
-	g_return_if_fail(list_view != NULL);
-	g_return_if_fail(entry != NULL);
+	cm_return_if_fail(list_view != NULL);
+	cm_return_if_fail(entry != NULL);
 	GList *grp_emails = NULL;
 
 	selection = gtk_tree_view_get_selection(list_view);
@@ -1140,8 +1140,8 @@ void address_completion_start(GtkWidget *mainwindow)
  */
 void address_completion_register_entry(GtkEntry *entry, gboolean allow_commas)
 {
-	g_return_if_fail(entry != NULL);
-	g_return_if_fail(GTK_IS_ENTRY(entry));
+	cm_return_if_fail(entry != NULL);
+	cm_return_if_fail(GTK_IS_ENTRY(entry));
 
 	/* add hooked property */
 	g_object_set_data(G_OBJECT(entry), ENTRY_DATA_TAB_HOOK, entry);
@@ -1164,12 +1164,12 @@ void address_completion_unregister_entry(GtkEntry *entry)
 {
 	GtkObject *entry_obj;
 
-	g_return_if_fail(entry != NULL);
-	g_return_if_fail(GTK_IS_ENTRY(entry));
+	cm_return_if_fail(entry != NULL);
+	cm_return_if_fail(GTK_IS_ENTRY(entry));
 
 	entry_obj = g_object_get_data(G_OBJECT(entry), ENTRY_DATA_TAB_HOOK);
-	g_return_if_fail(entry_obj);
-	g_return_if_fail(G_OBJECT(entry_obj) == G_OBJECT(entry));
+	cm_return_if_fail(entry_obj);
+	cm_return_if_fail(G_OBJECT(entry_obj) == G_OBJECT(entry));
 
 	/* has the hooked property? */
 	g_object_set_data(G_OBJECT(entry), ENTRY_DATA_TAB_HOOK, NULL);
@@ -1264,7 +1264,7 @@ static gboolean address_completion_complete_address_in_entry(GtkEntry *entry,
 	gint ncount, cursor_pos;
 	gchar *searchTerm, *new = NULL;
 
-	g_return_val_if_fail(entry != NULL, FALSE);
+	cm_return_val_if_fail(entry != NULL, FALSE);
 
 	if (!GTK_WIDGET_HAS_FOCUS(entry)) return FALSE;
 
@@ -1399,10 +1399,10 @@ static gboolean completion_window_button_press(GtkWidget *widget,
 	gint cursor_pos;
 	gboolean restore = TRUE;
 
-	g_return_val_if_fail(compWin != NULL, FALSE);
+	cm_return_val_if_fail(compWin != NULL, FALSE);
 
 	entry = compWin->entry;
-	g_return_val_if_fail(entry != NULL, FALSE);
+	cm_return_val_if_fail(entry != NULL, FALSE);
 
 	/* Test where mouse was clicked */
 	event_widget = gtk_get_event_widget((GdkEvent *)event);
@@ -1447,11 +1447,11 @@ static gboolean completion_window_key_press(GtkWidget *widget,
 	gint cursor_pos;
 	GtkWidget *list_view;
 	GtkWidget *parent;
-	g_return_val_if_fail(compWin != NULL, FALSE);
+	cm_return_val_if_fail(compWin != NULL, FALSE);
 
 	entry = compWin->entry;
 	list_view = compWin->list_view;
-	g_return_val_if_fail(entry != NULL, FALSE);
+	cm_return_val_if_fail(entry != NULL, FALSE);
 
 	/* allow keyboard navigation in the alternatives tree view */
 	if (event->keyval == GDK_Up || event->keyval == GDK_Down ||

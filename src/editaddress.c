@@ -215,7 +215,7 @@ static void edit_person_set_widgets_title( gchar *text )
 {
 	gchar *label = NULL;
 
-	g_return_if_fail( text != NULL );
+	cm_return_if_fail( text != NULL );
 
 	gtk_label_set_text(GTK_LABEL(personeditdlg.title), "");
 	label = g_markup_printf_escaped("<b>%s</b>", text);
@@ -632,7 +632,7 @@ static void edit_person_attrib_add( gpointer data ) {
 static void edit_person_size_allocate_cb(GtkWidget *widget,
 					 GtkAllocation *allocation)
 {
-	g_return_if_fail(allocation != NULL);
+	cm_return_if_fail(allocation != NULL);
 
 	prefs_common.addressbookeditpersonwin_width = allocation->width;
 	prefs_common.addressbookeditpersonwin_height = allocation->height;

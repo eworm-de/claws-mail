@@ -331,8 +331,8 @@ SC_HTMLParser *sc_html_parser_new(FILE *fp, CodeConverter *conv)
 {
 	SC_HTMLParser *parser;
 
-	g_return_val_if_fail(fp != NULL, NULL);
-	g_return_val_if_fail(conv != NULL, NULL);
+	cm_return_val_if_fail(fp != NULL, NULL);
+	cm_return_val_if_fail(conv != NULL, NULL);
 
 	parser = g_new0(SC_HTMLParser, 1);
 	parser->fp = fp;
@@ -522,7 +522,7 @@ static SC_HTMLTag *sc_html_get_tag(const gchar *str)
 	gchar *tmp;
 	guchar *tmpp;
 
-	g_return_val_if_fail(str != NULL, NULL);
+	cm_return_val_if_fail(str != NULL, NULL);
 
 	if (*str == '\0' || *str == '!') return NULL;
 
@@ -721,7 +721,7 @@ static void sc_html_parse_special(SC_HTMLParser *parser)
 	const gchar *val;
 
 	parser->state = SC_HTML_UNKNOWN;
-	g_return_if_fail(*parser->bufp == '&');
+	cm_return_if_fail(*parser->bufp == '&');
 
 	/* &foo; */
 	for (n = 0; parser->bufp[n] != '\0' && parser->bufp[n] != ';'; n++)
@@ -750,7 +750,7 @@ static void sc_html_get_parenthesis(SC_HTMLParser *parser, gchar *buf, gint len)
 	gchar *p;
 
 	buf[0] = '\0';
-	g_return_if_fail(*parser->bufp == '<');
+	cm_return_if_fail(*parser->bufp == '<');
 
 	/* ignore comment / CSS / script stuff */
 	if (!strncmp(parser->bufp, "<!--", 4)) {

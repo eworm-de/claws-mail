@@ -104,7 +104,7 @@ gedit_print_job_info_destroy (GeditPrintJobInfo *pji, gboolean save_config)
 {
 	gedit_debug (DEBUG_PRINT, "");
 
-	g_return_if_fail (pji != NULL);
+	cm_return_if_fail (pji != NULL);
 
 	if (pji->pjob != NULL)
 		g_object_unref (pji->pjob);
@@ -122,14 +122,14 @@ get_print_dialog (GeditPrintJobInfo *pji, GtkWindow *parent)
 
 	gedit_debug (DEBUG_PRINT, "");
 
-	g_return_val_if_fail (pji != NULL, NULL);
+	cm_return_val_if_fail (pji != NULL, NULL);
 	
 	if (!gtk_text_buffer_get_selection_bounds (GTK_TEXT_BUFFER (pji->doc), NULL, NULL))
 		selection_flag = GNOME_PRINT_RANGE_SELECTION_UNSENSITIVE;
 	else
 		selection_flag = GNOME_PRINT_RANGE_SELECTION;
 	
-	g_return_val_if_fail(pji->pjob != NULL, NULL);
+	cm_return_val_if_fail(pji->pjob != NULL, NULL);
 	config = gtk_source_print_job_get_config (pji->pjob);
 	
 	dialog = g_object_new (GNOME_TYPE_PRINT_DIALOG, "print_config", config, NULL);
@@ -171,7 +171,7 @@ gedit_print_dialog_response (GtkWidget *dialog, int response, GeditPrintJobInfo 
 		break;
 
 	default:
-		g_return_if_reached ();
+		cm_return_if_reached ();
 	}
 
 	switch (response)
@@ -331,7 +331,7 @@ gedit_print (GtkTextView *view)
 
 	gedit_debug (DEBUG_PRINT, "");
 
-	g_return_if_fail (view != NULL);
+	cm_return_if_fail (view != NULL);
 
 	pji = gedit_print_job_info_new (view);
 	pji->preview = PREVIEW_NO;
@@ -405,13 +405,13 @@ gedit_print_job_info_new (GtkTextView* view)
 	
 	gedit_debug (DEBUG_PRINT, "");
 	
-	g_return_val_if_fail (view != NULL, NULL);
+	cm_return_val_if_fail (view != NULL, NULL);
 
 	buffer = gtk_text_view_get_buffer (view);
-	g_return_val_if_fail (buffer != NULL, NULL);
+	cm_return_val_if_fail (buffer != NULL, NULL);
 
 	config = gnome_print_config_default ();
-	g_return_val_if_fail (config != NULL, NULL);
+	cm_return_val_if_fail (config != NULL, NULL);
 
 	gnome_print_config_set_int (config, GNOME_PRINT_KEY_NUM_COPIES, 1);
 	gnome_print_config_set_boolean (config, GNOME_PRINT_KEY_COLLATE, FALSE);

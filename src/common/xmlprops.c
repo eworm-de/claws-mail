@@ -40,6 +40,7 @@
 #include "xml.h"
 #include "mgutils.h"
 #include "xmlprops.h"
+#include "utils.h"
 
 /* Element tag names */
 #define XMLS_ELTAG_PROP_LIST     "property-list"
@@ -74,7 +75,7 @@ XmlProperty *xmlprops_create( void ) {
  * Properties - file path.
  */
 void xmlprops_set_path( XmlProperty *props, const gchar *value ) {
-	g_return_if_fail( props != NULL );
+	cm_return_if_fail( props != NULL );
 	props->path = mgu_replace_string( props->path, value );
 }
 
@@ -94,7 +95,7 @@ static gint xmlprops_free_entry_vis( gpointer key, gpointer value, gpointer data
  * Enter: props Property object.
  */
 static void xmlprops_clear( XmlProperty *props ) {
-	g_return_if_fail( props != NULL );
+	cm_return_if_fail( props != NULL );
 	g_hash_table_foreach_remove(
 		props->propertyTable, xmlprops_free_entry_vis, NULL );
 }
@@ -104,7 +105,7 @@ static void xmlprops_clear( XmlProperty *props ) {
  * Enter: props Property object.
  */
 void xmlprops_free( XmlProperty *props ) {
-	g_return_if_fail( props != NULL );
+	cm_return_if_fail( props != NULL );
 
 	/* Clear property table */
 	xmlprops_clear( props );
@@ -235,7 +236,7 @@ out:
  * return: Status code.
  */
 gint xmlprops_save_file( XmlProperty *props ) {
-	g_return_val_if_fail( props != NULL, -1 );
+	cm_return_val_if_fail( props != NULL, -1 );
 
 	props->retVal = MGU_NO_FILE;
 	if( props->path == NULL || *props->path == '\0' ) return props->retVal;
@@ -299,7 +300,7 @@ static void xmlprops_read_props( XmlProperty *props, XMLFile *file ) {
 gint xmlprops_load_file( XmlProperty *props ) {
 	XMLFile *file = NULL;
 
-	g_return_val_if_fail( props != NULL, -1 );
+	cm_return_val_if_fail( props != NULL, -1 );
 	props->retVal = MGU_NO_FILE;
 	file = xml_open_file( props->path );
 	if( file == NULL ) {
@@ -332,7 +333,7 @@ void xmlprops_set_property(
 	gchar *key = NULL;
 	gchar *val;
 
-	g_return_if_fail( props != NULL );
+	cm_return_if_fail( props != NULL );
 	if( name == NULL || strlen( name ) == 0 ) return;
 	if( value == NULL || strlen( value ) == 0 ) return;
 	val = g_hash_table_lookup( props->propertyTable, name );
@@ -357,7 +358,7 @@ void xmlprops_set_property_i(
 {
 	gchar buf[32];
 
-	g_return_if_fail( props != NULL );
+	cm_return_if_fail( props != NULL );
 	sprintf( buf, "%d", value );
 	xmlprops_set_property( props, name, buf );
 }
@@ -371,7 +372,7 @@ void xmlprops_set_property_i(
 void xmlprops_set_property_b(
 		XmlProperty *props, const gchar *name, const gboolean value )
 {
-	g_return_if_fail( props != NULL );
+	cm_return_if_fail( props != NULL );
 	if( value ) {
 		xmlprops_set_property( props, name, "y" );
 	}
@@ -390,7 +391,7 @@ void xmlprops_get_property_s(
 		XmlProperty *props, const gchar *name, gchar *buffer ) {
 	gchar *val;
 
-	g_return_if_fail( props != NULL );
+	cm_return_if_fail( props != NULL );
 	if( buffer == NULL ) return;
 	val = g_hash_table_lookup( props->propertyTable, name );
 	if( val ) {
@@ -410,7 +411,7 @@ gint xmlprops_get_property_i( XmlProperty *props, const gchar *name ) {
 	gint value;
 
 	value = 0;
-	g_return_val_if_fail( props != NULL, value );
+	cm_return_val_if_fail( props != NULL, value );
 	val = g_hash_table_lookup( props->propertyTable, name );
 	if( val ) {
 		endptr = NULL;
@@ -430,7 +431,7 @@ gboolean xmlprops_get_property_b( XmlProperty *props, const gchar *name ) {
 	gboolean value;
 
 	value = FALSE;
-	g_return_val_if_fail( props != NULL, value );
+	cm_return_val_if_fail( props != NULL, value );
 	val = g_hash_table_lookup( props->propertyTable, name );
 	if( val ) {
 		value = ( g_ascii_strcasecmp( val, "y" ) == 0 );

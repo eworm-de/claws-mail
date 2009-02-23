@@ -63,7 +63,7 @@ LdifFile *ldif_create() {
  * \param value    Value of access flag.
  */
 void ldif_set_file( LdifFile *ldifFile, const gchar *value ) {
-	g_return_if_fail( ldifFile != NULL );
+	cm_return_if_fail( ldifFile != NULL );
 
 	if( ldifFile->path ) {
 		if( strcmp( ldifFile->path, value ) != 0 )
@@ -83,7 +83,7 @@ void ldif_set_file( LdifFile *ldifFile, const gchar *value ) {
  * \param value    File specification.
  */
 void ldif_set_accessed( LdifFile *ldifFile, const gboolean value ) {
-	g_return_if_fail( ldifFile != NULL );
+	cm_return_if_fail( ldifFile != NULL );
 	ldifFile->accessFlag = value;
 }
 
@@ -123,7 +123,7 @@ static void ldif_free_fieldrec( Ldif_FieldRec *rec ) {
  *              named.
  */
 void ldif_field_set_name( Ldif_FieldRec *rec, const gchar *value ) {
-	g_return_if_fail( rec != NULL );
+	cm_return_if_fail( rec != NULL );
 
 	if( ! rec->reserved ) {
 		rec->userName = mgu_replace_string( rec->userName, value );
@@ -138,7 +138,7 @@ void ldif_field_set_name( Ldif_FieldRec *rec, const gchar *value ) {
  *              fields cannot be unselected.
  */
 void ldif_field_set_selected( Ldif_FieldRec *rec, const gboolean value ) {
-	g_return_if_fail( rec != NULL );
+	cm_return_if_fail( rec != NULL );
 
 	if( ! rec->reserved ) {
 		rec->selected = value;
@@ -151,7 +151,7 @@ void ldif_field_set_selected( Ldif_FieldRec *rec, const gboolean value ) {
  * \param rec   LDIF field object.
  */
 void ldif_field_toggle( Ldif_FieldRec *rec ) {
-	g_return_if_fail( rec != NULL );
+	cm_return_if_fail( rec != NULL );
 
 	if( ! rec->reserved ) {
 		rec->selected = !rec->selected;
@@ -177,7 +177,7 @@ static gint ldif_hash_free_vis( gpointer key, gpointer value, gpointer data ) {
  * \param ldifFile LDIF import control object.
  */
 void ldif_free( LdifFile *ldifFile ) {
-	g_return_if_fail( ldifFile != NULL );
+	cm_return_if_fail( ldifFile != NULL );
 
 	/* Close file */
 	if( ldifFile->file ) fclose( ldifFile->file );
@@ -234,7 +234,7 @@ static gint ldif_open_file( LdifFile* ldifFile ) {
  * \param  ldifFile LDIF import control object.
  */
 static void ldif_close_file( LdifFile *ldifFile ) {
-	g_return_if_fail( ldifFile != NULL );
+	cm_return_if_fail( ldifFile != NULL );
 	if( ldifFile->file ) fclose( ldifFile->file );
 	ldifFile->file = NULL;
 }
@@ -923,7 +923,7 @@ static void ldif_read_tag_list( LdifFile *ldifFile ) {
  * \return Status code.
  */
 gint ldif_import_data( LdifFile *ldifFile, AddressCache *cache ) {
-	g_return_val_if_fail( ldifFile != NULL, MGU_BAD_ARGS );
+	cm_return_val_if_fail( ldifFile != NULL, MGU_BAD_ARGS );
 	ldifFile->retVal = MGU_SUCCESS;
 	addrcache_clear( cache );
 	cache->dataRead = FALSE;
@@ -947,7 +947,7 @@ gint ldif_import_data( LdifFile *ldifFile, AddressCache *cache ) {
  * \return Status code.
  */
 gint ldif_read_tags( LdifFile *ldifFile ) {
-	g_return_val_if_fail( ldifFile != NULL, MGU_BAD_ARGS );
+	cm_return_val_if_fail( ldifFile != NULL, MGU_BAD_ARGS );
 	ldifFile->retVal = MGU_SUCCESS;
 	if( ldifFile->dirtyFlag ) {
 		ldif_open_file( ldifFile );
@@ -973,7 +973,7 @@ gint ldif_read_tags( LdifFile *ldifFile ) {
 GList *ldif_get_fieldlist( LdifFile *ldifFile ) {
 	GList *list = NULL;
 
-	g_return_val_if_fail( ldifFile != NULL, NULL );
+	cm_return_val_if_fail( ldifFile != NULL, NULL );
 	if( ldifFile->hashFields ) {
 		ldifFile->tempList = NULL;
 		g_hash_table_foreach( ldifFile->hashFields, ldif_hash2list_vis, ldifFile );

@@ -877,13 +877,13 @@ static void mainwindow_colorlabel_menu_item_activate_item_cb(GtkMenuItem *menu_i
 	GSList *sel;
 
 	mainwin = (MainWindow *)data;
-	g_return_if_fail(mainwin != NULL);
+	cm_return_if_fail(mainwin != NULL);
 
 	sel = summary_get_selection(mainwin->summaryview);
 	if (!sel) return;
 
 	menu = GTK_MENU_SHELL(mainwin->colorlabel_menu);
-	g_return_if_fail(menu != NULL);
+	cm_return_if_fail(menu != NULL);
 
 	Xalloca(items, (N_COLOR_LABELS + 1) * sizeof(GtkWidget *), return);
 
@@ -933,7 +933,7 @@ static void mainwindow_colorlabel_menu_item_activate_cb(GtkWidget *widget,
 	MainWindow *mainwin;
 
 	mainwin = g_object_get_data(G_OBJECT(widget), "mainwin");
-	g_return_if_fail(mainwin != NULL);
+	cm_return_if_fail(mainwin != NULL);
 
 	/* "dont_toggle" state set? */
 	if (g_object_get_data(G_OBJECT(mainwin->colorlabel_menu),
@@ -960,13 +960,13 @@ static void mainwindow_tags_menu_item_activate_item_cb(GtkMenuItem *menu_item,
 					NULL, NULL);
 	gint sel_len;
 	mainwin = (MainWindow *)data;
-	g_return_if_fail(mainwin != NULL);
+	cm_return_if_fail(mainwin != NULL);
 
 	sel = summary_get_selection(mainwin->summaryview);
 	if (!sel) return;
 
 	menu = GTK_MENU_SHELL(mainwin->tags_menu);
-	g_return_if_fail(menu != NULL);
+	cm_return_if_fail(menu != NULL);
 
 	/* NOTE: don't return prematurely because we set the "dont_toggle"
 	 * state for check menu items */
@@ -1042,7 +1042,7 @@ static void mainwindow_tags_menu_item_activate_cb(GtkWidget *widget,
 	MainWindow *mainwin;
 
 	mainwin = g_object_get_data(G_OBJECT(widget), "mainwin");
-	g_return_if_fail(mainwin != NULL);
+	cm_return_if_fail(mainwin != NULL);
 
 	/* "dont_toggle" state set? */
 	if (g_object_get_data(G_OBJECT(mainwin->tags_menu),
@@ -1153,7 +1153,7 @@ static void mainwindow_tags_menu_item_apply_tags_activate_cb(GtkWidget *widget,
 	MainWindow *mainwin;
 
 	mainwin = g_object_get_data(G_OBJECT(widget), "mainwin");
-	g_return_if_fail(mainwin != NULL);
+	cm_return_if_fail(mainwin != NULL);
 
 	/* "dont_toggle" state set? */
 	if (g_object_get_data(G_OBJECT(mainwin->tags_menu),
@@ -2449,7 +2449,7 @@ void main_window_reflect_prefs_custom_colors(MainWindow *mainwin)
 
 	/* re-create colorlabel submenu */
 	menu = GTK_MENU_SHELL(mainwin->colorlabel_menu);
-	g_return_if_fail(menu != NULL);
+	cm_return_if_fail(menu != NULL);
 
 	/* clear items. get item pointers. */
 	for (cur = menu->children; cur != NULL && cur->data != NULL; cur = cur->next) {
@@ -2477,7 +2477,7 @@ static gboolean main_window_reflect_tags_changes_real(gpointer data)
 	}
 	/* re-create tags submenu */
 	menu = GTK_MENU_SHELL(mainwin->tags_menu);
-	g_return_val_if_fail(menu != NULL, FALSE);
+	cm_return_val_if_fail(menu != NULL, FALSE);
 
 	/* clear items. get item pointers. */
 	for (cur = menu->children; cur != NULL && cur->data != NULL; cur = cur->next) {
@@ -4071,10 +4071,10 @@ static void main_window_reply_cb(GtkAction *gaction, gpointer data)
 	DO_ACTION("Message/Redirect", COMPOSE_REDIRECT);
 	DO_ACTION("Message/FollowupReply", COMPOSE_FOLLOWUP_AND_REPLY_TO);
 
-	g_return_if_fail(msgview != NULL);
+	cm_return_if_fail(msgview != NULL);
 
 	msginfo_list = summary_get_selection(mainwin->summaryview);
-	g_return_if_fail(msginfo_list != NULL);
+	cm_return_if_fail(msginfo_list != NULL);
 	compose_reply_from_messageview(msgview, msginfo_list, action);
 	g_slist_free(msginfo_list);
 }
@@ -4205,7 +4205,7 @@ static void online_switch_clicked (GtkButton *btn, gpointer data)
 
 	mainwin = (MainWindow *) data;
 	
-	g_return_if_fail(mainwin != NULL);
+	cm_return_if_fail(mainwin != NULL);
 	
 	if (btn == GTK_BUTTON(mainwin->online_switch)) {
 #ifndef GENERIC_UMPC
@@ -4637,7 +4637,7 @@ static void process_cb(GtkAction *action, gpointer data)
 {
 	MainWindow *mainwin = (MainWindow *)data;
 	FolderItem *item = mainwin->summaryview->folder_item;	
-	g_return_if_fail(item != NULL);
+	cm_return_if_fail(item != NULL);
 
 	item->processing_pending = TRUE;
 	folder_item_apply_processing(item);	
@@ -5035,11 +5035,11 @@ static gboolean mainwindow_focus_in_event(GtkWidget *widget, GdkEventFocus *focu
 {
 	SummaryView *summary;
 
-	g_return_val_if_fail(data, FALSE);
+	cm_return_val_if_fail(data, FALSE);
 	if (!g_list_find(mainwin_list, data))
 		return TRUE;
 	summary = ((MainWindow *)data)->summaryview;
-	g_return_val_if_fail(summary, FALSE);
+	cm_return_val_if_fail(summary, FALSE);
 
 	if (GTK_CMCLIST(summary->ctree)->selection && 
 	    g_list_length(GTK_CMCLIST(summary->ctree)->selection) > 1)

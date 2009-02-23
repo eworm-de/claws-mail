@@ -62,7 +62,7 @@ QuotePage *prefs_quote;
 
 static void prefs_quote_set_default_new_msg_fmt(void)
 {
-	g_return_if_fail(prefs_quote->text_format != NULL);
+	cm_return_if_fail(prefs_quote->text_format != NULL);
 
 	pref_set_textview_from_pref(GTK_TEXT_VIEW(prefs_quote->text_format),
 		_("Hello,\\n"));
@@ -70,7 +70,7 @@ static void prefs_quote_set_default_new_msg_fmt(void)
 
 static void prefs_quote_set_default_reply_fmt(void)
 {
-	g_return_if_fail(prefs_quote->text_quotefmt != NULL);
+	cm_return_if_fail(prefs_quote->text_quotefmt != NULL);
 
 	pref_set_textview_from_pref(GTK_TEXT_VIEW(prefs_quote->text_quotefmt),
 		_("On %d\\n%f wrote:\\n\\n%q"));
@@ -78,7 +78,7 @@ static void prefs_quote_set_default_reply_fmt(void)
 
 static void prefs_quote_set_default_forward_fmt(void)
 {
-	g_return_if_fail(prefs_quote->text_fw_quotefmt != NULL);
+	cm_return_if_fail(prefs_quote->text_fw_quotefmt != NULL);
 
 	pref_set_textview_from_pref(GTK_TEXT_VIEW(prefs_quote->text_fw_quotefmt),
 		_("\\n\\nBegin forwarded message:\\n\\n"

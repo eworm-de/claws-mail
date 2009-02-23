@@ -160,7 +160,7 @@ void exporthtml_free( ExportHtmlCtl *ctl ) {
 	GList *node;
 	StylesheetEntry *entry;
 
-	g_return_if_fail( ctl != NULL );
+	cm_return_if_fail( ctl != NULL );
 
 	/* Free stylesheet list */
 	node = ctl->listStyle;
@@ -222,23 +222,23 @@ static StylesheetEntry *exporthtml_find_stylesheet( ExportHtmlCtl *ctl ) {
 }
 
 void exporthtml_set_stylesheet( ExportHtmlCtl *ctl, const gint value ) {
-	g_return_if_fail( ctl != NULL );
+	cm_return_if_fail( ctl != NULL );
 	ctl->stylesheet = value;
 }
 void exporthtml_set_name_format( ExportHtmlCtl *ctl, const gint value ) {
-	g_return_if_fail( ctl != NULL );
+	cm_return_if_fail( ctl != NULL );
 	ctl->nameFormat = value;
 }
 void exporthtml_set_banding( ExportHtmlCtl *ctl, const gboolean value ) {
-	g_return_if_fail( ctl != NULL );
+	cm_return_if_fail( ctl != NULL );
 	ctl->banding = value;
 }
 void exporthtml_set_link_email( ExportHtmlCtl *ctl, const gboolean value ) {
-	g_return_if_fail( ctl != NULL );
+	cm_return_if_fail( ctl != NULL );
 	ctl->linkEMail = value;
 }
 void exporthtml_set_attributes( ExportHtmlCtl *ctl, const gboolean value ) {
-	g_return_if_fail( ctl != NULL );
+	cm_return_if_fail( ctl != NULL );
 	ctl->showAttribs = value;
 }
 

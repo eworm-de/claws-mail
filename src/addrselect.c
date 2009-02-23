@@ -132,7 +132,7 @@ AddrSelectList *addrselect_list_create() {
 void addrselect_list_clear( AddrSelectList *asl ) {
 	GList *node;
 
-	g_return_if_fail( asl != NULL );
+	cm_return_if_fail( asl != NULL );
 	node = asl->listSelect;
 	while( node ) {
 		AddrSelectItem *item;
@@ -151,7 +151,7 @@ void addrselect_list_clear( AddrSelectList *asl ) {
  * \param asl  List to free.
  */
 void addrselect_list_free( AddrSelectList *asl ) {
-	g_return_if_fail( asl != NULL );
+	cm_return_if_fail( asl != NULL );
 
 	addrselect_list_clear( asl );
 	g_list_free( asl->listSelect );
@@ -165,7 +165,7 @@ void addrselect_list_free( AddrSelectList *asl ) {
  * \return <i>TRUE</i> if list is empty.
  */
 gboolean addrselect_test_empty( AddrSelectList *asl ) {
-	g_return_val_if_fail( asl != NULL, TRUE );
+	cm_return_val_if_fail( asl != NULL, TRUE );
 	return ( asl->listSelect == NULL );
 }
 
@@ -179,7 +179,7 @@ gboolean addrselect_test_empty( AddrSelectList *asl ) {
 GList *addrselect_get_list( AddrSelectList *asl ) {
 	GList *node, *list;
 
-	g_return_val_if_fail(asl != NULL, NULL);
+	cm_return_val_if_fail(asl != NULL, NULL);
 	list = NULL;
 	node = asl->listSelect;
 	while( node ) {
@@ -270,7 +270,7 @@ static AddrSelectItem *addrselect_list_find( GList *list, AddrItemObject *aio ) 
 void addrselect_list_add_obj( AddrSelectList *asl, AddrItemObject *aio, gchar *cacheID ) {
 	AddrSelectItem *item;
 
-	g_return_if_fail( asl != NULL );
+	cm_return_if_fail( asl != NULL );
 	if( aio == NULL ) return;
 
 	/* Check whether object is in list */
@@ -293,7 +293,7 @@ void addrselect_list_add_obj( AddrSelectList *asl, AddrItemObject *aio, gchar *c
  * \param  cacheID Cache ID. Should be g_free() after calling function.
  */
 void addrselect_list_add( AddrSelectList *asl, AddrSelectItem *item, gchar *cacheID ) {
-	g_return_if_fail( asl != NULL );
+	cm_return_if_fail( asl != NULL );
 	if( item == NULL ) return;
 
 	/* Check whether object is in list */
@@ -312,7 +312,7 @@ void addrselect_list_remove( AddrSelectList *asl, AddrItemObject *aio ) {
 	GList *node;
 	AddrSelectItem *item;
 
-	g_return_if_fail( asl != NULL );
+	cm_return_if_fail( asl != NULL );
 	if( aio == NULL ) return;
 	node = asl->listSelect;
 	while( node ) {
@@ -338,7 +338,7 @@ GList *addrselect_build_list( AddrSelectList *asl ) {
 	GList *list;
 	GList *node;
 
-	g_return_val_if_fail(asl != NULL, NULL);
+	cm_return_val_if_fail(asl != NULL, NULL);
 	list = NULL;
 	node = asl->listSelect;
 	while( node != NULL ) {

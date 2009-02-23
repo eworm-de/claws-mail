@@ -24,6 +24,10 @@
 #  include "config.h"
 #endif
 
+#ifdef HAVE_BACKTRACE
+#include <execinfo.h>
+#endif
+
 #include <glib.h>
 #include <glib-object.h>
 #include <stdio.h>
@@ -178,6 +182,58 @@ typedef gint64 goffset;
 }
 
 #define IS_ASCII(c) (((guchar) c) <= 0177 ? 1 : 0)
+
+/* from NetworkManager */
+#if HAVE_BACKTRACE
+#define print_backtrace()						\
+G_STMT_START								\
+{									\
+	void *_call_stack[512];						\
+	int  _call_stack_size;						\
+	char **_symbols;						\
+	_call_stack_size = backtrace (_call_stack,			\
+				      G_N_ELEMENTS (_call_stack));	\
+	_symbols = backtrace_symbols (_call_stack, _call_stack_size);	\
+	if (_symbols != NULL)						\
+	{								\
+		int _i;							\
+		_i = 0;							\
+		g_print ("traceback:\n");				\
+		while (_i < _call_stack_size)				\
+		{							\
+			g_print ("%d:\t%s\n", _i, _symbols[_i]);	\
+			_i++;						\
+		}							\
+		free (_symbols);					\
+	}								\
+}									\
+G_STMT_END
+#else
+#define print_backtrace()						\
+G_STMT_START								\
+{									\
+}									\
+G_STMT_END
+#endif
+
+
+#define cm_return_val_if_fail(expr,val) G_STMT_START {			\
+	if (!(expr)) {							\
+		g_print("%s:%d Condition %s failed\n", __FILE__, __LINE__, #expr);\
+		print_backtrace();					\
+		g_print("\n");						\
+		return val;						\
+	} 								\
+} G_STMT_END
+
+#define cm_return_if_fail(expr) G_STMT_START {				\
+	if (!(expr)) {							\
+		g_print("%s:%d Condition %s failed\n", __FILE__, __LINE__, #expr);\
+		print_backtrace();					\
+		g_print("\n");						\
+		return;							\
+	} 								\
+} G_STMT_END
 
 #ifdef __cplusplus
 extern "C" {

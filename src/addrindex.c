@@ -398,7 +398,7 @@ AddressDataSource *addrindex_create_datasource( AddressIfType ifType ) {
 void addrindex_free_datasource( AddressDataSource *ds ) {
 	AddressInterface *iface;
 
-	g_return_if_fail( ds != NULL );
+	cm_return_if_fail( ds != NULL );
 
 	iface = ds->interface;
 	if( ds->rawDataSource != NULL ) {
@@ -512,8 +512,8 @@ gchar *addrindex_get_cache_id( AddressIndex *addrIndex, AddressDataSource *ds ) 
 	AddrBookBase *adbase;
 	AddressCache *cache;
 
-	g_return_val_if_fail( addrIndex != NULL, NULL );
-	g_return_val_if_fail( ds != NULL, NULL );
+	cm_return_val_if_fail( addrIndex != NULL, NULL );
+	cm_return_val_if_fail( ds != NULL, NULL );
 
 	adbase = ( AddrBookBase * ) ds->rawDataSource;
 	if( adbase ) {
@@ -535,8 +535,8 @@ gchar *addrindex_get_cache_id( AddressIndex *addrIndex, AddressDataSource *ds ) 
 static AddressDataSource *addrindex_get_datasource(
 		AddressIndex *addrIndex, const gchar *cacheID )
 {
-	g_return_val_if_fail( addrIndex != NULL, NULL );
-	g_return_val_if_fail( cacheID != NULL, NULL );
+	cm_return_val_if_fail( addrIndex != NULL, NULL );
+	cm_return_val_if_fail( cacheID != NULL, NULL );
 	return ( AddressDataSource * ) g_hash_table_lookup( addrIndex->hashCache, cacheID );
 }
 
@@ -551,8 +551,8 @@ AddressCache *addrindex_get_cache( AddressIndex *addrIndex, const gchar *cacheID
 	AddrBookBase *adbase;
 	AddressCache *cache;
 
-	g_return_val_if_fail( addrIndex != NULL, NULL );
-	g_return_val_if_fail( cacheID != NULL, NULL );
+	cm_return_val_if_fail( addrIndex != NULL, NULL );
+	cm_return_val_if_fail( cacheID != NULL, NULL );
 
 	cache = NULL;
 	ds = addrindex_get_datasource( addrIndex, cacheID );
@@ -653,7 +653,7 @@ AddressIndex *addrindex_create_index( void ) {
  * \param value Path to index file.
  */
 void addrindex_set_file_path( AddressIndex *addrIndex, const gchar *value ) {
-	g_return_if_fail( addrIndex != NULL );
+	cm_return_if_fail( addrIndex != NULL );
 	addrIndex->filePath = mgu_replace_string( addrIndex->filePath, value );
 }
 
@@ -663,7 +663,7 @@ void addrindex_set_file_path( AddressIndex *addrIndex, const gchar *value ) {
  * \param value File name.
  */
 void addrindex_set_file_name( AddressIndex *addrIndex, const gchar *value ) {
-	g_return_if_fail( addrIndex != NULL );
+	cm_return_if_fail( addrIndex != NULL );
 	addrIndex->fileName = mgu_replace_string( addrIndex->fileName, value );
 }
 
@@ -673,7 +673,7 @@ void addrindex_set_file_name( AddressIndex *addrIndex, const gchar *value ) {
  * \return List of address interfaces.
  */
 GList *addrindex_get_interface_list( AddressIndex *addrIndex ) {
-	g_return_val_if_fail( addrIndex != NULL, NULL );
+	cm_return_val_if_fail( addrIndex != NULL, NULL );
 	return addrIndex->interfaceList;
 }
 
@@ -700,7 +700,7 @@ void addrindex_teardown( void ) {
 void addrindex_free_index( AddressIndex *addrIndex ) {
 	GList *node;
 
-	g_return_if_fail( addrIndex != NULL );
+	cm_return_if_fail( addrIndex != NULL );
 
 	/* Search stuff */
 	g_list_free( addrIndex->searchOrder );
@@ -754,7 +754,7 @@ void addrindex_free_index( AddressIndex *addrIndex ) {
  * \parem stream    Stream to print.
 */
 void addrindex_print_index( AddressIndex *addrIndex, FILE *stream ) {
-	g_return_if_fail( addrIndex != NULL );
+	cm_return_if_fail( addrIndex != NULL );
 	fprintf( stream, "AddressIndex:\n" );
 	fprintf( stream, "\tfile path: '%s'\n", addrIndex->filePath );
 	fprintf( stream, "\tfile name: '%s'\n", addrIndex->fileName );
@@ -778,7 +778,7 @@ static AddressInterface *addrindex_get_interface(
 	AddressInterface *retVal = NULL;
 	GList *node;
 
-	g_return_val_if_fail( addrIndex != NULL, NULL );
+	cm_return_val_if_fail( addrIndex != NULL, NULL );
 
 	node = addrIndex->interfaceList;
 	while( node ) {
@@ -808,8 +808,8 @@ AddressDataSource *addrindex_index_add_datasource(
 	AddressInterface *iface;
 	AddressDataSource *ds = NULL;
 
-	g_return_val_if_fail( addrIndex != NULL, NULL );
-	g_return_val_if_fail( dataSource != NULL, NULL );
+	cm_return_val_if_fail( addrIndex != NULL, NULL );
+	cm_return_val_if_fail( dataSource != NULL, NULL );
 
 	iface = addrindex_get_interface( addrIndex, ifType );
 	if( iface ) {
@@ -839,8 +839,8 @@ AddressDataSource *addrindex_index_remove_datasource(
 	AddressDataSource *retVal = FALSE;
 	AddressInterface *iface;
 
-	g_return_val_if_fail( addrIndex != NULL, NULL );
-	g_return_val_if_fail( dataSource != NULL, NULL );
+	cm_return_val_if_fail( addrIndex != NULL, NULL );
+	cm_return_val_if_fail( dataSource != NULL, NULL );
 
 	iface = addrindex_get_interface( addrIndex, dataSource->type );
 	if( iface ) {
@@ -1662,7 +1662,7 @@ static gint addrindex_read_file( AddressIndex *addrIndex ) {
 	XMLFile *file = NULL;
 	gchar *fileSpec = NULL;
 
-	g_return_val_if_fail( addrIndex != NULL, -1 );
+	cm_return_val_if_fail( addrIndex != NULL, -1 );
 
 	fileSpec = g_strconcat( addrIndex->filePath, G_DIR_SEPARATOR_S, addrIndex->fileName, NULL );
 	addrIndex->retVal = MGU_NO_FILE;
@@ -1750,7 +1750,7 @@ static gint addrindex_write_to( AddressIndex *addrIndex, const gchar *newFile ) 
 	PrefFile *pfile;
 #endif
 
-	g_return_val_if_fail( addrIndex != NULL, -1 );
+	cm_return_val_if_fail( addrIndex != NULL, -1 );
 
 	fileSpec = g_strconcat( addrIndex->filePath, G_DIR_SEPARATOR_S, newFile, NULL );
 	addrIndex->retVal = MGU_OPEN_FILE;
@@ -1807,7 +1807,7 @@ gint addrindex_save_data( AddressIndex *addrIndex ) {
 	GList *nodeDS;
 #endif
 	
-	g_return_val_if_fail( addrIndex != NULL, -1 );
+	cm_return_val_if_fail( addrIndex != NULL, -1 );
 
 #ifdef USE_LDAP
 	nodeIf = addrIndex->interfaceList;
@@ -2337,7 +2337,7 @@ static gboolean addrindex_create_new_book( AddressIndex *addrIndex, gchar *displ
 *	"Gathered addresses" - a new address book.
 */
 gint addrindex_read_data( AddressIndex *addrIndex ) {
-	g_return_val_if_fail( addrIndex != NULL, -1 );
+	cm_return_val_if_fail( addrIndex != NULL, -1 );
 
 	addrIndex->conversionError = FALSE;
 	addrindex_read_file( addrIndex );
@@ -2368,7 +2368,7 @@ gint addrindex_read_data( AddressIndex *addrIndex ) {
 gint addrindex_create_new_books( AddressIndex *addrIndex ) {
 	gboolean flg;
 
-	g_return_val_if_fail( addrIndex != NULL, -1 );
+	cm_return_val_if_fail( addrIndex != NULL, -1 );
 
 	flg = addrindex_create_new_book( addrIndex, DISP_NEW_COMMON );
 	if( flg ) {

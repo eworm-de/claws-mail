@@ -248,7 +248,7 @@ static gint edit_group_list_compare_func( GtkCMCList *clist, gconstpointer ptr1,
 static void addressbook_edit_group_size_allocate_cb(GtkWidget *widget,
 					 GtkAllocation *allocation)
 {
-	g_return_if_fail(allocation != NULL);
+	cm_return_if_fail(allocation != NULL);
 
 	prefs_common.addressbookeditgroupwin_width = allocation->width;
 	prefs_common.addressbookeditgroupwin_height = allocation->height;

@@ -210,7 +210,7 @@ gboolean mh_scan_required(Folder *folder, FolderItem *item)
 	struct stat s;
 
 	path = folder_item_get_path(item);
-	g_return_val_if_fail(path != NULL, FALSE);
+	cm_return_val_if_fail(path != NULL, FALSE);
 
 	if (g_stat(path, &s) < 0) {
 		FILE_OP_ERROR(path, "stat");
@@ -244,12 +244,12 @@ static void mh_get_last_num(Folder *folder, FolderItem *item)
 	gint max = 0;
 	gint num;
 
-	g_return_if_fail(item != NULL);
+	cm_return_if_fail(item != NULL);
 
 	debug_print("mh_get_last_num(): Scanning %s ...\n", item->path?item->path:"(null)");
 
 	path = folder_item_get_path(item);
-	g_return_if_fail(path != NULL);
+	cm_return_if_fail(path != NULL);
 	if (change_dir(path) < 0) {
 		g_free(path);
 		return;
@@ -284,14 +284,14 @@ gint mh_get_num_list(Folder *folder, FolderItem *item, GSList **list, gboolean *
 	struct dirent *d;
 	gint num, nummsgs = 0;
 
-	g_return_val_if_fail(item != NULL, -1);
+	cm_return_val_if_fail(item != NULL, -1);
 
 	debug_print("mh_get_num_list(): Scanning %s ...\n", item->path?item->path:"(null)");
 
 	*old_uids_valid = TRUE;
 
 	path = folder_item_get_path(item);
-	g_return_val_if_fail(path != NULL, -1);
+	cm_return_val_if_fail(path != NULL, -1);
 	if (change_dir(path) < 0) {
 		g_free(path);
 		return -1;
@@ -320,8 +320,8 @@ static gchar *mh_fetch_msg(Folder *folder, FolderItem *item, gint num)
 	gchar *path;
 	gchar *file;
 
-	g_return_val_if_fail(item != NULL, NULL);
-	g_return_val_if_fail(num > 0, NULL);
+	cm_return_val_if_fail(item != NULL, NULL);
+	cm_return_val_if_fail(num > 0, NULL);
 
 	path = folder_item_get_path(item);
 	file = g_strconcat(path, G_DIR_SEPARATOR_S, itos(num), NULL);
@@ -340,7 +340,7 @@ static MsgInfo *mh_get_msginfo(Folder *folder, FolderItem *item, gint num)
 	MsgInfo *msginfo;
 	gchar *file;
 
-	g_return_val_if_fail(item != NULL, NULL);
+	cm_return_val_if_fail(item != NULL, NULL);
 	if (num <= 0)
 		return NULL;
 
@@ -362,7 +362,7 @@ static gchar *mh_get_new_msg_filename(FolderItem *dest)
 	gchar *destpath;
 
 	destpath = folder_item_get_path(dest);
-	g_return_val_if_fail(destpath != NULL, NULL);
+	cm_return_val_if_fail(destpath != NULL, NULL);
 
 	if (!is_dir_exist(destpath))
 		make_dir_hier(destpath);
@@ -388,7 +388,7 @@ static gint mh_add_msg(Folder *folder, FolderItem *dest, const gchar *file, MsgF
 	GSList file_list;
 	MsgFileInfo fileinfo;
 
-	g_return_val_if_fail(file != NULL, -1);
+	cm_return_val_if_fail(file != NULL, -1);
 
 	fileinfo.msginfo = NULL;
 	fileinfo.file = (gchar *)file;
@@ -407,8 +407,8 @@ static gint mh_add_msgs(Folder *folder, FolderItem *dest, GSList *file_list,
 	GSList *cur;
 	MsgFileInfo *fileinfo;
 
-	g_return_val_if_fail(dest != NULL, -1);
-	g_return_val_if_fail(file_list != NULL, -1);
+	cm_return_val_if_fail(dest != NULL, -1);
+	cm_return_val_if_fail(file_list != NULL, -1);
 
 	if (dest->last_num < 0) {
 		mh_get_last_num(folder, dest);
@@ -447,7 +447,7 @@ static gint mh_copy_msg(Folder *folder, FolderItem *dest, MsgInfo *msginfo)
 {
 	GSList msglist;
 
-	g_return_val_if_fail(msginfo != NULL, -1);
+	cm_return_val_if_fail(msginfo != NULL, -1);
 
 	msglist.data = msginfo;
 	msglist.next = NULL;
@@ -473,12 +473,12 @@ static gint mh_copy_msgs(Folder *folder, FolderItem *dest, MsgInfoList *msglist,
 	time_t last_dest_mtime = (time_t)0;
 	time_t last_src_mtime = (time_t)0;
 
-	g_return_val_if_fail(dest != NULL, -1);
-	g_return_val_if_fail(msglist != NULL, -1);
+	cm_return_val_if_fail(dest != NULL, -1);
+	cm_return_val_if_fail(msglist != NULL, -1);
 	
 	msginfo = (MsgInfo *)msglist->data;
 
-	g_return_val_if_fail(msginfo != NULL, -1);
+	cm_return_val_if_fail(msginfo != NULL, -1);
 
 	if (msginfo->folder == dest) {
 		g_warning("the src folder is identical to the dest.\n");
@@ -618,10 +618,10 @@ static gint mh_remove_msg(Folder *folder, FolderItem *item, gint num)
 	time_t last_mtime = (time_t)0;
 	gchar *file;
 
-	g_return_val_if_fail(item != NULL, -1);
+	cm_return_val_if_fail(item != NULL, -1);
 
 	file = mh_fetch_msg(folder, item, num);
-	g_return_val_if_fail(file != NULL, -1);
+	cm_return_val_if_fail(file != NULL, -1);
 
 	need_scan = mh_scan_required(folder, item);
 	last_mtime = item->mtime;
@@ -648,7 +648,7 @@ static gint mh_remove_msgs(Folder *folder, FolderItem *item,
 	MsgInfoList *cur;
 	gint total = 0, curnum = 0;
 
-	g_return_val_if_fail(item != NULL, -1);
+	cm_return_val_if_fail(item != NULL, -1);
 
 	path = folder_item_get_path(item);
 	
@@ -704,10 +704,10 @@ static gint mh_remove_all_msg(Folder *folder, FolderItem *item)
 	gchar *path;
 	gint val;
 
-	g_return_val_if_fail(item != NULL, -1);
+	cm_return_val_if_fail(item != NULL, -1);
 
 	path = folder_item_get_path(item);
-	g_return_val_if_fail(path != NULL, -1);
+	cm_return_val_if_fail(path != NULL, -1);
 	val = remove_all_numbered_files(path);
 	g_free(path);
 
@@ -736,7 +736,7 @@ static gint mh_scan_tree(Folder *folder)
 	FolderItem *item;
 	gchar *rootpath;
 
-	g_return_val_if_fail(folder != NULL, -1);
+	cm_return_val_if_fail(folder != NULL, -1);
 
 	if (!folder->node) {
 		item = folder_item_new(folder, folder->name, NULL);
@@ -776,7 +776,7 @@ static gint mh_create_tree(Folder *folder)
 {
 	gchar *rootpath;
 
-	g_return_val_if_fail(folder != NULL, -1);
+	cm_return_val_if_fail(folder != NULL, -1);
 
 	CHDIR_RETURN_VAL_IF_FAIL(get_mail_base_dir(), -1);
 	rootpath = LOCAL_FOLDER(folder)->rootpath;
@@ -797,11 +797,11 @@ static gchar *mh_item_get_path(Folder *folder, FolderItem *item)
 {
 	gchar *folder_path, *path;
 	gchar *real_path;
-	g_return_val_if_fail(folder != NULL, NULL);
-	g_return_val_if_fail(item != NULL, NULL);
+	cm_return_val_if_fail(folder != NULL, NULL);
+	cm_return_val_if_fail(item != NULL, NULL);
 
 	folder_path = g_strdup(LOCAL_FOLDER(folder)->rootpath);
-	g_return_val_if_fail(folder_path != NULL, NULL);
+	cm_return_val_if_fail(folder_path != NULL, NULL);
 
         /* FIXME: [W32] The code below does not correctly merge
            relative filenames; there should be a function to handle
@@ -843,9 +843,9 @@ static FolderItem *mh_create_folder(Folder *folder, FolderItem *parent,
 	gchar *mh_sequences_filename;
 	FILE *mh_sequences_file;
 
-	g_return_val_if_fail(folder != NULL, NULL);
-	g_return_val_if_fail(parent != NULL, NULL);
-	g_return_val_if_fail(name != NULL, NULL);
+	cm_return_val_if_fail(folder != NULL, NULL);
+	cm_return_val_if_fail(parent != NULL, NULL);
+	cm_return_val_if_fail(name != NULL, NULL);
 
 	path = folder_item_get_path(parent);
 	if (!is_dir_exist(path)) 
@@ -895,10 +895,10 @@ static gint mh_rename_folder(Folder *folder, FolderItem *item,
 	gchar *newpath, *utf8newpath;
 	gchar *paths[2];
 
-	g_return_val_if_fail(folder != NULL, -1);
-	g_return_val_if_fail(item != NULL, -1);
-	g_return_val_if_fail(item->path != NULL, -1);
-	g_return_val_if_fail(name != NULL, -1);
+	cm_return_val_if_fail(folder != NULL, -1);
+	cm_return_val_if_fail(item != NULL, -1);
+	cm_return_val_if_fail(item->path != NULL, -1);
+	cm_return_val_if_fail(name != NULL, -1);
 
 	oldpath = folder_item_get_path(item);
 	if (!is_dir_exist(oldpath))
@@ -944,9 +944,9 @@ static gint mh_remove_folder(Folder *folder, FolderItem *item)
 {
 	gchar *path;
 
-	g_return_val_if_fail(folder != NULL, -1);
-	g_return_val_if_fail(item != NULL, -1);
-	g_return_val_if_fail(item->path != NULL, -1);
+	cm_return_val_if_fail(folder != NULL, -1);
+	cm_return_val_if_fail(item != NULL, -1);
+	cm_return_val_if_fail(item->path != NULL, -1);
 
 	path = folder_item_get_path(item);
 	if (remove_dir_recursive(path) < 0) {
@@ -965,8 +965,8 @@ static MsgInfo *mh_parse_msg(const gchar *file, FolderItem *item)
 	MsgInfo *msginfo;
 	MsgFlags flags;
 
-	g_return_val_if_fail(item != NULL, NULL);
-	g_return_val_if_fail(file != NULL, NULL);
+	cm_return_val_if_fail(item != NULL, NULL);
+	cm_return_val_if_fail(file != NULL, NULL);
 
 	flags.perm_flags = MSG_NEW|MSG_UNREAD;
 	flags.tmp_flags = 0;
@@ -991,7 +991,7 @@ static gboolean mh_remove_missing_folder_items_func(GNode *node, gpointer data)
 	FolderItem *item;
 	gchar *path;
 
-	g_return_val_if_fail(node->data != NULL, FALSE);
+	cm_return_val_if_fail(node->data != NULL, FALSE);
 
 	if (G_NODE_IS_ROOT(node))
 		return FALSE;
@@ -1010,7 +1010,7 @@ static gboolean mh_remove_missing_folder_items_func(GNode *node, gpointer data)
 
 static void mh_remove_missing_folder_items(Folder *folder)
 {
-	g_return_if_fail(folder != NULL);
+	cm_return_if_fail(folder != NULL);
 
 	debug_print("searching missing folders...\n");
 
@@ -1032,8 +1032,8 @@ static void mh_scan_tree_recursive(FolderItem *item)
  	gchar *real_path, *entry, *utf8entry, *utf8name;
 	gint n_msg = 0;
 
-	g_return_if_fail(item != NULL);
-	g_return_if_fail(item->folder != NULL);
+	cm_return_if_fail(item != NULL);
+	cm_return_if_fail(item->folder != NULL);
 
 	folder = item->folder;
 
@@ -1451,7 +1451,7 @@ static void mh_set_mtime(Folder *folder, FolderItem *item)
 	struct stat s;
 	gchar *path = folder_item_get_path(item);
 
-	g_return_if_fail(path != NULL);
+	cm_return_if_fail(path != NULL);
 
 	if (g_stat(path, &s) < 0) {
 		FILE_OP_ERROR(path, "stat");

@@ -442,7 +442,7 @@ static void prefs_folder_column_set_view(void)
 		(gtk_tree_view_get_model(GTK_TREE_VIEW
 			(folder_col.shown_list_view)), NULL);
 
-	g_return_if_fail
+	cm_return_if_fail
 		(stock_n_rows + shown_n_rows == N_FOLDER_COLS);
 
 	for (row = 0; row < stock_n_rows; row++) {

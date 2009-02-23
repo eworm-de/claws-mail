@@ -92,8 +92,8 @@ gint proc_mbox(FolderItem *dest, const gchar *mbox, gboolean apply_filter,
 	gboolean printed = FALSE;
 	FolderItem *dropfolder;
 
-	g_return_val_if_fail(dest != NULL, -1);
-	g_return_val_if_fail(mbox != NULL, -1);
+	cm_return_val_if_fail(dest != NULL, -1);
+	cm_return_val_if_fail(mbox != NULL, -1);
 
 	debug_print("Getting messages from %s into %s...\n", mbox, dest->path);
 
@@ -681,9 +681,9 @@ gint export_to_mbox(FolderItem *src, const gchar *mbox)
 	GSList *mlist;
 	gint ret;
 	
-	g_return_val_if_fail(src != NULL, -1);
-	g_return_val_if_fail(src->folder != NULL, -1);
-	g_return_val_if_fail(mbox != NULL, -1);
+	cm_return_val_if_fail(src != NULL, -1);
+	cm_return_val_if_fail(src->folder != NULL, -1);
+	cm_return_val_if_fail(mbox != NULL, -1);
 
 	debug_print("Exporting messages from %s into %s...\n",
 		    src->path, mbox);

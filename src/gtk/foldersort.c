@@ -81,14 +81,14 @@ static void set_selected(FolderSortDialog *dialog, gint row)
 
 static void moveup_clicked(GtkWidget *widget, FolderSortDialog *dialog)
 {
-	g_return_if_fail(dialog->selected > 0);
+	cm_return_if_fail(dialog->selected > 0);
 
 	gtk_cmclist_swap_rows(GTK_CMCLIST(dialog->folderlist), dialog->selected, dialog->selected - 1);
 }
 
 static void movedown_clicked(GtkWidget *widget, FolderSortDialog *dialog)
 {
-	g_return_if_fail(dialog->selected < (dialog->rows - 1));
+	cm_return_if_fail(dialog->selected < (dialog->rows - 1));
 
 	gtk_cmclist_swap_rows(GTK_CMCLIST(dialog->folderlist), dialog->selected, dialog->selected + 1);
 }

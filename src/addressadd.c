@@ -128,7 +128,7 @@ static gboolean addressadd_tree_button( GtkCMCTree *ctree, GdkEventButton *event
 static void addressadd_size_allocate_cb(GtkWidget *widget,
 					 GtkAllocation *allocation)
 {
-	g_return_if_fail(allocation != NULL);
+	cm_return_if_fail(allocation != NULL);
 
 	prefs_common.addressaddwin_width = allocation->width;
 	prefs_common.addressaddwin_height = allocation->height;

@@ -92,7 +92,7 @@ static gboolean editldap_validate_criteria( gchar *criteria ) {
 	gint i;
 	gboolean errorFlag;
 
-	g_return_val_if_fail(criteria != NULL, TRUE);
+	cm_return_val_if_fail(criteria != NULL, TRUE);
 
 	errorFlag = TRUE;
 

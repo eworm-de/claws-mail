@@ -143,7 +143,7 @@ void prefs_template_open(void)
 static void prefs_template_size_allocate_cb(GtkWidget *widget,
 					 GtkAllocation *allocation)
 {
-	g_return_if_fail(allocation != NULL);
+	cm_return_if_fail(allocation != NULL);
 
 	prefs_common.templateswin_width = allocation->width;
 	prefs_common.templateswin_height = allocation->height;

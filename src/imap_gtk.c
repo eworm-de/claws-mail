@@ -184,9 +184,9 @@ static void new_folder_cb(GtkAction *action, gpointer data)
 	if (!folderview->selected) return;
 
 	item = gtk_cmctree_node_get_row_data(ctree, folderview->selected);
-	g_return_if_fail(item != NULL);
-	g_return_if_fail(item->folder != NULL);
-	g_return_if_fail(item->folder->account != NULL);
+	cm_return_if_fail(item != NULL);
+	cm_return_if_fail(item->folder != NULL);
+	cm_return_if_fail(item->folder->account != NULL);
 
 	new_folder = input_dialog_with_checkbtn
 		(_("New folder"),
@@ -251,9 +251,9 @@ static void rename_folder_cb(GtkAction *action, gpointer data)
 	gchar separator = '/';
 
 	item = folderview_get_selected_item(folderview);
-	g_return_if_fail(item != NULL);
-	g_return_if_fail(item->path != NULL);
-	g_return_if_fail(item->folder != NULL);
+	cm_return_if_fail(item != NULL);
+	cm_return_if_fail(item->path != NULL);
+	cm_return_if_fail(item->folder != NULL);
 
 	name = trim_string(item->name, 32);
 	message = g_strdup_printf(_("Input new name for '%s':"), name);
@@ -351,9 +351,9 @@ static void delete_folder_cb(GtkAction *action, gpointer data)
 	if (!folderview->selected) return;
 
 	item = gtk_cmctree_node_get_row_data(ctree, folderview->selected);
-	g_return_if_fail(item != NULL);
-	g_return_if_fail(item->path != NULL);
-	g_return_if_fail(item->folder != NULL);
+	cm_return_if_fail(item != NULL);
+	cm_return_if_fail(item->path != NULL);
+	cm_return_if_fail(item->folder != NULL);
 
 	name = trim_string(item->name, 32);
 	AUTORELEASE_STR(name, {g_free(name); return;});
@@ -401,11 +401,11 @@ static void update_tree_cb(GtkAction *action, gpointer data)
 	const gchar *a_name = gtk_action_get_name(action);
 
 	item = folderview_get_selected_item(folderview);
-	g_return_if_fail(item != NULL);
+	cm_return_if_fail(item != NULL);
 
 	summary_show(folderview->summaryview, NULL);
 
-	g_return_if_fail(item->folder != NULL);
+	cm_return_if_fail(item->folder != NULL);
 
 	DO_ACTION("FolderViewPopup/CheckNewMessages", folderview_check_new(item->folder));
 	DO_ACTION("FolderViewPopup/CheckNewFolders", folderview_rescan_tree(item->folder, FALSE));
@@ -418,7 +418,7 @@ static void sync_cb(GtkAction *action, gpointer data)
 	FolderItem *item;
 
 	item = folderview_get_selected_item(folderview);
-	g_return_if_fail(item != NULL);
+	cm_return_if_fail(item != NULL);
 	folder_synchronise(item->folder);
 }
 
@@ -427,8 +427,8 @@ void imap_gtk_synchronise(FolderItem *item, gint days)
 	MainWindow *mainwin = mainwindow_get_mainwindow();
 	FolderView *folderview = mainwin->folderview;
 	
-	g_return_if_fail(item != NULL);
-	g_return_if_fail(item->folder != NULL);
+	cm_return_if_fail(item != NULL);
+	cm_return_if_fail(item->folder != NULL);
 
 	main_window_cursor_wait(mainwin);
 	inc_lock();
@@ -495,8 +495,8 @@ static void subscribe_cb_full(FolderView *folderview, guint action)
 	if (!folderview->selected) return;
 
 	item = gtk_cmctree_node_get_row_data(ctree, folderview->selected);
-	g_return_if_fail(item != NULL);
-	g_return_if_fail(item->folder != NULL);
+	cm_return_if_fail(item != NULL);
+	cm_return_if_fail(item->folder != NULL);
 
 	name = trim_string(item->name, 32);
 	AUTORELEASE_STR(name, {g_free(name); return;});

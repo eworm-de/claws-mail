@@ -122,7 +122,7 @@ static gchar *get_part_as_string(MimeInfo *mimeinfo)
 	gchar *filename = NULL;
 	FILE *fp;
 
-	g_return_val_if_fail(mimeinfo != NULL, 0);
+	cm_return_val_if_fail(mimeinfo != NULL, 0);
 	procmime_decode_content(mimeinfo);
 	
 	if (mimeinfo->content == MIMECONTENT_MEM)
@@ -178,7 +178,7 @@ static gboolean pgpinline_is_signed(MimeInfo *mimeinfo)
 	const gchar *sig_indicator = "-----BEGIN PGP SIGNED MESSAGE-----";
 	gchar *textdata, *sigpos;
 	
-	g_return_val_if_fail(mimeinfo != NULL, FALSE);
+	cm_return_val_if_fail(mimeinfo != NULL, FALSE);
 	
 	if (procmime_mimeinfo_parent(mimeinfo) == NULL)
 		return FALSE; /* not parent */
@@ -235,7 +235,7 @@ static gint pgpinline_check_signature(MimeInfo *mimeinfo)
 	gpgme_data_t plain = NULL, cipher = NULL;
 	gpgme_error_t err;
 
-	g_return_val_if_fail(mimeinfo != NULL, 0);
+	cm_return_val_if_fail(mimeinfo != NULL, 0);
 
 	if (procmime_mimeinfo_parent(mimeinfo) == NULL) {
 		privacy_set_error(_("Incorrect part"));
@@ -246,7 +246,7 @@ static gint pgpinline_check_signature(MimeInfo *mimeinfo)
 		debug_print("type %d\n", mimeinfo->type);
 		return 0;
 	}
-	g_return_val_if_fail(mimeinfo->privacy != NULL, 0);
+	cm_return_val_if_fail(mimeinfo->privacy != NULL, 0);
 	data = (PrivacyDataPGP *) mimeinfo->privacy;
 
 	textdata = get_part_as_string(mimeinfo);
@@ -302,7 +302,7 @@ static SignatureStatus pgpinline_get_sig_status(MimeInfo *mimeinfo)
 {
 	PrivacyDataPGP *data = (PrivacyDataPGP *) mimeinfo->privacy;
 	
-	g_return_val_if_fail(data != NULL, SIGNATURE_INVALID);
+	cm_return_val_if_fail(data != NULL, SIGNATURE_INVALID);
 
 	if (data->sigstatus == NULL && 
 	    prefs_gpg_get_config()->auto_check_signatures)
@@ -315,7 +315,7 @@ static gchar *pgpinline_get_sig_info_short(MimeInfo *mimeinfo)
 {
 	PrivacyDataPGP *data = (PrivacyDataPGP *) mimeinfo->privacy;
 	
-	g_return_val_if_fail(data != NULL, g_strdup("Error"));
+	cm_return_val_if_fail(data != NULL, g_strdup("Error"));
 
 	if (data->sigstatus == NULL && 
 	    prefs_gpg_get_config()->auto_check_signatures)
@@ -328,7 +328,7 @@ static gchar *pgpinline_get_sig_info_full(MimeInfo *mimeinfo)
 {
 	PrivacyDataPGP *data = (PrivacyDataPGP *) mimeinfo->privacy;
 	
-	g_return_val_if_fail(data != NULL, g_strdup("Error"));
+	cm_return_val_if_fail(data != NULL, g_strdup("Error"));
 
 	return sgpgme_sigstat_info_full(data->ctx, data->sigstatus);
 }
@@ -340,7 +340,7 @@ static gboolean pgpinline_is_encrypted(MimeInfo *mimeinfo)
 	const gchar *enc_indicator = "-----BEGIN PGP MESSAGE-----";
 	gchar *textdata;
 	
-	g_return_val_if_fail(mimeinfo != NULL, FALSE);
+	cm_return_val_if_fail(mimeinfo != NULL, FALSE);
 	
 	if (procmime_mimeinfo_parent(mimeinfo) == NULL)
 		return FALSE; /* not parent */
@@ -396,8 +396,8 @@ static MimeInfo *pgpinline_decrypt(MimeInfo *mimeinfo)
 	gpgme_set_textmode(ctx, 1);
 	gpgme_set_armor(ctx, 1);
 
-	g_return_val_if_fail(mimeinfo != NULL, NULL);
-	g_return_val_if_fail(pgpinline_is_encrypted(mimeinfo), NULL);
+	cm_return_val_if_fail(mimeinfo != NULL, NULL);
+	cm_return_val_if_fail(pgpinline_is_encrypted(mimeinfo), NULL);
 	
 	if (procmime_mimeinfo_parent(mimeinfo) == NULL ||
 	    mimeinfo->type != MIMETYPE_TEXT) {

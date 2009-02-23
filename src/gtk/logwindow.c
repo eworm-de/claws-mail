@@ -62,11 +62,11 @@ static void size_allocate_cb(GtkWidget *widget,
 	gint *prefs_logwin_height = NULL;
 	LogInstance instance = GPOINTER_TO_INT(data);
 
-	g_return_if_fail(allocation != NULL);
+	cm_return_if_fail(allocation != NULL);
 
 	get_log_prefs(instance, &prefs_logwin_width, &prefs_logwin_height);
-	g_return_if_fail(prefs_logwin_width != NULL);
-	g_return_if_fail(prefs_logwin_height != NULL);
+	cm_return_if_fail(prefs_logwin_width != NULL);
+	cm_return_if_fail(prefs_logwin_height != NULL);
 
 	*prefs_logwin_width = allocation->width;
 	*prefs_logwin_height = allocation->height;
@@ -87,8 +87,8 @@ LogWindow *log_window_create(LogInstance instance)
 	debug_print("Creating log window...\n");
 
 	get_log_prefs(instance, &prefs_logwin_width, &prefs_logwin_height);
-	g_return_val_if_fail(prefs_logwin_width != NULL, NULL);
-	g_return_val_if_fail(prefs_logwin_height != NULL, NULL);
+	cm_return_val_if_fail(prefs_logwin_width != NULL, NULL);
+	cm_return_val_if_fail(prefs_logwin_height != NULL, NULL);
 
 	logwin = g_new0(LogWindow, 1);
 
@@ -271,7 +271,7 @@ void log_window_show_error(LogWindow *logwin)
 
 void log_window_set_clipping(LogWindow *logwin, gboolean clip, guint clip_length)
 {
-	g_return_if_fail(logwin != NULL);
+	cm_return_if_fail(logwin != NULL);
 
 	logwin->clip = clip;
 	logwin->clip_length = clip_length;
@@ -287,9 +287,9 @@ static gboolean log_window_append(gpointer source, gpointer data)
 	gchar *head = NULL;
 	const gchar *tag;
 
-	g_return_val_if_fail(logtext != NULL, TRUE);
-	g_return_val_if_fail(logtext->text != NULL, TRUE);
-	g_return_val_if_fail(logwindow != NULL, FALSE);
+	cm_return_val_if_fail(logtext != NULL, TRUE);
+	cm_return_val_if_fail(logtext->text != NULL, TRUE);
+	cm_return_val_if_fail(logwindow != NULL, FALSE);
 
 	if (logwindow->clip && !logwindow->clip_length)
 		return FALSE;
@@ -436,8 +436,8 @@ static void log_window_popup_menu_extend(GtkTextView *textview,
 {
 	GtkWidget *menuitem;
 	
-	g_return_if_fail(menu != NULL);
-	g_return_if_fail(GTK_IS_MENU_SHELL(menu));
+	cm_return_if_fail(menu != NULL);
+	cm_return_if_fail(GTK_IS_MENU_SHELL(menu));
 
 	menuitem = gtk_separator_menu_item_new();
 	gtk_menu_shell_prepend(GTK_MENU_SHELL(menu), menuitem);

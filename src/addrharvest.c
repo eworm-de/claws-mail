@@ -152,7 +152,7 @@ AddressHarvester *addrharvest_create( void ) {
  *        value     Full directory path.
  */
 void addrharvest_set_path( AddressHarvester* harvester, const gchar *value ) {
-	g_return_if_fail( harvester != NULL );
+	cm_return_if_fail( harvester != NULL );
 	harvester->path = mgu_replace_string( harvester->path, value );
 	g_strstrip( harvester->path );
 }
@@ -165,7 +165,7 @@ void addrharvest_set_path( AddressHarvester* harvester, const gchar *value ) {
 void addrharvest_set_folder_size(
 	AddressHarvester* harvester, const gint value )
 {
-	g_return_if_fail( harvester != NULL );
+	cm_return_if_fail( harvester != NULL );
 	if( value > 0 ) {
 		harvester->folderSize = value;
 	}
@@ -179,7 +179,7 @@ void addrharvest_set_folder_size(
 void addrharvest_set_recurse(
 	AddressHarvester* harvester, const gboolean value )
 {
-	g_return_if_fail( harvester != NULL );
+	cm_return_if_fail( harvester != NULL );
 	harvester->folderRecurse = value;
 }
 
@@ -221,7 +221,7 @@ void addrharvest_set_header(
 {
 	HeaderEntry *entry;
 
-	g_return_if_fail( harvester != NULL );
+	cm_return_if_fail( harvester != NULL );
 	entry = addrharvest_find( harvester, name );
 	if( entry != NULL ) {
 		entry->selected = value;
@@ -239,7 +239,7 @@ gint addrharvest_get_count( AddressHarvester* harvester, const gchar *name ) {
 	gint count;
 
 	count = -1;
-	g_return_val_if_fail( harvester != NULL, count );
+	cm_return_val_if_fail( harvester != NULL, count );
 	entry = addrharvest_find( harvester, name );
 	if( entry != NULL ) {
 		count = entry->count;
@@ -252,7 +252,7 @@ gint addrharvest_get_count( AddressHarvester* harvester, const gchar *name ) {
 * Enter: harvester Harvester.
 */
 void addrharvest_free( AddressHarvester *harvester ) {
-	g_return_if_fail( harvester != NULL );
+	cm_return_if_fail( harvester != NULL );
 
 	/* Free internal stuff */
 	addrharvest_free_table( harvester );
@@ -788,9 +788,9 @@ gint addrharvest_harvest(
 	GList *listHdr;
 
 	retVal = MGU_BAD_ARGS;
-	g_return_val_if_fail( harvester != NULL, retVal );
-	g_return_val_if_fail( cache != NULL, retVal );
-	g_return_val_if_fail( harvester->path != NULL, retVal );
+	cm_return_val_if_fail( harvester != NULL, retVal );
+	cm_return_val_if_fail( cache != NULL, retVal );
+	cm_return_val_if_fail( harvester->path != NULL, retVal );
 
 	/* Clear cache */
 	addrcache_clear( cache );
@@ -840,7 +840,7 @@ gboolean addrharvest_check_header( AddressHarvester *harvester ) {
 	GList *node;
 
 	retVal = FALSE;
-	g_return_val_if_fail( harvester != NULL, retVal );
+	cm_return_val_if_fail( harvester != NULL, retVal );
 
 	node = harvester->headerTable;
 	while( node ) {

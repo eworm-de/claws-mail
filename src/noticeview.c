@@ -168,13 +168,13 @@ void noticeview_hide(NoticeView *noticeview)
 
 void noticeview_set_text(NoticeView *noticeview, const char *text)
 {
-	g_return_if_fail(noticeview);
+	cm_return_if_fail(noticeview);
 	gtk_label_set_text(GTK_LABEL(noticeview->text), text);
 }
 
 void noticeview_set_button_text(NoticeView *noticeview, const char *text)
 {
-	g_return_if_fail(noticeview);
+	cm_return_if_fail(noticeview);
 
 	if (text != NULL) {
 		gtk_label_set_text
@@ -242,7 +242,7 @@ static gboolean noticeview_enter_notify(GtkWidget *widget,
 
 void noticeview_set_2ndbutton_text(NoticeView *noticeview, const char *text)
 {
-	g_return_if_fail(noticeview);
+	cm_return_if_fail(noticeview);
 
 	if (text != NULL) {
 		gtk_label_set_text

@@ -54,7 +54,7 @@ MuttFile *mutt_create() {
 * Properties...
 */
 void mutt_set_file( MuttFile* muttFile, const gchar *value ) {
-	g_return_if_fail( muttFile != NULL );
+	cm_return_if_fail( muttFile != NULL );
 	muttFile->path = mgu_replace_string( muttFile->path, value );
 	g_strstrip( muttFile->path );
 }
@@ -73,7 +73,7 @@ static gint mutt_free_table_vis( gpointer key, gpointer value, gpointer data ) {
 * Free up object by releasing internal memory.
 */
 void mutt_free( MuttFile *muttFile ) {
-	g_return_if_fail( muttFile != NULL );
+	cm_return_if_fail( muttFile != NULL );
 
 	/* Close file */
 	if( muttFile->file ) fclose( muttFile->file );
@@ -123,7 +123,7 @@ static gint mutt_open_file( MuttFile* muttFile ) {
 * Close file.
 */
 static void mutt_close_file( MuttFile *muttFile ) {
-	g_return_if_fail( muttFile != NULL );
+	cm_return_if_fail( muttFile != NULL );
 	if( muttFile->file ) fclose( muttFile->file );
 	muttFile->file = NULL;
 }
@@ -506,8 +506,8 @@ static void mutt_read_file( MuttFile *muttFile, AddressCache *cache ) {
 * ============================================================================================
 */
 gint mutt_import_data( MuttFile *muttFile, AddressCache *cache ) {
-	g_return_val_if_fail( muttFile != NULL, MGU_BAD_ARGS );
-	g_return_val_if_fail( cache != NULL, MGU_BAD_ARGS );
+	cm_return_val_if_fail( muttFile != NULL, MGU_BAD_ARGS );
+	cm_return_val_if_fail( cache != NULL, MGU_BAD_ARGS );
 	muttFile->retVal = MGU_SUCCESS;
 	addrcache_clear( cache );
 	cache->dataRead = FALSE;

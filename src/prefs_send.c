@@ -61,9 +61,9 @@ static gchar * prefs_common_charset_set_data_from_optmenu(GtkWidget *widget)
 	GtkTreeIter iter;
 	gchar *data = NULL;
 
-	g_return_val_if_fail(widget != NULL, NULL);
+	cm_return_val_if_fail(widget != NULL, NULL);
 
-	g_return_val_if_fail(gtk_combo_box_get_active_iter(
+	cm_return_val_if_fail(gtk_combo_box_get_active_iter(
 				GTK_COMBO_BOX(widget), &iter), NULL);
 
 	model = gtk_combo_box_get_model(GTK_COMBO_BOX(widget));
@@ -99,7 +99,7 @@ static void prefs_common_charset_set_optmenu(GtkWidget *widget, gchar *data)
 	GtkComboBox *combobox = GTK_COMBO_BOX(widget);
 	GtkTreeModel *model;
 	ComboboxSelCtx *ctx = NULL;
-	g_return_if_fail(combobox != NULL);
+	cm_return_if_fail(combobox != NULL);
 
 	model = gtk_combo_box_get_model(combobox);
 
@@ -117,7 +117,7 @@ static gboolean _combobox_separator_func(GtkTreeModel *model,
 {
 	gchar *txt = NULL;
 
-	g_return_val_if_fail(model != NULL, FALSE);
+	cm_return_val_if_fail(model != NULL, FALSE);
 
 	gtk_tree_model_get(model, iter, COMBOBOX_TEXT, &txt, -1);
 

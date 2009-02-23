@@ -32,7 +32,7 @@ void folder_local_folder_init(Folder *folder, const gchar *name,
 
 void folder_local_folder_destroy(LocalFolder *lfolder)
 {
-	g_return_if_fail(lfolder != NULL);
+	cm_return_if_fail(lfolder != NULL);
 
 	g_free(lfolder->rootpath);
 }

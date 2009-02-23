@@ -205,8 +205,8 @@ static int news_remove_msg		 (Folder 	*folder,
 {
 	gchar *path, *filename;
 
-	g_return_val_if_fail(folder != NULL, -1);
-	g_return_val_if_fail(item != NULL, -1);
+	cm_return_val_if_fail(folder != NULL, -1);
+	cm_return_val_if_fail(item != NULL, -1);
 
 	path = folder_item_get_path(item);
 	if (!is_dir_exist(path))
@@ -275,7 +275,7 @@ static void news_session_destroy(Session *session)
 {
 	NewsSession *news_session = NEWS_SESSION(session);
 
-	g_return_if_fail(session != NULL);
+	cm_return_if_fail(session != NULL);
 
 	if (news_session->group)
 		g_free(news_session->group);
@@ -292,7 +292,7 @@ static Session *news_session_new(Folder *folder, const gchar *server, gushort po
 {
 	NewsSession *session;
 	int r = 0;
-	g_return_val_if_fail(server != NULL, NULL);
+	cm_return_val_if_fail(server != NULL, NULL);
 
 	log_message(LOG_PROTOCOL, _("creating NNTP connection to %s:%d ...\n"), server, port);
 
@@ -329,8 +329,8 @@ static Session *news_session_new_for_folder(Folder *folder)
 	gchar *passwd = NULL;
 	gushort port;
 
-	g_return_val_if_fail(folder != NULL, NULL);
-	g_return_val_if_fail(folder->account != NULL, NULL);
+	cm_return_val_if_fail(folder != NULL, NULL);
+	cm_return_val_if_fail(folder->account != NULL, NULL);
 
 	ac = folder->account;
 	if (ac->use_nntp_auth && ac->userid && ac->userid[0]) {
@@ -390,9 +390,9 @@ static NewsSession *news_session_get(Folder *folder)
 	struct tm lt;
 	int r;
 	
-	g_return_val_if_fail(folder != NULL, NULL);
-	g_return_val_if_fail(FOLDER_CLASS(folder) == &news_class, NULL);
-	g_return_val_if_fail(folder->account != NULL, NULL);
+	cm_return_val_if_fail(folder != NULL, NULL);
+	cm_return_val_if_fail(FOLDER_CLASS(folder) == &news_class, NULL);
+	cm_return_val_if_fail(folder->account != NULL, NULL);
 
 	if (prefs_common.work_offline && 
 	    !inc_offline_should_override(FALSE,
@@ -456,8 +456,8 @@ static gchar *news_fetch_msg(Folder *folder, FolderItem *item, gint num)
 	NewsSession *session;
 	gint ok;
 
-	g_return_val_if_fail(folder != NULL, NULL);
-	g_return_val_if_fail(item != NULL, NULL);
+	cm_return_val_if_fail(folder != NULL, NULL);
+	cm_return_val_if_fail(item != NULL, NULL);
 
 	path = folder_item_get_path(item);
 	if (!is_dir_exist(path))
@@ -536,8 +536,8 @@ GSList *news_get_group_list(Folder *folder)
 	GSList *last = NULL;
 	gchar buf[BUFFSIZE];
 
-	g_return_val_if_fail(folder != NULL, NULL);
-	g_return_val_if_fail(FOLDER_CLASS(folder) == &news_class, NULL);
+	cm_return_val_if_fail(folder != NULL, NULL);
+	cm_return_val_if_fail(FOLDER_CLASS(folder) == &news_class, NULL);
 
 	path = folder_item_get_path(FOLDER_ITEM(folder->node->data));
 	if (!is_dir_exist(path))
@@ -660,8 +660,8 @@ void news_remove_group_list_cache(Folder *folder)
 {
 	gchar *path, *filename;
 
-	g_return_if_fail(folder != NULL);
-	g_return_if_fail(FOLDER_CLASS(folder) == &news_class);
+	cm_return_if_fail(folder != NULL);
+	cm_return_if_fail(FOLDER_CLASS(folder) == &news_class);
 
 	path = folder_item_get_path(FOLDER_ITEM(folder->node->data));
 	filename = g_strconcat(path, G_DIR_SEPARATOR_S, NEWSGROUP_LIST, NULL);
@@ -680,9 +680,9 @@ gint news_post(Folder *folder, const gchar *file)
 	char *contents = file_read_to_str_no_recode(file);
 	NewsSession *session;
 
-	g_return_val_if_fail(folder != NULL, -1);
-	g_return_val_if_fail(FOLDER_CLASS(folder) == &news_class, -1);
-	g_return_val_if_fail(contents != NULL, -1);
+	cm_return_val_if_fail(folder != NULL, -1);
+	cm_return_val_if_fail(FOLDER_CLASS(folder) == &news_class, -1);
+	cm_return_val_if_fail(contents != NULL, -1);
 	
 	session = news_session_get(folder);
 	if (!session)  {
@@ -745,7 +745,7 @@ static gint news_select_group(Folder *folder, const gchar *group,
 	struct newsnntp_group_info *info = NULL;
 	NewsSession *session = NEWS_SESSION(news_session_get(folder));
 
-	g_return_val_if_fail(session != NULL, -1);
+	cm_return_val_if_fail(session != NULL, -1);
 	
 	if (!num || !first || !last) {
 		if (session->group && g_ascii_strcasecmp(session->group, group) == 0)
@@ -917,7 +917,7 @@ static gchar *news_folder_get_path(Folder *folder)
 {
 	gchar *folder_path;
 
-        g_return_val_if_fail(folder->account != NULL, NULL);
+        cm_return_val_if_fail(folder->account != NULL, NULL);
 
         folder_path = g_strconcat(get_news_cache_dir(),
                                   G_DIR_SEPARATOR_S,
@@ -930,11 +930,11 @@ static gchar *news_item_get_path(Folder *folder, FolderItem *item)
 {
 	gchar *folder_path, *path;
 
-	g_return_val_if_fail(folder != NULL, NULL);
-	g_return_val_if_fail(item != NULL, NULL);
+	cm_return_val_if_fail(folder != NULL, NULL);
+	cm_return_val_if_fail(item != NULL, NULL);
 	folder_path = news_folder_get_path(folder);
 
-        g_return_val_if_fail(folder_path != NULL, NULL);
+        cm_return_val_if_fail(folder_path != NULL, NULL);
         if (g_path_is_absolute(folder_path)) {
                 if (item->path)
                         path = g_strconcat(folder_path, G_DIR_SEPARATOR_S,
@@ -964,12 +964,12 @@ static gint news_get_num_list(Folder *folder, FolderItem *item, GSList **msgnum_
 	gint i, ok, num, first, last, nummsgs = 0;
 	gchar *dir;
 
-	g_return_val_if_fail(item != NULL, -1);
-	g_return_val_if_fail(item->folder != NULL, -1);
-	g_return_val_if_fail(FOLDER_CLASS(folder) == &news_class, -1);
+	cm_return_val_if_fail(item != NULL, -1);
+	cm_return_val_if_fail(item->folder != NULL, -1);
+	cm_return_val_if_fail(FOLDER_CLASS(folder) == &news_class, -1);
 
 	session = news_session_get(folder);
-	g_return_val_if_fail(session != NULL, -1);
+	cm_return_val_if_fail(session != NULL, -1);
 
 	*old_uids_valid = TRUE;
 	
@@ -1032,10 +1032,10 @@ static MsgInfo *news_get_msginfo(Folder *folder, FolderItem *item, gint num)
 	clist *hdrlist = NULL;
 
 	session = news_session_get(folder);
-	g_return_val_if_fail(session != NULL, NULL);
-	g_return_val_if_fail(item != NULL, NULL);
-	g_return_val_if_fail(item->folder != NULL, NULL);
-	g_return_val_if_fail(FOLDER_CLASS(item->folder) == &news_class, NULL);
+	cm_return_val_if_fail(session != NULL, NULL);
+	cm_return_val_if_fail(item != NULL, NULL);
+	cm_return_val_if_fail(item->folder != NULL, NULL);
+	cm_return_val_if_fail(FOLDER_CLASS(item->folder) == &news_class, NULL);
 
 	log_message(LOG_PROTOCOL, _("getting xover %d in %s...\n"),
 		    num, item->path);
@@ -1111,8 +1111,8 @@ static GSList *news_get_msginfos_for_range(NewsSession *session, FolderItem *ite
 	gint ok;
 	clist *msglist = NULL;
 	clistiter *cur;
-	g_return_val_if_fail(session != NULL, NULL);
-	g_return_val_if_fail(item != NULL, NULL);
+	cm_return_val_if_fail(session != NULL, NULL);
+	cm_return_val_if_fail(item != NULL, NULL);
 
 	log_message(LOG_PROTOCOL, _("getting xover %d - %d in %s...\n"),
 		    begin, end, item->path);
@@ -1170,13 +1170,13 @@ static GSList *news_get_msginfos(Folder *folder, FolderItem *item, GSList *msgnu
 	guint first, last, next;
 	guint tofetch, fetched;
 	
-	g_return_val_if_fail(folder != NULL, NULL);
-	g_return_val_if_fail(FOLDER_CLASS(folder) == &news_class, NULL);
-	g_return_val_if_fail(msgnum_list != NULL, NULL);
-	g_return_val_if_fail(item != NULL, NULL);
+	cm_return_val_if_fail(folder != NULL, NULL);
+	cm_return_val_if_fail(FOLDER_CLASS(folder) == &news_class, NULL);
+	cm_return_val_if_fail(msgnum_list != NULL, NULL);
+	cm_return_val_if_fail(item != NULL, NULL);
 	
 	session = news_session_get(folder);
-	g_return_val_if_fail(session != NULL, NULL);
+	cm_return_val_if_fail(session != NULL, NULL);
 
 	tmp_msgnum_list = g_slist_copy(msgnum_list);
 	tmp_msgnum_list = g_slist_sort(tmp_msgnum_list, g_int_compare);
@@ -1234,10 +1234,10 @@ static gint news_rename_folder(Folder *folder, FolderItem *item,
 {
 	gchar *path;
 	 
-	g_return_val_if_fail(folder != NULL, -1);
-	g_return_val_if_fail(item != NULL, -1);
-	g_return_val_if_fail(item->path != NULL, -1);
-	g_return_val_if_fail(name != NULL, -1);
+	cm_return_val_if_fail(folder != NULL, -1);
+	cm_return_val_if_fail(item != NULL, -1);
+	cm_return_val_if_fail(item->path != NULL, -1);
+	cm_return_val_if_fail(name != NULL, -1);
 
 	path = folder_item_get_path(item);
 	if (!is_dir_exist(path))
@@ -1253,9 +1253,9 @@ static gint news_remove_folder(Folder *folder, FolderItem *item)
 {
 	gchar *path;
 
-	g_return_val_if_fail(folder != NULL, -1);
-	g_return_val_if_fail(item != NULL, -1);
-	g_return_val_if_fail(item->path != NULL, -1);
+	cm_return_val_if_fail(folder != NULL, -1);
+	cm_return_val_if_fail(item != NULL, -1);
+	cm_return_val_if_fail(item->path != NULL, -1);
 
 	path = folder_item_get_path(item);
 	if (remove_dir_recursive(path) < 0) {

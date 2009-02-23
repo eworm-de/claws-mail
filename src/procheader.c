@@ -194,7 +194,7 @@ GPtrArray *procheader_get_header_array_asis(FILE *fp)
 	GPtrArray *headers;
 	Header *header;
 
-	g_return_val_if_fail(fp != NULL, NULL);
+	cm_return_val_if_fail(fp != NULL, NULL);
 
 	headers = g_ptr_array_new();
 
@@ -1001,7 +1001,7 @@ gint procheader_get_header_from_msginfo(MsgInfo *msginfo, gchar *buf, gint len, 
 
         hentry[0].name = header;
        
-	g_return_val_if_fail(msginfo != NULL, -1);
+	cm_return_val_if_fail(msginfo != NULL, -1);
 	file = procmsg_get_message_file_path(msginfo);
 	if ((fp = g_fopen(file, "rb")) == NULL) {
                FILE_OP_ERROR(file, "fopen");

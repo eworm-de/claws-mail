@@ -125,7 +125,7 @@ void folderutils_mark_all_read(FolderItem *item)
 	MainWindow *mainwin = mainwindow_get_mainwindow();
 	int i = 0, m = 0;
 	debug_print("marking all read in item %s\n", (item==NULL)?"NULL":item->name);
-	g_return_if_fail(item != NULL);
+	cm_return_if_fail(item != NULL);
 
 
 	folder_item_update_freeze();

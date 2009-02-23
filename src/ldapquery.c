@@ -105,7 +105,7 @@ LdapQuery *ldapqry_create( void ) {
  * \param ctl Control object.
  */
 void ldapqry_set_control( LdapQuery *qry, LdapControl *ctl ) {
-	g_return_if_fail( qry != NULL );
+	cm_return_if_fail( qry != NULL );
 	qry->control = ctl;
 }
 
@@ -115,7 +115,7 @@ void ldapqry_set_control( LdapQuery *qry, LdapControl *ctl ) {
  * \param value Name.
  */
 void ldapqry_set_name( LdapQuery* qry, const gchar *value ) {
-	g_return_if_fail( qry != NULL );
+	cm_return_if_fail( qry != NULL );
 	ADDRQUERY_NAME(qry) = mgu_replace_string( ADDRQUERY_NAME(qry), value );
 	if (ADDRQUERY_NAME(qry) == NULL)
 		return;
@@ -129,7 +129,7 @@ void ldapqry_set_name( LdapQuery* qry, const gchar *value ) {
  * \param value 
  */
 void ldapqry_set_search_value( LdapQuery *qry, const gchar *value ) {
-	g_return_if_fail( qry != NULL );
+	cm_return_if_fail( qry != NULL );
 	ADDRQUERY_SEARCHVALUE(qry) = mgu_replace_string( ADDRQUERY_SEARCHVALUE(qry), value );
 	if (ADDRQUERY_SEARCHVALUE(qry) == NULL)
 		return;
@@ -159,7 +159,7 @@ void ldapqry_set_query_type( LdapQuery* qry, const gint value ) {
  * \param value Type.
  */
 void ldapqry_set_search_type( LdapQuery *qry, const AddrSearchType value ) {
-	g_return_if_fail( qry != NULL );
+	cm_return_if_fail( qry != NULL );
 	ADDRQUERY_SEARCHTYPE(qry) = value;
 }
 
@@ -169,7 +169,7 @@ void ldapqry_set_search_type( LdapQuery *qry, const AddrSearchType value ) {
  * \param value ID for the query.
  */
 void ldapqry_set_query_id( LdapQuery* qry, const gint value ) {
-	g_return_if_fail( qry != NULL );
+	cm_return_if_fail( qry != NULL );
 	ADDRQUERY_ID(qry) = value;
 }
 
@@ -226,7 +226,7 @@ void ldapqry_set_callback_end( LdapQuery *qry, void *func ) {
  * \param value Value of stop flag.
  */
 void ldapqry_set_stop_flag( LdapQuery *qry, const gboolean value ) {
-	g_return_if_fail( qry != NULL );
+	cm_return_if_fail( qry != NULL );
 
 	pthread_mutex_lock( qry->mutexStop );
 	qry->stopFlag = value;
@@ -241,7 +241,7 @@ void ldapqry_set_stop_flag( LdapQuery *qry, const gboolean value ) {
  */
 static gboolean ldapqry_get_stop_flag( LdapQuery *qry ) {
 	gboolean value;
-	g_return_val_if_fail( qry != NULL, TRUE );
+	cm_return_val_if_fail( qry != NULL, TRUE );
 
 	pthread_mutex_lock( qry->mutexStop );
 	value = qry->stopFlag;
@@ -255,7 +255,7 @@ static gboolean ldapqry_get_stop_flag( LdapQuery *qry ) {
  * \param value Value of busy flag.
  */
 static void ldapqry_set_busy_flag( LdapQuery *qry, const gboolean value ) {
-	g_return_if_fail( qry != NULL );
+	cm_return_if_fail( qry != NULL );
 	if (qry->mutexBusy == NULL)
 		return; /* exiting, mutex already freed */
 
@@ -272,7 +272,7 @@ static void ldapqry_set_busy_flag( LdapQuery *qry, const gboolean value ) {
  */
 static gboolean ldapqry_get_busy_flag( LdapQuery *qry ) {
 	gboolean value;
-	g_return_val_if_fail( qry != NULL, FALSE );
+	cm_return_val_if_fail( qry != NULL, FALSE );
 
 	pthread_mutex_lock( qry->mutexBusy );
 	value = qry->busyFlag;
@@ -286,7 +286,7 @@ static gboolean ldapqry_get_busy_flag( LdapQuery *qry ) {
  * \param value Value of aged flag.
  */
 static void ldapqry_set_aged_flag( LdapQuery *qry, const gboolean value ) {
-	g_return_if_fail( qry != NULL );
+	cm_return_if_fail( qry != NULL );
 	qry->agedFlag = value;
 }
 
@@ -295,7 +295,7 @@ static void ldapqry_set_aged_flag( LdapQuery *qry, const gboolean value ) {
  * \param qry Query object.
  */
 static void ldapqry_clear( LdapQuery *qry ) {
-	g_return_if_fail( qry != NULL );
+	cm_return_if_fail( qry != NULL );
 
 	/* Free internal stuff */
 	g_free( ADDRQUERY_NAME(qry) );
@@ -325,7 +325,7 @@ static void ldapqry_clear( LdapQuery *qry ) {
  * \param qry Query object to process.
  */
 void ldapqry_free( LdapQuery *qry ) {
-	g_return_if_fail( qry != NULL );
+	cm_return_if_fail( qry != NULL );
 
 	/* Clear out internal members */
 	ADDRQUERY_TYPE(qry) = ADDRQUERY_NONE;
@@ -963,8 +963,8 @@ static gint ldapqry_perform_locate( LdapQuery *qry );
 static gint ldapqry_search( LdapQuery *qry ) {
 	gint retVal;
 
-	g_return_val_if_fail( qry != NULL, -1 );
-	g_return_val_if_fail( qry->control != NULL, -1 );
+	cm_return_val_if_fail( qry != NULL, -1 );
+	cm_return_val_if_fail( qry->control != NULL, -1 );
 
 	ldapqry_touch( qry );
 	qry->completed = FALSE;
@@ -1015,8 +1015,8 @@ static gint ldapqry_search( LdapQuery *qry ) {
  * \return Error/status code.
  */
 gint ldapqry_read_data_th( LdapQuery *qry ) {
-	g_return_val_if_fail( qry != NULL, -1 );
-	g_return_val_if_fail( qry->control != NULL, -1 );
+	cm_return_val_if_fail( qry != NULL, -1 );
+	cm_return_val_if_fail( qry->control != NULL, -1 );
 
 	ldapqry_set_stop_flag( qry, FALSE );
 	ldapqry_touch( qry );
@@ -1043,7 +1043,7 @@ static void ldapqry_destroyer( void * ptr ) {
 	LdapQuery *qry;
 
 	qry = ( LdapQuery * ) ptr;
-	g_return_if_fail( qry != NULL );
+	cm_return_if_fail( qry != NULL );
 
 	debug_print("ldapqry_destroyer::%d::%s\n", (int) pthread_self(),
 			ADDRQUERY_NAME(qry)?ADDRQUERY_NAME(qry):"null");
@@ -1062,7 +1062,7 @@ static void ldapqry_destroyer( void * ptr ) {
  * \param qry Query object to process.
  */
 void ldapqry_cancel( LdapQuery *qry ) {
-	g_return_if_fail( qry != NULL );
+	cm_return_if_fail( qry != NULL );
 
 	debug_print("cancelling::%d::%s\n", (int) pthread_self(),
 			ADDRQUERY_NAME(qry)?ADDRQUERY_NAME(qry):"null");
@@ -1096,7 +1096,7 @@ void ldapqry_initialize( void ) {
 void ldapqry_age( LdapQuery *qry, gint maxAge ) {
 	gint age;
 
-	g_return_if_fail( qry != NULL );
+	cm_return_if_fail( qry != NULL );
 
 	/* Limit the time that queries can hang around */	
 	if( maxAge < 1 ) maxAge = LDAPCTL_MAX_QUERY_AGE;
@@ -1116,7 +1116,7 @@ void ldapqry_delete_folder( LdapQuery *qry ) {
 	AddressCache *cache;
 	ItemFolder *folder;
 
-	g_return_if_fail( qry != NULL );
+	cm_return_if_fail( qry != NULL );
 
 	folder = ADDRQUERY_FOLDER(qry);
 	if( folder ) {
@@ -1377,7 +1377,7 @@ gboolean ldapquery_remove_results( LdapQuery *qry ) {
 }
 
 void ldapqry_print(LdapQuery *qry, FILE *stream) {
-	g_return_if_fail( qry != NULL );
+	cm_return_if_fail( qry != NULL );
 
 	ldapsvr_print_data(qry->server, stream);
 	ldapctl_print(qry->control, stream);

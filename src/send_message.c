@@ -87,9 +87,9 @@ gint send_message(const gchar *file, PrefsAccount *ac_prefs, GSList *to_list)
 	FILE *fp;
 	gint val;
 
-	g_return_val_if_fail(file != NULL, -1);
-	g_return_val_if_fail(ac_prefs != NULL, -1);
-	g_return_val_if_fail(to_list != NULL, -1);
+	cm_return_val_if_fail(file != NULL, -1);
+	cm_return_val_if_fail(ac_prefs != NULL, -1);
+	cm_return_val_if_fail(to_list != NULL, -1);
 
 	if ((fp = g_fopen(file, "rb")) == NULL) {
 		FILE_OP_ERROR(file, "fopen");
@@ -129,8 +129,8 @@ gint send_message_local(const gchar *command, FILE *fp)
 	gboolean err = FALSE;
 	gint status;
 
-	g_return_val_if_fail(command != NULL, -1);
-	g_return_val_if_fail(fp != NULL, -1);
+	cm_return_val_if_fail(command != NULL, -1);
+	cm_return_val_if_fail(fp != NULL, -1);
 
 	log_message(LOG_PROTOCOL, _("Sending message using command: %s\n"), command);
 
@@ -205,11 +205,11 @@ gint send_message_smtp_full(PrefsAccount *ac_prefs, GSList *to_list, FILE *fp, g
 	long fp_pos = 0;
 	gchar spec_from[BUFFSIZE];
 
-	g_return_val_if_fail(ac_prefs != NULL, -1);
-	g_return_val_if_fail(ac_prefs->address != NULL, -1);
-	g_return_val_if_fail(ac_prefs->smtp_server != NULL, -1);
-	g_return_val_if_fail(to_list != NULL, -1);
-	g_return_val_if_fail(fp != NULL, -1);
+	cm_return_val_if_fail(ac_prefs != NULL, -1);
+	cm_return_val_if_fail(ac_prefs->address != NULL, -1);
+	cm_return_val_if_fail(ac_prefs->smtp_server != NULL, -1);
+	cm_return_val_if_fail(to_list != NULL, -1);
+	cm_return_val_if_fail(fp != NULL, -1);
 
 	/* get the From address used, not necessarily the ac_prefs',
 	 * because it's editable. */
@@ -439,7 +439,7 @@ static gint send_recv_message(Session *session, const gchar *msg, gpointer data)
 	SendProgressDialog *dialog = (SendProgressDialog *)data;
 	gchar *state_str = NULL;
 
-	g_return_val_if_fail(dialog != NULL, -1);
+	cm_return_val_if_fail(dialog != NULL, -1);
 
 	switch (smtp_session->state) {
 	case SMTP_READY:
@@ -496,7 +496,7 @@ static gint send_send_data_progressive(Session *session, guint cur_len,
 	SendProgressDialog *dialog = (SendProgressDialog *)data;
 	MainWindow *mainwin = mainwindow_get_mainwindow();
 	
-	g_return_val_if_fail(dialog != NULL, -1);
+	cm_return_val_if_fail(dialog != NULL, -1);
 
 	if (SMTP_SESSION(session)->state != SMTP_SEND_DATA &&
 	    SMTP_SESSION(session)->state != SMTP_EOM)
@@ -521,7 +521,7 @@ static gint send_send_data_finished(Session *session, guint len, gpointer data)
 	SendProgressDialog *dialog = (SendProgressDialog *)data;
 	MainWindow *mainwin = mainwindow_get_mainwindow();
 
-	g_return_val_if_fail(dialog != NULL, -1);
+	cm_return_val_if_fail(dialog != NULL, -1);
 
 	send_send_data_progressive(session, len, len, dialog);
 	if (mainwin)
@@ -534,7 +534,7 @@ static gint send_send_data_finished(Session *session, guint len, gpointer data)
 static void send_progress_dialog_size_allocate_cb(GtkWidget *widget,
 					 GtkAllocation *allocation)
 {
-	g_return_if_fail(allocation != NULL);
+	cm_return_if_fail(allocation != NULL);
 
 	prefs_common.sendwin_width = allocation->width;
 	prefs_common.sendwin_height = allocation->height;
@@ -583,7 +583,7 @@ static SendProgressDialog *send_progress_dialog_create(void)
 
 static void send_progress_dialog_destroy(SendProgressDialog *dialog)
 {
-	g_return_if_fail(dialog != NULL);
+	cm_return_if_fail(dialog != NULL);
 	if (!prefs_common.send_dialog_invisible) {
 		progress_dialog_destroy(dialog->dialog);
 	}

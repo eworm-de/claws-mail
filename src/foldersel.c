@@ -201,7 +201,7 @@ FolderItem *foldersel_folder_sel(Folder *cur_folder, FolderSelectionType type,
 static void foldersel_size_allocate_cb(GtkWidget *widget,
 					 GtkAllocation *allocation)
 {
-	g_return_if_fail(allocation != NULL);
+	cm_return_if_fail(allocation != NULL);
 
 	prefs_common.folderselwin_width = allocation->width;
 	prefs_common.folderselwin_height = allocation->height;
@@ -449,9 +449,9 @@ static void foldersel_insert_gnode_in_store(GtkTreeStore *store, GNode *node,
 	GtkTreeIter child;
 	GNode *iter;
 
-	g_return_if_fail(node != NULL);
-	g_return_if_fail(node->data != NULL);
-	g_return_if_fail(store != NULL);
+	cm_return_if_fail(node != NULL);
+	cm_return_if_fail(node->data != NULL);
+	cm_return_if_fail(store != NULL);
 
 	item = FOLDER_ITEM(node->data);
 	foldersel_append_item(store, item, &child, parent);
@@ -468,7 +468,7 @@ static void foldersel_set_tree(Folder *cur_folder, FolderSelectionType type)
 
 	for (list = folder_get_list(); list != NULL; list = list->next) {
 		folder = FOLDER(list->data);
-		g_return_if_fail(folder != NULL);
+		cm_return_if_fail(folder != NULL);
 
 		if (type != FOLDER_SEL_ALL) {
 			if (FOLDER_TYPE(folder) == F_NEWS)

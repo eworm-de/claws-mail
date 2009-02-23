@@ -206,8 +206,8 @@ gint session_disconnect(Session *session)
  */
 void session_destroy(Session *session)
 {
-	g_return_if_fail(session != NULL);
-	g_return_if_fail(session->destroy != NULL);
+	cm_return_if_fail(session != NULL);
+	cm_return_if_fail(session->destroy != NULL);
 
 	session_close(session);
 	session->destroy(session);
@@ -318,7 +318,7 @@ void session_set_send_data_notify(Session *session, SendDataNotify notify_func,
  */
 static gint session_close(Session *session)
 {
-	g_return_val_if_fail(session != NULL, -1);
+	cm_return_val_if_fail(session != NULL, -1);
 
 #ifdef G_OS_UNIX
 	if (session->conn_id > 0) {
@@ -373,9 +373,9 @@ gint session_send_msg(Session *session, SessionMsgType type, const gchar *msg)
 {
 	gboolean ret;
 
-	g_return_val_if_fail(session->write_buf == NULL, -1);
-	g_return_val_if_fail(msg != NULL, -1);
-	g_return_val_if_fail(msg[0] != '\0', -1);
+	cm_return_val_if_fail(session->write_buf == NULL, -1);
+	cm_return_val_if_fail(msg != NULL, -1);
+	cm_return_val_if_fail(msg[0] != '\0', -1);
 
 	session->state = SESSION_SEND;
 	session->write_buf = g_strconcat(msg, "\r\n", NULL);
@@ -395,7 +395,7 @@ gint session_send_msg(Session *session, SessionMsgType type, const gchar *msg)
 
 gint session_recv_msg(Session *session)
 {
-	g_return_val_if_fail(session->read_msg_buf->len == 0, -1);
+	cm_return_val_if_fail(session->read_msg_buf->len == 0, -1);
 
 	session->state = SESSION_RECV;
 
@@ -436,9 +436,9 @@ gint session_send_data(Session *session, const guchar *data, guint size)
 {
 	gboolean ret;
 
-	g_return_val_if_fail(session->write_data == NULL, -1);
-	g_return_val_if_fail(data != NULL, -1);
-	g_return_val_if_fail(size != 0, -1);
+	cm_return_val_if_fail(session->write_data == NULL, -1);
+	cm_return_val_if_fail(data != NULL, -1);
+	cm_return_val_if_fail(size != 0, -1);
 
 	session->state = SESSION_SEND;
 
@@ -461,7 +461,7 @@ gint session_send_data(Session *session, const guchar *data, guint size)
 
 gint session_recv_data(Session *session, guint size, const gchar *terminator)
 {
-	g_return_val_if_fail(session->read_data_buf->len == 0, -1);
+	cm_return_val_if_fail(session->read_data_buf->len == 0, -1);
 
 	session->state = SESSION_RECV;
 
@@ -502,7 +502,7 @@ static gboolean session_read_msg_cb(SockInfo *source, GIOCondition condition,
 	gchar *msg;
 	gint ret;
 
-	g_return_val_if_fail(condition == G_IO_IN, FALSE);
+	cm_return_val_if_fail(condition == G_IO_IN, FALSE);
 
 	session_set_timeout(session, session->timeout_interval);
 
@@ -597,7 +597,7 @@ static gboolean session_read_data_cb(SockInfo *source, GIOCondition condition,
 	guint data_len;
 	gint ret;
 
-	g_return_val_if_fail(condition == G_IO_IN, FALSE);
+	cm_return_val_if_fail(condition == G_IO_IN, FALSE);
 
 	session_set_timeout(session, session->timeout_interval);
 
@@ -697,9 +697,9 @@ static gint session_write_buf(Session *session)
 	gint write_len;
 	gint to_write_len;
 
-	g_return_val_if_fail(session->write_buf != NULL, -1);
-	g_return_val_if_fail(session->write_buf_p != NULL, -1);
-	g_return_val_if_fail(session->write_buf_len > 0, -1);
+	cm_return_val_if_fail(session->write_buf != NULL, -1);
+	cm_return_val_if_fail(session->write_buf_p != NULL, -1);
+	cm_return_val_if_fail(session->write_buf_len > 0, -1);
 
 	to_write_len = session->write_buf_len -
 		(session->write_buf_p - session->write_buf);
@@ -740,9 +740,9 @@ static gint session_write_data(Session *session)
 	gint write_len;
 	gint to_write_len;
 
-	g_return_val_if_fail(session->write_data != NULL, -1);
-	g_return_val_if_fail(session->write_data_p != NULL, -1);
-	g_return_val_if_fail(session->write_data_len > 0, -1);
+	cm_return_val_if_fail(session->write_data != NULL, -1);
+	cm_return_val_if_fail(session->write_data_p != NULL, -1);
+	cm_return_val_if_fail(session->write_data_len > 0, -1);
 
 	to_write_len = session->write_data_len -
 		(session->write_data_p - session->write_data);
@@ -783,10 +783,10 @@ static gboolean session_write_msg_cb(SockInfo *source, GIOCondition condition,
 	Session *session = SESSION(data);
 	gint ret;
 
-	g_return_val_if_fail(condition == G_IO_OUT, FALSE);
-	g_return_val_if_fail(session->write_buf != NULL, FALSE);
-	g_return_val_if_fail(session->write_buf_p != NULL, FALSE);
-	g_return_val_if_fail(session->write_buf_len > 0, FALSE);
+	cm_return_val_if_fail(condition == G_IO_OUT, FALSE);
+	cm_return_val_if_fail(session->write_buf != NULL, FALSE);
+	cm_return_val_if_fail(session->write_buf_p != NULL, FALSE);
+	cm_return_val_if_fail(session->write_buf_len > 0, FALSE);
 
 	ret = session_write_buf(session);
 
@@ -813,10 +813,10 @@ static gboolean session_write_data_cb(SockInfo *source,
 	guint write_data_len;
 	gint ret;
 
-	g_return_val_if_fail(condition == G_IO_OUT, FALSE);
-	g_return_val_if_fail(session->write_data != NULL, FALSE);
-	g_return_val_if_fail(session->write_data_p != NULL, FALSE);
-	g_return_val_if_fail(session->write_data_len > 0, FALSE);
+	cm_return_val_if_fail(condition == G_IO_OUT, FALSE);
+	cm_return_val_if_fail(session->write_data != NULL, FALSE);
+	cm_return_val_if_fail(session->write_data_p != NULL, FALSE);
+	cm_return_val_if_fail(session->write_data_len > 0, FALSE);
 
 	write_data_len = session->write_data_len;
 

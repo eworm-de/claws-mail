@@ -127,7 +127,7 @@ gint smtp_from(SMTPSession *session)
 	gchar buf[MSGBUFSIZE];
 	gchar *mail_size = NULL;
 
-	g_return_val_if_fail(session->from != NULL, SM_ERROR);
+	cm_return_val_if_fail(session->from != NULL, SM_ERROR);
 
 	session->state = SMTP_FROM;
 	
@@ -156,7 +156,7 @@ gint smtp_from(SMTPSession *session)
 static gint smtp_auth(SMTPSession *session)
 {
 
-	g_return_val_if_fail(session->user != NULL, SM_ERROR);
+	cm_return_val_if_fail(session->user != NULL, SM_ERROR);
 
 	session->state = SMTP_AUTH;
 
@@ -440,7 +440,7 @@ static gint smtp_rcpt(SMTPSession *session)
 	gchar buf[MSGBUFSIZE];
 	gchar *to;
 
-	g_return_val_if_fail(session->cur_to != NULL, SM_ERROR);
+	cm_return_val_if_fail(session->cur_to != NULL, SM_ERROR);
 
 	session->state = SMTP_RCPT;
 

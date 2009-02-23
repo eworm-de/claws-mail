@@ -3794,7 +3794,7 @@ static gint imap_cmd_append(IMAPSession *session,
 	struct mailimap_flag_list * flag_list;
 	int r;
 	
-	g_return_val_if_fail(file != NULL, MAILIMAP_ERROR_BAD_STATE);
+	cm_return_val_if_fail(file != NULL, MAILIMAP_ERROR_BAD_STATE);
 
 	flag_list = imap_flag_to_lep(item, flags, NULL);
 	lock_session(session);

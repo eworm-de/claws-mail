@@ -76,7 +76,7 @@ void addrclip_clear( AddressClipboard *clipBoard ) {
 	GList *node;
 	AddrSelectItem *item;
 
-	g_return_if_fail( clipBoard != NULL );
+	cm_return_if_fail( clipBoard != NULL );
 	node = clipBoard->objectList;
 	while( node ) {
 		item = node->data;
@@ -92,7 +92,7 @@ void addrclip_clear( AddressClipboard *clipBoard ) {
 * Free up a clipboard.
 */
 void addrclip_free( AddressClipboard *clipBoard ) {
-	g_return_if_fail( clipBoard != NULL );
+	cm_return_if_fail( clipBoard != NULL );
 
 	addrclip_clear( clipBoard );
 	clipBoard->cutFlag = FALSE;
@@ -104,8 +104,8 @@ void addrclip_free( AddressClipboard *clipBoard ) {
 void addrclip_set_index(
 	AddressClipboard *clipBoard, AddressIndex *addrIndex )
 {
-	g_return_if_fail( clipBoard != NULL );
-	g_return_if_fail( addrIndex != NULL );
+	cm_return_if_fail( clipBoard != NULL );
+	cm_return_if_fail( addrIndex != NULL );
 	clipBoard->addressIndex = addrIndex;
 }
 
@@ -131,8 +131,8 @@ gboolean addrclip_is_empty( AddressClipboard *clipBoard ) {
 void addrclip_add( AddressClipboard *clipBoard, AddrSelectList *asl ) {
 	GList *node;
 
-	g_return_if_fail( clipBoard != NULL );
-	g_return_if_fail( asl != NULL );
+	cm_return_if_fail( clipBoard != NULL );
+	cm_return_if_fail( asl != NULL );
 	node = asl->listSelect;
 	while( node ) {
 		AddrSelectItem *item, *itemCopy;
@@ -155,7 +155,7 @@ void addrclip_list_show( AddressClipboard *clipBoard, FILE *stream ) {
 	AddrItemObject *aio;
 	AddressCache *cache;
 
-	g_return_if_fail( clipBoard != NULL );
+	cm_return_if_fail( clipBoard != NULL );
 	node = clipBoard->objectList;
 	while( node != NULL ) {
 		AddrSelectItem *item;
@@ -398,8 +398,8 @@ static gboolean addrclip_is_subfolder_of(ItemFolder *is_parent, ItemFolder *is_c
 	ItemFolder *folder;
 	AddrItemObject *obj;
 
-	g_return_val_if_fail(is_parent != NULL, FALSE);
-	g_return_val_if_fail(is_child != NULL, FALSE);
+	cm_return_val_if_fail(is_parent != NULL, FALSE);
+	cm_return_val_if_fail(is_child != NULL, FALSE);
 
 	if (is_parent == is_child)
 		return TRUE;
@@ -631,7 +631,7 @@ GList *addrclip_paste_copy(
 	GList *itemList;
 	GList *folderGroup;
 
-	g_return_val_if_fail( clipBoard != NULL, NULL );
+	cm_return_val_if_fail( clipBoard != NULL, NULL );
 
 	cache = book->addressCache;
 	if( folder == NULL ) folder = cache->rootFolder;
@@ -727,7 +727,7 @@ GList *addrclip_paste_cut(
 	GList *itemList;
 	GList *folderGroup;
 
-	g_return_val_if_fail( clipBoard != NULL, NULL );
+	cm_return_val_if_fail( clipBoard != NULL, NULL );
 
 	cache = book->addressCache;
 	if( folder == NULL ) folder = cache->rootFolder;

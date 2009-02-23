@@ -196,8 +196,8 @@ ActionType action_get_type(const gchar *action_str)
 	const gchar *p;
 	ActionType action_type = ACTION_NONE;
 
-	g_return_val_if_fail(action_str,  ACTION_ERROR);
-	g_return_val_if_fail(*action_str, ACTION_ERROR);
+	cm_return_val_if_fail(action_str,  ACTION_ERROR);
+	cm_return_val_if_fail(*action_str, ACTION_ERROR);
 
 	p = action_str;
 
@@ -365,7 +365,7 @@ static gboolean parse_append_filename(GString *cmd, MsgInfo *msginfo)
 	gchar *p, *q;
 	gchar escape_ch[] = "\\ ";
 
-	g_return_val_if_fail(msginfo, FALSE);
+	cm_return_val_if_fail(msginfo, FALSE);
 
 	filename = procmsg_get_message_file(msginfo);
 
@@ -570,12 +570,12 @@ static void compose_actions_execute(Compose *compose, guint action_nb, GtkWidget
 	gchar *buf, *action;
 	ActionType action_type;
 
-	g_return_if_fail(action_nb < g_slist_length(prefs_common.actions_list));
+	cm_return_if_fail(action_nb < g_slist_length(prefs_common.actions_list));
 
 	buf = (gchar *)g_slist_nth_data(prefs_common.actions_list, action_nb);
-	g_return_if_fail(buf != NULL);
+	cm_return_if_fail(buf != NULL);
 	action = strstr(buf, ": ");
-	g_return_if_fail(action != NULL);
+	cm_return_if_fail(action != NULL);
 
 	/* Point to the beginning of the command-line */
 	action += 2;
@@ -638,12 +638,12 @@ static void message_actions_execute(MessageView *msgview, guint action_nb,
 	guint body_pos = 0;
 	ActionType action_type;
 	
-	g_return_if_fail(action_nb < g_slist_length(prefs_common.actions_list));
+	cm_return_if_fail(action_nb < g_slist_length(prefs_common.actions_list));
 
 	buf = (gchar *)g_slist_nth_data(prefs_common.actions_list, action_nb);
 
-	g_return_if_fail(buf);
-	g_return_if_fail((action = strstr(buf, ": ")));
+	cm_return_if_fail(buf);
+	cm_return_if_fail((action = strstr(buf, ": ")));
 
 	/* Point to the beginning of the command-line */
 	action += 2;
@@ -751,7 +751,7 @@ static gboolean execute_actions(gchar *action, GSList *msg_list,
 	GtkTextIter start_iter, end_iter;
 	gboolean is_selection = FALSE;
 
-	g_return_val_if_fail(action && *action, FALSE);
+	cm_return_val_if_fail(action && *action, FALSE);
 
 	action_type = action_get_type(action);
 

@@ -147,15 +147,15 @@ static void subscribe_newsgroup_cb(GtkAction *action, gpointer data)
 	if (!folderview->selected) return;
 
 	item = gtk_cmctree_node_get_row_data(ctree, folderview->selected);
-	g_return_if_fail(item != NULL);
+	cm_return_if_fail(item != NULL);
 
 	if (mainwin->lock_count || news_folder_locked(item->folder))
 		return;
 
 	folder = item->folder;
-	g_return_if_fail(folder != NULL);
-	g_return_if_fail(FOLDER_TYPE(folder) == F_NEWS);
-	g_return_if_fail(folder->account != NULL);
+	cm_return_if_fail(folder != NULL);
+	cm_return_if_fail(FOLDER_TYPE(folder) == F_NEWS);
+	cm_return_if_fail(folder->account != NULL);
 
 	if (GTK_CMCTREE_ROW(folderview->selected)->parent != NULL)
 		servernode = GTK_CMCTREE_ROW(folderview->selected)->parent;
@@ -235,14 +235,14 @@ static void unsubscribe_newsgroup_cb(GtkAction *action, gpointer data)
 	if (!folderview->selected) return;
 
 	item = gtk_cmctree_node_get_row_data(ctree, folderview->selected);
-	g_return_if_fail(item != NULL);
+	cm_return_if_fail(item != NULL);
 
 	if (mainwin->lock_count || news_folder_locked(item->folder))
 		return;
 
-	g_return_if_fail(item->folder != NULL);
-	g_return_if_fail(FOLDER_TYPE(item->folder) == F_NEWS);
-	g_return_if_fail(item->folder->account != NULL);
+	cm_return_if_fail(item->folder != NULL);
+	cm_return_if_fail(FOLDER_TYPE(item->folder) == F_NEWS);
+	cm_return_if_fail(item->folder->account != NULL);
 
 	old_id = folder_item_get_identifier(item);
 
@@ -297,9 +297,9 @@ static void rename_newsgroup_cb(GtkAction *action, gpointer data)
 	gchar *message;
 
 	item = folderview_get_selected_item(folderview);
-	g_return_if_fail(item != NULL);
-	g_return_if_fail(item->path != NULL);
-	g_return_if_fail(item->folder != NULL);
+	cm_return_if_fail(item != NULL);
+	cm_return_if_fail(item->path != NULL);
+	cm_return_if_fail(item->folder != NULL);
 
 	name = trim_string(item->name, 32);
 	message = g_strdup_printf(_("Input new name for '%s':"), name);
@@ -339,14 +339,14 @@ static void update_tree_cb(GtkAction *action, gpointer data)
 	MainWindow *mainwin = mainwindow_get_mainwindow();
 	
 	item = folderview_get_selected_item(folderview);
-	g_return_if_fail(item != NULL);
+	cm_return_if_fail(item != NULL);
 
 	if (mainwin->lock_count || news_folder_locked(item->folder))
 		return;
 
 	summary_show(folderview->summaryview, NULL);
 
-	g_return_if_fail(item->folder != NULL);
+	cm_return_if_fail(item->folder != NULL);
 
 	folderview_check_new(item->folder);
 }
@@ -357,7 +357,7 @@ static void sync_cb(GtkAction *action, gpointer data)
 	FolderItem *item;
 
 	item = folderview_get_selected_item(folderview);
-	g_return_if_fail(item != NULL);
+	cm_return_if_fail(item != NULL);
 	folder_synchronise(item->folder);
 }
 
@@ -371,8 +371,8 @@ void news_gtk_synchronise(FolderItem *item, gint days)
 	gint total = 0;
 	time_t t = time(NULL);
 
-	g_return_if_fail(item != NULL);
-	g_return_if_fail(item->folder != NULL);
+	cm_return_if_fail(item != NULL);
+	cm_return_if_fail(item->folder != NULL);
 
 	if (mainwin->lock_count || news_folder_locked(item->folder))
 		return;

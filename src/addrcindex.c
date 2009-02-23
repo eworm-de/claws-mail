@@ -102,7 +102,7 @@ void addrcindex_free( AddrCacheIndex *index ) {
  * \param index Address completion index.
  */
 void addrcindex_invalidate( AddrCacheIndex *index ) {
-	g_return_if_fail( index != NULL );
+	cm_return_if_fail( index != NULL );
 	index->invalid = TRUE;
 }
 
@@ -111,7 +111,7 @@ void addrcindex_invalidate( AddrCacheIndex *index ) {
  * \param index Address completion index.
  */
 void addrcindex_validate( AddrCacheIndex *index ) {
-	g_return_if_fail( index != NULL );
+	cm_return_if_fail( index != NULL );
 	index->invalid = FALSE;
 }
 
@@ -147,8 +147,8 @@ void addrcindex_add_email( AddrCacheIndex *index, ItemEMail *email ) {
 	GSList *node;
 	gboolean flag;
 
-	g_return_if_fail( index != NULL );
-	g_return_if_fail( email != NULL );
+	cm_return_if_fail( index != NULL );
+	cm_return_if_fail( email != NULL );
 
 	flag = FALSE;
 	uniqName = NULL;
@@ -257,8 +257,8 @@ void addrcindex_add_person( AddrCacheIndex *index, ItemPerson *person ) {
 	GList  *listEMail;
 	ItemEMail *email;
 
-	g_return_if_fail( index != NULL );
-	g_return_if_fail( person != NULL );
+	cm_return_if_fail( index != NULL );
+	cm_return_if_fail( person != NULL );
 
 	/* Build list of all unique names in person's name fields */
 	uniqName = NULL;
@@ -321,7 +321,7 @@ void addrcindex_print( AddrCacheIndex *index, FILE *stream ) {
 	AddrIndexEntry *entry;
 	ItemEMail *email;
 
-	g_return_if_fail( index != NULL );
+	cm_return_if_fail( index != NULL );
 	fprintf( stream, "AddressSearchIndex:\n" );
 	node = index->addressList;
 	while( node ) {
@@ -346,8 +346,8 @@ GList *addrcindex_search( AddrCacheIndex *index, const gchar *search ) {
 	GList *node;
 	GList *listEMail;
 
-	g_return_if_fail( index != NULL );
-	g_return_if_fail( search != NULL );
+	cm_return_if_fail( index != NULL );
+	cm_return_if_fail( search != NULL );
 
 	listEMail = NULL;
 	if( index->addressList != NULL ) { 

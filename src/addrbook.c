@@ -76,13 +76,13 @@ AddressBookFile *addrbook_create_book()
  */
 void addrbook_set_name(AddressBookFile *book, const gchar *value)
 {
-	g_return_if_fail(book != NULL);
+	cm_return_if_fail(book != NULL);
 	addrcache_set_name(book->addressCache, value);
 }
 
 gchar *addrbook_get_name(AddressBookFile *book)
 {
-	g_return_val_if_fail(book != NULL, NULL);
+	cm_return_val_if_fail(book != NULL, NULL);
 	return addrcache_get_name(book->addressCache);
 }
 
@@ -93,7 +93,7 @@ gchar *addrbook_get_name(AddressBookFile *book)
  */
 void addrbook_set_path(AddressBookFile *book, const gchar *value)
 {
-	g_return_if_fail(book != NULL);
+	cm_return_if_fail(book != NULL);
 	book->path = mgu_replace_string(book->path, value);
 	addrcache_set_dirty(book->addressCache, TRUE);
 }
@@ -105,20 +105,20 @@ void addrbook_set_path(AddressBookFile *book, const gchar *value)
  */
 void addrbook_set_file(AddressBookFile *book, const gchar *value)
 {
-	g_return_if_fail(book != NULL);
+	cm_return_if_fail(book != NULL);
 	book->fileName = mgu_replace_string(book->fileName, value);
 	addrcache_set_dirty(book->addressCache, TRUE);
 }
 
 gboolean addrbook_get_modified(AddressBookFile *book)
 {
-	g_return_val_if_fail(book != NULL, FALSE);
+	cm_return_val_if_fail(book != NULL, FALSE);
 	return book->addressCache->modified;
 }
 
 gboolean addrbook_get_accessed(AddressBookFile *book)
 {
-	g_return_val_if_fail(book != NULL, FALSE);
+	cm_return_val_if_fail(book != NULL, FALSE);
 	return book->addressCache->accessFlag;
 }
 
@@ -129,43 +129,43 @@ gboolean addrbook_get_accessed(AddressBookFile *book)
  */
 void addrbook_set_accessed(AddressBookFile *book, const gboolean value)
 {
-	g_return_if_fail(book != NULL);
+	cm_return_if_fail(book != NULL);
 	book->addressCache->accessFlag = value;
 }
 
 gboolean addrbook_get_read_flag(AddressBookFile *book)
 {
-	g_return_val_if_fail(book != NULL, FALSE);
+	cm_return_val_if_fail(book != NULL, FALSE);
 	return book->addressCache->dataRead;
 }
 
 gint addrbook_get_status(AddressBookFile *book)
 {
-	g_return_val_if_fail(book != NULL, -1);
+	cm_return_val_if_fail(book != NULL, -1);
 	return book->retVal;
 }
 
 ItemFolder *addrbook_get_root_folder(AddressBookFile *book)
 {
-	g_return_val_if_fail(book != NULL, NULL);
+	cm_return_val_if_fail(book != NULL, NULL);
 	return addrcache_get_root_folder(book->addressCache);
 }
 
 GList *addrbook_get_list_folder(AddressBookFile *book)
 {
-	g_return_val_if_fail(book != NULL, NULL);
+	cm_return_val_if_fail(book != NULL, NULL);
 	return addrcache_get_list_folder(book->addressCache);
 }
 
 GList *addrbook_get_list_person(AddressBookFile *book)
 {
-	g_return_val_if_fail(book != NULL, NULL);
+	cm_return_val_if_fail(book != NULL, NULL);
 	return addrcache_get_list_person(book->addressCache);
 }
 
 gboolean addrbook_get_dirty(AddressBookFile *book)
 {
-	g_return_val_if_fail(book != NULL, FALSE);
+	cm_return_val_if_fail(book != NULL, FALSE);
 	return addrcache_get_dirty(book->addressCache);
 }
 
@@ -176,7 +176,7 @@ gboolean addrbook_get_dirty(AddressBookFile *book)
  */
 void addrbook_set_dirty(AddressBookFile *book, const gboolean value)
 {
-	g_return_if_fail(book != NULL);
+	cm_return_if_fail(book != NULL);
 	addrcache_set_dirty(book->addressCache, value);
 }
 
@@ -186,7 +186,7 @@ void addrbook_set_dirty(AddressBookFile *book, const gboolean value)
  */
 void addrbook_free_book(AddressBookFile *book)
 {
-	g_return_if_fail(book != NULL);
+	cm_return_if_fail(book != NULL);
 
 	/* Clear cache */
 	addrcache_free(book->addressCache);
@@ -216,7 +216,7 @@ void addrbook_free_book(AddressBookFile *book)
  */
 static void addrbook_print_book(AddressBookFile *book, FILE *stream)
 {
-	g_return_if_fail(book != NULL);
+	cm_return_if_fail(book != NULL);
 
 	fprintf(stream, "AddressBook:\n");
 	fprintf(stream, "\tpath : '%s'\n", book->path);
@@ -234,7 +234,7 @@ void addrbook_dump_book(AddressBookFile *book, FILE *stream)
 {
 	ItemFolder *folder;
 
-	g_return_if_fail(book != NULL);
+	cm_return_if_fail(book != NULL);
 
 	addrbook_print_book(book, stream);
 	folder = book->addressCache->rootFolder;
@@ -252,7 +252,7 @@ void addrbook_dump_book(AddressBookFile *book, FILE *stream)
  */
 ItemGroup *addrbook_remove_group(AddressBookFile *book, ItemGroup *group)
 {
-	g_return_val_if_fail(book != NULL, NULL);
+	cm_return_val_if_fail(book != NULL, NULL);
 	return addrcache_remove_group(book->addressCache, group);
 }
 
@@ -265,7 +265,7 @@ ItemGroup *addrbook_remove_group(AddressBookFile *book, ItemGroup *group)
  */
 ItemPerson *addrbook_remove_person(AddressBookFile *book, ItemPerson *person)
 {
-	g_return_val_if_fail(book != NULL, NULL);
+	cm_return_val_if_fail(book != NULL, NULL);
 	return addrcache_remove_person(book->addressCache, person);
 }
 
@@ -280,7 +280,7 @@ ItemPerson *addrbook_remove_person(AddressBookFile *book, ItemPerson *person)
 ItemEMail *addrbook_person_remove_email(AddressBookFile *book,
 					ItemPerson *person, ItemEMail *email)
 {
-	g_return_val_if_fail(book != NULL, NULL);
+	cm_return_val_if_fail(book != NULL, NULL);
 	return addrcache_person_remove_email(book->addressCache, person, email);
 }
 
@@ -919,7 +919,7 @@ gint addrbook_read_data(AddressBookFile *book)
 	XMLFile *file = NULL;
 	gchar *fileSpec = NULL;
 
-	g_return_val_if_fail(book != NULL, -1);
+	cm_return_val_if_fail(book != NULL, -1);
 
 	/*
 	g_print( "...addrbook_read_data :%s:\t:%s:\n", book->fileName,
@@ -1273,8 +1273,8 @@ static gint addrbook_write_to(AddressBookFile *book, gchar *newFile)
 	PrefFile *pfile;
 #endif
 
-	g_return_val_if_fail(book != NULL, -1);
-	g_return_val_if_fail(newFile != NULL, -1);
+	cm_return_val_if_fail(book != NULL, -1);
+	cm_return_val_if_fail(newFile != NULL, -1);
 
 	fileSpec = g_strconcat(book->path, G_DIR_SEPARATOR_S, newFile, NULL);
 
@@ -1355,7 +1355,7 @@ fail:
  */
 gint addrbook_save_data(AddressBookFile *book)
 {
-	g_return_val_if_fail(book != NULL, -1);
+	cm_return_val_if_fail(book != NULL, -1);
 
 	book->retVal = MGU_NO_FILE;
 	if (book->fileName == NULL || *book->fileName == '\0') 
@@ -1407,8 +1407,8 @@ void addrbook_update_address_list(AddressBookFile *book, ItemPerson *person,
 	GList *listDelete;
 	GList *listGroup;
 
-	g_return_if_fail(book != NULL);
-	g_return_if_fail(person != NULL);
+	cm_return_if_fail(book != NULL);
+	cm_return_if_fail(person != NULL);
 
 	/* Get groups where person's existing email addresses are listed */
 	listGroup = addrcache_get_group_for_person(book->addressCache, person);
@@ -1562,7 +1562,7 @@ ItemPerson *addrbook_add_address_list(AddressBookFile *book, ItemFolder *folder,
 	ItemFolder *f = folder;
 	GList *node;
 
-	g_return_val_if_fail(book != NULL, NULL);
+	cm_return_val_if_fail(book != NULL, NULL);
 
 	if (!f) 
 		f = book->addressCache->rootFolder;
@@ -1626,7 +1626,7 @@ GList *addrbook_get_available_email_list(AddressBookFile *book, ItemGroup *group
 	GList *list = NULL;
 	GHashTable *table;
 
-	g_return_val_if_fail(book != NULL, NULL);
+	cm_return_val_if_fail(book != NULL, NULL);
 
 	/* Load hash table with group email entries */
 	table = g_hash_table_new(g_str_hash, g_str_equal);
@@ -1671,8 +1671,8 @@ void addrbook_update_group_list(AddressBookFile *book, ItemGroup *group,
 {
 	GList *oldData;
 
-	g_return_if_fail(book != NULL);
-	g_return_if_fail(group != NULL);
+	cm_return_if_fail(book != NULL);
+	cm_return_if_fail(group != NULL);
 
 	addrcache_set_dirty(book->addressCache, TRUE);
 
@@ -1702,7 +1702,7 @@ ItemGroup *addrbook_add_group_list(AddressBookFile *book, ItemFolder *folder,
 	ItemGroup *group = NULL;
 	ItemFolder *f = folder;
 
-	g_return_val_if_fail(book != NULL, NULL);
+	cm_return_val_if_fail(book != NULL, NULL);
 
 	if (!f)
 		f = book->addressCache->rootFolder;
@@ -1723,7 +1723,7 @@ ItemGroup *addrbook_add_group_list(AddressBookFile *book, ItemFolder *folder,
  */
 ItemFolder *addrbook_add_new_folder(AddressBookFile *book, ItemFolder *parent)
 {
-	g_return_val_if_fail(book != NULL, NULL);
+	cm_return_val_if_fail(book != NULL, NULL);
 	return addrcache_add_new_folder( book->addressCache, parent );
 }
 
@@ -1742,8 +1742,8 @@ void addrbook_update_attrib_list(AddressBookFile *book, ItemPerson *person,
 	GList *node;
 	GList *oldData;
 
-	g_return_if_fail(book != NULL);
-	g_return_if_fail(person != NULL);
+	cm_return_if_fail(book != NULL);
+	cm_return_if_fail(person != NULL);
 
 	/* Remember old list */
 	oldData = person->listAttrib;
@@ -1776,8 +1776,8 @@ void addrbook_update_attrib_list(AddressBookFile *book, ItemPerson *person,
 void addrbook_add_attrib_list( AddressBookFile *book, ItemPerson *person, GList *listAttrib ) {
 	GList *node;
 
-	g_return_if_fail( book != NULL );
-	g_return_if_fail( person != NULL );
+	cm_return_if_fail( book != NULL );
+	cm_return_if_fail( person != NULL );
 
    	node = listAttrib;
 	while( node ) {
@@ -1810,7 +1810,7 @@ GList *addrbook_get_bookfile_list(AddressBookFile *book) {
 	long int val, maxval;
 	GList *fileList = NULL;
 
-	g_return_val_if_fail(book != NULL, NULL);
+	cm_return_val_if_fail(book != NULL, NULL);
 
 	if (book->path == NULL || *book->path == '\0') {
 		book->retVal = MGU_NO_PATH;
@@ -2150,7 +2150,7 @@ gint addrbook_test_read_file(AddressBookFile *book, gchar *fileName)
 	XMLFile *file = NULL;
 	gchar *fileSpec = NULL;
 
-	g_return_val_if_fail(book != NULL, -1);
+	cm_return_val_if_fail(book != NULL, -1);
 
 	fileSpec = g_strconcat(book->path, G_DIR_SEPARATOR_S, fileName, NULL);
 	book->retVal = MGU_OPEN_FILE;
@@ -2181,13 +2181,13 @@ gint addrbook_test_read_file(AddressBookFile *book, gchar *fileName)
  */
 GList *addrbook_get_all_persons(AddressBookFile *book)
 {
-	g_return_val_if_fail(book != NULL, NULL);
+	cm_return_val_if_fail(book != NULL, NULL);
 	return addrcache_get_all_persons(book->addressCache);
 }
 
 GList *addrbook_get_all_groups(AddressBookFile *book)
 {
-	g_return_val_if_fail(book != NULL, NULL);
+	cm_return_val_if_fail(book != NULL, NULL);
 	return addrcache_get_all_groups(book->addressCache);
 }
 
@@ -2208,7 +2208,7 @@ ItemPerson *addrbook_add_contact(AddressBookFile *book, ItemFolder *folder,
 {
 	ItemPerson *person;
 
-	g_return_val_if_fail(book != NULL, NULL);
+	cm_return_val_if_fail(book != NULL, NULL);
 	person = addrcache_add_contact(
 			book->addressCache, folder, name, address, remarks );
 	return person;

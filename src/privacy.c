@@ -100,7 +100,7 @@ void privacy_free_privacydata(PrivacyData *privacydata)
 {
 	PrivacySystem *system = NULL;
 	
-	g_return_if_fail(privacydata != NULL);
+	cm_return_if_fail(privacydata != NULL);
 
 	system = privacy_data_get_system(privacydata);
 	if (!system)
@@ -120,7 +120,7 @@ void privacy_free_privacydata(PrivacyData *privacydata)
 gboolean privacy_mimeinfo_is_signed(MimeInfo *mimeinfo)
 {
 	GSList *cur;
-	g_return_val_if_fail(mimeinfo != NULL, FALSE);
+	cm_return_val_if_fail(mimeinfo != NULL, FALSE);
 
 	if (mimeinfo->privacy != NULL) {
 		PrivacySystem *system = 
@@ -196,7 +196,7 @@ gint privacy_mimeinfo_check_signature(MimeInfo *mimeinfo)
 {
 	PrivacySystem *system;
 
-	g_return_val_if_fail(mimeinfo != NULL, -1);
+	cm_return_val_if_fail(mimeinfo != NULL, -1);
 
 	if (mimeinfo->privacy == NULL)
 		privacy_mimeinfo_is_signed(mimeinfo);
@@ -218,7 +218,7 @@ SignatureStatus privacy_mimeinfo_get_sig_status(MimeInfo *mimeinfo)
 {
 	PrivacySystem *system;
 
-	g_return_val_if_fail(mimeinfo != NULL, -1);
+	cm_return_val_if_fail(mimeinfo != NULL, -1);
 
 	if (mimeinfo->privacy == NULL)
 		privacy_mimeinfo_is_signed(mimeinfo);
@@ -239,7 +239,7 @@ gchar *privacy_mimeinfo_sig_info_short(MimeInfo *mimeinfo)
 {
 	PrivacySystem *system;
 
-	g_return_val_if_fail(mimeinfo != NULL, NULL);
+	cm_return_val_if_fail(mimeinfo != NULL, NULL);
 
 	if (mimeinfo->privacy == NULL)
 		privacy_mimeinfo_is_signed(mimeinfo);
@@ -260,7 +260,7 @@ gchar *privacy_mimeinfo_sig_info_full(MimeInfo *mimeinfo)
 {
 	PrivacySystem *system;
 
-	g_return_val_if_fail(mimeinfo != NULL, NULL);
+	cm_return_val_if_fail(mimeinfo != NULL, NULL);
 
 	if (mimeinfo->privacy == NULL)
 		privacy_mimeinfo_is_signed(mimeinfo);
@@ -280,7 +280,7 @@ gchar *privacy_mimeinfo_sig_info_full(MimeInfo *mimeinfo)
 gboolean privacy_mimeinfo_is_encrypted(MimeInfo *mimeinfo)
 {
 	GSList *cur;
-	g_return_val_if_fail(mimeinfo != NULL, FALSE);
+	cm_return_val_if_fail(mimeinfo != NULL, FALSE);
 
 	for(cur = systems; cur != NULL; cur = g_slist_next(cur)) {
 		PrivacySystem *system = (PrivacySystem *) cur->data;
@@ -297,7 +297,7 @@ static gint decrypt(MimeInfo *mimeinfo, PrivacySystem *system)
 	MimeInfo *decryptedinfo, *parentinfo;
 	gint childnumber;
 	
-	g_return_val_if_fail(system->decrypt != NULL, -1);
+	cm_return_val_if_fail(system->decrypt != NULL, -1);
 	
 	decryptedinfo = system->decrypt(mimeinfo);
 	if (decryptedinfo == NULL)
@@ -316,7 +316,7 @@ static gint decrypt(MimeInfo *mimeinfo, PrivacySystem *system)
 gint privacy_mimeinfo_decrypt(MimeInfo *mimeinfo)
 {
 	GSList *cur;
-	g_return_val_if_fail(mimeinfo != NULL, FALSE);
+	cm_return_val_if_fail(mimeinfo != NULL, FALSE);
 
 	for(cur = systems; cur != NULL; cur = g_slist_next(cur)) {
 		PrivacySystem *system = (PrivacySystem *) cur->data;
@@ -346,7 +346,7 @@ static PrivacySystem *privacy_get_system(const gchar *id)
 {
 	GSList *cur;
 
-	g_return_val_if_fail(id != NULL, NULL);
+	cm_return_val_if_fail(id != NULL, NULL);
 
 	for(cur = systems; cur != NULL; cur = g_slist_next(cur)) {
 		PrivacySystem *system = (PrivacySystem *) cur->data;
@@ -362,7 +362,7 @@ const gchar *privacy_system_get_name(const gchar *id)
 {
 	PrivacySystem *system;
 
-	g_return_val_if_fail(id != NULL, NULL);
+	cm_return_val_if_fail(id != NULL, NULL);
 
 	system = privacy_get_system(id);
 	if (system == NULL)
@@ -375,7 +375,7 @@ gboolean privacy_system_can_sign(const gchar *id)
 {
 	PrivacySystem *system;
 
-	g_return_val_if_fail(id != NULL, FALSE);
+	cm_return_val_if_fail(id != NULL, FALSE);
 
 	system = privacy_get_system(id);
 	if (system == NULL)
@@ -388,7 +388,7 @@ gboolean privacy_system_can_encrypt(const gchar *id)
 {
 	PrivacySystem *system;
 
-	g_return_val_if_fail(id != NULL, FALSE);
+	cm_return_val_if_fail(id != NULL, FALSE);
 
 	system = privacy_get_system(id);
 	if (system == NULL)
@@ -401,8 +401,8 @@ gboolean privacy_sign(const gchar *id, MimeInfo *target, PrefsAccount *account, 
 {
 	PrivacySystem *system;
 
-	g_return_val_if_fail(id != NULL, FALSE);
-	g_return_val_if_fail(target != NULL, FALSE);
+	cm_return_val_if_fail(id != NULL, FALSE);
+	cm_return_val_if_fail(target != NULL, FALSE);
 
 	system = privacy_get_system(id);
 	if (system == NULL)
@@ -421,8 +421,8 @@ gchar *privacy_get_encrypt_data(const gchar *id, GSList *recp_names)
 	gchar *ret = NULL;
 	GSList *uniq_names = NULL, *cur;
 
-	g_return_val_if_fail(id != NULL, NULL);
-	g_return_val_if_fail(recp_names != NULL, NULL);
+	cm_return_val_if_fail(id != NULL, NULL);
+	cm_return_val_if_fail(recp_names != NULL, NULL);
 
 	system = privacy_get_system(id);
 	if (system == NULL)
@@ -447,7 +447,7 @@ const gchar *privacy_get_encrypt_warning(const gchar *id)
 {
 	PrivacySystem *system;
 
-	g_return_val_if_fail(id != NULL, NULL);
+	cm_return_val_if_fail(id != NULL, NULL);
 
 	system = privacy_get_system(id);
 	if (system == NULL)
@@ -464,7 +464,7 @@ void privacy_inhibit_encrypt_warning(const gchar *id, gboolean inhibit)
 {
 	PrivacySystem *system;
 
-	g_return_if_fail(id != NULL);
+	cm_return_if_fail(id != NULL);
 
 	system = privacy_get_system(id);
 	if (system == NULL)
@@ -481,8 +481,8 @@ gboolean privacy_encrypt(const gchar *id, MimeInfo *mimeinfo, const gchar *encda
 {
 	PrivacySystem *system;
 
-	g_return_val_if_fail(id != NULL, FALSE);
-	g_return_val_if_fail(mimeinfo != NULL, FALSE);
+	cm_return_val_if_fail(id != NULL, FALSE);
+	cm_return_val_if_fail(mimeinfo != NULL, FALSE);
 	if (encdata == NULL) {
 		privacy_set_error(_("No recipient keys defined."));
 		return FALSE;

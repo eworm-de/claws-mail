@@ -619,7 +619,7 @@ static void prefs_size_allocate_cb(GtkWidget *widget,
 {
 	PrefsWindow *prefswindow = (PrefsWindow *) user_data;
 
-	g_return_if_fail(allocation != NULL);
+	cm_return_if_fail(allocation != NULL);
 
 	/* don't try to save size to NULL pointers */
 	if (prefswindow && prefswindow->save_width && prefswindow->save_height) {

@@ -52,7 +52,7 @@ int get_attribute_index(const gchar *string_literal) {
 	/*int count = sizeof(ATTRIBUTE) / sizeof(*ATTRIBUTE);*/
 	const gchar **attribute = ATTRIBUTE;
 
-	g_return_val_if_fail(string_literal != NULL, -1);
+	cm_return_val_if_fail(string_literal != NULL, -1);
 	while (*attribute) {
 		debug_print("Comparing %s to %s\n", *attribute, string_literal);
 		if (strcmp(*attribute++, string_literal) == 0)
@@ -115,7 +115,7 @@ static void edit_person_combo_box_changed(GtkComboBox *opt_menu, gpointer data)
 	gint option = gtk_combo_box_get_active(opt_menu);
 	const gchar *str = attrib ? attrib->name:"";
 
-	g_return_if_fail (option < ATTRIBUTE_SIZE);
+	cm_return_if_fail (option < ATTRIBUTE_SIZE);
 	/* A corresponding attribute in contact does not match selected option */ 
 	if (strcmp(ATTRIBUTE[option], str) != 0) {
 		gtk_widget_set_sensitive(personEditDlg->attrib_add, TRUE);

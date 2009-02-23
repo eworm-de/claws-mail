@@ -134,7 +134,7 @@ void source_window_show_msg(SourceWindow *sourcewin, MsgInfo *msginfo)
 	FILE *fp;
 	gchar buf[BUFFSIZE];
 
-	g_return_if_fail(msginfo != NULL);
+	cm_return_if_fail(msginfo != NULL);
 
 	sourcewin->updating = TRUE;
 	file = procmsg_get_message_file(msginfo);
@@ -146,7 +146,7 @@ void source_window_show_msg(SourceWindow *sourcewin, MsgInfo *msginfo)
 		return;
 	}
 
-	g_return_if_fail(file != NULL);
+	cm_return_if_fail(file != NULL);
 
 	if ((fp = g_fopen(file, "rb")) == NULL) {
 		FILE_OP_ERROR(file, "fopen");
@@ -186,7 +186,7 @@ static void source_window_append(SourceWindow *sourcewin, const gchar *str)
 static void source_window_size_alloc_cb(GtkWidget *widget,
 					GtkAllocation *allocation)
 {
-	g_return_if_fail(allocation != NULL);
+	cm_return_if_fail(allocation != NULL);
 
 	prefs_common.sourcewin_width  = allocation->width;
 	prefs_common.sourcewin_height = allocation->height;

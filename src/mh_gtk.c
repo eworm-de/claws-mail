@@ -136,8 +136,8 @@ static void new_folder_cb(GtkAction *action, gpointer data)
 	if (!folderview->selected) return;
 
 	item = gtk_cmctree_node_get_row_data(ctree, folderview->selected);
-	g_return_if_fail(item != NULL);
-	g_return_if_fail(item->folder != NULL);
+	cm_return_if_fail(item != NULL);
+	cm_return_if_fail(item->folder != NULL);
 
 	new_folder = input_dialog_with_checkbtn(_("New folder"),
 						_("Input the name of new folder:"),
@@ -187,9 +187,9 @@ static void delete_folder_cb(GtkAction *action, gpointer data)
 	gchar *old_id;
 
 	item = folderview_get_selected_item(folderview);
-	g_return_if_fail(item != NULL);
-	g_return_if_fail(item->path != NULL);
-	g_return_if_fail(item->folder != NULL);
+	cm_return_if_fail(item != NULL);
+	cm_return_if_fail(item->path != NULL);
+	cm_return_if_fail(item->folder != NULL);
 
 	name = trim_string(item->name, 32);
 	AUTORELEASE_STR(name, {g_free(name); return;});
@@ -241,9 +241,9 @@ static void rename_folder_cb(GtkAction *action, gpointer data)
 	gchar *base;
 
 	item = folderview_get_selected_item(folderview);
-	g_return_if_fail(item != NULL);
-	g_return_if_fail(item->path != NULL);
-	g_return_if_fail(item->folder != NULL);
+	cm_return_if_fail(item != NULL);
+	cm_return_if_fail(item->path != NULL);
+	cm_return_if_fail(item->folder != NULL);
 
 	name = trim_string(item->name, 32);
 	message = g_strdup_printf(_("Input new name for '%s':"), name);
@@ -330,11 +330,11 @@ static void update_tree_cb(GtkAction *action, gpointer data)
 	const gchar *a_name = gtk_action_get_name(action);
 
 	item = folderview_get_selected_item(folderview);
-	g_return_if_fail(item != NULL);
+	cm_return_if_fail(item != NULL);
 
 	summary_show(folderview->summaryview, NULL);
 
-	g_return_if_fail(item->folder != NULL);
+	cm_return_if_fail(item->folder != NULL);
 
 	DO_ACTION("FolderViewPopup/CheckNewMessages", folderview_check_new(item->folder));
 	DO_ACTION("FolderViewPopup/CheckNewFolders", folderview_rescan_tree(item->folder, FALSE));
@@ -350,8 +350,8 @@ static void remove_mailbox_cb(GtkAction *action, gpointer data)
 	AlertValue avalue;
 
 	item = folderview_get_selected_item(folderview);
-	g_return_if_fail(item != NULL);
-	g_return_if_fail(item->folder != NULL);
+	cm_return_if_fail(item != NULL);
+	cm_return_if_fail(item->folder != NULL);
 	if (folder_item_parent(item)) return;
 
 	name = trim_string(item->folder->name, 32);

@@ -88,7 +88,7 @@ static gboolean smime_is_signed(MimeInfo *mimeinfo)
 	const gchar *protocol, *tmpstr;
 	PrivacyDataPGP *data = NULL;
 	
-	g_return_val_if_fail(mimeinfo != NULL, FALSE);
+	cm_return_val_if_fail(mimeinfo != NULL, FALSE);
 	if (mimeinfo->privacy != NULL) {
 		data = (PrivacyDataPGP *) mimeinfo->privacy;
 		if (data->done_sigtest)
@@ -194,8 +194,8 @@ static gint smime_check_signature(MimeInfo *mimeinfo)
 	const gchar *tmpstr;
 	gpgme_data_t sigdata = NULL, textdata = NULL;
 	gpgme_error_t err;
-	g_return_val_if_fail(mimeinfo != NULL, -1);
-	g_return_val_if_fail(mimeinfo->privacy != NULL, -1);
+	cm_return_val_if_fail(mimeinfo != NULL, -1);
+	cm_return_val_if_fail(mimeinfo->privacy != NULL, -1);
 	data = (PrivacyDataPGP *) mimeinfo->privacy;
 	gpgme_new(&data->ctx);
 	EncodingType oldenc = ENC_BINARY;
@@ -211,7 +211,7 @@ static gint smime_check_signature(MimeInfo *mimeinfo)
 	parent = procmime_mimeinfo_parent(mimeinfo);
 
 	fp = g_fopen(parent->data.filename, "rb");
-	g_return_val_if_fail(fp != NULL, SIGNATURE_INVALID);
+	cm_return_val_if_fail(fp != NULL, SIGNATURE_INVALID);
 	
 	boundary = g_hash_table_lookup(parent->typeparameters, "boundary");
 	if (!boundary) {
@@ -328,7 +328,7 @@ static SignatureStatus smime_get_sig_status(MimeInfo *mimeinfo)
 {
 	PrivacyDataPGP *data = (PrivacyDataPGP *) mimeinfo->privacy;
 	
-	g_return_val_if_fail(data != NULL, SIGNATURE_INVALID);
+	cm_return_val_if_fail(data != NULL, SIGNATURE_INVALID);
 
 	if (data->sigstatus == NULL && 
 	    prefs_gpg_get_config()->auto_check_signatures)
@@ -341,7 +341,7 @@ static gchar *smime_get_sig_info_short(MimeInfo *mimeinfo)
 {
 	PrivacyDataPGP *data = (PrivacyDataPGP *) mimeinfo->privacy;
 	
-	g_return_val_if_fail(data != NULL, g_strdup("Error"));
+	cm_return_val_if_fail(data != NULL, g_strdup("Error"));
 
 	if (data->sigstatus == NULL && 
 	    prefs_gpg_get_config()->auto_check_signatures)
@@ -354,7 +354,7 @@ static gchar *smime_get_sig_info_full(MimeInfo *mimeinfo)
 {
 	PrivacyDataPGP *data = (PrivacyDataPGP *) mimeinfo->privacy;
 	
-	g_return_val_if_fail(data != NULL, g_strdup("Error"));
+	cm_return_val_if_fail(data != NULL, g_strdup("Error"));
 
 	if (data->sigstatus == NULL && 
 	    prefs_gpg_get_config()->auto_check_signatures)
@@ -400,7 +400,7 @@ static MimeInfo *smime_decrypt(MimeInfo *mimeinfo)
 	gchar *chars;
 	size_t len;
 
-	g_return_val_if_fail(smime_is_encrypted(mimeinfo), NULL);
+	cm_return_val_if_fail(smime_is_encrypted(mimeinfo), NULL);
 	
 	if ((err = gpgme_new(&ctx)) != GPG_ERR_NO_ERROR) {
 		privacy_set_error(_("Couldn't initialize GPG context, %s"), gpgme_strerror(err));

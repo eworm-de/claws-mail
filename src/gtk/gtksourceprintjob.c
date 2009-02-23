@@ -477,7 +477,7 @@ gtk_source_print_job_finalize (GObject *object)
 	GtkSourcePrintJob *job;
 	GtkSourcePrintJobPrivate *priv;
 	
-	g_return_if_fail (GTK_IS_SOURCE_PRINT_JOB (object));
+	cm_return_if_fail (GTK_IS_SOURCE_PRINT_JOB (object));
 	
 	job = GTK_SOURCE_PRINT_JOB (object);
 	priv = job->priv;
@@ -673,7 +673,7 @@ gtk_source_print_job_set_property (GObject      *object,
 static void 
 gtk_source_print_job_begin_page (GtkSourcePrintJob *job)
 {
-	g_return_if_fail (job->priv->printing);
+	cm_return_if_fail (job->priv->printing);
 	
 	if (job->priv->print_header && job->priv->header_height > 0)
 	{
@@ -836,8 +836,8 @@ update_page_size_and_margins (GtkSourcePrintJob *job)
 				  job->priv->header_height - job->priv->footer_height);
 
 	/* FIXME: put some saner values than 5cm - Gustavo */
-	g_return_val_if_fail (job->priv->text_width > CM(5.0), FALSE);
-	g_return_val_if_fail (job->priv->text_height > CM(5.0), FALSE);
+	cm_return_val_if_fail (job->priv->text_width > CM(5.0), FALSE);
+	cm_return_val_if_fail (job->priv->text_height > CM(5.0), FALSE);
 
 	return TRUE;
 }
@@ -982,7 +982,7 @@ text_style_new (GtkSourcePrintJob *job, GtkTextTag *tag)
 	TextStyle *style;
 	gboolean bg_set, fg_set;
 	
-	g_return_val_if_fail (tag != NULL && GTK_IS_TEXT_TAG (tag), NULL);
+	cm_return_val_if_fail (tag != NULL && GTK_IS_TEXT_TAG (tag), NULL);
 
 	style = g_new0 (TextStyle, 1);
 
@@ -1207,8 +1207,8 @@ get_text_to_print (GtkSourcePrintJob *job,
 	GtkTextIter _start, _end;
 	gboolean retval;
 	
-	g_return_val_if_fail (start != NULL && end != NULL, FALSE);
-	g_return_val_if_fail (job->priv->buffer != NULL, FALSE);
+	cm_return_val_if_fail (start != NULL && end != NULL, FALSE);
+	cm_return_val_if_fail (job->priv->buffer != NULL, FALSE);
 
 	_start = *start;
 	_end = *end;
@@ -1800,7 +1800,7 @@ gtk_source_print_job_new (GnomePrintConfig  *config)
 {
 	GtkSourcePrintJob *job;
 
-	g_return_val_if_fail (config == NULL || GNOME_IS_PRINT_CONFIG (config), NULL);
+	cm_return_val_if_fail (config == NULL || GNOME_IS_PRINT_CONFIG (config), NULL);
 
 	job = GTK_SOURCE_PRINT_JOB (g_object_new (GTK_TYPE_SOURCE_PRINT_JOB, NULL));
 	if (config != NULL)
@@ -1824,8 +1824,8 @@ gtk_source_print_job_new_with_buffer (GnomePrintConfig  *config,
 {
 	GtkSourcePrintJob *job;
 
-	g_return_val_if_fail (config == NULL || GNOME_IS_PRINT_CONFIG (config), NULL);
-	g_return_val_if_fail (buffer == NULL || GTK_IS_TEXT_BUFFER (buffer), NULL);
+	cm_return_val_if_fail (config == NULL || GNOME_IS_PRINT_CONFIG (config), NULL);
+	cm_return_val_if_fail (buffer == NULL || GTK_IS_TEXT_BUFFER (buffer), NULL);
 
 	job = gtk_source_print_job_new (config);
 	if (buffer != NULL)
@@ -1849,9 +1849,9 @@ void
 gtk_source_print_job_set_config (GtkSourcePrintJob *job,
 				 GnomePrintConfig  *config)
 {
-	g_return_if_fail (GTK_IS_SOURCE_PRINT_JOB (job));
-	g_return_if_fail (GNOME_IS_PRINT_CONFIG (config));
-	g_return_if_fail (!job->priv->printing);
+	cm_return_if_fail (GTK_IS_SOURCE_PRINT_JOB (job));
+	cm_return_if_fail (GNOME_IS_PRINT_CONFIG (config));
+	cm_return_if_fail (!job->priv->printing);
 	
 	if (config == job->priv->config)
 		return;
@@ -1878,7 +1878,7 @@ gtk_source_print_job_set_config (GtkSourcePrintJob *job,
 GnomePrintConfig * 
 gtk_source_print_job_get_config (GtkSourcePrintJob *job)
 {
-	g_return_val_if_fail (GTK_IS_SOURCE_PRINT_JOB (job), NULL);
+	cm_return_val_if_fail (GTK_IS_SOURCE_PRINT_JOB (job), NULL);
 
 	ensure_print_config (job);
 	
@@ -1898,9 +1898,9 @@ void
 gtk_source_print_job_set_buffer (GtkSourcePrintJob *job,
 				 GtkTextBuffer   *buffer)
 {
-	g_return_if_fail (GTK_IS_SOURCE_PRINT_JOB (job));
-	g_return_if_fail (GTK_IS_TEXT_BUFFER (buffer));
-	g_return_if_fail (!job->priv->printing);
+	cm_return_if_fail (GTK_IS_SOURCE_PRINT_JOB (job));
+	cm_return_if_fail (GTK_IS_TEXT_BUFFER (buffer));
+	cm_return_if_fail (!job->priv->printing);
 
 	if (buffer == job->priv->buffer)
 		return;
@@ -1927,7 +1927,7 @@ gtk_source_print_job_set_buffer (GtkSourcePrintJob *job,
 GtkTextBuffer *
 gtk_source_print_job_get_buffer (GtkSourcePrintJob *job)
 {
-	g_return_val_if_fail (GTK_IS_SOURCE_PRINT_JOB (job), NULL);
+	cm_return_val_if_fail (GTK_IS_SOURCE_PRINT_JOB (job), NULL);
 
 	return job->priv->buffer;
 }
@@ -1948,8 +1948,8 @@ void
 gtk_source_print_job_set_tabs_width (GtkSourcePrintJob *job,
 				     guint              tabs_width)
 {
-	g_return_if_fail (GTK_IS_SOURCE_PRINT_JOB (job));
-	g_return_if_fail (!job->priv->printing);
+	cm_return_if_fail (GTK_IS_SOURCE_PRINT_JOB (job));
+	cm_return_if_fail (!job->priv->printing);
 
 	if (tabs_width == job->priv->tabs_width)
 		return;
@@ -1971,7 +1971,7 @@ gtk_source_print_job_set_tabs_width (GtkSourcePrintJob *job,
 guint 
 gtk_source_print_job_get_tabs_width (GtkSourcePrintJob *job)
 {
-	g_return_val_if_fail (GTK_IS_SOURCE_PRINT_JOB (job), 0);
+	cm_return_val_if_fail (GTK_IS_SOURCE_PRINT_JOB (job), 0);
 
 	return job->priv->tabs_width;
 }
@@ -1988,8 +1988,8 @@ void
 gtk_source_print_job_set_wrap_mode (GtkSourcePrintJob *job,
 				    GtkWrapMode        wrap)
 {
-	g_return_if_fail (GTK_IS_SOURCE_PRINT_JOB (job));
-	g_return_if_fail (!job->priv->printing);
+	cm_return_if_fail (GTK_IS_SOURCE_PRINT_JOB (job));
+	cm_return_if_fail (!job->priv->printing);
 
 	if (wrap == job->priv->wrap_mode)
 		return;
@@ -2011,7 +2011,7 @@ gtk_source_print_job_set_wrap_mode (GtkSourcePrintJob *job,
 GtkWrapMode 
 gtk_source_print_job_get_wrap_mode (GtkSourcePrintJob *job)
 {
-	g_return_val_if_fail (GTK_IS_SOURCE_PRINT_JOB (job), GTK_WRAP_NONE);
+	cm_return_val_if_fail (GTK_IS_SOURCE_PRINT_JOB (job), GTK_WRAP_NONE);
 
 	return job->priv->wrap_mode;
 }
@@ -2028,8 +2028,8 @@ void
 gtk_source_print_job_set_highlight (GtkSourcePrintJob *job,
 				    gboolean           highlight)
 {
-	g_return_if_fail (GTK_IS_SOURCE_PRINT_JOB (job));
-	g_return_if_fail (!job->priv->printing);
+	cm_return_if_fail (GTK_IS_SOURCE_PRINT_JOB (job));
+	cm_return_if_fail (!job->priv->printing);
 
 	highlight = (highlight != FALSE);
 	
@@ -2054,7 +2054,7 @@ gtk_source_print_job_set_highlight (GtkSourcePrintJob *job,
 gboolean 
 gtk_source_print_job_get_highlight (GtkSourcePrintJob *job)
 {
-	g_return_val_if_fail (GTK_IS_SOURCE_PRINT_JOB (job), FALSE);
+	cm_return_val_if_fail (GTK_IS_SOURCE_PRINT_JOB (job), FALSE);
 
 	return job->priv->highlight;
 }
@@ -2070,9 +2070,9 @@ void
 gtk_source_print_job_set_font_desc (GtkSourcePrintJob    *job,
 				    PangoFontDescription *desc)
 {
-	g_return_if_fail (GTK_IS_SOURCE_PRINT_JOB (job));
-	g_return_if_fail (desc != NULL);
-	g_return_if_fail (!job->priv->printing);
+	cm_return_if_fail (GTK_IS_SOURCE_PRINT_JOB (job));
+	cm_return_if_fail (desc != NULL);
+	cm_return_if_fail (!job->priv->printing);
 
 	desc = pango_font_description_copy (desc);
 	if (job->priv->font != NULL)
@@ -2104,9 +2104,9 @@ gtk_source_print_job_set_font (GtkSourcePrintJob *job,
 {
 	PangoFontDescription *desc;
 	
-	g_return_if_fail (GTK_IS_SOURCE_PRINT_JOB (job));
-	g_return_if_fail (font_name != NULL);
-	g_return_if_fail (!job->priv->printing);
+	cm_return_if_fail (GTK_IS_SOURCE_PRINT_JOB (job));
+	cm_return_if_fail (font_name != NULL);
+	cm_return_if_fail (!job->priv->printing);
 
 	desc = font_description_from_gnome_font_name (font_name);
 	if (desc)
@@ -2131,7 +2131,7 @@ gtk_source_print_job_set_font (GtkSourcePrintJob *job,
 PangoFontDescription *
 gtk_source_print_job_get_font_desc (GtkSourcePrintJob *job)
 {
-	g_return_val_if_fail (GTK_IS_SOURCE_PRINT_JOB (job), NULL);
+	cm_return_val_if_fail (GTK_IS_SOURCE_PRINT_JOB (job), NULL);
 
 	ensure_print_config (job);
 	
@@ -2158,7 +2158,7 @@ gtk_source_print_job_get_font_desc (GtkSourcePrintJob *job)
 gchar *
 gtk_source_print_job_get_font (GtkSourcePrintJob *job)
 {
-	g_return_val_if_fail (GTK_IS_SOURCE_PRINT_JOB (job), NULL);
+	cm_return_val_if_fail (GTK_IS_SOURCE_PRINT_JOB (job), NULL);
 
 	ensure_print_config (job);
 	
@@ -2182,8 +2182,8 @@ gtk_source_print_job_setup_from_view (GtkSourcePrintJob *job,
 	GtkTextBuffer *buffer = NULL;
 	PangoContext *pango_context;
 	
-	g_return_if_fail (GTK_IS_SOURCE_PRINT_JOB (job));
-	g_return_if_fail (!job->priv->printing);
+	cm_return_if_fail (GTK_IS_SOURCE_PRINT_JOB (job));
+	cm_return_if_fail (!job->priv->printing);
 
 	buffer = gtk_text_view_get_buffer (view);
 	
@@ -2212,8 +2212,8 @@ void
 gtk_source_print_job_set_numbers_font_desc (GtkSourcePrintJob    *job,
 					    PangoFontDescription *desc)
 {
-	g_return_if_fail (GTK_IS_SOURCE_PRINT_JOB (job));
-	g_return_if_fail (!job->priv->printing);
+	cm_return_if_fail (GTK_IS_SOURCE_PRINT_JOB (job));
+	cm_return_if_fail (!job->priv->printing);
 	
 	if (desc)
 		desc = pango_font_description_copy (desc);
@@ -2246,8 +2246,8 @@ gtk_source_print_job_set_numbers_font (GtkSourcePrintJob *job,
 {
 	PangoFontDescription *desc;
 	
-	g_return_if_fail (GTK_IS_SOURCE_PRINT_JOB (job));
-	g_return_if_fail (!job->priv->printing);
+	cm_return_if_fail (GTK_IS_SOURCE_PRINT_JOB (job));
+	cm_return_if_fail (!job->priv->printing);
 
 	if (font_name != NULL)
 	{
@@ -2275,7 +2275,7 @@ gtk_source_print_job_set_numbers_font (GtkSourcePrintJob *job,
 PangoFontDescription *
 gtk_source_print_job_get_numbers_font_desc (GtkSourcePrintJob *job)
 {
-	g_return_val_if_fail (GTK_IS_SOURCE_PRINT_JOB (job), NULL);
+	cm_return_val_if_fail (GTK_IS_SOURCE_PRINT_JOB (job), NULL);
 
 	return job->priv->numbers_font;
 }
@@ -2301,7 +2301,7 @@ gtk_source_print_job_get_numbers_font_desc (GtkSourcePrintJob *job)
 gchar *
 gtk_source_print_job_get_numbers_font (GtkSourcePrintJob *job)
 {
-	g_return_val_if_fail (GTK_IS_SOURCE_PRINT_JOB (job), NULL);
+	cm_return_val_if_fail (GTK_IS_SOURCE_PRINT_JOB (job), NULL);
 
 	if (job->priv->numbers_font != NULL)
 		return font_description_to_gnome_font_name (job->priv->numbers_font);
@@ -2322,8 +2322,8 @@ void
 gtk_source_print_job_set_print_numbers (GtkSourcePrintJob *job,
 					guint              interval)
 {
-	g_return_if_fail (GTK_IS_SOURCE_PRINT_JOB (job));
-	g_return_if_fail (!job->priv->printing);
+	cm_return_if_fail (GTK_IS_SOURCE_PRINT_JOB (job));
+	cm_return_if_fail (!job->priv->printing);
 
 	if (interval == job->priv->print_numbers)
 		return;
@@ -2346,7 +2346,7 @@ gtk_source_print_job_set_print_numbers (GtkSourcePrintJob *job,
 guint 
 gtk_source_print_job_get_print_numbers (GtkSourcePrintJob *job)
 {
-	g_return_val_if_fail (GTK_IS_SOURCE_PRINT_JOB (job), 0);
+	cm_return_val_if_fail (GTK_IS_SOURCE_PRINT_JOB (job), 0);
 
 	return job->priv->print_numbers;
 }
@@ -2379,8 +2379,8 @@ gtk_source_print_job_set_text_margins (GtkSourcePrintJob *job,
 				       gdouble            left,
 				       gdouble            right)
 {
-	g_return_if_fail (GTK_IS_SOURCE_PRINT_JOB (job));
-	g_return_if_fail (!job->priv->printing);
+	cm_return_if_fail (GTK_IS_SOURCE_PRINT_JOB (job));
+	cm_return_if_fail (!job->priv->printing);
 
 	if (top >= 0)
 		job->priv->margin_top = top;
@@ -2413,7 +2413,7 @@ gtk_source_print_job_get_text_margins (GtkSourcePrintJob *job,
 				       gdouble           *left,
 				       gdouble           *right)
 {
-	g_return_if_fail (GTK_IS_SOURCE_PRINT_JOB (job));
+	cm_return_if_fail (GTK_IS_SOURCE_PRINT_JOB (job));
 
 	if (top != NULL)
 		*top = job->priv->margin_top;
@@ -2434,10 +2434,10 @@ gtk_source_print_job_prepare (GtkSourcePrintJob *job,
 {
 	PROFILE (GTimer *timer);
 	
-	g_return_val_if_fail (GTK_IS_SOURCE_PRINT_JOB (job), FALSE);
-	g_return_val_if_fail (!job->priv->printing, FALSE);
-	g_return_val_if_fail (job->priv->buffer != NULL, FALSE);
-	g_return_val_if_fail (start != NULL && end != NULL, FALSE);
+	cm_return_val_if_fail (GTK_IS_SOURCE_PRINT_JOB (job), FALSE);
+	cm_return_val_if_fail (!job->priv->printing, FALSE);
+	cm_return_val_if_fail (job->priv->buffer != NULL, FALSE);
+	cm_return_val_if_fail (start != NULL && end != NULL, FALSE);
 
 	/* make sure we have a sane configuration to start printing */
 	ensure_print_config (job);
@@ -2489,9 +2489,9 @@ gtk_source_print_job_print (GtkSourcePrintJob *job)
 {
 	GtkTextIter start, end;
 
-	g_return_val_if_fail (GTK_IS_SOURCE_PRINT_JOB (job), NULL);
-	g_return_val_if_fail (!job->priv->printing, NULL);
-	g_return_val_if_fail (job->priv->buffer != NULL, NULL);
+	cm_return_val_if_fail (GTK_IS_SOURCE_PRINT_JOB (job), NULL);
+	cm_return_val_if_fail (!job->priv->printing, NULL);
+	cm_return_val_if_fail (job->priv->buffer != NULL, NULL);
 
 	gtk_text_buffer_get_bounds (GTK_TEXT_BUFFER (job->priv->buffer), &start, &end);
 
@@ -2516,11 +2516,11 @@ gtk_source_print_job_print_range (GtkSourcePrintJob *job,
 				  const GtkTextIter *start,
 				  const GtkTextIter *end)
 {
-	g_return_val_if_fail (GTK_IS_SOURCE_PRINT_JOB (job), NULL);
-	g_return_val_if_fail (!job->priv->printing, NULL);
-	g_return_val_if_fail (job->priv->buffer != NULL, NULL);
-	g_return_val_if_fail (start != NULL && end != NULL, NULL);
-	g_return_val_if_fail (gtk_text_iter_get_buffer (start) ==
+	cm_return_val_if_fail (GTK_IS_SOURCE_PRINT_JOB (job), NULL);
+	cm_return_val_if_fail (!job->priv->printing, NULL);
+	cm_return_val_if_fail (job->priv->buffer != NULL, NULL);
+	cm_return_val_if_fail (start != NULL && end != NULL, NULL);
+	cm_return_val_if_fail (gtk_text_iter_get_buffer (start) ==
 			      GTK_TEXT_BUFFER (job->priv->buffer) &&
 			      gtk_text_iter_get_buffer (end) ==
 			      GTK_TEXT_BUFFER (job->priv->buffer), NULL);
@@ -2572,11 +2572,11 @@ gtk_source_print_job_print_range_async (GtkSourcePrintJob *job,
 {
 	GSource *idle_source;
 
-	g_return_val_if_fail (GTK_IS_SOURCE_PRINT_JOB (job), FALSE);
-	g_return_val_if_fail (!job->priv->printing, FALSE);
-	g_return_val_if_fail (job->priv->buffer != NULL, FALSE);
-	g_return_val_if_fail (start != NULL && end != NULL, FALSE);
-	g_return_val_if_fail (gtk_text_iter_get_buffer (start) ==
+	cm_return_val_if_fail (GTK_IS_SOURCE_PRINT_JOB (job), FALSE);
+	cm_return_val_if_fail (!job->priv->printing, FALSE);
+	cm_return_val_if_fail (job->priv->buffer != NULL, FALSE);
+	cm_return_val_if_fail (start != NULL && end != NULL, FALSE);
+	cm_return_val_if_fail (gtk_text_iter_get_buffer (start) ==
 			      GTK_TEXT_BUFFER (job->priv->buffer) &&
 			      gtk_text_iter_get_buffer (end) ==
 			      GTK_TEXT_BUFFER (job->priv->buffer), FALSE);
@@ -2622,8 +2622,8 @@ gtk_source_print_job_print_range_async (GtkSourcePrintJob *job,
 void 
 gtk_source_print_job_cancel (GtkSourcePrintJob *job)
 {
-	g_return_if_fail (GTK_IS_SOURCE_PRINT_JOB (job));
-	g_return_if_fail (job->priv->printing);
+	cm_return_if_fail (GTK_IS_SOURCE_PRINT_JOB (job));
+	cm_return_if_fail (job->priv->printing);
 
 	if (job->priv->idle_printing_tag > 0)
 	{
@@ -2658,7 +2658,7 @@ gtk_source_print_job_cancel (GtkSourcePrintJob *job)
 GnomePrintJob *
 gtk_source_print_job_get_print_job (GtkSourcePrintJob *job)
 {
-	g_return_val_if_fail (GTK_IS_SOURCE_PRINT_JOB (job), NULL);
+	cm_return_val_if_fail (GTK_IS_SOURCE_PRINT_JOB (job), NULL);
 
 	if (job->priv->print_job)
 		g_object_ref (job->priv->print_job);
@@ -2680,8 +2680,8 @@ gtk_source_print_job_get_print_job (GtkSourcePrintJob *job)
 guint 
 gtk_source_print_job_get_page (GtkSourcePrintJob *job)
 {
-	g_return_val_if_fail (GTK_IS_SOURCE_PRINT_JOB (job), 0);
-	g_return_val_if_fail (job->priv->printing, 0);
+	cm_return_val_if_fail (GTK_IS_SOURCE_PRINT_JOB (job), 0);
+	cm_return_val_if_fail (job->priv->printing, 0);
 
 	return job->priv->page;
 }
@@ -2702,7 +2702,7 @@ gtk_source_print_job_get_page (GtkSourcePrintJob *job)
 guint 
 gtk_source_print_job_get_page_count (GtkSourcePrintJob *job)
 {
-	g_return_val_if_fail (GTK_IS_SOURCE_PRINT_JOB (job), 0);
+	cm_return_val_if_fail (GTK_IS_SOURCE_PRINT_JOB (job), 0);
 
 	return job->priv->page_count;
 }
@@ -2724,8 +2724,8 @@ gtk_source_print_job_get_page_count (GtkSourcePrintJob *job)
 GnomePrintContext *
 gtk_source_print_job_get_print_context (GtkSourcePrintJob *job)
 {
-	g_return_val_if_fail (GTK_IS_SOURCE_PRINT_JOB (job), NULL);
-	g_return_val_if_fail (job->priv->printing, NULL);
+	cm_return_val_if_fail (GTK_IS_SOURCE_PRINT_JOB (job), NULL);
+	cm_return_val_if_fail (job->priv->printing, NULL);
 
 	return job->priv->print_ctxt;
 }
@@ -2748,8 +2748,8 @@ strdup_strftime (const gchar *format, const struct tm *tm)
 	gsize convlen = 0;
 	GError *error = NULL;
 
-	g_return_val_if_fail (format != NULL, NULL);
-	g_return_val_if_fail (tm != NULL, NULL);
+	cm_return_val_if_fail (format != NULL, NULL);
+	cm_return_val_if_fail (tm != NULL, NULL);
 
 	locale_format = g_locale_from_utf8 (format, -1, NULL, &locale_format_len, &error);
 
@@ -2977,8 +2977,8 @@ void
 gtk_source_print_job_set_print_header (GtkSourcePrintJob *job,
 				       gboolean           setting)
 {
-	g_return_if_fail (GTK_IS_SOURCE_PRINT_JOB (job));
-	g_return_if_fail (!job->priv->printing);
+	cm_return_if_fail (GTK_IS_SOURCE_PRINT_JOB (job));
+	cm_return_if_fail (!job->priv->printing);
 
 	setting = (setting != FALSE);
 	
@@ -3004,7 +3004,7 @@ gtk_source_print_job_set_print_header (GtkSourcePrintJob *job,
 gboolean 
 gtk_source_print_job_get_print_header (GtkSourcePrintJob *job)
 {
-	g_return_val_if_fail (GTK_IS_SOURCE_PRINT_JOB (job), FALSE);
+	cm_return_val_if_fail (GTK_IS_SOURCE_PRINT_JOB (job), FALSE);
 
 	return job->priv->print_header;
 }
@@ -3026,8 +3026,8 @@ void
 gtk_source_print_job_set_print_footer (GtkSourcePrintJob *job,
 				       gboolean           setting)
 {
-	g_return_if_fail (GTK_IS_SOURCE_PRINT_JOB (job));
-	g_return_if_fail (!job->priv->printing);
+	cm_return_if_fail (GTK_IS_SOURCE_PRINT_JOB (job));
+	cm_return_if_fail (!job->priv->printing);
 
 	setting = (setting != FALSE);
 	
@@ -3053,7 +3053,7 @@ gtk_source_print_job_set_print_footer (GtkSourcePrintJob *job,
 gboolean 
 gtk_source_print_job_get_print_footer (GtkSourcePrintJob *job)
 {
-	g_return_val_if_fail (GTK_IS_SOURCE_PRINT_JOB (job), FALSE);
+	cm_return_val_if_fail (GTK_IS_SOURCE_PRINT_JOB (job), FALSE);
 
 	return job->priv->print_footer;
 }
@@ -3071,8 +3071,8 @@ void
 gtk_source_print_job_set_header_footer_font_desc (GtkSourcePrintJob    *job,
 						  PangoFontDescription *desc)
 {
-	g_return_if_fail (GTK_IS_SOURCE_PRINT_JOB (job));
-	g_return_if_fail (!job->priv->printing);
+	cm_return_if_fail (GTK_IS_SOURCE_PRINT_JOB (job));
+	cm_return_if_fail (!job->priv->printing);
 	
 	if (desc)
 		desc = pango_font_description_copy (desc);
@@ -3105,8 +3105,8 @@ gtk_source_print_job_set_header_footer_font (GtkSourcePrintJob *job,
 {
 	PangoFontDescription *desc;
 	
-	g_return_if_fail (GTK_IS_SOURCE_PRINT_JOB (job));
-	g_return_if_fail (!job->priv->printing);
+	cm_return_if_fail (GTK_IS_SOURCE_PRINT_JOB (job));
+	cm_return_if_fail (!job->priv->printing);
 
 	if (font_name != NULL)
 	{
@@ -3134,7 +3134,7 @@ gtk_source_print_job_set_header_footer_font (GtkSourcePrintJob *job,
 PangoFontDescription *
 gtk_source_print_job_get_header_footer_font_desc (GtkSourcePrintJob *job)
 {
-	g_return_val_if_fail (GTK_IS_SOURCE_PRINT_JOB (job), NULL);
+	cm_return_val_if_fail (GTK_IS_SOURCE_PRINT_JOB (job), NULL);
 
 	return job->priv->header_footer_font;
 }
@@ -3160,7 +3160,7 @@ gtk_source_print_job_get_header_footer_font_desc (GtkSourcePrintJob *job)
 gchar *
 gtk_source_print_job_get_header_footer_font (GtkSourcePrintJob *job)
 {
-	g_return_val_if_fail (GTK_IS_SOURCE_PRINT_JOB (job), NULL);
+	cm_return_val_if_fail (GTK_IS_SOURCE_PRINT_JOB (job), NULL);
 
 	if (job->priv->header_footer_font != NULL)
 		return font_description_to_gnome_font_name (job->priv->header_footer_font);
@@ -3197,8 +3197,8 @@ gtk_source_print_job_set_header_format (GtkSourcePrintJob *job,
 					const gchar       *right,
 					gboolean           separator)
 {
-	g_return_if_fail (GTK_IS_SOURCE_PRINT_JOB (job));
-	g_return_if_fail (!job->priv->printing);
+	cm_return_if_fail (GTK_IS_SOURCE_PRINT_JOB (job));
+	cm_return_if_fail (!job->priv->printing);
 
 	/* FIXME: validate given strings? */
 	g_free (job->priv->header_format_left);
@@ -3227,8 +3227,8 @@ gtk_source_print_job_set_footer_format (GtkSourcePrintJob *job,
 					const gchar       *right,
 					gboolean           separator)
 {
-	g_return_if_fail (GTK_IS_SOURCE_PRINT_JOB (job));
-	g_return_if_fail (!job->priv->printing);
+	cm_return_if_fail (GTK_IS_SOURCE_PRINT_JOB (job));
+	cm_return_if_fail (!job->priv->printing);
 
 	/* FIXME: validate given strings? */
 	g_free (job->priv->footer_format_left);

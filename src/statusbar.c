@@ -204,8 +204,8 @@ static gboolean statusbar_puts_all_hook (gpointer source, gpointer data)
 {
 	LogText *logtext = (LogText *) source;
 
-	g_return_val_if_fail(logtext != NULL, TRUE);
-	g_return_val_if_fail(logtext->text != NULL, TRUE);
+	cm_return_val_if_fail(logtext != NULL, TRUE);
+	cm_return_val_if_fail(logtext->text != NULL, TRUE);
 
 	statusbar_pop_all();
 	if (logtext->type == LOG_NORMAL) {

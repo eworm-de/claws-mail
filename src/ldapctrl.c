@@ -240,7 +240,7 @@ void ldapctl_set_ssl( LdapControl* ctl, const gboolean value ) {
  *         <code>ldapctl_criteria_list_add()</code> functions for this purpose.
  */
 GList *ldapctl_get_criteria_list( const LdapControl* ctl ) {
-	g_return_val_if_fail( ctl != NULL, NULL );
+	cm_return_val_if_fail( ctl != NULL, NULL );
 	return ctl->listCriteria;
 }
 
@@ -249,7 +249,7 @@ GList *ldapctl_get_criteria_list( const LdapControl* ctl ) {
  * \param  ctl  Control data object.
  */
 void ldapctl_criteria_list_clear( LdapControl *ctl ) {
-	g_return_if_fail( ctl != NULL );
+	cm_return_if_fail( ctl != NULL );
 	mgu_free_dlist( ctl->listCriteria );
 	ctl->listCriteria = NULL;
 }
@@ -261,7 +261,7 @@ void ldapctl_criteria_list_clear( LdapControl *ctl ) {
  *             be appended to the list.
  */
 void ldapctl_criteria_list_add( LdapControl *ctl, gchar *attr ) {
-	g_return_if_fail( ctl != NULL );
+	cm_return_if_fail( ctl != NULL );
 	if( attr != NULL ) {
 		if( mgu_list_test_unq_nc( ctl->listCriteria, attr ) ) {
 			debug_print("adding to criteria list: %s\n", attr);
@@ -276,7 +276,7 @@ void ldapctl_criteria_list_add( LdapControl *ctl, gchar *attr ) {
  * \param ctl Control object to clear.
  */
 static void ldapctl_clear( LdapControl *ctl ) {
-	g_return_if_fail( ctl != NULL );
+	cm_return_if_fail( ctl != NULL );
 
 	debug_print("clearing ldap controller members\n");
 	/* Free internal stuff */
@@ -317,7 +317,7 @@ static void ldapctl_clear( LdapControl *ctl ) {
  * \param ctl Control object to free.
  */
 void ldapctl_free( LdapControl *ctl ) {
-	g_return_if_fail( ctl != NULL );
+	cm_return_if_fail( ctl != NULL );
 
 	debug_print("releasing requested memory for ldap controller\n");
 	/* Free internal stuff */
@@ -338,7 +338,7 @@ void ldapctl_free( LdapControl *ctl ) {
  * \param stream Output stream.
  */
 void ldapctl_print( const LdapControl *ctl, FILE *stream ) {
-	g_return_if_fail( ctl != NULL );
+	cm_return_if_fail( ctl != NULL );
 
 	pthread_mutex_lock( ctl->mutexCtl );
 	fprintf( stream, "LdapControl:\n" );
@@ -378,8 +378,8 @@ void ldapctl_print( const LdapControl *ctl, FILE *stream ) {
 void ldapctl_copy( const LdapControl *ctlFrom, LdapControl *ctlTo ) {
 	GList *node;
 
-	g_return_if_fail( ctlFrom != NULL );
-	g_return_if_fail( ctlTo != NULL );
+	cm_return_if_fail( ctlFrom != NULL );
+	cm_return_if_fail( ctlTo != NULL );
 
 	debug_print("ldap controller copy\n");
 	/* Lock both objects */
@@ -521,8 +521,8 @@ gchar *ldapctl_format_criteria( LdapControl *ctl, const gchar *searchVal ) {
 	gchar *p1, *p2, *retVal;
 	gchar *criteriaFmt;
 
-	g_return_val_if_fail( ctl != NULL, NULL );
-	g_return_val_if_fail( searchVal != NULL, NULL );
+	cm_return_val_if_fail( ctl != NULL, NULL );
+	cm_return_val_if_fail( searchVal != NULL, NULL );
 
 	/* Test whether there are more that one search terms */
 	retVal = ldapctl_build_ldap_criteria( searchVal, ctl->matchingOption );
@@ -589,7 +589,7 @@ char **ldapctl_attribute_array( LdapControl *ctl ) {
 	char **ptrArray;
 	GList *node;
 	gint cnt, i;
-	g_return_val_if_fail( ctl != NULL, NULL );
+	cm_return_val_if_fail( ctl != NULL, NULL );
 
 	node = ctl->listCriteria;
 	cnt = g_list_length( ctl->listCriteria );
@@ -614,7 +614,7 @@ char **ldapctl_full_attribute_array( LdapControl *ctl ) {
 	GList *node, *def;
 	GList *tmp = NULL;
 	gint cnt, i;
-	g_return_val_if_fail( ctl != NULL, NULL );
+	cm_return_val_if_fail( ctl != NULL, NULL );
 
 	def = ctl->listCriteria;
 	while (def) {
@@ -678,7 +678,7 @@ void ldapctl_parse_ldap_search( LdapControl *ctl, gchar *criteria ) {
 	gchar *attrib;
 	gint iLen;
 
-	g_return_if_fail( ctl != NULL );
+	cm_return_if_fail( ctl != NULL );
 
 	ldapctl_criteria_list_clear( ctl );
   	if( criteria == NULL ) return;

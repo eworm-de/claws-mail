@@ -41,8 +41,8 @@ ERTFParser *ertf_parser_new(FILE *fp, CodeConverter *conv)
 {
 	ERTFParser *parser;
 
-	g_return_val_if_fail(fp   != NULL, NULL);
-	g_return_val_if_fail(conv != NULL, NULL);
+	cm_return_val_if_fail(fp   != NULL, NULL);
+	cm_return_val_if_fail(conv != NULL, NULL);
 
 	parser             = g_new0(ERTFParser, 1);
 	parser->fp         = fp;
@@ -199,7 +199,7 @@ static void ertf_get_parenthesis(ERTFParser *parser, gchar *buf, gint len)
 	gchar *p;
 
 	buf[0] = '\0';
-	g_return_if_fail(*parser->bufp == '<');
+	cm_return_if_fail(*parser->bufp == '<');
 
 	/* ignore params */
 	if (!g_ascii_strncasecmp(parser->bufp, "<param>", 4)) {

@@ -146,7 +146,7 @@ static gboolean msgcache_msginfo_free_func(gpointer num, gpointer msginfo, gpoin
 
 void msgcache_destroy(MsgCache *cache)
 {
-	g_return_if_fail(cache != NULL);
+	cm_return_if_fail(cache != NULL);
 
 	g_hash_table_foreach_remove(cache->msgnum_table, msgcache_msginfo_free_func, NULL);
 	g_hash_table_destroy(cache->msgid_table);
@@ -158,8 +158,8 @@ void msgcache_add_msg(MsgCache *cache, MsgInfo *msginfo)
 {
 	MsgInfo *newmsginfo;
 
-	g_return_if_fail(cache != NULL);
-	g_return_if_fail(msginfo != NULL);
+	cm_return_if_fail(cache != NULL);
+	cm_return_if_fail(msginfo != NULL);
 
 	newmsginfo = procmsg_msginfo_new_ref(msginfo);
 	g_hash_table_insert(cache->msgnum_table, &newmsginfo->msgnum, newmsginfo);
@@ -175,8 +175,8 @@ void msgcache_remove_msg(MsgCache *cache, guint msgnum)
 {
 	MsgInfo *msginfo;
 
-	g_return_if_fail(cache != NULL);
-	g_return_if_fail(msgnum > 0);
+	cm_return_if_fail(cache != NULL);
+	cm_return_if_fail(msgnum > 0);
 
 	msginfo = (MsgInfo *) g_hash_table_lookup(cache->msgnum_table, &msgnum);
 	if(!msginfo)
@@ -196,8 +196,8 @@ void msgcache_update_msg(MsgCache *cache, MsgInfo *msginfo)
 {
 	MsgInfo *oldmsginfo, *newmsginfo;
 	
-	g_return_if_fail(cache != NULL);
-	g_return_if_fail(msginfo != NULL);
+	cm_return_if_fail(cache != NULL);
+	cm_return_if_fail(msginfo != NULL);
 
 	oldmsginfo = g_hash_table_lookup(cache->msgnum_table, &msginfo->msgnum);
 	if(oldmsginfo && oldmsginfo->msgid) 
@@ -224,7 +224,7 @@ MsgInfo *msgcache_get_msg(MsgCache *cache, guint num)
 {
 	MsgInfo *msginfo;
 
-	g_return_val_if_fail(cache != NULL, NULL);
+	cm_return_val_if_fail(cache != NULL, NULL);
 
 	msginfo = g_hash_table_lookup(cache->msgnum_table, &num);
 	if(!msginfo)
@@ -238,8 +238,8 @@ MsgInfo *msgcache_get_msg_by_id(MsgCache *cache, const gchar *msgid)
 {
 	MsgInfo *msginfo;
 	
-	g_return_val_if_fail(cache != NULL, NULL);
-	g_return_val_if_fail(msgid != NULL, NULL);
+	cm_return_val_if_fail(cache != NULL, NULL);
+	cm_return_val_if_fail(msgid != NULL, NULL);
 
 	msginfo = g_hash_table_lookup(cache->msgid_table, msgid);
 	if(!msginfo)
@@ -261,7 +261,7 @@ MsgInfoList *msgcache_get_msg_list(MsgCache *cache)
 {
 	MsgInfoList *msg_list = NULL;
 	START_TIMING("");
-	g_return_val_if_fail(cache != NULL, NULL);
+	cm_return_val_if_fail(cache != NULL, NULL);
 
 	g_hash_table_foreach((GHashTable *)cache->msgnum_table, msgcache_get_msg_list_func, (gpointer)&msg_list);	
 	cache->last_access = time(NULL);
@@ -273,14 +273,14 @@ MsgInfoList *msgcache_get_msg_list(MsgCache *cache)
 
 time_t msgcache_get_last_access_time(MsgCache *cache)
 {
-	g_return_val_if_fail(cache != NULL, 0);
+	cm_return_val_if_fail(cache != NULL, 0);
 	
 	return cache->last_access;
 }
 
 gint msgcache_get_memory_usage(MsgCache *cache)
 {
-	g_return_val_if_fail(cache != NULL, 0);
+	cm_return_val_if_fail(cache != NULL, 0);
 
 	return cache->memusage;
 }
@@ -391,7 +391,7 @@ static FILE *msgcache_open_data_file(const gchar *file, guint version,
 	FILE *fp;
 	gint32 data_ver;
 
-	g_return_val_if_fail(file != NULL, NULL);
+	cm_return_val_if_fail(file != NULL, NULL);
 
 	if (mode == DATA_WRITE) {
 		int w_err = 0, wrote = 0;
@@ -566,8 +566,8 @@ MsgCache *msgcache_read_cache(FolderItem *item, const gchar *cache_file)
 	char *cache_data = NULL;
 	struct stat st;
 
-	g_return_val_if_fail(cache_file != NULL, NULL);
-	g_return_val_if_fail(item != NULL, NULL);
+	cm_return_val_if_fail(cache_file != NULL, NULL);
+	cm_return_val_if_fail(item != NULL, NULL);
 
 	swapping = TRUE;
 
@@ -1158,10 +1158,10 @@ gint msgcache_write(const gchar *cache_file, const gchar *mark_file, const gchar
 	char *tags_data = NULL;
 
 	START_TIMING("");
-	g_return_val_if_fail(cache_file != NULL, -1);
-	g_return_val_if_fail(mark_file != NULL, -1);
-	g_return_val_if_fail(tags_file != NULL, -1);
-	g_return_val_if_fail(cache != NULL, -1);
+	cm_return_val_if_fail(cache_file != NULL, -1);
+	cm_return_val_if_fail(mark_file != NULL, -1);
+	cm_return_val_if_fail(tags_file != NULL, -1);
+	cm_return_val_if_fail(cache != NULL, -1);
 
 	new_cache = g_strconcat(cache_file, ".new", NULL);
 	new_mark  = g_strconcat(mark_file, ".new", NULL);

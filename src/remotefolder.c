@@ -30,7 +30,7 @@ void folder_remote_folder_init(Folder *folder, const gchar *name,
 
 void folder_remote_folder_destroy(RemoteFolder *rfolder)
 {
-	g_return_if_fail(rfolder != NULL);
+	cm_return_if_fail(rfolder != NULL);
 
 	if (rfolder->session)
 		session_destroy(rfolder->session);

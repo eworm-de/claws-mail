@@ -208,30 +208,30 @@ JPilotFile *jpilot_create_path( const gchar *path ) {
 * Properties...
 */
 void jpilot_set_name( JPilotFile* pilotFile, const gchar *value ) {
-	g_return_if_fail( pilotFile != NULL );
+	cm_return_if_fail( pilotFile != NULL );
 	addrcache_set_name( pilotFile->addressCache, value );
 }
 void jpilot_set_file( JPilotFile* pilotFile, const gchar *value ) {
-	g_return_if_fail( pilotFile != NULL );
+	cm_return_if_fail( pilotFile != NULL );
 	addrcache_refresh( pilotFile->addressCache );
 	pilotFile->readMetadata = FALSE;
 	pilotFile->path = mgu_replace_string( pilotFile->path, value );
 }
 void jpilot_set_accessed( JPilotFile *pilotFile, const gboolean value ) {
-	g_return_if_fail( pilotFile != NULL );
+	cm_return_if_fail( pilotFile != NULL );
 	pilotFile->addressCache->accessFlag = value;
 }
 
 gint jpilot_get_status( JPilotFile *pilotFile ) {
-	g_return_val_if_fail( pilotFile != NULL, -1 );
+	cm_return_val_if_fail( pilotFile != NULL, -1 );
 	return pilotFile->retVal;
 }
 ItemFolder *jpilot_get_root_folder( JPilotFile *pilotFile ) {
-	g_return_val_if_fail( pilotFile != NULL, NULL );
+	cm_return_val_if_fail( pilotFile != NULL, NULL );
 	return addrcache_get_root_folder( pilotFile->addressCache );
 }
 gchar *jpilot_get_name( JPilotFile *pilotFile ) {
-	g_return_val_if_fail( pilotFile != NULL, NULL );
+	cm_return_val_if_fail( pilotFile != NULL, NULL );
 	return addrcache_get_name( pilotFile->addressCache );
 }
 
@@ -241,7 +241,7 @@ gchar *jpilot_get_name( JPilotFile *pilotFile ) {
  * \return <i>TRUE</i> if file was read.
  */
 gboolean jpilot_get_read_flag( JPilotFile *pilotFile ) {
-	g_return_val_if_fail( pilotFile != NULL, FALSE );
+	cm_return_val_if_fail( pilotFile != NULL, FALSE );
 	return pilotFile->addressCache->dataRead;
 }
 
@@ -252,7 +252,7 @@ gboolean jpilot_get_read_flag( JPilotFile *pilotFile ) {
 void jpilot_clear_custom_labels( JPilotFile *pilotFile ) {
 	GList *node;
 
-	g_return_if_fail( pilotFile != NULL );
+	cm_return_if_fail( pilotFile != NULL );
 
 	/* Release custom labels */
 	mgu_free_dlist( pilotFile->customLabels );
@@ -277,7 +277,7 @@ void jpilot_clear_custom_labels( JPilotFile *pilotFile ) {
  * \param pilotFile  JPilot control data.
  */
 void jpilot_add_custom_label( JPilotFile *pilotFile, const gchar *labelName ) {
-	g_return_if_fail( pilotFile != NULL );
+	cm_return_if_fail( pilotFile != NULL );
 
 	if( labelName ) {
 		gchar *labelCopy = g_strdup( labelName );
@@ -302,7 +302,7 @@ GList *jpilot_get_custom_labels( JPilotFile *pilotFile ) {
 	GList *retVal = NULL;
 	GList *node;
 
-	g_return_val_if_fail( pilotFile != NULL, NULL );
+	cm_return_val_if_fail( pilotFile != NULL, NULL );
 
 	node = pilotFile->customLabels;
 	while( node ) {
@@ -404,12 +404,12 @@ static gboolean jpilot_check_files( JPilotFile *pilotFile ) {
 * Return: TRUE if file was modified.
 */
 gboolean jpilot_get_modified( JPilotFile *pilotFile ) {
-	g_return_val_if_fail( pilotFile != NULL, FALSE );
+	cm_return_val_if_fail( pilotFile != NULL, FALSE );
 	pilotFile->addressCache->modified = jpilot_check_files( pilotFile );
 	return pilotFile->addressCache->modified;
 }
 gboolean jpilot_get_accessed( JPilotFile *pilotFile ) {
-	g_return_val_if_fail( pilotFile != NULL, FALSE );
+	cm_return_val_if_fail( pilotFile != NULL, FALSE );
 	return pilotFile->addressCache->accessFlag;
 }
 
@@ -418,7 +418,7 @@ gboolean jpilot_get_accessed( JPilotFile *pilotFile ) {
  * \param pilotFile  JPilot control data.
  */
 void jpilot_free( JPilotFile *pilotFile ) {
-	g_return_if_fail( pilotFile != NULL );
+	cm_return_if_fail( pilotFile != NULL );
 
 	/* Release custom labels */
 	jpilot_clear_custom_labels( pilotFile );
@@ -1256,7 +1256,7 @@ static gint jpilot_read_metadata( JPilotFile *pilotFile ) {
 	unsigned char *buf;
 	int num;
 
-	g_return_val_if_fail( pilotFile != NULL, -1 );
+	cm_return_val_if_fail( pilotFile != NULL, -1 );
 
 	pilotFile->readMetadata = FALSE;
 	addrcache_clear( pilotFile->addressCache );
@@ -1292,7 +1292,7 @@ static gboolean jpilot_setup_labels( JPilotFile *pilotFile ) {
 	struct AddressAppInfo *ai;
 	GList *node;
 
-	g_return_val_if_fail( pilotFile != NULL, -1 );
+	cm_return_val_if_fail( pilotFile != NULL, -1 );
 
 	/* Release indexes */
 	node = pilotFile->labelInd;
@@ -1346,7 +1346,7 @@ static gboolean jpilot_setup_labels( JPilotFile *pilotFile ) {
 GList *jpilot_load_custom_label( JPilotFile *pilotFile, GList *labelList ) {
 	gint i;
 
-	g_return_val_if_fail( pilotFile != NULL, NULL );
+	cm_return_val_if_fail( pilotFile != NULL, NULL );
 
 	if( pilotFile->readMetadata ) {
 		struct AddressAppInfo *ai = & pilotFile->addrInfo;
@@ -1526,7 +1526,7 @@ gint jpilot_read_data( JPilotFile *pilotFile ) {
 		name_order = FAMILY_FIRST;
 	}
 
-	g_return_val_if_fail( pilotFile != NULL, -1 );
+	cm_return_val_if_fail( pilotFile != NULL, -1 );
 
 	pilotFile->retVal = MGU_SUCCESS;
 	pilotFile->addressCache->accessFlag = FALSE;
@@ -1553,7 +1553,7 @@ gint jpilot_read_data( JPilotFile *pilotFile ) {
  * \return List of persons.
  */
 GList *jpilot_get_list_person( JPilotFile *pilotFile ) {
-	g_return_val_if_fail( pilotFile != NULL, NULL );
+	cm_return_val_if_fail( pilotFile != NULL, NULL );
 	return addrcache_get_list_person( pilotFile->addressCache );
 }
 
@@ -1567,7 +1567,7 @@ GList *jpilot_get_list_person( JPilotFile *pilotFile ) {
  * \return List of ItemFolder objects. This should not be freed.
  */
 GList *jpilot_get_list_folder( JPilotFile *pilotFile ) {
-	g_return_val_if_fail( pilotFile != NULL, NULL );
+	cm_return_val_if_fail( pilotFile != NULL, NULL );
 	return addrcache_get_list_folder( pilotFile->addressCache );
 }
 
@@ -1580,7 +1580,7 @@ GList *jpilot_get_list_folder( JPilotFile *pilotFile ) {
  * \return List of items, or NULL if none.
  */
 GList *jpilot_get_all_persons( JPilotFile *pilotFile ) {
-	g_return_val_if_fail( pilotFile != NULL, NULL );
+	cm_return_val_if_fail( pilotFile != NULL, NULL );
 	return addrcache_get_all_persons( pilotFile->addressCache );
 }
 
@@ -1634,7 +1634,7 @@ gboolean jpilot_test_custom_label( JPilotFile *pilotFile, const gchar *labelName
 	gboolean retVal;
 	GList *node;
 
-	g_return_val_if_fail( pilotFile != NULL, FALSE );
+	cm_return_val_if_fail( pilotFile != NULL, FALSE );
 
 	retVal = FALSE;
 	if( labelName ) {

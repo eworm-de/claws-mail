@@ -120,7 +120,7 @@ static gint pop3_stls_recv(Pop3Session *session)
 
 static gint pop3_getauth_user_send(Pop3Session *session)
 {
-	g_return_val_if_fail(session->user != NULL, -1);
+	cm_return_val_if_fail(session->user != NULL, -1);
 
 	session->state = POP3_GETAUTH_USER;
 	pop3_gen_send(session, "USER %s", session->user);
@@ -129,7 +129,7 @@ static gint pop3_getauth_user_send(Pop3Session *session)
 
 static gint pop3_getauth_pass_send(Pop3Session *session)
 {
-	g_return_val_if_fail(session->pass != NULL, -1);
+	cm_return_val_if_fail(session->pass != NULL, -1);
 
 	session->state = POP3_GETAUTH_PASS;
 	pop3_gen_send(session, "PASS %s", session->pass);
@@ -142,8 +142,8 @@ static gint pop3_getauth_apop_send(Pop3Session *session)
 	gchar *apop_str;
 	gchar md5sum[33];
 
-	g_return_val_if_fail(session->user != NULL, -1);
-	g_return_val_if_fail(session->pass != NULL, -1);
+	cm_return_val_if_fail(session->user != NULL, -1);
+	cm_return_val_if_fail(session->pass != NULL, -1);
 
 	session->state = POP3_GETAUTH_APOP;
 
@@ -516,7 +516,7 @@ Session *pop3_session_new(PrefsAccount *account)
 {
 	Pop3Session *session;
 
-	g_return_val_if_fail(account != NULL, NULL);
+	cm_return_val_if_fail(account != NULL, NULL);
 
 	session = g_new0(Pop3Session, 1);
 
@@ -546,7 +546,7 @@ static void pop3_session_destroy(Session *session)
 	Pop3Session *pop3_session = POP3_SESSION(session);
 	gint n;
 
-	g_return_if_fail(session != NULL);
+	cm_return_if_fail(session != NULL);
 
 	for (n = 1; n <= pop3_session->count; n++)
 		g_free(pop3_session->msg[n].uidl);
@@ -724,7 +724,7 @@ static gint pop3_write_msg_to_file(const gchar *file, const gchar *data,
 	FILE *fp;
 	const gchar *prev, *cur;
 
-	g_return_val_if_fail(file != NULL, -1);
+	cm_return_val_if_fail(file != NULL, -1);
 
 	if ((fp = g_fopen(file, "wb")) == NULL) {
 		FILE_OP_ERROR(file, "fopen");

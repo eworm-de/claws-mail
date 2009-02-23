@@ -164,8 +164,8 @@ static void update_extended_buttons (QuickSearch *quicksearch)
 	GtkWidget *expr_btn = quicksearch->search_condition_expression;
 	GtkWidget *ext_btn = quicksearch->search_description;
 
-	g_return_if_fail(expr_btn != NULL);
-	g_return_if_fail(ext_btn != NULL);
+	cm_return_if_fail(expr_btn != NULL);
+	cm_return_if_fail(ext_btn != NULL);
 
 	if (prefs_common.summary_quicksearch_type == QUICK_SEARCH_EXTENDED) {
 		gtk_widget_show(expr_btn);
@@ -267,7 +267,7 @@ static gboolean searchbar_pressed(GtkWidget *widget, GdkEventKey *event,
 		quicksearch->in_typing = FALSE;
 
 		str = quicksearch_get_text(quicksearch);
-		g_return_val_if_fail(str != NULL, TRUE);
+		cm_return_val_if_fail(str != NULL, TRUE);
 
 		/* If the string entry is empty -> hide quicksearch bar. If not -> empty it */
 		if (!*str) {
@@ -492,7 +492,7 @@ static void search_condition_expr_done(MatcherList * matchers)
 {
 	gchar *str;
 
-	g_return_if_fail(
+	cm_return_if_fail(
 			mainwindow_get_mainwindow()->summaryview->quicksearch != NULL);
 
 	if (matchers == NULL)
@@ -515,7 +515,7 @@ static gboolean search_condition_expr(GtkMenuItem *widget, gpointer data)
 	gchar * cond_str;
 	MatcherList * matchers = NULL;
 	
-	g_return_val_if_fail(
+	cm_return_val_if_fail(
 			mainwindow_get_mainwindow()->summaryview->quicksearch != NULL,
 			FALSE);
 

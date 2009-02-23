@@ -31,6 +31,7 @@
 
 #include "claws-marshal.h"
 #include "gtkcmoptionmenu.h"
+#include "utils.h"
 
 #define CHILD_LEFT_SPACING        4
 #define CHILD_RIGHT_SPACING       1
@@ -199,7 +200,7 @@ gtk_cmoption_menu_new (void)
 GtkWidget*
 gtk_cmoption_menu_get_menu (GtkCMOptionMenu *option_menu)
 {
-  g_return_val_if_fail (GTK_IS_CMOPTION_MENU (option_menu), NULL);
+  cm_return_val_if_fail (GTK_IS_CMOPTION_MENU (option_menu), NULL);
 
   return option_menu->menu;
 }
@@ -210,10 +211,10 @@ gtk_cmoption_menu_detacher (GtkWidget     *widget,
 {
   GtkCMOptionMenu *option_menu;
 
-  g_return_if_fail (GTK_IS_CMOPTION_MENU (widget));
+  cm_return_if_fail (GTK_IS_CMOPTION_MENU (widget));
 
   option_menu = GTK_CMOPTION_MENU (widget);
-  g_return_if_fail (option_menu->menu == (GtkWidget*) menu);
+  cm_return_if_fail (option_menu->menu == (GtkWidget*) menu);
 
   gtk_cmoption_menu_remove_contents (option_menu);
   g_signal_handlers_disconnect_by_func (option_menu->menu,
@@ -231,8 +232,8 @@ void
 gtk_cmoption_menu_set_menu (GtkCMOptionMenu *option_menu,
 			  GtkWidget     *menu)
 {
-  g_return_if_fail (GTK_IS_CMOPTION_MENU (option_menu));
-  g_return_if_fail (GTK_IS_MENU (menu));
+  cm_return_if_fail (GTK_IS_CMOPTION_MENU (option_menu));
+  cm_return_if_fail (GTK_IS_MENU (menu));
 
   if (option_menu->menu != menu)
     {
@@ -264,7 +265,7 @@ gtk_cmoption_menu_set_menu (GtkCMOptionMenu *option_menu,
 void
 gtk_cmoption_menu_remove_menu (GtkCMOptionMenu *option_menu)
 {
-  g_return_if_fail (GTK_IS_CMOPTION_MENU (option_menu));
+  cm_return_if_fail (GTK_IS_CMOPTION_MENU (option_menu));
 
   if (option_menu->menu)
     {
@@ -281,7 +282,7 @@ gtk_cmoption_menu_set_history (GtkCMOptionMenu *option_menu,
 {
   GtkWidget *menu_item;
 
-  g_return_if_fail (GTK_IS_CMOPTION_MENU (option_menu));
+  cm_return_if_fail (GTK_IS_CMOPTION_MENU (option_menu));
 
   if (option_menu->menu)
     {
@@ -308,7 +309,7 @@ gtk_cmoption_menu_get_history (GtkCMOptionMenu *option_menu)
 {
   GtkWidget *active_widget;
   
-  g_return_val_if_fail (GTK_IS_CMOPTION_MENU (option_menu), -1);
+  cm_return_val_if_fail (GTK_IS_CMOPTION_MENU (option_menu), -1);
 
   if (option_menu->menu)
     {
@@ -369,7 +370,7 @@ gtk_cmoption_menu_destroy (GtkObject *object)
 {
   GtkCMOptionMenu *option_menu;
 
-  g_return_if_fail (GTK_IS_CMOPTION_MENU (object));
+  cm_return_if_fail (GTK_IS_CMOPTION_MENU (object));
 
   option_menu = GTK_CMOPTION_MENU (object);
 
@@ -493,8 +494,8 @@ gtk_cmoption_menu_paint (GtkWidget    *widget,
   gint border_width;
   gint tab_x;
 
-  g_return_if_fail (GTK_IS_CMOPTION_MENU (widget));
-  g_return_if_fail (area != NULL);
+  cm_return_if_fail (GTK_IS_CMOPTION_MENU (widget));
+  cm_return_if_fail (area != NULL);
 
   if (GTK_WIDGET_DRAWABLE (widget))
     {
@@ -573,8 +574,8 @@ static gint
 gtk_cmoption_menu_expose (GtkWidget      *widget,
 			GdkEventExpose *event)
 {
-  g_return_val_if_fail (GTK_IS_CMOPTION_MENU (widget), FALSE);
-  g_return_val_if_fail (event != NULL, FALSE);
+  cm_return_val_if_fail (GTK_IS_CMOPTION_MENU (widget), FALSE);
+  cm_return_val_if_fail (event != NULL, FALSE);
 
   if (GTK_WIDGET_DRAWABLE (widget))
     {
@@ -632,8 +633,8 @@ gtk_cmoption_menu_button_press (GtkWidget      *widget,
   GtkCMOptionMenu *option_menu;
   GtkWidget *menu_item;
 
-  g_return_val_if_fail (GTK_IS_CMOPTION_MENU (widget), FALSE);
-  g_return_val_if_fail (event != NULL, FALSE);
+  cm_return_val_if_fail (GTK_IS_CMOPTION_MENU (widget), FALSE);
+  cm_return_val_if_fail (event != NULL, FALSE);
 
   option_menu = GTK_CMOPTION_MENU (widget);
 
@@ -660,8 +661,8 @@ gtk_cmoption_menu_key_press (GtkWidget   *widget,
   GtkCMOptionMenu *option_menu;
   GtkWidget *menu_item;
 
-  g_return_val_if_fail (GTK_IS_CMOPTION_MENU (widget), FALSE);
-  g_return_val_if_fail (event != NULL, FALSE);
+  cm_return_val_if_fail (GTK_IS_CMOPTION_MENU (widget), FALSE);
+  cm_return_val_if_fail (event != NULL, FALSE);
 
   option_menu = GTK_CMOPTION_MENU (widget);
 
@@ -686,8 +687,8 @@ static void
 gtk_cmoption_menu_selection_done (GtkMenuShell  *menu_shell,
 				GtkCMOptionMenu *option_menu)
 {
-  g_return_if_fail (menu_shell != NULL);
-  g_return_if_fail (GTK_IS_CMOPTION_MENU (option_menu));
+  cm_return_if_fail (menu_shell != NULL);
+  cm_return_if_fail (GTK_IS_CMOPTION_MENU (option_menu));
 
   gtk_cmoption_menu_update_contents (option_menu);
 }
@@ -695,7 +696,7 @@ gtk_cmoption_menu_selection_done (GtkMenuShell  *menu_shell,
 static void
 gtk_cmoption_menu_changed (GtkCMOptionMenu *option_menu)
 {
-  g_return_if_fail (GTK_IS_CMOPTION_MENU (option_menu));
+  cm_return_if_fail (GTK_IS_CMOPTION_MENU (option_menu));
 
   g_signal_emit (option_menu, signals[CHANGED], 0);
 }
@@ -756,7 +757,7 @@ gtk_cmoption_menu_update_contents (GtkCMOptionMenu *option_menu)
   GtkWidget *child;
   GtkRequisition child_requisition;
 
-  g_return_if_fail (GTK_IS_CMOPTION_MENU (option_menu));
+  cm_return_if_fail (GTK_IS_CMOPTION_MENU (option_menu));
 
   if (option_menu->menu)
     {
@@ -799,7 +800,7 @@ gtk_cmoption_menu_remove_contents (GtkCMOptionMenu *option_menu)
 {
   GtkWidget *child;
   
-  g_return_if_fail (GTK_IS_CMOPTION_MENU (option_menu));
+  cm_return_if_fail (GTK_IS_CMOPTION_MENU (option_menu));
 
   if (option_menu->menu_item)
     {
@@ -833,7 +834,7 @@ gtk_cmoption_menu_calc_size (GtkCMOptionMenu *option_menu)
   gint old_width = option_menu->width;
   gint old_height = option_menu->height;
 
-  g_return_if_fail (GTK_IS_CMOPTION_MENU (option_menu));
+  cm_return_if_fail (GTK_IS_CMOPTION_MENU (option_menu));
 
   option_menu->width = 0;
   option_menu->height = 0;
@@ -883,7 +884,7 @@ gtk_cmoption_menu_position (GtkMenu  *menu,
   gint menu_ypos;
   gint menu_width;
 
-  g_return_if_fail (GTK_IS_CMOPTION_MENU (user_data));
+  cm_return_if_fail (GTK_IS_CMOPTION_MENU (user_data));
 
   option_menu = GTK_CMOPTION_MENU (user_data);
   widget = GTK_WIDGET (option_menu);
@@ -943,7 +944,7 @@ gtk_cmoption_menu_show_all (GtkWidget *widget)
   GtkContainer *container;
   GtkCMOptionMenu *option_menu;
   
-  g_return_if_fail (GTK_IS_CMOPTION_MENU (widget));
+  cm_return_if_fail (GTK_IS_CMOPTION_MENU (widget));
   container = GTK_CONTAINER (widget);
   option_menu = GTK_CMOPTION_MENU (widget);
 
@@ -961,7 +962,7 @@ gtk_cmoption_menu_hide_all (GtkWidget *widget)
 {
   GtkContainer *container;
 
-  g_return_if_fail (GTK_IS_CMOPTION_MENU (widget));
+  cm_return_if_fail (GTK_IS_CMOPTION_MENU (widget));
   container = GTK_CONTAINER (widget);
 
   gtk_widget_hide (widget);

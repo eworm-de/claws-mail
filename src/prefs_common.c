@@ -1338,8 +1338,8 @@ void pref_get_unescaped_pref(gchar *out, const gchar *in)
 
 	*out = '\0';
 
-	g_return_if_fail( in != NULL );
-	g_return_if_fail( out != NULL );
+	cm_return_if_fail( in != NULL );
+	cm_return_if_fail( out != NULL );
 
 	i = in;
 	o = out;
@@ -1374,8 +1374,8 @@ void pref_get_escaped_pref(gchar *out, const gchar *in)
 
 	*out = '\0';
 
-	g_return_if_fail( in != NULL );
-	g_return_if_fail( out != NULL );
+	cm_return_if_fail( in != NULL );
+	cm_return_if_fail( out != NULL );
 
 	i = in;
 	o = out;
@@ -1404,7 +1404,7 @@ void pref_set_textview_from_pref(GtkTextView *textview, const gchar *txt)
 	GtkTextBuffer *buffer;
 	gchar *out = NULL;
 
-	g_return_if_fail( textview != NULL );
+	cm_return_if_fail( textview != NULL );
 
 	buffer = gtk_text_view_get_buffer(textview);
 
@@ -1426,7 +1426,7 @@ void pref_set_entry_from_pref(GtkEntry *entry, const gchar *txt)
 {
 	gchar *out = NULL;
 
-	g_return_if_fail( entry != NULL );
+	cm_return_if_fail( entry != NULL );
 	if (!txt) {
 		gtk_entry_set_text(entry, "");
 	} else {
@@ -1447,7 +1447,7 @@ gchar *pref_get_pref_from_textview(GtkTextView *textview)
 	GtkTextIter start, end;
 	gchar *out, *tmp;
 	
-	g_return_val_if_fail( textview != NULL, "" );
+	cm_return_val_if_fail( textview != NULL, "" );
 
 	buffer = gtk_text_view_get_buffer(textview);
 	gtk_text_buffer_get_start_iter(buffer, &start);
@@ -1467,7 +1467,7 @@ gchar *pref_get_pref_from_entry(GtkEntry *entry)
 {
 	gchar *out, *tmp;
 
-	g_return_val_if_fail( entry != NULL, "" );
+	cm_return_val_if_fail( entry != NULL, "" );
 
 	tmp = gtk_editable_get_chars(GTK_EDITABLE(entry), 0, -1);
 	out = malloc(2*strlen(tmp)+1);

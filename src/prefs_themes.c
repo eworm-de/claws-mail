@@ -228,8 +228,8 @@ static void prefs_themes_foreach_file(const gchar *dirname, const FileFunc func,
 	struct dirent *d;
 	DIR           *dp;
 
-	g_return_if_fail(dirname != NULL);
-	g_return_if_fail(func != NULL);
+	cm_return_if_fail(dirname != NULL);
+	cm_return_if_fail(func != NULL);
 	
 	if ((dp = opendir(dirname)) == NULL) {
 		debug_print("directory %s not found\n", dirname);
@@ -256,7 +256,7 @@ static gboolean prefs_themes_is_system_theme(const gchar *dirname)
 	gchar *system_theme_dir;
 	gboolean is_sys = FALSE;
 
-	g_return_val_if_fail(dirname != NULL, FALSE);
+	cm_return_val_if_fail(dirname != NULL, FALSE);
 
 	system_theme_dir = stock_pixmap_get_system_theme_dir_for_theme(NULL);
 	len = strlen(system_theme_dir);
@@ -276,7 +276,7 @@ static void prefs_themes_set_themes_menu(GtkComboBox *combo, const ThemesData *t
 	gint       i = 0, active = 0;
 	GList     *sorted_list = NULL;
 
-	g_return_if_fail(combo != NULL);
+	cm_return_if_fail(combo != NULL);
 
 	/* sort theme data list by data name */
 	while (themes != NULL) {
@@ -329,7 +329,7 @@ static void prefs_themes_get_themes_and_names(ThemesData *tdata)
 {
 	GList *tpaths;
 	
-	g_return_if_fail(tdata != NULL);
+	cm_return_if_fail(tdata != NULL);
 	
 	if (tdata->themes != NULL)
 		stock_pixmap_themes_list_free(tdata->themes);
@@ -602,7 +602,7 @@ static void prefs_themes_menu_item_activated_cb(GtkWidget *widget, gpointer data
 	GtkTreeModel *model;
 	GtkTreeIter iter;
 	
-	g_return_if_fail(gtk_combo_box_get_active_iter(GTK_COMBO_BOX(widget), &iter));
+	cm_return_if_fail(gtk_combo_box_get_active_iter(GTK_COMBO_BOX(widget), &iter));
 	
 	model = gtk_combo_box_get_model(GTK_COMBO_BOX(widget));			
 	gtk_tree_model_get(model, &iter, 1, &path, -1);	
@@ -716,9 +716,9 @@ static void prefs_themes_get_theme_info(ThemesData *tdata)
 	ThemeInfo *info;
 	ThemesPage *theme = tdata->page;
 
-	g_return_if_fail(theme != NULL);
+	cm_return_if_fail(theme != NULL);
 	path = tdata->displayed;
-	g_return_if_fail(path != NULL);
+	cm_return_if_fail(path != NULL);
 
 	debug_print("Getting theme info for %s\n", path);
 	

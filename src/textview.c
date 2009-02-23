@@ -576,8 +576,8 @@ void textview_reflect_prefs(TextView *textview)
 void textview_show_part(TextView *textview, MimeInfo *mimeinfo, FILE *fp)
 {
 	START_TIMING("");
-	g_return_if_fail(mimeinfo != NULL);
-	g_return_if_fail(fp != NULL);
+	cm_return_if_fail(mimeinfo != NULL);
+	cm_return_if_fail(fp != NULL);
 
 	if ((mimeinfo->type == MIMETYPE_MULTIPART) ||
 	    ((mimeinfo->type == MIMETYPE_MESSAGE) && !g_ascii_strcasecmp(mimeinfo->subtype, "rfc822"))) {
@@ -622,7 +622,7 @@ static void textview_add_part(TextView *textview, MimeInfo *mimeinfo)
 	gint charcount;
 	START_TIMING("");
 
-	g_return_if_fail(mimeinfo != NULL);
+	cm_return_if_fail(mimeinfo != NULL);
 	text = GTK_TEXT_VIEW(textview->text);
 	buffer = gtk_text_view_get_buffer(text);
 	charcount = gtk_text_buffer_get_char_count(buffer);
@@ -832,7 +832,7 @@ static void recursive_add_parts(TextView *textview, GNode *node)
 
 static void textview_add_parts(TextView *textview, MimeInfo *mimeinfo)
 {
-	g_return_if_fail(mimeinfo != NULL);
+	cm_return_if_fail(mimeinfo != NULL);
         
         recursive_add_parts(textview, mimeinfo->node);
 }
@@ -1111,7 +1111,7 @@ static void textview_show_html(TextView *textview, FILE *fp,
 	gint lines = 0;
 
 	parser = sc_html_parser_new(fp, conv);
-	g_return_if_fail(parser != NULL);
+	cm_return_if_fail(parser != NULL);
 
 	while ((str = sc_html_parse(parser)) != NULL) {
 	        if (parser->state == SC_HTML_HREF) {
@@ -1152,7 +1152,7 @@ static void textview_show_ertf(TextView *textview, FILE *fp,
 	gint lines = 0;
 
 	parser = ertf_parser_new(fp, conv);
-	g_return_if_fail(parser != NULL);
+	cm_return_if_fail(parser != NULL);
 
 	while ((str = ertf_parse(parser)) != NULL) {
 		textview_write_line(textview, str, NULL, FALSE);
@@ -1722,8 +1722,8 @@ void textview_set_text(TextView *textview, const gchar *text)
 	GtkTextView *view;
 	GtkTextBuffer *buffer;
 
-	g_return_if_fail(textview != NULL);
-	g_return_if_fail(text != NULL);
+	cm_return_if_fail(textview != NULL);
+	cm_return_if_fail(text != NULL);
 
 	textview_clear(textview);
 
@@ -1783,7 +1783,7 @@ static GPtrArray *textview_scan_header(TextView *textview, FILE *fp)
 	Header *header;
 	gint i;
 
-	g_return_val_if_fail(fp != NULL, NULL);
+	cm_return_val_if_fail(fp != NULL, NULL);
 
 	if (textview->show_all_headers) {
 		headers = procheader_get_header_array_asis(fp);
@@ -1865,7 +1865,7 @@ static void textview_show_face(TextView *textview)
 		gtk_widget_destroy(textview->image);
 	
 	textview->image = face_get_from_header(msginfo->extradata->face);
-	g_return_if_fail(textview->image != NULL);
+	cm_return_if_fail(textview->image != NULL);
 
 	gtk_widget_show(textview->image);
 	
@@ -1893,7 +1893,7 @@ void textview_show_icon(TextView *textview, const gchar *stock_id)
 		gtk_widget_destroy(textview->image);
 	
 	textview->image = gtk_image_new_from_stock(stock_id, GTK_ICON_SIZE_DIALOG);
-	g_return_if_fail(textview->image != NULL);
+	cm_return_if_fail(textview->image != NULL);
 
 	gtk_widget_show(textview->image);
 	
@@ -1939,7 +1939,7 @@ static void textview_show_xface(TextView *textview)
 	textview->image = xface_get_from_header(msginfo->extradata->xface,
 				&textview->text->style->white,
 				window);
-	g_return_if_fail(textview->image != NULL);
+	cm_return_if_fail(textview->image != NULL);
 
 	gtk_widget_show(textview->image);
 	
@@ -2035,7 +2035,7 @@ static void textview_show_contact_pic(TextView *textview)
 		textview->image = gtk_image_new_from_pixbuf(picture);
 		g_object_unref(picture);
 	}
-	g_return_if_fail(textview->image != NULL);
+	cm_return_if_fail(textview->image != NULL);
 
 	gtk_widget_show(textview->image);
 	
@@ -2138,11 +2138,11 @@ static void textview_show_header(TextView *textview, GPtrArray *headers)
 	Header *header;
 	gint i;
 
-	g_return_if_fail(headers != NULL);
+	cm_return_if_fail(headers != NULL);
 
 	for (i = 0; i < headers->len; i++) {
 		header = g_ptr_array_index(headers, i);
-		g_return_if_fail(header->name != NULL);
+		cm_return_if_fail(header->name != NULL);
 
 		gtk_text_buffer_get_end_iter (buffer, &iter);
 		if(prefs_common.trans_hdr == TRUE) {

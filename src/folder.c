@@ -174,7 +174,7 @@ Folder *folder_new(FolderClass *klass, const gchar *name, const gchar *path)
 	Folder *folder = NULL;
 	FolderItem *item;
 
-	g_return_val_if_fail(klass != NULL, NULL);
+	cm_return_val_if_fail(klass != NULL, NULL);
 
 	name = name ? name : path;
 	folder = klass->new_folder(name, path);
@@ -193,7 +193,7 @@ Folder *folder_new(FolderClass *klass, const gchar *name, const gchar *path)
 
 void folder_init(Folder *folder, const gchar *name)
 {
-	g_return_if_fail(folder != NULL);
+	cm_return_if_fail(folder != NULL);
 
 	folder_set_name(folder, name);
 
@@ -258,8 +258,8 @@ void folder_item_change_type(FolderItem *item, SpecialFolderItemType newtype)
 
 void folder_destroy(Folder *folder)
 {
-	g_return_if_fail(folder != NULL);
-	g_return_if_fail(folder->klass->destroy_folder != NULL);
+	cm_return_if_fail(folder != NULL);
+	cm_return_if_fail(folder->klass->destroy_folder != NULL);
 
 	folder_remove(folder);
 
@@ -333,7 +333,7 @@ FolderItem *folder_item_new(Folder *folder, const gchar *name, const gchar *path
 {
 	FolderItem *item = NULL;
 	
-	g_return_val_if_fail(folder != NULL, NULL);
+	cm_return_val_if_fail(folder != NULL, NULL);
 	
 	if (folder->klass->item_new) {
 		item = folder->klass->item_new(folder);
@@ -341,7 +341,7 @@ FolderItem *folder_item_new(Folder *folder, const gchar *name, const gchar *path
 		item = g_new0(FolderItem, 1);
 	}
 
-	g_return_val_if_fail(item != NULL, NULL);
+	cm_return_val_if_fail(item != NULL, NULL);
 
 	item->stype = F_NORMAL;
 	item->name = g_strdup(name);
@@ -385,10 +385,10 @@ FolderItem *folder_item_new(Folder *folder, const gchar *name, const gchar *path
 
 void folder_item_append(FolderItem *parent, FolderItem *item)
 {
-	g_return_if_fail(parent != NULL);
-	g_return_if_fail(parent->folder != NULL);
-	g_return_if_fail(parent->node != NULL);
-	g_return_if_fail(item != NULL);
+	cm_return_if_fail(parent != NULL);
+	cm_return_if_fail(parent->folder != NULL);
+	cm_return_if_fail(parent->node != NULL);
+	cm_return_if_fail(item != NULL);
 
 	item->folder = parent->folder;
 	g_node_append(parent->node, item->node);
@@ -400,9 +400,9 @@ void folder_item_remove(FolderItem *item)
 	FolderUpdateData hookdata;
 	gchar *tags_file = NULL;
 
-	g_return_if_fail(item != NULL);
-	g_return_if_fail(item->folder != NULL);
-	g_return_if_fail(item->folder->node != NULL);
+	cm_return_if_fail(item != NULL);
+	cm_return_if_fail(item->folder != NULL);
+	cm_return_if_fail(item->folder->node != NULL);
 
 	start_node = node = item->node;
 	
@@ -449,9 +449,9 @@ void folder_item_remove_children(FolderItem *item)
 {
 	GNode *node, *next;
 
-	g_return_if_fail(item != NULL);
-	g_return_if_fail(item->folder != NULL);
-	g_return_if_fail(item->node != NULL);
+	cm_return_if_fail(item != NULL);
+	cm_return_if_fail(item->folder != NULL);
+	cm_return_if_fail(item->node != NULL);
 
 	node = item->node->children;
 	while (node != NULL) {
@@ -465,7 +465,7 @@ void folder_item_destroy(FolderItem *item)
 {
 	Folder *folder;
 
-	g_return_if_fail(item != NULL);
+	cm_return_if_fail(item != NULL);
 
 	folder = item->folder;
 	if (folder) {
@@ -499,8 +499,8 @@ void folder_item_destroy(FolderItem *item)
 
 FolderItem *folder_item_parent(FolderItem *item)
 {
-	g_return_val_if_fail(item != NULL, NULL);
-	g_return_val_if_fail(item->node != NULL, NULL);
+	cm_return_val_if_fail(item != NULL, NULL);
+	cm_return_val_if_fail(item->node != NULL, NULL);
 
 	if (item->node->parent == NULL)
 		return NULL;
@@ -688,7 +688,7 @@ XMLTag *folder_item_get_xml(Folder *folder, FolderItem *item)
 
 void folder_set_ui_func(Folder *folder, FolderUIFunc func, gpointer data)
 {
-	g_return_if_fail(folder != NULL);
+	cm_return_if_fail(folder != NULL);
 
 	folder->ui_func = func;
 	folder->ui_func_data = data;
@@ -696,7 +696,7 @@ void folder_set_ui_func(Folder *folder, FolderUIFunc func, gpointer data)
 
 void folder_set_name(Folder *folder, const gchar *name)
 {
-	g_return_if_fail(folder != NULL);
+	cm_return_if_fail(folder != NULL);
 
 	g_free(folder->name);
 	folder->name = name ? g_strdup(name) : NULL;
@@ -710,7 +710,7 @@ void folder_set_name(Folder *folder, const gchar *name)
 
 void folder_set_sort(Folder *folder, guint sort)
 {
-	g_return_if_fail(folder != NULL);
+	cm_return_if_fail(folder != NULL);
 
 	if (folder->sort != sort) {
 		folder_remove(folder);
@@ -730,7 +730,7 @@ void folder_tree_destroy(Folder *folder)
 {
 	GNode *node;
 
-	g_return_if_fail(folder != NULL);
+	cm_return_if_fail(folder != NULL);
 
 	node = folder->node;
 	
@@ -751,7 +751,7 @@ void folder_add(Folder *folder)
 	gint i;
 	FolderUpdateData hookdata;
 
-	g_return_if_fail(folder != NULL);
+	cm_return_if_fail(folder != NULL);
 
 	if ((FOLDER_TYPE(folder) == F_IMAP ||
 	     FOLDER_TYPE(folder) == F_NEWS) &&
@@ -777,7 +777,7 @@ void folder_remove(Folder *folder)
 {
 	FolderUpdateData hookdata;
 
-	g_return_if_fail(folder != NULL);
+	cm_return_if_fail(folder != NULL);
 
 	folder_list = g_list_remove(folder_list, folder);
 
@@ -965,7 +965,7 @@ FolderItem *folder_create_folder(FolderItem *parent, const gchar *name)
 {
 	FolderItem *new_item;
 	
-	g_return_val_if_fail(parent != NULL, NULL);
+	cm_return_val_if_fail(parent != NULL, NULL);
 
 	new_item = parent->folder->klass->create_folder(parent->folder, parent, name);
 	if (new_item) {
@@ -986,8 +986,8 @@ gint folder_item_rename(FolderItem *item, gchar *newname)
 {
 	gint retval;
 
-	g_return_val_if_fail(item != NULL, -1);
-	g_return_val_if_fail(newname != NULL, -1);
+	cm_return_val_if_fail(item != NULL, -1);
+	cm_return_val_if_fail(newname != NULL, -1);
 
 	retval = item->folder->klass->rename_folder(item->folder, item, newname);
 
@@ -1034,10 +1034,10 @@ static gboolean folder_func_to_all_folders_func(GNode *node, gpointer data)
 	FolderItem *item;
 	struct FuncToAllFoldersData *function_data = (struct FuncToAllFoldersData *) data;
 
-	g_return_val_if_fail(node->data != NULL, FALSE);
+	cm_return_val_if_fail(node->data != NULL, FALSE);
 
 	item = FOLDER_ITEM(node->data);
-	g_return_val_if_fail(item != NULL, FALSE);
+	cm_return_val_if_fail(item != NULL, FALSE);
 
 	function_data->function(item, function_data->data);
 
@@ -1093,7 +1093,7 @@ static gboolean folder_get_status_full_all_func(GNode *node, gpointer data)
 	struct TotalMsgStatus *status = (struct TotalMsgStatus *)data;
 	gchar *id;
  
- 	g_return_val_if_fail(node->data != NULL, FALSE);
+ 	cm_return_val_if_fail(node->data != NULL, FALSE);
  
  	item = FOLDER_ITEM(node->data);
 
@@ -1268,7 +1268,7 @@ FolderItem *folder_find_item_from_path(const gchar *path)
 	
 	folder = list ? list->data:NULL;
 	
-	g_return_val_if_fail(folder != NULL, NULL);
+	cm_return_val_if_fail(folder != NULL, NULL);
 
 	d[0] = (gpointer)path;
 	d[1] = NULL;
@@ -1305,7 +1305,7 @@ FolderItem *folder_find_item_from_real_path(const gchar *path)
 	
 	folder = list ? list->data:NULL;
 	
-	g_return_val_if_fail(folder != NULL, NULL);
+	cm_return_val_if_fail(folder != NULL, NULL);
 
 	d[0] = (gpointer)path;
 	d[1] = NULL;
@@ -1351,7 +1351,7 @@ gchar *folder_get_identifier(Folder *folder)
 {
 	gchar *type_str;
 
-	g_return_val_if_fail(folder != NULL, NULL);
+	cm_return_val_if_fail(folder != NULL, NULL);
 
 	type_str = folder->klass->idstr;
 	return g_strconcat("#", type_str, "/", folder->name, NULL);
@@ -1362,7 +1362,7 @@ gchar *folder_item_get_identifier(FolderItem *item)
 	gchar *id = NULL;
 	gchar *folder_id = NULL;
 
-	g_return_val_if_fail(item != NULL, NULL);
+	cm_return_val_if_fail(item != NULL, NULL);
 
 	if (item->path == NULL)
 		return NULL;
@@ -1384,7 +1384,7 @@ FolderItem *folder_find_item_from_identifier(const gchar *identifier)
 	gchar *path;
 	FolderClass *class;
 
-	g_return_val_if_fail(identifier != NULL, NULL);
+	cm_return_val_if_fail(identifier != NULL, NULL);
 
 	if (*identifier != '#')
 		return folder_find_item_from_path(identifier);
@@ -1431,7 +1431,7 @@ gchar *folder_item_get_name(FolderItem *item)
 {
 	gchar *name = NULL;
 
-	g_return_val_if_fail(item != NULL, g_strdup(""));
+	cm_return_val_if_fail(item != NULL, g_strdup(""));
 
 	switch (item->stype) {
 	case F_INBOX:
@@ -1714,7 +1714,7 @@ void folder_set_missing_folders(void)
 		folder = list->data;
 		if (FOLDER_TYPE(folder) != F_MH) continue;
 		rootitem = FOLDER_ITEM(folder->node->data);
-		g_return_if_fail(rootitem != NULL);
+		cm_return_if_fail(rootitem != NULL);
 
 		if (folder->inbox && folder->outbox && folder->draft &&
 		    folder->queue && folder->trash)
@@ -1767,9 +1767,9 @@ gchar *folder_item_get_path(FolderItem *item)
 {
 	Folder *folder;
 
-	g_return_val_if_fail(item != NULL, NULL);
+	cm_return_val_if_fail(item != NULL, NULL);
 	folder = item->folder;
-	g_return_val_if_fail(folder != NULL, NULL);
+	cm_return_val_if_fail(folder != NULL, NULL);
 
 	return folder->klass->item_get_path(folder, item);
 }
@@ -1845,9 +1845,9 @@ static gint folder_item_syncronize_flags(FolderItem *item)
 	GSList *cur;
 	gint ret = 0;
 	
-	g_return_val_if_fail(item != NULL, -1);
-	g_return_val_if_fail(item->folder != NULL, -1);
-	g_return_val_if_fail(item->folder->klass != NULL, -1);
+	cm_return_val_if_fail(item != NULL, -1);
+	cm_return_val_if_fail(item->folder != NULL, -1);
+	cm_return_val_if_fail(item->folder->klass != NULL, -1);
 	if (item->no_select)
 		return -1;
 
@@ -1927,7 +1927,7 @@ gint folder_item_close(FolderItem *item)
 	GSList *mlist, *cur;
 	Folder *folder;
 	
-	g_return_val_if_fail(item != NULL, -1);
+	cm_return_val_if_fail(item != NULL, -1);
 
 	if (item->no_select)
 		return -1;
@@ -2018,13 +2018,13 @@ gint folder_item_scan_full(FolderItem *item, gboolean filtering)
 	gboolean update_flags = 0, old_uids_valid = FALSE;
 	GHashTable *subject_table = NULL;
 	
-	g_return_val_if_fail(item != NULL, -1);
+	cm_return_val_if_fail(item != NULL, -1);
 	if (item->path == NULL) return -1;
 
 	folder = item->folder;
 
-	g_return_val_if_fail(folder != NULL, -1);
-	g_return_val_if_fail(folder->klass->get_num_list != NULL, -1);
+	cm_return_val_if_fail(folder != NULL, -1);
+	cm_return_val_if_fail(folder->klass->get_num_list != NULL, -1);
 
 	item->scanning = ITEM_SCANNING_WITH_FLAGS;
 
@@ -2411,7 +2411,7 @@ static void folder_find_expired_caches(FolderItem *item, gpointer data)
 
 gboolean folder_item_free_cache(FolderItem *item, gboolean force)
 {
-	g_return_val_if_fail(item != NULL, TRUE);
+	cm_return_val_if_fail(item != NULL, TRUE);
 	
 	if (item->cache == NULL)
 		return TRUE;
@@ -2475,7 +2475,7 @@ static void folder_item_remove_cached_msg(FolderItem *item, MsgInfo *msginfo)
 {
 	Folder *folder = item->folder;
 
-	g_return_if_fail(folder != NULL);
+	cm_return_if_fail(folder != NULL);
 
 	if (folder->klass->remove_cached_msg == NULL)
 		return;
@@ -2485,8 +2485,8 @@ static void folder_item_remove_cached_msg(FolderItem *item, MsgInfo *msginfo)
 
 static void folder_item_clean_local_files(FolderItem *item, gint days)
 {
-	g_return_if_fail(item != NULL);
-	g_return_if_fail(item->folder != NULL);
+	cm_return_if_fail(item != NULL);
+	cm_return_if_fail(item->folder != NULL);
 
 	if (FOLDER_TYPE(item->folder) == F_IMAP ||
 	    FOLDER_TYPE(item->folder) == F_NEWS) {
@@ -2507,7 +2507,7 @@ static void folder_item_read_cache(FolderItem *item)
 {
 	gchar *cache_file, *mark_file, *tags_file;
 	START_TIMING("");
-	g_return_if_fail(item != NULL);
+	cm_return_if_fail(item != NULL);
 
 	if (item->path != NULL) {
 	        cache_file = folder_item_get_cache_file(item);
@@ -2629,7 +2629,7 @@ MsgInfo *folder_item_get_msginfo(FolderItem *item, gint num)
 	Folder *folder;
 	MsgInfo *msginfo = NULL;
 	
-	g_return_val_if_fail(item != NULL, NULL);
+	cm_return_val_if_fail(item != NULL, NULL);
 	if (item->no_select)
 		return NULL;
 	folder = item->folder;
@@ -2653,8 +2653,8 @@ MsgInfo *folder_item_get_msginfo_by_msgid(FolderItem *item, const gchar *msgid)
 	Folder *folder;
 	MsgInfo *msginfo;
 	
-	g_return_val_if_fail(item != NULL, NULL);
-	g_return_val_if_fail(msgid != NULL, NULL);
+	cm_return_val_if_fail(item != NULL, NULL);
+	cm_return_val_if_fail(msgid != NULL, NULL);
 	if (item->no_select)
 		return FALSE;
 	
@@ -2670,14 +2670,14 @@ MsgInfo *folder_item_get_msginfo_by_msgid(FolderItem *item, const gchar *msgid)
 
 GSList *folder_item_get_msg_list(FolderItem *item)
 {
-	g_return_val_if_fail(item != NULL, NULL);
+	cm_return_val_if_fail(item != NULL, NULL);
 	if (item->no_select)
 		return FALSE;
 	
 	if (item->cache == 0)
 		folder_item_read_cache(item);
 
-	g_return_val_if_fail(item->cache != NULL, NULL);
+	cm_return_val_if_fail(item->cache != NULL, NULL);
 	
 	return msgcache_get_msg_list(item->cache);
 }
@@ -2725,11 +2725,11 @@ gchar *folder_item_fetch_msg(FolderItem *item, gint num)
 	gchar *msgfile;
 	MsgInfo *msginfo;
 
-	g_return_val_if_fail(item != NULL, NULL);
+	cm_return_val_if_fail(item != NULL, NULL);
 
 	folder = item->folder;
 
-	g_return_val_if_fail(folder->klass->fetch_msg != NULL, NULL);
+	cm_return_val_if_fail(folder->klass->fetch_msg != NULL, NULL);
 	if (item->no_select)
 		return NULL;
 
@@ -2766,7 +2766,7 @@ gchar *folder_item_fetch_msg_full(FolderItem *item, gint num, gboolean headers,
 	gchar *msgfile;
 	MsgInfo *msginfo;
 
-	g_return_val_if_fail(item != NULL, NULL);
+	cm_return_val_if_fail(item != NULL, NULL);
 	if (item->no_select)
 		return NULL;
 	
@@ -2986,8 +2986,8 @@ gint folder_item_add_msg(FolderItem *dest, const gchar *file,
         GSList file_list;
         MsgFileInfo fileinfo;
 
-	g_return_val_if_fail(dest != NULL, -1);
-	g_return_val_if_fail(file != NULL, -1);
+	cm_return_val_if_fail(dest != NULL, -1);
+	cm_return_val_if_fail(file != NULL, -1);
  
 	fileinfo.msginfo = NULL;
         fileinfo.file = (gchar *)file;
@@ -3008,9 +3008,9 @@ gint folder_item_add_msgs(FolderItem *dest, GSList *file_list,
 	MsgFileInfo *fileinfo = NULL;
 	gboolean folderscan = FALSE;
 
-        g_return_val_if_fail(dest != NULL, -1);
-        g_return_val_if_fail(file_list != NULL, -1);
-        g_return_val_if_fail(dest->folder != NULL, -1);
+        cm_return_val_if_fail(dest != NULL, -1);
+        cm_return_val_if_fail(file_list != NULL, -1);
+        cm_return_val_if_fail(dest->folder != NULL, -1);
 	if (dest->no_select)
 		return -1;
 
@@ -3246,12 +3246,12 @@ static gint do_copy_msgs(FolderItem *dest, GSList *msglist, gboolean remove_sour
 	gint total = 0, curmsg = 0;
 	MsgInfo *msginfo = NULL;
 
-	g_return_val_if_fail(dest != NULL, -1);
-	g_return_val_if_fail(msglist != NULL, -1);
+	cm_return_val_if_fail(dest != NULL, -1);
+	cm_return_val_if_fail(msglist != NULL, -1);
 
 	folder = dest->folder;
 
-	g_return_val_if_fail(folder->klass->copy_msg != NULL, -1);
+	cm_return_val_if_fail(folder->klass->copy_msg != NULL, -1);
 	if (dest->no_select)
 		return -1;
 
@@ -3404,6 +3404,8 @@ static gint do_copy_msgs(FolderItem *dest, GSList *msglist, gboolean remove_sour
 		MsgInfo *msginfo = (MsgInfo *) l->data;
                 GTuples *tuples;
 
+		if (!msginfo)
+			continue;
                 tuples = g_relation_select(relation, msginfo, 0);
 		if (tuples && tuples->len > 0) {
 	                num = GPOINTER_TO_INT(g_tuples_index(tuples, 0, 1));
@@ -3449,9 +3451,11 @@ static gint do_copy_msgs(FolderItem *dest, GSList *msglist, gboolean remove_sour
 				partial_mark_for_download(newmsginfo);
 			}
 			if (!MSG_IS_POSTFILTERED (msginfo->flags)) {
-			    procmsg_msginfo_set_flags (   msginfo, MSG_POSTFILTERED, 0);
-			    procmsg_msginfo_set_flags (newmsginfo, MSG_POSTFILTERED, 0);
-			    hooks_invoke (MAIL_POSTFILTERING_HOOKLIST, newmsginfo);
+				procmsg_msginfo_set_flags (   msginfo, MSG_POSTFILTERED, 0);
+				if (newmsginfo) {
+					procmsg_msginfo_set_flags (newmsginfo, MSG_POSTFILTERED, 0);
+					hooks_invoke (MAIL_POSTFILTERING_HOOKLIST, newmsginfo);
+				}
 			}
 			procmsg_msginfo_free(newmsginfo);
 
@@ -3482,8 +3486,8 @@ gint folder_item_move_msg(FolderItem *dest, MsgInfo *msginfo)
 {
 	GSList list;
 
-	g_return_val_if_fail(dest != NULL, -1);
-	g_return_val_if_fail(msginfo != NULL, -1);
+	cm_return_val_if_fail(dest != NULL, -1);
+	cm_return_val_if_fail(msginfo != NULL, -1);
 
 	list.data = msginfo;
 	list.next = NULL;
@@ -3500,8 +3504,8 @@ gint folder_item_move_msg(FolderItem *dest, MsgInfo *msginfo)
 gint folder_item_move_msgs(FolderItem *dest, GSList *msglist)
 {
 	gint result = -1;
-	g_return_val_if_fail(dest != NULL, -1);
-	g_return_val_if_fail(msglist != NULL, -1);
+	cm_return_val_if_fail(dest != NULL, -1);
+	cm_return_val_if_fail(msglist != NULL, -1);
 	inc_lock();
 	result = do_copy_msgs(dest, msglist, TRUE);
 	inc_unlock();
@@ -3518,8 +3522,8 @@ gint folder_item_copy_msg(FolderItem *dest, MsgInfo *msginfo)
 {
 	GSList list;
 
-	g_return_val_if_fail(dest != NULL, -1);
-	g_return_val_if_fail(msginfo != NULL, -1);
+	cm_return_val_if_fail(dest != NULL, -1);
+	cm_return_val_if_fail(msginfo != NULL, -1);
     
 	list.data = msginfo;
 	list.next = NULL;
@@ -3536,8 +3540,8 @@ gint folder_item_copy_msg(FolderItem *dest, MsgInfo *msginfo)
 gint folder_item_copy_msgs(FolderItem *dest, GSList *msglist)
 {
 	gint result;
-	g_return_val_if_fail(dest != NULL, -1);
-	g_return_val_if_fail(msglist != NULL, -1);
+	cm_return_val_if_fail(dest != NULL, -1);
+	cm_return_val_if_fail(msglist != NULL, -1);
 
 	inc_lock();
 	result = do_copy_msgs(dest, msglist, FALSE);
@@ -3552,9 +3556,9 @@ gint folder_item_remove_msg(FolderItem *item, gint num)
 	gint ret;
 	MsgInfo *msginfo;
 
-	g_return_val_if_fail(item != NULL, -1);
+	cm_return_val_if_fail(item != NULL, -1);
 	folder = item->folder;
-	g_return_val_if_fail(folder->klass->remove_msg != NULL, -1);
+	cm_return_val_if_fail(folder->klass->remove_msg != NULL, -1);
 	if (item->no_select)
 		return -1;
 
@@ -3581,9 +3585,9 @@ gint folder_item_remove_msgs(FolderItem *item, GSList *msglist)
 	gint ret = 0;
 	GSList *real_list = NULL, *cur = NULL;
 
-	g_return_val_if_fail(item != NULL, -1);
+	cm_return_val_if_fail(item != NULL, -1);
 	folder = item->folder;
-	g_return_val_if_fail(folder != NULL, -1);
+	cm_return_val_if_fail(folder != NULL, -1);
 	if (item->no_select)
 		return -1;
 	inc_lock();
@@ -3630,7 +3634,7 @@ gint folder_item_remove_all_msg(FolderItem *item)
 	Folder *folder;
 	gint result;
 
-	g_return_val_if_fail(item != NULL, -1);
+	cm_return_val_if_fail(item != NULL, -1);
 	if (item->no_select)
 		return -1;
 
@@ -3672,8 +3676,8 @@ gint folder_item_remove_all_msg(FolderItem *item)
 
 void folder_item_change_msg_flags(FolderItem *item, MsgInfo *msginfo, MsgPermFlags newflags)
 {
-	g_return_if_fail(item != NULL);
-	g_return_if_fail(msginfo != NULL);
+	cm_return_if_fail(item != NULL);
+	cm_return_if_fail(msginfo != NULL);
 	if (item->no_select)
 		return;
 	
@@ -3709,13 +3713,13 @@ gboolean folder_item_is_msg_changed(FolderItem *item, MsgInfo *msginfo)
 {
 	Folder *folder;
 
-	g_return_val_if_fail(item != NULL, FALSE);
+	cm_return_val_if_fail(item != NULL, FALSE);
 	if (item->no_select)
 		return FALSE;
 
 	folder = item->folder;
 
-	g_return_val_if_fail(folder->klass->is_msg_changed != NULL, -1);
+	cm_return_val_if_fail(folder->klass->is_msg_changed != NULL, -1);
 
 	return folder->klass->is_msg_changed(folder, item, msginfo);
 }
@@ -3750,11 +3754,11 @@ static gchar *folder_item_get_cache_file(FolderItem *item)
 	gchar *file;
 	gchar *old_file;
 
-	g_return_val_if_fail(item != NULL, NULL);
-	g_return_val_if_fail(item->path != NULL, NULL);
+	cm_return_val_if_fail(item != NULL, NULL);
+	cm_return_val_if_fail(item->path != NULL, NULL);
 
 	path = folder_item_get_path(item);
-	g_return_val_if_fail(path != NULL, NULL);
+	cm_return_val_if_fail(path != NULL, NULL);
 	if (!is_dir_exist(path))
 		make_dir_hier(path);
 	file = g_strconcat(path, G_DIR_SEPARATOR_S, CACHE_FILE, NULL);
@@ -3774,11 +3778,11 @@ static gchar *folder_item_get_mark_file(FolderItem *item)
 	gchar *file;
 	gchar *old_file;
 
-	g_return_val_if_fail(item != NULL, NULL);
-	g_return_val_if_fail(item->path != NULL, NULL);
+	cm_return_val_if_fail(item != NULL, NULL);
+	cm_return_val_if_fail(item->path != NULL, NULL);
 
 	path = folder_item_get_path(item);
-	g_return_val_if_fail(path != NULL, NULL);
+	cm_return_val_if_fail(path != NULL, NULL);
 	if (!is_dir_exist(path))
 		make_dir_hier(path);
 	file = g_strconcat(path, G_DIR_SEPARATOR_S, MARK_FILE, NULL);
@@ -3803,10 +3807,10 @@ static gchar *folder_item_get_tags_file(FolderItem *item)
 	 * result when using another Claws mailbox from another install
 	 * with different tags. */
 
-	g_return_val_if_fail(item != NULL, NULL);
+	cm_return_val_if_fail(item != NULL, NULL);
 
 	identifier = folder_item_get_identifier(item);
-	g_return_val_if_fail(identifier != NULL, NULL);
+	cm_return_val_if_fail(identifier != NULL, NULL);
 
 #ifdef G_OS_WIN32
 	while (strchr(identifier, '/'))
@@ -3835,8 +3839,8 @@ static gpointer xml_to_folder_item(gpointer nodedata, gpointer data)
 	Folder *folder = (Folder *) data;
 	FolderItem *item;
 
-	g_return_val_if_fail(xmlnode != NULL, NULL);
-	g_return_val_if_fail(folder != NULL, NULL);
+	cm_return_val_if_fail(xmlnode != NULL, NULL);
+	cm_return_val_if_fail(folder != NULL, NULL);
 
 	if (strcmp2(xmlnode->tag->tag, "folderitem") != 0) {
 		g_warning("tag name != \"folderitem\"\n");
@@ -3880,7 +3884,7 @@ static Folder *folder_get_from_xml(GNode *node)
 	FolderClass *klass = NULL;
 	GNode *cur;
 
-	g_return_val_if_fail(node->data != NULL, NULL);
+	cm_return_val_if_fail(node->data != NULL, NULL);
 
 	xmlnode = node->data;
 	if (strcmp2(xmlnode->tag->tag, "folder") != 0) {
@@ -3899,7 +3903,7 @@ static Folder *folder_get_from_xml(GNode *node)
 		return NULL;
 
 	folder = folder_new(klass, "", "");
-	g_return_val_if_fail(folder != NULL, NULL);
+	cm_return_val_if_fail(folder != NULL, NULL);
 
 	if (klass->set_xml)
 		klass->set_xml(folder, xmlnode->tag);
@@ -3935,7 +3939,7 @@ static gpointer folder_item_to_xml(gpointer nodedata, gpointer data)
 	FolderItem *item = (FolderItem *) nodedata;
 	XMLTag *tag;
 
-	g_return_val_if_fail(item != NULL, NULL);
+	cm_return_val_if_fail(item != NULL, NULL);
 
 	if (item->folder->klass->item_get_xml != NULL)
 		tag = item->folder->klass->item_get_xml(item->folder, item);
@@ -3951,7 +3955,7 @@ static GNode *folder_get_xml_node(Folder *folder)
 	XMLNode *xmlnode;
 	XMLTag *tag;
 
-	g_return_val_if_fail(folder != NULL, NULL);
+	cm_return_val_if_fail(folder != NULL, NULL);
 
 	if (folder->klass->get_xml != NULL)
 		tag = folder->klass->get_xml(folder);
@@ -3964,7 +3968,7 @@ static GNode *folder_get_xml_node(Folder *folder)
 
 	node = g_node_new(xmlnode);
 	
-	g_return_val_if_fail (folder->node != NULL, NULL);
+	cm_return_val_if_fail (folder->node != NULL, NULL);
 	
 	if (folder->node->children) {
 		GNode *cur;
@@ -4114,7 +4118,7 @@ static GHashTable *folder_persist_prefs_new(Folder *folder)
 {
 	GHashTable *pptable;
 
-	g_return_val_if_fail(folder, NULL);
+	cm_return_val_if_fail(folder, NULL);
 	pptable = g_hash_table_new(g_str_hash, g_str_equal);
 	folder_get_persist_prefs_recursive(folder->node, pptable);
 	return pptable;
@@ -4122,7 +4126,7 @@ static GHashTable *folder_persist_prefs_new(Folder *folder)
 
 static void folder_persist_prefs_free(GHashTable *pptable)
 {
-	g_return_if_fail(pptable);
+	cm_return_if_fail(pptable);
 	g_hash_table_foreach_remove(pptable, persist_prefs_free, NULL);
 	g_hash_table_destroy(pptable);
 }
@@ -4164,15 +4168,15 @@ static void folder_get_persist_prefs_recursive(GNode *node, GHashTable *pptable)
 	GNode *child, *cur;
 	gchar *id;
 
-	g_return_if_fail(node != NULL);
-	g_return_if_fail(item != NULL);
+	cm_return_if_fail(node != NULL);
+	cm_return_if_fail(item != NULL);
 
 	/* NOTE: item->path == NULL means top level folder; not interesting
 	 * to store preferences of that one.  */
 	if (item->path) {
 		id = folder_item_get_identifier(item);
 		pp = g_new0(PersistPrefs, 1);
-		g_return_if_fail(pp != NULL);
+		cm_return_if_fail(pp != NULL);
 		pp->collapsed = item->collapsed;
 		pp->thread_collapsed = item->thread_collapsed;
 		pp->threaded  = item->threaded;
@@ -4207,7 +4211,7 @@ void folder_item_apply_processing(FolderItem *item)
 	guint total = 0, curmsg = 0;
 	gint last_apply_per_account;
 
-	g_return_if_fail(item != NULL);
+	cm_return_if_fail(item != NULL);
 
 	if (item->no_select)
 	       return;

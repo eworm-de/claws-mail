@@ -89,9 +89,9 @@ static gint list_find_by_plugin_filename(const Plugin *plugin, const gchar *file
 	   different directory.  I think it would be better to compare
 	   only the basename of the filename here (case-insensitive on
 	   W32). */
-	g_return_val_if_fail(plugin, 1);
-	g_return_val_if_fail(plugin->filename, 1);
-	g_return_val_if_fail(filename, 1);
+	cm_return_val_if_fail(plugin, 1);
+	cm_return_val_if_fail(plugin->filename, 1);
+	cm_return_val_if_fail(filename, 1);
 	return strcmp(filename, plugin->filename);
 }
 
@@ -311,8 +311,8 @@ Plugin *plugin_load(const gchar *filename, gchar **error)
 	struct PluginFeature *(*plugin_provides)(void);
 	gint ok;
 	START_TIMING((filename?filename:"NULL plugin"));
-	g_return_val_if_fail(filename != NULL, NULL);
-	g_return_val_if_fail(error != NULL, NULL);
+	cm_return_val_if_fail(filename != NULL, NULL);
+	cm_return_val_if_fail(error != NULL, NULL);
 
 	/* check duplicate plugin path name */
 	if (plugin_is_loaded(filename)) {

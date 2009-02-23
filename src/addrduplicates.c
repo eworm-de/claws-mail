@@ -767,7 +767,7 @@ static void cb_edit_btn_clicked(GtkButton *button, gpointer data)
 
 	selection = gtk_tree_view_get_selection(GTK_TREE_VIEW(detail_view));
 	selected = gtk_tree_selection_get_selected_rows(selection,&model);
-	g_return_if_fail(selected);
+	cm_return_if_fail(selected);
 
 	/* we are guaranteed to have exactly one row selected */
 	gtk_tree_view_row_activated(GTK_TREE_VIEW(detail_view),(GtkTreePath*)selected->data,

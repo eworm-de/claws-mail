@@ -34,7 +34,7 @@
 
 #include <glib.h>
 #include <gtk/gtk.h>
-
+#include "utils.h"
 #include "gtkvscrollbutton.h"
 
 #define SCROLL_TIMER_LENGTH  20
@@ -223,14 +223,14 @@ GtkWidget *gtk_vscrollbutton_new(GtkAdjustment *adjustment)
 void gtk_vscrollbutton_set_adjustment(GtkVScrollbutton *scrollbutton,
 				      GtkAdjustment *adjustment)
 {
-    g_return_if_fail(scrollbutton != NULL);
-    g_return_if_fail(GTK_IS_VSCROLLBUTTON(scrollbutton));
+    cm_return_if_fail(scrollbutton != NULL);
+    cm_return_if_fail(GTK_IS_VSCROLLBUTTON(scrollbutton));
 
     if (!adjustment)
 	    adjustment =
 	    GTK_ADJUSTMENT(gtk_adjustment_new(0.0, 0.0, 0.0, 0.0, 0.0, 0.0));
     else
-	g_return_if_fail(GTK_IS_ADJUSTMENT(adjustment));
+	cm_return_if_fail(GTK_IS_ADJUSTMENT(adjustment));
 
     if (scrollbutton->adjustment != adjustment) {
 	if (scrollbutton->adjustment) {
@@ -296,8 +296,8 @@ gint gtk_vscrollbutton_scroll(GtkVScrollbutton *scrollbutton)
     gfloat new_value;
     gint return_val;
 
-    g_return_val_if_fail(scrollbutton != NULL, FALSE);
-    g_return_val_if_fail(GTK_IS_VSCROLLBUTTON(scrollbutton), FALSE);
+    cm_return_val_if_fail(scrollbutton != NULL, FALSE);
+    cm_return_val_if_fail(GTK_IS_VSCROLLBUTTON(scrollbutton), FALSE);
 
     new_value = scrollbutton->adjustment->value;
     return_val = TRUE;
@@ -368,8 +368,8 @@ gtk_vscrollbutton_timer_1st_time(GtkVScrollbutton *scrollbutton)
 
 static void gtk_vscrollbutton_add_timer(GtkVScrollbutton *scrollbutton)
 {
-    g_return_if_fail(scrollbutton != NULL);
-    g_return_if_fail(GTK_IS_VSCROLLBUTTON(scrollbutton));
+    cm_return_if_fail(scrollbutton != NULL);
+    cm_return_if_fail(GTK_IS_VSCROLLBUTTON(scrollbutton));
 
     if (!scrollbutton->timer) {
 	scrollbutton->need_timer = TRUE;
@@ -382,8 +382,8 @@ static void gtk_vscrollbutton_add_timer(GtkVScrollbutton *scrollbutton)
 
 static void gtk_vscrollbutton_remove_timer(GtkVScrollbutton *scrollbutton)
 {
-    g_return_if_fail(scrollbutton != NULL);
-    g_return_if_fail(GTK_IS_VSCROLLBUTTON(scrollbutton));
+    cm_return_if_fail(scrollbutton != NULL);
+    cm_return_if_fail(GTK_IS_VSCROLLBUTTON(scrollbutton));
 
     if (scrollbutton->timer) {
 	g_source_remove(scrollbutton->timer);

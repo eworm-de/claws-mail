@@ -112,10 +112,10 @@ static void subject_relation_insert(GRelation *relation, GNode *node)
 	gchar *subject;
 	MsgInfo *msginfo;
 
-	g_return_if_fail(relation != NULL);
-	g_return_if_fail(node != NULL);
+	cm_return_if_fail(relation != NULL);
+	cm_return_if_fail(node != NULL);
 	msginfo = (MsgInfo *) node->data;
-	g_return_if_fail(msginfo != NULL);
+	cm_return_if_fail(msginfo != NULL);
 
 	subject = msginfo->subject;
 	if (subject == NULL)
@@ -132,7 +132,7 @@ static GNode *subject_relation_lookup(GRelation *relation, MsgInfo *msginfo)
 	GNode *node = NULL;
 	gint prefix_length;
     
-	g_return_val_if_fail(relation != NULL, NULL);
+	cm_return_val_if_fail(relation != NULL, NULL);
 
 	subject = msginfo->subject;
 	if (subject == NULL)
@@ -383,7 +383,7 @@ gchar *procmsg_get_message_file_path(MsgInfo *msginfo)
 {
 	gchar *file;
 
-	g_return_val_if_fail(msginfo != NULL, NULL);
+	cm_return_val_if_fail(msginfo != NULL, NULL);
 
 	if (msginfo->plaintext_file)
 		file = g_strdup(msginfo->plaintext_file);
@@ -398,7 +398,7 @@ gchar *procmsg_get_message_file(MsgInfo *msginfo)
 {
 	gchar *filename = NULL;
 
-	g_return_val_if_fail(msginfo != NULL, NULL);
+	cm_return_val_if_fail(msginfo != NULL, NULL);
 
 	filename = folder_item_fetch_msg(msginfo->folder, msginfo->msgnum);
 	if (!filename)
@@ -411,7 +411,7 @@ gchar *procmsg_get_message_file_full(MsgInfo *msginfo, gboolean headers, gboolea
 {
 	gchar *filename = NULL;
 
-	g_return_val_if_fail(msginfo != NULL, NULL);
+	cm_return_val_if_fail(msginfo != NULL, NULL);
 
 	filename = folder_item_fetch_msg_full(msginfo->folder, msginfo->msgnum,
 						headers, body);
@@ -470,10 +470,10 @@ FILE *procmsg_open_message(MsgInfo *msginfo)
 	FILE *fp;
 	gchar *file;
 
-	g_return_val_if_fail(msginfo != NULL, NULL);
-
+	cm_return_val_if_fail(msginfo != NULL, NULL);
+	
 	file = procmsg_get_message_file_path(msginfo);
-	g_return_val_if_fail(file != NULL, NULL);
+	cm_return_val_if_fail(file != NULL, NULL);
 
 	if (!is_file_exist(file)) {
 		g_free(file);
@@ -557,9 +557,9 @@ void procmsg_get_filter_keyword(MsgInfo *msginfo, gchar **header, gchar **key,
 
 	FILE *fp;
 
-	g_return_if_fail(msginfo != NULL);
-	g_return_if_fail(header != NULL);
-	g_return_if_fail(key != NULL);
+	cm_return_if_fail(msginfo != NULL);
+	cm_return_if_fail(header != NULL);
+	cm_return_if_fail(key != NULL);
 
 	*header = NULL;
 	*key = NULL;
@@ -731,7 +731,7 @@ static PrefsAccount *procmsg_get_account_from_file(const gchar *file)
 				       {"X-Sylpheed-Encrypt-Data:", NULL, FALSE},
 				       {NULL,    NULL, FALSE}};
 	
-	g_return_val_if_fail(file != NULL, NULL);
+	cm_return_val_if_fail(file != NULL, NULL);
 
 	if ((fp = g_fopen(file, "rb")) == NULL) {
 		FILE_OP_ERROR(file, "fopen");
@@ -957,7 +957,7 @@ gboolean procmsg_queue_is_empty(FolderItem *queue)
 	gboolean res = FALSE;
 	if (!queue)
 		queue = folder_get_default_queue();
-	g_return_val_if_fail(queue != NULL, TRUE);
+	cm_return_val_if_fail(queue != NULL, TRUE);
 
 	folder_item_scan(queue);
 	list = folder_item_get_msg_list(queue);
@@ -1029,7 +1029,7 @@ static gint procmsg_save_to_outbox(FolderItem *outbox, const gchar *file,
 
 	if (!outbox)
 		outbox = folder_get_default_outbox();
-	g_return_val_if_fail(outbox != NULL, -1);
+	cm_return_val_if_fail(outbox != NULL, -1);
 
 	/* remove queueing headers */
 	if (is_queued) {
@@ -1081,7 +1081,7 @@ void procmsg_print_message(MsgInfo *msginfo, const gchar *cmdline)
 	gchar buf[1024];
 	gchar *p;
 	int r;
-	g_return_if_fail(msginfo);
+	cm_return_if_fail(msginfo);
 
 	if (procmime_msginfo_is_encrypted(msginfo))
 		tmpfp = procmime_get_first_encrypted_text_content(msginfo);
@@ -1460,7 +1460,7 @@ static gint procmsg_send_message_queue_full(const gchar *file, gboolean keep_ses
 
 	int local = 0;
 
-	g_return_val_if_fail(file != NULL, -1);
+	cm_return_val_if_fail(file != NULL, -1);
 
 	if ((fp = g_fopen(file, "rb")) == NULL) {
 		FILE_OP_ERROR(file, "fopen");
@@ -1891,9 +1891,9 @@ void procmsg_msginfo_set_flags(MsgInfo *msginfo, MsgPermFlags perm_flags, MsgTmp
 	MsgPermFlags perm_flags_new, perm_flags_old;
 	MsgTmpFlags tmp_flags_old;
 
-	g_return_if_fail(msginfo != NULL);
+	cm_return_if_fail(msginfo != NULL);
 	item = msginfo->folder;
-	g_return_if_fail(item != NULL);
+	cm_return_if_fail(item != NULL);
 	
 	debug_print("Setting flags for message %d in folder %s\n", msginfo->msgnum, item->path);
 
@@ -1934,9 +1934,9 @@ void procmsg_msginfo_unset_flags(MsgInfo *msginfo, MsgPermFlags perm_flags, MsgT
 	MsgPermFlags perm_flags_new, perm_flags_old;
 	MsgTmpFlags tmp_flags_old;
 
-	g_return_if_fail(msginfo != NULL);
+	cm_return_if_fail(msginfo != NULL);
 	item = msginfo->folder;
-	g_return_if_fail(item != NULL);
+	cm_return_if_fail(item != NULL);
 	
 	debug_print("Unsetting flags for message %d in folder %s\n", msginfo->msgnum, item->path);
 
@@ -1972,9 +1972,9 @@ void procmsg_msginfo_change_flags(MsgInfo *msginfo,
 	MsgPermFlags perm_flags_new, perm_flags_old;
 	MsgTmpFlags tmp_flags_old;
 
-	g_return_if_fail(msginfo != NULL);
+	cm_return_if_fail(msginfo != NULL);
 	item = msginfo->folder;
-	g_return_if_fail(item != NULL);
+	cm_return_if_fail(item != NULL);
 	
 	debug_print("Changing flags for message %d in folder %s\n", msginfo->msgnum, item->path);
 
@@ -2023,7 +2023,7 @@ static gboolean procmsg_msg_has_flagged_parent_real(MsgInfo *info,
 {
 	MsgInfo *tmp;
 
-	g_return_val_if_fail(info != NULL, FALSE);
+	cm_return_val_if_fail(info != NULL, FALSE);
 
 	if (info != NULL && info->folder != NULL && info->inreplyto != NULL) {
 		tmp = folder_item_get_msginfo_by_msgid(info->folder,
@@ -2095,7 +2095,7 @@ static GSList *procmsg_find_children_func(MsgInfo *info,
 {
 	GSList *cur;
 
-	g_return_val_if_fail(info!=NULL, children);
+	cm_return_val_if_fail(info!=NULL, children);
 	if (info->msgid == NULL)
 		return children;
 
@@ -2121,7 +2121,7 @@ static GSList *procmsg_find_children (MsgInfo *info)
 	GSList *children;
 	GSList *all, *cur;
 
-	g_return_val_if_fail(info!=NULL, NULL);
+	cm_return_val_if_fail(info!=NULL, NULL);
 	all = folder_item_get_msg_list(info->folder);
 	children = procmsg_find_children_func(info, NULL, all);
 	if (children != NULL) {
@@ -2212,8 +2212,8 @@ void procmsg_msglist_filter(GSList *list, PrefsAccount *ac,
 	gint total = 0, curnum = 0;
 	MailFilteringData mail_filtering_data;
 			
-	g_return_if_fail(filtered != NULL);
-	g_return_if_fail(unfiltered != NULL);
+	cm_return_if_fail(filtered != NULL);
+	cm_return_if_fail(unfiltered != NULL);
 
 	*filtered = NULL;
 	*unfiltered = NULL;

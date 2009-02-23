@@ -1971,7 +1971,7 @@ static void initial_processing(FolderItem *item, gpointer data)
 	MainWindow *mainwin = (MainWindow *)data;
 	gchar *buf;
 
-	g_return_if_fail(item);
+	cm_return_if_fail(item);
 	buf = g_strdup_printf(_("Processing (%s)..."), 
 			      item->path 
 			      ? item->path 

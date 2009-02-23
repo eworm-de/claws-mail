@@ -202,10 +202,10 @@ static gint get_textview_buffer_charcount(GtkTextView *view)
 {
 	GtkTextBuffer *buffer;
 
-	g_return_val_if_fail(view, 0);
+	cm_return_val_if_fail(view, 0);
 
 	buffer = gtk_text_view_get_buffer(view);
-	g_return_val_if_fail(buffer, 0);
+	cm_return_val_if_fail(buffer, 0);
 
 	return gtk_text_buffer_get_char_count(buffer);
 }
@@ -215,13 +215,13 @@ static gint get_textview_buffer_offset(GtkTextView *view)
 	GtkTextMark * mark;
 	GtkTextIter iter;
 
-	g_return_val_if_fail(view, 0);
+	cm_return_val_if_fail(view, 0);
 
 	buffer = gtk_text_view_get_buffer(view);
-	g_return_val_if_fail(buffer, 0);
+	cm_return_val_if_fail(buffer, 0);
 
 	mark = gtk_text_buffer_get_insert(buffer);
-	g_return_val_if_fail(mark, 0);
+	cm_return_val_if_fail(mark, 0);
 
 	gtk_text_buffer_get_iter_at_mark(buffer, &iter, mark);
 
@@ -232,10 +232,10 @@ static void set_textview_buffer_offset(GtkTextView *view, gint offset)
 	GtkTextBuffer *buffer;
 	GtkTextIter iter;
 
-	g_return_if_fail(view);
+	cm_return_if_fail(view);
 
 	buffer = gtk_text_view_get_buffer(view);
-	g_return_if_fail(buffer);
+	cm_return_if_fail(buffer);
 
 	gtk_text_buffer_get_iter_at_offset(buffer, &iter, offset);
 	gtk_text_buffer_place_cursor(buffer, &iter);
@@ -298,13 +298,13 @@ static void gtkaspell_checkers_error_message (gchar *message)
 
 const char *gtkaspell_checkers_strerror(void)
 {
-	g_return_val_if_fail(gtkaspellcheckers, "");
+	cm_return_val_if_fail(gtkaspellcheckers, "");
 	return gtkaspellcheckers->error_message;
 }
 
 void gtkaspell_checkers_reset_error(void)
 {
-	g_return_if_fail(gtkaspellcheckers);
+	cm_return_if_fail(gtkaspellcheckers);
 	
 	g_free(gtkaspellcheckers->error_message);
 	
@@ -330,7 +330,7 @@ GtkAspell *gtkaspell_new(const gchar *dictionary,
 	GtkAspeller 	*gtkaspeller;
 	GtkTextBuffer *buffer;
 
-	g_return_val_if_fail(gtktext, NULL);
+	cm_return_val_if_fail(gtktext, NULL);
 	if (!dictionary || !*dictionary) {
 		gtkaspell_checkers_error_message(
 				g_strdup(_("No dictionary selected.")));
@@ -481,7 +481,7 @@ static void entry_insert_cb(GtkTextBuffer *textbuf,
 {
 	guint pos;
 
-	g_return_if_fail(gtkaspell->gtkaspeller->speller);
+	cm_return_if_fail(gtkaspell->gtkaspeller->speller);
 
 	if (!gtkaspell->check_while_typing)
 		return;
@@ -515,7 +515,7 @@ static void entry_delete_cb(GtkTextBuffer *textbuf,
 	int origpos;
 	gint start, end;
     
-	g_return_if_fail(gtkaspell->gtkaspeller->speller);
+	cm_return_if_fail(gtkaspell->gtkaspeller->speller);
 
 	if (!gtkaspell->check_while_typing)
 		return;
@@ -607,15 +607,15 @@ static GtkAspeller *gtkaspeller_new(Dictionary *dictionary)
 	GtkAspeller	*tmp;
 	Dictionary	*dict;
 
-	g_return_val_if_fail(gtkaspellcheckers, NULL);
+	cm_return_val_if_fail(gtkaspellcheckers, NULL);
 
-	g_return_val_if_fail(dictionary, NULL);
+	cm_return_val_if_fail(dictionary, NULL);
 
 	if (dictionary->dictname == NULL)
 		gtkaspell_checkers_error_message(
 				g_strdup(_("No dictionary selected.")));
 	
-	g_return_val_if_fail(dictionary->fullname, NULL);
+	cm_return_val_if_fail(dictionary->fullname, NULL);
 
 	dict = dictionary_dup(dictionary);
 
@@ -652,8 +652,8 @@ static GtkAspeller *gtkaspeller_real_new(Dictionary *dict)
 	EnchantBroker 		*broker;
 	EnchantDict		*speller;
 	
-	g_return_val_if_fail(gtkaspellcheckers, NULL);
-	g_return_val_if_fail(dict, NULL);
+	cm_return_val_if_fail(gtkaspellcheckers, NULL);
+	cm_return_val_if_fail(dict, NULL);
 
 	gtkaspeller = g_new(GtkAspeller, 1);
 	
@@ -681,7 +681,7 @@ static GtkAspeller *gtkaspeller_real_new(Dictionary *dict)
 
 static GtkAspeller *gtkaspeller_delete(GtkAspeller *gtkaspeller)
 {
-	g_return_val_if_fail(gtkaspellcheckers, NULL);
+	cm_return_val_if_fail(gtkaspellcheckers, NULL);
 	
 	gtkaspellcheckers->checkers = 
 		g_slist_remove(gtkaspellcheckers->checkers, 
@@ -700,8 +700,8 @@ static GtkAspeller *gtkaspeller_delete(GtkAspeller *gtkaspeller)
 
 static GtkAspeller *gtkaspeller_real_delete(GtkAspeller *gtkaspeller)
 {
-	g_return_val_if_fail(gtkaspeller,          NULL);
-	g_return_val_if_fail(gtkaspeller->speller, NULL);
+	cm_return_val_if_fail(gtkaspeller,          NULL);
+	cm_return_val_if_fail(gtkaspeller->speller, NULL);
 
 	enchant_broker_free_dict(gtkaspeller->broker, gtkaspeller->speller);
 	enchant_broker_free(gtkaspeller->broker);
@@ -721,8 +721,8 @@ static GtkAspeller *gtkaspeller_real_delete(GtkAspeller *gtkaspeller)
 
 static EnchantDict *set_dictionary(EnchantBroker *broker, Dictionary *dict)
 {
-	g_return_val_if_fail(broker, FALSE);
-	g_return_val_if_fail(dict,   FALSE);
+	cm_return_val_if_fail(broker, FALSE);
+	cm_return_val_if_fail(dict,   FALSE);
 
 	return enchant_broker_request_dict(broker, dict->dictname );
 }
@@ -742,7 +742,7 @@ static GList *misspelled_suggest(GtkAspell *gtkaspell, gchar *word)
 	GList                 *list = NULL;
 	char **suggestions;
 	size_t num_sug, i;
-	g_return_val_if_fail(word, NULL);
+	cm_return_val_if_fail(word, NULL);
 
 	if (*word == 0)
 		return NULL;
@@ -769,7 +769,7 @@ static GList *misspelled_suggest(GtkAspell *gtkaspell, gchar *word)
 int gtkaspell_misspelled_test(GtkAspell *gtkaspell, char *word) 
 {
 	gint result = 0;
-	g_return_val_if_fail(word, 0);
+	cm_return_val_if_fail(word, 0);
 
 	if (*word == 0)
 		return 0;
@@ -913,7 +913,7 @@ static gboolean check_at(GtkAspell *gtkaspell, gint from_pos)
 	char buf[GTKASPELLWORDSIZE];
 	GtkTextView     *gtktext;
 
-	g_return_val_if_fail(from_pos >= 0, FALSE);
+	cm_return_val_if_fail(from_pos >= 0, FALSE);
     
 	gtktext = gtkaspell->gtktext;
 
@@ -1061,8 +1061,8 @@ void gtkaspell_check_all(GtkAspell *gtkaspell)
 	GtkTextBuffer *buffer;
 	GtkTextIter startiter, enditer;
 
-	g_return_if_fail(gtkaspell);
-	g_return_if_fail(gtkaspell->gtktext);
+	cm_return_if_fail(gtkaspell);
+	cm_return_if_fail(gtkaspell->gtktext);
 
 	gtktext = gtkaspell->gtktext;
 	buffer = gtk_text_view_get_buffer(gtktext);
@@ -1107,7 +1107,7 @@ void gtkaspell_highlight_all(GtkAspell *gtkaspell)
 	guint     len;
 	GtkTextView *gtktext;
 
-	g_return_if_fail(gtkaspell->gtkaspeller->speller);	
+	cm_return_if_fail(gtkaspell->gtkaspeller->speller);	
 
 	gtktext = gtkaspell->gtktext;
 
@@ -1592,7 +1592,7 @@ GtkTreeModel *gtkaspell_dictionary_store_new_with_refresh(gboolean refresh)
 	Dictionary *dict;
 
 	dict_list = gtkaspell_get_dictionary_list(refresh);
-	g_return_val_if_fail(dict_list, NULL);
+	cm_return_val_if_fail(dict_list, NULL);
 
 	store = gtk_list_store_new(SET_GTKASPELL_SIZE,
 				   G_TYPE_STRING,
@@ -1642,8 +1642,8 @@ gchar *gtkaspell_get_dictionary_menu_active_item(GtkComboBox *combo)
 	GtkTreeModel *model;
 	gchar *dict_fullname = NULL;
 	
-	g_return_val_if_fail(GTK_IS_COMBO_BOX(combo), NULL);
-	g_return_val_if_fail(gtk_combo_box_get_active_iter(combo, &iter), NULL);
+	cm_return_val_if_fail(GTK_IS_COMBO_BOX(combo), NULL);
+	cm_return_val_if_fail(gtk_combo_box_get_active_iter(combo, &iter), NULL);
 	
 	model = gtk_combo_box_get_model(combo);
 	if(model == NULL)
@@ -1663,9 +1663,9 @@ gint gtkaspell_set_dictionary_menu_active_item(GtkComboBox *combo,
 	GtkTreeIter iter;
 	gchar *dict_name = NULL;
 	
-	g_return_val_if_fail(combo != NULL, 0);
-	g_return_val_if_fail(dictionary != NULL, 0);
-	g_return_val_if_fail(GTK_IS_COMBO_BOX(combo), 0);
+	cm_return_val_if_fail(combo != NULL, 0);
+	cm_return_val_if_fail(dictionary != NULL, 0);
+	cm_return_val_if_fail(GTK_IS_COMBO_BOX(combo), 0);
 
 	if((model = gtk_combo_box_get_model(combo)) == NULL)
 		return 0;
@@ -2061,8 +2061,8 @@ gboolean gtkaspell_change_dict(GtkAspell *gtkaspell, const gchar *dictionary,
 	Dictionary 	*dict;       
 	GtkAspeller 	*gtkaspeller;
 
-	g_return_val_if_fail(gtkaspell, FALSE);
-	g_return_val_if_fail(dictionary, FALSE);
+	cm_return_val_if_fail(gtkaspell, FALSE);
+	cm_return_val_if_fail(dictionary, FALSE);
   
 	dict = g_new0(Dictionary, 1);
 	
@@ -2117,8 +2117,8 @@ gboolean gtkaspell_change_alt_dict(GtkAspell *gtkaspell, const gchar *alt_dictio
 	Dictionary 	*dict;       
 	GtkAspeller 	*gtkaspeller;
 
-	g_return_val_if_fail(gtkaspell, FALSE);
-	g_return_val_if_fail(alt_dictionary, FALSE);
+	cm_return_val_if_fail(gtkaspell, FALSE);
+	cm_return_val_if_fail(alt_dictionary, FALSE);
   
 	dict = g_new0(Dictionary, 1);
 	if (strrchr(alt_dictionary, '/')) {
@@ -2320,7 +2320,7 @@ static void free_checkers(gpointer elt, gpointer data)
 {
 	GtkAspeller *gtkaspeller = elt;
 
-	g_return_if_fail(gtkaspeller);
+	cm_return_if_fail(gtkaspeller);
 
 	gtkaspeller_real_delete(gtkaspeller);
 }

@@ -83,7 +83,7 @@ UndoMain *undo_init(GtkWidget *text)
 	GtkTextView *textview = GTK_TEXT_VIEW(text); 
 	GtkTextBuffer *textbuf = gtk_text_view_get_buffer(textview);
 
-	g_return_val_if_fail(text != NULL, NULL);
+	cm_return_val_if_fail(text != NULL, NULL);
 
 	undostruct = g_new0(UndoMain, 1);
 	undostruct->textview = textview;
@@ -154,7 +154,7 @@ static void undo_free_list(GList **list_pointer)
 void undo_set_change_state_func(UndoMain *undostruct, UndoChangeStateFunc func,
 				gpointer data)
 {
-	g_return_if_fail(undostruct != NULL);
+	cm_return_if_fail(undostruct != NULL);
 
 	undostruct->change_state_func = func;
 	undostruct->change_state_data = data;
@@ -286,8 +286,8 @@ static void undo_add(const gchar *text,
 	UndoInfo *undoinfo;
 	GtkAdjustment *vadj;
 
-	g_return_if_fail(text != NULL);
-	g_return_if_fail(end_pos >= start_pos);
+	cm_return_if_fail(text != NULL);
+	cm_return_if_fail(end_pos >= start_pos);
 
 	undo_free_list(&undostruct->redo);
 
@@ -342,14 +342,14 @@ void undo_undo(UndoMain *undostruct)
 	GtkTextIter iter, start_iter, end_iter;
 	GtkTextMark *mark;
 
-	g_return_if_fail(undostruct != NULL);
+	cm_return_if_fail(undostruct != NULL);
 
 	if (undostruct->undo == NULL) return;
 
 	/* The undo data we need is always at the top op the
 	   stack. So, therefore, the first one */
 	undoinfo = (UndoInfo *)undostruct->undo->data;
-	g_return_if_fail(undoinfo != NULL);
+	cm_return_if_fail(undoinfo != NULL);
 	undoinfo->mergeable = FALSE;
 	undostruct->redo = g_list_prepend(undostruct->redo, undoinfo);
 	undostruct->undo = g_list_remove(undostruct->undo, undoinfo);
@@ -388,8 +388,8 @@ void undo_undo(UndoMain *undostruct)
 			undoinfo = (UndoInfo *)undostruct->undo->data;
 			undostruct->redo = g_list_prepend(undostruct->redo, undoinfo);
 			undostruct->undo = g_list_remove(undostruct->undo, undoinfo);
-			g_return_if_fail(undoinfo != NULL);
-			g_return_if_fail(undoinfo->action == UNDO_ACTION_REPLACE_DELETE);
+			cm_return_if_fail(undoinfo != NULL);
+			cm_return_if_fail(undoinfo->action == UNDO_ACTION_REPLACE_DELETE);
 			gtk_text_buffer_insert(buffer, &start_iter, undoinfo->text, -1);
 		}
 		break;
@@ -429,12 +429,12 @@ void undo_redo(UndoMain *undostruct)
 	GtkTextIter iter, start_iter, end_iter;
 	GtkTextMark *mark;
 
-	g_return_if_fail(undostruct != NULL);
+	cm_return_if_fail(undostruct != NULL);
 
 	if (undostruct->redo == NULL) return;
 
 	redoinfo = (UndoInfo *)undostruct->redo->data;
-	g_return_if_fail (redoinfo != NULL);
+	cm_return_if_fail (redoinfo != NULL);
 	undostruct->undo = g_list_prepend(undostruct->undo, redoinfo);
 	undostruct->redo = g_list_remove(undostruct->redo, redoinfo);
 
@@ -469,10 +469,10 @@ void undo_redo(UndoMain *undostruct)
 		debug_print("UNDO_ACTION_REPLACE %s\n", redoinfo->text);
 		/* "pull" another data structure from the list */
 		redoinfo = (UndoInfo *)undostruct->redo->data;
-		g_return_if_fail(redoinfo != NULL);
+		cm_return_if_fail(redoinfo != NULL);
 		undostruct->undo = g_list_prepend(undostruct->undo, redoinfo);
 		undostruct->redo = g_list_remove(undostruct->redo, redoinfo);
-		g_return_if_fail(redoinfo->action == UNDO_ACTION_REPLACE_INSERT);
+		cm_return_if_fail(redoinfo->action == UNDO_ACTION_REPLACE_INSERT);
 		gtk_text_buffer_insert(buffer, &start_iter, redoinfo->text, -1);
 		break;
 	case UNDO_ACTION_REPLACE_INSERT:
@@ -502,7 +502,7 @@ void undo_block(UndoMain *undostruct)
 {
 	GtkTextBuffer *buffer;
 
-	g_return_if_fail(GTK_IS_TEXT_VIEW(undostruct->textview));
+	cm_return_if_fail(GTK_IS_TEXT_VIEW(undostruct->textview));
 
 	buffer = gtk_text_view_get_buffer(undostruct->textview);
 	g_signal_handlers_block_by_func(buffer, undo_insert_text_cb, undostruct);
@@ -515,7 +515,7 @@ void undo_unblock(UndoMain *undostruct)
 {
 	GtkTextBuffer *buffer;
 
-	g_return_if_fail(GTK_IS_TEXT_VIEW(undostruct->textview));
+	cm_return_if_fail(GTK_IS_TEXT_VIEW(undostruct->textview));
 
 	buffer = gtk_text_view_get_buffer(undostruct->textview);
 	g_signal_handlers_unblock_by_func(buffer, undo_insert_text_cb, undostruct);

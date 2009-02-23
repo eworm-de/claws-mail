@@ -444,7 +444,7 @@ void prefs_matcher_open(MatcherList *matchers, PrefsMatcherSignal *cb)
 static void prefs_matcher_size_allocate_cb(GtkWidget *widget,
 					 GtkAllocation *allocation)
 {
-	g_return_if_fail(allocation != NULL);
+	cm_return_if_fail(allocation != NULL);
 
 	prefs_common.matcherwin_width = allocation->width;
 	prefs_common.matcherwin_height = allocation->height;
@@ -1670,7 +1670,7 @@ static void prefs_matcher_down(void)
 
 static void prefs_matcher_enable_widget(GtkWidget* widget, const gboolean enable)
 {
-	g_return_if_fail(widget != NULL);
+	cm_return_if_fail(widget != NULL);
 
 	if(enable == TRUE) {
 		gtk_widget_set_sensitive(widget, TRUE);
@@ -1683,8 +1683,8 @@ static void prefs_matcher_enable_widget(GtkWidget* widget, const gboolean enable
 
 static void prefs_matcher_set_model(GtkWidget *widget, GtkTreeModel *model)
 {
-	g_return_if_fail(widget != NULL);
-	g_return_if_fail(model != NULL);
+	cm_return_if_fail(widget != NULL);
+	cm_return_if_fail(model != NULL);
 	
 	gtk_combo_box_set_model(GTK_COMBO_BOX(widget), model);
 	gtk_combo_box_set_active(GTK_COMBO_BOX(widget), 0);

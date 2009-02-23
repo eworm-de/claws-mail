@@ -351,7 +351,7 @@ static gboolean match_with_addresses_in_addressbook
 	gboolean found = FALSE;
 	gchar *path = NULL;
 
-	g_return_val_if_fail(address_list != NULL, FALSE);
+	cm_return_val_if_fail(address_list != NULL, FALSE);
 
 	debug_print("match_with_addresses_in_addressbook(%d, %s)\n",
 				g_slist_length(address_list), folderpath?folderpath:"(null)");
@@ -1206,7 +1206,7 @@ void matcherlist_free(MatcherList *cond)
 {
 	GSList *l;
 
-	g_return_if_fail(cond);
+	cm_return_if_fail(cond);
 	for (l = cond->matchers ; l != NULL ; l = g_slist_next(l)) {
 		matcherprop_free((MatcherProp *) l->data);
 	}

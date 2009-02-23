@@ -73,10 +73,10 @@ void uri_opener_open(MessageView *msgview, GSList *uris)
 {
 	GtkAdjustment *hadj, *vadj;
 	
-	g_return_if_fail(msgview);
-	g_return_if_fail(msgview->mimeview);
-	g_return_if_fail(msgview->mimeview->textview);
-	g_return_if_fail(msgview);
+	cm_return_if_fail(msgview);
+	cm_return_if_fail(msgview->mimeview);
+	cm_return_if_fail(msgview->mimeview->textview);
+	cm_return_if_fail(msgview);
 	if (!opener.window)
 		uri_opener_create();
 

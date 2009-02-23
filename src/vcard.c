@@ -63,17 +63,17 @@ VCardFile *vcard_create() {
 * Properties...
 */
 void vcard_set_name( VCardFile* cardFile, const gchar *value ) {
-	g_return_if_fail( cardFile != NULL );
+	cm_return_if_fail( cardFile != NULL );
 	addrcache_set_name( cardFile->addressCache, value );
 }
 void vcard_set_file( VCardFile* cardFile, const gchar *value ) {
-	g_return_if_fail( cardFile != NULL );
+	cm_return_if_fail( cardFile != NULL );
 	addrcache_refresh( cardFile->addressCache );
 	cardFile->path = mgu_replace_string( cardFile->path, value );
 	g_strstrip( cardFile->path );
 }
 void vcard_set_accessed( VCardFile *cardFile, const gboolean value ) {
-	g_return_if_fail( cardFile != NULL );
+	cm_return_if_fail( cardFile != NULL );
 	cardFile->addressCache->accessFlag = value;
 }
 
@@ -82,13 +82,13 @@ void vcard_set_accessed( VCardFile *cardFile, const gboolean value ) {
 * Return: TRUE if file was modified.
 */
 gboolean vcard_get_modified( VCardFile *cardFile ) {
-	g_return_val_if_fail( cardFile != NULL, FALSE );
+	cm_return_val_if_fail( cardFile != NULL, FALSE );
 	cardFile->addressCache->modified =
 		addrcache_check_file( cardFile->addressCache, cardFile->path );
 	return cardFile->addressCache->modified;
 }
 gboolean vcard_get_accessed( VCardFile *cardFile ) {
-	g_return_val_if_fail( cardFile != NULL, FALSE );
+	cm_return_val_if_fail( cardFile != NULL, FALSE );
 	return cardFile->addressCache->accessFlag;
 }
 
@@ -97,7 +97,7 @@ gboolean vcard_get_accessed( VCardFile *cardFile ) {
 * Return: TRUE if file was read.
 */
 gboolean vcard_get_read_flag( VCardFile *cardFile ) {
-	g_return_val_if_fail( cardFile != NULL, FALSE );
+	cm_return_val_if_fail( cardFile != NULL, FALSE );
 	return cardFile->addressCache->dataRead;
 }
 
@@ -106,16 +106,16 @@ gboolean vcard_get_read_flag( VCardFile *cardFile ) {
 * Return: Status code.
 */
 gint vcard_get_status( VCardFile *cardFile ) {
-	g_return_val_if_fail( cardFile != NULL, -1 );
+	cm_return_val_if_fail( cardFile != NULL, -1 );
 	return cardFile->retVal;
 }
 
 ItemFolder *vcard_get_root_folder( VCardFile *cardFile ) {
-	g_return_val_if_fail( cardFile != NULL, NULL );
+	cm_return_val_if_fail( cardFile != NULL, NULL );
 	return addrcache_get_root_folder( cardFile->addressCache );
 }
 gchar *vcard_get_name( VCardFile *cardFile ) {
-	g_return_val_if_fail( cardFile != NULL, NULL );
+	cm_return_val_if_fail( cardFile != NULL, NULL );
 	return addrcache_get_name( cardFile->addressCache );
 }
 
@@ -133,7 +133,7 @@ static VCardFile *vcard_create_path( const gchar *path ) {
 * Free up cardfile object by releasing internal memory.
 */
 void vcard_free( VCardFile *cardFile ) {
-	g_return_if_fail( cardFile != NULL );
+	cm_return_if_fail( cardFile != NULL );
 
 	/* Close file */
 	if( cardFile->file ) fclose( cardFile->file );
@@ -163,7 +163,7 @@ void vcard_free( VCardFile *cardFile ) {
 * return: TRUE if file opened successfully.
 */
 static gint vcard_open_file( VCardFile* cardFile ) {
-	g_return_val_if_fail( cardFile != NULL, -1 );
+	cm_return_val_if_fail( cardFile != NULL, -1 );
 
 	/* g_print( "Opening file\n" ); */
 	cardFile->addressCache->dataRead = FALSE;
@@ -192,7 +192,7 @@ static gint vcard_open_file( VCardFile* cardFile ) {
 * Close file.
 */
 static void vcard_close_file( VCardFile *cardFile ) {
-	g_return_if_fail( cardFile != NULL );
+	cm_return_if_fail( cardFile != NULL );
 	if( cardFile->file ) fclose( cardFile->file );
 	cardFile->file = NULL;
 }
@@ -501,7 +501,7 @@ static void vcard_read_file( VCardFile *cardFile ) {
 */
 /* ============================================================================================ */
 gint vcard_read_data( VCardFile *cardFile ) {
-	g_return_val_if_fail( cardFile != NULL, -1 );
+	cm_return_val_if_fail( cardFile != NULL, -1 );
 
 	cardFile->retVal = MGU_SUCCESS;
 	cardFile->addressCache->accessFlag = FALSE;
@@ -526,7 +526,7 @@ gint vcard_read_data( VCardFile *cardFile ) {
 * Return link list of persons.
 */
 GList *vcard_get_list_person( VCardFile *cardFile ) {
-	g_return_val_if_fail( cardFile != NULL, NULL );
+	cm_return_val_if_fail( cardFile != NULL, NULL );
 	return addrcache_get_list_person( cardFile->addressCache );
 }
 
@@ -536,7 +536,7 @@ GList *vcard_get_list_person( VCardFile *cardFile ) {
 * Return: NULL.
 */
 GList *vcard_get_list_folder( VCardFile *cardFile ) {
-	g_return_val_if_fail( cardFile != NULL, NULL );
+	cm_return_val_if_fail( cardFile != NULL, NULL );
 	return NULL;
 }
 
@@ -547,7 +547,7 @@ GList *vcard_get_list_folder( VCardFile *cardFile ) {
 * Return: List of items, or NULL if none.
 */
 GList *vcard_get_all_persons( VCardFile *cardFile ) {
-	g_return_val_if_fail( cardFile != NULL, NULL );
+	cm_return_val_if_fail( cardFile != NULL, NULL );
 	return addrcache_get_all_persons( cardFile->addressCache );
 }
 

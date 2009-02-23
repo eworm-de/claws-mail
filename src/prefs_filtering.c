@@ -227,7 +227,7 @@ void prefs_filtering_open(GSList ** p_processing,
 static void prefs_filtering_size_allocate_cb(GtkWidget *widget,
 					 GtkAllocation *allocation)
 {
-	g_return_if_fail(allocation != NULL);
+	cm_return_if_fail(allocation != NULL);
 
 	prefs_common.filteringwin_width = allocation->width;
 	prefs_common.filteringwin_height = allocation->height;
@@ -254,7 +254,7 @@ static void prefs_filtering_account_option_menu_populate(void)
 
 	accounts = account_get_list();
 
-	g_return_if_fail(accounts != NULL);
+	cm_return_if_fail(accounts != NULL);
 
 	COMBOBOX_ADD(filtering.account_combobox_list, Q_("Filtering Account Menu|All"), 0);
 	for (; accounts != NULL; accounts = accounts->next) {
@@ -733,9 +733,9 @@ static gboolean prefs_filtering_rename_path_func(GNode *node, gpointer data)
 	old_path = paths[0];
 	new_path = paths[1];
 
-	g_return_val_if_fail(old_path != NULL, FALSE);
-	g_return_val_if_fail(new_path != NULL, FALSE);
-	g_return_val_if_fail(node != NULL, FALSE);
+	cm_return_val_if_fail(old_path != NULL, FALSE);
+	cm_return_val_if_fail(new_path != NULL, FALSE);
+	cm_return_val_if_fail(node != NULL, FALSE);
 
         item = node->data;
         if (!item || !item->prefs)
@@ -786,9 +786,9 @@ static gboolean prefs_filtering_rename_tag_func(GNode *node, gpointer data)
 	old_tag = tags[0];
 	new_tag = tags[1];
 
-	g_return_val_if_fail(old_tag != NULL, FALSE);
-	g_return_val_if_fail(new_tag != NULL, FALSE);
-	g_return_val_if_fail(node != NULL, FALSE);
+	cm_return_val_if_fail(old_tag != NULL, FALSE);
+	cm_return_val_if_fail(new_tag != NULL, FALSE);
+	cm_return_val_if_fail(node != NULL, FALSE);
 
         item = node->data;
         if (!item || !item->prefs)
@@ -873,8 +873,8 @@ static gboolean prefs_filtering_delete_path_func(GNode *node, gpointer data)
 	FolderItem *item;
         GSList ** p_filters;
 	
-	g_return_val_if_fail(path != NULL, FALSE);
-	g_return_val_if_fail(node != NULL, FALSE);
+	cm_return_val_if_fail(path != NULL, FALSE);
+	cm_return_val_if_fail(node != NULL, FALSE);
 
         item = node->data;
         if (!item || !item->prefs)

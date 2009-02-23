@@ -87,7 +87,7 @@ FilteringAction * filteringaction_new(int type, int account_id,
 
 void filteringaction_free(FilteringAction * action)
 {
-	g_return_if_fail(action);
+	cm_return_if_fail(action);
 	g_free(action->header);
 	g_free(action->destination);
 	g_free(action);
@@ -168,7 +168,7 @@ void filteringprop_free(FilteringProp * prop)
 {
         GSList * tmp;
 
-	g_return_if_fail(prop);
+	cm_return_if_fail(prop);
 	matcherlist_free(prop->matchers);
         
         for (tmp = prop->action_list ; tmp != NULL ; tmp = tmp->next) {
@@ -531,8 +531,8 @@ static gboolean filteringaction_apply(FilteringAction * action, MsgInfo * info)
 gboolean filteringaction_apply_action_list(GSList *action_list, MsgInfo *info)
 {
 	GSList *p;
-	g_return_val_if_fail(action_list, FALSE);
-	g_return_val_if_fail(info, FALSE);
+	cm_return_val_if_fail(action_list, FALSE);
+	cm_return_val_if_fail(info, FALSE);
 	for (p = action_list; p && p->data; p = g_slist_next(p)) {
 		FilteringAction *a = (FilteringAction *) p->data;
 		if (filteringaction_apply(a, info)) {
@@ -776,7 +776,7 @@ static gboolean filter_msginfo(GSList * filtering_list, MsgInfo * info, PrefsAcc
 	gboolean final;
 	gboolean apply_next;
 	
-	g_return_val_if_fail(info != NULL, TRUE);
+	cm_return_val_if_fail(info != NULL, TRUE);
 	
 	for (l = filtering_list, final = FALSE, apply_next = FALSE; l != NULL; l = g_slist_next(l)) {
 		FilteringProp * filtering = (FilteringProp *) l->data;
@@ -1052,8 +1052,8 @@ static gboolean prefs_filtering_free_func(GNode *node, gpointer data)
 {
 	FolderItem *item = node->data;
 
-	g_return_val_if_fail(item, FALSE);
-	g_return_val_if_fail(item->prefs, FALSE);
+	cm_return_val_if_fail(item, FALSE);
+	cm_return_val_if_fail(item->prefs, FALSE);
 
 	prefs_filtering_free(item->prefs->processing);
 	item->prefs->processing = NULL;
@@ -1083,8 +1083,8 @@ void prefs_filtering_clear(void)
 
 void prefs_filtering_clear_folder(Folder *folder)
 {
-	g_return_if_fail(folder);
-	g_return_if_fail(folder->node);
+	cm_return_if_fail(folder);
+	cm_return_if_fail(folder->node);
 
 	g_node_traverse(folder->node, G_PRE_ORDER, G_TRAVERSE_ALL, -1,
 			prefs_filtering_free_func, NULL);

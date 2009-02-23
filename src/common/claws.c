@@ -58,8 +58,8 @@ static void parse_parameter(int *argc, char ***argv)
 {
 	gint i, j, k;
 
-	g_return_if_fail(argc != NULL);
-	g_return_if_fail(argv != NULL);
+	cm_return_if_fail(argc != NULL);
+	cm_return_if_fail(argv != NULL);
 
 	for (i = 1; i < *argc;) {
 		if (strcmp("--debug", (*argv)[i]) == 0) {

@@ -282,8 +282,8 @@ PrefsAccount *account_find_from_smtp_server(const gchar *address,
 	GList *cur;
 	PrefsAccount *ac;
 
-	g_return_val_if_fail(address != NULL, NULL);
-	g_return_val_if_fail(smtp_server != NULL, NULL);
+	cm_return_val_if_fail(address != NULL, NULL);
+	cm_return_val_if_fail(smtp_server != NULL, NULL);
 
 	for (cur = account_list; cur != NULL; cur = cur->next) {
 		ac = (PrefsAccount *)cur->data;
@@ -308,7 +308,7 @@ PrefsAccount *account_find_from_address(const gchar *address, gboolean newsgroup
 	GList *cur;
 	PrefsAccount *ac;
 
-	g_return_val_if_fail(address != NULL, NULL);
+	cm_return_val_if_fail(address != NULL, NULL);
 
 	for (cur = account_list; cur != NULL; cur = cur->next) {
 		ac = (PrefsAccount *)cur->data;
@@ -338,7 +338,7 @@ PrefsAccount *account_find_from_item(FolderItem *item)
 {
 	PrefsAccount *ac;
 
-	g_return_val_if_fail(item != NULL, NULL);
+	cm_return_val_if_fail(item != NULL, NULL);
 
 	ac = item->account;
 	if (!ac) {
@@ -445,7 +445,7 @@ void account_open(PrefsAccount *ac_prefs)
 	gchar *ac_name;
 	gboolean account_dirty = FALSE;
 
-	g_return_if_fail(ac_prefs != NULL);
+	cm_return_if_fail(ac_prefs != NULL);
 
 	prev_default = ac_prefs->is_default;
 	Xstrdup_a(ac_name, ac_prefs->account_name ? ac_prefs->account_name : "",
@@ -564,7 +564,7 @@ FolderItem *account_get_special_folder(PrefsAccount *ac_prefs,
 {
 	FolderItem *item = NULL;
 
-	g_return_val_if_fail(ac_prefs != NULL, NULL);
+	cm_return_val_if_fail(ac_prefs != NULL, NULL);
 
 	switch (type) {
 	case F_INBOX:
@@ -638,7 +638,7 @@ FolderItem *account_get_special_folder(PrefsAccount *ac_prefs,
 
 void account_destroy(PrefsAccount *ac_prefs)
 {
-	g_return_if_fail(ac_prefs != NULL);
+	cm_return_if_fail(ac_prefs != NULL);
 
 	folder_unref_account_all(ac_prefs);
 
@@ -662,7 +662,7 @@ void account_destroy(PrefsAccount *ac_prefs)
 static void account_size_allocate_cb(GtkWidget *widget,
 					 GtkAllocation *allocation)
 {
-	g_return_if_fail(allocation != NULL);
+	cm_return_if_fail(allocation != NULL);
 
 	prefs_common.accountswin_width = allocation->width;
 	prefs_common.accountswin_height = allocation->height;
@@ -853,7 +853,7 @@ static gboolean account_delete_references_func(GNode *node, gpointer data)
 	FolderItem *item;
 	gint account;
 
-	g_return_val_if_fail(node->data != NULL, FALSE);
+	cm_return_val_if_fail(node->data != NULL, FALSE);
 
 	item = FOLDER_ITEM(node->data);
 	account = GPOINTER_TO_INT(data);
@@ -1792,7 +1792,7 @@ gchar *account_get_signature_str(PrefsAccount *account)
 	gchar *sig_str = NULL;
 	gchar *utf8_sig_str = NULL;
 
-	g_return_val_if_fail(account != NULL, NULL);
+	cm_return_val_if_fail(account != NULL, NULL);
 
 	if (!account->sig_path)
 		return NULL;

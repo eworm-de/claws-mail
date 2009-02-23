@@ -56,7 +56,7 @@ PineFile *pine_create() {
 * Properties...
 */
 void pine_set_file( PineFile* pineFile, const gchar *value ) {
-	g_return_if_fail( pineFile != NULL );
+	cm_return_if_fail( pineFile != NULL );
 	pineFile->path = mgu_replace_string( pineFile->path, value );
 	g_strstrip( pineFile->path );
 }
@@ -75,7 +75,7 @@ static gint pine_free_table_vis( gpointer key, gpointer value, gpointer data ) {
 * Free up object by releasing internal memory.
 */
 void pine_free( PineFile *pineFile ) {
-	g_return_if_fail( pineFile != NULL );
+	cm_return_if_fail( pineFile != NULL );
 
 	/* Close file */
 	if( pineFile->file ) fclose( pineFile->file );
@@ -127,7 +127,7 @@ static gint pine_open_file( PineFile* pineFile ) {
  * Enter: pineFile File object.
  */
 static void pine_close_file( PineFile *pineFile ) {
-	g_return_if_fail( pineFile != NULL );
+	cm_return_if_fail( pineFile != NULL );
 	if( pineFile->file ) fclose( pineFile->file );
 	pineFile->file = NULL;
 }
@@ -389,7 +389,7 @@ static void pine_parse_address( PineFile *pineFile, AddressCache *cache, Pine_Pa
 	gchar *name;
 	gint len;
 
-	g_return_if_fail( rec->address != NULL );
+	cm_return_if_fail( rec->address != NULL );
 
 	buf = rec->address;
 	while((atCh = strchr( buf, CHAR_AT )) != NULL) {
@@ -427,7 +427,7 @@ static ItemEMail *pine_insert_table(
 	ItemEMail *email;
 	gchar *key;
 
-	g_return_val_if_fail( address != NULL, NULL );
+	cm_return_val_if_fail( address != NULL, NULL );
 
 	/* create an entry with empty name if needed */
 	if ( name == NULL )
@@ -607,8 +607,8 @@ static void pine_read_file( PineFile *pineFile, AddressCache *cache ) {
  * ============================================================================================
  */
 gint pine_import_data( PineFile *pineFile, AddressCache *cache ) {
-	g_return_val_if_fail( pineFile != NULL, MGU_BAD_ARGS );
-	g_return_val_if_fail( cache != NULL, MGU_BAD_ARGS );
+	cm_return_val_if_fail( pineFile != NULL, MGU_BAD_ARGS );
+	cm_return_val_if_fail( cache != NULL, MGU_BAD_ARGS );
 
 	pineFile->retVal = MGU_SUCCESS;
 	addrcache_clear( cache );

@@ -31,6 +31,7 @@
 #include <string.h>
 #include <gtk/gtk.h>
 #include "gtkshruler.h"
+#include "utils.h"
 
 #define RULER_HEIGHT          14
 #define MINIMUM_INCR          5
@@ -120,8 +121,8 @@ gtk_shruler_draw_ticks(GtkRuler *ruler)
 	gint ythickness;
 	gint pos;
 
-	g_return_if_fail (ruler != NULL);
-	g_return_if_fail (GTK_IS_HRULER (ruler));
+	cm_return_if_fail (ruler != NULL);
+	cm_return_if_fail (GTK_IS_HRULER (ruler));
 
 	if (!GTK_WIDGET_DRAWABLE (ruler)) 
 		return;

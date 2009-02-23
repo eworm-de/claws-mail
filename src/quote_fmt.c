@@ -138,13 +138,13 @@ void quotefmt_create_new_msg_fmt_widgets(GtkWindow *parent_window,
 	GtkSizeGroup *size_group;
 
 	if (add_info_button)
-		g_return_if_fail(parent_window != NULL);
-	g_return_if_fail(parent_box != NULL);
+		cm_return_if_fail(parent_window != NULL);
+	cm_return_if_fail(parent_box != NULL);
 	if (checkbtn_compose_with_format)
-		g_return_if_fail(checkbtn_compose_with_format != NULL);
+		cm_return_if_fail(checkbtn_compose_with_format != NULL);
 
-	g_return_if_fail(edit_subject_format != NULL);
-	g_return_if_fail(edit_body_format != NULL);
+	cm_return_if_fail(edit_subject_format != NULL);
+	cm_return_if_fail(edit_body_format != NULL);
 
 	size_group = gtk_size_group_new(GTK_SIZE_GROUP_HORIZONTAL);
 
@@ -266,13 +266,13 @@ void quotefmt_create_reply_fmt_widgets(GtkWindow *parent_window,
 	GtkSizeGroup *size_group;
 
 	if (add_info_button)
-		g_return_if_fail(parent_window != NULL);
-	g_return_if_fail(parent_box != NULL);
+		cm_return_if_fail(parent_window != NULL);
+	cm_return_if_fail(parent_box != NULL);
 	if (checkbtn_reply_with_format)
-		g_return_if_fail(checkbtn_reply_with_format != NULL);
+		cm_return_if_fail(checkbtn_reply_with_format != NULL);
 
-	g_return_if_fail(edit_reply_quotemark != NULL);
-	g_return_if_fail(edit_reply_format != NULL);
+	cm_return_if_fail(edit_reply_quotemark != NULL);
+	cm_return_if_fail(edit_reply_format != NULL);
 
 	size_group = gtk_size_group_new(GTK_SIZE_GROUP_HORIZONTAL);
 
@@ -398,13 +398,13 @@ void quotefmt_create_forward_fmt_widgets(GtkWindow *parent_window,
 	GtkSizeGroup *size_group;
 
 	if (add_info_button)
-		g_return_if_fail(parent_window != NULL);
-	g_return_if_fail(parent_box != NULL);
+		cm_return_if_fail(parent_window != NULL);
+	cm_return_if_fail(parent_box != NULL);
 	if (checkbtn_forward_with_format) {
-		g_return_if_fail(checkbtn_forward_with_format != NULL);
+		cm_return_if_fail(checkbtn_forward_with_format != NULL);
 	}
-	g_return_if_fail(edit_fw_quotemark != NULL);
-	g_return_if_fail(edit_fw_format != NULL);
+	cm_return_if_fail(edit_fw_quotemark != NULL);
+	cm_return_if_fail(edit_fw_format != NULL);
 
 	size_group = gtk_size_group_new(GTK_SIZE_GROUP_HORIZONTAL);
 
@@ -538,7 +538,7 @@ void quotefmt_add_defaults_button(GtkWindow *parent_window,
 	GtkWidget *hbox_formatdesc;
 	GtkWidget *btn_formatdesc;
 
-	g_return_if_fail(set_defaults_func != NULL);
+	cm_return_if_fail(set_defaults_func != NULL);
 
 	hbox_formatdesc = gtk_hbox_new (FALSE, 32);
 	gtk_widget_show (hbox_formatdesc);

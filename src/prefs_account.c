@@ -3350,8 +3350,8 @@ void prefs_account_read_config(PrefsAccount *ac_prefs, const gchar *label)
 	gint id;
 	gchar **strv, **cur;
 
-	g_return_if_fail(ac_prefs != NULL);
-	g_return_if_fail(label != NULL);
+	cm_return_if_fail(ac_prefs != NULL);
+	cm_return_if_fail(label != NULL);
 
 	memset(&tmp_ac_prefs, 0, sizeof(PrefsAccount));
 	tmp_ac_prefs.privacy_prefs = ac_prefs->privacy_prefs;
@@ -3870,10 +3870,10 @@ static void prefs_account_set_string_from_combobox(PrefParam *pparam)
 	GtkTreeIter iter;
 	gchar **str;
 
-	g_return_if_fail(*pparam->widget != NULL);
+	cm_return_if_fail(*pparam->widget != NULL);
 
 	combobox = *pparam->widget;
-	g_return_if_fail(gtk_combo_box_get_active_iter(
+	cm_return_if_fail(gtk_combo_box_get_active_iter(
 				GTK_COMBO_BOX(combobox), &iter));
 
 	str = (gchar **)pparam->data;
@@ -3923,7 +3923,7 @@ static void prefs_account_set_privacy_combobox_from_string(PrefParam *pparam)
 	gchar *prefsid;
 	PrivacySystemSetCtx *ctx = NULL;
 
-	g_return_if_fail(*pparam->widget != NULL);
+	cm_return_if_fail(*pparam->widget != NULL);
 
 	prefsid = *((gchar **) pparam->data);
 	if (prefsid == NULL)
@@ -4512,7 +4512,7 @@ static void prefs_account_compose_default_dictionary_set_string_from_optmenu
 	GtkWidget *combo;
 	gchar **str;
 
-	g_return_if_fail(*pparam->widget != NULL);
+	cm_return_if_fail(*pparam->widget != NULL);
 
 	combo = *pparam->widget;
 	str = (gchar **) pparam->data;
@@ -4527,23 +4527,31 @@ static void prefs_account_compose_default_dictionary_set_optmenu_from_string
 	GtkWidget *combo;
 	gchar *dictionary;
 
-	g_return_if_fail(*pparam->widget != NULL);
+	cm_return_if_fail(*pparam->widget != NULL);
 
 	dictionary = *((gchar **) pparam->data);
-	if (dictionary == NULL)
-		return;
+	if (dictionary != NULL) {
+		if (strrchr(dictionary, '/')) {
+			dictionary = g_strdup(strrchr(dictionary, '/')+1);
+		}
 
-	if (strrchr(dictionary, '/')) {
-		dictionary = g_strdup(strrchr(dictionary, '/')+1);
-	}
-
-	if (strchr(dictionary, '-')) {
-		*(strchr(dictionary, '-')) = '\0';
+		if (strchr(dictionary, '-')) {
+			*(strchr(dictionary, '-')) = '\0';
+		}
 	}
 	combo = *pparam->widget;
-	if (dictionary)
+	if (dictionary && *dictionary)
 		gtkaspell_set_dictionary_menu_active_item(GTK_COMBO_BOX(combo), 
 							  dictionary);
+	else {
+		GtkTreeModel *model;
+		GtkTreeIter iter;
+		if((model = gtk_combo_box_get_model(GTK_COMBO_BOX(combo))) == NULL)
+			return;
+		if((gtk_tree_model_get_iter_first(model, &iter)) == FALSE)
+			return;
+		gtk_combo_box_set_active_iter(GTK_COMBO_BOX(combo), &iter);
+	}
 }
 #endif
 

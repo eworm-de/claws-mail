@@ -133,7 +133,7 @@ static gboolean addressbook_foldersel_tree_button( GtkCMCTree *ctree, GdkEventBu
 static void addressbook_foldersel_size_allocate_cb(GtkWidget *widget,
 					 GtkAllocation *allocation)
 {
-	g_return_if_fail(allocation != NULL);
+	cm_return_if_fail(allocation != NULL);
 
 	prefs_common.addressbook_folderselwin_width = allocation->width;
 	prefs_common.addressbook_folderselwin_height = allocation->height;

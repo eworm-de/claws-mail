@@ -140,8 +140,8 @@ GtkWidget *claws_spell_entry_new(void)
 
 void claws_spell_entry_set_gtkaspell(ClawsSpellEntry *entry, GtkAspell *gtkaspell)
 {
-	g_return_if_fail(CLAWS_IS_SPELL_ENTRY(entry));
-	g_return_if_fail(gtkaspell != NULL);
+	cm_return_if_fail(CLAWS_IS_SPELL_ENTRY(entry));
+	cm_return_if_fail(gtkaspell != NULL);
 
 	entry->gtkaspell = gtkaspell;
 }
@@ -384,8 +384,8 @@ void claws_spell_entry_recheck_all(ClawsSpellEntry *entry)
 	PangoLayout *layout;
 	int length, i;
 
-	g_return_if_fail(CLAWS_IS_SPELL_ENTRY(entry));
-	g_return_if_fail(entry->gtkaspell != NULL);
+	cm_return_if_fail(CLAWS_IS_SPELL_ENTRY(entry));
+	cm_return_if_fail(entry->gtkaspell != NULL);
 
 	if (entry->priv->words == NULL)
 		return;
@@ -546,8 +546,8 @@ static void set_menu_pos(GtkMenu *menu, gint *x, gint *y,
 
 void claws_spell_entry_context_set(ClawsSpellEntry *entry)
 {
-	g_return_if_fail(CLAWS_IS_SPELL_ENTRY(entry));
-	g_return_if_fail(entry->gtkaspell != NULL);
+	cm_return_if_fail(CLAWS_IS_SPELL_ENTRY(entry));
+	cm_return_if_fail(entry->gtkaspell != NULL);
 
 	entry->gtkaspell->ctx.set_position	= set_position;
 	entry->gtkaspell->ctx.set_menu_pos	= set_menu_pos;
@@ -615,8 +615,8 @@ void claws_spell_entry_check_all(ClawsSpellEntry *entry)
 	gint start, end;
 	gchar *text;
 	
-	g_return_if_fail(CLAWS_IS_SPELL_ENTRY(entry));
-	g_return_if_fail(entry->gtkaspell != NULL);
+	cm_return_if_fail(CLAWS_IS_SPELL_ENTRY(entry));
+	cm_return_if_fail(entry->gtkaspell != NULL);
 	
 	if (!gtk_editable_get_selection_bounds(GTK_EDITABLE(entry), &start, &end)) {
 		text = gtk_editable_get_chars(GTK_EDITABLE(entry), 0, -1);	
@@ -638,8 +638,8 @@ void claws_spell_entry_check_all(ClawsSpellEntry *entry)
 
 void claws_spell_entry_check_backwards(ClawsSpellEntry *entry)
 {
-	g_return_if_fail(CLAWS_IS_SPELL_ENTRY(entry));
-	g_return_if_fail(entry->gtkaspell != NULL);
+	cm_return_if_fail(CLAWS_IS_SPELL_ENTRY(entry));
+	cm_return_if_fail(entry->gtkaspell != NULL);
 	
 	entry->gtkaspell->continue_check = NULL;
 	claws_spell_entry_context_set(entry);
@@ -648,8 +648,8 @@ void claws_spell_entry_check_backwards(ClawsSpellEntry *entry)
 
 void claws_spell_entry_check_forwards_go(ClawsSpellEntry *entry)
 {
-	g_return_if_fail(CLAWS_IS_SPELL_ENTRY(entry));
-	g_return_if_fail(entry->gtkaspell != NULL);
+	cm_return_if_fail(CLAWS_IS_SPELL_ENTRY(entry));
+	cm_return_if_fail(entry->gtkaspell != NULL);
 
 	entry->gtkaspell->continue_check = NULL;
 	claws_spell_entry_context_set(entry);

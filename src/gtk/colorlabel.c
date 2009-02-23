@@ -250,7 +250,7 @@ static void colorlabel_recreate_color(gint color)
 			continue;
 
 		widget = colorlabel_create_color_widget(label_colors[i][color].color);
-		g_return_if_fail(widget);
+		cm_return_if_fail(widget);
 
 		if (label_colors[i][color].widget) 
 			gtk_widget_destroy(label_colors[i][color].widget);

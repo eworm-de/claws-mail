@@ -66,10 +66,10 @@ gboolean gtkut_get_font_size(GtkWidget *widget,
 	PangoLayout *layout;
 	const gchar *str = "Abcdef";
 
-	g_return_val_if_fail(GTK_IS_WIDGET(widget), FALSE);
+	cm_return_val_if_fail(GTK_IS_WIDGET(widget), FALSE);
 
 	layout = gtk_widget_create_pango_layout(widget, str);
-	g_return_val_if_fail(layout, FALSE);
+	cm_return_val_if_fail(layout, FALSE);
 	pango_layout_get_pixel_size(layout, width, height);
 	if (width)
 		*width = *width / g_utf8_strlen(str, -1);
@@ -83,8 +83,8 @@ void gtkut_widget_set_small_font_size(GtkWidget *widget)
 	PangoFontDescription *font_desc;
 	gint size;
 
-	g_return_if_fail(widget != NULL);
-	g_return_if_fail(widget->style != NULL);
+	cm_return_if_fail(widget != NULL);
+	cm_return_if_fail(widget->style != NULL);
 
 	if (prefs_common.derive_from_normal_font || !SMALL_FONT) {
 		font_desc = pango_font_description_from_string(NORMAL_FONT);
@@ -101,7 +101,7 @@ void gtkut_widget_set_small_font_size(GtkWidget *widget)
 
 void gtkut_convert_int_to_gdk_color(gint rgbvalue, GdkColor *color)
 {
-	g_return_if_fail(color != NULL);
+	cm_return_if_fail(color != NULL);
 
 	color->pixel = 0L;
 	color->red   = (int) (((gdouble)((rgbvalue & 0xff0000) >> 16) / 255.0) * 65535.0);
@@ -122,7 +122,7 @@ gint gtkut_convert_gdk_color_to_int(GdkColor *color)
 
 void gtkut_stock_button_add_help(GtkWidget *bbox, GtkWidget **help_btn)
 {
-	g_return_if_fail(bbox != NULL);
+	cm_return_if_fail(bbox != NULL);
 
 	*help_btn = gtk_button_new_from_stock(GTK_STOCK_HELP);
 
@@ -141,8 +141,8 @@ void gtkut_stock_button_set_create_with_help(GtkWidget **bbox,
 		GtkWidget **button2, const gchar *label2,
 		GtkWidget **button3, const gchar *label3)
 {
-	g_return_if_fail(bbox != NULL);
-	g_return_if_fail(button1 != NULL);
+	cm_return_if_fail(bbox != NULL);
+	cm_return_if_fail(button1 != NULL);
 
 	gtkut_stock_button_set_create(bbox, button1, label1,
 			button2, label2, button3, label3);
@@ -155,8 +155,8 @@ void gtkut_stock_button_set_create(GtkWidget **bbox,
 				   GtkWidget **button2, const gchar *label2,
 				   GtkWidget **button3, const gchar *label3)
 {
-	g_return_if_fail(bbox != NULL);
-	g_return_if_fail(button1 != NULL);
+	cm_return_if_fail(bbox != NULL);
+	cm_return_if_fail(button1 != NULL);
 
 	*bbox = gtk_hbutton_box_new();
 	gtk_button_box_set_layout(GTK_BUTTON_BOX(*bbox), GTK_BUTTONBOX_END);
@@ -187,8 +187,8 @@ void gtkut_stock_with_text_button_set_create(GtkWidget **bbox,
 				   GtkWidget **button2, const gchar *label2, const gchar *text2,
 				   GtkWidget **button3, const gchar *label3, const gchar *text3)
 {
-	g_return_if_fail(bbox != NULL);
-	g_return_if_fail(button1 != NULL);
+	cm_return_if_fail(bbox != NULL);
+	cm_return_if_fail(button1 != NULL);
 
 	*bbox = gtk_hbutton_box_new();
 	gtk_button_box_set_layout(GTK_BUTTON_BOX(*bbox), GTK_BUTTONBOX_END);
@@ -233,8 +233,8 @@ void gtkut_ctree_node_move_if_on_the_edge(GtkCMCTree *ctree, GtkCMCTreeNode *nod
 	gint row;
 	GtkVisibility row_visibility, prev_row_visibility, next_row_visibility;
 
-	g_return_if_fail(ctree != NULL);
-	g_return_if_fail(node != NULL);
+	cm_return_if_fail(ctree != NULL);
+	cm_return_if_fail(node != NULL);
 
 	row = (_row != -1 ? _row : g_list_position(clist->row_list, (GList *)node));
 
@@ -271,8 +271,8 @@ void gtkut_ctree_node_move_if_on_the_edge(GtkCMCTree *ctree, GtkCMCTreeNode *nod
 
 gint gtkut_ctree_get_nth_from_node(GtkCMCTree *ctree, GtkCMCTreeNode *node)
 {
-	g_return_val_if_fail(ctree != NULL, -1);
-	g_return_val_if_fail(node != NULL, -1);
+	cm_return_val_if_fail(ctree != NULL, -1);
+	cm_return_val_if_fail(node != NULL, -1);
 
 	return g_list_position(GTK_CMCLIST(ctree)->row_list, (GList *)node);
 }
@@ -356,8 +356,8 @@ void gtkut_ctree_expand_parent_all(GtkCMCTree *ctree, GtkCMCTreeNode *node)
 gboolean gtkut_ctree_node_is_parent(GtkCMCTreeNode *parent, GtkCMCTreeNode *node)
 {
 	GtkCMCTreeNode *tmp;
-	g_return_val_if_fail(node != NULL, FALSE);
-	g_return_val_if_fail(parent != NULL, FALSE);
+	cm_return_val_if_fail(node != NULL, FALSE);
+	cm_return_val_if_fail(parent != NULL, FALSE);
 	tmp = node;
 	
 	while (tmp) {
@@ -510,7 +510,7 @@ gchar *gtkut_text_view_get_selection(GtkTextView *textview)
 	GtkTextIter start_iter, end_iter;
 	gboolean found;
 
-	g_return_val_if_fail(GTK_IS_TEXT_VIEW(textview), NULL);
+	cm_return_val_if_fail(GTK_IS_TEXT_VIEW(textview), NULL);
 
 	buffer = gtk_text_view_get_buffer(textview);
 	found = gtk_text_buffer_get_selection_bounds(buffer,
@@ -529,7 +529,7 @@ void gtkut_text_view_set_position(GtkTextView *text, gint pos)
 	GtkTextBuffer *buffer;
 	GtkTextIter iter;
 
-	g_return_if_fail(text != NULL);
+	cm_return_if_fail(text != NULL);
 
 	buffer = gtk_text_view_get_buffer(text);
 
@@ -546,13 +546,13 @@ gboolean gtkut_text_view_search_string(GtkTextView *text, const gchar *str,
 	GtkTextMark *mark;
 	gint len;
 
-	g_return_val_if_fail(text != NULL, FALSE);
-	g_return_val_if_fail(str != NULL, FALSE);
+	cm_return_val_if_fail(text != NULL, FALSE);
+	cm_return_val_if_fail(str != NULL, FALSE);
 
 	buffer = gtk_text_view_get_buffer(text);
 
 	len = g_utf8_strlen(str, -1);
-	g_return_val_if_fail(len >= 0, FALSE);
+	cm_return_val_if_fail(len >= 0, FALSE);
 
 	mark = gtk_text_buffer_get_insert(buffer);
 	gtk_text_buffer_get_iter_at_mark(buffer, &iter, mark);
@@ -579,13 +579,13 @@ gboolean gtkut_text_view_search_string_backward(GtkTextView *text, const gchar *
 	GtkTextMark *mark;
 	gint len;
 
-	g_return_val_if_fail(text != NULL, FALSE);
-	g_return_val_if_fail(str != NULL, FALSE);
+	cm_return_val_if_fail(text != NULL, FALSE);
+	cm_return_val_if_fail(str != NULL, FALSE);
 
 	buffer = gtk_text_view_get_buffer(text);
 
 	len = g_utf8_strlen(str, -1);
-	g_return_val_if_fail(len >= 0, FALSE);
+	cm_return_val_if_fail(len >= 0, FALSE);
 
 	mark = gtk_text_buffer_get_insert(buffer);
 	gtk_text_buffer_get_iter_at_mark(buffer, &iter, mark);
@@ -607,8 +607,8 @@ void gtkut_window_popup(GtkWidget *window)
 {
 	gint x, y, sx, sy, new_x, new_y;
 
-	g_return_if_fail(window != NULL);
-	g_return_if_fail(window->window != NULL);
+	cm_return_if_fail(window != NULL);
+	cm_return_if_fail(window->window != NULL);
 
 	sx = gdk_screen_width();
 	sy = gdk_screen_height();
@@ -632,8 +632,8 @@ void gtkut_widget_get_uposition(GtkWidget *widget, gint *px, gint *py)
 	gint x, y;
 	gint sx, sy;
 
-	g_return_if_fail(widget != NULL);
-	g_return_if_fail(widget->window != NULL);
+	cm_return_if_fail(widget != NULL);
+	cm_return_if_fail(widget->window != NULL);
 
 	sx = gdk_screen_width();
 	sy = gdk_screen_height();
@@ -712,8 +712,8 @@ void gtkut_widget_set_app_icon(GtkWidget *widget)
 {
 	static GdkPixbuf *icon = NULL;
 	
-	g_return_if_fail(widget != NULL);
-	g_return_if_fail(widget->window != NULL);
+	cm_return_if_fail(widget != NULL);
+	cm_return_if_fail(widget->window != NULL);
 	if (!icon) {
 		stock_pixbuf_gdk(widget, STOCK_PIXMAP_CLAWS_MAIL_ICON, &icon);
 	}		
@@ -725,8 +725,8 @@ void gtkut_widget_set_composer_icon(GtkWidget *widget)
 {
 	static GdkPixbuf *icon = NULL;
 	
-	g_return_if_fail(widget != NULL);
-	g_return_if_fail(widget->window != NULL);
+	cm_return_if_fail(widget != NULL);
+	cm_return_if_fail(widget->window != NULL);
 	if (!icon) {
 		stock_pixbuf_gdk(widget, STOCK_PIXMAP_MAIL_COMPOSE, &icon);
 	}		
@@ -814,7 +814,7 @@ GtkWidget *gtkut_account_menu_new(GList			*ac_list,
 	PrefsAccount *account;
 	gchar *name;
 	
-	g_return_val_if_fail(ac_list != NULL, NULL);
+	cm_return_val_if_fail(ac_list != NULL, NULL);
 
 	optmenu = gtkut_sc_combobox_create(NULL, FALSE);
 	menu = GTK_LIST_STORE(gtk_combo_box_get_model(GTK_COMBO_BOX(optmenu)));
@@ -863,7 +863,7 @@ GtkWidget *gtkut_get_focused_child(GtkContainer *parent)
 	GList *child_list = NULL;
 	GList *c;
 
-	g_return_val_if_fail(parent, NULL);
+	cm_return_val_if_fail(parent, NULL);
 
 	/* Get children list and see which has the focus. */
 	child_list = gtk_container_get_children(parent);
@@ -1263,7 +1263,7 @@ static gboolean _combobox_separator_func(GtkTreeModel *model,
 {
 	gchar *txt = NULL;
 
-	g_return_val_if_fail(model != NULL, FALSE);
+	cm_return_val_if_fail(model != NULL, FALSE);
 
 	gtk_tree_model_get(model, iter, COMBOBOX_TEXT, &txt, -1);
 
@@ -1473,8 +1473,8 @@ gboolean gtkut_tree_model_text_iter_prev(GtkTreeModel *model,
 	gboolean valid;
 	gint count;
 
-	g_return_val_if_fail(model != NULL, FALSE);
-	g_return_val_if_fail(iter != NULL, FALSE);
+	cm_return_val_if_fail(model != NULL, FALSE);
+	cm_return_val_if_fail(iter != NULL, FALSE);
 
 	if (text == NULL || *text == '\0')
 		return FALSE;
@@ -1504,8 +1504,8 @@ gboolean gtkut_tree_model_get_iter_last(GtkTreeModel *model,
 {
 	gint count;
 
-	g_return_val_if_fail(model != NULL, FALSE);
-	g_return_val_if_fail(iter != NULL, FALSE);
+	cm_return_val_if_fail(model != NULL, FALSE);
+	cm_return_val_if_fail(iter != NULL, FALSE);
 
 	count = gtk_tree_model_iter_n_children(model, NULL);
 
@@ -1602,7 +1602,7 @@ static GtkUIManager *gui_manager = NULL;
 
 GtkUIManager *gtkut_create_ui_manager(void)
 {
-	g_return_val_if_fail(gui_manager == NULL, gui_manager);
+	cm_return_val_if_fail(gui_manager == NULL, gui_manager);
 	return (gui_manager = gtk_ui_manager_new());
 }
 

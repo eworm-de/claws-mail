@@ -77,7 +77,7 @@ LdapServer *ldapsvr_create( void ) {
  * \return Name for server.
  */
 gchar *ldapsvr_get_name( LdapServer *server ) {
-	g_return_val_if_fail( server != NULL, NULL );
+	cm_return_val_if_fail( server != NULL, NULL );
 	return addrcache_get_name( server->addressCache );
 }
 
@@ -87,7 +87,7 @@ gchar *ldapsvr_get_name( LdapServer *server ) {
  * \param value      Name for server.
  */
 void ldapsvr_set_name( LdapServer* server, const gchar *value ) {
-	g_return_if_fail( server != NULL );
+	cm_return_if_fail( server != NULL );
 	addrcache_set_name( server->addressCache, value );
 	debug_print("setting name: %s\n", value?value:"null");
 }
@@ -97,7 +97,7 @@ void ldapsvr_set_name( LdapServer* server, const gchar *value ) {
  * \param server Server object.
  */
 void ldapsvr_force_refresh( LdapServer *server ) {
-	g_return_if_fail( server != NULL );
+	cm_return_if_fail( server != NULL );
 	addrcache_refresh( server->addressCache );
 }
 
@@ -107,7 +107,7 @@ void ldapsvr_force_refresh( LdapServer *server ) {
  * \return Status/error code.
  */
 gint ldapsvr_get_status( LdapServer *server ) {
-	g_return_val_if_fail( server != NULL, -1 );
+	cm_return_val_if_fail( server != NULL, -1 );
 	return server->retVal;
 }
 
@@ -117,7 +117,7 @@ gint ldapsvr_get_status( LdapServer *server ) {
  * \return Root level folder.
  */
 ItemFolder *ldapsvr_get_root_folder( LdapServer *server ) {
-	g_return_val_if_fail( server != NULL, NULL );
+	cm_return_val_if_fail( server != NULL, NULL );
 	/*
 	g_print( "ldapsvr_get_root_folder/start\n" );
 	ldapsvr_print_data( server, stdout );
@@ -132,7 +132,7 @@ ItemFolder *ldapsvr_get_root_folder( LdapServer *server ) {
  * \return <i>TRUE</i> if data was accessed.
  */
 gboolean ldapsvr_get_accessed( LdapServer *server ) {
-	g_return_val_if_fail( server != NULL, FALSE );
+	cm_return_val_if_fail( server != NULL, FALSE );
 	return server->addressCache->accessFlag;
 }
 
@@ -142,7 +142,7 @@ gboolean ldapsvr_get_accessed( LdapServer *server ) {
  * \param value      Value for flag.
  */
 void ldapsvr_set_accessed( LdapServer *server, const gboolean value ) {
-	g_return_if_fail( server != NULL );
+	cm_return_if_fail( server != NULL );
 	server->addressCache->accessFlag = value;
 	debug_print("setting accessFlag: %d\n", value);
 }
@@ -153,7 +153,7 @@ void ldapsvr_set_accessed( LdapServer *server, const gboolean value ) {
  * \return <i>TRUE</i> if data was modified.
  */
 gboolean ldapsvr_get_modified( LdapServer *server ) {
-	g_return_val_if_fail( server != NULL, FALSE );
+	cm_return_val_if_fail( server != NULL, FALSE );
 	return server->addressCache->modified;
 }
 
@@ -163,7 +163,7 @@ gboolean ldapsvr_get_modified( LdapServer *server ) {
  * \param value      Value for flag.
  */
 void ldapsvr_set_modified( LdapServer *server, const gboolean value ) {
-	g_return_if_fail( server != NULL );
+	cm_return_if_fail( server != NULL );
 	server->addressCache->modified = value;
 	debug_print("setting modified: %d\n", value);
 }
@@ -174,7 +174,7 @@ void ldapsvr_set_modified( LdapServer *server, const gboolean value ) {
  * \return <i>TRUE</i> if data was read.
  */
 gboolean ldapsvr_get_read_flag( LdapServer *server ) {
-	g_return_val_if_fail( server != NULL, FALSE );
+	cm_return_val_if_fail( server != NULL, FALSE );
 	return server->addressCache->dataRead;
 }
 
@@ -184,7 +184,7 @@ gboolean ldapsvr_get_read_flag( LdapServer *server ) {
  * \return <i>TRUE</i> if server is used for dynamic searches.
  */
 gboolean ldapsvr_get_search_flag( LdapServer *server ) {
-	g_return_val_if_fail( server != NULL, FALSE );
+	cm_return_val_if_fail( server != NULL, FALSE );
 	return server->searchFlag;
 }
 
@@ -194,7 +194,7 @@ gboolean ldapsvr_get_search_flag( LdapServer *server ) {
  * \param value      Name for server.
  */
 void ldapsvr_set_search_flag( LdapServer *server, const gboolean value ) {
-	g_return_if_fail( server != NULL );
+	cm_return_if_fail( server != NULL );
 	server->searchFlag = value;
 	debug_print("setting searchFlag: %d\n", value);
 }
@@ -206,7 +206,7 @@ void ldapsvr_set_search_flag( LdapServer *server, const gboolean value ) {
  * \param ctl    Control data.
  */
 void ldapsvr_set_control( LdapServer *server, LdapControl *ctl ) {
-	g_return_if_fail( server != NULL );
+	cm_return_if_fail( server != NULL );
 	addrcache_refresh( server->addressCache );
 	server->control = ctl;
 }
@@ -217,7 +217,7 @@ void ldapsvr_set_control( LdapServer *server, LdapControl *ctl ) {
  */
 void ldapsvr_free_all_query( LdapServer *server ) {
 	GList *node;	
-	g_return_if_fail( server != NULL );
+	cm_return_if_fail( server != NULL );
 
 	node = server->listQuery;
 	while( node ) {
@@ -236,8 +236,8 @@ void ldapsvr_free_all_query( LdapServer *server ) {
  * \param qry    Query object.
  */
 void ldapsvr_add_query( LdapServer *server, LdapQuery *qry ) {
-	g_return_if_fail( server != NULL );
-	g_return_if_fail( qry != NULL );
+	cm_return_if_fail( server != NULL );
+	cm_return_if_fail( qry != NULL );
 
 	server->listQuery = g_list_append( server->listQuery, qry );
 	qry->server = server;
@@ -248,7 +248,7 @@ void ldapsvr_add_query( LdapServer *server, LdapQuery *qry ) {
  * \param server Server object.
  */
 void ldapsvr_free( LdapServer *server ) {
-	g_return_if_fail( server != NULL );
+	cm_return_if_fail( server != NULL );
 
 	/* Stop and cancel any queries that may be active */
 	ldapsvr_stop_all_query( server );
@@ -285,7 +285,7 @@ void ldapsvr_print_data( LdapServer *server, FILE *stream ) {
 	GList *node;
 	gint  i;
 
-	g_return_if_fail( server != NULL );
+	cm_return_if_fail( server != NULL );
 
 	fprintf( stream, "LdapServer:\n" );
 	fprintf( stream, "  ret val: %d\n", server->retVal );
@@ -317,7 +317,7 @@ void ldapsvr_print_data( LdapServer *server, FILE *stream ) {
  * \return List of persons.
  */
 GList *ldapsvr_get_list_person( LdapServer *server ) {
-	g_return_val_if_fail( server != NULL, NULL );
+	cm_return_val_if_fail( server != NULL, NULL );
 	return addrcache_get_list_person( server->addressCache );
 }
 
@@ -328,7 +328,7 @@ GList *ldapsvr_get_list_person( LdapServer *server ) {
  * \return List of folders.
  */
 GList *ldapsvr_get_list_folder( LdapServer *server ) {
-	g_return_val_if_fail( server != NULL, NULL );
+	cm_return_val_if_fail( server != NULL, NULL );
 	/* return addrcache_get_list_folder( server->addressCache ); */
 	return NULL;
 }
@@ -341,8 +341,8 @@ GList *ldapsvr_get_list_folder( LdapServer *server ) {
 void ldapsvr_execute_query( LdapServer *server, LdapQuery *qry ) {
 	LdapControl *ctlCopy;
 
-	g_return_if_fail( server != NULL );
-	g_return_if_fail( qry != NULL );
+	cm_return_if_fail( server != NULL );
+	cm_return_if_fail( qry != NULL );
 
 	/* Copy server's control data to the query */
 	ctlCopy = ldapctl_create();
@@ -369,7 +369,7 @@ void ldapsvr_execute_query( LdapServer *server, LdapQuery *qry ) {
  */
 void ldapsvr_stop_query_id( LdapServer *server, const gint queryID ) {
 	GList *node;	
-	g_return_if_fail( server != NULL );
+	cm_return_if_fail( server != NULL );
 
 	node = server->listQuery;
 	while( node ) {
@@ -388,7 +388,7 @@ void ldapsvr_stop_query_id( LdapServer *server, const gint queryID ) {
  */
 void ldapsvr_stop_all_query( LdapServer *server ) {
 	GList *node;	
-	g_return_if_fail( server != NULL );
+	cm_return_if_fail( server != NULL );
 
 	node = server->listQuery;
 	while( node ) {
@@ -404,7 +404,7 @@ void ldapsvr_stop_all_query( LdapServer *server ) {
  */
 void ldapsvr_cancel_all_query( LdapServer *server ) {
 	GList *node;	
-	g_return_if_fail( server != NULL );
+	cm_return_if_fail( server != NULL );
 
 	node = server->listQuery;
 	while( node ) {
@@ -430,7 +430,7 @@ static LdapQuery *ldapsvr_locate_query(
 {
 	LdapQuery *incomplete = NULL;
 	GList *node;	
-	g_return_val_if_fail( server != NULL, NULL );
+	cm_return_val_if_fail( server != NULL, NULL );
 
 	node = server->listQuery;
 	node = g_list_last( node );
@@ -470,7 +470,7 @@ void ldapsvr_retire_query( LdapServer *server ) {
 	ItemFolder *folder;
 
 	debug_print("ldapsvr_retire_query\n");
-	g_return_if_fail( server != NULL );
+	cm_return_if_fail( server != NULL );
 	ctl = server->control;
 	maxAge = ctl->maxQueryAge;
 
@@ -569,8 +569,8 @@ gboolean ldapsvr_reuse_previous( const LdapServer *server, const QueryRequest *r
 	gchar *searchTerm;
 	ItemFolder *folder;
 
-	g_return_val_if_fail( server != NULL, FALSE );
-	g_return_val_if_fail( req != NULL, FALSE );
+	cm_return_val_if_fail( server != NULL, FALSE );
+	cm_return_val_if_fail( req != NULL, FALSE );
 
 	searchTerm = req->searchTerm;
 
@@ -603,8 +603,8 @@ LdapQuery *ldapsvr_new_dynamic_search( LdapServer *server, QueryRequest *req )
 	gchar *searchTerm;
 	ItemFolder *folder;
 
-	g_return_val_if_fail( server != NULL, NULL );
-	g_return_val_if_fail( req != NULL, NULL );
+	cm_return_val_if_fail( server != NULL, NULL );
+	cm_return_val_if_fail( req != NULL, NULL );
 
 	/* Retire any aged queries */
 	/* // ldapsvr_retire_query( server ); */
@@ -661,9 +661,9 @@ LdapQuery *ldapsvr_new_explicit_search(
 	gchar *searchTerm;
 	gchar *name;
 
-	g_return_val_if_fail( server != NULL, NULL );
-	g_return_val_if_fail( req != NULL, NULL );
-	g_return_val_if_fail( folder != NULL, NULL );
+	cm_return_val_if_fail( server != NULL, NULL );
+	cm_return_val_if_fail( req != NULL, NULL );
+	cm_return_val_if_fail( folder != NULL, NULL );
 
 	/* Retire any aged queries */
 	/* // ldapsvr_retire_query( server ); */
@@ -701,7 +701,7 @@ gint ldapsvr_read_data( LdapServer *server )
 {
 	gchar *name;
 
-	g_return_val_if_fail( server != NULL, -1 );
+	cm_return_val_if_fail( server != NULL, -1 );
 
 	name = addrcache_get_name(server->addressCache);
 	debug_print("...addrbook_read_data :%s:\n", name?name:"null");

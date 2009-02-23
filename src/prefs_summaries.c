@@ -707,13 +707,13 @@ static void date_format_ok_btn_clicked(GtkButton *button, GtkWidget **widget)
 	GtkWidget *datefmt_sample = NULL;
 	gchar *text;
 
-	g_return_if_fail(widget != NULL);
-	g_return_if_fail(*widget != NULL);
-	g_return_if_fail(prefs_summaries->entry_datefmt != NULL);
+	cm_return_if_fail(widget != NULL);
+	cm_return_if_fail(*widget != NULL);
+	cm_return_if_fail(prefs_summaries->entry_datefmt != NULL);
 
 	datefmt_sample = GTK_WIDGET(g_object_get_data
 				    (G_OBJECT(*widget), "datefmt_sample"));
-	g_return_if_fail(datefmt_sample != NULL);
+	cm_return_if_fail(datefmt_sample != NULL);
 
 	text = gtk_editable_get_chars(GTK_EDITABLE(datefmt_sample), 0, -1);
 	g_free(prefs_common.date_format);
@@ -727,8 +727,8 @@ static void date_format_ok_btn_clicked(GtkButton *button, GtkWidget **widget)
 static void date_format_cancel_btn_clicked(GtkButton *button,
 					   GtkWidget **widget)
 {
-	g_return_if_fail(widget != NULL);
-	g_return_if_fail(*widget != NULL);
+	cm_return_if_fail(widget != NULL);
+	cm_return_if_fail(*widget != NULL);
 
 	gtk_widget_destroy(*widget);
 	*widget = NULL;
@@ -745,8 +745,8 @@ static gboolean date_format_key_pressed(GtkWidget *keywidget, GdkEventKey *event
 static gboolean date_format_on_delete(GtkWidget *dialogwidget,
 				      GdkEventAny *event, GtkWidget **widget)
 {
-	g_return_val_if_fail(widget != NULL, FALSE);
-	g_return_val_if_fail(*widget != NULL, FALSE);
+	cm_return_val_if_fail(widget != NULL, FALSE);
+	cm_return_val_if_fail(*widget != NULL, FALSE);
 
 	*widget = NULL;
 	return FALSE;
@@ -793,13 +793,13 @@ static void date_format_select_row(GtkTreeView *list_view,
 	GtkTreeIter iter;
 	GtkTreeModel *model;
 	
-	g_return_if_fail(date_format != NULL);
+	cm_return_if_fail(date_format != NULL);
 
 	/* only on double click */
 	datefmt_sample = GTK_WIDGET(g_object_get_data(G_OBJECT(date_format), 
 						      "datefmt_sample"));
 
-	g_return_if_fail(datefmt_sample != NULL);
+	cm_return_if_fail(datefmt_sample != NULL);
 
 	model = gtk_tree_view_get_model(list_view);
 

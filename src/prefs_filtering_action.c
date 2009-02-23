@@ -291,7 +291,7 @@ void prefs_filtering_action_open(GSList *action_list,
 static void prefs_filtering_action_size_allocate_cb(GtkWidget *widget,
 					 GtkAllocation *allocation)
 {
-	g_return_if_fail(allocation != NULL);
+	cm_return_if_fail(allocation != NULL);
 
 	prefs_common.filteringactionwin_width = allocation->width;
 	prefs_common.filteringactionwin_height = allocation->height;
@@ -1263,7 +1263,7 @@ static void prefs_filtering_action_select_addressbook(void)
 
 static void prefs_filtering_action_enable_widget(GtkWidget* widget, const gboolean enable)
 {
-	g_return_if_fail(widget != NULL);
+	cm_return_if_fail(widget != NULL);
 
 	if(enable == TRUE)
 	{
