@@ -2085,7 +2085,7 @@ static gint imap_scan_tree_real(Folder *folder, gboolean subs_only)
 
 	if (folder->account->imap_dir && *folder->account->imap_dir) {
 		gchar *real_path;
-		int r;
+		int r = MAILIMAP_NO_ERROR;
 		clist * lep_list;
 
 		Xstrdup_a(root_folder, folder->account->imap_dir, {return -1;});
@@ -2167,7 +2167,7 @@ static gint imap_scan_tree_recursive(IMAPSession *session, FolderItem *item, gbo
 	gchar separator;
 	gchar wildcard[3];
 	clist * lep_list;
-	int r;
+	int r = MAILIMAP_NO_ERROR;
 	
 	g_return_val_if_fail(item != NULL, -1);
 	g_return_val_if_fail(item->folder != NULL, -1);
@@ -2320,7 +2320,7 @@ GList *imap_scan_subtree(Folder *folder, FolderItem *item, gboolean unsubs_only,
 	GSList *item_list = NULL, *cur;
 	GList *child_list = NULL, *tmplist = NULL;
 	GSList *sub_list = NULL;
-	int r;
+	int r = MAILIMAP_NO_ERROR;
 
 	if (!session)
 		return NULL;
@@ -2588,7 +2588,7 @@ static FolderItem *imap_create_folder(Folder *folder, FolderItem *parent,
 	gchar separator;
 	gchar *new_name;
 	const gchar *p;
-	gint ok;
+	gint ok = MAILIMAP_NO_ERROR;
 	gboolean no_select = FALSE, no_sub = FALSE;
 	gboolean exist = FALSE;
 	
@@ -2737,7 +2737,7 @@ static gint imap_rename_folder(Folder *folder, FolderItem *item,
 	gchar *new_cache_dir;
 	IMAPSession *session;
 	gchar separator;
-	gint ok;
+	gint ok = MAILIMAP_NO_ERROR;
 	gint exists, recent, unseen;
 	guint32 uid_validity;
 
@@ -2827,7 +2827,7 @@ static gint imap_rename_folder(Folder *folder, FolderItem *item,
 gint imap_subscribe(Folder *folder, FolderItem *item, gchar *rpath, gboolean sub)
 {
 	gchar *path;
-	gint r = -1;
+	gint r = MAILIMAP_NO_ERROR;
 	IMAPSession *session;
 	debug_print("getting session...\n");
 
@@ -2859,7 +2859,7 @@ gint imap_subscribe(Folder *folder, FolderItem *item, gchar *rpath, gboolean sub
 
 static gint imap_remove_folder_real(Folder *folder, FolderItem *item)
 {
-	gint ok;
+	gint ok = MAILIMAP_NO_ERROR;
 	IMAPSession *session;
 	gchar *path;
 	gchar *cache_dir;
@@ -2891,7 +2891,10 @@ static gint imap_remove_folder_real(Folder *folder, FolderItem *item)
 	}
 	ok = imap_cmd_delete(session, path);
 	if (ok != MAILIMAP_NO_ERROR && !is_fatal(ok)) {
-		gchar *tmp = g_strdup_printf("%s%c", path, 
+		gchar *tmp = NULL;
+		
+		ok = MAILIMAP_NO_ERROR;
+		tmp = g_strdup_printf("%s%c", path, 
 				imap_get_path_separator(session, IMAP_FOLDER(folder), path, &ok));
 		g_free(path);
 		path = tmp;
@@ -3160,7 +3163,7 @@ gchar imap_get_path_separator_for_item(FolderItem *item)
 	IMAPFolder *imap_folder = NULL;
 	IMAPSession *session = NULL;
 	gchar result = '/';
-	gint ok;
+	gint ok = MAILIMAP_NO_ERROR;
 	if (!item)
 		return '/';
 	folder = item->folder;
@@ -3211,7 +3214,7 @@ static gchar imap_refresh_path_separator(IMAPSession *session, IMAPFolder *folde
 static gchar imap_get_path_separator(IMAPSession *session, IMAPFolder *folder, const gchar *path, gint *ok)
 {
 	gchar separator = '/';
-
+	*ok = MAILIMAP_NO_ERROR;
 	if (folder->last_seen_separator == 0) {
 		folder->last_seen_separator = imap_refresh_path_separator(session, folder, "", ok);
 	}
@@ -3232,10 +3235,12 @@ static gchar *imap_get_real_path(IMAPSession *session, IMAPFolder *folder, const
 {
 	gchar *real_path = NULL;
 	gchar separator;
-
+	
 	g_return_val_if_fail(folder != NULL, NULL);
 	g_return_val_if_fail(path != NULL, NULL);
 
+	*ok = MAILIMAP_NO_ERROR;
+	
 	real_path = imap_utf8_to_modified_utf7(path, FALSE);
 	separator = imap_get_path_separator(session, folder, path, ok);
 	if (*ok == MAILIMAP_NO_ERROR)
@@ -3328,7 +3333,7 @@ static gint imap_select(IMAPSession *session, IMAPFolder *folder,
 			gboolean block)
 {
 	gchar *real_path;
-	gint ok;
+	gint ok = MAILIMAP_NO_ERROR;
 	gint exists_, recent_, unseen_;
 	guint32 uid_validity_;
 	gint can_create_flags_;
@@ -3403,7 +3408,7 @@ static gint imap_status(IMAPSession *session, IMAPFolder *folder,
 			guint32 *uid_next, guint32 *uid_validity,
 			gint *unseen, gboolean block)
 {
-	int r;
+	int r = MAILIMAP_NO_ERROR;
 	clistiter * iter;
 	struct mailimap_mailbox_data_status * data_status;
 	int got_values;
@@ -3903,7 +3908,7 @@ static gboolean imap_rename_folder_func(GNode *node, gpointer data)
 	gchar *new_itempath;
 	gint oldpathlen;
 	IMAPSession *session = imap_session_get(item->folder);
-	gint ok;
+	gint ok = MAILIMAP_NO_ERROR;
 	oldpathlen = strlen(oldpath);
 	if (strncmp(oldpath, item->path, oldpathlen) != 0) {
 		g_warning("path doesn't match: %s, %s\n", oldpath, item->path);

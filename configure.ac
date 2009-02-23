@@ -11,7 +11,7 @@ MINOR_VERSION=7
 MICRO_VERSION=0
 INTERFACE_AGE=0
 BINARY_AGE=0
-EXTRA_VERSION=71
+EXTRA_VERSION=72
 EXTRA_RELEASE=
 EXTRA_GTK2_VERSION=
 
@@ -286,6 +286,8 @@ AC_HEADER_SYS_WAIT
 AC_CHECK_HEADERS(fcntl.h sys/file.h unistd.h paths.h \
 		 sys/param.h sys/utsname.h sys/select.h \
 		 wchar.h wctype.h locale.h netdb.h)
+AC_CHECK_HEADER([execinfo.h], [AC_DEFINE(HAVE_BACKTRACE,1,[Has backtrace*() needed for retrieving stack traces])])
+AC_SEARCH_LIBS(backtrace_symbols, [execinfo])
 
 dnl alf - Check for apache installation f*ck up. apache may also install an 
 dnl fnmatch, which includes their own regex stuff if USE_HSREGEX is defined

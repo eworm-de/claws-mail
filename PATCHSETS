@@ -3733,3 +3733,4 @@
 ( cvs diff -u -r 1.60.2.131 -r 1.60.2.132 src/addressbook.c;  cvs diff -u -r 1.49.2.125 -r 1.49.2.126 src/procmime.c;  ) > 3.7.0cvs69.patchset
 ( cvs diff -u -r 1.25.2.64 -r 1.25.2.65 src/stock_pixmap.c;  cvs diff -u -r 1.2.2.25 -r 1.2.2.26 src/gtk/colorlabel.c;  ) > 3.7.0cvs70.patchset
 ( cvs diff -u -r 1.179.2.240 -r 1.179.2.241 src/imap.c;  ) > 3.7.0cvs71.patchset
+( cvs diff -u -r 1.179.2.241 -r 1.179.2.242 src/imap.c;  ) > 3.7.0cvs72.patchset
