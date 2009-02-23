@@ -572,7 +572,8 @@ void stock_pixmap_themes_list_free(GList *list)
 
 gchar *stock_pixmap_get_name (StockPixmap icon)
 {
-	g_return_val_if_fail(icon >= 0 && icon < N_STOCK_PIXMAPS, NULL);
+	if (icon < 0 || icon >= N_STOCK_PIXMAPS)
+		return NULL;
 	
 	return pixmaps[icon].file;
 

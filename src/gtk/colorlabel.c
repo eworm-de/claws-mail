@@ -130,7 +130,9 @@ static struct
 #define LABEL_COLORS_ELEMS (sizeof label_colors[0] / sizeof label_colors[0][0])
 
 #define G_RETURN_VAL_IF_INVALID_COLOR(color, val) \
-	g_return_val_if_fail((color) >= 0 && (color) < LABEL_COLORS_ELEMS, (val))
+	do if ((color) < 0 || (color) >= LABEL_COLORS_ELEMS) {	\
+		return val;				    	\
+	} while(0)
 
 #define INTCOLOR_TO_GDKCOLOR(intcolor, gdkcolor) \
 	gdkcolor.red   = ((intcolor >> 16UL) & 0xFFUL) << 8UL; \

@@ -1,3 +1,9 @@
+2009-02-23 [colin]	3.7.0cvs70
+
+	* src/stock_pixmap.c
+	* src/gtk/colorlabel.c
+		don't use g_return on normal checks
+
 2009-02-22 [colin]	3.7.0cvs69
 
 	* src/addressbook.c
