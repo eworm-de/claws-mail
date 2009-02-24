@@ -114,7 +114,7 @@ static GtkPrintSettings *settings   = NULL;
 static GtkPageSetup     *page_setup = NULL;
 
 /* other static functions */
-static void     printing_layout_set_text_attributes(PrintData*, GtkPrintContext *);
+static void     printing_layout_set_text_attributes(PrintData*, GtkPrintContext *, gboolean *);
 static gboolean printing_is_pango_gdk_color_equal(PangoColor*, GdkColor*); 
 static gint     printing_text_iter_get_offset_bytes(PrintData *, const GtkTextIter*);
 
@@ -844,6 +844,7 @@ static void printing_textview_cb_begin_print(GtkPrintOperation *op, GtkPrintCont
   gint num_header_lines;
   gint dummy;
   gboolean header_done;
+  gboolean has_headers = FALSE;
   const gchar *text;
   double line_height =0.;
 
@@ -869,7 +870,7 @@ static void printing_textview_cb_begin_print(GtkPrintOperation *op, GtkPrintCont
   pango_layout_set_width(print_data->layout, width * PANGO_SCALE);
   pango_layout_set_text(print_data->layout, (char *)print_data->to_print, -1);
 
-  printing_layout_set_text_attributes(print_data, context);
+  printing_layout_set_text_attributes(print_data, context, &has_headers);
 
   num_lines = pango_layout_get_line_count(print_data->layout);
 
@@ -884,20 +885,25 @@ static void printing_textview_cb_begin_print(GtkPrintOperation *op, GtkPrintCont
   header_end_pos = 0;
   header_done = FALSE;
   text = pango_layout_get_text(print_data->layout);
-  if(text && *text && *text != '\n') {
-    do {
-      if(text[0] == '\n' && (text[1] != '\0') && (text[1] == '\n'))
-	header_done = TRUE;
-      else
-	header_end_pos++;
-      text++;
-    } while(*text && !header_done);
+  
+  if (has_headers) {
+    if(text && *text && *text != '\n') {
+      do {
+	if(text[0] == '\n' && (text[1] != '\0') && (text[1] == '\n'))
+	  header_done = TRUE;
+	else
+	  header_end_pos++;
+	text++;
+      } while(*text && !header_done);
+    }
+    /* find line number for header end */
+    pango_layout_index_to_line_x(print_data->layout, header_end_pos, 1,
+				 &num_header_lines, &dummy);
+    /* line count is zero-based */
+    num_header_lines++;
+  } else {
+    print_data->ypos_line = -1.0;
   }
-  /* find line number for header end */
-  pango_layout_index_to_line_x(print_data->layout, header_end_pos, 1,
-			       &num_header_lines, &dummy);
-  /* line count is zero-based */
-  num_header_lines++;
 
   do {
     PangoRectangle logical_rect;
@@ -922,7 +928,7 @@ static void printing_textview_cb_begin_print(GtkPrintOperation *op, GtkPrintCont
       page_height = 0;
     }
 
-    if(ii == num_header_lines) {
+    if(has_headers && ii == num_header_lines) {
       int y0, y1;
       pango_layout_iter_get_line_yrange(iter,&y0,&y1);
       print_data->ypos_line = (double)y0 + 1./3.*((double)(y1 - y0))/2.;
@@ -1069,7 +1075,7 @@ static void printing_textview_cb_draw_page(GtkPrintOperation *op, GtkPrintContex
 	start_pos = ((double)logical_rect.y) / PANGO_SCALE;
 
       /* Draw header separator line */
-      if(ii == 0) {
+      if(ii == 0 && print_data->ypos_line >= 0) {
 	cairo_surface_t *surface;
 	surface = cairo_image_surface_create(CAIRO_FORMAT_ARGB32,
 					     gtk_print_context_get_width(context)/print_data->zoom,
@@ -1110,7 +1116,7 @@ static void printing_textview_cb_draw_page(GtkPrintOperation *op, GtkPrintContex
   debug_print("Sent page %d to printer\n", page_nr+1);
 }
 
-static void printing_layout_set_text_attributes(PrintData *print_data, GtkPrintContext *context)
+static void printing_layout_set_text_attributes(PrintData *print_data, GtkPrintContext *context, gboolean *has_headers)
 {
   GtkTextIter iter;
   PangoAttrList *attr_list;
@@ -1118,6 +1124,9 @@ static void printing_layout_set_text_attributes(PrintData *print_data, GtkPrintC
   GSList *open_attrs, *attr_walk;
   GtkTextView *text_view = GTK_TEXT_VIEW(print_data->renderer_data);
   GtkTextBuffer *buffer = gtk_text_view_get_buffer(text_view);
+
+
+  *has_headers = FALSE;
 
   attr_list = pango_attr_list_new();
   if (print_data->sel_start < 0 || print_data->sel_end <= print_data->sel_start) {
@@ -1332,6 +1341,10 @@ static void printing_layout_set_text_attributes(PrintData *print_data, GtkPrintC
 		attr = pango_attr_weight_new(weight);
 		attr->start_index = printing_text_iter_get_offset_bytes(print_data, &iter);
 		open_attrs = g_slist_prepend(open_attrs, attr); 
+		/* Hack to see if the first char is bold -- indicates header */
+		if (attr->start_index == 0 && weight == PANGO_WEIGHT_BOLD) {
+			*has_headers = TRUE;
+		}
 	}
       }
       g_slist_free(tags);

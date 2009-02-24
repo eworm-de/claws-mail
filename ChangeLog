@@ -1,3 +1,9 @@
+2009-02-24 [colin]	3.7.0cvs74
+
+	* src/printing.c
+		Don't print separation line if there
+		are no headers
+
 2009-02-23 [cleroy]	3.7.0cvs73
 
 	* src/account.c
