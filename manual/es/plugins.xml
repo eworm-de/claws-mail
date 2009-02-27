@@ -1,52 +1,52 @@
-<?xml version="1.0" encoding="iso-8859-1"?>
+<?xml version="1.0" encoding="utf-8"?>
 <section id="ch_plugins">
 <title>Extendiendo &SC;</title>
 
   <section id="plugins_default">
-    <title>Módulos proporcionados</title>
+    <title>MÃ³dulos proporcionados</title>
     <para>
-	Las capacidades de &SC; se amplian usando módulos. Los módulos que
-	se listan más adelante vienen incluidos con él, y se construyen
-	automáticamente si las librerías necesarias están disponibles.
+	Las capacidades de &SC; se amplian usando mÃ³dulos. Los mÃ³dulos que
+	se listan mÃ¡s adelante vienen incluidos con Ã©l, y se construyen
+	automÃ¡ticamente si las librerÃ­as necesarias estÃ¡n disponibles.
     </para><para>
-	Los módulos se instalan en <filename class="directory"
+	Los mÃ³dulos se instalan en <filename class="directory"
 	>$PREFIX/lib/claws-mail/plugins/</filename> y 
-	tienen el sufijo <quote>.so</quote>. Para cargar un módulo vaya
-	al menú <quote>Configuración/Módulos</quote> y pulse el botón
-	<quote>Cargar módulo</quote>. Seleccione el módulo que desee cargar y
-	pulse el botón <quote>Aceptar</quote>.
+	tienen el sufijo <quote>.so</quote>. Para cargar un mÃ³dulo vaya
+	al menÃº <quote>ConfiguraciÃ³n/MÃ³dulos</quote> y pulse el botÃ³n
+	<quote>Cargar mÃ³dulo</quote>. Seleccione el mÃ³dulo que desee cargar y
+	pulse el botÃ³n <quote>Aceptar</quote>.
     </para><para>
-	Si no encuentra el módulo que busca es posible que la distribución de
-	su sistema operativo lo proporcione en algún paquete distinto. En ese 
-	caso busque el módulo con su gestor de paquetes.
+	Si no encuentra el mÃ³dulo que busca es posible que la distribuciÃ³n de
+	su sistema operativo lo proporcione en algÃºn paquete distinto. En ese 
+	caso busque el mÃ³dulo con su gestor de paquetes.
     </para>
     <variablelist>
       <varlistentry>
 	<term>Bogofilter</term>
 	<listitem>
 	  <para>
-	El módulo Bogofilter viene con dos características principales:
+	El mÃ³dulo Bogofilter viene con dos caracterÃ­sticas principales:
 	  </para><para>
 	La habilidad para escanear el correo entrante recibido de cuentas
 	IMAP, POP3 o locales usando Bogofilter. Puede, opcionalmente, borrar
 	el correo identificado como basura o guardarlo en una carpeta 
 	designada al efecto. El escaneado se puede desactivar.
 	  </para><para>
-	La posibilidad de que el usuario enseñe a Bogofilter a distinguir entre
+	La posibilidad de que el usuario enseÃ±e a Bogofilter a distinguir entre
 	el correo basura o el aceptable. Puede entrenar a Bogofilter marcando 
-	los mensajes como correo basura o como buenos en el menú contextual de
-	la lista de mensajes, o a través del botón correspondiente en la 
+	los mensajes como correo basura o como buenos en el menÃº contextual de
+	la lista de mensajes, o a travÃ©s del botÃ³n correspondiente en la 
 	venana principal o de mensaje (vea
-	<quote>Configuración/Preferencias/Configurar barras de 
-	herramientas</quote>. Los mensajes marcados como basura se pueden
-	guardar en una carpeta designada al efecto también de manera opcional.
+	<quote>ConfiguraciÃ³n/Preferencias/Barras de herramientas</quote>. 
+	Los mensajes marcados como basura se pueden
+	guardar en una carpeta designada al efecto tambiÃ©n de manera opcional.
 	  </para><para>
-	Las preferencias del módulo se pueden encontrar en
-	<quote>Configuración/Preferencias/Módulos/Bogofilter</quote>.
+	Las preferencias del mÃ³dulo se pueden encontrar en
+	<quote>ConfiguraciÃ³n/Preferencias/MÃ³dulos/Bogofilter</quote>.
 	  </para><para>
 	La ventaja de Bogofilter sobre SpamAssassin es su velocidad.
 	  </para><para>
-	Bogofilter está disponible en <ulink 
+	Bogofilter estÃ¡ disponible en <ulink 
 	url="http://bogofilter.sourceforge.net/"
 	>http://bogofilter.sourceforge.net/</ulink>.
 	  </para>
@@ -56,12 +56,12 @@
 	<term>Visor HTML Dillo</term>
 	<listitem>
 	  <para>
-	Habilita la visualización de mensajes HTML usando la versión 0.7.0 o
+	Habilita la visualizaciÃ³n de mensajes HTML usando la versiÃ³n 0.7.0 o
 	posterior del navegador web Dillo. De manera predeterminada utiliza la
-	opción <quote>--local</quote> para una navegación segura. Las
+	opciÃ³n <quote>--local</quote> para una navegaciÃ³n segura. Las
 	preferencias se encuentran en 
-	<quote>Configuración/Preferencias/Módulos/Navegador Dillo</quote>.
-	Dillo está disponible en  <ulink url="http://www.dillo.org/"
+	<quote>ConfiguraciÃ³n/Preferencias/MÃ³dulos/Navegador Dillo</quote>.
+	Dillo estÃ¡ disponible en  <ulink url="http://www.dillo.org/"
 	>http://www.dillo.org/</ulink>.
 	  </para>
 	</listitem>
@@ -71,7 +71,7 @@
 	<listitem>
 	  <para>
 	Gestiona mensajes firmados y/o cifrados con PGP. Se pueden descifrar
-	correos y verificar firmas, así como firmar y encriptar sus propios 
+	correos y verificar firmas, asÃ­ como firmar y encriptar sus propios 
 	correos. Utiliza GnuPG/GPGME, <ulink 
 	url="ftp://ftp.gnupg.org/gcrypt/gpgme/"
 	>ftp://ftp.gnupg.org/gcrypt/gpgme/</ulink>.
@@ -82,29 +82,29 @@
 	<term>SpamAssassin</term>
 	<listitem>
 	  <para>
-	El módulo SpamAssassin proporciona dos grandes funcionalidades:
+	El mÃ³dulo SpamAssassin proporciona dos grandes funcionalidades:
 	  </para><para>
 	La capacidad de escanear con SpamAssassin el correo entrante de 
 	cualquier cuenta POP, IMAP o local. Opcionalmente puede borrar los
 	mensajes identificados como spam o guardarlos en una carpeta al efecto.
-	El escaneo de correo se puede desactivar, lo cual es útil si el
+	El escaneo de correo se puede desactivar, lo cual es Ãºtil si el
 	correo ya es escaneado en su servidor.
 	  </para><para>
-	La posibilidad para que los usuarios enseñen a SpamAssassin a 
+	La posibilidad para que los usuarios enseÃ±en a SpamAssassin a 
 	distinguir el spam de los correos deseados. Se puede entrenar a
-	SpamAssassin marcando los mensajes como spam o no usando el menú
-	contextual de la lista de mensajes, o usando un botón para ello en
+	SpamAssassin marcando los mensajes como spam o no usando el menÃº
+	contextual de la lista de mensajes, o usando un botÃ³n para ello en
 	la barra de herramientas de la ventana principal o de mensaje (vea
-	<quote>Configuración/Preferencias/Configurar barras de 
-	herramientas</quote>. Los mensajes marcados como spam se pueden
+	<quote>ConfiguraciÃ³n/Preferencias/Barras de herramientas</quote>. 
+	Los mensajes marcados como spam se pueden
 	guardar opcionalmente en una carpeta destinada a ello.
 	  </para><para>
-	Las preferencias del módulo se encuentran 
-	en <quote>Configuración/Preferencias/Módulos/SpamAssassin</quote>. 
+	Las preferencias del mÃ³dulo se encuentran 
+	en <quote>ConfiguraciÃ³n/Preferencias/MÃ³dulos/SpamAssassin</quote>. 
 	  </para><para>
-	SpamAssassin está disponible en <ulink
+	SpamAssassin estÃ¡ disponible en <ulink
 	url="http://spamassassin.apache.org/"
-	>http://spamassassin.apache.org/</ulink>. Es necesaria la versión
+	>http://spamassassin.apache.org/</ulink>. Es necesaria la versiÃ³n
 	3.1.x o superior para utilizar la funcionalidad de aprendizaje en
 	modo TCP.
 	  </para>
@@ -115,8 +115,8 @@
 	<listitem>
 	  <para>
 	Coloca un icono en la bandeja del sistema que indica si hay correo
-	nuevo. Al mover el puntero del ratón sobre el icono una notificación 
-	emergente muestra también el número de mensajes nuevos, sin leer y 
+	nuevo. Al mover el puntero del ratÃ³n sobre el icono una notificaciÃ³n 
+	emergente muestra tambiÃ©n el nÃºmero de mensajes nuevos, sin leer y 
 	totales.
 	  </para>
 	</listitem>
@@ -125,10 +125,10 @@
   </section>
 
   <section id="plugins_external">
-    <title>Más módulos</title>
+    <title>MÃ¡s mÃ³dulos</title>
     <para>
-	También se han escrito otros módulos, que están disponibles para
-	descargar aparte. Mientras se escribe esto hay cierto número de módulos
+	TambiÃ©n se han escrito otros mÃ³dulos, que estÃ¡n disponibles para
+	descargar aparte. Mientras se escribe esto hay cierto nÃºmero de mÃ³dulos
 	dispononibles en <ulink url="http://www.claws-mail.org/plugins.php"
 	>http://www.claws-mail.org/plugins.php</ulink>:
     </para>
@@ -137,8 +137,8 @@
 	<term>Acpi Notifier</term>
 	<listitem>
 	  <para>
-	Permite la notificación de correo nuevo a través de los LEDs que 
-	tienen algunos portátiles, como los de Acer, Asus, Fujitsu e IBM.
+	Permite la notificaciÃ³n de correo nuevo a travÃ©s de los LEDs que 
+	tienen algunos portÃ¡tiles, como los de Acer, Asus, Fujitsu e IBM.
 	  </para>
 	</listitem>
       </varlistentry>
@@ -148,8 +148,8 @@
 	  <para> 
 	Le recuerda la posibilidad de que se haya olvidado adjuntos.
 	Comprueba expresiones comunes que se usan cuando se adjuntan
-	ficheros y le avisa si no se añadió ningún adjunto al correo
-	que se está enviando.
+	ficheros y le avisa si no se aÃ±adiÃ³ ningÃºn adjunto al correo
+	que se estÃ¡ enviando.
 	  </para>
 	</listitem>
       </varlistentry>
@@ -157,7 +157,7 @@
 	<term>AttRemover</term>
 	<listitem>
 	  <para> 
-	Este módulo le permite eliminar los adjuntos de los mensajes.
+	Este mÃ³dulo le permite eliminar los adjuntos de los mensajes.
 	  </para>
 	</listitem>
       </varlistentry>
@@ -165,9 +165,9 @@
 	<term>CacheSaver</term>
 	<listitem>
 	  <para>
-	Guarda las caches cada 60 segundos (o un período definido por el 
-	usuario). Puede ayudar a prevenir la pérdida de metadatos si su
-	ordenador (<emphasis>¡o &SC;!</emphasis>) se cuelga.
+	Guarda las caches cada 60 segundos (o un perÃ­odo definido por el 
+	usuario). Puede ayudar a prevenir la pÃ©rdida de metadatos si su
+	ordenador (<emphasis>Â¡o &SC;!</emphasis>) se cuelga.
 	  </para>
 	</listitem>
       </varlistentry>
@@ -175,7 +175,7 @@
 	<term>Fetchinfo</term>
 	<listitem>
 	  <para>
-	Inserta cabeceras que contienen cierta información sobre la descarga,
+	Inserta cabeceras que contienen cierta informaciÃ³n sobre la descarga,
 	como el UIDL, el nombre de la cuenta de &SC;, el servidor POP, el
 	identificador de usuario y la hora de descarga.
 	  </para>
@@ -185,8 +185,8 @@
 	<term>Visor GtkHtml</term>
 	<listitem>
 	  <para>
-	Al igual que Dillo, permite la visualización de mensajes HTML, pero
-	lo hace de manera más elegante (utiliza tipografías suavizadas).
+	Al igual que Dillo, permite la visualizaciÃ³n de mensajes HTML, pero
+	lo hace de manera mÃ¡s elegante (utiliza tipografÃ­as suavizadas).
 	  </para>
 	</listitem>
       </varlistentry>
@@ -212,7 +212,7 @@
 	  <para>
 	Escribe un resumen de las cabeceras de los mensajes en un fichero
 	de traza (por defecto <filename>~/Mail/NewLog</filename>) cuando
-	llega correo nuevo y <emphasis>después</emphasis> de ordenarlo.
+	llega correo nuevo y <emphasis>despuÃ©s</emphasis> de ordenarlo.
 	  </para>
 	</listitem>
       </varlistentry>
@@ -220,8 +220,8 @@
 	<term>Notification</term>
 	<listitem>
 	  <para>
-	Proporciona varios métodos para notificar al usuario sobre el
-	correo nuevo y no leído.
+	Proporciona varios mÃ©todos para notificar al usuario sobre el
+	correo nuevo y no leÃ­do.
 	  </para>
 	</listitem>
       </varlistentry>
@@ -229,9 +229,9 @@
 	<term>Visor PDF</term>
 	<listitem>
 	  <para>
-	Proporciona la visualización directa de adjuntos PDF y PostScript
-	en la vista de mensaje de &SC;. También permite hojear, hacer zoom
-	y mostrar información detallada sobre tales adjuntos.
+	Proporciona la visualizaciÃ³n directa de adjuntos PDF y PostScript
+	en la vista de mensaje de &SC;. TambiÃ©n permite hojear, hacer zoom
+	y mostrar informaciÃ³n detallada sobre tales adjuntos.
 	  </para>
 	</listitem>
       </varlistentry>
@@ -250,7 +250,7 @@
 	<listitem>
 	  <para>
 	Le permite leer sus canales de noticias (<emphasis>feeds</emphasis>)
-	en &SC;. Actualmente están soportados los canales RSS 1.0 y 2.0, así
+	en &SC;. Actualmente estÃ¡n soportados los canales RSS 1.0 y 2.0, asÃ­
 	como los Atom.
 	  </para>
 	</listitem>
@@ -260,7 +260,7 @@
 	<listitem>
 	  <para>
 	Gestiona correos firmados y/o cifrados S/MIME. Se pueden descifrar
-	correos y verificar firmas digitales, así como firmar y cifrar sus 
+	correos y verificar firmas digitales, asÃ­ como firmar y cifrar sus 
 	propios correos. Utiliza GnuPG/GPGME y GpgSM, disponibles en <ulink 
 	url="ftp://ftp.gnupg.org/gcrypt/gpgme/"
 	>ftp://ftp.gnupg.org/gcrypt/gpgme/</ulink>.
@@ -271,8 +271,8 @@
 	<term>SpamReport</term>
 	<listitem>
 	  <para>
-	Este módulo permite informar sobre correo basura en varios sitios.
-	Actualmente sólo están soportados los sitios <ulink 
+	Este mÃ³dulo permite informar sobre correo basura en varios sitios.
+	Actualmente sÃ³lo estÃ¡n soportados los sitios <ulink 
 	url="http://spam-signal.fr">spam-signal.fr</ulink> y <ulink 
 	url="http://spamcop.net">spamcop.net</ulink>.
 	  </para>
@@ -285,7 +285,7 @@
 	Ayuda a mantener sincronizada la agenda de direcciones de un
 	dispositivo Windows CE (Pocket PC, iPAQ, Smartphone, etc.) con la
 	agenda de direcciones de &SC; en lo que a direcciones de correo
-	electrónico se refiere.
+	electrÃ³nico se refiere.
 	  </para>
 	</listitem>
       </varlistentry>
@@ -293,46 +293,46 @@
 	<term>vCalendar</term>
 	<listitem>
 	  <para>
-	Permite la gestión de mensajes vCalendar al estilo de Evolution u
-	Outlook, y también suscripciones Webcal.
+	Permite la gestiÃ³n de mensajes vCalendar al estilo de Evolution u
+	Outlook, y tambiÃ©n suscripciones Webcal.
 	  </para>
 	</listitem>
       </varlistentry>
     </variablelist>
     <para>
-	Si usted es un desarrollador, escribir un módulo para extender las
-	capacidades de &SC; será probablemente la mejor solución y la más 
-	fácil. Nosotros proporcionaremos almacenamiento para su código y
+	Si usted es un desarrollador, escribir un mÃ³dulo para extender las
+	capacidades de &SC; serÃ¡ probablemente la mejor soluciÃ³n y la mÃ¡s 
+	fÃ¡cil. Nosotros proporcionaremos almacenamiento para su cÃ³digo y
 	estaremos encantados de responder a sus preguntas en la lista de
 	correo o en los canales de IRC, <literal>#claws</literal> en 
 	Freenode o IRCnet.
     </para>
   </section>
   <section id="plugins_network">
-    <title>Acceso a la red desde los módulos</title>
+    <title>Acceso a la red desde los mÃ³dulos</title>
     <para>
-	Algunos de los módulos externos, por ejemplo RSSyl, vCalendar o el
+	Algunos de los mÃ³dulos externos, por ejemplo RSSyl, vCalendar o el
 	visor GtkHtml, necesitan acceso a Internet para llevar a cabo sus
 	funciones (recuperar canales en el caso de RSSyl o vCalendar, y
-	obtener imágenes en el caso del visor GtkHtml). Estos módulos usan
-	para ello la librería Curl. Por tanto, si su acceso a Internet está
-	restringido por un proxy necesitará decirle a libCurl que lo use.
+	obtener imÃ¡genes en el caso del visor GtkHtml). Estos mÃ³dulos usan
+	para ello la librerÃ­a Curl. Por tanto, si su acceso a Internet estÃ¡
+	restringido por un proxy necesitarÃ¡ decirle a libCurl que lo use.
 	Esto se consigue estableciendo la variable de entorno 
-	<literal>http_proxy</literal>. Por ejemplo, <literal>http_proxy=http://usuario:contra@miproxy.ejemplo.com:8080</literal> le dirá a libCurl que
-	conecte al puerto 8080 de la máquina miproxy.ejemplo.com con el 
-	usuario <quote>usuario</quote> y contraseña <quote>contra</quote> para
+	<literal>http_proxy</literal>. Por ejemplo, <literal>http_proxy=http://usuario:contra@miproxy.ejemplo.com:8080</literal> le dirÃ¡ a libCurl que
+	conecte al puerto 8080 de la mÃ¡quina miproxy.ejemplo.com con el 
+	usuario <quote>usuario</quote> y contraseÃ±a <quote>contra</quote> para
 	conectarse a Internet.
     </para><para>
 	Puede establecer esta variable antes de iniciar &SC;, usando por
 	por ejemplo la orden 
 	<command>http_proxy=http://usuario:contra@miproxy.ejemplo.com:8080 
 	claws-mail</command>, o establecerla en su fichero 
-	<filename>~/.bashrc</filename> (o el equivalente de su shell) añadiendo
-	la línea<footnote><para>Otros shells pueden tener diferentes sintaxis,
-	compruebe la página del manual de su shell.</para></footnote>:
+	<filename>~/.bashrc</filename> (o el equivalente de su shell) aÃ±adiendo
+	la lÃ­nea<footnote><para>Otros shells pueden tener diferentes sintaxis,
+	compruebe la pÃ¡gina del manual de su shell.</para></footnote>:
 	<command>export
 	http_proxy=http://usuario:contra@miproxy.ejemplo.com:8080</command>
-	(tendrá que reconectar para que se tenga en cuenta).
+	(tendrÃ¡ que reconectar para que se tenga en cuenta).
     </para>
   </section>
 </section>

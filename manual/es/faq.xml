@@ -1,59 +1,59 @@
-<?xml version="1.0" encoding="iso-8859-1"?>
+<?xml version="1.0" encoding="utf-8"?>
 <appendix id="ap_faq">
 <title>Las preguntas frecuentes (FAQ) de &SC;</title>
   <section>
-    <title>¿Cuáles son las diferencias entre &SC; y Sylpheed?</title>
+    <title>Â¿CuÃ¡les son las diferencias entre &SC; y Sylpheed?</title>
     <para>
-	&SC; es la versión <emphasis>extendida</emphasis> de Sylpheed, por
-	tanto encontrará todas las funcionalidades que Sylpheed tiene aparte
-	de muchas más. También incluye algunos diálogos modificados para
-	mejorar la usabilidad. Puede encontrar más información en <ulink 
+	&SC; es un nuevo proyecto basado en Sylpheed (tambiÃ©n denominado
+	<emphasis>fork</emphasis> en InglÃ©s), por
+	tanto encontrarÃ¡ todas las funcionalidades que Sylpheed tiene y
+	muchas mÃ¡s. TambiÃ©n incluye algunos diÃ¡logos modificados para
+	mejorar la usabilidad. Puede encontrar mÃ¡s informaciÃ³n en <ulink 
 	url="http://www.claws-mail.org/features.php"
 	>http://www.claws-mail.org/features.php</ulink>.
     </para>
   </section>
   <section>
-    <title>¿Me permite &SC; escribir mensajes HTML?</title>
+    <title>Â¿Me permite &SC; escribir mensajes HTML?</title>
     <para>
-	No. Se discutió sobre este tema, y el resultado fue que el correo
+	No. Se discutiÃ³ sobre este tema, y el resultado fue que el correo
 	HTML es algo no deseado. Si realmente necesita enviar HTML puede,
-	por supuesto, adjuntar una página web a un correo.
+	por supuesto, adjuntar una pÃ¡gina web a un correo.
     </para>
   </section>
   <section>
-    <title>¿Cómo puedo enviar parches, informar de fallos y hablar de &SC;
+    <title>Â¿CÃ³mo puedo enviar parches, informar de fallos y hablar de &SC;
       con otros?</title>
     <para>
-	Los parches deberían enviarse a través del sistema de seguimiento
-	de parches de SourceForge en <ulink 
-	url='http://sourceforge.net/tracker/?group_id=25528&amp;atid=384600'
- >http://sourceforge.net/tracker/?group_id=25528&amp;atid=384600</ulink>, pero
-	siga por favor la guía para parches en <ulink 
+	Los parches deben enviarse a travÃ©s de nuestro Bugzilla, <ulink 
+	url='http://www.thewildbeast.co.uk/claws-mail/bugzilla/'
+ 	>http://www.thewildbeast.co.uk/claws-mail/bugzilla/</ulink>, pero
+	para ello siga por favor la guÃ­a para parches en <ulink 
 	url="http://www.claws-mail.org/devel.php"
 	>http://www.claws-mail.org/devel.php</ulink>.
     </para>
     <para>
 	Los informes de fallo deben ser enviados a nuestro Bugzilla, <ulink 
-	url="http://www.thewildbeast.co.uk/sylpheed-claws/bugzilla/"
-	>http://www.thewildbeast.co.uk/sylpheed-claws/bugzilla/</ulink>.
+	url="http://www.thewildbeast.co.uk/claws-mail/bugzilla/"
+	>http://www.thewildbeast.co.uk/claws-mail/bugzilla/</ulink>.
     </para>
     <para>
-    	Para hablar con otros debería unirse a la lista de correo de usuarios
+    	Para hablar con otros deberÃ­a unirse a la lista de correo de usuarios
 	de &SC;. Los detalles los puede encontrar en <ulink 
 	url="http://www.claws-mail.org/MLs.php"
 	>http://www.claws-mail.org/MLs.php</ulink>.
     </para>
   </section>
   <section>
-    <title>¿Tiene &SC; alguna funcionalidad anti-spam?</title>
+    <title>Â¿Tiene &SC; alguna funcionalidad anti-spam?</title>
     <para>
-	Si. Tiene módulos para SpamAssassin y Bogofilter. Puede encontrar más 
-	detalles sobre ello en el capítulo <link linkend="ch_plugins"
+	Si. Tiene mÃ³dulos para SpamAssassin y Bogofilter. Puede encontrar mÃ¡s 
+	detalles sobre ello en el capÃ­tulo <link linkend="ch_plugins"
 	>Extendiendo &SC;</link>.
     </para>
     <para>
-	También puede usar otros filtros de correo basura como Bogofilter
-	a través de las	funcionalidades de <quote>Filtrado</quote> y 
+	TambiÃ©n puede usar otros filtros de correo basura como Bogofilter
+	a travÃ©s de las	funcionalidades de <quote>Filtrado</quote> y 
 	<quote>Acciones</quote>. Las instrucciones para usar Bogofilter
 	con &SC; se pueden encontrar en las <ulink 
 	url="http://bogofilter.sourceforge.net/faq.shtml#with-sc"
@@ -61,37 +61,42 @@
     </para>
   </section>
   <section>
-    <title>¿Soporta &SC; acuses de recibo?</title>
+    <title>Â¿Soporta &SC; acuses de recibo?</title>
     <para>
 	Si. Para solicitar un acuse de recibo utilice <quote>Opciones/Solicitar
-	acuse de recibo</quote> en la ventana de composición.
-	Cuando reciba un mensaje que solicite acuse de recibo aparecerá un
-	área encima de la vista de mensaje para notificarlo. Puede utilizar
-	el botón <quote>Enviar acuse de recibo</quote> o ignorar la solicitud,
-	no se enviarán acuses de recibo de manera automática.
+	acuse de recibo</quote> en la ventana de composiciÃ³n.
+	Cuando reciba un mensaje que solicite acuse de recibo aparecerÃ¡ un
+	Ã¡rea encima de la vista de mensaje para notificarlo. Puede utilizar
+	el botÃ³n <quote>Enviar acuse de recibo</quote> o ignorar la solicitud,
+	no se enviarÃ¡n acuses de recibo de manera automÃ¡tica.
+    </para>
+    <para>
+	Si no quiere enviar nunca acuses de recibo puede utilizar la opciÃ³n
+	<quote>No enviar nunca acuses de recibo</quote> en la pÃ¡gina
+	<quote>ConfiguraciÃ³n/Preferencias/Manejo de correo/Enviando</quote>.
     </para>
   </section>
   <section>
-    <title>¿Cómo puedo hacer que &SC; me avise cuando llega correo nuevo?
+    <title>Â¿CÃ³mo puedo hacer que &SC; me avise cuando llega correo nuevo?
     </title>
     <para>
-	Vaya a <quote>Configuración/Preferencias</quote> y en la sección
-	<quote>Manejo de correo/Recibiendo</quote>, configure la opción
-	<quote>Ejecutar una orden</quote> después de recibir correo nuevo.
-	Alternativamente puede usar el módulo del icono en bandeja.
+	Vaya a <quote>ConfiguraciÃ³n/Preferencias</quote> y en la secciÃ³n
+	<quote>Manejo de correo/Recibiendo</quote>, configure la opciÃ³n
+	<quote>Ejecutar una orden</quote> despuÃ©s de recibir correo nuevo.
+	Alternativamente puede usar el mÃ³dulo del icono en bandeja.
     </para>
   </section>
   <section>
-    <title>¿Por qué los caracteres especiales (p.ej. diéresis) no se muestran 
+    <title>Â¿Por quÃ© los caracteres especiales (p.ej. diÃ©resis) no se muestran 
 	correctamente?</title>
     <para>
-	En la mayoría de los casos esto esta provocado por correos con
+	En la mayorÃ­a de los casos esto esta provocado por correos con
 	coficaciones de caracteres incorrectas. Puede intentar forzarlas
-	utilizando el submenú <quote>Ver/Codificación de caracteres</quote>.
+	utilizando el submenÃº <quote>Ver/CodificaciÃ³n de caracteres</quote>.
     </para>
   </section>
   <section>
-    <title>¿Puedo citar sólo una parte del mensaje original al responder?
+    <title>Â¿Puedo citar sÃ³lo una parte del mensaje original al responder?
     </title>
     <para>
 	Si, seleccione el texto en la vista de mensaje y seleccione
@@ -99,13 +104,13 @@
     </para>
   </section>
   <section>
-    <title>¿Dónde puedo encontrar las respuestas a más preguntas frecuentes
+    <title>Â¿DÃ³nde puedo encontrar las respuestas a mÃ¡s preguntas frecuentes
 	sobre &SC;?</title>
     <para>
 	Dentro el sitio web de &SC;, en <ulink 
 	url="http://www.claws-mail.org/faq/"
 	>http://www.claws-mail.org/faq/</ulink>, se puede encontrar una 
-	colección más amplia de preguntas frecuentes que los usuarios han 
+	colecciÃ³n mÃ¡s amplia de preguntas frecuentes que los usuarios han 
 	aportado.
     </para>
     </section>

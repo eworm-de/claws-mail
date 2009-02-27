@@ -1,3 +1,23 @@
+2009-02-27 [mones]	3.7.0cvs75
+
+	* manual/es/account.xml
+	* manual/es/ack.xml
+	* manual/es/addrbook.xml
+	* manual/es/advanced.xml
+	* manual/es/claws-mail-manual.xml
+	* manual/es/faq.xml
+	* manual/es/glossary.xml
+	* manual/es/gpl.xml
+	* manual/es/handling.xml
+	* manual/es/intro.xml
+	* manual/es/keyboard.xml
+	* manual/es/plugins.xml
+	* manual/es/starting.xml
+		Sync with English version, fix some typos
+		Changed encoding to UTF-8
+	* po/es.po
+		Update for release, changed encoding to UTF-8
+
 2009-02-24 [colin]	3.7.0cvs74
 
 	* src/printing.c

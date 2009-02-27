@@ -1,12 +1,12 @@
-<?xml version="1.0" encoding="iso-8859-1"?>
+<?xml version="1.0" encoding="utf-8"?>
 <section id="ch_intro">
-<title>Introduction</title>
+<title>IntroducciÃ³n</title>
 
   <section id="intro_what">
-    <title>¿Qué es &SC;?</title>
+    <title>Â¿QuÃ© es &SC;?</title>
     <para>
-	&SC; es un cliente de correo electrónico orientado a ser rápido, 
-	fácil de usar y potente. Mayormente es independiente del escritorio 
+	&SC; es un cliente de correo electrÃ³nico orientado a ser rÃ¡pido, 
+	fÃ¡cil de usar y potente. Mayormente es independiente del escritorio 
 	usado, pero intenta integrarse en el escritorio de la mejor manera 
 	posible. Los desarrolladores de &SC; intentan por todos los medios 
 	mantenerlo ligero, de manera que sea utilizable en ordenadores de 
@@ -15,28 +15,28 @@
   </section>
 
   <section id="intro_whatnot">
-    <title>¿Qué no es &SC;?</title>
+    <title>Â¿QuÃ© no es &SC;?</title>
     <para>
-	&SC; no es un gestor de información personal completo como Evolution 
-	u Outlook, aunque los módulos externos proporcionan estas 
-	funcionalidades. &SC; no le permitirá escribir y enviar correos HTML 
+	&SC; no es un gestor de informaciÃ³n personal completo como Evolution 
+	u Outlook, aunque los mÃ³dulos externos proporcionan estas 
+	funcionalidades. &SC; no le permitirÃ¡ escribir y enviar correos HTML 
 	u otros tipos de cosas desagradables, por lo que para algunos entornos
 	empresariales puede que no sea el software que necesita.
     </para>
   </section>
 
   <section id="intro_features"> 
-    <title>Características principales</title>
+    <title>CaracterÃ­sticas principales</title>
     <para>
     	&SC; brinda casi todo lo que un perfecto cliente de correo necesita.
-	Recuperacion de correo POP3, IMAP4, buzón local, sobre SSL; soporta
-	varios métodos de autentificación; Tiene múltiples cuentas y buzones,
-	potentes funcionalidades de filtrado y búsqueda, capacidad de 
-	importación y exportación de varios formatos, soporte de GnuPG
-	(firmas digitales y cifrado). Soporta módulos, barras de herramientas
-	configurables, corrección ortográfica, mecanismos para evitar cualquier
-	pérdida de datos, preferencias para cada carpeta y mucho más. Una 
-	lista completa de las características se puede encontrar en <ulink 
+	Recuperacion de correo POP3, IMAP4, buzÃ³n local, sobre SSL; soporta
+	varios mÃ©todos de autentificaciÃ³n; Tiene mÃºltiples cuentas y buzones,
+	potentes funcionalidades de filtrado y bÃºsqueda, capacidad de 
+	importaciÃ³n y exportaciÃ³n de varios formatos, soporte de GnuPG
+	(firmas digitales y cifrado). Soporta mÃ³dulos, barras de herramientas
+	configurables, correcciÃ³n ortogrÃ¡fica, mecanismos para evitar cualquier
+	pÃ©rdida de datos, preferencias para cada carpeta y mucho mÃ¡s. Una 
+	lista completa de las caracterÃ­sticas se puede encontrar en <ulink 
 	url="http://www.claws-mail.org/features.php"
 	>http://www.claws-mail.org/features.php</ulink>.
     </para>
@@ -46,20 +46,20 @@
     <title>Historia de &SC;</title>
     <para>
 	&SC; ha existido desde Abril del 2001. El objetivo inicial de &SC; fue
-	servir de banco de puebas para posibles características de Sylpheed (
+	servir de banco de puebas para posibles caracterÃ­sticas de Sylpheed (
 	<ulink url="http://sylpheed.good-day.net/"
 	>http://sylpheed.good-day.net/</ulink>), de manera que las nuevas
 	funcionalidades se pudieran probar ampliamente sin comprometer la
 	estabilidad de Sylpheed. Los desarrolladores de &SC; sincronizaban
-	regularmente su código fuente con el de Sylpheed, y el autor de
+	regularmente su cÃ³digo fuente con el de Sylpheed, y el autor de
 	Sylpheed, Hiroyuki Yamamoto, tomaba las nuevas funcionalidades que
 	le gustaban una vez se estabilizaban.
     </para><para>
 	Originalmente ambos, Sylpheed y &SC; estaban basados en GTK1. El
-	trabajo en las versiones GTK2 empezó a principios del 2003, y el
-	primer &SC; moderno (basado en GTK2) se liberó en Marzo del 2005.
-	Desde esa época los objetivos de Sylpheed y &SC; empezaron a ser
-	más divergentes, y &SC; se convirtió en una entidad por si mismo.
+	trabajo en las versiones GTK2 empezÃ³ a principios del 2003, y el
+	primer &SC; moderno (basado en GTK2) se liberÃ³ en Marzo del 2005.
+	Desde esa Ã©poca los objetivos de Sylpheed y &SC; empezaron a ser
+	mÃ¡s divergentes, y &SC; se convirtiÃ³ en una entidad por si mismo.
     </para>
   </section>
 
@@ -69,10 +69,10 @@
 	Sitio web: <ulink 
 	url="http://www.claws-mail.org">www.claws-mail.org</ulink>
     </para><para>
-	Últimas noticias: <ulink url="http://www.claws-mail.org/news.php"
+	&Uacute;ltimas noticias: <ulink url="http://www.claws-mail.org/news.php"
 	>http://www.claws-mail.org/news.php</ulink>
     </para><para>
-	Módulos adicionales: <ulink 
+	MÃ³dulos adicionales: <ulink 
 	url="http://www.claws-mail.org/plugins.php"
 	>http://www.claws-mail.org/plugins.php</ulink>
     </para><para>

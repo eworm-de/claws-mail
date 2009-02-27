@@ -1,17 +1,17 @@
-<?xml version="1.0" encoding="iso-8859-1"?>
+<?xml version="1.0" encoding="utf-8"?>
 <appendix id="ap_glossary">
 <title>Glosario</title>
 <variablelist>
   <title>A</title>
   <varlistentry id="gt_action_rules">
     <term>
-	Acción (reglas de filtrado/procesamiento)
+	AcciÃ³n (reglas de filtrado/procesamiento)
     </term>
     <listitem>
       <para>
-	Una acción es algo que se realiza sobre un mensaje cuando cumple
-	las condiciones de la regla. Una acción típica es mover el mensaje
-	a una carpeta en particular. Ver también <xref 
+	Una acciÃ³n es algo que se realiza sobre un mensaje cuando cumple
+	las condiciones de la regla. Una acciÃ³n tÃ­pica es mover el mensaje
+	a una carpeta en particular. Ver tambiÃ©n <xref 
 	linkend="gt_condition_rules" />.
       </para>
     </listitem>
@@ -22,9 +22,9 @@
     </term>
     <listitem>
       <para>
-	Las acciones son órdenes definidas por el usuario que se pueden
-	aplicar a un mensaje o parte de él, utilizando una sintaxis especial.
-	De cara al usuario aparecen en un menú configurable.
+	Las acciones son Ã³rdenes definidas por el usuario que se pueden
+	aplicar a un mensaje o parte de Ã©l, utilizando una sintaxis especial.
+	De cara al usuario aparecen en un menÃº configurable.
       </para>
     </listitem>
   </varlistentry>
@@ -47,8 +47,8 @@
     </term>
     <listitem>
       <para>
-	Almacén de nombres, direcciones de correo y atributos de usuario
-	configurables. También proporciona acceso a servidores <xref 
+	AlmacÃ©n de nombres, direcciones de correo y atributos de usuario
+	configurables. TambiÃ©n proporciona acceso a servidores <xref 
 	linkend="gt_ldap" /> y ficheros <xref linkend="gt_vcard" />.
       </para>
     </listitem>
@@ -59,10 +59,10 @@
     </term>
     <listitem>
       <para>
-	Acrónimo de <emphasis>American Standard Code for Information 
-	Interchange</emphasis> (Código Estándar Americano para el Intercambio
-	de Información). Es una <xref linkend="gt_character_encoding" /> que
-	utiliza 7 bits. Está definido como estándar de Internet en el <ulink 
+	AcrÃ³nimo de <emphasis>American Standard Code for Information 
+	Interchange</emphasis> (CÃ³digo EstÃ¡ndar Americano para el Intercambio
+	de InformaciÃ³n). Es una <xref linkend="gt_character_encoding" /> que
+	utiliza 7 bits. EstÃ¡ definido como estÃ¡ndar de Internet en el <ulink 
 	url="http://www.ietf.org/rfc/rfc20.txt">RFC 20</ulink>.
       </para>
     </listitem>
@@ -78,29 +78,29 @@
     <listitem>
       <para>
 	Conjuntos de botones dispuestos horizontalmente que proporcionan
-	acceso a las funciones comúnmente usadas. Las barras de herramientas
+	acceso a las funciones comÃºnmente usadas. Las barras de herramientas
 	en &SC; son configurables por el usuario.
       </para>
     </listitem>
   </varlistentry>
   <varlistentry id="gt_quick_search">
     <term>
-	Búsqueda rápida
+	BÃºsqueda rÃ¡pida
     </term>
     <listitem>
       <para>
-	Una manera potente de buscar mensajes utilizando prácticamente
+	Una manera potente de buscar mensajes utilizando prÃ¡cticamente
 	cualquier criterio que se pueda imaginar.
       </para>
     </listitem>
   </varlistentry>
   <varlistentry id="gt_mailbox">
     <term>
-	Buzón
+	BuzÃ³n
     </term>
     <listitem>
       <para>
-	La carpeta raíz de la jerarquía de carpetas.
+	La carpeta raÃ­z de la jerarquÃ­a de carpetas.
       </para>
     </listitem>
   </varlistentry>
@@ -114,13 +114,13 @@
     </term>
     <listitem>
       <para>
-	Líneas legibles por las máquinas que forman la primera parte de un
-	mensaje de correo. El propósito de las cabeceras es variado: las
-	cabeceras típicas son Desde y Para (<emphasis>From</emphasis> y
+	LÃ­neas legibles por las mÃ¡quinas que forman la primera parte de un
+	mensaje de correo. El propÃ³sito de las cabeceras es variado: las
+	cabeceras tÃ­picas son Desde y Para (<emphasis>From</emphasis> y
 	<emphasis>To</emphasis> respectivamente), que indican el remitente y
 	el destinatario del mensaje, otras son usadas por el sistema de correo.
 	Algunas cabeceras son opcionales y se usan para proporcional
-	información adicional, como <xref linkend="gt_xface" /> o <xref 
+	informaciÃ³n adicional, como <xref linkend="gt_xface" /> o <xref 
 	linkend="gt_face" />.
       </para>
     </listitem>
@@ -143,7 +143,7 @@
     <listitem>
       <para>
 	Un certificado instalado en un servidor seguro que se usa para
-	identificación.
+	identificaciÃ³n.
       </para>
     </listitem>
   </varlistentry>
@@ -153,8 +153,8 @@
     </term>
     <listitem>
       <para>
-	Ofuscación de un mensaje con una clave criptográfica de manera que sólo
-	el destinatario y poseedor de la contraseña de la clave pueda recuperar
+	OfuscaciÃ³n de un mensaje con una clave criptogrÃ¡fica de manera que sÃ³lo
+	el destinatario y poseedor de la contraseÃ±a de la clave pueda recuperar
 	el texto original para su lectura.
       </para>
     </listitem>
@@ -165,22 +165,22 @@
     </term>
     <listitem>
       <para>
-	Al responder a un mensaje el usuario a menudo incluirá una sección
-	citada del mismo para proporcionar el contexto. La sección citada
-	se muestra anteponiendo un caracter común, normalmente 
+	Al responder a un mensaje el usuario a menudo incluirÃ¡ una secciÃ³n
+	citada del mismo para proporcionar el contexto. La secciÃ³n citada
+	se muestra anteponiendo un caracter comÃºn, normalmente 
 	<quote>&gt;</quote>.
       </para>
     </listitem>
   </varlistentry>
   <varlistentry id="gt_character_encoding">
     <term>
-	Codificación de caracteres
+	CodificaciÃ³n de caracteres
     </term>
     <listitem>
       <para>
-	Un mapa entre símbolos escritos, como letras y otros símbolos, y los
-	números utilizados para representarlos dentro del ordenador. La
-	codificación de caracteres más conocida es probablemente <xref 
+	Un mapa entre sÃ­mbolos escritos, como letras y otros sÃ­mbolos, y los
+	nÃºmeros utilizados para representarlos dentro del ordenador. La
+	codificaciÃ³n de caracteres mÃ¡s conocida es probablemente <xref 
 	linkend="gt_ascii" />, pero ha sido superada por otras como <xref 
 	linkend="gt_utf8" />.
       </para>
@@ -192,9 +192,9 @@
     </term>
     <listitem>
       <para>
-	Almacén temporal para los mensajes que están a la espera de ser
+	AlmacÃ©n temporal para los mensajes que estÃ¡n a la espera de ser
 	enviados, bien porque no se pudieron enviar por un fallo de red o 
-	bien porque el usuario solicitó que fuesen enviados más tarde.
+	bien porque el usuario solicitÃ³ que fuesen enviados mÃ¡s tarde.
       </para>
     </listitem>
   </varlistentry>
@@ -205,30 +205,30 @@
     <listitem>
       <para>
 	Crear un nuevo mensaje de texto o responder a uno recibido en la
-	ventana de composición.
+	ventana de composiciÃ³n.
       </para>
     </listitem>
   </varlistentry>
   <varlistentry id="gt_condition_rules">
     <term>
-	Condición (reglas de filtrado/procesamiento)
+	CondiciÃ³n (reglas de filtrado/procesamiento)
     </term>
     <listitem>
       <para>
 	Los prerequisitos que un mensaje de correo debe cumplir para que la
-	acción de la regla sea ejecutada. Veáse también <xref 
+	acciÃ³n de la regla sea ejecutada. VeÃ¡se tambiÃ©n <xref 
 	linkend="gt_action_rules" />.
       </para>
     </listitem>
   </varlistentry>
   <varlistentry id="gt_spell_checking">
     <term>
-	Corrección ortográfica
+	CorrecciÃ³n ortogrÃ¡fica
     </term>
     <listitem>
       <para>
-	Verificación automática de la ortografía mientras se escribe o después
-	de que la composición ha finalizado.
+	VerificaciÃ³n automÃ¡tica de la ortografÃ­a mientras se escribe o despuÃ©s
+	de que la composiciÃ³n ha finalizado.
       </para>
     </listitem>
   </varlistentry>
@@ -238,9 +238,9 @@
     </term>
     <listitem>
       <para>
-	Una cuenta representa una identidad dentro de &SC;. Como tal, sólo una
-	dirección de correo está asociada con cada cuenta. Sin embargo el
-	número de cuentas que puede configurar no está limitado.
+	Una cuenta representa una identidad dentro de &SC;. Como tal, sÃ³lo una
+	direcciÃ³n de correo estÃ¡ asociada con cada cuenta. Sin embargo el
+	nÃºmero de cuentas que puede configurar no estÃ¡ limitado.
       </para>
     </listitem>
   </varlistentry>
@@ -254,15 +254,15 @@
   <title>E</title>
   <varlistentry id="gt_immediate_execution">
     <term>
-	Ejecución inmediata
+	EjecuciÃ³n inmediata
     </term>
     <listitem>
       <para>
-	Cuando se usa la opción <quote>Ejecutar inmediatamente</quote>, las
+	Cuando se usa la opciÃ³n <quote>Ejecutar inmediatamente</quote>, las
 	operaciones realizadas en los mensajes (como borrados o movimientos) se
-	ejecutan de manera inmediata. Si está desactivada, todas las 
-	operaciones realizadas por el usuario sobre los mensajes sólo se
-	llevarán a cabo cuando se pulse el botón <quote>Ejecutar</quote>.
+	ejecutan de manera inmediata. Si estÃ¡ desactivada, todas las 
+	operaciones realizadas por el usuario sobre los mensajes sÃ³lo se
+	llevarÃ¡n a cabo cuando se pulse el botÃ³n <quote>Ejecutar</quote>.
       </para>
     </listitem>
   </varlistentry>
@@ -276,7 +276,7 @@
     </term>
     <listitem>
       <para>
-	Una implementación más moderna de <xref linkend="gt_xface" />. Es una
+	Una implementaciÃ³n mÃ¡s moderna de <xref linkend="gt_xface" />. Es una
 	imagen en color (48x48 pixels) incluida en las cabeceras del mensaje.
       </para>
     </listitem>
@@ -287,7 +287,7 @@
     </term>
     <listitem>
       <para>
-	Un fichero buzón de almacenamiento local en formato <xref 
+	Un fichero buzÃ³n de almacenamiento local en formato <xref 
 	linkend="gt_mbox" />.
       </para>
     </listitem>
@@ -299,9 +299,9 @@
     <listitem>
       <para>
 	Un conjunto de datos obtenidos de mezclar un mensaje con una clave
-	criptográfica que garantiza la autoría del mensaje, de manera similar
+	criptogrÃ¡fica que garantiza la autorÃ­a del mensaje, de manera similar
 	a la que una firma manuscrita lo hace con un documento. Estos datos
-	se envían junto con el mensaje de manera que el destinatario pueda
+	se envÃ­an junto con el mensaje de manera que el destinatario pueda
 	verificar su validez.
       </para>
     </listitem>
@@ -312,7 +312,7 @@
     </term>
     <listitem>
       <para>
-	El texto completo de un mensaje tal y como se transmite a través de la
+	El texto completo de un mensaje tal y como se transmite a travÃ©s de la
 	red. Esto incluye todas las cabeceras, el cuerpo del mensaje y los
 	adjuntos codificados si existen.
       </para>
@@ -328,11 +328,11 @@
     </term>
     <listitem>
       <para>
-	Un conjunto de particiones jerárquicas de mensajes de <xref 
+	Un conjunto de particiones jerÃ¡rquicas de mensajes de <xref 
 	linkend="gt_usenet" /> en un <xref linkend="gt_news_server" />.
 	El protocolo <xref linkend="gt_nntp" /> permite a los usuarios
-	suscribirse a uno o más grupos de noticias. Los mensajes nuevos
-	enviados a los grupos suscritos se descargan automáticamente al
+	suscribirse a uno o mÃ¡s grupos de noticias. Los mensajes nuevos
+	enviados a los grupos suscritos se descargan automÃ¡ticamente al
 	conectarse.
       </para>
     </listitem>
@@ -347,13 +347,13 @@
     </term>
     <listitem>
       <para>
-	Acrónimo de <emphasis>Hyper-Text Markup Language</emphasis> (Lenguaje
-	de Etiquetas de Hiper-Texto), el lenguaje estándar para codificar
-	páginas web al comienzo de la <xref linkend="gt_www" />. Algunos
+	AcrÃ³nimo de <emphasis>Hyper-Text Markup Language</emphasis> (Lenguaje
+	de Etiquetas de Hiper-Texto), el lenguaje estÃ¡ndar para codificar
+	pÃ¡ginas web al comienzo de la <xref linkend="gt_www" />. Algunos
 	clientes de correo utilizan este lenguaje para codificar el cuerpo
 	de texto de los mensajes, de manera que puedan incluir efectos
-	especiales en el texto, multiplicando con ello el tamaño del mensaje
-	varias veces. Los  <emphasis>spammers</emphasis> también utilizan 
+	especiales en el texto, multiplicando con ello el tamaÃ±o del mensaje
+	varias veces. Los  <emphasis>spammers</emphasis> tambiÃ©n utilizan 
 	mayoritariamente el correo HTML para enviar <xref linkend="gt_spam" />.
       </para>
     </listitem>
@@ -368,8 +368,8 @@
     </term>
     <listitem>
       <para>
-	Acrónimo de <emphasis>Internet Messaging Access Protocol</emphasis>
-	versión 4 (Protocolo de Acceso a Mensajería de Internet). Un protocolo
+	AcrÃ³nimo de <emphasis>Internet Messaging Access Protocol</emphasis>
+	versiÃ³n 4 (Protocolo de Acceso a MensajerÃ­a de Internet). Un protocolo
 	para acceder al correo almacenado en un servidor remoto desde un
 	cliente local. Todos los mensajes se almacenan en el servidor remoto.
       </para>
@@ -381,11 +381,11 @@
     </term>
     <listitem>
       <para>
-	Acrónimo de <emphasis>Internet Service Provider</emphasis> (Proveedor
+	AcrÃ³nimo de <emphasis>Internet Service Provider</emphasis> (Proveedor
 	de servicios de internet). Una empresa que proporciona acceso a sus
-	clientes. En la época del acceso por módem fueron las grandes compañías
-	telefónicas, pero con la llegada del acceso de banda ancha el número
-	de compañías y tipos de servicio ofrecidos ha crecido exponencialmente.
+	clientes. En la Ã©poca del acceso por mÃ³dem fueron las grandes compaÃ±Ã­as
+	telefÃ³nicas, pero con la llegada del acceso de banda ancha el nÃºmero
+	de compaÃ±Ã­as y tipos de servicio ofrecidos ha crecido exponencialmente.
       </para>
     </listitem>
   </varlistentry>
@@ -395,7 +395,7 @@
   <title>J</title>
   <varlistentry id="gt_thread">
     <term>
-	Jerarquía (de mensajes)
+	JerarquÃ­a (de mensajes)
     </term>
     <listitem>
       <para>
@@ -417,10 +417,10 @@
     </term>
     <listitem>
       <para>
-	Acrónimo de <emphasis>Lightweight Directory Access Protocol</emphasis>
+	AcrÃ³nimo de <emphasis>Lightweight Directory Access Protocol</emphasis>
 	(Protocolo de acceso a directorio ligero). Un protocolo para acceder
-	a la información de directorios, como organizaciones, individuos,
-	números de teléfomo y direcciones.
+	a la informaciÃ³n de directorios, como organizaciones, individuos,
+	nÃºmeros de telÃ©fomo y direcciones.
       </para>
     </listitem>
   </varlistentry>
@@ -430,7 +430,7 @@
     </term>
     <listitem>
       <para>
-	Acrónimo de <emphasis>LDAP Data Interchange Format</emphasis> (Formato
+	AcrÃ³nimo de <emphasis>LDAP Data Interchange Format</emphasis> (Formato
 	de intercambio de datos LDAP). Un formato de fichero de texto usado
 	ampliamente para mover datos entre servidores <xref linkend="gt_ldap" 
 	/> y otros programas, o entre los propios programas.
@@ -443,9 +443,9 @@
     </term>
    <listitem>
       <para>
-	Las listas de correo electrónico constituyen un uso especial del
-	correo que permite la amplia distribución de información a muchos
-	usuarios de Interneta. A menudo toman la forma de listas de discusión,
+	Las listas de correo electrÃ³nico constituyen un uso especial del
+	correo que permite la amplia distribuciÃ³n de informaciÃ³n a muchos
+	usuarios de Interneta. A menudo toman la forma de listas de discusiÃ³n,
 	como la lista de usuarios de &SC;, donde un suscriptor utiliza la
 	lista para enviar mensajes al resto de suscriptores, los cuales pueden
 	contestar de manera similar.
@@ -462,8 +462,8 @@
     </term>
     <listitem>
       <para>
-	Un formato de buzón en el que el correo se mantiene en ficheros
-	independientes. Maildir++ es una extensión del formato Maildir.
+	Un formato de buzÃ³n en el que el correo se mantiene en ficheros
+	independientes. Maildir++ es una extensiÃ³n del formato Maildir.
       </para>
     </listitem>
   </varlistentry>
@@ -474,7 +474,7 @@
     <listitem>
       <para>
 	Una etiqueta que el usuario puede establecer en el mensaje de manera
-	que se llame la atención sobre él. Las marcas se muestran en la 
+	que se llame la atenciÃ³n sobre Ã©l. Las marcas se muestran en la 
 	columna de marcas de la lista de mensajes.
       </para>
     </listitem>
@@ -485,7 +485,7 @@
     </term>
     <listitem>
       <para>
-	Un formato de buzón en el que todos los correos son concatenados y
+	Un formato de buzÃ³n en el que todos los correos son concatenados y
 	almacenados en un solo fichero. El formato mbox soportado por &SC; es
 	el mboxrd.
       </para>
@@ -497,9 +497,9 @@
     </term>
     <listitem>
       <para>
-	La undad básica de información manejada por &SC;. Un mensaje será
+	La undad bÃ¡sica de informaciÃ³n manejada por &SC;. Un mensaje serÃ¡
 	normalmente un mensaje de correo, almacenado en disco en formato <xref 
-	linkend="gt_mh" />. A través de <xref linkend="gt_plugins" /> se
+	linkend="gt_mh" />. A travÃ©s de <xref linkend="gt_plugins" /> se
 	pueden gestionar otros tipos de mensajes (y formatos de 
 	almacenamiento).
       </para>
@@ -511,7 +511,7 @@
     </term>
     <listitem>
       <para>
-	Un formato de buzón en el que todos los correos se mantienen en
+	Un formato de buzÃ³n en el que todos los correos se mantienen en
 	ficheros separados. Es el formato predeterminado que usa &SC;.
       </para>
     </listitem>
@@ -522,24 +522,24 @@
     </term>
     <listitem>
       <para>
-	Acrónimo de <emphasis>Multipurpose Internet Mail Extensions</emphasis>
-	(Extensiones de correo de Intenet de propósito múltiple). Estándares
+	AcrÃ³nimo de <emphasis>Multipurpose Internet Mail Extensions</emphasis>
+	(Extensiones de correo de Intenet de propÃ³sito mÃºltiple). EstÃ¡ndares
 	de Internet para representar datos binarios en formato de texto <xref 
-	linkend="gt_ascii" />, así como codificación de <xref 
+	linkend="gt_ascii" />, asÃ­ como codificaciÃ³n de <xref 
 	linkend="gt_headers" /> y <xref linkend="gt_attachment" />s.
       </para>
     </listitem>
   </varlistentry>
   <varlistentry id="gt_plugins">
     <term>
-	Módulos
+	MÃ³dulos
     </term>
     <listitem>
       <para>
 	Elementos externos que &SC; puede cargar y utilizar para extender
-	sus funcionalidades. En términos técnicos estos elementos son
-	librerías dinámicas que pueden registrar una o varias funciones que
-	&SC; llamará cuando algo <emphasis>interesante</emphasis> se haga.
+	sus funcionalidades. En tÃ©rminos tÃ©cnicos estos elementos son
+	librerÃ­as dinÃ¡micas que pueden registrar una o varias funciones que
+	&SC; llamarÃ¡ cuando algo <emphasis>interesante</emphasis> se haga.
       </para>
     </listitem>
   </varlistentry>
@@ -553,10 +553,10 @@
     </term>
     <listitem>
       <para>
-	Acrónimo de <emphasis>Network News Transfer Protocol</emphasis>
+	AcrÃ³nimo de <emphasis>Network News Transfer Protocol</emphasis>
 	(Protocolo de transferencia de noticias de red). Es el protocolo
 	utilizado para enviar, distribuir y recuperar mensajes de <xref
-	linkend="gt_usenet" />, también denominados artículos de noticias 
+	linkend="gt_usenet" />, tambiÃ©n denominados artÃ­culos de noticias 
 	o simplemente noticias (<emphasis>news</emphasis>) para abreviar.
       </para>
     </listitem>
@@ -575,23 +575,23 @@
     </term>
     <listitem>
       <para>
-        Acrónimo de <emphasis>Portable Document Format</emphasis> (Formato de
+        AcrÃ³nimo de <emphasis>Portable Document Format</emphasis> (Formato de
 	documento portable). Es un formato binario abierto desarrollado por
 	Adobe Systems para permitir el intercambio de documentos imprimibles
-	entre distintas plataformas. Hereda algunas características del
+	entre distintas plataformas. Hereda algunas caracterÃ­sticas del
 	<xref linkend="gt_postscript" />, pero al no ser un lenguaje lo hizo
-	más facil de procesar, especialmente en ordenadores de escritorio.
+	mÃ¡s facil de procesar, especialmente en ordenadores de escritorio.
       </para>
     </listitem>
   </varlistentry>
   <varlistentry id="gt_sticky_quick_search">
     <term>
-	Pegajoso (búsqueda rápida)
+	Pegajoso (bÃºsqueda rÃ¡pida)
     </term>
     <listitem>
       <para>
-	Cuando la opción está activada en la <xref linkend="gt_quick_search" />
-	los términos buscados no se incializan al cambiar de carpeta.
+	Cuando la opciÃ³n estÃ¡ activada en la <xref linkend="gt_quick_search" />
+	los tÃ©rminos buscados no se incializan al cambiar de carpeta.
       </para>
     </listitem>
   </varlistentry>
@@ -601,7 +601,7 @@
     </term>
     <listitem>
       <para>
-	Método de firma digital que incluye los datos de la firma en el
+	MÃ©todo de firma digital que incluye los datos de la firma en el
 	cuerpo del mensaje.
       </para>
     </listitem>
@@ -612,7 +612,7 @@
     </term>
     <listitem>
       <para>
-	Método de firma digital que incluye los datos de la firma aparte como
+	MÃ©todo de firma digital que incluye los datos de la firma aparte como
 	<xref linkend="gt_attachment" /> en formato <xref linkend="gt_mime" />.
       </para>
     </listitem>
@@ -623,10 +623,10 @@
     </term>
     <listitem>
       <para>
-	Acrónimo de <emphasis>Post Office Protocol</emphasis> versión 3
+	AcrÃ³nimo de <emphasis>Post Office Protocol</emphasis> versiÃ³n 3
 	(Protocolo de oficina de correos.) Un protocolo para recuperar
 	correo de un servidor remoto. Los mensajes se pueden eliminar
-	automáticamente del servidor después de descargarlos.
+	automÃ¡ticamente del servidor despuÃ©s de descargarlos.
       </para>
     </listitem>
   </varlistentry>
@@ -636,11 +636,11 @@
     </term>
     <listitem>
       <para>
-	Lenguaje de descripción de páginas usado y entendido principalmente
-	por dispositivos de impresión para generar su salida. Fue desarrollado
-	por Adobe Systems y actualmente es un estándar ampliamente usado en
-	la industria de la impresión. Puesto que es un lenguaje interpretado
-	con gran número de funcionalidades necesita una cierta capacidad de 
+	Lenguaje de descripciÃ³n de pÃ¡ginas usado y entendido principalmente
+	por dispositivos de impresiÃ³n para generar su salida. Fue desarrollado
+	por Adobe Systems y actualmente es un estÃ¡ndar ampliamente usado en
+	la industria de la impresiÃ³n. Puesto que es un lenguaje interpretado
+	con gran nÃºmero de funcionalidades necesita una cierta capacidad de 
 	proceso para poder tratarlo.
       </para>
     </listitem>
@@ -651,8 +651,8 @@
     </term>
     <listitem>
       <para>
-	Privacidad proporciona métodos tanto para firmar y cifrar mensajes de
-	correo que envíe como para verificar y descifrar los mensajes
+	Privacidad proporciona mÃ©todos tanto para firmar y cifrar mensajes de
+	correo que envÃ­e como para verificar y descifrar los mensajes
 	firmados y cifrados que reciba.
       </para>
     </listitem>
@@ -671,20 +671,20 @@
     </term>
     <listitem>
       <para>
-	Reestructuración de un mensaje de texto basándose en un número máximo
-	de caracteres por línea definido por el usuario. El recorte asegura
-	que los párrafos están justificados, que significa que el texto está
-	alineado a los márgenes izquierdo y derecho.
+	ReestructuraciÃ³n de un mensaje de texto basÃ¡ndose en un nÃºmero mÃ¡ximo
+	de caracteres por lÃ­nea definido por el usuario. El recorte asegura
+	que los pÃ¡rrafos estÃ¡n justificados, que significa que el texto estÃ¡
+	alineado a los mÃ¡rgenes izquierdo y derecho.
       </para>
     </listitem>
   </varlistentry>
   <varlistentry id="gt_recursive_quick_search">
     <term>
-	Recursiva (búsqueda rápida)
+	Recursiva (bÃºsqueda rÃ¡pida)
     </term>
     <listitem>
       <para>
-	Una <xref linkend="gt_quick_search" /> recursiva buscará también en
+	Una <xref linkend="gt_quick_search" /> recursiva buscarÃ¡ tambiÃ©n en
 	todas las subcarpetas de la carpeta seleccionada.
       </para>
     </listitem>
@@ -706,7 +706,7 @@
     </term>
     <listitem>
       <para>
-	Enviar una copia de un mensaje recibido a otro destinatario, añadiendo,
+	Enviar una copia de un mensaje recibido a otro destinatario, aÃ±adiendo,
 	opcionalmente, su propio mensaje.
       </para>
     </listitem>
@@ -717,8 +717,8 @@
     </term>
     <listitem>
       <para>
-	Estructura lógica compuesta de una o más condiciones (ver <xref
-	linkend="gt_condition_rules" />) y una o más acciones asociadas (ver
+	Estructura lÃ³gica compuesta de una o mÃ¡s condiciones (ver <xref
+	linkend="gt_condition_rules" />) y una o mÃ¡s acciones asociadas (ver
 	<xref linkend="gt_action_rules" />). Las reglas se utilizan para
 	filtrar los mensajes de correo.
       </para>
@@ -731,7 +731,7 @@
     <listitem>
       <para>
 	Una <xref linkend="gt_rule" /> aplicada a los mensajes entrantes. Las
-	reglas de filtrado se pueden aplicar también manualmente a los
+	reglas de filtrado se pueden aplicar tambiÃ©n manualmente a los
 	contenidos de cualquier carpeta.
       </para>
     </listitem>
@@ -753,7 +753,7 @@
     </term>
     <listitem>
       <para>
-	Contestación a un mensaje recibido. Como verbo también el acto de
+	ContestaciÃ³n a un mensaje recibido. Como verbo tambiÃ©n el acto de
 	contestar el mensaje.
       </para>
     </listitem>
@@ -764,8 +764,8 @@
     </term>
     <listitem>
       <para>
-        Una técnica de <emphasis>cifrado</emphasis> simple usada desde la 
-	época de los Romanos, la cual usa un alfabeto rotado trece posiciones
+        Una tÃ©cnica de <emphasis>cifrado</emphasis> simple usada desde la 
+	Ã©poca de los Romanos, la cual usa un alfabeto rotado trece posiciones
 	para codificar cada letra del mensaje. Se usa a veces para esconder
 	mensajes divertidos en los correos.
       </para>
@@ -783,7 +783,7 @@
       <para>
 	Servidor que proporciona acceso a los mensajes de <xref 
 	linkend="gt_usenet" /> en los <xref linkend="gt_newsgroups" /> a
-	través del protocolo <xref linkend="gt_nntp" />.
+	travÃ©s del protocolo <xref linkend="gt_nntp" />.
       </para>
     </listitem>
   </varlistentry>
@@ -793,19 +793,19 @@
     </term>
     <listitem>
       <para>
-	Un servidor que recibe mensajes de correo de otras máquinas y/o envía
-	los mensajes a otras máquinas usando el protocolo <xref 
+	Un servidor que recibe mensajes de correo de otras mÃ¡quinas y/o envÃ­a
+	los mensajes a otras mÃ¡quinas usando el protocolo <xref 
 	linkend="gt_smtp" />.
       </para>
     </listitem>
   </varlistentry>
   <varlistentry id="gt_synchronisation">
     <term>
-	Sincronización (carpeta)
+	SincronizaciÃ³n (carpeta)
     </term>
     <listitem>
       <para>
-	Hacer que los contenidos de una carpeta local sean idénticos a los
+	Hacer que los contenidos de una carpeta local sean idÃ©nticos a los
 	de la carpeta remota equivalente en el servidor de correo asociado.
       </para>
     </listitem>
@@ -816,7 +816,7 @@
     </term>
     <listitem>
       <para>
-	Acrónimo de <emphasis>Simple Mail Transfer Protocol</emphasis>
+	AcrÃ³nimo de <emphasis>Simple Mail Transfer Protocol</emphasis>
 	(Protocolo de transferencia de correo simple). Un protocolo para
 	enviar correo a servidores.
       </para>
@@ -838,9 +838,9 @@
     </term>
     <listitem>
       <para>
-	Acrónimo de <emphasis>Secure Sockets Layer</emphasis> (Capa de
+	AcrÃ³nimo de <emphasis>Secure Sockets Layer</emphasis> (Capa de
 	conectores segura). Es un protocolo utilizado para cifrar y
-	proteger los datos enviados a través de la red.
+	proteger los datos enviados a travÃ©s de la red.
       </para>
     </listitem>
   </varlistentry>
@@ -850,9 +850,9 @@
     </term>
     <listitem>
       <para>
-	La orden STARTTLS, pseudo-acrónimo de <emphasis>Start Transport Layer 
+	La orden STARTTLS, pseudo-acrÃ³nimo de <emphasis>Start Transport Layer 
 	Security</emphasis> (iniciar la seguridad de la capa de transporte), es
-	una orden utilizada para inicializar una conexión segura entre dos
+	una orden utilizada para inicializar una conexiÃ³n segura entre dos
 	servidores usando <xref linkend="gt_ssl" />.
       </para>
     </listitem>
@@ -867,10 +867,10 @@
     </term>
     <listitem>
       <para>
-	Acrónimo de <emphasis>Transmission Control Protocol</emphasis>
-	(Protocolo de control de transmisión). Es el principal protocolo
-	utilizado en Internet. Permite conexiónes fiables independientes del
-	medio entre dos extremos y está soportado por todos los sistemas
+	AcrÃ³nimo de <emphasis>Transmission Control Protocol</emphasis>
+	(Protocolo de control de transmisiÃ³n). Es el principal protocolo
+	utilizado en Internet. Permite conexiÃ³nes fiables independientes del
+	medio entre dos extremos y estÃ¡ soportado por todos los sistemas
 	operativos modernos en uso.
       </para>
     </listitem>
@@ -881,8 +881,8 @@
     </term>
     <listitem>
       <para>
-	Conjuntos de imágenes para cambiar la apariencia de los botones,
-	carpetas y otros elementos gráficos de &SC;.
+	Conjuntos de imÃ¡genes para cambiar la apariencia de los botones,
+	carpetas y otros elementos grÃ¡ficos de &SC;.
       </para>
     </listitem>
   </varlistentry>
@@ -896,10 +896,10 @@
     </term>
     <listitem>
       <para>
-        Pseudo-acrónimo de <emphasis>Unique IDentification Listing</emphasis>
-	(Listado de identificación única), una orden del protocolo <xref 
-	linkend="gt_pop3" /> que permite la gestión de mensajes individuales 
-	asignándoles un identificador único a cada uno.
+        Pseudo-acrÃ³nimo de <emphasis>Unique IDentification Listing</emphasis>
+	(Listado de identificaciÃ³n Ãºnica), una orden del protocolo <xref 
+	linkend="gt_pop3" /> que permite la gestiÃ³n de mensajes individuales 
+	asignÃ¡ndoles un identificador Ãºnico a cada uno.
       </para>
     </listitem>
   </varlistentry>
@@ -909,10 +909,10 @@
     </term>
     <listitem>
       <para>
-	Acrónimo de <emphasis>Uniform Resource Locator</emphasis> (Localizador 
+	AcrÃ³nimo de <emphasis>Uniform Resource Locator</emphasis> (Localizador 
 	uniforme de recurso). Es un esquema de nombrado para objetos (ficheros
 	normalmente) en entornos de red multi-protocolo como Internet.
-	Por ejemplo éste es el de la página principal de &SC;:
+	Por ejemplo Ã©ste es el de la pÃ¡gina principal de &SC;:
         <literal>http://www.claws-mail.org</literal>.
       </para>
     </listitem>
@@ -923,8 +923,8 @@
     </term>
     <listitem>
       <para>
-	Pseudo-acrónimo de <emphasis>User's Network</emphasis> (Red de 
-	usuarios). Un sistema de tablón de anuncios para grupos de discusión,
+	Pseudo-acrÃ³nimo de <emphasis>User's Network</emphasis> (Red de 
+	usuarios). Un sistema de tablÃ³n de anuncios para grupos de discusiÃ³n,
 	denominado a menudo <xref linkend="gt_newsgroups" />.
       </para>
     </listitem>
@@ -935,10 +935,10 @@
     </term>
     <listitem>
       <para>
-	Acrónimo de <emphasis>Unicode Transformation Format</emphasis> (Formato
-	de transformación Unicode) de 8 bits. Una codificación de caracteres
-	de longitud variable capaz de representar cualquier carácter universal.
-	Es un estándar de Internet definido en el <ulink
+	AcrÃ³nimo de <emphasis>Unicode Transformation Format</emphasis> (Formato
+	de transformaciÃ³n Unicode) de 8 bits. Una codificaciÃ³n de caracteres
+	de longitud variable capaz de representar cualquier carÃ¡cter universal.
+	Es un estÃ¡ndar de Internet definido en el <ulink
 	url="http://www.ietf.org/rfc/rfc3629.txt">RFC 3629</ulink>.
       </para>
     </listitem>
@@ -953,9 +953,9 @@
     </term>
     <listitem>
       <para>
-	Fichero de formato estándar para intercambio de datos personales. Puede
-	contener información como direcciones, números de teléfono, etc. de
-	manera similar a la información que se encuentra normalmente en una
+	Fichero de formato estÃ¡ndar para intercambio de datos personales. Puede
+	contener informaciÃ³n como direcciones, nÃºmeros de telÃ©fono, etc. de
+	manera similar a la informaciÃ³n que se encuentra normalmente en una
 	tarjeta de empresa. Se encuentran habitualmente adjuntas a mensajes
 	de correo.
       </para>
@@ -968,8 +968,8 @@
     <listitem>
       <para>
 	Una ventana especial que registra en detalle las operaciones de
-	protocolo realizadas por &SC;. Es una herramienta útil para la
-	depuración de fallos.
+	protocolo realizadas por &SC;. Es una herramienta Ãºtil para la
+	depuraciÃ³n de fallos.
       </para>
     </listitem>
   </varlistentry>
@@ -983,8 +983,8 @@
     </term>
     <listitem>
       <para>
-	Acrónimo de <emphasis>World Wide Web</emphasis> (La telaraña mundial),
-	la red de páginas web hiperenlazadas a través de Internet.
+	AcrÃ³nimo de <emphasis>World Wide Web</emphasis> (La telaraÃ±a mundial),
+	la red de pÃ¡ginas web hiperenlazadas a travÃ©s de Internet.
       </para>
     </listitem>
   </varlistentry>
@@ -1001,8 +1001,8 @@
 	Imagen en blanco y negro (48x48 pixels) codificada de manera especial
 	e incluida en las cabeceras del mensaje. Los clientes de correo
 	capacitados, como &SC; y otros, pueden decodificarla y mostrarla
-	junto al texto del mensaje. Aunque no son únicas, pueden ayudar a
-	la rápida identificación del remitente del mensaje. Véase también
+	junto al texto del mensaje. Aunque no son Ãºnicas, pueden ayudar a
+	la rÃ¡pida identificaciÃ³n del remitente del mensaje. VÃ©ase tambiÃ©n
 	<xref linkend="gt_face" />.
       </para>
     </listitem>

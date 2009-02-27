@@ -1,61 +1,61 @@
-<?xml version="1.0" encoding="iso-8859-1"?>
+<?xml version="1.0" encoding="utf-8"?>
 <section id="ch_handling">
-<title>Gestión básica del correo</title>
+<title>GestiÃ³n bÃ¡sica del correo</title>
 
   <section id="handling_folders">
     <title>Carpetas de correo</title>
     <para>
-	Si recibe un monton de correos pronto se encontrará con que su carpeta
+	Si recibe un montÃ³n de correos pronto se encontrarÃ¡ con que su carpeta
 	de Entrada ha crecido hasta el punto en que encontrar un mensaje,
-	incluso si lo ha recibido hace unos días, se vuelve una tarea árdua.
-	Esta es la razón por la que &SC;, como la mayoría de los buenos
-	clientes de correo, proporciona múltiples posibilidades de organización
+	incluso si lo ha recibido hace unos dÃ­as, se vuelve una tarea Ã¡rdua.
+	Esta es la razÃ³n por la que &SC;, como la mayorÃ­a de los buenos
+	clientes de correo, proporciona mÃºltiples posibilidades de organizaciÃ³n
 	de los mensajes al usuario.
     </para>
     <para>
 	Puede crear tantas carpetas y subcarpetas como necesite. Por ejemplo,
 	una carpeta para la familia, otra para los amigos, carpetas para
-	listas de correo, carpetas de archivo para correos antiguos que aún
+	listas de correo, carpetas de archivo para correos antiguos que aÃºn
 	desee tener disponibles, etc. Para crear una carpeta nueva, simplemente
-	haga clic con el botón derecho en la carpeta padre y seleccione
-	<quote>Nueva carpeta...</quote> del menú deplegable. Si quiere crear
+	haga clic con el botÃ³n derecho en la carpeta padre y seleccione
+	<quote>Nueva carpeta...</quote> del menÃº deplegable. Si quiere crear
 	una carpeta <quote>Amigos</quote> dentro de Entrada, por ejemplo, haga
-	clic con el botón derecho del ratón en la carpeta Entrada, elija
+	clic con el botÃ³n derecho del ratÃ³n en la carpeta Entrada, elija
 	<quote>Nueva carpeta...</quote> y teclee <quote>Amigos</quote> en la
-	ventana de diálogo que aparece. Pulse el botón Aceptar y la nueva
-	carpeta estará creada.
+	ventana de diÃ¡logo que aparece. Pulse el botÃ³n Aceptar y la nueva
+	carpeta estarÃ¡ creada.
     </para>
   </section>
 
   <section id="handling_organisation">
-    <title>Organización de carpetas</title>
+    <title>OrganizaciÃ³n de carpetas</title>
     <para>
 	Ahora que ha creado carpetas puede manipularlas, incluyendo su
-	contenido, utilizando los elementos del menú o arrastrando y soltando.
+	contenido, utilizando los elementos del menÃº o arrastrando y soltando.
 	Mover una carpeta dentro de otra, por ejemplo, se puede realizar
-	pulsando con el botón derecho sobre la carpeta a mover, seleccionar
-	la opción <quote>Mover carpeta...</quote> y seleccionar la carpeta
-	de destino. Ésto moverá la carpeta, junto el correo que contiene,
+	pulsando con el botÃ³n derecho sobre la carpeta a mover, seleccionar
+	la opciÃ³n <quote>Mover carpeta...</quote> y seleccionar la carpeta
+	de destino. &Eacute;sto moverÃ¡ la carpeta, junto el correo que contiene,
 	como subcarpeta de la carpeta seleccionada. De manera alternativa,
 	puede arrastrar la carpeta a otra pulsando sobre ella, manteniendo
-	el botón pulsado, moviendo el cursor del ratón sobre la carpeta de
-	destino y soltando el botón del ratón.
+	el botÃ³n pulsado, moviendo el cursor del ratÃ³n sobre la carpeta de
+	destino y soltando el botÃ³n del ratÃ³n.
     </para><para>
 	Si quiere eliminar una carpeta y el correo que contenga, simplemente
-	haga clic con el botón derecho sobre la misma y seleccione
-	<quote>Borrar carpeta...</quote>. Puesto que ésto es potencialmente
-	peligroso (los mensajes en la carpeta se borrarán y no será posible
-	recuperarlos) se le pedirá confirmación.
+	haga clic con el botÃ³n derecho sobre la misma y seleccione
+	<quote>Borrar carpeta...</quote>. Puesto que Ã©sto es potencialmente
+	peligroso (los mensajes en la carpeta se borrarÃ¡n y no serÃ¡ posible
+	recuperarlos) se le pedirÃ¡ confirmaciÃ³n.
     </para><para>
 	De la misma manera que puede mover una carpeta dentro de otra se pueden
-	mover los mensajes de una carpeta a otra. El método a aplicar es el
+	mover los mensajes de una carpeta a otra. El mÃ©todo a aplicar es el
 	mismo: bien arrastrar y soltar los correos o bien seleccionar
-	<quote>Mover...</quote> después de hacer clic con el botón derecho
+	<quote>Mover...</quote> despuÃ©s de hacer clic con el botÃ³n derecho
 	sobre el mensaje. Se pueden seleccionar varios mensajes utilizando las
-	teclas Control o Mayúsculas mientras se hace clic sobre ellos. También
+	teclas Control o MayÃºsculas mientras se hace clic sobre ellos. TambiÃ©n
 	se pueden copiar los mensajes a otra carpeta manteniendo la tecla
-	Control pulsada mientras se realiza la operación de arrastrar y soltar,
-	o seleccionando <quote>Copiar...</quote> del menú contextual del
+	Control pulsada mientras se realiza la operaciÃ³n de arrastrar y soltar,
+	o seleccionando <quote>Copiar...</quote> del menÃº contextual del
 	mensaje.
     </para>
   </section>
@@ -64,18 +64,18 @@
     <title>Suscripciones IMAP</title>
     <para>
 	El protocolo IMAP permite guardar una lista de carpetas suscritas.
-	La mayoría de los agentes de usuario no muestran en el interfaz 
-	gráfico las carpetas no suscritas y tienen una pequeña ventana que
+	La mayorÃ­a de los agentes de usuario no muestran en el interfaz 
+	grÃ¡fico las carpetas no suscritas y tienen una pequeÃ±a ventana que
 	permite suscribirse a dichas carpetas. Por defecto en &SC; se respetan
-	las suscripciones, y sólo se mostrarán las carpetas suscritas. Si
-	desea ver todas las carpetas desmarque <quote>Mostrar sólo las carpetas
-	suscritas</quote> en el menú de contexto del buzón IMAP o en las
-	preferencias de la cuenta. También podrá suscribir y desuscribir carpetas
-	desde este menú contextual. Si las carpetas no suscritas no aparecen
-	en la lista tendrá dos maneras de suscribirse a una carpeta: o bien
-	mostrar todas las carpetas, suscribir las que quiera y ocultar las
-	carpetas no suscritas de nuevo, o bien, si sabe los nombres de las
-	carpetas, usar <quote>Crear nueva carpeta</quote> en el menú contextual
+	las suscripciones, y sÃ³lo se mostrarÃ¡n las carpetas suscritas. Si
+	desea ver todas las carpetas desmarque <quote>Mostrar sÃ³lo las carpetas
+	suscritas</quote> en el menÃº de contexto del buzÃ³n IMAP o en las
+	preferencias de la cuenta. TambiÃ©n podrÃ¡ suscribir y desuscribir 
+	carpetas desde este menÃº contextual. Si las carpetas no suscritas no 
+	aparecen en la lista tendrÃ¡ dos maneras de suscribirse a una carpeta: 
+	o bien mostrar todas las carpetas, suscribir las que quiera y ocultar 
+	las carpetas no suscritas de nuevo, o bien, si sabe los nombres de las
+	carpetas, usar <quote>Crear nueva carpeta</quote> en el menÃº contextual
 	de su antecesora.
     </para>
   </section>
@@ -84,105 +84,106 @@
     <title>Filtrado</title>
     <para>
 	Una vez haya creado una elegante estructura de carpetas, probablemente
-	querrá que &SC; distribuya los mensajes entrantes automáticamente, de
+	querrÃ¡ que &SC; distribuya los mensajes entrantes automÃ¡ticamente, de
 	manera que no haya que moverlos manualmente cada vez que llegan. Para
-	ésto se puede usar el mecanismo de filtrado.
+	Ã©sto se puede usar el mecanismo de filtrado.
     </para>
     <para>
-	Encontrará las preferencias de filtrado a través del elemento
-	<quote>Filtrado...</quote> del menú de <quote>Configuración</quote>.
-	Desde este diálogo podrá definir nuevas reglas, modificar o borrar
+	EncontrarÃ¡ las preferencias de filtrado a travÃ©s del elemento
+	<quote>Filtrado...</quote> del menÃº de <quote>ConfiguraciÃ³n</quote>.
+	Desde este diÃ¡logo podrÃ¡ definir nuevas reglas, modificar o borrar
 	las existentes, reordenarlas, y activarlas o desactivarlas. Las reglas
-	de filtrado se componen de cuatro elementos: su estado de activación,
-	un nombre, una condición y una acción. Las reglas desactivadas
-	simplemente se ignoran. El nombre es opcional, pero está para facilitar
-	la identificación de las reglas existentes. El formato de la condición
-	es una expresión que define lo que &SC; deberá buscar al filtrar los
+	de filtrado se componen de cuatro elementos: su estado de activaciÃ³n,
+	un nombre, una condiciÃ³n y una acciÃ³n. Las reglas desactivadas
+	simplemente se ignoran. El nombre es opcional, pero estÃ¡ para facilitar
+	la identificaciÃ³n de las reglas existentes. El formato de la condiciÃ³n
+	es una expresiÃ³n que define lo que &SC; deberÃ¡ buscar al filtrar los
 	mensajes, por ejemplo: <quote>to matchcase claws-mail-users</quote>
-	es para mensajes enviados a cualquier dirección que contenga
+	es para mensajes enviados a cualquier direcciÃ³n que contenga
 	<quote>claws-mail-users</quote>. Puede definir condiciones
-	fácilmente pulsando el botón <quote>Definir...</quote> a la derecha del
-	campo. La tercera parte de una regla de filtrado es la acción, que
-	indica a &SC; que hacer con los mensajes que cumplan la condición que
-	hemos definido. Por ejemplo, <quote>mark_as_read</quote> marcaría el
-	correo como leído tan pronto como llegase a la Entrada, o <quote>move
-	#mh/Mailbox/inbox/Amigos</quote> movería el mensaje a la subcarpeta 
-	<quote>Amigos</quote>. Aquí también el botón <quote>Definir...</quote>
-	está disponible para ayudarle a definir las acciones a realizar.
+	fÃ¡cilmente pulsando el botÃ³n <quote>Definir...</quote> a la derecha del
+	campo. La tercera parte de una regla de filtrado es la acciÃ³n, que
+	indica a &SC; que hacer con los mensajes que cumplan la condiciÃ³n que
+	hemos definido. Por ejemplo, <quote>mark_as_read</quote> marcarÃ­a el
+	correo como leÃ­do tan pronto como llegase a la Entrada, o <quote>move
+	#mh/Mailbox/inbox/Amigos</quote> moverÃ­a el mensaje a la subcarpeta 
+	<quote>Amigos</quote>. AquÃ­ tambiÃ©n el botÃ³n <quote>Definir...</quote>
+	estÃ¡ disponible para ayudarle a definir las acciones a realizar.
     </para><para>
-	Una vez haya definido la regla, puede añadirla a la lista de reglas
-	con el botón <quote>Añadir</quote>. No olvide que el orden de las
+	Una vez haya definido la regla, puede aÃ±adirla a la lista de reglas
+	con el botÃ³n <quote>AÃ±adir</quote>. No olvide que el orden de las
 	reglas es importante: si &SC; encuentra una regla adecuada para un
-	mensaje que lo mueve o lo borra estó detendrá la búsqueda de más reglas
-	para él. Esta es la razón de los botones en la parte derecha de la
-	lista de reglas, que permiten la reordenación de las mismas. Las reglas
-	también se pueden reordenar arrastrando y soltando con el ratón.
+	mensaje que lo mueve o lo borra estÃ³ detendrÃ¡ la bÃºsqueda de mÃ¡s reglas
+	para Ã©l. Esta es la razÃ³n de los botones en la parte derecha de la
+	lista de reglas, que permiten la reordenaciÃ³n de las mismas. Las reglas
+	tambiÃ©n se pueden reordenar arrastrando y soltando con el ratÃ³n.
     </para><para>
-	También existe un método rápido para crear reglas de filtrado basadas
-	en el mensaje seleccionado. Después de seleccionar un correo del tipo
+	TambiÃ©n existe un mÃ©todo rÃ¡pido para crear reglas de filtrado basadas
+	en el mensaje seleccionado. DespuÃ©s de seleccionar un correo del tipo
 	que quiera filtrar, seleccione <quote>Crear regla de filtrado</quote>
-	en el menú <quote>Herramientas</quote> y elija un tipo del submenú:
-	<quote>Automáticamente</quote> es útil para mensajes de listas de 
+	en el menÃº <quote>Herramientas</quote> y elija un tipo del submenÃº:
+	<quote>AutomÃ¡ticamente</quote> es Ãºtil para mensajes de listas de 
 	correo, <quote>Basada en Desde</quote> crea un filtro a partir del
 	remitente del correo, <quote>Basada en Para</quote> lo hace a partir
 	del destinatario y <quote>Basada en el Asunto</quote> lo crea en
-	función del asunto del correo. Cada uno de estos tipos de filtrado
+	funciÃ³n del asunto del correo. Cada uno de estos tipos de filtrado
 	tiene sus ventajas, dejando al usuario que encuentre la que le
-	resulte más práctica. Normalmente, <quote>Basada en Desde</quote> es
+	resulte mÃ¡s prÃ¡ctica. Normalmente, <quote>Basada en Desde</quote> es
 	mejor para organizar correos de los contactos habituales, mientras que
-	<quote>Basada en Para</quote> es más útil para organizar los mensajes
-	que le envíen a sus distintas cuentas.
+	<quote>Basada en Para</quote> es mÃ¡s Ãºtil para organizar los mensajes
+	que le envÃ­en a sus distintas cuentas.
     </para>
   </section>
 
   <section id="handling_searching">
     <title>Buscando</title>
     <para>
-	Existen varios métodos para buscar en sus mensajes de correo.
+	Existen varios mÃ©todos para buscar en sus mensajes de correo.
     </para><para>
-	Una de ellas es relativamente estándar, y se puede encontrar en el
-	menú <quote>Editar</quote>, es la opción <quote>Buscar en 
-	carpeta...</quote>. Esto abrirá una ventana donde se pueden especificar
-	uno o más campos por los que buscar: Desde, Para, Asunto y Cuerpo. 
+	Una de ellas es relativamente estÃ¡ndar, y se puede encontrar en el
+	menÃº <quote>Editar</quote>, es la opciÃ³n <quote>Buscar en 
+	carpeta...</quote>. Esto abrirÃ¡ una ventana donde se pueden especificar
+	uno o mÃ¡s campos por los que buscar: Desde, Para, Asunto y Cuerpo. 
 	Una vez especificados los criterios pulse en los botones 
-	<quote>Atrás</quote> o <quote>Adelante</quote> para navegar a través
+	<quote>AtrÃ¡s</quote> o <quote>Adelante</quote> para navegar a travÃ©s
 	de los mensajes que coincidan, o utilize <quote>Encontrar todos</quote>
 	para seleccionar todos los mensajes de una vez. Tenga en cuenta que
-	buscar en el cuerpo de los mensajes es mucho más lento que buscar en
-	las cabeceras, ya que los cuerpos no están en la cache de &SC;.
+	buscar en el cuerpo de los mensajes es mucho mÃ¡s lento que buscar en
+	las cabeceras, ya que los cuerpos no estÃ¡n en la cache de &SC;.
     </para><para>
-	Si está leyendo un correo muy grande y quiere encontrar alguna parte
-	concreta del mismo puede usar la opción <quote>Buscar en el mensaje 
-	actual...</quote> del menú <quote>Editar</quote>. Funciona igual que
-	la búsqueda en un documento de texto.
+	Si estÃ¡ leyendo un correo muy grande y quiere encontrar alguna parte
+	concreta del mismo puede usar la opciÃ³n <quote>Buscar en el mensaje 
+	actual...</quote> del menÃº <quote>Editar</quote>. Funciona igual que
+	la bÃºsqueda en un documento de texto.
     </para><para>
-	La última manera de buscar mensaje es utilizar la
-	<quote>búsqueda rápida</quote>, que	puede mostrar u ocultar usando la
-	pequeña lupa que aparece bajo la lista de mensajes. También se puede
-	acceder a ella a través de la opción <quote>Búsqueda rápida</quote>
-	del menú <quote>Editar</quote>.
-	La <quote>búsqueda rápida</quote> es más potente que la búsqueda normal,
-	ya que puede buscar en las cabeceras estándar (Desde, Para, Asunto)
-	o en modo <quote>Extendido</quote> utilizando prácticamente cualquier
-	criterio que pueda imaginar. En modo <quote>Extendido</quote> el botón de 
-	<quote>Información</quote> es visible, lo que permite ver la sintaxis
-	de búsqueda. El botón <quote>Editar</quote> también esta disponible
-	para crear rápidamente una regla. Además se puede configurar la 
-	<quote>búsqueda rápida</quote> para buscar recursivamente por las
+	La Ãºltima manera de buscar mensaje es utilizar la
+	<quote>bÃºsqueda rÃ¡pida</quote>, que puede mostrar u ocultar usando la
+	pequeÃ±a lupa que aparece bajo la lista de mensajes. TambiÃ©n se puede
+	acceder a ella a travÃ©s de la opciÃ³n <quote>BÃºsqueda rÃ¡pida</quote>
+	del menÃº <quote>Editar</quote>.
+	La <quote>bÃºsqueda rÃ¡pida</quote> es mÃ¡s potente que la bÃºsqueda normal,
+	ya que puede buscar en las cabeceras estÃ¡ndar (Desde, Para, Asunto)
+	o en modo <quote>Extendido</quote> utilizando prÃ¡cticamente cualquier
+	criterio que pueda imaginar. En modo <quote>Extendido</quote> el botÃ³n 
+	de <quote>InformaciÃ³n</quote> es visible, lo que permite ver la sintaxis
+	de bÃºsqueda. El botÃ³n <quote>Editar</quote> tambiÃ©n esta disponible
+	para crear rÃ¡pidamente una regla. AdemÃ¡s se puede configurar la 
+	<quote>bÃºsqueda rÃ¡pida</quote> para buscar recursivamente por las
 	subcarpetas y si debe o no reinicializarse por si misma cuando se
 	cambia de carpeta.
     </para><para>
-	Cuando pulse Entrar después de haber especificado la cadena de 
-	búsqueda, la lista de mensajes se reducirá para mostrarle sólo los
-	mensajes que coincidan. Si se configuró la búsqueda recursivamente
+	Cuando pulse Entrar despuÃ©s de haber especificado la cadena de 
+	bÃºsqueda, la lista de mensajes se reducirÃ¡ para mostrarle sÃ³lo los
+	mensajes que coincidan. Si se configurÃ³ la bÃºsqueda recursivamente
 	cualquier subcarpeta de la actual que contenga mensajes que coincidan
-	cambiará su icono por el de una lupa. De esta manera puede buscar en
-	todo el buzón de una sola vez. Si la búsqueda esta en modo pegajoso
-	el filtro permanecerá aplicado cuando se cambie a otra carpeta. Ésto
+	cambiarÃ¡ su icono por el de una lupa. De esta manera puede buscar en
+	todo el buzÃ³n de una sola vez. Si la bÃºsqueda esta en modo pegajoso
+	el filtro permanecerÃ¡ aplicado cuando se cambie a otra carpeta. 
+	&Eacute;sto
 	puede ser molesto inicialmente, ya que puede que se olvide de ello,
-	pero es útil en algunos casos, por ejemplo si quiere buscar en el 
-	cuerpo de los mensajes y no está seguro de la carpeta que lo contiene:
-	una búsqueda recursiva sobre el cuerpo de los correos de todo el buzón
+	pero es Ãºtil en algunos casos, por ejemplo si quiere buscar en el 
+	cuerpo de los mensajes y no estÃ¡ seguro de la carpeta que lo contiene:
+	una bÃºsqueda recursiva sobre el cuerpo de los correos de todo el buzÃ³n
 	puede ser realmente lenta.
     </para>
   </section>

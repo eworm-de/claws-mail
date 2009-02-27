@@ -1,43 +1,43 @@
-<?xml version="1.0" encoding="iso-8859-1"?>
+<?xml version="1.0" encoding="utf-8"?>
 <section id="ch_addrbook">
 <title>Agenda de direcciones</title>
 
   <section id="addrbk_basic">
-    <title>Manejo básico</title>
+    <title>Manejo bÃ¡sico</title>
     <para>
-	Se puede acceder a la agenda de direcciones a través del menú 
+	Se puede acceder a la agenda de direcciones a travÃ©s del menÃº 
 	<quote>Herramientas/Agenda de direcciones</quote>. Esta organizada
 	en diferentes secciones: la <quote>Agenda de direcciones</quote> y
-	sus subseciones, que contienen los contactos añadidos localmente; las
+	sus subseciones, que contienen los contactos aÃ±adidos localmente; las
 	secciones vCard, que contienen las vCard importadas; y, si el
 	soporte para ello ha sido incluido en &SC;, las secciones LDAP y
 	jPilot, conteniendo contactos de sus servidores LDAP o dispositivos
 	de mano.
     </para><para>
-	En la sección <quote>Agenda de direcciones</quote> puede crear 
-	múltiples libros de direcciones. Cada uno puede albergar direcciones
+	En la secciÃ³n <quote>Agenda de direcciones</quote> puede crear 
+	mÃºltiples libros de direcciones. Cada uno puede albergar direcciones
 	y/o carpetas. Esto puede ayudar a organizar sus contactos por
-	categorías. Además de esto puede crear grupos de direcciones, los
-	cuales pueden usarse en la ventana de composición para enviar correos
-	a múltiples personas a la vez.
-	Los menús de la ventana de la agenda de direcciones le permitiran
+	categorÃ­as. AdemÃ¡s de esto puede crear grupos de direcciones, los
+	cuales pueden usarse en la ventana de composiciÃ³n para enviar correos
+	a mÃºltiples personas a la vez.
+	Los menÃºs de la ventana de la agenda de direcciones le permitiran
 	realizar todo esto. Por ejemplo, puede crear una carpeta 
 	<emphasis>Familia</emphasis> dentro de su agenda <quote>Direcciones 
-	personales</quote> usando el menú <quote>Agenda/Nueva carpeta</quote>
-	cuando <quote>Direcciones personales</quote> esté seleccionado, o
-	pulsando con el botón derecho en ella. De la misma manera puede añadir
-	contactos a una agenda o carpeta usando el menú 
-	<quote>Dirección</quote> o pulsando con el botón derecho en un elemento
+	personales</quote> usando el menÃº <quote>Agenda/Nueva carpeta</quote>
+	cuando <quote>Direcciones personales</quote> estÃ© seleccionado, o
+	pulsando con el botÃ³n derecho en ella. De la misma manera puede aÃ±adir
+	contactos a una agenda o carpeta usando el menÃº 
+	<quote>DirecciÃ³n</quote> o pulsando con el botÃ³n derecho en un elemento
 	de la lista que se encuentra a la derecha de la ventana.
-	Cuando añada un contacto aparecerá una nueva ventana, donde podrá
-	especificar los detalles del contacto en la primera pestaña 
+	Cuando aÃ±ada un contacto aparecerÃ¡ una nueva ventana, donde podrÃ¡
+	especificar los detalles del contacto en la primera pestaÃ±a 
 	(<emphasis>Nombre mostrado, Nombre, ...</emphasis>) y una lista de
-	direcciones de correo en la segunda pestaña.
+	direcciones de correo en la segunda pestaÃ±a.
     </para><para>
-	Una manera más simple de guardar sus contactos en su agenda de
+	Una manera mÃ¡s simple de guardar sus contactos en su agenda de
 	direcciones es hacerlo cuando lea uno de sus correos, utilizando el
-	menú <quote>Herramientas/Añadir remitente a la agenda</quote>, o
-	pulsando con el botón derecho en una dirección de correo en la vista
+	menÃº <quote>Herramientas/AÃ±adir remitente a la agenda</quote>, o
+	pulsando con el botÃ³n derecho en una direcciÃ³n de correo en la vista
 	de mensaje.
     </para>
   </section>
@@ -45,18 +45,18 @@
   <section id="addrbk_expimp">
     <title>Exportando e importando direcciones</title>
     <para>
-	&SC; puede importar agendas de direcciones fácilmente desde la mayoría
-	de los programas de correo electrónico. Desde el menú 
-	<quote>Herramientas</quote> en la agenda de direcciones podrá importar
-	agendas de Pine o Mutt. Como estos formatos no están muy difundidos,
-	también podrá importar ficheros LDIF. LDIF es un formato usado 
-	ampliamente, por lo que la mayoría de los programas de correo pueden
+	&SC; puede importar agendas de direcciones fÃ¡cilmente desde la mayorÃ­a
+	de los programas de correo electrÃ³nico. Desde el menÃº 
+	<quote>Herramientas</quote> en la agenda de direcciones podrÃ¡ importar
+	agendas de Pine o Mutt. Como estos formatos no estÃ¡n muy difundidos,
+	tambiÃ©n podrÃ¡ importar ficheros LDIF. LDIF es un formato usado 
+	ampliamente, por lo que la mayorÃ­a de los programas de correo pueden
 	exportar sus agendas en este formato.
-	La importación de ficheros LDIF se realiza a través de
+	La importaciÃ³n de ficheros LDIF se realiza a travÃ©s de
 	<quote>Herramientas/Importar fichero LDIF</quote> y es un proceso en
 	tres pasos: seleccionar el fichero a importar y el nombre de la agenda,
 	comprobar los campos que quiere importar si los valores predeterminados
-	no son satisfactorios, y finalmente pulsar el botón 
+	no son satisfactorios, y finalmente pulsar el botÃ³n 
 	<quote>Guardar</quote>.
     </para>
   </section>
@@ -68,23 +68,23 @@
       <title>Usando servidores LDAP</title>
       <para>
 	Los servidores LDAP se utilizan para compartir agendas de direcciones
-	en un entorno de red. A menudo están disponibles en empresas. Activar
-	un servidor LDAP en &SC; es bastante sencillo. Seleccione en el menú 
-	<quote>Agenda/Nuevo servidor LDAP</quote>, después elija un nombre
-	para este servidor LDAP. Introduzca el nombre de la máquina con el 
+	en un entorno de red. A menudo estÃ¡n disponibles en empresas. Activar
+	un servidor LDAP en &SC; es bastante sencillo. Seleccione en el menÃº 
+	<quote>Agenda/Nuevo servidor LDAP</quote>, despuÃ©s elija un nombre
+	para este servidor LDAP. Introduzca el nombre de la mÃ¡quina con el 
 	servidor (<emphasis>p.ej. <quote>ldap.sylpheed.org</quote></emphasis>),
-	su puerto si es necesario (<emphasis>el puerto estándar es el 389
+	su puerto si es necesario (<emphasis>el puerto estÃ¡ndar es el 389
 	</emphasis>). Puede entonces rellenar la <quote>Base de 
-	búsqueda</quote> si conoce el valor a usar o pulsar el botón 
+	bÃºsqueda</quote> si conoce el valor a usar o pulsar el botÃ³n 
 	<quote>Comprobar servidor</quote> para que &SC; intente deducirla de
-	manera automática. Si su servidor necesita autentificación, puede
-	establecerla en la pestaña <quote>Extendido</quote>
+	manera automÃ¡tica. Si su servidor necesita autentificaciÃ³n, puede
+	establecerla en la pestaÃ±a <quote>Extendido</quote>
 	Cuando cierre esta ventana pulsando <quote>Aceptar</quote> el
-	servidor aparecerá en la lista de fuentes de agendas de direcciones
-	de la parte izquierda. Al seleccionar el servidor podrá ver una lista
-	de contactos vacía a la derecha, lo cual puede ser sorprendente al
-	principio. Esto es así para evitar realizar búsquedas completas en el
-	servidor sin que sean solicitadas explícitamente. Ahora puede buscar
+	servidor aparecerÃ¡ en la lista de fuentes de agendas de direcciones
+	de la parte izquierda. Al seleccionar el servidor podrÃ¡ ver una lista
+	de contactos vacÃ­a a la derecha, lo cual puede ser sorprendente al
+	principio. Esto es asÃ­ para evitar realizar bÃºsquedas completas en el
+	servidor sin que sean solicitadas explÃ­citamente. Ahora puede buscar
 	nombres usando el formulario <quote>Buscar nombre</quote> de la parte
 	inferior de la lista. Si desea un listado completo simplemente busque
 	<quote>*</quote>.
@@ -92,7 +92,7 @@
     </section>
 
     <section id="addrbk_adv_jpilot">
-      <title>Integración con jPilot</title>
+      <title>IntegraciÃ³n con jPilot</title>
       <para>
         &SC; puede usar las direcciones almacenadas en su dispositivo de mano.
       </para>
@@ -101,7 +101,7 @@
     <section id="addrbk_adv_vcard">
       <title>Soporte de vCard</title>
       <para>
-        &SC; puede importar las vCard de sus contactos utilizando el menú
+        &SC; puede importar las vCard de sus contactos utilizando el menÃº
 	<quote>Agenda/Nueva vCard</quote>.
       </para>
     </section>

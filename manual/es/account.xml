@@ -1,72 +1,72 @@
-<?xml version="1.0" encoding="iso-8859-1"?>
+<?xml version="1.0" encoding="utf-8"?>
 <section id="ch_account">
-<title>Configuración de cuentas</title>
+<title>ConfiguraciÃ³n de cuentas</title>
 
   <section id="account_basic">
-    <title>Preferencias básicas</title>
+    <title>Preferencias bÃ¡sicas</title>
     <para>
-	La primera pestaña en las preferencias de la cuenta, 
-	<quote>Básicas</quote>, contiene
+	La primera pestaÃ±a en las preferencias de la cuenta, 
+	<quote>BÃ¡sicas</quote>, contiene
 	como su nombre indica los datos indispensables de la cuenta. En esta
-	pestaña puede especificar su nombre, dirección de correo, organización
-	y la información básica de conexión. El nombre de la cuenta es sólo el
-	nombre que &SC; usará para referirse a ella, por ejemplo, en el 
+	pestaÃ±a puede especificar su nombre, direcciÃ³n de correo, organizaciÃ³n
+	y la informaciÃ³n bÃ¡sica de conexiÃ³n. El nombre de la cuenta es sÃ³lo el
+	nombre que &SC; usarÃ¡ para referirse a ella, por ejemplo, en el 
 	selector de cuenta de la esquina inferior derecha de la ventana 
-	principal. La información del servidor le permite indicar el protocolo
-	de recepción a usar (que no es modificable en cuentas ya existentes),
-	el/los servidor/es usados para recibir o enviar sus correos (comúnmente
+	principal. La informaciÃ³n del servidor le permite indicar el protocolo
+	de recepciÃ³n a usar (que no es modificable en cuentas ya existentes),
+	el/los servidor/es usados para recibir o enviar sus correos (comÃºnmente
 	<literal>pop.isp.com</literal> y <literal>smtp.isp.com</literal>) 
-	y su nombre de usuario en el servidor de recepción.
+	y su nombre de usuario en el servidor de recepciÃ³n.
     </para><para>
-	En la pestaña <quote>Recibir</quote> se puede cambiar el comportamiento
+	En la pestaÃ±a <quote>Recibir</quote> se puede cambiar el comportamiento
 	predeterminado de &SC;. Por ejemplo, dejar los mensajes en el servidor
 	durante un tiempo, evitar la descarga de correos demasiado grandes, o
 	especificar si se quiere que las reglas de filtrado se apliquen a los
-	mensajes de esta cuenta. La opción <quote>Límite de tamaño al 
+	mensajes de esta cuenta. La opciÃ³n <quote>LÃ­mite de tamaÃ±o al 
 	recibir</quote> se usa para controlar el tiempo invertido descargando
-	mensajes grandes. Cuando reciba un mensaje de tamaño mayor que éste
-	límite será descargado parcialmente y tendrá después la opción de
-	descargarlo por completo o eliminarlo del servidor. Esta eleción
-	aparecerá cuando esté visualizando el mensaje.
+	mensajes grandes. Cuando reciba un mensaje de tamaÃ±o mayor que Ã©ste
+	lÃ­mite serÃ¡ descargado parcialmente y tendrÃ¡ despuÃ©s la opciÃ³n de
+	descargarlo por completo o eliminarlo del servidor. Esta eleciÃ³n
+	aparecerÃ¡ cuando estÃ© visualizando el mensaje.
     </para><para>
-	La pestaña <quote>Enviar</quote> contiene las preferencias de cabeceras
-	especiales que puede querer añadir a los mensajes que envíe, como las
-	cabeceras X-Face o Face, e información de autentificación para enviar
-	correos. En la mayoría de las ocasiones su ISP permitirá que sus
-	clientes envíen correo a través del servidor SMTP sin autentificarse,
+	La pestaÃ±a <quote>Enviar</quote> contiene las preferencias de cabeceras
+	especiales que puede querer aÃ±adir a los mensajes que envÃ­e, como las
+	cabeceras X-Face o Face, e informaciÃ³n de autentificaciÃ³n para enviar
+	correos. En la mayorÃ­a de las ocasiones su ISP permitirÃ¡ que sus
+	clientes envÃ­en correo a travÃ©s del servidor SMTP sin autentificarse,
 	pero en algunas configuraciones tiene que identificarse primero antes
 	de enviar. Hay diferentes posibilidades para ello. La mejor, cuando
-	está disponible, es SMTP AUTH. Cuando no está disponible normalmente
-	usará <quote>Autentificación con POP3 antes de enviar</quote>, que se
-	conecta al servidor POP (que necesita autentificación), desconecta y
-	envía el correo.
+	estÃ¡ disponible, es SMTP AUTH. Cuando no estÃ¡ disponible normalmente
+	usarÃ¡ <quote>AutentificaciÃ³n con POP3 antes de enviar</quote>, que se
+	conecta al servidor POP (que necesita autentificaciÃ³n), desconecta y
+	envÃ­a el correo.
     </para><para>
-	La pestaña de <quote>Componer</quote> alberga las opciones para cambiar
-	el comportamiento de la ventana de composición cuando se usa con la
+	La pestaÃ±a de <quote>Componer</quote> alberga las opciones para cambiar
+	el comportamiento de la ventana de composiciÃ³n cuando se usa con la
 	cuenta. Se puede especificar una firma para insertar de manera
-	automática y establecer direcciones <quote>Cc</quote>, 
+	automÃ¡tica y establecer direcciones <quote>Cc</quote>, 
 	<quote>Bcc</quote> o <quote>Responder a</quote> predeterminadas.
     </para><para>
-	En la pestaña de <quote>Privacidad</quote> se puede seleccionar el
+	En la pestaÃ±a de <quote>Privacidad</quote> se puede seleccionar el
 	nivel de paranoia predeterminado para la cuenta. Puede desear que todos
 	los mensajes enviados sean firmados y/o cifrados digitalmente. Firmar
-	todos los mensajes salientes, no sólo los importantes, podrá, por 
+	todos los mensajes salientes, no sÃ³lo los importantes, podrÃ¡, por 
 	ejemplo, protegerle de correos falsos enviados en su nombre a 
-	compañeros de trabajo. Esto puede ayudar a resolver situaciones 
+	compaÃ±eros de trabajo. Esto puede ayudar a resolver situaciones 
 	embarazosas.
     </para><para>
-	La pestaña <quote>SSL</quote> también está relacionada con la 
-	seguridad, aunque en esta ocasión las configuraciones se aplican al
-	transporte de sus correos y no al contenido de los mismos. Básicamente
-	el uso de SSL realiza un cifrado de la conexión entre usted y el 
-	servidor, que evita que alguién espiando en su conexión sea capaz de
-	leer sus correos y su contraseña. Debería usar SSL siempre que esté
+	La pestaÃ±a <quote>SSL</quote> tambiÃ©n estÃ¡ relacionada con la 
+	seguridad, aunque en esta ocasiÃ³n las configuraciones se aplican al
+	transporte de sus correos y no al contenido de los mismos. BÃ¡sicamente
+	el uso de SSL realiza un cifrado de la conexiÃ³n entre usted y el 
+	servidor, que evita que alguiÃ©n espiando en su conexiÃ³n sea capaz de
+	leer sus correos y su contraseÃ±a. DeberÃ­a usar SSL siempre que estÃ©
 	disponible.
     </para><para>
-	Finalmente, la pestaña <quote>Avanzadas</quote> permite especificar
+	Finalmente, la pestaÃ±a <quote>Avanzadas</quote> permite especificar
 	puertos y dominios si no se utilizan los valores predeterminados.
-	Habitualmente puede dejar estas opciones vacías. También se pueden
-	indicar aquí las carpetas para mensajes enviados, encolados, borradores
+	Habitualmente puede dejar estas opciones vacÃ­as. TambiÃ©n se pueden
+	indicar aquÃ­ las carpetas para mensajes enviados, encolados, borradores
 	y borrados.
     </para>
   </section>
@@ -75,51 +75,51 @@
     <title>Tipos de cuentas</title>
     <para>
 	Como vimos anteriormente, una vez creada una cuenta no se puede cambiar
-	su tipo (protocolo) nunca más. Esto es debido a que las preferencias
-	para estos diferentes tipos no son similares, siendo la mayoría de las
+	su tipo (protocolo) nunca mÃ¡s. Esto es debido a que las preferencias
+	para estos diferentes tipos no son similares, siendo la mayorÃ­a de las
 	opciones relacionadas con POP3 irrelevantes para IMAP, por ejemplo.
     </para>
     <section id="pop3">
     <title>POP3</title>
     <para>
-	POP3 es uno de los dos procotolos más utilizados y está disponible en
+	POP3 es uno de los dos procotolos mÃ¡s utilizados y estÃ¡ disponible en
 	casi cualquier ISP del planeta. Su ventaja es que permite descargar
 	el correo a su ordenador, lo cual significa que el acceso al mismo es
-	realmente rápido una vez lo tenga en su disco duro. La desventaja de
-	POP3 es que es más complicado mantener el correo sincronizado en 
-	múltiples ordenadores (tendrá que mantener el correo en el servidor
-	durante algunos días) y no será fácil llevar a cabo el seguimiento de 
-	que mensajes han sido leídos, cuales respondidos, etc. cuando esté 
+	realmente rÃ¡pido una vez lo tenga en su disco duro. La desventaja de
+	POP3 es que es mÃ¡s complicado mantener el correo sincronizado en 
+	mÃºltiples ordenadores (tendrÃ¡ que mantener el correo en el servidor
+	durante algunos dÃ­as) y no serÃ¡ fÃ¡cil llevar a cabo el seguimiento de 
+	que mensajes han sido leÃ­dos, cuales respondidos, etc. cuando estÃ© 
 	usando otro ordenador.
     </para><para>
-	El correo recibido de una cuenta POP3 será almacenado en un buzón MH
-	en el árbol de carpetas.
+	El correo recibido de una cuenta POP3 serÃ¡ almacenado en un buzÃ³n MH
+	en el Ã¡rbol de carpetas.
     </para>
     </section>
     <section id="imap">
     <title>IMAP</title>
     <para>
-	IMAP es el segundo protocolo más utilizado y su objetivo es resolver
+	IMAP es el segundo protocolo mÃ¡s utilizado y su objetivo es resolver
 	las desventajas de POP3. Al usar IMAP su lista de carpetas y sus
-	mensajes serán todos mantenidos en un servidor central. Esto ralentiza
-	un poco la navegación ya que cada correo es descargado bajo demanda,
-	pero cuando use otro ordenador o cliente de correo sus mensajes estarán
-	en el mismo estado en que los dejó, incluyendo su estado (leído, sin
+	mensajes serÃ¡n todos mantenidos en un servidor central. Esto ralentiza
+	un poco la navegaciÃ³n ya que cada correo es descargado bajo demanda,
+	pero cuando use otro ordenador o cliente de correo sus mensajes estarÃ¡n
+	en el mismo estado en que los dejÃ³, incluyendo su estado (leÃ­do, sin
 	leer, respondido, etc.).
     </para><para>
-	Cuando cree una cuenta IMAP se creará un buzón IMAP para ella en el
-	árbol de carpetas.
+	Cuando cree una cuenta IMAP se crearÃ¡ un buzÃ³n IMAP para ella en el
+	Ã¡rbol de carpetas.
     </para>
     </section>
     <section id="news">
     <title>Noticias (<emphasis>News</emphasis>)</title>
     <para>
-	Las noticias (NNTP) es el protocolo para enviar y recibir artículos de
+	Las noticias (NNTP) es el protocolo para enviar y recibir artÃ­culos de
 	USENET. Los mesajes se mantienen en un servidor central y son 
 	descargados bajo demanda. El usuario no puede borrar los mensajes.
     </para><para>
-	Cuando cree una cuenta de noticias se creará un buzón de noticias para
-	ella en el árbol de carpetas.
+	Cuando cree una cuenta de noticias se crearÃ¡ un buzÃ³n de noticias para
+	ella en el Ã¡rbol de carpetas.
     </para>
     </section>
     <section id="local">
@@ -127,17 +127,17 @@
     <para>
 	El tipo de cuenta <quote>Local mbox file</quote> puede ser usado si
 	se ejecuta un servidor SMTP en su ordenador y/o quiere recibir sus
-	registros fácilmente.
+	registros fÃ¡cilmente.
     </para><para>
-	El correo recibido de una cuenta local se almacena en un buzón MH en
-	el árbol de carpetas.
+	El correo recibido de una cuenta local se almacena en un buzÃ³n MH en
+	el Ã¡rbol de carpetas.
     </para>
     </section>
     <section id="smtp_only">
-    <title>Sólo SMTP</title>
+    <title>SÃ³lo SMTP</title>
     <para>
 	El tipo de cuenta <quote>None, (SMTP only)</quote> es un tipo especial
-	de cuenta que no recibirá ningún correo, pero que permite crear
+	de cuenta que no recibirÃ¡ ningÃºn correo, pero que permite crear
 	identidades diferentes que pueden usarse para, por ejemplo, enviar
 	correo con distintos alias.
     </para>
@@ -145,42 +145,42 @@
   </section>
 
   <section id="account_multiple">
-    <title>Múltiples cuentas</title>
+    <title>MÃºltiples cuentas</title>
     <para>
-	Se pueden crear fácilmente múltiples cuentas en &SC;. Para las cuentas
+	Se pueden crear fÃ¡cilmente mÃºltiples cuentas en &SC;. Para las cuentas
 	POP se puede almacenar todo el correo de distintas cuentas en la(s)
-	misma(s) carpeta(s), usando la configuración de la pestaña 
+	misma(s) carpeta(s), usando la configuraciÃ³n de la pestaÃ±a 
 	<quote>Recibir</quote>. Las cuentas IMAP y de noticias tienen sus
-	propios buzones cada una de ellas en el árbol de carpetas.
+	propios buzones cada una de ellas en el Ã¡rbol de carpetas.
     </para><para>
-	Puede seleccionar en que cuentas se comprobará si hay correo nuevo
+	Puede seleccionar en que cuentas se comprobarÃ¡ si hay correo nuevo
 	al usar el comando <quote>Recibir todo</quote> en la barra de 
 	herramientas, marcando para ello la casilla correspondiente el la 
-	pestaña <quote>Recibir</quote> de su configuración o en la columna 
+	pestaÃ±a <quote>Recibir</quote> de su configuraciÃ³n o en la columna 
 	<quote>G</quote> de la lista de cuentas.
     </para>
   </section>
 
   <section id="account_morefilt">
-    <title>Más filtrado</title>
+    <title>MÃ¡s filtrado</title>
     <para>
-	Por defecto las reglas de filtrado son globales, pero también pueden
-	asignarse a una cuenta específica. Al recuperar el correo, cualquier
-	regla asignada a una cuenta específica solo se aplicará a mensajes
+	Por defecto las reglas de filtrado son globales, pero tambiÃ©n pueden
+	asignarse a una cuenta especÃ­fica. Al recuperar el correo, cualquier
+	regla asignada a una cuenta especÃ­fica solo se aplicarÃ¡ a mensajes
 	recuperados desde esa cuenta.
     </para>
     <para>
 	El correo de cualquier cuenta se puede filtrar hacia las carpetas 
-	de otras cuentas. Por ejemplo, un correo recibido a través de POP3 
-	podría filtrarse a una carpeta de una cuenta IMAP, y viceversa. 
-	Esto puede ser una característica útil o desagradable, depende de 
-	lo que quiera conseguir. Si prefiriese evitar esto, pero aún desea 
-	ordenar su correo entrante de manera automática lo mejor es desactivar 
+	de otras cuentas. Por ejemplo, un correo recibido a travÃ©s de POP3 
+	podrÃ­a filtrarse a una carpeta de una cuenta IMAP, y viceversa. 
+	Esto puede ser una caracterÃ­stica Ãºtil o desagradable, depende de 
+	lo que quiera conseguir. Si prefiriese evitar esto, pero aÃºn desea 
+	ordenar su correo entrante de manera automÃ¡tica lo mejor es desactivar 
 	el filtrado en ciertas cuentas y utilizar las reglas de procesamiento 
 	en cada una de las carpetas de entrada que especifique, ya que las 
-	reglas de procesamiento se aplican automáticamente cuando se abre la 
-	carpeta y pueden aplicarse manualmente desde la opción correspondiente
-	en el menú de contexto de la carpeta.
+	reglas de procesamiento se aplican automÃ¡ticamente cuando se abre la 
+	carpeta y pueden aplicarse manualmente desde la opciÃ³n correspondiente
+	en el menÃº de contexto de la carpeta.
     </para>
   </section>
 

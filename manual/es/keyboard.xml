@@ -1,40 +1,40 @@
-<?xml version="1.0" encoding="iso-8859-1"?>
+<?xml version="1.0" encoding="utf-8"?>
 <appendix id="ap_keyboard">
 <title>Atajos de teclado predeterminados</title>
 
   <section id="keyb_general">
     <title>Motivaciones y convenciones generales</title>
     <para>
-	Aunque &SC; es una aplicación gráfica y principalmente puede ser 
-	utilizada con el ratón, también requiere del uso frecuente del teclado.
-	Componer un mensaje es una de las tareas más comunes que hace uso
+	Aunque &SC; es una aplicaciÃ³n grÃ¡fica y principalmente puede ser 
+	utilizada con el ratÃ³n, tambiÃ©n requiere del uso frecuente del teclado.
+	Componer un mensaje es una de las tareas mÃ¡s comunes que hace uso
 	del teclado. Para la gente que escribe muchos correos tener que
-	apartar las manos del teclado al ratón disminuye la productividad de
+	apartar las manos del teclado al ratÃ³n disminuye la productividad de
 	manera notable, por lo que &SC; proporciona una serie de atajos de
-	teclado para permitir un manejo más rápido.
+	teclado para permitir un manejo mÃ¡s rÃ¡pido.
     </para>
     <para>
-	Esto no sólo beneficia a los usuarios avanzados proporcionándoles
-	alternativas y navegación con teclado, si no que también permite que
+	Esto no sÃ³lo beneficia a los usuarios avanzados proporcionÃ¡ndoles
+	alternativas y navegaciÃ³n con teclado, si no que tambiÃ©n permite que
 	gente con discapacidades (que pueden no ser capaces de controlar
 	adecuadamente un dispositivo apuntador) pueda usar &SC;. 
     </para>
     <para>
-	La convención más general es la tecla <option>Escape</option>. Los
-	diálogos o ventanas activas se pueden cerrar pulsando 
+	La convenciÃ³n mÃ¡s general es la tecla <option>Escape</option>. Los
+	diÃ¡logos o ventanas activas se pueden cerrar pulsando 
 	<option>Esc</option>.
     </para>
     <para>
-	Hay otras combinaciones de teclas que están asignadas de manera
-	predeterminada a elementos de menú. Éstas no se listarán aquí, ya
-	que aparecen mostradas en la parte derecha de los propios menús, de
-	manera que puedan ser aprendidas fácilmente con el uso. Además, si
+	Hay otras combinaciones de teclas que estÃ¡n asignadas de manera
+	predeterminada a elementos de menÃº. &Eacute;stas no se listarÃ¡n aquÃ­, ya
+	que aparecen mostradas en la parte derecha de los propios menÃºs, de
+	manera que puedan ser aprendidas fÃ¡cilmente con el uso. AdemÃ¡s, si
 	no son de su agrado, estos atajos pueden ser cambiados al instante
-	mediante el enfoque del elemento del menú y pulsando la nueva
-	combinación deseada. 
+	mediante el enfoque del elemento del menÃº y pulsando la nueva
+	combinaciÃ³n deseada. 
     </para>
     <para>
-	Además de estos atajos hay otros que varían de una ventana a otra,
+	AdemÃ¡s de estos atajos hay otros que varÃ­an de una ventana a otra,
 	y que se resumen en las secciones siguientes.
     </para>
   </section>
@@ -55,7 +55,7 @@
 	  </row>
 	  <row>
 	    <entry><option>Control+w</option></entry>
-	    <entry>Trabajar sin conexión</entry>
+	    <entry>Trabajar sin conexiÃ³n</entry>
 	  </row>
 	  <row>
 	    <entry><option>Control+Mays+s</option></entry>
@@ -87,7 +87,7 @@
 	  </row>
 	  <row>
 	    <entry><option>Control+t</option></entry>
-	    <entry>Conmutar la vista jerárquica</entry>
+	    <entry>Conmutar la vista jerÃ¡rquica</entry>
 	  </row>
           <row>
 	    <entry><option>n</option></entry>
@@ -100,7 +100,7 @@
 	    <entry><option>p</option></entry>
 	    <entry>
 		Ir al correo anterior. La flecha <option>Arriba</option> es
-		un sinónimo.
+		un sinÃ³nimo.
 	    </entry>
 	  </row>
 	  <row>
@@ -127,15 +127,15 @@
 	    <entry><option>v</option></entry>
 	    <entry>
 		Conmutar la visibilidad del panel de la vista de mensaje. Si
-		está invisible la lista de mensajes se expande para llenar todo
-		el alto de la ventana y se muestran más líneas de resumen.
+		estÃ¡ invisible la lista de mensajes se expande para llenar todo
+		el alto de la ventana y se muestran mÃ¡s lÃ­neas de resumen.
 	    </entry>
 	  </row>
 	  <row>
 	    <entry><option>/</option></entry>
 	    <entry>
-		Coloca el cursor en el campo de búsqueda rápida, abriendo 
-		también el panel de búsqueda rápida si es necesario.
+		Coloca el cursor en el campo de bÃºsqueda rÃ¡pida, abriendo 
+		tambiÃ©n el panel de bÃºsqueda rÃ¡pida si es necesario.
 	    </entry>
 	  </row>
 	  <row>
@@ -196,7 +196,7 @@
 	  </row>
 	  <row>
 	    <entry><option>Mays+!</option></entry>
-	    <entry>Marcar mensaje como no leído</entry>
+	    <entry>Marcar mensaje como no leÃ­do</entry>
 	  </row>
 	  <row>
 	    <entry><option>Mays+Control+a</option>
@@ -216,7 +216,7 @@
   </section>
 
   <section id="keyb_compose">
-    <title>Ventana de composición</title>
+    <title>Ventana de composiciÃ³n</title>
     <informaltable frame="topbot">
      <tgroup cols="2">
      <colspec colwidth="*" />
@@ -231,7 +231,7 @@
 	</row>
 	<row>
 	  <entry><option>Mays+Control+s</option></entry>
-	  <entry>Enviar después</entry>
+	  <entry>Enviar despuÃ©s</entry>
 	</row>
 	<row>
 	  <entry><option>Control+m</option></entry>
@@ -287,15 +287,15 @@
 	</row>
 	<row>
 	  <entry><option>Control+e</option></entry>
-	  <entry>Moverse al final de la línea</entry>
+	  <entry>Moverse al final de la lÃ­nea</entry>
 	</row>
 	<row>
 	  <entry><option>Control+p</option></entry>
-	  <entry>Moverse a la línea anterior</entry>
+	  <entry>Moverse a la lÃ­nea anterior</entry>
 	</row>
 	<row>
 	  <entry><option>Control+n</option></entry>
-	  <entry>Moverse a la línea siguiente</entry>
+	  <entry>Moverse a la lÃ­nea siguiente</entry>
 	</row>
 	<row>
 	  <entry><option>Control+h</option></entry>
@@ -307,23 +307,23 @@
 	</row>
 	<row>
 	  <entry><option>Control+u</option></entry>
-	  <entry>Borrar línea</entry>
+	  <entry>Borrar lÃ­nea</entry>
 	</row>
 	<row>
 	  <entry><option>Control+k</option></entry>
-	  <entry>Borrar hasta el final de la línea</entry>
+	  <entry>Borrar hasta el final de la lÃ­nea</entry>
 	</row>
 	<row>
 	  <entry><option>Control+l</option></entry>
-	  <entry>Recortar el párrafo actual</entry>
+	  <entry>Recortar el pÃ¡rrafo actual</entry>
 	</row>
 	<row>
 	  <entry><option>Control+Alt+l</option></entry>
-	  <entry>Recortar todas las líneas largas</entry>
+	  <entry>Recortar todas las lÃ­neas largas</entry>
 	</row>
 	<row>
 	  <entry><option>Mays+Control+l</option></entry>
-	  <entry>Conmutar el recorte automático</entry>
+	  <entry>Conmutar el recorte automÃ¡tico</entry>
 	</row>
 	<row>
 	  <entry><option>Mays+Control+x</option></entry>
