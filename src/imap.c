@@ -5777,7 +5777,11 @@ char* imap_utf8_to_modified_utf7(const char *src, gboolean change_spaces)
   unsigned long ucs4 = 0, bitbuf = 0;
 
   /* initialize hex lookup table */
-  char *dst, *res = malloc(2*strlen(src)+1);
+  char *dst, *res;
+
+  if (!src) return NULL;
+
+  res = malloc(2*strlen(src)+1);
   dst = res;
   if(!dst) return NULL;
 

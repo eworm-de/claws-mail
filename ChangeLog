@@ -1,3 +1,10 @@
+2009-03-02 [colin]	3.7.0cvs76
+
+	* src/imap.c
+		Fix Launchpad bug 335571: 'claws-mail crashed 
+		with SIGSEGV in strlen() while deleting 
+		large amount of e-mails on IMAP account
+
 2009-02-27 [mones]	3.7.0cvs75
 
 	* manual/es/account.xml
