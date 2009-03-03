@@ -1,3 +1,9 @@
+2009-03-03 [colin]	3.7.0cvs77
+
+	* src/prefs_filtering.c
+		Win32: Fix bug 1865, 'IMAP account name changes 
+		are not followed at filter actions'
+
 2009-03-02 [colin]	3.7.0cvs76
 
 	* src/imap.c
