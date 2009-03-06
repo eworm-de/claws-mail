@@ -1,3 +1,19 @@
+2009-03-06 [paul]	3.7.0cvs78
+
+	* po/cs.po
+	* po/de.po
+	* po/fi.po
+	* po/fr.po
+	* po/hu.po
+	* po/nl.po
+	* po/pt_BR.po
+	* po/sv.po
+	* po/zh_CN.po
+		updated by David Vachulka, Stephan Sachse, Flammie
+		Pirinen, Colin Leroy, Pader Rezso, Marcel Pol,
+		Frederico Goncalves Guimaraes, Lars Persson Fink,
+		and Ralph Young
+
 2009-03-03 [colin]	3.7.0cvs77
 
 	* src/prefs_filtering.c
