@@ -44,6 +44,12 @@ struct _FolderItemPrefs {
 	gchar *default_to;
 	gboolean enable_default_reply_to;
 	gchar *default_reply_to;
+	gboolean enable_default_cc;
+	gchar *default_cc;
+	gboolean enable_default_bcc;
+	gchar *default_bcc;
+	gboolean enable_default_replyto;
+	gchar *default_replyto;
 	gboolean enable_simplify_subject;
 #ifndef G_OS_WIN32
 	gchar *simplify_subject_regexp;

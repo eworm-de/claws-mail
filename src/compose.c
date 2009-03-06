@@ -1018,9 +1018,20 @@ Compose *compose_generic_new(PrefsAccount *account, const gchar *mailto, FolderI
 		if (mailto && *mailto != '\0') {
 			compose_entries_set(compose, mailto, COMPOSE_TO);
 
-		} else if (item && item->prefs && item->prefs->enable_default_to) {
-			compose_entry_append(compose, item->prefs->default_to, COMPOSE_TO);
-			compose_entry_mark_default_to(compose, item->prefs->default_to);
+		} else if (item && item->prefs) {
+			if (item->prefs->enable_default_bcc) {
+				compose_entry_append(compose, item->prefs->default_bcc, COMPOSE_BCC);
+			}
+			if (item->prefs->enable_default_cc) {
+				compose_entry_append(compose, item->prefs->default_cc, COMPOSE_CC);
+			}
+			if (item->prefs->enable_default_replyto) {
+				compose_entry_append(compose, item->prefs->default_replyto, COMPOSE_REPLYTO);
+			}
+			if (item->prefs->enable_default_to) {
+				compose_entry_append(compose, item->prefs->default_to, COMPOSE_TO);
+				compose_entry_mark_default_to(compose, item->prefs->default_to);
+			}
 		}
 		if (item && item->ret_rcpt) {
 			cm_toggle_menu_set_active_full(compose->ui_manager, "Menu/Options/RequestRetRcpt", TRUE);
@@ -2994,6 +3005,17 @@ static void compose_reply_set_entry(Compose *compose, MsgInfo *msginfo,
 		msginfo->folder->prefs->enable_default_reply_to;
 
 	if (compose->account->protocol != A_NNTP) {
+		if (msginfo && msginfo->folder && msginfo->folder->prefs) {
+			if (msginfo->folder->prefs->enable_default_replyto) {
+				compose_entry_append(compose, msginfo->folder->prefs->default_replyto, COMPOSE_REPLYTO);
+			}
+			if (msginfo->folder->prefs->enable_default_bcc) {
+				compose_entry_append(compose, msginfo->folder->prefs->default_bcc, COMPOSE_BCC);
+			}
+			if (msginfo->folder->prefs->enable_default_cc) {
+				compose_entry_append(compose, msginfo->folder->prefs->default_cc, COMPOSE_CC);
+			}
+		}
 		if (reply_to_ml && !default_reply_to) {
 			
 			gboolean is_subscr = is_subscription(compose->ml_post,
@@ -6280,7 +6302,7 @@ static void compose_create_header_entry(Compose *compose)
 	gtk_table_attach(GTK_TABLE(compose->header_table), combo, 0, 1,
 			compose->header_nextrow, compose->header_nextrow+1,
 			GTK_SHRINK, GTK_FILL, 0, 0);
-	if (compose->header_last) {	
+	if (compose->header_last && (compose->draft_timeout_tag != -2)) {
 		const gchar *last_header_entry = gtk_entry_get_text(
 				GTK_ENTRY(gtk_bin_get_child(GTK_BIN((compose->header_last->combo)))));
 		string = headers;

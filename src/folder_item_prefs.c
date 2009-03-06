@@ -42,6 +42,18 @@ static PrefParam param[] = {
 	 NULL, NULL, NULL},
 	{"default_reply_to", "", &tmp_prefs.default_reply_to, P_STRING,
 	 NULL, NULL, NULL},
+	{"enable_default_cc", "", &tmp_prefs.enable_default_cc, P_BOOL,
+	 NULL, NULL, NULL},
+	{"default_cc", "", &tmp_prefs.default_cc, P_STRING,
+	 NULL, NULL, NULL},
+	{"enable_default_bcc", "", &tmp_prefs.enable_default_bcc, P_BOOL,
+	 NULL, NULL, NULL},
+	{"default_bcc", "", &tmp_prefs.default_bcc, P_STRING,
+	 NULL, NULL, NULL},
+	{"enable_default_replyto", "", &tmp_prefs.enable_default_replyto, P_BOOL,
+	 NULL, NULL, NULL},
+	{"default_replyto", "", &tmp_prefs.default_replyto, P_STRING,
+	 NULL, NULL, NULL},
 	{"enable_simplify_subject", "", &tmp_prefs.enable_simplify_subject, P_BOOL,
 	 NULL, NULL, NULL},
 #ifndef G_OS_WIN32
@@ -158,6 +170,12 @@ static FolderItemPrefs *folder_item_prefs_clear(FolderItemPrefs *prefs)
 	prefs->default_to = NULL;
 	prefs->enable_default_reply_to = FALSE;
 	prefs->default_reply_to = NULL;
+	prefs->enable_default_cc = FALSE;
+	prefs->default_cc = NULL;
+	prefs->enable_default_bcc = FALSE;
+	prefs->default_bcc = NULL;
+	prefs->enable_default_replyto = FALSE;
+	prefs->default_replyto = NULL;
 	prefs->enable_simplify_subject = FALSE;
 #ifndef G_OS_WIN32
 	prefs->simplify_subject_regexp = NULL;
@@ -212,6 +230,9 @@ void folder_item_prefs_free(FolderItemPrefs * prefs)
 {
 	g_free(prefs->default_to);
 	g_free(prefs->default_reply_to);
+	g_free(prefs->default_cc);
+	g_free(prefs->default_bcc);
+	g_free(prefs->default_replyto);
 	g_free(prefs->compose_subject_format);
 	g_free(prefs->compose_body_format);
 	g_free(prefs->compose_override_from_format);
@@ -256,6 +277,12 @@ void folder_item_prefs_copy_prefs(FolderItem * src, FolderItem * dest)
 	tmp_prefs.default_to			= g_strdup(src->prefs->default_to);
 	tmp_prefs.enable_default_reply_to	= src->prefs->enable_default_reply_to;
 	tmp_prefs.default_reply_to		= g_strdup(src->prefs->default_reply_to);
+	tmp_prefs.enable_default_cc		= src->prefs->enable_default_cc;
+	tmp_prefs.default_cc			= g_strdup(src->prefs->default_cc);
+	tmp_prefs.enable_default_bcc		= src->prefs->enable_default_bcc;
+	tmp_prefs.default_bcc			= g_strdup(src->prefs->default_bcc);
+	tmp_prefs.enable_default_replyto		= src->prefs->enable_default_replyto;
+	tmp_prefs.default_replyto			= g_strdup(src->prefs->default_replyto);
 	tmp_prefs.enable_simplify_subject	= src->prefs->enable_simplify_subject;
 #ifndef G_OS_WIN32
 	tmp_prefs.simplify_subject_regexp	= g_strdup(src->prefs->simplify_subject_regexp);

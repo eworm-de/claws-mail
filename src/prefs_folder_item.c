@@ -123,6 +123,12 @@ struct _FolderItemComposePage
 	GtkWidget *entry_default_to;
 	GtkWidget *checkbtn_default_reply_to;
 	GtkWidget *entry_default_reply_to;
+	GtkWidget *checkbtn_default_cc;
+	GtkWidget *entry_default_cc;
+	GtkWidget *checkbtn_default_bcc;
+	GtkWidget *entry_default_bcc;
+	GtkWidget *checkbtn_default_replyto;
+	GtkWidget *entry_default_replyto;
 	GtkWidget *checkbtn_enable_default_account;
 	GtkWidget *optmenu_default_account;
 #if USE_ENCHANT
@@ -137,6 +143,9 @@ struct _FolderItemComposePage
 	GtkWidget *save_copy_to_folder_rec_checkbtn;
 	GtkWidget *default_to_rec_checkbtn;
 	GtkWidget *default_reply_to_rec_checkbtn;
+	GtkWidget *default_cc_rec_checkbtn;
+	GtkWidget *default_bcc_rec_checkbtn;
+	GtkWidget *default_replyto_rec_checkbtn;
 	GtkWidget *default_account_rec_checkbtn;
 #if USE_ENCHANT
 	GtkWidget *default_dictionary_rec_checkbtn;
@@ -758,6 +767,12 @@ static void prefs_folder_item_compose_create_widget_func(PrefsPage * page_,
 	GtkWidget *entry_default_to = NULL;
 	GtkWidget *checkbtn_default_reply_to = NULL;
 	GtkWidget *entry_default_reply_to = NULL;
+	GtkWidget *checkbtn_default_cc = NULL;
+	GtkWidget *entry_default_cc = NULL;
+	GtkWidget *checkbtn_default_bcc = NULL;
+	GtkWidget *entry_default_bcc = NULL;
+	GtkWidget *checkbtn_default_replyto = NULL;
+	GtkWidget *entry_default_replyto = NULL;
 	GtkWidget *checkbtn_enable_default_account = NULL;
 	GtkWidget *optmenu_default_account = NULL;
 	GtkListStore *optmenu_default_account_menu = NULL;
@@ -775,6 +790,9 @@ static void prefs_folder_item_compose_create_widget_func(PrefsPage * page_,
 	GtkWidget *save_copy_to_folder_rec_checkbtn = NULL;
 	GtkWidget *default_to_rec_checkbtn = NULL;
 	GtkWidget *default_reply_to_rec_checkbtn = NULL;
+	GtkWidget *default_cc_rec_checkbtn = NULL;
+	GtkWidget *default_bcc_rec_checkbtn = NULL;
+	GtkWidget *default_replyto_rec_checkbtn = NULL;
 	GtkWidget *default_account_rec_checkbtn = NULL;
 
 	GList *cur_ac;
@@ -884,6 +902,69 @@ static void prefs_folder_item_compose_create_widget_func(PrefsPage * page_,
 
 		default_reply_to_rec_checkbtn = gtk_check_button_new();
 		gtk_table_attach(GTK_TABLE(table), default_reply_to_rec_checkbtn, 2, 3, 
+				 rowcount, rowcount + 1, GTK_SHRINK, GTK_SHRINK, 0, 0);
+
+		rowcount++;
+
+		/* Default Cc */
+		checkbtn_default_cc = gtk_check_button_new_with_label(_("Default Cc:"));
+		gtk_table_attach(GTK_TABLE(table), checkbtn_default_cc, 0, 1, 
+				 rowcount, rowcount + 1, GTK_SHRINK | GTK_FILL, GTK_SHRINK, 0, 0);
+		gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(checkbtn_default_cc), 
+					     item->prefs->enable_default_cc);
+
+		entry_default_cc = gtk_entry_new();
+		gtk_table_attach(GTK_TABLE(table), entry_default_cc, 1, 2,
+				 rowcount, rowcount + 1, GTK_EXPAND | GTK_FILL, GTK_SHRINK, 0, 0);
+		SET_TOGGLE_SENSITIVITY(checkbtn_default_cc, entry_default_cc);
+		gtk_entry_set_text(GTK_ENTRY(entry_default_cc), SAFE_STRING(item->prefs->default_cc));
+		address_completion_register_entry(GTK_ENTRY(entry_default_cc),
+				TRUE);
+
+		default_cc_rec_checkbtn = gtk_check_button_new();
+		gtk_table_attach(GTK_TABLE(table), default_cc_rec_checkbtn, 2, 3, 
+				 rowcount, rowcount + 1, GTK_SHRINK, GTK_SHRINK, 0, 0);
+
+		rowcount++;
+
+		/* Default Bcc */
+		checkbtn_default_bcc = gtk_check_button_new_with_label(_("Default Bcc:"));
+		gtk_table_attach(GTK_TABLE(table), checkbtn_default_bcc, 0, 1, 
+				 rowcount, rowcount + 1, GTK_SHRINK | GTK_FILL, GTK_SHRINK, 0, 0);
+		gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(checkbtn_default_bcc), 
+					     item->prefs->enable_default_bcc);
+
+		entry_default_bcc = gtk_entry_new();
+		gtk_table_attach(GTK_TABLE(table), entry_default_bcc, 1, 2,
+				 rowcount, rowcount + 1, GTK_EXPAND | GTK_FILL, GTK_SHRINK, 0, 0);
+		SET_TOGGLE_SENSITIVITY(checkbtn_default_bcc, entry_default_bcc);
+		gtk_entry_set_text(GTK_ENTRY(entry_default_bcc), SAFE_STRING(item->prefs->default_bcc));
+		address_completion_register_entry(GTK_ENTRY(entry_default_bcc),
+				TRUE);
+
+		default_bcc_rec_checkbtn = gtk_check_button_new();
+		gtk_table_attach(GTK_TABLE(table), default_bcc_rec_checkbtn, 2, 3, 
+				 rowcount, rowcount + 1, GTK_SHRINK, GTK_SHRINK, 0, 0);
+
+		rowcount++;
+
+		/* Default Reply-to */
+		checkbtn_default_replyto = gtk_check_button_new_with_label(_("Default Reply-to:"));
+		gtk_table_attach(GTK_TABLE(table), checkbtn_default_replyto, 0, 1, 
+				 rowcount, rowcount + 1, GTK_SHRINK | GTK_FILL, GTK_SHRINK, 0, 0);
+		gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(checkbtn_default_replyto), 
+					     item->prefs->enable_default_replyto);
+
+		entry_default_replyto = gtk_entry_new();
+		gtk_table_attach(GTK_TABLE(table), entry_default_replyto, 1, 2,
+				 rowcount, rowcount + 1, GTK_EXPAND | GTK_FILL, GTK_SHRINK, 0, 0);
+		SET_TOGGLE_SENSITIVITY(checkbtn_default_replyto, entry_default_replyto);
+		gtk_entry_set_text(GTK_ENTRY(entry_default_replyto), SAFE_STRING(item->prefs->default_replyto));
+		address_completion_register_entry(GTK_ENTRY(entry_default_replyto),
+				TRUE);
+
+		default_replyto_rec_checkbtn = gtk_check_button_new();
+		gtk_table_attach(GTK_TABLE(table), default_replyto_rec_checkbtn, 2, 3, 
 				 rowcount, rowcount + 1, GTK_SHRINK, GTK_SHRINK, 0, 0);
 
 		rowcount++;
@@ -1019,6 +1100,12 @@ static void prefs_folder_item_compose_create_widget_func(PrefsPage * page_,
 	page->entry_default_to = entry_default_to;
 	page->checkbtn_default_reply_to = checkbtn_default_reply_to;
 	page->entry_default_reply_to = entry_default_reply_to;
+	page->checkbtn_default_cc = checkbtn_default_cc;
+	page->entry_default_cc = entry_default_cc;
+	page->checkbtn_default_bcc = checkbtn_default_bcc;
+	page->entry_default_bcc = entry_default_bcc;
+	page->checkbtn_default_replyto = checkbtn_default_replyto;
+	page->entry_default_replyto = entry_default_replyto;
 	page->checkbtn_enable_default_account = checkbtn_enable_default_account;
 	page->optmenu_default_account = optmenu_default_account;
 #ifdef USE_ENCHANT
@@ -1032,6 +1119,9 @@ static void prefs_folder_item_compose_create_widget_func(PrefsPage * page_,
 	page->save_copy_to_folder_rec_checkbtn	  = save_copy_to_folder_rec_checkbtn;
 	page->default_to_rec_checkbtn		  = default_to_rec_checkbtn;
 	page->default_reply_to_rec_checkbtn	  = default_reply_to_rec_checkbtn;
+	page->default_cc_rec_checkbtn		  = default_cc_rec_checkbtn;
+	page->default_bcc_rec_checkbtn		  = default_bcc_rec_checkbtn;
+	page->default_replyto_rec_checkbtn		  = default_replyto_rec_checkbtn;
 	page->default_account_rec_checkbtn	  = default_account_rec_checkbtn;
 #if USE_ENCHANT
 	page->default_dictionary_rec_checkbtn = default_dictionary_rec_checkbtn;
@@ -1049,6 +1139,12 @@ static void prefs_folder_item_compose_destroy_widget_func(PrefsPage *page_)
 		address_completion_unregister_entry(GTK_ENTRY(page->entry_default_to));
 	if (page->entry_default_reply_to)
 		address_completion_unregister_entry(GTK_ENTRY(page->entry_default_reply_to));
+	if (page->entry_default_cc)
+		address_completion_unregister_entry(GTK_ENTRY(page->entry_default_cc));
+	if (page->entry_default_bcc)
+		address_completion_unregister_entry(GTK_ENTRY(page->entry_default_bcc));
+	if (page->entry_default_replyto)
+		address_completion_unregister_entry(GTK_ENTRY(page->entry_default_replyto));
 }
 
 /** \brief  Save the prefs in page to folder.
@@ -1097,11 +1193,39 @@ static void compose_save_folder_prefs(FolderItem *folder, FolderItemComposePage 
 			ASSIGN_STRING(prefs->default_reply_to,
 				      gtk_editable_get_chars(GTK_EDITABLE(page->entry_default_reply_to), 0, -1));
 		}
+
+		if (all || gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(page->default_cc_rec_checkbtn))) {
+
+			prefs->enable_default_cc = 
+				gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(page->checkbtn_default_cc));
+			ASSIGN_STRING(prefs->default_cc,
+				      gtk_editable_get_chars(GTK_EDITABLE(page->entry_default_cc), 0, -1));
+		}
+
+		if (all || gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(page->default_bcc_rec_checkbtn))) {
+
+			prefs->enable_default_bcc = 
+				gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(page->checkbtn_default_bcc));
+			ASSIGN_STRING(prefs->default_bcc,
+				      gtk_editable_get_chars(GTK_EDITABLE(page->entry_default_bcc), 0, -1));
+		}
+
+		if (all || gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(page->default_replyto_rec_checkbtn))) {
+
+			prefs->enable_default_replyto = 
+				gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(page->checkbtn_default_replyto));
+			ASSIGN_STRING(prefs->default_replyto,
+				      gtk_editable_get_chars(GTK_EDITABLE(page->entry_default_replyto), 0, -1));
+		}
+
 	} else {
 		prefs->request_return_receipt = FALSE;
 		prefs->save_copy_to_folder = FALSE;
 		prefs->enable_default_to = FALSE;
 		prefs->enable_default_reply_to = FALSE;
+		prefs->enable_default_cc = FALSE;
+		prefs->enable_default_bcc = FALSE;
+		prefs->enable_default_replyto = FALSE;
 	}
 
 	if (all || gtk_toggle_button_get_active(
@@ -1151,11 +1275,15 @@ static gboolean compose_save_recurse_func(GNode *node, gpointer data)
 	      gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(page->save_copy_to_folder_rec_checkbtn)) ||
 	      gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(page->default_to_rec_checkbtn)) ||
 	      gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(page->default_account_rec_checkbtn)) ||
+	      gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(page->default_cc_rec_checkbtn)) ||
+	      gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(page->default_bcc_rec_checkbtn)) ||
+	      gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(page->default_replyto_rec_checkbtn)) ||
 #if USE_ENCHANT
 	      gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(page->default_dictionary_rec_checkbtn)) ||
 	      gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(page->default_alt_dictionary_rec_checkbtn)) ||
 #endif
-	      gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(page->default_reply_to_rec_checkbtn))))
+	      gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(page->default_reply_to_rec_checkbtn))
+			))
 		return TRUE;
 	else if ((node == page->item->node) && item_protocol(item) == A_NNTP &&
 	    !(gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(page->default_account_rec_checkbtn)) 
