@@ -1,3 +1,11 @@
+2009-03-06 [wwp]	3.7.1cvs2
+
+	* src/compose.c
+	* src/folder_item_prefs.c
+	* src/folder_item_prefs.h
+	* src/prefs_folder_item.c
+		Add per-folder default cc, bcc and reply-to.
+
 2009-03-06 [colin]	3.7.1cvs1
 
 	* src/gedit-print.c
