@@ -2,7 +2,7 @@ Claws Mail - a GTK+ based, lightweight, and fast e-mail client
 
 ---------------------------------------------------------------------
 
-   Copyright(C) 1999-2008 Hiroyuki Yamamoto <hiro-y@kcn.ne.jp> and the
+   Copyright(C) 1999-2009 Hiroyuki Yamamoto <hiro-y@kcn.ne.jp> and the
    Claws Mail Team
 
    This program is free software; you can redistribute it and/or modify
@@ -690,6 +690,7 @@ http://www.thewildbeast.co.uk/claws-mail/bugzilla/index.cgi
 
 GTK 2 Version
 -------------
+2009-03-06	3.7.1
 2008-12-19	3.7.0
 2008-10-10	3.6.1
 2008-10-03	3.6.0

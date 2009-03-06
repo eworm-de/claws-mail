@@ -1,5 +1,31 @@
 Changes of the  Claws Mail GTK2 branch
 
+* 3.7.1
+-------
+
+* Spell Checking has been added to the Subject in the Compose window.
+
+* The 'Quotation characters' option has been moved from the Compose/
+  Writing page of the preferences to the /Message View/Text Options
+  page.
+
+* When replying to signed and/or encrypted mail and the preference to
+  sign and/or encrypt is set, the original mail's privacy system is
+  automatically used, if available.
+
+* If a text/calendar attachment is present in a message it is
+  automatcally selected if a suitable plugin (i.e. vCalendar) is
+  available.
+
+* /Tools/List URLs now shows both the link title and URI if possible.
+
+* A URI appearing in the statusbar is now only trimmed if necessary.
+
+* When using /Tools/Create filter|procesing rule/Automatically
+  the List-Id header is preferred to X-* headers.
+
+* The manual has been updated.
+
 * 3.7.0
 -------
 
