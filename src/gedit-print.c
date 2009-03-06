@@ -171,7 +171,7 @@ gedit_print_dialog_response (GtkWidget *dialog, int response, GeditPrintJobInfo 
 		break;
 
 	default:
-		cm_return_if_reached ();
+		g_return_if_reached ();
 	}
 
 	switch (response)

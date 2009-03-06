@@ -35,6 +35,7 @@
 
 #include "gtksourceprintjob.h"
 #include "image_viewer.h"
+#include "utils.h"
 
 #include <glib/gi18n.h>
 #include <gtk/gtk.h>

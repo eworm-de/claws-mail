@@ -1,3 +1,9 @@
+2009-03-06 [colin]	3.7.1cvs1
+
+	* src/gedit-print.c
+	* src/gtk/gtksourceprintjob.c
+		Fix build with old print interface
+
 2009-03-06 [paul]	3.7.1
 
 	* NEWS
