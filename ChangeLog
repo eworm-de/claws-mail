@@ -1,3 +1,8 @@
+2009-03-07 [colin]	3.7.1cvs4
+
+	* src/procmime.c
+		Fix build
+
 2009-03-07 [colin]	3.7.1cvs3
 
 	* src/messageview.c

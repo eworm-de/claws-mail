@@ -1918,7 +1918,6 @@ static int procmime_parse_mimepart(MimeInfo *parent,
 	/* Create MimeInfo */
 	mimeinfo = procmime_mimeinfo_new();
 	mimeinfo->content = MIMECONTENT_FILE;
-	mimeinfo->lax_parse = parent->lax_parse;
 
 	if (parent != NULL) {
 		if (g_node_depth(parent->node) > 32) {

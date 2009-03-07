@@ -3743,3 +3743,4 @@
 ( cvs diff -u -r 1.1.2.14 -r 1.1.2.15 src/gedit-print.c;  cvs diff -u -r 1.1.2.12 -r 1.1.2.13 src/gtk/gtksourceprintjob.c;  ) > 3.7.1cvs1.patchset
 ( cvs diff -u -r 1.487 -r 1.488 src/compose.c;  cvs diff -u -r 1.10 -r 1.11 src/folder_item_prefs.c;  cvs diff -u -r 1.6 -r 1.7 src/folder_item_prefs.h;  cvs diff -u -r 1.65 -r 1.66 src/prefs_folder_item.c;  ) > 3.7.1cvs2.patchset
 ( cvs diff -u -r 1.94.2.200 -r 1.94.2.201 src/messageview.c;  cvs diff -u -r 1.49.2.127 -r 1.49.2.128 src/procmime.c;  cvs diff -u -r 1.17.2.23 -r 1.17.2.24 src/procmime.h;  ) > 3.7.1cvs3.patchset
+( cvs diff -u -r 1.49.2.128 -r 1.49.2.129 src/procmime.c;  ) > 3.7.1cvs4.patchset
