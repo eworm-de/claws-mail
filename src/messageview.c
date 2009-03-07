@@ -1226,17 +1226,6 @@ gint messageview_show(MessageView *messageview, MsgInfo *msginfo,
 		}
 	}
 			
-	while ((brokeninfo = find_broken_part(mimeinfo)) != NULL) {
-		noticeview_show(messageview->noticeview);
-		noticeview_set_icon(messageview->noticeview,
-				    STOCK_PIXMAP_NOTICE_WARN);
-		noticeview_set_text(messageview->noticeview, _("Message doesn't conform to MIME standard. "
-					"It may render wrongly."));
-		gtk_widget_hide(messageview->noticeview->button);
-		gtk_widget_hide(messageview->noticeview->button2);
-		break;
-	}
-			
 	if (messageview->msginfo != msginfo) {
 		procmsg_msginfo_free(messageview->msginfo);
 		messageview->msginfo = NULL;
@@ -1305,6 +1294,27 @@ gint messageview_show(MessageView *messageview, MsgInfo *msginfo,
 		return_receipt_show(messageview->noticeview, 
 				    messageview->msginfo);
 
+	while ((brokeninfo = find_broken_part(mimeinfo)) != NULL) {
+		noticeview_show(messageview->noticeview);
+		noticeview_set_icon(messageview->noticeview,
+				    STOCK_PIXMAP_NOTICE_WARN);
+		if (!noticeview_is_visible(messageview->noticeview)) {
+			noticeview_set_text(messageview->noticeview, _("Message doesn't conform to MIME standard. "
+						"It may render wrongly."));
+			gtk_widget_hide(messageview->noticeview->button);
+			gtk_widget_hide(messageview->noticeview->button2);
+		} else {
+			gchar *full = g_strconcat(
+					gtk_label_get_text(GTK_LABEL(messageview->noticeview->text)), 
+					"\n", 
+					_("Message doesn't conform to MIME standard. "
+					"It may render wrongly."), NULL);
+			noticeview_set_text(messageview->noticeview, full);
+			g_free(full);
+		}
+		break;
+	}
+			
 	mimeinfo = procmime_mimeinfo_next(mimeinfo);
 	if (!all_headers && mimeinfo 
 			&& (mimeinfo->type != MIMETYPE_TEXT || 
