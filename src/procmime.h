@@ -151,6 +151,8 @@ struct _MimeInfo
 
 	/* Privacy */
 	PrivacyData	*privacy;
+
+	gboolean	 broken;
 };
 
 #define IS_BOUNDARY(s, bnd, len) \

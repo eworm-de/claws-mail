@@ -1,3 +1,12 @@
+2009-03-07 [colin]	3.7.1cvs3
+
+	* src/messageview.c
+	* src/procmime.c
+	* src/procmime.h
+		Handle mimeparts that lack an end boundary.
+		They're invalid but it's too annoying for
+		normal users to fix.
+
 2009-03-06 [wwp]	3.7.1cvs2
 
 	* src/compose.c

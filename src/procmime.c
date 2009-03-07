@@ -1543,6 +1543,8 @@ static void procmime_parse_multipart(MimeInfo *mimeinfo, gboolean short_scan)
 	FILE *fp;
 	int result = 0;
 	gboolean done = FALSE;
+	gboolean start_found = FALSE;
+	gboolean end_found = FALSE;
 
 	boundary = g_hash_table_lookup(mimeinfo->typeparameters, "boundary");
 	if (!boundary)
@@ -1556,12 +1558,15 @@ static void procmime_parse_multipart(MimeInfo *mimeinfo, gboolean short_scan)
 		FILE_OP_ERROR(mimeinfo->data.filename, "fopen");
 		return;
 	}
+
 	fseek(fp, mimeinfo->offset, SEEK_SET);
 	while ((p = fgets(buf, sizeof(buf), fp)) != NULL && result == 0) {
 		if (ftell(fp) - 1 > (mimeinfo->offset + mimeinfo->length))
 			break;
 
 		if (IS_BOUNDARY(buf, boundary, boundary_len)) {
+			start_found = TRUE;
+
 			if (lastoffset != -1) {
 				gint len = (ftell(fp) - strlen(buf)) - lastoffset - 1;
 				if (len < 0)
@@ -1581,6 +1586,7 @@ static void procmime_parse_multipart(MimeInfo *mimeinfo, gboolean short_scan)
 			
 			if (buf[2 + boundary_len]     == '-' &&
 			    buf[2 + boundary_len + 1] == '-') {
+			    	end_found = TRUE;
 				break;
 			}
 			for (i = 0; i < (sizeof hentry / sizeof hentry[0]) ; i++) {
@@ -1591,6 +1597,22 @@ static void procmime_parse_multipart(MimeInfo *mimeinfo, gboolean short_scan)
 			lastoffset = ftell(fp);
 		}
 	}
+	
+	if (start_found && !end_found && lastoffset != -1) {
+		gint len = (ftell(fp) - strlen(buf)) - lastoffset - 1;
+
+		if (len >= 0) {
+			result = procmime_parse_mimepart(mimeinfo,
+				        hentry[0].body, hentry[1].body,
+					hentry[2].body, hentry[3].body, 
+					hentry[4].body, hentry[5].body,
+					hentry[6].body, hentry[7].body,
+					mimeinfo->data.filename, lastoffset,
+					len, short_scan);
+		}
+		mimeinfo->broken = TRUE;
+	}
+	
 	for (i = 0; i < (sizeof hentry / sizeof hentry[0]); i++) {
 		g_free(hentry[i].body);
 		hentry[i].body = NULL;
@@ -1896,6 +1918,8 @@ static int procmime_parse_mimepart(MimeInfo *parent,
 	/* Create MimeInfo */
 	mimeinfo = procmime_mimeinfo_new();
 	mimeinfo->content = MIMECONTENT_FILE;
+	mimeinfo->lax_parse = parent->lax_parse;
+
 	if (parent != NULL) {
 		if (g_node_depth(parent->node) > 32) {
 			/* 32 is an arbitrary value

@@ -1107,12 +1107,35 @@ static MimeInfo *find_encrypted_part(MimeInfo *rootinfo)
 	return encinfo;
 }
 
+static gboolean find_broken_func(GNode *node, gpointer data)
+{
+	MimeInfo *mimeinfo = (MimeInfo *) node->data;
+	MimeInfo **brokeninfo = (MimeInfo **) data;
+	
+	if (mimeinfo->broken) {
+		*brokeninfo = mimeinfo;
+		return TRUE;
+	}
+	
+	return FALSE;
+}
+
+static MimeInfo *find_broken_part(MimeInfo *rootinfo)
+{
+	MimeInfo *brokeninfo = NULL;
+
+	g_node_traverse(rootinfo->node, G_IN_ORDER, G_TRAVERSE_ALL, -1,
+		find_broken_func, &brokeninfo);
+	
+	return brokeninfo;
+}
+
 gint messageview_show(MessageView *messageview, MsgInfo *msginfo,
 		      gboolean all_headers)
 {
 	gchar *text = NULL;
 	gchar *file;
-	MimeInfo *mimeinfo, *encinfo;
+	MimeInfo *mimeinfo, *encinfo, *brokeninfo;
 	gchar *subject = NULL;
 	cm_return_val_if_fail(msginfo != NULL, -1);
 
@@ -1201,6 +1224,17 @@ gint messageview_show(MessageView *messageview, MsgInfo *msginfo,
 			g_free(text);
 			break;
 		}
+	}
+			
+	while ((brokeninfo = find_broken_part(mimeinfo)) != NULL) {
+		noticeview_show(messageview->noticeview);
+		noticeview_set_icon(messageview->noticeview,
+				    STOCK_PIXMAP_NOTICE_WARN);
+		noticeview_set_text(messageview->noticeview, _("Message doesn't conform to MIME standard. "
+					"It may render wrongly."));
+		gtk_widget_hide(messageview->noticeview->button);
+		gtk_widget_hide(messageview->noticeview->button2);
+		break;
 	}
 			
 	if (messageview->msginfo != msginfo) {
