@@ -1,6 +1,4 @@
-# Japanese translation of Sylpheed
-# Copyright (C) 1999 Free Software Foundation, Inc.
-# Hiroyuki Yamamoto <hiro-y@kcn.ne.jp>, 1999,2000,2001.
+# Japanese translation of Claws Mail
 #
 msgid ""
 msgstr ""
