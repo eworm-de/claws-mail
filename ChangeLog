@@ -1,3 +1,12 @@
+2009-03-08 [paul]	3.7.1cvs6
+
+	* AUTHORS
+	* configure.ac
+	* po/ja.po
+	* src/gtk/authors.h
+	* tools/claws.i18n.status.pl
+		add Japanese translation, submitted by kazken3
+
 2009-03-07 [colin]	3.7.1cvs5
 
 	* src/messageview.c

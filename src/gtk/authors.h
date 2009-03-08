@@ -41,6 +41,7 @@ static char *TRANS_TEAM_LIST[] = {
 "[fr] Tristan Chabredier <wwp@claws-mail.org>",
 "[hu] Pader Rezso <rezso@rezso.net>",
 "[it] Andrea Spadaccini <a.spadaccini@catania.linux.it>",
+"[ja] kazken3 <kazken3@gmail.com>",
 "[nl] Marcel Pol <mpol@gmx.net>",
 "[pl] Emilian Nowak <emil5@go2.pl>",
 "[pt_BR] Frederico Goncalves Guimaraes <fggdebian@yahoo.com.br>",
