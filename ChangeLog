@@ -1,3 +1,9 @@
+2009-03-09 [paul]	3.7.1cvs8
+
+	* src/prefs_folder_item.c
+	* src/send_message.c
+		fixes to english text
+
 2009-03-08 [paul]	3.7.1cvs7
 
 	* po/ja.po
