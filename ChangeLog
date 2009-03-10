@@ -1,3 +1,8 @@
+2009-03-10 [colin]	3.7.1cvs9
+
+	* src/prefs_folder_item.c
+		Fix build
+
 2009-03-09 [paul]	3.7.1cvs8
 
 	* src/prefs_folder_item.c

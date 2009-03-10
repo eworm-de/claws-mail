@@ -818,7 +818,7 @@ static void prefs_folder_item_compose_create_widget_func(PrefsPage * page_,
 		no_save_warning = gtk_label_new(
 			_("<i>These preferences will not be saved as this folder "
 			"is a top-level folder. However, you can set them for the "
-			"whole mailbox tree by using \"Apply to subfolders\".</i>));
+			"whole mailbox tree by using \"Apply to subfolders\".</i>"));
 		gtk_label_set_use_markup(GTK_LABEL(no_save_warning), TRUE);
 		gtk_label_set_line_wrap(GTK_LABEL(no_save_warning), TRUE);
 		gtk_misc_set_alignment(GTK_MISC(no_save_warning), 0.0, 0.5);
