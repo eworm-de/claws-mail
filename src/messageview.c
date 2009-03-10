@@ -1294,8 +1294,7 @@ gint messageview_show(MessageView *messageview, MsgInfo *msginfo,
 		return_receipt_show(messageview->noticeview, 
 				    messageview->msginfo);
 
-	while ((brokeninfo = find_broken_part(mimeinfo)) != NULL) {
-		noticeview_show(messageview->noticeview);
+	if ((brokeninfo = find_broken_part(mimeinfo)) != NULL) {
 		noticeview_set_icon(messageview->noticeview,
 				    STOCK_PIXMAP_NOTICE_WARN);
 		if (!noticeview_is_visible(messageview->noticeview)) {
@@ -1312,7 +1311,7 @@ gint messageview_show(MessageView *messageview, MsgInfo *msginfo,
 			noticeview_set_text(messageview->noticeview, full);
 			g_free(full);
 		}
-		break;
+		noticeview_show(messageview->noticeview);
 	}
 			
 	mimeinfo = procmime_mimeinfo_next(mimeinfo);

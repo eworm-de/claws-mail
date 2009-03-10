@@ -3749,3 +3749,4 @@
 ( cvs diff -u -r 1.16.2.7 -r 1.16.2.8 po/ja.po;  ) > 3.7.1cvs7.patchset
 ( cvs diff -u -r 1.52.2.75 -r 1.52.2.76 src/prefs_folder_item.c;  cvs diff -u -r 1.17.2.54 -r 1.17.2.55 src/send_message.c;  ) > 3.7.1cvs8.patchset
 ( cvs diff -u -r 1.52.2.76 -r 1.52.2.77 src/prefs_folder_item.c;  ) > 3.7.1cvs9.patchset
+( cvs diff -u -r 1.94.2.202 -r 1.94.2.203 src/messageview.c;  ) > 3.7.1cvs10.patchset
