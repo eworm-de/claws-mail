@@ -1,3 +1,9 @@
+2009-03-11 [mones]	3.7.1cvs11
+
+	* po/es.po
+		fix encoding declared in header
+		update translation now we're at it
+
 2009-03-10 [colin]	3.7.1cvs10
 
 	* src/messageview.c
