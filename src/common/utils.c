@@ -3773,8 +3773,11 @@ int subject_get_prefix_length(const gchar *subject)
 
 	for (n = 0; n < PREFIXES; n++) {
 		int len = strlen(prefixes[n]);
-		if (!strncasecmp(subject, prefixes[n], len))
-			return len;
+		if (!strncasecmp(subject, prefixes[n], len)) {
+			if (subject[len] == ' ')
+				return len+1;
+			else
+				return len;
 	}
 	return 0;
 #endif

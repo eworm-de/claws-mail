@@ -1,3 +1,8 @@
+2009-03-14 [colin]	3.7.1cvs12
+
+	* src/common/utils.c
+		Win32: fix subject prefix length
+
 2009-03-11 [mones]	3.7.1cvs11
 
 	* po/es.po
