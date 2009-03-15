@@ -750,12 +750,12 @@ static GList *misspelled_suggest(GtkAspell *gtkaspell, gchar *word)
 	gtkaspell_free_suggestions_list(gtkaspell);
 
 	suggestions = enchant_dict_suggest(gtkaspell->gtkaspeller->speller, word, strlen(word), &num_sug);
-	if (suggestions == NULL || num_sug == 0) {
-		gtkaspell->max_sug          = - 1;
-		gtkaspell->suggestions_list = NULL;
-		return NULL;
-	}
 	list = g_list_append(list, g_strdup(word)); 
+	if (suggestions == NULL || num_sug == 0) {
+		gtkaspell->max_sug          = -1;
+		gtkaspell->suggestions_list = list;
+		return list;
+	}
 	for (i = 0; i < num_sug; i++)
 		list = g_list_append(list, g_strdup((gchar *)suggestions[i]));
 

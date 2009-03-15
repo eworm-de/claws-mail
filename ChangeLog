@@ -1,3 +1,9 @@
+2009-03-15 [colin]	3.7.1cvs13
+
+	* src/gtk/gtkaspell.c
+		Fix empty menu when there are no
+		suggestions (using the Spelling menu)
+
 2009-03-14 [colin]	3.7.1cvs12
 
 	* src/common/utils.c
