@@ -656,6 +656,9 @@ struct _FolderItem
 	gint last_num;
 
 	MsgCache *cache;
+	gboolean cache_dirty;
+	gboolean mark_dirty;
+	gboolean tags_dirty;
 
 	/* special flags */
 	guint no_sub         : 1; /* no child allowed?    */

@@ -1,3 +1,15 @@
+2009-03-16 [colin]	3.7.1cvs14
+
+	* src/compose.c
+	* src/folder.c
+	* src/folder.h
+	* src/msgcache.c
+	* src/common/prefs.c
+		Add fsync calls to make sure we don't
+		lose data on system crashes. (to do:
+		add a pref to allow people choosing raw
+		speed)
+
 2009-03-15 [colin]	3.7.1cvs13
 
 	* src/gtk/gtkaspell.c

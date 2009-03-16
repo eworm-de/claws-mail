@@ -2573,13 +2573,17 @@ static void folder_item_read_cache(FolderItem *item)
 	} else {
 		item->cache = msgcache_new();
 	}
+	item->cache_dirty = FALSE;
+	item->mark_dirty = FALSE;
+	item->tags_dirty = FALSE;
+
 	END_TIMING();
 	folder_clean_cache_memory(item);
 }
 
 void folder_item_write_cache(FolderItem *item)
 {
-	gchar *cache_file, *mark_file, *tags_file;
+	gchar *cache_file = NULL, *mark_file = NULL, *tags_file = NULL;
 	FolderItemPrefs *prefs;
 	gint filemode = 0;
 	gchar *id;
@@ -2599,9 +2603,12 @@ void folder_item_write_cache(FolderItem *item)
 	debug_print("Save cache for folder %s\n", id);
 	g_free(id);
 
-	cache_file = folder_item_get_cache_file(item);
-	mark_file = folder_item_get_mark_file(item);
-	tags_file = folder_item_get_tags_file(item);
+	if (item->cache_dirty)
+		cache_file = folder_item_get_cache_file(item);
+	if (item->cache_dirty || item->mark_dirty)
+		mark_file = folder_item_get_mark_file(item);
+	if (item->cache_dirty || item->tags_dirty)
+		tags_file = folder_item_get_tags_file(item);
 	if (msgcache_write(cache_file, mark_file, tags_file, item->cache) < 0) {
 		prefs = item->prefs;
     		if (prefs && prefs->enable_folder_chmod && prefs->folder_chmod) {
@@ -2611,7 +2618,11 @@ void folder_item_write_cache(FolderItem *item)
 			if (filemode & S_IROTH) filemode |= S_IWOTH;
 			chmod(cache_file, filemode);
 		}
-        }
+        } else {
+		item->cache_dirty = FALSE;
+		item->mark_dirty = FALSE;
+		item->tags_dirty = FALSE;
+	}
 
 	if (!need_scan && item->folder->klass->set_mtime) {
 		if (item->mtime == last_mtime) {
@@ -3678,6 +3689,9 @@ void folder_item_change_msg_flags(FolderItem *item, MsgInfo *msginfo, MsgPermFla
 {
 	cm_return_if_fail(item != NULL);
 	cm_return_if_fail(msginfo != NULL);
+	
+	item->mark_dirty = TRUE;
+
 	if (item->no_select)
 		return;
 	
@@ -3703,6 +3717,8 @@ void folder_item_commit_tags(FolderItem *item, MsgInfo *msginfo, GSList *tags_se
 	if (!folder)
 		return;
 	
+	item->tags_dirty = TRUE;
+
 	if (folder->klass->commit_tags == NULL)
 		return;
 	

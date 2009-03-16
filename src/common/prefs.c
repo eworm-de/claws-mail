@@ -162,6 +162,17 @@ gint prefs_file_close(PrefFile *pfile)
 	}
 
 	tmppath = g_strconcat(path, ".tmp", NULL);
+
+	
+	if (fsync(fileno(fp)) < 0) {
+		FILE_OP_ERROR(tmppath, "fsync");
+		fclose(fp);
+		claws_unlink(tmppath);
+		g_free(path);
+		g_free(tmppath);
+		return -1;
+	}
+
 	if (fclose(fp) == EOF) {
 		FILE_OP_ERROR(tmppath, "fclose");
 		claws_unlink(tmppath);
