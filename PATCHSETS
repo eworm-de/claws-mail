@@ -3755,3 +3755,4 @@
 ( cvs diff -u -r 1.9.2.67 -r 1.9.2.68 src/gtk/gtkaspell.c;  ) > 3.7.1cvs13.patchset
 ( cvs diff -u -r 1.382.2.503 -r 1.382.2.504 src/compose.c;  cvs diff -u -r 1.213.2.190 -r 1.213.2.191 src/folder.c;  cvs diff -u -r 1.87.2.58 -r 1.87.2.59 src/folder.h;  cvs diff -u -r 1.16.2.65 -r 1.16.2.66 src/msgcache.c;  cvs diff -u -r 1.5.2.15 -r 1.5.2.16 src/common/prefs.c;  ) > 3.7.1cvs14.patchset
 ( cvs diff -u -r 1.16.2.34 -r 1.16.2.35 src/prefs_customheader.c;  ) > 3.7.1cvs15.patchset
+( cvs diff -u -r 1.16.2.35 -r 1.16.2.36 src/prefs_customheader.c;  ) > 3.7.1cvs16.patchset

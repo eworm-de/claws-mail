@@ -1,3 +1,10 @@
+2009-03-16 [paul]	3.7.1cvs16
+
+	* src/prefs_customheader.c
+		put the (X-)Face preview image below the up/down
+		buttons so they don't jump around.
+		make the list reorderable by drag'n'drop
+
 2009-03-16 [colin]	3.7.1cvs15
 
 	* src/prefs_customheader.c

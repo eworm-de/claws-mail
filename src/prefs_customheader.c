@@ -292,10 +292,6 @@ static void prefs_custom_header_create(void)
 	gtk_widget_show (btn_vbox);
 	gtk_box_pack_start (GTK_BOX (ch_hbox), btn_vbox, FALSE, FALSE, 0);
 
-	preview = gtk_image_new ();
-	gtk_widget_show (preview);
-	gtk_box_pack_start (GTK_BOX (btn_vbox), preview, FALSE, FALSE, 0);
-
 	up_btn = gtk_button_new_from_stock (GTK_STOCK_GO_UP);
 	gtk_widget_show (up_btn);
 	gtk_box_pack_start (GTK_BOX (btn_vbox), up_btn, FALSE, FALSE, 0);
@@ -307,6 +303,10 @@ static void prefs_custom_header_create(void)
 	gtk_box_pack_start (GTK_BOX (btn_vbox), down_btn, FALSE, FALSE, 0);
 	g_signal_connect (G_OBJECT (down_btn), "clicked",
 			  G_CALLBACK (prefs_custom_header_down), NULL);
+
+	preview = gtk_image_new ();
+	gtk_widget_show (preview);
+	gtk_box_pack_start (GTK_BOX (btn_vbox), preview, FALSE, FALSE, 0);
 
 	gtk_widget_show_all(window);
 
@@ -854,6 +854,7 @@ static GtkWidget *prefs_custom_header_list_view_create(void)
 	g_object_unref(model);	
 	
 	gtk_tree_view_set_rules_hint(list_view, prefs_common.use_stripes_everywhere);
+	gtk_tree_view_set_reorderable(list_view, TRUE);
 	
 	selector = gtk_tree_view_get_selection(list_view);
 	gtk_tree_selection_set_mode(selector, GTK_SELECTION_BROWSE);
