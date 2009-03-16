@@ -921,7 +921,9 @@ static gboolean prefs_custom_header_selected(GtkTreeSelection *selector,
 		gtk_object_ref (G_OBJECT(preview));
 		gtk_object_sink (G_OBJECT(preview));
 #endif
-	} else if (!g_strcmp0("X-Face", ch->name)) {
+	} 
+#if HAVE_LIBCOMPFACE
+else if (!g_strcmp0("X-Face", ch->name)) {
 		GdkColor color;
 		color.pixel = 0;
 		preview = GTK_IMAGE(xface_get_from_header(ch->value, 
@@ -936,7 +938,9 @@ static gboolean prefs_custom_header_selected(GtkTreeSelection *selector,
 		gtk_object_ref (G_OBJECT(preview));
 		gtk_object_sink (G_OBJECT(preview));
 #endif
-	} else {
+	} 
+#endif
+else {
 		gtk_widget_hide(customhdr.preview);
 	}
 	return TRUE;
