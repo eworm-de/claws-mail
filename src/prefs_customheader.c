@@ -64,6 +64,7 @@ static struct CustomHdr {
 	GtkWidget *hdr_combo;
 	GtkWidget *hdr_entry;
 	GtkWidget *val_entry;
+	GtkWidget *preview;
 	GtkWidget *list_view;
 } customhdr;
 
@@ -150,6 +151,7 @@ static void prefs_custom_header_create(void)
 	GtkWidget *arrow;
 	GtkWidget *add_btn;
 	GtkWidget *del_btn;
+	GtkWidget *preview;
 
 	GtkWidget *ch_hbox;
 	GtkWidget *ch_scrolledwin;
@@ -290,6 +292,10 @@ static void prefs_custom_header_create(void)
 	gtk_widget_show (btn_vbox);
 	gtk_box_pack_start (GTK_BOX (ch_hbox), btn_vbox, FALSE, FALSE, 0);
 
+	preview = gtk_image_new ();
+	gtk_widget_show (preview);
+	gtk_box_pack_start (GTK_BOX (btn_vbox), preview, FALSE, FALSE, 0);
+
 	up_btn = gtk_button_new_from_stock (GTK_STOCK_GO_UP);
 	gtk_widget_show (up_btn);
 	gtk_box_pack_start (GTK_BOX (btn_vbox), up_btn, FALSE, FALSE, 0);
@@ -307,6 +313,7 @@ static void prefs_custom_header_create(void)
 	customhdr.window     = window;
 	customhdr.ok_btn     = ok_btn;
 	customhdr.cancel_btn = cancel_btn;
+	customhdr.preview = preview;
 
 	customhdr.hdr_combo  = hdr_combo;
 	customhdr.hdr_entry  = gtk_bin_get_child(GTK_BIN((hdr_combo)));
@@ -884,6 +891,8 @@ static gboolean prefs_custom_header_selected(GtkTreeSelection *selector,
 {
 	GtkTreeIter iter;
 	CustomHeader *ch;
+	GtkImage *preview;
+	GdkPixbuf *pixbuf;
 	CustomHeader default_ch = { 0, "", NULL };
 
 	if (currently_selected)
@@ -900,7 +909,35 @@ static gboolean prefs_custom_header_selected(GtkTreeSelection *selector,
 
 	ENTRY_SET_TEXT(customhdr.hdr_entry, ch->name);
 	ENTRY_SET_TEXT(customhdr.val_entry, ch->value);
-			   
+	if (!g_strcmp0("Face",ch->name)) {
+		preview = GTK_IMAGE(face_get_from_header (ch->value));
+		pixbuf = gtk_image_get_pixbuf(preview);
+		gtk_image_set_from_pixbuf (GTK_IMAGE(customhdr.preview), pixbuf);
+		gtk_widget_show(customhdr.preview);
+#if GLIB_CHECK_VERSION(2,10,0)
+		g_object_ref_sink (G_OBJECT(preview));
+#else
+		gtk_object_ref (G_OBJECT(preview));
+		gtk_object_sink (G_OBJECT(preview));
+#endif
+	} else if (!g_strcmp0("X-Face", ch->name)) {
+		GdkColor color;
+		color.pixel = 0;
+		preview = GTK_IMAGE(xface_get_from_header(ch->value, 
+					  &color, 
+					  mainwindow_get_mainwindow()->window->window));	
+		pixbuf = gtk_image_get_pixbuf(preview);
+		gtk_image_set_from_pixbuf (GTK_IMAGE(customhdr.preview), pixbuf);
+		gtk_widget_show(customhdr.preview);
+#if GLIB_CHECK_VERSION(2,10,0)
+		g_object_ref_sink (G_OBJECT(preview));
+#else
+		gtk_object_ref (G_OBJECT(preview));
+		gtk_object_sink (G_OBJECT(preview));
+#endif
+	} else {
+		gtk_widget_hide(customhdr.preview);
+	}
 	return TRUE;
 }
 

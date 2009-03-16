@@ -1,3 +1,8 @@
+2009-03-16 [colin]	3.7.1cvs15
+
+	* src/prefs_customheader.c
+		Add a (X-)Face preview. Patch by iwkse.
+
 2009-03-16 [colin]	3.7.1cvs14
 
 	* src/compose.c
