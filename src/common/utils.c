@@ -3778,6 +3778,7 @@ int subject_get_prefix_length(const gchar *subject)
 				return len+1;
 			else
 				return len;
+		}
 	}
 	return 0;
 #endif
