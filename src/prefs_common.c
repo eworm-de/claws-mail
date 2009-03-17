@@ -1129,6 +1129,9 @@ static PrefParam param[] = {
 	{"inherit_folder_properties", "FALSE", &prefs_common.inherit_folder_props, P_BOOL,
 	 NULL, NULL, NULL},
 
+	{"flush_metadata", "TRUE", &prefs_common.flush_metadata, P_BOOL,
+	 NULL, NULL, NULL},
+
 	{NULL, NULL, NULL, P_OTHER, NULL, NULL, NULL}
 };
 
@@ -1570,6 +1573,11 @@ const gchar *prefs_common_get_ext_editor_cmd(void)
 gboolean prefs_common_get_use_shred(void)
 {
 	return prefs_common.use_shred;
+}
+
+gboolean prefs_common_get_flush_metadata (void)
+{
+	return prefs_common.flush_metadata;
 }
 
 PrefsCommon *prefs_common_get_prefs(void)

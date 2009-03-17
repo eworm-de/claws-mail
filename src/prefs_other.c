@@ -59,6 +59,8 @@ typedef struct _OtherPage
 	GtkWidget *checkbtn_askonfilter;
 	GtkWidget *checkbtn_use_shred;
 	GtkWidget *checkbtn_real_time_sync;
+	GtkWidget *flush_metadata_faster_radiobtn;
+	GtkWidget *flush_metadata_safer_radiobtn;
 } OtherPage;
 
 static struct KeybindDialog {
@@ -452,6 +454,12 @@ static void prefs_other_create_widget(PrefsPage *_page, GtkWindow *window,
 	GtkWidget *checkbtn_use_shred;
 	GtkWidget *checkbtn_real_time_sync;
 
+	GtkWidget *frame_metadata;
+	GtkWidget *vbox_metadata;
+	GtkWidget *metadata_label;
+	GtkWidget *flush_metadata_faster_radiobtn;
+	GtkWidget *flush_metadata_safer_radiobtn;
+
 	gchar *shred_binary = NULL;
 	CLAWS_TIP_DECL();
 
@@ -502,6 +510,28 @@ static void prefs_other_create_widget(PrefsPage *_page, GtkWindow *window,
 	gtk_box_pack_start (GTK_BOX (hbox1), button_keybind, FALSE, FALSE, 0);
 	g_signal_connect (G_OBJECT (button_keybind), "clicked",
 			  G_CALLBACK (prefs_keybind_select), NULL);
+
+
+	vbox_metadata = gtkut_get_options_frame(vbox1, &frame_metadata, _("Metadata handling"));
+	metadata_label = gtk_label_new(_("Safer mode asks the OS to write metadata to disk directly;\n"
+					 "it avoids data loss after crashes but can take some time."));
+	gtk_misc_set_alignment(GTK_MISC(metadata_label), 0, 0);
+	gtk_box_pack_start (GTK_BOX (vbox_metadata), metadata_label, FALSE, FALSE, 0);
+	flush_metadata_safer_radiobtn = gtk_radio_button_new_with_label(NULL, _("Safer"));
+	flush_metadata_faster_radiobtn = gtk_radio_button_new_with_label_from_widget(
+					   GTK_RADIO_BUTTON(flush_metadata_safer_radiobtn), _("Faster"));
+	hbox1 = gtk_hbox_new (FALSE, 8);
+	gtk_widget_show (hbox1);
+	gtk_box_pack_start (GTK_BOX (vbox_metadata), hbox1, FALSE, FALSE, 0);
+	gtk_box_pack_start (GTK_BOX (hbox1), flush_metadata_safer_radiobtn, FALSE, FALSE, 0);
+	gtk_box_pack_start (GTK_BOX (hbox1), flush_metadata_faster_radiobtn, FALSE, FALSE, 0);
+	
+	if (prefs_common.flush_metadata)
+		gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(flush_metadata_safer_radiobtn), TRUE);
+	else
+		gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(flush_metadata_faster_radiobtn), TRUE);
+
+	gtk_widget_show_all(frame_metadata);
 
 	hbox1 = gtk_hbox_new (FALSE, 8);
 	gtk_widget_show (hbox1);
@@ -584,7 +614,8 @@ static void prefs_other_create_widget(PrefsPage *_page, GtkWindow *window,
 	prefs_other->checkbtn_askonfilter = checkbtn_askonfilter;
 	prefs_other->checkbtn_use_shred = checkbtn_use_shred;
 	prefs_other->checkbtn_real_time_sync = checkbtn_real_time_sync;
-
+	prefs_other->flush_metadata_safer_radiobtn = flush_metadata_safer_radiobtn;
+	prefs_other->flush_metadata_faster_radiobtn = flush_metadata_faster_radiobtn;
 	prefs_other->page.widget = vbox1;
 }
 
@@ -605,6 +636,8 @@ static void prefs_other_save(PrefsPage *_page)
 		GTK_TOGGLE_BUTTON(page->checkbtn_warnqueued)); 
 	prefs_common.io_timeout_secs = gtk_spin_button_get_value_as_int(
 		GTK_SPIN_BUTTON(page->spinbtn_iotimeout));
+	prefs_common.flush_metadata = gtk_toggle_button_get_active(
+		GTK_TOGGLE_BUTTON(page->flush_metadata_safer_radiobtn));
 	sock_set_io_timeout(prefs_common.io_timeout_secs);
 #ifdef HAVE_LIBETPAN
 	imap_main_set_timeout(prefs_common.io_timeout_secs);

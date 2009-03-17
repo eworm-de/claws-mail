@@ -45,6 +45,7 @@
 #include "codeconv.h"
 #include "timing.h"
 #include "tags.h"
+#include "prefs_common.h"
 
 #ifdef HAVE_FWRITE_UNLOCKED
 #define SC_FWRITE fwrite_unlocked
@@ -1194,11 +1195,11 @@ gint msgcache_write(const gchar *cache_file, const gchar *mark_file, const gchar
 		write_fps.error |= (fflush(write_fps.tags_fp) != 0);
 
 	/* sync to filesystem */
-	if (write_fps.cache_fp)
+	if (prefs_common.flush_metadata && write_fps.cache_fp)
 		write_fps.error |= (fsync(fileno(write_fps.cache_fp)) != 0);
-	if (write_fps.mark_fp)
+	if (prefs_common.flush_metadata && write_fps.mark_fp)
 		write_fps.error |= (fsync(fileno(write_fps.mark_fp)) != 0);
-	if (write_fps.tags_fp)
+	if (prefs_common.flush_metadata && write_fps.tags_fp)
 		write_fps.error |= (fsync(fileno(write_fps.tags_fp)) != 0);
 
 	/* close files */

@@ -101,6 +101,8 @@ PrefFile *prefs_write_open(const gchar *path)
 	return pfile;
 }
 
+gboolean prefs_common_get_flush_metadata (void);
+
 /*!
  *\brief	Close and free preferences file
  *		Creates final file from temp, creates backup
@@ -164,7 +166,7 @@ gint prefs_file_close(PrefFile *pfile)
 	tmppath = g_strconcat(path, ".tmp", NULL);
 
 	
-	if (fsync(fileno(fp)) < 0) {
+	if (prefs_common_get_flush_metadata() && fsync(fileno(fp)) < 0) {
 		FILE_OP_ERROR(tmppath, "fsync");
 		fclose(fp);
 		claws_unlink(tmppath);

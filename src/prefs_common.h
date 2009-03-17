@@ -389,10 +389,10 @@ struct _PrefsCommon
 	gboolean enable_filtering_debug_folder_proc;
 	gboolean enable_filtering_debug_pre_proc;
 	gboolean enable_filtering_debug_post_proc;
-    gboolean filtering_debug_cliplog;
-    guint filtering_debug_loglength;
+	gboolean filtering_debug_cliplog;
+	guint filtering_debug_loglength;
 
-    gboolean confirm_on_exit;
+	gboolean confirm_on_exit;
 	gboolean session_passwords;
 	gboolean clean_on_exit;
 	gboolean ask_on_clean;
@@ -478,10 +478,10 @@ struct _PrefsCommon
 	
 	gchar *print_paper_type;
 	gint print_paper_orientation;
-  gint print_margin_top;
-  gint print_margin_bottom;
-  gint print_margin_left;
-  gint print_margin_right;
+	gint print_margin_top;
+	gint print_margin_bottom;
+	gint print_margin_left;
+	gint print_margin_right;
   
 	gint print_use_color;
 	gint print_use_collate;
@@ -495,6 +495,7 @@ struct _PrefsCommon
 	gboolean use_shred;
 	gboolean two_line_vert;
 	gboolean inherit_folder_props;
+	gboolean flush_metadata;
 
 };
 
