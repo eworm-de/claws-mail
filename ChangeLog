@@ -1,3 +1,10 @@
+2009-03-17 [colin]	3.7.1cvs19
+
+	* src/compose.c
+		Fix bug 1735, 'Change To: and Newsgroups: 
+		recipient field according account type'
+		Patch by Pawel
+
 2009-03-17 [colin]	3.7.1cvs18
 
 	* src/msgcache.c

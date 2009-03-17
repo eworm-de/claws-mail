@@ -4540,7 +4540,8 @@ compose_current_mail_account(void)
 static void compose_select_account(Compose *compose, PrefsAccount *account,
 				   gboolean init)
 {
-	gchar *from = NULL;
+	gchar *from = NULL, *header;
+	ComposeHeaderEntry *header_entry;
 
 	cm_return_if_fail(account != NULL);
 
@@ -4578,7 +4579,26 @@ static void compose_select_account(Compose *compose, PrefsAccount *account,
 		compose_insert_sig(compose, TRUE);
 		undo_unblock(compose->undostruct);
 	}
-
+	
+	header_entry = (ComposeHeaderEntry *) compose->header_list->data;
+	header = gtk_combo_box_get_active_text(GTK_COMBO_BOX(header_entry->combo));
+	
+	if (header && !strlen(gtk_entry_get_text(GTK_ENTRY(header_entry->entry)))) {
+		if (account->protocol == A_NNTP) {
+			if (!strcmp(header, _("To:")))
+				combobox_select_by_text(
+					GTK_COMBO_BOX(header_entry->combo),
+					_("Newsgroups:"));
+		} else {
+			if (!strcmp(header, _("Newsgroups:")))
+				combobox_select_by_text(
+					GTK_COMBO_BOX(header_entry->combo),
+					_("To:"));
+		}
+		
+	}
+	g_free(header);
+	
 #ifdef USE_ENCHANT
 	/* use account's dict info if set */
 	if (compose->gtkaspell) {
