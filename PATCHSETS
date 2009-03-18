@@ -3760,3 +3760,4 @@
 ( cvs diff -u -r 1.16.2.66 -r 1.16.2.67 src/msgcache.c;  cvs diff -u -r 1.204.2.188 -r 1.204.2.189 src/prefs_common.c;  cvs diff -u -r 1.103.2.122 -r 1.103.2.123 src/prefs_common.h;  cvs diff -u -r 1.1.2.36 -r 1.1.2.37 src/prefs_other.c;  cvs diff -u -r 1.5.2.16 -r 1.5.2.17 src/common/prefs.c;  ) > 3.7.1cvs18.patchset
 ( cvs diff -u -r 1.382.2.504 -r 1.382.2.505 src/compose.c;  ) > 3.7.1cvs19.patchset
 ( cvs diff -u -r 1.36.2.167 -r 1.36.2.168 src/common/utils.c;  ) > 3.7.1cvs20.patchset
+( cvs diff -u -r 1.1.2.5 -r 1.1.2.6 src/gtk/spell_entry.c;  ) > 3.7.1cvs21.patchset

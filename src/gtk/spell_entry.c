@@ -562,7 +562,7 @@ static void claws_spell_entry_populate_popup(ClawsSpellEntry *entry, GtkMenu *me
 {
 	GtkAspell *gtkaspell = entry->gtkaspell;
 	gint start, end;
-	gchar *word;
+	gchar *word, *text;
 	
 	if (gtkaspell == NULL)
         	return;
@@ -575,7 +575,12 @@ static void claws_spell_entry_populate_popup(ClawsSpellEntry *entry, GtkMenu *me
 	}
 
         gtkaspell->misspelled = word_misspelled(entry, start, end);
-        
+
+	text = gtk_editable_get_chars(GTK_EDITABLE(entry), 0, -1);
+	gtkaspell->start_pos  = g_utf8_pointer_to_offset(text, (text+start));
+	gtkaspell->end_pos    = g_utf8_pointer_to_offset(text, (text+end));
+	g_free(text);
+
         claws_spell_entry_context_set(entry);
         gtkaspell_make_context_menu(menu, gtkaspell);
 }

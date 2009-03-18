@@ -1,3 +1,10 @@
+2009-03-18 [paul]	3.7.1cvs21
+
+	* src/gtk/spell_entry.c
+		fix "[BUG] Wrong word replaced in 'Subject:'
+		when spell-checking correction used"
+		Patch by Pawel Pekala
+
 2009-03-17 [colin]	3.7.1cvs20
 
 	* src/common/utils.c
