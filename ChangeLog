@@ -1,3 +1,12 @@
+2009-03-19 [colin]	3.7.1cvs22
+
+	* src/toolbar.c
+		Put spam button in default toolbar even if
+		bogofilter and spamassassin are not built.
+		Other anti-spam plugin could exist! :)
+	* src/common/utils.c
+		Fix exit status fetch on win32
+
 2009-03-18 [paul]	3.7.1cvs21
 
 	* src/gtk/spell_entry.c

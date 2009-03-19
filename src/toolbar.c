@@ -489,9 +489,7 @@ static void toolbar_set_default_main(void)
 		{ A_SEPARATOR},
 		{ A_TRASH},
 #ifndef GENERIC_UMPC
-#if (defined(USE_SPAMASSASSIN_PLUGIN) || defined(USE_BOGOFILTER_PLUGIN))
 		{ A_LEARN_SPAM},
-#endif
 #endif
 		{ A_SEPARATOR},
 		{ A_GOTO_NEXT}
@@ -593,9 +591,7 @@ static void toolbar_set_default_msgview(void)
 		{ A_SEPARATOR},
 		{ A_TRASH},
 #ifndef GENERIC_UMPC
-#if (defined(USE_SPAMASSASSIN_PLUGIN) || defined(USE_BOGOFILTER_PLUGIN))
 		{ A_LEARN_SPAM},
-#endif
 #endif
 		{ A_GOTO_NEXT}
 	};
