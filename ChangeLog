@@ -1,3 +1,10 @@
+2009-03-23 [colin]	3.7.1cvs23
+
+	* configure.ac
+		Fix check for RC (resource compiler) used
+		on win32 (AC_LIBTOOL_RC used to call it 
+		implicitely but stopped)
+
 2009-03-19 [colin]	3.7.1cvs22
 
 	* src/toolbar.c
