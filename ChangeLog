@@ -1,3 +1,8 @@
+2009-03-23 [colin]	3.7.1cvs24
+
+	* src/textview.c
+		Fix internal headers visible in queue/sent
+
 2009-03-23 [colin]	3.7.1cvs23
 
 	* configure.ac

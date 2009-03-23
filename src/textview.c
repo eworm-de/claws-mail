@@ -1764,6 +1764,7 @@ static gboolean header_is_internal(Header *header)
 		 "X-Claws-Account-Id:", "X-Claws-Sign:", "X-Claws-Encrypt:", 
 		 "X-Claws-Privacy-System:", "X-Claws-End-Special-Headers:",
 		 "X-Sylpheed-Account-Id:", "X-Sylpheed-Sign:", "X-Sylpheed-Encrypt:", 
+		 "X-Claws-Auto-Wrapping:", "X-Claws-Auto-Indent:",
 		 "X-Sylpheed-Privacy-System:", "X-Sylpheed-End-Special-Headers:",
 		 NULL};
 	int i;
