@@ -1,3 +1,11 @@
+2009-03-25 [colin]	3.7.1cvs25
+
+	* src/news.c
+	* src/etpan/nntp-thread.c
+		Fix header fetching (NG/To/Cc). Fixes 
+		bug 1883, 'Message processing fails to 
+		act on Newsgroups: field'
+
 2009-03-23 [colin]	3.7.1cvs24
 
 	* src/textview.c

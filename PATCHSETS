@@ -3764,3 +3764,4 @@
 ( cvs diff -u -r 1.43.2.107 -r 1.43.2.108 src/toolbar.c;  cvs diff -u -r 1.36.2.168 -r 1.36.2.169 src/common/utils.c;  ) > 3.7.1cvs22.patchset
 ( cvs diff -u -r 1.654.2.3830 -r 1.654.2.3831 configure.ac;  ) > 3.7.1cvs23.patchset
 ( cvs diff -u -r 1.96.2.217 -r 1.96.2.218 src/textview.c;  ) > 3.7.1cvs24.patchset
+( cvs diff -u -r 1.101.2.60 -r 1.101.2.61 src/news.c;  cvs diff -u -r 1.1.2.10 -r 1.1.2.11 src/etpan/nntp-thread.c;  ) > 3.7.1cvs25.patchset

@@ -972,8 +972,7 @@ static void xhdr_run(struct etpan_thread_op * op)
 	if (param->beg == param->end) {
 		r = newsnntp_xhdr_single(param->nntp, param->header, param->beg, param->hdrlist);
 	} else {
-		r = -1;
-		g_warning("XHDR range not implemented\n");
+		r = newsnntp_xhdr_range(param->nntp, param->header, param->beg, param->end, param->hdrlist);
 	}
 	
 	result->error = r;
