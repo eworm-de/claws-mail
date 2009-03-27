@@ -3008,10 +3008,9 @@ static void *imap_get_uncached_messages_thread(void *data)
 				g_slist_free(tags);
 				continue;
 			}
-			if (tags != NULL) {
-				g_slist_free(msginfo->tags);
-				msginfo->tags = NULL;
-			}
+			g_slist_free(msginfo->tags);
+			msginfo->tags = NULL;
+
 			for (cur = tags; cur; cur = cur->next) {
 				gchar *real_tag = imap_modified_utf7_to_utf8(cur->data, TRUE);
 				gint id = 0;
@@ -3021,12 +3020,14 @@ static void *imap_get_uncached_messages_thread(void *data)
 					got_alien_tags = TRUE;
 				}
 				if (!g_slist_find(msginfo->tags, GINT_TO_POINTER(id))) {
-					msginfo->tags = g_slist_append(
+					msginfo->tags = g_slist_prepend(
 							msginfo->tags,
 							GINT_TO_POINTER(id));
 				}
 				g_free(real_tag);
 			}
+			if (msginfo->tags)
+				msginfo->tags = g_slist_reverse(msginfo->tags);
 			slist_free_strings(tags);
 			g_slist_free(tags);
 			msginfo->folder = item;

@@ -1,3 +1,16 @@
+2009-03-27 [colin]	3.7.1cvs27
+
+	* src/imap.c
+		Fix tag update when all tags are removed 
+		from another client
+
+<<<<<<< ChangeLog
+2009-03-25 [colin]	3.7.1cvs26
+
+	* configure.ac
+		Fix configure.ac, thanks to Pawel
+
+=======
 2009-03-25 [colin]	3.7.1cvs25
 
 	* src/news.c
@@ -6,6 +19,7 @@
 		bug 1883, 'Message processing fails to 
 		act on Newsgroups: field'
 
+>>>>>>> 1.396.2.2926
 2009-03-23 [colin]	3.7.1cvs24
 
 	* src/textview.c
