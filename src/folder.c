@@ -972,6 +972,9 @@ FolderItem *folder_create_folder(FolderItem *parent, const gchar *name)
 		FolderUpdateData hookdata;
 
 		new_item->cache = msgcache_new();
+		new_item->cache_dirty = TRUE;
+		new_item->mark_dirty = TRUE;
+		new_item->tags_dirty = TRUE;
 
 		hookdata.folder = new_item->folder;
 		hookdata.update_flags = FOLDER_TREE_CHANGED | FOLDER_ADD_FOLDERITEM;
@@ -2049,6 +2052,9 @@ gint folder_item_scan_full(FolderItem *item, gboolean filtering)
 		if (item->cache)
 			msgcache_destroy(item->cache);
 		item->cache = msgcache_new();
+		item->cache_dirty = TRUE;
+		item->mark_dirty = TRUE;
+		item->tags_dirty = TRUE;
 		cache_list = NULL;
 	}
 
@@ -2514,6 +2520,9 @@ static void folder_item_read_cache(FolderItem *item)
 		mark_file = folder_item_get_mark_file(item);
 		tags_file = folder_item_get_tags_file(item);
 		item->cache = msgcache_read_cache(item, cache_file);
+		item->cache_dirty = FALSE;
+		item->mark_dirty = FALSE;
+		item->tags_dirty = FALSE;
 		if (!item->cache) {
 			MsgInfoList *list, *cur;
 			guint newcnt = 0, unreadcnt = 0;
@@ -2524,6 +2533,9 @@ static void folder_item_read_cache(FolderItem *item)
 			MsgInfo *msginfo;
 
 			item->cache = msgcache_new();
+			item->cache_dirty = TRUE;
+			item->mark_dirty = TRUE;
+			item->tags_dirty = TRUE;
 			folder_item_scan_full(item, TRUE);
 
 			msgcache_read_mark(item->cache, mark_file);
@@ -2572,10 +2584,10 @@ static void folder_item_read_cache(FolderItem *item)
 		g_free(tags_file);
 	} else {
 		item->cache = msgcache_new();
+		item->cache_dirty = TRUE;
+		item->mark_dirty = TRUE;
+		item->tags_dirty = TRUE;
 	}
-	item->cache_dirty = FALSE;
-	item->mark_dirty = FALSE;
-	item->tags_dirty = FALSE;
 
 	END_TIMING();
 	folder_clean_cache_memory(item);
@@ -3658,6 +3670,9 @@ gint folder_item_remove_all_msg(FolderItem *item)
 		if (result == 0) {
 			folder_item_free_cache(item, TRUE);
 			item->cache = msgcache_new();
+			item->cache_dirty = TRUE;
+			item->mark_dirty = TRUE;
+			item->tags_dirty = TRUE;
 		}
 	} else {
 		MsgInfoList *msglist;

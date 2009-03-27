@@ -3770,3 +3770,4 @@
 ( cvs diff -u -r 1.101.2.60 -r 1.101.2.61 src/news.c;  cvs diff -u -r 1.1.2.10 -r 1.1.2.11 src/etpan/nntp-thread.c;  ) > 3.7.1cvs25.patchset
 >>>>>>> 1.1.2.3777
 ( cvs diff -u -r 1.179.2.244 -r 1.179.2.245 src/imap.c;  ) > 3.7.1cvs27.patchset
+( cvs diff -u -r 1.213.2.191 -r 1.213.2.192 src/folder.c;  ) > 3.7.1cvs28.patchset
