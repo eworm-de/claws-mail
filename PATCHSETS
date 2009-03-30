@@ -3771,3 +3771,4 @@
 >>>>>>> 1.1.2.3777
 ( cvs diff -u -r 1.179.2.244 -r 1.179.2.245 src/imap.c;  ) > 3.7.1cvs27.patchset
 ( cvs diff -u -r 1.213.2.191 -r 1.213.2.192 src/folder.c;  ) > 3.7.1cvs28.patchset
+( cvs diff -u -r 1.179.2.245 -r 1.179.2.246 src/imap.c;  ) > 3.7.1cvs29.patchset

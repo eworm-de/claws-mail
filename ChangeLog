@@ -1,3 +1,9 @@
+2009-03-30 [colin]	3.7.1cvs29
+
+	* src/imap.c
+		Fix Redhat bug 486422, Ubuntu bug 486422: Don't
+		ask for IMAP password when using GSSAPI auth
+
 2009-03-27 [colin]	3.7.1cvs28
 
 	* src/folder.c
