@@ -570,6 +570,8 @@ void folder_item_set_xml(Folder *folder, FolderItem *item, XMLTag *tag)
 			item->threaded =  *attr->value == '1' ? TRUE : FALSE;
 		else if (!strcmp(attr->name, "hidereadmsgs"))
 			item->hide_read_msgs =  *attr->value == '1' ? TRUE : FALSE;
+		else if (!strcmp(attr->name, "hidedelmsgs"))
+			item->hide_del_msgs =  *attr->value == '1' ? TRUE : FALSE;
 		else if (!strcmp(attr->name, "reqretrcpt"))
 			item->ret_rcpt =  *attr->value == '1' ? TRUE : FALSE;
 		else if (!strcmp(attr->name, "sort_key")) {
@@ -653,6 +655,7 @@ XMLTag *folder_item_get_xml(Folder *folder, FolderItem *item)
 	xml_tag_add_attr(tag, xml_attr_new("thread_collapsed", item->thread_collapsed ? "1" : "0"));
 	xml_tag_add_attr(tag, xml_attr_new("threaded", item->threaded ? "1" : "0"));
 	xml_tag_add_attr(tag, xml_attr_new("hidereadmsgs", item->hide_read_msgs ? "1" : "0"));
+	xml_tag_add_attr(tag, xml_attr_new("hidedelmsgs", item->hide_del_msgs ? "1" : "0"));
 	if (item->ret_rcpt)
 		xml_tag_add_attr(tag, xml_attr_new("reqretrcpt", "1"));
 
@@ -3154,6 +3157,7 @@ static FolderItem *folder_item_move_recursive(FolderItem *src, FolderItem *dest,
 	new_item->threaded  = src->threaded;
 	new_item->ret_rcpt  = src->ret_rcpt;
 	new_item->hide_read_msgs = src->hide_read_msgs;
+	new_item->hide_del_msgs = src->hide_del_msgs;
 	new_item->sort_key  = src->sort_key;
 	new_item->sort_type = src->sort_type;
 
@@ -3398,7 +3402,9 @@ static gint do_copy_msgs(FolderItem *dest, GSList *msglist, gboolean remove_sour
 					item->folder->klass->remove_msg(item->folder,
 					    		        msginfo->folder,
 						    		msginfo->msgnum);
-				remove_msginfo_from_cache(item, msginfo);
+				if (!item->folder->account || item->folder->account->imap_use_trash) {
+					remove_msginfo_from_cache(item, msginfo);
+				}
 			}
 		}
 	}
@@ -3594,9 +3600,11 @@ gint folder_item_remove_msg(FolderItem *item, gint num)
 	}
 	ret = folder->klass->remove_msg(folder, item, num);
 
-	if (msginfo != NULL) {
-		remove_msginfo_from_cache(item, msginfo);
-		procmsg_msginfo_free(msginfo);
+	if (!item->folder->account || item->folder->account->imap_use_trash) {
+		if (msginfo != NULL) {
+			remove_msginfo_from_cache(item, msginfo);
+			procmsg_msginfo_free(msginfo);
+		}
 	}
 
 	return ret;
@@ -3650,6 +3658,29 @@ gint folder_item_remove_msgs(FolderItem *item, GSList *msglist)
 	folder_item_update_thaw();
 	inc_unlock();
 	return ret;
+}
+
+gint folder_item_expunge(FolderItem *item)
+{
+	Folder *folder = item->folder;
+	gint result = 0;
+	if (folder == NULL)
+		return -1;
+	if (folder->klass->expunge) {
+		GSList *msglist = folder_item_get_msg_list(item);
+		GSList *cur;
+		result = folder->klass->expunge(folder, item);
+		if (result == 0) {
+			for (cur = msglist; cur; cur = cur->next) {
+				MsgInfo *msginfo = (MsgInfo *)cur->data;
+				if (MSG_IS_DELETED(msginfo->flags)) {
+					remove_msginfo_from_cache(item, msginfo);
+				}
+			}
+		}
+		procmsg_msg_list_free(msglist);
+	}
+	return result;
 }
 
 gint folder_item_remove_all_msg(FolderItem *item)
@@ -4188,6 +4219,7 @@ static void folder_item_restore_persist_prefs(FolderItem *item, GHashTable *ppta
 	item->threaded  = pp->threaded;
 	item->ret_rcpt  = pp->ret_rcpt;
 	item->hide_read_msgs = pp->hide_read_msgs;
+	item->hide_del_msgs = pp->hide_del_msgs;
 	item->sort_key  = pp->sort_key;
 	item->sort_type = pp->sort_type;
 }
@@ -4213,6 +4245,7 @@ static void folder_get_persist_prefs_recursive(GNode *node, GHashTable *pptable)
 		pp->threaded  = item->threaded;
 		pp->ret_rcpt  = item->ret_rcpt;	
 		pp->hide_read_msgs = item->hide_read_msgs;
+		pp->hide_del_msgs = item->hide_del_msgs;
 		pp->sort_key  = item->sort_key;
 		pp->sort_type = item->sort_type;
 		g_hash_table_insert(pptable, id, pp);

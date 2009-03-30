@@ -148,6 +148,7 @@ typedef struct ReceivePage
 	GtkWidget *imapdir_entry;
 	GtkWidget *subsonly_checkbtn;
 	GtkWidget *low_bandwidth_checkbtn;
+	GtkWidget *imap_use_trash_checkbtn;
 
 	GtkWidget *frame_maxarticle;
 	GtkWidget *maxarticle_label;
@@ -488,6 +489,10 @@ static PrefParam receive_param[] = {
 
 	{"low_bandwidth", "FALSE", &tmp_ac_prefs.low_bandwidth, P_BOOL,
 	 &receive_page.low_bandwidth_checkbtn,
+	 prefs_set_data_from_toggle, prefs_set_toggle},
+
+	{"imap_use_trash", "TRUE", &tmp_ac_prefs.imap_use_trash, P_BOOL,
+	 &receive_page.imap_use_trash_checkbtn,
 	 prefs_set_data_from_toggle, prefs_set_toggle},
 
 	{NULL, NULL, NULL, P_OTHER, NULL, NULL, NULL}
@@ -1354,6 +1359,7 @@ static void receive_create_widget_func(PrefsPage * _page,
 	GtkWidget *imapdir_entry;
 	GtkWidget *subsonly_checkbtn;
 	GtkWidget *low_bandwidth_checkbtn;
+	GtkWidget *imap_use_trash_checkbtn;
 	GtkWidget *local_frame;
 	GtkWidget *local_vbox;
 	GtkWidget *local_hbox;
@@ -1572,6 +1578,15 @@ static void receive_create_widget_func(PrefsPage * _page,
 	CLAWS_SET_TIP(low_bandwidth_checkbtn,
 			     _("This mode uses less bandwidth, but can be slower with some servers."));
 
+	hbox1 = gtk_hbox_new (FALSE, 8);
+	gtk_widget_show (hbox1);
+	gtk_box_pack_start (GTK_BOX (vbox2), hbox1, FALSE, FALSE, 4);
+
+	PACK_CHECK_BUTTON (hbox1, imap_use_trash_checkbtn,
+			   _("Move deleted mails to trash and expunge immediately"));
+	CLAWS_SET_TIP(imap_use_trash_checkbtn,
+			     _("Moves deleted mails to trash instead of using the \\Deleted flag without expunging. "));
+
 	PACK_CHECK_BUTTON (vbox1, filter_on_recv_checkbtn,
 			   _("Filter messages on receiving"));
 
@@ -1603,9 +1618,10 @@ static void receive_create_widget_func(PrefsPage * _page,
 	page->imap_auth_type_optmenu   = optmenu;
 
 	page->imapdir_label		= imapdir_label;
-	page->imapdir_entry           = imapdir_entry;
+	page->imapdir_entry		= imapdir_entry;
 	page->subsonly_checkbtn		= subsonly_checkbtn;
-	page->low_bandwidth_checkbtn		= low_bandwidth_checkbtn;
+	page->low_bandwidth_checkbtn	= low_bandwidth_checkbtn;
+	page->imap_use_trash_checkbtn	= imap_use_trash_checkbtn;
 	page->local_frame		= local_frame;
 	page->local_inbox_label	= local_inbox_label;
 	page->local_inbox_entry	= local_inbox_entry;
@@ -4073,6 +4089,7 @@ static void prefs_account_protocol_changed(GtkComboBox *combobox, gpointer data)
 		gtk_widget_hide(receive_page.imapdir_entry);
 		gtk_widget_hide(receive_page.subsonly_checkbtn);
 		gtk_widget_hide(receive_page.low_bandwidth_checkbtn);
+		gtk_widget_hide(receive_page.imap_use_trash_checkbtn);
 		break;
 	case A_LOCAL:
 		gtk_widget_show(send_page.msgid_checkbtn);
@@ -4167,6 +4184,7 @@ static void prefs_account_protocol_changed(GtkComboBox *combobox, gpointer data)
 		gtk_widget_hide(receive_page.imapdir_entry);
 		gtk_widget_hide(receive_page.subsonly_checkbtn);
 		gtk_widget_hide(receive_page.low_bandwidth_checkbtn);
+		gtk_widget_hide(receive_page.imap_use_trash_checkbtn);
 		break;
 	case A_IMAP4:
 #ifndef HAVE_LIBETPAN
@@ -4270,6 +4288,7 @@ static void prefs_account_protocol_changed(GtkComboBox *combobox, gpointer data)
 		gtk_widget_show(receive_page.imapdir_entry);
 		gtk_widget_show(receive_page.subsonly_checkbtn);
 		gtk_widget_show(receive_page.low_bandwidth_checkbtn);
+		gtk_widget_show(receive_page.imap_use_trash_checkbtn);
 		break;
 	case A_NONE:
 		gtk_widget_show(send_page.msgid_checkbtn);
@@ -4362,6 +4381,7 @@ static void prefs_account_protocol_changed(GtkComboBox *combobox, gpointer data)
 		gtk_widget_hide(receive_page.imapdir_entry);
 		gtk_widget_hide(receive_page.subsonly_checkbtn);
 		gtk_widget_hide(receive_page.low_bandwidth_checkbtn);
+		gtk_widget_hide(receive_page.imap_use_trash_checkbtn);
 		break;
 	case A_POP3:
 	default:
@@ -4460,6 +4480,7 @@ static void prefs_account_protocol_changed(GtkComboBox *combobox, gpointer data)
 		gtk_widget_hide(receive_page.imapdir_entry);
 		gtk_widget_hide(receive_page.subsonly_checkbtn);
 		gtk_widget_hide(receive_page.low_bandwidth_checkbtn);
+		gtk_widget_hide(receive_page.imap_use_trash_checkbtn);
 		break;
 	}
 

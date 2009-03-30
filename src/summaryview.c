@@ -124,6 +124,8 @@ guint summary_get_msgnum		(SummaryView		*summaryview,
 
 static void summary_set_hide_read_msgs_menu (SummaryView *summaryview,
 					     guint action);
+static void summary_set_hide_del_msgs_menu (SummaryView *summaryview,
+					     guint action);
 
 static GtkCMCTreeNode *summary_find_prev_msg
 					(SummaryView		*summaryview,
@@ -205,6 +207,7 @@ static void summary_execute_delete	(SummaryView		*summaryview);
 static void summary_execute_delete_func	(GtkCMCTree		*ctree,
 					 GtkCMCTreeNode		*node,
 					 gpointer		 data);
+static void summary_execute_expunge	(SummaryView		*summaryview);
 
 static void summary_thread_init		(SummaryView		*summaryview);
 
@@ -1204,6 +1207,7 @@ gboolean summary_show(SummaryView *summaryview, FolderItem *item)
 				item?folder_item_parent(item):0x0,
 				item?item->no_select:FALSE);
 		summary_set_hide_read_msgs_menu(summaryview, FALSE);
+		summary_set_hide_del_msgs_menu(summaryview, FALSE);
 		summary_clear_all(summaryview);
 		summaryview->folder_item = item;
 		summary_thaw(summaryview);
@@ -1244,28 +1248,37 @@ gboolean summary_show(SummaryView *summaryview, FolderItem *item)
 		mlist = folder_item_get_msg_list(item);
 	}
 
-	if (summaryview->folder_item->hide_read_msgs &&
+	if ((summaryview->folder_item->hide_read_msgs || summaryview->folder_item->hide_del_msgs) &&
 	    quicksearch_is_active(summaryview->quicksearch) == FALSE) {
 		GSList *not_killed;
 		
-		summary_set_hide_read_msgs_menu(summaryview, TRUE);
+		summary_set_hide_read_msgs_menu(summaryview, summaryview->folder_item->hide_read_msgs);
+		summary_set_hide_del_msgs_menu(summaryview, summaryview->folder_item->hide_del_msgs);
 		not_killed = NULL;
 		for(cur = mlist ; cur != NULL && cur->data != NULL ; cur = g_slist_next(cur)) {
 			MsgInfo * msginfo = (MsgInfo *) cur->data;
 			
 			if (!msginfo->hidden) {
-				if (MSG_IS_UNREAD(msginfo->flags) &&
-				    !MSG_IS_IGNORE_THREAD(msginfo->flags))
-					not_killed = g_slist_prepend(not_killed, msginfo);
-				else if (MSG_IS_MARKED(msginfo->flags) ||
-					 MSG_IS_LOCKED(msginfo->flags))
-					not_killed = g_slist_prepend(not_killed, msginfo);
-				else if (is_refresh &&
-					(msginfo->msgnum == selected_msgnum ||
-					 msginfo->msgnum == displayed_msgnum))
-					not_killed = g_slist_prepend(not_killed, msginfo);
-				else
+				if (MSG_IS_DELETED(msginfo->flags) && summaryview->folder_item->hide_del_msgs) {
 					procmsg_msginfo_free(msginfo);
+					continue;
+				}
+				if (summaryview->folder_item->hide_read_msgs) {
+					if (MSG_IS_UNREAD(msginfo->flags) &&
+					    !MSG_IS_IGNORE_THREAD(msginfo->flags))
+						not_killed = g_slist_prepend(not_killed, msginfo);
+					else if (MSG_IS_MARKED(msginfo->flags) ||
+						 MSG_IS_LOCKED(msginfo->flags))
+						not_killed = g_slist_prepend(not_killed, msginfo);
+					else if (is_refresh &&
+						(msginfo->msgnum == selected_msgnum ||
+						 msginfo->msgnum == displayed_msgnum))
+						not_killed = g_slist_prepend(not_killed, msginfo);
+					else
+						procmsg_msginfo_free(msginfo);
+				} else {
+					not_killed = g_slist_prepend(not_killed, msginfo);
+				}
 			 } else
 			 	procmsg_msginfo_free(msginfo);
 		}
@@ -1274,6 +1287,7 @@ gboolean summary_show(SummaryView *summaryview, FolderItem *item)
 		mlist = not_killed;
 	} else {
 		summary_set_hide_read_msgs_menu(summaryview, FALSE);
+		summary_set_hide_del_msgs_menu(summaryview, FALSE);
 	}
 
 	if (quicksearch_is_active(summaryview->quicksearch)) {
@@ -2431,6 +2445,7 @@ static void summary_status_show(SummaryView *summaryview)
 	}
 	
 	if (summaryview->folder_item->hide_read_msgs 
+	|| summaryview->folder_item->hide_del_msgs
 	|| quicksearch_is_active(summaryview->quicksearch)) {
 		rowlist = GTK_CMCLIST(summaryview->ctree)->row_list;
 		for (cur = rowlist; cur != NULL && cur->data != NULL; cur = cur->next) {
@@ -4125,9 +4140,11 @@ static void summary_delete_row(SummaryView *summaryview, GtkCMCTreeNode *row)
 	summaryview->deleted++;
 
 	if (!prefs_common.immediate_exec && 
-	    !folder_has_parent_of_type(summaryview->folder_item, F_TRASH))
+	    !folder_has_parent_of_type(summaryview->folder_item, F_TRASH)) {
 		summary_set_row_marks(summaryview, row);
-
+	} else if (summaryview->folder_item->folder->account && !summaryview->folder_item->folder->account->imap_use_trash) {
+		summary_set_row_marks(summaryview, row);
+	}
 	debug_print("Message %s/%d is set to delete\n",
 		    msginfo->folder->path, msginfo->msgnum);
 }
@@ -4176,18 +4193,20 @@ void summary_delete(SummaryView *summaryview)
 
 	if (!summaryview->folder_item) return;
 
-	if (!prefs_common.live_dangerously) {
-		gchar *buf = NULL;
-		int num = g_list_length(GTK_CMCLIST(summaryview->ctree)->selection);
-		buf = g_strdup_printf(ngettext(
-			"Do you really want to delete the selected message?",
-			"Do you really want to delete the %d selected messages?", num), 
-			num);
-		aval = alertpanel(_("Delete message(s)"),
-				  buf,
-				  GTK_STOCK_CANCEL, "+"GTK_STOCK_DELETE, NULL);
-		g_free(buf);
-		if (aval != G_ALERTALTERNATE) return;
+	if (!summaryview->folder_item->folder->account || summaryview->folder_item->folder->account->imap_use_trash) {
+		if (!prefs_common.live_dangerously) {
+			gchar *buf = NULL;
+			int num = g_list_length(GTK_CMCLIST(summaryview->ctree)->selection);
+			buf = g_strdup_printf(ngettext(
+				"Do you really want to delete the selected message?",
+				"Do you really want to delete the %d selected messages?", num), 
+				num);
+			aval = alertpanel(_("Delete message(s)"),
+					  buf,
+					  GTK_STOCK_CANCEL, "+"GTK_STOCK_DELETE, NULL);
+			g_free(buf);
+			if (aval != G_ALERTALTERNATE) return;
+		}
 	}
 
 	for (cur = GTK_CMCLIST(ctree)->selection; cur != NULL && cur->data != NULL; 
@@ -4244,7 +4263,8 @@ void summary_delete_trash(SummaryView *summaryview)
 		to_folder = summaryview->folder_item->folder->trash;
 	
 	if (to_folder == NULL || to_folder == summaryview->folder_item
-	    || folder_has_parent_of_type(summaryview->folder_item, F_TRASH))
+	    || folder_has_parent_of_type(summaryview->folder_item, F_TRASH)
+	    || (summaryview->folder_item->folder->account && !summaryview->folder_item->folder->account->imap_use_trash))
 		summary_delete(summaryview);
 	else
 		summary_move_selected_to(summaryview, to_folder);
@@ -4320,6 +4340,8 @@ static void summary_move_row_to(SummaryView *summaryview, GtkCMCTreeNode *row,
 	}
 	
 	if (!prefs_common.immediate_exec) {
+		summary_set_row_marks(summaryview, row);
+	} else if (msginfo->folder->folder->account && !msginfo->folder->folder->account->imap_use_trash) {
 		summary_set_row_marks(summaryview, row);
 	}
 
@@ -4811,14 +4833,129 @@ gboolean summary_execute(SummaryView *summaryview)
 	return TRUE;
 }
 
+gboolean summary_expunge(SummaryView *summaryview)
+{
+	GtkCMCTree *ctree = GTK_CMCTREE(summaryview->ctree);
+	GtkCMCList *clist = GTK_CMCLIST(summaryview->ctree);
+	GtkCMCTreeNode *node, *next;
+	GtkCMCTreeNode *new_selected = NULL;
+
+	if (!summaryview->folder_item) return FALSE;
+
+	if (summary_is_locked(summaryview)) return FALSE;
+
+	summary_lock(summaryview);
+
+	summary_freeze(summaryview);
+
+	main_window_cursor_wait(summaryview->mainwin);
+
+	if (summaryview->threaded)
+		summary_unthread_for_exec(summaryview);
+
+	folder_item_update_freeze();
+	summary_execute_expunge(summaryview);
+	
+	node = GTK_CMCTREE_NODE(clist->row_list);
+	for (; node != NULL; node = next) {
+		next = gtkut_ctree_node_next(ctree, node);
+		if (gtk_cmctree_node_get_row_data(ctree, node) != NULL) continue;
+
+		if (node == summaryview->displayed) {
+			messageview_clear(summaryview->messageview);
+			summaryview->displayed = NULL;
+		}
+		if (GTK_CMCTREE_ROW(node)->children != NULL) {
+			next = NULL;
+			if (GTK_CMCTREE_ROW(node)->sibling) {
+				next = GTK_CMCTREE_ROW(node)->sibling;
+			} else {
+				GtkCMCTreeNode *parent = NULL;
+				for (parent = GTK_CMCTREE_ROW(node)->parent; parent != NULL;
+				     parent = GTK_CMCTREE_ROW(parent)->parent) {
+					if (GTK_CMCTREE_ROW(parent)->sibling) {
+						next = GTK_CMCTREE_ROW(parent)->sibling;
+					}
+				}
+			}
+		}
+
+		if (!new_selected &&
+		    gtkut_ctree_node_is_selected(ctree, node)) {
+			summary_unselect_all(summaryview);
+			new_selected = summary_find_next_msg(summaryview, node);
+			if (!new_selected)
+				new_selected = summary_find_prev_msg
+					(summaryview, node);
+		}
+
+		gtk_sctree_remove_node((GtkSCTree *)ctree, node);
+	}
+
+	folder_item_update_thaw();
+
+	if (new_selected) {
+		summary_unlock(summaryview);
+		gtk_sctree_select
+			(GTK_SCTREE(ctree), new_selected);
+		summary_lock(summaryview);
+	}
+
+	if (summaryview->threaded) {
+		summary_thread_build(summaryview);
+		summary_thread_init(summaryview);
+	}
+
+	summary_thaw(summaryview);
+
+	summaryview->selected = clist->selection ?
+		GTK_CMCTREE_NODE(clist->selection->data) : NULL;
+
+	if (!GTK_CMCLIST(summaryview->ctree)->row_list) {
+		menu_set_insensitive_all
+			(GTK_MENU_SHELL(summaryview->popupmenu));
+		gtk_widget_grab_focus(summaryview->folderview->ctree);
+	} else
+		gtk_widget_grab_focus(summaryview->ctree);
+
+	summary_update_status(summaryview);
+	summary_status_show(summaryview);
+
+	gtk_cmctree_node_moveto(ctree, summaryview->selected, 0, 0.5, 0);
+
+	summary_unlock(summaryview);
+
+	main_window_cursor_normal(summaryview->mainwin);
+
+	return TRUE;
+}
+
+static void summary_set_deleted_func(GtkCMCTree *ctree, GtkCMCTreeNode *node,
+				      gpointer data)
+{
+	SummaryView *summaryview = data;
+	MsgInfo *msginfo;
+
+	msginfo = GTKUT_CTREE_NODE_GET_ROW_DATA(node);
+
+	if (msginfo && MSG_IS_MOVE(msginfo->flags)) {
+		msginfo->flags.tmp_flags &= ~ MSG_MOVE;
+		msginfo->flags.perm_flags |= MSG_DELETED;
+		summary_set_row_marks(summaryview, node);
+		summaryview->moved--;
+		summaryview->deleted++;
+	}
+}
+
 static gint summary_execute_move(SummaryView *summaryview)
 {
 	GtkCMCTree *ctree = GTK_CMCTREE(summaryview->ctree);
 	GSList *cur;
 	gint val = -1;
 	/* search moving messages and execute */
+	
 	gtk_cmctree_pre_recursive(ctree, NULL, summary_execute_move_func,
-				summaryview);
+			summaryview);
 
 	if (summaryview->mlist) {
 		hooks_unregister_hook(MSGINFO_UPDATE_HOOKLIST,
@@ -4828,8 +4965,14 @@ static gint summary_execute_move(SummaryView *summaryview)
 		hooks_register_hook(MSGINFO_UPDATE_HOOKLIST, 
 			summary_update_msg, (gpointer) summaryview);
 
-		for (cur = summaryview->mlist; cur != NULL && cur->data != NULL; cur = cur->next)
-			procmsg_msginfo_free((MsgInfo *)cur->data);
+		if (!summaryview->folder_item->folder->account || summaryview->folder_item->folder->account->imap_use_trash) {
+			for (cur = summaryview->mlist; cur != NULL && cur->data != NULL; cur = cur->next)
+				procmsg_msginfo_free((MsgInfo *)cur->data);
+		} 
+		if (summaryview->folder_item->folder->account && !summaryview->folder_item->folder->account->imap_use_trash) {
+			gtk_cmctree_pre_recursive(ctree, NULL, summary_set_deleted_func,
+					summaryview);
+		}
 		g_slist_free(summaryview->mlist);
 		summaryview->mlist = NULL;
 		return val;
@@ -4848,20 +4991,23 @@ static void summary_execute_move_func(GtkCMCTree *ctree, GtkCMCTreeNode *node,
 	if (msginfo && MSG_IS_MOVE(msginfo->flags) && msginfo->to_folder) {
 		summaryview->mlist =
 			g_slist_prepend(summaryview->mlist, msginfo);
-		gtk_cmctree_node_set_row_data(ctree, node, NULL);
+		if (!summaryview->folder_item->folder->account || 
+		     summaryview->folder_item->folder->account->imap_use_trash) {
+			gtk_cmctree_node_set_row_data(ctree, node, NULL);
 
-		if (msginfo->msgid && *msginfo->msgid &&
-		    node == g_hash_table_lookup(summaryview->msgid_table,
-						msginfo->msgid))
-			g_hash_table_remove(summaryview->msgid_table,
-					    msginfo->msgid);
-		if (prefs_common.thread_by_subject &&
-		    msginfo->subject && *msginfo->subject && 
-		    node == subject_table_lookup(summaryview->subject_table,
-						 msginfo->subject)) {
-			subject_table_remove(summaryview->subject_table,
-					     msginfo->subject);
-		}					    
+			if (msginfo->msgid && *msginfo->msgid &&
+			    node == g_hash_table_lookup(summaryview->msgid_table,
+							msginfo->msgid))
+				g_hash_table_remove(summaryview->msgid_table,
+						    msginfo->msgid);
+			if (prefs_common.thread_by_subject &&
+			    msginfo->subject && *msginfo->subject && 
+			    node == subject_table_lookup(summaryview->subject_table,
+							 msginfo->subject)) {
+				subject_table_remove(summaryview->subject_table,
+						     msginfo->subject);
+			}
+		}
 	}
 }
 
@@ -4910,9 +5056,10 @@ static void summary_execute_delete(SummaryView *summaryview)
 	GSList *cur;
 
 	/* search deleting messages and execute */
-	gtk_cmctree_pre_recursive
-		(ctree, NULL, summary_execute_delete_func, summaryview);
-
+	if (!summaryview->folder_item->folder->account || summaryview->folder_item->folder->account->imap_use_trash) {
+		gtk_cmctree_pre_recursive
+			(ctree, NULL, summary_execute_delete_func, summaryview);
+	}
 	if (!summaryview->mlist) return;
 
 	hooks_unregister_hook(MSGINFO_UPDATE_HOOKLIST,
@@ -4924,9 +5071,10 @@ static void summary_execute_delete(SummaryView *summaryview)
 	summaryview->msginfo_update_callback_id =
 		hooks_register_hook(MSGINFO_UPDATE_HOOKLIST, 
 			summary_update_msg, (gpointer) summaryview);
-	for (cur = summaryview->mlist; cur != NULL && cur->data != NULL; cur = cur->next)
-		procmsg_msginfo_free((MsgInfo *)cur->data);
-
+	if (!summaryview->folder_item->folder->account || summaryview->folder_item->folder->account->imap_use_trash) {
+		for (cur = summaryview->mlist; cur != NULL && cur->data != NULL; cur = cur->next)
+			procmsg_msginfo_free((MsgInfo *)cur->data);
+	}
 	g_slist_free(summaryview->mlist);
 	summaryview->mlist = NULL;
 }
@@ -4958,6 +5106,58 @@ static void summary_execute_delete_func(GtkCMCTree *ctree, GtkCMCTreeNode *node,
 					     msginfo->subject);
 		}					    
 	}
+}
+
+static void summary_execute_expunge_func(GtkCMCTree *ctree, GtkCMCTreeNode *node,
+					gpointer data)
+{
+	SummaryView *summaryview = data;
+	MsgInfo *msginfo;
+
+	msginfo = GTKUT_CTREE_NODE_GET_ROW_DATA(node);
+
+	if (msginfo && MSG_IS_DELETED(msginfo->flags)) {
+		summaryview->mlist =
+			g_slist_prepend(summaryview->mlist, msginfo);
+		gtk_cmctree_node_set_row_data(ctree, node, NULL);
+
+		if (msginfo->msgid && *msginfo->msgid &&
+		    node == g_hash_table_lookup(summaryview->msgid_table,
+						msginfo->msgid)) {
+			g_hash_table_remove(summaryview->msgid_table,
+					    msginfo->msgid);
+		}	
+		if (prefs_common.thread_by_subject &&
+		    msginfo->subject && *msginfo->subject && 
+		    node == subject_table_lookup(summaryview->subject_table,
+						 msginfo->subject)) {
+			subject_table_remove(summaryview->subject_table,
+					     msginfo->subject);
+		}					    
+	}
+}
+
+static void summary_execute_expunge(SummaryView *summaryview)
+{
+	GtkCMCTree *ctree = GTK_CMCTREE(summaryview->ctree);
+	GSList *cur;
+
+	gtk_cmctree_pre_recursive
+		(ctree, NULL, summary_execute_expunge_func, summaryview);
+
+	hooks_unregister_hook(MSGINFO_UPDATE_HOOKLIST,
+		summaryview->msginfo_update_callback_id);
+
+	folder_item_expunge(summaryview->folder_item);
+
+	summaryview->msginfo_update_callback_id =
+		hooks_register_hook(MSGINFO_UPDATE_HOOKLIST, 
+			summary_update_msg, (gpointer) summaryview);
+	for (cur = summaryview->mlist; cur != NULL && cur->data != NULL; cur = cur->next)
+		procmsg_msginfo_free((MsgInfo *)cur->data);
+
+	g_slist_free(summaryview->mlist);
+	summaryview->mlist = NULL;
 }
 
 /* thread functions */
@@ -7379,12 +7579,40 @@ void summary_toggle_show_read_messages(SummaryView *summaryview)
  	summary_show(summaryview, summaryview->folder_item);
 }
  
+void summary_toggle_show_del_messages(SummaryView *summaryview)
+{
+	FolderItemUpdateData source;
+	if (summaryview->folder_item->hide_del_msgs)
+ 		summaryview->folder_item->hide_del_msgs = 0;
+ 	else
+ 		summaryview->folder_item->hide_del_msgs = 1;
+
+	source.item = summaryview->folder_item;
+	source.update_flags = F_ITEM_UPDATE_NAME;
+	source.msg = NULL;
+	hooks_invoke(FOLDER_ITEM_UPDATE_HOOKLIST, &source);
+ 	summary_show(summaryview, summaryview->folder_item);
+}
+ 
 static void summary_set_hide_read_msgs_menu (SummaryView *summaryview,
  					     guint action)
 {
  	GtkWidget *widget;
 
  	widget = gtk_ui_manager_get_widget(summaryview->mainwin->ui_manager, "/Menu/View/HideReadMessages");
+ 	g_object_set_data(G_OBJECT(widget), "dont_toggle",
+ 			  GINT_TO_POINTER(1));
+ 	gtk_check_menu_item_set_active (GTK_CHECK_MENU_ITEM(widget), action);
+ 	g_object_set_data(G_OBJECT(widget), "dont_toggle",
+ 			  GINT_TO_POINTER(0));
+}
+
+static void summary_set_hide_del_msgs_menu (SummaryView *summaryview,
+ 					     guint action)
+{
+ 	GtkWidget *widget;
+
+ 	widget = gtk_ui_manager_get_widget(summaryview->mainwin->ui_manager, "/Menu/View/HideDelMessages");
  	g_object_set_data(G_OBJECT(widget), "dont_toggle",
  			  GINT_TO_POINTER(1));
  	gtk_check_menu_item_set_active (GTK_CHECK_MENU_ITEM(widget), action);

@@ -249,6 +249,8 @@ static void set_decode_cb		(GtkAction *action, GtkRadioAction *current, gpointer
 
 static void hide_read_messages   (GtkAction	*action,
 				  gpointer	 data);
+static void hide_del_messages   (GtkAction	*action,
+				  gpointer	 data);
 
 static void thread_cb		 (GtkAction	*action,
 				  gpointer	 data);
@@ -277,6 +279,8 @@ static void filter_list_cb	 (GtkAction	*action,
 static void process_cb		 (GtkAction	*action,
 				  gpointer	 data);
 static void execute_summary_cb	 (GtkAction	*action,
+				  gpointer	 data);
+static void expunge_summary_cb	 (GtkAction	*action,
 				  gpointer	 data);
 static void update_summary_cb	 (GtkAction	*action,
 				  gpointer	 data);
@@ -697,6 +701,7 @@ static GtkActionEntry mainwin_entries[] =
 	/* {"Tools/---",			NULL, "---", NULL, NULL, NULL }, */
 
 	{"Tools/Execute",			NULL, N_("E_xecute"), "X", NULL, G_CALLBACK(execute_summary_cb) }, 
+	{"Tools/Expunge",			NULL, N_("Exp_unge"), "<control>E", NULL, G_CALLBACK(expunge_summary_cb) }, 
 #ifdef USE_GNUTLS
 	/* {"Tools/---",			NULL, "---", NULL, NULL, NULL }, */
 	{"Tools/SSLCertificates",		NULL, N_("SSL cer_tificates"), NULL, NULL, G_CALLBACK(ssl_manager_open_cb) }, 
@@ -747,6 +752,7 @@ static GtkToggleActionEntry mainwin_toggle_entries[] = {
 	{"View/ShowHide/ColumnHeaders",		NULL, N_("Column headers"), NULL, NULL, G_CALLBACK(toggle_col_headers_cb) }, /* toggle */
 	{"View/ThreadView",			NULL, N_("Th_read view"), "<control>T", NULL, G_CALLBACK(thread_cb) }, /* toggle */
 	{"View/HideReadMessages",		NULL, N_("_Hide read messages"), NULL, NULL, G_CALLBACK(hide_read_messages) }, /* toggle */
+	{"View/HideDelMessages",		NULL, N_("Hide deleted messages"), NULL, NULL, G_CALLBACK(hide_del_messages) }, /* toggle */
 #ifndef MAEMO
 	{"View/FullScreen",			NULL, N_("_Fullscreen"), "F11", NULL, G_CALLBACK(toggle_fullscreen_cb) }, /* toggle */
 #endif
@@ -1697,6 +1703,7 @@ MainWindow *main_window_create()
 	MENUITEM_ADDUI_MANAGER(mainwin->ui_manager, "/Menu/View", "ExpandThreads", "View/ExpandThreads", GTK_UI_MANAGER_MENUITEM)
 	MENUITEM_ADDUI_MANAGER(mainwin->ui_manager, "/Menu/View", "CollapseThreads", "View/CollapseThreads", GTK_UI_MANAGER_MENUITEM)
 	MENUITEM_ADDUI_MANAGER(mainwin->ui_manager, "/Menu/View", "HideReadMessages", "View/HideReadMessages", GTK_UI_MANAGER_MENUITEM)
+	MENUITEM_ADDUI_MANAGER(mainwin->ui_manager, "/Menu/View", "HideDelMessages", "View/HideDelMessages", GTK_UI_MANAGER_MENUITEM)
 	MENUITEM_ADDUI_MANAGER(mainwin->ui_manager, "/Menu/View", "Separator3", "View/---", GTK_UI_MANAGER_SEPARATOR)
 
 	MENUITEM_ADDUI_MANAGER(mainwin->ui_manager, "/Menu/View", "Goto", "View/Goto", GTK_UI_MANAGER_MENU)
@@ -1904,6 +1911,7 @@ MainWindow *main_window_create()
 	MENUITEM_ADDUI_MANAGER(mainwin->ui_manager, "/Menu/Tools", "Separator5", "Tools/---", GTK_UI_MANAGER_SEPARATOR)
 
 	MENUITEM_ADDUI_MANAGER(mainwin->ui_manager, "/Menu/Tools", "Execute", "Tools/Execute", GTK_UI_MANAGER_MENUITEM)
+	MENUITEM_ADDUI_MANAGER(mainwin->ui_manager, "/Menu/Tools", "Expunge", "Tools/Expunge", GTK_UI_MANAGER_MENUITEM)
 #ifdef USE_GNUTLS
 	MENUITEM_ADDUI_MANAGER(mainwin->ui_manager, "/Menu/Tools", "Separator6", "Tools/---", GTK_UI_MANAGER_SEPARATOR)
 	MENUITEM_ADDUI_MANAGER(mainwin->ui_manager, "/Menu/Tools", "SSLCertificates", "Tools/SSLCertificates", GTK_UI_MANAGER_MENUITEM)
@@ -3116,6 +3124,9 @@ SensitiveCond main_window_get_current_state(MainWindow *mainwin)
 	if (imap_cancel_all_enabled())
 		state |= M_INC_ACTIVE;
 
+	if (mainwin->summaryview->deleted > 0)
+		state |= M_DELETED_EXISTS;
+
 	if (mainwin->summaryview->deleted > 0 ||
 	    mainwin->summaryview->moved > 0 ||
 	    mainwin->summaryview->copied > 0)
@@ -3170,6 +3181,7 @@ void main_window_set_menu_sensitive(MainWindow *mainwin)
 		{"Menu/View/ExpandThreads"        , M_MSG_EXIST|M_SUMMARY_ISLIST},
 		{"Menu/View/CollapseThreads"      , M_MSG_EXIST|M_SUMMARY_ISLIST},
 		{"Menu/View/HideReadMessages"	   , M_HIDE_READ_MSG|M_SUMMARY_ISLIST},
+		{"Menu/View/HideDelMessages"	   , M_SUMMARY_ISLIST},
 		{"Menu/View/Goto/Prev"        , M_MSG_EXIST},
 		{"Menu/View/Goto/Next"        , M_MSG_EXIST},
 		{"Menu/View/Goto/PrevUnread" , M_MSG_EXIST},
@@ -3229,6 +3241,7 @@ void main_window_set_menu_sensitive(MainWindow *mainwin)
 		{"Menu/Tools/ListUrls"                 , M_TARGET_EXIST},
 		{"Menu/Tools/Actions"                      , M_TARGET_EXIST|M_ACTIONS_EXIST},
 		{"Menu/Tools/Execute"                      , M_DELAY_EXEC},
+		{"Menu/Tools/Expunge"                      , M_DELETED_EXISTS},
 		{"Menu/Tools/ForgetSessionPasswords"	   , M_SESSION_PASSWORDS},
 		{"Menu/Tools/DeleteDuplicates/SelFolder"   , M_MSG_EXIST|M_ALLOW_DELETE},
 
@@ -4497,6 +4510,16 @@ static void hide_read_messages (GtkAction *action, gpointer data)
 	summary_toggle_show_read_messages(mainwin->summaryview);
 }
 
+static void hide_del_messages (GtkAction *action, gpointer data)
+{
+	MainWindow *mainwin = (MainWindow *)data;
+	GtkWidget *menuitem = gtk_ui_manager_get_widget(mainwin->ui_manager, "/Menu/View/HideDelMessages");
+	if (!mainwin->summaryview->folder_item
+	    || g_object_get_data(G_OBJECT(menuitem), "dont_toggle"))
+		return;
+	summary_toggle_show_del_messages(mainwin->summaryview);
+}
+
 static void thread_cb(GtkAction *action, gpointer data)
 {
 	MainWindow *mainwin = (MainWindow *)data;
@@ -4648,6 +4671,12 @@ static void execute_summary_cb(GtkAction *action, gpointer data)
 {
 	MainWindow *mainwin = (MainWindow *)data;
 	summary_execute(mainwin->summaryview);
+}
+
+static void expunge_summary_cb(GtkAction *action, gpointer data)
+{
+	MainWindow *mainwin = (MainWindow *)data;
+	summary_expunge(mainwin->summaryview);
 }
 
 static void update_summary_cb(GtkAction *action, gpointer data)

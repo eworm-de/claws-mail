@@ -183,6 +183,7 @@ struct _PrefsAccount
 	gchar *imap_dir;
 	gboolean imap_subsonly;
 	gboolean low_bandwidth;
+	gboolean imap_use_trash;
 
 	gboolean set_sent_folder;
 	gchar *sent_folder;

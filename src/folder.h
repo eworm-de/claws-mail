@@ -521,6 +521,8 @@ struct _FolderClass
 						 FolderItem	*item,
 						 MsgInfoList    *msglist,
 						 GRelation	*relation);
+	gint    	(*expunge)		(Folder		*folder,
+						 FolderItem	*item);
 	/**
 	 * Remove all messages in a \ c FolderItem
 	 *
@@ -669,6 +671,7 @@ struct _FolderItem
 	guint hide_read_msgs : 1; /* hide read messages   */
 	guint ret_rcpt       : 1; /* return receipt       */
 	guint search_match   : 1;
+	guint hide_del_msgs : 1; /* hide deleted messages   */
 
 	gint op_count;
 	guint opened         : 1; /* opened by summary view */
@@ -707,6 +710,7 @@ struct _PersistPrefs
 	guint		threaded	: 1;
 	guint		hide_read_msgs	: 1; /* CLAWS */
 	guint		ret_rcpt	: 1; /* CLAWS */
+	guint		hide_del_msgs	: 1; /* CLAWS */
 };
 
 struct _FolderUpdateData
@@ -856,6 +860,7 @@ gint   folder_item_remove_msg		(FolderItem	*item,
 					 gint		 num);
 gint   folder_item_remove_msgs		(FolderItem	*item,
 					 GSList		*msglist);
+gint   folder_item_expunge		(FolderItem	*item);
 gint   folder_item_remove_all_msg	(FolderItem	*item);
 void 	folder_item_change_msg_flags	(FolderItem 	*item,
 					 MsgInfo 	*msginfo,

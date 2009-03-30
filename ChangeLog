@@ -1,3 +1,23 @@
+2009-03-30 [colin]	3.7.1cvs30
+
+	* src/folder.c
+	* src/folder.h
+	* src/imap.c
+	* src/mainwindow.c
+	* src/mainwindow.h
+	* src/prefs_account.c
+	* src/prefs_account.h
+	* src/summaryview.c
+	* src/summaryview.h
+		Fix bug 1866, 'Claws should make use of the IMAP 'deleted' flag'
+		Add an option on the Receive page of IMAP account preferences:
+		"Move deleted mails to trash and expunge immediately". This
+		option defaults to TRUE to avoid changing the existing behaviour.
+		Setting it to FALSE prevents automatic expunging. 
+		Also, add Tools/Expunge and View/Hide deleted messages menu items
+		(View/Hide deleted message being a per-folder setting, and behaving,
+		like View/Hide read messages).
+
 2009-03-30 [colin]	3.7.1cvs29
 
 	* src/imap.c

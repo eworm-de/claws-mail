@@ -229,6 +229,8 @@ static gint 	imap_remove_msgs	(Folder 	*folder,
 					 FolderItem 	*dest, 
 		    			 MsgInfoList 	*msglist, 
 					 GRelation 	*relation);
+static gint 	imap_expunge		(Folder 	*folder, 
+					 FolderItem 	*dest);
 static gint 	imap_remove_all_msg	(Folder 	*folder, 
 					 FolderItem 	*item);
 
@@ -382,7 +384,7 @@ static gint imap_cmd_store	(IMAPSession	*session,
 				 IMAPFlags flags,
 				 GSList *tags,
 				 int do_add);
-static gint imap_cmd_expunge	(IMAPSession	*session);
+static gint imap_cmd_expunge	(IMAPSession	*session, gboolean force);
 
 static void imap_path_separator_subst		(gchar		*str,
 						 gchar		 separator);
@@ -476,6 +478,7 @@ FolderClass *imap_get_class(void)
 		imap_class.copy_msgs = imap_copy_msgs;
 		imap_class.remove_msg = imap_remove_msg;
 		imap_class.remove_msgs = imap_remove_msgs;
+		imap_class.expunge = imap_expunge;
 		imap_class.remove_all_msg = imap_remove_all_msg;
 		imap_class.is_msg_changed = imap_is_msg_changed;
 		imap_class.change_flags = imap_change_flags;
@@ -1995,7 +1998,7 @@ static gint imap_do_remove_msgs(Folder *folder, FolderItem *dest,
 			return ok;
 		}
 	} /* else we just need to expunge */
-	ok = imap_cmd_expunge(session);
+	ok = imap_cmd_expunge(session, folder->account->imap_use_trash);
 	if (ok != MAILIMAP_NO_ERROR) {
 		log_warning(LOG_PROTOCOL, _("can't expunge\n"));
 		g_free(destdir);
@@ -3861,10 +3864,13 @@ static gint imap_cmd_store(IMAPSession *session,
 	return MAILIMAP_NO_ERROR;
 }
 
-static gint imap_cmd_expunge(IMAPSession *session)
+static gint imap_cmd_expunge(IMAPSession *session, gboolean do_expunge)
 {
 	int r;
 	
+	if (!do_expunge)
+		return MAILIMAP_NO_ERROR;
+
 	if (prefs_common.work_offline && 
 	    !inc_offline_should_override(FALSE,
 		_("Claws Mail needs network access in order "
@@ -3879,6 +3885,15 @@ static gint imap_cmd_expunge(IMAPSession *session)
 	}
 
 	return MAILIMAP_NO_ERROR;
+}
+
+gint imap_expunge(Folder *folder, FolderItem *item)
+{
+	IMAPSession *session = imap_session_get(folder);
+	if (session == NULL)
+		return -1;
+	
+	return imap_cmd_expunge(session, TRUE);
 }
 
 static void imap_path_separator_subst(gchar *str, gchar separator)
@@ -4471,15 +4486,8 @@ static gint imap_remove_msg(Folder *folder, FolderItem *item, gint uid)
 		return ok;
 	}
 
-	if (!session->uidplus) {
-		ok = imap_cmd_expunge(session);
-	} else {
-		gchar *uidstr;
+	ok = imap_cmd_expunge(session, folder->account->imap_use_trash);
 
-		uidstr = g_strdup_printf("%u", uid);
-		ok = imap_cmd_expunge(session);
-		g_free(uidstr);
-	}
 	if (ok != MAILIMAP_NO_ERROR) {
 		log_warning(LOG_PROTOCOL, _("can't expunge\n"));
 		return ok;

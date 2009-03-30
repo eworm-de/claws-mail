@@ -236,6 +236,7 @@ void summary_delete_trash	  (SummaryView		*summaryview);
 void summary_cancel               (SummaryView          *summaryview);
 
 gboolean summary_execute	  (SummaryView		*summaryview);
+gboolean summary_expunge	  (SummaryView		*summaryview);
 
 void summary_attract_by_subject	  (SummaryView		*summaryview);
 
@@ -298,6 +299,8 @@ void summary_set_tag		  (SummaryView		*summaryview,
 void summary_set_column_order	  (SummaryView		*summaryview);
 
 void summary_toggle_show_read_messages
+				  (SummaryView *summaryview);
+void summary_toggle_show_del_messages
 				  (SummaryView *summaryview);
 
 void summary_toggle_view_real	  (SummaryView	*summaryview);
