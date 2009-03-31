@@ -896,19 +896,9 @@ static void privacy_system_activated(GtkWidget *combobox)
 	if( privacy_enabled_int == 0 )
 		privacy_enabled = FALSE;
 
-	gtk_widget_set_sensitive (privacy_page.default_encrypt_checkbtn,
-			privacy_enabled);
-	gtk_widget_set_sensitive (privacy_page.default_encrypt_reply_checkbtn,
-			privacy_enabled);
-	gtk_widget_set_sensitive (privacy_page.default_sign_checkbtn,
-			privacy_enabled);
-	gtk_widget_set_sensitive (privacy_page.default_sign_reply_checkbtn,
-			privacy_enabled);
-	gtk_widget_set_sensitive (privacy_page.encrypt_to_self_checkbtn,
-			privacy_enabled);
 	gtk_widget_set_sensitive (privacy_page.save_clear_text_checkbtn, 
-		privacy_enabled && !gtk_toggle_button_get_active(
-					GTK_TOGGLE_BUTTON(privacy_page.encrypt_to_self_checkbtn)));
+		!gtk_toggle_button_get_active(
+				GTK_TOGGLE_BUTTON(privacy_page.encrypt_to_self_checkbtn)));
 }
 
 /* Populate the privacy system choice combobox with valid choices */

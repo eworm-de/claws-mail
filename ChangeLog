@@ -1,3 +1,10 @@
+2009-03-31 [colin]	3.7.1cvs31
+
+	* src/prefs_account.c
+		Don't use un-sensitive checkboxes in Privacy tab
+		when privacy system in None (makes unchecking 
+		painful when no privacy plugin is loaded)
+
 2009-03-30 [colin]	3.7.1cvs30
 
 	* src/folder.c
