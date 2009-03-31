@@ -315,4 +315,14 @@ void folder_item_prefs_copy_prefs(FolderItem * src, FolderItem * dest)
 
 	*dest->prefs = tmp_prefs;
 	folder_item_prefs_save_config(dest);
+
+	dest->collapsed = src->collapsed;
+	dest->thread_collapsed = src->thread_collapsed;
+	dest->threaded  = src->threaded;
+	dest->ret_rcpt  = src->ret_rcpt;
+	dest->hide_read_msgs = src->hide_read_msgs;
+	dest->hide_del_msgs = src->hide_del_msgs;
+	dest->sort_key  = src->sort_key;
+	dest->sort_type = src->sort_type;
+
 }

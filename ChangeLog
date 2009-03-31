@@ -1,3 +1,8 @@
+2009-03-31 [colin]	3.7.1cvs32
+
+	* src/folder_item_prefs.c
+		Copy folder settings with prefs
+
 2009-03-31 [colin]	3.7.1cvs31
 
 	* src/prefs_account.c

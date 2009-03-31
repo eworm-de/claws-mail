@@ -3771,3 +3771,4 @@
 ( cvs diff -u -r 1.179.2.245 -r 1.179.2.246 src/imap.c;  ) > 3.7.1cvs29.patchset
 ( cvs diff -u -r 1.213.2.192 -r 1.213.2.193 src/folder.c;  cvs diff -u -r 1.87.2.59 -r 1.87.2.60 src/folder.h;  cvs diff -u -r 1.179.2.246 -r 1.179.2.247 src/imap.c;  cvs diff -u -r 1.274.2.300 -r 1.274.2.301 src/mainwindow.c;  cvs diff -u -r 1.39.2.55 -r 1.39.2.56 src/mainwindow.h;  cvs diff -u -r 1.105.2.151 -r 1.105.2.152 src/prefs_account.c;  cvs diff -u -r 1.49.2.42 -r 1.49.2.43 src/prefs_account.h;  cvs diff -u -r 1.395.2.409 -r 1.395.2.410 src/summaryview.c;  cvs diff -u -r 1.68.2.51 -r 1.68.2.52 src/summaryview.h;  ) > 3.7.1cvs30.patchset
 ( cvs diff -u -r 1.105.2.152 -r 1.105.2.153 src/prefs_account.c;  ) > 3.7.1cvs31.patchset
+( cvs diff -u -r 1.2.2.34 -r 1.2.2.35 src/folder_item_prefs.c;  ) > 3.7.1cvs32.patchset
