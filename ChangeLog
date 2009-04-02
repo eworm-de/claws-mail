@@ -1,3 +1,11 @@
+2009-04-02 [colin]	3.7.1cvs33
+
+	* src/common/utils.h
+	* src/etpan/etpan-thread-manager.c
+		pipe() was a macro from GLib on win32 until
+		glib 2.13.2. It's undefined after that.
+		Thanks to Marcus Brinkmann for the heads-up!
+
 2009-03-31 [colin]	3.7.1cvs32
 
 	* src/folder_item_prefs.c

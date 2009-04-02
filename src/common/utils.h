@@ -44,6 +44,11 @@
 #  include <wchar.h>
 #endif
 
+#ifdef G_OS_WIN32
+#if GTK_CHECK_VERSION (2, 13, 2)
+#define pipe(phandles)  _pipe (phandles, 4096, _O_BINARY)
+#endif
+#endif
 /* Wrappers for C library function that take pathname arguments. */
 #if GLIB_CHECK_VERSION(2, 6, 0)
 #  include <glib/gstdio.h>

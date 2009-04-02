@@ -34,6 +34,7 @@
 #include <fcntl.h>
 
 #include "etpan-errors.h"
+#include "utils.h"
 
 #define POOL_UNBOUND_MAX 4
 
