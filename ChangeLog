@@ -1,3 +1,8 @@
+2009-04-02 [colin]	3.7.1cvs34
+
+	* src/common/utils.h
+		Fix previous (thanks to Marcus :)
+
 2009-04-02 [colin]	3.7.1cvs33
 
 	* src/common/utils.h
