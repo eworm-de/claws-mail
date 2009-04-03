@@ -2,6 +2,7 @@
 AC_PREREQ(2.60)
 AC_INIT(src/main.c)
 AC_CONFIG_AUX_DIR(config)
+AC_CONFIG_MACRO_DIR([m4])
 
 PACKAGE=claws-mail
 
@@ -11,7 +12,7 @@ MINOR_VERSION=7
 MICRO_VERSION=1
 INTERFACE_AGE=0
 BINARY_AGE=0
-EXTRA_VERSION=34
+EXTRA_VERSION=35
 EXTRA_RELEASE=
 EXTRA_GTK2_VERSION=
 
@@ -90,8 +91,6 @@ LT_AC_PROG_RC
 AC_LIBTOOL_RC
 AC_PROG_LIBTOOL
 
-CLAWS_ACLOCAL_INCLUDE(m4)
-  
 dnl ******************************
 dnl Checks for host
 dnl Not needed anymore because we 

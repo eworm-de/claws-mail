@@ -1,3 +1,11 @@
+2009-04-03 [paul]	3.7.1cvs35
+
+	* configure.ac
+		add AC_CONFIG_MACRO_DIR([m4])
+		remove CLAWS_ACLOCAL_INCLUDE(m4)
+	* m4/aclocal-include.m4
+		removed this now unneeded file
+
 2009-04-02 [colin]	3.7.1cvs34
 
 	* src/common/utils.h
