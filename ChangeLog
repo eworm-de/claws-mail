@@ -1,3 +1,11 @@
+2009-04-03 [colin]	3.7.1cvs37
+
+	* src/compose.c
+	* src/textview.c
+		Add support for gopher:// links
+		Patch by Jacob Head <clawsmail at jacob-head.com>
+		Let's go back to the roots! 
+
 2009-04-03 [paul]	3.7.1cvs36
 
 	* m4/Makefile.am

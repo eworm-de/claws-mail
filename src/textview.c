@@ -1224,6 +1224,7 @@ static void textview_make_clickable_parts(TextView *textview,
 		{"https://", strcasestr, get_uri_part,   make_uri_string},
 		{"ftp://",   strcasestr, get_uri_part,   make_uri_string},
 		{"sftp://",  strcasestr, get_uri_part,   make_uri_string},
+		{"gopher://",strcasestr, get_uri_part,   make_uri_string},
 		{"www.",     strcasestr, get_uri_part,   make_http_string},
 		{"mailto:",  strcasestr, get_uri_part,   make_uri_string},
 		{"@",        strcasestr, get_email_part, make_email_string}
