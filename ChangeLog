@@ -2,7 +2,7 @@
 
 	* src/compose.c
 	* src/textview.c
-		Add support for gopher:// links
+		Fix bug 1891, 'Add support for gopher:// links'
 		Patch by Jacob Head <clawsmail at jacob-head.com>
 		Let's go back to the roots! 
 
