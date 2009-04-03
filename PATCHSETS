@@ -3775,3 +3775,4 @@
 ( cvs diff -u -r 1.20.2.68 -r 1.20.2.69 src/common/utils.h;  cvs diff -u -r 1.1.4.12 -r 1.1.4.13 src/etpan/etpan-thread-manager.c;  ) > 3.7.1cvs33.patchset
 ( cvs diff -u -r 1.20.2.69 -r 1.20.2.70 src/common/utils.h;  ) > 3.7.1cvs34.patchset
 ( cvs diff -u -r 1.654.2.3842 -r 1.654.2.3843 configure.ac;  cvs diff -u -r -1.1.4.2 -r -1.1.4.3 m4/aclocal-include.m4;  ) > 3.7.1cvs35.patchset
+( cvs diff -u -r 1.1.4.4 -r 1.1.4.5 m4/Makefile.am;  ) > 3.7.1cvs36.patchset

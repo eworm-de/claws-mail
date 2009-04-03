@@ -1,5 +1,4 @@
 MACROS = \
-	aclocal-include.m4 \
 	check-type.m4 \
 	gnupg-check-typedef.m4 \
 	aspell.m4 \

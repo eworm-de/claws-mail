@@ -1,3 +1,8 @@
+2009-04-03 [paul]	3.7.1cvs36
+
+	* m4/Makefile.am
+		complete cvs35
+
 2009-04-03 [paul]	3.7.1cvs35
 
 	* configure.ac
