@@ -3778,3 +3778,4 @@
 ( cvs diff -u -r 1.1.4.4 -r 1.1.4.5 m4/Makefile.am;  ) > 3.7.1cvs36.patchset
 ( cvs diff -u -r 1.382.2.505 -r 1.382.2.506 src/compose.c;  cvs diff -u -r 1.96.2.218 -r 1.96.2.219 src/textview.c;  ) > 3.7.1cvs37.patchset
 ( cvs diff -u -r 1.100.2.66 -r 1.100.2.67 AUTHORS;  cvs diff -u -r 1.1.2.54 -r 1.1.2.55 src/gtk/authors.h;  ) > 3.7.1cvs38.patchset
+( cvs diff -u -r 1.100.2.67 -r 1.100.2.68 AUTHORS;  cvs diff -u -r 1.654.2.3846 -r 1.654.2.3847 configure.ac;  diff -u /dev/null po/id.po;  cvs diff -u -r 1.1.2.55 -r 1.1.2.56 src/gtk/authors.h;  cvs diff -u -r 1.1.2.19 -r 1.1.2.20 tools/claws.i18n.status.pl;  ) > 3.7.1cvs39.patchset

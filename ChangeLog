@@ -1,3 +1,13 @@
+2009-04-04 [paul]	3.7.1cvs39
+
+	* AUTHORS
+	* configure.ac
+	* po/id.po
+	* src/gtk/authors.h
+	* tools/claws.i18n.status.pl
+		add new Indonesian translation, by
+		MSulchan Darmawan
+
 2009-04-03 [paul]	3.7.1cvs38
 
 	* AUTHORS
