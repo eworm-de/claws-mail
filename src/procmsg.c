@@ -890,7 +890,7 @@ gint procmsg_send_queue(FolderItem *queue, gboolean save_msgs, gchar **errstr)
 		MsgInfo *msginfo;
 			
 		msginfo = (MsgInfo *)(elem->data);
-		if (!MSG_IS_LOCKED(msginfo->flags)) {
+		if (!MSG_IS_LOCKED(msginfo->flags) && !MSG_IS_DELETED(msginfo->flags)) {
 			file = folder_item_fetch_msg(queue, msginfo->msgnum);
 			if (file) {
 				gboolean queued_removed = FALSE;
@@ -2397,8 +2397,23 @@ static void item_has_queued_mails(FolderItem *item, gpointer data)
 	gboolean *result = (gboolean *)data;
 	if (*result == TRUE)
 		return;
-	if (folder_has_parent_of_type(item, F_QUEUE) && item->total_msgs > 0)
-		*result = TRUE;
+	if (folder_has_parent_of_type(item, F_QUEUE)) {
+		if (item->total_msgs == 0)
+			return;
+		else {
+			GSList *msglist = folder_item_get_msg_list(item);
+			GSList *cur;
+			for (cur = msglist; cur; cur = cur->next) {
+				MsgInfo *msginfo = (MsgInfo *)cur->data;
+				if (!MSG_IS_DELETED(msginfo->flags) &&
+				    !MSG_IS_LOCKED(msginfo->flags)) {
+					*result = TRUE;
+					break;
+				}
+			}
+			procmsg_msg_list_free(msglist);
+		}
+	}
 }
 
 gboolean procmsg_have_queued_mails_fast (void)
