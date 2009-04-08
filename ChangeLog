@@ -1,3 +1,9 @@
+2009-04-08 [colin]	3.7.1cvs41
+
+	* src/gtk/manage_window.c
+		Disable transient windows on win32 - seems to
+		fix most focusing issues
+
 2009-04-05 [colin]	3.7.1cvs40
 
 	* src/procmsg.c

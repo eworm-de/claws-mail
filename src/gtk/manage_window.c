@@ -67,9 +67,8 @@ void manage_window_destroy(GtkWidget *widget, gpointer data)
 
 void manage_window_set_transient(GtkWindow *window)
 {
-	/* debug_print("manage_window_set_transient(): window = %p, focus_window = %p\n",
-		    window, focus_window); */
-
+#ifndef G_OS_WIN32
 	if (window && focus_window)
 		gtk_window_set_transient_for(window, GTK_WINDOW(focus_window));
+#endif
 }
