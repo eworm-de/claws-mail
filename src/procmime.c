@@ -350,6 +350,7 @@ gboolean procmime_decode_content(MimeInfo *mimeinfo)
 		gboolean got_error = FALSE;
 		gboolean uncanonicalize = FALSE;
 		FILE *tmpfp = outfp;
+		gboolean null_bytes = FALSE;
 
 		if (mimeinfo->type == MIMETYPE_TEXT ||
 		    mimeinfo->type == MIMETYPE_MESSAGE) {
@@ -366,6 +367,10 @@ gboolean procmime_decode_content(MimeInfo *mimeinfo)
 		decoder = base64_decoder_new();
 		while ((ftell(infp) < readend) && (fgets(buf, sizeof(buf), infp) != NULL)) {
 			len = base64_decoder_decode(decoder, buf, outbuf);
+			if (uncanonicalize == TRUE && strlen(outbuf) < len) {
+				uncanonicalize = FALSE;
+				null_bytes = TRUE;
+			}
 			if (len < 0 && !got_error) {
 				g_warning("Bad BASE64 content.\n");
 				if (fwrite(_("[Error decoding BASE64]\n"),
@@ -378,8 +383,14 @@ gboolean procmime_decode_content(MimeInfo *mimeinfo)
 			} else if (len >= 0) {
 				/* print out the error message only once 
 				 * per block */
-				if (fwrite(outbuf, sizeof(gchar), len, tmpfp) < len)
-					err = TRUE;
+				if (null_bytes) {
+					/* we won't uncanonicalize, output to outfp directly */
+					if (fwrite(outbuf, sizeof(gchar), len, outfp) < len)
+						err = TRUE;
+				} else {
+					if (fwrite(outbuf, sizeof(gchar), len, tmpfp) < len)
+						err = TRUE;
+				}
 				got_error = FALSE;
 			}
 		}

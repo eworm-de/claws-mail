@@ -3781,3 +3781,4 @@
 ( cvs diff -u -r 1.100.2.67 -r 1.100.2.68 AUTHORS;  cvs diff -u -r 1.654.2.3846 -r 1.654.2.3847 configure.ac;  diff -u /dev/null po/id.po;  cvs diff -u -r 1.1.2.55 -r 1.1.2.56 src/gtk/authors.h;  cvs diff -u -r 1.1.2.19 -r 1.1.2.20 tools/claws.i18n.status.pl;  ) > 3.7.1cvs39.patchset
 ( cvs diff -u -r 1.150.2.114 -r 1.150.2.115 src/procmsg.c;  ) > 3.7.1cvs40.patchset
 ( cvs diff -u -r 1.1.4.8 -r 1.1.4.9 src/gtk/manage_window.c;  ) > 3.7.1cvs41.patchset
+( cvs diff -u -r 1.49.2.129 -r 1.49.2.130 src/procmime.c;  ) > 3.7.1cvs42.patchset

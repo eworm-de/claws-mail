@@ -1,3 +1,9 @@
+2009-04-08 [colin]	3.7.1cvs42
+
+	* src/procmime.c
+		fix saving (but not displaying) of UTF-16
+		files
+
 2009-04-08 [colin]	3.7.1cvs41
 
 	* src/gtk/manage_window.c
