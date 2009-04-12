@@ -71,7 +71,9 @@ my @tbird_fields = ('First Name','Last Name','Display Name','Nickname',
 		    'Work City','Work State','Work ZipCode','Work Country',
 		    'Job Title','Department','Organization','Web Page 1',
 		    'Web Page 2','Birth Year','Birth Month','Birth Day',
-		    'Custom 1','Custom 2','Custom 3','Custom 4','Notes','junk');
+		    'Custom 1','Custom 2','Custom 3','Custom 4','Notes',
+		    'Anniversary Year','Anniversary Month','Anniversary Day',
+		    'Category','Spouse name');
 my @kmail_fields = ('Formatted Name','Family Name','Given Name',
 		    'Additional Names','Honorific Prefixes','Honorific Suffixes',
 		    'Nick Name','Birthday','Home Address Street',

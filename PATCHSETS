@@ -3782,3 +3782,4 @@
 ( cvs diff -u -r 1.150.2.114 -r 1.150.2.115 src/procmsg.c;  ) > 3.7.1cvs40.patchset
 ( cvs diff -u -r 1.1.4.8 -r 1.1.4.9 src/gtk/manage_window.c;  ) > 3.7.1cvs41.patchset
 ( cvs diff -u -r 1.49.2.129 -r 1.49.2.130 src/procmime.c;  ) > 3.7.1cvs42.patchset
+( cvs diff -u -r 1.1.2.4 -r 1.1.2.5 tools/csv2addressbook.pl;  ) > 3.7.1cvs43.patchset
