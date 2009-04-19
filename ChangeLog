@@ -1,3 +1,11 @@
+2009-04-19 [paul]	3.7.1cvs44
+
+	* src/prefs_common.c
+	* src/prefs_common.h
+	* src/gtk/about.c
+		save About window size.
+		patch by Pawel Pekala
+
 2009-04-12 [paul]	3.7.1cvs43
 
 	* tools/csv2addressbook.pl
