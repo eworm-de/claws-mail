@@ -282,7 +282,7 @@ static gint compose_queue_sub			(Compose	*compose,
 						 gchar		**msgpath,
 						 gboolean	check_subject,
 						 gboolean 	remove_reedit_target);
-static void compose_add_attachments		(Compose	*compose,
+static int compose_add_attachments		(Compose	*compose,
 						 MimeInfo	*parent);
 static gchar *compose_get_header		(Compose	*compose);
 
@@ -5358,7 +5358,8 @@ static gint compose_write_to_file(Compose *compose, FILE *fp, gint action, gbool
 		g_node_append(mimempart->node, mimetext->node);
 		g_node_append(mimemsg->node, mimempart->node);
 
-		compose_add_attachments(compose, mimempart);
+		if (compose_add_attachments(compose, mimempart) < 0)
+			return -1;
 	} else
 		g_node_append(mimemsg->node, mimetext->node);
 
@@ -5783,7 +5784,7 @@ static gint compose_queue_sub(Compose *compose, gint *msgnum, FolderItem **item,
 	return 0;
 }
 
-static void compose_add_attachments(Compose *compose, MimeInfo *parent)
+static int compose_add_attachments(Compose *compose, MimeInfo *parent)
 {
 	AttachInfo *ainfo;
 	GtkTreeView *tree_view = GTK_TREE_VIEW(compose->attach_clist);
@@ -5796,12 +5797,22 @@ static void compose_add_attachments(Compose *compose, MimeInfo *parent)
 	model = gtk_tree_view_get_model(tree_view);
 	
 	if (!gtk_tree_model_get_iter_first(model, &iter))
-		return;
+		return 0;
 	do {
 		gtk_tree_model_get(model, &iter,
 				   COL_DATA, &ainfo,
 				   -1);
-							   
+		
+		if (!is_file_exist(ainfo->file)) {
+			gchar *msg = g_strdup_printf(_("Attachment %s doesn't exist anymore. Ignore?"), ainfo->file);
+			AlertValue val = alertpanel_full(_("Warning"), msg, _("Cancel sending"), _("Ignore attachment"),
+		      		      NULL, FALSE, NULL, ALERT_WARNING, G_ALERTDEFAULT);
+			g_free(msg);
+			if (val == G_ALERTDEFAULT) {
+				return -1;
+			}
+			continue;
+		}
 		mimepart = procmime_mimeinfo_new();
 		mimepart->content = MIMECONTENT_FILE;
 		mimepart->data.filename = g_strdup(ainfo->file);
@@ -5850,6 +5861,8 @@ static void compose_add_attachments(Compose *compose, MimeInfo *parent)
 
 		g_node_append(parent->node, mimepart->node);
 	} while (gtk_tree_model_iter_next(model, &iter));
+	
+	return 0;
 }
 
 #define IS_IN_CUSTOM_HEADER(header) \
