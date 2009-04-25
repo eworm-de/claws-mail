@@ -420,7 +420,11 @@ static gboolean cb_preview(GtkPrintOperation        *operation,
   
   /* toolbar */
   toolbar = gtk_toolbar_new();
+#if (GTK_CHECK_VERSION(2,16,0))
+  	gtk_orientable_set_orientation(GTK_ORIENTABLE(toolbar), GTK_ORIENTATION_HORIZONTAL);
+#else
   gtk_toolbar_set_orientation(GTK_TOOLBAR(toolbar), GTK_ORIENTATION_HORIZONTAL);
+#endif
   switch (prefs_common.toolbar_style) {
   case TOOLBAR_ICON:
     gtk_toolbar_set_style(GTK_TOOLBAR(toolbar), GTK_TOOLBAR_ICONS);

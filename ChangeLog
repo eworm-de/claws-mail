@@ -1,3 +1,11 @@
+2009-04-25 [paul]	3.7.1cvs46
+
+	* src/printing.c
+	* src/toolbar.c
+		if building with GTK+ >= 2.16 use
+		gtk_orientable_set_orientation() instead of now
+		deprecated gtk_toolbar_set_orientation()
+
 2009-04-24 [colin]	3.7.1cvs45
 
 	* src/compose.c
