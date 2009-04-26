@@ -1,3 +1,10 @@
+2009-04-26 [paul]	3.7.1cvs48
+
+	* configure.ac
+	* src/gtk/gtkaspell.h
+		fix bug 1904, 'build mechanism looks for
+		'enchant.h' in a wrong place'
+
 2009-04-25 [paul]	3.7.1cvs47
 
 	* src/printing.c

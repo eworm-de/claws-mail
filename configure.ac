@@ -12,7 +12,7 @@ MINOR_VERSION=7
 MICRO_VERSION=1
 INTERFACE_AGE=0
 BINARY_AGE=0
-EXTRA_VERSION=47
+EXTRA_VERSION=48
 EXTRA_RELEASE=
 EXTRA_GTK2_VERSION=
 
@@ -484,6 +484,7 @@ if test $ac_cv_enable_enchant = yes; then
 		AC_DEFINE(USE_ENCHANT, 1, enchant)
 		echo "Building with enchant"
 		ac_cv_enable_enchant=yes
+		CFLAGS="$CFLAGS `$PKG_CONFIG --cflags enchant`"
 	],
 	[
 		echo "Building without enchant-notification"

@@ -3787,3 +3787,4 @@
 ( cvs diff -u -r 1.382.2.506 -r 1.382.2.507 src/compose.c;  ) > 3.7.1cvs45.patchset
 ( cvs diff -u -r 1.1.2.24 -r 1.1.2.25 src/printing.c;  cvs diff -u -r 1.43.2.108 -r 1.43.2.109 src/toolbar.c;  ) > 3.7.1cvs46.patchset
 ( cvs diff -u -r 1.1.2.25 -r 1.1.2.26 src/printing.c;  ) > 3.7.1cvs47.patchset
+( cvs diff -u -r 1.654.2.3855 -r 1.654.2.3856 configure.ac;  cvs diff -u -r 1.5.2.17 -r 1.5.2.18 src/gtk/gtkaspell.h;  ) > 3.7.1cvs48.patchset
