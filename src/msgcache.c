@@ -319,15 +319,25 @@ gint msgcache_get_memory_usage(MsgCache *cache)
 		n = swapping ? bswap_32(idata) : (idata);\
 }
 
-#define GET_CACHE_DATA_INT(n) \
-{ \
-	n = (swapping ? (MMAP_TO_GUINT32_SWAPPED(walk_data)):(MMAP_TO_GUINT32(walk_data))); \
-	walk_data += 4;	rem_len -= 4;			\
+#define GET_CACHE_DATA_INT(n)									\
+{												\
+	if (rem_len < 4) {									\
+		g_print("error at rem_len:%d\n", rem_len);					\
+		error = TRUE;									\
+		goto bail_err;									\
+	}											\
+	n = (swapping ? (MMAP_TO_GUINT32_SWAPPED(walk_data)):(MMAP_TO_GUINT32(walk_data))); 	\
+	walk_data += 4;	rem_len -= 4;								\
 }
 
 #define GET_CACHE_DATA(data, total_len) \
 { \
 	GET_CACHE_DATA_INT(tmp_len);	\
+	if (rem_len < tmp_len) {								\
+		g_print("error at rem_len:%d (tmp_len %d)\n", rem_len, tmp_len);		\
+		error = TRUE;									\
+		goto bail_err;									\
+	}											\
 	if ((tmp_len = msgcache_get_cache_data_str(walk_data, &data, tmp_len, conv)) < 0) { \
 		g_print("error at rem_len:%d\n", rem_len);\
 		procmsg_msginfo_free(msginfo); \
@@ -793,7 +803,8 @@ void msgcache_read_mark(MsgCache *cache, const gchar *mark_file)
 	gint map_len = -1;
 	char *cache_data = NULL;
 	struct stat st;
-	
+	gboolean error;
+
 	swapping = TRUE;
 
 	/* In case we can't open the mark file with MARK_VERSION, check if we can open it with the
@@ -866,6 +877,7 @@ void msgcache_read_mark(MsgCache *cache, const gchar *mark_file)
 			}
 		}	
 	}
+bail_err:
 	fclose(fp);
 }
 
@@ -877,7 +889,8 @@ void msgcache_read_tags(MsgCache *cache, const gchar *tags_file)
 	gint map_len = -1;
 	char *cache_data = NULL;
 	struct stat st;
-	
+	gboolean error = FALSE;
+
 	swapping = TRUE;
 
 	/* In case we can't open the mark file with MARK_VERSION, check if we can open it with the
@@ -971,6 +984,7 @@ void msgcache_read_tags(MsgCache *cache, const gchar *tags_file)
 			}
 		}
 	}
+bail_err:
 	fclose(fp);
 }
 

@@ -1,3 +1,9 @@
+2009-05-04 [colin]	3.7.1cvs49
+
+	* src/msgcache.c
+		Probably fix bug 1914, 'Crash reading
+		corrupted tags file'
+
 2009-04-26 [paul]	3.7.1cvs48
 
 	* configure.ac
