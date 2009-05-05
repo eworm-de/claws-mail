@@ -1,3 +1,9 @@
+2009-05-05 [colin]	3.7.1cvs50
+
+	* src/common/utils.c
+		Fix bug 1895, '(imap) cache issues when cache dir is on a 
+		different mountpoint than tempdir'
+
 2009-05-04 [colin]	3.7.1cvs49
 
 	* src/msgcache.c
