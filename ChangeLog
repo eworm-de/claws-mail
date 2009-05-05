@@ -1,3 +1,8 @@
+2009-05-05 [colin]	3.7.1cvs51
+
+	* src/common/utils.c
+		Fix patch :)
+
 2009-05-05 [colin]	3.7.1cvs50
 
 	* src/common/utils.c

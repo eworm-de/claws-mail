@@ -504,7 +504,7 @@ gint file_strip_crs(const gchar *file)
 		goto unlinkout;
 	}
 	
-+	if (move_file(out, file, TRUE) < 0)
+	if (move_file(out, file, TRUE) < 0)
 		goto unlinkout;
 	
 	g_free(out);
