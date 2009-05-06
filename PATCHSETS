@@ -3791,3 +3791,4 @@
 ( cvs diff -u -r 1.16.2.67 -r 1.16.2.68 src/msgcache.c;  ) > 3.7.1cvs49.patchset
 ( cvs diff -u -r 1.36.2.169 -r 1.36.2.170 src/common/utils.c;  ) > 3.7.1cvs50.patchset
 ( cvs diff -u -r 1.36.2.170 -r 1.36.2.171 src/common/utils.c;  ) > 3.7.1cvs51.patchset
+( cvs diff -u -r 1.213.2.193 -r 1.213.2.194 src/folder.c;  cvs diff -u -r 1.83.2.154 -r 1.83.2.155 src/mimeview.c;  ) > 3.7.1cvs52.patchset

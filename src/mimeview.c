@@ -2251,7 +2251,9 @@ static void icon_list_append_icon (MimeView *mimeview, MimeInfo *mimeinfo)
 		stockp = STOCK_PIXMAP_MIME_MESSAGE;
 		break;
 	case MIMETYPE_APPLICATION:
-		if (mimeinfo->subtype && !g_ascii_strcasecmp(mimeinfo->subtype, "pgp-signature"))
+		if (mimeinfo->subtype && (!g_ascii_strcasecmp(mimeinfo->subtype, "pgp-signature")
+		    || !g_ascii_strcasecmp(mimeinfo->subtype, "x-pkcs7-signature")
+		    || !g_ascii_strcasecmp(mimeinfo->subtype, "pkcs7-signature")))
 			stockp = STOCK_PIXMAP_MIME_PGP_SIG;
 		else if (mimeinfo->subtype && !g_ascii_strcasecmp(mimeinfo->subtype, "pdf"))
 			stockp = STOCK_PIXMAP_MIME_PDF;

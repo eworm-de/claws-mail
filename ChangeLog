@@ -1,3 +1,10 @@
+2009-05-06 [paul]	3.7.1cvs52
+
+	* src/folder.c
+	* src/mimeview.c
+		fix bug 1915, 'Mails signed with smime.p7s
+		display both signed and attachment icon.'
+
 2009-05-05 [colin]	3.7.1cvs51
 
 	* src/common/utils.c
