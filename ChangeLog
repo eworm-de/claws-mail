@@ -1,3 +1,10 @@
+2009-05-10 [holger]	3.7.1cvs53
+
+	* src/addr_compl.c
+	* src/addr_compl.h
+		Add a hook to make it possible for plugins to
+		modify the address completion list
+
 2009-05-06 [paul]	3.7.1cvs52
 
 	* src/folder.c

@@ -40,6 +40,7 @@
 #include "utils.h"
 #include "prefs_common.h"
 #include "claws.h"
+#include "hooks.h"
 #include <pthread.h>
 
 /*!
@@ -69,18 +70,7 @@ enum {
  * addresses a little more (e.g. break up alfons@proteus.demon.nl into
  * something like alfons, proteus, demon, nl; and then completing on
  * any of those words).
- */ 
-	
-/**
- * address_entry - structure which refers to the original address entry in the
- * address book .
  */
-typedef struct
-{
-	gchar *name;
-	gchar *address;
-	GList *grp_emails;
-} address_entry;
 
 /**
  * completion_entry - structure used to complete addresses, with a reference
@@ -230,7 +220,7 @@ static void free_all(void)
  * \param str Index string value.
  * \param ae  Entry containing address data.
  */
-static void add_address1(const char *str, address_entry *ae)
+void addr_compl_add_address1(const char *str, address_entry *ae)
 {
 	completion_entry *ce1;
 	ce1 = g_new0(completion_entry, 1),
@@ -270,19 +260,19 @@ static gint add_address(const gchar *name, const gchar *address,
 	cm_return_val_if_fail(ae != NULL, -1);
 
 	ae->name    = g_strdup(name);
-	ae->address = g_strdup(address);		
+	ae->address = g_strdup(address);
 	ae->grp_emails = grp_emails;
 	g_address_list = g_list_prepend(g_address_list, ae);
 
-	add_address1(name, ae);
+	addr_compl_add_address1(name, ae);
 	if (address != NULL && *address != '\0')
-		add_address1(address, ae);
-	
+		addr_compl_add_address1(address, ae);
+
 	if (nick != NULL && *nick != '\0')
-		add_address1(nick, ae);
-	
+		addr_compl_add_address1(nick, ae);
+
 	if ( alias != NULL && *alias != '\0') {
-		add_address1(alias, ae);
+		addr_compl_add_address1(alias, ae);
 	}
 
 	return 0;
@@ -296,13 +286,17 @@ static void read_address_book(gchar *folderpath) {
 	free_completion_list();
 
 	addrindex_load_completion( add_address, folderpath );
+
+	/* plugins may hook in here to modify/extend the completion list */
+	hooks_invoke(ADDDRESS_COMPLETION_BUILD_ADDRESS_LIST_HOOKLIST, &g_address_list);
+
 	g_address_list = g_list_reverse(g_address_list);
 	g_completion_list = g_list_reverse(g_completion_list);
 	/* merge the completion entry list into g_completion */
 	if (g_completion_list) {
 		g_completion_add_items(g_completion, g_completion_list);
 		if (debug_get_mode())
-			debug_print("read %d items in %s\n", 
+			debug_print("read %d items in %s\n",
 				g_list_length(g_completion_list),
 				folderpath?folderpath:"(null)");
 	}
@@ -1681,11 +1675,11 @@ static gboolean addr_compl_selected(GtkTreeSelection *selector,
 	 * not using a time out would result in a crash. if this doesn't work
 	 * safely, maybe we should set variables when receiving button presses
 	 * in the tree view. */
-	if (!window->destroying) {	 
-		window->destroying = TRUE;	 
+	if (!window->destroying) {
+		window->destroying = TRUE;
 		g_idle_add((GSourceFunc) addr_compl_defer_select_destruct, data);
-	}		
-	
+	}
+
 	return TRUE;
 }
 

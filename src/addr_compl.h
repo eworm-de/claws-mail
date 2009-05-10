@@ -15,13 +15,26 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
- * 
+ *
  */
- 
+
 #ifndef __ADDR_COMPL_H__
 #define __ADDR_COMPL_H__
 
 #include <gtk/gtk.h>
+
+#define ADDDRESS_COMPLETION_BUILD_ADDRESS_LIST_HOOKLIST "address_completion_build_address_list_hooklist"
+
+/**
+ * address_entry - structure which refers to the original address entry in the
+ * address book .
+ */
+typedef struct
+{
+    gchar *name;
+    gchar *address;
+    GList *grp_emails;
+} address_entry;
 
 gint start_address_completion		(gchar *folderpath);
 guint complete_address			(const gchar *str);
@@ -38,5 +51,7 @@ void address_completion_end		(GtkWidget *mainwindow);
 
 void addrcompl_initialize	( void );
 void addrcompl_teardown		( void );
+
+void addr_compl_add_address1(const char *str, address_entry *ae);
 
 #endif /* __ADDR_COMPL_H__ */
