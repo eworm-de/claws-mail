@@ -6341,7 +6341,7 @@ static void compose_create_header_entry(Compose *compose)
 				GTK_ENTRY(gtk_bin_get_child(GTK_BIN((compose->header_last->combo)))));
 		string = headers;
 		while (*string != NULL) {
-			if (!strcmp(*string, last_header_entry))
+			if (!strcmp(prefs_common_translated_header_name(*string), last_header_entry))
 				standard_header = TRUE;
 			string++;
 		}

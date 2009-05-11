@@ -1,3 +1,9 @@
+2009-05-11 [colin]	3.7.1cvs54
+
+	* src/compose.c
+		Fix bug 1872, 'A: Cc: CCi: selector should 
+		default on same as preceding contact'
+
 2009-05-10 [holger]	3.7.1cvs53
 
 	* src/addr_compl.c
