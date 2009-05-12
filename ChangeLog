@@ -1,3 +1,9 @@
+2009-05-12 [holger]	3.7.1cvs55
+
+	* src/messageview.c
+	* src/messageview.h
+		Introduce hook after showing of the message view
+
 2009-05-11 [colin]	3.7.1cvs54
 
 	* src/compose.c

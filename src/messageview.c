@@ -1406,6 +1406,9 @@ gint messageview_show(MessageView *messageview, MsgInfo *msginfo,
 		}
 	}
 done:
+	/* plugins may hook in here to work with the message view */
+	hooks_invoke(MESSAGE_VIEW_SHOW_DONE_HOOKLIST, messageview);
+
 	g_free(file);
 
 	return 0;
