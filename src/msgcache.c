@@ -177,7 +177,6 @@ void msgcache_remove_msg(MsgCache *cache, guint msgnum)
 	MsgInfo *msginfo;
 
 	cm_return_if_fail(cache != NULL);
-	cm_return_if_fail(msgnum > 0);
 
 	msginfo = (MsgInfo *) g_hash_table_lookup(cache->msgnum_table, &msgnum);
 	if(!msginfo)
