@@ -593,6 +593,7 @@ static void send_progress_dialog_destroy(SendProgressDialog *dialog)
 static void send_cancel_button_cb(GtkWidget *widget, gpointer data)
 {
 	SendProgressDialog *dialog = (SendProgressDialog *)data;
+	statusbar_progress_all(0,0,0);
 
 	dialog->cancelled = TRUE;
 }

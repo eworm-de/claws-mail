@@ -1,3 +1,8 @@
+2009-05-19 [paul]	3.7.1cvs58
+
+	* src/send_message.c
+		clear progressbar in the statusbar on 'Cancel'
+
 2009-05-16 [colin]	3.7.1cvs57
 
 	* AUTHORS
