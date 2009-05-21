@@ -1,3 +1,11 @@
+2009-05-21 [paul]	3.7.1cvs60
+
+	* src/mainwindow.c
+	* src/mainwindow.h
+	* src/plugins/trayicon/trayicon.c
+		when quitting from the trayicon, honour
+		prefs_common.clean_on_exit
+
 2009-05-21 [paul]	3.7.1cvs59
 
 	* src/gtk/Makefile.am

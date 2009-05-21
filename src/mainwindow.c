@@ -2965,7 +2965,7 @@ void main_window_progress_off(MainWindow *mainwin)
 	gtk_progress_bar_set_text(GTK_PROGRESS_BAR(mainwin->progressbar), "");
 }
 
-static gboolean main_window_empty_trash(MainWindow *mainwin, gboolean confirm, gboolean for_quit)
+gboolean main_window_empty_trash(MainWindow *mainwin, gboolean confirm, gboolean for_quit)
 {
 	if (confirm && procmsg_have_trashed_mails_fast()) {
 		AlertValue val;
