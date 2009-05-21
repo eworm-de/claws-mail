@@ -63,7 +63,6 @@ clawsgtkinclude_HEADERS = \
 	menu.h \
 	pluginwindow.h \
 	prefswindow.h \
-	gtkvscrollbutton.h \
 	progressdialog.h \
 	quicksearch.h \
 	spell_entry.h \

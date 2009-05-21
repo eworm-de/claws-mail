@@ -3798,3 +3798,4 @@
 ( cvs diff -u -r 1.16.2.68 -r 1.16.2.69 src/msgcache.c;  ) > 3.7.1cvs56.patchset
 ( cvs diff -u -r 1.100.2.69 -r 1.100.2.70 AUTHORS;  cvs diff -u -r 1.1.2.57 -r 1.1.2.58 src/gtk/authors.h;  ) > 3.7.1cvs57.patchset
 ( cvs diff -u -r 1.17.2.55 -r 1.17.2.56 src/send_message.c;  ) > 3.7.1cvs58.patchset
+( cvs diff -u -r 1.20.2.22 -r 1.20.2.23 src/gtk/Makefile.am;  ) > 3.7.1cvs59.patchset
