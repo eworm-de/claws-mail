@@ -82,6 +82,8 @@ typedef struct {
 	Compose *compose;
 	GtkWidget *combo;
 	GtkWidget *entry;
+	GtkWidget *button;
+	GtkWidget *hbox;
 } ComposeHeaderEntry;
 
 struct _Compose

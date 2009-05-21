@@ -496,6 +496,8 @@ static gboolean compose_headerentry_changed_cb	   (GtkWidget	       *entry,
 static gboolean compose_headerentry_key_press_event_cb(GtkWidget	       *entry,
 					    GdkEventKey        *event,
 					    ComposeHeaderEntry *headerentry);
+static gboolean compose_headerentry_button_clicked_cb (GtkWidget *button,
+					ComposeHeaderEntry *headerentry);
 
 static void compose_show_first_last_header (Compose *compose, gboolean show_first);
 
@@ -6311,6 +6313,8 @@ static void compose_create_header_entry(Compose *compose)
 
 	GtkWidget *combo;
 	GtkWidget *entry;
+	GtkWidget *button;
+	GtkWidget *hbox;
 	gchar **string;
 	const gchar *header = NULL;
 	ComposeHeaderEntry *headerentry;
@@ -6364,12 +6368,22 @@ static void compose_create_header_entry(Compose *compose)
 	g_signal_connect_after(G_OBJECT(gtk_bin_get_child(GTK_BIN((combo)))), "grab_focus",
 			 G_CALLBACK(compose_grab_focus_cb), compose);
 
-	/* Entry field */
+	/* Entry field with cleanup button */
+	button = gtk_button_new();
+	gtk_button_set_image(GTK_BUTTON(button),
+                        gtk_image_new_from_stock(GTK_STOCK_CLEAR, GTK_ICON_SIZE_BUTTON));
+	gtk_widget_show(button);
+	CLAWS_SET_TIP(button,
+		_("Delete entry contents"));
 	entry = gtk_entry_new(); 
 	gtk_widget_show(entry);
 	CLAWS_SET_TIP(entry,
 		_("Use <tab> to autocomplete from addressbook"));
-	gtk_table_attach(GTK_TABLE(compose->header_table), entry, 1, 2,
+	hbox = gtk_hbox_new (FALSE, 0);
+	gtk_widget_show(hbox);
+	gtk_box_pack_start (GTK_BOX (hbox), entry, TRUE, TRUE, 0);
+	gtk_box_pack_start (GTK_BOX (hbox), button, FALSE, FALSE, 0);
+	gtk_table_attach(GTK_TABLE(compose->header_table), hbox, 1, 2,
 			compose->header_nextrow, compose->header_nextrow+1,
 			GTK_EXPAND | GTK_FILL, GTK_FILL, 0, 0);
 
@@ -6381,6 +6395,10 @@ static void compose_create_header_entry(Compose *compose)
 			 headerentry);
 	g_signal_connect_after(G_OBJECT(entry), "grab_focus",
 			 G_CALLBACK(compose_grab_focus_cb), compose);
+
+	g_signal_connect(G_OBJECT(button), "clicked",
+			 G_CALLBACK(compose_headerentry_button_clicked_cb),
+			 headerentry); 
 			 
 	/* email dnd */
 	gtk_drag_dest_set(entry, GTK_DEST_DEFAULT_ALL, compose_mime_types, 
@@ -6401,6 +6419,8 @@ static void compose_create_header_entry(Compose *compose)
         headerentry->compose = compose;
         headerentry->combo = combo;
         headerentry->entry = entry;
+        headerentry->button = button;
+        headerentry->hbox = hbox;
         headerentry->headernum = compose->header_nextrow;
 
         compose->header_nextrow++;
@@ -10388,6 +10408,13 @@ static void compose_toggle_remove_refs_cb(GtkToggleAction *action, gpointer data
 		compose->remove_references = TRUE;
 	else
 		compose->remove_references = FALSE;
+}
+
+static gboolean compose_headerentry_button_clicked_cb (GtkWidget *button,
+                                        ComposeHeaderEntry *headerentry)
+{
+	gtk_entry_set_text(GTK_ENTRY(headerentry->entry), "");
+	return FALSE;
 }
 
 static gboolean compose_headerentry_key_press_event_cb(GtkWidget *entry,

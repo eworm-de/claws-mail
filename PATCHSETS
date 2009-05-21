@@ -3800,3 +3800,4 @@
 ( cvs diff -u -r 1.17.2.55 -r 1.17.2.56 src/send_message.c;  ) > 3.7.1cvs58.patchset
 ( cvs diff -u -r 1.20.2.22 -r 1.20.2.23 src/gtk/Makefile.am;  ) > 3.7.1cvs59.patchset
 ( cvs diff -u -r 1.274.2.301 -r 1.274.2.302 src/mainwindow.c;  cvs diff -u -r 1.39.2.56 -r 1.39.2.57 src/mainwindow.h;  cvs diff -u -r 1.14.2.68 -r 1.14.2.69 src/plugins/trayicon/trayicon.c;  ) > 3.7.1cvs60.patchset
+( cvs diff -u -r 1.382.2.508 -r 1.382.2.509 src/compose.c;  cvs diff -u -r 1.50.2.53 -r 1.50.2.54 src/compose.h;  ) > 3.7.1cvs61.patchset
