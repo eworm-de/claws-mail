@@ -6449,6 +6449,7 @@ static void compose_remove_header_entries(Compose *compose)
 		gtk_widget_destroy(headerentry->combo);
 		gtk_widget_destroy(headerentry->entry);
 		gtk_widget_destroy(headerentry->button);
+		gtk_widget_destroy(headerentry->hbox);
 		g_free(headerentry);
 	}
 	compose->header_last = NULL;

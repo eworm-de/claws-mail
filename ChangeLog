@@ -1,3 +1,8 @@
+2009-05-22 [colin]	3.7.1cvs64
+
+	* src/compose.c
+		And remove hbox too
+
 2009-05-22 [colin]	3.7.1cvs63
 
 	* src/compose.c
