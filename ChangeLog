@@ -1,3 +1,9 @@
+2009-05-22 [colin]	3.7.1cvs63
+
+	* src/compose.c
+		Fix phantom button behind entry when
+		changing fields via Tools/Reply mode.
+
 2009-05-22 [colin]	3.7.1cvs62
 
 	* src/compose.c
