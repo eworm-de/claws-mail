@@ -1124,7 +1124,7 @@ Compose *compose_generic_new(PrefsAccount *account, const gchar *mailto, FolderI
 			compose_quote_fmt(compose, dummyinfo,
 			        	  body_format,
 			        	  NULL, tmp, FALSE, TRUE,
-						  _("New message body format error at line %d."));
+						  _("The body of the \"New message\" template has an error at line %d."));
 			compose_attach_from_list(compose, quote_fmt_get_attachments_list(), FALSE);
 			quote_fmt_reset_vartable();
 
@@ -1511,7 +1511,7 @@ static Compose *compose_generic_reply(MsgInfo *msginfo,
 
 		buf = quote_fmt_get_buffer();
 		if (buf == NULL)
-			alertpanel_error(_("Message reply From format error."));
+			alertpanel_error(_("The \"From\" field of the \"Reply\" template contains an invalid email address."));
 		else
 			gtk_entry_set_text(GTK_ENTRY(compose->from_name), buf);
 		quote_fmt_reset_vartable();
@@ -1558,7 +1558,7 @@ static Compose *compose_generic_reply(MsgInfo *msginfo,
 			qmark = "> ";
 		compose_quote_fmt(compose, compose->replyinfo,
 			          body_fmt, qmark, body, FALSE, TRUE,
-					  _("Message reply format error at line %d."));
+					  _("The body of the \"Reply\" template has an error at line %d."));
 		compose_attach_from_list(compose, quote_fmt_get_attachments_list(), FALSE);
 		quote_fmt_reset_vartable();
 	}
@@ -1682,7 +1682,7 @@ Compose *compose_forward(PrefsAccount *account, MsgInfo *msginfo,
 
 		buf = quote_fmt_get_buffer();
 		if (buf == NULL)
-			alertpanel_error(_("Message forward From format error."));
+			alertpanel_error(_("The \"From\" field of the \"Forward\" template contains an invalid email address."));
 		else
 			gtk_entry_set_text(GTK_ENTRY(compose->from_name), buf);
 		quote_fmt_reset_vartable();
@@ -1747,7 +1747,7 @@ Compose *compose_forward(PrefsAccount *account, MsgInfo *msginfo,
 
 		compose_quote_fmt(compose, full_msginfo,
 			          body_fmt, qmark, body, FALSE, TRUE,
-					  _("Message forward format error at line %d."));
+					  _("The body of the \"Forward\" template has an error at line %d."));
 		compose_attach_from_list(compose, quote_fmt_get_attachments_list(), FALSE);
 		quote_fmt_reset_vartable();
 		compose_attach_parts(compose, msginfo);
@@ -1871,7 +1871,7 @@ static Compose *compose_forward_multiple(PrefsAccount *account, GSList *msginfo_
 
 			buf = quote_fmt_get_buffer();
 			if (buf == NULL)
-				alertpanel_error(_("Message forward From format error."));
+				alertpanel_error(_("The \"From\" field of the \"Forward\" template contains an invalid email address."));
 			else
 				gtk_entry_set_text(GTK_ENTRY(compose->from_name), buf);
 			quote_fmt_reset_vartable();
@@ -2329,7 +2329,7 @@ Compose *compose_redirect(PrefsAccount *account, MsgInfo *msginfo,
 	gtk_editable_set_editable(GTK_EDITABLE(compose->subject_entry), FALSE);
 
 	compose_quote_fmt(compose, msginfo, "%M", NULL, NULL, FALSE, FALSE,
-					  _("Message redirect format error at line %d."));
+					  _("The body of the \"Redirect\" template has an error at line %d."));
 	quote_fmt_reset_vartable();
 	gtk_text_view_set_editable(GTK_TEXT_VIEW(compose->text), FALSE);
 
@@ -2845,7 +2845,7 @@ static gchar *compose_quote_fmt(Compose *compose, MsgInfo *msginfo,
 
 		buf = quote_fmt_get_buffer();
 		if (buf == NULL)
-			alertpanel_error(_("Quote mark format error."));
+			alertpanel_error(_("The \"Quotation mark\" of the template is invalid."));
 		else
 			Xstrdup_a(quote_str, buf, goto error)
 	}
@@ -7894,7 +7894,7 @@ static void compose_template_apply(Compose *compose, Template *tmpl,
 	const gchar *qmark;
 	gchar *parsed_str = NULL;
 	gint cursor_pos = 0;
-	const gchar *err_msg = _("Template body format error at line %d.");
+	const gchar *err_msg = _("The body of the template has an error at line %d.");
 	if (!tmpl) return;
 
 	/* process the body */

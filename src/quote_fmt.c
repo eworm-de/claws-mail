@@ -563,13 +563,13 @@ void quotefmt_check_new_msg_formats(gboolean use_format,
 		gint line;
 
 		if (override_from_fmt && !prefs_template_string_is_valid(override_from_fmt, NULL, TRUE, TRUE))
-			alertpanel_error(_("New message From format error."));
+			alertpanel_error(_("The \"From\" field of the \"New message\" template contains an invalid email address."));
 
 		if (!prefs_template_string_is_valid(subject_fmt, NULL, TRUE, FALSE))
-			alertpanel_error(_("New message subject format error."));
+			alertpanel_error(_("The \"Subject\" field of the \"New message\" template is invalid."));
 
 		if (!prefs_template_string_is_valid(body_fmt, &line, TRUE, FALSE)) {
-			alertpanel_error(_("New message body format error at line %d."), line);
+			alertpanel_error(_("The body of the \"New message\" template has an error at line %d."), line);
 		}
 	}
 }
@@ -583,13 +583,13 @@ void quotefmt_check_reply_formats(gboolean use_format,
 		gint line;
 
 		if (!prefs_template_string_is_valid(quotation_mark, NULL, TRUE, FALSE))
-			alertpanel_error(_("Message reply quotation mark format error."));
+			alertpanel_error(_("The \"Quotation mark\" field of the \"Reply\" template is invalid."));
 
 		if (override_from_fmt && !prefs_template_string_is_valid(override_from_fmt, NULL, TRUE, TRUE))
-			alertpanel_error(_("Message reply From format error."));
+			alertpanel_error(_("The \"From\" field of the \"Reply\" template contains an invalid email address."));
 
 		if (!prefs_template_string_is_valid(body_fmt, &line, TRUE, FALSE)) {
-			alertpanel_error(_("Message reply format error at line %d."), line);
+			alertpanel_error(_("The body of the \"Reply\" template has an error at line %d."), line);
 		}
 	}
 }
@@ -603,13 +603,13 @@ void quotefmt_check_forward_formats(gboolean use_format,
 		gint line;
 
 		if (!prefs_template_string_is_valid(quotation_mark, NULL, TRUE, FALSE))
-			alertpanel_error(_("Message forward quotation mark format error."));
+			alertpanel_error(_("The \"Quotation mark\" field of the \"Forward\" template is invalid."));
 
 		if (override_from_fmt && !prefs_template_string_is_valid(override_from_fmt, NULL, TRUE, TRUE))
-			alertpanel_error(_("Message forward From format error."));
+			alertpanel_error(_("The \"From\" field of the \"Forward\" template contains an invalid email address."));
 
 		if (!prefs_template_string_is_valid(body_fmt, &line, TRUE, FALSE)) {
-			alertpanel_error(_("Message forward format error at line %d."), line);
+			alertpanel_error(_("The body of the \"Forward\" template has an error at line %d."), line);
 		}
 	}
 }

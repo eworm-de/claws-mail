@@ -681,6 +681,18 @@ gboolean prefs_template_string_is_valid(gchar *string, gint *line, gboolean esca
 			tmp = g_strdup(string);
 		}
 		memset(&dummyinfo, 0, sizeof(MsgInfo));
+		/* init dummy fields, so we can test the result of the parse */
+		dummyinfo.date="Sat, 30 May 2009 01:23:45 +0200";
+		dummyinfo.fromname="John Doe";
+		dummyinfo.from="John Doe <john@example.com>";
+		dummyinfo.to="John Doe <john@example.com>";
+		dummyinfo.cc="John Doe <john@example.com>";
+		dummyinfo.msgid="<1234john@example.com>";
+		dummyinfo.inreplyto="<1234john@example.com>";
+		dummyinfo.newsgroups="alt.test";
+		dummyinfo.subject="subject";
+		
+		
 #ifdef USE_ENCHANT
 		quote_fmt_init(&dummyinfo, NULL, NULL, TRUE, account, FALSE, NULL);
 #else
@@ -738,7 +750,7 @@ static gboolean prefs_template_list_view_set_row(gint row)
 		value = NULL;
 		}
 	if (!prefs_template_string_is_valid(value, &line, TRUE, FALSE)) {
-		alertpanel_error(_("Template body format error at line %d."), line);
+		alertpanel_error(_("The body of the template has an error at line %d."), line);
 		g_free(value);
 		return FALSE;
 	}
@@ -746,7 +758,7 @@ static gboolean prefs_template_list_view_set_row(gint row)
 	name = gtk_editable_get_chars(GTK_EDITABLE(templates.entry_name),
 				      0, -1);
 	if (*name == '\0') {
-		alertpanel_error(_("Template name is not set."));
+		alertpanel_error(_("The template's name is not set."));
 		g_free(value);
 		return FALSE;
 	}
@@ -783,31 +795,31 @@ static gboolean prefs_template_list_view_set_row(gint row)
 	}
 
 	if (!prefs_template_string_is_valid(from, NULL, TRUE, TRUE)) {
-		alertpanel_error(_("Template From format error."));
+		alertpanel_error(_("The \"From\" field of the template contains an invalid email address."));
 		g_free(from);
 		g_free(value);
 		return FALSE;
 	}
 	if (!prefs_template_string_is_valid(to, NULL, TRUE, TRUE)) {
-		alertpanel_error(_("Template To format error."));
+		alertpanel_error(_("The \"To\" field of the template contains an invalid email address."));
 		g_free(to);
 		g_free(value);
 		return FALSE;
 	}
 	if (!prefs_template_string_is_valid(cc, NULL, TRUE, TRUE)) {
-		alertpanel_error(_("Template Cc format error."));	
+		alertpanel_error(_("The \"Cc\" field of the template contains an invalid email address."));	
 		g_free(cc);
 		g_free(value);
 		return FALSE;
 	}
 	if (!prefs_template_string_is_valid(bcc, NULL, TRUE, TRUE)) {
-		alertpanel_error(_("Template Bcc format error."));	
+		alertpanel_error(_("The \"Bcc\" field of the template contains an invalid email address."));	
 		g_free(bcc);
 		g_free(value);
 		return FALSE;
 	}
 	if (!prefs_template_string_is_valid(subject, NULL, TRUE, FALSE)) {
-		alertpanel_error(_("Template subject format error."));	
+		alertpanel_error(_("The \"Subject\" field of the template is invalid."));	
 		g_free(subject);
 		g_free(value);
 		return FALSE;
