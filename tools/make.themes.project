@@ -1,14 +1,13 @@
 #!/bin/bash
 #
 # Generate the source directory for claws-mail-themes package
-# from the theme tarballs in http://claws-mail.org/themes.php
+# from the theme tarballs in http://www.claws-mail.org/themes.php
 #
-# Copyright (c) 2006-2007 Ricardo Mones <ricardo@mones.org>
-#                         Paul Mangan <paul@claws-mail.org>
+# Copyright (c) 2006-2008 Ricardo Mones <ricardo@mones.org>
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
-# the Free Software Foundation; either version 3 of the License, or
+# the Free Software Foundation; either version 2 of the License, or
 # (at your option) any later version.
 #
 # This program is distributed in the hope that it will be useful,
@@ -21,19 +20,12 @@
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
 # 
 
-function printHelp()
-{
-  echo "Syntax: ";
-  echo "  $0 version {--clean[-all]|--download|--autotoolize|--all}"
-}
-
-test x$1 = x && echo "Error: version number not given" && printHelp && exit 1;
+test x$1 = x && echo "Error: version number not given" && exit 1;
 
 VERS=$1
 shift;
-SITE=http://claws-mail.org
+SITE=http://www.claws-mail.org
 NAME=claws-mail-themes
-NOTES=RELEASE_NOTES
 DDIR=$NAME-$VERS
 PAGE=themes.php
 LIST=themes.list
@@ -62,6 +54,8 @@ function downloadThemes()
 {
   for theme in `cat ${LIST} `;
   do tarf=`echo $theme | cut -f2 -d/ `;
+     test $tarf = "png" \
+         && tarf=`echo $theme | cut -f3 -d/ `;
      echo -n "Downloading... ";
      wget -q -a ${WLOG} -P ${DDIR} ${SITE}/$theme
      test ! -f ${DDIR}/$tarf && echo "Error: couldn't get $tarf" && exit 1;
@@ -88,10 +82,15 @@ function removeWhitespaces()
   cd "..";
 }
 
+function fixPermissions()
+{
+  find ${DDIR} -type d -exec chmod 755 '{}' +
+  find ${DDIR} -type f -exec chmod 644 '{}' +
+}
+
 function createProject()
 {
-  touch ${DDIR}/${NAME} ${DDIR}/${NOTES}
-  find ${DDIR} -type f -exec chmod -x '{}' +
+  touch ${DDIR}/${NAME}
 }
 
 function createThemeMakefileAm()
@@ -102,12 +101,17 @@ function createThemeMakefileAm()
   dir="$1";
   echo 'themedir = $(prefix)/share/claws-mail/themes/'${dir} > $MA
   echo "" >> $MA
-  echo -n 'dist_theme_DATA =' >> $MA 
-  test -f .claws_themeinfo \
-    && echo " .claws_themeinfo \\" >> $MA;
-  count=`ls *.xpm | wc -l `;
+  echo -n 'dist_theme_DATA =' >> $MA  
+  count_png=`ls -1 *.png 2> /dev/null | wc -l `
+  count_xpm=`ls -1 *.xpm 2> /dev/null | wc -l `
+  ext="xpm"
+  count=$count_xpm
+  if [ $count_png -gt $count_xpm ];
+  then ext="png";
+       count=$count_png; 
+  fi
   i=1;
-  for px in `ls -1 *.xpm `; 
+  for px in `ls -1 *.${ext} `; 
   do if [ $i -lt $count ]; 
      then echo " $px \\" >> $MA; 
      else echo " $px" >> $MA; 
@@ -115,11 +119,11 @@ function createThemeMakefileAm()
      i=$((1 + $i)); 
   done;
   echo "" >> $MA;
-  count=`ls * | grep -v '\.xpm$' | wc -l `;
+  count=`ls * | grep -v "\.${ext}$" | wc -l `;
   if [ $count -gt 0 ];
   then echo -n 'EXTRA_DIST =' >> $MA;
        i=1;
-       for npx in `ls -1 * | grep -v '\.xpm$' `;
+       for npx in `ls -1 * | grep -v "\.${ext}$" `;
        do if [ $i -lt $count ];
           then echo " $npx \\" >> $MA;
           else echo " $npx" >> $MA;
@@ -150,15 +154,15 @@ function createMakefileAm()
 {
   cd ${DDIR}
   MA=Makefile.am
-  echo "AUTOMAKE_OPTIONS = dist-bzip2" > $MA
-  echo "" >> $MA
-  echo "EXTRA_DIST = INSTALL "${NOTES} ${NAME} >> $MA
+  if [ -f INSTALL ]
+  then echo "EXTRA_DIST = INSTALL "${NAME} > $MA
+  else echo "EXTRA_DIST = "${NAME} > $MA
+  fi
   echo "" >> $MA
   echo -n "SUBDIRS =" >> $MA
   for dir in *;
   do test -d "$dir" && echo -n " ${dir}" >> $MA;
   done;
-  echo "" >> $MA
   cd ".."
   echo "Created Makefile.am"
 }
@@ -232,6 +236,7 @@ case "$1" in
     ;;
   --autotoolize)
       removeWhitespaces;
+      fixPermissions;
       createProject;
       createAutogenSh;
       createMakefileAm;
@@ -244,7 +249,8 @@ case "$1" in
     echo "Done.";
     ;;
   *)
-      printHelp;
+      echo "Syntax: ";
+      echo "  $0 vers {--clean[-all]|--download|--autotoolize|--all}"
     ;;
 esac
 
