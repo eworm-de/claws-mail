@@ -294,6 +294,9 @@ static void compose_attach_info_free		(AttachInfo	*ainfo);
 static void compose_attach_remove_selected	(GtkAction	*action,
 						 gpointer	 data);
 
+static void compose_template_apply		(Compose	*compose,
+						 Template	*tmpl,
+						 gboolean	 replace);
 static void compose_attach_property		(GtkAction	*action,
 						 gpointer	 data);
 static void compose_attach_property_create	(gboolean	*cancelled);
@@ -7885,7 +7888,7 @@ static const gchar *compose_quote_char_from_context(Compose *compose)
 	return qmark;
 }
 
-void compose_template_apply(Compose *compose, Template *tmpl,
+static void compose_template_apply(Compose *compose, Template *tmpl,
 				   gboolean replace)
 {
 	GtkTextView *text;
