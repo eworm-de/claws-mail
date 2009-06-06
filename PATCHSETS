@@ -3809,3 +3809,4 @@
 ( cvs diff -u -r 1.1.2.8 -r 1.1.2.9 tools/make.themes.project;  ) > 3.7.1cvs67.patchset
 ( cvs diff -u -r 1.382.2.513 -r 1.382.2.514 src/compose.c;  ) > 3.7.1cvs68.patchset
 ( cvs diff -u -r 1.382.2.514 -r 1.382.2.515 src/compose.c;  ) > 3.7.1cvs69.patchset
+( cvs diff -u -r 1.382.2.515 -r 1.382.2.516 src/compose.c;  ) > 3.7.1cvs70.patchset

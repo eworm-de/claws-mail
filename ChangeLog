@@ -1,3 +1,8 @@
+2009-06-06 [iwkse]	3.7.1cvs70
+
+	* src/compose.c
+		A better fix for the previous commit's issue
+
 2009-06-06 [iwkse]	3.7.1cvs69
 
 	* src/compose.c

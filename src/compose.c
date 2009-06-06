@@ -205,9 +205,6 @@ static GtkWidget *compose_account_option_menu_create
 						(Compose	*compose);
 static void compose_set_out_encoding		(Compose	*compose);
 static void compose_set_template_menu		(Compose	*compose);
-static void compose_template_apply		(Compose	*compose,
-						 Template	*tmpl,
-						 gboolean	 replace);
 static void compose_destroy			(Compose	*compose);
 
 static void compose_entries_set			(Compose	*compose,
@@ -7888,7 +7885,7 @@ static const gchar *compose_quote_char_from_context(Compose *compose)
 	return qmark;
 }
 
-static void compose_template_apply(Compose *compose, Template *tmpl,
+void compose_template_apply(Compose *compose, Template *tmpl,
 				   gboolean replace)
 {
 	GtkTextView *text;
@@ -8551,6 +8548,11 @@ static gboolean attach_property_key_pressed(GtkWidget *widget,
 	if (event && event->keyval == GDK_Escape) {
 		*cancelled = TRUE;
 		gtk_main_quit();
+	}
+	if (event && event->keyval == GDK_Return) {
+		*cancelled = FALSE;
+		gtk_main_quit();
+		return TRUE;
 	}
 	return FALSE;
 }
