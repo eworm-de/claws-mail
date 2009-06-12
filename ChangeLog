@@ -1,3 +1,10 @@
+2009-06-12 [colin]	3.7.1cvs72
+
+	* src/common/ssl.c
+		Use compatibility mode in GnuTLS, and avoid problems with 
+		servers that don't comply 100% with the spec, but still
+		exist.
+
 2009-06-06 [iwkse]	3.7.1cvs71
 
 	* src/compose.c

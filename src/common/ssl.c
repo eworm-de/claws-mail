@@ -270,7 +270,7 @@ gboolean ssl_init_socket_with_method(SockInfo *sockinfo, SSLMethod method)
 	if (session == NULL || r != 0)
 		return FALSE;
   
-	gnutls_set_default_priority(session);
+	gnutls_priority_set_direct(session, "NORMAL:%COMPAT", NULL);
 	gnutls_protocol_set_priority (session, proto_prio);
 	gnutls_cipher_set_priority (session, cipher_prio);
 	gnutls_kx_set_priority (session, kx_prio);
