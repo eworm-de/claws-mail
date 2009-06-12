@@ -282,6 +282,7 @@ typedef struct AdvancedPage
 	GtkWidget *nntpport_spinbtn;
 	GtkWidget *domain_checkbtn;
 	GtkWidget *domain_entry;
+	GtkWidget *msgid_with_addr_checkbtn;
 	GtkWidget *crosspost_checkbtn;
  	GtkWidget *crosspost_colormenu;
 
@@ -793,6 +794,10 @@ static PrefParam advanced_param[] = {
 	{"domain", NULL, &tmp_ac_prefs.domain, P_STRING,
 	 &advanced_page.domain_entry,
 	 prefs_set_data_from_entry, prefs_set_entry},
+
+	{"msgid_with_addr", "FALSE", &tmp_ac_prefs.msgid_with_addr, P_BOOL,
+	 &advanced_page.msgid_with_addr_checkbtn,
+	 prefs_set_data_from_toggle, prefs_set_toggle},
 #ifndef G_OS_WIN32
 	{"set_tunnelcmd", "FALSE", &tmp_ac_prefs.set_tunnelcmd, P_BOOL,
 	 &advanced_page.tunnelcmd_checkbtn,
@@ -2529,6 +2534,7 @@ static void advanced_create_widget_func(PrefsPage * _page,
 	GtkWidget *spinbtn_nntpport;
 	GtkWidget *checkbtn_domain;
 	GtkWidget *entry_domain;
+	GtkWidget *checkbtn_msgid_with_addr;
 	GtkWidget *checkbtn_crosspost;
  	GtkWidget *colormenu_crosspost;
  	GtkWidget *menu;
@@ -2615,7 +2621,9 @@ static void advanced_create_widget_func(PrefsPage * _page,
 			     _("The domain name will be used in the right part of "
 			       "the generated Message-Ids, and when connecting to "
 			       "SMTP servers."));
-
+	PACK_HBOX (hbox1);
+	PACK_CHECK_BUTTON (hbox1, checkbtn_msgid_with_addr,
+			   _("Send account mail address in Message-Id"));
 
 #ifndef G_OS_WIN32	
 	PACK_HBOX (hbox1);
@@ -2705,6 +2713,7 @@ static void advanced_create_widget_func(PrefsPage * _page,
 	page->nntpport_spinbtn		= spinbtn_nntpport;
 	page->domain_checkbtn		= checkbtn_domain;
 	page->domain_entry		= entry_domain;
+	page->msgid_with_addr_checkbtn	= checkbtn_msgid_with_addr;
  	page->crosspost_checkbtn	= checkbtn_crosspost;
  	page->crosspost_colormenu	= colormenu_crosspost;
 

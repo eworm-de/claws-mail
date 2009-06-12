@@ -5065,7 +5065,11 @@ static gint compose_redirect_write_headers(Compose *compose, FILE *fp)
 	}
 
 	if (compose->account->gen_msgid) {
-		generate_msgid(buf, sizeof(buf));
+		gchar *addr = NULL;
+		if (compose->account->msgid_with_addr) {
+			addr = compose->account->address;
+		}
+		generate_msgid(buf, sizeof(buf), addr);
 		err |= (fprintf(fp, "Resent-Message-ID: <%s>\n", buf) < 0);
 		compose->msgid = g_strdup(buf);
 	} else {
@@ -6033,7 +6037,11 @@ static gchar *compose_get_header(Compose *compose)
 	}
 	
 	if (compose->account->gen_msgid) {
-		generate_msgid(buf, sizeof(buf));
+		gchar *addr = NULL;
+		if (compose->account->msgid_with_addr) {
+			addr = compose->account->address;
+		}
+		generate_msgid(buf, sizeof(buf), addr);
 		g_string_append_printf(header, "Message-ID: <%s>\n", buf);
 		compose->msgid = g_strdup(buf);
 	} else {

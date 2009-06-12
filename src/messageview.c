@@ -964,7 +964,11 @@ static gint disposition_notification_send(MsgInfo *msginfo)
 	}
 	
 	if (account->gen_msgid) {
-		generate_msgid(buf, sizeof(buf));
+		gchar *addr = NULL;
+		if (account->msgid_with_addr) {
+			addr = account->address;
+		}
+		generate_msgid(buf, sizeof(buf), addr);
 
 		if (fprintf(fp, "Message-ID: <%s>\n", buf) < 0) {
 			fclose(fp);

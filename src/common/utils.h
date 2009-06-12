@@ -536,7 +536,7 @@ const gchar * line_has_quote_char	(const gchar *str,
 
 gint g_int_compare	(gconstpointer a, gconstpointer b);
 
-gchar *generate_msgid		(gchar *buf, gint len);
+gchar *generate_msgid		(gchar *buf, gint len, gchar *user_addr);
 gchar *generate_mime_boundary	(const gchar *prefix);
 
 gint quote_cmd_argument(gchar * result, guint size,

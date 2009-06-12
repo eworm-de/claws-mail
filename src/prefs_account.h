@@ -164,6 +164,7 @@ struct _PrefsAccount
 	gushort   nntpport;
 	gboolean  set_domain;
 	gchar    *domain;
+	gboolean  msgid_with_addr;
 	gboolean  mark_crosspost_read;
 	gint	  crosspost_col;
 
