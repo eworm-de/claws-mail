@@ -141,7 +141,6 @@ GtkWidget *claws_spell_entry_new(void)
 void claws_spell_entry_set_gtkaspell(ClawsSpellEntry *entry, GtkAspell *gtkaspell)
 {
 	cm_return_if_fail(CLAWS_IS_SPELL_ENTRY(entry));
-	cm_return_if_fail(gtkaspell != NULL);
 
 	entry->gtkaspell = gtkaspell;
 }
