@@ -256,7 +256,7 @@ static gint smime_check_signature(MimeInfo *mimeinfo)
 				sgpgme_verify_signature	(data->ctx, textdata, NULL, cipher);
 			gpgme_data_release(textdata);
 			g_free(textstr);
-			gpgme_data_rewind(cipher);
+			cm_gpgme_data_rewind(cipher);
 			textstr = sgpgme_data_release_and_get_mem(cipher, &len);
 			fclose(fp);
 			if (textstr && len > 0)
@@ -825,7 +825,7 @@ gboolean smime_encrypt(MimeInfo *mimeinfo, const gchar *encrypt_data)
 	/* encrypt data */
 	gpgme_data_new_from_mem(&gpgtext, textstr, textstr?strlen(textstr):0, 0);
 	gpgme_data_new(&gpgenc);
-	gpgme_data_rewind(gpgtext);
+	cm_gpgme_data_rewind(gpgtext);
 	
 	gpgme_data_set_encoding(gpgenc, GPGME_DATA_ENCODING_BASE64);
 	gpgme_op_encrypt(ctx, kset, GPGME_ENCRYPT_ALWAYS_TRUST, gpgtext, gpgenc);

@@ -51,4 +51,6 @@ gboolean sgpgme_has_secret_key(void);
 void sgpgme_create_secret_key(PrefsAccount *account, gboolean ask_create);
 void *sgpgme_data_release_and_get_mem(gpgme_data_t data, size_t *len);
 
+gpgme_error_t cm_gpgme_data_rewind(gpgme_data_t dh);
+
 #endif /* SGPGME_H */

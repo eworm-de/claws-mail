@@ -423,7 +423,7 @@ gpgme_data_t sgpgme_decrypt_verify(gpgme_data_t cipher, gpgme_verify_result_t *s
 			return NULL;
 		}
 
-		err = gpgme_data_rewind(plain);
+		err = cm_gpgme_data_rewind(plain);
 		if (err) {
 			debug_print("can't seek (%d %d %s)\n", err, errno, strerror(errno));
 		}
@@ -440,7 +440,7 @@ gpgme_data_t sgpgme_decrypt_verify(gpgme_data_t cipher, gpgme_verify_result_t *s
 			return NULL;
 		}
 
-		err = gpgme_data_rewind(plain);
+		err = cm_gpgme_data_rewind(plain);
 		if (err) {
 			debug_print("can't seek (%d %d %s)\n", err, errno, strerror(errno));
 		}
@@ -890,7 +890,7 @@ void *sgpgme_data_release_and_get_mem(gpgme_data_t data, size_t *len)
 		return NULL;
 
 	/* I know it's deprecated, but we don't compile with _LARGEFILE */
-	gpgme_data_rewind(data);
+	cm_gpgme_data_rewind(data);
 	while ((r = gpgme_data_read(data, buf, BUFSIZ)) > 0) {
 		result = realloc(result, r + w);
 		memcpy(result+w, buf, r);
@@ -907,4 +907,17 @@ void *sgpgme_data_release_and_get_mem(gpgme_data_t data, size_t *len)
 	}
 	return result;
 }
+
+gpgme_error_t cm_gpgme_data_rewind(gpgme_data_t dh)
+{
+#if defined(_FILE_OFFSET_BITS) && _FILE_OFFSET_BITS == 64
+	if (gpgme_data_seek(dh, (off_t)0, SEEK_SET) == -1)
+		return gpg_error_from_errno(errno);
+	else
+		return 0;
+#else
+	return gpgme_data_rewind(dh);
+#endif
+}
+
 #endif /* USE_GPGME */

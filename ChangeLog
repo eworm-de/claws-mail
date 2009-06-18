@@ -1,3 +1,17 @@
+2009-06-18 [colin]	3.7.1cvs76
+
+	* configure.ac
+	* src/plugins/pgpcore/sgpgme.c
+	* src/plugins/pgpcore/sgpgme.h
+	* src/plugins/pgpmime/mypgpcore.def
+	* src/plugins/pgpmime/pgpmime.c
+	* src/plugins/smime/mypgpcore.def
+	* src/plugins/smime/smime.c
+		Use largefile support (and stop using our old GPGME
+		hack on gpgme_data_seek/rewind)
+		(See 1.9.12cvs44 to 46 - if this breaks things we 
+		should soon know :)
+
 2009-06-13 [colin]	3.7.1cvs75
 
 	* src/gtk/spell_entry.c
