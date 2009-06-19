@@ -1132,7 +1132,9 @@ gboolean summary_show(SummaryView *summaryview, FolderItem *item)
 
 	inc_lock();
 	summary_lock(summaryview);
-
+	
+	menu_set_sensitive_all(GTK_MENU_SHELL(summaryview->popupmenu), TRUE);
+	
 	utils_free_regex();
 
 	is_refresh = (item == summaryview->folder_item) ? TRUE : FALSE;
@@ -4816,9 +4818,10 @@ gboolean summary_execute(SummaryView *summaryview)
 		menu_set_insensitive_all
 			(GTK_MENU_SHELL(summaryview->popupmenu));
 		gtk_widget_grab_focus(summaryview->folderview->ctree);
-	} else
+	} else {
+		menu_set_sensitive_all(GTK_MENU_SHELL(summaryview->popupmenu), TRUE);
 		gtk_widget_grab_focus(summaryview->ctree);
-
+	}
 	summary_update_status(summaryview);
 	summary_status_show(summaryview);
 
@@ -4915,8 +4918,10 @@ gboolean summary_expunge(SummaryView *summaryview)
 		menu_set_insensitive_all
 			(GTK_MENU_SHELL(summaryview->popupmenu));
 		gtk_widget_grab_focus(summaryview->folderview->ctree);
-	} else
+	} else {
+		menu_set_sensitive_all(GTK_MENU_SHELL(summaryview->popupmenu), TRUE);
 		gtk_widget_grab_focus(summaryview->ctree);
+	}
 
 	summary_update_status(summaryview);
 	summary_status_show(summaryview);

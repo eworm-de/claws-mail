@@ -1,3 +1,8 @@
+2009-06-19 [colin]	3.7.1cvs77
+
+	* src/summaryview.c
+		Fix menu sensitiveness
+
 2009-06-18 [colin]	3.7.1cvs76
 
 	* configure.ac
