@@ -3817,3 +3817,4 @@
 ( cvs diff -u -r 1.1.2.6 -r 1.1.2.7 src/gtk/spell_entry.c;  ) > 3.7.1cvs75.patchset
 ( cvs diff -u -r 1.1.2.63 -r 1.1.2.64 src/plugins/pgpcore/sgpgme.c;  cvs diff -u -r 1.1.2.13 -r 1.1.2.14 src/plugins/pgpcore/sgpgme.h;  cvs diff -u -r 1.1.2.2 -r 1.1.2.3 src/plugins/pgpmime/mypgpcore.def;  cvs diff -u -r 1.1.2.55 -r 1.1.2.56 src/plugins/pgpmime/pgpmime.c;  cvs diff -u -r 1.1.2.2 -r 1.1.2.3 src/plugins/smime/mypgpcore.def;  cvs diff -u -r 1.1.2.6 -r 1.1.2.7 src/plugins/smime/smime.c;  ) > 3.7.1cvs76.patchset
 ( cvs diff -u -r 1.395.2.410 -r 1.395.2.411 src/summaryview.c;  ) > 3.7.1cvs77.patchset
+( cvs diff -u -r 1.395.2.411 -r 1.395.2.412 src/summaryview.c;  ) > 3.7.1cvs78.patchset

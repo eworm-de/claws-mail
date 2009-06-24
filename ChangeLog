@@ -1,3 +1,8 @@
+2009-06-24 [paul]	3.7.1cvs78
+
+	* src/summaryview.c
+		make some (forgotten) strings translatable
+
 2009-06-19 [colin]	3.7.1cvs77
 
 	* src/summaryview.c

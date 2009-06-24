@@ -414,15 +414,15 @@ GtkTargetEntry summary_drag_types[2] =
 static GtkActionEntry summary_popup_entries[] =
 {
 	{"SummaryViewPopup",				NULL, "SummaryViewPopup" },
-	{"SummaryViewPopup/ReplyTo",			NULL, "Repl_y to" },
-	{"SummaryViewPopup/Mark",			NULL, "_Mark" },
-	{"SummaryViewPopup/ColorLabel",			NULL, "Color la_bel" },
-	{"SummaryViewPopup/Tags",			NULL, "Ta_gs" },
-	{"SummaryViewPopup/CreateFilterRule",		NULL, "Create _filter rule" },
+	{"SummaryViewPopup/ReplyTo",			NULL, N_("Repl_y to") },
+	{"SummaryViewPopup/Mark",			NULL, N_("_Mark") },
+	{"SummaryViewPopup/ColorLabel",			NULL, N_("Color la_bel") },
+	{"SummaryViewPopup/Tags",			NULL, N_("Ta_gs") },
+	{"SummaryViewPopup/CreateFilterRule",		NULL, N_("Create _filter rule") },
 #ifndef GENERIC_UMPC
-	{"SummaryViewPopup/CreateProcessingRule",	NULL, "Create processing rule" },
+	{"SummaryViewPopup/CreateProcessingRule",	NULL, N_("Create processing rule") },
 #endif
-	{"SummaryViewPopup/View",			NULL, "_View" },
+	{"SummaryViewPopup/View",			NULL, N_("_View") },
 };
 
 static const gchar *const col_label[N_SUMMARY_COLS] = {
