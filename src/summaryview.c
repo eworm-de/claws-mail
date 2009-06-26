@@ -7162,6 +7162,8 @@ static gint summary_cmp_by_date(GtkCMCList *clist,
 		return -1;
 
 	res = (msginfo1->date_t - msginfo2->date_t);
+	if (res == 0)
+		res = msginfo1->msgnum - msginfo2->msgnum;
 	return res;
 }
 

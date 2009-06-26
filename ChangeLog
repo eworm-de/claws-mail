@@ -1,3 +1,8 @@
+2009-06-26 [colin]	3.7.1cvs79
+
+	* src/summaryview.c
+		Sort by msgnum if dates are equal
+
 2009-06-24 [paul]	3.7.1cvs78
 
 	* src/summaryview.c
