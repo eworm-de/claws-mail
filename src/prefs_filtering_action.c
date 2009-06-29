@@ -652,7 +652,7 @@ static void prefs_filtering_action_create(void)
 static void prefs_filtering_action_list_view_set_row(GtkTreeIter *row, 
 						     FilteringAction *action)
 {
-        gchar buf[256];
+        gchar *buf;
 
 	if (row == NULL && action == NULL) {
 		prefs_filtering_action_list_view_insert_action
@@ -661,11 +661,12 @@ static void prefs_filtering_action_list_view_set_row(GtkTreeIter *row,
 		return;
 	}			 
 
-        filteringaction_to_string(buf, sizeof buf, action);
+        buf = filteringaction_to_string(action);
 
 	prefs_filtering_action_list_view_insert_action
 			(filtering_action.action_list_view,
 			 row, buf, TRUE);
+	g_free(buf);
 }
 
 /*!

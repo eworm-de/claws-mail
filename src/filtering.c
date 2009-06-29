@@ -719,7 +719,7 @@ static gboolean filtering_apply_rule(FilteringProp *filtering, MsgInfo *info,
     gboolean * final)
 {
 	gboolean result = TRUE;
-	gchar    buf[256];
+	gchar    *buf;
         GSList * tmp;
         
         * final = FALSE;
@@ -727,9 +727,9 @@ static gboolean filtering_apply_rule(FilteringProp *filtering, MsgInfo *info,
                 FilteringAction * action;
 
                 action = tmp->data;
-				filteringaction_to_string(buf, sizeof buf, action);
-				if (debug_filtering_session)
-					log_print(LOG_DEBUG_FILTERING, _("applying action [ %s ]\n"), buf);
+		buf = filteringaction_to_string(action);
+		if (debug_filtering_session)
+			log_print(LOG_DEBUG_FILTERING, _("applying action [ %s ]\n"), buf);
 
                 if (FALSE == (result = filteringaction_apply(action, info))) {
 					if (debug_filtering_session) {
@@ -740,11 +740,12 @@ static gboolean filtering_apply_rule(FilteringProp *filtering, MsgInfo *info,
 					} else
 						g_warning("No further processing after rule %s\n", buf);
                 }
-                
+                g_free(buf);
                 if (filtering_is_final_action(action)) {
                         * final = TRUE;
                         break;
                 }
+		
         }
 	return result;
 }
@@ -911,12 +912,14 @@ gboolean filter_message_by_msginfo(GSList *flist, MsgInfo *info, PrefsAccount* a
 	return ret;
 }
 
-gchar *filteringaction_to_string(gchar *dest, gint destlen, FilteringAction *action)
+gchar *filteringaction_to_string(FilteringAction *action)
 {
 	const gchar *command_str;
 	gchar * quoted_dest;
 	gchar * quoted_header;
-	
+	GString *dest = g_string_new("");
+	gchar *deststr = NULL;
+
 	command_str = get_matchparser_tab_str(action->type);
 
 	if (command_str == NULL)
@@ -929,9 +932,9 @@ gchar *filteringaction_to_string(gchar *dest, gint destlen, FilteringAction *act
 	case MATCHACTION_SET_TAG:
 	case MATCHACTION_UNSET_TAG:
 		quoted_dest = matcher_quote_str(action->destination);
-		g_snprintf(dest, destlen, "%s \"%s\"", command_str, quoted_dest);
+		g_string_append_printf(dest, "%s \"%s\"", command_str, quoted_dest);
 		g_free(quoted_dest);
-		return dest;
+		break;
 
 	case MATCHACTION_DELETE:
 	case MATCHACTION_MARK:
@@ -947,43 +950,45 @@ gchar *filteringaction_to_string(gchar *dest, gint destlen, FilteringAction *act
 	case MATCHACTION_IGNORE:
 	case MATCHACTION_WATCH:
 	case MATCHACTION_CLEAR_TAGS:
-		g_snprintf(dest, destlen, "%s", command_str);
-		return dest;
+		g_string_append_printf(dest, "%s", command_str);
+		break;
 
 	case MATCHACTION_REDIRECT:
 	case MATCHACTION_FORWARD:
 	case MATCHACTION_FORWARD_AS_ATTACHMENT:
 		quoted_dest = matcher_quote_str(action->destination);
-		g_snprintf(dest, destlen, "%s %d \"%s\"", command_str, action->account_id, quoted_dest);
+		g_string_append_printf(dest, "%s %d \"%s\"", command_str, action->account_id, quoted_dest);
 		g_free(quoted_dest);
-		return dest; 
+		break;
 
 	case MATCHACTION_COLOR:
-		g_snprintf(dest, destlen, "%s %d", command_str, action->labelcolor);
-		return dest;  
+		g_string_append_printf(dest, "%s %d", command_str, action->labelcolor);
+		break;
 
 	case MATCHACTION_CHANGE_SCORE:
 	case MATCHACTION_SET_SCORE:
-		g_snprintf(dest, destlen, "%s %d", command_str, action->score);
-		return dest;  
+		g_string_append_printf(dest, "%s %d", command_str, action->score);
+		break;
 
 	case MATCHACTION_ADD_TO_ADDRESSBOOK:
 		quoted_header = matcher_quote_str(action->header);
 		quoted_dest = matcher_quote_str(action->destination);
-		g_snprintf(dest, destlen, "%s \"%s\" \"%s\"", command_str, quoted_header, quoted_dest);
+		g_string_append_printf(dest, "%s \"%s\" \"%s\"", command_str, quoted_header, quoted_dest);
 		g_free(quoted_dest);
 		g_free(quoted_header);
-		return dest;
+		break;
 
 	default:
 		return NULL;
 	}
+	deststr = dest->str;
+	g_string_free(dest, FALSE);
+	return deststr;
 }
 
 gchar * filteringaction_list_to_string(GSList * action_list)
 {
 	gchar *action_list_str;
-	gchar  buf[256];
         GSList * tmp;
 	gchar *list_str;
 
@@ -994,8 +999,7 @@ gchar * filteringaction_list_to_string(GSList * action_list)
                 
                 action = tmp->data;
                 
-                action_str = filteringaction_to_string(buf,
-                    sizeof buf, action);
+                action_str = filteringaction_to_string(action);
                 
                 if (action_list_str != NULL) {
                         list_str = g_strconcat(action_list_str, " ", action_str, NULL);
@@ -1004,6 +1008,7 @@ gchar * filteringaction_list_to_string(GSList * action_list)
                 else {
                         list_str = g_strdup(action_str);
                 }
+		g_free(action_str);
                 action_list_str = list_str;
         }
 

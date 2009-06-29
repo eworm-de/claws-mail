@@ -1,3 +1,12 @@
+2009-06-29 [colin]	3.7.1cvs83
+
+	* src/filtering.c
+	* src/filtering.h
+	* src/prefs_filtering_action.c
+		Fix bug 1935, 'problems with very long filtering actions':
+		Use a dynamic buffer in action to string, and a bigger
+		buffer in string to action
+
 2009-06-29 [colin]	3.7.1cvs82
 
 	* src/matcher_parser_lex.l

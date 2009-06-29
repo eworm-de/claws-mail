@@ -89,7 +89,7 @@ void filter_msginfo_move_or_delete(GSList *filtering_list, MsgInfo *info);
 gboolean filter_message_by_msginfo(GSList *flist, MsgInfo *info, PrefsAccount *ac_prefs,
 								   FilteringInvocationType context, gchar *extra_info);
 
-gchar * filteringaction_to_string(gchar *dest, gint destlen, FilteringAction *action);
+gchar * filteringaction_to_string(FilteringAction *action);
 void prefs_filtering_write_config(void);
 void prefs_filtering_read_config(void);
 gchar * filteringaction_list_to_string(GSList * action_list);
