@@ -442,10 +442,11 @@ Rdn *ldapsvr_modify_dn(GHashTable *hash, gchar *dn) {
 	cm_return_val_if_fail(hash != NULL || dn != NULL, NULL);
 	
 	pos = g_strstr_len(dn, strlen(dn), "=");
-	compare = g_strndup(dn, pos - dn);
-
 	if (!pos)
 		return NULL;
+
+	compare = g_strndup(dn, pos - dn);
+
 	pos++;
 	rest = g_strstr_len(pos, strlen(pos), ",");
 	val = g_strndup(pos, rest - pos);

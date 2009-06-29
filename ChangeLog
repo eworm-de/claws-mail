@@ -1,3 +1,9 @@
+2009-06-29 [colin]	3.7.1cvs80
+
+	* src/ldapupdate.c
+	* src/ldif.c
+		Leak fixes; patch by Pawel Pekala.
+
 2009-06-26 [colin]	3.7.1cvs79
 
 	* src/summaryview.c

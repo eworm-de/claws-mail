@@ -3819,3 +3819,4 @@
 ( cvs diff -u -r 1.395.2.410 -r 1.395.2.411 src/summaryview.c;  ) > 3.7.1cvs77.patchset
 ( cvs diff -u -r 1.395.2.411 -r 1.395.2.412 src/summaryview.c;  ) > 3.7.1cvs78.patchset
 ( cvs diff -u -r 1.395.2.412 -r 1.395.2.413 src/summaryview.c;  ) > 3.7.1cvs79.patchset
+( cvs diff -u -r 1.1.2.22 -r 1.1.2.23 src/ldapupdate.c;  cvs diff -u -r 1.12.2.20 -r 1.12.2.21 src/ldif.c;  ) > 3.7.1cvs80.patchset

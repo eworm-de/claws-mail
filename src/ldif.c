@@ -250,8 +250,10 @@ static gchar *ldif_get_line( LdifFile *ldifFile ) {
 	int i = 0;
 	int cur_alloc = LDIFBUFSIZE;
 
-	if( feof( ldifFile->file ) ) 
+	if( feof( ldifFile->file ) ) {
+		g_free(buf);
 		return NULL;
+	}
 
 	while( i < cur_alloc-1 ) {
 		ch = fgetc( ldifFile->file );
