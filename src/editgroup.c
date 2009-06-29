@@ -350,7 +350,7 @@ static void addressbook_edit_group_create( gboolean *cancelled ) {
 				       GTK_POLICY_AUTOMATIC,
 				       GTK_POLICY_AUTOMATIC);
 
-	clist_group = gtk_sctree_new_with_titles( GROUP_N_COLS, GROUP_N_COLS, titles );
+	clist_group = gtk_sctree_new_with_titles( GROUP_N_COLS, 0, titles );
 	gtk_container_add( GTK_CONTAINER(clist_swin), clist_group );
 	if (prefs_common.enable_dotted_lines) {
 		gtk_cmctree_set_line_style(GTK_CMCTREE(clist_group), GTK_CMCTREE_LINES_DOTTED);
@@ -389,8 +389,17 @@ static void addressbook_edit_group_create( gboolean *cancelled ) {
 				       GTK_POLICY_AUTOMATIC,
 				       GTK_POLICY_AUTOMATIC);
 
-	clist_avail = gtk_sctree_new_with_titles( GROUP_N_COLS, GROUP_N_COLS, titles );
+	clist_avail = gtk_sctree_new_with_titles( GROUP_N_COLS, 0, titles );
 	gtk_container_add( GTK_CONTAINER(clist_swin), clist_avail );
+	if (prefs_common.enable_dotted_lines) {
+		gtk_cmctree_set_line_style(GTK_CMCTREE(clist_avail), GTK_CMCTREE_LINES_DOTTED);
+		gtk_cmctree_set_expander_style(GTK_CMCTREE(clist_avail),
+				     GTK_CMCTREE_EXPANDER_SQUARE);
+	} else {
+		gtk_cmctree_set_line_style(GTK_CMCTREE(clist_avail), GTK_CMCTREE_LINES_NONE);
+		gtk_cmctree_set_expander_style(GTK_CMCTREE(clist_avail),
+				     GTK_CMCTREE_EXPANDER_TRIANGLE);
+	}
 	gtk_cmclist_set_selection_mode( GTK_CMCLIST(clist_avail), GTK_SELECTION_EXTENDED );
 	gtk_cmclist_set_column_width( GTK_CMCLIST(clist_avail), GROUP_COL_NAME, GROUP_COL_WIDTH_NAME );
 	gtk_cmclist_set_column_width( GTK_CMCLIST(clist_avail), GROUP_COL_EMAIL, GROUP_COL_WIDTH_EMAIL );

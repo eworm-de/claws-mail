@@ -1,3 +1,13 @@
+2009-06-29 [colin]	3.7.1cvs81
+
+	* src/addressbook.c
+		Fix warnings
+	* src/editgroup.c
+		Fix crash (out-of-bounds tree column)
+	* src/gtk/gtkcmctree.c
+	* src/gtk/gtksctree.c
+		Prevent using an out-of-bounds tree column
+
 2009-06-29 [colin]	3.7.1cvs80
 
 	* src/ldapupdate.c

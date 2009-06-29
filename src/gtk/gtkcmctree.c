@@ -3271,7 +3271,6 @@ row_new (GtkCMCTree *ctree)
       ctree_row->row.cell[i].horizontal = 0;
       ctree_row->row.cell[i].style = NULL;
     }
-
   GTK_CMCELL_PIXTEXT (ctree_row->row.cell[ctree->tree_column])->text = NULL;
 
   ctree_row->row.fg_set     = FALSE;

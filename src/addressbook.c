@@ -4788,17 +4788,28 @@ static void addrbookctl_build_icons( GtkWidget *window ) {
 	AddressTypeControlItem *atci;
 
 	/* Build icons */
-	g_object_unref(interfacexpm);
-	g_object_unref(folderxpm);
-	g_object_unref(folderopenxpm);
-	g_object_unref(groupxpm);
-	g_object_unref(vcardxpm);
-	g_object_unref(bookxpm);
-	g_object_unref(addressxpm);
-	g_object_unref(jpilotxpm);
-	g_object_unref(categoryxpm);
-	g_object_unref(ldapxpm);
-	g_object_unref(addrsearchxpm);
+	if (interfacexpm)
+		g_object_unref(interfacexpm);
+	if (folderxpm)
+		g_object_unref(folderxpm);
+	if (folderopenxpm)
+		g_object_unref(folderopenxpm);
+	if (groupxpm)
+		g_object_unref(groupxpm);
+	if (vcardxpm)
+		g_object_unref(vcardxpm);
+	if (bookxpm)
+		g_object_unref(bookxpm);
+	if (addressxpm)
+		g_object_unref(addressxpm);
+	if (jpilotxpm)
+		g_object_unref(jpilotxpm);
+	if (categoryxpm)
+		g_object_unref(categoryxpm);
+	if (ldapxpm)
+		g_object_unref(ldapxpm);
+	if (addrsearchxpm)
+		g_object_unref(addrsearchxpm);
 	stock_pixbuf_gdk(window, STOCK_PIXMAP_INTERFACE, &interfacexpm );
 	stock_pixbuf_gdk(window, STOCK_PIXMAP_DIR_CLOSE, &folderxpm);
 	stock_pixbuf_gdk(window, STOCK_PIXMAP_DIR_OPEN, &folderopenxpm);
