@@ -31,7 +31,7 @@
 #include "matcher_parser_parse.h"
 #endif
 
-#define MAX_STR_CONST 512
+#define MAX_STR_CONST 8192
 
 static char string_buf[MAX_STR_CONST];
 static char *string_buf_ptr;
@@ -104,7 +104,7 @@ void matcher_parser_init(void)
 <string>.	{
 		add_char(yytext[0]);
 		}
-\[[^\[\]]*\]	{
+^\[.*\]$	{
                 /* for section name in configuration file */
 		BEGIN(0);
 		yylval.str = yytext + 1;

@@ -1,3 +1,8 @@
+2009-06-29 [colin]	3.7.1cvs82
+
+	* src/matcher_parser_lex.l
+		Fix bug 1878, 'Processing rules for folders with brackets aren't saved'
+
 2009-06-29 [colin]	3.7.1cvs81
 
 	* src/addressbook.c

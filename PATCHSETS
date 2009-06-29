@@ -3821,3 +3821,4 @@
 ( cvs diff -u -r 1.395.2.412 -r 1.395.2.413 src/summaryview.c;  ) > 3.7.1cvs79.patchset
 ( cvs diff -u -r 1.1.2.22 -r 1.1.2.23 src/ldapupdate.c;  cvs diff -u -r 1.12.2.20 -r 1.12.2.21 src/ldif.c;  ) > 3.7.1cvs80.patchset
 ( cvs diff -u -r 1.60.2.133 -r 1.60.2.134 src/addressbook.c;  cvs diff -u -r 1.11.2.22 -r 1.11.2.23 src/editgroup.c;  cvs diff -u -r 1.1.2.12 -r 1.1.2.13 src/gtk/gtkcmctree.c;  cvs diff -u -r 1.1.4.56 -r 1.1.4.57 src/gtk/gtksctree.c;  ) > 3.7.1cvs81.patchset
+( cvs diff -u -r 1.16.2.13 -r 1.16.2.14 src/matcher_parser_lex.l;  ) > 3.7.1cvs82.patchset
