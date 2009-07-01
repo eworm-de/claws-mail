@@ -819,7 +819,7 @@ static PrefParam param[] = {
 #endif
 	{"ext_editor_command", DEFAULT_EDITOR_CMD,
 	 &SPECIFIC_PREFS.ext_editor_cmd, P_STRING, NULL, NULL, NULL},
-	{"cmds_use_system_default", "FALSE",
+	{"cmds_use_system_default", "TRUE",
 	 &prefs_common.cmds_use_system_default, P_BOOL, NULL, NULL, NULL},
 	{"add_address_by_click", "FALSE", &prefs_common.add_address_by_click,
 	 P_BOOL, NULL, NULL, NULL},

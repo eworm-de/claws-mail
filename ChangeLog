@@ -1,3 +1,11 @@
+2009-07-01 [colin]	3.7.1cvs84
+
+	* src/prefs_common.c
+		Fix bug 1940, 'Doesn't open links in 
+		user's default browser'. Turn the preference
+		to TRUE by default; that will only change the
+		behaviour for new users.
+
 2009-06-29 [colin]	3.7.1cvs83
 
 	* src/filtering.c
