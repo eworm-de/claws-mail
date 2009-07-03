@@ -1,5 +1,45 @@
 Changes of the  Claws Mail GTK2 branch
 
+* 3.7.2
+-------
+
+* Default Cc, Bcc and Reply-To options have been added to Folder
+  Properties.
+
+* MIME parts that lack an end boundary are now handled, (even though
+  they're INVALID!).
+
+* A 'Metadata handling' option has been added to the Miscellaneous
+  options page. The options are 'safer' or 'faster'. 'faster' is
+  Claws' original behaviour. 'safer' prevents data loss on system
+  crashes where the filesystem is of a 'not-so-robust' variety, e.g.
+  xfs. If in doubt, use 'safer'. This option defaults to 'safer'.
+
+* Face and X-Face previews have been added to the Custom Header
+  Configuration dialogue in Account preferences.
+
+* An option has been added to the Receive page of IMAP account
+  preferences, "Move deleted mails to trash and expunge immediately".
+  This option is on by default to avoid changing the existing
+  behaviour. Turning it off prevents automatic expunging.
+  Also, 'Tools/Expunge'  and 'View/Hide deleted messages' menu items
+  have been added to main toolbar.
+
+* Support for clickable gopher:// links has been added.
+
+* In the Compose window a warning dialogue is raised if attachments
+  that have been added no longer exist on the filesystem at the time
+  of sending.
+
+* Buttons to clear header lines in the Compose window have been
+  added.
+
+* GnuTLS compatibility mode is now used, this avoids problems with 
+  servers that don't comply 100% with the spec, but still exist.
+
+* tools/csv2addressbook.pl
+  thunderbird import for version 2.0.0.21 has been added.
+
 * 3.7.1
 -------
 

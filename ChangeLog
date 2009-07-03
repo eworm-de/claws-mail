@@ -1,3 +1,10 @@
+2009-07-03 [paul]	3.7.2
+
+	* NEWS
+	* README
+	* RELEASE_NOTES	
+		3.7.2 released!
+
 2009-07-03 [paul]	3.7.1cvs85
 
 	* AUTHORS
@@ -1357,7 +1364,7 @@
 	* po/ru.po
 	* po/sv.po
 		updated by Yasen Pramatarov, Miquel Oliete, David Vachulka,
-		Stephan Sachse, Flammie Pirinen, Páder Rezso, Marcel Pol,
+		Stephan Sachse, Flammie Pirinen, Pï¿½der Rezso, Marcel Pol,
 		Frederico Goncalves Guimaraes, Aleksei Miheev, and Lars
 		Persson Fink
 
@@ -5692,7 +5699,7 @@ lease complete the changelog entry below
 
 	* po/es.po
 		Updated translation, corrected a term based 
-		on suggestion from Israel Saeta Pérez,
+		on suggestion from Israel Saeta Pï¿½rez,
 		reverted awful X-Mailer translation
 	* src/procmime.c
 		Complete cvs20 for FreeBSD, patch by Pawel
