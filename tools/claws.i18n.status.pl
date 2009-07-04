@@ -24,7 +24,9 @@
 	'nl.po' => 'Dutch',
 	'pl.po' => 'Polish',
 	'pt_BR.po' => 'Brazilian Portuguese',
+	'pt_PT.po' => 'Portuguese',
 	'ru.po' => 'Russian',
+	'sk.po' => 'Slovakian',
 	'sv.po' => 'Swedish',
 	'zh_CN.po' => 'Simpilified Chinese',
 );
@@ -44,8 +46,10 @@
 	'ja.po' => 'kazken3 <kazken3@gmail.com>',
 	'nl.po' => 'Marcel Pol <mpol@gmx.net>',
 	'pl.po' => 'Emilian Nowak <emil5@go2.pl>',
+	'pt_PT.po' => 'Tiago Faria <gouki@goukihq.org>',
 	'pt_BR.po' => 'Frederico Goncalves Guimaraes <fggdebian@yahoo.com.br>',
 	'ru.po' => 'Aleksei Miheev <aleksei@miheev.info>',
+	'sk.po' => 'Slavko <slavino@slavino.sk>',
 	'sv.po' => 'Lars Persson Fink <lars.p.fink@gmail.com>',
 	'zh_CN.po' => 'Ralgh Young <bamanzi@gmail.com>',
 );
