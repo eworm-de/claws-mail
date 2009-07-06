@@ -1,3 +1,8 @@
+2009-07-06 [colin]	3.7.2cvs2
+
+	* src/prefs_customheader.c
+		Fix build failure
+
 2009-07-04 [paul]	3.7.2cvs1
 
 	* tools/claws.i18n.status.pl

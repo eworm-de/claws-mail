@@ -910,7 +910,7 @@ static gboolean prefs_custom_header_selected(GtkTreeSelection *selector,
 
 	ENTRY_SET_TEXT(customhdr.hdr_entry, ch->name);
 	ENTRY_SET_TEXT(customhdr.val_entry, ch->value);
-	if (!g_strcmp0("Face",ch->name)) {
+	if (!strcmp2("Face",ch->name)) {
 		preview = GTK_IMAGE(face_get_from_header (ch->value));
 		pixbuf = gtk_image_get_pixbuf(preview);
 		gtk_image_set_from_pixbuf (GTK_IMAGE(customhdr.preview), pixbuf);
@@ -923,7 +923,7 @@ static gboolean prefs_custom_header_selected(GtkTreeSelection *selector,
 #endif
 	} 
 #if HAVE_LIBCOMPFACE
-else if (!g_strcmp0("X-Face", ch->name)) {
+else if (!strcmp2("X-Face", ch->name)) {
 		GdkColor color;
 		color.pixel = 0;
 		preview = GTK_IMAGE(xface_get_from_header(ch->value, 
