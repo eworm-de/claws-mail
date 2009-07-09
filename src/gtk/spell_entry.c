@@ -257,6 +257,29 @@ static gboolean word_misspelled(ClawsSpellEntry *entry, int start, int end)
 	return ret;
 }
 
+static gboolean is_word_end (GtkEntry *entry, const int offset)
+{
+	gchar *p = gtk_editable_get_chars(GTK_EDITABLE(entry), offset, offset+1);
+	gunichar ch;
+	
+	ch = g_utf8_get_char(p);
+	g_free(p);
+	
+	if (ch == '\0')
+		return TRUE;
+
+	if (ch == '\'') {
+		p = gtk_editable_get_chars(GTK_EDITABLE(entry), offset+1, offset+2);
+		ch = g_utf8_get_char(p);
+		g_free(p);
+		
+		return (g_unichar_isspace(ch) || g_unichar_ispunct(ch)
+			|| g_unichar_isdigit(ch));
+	}
+	
+	return (g_unichar_isspace(ch) || g_unichar_ispunct(ch));
+}
+
 static void entry_strsplit_utf8(GtkEntry *entry, gchar ***set, gint **starts, gint **ends)
 {
 	PangoLayout   *layout;
@@ -286,7 +309,7 @@ static void entry_strsplit_utf8(GtkEntry *entry, gchar ***set, gint **starts, gi
 
 			/* Find the end of this string */
 			cend = i;
-			while (!(log_attrs[cend].is_word_end))
+			while (!is_word_end(entry, cend))
 				cend++;
 
 			/* Copy sub-string */

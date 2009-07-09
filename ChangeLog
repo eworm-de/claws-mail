@@ -1,3 +1,10 @@
+2009-07-09 [colin]	3.7.2cvs4
+
+	* src/gtk/spell_entry.c
+		Fix bug 1949, 'Spell checker doesn't recognise 
+		certain word in Subject header, but does in 
+		message body'. Patch by Pawel Pekala.
+
 2009-07-09 [paul]	3.7.2cvs3
 
 	* configure.ac
