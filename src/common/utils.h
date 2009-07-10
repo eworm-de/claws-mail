@@ -45,6 +45,9 @@
 #endif
 
 #ifdef G_OS_WIN32
+
+#define fsync _commit
+
 #if GLIB_CHECK_VERSION (2, 13, 2)
 #define pipe(phandles)  _pipe (phandles, 4096, _O_BINARY)
 #endif

@@ -24,3 +24,5 @@ EXPORTS
         prefs_gpg_remove_skip_encryption_warning
         prefs_gpg_should_skip_encryption_warning
         prefs_gpg_get_config
+
+	cm_gpgme_data_rewind

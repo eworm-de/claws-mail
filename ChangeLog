@@ -1,3 +1,9 @@
+2009-07-10 [colin]	3.7.2cvs7
+
+	* src/plugins/pgpcore/plugin.def
+	* src/common/utils.h
+		Fix windows port
+
 2009-07-10 [colin]	3.7.2cvs6
 
 	* src/prefs_display_header.c
