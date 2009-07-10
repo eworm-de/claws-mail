@@ -93,20 +93,12 @@ static void prefs_display_header_insert_header		(GtkListStore *store,
 static GtkWidget *prefs_display_header_list_view_create	(const gchar *name);
 static void prefs_filtering_create_list_view_columns	(GtkWidget *list_view, 
 							 const gchar *name);
-static void headers_list_model_row_changed		(GtkTreeModel *model, 
-							 GtkTreePath *path, 
-							 GtkTreeIter *iter, 
-							 GtkTreeView *list_view);
 static void headers_list_model_rows_reordered		(GtkTreeModel *model,
 							 GtkTreePath  *path, 
 							 GtkTreeIter  *iter,
 							 gpointer      arg,
 							 GtkTreeView  *list_view);
 							 
-static void drag_begin	(GtkTreeView *list_view,
-			 GdkDragContext *context,
-			 gpointer data);
-
 static void drag_end	(GtkTreeView *list_view,
 			 GdkDragContext *context,
 			 gpointer data);
@@ -318,10 +310,6 @@ static void prefs_display_header_create(void)
 	gtk_container_add(GTK_CONTAINER(list_view_scrolledwin), headers_list_view);
 	gtk_tree_view_set_reorderable(GTK_TREE_VIEW(headers_list_view), TRUE);
 
-	g_signal_connect(G_OBJECT(headers_list_view), "drag_begin", 			 
-			 G_CALLBACK(drag_begin),
-			 headers_list_view);
-			 
 	g_signal_connect(G_OBJECT(headers_list_view), "drag_end", 			 
 			 G_CALLBACK(drag_end),
 			 headers_list_view);
@@ -799,17 +787,6 @@ static void prefs_filtering_create_list_view_columns(GtkWidget *list_view,
 }
 
 /*!
- *\brief	Called as a result of a drag & drop
- */
-static void headers_list_model_row_changed(GtkTreeModel *model, 
-					   GtkTreePath *path, 
-					   GtkTreeIter *iter, 
-					   GtkTreeView *list_view)
-{
-	prefs_display_header_set_list();
-}
-
-/*!
  *\brief	Called as a result of a gtk_list_store_swap()
  */
 static void headers_list_model_rows_reordered(GtkTreeModel *model,
@@ -821,28 +798,13 @@ static void headers_list_model_rows_reordered(GtkTreeModel *model,
 	prefs_display_header_set_list();
 }
 
-static void drag_begin(GtkTreeView *list_view,
-		      GdkDragContext *context,
-		      gpointer data)
-{
-	/* XXX unfortunately a completed drag & drop does not emit 
-	 * a "rows_reordered" signal, but a "row_changed" signal.
-	 * So during drag and drop, listen to "row_changed", and
-	 * update the account list accordingly */
-
-	GtkTreeModel *model = gtk_tree_view_get_model(list_view);
-	g_signal_connect(G_OBJECT(model), "row_changed",
-			 G_CALLBACK(headers_list_model_row_changed),
-			 list_view);
-}
-
+/*!
+ *\brief	Called as a result of a drag & drop
+ */
 static void drag_end(GtkTreeView *list_view,
 		    GdkDragContext *context,
 		    gpointer data)
 {
-	GtkTreeModel *model = gtk_tree_view_get_model(list_view);
-	g_signal_handlers_disconnect_by_func(G_OBJECT(model),
-					     G_CALLBACK(headers_list_model_row_changed),
-					     list_view);
+	prefs_display_header_set_list();
 }
 

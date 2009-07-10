@@ -1,3 +1,9 @@
+2009-07-10 [colin]	3.7.2cvs6
+
+	* src/prefs_display_header.c
+		Fix bug 1951, 'C-Mail dumps core when editing 
+		displayed headers'. Patch by Alexey Rusakov
+
 2009-07-10 [colin]	3.7.2cvs5
 
 	* src/folderview.c
