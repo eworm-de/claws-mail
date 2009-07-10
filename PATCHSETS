@@ -3829,3 +3829,4 @@
 ( cvs diff -u -r 1.16.2.37 -r 1.16.2.38 src/prefs_customheader.c;  ) > 3.7.2cvs2.patchset
 ( cvs diff -u -r 1.654.2.3896 -r 1.654.2.3897 configure.ac;  ) > 3.7.2cvs3.patchset
 ( cvs diff -u -r 1.1.2.7 -r 1.1.2.8 src/gtk/spell_entry.c;  ) > 3.7.2cvs4.patchset
+( cvs diff -u -r 1.207.2.213 -r 1.207.2.214 src/folderview.c;  ) > 3.7.2cvs5.patchset

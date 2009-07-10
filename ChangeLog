@@ -1,3 +1,9 @@
+2009-07-10 [colin]	3.7.2cvs5
+
+	* src/folderview.c
+		Fix bug 1952, 'Deleted mails in Queue folder 
+		highlight it'.
+
 2009-07-09 [colin]	3.7.2cvs4
 
 	* src/gtk/spell_entry.c

@@ -1617,8 +1617,17 @@ static void folderview_update_node(FolderView *folderview, GtkCMCTreeNode *node)
 	    folder_has_parent_of_type(item, F_TRASH)) {
 		use_bold = use_color = FALSE;
 	} else if (folder_has_parent_of_type(item, F_QUEUE)) {
-		/* highlight queue folder if there are any messages */
-		use_bold = use_color = (item->total_msgs > 0);
+		GSList *list = folder_item_get_msg_list(item);
+		GSList *cur;
+		use_bold = use_color = FALSE;
+		for (cur = list; cur; cur = cur->next) {
+			MsgInfo *msginfo = (MsgInfo *)cur->data;
+			if (!MSG_IS_DELETED(msginfo->flags)) {
+				/* highlight queue folder if there are any messages */
+				use_bold = use_color = TRUE;
+				break;
+			}
+		}
 	} else {
 		/* if unread messages exist, print with bold font */
 		use_bold = (item->unread_msgs > 0|| item->new_msgs > 0) 
