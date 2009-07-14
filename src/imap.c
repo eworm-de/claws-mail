@@ -3461,9 +3461,12 @@ static gint imap_status(IMAPSession *session, IMAPFolder *folder,
 		return r;
 	}
 	
-	if (data_status->st_info_list == NULL) {
-		mailimap_mailbox_data_status_free(data_status);
-		debug_print("status->st_info_list == NULL\n");
+	if (data_status == NULL || data_status->st_info_list == NULL) {
+		debug_print("data_status %p\n", data_status);
+		if (data_status) {
+			debug_print("data_status->st_info_list %p\n", data_status->st_info_list);
+			mailimap_mailbox_data_status_free(data_status);
+		}
 		return MAILIMAP_ERROR_BAD_STATE;
 	}
 	
