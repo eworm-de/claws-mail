@@ -3833,3 +3833,4 @@
 ( cvs diff -u -r 1.16.2.36 -r 1.16.2.37 src/prefs_display_header.c;  ) > 3.7.2cvs6.patchset
 ( cvs diff -u -r 1.1.2.4 -r 1.1.2.5 src/plugins/pgpcore/plugin.def;  cvs diff -u -r 1.20.2.71 -r 1.20.2.72 src/common/utils.h;  ) > 3.7.2cvs7.patchset
 ( cvs diff -u -r 1.179.2.247 -r 1.179.2.248 src/imap.c;  ) > 3.7.2cvs8.patchset
+( cvs diff -u -r 1.395.2.413 -r 1.395.2.414 src/summaryview.c;  ) > 3.7.2cvs9.patchset

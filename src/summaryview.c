@@ -3409,8 +3409,13 @@ static void summary_display_msg_full(SummaryView *summaryview,
 	GTK_EVENTS_FLUSH();
 
 	msginfo = gtk_cmctree_node_get_row_data(ctree, row);
-	
-	cm_return_if_fail(msginfo);
+
+	if (!msginfo) {
+		debug_print("NULL msginfo\n");
+		summary_unlock(summaryview);
+		END_TIMING();
+		return;
+	}	
 
 	if (new_window && prefs_common.layout_mode != SMALL_LAYOUT) {
 		MessageView *msgview;
