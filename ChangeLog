@@ -1,3 +1,11 @@
+2009-07-18 [mones]	3.7.2cvs10
+
+	* manual/plugins.xml
+		Add new bsfilter and fancy plugins to the docs
+		and a note about dealing with plugins of the same class
+	* src/prefs_account.c
+		Fix extra space at the end typo
+
 2009-07-16 [colin]	3.7.2cvs9
 
 	* src/summaryview.c

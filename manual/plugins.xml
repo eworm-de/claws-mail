@@ -19,6 +19,11 @@
 	If you don't find the plugin you're looking for, it is possible that 
 	your Operating System distribution provides it in a separate package. 
 	In this case, search for the plugin in your package manager.
+    </para><para>
+	Some plugins may provide the same functionality (for example the 
+	three HTML message viewers). This means you have to choose which 
+	one to load, as Claws Mail will refuse to load more than one of
+	the same type.
     </para>
     <variablelist>
       <varlistentry>
@@ -156,6 +161,22 @@
 	</listitem>
       </varlistentry>
       <varlistentry>
+	<term>BSFilter</term>
+	<listitem>
+	  <para> 
+	BSFilter is a plugin very similar to Bogofilter plugin but using
+	the <ulink url="http://bsfilter.org/index-e.html">bsfilter</ulink>
+	bayesian spam filter as a backend. 
+	  </para><para>
+	As well as like Bogofilter you have to train it with spam and ham
+	messages in order bsfilter to start recognising spam.
+	  </para><para>
+	Plugin preferences can be found in 
+	<quote>Configuration/Preferences/Plugins/BSFilter</quote>.
+	  </para>
+	</listitem>
+      </varlistentry>
+      <varlistentry>
 	<term>CacheSaver</term>
 	<listitem>
 	  <para>
@@ -163,6 +184,15 @@
 	avoiding the loss of metadata if your computer (<emphasis>or 
 	Claws Mail!</emphasis>) crashes. (NOTE: using this plugin can slow
 	down Claws Mail.)
+	  </para>
+	</listitem>
+      </varlistentry>
+      <varlistentry>
+	<term>Fancy</term>
+	<listitem>
+	  <para>
+	Allows displaying HTML mail messages using the GTK+ port of the
+	WebKit library.
 	  </para>
 	</listitem>
       </varlistentry>

@@ -1580,7 +1580,7 @@ static void receive_create_widget_func(PrefsPage * _page,
 	PACK_CHECK_BUTTON (hbox1, imap_use_trash_checkbtn,
 			   _("Move deleted mails to trash and expunge immediately"));
 	CLAWS_SET_TIP(imap_use_trash_checkbtn,
-			     _("Moves deleted mails to trash instead of using the \\Deleted flag without expunging. "));
+			     _("Moves deleted mails to trash instead of using the \\Deleted flag without expunging."));
 
 	PACK_CHECK_BUTTON (vbox1, filter_on_recv_checkbtn,
 			   _("Filter messages on receiving"));
