@@ -589,7 +589,6 @@ static void export_html_dialog_create( void ) {
 	gtk_window_set_title( GTK_WINDOW(window),
 		_("Export Address Book to HTML File") );
 	gtk_window_set_position(GTK_WINDOW(window), GTK_WIN_POS_CENTER);
-	gtk_window_set_modal(GTK_WINDOW(window), TRUE);	
 	g_signal_connect(G_OBJECT(window), "delete_event",
 			 G_CALLBACK(export_html_delete_event),
 			 NULL );
@@ -702,7 +701,7 @@ void addressbook_exp_html( AddressCache *cache ) {
 	exphtml_dlg.cancelled = FALSE;
 	gtk_widget_show(exphtml_dlg.window);
 	manage_window_set_transient(GTK_WINDOW(exphtml_dlg.window));
-
+	gtk_window_set_modal(GTK_WINDOW(exphtml_dlg.window), TRUE);
 	gtk_label_set_text( GTK_LABEL(exphtml_dlg.labelBook), cache->name );
 	gtk_label_set_text( GTK_LABEL(exphtml_dlg.labelOutBook), cache->name );
 	export_html_fill_fields( _exportCtl_ );
@@ -717,6 +716,7 @@ void addressbook_exp_html( AddressCache *cache ) {
 
 	gtk_main();
 	gtk_widget_hide(exphtml_dlg.window);
+	gtk_window_set_modal(GTK_WINDOW(exphtml_dlg.window), FALSE);
 	exporthtml_free( _exportCtl_ );
 	_exportCtl_ = NULL;
 

@@ -136,7 +136,6 @@ static void edit_ldap_bdn_create(void) {
 	gtk_container_set_border_width(GTK_CONTAINER(window), 0);
 	gtk_window_set_title(GTK_WINDOW(window), _("Edit LDAP - Select Search Base"));
 	gtk_window_set_position(GTK_WINDOW(window), GTK_WIN_POS_CENTER);
-	gtk_window_set_modal(GTK_WINDOW(window), TRUE);	
 	g_signal_connect(G_OBJECT(window), "delete_event",
 			 G_CALLBACK(edit_ldap_bdn_delete_event), NULL );
 	g_signal_connect(G_OBJECT(window), "key_press_event",
@@ -303,7 +302,7 @@ gchar *edit_ldap_basedn_selection( const gchar *hostName, const gint port, gchar
 	gtk_widget_grab_focus(ldapedit_basedn.ok_btn);
 	gtk_widget_show(ldapedit_basedn.window);
 	manage_window_set_transient(GTK_WINDOW(ldapedit_basedn.window));
-
+	gtk_window_set_modal(GTK_WINDOW(ldapedit_basedn.window), TRUE);
 	edit_ldap_bdn_status_show( "" );
 	edit_ldap_bdn_load_data( hostName, port, tov, bindDN, bindPW, ssl, tls );
 	gtk_widget_show(ldapedit_basedn.window);
@@ -312,6 +311,7 @@ gchar *edit_ldap_basedn_selection( const gchar *hostName, const gint port, gchar
 
 	gtk_main();
 	gtk_widget_hide(ldapedit_basedn.window);
+	gtk_window_set_modal(GTK_WINDOW(ldapedit_basedn.window), FALSE);
 	if( ldapedit_basedn_cancelled ) return NULL;
 	if( ldapedit_basedn_bad_server ) return NULL;
 

@@ -189,6 +189,7 @@ void prefs_display_header_open(void)
 	prefs_display_header_set_dialog();
 
 	gtk_widget_show(dispheader.window);
+	gtk_window_set_modal(GTK_WINDOW(dispheader.window), TRUE);
 }
 
 static void prefs_display_header_create(void)
@@ -227,7 +228,6 @@ static void prefs_display_header_create(void)
 	window = gtkut_window_new(GTK_WINDOW_TOPLEVEL, "prefs_display_header");
 	gtk_container_set_border_width (GTK_CONTAINER (window), 8);
 	gtk_window_set_position (GTK_WINDOW (window), GTK_WIN_POS_CENTER);
-	gtk_window_set_modal (GTK_WINDOW (window), TRUE);
 	gtk_window_set_resizable(GTK_WINDOW (window), TRUE);
 
 	vbox = gtk_vbox_new (FALSE, 6);
@@ -715,12 +715,14 @@ static void prefs_display_header_ok(void)
 			(GTK_TOGGLE_BUTTON(dispheader.other_headers));
 	prefs_display_header_write_config();
 	gtk_widget_hide(dispheader.window);
+	gtk_window_set_modal(GTK_WINDOW(dispheader.window), FALSE);
 }
 
 static void prefs_display_header_cancel(void)
 {
 	prefs_display_header_read_config();
 	gtk_widget_hide(dispheader.window);
+	gtk_window_set_modal(GTK_WINDOW(dispheader.window), FALSE);
 }
 
 static gint prefs_display_header_deleted(GtkWidget *widget, GdkEventAny *event,

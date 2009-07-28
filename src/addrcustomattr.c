@@ -299,6 +299,7 @@ static void custom_attr_window_close(void)
 		custom_attr_window_save_list();
 	custom_attr_window_list_view_clear_list(custom_attr_window.attr_list, FALSE);
 	gtk_widget_hide(custom_attr_window.window);
+	gtk_window_set_modal(GTK_WINDOW(custom_attr_window.window), FALSE);
 	if (dirty && !prefs_common.addressbook_use_editaddress_dialog)
 		addressbook_edit_reload_attr_list();
 }

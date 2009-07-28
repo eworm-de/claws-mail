@@ -654,7 +654,6 @@ static void export_ldif_dialog_create( void ) {
 	gtk_window_set_title( GTK_WINDOW(window),
 		_("Export Address Book to LDIF File") );
 	gtk_window_set_position(GTK_WINDOW(window), GTK_WIN_POS_CENTER);
-	gtk_window_set_modal(GTK_WINDOW(window), TRUE);	
 	g_signal_connect(G_OBJECT(window), "delete_event",
 			 G_CALLBACK(export_ldif_delete_event),
 			 NULL );
@@ -768,7 +767,7 @@ void addressbook_exp_ldif( AddressCache *cache ) {
 	expldif_dlg.cancelled = FALSE;
 	gtk_widget_show(expldif_dlg.window);
 	manage_window_set_transient(GTK_WINDOW(expldif_dlg.window));
-
+	gtk_window_set_modal(GTK_WINDOW(expldif_dlg.window), TRUE);
 	gtk_label_set_text( GTK_LABEL(expldif_dlg.labelBook), cache->name );
 	gtk_label_set_text( GTK_LABEL(expldif_dlg.labelOutBook), cache->name );
 	export_ldif_fill_fields( _exportCtl_ );
@@ -783,6 +782,7 @@ void addressbook_exp_ldif( AddressCache *cache ) {
 
 	gtk_main();
 	gtk_widget_hide(expldif_dlg.window);
+	gtk_window_set_modal(GTK_WINDOW(expldif_dlg.window), FALSE);
 	exportldif_free( _exportCtl_ );
 	_exportCtl_ = NULL;
 

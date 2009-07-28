@@ -158,7 +158,6 @@ static void addressadd_create( void ) {
 	gtk_container_set_border_width( GTK_CONTAINER(window), VBOX_BORDER );
 	gtk_window_set_title( GTK_WINDOW(window), _("Add to address book") );
 	gtk_window_set_position( GTK_WINDOW(window), GTK_WIN_POS_MOUSE );
-	gtk_window_set_modal( GTK_WINDOW(window), TRUE );
 	g_signal_connect( G_OBJECT(window), "delete_event",
 			  G_CALLBACK(addressadd_delete_event), NULL );
 	g_signal_connect( G_OBJECT(window), "key_press_event",
@@ -377,14 +376,15 @@ gboolean addressadd_selection( AddressIndex *addrIndex, const gchar *name,
 	addressadd_cancelled = FALSE;
 
 	if( ! addressadd_dlg.window ) addressadd_create();
-	gtk_widget_grab_focus(addressadd_dlg.ok_btn);
-	gtk_widget_show(addressadd_dlg.window);
-	manage_window_set_transient(GTK_WINDOW(addressadd_dlg.window));
 
 	addressadd_dlg.fiSelected = NULL;
 	addressadd_load_data( addrIndex );
 	gtk_cmclist_select_row( GTK_CMCLIST( addressadd_dlg.tree_folder ), 0, 0 );
 	gtk_widget_show(addressadd_dlg.window);
+	gtk_window_set_modal(GTK_WINDOW(addressadd_dlg.window), TRUE);
+	gtk_widget_grab_focus(addressadd_dlg.ok_btn);
+
+	manage_window_set_transient(GTK_WINDOW(addressadd_dlg.window));
 
 	gtk_entry_set_text( GTK_ENTRY(addressadd_dlg.entry_name ), "" );
 	gtk_label_set_text( GTK_LABEL(addressadd_dlg.label_address ), "" );
@@ -403,7 +403,7 @@ gboolean addressadd_selection( AddressIndex *addrIndex, const gchar *name,
 	}
 	gtk_main();
 	gtk_widget_hide( addressadd_dlg.window );
-
+	gtk_window_set_modal(GTK_WINDOW(addressadd_dlg.window), FALSE);
 	if( ! addressadd_cancelled ) {
 		if( addressadd_dlg.fiSelected ) {
 			gchar *returned_name;

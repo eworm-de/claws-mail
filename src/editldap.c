@@ -334,7 +334,6 @@ static void addressbook_edit_ldap_dialog_create( gboolean *cancelled ) {
 	gtk_container_set_border_width(GTK_CONTAINER(window), 0);
 	gtk_window_set_title(GTK_WINDOW(window), _("Edit LDAP Server"));
 	gtk_window_set_position(GTK_WINDOW(window), GTK_WIN_POS_CENTER);
-	gtk_window_set_modal(GTK_WINDOW(window), TRUE);	
 	g_signal_connect(G_OBJECT(window), "delete_event",
 			 G_CALLBACK(edit_ldap_delete_event),
 			 cancelled);
@@ -967,6 +966,7 @@ AdapterDSource *addressbook_edit_ldap(
 	gtk_widget_grab_focus(ldapedit.entry_name);
 	gtk_widget_show(ldapedit.window);
 	manage_window_set_transient(GTK_WINDOW(ldapedit.window));
+	gtk_window_set_modal(GTK_WINDOW(ldapedit.window), TRUE);
 
 	edit_ldap_status_show( "" );
 	if( ads ) {
@@ -984,6 +984,7 @@ AdapterDSource *addressbook_edit_ldap(
 
 	gtk_main();
 	gtk_widget_hide(ldapedit.window);
+	gtk_window_set_modal(GTK_WINDOW(ldapedit.window), FALSE);
 	if (cancelled == TRUE) return NULL;
 
 	sName = gtk_editable_get_chars(

@@ -943,7 +943,6 @@ static void imp_ldif_dialog_create() {
 	gtk_container_set_border_width( GTK_CONTAINER(window), 0 );
 	gtk_window_set_title( GTK_WINDOW(window), _("Import LDIF file into Address Book") );
 	gtk_window_set_position(GTK_WINDOW(window), GTK_WIN_POS_CENTER);
-	gtk_window_set_modal(GTK_WINDOW(window), TRUE);	
 	g_signal_connect(G_OBJECT(window), "delete_event",
 			 G_CALLBACK(imp_ldif_delete_event),
 			 NULL );
@@ -1047,6 +1046,7 @@ AddressBookFile *addressbook_imp_ldif( AddressIndex *addrIndex ) {
 	gtk_widget_show(impldif_dlg.window);
 	manage_window_set_transient(GTK_WINDOW(impldif_dlg.window));
 	gtk_widget_grab_default(impldif_dlg.btnNext);
+	gtk_window_set_modal(GTK_WINDOW(impldif_dlg.window), TRUE);
 
 	gtk_entry_set_text( GTK_ENTRY(impldif_dlg.entryName), IMPORTLDIF_GUESS_NAME );
 	gtk_entry_set_text( GTK_ENTRY(impldif_dlg.entryFile), "" );
@@ -1071,6 +1071,7 @@ AddressBookFile *addressbook_imp_ldif( AddressIndex *addrIndex ) {
 	_ldifFile_ = ldif_create();
 	gtk_main();
 	gtk_widget_hide(impldif_dlg.window);
+	gtk_window_set_modal(GTK_WINDOW(impldif_dlg.window), FALSE);
 	ldif_free( _ldifFile_ );
 	_ldifFile_ = NULL;
 	_imp_addressIndex_ = NULL;

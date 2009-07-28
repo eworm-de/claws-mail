@@ -234,7 +234,6 @@ static void addressbook_edit_jpilot_create( gboolean *cancelled ) {
 	gtk_container_set_border_width(GTK_CONTAINER(window), 0);
 	gtk_window_set_title(GTK_WINDOW(window), _("Edit JPilot Entry"));
 	gtk_window_set_position(GTK_WINDOW(window), GTK_WIN_POS_CENTER);
-	gtk_window_set_modal(GTK_WINDOW(window), TRUE);	
 	g_signal_connect(G_OBJECT(window), "delete_event",
 			 G_CALLBACK(edit_jpilot_delete_event),
 			 cancelled);
@@ -352,7 +351,7 @@ AdapterDSource *addressbook_edit_jpilot( AddressIndex *addrIndex, AdapterDSource
 	gtk_widget_grab_focus(jpilotedit.name_entry);
 	gtk_widget_show(jpilotedit.window);
 	manage_window_set_transient(GTK_WINDOW(jpilotedit.window));
-
+	gtk_window_set_modal(GTK_WINDOW(jpilotedit.window), TRUE);
 	edit_jpilot_status_show( "" );
 	if( ads ) {
 		ds = ads->dataSource;
@@ -378,6 +377,7 @@ AdapterDSource *addressbook_edit_jpilot( AddressIndex *addrIndex, AdapterDSource
 
 	gtk_main();
 	gtk_widget_hide(jpilotedit.window);
+	gtk_window_set_modal(GTK_WINDOW(jpilotedit.window), FALSE);
 	if (cancelled == TRUE) return NULL;
 
 	fin = FALSE;

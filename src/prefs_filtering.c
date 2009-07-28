@@ -220,6 +220,7 @@ void prefs_filtering_open(GSList ** p_processing,
 	}
 
 	gtk_widget_show(filtering.window);
+	gtk_window_set_modal(GTK_WINDOW(filtering.window), TRUE);
 
 	start_address_completion(NULL);
 }
@@ -244,6 +245,7 @@ static void prefs_filtering_close(void)
 				(filtering.cond_list_view)));
 	gtk_list_store_clear(store);
 	gtk_widget_hide(filtering.window);
+	gtk_window_set_modal(GTK_WINDOW(filtering.window), FALSE);
 	inc_unlock();
 }
 
@@ -334,7 +336,6 @@ static void prefs_filtering_create(void)
 	window = gtkut_window_new(GTK_WINDOW_TOPLEVEL, "prefs_filtering");
 	gtk_container_set_border_width (GTK_CONTAINER (window), 8);
 	gtk_window_set_position (GTK_WINDOW (window), GTK_WIN_POS_CENTER);
-	gtk_window_set_modal (GTK_WINDOW (window), TRUE);
 	gtk_window_set_resizable(GTK_WINDOW (window), TRUE);
 
 	vbox = gtk_vbox_new (FALSE, 6);

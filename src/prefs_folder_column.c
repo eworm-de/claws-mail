@@ -161,12 +161,14 @@ void prefs_folder_column_open(void)
 	prefs_folder_column_set_dialog(NULL);
 
 	gtk_widget_show(folder_col.window);
+	gtk_window_set_modal(GTK_WINDOW(folder_col.window), TRUE);
 
 	folder_col.finished = FALSE;
 	while (folder_col.finished == FALSE)
 		gtk_main_iteration();
 
 	gtk_widget_hide(folder_col.window);
+	gtk_window_set_modal(GTK_WINDOW(folder_col.window), FALSE);
 
 	inc_unlock();
 }
@@ -204,7 +206,6 @@ static void prefs_folder_column_create(void)
 	window = gtkut_window_new(GTK_WINDOW_TOPLEVEL, "prefs_folder_column");
 	gtk_container_set_border_width(GTK_CONTAINER(window), 8);
 	gtk_window_set_position(GTK_WINDOW(window), GTK_WIN_POS_CENTER);
-	gtk_window_set_modal(GTK_WINDOW(window), TRUE);
 	gtk_window_set_resizable(GTK_WINDOW(window), FALSE);
 	gtk_window_set_title(GTK_WINDOW(window),
 			     _("Folder list columns configuration"));

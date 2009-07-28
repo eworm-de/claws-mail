@@ -295,6 +295,7 @@ static void uri_opener_close(void)
 {
 	g_slist_free(opener.uris);
 	opener.uris = NULL;
+	gtk_window_set_modal(GTK_WINDOW(opener.window), FALSE);
 	gtk_widget_hide(opener.window);
 }
 

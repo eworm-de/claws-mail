@@ -858,7 +858,6 @@ void textview_show_error(TextView *textview)
 	TEXTVIEW_INSERT_LINK(_("'View Log'"), "sc://view_log", NULL);
 	TEXTVIEW_INSERT(_(" in the Tools menu for more information."));
 	textview_show_icon(textview, GTK_STOCK_DIALOG_ERROR);
-
 }
 
 void textview_show_mime_part(TextView *textview, MimeInfo *partinfo)

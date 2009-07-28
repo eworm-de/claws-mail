@@ -436,6 +436,7 @@ void prefs_matcher_open(MatcherList *matchers, PrefsMatcherSignal *cb)
 	prefs_matcher_set_dialog(matchers);
 
 	gtk_widget_show(matcher.window);
+	gtk_window_set_modal(GTK_WINDOW(matcher.window), TRUE);
 }
 
 /*!
@@ -528,7 +529,6 @@ static void prefs_matcher_create(void)
 	window = gtkut_window_new(GTK_WINDOW_TOPLEVEL, "prefs_matcher");
 	gtk_container_set_border_width(GTK_CONTAINER(window), 4);
 	gtk_window_set_position(GTK_WINDOW(window), GTK_WIN_POS_CENTER);
-	gtk_window_set_modal(GTK_WINDOW(window), TRUE);
 
 	vbox = gtk_vbox_new(FALSE, 6);
 	gtk_container_add(GTK_CONTAINER(window), vbox);
@@ -1937,6 +1937,7 @@ static gboolean prefs_matcher_key_pressed(GtkWidget *widget, GdkEventKey *event,
 static void prefs_matcher_cancel(void)
 {
 	gtk_widget_hide(matcher.window);
+	gtk_window_set_modal(GTK_WINDOW(matcher.window), FALSE);
 	inc_unlock();
 }
 
@@ -1991,6 +1992,7 @@ static void prefs_matcher_ok(void)
 		}
                 g_free(str);
 		gtk_widget_hide(matcher.window);
+		gtk_window_set_modal(GTK_WINDOW(matcher.window), FALSE);
 		if (matchers_callback != NULL)
 			matchers_callback(matchers);
 		matcherlist_free(matchers);

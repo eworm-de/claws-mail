@@ -150,7 +150,6 @@ static void addressbook_edit_vcard_create( gboolean *cancelled ) {
 	gtk_container_set_border_width( GTK_CONTAINER(window), 0 );
 	gtk_window_set_title(GTK_WINDOW(window), _("Edit vCard Entry"));
 	gtk_window_set_position(GTK_WINDOW(window), GTK_WIN_POS_CENTER);
-	gtk_window_set_modal(GTK_WINDOW(window), TRUE);	
 	g_signal_connect(G_OBJECT(window), "delete_event",
 			 G_CALLBACK(edit_vcard_delete_event),
 			 cancelled);
@@ -244,7 +243,7 @@ AdapterDSource *addressbook_edit_vcard( AddressIndex *addrIndex, AdapterDSource 
 	gtk_widget_grab_focus(vcardedit.name_entry);
 	gtk_widget_show(vcardedit.window);
 	manage_window_set_transient(GTK_WINDOW(vcardedit.window));
-
+	gtk_window_set_modal(GTK_WINDOW(vcardedit.window), TRUE);
 	edit_vcard_status_show( "" );
 	if( ads ) {
 		ds = ads->dataSource;
@@ -263,6 +262,7 @@ AdapterDSource *addressbook_edit_vcard( AddressIndex *addrIndex, AdapterDSource 
 
 	gtk_main();
 	gtk_widget_hide(vcardedit.window);
+	gtk_window_set_modal(GTK_WINDOW(vcardedit.window), FALSE);
 	if (cancelled == TRUE) return NULL;
 
 	fin = FALSE;

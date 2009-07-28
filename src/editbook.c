@@ -147,7 +147,6 @@ static void addressbook_edit_book_create( gboolean *cancelled ) {
 	gtk_container_set_border_width( GTK_CONTAINER(window), 0 );
 	gtk_window_set_title(GTK_WINDOW(window), _("Edit Addressbook"));
 	gtk_window_set_position(GTK_WINDOW(window), GTK_WIN_POS_CENTER);
-	gtk_window_set_modal(GTK_WINDOW(window), TRUE);	
 	g_signal_connect(G_OBJECT(window), "delete_event",
 			 G_CALLBACK(edit_book_delete_event),
 			 cancelled);
@@ -247,6 +246,7 @@ AdapterDSource *addressbook_edit_book( AddressIndex *addrIndex, AdapterDSource *
 	gtk_widget_grab_focus(addrbookedit_dlg.name_entry);
 	gtk_widget_show(addrbookedit_dlg.window);
 	manage_window_set_transient(GTK_WINDOW(addrbookedit_dlg.window));
+	gtk_window_set_modal(GTK_WINDOW(addrbookedit_dlg.window), TRUE);
 
 	edit_book_status_show( "" );
 	gtk_label_set_text( GTK_LABEL(addrbookedit_dlg.file_label), "" );
@@ -285,7 +285,7 @@ AdapterDSource *addressbook_edit_book( AddressIndex *addrIndex, AdapterDSource *
 
 	gtk_main();
 	gtk_widget_hide(addrbookedit_dlg.window);
-
+	gtk_window_set_modal(GTK_WINDOW(addrbookedit_dlg.window), FALSE);
 	if( cancelled == TRUE ) {
 		if( newBook ) {
 			addrbook_free_book( abf );

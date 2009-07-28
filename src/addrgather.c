@@ -423,7 +423,6 @@ static void addrgather_dlg_create(void)
 	gtk_container_set_border_width(GTK_CONTAINER(window), 4);
 	gtk_window_set_position(GTK_WINDOW(window), GTK_WIN_POS_CENTER);
 	gtk_window_set_resizable(GTK_WINDOW(window), TRUE);
-	gtk_window_set_modal(GTK_WINDOW(window), TRUE);
 	
 	g_signal_connect(G_OBJECT(window), "delete_event",
 			 G_CALLBACK(addrgather_dlg_delete_event), NULL);
@@ -529,7 +528,7 @@ AddressBookFile *addrgather_dlg_execute(FolderItem *folderItem, AddressIndex *ad
 
 	addrgather_dlg_status_show("");
 	gtk_widget_show(addrgather_dlg.window);
-
+	gtk_window_set_modal(GTK_WINDOW(addrgather_dlg.window), TRUE);
 	gtk_widget_grab_focus(addrgather_dlg.entryBook);
 	manage_window_set_transient(GTK_WINDOW(addrgather_dlg.window));
 	gtk_main();
@@ -537,6 +536,7 @@ AddressBookFile *addrgather_dlg_execute(FolderItem *folderItem, AddressIndex *ad
 	g_free(addrgather_dlg.folderPath);
 	addrgather_dlg.folderPath = NULL;
 	gtk_widget_hide(addrgather_dlg.window);
+	gtk_window_set_modal(GTK_WINDOW(addrgather_dlg.window), FALSE);
 	_harv_addressIndex_ = NULL;
 
 	if (addrgather_dlg.cancelled == TRUE)

@@ -125,6 +125,7 @@ void prefs_custom_header_open(PrefsAccount *ac)
 	cur_ac = ac;
 
 	gtk_widget_show(customhdr.window);
+	gtk_window_set_modal(GTK_WINDOW(customhdr.window), TRUE);
 }
 
 static void prefs_custom_header_create(void)
@@ -166,7 +167,6 @@ static void prefs_custom_header_create(void)
 	window = gtkut_window_new(GTK_WINDOW_TOPLEVEL, "prefs_customheader");
 	gtk_container_set_border_width (GTK_CONTAINER (window), 8);
 	gtk_window_set_position (GTK_WINDOW (window), GTK_WIN_POS_CENTER);
-	gtk_window_set_modal (GTK_WINDOW (window), TRUE);
 	gtk_window_set_resizable(GTK_WINDOW (window), TRUE);
 
 	vbox = gtk_vbox_new (FALSE, 6);
@@ -787,12 +787,14 @@ static void prefs_custom_header_ok(void)
 {
 	prefs_custom_header_write_config(cur_ac);
 	gtk_widget_hide(customhdr.window);
+	gtk_window_set_modal(GTK_WINDOW(customhdr.window), FALSE);
 }
 
 static void prefs_custom_header_cancel(void)
 {
 	prefs_custom_header_read_config(cur_ac); 
 	gtk_widget_hide(customhdr.window);
+	gtk_window_set_modal(GTK_WINDOW(customhdr.window), FALSE);
 }
 
 static gint prefs_custom_header_deleted(GtkWidget *widget, GdkEventAny *event,

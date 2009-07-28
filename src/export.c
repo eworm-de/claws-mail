@@ -72,6 +72,7 @@ gint export_mbox(FolderItem *default_src)
 		gtk_widget_show(window);
 	}
 
+	gtk_window_set_modal(GTK_WINDOW(window), TRUE);
 	change_dir(claws_get_startup_dir());
 
 	if (default_src && default_src->path) {
@@ -92,6 +93,7 @@ gint export_mbox(FolderItem *default_src)
 	gtk_main();
 
 	gtk_widget_hide(window);
+	gtk_window_set_modal(GTK_WINDOW(window), FALSE);
 
 	return export_ok;
 }
@@ -110,7 +112,6 @@ static void export_create(void)
 	gtk_window_set_title(GTK_WINDOW(window), _("Export to mbox file"));
 	gtk_container_set_border_width(GTK_CONTAINER(window), 5);
 	gtk_window_set_position(GTK_WINDOW(window), GTK_WIN_POS_CENTER);
-	gtk_window_set_modal(GTK_WINDOW(window), TRUE);
 	gtk_window_set_resizable(GTK_WINDOW(window), TRUE);
 	g_signal_connect(G_OBJECT(window), "delete_event",
 			 G_CALLBACK(delete_event), NULL);

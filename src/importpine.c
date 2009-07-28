@@ -201,7 +201,6 @@ static void imp_pine_create( gboolean *cancelled ) {
 	gtk_container_set_border_width( GTK_CONTAINER(window), 0 );
 	gtk_window_set_title( GTK_WINDOW(window), _("Import Pine file into Address Book") );
 	gtk_window_set_position(GTK_WINDOW(window), GTK_WIN_POS_CENTER);
-	gtk_window_set_modal(GTK_WINDOW(window), TRUE);	
 	g_signal_connect(G_OBJECT(window), "delete_event",
 			 G_CALLBACK(imp_pine_delete_event), cancelled);
 	g_signal_connect(G_OBJECT(window), "key_press_event",
@@ -284,6 +283,7 @@ AddressBookFile *addressbook_imp_pine( AddressIndex *addrIndex ) {
 	gtk_widget_grab_focus(imppine_dlg.file_entry);
 	gtk_widget_show(imppine_dlg.window);
 	manage_window_set_transient(GTK_WINDOW(imppine_dlg.window));
+	gtk_window_set_modal(GTK_WINDOW(imppine_dlg.window), TRUE);
 
 	imp_pine_status_show( _( "Please select a file to import." ) );
 	pineFile = pine_find_file();
@@ -294,6 +294,7 @@ AddressBookFile *addressbook_imp_pine( AddressIndex *addrIndex ) {
 
 	gtk_main();
 	gtk_widget_hide(imppine_dlg.window);
+	gtk_window_set_modal(GTK_WINDOW(imppine_dlg.window), FALSE);
 	_imp_addressIndex_ = NULL;
 
 	if (cancelled == TRUE) return NULL;

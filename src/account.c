@@ -396,7 +396,7 @@ void account_edit_open(gpointer a, gpointer b)
 	manage_window_set_transient(GTK_WINDOW(edit_account.window));
 	gtk_widget_grab_focus(edit_account.close_btn);
 	gtk_widget_show(edit_account.window);
-
+	gtk_window_set_modal(GTK_WINDOW(edit_account.window), TRUE);
 	manage_window_focus_in(edit_account.window, NULL, NULL);
 }
 
@@ -698,7 +698,6 @@ static void account_edit_create(void)
 	window = gtkut_window_new(GTK_WINDOW_TOPLEVEL, "account");
 	gtk_container_set_border_width (GTK_CONTAINER (window), 8);
 	gtk_window_set_title (GTK_WINDOW (window), _("Edit accounts"));
-	gtk_window_set_modal (GTK_WINDOW (window), TRUE);
 	g_signal_connect (G_OBJECT (window), "delete_event",
 			  G_CALLBACK (account_delete_event), NULL);
 #ifdef MAEMO
@@ -1215,7 +1214,7 @@ static void account_edit_close(GtkWidget *widget, gpointer data)
 		account_flush_state();
 
 	gtk_widget_hide(edit_account.window);
-
+	gtk_window_set_modal(GTK_WINDOW(edit_account.window), FALSE);
 	inc_unlock();
 }
 

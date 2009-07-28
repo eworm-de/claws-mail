@@ -142,6 +142,7 @@ void prefs_actions_open(MainWindow *mainwin)
 	prefs_actions_set_dialog();
 
 	gtk_widget_show(actions.window);
+	gtk_window_set_modal(GTK_WINDOW(actions.window), TRUE);
 }
 
 /*!
@@ -204,7 +205,6 @@ static void prefs_actions_create(MainWindow *mainwin)
 
 	gtk_container_set_border_width(GTK_CONTAINER (window), 8);
 	gtk_window_set_position(GTK_WINDOW(window), GTK_WIN_POS_CENTER);
-	gtk_window_set_modal(GTK_WINDOW(window), TRUE);
 	gtk_window_set_resizable(GTK_WINDOW(window), TRUE);
 
 	vbox = gtk_vbox_new(FALSE, 6);
@@ -907,6 +907,7 @@ static void prefs_actions_cancel(GtkWidget *w, gpointer data)
 	gtk_list_store_clear(store);
 	prefs_actions_read_config();
 	gtk_widget_hide(actions.window);
+	gtk_window_set_modal(GTK_WINDOW(actions.window), FALSE);
 	inc_unlock();
 }
 
@@ -951,6 +952,7 @@ static void prefs_actions_ok(GtkWidget *widget, gpointer data)
 	}
 
 	gtk_widget_hide(actions.window);
+	gtk_window_set_modal(GTK_WINDOW(actions.window), FALSE);
 	inc_unlock();
 }
 

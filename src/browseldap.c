@@ -216,7 +216,6 @@ static void browse_create( void ) {
 	gtk_container_set_border_width( GTK_CONTAINER(window), 0 );
 	gtk_window_set_title( GTK_WINDOW(window), _("Browse Directory Entry") );
 	gtk_window_set_position( GTK_WINDOW(window), GTK_WIN_POS_MOUSE );
-	gtk_window_set_modal( GTK_WINDOW(window), TRUE );
 	g_signal_connect(G_OBJECT(window), "delete_event",
 			 G_CALLBACK(browse_delete_event), NULL);
 	g_signal_connect(G_OBJECT(window), "key_press_event",
@@ -367,7 +366,7 @@ gboolean browseldap_entry( AddressDataSource *ds, const gchar *dn ) {
 	gtk_widget_grab_focus(browseldap_dlg.close_btn);
 	gtk_widget_show(browseldap_dlg.window);
 	manage_window_set_transient(GTK_WINDOW(browseldap_dlg.window));
-
+	gtk_window_set_modal(GTK_WINDOW(browseldap_dlg.window), TRUE);
 	gtk_cmclist_select_row( GTK_CMCLIST( browseldap_dlg.list_entry ), 0, 0 );
 	gtk_widget_show(browseldap_dlg.window);
 
@@ -395,7 +394,7 @@ gboolean browseldap_entry( AddressDataSource *ds, const gchar *dn ) {
 	/* Display dialog */
 	gtk_main();
 	gtk_widget_hide( browseldap_dlg.window );
-
+	gtk_window_set_modal(GTK_WINDOW(browseldap_dlg.window), FALSE);
 	/* Stop query */
 	debug_print("stopping search\n");
 	ldaplocate_search_stop( _queryID_ );

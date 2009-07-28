@@ -202,7 +202,6 @@ static void imp_mutt_create( gboolean *cancelled ) {
 	gtk_container_set_border_width( GTK_CONTAINER(window), 0 );
 	gtk_window_set_title( GTK_WINDOW(window), _("Import MUTT file into Address Book") );
 	gtk_window_set_position(GTK_WINDOW(window), GTK_WIN_POS_CENTER);
-	gtk_window_set_modal(GTK_WINDOW(window), TRUE);	
 	g_signal_connect(G_OBJECT(window), "delete_event",
 			 G_CALLBACK(imp_mutt_delete_event), cancelled);
 	g_signal_connect(G_OBJECT(window), "key_press_event",
@@ -284,6 +283,7 @@ AddressBookFile *addressbook_imp_mutt( AddressIndex *addrIndex ) {
 	gtk_widget_grab_focus(impmutt_dlg.file_entry);
 	gtk_widget_show(impmutt_dlg.window);
 	manage_window_set_transient(GTK_WINDOW(impmutt_dlg.window));
+	gtk_window_set_modal(GTK_WINDOW(impmutt_dlg.window), TRUE);
 
 	imp_mutt_status_show( _( "Please select a file to import." ) );
 	muttFile = mutt_find_file();
@@ -294,6 +294,7 @@ AddressBookFile *addressbook_imp_mutt( AddressIndex *addrIndex ) {
 
 	gtk_main();
 	gtk_widget_hide(impmutt_dlg.window);
+	gtk_window_set_modal(GTK_WINDOW(impmutt_dlg.window), FALSE);
 	_imp_addressIndex_ = NULL;
 
 	if (cancelled == TRUE) return NULL;

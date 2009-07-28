@@ -156,7 +156,6 @@ static void addressbook_foldersel_create( void )
 	gtk_container_set_border_width( GTK_CONTAINER(window), 0 );
 	gtk_window_set_title( GTK_WINDOW(window), _("Select Address Book Folder") );
 	gtk_window_set_position( GTK_WINDOW(window), GTK_WIN_POS_MOUSE );
-	gtk_window_set_modal( GTK_WINDOW(window), TRUE );
 	g_signal_connect( G_OBJECT(window), "delete_event",
 			  G_CALLBACK(addressbook_foldersel_delete_event), NULL );
 	g_signal_connect( G_OBJECT(window), "key_press_event",
@@ -382,7 +381,8 @@ gboolean addressbook_foldersel_selection( AddressIndex *addrIndex,
 	gtk_widget_grab_focus(addressbook_foldersel_dlg.ok_btn);
 	gtk_widget_show(addressbook_foldersel_dlg.window);
 	manage_window_set_transient(GTK_WINDOW(addressbook_foldersel_dlg.window));
-
+	gtk_window_set_modal(GTK_WINDOW(addressbook_foldersel_dlg.window), TRUE);
+	
 	addressbook_foldersel_dlg.fiSelected = NULL;
 
 	/* split the folder path we've received, we'll try to match this path, subpath by
@@ -414,7 +414,7 @@ gboolean addressbook_foldersel_selection( AddressIndex *addrIndex,
 
 	gtk_main();
 	gtk_widget_hide( addressbook_foldersel_dlg.window );
-
+	gtk_window_set_modal(GTK_WINDOW(addressbook_foldersel_dlg.window), FALSE);
 	if ( ! addressbook_foldersel_cancelled ) {
 
 		*book = NULL;

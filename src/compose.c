@@ -8302,6 +8302,7 @@ static void compose_attach_property(GtkAction *action, gpointer data)
 
 	if (!attach_prop.window)
 		compose_attach_property_create(&cancelled);
+	gtk_window_set_modal(GTK_WINDOW(attach_prop.window), TRUE);
 	gtk_widget_grab_focus(attach_prop.ok_btn);
 	gtk_widget_show(attach_prop.window);
 	manage_window_set_transient(GTK_WINDOW(attach_prop.window));
@@ -8330,6 +8331,7 @@ static void compose_attach_property(GtkAction *action, gpointer data)
 		gtk_main();
 
 		gtk_widget_hide(attach_prop.window);
+		gtk_window_set_modal(GTK_WINDOW(attach_prop.window), FALSE);
 		
 		if (cancelled) 
 			break;
@@ -8433,7 +8435,6 @@ static void compose_attach_property_create(gboolean *cancelled)
 	gtk_container_set_border_width(GTK_CONTAINER(window), 8);
 	gtk_window_set_title(GTK_WINDOW(window), _("Properties"));
 	gtk_window_set_position(GTK_WINDOW(window), GTK_WIN_POS_CENTER);
-	gtk_window_set_modal(GTK_WINDOW(window), TRUE);
 	g_signal_connect(G_OBJECT(window), "delete_event",
 			 G_CALLBACK(attach_property_delete_event),
 			 cancelled);

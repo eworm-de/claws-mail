@@ -374,6 +374,7 @@ static void apply_window_close(void)
 	APPLYWINDOW_UNLOCK();
 	apply_window_list_view_clear_tags(applywindow.taglist);
 	gtk_widget_hide(applywindow.window);
+	gtk_window_set_modal(GTK_WINDOW(applywindow.window), FALSE);
 }
 
 static void apply_window_close_cb(GtkWidget *widget,

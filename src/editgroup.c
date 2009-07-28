@@ -292,7 +292,6 @@ static void addressbook_edit_group_create( gboolean *cancelled ) {
 	gtk_container_set_border_width(GTK_CONTAINER(window), 0);
 	gtk_window_set_title(GTK_WINDOW(window), _("Edit Group Data"));
 	gtk_window_set_position(GTK_WINDOW(window), GTK_WIN_POS_CENTER);
-	gtk_window_set_modal(GTK_WINDOW(window), TRUE);
 	g_signal_connect(G_OBJECT(window), "delete_event",
 			 G_CALLBACK(edit_group_delete_event),
 			 cancelled);
@@ -499,7 +498,7 @@ ItemGroup *addressbook_edit_group( AddressBookFile *abf, ItemFolder *parent, Ite
 	gtk_widget_grab_focus(groupeditdlg.entry_name);
 	gtk_widget_show(groupeditdlg.window);
 	manage_window_set_transient(GTK_WINDOW(groupeditdlg.window));
-
+	gtk_window_set_modal(GTK_WINDOW(groupeditdlg.window), TRUE);
 	/* Clear all fields */
 	edit_group_status_show( "" );
 	gtk_cmclist_clear( GTK_CMCLIST(groupeditdlg.clist_group) );
@@ -527,7 +526,7 @@ ItemGroup *addressbook_edit_group( AddressBookFile *abf, ItemFolder *parent, Ite
 
 	gtk_main();
 	gtk_widget_hide( groupeditdlg.window );
-
+	gtk_window_set_modal(GTK_WINDOW(groupeditdlg.window), FALSE);
 	if( cancelled ) {
 		return NULL;
 	}

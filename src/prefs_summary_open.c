@@ -130,6 +130,7 @@ void prefs_summary_open_open(void)
 		saved_summary_select_prio[i] = prefs_common.summary_select_prio[i];
 
 	gtk_widget_show(summaryopen.window);
+	gtk_window_set_modal(GTK_WINDOW(summaryopen.window), TRUE);
 }
 
 static void prefs_summary_open_create(void)
@@ -161,7 +162,6 @@ static void prefs_summary_open_create(void)
 	window = gtkut_window_new(GTK_WINDOW_TOPLEVEL, "prefs_summary_open");
 	gtk_container_set_border_width (GTK_CONTAINER (window), 8);
 	gtk_window_set_position (GTK_WINDOW (window), GTK_WIN_POS_CENTER);
-	gtk_window_set_modal (GTK_WINDOW (window), TRUE);
 	gtk_window_set_resizable(GTK_WINDOW (window), TRUE);
 
 	vbox = gtk_vbox_new (FALSE, 6);
@@ -543,6 +543,7 @@ static void prefs_summary_open_ok(void)
 		saved_summary_select_prio[i] = prefs_common.summary_select_prio[i];
 
 	gtk_widget_hide(summaryopen.window);
+	gtk_window_set_modal(GTK_WINDOW(summaryopen.window), FALSE);
 }
 
 static void prefs_summary_open_cancel(void)
