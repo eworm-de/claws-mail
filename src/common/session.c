@@ -174,6 +174,11 @@ static gint session_connect_cb(SockInfo *sock, gpointer data)
 	}
 #endif
 
+	/* we could have gotten a timeout while waiting for user input in 
+	 * an SSL certificate dialog */
+	if (session->state == SESSION_TIMEOUT)
+		return -1;
+
 	sock_set_nonblocking_mode(sock, session->nonblocking);
 
 	debug_print("session (%p): connected\n", session);

@@ -3836,3 +3836,4 @@
 ( cvs diff -u -r 1.395.2.413 -r 1.395.2.414 src/summaryview.c;  ) > 3.7.2cvs9.patchset
 ( cvs diff -u -r 1.1.2.23 -r 1.1.2.24 manual/plugins.xml;  cvs diff -u -r 1.105.2.154 -r 1.105.2.155 src/prefs_account.c;  ) > 3.7.2cvs10.patchset
 ( cvs diff -u -r 1.1.2.24 -r 1.1.2.25 manual/plugins.xml;  ) > 3.7.2cvs11.patchset
+( cvs diff -u -r 1.23.2.23 -r 1.23.2.24 src/common/session.c;  ) > 3.7.2cvs12.patchset
