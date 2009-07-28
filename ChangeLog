@@ -1,3 +1,9 @@
+2009-07-28 [colin]	3.7.2cvs14
+
+	* src/ldapquery.c
+		Fix bug 1957, 'LDAP errs out after searching too 
+		many search bases'
+
 2009-07-28 [colin]	3.7.2cvs13
 
 	* src/summaryview.c

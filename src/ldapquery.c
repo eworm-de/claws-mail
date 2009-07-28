@@ -856,7 +856,7 @@ static gint ldapqry_search_retrieve( LdapQuery *qry ) {
 	else if( rc == LDAP_SUCCESS ) {
 		searchFlag = TRUE;
 	}
-	else if( rc == LDAP_PARTIAL_RESULTS ) {
+	else if( rc == LDAP_PARTIAL_RESULTS || ldap_count_entries(ld, result) > 0 ) {
 		searchFlag = TRUE;
 	}
 	else {
