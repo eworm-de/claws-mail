@@ -1,3 +1,10 @@
+2009-08-04 [colin]	3.7.2cvs16
+
+	* src/toolbar.c
+		Fix toolbar's spacing that breaks dark
+		themes (patch from http://blogs.igalia.com/aperez/
+		2009/07/making-claws-mail-look-better/)
+
 2009-07-28 [colin]	3.7.2cvs15
 
 	* src/account.c

@@ -2150,7 +2150,7 @@ Toolbar *toolbar_create(ToolbarType 	 type,
 	
 #ifndef MAEMO
 	gtk_container_add(GTK_CONTAINER(container), toolbar);
-	gtk_container_set_border_width(GTK_CONTAINER(container), 2);
+	gtk_container_set_border_width(GTK_CONTAINER(container), 0);
 #else
 	if ( GTK_IS_WINDOW(container) ) {
 		hildon_window_add_toolbar (HILDON_WINDOW(container), GTK_TOOLBAR(toolbar));
