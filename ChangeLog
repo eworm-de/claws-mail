@@ -1,3 +1,8 @@
+2009-08-18 [colin]	3.7.2cvs17
+
+	* src/ldapquery.c
+		Maybe fix crash on non-existent LDAP server
+
 2009-08-04 [colin]	3.7.2cvs16
 
 	* src/toolbar.c

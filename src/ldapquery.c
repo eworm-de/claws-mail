@@ -804,7 +804,7 @@ static gint ldapqry_disconnect( LdapQuery *qry ) {
 static gint ldapqry_search_retrieve( LdapQuery *qry ) {
 	LdapControl *ctl;
 	LDAP *ld;
-	LDAPMessage *result, *e = NULL;
+	LDAPMessage *result = NULL, *e = NULL;
 	char **attribs;
 	gchar *criteria;
 	gboolean searchFlag;
@@ -856,7 +856,7 @@ static gint ldapqry_search_retrieve( LdapQuery *qry ) {
 	else if( rc == LDAP_SUCCESS ) {
 		searchFlag = TRUE;
 	}
-	else if( rc == LDAP_PARTIAL_RESULTS || ldap_count_entries(ld, result) > 0 ) {
+	else if( rc == LDAP_PARTIAL_RESULTS || (result && ldap_count_entries(ld, result) > 0) ) {
 		searchFlag = TRUE;
 	}
 	else {
