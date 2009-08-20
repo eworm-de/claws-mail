@@ -320,4 +320,5 @@ gboolean compose_close			(Compose *compose);
 void compose_close_toolbar		(Compose *compose);
 void compose_clear_exit_drafts		(void);
 void compose_reopen_exit_drafts		(void);
+void compose_attach_from_list (Compose *compose, GList *file_list, gboolean free_data);
 #endif /* __COMPOSE_H__ */

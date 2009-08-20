@@ -1,3 +1,10 @@
+2009-08-20 [holger]	3.7.2cvs19
+
+	* src/compose.c
+	* src/compose.h
+		Make it possible for code outside
+		compose (e.g. plugins) to attach files
+
 2009-08-20 [colin]	3.7.2cvs18
 
 	* src/main.c

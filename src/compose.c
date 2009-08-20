@@ -526,8 +526,6 @@ static void compose_set_dictionaries_from_folder_prefs(Compose *compose,
 #endif
 static void compose_attach_update_label(Compose *compose);
 
-static void compose_attach_from_list(Compose *compose, GList *file_list, gboolean free_data);
-
 static GtkActionEntry compose_popup_entries[] =
 {
 	{"Compose",			NULL, "Compose" },
@@ -9332,7 +9330,7 @@ static void compose_save_cb(GtkAction *action, gpointer data)
 	compose->rmode = COMPOSE_REEDIT;
 }
 
-static void compose_attach_from_list(Compose *compose, GList *file_list, gboolean free_data)
+void compose_attach_from_list(Compose *compose, GList *file_list, gboolean free_data)
 {
 	if (compose && file_list) {
 		GList *tmp;
