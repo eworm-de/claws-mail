@@ -1383,6 +1383,11 @@ int main(int argc, char *argv[])
 	prefs_account_init();
 	account_read_config_all();
 
+#ifdef HAVE_LIBETPAN
+	imap_main_init(prefs_common.skip_ssl_cert_check);
+	imap_main_set_timeout(prefs_common.io_timeout_secs);
+	nntp_main_init(prefs_common.skip_ssl_cert_check);
+#endif	
 	/* If we can't read a folder list or don't have accounts,
 	 * it means the configuration's not done. Either this is
 	 * a brand new install, either a failed/refused migration.
@@ -1438,11 +1443,6 @@ int main(int argc, char *argv[])
 	if (claws_crashed())
 		main_window_popup(mainwin);
 
-#ifdef HAVE_LIBETPAN
-	imap_main_init(prefs_common.skip_ssl_cert_check);
-	imap_main_set_timeout(prefs_common.io_timeout_secs);
-	nntp_main_init(prefs_common.skip_ssl_cert_check);
-#endif	
 	account_set_missing_folder();
 	folder_set_missing_folders();
 	folderview_set(folderview);
