@@ -1,3 +1,9 @@
+2009-08-21 [colin]	3.7.2cvs24
+
+	* src/compose.c
+		Previous commit: move the function into compose_insert_file
+		so that it's also used on drag-n-drop
+
 2009-08-21 [colin]	3.7.2cvs23
 
 	* src/compose.c
