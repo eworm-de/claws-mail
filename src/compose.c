@@ -10518,6 +10518,7 @@ static gboolean compose_headerentry_changed_cb(GtkWidget *entry,
 			 0, 0, NULL, NULL, headerentry);
 		
 		/* Automatically scroll down */
+		GTK_EVENTS_FLUSH();
 		compose_show_first_last_header(headerentry->compose, FALSE);
 		
 	}
@@ -10531,9 +10532,8 @@ static void compose_show_first_last_header(Compose *compose, gboolean show_first
 	cm_return_if_fail(compose);
 	cm_return_if_fail(GTK_IS_WIDGET(compose->header_table));
 	cm_return_if_fail(GTK_IS_VIEWPORT(compose->header_table->parent));
-
 	vadj = gtk_viewport_get_vadjustment(GTK_VIEWPORT(compose->header_table->parent));
-	gtk_adjustment_set_value(vadj, (show_first ? vadj->lower : vadj->upper));
+	gtk_adjustment_set_value(vadj, (show_first ? vadj->lower : (vadj->upper - vadj->page_size)));
 	gtk_adjustment_changed(vadj);
 }
 
