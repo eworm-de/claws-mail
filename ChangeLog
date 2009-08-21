@@ -1,3 +1,13 @@
+2009-08-21 [colin]	3.7.2cvs20
+
+	* src/codeconv.c
+	* src/codeconv.h
+		Fix bug 1969, 'Bad guess for outgoing encoding'
+		Make sure the specific converters (japanese in
+		this case) can return success/error in strict
+		mode, instead of silently failing back to 
+		strncpy
+
 2009-08-20 [holger]	3.7.2cvs19
 
 	* src/compose.c

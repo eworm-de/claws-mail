@@ -92,7 +92,7 @@ typedef enum
 	C_TCVN5712_1
 } CharSet;
 
-typedef void (*CodeConvFunc) (gchar *outbuf, gint outlen, const gchar *inbuf);
+typedef gint (*CodeConvFunc) (gchar *outbuf, gint outlen, const gchar *inbuf);
 
 struct _CodeConverter
 {
