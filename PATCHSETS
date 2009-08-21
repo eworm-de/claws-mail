@@ -3846,3 +3846,4 @@
 ( cvs diff -u -r 1.382.2.519 -r 1.382.2.520 src/compose.c;  cvs diff -u -r 1.50.2.54 -r 1.50.2.55 src/compose.h;  ) > 3.7.2cvs19.patchset
 ( cvs diff -u -r 1.65.2.68 -r 1.65.2.69 src/codeconv.c;  cvs diff -u -r 1.15.2.22 -r 1.15.2.23 src/codeconv.h;  ) > 3.7.2cvs20.patchset
 ( cvs diff -u -r 1.100.2.72 -r 1.100.2.73 AUTHORS;  cvs diff -u -r 1.1.2.60 -r 1.1.2.61 src/gtk/authors.h;  cvs diff -u -r 1.36.2.172 -r 1.36.2.173 src/common/utils.c;  ) > 3.7.2cvs21.patchset
+( cvs diff -u -r 1.382.2.520 -r 1.382.2.521 src/compose.c;  cvs diff -u -r 1.204.2.191 -r 1.204.2.192 src/prefs_common.c;  cvs diff -u -r 1.103.2.124 -r 1.103.2.125 src/prefs_common.h;  cvs diff -u -r 1.1.2.26 -r 1.1.2.27 src/prefs_compose_writing.c;  cvs diff -u -r 1.36.2.173 -r 1.36.2.174 src/common/utils.c;  ) > 3.7.2cvs22.patchset

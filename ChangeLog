@@ -1,10 +1,21 @@
+2009-08-21 [colin]	3.7.2cvs22
+
+	* src/compose.c
+	* src/prefs_common.c
+	* src/prefs_common.h
+	* src/prefs_compose_writing.c
+	* src/common/utils.c
+		Fix bug 1986, "New feature: warn user when inserting 
+		a large file in the message body". Patch by Didier
+		Barvaux
+
 2009-08-21 [colin]	3.7.2cvs21
 
 	* AUTHORS
 	* src/gtk/authors.h
 	* src/common/utils.c
-		Add Réf. : reply prefix (french Lotus Notes); patch
-		by Didier Barvaux
+		Fix bug 1984: Add Réf. : reply prefix (french 
+		Lotus Notes); patch by Didier Barvaux
 
 2009-08-21 [colin]	3.7.2cvs20
 

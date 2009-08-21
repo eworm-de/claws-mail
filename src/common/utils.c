@@ -346,6 +346,13 @@ gchar *itos(gint n)
 	d = (d*100) >> divisor;		\
 }
 
+
+/*!
+ * \brief Convert a given size in bytes in a human-readable string
+ *
+ * \param size  The size expressed in bytes to convert in string
+ * \return      The string that respresents the size in an human-readable way
+ */
 gchar *to_human_readable(goffset size)
 {
 	static gchar str[14];

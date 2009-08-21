@@ -9379,15 +9379,60 @@ static void compose_insert_file_cb(GtkAction *action, gpointer data)
 			gchar *file = (gchar *) tmp->data;
 			gchar *filedup = g_strdup(file);
 			gchar *shortfile = g_path_get_basename(filedup);
+			struct stat file_stat;
+			gboolean do_insert;
 			ComposeInsertResult res;
+			int ret;
 
-			res = compose_insert_file(compose, file);
-			if (res == COMPOSE_INSERT_READ_ERROR) {
-				alertpanel_error(_("File '%s' could not be read."), shortfile);
-			} else if (res == COMPOSE_INSERT_INVALID_CHARACTER) {
-				alertpanel_error(_("File '%s' contained invalid characters\n"
-						   "for the current encoding, insertion may be incorrect."), shortfile);
+			do_insert = TRUE;
+
+			/* get the size of the file we are about to insert */
+			ret = g_stat(file, &file_stat);
+			if (ret != 0) {
+				alertpanel_error(_("Could not get size of file '%s'."), shortfile);
+				do_insert = FALSE;
+			} else if (prefs_common.warn_large_insert == TRUE) {
+
+				/* ask user for confirmation if the file is large */
+				if (prefs_common.warn_large_insert_size < 0 ||
+				    file_stat.st_size > (prefs_common.warn_large_insert_size * 1024)) {
+					AlertValue aval;
+					gchar *msg;
+					
+					msg = g_strdup_printf(_("You are about to insert a file of %s "
+								"in the message body. Are your sure to do that?"),
+								to_human_readable(file_stat.st_size));
+					aval = alertpanel_full(_("Are you sure?"), msg, GTK_STOCK_CANCEL,
+							_("+_Insert"), NULL, TRUE, NULL, ALERT_QUESTION, G_ALERTDEFAULT);
+					g_free(msg);
+
+					/* do we ask for confirmation next time? */
+					if (aval & G_ALERTDISABLE) {
+						/* no confirmation next time, disable feature in preferences */
+						aval &= ~G_ALERTDISABLE;
+						prefs_common.warn_large_insert = FALSE;
+					}
+
+					/* abort file insertion if user canceled action */
+					if (aval != G_ALERTALTERNATE) {
+						do_insert = FALSE;
+					}
+				}
 			}
+
+			/* insert the file if the file is short or if the user confirmed that
+			   he/she wants to insert the large file */
+			if (do_insert) {
+				res = compose_insert_file(compose, file);
+				if (res == COMPOSE_INSERT_READ_ERROR) {
+					alertpanel_error(_("File '%s' could not be read."), shortfile);
+				} else if (res == COMPOSE_INSERT_INVALID_CHARACTER) {
+					alertpanel_error(_("File '%s' contained invalid characters\n"
+								"for the current encoding, insertion may be incorrect."),
+								shortfile);
+				}
+			}
+
 			g_free(shortfile);
 			g_free(filedup);
 			g_free(file);

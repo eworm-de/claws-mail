@@ -60,9 +60,10 @@ typedef struct _WritingPage
 	GtkWidget *checkbtn_default_reply_list;
 	GtkWidget *checkbtn_forward_as_attachment;
 	GtkWidget *checkbtn_redirect_keep_from;
-	GtkWidget *hbox_autosave;
 	GtkWidget *checkbtn_autosave;
 	GtkWidget *spinbtn_autosave_length;
+	GtkWidget *checkbtn_warn_large_insert;
+	GtkWidget *spinbtn_warn_large_insert_size;
 	GtkWidget *optmenu_dnd_insert_or_attach;
 } WritingPage;
 
@@ -86,6 +87,12 @@ static void prefs_compose_writing_create_widget(PrefsPage *_page, GtkWindow *win
 	GtkWidget *label_undolevel;
 	GtkObject *spinbtn_undolevel_adj;
 	GtkWidget *spinbtn_undolevel;
+
+	GtkWidget *hbox_warn_large_insert;
+	GtkWidget *checkbtn_warn_large_insert;
+	GtkObject *spinbtn_warn_large_insert_adj;
+	GtkWidget *spinbtn_warn_large_insert_size;
+	GtkWidget *label_warn_large_insert_size;
 
 	GtkWidget *checkbtn_reply_with_quote;
 	GtkWidget *checkbtn_default_reply_list;
@@ -124,11 +131,14 @@ static void prefs_compose_writing_create_widget(PrefsPage *_page, GtkWindow *win
 	PACK_CHECK_BUTTON (hbox_autosel, checkbtn_reedit_account_autosel,
 			   _("when re-editing"));
 
+	/* Editing */
 	vbox2 = gtkut_get_options_frame(vbox1, &frame, _("Editing"));
 
+	/* Editing: automatically start the text editor */
 	PACK_CHECK_BUTTON (vbox2, checkbtn_autoextedit,
 			   _("Automatically launch the external editor"));
 
+	/* Editing: automatically save draft */
 	hbox_autosave = gtk_hbox_new (FALSE, 8);
 	gtk_widget_show (hbox_autosave);
 	gtk_box_pack_start (GTK_BOX (vbox2), hbox_autosave, FALSE, FALSE, 0);
@@ -148,6 +158,7 @@ static void prefs_compose_writing_create_widget(PrefsPage *_page, GtkWindow *win
 	gtk_widget_show (label_autosave_length);
 	gtk_box_pack_start (GTK_BOX (hbox_autosave), label_autosave_length, FALSE, FALSE, 0);
 	
+	/* Editing: undo level */
 	hbox_undolevel = gtk_hbox_new (FALSE, 8);
 	gtk_widget_show (hbox_undolevel);
 	gtk_box_pack_start (GTK_BOX (vbox2), hbox_undolevel, FALSE, FALSE, 0);
@@ -163,7 +174,31 @@ static void prefs_compose_writing_create_widget(PrefsPage *_page, GtkWindow *win
 	gtk_box_pack_start (GTK_BOX (hbox_undolevel), spinbtn_undolevel, FALSE, FALSE, 0);
 	gtk_widget_set_size_request (spinbtn_undolevel, 64, -1);
 	gtk_spin_button_set_numeric (GTK_SPIN_BUTTON (spinbtn_undolevel), TRUE);
-	
+
+	/* Editing: warn when inserting large files in message body */
+	hbox_warn_large_insert = gtk_hbox_new (FALSE, 8);
+	gtk_widget_show (hbox_warn_large_insert);
+	gtk_box_pack_start (GTK_BOX (vbox2), hbox_warn_large_insert, FALSE, FALSE, 0);
+
+	PACK_CHECK_BUTTON (hbox_warn_large_insert, checkbtn_warn_large_insert,
+			   _("Warn when inserting in message body a file larger than"));
+
+	spinbtn_warn_large_insert_adj = gtk_adjustment_new (50, 0, 1000, 1, 10, 0);
+	spinbtn_warn_large_insert_size = gtk_spin_button_new
+		(GTK_ADJUSTMENT (spinbtn_warn_large_insert_adj), 1, 0);
+	gtk_widget_set_size_request (spinbtn_warn_large_insert_size, 64, -1);	
+	gtk_widget_show (spinbtn_warn_large_insert_size);
+	gtk_box_pack_start (GTK_BOX (hbox_warn_large_insert),
+			spinbtn_warn_large_insert_size, FALSE, FALSE, 0);
+	gtk_spin_button_set_numeric (GTK_SPIN_BUTTON (spinbtn_warn_large_insert_size),
+			TRUE);
+
+	label_warn_large_insert_size = gtk_label_new(_("KB"));
+	gtk_widget_show (label_warn_large_insert_size);
+	gtk_box_pack_start (GTK_BOX (hbox_warn_large_insert),
+			label_warn_large_insert_size, FALSE, FALSE, 0);
+
+	/* Replying */
 	vbox2 = gtkut_get_options_frame(vbox1, &frame, _("Replying"));
 
 	PACK_CHECK_BUTTON (vbox2, checkbtn_reply_with_quote,
@@ -205,6 +240,9 @@ static void prefs_compose_writing_create_widget(PrefsPage *_page, GtkWindow *win
 	SET_TOGGLE_SENSITIVITY (checkbtn_autosave, spinbtn_autosave_length);
 	SET_TOGGLE_SENSITIVITY (checkbtn_autosave, label_autosave_length);
 
+	SET_TOGGLE_SENSITIVITY (checkbtn_warn_large_insert, spinbtn_warn_large_insert_size);
+	SET_TOGGLE_SENSITIVITY (checkbtn_warn_large_insert, label_warn_large_insert_size);
+
 
 	prefs_writing->checkbtn_autoextedit = checkbtn_autoextedit;
 
@@ -216,6 +254,9 @@ static void prefs_compose_writing_create_widget(PrefsPage *_page, GtkWindow *win
 
 	prefs_writing->checkbtn_autosave     = checkbtn_autosave;
 	prefs_writing->spinbtn_autosave_length = spinbtn_autosave_length;
+
+	prefs_writing->checkbtn_warn_large_insert = checkbtn_warn_large_insert;
+	prefs_writing->spinbtn_warn_large_insert_size = spinbtn_warn_large_insert_size;
 	
 	prefs_writing->checkbtn_forward_as_attachment =
 		checkbtn_forward_as_attachment;
@@ -238,6 +279,10 @@ static void prefs_compose_writing_create_widget(PrefsPage *_page, GtkWindow *win
 		prefs_common.autosave_length);
 	gtk_spin_button_set_value(GTK_SPIN_BUTTON(prefs_writing->spinbtn_undolevel),
 		prefs_common.undolevels);
+	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(prefs_writing->checkbtn_warn_large_insert),
+		prefs_common.warn_large_insert);
+	gtk_spin_button_set_value(GTK_SPIN_BUTTON(prefs_writing->spinbtn_warn_large_insert_size),
+		prefs_common.warn_large_insert_size);
 	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(prefs_writing->checkbtn_reply_account_autosel),
 		prefs_common.reply_account_autosel);
 	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(prefs_writing->checkbtn_forward_account_autosel),
@@ -270,6 +315,10 @@ static void prefs_compose_writing_save(PrefsPage *_page)
 		gtk_spin_button_get_value_as_int(GTK_SPIN_BUTTON(page->spinbtn_autosave_length));
 	prefs_common.undolevels = 
 		gtk_spin_button_get_value_as_int(GTK_SPIN_BUTTON(page->spinbtn_undolevel));
+	prefs_common.warn_large_insert = 
+		gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(page->checkbtn_warn_large_insert));
+	prefs_common.warn_large_insert_size =
+		gtk_spin_button_get_value_as_int(GTK_SPIN_BUTTON(page->spinbtn_warn_large_insert_size));
 		
 	prefs_common.reply_account_autosel =
 		gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(page->checkbtn_reply_account_autosel));
