@@ -3666,18 +3666,6 @@ void subject_table_remove(GHashTable *subject_table, gchar * subject)
 	g_hash_table_remove(subject_table, subject);
 }
 
-/*!
- *\brief	Check if a string is prefixed with known (combinations)
- *		of prefixes. The function assumes that each prefix
- *		is terminated by zero or exactly _one_ space.
- *
- *\param	str String to check for a prefixes
- *
- *\return	int Number of chars in the prefix that should be skipped
- *		for a "clean" subject line. If no prefix was found, 0
- *		is returned.
- */
- 
 #ifndef G_OS_WIN32
 static regex_t u_regex;
 static gboolean u_init_;
@@ -3693,6 +3681,17 @@ void utils_free_regex(void)
 #endif
 }
 
+/*!
+ *\brief	Check if a string is prefixed with known (combinations)
+ *		of prefixes. The function assumes that each prefix
+ *		is terminated by zero or exactly _one_ space.
+ *
+ *\param	str String to check for a prefixes
+ *
+ *\return	int Number of chars in the prefix that should be skipped
+ *		for a "clean" subject line. If no prefix was found, 0
+ *		is returned.
+ */
 int subject_get_prefix_length(const gchar *subject)
 {
 #ifndef G_OS_WIN32
@@ -3712,7 +3711,8 @@ int subject_get_prefix_length(const gchar *subject)
 		"Sv\\:",			/* "Sv" (Norwegian) */
 		"Vs\\:",			/* "Vs" (Norwegian) */
 		"Ad\\:",			/* "Ad" (Norwegian) */
-		"\347\255\224\345\244\215\\:"	/* "Re" (Chinese, UTF-8) */
+		"\347\255\224\345\244\215\\:",	/* "Re" (Chinese, UTF-8) */
+		"R\303\251f\\. \\:",	/* "Réf. :" (French Lotus Notes) */
 		/* add more */
 	};
 	const int PREFIXES = sizeof prefixes / sizeof prefixes[0];
@@ -3770,6 +3770,7 @@ int subject_get_prefix_length(const gchar *subject)
 		"sv:",			/* "Sv" (Norwegian) */
 		"vs:",			/* "Vs" (Norwegian) */
 		"ad:",			/* "Ad" (Norwegian) */
+		"R\303\251f. :",	/* "Réf. :" (French Lotus Notes) */
 		/* add more */
 	};
 	const int PREFIXES = sizeof prefixes / sizeof prefixes[0];

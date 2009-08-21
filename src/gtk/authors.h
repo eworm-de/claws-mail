@@ -86,6 +86,7 @@ static char *CONTRIBS_LIST[] = {
 "Fabio Junior Beneditto",
 "M. Benkmann",
 "Wilbert Berendsen",
+"Didier Barvaux",
 "Jean-Luc Biord",
 "Pavlo Bohmat",
 "Eugene Brevdo",

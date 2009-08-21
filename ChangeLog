@@ -1,3 +1,11 @@
+2009-08-21 [colin]	3.7.2cvs21
+
+	* AUTHORS
+	* src/gtk/authors.h
+	* src/common/utils.c
+		Add Réf. : reply prefix (french Lotus Notes); patch
+		by Didier Barvaux
+
 2009-08-21 [colin]	3.7.2cvs20
 
 	* src/codeconv.c
