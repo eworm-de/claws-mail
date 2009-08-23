@@ -1,3 +1,9 @@
+2009-08-23 [colin]	3.7.2cvs25
+
+	* src/prefs_compose_writing.c
+		Make the maximum size warning bigger. Patch
+		by Didier Barvaux on bug 1986.
+
 2009-08-21 [colin]	3.7.2cvs24
 
 	* src/compose.c

@@ -183,7 +183,7 @@ static void prefs_compose_writing_create_widget(PrefsPage *_page, GtkWindow *win
 	PACK_CHECK_BUTTON (hbox_warn_large_insert, checkbtn_warn_large_insert,
 			   _("Warn when inserting in message body a file larger than"));
 
-	spinbtn_warn_large_insert_adj = gtk_adjustment_new (50, 0, 1000, 1, 10, 0);
+	spinbtn_warn_large_insert_adj = gtk_adjustment_new (50, 0, 10000, 1, 10, 0);
 	spinbtn_warn_large_insert_size = gtk_spin_button_new
 		(GTK_ADJUSTMENT (spinbtn_warn_large_insert_adj), 1, 0);
 	gtk_widget_set_size_request (spinbtn_warn_large_insert_size, 64, -1);	
