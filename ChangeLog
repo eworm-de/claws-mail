@@ -1,3 +1,9 @@
+2009-08-23 [colin]	3.7.2cvs26
+
+	* src/mbox.c
+		Probably fix RH bug 512024, " folder.c:3543 
+		Condition msglist != NULL failed"
+
 2009-08-23 [colin]	3.7.2cvs25
 
 	* src/prefs_compose_writing.c

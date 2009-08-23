@@ -279,10 +279,12 @@ gint proc_mbox(FolderItem *dest, const gchar *mbox, gboolean apply_filter,
 		}
 
 		unfiltered = g_slist_reverse(unfiltered);
-		folder_item_move_msgs(dest, unfiltered);
-		for (cur = unfiltered; cur; cur = g_slist_next(cur)) {
-			MsgInfo *info = (MsgInfo *)cur->data;
-			procmsg_msginfo_free(info);
+		if (unfiltered) {
+			folder_item_move_msgs(dest, unfiltered);
+			for (cur = unfiltered; cur; cur = g_slist_next(cur)) {
+				MsgInfo *info = (MsgInfo *)cur->data;
+				procmsg_msginfo_free(info);
+			}
 		}
 
 		g_slist_free(unfiltered);
