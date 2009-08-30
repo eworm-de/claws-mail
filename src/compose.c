@@ -4681,13 +4681,13 @@ gboolean compose_check_for_valid_recipient(Compose *compose) {
 		g_strstrip(header);
 		if (entry[0] != '\0') {
 			for (strptr = recipient_headers_mail; *strptr != NULL; strptr++) {
-				if (!strcmp(header, prefs_common_translated_header_name(*strptr))) {
+				if (!g_ascii_strcasecmp(header, prefs_common_translated_header_name(*strptr))) {
 					compose->to_list = address_list_append(compose->to_list, entry);
 					recipient_found = TRUE;
 				}
 			}
 			for (strptr = recipient_headers_news; *strptr != NULL; strptr++) {
-				if (!strcmp(header, prefs_common_translated_header_name(*strptr))) {
+				if (!g_ascii_strcasecmp(header, prefs_common_translated_header_name(*strptr))) {
 					compose->newsgroup_list = newsgroup_list_append(compose->newsgroup_list, entry);
 					recipient_found = TRUE;
 				}

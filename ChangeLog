@@ -1,3 +1,10 @@
+2009-08-30 [holger]	3.7.2cvs27
+
+	* src/compose.c
+		Do case-insensitive comparison against
+		header names when extracting recipients
+		from composed mails
+
 2009-08-23 [colin]	3.7.2cvs26
 
 	* src/mbox.c
