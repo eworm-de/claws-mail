@@ -272,7 +272,7 @@ static void prefs_toolbar_save(PrefsPage *_page)
 	toolbar_save_config_file(prefs_toolbar->source);
 
 	if (prefs_toolbar->source == TOOLBAR_MAIN) 
-		main_window_reflect_prefs_all_real(TRUE);
+		toolbar_update(TOOLBAR_MAIN, mainwindow_get_mainwindow());
 	else if (prefs_toolbar->source == TOOLBAR_COMPOSE)
 		compose_reflect_prefs_pixmap_theme();
 	else if (prefs_toolbar->source == TOOLBAR_MSGVIEW)

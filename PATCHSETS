@@ -3852,3 +3852,4 @@
 ( cvs diff -u -r 1.1.2.27 -r 1.1.2.28 src/prefs_compose_writing.c;  ) > 3.7.2cvs25.patchset
 ( cvs diff -u -r 1.28.2.48 -r 1.28.2.49 src/mbox.c;  ) > 3.7.2cvs26.patchset
 ( cvs diff -u -r 1.382.2.523 -r 1.382.2.524 src/compose.c;  ) > 3.7.2cvs27.patchset
+( cvs diff -u -r 1.30.2.56 -r 1.30.2.57 src/prefs_toolbar.c;  ) > 3.7.2cvs28.patchset
