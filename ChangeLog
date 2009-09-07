@@ -1,3 +1,12 @@
+2009-09-07 [holger]	3.7.2cvs29
+
+	* Makefile.am
+		Also update the icon cache on uninstall.
+		This prevents possible problems when Claws Mail was
+		uninstalled and installed again into a different location,
+		see http://bugzilla.gnome.org/show_bug.cgi?id=362604
+		and the blog post linked therein
+
 2009-09-07 [paul]	3.7.2cvs28
 
 	* src/prefs_toolbar.c
