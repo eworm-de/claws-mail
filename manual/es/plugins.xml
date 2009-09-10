@@ -19,6 +19,11 @@
 	Si no encuentra el módulo que busca es posible que la distribución de
 	su sistema operativo lo proporcione en algún paquete distinto. En ese 
 	caso busque el módulo con su gestor de paquetes.
+    </para><para>
+	Algunos módulos proporcionan la misma funcionalidad que otros (por
+	ejemplo, los tres visualizadores de HTML). En tal caso tendrá que
+	elejir cual de ellos cargar, ya que &SC; no cargará más de uno del
+	mismo tipo a la vez.
     </para>
     <variablelist>
       <varlistentry>
@@ -162,6 +167,23 @@
 	</listitem>
       </varlistentry>
       <varlistentry>
+        <term>BSFilter</term>
+        <listitem>
+          <para>
+        BSFilter es un módulo muy similar al Bogofilter pero utiliza
+        para realizar su tarea el filtro bayesiano de correo basura
+	<ulink url="http://bsfilter.org/index-e.html">bsfilter</ulink>.
+          </para><para>
+	Al igual que con Bogofilter, hay que entrenarlo con mensajes
+	basura y mensajes legítimos para que pueda comenzar a reconocer
+	el correo basura.
+          </para><para>
+	Las preferencias se encuentran en
+        <quote>Configuración/Preferencias/Módulos/BSFilter</quote>.
+          </para>
+        </listitem>
+      </varlistentry>
+      <varlistentry>
 	<term>CacheSaver</term>
 	<listitem>
 	  <para>
@@ -170,6 +192,15 @@
 	ordenador (<emphasis>¡o &SC;!</emphasis>) se cuelga.
 	  </para>
 	</listitem>
+      </varlistentry>
+      <varlistentry>
+        <term>Fancy</term>
+        <listitem>
+          <para>
+	Permite mostrar mensajes HTML usando la versión basada en GTK+
+	de la librería WebKit.
+          </para>
+        </listitem>
       </varlistentry>
       <varlistentry>
 	<term>Fetchinfo</term>
@@ -272,9 +303,11 @@
 	<listitem>
 	  <para>
 	Este módulo permite informar sobre correo basura en varios sitios.
-	Actualmente sólo están soportados los sitios <ulink 
+	Actualmente están soportados los sitios <ulink 
 	url="http://spam-signal.fr">spam-signal.fr</ulink> y <ulink 
-	url="http://spamcop.net">spamcop.net</ulink>.
+	url="http://spamcop.net">spamcop.net</ulink>, y el sistema de
+	nominación de correo basura de las <ulink
+        url="http://lists.debian.org">listas de Debian</ulink>.
 	  </para>
 	</listitem>
       </varlistentry>

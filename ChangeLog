@@ -1,3 +1,10 @@
+2009-09-10 [mones]	3.7.2cvs30
+
+	* manual/plugins.xml
+		Fix sites supported by SpamReport
+	* manual/es/plugins.xml
+		Synchronise Spanish manual
+
 2009-09-07 [holger]	3.7.2cvs29
 
 	* Makefile.am

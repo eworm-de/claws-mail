@@ -294,9 +294,11 @@
 	<listitem>
 	  <para>
 	This plugin reports spam to various places.
-	Currently only <ulink url="http://spam-signal.fr"
+	Currently the sites <ulink url="http://spam-signal.fr"
 	>spam-signal.fr</ulink> and <ulink url="http://spamcop.net"
-	>spamcop.net</ulink> are supported.
+	>spamcop.net</ulink> are supported, and the <ulink
+	url="http://lists.debian.org">Debian lists</ulink>
+	spam nomination system.
 	  </para>
 	</listitem>
       </varlistentry>
