@@ -3855,3 +3855,4 @@
 ( cvs diff -u -r 1.30.2.56 -r 1.30.2.57 src/prefs_toolbar.c;  ) > 3.7.2cvs28.patchset
 ( cvs diff -u -r 1.24.2.25 -r 1.24.2.26 Makefile.am;  ) > 3.7.2cvs29.patchset
 ( cvs diff -u -r 1.1.2.25 -r 1.1.2.26 manual/plugins.xml;  cvs diff -u -r 1.1.2.7 -r 1.1.2.8 manual/es/plugins.xml;  ) > 3.7.2cvs30.patchset
+( cvs diff -u -r 1.36.2.174 -r 1.36.2.175 src/common/utils.c;  ) > 3.7.2cvs31.patchset

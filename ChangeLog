@@ -1,3 +1,9 @@
+2009-09-14 [colin]	3.7.2cvs31
+
+	* src/common/utils.c
+		Add "Re :" prefix from french Yahoo mail.
+		Patch by Didier Barvaux, fixes bug 1999
+
 2009-09-10 [mones]	3.7.2cvs30
 
 	* manual/plugins.xml

@@ -3720,6 +3720,7 @@ int subject_get_prefix_length(const gchar *subject)
 		"Ad\\:",			/* "Ad" (Norwegian) */
 		"\347\255\224\345\244\215\\:",	/* "Re" (Chinese, UTF-8) */
 		"R\303\251f\\. \\:",	/* "Réf. :" (French Lotus Notes) */
+		"Re \\:",			/* "Re :" (French Yahoo Mail) */
 		/* add more */
 	};
 	const int PREFIXES = sizeof prefixes / sizeof prefixes[0];
@@ -3778,6 +3779,7 @@ int subject_get_prefix_length(const gchar *subject)
 		"vs:",			/* "Vs" (Norwegian) */
 		"ad:",			/* "Ad" (Norwegian) */
 		"R\303\251f. :",	/* "Réf. :" (French Lotus Notes) */
+		"Re :",			/* "Re :" (French Yahoo Mail) */
 		/* add more */
 	};
 	const int PREFIXES = sizeof prefixes / sizeof prefixes[0];
