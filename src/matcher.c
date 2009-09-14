@@ -85,6 +85,10 @@ static const MatchParser matchparser_tab[] = {
 	{MATCHCRITERIA_NOT_WATCH_THREAD, "~watch_thread"},
 	{MATCHCRITERIA_SPAM, "spam"},
 	{MATCHCRITERIA_NOT_SPAM, "~spam"},
+	{MATCHCRITERIA_HAS_ATTACHMENT, "has_attachment"},
+	{MATCHCRITERIA_HAS_NO_ATTACHMENT, "~has_attachment"},
+	{MATCHCRITERIA_SIGNED, "signed"},
+	{MATCHCRITERIA_NOT_SIGNED, "~signed"},
 
 	/* msginfo headers */
 	{MATCHCRITERIA_SUBJECT, "subject"},
@@ -798,6 +802,14 @@ gboolean matcherprop_match(MatcherProp *prop,
 		return MSG_IS_SPAM(info->flags);
 	case MATCHCRITERIA_NOT_SPAM:
 		return !MSG_IS_SPAM(info->flags);
+	case MATCHCRITERIA_HAS_ATTACHMENT:
+		return MSG_IS_WITH_ATTACHMENT(info->flags);
+	case MATCHCRITERIA_HAS_NO_ATTACHMENT:
+		return !MSG_IS_WITH_ATTACHMENT(info->flags);
+	case MATCHCRITERIA_SIGNED:
+		return MSG_IS_SIGNED(info->flags);
+	case MATCHCRITERIA_NOT_SIGNED:
+		return !MSG_IS_SIGNED(info->flags);
 	case MATCHCRITERIA_COLORLABEL:
 	{
 		gint color = MSG_GET_COLORLABEL_VALUE(info->flags);
@@ -1686,6 +1698,10 @@ gboolean matcherlist_match(MatcherList *matchers, MsgInfo *info)
 		case MATCHCRITERIA_NOT_LOCKED:
 		case MATCHCRITERIA_SPAM:
 		case MATCHCRITERIA_NOT_SPAM:
+		case MATCHCRITERIA_HAS_ATTACHMENT:
+		case MATCHCRITERIA_HAS_NO_ATTACHMENT:
+		case MATCHCRITERIA_SIGNED:
+		case MATCHCRITERIA_NOT_SIGNED:
 		case MATCHCRITERIA_COLORLABEL:
 		case MATCHCRITERIA_NOT_COLORLABEL:
 		case MATCHCRITERIA_IGNORE_THREAD:
@@ -1881,6 +1897,10 @@ gchar *matcherprop_to_string(MatcherProp *matcher)
 	case MATCHCRITERIA_NOT_LOCKED:
 	case MATCHCRITERIA_SPAM:
 	case MATCHCRITERIA_NOT_SPAM:
+	case MATCHCRITERIA_HAS_ATTACHMENT:
+	case MATCHCRITERIA_HAS_NO_ATTACHMENT:
+	case MATCHCRITERIA_SIGNED:
+	case MATCHCRITERIA_NOT_SIGNED:
 	case MATCHCRITERIA_PARTIAL:
 	case MATCHCRITERIA_NOT_PARTIAL:
 	case MATCHCRITERIA_IGNORE_THREAD:

@@ -3856,3 +3856,4 @@
 ( cvs diff -u -r 1.24.2.25 -r 1.24.2.26 Makefile.am;  ) > 3.7.2cvs29.patchset
 ( cvs diff -u -r 1.1.2.25 -r 1.1.2.26 manual/plugins.xml;  cvs diff -u -r 1.1.2.7 -r 1.1.2.8 manual/es/plugins.xml;  ) > 3.7.2cvs30.patchset
 ( cvs diff -u -r 1.36.2.174 -r 1.36.2.175 src/common/utils.c;  ) > 3.7.2cvs31.patchset
+( cvs diff -u -r 1.75.2.65 -r 1.75.2.66 src/matcher.c;  cvs diff -u -r 1.39.2.17 -r 1.39.2.18 src/matcher.h;  cvs diff -u -r 1.25.2.33 -r 1.25.2.34 src/matcher_parser_parse.y;  cvs diff -u -r 1.43.2.81 -r 1.43.2.82 src/prefs_matcher.c;  ) > 3.7.2cvs32.patchset

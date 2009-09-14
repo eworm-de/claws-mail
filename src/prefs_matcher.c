@@ -170,7 +170,10 @@ enum {
 	CRITERIA_FOUND_IN_ADDRESSBOOK = 34,
 	
 	CRITERIA_TAG = 35,
-	CRITERIA_TAGGED = 36
+	CRITERIA_TAGGED = 36,
+
+	CRITERIA_HAS_ATTACHMENT = 37,
+	CRITERIA_SIGNED = 38
 };
 
 enum {
@@ -373,6 +376,8 @@ static void prefs_matcher_models_create(void)
 	COMBOBOX_ADD(store, _("Forwarded"), CRITERIA_FORWARDED);
 	COMBOBOX_ADD(store, _("Locked"), CRITERIA_LOCKED);
 	COMBOBOX_ADD(store, _("Spam"), CRITERIA_SPAM);
+	COMBOBOX_ADD(store, _("Has attachment"), CRITERIA_HAS_ATTACHMENT);
+	COMBOBOX_ADD(store, _("Signed"), CRITERIA_SIGNED);
 	matcher.model_flags = GTK_TREE_MODEL(store);
 	
 	store = gtk_list_store_new(3, G_TYPE_STRING, G_TYPE_INT, G_TYPE_BOOLEAN);
@@ -1008,6 +1013,12 @@ static gint prefs_matcher_get_criteria_from_matching(gint matching_id)
 	case MATCHCRITERIA_NOT_SPAM:
 	case MATCHCRITERIA_SPAM:
 		return CRITERIA_SPAM;
+	case MATCHCRITERIA_HAS_ATTACHMENT:
+	case MATCHCRITERIA_HAS_NO_ATTACHMENT:
+		return CRITERIA_HAS_ATTACHMENT;
+	case MATCHCRITERIA_SIGNED:
+	case MATCHCRITERIA_NOT_SIGNED:
+		return CRITERIA_SIGNED;
 	case MATCHCRITERIA_PARTIAL:
 	case MATCHCRITERIA_NOT_PARTIAL:
 		return CRITERIA_PARTIAL;
@@ -1118,6 +1129,10 @@ static gint prefs_matcher_get_matching_from_criteria(gint criteria_id)
 		return MATCHCRITERIA_LOCKED;
 	case CRITERIA_SPAM:
 		return MATCHCRITERIA_SPAM;
+	case CRITERIA_HAS_ATTACHMENT:
+		return MATCHCRITERIA_HAS_ATTACHMENT;
+	case CRITERIA_SIGNED:
+		return MATCHCRITERIA_SIGNED;
 	case CRITERIA_PARTIAL:
 		return MATCHCRITERIA_PARTIAL;
 	case CRITERIA_COLORLABEL:
@@ -1206,6 +1221,10 @@ static gint prefs_matcher_not_criteria(gint matcher_criteria)
 		return MATCHCRITERIA_NOT_LOCKED;
 	case MATCHCRITERIA_SPAM:
 		return MATCHCRITERIA_NOT_SPAM;
+	case MATCHCRITERIA_HAS_ATTACHMENT:
+		return MATCHCRITERIA_HAS_NO_ATTACHMENT;
+	case MATCHCRITERIA_SIGNED:
+		return MATCHCRITERIA_NOT_SIGNED;
 	case MATCHCRITERIA_PARTIAL:
 		return MATCHCRITERIA_NOT_PARTIAL;
 	case MATCHCRITERIA_COLORLABEL:
@@ -1315,6 +1334,8 @@ static gint prefs_matcher_get_pred(const gint criteria)
 	case CRITERIA_FORWARDED:
 	case CRITERIA_LOCKED:
 	case CRITERIA_SPAM:
+	case CRITERIA_HAS_ATTACHMENT:
+	case CRITERIA_SIGNED:
 	case CRITERIA_COLORLABEL:
 		return gtk_combo_box_get_active(GTK_COMBO_BOX(matcher.match_combo2));
 	case CRITERIA_WATCH_THREAD:
@@ -1389,6 +1410,8 @@ static MatcherProp *prefs_matcher_dialog_to_matcher(void)
 	case CRITERIA_FORWARDED:
 	case CRITERIA_LOCKED:
 	case CRITERIA_SPAM:
+	case CRITERIA_HAS_ATTACHMENT:
+	case CRITERIA_SIGNED:
 	case CRITERIA_PARTIAL:
 	case CRITERIA_IGNORE_THREAD:
 	case CRITERIA_WATCH_THREAD:
@@ -2207,6 +2230,8 @@ static void prefs_matcher_set_criteria(const gint criteria)
 	case CRITERIA_FORWARDED:
 	case CRITERIA_LOCKED:
 	case CRITERIA_SPAM:
+	case CRITERIA_HAS_ATTACHMENT:
+	case CRITERIA_SIGNED:
 		match_criteria = MATCH_FLAG;
 		break;
 	case CRITERIA_PARTIAL:
@@ -2294,6 +2319,8 @@ static gboolean prefs_matcher_selected(GtkTreeSelection *selector,
 	case MATCHCRITERIA_NOT_FORWARDED:
 	case MATCHCRITERIA_NOT_LOCKED:
 	case MATCHCRITERIA_NOT_SPAM:
+	case MATCHCRITERIA_HAS_NO_ATTACHMENT:
+	case MATCHCRITERIA_NOT_SIGNED:
 	case MATCHCRITERIA_NOT_PARTIAL:
 	case MATCHCRITERIA_NOT_COLORLABEL:
 	case MATCHCRITERIA_NOT_IGNORE_THREAD:
@@ -2463,6 +2490,8 @@ static gboolean prefs_matcher_selected(GtkTreeSelection *selector,
 	case CRITERIA_FORWARDED:
 	case CRITERIA_LOCKED:
 	case CRITERIA_SPAM:
+	case CRITERIA_HAS_ATTACHMENT:
+	case CRITERIA_SIGNED:
 	case CRITERIA_COLORLABEL:
 		gtk_combo_box_set_active(GTK_COMBO_BOX(matcher.match_combo2),
 					 negative_cond ? PREDICATE_FLAG_DISABLED :

@@ -1,3 +1,13 @@
+2009-09-14 [colin]	3.7.2cvs32
+
+	* src/matcher.c
+	* src/matcher.h
+	* src/matcher_parser_parse.y
+	* src/prefs_matcher.c
+		Add 'has_attachment' and 'signed' matcher
+		expressions. Patch by Aleksei Miheev, fixes
+		bug 1997. 
+
 2009-09-14 [colin]	3.7.2cvs31
 
 	* src/common/utils.c

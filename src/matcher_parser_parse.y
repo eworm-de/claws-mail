@@ -337,6 +337,8 @@ int matcher_parserwrap(void)
 %token MATCHER_ADD_TO_ADDRESSBOOK
 %token MATCHER_STOP MATCHER_HIDE MATCHER_IGNORE MATCHER_WATCH
 %token MATCHER_SPAM MATCHER_NOT_SPAM
+%token MATCHER_HAS_ATTACHMENT MATCHER_HAS_NO_ATTACHMENT
+%token MATCHER_SIGNED MATCHER_NOT_SIGNED
 %token MATCHER_TAG MATCHER_NOT_TAG MATCHER_SET_TAG MATCHER_UNSET_TAG
 %token MATCHER_TAGGED MATCHER_NOT_TAGGED MATCHER_CLEAR_TAGS
 
@@ -709,6 +711,34 @@ MATCHER_ALL
 	gint criteria = 0;
 
 	criteria = MATCHCRITERIA_NOT_SPAM;
+	prop = matcherprop_new(criteria, NULL, 0, NULL, 0);
+}
+| MATCHER_HAS_ATTACHMENT
+{
+	gint criteria = 0;
+
+	criteria = MATCHCRITERIA_HAS_ATTACHMENT;
+	prop = matcherprop_new(criteria, NULL, 0, NULL, 0);
+}
+| MATCHER_HAS_NO_ATTACHMENT
+{
+	gint criteria = 0;
+
+	criteria = MATCHCRITERIA_HAS_NO_ATTACHMENT;
+	prop = matcherprop_new(criteria, NULL, 0, NULL, 0);
+}
+| MATCHER_SIGNED
+{
+	gint criteria = 0;
+
+	criteria = MATCHCRITERIA_SIGNED;
+	prop = matcherprop_new(criteria, NULL, 0, NULL, 0);
+}
+| MATCHER_NOT_SIGNED
+{
+	gint criteria = 0;
+
+	criteria = MATCHCRITERIA_NOT_SIGNED;
 	prop = matcherprop_new(criteria, NULL, 0, NULL, 0);
 }
 | MATCHER_PARTIAL
