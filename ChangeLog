@@ -1,3 +1,12 @@
+2009-09-15 [colin]	3.7.2cvs33
+
+	* src/procmime.c
+		Complete 3.7.1cvs42: only output directly to
+		final file if we get NULL byes at the start.
+		Still fixes saving UTF16 files, but also
+		fixes displaying Base64 parts with decoding
+		errors (parts without errors get displayed)
+
 2009-09-14 [colin]	3.7.2cvs32
 
 	* src/matcher.c

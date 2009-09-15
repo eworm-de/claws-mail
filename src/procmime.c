@@ -351,6 +351,7 @@ gboolean procmime_decode_content(MimeInfo *mimeinfo)
 		gboolean uncanonicalize = FALSE;
 		FILE *tmpfp = outfp;
 		gboolean null_bytes = FALSE;
+		gboolean starting = TRUE;
 
 		if (mimeinfo->type == MIMETYPE_TEXT ||
 		    mimeinfo->type == MIMETYPE_MESSAGE) {
@@ -367,10 +368,11 @@ gboolean procmime_decode_content(MimeInfo *mimeinfo)
 		decoder = base64_decoder_new();
 		while ((ftell(infp) < readend) && (fgets(buf, sizeof(buf), infp) != NULL)) {
 			len = base64_decoder_decode(decoder, buf, outbuf);
-			if (uncanonicalize == TRUE && strlen(outbuf) < len) {
+			if (uncanonicalize == TRUE && strlen(outbuf) < len && starting) {
 				uncanonicalize = FALSE;
 				null_bytes = TRUE;
 			}
+			starting = FALSE;
 			if (len < 0 && !got_error) {
 				g_warning("Bad BASE64 content.\n");
 				if (fwrite(_("[Error decoding BASE64]\n"),
