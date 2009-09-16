@@ -1228,12 +1228,20 @@ int main(int argc, char *argv[])
 		/* If migration failed or the user didn't want to do it,
 		 * we create a new one (and we'll hit wizard later). 
 		 */
-		if (r == FALSE && !is_dir_exist(RC_DIR) && make_dir(RC_DIR) < 0) {
-#ifdef G_OS_WIN32
-			win32_close_log();
+		if (r == FALSE && !is_dir_exist(RC_DIR)) {
+#ifdef G_OS_UNIX
+			if (copy_dir(SYSCONFDIR "/skel/.claws-mail", RC_DIR) < 0) {
 #endif
-			exit(1);
-	}
+				if (!is_dir_exist(RC_DIR) && make_dir(RC_DIR) < 0) {
+#ifdef G_OS_WIN32
+					win32_close_log();
+#endif
+					exit(1);
+				}
+#ifdef G_OS_UNIX
+			}
+#endif
+		}
 	}
 	
 

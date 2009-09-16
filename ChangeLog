@@ -1,3 +1,9 @@
+2009-09-16 [colin]	3.7.2cvs34
+
+	* src/main.c
+		Go grab files in /etc/skel if they exist
+		at first startup 
+
 2009-09-15 [colin]	3.7.2cvs33
 
 	* src/procmime.c

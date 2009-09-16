@@ -3858,3 +3858,4 @@
 ( cvs diff -u -r 1.36.2.174 -r 1.36.2.175 src/common/utils.c;  ) > 3.7.2cvs31.patchset
 ( cvs diff -u -r 1.75.2.65 -r 1.75.2.66 src/matcher.c;  cvs diff -u -r 1.39.2.17 -r 1.39.2.18 src/matcher.h;  cvs diff -u -r 1.25.2.33 -r 1.25.2.34 src/matcher_parser_parse.y;  cvs diff -u -r 1.43.2.81 -r 1.43.2.82 src/prefs_matcher.c;  ) > 3.7.2cvs32.patchset
 ( cvs diff -u -r 1.49.2.130 -r 1.49.2.131 src/procmime.c;  ) > 3.7.2cvs33.patchset
+( cvs diff -u -r 1.115.2.222 -r 1.115.2.223 src/main.c;  ) > 3.7.2cvs34.patchset
