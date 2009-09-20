@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 
 #  * Copyright 2007 Tristan Chabredier <wwp@claws-mail.org>
 #  *

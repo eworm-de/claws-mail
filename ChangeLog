@@ -1,3 +1,14 @@
+2009-09-20 [mones]	3.7.2cvs35
+
+	* tools/convert_mbox.pl
+		Add -R flag to support recursive conversions
+		of arbitrary Evolution mail folders, based on
+		bash script by Daniel Dickinson (fixes debian 
+		bug #461435) 
+	* tools/popfile-link.sh
+		Set required shell for script (fixes debian 
+		bug #530057)
+
 2009-09-16 [colin]	3.7.2cvs34
 
 	* src/main.c
