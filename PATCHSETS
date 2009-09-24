@@ -3862,3 +3862,4 @@
 ( cvs diff -u -r 1.3.2.2 -r 1.3.2.3 tools/convert_mbox.pl;  cvs diff -u -r 1.1.2.3 -r 1.1.2.4 tools/popfile-link.sh;  ) > 3.7.2cvs35.patchset
 ( cvs diff -u -r 1.12.2.57 -r 1.12.2.58 src/action.c;  ) > 3.7.2cvs36.patchset
 ( cvs diff -u -r 1.654.2.3930 -r 1.654.2.3931 configure.ac;  ) > 3.7.2cvs37.patchset
+( cvs diff -u -r 1.654.2.3931 -r 1.654.2.3932 configure.ac;  ) > 3.7.2cvs38.patchset

@@ -12,7 +12,7 @@ MINOR_VERSION=7
 MICRO_VERSION=2
 INTERFACE_AGE=0
 BINARY_AGE=0
-EXTRA_VERSION=37
+EXTRA_VERSION=38
 EXTRA_RELEASE=
 EXTRA_GTK2_VERSION=
 
@@ -140,7 +140,7 @@ AM_CONDITIONAL(CYGWIN, test x"$env_cygwin" = x"yes")
 
 if test "$GCC" = "yes"
 then
-	CFLAGS="$CFLAGS -Wno-unused-function"
+	CFLAGS="$CFLAGS -Wno-unused -function"
 fi
 
 AC_MSG_CHECKING([if gcc supports -Wno-pointer-sign])
