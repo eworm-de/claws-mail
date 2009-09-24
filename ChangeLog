@@ -1,3 +1,9 @@
+2009-09-24 [iwkse]	3.7.2cvs36
+
+	* src/action.c
+            Fix issue with filtering actions and 
+            parsed parameters
+
 2009-09-20 [mones]	3.7.2cvs35
 
 	* tools/convert_mbox.pl

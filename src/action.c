@@ -194,6 +194,7 @@ static gchar *get_user_string		(const gchar	*action,
 ActionType action_get_type(const gchar *action_str)
 {
 	const gchar *p;
+	gboolean in_filtering_action = FALSE;
 	ActionType action_type = ACTION_NONE;
 
 	cm_return_val_if_fail(action_str,  ACTION_ERROR);
@@ -216,55 +217,60 @@ ActionType action_get_type(const gchar *action_str)
 		return ACTION_ERROR;
 
 	while (*p && action_type != ACTION_ERROR) {
-		if (p[0] == '%' && p[1]) {
-			switch (p[1]) {
-			case 'a':
-				/* CLAWS: filtering action is a mutually exclusive
-				 * action. we can enable others if needed later. we
-				 * add ACTION_SINGLE | ACTION_MULTIPLE so it will
-				 * only be executed from the main window toolbar */
-				if (p[2] == 's')  /* source messages */
-					action_type = ACTION_FILTERING_ACTION 
-						    | ACTION_SINGLE 
-						    | ACTION_MULTIPLE;
-				break;
-			case 'f':
-				action_type |= ACTION_SINGLE;
-				break;
-			case 'F':
-				action_type |= ACTION_MULTIPLE;
-				break;
-			case 'p':
-				action_type |= ACTION_SINGLE;
-				break;
-			case 's':
-				action_type |= ACTION_SELECTION_STR;
-				break;
-			case 'u':
-				action_type |= ACTION_USER_STR;
-				break;
-			case 'h':
-				action_type |= ACTION_USER_HIDDEN_STR;
-				break;
-			case '%':
-				/* literal '%' */
-				break;
-			default:
-				action_type = ACTION_ERROR;
-				break;
+		if (!in_filtering_action) {
+			if (p[0] == '%' && p[1]) {
+				switch (p[1]) {
+				case 'a':
+					/* CLAWS: filtering action is a mutually exclusive
+					* action. we can enable others if needed later. we
+					* add ACTION_SINGLE | ACTION_MULTIPLE so it will
+					* only be executed from the main window toolbar */
+					if (p[2] == 's')  /* source messages */
+						action_type = ACTION_FILTERING_ACTION 
+								| ACTION_SINGLE 
+								| ACTION_MULTIPLE;
+					in_filtering_action = TRUE;
+					break;
+				case 'f':
+					action_type |= ACTION_SINGLE;
+					break;
+				case 'F':
+					action_type |= ACTION_MULTIPLE;
+					break;
+				case 'p':
+					action_type |= ACTION_SINGLE;
+					break;
+				case 's':
+					action_type |= ACTION_SELECTION_STR;
+					break;
+				case 'u':
+					action_type |= ACTION_USER_STR;
+					break;
+				case 'h':
+					action_type |= ACTION_USER_HIDDEN_STR;
+					break;
+				case '%':
+					/* literal '%' */
+					break;
+				default:
+					action_type = ACTION_ERROR;
+					break;
+				}
+				p++;
+			} else if (p[0] == '|') {
+				if (p[1] == '\0')
+					action_type |= ACTION_PIPE_OUT;
+			} else if (p[0] == '>') {
+				if (p[1] == '\0')
+					action_type |= ACTION_INSERT;
+			} else if (p[0] == '&') {
+				if (p[1] == '\0')
+					action_type |= ACTION_ASYNC;
+			} else if (p[0] == '}') {
+				in_filtering_action = FALSE;
 			}
-			p++;
-		} else if (p[0] == '|') {
-			if (p[1] == '\0')
-				action_type |= ACTION_PIPE_OUT;
-		} else if (p[0] == '>') {
-			if (p[1] == '\0')
-				action_type |= ACTION_INSERT;
-		} else if (p[0] == '&') {
-			if (p[1] == '\0')
-				action_type |= ACTION_ASYNC;
 		}
-		p++;
+			p++;
 	}
 
 	return action_type;
