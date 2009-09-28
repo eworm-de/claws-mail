@@ -1598,8 +1598,10 @@ static gchar *mimeview_get_filename_for_part(MimeInfo *partinfo,
 	gchar *filename;
 
 	filename = g_strdup(get_part_name(partinfo));
-	if (!filename || !*filename)
+	if (!filename || !*filename) {
+		g_free(filename);
 		filename = g_strdup_printf("noname.%d", number);
+	}
 
 	if (!g_utf8_validate(filename, -1, NULL)) {
 		gchar *tmp = conv_filename_to_utf8(filename);

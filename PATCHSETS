@@ -3865,3 +3865,4 @@
 ( cvs diff -u -r 1.654.2.3931 -r 1.654.2.3932 configure.ac;  ) > 3.7.2cvs38.patchset
 ( cvs diff -u -r 1.654.2.3932 -r 1.654.2.3933 configure.ac;  ) > 3.7.2cvs39.patchset
 ( cvs diff -u -r 1.1.2.60 -r 1.1.2.61 src/prefs_summaries.c;  cvs diff -u -r 1.9.2.28 -r 1.9.2.29 src/gtk/sslcertwindow.c;  ) > 3.7.2cvs40.patchset
+( cvs diff -u -r 1.75.2.66 -r 1.75.2.67 src/matcher.c;  cvs diff -u -r 1.83.2.155 -r 1.83.2.156 src/mimeview.c;  cvs diff -u -r 1.52.2.77 -r 1.52.2.78 src/prefs_folder_item.c;  ) > 3.7.2cvs41.patchset

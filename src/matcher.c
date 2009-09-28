@@ -689,13 +689,21 @@ static gboolean matcherprop_match_test(const MatcherProp *prop,
 #endif
 
 	file = procmsg_get_message_file(info);
-	if (file == NULL)
+	if (file == NULL) {
+#ifdef USE_PTHREAD
+		g_free(td);
+#endif
 		return FALSE;
+	}
 	g_free(file);		
 
 	cmd = matching_build_command(prop->expr, info);
-	if (cmd == NULL)
+	if (cmd == NULL) {
+#ifdef USE_PTHREAD
+		g_free(td);
+#endif	
 		return FALSE;
+}
 
 #ifdef USE_PTHREAD
 	/* debug output */

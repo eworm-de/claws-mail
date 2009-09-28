@@ -1,3 +1,10 @@
+2009-09-28 [colin]	3.7.2cvs41
+
+	* src/matcher.c
+	* src/mimeview.c
+	* src/prefs_folder_item.c
+		Fix bug 2007, 'Small memory leaks'. Patch by Pawel
+
 2009-09-28 [colin]	3.7.2cvs40
 
 	* src/prefs_summaries.c
