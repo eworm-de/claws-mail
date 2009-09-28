@@ -1,3 +1,10 @@
+2009-09-28 [colin]	3.7.2cvs40
+
+	* src/prefs_summaries.c
+	* src/gtk/sslcertwindow.c
+		Fix bug 2006, 'Non-utf8 strftime(3) date strings 
+		shows up garbled in GUI'. Patch by Pawel Pekala
+
 2009-09-24 [iwkse]	3.7.2cvs39
 
 	* configure.ac

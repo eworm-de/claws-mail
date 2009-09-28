@@ -136,7 +136,7 @@ static GtkWidget *cert_presenter(SSLCertificate *cert)
 
 	memset(buf, 0, sizeof(buf));
 	if (exp_time_t > 0) {
-		strftime(buf, sizeof(buf)-1, prefs_common.date_format, localtime_r(&exp_time_t, &lt));
+		fast_strftime(buf, sizeof(buf)-1, prefs_common.date_format, localtime_r(&exp_time_t, &lt));
 		exp_date = (*buf) ? g_strdup(buf):g_strdup("?");
 	} else
 		exp_date = g_strdup("");
