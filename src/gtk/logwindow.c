@@ -147,8 +147,6 @@ LogWindow *log_window_create(LogInstance instance)
 	logwin->text = text;
 	logwin->hook_id = hooks_register_hook(get_log_hook(instance), log_window_append, logwin);
 
-	gtk_text_view_scroll_mark_onscreen(GTK_TEXT_VIEW(text), logwin->end_mark);
-
 	return logwin;
 }
 

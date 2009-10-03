@@ -6001,9 +6001,14 @@ draw_rows (GtkCMCList     *clist,
       i++;
     }
 
-  if (!area)
-    gdk_window_clear_area (clist->clist_window, 0,
-			   ROW_TOP_YPIXEL (clist, i), 0, 0);
+  if (!area) {
+    int w, h, y;
+    gdk_drawable_get_size (GDK_DRAWABLE (clist->clist_window), &w, &h);
+    y = ROW_TOP_YPIXEL (clist, i);
+    gdk_window_clear_area (clist->clist_window,
+                           0, y,
+                           w, h - y);
+  }
 }
 
 static void                          

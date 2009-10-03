@@ -1,3 +1,15 @@
+2009-10-03 [colin]	3.7.2cvs42
+
+	* src/mimeview.c
+	* src/noticeview.c
+	* src/gtk/gtkcmclist.c
+	* src/gtk/gtkvscrollbutton.c
+	* src/gtk/logwindow.c
+		GTK+ 2.18 fixes:
+		Fix bug 2008, 'Claws-Mail doesn't refresh after deletion'
+		Fix bug 2009, 'Incorrect pointer representation with GTK+2.18'
+		Fix warning at start
+
 2009-09-28 [colin]	3.7.2cvs41
 
 	* src/matcher.c

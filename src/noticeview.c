@@ -97,8 +97,6 @@ NoticeView *noticeview_create(MainWindow *mainwin)
 	g_signal_connect(G_OBJECT(evtbox), "button-press-event", 
 			 G_CALLBACK(noticeview_icon_pressed),
 			 (gpointer) noticeview);
-	g_signal_connect(G_OBJECT(evtbox), "visibility-notify-event",
-			 G_CALLBACK(noticeview_visi_notify), noticeview);
 	g_signal_connect(G_OBJECT(evtbox), "motion-notify-event",
 			 G_CALLBACK(noticeview_visi_notify), noticeview);
 	g_signal_connect(G_OBJECT(evtbox), "leave-notify-event",

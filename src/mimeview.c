@@ -321,8 +321,6 @@ MimeView *mimeview_create(MainWindow *mainwin)
     	mime_toggle = gtk_event_box_new();
 	gtk_event_box_set_visible_window(GTK_EVENT_BOX(mime_toggle), FALSE);
 
-	g_signal_connect(G_OBJECT(mime_toggle), "visibility-notify-event",
-			 G_CALLBACK(mimeview_visi_notify), mimeview);
 	g_signal_connect(G_OBJECT(mime_toggle), "motion-notify-event",
 			 G_CALLBACK(mimeview_visi_notify), mimeview);
 	g_signal_connect(G_OBJECT(mime_toggle), "leave-notify-event",
@@ -2219,8 +2217,6 @@ static void icon_list_append_icon (MimeView *mimeview, MimeInfo *mimeinfo)
 	mimeview->icon_count++;
 	button = gtk_event_box_new();
 
-	g_signal_connect(G_OBJECT(button), "visibility-notify-event",
-			 G_CALLBACK(mimeview_visi_notify), mimeview);
 	g_signal_connect(G_OBJECT(button), "motion-notify-event",
 			 G_CALLBACK(mimeview_visi_notify), mimeview);
 	g_signal_connect(G_OBJECT(button), "leave-notify-event",

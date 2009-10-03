@@ -161,16 +161,12 @@ static void gtk_vscrollbutton_init(GtkVScrollbutton *scrollbutton)
     gtk_widget_show(scrollbutton->downbutton);
     gtk_widget_show(scrollbutton->upbutton);
 
-    g_signal_connect(G_OBJECT(scrollbutton->upbutton), "visibility-notify-event",
-		     G_CALLBACK(vscroll_visi_notify), NULL);
     g_signal_connect(G_OBJECT(scrollbutton->upbutton), "motion-notify-event",
 		     G_CALLBACK(vscroll_visi_notify), NULL);
     g_signal_connect(G_OBJECT(scrollbutton->upbutton), "leave-notify-event",
 		     G_CALLBACK(vscroll_leave_notify), NULL);
     g_signal_connect(G_OBJECT(scrollbutton->upbutton), "enter-notify-event",
 		     G_CALLBACK(vscroll_enter_notify), NULL);
-    g_signal_connect(G_OBJECT(scrollbutton->downbutton), "visibility-notify-event",
-		     G_CALLBACK(vscroll_visi_notify), NULL);
     g_signal_connect(G_OBJECT(scrollbutton->downbutton), "motion-notify-event",
 		     G_CALLBACK(vscroll_visi_notify), NULL);
     g_signal_connect(G_OBJECT(scrollbutton->downbutton), "leave-notify-event",
