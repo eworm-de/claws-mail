@@ -378,7 +378,7 @@ static void prefs_summaries_create_widget(PrefsPage *_page, GtkWindow *window,
 
 	PACK_CHECK_BUTTON
 		(vbox2, checkbtn_reopen_last_folder,
-		 _("Open last opened folder at startup"));
+		 _("Open last opened folder at start-up"));
 
 	label_ng_abbrev = gtk_label_new
 		(_("Abbreviate newsgroup names longer than"));

@@ -1,3 +1,9 @@
+2009-10-05 [paul]	3.7.2cvs44
+
+	* src/prefs_summaries.c
+		fix label, startup --> start-up, to match other uses of the
+		term
+
 2009-10-05 [paul]	3.7.2cvs43
 
 	* po/pl.po
