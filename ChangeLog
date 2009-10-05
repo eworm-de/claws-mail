@@ -1,3 +1,9 @@
+2009-10-05 [paul]	3.7.2cvs45
+
+	* src/printing.c
+		enable Page Size and Orientation in the print dialog,
+		GTK+ >= 2.18.x only. Patch by Mark__T
+
 2009-10-05 [paul]	3.7.2cvs44
 
 	* src/prefs_summaries.c

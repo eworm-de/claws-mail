@@ -279,6 +279,10 @@ void printing_print_full(GtkWindow *parent, PrintRenderer *renderer, gpointer re
 	/* Config for printing */
 	gtk_print_operation_set_print_settings(op, settings);
 	gtk_print_operation_set_default_page_setup(op, page_setup);
+#if GTK_CHECK_VERSION(2, 18, 0)
+        /* enable Page Size and Orientation in the print dialog */
+	gtk_print_operation_set_embed_page_setup(op, TRUE);
+#endif
 
 	/* signals */
 	g_signal_connect(op, "begin_print", G_CALLBACK(renderer->cb_begin_print), print_data);
