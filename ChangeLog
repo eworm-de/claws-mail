@@ -1,3 +1,8 @@
+2009-10-06 [colin]	3.7.2cvs46
+
+	* po/fr.po
+		French translation update
+
 2009-10-05 [paul]	3.7.2cvs45
 
 	* src/printing.c

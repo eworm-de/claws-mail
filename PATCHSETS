@@ -3870,3 +3870,4 @@
 ( cvs diff -u -r 1.10.2.17 -r 1.10.2.18 po/pl.po;  ) > 3.7.2cvs43.patchset
 ( cvs diff -u -r 1.1.2.61 -r 1.1.2.62 src/prefs_summaries.c;  ) > 3.7.2cvs44.patchset
 ( cvs diff -u -r 1.1.2.26 -r 1.1.2.27 src/printing.c;  ) > 3.7.2cvs45.patchset
+( cvs diff -u -r 1.42.2.47 -r 1.42.2.48 po/fr.po;  ) > 3.7.2cvs46.patchset
