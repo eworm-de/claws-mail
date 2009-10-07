@@ -2630,7 +2630,7 @@ static gchar *last_normalfont = NULL;
 static gchar *last_boldfont = NULL;
 static gboolean last_derive = 0;
 
-void folderview_reflect_prefs_pixmap_theme(FolderView *folderview)
+void folderview_reinit_fonts(FolderView *folderview)
 {
 	/* force reinit */
 	g_free(last_smallfont);

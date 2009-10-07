@@ -2403,7 +2403,7 @@ static gboolean reflect_prefs_timeout_cb(gpointer data)
 			toolbar_update(TOOLBAR_MAIN, mainwin);
 			messageview_reflect_prefs_pixmap_theme();
 			compose_reflect_prefs_pixmap_theme();
-			folderview_reflect_prefs_pixmap_theme(mainwin->folderview);
+			folderview_reinit_fonts(mainwin->folderview);
 			summary_reflect_prefs_pixmap_theme(mainwin->summaryview);
 			foldersel_reflect_prefs_pixmap_theme();
 			addressbook_reflect_prefs_pixmap_theme();
@@ -2469,7 +2469,7 @@ void main_window_reflect_prefs_custom_colors(MainWindow *mainwin)
 	}
 	mainwindow_colorlabel_menu_create(mainwin, TRUE);
 	summary_reflect_prefs_custom_colors(mainwin->summaryview);
-
+	folderview_reinit_fonts(mainwin->folderview);
 }
 
 static gint tags_tag = 0;

@@ -133,7 +133,7 @@ void folderview_move_folder		(FolderView 	*folderview,
 
 void folderview_set_target_folder_color (gint		color_op);
 
-void folderview_reflect_prefs_pixmap_theme	(FolderView *folderview);
+void folderview_reinit_fonts		(FolderView *folderview);
 
 void folderview_reflect_prefs		(void);
 void folderview_register_popup		(FolderViewPopup	*fpopup);

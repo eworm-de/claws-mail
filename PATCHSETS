@@ -3873,3 +3873,4 @@
 ( cvs diff -u -r 1.42.2.47 -r 1.42.2.48 po/fr.po;  ) > 3.7.2cvs46.patchset
 ( cvs diff -u -r 1.9.2.16 -r 1.9.2.17 po/cs.po;  cvs diff -u -r 1.58.2.44 -r 1.58.2.45 po/de.po;  cvs diff -u -r 1.5.2.14 -r 1.5.2.15 po/hu.po;  cvs diff -u -r 1.1.2.2 -r 1.1.2.3 po/id.po;  cvs diff -u -r 1.16.2.9 -r 1.16.2.10 po/ja.po;  cvs diff -u -r 1.50.2.36 -r 1.50.2.37 po/pt_BR.po;  ) > 3.7.2cvs47.patchset
 ( cvs diff -u -r 1.5.10.29 -r 1.5.10.30 src/addrgather.c;  cvs diff -u -r 1.204.2.192 -r 1.204.2.193 src/prefs_common.c;  cvs diff -u -r 1.103.2.125 -r 1.103.2.126 src/prefs_common.h;  ) > 3.7.2cvs48.patchset
+( cvs diff -u -r 1.207.2.214 -r 1.207.2.215 src/folderview.c;  cvs diff -u -r 1.20.2.25 -r 1.20.2.26 src/folderview.h;  cvs diff -u -r 1.274.2.302 -r 1.274.2.303 src/mainwindow.c;  ) > 3.7.2cvs49.patchset

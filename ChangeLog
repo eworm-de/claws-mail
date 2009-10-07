@@ -1,3 +1,12 @@
+2009-10-07 [paul]	3.7.2cvs49
+
+	* src/folderview.c
+	* src/folderview.h
+	* src/mainwindow.c
+		fix  Bug 1994 -  Changing colors required restart.
+		in the process rename folderview_reflect_prefs_pixmap_theme() to the
+		more accurate folderview_reinit_fonts()
+
 2009-10-07 [paul]	3.7.2cvs48
 
 	* src/addrgather.c
