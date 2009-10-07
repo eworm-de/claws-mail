@@ -1,3 +1,15 @@
+2009-10-07 [paul]	3.7.2cvs47
+
+	* po/cs.po
+	* po/de.po
+	* po/hu.po
+	* po/id.po
+	* po/ja.po
+	* po/pt_BR.po
+		updated by David Vachulka, Stephan Sachse and Marc Arens,
+		Pader Rezso, MSulchan Darmawan, kazken3, and Frederico
+		Goncalves Guimaraes
+
 2009-10-06 [colin]	3.7.2cvs46
 
 	* po/fr.po
