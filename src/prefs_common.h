@@ -469,6 +469,8 @@ struct _PrefsCommon
 	gint addressbook_folderselwin_height;
 	gint aboutwin_width;
 	gint aboutwin_height;
+	gint addrgather_width;
+	gint addrgather_height;
 
 	gint warn_dnd;
 	gint broken_are_utf8;

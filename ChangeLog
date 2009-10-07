@@ -1,3 +1,11 @@
+2009-10-07 [paul]	3.7.2cvs48
+
+	* src/addrgather.c
+	* src/prefs_common.c
+	* src/prefs_common.h
+		fix  Bug 2003 -  Address gathering dialog minor bugs/annoyances,
+		patch by Pawel Pekala
+
 2009-10-07 [paul]	3.7.2cvs47
 
 	* po/cs.po

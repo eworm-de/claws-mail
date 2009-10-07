@@ -42,6 +42,7 @@
 #include "manage_window.h"
 #include "folder.h"
 #include "utils.h"
+#include "prefs_common.h"
 
 #include "addrharvest.h"
 #include "addrindex.h"
@@ -125,6 +126,15 @@ static gboolean addrgather_dlg_key_pressed(
 		gtk_main_quit();
 	}
 	return FALSE;
+}
+
+static void addrgather_size_allocate(
+	GtkWidget *widget, GtkAllocation *allocation )
+{
+	cm_return_if_fail( allocation != NULL );
+	
+	prefs_common.addrgather_width	= allocation->width;
+	prefs_common.addrgather_height	= allocation->height;
 }
 
 #define FMT_BUFSIZE 32
@@ -338,7 +348,8 @@ static void addrgather_page_fields(gint pageNum, gchar *pageLbl)
 	gtk_container_set_border_width(GTK_CONTAINER(vboxf), 8);
 
 	for (i = 0; i < NUM_FIELDS; i++) {
-		PACK_CHECK_BUTTON(vboxf, checkHeader[i], _harv_headerNames_[i]);
+		PACK_CHECK_BUTTON(vboxf, checkHeader[i],
+			prefs_common_translated_header_name(_harv_headerNames_[i]));
 		addrgather_dlg.checkHeader[i] = checkHeader[i];
 	}
 
@@ -417,9 +428,9 @@ static void addrgather_dlg_create(void)
 	GtkWidget *vbox;
 	GtkWidget *hbbox;
 	GtkWidget *hsbox;
-
+	static GdkGeometry geometry;
+	
 	window = gtkut_window_new(GTK_WINDOW_TOPLEVEL, "addrgather");
-	gtk_widget_set_size_request(window, 380, -1);
 	gtk_container_set_border_width(GTK_CONTAINER(window), 4);
 	gtk_window_set_position(GTK_WINDOW(window), GTK_WIN_POS_CENTER);
 	gtk_window_set_resizable(GTK_WINDOW(window), TRUE);
@@ -428,6 +439,8 @@ static void addrgather_dlg_create(void)
 			 G_CALLBACK(addrgather_dlg_delete_event), NULL);
 	g_signal_connect(G_OBJECT(window), "key_press_event",
 			 G_CALLBACK(addrgather_dlg_key_pressed), NULL);
+	g_signal_connect(G_OBJECT(window), "size_allocate",
+			 G_CALLBACK(addrgather_size_allocate), NULL);
 
 	vbox = gtk_vbox_new(FALSE, 6);
 	gtk_container_add(GTK_CONTAINER(window), vbox);
@@ -456,6 +469,16 @@ static void addrgather_dlg_create(void)
 			 G_CALLBACK(addrgather_dlg_ok), NULL);
 	g_signal_connect(G_OBJECT(btnCancel), "clicked",
 			 G_CALLBACK(addrgather_dlg_cancel), NULL);
+
+	if (!geometry.min_width) {
+		geometry.min_width = 450;
+		geometry.min_height = -1;
+	}
+
+	gtk_window_set_geometry_hints(GTK_WINDOW(window), NULL, &geometry,
+				      GDK_HINT_MIN_SIZE);
+	gtk_window_set_default_size(GTK_WINDOW(window), prefs_common.addrgather_width,
+				    prefs_common.addrgather_height);
 
 	gtk_widget_show_all(vbox);
 
@@ -512,6 +535,7 @@ AddressBookFile *addrgather_dlg_execute(FolderItem *folderItem, AddressIndex *ad
 	}
 
 	gtk_widget_set_sensitive(addrgather_dlg.btnOk, TRUE);
+	gtk_widget_set_sensitive(addrgather_dlg.btnCancel, TRUE);
 	gtk_widget_grab_default(addrgather_dlg.btnOk);
 
 	/* Apply window title */

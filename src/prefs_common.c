@@ -1030,6 +1030,11 @@ static PrefParam param[] = {
 	{"aboutwin_height", "500", &prefs_common.aboutwin_height, P_INT,
 	 NULL, NULL, NULL},
 
+	{"addrgather_width", "450", &prefs_common.addrgather_width, P_INT,
+	 NULL, NULL, NULL},
+	{"addrgather_height", "-1", &prefs_common.addrgather_height, P_INT,
+	 NULL, NULL, NULL},
+
 	/* Hidden */
 	{"warn_dnd", "1", &prefs_common.warn_dnd, P_INT,
 	 NULL, NULL, NULL},
