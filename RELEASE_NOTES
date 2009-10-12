@@ -1,4 +1,4 @@
-3rd July 2009                                        Claws Mail 3.7.2
+9th October 2009                                     Claws Mail 3.7.3
 
 		    CLAWS MAIL  RELEASE NOTES
                     http://www.claws-mail.org
@@ -9,90 +9,59 @@ email client.
 New in this release:
 ~~~~~~~~~~~~~~~~~~~~
 
-* Default Cc, Bcc and Reply-To options have been added to Folder
-  Properties.
+* The user is now warned when inserting a large file in the message
+  body. The value of 'large' can be configured on the Compose/Writing
+  page of the Preferences.
 
-* MIME parts that lack an end boundary are now handled, (even though
-  they're INVALID!).
+* Added 'has_attachment' and 'signed' matcher expressions to
+  Filtering and Processing Flags lists.
 
-* A 'Metadata handling' option has been added to the Miscellaneous
-  options page. The options are 'safer' or 'faster'. 'faster' is
-  Claws' original behaviour. 'safer' prevents data loss on system
-  crashes where the filesystem is of a 'not-so-robust' variety, e.g.
-  xfs. If in doubt, use 'safer'. This option defaults to 'safer'.
+* Support Reply prefixes of French Yahoo mail and French Lotus Notes.
 
-* Face and X-Face previews have been added to the Custom Header
-  Configuration dialogue in Account preferences.
+* Enabled Page Size and Orientation configuration in the print dialog.
+  GTK+ 2.18 or newer only.
 
-* An option has been added to the Receive page of IMAP account
-  preferences, "Move deleted mails to trash and expunge immediately".
-  This option is on by default to avoid changing the existing
-  behaviour. Turning it off prevents automatic expunging.
-  Also, 'Tools/Expunge'  and 'View/Hide deleted messages' menu items
-  have been added to main toolbar.
+* tools/convert_mbox.pl
+  Add -R flag to support recursive conversions of arbitrary Evolution
+  mail folders.
 
-* Support for clickable gopher:// links has been added.
+* Updated user manual.
 
-* In the Compose window a warning dialogue is raised if attachments
-  that have been added no longer exist on the filesystem at the time
-  of sending.
-
-* Buttons to clear header lines in the Compose window have been
-  added.
-
-* GnuTLS compatibility mode is now used, this avoids problems with 
-  servers that don't comply 100% with the spec, but still exist.
-
-* tools/csv2addressbook.pl
-  thunderbird import for version 2.0.0.21 has been added.
-
-* Added Indonesian, Japanese, Portuguese, and Slovakian translations.
-
-* Updated Bulgarian, Brazilian Portuguese, Czech, Finnish, French,
-  German, Hungarian, Italian, Russian, and Spanish translations.
+* Updated  Brazilian Portuguese, Czech, French, German, Hungarian,
+  Indonesian, Japanese, and Polish translations.
 
 * Bug fixes:
-	o bug 1735, 'Change To: and Newsgroups: recipient field
-		     according account type'
-	o bug 1866, 'Claws should make use of the IMAP 'deleted'
-		     flag'
-	o bug 1872, 'A: Cc: CCi: selector should default on same as
-		     preceding contact'
-	o bug 1878, 'Processing rules for folders with brackets
-		     aren't saved'
-	o bug 1883, 'Message processing fails to act on Newsgroups:
-		     field'
-	o bug 1895, '(imap) cache issues when cache dir is on a 
-		     different mountpoint than tempdir'
-	o bug 1904, 'build mechanism looks for 'enchant.h' in a wrong
-		     place'
-	o bug 1913, 'Allow to remove phantom messages from the cache'
-	o bug 1914, 'Crash reading corrupted tags file'
-	o bug 1915, 'Mails signed with smime.p7s display both signed
-		     and attachment icon.'
-	o bug 1935, 'problems with very long filtering actions'
-	o bug 1940, 'Doesn't open links in user's default browser'
-	o Debian bug 531052: 'Message-ID header does not conform to
-	  RFC-2822'
-	o Redhat bug 486422, Ubuntu bug 486422: Don't ask for IMAP
-	  password when using GSSAPI auth
-	o fix old print interface
-	o fix "wrong mime" message printed out multiple times
-	o fix empty spell checker menu when there are no suggestions
-	o fix 'Wrong word replaced in 'Subject:' when spell-checking
-	  correction used'
-	o fix internal headers visible in queue/sent
-	o don't use un-sensitive checkboxes in Privacy tab when
-	  privacy system in None
-	o [IMAP] fix tag update when all tags are removed by another
-	  client
-	o fix saving of UTF-16 files
-	o clear progressbar in the statusbar on 'Cancel'
-	o TrayIcon plugin: respect the 'empty trash on exit' option
-	o fix error messages in templates, and fix their checking
-	o win32: fix subject prefix length
-	o win32: fix exit status fetch
-	o win32: fix most focusing issues
+	o bug 1949, 'Spell checker doesn't recognise certain word in
+		     Subject header, but does in message body'
+	o bug 1951, 'C-Mail dumps core when editing displayed
+		     headers'
+	o bug 1952, 'Deleted mails in Queue folder highlight it'
+	o bug 1954, 'Segfault on reading wrong STATUS'
+	o bug 1957, 'LDAP errs out after searching too many search
+		     bases'
+	o bug 1966, '"Collapse all threads" slower than "Expand all
+		     threads"'
+	o bug 1967, 'Claws gets stuck after accepting a certificate
+		     warning dialog'
+	o bug 1969, 'Bad guess for outgoing encoding'
+	o bug 1984, 'Claws Mail does not support the anwser prefix
+		     used by French Lotus Notes'
+	o bug 1994, 'Changing colors required restart.'
+	o bug 2003, 'Address gathering dialog minor bugs/annoyances'
+	o bug 2006, 'Non-utf8 strftime(3) date strings shows up
+		     garbled in GUI'
+	o bug 2007, 'Small memory leaks'
+	o bug 2008, 'Claws-Mail doesn't refresh after deletion'
+	o bug 2009, 'Incorrect pointer representation with GTK+2.18'
+	o Debian bug 530057: 'claws-mail-tools: bashism in /bin/sh
+	  script'
+	o Redhat bug 512024, 'folder.c:3543 Condition
+	  msglist != NULL failed'
+	o fix displaying Base64 parts with decoding errors (parts
+	  without errors get displayed)
+	o fix disappearing folderview icons on main toolbar update
+	o fix crash on non-existent LDAP server
+	o fix toolbar spacing that breaks dark themes
 
 For further details of the numbered bugs listed above consult
 http://www.thewildbeast.co.uk/claws-mail/bugzilla/index.cgi

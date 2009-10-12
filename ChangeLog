@@ -2,6 +2,10 @@
 
 	* CVS repository change
 
+2009-10-09 [paul[	3.7.3
+
+	version 3.7.3 unleashed!!
+
 2009-10-07 [paul]	3.7.2cvs49
 
 	* src/folderview.c
@@ -211,7 +215,7 @@
 	* AUTHORS
 	* src/gtk/authors.h
 	* src/common/utils.c
-		Fix bug 1984: Add Réf. : reply prefix (french 
+		Fix bug 1984: Add Rï¿½f. : reply prefix (french 
 		Lotus Notes); patch by Didier Barvaux
 
 2009-08-21 [colin]	3.7.2cvs20
