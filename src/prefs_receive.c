@@ -159,7 +159,7 @@ static void prefs_receive_create_widget(PrefsPage *_page, GtkWindow *window,
 	gtk_box_pack_start (GTK_BOX (vbox2), hbox_autochk, FALSE, FALSE, 0);
 
 	PACK_CHECK_BUTTON (hbox_autochk, checkbtn_autochk,
-			   _("Automatically check for new mail every"));
+			   _("Check for new mail every"));
 
 	spinbtn_autochk_adj = gtk_adjustment_new (5, 1, 100, 1, 10, 0);
 	spinbtn_autochk = gtk_spin_button_new

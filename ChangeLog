@@ -1,3 +1,16 @@
+2009-10-17 [paul]	3.7.3cvs1
+
+	* src/prefs_account.c
+	* src/prefs_compose_writing.c
+	* src/prefs_receive.c
+	* src/prefs_summaries.c
+	* src/prefs_wrapping.c
+		reword a few labels. (this incorporates everything
+		that seemed worthwhile from bug 2020)
+	* src/prefs_customheader.c
+		use a 'Browse' button instead of button with
+		label 'From file...'
+
 2009-10-12 [colin]
 
 	* CVS repository change

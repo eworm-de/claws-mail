@@ -144,7 +144,7 @@ static void prefs_compose_writing_create_widget(PrefsPage *_page, GtkWindow *win
 	gtk_box_pack_start (GTK_BOX (vbox2), hbox_autosave, FALSE, FALSE, 0);
 
 	PACK_CHECK_BUTTON (hbox_autosave, checkbtn_autosave,
-			   _("Autosave message text to Drafts folder every"));
+			   _("Automatically save message to Drafts folder every"));
 
 	spinbtn_autosave_adj = gtk_adjustment_new (50, 0, 1000, 1, 10, 0);
 	spinbtn_autosave_length = gtk_spin_button_new
@@ -181,7 +181,7 @@ static void prefs_compose_writing_create_widget(PrefsPage *_page, GtkWindow *win
 	gtk_box_pack_start (GTK_BOX (vbox2), hbox_warn_large_insert, FALSE, FALSE, 0);
 
 	PACK_CHECK_BUTTON (hbox_warn_large_insert, checkbtn_warn_large_insert,
-			   _("Warn when inserting in message body a file larger than"));
+			   _("Warn when inserting a file larger than"));
 
 	spinbtn_warn_large_insert_adj = gtk_adjustment_new (50, 0, 10000, 1, 10, 0);
 	spinbtn_warn_large_insert_size = gtk_spin_button_new
@@ -193,7 +193,7 @@ static void prefs_compose_writing_create_widget(PrefsPage *_page, GtkWindow *win
 	gtk_spin_button_set_numeric (GTK_SPIN_BUTTON (spinbtn_warn_large_insert_size),
 			TRUE);
 
-	label_warn_large_insert_size = gtk_label_new(_("KB"));
+ 	label_warn_large_insert_size = gtk_label_new(_("KB into message body "));
 	gtk_widget_show (label_warn_large_insert_size);
 	gtk_box_pack_start (GTK_BOX (hbox_warn_large_insert),
 			label_warn_large_insert_size, FALSE, FALSE, 0);

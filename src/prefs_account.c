@@ -1891,7 +1891,7 @@ static void compose_create_widget_func(PrefsPage * _page,
 	vbox_sig = gtkut_get_options_frame(vbox1, &frame_sig, _("Signature"));
 
 	PACK_CHECK_BUTTON (vbox_sig, checkbtn_autosig,
-			   _("Insert signature automatically"));
+			   _("Automatically insert signature"));
 
 	hbox1 = gtk_hbox_new (FALSE, 8);
 	gtk_widget_show (hbox1);
@@ -2534,6 +2534,7 @@ static void advanced_create_widget_func(PrefsPage * _page,
 	GtkWidget *spinbtn_nntpport;
 	GtkWidget *checkbtn_domain;
 	GtkWidget *entry_domain;
+	gchar *tip_domain;
 	GtkWidget *checkbtn_msgid_with_addr;
 	GtkWidget *checkbtn_crosspost;
  	GtkWidget *colormenu_crosspost;
@@ -2608,22 +2609,19 @@ static void advanced_create_widget_func(PrefsPage * _page,
 	PACK_CHECK_BUTTON (hbox1, checkbtn_domain, _("Domain name"));
 	gtk_size_group_add_widget(size_group, checkbtn_domain);	
 
-	CLAWS_SET_TIP(checkbtn_domain,
-			     _("The domain name will be used in the right part of "
-			       "the generated Message-Ids, and when connecting to "
-			       "SMTP servers."));
+	tip_domain = _("The domain name will be used in the generated "
+			"Message-ID, and when connecting to SMTP servers.");
+
+	CLAWS_SET_TIP(checkbtn_domain, tip_domain);
 
 	entry_domain = gtk_entry_new ();
 	gtk_widget_show (entry_domain);
 	gtk_box_pack_start (GTK_BOX (hbox1), entry_domain, TRUE, TRUE, 0);
 	SET_TOGGLE_SENSITIVITY (checkbtn_domain, entry_domain);
-	CLAWS_SET_TIP(entry_domain,
-			     _("The domain name will be used in the right part of "
-			       "the generated Message-Ids, and when connecting to "
-			       "SMTP servers."));
+	CLAWS_SET_TIP(entry_domain, tip_domain);
 	PACK_HBOX (hbox1);
 	PACK_CHECK_BUTTON (hbox1, checkbtn_msgid_with_addr,
-			   _("Send account mail address in Message-Id"));
+			   _("Send account mail address in Message-ID"));
 
 #ifndef G_OS_WIN32	
 	PACK_HBOX (hbox1);

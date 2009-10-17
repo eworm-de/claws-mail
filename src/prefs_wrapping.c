@@ -85,7 +85,7 @@ static void prefs_wrapping_create_widget(PrefsPage *_page, GtkWindow *window,
 	gtk_widget_show (hbox1);
 	gtk_box_pack_start (GTK_BOX (vbox2), hbox1, FALSE, FALSE, 0);
 
-	label_linewrap = gtk_label_new (_("Wrap messages at"));
+	label_linewrap = gtk_label_new (_("Wrap text at"));
 	gtk_widget_show (label_linewrap);
 	gtk_box_pack_start (GTK_BOX (hbox1), label_linewrap, FALSE, FALSE, 4);
 

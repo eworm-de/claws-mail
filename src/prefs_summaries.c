@@ -561,7 +561,7 @@ static void prefs_summaries_create_widget(PrefsPage *_page, GtkWindow *window,
 
 	PACK_CHECK_BUTTON
 		(vbox1, checkbtn_ask_mark_all_read,
-		 _("Confirm before marking all mails in a folder as read"));
+		 _("Confirm before marking all messages in a folder as read"));
 	PACK_CHECK_BUTTON
 		(vbox1, checkbtn_transhdr,
 		 _("Translate header names"));

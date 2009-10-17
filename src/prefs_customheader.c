@@ -233,7 +233,7 @@ static void prefs_custom_header_create(void)
 			  0, 0, 0);
 	gtk_widget_set_size_request (val_entry, 200, -1);
 
-	val_btn = gtk_button_new_with_label (_("From file..."));
+	val_btn = gtkut_get_browse_file_btn(_("Bro_wse"));
 	gtk_widget_show (val_btn);
 	gtk_table_attach (GTK_TABLE (table1), val_btn, 2, 3, 1, 2,
 			  GTK_EXPAND | GTK_SHRINK | GTK_FILL,
