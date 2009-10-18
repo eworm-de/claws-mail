@@ -1,3 +1,11 @@
+2009-10-18 [paul]	3.7.3cvs2
+
+	* tools/claws.i18n.status.pl
+		increase the value of $transolddays since we're relasing less
+		often now.
+		rework the en_GB.po hack so that en_GB is always 100% translated
+		and recently updated
+
 2009-10-17 [paul]	3.7.3cvs1
 
 	* src/prefs_account.c

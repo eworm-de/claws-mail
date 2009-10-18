@@ -75,7 +75,7 @@
 $barwidth = 500; # pixels
 $barheight = 12; # pixels
 
-$transolddays = 90;	# days to consider a translation is old, so probably unmaintained.
+$transolddays = 120;	# days to consider a translation is old, so probably unmaintained.
 $transoldmonths = $transolddays / 30;
 $transneedthresold = 0.75; # percent/100
 
@@ -135,7 +135,6 @@ sub print_lang {
 	$barlen3 = $barwidth - $barlen2 - $barlen;
 	print "<td style='width:$barlen3", "px' bgcolor=\"$$barcolor{default}\"></td>\n";
 	print "</tr>\n</table>\n</td>\n\n<td style='text-align: right'>", int(($trans / $total) * 10000) / 100,  "%</td>\n";
-	if (($lang eq $langname{'en_GB.po'}) or ($lang eq $averagestr)) { $trans = $total; } # hack for en_GB and average results
 	$transtatus = (($trans / $total) < $transneedthresold)? '<font size="+1" color="red"> * </font>': '';
 	print "<td>$transtatus</td>\n</tr>\n";
 }
@@ -202,9 +201,16 @@ foreach $pofile (@sorted_pofiles) {
 		$atran += $tran;
 		$afuzz += $fuzz;
 		$auntr += $untr;
-		$_ = `grep 'PO-Revision-Date:' $pofile | cut -f2 -d:`;
-		if (/\s+(\d+)\-(\d+)\-(\d+)/) { 
-			$transage = get_trans_age($1,$2,$3); 
+		if ($pofile eq "en_GB.po") {
+			$tran = $tran+$fuzz;
+			$untr = "0";
+			$fuzz = "0";
+			$transage = $cage;
+		} else {
+			$_ = `grep 'PO-Revision-Date:' $pofile | cut -f2 -d:`;
+			if (/\s+(\d+)\-(\d+)\-(\d+)/) { 
+				$transage = get_trans_age($1,$2,$3); 
+			}
 		}
 		print_lang($langname{$pofile},$lasttranslator{$pofile},$tran,$fuzz,$untr,$transage, $oddeven);
 		if ($oddeven == 1) { $oddeven = 0 } else { $oddeven++; } 
