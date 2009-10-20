@@ -1,3 +1,9 @@
+2009-10-20 [colin]	3.7.3cvs5
+
+	* src/plugins/pgpcore/sgpgme.c
+		Fix bug 1996, 'S/MIME key not selected'
+		Check for S/MIME certs too
+
 2009-10-20 [colin]	3.7.3cvs4
 
 	* src/common/w32lib.h

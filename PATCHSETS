@@ -3878,3 +3878,4 @@
 ( cvs diff -u -r 1.1.2.21 -r 1.1.2.22 tools/claws.i18n.status.pl;  ) > 3.7.3cvs2.patchset
 ( cvs diff -u -r 1.1.4.20 -r 1.1.4.21 src/exportldif.c;  cvs diff -u -r 1.12.2.21 -r 1.12.2.22 src/ldif.c;  cvs diff -u -r 1.5.2.8 -r 1.5.2.9 src/ldif.h;  ) > 3.7.3cvs3.patchset
 ( cvs diff -u -r 1.1.2.5 -r 1.1.2.6 src/common/w32lib.h;  ) > 3.7.3cvs4.patchset
+( cvs diff -u -r 1.1.2.64 -r 1.1.2.65 src/plugins/pgpcore/sgpgme.c;  ) > 3.7.3cvs5.patchset

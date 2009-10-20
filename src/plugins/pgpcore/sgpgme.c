@@ -855,14 +855,19 @@ gboolean sgpgme_has_secret_key(void)
 		debug_print("err : %s\n", gpgme_strerror(err));
 		return TRUE;
 	}
+check_again:
 	err = gpgme_op_keylist_start(ctx, NULL, TRUE);
 	if (!err)
 		err = gpgme_op_keylist_next(ctx, &key);
 	gpgme_op_keylist_end(ctx);
 	gpgme_release(ctx);
-	if (gpg_err_code(err) == GPG_ERR_EOF)
+	if (gpg_err_code(err) == GPG_ERR_EOF) {
+		if (gpgme_get_protocol(ctx) != GPGME_PROTOCOL_CMS) {
+			gpgme_set_protocol(ctx, GPGME_PROTOCOL_CMS);
+			goto check_again;
+		}
 		return FALSE;
-	else
+	} else
 		return TRUE;
 }
 
