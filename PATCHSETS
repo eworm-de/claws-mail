@@ -3877,3 +3877,4 @@
 ( cvs diff -u -r 1.105.2.155 -r 1.105.2.156 src/prefs_account.c;  cvs diff -u -r 1.1.2.28 -r 1.1.2.29 src/prefs_compose_writing.c;  cvs diff -u -r 1.16.2.39 -r 1.16.2.40 src/prefs_customheader.c;  cvs diff -u -r 1.1.2.26 -r 1.1.2.27 src/prefs_receive.c;  cvs diff -u -r 1.1.2.62 -r 1.1.2.63 src/prefs_summaries.c;  cvs diff -u -r 1.1.2.20 -r 1.1.2.21 src/prefs_wrapping.c;  ) > 3.7.3cvs1.patchset
 ( cvs diff -u -r 1.1.2.21 -r 1.1.2.22 tools/claws.i18n.status.pl;  ) > 3.7.3cvs2.patchset
 ( cvs diff -u -r 1.1.4.20 -r 1.1.4.21 src/exportldif.c;  cvs diff -u -r 1.12.2.21 -r 1.12.2.22 src/ldif.c;  cvs diff -u -r 1.5.2.8 -r 1.5.2.9 src/ldif.h;  ) > 3.7.3cvs3.patchset
+( cvs diff -u -r 1.1.2.5 -r 1.1.2.6 src/common/w32lib.h;  ) > 3.7.3cvs4.patchset

@@ -191,7 +191,6 @@ pid_t getppid( void );
 pid_t fork( void );
 unsigned int sleep( unsigned int seconds );
 int link( const char *oldpath, const char *newpath );
-int usleep( unsigned long usec );
 
 /*** stdlib ***/
 long int random( void );

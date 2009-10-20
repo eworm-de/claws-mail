@@ -1,3 +1,8 @@
+2009-10-20 [colin]	3.7.3cvs4
+
+	* src/common/w32lib.h
+		Fix win32 build on latest mingw32
+
 2009-10-20 [colin]	3.7.3cvs3
 
 	* src/exportldif.c
