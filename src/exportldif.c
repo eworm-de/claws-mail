@@ -14,7 +14,7 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
- * 
+ *
  */
 
 /*
@@ -331,6 +331,57 @@ static gboolean exportldif_test_email( const ItemPerson *person )
 }
 
 /**
+ * Format other attributes for person.
+ * \param person ItemPerson.
+ * \param stream Output stream.
+ */
+static void exportldif_fmt_other_attributes(ItemPerson* person, FILE* stream) {
+    UserAttribute* attr;
+    GList* attrList = NULL;
+    gchar* attrib;
+
+    if (! person)
+        return;
+    debug_print("cn: %s\n-----------------------------\n", ADDRITEM_NAME(person));
+    attrList = person->listAttrib;
+    while (attrList) {
+        attr = (UserAttribute *) attrList->data;
+        if (attr->uid) {
+            /* Native address book which does not conform to
+             * the LDAP schemas
+             */
+            attrib = g_strdup_printf("# %s", attr->name);
+        }
+        else {
+            attrib = g_strdup(attr->name);
+        }
+        debug_print("name: %s\nvalue: %s\n", attrib, attr->value);
+        ldif_write_value(stream, attrib, attr->value);
+        g_free(attrib);
+        attrList = g_list_next(attrList);
+    }
+    debug_print("-------------------------------\n");
+}
+
+/**
+ * Find persons displayName.
+ * \param person ItemPerson.
+ * \return displayName.
+ */
+static gchar* exportldif_find_displayName(ItemPerson* person) {
+	gchar* displayName;
+
+	if (! person)
+	    return NULL;
+	
+	if (person->nickName && strlen(person->nickName) > 0)
+		displayName = g_strdup(person->nickName);
+	else
+		displayName = g_strdup(ADDRITEM_NAME(person));
+	return displayName;
+}
+
+/**
  * Format persons in an address book folder.
  * \param  ctl    Export control data.
  * \param  stream Output stream.
@@ -342,6 +393,8 @@ static gboolean exportldif_fmt_person(
 {
 	gboolean retVal = TRUE;
 	const GList *node;
+	gchar* sn = NULL;
+	gchar* displayName = NULL;
 
 	if( folder->listPerson == NULL ) return retVal;
 
@@ -401,15 +454,33 @@ static gboolean exportldif_fmt_person(
 			/* Format person attributes */
 			ldif_write_value(
 				stream, LDIF_TAG_COMMONNAME, ADDRITEM_NAME( person ) );
+			sn = g_strdup(person->lastName);
+			if (classPerson || classInetP) {
+				if(! sn || strcmp("", sn) == 0 || strcmp(" ", sn) == 0) {
+					g_free(sn);
+					sn = g_strdup("Some SN");
+				}
+			}
 			ldif_write_value(
-				stream, LDIF_TAG_LASTNAME, person->lastName );
+				stream, LDIF_TAG_LASTNAME, sn );
+			g_free(sn);
+			sn = NULL;
 			ldif_write_value(
 				stream, LDIF_TAG_FIRSTNAME, person->firstName );
-			ldif_write_value(
-				stream, LDIF_TAG_NICKNAME, person->nickName );
+
+			if (! person->externalID)
+				displayName = exportldif_find_displayName(person);
+			else
+				displayName = g_strdup(person->nickName);
+			ldif_write_value(stream, LDIF_TAG_NICKNAME, displayName);
+			g_free(displayName);
+			displayName = NULL;
 
 			/* Format E-Mail */
 			exportldif_fmt_email( person, stream );
+			
+			/* Handle other attributes */
+			exportldif_fmt_other_attributes(person, stream);
 
 			/* End record */
 			ldif_write_eor( stream );

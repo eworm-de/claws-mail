@@ -1,3 +1,10 @@
+2009-10-20 [colin]	3.7.3cvs3
+
+	* src/exportldif.c
+	* src/ldif.c
+	* src/ldif.h
+		Fix LDIF export. Patch by Michael Rasmussen
+
 2009-10-18 [paul]	3.7.3cvs2
 
 	* tools/claws.i18n.status.pl
