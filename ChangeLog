@@ -1,3 +1,8 @@
+2009-10-20 [colin]	3.7.3cvs6
+
+	* src/common/utils.c
+		Don't g_error on normal warnings...
+
 2009-10-20 [colin]	3.7.3cvs5
 
 	* src/plugins/pgpcore/sgpgme.c
