@@ -1,3 +1,8 @@
+2009-10-21 [wwp]	3.7.3cvs8
+
+	* src/common/utils.c
+		Fix 3.7.3cvs7 (accidentally committed a CVS conflict mark, say bravo).
+
 2009-10-21 [wwp]	3.7.3cvs7
 
 	* src/common/utils.c
