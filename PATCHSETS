@@ -3880,3 +3880,4 @@
 ( cvs diff -u -r 1.1.2.5 -r 1.1.2.6 src/common/w32lib.h;  ) > 3.7.3cvs4.patchset
 ( cvs diff -u -r 1.1.2.64 -r 1.1.2.65 src/plugins/pgpcore/sgpgme.c;  ) > 3.7.3cvs5.patchset
 ( cvs diff -u -r 1.36.2.175 -r 1.36.2.176 src/common/utils.c;  ) > 3.7.3cvs6.patchset
+( cvs diff -u -r 1.36.2.176 -r 1.36.2.177 src/common/utils.c;  ) > 3.7.3cvs7.patchset

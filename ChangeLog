@@ -1,3 +1,9 @@
+2009-10-21 [wwp]	3.7.3cvs7
+
+	* src/common/utils.c
+		Don't core dump when attempting to insert a non-existing
+		file using a mailto: uri (g_error does core dump).
+
 2009-10-20 [colin]	3.7.3cvs6
 
 	* src/common/utils.c
