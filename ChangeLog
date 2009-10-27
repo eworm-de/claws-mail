@@ -1,3 +1,13 @@
+2009-10-27 [colin]	3.7.3cvs10
+
+	* src/folder.c
+		Fix bug 2028, 'Attempts to connect to all accounts on exit'
+		Don't try to check whether the folder is up-to-date if
+		the folder class doesn't implement set_mtime, as we don't
+		care in this case. This code exists since a long time, but
+		the bug was triggered by more scanning of queue folders 
+		since recently (when we added \Deleted handling).
+
 2009-10-27 [colin]	3.7.3cvs9
 
 	* src/mainwindow.c
