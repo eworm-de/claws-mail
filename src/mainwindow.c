@@ -5003,6 +5003,9 @@ static void set_default_client_cb(GtkAction *action, gpointer data)
 		r = write_w32_registry_dword ("HKCU", "Software\\Clients\\Mail\\Claws Mail\\Protocols\\mailto", 
 				"EditFlags", 2);
 	if (!r)
+		r = write_w32_registry_string ("HKCU", "Software\\Clients\\Mail\\Claws Mail\\Protocols\\mailto", 
+				"FriendlyTypeName", "Claws-Mail URL");
+	if (!r)
 		r = write_w32_registry_string("HKCU", "Software\\Clients\\Mail\\Claws Mail\\Protocols\\mailto\\DefaultIcon", 
 				"", binary_icon);
 	if (!r)
@@ -5021,6 +5024,9 @@ static void set_default_client_cb(GtkAction *action, gpointer data)
 	if (!r)
 		r = write_w32_registry_dword ("HKCU", "Software\\Classes\\mailto", 
 				"EditFlags", 2);
+	if (!r)
+		r = write_w32_registry_string("HKCU", "Software\\Classes\\mailto", 
+				"FriendlyTypeName", "Claws-Mail URL");
 	if (!r)
 		r = write_w32_registry_string("HKCU", "Software\\Classes\\mailto\\DefaultIcon", 
 				"", binary_icon);

@@ -1,3 +1,9 @@
+2009-10-27 [colin]	3.7.3cvs9
+
+	* src/mainwindow.c
+		Try to fix registering as default client
+		on windows 7
+
 2009-10-21 [wwp]	3.7.3cvs8
 
 	* src/common/utils.c
