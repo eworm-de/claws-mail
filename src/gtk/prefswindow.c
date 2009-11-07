@@ -50,7 +50,6 @@ struct _PrefsWindow
 	GtkWidget *vbox;
 	GtkWidget *paned;
 	GtkWidget *scrolledwindow1;
-	GtkWidget *scrolledwindow2;
 	GtkWidget *tree_view;
 	GtkWidget *table2;
 	GtkWidget *pagelabel;
@@ -289,7 +288,30 @@ static gint prefswindow_tree_sort_by_weight(GtkTreeModel *model,
 	return f1 < f2 ? -1 : (f1 > f2 ?  1 : 
 	      (i1 < i2 ?  1 : (i1 > i2 ? -1 : 0)));
 }
-				  
+
+static void prefswindow_build_page(PrefsWindow *prefswindow, PrefsPage *page)
+{
+	GtkWidget *scrolledwin, *tmp;
+
+	if (!page->page_open) {
+		scrolledwin = gtk_scrolled_window_new(NULL, NULL);
+		gtk_widget_show(scrolledwin);
+		gtk_scrolled_window_set_policy(GTK_SCROLLED_WINDOW(scrolledwin),
+			GTK_POLICY_AUTOMATIC, GTK_POLICY_AUTOMATIC);
+		
+		page->create_widget(page, GTK_WINDOW(prefswindow->window), prefswindow->data);
+		gtk_scrolled_window_add_with_viewport(GTK_SCROLLED_WINDOW(scrolledwin),
+					page->widget);
+
+		gtk_container_add(GTK_CONTAINER(prefswindow->notebook), scrolledwin);
+		tmp = gtk_bin_get_child(GTK_BIN(scrolledwin));
+		gtk_viewport_set_shadow_type(GTK_VIEWPORT(tmp), GTK_SHADOW_NONE);
+		
+		page->widget	= scrolledwin;
+		page->page_open	= TRUE;
+	}
+}
+
 static void prefswindow_build_all_pages(PrefsWindow *prefswindow, GSList *prefs_pages)
 {
 	GSList *cur;
@@ -298,11 +320,7 @@ static void prefswindow_build_all_pages(PrefsWindow *prefswindow, GSList *prefs_
 	for (cur = prefs_pages; cur != NULL; cur = g_slist_next(cur)) {
 		PrefsPage *page = (PrefsPage *) cur->data;
 
-		if (!page->page_open) {
-			page->create_widget(page, GTK_WINDOW(prefswindow->window), prefswindow->data);
-			gtk_container_add(GTK_CONTAINER(prefswindow->notebook), page->widget);
-			page->page_open = TRUE;
-		}
+		prefswindow_build_page(prefswindow, page);
 	}
 	prefs_pages = g_slist_reverse(prefs_pages);
 }
@@ -422,7 +440,6 @@ void prefswindow_open_full(const gchar *title, GSList *prefs_pages,
 	gint y = gdk_screen_height();
 	static GdkGeometry geometry;
 	GtkAdjustment *adj;
-	GtkWidget *tmp;
 
 	prefswindow = g_new0(PrefsWindow, 1);
 
@@ -487,21 +504,13 @@ void prefswindow_open_full(const gchar *title, GSList *prefs_pages,
 	gtk_misc_set_alignment(GTK_MISC(prefswindow->pagelabel), 0, 0.0);
 	gtk_container_add(GTK_CONTAINER(prefswindow->labelframe), prefswindow->pagelabel);
 
-	prefswindow->scrolledwindow2 = gtk_scrolled_window_new(NULL, NULL);
-	gtk_widget_show(prefswindow->scrolledwindow2);
-	gtk_scrolled_window_set_policy(GTK_SCROLLED_WINDOW(prefswindow->scrolledwindow2),
-			GTK_POLICY_AUTOMATIC, GTK_POLICY_AUTOMATIC);
-
 	prefswindow->notebook = gtk_notebook_new();
 	gtk_widget_show(prefswindow->notebook);
 	gtk_notebook_set_scrollable(GTK_NOTEBOOK(prefswindow->notebook), TRUE);
 	gtk_notebook_set_show_tabs(GTK_NOTEBOOK(prefswindow->notebook), FALSE);
 	gtk_notebook_set_show_border(GTK_NOTEBOOK(prefswindow->notebook), FALSE);
-	gtk_scrolled_window_add_with_viewport(GTK_SCROLLED_WINDOW(prefswindow->scrolledwindow2),
-					prefswindow->notebook);
-	tmp = gtk_bin_get_child(GTK_BIN(prefswindow->scrolledwindow2));
-	gtk_viewport_set_shadow_type(GTK_VIEWPORT(tmp), GTK_SHADOW_NONE);
-	gtk_table_attach(GTK_TABLE(prefswindow->table2), prefswindow->scrolledwindow2,
+
+	gtk_table_attach(GTK_TABLE(prefswindow->table2), prefswindow->notebook,
 			0, 1, 1, 2, GTK_FILL | GTK_EXPAND, GTK_FILL | GTK_EXPAND, 0, 4);
 
 	prefswindow->empty_page = gtk_label_new("");
@@ -530,7 +539,6 @@ void prefswindow_open_full(const gchar *title, GSList *prefs_pages,
 	gtk_widget_show_all(prefswindow->confirm_area);
 	gtk_widget_show(prefswindow->vbox);
 	gtk_widget_show(prefswindow->scrolledwindow1);
-	gtk_widget_show(prefswindow->scrolledwindow2);
 
 	gtk_box_pack_start(GTK_BOX(prefswindow->vbox), prefswindow->confirm_area, FALSE, FALSE, 0);
 
@@ -590,14 +598,6 @@ void prefswindow_open_full(const gchar *title, GSList *prefs_pages,
 #endif
 	adj = gtk_scrolled_window_get_vadjustment(
 			GTK_SCROLLED_WINDOW(prefswindow->scrolledwindow1));
-	gtk_adjustment_set_value(adj, adj->lower);
-	gtk_adjustment_changed(adj);
-	adj = gtk_scrolled_window_get_vadjustment(
-			GTK_SCROLLED_WINDOW(prefswindow->scrolledwindow2));
-	gtk_adjustment_set_value(adj, adj->lower);
-	gtk_adjustment_changed(adj);
-	adj = gtk_scrolled_window_get_hadjustment(
-			GTK_SCROLLED_WINDOW(prefswindow->scrolledwindow2));
 	gtk_adjustment_set_value(adj, adj->lower);
 	gtk_adjustment_changed(adj);
 }
@@ -712,11 +712,7 @@ static gboolean prefswindow_row_selected(GtkTreeSelection *selector,
 		return TRUE;
 	}
 
-	if (!page->page_open) {
-		page->create_widget(page, GTK_WINDOW(prefswindow->window), prefswindow->data);
-		gtk_container_add(GTK_CONTAINER(prefswindow->notebook), page->widget);
-		page->page_open = TRUE;
-	}
+	prefswindow_build_page(prefswindow, page);
 
 	i = 0;
 	while (page->path[i + 1] != 0)
@@ -731,11 +727,11 @@ static gboolean prefswindow_row_selected(GtkTreeSelection *selector,
 				      pagenum);
 
 	adj = gtk_scrolled_window_get_vadjustment(
-			GTK_SCROLLED_WINDOW(prefswindow->scrolledwindow2));
+			GTK_SCROLLED_WINDOW(page->widget));
 	gtk_adjustment_set_value(adj, adj->lower);
 	gtk_adjustment_changed(adj);
 	adj = gtk_scrolled_window_get_hadjustment(
-			GTK_SCROLLED_WINDOW(prefswindow->scrolledwindow2));
+			GTK_SCROLLED_WINDOW(page->widget));
 	gtk_adjustment_set_value(adj, adj->lower);
 	gtk_adjustment_changed(adj);
 

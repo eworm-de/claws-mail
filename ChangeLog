@@ -1,3 +1,9 @@
+2009-11-07 [colin]	3.7.3cvs12
+
+	* src/gtk/prefswindow.c
+		Fix bug 2041, "add autonomical scrolled windows to prefs pages"
+		Patch by Pawel
+
 2009-11-07 [colin]	3.7.3cvs11
 
 	* src/gtk/spell_entry.c
