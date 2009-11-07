@@ -1,3 +1,9 @@
+2009-11-07 [colin]	3.7.3cvs11
+
+	* src/gtk/spell_entry.c
+		Fix bug 2040, 'numbers in subject entry marked as misspelled'
+		Patch by Pawel Pekala
+
 2009-10-27 [colin]	3.7.3cvs10
 
 	* src/folder.c

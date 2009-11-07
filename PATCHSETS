@@ -3884,3 +3884,4 @@
 ( cvs diff -u -r 1.36.2.177 -r 1.36.2.178 src/common/utils.c;  ) > 3.7.3cvs8.patchset
 ( cvs diff -u -r 1.274.2.303 -r 1.274.2.304 src/mainwindow.c;  ) > 3.7.3cvs9.patchset
 ( cvs diff -u -r 1.213.2.194 -r 1.213.2.195 src/folder.c;  ) > 3.7.3cvs10.patchset
+( cvs diff -u -r 1.1.2.8 -r 1.1.2.9 src/gtk/spell_entry.c;  ) > 3.7.3cvs11.patchset
