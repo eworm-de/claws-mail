@@ -400,7 +400,7 @@ static gboolean filteringaction_apply(FilteringAction * action, MsgInfo * info)
 		compose_entry_append(compose, action->destination,
 				     compose->account->protocol == A_NNTP
 					    ? COMPOSE_NEWSGROUPS
-					    : COMPOSE_TO);
+					    : COMPOSE_TO, PREF_NONE);
 
 		val = compose_send(compose);
 
@@ -413,7 +413,7 @@ static gboolean filteringaction_apply(FilteringAction * action, MsgInfo * info)
 			break;
 		else
 			compose_entry_append(compose, action->destination,
-					     COMPOSE_TO);
+					     COMPOSE_TO, PREF_NONE);
 
 		val = compose_send(compose);
 		

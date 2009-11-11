@@ -77,6 +77,15 @@ typedef enum
 	COMPOSE_REEDIT
 } ComposeMode;
 
+typedef enum {
+	PREF_ACCOUNT,
+	PREF_FOLDER,
+	PREF_TEMPLATE,
+	PREF_ML,
+	PREF_MAILTO,
+	PREF_NONE
+} ComposePrefType;
+
 typedef struct {
 	guint headernum;
 	Compose *compose;
@@ -84,6 +93,7 @@ typedef struct {
 	GtkWidget *entry;
 	GtkWidget *button;
 	GtkWidget *hbox;
+	ComposePrefType type;
 } ComposeHeaderEntry;
 
 struct _Compose
@@ -285,7 +295,8 @@ GList *compose_get_compose_list		(void);
 
 void compose_entry_append		(Compose	  *compose,
 					 const gchar	  *address,
-					 ComposeEntryType  type);
+					 ComposeEntryType  type,
+					 ComposePrefType   pref_type);
 
 
 gint compose_send			(Compose	  *compose);

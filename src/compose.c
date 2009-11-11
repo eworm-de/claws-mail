@@ -328,7 +328,8 @@ static void compose_undo_state_changed		(UndoMain	*undostruct,
 						 gpointer	 data);
 
 static void compose_create_header_entry	(Compose *compose);
-static void compose_add_header_entry	(Compose *compose, const gchar *header, gchar *text);
+static void compose_add_header_entry	(Compose *compose, const gchar *header,
+					 gchar *text, ComposePrefType pref_type);
 static void compose_remove_header_entries(Compose *compose);
 
 static void compose_update_priority_menu_item(Compose * compose);
@@ -1020,16 +1021,20 @@ Compose *compose_generic_new(PrefsAccount *account, const gchar *mailto, FolderI
 
 		} else if (item && item->prefs) {
 			if (item->prefs->enable_default_bcc) {
-				compose_entry_append(compose, item->prefs->default_bcc, COMPOSE_BCC);
+				compose_entry_append(compose, item->prefs->default_bcc,
+						COMPOSE_BCC, PREF_FOLDER);
 			}
 			if (item->prefs->enable_default_cc) {
-				compose_entry_append(compose, item->prefs->default_cc, COMPOSE_CC);
+				compose_entry_append(compose, item->prefs->default_cc,
+						COMPOSE_CC, PREF_FOLDER);
 			}
 			if (item->prefs->enable_default_replyto) {
-				compose_entry_append(compose, item->prefs->default_replyto, COMPOSE_REPLYTO);
+				compose_entry_append(compose, item->prefs->default_replyto,
+						COMPOSE_REPLYTO, PREF_FOLDER);
 			}
 			if (item->prefs->enable_default_to) {
-				compose_entry_append(compose, item->prefs->default_to, COMPOSE_TO);
+				compose_entry_append(compose, item->prefs->default_to,
+						COMPOSE_TO, PREF_FOLDER);
 				compose_entry_mark_default_to(compose, item->prefs->default_to);
 			}
 		}
@@ -1043,7 +1048,7 @@ Compose *compose_generic_new(PrefsAccount *account, const gchar *mailto, FolderI
 			else
 				compose_entries_set(compose, mailto, COMPOSE_TO);
 		} else if (item && FOLDER_CLASS(item->folder) == news_get_class()) {
-			compose_entry_append(compose, item->path, COMPOSE_NEWSGROUPS);
+			compose_entry_append(compose, item->path, COMPOSE_NEWSGROUPS, PREF_FOLDER);
 		}
 		/*
 		 * CLAWS: just don't allow return receipt request, even if the user
@@ -2382,7 +2387,7 @@ GList *compose_get_compose_list(void)
 }
 
 void compose_entry_append(Compose *compose, const gchar *address,
-			  ComposeEntryType type)
+			  ComposeEntryType type, ComposePrefType pref_type)
 {
 	const gchar *header;
 	gchar *cur, *begin;
@@ -2427,7 +2432,7 @@ void compose_entry_append(Compose *compose, const gchar *address,
 			begin = cur;
 			while (*tmp == ' ' || *tmp == '\t')
 				tmp++;
-			compose_add_header_entry(compose, header, tmp);
+			compose_add_header_entry(compose, header, tmp, pref_type);
 			g_free(o_tmp);
 			continue;
 		}
@@ -2441,7 +2446,7 @@ void compose_entry_append(Compose *compose, const gchar *address,
 		begin = cur;
 		while (*tmp == ' ' || *tmp == '\t')
 			tmp++;
-		compose_add_header_entry(compose, header, tmp);
+		compose_add_header_entry(compose, header, tmp, pref_type);
 		g_free(o_tmp);		
 	}
 }
@@ -2542,11 +2547,11 @@ static void compose_entries_set(Compose *compose, const gchar *mailto, ComposeEn
 	scan_mailto_url(mailto, NULL, &to, &cc, &bcc, &subject, &body, &attach);
 
 	if (to)
-		compose_entry_append(compose, to, to_type);
+		compose_entry_append(compose, to, to_type, PREF_MAILTO);
 	if (cc)
-		compose_entry_append(compose, cc, COMPOSE_CC);
+		compose_entry_append(compose, cc, COMPOSE_CC, PREF_MAILTO);
 	if (bcc)
-		compose_entry_append(compose, bcc, COMPOSE_BCC);
+		compose_entry_append(compose, bcc, COMPOSE_BCC, PREF_MAILTO);
 	if (subject) {
 		if (!g_utf8_validate (subject, -1, NULL)) {
 			temp = g_locale_to_utf8 (subject, -1, NULL, &len, NULL);
@@ -3007,13 +3012,16 @@ static void compose_reply_set_entry(Compose *compose, MsgInfo *msginfo,
 	if (compose->account->protocol != A_NNTP) {
 		if (msginfo && msginfo->folder && msginfo->folder->prefs) {
 			if (msginfo->folder->prefs->enable_default_replyto) {
-				compose_entry_append(compose, msginfo->folder->prefs->default_replyto, COMPOSE_REPLYTO);
+				compose_entry_append(compose, msginfo->folder->prefs->default_replyto,
+							COMPOSE_REPLYTO, PREF_FOLDER);
 			}
 			if (msginfo->folder->prefs->enable_default_bcc) {
-				compose_entry_append(compose, msginfo->folder->prefs->default_bcc, COMPOSE_BCC);
+				compose_entry_append(compose, msginfo->folder->prefs->default_bcc,
+							COMPOSE_BCC, PREF_FOLDER);
 			}
 			if (msginfo->folder->prefs->enable_default_cc) {
-				compose_entry_append(compose, msginfo->folder->prefs->default_cc, COMPOSE_CC);
+				compose_entry_append(compose, msginfo->folder->prefs->default_cc,
+							COMPOSE_CC, PREF_FOLDER);
 			}
 		}
 		if (reply_to_ml && !default_reply_to) {
@@ -3024,28 +3032,28 @@ static void compose_reply_set_entry(Compose *compose, MsgInfo *msginfo,
 				/* normal answer to ml post with a reply-to */
 				compose_entry_append(compose,
 					   compose->ml_post,
-					   COMPOSE_TO);
+					   COMPOSE_TO, PREF_ML);
 				if (compose->replyto
 				&&  !same_address(compose->ml_post, compose->replyto))
 					compose_entry_append(compose,
 						compose->replyto,
-						COMPOSE_CC);
+						COMPOSE_CC, PREF_ML);
 			} else {
 				/* answer to subscription confirmation */
 				if (compose->replyto)
 					compose_entry_append(compose,
 						compose->replyto,
-						COMPOSE_TO);
+						COMPOSE_TO, PREF_ML);
 				else if (msginfo->from)
 					compose_entry_append(compose,
 						msginfo->from,
-						COMPOSE_TO);
+						COMPOSE_TO, PREF_ML);
 			}
 		}
 		else if (!(to_all || to_sender) && default_reply_to) {
 			compose_entry_append(compose,
 			    msginfo->folder->prefs->default_reply_to,
-			    COMPOSE_TO);
+			    COMPOSE_TO, PREF_FOLDER);
 			compose_entry_mark_default_to(compose,
 				msginfo->folder->prefs->default_reply_to);
 		} else {
@@ -3060,7 +3068,7 @@ static void compose_reply_set_entry(Compose *compose, MsgInfo *msginfo,
 				 (compose->replyto && !to_sender)
 					  ? compose->replyto :
 					  msginfo->from ? msginfo->from : "",
-					  COMPOSE_TO);
+					  COMPOSE_TO, PREF_NONE);
 			else if (!to_all && !to_sender) {
 				if (!folder_has_parent_of_type(msginfo->folder, F_QUEUE) &&
 				    !folder_has_parent_of_type(msginfo->folder, F_OUTBOX) &&
@@ -3068,20 +3076,20 @@ static void compose_reply_set_entry(Compose *compose, MsgInfo *msginfo,
 					if (compose->replyto) {
 						compose_entry_append(compose,
 			    				compose->replyto,
-			    				COMPOSE_TO);
+			    				COMPOSE_TO, PREF_NONE);
 					} else {
 						compose_entry_append(compose,
 							  msginfo->from ? msginfo->from : "",
-							  COMPOSE_TO);
+							  COMPOSE_TO, PREF_NONE);
 					}
 				} else {
 					/* replying to own mail, use original recp */
 					compose_entry_append(compose,
 						  msginfo->to ? msginfo->to : "",
-						  COMPOSE_TO);
+						  COMPOSE_TO, PREF_NONE);
 					compose_entry_append(compose,
 						  msginfo->cc ? msginfo->cc : "",
-						  COMPOSE_CC);
+						  COMPOSE_CC, PREF_NONE);
 				}
 			}
 		}
@@ -3092,27 +3100,27 @@ static void compose_reply_set_entry(Compose *compose, MsgInfo *msginfo,
 				(compose, 
 				 (compose->replyto ? compose->replyto :
 		    		 	msginfo->from ? msginfo->from : ""),
-				 COMPOSE_TO);
+				 COMPOSE_TO, PREF_NONE);
 				 
 		else if (followup_and_reply_to || to_all) {
 			compose_entry_append
 		    		(compose,
 		    		 (compose->replyto ? compose->replyto :
 		    		 msginfo->from ? msginfo->from : ""),
-		    		 COMPOSE_TO);				
+		    		 COMPOSE_TO, PREF_NONE);				
 		
 			compose_entry_append
 				(compose,
 			 	 compose->followup_to ? compose->followup_to :
 			 	 compose->newsgroups ? compose->newsgroups : "",
-			 	 COMPOSE_NEWSGROUPS);
+			 	 COMPOSE_NEWSGROUPS, PREF_NONE);
 		} 
 		else 
 			compose_entry_append
 				(compose,
 			 	 compose->followup_to ? compose->followup_to :
 			 	 compose->newsgroups ? compose->newsgroups : "",
-			 	 COMPOSE_NEWSGROUPS);
+			 	 COMPOSE_NEWSGROUPS, PREF_NONE);
 	}
 
 	if (msginfo->subject && *msginfo->subject) {
@@ -3180,7 +3188,7 @@ static void compose_reply_set_entry(Compose *compose, MsgInfo *msginfo,
 	if (cc_list) {
 		for (cur = cc_list; cur != NULL; cur = cur->next)
 			compose_entry_append(compose, (gchar *)cur->data,
-					     COMPOSE_CC);
+					     COMPOSE_CC, PREF_NONE);
 		slist_free_strings(cc_list);
 		g_slist_free(cc_list);
 	}
@@ -3196,7 +3204,7 @@ static void compose_reply_set_entry(Compose *compose, MsgInfo *msginfo,
 #define SET_ADDRESS(type, str) \
 { \
 	if (str && *str) \
-		compose_entry_append(compose, str, type); \
+		compose_entry_append(compose, str, type, PREF_NONE); \
 }
 
 static void compose_reedit_set_entry(Compose *compose, MsgInfo *msginfo)
@@ -6364,6 +6372,8 @@ static void compose_create_header_entry(Compose *compose)
 	const gchar *header = NULL;
 	ComposeHeaderEntry *headerentry;
 	gboolean standard_header = FALSE;
+	GtkListStore *model;
+	GtkTreeIter iter;
 #if !(GTK_CHECK_VERSION(2,12,0))
 	GtkTooltips *tips = compose->tooltips;
 #endif
@@ -6371,13 +6381,21 @@ static void compose_create_header_entry(Compose *compose)
 	headerentry = g_new0(ComposeHeaderEntry, 1);
 
 	/* Combo box */
-	combo = gtk_combo_box_entry_new_text();
-	string = headers; 
-	while(*string != NULL) {
-		gtk_combo_box_append_text(GTK_COMBO_BOX(combo),
-			(gchar*)prefs_common_translated_header_name(*string));
-	        string++;
-	}
+	model = gtk_list_store_new(3, G_TYPE_STRING, G_TYPE_INT, G_TYPE_BOOLEAN);
+	combo = gtk_combo_box_entry_new_with_model(GTK_TREE_MODEL(model), 0);
+	COMBOBOX_ADD(model, prefs_common_translated_header_name("To:"),
+			COMPOSE_TO);
+	COMBOBOX_ADD(model, prefs_common_translated_header_name("Cc:"),
+			COMPOSE_CC);
+	COMBOBOX_ADD(model, prefs_common_translated_header_name("Bcc:"),
+			COMPOSE_BCC);
+	COMBOBOX_ADD(model, prefs_common_translated_header_name("Newsgroups:"),
+			COMPOSE_NEWSGROUPS);			
+	COMBOBOX_ADD(model, prefs_common_translated_header_name("Reply-To:"),
+			COMPOSE_REPLYTO);
+	COMBOBOX_ADD(model, prefs_common_translated_header_name("Followup-To:"),
+			COMPOSE_FOLLOWUPTO);
+
 	gtk_combo_box_set_active(GTK_COMBO_BOX(combo), 0);
 	g_signal_connect(G_OBJECT(gtk_bin_get_child(GTK_BIN((combo)))), "grab_focus",
 			 G_CALLBACK(compose_grab_focus_cb), compose);
@@ -6471,6 +6489,7 @@ static void compose_create_header_entry(Compose *compose)
         headerentry->button = button;
         headerentry->hbox = hbox;
         headerentry->headernum = compose->header_nextrow;
+        headerentry->type = PREF_NONE;
 
         compose->header_nextrow++;
 	compose->header_last = headerentry;		
@@ -6479,28 +6498,33 @@ static void compose_create_header_entry(Compose *compose)
 			       headerentry);
 }
 
-static void compose_add_header_entry(Compose *compose, const gchar *header, gchar *text) 
+static void compose_add_header_entry(Compose *compose, const gchar *header,
+				gchar *text, ComposePrefType pref_type) 
 {
 	ComposeHeaderEntry *last_header;
 	
 	last_header = compose->header_last;
 
-	gtk_entry_set_text(GTK_ENTRY(gtk_bin_get_child(GTK_BIN((last_header->combo)))), header);
+	combobox_select_by_text(GTK_COMBO_BOX(last_header->combo), header);
 	gtk_entry_set_text(GTK_ENTRY(last_header->entry), text);
+	last_header->type = pref_type;
+}
+
+static void compose_destroy_headerentry(ComposeHeaderEntry *headerentry)
+{
+	gtk_widget_destroy(headerentry->combo);
+	gtk_widget_destroy(headerentry->entry);
+	gtk_widget_destroy(headerentry->button);
+	gtk_widget_destroy(headerentry->hbox);
+	g_free(headerentry);
 }
 
 static void compose_remove_header_entries(Compose *compose) 
 {
 	GSList *list;
-	for (list = compose->header_list; list; list = list->next) {
-		ComposeHeaderEntry *headerentry = 
-			(ComposeHeaderEntry *)list->data;
-		gtk_widget_destroy(headerentry->combo);
-		gtk_widget_destroy(headerentry->entry);
-		gtk_widget_destroy(headerentry->button);
-		gtk_widget_destroy(headerentry->hbox);
-		g_free(headerentry);
-	}
+	for (list = compose->header_list; list; list = list->next)
+		compose_destroy_headerentry((ComposeHeaderEntry *)list->data);
+
 	compose->header_last = NULL;
 	g_slist_free(compose->header_list);
 	compose->header_list = NULL;
@@ -7452,13 +7476,13 @@ static Compose *compose_create(PrefsAccount *account,
 	cm_toggle_menu_set_active_full(compose->ui_manager, "Menu/Edit/AutoIndent", prefs_common.auto_indent);
 
 	if (account->set_autocc && account->auto_cc && mode != COMPOSE_REEDIT)
-		compose_entry_append(compose, account->auto_cc, COMPOSE_CC);
+		compose_entry_append(compose, account->auto_cc, COMPOSE_CC, PREF_ACCOUNT);
 
 	if (account->set_autobcc && account->auto_bcc && mode != COMPOSE_REEDIT) 
-		compose_entry_append(compose, account->auto_bcc, COMPOSE_BCC);
+		compose_entry_append(compose, account->auto_bcc, COMPOSE_BCC, PREF_ACCOUNT);
 	
 	if (account->set_autoreplyto && account->auto_replyto && mode != COMPOSE_REEDIT)
-		compose_entry_append(compose, account->auto_replyto, COMPOSE_REPLYTO);
+		compose_entry_append(compose, account->auto_replyto, COMPOSE_REPLYTO, PREF_ACCOUNT);
 
 	cm_menu_set_sensitive_full(compose->ui_manager, "Menu/Options/ReplyMode", compose->mode == COMPOSE_REPLY);
 	if (account->protocol != A_NNTP)
@@ -7620,13 +7644,13 @@ static void compose_reply_change_mode(Compose *compose,
 	compose_remove_header_entries(compose);
 	compose_reply_set_entry(compose, compose->replyinfo, all, ml, sender, followup);
 	if (compose->account->set_autocc && compose->account->auto_cc)
-		compose_entry_append(compose, compose->account->auto_cc, COMPOSE_CC);
+		compose_entry_append(compose, compose->account->auto_cc, COMPOSE_CC, PREF_ACCOUNT);
 
 	if (compose->account->set_autobcc && compose->account->auto_bcc) 
-		compose_entry_append(compose, compose->account->auto_bcc, COMPOSE_BCC);
+		compose_entry_append(compose, compose->account->auto_bcc, COMPOSE_BCC, PREF_ACCOUNT);
 	
 	if (compose->account->set_autoreplyto && compose->account->auto_replyto)
-		compose_entry_append(compose, compose->account->auto_replyto, COMPOSE_REPLYTO);
+		compose_entry_append(compose, compose->account->auto_replyto, COMPOSE_REPLYTO, PREF_ACCOUNT);
 	compose_show_first_last_header(compose, TRUE);
 	compose->modified = was_modified;
 	compose_set_title(compose);
@@ -8074,7 +8098,7 @@ static void compose_template_apply_fields(Compose *compose, Template *tmpl)
 		if (buf == NULL) {
 			alertpanel_error(_("Template To format error."));
 		} else {
-			compose_entry_append(compose, buf, COMPOSE_TO);
+			compose_entry_append(compose, buf, COMPOSE_TO, PREF_TEMPLATE);
 		}
 	}
 
@@ -8092,7 +8116,7 @@ static void compose_template_apply_fields(Compose *compose, Template *tmpl)
 		if (buf == NULL) {
 			alertpanel_error(_("Template Cc format error."));
 		} else {
-			compose_entry_append(compose, buf, COMPOSE_CC);
+			compose_entry_append(compose, buf, COMPOSE_CC, PREF_TEMPLATE);
 		}
 	}
 
@@ -8110,7 +8134,7 @@ static void compose_template_apply_fields(Compose *compose, Template *tmpl)
 		if (buf == NULL) {
 			alertpanel_error(_("Template Bcc format error."));
 		} else {
-			compose_entry_append(compose, buf, COMPOSE_BCC);
+			compose_entry_append(compose, buf, COMPOSE_BCC, PREF_TEMPLATE);
 		}
 	}
 
@@ -8932,6 +8956,13 @@ static gboolean compose_edit_size_alloc(GtkEditable *widget,
 	return TRUE;
 }
 
+typedef struct {
+	ComposeEntryType 	header;
+	gchar 			*entry;
+	ComposePrefType		type;
+	gboolean		entry_marked;
+} HeaderEntryState;
+
 static void account_activated(GtkComboBox *optmenu, gpointer data)
 {
 	Compose *compose = (Compose *)data;
@@ -8941,6 +8972,11 @@ static void account_activated(GtkComboBox *optmenu, gpointer data)
 	gint account_id = 0;
 	GtkTreeModel *menu;
 	GtkTreeIter iter;
+	GSList *list, *saved_list = NULL;
+	HeaderEntryState *state;
+	GtkRcStyle *style = NULL;
+	static GdkColor yellow;
+	static gboolean color_set = FALSE;
 
 	/* Get ID of active account in the combo box */
 	menu = gtk_combo_box_get_model(optmenu);
@@ -8950,8 +8986,73 @@ static void account_activated(GtkComboBox *optmenu, gpointer data)
 	ac = account_find_from_id(account_id);
 	cm_return_if_fail(ac != NULL);
 
-	if (ac != compose->account)
+	if (ac != compose->account) {
 		compose_select_account(compose, ac, FALSE);
+
+		for (list = compose->header_list; list; list = list->next) {
+			ComposeHeaderEntry *hentry=(ComposeHeaderEntry *)list->data;
+			
+			if (hentry->type == PREF_ACCOUNT || !list->next) {
+				compose_destroy_headerentry(hentry);
+				continue;
+			}
+			
+			state = g_malloc0(sizeof(HeaderEntryState));
+			state->header = combobox_get_active_data(
+					GTK_COMBO_BOX(hentry->combo));
+			state->entry = gtk_editable_get_chars(
+					GTK_EDITABLE(hentry->entry), 0, -1);
+			state->type = hentry->type;
+				
+			if (!color_set) {
+				gdk_color_parse("#f5f6be", &yellow);
+				color_set = gdk_colormap_alloc_color(
+							gdk_colormap_get_system(),
+							&yellow, FALSE, TRUE);
+			}
+				
+			style = gtk_widget_get_modifier_style(hentry->entry);
+			state->entry_marked = gdk_color_equal(&yellow,
+						&style->base[GTK_STATE_NORMAL]);
+
+			saved_list = g_slist_append(saved_list, state);
+			compose_destroy_headerentry(hentry);
+		}
+
+		compose->header_last = NULL;
+		g_slist_free(compose->header_list);
+		compose->header_list = NULL;
+		compose->header_nextrow = 1;
+		compose_create_header_entry(compose);
+		
+		if (ac->set_autocc && ac->auto_cc)
+			compose_entry_append(compose, ac->auto_cc,
+						COMPOSE_CC, PREF_ACCOUNT);
+
+		if (ac->set_autobcc && ac->auto_bcc) 
+			compose_entry_append(compose, ac->auto_bcc,
+						COMPOSE_BCC, PREF_ACCOUNT);
+	
+		if (ac->set_autoreplyto && ac->auto_replyto)
+			compose_entry_append(compose, ac->auto_replyto,
+						COMPOSE_REPLYTO, PREF_ACCOUNT);
+		
+		for (list = saved_list; list; list = list->next) {
+			state = (HeaderEntryState *) list->data;
+			
+			compose_entry_append(compose, state->entry,
+						state->header, state->type);
+			if (state->entry_marked)
+				compose_entry_mark_default_to(compose, state->entry);
+				
+			g_free(state->entry);
+		}
+		g_slist_free(saved_list);
+		
+		combobox_select_by_data(GTK_COMBO_BOX(compose->header_last->combo),
+					(ac->protocol == A_NNTP) ? 
+					COMPOSE_NEWSGROUPS : COMPOSE_TO);
+	}
 
 	/* Set message save folder */
 	if (account_get_special_folder(compose->account, F_OUTBOX)) {
@@ -10782,7 +10883,7 @@ static void compose_add_field_list( Compose *compose, GList *listAddress ) {
 	node = listAddress;
 	while( node ) {
 		addr = ( gchar * ) node->data;
-		compose_entry_append( compose, addr, COMPOSE_TO );
+		compose_entry_append( compose, addr, COMPOSE_TO, PREF_NONE );
 		node = g_list_next( node );
 	}
 }

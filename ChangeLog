@@ -1,3 +1,13 @@
+ [pawel]	3.7.3cvs13
+
+	* src/addressbook.c
+	* src/compose.c
+	* src/compose.h
+	* src/filtering.c
+		Fix Bug 1867 Changing account does not change BCC address
+		Set account specific headers when changing account
+		in compose window.
+
 2009-11-07 [colin]	3.7.3cvs12
 
 	* src/gtk/prefswindow.c

@@ -1766,7 +1766,7 @@ static void addressbook_to_clicked(GtkButton *button, gpointer data)
 	addr = (char *)gtk_entry_get_text( GTK_ENTRY( addrbook.entry) );
 	if ( addr ) {
 		compose_entry_append(
-			compose, addr, (ComposeEntryType)data );
+			compose, addr, (ComposeEntryType)data , PREF_NONE);
 	}
 
 	/* Select from address list */
@@ -1781,7 +1781,7 @@ static void addressbook_to_clicked(GtkButton *button, gpointer data)
 			    aio->type == ADDR_ITEM_EMAIL ) {
 				addr = addressbook_format_address( aio );
 				compose_entry_append(
-					compose, addr, (ComposeEntryType) data );
+					compose, addr, (ComposeEntryType) data, PREF_NONE );
 				g_free( addr );
 			}
 			else if( aio->type == ADDR_ITEM_GROUP ) {
@@ -1793,7 +1793,7 @@ static void addressbook_to_clicked(GtkButton *button, gpointer data)
 					addr = addressbook_format_address(
 							( AddrItemObject * ) email );
 					compose_entry_append(
-						compose, addr, (ComposeEntryType) data );
+						compose, addr, (ComposeEntryType) data, PREF_NONE );
 					g_free( addr );
 					nodeMail = g_list_next( nodeMail );
 				}
@@ -1813,7 +1813,7 @@ static void addressbook_to_clicked(GtkButton *button, gpointer data)
 				addr = addressbook_format_address(
 						( AddrItemObject * ) email );
 				compose_entry_append(
-					compose, addr, (ComposeEntryType) data );
+					compose, addr, (ComposeEntryType) data, PREF_NONE );
 				g_free( addr );
 				nodeMail = g_list_next( nodeMail );
 			}

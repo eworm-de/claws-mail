@@ -3886,3 +3886,4 @@
 ( cvs diff -u -r 1.213.2.194 -r 1.213.2.195 src/folder.c;  ) > 3.7.3cvs10.patchset
 ( cvs diff -u -r 1.1.2.8 -r 1.1.2.9 src/gtk/spell_entry.c;  ) > 3.7.3cvs11.patchset
 ( cvs diff -u -r 1.12.2.53 -r 1.12.2.54 src/gtk/prefswindow.c;  ) > 3.7.3cvs12.patchset
+( cvs diff -u -r 1.60.2.134 -r 1.60.2.135 src/addressbook.c;  cvs diff -u -r 1.382.2.524 -r 1.382.2.525 src/compose.c;  cvs diff -u -r 1.50.2.55 -r 1.50.2.56 src/compose.h;  cvs diff -u -r 1.60.2.53 -r 1.60.2.54 src/filtering.c;  ) > 3.7.3cvs13.patchset
