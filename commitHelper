@@ -74,7 +74,11 @@ if [ "$name" == "salvatore" ]; then
 	name="iwkse";
 fi;
 
-log="`date --utc +%Y-%m-%d` [$name]\t$nextsversion\n\n"
+if [ "$name" == "corn" ]; then
+	name="pawel";
+fi;
+
+log="`date -u +%Y-%m-%d` [$name]\t$nextsversion\n\n"
 for line in $files; do
 	file=`echo $line | cut -d' ' -f2`
 	dir=`dirname $file`
