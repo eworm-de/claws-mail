@@ -19,13 +19,26 @@ EXTRA_DIST = \
 # hicolor icon theme, base class of all icon themes
 pixmapdir=$(datadir)/icons/hicolor/48x48/apps
 pixmap_DATA=claws-mail.png
+
+pixmap64dir=$(datadir)/icons/hicolor/64x64/apps
+pixmap64_DATA=claws-mail-64x64.png
+
+pixmap128dir=$(datadir)/icons/hicolor/128x128/apps
+pixmap128_DATA=claws-mail-128x128.png
+
 gnomapdir = $(datadir)/applications
 gnomap_DATA=claws-mail.desktop
+
+rename-icons:
+	@cd $(datadir)/icons/hicolor/64x64/apps && \
+            mv claws-mail-64x64.png claws-mail.png
+	@cd $(datadir)/icons/hicolor/128x128/apps && \
+            mv claws-mail-128x128.png claws-mail.png
 
 if CLAWS_GNOME2
 gtk_update_icon_cache = gtk-update-icon-cache -f -t $(datadir)/icons/hicolor
 
-install-data-hook: update-icon-cache
+install-data-hook: rename-icons update-icon-cache
 uninstall-hook: update-icon-cache
 
 update-icon-cache:
@@ -38,6 +51,10 @@ update-icon-cache:
                 echo "***   $(gtk_update_icon_cache)";			\
 		echo "***";						\
         fi
+else
+
+install-data-hook: rename-icons
+
 endif
 
 pkgconfigdir = $(libdir)/pkgconfig

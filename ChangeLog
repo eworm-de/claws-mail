@@ -1,3 +1,9 @@
+2009-11-17 [pawel]	3.7.3cvs15
+
+	* Makefile.am
+		Fix Bug 2049 'some icons not copied?'
+		Install additional 64x64 and 128x128 icons
+
 2009-11-17 [holger]	3.7.3cvs14
 
 	* src/prefs_toolbar.c
