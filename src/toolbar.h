@@ -198,6 +198,8 @@ enum {
 
 	A_SEPARATOR,
 
+	A_CLAWS_PLUGINS,
+
 	N_ACTION_VAL
 };
 

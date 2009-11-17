@@ -1,3 +1,11 @@
+2009-11-17 [holger]	3.7.3cvs14
+
+	* src/prefs_toolbar.c
+	* src/prefs_toolbar.h
+	* src/toolbar.c
+	* src/toolbar.h
+		Allow plugins to register toolbar items
+
 2009-11-11 [pawel]	3.7.3cvs13
 
 	* src/addressbook.c
