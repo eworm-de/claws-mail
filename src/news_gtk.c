@@ -288,21 +288,6 @@ static void unsubscribe_newsgroup_cb(GtkAction *action, gpointer data)
 	g_free(old_id);
 }
 
-static FolderItem *find_child_by_name(FolderItem *item, const gchar *name)
-{
-	GNode *node;
-	FolderItem *child;
-
-	for (node = item->node->children; node != NULL; node = node->next) {
-		child = FOLDER_ITEM(node->data);
-		if (strcmp2(child->name, name) == 0) {
-			return child;
-		}
-	}
-
-	return NULL;
-}
-
 static void rename_newsgroup_cb(GtkAction *action, gpointer data)
 {
 	FolderView *folderview = (FolderView *)data;
@@ -331,7 +316,7 @@ static void rename_newsgroup_cb(GtkAction *action, gpointer data)
 		return;
 	}
 
-	if (find_child_by_name(folder_item_parent(item), new_folder)) {
+	if (folder_find_child_item_by_name(folder_item_parent(item), new_folder)) {
 		name = trim_string(new_folder, 32);
 		alertpanel_error(_("The folder '%s' already exists."), name);
 		g_free(name);

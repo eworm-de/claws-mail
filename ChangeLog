@@ -1,3 +1,8 @@
+2009-11-18 [pawel]	3.7.3cvs17
+
+	* src/news_gtk.c
+		remove unneeded and code-duplicating function
+
 2009-11-18 [pawel]	3.7.3cvs16
 
 	* src/news_gtk.c
