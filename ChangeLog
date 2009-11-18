@@ -1,3 +1,12 @@
+2009-11-18 [pawel]	3.7.3cvs16
+
+	* src/news_gtk.c
+		Fix Bug 2057 'Claws mail does not keep renamed names
+		of nntp-subscribed groups'
+		Check for already subscribed group using item->path for group
+		comparision as folders item->path != item->name may be truth 
+		since we allowed renaming of newsgroups folders -> 3.5.0cvs11
+
 2009-11-17 [pawel]	3.7.3cvs15
 
 	* Makefile.am

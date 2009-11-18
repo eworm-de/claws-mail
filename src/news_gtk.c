@@ -130,6 +130,21 @@ static void set_sensitivity(GtkUIManager *ui_manager, FolderItem *item)
 #undef SET_SENS
 }
 
+static FolderItem *news_find_child_item(FolderItem *item, const gchar *path)
+{
+	GNode *node;
+	FolderItem *child;
+
+	for (node = item->node->children; node != NULL; node = node->next) {
+		child = FOLDER_ITEM(node->data);
+		if (strcmp2(child->path, path) == 0) {
+			return child;
+		}
+	}
+
+	return NULL;
+}
+
 static void subscribe_newsgroup_cb(GtkAction *action, gpointer data)
 {
 	FolderView *folderview = (FolderView *)data;
@@ -201,7 +216,7 @@ static void subscribe_newsgroup_cb(GtkAction *action, gpointer data)
 		gchar *name = (gchar *)cur->data;
 		FolderUpdateData hookdata;
 
-		if (folder_find_child_item_by_name(rootitem, name) != NULL)
+		if (news_find_child_item(rootitem, name) != NULL)
 			continue;
 
 		newitem = folder_item_new(folder, name, name);
