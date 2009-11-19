@@ -1,3 +1,9 @@
+2009-11-19 [pawel]	3.7.3cvs18
+
+	* Makefile.am
+		complete 3.7.3cvs15 so install is DESTDIR safe
+		remove icons with changed names on uninstall
+
 2009-11-18 [pawel]	3.7.3cvs17
 
 	* src/news_gtk.c
