@@ -1,3 +1,12 @@
+2009-11-21 [holger]	3.7.3cvs19
+
+	* src/printing.c
+		Modify cairo clip handling in preview windows,
+		to prevent print preview windows from being blank
+		with GTK+ 2.18. Follow recommendation of the GTK+
+		documentation (section "Migrating to client side windows")
+		and create a new cairo context for each expose event.
+
 2009-11-19 [pawel]	3.7.3cvs18
 
 	* Makefile.am

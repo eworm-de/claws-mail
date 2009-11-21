@@ -77,6 +77,7 @@ typedef struct {
 	gboolean rendering;
 	gint page_width;
 	gint page_height;
+	GtkPrintContext *context;
 } PreviewData;
 
 /* callbacks */
@@ -619,6 +620,7 @@ static void cb_preview_ready(GtkPrintOperationPreview *preview,
 
 	preview_data->pages_to_print = g_list_reverse(preview_data->pages_to_print);
 	preview_data->current_page = preview_data->pages_to_print;
+	preview_data->context = context;
 
 	g_signal_connect(preview_data->area, "expose_event",
 			 G_CALLBACK(cb_preview_expose),
@@ -663,6 +665,7 @@ static gboolean cb_preview_expose(GtkWidget *widget, GdkEventExpose *event,
 	GdkColor white;
 	GdkColor black;
 	GdkColor gray;
+	cairo_t *cr;
 
 	debug_print("preview_expose (current %p)\n", preview_data->current_page);
 	gdk_window_clear(preview_data->area->window);
@@ -699,6 +702,10 @@ static gboolean cb_preview_expose(GtkWidget *widget, GdkEventExpose *event,
 			   preview_data->page_height);
 
 	g_object_unref(gc);
+
+	cr = gdk_cairo_create(preview_data->area->window);
+	gtk_print_context_set_cairo_context(preview_data->context, cr, PREVIEW_SCALE, PREVIEW_SCALE);
+	cairo_destroy(cr);
 
 	if (preview_data->current_page) {
 		preview_data->rendering = TRUE;
