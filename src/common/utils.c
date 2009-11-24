@@ -1166,8 +1166,8 @@ gint get_quote_level(const gchar *str, const gchar *quote_chars)
 		if (strchr(quote_chars, *p))
 			quote_level++;
 		else if (*p != '-' && !g_ascii_isspace(*p) && p <= last_pos) {
-			/* any characters are allowed except '-' and space */
-			while (*p != '-'
+			/* any characters are allowed except '-','<' and space */
+			while (*p != '-' && *p != '<'
 			       && !strchr(quote_chars, *p)
 			       && !g_ascii_isspace(*p)
 			       && p < last_pos)

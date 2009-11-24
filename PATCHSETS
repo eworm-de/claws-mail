@@ -3893,3 +3893,4 @@
 ( cvs diff -u -r 1.2.2.32 -r 1.2.2.33 src/news_gtk.c;  ) > 3.7.3cvs17.patchset
 ( cvs diff -u -r 1.24.2.27 -r 1.24.2.28 Makefile.am;  ) > 3.7.3cvs18.patchset
 ( cvs diff -u -r 1.1.2.27 -r 1.1.2.28 src/printing.c;  ) > 3.7.3cvs19.patchset
+( cvs diff -u -r 1.36.2.178 -r 1.36.2.179 src/common/utils.c;  ) > 3.7.3cvs20.patchset

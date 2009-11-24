@@ -1,3 +1,10 @@
+2009-11-24 [pawel]	3.7.3cvs20
+
+	* src/common/utils.c
+		Fix Bug 2053 'Inconsistent application of Coloration 
+		of Message text'
+		Don't allow '<' character between quotation marks
+
 2009-11-21 [holger]	3.7.3cvs19
 
 	* src/printing.c
