@@ -1,3 +1,9 @@
+2009-11-25 [colin]	3.7.3cvs21
+
+	* src/imap.c
+		Fix bug 2063, 'glib assertion in GRelation use in 
+		imap.c'
+
 2009-11-24 [pawel]	3.7.3cvs20
 
 	* src/common/utils.c

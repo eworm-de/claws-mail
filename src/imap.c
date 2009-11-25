@@ -375,7 +375,6 @@ static gint imap_cmd_append	(IMAPSession	*session,
 static gint imap_cmd_copy       (IMAPSession *session,
 				 struct mailimap_set * set,
 				 const gchar *destfolder,
-				 GRelation *uid_mapping,
 				 struct mailimap_set ** source,
 				 struct mailimap_set ** dest);
 static gint imap_cmd_store	(IMAPSession	*session,
@@ -1735,7 +1734,7 @@ static gint imap_do_copy_msgs(Folder *folder, FolderItem *dest,
 	MsgInfo *msginfo;
 	IMAPSession *session;
 	gint ok = MAILIMAP_NO_ERROR;
-	GRelation *uid_mapping;
+	GHashTable *uid_hash;
 	gint last_num = 0;
 	gboolean single = FALSE;
 
@@ -1796,8 +1795,7 @@ static gint imap_do_copy_msgs(Folder *folder, FolderItem *dest,
 		return ok;
 
 	seq_list = imap_get_lep_set_from_msglist(IMAP_FOLDER(folder), msglist);
-	uid_mapping = g_relation_new(2);
-	g_relation_index(uid_mapping, 0, g_direct_hash, g_direct_equal);
+	uid_hash = g_hash_table_new(g_direct_hash, g_direct_equal);
 	
 	statusbar_print_all(_("Copying messages..."));
 	for (cur = seq_list; cur != NULL; cur = g_slist_next(cur)) {
@@ -1810,7 +1808,7 @@ static gint imap_do_copy_msgs(Folder *folder, FolderItem *dest,
 			    src->path, destdir);
 
 		lock_session(session); /* unlocked later in the function */
-		ok = imap_cmd_copy(session, seq_set, destdir, uid_mapping,
+		ok = imap_cmd_copy(session, seq_set, destdir,
 			&source, &dest);
 		
 		if (is_fatal(ok)) {
@@ -1828,7 +1826,7 @@ static gint imap_do_copy_msgs(Folder *folder, FolderItem *dest,
 					for (s_cur = s_list, d_cur = d_list; 
 					     s_cur && d_cur; 
 					     s_cur = s_cur->next, d_cur = d_cur->next) {
-						g_relation_insert(uid_mapping, s_cur->data, d_cur->data);
+						g_hash_table_insert(uid_hash, s_cur->data, d_cur->data);
 					}
 
 				} else {
@@ -1846,7 +1844,7 @@ static gint imap_do_copy_msgs(Folder *folder, FolderItem *dest,
 			mailimap_set_free(dest);
 
 		if (ok != MAILIMAP_NO_ERROR) {
-			g_relation_destroy(uid_mapping);
+			g_hash_table_destroy(uid_hash);
 			imap_lep_set_free(seq_list);
 			statusbar_pop_all();
 			return -1;
@@ -1855,13 +1853,12 @@ static gint imap_do_copy_msgs(Folder *folder, FolderItem *dest,
 
 	for (cur = msglist; cur != NULL; cur = g_slist_next(cur)) {
 		MsgInfo *msginfo = (MsgInfo *)cur->data;
-		GTuples *tuples;
+		gpointer hashval;
 
-		tuples = g_relation_select(uid_mapping, 
-					   GINT_TO_POINTER(msginfo->msgnum),
-					   0);
-		if (tuples->len > 0) {
-			gint num = GPOINTER_TO_INT(g_tuples_index(tuples, 0, 1));
+		hashval = g_hash_table_lookup(uid_hash, GINT_TO_POINTER(msginfo->msgnum));
+		
+		if (hashval != NULL) {
+			gint num = GPOINTER_TO_INT(hashval);
 			g_relation_insert(relation, msginfo,
 					  GINT_TO_POINTER(num));
 			if (num > last_num)
@@ -1893,11 +1890,10 @@ static gint imap_do_copy_msgs(Folder *folder, FolderItem *dest,
 		} else
 			g_relation_insert(relation, msginfo,
 					  GINT_TO_POINTER(0));
-		g_tuples_destroy(tuples);
 	}
 	statusbar_pop_all();
 
-	g_relation_destroy(uid_mapping);
+	g_hash_table_destroy(uid_hash);
 	imap_lep_set_free(seq_list);
 
 	g_free(destdir);
@@ -1952,7 +1948,6 @@ static gint imap_do_remove_msgs(Folder *folder, FolderItem *dest,
 	MsgInfo *msginfo;
 	IMAPSession *session;
 	gint ok = MAILIMAP_NO_ERROR;
-	GRelation *uid_mapping;
 	
 	g_return_val_if_fail(folder != NULL, -1);
 	g_return_val_if_fail(dest != NULL, -1);
@@ -1986,9 +1981,6 @@ static gint imap_do_remove_msgs(Folder *folder, FolderItem *dest,
 	}
 	numlist = g_slist_reverse(numlist);
 
-	uid_mapping = g_relation_new(2);
-	g_relation_index(uid_mapping, 0, g_direct_hash, g_direct_equal);
-
 	if (numlist != NULL) {
 		ok = imap_set_message_flags
 			(session, IMAP_FOLDER_ITEM(msginfo->folder), numlist, IMAP_FLAG_DELETED, NULL, TRUE);
@@ -2017,7 +2009,6 @@ static gint imap_do_remove_msgs(Folder *folder, FolderItem *dest,
 	}
 	g_free(dir);
 
-	g_relation_destroy(uid_mapping);
 	g_slist_free(numlist);
 
 	imap_scan_required(folder, dest);
@@ -3821,7 +3812,7 @@ static gint imap_cmd_append(IMAPSession *session,
 }
 
 static gint imap_cmd_copy(IMAPSession *session, struct mailimap_set * set,
-			  const gchar *destfolder, GRelation *uid_mapping,
+			  const gchar *destfolder,
 			  struct mailimap_set **source, struct mailimap_set **dest)
 {
 	int r;
