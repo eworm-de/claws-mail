@@ -1,4 +1,6 @@
 PLUGINDIR = $(pkglibdir)/plugins/
+DESKTOPFILEPATH=$(datadir)/applications/claws-mail.desktop
+
 noinst_LTLIBRARIES = libclawscommon.la
 
 if OS_WIN32
@@ -78,6 +80,7 @@ AM_CPPFLAGS = \
 	-DLOCALEDIR=\""$(localedir)"\" \
 	-DPLUGINDIR=\"$(PLUGINDIR)\" \
 	-DDATAROOTDIR=\""$(datarootdir)"\" \
+	-DDESKTOPFILEPATH=\"$(DESKTOPFILEPATH)\" \
 	-DGTK_DISABLE_DEPRECATED
 
 libclawscommon_la_LIBADD = \

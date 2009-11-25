@@ -1993,6 +1993,16 @@ const gchar *get_cert_file(void)
 }
 #endif
 
+/* Return the filepath of the claws-mail.desktop file */
+const gchar *get_desktop_file(void)
+{
+#ifdef DESKTOPFILEPATH
+  return DESKTOPFILEPATH;
+#else
+  return NULL;
+#endif
+}
+
 /* Return the default directory for Plugins. */
 const gchar *get_plugin_dir(void)
 {

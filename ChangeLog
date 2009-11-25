@@ -1,3 +1,12 @@
+2009-11-25 [holger]	3.7.3cvs22
+
+	* Makefile.am
+	* src/common/Makefile.am
+	* src/common/utils.c
+	* src/common/utils.h
+		Add a function to query the
+		filepath of the .desktop file
+
 2009-11-25 [colin]	3.7.3cvs21
 
 	* src/imap.c
