@@ -1,3 +1,8 @@
+2009-11-27 [mones]	3.7.3cvs23
+
+	* src/gtk/quicksearch.c
+		Allow viewing longer expressions if there's space
+
 2009-11-25 [holger]	3.7.3cvs22
 
 	* Makefile.am

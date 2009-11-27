@@ -654,7 +654,7 @@ QuickSearch *quicksearch_new()
 
 	vbox = gtk_vbox_new(TRUE, 0);
 	gtk_box_pack_start(GTK_BOX(vbox), search_string_entry, FALSE, FALSE, 0);
-	gtk_box_pack_start(GTK_BOX(hbox_search), vbox, FALSE, FALSE, 4);
+	gtk_box_pack_start(GTK_BOX(hbox_search), vbox, TRUE, TRUE, 4);
 
 	gtk_widget_show(vbox);
 	gtk_widget_show(search_string_entry);
