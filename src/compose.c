@@ -162,6 +162,13 @@ typedef enum
 	COMPOSE_QUOTE_SKIP
 } ComposeQuoteMode;
 
+typedef enum {
+    TO_FIELD_PRESENT,
+    SUBJECT_FIELD_PRESENT,
+    BODY_FIELD_PRESENT,
+    NO_FIELD_PRESENT
+} MailField;
+
 #define B64_LINE_SIZE		57
 #define B64_BUFFSIZE		77
 
@@ -207,7 +214,7 @@ static void compose_set_out_encoding		(Compose	*compose);
 static void compose_set_template_menu		(Compose	*compose);
 static void compose_destroy			(Compose	*compose);
 
-static void compose_entries_set			(Compose	*compose,
+static MailField compose_entries_set		(Compose	*compose,
 						 const gchar	*mailto,
 						 ComposeEntryType to_type);
 static gint compose_parse_header		(Compose	*compose,
@@ -936,6 +943,9 @@ Compose *compose_generic_new(PrefsAccount *account, const gchar *mailto, FolderI
 	gchar *mailto_from = NULL;
 	PrefsAccount *mailto_account = NULL;
 	MsgInfo* dummyinfo = NULL;
+	MailField mfield = NO_FIELD_PRESENT;
+	gchar* buf;
+	GtkTextMark *mark;
 
 	/* check if mailto defines a from */
 	if (mailto && *mailto != '\0') {
@@ -1017,7 +1027,7 @@ Compose *compose_generic_new(PrefsAccount *account, const gchar *mailto, FolderI
 
 	if (account->protocol != A_NNTP) {
 		if (mailto && *mailto != '\0') {
-			compose_entries_set(compose, mailto, COMPOSE_TO);
+			mfield = compose_entries_set(compose, mailto, COMPOSE_TO);
 
 		} else if (item && item->prefs) {
 			if (item->prefs->enable_default_bcc) {
@@ -1044,9 +1054,9 @@ Compose *compose_generic_new(PrefsAccount *account, const gchar *mailto, FolderI
 	} else {
 		if (mailto && *mailto != '\0') {
 			if (!strchr(mailto, '@'))
-				compose_entries_set(compose, mailto, COMPOSE_NEWSGROUPS);
+				mfield = compose_entries_set(compose, mailto, COMPOSE_NEWSGROUPS);
 			else
-				compose_entries_set(compose, mailto, COMPOSE_TO);
+				mfield = compose_entries_set(compose, mailto, COMPOSE_TO);
 		} else if (item && FOLDER_CLASS(item->folder) == news_get_class()) {
 			compose_entry_append(compose, item->path, COMPOSE_NEWSGROUPS, PREF_FOLDER);
 		}
@@ -1158,8 +1168,35 @@ Compose *compose_generic_new(PrefsAccount *account, const gchar *mailto, FolderI
 		compose_set_save_to(compose, folderidentifier);
 		g_free(folderidentifier);
 	}
-	
-	gtk_widget_grab_focus(compose->header_last->entry);
+
+	/* Place cursor according to provided input (mfield) */
+	switch (mfield) { 
+		case NO_FIELD_PRESENT:
+			gtk_widget_grab_focus(compose->header_last->entry);
+			break;
+		case TO_FIELD_PRESENT:
+			buf = g_strdup("");
+			gtk_entry_set_text(GTK_ENTRY(compose->subject_entry), buf);	
+			gtk_widget_grab_focus(compose->subject_entry);
+			break;
+		case SUBJECT_FIELD_PRESENT:
+			textview = GTK_TEXT_VIEW(compose->text);
+			textbuf = gtk_text_view_get_buffer(textview);
+			mark = gtk_text_buffer_get_insert(textbuf);
+			gtk_text_buffer_get_iter_at_mark(textbuf, &iter, mark);
+			gtk_text_buffer_insert(textbuf, &iter, "", -1);
+		    /* 
+		     * SUBJECT_FIELD_PRESENT and BODY_FIELD_PRESENT
+		     * only defers where it comes to the variable body
+		     * is not null. If no body is present compose->text
+		     * will be null in which case you cannot place the
+		     * cursor inside the component so. An empty component
+		     * is therefore created before placing the cursor
+		     */
+		case BODY_FIELD_PRESENT:
+			gtk_widget_grab_focus(compose->text);
+			break;
+	}
 
 	undo_unblock(compose->undostruct);
 
@@ -2532,7 +2569,7 @@ void compose_toolbar_cb(gint action, gpointer data)
 	}
 }
 
-static void compose_entries_set(Compose *compose, const gchar *mailto, ComposeEntryType to_type)
+static MailField compose_entries_set(Compose *compose, const gchar *mailto, ComposeEntryType to_type)
 {
 	gchar *to = NULL;
 	gchar *cc = NULL;
@@ -2542,12 +2579,15 @@ static void compose_entries_set(Compose *compose, const gchar *mailto, ComposeEn
 	gchar *temp = NULL;
 	gsize  len = 0;
 	gchar **attach = NULL;
+	MailField mfield = NO_FIELD_PRESENT;
 
 	/* get mailto parts but skip from */
 	scan_mailto_url(mailto, NULL, &to, &cc, &bcc, &subject, &body, &attach);
 
-	if (to)
+	if (to) {
 		compose_entry_append(compose, to, to_type, PREF_MAILTO);
+		mfield = TO_FIELD_PRESENT;
+	}
 	if (cc)
 		compose_entry_append(compose, cc, COMPOSE_CC, PREF_MAILTO);
 	if (bcc)
@@ -2560,6 +2600,7 @@ static void compose_entries_set(Compose *compose, const gchar *mailto, ComposeEn
 		} else {
 			gtk_entry_set_text(GTK_ENTRY(compose->subject_entry), subject);
 		}
+		mfield = SUBJECT_FIELD_PRESENT;
 	}
 	if (body) {
 		GtkTextView *text = GTK_TEXT_VIEW(compose->text);
@@ -2585,6 +2626,7 @@ static void compose_entries_set(Compose *compose, const gchar *mailto, ComposeEn
 		compose->autowrap = prev_autowrap;
 		if (compose->autowrap)
 			compose_wrap_all(compose);
+		mfield = BODY_FIELD_PRESENT;
 	}
 
 	if (attach) {
@@ -2620,6 +2662,8 @@ static void compose_entries_set(Compose *compose, const gchar *mailto, ComposeEn
 	g_free(subject);
 	g_free(body);
 	g_strfreev(attach);
+	
+	return mfield;
 }
 
 static gint compose_parse_header(Compose *compose, MsgInfo *msginfo)
