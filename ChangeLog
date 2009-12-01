@@ -1,3 +1,14 @@
+2009-12-01 [holger]	3.7.3cvs25
+
+	* src/summaryview.c
+	* src/summaryview.h
+		Introduce new drag type "claws-mail/msg-path-list" for
+		drag'n'drop of a message selection from the summaryview
+		into other applications. The drag data gets set to the
+		folder-item-id followed by message ids, separated by newlines.
+		This enables other applications to back-link to Claws Mail
+		via a "claws-mail --select" call after they received a drop.
+
 2009-11-30 [mir]	3.7.3cvs24
 
 	* src/compose.c

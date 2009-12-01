@@ -399,10 +399,11 @@ static void summary_set_colorlabel_color (GtkCMCTree		*ctree,
 				   guint		 labelcolor);
 static void summary_thread_build(SummaryView *summaryview);
 
-GtkTargetEntry summary_drag_types[2] =
+GtkTargetEntry summary_drag_types[3] =
 {
 	{"text/uri-list", 0, TARGET_MAIL_URI_LIST},
-	{"claws-mail/internal", GTK_TARGET_SAME_APP, TARGET_DUMMY}
+	{"claws-mail/internal", GTK_TARGET_SAME_APP, TARGET_DUMMY},
+	{"claws-mail/msg-path-list", 0, TARGET_MAIL_CM_PATH_LIST},
 };
 
 #define DO_ACTION(name, act) {						\
@@ -759,7 +760,7 @@ SummaryView *summary_create(MainWindow *mainwin)
 				summary_update_folder_hook,
 				(gpointer) summaryview);
 
-	summaryview->target_list = gtk_target_list_new(summary_drag_types, 2);
+	summaryview->target_list = gtk_target_list_new(summary_drag_types, 3);
 
 	summaryview->quicksearch = quicksearch;
 
@@ -6408,7 +6409,7 @@ static GtkWidget *summary_ctree_create(SummaryView *summaryview)
 			 summaryview);
 
 	gtk_drag_dest_set(ctree, GTK_DEST_DEFAULT_ALL & ~GTK_DEST_DEFAULT_HIGHLIGHT,
-			  summary_drag_types, 2,
+			  summary_drag_types, 3,
 			  GDK_ACTION_MOVE | GDK_ACTION_COPY | GDK_ACTION_DEFAULT);
 
 	g_signal_connect(G_OBJECT(ctree), "drag_data_received",
@@ -7109,7 +7110,40 @@ static void summary_drag_data_get(GtkWidget        *widget,
 					       selection_data->target, 8,
 					       "Dummy-Summaryview", 
 					       strlen("Dummy-Summaryview")+1);
-	}
+	} else if (info == TARGET_MAIL_CM_PATH_LIST) {
+		/* content: folder_item_identifier\nmsgid1\nmsgid2\nmsgid3 */
+
+		GtkCMCTree *ctree = GTK_CMCTREE(summaryview->ctree);
+		GList *cur;
+		MsgInfo *msginfo;
+		gchar *path_list = NULL;
+
+		/* identifier */
+		if(GTK_CMCLIST(ctree)->selection != NULL) {
+			msginfo = gtk_cmctree_node_get_row_data(ctree, GTK_CMCTREE_NODE(GTK_CMCLIST(ctree)->selection->data));
+            if(msginfo && msginfo->folder)
+              path_list = folder_item_get_identifier(msginfo->folder);
+		}
+
+		for (cur = GTK_CMCLIST(ctree)->selection;
+		     cur != NULL && cur->data != NULL; cur = cur->next) {
+			gchar *tmp;
+
+			msginfo = gtk_cmctree_node_get_row_data(ctree, GTK_CMCTREE_NODE(cur->data));
+            if(!msginfo)
+              continue;
+			tmp = path_list;
+			path_list = g_strconcat(path_list, "\n", (msginfo->msgid ? msginfo->msgid : "unknown"), NULL);
+			g_free(tmp);
+		}
+
+		if (path_list != NULL) {
+			gtk_selection_data_set(selection_data,
+					       selection_data->target, 8,
+					       path_list, strlen(path_list));
+			g_free(path_list);
+		}
+    }
 }
 
 static gboolean summary_drag_motion_cb(GtkWidget      *widget,

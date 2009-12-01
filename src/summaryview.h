@@ -61,7 +61,8 @@ typedef enum
 typedef enum
 {
 	TARGET_MAIL_URI_LIST,
-	TARGET_DUMMY
+	TARGET_DUMMY,
+	TARGET_MAIL_CM_PATH_LIST,
 } TargetInfo;
 
 #include "mainwindow.h"
@@ -74,7 +75,7 @@ typedef enum
 #include "prefs_filtering.h"
 #include "quicksearch.h"
 
-extern GtkTargetEntry summary_drag_types[2];
+extern GtkTargetEntry summary_drag_types[3];
 
 struct _SummaryColumnState
 {
