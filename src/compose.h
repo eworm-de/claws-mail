@@ -156,6 +156,8 @@ struct _Compose
 	guint	   header_nextrow;
 	ComposeHeaderEntry *header_last;
 
+	GHashTable *email_hashtable;
+
 	gchar	*replyto;
 	gchar	*cc;
 	gchar	*bcc;

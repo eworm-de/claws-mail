@@ -1,3 +1,11 @@
+2009-12-02 [pawel]	3.7.3cvs27
+
+	* src/compose.c
+	* src/compose.h
+		Fix Bug 1850 "Reply All" duplicates "To" user in "CC" if original
+		email had user in "From" and "CC"
+		Don't allow duplicate addresses in compose window headers
+
 2009-12-02 [mones]	3.7.3cvs26
 
 	* manual/intro.xml

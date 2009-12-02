@@ -6545,17 +6545,41 @@ static void compose_create_header_entry(Compose *compose)
 static void compose_add_header_entry(Compose *compose, const gchar *header,
 				gchar *text, ComposePrefType pref_type) 
 {
-	ComposeHeaderEntry *last_header;
+	ComposeHeaderEntry *last_header = compose->header_last;
+	gchar *tmp = g_strdup(text), *email;
 	
-	last_header = compose->header_last;
-
+	extract_address(tmp);
+	email = g_utf8_strdown(tmp, -1);
+	
+	if (g_hash_table_lookup(compose->email_hashtable, email) != NULL) {
+		debug_print("Ignoring duplicate address - %s %s, pref_type: %d\n",
+				header, text, (gint) pref_type);
+		g_free(email);
+		g_free(tmp);
+		return;
+	}
+	
 	combobox_select_by_text(GTK_COMBO_BOX(last_header->combo), header);
 	gtk_entry_set_text(GTK_ENTRY(last_header->entry), text);
 	last_header->type = pref_type;
+
+	g_hash_table_insert(compose->email_hashtable, email,
+				GUINT_TO_POINTER(1));
+	g_free(tmp);
 }
 
-static void compose_destroy_headerentry(ComposeHeaderEntry *headerentry)
+static void compose_destroy_headerentry(Compose *compose, 
+					ComposeHeaderEntry *headerentry)
 {
+	gchar *text = gtk_editable_get_chars(GTK_EDITABLE(headerentry->entry), 0, -1);
+	gchar *email;
+
+	extract_address(text);
+	email = g_utf8_strdown(text, -1);
+	g_hash_table_remove(compose->email_hashtable, email);
+	g_free(text);
+	g_free(email);
+	
 	gtk_widget_destroy(headerentry->combo);
 	gtk_widget_destroy(headerentry->entry);
 	gtk_widget_destroy(headerentry->button);
@@ -6567,7 +6591,7 @@ static void compose_remove_header_entries(Compose *compose)
 {
 	GSList *list;
 	for (list = compose->header_list; list; list = list->next)
-		compose_destroy_headerentry((ComposeHeaderEntry *)list->data);
+		compose_destroy_headerentry(compose, (ComposeHeaderEntry *)list->data);
 
 	compose->header_last = NULL;
 	g_slist_free(compose->header_list);
@@ -7447,6 +7471,9 @@ static Compose *compose_create(PrefsAccount *account,
 	compose->replyinfo  = NULL;
 	compose->fwdinfo    = NULL;
 
+	compose->email_hashtable = g_hash_table_new_full(g_str_hash,
+				g_str_equal, (GDestroyNotify) g_free, NULL);
+	
 	compose->replyto     = NULL;
 	compose->cc	     = NULL;
 	compose->bcc	     = NULL;
@@ -8226,6 +8253,8 @@ static void compose_destroy(Compose *compose)
 	g_slist_free(compose->newsgroup_list);
 	slist_free_strings(compose->header_list);
 	g_slist_free(compose->header_list);
+
+	g_hash_table_destroy(compose->email_hashtable);
 
 	procmsg_msginfo_free(compose->targetinfo);
 	procmsg_msginfo_free(compose->replyinfo);
@@ -9037,7 +9066,7 @@ static void account_activated(GtkComboBox *optmenu, gpointer data)
 			ComposeHeaderEntry *hentry=(ComposeHeaderEntry *)list->data;
 			
 			if (hentry->type == PREF_ACCOUNT || !list->next) {
-				compose_destroy_headerentry(hentry);
+				compose_destroy_headerentry(compose, hentry);
 				continue;
 			}
 			
@@ -9060,7 +9089,7 @@ static void account_activated(GtkComboBox *optmenu, gpointer data)
 						&style->base[GTK_STATE_NORMAL]);
 
 			saved_list = g_slist_append(saved_list, state);
-			compose_destroy_headerentry(hentry);
+			compose_destroy_headerentry(compose, hentry);
 		}
 
 		compose->header_last = NULL;
