@@ -1,3 +1,11 @@
+2009-12-02 [pawel]	3.7.3cvs28
+
+	* src/compose.c
+		Fix Bug 2055 "duplicate mailing list reply if
+		List-Post + Reply-To present"
+		- Ignore Reply-To if answering to ML
+		- Improve parsing of List-Post header
+
 2009-12-02 [pawel]	3.7.3cvs27
 
 	* src/compose.c

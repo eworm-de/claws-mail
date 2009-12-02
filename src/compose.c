@@ -2743,12 +2743,15 @@ static gint compose_parse_header(Compose *compose, MsgInfo *msginfo)
 		hentry[H_FOLLOWUP_TO].body = NULL;
 	}
 	if (hentry[H_LIST_POST].body != NULL) {
-		gchar *to = NULL;
+		gchar *to = NULL, *start = NULL;
 
 		extract_address(hentry[H_LIST_POST].body);
 		if (hentry[H_LIST_POST].body[0] != '\0') {
-			scan_mailto_url(hentry[H_LIST_POST].body,
+			start = strstr(hentry[H_LIST_POST].body, "mailto:");
+			
+			scan_mailto_url(start ? start : hentry[H_LIST_POST].body,
 					NULL, &to, NULL, NULL, NULL, NULL, NULL);
+
 			if (to) {
 				g_free(compose->ml_post);
 				compose->ml_post = to;
@@ -3015,22 +3018,6 @@ static gboolean is_subscription(const gchar *ml_post, const gchar *from)
 	return result;
 }
 
-static gboolean same_address(const gchar *addr1, const gchar *addr2)
-{
-	gchar *my_addr1, *my_addr2;
-	
-	if (!addr1 || !addr2)
-		return FALSE;
-
-	Xstrdup_a(my_addr1, addr1, return FALSE);
-	Xstrdup_a(my_addr2, addr2, return FALSE);
-	
-	extract_address(my_addr1);
-	extract_address(my_addr2);
-	
-	return !strcasecmp(my_addr1, my_addr2);
-}
-
 static void compose_reply_set_entry(Compose *compose, MsgInfo *msginfo,
 				    gboolean to_all, gboolean to_ml,
 				    gboolean to_sender,
@@ -3040,7 +3027,6 @@ static void compose_reply_set_entry(Compose *compose, MsgInfo *msginfo,
 	GSList *cur;
 	gchar *from = NULL;
 	gchar *replyto = NULL;
-	GHashTable *to_table;
 
 	gboolean reply_to_ml = FALSE;
 	gboolean default_reply_to = FALSE;
@@ -3077,8 +3063,7 @@ static void compose_reply_set_entry(Compose *compose, MsgInfo *msginfo,
 				compose_entry_append(compose,
 					   compose->ml_post,
 					   COMPOSE_TO, PREF_ML);
-				if (compose->replyto
-				&&  !same_address(compose->ml_post, compose->replyto))
+				if (to_all && compose->replyto)
 					compose_entry_append(compose,
 						compose->replyto,
 						COMPOSE_CC, PREF_ML);
@@ -3204,31 +3189,6 @@ static void compose_reply_set_entry(Compose *compose, MsgInfo *msginfo,
 	cc_list = address_list_append_with_comments(cc_list, msginfo->to);
 	cc_list = address_list_append_with_comments(cc_list, compose->cc);
 
-	to_table = g_hash_table_new(g_str_hash, g_str_equal);
-	if (replyto)
-		g_hash_table_insert(to_table, g_utf8_strdown(replyto, -1), GINT_TO_POINTER(1));
-	if (compose->account) {
-		g_hash_table_insert(to_table, g_utf8_strdown(compose->account->address, -1),
-				    GINT_TO_POINTER(1));
-	}
-	/* remove address on To: and that of current account */
-	for (cur = cc_list; cur != NULL; ) {
-		GSList *next = cur->next;
-		gchar *addr;
-
-		addr = g_utf8_strdown(cur->data, -1);
-		extract_address(addr);
-
-		if (GPOINTER_TO_INT(g_hash_table_lookup(to_table, addr)) == 1)
-			cc_list = g_slist_remove(cc_list, cur->data);
-		else
-			g_hash_table_insert(to_table, addr, GINT_TO_POINTER(1));
-
-		cur = next;
-	}
-	hash_free_strings(to_table);
-	g_hash_table_destroy(to_table);
-
 	if (cc_list) {
 		for (cur = cc_list; cur != NULL; cur = cur->next)
 			compose_entry_append(compose, (gchar *)cur->data,
@@ -3236,7 +3196,6 @@ static void compose_reply_set_entry(Compose *compose, MsgInfo *msginfo,
 		slist_free_strings(cc_list);
 		g_slist_free(cc_list);
 	}
-
 }
 
 #define SET_ENTRY(entry, str) \
