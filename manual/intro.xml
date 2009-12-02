@@ -26,7 +26,7 @@
   <section id="intro_history">
     <title>History of Claws Mail</title>
     <para>
-	Claws Mail has existed since April 2001. It was initially named Sylpheed-Claws and changed its name to Claws Mail in November 2006. The primary goal of Sylpheed-Claws was to be a test-bed for potential features of Sylpheed (<ulink url="http://sylpheed.good-day.net/">http://sylpheed.good-day.net/</ulink>), so that new features could be tested thoroughly without compromising Sylpheed's stability. Sylpheed-Claws developers regularly synchronised their codebase with Sylpheed's codebase, and Sylpheed's author, Hiroyuki Yamamoto, took back the new features he liked once they were stabilised.
+	Claws Mail has existed since April 2001. It was initially named Sylpheed-Claws and changed its name to Claws Mail in November 2006. The primary goal of Sylpheed-Claws was to be a test-bed for potential features of Sylpheed (<ulink url="http://sylpheed.sraoss.jp/en/">http://sylpheed.sraoss.jp/en/</ulink>), so that new features could be tested thoroughly without compromising Sylpheed's stability. Sylpheed-Claws developers regularly synchronised their codebase with Sylpheed's codebase, and Sylpheed's author, Hiroyuki Yamamoto, took back the new features he liked once they were stabilised.
     </para><para>
 	Originally both Sylpheed and Claws Mail were based on GTK1. The work on the GTK2 versions started in early 2003, and the first modern (GTK2-based) Sylpheed-Claws was released in March 2005. Since about this time, Sylpheed and Sylpheed-Claws' goals started to diverge more, and Sylpheed-Claws became an entity of its own. This is why its name is now Claws Mail.
     </para>

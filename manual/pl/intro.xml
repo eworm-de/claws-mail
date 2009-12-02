@@ -26,7 +26,7 @@
   <section id="intro_history">
     <title>Historia Claws Mail</title>
     <para>
-	Claws Mail istnieje od kwietnia 2001. Pierwotnym celem Claws Mail by³o testowanie nowych, potencjalnych funkcji programu Sylpheed (<ulink url="http://sylpheed.good-day.net/">http://sylpheed.good-day.net/</ulink>), tak aby nowe funkcje by³y przetestowane, ¿eby nie zagroziæ stabilno¶ci programu Sylpheed. Autorzy Claws Mail regularnie synchronizowali kod ¼ród³owy z kodem Sylpheed i autor Sylpheed  Hiroyuki Yamamoto, pobiera³ z powrotem nowe funkcje kiedy by³y one ju¿ stabilne.
+	Claws Mail istnieje od kwietnia 2001. Pierwotnym celem Claws Mail by³o testowanie nowych, potencjalnych funkcji programu Sylpheed (<ulink url="http://sylpheed.sraoss.jp/en/">http://sylpheed.sraoss.jp/en/</ulink>), tak aby nowe funkcje by³y przetestowane, ¿eby nie zagroziæ stabilno¶ci programu Sylpheed. Autorzy Claws Mail regularnie synchronizowali kod ¼ród³owy z kodem Sylpheed i autor Sylpheed  Hiroyuki Yamamoto, pobiera³ z powrotem nowe funkcje kiedy by³y one ju¿ stabilne.
     </para><para>
 	Oryginalnie obie programy Sylpheed i Claws Mail by³y oparte na GTK1. Prace na wersjami opartymi na GTK2 rozpoczê³y siê wczesnym 2003, pierwsza wersja oparta na GTK2 Claws Mail zosta³a wydana w marcu 2005. Od tego czasu cele Sylpheed i Claws Mail zaczê³y siê coraz bardziej rozmijaæ i w pewnym momencie Claws Mail sta³ siê oddzielnym projektem.
     </para>

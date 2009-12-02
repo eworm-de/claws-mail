@@ -3899,3 +3899,4 @@
 ( cvs diff -u -r 1.1.2.87 -r 1.1.2.88 src/gtk/quicksearch.c;  ) > 3.7.3cvs23.patchset
 ( cvs diff -u -r 1.382.2.525 -r 1.382.2.526 src/compose.c;  ) > 3.7.3cvs24.patchset
 ( cvs diff -u -r 1.395.2.415 -r 1.395.2.416 src/summaryview.c;  cvs diff -u -r 1.68.2.52 -r 1.68.2.53 src/summaryview.h;  ) > 3.7.3cvs25.patchset
+( cvs diff -u -r 1.1.2.9 -r 1.1.2.10 manual/intro.xml;  cvs diff -u -r 1.1.2.3 -r 1.1.2.4 manual/es/intro.xml;  cvs diff -u -r 1.1.2.5 -r 1.1.2.6 manual/fr/intro.xml;  cvs diff -u -r 1.1.2.1 -r 1.1.2.2 manual/it/intro.xml;  cvs diff -u -r 1.1.2.3 -r 1.1.2.4 manual/pl/intro.xml;  ) > 3.7.3cvs26.patchset

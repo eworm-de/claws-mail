@@ -1,3 +1,12 @@
+2009-12-02 [mones]	3.7.3cvs26
+
+	* manual/intro.xml
+	* manual/es/intro.xml
+	* manual/fr/intro.xml
+	* manual/it/intro.xml
+	* manual/pl/intro.xml
+		Make URL to point current site
+
 2009-12-01 [holger]	3.7.3cvs25
 
 	* src/summaryview.c
