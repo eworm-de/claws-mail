@@ -3063,7 +3063,7 @@ static void compose_reply_set_entry(Compose *compose, MsgInfo *msginfo,
 				compose_entry_append(compose,
 					   compose->ml_post,
 					   COMPOSE_TO, PREF_ML);
-				if (to_all && compose->replyto)
+				if (compose->replyto)
 					compose_entry_append(compose,
 						compose->replyto,
 						COMPOSE_CC, PREF_ML);
