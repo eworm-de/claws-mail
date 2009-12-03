@@ -1,3 +1,10 @@
+2009-12-03 [pawel]	3.7.3cvs30
+
+	* src/compose.c
+		Highlight misspelled words in text inserted from file(s)
+		or pasted to message body when check_while_typing
+		options is on
+
 2009-12-02 [pawel]	3.7.3cvs29
 
 	* src/compose.c

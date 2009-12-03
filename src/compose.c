@@ -9541,6 +9541,7 @@ static void compose_insert_file_cb(GtkAction *action, gpointer data)
 {
 	Compose *compose = (Compose *)data;
 	GList *file_list;
+	gint files_inserted = 0;
 
 	file_list = filesel_select_multiple_files_open(_("Select file"));
 
@@ -9561,7 +9562,8 @@ static void compose_insert_file_cb(GtkAction *action, gpointer data)
 				alertpanel_error(_("File '%s' contained invalid characters\n"
 							"for the current encoding, insertion may be incorrect."),
 							shortfile);
-			}
+			} else if (res == COMPOSE_INSERT_SUCCESS)
+				files_inserted++;
 
 			g_free(shortfile);
 			g_free(filedup);
@@ -9569,6 +9571,11 @@ static void compose_insert_file_cb(GtkAction *action, gpointer data)
 		}
 		g_list_free(file_list);
 	}
+
+#ifdef USE_ENCHANT	
+	if (files_inserted > 0 && compose->gtkaspell->check_while_typing)
+		gtkaspell_highlight_all(compose->gtkaspell);
+#endif
 }
 
 static void compose_insert_sig_cb(GtkAction *action, gpointer data)
@@ -9847,6 +9854,12 @@ static void compose_paste_cb(GtkAction *action, gpointer data)
 				prefs_common.linewrap_pastes,
 				GDK_SELECTION_CLIPBOARD, NULL);
 	UNBLOCK_WRAP();
+
+#ifdef USE_ENCHANT
+	if (GTK_WIDGET_HAS_FOCUS(compose->text) &&
+	    compose->gtkaspell->check_while_typing)
+	    	gtkaspell_highlight_all(compose->gtkaspell);
+#endif
 }
 
 static void compose_paste_as_quote_cb(GtkAction *action, gpointer data)
@@ -9890,6 +9903,12 @@ static void compose_paste_no_wrap_cb(GtkAction *action, gpointer data)
 		entry_paste_clipboard(compose, compose->focused_editable, FALSE,
 			GDK_SELECTION_CLIPBOARD, NULL);
 	UNBLOCK_WRAP();
+
+#ifdef USE_ENCHANT
+	if (GTK_WIDGET_HAS_FOCUS(compose->text) &&
+	    compose->gtkaspell->check_while_typing)
+	    	gtkaspell_highlight_all(compose->gtkaspell);
+#endif
 }
 
 static void compose_paste_wrap_cb(GtkAction *action, gpointer data)
@@ -9906,6 +9925,12 @@ static void compose_paste_wrap_cb(GtkAction *action, gpointer data)
 		entry_paste_clipboard(compose, compose->focused_editable, TRUE,
 			GDK_SELECTION_CLIPBOARD, NULL);
 	UNBLOCK_WRAP();
+
+#ifdef USE_ENCHANT
+	if (GTK_WIDGET_HAS_FOCUS(compose->text) &&
+	    compose->gtkaspell->check_while_typing)
+	    	gtkaspell_highlight_all(compose->gtkaspell);
+#endif
 }
 
 static void compose_allsel_cb(GtkAction *action, gpointer data)
