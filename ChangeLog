@@ -1,3 +1,11 @@
+2009-12-04 [pawel]	3.7.3cvs32
+
+	* src/messageview.c
+		Use case insensitive comparison in search for
+		duplicate urls
+	* src/uri_opener.c
+		Refresh scrollbars on every window open
+
 2009-12-04 [pawel]	3.7.3cvs31
 
 	* src/compose.c

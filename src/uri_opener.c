@@ -47,6 +47,7 @@ enum {
 static struct URIOpener
 {
 	GtkWidget *window;
+	GtkWidget *hbox_scroll;
 	GtkWidget *hbox1;
 	GtkWidget *vbox1;
 	GtkWidget *label;
@@ -71,8 +72,6 @@ static void uri_opener_double_clicked(GtkTreeView		*list_view,
 static void uri_opener_create(void);
 void uri_opener_open(MessageView *msgview, GSList *uris)
 {
-	GtkAdjustment *hadj, *vadj;
-	
 	cm_return_if_fail(msgview);
 	cm_return_if_fail(msgview->mimeview);
 	cm_return_if_fail(msgview->mimeview->textview);
@@ -95,14 +94,6 @@ void uri_opener_open(MessageView *msgview, GSList *uris)
 	gtk_widget_show(opener.window);
 	gtk_widget_grab_focus(opener.urilist);
 	gtk_window_set_modal(GTK_WINDOW(opener.window), TRUE);
-	
-	vadj = gtk_scrolled_window_get_vadjustment(GTK_SCROLLED_WINDOW(
-						   opener.scrolledwin));
-	gtk_adjustment_set_value(vadj, 0);
-	hadj = gtk_scrolled_window_get_hadjustment(GTK_SCROLLED_WINDOW(
-						   opener.scrolledwin));
-	gtk_adjustment_set_value(hadj, 0);
-
 }
 
 static GtkListStore* uri_opener_create_data_store(void)
@@ -153,9 +144,26 @@ static GtkWidget *uri_opener_list_view_create	(void)
 
 }
 
+static GtkWidget *uri_opener_scrolled_win_create(void)
+{
+	GtkWidget *scrolledwin;
+
+	scrolledwin = gtk_scrolled_window_new(NULL, NULL);
+	gtk_scrolled_window_set_shadow_type(GTK_SCROLLED_WINDOW(scrolledwin),
+					    GTK_SHADOW_ETCHED_IN);
+	gtk_scrolled_window_set_policy(GTK_SCROLLED_WINDOW(scrolledwin),
+				       GTK_POLICY_AUTOMATIC, GTK_POLICY_AUTOMATIC);
+				       
+	gtk_widget_set_size_request(scrolledwin, 500, 250);
+	gtk_widget_show(scrolledwin);
+	
+	return scrolledwin;
+}
+
 static void uri_opener_create(void) 
 {
 	GtkWidget *window;
+	GtkWidget *hbox_scroll;
 	GtkWidget *hbox;
 	GtkWidget *hbox1;
 	GtkWidget *vbox1;
@@ -197,14 +205,10 @@ static void uri_opener_create(void)
 	gtk_misc_set_alignment(GTK_MISC(label), 0, 0.5);
 	gtk_box_pack_start(GTK_BOX(vbox1), label, FALSE, TRUE, 0);
 	
-	scrolledwin = gtk_scrolled_window_new(NULL, NULL);
-	gtk_scrolled_window_set_shadow_type(GTK_SCROLLED_WINDOW(scrolledwin),
-					    GTK_SHADOW_ETCHED_IN);
-	gtk_scrolled_window_set_policy(GTK_SCROLLED_WINDOW(scrolledwin),
-				       GTK_POLICY_AUTOMATIC, GTK_POLICY_AUTOMATIC);
-				       
-	gtk_widget_set_size_request(scrolledwin, 500, 250);
-
+	scrolledwin = uri_opener_scrolled_win_create();
+	hbox_scroll = gtk_hbox_new(FALSE, 0);
+	gtk_box_pack_start(GTK_BOX(hbox_scroll), scrolledwin, TRUE, TRUE, 0);
+	
 	select_all_btn = gtk_button_new_with_label(_("Select All"));
 	g_signal_connect(G_OBJECT(select_all_btn), "clicked",
 			 G_CALLBACK(uri_opener_select_all_cb), NULL);	
@@ -214,7 +218,7 @@ static void uri_opener_create(void)
 	gtk_box_pack_start(GTK_BOX(hbox), gtk_label_new(""), TRUE, TRUE, 0);
 	
 	gtk_container_add(GTK_CONTAINER(scrolledwin), urilist);
-	gtk_box_pack_start(GTK_BOX(vbox1), scrolledwin, TRUE, TRUE, 0);
+	gtk_box_pack_start(GTK_BOX(vbox1), hbox_scroll, TRUE, TRUE, 0);
 	gtk_box_pack_start(GTK_BOX(vbox1), hbox, FALSE, FALSE, 0);
 	gtk_box_pack_start(GTK_BOX(vbox1), hbox1, FALSE, FALSE, 0);
 	
@@ -222,6 +226,7 @@ static void uri_opener_create(void)
 	gtk_container_add(GTK_CONTAINER (window), vbox1);
 
 	opener.window = window;
+	opener.hbox_scroll = hbox_scroll;
 	opener.hbox1 = hbox1;
 	opener.vbox1 = vbox1;
 	opener.label = label;
@@ -284,6 +289,16 @@ static void uri_opener_load_uris (void)
 		ClickableText *uri = (ClickableText *)cur->data;
 		uri_opener_list_view_insert_uri(opener.urilist, NULL, uri);
 	}
+	
+	g_object_ref(opener.urilist);
+	gtk_container_remove(GTK_CONTAINER(opener.scrolledwin), opener.urilist);
+	gtk_widget_destroy(opener.scrolledwin);
+	
+	opener.scrolledwin = uri_opener_scrolled_win_create();
+	gtk_container_add(GTK_CONTAINER(opener.scrolledwin), opener.urilist);
+	gtk_box_pack_start(GTK_BOX(opener.hbox_scroll),
+			   opener.scrolledwin, TRUE, TRUE, 0);
+	g_object_unref(opener.urilist);
 	
 	model = gtk_tree_view_get_model(GTK_TREE_VIEW(opener.urilist));
 	gtk_tree_model_get_iter_first(model, &iter);
