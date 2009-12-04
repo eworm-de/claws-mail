@@ -1142,6 +1142,10 @@ Compose *compose_generic_new(PrefsAccount *account, const gchar *mailto, FolderI
 			quote_fmt_reset_vartable();
 
 			g_free(tmp);
+#ifdef USE_ENCHANT
+			if (compose->gtkaspell->check_while_typing)
+				gtkaspell_highlight_all(compose->gtkaspell);
+#endif
 		}
 
 	}
@@ -1601,6 +1605,10 @@ static Compose *compose_generic_reply(MsgInfo *msginfo,
 					  _("The body of the \"Reply\" template has an error at line %d."));
 		compose_attach_from_list(compose, quote_fmt_get_attachments_list(), FALSE);
 		quote_fmt_reset_vartable();
+#ifdef USE_ENCHANT
+		if (compose->gtkaspell->check_while_typing)
+			gtkaspell_highlight_all(compose->gtkaspell);
+#endif
 	}
 
 	if (MSG_IS_ENCRYPTED(compose->replyinfo->flags)) {
@@ -1793,6 +1801,10 @@ Compose *compose_forward(PrefsAccount *account, MsgInfo *msginfo,
 		compose_attach_parts(compose, msginfo);
 
 		procmsg_msginfo_free(full_msginfo);
+#ifdef USE_ENCHANT
+		if (compose->gtkaspell->check_while_typing)
+			gtkaspell_highlight_all(compose->gtkaspell);
+#endif
 	}
 
 	SIGNAL_BLOCK(textbuf);
@@ -8079,6 +8091,11 @@ static void compose_template_apply(Compose *compose, Template *tmpl,
 	compose_attach_from_list(compose, quote_fmt_get_attachments_list(), FALSE);
 	quote_fmt_reset_vartable();
 	compose_changed_cb(NULL, compose);
+
+#ifdef USE_ENCHANT
+	if (compose->gtkaspell->check_while_typing)
+	    	gtkaspell_highlight_all(compose->gtkaspell);
+#endif
 }
 
 static void compose_template_apply_fields(Compose *compose, Template *tmpl)
