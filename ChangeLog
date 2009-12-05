@@ -1,3 +1,8 @@
+2009-12-05 [pawel]	3.7.3cvs33
+
+	* src/messageview.c
+		Fix memory management, duh!
+
 2009-12-04 [pawel]	3.7.3cvs32
 
 	* src/messageview.c
