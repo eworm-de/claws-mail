@@ -1,3 +1,9 @@
+2009-12-08 [pawel]	3.7.3cvs34
+
+	* src/compose.c
+		When 'Reply All' remove current compose address from
+		Cc/Bcc list - fix for regression introduced in cvs28
+
 2009-12-05 [pawel]	3.7.3cvs33
 
 	* src/messageview.c

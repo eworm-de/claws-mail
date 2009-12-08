@@ -4603,12 +4603,19 @@ compose_current_mail_account(void)
 static void compose_select_account(Compose *compose, PrefsAccount *account,
 				   gboolean init)
 {
-	gchar *from = NULL, *header;
+	gchar *from = NULL, *email, *header;
 	ComposeHeaderEntry *header_entry;
 
 	cm_return_if_fail(account != NULL);
 
+	email = g_utf8_strdown(compose->account->address, -1);
+	g_hash_table_remove(compose->email_hashtable, email);
+	g_free(email);
+
 	compose->account = account;
+	g_hash_table_insert(compose->email_hashtable,
+			    g_utf8_strdown(account->address, -1),
+			    GUINT_TO_POINTER(1)); 
 
 	if (account->name && *account->name) {
 		gchar *buf;
@@ -6522,7 +6529,8 @@ static void compose_add_header_entry(Compose *compose, const gchar *header,
 	extract_address(tmp);
 	email = g_utf8_strdown(tmp, -1);
 	
-	if (g_hash_table_lookup(compose->email_hashtable, email) != NULL) {
+	if (!(!strcmp(header, "To:") && !strcasecmp(compose->account->address, email))
+	    && g_hash_table_lookup(compose->email_hashtable, email) != NULL) {
 		debug_print("Ignoring duplicate address - %s %s, pref_type: %d\n",
 				header, text, (gint) pref_type);
 		g_free(email);
