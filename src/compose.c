@@ -1115,6 +1115,7 @@ Compose *compose_generic_new(PrefsAccount *account, const gchar *mailto, FolderI
 
 			g_free(subject);
 			g_free(tmp);
+			mfield = SUBJECT_FIELD_PRESENT;
 		}
 
 		if ( body_format
@@ -1146,6 +1147,7 @@ Compose *compose_generic_new(PrefsAccount *account, const gchar *mailto, FolderI
 			if (compose->gtkaspell->check_while_typing)
 				gtkaspell_highlight_all(compose->gtkaspell);
 #endif
+			mfield = BODY_FIELD_PRESENT;
 		}
 
 	}
@@ -1179,7 +1181,11 @@ Compose *compose_generic_new(PrefsAccount *account, const gchar *mailto, FolderI
 			gtk_widget_grab_focus(compose->header_last->entry);
 			break;
 		case TO_FIELD_PRESENT:
-			buf = g_strdup("");
+			buf = gtk_editable_get_chars(GTK_EDITABLE(compose->subject_entry), 0, -1);
+			/*
+			 * buf will always contain an allocated string,
+			 * either empty or populated with some text
+			 */
 			gtk_entry_set_text(GTK_ENTRY(compose->subject_entry), buf);	
 			gtk_widget_grab_focus(compose->subject_entry);
 			break;

@@ -1,3 +1,9 @@
+2009-12-09 [mir]	3.7.3cvs35
+
+	* src/compose.c
+	Fix Bug 2072 "template at folder properties is not working"
+	introduced in cvs24.
+
 2009-12-08 [pawel]	3.7.3cvs34
 
 	* src/compose.c
