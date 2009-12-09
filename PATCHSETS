@@ -3909,3 +3909,4 @@
 ( cvs diff -u -r 1.94.2.206 -r 1.94.2.207 src/messageview.c;  ) > 3.7.3cvs33.patchset
 ( cvs diff -u -r 1.382.2.531 -r 1.382.2.532 src/compose.c;  ) > 3.7.3cvs34.patchset
 ( cvs diff -u -r 1.382.2.532 -r 1.382.2.533 src/compose.c;  ) > 3.7.3cvs35.patchset
+( cvs diff -u -r 1.382.2.533 -r 1.382.2.534 src/compose.c;  ) > 3.7.3cvs36.patchset

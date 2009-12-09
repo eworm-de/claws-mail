@@ -1178,20 +1178,24 @@ Compose *compose_generic_new(PrefsAccount *account, const gchar *mailto, FolderI
 	/* Place cursor according to provided input (mfield) */
 	switch (mfield) { 
 		case NO_FIELD_PRESENT:
-			gtk_widget_grab_focus(compose->header_last->entry);
+			if (compose->header_last)
+				gtk_widget_grab_focus(compose->header_last->entry);
 			break;
 		case TO_FIELD_PRESENT:
 			buf = gtk_editable_get_chars(GTK_EDITABLE(compose->subject_entry), 0, -1);
-			/*
-			 * buf will always contain an allocated string,
-			 * either empty or populated with some text
-			 */
-			gtk_entry_set_text(GTK_ENTRY(compose->subject_entry), buf);	
+			if (buf) {
+				gtk_entry_set_text(GTK_ENTRY(compose->subject_entry), buf);
+				g_free(buf);
+			}
 			gtk_widget_grab_focus(compose->subject_entry);
 			break;
 		case SUBJECT_FIELD_PRESENT:
 			textview = GTK_TEXT_VIEW(compose->text);
+			if (!textview)
+				break;
 			textbuf = gtk_text_view_get_buffer(textview);
+			if (!textbuf)
+				break;
 			mark = gtk_text_buffer_get_insert(textbuf);
 			gtk_text_buffer_get_iter_at_mark(textbuf, &iter, mark);
 			gtk_text_buffer_insert(textbuf, &iter, "", -1);
@@ -8243,6 +8247,8 @@ static void compose_destroy(Compose *compose)
 	g_slist_free(compose->newsgroup_list);
 	slist_free_strings(compose->header_list);
 	g_slist_free(compose->header_list);
+
+	compose->header_list = compose->newsgroup_list = compose->to_list = NULL;
 
 	g_hash_table_destroy(compose->email_hashtable);
 
