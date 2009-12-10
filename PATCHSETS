@@ -3912,3 +3912,4 @@
 ( cvs diff -u -r 1.382.2.533 -r 1.382.2.534 src/compose.c;  ) > 3.7.3cvs36.patchset
 ( cvs diff -u -r 1.382.2.534 -r 1.382.2.535 src/compose.c;  ) > 3.7.3cvs37.patchset
 ( cvs diff -u -r 1.382.2.535 -r 1.382.2.536 src/compose.c;  ) > 3.7.3cvs38.patchset
+( cvs diff -u -r 1.382.2.536 -r 1.382.2.537 src/compose.c;  ) > 3.7.3cvs39.patchset

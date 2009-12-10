@@ -3049,6 +3049,7 @@ static void compose_reply_set_entry(Compose *compose, MsgInfo *msginfo,
 	GSList *cur;
 	gchar *from = NULL;
 	gchar *replyto = NULL;
+	gchar *ac_email = NULL;
 
 	gboolean reply_to_ml = FALSE;
 	gboolean default_reply_to = FALSE;
@@ -3211,13 +3212,27 @@ static void compose_reply_set_entry(Compose *compose, MsgInfo *msginfo,
 	cc_list = address_list_append_with_comments(cc_list, msginfo->to);
 	cc_list = address_list_append_with_comments(cc_list, compose->cc);
 
+	ac_email = g_utf8_strdown(compose->account->address, -1);
+
 	if (cc_list) {
-		for (cur = cc_list; cur != NULL; cur = cur->next)
-			compose_entry_append(compose, (gchar *)cur->data,
-					     COMPOSE_CC, PREF_NONE);
+		for (cur = cc_list; cur != NULL; cur = cur->next) {
+			gchar *addr = g_utf8_strdown(cur->data, -1);
+			extract_address(addr);
+		
+			if (strcmp(ac_email, addr))
+				compose_entry_append(compose, (gchar *)cur->data,
+						     COMPOSE_CC, PREF_NONE);
+			else
+				debug_print("Cc address same as compose account's, ignoring\n");
+
+			g_free(addr);
+		}
+		
 		slist_free_strings(cc_list);
 		g_slist_free(cc_list);
 	}
+	
+	g_free(ac_email);
 }
 
 #define SET_ENTRY(entry, str) \
@@ -4613,20 +4628,12 @@ compose_current_mail_account(void)
 static void compose_select_account(Compose *compose, PrefsAccount *account,
 				   gboolean init)
 {
-	gchar *from = NULL, *email, *header;
+	gchar *from = NULL, *header;
 	ComposeHeaderEntry *header_entry;
 
 	cm_return_if_fail(account != NULL);
 
-	email = g_utf8_strdown(compose->account->address, -1);
-	g_hash_table_remove(compose->email_hashtable, email);
-	g_free(email);
-
 	compose->account = account;
-	g_hash_table_insert(compose->email_hashtable,
-			    g_utf8_strdown(account->address, -1),
-			    GUINT_TO_POINTER(1)); 
-
 	if (account->name && *account->name) {
 		gchar *buf;
 		QUOTE_IF_REQUIRED_NORMAL(buf, account->name, return);
@@ -6535,12 +6542,14 @@ static void compose_add_header_entry(Compose *compose, const gchar *header,
 {
 	ComposeHeaderEntry *last_header = compose->header_last;
 	gchar *tmp = g_strdup(text), *email;
+	gboolean replyto_hdr = g_str_has_suffix(header, "-To:");
 	
 	extract_address(tmp);
 	email = g_utf8_strdown(tmp, -1);
 	
-	if (!(!strcmp(header, "To:") && !strcasecmp(compose->account->address, email))
-	    && g_hash_table_lookup(compose->email_hashtable, email) != NULL) {
+	if (replyto_hdr == FALSE &&
+	    g_hash_table_lookup(compose->email_hashtable, email) != NULL)
+	{
 		debug_print("Ignoring duplicate address - %s %s, pref_type: %d\n",
 				header, text, (gint) pref_type);
 		g_free(email);
@@ -6552,8 +6561,12 @@ static void compose_add_header_entry(Compose *compose, const gchar *header,
 	gtk_entry_set_text(GTK_ENTRY(last_header->entry), text);
 	last_header->type = pref_type;
 
-	g_hash_table_insert(compose->email_hashtable, email,
-				GUINT_TO_POINTER(1));
+	if (replyto_hdr == FALSE)
+		g_hash_table_insert(compose->email_hashtable, email,
+				    GUINT_TO_POINTER(1));
+	else
+		g_free(email);
+	
 	g_free(tmp);
 }
 

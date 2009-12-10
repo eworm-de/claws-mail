@@ -1,3 +1,8 @@
+2009-12-10 [pawel]	3.7.3cvs39
+
+	* src/compose.c
+		Better fix for cvs28 regression
+
 2009-12-10 [iwkse]	3.7.3cvs38
 
 	* src/compose.c
