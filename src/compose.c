@@ -1144,7 +1144,7 @@ Compose *compose_generic_new(PrefsAccount *account, const gchar *mailto, FolderI
 
 			g_free(tmp);
 #ifdef USE_ENCHANT
-			if (compose->gtkaspell->check_while_typing)
+			if (compose->gtkaspell && compose->gtkaspell->check_while_typing)
 				gtkaspell_highlight_all(compose->gtkaspell);
 #endif
 			mfield = BODY_FIELD_PRESENT;
@@ -1616,7 +1616,7 @@ static Compose *compose_generic_reply(MsgInfo *msginfo,
 		compose_attach_from_list(compose, quote_fmt_get_attachments_list(), FALSE);
 		quote_fmt_reset_vartable();
 #ifdef USE_ENCHANT
-		if (compose->gtkaspell->check_while_typing)
+		if (compose->gtkaspell && compose->gtkaspell->check_while_typing)
 			gtkaspell_highlight_all(compose->gtkaspell);
 #endif
 	}
@@ -1812,7 +1812,7 @@ Compose *compose_forward(PrefsAccount *account, MsgInfo *msginfo,
 
 		procmsg_msginfo_free(full_msginfo);
 #ifdef USE_ENCHANT
-		if (compose->gtkaspell->check_while_typing)
+		if (compose->gtkaspell && compose->gtkaspell->check_while_typing)
 			gtkaspell_highlight_all(compose->gtkaspell);
 #endif
 	}
@@ -6912,7 +6912,8 @@ static void compose_dict_changed(void *data)
 {
 	Compose *compose = (Compose *) data;
 
-	if(compose->gtkaspell->recheck_when_changing_dict == FALSE)
+	if(compose->gtkaspell && 
+       compose->gtkaspell->recheck_when_changing_dict == FALSE)
 		return;
 
 	gtkaspell_highlight_all(compose->gtkaspell);
@@ -7525,9 +7526,9 @@ static Compose *compose_create(PrefsAccount *account,
 			}
         	}
 	}
-        compose->gtkaspell = gtkaspell;
 	compose_spell_menu_changed(compose);
 	claws_spell_entry_set_gtkaspell(CLAWS_SPELL_ENTRY(subject_entry), gtkaspell);
+    compose->gtkaspell = gtkaspell;
 #endif
 
 	compose_select_account(compose, account, TRUE);
@@ -8111,7 +8112,7 @@ static void compose_template_apply(Compose *compose, Template *tmpl,
 	compose_changed_cb(NULL, compose);
 
 #ifdef USE_ENCHANT
-	if (compose->gtkaspell->check_while_typing)
+	if (compose->gtkaspell && compose->gtkaspell->check_while_typing)
 	    	gtkaspell_highlight_all(compose->gtkaspell);
 #endif
 }
@@ -9610,7 +9611,8 @@ static void compose_insert_file_cb(GtkAction *action, gpointer data)
 	}
 
 #ifdef USE_ENCHANT	
-	if (files_inserted > 0 && compose->gtkaspell->check_while_typing)
+	if (files_inserted > 0 && compose->gtkaspell && 
+        compose->gtkaspell->check_while_typing)
 		gtkaspell_highlight_all(compose->gtkaspell);
 #endif
 }
@@ -9894,7 +9896,8 @@ static void compose_paste_cb(GtkAction *action, gpointer data)
 
 #ifdef USE_ENCHANT
 	if (GTK_WIDGET_HAS_FOCUS(compose->text) &&
-	    compose->gtkaspell->check_while_typing)
+	    compose->gtkaspell && 
+        compose->gtkaspell->check_while_typing)
 	    	gtkaspell_highlight_all(compose->gtkaspell);
 #endif
 }
@@ -9943,7 +9946,8 @@ static void compose_paste_no_wrap_cb(GtkAction *action, gpointer data)
 
 #ifdef USE_ENCHANT
 	if (GTK_WIDGET_HAS_FOCUS(compose->text) &&
-	    compose->gtkaspell->check_while_typing)
+	    compose->gtkaspell && 
+        compose->gtkaspell->check_while_typing)
 	    	gtkaspell_highlight_all(compose->gtkaspell);
 #endif
 }
@@ -9965,7 +9969,8 @@ static void compose_paste_wrap_cb(GtkAction *action, gpointer data)
 
 #ifdef USE_ENCHANT
 	if (GTK_WIDGET_HAS_FOCUS(compose->text) &&
-	    compose->gtkaspell->check_while_typing)
+	    compose->gtkaspell &&
+        compose->gtkaspell->check_while_typing)
 	    	gtkaspell_highlight_all(compose->gtkaspell);
 #endif
 }
