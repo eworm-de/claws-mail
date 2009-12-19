@@ -1,3 +1,11 @@
+2009-12-19 [holger]	3.7.3cvs41
+
+	* src/prefs_toolbar.c
+	* src/prefs_toolbar.h
+	* src/toolbar.c
+		Allow plugins to choose to which toolbar they want
+		to add actions (main window, compose window, or message view)
+
 2009-12-19 [paul]	3.7.3cvs40
 
 	* src/statusbar.c

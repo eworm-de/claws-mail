@@ -25,8 +25,8 @@ void prefs_toolbar_done		(void);
 
 typedef void (*ToolbarPluginCallback)(const gchar *item_name, gpointer data);
 
-void prefs_toolbar_register_plugin_item(const gchar *plugin_name, const gchar *item_name, ToolbarPluginCallback cb, gpointer cb_data);
-void prefs_toolbar_unregister_plugin_item(const gchar *plugin_name, const gchar *item_name);
-void prefs_toolbar_execute_plugin_item(const gchar *id);
+void prefs_toolbar_register_plugin_item(ToolbarType toolbar_type, const gchar *plugin_name, const gchar *item_name, ToolbarPluginCallback cb, gpointer cb_data);
+void prefs_toolbar_unregister_plugin_item(ToolbarType toolbar_type, const gchar *plugin_name, const gchar *item_name);
+void prefs_toolbar_execute_plugin_item(ToolbarType toolbar_type, const gchar *id);
 
 #endif /* __PREFS_CUSTOM_TOOLBAR_H__ */ 
