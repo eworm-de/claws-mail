@@ -50,6 +50,9 @@ gint statusbar_puts_all_hook_id = -1;
 GtkWidget *statusbar_create(void)
 {
 	GtkWidget *statusbar;
+	GtkWidget *child;
+	GtkWidget *parent;
+	GtkWidget *hbox;
 
 	statusbar = gtk_statusbar_new();
 	gtk_widget_set_size_request(statusbar, 1, -1);
@@ -57,17 +60,18 @@ GtkWidget *statusbar_create(void)
 	gtk_statusbar_set_has_resize_grip(GTK_STATUSBAR(statusbar), 
 					  FALSE);
 	gtk_container_set_border_width(GTK_CONTAINER(statusbar), 1);
-
-	g_object_ref(GTK_STATUSBAR(statusbar)->label);
-	gtk_container_remove(GTK_CONTAINER(GTK_STATUSBAR(statusbar)->frame),
-		GTK_STATUSBAR(statusbar)->label);
-	gtk_widget_hide(GTK_STATUSBAR(statusbar)->frame);
-	gtk_box_pack_start (GTK_BOX(statusbar), GTK_STATUSBAR(statusbar)->label, 
-		TRUE, TRUE, 0);
-	g_object_unref(GTK_STATUSBAR(statusbar)->label);
-	gtk_container_remove(GTK_CONTAINER(statusbar),
-		GTK_STATUSBAR(statusbar)->frame);
-	GTK_STATUSBAR(statusbar)->frame = gtk_frame_new(NULL);
+#if GTK_CHECK_VERSION (2, 19, 1)
+	child = gtk_statusbar_get_message_area(GTK_STATUSBAR(statusbar));
+#else
+	child = GTK_STATUSBAR(statusbar)->label;
+#endif
+	parent = gtk_widget_get_parent(child);
+	gtk_container_remove(GTK_CONTAINER(parent), g_object_ref(child));
+	hbox = gtk_hbox_new(FALSE, 0);
+	gtk_container_add(GTK_CONTAINER(parent), hbox);
+	gtk_widget_show(hbox);
+	gtk_box_pack_start(GTK_BOX(hbox), child, TRUE, TRUE, 0);
+	g_object_unref(child);	
 
 	return statusbar;
 }

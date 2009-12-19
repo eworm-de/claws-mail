@@ -1,3 +1,8 @@
+2009-12-19 [paul]	3.7.3cvs40
+
+	* src/statusbar.c
+		fix statusbar in GTK+ 2.19.1
+
 2009-12-10 [pawel]	3.7.3cvs39
 
 	* src/compose.c
