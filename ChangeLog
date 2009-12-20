@@ -1,3 +1,11 @@
+2009-12-20 [holger]	3.7.3cvs45
+
+	* src/compose.c
+		Delay CREATED_HOOKLIST invokation until
+		after the modifications to the compose window
+		are done, to allow hooks to further modify the
+		window without getting overridden again
+
 2009-12-20 [holger]	3.7.3cvs44
 
 	* src/prefs_toolbar.h

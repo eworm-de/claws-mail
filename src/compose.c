@@ -1222,6 +1222,9 @@ Compose *compose_generic_new(PrefsAccount *account, const gchar *mailto, FolderI
 
 	compose->modified = FALSE;
 	compose_set_title(compose);
+
+  hooks_invoke(COMPOSE_CREATED_HOOKLIST, compose);
+
         return compose;
 }
 
@@ -1659,6 +1662,7 @@ static Compose *compose_generic_reply(MsgInfo *msginfo,
 		return NULL;
 	}
 	END_TIMING();
+
 	return compose;
 }
 
@@ -1858,6 +1862,8 @@ Compose *compose_forward(PrefsAccount *account, MsgInfo *msginfo,
 		return NULL;
 	}
 
+	hooks_invoke(COMPOSE_CREATED_HOOKLIST, compose);
+
         return compose;
 }
 
@@ -2003,6 +2009,8 @@ static Compose *compose_forward_multiple(PrefsAccount *account, GSList *msginfo_
 		compose_destroy(compose);
 		return NULL;
 	}
+
+	hooks_invoke(COMPOSE_CREATED_HOOKLIST, compose);
 
 	return compose;
 }
@@ -2332,6 +2340,8 @@ Compose *compose_reedit(MsgInfo *msginfo, gboolean batch)
 	
 	compose->sig_str = account_get_signature_str(compose->account);
 	
+	hooks_invoke(COMPOSE_CREATED_HOOKLIST, compose);
+
 	return compose;
 }
 
@@ -2437,6 +2447,8 @@ Compose *compose_redirect(PrefsAccount *account, MsgInfo *msginfo,
 		return NULL;
 	}
 	
+	hooks_invoke(COMPOSE_CREATED_HOOKLIST, compose);
+
 	return compose;
 }
 
@@ -7605,8 +7617,6 @@ static Compose *compose_create(PrefsAccount *account,
 #endif
 	}
 	
-	hooks_invoke(COMPOSE_CREATED_HOOKLIST, compose);
-
 	return compose;
 }
 
@@ -11061,6 +11071,7 @@ static void compose_reply_from_messageview_real(MessageView *msgview, GSList *ms
 	}
 	g_free(s_system);
 	g_free(body);
+	hooks_invoke(COMPOSE_CREATED_HOOKLIST, compose);
 }
 
 void compose_reply_from_messageview(MessageView *msgview, GSList *msginfo_list, 
