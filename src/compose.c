@@ -7605,6 +7605,8 @@ static Compose *compose_create(PrefsAccount *account,
 #endif
 	}
 	
+	hooks_invoke(COMPOSE_CREATED_HOOKLIST, compose);
+
 	return compose;
 }
 

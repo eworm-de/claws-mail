@@ -43,6 +43,7 @@ typedef struct _AttachInfo	AttachInfo;
 #endif
 
 #define COMPOSE_CHECK_BEFORE_SEND_HOOKLIST "compose_check_before_send"
+#define COMPOSE_CREATED_HOOKLIST "compose_created"
 
 typedef enum
 {
