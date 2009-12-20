@@ -1,3 +1,8 @@
+2009-12-20 [holger]	3.7.3cvs44
+
+	* src/prefs_toolbar.h
+		Fix last commit
+
 2009-12-20 [holger]	3.7.3cvs43
 
 	* src/prefs_toolbar.c
