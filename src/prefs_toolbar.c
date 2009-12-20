@@ -1095,7 +1095,7 @@ void prefs_toolbar_unregister_plugin_item(ToolbarType toolbar_type, const gchar 
     toolbar_unregister_plugin_item_real(*hash, plugin_name, item_name);
 }
 
-static void prefs_toolbar_execute_plugin_item_real(GHashTable *hash, const gchar *id)
+static void prefs_toolbar_execute_plugin_item_real(gpointer parent, GHashTable *hash, const gchar *id)
 {
   ToolbarPluginItem *value;
   GSList *walk;
@@ -1128,15 +1128,15 @@ static void prefs_toolbar_execute_plugin_item_real(GHashTable *hash, const gchar
         return;
   }
 
-  value->cb(value->item_name, value->cb_data);
+  value->cb(parent, value->item_name, value->cb_data);
 }
 
-void prefs_toolbar_execute_plugin_item(ToolbarType toolbar_type, const gchar *id)
+void prefs_toolbar_execute_plugin_item(gpointer parent, ToolbarType toolbar_type, const gchar *id)
 {
   GHashTable **hash;
   hash = get_plugin_hash_from_toolbar_type(toolbar_type);
   if(hash)
-    prefs_toolbar_execute_plugin_item_real(*hash, id);
+    prefs_toolbar_execute_plugin_item_real(parent, *hash, id);
 }
 
 static void destroy_plugin_item_hash_value(ToolbarPluginItem *item)

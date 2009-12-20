@@ -1,3 +1,10 @@
+2009-12-20 [holger]	3.7.3cvs43
+
+	* src/prefs_toolbar.c
+	* src/prefs_toolbar.h
+	* src/toolbar.c
+		Pass window struct to caller
+
 2009-12-20 [holger]	3.7.3cvs42
 
 	* src/compose.c

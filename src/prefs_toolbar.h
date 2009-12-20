@@ -23,7 +23,8 @@
 void prefs_toolbar_init		(void);
 void prefs_toolbar_done		(void);
 
-typedef void (*ToolbarPluginCallback)(const gchar *item_name, gpointer data);
+/* parent is a MainWindow, Compose, or MessageView, depending on the ToolbarType during registration */
+typedef void (*ToolbarPluginCallback)(gpointer parent, const gchar *item_name, gpointer data);
 
 void prefs_toolbar_register_plugin_item(ToolbarType toolbar_type, const gchar *plugin_name, const gchar *item_name, ToolbarPluginCallback cb, gpointer cb_data);
 void prefs_toolbar_unregister_plugin_item(ToolbarType toolbar_type, const gchar *plugin_name, const gchar *item_name);

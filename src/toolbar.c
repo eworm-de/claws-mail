@@ -1624,7 +1624,7 @@ static void toolbar_actions_execute_cb(GtkWidget *widget, gpointer data)
 static void toolbar_plugins_execute_cb(GtkWidget *widget, gpointer data)
 {
 	ToolbarItem *toolbar_item = data;
-	prefs_toolbar_execute_plugin_item(toolbar_item->type, toolbar_item->text);
+	prefs_toolbar_execute_plugin_item(toolbar_item->parent, toolbar_item->type, toolbar_item->text);
 }
 
 static MainWindow *get_mainwin(gpointer data)

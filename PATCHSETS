@@ -3916,3 +3916,4 @@
 ( cvs diff -u -r 1.5.2.25 -r 1.5.2.26 src/statusbar.c;  ) > 3.7.3cvs40.patchset
 ( cvs diff -u -r 1.30.2.58 -r 1.30.2.59 src/prefs_toolbar.c;  cvs diff -u -r 1.5.2.7 -r 1.5.2.8 src/prefs_toolbar.h;  cvs diff -u -r 1.43.2.111 -r 1.43.2.112 src/toolbar.c;  ) > 3.7.3cvs41.patchset
 ( cvs diff -u -r 1.382.2.537 -r 1.382.2.538 src/compose.c;  cvs diff -u -r 1.50.2.57 -r 1.50.2.58 src/compose.h;  ) > 3.7.3cvs42.patchset
+( cvs diff -u -r 1.30.2.59 -r 1.30.2.60 src/prefs_toolbar.c;  cvs diff -u -r 1.5.2.8 -r 1.5.2.9 src/prefs_toolbar.h;  cvs diff -u -r 1.43.2.112 -r 1.43.2.113 src/toolbar.c;  ) > 3.7.3cvs43.patchset
