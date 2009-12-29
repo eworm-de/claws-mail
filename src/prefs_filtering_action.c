@@ -1472,6 +1472,7 @@ static gboolean prefs_filtering_actions_selected
 	gint list_id;
 	GtkTreeIter iter;
 	gboolean is_valid;
+	GtkWidget *menu;
 
 	if (currently_selected)
 		return TRUE;
@@ -1576,6 +1577,9 @@ static gboolean prefs_filtering_actions_selected
 				     ACTION_COLOR);
 		gtk_cmoption_menu_set_history(GTK_CMOPTION_MENU(filtering_action.color_optmenu),
 					    action->labelcolor);     
+		menu = gtk_cmoption_menu_get_menu(GTK_CMOPTION_MENU(
+						filtering_action.color_optmenu));
+		g_signal_emit_by_name(G_OBJECT(menu), "selection-done", menu);
 		break;
 	case MATCHACTION_CHANGE_SCORE:
 		combobox_select_by_data(GTK_COMBO_BOX(filtering_action.action_combo),

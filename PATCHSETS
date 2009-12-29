@@ -3920,3 +3920,4 @@
 ( cvs diff -u -r 1.5.2.9 -r 1.5.2.10 src/prefs_toolbar.h;  ) > 3.7.3cvs44.patchset
 ( cvs diff -u -r 1.382.2.538 -r 1.382.2.539 src/compose.c;  ) > 3.7.3cvs45.patchset
 ( cvs diff -u -r 1.382.2.539 -r 1.382.2.540 src/compose.c;  ) > 3.7.3cvs46.patchset
+( cvs diff -u -r 1.1.4.61 -r 1.1.4.62 src/prefs_filtering_action.c;  ) > 3.7.3cvs47.patchset

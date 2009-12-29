@@ -1,3 +1,9 @@
+2009-12-29 [pawel]	3.7.3cvs47
+
+	* src/prefs_filtering_action.c
+		Fix Bug 2082 'Wrong color rectangle position when replacing
+		"color" processing rule'
+
 2009-12-29 [colin]	3.7.3cvs46
 
 	* src/compose.c
