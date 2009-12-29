@@ -2118,7 +2118,8 @@ Compose *compose_reedit(MsgInfo *msginfo, gboolean batch)
 	}
 
         if (folder_has_parent_of_type(msginfo->folder, F_QUEUE) ||
-	    folder_has_parent_of_type(msginfo->folder, F_DRAFT)) {
+	    folder_has_parent_of_type(msginfo->folder, F_DRAFT) ||
+	    folder_has_parent_of_type(msginfo->folder, F_OUTBOX)) {
 		gchar queueheader_buf[BUFFSIZE];
 		gint id, param;
 
@@ -2255,7 +2256,8 @@ Compose *compose_reedit(MsgInfo *msginfo, gboolean batch)
 	compose_extract_original_charset(compose);
 
         if (folder_has_parent_of_type(msginfo->folder, F_QUEUE) ||
-	    folder_has_parent_of_type(msginfo->folder, F_DRAFT)) {
+	    folder_has_parent_of_type(msginfo->folder, F_DRAFT) ||
+	    folder_has_parent_of_type(msginfo->folder, F_OUTBOX)) {
 		gchar queueheader_buf[BUFFSIZE];
 
 		/* Set message save folder */
