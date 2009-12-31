@@ -1,3 +1,11 @@
+2009-12-31 [paul]	3.7.3cvs49
+
+	* manual/claws-mail-manual.xml
+	* manual/intro.xml
+	* manual/plugins.xml
+		fix links so that they make sense in the context of the
+		text version of the manual
+
 2009-12-31 [paul]	3.7.3cvs48
 
 	* manual/intro.xml

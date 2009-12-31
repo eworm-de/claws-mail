@@ -150,7 +150,8 @@
 	  <para>
 	Enables new mail notification via the LEDs found on some laptops like 
 	Acer, Asus, Fujitsu and IBM laptops.
-	<ulink url="http://www.claws-mail.org/plugin.php?plugin=acpinotifier">More information.</ulink>
+	More information: <ulink url="http://www.claws-mail.org/plugin.php?plugin=acpinotifier">
+	www.claws-mail.org/plugin.php?plugin=acpinotifier</ulink>
 	  </para>
 	</listitem>
       </varlistentry>
@@ -161,7 +162,8 @@
 	Reminds you about possibly forgotten attachments. Checks for common
 	expressions found when attaching a file and warns you if no attachment
 	was added to the mail you're sending.
-	<ulink url="http://www.claws-mail.org/plugin.php?plugin=attachwarner">More information.</ulink>
+	More information: <ulink url="http://www.claws-mail.org/plugin.php?plugin=attachwarner">
+	www.claws-mail.org/plugin.php?plugin=attachwarner</ulink>
 	  </para>
 	</listitem>
       </varlistentry>
@@ -178,7 +180,7 @@
 	<listitem>
 	  <para> 
 	BSFilter is a plugin that is very similar to the Bogofilter plugin but uses
-	the <ulink url="http://bsfilter.org/index-e.html">bsfilter</ulink>
+	the bsfilter (<ulink url="http://bsfilter.org/index-e.html">bsfilter.org/index-e.html</ulink>)
 	bayesian spam filter as a backend. 
 	  </para><para>
 	Like Bogofilter, you have to train it with spam and ham
@@ -224,7 +226,8 @@
 	  <para>
 	Like Dillo, enables the viewing of HTML messages, but in a nicer way 
 	(antialiased fonts).
-	<ulink url="http://www.claws-mail.org/plugin.php?plugin=gtkhtml2">More information.</ulink>
+	More information: <ulink url="http://www.claws-mail.org/plugin.php?plugin=gtkhtml2">
+	www.claws-mail.org/plugin.php?plugin=gtkhtml2</ulink>
 	  </para>
 	</listitem>
       </varlistentry>
@@ -260,7 +263,8 @@
 	<listitem>
 	  <para>
 	Provides various ways to notify the user of new and unread email.
-	<ulink url="http://www.claws-mail.org/plugin.php?plugin=notification">More information.</ulink>
+	More information: <ulink url="http://www.claws-mail.org/plugin.php?plugin=notification">
+	www.claws-mail.org/plugin.php?plugin=notification</ulink>
 	  </para>
 	</listitem>
       </varlistentry>
@@ -279,7 +283,8 @@
 	<listitem>
 	  <para>
 	This plugin provides Python integration features.
-	<ulink url="http://www.claws-mail.org/plugin.php?plugin=python">More information.</ulink>
+	More information: <ulink url="http://www.claws-mail.org/plugin.php?plugin=python">
+	www.claws-mail.org/plugin.php?plugin=python</ulink>
 	  </para>
 	</listitem>
       </varlistentry>
@@ -289,7 +294,8 @@
 	  <para>
 	Allows you to read your favorite newsfeeds in Claws. RSS 1.0, 2.0 and 
 	Atom feeds are currently supported.
-	<ulink url="http://www.claws-mail.org/plugin.php?plugin=rssyl">More information.</ulink>
+	More information: <ulink url="http://www.claws-mail.org/plugin.php?plugin=rssyl">
+	www.claws-mail.org/plugin.php?plugin=rssyl</ulink>
 	  </para>
 	</listitem>
       </varlistentry>
@@ -301,7 +307,7 @@
 	Currently the sites <ulink url="http://spam-signal.fr"
 	>spam-signal.fr</ulink> and <ulink url="http://spamcop.net"
 	>spamcop.net</ulink> are supported, and the <ulink
-	url="http://lists.debian.org">Debian lists</ulink>
+	url="http://lists.debian.org">Debian lists (lists.debian.org)</ulink>
 	spam nomination system.
 	  </para>
 	</listitem>
@@ -321,7 +327,8 @@
 	<listitem>
 	  <para>
 	This plugin enables reading application/ms-tnef attachments.
-	<ulink url="http://www.claws-mail.org/plugin.php?plugin=tnef_parser">More information.</ulink>
+	More information: <ulink url="http://www.claws-mail.org/plugin.php?plugin=tnef_parser">
+	www.claws-mail.org/plugin.php?plugin=tnef_parser</ulink>
 	  </para>
 	</listitem>
       </varlistentry>
@@ -331,7 +338,8 @@
 	  <para>
 	Enables vCalendar message handling like that produced by Evolution or 
 	Outlook, and Webcal subscriptions.
-	<ulink url="http://www.claws-mail.org/plugin.php?plugin=vcalendar">More information.</ulink>
+	More information: <ulink url="http://www.claws-mail.org/plugin.php?plugin=vcalendar">
+	www.claws-mail.org/plugin.php?plugin=vcalendar</ulink>
 	  </para>
 	</listitem>
       </varlistentry>

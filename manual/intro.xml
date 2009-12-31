@@ -19,14 +19,14 @@
   <section id="intro_features"> 
     <title>Main features</title>
     <para>
-	    Claws Mail sports almost everything a perfect email client needs. Mail retrieval over POP3, IMAP4, local mbox, over SSL; support for various authentication schemes. It has multiple accounts and mailboxes, powerful filtering and search functionality, import/export capabilities using a number of formats, support for GnuPG (digital signatures and encryption). It supports plugins, customisable toolbars, spell checking, a number of guards to prevent any data loss, per-folder preferences, and much more. A list of features can be found at <ulink url="http://www.claws-mail.org/features.php">http://www.claws-mail.org/features.php</ulink>.
+	    Claws Mail sports almost everything a perfect email client needs. Mail retrieval over POP3, IMAP4, local mbox, over SSL; support for various authentication schemes. It has multiple accounts and mailboxes, powerful filtering and search functionality, import/export capabilities using a number of formats, support for GnuPG (digital signatures and encryption). It supports plugins, customisable toolbars, spell checking, a number of guards to prevent any data loss, per-folder preferences, and much more. A list of features can be found at <ulink url="http://www.claws-mail.org/features.php">www.claws-mail.org/features.php</ulink>.
     </para>
   </section>
 
   <section id="intro_history">
     <title>History of Claws Mail</title>
     <para>
-	Claws Mail has existed since April 2001. It was initially named Sylpheed-Claws and changed its name to Claws Mail in November 2006. The primary goal of Sylpheed-Claws was to be a test-bed for potential features of Sylpheed (<ulink url="http://sylpheed.sraoss.jp/en/">http://sylpheed.sraoss.jp/en/</ulink>), so that new features could be tested thoroughly without compromising Sylpheed's stability. Sylpheed-Claws developers regularly synchronised their codebase with Sylpheed's codebase, and Sylpheed's author, Hiroyuki Yamamoto, took back the new features he liked once they were stabilised.
+	Claws Mail has existed since April 2001. It was initially named Sylpheed-Claws and changed its name to Claws Mail in November 2006. The primary goal of Sylpheed-Claws was to be a test-bed for potential features of Sylpheed (<ulink url="http://sylpheed.sraoss.jp/en/">sylpheed.sraoss.jp/en/</ulink>), so that new features could be tested thoroughly without compromising Sylpheed's stability. Sylpheed-Claws developers regularly synchronised their codebase with Sylpheed's codebase, and Sylpheed's author, Hiroyuki Yamamoto, took back the new features he liked once they were stabilised.
     </para><para>
 	Originally both Sylpheed and Claws Mail were based on GTK1. The work on the GTK2 versions started in early 2003, and the first modern (GTK2-based) Sylpheed-Claws was released in March 2005. Since about this time, Sylpheed and Sylpheed-Claws' goals started to diverge more, and Sylpheed-Claws became an entity of its own. This is why its name is now Claws Mail.
     </para>
