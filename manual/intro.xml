@@ -19,7 +19,7 @@
   <section id="intro_features"> 
     <title>Main features</title>
     <para>
-	    Claws Mail sports almost everything a perfect email client needs. Mail retrieval over POP3, IMAP4, local mbox, over SSL; support for various authentication schemes. It has multiple accounts and mailboxes, powerful filtering and search functionality, import/export capabilities using a number of formats, support for GnuPG (digital signatures and encryption). It supports plugins, customisable toolbars, spell checking, a number of guards to prevent any data loss, per-folder preferences, and much more. A complete list of features can be found at <ulink url="http://www.claws-mail.org/features.php">http://www.claws-mail.org/features.php</ulink>.
+	    Claws Mail sports almost everything a perfect email client needs. Mail retrieval over POP3, IMAP4, local mbox, over SSL; support for various authentication schemes. It has multiple accounts and mailboxes, powerful filtering and search functionality, import/export capabilities using a number of formats, support for GnuPG (digital signatures and encryption). It supports plugins, customisable toolbars, spell checking, a number of guards to prevent any data loss, per-folder preferences, and much more. A list of features can be found at <ulink url="http://www.claws-mail.org/features.php">http://www.claws-mail.org/features.php</ulink>.
     </para>
   </section>
 
@@ -38,25 +38,25 @@
 	    Website: <ulink url="http://www.claws-mail.org">www.claws-mail.org</ulink>
     </para>
     <para>
-	    Latest News: <ulink url="http://www.claws-mail.org/news.php">http://www.claws-mail.org/news.php</ulink>
+	    Latest News: <ulink url="http://www.claws-mail.org/news.php">www.claws-mail.org/news.php</ulink>
     </para>
     <para>
-	    Extra Plugins: <ulink url="http://www.claws-mail.org/plugins.php">http://www.claws-mail.org/plugins.php</ulink>
+	    Extra Plugins: <ulink url="http://www.claws-mail.org/plugins.php">www.claws-mail.org/plugins.php</ulink>
     </para>
     <para>
-	    Icon Themes: <ulink url="http://www.claws-mail.org/themes.php">http://www.claws-mail.org/themes.php</ulink>
+	    Icon Themes: <ulink url="http://www.claws-mail.org/themes.php">www.claws-mail.org/themes.php</ulink>
     </para>
     <para>
-	    Tools: <ulink url="http://www.claws-mail.org/tools.php">http://www.claws-mail.org/tools.php</ulink>
+	    Tools: <ulink url="http://www.claws-mail.org/tools.php">www.claws-mail.org/tools.php</ulink>
     </para>
     <para>
-	    Mailing Lists: <ulink url="http://www.claws-mail.org/MLs.php">http://www.claws-mail.org/MLs.php</ulink>
+	    Mailing Lists: <ulink url="http://www.claws-mail.org/MLs.php">www.claws-mail.org/MLs.php</ulink>
     </para>
     <para>
-	Bugtracker: <ulink url="http://www.thewildbeast.co.uk/claws-mail/bugzilla/">http://www.thewildbeast.co.uk/claws-mail/bugzilla/</ulink>
+	Bugtracker: <ulink url="http://www.thewildbeast.co.uk/claws-mail/bugzilla/">www.thewildbeast.co.uk/claws-mail/bugzilla/</ulink>
     </para>
     <para>
-	Project: <ulink url="http://sourceforge.net/projects/claws-mail/">http://sourceforge.net/projects/claws-mail/</ulink>
+	Source code: <ulink url="http://sourceforge.net/projects/sylpheed-claws/files/">sourceforge.net/projects/sylpheed-claws/files/</ulink>
     </para>
   </section>
 

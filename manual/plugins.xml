@@ -80,6 +80,17 @@
 	</listitem>
       </varlistentry>
       <varlistentry>
+	<term>S/MIME</term>
+	<listitem>
+	  <para>
+	Handles S/MIME signed and/or encrypted mails. You can decrypt mails, 
+	verify signatures or sign and encrypt your own mails. Uses GnuPG/GPGME 
+	and GpgSM, <ulink url="ftp://ftp.gnupg.org/gcrypt/gpgme/"
+	>ftp://ftp.gnupg.org/gcrypt/gpgme/</ulink>.
+	  </para>
+	</listitem>
+      </varlistentry>
+      <varlistentry>
 	<term>SpamAssassin</term>
 	<listitem>
 	  <para>
@@ -139,6 +150,7 @@
 	  <para>
 	Enables new mail notification via the LEDs found on some laptops like 
 	Acer, Asus, Fujitsu and IBM laptops.
+	<ulink url="http://www.claws-mail.org/plugin.php?plugin=acpinotifier">More information.</ulink>
 	  </para>
 	</listitem>
       </varlistentry>
@@ -149,6 +161,7 @@
 	Reminds you about possibly forgotten attachments. Checks for common
 	expressions found when attaching a file and warns you if no attachment
 	was added to the mail you're sending.
+	<ulink url="http://www.claws-mail.org/plugin.php?plugin=attachwarner">More information.</ulink>
 	  </para>
 	</listitem>
       </varlistentry>
@@ -211,6 +224,7 @@
 	  <para>
 	Like Dillo, enables the viewing of HTML messages, but in a nicer way 
 	(antialiased fonts).
+	<ulink url="http://www.claws-mail.org/plugin.php?plugin=gtkhtml2">More information.</ulink>
 	  </para>
 	</listitem>
       </varlistentry>
@@ -246,16 +260,7 @@
 	<listitem>
 	  <para>
 	Provides various ways to notify the user of new and unread email.
-	  </para>
-	</listitem>
-      </varlistentry>
-      <varlistentry>
-	<term>PDF Viewer</term>
-	<listitem>
-	  <para>
-	Provides direct rendering of PDF and PostScript attachments
-	in the Claws Mail message view. It also allows browsing, zooming and 
-	displaying detailed information about such attachments.
+	<ulink url="http://www.claws-mail.org/plugin.php?plugin=notification">More information.</ulink>
 	  </para>
 	</listitem>
       </varlistentry>
@@ -270,22 +275,21 @@
 	</listitem>
       </varlistentry>
       <varlistentry>
+	<term>Python</term>
+	<listitem>
+	  <para>
+	This plugin provides Python integration features.
+	<ulink url="http://www.claws-mail.org/plugin.php?plugin=python">More information.</ulink>
+	  </para>
+	</listitem>
+      </varlistentry>
+      <varlistentry>
 	<term>RSSyl</term>
 	<listitem>
 	  <para>
 	Allows you to read your favorite newsfeeds in Claws. RSS 1.0, 2.0 and 
 	Atom feeds are currently supported.
-	  </para>
-	</listitem>
-      </varlistentry>
-      <varlistentry>
-	<term>S/MIME</term>
-	<listitem>
-	  <para>
-	Handles S/MIME signed and/or encrypted mails. You can decrypt mails, 
-	verify signatures or sign and encrypt your own mails. Uses GnuPG/GPGME 
-	and GpgSM, <ulink url="ftp://ftp.gnupg.org/gcrypt/gpgme/"
-	>ftp://ftp.gnupg.org/gcrypt/gpgme/</ulink>.
+	<ulink url="http://www.claws-mail.org/plugin.php?plugin=rssyl">More information.</ulink>
 	  </para>
 	</listitem>
       </varlistentry>
@@ -313,11 +317,21 @@
 	</listitem>
       </varlistentry>
       <varlistentry>
+	<term>TNEF parse</term>
+	<listitem>
+	  <para>
+	This plugin enables reading application/ms-tnef attachments.
+	<ulink url="http://www.claws-mail.org/plugin.php?plugin=tnef_parser">More information.</ulink>
+	  </para>
+	</listitem>
+      </varlistentry>
+      <varlistentry>
 	<term>vCalendar</term>
 	<listitem>
 	  <para>
 	Enables vCalendar message handling like that produced by Evolution or 
 	Outlook, and Webcal subscriptions.
+	<ulink url="http://www.claws-mail.org/plugin.php?plugin=vcalendar">More information.</ulink>
 	  </para>
 	</listitem>
       </varlistentry>
