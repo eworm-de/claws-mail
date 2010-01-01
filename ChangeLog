@@ -1,3 +1,8 @@
+2010-01-01 [paul]	3.7.3cvs50
+
+	* src/gtk/about.c
+		bump copyright year whilst it's in mind
+
 2009-12-31 [paul]	3.7.3cvs49
 
 	* manual/claws-mail-manual.xml

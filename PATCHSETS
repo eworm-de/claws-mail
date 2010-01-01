@@ -3923,3 +3923,4 @@
 ( cvs diff -u -r 1.1.4.61 -r 1.1.4.62 src/prefs_filtering_action.c;  ) > 3.7.3cvs47.patchset
 ( cvs diff -u -r 1.1.2.10 -r 1.1.2.11 manual/intro.xml;  cvs diff -u -r 1.1.2.26 -r 1.1.2.27 manual/plugins.xml;  ) > 3.7.3cvs48.patchset
 ( cvs diff -u -r 1.1.2.3 -r 1.1.2.4 manual/claws-mail-manual.xml;  cvs diff -u -r 1.1.2.11 -r 1.1.2.12 manual/intro.xml;  cvs diff -u -r 1.1.2.27 -r 1.1.2.28 manual/plugins.xml;  ) > 3.7.3cvs49.patchset
+( cvs diff -u -r 1.4.2.75 -r 1.4.2.76 src/gtk/about.c;  ) > 3.7.3cvs50.patchset
