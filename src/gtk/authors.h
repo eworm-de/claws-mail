@@ -1,13 +1,15 @@
 static char *TEAM_LIST[] = {
 "Holger Berndt <berndth@users.sf.net>",
 "Tristan Chabredier <wwp@claws-mail.org>",
-"Ho‡ ViÍt Dinh <hoa@users.sf.net>",
+"Ho√† Vi√™t Dinh <hoa@users.sf.net>",
 "Andrej Kacian <andrej@kacian.sk>",
 "Darko Koruga <darko@users.sf.net>",
 "Ricardo Mones Lastra <ricardo@mones.org>",
 "Colin Leroy <colin@colino.net>",
 "Paul Mangan <paul@claws-mail.org>",
-"Salvatore De Paolis <iwkse@claws-mail.org>", 
+"Salvatore De Paolis <iwkse@claws-mail.org>",
+"Pawe≈Ç Pekala <c0rn@o2.pl>",
+"Michael Rasmussen <mir@datanom.net>",
 NULL
 };
 
@@ -62,7 +64,7 @@ static char *DOC_TEAM_LIST[] = {
 "[es] Ricardo Mones Lastra <ricardo@mones.org>",
 "[fr] Tristan Chabredier <wwp@claws-mail.org>",
 "     Colin Leroy <colin@colino.net>",
-"[pl] Pawel Pekala <c0rn@gazeta.pl>",
+"[pl] Pawe≈Ç Pekala <c0rn@gazeta.pl>",
 NULL
 };
 
@@ -90,7 +92,7 @@ static char *CONTRIBS_LIST[] = {
 "Jean-Luc Biord",
 "Pavlo Bohmat",
 "Eugene Brevdo",
-"AndrÈ Filipe de AssunÁ„o e Brito",
+"Andr√© Filipe de Assun√ß√£o e Brito",
 "Henrik Carlqvist",
 "Luca Cavalli",
 "David Chalmers",
@@ -115,7 +117,7 @@ static char *CONTRIBS_LIST[] = {
 "Leonid Evdokimov",
 "Xavier FACQ",
 "Bob Forsman",
-"Matthias FÔøΩrste",
+"Matthias F√∂rste",
 "Stoyan Genov",
 "Stavros Giannouris",
 "Thomas Gilgin",
@@ -159,7 +161,7 @@ static char *CONTRIBS_LIST[] = {
 "IWAMOTO Kouichi",
 "Joshua M. Kwan",
 "Jean-Yves Lefort",
-"JÈrÙme Lelong",
+"J√©r√¥me Lelong",
 "Eric Limpens",
 "Thomas Link",
 "David Looney",
@@ -198,11 +200,9 @@ static char *CONTRIBS_LIST[] = {
 "Fredrik Olofssen",
 "Reza Pakdel",
 "Martin Pool",
-"Pawel PÍkala",
 "Quar",
 "Don Quijote",
 "Jens Rantil",
-"Michael Rasmussen",
 "Ravemax",
 "Ivan Rayner",
 "David Relson",
@@ -223,7 +223,7 @@ static char *CONTRIBS_LIST[] = {
 "shigeri",
 "Gustavo Noronha Silva",
 "Jesse Skinner",
-"Ville Skytt‰",
+"Ville Skytt√§",
 "Dale P. Smith",
 "Bogdan Sumanariu",
 "TAKANO",
@@ -256,7 +256,7 @@ static char *CONTRIBS_LIST[] = {
 "Yanase",
 "Yasumatsu",
 "Ralgh Young",
-"G·l Zolt·n",
+"G√°l Zolt√°n",
 "Marien Zwart",
 "Martin Zwickel",
 NULL
