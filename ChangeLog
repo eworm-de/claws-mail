@@ -1,3 +1,11 @@
+2010-01-03 [mir]	3.7.3cvs51
+
+	* src/compose.c
+	When composing to a NNTP list TO: will always be preset
+	to the NNTP list unless user has chosen some other default
+	in which case we will handle this the normal way. Therefore
+	mfield will be set to TO_FIELD_PRESENT if mailto is NULL.
+
 2010-01-01 [paul]	3.7.3cvs50
 
 	* src/gtk/about.c
