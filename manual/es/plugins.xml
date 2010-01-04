@@ -76,8 +76,20 @@
 	<listitem>
 	  <para>
 	Gestiona mensajes firmados y/o cifrados con PGP. Se pueden descifrar
-	correos y verificar firmas, así como firmar y encriptar sus propios 
+	correos y verificar firmas, así como firmar y cifrar sus propios 
 	correos. Utiliza GnuPG/GPGME, <ulink 
+	url="ftp://ftp.gnupg.org/gcrypt/gpgme/"
+	>ftp://ftp.gnupg.org/gcrypt/gpgme/</ulink>.
+	  </para>
+	</listitem>
+      </varlistentry>
+      <varlistentry>
+	<term>S/MIME</term>
+	<listitem>
+	  <para>
+	Gestiona correos firmados y/o cifrados S/MIME. Se pueden descifrar
+	correos y verificar firmas digitales, así como firmar y cifrar sus 
+	propios correos. Utiliza GnuPG/GPGME y GpgSM, disponibles en <ulink 
 	url="ftp://ftp.gnupg.org/gcrypt/gpgme/"
 	>ftp://ftp.gnupg.org/gcrypt/gpgme/</ulink>.
 	  </para>
@@ -144,6 +156,9 @@
 	  <para>
 	Permite la notificación de correo nuevo a través de los LEDs que 
 	tienen algunos portátiles, como los de Acer, Asus, Fujitsu e IBM.
+	Más información: <ulink 
+	url="http://www.claws-mail.org/plugin.php?plugin=acpinotifier"
+	>www.claws-mail.org/plugin.php?plugin=acpinotifier</ulink>.
 	  </para>
 	</listitem>
       </varlistentry>
@@ -155,6 +170,9 @@
 	Comprueba expresiones comunes que se usan cuando se adjuntan
 	ficheros y le avisa si no se añadió ningún adjunto al correo
 	que se está enviando.
+	Más información: <ulink 
+	url="http://www.claws-mail.org/plugin.php?plugin=attachwarner"
+	>www.claws-mail.org/plugin.php?plugin=attachwarner</ulink>.
 	  </para>
 	</listitem>
       </varlistentry>
@@ -172,7 +190,8 @@
           <para>
         BSFilter es un módulo muy similar al Bogofilter pero utiliza
         para realizar su tarea el filtro bayesiano de correo basura
-	<ulink url="http://bsfilter.org/index-e.html">bsfilter</ulink>.
+	bsfilter (<ulink url="http://bsfilter.org/index-e.html"
+	>bsfilter.org/index-e.html</ulink>).
           </para><para>
 	Al igual que con Bogofilter, hay que entrenarlo con mensajes
 	basura y mensajes legítimos para que pueda comenzar a reconocer
@@ -218,6 +237,9 @@
 	  <para>
 	Al igual que Dillo, permite la visualización de mensajes HTML, pero
 	lo hace de manera más elegante (utiliza tipografías suavizadas).
+	Más información: <ulink 
+	url="http://www.claws-mail.org/plugin.php?plugin=gtkhtml2"
+	>www.claws-mail.org/plugin.php?plugin=gtkhtml2</ulink>.
 	  </para>
 	</listitem>
       </varlistentry>
@@ -253,16 +275,9 @@
 	  <para>
 	Proporciona varios métodos para notificar al usuario sobre el
 	correo nuevo y no leído.
-	  </para>
-	</listitem>
-      </varlistentry>
-      <varlistentry>
-	<term>Visor PDF</term>
-	<listitem>
-	  <para>
-	Proporciona la visualización directa de adjuntos PDF y PostScript
-	en la vista de mensaje de &SC;. También permite hojear, hacer zoom
-	y mostrar información detallada sobre tales adjuntos.
+	Más información: <ulink 
+	url="http://www.claws-mail.org/plugin.php?plugin=notification"
+	>www.claws-mail.org/plugin.php?plugin=notification</ulink>.
 	  </para>
 	</listitem>
       </varlistentry>
@@ -277,24 +292,26 @@
 	</listitem>
       </varlistentry>
       <varlistentry>
+        <term>Python</term>
+        <listitem>
+          <para>
+	Este módulo permite integrarse con Python.
+	Más información: <ulink 
+	url="http://www.claws-mail.org/plugin.php?plugin=python"
+	>www.claws-mail.org/plugin.php?plugin=python</ulink>.
+	  </para>
+        </listitem>
+      </varlistentry>
+      <varlistentry>
 	<term>RSSyl</term>
 	<listitem>
 	  <para>
 	Le permite leer sus canales de noticias (<emphasis>feeds</emphasis>)
 	en &SC;. Actualmente están soportados los canales RSS 1.0 y 2.0, así
 	como los Atom.
-	  </para>
-	</listitem>
-      </varlistentry>
-      <varlistentry>
-	<term>S/MIME</term>
-	<listitem>
-	  <para>
-	Gestiona correos firmados y/o cifrados S/MIME. Se pueden descifrar
-	correos y verificar firmas digitales, así como firmar y cifrar sus 
-	propios correos. Utiliza GnuPG/GPGME y GpgSM, disponibles en <ulink 
-	url="ftp://ftp.gnupg.org/gcrypt/gpgme/"
-	>ftp://ftp.gnupg.org/gcrypt/gpgme/</ulink>.
+	Más información: <ulink 
+	url="http://www.claws-mail.org/plugin.php?plugin=rssyl"
+	>www.claws-mail.org/plugin.php?plugin=rssyl</ulink>.
 	  </para>
 	</listitem>
       </varlistentry>
@@ -306,8 +323,8 @@
 	Actualmente están soportados los sitios <ulink 
 	url="http://spam-signal.fr">spam-signal.fr</ulink> y <ulink 
 	url="http://spamcop.net">spamcop.net</ulink>, y el sistema de
-	nominación de correo basura de las <ulink
-        url="http://lists.debian.org">listas de Debian</ulink>.
+	nominación de correo basura de las <ulink url="http://lists.debian.org"
+	>listas de Debian (lists.debian.org)</ulink>.
 	  </para>
 	</listitem>
       </varlistentry>
@@ -323,11 +340,26 @@
 	</listitem>
       </varlistentry>
       <varlistentry>
+	<term>Intérprete TNEF</term>
+	<listitem>
+	  <para>
+	Este módulo permite leer los adjuntos de tipo <literal
+	>application/ms-tnef</literal>.
+	Más información: <ulink 
+	url="http://www.claws-mail.org/plugin.php?plugin=tnef_parser"
+	>www.claws-mail.org/plugin.php?plugin=tnef_parser</ulink>.
+          </para>
+        </listitem>
+      </varlistentry>
+      <varlistentry>
 	<term>vCalendar</term>
 	<listitem>
 	  <para>
 	Permite la gestión de mensajes vCalendar al estilo de Evolution u
 	Outlook, y también suscripciones Webcal.
+	Más información: <ulink 
+	url="http://www.claws-mail.org/plugin.php?plugin=vcalendar"
+	>www.claws-mail.org/plugin.php?plugin=vcalendar</ulink>.
 	  </para>
 	</listitem>
       </varlistentry>

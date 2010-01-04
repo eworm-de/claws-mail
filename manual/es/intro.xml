@@ -36,9 +36,9 @@
 	(firmas digitales y cifrado). Soporta módulos, barras de herramientas
 	configurables, corrección ortográfica, mecanismos para evitar cualquier
 	pérdida de datos, preferencias para cada carpeta y mucho más. Una 
-	lista completa de las características se puede encontrar en <ulink 
+	lista de las características se puede encontrar en <ulink 
 	url="http://www.claws-mail.org/features.php"
-	>http://www.claws-mail.org/features.php</ulink>.
+	>www.claws-mail.org/features.php</ulink>.
     </para>
   </section>
 
@@ -48,7 +48,7 @@
 	&SC; ha existido desde Abril del 2001. El objetivo inicial de &SC; fue
 	servir de banco de puebas para posibles características de Sylpheed (
 	<ulink url="http://sylpheed.sraoss.jp/en/"
-	>http://sylpheed.sraoss.jp/en/</ulink>), de manera que las nuevas
+	>sylpheed.sraoss.jp/en/</ulink>), de manera que las nuevas
 	funcionalidades se pudieran probar ampliamente sin comprometer la
 	estabilidad de Sylpheed. Los desarrolladores de &SC; sincronizaban
 	regularmente su código fuente con el de Sylpheed, y el autor de
@@ -70,27 +70,28 @@
 	url="http://www.claws-mail.org">www.claws-mail.org</ulink>
     </para><para>
 	&Uacute;ltimas noticias: <ulink url="http://www.claws-mail.org/news.php"
-	>http://www.claws-mail.org/news.php</ulink>
+	>www.claws-mail.org/news.php</ulink>
     </para><para>
 	Módulos adicionales: <ulink 
 	url="http://www.claws-mail.org/plugins.php"
-	>http://www.claws-mail.org/plugins.php</ulink>
+	>www.claws-mail.org/plugins.php</ulink>
     </para><para>
 	Temas de iconos: <ulink url="http://www.claws-mail.org/themes.php"
-	>http://www.claws-mail.org/themes.php</ulink>
+	>www.claws-mail.org/themes.php</ulink>
     </para><para>
 	Herramientas: <ulink url="http://www.claws-mail.org/tools.php"
-	>http://www.claws-mail.org/tools.php</ulink>
+	>www.claws-mail.org/tools.php</ulink>
     </para><para>
 	Listas de correo: <ulink url="http://www.claws-mail.org/MLs.php"
-	>http://www.claws-mail.org/MLs.php</ulink>
+	>www.claws-mail.org/MLs.php</ulink>
     </para><para>
 	Seguimiento de fallos: <ulink 
-	url="http://www.thewildbeast.co.uk/sylpheed-claws/bugzilla/"
-	>http://www.thewildbeast.co.uk/sylpheed-claws/bugzilla/</ulink>
+	url="http://www.thewildbeast.co.uk/claws-mail/bugzilla/"
+	>www.thewildbeast.co.uk/claws-mail/bugzilla/</ulink>
     </para><para>
-	Proyecto: <ulink url="http://sourceforge.net/projects/claws-mail/"
-	>http://sourceforge.net/projects/claws-mail/</ulink>
+	Proyecto: <ulink 
+	url="http://sourceforge.net/projects/sylpheed-claws/files/"
+	>sourceforge.net/projects/sylpheed-claws/files/</ulink>
     </para>
   </section>
 

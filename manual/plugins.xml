@@ -326,7 +326,7 @@
 	<term>TNEF parse</term>
 	<listitem>
 	  <para>
-	This plugin enables reading application/ms-tnef attachments.
+	This plugin enables reading <literal>application/ms-tnef attachments</literal>.
 	More information: <ulink url="http://www.claws-mail.org/plugin.php?plugin=tnef_parser">
 	www.claws-mail.org/plugin.php?plugin=tnef_parser</ulink>
 	  </para>

@@ -1,3 +1,12 @@
+2010-01-04 [mones]	3.7.3cvs53
+
+	* manual/plugins.xml
+		Some format
+	* manual/es/claws-mail-manual.xml
+	* manual/es/intro.xml
+	* manual/es/plugins.xml
+		Synchronise with English version
+
 2010-01-03 [paul]	3.7.3cvs52
 
 	* ChangeLog
