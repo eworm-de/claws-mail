@@ -3729,7 +3729,7 @@ int subject_get_prefix_length(const gchar *subject)
 		"Vs\\:",			/* "Vs" (Norwegian) */
 		"Ad\\:",			/* "Ad" (Norwegian) */
 		"\347\255\224\345\244\215\\:",	/* "Re" (Chinese, UTF-8) */
-		"R\303\251f\\. \\:",	/* "Rï¿½f. :" (French Lotus Notes) */
+		"R\303\251f\\. \\:",		/* "Réf. :" (French Lotus Notes) */
 		"Re \\:",			/* "Re :" (French Yahoo Mail) */
 		/* add more */
 	};
@@ -3788,7 +3788,7 @@ int subject_get_prefix_length(const gchar *subject)
 		"sv:",			/* "Sv" (Norwegian) */
 		"vs:",			/* "Vs" (Norwegian) */
 		"ad:",			/* "Ad" (Norwegian) */
-		"R\303\251f. :",	/* "Rï¿½f. :" (French Lotus Notes) */
+		"R\303\251f. :",	/* "Réf. :" (French Lotus Notes) */
 		"Re :",			/* "Re :" (French Yahoo Mail) */
 		/* add more */
 	};
@@ -3879,7 +3879,7 @@ gchar *generate_msgid(gchar *buf, gint len, gchar *user_addr)
 
    return a quoted string safely usable in argument of a command.
 
-   code is extracted and adapted from etPan! project -- DINH V. Hoï¿½.
+   code is extracted and adapted from etPan! project -- DINH V. Hoà.
 */
 
 gint quote_cmd_argument(gchar * result, guint size,
