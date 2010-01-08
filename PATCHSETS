@@ -3931,3 +3931,4 @@
 ( cvs diff -u -r 1.42.2.48 -r 1.42.2.49 po/fr.po;  ) > 3.7.3cvs55.patchset
 ( cvs diff -u -r 1.36.2.180 -r 1.36.2.181 src/common/utils.c;  ) > 3.7.3cvs56.patchset
 ( cvs diff -u -r 1.1.2.16 -r 1.1.2.17 po/ca.po;  cvs diff -u -r 1.9.2.17 -r 1.9.2.18 po/cs.po;  cvs diff -u -r 1.58.2.45 -r 1.58.2.46 po/de.po;  cvs diff -u -r 1.1.2.23 -r 1.1.2.24 po/fi.po;  cvs diff -u -r 1.5.2.15 -r 1.5.2.16 po/hu.po;  cvs diff -u -r 1.1.2.3 -r 1.1.2.4 po/id.po;  cvs diff -u -r 1.16.2.10 -r 1.16.2.11 po/ja.po;  cvs diff -u -r 1.28.2.13 -r 1.28.2.14 po/nl.po;  cvs diff -u -r 1.50.2.37 -r 1.50.2.38 po/pt_BR.po;  cvs diff -u -r 1.1.2.1 -r 1.1.2.2 po/pt_PT.po;  cvs diff -u -r 1.17.2.20 -r 1.17.2.21 po/ru.po;  cvs diff -u -r 1.2.2.28 -r 1.2.2.29 po/sk.po;  ) > 3.7.3cvs57.patchset
+( cvs diff -u -r 1.1.2.22 -r 1.1.2.23 tools/claws.i18n.status.pl;  ) > 3.7.4cvs1.patchset

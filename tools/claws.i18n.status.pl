@@ -26,9 +26,9 @@
 	'pt_BR.po' => 'Brazilian Portuguese',
 	'pt_PT.po' => 'Portuguese',
 	'ru.po' => 'Russian',
-	'sk.po' => 'Slovakian',
+	'sk.po' => 'Slovak',
 	'sv.po' => 'Swedish',
-	'zh_CN.po' => 'Simpilified Chinese',
+	'zh_CN.po' => 'Simplified Chinese',
 );
 
 %lasttranslator = (
