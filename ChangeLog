@@ -1,3 +1,9 @@
+2010-01-08 [paul]	3.7.3cvs56
+
+	* src/common/utils.c
+		fix bug 2089, 'URLs ending with an underscore ('_')
+		are not correctly parsed'. thanks to Johan
+
 2010-01-05 [colin]	3.7.3cvs55
 
 	* po/fr.po

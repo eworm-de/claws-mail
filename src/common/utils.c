@@ -3729,7 +3729,7 @@ int subject_get_prefix_length(const gchar *subject)
 		"Vs\\:",			/* "Vs" (Norwegian) */
 		"Ad\\:",			/* "Ad" (Norwegian) */
 		"\347\255\224\345\244\215\\:",	/* "Re" (Chinese, UTF-8) */
-		"R\303\251f\\. \\:",	/* "Réf. :" (French Lotus Notes) */
+		"R\303\251f\\. \\:",	/* "Rï¿½f. :" (French Lotus Notes) */
 		"Re \\:",			/* "Re :" (French Yahoo Mail) */
 		/* add more */
 	};
@@ -3788,7 +3788,7 @@ int subject_get_prefix_length(const gchar *subject)
 		"sv:",			/* "Sv" (Norwegian) */
 		"vs:",			/* "Vs" (Norwegian) */
 		"ad:",			/* "Ad" (Norwegian) */
-		"R\303\251f. :",	/* "Réf. :" (French Lotus Notes) */
+		"R\303\251f. :",	/* "Rï¿½f. :" (French Lotus Notes) */
 		"Re :",			/* "Re :" (French Yahoo Mail) */
 		/* add more */
 	};
@@ -3879,7 +3879,7 @@ gchar *generate_msgid(gchar *buf, gint len, gchar *user_addr)
 
    return a quoted string safely usable in argument of a command.
 
-   code is extracted and adapted from etPan! project -- DINH V. Hoà.
+   code is extracted and adapted from etPan! project -- DINH V. Hoï¿½.
 */
 
 gint quote_cmd_argument(gchar * result, guint size,
@@ -4269,7 +4269,7 @@ gboolean get_uri_part(const gchar *start, const gchar *scanpos,
 	 * should pass some URI type to this function and decide on that whether
 	 * to perform punctuation stripping */
 
-#define IS_REAL_PUNCT(ch)	(g_ascii_ispunct(ch) && !strchr("/?=-)", ch))
+#define IS_REAL_PUNCT(ch)	(g_ascii_ispunct(ch) && !strchr("/?=-_)", ch))
 
 	for (; ep_ - 1 > scanpos + 1 &&
 	       IS_REAL_PUNCT(*(ep_ - 1));
