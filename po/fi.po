@@ -1,6 +1,6 @@
 # Finnish translations for claws-mail package.
 # This file is distributed under the same license as the claws-mail package.
-# Flammie Pirinen <flammie@iki.fi>, 2005—2008
+# Flammie Pirinen <flammie@iki.fi>, 2005—2010
 # Sanastoani:
 #
 # To: = Vastaanottaja:
@@ -30,8 +30,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: sylpheed-claws\n"
 "Report-Msgid-Bugs-To: paul@claws-mail.org\n"
-"POT-Creation-Date: 2009-07-01 16:18+0300\n"
-"PO-Revision-Date: 2009-07-01 18:09+0300\n"
+"POT-Creation-Date: 2010-01-02 22:10+0200\n"
+"PO-Revision-Date: 2010-01-02 22:20+0200\n"
 "Last-Translator: Flammie Pirinen <flammie@iki.fi>\n"
 "Language-Team: Finnish <laatu@lokalisointi.org>\n"
 "MIME-Version: 1.0\n"
@@ -55,7 +55,7 @@ msgstr "Kansiota ei voi luoda."
 msgid "Edit accounts"
 msgstr "Muokkaa tilejä"
 
-#: src/account.c:722
+#: src/account.c:721
 msgid ""
 "Using 'Get Mail' will retrieve messages from your Accounts in the order "
 "given, the checkbox indicates which accounts will be included. Bold text "
@@ -64,74 +64,74 @@ msgstr ""
 "Hae viestit hakee järjestyksessä viestit tileiltä. Rastiruutu kertoo "
 "haettavat tilit ja lihavoitu teksti oletustilin."
 
-#: src/account.c:793
+#: src/account.c:792
 msgid " _Set as default account "
 msgstr " _Valitse oletustiliksi "
 
-#: src/account.c:888
+#: src/account.c:887
 msgid "Accounts with remote folders cannot be copied."
 msgstr "Tilejä, joissa on etäkansioita, ei voi kopioida."
 
-#: src/account.c:895
+#: src/account.c:894
 #, c-format
 msgid "Copy of %s"
 msgstr "Kentän %s kopio"
 
-#: src/account.c:1054
+#: src/account.c:1053
 #, c-format
 msgid "Do you really want to delete the account '%s'?"
 msgstr "Poistetaanko tili %s?"
 
-#: src/account.c:1056
+#: src/account.c:1055
 msgid "(Untitled)"
 msgstr "(Nimetön)"
 
-#: src/account.c:1057
+#: src/account.c:1056
 msgid "Delete account"
 msgstr "Poista tili"
 
-#: src/account.c:1528
+#: src/account.c:1527
 msgid "Accounts List Get Column Name|G"
 msgstr "H"
 
-#: src/account.c:1534
+#: src/account.c:1533
 msgid "'Get Mail' retrieves mail from the checked accounts"
 msgstr "Hae viestit hakee viestit merkityiltä tileiltä"
 
-#: src/account.c:1541 src/addressadd.c:190 src/addressbook.c:122
-#: src/addrduplicates.c:480 src/compose.c:6565 src/compose.c:6874
+#: src/account.c:1540 src/addressadd.c:189 src/addressbook.c:122
+#: src/addrduplicates.c:480 src/compose.c:6710 src/compose.c:7020
 #: src/editaddress.c:1269 src/editaddress.c:1326 src/editaddress.c:1342
-#: src/editbook.c:170 src/editgroup.c:287 src/editjpilot.c:257
-#: src/editldap.c:429 src/editvcard.c:173 src/importmutt.c:223
-#: src/importpine.c:222 src/mimeview.c:272
-#: src/plugins/pgpcore/select-keys.c:396 src/prefs_filtering.c:378
-#: src/prefs_filtering.c:1932 src/prefs_template.c:77
+#: src/editbook.c:169 src/editgroup.c:287 src/editjpilot.c:256
+#: src/editldap.c:428 src/editvcard.c:172 src/importmutt.c:222
+#: src/importpine.c:221 src/mimeview.c:272
+#: src/plugins/pgpcore/select-keys.c:396 src/prefs_filtering.c:379
+#: src/prefs_filtering.c:1933 src/prefs_template.c:77
 msgid "Name"
 msgstr "Nimi"
 
-#: src/account.c:1549 src/prefs_account.c:1072 src/prefs_account.c:3822
+#: src/account.c:1548 src/prefs_account.c:1072 src/prefs_account.c:3820
 msgid "Protocol"
 msgstr "Käytäntö"
 
-#: src/account.c:1557 src/ssl_manager.c:102
+#: src/account.c:1556 src/ssl_manager.c:102
 msgid "Server"
 msgstr "Palvelin"
 
-#: src/action.c:373
+#: src/action.c:379
 #, c-format
 msgid "Could not get message file %d"
 msgstr "Ei voitu lukea viestitiedostoa %d"
 
-#: src/action.c:404
+#: src/action.c:410
 msgid "Could not get message part."
 msgstr "Ei voitu lukea viestin osaa."
 
-#: src/action.c:421
+#: src/action.c:427
 #, c-format
 msgid "Can't get part of multipart message: %s"
 msgstr "Ei voitu lukea osaa moniosaisesta viestistä: %s"
 
-#: src/action.c:586
+#: src/action.c:592
 #, c-format
 msgid ""
 "The selected action cannot be used in the compose window\n"
@@ -140,11 +140,11 @@ msgstr ""
 "Toimintoa ei voida suorittaa viestinmuokkausikkunassa,\n"
 "koska se sisältää %%f:n, %%F:n, %%as:n tai %%p:n."
 
-#: src/action.c:698
+#: src/action.c:704
 msgid "There is no filtering action set"
 msgstr "Suodatustoimintoa ei ole valittu"
 
-#: src/action.c:700
+#: src/action.c:706
 #, c-format
 msgid ""
 "Invalid filtering action(s):\n"
@@ -153,7 +153,7 @@ msgstr ""
 "Viallisia suodatustoimintoja:\n"
 "%s"
 
-#: src/action.c:923
+#: src/action.c:929
 #, c-format
 msgid ""
 "Command could not be started. Pipe creation failed.\n"
@@ -162,7 +162,7 @@ msgstr ""
 "Komentoa ei voitu suorittaa. Putken luonti epäonnistui.\n"
 "%s"
 
-#: src/action.c:1018
+#: src/action.c:1024
 #, c-format
 msgid ""
 "Could not fork to execute the following command:\n"
@@ -172,25 +172,25 @@ msgstr ""
 "Komentoon %s forkkaus epäonnistui:\n"
 "%s"
 
-#: src/action.c:1238 src/action.c:1394
+#: src/action.c:1244 src/action.c:1400
 msgid "Completed"
 msgstr "Suoritettu"
 
-#: src/action.c:1274
+#: src/action.c:1280
 #, c-format
 msgid "--- Running: %s\n"
 msgstr "--- Suoritetaan komentoa %s\n"
 
-#: src/action.c:1278
+#: src/action.c:1284
 #, c-format
 msgid "--- Ended: %s\n"
 msgstr "--- Komennon %s suoritus loppui\n"
 
-#: src/action.c:1311
+#: src/action.c:1317
 msgid "Action's input/output"
 msgstr "Toiminnon syötteet ja tulosteet"
 
-#: src/action.c:1630
+#: src/action.c:1636
 #, c-format
 msgid ""
 "Enter the argument for the following action:\n"
@@ -201,11 +201,11 @@ msgstr ""
 "(”%%h” korvautuu parametreilläsi)\n"
 " %s"
 
-#: src/action.c:1635
+#: src/action.c:1641
 msgid "Action's hidden user argument"
 msgstr "Toiminnon piilotettu käyttäjäparametri"
 
-#: src/action.c:1639
+#: src/action.c:1645
 #, c-format
 msgid ""
 "Enter the argument for the following action:\n"
@@ -216,7 +216,7 @@ msgstr ""
 "(”%%u” korvautuu parametreilläsi)\n"
 " %s"
 
-#: src/action.c:1644
+#: src/action.c:1650
 msgid "Action's user argument"
 msgstr "Toiminnon käyttäjäparametri"
 
@@ -291,13 +291,13 @@ msgid ""
 msgstr "Korvataanko kaikki attribuutit oletuksilla?"
 
 #: src/addrcustomattr.c:211 src/addressbook.c:433 src/addressbook.c:461
-#: src/addressbook.c:478 src/edittags.c:269 src/prefs_actions.c:1078
-#: src/prefs_filtering.c:1769 src/prefs_template.c:1101
+#: src/addressbook.c:478 src/edittags.c:269 src/prefs_actions.c:1080
+#: src/prefs_filtering.c:1770 src/prefs_template.c:1102
 msgid "_Delete"
 msgstr "_Poista"
 
-#: src/addrcustomattr.c:212 src/edittags.c:270 src/prefs_actions.c:1079
-#: src/prefs_filtering.c:1770 src/prefs_template.c:1102
+#: src/addrcustomattr.c:212 src/edittags.c:270 src/prefs_actions.c:1081
+#: src/prefs_filtering.c:1771 src/prefs_template.c:1103
 msgid "Delete _all"
 msgstr "Poist_a kaikki"
 
@@ -305,19 +305,19 @@ msgstr "Poist_a kaikki"
 msgid "_Reset to default"
 msgstr "Palauta _oletukset"
 
-#: src/addrcustomattr.c:412
+#: src/addrcustomattr.c:413
 msgid "Attribute name is not set."
 msgstr "Attribuuttinimi on asettamatta."
 
-#: src/addrcustomattr.c:471
+#: src/addrcustomattr.c:472
 msgid "Dialog title|Edit attribute names"
 msgstr "Attribuuttinimien muokkaus"
 
-#: src/addrcustomattr.c:485
+#: src/addrcustomattr.c:486
 msgid "New attribute name:"
 msgstr "Uusi attribuuttinimi:"
 
-#: src/addrcustomattr.c:522
+#: src/addrcustomattr.c:523
 msgid ""
 "Adding or removing attribute names won't affect attributes already set for "
 "contacts."
@@ -329,26 +329,26 @@ msgstr ""
 msgid "Add to address book"
 msgstr "Lisää osoitekirjaan"
 
-#: src/addressadd.c:182
+#: src/addressadd.c:181
 msgid "Contact"
 msgstr "Yhteystieto"
 
-#: src/addressadd.c:202 src/addrduplicates.c:451
-#: src/plugins/pgpcore/select-keys.c:397 src/toolbar.c:415
+#: src/addressadd.c:201 src/addrduplicates.c:451
+#: src/plugins/pgpcore/select-keys.c:397 src/toolbar.c:418
 msgid "Address"
 msgstr "Osoite"
 
-#: src/addressadd.c:213 src/addressbook.c:124 src/editaddress.c:1061
+#: src/addressadd.c:212 src/addressbook.c:124 src/editaddress.c:1061
 #: src/editaddress.c:1136 src/editgroup.c:289
 msgid "Remarks"
 msgstr "Huomiot"
 
-#: src/addressadd.c:232 src/addressbook_foldersel.c:157
+#: src/addressadd.c:231 src/addressbook_foldersel.c:157
 msgid "Select Address Book Folder"
 msgstr "Valitse osoitekirjan hakemisto"
 
 #: src/addressadd.c:428 src/editaddress.c:1576 src/headerview.c:346
-#: src/textview.c:1983
+#: src/textview.c:1982
 #, c-format
 msgid ""
 "Failed to save image: \n"
@@ -367,7 +367,7 @@ msgstr "Osoitetta ei voi lisätä"
 
 #: src/addressbook.c:123 src/addressbook.c:4891 src/editaddress.c:1058
 #: src/editaddress.c:1119 src/editgroup.c:288 src/expldifdlg.c:517
-#: src/exporthtml.c:595 src/exporthtml.c:759 src/ldif.c:786
+#: src/exporthtml.c:595 src/exporthtml.c:759 src/ldif.c:784
 msgid "Email Address"
 msgstr "Sähköpostiosoite"
 
@@ -376,17 +376,17 @@ msgid "_Book"
 msgstr "_Osoitekirja"
 
 #: src/addressbook.c:401 src/addressbook.c:432 src/addressbook.c:460
-#: src/addressbook.c:477 src/compose.c:545 src/mainwindow.c:473
+#: src/addressbook.c:477 src/compose.c:551 src/mainwindow.c:473
 #: src/messageview.c:187
 msgid "_Edit"
 msgstr "_Muokkaa"
 
-#: src/addressbook.c:402 src/compose.c:550 src/mainwindow.c:476
+#: src/addressbook.c:402 src/compose.c:556 src/mainwindow.c:476
 #: src/messageview.c:190
 msgid "_Tools"
 msgstr "_Työkalut"
 
-#: src/addressbook.c:403 src/compose.c:551 src/mainwindow.c:478
+#: src/addressbook.c:403 src/compose.c:557 src/mainwindow.c:478
 #: src/messageview.c:191
 msgid "_Help"
 msgstr "O_hje"
@@ -419,11 +419,11 @@ msgstr "_Muokkaa kirjaa"
 msgid "_Delete book"
 msgstr "_Poista kirja"
 
-#: src/addressbook.c:422 src/compose.c:561
+#: src/addressbook.c:422 src/compose.c:567
 msgid "_Save"
 msgstr "_Tallenna"
 
-#: src/addressbook.c:423 src/compose.c:563 src/messageview.c:201
+#: src/addressbook.c:423 src/compose.c:569 src/messageview.c:201
 msgid "_Close"
 msgstr "_Sulje"
 
@@ -436,12 +436,12 @@ msgid "C_ut"
 msgstr "_Leikkaa"
 
 #: src/addressbook.c:429 src/addressbook.c:468 src/addressbook.c:484
-#: src/compose.c:571 src/mainwindow.c:507 src/messageview.c:204
+#: src/compose.c:577 src/mainwindow.c:507 src/messageview.c:204
 msgid "_Copy"
 msgstr "_Kopioi"
 
 #: src/addressbook.c:430 src/addressbook.c:469 src/addressbook.c:485
-#: src/compose.c:572
+#: src/compose.c:578
 msgid "_Paste"
 msgstr "L_iitä"
 
@@ -485,7 +485,7 @@ msgstr "Hae kaksoiskappaleita…"
 msgid "Edit custom attributes..."
 msgstr "Muokkaa attribuutteja…"
 
-#: src/addressbook.c:453 src/compose.c:651 src/mainwindow.c:743
+#: src/addressbook.c:453 src/compose.c:657 src/mainwindow.c:743
 #: src/messageview.c:300
 msgid "_About"
 msgstr "_Tietoja"
@@ -600,8 +600,8 @@ msgstr "Vahvempi todennus vaaditaan"
 msgid "Sources"
 msgstr "Lähteet"
 
-#: src/addressbook.c:916 src/prefs_matcher.c:605 src/prefs_other.c:470
-#: src/toolbar.c:210 src/toolbar.c:2091
+#: src/addressbook.c:916 src/prefs_matcher.c:610 src/prefs_other.c:470
+#: src/toolbar.c:212 src/toolbar.c:2101
 msgid "Address book"
 msgstr "Osoitekirja"
 
@@ -647,7 +647,7 @@ msgid "Do you want to delete the query results and addresses in '%s' ?"
 msgstr "Poistetaanko hakutulokset ja osoitteet ”%s”?"
 
 #: src/addressbook.c:2934 src/addressbook.c:2960 src/addressbook.c:2967
-#: src/prefs_filtering_action.c:164 src/toolbar.c:397
+#: src/prefs_filtering_action.c:164 src/toolbar.c:400
 msgid "Delete"
 msgstr "Poista"
 
@@ -763,7 +763,7 @@ msgstr "Etsitään…"
 msgid "Interface"
 msgstr "Rajapinta"
 
-#: src/addressbook.c:4867 src/addressbook_foldersel.c:182 src/exphtmldlg.c:370
+#: src/addressbook.c:4867 src/addressbook_foldersel.c:181 src/exphtmldlg.c:370
 #: src/expldifdlg.c:387 src/exporthtml.c:979 src/importldif.c:657
 msgid "Address Book"
 msgstr "Osoitekirja"
@@ -773,9 +773,9 @@ msgid "Person"
 msgstr "Henkilö"
 
 #: src/addressbook.c:4915 src/exporthtml.c:879 src/folderview.c:338
-#: src/folderview.c:426 src/prefs_account.c:2658 src/prefs_folder_column.c:77
-#: src/prefs_folder_item.c:1718 src/prefs_folder_item.c:1736
-#: src/prefs_folder_item.c:1753
+#: src/folderview.c:426 src/prefs_account.c:2656 src/prefs_folder_column.c:77
+#: src/prefs_folder_item.c:1720 src/prefs_folder_item.c:1738
+#: src/prefs_folder_item.c:1755
 msgid "Folder"
 msgstr "Kansio"
 
@@ -808,76 +808,76 @@ msgstr "LDAP-haku"
 #: src/plugins/spamassassin/spamassassin.c:116
 #: src/plugins/spamassassin/spamassassin_gtk.c:441
 #: src/plugins/spamassassin/spamassassin_gtk.c:483
-#: src/plugins/spamassassin/spamassassin_gtk.c:606 src/prefs_matcher.c:640
-#: src/prefs_matcher.c:670 src/prefs_matcher.c:1490 src/prefs_matcher.c:1497
-#: src/prefs_matcher.c:1505 src/prefs_matcher.c:1507 src/prefs_matcher.c:2364
-#: src/prefs_matcher.c:2368
+#: src/plugins/spamassassin/spamassassin_gtk.c:606 src/prefs_matcher.c:645
+#: src/prefs_matcher.c:675 src/prefs_matcher.c:1513 src/prefs_matcher.c:1520
+#: src/prefs_matcher.c:1528 src/prefs_matcher.c:1530 src/prefs_matcher.c:2393
+#: src/prefs_matcher.c:2397
 msgid "Any"
 msgstr "Mikä tahansa"
 
-#: src/addrgather.c:147
+#: src/addrgather.c:157
 msgid "Please specify name for address book."
 msgstr "Anna osoitekirjan nimi."
 
-#: src/addrgather.c:167
+#: src/addrgather.c:177
 msgid "Please select the mail headers to search."
 msgstr "Anna etsittävät postiotsakkeet."
 
-#: src/addrgather.c:174
+#: src/addrgather.c:184
 msgid "Collecting addresses..."
 msgstr "Etsitään osoitteita…"
 
-#: src/addrgather.c:213
+#: src/addrgather.c:223
 msgid "Addresses collected successfully."
 msgstr "Osoitteiden keräys onnistui."
 
-#: src/addrgather.c:290
+#: src/addrgather.c:300
 msgid "Current folder:"
 msgstr "Nykyinen hakemisto:"
 
-#: src/addrgather.c:301
+#: src/addrgather.c:311
 msgid "Address book name:"
 msgstr "Osoitekirja:"
 
-#: src/addrgather.c:311
+#: src/addrgather.c:321
 msgid "Address book folder size:"
 msgstr "Osoitekirjan koko:"
 
-#: src/addrgather.c:315 src/addrgather.c:325
+#: src/addrgather.c:325 src/addrgather.c:335
 msgid ""
 "Maximum amount of entries per folder within the newly created address book"
 msgstr "Enimmäismäärä kenttiä kansiota kohden uudessa osoitekirjassa"
 
-#: src/addrgather.c:329
+#: src/addrgather.c:339
 msgid "Process these mail header fields"
 msgstr "Käsittele nämä otsakekentät"
 
-#: src/addrgather.c:347
+#: src/addrgather.c:358
 msgid "Include subfolders"
 msgstr "Käy myös alihakemistot"
 
-#: src/addrgather.c:370 src/prefs_filtering_action.c:1362
+#: src/addrgather.c:381 src/prefs_filtering_action.c:1362
 msgid "Header Name"
 msgstr "Otsakkeen nimi"
 
-#: src/addrgather.c:371
+#: src/addrgather.c:382
 msgid "Address Count"
 msgstr "Osoitteiden määrä"
 
-#: src/addrgather.c:472
+#: src/addrgather.c:494
 msgid "Header Fields"
 msgstr "Otsakekentät"
 
-#: src/addrgather.c:473 src/exphtmldlg.c:658 src/expldifdlg.c:723
-#: src/importldif.c:1024
+#: src/addrgather.c:495 src/exphtmldlg.c:657 src/expldifdlg.c:722
+#: src/importldif.c:1023
 msgid "Finish"
 msgstr "Lopeta"
 
-#: src/addrgather.c:521
+#: src/addrgather.c:544
 msgid "Collect email addresses from selected messages"
 msgstr "Kerää sähköpostiosoitteita valituista viesteistä"
 
-#: src/addrgather.c:525
+#: src/addrgather.c:548
 msgid "Collect email addresses from folder"
 msgstr "Kerää sähköpostiosoitteita kansiosta"
 
@@ -938,17 +938,17 @@ msgstr "Osoitekirjan polku"
 msgid "Delete address"
 msgstr "Poista osoite"
 
-#: src/alertpanel.c:145 src/compose.c:8701
+#: src/alertpanel.c:145 src/compose.c:8860
 msgid "Notice"
 msgstr "Huomautus"
 
-#: src/alertpanel.c:158 src/compose.c:5334 src/compose.c:5814
-#: src/compose.c:10822 src/messageview.c:806 src/messageview.c:819
-#: src/plugins/pgpcore/sgpgme.c:652 src/summaryview.c:4685
+#: src/alertpanel.c:158 src/compose.c:5432 src/compose.c:5912
+#: src/compose.c:11091 src/messageview.c:806 src/messageview.c:819
+#: src/plugins/pgpcore/sgpgme.c:652 src/summaryview.c:4691
 msgid "Warning"
 msgstr "Varoitus"
 
-#: src/alertpanel.c:171 src/alertpanel.c:194 src/compose.c:5275 src/inc.c:647
+#: src/alertpanel.c:171 src/alertpanel.c:194 src/compose.c:5373 src/inc.c:647
 #: src/plugins/pgpcore/sgpgme.c:153 src/plugins/pgpcore/sgpgme.c:247
 msgid "Error"
 msgstr "Virhe"
@@ -965,19 +965,19 @@ msgstr "Näytä tämä viesti ensi kerralla"
 msgid "Browse Directory Entry"
 msgstr "Selaa hakemistoa"
 
-#: src/browseldap.c:237
+#: src/browseldap.c:236
 msgid "Server Name :"
 msgstr "Palvelimen nimi:"
 
-#: src/browseldap.c:247
+#: src/browseldap.c:246
 msgid "Distinguished Name (dn) :"
 msgstr "Erillisnimi (dn):"
 
-#: src/browseldap.c:270
+#: src/browseldap.c:269
 msgid "LDAP Name"
 msgstr "LDAP-nimi"
 
-#: src/browseldap.c:272
+#: src/browseldap.c:271
 msgid "Attribute Value"
 msgstr "Attribuutin arvo"
 
@@ -1061,7 +1061,7 @@ msgstr "Claws Mail on liian vanha liitännäiselle %s"
 msgid "Your version of Claws Mail is too old for the plugin."
 msgstr "Claws Mail on liian vanha liitännäiselle"
 
-#: src/common/session.c:170 src/imap.c:1100
+#: src/common/session.c:170 src/imap.c:1099
 msgid "SSL handshake failed\n"
 msgstr "SSL-kättely epäonnistui\n"
 
@@ -1119,608 +1119,606 @@ msgstr "Varmenteen myöntäjä ei ole CA"
 msgid "(Subject cleared by RegExp)"
 msgstr "(Säännöllisin ilmauksin poistettu aihe)"
 
-#: src/common/utils.c:356
+#: src/common/utils.c:363
 #, c-format
 msgid "%dB"
 msgstr "%d t"
 
-#: src/common/utils.c:357
+#: src/common/utils.c:364
 #, c-format
 msgid "%d.%02dKB"
 msgstr "%d,%02d kt"
 
-#: src/common/utils.c:358
+#: src/common/utils.c:365
 #, c-format
 msgid "%d.%02dMB"
 msgstr "%d,%02d Mt"
 
-#: src/common/utils.c:359
+#: src/common/utils.c:366
 #, c-format
 msgid "%.2fGB"
 msgstr "%.2f Gt"
 
-#: src/common/utils.c:4905
+#: src/common/utils.c:4925
 msgid "Complete day name for use by strftime|Sunday"
 msgstr "sunnuntai"
 
-#: src/common/utils.c:4906
+#: src/common/utils.c:4926
 msgid "Complete day name for use by strftime|Monday"
 msgstr "maanantai"
 
-#: src/common/utils.c:4907
+#: src/common/utils.c:4927
 msgid "Complete day name for use by strftime|Tuesday"
 msgstr "tiistai"
 
-#: src/common/utils.c:4908
+#: src/common/utils.c:4928
 msgid "Complete day name for use by strftime|Wednesday"
 msgstr "keskiviikko"
 
-#: src/common/utils.c:4909
+#: src/common/utils.c:4929
 msgid "Complete day name for use by strftime|Thursday"
 msgstr "torstai"
 
-#: src/common/utils.c:4910
+#: src/common/utils.c:4930
 msgid "Complete day name for use by strftime|Friday"
 msgstr "perjantai"
 
-#: src/common/utils.c:4911
+#: src/common/utils.c:4931
 msgid "Complete day name for use by strftime|Saturday"
 msgstr "lauantai"
 
-#: src/common/utils.c:4913
+#: src/common/utils.c:4933
 msgid "Complete month name for use by strftime|January"
 msgstr "tammikuu"
 
-#: src/common/utils.c:4914
+#: src/common/utils.c:4934
 msgid "Complete month name for use by strftime|February"
 msgstr "helmikuu"
 
-#: src/common/utils.c:4915
+#: src/common/utils.c:4935
 msgid "Complete month name for use by strftime|March"
 msgstr "maaliskuu"
 
-#: src/common/utils.c:4916
+#: src/common/utils.c:4936
 msgid "Complete month name for use by strftime|April"
 msgstr "huhtikuu"
 
-#: src/common/utils.c:4917
+#: src/common/utils.c:4937
 msgid "Complete month name for use by strftime|May"
 msgstr "toukokuu"
 
-#: src/common/utils.c:4918
+#: src/common/utils.c:4938
 msgid "Complete month name for use by strftime|June"
 msgstr "kesäkuu"
 
-#: src/common/utils.c:4919
+#: src/common/utils.c:4939
 msgid "Complete month name for use by strftime|July"
 msgstr "heinäkuu"
 
-#: src/common/utils.c:4920
+#: src/common/utils.c:4940
 msgid "Complete month name for use by strftime|August"
 msgstr "elokuu"
 
-#: src/common/utils.c:4921
+#: src/common/utils.c:4941
 msgid "Complete month name for use by strftime|September"
 msgstr "syyskuu"
 
-#: src/common/utils.c:4922
+#: src/common/utils.c:4942
 msgid "Complete month name for use by strftime|October"
 msgstr "lokakuu"
 
-#: src/common/utils.c:4923
+#: src/common/utils.c:4943
 msgid "Complete month name for use by strftime|November"
 msgstr "marraskuu"
 
-#: src/common/utils.c:4924
+#: src/common/utils.c:4944
 msgid "Complete month name for use by strftime|December"
 msgstr "joulukuu"
 
-#: src/common/utils.c:4926
+#: src/common/utils.c:4946
 msgid "Abbr. day name for use by strftime|Sun"
 msgstr "su"
 
-#: src/common/utils.c:4927
+#: src/common/utils.c:4947
 msgid "Abbr. day name for use by strftime|Mon"
 msgstr "ma"
 
-#: src/common/utils.c:4928
+#: src/common/utils.c:4948
 msgid "Abbr. day name for use by strftime|Tue"
 msgstr "ti"
 
-#: src/common/utils.c:4929
+#: src/common/utils.c:4949
 msgid "Abbr. day name for use by strftime|Wed"
 msgstr "ke"
 
-#: src/common/utils.c:4930
+#: src/common/utils.c:4950
 msgid "Abbr. day name for use by strftime|Thu"
 msgstr "to"
 
-#: src/common/utils.c:4931
+#: src/common/utils.c:4951
 msgid "Abbr. day name for use by strftime|Fri"
 msgstr "pe"
 
-#: src/common/utils.c:4932
+#: src/common/utils.c:4952
 msgid "Abbr. day name for use by strftime|Sat"
 msgstr "la"
 
-#: src/common/utils.c:4934
+#: src/common/utils.c:4954
 msgid "Abbr. month name for use by strftime|Jan"
 msgstr "tammi"
 
-#: src/common/utils.c:4935
+#: src/common/utils.c:4955
 msgid "Abbr. month name for use by strftime|Feb"
 msgstr "helmi"
 
-#: src/common/utils.c:4936
+#: src/common/utils.c:4956
 msgid "Abbr. month name for use by strftime|Mar"
 msgstr "maalis"
 
-#: src/common/utils.c:4937
+#: src/common/utils.c:4957
 msgid "Abbr. month name for use by strftime|Apr"
 msgstr "huhti"
 
-#: src/common/utils.c:4938
+#: src/common/utils.c:4958
 msgid "Abbr. month name for use by strftime|May"
 msgstr "touko"
 
-#: src/common/utils.c:4939
+#: src/common/utils.c:4959
 msgid "Abbr. month name for use by strftime|Jun"
 msgstr "kesä"
 
-#: src/common/utils.c:4940
+#: src/common/utils.c:4960
 msgid "Abbr. month name for use by strftime|Jul"
 msgstr "heinä"
 
-#: src/common/utils.c:4941
+#: src/common/utils.c:4961
 msgid "Abbr. month name for use by strftime|Aug"
 msgstr "elo"
 
-#: src/common/utils.c:4942
+#: src/common/utils.c:4962
 msgid "Abbr. month name for use by strftime|Sep"
 msgstr "syys"
 
-#: src/common/utils.c:4943
+#: src/common/utils.c:4963
 msgid "Abbr. month name for use by strftime|Oct"
 msgstr "loka"
 
-#: src/common/utils.c:4944
+#: src/common/utils.c:4964
 msgid "Abbr. month name for use by strftime|Nov"
 msgstr "marras"
 
-#: src/common/utils.c:4945
+#: src/common/utils.c:4965
 msgid "Abbr. month name for use by strftime|Dec"
 msgstr "joulu"
 
-#: src/common/utils.c:4956
+#: src/common/utils.c:4976
 msgid "For use by strftime (morning)|AM"
 msgstr "Ap."
 
-#: src/common/utils.c:4957
+#: src/common/utils.c:4977
 msgid "For use by strftime (afternoon)|PM"
 msgstr "Ip."
 
-#: src/common/utils.c:4958
+#: src/common/utils.c:4978
 msgid "For use by strftime (morning, lowercase)|am"
 msgstr "ap."
 
-#: src/common/utils.c:4959
+#: src/common/utils.c:4979
 msgid "For use by strftime (afternoon, lowercase)|pm"
 msgstr "ip."
 
-#: src/common/utils.c:4966
+#: src/common/utils.c:4986
 msgid "For use by strftime (default date+time format)|%a %b %e %H:%M:%S %Y"
 msgstr "%Ana, %-d.%-m.%Y %H.%M.%S"
 
-#: src/common/utils.c:4967
+#: src/common/utils.c:4987
 msgid "For use by strftime (default date format)|%m/%d/%y"
 msgstr "%-d.%-m.%Y"
 
-#: src/common/utils.c:4968
+#: src/common/utils.c:4988
 msgid "For use by strftime (default time format)|%H:%M:%S"
 msgstr "%H.%M.%S"
 
-#: src/common/utils.c:4970
+#: src/common/utils.c:4990
 msgid "For use by strftime (default 12-hour time format)|%I:%M:%S %p"
 msgstr "%H.%M.%S"
 
-#: src/compose.c:534
+#: src/compose.c:540
 msgid "_Add..."
 msgstr "_Lisää…"
 
-#: src/compose.c:535 src/mh_gtk.c:362
+#: src/compose.c:541 src/mh_gtk.c:362
 msgid "_Remove"
 msgstr "_Poista"
 
-#: src/compose.c:537 src/folderview.c:234
+#: src/compose.c:543 src/folderview.c:234
 msgid "_Properties..."
 msgstr "_Asetukset"
 
-#: src/compose.c:544 src/mainwindow.c:475 src/messageview.c:189
+#: src/compose.c:550 src/mainwindow.c:475 src/messageview.c:189
 msgid "_Message"
 msgstr "_Viesti"
 
-#: src/compose.c:547
+#: src/compose.c:553
 msgid "_Spelling"
 msgstr "_Oikoluku"
 
-#: src/compose.c:549 src/compose.c:613
+#: src/compose.c:555 src/compose.c:619
 msgid "_Options"
 msgstr "_Asetukset"
 
-#: src/compose.c:553
+#: src/compose.c:559
 msgid "S_end"
 msgstr "Läh_etä"
 
-#: src/compose.c:554
+#: src/compose.c:560
 msgid "Send _later"
 msgstr "_Lähetä myöhemmin"
 
-#: src/compose.c:557
+#: src/compose.c:563
 msgid "_Attach file"
 msgstr "_Liitä tiedosto"
 
-#: src/compose.c:558
+#: src/compose.c:564
 msgid "_Insert file"
 msgstr "L_isää tiedosto"
 
-#: src/compose.c:559
+#: src/compose.c:565
 msgid "Insert si_gnature"
 msgstr "Lisää _allekirjoitus"
 
-#: src/compose.c:566
+#: src/compose.c:572
 msgid "_Undo"
 msgstr "_Peru"
 
-#: src/compose.c:567
+#: src/compose.c:573
 msgid "_Redo"
 msgstr "_Toista"
 
-#: src/compose.c:570
+#: src/compose.c:576
 msgid "Cu_t"
 msgstr "_Leikkaa"
 
-#: src/compose.c:574
+#: src/compose.c:580
 msgid "Special paste"
 msgstr "Liitä määräten"
 
-#: src/compose.c:575
+#: src/compose.c:581
 msgid "as _quotation"
 msgstr "_lainauksena"
 
-#: src/compose.c:576
+#: src/compose.c:582
 msgid "_wrapped"
 msgstr "_rivitettynä"
 
-#: src/compose.c:577
+#: src/compose.c:583
 msgid "_unwrapped"
 msgstr "_rivittämättä"
 
-#: src/compose.c:579 src/mainwindow.c:508
+#: src/compose.c:585 src/mainwindow.c:508
 msgid "Select _all"
 msgstr "Valitse _kaikki"
 
-#: src/compose.c:581
+#: src/compose.c:587
 msgid "A_dvanced"
 msgstr "_Lisäasetukset"
 
-#: src/compose.c:582
+#: src/compose.c:588
 msgid "Move a character backward"
 msgstr "Siirry merkin verran taaksepäin"
 
-#: src/compose.c:583
+#: src/compose.c:589
 msgid "Move a character forward"
 msgstr "Siirry merkin verran eteenpäin"
 
-#: src/compose.c:584
+#: src/compose.c:590
 msgid "Move a word backward"
 msgstr "Siirry sanan verran taaksepäin"
 
-#: src/compose.c:585
+#: src/compose.c:591
 msgid "Move a word forward"
 msgstr "Siirry sanan verran eteenpäin"
 
-#: src/compose.c:586
+#: src/compose.c:592
 msgid "Move to beginning of line"
 msgstr "Siirry rivin alkuun"
 
-#: src/compose.c:587
+#: src/compose.c:593
 msgid "Move to end of line"
 msgstr "Siirry rivin loppuun"
 
-#: src/compose.c:588
+#: src/compose.c:594
 msgid "Move to previous line"
 msgstr "Siirry edelliselle riville"
 
-#: src/compose.c:589
+#: src/compose.c:595
 msgid "Move to next line"
 msgstr "Siirry seuraavalle riville"
 
-#: src/compose.c:590
+#: src/compose.c:596
 msgid "Delete a character backward"
 msgstr "Poista merkki takaa"
 
-#: src/compose.c:591
+#: src/compose.c:597
 msgid "Delete a character forward"
 msgstr "Poista merkki edestä"
 
-#: src/compose.c:592
+#: src/compose.c:598
 msgid "Delete a word backward"
 msgstr "Poista sana takaa"
 
-#: src/compose.c:593
+#: src/compose.c:599
 msgid "Delete a word forward"
 msgstr "Poista sana edestä"
 
-#: src/compose.c:594
+#: src/compose.c:600
 msgid "Delete line"
 msgstr "Poista sääntö"
 
-#: src/compose.c:595
+#: src/compose.c:601
 msgid "Delete to end of line"
 msgstr "Poista rivin loppuun"
 
-#: src/compose.c:598 src/messageview.c:207
+#: src/compose.c:604 src/messageview.c:207
 msgid "_Find"
 msgstr "_Hae"
 
-#: src/compose.c:601
+#: src/compose.c:607
 msgid "_Wrap current paragraph"
 msgstr "_Rivitä tämä kappale"
 
-#: src/compose.c:602
+#: src/compose.c:608
 msgid "Wrap all long _lines"
 msgstr "Rivitä _kaikki pitkät rivit"
 
-#: src/compose.c:604
+#: src/compose.c:610
 msgid "Edit with e_xternal editor"
 msgstr "Muokkaa _ulkoisella muokkaimella"
 
-#: src/compose.c:607
+#: src/compose.c:613
 msgid "_Check all or check selection"
 msgstr "_Tarkista kaikki tai valittu"
 
-#: src/compose.c:608
+#: src/compose.c:614
 msgid "_Highlight all misspelled words"
 msgstr "_Korosta virheelliset sanat"
 
-#: src/compose.c:609
+#: src/compose.c:615
 msgid "Check _backwards misspelled word"
 msgstr "Tarkista _edellinen väärinkirjoitettu sana"
 
-#: src/compose.c:610
+#: src/compose.c:616
 msgid "_Forward to next misspelled word"
 msgstr "Tarkista _seuraava väärinkirjoitettu sana"
 
-#: src/compose.c:618
+#: src/compose.c:624
 msgid "Reply _mode"
 msgstr "_Vastaustapa"
 
-#: src/compose.c:620
+#: src/compose.c:626
 msgid "Privacy _System"
 msgstr "Suojaus- ja _salaus-järjestelmä"
 
-#: src/compose.c:625
+#: src/compose.c:631
 msgid "_Priority"
 msgstr "_Tärkeysarvo"
 
-#: src/compose.c:627 src/mainwindow.c:560 src/messageview.c:233
+#: src/compose.c:633 src/mainwindow.c:560 src/messageview.c:233
 msgid "Character _encoding"
 msgstr "_Merkistökoodaus"
 
-#: src/compose.c:632 src/mainwindow.c:565 src/messageview.c:238
+#: src/compose.c:638 src/mainwindow.c:565 src/messageview.c:238
 msgid "Western European"
 msgstr "Länsieurooppalainen"
 
-#: src/compose.c:633 src/mainwindow.c:566 src/messageview.c:239
+#: src/compose.c:639 src/mainwindow.c:566 src/messageview.c:239
 msgid "Baltic"
 msgstr "Balttilainen"
 
-#: src/compose.c:634 src/mainwindow.c:567 src/messageview.c:240
+#: src/compose.c:640 src/mainwindow.c:567 src/messageview.c:240
 msgid "Hebrew"
 msgstr "Heprealainen"
 
-#: src/compose.c:635 src/mainwindow.c:568 src/messageview.c:241
+#: src/compose.c:641 src/mainwindow.c:568 src/messageview.c:241
 msgid "Arabic"
 msgstr "Arabialainen"
 
-#: src/compose.c:636 src/mainwindow.c:569 src/messageview.c:242
+#: src/compose.c:642 src/mainwindow.c:569 src/messageview.c:242
 msgid "Cyrillic"
 msgstr "Kyrillinen"
 
-#: src/compose.c:637 src/mainwindow.c:570 src/messageview.c:243
+#: src/compose.c:643 src/mainwindow.c:570 src/messageview.c:243
 msgid "Japanese"
 msgstr "Japanilainen"
 
-#: src/compose.c:638 src/mainwindow.c:571 src/messageview.c:244
+#: src/compose.c:644 src/mainwindow.c:571 src/messageview.c:244
 msgid "Chinese"
 msgstr "Kiinalainen"
 
-#: src/compose.c:639 src/mainwindow.c:572 src/messageview.c:245
+#: src/compose.c:645 src/mainwindow.c:572 src/messageview.c:245
 msgid "Korean"
 msgstr "Korealainen"
 
-#: src/compose.c:640 src/mainwindow.c:573 src/messageview.c:246
+#: src/compose.c:646 src/mainwindow.c:573 src/messageview.c:246
 msgid "Thai"
 msgstr "Thailainen"
 
-#: src/compose.c:643 src/mainwindow.c:665 src/messageview.c:275
+#: src/compose.c:649 src/mainwindow.c:665 src/messageview.c:275
 msgid "_Address book"
 msgstr "_Osoitekirja"
 
-#: src/compose.c:645
+#: src/compose.c:651
 msgid "_Template"
 msgstr "_Malline"
 
-#: src/compose.c:647 src/mainwindow.c:693 src/messageview.c:296
+#: src/compose.c:653 src/mainwindow.c:693 src/messageview.c:296
 msgid "Actio_ns"
 msgstr "_Toiminnot"
 
-#: src/compose.c:656
+#: src/compose.c:662
 msgid "Aut_o wrapping"
 msgstr "Aut_omaattinen rivitys"
 
-#: src/compose.c:657
+#: src/compose.c:663
 msgid "Auto _indent"
 msgstr "S_isennä automaattisesti"
 
-#: src/compose.c:658
+#: src/compose.c:664
 msgid "Si_gn"
 msgstr "_Allekirjoita"
 
-#: src/compose.c:659
+#: src/compose.c:665
 msgid "_Encrypt"
 msgstr "_Salaa"
 
-#: src/compose.c:660
+#: src/compose.c:666
 msgid "_Request Return Receipt"
 msgstr "_Pyydä saapumisilmoitus"
 
-#: src/compose.c:661
+#: src/compose.c:667
 msgid "Remo_ve references"
 msgstr "_Poista viitteet"
 
-#: src/compose.c:662
+#: src/compose.c:668
 msgid "Show _ruler"
 msgstr "Näytä _viivain"
 
-#: src/compose.c:667 src/compose.c:677
+#: src/compose.c:673 src/compose.c:683
 msgid "_Normal"
 msgstr "_Normaali"
 
-#: src/compose.c:668
+#: src/compose.c:674
 msgid "_All"
 msgstr "_Kaikille"
 
-#: src/compose.c:669
+#: src/compose.c:675
 msgid "_Sender"
 msgstr "_Välittäjä"
 
-#: src/compose.c:670
+#: src/compose.c:676
 msgid "_Mailing-list"
 msgstr "_Postituslista"
 
-#: src/compose.c:675
+#: src/compose.c:681
 msgid "_Highest"
 msgstr "_Korkein"
 
-#: src/compose.c:676
+#: src/compose.c:682
 msgid "Hi_gh"
 msgstr "K_orkea"
 
-#: src/compose.c:678
+#: src/compose.c:684
 msgid "Lo_w"
 msgstr "_Matala"
 
-#: src/compose.c:679
+#: src/compose.c:685
 msgid "_Lowest"
 msgstr "Mata_lin"
 
-#: src/compose.c:684 src/mainwindow.c:808 src/messageview.c:313
+#: src/compose.c:690 src/mainwindow.c:808 src/messageview.c:313
 msgid "_Automatic"
 msgstr "_Automaattinen"
 
-#: src/compose.c:685 src/mainwindow.c:809 src/messageview.c:314
+#: src/compose.c:691 src/mainwindow.c:809 src/messageview.c:314
 msgid "7bit ASCII (US-ASC_II)"
 msgstr "7‐bittinen ASCII (US‐ASC_II)"
 
-#: src/compose.c:686 src/mainwindow.c:810 src/messageview.c:315
+#: src/compose.c:692 src/mainwindow.c:810 src/messageview.c:315
 msgid "Unicode (_UTF-8)"
 msgstr "Unicode (_UTF‐8)"
 
-#: src/compose.c:690 src/mainwindow.c:814 src/messageview.c:319
+#: src/compose.c:696 src/mainwindow.c:814 src/messageview.c:319
 msgid "Central European (ISO-8859-_2)"
 msgstr "Keskieurooppalainen (ISO‐8859‐_2)"
 
-#: src/compose.c:693 src/mainwindow.c:817 src/messageview.c:322
+#: src/compose.c:699 src/mainwindow.c:817 src/messageview.c:322
 msgid "Greek (ISO-8859-_7)"
 msgstr "Kreikkalainen (ISO‐8859‐_7)"
 
-#: src/compose.c:698 src/mainwindow.c:822 src/messageview.c:327
+#: src/compose.c:704 src/mainwindow.c:822 src/messageview.c:327
 msgid "Turkish (ISO-8859-_9)"
 msgstr "Turkkilainen (ISO‐8859‐_9)"
 
-#: src/compose.c:994
+#: src/compose.c:1003
 msgid "New message From format error."
 msgstr "Uuden viestin lähettäjän muodon virhe."
 
-#: src/compose.c:1097
+#: src/compose.c:1110
 msgid "New message subject format error."
 msgstr "Uuden viestin aiheen muodon virhe."
 
-#: src/compose.c:1127 src/quote_fmt.c:572
+#: src/compose.c:1141 src/quote_fmt.c:572
 #, c-format
 msgid "The body of the \"New message\" template has an error at line %d."
 msgstr "Uusi viesti -mallineen sisällön muotovirhe rivillä %d."
 
-#: src/compose.c:1334
+#: src/compose.c:1391
 msgid "Unable to reply. The original email probably doesn't exist."
 msgstr "Ei voi vastata, alkuperäistä viestiä ei varmaankaan ole."
 
-#: src/compose.c:1514 src/quote_fmt.c:589
+#: src/compose.c:1571 src/quote_fmt.c:589
 msgid ""
 "The \"From\" field of the \"Reply\" template contains an invalid email "
 "address."
-msgstr ""
-"Vastauksen Lähettäjä-kentässä on epäkelpo sähköpostiosoite."
+msgstr "Vastauksen Lähettäjä-kentässä on epäkelpo sähköpostiosoite."
 
-#: src/compose.c:1561 src/quote_fmt.c:592
+#: src/compose.c:1618 src/quote_fmt.c:592
 #, c-format
 msgid "The body of the \"Reply\" template has an error at line %d."
 msgstr "Vastaus-mallineen sisällön muotovirhe rivillä %d."
 
-#: src/compose.c:1685 src/compose.c:1874 src/quote_fmt.c:609
+#: src/compose.c:1747 src/compose.c:1942 src/quote_fmt.c:609
 msgid ""
 "The \"From\" field of the \"Forward\" template contains an invalid email "
 "address."
-msgstr ""
-"Edelleenlähetyksen Lähettäjä-kentässä on epäkelpo sähköpostiosoite."
+msgstr "Edelleenlähetyksen Lähettäjä-kentässä on epäkelpo sähköpostiosoite."
 
-#: src/compose.c:1750 src/quote_fmt.c:612
+#: src/compose.c:1812 src/quote_fmt.c:612
 #, c-format
 msgid "The body of the \"Forward\" template has an error at line %d."
 msgstr "Edelleenlähetys-mallineen sisällön muotovirhe rivillä %d."
 
-#: src/compose.c:1916
+#: src/compose.c:1984
 msgid "Fw: multiple emails"
 msgstr "Ed: useita sähköposteja"
 
-#: src/compose.c:2332
+#: src/compose.c:2406
 #, c-format
 msgid "The body of the \"Redirect\" template has an error at line %d."
 msgstr "Uudelleenohjaus-mallineen sisällön muodon virhe rivillä %d."
 
-#: src/compose.c:2396 src/gtk/headers.h:13
+#: src/compose.c:2472 src/gtk/headers.h:13
 msgid "Cc:"
 msgstr "Kopio:"
 
-#: src/compose.c:2399 src/gtk/headers.h:14
+#: src/compose.c:2475 src/gtk/headers.h:14
 msgid "Bcc:"
 msgstr "Piilokopio:"
 
-#: src/compose.c:2402 src/gtk/headers.h:11
+#: src/compose.c:2478 src/gtk/headers.h:11
 msgid "Reply-To:"
 msgstr "Vastausosoite:"
 
-#: src/compose.c:2405 src/compose.c:4594 src/compose.c:4596
+#: src/compose.c:2481 src/compose.c:4692 src/compose.c:4694
 #: src/gtk/headers.h:32
 msgid "Newsgroups:"
 msgstr "Uutisryhmät:"
 
-#: src/compose.c:2408 src/gtk/headers.h:33
+#: src/compose.c:2484 src/gtk/headers.h:33
 msgid "Followup-To:"
 msgstr "Keskustelunsiirto:"
 
-#: src/compose.c:2412 src/compose.c:4591 src/compose.c:4599
+#: src/compose.c:2488 src/compose.c:4689 src/compose.c:4697
 #: src/gtk/headers.h:12 src/summary_search.c:359
 msgid "To:"
 msgstr "Vastaanottaja:"
 
-#: src/compose.c:2603
+#: src/compose.c:2684
 msgid "Couldn't attach a file (charset conversion failed)."
 msgstr ""
 "Liitetiedoston liittäminen epäonnistui (merkistön muunnos epäonnistui)."
 
-#: src/compose.c:2609
+#: src/compose.c:2690
 #, c-format
 msgid ""
 "The following file has been attached: \n"
@@ -1735,45 +1733,65 @@ msgstr[1] ""
 "Tiedostot liitettiin: \n"
 "%s"
 
-#: src/compose.c:2848
+#: src/compose.c:2934
 msgid "The \"Quotation mark\" of the template is invalid."
 msgstr "Lainausmerkinnät mallineessa ovat väärin"
 
-#: src/compose.c:3429
+#: src/compose.c:3404
+#, c-format
+msgid "Could not get size of file '%s'."
+msgstr "Ei voitu lukea viestitiedoston %s kokoa"
+
+#: src/compose.c:3415
+#, c-format
+msgid ""
+"You are about to insert a file of %s in the message body. Are you sure you "
+"want to do that?"
+msgstr "Olet lisäämässä tiedostoa %s viestiin. Jatketaanko?"
+
+#: src/compose.c:3418
+msgid "Are you sure?"
+msgstr "Toteutetaanko?"
+
+#: src/compose.c:3419 src/compose.c:10588
+msgid "+_Insert"
+msgstr "_Sisällytä"
+
+#: src/compose.c:3528
 #, c-format
 msgid "File %s is empty."
 msgstr "Tiedosto %s on tyhjä."
 
-#: src/compose.c:3433
+#: src/compose.c:3532
 #, c-format
 msgid "Can't read %s."
 msgstr "Tiedostoa %s ei voitu lukea."
 
-#: src/compose.c:3460
+#: src/compose.c:3559
 #, c-format
 msgid "Message: %s"
 msgstr "Viesti: %s"
 
-#: src/compose.c:4442
+#: src/compose.c:4541
 msgid " [Edited]"
 msgstr " [Muokattu]"
 
 # "sylpheed-claws - Muokataan viestiä (MUOKATTU)"
-#: src/compose.c:4449
+#: src/compose.c:4548
 #, c-format
 msgid "%s - Compose message%s"
 msgstr "%s — Muokataan viestiä%s"
 
-#: src/compose.c:4452
+#: src/compose.c:4551
 #, c-format
 msgid "[no subject] - Compose message%s"
 msgstr "[ei aihetta] — Muokataan viestiä%s"
 
-#: src/compose.c:4454
+#: src/compose.c:4553
 msgid "Compose message"
 msgstr "Muokkaa viestiä"
 
-#: src/compose.c:4481 src/messageview.c:841
+#: src/compose.c:4580 src/messageview.c:841
 msgid ""
 "Account for sending mail is not specified.\n"
 "Please select a mail account before sending."
@@ -1781,49 +1799,49 @@ msgstr ""
 "Postin lähetykseen ei ole määritelty tiliä.\n"
 "Valitse postitili ennen lähettämistä."
 
-#: src/compose.c:4692 src/compose.c:4724 src/compose.c:4766
-#: src/prefs_account.c:3155 src/toolbar.c:388 src/toolbar.c:406
+#: src/compose.c:4790 src/compose.c:4822 src/compose.c:4864
+#: src/prefs_account.c:3153 src/toolbar.c:391 src/toolbar.c:409
 msgid "Send"
 msgstr "Lähetä"
 
-#: src/compose.c:4693
+#: src/compose.c:4791
 msgid "The only recipient is the default CC address. Send anyway?"
 msgstr "Ainoa vastaanottaja on oletuskopio-osoite. Lähetetäänkö silti?"
 
-#: src/compose.c:4694 src/compose.c:4726 src/compose.c:4759 src/compose.c:5275
+#: src/compose.c:4792 src/compose.c:4824 src/compose.c:4857 src/compose.c:5373
 msgid "+_Send"
 msgstr "_Lähetä"
 
-#: src/compose.c:4725
+#: src/compose.c:4823
 msgid "The only recipient is the default BCC address. Send anyway?"
 msgstr "Ainoa vastaanottaja on oletuspiilokopio-osoite. Lähetetäänkö silti?"
 
-#: src/compose.c:4742
+#: src/compose.c:4840
 msgid "Recipient is not specified."
 msgstr "Vastaanottajaa ei ole määritelty."
 
-#: src/compose.c:4761
+#: src/compose.c:4859
 msgid "+_Queue"
 msgstr "Jonoon"
 
-#: src/compose.c:4762
+#: src/compose.c:4860
 #, c-format
 msgid "Subject is empty. %s"
 msgstr "Aihe puuttuu. %s"
 
-#: src/compose.c:4763
+#: src/compose.c:4861
 msgid "Send it anyway?"
 msgstr "Lähetetäänkö?"
 
-#: src/compose.c:4764
+#: src/compose.c:4862
 msgid "Queue it anyway?"
 msgstr "Lisätäänkö jonoon?"
 
-#: src/compose.c:4766 src/toolbar.c:407
+#: src/compose.c:4864 src/toolbar.c:410
 msgid "Send later"
 msgstr "Lähetä myöhemmin"
 
-#: src/compose.c:4814 src/compose.c:9041
+#: src/compose.c:4912 src/compose.c:9277
 msgid ""
 "Could not queue message for sending:\n"
 "\n"
@@ -1833,7 +1851,7 @@ msgstr ""
 "\n"
 "Merkistön muunnos epäonnistui."
 
-#: src/compose.c:4817 src/compose.c:9044
+#: src/compose.c:4915 src/compose.c:9280
 msgid ""
 "Could not queue message for sending:\n"
 "\n"
@@ -1843,7 +1861,7 @@ msgstr ""
 "\n"
 "Vastaanottajan salausavainta ei saatu."
 
-#: src/compose.c:4823 src/compose.c:9038
+#: src/compose.c:4921 src/compose.c:9274
 #, c-format
 msgid ""
 "Could not queue message for sending:\n"
@@ -1854,7 +1872,7 @@ msgstr ""
 "\n"
 "Allekirjoitus epäonnistui: %s"
 
-#: src/compose.c:4826
+#: src/compose.c:4924
 #, c-format
 msgid ""
 "Could not queue message for sending:\n"
@@ -1865,11 +1883,11 @@ msgstr ""
 "\n"
 "%s."
 
-#: src/compose.c:4828
+#: src/compose.c:4926
 msgid "Could not queue message for sending."
 msgstr "Viestin lisääminen jonoon lähettämistä varten ei onnistunut."
 
-#: src/compose.c:4843 src/compose.c:4903
+#: src/compose.c:4941 src/compose.c:5001
 msgid ""
 "The message was queued but could not be sent.\n"
 "Use \"Send queued messages\" from the main window to retry."
@@ -1878,7 +1896,7 @@ msgstr ""
 "Käytä pääikkunan Lähetä jonottavat viestit -painiketta yrittääksesi "
 "uudelleen."
 
-#: src/compose.c:4899
+#: src/compose.c:4997
 #, c-format
 msgid ""
 "%s\n"
@@ -1888,7 +1906,7 @@ msgstr ""
 "Käytä pääikkunan Lähetä jonottavat viestit -painiketta yrittääksesi "
 "uudelleen."
 
-#: src/compose.c:5272
+#: src/compose.c:5370
 #, c-format
 msgid ""
 "Can't convert the character encoding of the message \n"
@@ -1898,7 +1916,7 @@ msgstr ""
 "Viestin merkistön muutos merkistöstä merkistölle %s\n"
 "ei onnistu, lähetetäänkö se joka merkistöllä %s?"
 
-#: src/compose.c:5330
+#: src/compose.c:5428
 #, c-format
 msgid ""
 "Line %d exceeds the line length limit (998 bytes).\n"
@@ -1911,94 +1929,94 @@ msgstr ""
 "\n"
 "Lähetetäänkö joka tapauksessa?"
 
-#: src/compose.c:5511
+#: src/compose.c:5609
 msgid "Encryption warning"
 msgstr "Salausvaroitus"
 
-#: src/compose.c:5512
+#: src/compose.c:5610
 msgid "+C_ontinue"
 msgstr "_Jatka"
 
-#: src/compose.c:5567
+#: src/compose.c:5665
 msgid "No account for sending mails available!"
 msgstr "Sähköpostin lähettämiseen tarkoitettu tiliä ei ole saatavilla!"
 
-#: src/compose.c:5577
+#: src/compose.c:5675
 msgid "Selected account isn't NNTP: Posting is impossible."
 msgstr "Tili ei ole NNTP:lle joten lähetys ei onnistu."
 
-#: src/compose.c:5813
+#: src/compose.c:5911
 #, c-format
 msgid "Attachment %s doesn't exist anymore. Ignore?"
 msgstr "Liitetiedostoa %s ei enää ole, ohitetaanko?"
 
-#: src/compose.c:5814
+#: src/compose.c:5912
 msgid "Cancel sending"
 msgstr "Peruuta lähetys"
 
-#: src/compose.c:5814
+#: src/compose.c:5912
 msgid "Ignore attachment"
 msgstr "Ohita liite"
 
-#: src/compose.c:6304
+#: src/compose.c:6402
 msgid "Add to address _book"
 msgstr "Lisää osoitekirj_aan"
 
-#: src/compose.c:6385 src/gtk/quicksearch.c:774
+#: src/compose.c:6493 src/gtk/quicksearch.c:774
 msgid "Clear"
 msgstr "Tyhjennä"
 
-#: src/compose.c:6389
+#: src/compose.c:6497
 msgid "Delete entry contents"
 msgstr "Poista kohteen sisältö"
 
-#: src/compose.c:6393
+#: src/compose.c:6501
 msgid "Use <tab> to autocomplete from addressbook"
 msgstr "Käytä tabulaattoria automaattiseen täydennykseen osoitekirjasta"
 
-#: src/compose.c:6553
+#: src/compose.c:6698
 msgid "Mime type"
 msgstr "MIME-tyyppi"
 
-#: src/compose.c:6559 src/compose.c:6873 src/mimeview.c:271
-#: src/plugins/pgpcore/select-keys.c:394 src/prefs_matcher.c:603
-#: src/prefs_summary_column.c:84 src/summaryview.c:436
+#: src/compose.c:6704 src/compose.c:7019 src/mimeview.c:271
+#: src/plugins/pgpcore/select-keys.c:394 src/prefs_matcher.c:608
+#: src/prefs_summary_column.c:84 src/summaryview.c:437
 msgid "Size"
 msgstr "Koko"
 
-#: src/compose.c:6629
+#: src/compose.c:6774
 msgid "Save Message to "
 msgstr "Tallenna viesti kohteeseen "
 
-#: src/compose.c:6658 src/editjpilot.c:276 src/editldap.c:519
-#: src/editvcard.c:192 src/export.c:162 src/import.c:161 src/importmutt.c:239
-#: src/importpine.c:238 src/plugins/bogofilter/bogofilter_gtk.c:186
+#: src/compose.c:6803 src/editjpilot.c:275 src/editldap.c:518
+#: src/editvcard.c:191 src/export.c:163 src/import.c:162 src/importmutt.c:238
+#: src/importpine.c:237 src/plugins/bogofilter/bogofilter_gtk.c:186
 #: src/plugins/bogofilter/bogofilter_gtk.c:206
 #: src/plugins/spamassassin/spamassassin_gtk.c:416
 msgid "_Browse"
 msgstr "_Selaa"
 
-#: src/compose.c:6872 src/compose.c:8452
+#: src/compose.c:7018 src/compose.c:8611
 msgid "MIME type"
 msgstr "MIME-tyyppi"
 
-#: src/compose.c:7149
+#: src/compose.c:7295
 msgid "Hea_der"
 msgstr "_Otsake"
 
-#: src/compose.c:7154
+#: src/compose.c:7300
 msgid "_Attachments"
 msgstr "_Liitteet"
 
-#: src/compose.c:7168
+#: src/compose.c:7314
 msgid "Othe_rs"
 msgstr "_Muut"
 
-#: src/compose.c:7183 src/gtk/headers.h:18 src/summary_search.c:366
+#: src/compose.c:7329 src/gtk/headers.h:18 src/summary_search.c:366
 msgid "Subject:"
 msgstr "Aihe:"
 
-#: src/compose.c:7398
+#: src/compose.c:7547
 #, c-format
 msgid ""
 "Spell checker could not be started.\n"
@@ -2007,20 +2025,20 @@ msgstr ""
 "Oikolukua ei voitu käynnistää.\n"
 "%s"
 
-#: src/compose.c:7510
+#: src/compose.c:7659
 #, c-format
 msgid "From: <i>%s</i>"
 msgstr "Lähettäjä: <i>%s</i>"
 
-#: src/compose.c:7544
+#: src/compose.c:7693
 msgid "Account to use for this email"
 msgstr "Viestissä käytettävä tili"
 
-#: src/compose.c:7546
+#: src/compose.c:7695
 msgid "Sender address to be used"
 msgstr "Käytettävä lähettäjäosoite"
 
-#: src/compose.c:7709
+#: src/compose.c:7858
 #, c-format
 msgid ""
 "The privacy system '%s' cannot be loaded. You will not be able to sign or "
@@ -2029,60 +2047,60 @@ msgstr ""
 "Salausjärjestelmää %s ei voi ladata. Viestien salaus tai allekirjoitus tälle "
 "viestille ei onnistu."
 
-#: src/compose.c:7808
+#: src/compose.c:7957
 msgid "_None"
 msgstr "_Ei mitään"
 
-#: src/compose.c:7909 src/prefs_template.c:753
+#: src/compose.c:8058 src/prefs_template.c:754
 #, c-format
 msgid "The body of the template has an error at line %d."
 msgstr "Mallineen sisällön muotovirhe rivillä %d."
 
-#: src/compose.c:8020
+#: src/compose.c:8174
 msgid "Template From format error."
 msgstr "Mallineen lähettäjän muodon virhe."
 
-#: src/compose.c:8038
+#: src/compose.c:8192
 msgid "Template To format error."
 msgstr "Mallineen vastaanottajan muodon virhe."
 
-#: src/compose.c:8056
+#: src/compose.c:8210
 msgid "Template Cc format error."
 msgstr "Mallineen kopioiden muodon virhe."
 
-#: src/compose.c:8074
+#: src/compose.c:8228
 msgid "Template Bcc format error."
 msgstr "Mallineen piilokopioiden muodon virhe."
 
-#: src/compose.c:8093
+#: src/compose.c:8247
 msgid "Template subject format error."
 msgstr "Viestin aiheen muodon virhe."
 
-#: src/compose.c:8346
+#: src/compose.c:8506
 msgid "Invalid MIME type."
 msgstr "Virheellinen MIME-tyyppi."
 
-#: src/compose.c:8361
+#: src/compose.c:8521
 msgid "File doesn't exist or is empty."
 msgstr "Tiedostoa ei ole tai se on tyhjä"
 
-#: src/compose.c:8434
+#: src/compose.c:8594
 msgid "Properties"
 msgstr "Asetukset"
 
-#: src/compose.c:8485
+#: src/compose.c:8644
 msgid "Encoding"
 msgstr "Koodaus"
 
-#: src/compose.c:8505
+#: src/compose.c:8664
 msgid "Path"
 msgstr "Polku"
 
-#: src/compose.c:8506
+#: src/compose.c:8665
 msgid "File name"
 msgstr "Tiedostonimi"
 
-#: src/compose.c:8698
+#: src/compose.c:8857
 #, c-format
 msgid ""
 "The external editor is still working.\n"
@@ -2093,19 +2111,19 @@ msgstr ""
 "Suljetaanko se väkisin?\n"
 "prosessiryhmän id: %d"
 
-#: src/compose.c:8740
+#: src/compose.c:8899
 msgid "Compose: input from monitoring process\n"
 msgstr "Kirjoitustila: syöte valvotulta prosessilta\n"
 
-#: src/compose.c:9007 src/messageview.c:1076
+#: src/compose.c:9243 src/messageview.c:1076
 msgid "Claws Mail needs network access in order to send this email."
 msgstr "Sähköpostin lähettämiseen tarvitaan verkkoyhteyttä."
 
-#: src/compose.c:9033
+#: src/compose.c:9269
 msgid "Could not queue message."
 msgstr "Viestin lisääminen jonoon ei onnistunut."
 
-#: src/compose.c:9035
+#: src/compose.c:9271
 #, c-format
 msgid ""
 "Could not queue message:\n"
@@ -2116,15 +2134,15 @@ msgstr ""
 "\n"
 "%s."
 
-#: src/compose.c:9198
+#: src/compose.c:9434
 msgid "Could not save draft."
 msgstr "Ei voitu tallentaa luonnosta."
 
-#: src/compose.c:9202
+#: src/compose.c:9438
 msgid "Could not save draft"
 msgstr "Ei voitu tallentaa luonnosta"
 
-#: src/compose.c:9203
+#: src/compose.c:9439
 msgid ""
 "Could not save draft.\n"
 "Do you want to cancel exit or discard this email?"
@@ -2132,24 +2150,24 @@ msgstr ""
 "Luonnosta ei voitu tallentaa.\n"
 "Perutaanko lopetus vai poistetaanko viestin?"
 
-#: src/compose.c:9205
+#: src/compose.c:9441
 msgid "_Cancel exit"
 msgstr "_Peru lopetus"
 
-#: src/compose.c:9205
+#: src/compose.c:9441
 msgid "_Discard email"
 msgstr "_Poista viesti"
 
-#: src/compose.c:9361 src/compose.c:9374
+#: src/compose.c:9597 src/compose.c:9611
 msgid "Select file"
 msgstr "Valitse tiedosto"
 
-#: src/compose.c:9387
+#: src/compose.c:9625
 #, c-format
 msgid "File '%s' could not be read."
 msgstr "Tiedostoa ”%s” ei voitu lukea."
 
-#: src/compose.c:9389
+#: src/compose.c:9627
 #, c-format
 msgid ""
 "File '%s' contained invalid characters\n"
@@ -2158,80 +2176,76 @@ msgstr ""
 "Tiedosto ”%s” sisältää nykyiseen koodaukseen\n"
 "sopimattomia merkkejä, lisäykset saattavat olla virheellisiä."
 
-#: src/compose.c:9452
+#: src/compose.c:9699
 msgid "Discard message"
 msgstr "Poista viesti"
 
-#: src/compose.c:9453
+#: src/compose.c:9700
 msgid "This message has been modified. Discard it?"
 msgstr "Tätä viestiä on muokattu, poistetaanko se?"
 
-#: src/compose.c:9454
+#: src/compose.c:9701
 msgid "_Discard"
 msgstr "_Poista"
 
-#: src/compose.c:9454
+#: src/compose.c:9701
 msgid "_Save to Drafts"
 msgstr "_Pane luonnoksiin"
 
-#: src/compose.c:9456
+#: src/compose.c:9703
 msgid "Save changes"
 msgstr "Tallenna muutokset"
 
-#: src/compose.c:9457
+#: src/compose.c:9704
 msgid "This message has been modified. Save the latest changes?"
 msgstr "Tätä viestiä on muokattu, tallennetaanko muutokset?"
 
-#: src/compose.c:9458
+#: src/compose.c:9705
 msgid "_Don't save"
 msgstr "_Älä tallenna"
 
-#: src/compose.c:9458
+#: src/compose.c:9705
 msgid "+_Save to Drafts"
 msgstr "_Tallenna luonnoksiin"
 
-#: src/compose.c:9509
+#: src/compose.c:9756
 #, c-format
 msgid "Do you want to apply the template '%s' ?"
 msgstr "Haluatko käyttää mallinetta ”%s”?"
 
-#: src/compose.c:9511
+#: src/compose.c:9758
 msgid "Apply template"
 msgstr "Käytä mallinetta"
 
-#: src/compose.c:9512
+#: src/compose.c:9759
 msgid "_Replace"
 msgstr "_Korvaa"
 
-#: src/compose.c:9512
+#: src/compose.c:9759
 msgid "_Insert"
 msgstr "_Lisää"
 
-#: src/compose.c:10317
+#: src/compose.c:10585
 msgid "Insert or attach?"
 msgstr "Liitä vai sisällytä?"
 
-#: src/compose.c:10318
+#: src/compose.c:10586
 msgid ""
 "Do you want to insert the contents of the file(s) into the message body, or "
 "attach it to the email?"
 msgstr ""
 "Haluatko sisällyttää tiedostot viestin sisältöön vai liitetiedostoiksi?"
 
-#: src/compose.c:10320
-msgid "+_Insert"
-msgstr "_Sisällytä"
-
-#: src/compose.c:10320
+#: src/compose.c:10588
 msgid "_Attach"
 msgstr "_Liitä"
 
-#: src/compose.c:10527
+#: src/compose.c:10795
 #, c-format
 msgid "Quote format error at line %d."
 msgstr "Lainausten merkintöjen muotovirhe rivillä %d."
 
-#: src/compose.c:10816
+#: src/compose.c:11085
 #, c-format
 msgid ""
 "You are about to reply to %d messages. Opening the windows could take some "
@@ -2262,7 +2276,7 @@ msgstr ""
 msgid "Debug log"
 msgstr "Vianjäljitysloki"
 
-#: src/crash.c:251 src/toolbar.c:404
+#: src/crash.c:251 src/toolbar.c:407
 msgid "Close"
 msgstr "Sulje"
 
@@ -2380,15 +2394,15 @@ msgid "Photo"
 msgstr "Valokuva"
 
 #: src/editaddress.c:958 src/editaddress.c:960 src/expldifdlg.c:516
-#: src/exporthtml.c:756 src/ldif.c:770
+#: src/exporthtml.c:756 src/ldif.c:768
 msgid "Display Name"
 msgstr "Näyttönimi"
 
-#: src/editaddress.c:967 src/editaddress.c:971 src/ldif.c:778
+#: src/editaddress.c:967 src/editaddress.c:971 src/ldif.c:776
 msgid "Last Name"
 msgstr "Sukunimi"
 
-#: src/editaddress.c:968 src/editaddress.c:970 src/ldif.c:774
+#: src/editaddress.c:968 src/editaddress.c:970 src/ldif.c:772
 msgid "First Name"
 msgstr "Etunimi"
 
@@ -2433,12 +2447,12 @@ msgstr "Tiedostoa ei pystytty lukemaan."
 msgid "Edit Addressbook"
 msgstr "Muokkaa osoitekirjaa"
 
-#: src/editbook.c:177 src/editjpilot.c:264 src/editvcard.c:180
+#: src/editbook.c:176 src/editjpilot.c:263 src/editvcard.c:179
 msgid " Check File "
 msgstr " Tarkasta tiedosto "
 
-#: src/editbook.c:182 src/editjpilot.c:269 src/editvcard.c:185
-#: src/importmutt.c:232 src/importpine.c:231 src/prefs_account.c:1913
+#: src/editbook.c:181 src/editjpilot.c:268 src/editvcard.c:184
+#: src/importmutt.c:231 src/importpine.c:230 src/prefs_account.c:1913
 #: src/wizard.c:1339 src/wizard.c:1602
 msgid "File"
 msgstr "Tiedosto"
@@ -2455,43 +2469,43 @@ msgstr "Ryhmänimi pitää olla"
 msgid "Edit Group Data"
 msgstr "Muokkaa ryhmän tietoja"
 
-#: src/editgroup.c:323 src/exporthtml.c:592
+#: src/editgroup.c:322 src/exporthtml.c:592
 msgid "Group Name"
 msgstr "Ryhmänimi"
 
-#: src/editgroup.c:342
+#: src/editgroup.c:341
 msgid "Addresses in Group"
 msgstr "Osoitteet ryhmässä"
 
-#: src/editgroup.c:383
+#: src/editgroup.c:382
 msgid "Available Addresses"
 msgstr "Saatavilla olevat osoitteet"
 
-#: src/editgroup.c:464
+#: src/editgroup.c:463
 msgid "Move Email Addresses to or from Group with arrow buttons"
 msgstr "Siirrä sähköpostisoitteita ryhmään ja pois nuolipainikkeilla"
 
-#: src/editgroup.c:512
+#: src/editgroup.c:511
 msgid "Edit Group Details"
 msgstr "Muokkaa ryhmän tietoja"
 
-#: src/editgroup.c:515
+#: src/editgroup.c:514
 msgid "Add New Group"
 msgstr "Lisää uusi ryhmä"
 
-#: src/editgroup.c:565
+#: src/editgroup.c:564
 msgid "Edit folder"
 msgstr "Muokkaa hakemistoa"
 
-#: src/editgroup.c:565
+#: src/editgroup.c:564
 msgid "Input the new name of folder:"
 msgstr "Anna hakemistolle uusi nimi:"
 
-#: src/editgroup.c:568 src/foldersel.c:556 src/imap_gtk.c:192 src/mh_gtk.c:142
+#: src/editgroup.c:567 src/foldersel.c:557 src/imap_gtk.c:192 src/mh_gtk.c:142
 msgid "New folder"
 msgstr "Uusi hakemisto"
 
-#: src/editgroup.c:569 src/foldersel.c:557 src/mh_gtk.c:143
+#: src/editgroup.c:568 src/foldersel.c:558 src/mh_gtk.c:143
 msgid "Input the name of new folder:"
 msgstr "Anna uudelle hakemistolle nimi:"
 
@@ -2503,15 +2517,15 @@ msgstr "Tiedosto ei ole JPilot-muodossa."
 msgid "Select JPilot File"
 msgstr "Valitse JPilot-tiedosto"
 
-#: src/editjpilot.c:235 src/editjpilot.c:365
+#: src/editjpilot.c:235 src/editjpilot.c:364
 msgid "Edit JPilot Entry"
 msgstr "Muokkaa JPilot-kenttiä"
 
-#: src/editjpilot.c:281
+#: src/editjpilot.c:280
 msgid "Additional e-Mail address item(s)"
 msgstr "Muita sähköpostiosoitetietoja"
 
-#: src/editjpilot.c:372
+#: src/editjpilot.c:371
 msgid "Add New JPilot Entry"
 msgstr "Lisää uusi JPilot-kenttä"
 
@@ -2519,27 +2533,27 @@ msgstr "Lisää uusi JPilot-kenttä"
 msgid "Edit LDAP - Select Search Base"
 msgstr "Muokkaa LDAP:ia — valitse haun juuri"
 
-#: src/editldap_basedn.c:157 src/editldap.c:442
+#: src/editldap_basedn.c:156 src/editldap.c:441
 msgid "Hostname"
 msgstr "Verkkonimi"
 
-#: src/editldap_basedn.c:167 src/editldap.c:459 src/ssl_manager.c:110
+#: src/editldap_basedn.c:166 src/editldap.c:458 src/ssl_manager.c:110
 msgid "Port"
 msgstr "Portti"
 
-#: src/editldap_basedn.c:177 src/editldap.c:503
+#: src/editldap_basedn.c:176 src/editldap.c:502
 msgid "Search Base"
 msgstr "Haun juuri"
 
-#: src/editldap_basedn.c:198
+#: src/editldap_basedn.c:197
 msgid "Available Search Base(s)"
 msgstr "Saatavilla olevat juuret"
 
-#: src/editldap_basedn.c:288
+#: src/editldap_basedn.c:287
 msgid "Could not read Search Base(s) from server - please set manually"
 msgstr "Ei voitu lukea juuria palvelimelta — aseta sellainen käsin"
 
-#: src/editldap_basedn.c:292 src/editldap.c:280
+#: src/editldap_basedn.c:291 src/editldap.c:280
 msgid "Could not connect to server"
 msgstr "Palvelimeen ei saatu yhteyttä"
 
@@ -2563,11 +2577,11 @@ msgstr "Palvelinyhteyden muodostaminen onnistui."
 msgid "Edit LDAP Server"
 msgstr "Muokkaa LDAP-palvelinta"
 
-#: src/editldap.c:438
+#: src/editldap.c:437
 msgid "A name that you wish to call the server."
 msgstr "Nimi, jota aiot käyttää palvelimelle."
 
-#: src/editldap.c:451
+#: src/editldap.c:450
 msgid ""
 "This is the hostname of the server. For example, \"ldap.mydomain.com\" may "
 "be appropriate for the \"mydomain.com\" organization. An IP address may also "
@@ -2579,15 +2593,15 @@ msgstr ""
 "palvelin on samalla koneella kuin Claws Mail, voi osoitteeksi määrittää "
 "”localhost”."
 
-#: src/editldap.c:471
+#: src/editldap.c:470
 msgid "TLS"
 msgstr "TLS"
 
-#: src/editldap.c:472 src/prefs_account.c:3228
+#: src/editldap.c:471 src/prefs_account.c:3226
 msgid "SSL"
 msgstr "SSL"
 
-#: src/editldap.c:476
+#: src/editldap.c:475
 msgid ""
 "Enable secure connection to the LDAP server via TLS.If connection fails, be "
 "sure to check the correct configuration in ldap.conf (TLS_CACERTDIR and "
@@ -2597,7 +2611,7 @@ msgstr ""
 "epäonnistuu, tarkista asetukset ldap.confista (TLS_CACERTDIR tai "
 "TLS_REQCERT)."
 
-#: src/editldap.c:480
+#: src/editldap.c:479
 msgid ""
 "Enable secure connection to the LDAP server via SSL.If connection fails, be "
 "sure to check the correct configuration in ldap.conf (TLS_CACERTDIR and "
@@ -2607,19 +2621,19 @@ msgstr ""
 "epäonnistuu, tarkista asetukset ldap.confista (TLS_CACERTDIR tai "
 "TLS_REQCERT)."
 
-#: src/editldap.c:492
+#: src/editldap.c:491
 msgid "The port number that the server listens on. Port 389 is the default."
 msgstr "Porttinumero, jota palvelin kuuntelee. 389 on oletusarvo."
 
-#: src/editldap.c:495
+#: src/editldap.c:494
 msgid " Check Server "
 msgstr " Tarkasta palvelin "
 
-#: src/editldap.c:499
+#: src/editldap.c:498
 msgid "Press this button to test the connection to the server."
 msgstr "Tällä painikkeella testataan palvelinyhteyttä."
 
-#: src/editldap.c:512
+#: src/editldap.c:511
 msgid ""
 "This specifies the name of the directory to be searched on the server. "
 "Examples include:\n"
@@ -2632,17 +2646,17 @@ msgstr ""
 "  ou=people,dc=domainname,dc=com\n"
 "  o=Organization Name,c=Country\n"
 
-#: src/editldap.c:523
+#: src/editldap.c:522
 msgid ""
 "Press this button to lookup the name of available directory names on the "
 "server."
 msgstr "Tällä napilla haetaan saatavilla olevat tiedostonimet palvelimelta."
 
-#: src/editldap.c:580
+#: src/editldap.c:579
 msgid "Search Attributes"
 msgstr "Hakuehdot"
 
-#: src/editldap.c:589
+#: src/editldap.c:588
 msgid ""
 "A list of LDAP attribute names that should be searched when attempting to "
 "find a name or address."
@@ -2650,11 +2664,11 @@ msgstr ""
 "Luettelo LDAP-attribuutinimistä, joita etsitään kun yritetään löytää nimeä "
 "tai osoitetta."
 
-#: src/editldap.c:592
+#: src/editldap.c:591
 msgid " Defaults "
 msgstr " Oletusarvot "
 
-#: src/editldap.c:596
+#: src/editldap.c:595
 msgid ""
 "This resets the attribute names to a default value that should find most "
 "names and addresses during a name or address search process."
@@ -2662,11 +2676,11 @@ msgstr ""
 "Tällä nollataan attribuuttien nimet sellaisiin oletusarvoihin, joilla "
 "useimmat nimet ja osoittet löytyvät."
 
-#: src/editldap.c:602
+#: src/editldap.c:601
 msgid "Max Query Age (secs)"
 msgstr "Hakuajan yläraja (sekunteissa)"
 
-#: src/editldap.c:617
+#: src/editldap.c:616
 msgid ""
 "This defines the maximum period of time (in seconds) that an address search "
 "result is valid for address completion purposes. Search results are stored "
@@ -2688,11 +2702,11 @@ msgstr ""
 "ha’uille. Tämä on hyödyllistä hitaiden palvelinten kanssa, mutta vie enemmän "
 "muistia."
 
-#: src/editldap.c:634
+#: src/editldap.c:633
 msgid "Include server in dynamic search"
 msgstr "Sisällytä palvelin dynaamiseen hakuun."
 
-#: src/editldap.c:639
+#: src/editldap.c:638
 msgid ""
 "Check this option to include this server for dynamic searches when using "
 "address completion."
@@ -2700,11 +2714,11 @@ msgstr ""
 "Valitse tämä asetus lisätäksesi palvelin dynaamisiin hakuihin "
 "osoitteentäydennykseksi."
 
-#: src/editldap.c:645
+#: src/editldap.c:644
 msgid "Match names 'containing' search term"
 msgstr "Täsmää nimiin jotka sisältävät hakuehdon"
 
-#: src/editldap.c:650
+#: src/editldap.c:649
 msgid ""
 "Searches for names and addresses can be performed either using \"begins-with"
 "\" or \"contains\" search term. Check this option to perform a \"contains\" "
@@ -2718,11 +2732,11 @@ msgstr ""
 "suorituskyvyn takia osoitteentäydennys käyttää alkuun vertaavaa hakuehtoa "
 "toisten osoiterajapintojen kanssa."
 
-#: src/editldap.c:704
+#: src/editldap.c:703
 msgid "Bind DN"
 msgstr "Bind DN"
 
-#: src/editldap.c:713
+#: src/editldap.c:712
 msgid ""
 "The LDAP user account name to be used to connect to the server. This is "
 "usually only used for protected servers. This name is typically formatted "
@@ -2734,40 +2748,40 @@ msgstr ""
 "muotoa ”cn=user,dc=claws-mail,dc=com”. Tämä kohta jätetään usein tyhjäksi "
 "etsittäessä."
 
-#: src/editldap.c:720
+#: src/editldap.c:719
 msgid "Bind Password"
 msgstr "Bindauksen salasana"
 
-#: src/editldap.c:734
+#: src/editldap.c:733
 msgid "The password to be used when connecting as the \"Bind DN\" user."
 msgstr "Salasana, jota käytetään kun yhdistetään ”Bind DN”-käyttäjänä"
 
-#: src/editldap.c:739
+#: src/editldap.c:738
 msgid "Timeout (secs)"
 msgstr "Aikakatkaisu (sekuntia)"
 
-#: src/editldap.c:753
+#: src/editldap.c:752
 msgid "The timeout period in seconds."
 msgstr "Aikakatkaisu sekunneissa"
 
-#: src/editldap.c:757
+#: src/editldap.c:756
 msgid "Maximum Entries"
 msgstr "Kenttien määrän yläraja"
 
-#: src/editldap.c:771
+#: src/editldap.c:770
 msgid ""
 "The maximum number of entries that should be returned in the search result."
 msgstr "Yläraja haussa palautettavien kenttien määrälle."
 
-#: src/editldap.c:786 src/prefs_account.c:3119
+#: src/editldap.c:785 src/prefs_account.c:3117
 msgid "Basic"
 msgstr "Perus"
 
-#: src/editldap.c:787
+#: src/editldap.c:786
 msgid "Search"
 msgstr "Haku"
 
-#: src/editldap.c:788 src/gtk/quicksearch.c:591
+#: src/editldap.c:787 src/gtk/quicksearch.c:591
 msgid "Extended"
 msgstr "Laaja"
 
@@ -2775,7 +2789,7 @@ msgstr "Laaja"
 msgid "Add New LDAP Server"
 msgstr "Lisää uusi LDAP-palvelin"
 
-#: src/edittags.c:186 src/matcher.c:919 src/prefs_filtering_action.c:1381
+#: src/edittags.c:186 src/matcher.c:939 src/prefs_filtering_action.c:1381
 msgid "Tag"
 msgstr "Tägi"
 
@@ -2795,19 +2809,19 @@ msgstr "Poista kaikki tägit"
 msgid "Do you really want to delete all tags?"
 msgstr "Poistetaanko kaikki tägit?"
 
-#: src/edittags.c:456
+#: src/edittags.c:457
 msgid "Tag is not set."
 msgstr "Tägi on asettamatta."
 
-#: src/edittags.c:521
+#: src/edittags.c:522
 msgid "Dialog title|Apply tags"
 msgstr "Toteuta tägit"
 
-#: src/edittags.c:535
+#: src/edittags.c:536
 msgid "New tag:"
 msgstr "Uusi tägi:"
 
-#: src/edittags.c:568
+#: src/edittags.c:569
 msgid "Please select tags to apply/remove. Changes are immediate."
 msgstr ""
 "Valitse tägejä käytettäväksi tai poistettavaksi, muutokset vaikuttavat heti."
@@ -2820,11 +2834,11 @@ msgstr "Tiedosto ei ole vCard-muodossa."
 msgid "Select vCard File"
 msgstr "Valitse vCard-tiedosto"
 
-#: src/editvcard.c:151 src/editvcard.c:256
+#: src/editvcard.c:151 src/editvcard.c:255
 msgid "Edit vCard Entry"
 msgstr "Muokka vCard-tietoja"
 
-#: src/editvcard.c:261
+#: src/editvcard.c:260
 msgid "Add New vCard Entry"
 msgstr "Lisää vCard-tieto"
 
@@ -2878,7 +2892,7 @@ msgstr "Valitse HTML-tulostetiedosto"
 msgid "HTML Output File"
 msgstr "HTML-tulostetiedosto"
 
-#: src/exphtmldlg.c:391 src/expldifdlg.c:408 src/export.c:169 src/import.c:168
+#: src/exphtmldlg.c:391 src/expldifdlg.c:408 src/export.c:170 src/import.c:169
 #: src/importldif.c:684
 msgid "B_rowse"
 msgstr "_Selaa"
@@ -2889,7 +2903,7 @@ msgstr "Tyylisivu"
 
 #: src/exphtmldlg.c:452 src/gtk/colorlabel.c:379 src/gtk/gtkaspell.c:1513
 #: src/gtk/gtkaspell.c:2167 src/mainwindow.c:1113 src/prefs_account.c:921
-#: src/prefs_toolbar.c:705 src/prefs_toolbar.c:1184 src/summaryview.c:5842
+#: src/prefs_toolbar.c:754 src/prefs_toolbar.c:1370 src/summaryview.c:5854
 msgid "None"
 msgstr "Ei mitään"
 
@@ -2958,11 +2972,11 @@ msgstr "Avaa veppiselain"
 msgid "Export Address Book to HTML File"
 msgstr "Tuo osoitekirja HTML-tiedostoksi"
 
-#: src/exphtmldlg.c:656 src/expldifdlg.c:721 src/importldif.c:1022
+#: src/exphtmldlg.c:655 src/expldifdlg.c:720 src/importldif.c:1021
 msgid "File Info"
 msgstr "Tiedoston tiedot"
 
-#: src/exphtmldlg.c:657
+#: src/exphtmldlg.c:656
 msgid "Format"
 msgstr "Muoto"
 
@@ -3113,39 +3127,39 @@ msgstr ""
 msgid "Export Address Book to LDIF File"
 msgstr "Vie osoitekirja LDIF-tiedostoon"
 
-#: src/expldifdlg.c:722
+#: src/expldifdlg.c:721
 msgid "Distinguished Name"
 msgstr "Distinguished Name"
 
-#: src/export.c:110 src/summaryview.c:7922
+#: src/export.c:112 src/summaryview.c:7967
 msgid "Export to mbox file"
 msgstr "Vie mbox-tiedostoon"
 
-#: src/export.c:129
+#: src/export.c:130
 msgid "Locate the folder to export and specify the mbox file."
 msgstr "Hae vietävä kansio ja anna mbox-tiedoston nimi"
 
-#: src/export.c:140
+#: src/export.c:141
 msgid "Source folder:"
 msgstr "Lähdehakemisto:"
 
-#: src/export.c:146 src/import.c:140
+#: src/export.c:147 src/import.c:141
 msgid "Mbox file:"
 msgstr "Paikallinen mbox-tiedosto:"
 
-#: src/export.c:201
+#: src/export.c:202
 msgid "Target mbox filename can't be left empty."
 msgstr "Kohde-mbox-tiedostonimi ei voi olla tyhjä."
 
-#: src/export.c:206
+#: src/export.c:207
 msgid "Source folder can't be left empty."
 msgstr "Lähdekansio ei voi olla tyhjä"
 
-#: src/export.c:219
+#: src/export.c:220
 msgid "Couldn't find the source folder."
 msgstr "Lähdekansiota ei löydy."
 
-#: src/export.c:242
+#: src/export.c:243
 msgid "Select exporting file"
 msgstr "Valitse vietävä tiedosto"
 
@@ -3153,7 +3167,7 @@ msgstr "Valitse vietävä tiedosto"
 msgid "Full Name"
 msgstr "Koko nimi"
 
-#: src/exporthtml.c:766 src/importldif.c:1023
+#: src/exporthtml.c:766 src/importldif.c:1022
 msgid "Attributes"
 msgstr "Attribuutit"
 
@@ -3161,40 +3175,40 @@ msgstr "Attribuutit"
 msgid "Claws Mail Address Book"
 msgstr "Claws Mailin osoitekirja"
 
-#: src/exporthtml.c:1083 src/exportldif.c:551
+#: src/exporthtml.c:1083 src/exportldif.c:622
 msgid "Name already exists but is not a directory."
 msgstr "Nimi on jo olemassa, muttei hakemistoa"
 
-#: src/exporthtml.c:1086 src/exportldif.c:554
+#: src/exporthtml.c:1086 src/exportldif.c:625
 msgid "No permissions to create directory."
 msgstr "Hakemistonluontiin vaadittavat oikeudet puuttuvat."
 
-#: src/exporthtml.c:1089 src/exportldif.c:557
+#: src/exporthtml.c:1089 src/exportldif.c:628
 msgid "Name is too long."
 msgstr "Nimi on liian pitkä."
 
-#: src/exporthtml.c:1092 src/exportldif.c:560
+#: src/exporthtml.c:1092 src/exportldif.c:631
 msgid "Not specified."
 msgstr "Määrittelemättä."
 
-#: src/folder.c:1444 src/foldersel.c:378 src/prefs_folder_item.c:304
+#: src/folder.c:1444 src/foldersel.c:379 src/prefs_folder_item.c:304
 msgid "Inbox"
 msgstr "Saapuneet"
 
-#: src/folder.c:1448 src/foldersel.c:382
+#: src/folder.c:1448 src/foldersel.c:383
 msgid "Sent"
 msgstr "Lähetetyt"
 
-#: src/folder.c:1452 src/foldersel.c:386 src/prefs_folder_item.c:307
+#: src/folder.c:1452 src/foldersel.c:387 src/prefs_folder_item.c:307
 msgid "Queue"
 msgstr "Jono"
 
-#: src/folder.c:1456 src/foldersel.c:390 src/prefs_folder_item.c:308
-#: src/toolbar.c:361 src/toolbar.c:396
+#: src/folder.c:1456 src/foldersel.c:391 src/prefs_folder_item.c:308
+#: src/toolbar.c:364 src/toolbar.c:399
 msgid "Trash"
 msgstr "Roskis"
 
-#: src/folder.c:1460 src/foldersel.c:394 src/prefs_folder_item.c:306
+#: src/folder.c:1460 src/foldersel.c:395 src/prefs_folder_item.c:306
 msgid "Drafts"
 msgstr "Luonnokset"
 
@@ -3203,51 +3217,51 @@ msgstr "Luonnokset"
 msgid "Processing (%s)...\n"
 msgstr "Käsitellään (%s)…\n"
 
-#: src/folder.c:3140
+#: src/folder.c:3142
 #, c-format
 msgid "Copying %s to %s...\n"
 msgstr "Kopioidaan kohteesta %s kohteeseen %s…\n"
 
-#: src/folder.c:3140
+#: src/folder.c:3142
 #, c-format
 msgid "Moving %s to %s...\n"
 msgstr "Siirretään kohteesta %s kohteeseen %s…\n"
 
-#: src/folder.c:3430
+#: src/folder.c:3432
 #, c-format
 msgid "Updating cache for %s..."
 msgstr "Päivitetään välimuistia kohteelle %s…"
 
-#: src/folder.c:4302
+#: src/folder.c:4304
 msgid "Processing messages..."
 msgstr "Käsitellään viestejä…"
 
-#: src/folder.c:4438
+#: src/folder.c:4440
 #, c-format
 msgid "Synchronising %s for offline use...\n"
 msgstr "Ajantasaistetaan %s yhteydetöntä käyttöä varten…\n"
 
-#: src/foldersel.c:221
+#: src/foldersel.c:223
 msgid "Select folder"
 msgstr "Valitse hakemisto"
 
-#: src/foldersel.c:558 src/imap_gtk.c:196 src/mh_gtk.c:144
+#: src/foldersel.c:559 src/imap_gtk.c:196 src/mh_gtk.c:144
 msgid "NewFolder"
 msgstr "UusiKansio"
 
-#: src/foldersel.c:566 src/imap_gtk.c:207 src/imap_gtk.c:213
+#: src/foldersel.c:567 src/imap_gtk.c:207 src/imap_gtk.c:213
 #: src/imap_gtk.c:270 src/mh_gtk.c:152 src/mh_gtk.c:259 src/news_gtk.c:314
 #, c-format
 msgid "'%c' can't be included in folder name."
 msgstr "merkkiä ’%c’ ei voi sisällyttää kansion nimeen."
 
-#: src/foldersel.c:576 src/imap_gtk.c:223 src/imap_gtk.c:282 src/mh_gtk.c:162
+#: src/foldersel.c:577 src/imap_gtk.c:223 src/imap_gtk.c:282 src/mh_gtk.c:162
 #: src/mh_gtk.c:266 src/news_gtk.c:321
 #, c-format
 msgid "The folder '%s' already exists."
 msgstr "Kansio ”%s” on jo olemassa."
 
-#: src/foldersel.c:583 src/imap_gtk.c:229 src/mh_gtk.c:168
+#: src/foldersel.c:584 src/imap_gtk.c:229 src/mh_gtk.c:168
 #, c-format
 msgid "Can't create the folder '%s'."
 msgstr "Kansiota ”%s” ei voi luoda."
@@ -3277,12 +3291,12 @@ msgid "Send _queue..."
 msgstr "Lähetä _jonottavat…"
 
 #: src/folderview.c:380 src/folderview.c:427 src/prefs_folder_column.c:78
-#: src/prefs_matcher.c:369 src/summaryview.c:6115
+#: src/prefs_matcher.c:372 src/summaryview.c:6127
 msgid "New"
 msgstr "Uusi"
 
 #: src/folderview.c:381 src/folderview.c:428 src/prefs_folder_column.c:79
-#: src/prefs_matcher.c:368 src/summaryview.c:6117
+#: src/prefs_matcher.c:371 src/summaryview.c:6129
 msgid "Unread"
 msgstr "Lukematta"
 
@@ -3291,7 +3305,7 @@ msgid "Total"
 msgstr "Yhteensä"
 
 #. TRANSLATORS: This in Number sign in American style
-#: src/folderview.c:430 src/summaryview.c:437
+#: src/folderview.c:430 src/summaryview.c:438
 msgid "#"
 msgstr "#"
 
@@ -3299,20 +3313,20 @@ msgstr "#"
 msgid "Setting folder info..."
 msgstr "Asetetaan hakemiston tietoja…"
 
-#: src/folderview.c:804 src/summaryview.c:3935
+#: src/folderview.c:804 src/summaryview.c:3941
 msgid "Mark all as read"
 msgstr "Merkitse kaikki luetuksi"
 
-#: src/folderview.c:805 src/summaryview.c:3936
+#: src/folderview.c:805 src/summaryview.c:3942
 msgid "Do you really want to mark all mails in this folder as read ?"
 msgstr "Merkitäänkö kaikki kansion viestit luetuiksi?"
 
-#: src/folderview.c:1028 src/imap.c:4073 src/mainwindow.c:5049 src/setup.c:90
+#: src/folderview.c:1028 src/imap.c:4067 src/mainwindow.c:5055 src/setup.c:90
 #, c-format
 msgid "Scanning folder %s%c%s ..."
 msgstr "Luetaan hakemistoa %s%c%s…"
 
-#: src/folderview.c:1032 src/imap.c:4078 src/mainwindow.c:5054 src/setup.c:95
+#: src/folderview.c:1032 src/imap.c:4072 src/mainwindow.c:5060 src/setup.c:95
 #, c-format
 msgid "Scanning folder %s ..."
 msgstr "Luetaan hakemistoa %s…"
@@ -3343,58 +3357,58 @@ msgstr "Kansiota %s ei pysty lukemaan\n"
 msgid "Checking for new messages in all folders..."
 msgstr "Tarkastetaan uudet viestit kaikissa kansioissa…"
 
-#: src/folderview.c:2081
+#: src/folderview.c:2090
 #, c-format
 msgid "Closing Folder %s..."
 msgstr "Suljetaan kansiota %s…"
 
-#: src/folderview.c:2176
+#: src/folderview.c:2185
 #, c-format
 msgid "Opening Folder %s..."
 msgstr "Avataan kansiota %s…"
 
-#: src/folderview.c:2194
+#: src/folderview.c:2203
 msgid "Folder could not be opened."
 msgstr "Kansiota ei voitu avata."
 
-#: src/folderview.c:2335 src/mainwindow.c:2974 src/mainwindow.c:2978
+#: src/folderview.c:2344 src/mainwindow.c:2974 src/mainwindow.c:2978
 msgid "Empty trash"
 msgstr "Tyhjä roskis"
 
-#: src/folderview.c:2336
+#: src/folderview.c:2345
 msgid "Delete all messages in trash?"
 msgstr "Poistetaanko kaikki viestit roskiksesta?"
 
-#: src/folderview.c:2337
+#: src/folderview.c:2346
 msgid "+_Empty trash"
 msgstr "_Tyhjää roskat"
 
-#: src/folderview.c:2381 src/inc.c:1599 src/toolbar.c:2573
+#: src/folderview.c:2390 src/inc.c:1599 src/toolbar.c:2586
 msgid "Offline warning"
 msgstr "Yhteydettömyysvaroitus"
 
-#: src/folderview.c:2382 src/toolbar.c:2574
+#: src/folderview.c:2391 src/toolbar.c:2587
 msgid "You're working offline. Override?"
 msgstr "Olet poissa linjoilta. Palataanko?"
 
-#: src/folderview.c:2393 src/toolbar.c:2593
+#: src/folderview.c:2402 src/toolbar.c:2606
 msgid "Send queued messages"
 msgstr "Lähetä jonottavat viestit"
 
-#: src/folderview.c:2394 src/toolbar.c:2594
+#: src/folderview.c:2403 src/toolbar.c:2607
 msgid "Send all queued messages?"
 msgstr "Lähetetäänkö kaikki jonottavat viestit?"
 
-#: src/folderview.c:2395 src/messageview.c:807 src/messageview.c:824
-#: src/toolbar.c:2595
+#: src/folderview.c:2404 src/messageview.c:807 src/messageview.c:824
+#: src/toolbar.c:2608
 msgid "_Send"
 msgstr "_Lähetä"
 
-#: src/folderview.c:2403 src/toolbar.c:2613
+#: src/folderview.c:2412 src/toolbar.c:2626
 msgid "Some errors occurred while sending queued messages."
 msgstr "Jonottavien viestien lähetyksessä tapahtui virheitä."
 
-#: src/folderview.c:2406 src/main.c:2420 src/toolbar.c:2616
+#: src/folderview.c:2415 src/main.c:2428 src/toolbar.c:2629
 #, c-format
 msgid ""
 "Some errors occurred while sending queued messages:\n"
@@ -3403,69 +3417,69 @@ msgstr ""
 "Jonottavien viestien lähetyksessä tapahtui virheitä:\n"
 "%s"
 
-#: src/folderview.c:2488
+#: src/folderview.c:2497
 #, c-format
 msgid "Do you really want to copy folder '%s' in '%s' ?"
 msgstr "Kopioidaanko kansion %s kohteessa %s?"
 
-#: src/folderview.c:2489
+#: src/folderview.c:2498
 #, c-format
 msgid "Do you really want to make folder '%s' a subfolder of '%s' ?"
 msgstr "Tehdäänkö kansiosta %s kansion %s alikansio?"
 
-#: src/folderview.c:2491
+#: src/folderview.c:2500
 msgid "Copy folder"
 msgstr "Kopioi kansio"
 
-#: src/folderview.c:2491
+#: src/folderview.c:2500
 msgid "Move folder"
 msgstr "Siirrä kansio"
 
-#: src/folderview.c:2502
+#: src/folderview.c:2511
 #, c-format
 msgid "Copying %s to %s..."
 msgstr "Kopioidaan kohteesta %s kohteeseen %s…"
 
-#: src/folderview.c:2502
+#: src/folderview.c:2511
 #, c-format
 msgid "Moving %s to %s..."
 msgstr "Siirretään kohteesta %s kohteeseen %s…"
 
-#: src/folderview.c:2533
+#: src/folderview.c:2542
 msgid "Source and destination are the same."
 msgstr "Lähde ja kohde ovat samoja."
 
-#: src/folderview.c:2536
+#: src/folderview.c:2545
 msgid "Can't copy a folder to one of its children."
 msgstr "Ei voida kopioida hakemistoa lapsekseen."
 
-#: src/folderview.c:2537
+#: src/folderview.c:2546
 msgid "Can't move a folder to one of its children."
 msgstr "Ei voida siirtää hakemistoa lapsekseen."
 
-#: src/folderview.c:2540
+#: src/folderview.c:2549
 msgid "A folder cannot be moved between different mailboxes."
 msgstr "Kansiota ei voida siirtää postilaatikkojen välillä."
 
-#: src/folderview.c:2543
+#: src/folderview.c:2552
 msgid "Copy failed!"
 msgstr "Kopiointi epäonnistui!"
 
-#: src/folderview.c:2543
+#: src/folderview.c:2552
 msgid "Move failed!"
 msgstr "Siirto epäonnistui!"
 
-#: src/folderview.c:2594
+#: src/folderview.c:2603
 #, c-format
 msgid "Processing configuration for folder %s"
 msgstr "Kansion %s asetuksia luetaan"
 
-#: src/folderview.c:2986 src/summaryview.c:4372 src/summaryview.c:4471
+#: src/folderview.c:2995 src/summaryview.c:4378 src/summaryview.c:4477
 msgid "The destination folder can only be used to store subfolders."
 msgstr "Kohdekansiota voidaan käyttää vain alikansioiden säilytykseen."
 
-#: src/gedit-print.c:138 src/messageview.c:2105 src/summaryview.c:4694
-#: src/toolbar.c:196 src/toolbar.c:403
+#: src/gedit-print.c:138 src/messageview.c:2105 src/summaryview.c:4700
+#: src/toolbar.c:198 src/toolbar.c:406
 msgid "Print"
 msgstr "Tulosta"
 
@@ -3483,7 +3497,7 @@ msgstr "Piirretään sivua %d∕%d…"
 msgid "Printing page %d of %d..."
 msgstr "Tulostetaan sivua %d∕%d…"
 
-#: src/gedit-print.c:287 src/printing.c:434
+#: src/gedit-print.c:287 src/printing.c:439
 msgid "Print preview"
 msgstr "Tulostuksen esikatselu"
 
@@ -3535,7 +3549,7 @@ msgstr "tuntematon"
 msgid "Can't retrieve newsgroup list."
 msgstr "Keskusteluryhmälistaa ei voida hakea."
 
-#: src/grouplistdialog.c:443 src/summaryview.c:1488
+#: src/grouplistdialog.c:443 src/summaryview.c:1489
 msgid "Done."
 msgstr "Valmis."
 
@@ -3570,13 +3584,13 @@ msgstr ""
 msgid ""
 "\n"
 "\n"
-"Copyright (C) 1999-2009\n"
+"Copyright (C) 1999-2010\n"
 "Hiroyuki Yamamoto <hiro-y@kcn.ne.jp>\n"
 "and the Claws Mail team"
 msgstr ""
 "\n"
 "\n"
-"Copyright © 1999—2009\n"
+"Copyright © 1999—2010\n"
 "Hiroyuki Yamamoto <hiro-y@kcn.ne.jp>\n"
 "ja Claws Mail -tiimi"
 
@@ -3751,11 +3765,11 @@ msgstr "Tietoja Claws Mailista."
 
 #: src/gtk/about.c:723
 msgid ""
-"Copyright (C) 1999-2009\n"
+"Copyright (C) 1999-2010\n"
 "Hiroyuki Yamamoto <hiro-y@kcn.ne.jp>\n"
 "and the Claws Mail team"
 msgstr ""
-"Copyright © 1999—2008\n"
+"Copyright © 1999—2010\n"
 "Hiroyuki Yamamoto <hiro-y@kcn.ne.jp>\n"
 "ja Claws Mail -tiimi"
 
@@ -3779,63 +3793,63 @@ msgstr "_Lisenssi"
 msgid "_Release Notes"
 msgstr "_Julkaisutiedotteet"
 
-#: src/gtk/colorlabel.c:38 src/prefs_common.c:358
+#: src/gtk/colorlabel.c:38 src/prefs_common.c:362
 msgid "Orange"
 msgstr "Oranssi"
 
-#: src/gtk/colorlabel.c:39 src/prefs_common.c:362
+#: src/gtk/colorlabel.c:39 src/prefs_common.c:366
 msgid "Red"
 msgstr "Punainen"
 
-#: src/gtk/colorlabel.c:40 src/prefs_common.c:366
+#: src/gtk/colorlabel.c:40 src/prefs_common.c:370
 msgid "Pink"
 msgstr "Pinkki"
 
-#: src/gtk/colorlabel.c:41 src/prefs_common.c:370
+#: src/gtk/colorlabel.c:41 src/prefs_common.c:374
 msgid "Sky blue"
 msgstr "Taivaansininen"
 
-#: src/gtk/colorlabel.c:42 src/prefs_common.c:374
+#: src/gtk/colorlabel.c:42 src/prefs_common.c:378
 msgid "Blue"
 msgstr "Sininen"
 
-#: src/gtk/colorlabel.c:43 src/prefs_common.c:378
+#: src/gtk/colorlabel.c:43 src/prefs_common.c:382
 msgid "Green"
 msgstr "Vihreä"
 
-#: src/gtk/colorlabel.c:44 src/prefs_common.c:382
+#: src/gtk/colorlabel.c:44 src/prefs_common.c:386
 msgid "Brown"
 msgstr "Ruskea"
 
-#: src/gtk/colorlabel.c:45 src/prefs_common.c:386
+#: src/gtk/colorlabel.c:45 src/prefs_common.c:390
 msgid "Grey"
 msgstr "Harmaa"
 
-#: src/gtk/colorlabel.c:46 src/prefs_common.c:390
+#: src/gtk/colorlabel.c:46 src/prefs_common.c:394
 msgid "Light brown"
 msgstr "Vaaleanruskea"
 
-#: src/gtk/colorlabel.c:47 src/prefs_common.c:394
+#: src/gtk/colorlabel.c:47 src/prefs_common.c:398
 msgid "Dark red"
 msgstr "Tummanpunainen"
 
-#: src/gtk/colorlabel.c:48 src/prefs_common.c:398
+#: src/gtk/colorlabel.c:48 src/prefs_common.c:402
 msgid "Dark pink"
 msgstr "Tummanpinkki"
 
-#: src/gtk/colorlabel.c:49 src/prefs_common.c:402
+#: src/gtk/colorlabel.c:49 src/prefs_common.c:406
 msgid "Steel blue"
 msgstr "Teräksenharmaa"
 
-#: src/gtk/colorlabel.c:50 src/prefs_common.c:406
+#: src/gtk/colorlabel.c:50 src/prefs_common.c:410
 msgid "Gold"
 msgstr "Kultainen"
 
-#: src/gtk/colorlabel.c:51 src/prefs_common.c:410
+#: src/gtk/colorlabel.c:51 src/prefs_common.c:414
 msgid "Bright green"
 msgstr "Kirkas vihreä"
 
-#: src/gtk/colorlabel.c:52 src/prefs_common.c:414
+#: src/gtk/colorlabel.c:52 src/prefs_common.c:418
 msgid "Magenta"
 msgstr "Magenta"
 
@@ -3848,7 +3862,7 @@ msgid "Move folders up or down to change the sort order in the folder list."
 msgstr ""
 "Siirrä kansiota ylös tai alas muuttaaksesin järjestystä kansionäkymässä"
 
-#: src/gtk/foldersort.c:216 src/toolbar.c:384
+#: src/gtk/foldersort.c:216 src/toolbar.c:387
 msgid "Folders"
 msgstr "Kansiot"
 
@@ -4071,8 +4085,8 @@ msgstr ""
 "Fontti, jota käytetään otsakkeille ja alatunnisteille (kuten Monospace 10)"
 
 #: src/gtk/headers.h:8 src/prefs_filtering_action.c:1207
-#: src/prefs_matcher.c:2028 src/prefs_summary_column.c:83 src/quote_fmt.c:48
-#: src/summaryview.c:435
+#: src/prefs_matcher.c:2053 src/prefs_summary_column.c:83 src/quote_fmt.c:48
+#: src/summaryview.c:436
 msgid "Date"
 msgstr "Päiväys"
 
@@ -4081,9 +4095,9 @@ msgid "Date:"
 msgstr "Päiväys:"
 
 #: src/gtk/headers.h:9 src/prefs_filtering_action.c:1204
-#: src/prefs_matcher.c:2025 src/prefs_summary_column.c:81
+#: src/prefs_matcher.c:2050 src/prefs_summary_column.c:81
 #: src/prefs_template.c:79 src/quote_fmt.c:49 src/quote_fmt.c:167
-#: src/quote_fmt.c:295 src/quote_fmt.c:427 src/summaryview.c:433
+#: src/quote_fmt.c:295 src/quote_fmt.c:427 src/summaryview.c:434
 msgid "From"
 msgstr "Lähettäjä"
 
@@ -4091,7 +4105,7 @@ msgstr "Lähettäjä"
 msgid "From:"
 msgstr "Lähettäjä:"
 
-#: src/gtk/headers.h:10 src/toolbar.c:393
+#: src/gtk/headers.h:10 src/toolbar.c:396
 msgid "Sender"
 msgstr "Välittäjä"
 
@@ -4104,13 +4118,13 @@ msgid "Reply-To"
 msgstr "Vastausosoite"
 
 #: src/gtk/headers.h:12 src/prefs_filtering_action.c:1205
-#: src/prefs_matcher.c:2026 src/prefs_summary_column.c:82
-#: src/prefs_template.c:81 src/quote_fmt.c:56 src/summaryview.c:434
+#: src/prefs_matcher.c:2051 src/prefs_summary_column.c:82
+#: src/prefs_template.c:81 src/quote_fmt.c:56 src/summaryview.c:435
 msgid "To"
 msgstr "Vastaanottaja"
 
 #: src/gtk/headers.h:13 src/prefs_account.c:1966
-#: src/prefs_filtering_action.c:1206 src/prefs_matcher.c:2027
+#: src/prefs_filtering_action.c:1206 src/prefs_matcher.c:2052
 #: src/prefs_template.c:82 src/quote_fmt.c:57
 msgid "Cc"
 msgstr "Kopiot"
@@ -4120,7 +4134,7 @@ msgid "Bcc"
 msgstr "Piilokopiot"
 
 #: src/gtk/headers.h:15 src/prefs_filtering_action.c:1208
-#: src/prefs_matcher.c:2029 src/quote_fmt.c:60
+#: src/prefs_matcher.c:2054 src/quote_fmt.c:60
 msgid "Message-ID"
 msgstr "Viestin tunniste"
 
@@ -4137,7 +4151,7 @@ msgid "In-Reply-To:"
 msgstr "Vastauksena viestiin:"
 
 #: src/gtk/headers.h:17 src/prefs_filtering_action.c:1210
-#: src/prefs_matcher.c:2031 src/quote_fmt.c:59
+#: src/prefs_matcher.c:2056 src/quote_fmt.c:59
 msgid "References"
 msgstr "Viittaukset"
 
@@ -4146,9 +4160,9 @@ msgid "References:"
 msgstr "Viittaukset:"
 
 #: src/gtk/headers.h:18 src/prefs_filtering_action.c:1203
-#: src/prefs_matcher.c:2024 src/prefs_summary_column.c:80
+#: src/prefs_matcher.c:2049 src/prefs_summary_column.c:80
 #: src/prefs_template.c:84 src/quote_fmt.c:55 src/quote_fmt.c:186
-#: src/summaryview.c:432
+#: src/summaryview.c:433
 msgid "Subject"
 msgstr "Aihe"
 
@@ -4241,7 +4255,7 @@ msgid "Received:"
 msgstr "Saanut:"
 
 #: src/gtk/headers.h:32 src/prefs_filtering_action.c:1209
-#: src/prefs_matcher.c:2030 src/quote_fmt.c:58
+#: src/prefs_matcher.c:2055 src/quote_fmt.c:58
 msgid "Newsgroups"
 msgstr "Keskusteluryhmä"
 
@@ -4267,7 +4281,7 @@ msgstr "Nähnyt:"
 
 #: src/gtk/headers.h:36 src/gtk/progressdialog.c:137
 #: src/gtk/sslcertwindow.c:163 src/prefs_summary_column.c:78
-#: src/summaryview.c:2668
+#: src/summaryview.c:2669
 msgid "Status"
 msgstr "Tila"
 
@@ -4587,7 +4601,7 @@ msgstr "Muista salasana istunnon ajan"
 msgid "Remember this"
 msgstr "Muista tämä"
 
-#: src/gtk/logwindow.c:446
+#: src/gtk/logwindow.c:444
 msgid "Clear _Log"
 msgstr "Tyhjennä _loki"
 
@@ -4628,7 +4642,7 @@ msgstr ""
 #: src/plugins/dillo_viewer/dillo_prefs.c:124
 #: src/plugins/pgpcore/prefs_gpg.c:553
 #: src/plugins/spamassassin/spamassassin_gtk.c:641
-#: src/plugins/trayicon/trayicon_prefs.c:68
+#: src/plugins/trayicon/trayicon_prefs.c:68 src/prefs_toolbar.c:900
 msgid "Plugins"
 msgstr "Liitännäiset"
 
@@ -4668,11 +4682,11 @@ msgstr "Ladatut liitännäiset"
 msgid "Page Index"
 msgstr "Hakemisto"
 
-#: src/gtk/progressdialog.c:129 src/prefs_account.c:3118
-#: src/prefs_account.c:3136 src/prefs_account.c:3154 src/prefs_account.c:3172
-#: src/prefs_account.c:3190 src/prefs_account.c:3208 src/prefs_account.c:3227
-#: src/prefs_account.c:3309 src/prefs_filtering_action.c:1358
-#: src/prefs_filtering.c:391 src/prefs_filtering.c:1941
+#: src/gtk/progressdialog.c:129 src/prefs_account.c:3116
+#: src/prefs_account.c:3134 src/prefs_account.c:3152 src/prefs_account.c:3170
+#: src/prefs_account.c:3188 src/prefs_account.c:3206 src/prefs_account.c:3225
+#: src/prefs_account.c:3307 src/prefs_filtering_action.c:1358
+#: src/prefs_filtering.c:392 src/prefs_filtering.c:1942
 msgid "Account"
 msgstr "Tili"
 
@@ -4907,7 +4921,7 @@ msgstr "Tietoja laajennetuista symboleista"
 msgid "Info"
 msgstr "Tietoja"
 
-#: src/gtk/quicksearch.c:1257 src/summaryview.c:1300
+#: src/gtk/quicksearch.c:1257 src/summaryview.c:1301
 #, c-format
 msgid "Searching in %s... \n"
 msgstr "Etsitään kohteessa %s…\n"
@@ -5035,12 +5049,12 @@ msgstr "Muuttunut SSL-varmenne"
 msgid "Tags:"
 msgstr "Tägit:"
 
-#: src/headerview.c:215 src/summaryview.c:3191 src/summaryview.c:3201
-#: src/summaryview.c:3222
+#: src/headerview.c:215 src/summaryview.c:3192 src/summaryview.c:3202
+#: src/summaryview.c:3223
 msgid "(No From)"
 msgstr "(Ei lähettäjää)"
 
-#: src/headerview.c:230 src/summaryview.c:3235 src/summaryview.c:3239
+#: src/headerview.c:230 src/summaryview.c:3236 src/summaryview.c:3240
 msgid "(No Subject)"
 msgstr "(Ei aihetta)"
 
@@ -5060,227 +5074,227 @@ msgstr "Tiedoston koko:"
 msgid "Load Image"
 msgstr "Lataa kuva"
 
-#: src/imap.c:546
+#: src/imap.c:545
 msgid "IMAP4 connection broken\n"
 msgstr "IMAP4-yhteys rikki\n"
 
-#: src/imap.c:571
+#: src/imap.c:570
 #, c-format
 msgid "IMAP error on %s: authenticated\n"
 msgstr "IMAP-virhe kohteelle %s: varmennettu\n"
 
-#: src/imap.c:574
+#: src/imap.c:573
 #, c-format
 msgid "IMAP error on %s: not authenticated\n"
 msgstr "IMAP-virhe kohteelle %s: ei varmennettu\n"
 
-#: src/imap.c:577
+#: src/imap.c:576
 #, c-format
 msgid "IMAP error on %s: bad state\n"
 msgstr "IMAP-virhe kohteelle %s: huono tila\n"
 
-#: src/imap.c:580
+#: src/imap.c:579
 #, c-format
 msgid "IMAP error on %s: stream error\n"
 msgstr "IMAP-virhe kohteelle %s: virtavirhe\n"
 
-#: src/imap.c:583
+#: src/imap.c:582
 #, c-format
 msgid ""
 "IMAP error on %s: parse error (very probably non-RFC compliance from the "
 "server)\n"
-msgstr "IMAP-virhe kohteelle %s: jäsennysvirhe "
-"(RFC-epäyhteensopiva palvelin)\n"
+msgstr ""
+"IMAP-virhe kohteelle %s: jäsennysvirhe (RFC-epäyhteensopiva palvelin)\n"
 
-#: src/imap.c:587
+#: src/imap.c:586
 #, c-format
 msgid "IMAP error on %s: connection refused\n"
 msgstr "IMAP-virhe kohteelle %s: yhteys estettiin\n"
 
-#: src/imap.c:590
+#: src/imap.c:589
 #, c-format
 msgid "IMAP error on %s: memory error\n"
 msgstr "IMAP-virhe kohteelle %s: muistivirhe\n"
 
-#: src/imap.c:593
+#: src/imap.c:592
 #, c-format
 msgid "IMAP error on %s: fatal error\n"
 msgstr "IMAP-virhe kohteelle %s: kriittinen virhe\n"
 
-#: src/imap.c:596
+#: src/imap.c:595
 #, c-format
 msgid ""
 "IMAP error on %s: protocol error(very probably non-RFC compliance from the "
 "server)\n"
-msgstr "IMAP-virhe kohteelle %s: protokollavirhe "
-"(RFC-epäyhteensopiva palvelin)\n"
+msgstr ""
+"IMAP-virhe kohteelle %s: protokollavirhe (RFC-epäyhteensopiva palvelin)\n"
 
-#: src/imap.c:600
+#: src/imap.c:599
 #, c-format
 msgid "IMAP error on %s: connection not accepted\n"
 msgstr "IMAP-virhe kohteelle %s: yhteyttä ei hyväksytty\n"
 
-#: src/imap.c:603
+#: src/imap.c:602
 #, c-format
 msgid "IMAP error on %s: APPEND error\n"
 msgstr "IMAP-virhe kohteelle %s: APPEND-virhe\n"
 
-#: src/imap.c:606
+#: src/imap.c:605
 #, c-format
 msgid "IMAP error on %s: NOOP error\n"
 msgstr "IMAP-virhe kohteelle %s: NOOP-virhe\n"
 
-#: src/imap.c:609
+#: src/imap.c:608
 #, c-format
 msgid "IMAP error on %s: LOGOUT error\n"
 msgstr "IMAP-virhe kohteelle %s: LOGOUT-virhe\n"
 
-#: src/imap.c:612
+#: src/imap.c:611
 #, c-format
 msgid "IMAP error on %s: CAPABILITY error\n"
 msgstr "IMAP-virhe kohteelle %s: CAPABILITY-virhe\n"
 
-#: src/imap.c:615
+#: src/imap.c:614
 #, c-format
 msgid "IMAP error on %s: CHECK error\n"
 msgstr "IMAP-virhe kohteelle %s: CHECK-virhe\n"
 
-#: src/imap.c:618
+#: src/imap.c:617
 #, c-format
 msgid "IMAP error on %s: CLOSE error\n"
 msgstr "IMAP-virhe kohteelle %s: CLOSE-virhe\n"
 
-#: src/imap.c:621
+#: src/imap.c:620
 #, c-format
 msgid "IMAP error on %s: EXPUNGE error\n"
 msgstr "IMAP-virhe kohteelle %s: EXPUNGE-virhe\n"
 
-#: src/imap.c:624
+#: src/imap.c:623
 #, c-format
 msgid "IMAP error on %s: COPY error\n"
 msgstr "IMAP-virhe kohteelle %s: COPY-virhe\n"
 
-#: src/imap.c:627
+#: src/imap.c:626
 #, c-format
 msgid "IMAP error on %s: UID COPY error\n"
 msgstr "IMAP-virhe kohteelle %s: UID COPY -virhe\n"
 
-#: src/imap.c:630
+#: src/imap.c:629
 #, c-format
 msgid "IMAP error on %s: CREATE error\n"
 msgstr "IMAP-virhe kohteelle %s: CREATE-virhe\n"
 
-#: src/imap.c:633
+#: src/imap.c:632
 #, c-format
 msgid "IMAP error on %s: DELETE error\n"
 msgstr "IMAP-virhe kohteelle %s: DELETE-virhe\n"
 
-#: src/imap.c:636
+#: src/imap.c:635
 #, c-format
 msgid "IMAP error on %s: EXAMINE error\n"
 msgstr "IMAP-virhe kohteelle %s: EXAMINE-virhe\n"
 
-#: src/imap.c:639
+#: src/imap.c:638
 #, c-format
 msgid "IMAP error on %s: FETCH error\n"
 msgstr "IMAP-virhe kohteelle %s: FETCH-virhe\n"
 
-#: src/imap.c:642
+#: src/imap.c:641
 #, c-format
 msgid "IMAP error on %s: UID FETCH error\n"
 msgstr "IMAP-virhe kohteelle %s: UID FETCH -virhe\n"
 
-#: src/imap.c:645
+#: src/imap.c:644
 #, c-format
 msgid "IMAP error on %s: LIST error\n"
 msgstr "IMAP-virhe kohteelle %s: LIST-virhe\n"
 
-#: src/imap.c:648
+#: src/imap.c:647
 #, c-format
 msgid "IMAP error on %s: LOGIN error\n"
 msgstr "IMAP-virhe kohteelle %s: LOGIN-virhe\n"
 
-#: src/imap.c:651
+#: src/imap.c:650
 #, c-format
 msgid "IMAP error on %s: LSUB error\n"
 msgstr "IMAP-virhe kohteelle %s: LSUB-virhe\n"
 
-#: src/imap.c:654
+#: src/imap.c:653
 #, c-format
 msgid "IMAP error on %s: RENAME error\n"
 msgstr "IMAP-virhe kohteelle %s: RENAME-virhe\n"
 
-#: src/imap.c:657
+#: src/imap.c:656
 #, c-format
 msgid "IMAP error on %s: SEARCH error\n"
 msgstr "IMAP-virhe kohteelle %s: SEARCH-virhe\n"
 
-#: src/imap.c:660
+#: src/imap.c:659
 #, c-format
 msgid "IMAP error on %s: UID SEARCH error\n"
 msgstr "IMAP-virhe kohteelle %s: UID SEARCH -virhe\n"
 
-#: src/imap.c:663
+#: src/imap.c:662
 #, c-format
 msgid "IMAP error on %s: SELECT error\n"
 msgstr "IMAP-virhe kohteelle %s: SELECT-virhe\n"
 
-#: src/imap.c:666
+#: src/imap.c:665
 #, c-format
 msgid "IMAP error on %s: STATUS error\n"
 msgstr "IMAP-virhe kohteelle %s: STATUS-virhe\n"
 
-#: src/imap.c:669
+#: src/imap.c:668
 #, c-format
 msgid "IMAP error on %s: STORE error\n"
 msgstr "IMAP-virhe kohteelle %s: STORE-virhe\n"
 
-#: src/imap.c:672
+#: src/imap.c:671
 #, c-format
 msgid "IMAP error on %s: UID STORE error\n"
 msgstr "IMAP-virhe kohteelle %s: UID STORE -virhe\n"
 
-#: src/imap.c:675
+#: src/imap.c:674
 #, c-format
 msgid "IMAP error on %s: SUBSCRIBE error\n"
 msgstr "IMAP-virhe kohteelle %s: SUBSCRIBE-virhe\n"
 
-#: src/imap.c:678
+#: src/imap.c:677
 #, c-format
 msgid "IMAP error on %s: UNSUBSCRIBE error\n"
 msgstr "IMAP-virhe kohteelle %s: UNSUBSCRIBE-virhe\n"
 
-#: src/imap.c:681
+#: src/imap.c:680
 #, c-format
 msgid "IMAP error on %s: STARTTLS error\n"
 msgstr "IMAP-virhe kohteelle %s: STARTTLS-virhe\n"
 
-#: src/imap.c:684
+#: src/imap.c:683
 #, c-format
 msgid "IMAP error on %s: INVAL error\n"
 msgstr "IMAP-virhe kohteelle %s: INVAL-virhe\n"
 
-#: src/imap.c:687
+#: src/imap.c:686
 #, c-format
 msgid "IMAP error on %s: EXTENSION error\n"
 msgstr "IMAP-virhe kohteelle %s: EXTENSION-virhe\n"
 
-#: src/imap.c:690
+#: src/imap.c:689
 #, c-format
 msgid "IMAP error on %s: SASL error\n"
 msgstr "IMAP-virhe kohteelle %s: SASL-virhe\n"
 
-#: src/imap.c:694
+#: src/imap.c:693
 #, c-format
 msgid "IMAP error on %s: SSL error\n"
 msgstr "IMAP-virhe kohteelle %s: SSL-virhe\n"
 
-#: src/imap.c:698
+#: src/imap.c:697
 #, c-format
 msgid "IMAP error on %s: Unknown error [%d]\n"
 msgstr "IMAP-virhe kohteelle %s: tuntematon virhe [%d]\n"
 
-#: src/imap.c:879
+#: src/imap.c:878
 msgid ""
 "\n"
 "\n"
@@ -5292,7 +5306,7 @@ msgstr ""
 "CRAM-MD5-kirjautumiset toimivat vain jos libetpanissa on SASL-tuki ja CRAM-"
 "MD5 SASL-liitännäinen on on asennettu."
 
-#: src/imap.c:885
+#: src/imap.c:884
 msgid ""
 "\n"
 "\n"
@@ -5304,38 +5318,38 @@ msgstr ""
 "DIGEST-MD5-kirjautumiset toimivat vain jos libetpanissa on SASL-tuki "
 "jaDIGEST-MD5 SASL -liitännäinen on on asennettu."
 
-#: src/imap.c:892
+#: src/imap.c:891
 #, c-format
 msgid "Connection to %s failed: login refused.%s"
 msgstr ""
 "Yhdistäminen kohteeseen %s epäonnistui: kirjautuminen sisään ei toiminut.%s"
 
-#: src/imap.c:896
+#: src/imap.c:895
 #, c-format
 msgid "Connection to %s failed: login refused.%s\n"
 msgstr ""
 "Yhdistäminen kohteeseen %s epäonnistui: kirjautuminen sisään ei toiminut.%s\n"
 
-#: src/imap.c:914
+#: src/imap.c:913
 #, c-format
 msgid "Connecting to %s failed"
 msgstr "Yhteydenotto kohteeseen %s epäonnistui"
 
-#: src/imap.c:921 src/imap.c:924
+#: src/imap.c:920 src/imap.c:923
 #, c-format
 msgid "IMAP4 connection to %s has been disconnected. Reconnecting...\n"
 msgstr "IMAP4-yhteys kohteeseen %s on katkennut, yhdistetään uudelleen…\n"
 
-#: src/imap.c:954 src/imap.c:3119 src/imap.c:3779 src/imap.c:3876
-#: src/imap.c:4062 src/imap.c:4866
+#: src/imap.c:953 src/imap.c:3110 src/imap.c:3773 src/imap.c:3870
+#: src/imap.c:4056 src/imap.c:4860
 msgid "Claws Mail needs network access in order to access the IMAP server."
 msgstr "IMAP-palvelimeen ei saada yhteyttä ilman verkkoyhteyttä."
 
-#: src/imap.c:1047 src/inc.c:795 src/news.c:351 src/send_message.c:289
+#: src/imap.c:1046 src/inc.c:795 src/news.c:351 src/send_message.c:289
 msgid "Insecure connection"
 msgstr "Suojaamaton yhteys"
 
-#: src/imap.c:1048 src/inc.c:796 src/news.c:352 src/send_message.c:290
+#: src/imap.c:1047 src/inc.c:796 src/news.c:352 src/send_message.c:290
 msgid ""
 "This connection is configured to be secured using SSL, but SSL is not "
 "available in this build of Claws Mail. \n"
@@ -5348,113 +5362,113 @@ msgstr ""
 "\n"
 "Haluatko silti yhdistää palvelimelle? Yhteys ei ole silloin suojattua."
 
-#: src/imap.c:1054 src/inc.c:802 src/news.c:358 src/send_message.c:296
+#: src/imap.c:1053 src/inc.c:802 src/news.c:358 src/send_message.c:296
 msgid "Con_tinue connecting"
 msgstr "_Yhdistä joka tapauksessa"
 
-#: src/imap.c:1064
+#: src/imap.c:1063
 #, c-format
 msgid "Connecting to IMAP4 server: %s..."
 msgstr "Yhdistetään IMAP4-palvelimeen: %s…"
 
-#: src/imap.c:1106
+#: src/imap.c:1105
 #, c-format
 msgid "Can't connect to IMAP4 server: %s:%d"
 msgstr "IMAP4-palvelimeen %s:%d ei saada yhteyttä"
 
-#: src/imap.c:1109
+#: src/imap.c:1108
 #, c-format
 msgid "Can't connect to IMAP4 server: %s:%d\n"
 msgstr "IMAP4-palvelimeen %s:%d ei saada yhteyttä\n"
 
-#: src/imap.c:1142 src/imap.c:3539
+#: src/imap.c:1141 src/imap.c:3533
 msgid "Can't start TLS session.\n"
 msgstr "TLS-session aloitus ei onnistu.\n"
 
-#: src/imap.c:1184
+#: src/imap.c:1183
 #, c-format
 msgid "Connecting to IMAP4 server %s...\n"
 msgstr "Yhdistetään IMAP4-palvelimeen: %s…\n"
 
-#: src/imap.c:1199
+#: src/imap.c:1198
 #, c-format
 msgid "Couldn't login to IMAP server %s.\n"
 msgstr "Yhdistetään IMAP-palvelimeen: %s…\n"
 
-#: src/imap.c:1202
+#: src/imap.c:1201
 #, c-format
 msgid "Couldn't login to IMAP server %s."
 msgstr "Yhdistetään IMAP-palvelimeen: %s…"
 
-#: src/imap.c:1598
+#: src/imap.c:1597
 msgid "Adding messages..."
 msgstr "Lisätään viestejä…"
 
-#: src/imap.c:1802 src/mh.c:517
+#: src/imap.c:1800 src/mh.c:517
 msgid "Copying messages..."
 msgstr "Kopioidaan viestejä…"
 
-#: src/imap.c:1996
+#: src/imap.c:1988
 msgid "can't set deleted flags\n"
 msgstr "poistomerkkejä ei voitu asettaa\n"
 
-#: src/imap.c:2003 src/imap.c:4492
+#: src/imap.c:1995 src/imap.c:4486
 msgid "can't expunge\n"
 msgstr "ei voida hävittää\n"
 
-#: src/imap.c:2355
+#: src/imap.c:2346
 #, c-format
 msgid "Looking for unsubscribed folders in %s..."
 msgstr "Haetaan tilaamattomia kansioita kohteesta %s…"
 
-#: src/imap.c:2358
+#: src/imap.c:2349
 #, c-format
 msgid "Looking for subfolders of %s..."
 msgstr "Haetaan kansion %s alikansioita…"
 
-#: src/imap.c:2654
+#: src/imap.c:2645
 msgid "can't create mailbox: LIST failed\n"
 msgstr "ei voitu luoda postilaatikkoa: LIST epäonnistui\n"
 
-#: src/imap.c:2669
+#: src/imap.c:2660
 msgid "can't create mailbox\n"
 msgstr "ei voitu luoda postilaatikkoa\n"
 
-#: src/imap.c:2760
+#: src/imap.c:2751
 msgid "New folder name must not contain the namespace path separator"
 msgstr "Uuden kansion nimessä ei saa olla nimiavaruuden polkuerotinta"
 
-#: src/imap.c:2797
+#: src/imap.c:2788
 #, c-format
 msgid "can't rename mailbox: %s to %s\n"
 msgstr "ei voida uudelleennimetä postilaatikkoa %s %s:ksi\n"
 
-#: src/imap.c:2909
+#: src/imap.c:2900
 msgid "can't delete mailbox\n"
 msgstr "ei voida poistaa postilaatikkoa\n"
 
-#: src/imap.c:3200
+#: src/imap.c:3191
 msgid "LIST failed\n"
 msgstr "LIST epäonnistui\n"
 
-#: src/imap.c:3285
+#: src/imap.c:3276
 msgid "Flagging messages..."
 msgstr "Merkitään viestejä…"
 
-#: src/imap.c:3386
+#: src/imap.c:3377
 #, c-format
 msgid "can't select folder: %s\n"
 msgstr "hakemistoa %s ei voida valita\n"
 
-#: src/imap.c:3536
+#: src/imap.c:3530
 msgid "Server requires TLS to log in.\n"
 msgstr "Palvelin vaatii TLS:ää kirjautumiseen\n"
 
-#: src/imap.c:3546
+#: src/imap.c:3540
 msgid "Can't refresh capabilities.\n"
 msgstr "Ominaisuuksia ei voida päivittää.\n"
 
-#: src/imap.c:3551
+#: src/imap.c:3545
 #, c-format
 msgid ""
 "Connection to %s failed: server requires TLS, but Claws Mail has been "
@@ -5463,20 +5477,20 @@ msgstr ""
 "Yhteydenotto palvelimelle %s epäonnistui: palvelin vaatii TLS:ää, mutta "
 "Claws Mail on käännetty ilman OpenSSL-tukea.\n"
 
-#: src/imap.c:3559
+#: src/imap.c:3553
 msgid "Server logins are disabled.\n"
 msgstr "Palvelimelle kirjautuminen on poissa käytöstä.\n"
 
-#: src/imap.c:3784
+#: src/imap.c:3778
 msgid "Fetching message..."
 msgstr "Haetaan viestiä…"
 
-#: src/imap.c:4485
+#: src/imap.c:4479
 #, c-format
 msgid "can't set deleted flags: %d\n"
 msgstr "poistomerkkejä ei voitu asettaa: %d\n"
 
-#: src/imap.c:5525
+#: src/imap.c:5519
 msgid ""
 "You have one or more IMAP accounts defined. However this version of Claws "
 "Mail has been built without IMAP support; your IMAP account(s) are "
@@ -5594,7 +5608,7 @@ msgstr ""
 "\n"
 "Poistetaanko varmasti?"
 
-#: src/imap_gtk.c:383 src/mh_gtk.c:219 src/news_gtk.c:265
+#: src/imap_gtk.c:383 src/mh_gtk.c:219 src/news_gtk.c:280
 #, c-format
 msgid "Can't remove the folder '%s'."
 msgstr "Ei voi poistaa kansiota ”%s”."
@@ -5667,23 +5681,23 @@ msgstr "_Tilaa"
 msgid "+_Unsubscribe"
 msgstr "_Poista ryhmän tilaus"
 
-#: src/import.c:110 src/import.c:205
+#: src/import.c:112 src/import.c:206
 msgid "Import mbox file"
 msgstr "Vie mbox-tiedostoon"
 
-#: src/import.c:129
+#: src/import.c:130
 msgid "Locate the mbox file and specify the destination folder."
 msgstr "Anna kohteeksi mbox-tiedosto ja kohdehakemisto."
 
-#: src/import.c:146
+#: src/import.c:147
 msgid "Destination folder:"
 msgstr "Kohdehakemisto"
 
-#: src/import.c:200
+#: src/import.c:201
 msgid "Source mbox filename can't be left empty."
 msgstr "Paikallisen mbox-postilaatikon tiedostonimeä ei syötetty."
 
-#: src/import.c:205
+#: src/import.c:206
 msgid ""
 "Destination folder is not set.\n"
 "Import mbox file to the Inbox folder?"
@@ -5691,11 +5705,11 @@ msgstr ""
 "Kohdekansiota ei ole asetettu.\n"
 "Tuodaanko mbox-tiedosto inbox-kansioksi?"
 
-#: src/import.c:227
+#: src/import.c:228
 msgid "Can't find the destination folder."
 msgstr "Kohdehakemistoa ei löydy."
 
-#: src/import.c:251
+#: src/import.c:252
 msgid "Select importing file"
 msgstr "Valitse tuotava tiedosto"
 
@@ -5749,7 +5763,7 @@ msgstr "Valitse tuotava LDIF-tiedosto."
 msgid "R"
 msgstr "V"
 
-#: src/importldif.c:727 src/summaryview.c:430
+#: src/importldif.c:727 src/summaryview.c:431
 msgid "S"
 msgstr "S"
 
@@ -5814,7 +5828,7 @@ msgstr "Tietueita tuotu:"
 msgid "Import LDIF file into Address Book"
 msgstr "Tuo LDIF-tiedosto osoitekirjaan"
 
-#: src/importldif.c:982
+#: src/importldif.c:981
 msgid "Proceed"
 msgstr "Etene"
 
@@ -5890,8 +5904,8 @@ msgstr "Yhdistäminen epäonnistui"
 msgid "Auth failed"
 msgstr "Autentikointi epäonnistui"
 
-#: src/inc.c:640 src/prefs_matcher.c:374 src/prefs_summary_column.c:87
-#: src/summaryview.c:2664 src/summaryview.c:6139
+#: src/inc.c:640 src/prefs_matcher.c:377 src/prefs_summary_column.c:87
+#: src/summaryview.c:2665 src/summaryview.c:6151
 msgid "Locked"
 msgstr "Lukittu"
 
@@ -6087,7 +6101,7 @@ msgstr "%s%sOlet poissa linjoilta. Palataanko?"
 msgid "On_ly once"
 msgstr "_Vain kerran"
 
-#: src/ldif.c:782
+#: src/ldif.c:780
 msgid "Nick Name"
 msgstr "Lempinimi"
 
@@ -6197,7 +6211,7 @@ msgstr "Sylpheed-Claws 1.9.15 (tai vanhempi)"
 msgid "Sylpheed-Claws 1.0.5 (or older)"
 msgstr "Sylpheed-Claws 1.0.5 (tai vanhempi)"
 
-#: src/main.c:1518
+#: src/main.c:1526
 #, c-format
 msgid ""
 "The following plugin failed to load. Check the Plugins configuration for "
@@ -6214,7 +6228,7 @@ msgstr[1] ""
 "Osa liitännäisistä ei latautunut. Tarkista asetuksista lisätietoja:\n"
 "%s"
 
-#: src/main.c:1546
+#: src/main.c:1554
 msgid ""
 "Claws Mail has detected a configured mailbox, but it is incomplete. It is "
 "possibly due to a failing IMAP account. Use \"Rebuild folder tree\" on the "
@@ -6224,7 +6238,7 @@ msgstr ""
 "johtua vaikkapa viallisesta IMAP-tilistä. Koeta korjata asia komennolla "
 "Uudelleenkasaa kansiopuu viallisessa kansiossa."
 
-#: src/main.c:1552
+#: src/main.c:1560
 msgid ""
 "Claws Mail has detected a configured mailbox, but could not load it. It is "
 "probably provided by an out-of-date external plugin. Please reinstall the "
@@ -6234,25 +6248,25 @@ msgstr ""
 "Luultavasti käytössä on vanhentunut liitännäinen. Asenna liitännäiset "
 "uudelleen ja yritä uudestaan."
 
-#: src/main.c:1581
+#: src/main.c:1589
 #, c-format
 msgid "Claws Mail can not start without its data volume (%s)."
 msgstr "Claws Mail ei voi käynnistyä ilman dataosiotaan (%s)."
 
-#: src/main.c:1884
+#: src/main.c:1892
 #, c-format
 msgid "Usage: %s [OPTION]...\n"
 msgstr "Käyttö: %s [ASETUKSET]…\n"
 
-#: src/main.c:1886
+#: src/main.c:1894
 msgid "  --compose [address]    open composition window"
 msgstr "  --compose [osoite]     avaa viestinkirjoitusikkuna"
 
-#: src/main.c:1887
+#: src/main.c:1895
 msgid "  --subscribe [uri]      subscribe to the given URI if possible"
 msgstr "  --subscribe [uri]      tilaa annetu URI jos mahdollista"
 
-#: src/main.c:1888
+#: src/main.c:1896
 msgid ""
 "  --attach file1 [file2]...\n"
 "                         open composition window with specified files\n"
@@ -6262,23 +6276,23 @@ msgstr ""
 "                         Avaa viestinkirjoitusikkuna annetut tiedostot\n"
 "                         valmiiksi viestiin liitettyinä"
 
-#: src/main.c:1891
+#: src/main.c:1899
 msgid "  --receive              receive new messages"
 msgstr "  --receive              hae uudet viestit"
 
-#: src/main.c:1892
+#: src/main.c:1900
 msgid "  --receive-all          receive new messages of all accounts"
 msgstr "  --receive-all          hae uudet viestit kaikille tileille"
 
-#: src/main.c:1893
+#: src/main.c:1901
 msgid "  --send                 send all queued messages"
 msgstr "  --send                 lähetä kaikki jonottavat viestit"
 
-#: src/main.c:1894
+#: src/main.c:1902
 msgid "  --status [folder]...   show the total number of messages"
 msgstr "  --status [kansio]…     näytä viestien määrän"
 
-#: src/main.c:1895
+#: src/main.c:1903
 msgid ""
 "  --status-full [folder]...\n"
 "                         show the status of each folder"
@@ -6286,7 +6300,7 @@ msgstr ""
 "  --status-full [kansio]…\n"
 "                         näytä kansioiden tilat"
 
-#: src/main.c:1897
+#: src/main.c:1905
 msgid ""
 "  --select folder[/msg]  jumps to the specified folder/message\n"
 "                         folder is a folder id like 'folder/sub_folder'"
@@ -6295,41 +6309,41 @@ msgstr ""
 "                         siirryy valittuun kansioon tai viestiin\n"
 "                         kansion tunnus on tyyppiä ”kansio/alikansio”"
 
-#: src/main.c:1899
+#: src/main.c:1907
 msgid "  --online               switch to online mode"
 msgstr "  --online               siirry yhdistettyyn tilaan"
 
-#: src/main.c:1900
+#: src/main.c:1908
 msgid "  --offline              switch to offline mode"
 msgstr "  --offline              siirry yhdistämättömään tilaan"
 
-#: src/main.c:1901
+#: src/main.c:1909
 msgid "  --exit --quit -q       exit Claws Mail"
 msgstr "  --exit --quit -q       poistu Claws Mailista"
 
-#: src/main.c:1902
+#: src/main.c:1910
 msgid "  --debug                debug mode"
 msgstr "  --debug                vianetsintätila"
 
-#: src/main.c:1903
+#: src/main.c:1911
 msgid "  --help -h              display this help and exit"
 msgstr "  --help -h              näytä tämä ohje ja lopeta"
 
-#: src/main.c:1904
+#: src/main.c:1912
 msgid "  --version -v           output version information and exit"
 msgstr "  --version -v           näytä versiotiedot ja lopeta"
 
-#: src/main.c:1905
+#: src/main.c:1913
 msgid ""
 "  --version-full -V      output version and built-in features information "
 "and exit"
 msgstr "  --version-full -V      näytä versiotiedot, ominaisuudet ja lopeta"
 
-#: src/main.c:1906
+#: src/main.c:1914
 msgid "  --config-dir           output configuration directory"
 msgstr "  --config-dir           näytä asetushakemisto"
 
-#: src/main.c:1907
+#: src/main.c:1915
 msgid ""
 "  --alternate-config-dir [dir]\n"
 "                         use specified configuration directory"
@@ -6337,32 +6351,32 @@ msgstr ""
 "--alternate-config-dir [hakemisto]\n"
 "                         käytä määriteltyä asetushakemisto"
 
-#: src/main.c:1957
+#: src/main.c:1965
 msgid "Unknown option\n"
 msgstr "Tuntematon valitsin\n"
 
-#: src/main.c:1975
+#: src/main.c:1983
 #, c-format
 msgid "Processing (%s)..."
 msgstr "Käsitellään (%s)…"
 
-#: src/main.c:1978
+#: src/main.c:1986
 msgid "top level folder"
 msgstr "ylimmän tason kansio"
 
-#: src/main.c:2061
+#: src/main.c:2069
 msgid "Queued messages"
 msgstr "Jonottavat viestit"
 
-#: src/main.c:2062
+#: src/main.c:2070
 msgid "Some unsent messages are queued. Exit now?"
 msgstr "Lähettämättömiä viestejä on jonossa, lopetetaanko?"
 
-#: src/main.c:2557
+#: src/main.c:2565
 msgid "NetworkManager: network is online.\n"
 msgstr "NetworkManager: verkko on yhdistetty.\n"
 
-#: src/main.c:2563
+#: src/main.c:2571
 msgid "NetworkManager: network is offline.\n"
 msgstr "NetworkManager: verkko on yhdistämättä.\n"
 
@@ -6370,7 +6384,7 @@ msgstr "NetworkManager: verkko on yhdistämättä.\n"
 msgid "_File"
 msgstr "_Tiedosto"
 
-#: src/mainwindow.c:474 src/messageview.c:188 src/summaryview.c:425
+#: src/mainwindow.c:474 src/messageview.c:188 src/summaryview.c:426
 msgid "_View"
 msgstr "_Näytä"
 
@@ -6594,7 +6608,7 @@ msgstr "_Kirjoita keskusteluryhmäviesti"
 msgid "_Reply"
 msgstr "_Vastaa"
 
-#: src/mainwindow.c:603 src/messageview.c:264 src/summaryview.c:417
+#: src/mainwindow.c:603 src/messageview.c:264 src/summaryview.c:418
 msgid "Repl_y to"
 msgstr "_Vastaa kohteeseen"
 
@@ -6614,15 +6628,15 @@ msgstr "_postituslista"
 msgid "Follow-up and reply to"
 msgstr "Vastaukset ja keskustelunsiirto"
 
-#: src/mainwindow.c:610 src/messageview.c:270 src/toolbar.c:2022
+#: src/mainwindow.c:610 src/messageview.c:270 src/toolbar.c:2032
 msgid "_Forward"
 msgstr "_Edelleenlähetä"
 
-#: src/mainwindow.c:611 src/messageview.c:271 src/toolbar.c:2023
+#: src/mainwindow.c:611 src/messageview.c:271 src/toolbar.c:2033
 msgid "For_ward as attachment"
 msgstr "_Edelleenlähetä liitteenä"
 
-#: src/mainwindow.c:612 src/messageview.c:272 src/toolbar.c:2024
+#: src/mainwindow.c:612 src/messageview.c:272 src/toolbar.c:2034
 msgid "Redirec_t"
 msgstr "_Uudelleenohjaa"
 
@@ -6670,7 +6684,7 @@ msgstr "_Poista…"
 msgid "Cancel a news message"
 msgstr "Peruuta keskusteluryhmäviesti"
 
-#: src/mainwindow.c:636 src/mainwindow.c:637 src/summaryview.c:418
+#: src/mainwindow.c:636 src/mainwindow.c:637 src/summaryview.c:419
 msgid "_Mark"
 msgstr "_Merkitse"
 
@@ -6690,8 +6704,8 @@ msgstr "Merkitse _luetuksi"
 msgid "Mark all read"
 msgstr "Merkitse kaikki luetuiksi"
 
-#: src/mainwindow.c:644 src/prefs_filtering_action.c:184 src/toolbar.c:194
-#: src/toolbar.c:401
+#: src/mainwindow.c:644 src/prefs_filtering_action.c:184 src/toolbar.c:196
+#: src/toolbar.c:404
 msgid "Ignore thread"
 msgstr "Ohita säie"
 
@@ -6699,8 +6713,8 @@ msgstr "Ohita säie"
 msgid "Unignore thread"
 msgstr "Poista säikeen ohitus"
 
-#: src/mainwindow.c:646 src/prefs_filtering_action.c:185 src/toolbar.c:195
-#: src/toolbar.c:402
+#: src/mainwindow.c:646 src/prefs_filtering_action.c:185 src/toolbar.c:197
+#: src/toolbar.c:405
 msgid "Watch thread"
 msgstr "Tarkkaile säiettä"
 
@@ -6724,11 +6738,11 @@ msgstr "Lukitse"
 msgid "Unlock"
 msgstr "Poista lukitus"
 
-#: src/mainwindow.c:657 src/summaryview.c:419
+#: src/mainwindow.c:657 src/summaryview.c:420
 msgid "Color la_bel"
 msgstr "_Värimerkintä"
 
-#: src/mainwindow.c:658 src/summaryview.c:420
+#: src/mainwindow.c:658 src/summaryview.c:421
 msgid "Ta_gs"
 msgstr "Tä_git"
 
@@ -6788,7 +6802,7 @@ msgstr "Vas_taanottajan mukaan"
 msgid "By _Subject"
 msgstr "_Aiheen mukaan"
 
-#: src/mainwindow.c:683 src/messageview.c:285 src/summaryview.c:423
+#: src/mainwindow.c:683 src/messageview.c:285 src/summaryview.c:424
 msgid "Create processing rule"
 msgstr "Luo käsittelysääntö"
 
@@ -7060,7 +7074,7 @@ msgstr "Laskevaan"
 msgid "_Auto detect"
 msgstr "Tunnista _automaattisesti"
 
-#: src/mainwindow.c:1238 src/summaryview.c:6067
+#: src/mainwindow.c:1238 src/summaryview.c:6079
 msgid "Apply tags..."
 msgstr "Toteuta tägit…"
 
@@ -7190,7 +7204,7 @@ msgid_plural "Deleted %d duplicate messages in %d folders.\n"
 msgstr[0] "Poistettiin %d kaksoiskappale %d kansiosta.\n"
 msgstr[1] "Poistettiin %d kappaletta %d kansiosta.\n"
 
-#: src/mainwindow.c:4849 src/summaryview.c:5562
+#: src/mainwindow.c:4849 src/summaryview.c:5574
 msgid "Processing rules to apply before folder rules"
 msgstr "Käsittelysäännöt, jotka merkitsevät ennen kansion sääntöjä"
 
@@ -7198,83 +7212,84 @@ msgstr "Käsittelysäännöt, jotka merkitsevät ennen kansion sääntöjä"
 msgid "Processing rules to apply after folder rules"
 msgstr "Käsittelysäännöt, jotka merkitsevät kansion sääntöjen jälkeen"
 
-#: src/mainwindow.c:4865 src/summaryview.c:5573
+#: src/mainwindow.c:4865 src/summaryview.c:5585
 msgid "Filtering configuration"
 msgstr "Suodatusasetukset"
 
 #: src/mainwindow.c:4980
 msgid "Can not register as default client: impossible to get executable path."
-msgstr "Ei voitu rekisteröidä oletusohjelmaksi. Suorituspolun "
-"selvittäminen ei onnistu."
+msgstr ""
+"Ei voitu rekisteröidä oletusohjelmaksi. Suorituspolun selvittäminen ei "
+"onnistu."
 
-#: src/mainwindow.c:5033
+#: src/mainwindow.c:5039
 msgid "Claws Mail has been registered as default client."
 msgstr "Claws Mail on rekisteröity oletusohjelmaksi."
 
-#: src/mainwindow.c:5035
+#: src/mainwindow.c:5041
 msgid ""
 "Can not register as default client: impossible to write to the registry."
 msgstr ""
 "Ei voitu rekisteröidä oletusohjelmaksi, koska rekisteriin ei voi kirjoittaa."
 
-#: src/mainwindow.c:5192
+#: src/mainwindow.c:5198
 #, c-format
 msgid "Forgotten %d password in %d accounts.\n"
 msgid_plural "Forgotten %d passwords in %d accounts.\n"
 msgstr[0] "Unohdettu %d salasana %d tilissä.\n"
 msgstr[1] "Unohdettu %d salasanaa %d tilissä.\n"
 
-#: src/matcher.c:499 src/matcher.c:504 src/matcher.c:524 src/matcher.c:529
-#: src/message_search.c:208 src/prefs_matcher.c:700 src/summary_search.c:392
+#: src/matcher.c:503 src/matcher.c:508 src/matcher.c:528 src/matcher.c:533
+#: src/message_search.c:208 src/prefs_matcher.c:705 src/summary_search.c:392
 msgid "Case sensitive"
 msgstr "Kirjaintasot erotteleva"
 
-#: src/matcher.c:499 src/matcher.c:504 src/matcher.c:524 src/matcher.c:529
+#: src/matcher.c:503 src/matcher.c:508 src/matcher.c:528 src/matcher.c:533
 msgid "Case insensitive"
 msgstr "Kirjaintasot erottelematon"
 
-#: src/matcher.c:861 src/matcher.c:872 src/matcher.c:883 src/matcher.c:893
-#: src/matcher.c:894 src/matcher.c:906 src/matcher.c:907 src/matcher.c:1139
-#: src/matcher.c:1151 src/matcher.c:1163
+#: src/matcher.c:881 src/matcher.c:892 src/matcher.c:903 src/matcher.c:913
+#: src/matcher.c:914 src/matcher.c:926 src/matcher.c:927 src/matcher.c:1159
+#: src/matcher.c:1171 src/matcher.c:1183
 #, c-format
 msgid "%s header"
 msgstr "%s-otsake"
 
-#: src/matcher.c:1253 src/matcher.c:1255
+#: src/matcher.c:1273 src/matcher.c:1275
 msgid "header"
 msgstr "otsake"
 
-#: src/matcher.c:1264
+#: src/matcher.c:1284
 msgid "header line"
 msgstr "otsakerivi"
 
-#: src/matcher.c:1266
+#: src/matcher.c:1286
 msgid "headers line"
 msgstr "otsakerivit"
 
-#: src/matcher.c:1268 src/matcher.c:1270
+#: src/matcher.c:1288 src/matcher.c:1290
 msgid "message line"
 msgstr "viestirivi"
 
-#: src/matcher.c:1488 src/matcher.c:1491
+#: src/matcher.c:1508 src/matcher.c:1511
 msgid "body line"
 msgstr "sisältörivi"
 
-#: src/matcher.c:1667
+#: src/matcher.c:1687
 #, c-format
 msgid "checking if message matches [ %s ]\n"
 msgstr "tarkasteaan täsmääkö viesti [ %s ]\n"
 
-#: src/matcher.c:1730 src/matcher.c:1749 src/matcher.c:1762
+#: src/matcher.c:1754 src/matcher.c:1773 src/matcher.c:1786
 msgid "message matches\n"
 msgstr "viesti täsmää\n"
 
-#: src/matcher.c:1737 src/matcher.c:1755 src/matcher.c:1764
+#: src/matcher.c:1761 src/matcher.c:1779 src/matcher.c:1788
 msgid "message does not match\n"
 msgstr "viesti ei täsmää.\n"
 
-#: src/matcher.c:2021 src/matcher.c:2022 src/matcher.c:2023 src/matcher.c:2024
-#: src/matcher.c:2025 src/matcher.c:2026 src/matcher.c:2027 src/matcher.c:2028
+#: src/matcher.c:2049 src/matcher.c:2050 src/matcher.c:2051 src/matcher.c:2052
+#: src/matcher.c:2053 src/matcher.c:2054 src/matcher.c:2055 src/matcher.c:2056
 msgid "(none)"
 msgstr "(ei mitään)"
 
@@ -7292,20 +7307,20 @@ msgstr ""
 msgid "Importing from mbox... (%d mails imported)"
 msgstr "Tuodaan mboxista... (%d viestiä tuotu)"
 
-#: src/mbox.c:548
+#: src/mbox.c:550
 msgid "Overwrite mbox file"
 msgstr "Korvaa olemassaoleva mbox-tiedosto"
 
-#: src/mbox.c:549
+#: src/mbox.c:551
 msgid "This file already exists. Do you want to overwrite it?"
 msgstr "Tiedosto on jo olemassa, korvataanko?"
 
-#: src/mbox.c:550 src/messageview.c:1693 src/mimeview.c:1651
-#: src/prefs_themes.c:553 src/textview.c:2954
+#: src/mbox.c:552 src/messageview.c:1693 src/mimeview.c:1651
+#: src/prefs_themes.c:553 src/textview.c:2953
 msgid "Overwrite"
 msgstr "Korvaa"
 
-#: src/mbox.c:559
+#: src/mbox.c:561
 #, c-format
 msgid ""
 "Could not create mbox file:\n"
@@ -7314,7 +7329,7 @@ msgstr ""
 "Mbox-tiedostoa ei pysty luomaan:\n"
 "%s\n"
 
-#: src/mbox.c:567
+#: src/mbox.c:569
 msgid "Exporting to mbox..."
 msgstr "Viedään mbox-tiedostoon..."
 
@@ -7393,7 +7408,7 @@ msgstr ""
 msgid "Fetching message (%s)..."
 msgstr "Haetaan viestiä (%s)…"
 
-#: src/messageview.c:1220 src/procmime.c:857
+#: src/messageview.c:1220 src/procmime.c:859
 #, c-format
 msgid "Couldn't decrypt: %s"
 msgstr "Ei voitu salata: %s"
@@ -7403,7 +7418,7 @@ msgid "Message doesn't conform to MIME standard. It may render wrongly."
 msgstr "Viesti ei noudata MIME-standardia ja saattaa hajota."
 
 #: src/messageview.c:1685 src/messageview.c:1688 src/mimeview.c:1802
-#: src/summaryview.c:4624 src/summaryview.c:4627 src/textview.c:2942
+#: src/summaryview.c:4630 src/summaryview.c:4633 src/textview.c:2941
 msgid "Save as"
 msgstr "Tallenna nimellä"
 
@@ -7411,8 +7426,8 @@ msgstr "Tallenna nimellä"
 msgid "Overwrite existing file?"
 msgstr "Korvataanko olemassaoleva tiedosto?"
 
-#: src/messageview.c:1702 src/summaryview.c:4644 src/summaryview.c:4647
-#: src/summaryview.c:4662
+#: src/messageview.c:1702 src/summaryview.c:4650 src/summaryview.c:4653
+#: src/summaryview.c:4668
 #, c-format
 msgid "Couldn't save the file '%s'."
 msgstr "Tiedostoa ”%s” ei voida tallentaa."
@@ -7431,8 +7446,7 @@ msgid ""
 "You got a return receipt for this message : it has been displayed by the "
 "recipient."
 msgstr ""
-"Sait saapumisilmoituksen tälle viestille: se on näytetty "
-"vastaanottajalle."
+"Sait saapumisilmoituksen tälle viestille: se on näytetty vastaanottajalle."
 
 #: src/messageview.c:1793
 msgid "You asked for a return receipt in this message."
@@ -7519,7 +7533,7 @@ msgstr "_Lähetä ilmoitus"
 msgid "Cannot print: the message doesn't contain text."
 msgstr "Tulostus ei onnistu: viestissä ei ole sisältötekstiä"
 
-#: src/messageview.c:2106 src/summaryview.c:4695
+#: src/messageview.c:2106 src/summaryview.c:4701
 #, c-format
 msgid ""
 "Enter the print command-line:\n"
@@ -7528,7 +7542,7 @@ msgstr ""
 "Anna tulostuskomento:\n"
 "(”%s” korvautuu tiedostonimellä)"
 
-#: src/messageview.c:2112 src/summaryview.c:4701
+#: src/messageview.c:2112 src/summaryview.c:4707
 #, c-format
 msgid ""
 "Print command-line is invalid:\n"
@@ -7537,8 +7551,8 @@ msgstr ""
 "Tulostuskomento on virheellinen:\n"
 "”%s”"
 
-#: src/messageview.c:2783 src/messageview.c:2789 src/summaryview.c:4009
-#: src/summaryview.c:6821
+#: src/messageview.c:2783 src/messageview.c:2789 src/summaryview.c:4015
+#: src/summaryview.c:6833
 msgid "An error happened while learning.\n"
 msgstr "Virhe luokiteltaessa roskapostia muistiin.\n"
 
@@ -7600,43 +7614,43 @@ msgstr "Seuraava osa (a)"
 msgid "MIME Type"
 msgstr "MIME-tyyppi"
 
-#: src/mimeview.c:873
+#: src/mimeview.c:871
 msgid "Check signature"
 msgstr "Lisää allekirjoitus"
 
-#: src/mimeview.c:878 src/mimeview.c:883 src/mimeview.c:888 src/mimeview.c:893
+#: src/mimeview.c:876 src/mimeview.c:881 src/mimeview.c:886 src/mimeview.c:891
 msgid "View full information"
 msgstr "Henkilökohtaiset tiedot"
 
-#: src/mimeview.c:898 src/mimeview.c:902
+#: src/mimeview.c:896 src/mimeview.c:900
 msgid "Check again"
 msgstr "Tarkasta uudelleen"
 
-#: src/mimeview.c:911
+#: src/mimeview.c:909
 msgid "Click the icon or hit 'C' to check it."
 msgstr "Paina kuvaketta tai C:tä tarkastaaksesi"
 
-#: src/mimeview.c:916
+#: src/mimeview.c:914
 msgid "Timeout checking the signature. Click the icon or hit 'C' to try again."
 msgstr ""
 "Aikakatkaisu allekirjoitusta haettaessa, paina kuvaketta tai C:tä "
 "yrittääksesi uudelleen."
 
-#: src/mimeview.c:1124
+#: src/mimeview.c:1122
 msgid "Checking signature..."
 msgstr "Haetaan viestiä…"
 
-#: src/mimeview.c:1166
+#: src/mimeview.c:1164
 msgid "Go back to email"
 msgstr "Palaa sähköpostiin"
 
-#: src/mimeview.c:1573 src/mimeview.c:1659 src/mimeview.c:1849
+#: src/mimeview.c:1571 src/mimeview.c:1659 src/mimeview.c:1849
 #: src/mimeview.c:1892
 #, c-format
 msgid "Couldn't save the part of multipart message: %s"
 msgstr "Ei voida tallentaa osaa moniosaviestistä: %s"
 
-#: src/mimeview.c:1648 src/textview.c:2952
+#: src/mimeview.c:1648 src/textview.c:2951
 #, c-format
 msgid "Overwrite existing file '%s'?"
 msgstr "Korvataanko tiedosto ”%s”?"
@@ -7654,11 +7668,11 @@ msgstr "”%s” ei ole hakemisto."
 msgid "No registered viewer for this file type."
 msgstr "Tälle tiedostotyypille ei ole rekisteröity näytintä."
 
-#: src/mimeview.c:1956 src/mimeview.c:1963 src/textview.c:2883
+#: src/mimeview.c:1956 src/mimeview.c:1963 src/textview.c:2882
 msgid "Open with"
 msgstr "Avaa ohjelmalla"
 
-#: src/mimeview.c:1957 src/mimeview.c:1964 src/textview.c:2884
+#: src/mimeview.c:1957 src/mimeview.c:1964 src/textview.c:2883
 #, c-format
 msgid ""
 "Enter the command-line to open file:\n"
@@ -7678,8 +7692,8 @@ msgid ""
 "\n"
 "Do you want to run this file?"
 msgstr ""
-"Liitetiedost on suoritettava ohjelma. Ohjelman suorittaminen voi "
-"olla vaarallista ja johtaa tietoturvariskeihin.\n"
+"Liitetiedost on suoritettava ohjelma. Ohjelman suorittaminen voi olla "
+"vaarallista ja johtaa tietoturvariskeihin.\n"
 "\n"
 "Suoritetaanko tiedosto?"
 
@@ -7764,16 +7778,16 @@ msgstr "_Tilaa ryhmä…"
 msgid "_Unsubscribe newsgroup"
 msgstr "_Poista ryhmän tilaus"
 
-#: src/news_gtk.c:250
+#: src/news_gtk.c:265
 #, c-format
 msgid "Really unsubscribe newsgroup '%s'?"
 msgstr "Poistetaanko ryhmän ”%s” tilaus?"
 
-#: src/news_gtk.c:251
+#: src/news_gtk.c:266
 msgid "Unsubscribe newsgroup"
 msgstr "Poista ryhmätilauksia"
 
-#: src/news_gtk.c:252
+#: src/news_gtk.c:267
 msgid "_Unsubscribe"
 msgstr "_Poista ryhmän tilaus"
 
@@ -7961,7 +7975,7 @@ msgstr ""
 #: src/plugins/dillo_viewer/dillo_prefs.c:200
 #: src/plugins/spamassassin/spamassassin_gtk.c:445
 #: src/prefs_filtering_action.c:533 src/prefs_filtering_action.c:539
-#: src/prefs_matcher.c:644
+#: src/prefs_matcher.c:649
 msgid "Select ..."
 msgstr "Valitse…"
 
@@ -8810,9 +8824,9 @@ msgid ""
 "\n"
 "GPGME is copyright 2001 by Werner Koch <dd9jn@gnu.org>"
 msgstr ""
-"Tämä liitännäinen ymmärtää S/MIME-allekirjoitettuja tai -salattuja "
-"viestejä. Voit purkaa salaukset tai varmentaa allekirjoitukset tulevista "
-"viesteistä sekä allekirjoittaa tai salata omia viestejäsi.\n"
+"Tämä liitännäinen ymmärtää S/MIME-allekirjoitettuja tai -salattuja viestejä. "
+"Voit purkaa salaukset tai varmentaa allekirjoitukset tulevista viesteistä "
+"sekä allekirjoittaa tai salata omia viestejäsi.\n"
 "\n"
 "Oletusyksityisyysjärjestelmä voidaan valita valikosta "
 "Asteukset→Tilit→yksityisyys tai viestiä kirjoitettaessa "
@@ -9248,6 +9262,7 @@ msgid "Unfiltered messages will be stored in this folder"
 msgstr "Suodattamattomat viestit tallennetaan tänne"
 
 #: src/prefs_account.c:1398 src/prefs_account.c:1487 src/prefs_account.c:1945
+#: src/prefs_customheader.c:236
 msgid "Bro_wse"
 msgstr "_Selaa"
 
@@ -9268,7 +9283,7 @@ msgid "0 days and 0 hours : remove immediately"
 msgstr "0 päivän ja 0 tunnin jälkeen: poistetaan heti"
 
 #: src/prefs_account.c:1433 src/prefs_folder_item.c:526
-#: src/prefs_matcher.c:316
+#: src/prefs_matcher.c:319
 msgid "days"
 msgstr "päivän jälkeen"
 
@@ -9337,10 +9352,10 @@ msgstr "Siirrä poistetut viestit roskiin ja poista lopullisesti heti"
 #: src/prefs_account.c:1583
 msgid ""
 "Moves deleted mails to trash instead of using the \\Deleted flag without "
-"expunging. "
+"expunging."
 msgstr ""
-"Siirtää poistetut viestit roskiin käyttämättä \\Deletet-merkintää ja "
-"poistamatta. "
+"Siirtää poistetut viestit roskiin käyttämättä \\Deleted-merkintää ja "
+"poistamatta lopullisesti."
 
 #: src/prefs_account.c:1586
 msgid "Filter messages on receiving"
@@ -9355,7 +9370,7 @@ msgid "'Get Mail' checks for new messages on this account"
 msgstr "”Hae kaikki” tarkastaa tämän tilin uudet viestit"
 
 #: src/prefs_account.c:1677 src/prefs_customheader.c:208
-#: src/prefs_matcher.c:596 src/prefs_matcher.c:1833 src/prefs_matcher.c:1854
+#: src/prefs_matcher.c:601 src/prefs_matcher.c:1856 src/prefs_matcher.c:1877
 msgid "Header"
 msgstr "Otsake"
 
@@ -9400,7 +9415,7 @@ msgid "Signature"
 msgstr "Allekirjoitus"
 
 #: src/prefs_account.c:1894
-msgid "Insert signature automatically"
+msgid "Automatically insert signature"
 msgstr "Lisää allekirjoitus automaattisesti"
 
 #: src/prefs_account.c:1899
@@ -9429,20 +9444,20 @@ msgstr "Oletussanakirja"
 msgid "Default alternate dictionary"
 msgstr "Oletusvaihtoehtosanakirja"
 
-#: src/prefs_account.c:2115 src/prefs_account.c:3173
-#: src/prefs_compose_writing.c:300 src/prefs_folder_item.c:1364
-#: src/prefs_folder_item.c:1737 src/prefs_quote.c:118 src/prefs_quote.c:239
+#: src/prefs_account.c:2115 src/prefs_account.c:3171
+#: src/prefs_compose_writing.c:349 src/prefs_folder_item.c:1364
+#: src/prefs_folder_item.c:1739 src/prefs_quote.c:118 src/prefs_quote.c:239
 #: src/prefs_spelling.c:325 src/prefs_wrapping.c:152
 msgid "Compose"
 msgstr "Viestin kirjoitus"
 
 #: src/prefs_account.c:2130 src/prefs_folder_item.c:1385 src/prefs_quote.c:133
-#: src/toolbar.c:391
+#: src/toolbar.c:394
 msgid "Reply"
 msgstr "Vastaa"
 
 #: src/prefs_account.c:2145 src/prefs_filtering_action.c:176
-#: src/prefs_folder_item.c:1406 src/prefs_quote.c:148 src/toolbar.c:395
+#: src/prefs_folder_item.c:1406 src/prefs_quote.c:148 src/toolbar.c:398
 msgid "Forward"
 msgstr "Edelleenlähetä"
 
@@ -9460,8 +9475,9 @@ msgstr "Salaa viestit aina"
 
 #: src/prefs_account.c:2227
 msgid "Always sign messages when replying to a signed message"
-msgstr "Allekirjoita viestit oletusarvoisesti vastattaessa "
-"allekirjoitettuun viestiin."
+msgstr ""
+"Allekirjoita viestit oletusarvoisesti vastattaessa allekirjoitettuun "
+"viestiin."
 
 #: src/prefs_account.c:2230
 msgid "Always encrypt messages when replying to an encrypted message"
@@ -9515,7 +9531,7 @@ msgstr "Asiakasvarmenteet"
 msgid "Certificate for receiving"
 msgstr "Vastaanottovarmenne"
 
-#: src/prefs_account.c:2403 src/prefs_account.c:2425 src/prefs_account.c:2681
+#: src/prefs_account.c:2403 src/prefs_account.c:2425 src/prefs_account.c:2679
 #: src/wizard.c:1345 src/wizard.c:1608
 msgid "Browse"
 msgstr "Selaa"
@@ -9537,140 +9553,140 @@ msgstr "Käytä blokkaamatonta SSL:ää"
 msgid "Turn this off if you have SSL connection problems"
 msgstr "Aseta tämä pois päältä jos SSL-yhteydessä on ongelmia"
 
-#: src/prefs_account.c:2581
+#: src/prefs_account.c:2582
 msgid "SMTP port"
 msgstr "SMTP-portti"
 
-#: src/prefs_account.c:2588
+#: src/prefs_account.c:2589
 msgid "POP3 port"
 msgstr "POP3-portti"
 
-#: src/prefs_account.c:2595
+#: src/prefs_account.c:2596
 msgid "IMAP4 port"
 msgstr "IMAP4-portti"
 
-#: src/prefs_account.c:2602
+#: src/prefs_account.c:2603
 msgid "NNTP port"
 msgstr "NNTP-portti"
 
-#: src/prefs_account.c:2608
+#: src/prefs_account.c:2609
 msgid "Domain name"
 msgstr "Verkkotunnus"
 
-#: src/prefs_account.c:2612 src/prefs_account.c:2621
+#: src/prefs_account.c:2612
 msgid ""
-"The domain name will be used in the right part of the generated Message-Ids, "
-"and when connecting to SMTP servers."
+"The domain name will be used in the generated Message-ID, and when "
+"connecting to SMTP servers."
 msgstr ""
 "Verkkotunnusta käytetään Message-Id:n osana ja SMTP-palvelimille "
 "yhdistettäessä."
 
-#: src/prefs_account.c:2626
-msgid "Send account mail address in Message-Id"
+#: src/prefs_account.c:2624
+msgid "Send account mail address in Message-ID"
 msgstr "Lähetä tilin osoite Message-Id:ssä"
 
-#: src/prefs_account.c:2631
+#: src/prefs_account.c:2629
 msgid "Use command to communicate with server"
 msgstr "Käytä palvelimen kanssa kommunikointiin komentoa"
 
-#: src/prefs_account.c:2639
+#: src/prefs_account.c:2637
 msgid "Mark cross-posted messages as read and color:"
 msgstr "Merkitse yhteislähetetyt viestit luetuiksi ja värillä:"
 
-#: src/prefs_account.c:2694
+#: src/prefs_account.c:2692
 msgid "Put sent messages in"
 msgstr "Pane lähetetyt viestit kansioon"
 
-#: src/prefs_account.c:2696
+#: src/prefs_account.c:2694
 msgid "Put queued messages in"
 msgstr "Pane poistetut viestit kansioon"
 
-#: src/prefs_account.c:2698
+#: src/prefs_account.c:2696
 msgid "Put draft messages in"
 msgstr "Pane luonnokset kansioon"
 
-#: src/prefs_account.c:2700
+#: src/prefs_account.c:2698
 msgid "Put deleted messages in"
 msgstr "Pane poistetut viestit kansioon"
 
-#: src/prefs_account.c:2756
+#: src/prefs_account.c:2754
 msgid "Account name is not entered."
 msgstr "Tilin nimeä ei syötetty."
 
-#: src/prefs_account.c:2760
+#: src/prefs_account.c:2758
 msgid "Mail address is not entered."
 msgstr "Postiosoitetta ei syötetty."
 
-#: src/prefs_account.c:2767
+#: src/prefs_account.c:2765
 msgid "SMTP server is not entered."
 msgstr "SMTP-palvelinta ei syötetty."
 
-#: src/prefs_account.c:2772
+#: src/prefs_account.c:2770
 msgid "User ID is not entered."
 msgstr "Käyttäjän tunnistetta ei syötetty."
 
-#: src/prefs_account.c:2777
+#: src/prefs_account.c:2775
 msgid "POP3 server is not entered."
 msgstr "POP3-palvelinta ei syötetty."
 
-#: src/prefs_account.c:2797
+#: src/prefs_account.c:2795
 msgid "The default Inbox folder doesn't exist."
 msgstr "Oletusarvoinen saapuneet-kansio puuttuu."
 
-#: src/prefs_account.c:2803
+#: src/prefs_account.c:2801
 msgid "IMAP4 server is not entered."
 msgstr "IMAP4-palvelinta ei syötetty."
 
-#: src/prefs_account.c:2808
+#: src/prefs_account.c:2806
 msgid "NNTP server is not entered."
 msgstr "NNTP-palvelinta ei syötetty."
 
-#: src/prefs_account.c:2814
+#: src/prefs_account.c:2812
 msgid "local mailbox filename is not entered."
 msgstr "paikallisen postilaatikon tiedostonimeä ei syötetty."
 
-#: src/prefs_account.c:2820
+#: src/prefs_account.c:2818
 msgid "mail command is not entered."
 msgstr "lähetyskomentoa ei syötetty."
 
-#: src/prefs_account.c:3137
+#: src/prefs_account.c:3135
 msgid "Receive"
 msgstr "Haku"
 
-#: src/prefs_account.c:3191 src/prefs_folder_item.c:1754 src/prefs_quote.c:240
+#: src/prefs_account.c:3189 src/prefs_folder_item.c:1756 src/prefs_quote.c:240
 msgid "Templates"
 msgstr "Mallineet"
 
-#: src/prefs_account.c:3209
+#: src/prefs_account.c:3207
 msgid "Privacy"
 msgstr "Yksityisyys"
 
-#: src/prefs_account.c:3310
+#: src/prefs_account.c:3308
 msgid "Advanced"
 msgstr "Lisäasetukset"
 
-#: src/prefs_account.c:3598
+#: src/prefs_account.c:3596
 msgid "Preferences for new account"
 msgstr "Uuden tilin asetukset"
 
-#: src/prefs_account.c:3600
+#: src/prefs_account.c:3598
 #, c-format
 msgid "%s - Account preferences"
 msgstr "%s — Tilin asetukset"
 
-#: src/prefs_account.c:3695
+#: src/prefs_account.c:3693
 msgid "Select signature file"
 msgstr "Valitse allekirjoitustiedosto"
 
-#: src/prefs_account.c:3713 src/prefs_account.c:3730 src/wizard.c:1223
+#: src/prefs_account.c:3711 src/prefs_account.c:3728 src/wizard.c:1223
 msgid "Select certificate file"
 msgstr "Valitse varmennetiedosto"
 
-#: src/prefs_account.c:3826
+#: src/prefs_account.c:3824
 msgid "Protocol:"
 msgstr "Käytäntö:"
 
-#: src/prefs_account.c:3965
+#: src/prefs_account.c:3963
 #, c-format
 msgid "%s (plugin not loaded)"
 msgstr "%s (liitännäistä lataamatta)"
@@ -9704,8 +9720,8 @@ msgid "Append the new action above to the list"
 msgstr "Lisää ylläoleva toiminto listaan"
 
 #: src/prefs_actions.c:328 src/prefs_filtering_action.c:572
-#: src/prefs_filtering.c:471 src/prefs_matcher.c:735 src/prefs_template.c:306
-#: src/prefs_toolbar.c:909
+#: src/prefs_filtering.c:472 src/prefs_matcher.c:740 src/prefs_template.c:306
+#: src/prefs_toolbar.c:991
 msgid "Replace"
 msgstr "Korvaa"
 
@@ -9717,12 +9733,12 @@ msgstr "Korvaa valittu toiminto ylläolevalla"
 msgid "Delete the selected action from the list"
 msgstr "Poista valittu toiminto listasta"
 
-#: src/prefs_actions.c:350 src/prefs_filtering.c:494 src/prefs_template.c:329
+#: src/prefs_actions.c:350 src/prefs_filtering.c:495 src/prefs_template.c:329
 msgid "Clear all the input fields in the dialog"
 msgstr "Tyhjennä valintaikkunan syötekentät"
 
 #: src/prefs_actions.c:355 src/prefs_filtering_action.c:548
-#: src/prefs_matcher.c:712
+#: src/prefs_matcher.c:717
 msgid "Info..."
 msgstr "Tietoja…"
 
@@ -9739,9 +9755,9 @@ msgid "Move selected action down"
 msgstr "Siirrä valittua toimintoa alas"
 
 #: src/prefs_actions.c:532 src/prefs_filtering_action.c:660
-#: src/prefs_filtering.c:911 src/prefs_filtering.c:913
-#: src/prefs_filtering.c:914 src/prefs_filtering.c:1024
-#: src/prefs_matcher.c:854 src/prefs_template.c:466
+#: src/prefs_filtering.c:912 src/prefs_filtering.c:914
+#: src/prefs_filtering.c:915 src/prefs_filtering.c:1025
+#: src/prefs_matcher.c:859 src/prefs_template.c:466
 msgid "(New)"
 msgstr "(Uusi)"
 
@@ -9796,22 +9812,22 @@ msgstr "Poista kaikki toiminnot"
 msgid "Do you really want to delete all the actions?"
 msgstr "Poistetaanko kaikki toiminnot?"
 
-#: src/prefs_actions.c:892 src/prefs_actions.c:922 src/prefs_filtering.c:1573
-#: src/prefs_filtering.c:1595 src/prefs_matcher.c:1980
-#: src/prefs_template.c:566 src/prefs_template.c:591
+#: src/prefs_actions.c:892 src/prefs_actions.c:923 src/prefs_filtering.c:1574
+#: src/prefs_filtering.c:1596 src/prefs_matcher.c:2004
+#: src/prefs_template.c:566 src/prefs_template.c:592
 msgid "Entry not saved"
 msgstr "Kenttää on tallentamatta"
 
-#: src/prefs_actions.c:893 src/prefs_actions.c:923 src/prefs_filtering.c:1574
-#: src/prefs_filtering.c:1596 src/prefs_template.c:567
-#: src/prefs_template.c:592
+#: src/prefs_actions.c:893 src/prefs_actions.c:924 src/prefs_filtering.c:1575
+#: src/prefs_filtering.c:1597 src/prefs_template.c:567
+#: src/prefs_template.c:593
 msgid "The entry was not saved. Close anyway?"
 msgstr "Kenttää ei ole tallennettu, suljetaanko joka tapauksessa?"
 
-#: src/prefs_actions.c:894 src/prefs_actions.c:899 src/prefs_actions.c:924
-#: src/prefs_filtering.c:1553 src/prefs_filtering.c:1575
-#: src/prefs_filtering.c:1597 src/prefs_matcher.c:1982
-#: src/prefs_template.c:568 src/prefs_template.c:593 src/prefs_template.c:598
+#: src/prefs_actions.c:894 src/prefs_actions.c:899 src/prefs_actions.c:925
+#: src/prefs_filtering.c:1554 src/prefs_filtering.c:1576
+#: src/prefs_filtering.c:1598 src/prefs_matcher.c:2006
+#: src/prefs_template.c:568 src/prefs_template.c:594 src/prefs_template.c:599
 msgid "+_Continue editing"
 msgstr "_Jatka muokkausta"
 
@@ -9823,93 +9839,93 @@ msgstr "Toimintolista ei tallennettu."
 msgid "The actions list has been modified. Close anyway?"
 msgstr "Toimintolistaa ei ole tallennettu, suljetaanko joka tapauksessa?"
 
-#: src/prefs_actions.c:963
+#: src/prefs_actions.c:965
 msgid "<span weight=\"bold\" underline=\"single\">Menu name:</span>"
 msgstr "<span weight=\"bold\" underline=\"single\">Valikon nimi:</span>"
 
-#: src/prefs_actions.c:964
+#: src/prefs_actions.c:966
 msgid "Use / in menu name to make submenus."
 msgstr "Lisää alivalikoita valikkoon erottelemalla ne /-merkein."
 
-#: src/prefs_actions.c:966
+#: src/prefs_actions.c:968
 msgid "<span weight=\"bold\" underline=\"single\">Command-line:</span>"
 msgstr "<span weight=\"bold\" underline=\"single\">Komentorivi:</span>"
 
-#: src/prefs_actions.c:967
+#: src/prefs_actions.c:969
 msgid "<span weight=\"bold\">Begin with:</span>"
 msgstr "<span weight=\"bold\">Aloita:</span>"
 
-#: src/prefs_actions.c:968
+#: src/prefs_actions.c:970
 msgid "to send message body or selection to command's standard input"
 msgstr "lähettämään viestin sisältö tai valinta komennon oletussyötteeksi"
 
-#: src/prefs_actions.c:969
+#: src/prefs_actions.c:971
 msgid "to send user provided text to command's standard input"
 msgstr "lähettämään käyttäjän syöttämä teksti komennon oletussyötteeksi"
 
-#: src/prefs_actions.c:970
+#: src/prefs_actions.c:972
 msgid "to send user provided hidden text to command's standard input"
 msgstr ""
 "lähettämään käyttäjän antama piilotettu teksti komennon oletussyötteeksi"
 
-#: src/prefs_actions.c:971
+#: src/prefs_actions.c:973
 msgid "<span weight=\"bold\">End with:</span>"
 msgstr "<span weight=\"bold\">Lopeta:</span>"
 
-#: src/prefs_actions.c:972
+#: src/prefs_actions.c:974
 msgid "to replace message body or selection with command's standard output"
 msgstr "korvaamaan viestin sisältö tai valinta komennon vakiotulosteella"
 
-#: src/prefs_actions.c:973
+#: src/prefs_actions.c:975
 msgid "to insert command's standard output without replacing old text"
 msgstr "lisäämään komennon vakiotuloste korvaamatta mitään vanhaa tekstiä"
 
-#: src/prefs_actions.c:974
+#: src/prefs_actions.c:976
 msgid "to run command asynchronously"
 msgstr "komentojen yhtäaikaissuoritukseen"
 
-#: src/prefs_actions.c:975
+#: src/prefs_actions.c:977
 msgid "<span weight=\"bold\">Use:</span>"
 msgstr "<span weight=\"bold\">Käytä:</span>"
 
-#: src/prefs_actions.c:976
+#: src/prefs_actions.c:978
 msgid "for the file of the selected message in RFC822/2822 format "
 msgstr "valitun viestin RFC822/2822-muotoiselle tiedostolle"
 
-#: src/prefs_actions.c:977
+#: src/prefs_actions.c:979
 msgid ""
 "for the list of the files of the selected messages in RFC822/2822 format"
 msgstr "valittujen viestien RFC822/2822-muotoisten tiedostojen luettelolle"
 
-#: src/prefs_actions.c:978
+#: src/prefs_actions.c:980
 msgid "for the file of the selected decoded message MIME part"
 msgstr "valitun tiedoston osan puretulle MIME-sisällölle"
 
-#: src/prefs_actions.c:979
+#: src/prefs_actions.c:981
 msgid "for a user provided argument"
 msgstr "käyttäjän antamalle parametrille"
 
-#: src/prefs_actions.c:980
+#: src/prefs_actions.c:982
 msgid "for a user provided hidden argument (e.g. password)"
 msgstr "käyttäjän antamalle piilotetulle parametrille (kuten salasanalle)"
 
-#: src/prefs_actions.c:981
+#: src/prefs_actions.c:983
 msgid "for the text selection"
 msgstr "valitulle tekstille"
 
-#: src/prefs_actions.c:982
+#: src/prefs_actions.c:984
 msgid "apply filtering actions between {} to selected messages"
 msgstr "suorita suodatustoiminnot {}:n välissä valituille viesteille"
 
-#: src/prefs_actions.c:983
+#: src/prefs_actions.c:985
 msgid "for a literal %"
 msgstr "% sellaisenaan"
 
-#: src/prefs_actions.c:992 src/prefs_themes.c:994
+#: src/prefs_actions.c:994 src/prefs_themes.c:994
 msgid "Actions"
 msgstr "Toiminnot"
 
-#: src/prefs_actions.c:993
+#: src/prefs_actions.c:995
 msgid ""
 "The Actions feature is a way for the user to launch external commands to "
 "process a complete message file or just one of its parts."
@@ -9917,17 +9933,17 @@ msgstr ""
 "Toimintotoiminnallisuudella voi käynnistää ulkoisen ohjelman, joka "
 "käsittelee viestin tai sen osan."
 
-#: src/prefs_actions.c:1080 src/prefs_filtering.c:1771
-#: src/prefs_template.c:1103
+#: src/prefs_actions.c:1082 src/prefs_filtering.c:1772
+#: src/prefs_template.c:1104
 msgid "D_uplicate"
 msgstr "K_aksoiskappale"
 
-#: src/prefs_actions.c:1191
+#: src/prefs_actions.c:1193
 msgid "Current actions"
 msgstr "Nykyiset toiminnot"
 
-#: src/prefs_actions.c:1290 src/prefs_filtering.c:1149
-#: src/prefs_filtering.c:1207
+#: src/prefs_actions.c:1292 src/prefs_filtering.c:1150
+#: src/prefs_filtering.c:1208
 msgid "Action string is not valid."
 msgstr "Toimintomerkkijono ei ole toimiva."
 
@@ -9935,11 +9951,11 @@ msgstr "Toimintomerkkijono ei ole toimiva."
 msgid "Hello,\\n"
 msgstr "Hei,\\n"
 
-#: src/prefs_common.c:294
+#: src/prefs_common.c:298
 msgid "On %d\\n%f wrote:\\n\\n%q\\n%X"
 msgstr "%d\\n%f kirjoitti:\\n\\n%q\\n%X"
 
-#: src/prefs_common.c:300 src/prefs_quote.c:84
+#: src/prefs_common.c:304 src/prefs_quote.c:84
 msgid ""
 "\\n\\nBegin forwarded message:\\n\\n?d{Date: %d\\n}?f{From: %f\\n}?t{To: %t"
 "\\n}?c{Cc: %c\\n}?n{Newsgroups: %n\\n}?s{Subject: %s\\n}\\n\\n%M"
@@ -9948,87 +9964,95 @@ msgstr ""
 "{Vastaanottaja: %t\\n}?c{Kopiot: %c\\n}?n{Uutisryhmät: %n\\n}?s{Aihe: %s\\n}"
 "\\n\\n%M"
 
-#: src/prefs_common.c:440
+#: src/prefs_common.c:444
 msgid "%y/%m/%d(%a) %H:%M"
 msgstr "%d.%m.%y %H.%M"
 
-#: src/prefs_compose_writing.c:113
+#: src/prefs_compose_writing.c:120
 msgid "Automatic account selection"
 msgstr "Automaattinen tilin valinta"
 
-#: src/prefs_compose_writing.c:121
+#: src/prefs_compose_writing.c:128
 msgid "when replying"
 msgstr "vastattaessa"
 
-#: src/prefs_compose_writing.c:123
+#: src/prefs_compose_writing.c:130
 msgid "when forwarding"
 msgstr "edelleenlähetettäessä"
 
-#: src/prefs_compose_writing.c:125
+#: src/prefs_compose_writing.c:132
 msgid "when re-editing"
 msgstr "uudelleenmuokattaessa"
 
-#: src/prefs_compose_writing.c:127
+#: src/prefs_compose_writing.c:135
 msgid "Editing"
 msgstr "Muokkaus"
 
-#: src/prefs_compose_writing.c:130
+#: src/prefs_compose_writing.c:139
 msgid "Automatically launch the external editor"
 msgstr "Käynnistä ulkoinen editori automaattisesti"
 
-#: src/prefs_compose_writing.c:137
-msgid "Autosave message text to Drafts folder every"
+#: src/prefs_compose_writing.c:147
+msgid "Automatically save message to Drafts folder every"
 msgstr "Tallenna automaattisesti luonnoksiin joka"
 
-#: src/prefs_compose_writing.c:147 src/prefs_wrapping.c:100
+#: src/prefs_compose_writing.c:157 src/prefs_wrapping.c:100
 msgid "characters"
 msgstr "merkin välein"
 
-#: src/prefs_compose_writing.c:155
+#: src/prefs_compose_writing.c:166
 msgid "Undo level"
 msgstr "Kumoustasot"
 
-#: src/prefs_compose_writing.c:167
+#: src/prefs_compose_writing.c:184
+msgid "Warn when inserting a file larger than"
+msgstr "Varoita, jos tiedosto on suurempi kuin"
+
+#: src/prefs_compose_writing.c:196
+msgid "KB into message body "
+msgstr "Kilotavua viestin sisällä"
+
+#: src/prefs_compose_writing.c:202
 msgid "Replying"
 msgstr "Vastaaminen"
 
-#: src/prefs_compose_writing.c:170
+#: src/prefs_compose_writing.c:205
 msgid "Reply will quote by default"
 msgstr "Vastaaminen lainaa oletusarvoisesti"
 
-#: src/prefs_compose_writing.c:173
+#: src/prefs_compose_writing.c:208
 msgid "Reply button invokes mailing list reply"
 msgstr "Vastausnappi toimii postituslistavastauksena"
 
-#: src/prefs_compose_writing.c:175
+#: src/prefs_compose_writing.c:210
 msgid "Forwarding"
 msgstr "Edelleenlähetys"
 
-#: src/prefs_compose_writing.c:178 src/prefs_filtering_action.c:177
+#: src/prefs_compose_writing.c:213 src/prefs_filtering_action.c:177
 msgid "Forward as attachment"
 msgstr "Edelleenlähetä liitteenä"
 
-#: src/prefs_compose_writing.c:181
+#: src/prefs_compose_writing.c:216
 msgid "Keep the original 'From' header when redirecting"
 msgstr "Säilytä alkuperäinen Lähettäjä-otsake uudelleenohjattaessa"
 
-#: src/prefs_compose_writing.c:184
+#: src/prefs_compose_writing.c:219
 msgid "When dropping files into the Compose window"
 msgstr "Kun tiedostoja pudotetaan viestinkirjoitusikkunaan"
 
-#: src/prefs_compose_writing.c:193
+#: src/prefs_compose_writing.c:228
 msgid "Ask"
 msgstr "Kysy"
 
-#: src/prefs_compose_writing.c:194 src/toolbar.c:409
+#: src/prefs_compose_writing.c:229 src/toolbar.c:412
 msgid "Insert"
 msgstr "Lisää"
 
-#: src/prefs_compose_writing.c:195 src/toolbar.c:410
+#: src/prefs_compose_writing.c:230 src/toolbar.c:413
 msgid "Attach"
 msgstr "Liitä"
 
-#: src/prefs_compose_writing.c:301
+#: src/prefs_compose_writing.c:350
 msgid "Writing"
 msgstr "Kirjoittaminen"
 
@@ -10036,12 +10060,8 @@ msgstr "Kirjoittaminen"
 msgid "Custom header configuration"
 msgstr "Mukautetut otsakeasetukset"
 
-#: src/prefs_customheader.c:236
-msgid "From file..."
-msgstr " Tiedostosta…"
-
-#: src/prefs_customheader.c:510 src/prefs_display_header.c:598
-#: src/prefs_matcher.c:1466 src/prefs_matcher.c:1481
+#: src/prefs_customheader.c:510 src/prefs_display_header.c:586
+#: src/prefs_matcher.c:1489 src/prefs_matcher.c:1504
 msgid "Header name is not set."
 msgstr "Otsakkeen nimi on asettamatta."
 
@@ -10104,31 +10124,31 @@ msgstr "Poista otsake"
 msgid "Do you really want to delete this header?"
 msgstr "Poistetaanko tämä otsake?"
 
-#: src/prefs_customheader.c:877
+#: src/prefs_customheader.c:879
 msgid "Current custom headers"
 msgstr "Nykyiset mukautetut otsakkeet"
 
-#: src/prefs_display_header.c:257
+#: src/prefs_display_header.c:249
 msgid "Displayed header configuration"
 msgstr "Näytettyjen otsakkeiden asetukset"
 
-#: src/prefs_display_header.c:281
+#: src/prefs_display_header.c:273
 msgid "Header name"
 msgstr "Otsakkeen nimi"
 
-#: src/prefs_display_header.c:316
+#: src/prefs_display_header.c:308
 msgid "Displayed Headers"
 msgstr "Näytetyt otsakkeet"
 
-#: src/prefs_display_header.c:382
+#: src/prefs_display_header.c:370
 msgid "Hidden headers"
 msgstr "Piilotetut otsakkeet"
 
-#: src/prefs_display_header.c:408
+#: src/prefs_display_header.c:396
 msgid "Show all unspecified headers"
 msgstr "Näytä kaikki määrittelemättömät otsakkeet"
 
-#: src/prefs_display_header.c:608
+#: src/prefs_display_header.c:596
 msgid "This header is already in the list."
 msgstr "Tämä otsake on jo luettelossa."
 
@@ -10194,7 +10214,7 @@ msgid "Message flags"
 msgstr "Viestiliput"
 
 #: src/prefs_filtering_action.c:166 src/prefs_summary_column.c:77
-#: src/summaryview.c:2658
+#: src/summaryview.c:2659
 msgid "Mark"
 msgstr "Merkitse"
 
@@ -10207,7 +10227,7 @@ msgid "Mark as unread"
 msgstr "Merkitse lukemattomaksi"
 
 #: src/prefs_filtering_action.c:174 src/prefs_filtering_action.c:1373
-#: src/toolbar.c:191 src/toolbar.c:417 src/toolbar.c:2041
+#: src/toolbar.c:193 src/toolbar.c:420 src/toolbar.c:2051
 msgid "Execute"
 msgstr "Suorita"
 
@@ -10225,8 +10245,8 @@ msgid "Redirect"
 msgstr "Uudelleenohjaa"
 
 #: src/prefs_filtering_action.c:179 src/prefs_filtering_action.c:180
-#: src/prefs_filtering_action.c:1377 src/prefs_matcher.c:602
-#: src/prefs_summary_column.c:86 src/summaryview.c:438
+#: src/prefs_filtering_action.c:1377 src/prefs_matcher.c:607
+#: src/prefs_summary_column.c:86 src/summaryview.c:439
 msgid "Score"
 msgstr "Pisteet"
 
@@ -10239,8 +10259,8 @@ msgid "Set score"
 msgstr "Aseta pisteet"
 
 #: src/prefs_filtering_action.c:181 src/prefs_filtering_action.c:182
-#: src/prefs_filtering_action.c:183 src/prefs_matcher.c:606
-#: src/prefs_summary_column.c:88 src/summaryview.c:440
+#: src/prefs_filtering_action.c:183 src/prefs_matcher.c:611
+#: src/prefs_summary_column.c:88 src/summaryview.c:441
 msgid "Tags"
 msgstr "Tägit"
 
@@ -10268,12 +10288,12 @@ msgstr "Lopeta suodatus"
 msgid "Action configuration"
 msgstr "Toimintoasetukset"
 
-#: src/prefs_filtering_action.c:406 src/prefs_filtering.c:1952
-#: src/prefs_matcher.c:559
+#: src/prefs_filtering_action.c:406 src/prefs_filtering.c:1953
+#: src/prefs_matcher.c:564
 msgid "Rule"
 msgstr "Sääntö"
 
-#: src/prefs_filtering_action.c:419 src/prefs_filtering.c:427
+#: src/prefs_filtering_action.c:419 src/prefs_filtering.c:428
 msgid "Action"
 msgstr "Toiminto"
 
@@ -10309,25 +10329,25 @@ msgstr "Tägin nimi on asettamatta."
 msgid "No action was defined."
 msgstr "Toiminto on määrittelemättä"
 
-#: src/prefs_filtering_action.c:1202 src/prefs_matcher.c:2023
+#: src/prefs_filtering_action.c:1202 src/prefs_matcher.c:2048
 #: src/quote_fmt.c:78
 msgid "literal %"
 msgstr "% sellaisenaan"
 
-#: src/prefs_filtering_action.c:1211 src/prefs_matcher.c:2032
+#: src/prefs_filtering_action.c:1211 src/prefs_matcher.c:2057
 msgid "filename (should not be modified)"
 msgstr "Tiedostonimi — kannattaa säilyttää muuttamattomana"
 
-#: src/prefs_filtering_action.c:1212 src/prefs_matcher.c:2033
+#: src/prefs_filtering_action.c:1212 src/prefs_matcher.c:2058
 #: src/quote_fmt.c:86
 msgid "new line"
 msgstr "uusi rivi"
 
-#: src/prefs_filtering_action.c:1213 src/prefs_matcher.c:2034
+#: src/prefs_filtering_action.c:1213 src/prefs_matcher.c:2059
 msgid "escape character for quotes"
 msgstr "lainausmerkkien escape‐merkintä"
 
-#: src/prefs_filtering_action.c:1214 src/prefs_matcher.c:2035
+#: src/prefs_filtering_action.c:1214 src/prefs_matcher.c:2060
 msgid "quote character"
 msgstr "lainausmerkki"
 
@@ -10365,120 +10385,120 @@ msgstr "Värjää"
 msgid "Current action list"
 msgstr "Nykyinen toimintolista"
 
-#: src/prefs_filtering.c:192 src/prefs_filtering.c:353
+#: src/prefs_filtering.c:192 src/prefs_filtering.c:354
 msgid "Filtering/Processing configuration"
 msgstr "Suodatus‐ ja käsittelyasetukset"
 
-#: src/prefs_filtering.c:259 src/prefs_filtering.c:942
-#: src/prefs_filtering.c:1056
+#: src/prefs_filtering.c:261 src/prefs_filtering.c:943
+#: src/prefs_filtering.c:1057
 msgid "Filtering Account Menu|All"
 msgstr "Kaikki"
 
-#: src/prefs_filtering.c:405
+#: src/prefs_filtering.c:406
 msgid "Condition"
 msgstr "Ehto"
 
-#: src/prefs_filtering.c:418 src/prefs_filtering.c:440
+#: src/prefs_filtering.c:419 src/prefs_filtering.c:441
 msgid " Define... "
 msgstr " Määrittele…"
 
-#: src/prefs_filtering.c:469
+#: src/prefs_filtering.c:470
 msgid "Append the new rule above to the list"
 msgstr "Lisää ylläoleva sääntö listaan"
 
-#: src/prefs_filtering.c:478
+#: src/prefs_filtering.c:479
 msgid "Replace the selected rule in list with the rule above"
 msgstr "Korvaa valittu sääntö ylläolevalla"
 
-#: src/prefs_filtering.c:486
+#: src/prefs_filtering.c:487
 msgid "Delete the selected rule from the list"
 msgstr "Poista valittu sääntö listasta"
 
-#: src/prefs_filtering.c:523
+#: src/prefs_filtering.c:524
 msgid "Move the selected rule to the top"
 msgstr "Siirrä valittu sääntö ylimmäksi"
 
-#: src/prefs_filtering.c:526
+#: src/prefs_filtering.c:527
 msgid "Page up"
 msgstr "Sivu ylös"
 
-#: src/prefs_filtering.c:534
+#: src/prefs_filtering.c:535
 msgid "Move the selected rule one page up"
 msgstr "Siirrä valittu sääntö sivun ylöspäin"
 
-#: src/prefs_filtering.c:543
+#: src/prefs_filtering.c:544
 msgid "Move the selected rule up"
 msgstr "Siirrä valittua sääntöä ylös"
 
-#: src/prefs_filtering.c:551
+#: src/prefs_filtering.c:552
 msgid "Move the selected rule down"
 msgstr "Siirrä valittua sääntöä alas"
 
-#: src/prefs_filtering.c:554
+#: src/prefs_filtering.c:555
 msgid "Page down"
 msgstr "Sivu alas"
 
-#: src/prefs_filtering.c:562
+#: src/prefs_filtering.c:563
 msgid "Move the selected rule one page down"
 msgstr "Siirrä valittu sääntö alas sivun verran"
 
-#: src/prefs_filtering.c:571
+#: src/prefs_filtering.c:572
 msgid "Move the selected rule to the bottom"
 msgstr "Siirrä valittu sääntö alimmaksi"
 
-#: src/prefs_filtering.c:1113 src/prefs_filtering.c:1199
+#: src/prefs_filtering.c:1114 src/prefs_filtering.c:1200
 msgid "Condition string is not valid."
 msgstr "Ehtomerkkijono ei ole toimiva."
 
-#: src/prefs_filtering.c:1186
+#: src/prefs_filtering.c:1187
 msgid "Condition string is empty."
 msgstr "Ehtomerkkijono on tyhjä."
 
-#: src/prefs_filtering.c:1192
+#: src/prefs_filtering.c:1193
 msgid "Action string is empty."
 msgstr "Toimintomerkkijono on tyhjä."
 
-#: src/prefs_filtering.c:1278
+#: src/prefs_filtering.c:1279
 msgid "Delete rule"
 msgstr "Poista sääntö"
 
-#: src/prefs_filtering.c:1279
+#: src/prefs_filtering.c:1280
 msgid "Do you really want to delete this rule?"
 msgstr "Poistetaanko tämä sääntö?"
 
-#: src/prefs_filtering.c:1297
+#: src/prefs_filtering.c:1298
 msgid "Delete all rules"
 msgstr "Poista kaikki säännöt"
 
-#: src/prefs_filtering.c:1298
+#: src/prefs_filtering.c:1299
 msgid "Do you really want to delete all the rules?"
 msgstr "Poistetaanko kaikki säännöt?"
 
-#: src/prefs_filtering.c:1551
+#: src/prefs_filtering.c:1552
 msgid "Filtering rules not saved"
 msgstr "Suodatussääntöjä ei tallennettu"
 
-#: src/prefs_filtering.c:1552
+#: src/prefs_filtering.c:1553
 msgid "The list of filtering rules have been modified. Close anyway?"
 msgstr "Suodatussääntölistaa on muokattu, suljetaanko silti?"
 
-#: src/prefs_filtering.c:1774
+#: src/prefs_filtering.c:1775
 msgid "Move one page up"
 msgstr "Siirrä sivun ylöspäin"
 
-#: src/prefs_filtering.c:1775
+#: src/prefs_filtering.c:1776
 msgid "Move one page down"
 msgstr "Siirrä sivun alaspäin"
 
-#: src/prefs_filtering.c:1920
+#: src/prefs_filtering.c:1921
 msgid "Enable"
 msgstr "Pane päälle"
 
-#: src/prefs_folder_column.c:210
+#: src/prefs_folder_column.c:211
 msgid "Folder list columns configuration"
 msgstr "Viestiluettelon näyttöasetukset"
 
-#: src/prefs_folder_column.c:227
+#: src/prefs_folder_column.c:228
 msgid ""
 "Select columns to be displayed in the folder list. You can modify\n"
 "the order by using the Up / Down buttons or by dragging the items."
@@ -10486,17 +10506,17 @@ msgstr ""
 "Valitse viestiluettelossa näytettävät kohdat. Järjestystä voi muokata\n"
 "ylös‐ ja alas‐painikkeilla tai raahaamalla kohtia ympäriinsä."
 
-#: src/prefs_folder_column.c:256 src/prefs_summary_column.c:271
+#: src/prefs_folder_column.c:257 src/prefs_summary_column.c:271
 msgid "Hidden columns"
 msgstr "Piilotetut kohdat"
 
-#: src/prefs_folder_column.c:288 src/prefs_summaries.c:406
+#: src/prefs_folder_column.c:289 src/prefs_summaries.c:406
 #: src/prefs_summaries.c:552 src/prefs_summary_column.c:303
 msgid "Displayed columns"
 msgstr "Näytetyt kohdat"
 
-#: src/prefs_folder_column.c:327 src/prefs_msg_colors.c:496
-#: src/prefs_summary_column.c:342 src/prefs_toolbar.c:921
+#: src/prefs_folder_column.c:328 src/prefs_msg_colors.c:496
+#: src/prefs_summary_column.c:342 src/prefs_toolbar.c:1003
 msgid " Use default "
 msgstr " Käytä oletusta "
 
@@ -10635,11 +10655,11 @@ msgstr "Poistetaanko tämän kansion välimuistidata?"
 msgid "+Discard"
 msgstr "Poista"
 
-#: src/prefs_folder_item.c:1719
+#: src/prefs_folder_item.c:1721
 msgid "General"
 msgstr "Yleiset"
 
-#: src/prefs_folder_item.c:1793
+#: src/prefs_folder_item.c:1795
 #, c-format
 msgid "Properties for folder %s"
 msgstr "Kansion %s asetukset"
@@ -10648,7 +10668,7 @@ msgstr "Kansion %s asetukset"
 msgid "Folder and Message Lists"
 msgstr "Hakemisto ja viestiluettelot"
 
-#: src/prefs_fonts.c:102 src/prefs_matcher.c:1902
+#: src/prefs_fonts.c:102 src/prefs_matcher.c:1925
 msgid "Message"
 msgstr "Viesti"
 
@@ -10682,7 +10702,7 @@ msgstr "Näyttö"
 msgid "Fonts"
 msgstr "Fontit"
 
-#: src/prefs_gtk.c:939 src/toolbar.c:199 src/toolbar.c:405
+#: src/prefs_gtk.c:939 src/toolbar.c:201 src/toolbar.c:408
 msgid "Preferences"
 msgstr "Asetukset"
 
@@ -10834,234 +10854,242 @@ msgstr "Muu"
 msgid "Logging"
 msgstr "Lokikirjoitus"
 
-#: src/prefs_matcher.c:311
+#: src/prefs_matcher.c:314
 msgid "more than"
 msgstr "enemmän kuin"
 
-#: src/prefs_matcher.c:312
+#: src/prefs_matcher.c:315
 msgid "less than"
 msgstr "vähemmän kuin"
 
-#: src/prefs_matcher.c:317
+#: src/prefs_matcher.c:320
 msgid "weeks"
 msgstr "viikkoa"
 
-#: src/prefs_matcher.c:321
+#: src/prefs_matcher.c:324
 msgid "higher than"
 msgstr "enemmän kuin"
 
-#: src/prefs_matcher.c:322
+#: src/prefs_matcher.c:325
 msgid "lower than"
 msgstr "vähemmän kuin"
 
-#: src/prefs_matcher.c:323 src/prefs_matcher.c:329
+#: src/prefs_matcher.c:326 src/prefs_matcher.c:332
 msgid "exactly"
 msgstr "tasan"
 
-#: src/prefs_matcher.c:327
+#: src/prefs_matcher.c:330
 msgid "greater than"
 msgstr "enemmän kuin"
 
-#: src/prefs_matcher.c:328
+#: src/prefs_matcher.c:331
 msgid "smaller than"
 msgstr "vähemmän kuin"
 
-#: src/prefs_matcher.c:333
+#: src/prefs_matcher.c:336
 msgid "bytes"
 msgstr "tavua"
 
-#: src/prefs_matcher.c:334
+#: src/prefs_matcher.c:337
 msgid "kilobytes"
 msgstr "kilotavua"
 
-#: src/prefs_matcher.c:335
+#: src/prefs_matcher.c:338
 msgid "megabytes"
 msgstr "megatavua"
 
-#: src/prefs_matcher.c:339
+#: src/prefs_matcher.c:342
 msgid "contains"
 msgstr "sisältää"
 
-#: src/prefs_matcher.c:340
+#: src/prefs_matcher.c:343
 msgid "doesn't contain"
 msgstr "ei sisällä"
 
-#: src/prefs_matcher.c:362
+#: src/prefs_matcher.c:365
 msgid "headers part"
 msgstr "otsakkeet"
 
-#: src/prefs_matcher.c:363
+#: src/prefs_matcher.c:366
 msgid "body part"
 msgstr "viestisisältö"
 
-#: src/prefs_matcher.c:364
+#: src/prefs_matcher.c:367
 msgid "whole message"
 msgstr "koko viesti"
 
-#: src/prefs_matcher.c:370 src/summaryview.c:6129
+#: src/prefs_matcher.c:373 src/summaryview.c:6141
 msgid "Marked"
 msgstr "Merkitty"
 
-#: src/prefs_matcher.c:371 src/summaryview.c:6127
+#: src/prefs_matcher.c:374 src/summaryview.c:6139
 msgid "Deleted"
 msgstr "Poistettu"
 
-#: src/prefs_matcher.c:372
+#: src/prefs_matcher.c:375
 msgid "Replied"
 msgstr "Vastattu"
 
-#: src/prefs_matcher.c:373 src/summaryview.c:6121
+#: src/prefs_matcher.c:376 src/summaryview.c:6133
 msgid "Forwarded"
 msgstr "Edelleenlähetetty"
 
-#: src/prefs_matcher.c:375 src/summaryview.c:6113 src/toolbar.c:398
-#: src/toolbar.c:923 src/toolbar.c:1931
+#: src/prefs_matcher.c:378 src/summaryview.c:6125 src/toolbar.c:401
+#: src/toolbar.c:926 src/toolbar.c:1941
 msgid "Spam"
 msgstr "Roskaposti"
 
 #: src/prefs_matcher.c:379
+msgid "Has attachment"
+msgstr "Liitteellinen viesti"
+
+#: src/prefs_matcher.c:380 src/summaryview.c:6159
+msgid "Signed"
+msgstr "Allekirjoitettu"
+
+#: src/prefs_matcher.c:384
 msgid "set"
 msgstr "asetettu"
 
-#: src/prefs_matcher.c:380
+#: src/prefs_matcher.c:385
 msgid "not set"
 msgstr "asettamatta"
 
-#: src/prefs_matcher.c:384
+#: src/prefs_matcher.c:389
 msgid "yes"
 msgstr "kyllä"
 
-#: src/prefs_matcher.c:385
+#: src/prefs_matcher.c:390
 msgid "no"
 msgstr "ei"
 
-#: src/prefs_matcher.c:389
+#: src/prefs_matcher.c:394
 msgid "Any tags"
 msgstr "jokin tägi"
 
-#: src/prefs_matcher.c:390
+#: src/prefs_matcher.c:395
 msgid "Specific tag"
 msgstr "tietty tägi"
 
-#: src/prefs_matcher.c:394
+#: src/prefs_matcher.c:399
 msgid "ignored"
 msgstr "ohitettu"
 
-#: src/prefs_matcher.c:395
+#: src/prefs_matcher.c:400
 msgid "not ignored"
 msgstr "ei ohitettu"
 
-#: src/prefs_matcher.c:396
+#: src/prefs_matcher.c:401
 msgid "watched"
 msgstr "tarkkailtu"
 
-#: src/prefs_matcher.c:397
+#: src/prefs_matcher.c:402
 msgid "not watched"
 msgstr "ei tarkkailtu"
 
-#: src/prefs_matcher.c:401
+#: src/prefs_matcher.c:406
 msgid "found"
 msgstr "löydetty"
 
-#: src/prefs_matcher.c:402
+#: src/prefs_matcher.c:407
 msgid "not found"
 msgstr "ei löydetty"
 
-#: src/prefs_matcher.c:406
+#: src/prefs_matcher.c:411
 msgid "0 (Passed)"
 msgstr "0 (Onnistunut)"
 
-#: src/prefs_matcher.c:407
+#: src/prefs_matcher.c:412
 msgid "non-0 (Failed)"
 msgstr "ei-0 (Epäonnistunut)"
 
-#: src/prefs_matcher.c:542
+#: src/prefs_matcher.c:547
 msgid "Condition configuration"
 msgstr "Ehtoasetukset"
 
-#: src/prefs_matcher.c:586
+#: src/prefs_matcher.c:591
 msgid "Match criteria:"
 msgstr "Muokkaa hakuehtoja:"
 
-#: src/prefs_matcher.c:595
+#: src/prefs_matcher.c:600
 msgid "All messages"
 msgstr "Kaikki viestit"
 
-#: src/prefs_matcher.c:597
+#: src/prefs_matcher.c:602
 msgid "Age"
 msgstr "Ikä"
 
-#: src/prefs_matcher.c:598
+#: src/prefs_matcher.c:603
 msgid "Phrase"
 msgstr "Fraasi"
 
-#: src/prefs_matcher.c:599
+#: src/prefs_matcher.c:604
 msgid "Flags"
 msgstr "Liput"
 
-#: src/prefs_matcher.c:600 src/prefs_msg_colors.c:412
+#: src/prefs_matcher.c:605 src/prefs_msg_colors.c:412
 msgid "Color labels"
 msgstr "Värimerkinnät"
 
-#: src/prefs_matcher.c:601
+#: src/prefs_matcher.c:606
 msgid "Thread"
 msgstr "Säie"
 
-#: src/prefs_matcher.c:604
+#: src/prefs_matcher.c:609
 msgid "Partially downloaded"
 msgstr "Osittain noudettu"
 
-#: src/prefs_matcher.c:607
+#: src/prefs_matcher.c:612
 msgid "External program test"
 msgstr "Ulkoinen ohjelma"
 
-#: src/prefs_matcher.c:670 src/prefs_matcher.c:1487 src/prefs_matcher.c:1502
-#: src/prefs_matcher.c:2361
+#: src/prefs_matcher.c:675 src/prefs_matcher.c:1510 src/prefs_matcher.c:1525
+#: src/prefs_matcher.c:2390
 msgid "Filtering Matcher Menu|All"
 msgstr "Kaikki"
 
-#: src/prefs_matcher.c:702
+#: src/prefs_matcher.c:707
 msgid "Use regexp"
 msgstr "Käytä säännöllisiä lausekkeita"
 
-#: src/prefs_matcher.c:779
+#: src/prefs_matcher.c:784
 msgid "Message must match"
 msgstr "Viesti täsmää"
 
-#: src/prefs_matcher.c:783
+#: src/prefs_matcher.c:788
 msgid "at least one"
 msgstr "vähintään yksi"
 
-#: src/prefs_matcher.c:784
+#: src/prefs_matcher.c:789
 msgid "all"
 msgstr "kaikki"
 
-#: src/prefs_matcher.c:787
+#: src/prefs_matcher.c:792
 msgid "of above rules"
 msgstr "ylläolevista säännöistä"
 
-#: src/prefs_matcher.c:1413 src/prefs_matcher.c:1471
+#: src/prefs_matcher.c:1436 src/prefs_matcher.c:1494
 msgid "Search pattern is not set."
 msgstr "Hakulauseke on asettamatta."
 
-#: src/prefs_matcher.c:1422
+#: src/prefs_matcher.c:1445
 msgid "Test command is not set."
 msgstr "Testikomento on asettamatta."
 
-#: src/prefs_matcher.c:1488
+#: src/prefs_matcher.c:1511
 msgid "all addresses in all headers"
 msgstr "kaikki osoitteet kaikissa otsakkeissa"
 
-#: src/prefs_matcher.c:1491
+#: src/prefs_matcher.c:1514
 msgid "any address in any header"
 msgstr "mikä tahansa osoite missä tahansa otsakkeessa"
 
-#: src/prefs_matcher.c:1493
+#: src/prefs_matcher.c:1516
 #, c-format
 msgid "the address(es) in header '%s'"
 msgstr "osoitteita otsakkeessa %s"
 
-#: src/prefs_matcher.c:1494
+#: src/prefs_matcher.c:1517
 #, c-format
 msgid ""
 "Book/folder path is not set.\n"
@@ -11074,79 +11102,79 @@ msgstr ""
 "Jos haluat täsmätä kohteen %s koko osoitekirjaan, valitse %s osoitekirja‐"
 "kansiopudotusvalikosta."
 
-#: src/prefs_matcher.c:1707
+#: src/prefs_matcher.c:1730
 msgid "Headers part"
 msgstr "Otsakeosio"
 
-#: src/prefs_matcher.c:1711
+#: src/prefs_matcher.c:1734
 msgid "Body part"
 msgstr "Sisältöosio"
 
-#: src/prefs_matcher.c:1715
+#: src/prefs_matcher.c:1738
 msgid "Whole message"
 msgstr "Koko viesti"
 
-#: src/prefs_matcher.c:1832 src/prefs_matcher.c:1873
+#: src/prefs_matcher.c:1855 src/prefs_matcher.c:1896
 msgid "in"
 msgstr "kohteessa"
 
-#: src/prefs_matcher.c:1834
+#: src/prefs_matcher.c:1857
 msgid "content is"
 msgstr "sisältää"
 
-#: src/prefs_matcher.c:1842
+#: src/prefs_matcher.c:1865
 msgid "Age is"
 msgstr "Ikä on"
 
-#: src/prefs_matcher.c:1847
+#: src/prefs_matcher.c:1870
 msgid "Flag"
 msgstr "Lippu"
 
-#: src/prefs_matcher.c:1848 src/prefs_matcher.c:1864
+#: src/prefs_matcher.c:1871 src/prefs_matcher.c:1887
 msgid "is"
 msgstr "on"
 
-#: src/prefs_matcher.c:1853
+#: src/prefs_matcher.c:1876
 msgid "Name:"
 msgstr "Nimi:"
 
-#: src/prefs_matcher.c:1863
+#: src/prefs_matcher.c:1886
 msgid "Label"
 msgstr "Nimiö"
 
-#: src/prefs_matcher.c:1868
+#: src/prefs_matcher.c:1891
 msgid "Value:"
 msgstr "Arvo:"
 
-#: src/prefs_matcher.c:1885
+#: src/prefs_matcher.c:1908
 msgid "Score is"
 msgstr "Pisteet on"
 
-#: src/prefs_matcher.c:1886
+#: src/prefs_matcher.c:1909
 msgid "points"
 msgstr "pistettä"
 
-#: src/prefs_matcher.c:1896
+#: src/prefs_matcher.c:1919
 msgid "Size is"
 msgstr "Koko on"
 
-#: src/prefs_matcher.c:1901
+#: src/prefs_matcher.c:1924
 msgid "Scope:"
 msgstr "Alue:"
 
-#: src/prefs_matcher.c:1903
+#: src/prefs_matcher.c:1926
 msgid "tags"
 msgstr "tägit"
 
-#: src/prefs_matcher.c:1908
+#: src/prefs_matcher.c:1931
 msgid "type is"
 msgstr "tyyppi on"
 
-#: src/prefs_matcher.c:1912
+#: src/prefs_matcher.c:1935
 msgid "Program returns"
 msgstr "Ohjelma palauttaa"
 
-#: src/prefs_matcher.c:1981
+#: src/prefs_matcher.c:2005
 msgid ""
 "The entry was not saved.\n"
 "Close anyway?"
@@ -11154,11 +11182,11 @@ msgstr ""
 "Kenttää ei ole tallennettu.\n"
 " Suljetaanko joka tapauksessa?"
 
-#: src/prefs_matcher.c:2043
+#: src/prefs_matcher.c:2068
 msgid "Match Type: 'Test'"
 msgstr "Vastaavuuden tyyppi: Testaa"
 
-#: src/prefs_matcher.c:2044
+#: src/prefs_matcher.c:2069
 msgid ""
 "'Test' allows you to test a message or message element using an external "
 "program or script. The program will return either 0 or 1.\n"
@@ -11170,7 +11198,7 @@ msgstr ""
 "\n"
 "Seuraavia merkintöjä voi käyttää:"
 
-#: src/prefs_matcher.c:2142
+#: src/prefs_matcher.c:2167
 msgid "Current condition rules"
 msgstr "Nykyiset ehtosäännöt"
 
@@ -11492,8 +11520,8 @@ msgid ""
 "Safer mode asks the OS to write metadata to disk directly;\n"
 "it avoids data loss after crashes but can take some time."
 msgstr ""
-"Turvallisemmassa tilassa kysytään käyttöjärjestelmää kirjoittamaan "
-"levylle suoraan\n"
+"Turvallisemmassa tilassa kysytään käyttöjärjestelmää kirjoittamaan levylle "
+"suoraan\n"
 "Silloin ei menetetä tietoja ohjelman kaatuessa mutta se on hitaampaa."
 
 #: src/prefs_other.c:520
@@ -11562,8 +11590,8 @@ msgid "Automatic checking"
 msgstr "Automaattinen haku"
 
 #: src/prefs_receive.c:162
-msgid "Automatically check for new mail every"
-msgstr "Hae uudet viestit automaattisesti joka"
+msgid "Check for new mail every"
+msgstr "Etsi uusia viestejä automaattisesti joka"
 
 #: src/prefs_receive.c:180
 msgid "Check for new mail on start-up"
@@ -11958,7 +11986,7 @@ msgid "Unread and Total messages"
 msgstr "Lukemattomat ja kaikki viestit"
 
 #: src/prefs_summaries.c:381
-msgid "Open last opened folder at startup"
+msgid "Open last opened folder at start-up"
 msgstr "Avaa viimeksi avoinna ollut kansio käynnistyksessä"
 
 #: src/prefs_summaries.c:384
@@ -12038,7 +12066,7 @@ msgid "Date format help"
 msgstr "Päiväyksen muodon ohje"
 
 #: src/prefs_summaries.c:564
-msgid "Confirm before marking all mails in a folder as read"
+msgid "Confirm before marking all messages in a folder as read"
 msgstr "Vahvista ennen kuin merkitään kaikki kansion viestit luetuiksi"
 
 #: src/prefs_summaries.c:567
@@ -12055,7 +12083,7 @@ msgstr "Näyttää standardiotsakkeet (Lähettäjä, Aihe, jne.) suomeksi."
 msgid "Summaries"
 msgstr "Yhteenvetonäkymä"
 
-#: src/prefs_summary_column.c:79 src/summaryview.c:2652
+#: src/prefs_summary_column.c:79 src/summaryview.c:2653
 msgid "Attachment"
 msgstr "Liite"
 
@@ -12161,59 +12189,59 @@ msgstr "Siirrä valittu malline alimmaksi"
 msgid "Template configuration"
 msgstr "Mallineasetukset"
 
-#: src/prefs_template.c:596
+#: src/prefs_template.c:597
 msgid "Templates list not saved"
 msgstr "Malliluetteloa ei tallennettu."
 
-#: src/prefs_template.c:597
+#: src/prefs_template.c:598
 msgid "The templates list has been modified. Close anyway?"
 msgstr "Malliluetteloa ei ole tallennettu, suljetaanko joka tapauksessa?"
 
-#: src/prefs_template.c:761
+#: src/prefs_template.c:762
 msgid "The template's name is not set."
 msgstr "Mallineen nimi on asettamatta."
 
-#: src/prefs_template.c:798
+#: src/prefs_template.c:799
 msgid "The \"From\" field of the template contains an invalid email address."
 msgstr "Mallineen Lähettäjä-kentässä on epäkelpo sähköpostiosoite."
 
-#: src/prefs_template.c:804
+#: src/prefs_template.c:805
 msgid "The \"To\" field of the template contains an invalid email address."
 msgstr "Mallineen Vastaanottaja-kentässä on epäkelpo sähköpostiosoite."
 
-#: src/prefs_template.c:810
+#: src/prefs_template.c:811
 msgid "The \"Cc\" field of the template contains an invalid email address."
 msgstr "Mallineen Kopio-kentässä on epäkelpo sähköpostiosoite."
 
-#: src/prefs_template.c:816
+#: src/prefs_template.c:817
 msgid "The \"Bcc\" field of the template contains an invalid email address."
 msgstr "Mallineen Piilokopio-kentässä on epäkelpo sähköpostiosoite."
 
-#: src/prefs_template.c:822
+#: src/prefs_template.c:823
 msgid "The \"Subject\" field of the template is invalid."
 msgstr "Mallineen Aihe-kenttä on epäkelpo."
 
-#: src/prefs_template.c:892
+#: src/prefs_template.c:893
 msgid "Delete template"
 msgstr "Poista malline"
 
-#: src/prefs_template.c:893
+#: src/prefs_template.c:894
 msgid "Do you really want to delete this template?"
 msgstr "Poistetaanko tämä malline?"
 
-#: src/prefs_template.c:906
+#: src/prefs_template.c:907
 msgid "Delete all templates"
 msgstr "Poista kaikki mallineet"
 
-#: src/prefs_template.c:907
+#: src/prefs_template.c:908
 msgid "Do you really want to delete all the templates?"
 msgstr "Poistetaanko kaikki mallineet?"
 
-#: src/prefs_template.c:1213
+#: src/prefs_template.c:1214
 msgid "Current templates"
 msgstr "Nykyiset mallineet"
 
-#: src/prefs_template.c:1241
+#: src/prefs_template.c:1242
 msgid "Template"
 msgstr "Malline"
 
@@ -12379,7 +12407,7 @@ msgstr "Käytä tätä"
 msgid "Remove"
 msgstr "Poista"
 
-#: src/prefs_toolbar.c:170
+#: src/prefs_toolbar.c:173
 msgid ""
 "Selected Action already set.\n"
 "Please choose another Action from List"
@@ -12387,83 +12415,83 @@ msgstr ""
 "Valittu toiminto on jo asetettu.\n"
 "Valitse toimintoluettelosta jotain muuta"
 
-#: src/prefs_toolbar.c:171
+#: src/prefs_toolbar.c:174
 msgid "Item has no icon defined."
 msgstr "Kohdalla ei ole kuvaketta määritelty."
 
-#: src/prefs_toolbar.c:172
+#: src/prefs_toolbar.c:175
 msgid "Item has no text defined."
 msgstr "Kohdalla ei ole tekstiä määritelty."
 
-#: src/prefs_toolbar.c:219
+#: src/prefs_toolbar.c:250
 msgid "Main toolbar configuration"
 msgstr "Päätyökalupalkin asetukset"
 
-#: src/prefs_toolbar.c:220
+#: src/prefs_toolbar.c:251
 msgid "Compose toolbar configuration"
 msgstr "Kirjoitustyökalupalkkin asetukset"
 
-#: src/prefs_toolbar.c:221
+#: src/prefs_toolbar.c:252
 msgid "Message view toolbar configuration"
 msgstr "Viestinkatselutyökalupalkin asetukset"
 
-#: src/prefs_toolbar.c:801
+#: src/prefs_toolbar.c:876
 msgid "Toolbar item"
 msgstr "Työkalupalkin kohta"
 
-#: src/prefs_toolbar.c:817
+#: src/prefs_toolbar.c:892
 msgid "Item type"
 msgstr "Kohdan tyyppi"
 
-#: src/prefs_toolbar.c:824
+#: src/prefs_toolbar.c:899
 msgid "Internal Function"
 msgstr "Sisäinen toiminto"
 
-#: src/prefs_toolbar.c:825
+#: src/prefs_toolbar.c:900
 msgid "User Action"
 msgstr "Käyttäjän toiminto"
 
-#: src/prefs_toolbar.c:825 src/toolbar.c:217
+#: src/prefs_toolbar.c:900 src/toolbar.c:219
 msgid "Separator"
 msgstr "Erotin"
 
-#: src/prefs_toolbar.c:832
+#: src/prefs_toolbar.c:907
 msgid "Event executed on click"
 msgstr "Toiminto, joka suoritetaan hiirellä napsautettaessa"
 
-#: src/prefs_toolbar.c:852
+#: src/prefs_toolbar.c:934
 msgid "Toolbar text"
 msgstr "Työkalupalkin teksti"
 
-#: src/prefs_toolbar.c:867 src/prefs_toolbar.c:1100
+#: src/prefs_toolbar.c:949 src/prefs_toolbar.c:1286
 msgid "Icon"
 msgstr "Kuvake"
 
-#: src/prefs_toolbar.c:998 src/prefs_toolbar.c:1012 src/prefs_toolbar.c:1026
+#: src/prefs_toolbar.c:1184 src/prefs_toolbar.c:1198 src/prefs_toolbar.c:1212
 msgid "Toolbars"
 msgstr "Työkalupalkit"
 
-#: src/prefs_toolbar.c:999
+#: src/prefs_toolbar.c:1185
 msgid "Main Window"
 msgstr "Pääikkuna"
 
-#: src/prefs_toolbar.c:1013
+#: src/prefs_toolbar.c:1199
 msgid "Message Window"
 msgstr "Viesti‐ikkuna"
 
-#: src/prefs_toolbar.c:1027
+#: src/prefs_toolbar.c:1213
 msgid "Compose Window"
 msgstr "Viestinkirjoitusikkuna"
 
-#: src/prefs_toolbar.c:1123
+#: src/prefs_toolbar.c:1309
 msgid "Icon text"
 msgstr "Kuvaketeksti"
 
-#: src/prefs_toolbar.c:1132
+#: src/prefs_toolbar.c:1318
 msgid "Mapped event"
 msgstr "Liitetty toiminto"
 
-#: src/prefs_toolbar.c:1415
+#: src/prefs_toolbar.c:1617
 msgid "Toolbar item icon"
 msgstr "Työkalupalkin kuvake"
 
@@ -12484,46 +12512,46 @@ msgid "Auto indent"
 msgstr "Automaattinen rivitys"
 
 #: src/prefs_wrapping.c:88
-msgid "Wrap messages at"
-msgstr "Rivitä sarakkeelta"
+msgid "Wrap text at"
+msgstr "Rivitä sarakkeesta"
 
 #: src/prefs_wrapping.c:153
 msgid "Wrapping"
 msgstr "Rivitys"
 
-#: src/printing.c:487
+#: src/printing.c:492
 msgid "First page"
 msgstr "Ensimmäinen sivu"
 
-#: src/printing.c:489
+#: src/printing.c:494
 msgid "Previous page"
 msgstr "Edellinen sivu"
 
-#: src/printing.c:496
+#: src/printing.c:501
 msgid "Next page"
 msgstr "Seuraava sivu"
 
-#: src/printing.c:498
+#: src/printing.c:503
 msgid "Last page"
 msgstr "Viimeinen sivu"
 
-#: src/printing.c:504
+#: src/printing.c:509
 msgid "Zoom 100%"
 msgstr "Zoomaa 100 %:iin"
 
-#: src/printing.c:506
+#: src/printing.c:511
 msgid "Zoom fit"
 msgstr "Zoom sopivaksi"
 
-#: src/printing.c:508
+#: src/printing.c:513
 msgid "Zoom in"
 msgstr "Zoomaa sisään"
 
-#: src/printing.c:510
+#: src/printing.c:515
 msgid "Zoom out"
 msgstr "Zoomaa ulos"
 
-#: src/printing.c:704
+#: src/printing.c:715
 #, c-format
 msgid "Page %d"
 msgstr "Sivu %d"
@@ -12536,7 +12564,7 @@ msgstr "Ei tietoja saatavilla"
 msgid "No recipient keys defined."
 msgstr "Vastaanottaja‐avaimia ei ole määritelty"
 
-#: src/procmime.c:376 src/procmime.c:378 src/procmime.c:379
+#: src/procmime.c:378 src/procmime.c:380 src/procmime.c:381
 msgid "[Error decoding BASE64]\n"
 msgstr "[Virhe BASE64:n purussa]\n"
 
@@ -13060,140 +13088,140 @@ msgstr "Luettelon alku tuli vastaan, jatketaanko lopusta?"
 msgid "End of list reached; continue from beginning?"
 msgstr "Luettelon loppu tuli vastaan, jatketaanko alusta?"
 
-#: src/summaryview.c:421
+#: src/summaryview.c:422
 msgid "Create _filter rule"
 msgstr "Luo suoda_tussääntö"
 
-#: src/summaryview.c:544
+#: src/summaryview.c:545
 msgid "Toggle quick search bar"
 msgstr "Vaihda pikahakupalkin tilaa"
 
-#: src/summaryview.c:581
+#: src/summaryview.c:582
 msgid "Toggle multiple selection"
 msgstr "Vaihda monivalintaa"
 
-#: src/summaryview.c:1179
+#: src/summaryview.c:1180
 msgid "Process mark"
 msgstr "Käsittelymerkintä"
 
-#: src/summaryview.c:1180
+#: src/summaryview.c:1181
 msgid "Some marks are left. Process them?"
 msgstr "Merkintöjä on jäljellä, käsitelläänkö?"
 
-#: src/summaryview.c:1238
+#: src/summaryview.c:1239
 #, c-format
 msgid "Scanning folder (%s)..."
 msgstr "Luetaan kansiota (%s)…"
 
-#: src/summaryview.c:1727 src/summaryview.c:1779
+#: src/summaryview.c:1728 src/summaryview.c:1780
 msgid "No more unread messages"
 msgstr "Ei lukemattomia viestejä"
 
-#: src/summaryview.c:1728
+#: src/summaryview.c:1729
 msgid "No unread message found. Search from the end?"
 msgstr "Lukemattomia viestejä ei löytynyt, jatketaanko hakua lopusta?"
 
-#: src/summaryview.c:1740 src/summaryview.c:1792 src/summaryview.c:1839
-#: src/summaryview.c:1891 src/summaryview.c:1970
+#: src/summaryview.c:1741 src/summaryview.c:1793 src/summaryview.c:1840
+#: src/summaryview.c:1892 src/summaryview.c:1971
 msgid ""
 "Internal error: unexpected value for prefs_common.next_unread_msg_dialog\n"
 msgstr ""
 "Sisäinen virhe: prefs_common.next_unread_msg_dialog sisältää "
 "odotuksenvastaisia arvoja\n"
 
-#: src/summaryview.c:1748
+#: src/summaryview.c:1749
 msgid "No unread messages."
 msgstr "Ei lukemattomia viestejä."
 
-#: src/summaryview.c:1780
+#: src/summaryview.c:1781
 msgid "No unread message found. Go to next folder?"
 msgstr "Lukemattomia viestejä ei löytynyt, edetäänkö seuraavaan kansioon?"
 
-#: src/summaryview.c:1826 src/summaryview.c:1878
+#: src/summaryview.c:1827 src/summaryview.c:1879
 msgid "No more new messages"
 msgstr "Ei uusia viestejä"
 
-#: src/summaryview.c:1827
+#: src/summaryview.c:1828
 msgid "No new message found. Search from the end?"
 msgstr "Uusia viestejä ei löytynyt, jatketaanko hakua lopusta?"
 
-#: src/summaryview.c:1847
+#: src/summaryview.c:1848
 msgid "No new messages."
 msgstr "Ei uusia viestejä."
 
-#: src/summaryview.c:1879
+#: src/summaryview.c:1880
 msgid "No new message found. Go to next folder?"
 msgstr "Uusia viestejä ei löytynyt, edetäänkö seuraavaan kansioon?"
 
-#: src/summaryview.c:1916 src/summaryview.c:1957
+#: src/summaryview.c:1917 src/summaryview.c:1958
 msgid "No more marked messages"
 msgstr "Ei enää merkittyjä viestejä"
 
-#: src/summaryview.c:1917
+#: src/summaryview.c:1918
 msgid "No marked message found. Search from the end?"
 msgstr "Merkittyjä viestejä ei löytynyt, jatketaanko hakua lopusta?"
 
-#: src/summaryview.c:1926
+#: src/summaryview.c:1927
 msgid "No marked messages."
 msgstr "Ei merkittyjä viestejä."
 
-#: src/summaryview.c:1958
+#: src/summaryview.c:1959
 msgid "No marked message found. Go to next folder?"
 msgstr "Merkittyjä viestejä ei löytynyt, edetäänkö seuraavaan kansioon?"
 
-#: src/summaryview.c:1995 src/summaryview.c:2020
+#: src/summaryview.c:1996 src/summaryview.c:2021
 msgid "No more labeled messages"
 msgstr "Ei enää nimettyjä viestejä"
 
-#: src/summaryview.c:1996
+#: src/summaryview.c:1997
 msgid "No labeled message found. Search from the end?"
 msgstr "Nimettyjä viestejä ei löytynyt, jatketaanko hakua lopusta?"
 
-#: src/summaryview.c:2005 src/summaryview.c:2030
+#: src/summaryview.c:2006 src/summaryview.c:2031
 msgid "No labeled messages."
 msgstr "Ei nimettyjä viestejä."
 
-#: src/summaryview.c:2021
+#: src/summaryview.c:2022
 msgid "No labeled message found. Search from the beginning?"
 msgstr "Nimettyjä viestejä ei löytynyt, jatketaanko hakua alusta?"
 
-#: src/summaryview.c:2312
+#: src/summaryview.c:2313
 msgid "Attracting messages by subject..."
 msgstr "Houkutellaan viestejä otsikon mukaan…"
 
-#: src/summaryview.c:2496
+#: src/summaryview.c:2497
 #, c-format
 msgid "%d deleted"
 msgstr "%d poistettu"
 
-#: src/summaryview.c:2500
+#: src/summaryview.c:2501
 #, c-format
 msgid "%s%d moved"
 msgstr "%s%d siirretty"
 
-#: src/summaryview.c:2501 src/summaryview.c:2508
+#: src/summaryview.c:2502 src/summaryview.c:2509
 msgid ", "
 msgstr ", "
 
-#: src/summaryview.c:2506
+#: src/summaryview.c:2507
 #, c-format
 msgid "%s%d copied"
 msgstr "%s%d kopioitu"
 
-#: src/summaryview.c:2521
+#: src/summaryview.c:2522
 msgid " item selected"
 msgstr " kohde valittu"
 
-#: src/summaryview.c:2523
+#: src/summaryview.c:2524
 msgid " items selected"
 msgstr " kohdetta valittu"
 
-#: src/summaryview.c:2541 src/summaryview.c:2579
+#: src/summaryview.c:2542 src/summaryview.c:2580
 #, c-format
 msgid "%d new, %d unread, %d total (%s)"
 msgstr "%d uutta, %d lukematta, %d yhteensä (%s)"
 
-#: src/summaryview.c:2549
+#: src/summaryview.c:2550
 #, c-format
 msgid ""
 "<b>Message summary</b>\n"
@@ -13222,28 +13250,28 @@ msgstr ""
 "<b>Ohitettuja:</b> %d\n"
 "<b>Tarkkailtuja:</b> %d"
 
-#: src/summaryview.c:2574
+#: src/summaryview.c:2575
 #, c-format
 msgid "%d/%d selected (%s/%s), %d unread"
 msgstr "%d∕%d valittu (%s∕%s), %d lukematta"
 
-#: src/summaryview.c:2852
+#: src/summaryview.c:2853
 msgid "Sorting summary..."
 msgstr "Järjestellään yhteenvetoa…"
 
-#: src/summaryview.c:2966
+#: src/summaryview.c:2967
 msgid "Setting summary from message data..."
 msgstr "Laadistaan yhteenvetoja viestidatasta…"
 
-#: src/summaryview.c:3170
+#: src/summaryview.c:3171
 msgid "(No Date)"
 msgstr "(Ei päiväystä)"
 
-#: src/summaryview.c:3207
+#: src/summaryview.c:3208
 msgid "(No Recipient)"
 msgstr "(Ei vastaanottajia)"
 
-#: src/summaryview.c:3242
+#: src/summaryview.c:3243
 #, c-format
 msgid ""
 "%s\n"
@@ -13252,7 +13280,7 @@ msgstr ""
 "%s\n"
 "<span color='%s' style='italic'>Lähettäjä: %s, ajalla %s</span>"
 
-#: src/summaryview.c:3249
+#: src/summaryview.c:3250
 #, c-format
 msgid ""
 "%s\n"
@@ -13261,72 +13289,72 @@ msgstr ""
 "%s\n"
 "<span color='%s' style='italic'>Vastaanottaja: %s, ajalla %s</span>"
 
-#: src/summaryview.c:4112
+#: src/summaryview.c:4118
 msgid "You're not the author of the article.\n"
 msgstr "Et ole viestin kirjoittaja\n"
 
-#: src/summaryview.c:4203
+#: src/summaryview.c:4209
 #, c-format
 msgid "Do you really want to delete the selected message?"
 msgid_plural "Do you really want to delete the %d selected messages?"
 msgstr[0] "Poistetaanko valittu viesti?"
 msgstr[1] "Poistetaanko %d valittua viestiä?"
 
-#: src/summaryview.c:4206
+#: src/summaryview.c:4212
 msgid "Delete message(s)"
 msgstr "Poista viestejä"
 
-#: src/summaryview.c:4367
+#: src/summaryview.c:4373
 msgid "Destination is same as current folder."
 msgstr "Kohdekansio on sama kuin nykyinen kansio."
 
-#: src/summaryview.c:4466
+#: src/summaryview.c:4472
 msgid "Destination to copy is same as current folder."
 msgstr "Kopioinnin kohde on sama kuin nykyinen kansio."
 
-#: src/summaryview.c:4631
+#: src/summaryview.c:4637
 msgid "Append or Overwrite"
 msgstr "Lisää perään tai kirjoita päälle"
 
-#: src/summaryview.c:4632
+#: src/summaryview.c:4638
 msgid "Append or overwrite existing file?"
 msgstr "Lisätäänkö perään vai kirjoitetaanko olemassolevan tiedoston päälle?"
 
-#: src/summaryview.c:4633
+#: src/summaryview.c:4639
 msgid "_Append"
 msgstr "_Lisää"
 
-#: src/summaryview.c:4633
+#: src/summaryview.c:4639
 msgid "_Overwrite"
 msgstr "_Korvaa"
 
-#: src/summaryview.c:4680
+#: src/summaryview.c:4686
 #, c-format
 msgid ""
 "You are about to print %d messages, one by one. Do you want to continue?"
 msgstr "Olet tulostamassa %d viestiä yksitellen, jatketaanko?"
 
-#: src/summaryview.c:5182
+#: src/summaryview.c:5188
 msgid "Building threads..."
 msgstr "Rakennetaan säikeitä…"
 
-#: src/summaryview.c:5422
+#: src/summaryview.c:5434
 msgid "Skip these rules"
 msgstr "Ohita nämä säännöt"
 
-#: src/summaryview.c:5425
+#: src/summaryview.c:5437
 msgid "Apply these rules regardless of the account they belong to"
 msgstr "Käytä näitä sääntöjä tilistä riippumatta"
 
-#: src/summaryview.c:5428
+#: src/summaryview.c:5440
 msgid "Apply these rules if they apply to the current account"
 msgstr "Käytä näitä sääntöjä vain tälle tilille"
 
-#: src/summaryview.c:5457
+#: src/summaryview.c:5469
 msgid "Filtering"
 msgstr "Suodatus"
 
-#: src/summaryview.c:5458
+#: src/summaryview.c:5470
 msgid ""
 "There are some filtering rules that belong to an account.\n"
 "Please choose what to do with these rules:"
@@ -13334,59 +13362,55 @@ msgstr ""
 "Tiliin kuuluu joitain suodatussääntöjä.\n"
 "Valitse mitä niille tehdään:"
 
-#: src/summaryview.c:5460
+#: src/summaryview.c:5472
 msgid "_Filter"
 msgstr "_Suodata"
 
-#: src/summaryview.c:5488
+#: src/summaryview.c:5500
 msgid "Filtering..."
 msgstr "Suodatetaan…"
 
-#: src/summaryview.c:5567
+#: src/summaryview.c:5579
 msgid "Processing configuration"
 msgstr "Asetuksia luetaan"
 
-#: src/summaryview.c:6109
+#: src/summaryview.c:6121
 msgid "Ignored thread"
 msgstr "Ohitettu säie"
 
-#: src/summaryview.c:6111
+#: src/summaryview.c:6123
 msgid "Watched thread"
 msgstr "Tarkkailtu säie"
 
-#: src/summaryview.c:6119
+#: src/summaryview.c:6131
 msgid "Replied - click to see reply"
 msgstr "Vastattu – paina nähdäksesi vastaus"
 
-#: src/summaryview.c:6131
+#: src/summaryview.c:6143
 msgid "To be moved"
 msgstr "Siirrettävä"
 
-#: src/summaryview.c:6133
+#: src/summaryview.c:6145
 msgid "To be copied"
 msgstr "Kopioitavana"
 
-#: src/summaryview.c:6145
+#: src/summaryview.c:6157
 msgid "Signed, has attachment(s)"
 msgstr "Allekirjoitettu liitteellinen viesti"
 
-#: src/summaryview.c:6147
-msgid "Signed"
-msgstr "Allekirjoitettu"
-
-#: src/summaryview.c:6149
+#: src/summaryview.c:6161
 msgid "Encrypted, has attachment(s)"
 msgstr "Salattu ja liitteellinen viesti"
 
-#: src/summaryview.c:6151
+#: src/summaryview.c:6163
 msgid "Encrypted"
 msgstr "Salattu"
 
-#: src/summaryview.c:6153
+#: src/summaryview.c:6165
 msgid "Has attachment(s)"
 msgstr "Liitteellinen viesti"
 
-#: src/summaryview.c:7731
+#: src/summaryview.c:7776
 #, c-format
 msgid ""
 "Regular expression (regexp) error:\n"
@@ -13395,11 +13419,11 @@ msgstr ""
 "Säännöllisessä lausekkeessa (regexpissä siis) virhe:\n"
 "%s"
 
-#: src/summaryview.c:7839
+#: src/summaryview.c:7884
 msgid "Go back to the folder list (You have unread messages)"
 msgstr "Palaa kansioihin (lukemattomia viestejä jäljellä)"
 
-#: src/summaryview.c:7844
+#: src/summaryview.c:7889
 msgid "Go back to the folder list"
 msgstr "Palaa kansioluetteloon"
 
@@ -13459,72 +13483,72 @@ msgstr "”Katsele lokia”"
 msgid " in the Tools menu for more information."
 msgstr " työkaluvalikossa lisätietoa varten."
 
-#: src/textview.c:899
+#: src/textview.c:898
 msgid "  The following can be performed on this part\n"
 msgstr "  Tälle osalle voi suorittaa seuraavaa\n"
 
-#: src/textview.c:901
+#: src/textview.c:900
 msgid "  by right-clicking the icon or list item:"
 msgstr ""
 "  napsauttamalla kuvaketta tai luettelon kohtaa oikealla hiirenpainikkeella:"
 
-#: src/textview.c:905
+#: src/textview.c:904
 msgid "     - To save, select "
 msgstr "\t— Tallentaaksesi valitse "
 
-#: src/textview.c:906
+#: src/textview.c:905
 msgid "'Save as...'"
 msgstr "”Tallenna nimellä…”"
 
-#: src/textview.c:908
+#: src/textview.c:907
 msgid " (Shortcut key: 'y')"
 msgstr " (pikanäppäin: ’y’)"
 
-#: src/textview.c:912
+#: src/textview.c:911
 msgid "     - To display as text, select "
 msgstr "    — Näytä tekstinä valitsemalla "
 
-#: src/textview.c:913
+#: src/textview.c:912
 msgid "'Display as text'"
 msgstr "”Näytä tekstinä”"
 
-#: src/textview.c:916
+#: src/textview.c:915
 msgid " (Shortcut key: 't')"
 msgstr " (pikanäppäin: ’t’)"
 
-#: src/textview.c:920
+#: src/textview.c:919
 msgid "     - To open with an external program, select "
 msgstr "    — Avaa ulkoisella sovelluksella valitsemalla "
 
-#: src/textview.c:921
+#: src/textview.c:920
 msgid "'Open'"
 msgstr "”Avaa”"
 
-#: src/textview.c:924
+#: src/textview.c:923
 msgid " (Shortcut key: 'l')\n"
 msgstr " (pikanäppäin: ’l’)\n"
 
-#: src/textview.c:925
+#: src/textview.c:924
 msgid "       (alternately double-click, or click the middle "
 msgstr "    (vaihtoehtoisesti kaksoisnapsauta tai paina hiiren "
 
-#: src/textview.c:926
+#: src/textview.c:925
 msgid "mouse button)\n"
 msgstr "keskipainiketta)\n"
 
-#: src/textview.c:928
+#: src/textview.c:927
 msgid "     - Or use "
 msgstr "\t— tai käytä "
 
-#: src/textview.c:929
+#: src/textview.c:928
 msgid "'Open with...'"
 msgstr "”Avaa ohjelmalla…”"
 
-#: src/textview.c:930
+#: src/textview.c:929
 msgid " (Shortcut key: 'o')"
 msgstr " (pikanäppäin: ’o’)"
 
-#: src/textview.c:1027
+#: src/textview.c:1026
 #, c-format
 msgid ""
 "The command to view attachment as text failed:\n"
@@ -13535,11 +13559,11 @@ msgstr ""
 "\t%s\n"
 "Poistumisarvo %d\n"
 
-#: src/textview.c:2104
+#: src/textview.c:2103
 msgid "Tags: "
 msgstr "Tägit: "
 
-#: src/textview.c:2785
+#: src/textview.c:2784
 #, c-format
 msgid ""
 "The real URL is different from the displayed URL.\n"
@@ -13557,279 +13581,283 @@ msgstr ""
 "\n"
 "Avataanko silti?"
 
-#: src/textview.c:2794
+#: src/textview.c:2793
 msgid "Phishing attempt warning"
 msgstr "Khalasteluyritysvaroitus"
 
-#: src/textview.c:2795
+#: src/textview.c:2794
 msgid "_Open URL"
 msgstr "_Avaa"
 
-#: src/toolbar.c:178 src/toolbar.c:1883
+#: src/toolbar.c:180 src/toolbar.c:1893
 msgid "Receive Mail on all Accounts"
 msgstr "Hae viestit kaikille tileille"
 
-#: src/toolbar.c:179 src/toolbar.c:1888
+#: src/toolbar.c:181 src/toolbar.c:1898
 msgid "Receive Mail on current Account"
 msgstr "Hae viestit tälle tilille"
 
-#: src/toolbar.c:180 src/toolbar.c:1892
+#: src/toolbar.c:182 src/toolbar.c:1902
 msgid "Send Queued Messages"
 msgstr "Lähetä jonottavat viestit"
 
-#: src/toolbar.c:181 src/toolbar.c:891 src/toolbar.c:1910 src/toolbar.c:1921
+#: src/toolbar.c:183 src/toolbar.c:894 src/toolbar.c:1920 src/toolbar.c:1931
 msgid "Compose Email"
 msgstr "Kirjoita sähköpostia"
 
-#: src/toolbar.c:182
+#: src/toolbar.c:184
 msgid "Compose News"
 msgstr "Kirjoita keskusteluryhmäviesti"
 
-#: src/toolbar.c:183 src/toolbar.c:1949 src/toolbar.c:1959
+#: src/toolbar.c:185 src/toolbar.c:1959 src/toolbar.c:1969
 msgid "Reply to Message"
 msgstr "Vastaa viestiin"
 
-#: src/toolbar.c:184 src/toolbar.c:1966 src/toolbar.c:1976
+#: src/toolbar.c:186 src/toolbar.c:1976 src/toolbar.c:1986
 msgid "Reply to Sender"
 msgstr "Vastaa lähettäjälle"
 
-#: src/toolbar.c:185 src/toolbar.c:1983 src/toolbar.c:1993
+#: src/toolbar.c:187 src/toolbar.c:1993 src/toolbar.c:2003
 msgid "Reply to All"
 msgstr "Vastaa kaikille"
 
-#: src/toolbar.c:186 src/toolbar.c:2000 src/toolbar.c:2010
+#: src/toolbar.c:188 src/toolbar.c:2010 src/toolbar.c:2020
 msgid "Reply to Mailing-list"
 msgstr "Vastaa postituslistalle"
 
-#: src/toolbar.c:187 src/toolbar.c:1904
+#: src/toolbar.c:189 src/toolbar.c:1914
 msgid "Open email"
 msgstr "Avaa viesti"
 
-#: src/toolbar.c:188 src/toolbar.c:2017 src/toolbar.c:2028
+#: src/toolbar.c:190 src/toolbar.c:2027 src/toolbar.c:2038
 msgid "Forward Message"
 msgstr "Edelleenlähetä viesti"
 
-#: src/toolbar.c:189 src/toolbar.c:2033
+#: src/toolbar.c:191 src/toolbar.c:2043
 msgid "Trash Message"
 msgstr "Siirrä viesti roskiin"
 
-#: src/toolbar.c:190 src/toolbar.c:2037
+#: src/toolbar.c:192 src/toolbar.c:2047
 msgid "Delete Message"
 msgstr "Poista viesti"
 
-#: src/toolbar.c:192 src/toolbar.c:2045
+#: src/toolbar.c:194 src/toolbar.c:2055
 msgid "Go to Previous Unread Message"
 msgstr "Mene edelliseen lukemattomaan viestiin"
 
-#: src/toolbar.c:193 src/toolbar.c:2049
+#: src/toolbar.c:195 src/toolbar.c:2059
 msgid "Go to Next Unread Message"
 msgstr "Mene seuraavaan lukemattomaan viestiin"
 
-#: src/toolbar.c:197
+#: src/toolbar.c:199
 msgid "Learn Spam or Ham"
 msgstr "Tunnista roskapostia vai ei"
 
-#: src/toolbar.c:198
+#: src/toolbar.c:200
 msgid "Open folder/Go to folder list"
 msgstr "Avaa kansio, siirry kansioluetteloon"
 
-#: src/toolbar.c:201 src/toolbar.c:2055
+#: src/toolbar.c:203 src/toolbar.c:2065
 msgid "Send Message"
 msgstr "Lähetä viesti"
 
-#: src/toolbar.c:202 src/toolbar.c:2059
+#: src/toolbar.c:204 src/toolbar.c:2069
 msgid "Put into queue folder and send later"
 msgstr "Laita viesti jonoon ja lähetä myöhemmin"
 
-#: src/toolbar.c:203 src/toolbar.c:2063
+#: src/toolbar.c:205 src/toolbar.c:2073
 msgid "Save to draft folder"
 msgstr "Tallenna luonnoksiin"
 
-#: src/toolbar.c:204 src/toolbar.c:2067
+#: src/toolbar.c:206 src/toolbar.c:2077
 msgid "Insert file"
 msgstr "Lisää tiedosto"
 
-#: src/toolbar.c:205 src/toolbar.c:2071
+#: src/toolbar.c:207 src/toolbar.c:2081
 msgid "Attach file"
 msgstr "Liitä tiedosto"
 
-#: src/toolbar.c:206 src/toolbar.c:2075
+#: src/toolbar.c:208 src/toolbar.c:2085
 msgid "Insert signature"
 msgstr "Lisää allekirjoitus"
 
-#: src/toolbar.c:207 src/toolbar.c:2079
+#: src/toolbar.c:209 src/toolbar.c:2089
 msgid "Edit with external editor"
 msgstr "Muokkaa ulkoisella muokkaimella"
 
-#: src/toolbar.c:208 src/toolbar.c:2083
+#: src/toolbar.c:210 src/toolbar.c:2093
 msgid "Wrap long lines of current paragraph"
 msgstr "Rivitä pitkät rivit tässä kappaleessa"
 
-#: src/toolbar.c:209 src/toolbar.c:2087
+#: src/toolbar.c:211 src/toolbar.c:2097
 msgid "Wrap all long lines"
 msgstr "Rivitä kaikki pitkät rivit"
 
-#: src/toolbar.c:212 src/toolbar.c:419 src/toolbar.c:2096
+#: src/toolbar.c:214 src/toolbar.c:422 src/toolbar.c:2106
 msgid "Check spelling"
 msgstr "Tarkista oikeinkirjoitus"
 
-#: src/toolbar.c:214
+#: src/toolbar.c:216
 msgid "Claws Mail Actions Feature"
 msgstr "Claws Mailin toiminto‐ominaisuus"
 
-#: src/toolbar.c:215 src/toolbar.c:2112
+#: src/toolbar.c:217 src/toolbar.c:2122
 msgid "Cancel receiving"
 msgstr "Peruuta haku"
 
-#: src/toolbar.c:216 src/toolbar.c:1896
+#: src/toolbar.c:218 src/toolbar.c:1906
 msgid "Close window"
 msgstr "Sulje ikkuna"
 
-#: src/toolbar.c:385
+#: src/toolbar.c:220
+msgid "Claws Mail Plugins"
+msgstr "Claws Mailin liitännäiset"
+
+#: src/toolbar.c:388
 msgid "Open"
 msgstr "Avaa"
 
-#: src/toolbar.c:386
+#: src/toolbar.c:389
 msgid "Get Mail"
 msgstr "Hae kaikki"
 
-#: src/toolbar.c:387
+#: src/toolbar.c:390
 msgid "Get"
 msgstr "Hae"
 
-#: src/toolbar.c:389 src/toolbar.c:390
+#: src/toolbar.c:392 src/toolbar.c:393
 msgid "Toolbar|Compose"
 msgstr "Kirjoita"
 
-#: src/toolbar.c:392
+#: src/toolbar.c:395
 msgid "All"
 msgstr "Kaikille"
 
-#: src/toolbar.c:394
+#: src/toolbar.c:397
 msgid "List"
 msgstr "Postituslista"
 
-#: src/toolbar.c:399
+#: src/toolbar.c:402
 msgid "Prev"
 msgstr "Edellinen"
 
-#: src/toolbar.c:400
+#: src/toolbar.c:403
 msgid "Next"
 msgstr "Seuraava"
 
-#: src/toolbar.c:408
+#: src/toolbar.c:411
 msgid "Draft"
 msgstr "Luonnos"
 
-#: src/toolbar.c:411
+#: src/toolbar.c:414
 msgid "Insert sig."
 msgstr "Lisää allekirjoitus"
 
-#: src/toolbar.c:412
+#: src/toolbar.c:415
 msgid "Edit"
 msgstr "Muokkaa"
 
-#: src/toolbar.c:413
+#: src/toolbar.c:416
 msgid "Wrap para."
 msgstr "Rivitä kappale"
 
-#: src/toolbar.c:414
+#: src/toolbar.c:417
 msgid "Wrap all"
 msgstr "Rivitä kaikki"
 
-#: src/toolbar.c:416
+#: src/toolbar.c:419
 msgid "Stop"
 msgstr "Pysähdy"
 
-#: src/toolbar.c:883
+#: src/toolbar.c:886
 msgid "Compose News message"
 msgstr "Kirjoita keskusteluryhmäviesti"
 
-#: src/toolbar.c:925
+#: src/toolbar.c:928
 msgid "Learn spam"
 msgstr "Opi roskaposti"
 
-#: src/toolbar.c:934
+#: src/toolbar.c:937
 msgid "Ham"
 msgstr "Ei‐roskaposti"
 
-#: src/toolbar.c:936
+#: src/toolbar.c:939
 msgid "Learn ham"
 msgstr "Opi ei‐roskaposti"
 
-#: src/toolbar.c:1878
+#: src/toolbar.c:1888
 msgid "Go to folder list"
 msgstr "Siirry kansioluetteloon"
 
-#: src/toolbar.c:1884
+#: src/toolbar.c:1894
 msgid "Receive Mail on selected Account"
 msgstr "Hae viestit kaikille tileille"
 
-#: src/toolbar.c:1900
+#: src/toolbar.c:1910
 msgid "Open preferences"
 msgstr "Avaa asetukset"
 
-#: src/toolbar.c:1911
+#: src/toolbar.c:1921
 msgid "Compose with selected Account"
 msgstr "Kirjoita viesti valitulla tilillä"
 
-#: src/toolbar.c:1932
+#: src/toolbar.c:1942
 msgid "Learn as..."
 msgstr "Tunnista…"
 
-#: src/toolbar.c:1942
+#: src/toolbar.c:1952
 msgid "Learn as _Spam"
 msgstr "Tunnista _roskapostiksi"
 
-#: src/toolbar.c:1943
+#: src/toolbar.c:1953
 msgid "Learn as _Ham"
 msgstr "Tunnista _ei‐roskapostiksi"
 
-#: src/toolbar.c:1950
+#: src/toolbar.c:1960
 msgid "Reply to Message options"
 msgstr "Vastaa viestiin ‐asetukset"
 
-#: src/toolbar.c:1954 src/toolbar.c:1971 src/toolbar.c:1988 src/toolbar.c:2005
+#: src/toolbar.c:1964 src/toolbar.c:1981 src/toolbar.c:1998 src/toolbar.c:2015
 msgid "_Reply with quote"
 msgstr "Vastaa _lainauksin"
 
-#: src/toolbar.c:1955 src/toolbar.c:1972 src/toolbar.c:1989 src/toolbar.c:2006
+#: src/toolbar.c:1965 src/toolbar.c:1982 src/toolbar.c:1999 src/toolbar.c:2016
 msgid "Reply without _quote"
 msgstr "_Vastaa lainauksitta"
 
-#: src/toolbar.c:1967
+#: src/toolbar.c:1977
 msgid "Reply to Sender options"
 msgstr "Vastaa lähettäjälle ‐asetukset"
 
-#: src/toolbar.c:1984
+#: src/toolbar.c:1994
 msgid "Reply to All options"
 msgstr "Vastaa kaikille ‐asetukset"
 
-#: src/toolbar.c:2001
+#: src/toolbar.c:2011
 msgid "Reply to Mailing-list options"
 msgstr "Vastaa postituslistalle ‐asetukset"
 
-#: src/toolbar.c:2018
+#: src/toolbar.c:2028
 msgid "Forward Message options"
 msgstr "Edelleenlähetä viesti ‐asetukset"
 
-#: src/uri_opener.c:87
+#: src/uri_opener.c:86
 msgid "There are no URLs in this email."
 msgstr "Viestissä ei ole URLeja."
 
-#: src/uri_opener.c:123
+#: src/uri_opener.c:114
 msgid "Available URLs:"
 msgstr "Käytettävät URLit:"
 
-#: src/uri_opener.c:171
+#: src/uri_opener.c:179
 msgid "Dialog title|Open URLs"
 msgstr "Avaa URLit"
 
-#: src/uri_opener.c:196
+#: src/uri_opener.c:204
 msgid "Please select the URL to open."
 msgstr "Valitse avattava URL."
 
-#: src/uri_opener.c:208
+#: src/uri_opener.c:212
 msgid "Select All"
 msgstr "Valitse kaikki"
 
@@ -14136,3 +14164,12 @@ msgid ""
 msgstr ""
 "Claws Mail on valmis\n"
 "Tallenna‐painikkeella aloitetaan."
+
+#~ msgid "Insert signature automatically"
+#~ msgstr "Lisää allekirjoitus automaattisesti"
+
+#~ msgid "From file..."
+#~ msgstr " Tiedostosta…"
+
+#~ msgid "Wrap messages at"
+#~ msgstr "Rivitä sarakkeelta"

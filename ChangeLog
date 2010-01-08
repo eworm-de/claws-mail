@@ -1,3 +1,22 @@
+2010-01-08 [paul]	3.7.3cvs57
+
+	* po/ca.po
+	* po/cs.po
+	* po/de.po
+	* po/fi.po
+	* po/hu.po
+	* po/id.po
+	* po/ja.po
+	* po/nl.po
+	* po/pt_BR.po
+	* po/pt_PT.po
+	* po/ru.po
+	* po/sk.po
+		updated translations by Miquel Oliete, David Vachulka, Stephan Sachse,
+		Tommi Pirinen, Pader Rezso, MSulchan Darmawan, kazken3, Marcel Pol,
+		Frederico Goncalves Guimaraes, Tiago Faria, Aleksei Miheev, and
+		Slavko
+
 2010-01-08 [paul]	3.7.3cvs56
 
 	* src/common/utils.c

@@ -6,8 +6,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Claws Mail\n"
 "Report-Msgid-Bugs-To: paul@claws-mail.org\n"
-"POT-Creation-Date: 2009-10-06 09:46+0100\n"
-"PO-Revision-Date: 2009-10-06 16:41+0700\n"
+"POT-Creation-Date: 2010-01-01 18:56+0000\n"
+"PO-Revision-Date: 2010-01-06 22:49+0700\n"
 "Last-Translator: MSulchan Darmawan <bleketux@gmail.com>\n"
 "Language-Team: MSulchan Darmawan <bleketux@gmail.com>\n"
 "MIME-Version: 1.0\n"
@@ -73,8 +73,8 @@ msgstr "'Ambil Surat' mengambil surat dari akun terpilih"
 #: src/addressadd.c:189
 #: src/addressbook.c:122
 #: src/addrduplicates.c:480
-#: src/compose.c:6602
-#: src/compose.c:6911
+#: src/compose.c:6710
+#: src/compose.c:7020
 #: src/editaddress.c:1269
 #: src/editaddress.c:1326
 #: src/editaddress.c:1342
@@ -95,7 +95,7 @@ msgstr "Nama"
 
 #: src/account.c:1548
 #: src/prefs_account.c:1072
-#: src/prefs_account.c:3822
+#: src/prefs_account.c:3820
 msgid "Protocol"
 msgstr "Protokol"
 
@@ -331,7 +331,7 @@ msgstr "Kontak"
 #: src/addressadd.c:201
 #: src/addrduplicates.c:451
 #: src/plugins/pgpcore/select-keys.c:397
-#: src/toolbar.c:415
+#: src/toolbar.c:418
 msgid "Address"
 msgstr "Alamat"
 
@@ -378,7 +378,7 @@ msgstr "Tidak dapat menambahkan alamat tersebut"
 #: src/expldifdlg.c:517
 #: src/exporthtml.c:595
 #: src/exporthtml.c:759
-#: src/ldif.c:786
+#: src/ldif.c:784
 msgid "Email Address"
 msgstr "Alamat Email"
 
@@ -390,21 +390,21 @@ msgstr "_Buku"
 #: src/addressbook.c:432
 #: src/addressbook.c:460
 #: src/addressbook.c:477
-#: src/compose.c:543
+#: src/compose.c:551
 #: src/mainwindow.c:473
 #: src/messageview.c:187
 msgid "_Edit"
 msgstr "_Sunting"
 
 #: src/addressbook.c:402
-#: src/compose.c:548
+#: src/compose.c:556
 #: src/mainwindow.c:476
 #: src/messageview.c:190
 msgid "_Tools"
 msgstr "_Pengaturan"
 
 #: src/addressbook.c:403
-#: src/compose.c:549
+#: src/compose.c:557
 #: src/mainwindow.c:478
 #: src/messageview.c:191
 msgid "_Help"
@@ -441,12 +441,12 @@ msgid "_Delete book"
 msgstr "_Hapus buku"
 
 #: src/addressbook.c:422
-#: src/compose.c:559
+#: src/compose.c:567
 msgid "_Save"
 msgstr "_Simpan"
 
 #: src/addressbook.c:423
-#: src/compose.c:561
+#: src/compose.c:569
 #: src/messageview.c:201
 msgid "_Close"
 msgstr "_Tutup"
@@ -466,7 +466,7 @@ msgstr "P_otong"
 #: src/addressbook.c:429
 #: src/addressbook.c:468
 #: src/addressbook.c:484
-#: src/compose.c:569
+#: src/compose.c:577
 #: src/mainwindow.c:507
 #: src/messageview.c:204
 msgid "_Copy"
@@ -475,7 +475,7 @@ msgstr "_Salin"
 #: src/addressbook.c:430
 #: src/addressbook.c:469
 #: src/addressbook.c:485
-#: src/compose.c:570
+#: src/compose.c:578
 msgid "_Paste"
 msgstr "_Tempel"
 
@@ -524,7 +524,7 @@ msgid "Edit custom attributes..."
 msgstr "Sunting atribut buatan..."
 
 #: src/addressbook.c:453
-#: src/compose.c:649
+#: src/compose.c:657
 #: src/mainwindow.c:743
 #: src/messageview.c:300
 msgid "_About"
@@ -661,8 +661,8 @@ msgstr "Sumber"
 #: src/addressbook.c:916
 #: src/prefs_matcher.c:610
 #: src/prefs_other.c:470
-#: src/toolbar.c:210
-#: src/toolbar.c:2091
+#: src/toolbar.c:212
+#: src/toolbar.c:2101
 msgid "Address book"
 msgstr "Buku alamat"
 
@@ -715,7 +715,7 @@ msgstr "Anda akan menghapus hasil permintaan dan alamat di '%s', Yakin?"
 #: src/addressbook.c:2960
 #: src/addressbook.c:2967
 #: src/prefs_filtering_action.c:164
-#: src/toolbar.c:397
+#: src/toolbar.c:400
 msgid "Delete"
 msgstr "Hapus"
 
@@ -848,7 +848,7 @@ msgstr "Orang"
 #: src/exporthtml.c:879
 #: src/folderview.c:338
 #: src/folderview.c:426
-#: src/prefs_account.c:2658
+#: src/prefs_account.c:2656
 #: src/prefs_folder_column.c:77
 #: src/prefs_folder_item.c:1720
 #: src/prefs_folder_item.c:1738
@@ -899,72 +899,72 @@ msgstr "Permintaan LDAP"
 msgid "Any"
 msgstr "Semua"
 
-#: src/addrgather.c:147
+#: src/addrgather.c:157
 msgid "Please specify name for address book."
 msgstr "Mohon cantumkan nama untuk buku alamat."
 
-#: src/addrgather.c:167
+#: src/addrgather.c:177
 msgid "Please select the mail headers to search."
 msgstr "Mohon pilih kepala surat untuk mencari."
 
-#: src/addrgather.c:174
+#: src/addrgather.c:184
 msgid "Collecting addresses..."
 msgstr "Mengumpulkan alamat..."
 
-#: src/addrgather.c:213
+#: src/addrgather.c:223
 msgid "Addresses collected successfully."
 msgstr "Alamat berhasil dikumpulkan."
 
-#: src/addrgather.c:290
+#: src/addrgather.c:300
 msgid "Current folder:"
 msgstr "Direktori aktif:"
 
-#: src/addrgather.c:301
+#: src/addrgather.c:311
 msgid "Address book name:"
 msgstr "Nama buku alamat:"
 
-#: src/addrgather.c:311
+#: src/addrgather.c:321
 msgid "Address book folder size:"
 msgstr "Ukuran direktori buku alamat:"
 
-#: src/addrgather.c:315
 #: src/addrgather.c:325
+#: src/addrgather.c:335
 msgid "Maximum amount of entries per folder within the newly created address book"
 msgstr "Jumah maksimum setiap direktori untuk setiap buku alamat yang dibuat"
 
-#: src/addrgather.c:329
+#: src/addrgather.c:339
 msgid "Process these mail header fields"
 msgstr "Lakukan proses untuk kolom kepala surat"
 
-#: src/addrgather.c:347
+#: src/addrgather.c:358
 msgid "Include subfolders"
 msgstr "Termasuk subdirektori"
 
-#: src/addrgather.c:370
+#: src/addrgather.c:381
 #: src/prefs_filtering_action.c:1362
 msgid "Header Name"
 msgstr "Nama Kepala"
 
-#: src/addrgather.c:371
+#: src/addrgather.c:382
 msgid "Address Count"
 msgstr "Hitung Alamat"
 
-#: src/addrgather.c:471
+#: src/addrgather.c:494
 msgid "Header Fields"
 msgstr "Kolom Kepala"
 
-#: src/addrgather.c:472
+#: src/addrgather.c:495
 #: src/exphtmldlg.c:657
 #: src/expldifdlg.c:722
 #: src/importldif.c:1023
 msgid "Finish"
 msgstr "Selesai"
 
-#: src/addrgather.c:520
+#: src/addrgather.c:544
 msgid "Collect email addresses from selected messages"
 msgstr "Kumpulkan alamat email dari pesan terpilih"
 
-#: src/addrgather.c:524
+#: src/addrgather.c:548
 msgid "Collect email addresses from folder"
 msgstr "Kumpulkan alamat email dari direktor"
 
@@ -1025,24 +1025,24 @@ msgid "Delete address"
 msgstr "Hapus alamat"
 
 #: src/alertpanel.c:145
-#: src/compose.c:8739
+#: src/compose.c:8860
 msgid "Notice"
 msgstr "Pemberitahuan"
 
 #: src/alertpanel.c:158
-#: src/compose.c:5371
-#: src/compose.c:5851
-#: src/compose.c:10863
+#: src/compose.c:5432
+#: src/compose.c:5912
+#: src/compose.c:11091
 #: src/messageview.c:806
 #: src/messageview.c:819
 #: src/plugins/pgpcore/sgpgme.c:652
-#: src/summaryview.c:4690
+#: src/summaryview.c:4691
 msgid "Warning"
 msgstr "Peringatan"
 
 #: src/alertpanel.c:171
 #: src/alertpanel.c:194
-#: src/compose.c:5312
+#: src/compose.c:5373
 #: src/inc.c:647
 #: src/plugins/pgpcore/sgpgme.c:153
 #: src/plugins/pgpcore/sgpgme.c:247
@@ -1153,7 +1153,7 @@ msgid "Your version of Claws Mail is too old for the plugin."
 msgstr "Versi Claws Mail anda terlalu lama untuk pengaya tersebut."
 
 #: src/common/session.c:170
-#: src/imap.c:1100
+#: src/imap.c:1099
 msgid "SSL handshake failed\n"
 msgstr "Jalinan SSL gagal\n"
 
@@ -1236,640 +1236,640 @@ msgstr "%d.%02dMB"
 msgid "%.2fGB"
 msgstr "%.2fGB"
 
-#: src/common/utils.c:4915
+#: src/common/utils.c:4925
 msgid "Complete day name for use by strftime|Sunday"
 msgstr "Minggu"
 
-#: src/common/utils.c:4916
+#: src/common/utils.c:4926
 msgid "Complete day name for use by strftime|Monday"
 msgstr "Senin"
 
-#: src/common/utils.c:4917
+#: src/common/utils.c:4927
 msgid "Complete day name for use by strftime|Tuesday"
 msgstr "Selasa"
 
-#: src/common/utils.c:4918
+#: src/common/utils.c:4928
 msgid "Complete day name for use by strftime|Wednesday"
 msgstr "Rabu"
 
-#: src/common/utils.c:4919
+#: src/common/utils.c:4929
 msgid "Complete day name for use by strftime|Thursday"
 msgstr "Kamis"
 
-#: src/common/utils.c:4920
+#: src/common/utils.c:4930
 msgid "Complete day name for use by strftime|Friday"
 msgstr "Jumat"
 
-#: src/common/utils.c:4921
+#: src/common/utils.c:4931
 msgid "Complete day name for use by strftime|Saturday"
 msgstr "Sabtu"
 
-#: src/common/utils.c:4923
+#: src/common/utils.c:4933
 msgid "Complete month name for use by strftime|January"
 msgstr "Januari"
 
-#: src/common/utils.c:4924
+#: src/common/utils.c:4934
 msgid "Complete month name for use by strftime|February"
 msgstr "Pebruari"
 
-#: src/common/utils.c:4925
+#: src/common/utils.c:4935
 msgid "Complete month name for use by strftime|March"
 msgstr "Maret"
 
-#: src/common/utils.c:4926
+#: src/common/utils.c:4936
 msgid "Complete month name for use by strftime|April"
 msgstr "April"
 
-#: src/common/utils.c:4927
+#: src/common/utils.c:4937
 msgid "Complete month name for use by strftime|May"
 msgstr "Mei"
 
-#: src/common/utils.c:4928
+#: src/common/utils.c:4938
 msgid "Complete month name for use by strftime|June"
 msgstr "Juni"
 
-#: src/common/utils.c:4929
+#: src/common/utils.c:4939
 msgid "Complete month name for use by strftime|July"
 msgstr "Juli"
 
-#: src/common/utils.c:4930
+#: src/common/utils.c:4940
 msgid "Complete month name for use by strftime|August"
 msgstr "Agustus"
 
-#: src/common/utils.c:4931
+#: src/common/utils.c:4941
 msgid "Complete month name for use by strftime|September"
 msgstr "September"
 
-#: src/common/utils.c:4932
+#: src/common/utils.c:4942
 msgid "Complete month name for use by strftime|October"
 msgstr "Oktober"
 
-#: src/common/utils.c:4933
+#: src/common/utils.c:4943
 msgid "Complete month name for use by strftime|November"
 msgstr "Nopember"
 
-#: src/common/utils.c:4934
+#: src/common/utils.c:4944
 msgid "Complete month name for use by strftime|December"
 msgstr "Desember"
 
-#: src/common/utils.c:4936
+#: src/common/utils.c:4946
 msgid "Abbr. day name for use by strftime|Sun"
 msgstr "Min"
 
-#: src/common/utils.c:4937
+#: src/common/utils.c:4947
 msgid "Abbr. day name for use by strftime|Mon"
 msgstr "Sen"
 
-#: src/common/utils.c:4938
+#: src/common/utils.c:4948
 msgid "Abbr. day name for use by strftime|Tue"
 msgstr "Sel"
 
-#: src/common/utils.c:4939
+#: src/common/utils.c:4949
 msgid "Abbr. day name for use by strftime|Wed"
 msgstr "Rab"
 
-#: src/common/utils.c:4940
+#: src/common/utils.c:4950
 msgid "Abbr. day name for use by strftime|Thu"
 msgstr "Kam"
 
-#: src/common/utils.c:4941
+#: src/common/utils.c:4951
 msgid "Abbr. day name for use by strftime|Fri"
 msgstr "Jum"
 
-#: src/common/utils.c:4942
+#: src/common/utils.c:4952
 msgid "Abbr. day name for use by strftime|Sat"
 msgstr "Sab"
 
-#: src/common/utils.c:4944
+#: src/common/utils.c:4954
 msgid "Abbr. month name for use by strftime|Jan"
 msgstr "Jan"
 
-#: src/common/utils.c:4945
+#: src/common/utils.c:4955
 msgid "Abbr. month name for use by strftime|Feb"
 msgstr "Peb"
 
-#: src/common/utils.c:4946
+#: src/common/utils.c:4956
 msgid "Abbr. month name for use by strftime|Mar"
 msgstr "Mar"
 
-#: src/common/utils.c:4947
+#: src/common/utils.c:4957
 msgid "Abbr. month name for use by strftime|Apr"
 msgstr "Apr"
 
-#: src/common/utils.c:4948
+#: src/common/utils.c:4958
 msgid "Abbr. month name for use by strftime|May"
 msgstr "Mei"
 
-#: src/common/utils.c:4949
+#: src/common/utils.c:4959
 msgid "Abbr. month name for use by strftime|Jun"
 msgstr "Jun"
 
-#: src/common/utils.c:4950
+#: src/common/utils.c:4960
 msgid "Abbr. month name for use by strftime|Jul"
 msgstr "Jul"
 
-#: src/common/utils.c:4951
+#: src/common/utils.c:4961
 msgid "Abbr. month name for use by strftime|Aug"
 msgstr "Ags"
 
-#: src/common/utils.c:4952
+#: src/common/utils.c:4962
 msgid "Abbr. month name for use by strftime|Sep"
 msgstr "Sep"
 
-#: src/common/utils.c:4953
+#: src/common/utils.c:4963
 msgid "Abbr. month name for use by strftime|Oct"
 msgstr "Okt"
 
-#: src/common/utils.c:4954
+#: src/common/utils.c:4964
 msgid "Abbr. month name for use by strftime|Nov"
 msgstr "Nop"
 
-#: src/common/utils.c:4955
+#: src/common/utils.c:4965
 msgid "Abbr. month name for use by strftime|Dec"
 msgstr "Des"
 
-#: src/common/utils.c:4966
+#: src/common/utils.c:4976
 msgid "For use by strftime (morning)|AM"
 msgstr "AM"
 
-#: src/common/utils.c:4967
+#: src/common/utils.c:4977
 msgid "For use by strftime (afternoon)|PM"
 msgstr "PM"
 
-#: src/common/utils.c:4968
+#: src/common/utils.c:4978
 msgid "For use by strftime (morning, lowercase)|am"
 msgstr "am"
 
-#: src/common/utils.c:4969
+#: src/common/utils.c:4979
 msgid "For use by strftime (afternoon, lowercase)|pm"
 msgstr "pm"
 
-#: src/common/utils.c:4976
+#: src/common/utils.c:4986
 msgid "For use by strftime (default date+time format)|%a %b %e %H:%M:%S %Y"
 msgstr "%a %b %e %H:%M:%S %Y"
 
-#: src/common/utils.c:4977
+#: src/common/utils.c:4987
 msgid "For use by strftime (default date format)|%m/%d/%y"
 msgstr "%d-%m-%y"
 
-#: src/common/utils.c:4978
+#: src/common/utils.c:4988
 msgid "For use by strftime (default time format)|%H:%M:%S"
 msgstr "%H:%M:%S"
 
-#: src/common/utils.c:4980
+#: src/common/utils.c:4990
 msgid "For use by strftime (default 12-hour time format)|%I:%M:%S %p"
 msgstr "%I:%M:%S :p"
 
-#: src/compose.c:532
+#: src/compose.c:540
 msgid "_Add..."
 msgstr "_Tambah..."
 
-#: src/compose.c:533
+#: src/compose.c:541
 #: src/mh_gtk.c:362
 msgid "_Remove"
 msgstr "_Hapus"
 
-#: src/compose.c:535
+#: src/compose.c:543
 #: src/folderview.c:234
 msgid "_Properties..."
 msgstr "_Properti..."
 
-#: src/compose.c:542
+#: src/compose.c:550
 #: src/mainwindow.c:475
 #: src/messageview.c:189
 msgid "_Message"
 msgstr "_Pesan"
 
-#: src/compose.c:545
+#: src/compose.c:553
 msgid "_Spelling"
 msgstr "_Ejaan"
 
-#: src/compose.c:547
-#: src/compose.c:611
+#: src/compose.c:555
+#: src/compose.c:619
 msgid "_Options"
 msgstr "_Pilihan"
 
-#: src/compose.c:551
+#: src/compose.c:559
 msgid "S_end"
 msgstr "_Kirim"
 
-#: src/compose.c:552
+#: src/compose.c:560
 msgid "Send _later"
 msgstr "Kirim _nanti"
 
-#: src/compose.c:555
+#: src/compose.c:563
 msgid "_Attach file"
 msgstr "_Lampirkan berkas"
 
-#: src/compose.c:556
+#: src/compose.c:564
 msgid "_Insert file"
 msgstr "_Sisipkan berkas"
 
-#: src/compose.c:557
+#: src/compose.c:565
 msgid "Insert si_gnature"
 msgstr "Sisipkan _tanda tangan"
 
-#: src/compose.c:564
+#: src/compose.c:572
 msgid "_Undo"
 msgstr "_Batal"
 
-#: src/compose.c:565
+#: src/compose.c:573
 msgid "_Redo"
 msgstr "_Redo"
 
-#: src/compose.c:568
+#: src/compose.c:576
 msgid "Cu_t"
 msgstr "Po_tong"
 
-#: src/compose.c:572
+#: src/compose.c:580
 msgid "Special paste"
 msgstr "Tempel spesial"
 
-#: src/compose.c:573
+#: src/compose.c:581
 msgid "as _quotation"
 msgstr "sebagai _kutipan"
 
-#: src/compose.c:574
+#: src/compose.c:582
 msgid "_wrapped"
 msgstr "_penggalan"
 
-#: src/compose.c:575
+#: src/compose.c:583
 msgid "_unwrapped"
 msgstr "_non penggalan"
 
-#: src/compose.c:577
+#: src/compose.c:585
 #: src/mainwindow.c:508
 msgid "Select _all"
 msgstr "Pilih semu_a"
 
-#: src/compose.c:579
+#: src/compose.c:587
 msgid "A_dvanced"
 msgstr "Tingkat _lanjut"
 
-#: src/compose.c:580
+#: src/compose.c:588
 msgid "Move a character backward"
 msgstr "Pindahkan satu karakter ke belakang"
 
-#: src/compose.c:581
+#: src/compose.c:589
 msgid "Move a character forward"
 msgstr "Pindahkan satu karakter ke depan"
 
-#: src/compose.c:582
+#: src/compose.c:590
 msgid "Move a word backward"
 msgstr "Pindahkan satu kata ke belakang"
 
-#: src/compose.c:583
+#: src/compose.c:591
 msgid "Move a word forward"
 msgstr "Pindahkan satu kata ke depan"
 
-#: src/compose.c:584
+#: src/compose.c:592
 msgid "Move to beginning of line"
 msgstr "Pindahkan ke awal baris"
 
-#: src/compose.c:585
+#: src/compose.c:593
 msgid "Move to end of line"
 msgstr "Pindahkan ke akhir baris"
 
-#: src/compose.c:586
+#: src/compose.c:594
 msgid "Move to previous line"
 msgstr "Pindahkan ke baris sebelumnya"
 
-#: src/compose.c:587
+#: src/compose.c:595
 msgid "Move to next line"
 msgstr "Pindahkan ke baris berikutnya"
 
-#: src/compose.c:588
+#: src/compose.c:596
 msgid "Delete a character backward"
 msgstr "Hapus satu karakter ke belakang"
 
-#: src/compose.c:589
+#: src/compose.c:597
 msgid "Delete a character forward"
 msgstr "Hapus satu karakter ke depan"
 
-#: src/compose.c:590
+#: src/compose.c:598
 msgid "Delete a word backward"
 msgstr "Hapus satu kata ke belakang"
 
-#: src/compose.c:591
+#: src/compose.c:599
 msgid "Delete a word forward"
 msgstr "Hapus satu kata ke depan"
 
-#: src/compose.c:592
+#: src/compose.c:600
 msgid "Delete line"
 msgstr "Hapus baris"
 
-#: src/compose.c:593
+#: src/compose.c:601
 msgid "Delete to end of line"
 msgstr "Hapus sampai akhir baris"
 
-#: src/compose.c:596
+#: src/compose.c:604
 #: src/messageview.c:207
 msgid "_Find"
 msgstr "_Cari"
 
-#: src/compose.c:599
+#: src/compose.c:607
 msgid "_Wrap current paragraph"
 msgstr "_Penggal paragraf aktif"
 
-#: src/compose.c:600
+#: src/compose.c:608
 msgid "Wrap all long _lines"
 msgstr "Pengga_l seluruh baris"
 
-#: src/compose.c:602
+#: src/compose.c:610
 msgid "Edit with e_xternal editor"
 msgstr "Sunting dengan penyunting _eksternal"
 
-#: src/compose.c:605
+#: src/compose.c:613
 msgid "_Check all or check selection"
 msgstr "_Tandai semua atau tandai yang dipilih"
 
-#: src/compose.c:606
+#: src/compose.c:614
 msgid "_Highlight all misspelled words"
 msgstr "_Sorot semua kata yang salah eja"
 
-#: src/compose.c:607
+#: src/compose.c:615
 msgid "Check _backwards misspelled word"
 msgstr "Periksa kata yang salah eja secara mundur"
 
-#: src/compose.c:608
+#: src/compose.c:616
 msgid "_Forward to next misspelled word"
 msgstr "_Maju ke kata yang salah eja selanjutnya"
 
-#: src/compose.c:616
+#: src/compose.c:624
 msgid "Reply _mode"
 msgstr "_Modus balas"
 
-#: src/compose.c:618
+#: src/compose.c:626
 msgid "Privacy _System"
 msgstr "_Sistem Pribadi"
 
-#: src/compose.c:623
+#: src/compose.c:631
 msgid "_Priority"
 msgstr "_Prioritas"
 
-#: src/compose.c:625
+#: src/compose.c:633
 #: src/mainwindow.c:560
 #: src/messageview.c:233
 msgid "Character _encoding"
 msgstr "P_enyandian karakter"
 
-#: src/compose.c:630
+#: src/compose.c:638
 #: src/mainwindow.c:565
 #: src/messageview.c:238
 msgid "Western European"
 msgstr "Eropa Barat"
 
-#: src/compose.c:631
+#: src/compose.c:639
 #: src/mainwindow.c:566
 #: src/messageview.c:239
 msgid "Baltic"
 msgstr "Baltik"
 
-#: src/compose.c:632
+#: src/compose.c:640
 #: src/mainwindow.c:567
 #: src/messageview.c:240
 msgid "Hebrew"
 msgstr "Yunani"
 
-#: src/compose.c:633
+#: src/compose.c:641
 #: src/mainwindow.c:568
 #: src/messageview.c:241
 msgid "Arabic"
 msgstr "Arab"
 
-#: src/compose.c:634
+#: src/compose.c:642
 #: src/mainwindow.c:569
 #: src/messageview.c:242
 msgid "Cyrillic"
 msgstr "Cyrillic"
 
-#: src/compose.c:635
+#: src/compose.c:643
 #: src/mainwindow.c:570
 #: src/messageview.c:243
 msgid "Japanese"
 msgstr "Jepang"
 
-#: src/compose.c:636
+#: src/compose.c:644
 #: src/mainwindow.c:571
 #: src/messageview.c:244
 msgid "Chinese"
 msgstr "China"
 
-#: src/compose.c:637
+#: src/compose.c:645
 #: src/mainwindow.c:572
 #: src/messageview.c:245
 msgid "Korean"
 msgstr "Korea"
 
-#: src/compose.c:638
+#: src/compose.c:646
 #: src/mainwindow.c:573
 #: src/messageview.c:246
 msgid "Thai"
 msgstr "Thai"
 
-#: src/compose.c:641
+#: src/compose.c:649
 #: src/mainwindow.c:665
 #: src/messageview.c:275
 msgid "_Address book"
 msgstr "Buku _alamat"
 
-#: src/compose.c:643
+#: src/compose.c:651
 msgid "_Template"
 msgstr "_Cetakan"
 
-#: src/compose.c:645
+#: src/compose.c:653
 #: src/mainwindow.c:693
 #: src/messageview.c:296
 msgid "Actio_ns"
 msgstr "Aksi"
 
-#: src/compose.c:654
+#: src/compose.c:662
 msgid "Aut_o wrapping"
 msgstr "Penggalan ot_omatis"
 
-#: src/compose.c:655
+#: src/compose.c:663
 msgid "Auto _indent"
 msgstr "Otomat_is menjorok"
 
-#: src/compose.c:656
+#: src/compose.c:664
 msgid "Si_gn"
 msgstr "Tan_da"
 
-#: src/compose.c:657
+#: src/compose.c:665
 msgid "_Encrypt"
 msgstr "_Enkripsi"
 
-#: src/compose.c:658
+#: src/compose.c:666
 msgid "_Request Return Receipt"
 msgstr "_Meminta Tanda Terima"
 
-#: src/compose.c:659
+#: src/compose.c:667
 msgid "Remo_ve references"
 msgstr "Hapus re_ferensi"
 
-#: src/compose.c:660
+#: src/compose.c:668
 msgid "Show _ruler"
 msgstr "Tampilkan pengga_ris"
 
-#: src/compose.c:665
-#: src/compose.c:675
+#: src/compose.c:673
+#: src/compose.c:683
 msgid "_Normal"
 msgstr "_Normal"
 
-#: src/compose.c:666
+#: src/compose.c:674
 msgid "_All"
 msgstr "Semu_a"
 
-#: src/compose.c:667
+#: src/compose.c:675
 msgid "_Sender"
 msgstr "_Pengirim"
 
-#: src/compose.c:668
+#: src/compose.c:676
 msgid "_Mailing-list"
 msgstr "_Mailing-list"
 
-#: src/compose.c:673
+#: src/compose.c:681
 msgid "_Highest"
 msgstr "_Tertinggi"
 
-#: src/compose.c:674
+#: src/compose.c:682
 msgid "Hi_gh"
 msgstr "Ting_gi"
 
-#: src/compose.c:676
+#: src/compose.c:684
 msgid "Lo_w"
 msgstr "Renda_h"
 
-#: src/compose.c:677
+#: src/compose.c:685
 msgid "_Lowest"
 msgstr "Te_rendah"
 
-#: src/compose.c:682
+#: src/compose.c:690
 #: src/mainwindow.c:808
 #: src/messageview.c:313
 msgid "_Automatic"
 msgstr "_Otomatis"
 
-#: src/compose.c:683
+#: src/compose.c:691
 #: src/mainwindow.c:809
 #: src/messageview.c:314
 msgid "7bit ASCII (US-ASC_II)"
 msgstr "7bit ASCII (US-ASC_II)"
 
-#: src/compose.c:684
+#: src/compose.c:692
 #: src/mainwindow.c:810
 #: src/messageview.c:315
 msgid "Unicode (_UTF-8)"
 msgstr "Unicode (_UTF-8)"
 
-#: src/compose.c:688
+#: src/compose.c:696
 #: src/mainwindow.c:814
 #: src/messageview.c:319
 msgid "Central European (ISO-8859-_2)"
 msgstr "Central European (ISO-8859-_2)"
 
-#: src/compose.c:691
+#: src/compose.c:699
 #: src/mainwindow.c:817
 #: src/messageview.c:322
 msgid "Greek (ISO-8859-_7)"
 msgstr "Greek (ISO-8859-_7)"
 
-#: src/compose.c:696
+#: src/compose.c:704
 #: src/mainwindow.c:822
 #: src/messageview.c:327
 msgid "Turkish (ISO-8859-_9)"
 msgstr "Turkish (ISO-8859-_9)"
 
-#: src/compose.c:992
+#: src/compose.c:1003
 msgid "New message From format error."
 msgstr "Kesalahan pada format Pengirim pesan baru."
 
-#: src/compose.c:1095
+#: src/compose.c:1110
 msgid "New message subject format error."
 msgstr "Kesalahan pada format Subyek pesan baru."
 
-#: src/compose.c:1125
+#: src/compose.c:1141
 #: src/quote_fmt.c:572
 #, c-format
 msgid "The body of the \"New message\" template has an error at line %d."
 msgstr "Isi badan cetakan dari \"Pesan baru\" terdapat kesalahan pada baris %d."
 
-#: src/compose.c:1332
+#: src/compose.c:1391
 msgid "Unable to reply. The original email probably doesn't exist."
 msgstr "Tidak dapat membalas. Kemungkinan email asli tidak ada."
 
-#: src/compose.c:1512
+#: src/compose.c:1571
 #: src/quote_fmt.c:589
 msgid "The \"From\" field of the \"Reply\" template contains an invalid email address."
 msgstr "Pada bagian \"Dari\" di cetakan \"Balas\" mengandung alamat email yang salah."
 
-#: src/compose.c:1559
+#: src/compose.c:1618
 #: src/quote_fmt.c:592
 #, c-format
 msgid "The body of the \"Reply\" template has an error at line %d."
 msgstr "Isi badan cetakan dari \"Balas\" terdapat kesalahan pada baris %d."
 
-#: src/compose.c:1683
-#: src/compose.c:1872
+#: src/compose.c:1747
+#: src/compose.c:1942
 #: src/quote_fmt.c:609
 msgid "The \"From\" field of the \"Forward\" template contains an invalid email address."
 msgstr "Pada bagian \"Dari\" di cetakan \"Teruskan\" mengandung alamat email yang salah."
 
-#: src/compose.c:1748
+#: src/compose.c:1812
 #: src/quote_fmt.c:612
 #, c-format
 msgid "The body of the \"Forward\" template has an error at line %d."
 msgstr "Isi badan cetakan dari \"Teruskan\" terdapat kesalahan pada baris %d."
 
-#: src/compose.c:1914
+#: src/compose.c:1984
 msgid "Fw: multiple emails"
 msgstr "Trs: banyak email"
 
-#: src/compose.c:2330
+#: src/compose.c:2406
 #, c-format
 msgid "The body of the \"Redirect\" template has an error at line %d."
 msgstr "Isi badan cetakan dari \"Redirek\" terdapat kesalahan pada baris %d."
 
-#: src/compose.c:2394
+#: src/compose.c:2472
 #: src/gtk/headers.h:13
 msgid "Cc:"
 msgstr "Cc:"
 
-#: src/compose.c:2397
+#: src/compose.c:2475
 #: src/gtk/headers.h:14
 msgid "Bcc:"
 msgstr "Bcc:"
 
-#: src/compose.c:2400
+#: src/compose.c:2478
 #: src/gtk/headers.h:11
 msgid "Reply-To:"
 msgstr "Balas-Ke:"
 
-#: src/compose.c:2403
-#: src/compose.c:4631
-#: src/compose.c:4633
+#: src/compose.c:2481
+#: src/compose.c:4692
+#: src/compose.c:4694
 #: src/gtk/headers.h:32
 msgid "Newsgroups:"
 msgstr "Newsgroups:"
 
-#: src/compose.c:2406
+#: src/compose.c:2484
 #: src/gtk/headers.h:33
 msgid "Followup-To:"
 msgstr "Ikuti-Ke:"
 
-#: src/compose.c:2410
-#: src/compose.c:4628
-#: src/compose.c:4636
+#: src/compose.c:2488
+#: src/compose.c:4689
+#: src/compose.c:4697
 #: src/gtk/headers.h:12
 #: src/summary_search.c:359
 msgid "To:"
 msgstr "Kepada:"
 
-#: src/compose.c:2601
+#: src/compose.c:2684
 msgid "Couldn't attach a file (charset conversion failed)."
 msgstr "Tidak dapat melampirkan berkas (konversi charset gagal)."
 
-#: src/compose.c:2607
+#: src/compose.c:2690
 #, c-format
 msgid ""
 "The following file has been attached: \n"
@@ -1884,63 +1884,63 @@ msgstr[1] ""
 "Berkas-berkas berikut telah dilampirkan: \n"
 "%s"
 
-#: src/compose.c:2846
+#: src/compose.c:2934
 msgid "The \"Quotation mark\" of the template is invalid."
 msgstr "\"Tanda kutipan\" di cetakan salah."
 
-#: src/compose.c:3342
+#: src/compose.c:3404
 #, c-format
 msgid "Could not get size of file '%s'."
 msgstr "Tidak dapat mengambil ukuran berkas '%s'."
 
-#: src/compose.c:3353
+#: src/compose.c:3415
 #, c-format
 msgid "You are about to insert a file of %s in the message body. Are you sure you want to do that?"
 msgstr "Anda akan menyisipkan berkas %s pada badan pesan. Anda yakin ingin melakukannya?"
 
-#: src/compose.c:3356
+#: src/compose.c:3418
 msgid "Are you sure?"
 msgstr "Apakah anda yakin?"
 
-#: src/compose.c:3357
-#: src/compose.c:10361
+#: src/compose.c:3419
+#: src/compose.c:10588
 msgid "+_Insert"
 msgstr "+_Sisip"
 
-#: src/compose.c:3466
+#: src/compose.c:3528
 #, c-format
 msgid "File %s is empty."
 msgstr "Berkas %s kosong."
 
-#: src/compose.c:3470
+#: src/compose.c:3532
 #, c-format
 msgid "Can't read %s."
 msgstr "Tidak dapat membaca %s."
 
-#: src/compose.c:3497
+#: src/compose.c:3559
 #, c-format
 msgid "Message: %s"
 msgstr "Pesan: %s"
 
-#: src/compose.c:4479
+#: src/compose.c:4541
 msgid " [Edited]"
 msgstr "[Disunting]"
 
-#: src/compose.c:4486
+#: src/compose.c:4548
 #, c-format
 msgid "%s - Compose message%s"
 msgstr "%s - Tulis pesan%s"
 
-#: src/compose.c:4489
+#: src/compose.c:4551
 #, c-format
 msgid "[no subject] - Compose message%s"
 msgstr "[Tanpa subyek] - Tulis pesan%s"
 
-#: src/compose.c:4491
+#: src/compose.c:4553
 msgid "Compose message"
 msgstr "Tulis pesan"
 
-#: src/compose.c:4518
+#: src/compose.c:4580
 #: src/messageview.c:841
 msgid ""
 "Account for sending mail is not specified.\n"
@@ -1949,58 +1949,58 @@ msgstr ""
 "Akun untuk mengirim surat belum ditentukan.\n"
 "Silahkan pilih akun surat sebelum mengirim."
 
-#: src/compose.c:4729
-#: src/compose.c:4761
-#: src/compose.c:4803
-#: src/prefs_account.c:3155
-#: src/toolbar.c:388
-#: src/toolbar.c:406
+#: src/compose.c:4790
+#: src/compose.c:4822
+#: src/compose.c:4864
+#: src/prefs_account.c:3153
+#: src/toolbar.c:391
+#: src/toolbar.c:409
 msgid "Send"
 msgstr "Kirim"
 
-#: src/compose.c:4730
+#: src/compose.c:4791
 msgid "The only recipient is the default CC address. Send anyway?"
 msgstr "Penerima satu-satunya adalah alamat CC standar. Lanjut pengiriman?"
 
-#: src/compose.c:4731
-#: src/compose.c:4763
-#: src/compose.c:4796
-#: src/compose.c:5312
+#: src/compose.c:4792
+#: src/compose.c:4824
+#: src/compose.c:4857
+#: src/compose.c:5373
 msgid "+_Send"
 msgstr "+_Kirim"
 
-#: src/compose.c:4762
+#: src/compose.c:4823
 msgid "The only recipient is the default BCC address. Send anyway?"
 msgstr "Penerima satu-satunya adalah alamat BCC standar. Lanjut pengiriman?"
 
-#: src/compose.c:4779
+#: src/compose.c:4840
 msgid "Recipient is not specified."
 msgstr "Penerima belum ditentukan."
 
-#: src/compose.c:4798
+#: src/compose.c:4859
 msgid "+_Queue"
 msgstr "+_Antri"
 
-#: src/compose.c:4799
+#: src/compose.c:4860
 #, c-format
 msgid "Subject is empty. %s"
 msgstr "Subyek kosong. %s"
 
-#: src/compose.c:4800
+#: src/compose.c:4861
 msgid "Send it anyway?"
 msgstr "Lanjutkan pengiriman?"
 
-#: src/compose.c:4801
+#: src/compose.c:4862
 msgid "Queue it anyway?"
 msgstr "Lanjutkan antri?"
 
-#: src/compose.c:4803
-#: src/toolbar.c:407
+#: src/compose.c:4864
+#: src/toolbar.c:410
 msgid "Send later"
 msgstr "Kirim nanti"
 
-#: src/compose.c:4851
-#: src/compose.c:9079
+#: src/compose.c:4912
+#: src/compose.c:9277
 msgid ""
 "Could not queue message for sending:\n"
 "\n"
@@ -2010,8 +2010,8 @@ msgstr ""
 "\n"
 "Konversi charset gagal."
 
-#: src/compose.c:4854
-#: src/compose.c:9082
+#: src/compose.c:4915
+#: src/compose.c:9280
 msgid ""
 "Could not queue message for sending:\n"
 "\n"
@@ -2021,8 +2021,8 @@ msgstr ""
 "\n"
 "Tidak dapat mengambil kunci enkripsi penerima."
 
-#: src/compose.c:4860
-#: src/compose.c:9076
+#: src/compose.c:4921
+#: src/compose.c:9274
 #, c-format
 msgid ""
 "Could not queue message for sending:\n"
@@ -2033,7 +2033,7 @@ msgstr ""
 "\n"
 "Tanda tangan gagal: %s"
 
-#: src/compose.c:4863
+#: src/compose.c:4924
 #, c-format
 msgid ""
 "Could not queue message for sending:\n"
@@ -2044,12 +2044,12 @@ msgstr ""
 "\n"
 "%s."
 
-#: src/compose.c:4865
+#: src/compose.c:4926
 msgid "Could not queue message for sending."
 msgstr "Tidak dapat antri pesan untuk pengiriman."
 
-#: src/compose.c:4880
-#: src/compose.c:4940
+#: src/compose.c:4941
+#: src/compose.c:5001
 msgid ""
 "The message was queued but could not be sent.\n"
 "Use \"Send queued messages\" from the main window to retry."
@@ -2057,7 +2057,7 @@ msgstr ""
 "Pesan ini ada di antrian tapi tidak dapat dikirim.\n"
 "Gunakan \"Kirim antrian pesan\" dari jendela utama untuk mencoba lagi."
 
-#: src/compose.c:4936
+#: src/compose.c:4997
 #, c-format
 msgid ""
 "%s\n"
@@ -2066,7 +2066,7 @@ msgstr ""
 "%s\n"
 "Gunakan \"Send queued messages\" dari jendela utama untuk mencoba lagi."
 
-#: src/compose.c:5309
+#: src/compose.c:5370
 #, c-format
 msgid ""
 "Can't convert the character encoding of the message \n"
@@ -2077,7 +2077,7 @@ msgstr ""
 " ke %s charset yang ditentukan.\n"
 "Kirim sebagai %s?"
 
-#: src/compose.c:5367
+#: src/compose.c:5428
 #, c-format
 msgid ""
 "Line %d exceeds the line length limit (998 bytes).\n"
@@ -2090,71 +2090,71 @@ msgstr ""
 "\n"
 "Lanjutkan pengiriman?"
 
-#: src/compose.c:5548
+#: src/compose.c:5609
 msgid "Encryption warning"
 msgstr "Peringatan penyandian"
 
-#: src/compose.c:5549
+#: src/compose.c:5610
 msgid "+C_ontinue"
 msgstr "+L_anjutkan"
 
-#: src/compose.c:5604
+#: src/compose.c:5665
 msgid "No account for sending mails available!"
 msgstr "Akun untuk mengirim surat tidak tersedia!"
 
-#: src/compose.c:5614
+#: src/compose.c:5675
 msgid "Selected account isn't NNTP: Posting is impossible."
 msgstr "Akun terpilih bukan NNTP: Pengiriman tidak memungkinkan."
 
-#: src/compose.c:5850
+#: src/compose.c:5911
 #, c-format
 msgid "Attachment %s doesn't exist anymore. Ignore?"
 msgstr "Lampiran %s sudah tidak ada lagi. Abaikan?"
 
-#: src/compose.c:5851
+#: src/compose.c:5912
 msgid "Cancel sending"
 msgstr "Batalkan pengiriman"
 
-#: src/compose.c:5851
+#: src/compose.c:5912
 msgid "Ignore attachment"
 msgstr "Abaikan lampiran"
 
-#: src/compose.c:6341
+#: src/compose.c:6402
 msgid "Add to address _book"
 msgstr "Tambahkan ke _buku alamat"
 
-#: src/compose.c:6422
+#: src/compose.c:6493
 #: src/gtk/quicksearch.c:774
 msgid "Clear"
 msgstr "Bersih"
 
-#: src/compose.c:6426
+#: src/compose.c:6497
 msgid "Delete entry contents"
 msgstr "Hapus konten isian"
 
-#: src/compose.c:6430
+#: src/compose.c:6501
 msgid "Use <tab> to autocomplete from addressbook"
 msgstr "Gunakan <tab> untuk melengkapi dari buku alamat"
 
-#: src/compose.c:6590
+#: src/compose.c:6698
 msgid "Mime type"
 msgstr "Tipe Mime"
 
-#: src/compose.c:6596
-#: src/compose.c:6910
+#: src/compose.c:6704
+#: src/compose.c:7019
 #: src/mimeview.c:271
 #: src/plugins/pgpcore/select-keys.c:394
 #: src/prefs_matcher.c:608
 #: src/prefs_summary_column.c:84
-#: src/summaryview.c:436
+#: src/summaryview.c:437
 msgid "Size"
 msgstr "Ukuran"
 
-#: src/compose.c:6666
+#: src/compose.c:6774
 msgid "Save Message to "
 msgstr "Simpan Pesan ke "
 
-#: src/compose.c:6695
+#: src/compose.c:6803
 #: src/editjpilot.c:275
 #: src/editldap.c:518
 #: src/editvcard.c:191
@@ -2168,30 +2168,30 @@ msgstr "Simpan Pesan ke "
 msgid "_Browse"
 msgstr "_Jelajah"
 
-#: src/compose.c:6909
-#: src/compose.c:8490
+#: src/compose.c:7018
+#: src/compose.c:8611
 msgid "MIME type"
 msgstr "Tipe MIME"
 
-#: src/compose.c:7186
+#: src/compose.c:7295
 msgid "Hea_der"
 msgstr "Ke_pala"
 
-#: src/compose.c:7191
+#: src/compose.c:7300
 msgid "_Attachments"
 msgstr "_Lampiran"
 
-#: src/compose.c:7205
+#: src/compose.c:7314
 msgid "Othe_rs"
 msgstr "Lainn_ya"
 
-#: src/compose.c:7220
+#: src/compose.c:7329
 #: src/gtk/headers.h:18
 #: src/summary_search.c:366
 msgid "Subject:"
 msgstr "Subyek:"
 
-#: src/compose.c:7435
+#: src/compose.c:7547
 #, c-format
 msgid ""
 "Spell checker could not be started.\n"
@@ -2200,79 +2200,79 @@ msgstr ""
 "Pemeriksa ejaan tidak dapat dijalankan.\n"
 "%s"
 
-#: src/compose.c:7547
+#: src/compose.c:7659
 #, c-format
 msgid "From: <i>%s</i>"
 msgstr "Dari: <i>%s</i>"
 
-#: src/compose.c:7581
+#: src/compose.c:7693
 msgid "Account to use for this email"
 msgstr "Akun yang akan digunakan untuk email ini"
 
-#: src/compose.c:7583
+#: src/compose.c:7695
 msgid "Sender address to be used"
 msgstr "Alamat pengirim yang akan digunakan"
 
-#: src/compose.c:7746
+#: src/compose.c:7858
 #, c-format
 msgid "The privacy system '%s' cannot be loaded. You will not be able to sign or encrypt this message."
 msgstr "Sistem pribadi '%s' tidak dapat dimuat. Anda tidak dapat menandatangani atau menyandikan pesan ini."
 
-#: src/compose.c:7845
+#: src/compose.c:7957
 msgid "_None"
 msgstr "_Tidak ada"
 
-#: src/compose.c:7946
+#: src/compose.c:8058
 #: src/prefs_template.c:754
 #, c-format
 msgid "The body of the template has an error at line %d."
 msgstr "Isi badan cetakan mengandung kesalahan pada baris %d."
 
-#: src/compose.c:8057
+#: src/compose.c:8174
 msgid "Template From format error."
 msgstr "Format cetakan Pengirim bermasalah."
 
-#: src/compose.c:8075
+#: src/compose.c:8192
 msgid "Template To format error."
 msgstr "Format cetakan Kepada bermasalah."
 
-#: src/compose.c:8093
+#: src/compose.c:8210
 msgid "Template Cc format error."
 msgstr "Format cetakan Cc bermasalah."
 
-#: src/compose.c:8111
+#: src/compose.c:8228
 msgid "Template Bcc format error."
 msgstr "Format cetakan Bcc bermasalah."
 
-#: src/compose.c:8130
+#: src/compose.c:8247
 msgid "Template subject format error."
 msgstr "Format cetakan Subyek bermasalah."
 
-#: src/compose.c:8385
+#: src/compose.c:8506
 msgid "Invalid MIME type."
 msgstr "Tipe MIME salah."
 
-#: src/compose.c:8400
+#: src/compose.c:8521
 msgid "File doesn't exist or is empty."
 msgstr "Berkas tidak ada atau kosong."
 
-#: src/compose.c:8473
+#: src/compose.c:8594
 msgid "Properties"
 msgstr "Properti"
 
-#: src/compose.c:8523
+#: src/compose.c:8644
 msgid "Encoding"
 msgstr "Penyandian"
 
-#: src/compose.c:8543
+#: src/compose.c:8664
 msgid "Path"
 msgstr "Lokasi"
 
-#: src/compose.c:8544
+#: src/compose.c:8665
 msgid "File name"
 msgstr "Nama berkas"
 
-#: src/compose.c:8736
+#: src/compose.c:8857
 #, c-format
 msgid ""
 "The external editor is still working.\n"
@@ -2283,20 +2283,20 @@ msgstr ""
 "Sudahi proses secara paksa?\n"
 "id kelompok proses: %d"
 
-#: src/compose.c:8778
+#: src/compose.c:8899
 msgid "Compose: input from monitoring process\n"
 msgstr "Tulis: masukan dari proses pengawasan\n"
 
-#: src/compose.c:9045
+#: src/compose.c:9243
 #: src/messageview.c:1076
 msgid "Claws Mail needs network access in order to send this email."
 msgstr "Claws Mail membutuhkan akses jaringan untuk mengirimkan email ini."
 
-#: src/compose.c:9071
+#: src/compose.c:9269
 msgid "Could not queue message."
 msgstr "Tidak dapat mengantrikan pesan."
 
-#: src/compose.c:9073
+#: src/compose.c:9271
 #, c-format
 msgid ""
 "Could not queue message:\n"
@@ -2307,15 +2307,15 @@ msgstr ""
 "\n"
 "%s."
 
-#: src/compose.c:9236
+#: src/compose.c:9434
 msgid "Could not save draft."
 msgstr "Tidak dapat menyimpan konsep."
 
-#: src/compose.c:9240
+#: src/compose.c:9438
 msgid "Could not save draft"
 msgstr "Tidak dapat menyimpan konsep"
 
-#: src/compose.c:9241
+#: src/compose.c:9439
 msgid ""
 "Could not save draft.\n"
 "Do you want to cancel exit or discard this email?"
@@ -2323,25 +2323,25 @@ msgstr ""
 "Tidak dapat menyimpan konsep.\n"
 "Apakah anda akan batal keluar atau membatalkan email ini?"
 
-#: src/compose.c:9243
+#: src/compose.c:9441
 msgid "_Cancel exit"
 msgstr "_Batal keluar"
 
-#: src/compose.c:9243
+#: src/compose.c:9441
 msgid "_Discard email"
 msgstr "_Batalkan email"
 
-#: src/compose.c:9399
-#: src/compose.c:9412
+#: src/compose.c:9597
+#: src/compose.c:9611
 msgid "Select file"
 msgstr "Pilih berkas"
 
-#: src/compose.c:9426
+#: src/compose.c:9625
 #, c-format
 msgid "File '%s' could not be read."
 msgstr "Berkas '%s' tidak dapat di baca."
 
-#: src/compose.c:9428
+#: src/compose.c:9627
 #, c-format
 msgid ""
 "File '%s' contained invalid characters\n"
@@ -2350,73 +2350,73 @@ msgstr ""
 "Berkas '%s' mengandung karakter yang salah\n"
 "untuk penyandian ini, penyisipan mungkin salah."
 
-#: src/compose.c:9493
+#: src/compose.c:9699
 msgid "Discard message"
 msgstr "Batalkan pesan"
 
-#: src/compose.c:9494
+#: src/compose.c:9700
 msgid "This message has been modified. Discard it?"
 msgstr "Pesan ini telah dirubah. Batalkan ?"
 
-#: src/compose.c:9495
+#: src/compose.c:9701
 msgid "_Discard"
 msgstr "_Batalkan"
 
-#: src/compose.c:9495
+#: src/compose.c:9701
 msgid "_Save to Drafts"
 msgstr "_Simpan ke Konsep"
 
-#: src/compose.c:9497
+#: src/compose.c:9703
 msgid "Save changes"
 msgstr "Simpan perubahan"
 
-#: src/compose.c:9498
+#: src/compose.c:9704
 msgid "This message has been modified. Save the latest changes?"
 msgstr "Pesan ini telah dirubah. Simpan perubahan terakhir?"
 
-#: src/compose.c:9499
+#: src/compose.c:9705
 msgid "_Don't save"
 msgstr "_Jangan simpan"
 
-#: src/compose.c:9499
+#: src/compose.c:9705
 msgid "+_Save to Drafts"
 msgstr "+-Simpan sebagai Konsep"
 
-#: src/compose.c:9550
+#: src/compose.c:9756
 #, c-format
 msgid "Do you want to apply the template '%s' ?"
 msgstr "Apakah anda akan menerapkan cetakan '%s' ?"
 
-#: src/compose.c:9552
+#: src/compose.c:9758
 msgid "Apply template"
 msgstr "Terapkan cetakan"
 
-#: src/compose.c:9553
+#: src/compose.c:9759
 msgid "_Replace"
 msgstr "_Ganti"
 
-#: src/compose.c:9553
+#: src/compose.c:9759
 msgid "_Insert"
 msgstr "_Sisip"
 
-#: src/compose.c:10358
+#: src/compose.c:10585
 msgid "Insert or attach?"
 msgstr "Sisipkan atau lampirkan?"
 
-#: src/compose.c:10359
+#: src/compose.c:10586
 msgid "Do you want to insert the contents of the file(s) into the message body, or attach it to the email?"
 msgstr "Apakah anda akan menyisipkan isi berkas ke dalam badan pesan, atau melampirkan ke email?"
 
-#: src/compose.c:10361
+#: src/compose.c:10588
 msgid "_Attach"
 msgstr "_Lampirkan"
 
-#: src/compose.c:10568
+#: src/compose.c:10795
 #, c-format
 msgid "Quote format error at line %d."
 msgstr "Kesalahan format kutip pada baris %d."
 
-#: src/compose.c:10857
+#: src/compose.c:11085
 #, c-format
 msgid "You are about to reply to %d messages. Opening the windows could take some time. Do you want to continue?"
 msgstr "Anda akan menjawab %d pesan. Membuka jendelanya membutuhkan beberapa waktu. Anda mau melanjutkan?"
@@ -2444,7 +2444,7 @@ msgid "Debug log"
 msgstr "Catatan Debug"
 
 #: src/crash.c:251
-#: src/toolbar.c:404
+#: src/toolbar.c:407
 msgid "Close"
 msgstr "Tutup"
 
@@ -2567,19 +2567,19 @@ msgstr "Foto"
 #: src/editaddress.c:960
 #: src/expldifdlg.c:516
 #: src/exporthtml.c:756
-#: src/ldif.c:770
+#: src/ldif.c:768
 msgid "Display Name"
 msgstr "Nama Tampilan"
 
 #: src/editaddress.c:967
 #: src/editaddress.c:971
-#: src/ldif.c:778
+#: src/ldif.c:776
 msgid "Last Name"
 msgstr "Nama Akhir"
 
 #: src/editaddress.c:968
 #: src/editaddress.c:970
-#: src/ldif.c:774
+#: src/ldif.c:772
 msgid "First Name"
 msgstr "Nama Awal"
 
@@ -2795,7 +2795,7 @@ msgid "TLS"
 msgstr "TLS"
 
 #: src/editldap.c:471
-#: src/prefs_account.c:3228
+#: src/prefs_account.c:3226
 msgid "SSL"
 msgstr "SSL"
 
@@ -2908,7 +2908,7 @@ msgid "The maximum number of entries that should be returned in the search resul
 msgstr "Jumlah entri maksimum yang seharusnya dikembalikan pada hasil pencarian."
 
 #: src/editldap.c:785
-#: src/prefs_account.c:3119
+#: src/prefs_account.c:3117
 msgid "Basic"
 msgstr "Dasar"
 
@@ -3051,9 +3051,9 @@ msgstr "Lembargaya"
 #: src/gtk/gtkaspell.c:2167
 #: src/mainwindow.c:1113
 #: src/prefs_account.c:921
-#: src/prefs_toolbar.c:705
-#: src/prefs_toolbar.c:1184
-#: src/summaryview.c:5853
+#: src/prefs_toolbar.c:754
+#: src/prefs_toolbar.c:1370
+#: src/summaryview.c:5854
 msgid "None"
 msgstr "Tidak ada"
 
@@ -3262,7 +3262,7 @@ msgid "Distinguished Name"
 msgstr "Distinguished Name"
 
 #: src/export.c:112
-#: src/summaryview.c:7933
+#: src/summaryview.c:7967
 msgid "Export to mbox file"
 msgstr "Ekspor ke berkas mbox"
 
@@ -3309,22 +3309,22 @@ msgid "Claws Mail Address Book"
 msgstr "Buku Alamat Claws Mail"
 
 #: src/exporthtml.c:1083
-#: src/exportldif.c:551
+#: src/exportldif.c:622
 msgid "Name already exists but is not a directory."
 msgstr "Nama sudah ada namun bukan sebuah direktori."
 
 #: src/exporthtml.c:1086
-#: src/exportldif.c:554
+#: src/exportldif.c:625
 msgid "No permissions to create directory."
 msgstr "Tidak diijinkan untuk membuat direktori."
 
 #: src/exporthtml.c:1089
-#: src/exportldif.c:557
+#: src/exportldif.c:628
 msgid "Name is too long."
 msgstr "Nama terlalu panjang."
 
 #: src/exporthtml.c:1092
-#: src/exportldif.c:560
+#: src/exportldif.c:631
 msgid "Not specified."
 msgstr "Tidak ditentukan."
 
@@ -3348,8 +3348,8 @@ msgstr "Antri"
 #: src/folder.c:1456
 #: src/foldersel.c:391
 #: src/prefs_folder_item.c:308
-#: src/toolbar.c:361
-#: src/toolbar.c:396
+#: src/toolbar.c:364
+#: src/toolbar.c:399
 msgid "Trash"
 msgstr "Tempat Sampah"
 
@@ -3364,26 +3364,26 @@ msgstr "Konsep"
 msgid "Processing (%s)...\n"
 msgstr "Sedang memproses (%s)...\n"
 
-#: src/folder.c:3140
+#: src/folder.c:3142
 #, c-format
 msgid "Copying %s to %s...\n"
 msgstr "Menyalin %s to %s...\n"
 
-#: src/folder.c:3140
+#: src/folder.c:3142
 #, c-format
 msgid "Moving %s to %s...\n"
 msgstr "Memindahkan %s to %s...\n"
 
-#: src/folder.c:3430
+#: src/folder.c:3432
 #, c-format
 msgid "Updating cache for %s..."
 msgstr "Memperbaharui tampungan untuk %s..."
 
-#: src/folder.c:4302
+#: src/folder.c:4304
 msgid "Processing messages..."
 msgstr "Memproses pesan..."
 
-#: src/folder.c:4438
+#: src/folder.c:4440
 #, c-format
 msgid "Synchronising %s for offline use...\n"
 msgstr "Sinkronisasi %s untuk penggunaan secara offline...\n"
@@ -3455,7 +3455,7 @@ msgstr "Kirim _antrian..."
 #: src/folderview.c:427
 #: src/prefs_folder_column.c:78
 #: src/prefs_matcher.c:372
-#: src/summaryview.c:6126
+#: src/summaryview.c:6127
 msgid "New"
 msgstr "Baru"
 
@@ -3463,7 +3463,7 @@ msgstr "Baru"
 #: src/folderview.c:428
 #: src/prefs_folder_column.c:79
 #: src/prefs_matcher.c:371
-#: src/summaryview.c:6128
+#: src/summaryview.c:6129
 msgid "Unread"
 msgstr "Belum dibaca"
 
@@ -3474,7 +3474,7 @@ msgstr "Total"
 
 #. TRANSLATORS: This in Number sign in American style
 #: src/folderview.c:430
-#: src/summaryview.c:437
+#: src/summaryview.c:438
 msgid "#"
 msgstr "#"
 
@@ -3483,26 +3483,26 @@ msgid "Setting folder info..."
 msgstr "Atur info direktori..."
 
 #: src/folderview.c:804
-#: src/summaryview.c:3940
+#: src/summaryview.c:3941
 msgid "Mark all as read"
 msgstr "Tandai semua telah dibaca"
 
 #: src/folderview.c:805
-#: src/summaryview.c:3941
+#: src/summaryview.c:3942
 msgid "Do you really want to mark all mails in this folder as read ?"
 msgstr "Anda yakin akan menandai semua pesan dalam direktori ini sudah dibaca?"
 
 #: src/folderview.c:1028
-#: src/imap.c:4076
-#: src/mainwindow.c:5049
+#: src/imap.c:4067
+#: src/mainwindow.c:5055
 #: src/setup.c:90
 #, c-format
 msgid "Scanning folder %s%c%s ..."
 msgstr "Memindai direktori %s%c%s ..."
 
 #: src/folderview.c:1032
-#: src/imap.c:4081
-#: src/mainwindow.c:5054
+#: src/imap.c:4072
+#: src/mainwindow.c:5060
 #: src/setup.c:95
 #, c-format
 msgid "Scanning folder %s ..."
@@ -3564,40 +3564,40 @@ msgstr "+_Kosongkan tempat sampah"
 
 #: src/folderview.c:2390
 #: src/inc.c:1599
-#: src/toolbar.c:2573
+#: src/toolbar.c:2586
 msgid "Offline warning"
 msgstr "Peringatan offline"
 
 #: src/folderview.c:2391
-#: src/toolbar.c:2574
+#: src/toolbar.c:2587
 msgid "You're working offline. Override?"
 msgstr "Anda sedang bekerja secara offline. Lanjutkan?"
 
 #: src/folderview.c:2402
-#: src/toolbar.c:2593
+#: src/toolbar.c:2606
 msgid "Send queued messages"
 msgstr "Kirim antrian pesan"
 
 #: src/folderview.c:2403
-#: src/toolbar.c:2594
+#: src/toolbar.c:2607
 msgid "Send all queued messages?"
 msgstr "Kirim semua antrian pesan?"
 
 #: src/folderview.c:2404
 #: src/messageview.c:807
 #: src/messageview.c:824
-#: src/toolbar.c:2595
+#: src/toolbar.c:2608
 msgid "_Send"
 msgstr "_Kirim"
 
 #: src/folderview.c:2412
-#: src/toolbar.c:2613
+#: src/toolbar.c:2626
 msgid "Some errors occurred while sending queued messages."
 msgstr "Beberapa kesalahan terjadi ketika mengirimkan antrian pesan."
 
 #: src/folderview.c:2415
 #: src/main.c:2428
-#: src/toolbar.c:2616
+#: src/toolbar.c:2629
 #, c-format
 msgid ""
 "Some errors occurred while sending queued messages:\n"
@@ -3664,16 +3664,16 @@ msgid "Processing configuration for folder %s"
 msgstr "Memproses konfigurasi untuk direktori %s"
 
 #: src/folderview.c:2995
-#: src/summaryview.c:4377
-#: src/summaryview.c:4476
+#: src/summaryview.c:4378
+#: src/summaryview.c:4477
 msgid "The destination folder can only be used to store subfolders."
 msgstr "Direktori tujuan hanya dapat digunakan untuk menempatkan subdirektori."
 
 #: src/gedit-print.c:138
 #: src/messageview.c:2105
-#: src/summaryview.c:4699
-#: src/toolbar.c:196
-#: src/toolbar.c:403
+#: src/summaryview.c:4700
+#: src/toolbar.c:198
+#: src/toolbar.c:406
 msgid "Print"
 msgstr "Cetak"
 
@@ -3692,7 +3692,7 @@ msgid "Printing page %d of %d..."
 msgstr "Mencetak halaman %d dari %d..."
 
 #: src/gedit-print.c:287
-#: src/printing.c:438
+#: src/printing.c:439
 msgid "Print preview"
 msgstr "Pratayang Cetak"
 
@@ -3745,7 +3745,7 @@ msgid "Can't retrieve newsgroup list."
 msgstr "Tidak dapat mengambil daftar newsgroup."
 
 #: src/grouplistdialog.c:443
-#: src/summaryview.c:1488
+#: src/summaryview.c:1489
 msgid "Done."
 msgstr "Selesai."
 
@@ -4055,7 +4055,7 @@ msgid "Move folders up or down to change the sort order in the folder list."
 msgstr "Pindahkan direktori keatas atau kebawah untuk mengubah urutan pada daftar direktori."
 
 #: src/gtk/foldersort.c:216
-#: src/toolbar.c:384
+#: src/toolbar.c:387
 msgid "Folders"
 msgstr "Direktori"
 
@@ -4286,7 +4286,7 @@ msgstr "Huruf yang akan digunakan untuk header dan footer (contoh \"Monospace 10
 #: src/prefs_matcher.c:2053
 #: src/prefs_summary_column.c:83
 #: src/quote_fmt.c:48
-#: src/summaryview.c:435
+#: src/summaryview.c:436
 msgid "Date"
 msgstr "Tanggal"
 
@@ -4303,7 +4303,7 @@ msgstr "Tanggal:"
 #: src/quote_fmt.c:167
 #: src/quote_fmt.c:295
 #: src/quote_fmt.c:427
-#: src/summaryview.c:433
+#: src/summaryview.c:434
 msgid "From"
 msgstr "Dari"
 
@@ -4313,7 +4313,7 @@ msgid "From:"
 msgstr "Dari:"
 
 #: src/gtk/headers.h:10
-#: src/toolbar.c:393
+#: src/toolbar.c:396
 msgid "Sender"
 msgstr "Pengirim"
 
@@ -4332,7 +4332,7 @@ msgstr "Balas-Ke"
 #: src/prefs_summary_column.c:82
 #: src/prefs_template.c:81
 #: src/quote_fmt.c:56
-#: src/summaryview.c:434
+#: src/summaryview.c:435
 msgid "To"
 msgstr "Kepada"
 
@@ -4388,7 +4388,7 @@ msgstr "Referensi:"
 #: src/prefs_template.c:84
 #: src/quote_fmt.c:55
 #: src/quote_fmt.c:186
-#: src/summaryview.c:432
+#: src/summaryview.c:433
 msgid "Subject"
 msgstr "Subyek"
 
@@ -4511,7 +4511,7 @@ msgstr "Terlihat:"
 #: src/gtk/progressdialog.c:137
 #: src/gtk/sslcertwindow.c:163
 #: src/prefs_summary_column.c:78
-#: src/summaryview.c:2668
+#: src/summaryview.c:2669
 msgid "Status"
 msgstr "Status"
 
@@ -4880,6 +4880,7 @@ msgstr ""
 #: src/plugins/pgpcore/prefs_gpg.c:553
 #: src/plugins/spamassassin/spamassassin_gtk.c:641
 #: src/plugins/trayicon/trayicon_prefs.c:68
+#: src/prefs_toolbar.c:900
 msgid "Plugins"
 msgstr "Pengaya"
 
@@ -4922,14 +4923,14 @@ msgid "Page Index"
 msgstr "Indeks halaman"
 
 #: src/gtk/progressdialog.c:129
-#: src/prefs_account.c:3118
-#: src/prefs_account.c:3136
-#: src/prefs_account.c:3154
-#: src/prefs_account.c:3172
-#: src/prefs_account.c:3190
-#: src/prefs_account.c:3208
-#: src/prefs_account.c:3227
-#: src/prefs_account.c:3309
+#: src/prefs_account.c:3116
+#: src/prefs_account.c:3134
+#: src/prefs_account.c:3152
+#: src/prefs_account.c:3170
+#: src/prefs_account.c:3188
+#: src/prefs_account.c:3206
+#: src/prefs_account.c:3225
+#: src/prefs_account.c:3307
 #: src/prefs_filtering_action.c:1358
 #: src/prefs_filtering.c:392
 #: src/prefs_filtering.c:1942
@@ -5170,7 +5171,7 @@ msgid "Info"
 msgstr "Info"
 
 #: src/gtk/quicksearch.c:1257
-#: src/summaryview.c:1300
+#: src/summaryview.c:1301
 #, c-format
 msgid "Searching in %s... \n"
 msgstr "Mencari dalam %s... \n"
@@ -5311,15 +5312,15 @@ msgid "Tags:"
 msgstr "Tag:"
 
 #: src/headerview.c:215
-#: src/summaryview.c:3191
-#: src/summaryview.c:3201
-#: src/summaryview.c:3222
+#: src/summaryview.c:3192
+#: src/summaryview.c:3202
+#: src/summaryview.c:3223
 msgid "(No From)"
 msgstr "(Tidak ada Pengirim)"
 
 #: src/headerview.c:230
-#: src/summaryview.c:3235
-#: src/summaryview.c:3239
+#: src/summaryview.c:3236
+#: src/summaryview.c:3240
 msgid "(No Subject)"
 msgstr "(Tidak ada subyek)"
 
@@ -5339,221 +5340,221 @@ msgstr "Ukuranberkas:"
 msgid "Load Image"
 msgstr "Memuat Gambar"
 
-#: src/imap.c:546
+#: src/imap.c:545
 msgid "IMAP4 connection broken\n"
 msgstr "Sambungan IMAP4 putus\n"
 
-#: src/imap.c:571
+#: src/imap.c:570
 #, c-format
 msgid "IMAP error on %s: authenticated\n"
 msgstr "Kesalahan IMAP pada %s: diotentifikasi\n"
 
-#: src/imap.c:574
+#: src/imap.c:573
 #, c-format
 msgid "IMAP error on %s: not authenticated\n"
 msgstr "Kesalahan IMAP pada %s: tidak diotentifikasi\n"
 
-#: src/imap.c:577
+#: src/imap.c:576
 #, c-format
 msgid "IMAP error on %s: bad state\n"
 msgstr "Kesalahan IMAP pada %s: kondisi yang buruk\n"
 
-#: src/imap.c:580
+#: src/imap.c:579
 #, c-format
 msgid "IMAP error on %s: stream error\n"
 msgstr "Kesalahan IMAP pada %s: kesalahan stream\n"
 
-#: src/imap.c:583
+#: src/imap.c:582
 #, c-format
 msgid "IMAP error on %s: parse error (very probably non-RFC compliance from the server)\n"
 msgstr "Kesalahan IMAP pada %s: kesalahan parse (kemungkinan besar tidak memenuhi non-RFC dari server)\n"
 
-#: src/imap.c:587
+#: src/imap.c:586
 #, c-format
 msgid "IMAP error on %s: connection refused\n"
 msgstr "kesalahan IMAP pada %s: sambungan ditolak\n"
 
-#: src/imap.c:590
+#: src/imap.c:589
 #, c-format
 msgid "IMAP error on %s: memory error\n"
 msgstr "Kesalahan IMAP pada %s: kesalahan memori\n"
 
-#: src/imap.c:593
+#: src/imap.c:592
 #, c-format
 msgid "IMAP error on %s: fatal error\n"
 msgstr "Kesalahan IMAP pada %s: kesalahan fatal\n"
 
-#: src/imap.c:596
+#: src/imap.c:595
 #, c-format
 msgid "IMAP error on %s: protocol error(very probably non-RFC compliance from the server)\n"
 msgstr "Kesalahan IMAP pada %s: kesalahan protokol (kemungkinan besar tidak memenuhi non-RFC dari server)\n"
 
-#: src/imap.c:600
+#: src/imap.c:599
 #, c-format
 msgid "IMAP error on %s: connection not accepted\n"
 msgstr "Kesalahan IMAP pada %s: sambungan tidak diterima\n"
 
-#: src/imap.c:603
+#: src/imap.c:602
 #, c-format
 msgid "IMAP error on %s: APPEND error\n"
 msgstr "Kesalahan IMAP pada %s: kesalahan APPEND\n"
 
-#: src/imap.c:606
+#: src/imap.c:605
 #, c-format
 msgid "IMAP error on %s: NOOP error\n"
 msgstr "Kesalahan IMAP pada %s: kesalahan NOOP\n"
 
-#: src/imap.c:609
+#: src/imap.c:608
 #, c-format
 msgid "IMAP error on %s: LOGOUT error\n"
 msgstr "Kesalahan IMAP pada %s: kesalahan LOGOUT\n"
 
-#: src/imap.c:612
+#: src/imap.c:611
 #, c-format
 msgid "IMAP error on %s: CAPABILITY error\n"
 msgstr "Kesalahan IMAP pada %s: kesalahan CAPABILITY\n"
 
-#: src/imap.c:615
+#: src/imap.c:614
 #, c-format
 msgid "IMAP error on %s: CHECK error\n"
 msgstr "Kesalahan IMAP pada %s: kesalahan CHECK\n"
 
-#: src/imap.c:618
+#: src/imap.c:617
 #, c-format
 msgid "IMAP error on %s: CLOSE error\n"
 msgstr "Kesalahan IMAP pada %s: kesalahan CLOSE\n"
 
-#: src/imap.c:621
+#: src/imap.c:620
 #, c-format
 msgid "IMAP error on %s: EXPUNGE error\n"
 msgstr "Kesalahan IMAP pada %s: kesalahan EXPUNGE\n"
 
-#: src/imap.c:624
+#: src/imap.c:623
 #, c-format
 msgid "IMAP error on %s: COPY error\n"
 msgstr "Kesalahan IMAP pada %s: kesalahan COPY\n"
 
-#: src/imap.c:627
+#: src/imap.c:626
 #, c-format
 msgid "IMAP error on %s: UID COPY error\n"
 msgstr "Kesalahan IMAP pada %s: kesalahan UID COPY\n"
 
-#: src/imap.c:630
+#: src/imap.c:629
 #, c-format
 msgid "IMAP error on %s: CREATE error\n"
 msgstr "Kesalahan IMAP pada %s: kesalahan CREATE\n"
 
-#: src/imap.c:633
+#: src/imap.c:632
 #, c-format
 msgid "IMAP error on %s: DELETE error\n"
 msgstr "Kesalahan IMAP pada %s: kesalahan DELETE\n"
 
-#: src/imap.c:636
+#: src/imap.c:635
 #, c-format
 msgid "IMAP error on %s: EXAMINE error\n"
 msgstr "Kesalahan IMAP pada %s: kesalahan EXAMINE\n"
 
-#: src/imap.c:639
+#: src/imap.c:638
 #, c-format
 msgid "IMAP error on %s: FETCH error\n"
 msgstr "Kesalahan IMAP pada %s: kesalahan FETCH\n"
 
-#: src/imap.c:642
+#: src/imap.c:641
 #, c-format
 msgid "IMAP error on %s: UID FETCH error\n"
 msgstr "Kesalahan IMAP pada %s: kesalahan UID FETCH\n"
 
-#: src/imap.c:645
+#: src/imap.c:644
 #, c-format
 msgid "IMAP error on %s: LIST error\n"
 msgstr "Kesalahan IMAP pada %s: kesalahan LIST\n"
 
-#: src/imap.c:648
+#: src/imap.c:647
 #, c-format
 msgid "IMAP error on %s: LOGIN error\n"
 msgstr "Kesalahan IMAP pada %s: kesalahan LOGIN\n"
 
-#: src/imap.c:651
+#: src/imap.c:650
 #, c-format
 msgid "IMAP error on %s: LSUB error\n"
 msgstr "Kesalahan IMAP pada %s: kesalahan LSUB\n"
 
-#: src/imap.c:654
+#: src/imap.c:653
 #, c-format
 msgid "IMAP error on %s: RENAME error\n"
 msgstr "Kesalahan IMAP pada %s: kesalahan RENAME\n"
 
-#: src/imap.c:657
+#: src/imap.c:656
 #, c-format
 msgid "IMAP error on %s: SEARCH error\n"
 msgstr "Kesalahan IMAP pada %s: kesalahan SEARCH\n"
 
-#: src/imap.c:660
+#: src/imap.c:659
 #, c-format
 msgid "IMAP error on %s: UID SEARCH error\n"
 msgstr "Kesalahan IMAP pada %s: kesalahan UID SEARCH\n"
 
-#: src/imap.c:663
+#: src/imap.c:662
 #, c-format
 msgid "IMAP error on %s: SELECT error\n"
 msgstr "Kesalahan IMAP pada %s: kesalahan SELECT\n"
 
-#: src/imap.c:666
+#: src/imap.c:665
 #, c-format
 msgid "IMAP error on %s: STATUS error\n"
 msgstr "Kesalahan IMAP pada %s: kesalahan STATUS\n"
 
-#: src/imap.c:669
+#: src/imap.c:668
 #, c-format
 msgid "IMAP error on %s: STORE error\n"
 msgstr "Kesalahan IMAP pada %s: kesalahan STORE\n"
 
-#: src/imap.c:672
+#: src/imap.c:671
 #, c-format
 msgid "IMAP error on %s: UID STORE error\n"
 msgstr "Kesalahan IMAP pada %s: kesalahan UID STORE\n"
 
-#: src/imap.c:675
+#: src/imap.c:674
 #, c-format
 msgid "IMAP error on %s: SUBSCRIBE error\n"
 msgstr "Kesalahan IMAP pada %s: kesalahan SUBSCRIBE\n"
 
-#: src/imap.c:678
+#: src/imap.c:677
 #, c-format
 msgid "IMAP error on %s: UNSUBSCRIBE error\n"
 msgstr "Kesalahan IMAP pada %s: kesalahan UNSUBSCRIBE\n"
 
-#: src/imap.c:681
+#: src/imap.c:680
 #, c-format
 msgid "IMAP error on %s: STARTTLS error\n"
 msgstr "Kesalahan IMAP pada %s: kesalahan STARTTLS\n"
 
-#: src/imap.c:684
+#: src/imap.c:683
 #, c-format
 msgid "IMAP error on %s: INVAL error\n"
 msgstr "Kesalahan IMAP pada %s: kesalahan INVAL\n"
 
-#: src/imap.c:687
+#: src/imap.c:686
 #, c-format
 msgid "IMAP error on %s: EXTENSION error\n"
 msgstr "Kesalahan IMAP pada %s: kesalahan EXTENSION\n"
 
-#: src/imap.c:690
+#: src/imap.c:689
 #, c-format
 msgid "IMAP error on %s: SASL error\n"
 msgstr "Kesalahan IMAP pada %s: kesalahan SASL\n"
 
-#: src/imap.c:694
+#: src/imap.c:693
 #, c-format
 msgid "IMAP error on %s: SSL error\n"
 msgstr "Kesalahan IMAP pada %s: kesalahan SSL\n"
 
-#: src/imap.c:698
+#: src/imap.c:697
 #, c-format
 msgid "IMAP error on %s: Unknown error [%d]\n"
 msgstr "Kesalahan IMAP pada %s: kesalahan tidak dikenal [%d]\n"
 
-#: src/imap.c:879
+#: src/imap.c:878
 msgid ""
 "\n"
 "\n"
@@ -5563,7 +5564,7 @@ msgstr ""
 "\n"
 "Login CRAM-MD5 hanya berfungsi jika libetpan dipaketkan dengan dukungan SASL dan pengaya CRAM-MD5 SASL telah terpasang."
 
-#: src/imap.c:885
+#: src/imap.c:884
 msgid ""
 "\n"
 "\n"
@@ -5573,44 +5574,44 @@ msgstr ""
 "\n"
 "Login DIGEST-MD5 hanya berfungsi jika libetpan dipaketkan dengan dukungan SASL dan pengaya DIGEST-MD5 SASL telah terpasang."
 
-#: src/imap.c:892
+#: src/imap.c:891
 #, c-format
 msgid "Connection to %s failed: login refused.%s"
 msgstr "Menyambung ke %s gagal: login ditolak.%s"
 
-#: src/imap.c:896
+#: src/imap.c:895
 #, c-format
 msgid "Connection to %s failed: login refused.%s\n"
 msgstr "Menyambung ke %s gagal: login ditolak.%s\n"
 
-#: src/imap.c:914
+#: src/imap.c:913
 #, c-format
 msgid "Connecting to %s failed"
 msgstr "Menyambung ke %s gagal"
 
-#: src/imap.c:921
-#: src/imap.c:924
+#: src/imap.c:920
+#: src/imap.c:923
 #, c-format
 msgid "IMAP4 connection to %s has been disconnected. Reconnecting...\n"
 msgstr "Sambungan IMAP4 ke %s telah terputus. Menyambung ulang...\n"
 
-#: src/imap.c:954
-#: src/imap.c:3119
-#: src/imap.c:3782
-#: src/imap.c:3879
-#: src/imap.c:4065
-#: src/imap.c:4869
+#: src/imap.c:953
+#: src/imap.c:3110
+#: src/imap.c:3773
+#: src/imap.c:3870
+#: src/imap.c:4056
+#: src/imap.c:4860
 msgid "Claws Mail needs network access in order to access the IMAP server."
 msgstr "Claws Mail membutuhkan akses jaringan guna mengakses server IMAP."
 
-#: src/imap.c:1047
+#: src/imap.c:1046
 #: src/inc.c:795
 #: src/news.c:351
 #: src/send_message.c:289
 msgid "Insecure connection"
 msgstr "Sambungan tidak aman"
 
-#: src/imap.c:1048
+#: src/imap.c:1047
 #: src/inc.c:796
 #: src/news.c:352
 #: src/send_message.c:290
@@ -5623,137 +5624,137 @@ msgstr ""
 "\n"
 "Apakah anda ingin melanjutkan menyambung ke server? Komunikasi tidak akan diamankan."
 
-#: src/imap.c:1054
+#: src/imap.c:1053
 #: src/inc.c:802
 #: src/news.c:358
 #: src/send_message.c:296
 msgid "Con_tinue connecting"
 msgstr "Lanju_tkan menyambung"
 
-#: src/imap.c:1064
+#: src/imap.c:1063
 #, c-format
 msgid "Connecting to IMAP4 server: %s..."
 msgstr "Menyambung ke server IMAP4: %s..."
 
-#: src/imap.c:1106
+#: src/imap.c:1105
 #, c-format
 msgid "Can't connect to IMAP4 server: %s:%d"
 msgstr "Tidak dapat menyambung ke server IMAP4: %s:%d"
 
-#: src/imap.c:1109
+#: src/imap.c:1108
 #, c-format
 msgid "Can't connect to IMAP4 server: %s:%d\n"
 msgstr "Tidak dapat menyambung ke server IMAP4: %s:%d\n"
 
-#: src/imap.c:1142
-#: src/imap.c:3542
+#: src/imap.c:1141
+#: src/imap.c:3533
 msgid "Can't start TLS session.\n"
 msgstr "Tidak dapat menjalankan sesi TLS.\n"
 
-#: src/imap.c:1184
+#: src/imap.c:1183
 #, c-format
 msgid "Connecting to IMAP4 server %s...\n"
 msgstr "Menyambung ke server IMAP4 %s...\n"
 
-#: src/imap.c:1199
+#: src/imap.c:1198
 #, c-format
 msgid "Couldn't login to IMAP server %s.\n"
 msgstr "Tidak dapat login ke server IMAP %s.\n"
 
-#: src/imap.c:1202
+#: src/imap.c:1201
 #, c-format
 msgid "Couldn't login to IMAP server %s."
 msgstr "Tidak dapat login ke server IMAP %s."
 
-#: src/imap.c:1598
+#: src/imap.c:1597
 msgid "Adding messages..."
 msgstr "Menambahkan pesan..."
 
-#: src/imap.c:1802
+#: src/imap.c:1800
 #: src/mh.c:517
 msgid "Copying messages..."
 msgstr "Menyalin pesan..."
 
-#: src/imap.c:1996
+#: src/imap.c:1988
 msgid "can't set deleted flags\n"
 msgstr "Tidak dapat menandai penanda terhapus\n"
 
-#: src/imap.c:2003
-#: src/imap.c:4495
+#: src/imap.c:1995
+#: src/imap.c:4486
 msgid "can't expunge\n"
 msgstr "tidak dapat expunge\n"
 
-#: src/imap.c:2355
+#: src/imap.c:2346
 #, c-format
 msgid "Looking for unsubscribed folders in %s..."
 msgstr "Mencari direktori takterdaftar di %s..."
 
-#: src/imap.c:2358
+#: src/imap.c:2349
 #, c-format
 msgid "Looking for subfolders of %s..."
 msgstr "Mencari subdirektori dari %s..."
 
-#: src/imap.c:2654
+#: src/imap.c:2645
 msgid "can't create mailbox: LIST failed\n"
 msgstr "Tidak dapat membuat kotaksurat: LIST gagal\n"
 
-#: src/imap.c:2669
+#: src/imap.c:2660
 msgid "can't create mailbox\n"
 msgstr "Tidak dapat membuat kotaksurat\n"
 
-#: src/imap.c:2760
+#: src/imap.c:2751
 msgid "New folder name must not contain the namespace path separator"
 msgstr "Nama direktori baru tidak boleh mengandung pemisah nama lokasi"
 
-#: src/imap.c:2797
+#: src/imap.c:2788
 #, c-format
 msgid "can't rename mailbox: %s to %s\n"
 msgstr "Tidak dapat mengganti nama kotaksurat: %s ke %s\n"
 
-#: src/imap.c:2909
+#: src/imap.c:2900
 msgid "can't delete mailbox\n"
 msgstr "Tidak dapat menghapus kotaksurat\n"
 
-#: src/imap.c:3200
+#: src/imap.c:3191
 msgid "LIST failed\n"
 msgstr "LIST gagal\n"
 
-#: src/imap.c:3285
+#: src/imap.c:3276
 msgid "Flagging messages..."
 msgstr "Menandai pesan..."
 
-#: src/imap.c:3386
+#: src/imap.c:3377
 #, c-format
 msgid "can't select folder: %s\n"
 msgstr "Tidak dapat memilih direktori: %s\n"
 
-#: src/imap.c:3539
+#: src/imap.c:3530
 msgid "Server requires TLS to log in.\n"
 msgstr "Server membutuhkan TLS untuk login.\n"
 
-#: src/imap.c:3549
+#: src/imap.c:3540
 msgid "Can't refresh capabilities.\n"
 msgstr "Tidak dapat memperbaharui kapabilitas.\n"
 
-#: src/imap.c:3554
+#: src/imap.c:3545
 #, c-format
 msgid "Connection to %s failed: server requires TLS, but Claws Mail has been compiled without OpenSSL support.\n"
 msgstr "Sambungan ke %s gagal: server membutuhkan TLS, namun Claws Mail telah dipaketkan tanpa dukungan OpenSSL.\n"
 
-#: src/imap.c:3562
+#: src/imap.c:3553
 msgid "Server logins are disabled.\n"
 msgstr "Login ke Server dinonaktifkan.\n"
 
-#: src/imap.c:3787
+#: src/imap.c:3778
 msgid "Fetching message..."
 msgstr "Mengambil pesan..."
 
-#: src/imap.c:4488
+#: src/imap.c:4479
 #, c-format
 msgid "can't set deleted flags: %d\n"
 msgstr "Tidak dapat menandai penanda terhapus: %d\n"
 
-#: src/imap.c:5528
+#: src/imap.c:5519
 msgid ""
 "You have one or more IMAP accounts defined. However this version of Claws Mail has been built without IMAP support; your IMAP account(s) are disabled.\n"
 "\n"
@@ -5887,7 +5888,7 @@ msgstr ""
 
 #: src/imap_gtk.c:383
 #: src/mh_gtk.c:219
-#: src/news_gtk.c:265
+#: src/news_gtk.c:280
 #, c-format
 msgid "Can't remove the folder '%s'."
 msgstr "Tidak dapat menghapus direktori '%s'."
@@ -6049,7 +6050,7 @@ msgid "R"
 msgstr "R"
 
 #: src/importldif.c:727
-#: src/summaryview.c:430
+#: src/summaryview.c:431
 msgid "S"
 msgstr "S"
 
@@ -6184,8 +6185,8 @@ msgstr "Otentifikasi gagal"
 #: src/inc.c:640
 #: src/prefs_matcher.c:377
 #: src/prefs_summary_column.c:87
-#: src/summaryview.c:2664
-#: src/summaryview.c:6150
+#: src/summaryview.c:2665
+#: src/summaryview.c:6151
 msgid "Locked"
 msgstr "Dikunci"
 
@@ -6385,7 +6386,7 @@ msgstr "%s%sAnda bekerja offline. Abaikan?"
 msgid "On_ly once"
 msgstr "Hanya seka_li"
 
-#: src/ldif.c:782
+#: src/ldif.c:780
 msgid "Nick Name"
 msgstr "Nama Panggilan"
 
@@ -6641,7 +6642,7 @@ msgstr "_Berkas"
 
 #: src/mainwindow.c:474
 #: src/messageview.c:188
-#: src/summaryview.c:425
+#: src/summaryview.c:426
 msgid "_View"
 msgstr "_Tampilan"
 
@@ -6889,7 +6890,7 @@ msgstr "_Balas"
 
 #: src/mainwindow.c:603
 #: src/messageview.c:264
-#: src/summaryview.c:417
+#: src/summaryview.c:418
 msgid "Repl_y to"
 msgstr "Bala_s ke"
 
@@ -6914,19 +6915,19 @@ msgstr "Follow-up dan balas ke"
 
 #: src/mainwindow.c:610
 #: src/messageview.c:270
-#: src/toolbar.c:2022
+#: src/toolbar.c:2032
 msgid "_Forward"
 msgstr "_Teruskan"
 
 #: src/mainwindow.c:611
 #: src/messageview.c:271
-#: src/toolbar.c:2023
+#: src/toolbar.c:2033
 msgid "For_ward as attachment"
 msgstr "Ter_uskan sebagai lampiran"
 
 #: src/mainwindow.c:612
 #: src/messageview.c:272
-#: src/toolbar.c:2024
+#: src/toolbar.c:2034
 msgid "Redirec_t"
 msgstr "Redirec_t"
 
@@ -6976,7 +6977,7 @@ msgstr "Batalkan pesan berita"
 
 #: src/mainwindow.c:636
 #: src/mainwindow.c:637
-#: src/summaryview.c:418
+#: src/summaryview.c:419
 msgid "_Mark"
 msgstr "_Tandai"
 
@@ -6998,8 +6999,8 @@ msgstr "Tandai semua sudah dibaca"
 
 #: src/mainwindow.c:644
 #: src/prefs_filtering_action.c:184
-#: src/toolbar.c:194
-#: src/toolbar.c:401
+#: src/toolbar.c:196
+#: src/toolbar.c:404
 msgid "Ignore thread"
 msgstr "Abaikan thread"
 
@@ -7009,8 +7010,8 @@ msgstr "Jangan abaikan thread"
 
 #: src/mainwindow.c:646
 #: src/prefs_filtering_action.c:185
-#: src/toolbar.c:195
-#: src/toolbar.c:402
+#: src/toolbar.c:197
+#: src/toolbar.c:405
 msgid "Watch thread"
 msgstr "Awasi thread"
 
@@ -7039,12 +7040,12 @@ msgid "Unlock"
 msgstr "Buka kunci"
 
 #: src/mainwindow.c:657
-#: src/summaryview.c:419
+#: src/summaryview.c:420
 msgid "Color la_bel"
 msgstr "Warna la_bel"
 
 #: src/mainwindow.c:658
-#: src/summaryview.c:420
+#: src/summaryview.c:421
 msgid "Ta_gs"
 msgstr "Ta_gs"
 
@@ -7116,7 +7117,7 @@ msgstr "Berdasar _Subyek"
 
 #: src/mainwindow.c:683
 #: src/messageview.c:285
-#: src/summaryview.c:423
+#: src/summaryview.c:424
 msgid "Create processing rule"
 msgstr "Buat aturan pemrosesan"
 
@@ -7395,7 +7396,7 @@ msgid "_Auto detect"
 msgstr "_Deteksi otomatis"
 
 #: src/mainwindow.c:1238
-#: src/summaryview.c:6078
+#: src/summaryview.c:6079
 msgid "Apply tags..."
 msgstr "Terapkan tags..."
 
@@ -7540,7 +7541,7 @@ msgstr[0] "%d Pesan ganda dihapus pada %d direktori.\n"
 msgstr[1] "%d Pesan ganda dihapus pada %d direktori.\n"
 
 #: src/mainwindow.c:4849
-#: src/summaryview.c:5573
+#: src/summaryview.c:5574
 msgid "Processing rules to apply before folder rules"
 msgstr "Aturan pemrosesan diterapkan sebelum aturan direktori"
 
@@ -7549,7 +7550,7 @@ msgid "Processing rules to apply after folder rules"
 msgstr "Aturan pemrosesan diterapkan setelah aturan direktori"
 
 #: src/mainwindow.c:4865
-#: src/summaryview.c:5584
+#: src/summaryview.c:5585
 msgid "Filtering configuration"
 msgstr "Konfigurasi penyaringan"
 
@@ -7557,15 +7558,15 @@ msgstr "Konfigurasi penyaringan"
 msgid "Can not register as default client: impossible to get executable path."
 msgstr "Tidak dapat registrasi sebagai klien standar: mustahil untuk mendapatkan lokasi eksekusi."
 
-#: src/mainwindow.c:5033
+#: src/mainwindow.c:5039
 msgid "Claws Mail has been registered as default client."
 msgstr "Claws Mail telah diregistrasi sebagai klien standar."
 
-#: src/mainwindow.c:5035
+#: src/mainwindow.c:5041
 msgid "Can not register as default client: impossible to write to the registry."
 msgstr "Tidak dapat registrasi sebagai klien standar: mustahil untuk menulis ke registrasi."
 
-#: src/mainwindow.c:5192
+#: src/mainwindow.c:5198
 #, c-format
 msgid "Forgotten %d password in %d accounts.\n"
 msgid_plural "Forgotten %d passwords in %d accounts.\n"
@@ -7793,8 +7794,8 @@ msgstr "Pesan tidak memenuhi standar MIME. Hal ini dapat menyebabkan kesalahan."
 #: src/messageview.c:1685
 #: src/messageview.c:1688
 #: src/mimeview.c:1802
-#: src/summaryview.c:4629
-#: src/summaryview.c:4632
+#: src/summaryview.c:4630
+#: src/summaryview.c:4633
 #: src/textview.c:2941
 msgid "Save as"
 msgstr "Simpan sebagai"
@@ -7804,9 +7805,9 @@ msgid "Overwrite existing file?"
 msgstr "Timpa berkas yang sudah ada?"
 
 #: src/messageview.c:1702
-#: src/summaryview.c:4649
-#: src/summaryview.c:4652
-#: src/summaryview.c:4667
+#: src/summaryview.c:4650
+#: src/summaryview.c:4653
+#: src/summaryview.c:4668
 #, c-format
 msgid "Couldn't save the file '%s'."
 msgstr "Tidak dapat menyimpan berkas '%s'"
@@ -7912,7 +7913,7 @@ msgid "Cannot print: the message doesn't contain text."
 msgstr "Tidak dapat mencetak: Pesan tidak mengandung tulisan."
 
 #: src/messageview.c:2106
-#: src/summaryview.c:4700
+#: src/summaryview.c:4701
 #, c-format
 msgid ""
 "Enter the print command-line:\n"
@@ -7922,7 +7923,7 @@ msgstr ""
 "('%s' akan diganti dengan nama berkas)"
 
 #: src/messageview.c:2112
-#: src/summaryview.c:4706
+#: src/summaryview.c:4707
 #, c-format
 msgid ""
 "Print command-line is invalid:\n"
@@ -7933,8 +7934,8 @@ msgstr ""
 
 #: src/messageview.c:2783
 #: src/messageview.c:2789
-#: src/summaryview.c:4014
-#: src/summaryview.c:6832
+#: src/summaryview.c:4015
+#: src/summaryview.c:6833
 msgid "An error happened while learning.\n"
 msgstr "Kesalahan terjadi ketika sedang dipelajari.\n"
 
@@ -8166,16 +8167,16 @@ msgstr "_Mendaftar ke newgroup..."
 msgid "_Unsubscribe newsgroup"
 msgstr "_Berhenti langganan newsgroup"
 
-#: src/news_gtk.c:250
+#: src/news_gtk.c:265
 #, c-format
 msgid "Really unsubscribe newsgroup '%s'?"
 msgstr "Yakin berhenti langganan dari newsgroup '%s'?"
 
-#: src/news_gtk.c:251
+#: src/news_gtk.c:266
 msgid "Unsubscribe newsgroup"
 msgstr "Berhenti langganan newsgroup"
 
-#: src/news_gtk.c:252
+#: src/news_gtk.c:267
 msgid "_Unsubscribe"
 msgstr "_Berhenti langganan"
 
@@ -8281,7 +8282,6 @@ msgstr "Pesan yang lebih besar tidak akan diperiksa"
 #: src/plugins/bogofilter/bogofilter_gtk.c:168
 #: src/plugins/spamassassin/spamassassin_gtk.c:368
 #: src/prefs_account.c:1464
-#: src/prefs_compose_writing.c:196
 msgid "KB"
 msgstr "KB"
 
@@ -9597,6 +9597,7 @@ msgstr "Pesan tak tersaring akan diletakkan pada direktori ini"
 #: src/prefs_account.c:1398
 #: src/prefs_account.c:1487
 #: src/prefs_account.c:1945
+#: src/prefs_customheader.c:236
 msgid "Bro_wse"
 msgstr "Jela_jah"
 
@@ -9745,8 +9746,8 @@ msgid "Signature"
 msgstr "Tandatangan"
 
 #: src/prefs_account.c:1894
-msgid "Insert signature automatically"
-msgstr "Sisipkan tandatangan secara otomatis"
+msgid "Automatically insert signature"
+msgstr "Secara otomatis sisipkan tandatangan"
 
 #: src/prefs_account.c:1899
 msgid "Signature separator"
@@ -9777,7 +9778,7 @@ msgid "Default alternate dictionary"
 msgstr "Kamus alternatif standar"
 
 #: src/prefs_account.c:2115
-#: src/prefs_account.c:3173
+#: src/prefs_account.c:3171
 #: src/prefs_compose_writing.c:349
 #: src/prefs_folder_item.c:1364
 #: src/prefs_folder_item.c:1739
@@ -9791,7 +9792,7 @@ msgstr "Tulis"
 #: src/prefs_account.c:2130
 #: src/prefs_folder_item.c:1385
 #: src/prefs_quote.c:133
-#: src/toolbar.c:391
+#: src/toolbar.c:394
 msgid "Reply"
 msgstr "Balas"
 
@@ -9799,7 +9800,7 @@ msgstr "Balas"
 #: src/prefs_filtering_action.c:176
 #: src/prefs_folder_item.c:1406
 #: src/prefs_quote.c:148
-#: src/toolbar.c:395
+#: src/toolbar.c:398
 msgid "Forward"
 msgstr "Teruskan"
 
@@ -9877,7 +9878,7 @@ msgstr "Sertifikat untuk penerimaan"
 
 #: src/prefs_account.c:2403
 #: src/prefs_account.c:2425
-#: src/prefs_account.c:2681
+#: src/prefs_account.c:2679
 #: src/wizard.c:1345
 #: src/wizard.c:1608
 msgid "Browse"
@@ -9902,141 +9903,140 @@ msgstr "Gunakan non-blocking SSL"
 msgid "Turn this off if you have SSL connection problems"
 msgstr "Matikan jika anda memiliki masalah sambungan SSL"
 
-#: src/prefs_account.c:2581
+#: src/prefs_account.c:2582
 msgid "SMTP port"
 msgstr "Port SMTP"
 
-#: src/prefs_account.c:2588
+#: src/prefs_account.c:2589
 msgid "POP3 port"
 msgstr "Port POP3"
 
-#: src/prefs_account.c:2595
+#: src/prefs_account.c:2596
 msgid "IMAP4 port"
 msgstr "Port IMAP4"
 
-#: src/prefs_account.c:2602
+#: src/prefs_account.c:2603
 msgid "NNTP port"
 msgstr "Port NNTP"
 
-#: src/prefs_account.c:2608
+#: src/prefs_account.c:2609
 msgid "Domain name"
 msgstr "Nama domain"
 
 #: src/prefs_account.c:2612
-#: src/prefs_account.c:2621
-msgid "The domain name will be used in the right part of the generated Message-Ids, and when connecting to SMTP servers."
-msgstr "Nama domain akan digunakan pada bagian kanan Id-Pesan yang dihasilkan, dan ketika menyambung ke server SMTP."
+msgid "The domain name will be used in the generated Message-ID, and when connecting to SMTP servers."
+msgstr "Nama domain akan digunakan pada Id-Pesan yang dihasilkan, dan ketika menyambung ke server SMTP."
 
-#: src/prefs_account.c:2626
-msgid "Send account mail address in Message-Id"
-msgstr "Akun kirim alamat surat pada Message-Id"
+#: src/prefs_account.c:2624
+msgid "Send account mail address in Message-ID"
+msgstr "Kirim akun alamat surat pada Message-Id"
 
-#: src/prefs_account.c:2631
+#: src/prefs_account.c:2629
 msgid "Use command to communicate with server"
 msgstr "Gunakan perintah untuk komunikasi dengan server"
 
-#: src/prefs_account.c:2639
+#: src/prefs_account.c:2637
 msgid "Mark cross-posted messages as read and color:"
 msgstr "Tandai pesan cross-posted sebagai telah dibaca dan warna:"
 
-#: src/prefs_account.c:2694
+#: src/prefs_account.c:2692
 msgid "Put sent messages in"
 msgstr "Letakkan pesan terkirim di"
 
-#: src/prefs_account.c:2696
+#: src/prefs_account.c:2694
 msgid "Put queued messages in"
 msgstr "Letakkan antrian pesan di"
 
-#: src/prefs_account.c:2698
+#: src/prefs_account.c:2696
 msgid "Put draft messages in"
 msgstr "Letakkan konsep pesan di"
 
-#: src/prefs_account.c:2700
+#: src/prefs_account.c:2698
 msgid "Put deleted messages in"
 msgstr "Letakkan pesan yang dihapus di"
 
-#: src/prefs_account.c:2756
+#: src/prefs_account.c:2754
 msgid "Account name is not entered."
 msgstr "Nama akun tidak dimasukkan."
 
-#: src/prefs_account.c:2760
+#: src/prefs_account.c:2758
 msgid "Mail address is not entered."
 msgstr "Alamat surat tidak dimasukkan."
 
-#: src/prefs_account.c:2767
+#: src/prefs_account.c:2765
 msgid "SMTP server is not entered."
 msgstr "Server SMTP tidak dimasukkan."
 
-#: src/prefs_account.c:2772
+#: src/prefs_account.c:2770
 msgid "User ID is not entered."
 msgstr "ID Pengguna tidak dimasukkan."
 
-#: src/prefs_account.c:2777
+#: src/prefs_account.c:2775
 msgid "POP3 server is not entered."
 msgstr "Server POP3 tidak dimasukkan."
 
-#: src/prefs_account.c:2797
+#: src/prefs_account.c:2795
 msgid "The default Inbox folder doesn't exist."
 msgstr "Direktori standar Kotakmasuk tidak ada."
 
-#: src/prefs_account.c:2803
+#: src/prefs_account.c:2801
 msgid "IMAP4 server is not entered."
 msgstr "Server IMAP4 tidak dimasukkan."
 
-#: src/prefs_account.c:2808
+#: src/prefs_account.c:2806
 msgid "NNTP server is not entered."
 msgstr "Server NNTP tidak dimasukkan."
 
-#: src/prefs_account.c:2814
+#: src/prefs_account.c:2812
 msgid "local mailbox filename is not entered."
 msgstr "nama berkas kotaksurat lokal tidak dimasukkan."
 
-#: src/prefs_account.c:2820
+#: src/prefs_account.c:2818
 msgid "mail command is not entered."
 msgstr "perintah surat tidak dimasukkan."
 
-#: src/prefs_account.c:3137
+#: src/prefs_account.c:3135
 msgid "Receive"
 msgstr "Menerima"
 
-#: src/prefs_account.c:3191
+#: src/prefs_account.c:3189
 #: src/prefs_folder_item.c:1756
 #: src/prefs_quote.c:240
 msgid "Templates"
 msgstr "Cetakan"
 
-#: src/prefs_account.c:3209
+#: src/prefs_account.c:3207
 msgid "Privacy"
 msgstr "Privasi"
 
-#: src/prefs_account.c:3310
+#: src/prefs_account.c:3308
 msgid "Advanced"
 msgstr "Tingkatlanjut"
 
-#: src/prefs_account.c:3598
+#: src/prefs_account.c:3596
 msgid "Preferences for new account"
 msgstr "Preferensi untuk akun baru"
 
-#: src/prefs_account.c:3600
+#: src/prefs_account.c:3598
 #, c-format
 msgid "%s - Account preferences"
 msgstr "%s - Preferensi akun"
 
-#: src/prefs_account.c:3695
+#: src/prefs_account.c:3693
 msgid "Select signature file"
 msgstr "Pilih berkas tandatangan"
 
-#: src/prefs_account.c:3713
-#: src/prefs_account.c:3730
+#: src/prefs_account.c:3711
+#: src/prefs_account.c:3728
 #: src/wizard.c:1223
 msgid "Select certificate file"
 msgstr "Pilih berkas sertifikat"
 
-#: src/prefs_account.c:3826
+#: src/prefs_account.c:3824
 msgid "Protocol:"
 msgstr "Protokol:"
 
-#: src/prefs_account.c:3965
+#: src/prefs_account.c:3963
 #, c-format
 msgid "%s (plugin not loaded)"
 msgstr "%s (pengaya tidak dimuat)"
@@ -10075,7 +10075,7 @@ msgstr "Tambahkan aksi baru diatas ke dalam daftar"
 #: src/prefs_filtering.c:472
 #: src/prefs_matcher.c:740
 #: src/prefs_template.c:306
-#: src/prefs_toolbar.c:909
+#: src/prefs_toolbar.c:991
 msgid "Replace"
 msgstr "Timpa"
 
@@ -10397,8 +10397,8 @@ msgid "Automatically launch the external editor"
 msgstr "Secara otomatis menjalankan penyunting eksternal"
 
 #: src/prefs_compose_writing.c:147
-msgid "Autosave message text to Drafts folder every"
-msgstr "Otomatis simpan teks pesan ke direktori Konsep setiap"
+msgid "Automatically save message to Drafts folder every"
+msgstr "Otomatis simpan pesan ke direktori Konsep setiap"
 
 #: src/prefs_compose_writing.c:157
 #: src/prefs_wrapping.c:100
@@ -10410,8 +10410,12 @@ msgid "Undo level"
 msgstr "Tingkat batal"
 
 #: src/prefs_compose_writing.c:184
-msgid "Warn when inserting in message body a file larger than"
-msgstr "Peringatkan saat menyisipkan ke badan pesan sebuah berkas yg lebih besar dari"
+msgid "Warn when inserting a file larger than"
+msgstr "Peringatkan saat menyisipkan sebuah berkas yg lebih besar dari"
+
+#: src/prefs_compose_writing.c:196
+msgid "KB into message body "
+msgstr "KB kedalam badan pesan"
 
 #: src/prefs_compose_writing.c:202
 msgid "Replying"
@@ -10447,12 +10451,12 @@ msgid "Ask"
 msgstr "Tanya"
 
 #: src/prefs_compose_writing.c:229
-#: src/toolbar.c:409
+#: src/toolbar.c:412
 msgid "Insert"
 msgstr "Sisip"
 
 #: src/prefs_compose_writing.c:230
-#: src/toolbar.c:410
+#: src/toolbar.c:413
 msgid "Attach"
 msgstr "Lampirkan"
 
@@ -10463,10 +10467,6 @@ msgstr "Menulis"
 #: src/prefs_customheader.c:183
 msgid "Custom header configuration"
 msgstr "Konfigurasi header bebas"
-
-#: src/prefs_customheader.c:236
-msgid "From file..."
-msgstr "Dari berkas..."
 
 #: src/prefs_customheader.c:510
 #: src/prefs_display_header.c:586
@@ -10624,7 +10624,7 @@ msgstr "Bendera pesan"
 
 #: src/prefs_filtering_action.c:166
 #: src/prefs_summary_column.c:77
-#: src/summaryview.c:2658
+#: src/summaryview.c:2659
 msgid "Mark"
 msgstr "Tanda"
 
@@ -10638,9 +10638,9 @@ msgstr "Tandai belum dibaca"
 
 #: src/prefs_filtering_action.c:174
 #: src/prefs_filtering_action.c:1373
-#: src/toolbar.c:191
-#: src/toolbar.c:417
-#: src/toolbar.c:2041
+#: src/toolbar.c:193
+#: src/toolbar.c:420
+#: src/toolbar.c:2051
 msgid "Execute"
 msgstr "Jalankan"
 
@@ -10663,7 +10663,7 @@ msgstr "Redirect"
 #: src/prefs_filtering_action.c:1377
 #: src/prefs_matcher.c:607
 #: src/prefs_summary_column.c:86
-#: src/summaryview.c:438
+#: src/summaryview.c:439
 msgid "Score"
 msgstr "Nilai"
 
@@ -10680,7 +10680,7 @@ msgstr "Pasang nilai"
 #: src/prefs_filtering_action.c:183
 #: src/prefs_matcher.c:611
 #: src/prefs_summary_column.c:88
-#: src/summaryview.c:440
+#: src/summaryview.c:441
 msgid "Tags"
 msgstr "Tags"
 
@@ -10951,7 +10951,7 @@ msgstr "Kolom yang ditampilkan"
 #: src/prefs_folder_column.c:328
 #: src/prefs_msg_colors.c:496
 #: src/prefs_summary_column.c:342
-#: src/prefs_toolbar.c:921
+#: src/prefs_toolbar.c:1003
 msgid " Use default "
 msgstr " Gunakan standar "
 
@@ -11133,8 +11133,8 @@ msgid "Fonts"
 msgstr "Huruf"
 
 #: src/prefs_gtk.c:939
-#: src/toolbar.c:199
-#: src/toolbar.c:405
+#: src/toolbar.c:201
+#: src/toolbar.c:408
 msgid "Preferences"
 msgstr "Preferensi"
 
@@ -11349,12 +11349,12 @@ msgid "whole message"
 msgstr "seluruh pesan"
 
 #: src/prefs_matcher.c:373
-#: src/summaryview.c:6140
+#: src/summaryview.c:6141
 msgid "Marked"
 msgstr "Ditandai"
 
 #: src/prefs_matcher.c:374
-#: src/summaryview.c:6138
+#: src/summaryview.c:6139
 msgid "Deleted"
 msgstr "Dihapus"
 
@@ -11363,15 +11363,15 @@ msgid "Replied"
 msgstr "Dibalas"
 
 #: src/prefs_matcher.c:376
-#: src/summaryview.c:6132
+#: src/summaryview.c:6133
 msgid "Forwarded"
 msgstr "Diteruskan"
 
 #: src/prefs_matcher.c:378
-#: src/summaryview.c:6124
-#: src/toolbar.c:398
-#: src/toolbar.c:923
-#: src/toolbar.c:1931
+#: src/summaryview.c:6125
+#: src/toolbar.c:401
+#: src/toolbar.c:926
+#: src/toolbar.c:1941
 msgid "Spam"
 msgstr "Spam"
 
@@ -11380,7 +11380,7 @@ msgid "Has attachment"
 msgstr "Mempunyai lampiran"
 
 #: src/prefs_matcher.c:380
-#: src/summaryview.c:6158
+#: src/summaryview.c:6159
 msgid "Signed"
 msgstr "Tertanda"
 
@@ -12031,8 +12031,8 @@ msgid "Automatic checking"
 msgstr "Pemeriksaan otomatis"
 
 #: src/prefs_receive.c:162
-msgid "Automatically check for new mail every"
-msgstr "Secara otomatis periksa untuk surat baru setiap"
+msgid "Check for new mail every"
+msgstr "Periksa untuk surat baru setiap"
 
 #: src/prefs_receive.c:180
 msgid "Check for new mail on start-up"
@@ -12500,8 +12500,8 @@ msgid "Date format help"
 msgstr "Bantuan format tanggal"
 
 #: src/prefs_summaries.c:564
-msgid "Confirm before marking all mails in a folder as read"
-msgstr "Konfirmasi sebelum menandai seluruh surat dalam direktori sebagai telah dibaca"
+msgid "Confirm before marking all messages in a folder as read"
+msgstr "Konfirmasi sebelum menandai seluruh pesan dalam direktori sebagai telah dibaca"
 
 #: src/prefs_summaries.c:567
 msgid "Translate header names"
@@ -12516,7 +12516,7 @@ msgid "Summaries"
 msgstr "Ringkasan"
 
 #: src/prefs_summary_column.c:79
-#: src/summaryview.c:2652
+#: src/summaryview.c:2653
 msgid "Attachment"
 msgstr "Lampiran"
 
@@ -12839,7 +12839,7 @@ msgstr "Gunakan ini"
 msgid "Remove"
 msgstr "Hapus"
 
-#: src/prefs_toolbar.c:170
+#: src/prefs_toolbar.c:173
 msgid ""
 "Selected Action already set.\n"
 "Please choose another Action from List"
@@ -12847,87 +12847,87 @@ msgstr ""
 "Aksi terpilih telah terpasang.\n"
 "Silahkan pilih Aksi lainnya dari Daftar"
 
-#: src/prefs_toolbar.c:171
+#: src/prefs_toolbar.c:174
 msgid "Item has no icon defined."
 msgstr "Tidak ada ikon yang terdefinisi pada item."
 
-#: src/prefs_toolbar.c:172
+#: src/prefs_toolbar.c:175
 msgid "Item has no text defined."
 msgstr "Tidak ada teks yang terdefinisi pada item."
 
-#: src/prefs_toolbar.c:219
+#: src/prefs_toolbar.c:250
 msgid "Main toolbar configuration"
 msgstr "Konfigurasi toolbar Utama"
 
-#: src/prefs_toolbar.c:220
+#: src/prefs_toolbar.c:251
 msgid "Compose toolbar configuration"
 msgstr "Konfigurasi toolbar Tulis"
 
-#: src/prefs_toolbar.c:221
+#: src/prefs_toolbar.c:252
 msgid "Message view toolbar configuration"
 msgstr "Konfigurasi toolbar Tampilan pesan"
 
-#: src/prefs_toolbar.c:801
+#: src/prefs_toolbar.c:876
 msgid "Toolbar item"
 msgstr "Item toolbar"
 
-#: src/prefs_toolbar.c:817
+#: src/prefs_toolbar.c:892
 msgid "Item type"
 msgstr "Tipe item"
 
-#: src/prefs_toolbar.c:824
+#: src/prefs_toolbar.c:899
 msgid "Internal Function"
 msgstr "Fungsi Internal"
 
-#: src/prefs_toolbar.c:825
+#: src/prefs_toolbar.c:900
 msgid "User Action"
 msgstr "Aksi Pengguna"
 
-#: src/prefs_toolbar.c:825
-#: src/toolbar.c:217
+#: src/prefs_toolbar.c:900
+#: src/toolbar.c:219
 msgid "Separator"
 msgstr "Pemisah"
 
-#: src/prefs_toolbar.c:832
+#: src/prefs_toolbar.c:907
 msgid "Event executed on click"
 msgstr "Kegiatan dijalankan saat klik"
 
-#: src/prefs_toolbar.c:852
+#: src/prefs_toolbar.c:934
 msgid "Toolbar text"
 msgstr "Teks toolbar"
 
-#: src/prefs_toolbar.c:867
-#: src/prefs_toolbar.c:1100
+#: src/prefs_toolbar.c:949
+#: src/prefs_toolbar.c:1286
 msgid "Icon"
 msgstr "Ikon"
 
-#: src/prefs_toolbar.c:998
-#: src/prefs_toolbar.c:1012
-#: src/prefs_toolbar.c:1026
+#: src/prefs_toolbar.c:1184
+#: src/prefs_toolbar.c:1198
+#: src/prefs_toolbar.c:1212
 msgid "Toolbars"
 msgstr "PapanAlat"
 
-#: src/prefs_toolbar.c:999
+#: src/prefs_toolbar.c:1185
 msgid "Main Window"
 msgstr "Jendela Utama"
 
-#: src/prefs_toolbar.c:1013
+#: src/prefs_toolbar.c:1199
 msgid "Message Window"
 msgstr "Jendela Pesan"
 
-#: src/prefs_toolbar.c:1027
+#: src/prefs_toolbar.c:1213
 msgid "Compose Window"
 msgstr "Jendela Tulis"
 
-#: src/prefs_toolbar.c:1123
+#: src/prefs_toolbar.c:1309
 msgid "Icon text"
 msgstr "Teks Ikon"
 
-#: src/prefs_toolbar.c:1132
+#: src/prefs_toolbar.c:1318
 msgid "Mapped event"
 msgstr "Kegiatan yang dipetakan"
 
-#: src/prefs_toolbar.c:1415
+#: src/prefs_toolbar.c:1617
 msgid "Toolbar item icon"
 msgstr "Ikon item toolbar"
 
@@ -12948,46 +12948,46 @@ msgid "Auto indent"
 msgstr "Otomatis menjorok"
 
 #: src/prefs_wrapping.c:88
-msgid "Wrap messages at"
-msgstr "Penggal pesan pada"
+msgid "Wrap text at"
+msgstr "Penggal teks pada"
 
 #: src/prefs_wrapping.c:153
 msgid "Wrapping"
 msgstr "Penggalan"
 
-#: src/printing.c:491
+#: src/printing.c:492
 msgid "First page"
 msgstr "Halaman pertama"
 
-#: src/printing.c:493
+#: src/printing.c:494
 msgid "Previous page"
 msgstr "Halaman sebelum"
 
-#: src/printing.c:500
+#: src/printing.c:501
 msgid "Next page"
 msgstr "Halaman berikut"
 
-#: src/printing.c:502
+#: src/printing.c:503
 msgid "Last page"
 msgstr "Halaman terakhir"
 
-#: src/printing.c:508
+#: src/printing.c:509
 msgid "Zoom 100%"
 msgstr "Perbesar 100%"
 
-#: src/printing.c:510
+#: src/printing.c:511
 msgid "Zoom fit"
 msgstr "Perbesar sesuai"
 
-#: src/printing.c:512
+#: src/printing.c:513
 msgid "Zoom in"
 msgstr "Perbesar"
 
-#: src/printing.c:514
+#: src/printing.c:515
 msgid "Zoom out"
 msgstr "Perkecil"
 
-#: src/printing.c:708
+#: src/printing.c:715
 #, c-format
 msgid "Page %d"
 msgstr "Halaman %d"
@@ -13504,147 +13504,147 @@ msgstr "Bagian awal daftar telah dicapai; lanjutkan dari akhir?"
 msgid "End of list reached; continue from beginning?"
 msgstr "Baigan akhir daftar telah dicapai; lanjutkan dari awal?"
 
-#: src/summaryview.c:421
+#: src/summaryview.c:422
 msgid "Create _filter rule"
 msgstr "Buat atu_ran penyaringan"
 
-#: src/summaryview.c:544
+#: src/summaryview.c:545
 msgid "Toggle quick search bar"
 msgstr "Toggle papan pencarian cepat"
 
-#: src/summaryview.c:581
+#: src/summaryview.c:582
 msgid "Toggle multiple selection"
 msgstr "Toggle multi pilihan"
 
-#: src/summaryview.c:1179
+#: src/summaryview.c:1180
 msgid "Process mark"
 msgstr "Tanda proses"
 
-#: src/summaryview.c:1180
+#: src/summaryview.c:1181
 msgid "Some marks are left. Process them?"
 msgstr "Beberapa tanda tertinggal. Proses tanda tersebut?"
 
-#: src/summaryview.c:1238
+#: src/summaryview.c:1239
 #, c-format
 msgid "Scanning folder (%s)..."
 msgstr "Memindai direktori (%s)..."
 
-#: src/summaryview.c:1727
-#: src/summaryview.c:1779
+#: src/summaryview.c:1728
+#: src/summaryview.c:1780
 msgid "No more unread messages"
 msgstr "Tidak ada lagi pesan yang belum dibaca"
 
-#: src/summaryview.c:1728
+#: src/summaryview.c:1729
 msgid "No unread message found. Search from the end?"
 msgstr "Tidak ada pesan yang belum dibaca. Mulai cari dari akhir?"
 
-#: src/summaryview.c:1740
-#: src/summaryview.c:1792
-#: src/summaryview.c:1839
-#: src/summaryview.c:1891
-#: src/summaryview.c:1970
+#: src/summaryview.c:1741
+#: src/summaryview.c:1793
+#: src/summaryview.c:1840
+#: src/summaryview.c:1892
+#: src/summaryview.c:1971
 msgid "Internal error: unexpected value for prefs_common.next_unread_msg_dialog\n"
 msgstr "Kesalahan internal: nilai yang tidak diharapkan untuk prefs_common.next_unread_msg_dialog\n"
 
-#: src/summaryview.c:1748
+#: src/summaryview.c:1749
 msgid "No unread messages."
 msgstr "Tidak ada pesan yang belum dibaca."
 
-#: src/summaryview.c:1780
+#: src/summaryview.c:1781
 msgid "No unread message found. Go to next folder?"
 msgstr "Tidak ada pesan yang belum dibaca. Ke direktori berikutnya?"
 
-#: src/summaryview.c:1826
-#: src/summaryview.c:1878
+#: src/summaryview.c:1827
+#: src/summaryview.c:1879
 msgid "No more new messages"
 msgstr "Tidak ada lagi pesan baru"
 
-#: src/summaryview.c:1827
+#: src/summaryview.c:1828
 msgid "No new message found. Search from the end?"
 msgstr "Tidak ada pesan baru yang ditemukan. Mulai cari dari akhir?"
 
-#: src/summaryview.c:1847
+#: src/summaryview.c:1848
 msgid "No new messages."
 msgstr "Tidak ada pesan baru."
 
-#: src/summaryview.c:1879
+#: src/summaryview.c:1880
 msgid "No new message found. Go to next folder?"
 msgstr "Tidak ada pesan baru yang ditemukan. Ke direktori berikutnya?"
 
-#: src/summaryview.c:1916
-#: src/summaryview.c:1957
+#: src/summaryview.c:1917
+#: src/summaryview.c:1958
 msgid "No more marked messages"
 msgstr "Tidak ada lagi pesan yang ditandai"
 
-#: src/summaryview.c:1917
+#: src/summaryview.c:1918
 msgid "No marked message found. Search from the end?"
 msgstr "Tidak ada pesan ditandai yang ditemukan. Mulai cari dari akhir?"
 
-#: src/summaryview.c:1926
+#: src/summaryview.c:1927
 msgid "No marked messages."
 msgstr "Tidak ada pesan ditandai."
 
-#: src/summaryview.c:1958
+#: src/summaryview.c:1959
 msgid "No marked message found. Go to next folder?"
 msgstr "Tidak ada pesan ditandai yang ditemukan. Ke direktori berikutnya?"
 
-#: src/summaryview.c:1995
-#: src/summaryview.c:2020
+#: src/summaryview.c:1996
+#: src/summaryview.c:2021
 msgid "No more labeled messages"
 msgstr "Tidak ada lagi pesan dilabeli"
 
-#: src/summaryview.c:1996
+#: src/summaryview.c:1997
 msgid "No labeled message found. Search from the end?"
 msgstr "Tidak ada pesan dilabeli yang ditemukan. Mulai cari dari akhir?"
 
-#: src/summaryview.c:2005
-#: src/summaryview.c:2030
+#: src/summaryview.c:2006
+#: src/summaryview.c:2031
 msgid "No labeled messages."
 msgstr "Tidak ada pesan dilabeli."
 
-#: src/summaryview.c:2021
+#: src/summaryview.c:2022
 msgid "No labeled message found. Search from the beginning?"
 msgstr "Tidak ada pesan dilabeli yang ditemukan. Mulai cari dari awal?"
 
-#: src/summaryview.c:2312
+#: src/summaryview.c:2313
 msgid "Attracting messages by subject..."
 msgstr "Menarik pesan berdasar subyek..."
 
-#: src/summaryview.c:2496
+#: src/summaryview.c:2497
 #, c-format
 msgid "%d deleted"
 msgstr "%d dihapus"
 
-#: src/summaryview.c:2500
+#: src/summaryview.c:2501
 #, c-format
 msgid "%s%d moved"
 msgstr "%s%d dipindahkan"
 
-#: src/summaryview.c:2501
-#: src/summaryview.c:2508
+#: src/summaryview.c:2502
+#: src/summaryview.c:2509
 msgid ", "
 msgstr ","
 
-#: src/summaryview.c:2506
+#: src/summaryview.c:2507
 #, c-format
 msgid "%s%d copied"
 msgstr "%s%d disalin"
 
-#: src/summaryview.c:2521
+#: src/summaryview.c:2522
 msgid " item selected"
 msgstr " item terpilih"
 
-#: src/summaryview.c:2523
+#: src/summaryview.c:2524
 msgid " items selected"
 msgstr " item terpilih"
 
-#: src/summaryview.c:2541
-#: src/summaryview.c:2579
+#: src/summaryview.c:2542
+#: src/summaryview.c:2580
 #, c-format
 msgid "%d new, %d unread, %d total (%s)"
 msgstr "%d baru, %d belum dibaca, %d total (%s)"
 
-#: src/summaryview.c:2549
+#: src/summaryview.c:2550
 #, c-format
 msgid ""
 "<b>Message summary</b>\n"
@@ -13673,28 +13673,28 @@ msgstr ""
 "<b>Diabaikan:</b> %d\n"
 "<b>Diawasi:</b> %d"
 
-#: src/summaryview.c:2574
+#: src/summaryview.c:2575
 #, c-format
 msgid "%d/%d selected (%s/%s), %d unread"
 msgstr "%d/%d dipilih (%s/%s), %d belum dibaca"
 
-#: src/summaryview.c:2852
+#: src/summaryview.c:2853
 msgid "Sorting summary..."
 msgstr "Mengurutkan ringkasan..."
 
-#: src/summaryview.c:2966
+#: src/summaryview.c:2967
 msgid "Setting summary from message data..."
 msgstr "Mengatur ringkasan dari data pesan..."
 
-#: src/summaryview.c:3170
+#: src/summaryview.c:3171
 msgid "(No Date)"
 msgstr "(Tanpa Tanggal)"
 
-#: src/summaryview.c:3207
+#: src/summaryview.c:3208
 msgid "(No Recipient)"
 msgstr "(Tanpa Penerima)"
 
-#: src/summaryview.c:3242
+#: src/summaryview.c:3243
 #, c-format
 msgid ""
 "%s\n"
@@ -13703,7 +13703,7 @@ msgstr ""
 "%s\n"
 "<span color='%s' style='italic'>Dari: %s, pada %s</span>"
 
-#: src/summaryview.c:3249
+#: src/summaryview.c:3250
 #, c-format
 msgid ""
 "%s\n"
@@ -13712,71 +13712,71 @@ msgstr ""
 "%s\n"
 "<span color='%s' style='italic'>Kepada: %s, pada %s</span>"
 
-#: src/summaryview.c:4117
+#: src/summaryview.c:4118
 msgid "You're not the author of the article.\n"
 msgstr "Anda bukan pengarang artikel tersebut.\n"
 
-#: src/summaryview.c:4208
+#: src/summaryview.c:4209
 #, c-format
 msgid "Do you really want to delete the selected message?"
 msgid_plural "Do you really want to delete the %d selected messages?"
 msgstr[0] "Apakah anda ingin menghapus pesan terpilih?"
 msgstr[1] "Apakah anda ingin menghapus %d pesan terpilih?"
 
-#: src/summaryview.c:4211
+#: src/summaryview.c:4212
 msgid "Delete message(s)"
 msgstr "Hapus pesan"
 
-#: src/summaryview.c:4372
+#: src/summaryview.c:4373
 msgid "Destination is same as current folder."
 msgstr "Tujuannya sama dengan direktori aktif."
 
-#: src/summaryview.c:4471
+#: src/summaryview.c:4472
 msgid "Destination to copy is same as current folder."
 msgstr "Tujuan penyalinan sama dengan direktori aktif."
 
-#: src/summaryview.c:4636
+#: src/summaryview.c:4637
 msgid "Append or Overwrite"
 msgstr "Tambah atau Timpa"
 
-#: src/summaryview.c:4637
+#: src/summaryview.c:4638
 msgid "Append or overwrite existing file?"
 msgstr "Tambah atau timpa berkas yang ada?"
 
-#: src/summaryview.c:4638
+#: src/summaryview.c:4639
 msgid "_Append"
 msgstr "_Tambah"
 
-#: src/summaryview.c:4638
+#: src/summaryview.c:4639
 msgid "_Overwrite"
 msgstr "T_impa"
 
-#: src/summaryview.c:4685
+#: src/summaryview.c:4686
 #, c-format
 msgid "You are about to print %d messages, one by one. Do you want to continue?"
 msgstr "Anda akan mencetak %d pesan, satu per satu. Apakah anda akan melanjutkan?"
 
-#: src/summaryview.c:5187
+#: src/summaryview.c:5188
 msgid "Building threads..."
 msgstr "Membangun threads..."
 
-#: src/summaryview.c:5433
+#: src/summaryview.c:5434
 msgid "Skip these rules"
 msgstr "Abaikan aturan ini"
 
-#: src/summaryview.c:5436
+#: src/summaryview.c:5437
 msgid "Apply these rules regardless of the account they belong to"
 msgstr "Terapkan aturan berikut tanpa memperhatikan akun"
 
-#: src/summaryview.c:5439
+#: src/summaryview.c:5440
 msgid "Apply these rules if they apply to the current account"
 msgstr "Terapkan aturan berikut jika hanya berlaku untuk akun aktif"
 
-#: src/summaryview.c:5468
+#: src/summaryview.c:5469
 msgid "Filtering"
 msgstr "Penyaringan"
 
-#: src/summaryview.c:5469
+#: src/summaryview.c:5470
 msgid ""
 "There are some filtering rules that belong to an account.\n"
 "Please choose what to do with these rules:"
@@ -13784,55 +13784,55 @@ msgstr ""
 "Terdapat beberapa aturan penyaringan yang menjadi milik sebuah akun.\n"
 "Silahkan pilih yang akan dilakukan oleh aturan berikut:"
 
-#: src/summaryview.c:5471
+#: src/summaryview.c:5472
 msgid "_Filter"
 msgstr "_Saring"
 
-#: src/summaryview.c:5499
+#: src/summaryview.c:5500
 msgid "Filtering..."
 msgstr "Penyaringan..."
 
-#: src/summaryview.c:5578
+#: src/summaryview.c:5579
 msgid "Processing configuration"
 msgstr "Konfigurasi pemrosesan"
 
-#: src/summaryview.c:6120
+#: src/summaryview.c:6121
 msgid "Ignored thread"
 msgstr "Thread diabaikan"
 
-#: src/summaryview.c:6122
+#: src/summaryview.c:6123
 msgid "Watched thread"
 msgstr "Thread diawasi"
 
-#: src/summaryview.c:6130
+#: src/summaryview.c:6131
 msgid "Replied - click to see reply"
 msgstr "Terbalas - klik untuk melihat balasan"
 
-#: src/summaryview.c:6142
+#: src/summaryview.c:6143
 msgid "To be moved"
 msgstr "Akan dipindah"
 
-#: src/summaryview.c:6144
+#: src/summaryview.c:6145
 msgid "To be copied"
 msgstr "Akan disalin"
 
-#: src/summaryview.c:6156
+#: src/summaryview.c:6157
 msgid "Signed, has attachment(s)"
 msgstr "Tertanda, memiliki lampiran"
 
-#: src/summaryview.c:6160
+#: src/summaryview.c:6161
 msgid "Encrypted, has attachment(s)"
 msgstr "Terenkripsi, memiliki lampiran"
 
-#: src/summaryview.c:6162
+#: src/summaryview.c:6163
 msgid "Encrypted"
 msgstr "Terenkripsi"
 
-#: src/summaryview.c:6164
+#: src/summaryview.c:6165
 msgid "Has attachment(s)"
 msgstr "Memiliki lampiran"
 
-#: src/summaryview.c:7742
+#: src/summaryview.c:7776
 #, c-format
 msgid ""
 "Regular expression (regexp) error:\n"
@@ -13841,11 +13841,11 @@ msgstr ""
 "Kesalahan ekspresi reguler (regexp):\n"
 "%s"
 
-#: src/summaryview.c:7850
+#: src/summaryview.c:7884
 msgid "Go back to the folder list (You have unread messages)"
 msgstr "Kembali ke daftar direktori (Anda memiliki pesan yang belum dibaca)"
 
-#: src/summaryview.c:7855
+#: src/summaryview.c:7889
 msgid "Go back to the folder list"
 msgstr "Kembali ke daftar direktori"
 
@@ -14011,312 +14011,316 @@ msgstr "Peringatan percobaan phishing"
 msgid "_Open URL"
 msgstr "_Buka URL"
 
-#: src/toolbar.c:178
-#: src/toolbar.c:1883
+#: src/toolbar.c:180
+#: src/toolbar.c:1893
 msgid "Receive Mail on all Accounts"
 msgstr "Terima Surat untuk semua Akun"
 
-#: src/toolbar.c:179
-#: src/toolbar.c:1888
+#: src/toolbar.c:181
+#: src/toolbar.c:1898
 msgid "Receive Mail on current Account"
 msgstr "Terima Surat untuk Akun aktif"
 
-#: src/toolbar.c:180
-#: src/toolbar.c:1892
+#: src/toolbar.c:182
+#: src/toolbar.c:1902
 msgid "Send Queued Messages"
 msgstr "Kirim Antrian Pesan"
 
-#: src/toolbar.c:181
-#: src/toolbar.c:891
-#: src/toolbar.c:1910
-#: src/toolbar.c:1921
+#: src/toolbar.c:183
+#: src/toolbar.c:894
+#: src/toolbar.c:1920
+#: src/toolbar.c:1931
 msgid "Compose Email"
 msgstr "Tulis Email"
 
-#: src/toolbar.c:182
+#: src/toolbar.c:184
 msgid "Compose News"
 msgstr "Tulis Berita"
 
-#: src/toolbar.c:183
-#: src/toolbar.c:1949
+#: src/toolbar.c:185
 #: src/toolbar.c:1959
+#: src/toolbar.c:1969
 msgid "Reply to Message"
 msgstr "Balas ke Pesan"
 
-#: src/toolbar.c:184
-#: src/toolbar.c:1966
+#: src/toolbar.c:186
 #: src/toolbar.c:1976
+#: src/toolbar.c:1986
 msgid "Reply to Sender"
 msgstr "Balas ke Pengirim"
 
-#: src/toolbar.c:185
-#: src/toolbar.c:1983
+#: src/toolbar.c:187
 #: src/toolbar.c:1993
+#: src/toolbar.c:2003
 msgid "Reply to All"
 msgstr "Balas ke Semua"
 
-#: src/toolbar.c:186
-#: src/toolbar.c:2000
+#: src/toolbar.c:188
 #: src/toolbar.c:2010
+#: src/toolbar.c:2020
 msgid "Reply to Mailing-list"
 msgstr "Balas ke Mailing-list"
 
-#: src/toolbar.c:187
-#: src/toolbar.c:1904
+#: src/toolbar.c:189
+#: src/toolbar.c:1914
 msgid "Open email"
 msgstr "Buka email"
 
-#: src/toolbar.c:188
-#: src/toolbar.c:2017
-#: src/toolbar.c:2028
+#: src/toolbar.c:190
+#: src/toolbar.c:2027
+#: src/toolbar.c:2038
 msgid "Forward Message"
 msgstr "Teruskan Pesan"
 
-#: src/toolbar.c:189
-#: src/toolbar.c:2033
+#: src/toolbar.c:191
+#: src/toolbar.c:2043
 msgid "Trash Message"
 msgstr "Buang Pesan"
 
-#: src/toolbar.c:190
-#: src/toolbar.c:2037
+#: src/toolbar.c:192
+#: src/toolbar.c:2047
 msgid "Delete Message"
 msgstr "Hapus Pesan"
 
-#: src/toolbar.c:192
-#: src/toolbar.c:2045
+#: src/toolbar.c:194
+#: src/toolbar.c:2055
 msgid "Go to Previous Unread Message"
 msgstr "Ke Pesan Belum dibaca Sebelumnya"
 
-#: src/toolbar.c:193
-#: src/toolbar.c:2049
+#: src/toolbar.c:195
+#: src/toolbar.c:2059
 msgid "Go to Next Unread Message"
 msgstr "Ke Pesan Belum dibaca Berikutnya"
 
-#: src/toolbar.c:197
+#: src/toolbar.c:199
 msgid "Learn Spam or Ham"
 msgstr "Pelajari Spam atau Ham"
 
-#: src/toolbar.c:198
+#: src/toolbar.c:200
 msgid "Open folder/Go to folder list"
 msgstr "Buka direktori/Ke daftar direktori"
 
-#: src/toolbar.c:201
-#: src/toolbar.c:2055
+#: src/toolbar.c:203
+#: src/toolbar.c:2065
 msgid "Send Message"
 msgstr "Kirim Pesan"
 
-#: src/toolbar.c:202
-#: src/toolbar.c:2059
+#: src/toolbar.c:204
+#: src/toolbar.c:2069
 msgid "Put into queue folder and send later"
 msgstr "Letakan pada direktori antrian dan kirim nanti"
 
-#: src/toolbar.c:203
-#: src/toolbar.c:2063
+#: src/toolbar.c:205
+#: src/toolbar.c:2073
 msgid "Save to draft folder"
 msgstr "Simpan ke direktori konsep"
 
-#: src/toolbar.c:204
-#: src/toolbar.c:2067
+#: src/toolbar.c:206
+#: src/toolbar.c:2077
 msgid "Insert file"
 msgstr "Sisipkan berkas"
 
-#: src/toolbar.c:205
-#: src/toolbar.c:2071
+#: src/toolbar.c:207
+#: src/toolbar.c:2081
 msgid "Attach file"
 msgstr "Lampirkan berkas"
 
-#: src/toolbar.c:206
-#: src/toolbar.c:2075
+#: src/toolbar.c:208
+#: src/toolbar.c:2085
 msgid "Insert signature"
 msgstr "Sisipkan tandatangan"
 
-#: src/toolbar.c:207
-#: src/toolbar.c:2079
+#: src/toolbar.c:209
+#: src/toolbar.c:2089
 msgid "Edit with external editor"
 msgstr "Sunting dengan penyunting eksternal"
 
-#: src/toolbar.c:208
-#: src/toolbar.c:2083
+#: src/toolbar.c:210
+#: src/toolbar.c:2093
 msgid "Wrap long lines of current paragraph"
 msgstr "Penggal baris panjang pada paragraf aktif"
 
-#: src/toolbar.c:209
-#: src/toolbar.c:2087
+#: src/toolbar.c:211
+#: src/toolbar.c:2097
 msgid "Wrap all long lines"
 msgstr "Penggal seluruh baris panjang"
 
-#: src/toolbar.c:212
-#: src/toolbar.c:419
-#: src/toolbar.c:2096
+#: src/toolbar.c:214
+#: src/toolbar.c:422
+#: src/toolbar.c:2106
 msgid "Check spelling"
 msgstr "Periksa pengejaan"
 
-#: src/toolbar.c:214
+#: src/toolbar.c:216
 msgid "Claws Mail Actions Feature"
 msgstr "Fitur Aksi Claws Mail"
 
-#: src/toolbar.c:215
-#: src/toolbar.c:2112
+#: src/toolbar.c:217
+#: src/toolbar.c:2122
 msgid "Cancel receiving"
 msgstr "Batalkan penerimaan"
 
-#: src/toolbar.c:216
-#: src/toolbar.c:1896
+#: src/toolbar.c:218
+#: src/toolbar.c:1906
 msgid "Close window"
 msgstr "Tutup jendela"
 
-#: src/toolbar.c:385
+#: src/toolbar.c:220
+msgid "Claws Mail Plugins"
+msgstr "Pengaya Claws Mail"
+
+#: src/toolbar.c:388
 msgid "Open"
 msgstr "Buka"
 
-#: src/toolbar.c:386
+#: src/toolbar.c:389
 msgid "Get Mail"
 msgstr "Ambil Surat"
 
-#: src/toolbar.c:387
+#: src/toolbar.c:390
 msgid "Get"
 msgstr "Ambil"
 
-#: src/toolbar.c:389
-#: src/toolbar.c:390
+#: src/toolbar.c:392
+#: src/toolbar.c:393
 msgid "Toolbar|Compose"
 msgstr "Tulis"
 
-#: src/toolbar.c:392
+#: src/toolbar.c:395
 msgid "All"
 msgstr "Semua"
 
-#: src/toolbar.c:394
+#: src/toolbar.c:397
 msgid "List"
 msgstr "Daftar"
 
-#: src/toolbar.c:399
+#: src/toolbar.c:402
 msgid "Prev"
 msgstr "Sebelum"
 
-#: src/toolbar.c:400
+#: src/toolbar.c:403
 msgid "Next"
 msgstr "Berikut"
 
-#: src/toolbar.c:408
+#: src/toolbar.c:411
 msgid "Draft"
 msgstr "Konsep"
 
-#: src/toolbar.c:411
+#: src/toolbar.c:414
 msgid "Insert sig."
 msgstr "Sisip tandatangan."
 
-#: src/toolbar.c:412
+#: src/toolbar.c:415
 msgid "Edit"
 msgstr "Sunting"
 
-#: src/toolbar.c:413
+#: src/toolbar.c:416
 msgid "Wrap para."
 msgstr "Penggal para."
 
-#: src/toolbar.c:414
+#: src/toolbar.c:417
 msgid "Wrap all"
 msgstr "Penggal semua"
 
-#: src/toolbar.c:416
+#: src/toolbar.c:419
 msgid "Stop"
 msgstr "Stop"
 
-#: src/toolbar.c:883
+#: src/toolbar.c:886
 msgid "Compose News message"
 msgstr "Tulis pesan Berita"
 
-#: src/toolbar.c:925
+#: src/toolbar.c:928
 msgid "Learn spam"
 msgstr "Pelajari spam"
 
-#: src/toolbar.c:934
+#: src/toolbar.c:937
 msgid "Ham"
 msgstr "Ham"
 
-#: src/toolbar.c:936
+#: src/toolbar.c:939
 msgid "Learn ham"
 msgstr "Pelajari ham"
 
-#: src/toolbar.c:1878
+#: src/toolbar.c:1888
 msgid "Go to folder list"
 msgstr "Ke daftar direktori"
 
-#: src/toolbar.c:1884
+#: src/toolbar.c:1894
 msgid "Receive Mail on selected Account"
 msgstr "Terima Surat pada Akun terpilih"
 
-#: src/toolbar.c:1900
+#: src/toolbar.c:1910
 msgid "Open preferences"
 msgstr "Buka preferensi"
 
-#: src/toolbar.c:1911
+#: src/toolbar.c:1921
 msgid "Compose with selected Account"
 msgstr "Tulis dengan Akun terpilih"
 
-#: src/toolbar.c:1932
+#: src/toolbar.c:1942
 msgid "Learn as..."
 msgstr "Pelajari sebagai..."
 
-#: src/toolbar.c:1942
+#: src/toolbar.c:1952
 msgid "Learn as _Spam"
 msgstr "Pelajari sebagai _Spam"
 
-#: src/toolbar.c:1943
+#: src/toolbar.c:1953
 msgid "Learn as _Ham"
 msgstr "Pelajari sebagai _Ham"
 
-#: src/toolbar.c:1950
+#: src/toolbar.c:1960
 msgid "Reply to Message options"
 msgstr "Pilihan Balas ke Pesan"
 
-#: src/toolbar.c:1954
-#: src/toolbar.c:1971
-#: src/toolbar.c:1988
-#: src/toolbar.c:2005
+#: src/toolbar.c:1964
+#: src/toolbar.c:1981
+#: src/toolbar.c:1998
+#: src/toolbar.c:2015
 msgid "_Reply with quote"
 msgstr "_Balas dengan kutipan"
 
-#: src/toolbar.c:1955
-#: src/toolbar.c:1972
-#: src/toolbar.c:1989
-#: src/toolbar.c:2006
+#: src/toolbar.c:1965
+#: src/toolbar.c:1982
+#: src/toolbar.c:1999
+#: src/toolbar.c:2016
 msgid "Reply without _quote"
 msgstr "Balas tanpa _kutipan"
 
-#: src/toolbar.c:1967
+#: src/toolbar.c:1977
 msgid "Reply to Sender options"
 msgstr "Pilihan Balas ke Pengirim"
 
-#: src/toolbar.c:1984
+#: src/toolbar.c:1994
 msgid "Reply to All options"
 msgstr "Pilihan Balas ke Semua"
 
-#: src/toolbar.c:2001
+#: src/toolbar.c:2011
 msgid "Reply to Mailing-list options"
 msgstr "Pilihan Balas ke Mailing-list"
 
-#: src/toolbar.c:2018
+#: src/toolbar.c:2028
 msgid "Forward Message options"
 msgstr "Pilihan Terusan Pesan"
 
-#: src/uri_opener.c:87
+#: src/uri_opener.c:86
 msgid "There are no URLs in this email."
 msgstr "Tidak ada URL pada email ini."
 
-#: src/uri_opener.c:123
+#: src/uri_opener.c:114
 msgid "Available URLs:"
 msgstr "URL yang tersedia:"
 
-#: src/uri_opener.c:171
+#: src/uri_opener.c:179
 msgid "Dialog title|Open URLs"
 msgstr "Buka URL"
 
-#: src/uri_opener.c:196
+#: src/uri_opener.c:204
 msgid "Please select the URL to open."
 msgstr "Silahkan pilih URL yang akan dibuka."
 
-#: src/uri_opener.c:208
+#: src/uri_opener.c:212
 msgid "Select All"
 msgstr "Pilih Semua"
 
@@ -14621,4 +14625,11 @@ msgid ""
 msgstr ""
 "Claws Mail telah siap.\n"
 "Klik Simpan untuk memulai."
+
+#~ msgid "Insert signature automatically"
+#~ msgstr "Sisipkan tandatangan secara otomatis"
+#~ msgid "From file..."
+#~ msgstr "Dari berkas..."
+#~ msgid "Wrap messages at"
+#~ msgstr "Penggal pesan pada"
 
