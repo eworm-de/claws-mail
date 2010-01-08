@@ -1,4 +1,4 @@
-9th October 2009                                     Claws Mail 3.7.3
+8th January 2010                                     Claws Mail 3.7.4
 
 		    CLAWS MAIL  RELEASE NOTES
                     http://www.claws-mail.org
@@ -9,59 +9,65 @@ email client.
 New in this release:
 ~~~~~~~~~~~~~~~~~~~~
 
-* The user is now warned when inserting a large file in the message
-  body. The value of 'large' can be configured on the Compose/Writing
-  page of the Preferences.
+* Spell checker: Highlight misspelled words when applying template
+  and 'check while typing' option is on
 
-* Added 'has_attachment' and 'signed' matcher expressions to
-  Filtering and Processing Flags lists.
+* Spell checker: Highlight misspelled words in text inserted from
+  file(s) or pasted to message body when 'check while typing' option
+  is on
 
-* Support Reply prefixes of French Yahoo mail and French Lotus Notes.
+* Improve parsing of List-Post header
 
-* Enabled Page Size and Orientation configuration in the print dialog.
-  GTK+ 2.18 or newer only.
+* Add new drag type "claws-mail/msg-path-list" for drag'n'drop of a
+  message selection from the message list into other applications.
+  This enables other applications to back-link to Claws Mail via a
+  "claws-mail --select" call after they received a drop.
 
-* tools/convert_mbox.pl
-  Add -R flag to support recursive conversions of arbitrary Evolution
-  mail folders.
+* Place the cursor in the compose window according to provided input.
+  If To: is present place cursor in Subject: field and if both To:
+  and Subject: are present place cursor in body. If body: is present
+  insert a new line after text and place cursor there.
 
-* Updated user manual.
+* QuickSearch: Use all of the available space to view expressions
 
-* Updated  Brazilian Portuguese, Czech, French, German, Hungarian,
-  Indonesian, Japanese, and Polish translations.
+* Updated English and Spanish user manuals.
+
+* Updated  Brazilian Portuguese, Catalan, Czech, Dutch, French,
+  German, Hungarian, Indonesian, Japanese, Portuguese, Russian, and
+  Slovak translations.
 
 * Bug fixes:
-	o bug 1949, 'Spell checker doesn't recognise certain word in
-		     Subject header, but does in message body'
-	o bug 1951, 'C-Mail dumps core when editing displayed
-		     headers'
-	o bug 1952, 'Deleted mails in Queue folder highlight it'
-	o bug 1954, 'Segfault on reading wrong STATUS'
-	o bug 1957, 'LDAP errs out after searching too many search
-		     bases'
-	o bug 1966, '"Collapse all threads" slower than "Expand all
-		     threads"'
-	o bug 1967, 'Claws gets stuck after accepting a certificate
-		     warning dialog'
-	o bug 1969, 'Bad guess for outgoing encoding'
-	o bug 1984, 'Claws Mail does not support the anwser prefix
-		     used by French Lotus Notes'
-	o bug 1994, 'Changing colors required restart.'
-	o bug 2003, 'Address gathering dialog minor bugs/annoyances'
-	o bug 2006, 'Non-utf8 strftime(3) date strings shows up
-		     garbled in GUI'
-	o bug 2007, 'Small memory leaks'
-	o bug 2008, 'Claws-Mail doesn't refresh after deletion'
-	o bug 2009, 'Incorrect pointer representation with GTK+2.18'
-	o Debian bug 530057: 'claws-mail-tools: bashism in /bin/sh
-	  script'
-	o Redhat bug 512024, 'folder.c:3543 Condition
-	  msglist != NULL failed'
-	o fix displaying Base64 parts with decoding errors (parts
-	  without errors get displayed)
-	o fix disappearing folderview icons on main toolbar update
-	o fix crash on non-existent LDAP server
-	o fix toolbar spacing that breaks dark themes
+	o bug 1850, '"Reply All" duplicates "To" user in "CC" if
+		     original email had user in "From" and "CC"
+	o bug 1867, 'Changing account does not change BCC address'
+	o bug 1996, 'S/MIME key not selected'
+	o bug 2028, 'Attempts to connect to all accounts on exit'
+	o bug 2040, 'numbers in subject entry marked as misspelled'
+	o bug 2041, 'add autonomical scrolled windows to prefs pages'
+	o bug 2049, 'some icons not copied?'
+	o bug 2053, 'Inconsistent application of Coloration of
+		     Message text'
+	o bug 2055, 'duplicate mailing list reply if List-Post +
+		     Reply-To present'
+	o bug 2057, 'Claws mail does not keep renamed names of
+		     nntp-subscribed groups'
+	o bug 2063, 'glib assertion in GRelation use in imap.c'
+	o bug 2074, 'Remember sending account for sent messages'
+	o bug 2082, 'Wrong color rectangle position when replacing
+		     "color" processing rule'
+	o bug 2089, 'URLs ending with an underscore ('_') are not
+		     correctly parsed'
+	o fix statusbar in GTK+ 2.19.x
+	o fix crash in some cases when Enchant is enabled but the
+	  spell checker is disabled
+	o fix leak and unchecked accesses.
+	o modify cairo clip handling in preview windows, to prevent
+	  print preview windows from being blank with GTK+ 2.18
+	o fix core dump when attempting to insert a non-existing file
+	  using a mailto: uri
+	o fix LDIF export
+	o fix registering as default client on windows 7
+	o fix win32 build on latest mingw32
 
 For further details of the numbered bugs listed above consult
 http://www.thewildbeast.co.uk/claws-mail/bugzilla/index.cgi

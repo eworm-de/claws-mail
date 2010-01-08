@@ -1,5 +1,49 @@
 Changes of the  Claws Mail GTK2 branch
 
+* 3.7.4
+-------
+
+* Spell checker: Highlight misspelled words when applying template
+  and 'check while typing' option is on
+
+* Spell checker: Highlight misspelled words in text inserted from
+  file(s) or pasted to message body when 'check while typing' option
+  is on
+
+* Improve parsing of List-Post header
+
+* Add new drag type "claws-mail/msg-path-list" for drag'n'drop of a
+  message selection from the message list into other applications.
+  This enables other applications to back-link to Claws Mail via a
+  "claws-mail --select" call after they received a drop.
+
+* Place the cursor in the compose window according to provided input.
+  If To: is present place cursor in Subject: field and if both To:
+  and Subject: are present place cursor in body. If body: is present
+  insert a new line after text and place cursor there.
+
+* QuickSearch: Use all of the available space to view expressions
+
+
+* 3.7.3
+-------
+
+* The user is now warned when inserting a large file in the message
+  body. The value of 'large' can be configured on the Compose/Writing
+  page of the Preferences.
+
+* Added 'has_attachment' and 'signed' matcher expressions to
+  Filtering and Processing Flags lists.
+
+* Support Reply prefixes of French Yahoo mail and French Lotus Notes.
+
+* Enabled Page Size and Orientation configuration in the print dialog.
+  GTK+ 2.18 or newer only.
+
+* tools/convert_mbox.pl
+  Add -R flag to support recursive conversions of arbitrary Evolution
+  mail folders.
+
 * 3.7.2
 -------
 
