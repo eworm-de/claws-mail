@@ -1,3 +1,14 @@
+2010-01-15 [colin]	3.7.4cvs2
+
+	* src/privacy.c
+		Decode mimeinfo before decrypting it. Probably
+		fixes bug 2059 'gpgme >=1.1.8 not compatible 
+		with S/MIME encryption' and bug 2076 'having 
+		worked 2 times properly CLAWS ceased to 
+		decrypt incoming PGP mails -displays base64 
+		instead - sucks completely'
+		Let's hope complete suckage ends here!
+
 2010-01-08 [paul]	3.7.4cvs1
 
 	* tools/claws.i18n.status.pl
