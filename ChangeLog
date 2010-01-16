@@ -8,6 +8,7 @@
 		decrypt incoming PGP mails -displays base64 
 		instead - sucks completely'
 		Let's hope complete suckage ends here!
+		Thanks to Matthias Drochner.
 
 2010-01-08 [paul]	3.7.4cvs1
 
