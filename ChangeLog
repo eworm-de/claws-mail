@@ -1,3 +1,8 @@
+2010-01-16 [holger]	3.7.4cvs3
+
+	* src/prefs_toolbar.h
+		Forgotten header
+
 2010-01-15 [colin]	3.7.4cvs2
 
 	* src/privacy.c

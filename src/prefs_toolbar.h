@@ -20,6 +20,8 @@
 #ifndef __PREFS_CUSTOM_TOOLBAR_H__
 #define __PREFS_CUSTOM_TOOLBAR_H__
 
+#include "toolbar.h"
+
 void prefs_toolbar_init		(void);
 void prefs_toolbar_done		(void);
 
