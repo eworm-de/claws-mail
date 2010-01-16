@@ -3934,3 +3934,4 @@
 ( cvs diff -u -r 1.1.2.22 -r 1.1.2.23 tools/claws.i18n.status.pl;  ) > 3.7.4cvs1.patchset
 ( cvs diff -u -r 1.10.2.22 -r 1.10.2.23 src/privacy.c;  ) > 3.7.4cvs2.patchset
 ( cvs diff -u -r 1.5.2.10 -r 1.5.2.11 src/prefs_toolbar.h;  ) > 3.7.4cvs3.patchset
+( cvs diff -u -r 1.1.2.65 -r 1.1.2.66 src/plugins/pgpcore/sgpgme.c;  ) > 3.7.4cvs4.patchset

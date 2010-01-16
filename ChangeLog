@@ -1,3 +1,9 @@
+2010-01-16 [colin]	3.7.4cvs4
+
+	* src/plugins/pgpcore/sgpgme.c
+		Probably fix bug 2098, 'claws-mails crashes frequently 
+		with pgpcore'. Fix double-free.
+
 2010-01-16 [holger]	3.7.4cvs3
 
 	* src/prefs_toolbar.h
