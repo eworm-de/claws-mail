@@ -8,7 +8,7 @@ static char *TEAM_LIST[] = {
 "Colin Leroy <colin@colino.net>",
 "Paul Mangan <paul@claws-mail.org>",
 "Salvatore De Paolis <iwkse@claws-mail.org>",
-"Paweł Pekala <c0rn@o2.pl>",
+"Paweł Pękala <c0rn@o2.pl>",
 "Michael Rasmussen <mir@datanom.net>",
 NULL
 };
@@ -64,7 +64,7 @@ static char *DOC_TEAM_LIST[] = {
 "[es] Ricardo Mones Lastra <ricardo@mones.org>",
 "[fr] Tristan Chabredier <wwp@claws-mail.org>",
 "     Colin Leroy <colin@colino.net>",
-"[pl] Paweł Pekala <c0rn@gazeta.pl>",
+"[pl] Paweł Pękala <c0rn@gazeta.pl>",
 NULL
 };
 
