@@ -1426,6 +1426,91 @@ FolderItem *folder_find_item_from_identifier(const gchar *identifier)
 	return d[1];
 }
 
+/** Returns the FolderItem from a given identifier
+ *
+ * The FolderItem is created if it doesn't already exist.
+ * If creation failed, the function returns NULL.
+ * 
+ * Identifiers are of the form #type/Mailbox/FolderA/FolderB/FolderC
+ */
+FolderItem *folder_get_item_from_identifier(const gchar *identifier)
+{
+	FolderItem *item, *last_parent;
+	Folder *folder;
+	gchar *p1, *p2, *str;
+	size_t len;
+	FolderClass *class;
+	gboolean created_something = FALSE;
+
+	item = folder_find_item_from_identifier(identifier);
+	if(item)
+		return item;
+
+	/* trivial sanity check: need at least # and two slashes */
+	len = strlen(identifier);
+	if(len < 3)
+		return NULL;
+
+	/* make sure identifier ends with a slash */
+	if(identifier[len-1] == G_DIR_SEPARATOR) {
+		Xstrdup_a(str, identifier, return NULL);
+	}
+	else {
+		Xstrndup_a(str, identifier, len+1, return NULL);
+		str[len] = G_DIR_SEPARATOR;
+	}
+
+	/* find folder class */
+	p1 = strchr(str, G_DIR_SEPARATOR);
+	if(!p1)
+		return NULL;
+	*p1 = '\0';
+	class = folder_get_class_from_string(&str[1]);
+	if(!class)
+		return NULL;
+	*p1 = G_DIR_SEPARATOR;
+	++p1;
+
+	/* find folder from class and name */
+	p2 = strchr(p1, G_DIR_SEPARATOR);
+	if(!p2)
+		return NULL;
+	*p2 = '\0';
+	folder = folder_find_from_name(p1, class);
+	if(!folder)
+		return NULL;
+	*p2 = G_DIR_SEPARATOR;
+	++p2;
+	p1 = p2;
+
+	/* Now, move forward and make sure all sections in the path exist */
+	last_parent = folder->node->data;
+	while((p1 = strchr(p1, G_DIR_SEPARATOR)) != NULL) {
+		*p1 = '\0';
+		item = folder_find_item_from_identifier(str);
+		if(!item) {
+			item = folder_create_folder(last_parent, p2);
+			if(!item)
+				return NULL;
+			debug_print("Created folder '%s'\n", str);
+			created_something = TRUE;
+			if(prefs_common.inherit_folder_props && (last_parent != item->folder->node->data)) {
+				folder_item_prefs_copy_prefs(last_parent, item);
+			}
+		}
+		last_parent = item;
+		*p1 = G_DIR_SEPARATOR;
+		++p1;
+		p2 = p1;
+	}
+
+	if(created_something)
+		folder_write_list();
+
+	return item;
+}
+
+
 /**
  * Get a displayable name for a FolderItem
  *

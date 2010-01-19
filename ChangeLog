@@ -1,3 +1,12 @@
+2010-01-19 [holger]	3.7.4cvs6
+
+	* src/folder.c
+	* src/folder.h
+		Introduce folder_get_item_from_identifier().
+		In contrast to folder_find_item_from_identifier(), this
+		function recursively creates the FolderItems in the id path.
+		Useful for programmatically creating folders (e.g. by plugins)
+
 2010-01-17 [pawel]	3.7.4cvs5
 
 	* src/gtk/authors.h

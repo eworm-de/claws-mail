@@ -3936,3 +3936,4 @@
 ( cvs diff -u -r 1.5.2.10 -r 1.5.2.11 src/prefs_toolbar.h;  ) > 3.7.4cvs3.patchset
 ( cvs diff -u -r 1.1.2.65 -r 1.1.2.66 src/plugins/pgpcore/sgpgme.c;  ) > 3.7.4cvs4.patchset
 ( cvs diff -u -r 1.1.2.62 -r 1.1.2.63 src/gtk/authors.h;  ) > 3.7.4cvs5.patchset
+( cvs diff -u -r 1.213.2.195 -r 1.213.2.196 src/folder.c;  cvs diff -u -r 1.87.2.60 -r 1.87.2.61 src/folder.h;  ) > 3.7.4cvs6.patchset
