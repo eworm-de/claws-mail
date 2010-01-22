@@ -38,7 +38,7 @@ if test "$1" = "--build-w32"; then
 	     --with-gpgme-prefix=${w32root} \
              --with-config-dir="Claws-mail" \
              --disable-openssl --disable-dillo-viewer-plugin \
-             --disable-nls --disable-libetpan --disable-aspell \
+             --disable-nls --disable-libetpan --disable-enchant \
              --disable-trayicon-plugin --disable-spamassassin-plugin \
              --disable-bogofilter-plugin --disable-valgrind \
              PKG_CONFIG_LIBDIR="$w32root/lib/pkgconfig"

@@ -1,3 +1,12 @@
+2010-01-22 [pawel]	3.7.4cvs7
+
+	* autogen.sh
+		--disable-aspell -> --disable-enchant
+	* configure.ac
+		Fix options spacing in configure --help
+	* src/wizard.c
+		Make wizard's window centered on the screen
+
 2010-01-19 [holger]	3.7.4cvs6
 
 	* src/folder.c

@@ -12,7 +12,7 @@ MINOR_VERSION=7
 MICRO_VERSION=4
 INTERFACE_AGE=0
 BINARY_AGE=0
-EXTRA_VERSION=6
+EXTRA_VERSION=7
 EXTRA_RELEASE=
 EXTRA_GTK2_VERSION=
 
@@ -382,9 +382,9 @@ fi
 
 dnl GNUTLS
 AC_MSG_CHECKING([whether to use GnuTLS])
-AC_ARG_ENABLE(openssl,    [ --enable-openssl      enable GnuTLS support],
+AC_ARG_ENABLE(openssl,    [  --enable-openssl      enable GnuTLS support],
             [ac_cv_enable_openssl=$enableval], [ac_cv_enable_openssl=no])
-AC_ARG_ENABLE(gnutls,    [ --enable-gnutls      enable GnuTLS support],
+AC_ARG_ENABLE(gnutls,    [  --enable-gnutls      enable GnuTLS support],
             [ac_cv_enable_gnutls=$enableval], [ac_cv_enable_gnutls=yes])
 
 if test "x$ac_cv_enable_gnutls" != "xyes"; then
