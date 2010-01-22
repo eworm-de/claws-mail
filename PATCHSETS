@@ -3938,3 +3938,4 @@
 ( cvs diff -u -r 1.1.2.62 -r 1.1.2.63 src/gtk/authors.h;  ) > 3.7.4cvs5.patchset
 ( cvs diff -u -r 1.213.2.195 -r 1.213.2.196 src/folder.c;  cvs diff -u -r 1.87.2.60 -r 1.87.2.61 src/folder.h;  ) > 3.7.4cvs6.patchset
 ( cvs diff -u -r 1.4.2.9 -r 1.4.2.10 autogen.sh;  cvs diff -u -r 1.654.2.4008 -r 1.654.2.4009 configure.ac;  cvs diff -u -r 1.1.2.79 -r 1.1.2.80 src/wizard.c;  ) > 3.7.4cvs7.patchset
+( cvs diff -u -r 1.105.2.156 -r 1.105.2.157 src/prefs_account.c;  cvs diff -u -r 1.59.2.80 -r 1.59.2.81 src/prefs_filtering.c;  cvs diff -u -r 1.1.2.25 -r 1.1.2.26 src/prefs_send.c;  cvs diff -u -r 1.2.2.27 -r 1.2.2.28 src/gtk/colorlabel.c;  ) > 3.7.4cvs8.patchset

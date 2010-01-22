@@ -1,3 +1,11 @@
+2010-01-22 [pawel]	3.7.4cvs8
+
+	* src/prefs_account.c
+	* src/prefs_filtering.c
+	* src/prefs_send.c
+	* src/gtk/colorlabel.c
+		Add some separators in combos
+
 2010-01-22 [pawel]	3.7.4cvs7
 
 	* autogen.sh

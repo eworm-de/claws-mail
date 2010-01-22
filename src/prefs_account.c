@@ -1534,6 +1534,7 @@ static void receive_create_widget_func(PrefsPage * _page,
 	gtk_box_pack_start (GTK_BOX (hbox1), optmenu, FALSE, FALSE, 0);
 
 	COMBOBOX_ADD (menu, _("Automatic"), 0);
+	COMBOBOX_ADD (menu, NULL, 0);
 	COMBOBOX_ADD (menu, "LOGIN", IMAP_AUTH_LOGIN);
 	COMBOBOX_ADD (menu, "CRAM-MD5", IMAP_AUTH_CRAM_MD5);
 	COMBOBOX_ADD (menu, "ANONYMOUS", IMAP_AUTH_ANON);
@@ -1723,6 +1724,7 @@ static void send_create_widget_func(PrefsPage * _page,
 	gtk_box_pack_start (GTK_BOX (hbox), optmenu, FALSE, FALSE, 0);
 
 	COMBOBOX_ADD (menu, _("Automatic"), 0);
+	COMBOBOX_ADD (menu, NULL, 0);
 	COMBOBOX_ADD (menu, "PLAIN", SMTPAUTH_PLAIN);
 	COMBOBOX_ADD (menu, "LOGIN", SMTPAUTH_LOGIN);
 	COMBOBOX_ADD (menu, "CRAM-MD5", SMTPAUTH_CRAM_MD5);

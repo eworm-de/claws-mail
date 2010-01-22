@@ -283,6 +283,7 @@ static void prefs_send_create_widget(PrefsPage *_page, GtkWindow *window,
 				GTK_COMBO_BOX(combobox_encoding)));
 
 	COMBOBOX_ADD(optmenu, _("Automatic"),	 CTE_AUTO);
+	COMBOBOX_ADD(optmenu, NULL, 0);
 	COMBOBOX_ADD(optmenu, "base64",		 CTE_BASE64);
 	COMBOBOX_ADD(optmenu, "quoted-printable", CTE_QUOTED_PRINTABLE);
 	COMBOBOX_ADD(optmenu, "8bit",		 CTE_8BIT);

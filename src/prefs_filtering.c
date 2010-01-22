@@ -259,6 +259,7 @@ static void prefs_filtering_account_option_menu_populate(void)
 	cm_return_if_fail(accounts != NULL);
 
 	COMBOBOX_ADD(filtering.account_combobox_list, Q_("Filtering Account Menu|All"), 0);
+	COMBOBOX_ADD(filtering.account_combobox_list, NULL, 0);
 	for (; accounts != NULL; accounts = accounts->next) {
 		PrefsAccount *ac = (PrefsAccount *)accounts->data;
 
