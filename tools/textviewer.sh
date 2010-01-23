@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 # textviewer.sh
 # Copyright 2003 Luke Plant <L.Plant.98@cantab.net>

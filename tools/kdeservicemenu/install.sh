@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 PERL_SCRIPT="claws-mail-kdeservicemenu.pl"
 DESKTOP="claws-mail-attach-files.desktop"

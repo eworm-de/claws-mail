@@ -1,3 +1,14 @@
+2010-01-23 [pawel]	3.7.4cvs9
+
+	* commitHelper
+	* tools/kdeservicemenu/install.sh
+	* tools/make.themes.project
+	* tools/nautilus2claws-mail.sh
+	* tools/popfile-link.sh
+	* tools/textviewer.sh
+		Not all systems have bash installed in /bin, use env(1) to find
+		it`s location
+
 2010-01-22 [pawel]	3.7.4cvs8
 
 	* src/prefs_account.c

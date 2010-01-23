@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 #  * Copyright 2007 Tristan Chabredier <wwp@claws-mail.org>
 #  *

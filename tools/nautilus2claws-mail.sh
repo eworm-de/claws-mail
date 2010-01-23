@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 # nautilus2claws-mail.sh
 # Copyright 2004 Reza Pakdel <hrpakdel@cpsc.ucalgary.ca>

@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 #
 # Generate the source directory for claws-mail-themes package
 # from the theme tarballs in http://www.claws-mail.org/themes.php
