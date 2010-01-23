@@ -665,7 +665,6 @@ void addressbook_destroy( void ) {
 void addressbook_set_target_compose(Compose *target)
 {
 	addrbook.target_compose = target;
-	addressbook_button_set_sensitive();
 }
 
 Compose *addressbook_get_target_compose(void)
@@ -1409,25 +1408,6 @@ static void addressbook_ds_show_message( AddressDataSource *ds ) {
 	addressbook_status_show( addressbook_msgbuf );
 }
 
-static void addressbook_button_set_sensitive(void)
-{
-	gboolean to_sens  = FALSE;
-	gboolean cc_sens  = FALSE;
-	gboolean bcc_sens = FALSE;
-
-	if (!addrbook.window) return;
-
-	if (addrbook.target_compose) {
-		to_sens = TRUE;
-		cc_sens = TRUE;
-		bcc_sens = TRUE;
-	}
-
-	gtk_widget_set_sensitive(addrbook.to_btn, to_sens);
-	gtk_widget_set_sensitive(addrbook.cc_btn, cc_sens);
-	gtk_widget_set_sensitive(addrbook.bcc_btn, bcc_sens);
-}
-
 static void addressbook_edit_clicked(GtkButton *button, gpointer data)
 {
 	addressbook_edit_address_cb(NULL, NULL);
@@ -2134,6 +2114,11 @@ static void addressbook_list_menu_setup( void ) {
 	gtk_widget_set_sensitive( addrbook.edit_btn, canEdit );
 	gtk_widget_set_sensitive( addrbook.del_btn, canDelete );
 
+	if (addrbook.target_compose) {
+		gtk_widget_set_sensitive(addrbook.to_btn, obj ? TRUE : FALSE);	
+		gtk_widget_set_sensitive(addrbook.cc_btn, obj ? TRUE : FALSE);
+		gtk_widget_set_sensitive(addrbook.bcc_btn, obj ? TRUE : FALSE);
+	}
 #ifdef USE_LDAP
 	cm_menu_set_sensitive_full( addrbook.ui_manager, "Popups/ABListPopup/BrowseEntry",    canBrowse );
 #endif

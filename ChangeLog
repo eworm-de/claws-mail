@@ -1,3 +1,8 @@
+2010-01-23 [pawel]	3.7.4cvs10
+
+	* src/addressbook.c
+		Fix button sensitivity in compose mode
+
 2010-01-23 [pawel]	3.7.4cvs9
 
 	* commitHelper
