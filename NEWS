@@ -1,5 +1,17 @@
 Changes of the  Claws Mail GTK2 branch
 
+* 3.7.5
+-------
+
+* Bug fixes:
+	o bug 2059 'gpgme >=1.1.8 not compatible with S/MIME
+		    encryption'
+	o bug 2076 'having worked 2 times properly CLAWS ceased to
+		    decrypt incoming PGP mails -displays base64 
+		    instead - sucks completely'
+	o bug 2098, 'claws-mails crashes frequently with pgpcore'
+	o Address Book: fix button sensitivity in compose mode.
+
 * 3.7.4
 -------
 
