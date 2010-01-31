@@ -3942,3 +3942,4 @@
 ( cvs diff -u -r 1.1.2.38 -r 1.1.2.39 commitHelper;  cvs diff -u -r 1.2.2.9 -r 1.2.2.10 tools/kdeservicemenu/install.sh;  cvs diff -u -r 1.1.2.9 -r 1.1.2.10 tools/make.themes.project;  cvs diff -u -r 1.1.2.2 -r 1.1.2.3 tools/nautilus2claws-mail.sh;  cvs diff -u -r 1.1.2.4 -r 1.1.2.5 tools/popfile-link.sh;  cvs diff -u -r 1.4.2.5 -r 1.4.2.6 tools/textviewer.sh;  ) > 3.7.4cvs9.patchset
 ( cvs diff -u -r 1.60.2.135 -r 1.60.2.136 src/addressbook.c;  ) > 3.7.4cvs10.patchset
 ( cvs diff -u -r 1.94.2.207 -r 1.94.2.208 src/messageview.c;  cvs diff -u -r 1.83.2.157 -r 1.83.2.158 src/mimeview.c;  ) > 3.7.5cvs1.patchset
+( cvs diff -u -r 1.1.2.63 -r 1.1.2.64 src/gtk/authors.h;  ) > 3.7.5cvs2.patchset

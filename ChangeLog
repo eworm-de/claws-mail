@@ -1,3 +1,8 @@
+2010-01-31 [pawel]	3.7.5cvs2
+
+	* src/gtk/authors.h
+		Fix hungarian translator's name
+
 2010-01-31 [pawel]	3.7.5cvs1
 
 	* src/messageview.c
