@@ -1407,13 +1407,16 @@ static gint mimeview_key_pressed(GtkWidget *widget, GdkEventKey *event,
 		return FALSE;
 		
 	switch (event->keyval) {
+	case GDK_Page_Down:
 	case GDK_space:
-		if (mimeview_scroll_page(mimeview, FALSE))
+		if (mimeview_scroll_page(mimeview,
+					 (event->state & GDK_SHIFT_MASK) != 0))
 			return TRUE;
-
-		mimeview_select_next_part(mimeview);
+			
+		if (!(event->state & GDK_SHIFT_MASK))
+			mimeview_select_next_part(mimeview);
 		return TRUE;
-
+	case GDK_Page_Up:
 	case GDK_BackSpace:
 		mimeview_scroll_page(mimeview, TRUE);
 		return TRUE;
@@ -1421,6 +1424,10 @@ static gint mimeview_key_pressed(GtkWidget *widget, GdkEventKey *event,
 	case GDK_KP_Enter:
 		mimeview_scroll_one_line(mimeview,
 					 (event->state & GDK_MOD1_MASK) != 0);
+		return TRUE;
+	case GDK_Up:
+	case GDK_Down:
+		mimeview_scroll_one_line(mimeview, (event->keyval == GDK_Up));
 		return TRUE;
 	case GDK_n:
 	case GDK_N:
