@@ -318,8 +318,6 @@ gint privacy_mimeinfo_decrypt(MimeInfo *mimeinfo)
 	GSList *cur;
 	cm_return_val_if_fail(mimeinfo != NULL, FALSE);
 
-	procmime_decode_content(mimeinfo);
-
 	for(cur = systems; cur != NULL; cur = g_slist_next(cur)) {
 		PrivacySystem *system = (PrivacySystem *) cur->data;
 

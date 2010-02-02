@@ -3943,3 +3943,4 @@
 ( cvs diff -u -r 1.60.2.135 -r 1.60.2.136 src/addressbook.c;  ) > 3.7.4cvs10.patchset
 ( cvs diff -u -r 1.94.2.207 -r 1.94.2.208 src/messageview.c;  cvs diff -u -r 1.83.2.157 -r 1.83.2.158 src/mimeview.c;  ) > 3.7.5cvs1.patchset
 ( cvs diff -u -r 1.1.2.63 -r 1.1.2.64 src/gtk/authors.h;  ) > 3.7.5cvs2.patchset
+( cvs diff -u -r 1.1.2.7 -r 1.1.2.8 src/plugins/smime/smime.c;  cvs diff -u -r 1.10.2.23 -r 1.10.2.24 src/privacy.c;  ) > 3.7.5cvs3.patchset

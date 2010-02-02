@@ -420,7 +420,7 @@ static MimeInfo *smime_decrypt(MimeInfo *mimeinfo)
 	encinfo = mimeinfo;
 
 	cipher = sgpgme_data_from_mimeinfo(encinfo);
-	gpgme_data_set_encoding(cipher, GPGME_DATA_ENCODING_BASE64);
+	
 	plain = sgpgme_decrypt_verify(cipher, &sigstat, ctx);
 
 	gpgme_data_release(cipher);
@@ -791,6 +791,9 @@ gboolean smime_encrypt(MimeInfo *mimeinfo, const gchar *encrypt_data)
 	encmultipart->subtype = g_strdup("x-pkcs7-mime");
 	g_hash_table_insert(encmultipart->typeparameters, g_strdup("name"),
                             g_strdup("smime.p7m"));
+	g_hash_table_insert(encmultipart->typeparameters,
+			    g_strdup("smime-type"),
+			    g_strdup("enveloped-data"));
 	
 	encmultipart->disposition = DISPOSITIONTYPE_ATTACHMENT;
 	g_hash_table_insert(encmultipart->dispositionparameters, g_strdup("filename"),
@@ -827,7 +830,6 @@ gboolean smime_encrypt(MimeInfo *mimeinfo, const gchar *encrypt_data)
 	gpgme_data_new(&gpgenc);
 	cm_gpgme_data_rewind(gpgtext);
 	
-	gpgme_data_set_encoding(gpgenc, GPGME_DATA_ENCODING_BASE64);
 	gpgme_op_encrypt(ctx, kset, GPGME_ENCRYPT_ALWAYS_TRUST, gpgtext, gpgenc);
 
 	gpgme_release(ctx);

@@ -1,3 +1,10 @@
+2010-02-02 [colin]	3.7.5cvs3
+
+	* src/plugins/smime/smime.c
+	* src/privacy.c
+		Revert 3.7.4cvs2 and make a better patch for bug
+		2059 and 2076. Patch by Matthias Drochner
+
 2010-01-31 [pawel]	3.7.5cvs2
 
 	* src/gtk/authors.h
