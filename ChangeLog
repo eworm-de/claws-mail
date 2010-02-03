@@ -1,3 +1,8 @@
+2010-02-03 [pawel]	3.7.5cvs7
+
+	* m4/.cvsignore
+		Add some libtool files to ignore
+
 2010-02-03 [pawel]	3.7.5cvs6
 
 	* src/plugins/trayicon/trayicon.c
