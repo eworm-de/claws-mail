@@ -1,3 +1,11 @@
+2010-02-03 [colin]	3.7.5cvs4
+
+	* src/privacy.c
+		Fix again decoding of encrypted parts. The
+		reverting of the patch was wrong, as the
+		double-decoding was fixed in smime itself.
+		Thanks to Matthias Drochner again...
+
 2010-02-02 [colin]	3.7.5cvs3
 
 	* src/plugins/smime/smime.c
