@@ -1,3 +1,8 @@
+2010-02-03 [pawel]	3.7.5cvs6
+
+	* src/plugins/trayicon/trayicon.c
+		Save and then restore focus when closing/minimizing to tray
+
 2010-02-03 [mir]	3.7.5cvs5
 
 	* src/addrindex.c

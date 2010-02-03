@@ -68,6 +68,7 @@ static GdkPixbuf *nomail_pixmap[2] = {NULL, NULL};
 static EggTrayIcon *trayicon;
 static GtkWidget *eventbox;
 static GtkWidget *image = NULL;
+static GtkWidget *focused_widget = NULL;
 
 #if !(GTK_CHECK_VERSION(2,12,0))
 static GtkTooltips *tooltips;
@@ -242,12 +243,14 @@ static gboolean trayicon_close_hook(gpointer source, gpointer data)
 		gboolean *close_allowed = (gboolean*)source;
 
 		if (trayicon_prefs.close_to_tray) {
-		MainWindow *mainwin = mainwindow_get_mainwindow();
+			MainWindow *mainwin = mainwindow_get_mainwindow();
 
 			*close_allowed = FALSE;
-		if (GTK_WIDGET_VISIBLE(GTK_WIDGET(mainwin->window)))
-			main_window_hide(mainwin);
-	}
+			focused_widget = gtk_window_get_focus(GTK_WINDOW(mainwin->window));
+			
+			if (GTK_WIDGET_VISIBLE(GTK_WIDGET(mainwin->window)))
+				main_window_hide(mainwin);
+		}
 	}
 	return FALSE;
 }
@@ -259,6 +262,7 @@ static gboolean trayicon_got_iconified_hook(gpointer source, gpointer data)
 	if (trayicon_prefs.hide_when_iconified
 			&& GTK_WIDGET_VISIBLE(GTK_WIDGET(mainwin->window))
 			&& !gtk_window_get_skip_taskbar_hint(GTK_WINDOW(mainwin->window))) {
+		focused_widget = gtk_window_get_focus(GTK_WINDOW(mainwin->window));
 		gtk_window_set_skip_taskbar_hint(GTK_WINDOW(mainwin->window), TRUE);
 	}
 	return FALSE;
@@ -302,7 +306,9 @@ static gboolean click_cb(GtkWidget * widget,
 				gtk_window_set_skip_taskbar_hint(GTK_WINDOW(mainwin->window), FALSE);
 				main_window_show(mainwin);
 				gtk_window_present(GTK_WINDOW(mainwin->window));
+				gtk_window_set_focus(GTK_WINDOW(mainwin->window), focused_widget);
 			} else {
+				focused_widget = gtk_window_get_focus(GTK_WINDOW(mainwin->window));
 				main_window_hide(mainwin);
 			}
 		} else {
@@ -311,6 +317,7 @@ static gboolean click_cb(GtkWidget * widget,
 			main_window_show(mainwin);
 			gtk_window_present(GTK_WINDOW(mainwin->window));
 			fix_folderview_scroll(mainwin);
+			gtk_window_set_focus(GTK_WINDOW(mainwin->window), focused_widget);
         }
 		break;
 	case 3:
