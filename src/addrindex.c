@@ -1382,7 +1382,7 @@ static AddressDataSource *addrindex_parse_ldap( XMLFile *file ) {
 			ldapctl_set_bind_dn( ctl, value );
 		}
 		else if( strcmp( name, ATTAG_LDAP_BIND_PASS ) == 0 ) {
-			ldapctl_set_bind_password( ctl, value );
+			ldapctl_set_bind_password( ctl, value, FALSE, FALSE );
 		}
 		else if( strcmp( name, ATTAG_LDAP_CRITERIA ) == 0 ) {
 			g_free( criteria );

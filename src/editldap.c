@@ -892,6 +892,7 @@ static void edit_ldap_clear_fields(void) {
 static void edit_ldap_set_fields( LdapServer *server ) {
 	LdapControl *ctl;
 	gchar *crit;
+	gchar *pwd;
 
 	if( ldapsvr_get_name( server ) )
 		gtk_entry_set_text(GTK_ENTRY(ldapedit.entry_name),
@@ -907,9 +908,11 @@ static void edit_ldap_set_fields( LdapServer *server ) {
 	if( ctl->bindDN )
 		gtk_entry_set_text(
 			GTK_ENTRY(ldapedit.entry_bindDN), ctl->bindDN );
-	if( ctl->bindPass )
-		gtk_entry_set_text(
-			GTK_ENTRY(ldapedit.entry_bindPW), ctl->bindPass );
+	if( ctl->bindPass ) {
+		pwd = ldapctl_get_bind_password( ctl );
+		gtk_entry_set_text(	GTK_ENTRY(ldapedit.entry_bindPW),  pwd );
+		g_free(pwd);
+	}
 	gtk_spin_button_set_value(
 		GTK_SPIN_BUTTON(ldapedit.spinbtn_timeout), ctl->timeOut );
 	gtk_spin_button_set_value(
@@ -1040,7 +1043,7 @@ AdapterDSource *addressbook_edit_ldap(
 		ldapctl_set_host( ctl, sHost );
 		ldapctl_set_base_dn( ctl, sBase );
 		ldapctl_set_bind_dn( ctl, sBind );
-		ldapctl_set_bind_password( ctl, sPass );
+		ldapctl_set_bind_password( ctl, sPass, TRUE, TRUE );
 		ldapctl_set_port( ctl, iPort );
 		ldapctl_set_max_entries( ctl, iMaxE );
 		ldapctl_set_timeout( ctl, iTime );
@@ -1052,6 +1055,8 @@ AdapterDSource *addressbook_edit_ldap(
 		ldapctl_set_matching_option(
 			ctl, bMatch ?
 			LDAPCTL_MATCH_CONTAINS : LDAPCTL_MATCH_BEGINWITH );
+
+		addrindex_save_data(addrIndex);
 
 		/* Save attributes */
 		editldap_parse_criteria( sCrit, ctl );

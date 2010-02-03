@@ -691,6 +691,7 @@ static gint ldapqry_connect( LdapQuery *qry ) {
 	gint rc;
 	gint version;
 	gchar *uri = NULL;
+	gchar *pwd;
 
 	/* Initialize connection */
 	if (debug_get_mode()) {
@@ -756,7 +757,9 @@ static gint ldapqry_connect( LdapQuery *qry ) {
 	if( ctl->bindDN ) {
 		if( * ctl->bindDN != '\0' ) {
 			debug_print("binding...\n");
-			rc = claws_ldap_simple_bind_s( ld, ctl->bindDN, ctl->bindPass );
+			pwd = ldapctl_get_bind_password(ctl);
+			rc = claws_ldap_simple_bind_s(ld, ctl->bindDN, pwd);
+			g_free(pwd);
 			debug_print("rc=%d\n", rc);
 			if( rc != LDAP_SUCCESS ) {
 				debug_print("LDAP Error: ldap_simple_bind_s: %s\n",	ldap_err2string(rc));

@@ -87,7 +87,9 @@ void ldapctl_set_host		( LdapControl* ctl, const gchar *value );
 void ldapctl_set_port		( LdapControl* ctl, const gint value );
 void ldapctl_set_base_dn	( LdapControl* ctl, const gchar *value );
 void ldapctl_set_bind_dn	( LdapControl* ctl, const gchar *value );
-void ldapctl_set_bind_password	( LdapControl* ctl, const gchar *value );
+void ldapctl_set_bind_password	
+	( LdapControl* ctl, const gchar *value, gboolean encrypt, gboolean change );
+gchar* ldapctl_get_bind_password ( LdapControl* ctl );
 void ldapctl_set_max_entries	( LdapControl* ctl, const gint value );
 void ldapctl_set_timeout	( LdapControl* ctl, const gint value );
 void ldapctl_set_max_query_age	( LdapControl* ctl, const gint value );

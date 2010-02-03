@@ -33,6 +33,7 @@
 
 #include "ldapctrl.h"
 #include "mgutils.h"
+#include "passcrypt.h"
 #include "editaddress_other_attributes_ldap.h"
 #include "common/utils.h"
 
@@ -134,15 +135,64 @@ void ldapctl_set_bind_dn( LdapControl* ctl, const gchar *value ) {
  * Specify bind password to be used.
  * \param ctl  Control object to process.
  * \param value Password.
+ * \param encrypt Encrypt password
+ * \param change Save encrypted
  */
-void ldapctl_set_bind_password( LdapControl* ctl, const gchar *value ) {
+void ldapctl_set_bind_password( 
+	LdapControl* ctl, const gchar *value, gboolean encrypt, gboolean change ) {
+	gchar *buf = NULL, *tmp;
+
 	ctl->bindPass = mgu_replace_string( ctl->bindPass, value );
 
 	if ( ctl->bindPass == NULL )
 		return;
 
 	g_strstrip( ctl->bindPass );
+
+	if ( encrypt ) {
+		/* If first char is not ! the password is not encrypted */
+		if (ctl->bindPass[0] == '!' || change) {
+			if (ctl->bindPass[0] != '!' && change)
+				buf = mgu_replace_string( buf, ctl->bindPass );
+			else
+				buf = mgu_replace_string( buf, ctl->bindPass + 1 );
+			passcrypt_encrypt( buf, strlen(buf) );
+			if (ctl->bindPass[0] != '!' && change) {
+				tmp = g_strconcat( "!", buf, NULL );
+				g_free(buf);
+				buf = g_strdup(tmp);
+				g_free(tmp);
+			}
+			ctl->bindPass = mgu_replace_string( ctl->bindPass, buf );
+			g_free(buf);
+		}
+	}
 	debug_print("setting bindPassword\n");
+}
+
+/**
+ * Fetch bind password to be used.
+ * \param ctl  Control object to process.
+ * \return Decrypted password.
+ */
+gchar* ldapctl_get_bind_password( LdapControl* ctl ) {
+	gchar *pwd = NULL, *buf;
+
+	if ( ctl->bindPass != NULL ) {
+		pwd = mgu_replace_string( pwd, ctl->bindPass );
+		/* If first char is not ! the password is not encrypted */
+		if (pwd && pwd[0] == '!') {
+			buf = g_strdup(pwd + 1);
+			g_free(pwd);
+			passcrypt_decrypt( buf, strlen(buf) );
+			pwd = g_strdup(buf);
+			g_free(buf);
+		}
+	}
+
+	debug_print("getting bindPassword\n");
+
+	return pwd;
 }
 
 /**
@@ -339,6 +389,7 @@ void ldapctl_free( LdapControl *ctl ) {
  */
 void ldapctl_print( const LdapControl *ctl, FILE *stream ) {
 	cm_return_if_fail( ctl != NULL );
+	gchar *pwd;
 
 	pthread_mutex_lock( ctl->mutexCtl );
 	fprintf( stream, "LdapControl:\n" );
@@ -346,7 +397,9 @@ void ldapctl_print( const LdapControl *ctl, FILE *stream ) {
 	fprintf( stream, "     port: %d\n",   ctl->port );
 	fprintf( stream, "  base dn: '%s'\n", ctl->baseDN?ctl->baseDN:"null" );
 	fprintf( stream, "  bind dn: '%s'\n", ctl->bindDN?ctl->bindDN:"null" );
-	fprintf( stream, "bind pass: '%s'\n", ctl->bindPass?ctl->bindPass:"null" );
+	pwd = ldapctl_get_bind_password((LdapControl *) ctl);
+	fprintf( stream, "bind pass: '%s'\n", pwd?pwd:"null" );
+	g_free(pwd);
 	fprintf( stream, "attr mail: '%s'\n", ctl->attribEMail?ctl->attribEMail:"null" );
 	fprintf( stream, "attr comn: '%s'\n", ctl->attribCName?ctl->attribCName:"null" );
 	fprintf( stream, "attr frst: '%s'\n", ctl->attribFName?ctl->attribFName:"null" );

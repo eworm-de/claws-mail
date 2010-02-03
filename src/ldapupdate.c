@@ -317,6 +317,7 @@ LDAP *ldapsvr_connect(LdapControl *ctl) {
 	gint rc;
 	gint version;
 	gchar *uri = NULL;
+	gchar *pwd;
 
 	cm_return_val_if_fail(ctl != NULL, NULL);
 
@@ -357,13 +358,16 @@ LDAP *ldapsvr_connect(LdapControl *ctl) {
 	/* Bind to the server, if required */
 	if (ctl->bindDN) {
 		if (* ctl->bindDN != '\0') {
-			rc = claws_ldap_simple_bind_s(ld, ctl->bindDN, ctl->bindPass);
+			pwd = ldapctl_get_bind_password(ctl);
+			rc = claws_ldap_simple_bind_s(ld, ctl->bindDN, pwd);
 			if (rc != LDAP_SUCCESS) {
-				g_printerr("bindDN: %s, bindPass: %s\n", ctl->bindDN, ctl->bindPass);
+				g_printerr("bindDN: %s, bindPass: %s\n", ctl->bindDN, pwd);
 				g_printerr("LDAP Error(bind): ldap_simple_bind_s: %s\n",
 					ldap_err2string(rc));
+				g_free(pwd);
 				return NULL;
 			}
+			g_free(pwd);
 		}
 	}
 	return ld;

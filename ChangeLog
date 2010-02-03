@@ -1,3 +1,14 @@
+2010-02-03 [mir]	3.7.5cvs5
+
+	* src/addrindex.c
+	* src/editldap.c
+	* src/ldapctrl.c
+	* src/ldapctrl.h
+	* src/ldapquery.c
+	* src/ldapupdate.c
+	    Save LDAP password encrypted. See bug 2113.
+
+
 2010-02-03 [colin]	3.7.5cvs4
 
 	* src/privacy.c
