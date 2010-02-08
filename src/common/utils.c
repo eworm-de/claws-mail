@@ -1551,7 +1551,7 @@ static gchar *decode_uri_gdup(const gchar *encoded_uri)
 }
 
 gint scan_mailto_url(const gchar *mailto, gchar **from, gchar **to, gchar **cc, gchar **bcc,
-		     gchar **subject, gchar **body, gchar ***attach)
+		     gchar **subject, gchar **body, gchar ***attach, gchar **inreplyto)
 {
 	gchar *tmp_mailto;
 	gchar *p;
@@ -1659,6 +1659,9 @@ gint scan_mailto_url(const gchar *mailto, gchar **from, gchar **to, gchar **cc, 
 				my_att[num_attach-1] = tmp;
 				my_att[num_attach] = NULL;
 			}
+		} else if (inreplyto && !*inreplyto &&
+			   !g_ascii_strcasecmp(field, "in-reply-to")) {
+			*inreplyto = decode_uri_gdup(value);
 		}
 	}
 

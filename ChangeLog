@@ -1,3 +1,13 @@
+2010-02-08 [pawel]	3.7.5cvs8
+
+	* src/compose.c
+	* src/compose.h
+	* src/common/utils.c
+	* src/common/utils.h
+	* src/gtk/authors.h
+		Fix Bug 2058 "use in-reply-to info passed in mailto: links"
+		Patch by Laurent Bigonville with slight modifications
+
 2010-02-03 [pawel]	3.7.5cvs7
 
 	* m4/.cvsignore

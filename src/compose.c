@@ -949,7 +949,7 @@ Compose *compose_generic_new(PrefsAccount *account, const gchar *mailto, FolderI
 
 	/* check if mailto defines a from */
 	if (mailto && *mailto != '\0') {
-		scan_mailto_url(mailto, &mailto_from, NULL, NULL, NULL, NULL, NULL, NULL);
+		scan_mailto_url(mailto, &mailto_from, NULL, NULL, NULL, NULL, NULL, NULL, NULL);
 		/* mailto defines a from, check if we can get account prefs from it,
 		   if not, the account prefs will be guessed using other ways, but we'll keep
 		   the from anyway */
@@ -2484,6 +2484,9 @@ void compose_entry_append(Compose *compose, const gchar *address,
 	case COMPOSE_FOLLOWUPTO:
 		header = N_( "Followup-To:");
 		break;
+	case COMPOSE_INREPLYTO:
+		header = N_( "In-Reply-To:");
+		break;
 	case COMPOSE_TO:
 	default:
 		header = N_("To:");
@@ -2616,10 +2619,11 @@ static MailField compose_entries_set(Compose *compose, const gchar *mailto, Comp
 	gchar *temp = NULL;
 	gsize  len = 0;
 	gchar **attach = NULL;
+ 	gchar *inreplyto = NULL;
 	MailField mfield = NO_FIELD_PRESENT;
 
 	/* get mailto parts but skip from */
-	scan_mailto_url(mailto, NULL, &to, &cc, &bcc, &subject, &body, &attach);
+	scan_mailto_url(mailto, NULL, &to, &cc, &bcc, &subject, &body, &attach, &inreplyto);
 
 	if (to) {
 		compose_entry_append(compose, to, to_type, PREF_MAILTO);
@@ -2693,12 +2697,16 @@ static MailField compose_entries_set(Compose *compose, const gchar *mailto, Comp
 			g_free(warn_files);
 		}
 	}
+ 	if (inreplyto)
+ 		compose_entry_append(compose, inreplyto, COMPOSE_INREPLYTO, PREF_MAILTO);
+
 	g_free(to);
 	g_free(cc);
 	g_free(bcc);
 	g_free(subject);
 	g_free(body);
 	g_strfreev(attach);
+	g_free(inreplyto);
 	
 	return mfield;
 }
@@ -2787,7 +2795,7 @@ static gint compose_parse_header(Compose *compose, MsgInfo *msginfo)
 			start = strstr(hentry[H_LIST_POST].body, "mailto:");
 			
 			scan_mailto_url(start ? start : hentry[H_LIST_POST].body,
-					NULL, &to, NULL, NULL, NULL, NULL, NULL);
+					NULL, &to, NULL, NULL, NULL, NULL, NULL, NULL);
 
 			if (to) {
 				g_free(compose->ml_post);
@@ -3274,6 +3282,7 @@ static void compose_reedit_set_entry(Compose *compose, MsgInfo *msginfo)
 	SET_ADDRESS(COMPOSE_REPLYTO, compose->replyto);
 	SET_ADDRESS(COMPOSE_NEWSGROUPS, compose->newsgroups);
 	SET_ADDRESS(COMPOSE_FOLLOWUPTO, compose->followup_to);
+	SET_ADDRESS(COMPOSE_INREPLYTO, compose->inreplyto);
 
 	compose_update_priority_menu_item(compose);
 	compose_update_privacy_system_menu_item(compose, FALSE);
@@ -6572,7 +6581,11 @@ static void compose_add_header_entry(Compose *compose, const gchar *header,
 		return;
 	}
 	
-	combobox_select_by_text(GTK_COMBO_BOX(last_header->combo), header);
+	if (!strcmp(header, prefs_common_translated_header_name("In-Reply-To:")))
+		gtk_entry_set_text(GTK_ENTRY(
+			gtk_bin_get_child(GTK_BIN(last_header->combo))), header);
+	else
+		combobox_select_by_text(GTK_COMBO_BOX(last_header->combo), header);
 	gtk_entry_set_text(GTK_ENTRY(last_header->entry), text);
 	last_header->type = pref_type;
 
