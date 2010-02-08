@@ -1,3 +1,10 @@
+2010-02-08 [pawel]	3.7.5cvs9
+
+	* src/mimeview.c
+		Make tooltips less cryptic
+	* src/gtk/description_window.c
+		Improve window size calculation
+
 2010-02-08 [pawel]	3.7.5cvs8
 
 	* src/compose.c

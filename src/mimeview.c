@@ -2332,8 +2332,9 @@ static void icon_list_append_icon (MimeView *mimeview, MimeInfo *mimeinfo)
 	content_type = procmime_get_content_type_str(mimeinfo->type,
 						     mimeinfo->subtype);
 
-	tip = g_strjoin("\n", content_type,
-			to_human_readable((goffset)mimeinfo->length), NULL);
+	tip = g_strconcat("<b>", _("Type:"), "  </b>", content_type,
+			  "\n<b>", _("Size:"), " </b>",
+			  to_human_readable((goffset)mimeinfo->length), NULL);
 	g_free(content_type);
 	if (desc && *desc) {
 		gchar *tmp = NULL;
@@ -2342,7 +2343,10 @@ static void icon_list_append_icon (MimeView *mimeview, MimeInfo *mimeinfo)
 		} else {
 			tmp = g_strdup(desc);
 		}
-		tiptmp = g_strjoin("\n", tmp, tip, NULL);
+		tiptmp = g_strconcat(tip, "\n<b>",
+				prefs_common.attach_desc && mimeinfo->description ?
+				_("Description") : _("Filename:"),
+				" </b>", tmp, NULL);
 		g_free(tip);
 		tip = tiptmp;
 		g_free(tmp);
@@ -2354,7 +2358,7 @@ static void icon_list_append_icon (MimeView *mimeview, MimeInfo *mimeinfo)
 	}
 	g_free(sigshort);
 
-	CLAWS_SET_TIP(button, tip);
+	gtk_widget_set_tooltip_markup(button, tip);
 	g_free(tip);
 	gtk_widget_show_all(button);
 	gtk_drag_source_set(button, GDK_BUTTON1_MASK|GDK_BUTTON3_MASK, 

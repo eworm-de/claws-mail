@@ -73,7 +73,7 @@ static void description_create(DescriptionWindow * dwindow)
 	int sz;
 	int line;
 	int j;
-	int max_width = 0;
+	int *max_width = g_new0(int, dwindow->columns), width=0;
 	GtkRequisition req;
 	
 	dwindow->window = gtkut_window_new(GTK_WINDOW_TOPLEVEL, "description_window");
@@ -124,8 +124,8 @@ static void description_create(DescriptionWindow * dwindow)
 						 (GtkAttachOptions) (0), 0, 2);
 
 				gtk_widget_size_request(label, &req);
-				if(req.width > max_width)
-					max_width = req.width;
+				if(req.width > max_width[j])
+					max_width[j] = req.width;
 			}
 		} else {
 			GtkWidget *separator;
@@ -139,8 +139,12 @@ static void description_create(DescriptionWindow * dwindow)
 		line++;
 	}
 
-	max_width += 150;
+	for(j=0; j<dwindow->columns; j++)
+		width += max_width[j];
 
+	g_free(max_width);
+	width += 100;
+	
 	gtkut_stock_button_set_create(&hbbox, &close_btn, GTK_STOCK_CLOSE,
 				      NULL, NULL, NULL, NULL);
 
@@ -151,7 +155,7 @@ static void description_create(DescriptionWindow * dwindow)
 	gtk_box_pack_start(GTK_BOX(vbox), hbox, FALSE, FALSE, 0);
 
 	label = gtk_label_new(gettext(dwindow->description));
-	gtk_widget_set_size_request(GTK_WIDGET(label), max_width-2, -1);
+	gtk_widget_set_size_request(GTK_WIDGET(label), width-2, -1);
 	gtk_label_set_justify(GTK_LABEL(label), GTK_JUSTIFY_LEFT);
 	gtk_label_set_line_wrap(GTK_LABEL(label), TRUE);
 	gtk_box_pack_start(GTK_BOX(hbox), label, FALSE, FALSE, 0);
@@ -180,7 +184,7 @@ static void description_create(DescriptionWindow * dwindow)
 
 	gtk_widget_show_all(vbox);
 	gtk_widget_set_size_request(dwindow->window,
-                               (max_width < 400) ? 400 : max_width, 450);	
+                               (width < 400) ? 400 : width, 450);	
 }
 
 static gboolean description_window_key_pressed(GtkWidget *widget,

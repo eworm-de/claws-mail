@@ -3949,3 +3949,4 @@
 ( cvs diff -u -r 1.14.2.69 -r 1.14.2.70 src/plugins/trayicon/trayicon.c;  ) > 3.7.5cvs6.patchset
 ( cvs diff -u -r 1.2.4.1 -r 1.2.4.2 m4/.cvsignore;  ) > 3.7.5cvs7.patchset
 ( cvs diff -u -r 1.382.2.541 -r 1.382.2.542 src/compose.c;  cvs diff -u -r 1.50.2.58 -r 1.50.2.59 src/compose.h;  cvs diff -u -r 1.36.2.182 -r 1.36.2.183 src/common/utils.c;  cvs diff -u -r 1.20.2.73 -r 1.20.2.74 src/common/utils.h;  cvs diff -u -r 1.1.2.64 -r 1.1.2.65 src/gtk/authors.h;  ) > 3.7.5cvs8.patchset
+( cvs diff -u -r 1.83.2.158 -r 1.83.2.159 src/mimeview.c;  cvs diff -u -r 1.5.2.28 -r 1.5.2.29 src/gtk/description_window.c;  ) > 3.7.5cvs9.patchset
