@@ -1,3 +1,10 @@
+2010-02-08 [mir]	3.7.5cvs10
+
+	* src/compose.c
+	    Avoid displaying Bcc headers in message sent
+	    to NNTP servers. Thanks to Henning Mersch.
+
+
 2010-02-08 [pawel]	3.7.5cvs9
 
 	* src/mimeview.c

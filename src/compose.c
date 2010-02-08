@@ -6117,7 +6117,12 @@ static gchar *compose_get_header(Compose *compose)
 	compose_add_headerfield_from_headerlist(compose, header, "Cc", ", ");
 
 	/* Bcc */
-	compose_add_headerfield_from_headerlist(compose, header, "Bcc", ", ");
+	/* 
+	 * If this account is a NNTP account remove Bcc header from 
+	 * message body since it otherwise will be publicly shown
+	 */
+	if (compose->account->protocol != A_NNTP)
+		compose_add_headerfield_from_headerlist(compose, header, "Bcc", ", ");
 
 	/* Subject */
 	str = gtk_editable_get_chars(GTK_EDITABLE(compose->subject_entry), 0, -1);
@@ -9251,7 +9256,7 @@ static void compose_allow_user_actions (Compose *compose, gboolean allow)
 static void compose_send_cb(GtkAction *action, gpointer data)
 {
 	Compose *compose = (Compose *)data;
-	
+
 	if (prefs_common.work_offline && 
 	    !inc_offline_should_override(TRUE,
 		_("Claws Mail needs network access in order "
