@@ -37,13 +37,11 @@ src/exportldif.c
 src/folder.c
 src/foldersel.c
 src/folderview.c
-src/gedit-print.c
 src/grouplistdialog.c
 src/gtk/about.c
 src/gtk/colorlabel.c
 src/gtk/foldersort.c
 src/gtk/gtkaspell.c
-src/gtk/gtksourceprintjob.c
 src/gtk/headers.h
 src/gtk/icon_legend.c
 src/gtk/inputdialog.c

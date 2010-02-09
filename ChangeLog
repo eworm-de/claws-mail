@@ -1,3 +1,8 @@
+2010-02-09 [colin]	3.7.5cvs13
+
+	* po/POTFILES.in
+		Fix make dist
+
 2010-02-09 [colin]	3.7.5cvs12
 
 	* src/mimeview.c
