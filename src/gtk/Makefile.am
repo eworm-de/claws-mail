@@ -20,7 +20,6 @@ libclawsgtk_la_SOURCES = \
 	gtkcmoptionmenu.c \
 	gtkshruler.c \
 	gtksctree.c \
-	gtksourceprintjob.c \
 	gtkutils.c \
 	gtkvscrollbutton.c \
 	icon_legend.c \
@@ -52,7 +51,6 @@ clawsgtkinclude_HEADERS = \
 	gtkcmoptionmenu.h \
 	gtksctree.h \
 	gtkshruler.h \
-	gtksourceprintjob.h \
 	gtkutils.h \
 	gtkvscrollbutton.h \
 	headers.h \
@@ -75,7 +73,6 @@ AM_CPPFLAGS = \
 	-I$(srcdir)/.. \
 	-I$(builddir)/.. \
 	$(GTK_CFLAGS) \
-	$(GNOMEPRINT_CFLAGS) \
 	$(MAEMO_CFLAGS) \
 	$(ENCHANT_CFLAGS) \
 	-DPLUGINDIR=\"$(PLUGINDIR)\" \
@@ -85,7 +82,6 @@ libclawsgtk_la_LIBADD = \
 	../common/libclawscommon.la \
 	$(GTK_LIBS) \
 	$(ENCHANT_LIBS) \
-	$(GNOMEPRINT_LIBS) \
 	$(MAEMO_LIBS)
 
 BUILT_SOURCES=claws-marshal.c claws-marshal.h 

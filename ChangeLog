@@ -1,3 +1,47 @@
+2010-02-09 [colin]	3.7.5cvs11
+
+	* configure.ac
+		Bump up GTK+ requirement to 2.10
+	* src/Makefile.am
+	* src/compose.c
+	* src/crash.c
+	* src/foldersel.c
+	* src/main.c
+	* src/mainwindow.c
+	* src/messageview.c
+	* src/messageview.h
+	* src/prefs_actions.c
+	* src/prefs_common.c
+	* src/prefs_common.h
+	* src/prefs_ext_prog.c
+	* src/prefs_filtering_action.c
+	* src/prefs_fonts.c
+	* src/prefs_image_viewer.c
+	* src/prefs_matcher.c
+	* src/prefs_msg_colors.c
+	* src/prefs_summaries.c
+	* src/prefs_template.c
+	* src/printing.c
+	* src/printing.h
+	* src/quote_fmt.c
+	* src/summaryview.c
+	* src/textview.c
+	* src/gtk/Makefile.am
+	* src/gtk/about.c
+	* src/gtk/gtkcmclist.c
+	* src/gtk/gtkcmctree.c
+	* src/gtk/gtkutils.c
+	* src/gtk/quicksearch.c
+		Remove all compile-time conditionals depending on
+		GTK+ < 2.10
+	* src/gedit-print.c
+	* src/gedit-print.h
+	* src/gtk/gtksourceprintjob.c
+	* src/gtk/gtksourceprintjob.h
+		Remove libgnomeprint-based printing system (and
+		command-line-based printing system) as GTK+ 2.10
+		ships with print support.
+
 2010-02-08 [mir]	3.7.5cvs10
 
 	* src/compose.c

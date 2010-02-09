@@ -452,16 +452,10 @@ static void textview_create_tags(GtkTextView *text, TextView *textview)
 				"foreground-gdk", &quote_colors[2],
 				NULL);
 	}
-#if GTK_CHECK_VERSION(2, 8, 0)
 	gtk_text_buffer_create_tag(buffer, "tags",
 			"foreground-gdk", &black,
 			"paragraph-background-gdk", &yellow,
 			NULL);
-#else
-	gtk_text_buffer_create_tag(buffer, "tags",
-			"foreground-gdk", &emphasis_color,
-			NULL);
-#endif
 	gtk_text_buffer_create_tag(buffer, "emphasis",
 			"foreground-gdk", &emphasis_color,
 			NULL);
@@ -501,19 +495,11 @@ void textview_init(TextView *textview)
 	textview_create_tags(GTK_TEXT_VIEW(textview->text), textview);
 }
 
-#if GTK_CHECK_VERSION(2, 8, 0)
  #define CHANGE_TAG_COLOR(tagname, colorfg, colorbg) { \
 	tag = gtk_text_tag_table_lookup(tags, tagname); \
 	if (tag) \
 		g_object_set(G_OBJECT(tag), "foreground-gdk", colorfg, "paragraph-background-gdk", colorbg, NULL); \
  }
-#else
- #define CHANGE_TAG_COLOR(tagname, colorfg, colorbg) { \
-	tag = gtk_text_tag_table_lookup(tags, tagname); \
-	if (tag) \
-		g_object_set(G_OBJECT(tag), "foreground-gdk", colorfg, NULL); \
- }
-#endif
 
 static void textview_update_message_colors(TextView *textview)
 {

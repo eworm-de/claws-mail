@@ -26,8 +26,6 @@
 #include "printing.h"
 #include "image_viewer.h"
 
-#if GTK_CHECK_VERSION(2,10,0) && !defined(USE_GNOMEPRINT)
-
 #include "gtkutils.h"
 #include "toolbar.h"
 #include "prefs_common.h"
@@ -1463,4 +1461,3 @@ static void printing_preview_update_zoom_sensitivity(PreviewData *preview_data)
 		gtk_widget_set_sensitive(preview_data->zoom_out, TRUE);
 }
 
-#endif /* GTK+ >= 2.10.0 */

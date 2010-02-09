@@ -620,11 +620,7 @@ void gtkut_window_popup(GtkWidget *window)
 		gdk_window_move(window->window, new_x, new_y);
 
 	gtk_window_set_skip_taskbar_hint(GTK_WINDOW(window), FALSE);
-#if GTK_CHECK_VERSION(2,8,0)
 	gtk_window_present_with_time(GTK_WINDOW(window), time(NULL));
-#else
-	gtk_window_present(GTK_WINDOW(window));
-#endif
 }
 
 void gtkut_widget_get_uposition(GtkWidget *widget, gint *px, gint *py)
@@ -1291,9 +1287,7 @@ GtkWidget *gtkut_sc_combobox_create(GtkWidget *eventbox, gboolean focus_on_click
 
 	if( eventbox != NULL )
 		gtk_container_add(GTK_CONTAINER(eventbox), combobox);
-#if GTK_CHECK_VERSION(2,6,0)
 	gtk_combo_box_set_focus_on_click(GTK_COMBO_BOX(combobox), focus_on_click);
-#endif
 
 	gtk_combo_box_set_row_separator_func(GTK_COMBO_BOX(combobox),
 			(GtkTreeViewRowSeparatorFunc)_combobox_separator_func, NULL, NULL);

@@ -36,10 +36,6 @@
 #include <gdk/gdkkeysyms.h>
 #include "utils.h"
 
-#if !GTK_CHECK_VERSION(2,10,0)
-#define gdk_atom_intern_static_string(str) gdk_atom_intern(str, FALSE)
-#endif
-
 /* length of button_actions array */
 #define MAX_BUTTON 5
 

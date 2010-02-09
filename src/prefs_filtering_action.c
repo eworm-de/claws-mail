@@ -542,11 +542,7 @@ static void prefs_filtering_action_create(void)
 			  G_CALLBACK(prefs_filtering_action_select_addressbook),
 			  NULL);
 
-#if GTK_CHECK_VERSION(2, 8, 0)
 	exec_btn = gtk_button_new_from_stock(GTK_STOCK_INFO);
-#else
-	exec_btn = gtk_button_new_with_label (_("Info..."));
-#endif
 	gtk_box_pack_start (GTK_BOX (hbox1), exec_btn, FALSE, FALSE, 0);
 	g_signal_connect (G_OBJECT (exec_btn), "clicked",
 			  G_CALLBACK(prefs_filtering_action_exec_info),

@@ -53,8 +53,6 @@ typedef struct _ExtProgPage
 	GtkWidget *uri_combo;
 	GtkWidget *uri_entry;
 	
-	GtkWidget *printcmd_label;
-	GtkWidget *printcmd_entry;
 #endif
 	GtkWidget *exteditor_label;
 	GtkWidget *exteditor_combo;
@@ -78,8 +76,6 @@ static void prefs_ext_prog_create_widget(PrefsPage *_page, GtkWindow *window,
 	GtkWidget *uri_label;
 	GtkWidget *uri_combo;
 	GtkWidget *uri_entry;
-	GtkWidget *printcmd_label;
-	GtkWidget *printcmd_entry;
 #endif
 	GtkWidget *exteditor_label;
 	GtkWidget *exteditor_combo;
@@ -233,28 +229,6 @@ static void prefs_ext_prog_create_widget(PrefsPage *_page, GtkWindow *window,
 			   prefs_common.mime_textviewer ? prefs_common.mime_textviewer : "");
 
 #ifndef G_OS_WIN32
-	printcmd_label = gtk_label_new (_("Print command"));
-#if !defined(USE_GNOMEPRINT) && !GTK_CHECK_VERSION(2,10,0)
-	gtk_widget_show(printcmd_label);
-#endif
-	i++;
-	gtk_table_attach(GTK_TABLE (table2), printcmd_label, 0, 1, i, i+1,
-                    	 (GtkAttachOptions) (GTK_FILL),
-                    	 (GtkAttachOptions) (0), 0, 2);
-	gtk_label_set_justify(GTK_LABEL (printcmd_label), GTK_JUSTIFY_RIGHT);
-	gtk_misc_set_alignment(GTK_MISC (printcmd_label), 1, 0.5);
-
-	printcmd_entry = gtk_entry_new ();
-#if !defined(USE_GNOMEPRINT) && !GTK_CHECK_VERSION(2,10,0)
-	gtk_widget_show(printcmd_entry);
-#endif
-	gtk_table_attach(GTK_TABLE (table2), printcmd_entry, 1, 2, i, i+1,
-                    	 (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
-                    	 (GtkAttachOptions) (0), 0, 0);
-	gtk_entry_set_text(GTK_ENTRY(printcmd_entry), prefs_common.print_cmd ? prefs_common.print_cmd : "");
-#endif
-
-#ifndef G_OS_WIN32
 	SET_TOGGLE_SENSITIVITY_REVERSE (cmds_use_system_default_checkbtn, uri_label);
 	SET_TOGGLE_SENSITIVITY_REVERSE (cmds_use_system_default_checkbtn, uri_combo);
 #endif
@@ -267,7 +241,6 @@ static void prefs_ext_prog_create_widget(PrefsPage *_page, GtkWindow *window,
 	prefs_ext_prog->window			= GTK_WIDGET(window);
 #ifndef G_OS_WIN32
 	prefs_ext_prog->uri_entry		= uri_entry;
-	prefs_ext_prog->printcmd_entry		= printcmd_entry;
 #endif
 	prefs_ext_prog->exteditor_entry		= exteditor_entry;
 	prefs_ext_prog->astextviewer_entry	= astextviewer_entry;
@@ -282,8 +255,6 @@ static void prefs_ext_prog_save(PrefsPage *_page)
 #ifndef G_OS_WIN32
 	prefs_common.uri_cmd = gtk_editable_get_chars
 		(GTK_EDITABLE(ext_prog->uri_entry), 0, -1);
-	prefs_common.print_cmd = gtk_editable_get_chars
-		(GTK_EDITABLE(ext_prog->printcmd_entry), 0, -1);
 #endif
 	prefs_common.ext_editor_cmd = gtk_editable_get_chars
 		(GTK_EDITABLE(ext_prog->exteditor_entry), 0, -1);

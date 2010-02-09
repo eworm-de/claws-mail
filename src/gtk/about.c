@@ -478,18 +478,6 @@ static GtkWidget *about_create_child_page_features(void)
 	gtk_text_buffer_insert(buffer, &iter, 
 		(gchar *)Q_("libetpan|adds support for IMAP and NNTP servers\n"), -1);
 
-#if !GTK_CHECK_VERSION(2,10,0)
-#if USE_GNOMEPRINT
-	gtk_text_buffer_insert_pixbuf(buffer, &iter, active_pixbuf);
-#else
-	gtk_text_buffer_insert_pixbuf(buffer, &iter, inactive_pixbuf);
-#endif
-	gtk_text_buffer_insert_with_tags_by_name(buffer, &iter, (" libgnomeprint "), -1,
-						 "bold", NULL);
-	gtk_text_buffer_insert(buffer, &iter, 
-		(gchar *)Q_("libgnomeprint|adds support for a complete print dialog\n"), -1);
-#endif
-
 #if HAVE_LIBSM
 	gtk_text_buffer_insert_pixbuf(buffer, &iter, active_pixbuf);
 #else

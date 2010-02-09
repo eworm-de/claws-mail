@@ -158,9 +158,7 @@ static void prefs_msg_colors_create_widget(PrefsPage *_page, GtkWindow *window,
 	vbox_quotefg = gtk_vbox_new(FALSE, VBOX_BORDER);
 	gtk_widget_show (vbox_quotefg);
 	vbox_quotebg = gtk_vbox_new(FALSE, VBOX_BORDER);
-#if GTK_CHECK_VERSION(2, 8, 0)
 	gtk_widget_show (vbox_quotebg);
-#endif	
 	vbox3 = gtkut_get_options_frame(vbox2, &frame_quote, _("Quote"));
 	SET_TOGGLE_SENSITIVITY(checkbtn_enable_colors, frame_quote);
 	

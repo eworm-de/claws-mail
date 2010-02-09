@@ -349,11 +349,7 @@ static void prefs_actions_create(MainWindow *mainwin)
 	CLAWS_SET_TIP(clear_btn,
 			_("Clear all the input fields in the dialog"));
 
-#if GTK_CHECK_VERSION(2, 8, 0)
 	info_btn = gtk_button_new_from_stock(GTK_STOCK_INFO);
-#else
-	info_btn = gtk_button_new_with_label(_("Info..."));
-#endif
 	gtk_widget_show(info_btn);
 	gtk_box_pack_end(GTK_BOX(reg_hbox), info_btn, FALSE, FALSE, 0);
 	g_signal_connect(G_OBJECT(info_btn), "clicked",

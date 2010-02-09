@@ -71,7 +71,6 @@
 #include "partial_download.h"
 #include "tags.h"
 #include "timing.h"
-#include "gedit-print.h"
 #include "log.h"
 #include "edittags.h"
 #include "manual.h"
@@ -4676,12 +4675,6 @@ void summary_save_as(SummaryView *summaryview)
 void summary_print(SummaryView *summaryview)
 {
 	GtkCMCList *clist = GTK_CMCLIST(summaryview->ctree);
-#if !defined(USE_GNOMEPRINT) && !GTK_CHECK_VERSION(2,10,0)
-	GtkCMCTree *ctree = GTK_CMCTREE(summaryview->ctree);
-	MsgInfo *msginfo;
-	gchar *cmdline = NULL;
-	gchar *p;
-#endif
 	GList *cur;
 	gchar *msg = g_strdup_printf(_("You are about to print %d "
 				       "messages, one by one. Do you "
@@ -4696,30 +4689,6 @@ void summary_print(SummaryView *summaryview)
 	g_free(msg);
 
 	if (clist->selection == NULL) return;
-#if !defined(USE_GNOMEPRINT) && !GTK_CHECK_VERSION(2,10,0)
-	cmdline = input_dialog(_("Print"),
-			       _("Enter the print command-line:\n"
-				 "('%s' will be replaced with file name)"),
-			       prefs_common.print_cmd);
-	if (!cmdline) return;
-	if (!(p = strchr(cmdline, '%')) || *(p + 1) != 's' ||
-	    strchr(p + 2, '%')) {
-		alertpanel_error(_("Print command-line is invalid:\n'%s'"),
-				 cmdline);
-		g_free(cmdline);
-		return;
-	}
-	for (cur = clist->selection; 
-	     cur != NULL && cur->data != NULL; 
-	     cur = cur->next) {
-		msginfo = gtk_cmctree_node_get_row_data
-			(ctree, GTK_CMCTREE_NODE(cur->data));
-		if (msginfo) 
-			procmsg_print_message(msginfo, cmdline);
-	}
-
-	g_free(cmdline);
-#else
 	for (cur = clist->selection; 
 	     cur != NULL && cur->data != NULL; 
 	     cur = cur->next) {
@@ -4737,7 +4706,6 @@ void summary_print(SummaryView *summaryview)
 		messageview_print(msginfo, summaryview->messageview->all_headers,
 			sel_start, sel_end, partnum);
 	}
-#endif
 }
 
 gboolean summary_execute(SummaryView *summaryview)

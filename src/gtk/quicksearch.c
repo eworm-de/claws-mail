@@ -661,11 +661,7 @@ QuickSearch *quicksearch_new()
 
 	search_hbox = gtk_hbox_new(FALSE, 5);
 
-#if GTK_CHECK_VERSION(2, 8, 0)
 	clear_search = gtk_button_new_from_stock(GTK_STOCK_CLEAR);
-#else
-	clear_search = gtk_button_new_with_label(_(" Clear "));
-#endif
 	gtk_box_pack_start(GTK_BOX(search_hbox), clear_search,
 			   FALSE, FALSE, 0);
 	g_signal_connect(G_OBJECT(clear_search), "clicked",
@@ -674,11 +670,7 @@ QuickSearch *quicksearch_new()
 			     _("Clear the current search"));
 	gtk_widget_show(clear_search);
 
-#if GTK_CHECK_VERSION(2, 8, 0)
 	search_condition_expression = gtk_button_new_from_stock(GTK_STOCK_EDIT);
-#else
-	search_condition_expression = gtk_button_new_with_label(" ... ");
-#endif
 	gtk_box_pack_start(GTK_BOX(search_hbox), search_condition_expression,
 			   FALSE, FALSE, 0);
 	g_signal_connect(G_OBJECT (search_condition_expression), "clicked",
@@ -688,11 +680,7 @@ QuickSearch *quicksearch_new()
 			     _("Edit search criteria"));
 	gtk_widget_show(search_condition_expression);
 
-#if GTK_CHECK_VERSION(2, 8, 0)
 	search_description = gtk_button_new_from_stock(GTK_STOCK_INFO);
-#else
-	search_description = gtk_button_new_with_label(_(" Extended Symbols... "));
-#endif
 	gtk_box_pack_start(GTK_BOX(search_hbox), search_description,
 			   FALSE, FALSE, 0);
 	g_signal_connect(G_OBJECT(search_description), "clicked",
@@ -746,18 +734,11 @@ void quicksearch_relayout(QuickSearch *quicksearch)
 	case NORMAL_LAYOUT:
 	case WIDE_LAYOUT:
 	case WIDE_MSGLIST_LAYOUT:
-#if GTK_CHECK_VERSION(2, 8, 0)
 		gtk_button_set_label(GTK_BUTTON(quicksearch->search_description), GTK_STOCK_INFO);
 		gtk_button_set_label(GTK_BUTTON(quicksearch->search_condition_expression), GTK_STOCK_EDIT);
 		gtk_button_set_label(GTK_BUTTON(quicksearch->clear_search), GTK_STOCK_CLEAR);
-#else
-		gtk_button_set_label(GTK_BUTTON(quicksearch->search_description), _(" Extended Symbols... "));
-		gtk_button_set_label(GTK_BUTTON(quicksearch->search_condition_expression), " ... ");
-		gtk_button_set_label(GTK_BUTTON(quicksearch->clear_search), _(" Clear "));
-#endif
 		break;
 	case VERTICAL_LAYOUT:
-#if GTK_CHECK_VERSION(2, 8, 0)
 		gtk_button_set_label(GTK_BUTTON(quicksearch->search_description), "");
 		gtk_button_set_label(GTK_BUTTON(quicksearch->search_condition_expression), "");
 		gtk_button_set_label(GTK_BUTTON(quicksearch->clear_search), "");
@@ -768,11 +749,6 @@ void quicksearch_relayout(QuickSearch *quicksearch)
 			gtk_image_new_from_stock(GTK_STOCK_EDIT, GTK_ICON_SIZE_BUTTON));
 		gtk_button_set_image(GTK_BUTTON(quicksearch->clear_search),
 			gtk_image_new_from_stock(GTK_STOCK_CLEAR, GTK_ICON_SIZE_BUTTON));
-#else
-		gtk_button_set_label(GTK_BUTTON(quicksearch->search_description), _("Info"));
-		gtk_button_set_label(GTK_BUTTON(quicksearch->search_condition_expression), "...");
-		gtk_button_set_label(GTK_BUTTON(quicksearch->clear_search), _("Clear"));
-#endif
 		break;
 	}
 }

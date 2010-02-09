@@ -328,11 +328,7 @@ static void prefs_template_window_create(void)
 	CLAWS_SET_TIP(clear_btn,
 			_("Clear all the input fields in the dialog"));
 
-#if GTK_CHECK_VERSION(2, 8, 0)
 	desc_btn = gtk_button_new_from_stock(GTK_STOCK_INFO);
-#else
-	desc_btn = gtk_button_new_with_label(_(" Symbols... "));
-#endif
 	gtk_widget_show(desc_btn);
 	gtk_box_pack_end(GTK_BOX(hbox2), desc_btn, FALSE, FALSE, 0);
 	g_signal_connect(G_OBJECT(desc_btn), "clicked",

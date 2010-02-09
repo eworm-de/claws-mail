@@ -26,8 +26,6 @@
 #  include "config.h"
 #endif
 
-#if GTK_CHECK_VERSION(2,10,0) && !defined(USE_GNOMEPRINT)
-
 typedef struct _PrintData		PrintData;
 
 typedef struct _PrintRenderer {
@@ -49,7 +47,5 @@ void     printing_set_n_pages(PrintData *print_data, gint n_pages);
 GtkPrintSettings *printing_get_settings(void);
 GtkPageSetup *printing_get_page_setup(void);
 void printing_store_settings(GtkPrintSettings *new_settings);
-
-#endif /* GTK+ >= 2.10.0 */
 
 #endif /* __PRINTING_H__ */

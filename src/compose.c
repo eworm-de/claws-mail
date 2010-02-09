@@ -6500,13 +6500,9 @@ static void compose_create_header_entry(Compose *compose)
 			 G_CALLBACK(compose_grab_focus_cb), compose);
 
 	/* Entry field with cleanup button */
-#if GTK_CHECK_VERSION(2, 8, 0)
 	button = gtk_button_new();
 	gtk_button_set_image(GTK_BUTTON(button),
                         gtk_image_new_from_stock(GTK_STOCK_CLEAR, GTK_ICON_SIZE_MENU));
-#else
-	button = gtk_button_new_with_label(_("Clear"));
-#endif
 	gtk_widget_show(button);
 	CLAWS_SET_TIP(button,
 		_("Delete entry contents"));
@@ -10647,16 +10643,6 @@ static void compose_insert_drag_received_cb (GtkWidget		*widget,
 		gtk_drag_finish(drag_context, TRUE, FALSE, time);
 		return;
 	} else {
-#if GTK_CHECK_VERSION(2, 8, 0)
-		/* do nothing, handled by GTK */
-#else
-		gchar *tmpfile = get_tmp_file();
-		str_write_to_file((const gchar *)data->data, tmpfile);
-		compose_insert_file(compose, tmpfile);
-		claws_unlink(tmpfile);
-		g_free(tmpfile);
-		gtk_drag_finish(drag_context, TRUE, FALSE, time);
-#endif
 		return;
 	}
 	gtk_drag_finish(drag_context, TRUE, FALSE, time);

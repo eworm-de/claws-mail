@@ -711,11 +711,7 @@ static void prefs_matcher_create(void)
 			 GTK_FILL, GTK_SHRINK, 4, 0);
 
 	/* test info button */
-#if GTK_CHECK_VERSION(2, 8, 0)
 	test_btn = gtk_button_new_from_stock(GTK_STOCK_INFO);
-#else
-	test_btn = gtk_button_new_with_label(_("Info..."));
-#endif
 	gtk_box_pack_start(GTK_BOX(lower_hbox), test_btn, FALSE, FALSE, 0);
 	g_signal_connect(G_OBJECT (test_btn), "clicked",
 			 G_CALLBACK(prefs_matcher_test_info),

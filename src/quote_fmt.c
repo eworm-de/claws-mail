@@ -519,12 +519,7 @@ void quotefmt_add_info_button(GtkWindow *parent_window, GtkWidget *parent_box)
 	gtk_box_pack_start (GTK_BOX (parent_box), hbox_formatdesc, FALSE, FALSE,
 				VBOX_BORDER);
 
-#if GTK_CHECK_VERSION(2, 8, 0)
 	btn_formatdesc = gtk_button_new_from_stock(GTK_STOCK_INFO);
-#else
-	btn_formatdesc =
-		gtk_button_new_with_label (_("Description of symbols..."));
-#endif
 	gtk_widget_show (btn_formatdesc);
 	gtk_box_pack_start (GTK_BOX (hbox_formatdesc), btn_formatdesc, FALSE, FALSE, 0);
 	g_signal_connect(G_OBJECT(btn_formatdesc), "clicked",

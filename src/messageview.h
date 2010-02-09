@@ -118,13 +118,11 @@ gchar *messageview_get_selection		(MessageView 	*msgview);
 void messageview_set_menu_sensitive		(MessageView	*msgview);
 void messageview_learn				(MessageView	*msgview,
 						 gboolean is_spam);
-#if defined(USE_GNOMEPRINT) || GTK_CHECK_VERSION(2,10,0)
 void messageview_print				(MsgInfo	*msginfo,
 						 gboolean	 all_headers,
 						 gint		 sel_start,
 						 gint		 sel_end,
 						 gint		 partnum);
-#endif
 void messageview_list_urls			(MessageView	*msgview);
 void messageview_show_partial_display		(MessageView 	*msgview, 
 						 MsgInfo 	*msginfo,

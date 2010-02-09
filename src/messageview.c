@@ -58,7 +58,6 @@
 #include "hooks.h"
 #include "filtering.h"
 #include "partial_download.h"
-#include "gedit-print.h"
 #include "uri_opener.h"
 #include "inc.h"
 #include "log.h"
@@ -94,10 +93,8 @@ static void partial_recv_unmark_clicked (NoticeView	*noticeview,
                                          MsgInfo        *msginfo);
 static void save_as_cb			(GtkAction	*action,
 					 gpointer	 data);
-#if GTK_CHECK_VERSION(2,10,0) && !defined(USE_GNOMEPRINT)
 static void page_setup_cb		(GtkAction	*action,
 					 gpointer	 data);
-#endif
 static void print_cb			(GtkAction	*action,
 					 gpointer	 data);
 static void close_cb			(GtkAction	*action,
@@ -193,9 +190,7 @@ static GtkActionEntry msgview_entries[] =
 
 /* File menu */
 	{"File/SaveAs",			NULL, N_("_Save as..."), "<control>S", NULL, G_CALLBACK(save_as_cb) },
-#if GTK_CHECK_VERSION(2,10,0) && !defined(USE_GNOMEPRINT)
 	{"File/PageSetup",		NULL, N_("Page setup..."), NULL, NULL, G_CALLBACK(page_setup_cb) },
-#endif
 	{"File/Print",			NULL, N_("_Print..."), "<control>P", NULL, G_CALLBACK(print_cb) },
 	{"File/---",			NULL, "---", NULL, NULL, NULL },
 	{"File/Close",			NULL, N_("_Close"), "<control>W", NULL, G_CALLBACK(close_cb) },
@@ -454,9 +449,7 @@ static void messageview_add_toolbar(MessageView *msgview, GtkWidget *window)
 
 /* File menu */
 	MENUITEM_ADDUI_MANAGER(msgview->ui_manager, "/Menu/File", "SaveAs", "File/SaveAs", GTK_UI_MANAGER_MENUITEM)
-#if GTK_CHECK_VERSION(2,10,0) && !defined(USE_GNOMEPRINT)
 	MENUITEM_ADDUI_MANAGER(msgview->ui_manager, "/Menu/File", "PageSetup", "File/PageSetup", GTK_UI_MANAGER_MENUITEM)
-#endif
 	MENUITEM_ADDUI_MANAGER(msgview->ui_manager, "/Menu/File", "Print", "File/Print", GTK_UI_MANAGER_MENUITEM)
 	MENUITEM_ADDUI_MANAGER(msgview->ui_manager, "/Menu/File", "Separator1", "File/---", GTK_UI_MANAGER_SEPARATOR)
 	MENUITEM_ADDUI_MANAGER(msgview->ui_manager, "/Menu/File", "Close", "File/Close", GTK_UI_MANAGER_MENUITEM)
@@ -2008,12 +2001,9 @@ static void save_as_cb(GtkAction *action, gpointer data)
 	messageview_save_as(messageview);
 }
 
-#if defined(USE_GNOMEPRINT) || GTK_CHECK_VERSION(2,10,0)
 static void print_mimeview(MimeView *mimeview, gint sel_start, gint sel_end, gint partnum) 
 {
-#if !defined(USE_GNOMEPRINT) && GTK_CHECK_VERSION(2,10,0)
 	MainWindow *mainwin;
-#endif
 	if (!mimeview 
 	||  !mimeview->textview
 	||  !mimeview->textview->text)
@@ -2040,15 +2030,11 @@ static void print_mimeview(MimeView *mimeview, gint sel_start, gint sel_end, gin
 			gtk_text_buffer_get_iter_at_offset(buffer, &end, sel_end);
 			gtk_text_buffer_select_range(buffer, &start, &end);
 		}
-#if defined(USE_GNOMEPRINT)
-		gedit_print(GTK_TEXT_VIEW(mimeview->textview->text));
-#else
 		/* TODO: Get the real parent window, not the main window */
 		mainwin = mainwindow_get_mainwindow();
 		printing_print(GTK_TEXT_VIEW(mimeview->textview->text),
 			       mainwin ? GTK_WINDOW(mainwin->window) : NULL,
 				sel_start, sel_end);
-#endif
 	}
 }
 
@@ -2080,51 +2066,26 @@ void messageview_print(MsgInfo *msginfo, gboolean all_headers,
 	}
 	messageview_destroy(tmpview);
 }
-#endif
 
-#if GTK_CHECK_VERSION(2,10,0) && !defined(USE_GNOMEPRINT)
 static void page_setup_cb(GtkAction *action, gpointer data)
 {
 	MessageView *messageview = (MessageView *)data;
 	printing_page_setup(messageview ?
 			    GTK_WINDOW(messageview->window) : NULL);
 }
-#endif
 
 static void print_cb(GtkAction *action, gpointer data)
 {
 	MessageView *messageview = (MessageView *)data;
-#if !defined(USE_GNOMEPRINT) && !GTK_CHECK_VERSION(2,10,0)
-	gchar *cmdline = NULL;
-	gchar *p;
-#else
 	gint sel_start = -1, sel_end = -1, partnum = 0;
-#endif
 
 	if (!messageview->msginfo) return;
 
-#if !defined(USE_GNOMEPRINT) && !GTK_CHECK_VERSION(2,10,0)
-	cmdline = input_dialog(_("Print"),
-			       _("Enter the print command-line:\n"
-				 "('%s' will be replaced with file name)"),
-			       prefs_common.print_cmd);
-	if (!cmdline) return;
-	if (!(p = strchr(cmdline, '%')) || *(p + 1) != 's' ||
-	    strchr(p + 2, '%')) {
-		alertpanel_error(_("Print command-line is invalid:\n'%s'"),
-				 cmdline);
-		g_free(cmdline);
-		return;
-	}
-	procmsg_print_message(messageview->msginfo, cmdline);
-	g_free(cmdline);
-#else
 	partnum = mimeview_get_selected_part_num(messageview->mimeview);
 	textview_get_selection_offsets(messageview->mimeview->textview,
 		&sel_start, &sel_end);
 	messageview_print(messageview->msginfo, messageview->all_headers, 
 		sel_start, sel_end, partnum);
-#endif
 }
 
 static void close_cb(GtkAction *action, gpointer data)
