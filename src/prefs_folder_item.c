@@ -756,6 +756,7 @@ static void prefs_folder_item_compose_create_widget_func(PrefsPage * page_,
 	FolderItemComposePage *page = (FolderItemComposePage *) page_;
 	FolderItem *item = (FolderItem *) data;
 	guint rowcount;
+	gchar *text = NULL;
 
 	GtkWidget *table;
 	GtkWidget *label;
@@ -865,11 +866,13 @@ static void prefs_folder_item_compose_create_widget_func(PrefsPage * page_,
 		rowcount++;
 
 		/* Default To */
-		checkbtn_default_to = gtk_check_button_new_with_label(_("Default To:"));
+		text = g_strconcat(_("Default "), prefs_common_translated_header_name("To:"), NULL);
+		checkbtn_default_to = gtk_check_button_new_with_label(text);
 		gtk_table_attach(GTK_TABLE(table), checkbtn_default_to, 0, 1, 
 				 rowcount, rowcount + 1, GTK_SHRINK | GTK_FILL, GTK_SHRINK, 0, 0);
 		gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(checkbtn_default_to), 
 					     item->prefs->enable_default_to);
+		g_free(text);
 
 		entry_default_to = gtk_entry_new();
 		gtk_table_attach(GTK_TABLE(table), entry_default_to, 1, 2,
@@ -886,11 +889,14 @@ static void prefs_folder_item_compose_create_widget_func(PrefsPage * page_,
 		rowcount++;
 
 		/* Default address to reply to */
-		checkbtn_default_reply_to = gtk_check_button_new_with_label(_("Default To: for replies"));
+		text = g_strconcat(_("Default "), prefs_common_translated_header_name("To:"),
+				 _(" for replies"), NULL);
+		checkbtn_default_reply_to = gtk_check_button_new_with_label(text);
 		gtk_table_attach(GTK_TABLE(table), checkbtn_default_reply_to, 0, 1, 
 				 rowcount, rowcount + 1, GTK_SHRINK | GTK_FILL, GTK_SHRINK, 0, 0);
 		gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(checkbtn_default_reply_to), 
 					     item->prefs->enable_default_reply_to);
+		g_free(text);
 
 		entry_default_reply_to = gtk_entry_new();
 		gtk_table_attach(GTK_TABLE(table), entry_default_reply_to, 1, 2,
@@ -907,11 +913,13 @@ static void prefs_folder_item_compose_create_widget_func(PrefsPage * page_,
 		rowcount++;
 
 		/* Default Cc */
-		checkbtn_default_cc = gtk_check_button_new_with_label(_("Default Cc:"));
+		text = g_strconcat(_("Default "), prefs_common_translated_header_name("Cc:"), NULL);
+		checkbtn_default_cc = gtk_check_button_new_with_label(text);
 		gtk_table_attach(GTK_TABLE(table), checkbtn_default_cc, 0, 1, 
 				 rowcount, rowcount + 1, GTK_SHRINK | GTK_FILL, GTK_SHRINK, 0, 0);
 		gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(checkbtn_default_cc), 
 					     item->prefs->enable_default_cc);
+		g_free(text);
 
 		entry_default_cc = gtk_entry_new();
 		gtk_table_attach(GTK_TABLE(table), entry_default_cc, 1, 2,
@@ -928,11 +936,13 @@ static void prefs_folder_item_compose_create_widget_func(PrefsPage * page_,
 		rowcount++;
 
 		/* Default Bcc */
-		checkbtn_default_bcc = gtk_check_button_new_with_label(_("Default Bcc:"));
+		text = g_strconcat(_("Default "), prefs_common_translated_header_name("Bcc:"), NULL);
+		checkbtn_default_bcc = gtk_check_button_new_with_label(text);
 		gtk_table_attach(GTK_TABLE(table), checkbtn_default_bcc, 0, 1, 
 				 rowcount, rowcount + 1, GTK_SHRINK | GTK_FILL, GTK_SHRINK, 0, 0);
 		gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(checkbtn_default_bcc), 
 					     item->prefs->enable_default_bcc);
+		g_free(text);
 
 		entry_default_bcc = gtk_entry_new();
 		gtk_table_attach(GTK_TABLE(table), entry_default_bcc, 1, 2,
@@ -949,11 +959,13 @@ static void prefs_folder_item_compose_create_widget_func(PrefsPage * page_,
 		rowcount++;
 
 		/* Default Reply-to */
-		checkbtn_default_replyto = gtk_check_button_new_with_label(_("Default Reply-to:"));
+		text = g_strconcat(_("Default "), prefs_common_translated_header_name("Reply-To:"), NULL);
+		checkbtn_default_replyto = gtk_check_button_new_with_label(text);
 		gtk_table_attach(GTK_TABLE(table), checkbtn_default_replyto, 0, 1, 
 				 rowcount, rowcount + 1, GTK_SHRINK | GTK_FILL, GTK_SHRINK, 0, 0);
 		gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(checkbtn_default_replyto), 
 					     item->prefs->enable_default_replyto);
+		g_free(text);
 
 		entry_default_replyto = gtk_entry_new();
 		gtk_table_attach(GTK_TABLE(table), entry_default_replyto, 1, 2,

@@ -1965,7 +1965,8 @@ static void compose_create_widget_func(PrefsPage * _page,
 	gtk_table_set_row_spacings (GTK_TABLE (table), VSPACING_NARROW_2);
 	gtk_table_set_col_spacings (GTK_TABLE (table), 8);
 
-	autocc_checkbtn = gtk_check_button_new_with_label (_("Cc"));
+	autocc_checkbtn = gtk_check_button_new_with_label (
+				prefs_common_translated_header_name("Cc"));
 	gtk_widget_show (autocc_checkbtn);
 	gtk_table_attach (GTK_TABLE (table), autocc_checkbtn, 0, 1, 0, 1,
 			  GTK_FILL, 0, 0, 0);
@@ -1978,7 +1979,8 @@ static void compose_create_widget_func(PrefsPage * _page,
 
 	SET_TOGGLE_SENSITIVITY (autocc_checkbtn, autocc_entry);
 
-	autobcc_checkbtn = gtk_check_button_new_with_label (_("Bcc"));
+	autobcc_checkbtn = gtk_check_button_new_with_label (
+				prefs_common_translated_header_name("Bcc"));
 	gtk_widget_show (autobcc_checkbtn);
 	gtk_table_attach (GTK_TABLE (table), autobcc_checkbtn, 0, 1, 1, 2,
 			  GTK_FILL, 0, 0, 0);
@@ -1991,7 +1993,8 @@ static void compose_create_widget_func(PrefsPage * _page,
 
 	SET_TOGGLE_SENSITIVITY (autobcc_checkbtn, autobcc_entry);
 
-	autoreplyto_checkbtn = gtk_check_button_new_with_label (_("Reply-To"));
+	autoreplyto_checkbtn = gtk_check_button_new_with_label (
+				prefs_common_translated_header_name("Reply-To"));
 	gtk_widget_show (autoreplyto_checkbtn);
 	gtk_table_attach (GTK_TABLE (table), autoreplyto_checkbtn, 0, 1, 2, 3,
 			  GTK_FILL, 0, 0, 0);

@@ -74,14 +74,14 @@ static struct
 	gboolean compl;
 	gchar *tooltips;
 } widgets_table[] = {
-	{N_("Name"),	&templates.entry_name,		FALSE,
+	{"Name",	&templates.entry_name,		FALSE,
 		N_("This name is used as the Menu item")},
-	{N_("From"),	&templates.entry_from,		TRUE,
+	{"From",	&templates.entry_from,		TRUE,
 		N_("Override composing account's From header. This doesn't change the composing account.")},
-	{N_("To"),	&templates.entry_to,		TRUE, 	NULL},
-	{N_("Cc"),	&templates.entry_cc,		TRUE, 	NULL},
-	{N_("Bcc"),	&templates.entry_bcc,		TRUE, 	NULL},
-	{N_("Subject"),	&templates.entry_subject,	FALSE,	NULL},
+	{"To",		&templates.entry_to,		TRUE, 	NULL},
+	{"Cc",		&templates.entry_cc,		TRUE, 	NULL},
+	{"Bcc",		&templates.entry_bcc,		TRUE, 	NULL},
+	{"Subject",	&templates.entry_subject,	FALSE,	NULL},
 	{NULL,		NULL,				FALSE,	NULL}
 };
 
@@ -130,8 +130,7 @@ void prefs_template_open(void)
 {
 	inc_lock();
 
-	if (!templates.window)
-		prefs_template_window_create();
+	prefs_template_window_create();
 
 	prefs_template_window_setup();
 	gtk_widget_show(templates.window);
@@ -210,6 +209,8 @@ static void prefs_template_window_create(void)
 	gtk_widget_show(vpaned);
 	gtk_scrolled_window_add_with_viewport(GTK_SCROLLED_WINDOW(scrolled_window),
  					      vpaned);
+	gtk_viewport_set_shadow_type (GTK_VIEWPORT(
+			gtk_bin_get_child(GTK_BIN(scrolled_window))), GTK_SHADOW_NONE);
 
 	/* vbox to handle template name and content */
 	vbox1 = gtk_vbox_new(FALSE, 6);
@@ -228,7 +229,8 @@ static void prefs_template_window_create(void)
 
 		GtkWidget *label;
 
-		label = gtk_label_new(widgets_table[i].label);
+		label = gtk_label_new(prefs_common_translated_header_name(
+						widgets_table[i].label));
 		gtk_widget_show(label);
 		gtk_table_attach(GTK_TABLE(table), label, 0, 1, i, (i + 1),
 				(GtkAttachOptions) (GTK_FILL),
@@ -576,8 +578,7 @@ static void prefs_template_ok_cb(gpointer action, gpointer data)
 	store = GTK_LIST_STORE(gtk_tree_view_get_model(GTK_TREE_VIEW
 				(templates.list_view)));
 	gtk_list_store_clear(store);
-	gtk_widget_hide(templates.window);
-	gtk_window_set_modal(GTK_WINDOW(templates.window), FALSE);
+	gtk_widget_destroy(templates.window);
 	inc_unlock();
 }
 
@@ -604,7 +605,7 @@ static void prefs_template_cancel_cb(gpointer action, gpointer data)
 	store = GTK_LIST_STORE(gtk_tree_view_get_model(GTK_TREE_VIEW
 				(templates.list_view)));
 	gtk_list_store_clear(store);
-	gtk_widget_hide(templates.window);
+	gtk_widget_destroy(templates.window);
 	inc_unlock();
 }
 
