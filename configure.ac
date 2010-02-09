@@ -12,7 +12,7 @@ MINOR_VERSION=7
 MICRO_VERSION=5
 INTERFACE_AGE=0
 BINARY_AGE=0
-EXTRA_VERSION=14
+EXTRA_VERSION=15
 EXTRA_RELEASE=
 EXTRA_GTK2_VERSION=
 
@@ -992,10 +992,6 @@ else
 fi
 AM_CONDITIONAL(CLAWS_LIBETPAN, test "x$libetpan_result" = "xyes")
 
-
-dnl Printing support.
-PKG_CHECK_MODULES(GTK210, gtk+-2.0 >= 2.10, ac_cv_have_gtk210=yes, ac_cv_have_gtk210=no)
-
 AC_MSG_CHECKING([whether to use valgrind])
 AC_ARG_ENABLE(valgrind,
 	[  --disable-valgrind		disable valgrind support for debugging],
@@ -1085,7 +1081,6 @@ echo "enchant           : $ac_cv_enable_enchant"
 echo "IMAP4             : $ac_cv_enable_libetpan"
 echo "NNTP              : $ac_cv_enable_libetpan"
 echo "Crash dialog      : $ac_cv_enable_crash_dialog"
-echo "GTK+ print support: $ac_cv_have_gtk210"
 echo "LibSM             : $ac_cv_enable_libsm"
 echo "DBUS              : $enable_dbus"
 echo "NetworkManager    : $enable_networkmanager_support"

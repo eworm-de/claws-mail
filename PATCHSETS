@@ -3955,3 +3955,4 @@
 ( cvs diff -u -r 1.83.2.159 -r 1.83.2.160 src/mimeview.c;  ) > 3.7.5cvs12.patchset
 ( cvs diff -u -r 1.53.2.35 -r 1.53.2.36 po/POTFILES.in;  ) > 3.7.5cvs13.patchset
 ( cvs diff -u -r 1.105.2.157 -r 1.105.2.158 src/prefs_account.c;  cvs diff -u -r 1.52.2.78 -r 1.52.2.79 src/prefs_folder_item.c;  cvs diff -u -r 1.12.2.72 -r 1.12.2.73 src/prefs_template.c;  cvs diff -u -r 1.8.2.41 -r 1.8.2.42 src/quote_fmt.c;  ) > 3.7.5cvs14.patchset
+( cvs diff -u -r 1.654.2.4027 -r 1.654.2.4028 configure.ac;  ) > 3.7.5cvs15.patchset

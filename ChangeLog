@@ -1,3 +1,8 @@
+2010-02-09 [holger]	3.7.5cvs15
+
+	* configure.ac
+		GTK+ 2.10 related cleanup
+
 2010-02-09 [pawel]	3.7.5cvs14
 
 	* src/prefs_account.c
