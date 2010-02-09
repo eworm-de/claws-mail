@@ -1,3 +1,8 @@
+2010-02-09 [colin]	3.7.5cvs12
+
+	* src/mimeview.c
+		And fix 2.10 build :)
+
 2010-02-09 [colin]	3.7.5cvs11
 
 	* configure.ac

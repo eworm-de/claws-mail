@@ -2332,9 +2332,15 @@ static void icon_list_append_icon (MimeView *mimeview, MimeInfo *mimeinfo)
 	content_type = procmime_get_content_type_str(mimeinfo->type,
 						     mimeinfo->subtype);
 
+#if GTK_CHECK_VERSION(2,12,0)
 	tip = g_strconcat("<b>", _("Type:"), "  </b>", content_type,
 			  "\n<b>", _("Size:"), " </b>",
 			  to_human_readable((goffset)mimeinfo->length), NULL);
+#else
+	tip = g_strconcat(_("Type:"), " ", content_type,
+			  "\n", _("Size:"), " ",
+			  to_human_readable((goffset)mimeinfo->length), NULL);
+#endif	
 	g_free(content_type);
 	if (desc && *desc) {
 		gchar *tmp = NULL;
@@ -2343,10 +2349,17 @@ static void icon_list_append_icon (MimeView *mimeview, MimeInfo *mimeinfo)
 		} else {
 			tmp = g_strdup(desc);
 		}
+#if GTK_CHECK_VERSION(2,12,0)
 		tiptmp = g_strconcat(tip, "\n<b>",
 				prefs_common.attach_desc && mimeinfo->description ?
 				_("Description") : _("Filename:"),
 				" </b>", tmp, NULL);
+#else
+		tiptmp = g_strconcat(tip, "\n",
+				prefs_common.attach_desc && mimeinfo->description ?
+				_("Description") : _("Filename:"),
+				" ", tmp, NULL);
+#endif
 		g_free(tip);
 		tip = tiptmp;
 		g_free(tmp);
@@ -2358,7 +2371,11 @@ static void icon_list_append_icon (MimeView *mimeview, MimeInfo *mimeinfo)
 	}
 	g_free(sigshort);
 
+#if GTK_CHECK_VERSION(2,12,0)
 	gtk_widget_set_tooltip_markup(button, tip);
+#else
+	CLAWS_SET_TIP(button, tip);
+#endif
 	g_free(tip);
 	gtk_widget_show_all(button);
 	gtk_drag_source_set(button, GDK_BUTTON1_MASK|GDK_BUTTON3_MASK, 
