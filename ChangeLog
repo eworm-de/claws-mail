@@ -1,3 +1,16 @@
+2010-02-10 [colin]	3.7.5cvs16
+
+	* src/codeconv.c
+	* src/codeconv.h
+	* src/compose.c
+	* src/mainwindow.c
+	* src/messageview.c
+	* src/prefs_send.c
+	* src/procmime.c
+	* src/textview.c
+		Add the GB18030 Chinese charset, which is a superset
+		of GB2312 and (X-)GBK. Patch mostly by Yuwei Yu.
+
 2010-02-09 [holger]	3.7.5cvs15
 
 	* configure.ac

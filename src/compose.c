@@ -710,6 +710,7 @@ static GtkRadioActionEntry compose_radio_enc_entries[] =
 	ENC_ACTION("Japanese/"CS_ISO_2022_JP_2, C_ISO_2022_JP_2, "ISO-2022-JP-_2"), /* RADIO compose_set_encoding_cb */
 	ENC_ACTION("Japanese/"CS_EUC_JP, C_EUC_JP, "_EUC-JP"), /* RADIO compose_set_encoding_cb */
 	ENC_ACTION("Japanese/"CS_SHIFT_JIS, C_SHIFT_JIS, "_Shift-JIS"), /* RADIO compose_set_encoding_cb */
+	ENC_ACTION("Chinese/"CS_GB18030, C_GB18030, "_GB18030"), /* RADIO compose_set_encoding_cb */
 	ENC_ACTION("Chinese/"CS_GB2312, C_GB2312, "_GB2312"), /* RADIO compose_set_encoding_cb */
 	ENC_ACTION("Chinese/"CS_GBK, C_GBK, "GB_K"), /* RADIO compose_set_encoding_cb */
 	ENC_ACTION("Chinese/"CS_BIG5, C_BIG5, "_Big5-JP"), /* RADIO compose_set_encoding_cb */
@@ -7244,6 +7245,7 @@ static Compose *compose_create(PrefsAccount *account,
 	MENUITEM_ADDUI_MANAGER(compose->ui_manager, "/Menu/Options/Encoding/Japanese", CS_SHIFT_JIS, "Options/Encoding/Japanese/"CS_SHIFT_JIS, GTK_UI_MANAGER_MENUITEM)
 
 	MENUITEM_ADDUI_MANAGER(compose->ui_manager, "/Menu/Options/Encoding", "Chinese", "Options/Encoding/Chinese", GTK_UI_MANAGER_MENU)
+	MENUITEM_ADDUI_MANAGER(compose->ui_manager, "/Menu/Options/Encoding/Chinese", CS_GB18030, "Options/Encoding/Chinese/"CS_GB18030, GTK_UI_MANAGER_MENUITEM)
 	MENUITEM_ADDUI_MANAGER(compose->ui_manager, "/Menu/Options/Encoding/Chinese", CS_GB2312, "Options/Encoding/Chinese/"CS_GB2312, GTK_UI_MANAGER_MENUITEM)
 	MENUITEM_ADDUI_MANAGER(compose->ui_manager, "/Menu/Options/Encoding/Chinese", CS_GBK, "Options/Encoding/Chinese/"CS_GBK, GTK_UI_MANAGER_MENUITEM)
 	MENUITEM_ADDUI_MANAGER(compose->ui_manager, "/Menu/Options/Encoding/Chinese", CS_BIG5, "Options/Encoding/Chinese/"CS_BIG5, GTK_UI_MANAGER_MENUITEM)
@@ -7910,6 +7912,7 @@ static void compose_set_out_encoding(Compose *compose)
 		case C_ISO_2022_JP_2: branch = "Menu/Options/Encoding/Japanese/" CS_ISO_2022_JP_2; break;
 		case C_EUC_JP: branch = "Menu/Options/Encoding/Japanese/" CS_EUC_JP; break;
 		case C_SHIFT_JIS: branch = "Menu/Options/Encoding/Japanese/" CS_SHIFT_JIS; break;
+		case C_GB18030: branch = "Menu/Options/Encoding/Chinese/" CS_GB18030; break;
 		case C_GB2312: branch = "Menu/Options/Encoding/Chinese/" CS_GB2312; break;
 		case C_GBK: branch = "Menu/Options/Encoding/Chinese/" CS_GBK; break;
 		case C_BIG5: branch = "Menu/Options/Encoding/Chinese/" CS_BIG5; break;

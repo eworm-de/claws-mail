@@ -81,6 +81,7 @@ typedef enum
 	C_EUC_KR,
 	C_ISO_2022_CN,
 	C_EUC_CN,
+	C_GB18030,
 	C_GB2312,
 	C_GBK,
 	C_EUC_TW,
@@ -156,6 +157,7 @@ struct _CodeConverter
 #define CS_EUC_KR		"EUC-KR"
 #define CS_ISO_2022_CN		"ISO-2022-CN"
 #define CS_EUC_CN		"EUC-CN"
+#define CS_GB18030		"GB18030"
 #define CS_GB2312		"GB2312"
 #define CS_GBK			"GBK"
 #define CS_X_GBK		"X-GBK"

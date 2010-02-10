@@ -933,9 +933,16 @@ static void textview_write_body(TextView *textview, MimeInfo *mimeinfo)
 	if (textview->messageview->forced_charset)
 		charset = textview->messageview->forced_charset;
 	else {
+		/* use supersets transparently when possible */
 		charset = procmime_mimeinfo_get_parameter(mimeinfo, "charset");
 		if (charset && !strcasecmp(charset, CS_ISO_8859_1))
 			charset = CS_WINDOWS_1252;
+		else if (charset && !strcasecmp(charset, CS_X_GBK))
+			charset = CS_GB18030;
+		else if (charset && !strcasecmp(charset, CS_GBK))
+			charset = CS_GB18030;
+		else if (charset && !strcasecmp(charset, CS_GB2312))
+			charset = CS_GB18030;
 	}
 
 	textview_set_font(textview, charset);

@@ -711,8 +711,15 @@ static FILE *procmime_get_text_content(MimeInfo *mimeinfo)
 		      ? forced_charset : 
 		      procmime_mimeinfo_get_parameter(mimeinfo, "charset");
 
+	/* use supersets transparently when possible */
 	if (!forced_charset && src_codeset && !strcasecmp(src_codeset, CS_ISO_8859_1))
 		src_codeset = CS_WINDOWS_1252;
+	else if (!forced_charset && src_codeset && !strcasecmp(src_codeset, CS_X_GBK))
+		src_codeset = CS_GB18030;
+	else if (!forced_charset && src_codeset && !strcasecmp(src_codeset, CS_GBK))
+		src_codeset = CS_GB18030;
+	else if (!forced_charset && src_codeset && !strcasecmp(src_codeset, CS_GB2312))
+		src_codeset = CS_GB18030;
 
 	if (mimeinfo->type == MIMETYPE_TEXT && !g_ascii_strcasecmp(mimeinfo->subtype, "html")) {
 		SC_HTMLParser *parser;

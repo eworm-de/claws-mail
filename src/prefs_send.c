@@ -247,6 +247,7 @@ static void prefs_send_create_widget(PrefsPage *_page, GtkWindow *window,
 	SET_MENUITEM(_("Japanese (Shift_JIS)"),		 CS_SHIFT_JIS);
 #endif /* 0 */
 	SET_MENUITEM(NULL, NULL);
+	SET_MENUITEM(_("Simplified Chinese (GB18030)"),	 CS_GB18030);
 	SET_MENUITEM(_("Simplified Chinese (GB2312)"),	 CS_GB2312);
 	SET_MENUITEM(_("Simplified Chinese (GBK)"),	 CS_GBK);
 	SET_MENUITEM(_("Traditional Chinese (Big5)"),	 CS_BIG5);
