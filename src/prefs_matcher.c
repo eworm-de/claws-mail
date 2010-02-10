@@ -359,6 +359,7 @@ static void prefs_matcher_models_create(void)
 	COMBOBOX_ADD(store, "X-Mailer", CRITERIA_HEADER);
 	COMBOBOX_ADD(store, "X-BeenThere", CRITERIA_HEADER);
 	COMBOBOX_ADD(store, "List-Post", CRITERIA_HEADER);
+	COMBOBOX_ADD(store, "List-Id", CRITERIA_HEADER);
 	matcher.model_headers = GTK_TREE_MODEL(store);
 	
 	store = gtk_list_store_new(3, G_TYPE_STRING, G_TYPE_INT, G_TYPE_BOOLEAN);
