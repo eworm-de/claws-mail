@@ -74,7 +74,7 @@ static struct
 	gboolean compl;
 	gchar *tooltips;
 } widgets_table[] = {
-	{"Name",	&templates.entry_name,		FALSE,
+	{N_("Name"),	&templates.entry_name,		FALSE,
 		N_("This name is used as the Menu item")},
 	{"From",	&templates.entry_from,		TRUE,
 		N_("Override composing account's From header. This doesn't change the composing account.")},
@@ -229,8 +229,9 @@ static void prefs_template_window_create(void)
 
 		GtkWidget *label;
 
-		label = gtk_label_new(prefs_common_translated_header_name(
-						widgets_table[i].label));
+		label = gtk_label_new( (i != 0) ?
+			prefs_common_translated_header_name(widgets_table[i].label) :
+			widgets_table[i].label);
 		gtk_widget_show(label);
 		gtk_table_attach(GTK_TABLE(table), label, 0, 1, i, (i + 1),
 				(GtkAttachOptions) (GTK_FILL),

@@ -3958,3 +3958,4 @@
 ( cvs diff -u -r 1.654.2.4027 -r 1.654.2.4028 configure.ac;  ) > 3.7.5cvs15.patchset
 ( cvs diff -u -r 1.65.2.69 -r 1.65.2.70 src/codeconv.c;  cvs diff -u -r 1.15.2.23 -r 1.15.2.24 src/codeconv.h;  cvs diff -u -r 1.382.2.544 -r 1.382.2.545 src/compose.c;  cvs diff -u -r 1.274.2.305 -r 1.274.2.306 src/mainwindow.c;  cvs diff -u -r 1.94.2.209 -r 1.94.2.210 src/messageview.c;  cvs diff -u -r 1.1.2.26 -r 1.1.2.27 src/prefs_send.c;  cvs diff -u -r 1.49.2.131 -r 1.49.2.132 src/procmime.c;  cvs diff -u -r 1.96.2.221 -r 1.96.2.222 src/textview.c;  ) > 3.7.5cvs16.patchset
 ( cvs diff -u -r 1.43.2.83 -r 1.43.2.84 src/prefs_matcher.c;  ) > 3.7.5cvs17.patchset
+( cvs diff -u -r 1.382.2.545 -r 1.382.2.546 src/compose.c;  cvs diff -u -r 1.12.2.73 -r 1.12.2.74 src/prefs_template.c;  ) > 3.7.5cvs18.patchset

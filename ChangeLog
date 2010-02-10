@@ -1,3 +1,12 @@
+2010-02-10 [pawel]	3.7.5cvs18
+
+	* src/compose.c
+		- fix headers filtering when prefs_common.trans_hdr is on
+		- fix headers setting when changing composing account 
+		- plug memleak
+	* src/prefs_template.c
+		Re-add template's name for translation
+
 2010-02-10 [colin]	3.7.5cvs17
 
 	* src/prefs_matcher.c

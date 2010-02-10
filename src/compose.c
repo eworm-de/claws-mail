@@ -6568,8 +6568,15 @@ static void compose_add_header_entry(Compose *compose, const gchar *header,
 {
 	ComposeHeaderEntry *last_header = compose->header_last;
 	gchar *tmp = g_strdup(text), *email;
-	gboolean replyto_hdr = g_str_has_suffix(header, "-To:");
+	gboolean replyto_hdr;
 	
+	replyto_hdr = (!strcasecmp(header,
+				prefs_common_translated_header_name("Reply-To:")) ||
+			!strcasecmp(header,
+				prefs_common_translated_header_name("Followup-To:")) ||
+			!strcasecmp(header,
+				prefs_common_translated_header_name("In-Reply-To:")));
+		
 	extract_address(tmp);
 	email = g_utf8_strdown(tmp, -1);
 	
@@ -6583,7 +6590,7 @@ static void compose_add_header_entry(Compose *compose, const gchar *header,
 		return;
 	}
 	
-	if (!strcmp(header, prefs_common_translated_header_name("In-Reply-To:")))
+	if (!strcasecmp(header, prefs_common_translated_header_name("In-Reply-To:")))
 		gtk_entry_set_text(GTK_ENTRY(
 			gtk_bin_get_child(GTK_BIN(last_header->combo))), header);
 	else
@@ -9072,7 +9079,7 @@ static gboolean compose_edit_size_alloc(GtkEditable *widget,
 }
 
 typedef struct {
-	ComposeEntryType 	header;
+	gchar 			*header;
 	gchar 			*entry;
 	ComposePrefType		type;
 	gboolean		entry_marked;
@@ -9113,8 +9120,8 @@ static void account_activated(GtkComboBox *optmenu, gpointer data)
 			}
 			
 			state = g_malloc0(sizeof(HeaderEntryState));
-			state->header = combobox_get_active_data(
-					GTK_COMBO_BOX(hentry->combo));
+			state->header = gtk_editable_get_chars(GTK_EDITABLE(
+					gtk_bin_get_child(GTK_BIN(hentry->combo))), 0, -1);
 			state->entry = gtk_editable_get_chars(
 					GTK_EDITABLE(hentry->entry), 0, -1);
 			state->type = hentry->type;
@@ -9155,12 +9162,14 @@ static void account_activated(GtkComboBox *optmenu, gpointer data)
 		for (list = saved_list; list; list = list->next) {
 			state = (HeaderEntryState *) list->data;
 			
-			compose_entry_append(compose, state->entry,
-						state->header, state->type);
+			compose_add_header_entry(compose, state->header,
+						state->entry, state->type);
 			if (state->entry_marked)
 				compose_entry_mark_default_to(compose, state->entry);
-				
+			
+			g_free(state->header);	
 			g_free(state->entry);
+			g_free(state);
 		}
 		g_slist_free(saved_list);
 		
