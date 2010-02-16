@@ -1,3 +1,10 @@
+2010-02-16 [ticho]	3.7.5cvs19
+
+	* src/summaryview.c
+	* src/summaryview.h
+	* src/toolbar.c
+		Removed unused argument from summary_open_row().
+
 2010-02-10 [pawel]	3.7.5cvs18
 
 	* src/compose.c
