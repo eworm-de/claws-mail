@@ -1540,7 +1540,7 @@ static void toolbar_open_mail_cb(GtkWidget *widget, gpointer data)
 	switch (toolbar_item->type) {
 	case TOOLBAR_MAIN:
 		mainwin = (MainWindow *) toolbar_item->parent;
-		summary_open_row(mainwin->summaryview);
+		summary_open_row(NULL, mainwin->summaryview);
 		break;
 	case TOOLBAR_MSGVIEW:
 		debug_print("toolbar event not supported\n");

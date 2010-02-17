@@ -3960,3 +3960,4 @@
 ( cvs diff -u -r 1.43.2.83 -r 1.43.2.84 src/prefs_matcher.c;  ) > 3.7.5cvs17.patchset
 ( cvs diff -u -r 1.382.2.545 -r 1.382.2.546 src/compose.c;  cvs diff -u -r 1.12.2.73 -r 1.12.2.74 src/prefs_template.c;  ) > 3.7.5cvs18.patchset
 ( cvs diff -u -r 1.395.2.417 -r 1.395.2.418 src/summaryview.c;  cvs diff -u -r 1.68.2.53 -r 1.68.2.54 src/summaryview.h;  cvs diff -u -r 1.43.2.113 -r 1.43.2.114 src/toolbar.c;  ) > 3.7.5cvs19.patchset
+( cvs diff -u -r 1.395.2.418 -r 1.395.2.419 src/summaryview.c;  cvs diff -u -r 1.68.2.54 -r 1.68.2.55 src/summaryview.h;  cvs diff -u -r 1.43.2.114 -r 1.43.2.115 src/toolbar.c;  ) > 3.7.5cvs20.patchset

@@ -1,3 +1,10 @@
+2010-02-17 [ticho]	3.7.5cvs20
+
+	* src/summaryview.c
+	* src/summaryview.h
+	* src/toolbar.c
+		Revert 3.7.5cvs19.
+
 2010-02-16 [ticho]	3.7.5cvs19
 
 	* src/summaryview.c
