@@ -4230,8 +4230,7 @@ static void online_switch_clicked (GtkButton *btn, gpointer data)
 		if(have_connectivity)
 			mainwindow_check_synchronise(mainwin, TRUE);
 		prefs_common.work_offline = TRUE;
-		if(have_connectivity)
-			imap_disconnect_all();
+		imap_disconnect_all(have_connectivity);
 		hooks_invoke(OFFLINE_SWITCH_HOOKLIST, NULL);
 	} else {
 		/*go online */

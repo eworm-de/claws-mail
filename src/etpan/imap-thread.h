@@ -40,7 +40,7 @@ typedef enum
 
 void imap_main_set_timeout(int sec);
 void imap_main_init(gboolean skip_ssl_cert_check);
-void imap_main_done(void);
+void imap_main_done(gboolean have_connectivity);
 
 void imap_init(Folder * folder);
 void imap_done(Folder * folder);

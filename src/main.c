@@ -1696,6 +1696,7 @@ static void save_all_caches(FolderItem *item, gpointer data)
 static void exit_claws(MainWindow *mainwin)
 {
 	gchar *filename;
+	gboolean have_connectivity;
 
 	sc_exiting = TRUE;
 
@@ -1738,9 +1739,14 @@ static void exit_claws(MainWindow *mainwin)
 	close_log_file(LOG_PROTOCOL);
 	close_log_file(LOG_DEBUG_FILTERING);
 
+#ifdef HAVE_NETWORKMANAGER_SUPPORT
+	have_connectivity = networkmanager_is_online(NULL); 
+#else
+	have_connectivity = TRUE;
+#endif
 #ifdef HAVE_LIBETPAN
-	imap_main_done();
-	nntp_main_done();
+	imap_main_done(have_connectivity);
+	nntp_main_done(have_connectivity);
 #endif
 	/* delete crashfile */
 	if (!cmd.crash)

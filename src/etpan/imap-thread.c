@@ -296,9 +296,9 @@ void imap_main_set_timeout(int sec)
 	mailstream_network_delay.tv_usec = 0;
 }
 
-void imap_main_done(void)
+void imap_main_done(gboolean have_connectivity)
 {
-	imap_disconnect_all();
+	imap_disconnect_all(have_connectivity);
 	etpan_thread_manager_stop(thread_manager);
 #if defined(__NetBSD__) || defined(__OpenBSD__) || defined(__FreeBSD__)
 	return;
@@ -3398,7 +3398,7 @@ void imap_threaded_cancel(Folder * folder)
 void imap_main_init(void)
 {
 }
-void imap_main_done(void)
+void imap_main_done(gboolean have_connectivity)
 {
 }
 void imap_main_set_timeout(int sec)

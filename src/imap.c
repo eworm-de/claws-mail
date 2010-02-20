@@ -5398,7 +5398,7 @@ void imap_folder_ref(Folder *folder)
 	((IMAPFolder *)folder)->refcnt++;
 }
 
-void imap_disconnect_all(void)
+void imap_disconnect_all(gboolean have_connectivity)
 {
 	GList *list;
 	gboolean short_timeout;
@@ -5426,7 +5426,8 @@ void imap_disconnect_all(void)
 			RemoteFolder *folder = (RemoteFolder *)account->folder;
 			if (folder && folder->session) {
 				IMAPSession *session = (IMAPSession *)folder->session;
-				imap_threaded_disconnect(FOLDER(folder));
+				if (have_connectivity)
+					imap_threaded_disconnect(FOLDER(folder));
 				SESSION(session)->state = SESSION_DISCONNECTED;
 				SESSION(session)->sock = NULL;
 				session_destroy(SESSION(session));
@@ -5571,7 +5572,7 @@ FolderClass *imap_get_class(void)
 	return &imap_class;
 }
 
-void imap_disconnect_all(void)
+void imap_disconnect_all(gboolean have_connectivity)
 {
 }
 

@@ -26,7 +26,7 @@
 
 void nntp_main_set_timeout(int sec);
 void nntp_main_init(gboolean skip_ssl_cert_check);
-void nntp_main_done(void);
+void nntp_main_done(gboolean have_connectivity);
 
 void nntp_init(Folder * folder);
 void nntp_done(Folder * folder);

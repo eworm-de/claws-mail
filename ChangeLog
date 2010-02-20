@@ -1,3 +1,18 @@
+2010-02-20 [colin]	3.7.5cvs22
+
+	* src/imap.c
+	* src/imap.h
+	* src/main.c
+	* src/mainwindow.c
+	* src/etpan/imap-thread.c
+	* src/etpan/imap-thread.h
+	* src/etpan/nntp-thread.c
+	* src/etpan/nntp-thread.h
+		When going offline from NetworkManager, just
+		delete IMAP connections. That'll avoid timeouts
+		when coming back online in certain cases when
+		the TCP socket will have timed out.
+
 2010-02-20 [holger]	3.7.5cvs21
 
 	* .cvsignore

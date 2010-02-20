@@ -156,7 +156,7 @@ void nntp_main_init(gboolean skip_ssl_cert_check)
 						    NULL);
 }
 
-void nntp_main_done(void)
+void nntp_main_done(gboolean have_connectivity)
 {
 	etpan_thread_manager_stop(thread_manager);
 #if defined(__NetBSD__) || defined(__OpenBSD__) || defined(__FreeBSD__)
@@ -1005,7 +1005,7 @@ int nntp_threaded_xhdr(Folder * folder, const char *header, guint32 beg, guint32
 void nntp_main_init(void)
 {
 }
-void nntp_main_done(void)
+void nntp_main_done(gboolean have_connectivity)
 {
 }
 void nntp_main_set_timeout(int sec)
