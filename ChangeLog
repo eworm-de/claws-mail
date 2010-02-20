@@ -1,3 +1,8 @@
+2010-02-20 [holger]	3.7.5cvs21
+
+	* .cvsignore
+		More files to ignore
+
 2010-02-17 [ticho]	3.7.5cvs20
 
 	* src/summaryview.c

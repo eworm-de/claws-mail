@@ -26,3 +26,5 @@ patches
 commitHelper.tmp
 *.patchset
 .project
+.cproject
+.settings
