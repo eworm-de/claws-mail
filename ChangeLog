@@ -1,3 +1,9 @@
+2010-02-22 [colin]	3.7.5cvs23
+
+	* src/compose.c
+		Don't make In-Reply-To visible when reediting
+		a draft or sent mail.
+
 2010-02-20 [colin]	3.7.5cvs22
 
 	* src/imap.c

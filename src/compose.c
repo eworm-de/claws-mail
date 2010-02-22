@@ -3283,7 +3283,6 @@ static void compose_reedit_set_entry(Compose *compose, MsgInfo *msginfo)
 	SET_ADDRESS(COMPOSE_REPLYTO, compose->replyto);
 	SET_ADDRESS(COMPOSE_NEWSGROUPS, compose->newsgroups);
 	SET_ADDRESS(COMPOSE_FOLLOWUPTO, compose->followup_to);
-	SET_ADDRESS(COMPOSE_INREPLYTO, compose->inreplyto);
 
 	compose_update_priority_menu_item(compose);
 	compose_update_privacy_system_menu_item(compose, FALSE);
