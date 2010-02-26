@@ -352,7 +352,7 @@ static void toolbar_parse_item(XMLFile *file, ToolbarType source)
 		if (g_utf8_collate(name, TOOLBAR_ICON_FILE) == 0) 
 			item->file = g_strdup (value);
 		else if (g_utf8_collate(name, TOOLBAR_ICON_TEXT) == 0)
-			item->text = g_strdup (gettext(value));
+			item->text = g_strdup (*value ? gettext(value):"");
 		else if (g_utf8_collate(name, TOOLBAR_ICON_ACTION) == 0)
 			item->index = toolbar_ret_val_from_text(value);
 		if (item->index == -1 && !strcmp(value, "A_DELETE")) {
