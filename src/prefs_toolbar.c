@@ -774,7 +774,7 @@ static void item_type_changed(GtkComboBox *item_type_combo,
         gtk_widget_hide(prefs_toolbar->item_action_combo);
         gtk_combo_box_set_active(GTK_COMBO_BOX(prefs_toolbar->item_plugin_combo), 0);
         gtk_button_set_label(GTK_BUTTON(prefs_toolbar->icon_button), "");
-        gtk_widget_set_sensitive(prefs_toolbar->item_text_entry, TRUE);
+        gtk_widget_set_sensitive(prefs_toolbar->item_text_entry, FALSE);
         gtk_widget_set_sensitive(prefs_toolbar->item_plugin_combo, TRUE);
         gtk_widget_set_sensitive(prefs_toolbar->icon_button, TRUE);
         plugin_selection_changed(GTK_COMBO_BOX(prefs_toolbar->item_plugin_combo), prefs_toolbar);

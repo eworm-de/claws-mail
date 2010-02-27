@@ -1,3 +1,9 @@
+2010-02-27 [holger]	3.7.5cvs25
+
+	* src/prefs_toolbar.c
+		Don't make toolbar item description for
+		plugin registered items editable
+
 2010-02-26 [colin]	3.7.5cvs24
 
 	* src/toolbar.c
