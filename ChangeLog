@@ -1,3 +1,36 @@
+2010-02-27 [colin]	3.7.5cvs26
+
+	* configure.ac
+	* AUTHORS
+	* src/gtk/authors.h
+	* manual/Makefile.am
+	* manual/de/Makefile.am
+	* manual/de/account.xml
+	* manual/de/ack.xml
+	* manual/de/addrbook.xml
+	* manual/de/advanced.xml
+	* manual/de/claws-mail-manual.xml
+	* manual/de/faq.xml
+	* manual/de/glossary.xml
+	* manual/de/gpl.xml
+	* manual/de/handling.xml
+	* manual/de/intro.xml
+	* manual/de/keyboard.xml
+	* manual/de/plugins.xml
+	* manual/de/starting.xml
+	* manual/de/dist/.cvsignore
+	* manual/de/dist/Makefile.am
+	* manual/de/dist/html/.cvsignore
+	* manual/de/dist/html/Makefile.am
+	* manual/de/dist/pdf/.cvsignore
+	* manual/de/dist/pdf/Makefile.am
+	* manual/de/dist/ps/.cvsignore
+	* manual/de/dist/ps/Makefile.am
+	* manual/de/dist/txt/.cvsignore
+	* manual/de/dist/txt/Makefile.am
+		Add the german translation of the manual, done by
+		Volker Ribbert <thoraki@arcor.de>.
+
 2010-02-27 [holger]	3.7.5cvs25
 
 	* src/prefs_toolbar.c

@@ -61,6 +61,7 @@ static char *DOC_TEAM_LIST[] = {
 "     Ricardo Mones Lastra <ricardo@mones.org>",
 "     Colin Leroy <colin@colino.net>",
 "     Paul Mangan <paul@claws-mail.org>",
+"[de] Volker Ribbert <thoraki@arcor.de>",
 "[es] Ricardo Mones Lastra <ricardo@mones.org>",
 "[fr] Tristan Chabredier <wwp@claws-mail.org>",
 "     Colin Leroy <colin@colino.net>",

@@ -1,101 +1,47 @@
-<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="ISO-8859-1"?>
 <section id="ch_account">
-<title>Anpassung des Kontos</title>
+<title>Kontenanpassung</title>
 
   <section id="account_basic">
     <title>Grundeinstellungen</title>
-    <para>
-	Der erste Reiter der Konteneinstellungen, <quote>Grundeinstellungen</quote>,
- enthÃ¤lt, wie der Name andeutet, grundlegende Daten zum Konto. In diesem Reiter kÃ¶nnen der Name, E-Mail-Adresse, Organisation und grundlegende Verbindungsdaten angegeben werden. Der Kontoname ist einfach der Name, mit dem sich Claws Mail auf dieses Konto bezieht â€“ zum Beispiel auf dem Konten-Umschalter in der rechten unteren Ecke des Hauptfensters. In den Serverdaten wird das verwendete Abfrageprotokoll (welches fÃ¼r bestehende Konten nicht verÃ¤ndert werden kann),  die Server fÃ¼r den Empfang und den Versand von E-Mails (fÃ¼r gewÃ¶hnlich <literal>pop.anbieter.com</literal> und <literal>smtp.anbieter.com</literal>) sowie die Anmeldedaten fÃ¼r den Empfangsserver angegeben.
-    </para>
-    <para>
-	Im <quote>Empfangen</quote>-Reiter kann das vorgegebene Verhalten von Claws Mail verÃ¤ndert werden. Zum Beispiel kÃ¶nnen Nachrichten fÃ¼r eine bestimmte Zeit auf dem Server belassen werden, kann das Herunterladen zu groÃŸer Nachrichten verhindert werden oder  kann angegeben werden, dass Filterregeln auf die Nachrichten dieses Kontos angewendet werden. Das <quote>Limit der EmpfangsgrÃ¶ÃŸe</quote> wird benutzt, um die Zeit zum Herunterladen groÃŸer Nachrichten zu begrenzen. Wenn eine Nachricht empfangen werden soll, die grÃ¶ÃŸer als der Schwellenwert ist, so wird diese zunÃ¤chst teilweise heruntergeladen und nachher zur Wahl gestellt, ob sie vollstÃ¤ndig heruntergeladen oder vom Server gelÃ¶scht werden soll. Dies steht zur Wahl, wenn die Nachricht angezeigt wird.
-    </para>
-    <para>
-	Der <quote>Senden</quote>-Reiter enthÃ¤lt Einstellungen zu speziellen Kopfdaten, die zu den ausgehenden Nachrichten hinzugefÃ¼gt werden, wie X-Face- oder Face-Kopfdaten und authentifizierende Informationen zum Senden von E-Mails. Manche Internetdienstanbieter erlauben ihren Kunden das Senden von E-Mails Ã¼ber ihren SMTP-Server ohne Authentifizierung, doch teilweise muss auch eine Authentifizierung erfolgen, um Nachrichten versenden zu kÃ¶nnen. Es gibt verschiedene MÃ¶glichkeiten, das zu tun. Sofern verfÃ¼gbar ist die Beste MÃ¶glichkeit  SMTP AUTH. Falls das nicht mÃ¶glich ist, wird Ã¼blicherweise POP-before-SMTP verwendet, wobei zum POP-Server verbunden wird (welcher authentifiziert ist), getrennt wird und dann die Nachricht versendet wird.
-    </para>
-    <para>
-	Der <quote>Verfassen</quote>-Reiter enthÃ¤lt die Optionen um zu Ã¤ndern wie sich das Verfassen-Fenster verhÃ¤lt, wenn es mit einem Konto verwendet wird. Es kÃ¶nnen eine automatisch einzufÃ¼gende Signatur und vorgegebene CC-, BCC- oder Antwort-an-EmpfÃ¤nger angegeben werden.
-    </para>
-    <para>
-	Im <quote>Datenschutz</quote>-Reiter kann der Grad des Verfolgungswahns eingestellt werden. Es kann eingestellt werden, dass alle ausgehenden Nachrichten digital unterschrieben und/oder verschlÃ¼sselt werden. Durch das generelle Signieren aller ausgehenden Nachrichten kÃ¶nnen beispielsweise gefÃ¤lschten, in ihrem Namen verschickte Nachrichten erkannt werden. Dies kann helfen unangenehme Situationen zu vermeiden.
-    </para>
-    <para>
-	Der <quote>SSL</quote>-Reiter hat auch mit Datensicherheit zu tun, wenngleich es hier nur um die Ãœbermittlung der Nachrichten, nicht um den Inhalt geht. Im Wesentlichen verschlÃ¼sselt SSL die Verbindung zwischen dem Programm und dem Server des Anbieters, was verhindert, dass PasswÃ¶rter und Nachrichten durch abhÃ¶ren des Datenverkehrs ausgespÃ¤ht werden kÃ¶nnen. SSL sollte verwendet werden, sofern es verfÃ¼gbar ist.
-    </para>
-    <para>
-	Der <quote>Erweitert</quote>-Reiter schlieÃŸlich erlaubt das Einstellen von Ports und DomÃ¤nen, falls die Vorgaben nicht verwendet werden. Normalerweise muss hier nichts eingetragen werden. Hier kÃ¶nnen auch Ordner fÃ¼r gesendete und wartende Nachrichten, fÃ¼r EntwÃ¼rfe und gelÃ¶schte Nachrichten angegeben werden.
-    </para>
+    <para> Die erste Registerkarte der Kontoeinstellungen, <quote>Allgemein</quote>, enthält die Basisdaten des Mailkontos. Auf dieser Registerkarte können Sie Ihren Namen, Ihre E-Mail-Adresse, Organisation und grundlegende Verbindungsdaten eintragen. Der Kontoname ist hier nur der Name, den Claws Mail verwendet, um darauf zuzugreifen, wie z.B. beim Kontowechsel über die Schaltfläche unten rechts im Hauptfenster. Als Serverdaten können Sie das Empfangsprotokoll (das bei bestehenden Mailkonten nicht änderbar ist) bzw. den/die Server eintragen, wo Ihre E-Mails empfangen oder versandt werden (üblicherweise <literal>pop.isp.com</literal> und <literal
+	>smtp.isp.com</literal>) sowie Ihre Anmeldung beim empfangenden Server. </para> <para>Auf der Registerkarte <quote>Empfangen</quote> können Sie das standardmäßige Verhalten von Claws Mail ändern. So legen Sie etwa fest, Nachrichten eine Zeit lang auf dem Server zu belassen, übergroße Mails nicht herunterzuladen oder ob die Filterregeln für dieses Mailkonto gültig sein sollen. Das <quote>Limit der Empfangsgröße</quote> wird benutzt, um die Zeitdauer zum Herunterladen großer E-Mails zu begrenzen. Immer wenn Sie eine Mail über dieser Größe erhalten, wird diese teilweise geladen. Sie haben später die Gelegenheit, sie entweder ganz herunterzuladen oder sie vom Server zu löschen. Diese Auswahl wird Ihnen angeboten, sobald Sie die E-Mail betrachten. </para> <para> Die Registerkarte <quote>Senden</quote> enthält Einstellungen für besondere Kopfzeilen, die Sie vielleicht Ihren ausgehende E-Mails beifügen möchten, wie Kopfzeilen für X-Face oder Face sowie Authentifizierungdaten zum Senden Ihrer Mail. Meistens gestattet Ihr Dienstanbieter (ISP) seinen Teilnehmern das Senden von E-Mail via SMTP-Server ohne Authentifizierung, doch in manchen Fällen müssen Sie sich identifizieren um senden zu können. Es gibt verschiedene Möglichkeiten, dies zu tun. Die beste ist - falls verfügbar - SMTP AUTH. Ist sie nicht verfügbar, verwendet man üblicherweise POP-before-SMTP, wobei der POP-Server (mit Authentifizierung) kontaktiert, die Verbindung wieder getrennt und dann die Mail versandt wird. </para> <para> Die Registerkarte <quote>Verfassen</quote> enthält Optionen, die das Verhalten des Editor-Fensters ändern, wenn dieses Konto genutzt wird. Sie können automatisch eine Signatur einfügen lassen und Standard-Adressen für Cc, Bcc oder Reply-To eintragen. </para> <para> Auf der Registerkarte <quote>Datenschutz</quote> können Sie die voreingestellte Besorgnis-Stufe für Ihr Mailkonto wählen. Eventuell möchten Sie, daß alle ausgehenden Mails digital unterschrieben und/oder verschlüsselt werden. Wenn Sie alle ausgehenden E-Mails (nicht nur die wichtigen) so unterschreiben, können Sie sich z.B. davor schützen, daß gefälschte Mails in Ihrem Namen an Kollegen verschickt werden. Dies kann helfen, peinliche Situationen zu vermeiden. </para> <para> Die Registerkarte <quote>SSL</quote> betrifft ebenfalls Sicherheitsaspekte, obwohl sich die Einstellungen hier auf die Übertragung Ihrer Mails beziehen - und nicht deren Inhalt. Grundsätzlich verschlüsselt der Einsatz von SSL Ihre Verbindung zum Server, wodurch verhindert wird, daß andere in dieser herumstöbern und dabei Ihre Mails samt Kennwort lesen. Wenn es verfügbar ist, sollte SSL genutzt werden. </para> <para> Schließlich können Sie auf der Registerkarte  <quote>Erweitert</quote> Ports und Domänen angeben, falls die Standardvorgaben nicht zutreffen. Normalerweise können Sie diese leer lassen. Außerdem können Sie hier Ordner für gesendete, wartende und gelöschte Nachrichten sowie Mailentwürfe bestimmen. </para>
   </section>
 
   <section id="account_types">
-    <title>Kontentypen</title>
-    <para>
-	Wie gesagt, kann nach dem Erstellen eines Kontos dessen Typ (das Protokoll) nichtmehr geÃ¤ndert werden. Das rÃ¼hrt daher, dass die Einstellungen fÃ¼r die verschiedenen Typen recht unterschiedlich sind; so sind beispielsweise die meisten Optionen fÃ¼r POP3 fÃ¼r IMAP nicht von Bedeutung.
-    </para>
+    <title>Kontotypen</title>
+    <para>Zuvor haben wir bereits gesehen, daß Sie nach Neuanlage eines Kontos dessen (Protokoll-)Typ nicht mehr verändern können. Dies ist so, weil sich die Einstellungen für die verschiedenen Typen etwas unterscheiden; die meisten POP3-typischen Optionen sind z.B. für IMAP belanglos.</para>
     <section id="pop3">
     <title>POP3</title>
-    <para>
-	POP3 ist eines der zwei meistbenutzten Protokolle und steht bei beinahe jedem Dienstanbieter auf dieser Erde zur VerfÃ¼gung. Sein Vorteil ist, dass es ermÃ¶glicht Nachrichten auf den Rechner herunterzuladen, womit der Zugriff auf die Nachrichten sehr schnell geht, wenn sie erst auf der Festplatte sind. Die Hauptnachteile von POP3 sind, dass es schwieriger ist die Nachrichten mit mehreren Rechnern abzugleichen (die Nachrichten mÃ¼ssen dazu eine Zeit auf dem Server belassen werden) und es ist unmÃ¶glich zu verfolgen, welche Nachrichten schon gelesen wurden oder welche schon beantwortet sind etc., wenn ein anderer Rechner verwendet wird.
-    </para>
-    <para>
-	Nachrichten, die Ã¼ber ein POP3-Konto empfangen werden, werden in einem MH-Postfach im Ordnerbaum abgelegt.
-    </para>
+    <para> POP3 ist eines der meistverwendeten Protokolle und weltweit bei fast allen Internet-Dienstanbietern verfügbar. Sein Vorteil ist, daß Sie die Mail auf Ihren Computer laden können, und das bedeutet, daß Sie sehr schnell darauf zugreifen können, sobald sie auf Ihrer Festplatte liegt. Der Nachteil von POP3 ist, daß es eher schwierig ist, Ihre Mail auf mehreren Computern gleichzeitig aktuell zu halten (Sie müßten die Mail tagelang auf dem Server belassen), und Sie wären kaum in der Lage, einfach zu überblicken, was Sie schon gelesen oder wem Sie geantwortet haben usw., wenn Sie einen anderen Computer benutzen. </para> <para> Von einem POP3-Konto abgerufene Mail wird in einem MH-Postfach innerhalb der Ordnerstruktur gespeichert. </para>
     </section>
     <section id="imap">
     <title>IMAP</title>
-    <para>
-	IMAP ist das am zweithÃ¤ufigsten benutzte Protokoll, das den Nachteilen von POP3 begegnen soll. Bei Benutzung von IMAP werden die Ordnerliste und die Nachrichten Ã¼blicherweise auf einem zentralen Server vorgehalten und bei Bedarf heruntergeladen. Das verzÃ¶gert die Navigation durch die Nachrichten ein wenig, da sie erst bei Bedarf heruntergeladen werden, doch wenn noch ein anderer Rechner oder E-Mail-Programm verwendet werden, so sind die Nachrichten noch im selben Zustand, wie sie verlassen wurden, einschlieÃŸlich deren Status (gelesen, ungelesen, beantwortet usw.).
-    </para>
-    <para>
-	Wenn ein IMAP-Konto erstellt wird, so wird dafÃ¼r ein IMAP-Postfach im Ordnerbaum erstellt.
-    </para>
+    <para> IMAP ist das am zweithäufigsten verwendete Protokoll, und sein Ziel ist es, den Unzulänglichkeiten von POP3 zu begegnen. Wenn Sie IMAP benutzen, bleiben Ihre Ordnerliste und E-Mails vollständig auf dem Server. Hierdurch verlangsamt sich die Handhabung ein wenig, da jede Mail bei Bedarf geladen wird, doch wenn Sie einen anderen Computer benutzen oder das Mailprogramm wechseln, finden Sie Ihre E-Mails so wieder, wie sie verlassen wurden, einschließlich ihres Status (gelesen, ungelesen, beantwortet usw.). </para> <para> Wenn Sie ein neues IMAP-Konto einrichten, wird innerhalb der Ordnerstruktur ein IMAP-Postfach angelegt. </para>
     </section>
     <section id="news">
     <title>News</title>
-    <para>
-	News (NNTP) ist das Protokoll um Usenet-Artikel zu senden und zu empfangen. Nachrichten werden auf einem zentralen Server vorgehalten und bei Bedarf heruntergeladen. Sie kÃ¶nnen nicht vom Benutzer gelÃ¶scht werden.
-    </para>
-    <para>
-	Wenn ein News-Konto erstellt wird, so wird dafÃ¼r ein News-Postfach im Ordnerbaum erstellt.
-    </para>
+    <para> News (NNTP) ist das Protokoll zum Versenden und Empfangen von USENET-Beiträgen. Die Nachrichten werden auf einem zentralen Server vorgehalten und bedarfsweise heruntergeladen. Sie können nicht von Benutzer gelöscht werden. </para> <para> Wenn Sie ein neues News-Konto anlegen, wird innerhalb der Ordnerstruktur ein News-Postfach angelegt. </para>
     </section>
     <section id="local">
-    <title>Lokale mbox-Datei</title>
-    <para>
-	Der Kontentyp <quote>Lokale mbox-Datei</quote> kann benutzt werden, wenn ein SMTP-Server auf dem Rechner betrieben wird und auf einfache Weise die Log-Dateien empfangen werden sollen.
-    </para>
-    <para>
-	Nachrichten, die Ã¼ber ein lokales Konto empfangen werden, werden in einem MH-Postfach im Ordnerbaum abgelegt.
-    </para>
+    <title>Lokal</title>
+    <para> Die <quote>Lokale Mbox-Datei</quote> als Kontotyp kann benutzt werden, wenn Sie auf Ihrem Computer einen SMTP-Server betreiben und/oder auf einfache Art ihre Protokolle bekommen möchten. </para> <para> Mail von einem lokalen Konto wird innerhalb der Ordnerstruktur in einem MH-Postfach gespeichert. </para>
     </section>
     <section id="smtp_only">
-    <title>nur SMTP</title>
-    <para>
-	Der Kontentyp <quote>Keine (nur SMTP)</quote> ist ein spezieller Kontentyp, mit dem keine Nachrichten empfangen werden kÃ¶nnen, jedoch das Anlegen verschiedener IdentitÃ¤ten mÃ¶glich wird, um beispielsweise Nachrichten unter verschiedenen Aliasen versenden zu kÃ¶nnen.
-    </para>
+    <title>Nur SMTP</title>
+    <para>Der Kontotyp <quote>Keines, (nur SMTP)</quote> ist ein Sondertyp für ein Konto, das zwar keine Mail abholt, Ihnen aber z.B. ermöglicht, verschiedene Identitäten anzulegen, die dazu dienen, E-Mails unter unterschiedlichen Namen zu versenden.</para>
     </section>
   </section>
 
   <section id="account_multiple">
-    <title>Mehrere Konten</title>
-    <para>
-	In Claws Mail kÃ¶nnen leicht mehrere Konten angelegt werden. Bei POP-Konten kann Ã¼ber den Empfangen-Reiter festgelegt werden, dass die Nachrichten verschiedener Konten in den selben Ordner(n) abgelegt werden. IMAP- und News-Konten erhalten jeweils ein eigenes Postfach im Ordnerbaum.
-    </para>
-    <para>
-	Es kann Ã¼ber ein entsprechendes HÃ¤kchen unter dem Punkt â€Empfangenâ€œ in den Einstellungen des jeweiligen Kontos oder in der  â€Gâ€œ-Spalte der Kontenliste (MenÃ¼punkt â€Konten bearbeitenâ€œ) festgelegt werden, welche Konten bei AusfÃ¼hren des <quote>Von allen Konten holen</quote>-Befehls (oder â€Abrufenâ€œ in der Symbolleiste) auf neue Nachrichten Ã¼berprÃ¼ft werden.
-    </para>
+    <title>Mehrere Mailkonten</title>
+    <para> Sie können in Claws Mail recht einfach mehrere Konten anlegen. Bei POP-Konten können Sie wählen, ob alle Mails von verschiedenen Konten im selben Ordner gespeichert werden, und zwar in der Einstellung auf der Registerkarte Empfangen. IMAP- und News-Konten bekommen innerhalb der Ordnerstruktur jeweils ihr eigenes Postfach. </para> <para> Sie können bestimmen, welche Konten auf neue Mail überprüft werden, wenn der Menübefehl <quote>Von allen Konten</quote> (oder "Abrufen" auf der Werkzeugleiste) gewählt wird, indem Sie auf der Registerkarte 'Empfangen' oder in der Spalte <quote>G</quote> Ihrer Kontenliste das entsprechende Kontrollkästchen als Einstellung aktivieren. </para>
   </section>
 
   <section id="account_morefilt">
-    <title>More filtering</title>
-    <para>
-	Per Voreinstellung gelten Filterregeln global, doch sie kÃ¶nnen auch fÃ¼r ein bestimmtes Konto festgelegt werden. Wenn Nachrichten abgeholt werden, so werden alle speziell mit diesem Konto verknÃ¼pften Regeln nur auf Nachrichten angewendet, die Ã¼ber dieses Konto empfangen wurden.
-    </para>
-    <para>
-	Nachrichten eines beliebigen Kontos kÃ¶nnen durch einen Filter in Ordner eines anderen Kontos gelegt werden. So kann z.B. eine Nachricht, die Ã¼ber POP3 empfangen wurde, in einen Ordner eines IMAP-Kontos gelegt werden und umgekehrt. AbhÃ¤ngig davon, was erreicht werden soll, ist das entweder eine nÃ¼tzliche oder eine lÃ¤stige Funktion. Soll dies eher vermieden werden und sollen dennoch eingehende Nachrichten automatisch sortiert werden, so kÃ¶nnte es das Beste sein, das Filtern von Nachrichten fÃ¼r bestimmte Konten zu deaktivieren und Verarbeitungsregeln in einem bestimmten Posteingang anzuwenden, da Verarbeitungsregeln automatisch beim Ã–ffnen eines Ordners angewendet werden und manuell Ã¼ber das KontextmenÃ¼ eines Ordners angewendet werden kÃ¶nnen.
-    </para>
+    <title>Über das Filtern</title>
+    <para> Standardmäßig gelten Filterregeln global, aber sie können auch einem bestimmten Mailkonto zugewiesen sein. Beim Abholen von Mail werden Regeln, die zu einem bestimmten Konto gehören, nur auf Mails angewandt, die von diesem Konto abgerufen wurden. </para> <para> Mail eines jeden Kontos kann in die Ordner eines anderen Kontos gefiltert werden. Eine über POP3 empfangene Mail könnte z.B. in den Ordner eines IMAP-Kontos gefiltert werden, und umgekehrt. Dies ist eine Funktion, die entweder gefällt oder stört, je nachdem, was Sie erreichen wollen. Wenn Sie das lieber vermeiden, aber dennoch Ihre Eingangsmail automatisch sortiert haben möchten, ist es am besten, auf das Filtern gewisser Konten zu verzichten und im verwendeten Ordner für den Posteingang Verarbeitungsregeln einzusetzen, da diese automatisch greifen, wenn ein Ordner geöffnet wird oder über das Kontextmenü eines Ordners manuell ausgeführt werden. </para>
   </section>
 
 </section>
-
+

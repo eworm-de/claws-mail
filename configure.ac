@@ -12,7 +12,7 @@ MINOR_VERSION=7
 MICRO_VERSION=5
 INTERFACE_AGE=0
 BINARY_AGE=0
-EXTRA_VERSION=25
+EXTRA_VERSION=26
 EXTRA_RELEASE=
 EXTRA_GTK2_VERSION=
 
@@ -1064,6 +1064,12 @@ manual/es/dist/pdf/Makefile
 manual/es/dist/ps/Makefile
 manual/es/dist/html/Makefile
 manual/es/dist/txt/Makefile
+manual/de/Makefile
+manual/de/dist/Makefile
+manual/de/dist/pdf/Makefile
+manual/de/dist/ps/Makefile
+manual/de/dist/html/Makefile
+manual/de/dist/txt/Makefile
 claws-mail.pc
 ])
 

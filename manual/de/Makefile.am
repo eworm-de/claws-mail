@@ -1,5 +1,5 @@
 if BUILD_MANUAL
-SUBDIRS=dtd dist de es fr pl 
+SUBDIRS=dist
 endif
 
 EXTRA_DIST = \
