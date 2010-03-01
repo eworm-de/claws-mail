@@ -575,10 +575,10 @@ Plugin *plugin_get_loaded_by_name(const gchar *name)
 		plugin = (Plugin *)cur->data;
 		if (!g_ascii_strcasecmp(plugin->name(), name)) 
             break;
-		else 
+        else 
             plugin = NULL;
-	}
-	g_slist_free(new);
+    }
+    g_slist_free(new);
 	return plugin;
 }
 

@@ -1,3 +1,8 @@
+2010-03-01 [iwkse]	3.7.5cvs28
+
+	* src/common/plugin.c
+			Fix indentation of the previous commit
+
 2010-03-01 [iwkse]	3.7.5cvs27
 
 	* src/common/plugin.h
