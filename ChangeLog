@@ -1,3 +1,11 @@
+2010-03-01 [iwkse]	3.7.5cvs27
+
+	* src/common/plugin.h
+	* src/common/plugin.c
+			Add API for getting a loaded Plugin from the
+			plugin's name, plugin_get_loaded_by_name (const gchar *name)
+			Thanks to Colin, Michael
+
 2010-02-27 [colin]	3.7.5cvs26
 
 	* configure.ac

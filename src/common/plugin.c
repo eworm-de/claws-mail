@@ -566,6 +566,22 @@ GSList *plugin_get_list(void)
 	return new;
 }
 
+Plugin *plugin_get_loaded_by_name(const gchar *name) 
+{
+	Plugin *plugin = NULL;
+	GSList *new, *cur; 
+	new = plugin_get_list();
+	for (cur = new; cur; cur = g_slist_next(cur)) {
+		plugin = (Plugin *)cur->data;
+		if (!g_ascii_strcasecmp(plugin->name(), name)) 
+            break;
+		else 
+            plugin = NULL;
+	}
+	g_slist_free(new);
+	return plugin;
+}
+
 GSList *plugin_get_unloaded_list(void)
 {
 	return g_slist_copy(unloaded_plugins);
