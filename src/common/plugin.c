@@ -574,11 +574,11 @@ Plugin *plugin_get_loaded_by_name(const gchar *name)
 	for (cur = new; cur; cur = g_slist_next(cur)) {
 		plugin = (Plugin *)cur->data;
 		if (!g_ascii_strcasecmp(plugin->name(), name)) 
-            break;
-        else 
-            plugin = NULL;
-    }
-    g_slist_free(new);
+			break;
+		else 
+			plugin = NULL;
+	}
+	g_slist_free(new);
 	return plugin;
 }
 
