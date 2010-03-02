@@ -1,3 +1,8 @@
+2010-03-02 [colin]	3.7.5cvs31
+
+	* manual/de/glossary.xml
+		Sort alphabetically. Done by Volker Ribbert.
+
 2010-03-02 [mones]	3.7.5cvs30
 
 	* README

@@ -3971,3 +3971,4 @@
 ( cvs diff -u -r 1.13.2.38 -r 1.13.2.39 src/common/plugin.c;  ) > 3.7.5cvs28.patchset
 ( cvs diff -u -r 1.13.2.39 -r 1.13.2.40 src/common/plugin.c;  ) > 3.7.5cvs29.patchset
 ( cvs diff -u -r 1.8.2.58 -r 1.8.2.59 README;  ) > 3.7.5cvs30.patchset
+( cvs diff -u -r 1.1.2.1 -r 1.1.2.2 manual/de/glossary.xml;  ) > 3.7.5cvs31.patchset
