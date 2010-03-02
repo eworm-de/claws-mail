@@ -811,14 +811,12 @@ Extra Plugins
     http://www.claws-mail.org/plugins.php
 Icon Themes
     http://www.claws-mail.org/themes.php
-CVS webview
-    http://scm.dotsrc.org/viewvc.cgi/claws-mail/claws/?pathrev=gtk2
 Mailing Lists
     http://www.claws-mail.org/MLs.php
 Users Mailing List archive
-    http://lists.sunsite.dk/cgi-bin/ezmlm-cgi/28
+    http://lists.claws-mail.org/pipermail/users/index.html
 Commits Announcement List archive
-    http://lists.sunsite.dk/cgi-bin/ezmlm-cgi/27
+    http://lists.claws-mail.org/pipermail/commits/index.html
 Bug/Patch/Feature Request Tracker
     http://www.thewildbeast.co.uk/claws-mail/bugzilla/index.cgi
 Internationalisation Status
