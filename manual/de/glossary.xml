@@ -363,13 +363,13 @@
 	</variablelist>
 	<variablelist>
 		<title>Q</title>
+		<varlistentry id="gt_source_message">
+			<term>Quellnachricht</term>
+			<listitem>
+				<para>Der vollständige Nachrichtentext, wie er im Netz übertragen wird. Dazu gehören alle Kopfzeilen, der Textkörper und - falls vorhanden - kodierte Anhänge.</para>
+			</listitem>
+		</varlistentry>
 	</variablelist>
-	<varlistentry id="gt_source_message">
-		<term>Quellnachricht</term>
-		<listitem>
-			<para>Der vollständige Nachrichtentext, wie er im Netz übertragen wird. Dazu gehören alle Kopfzeilen, der Textkörper und - falls vorhanden - kodierte Anhänge.</para>
-		</listitem>
-	</varlistentry>
 	<variablelist>
 		<title>R</title>
 		<varlistentry id="gt_spell_checking">
