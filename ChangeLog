@@ -1,3 +1,9 @@
+2010-03-11 [paul]	3.7.5cvs33
+
+	* po/zh_CN.po
+		fix bug 2110, 'Patch to use GB18030 for GB2312 and GBK X-GBK'
+		submitted by Yuwei Yu
+
 2010-03-09 [colin]	3.7.5cvs32
 
 	* manual/de/glossary.xml
