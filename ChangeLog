@@ -1,3 +1,11 @@
+2010-03-21 [pawel]	3.7.5cvs34
+
+	* src/main.c
+	* src/gtk/quicksearch.c
+	* src/gtk/quicksearch.h
+		Implement separate search phrase completion for
+		normal/extended quicksearch
+
 2010-03-11 [paul]	3.7.5cvs33
 
 	* po/zh_CN.po

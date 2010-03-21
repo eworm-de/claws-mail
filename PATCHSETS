@@ -3974,3 +3974,4 @@
 ( cvs diff -u -r 1.1.2.1 -r 1.1.2.2 manual/de/glossary.xml;  ) > 3.7.5cvs31.patchset
 ( cvs diff -u -r 1.1.2.2 -r 1.1.2.3 manual/de/glossary.xml;  ) > 3.7.5cvs32.patchset
 ( cvs diff -u -r 1.5.2.29 -r 1.5.2.30 po/zh_CN.po;  ) > 3.7.5cvs33.patchset
+( cvs diff -u -r 1.115.2.225 -r 1.115.2.226 src/main.c;  cvs diff -u -r 1.1.2.89 -r 1.1.2.90 src/gtk/quicksearch.c;  cvs diff -u -r 1.1.2.18 -r 1.1.2.19 src/gtk/quicksearch.h;  ) > 3.7.5cvs34.patchset

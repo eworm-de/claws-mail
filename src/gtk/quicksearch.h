@@ -57,4 +57,5 @@ gboolean quicksearch_is_in_subfolder(QuickSearch *quicksearch, FolderItem *cur);
 gboolean quicksearch_is_fast(QuickSearch *quicksearch);
 gboolean quicksearch_is_in_typing(QuickSearch *quicksearch);
 void quicksearch_relayout(QuickSearch *quicksearch);
+void quicksearch_set_search_strings(QuickSearch *quicksearch);
 #endif /* QUICKSEARCH_H */

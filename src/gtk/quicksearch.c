@@ -69,6 +69,9 @@ struct _QuickSearch
 	gboolean			 in_typing;
 	guint				 press_timeout_id;
 
+	GList				*normal_search_strings;
+	GList				*extended_search_strings;
+	
 	/* dynamic and autorun qs settings are exclusive*/
 	GtkWidget 			 *dynamic_menuitem;
 	GtkWidget 			 *autorun_menuitem;
@@ -100,6 +103,20 @@ static gchar *quicksearch_get_text(QuickSearch * quicksearch)
 
 	g_strstrip(search_string);
 	return search_string;
+}
+
+static void quicksearch_set_popdown_strings(QuickSearch *quicksearch)
+{
+	GtkWidget *search_string_entry = quicksearch->search_string_entry;
+
+	combobox_unset_popdown_strings(GTK_COMBO_BOX(search_string_entry));
+
+	if (prefs_common.summary_quicksearch_type == QUICK_SEARCH_EXTENDED)
+		combobox_set_popdown_strings(GTK_COMBO_BOX(search_string_entry),
+			quicksearch->extended_search_strings);	
+	else
+		combobox_set_popdown_strings(GTK_COMBO_BOX(search_string_entry),
+			quicksearch->normal_search_strings);
 }
 
 static void prepare_matcher(QuickSearch *quicksearch)
@@ -202,12 +219,18 @@ static void searchbar_run(QuickSearch *quicksearch, gboolean run_only_if_fast)
 
 	/* add to history */
 	if (!quicksearch->in_typing && search_string && strlen(search_string) != 0) {
-		combobox_unset_popdown_strings(GTK_COMBO_BOX(quicksearch->search_string_entry));
+		if (prefs_common.summary_quicksearch_type == QUICK_SEARCH_EXTENDED)
+			quicksearch->extended_search_strings =
+				add_history(quicksearch->extended_search_strings,
+						search_string);
+		else
+			quicksearch->normal_search_strings =
+				add_history(quicksearch->normal_search_strings,
+						search_string);		
 		prefs_common.summary_quicksearch_history =
 			add_history(prefs_common.summary_quicksearch_history,
 					search_string);
-		combobox_set_popdown_strings(GTK_COMBO_BOX(quicksearch->search_string_entry),
-			prefs_common.summary_quicksearch_history);
+		quicksearch_set_popdown_strings(quicksearch);
 	}
 
 	prepare_matcher(quicksearch);
@@ -317,6 +340,7 @@ static gboolean searchtype_changed(GtkMenuItem *widget, gpointer data)
 
 	/* Show extended search description button, only when Extended is selected */
 	update_extended_buttons(quicksearch);
+	quicksearch_set_popdown_strings(quicksearch);
 
 	if (!search_string || *(search_string) == 0) {
 		g_free(search_string);
@@ -648,9 +672,6 @@ QuickSearch *quicksearch_new()
 
 	search_string_entry = gtk_combo_box_entry_new_text ();
 	gtk_combo_box_set_active(GTK_COMBO_BOX(search_string_entry), -1);
-	if (prefs_common.summary_quicksearch_history)
-		combobox_set_popdown_strings(GTK_COMBO_BOX(search_string_entry),
-			prefs_common.summary_quicksearch_history);
 
 	vbox = gtk_vbox_new(TRUE, 0);
 	gtk_box_pack_start(GTK_BOX(vbox), search_string_entry, FALSE, FALSE, 0);
@@ -722,7 +743,9 @@ QuickSearch *quicksearch_new()
 	quicksearch->clear_search = clear_search;
 	quicksearch->in_typing = FALSE;
 	quicksearch->press_timeout_id = -1;
-
+	quicksearch->normal_search_strings = NULL;
+	quicksearch->extended_search_strings = NULL;
+	
 	update_extended_buttons(quicksearch);
 
 	return quicksearch;
@@ -1326,4 +1349,46 @@ void quicksearch_reset_cur_folder_item(QuickSearch *quicksearch)
 gboolean quicksearch_is_in_typing(QuickSearch *quicksearch)
 {
 	return quicksearch->in_typing;
+}
+
+void quicksearch_set_search_strings(QuickSearch *quicksearch)
+{
+	GList *strings = prefs_common.summary_quicksearch_history;
+	gchar *newstr = NULL;
+	MatcherList *matcher_list = NULL;
+
+	if (!strings)
+		return;
+	
+	do {
+		newstr = expand_search_string((gchar *) strings->data);
+		if (newstr && newstr[0] != '\0') {
+			if (!strchr(newstr, ' ')) {
+				quicksearch->normal_search_strings =
+					g_list_append(
+						quicksearch->normal_search_strings,
+						strings->data);
+				g_free(newstr);
+				continue;
+			}
+			
+			matcher_list = matcher_parser_get_cond(newstr, FALSE);
+			g_free(newstr);
+			
+			if (matcher_list) {
+				quicksearch->extended_search_strings =
+					g_list_append(
+						quicksearch->extended_search_strings,
+						strings->data);
+				matcherlist_free(matcher_list);
+			} else
+				quicksearch->normal_search_strings =
+					g_list_append(
+						quicksearch->normal_search_strings,
+						strings->data);
+		}
+	
+	} while ((strings = g_list_next(strings)) != NULL);
+
+	quicksearch_set_popdown_strings(quicksearch);
 }

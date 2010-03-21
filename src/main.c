@@ -1450,6 +1450,7 @@ int main(int argc, char *argv[])
 	folderview_set(folderview);
 
 	prefs_matcher_read_config();
+	quicksearch_set_search_strings(mainwin->summaryview->quicksearch);
 
 	/* make one all-folder processing before using claws */
 	main_window_cursor_wait(mainwin);
