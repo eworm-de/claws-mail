@@ -1,3 +1,12 @@
+2010-03-21 [pawel]	3.7.5cvs35
+
+	* src/addrgather.c
+		Remove superfluous gtk_widget_show_all()
+	* src/mimeview.c
+		Add forgotten colon
+	* src/common/utils.c
+		Return correct type
+
 2010-03-21 [pawel]	3.7.5cvs34
 
 	* src/main.c

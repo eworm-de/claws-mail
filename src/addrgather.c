@@ -480,8 +480,6 @@ static void addrgather_dlg_create(void)
 	gtk_window_set_default_size(GTK_WINDOW(window), prefs_common.addrgather_width,
 				    prefs_common.addrgather_height);
 
-	gtk_widget_show_all(vbox);
-
 	addrgather_dlg.window     = window;
 	addrgather_dlg.notebook   = notebook;
 	addrgather_dlg.btnOk      = btnOk;

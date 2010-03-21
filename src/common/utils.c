@@ -1128,7 +1128,7 @@ static const gchar * line_has_quote_char_last(const gchar * str, const gchar *qu
 	int i;
 
 	if (quote_chars == NULL)
-		return FALSE;
+		return NULL;
 
 	for (i = 0; i < strlen(quote_chars); i++) {
 		tmp_pos = strrchr (str,	quote_chars[i]);

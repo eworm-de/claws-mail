@@ -2352,12 +2352,12 @@ static void icon_list_append_icon (MimeView *mimeview, MimeInfo *mimeinfo)
 #if GTK_CHECK_VERSION(2,12,0)
 		tiptmp = g_strconcat(tip, "\n<b>",
 				prefs_common.attach_desc && mimeinfo->description ?
-				_("Description") : _("Filename:"),
+				_("Description:") : _("Filename:"),
 				" </b>", tmp, NULL);
 #else
 		tiptmp = g_strconcat(tip, "\n",
 				prefs_common.attach_desc && mimeinfo->description ?
-				_("Description") : _("Filename:"),
+				_("Description:") : _("Filename:"),
 				" ", tmp, NULL);
 #endif
 		g_free(tip);
