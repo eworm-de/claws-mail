@@ -39,6 +39,7 @@
 #include "alertpanel.h"
 #include "recv.h"
 #include "socket.h"
+#include "prefs_common.h"
 
 #define GROUPLIST_DIALOG_WIDTH		450
 #define GROUPLIST_DIALOG_HEIGHT		400
@@ -66,6 +67,8 @@ static gboolean grouplist_recv_func	(SockInfo	*sock,
 					 gint		 count,
 					 gint		 read_bytes,
 					 gpointer	 data);
+static void grouplist_size_allocate	(GtkWidget *widget,
+					 GtkAllocation *allocation);
 
 static gint window_deleted	(GtkWidget	*widget,
 				 GdkEventAny	*event,
@@ -146,14 +149,12 @@ static void grouplist_dialog_create(void)
 	GtkWidget *cancel_button;	
 	GtkWidget *refresh_button;	
 	GtkWidget *scrolledwin;
+	static GdkGeometry geometry;
 	gchar *titles[3];
 	gint i;
 
 	dialog = gtk_dialog_new();
 	gtk_window_set_resizable(GTK_WINDOW(dialog), TRUE);
-	gtk_widget_set_size_request(dialog,
-				    GROUPLIST_DIALOG_WIDTH,
-				    GROUPLIST_DIALOG_HEIGHT);
 	gtk_container_set_border_width
 		(GTK_CONTAINER(GTK_DIALOG(dialog)->action_area), 5);
 	gtk_window_set_position(GTK_WINDOW(dialog), GTK_WIN_POS_CENTER);
@@ -162,9 +163,9 @@ static void grouplist_dialog_create(void)
 			 G_CALLBACK(window_deleted), NULL);
 	g_signal_connect(G_OBJECT(dialog), "key_press_event",
 			 G_CALLBACK(key_pressed), NULL);
+	g_signal_connect(G_OBJECT(dialog), "size_allocate",
+			 G_CALLBACK(grouplist_size_allocate), NULL);
 	MANAGE_WINDOW_SIGNALS_CONNECT(dialog);
-
-	gtk_widget_realize(dialog);
 
 	vbox = gtk_vbox_new(FALSE, 8);
 	gtk_container_add(GTK_CONTAINER(GTK_DIALOG(dialog)->vbox), vbox);
@@ -196,21 +197,29 @@ static void grouplist_dialog_create(void)
 	scrolledwin = gtk_scrolled_window_new(NULL, NULL);
 	gtk_box_pack_start(GTK_BOX (vbox), scrolledwin, TRUE, TRUE, 0);
 	gtk_scrolled_window_set_policy(GTK_SCROLLED_WINDOW (scrolledwin),
-				       GTK_POLICY_ALWAYS,
-				       GTK_POLICY_ALWAYS);
+				       GTK_POLICY_AUTOMATIC,
+				       GTK_POLICY_AUTOMATIC);
 
 	titles[0] = _("Newsgroup name");
 	titles[1] = _("Messages");
 	titles[2] = _("Type");
-	ctree = gtk_cmctree_new_with_titles(3, 0, titles);
+	ctree = gtk_sctree_new_with_titles(3, 0, titles);
 	gtk_container_add(GTK_CONTAINER(scrolledwin), ctree);
 	gtk_cmclist_set_column_width
 		(GTK_CMCLIST(ctree), 0, GROUPLIST_COL_NAME_WIDTH);
 	gtk_cmclist_set_column_auto_resize(GTK_CMCLIST(ctree), 0, TRUE);
 	gtk_cmclist_set_selection_mode(GTK_CMCLIST(ctree), GTK_SELECTION_MULTIPLE);
-	gtk_cmctree_set_line_style(GTK_CMCTREE(ctree), GTK_CMCTREE_LINES_DOTTED);
-	gtk_cmctree_set_expander_style(GTK_CMCTREE(ctree),
-				     GTK_CMCTREE_EXPANDER_SQUARE);
+	
+	if (prefs_common.enable_dotted_lines) {	
+		gtk_cmctree_set_line_style(GTK_CMCTREE(ctree), GTK_CMCTREE_LINES_DOTTED);
+		gtk_cmctree_set_expander_style(GTK_CMCTREE(ctree),
+					GTK_CMCTREE_EXPANDER_SQUARE);
+	} else {
+		gtk_cmctree_set_line_style(GTK_CMCTREE(ctree), GTK_CMCTREE_LINES_NONE);
+		gtk_cmctree_set_expander_style(GTK_CMCTREE(ctree),
+					GTK_CMCTREE_EXPANDER_TRIANGLE);
+	}
+
 	for (i = 0; i < 3; i++)
 		GTK_WIDGET_UNSET_FLAGS(GTK_CMCLIST(ctree)->column[i].button,
 				       GTK_CAN_FOCUS);
@@ -237,6 +246,17 @@ static void grouplist_dialog_create(void)
 			 G_CALLBACK(cancel_clicked), NULL);
 	g_signal_connect(G_OBJECT(refresh_button), "clicked",
 			 G_CALLBACK(refresh_clicked), NULL);
+
+	if (!geometry.min_width) {
+		geometry.min_width = GROUPLIST_DIALOG_WIDTH;
+		geometry.min_height = GROUPLIST_DIALOG_HEIGHT;
+	}
+
+	gtk_window_set_geometry_hints(GTK_WINDOW(dialog), NULL, &geometry,
+				      GDK_HINT_MIN_SIZE);
+	gtk_window_set_default_size(GTK_WINDOW(dialog),
+					prefs_common.news_subscribe_width,
+					prefs_common.news_subscribe_height);
 
 	gtk_widget_show_all(GTK_DIALOG(dialog)->vbox);
 }
@@ -481,6 +501,14 @@ static gboolean grouplist_recv_func(SockInfo *sock, gint count, gint read_bytes,
 		return FALSE;
 	else
 		return TRUE;
+}
+
+static void grouplist_size_allocate(GtkWidget *widget, GtkAllocation *allocation)
+{
+	cm_return_if_fail( allocation != NULL );
+	
+	prefs_common.news_subscribe_width	= allocation->width;
+	prefs_common.news_subscribe_height	= allocation->height;
 }
 
 static gint window_deleted(GtkWidget *widget, GdkEventAny *event, gpointer data)

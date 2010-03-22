@@ -470,6 +470,8 @@ struct _PrefsCommon
 	gint aboutwin_height;
 	gint addrgather_width;
 	gint addrgather_height;
+	gint news_subscribe_width;
+	gint news_subscribe_height;
 
 	gint warn_dnd;
 	gint broken_are_utf8;

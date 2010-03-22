@@ -3976,3 +3976,4 @@
 ( cvs diff -u -r 1.5.2.29 -r 1.5.2.30 po/zh_CN.po;  ) > 3.7.5cvs33.patchset
 ( cvs diff -u -r 1.115.2.225 -r 1.115.2.226 src/main.c;  cvs diff -u -r 1.1.2.89 -r 1.1.2.90 src/gtk/quicksearch.c;  cvs diff -u -r 1.1.2.18 -r 1.1.2.19 src/gtk/quicksearch.h;  ) > 3.7.5cvs34.patchset
 ( cvs diff -u -r 1.5.10.30 -r 1.5.10.31 src/addrgather.c;  cvs diff -u -r 1.83.2.160 -r 1.83.2.161 src/mimeview.c;  cvs diff -u -r 1.36.2.183 -r 1.36.2.184 src/common/utils.c;  ) > 3.7.5cvs35.patchset
+( cvs diff -u -r 1.14.2.24 -r 1.14.2.25 src/grouplistdialog.c;  cvs diff -u -r 1.204.2.194 -r 1.204.2.195 src/prefs_common.c;  cvs diff -u -r 1.103.2.127 -r 1.103.2.128 src/prefs_common.h;  ) > 3.7.5cvs36.patchset

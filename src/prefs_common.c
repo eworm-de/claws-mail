@@ -1033,6 +1033,11 @@ static PrefParam param[] = {
 	{"addrgather_height", "-1", &prefs_common.addrgather_height, P_INT,
 	 NULL, NULL, NULL},
 
+	{"news_subscribe_width", "450", &prefs_common.news_subscribe_width, P_INT,
+	 NULL, NULL, NULL},
+	{"news_subscribe_height", "400", &prefs_common.news_subscribe_height, P_INT,
+	 NULL, NULL, NULL},
+
 	/* Hidden */
 	{"warn_dnd", "1", &prefs_common.warn_dnd, P_INT,
 	 NULL, NULL, NULL},

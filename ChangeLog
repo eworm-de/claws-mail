@@ -1,3 +1,12 @@
+2010-03-22 [pawel]	3.7.5cvs36
+
+	* src/grouplistdialog.c
+	* src/prefs_common.c
+	* src/prefs_common.h
+		- remember newsgroups list dialog size
+		- respect use_dotted_lines hidden pref
+		- respect use_stripes_everywhere hidden pref
+
 2010-03-21 [pawel]	3.7.5cvs35
 
 	* src/addrgather.c
