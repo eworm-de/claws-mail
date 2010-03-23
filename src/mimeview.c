@@ -278,16 +278,22 @@ MimeView *mimeview_create(MainWindow *mainwin)
 				       GTK_POLICY_AUTOMATIC);
 
 	ctree = gtk_sctree_new_with_titles(N_MIMEVIEW_COLS, 0, titles);
-	gtk_widget_show(ctree);
+
+	if (prefs_common.show_col_headers == FALSE)
+		gtk_cmclist_column_titles_hide(GTK_CMCLIST(ctree));
+
 	gtk_cmclist_set_selection_mode(GTK_CMCLIST(ctree), GTK_SELECTION_BROWSE);
 	gtk_cmctree_set_line_style(GTK_CMCTREE(ctree), GTK_CMCTREE_LINES_NONE);
 	gtk_cmclist_set_column_justification(GTK_CMCLIST(ctree), COL_SIZE,
 					   GTK_JUSTIFY_RIGHT);
 	gtk_cmclist_set_column_width(GTK_CMCLIST(ctree), COL_MIMETYPE, 240);
 	gtk_cmclist_set_column_width(GTK_CMCLIST(ctree), COL_SIZE, 90);
+	gtk_cmclist_set_column_auto_resize(GTK_CMCLIST(ctree), COL_MIMETYPE, TRUE);
+	gtk_cmclist_set_column_auto_resize(GTK_CMCLIST(ctree), COL_NAME, TRUE);	
 	for (i = 0; i < N_MIMEVIEW_COLS; i++)
 		GTK_WIDGET_UNSET_FLAGS(GTK_CMCLIST(ctree)->column[i].button,
 				       GTK_CAN_FOCUS);
+	gtk_widget_show(ctree);
 	gtk_container_add(GTK_CONTAINER(scrolledwin), ctree);
 
 	g_signal_connect(G_OBJECT(ctree), "tree_select_row",

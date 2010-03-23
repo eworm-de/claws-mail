@@ -4091,14 +4091,17 @@ static void toggle_col_headers_cb(GtkAction *gaction, gpointer data)
 	MainWindow *mainwin = (MainWindow *)data;
 	FolderView *folderview = mainwin->folderview;
 	SummaryView *summaryview = mainwin->summaryview;
+	MimeView *mimeview = mainwin->messageview->mimeview;
 
 	if (gtk_toggle_action_get_active (GTK_TOGGLE_ACTION (gaction))) {
 		gtk_cmclist_column_titles_show(GTK_CMCLIST(folderview->ctree));
 		gtk_cmclist_column_titles_show(GTK_CMCLIST(summaryview->ctree));
+  		gtk_cmclist_column_titles_show(GTK_CMCLIST(mimeview->ctree));
 		prefs_common.show_col_headers = TRUE;
 	} else {
 		gtk_cmclist_column_titles_hide(GTK_CMCLIST(folderview->ctree));
 		gtk_cmclist_column_titles_hide(GTK_CMCLIST(summaryview->ctree));
+   		gtk_cmclist_column_titles_hide(GTK_CMCLIST(mimeview->ctree));		
 		prefs_common.show_col_headers = FALSE;
 	}
 }

@@ -3014,7 +3014,7 @@ set_cell_contents (GtkCMCList    *clist,
       GtkCMCTreeNode *parent;
 
       parent = ((GtkCMCTreeRow *)clist_row)->parent;
-      if (!parent || (parent && GTK_CMCTREE_ROW (parent)->expanded &&
+      if ((parent && GTK_CMCTREE_ROW (parent)->expanded &&
 		      gtk_cmctree_is_viewable (ctree, parent)))
 	{
 	  visible = TRUE;

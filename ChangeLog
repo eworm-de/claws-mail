@@ -1,3 +1,12 @@
+2010-03-23 [pawel]	3.7.5cvs37
+
+	* src/mainwindow.c
+	* src/mimeview.c
+		Respect view->show_col_headers option
+	* src/gtk/gtkcmctree.c
+		Fix GtkCmcTree column width calculation when it has
+		auto_resize set and new node is added
+
 2010-03-22 [pawel]	3.7.5cvs36
 
 	* src/grouplistdialog.c
