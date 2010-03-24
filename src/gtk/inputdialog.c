@@ -85,7 +85,7 @@ static void combo_activated	(GtkEditable	*editable);
 gchar *input_dialog(const gchar *title, const gchar *message,
 		    const gchar *default_string)
 {
-	if (dialog && GTK_WIDGET_VISIBLE(dialog)) return NULL;
+	if (dialog && gtkut_widget_get_visible(dialog)) return NULL;
 
 	if (!dialog)
 		input_dialog_create(FALSE);
@@ -111,7 +111,7 @@ gchar *input_dialog(const gchar *title, const gchar *message,
 gchar *input_dialog_with_invisible(const gchar *title, const gchar *message,
 				   const gchar *default_string)
 {
-	if (dialog && GTK_WIDGET_VISIBLE(dialog)) return NULL;
+	if (dialog && gtkut_widget_get_visible(dialog)) return NULL;
 
 	if (!dialog)
 		input_dialog_create(TRUE);
@@ -137,7 +137,7 @@ gchar *input_dialog_with_invisible_checkbtn(const gchar *title, const gchar *mes
 				   const gchar *default_string, const gchar *checkbtn_label,
 				   gboolean *checkbtn_state)
 {
-	if (dialog && GTK_WIDGET_VISIBLE(dialog)) return NULL;
+	if (dialog && gtkut_widget_get_visible(dialog)) return NULL;
 
 	if (!dialog)
 		input_dialog_create(TRUE);
@@ -178,7 +178,7 @@ gchar *input_dialog_combo_remember(const gchar *title, const gchar *message,
 			  const gchar *default_string, GList *list,
 			  gboolean *remember)
 {
-	if (dialog && GTK_WIDGET_VISIBLE(dialog)) return NULL;
+	if (dialog && gtkut_widget_get_visible(dialog)) return NULL;
 
 	if (!dialog)
 		input_dialog_create(FALSE);
@@ -209,7 +209,7 @@ gchar *input_dialog_with_checkbtn(const gchar	*title,
 				   const gchar  *checkbtn_label,
 				   gboolean *checkbtn_state)
 {
-	if (dialog && GTK_WIDGET_VISIBLE(dialog)) return NULL;
+	if (dialog && gtkut_widget_get_visible(dialog)) return NULL;
 
 	if (!dialog)
 		input_dialog_create(FALSE);
@@ -421,7 +421,7 @@ static gchar *input_dialog_open(const gchar *title, const gchar *message,
 {
 	gchar *str;
 
-	if (dialog && GTK_WIDGET_VISIBLE(dialog)) return NULL;
+	if (dialog && gtkut_widget_get_visible(dialog)) return NULL;
 
 	if (!dialog)
 		input_dialog_create(FALSE);

@@ -41,6 +41,7 @@
 #include "prefs_common.h"
 #include "claws.h"
 #include "hooks.h"
+#include "gtkutils.h"
 #include <pthread.h>
 
 /*!
@@ -1260,7 +1261,7 @@ static gboolean address_completion_complete_address_in_entry(GtkEntry *entry,
 
 	cm_return_val_if_fail(entry != NULL, FALSE);
 
-	if (!GTK_WIDGET_HAS_FOCUS(entry)) return FALSE;
+	if (!gtkut_widget_has_focus(GTK_WIDGET(entry))) return FALSE;
 
 	/* get an address component from the cursor */
 	searchTerm = get_address_from_edit( entry, &cursor_pos );

@@ -248,7 +248,7 @@ static gboolean trayicon_close_hook(gpointer source, gpointer data)
 			*close_allowed = FALSE;
 			focused_widget = gtk_window_get_focus(GTK_WINDOW(mainwin->window));
 			
-			if (GTK_WIDGET_VISIBLE(GTK_WIDGET(mainwin->window)))
+			if (gtkut_widget_get_visible(GTK_WIDGET(mainwin->window)))
 				main_window_hide(mainwin);
 		}
 	}
@@ -260,7 +260,7 @@ static gboolean trayicon_got_iconified_hook(gpointer source, gpointer data)
 	MainWindow *mainwin = mainwindow_get_mainwindow();
 
 	if (trayicon_prefs.hide_when_iconified
-			&& GTK_WIDGET_VISIBLE(GTK_WIDGET(mainwin->window))
+			&& gtkut_widget_get_visible(GTK_WIDGET(mainwin->window))
 			&& !gtk_window_get_skip_taskbar_hint(GTK_WINDOW(mainwin->window))) {
 		focused_widget = gtk_window_get_focus(GTK_WINDOW(mainwin->window));
 		gtk_window_set_skip_taskbar_hint(GTK_WINDOW(mainwin->window), TRUE);
@@ -299,7 +299,7 @@ static gboolean click_cb(GtkWidget * widget,
 
 	switch (event->button) {
 	case 1:
-		if (GTK_WIDGET_VISIBLE(GTK_WIDGET(mainwin->window))) {
+		if (gtkut_widget_get_visible(GTK_WIDGET(mainwin->window))) {
 			if ((gdk_window_get_state(GTK_WIDGET(mainwin->window)->window)&GDK_WINDOW_STATE_ICONIFIED)
 					|| mainwindow_is_obscured()) {
 				gtk_window_deiconify(GTK_WINDOW(mainwin->window));
@@ -477,7 +477,7 @@ int plugin_init(gchar **error)
 	if (trayicon_prefs.hide_at_startup && claws_is_starting()) {
 		MainWindow *mainwin = mainwindow_get_mainwindow();
 
-		if (GTK_WIDGET_VISIBLE(GTK_WIDGET(mainwin->window)))
+		if (gtkut_widget_get_visible(GTK_WIDGET(mainwin->window)))
 			main_window_hide(mainwin);
 		main_set_show_at_startup(FALSE);
 	}

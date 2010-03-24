@@ -645,7 +645,7 @@ void gtkut_widget_get_uposition(GtkWidget *widget, gint *px, gint *py)
 
 void gtkut_widget_draw_now(GtkWidget *widget)
 {
-	if (widget && GTK_WIDGET_VISIBLE(widget) && GTK_WIDGET_DRAWABLE(widget))
+	if (widget && gtkut_widget_get_visible(widget) && gtkut_widget_is_drawable(widget))
 		gdk_window_process_updates(widget->window, FALSE);
 }
 
@@ -868,7 +868,7 @@ GtkWidget *gtkut_get_focused_child(GtkContainer *parent)
 
 	for (c = child_list; c != NULL; c = g_list_next(c)) {
 		if (c->data && GTK_IS_WIDGET(c->data)) {
-			if (GTK_WIDGET_HAS_FOCUS(GTK_WIDGET(c->data))) {
+			if (gtkut_widget_has_focus(GTK_WIDGET(c->data))) {
 				result = GTK_WIDGET(c->data);
 				break;
 			}
@@ -1688,4 +1688,112 @@ claws_input_add    (gint	      source,
   g_io_channel_unref (channel);
 
   return result;
+}
+
+gboolean gtkut_widget_has_focus(GtkWidget *widget)
+{
+#if GTK_CHECK_VERSION(2,18,0)
+	return gtk_widget_has_focus(widget);
+#else
+	return GTK_WIDGET_HAS_FOCUS(widget);
+#endif
+}
+
+gboolean gtkut_widget_get_can_focus(GtkWidget *widget)
+{
+#if GTK_CHECK_VERSION(2,18,0)
+	return gtk_widget_get_can_focus(widget);
+#else
+	return GTK_WIDGET_CAN_FOCUS(widget);
+#endif
+}
+
+gboolean gtkut_widget_has_grab(GtkWidget *widget)
+{
+#if GTK_CHECK_VERSION(2,18,0)
+	return gtk_widget_has_grab(widget);
+#else
+	return GTK_WIDGET_HAS_GRAB(widget);
+#endif
+}
+
+gboolean gtkut_widget_get_visible(GtkWidget *widget)
+{
+#if GTK_CHECK_VERSION(2,18,0)
+	return gtk_widget_get_visible(widget);
+#else
+	return GTK_WIDGET_VISIBLE(widget);
+#endif
+}
+
+gboolean gtkut_widget_get_realized(GtkWidget *widget)
+{
+#if GTK_CHECK_VERSION(2,19,0)
+	return gtk_widget_get_realized(widget);
+#else
+	return GTK_WIDGET_REALIZED(widget);
+#endif
+}
+
+gboolean gtkut_widget_is_sensitive(GtkWidget *widget)
+{
+#if GTK_CHECK_VERSION(2,18,0)
+	return gtk_widget_is_sensitive(widget);
+#else
+	return GTK_WIDGET_IS_SENSITIVE(widget);
+#endif
+}
+
+gboolean gtkut_widget_get_sensitive(GtkWidget *widget)
+{
+#if GTK_CHECK_VERSION(2,18,0)
+	return gtk_widget_get_sensitive(widget);
+#else
+	return GTK_WIDGET_SENSITIVE(widget);
+#endif
+}
+
+gboolean gtkut_widget_is_drawable(GtkWidget *widget)
+{
+#if GTK_CHECK_VERSION(2,18,0)
+	return gtk_widget_is_drawable(widget);
+#else
+	return GTK_WIDGET_DRAWABLE(widget);
+#endif
+}
+
+GtkStateType gtkut_widget_get_state(GtkWidget *widget)
+{
+#if GTK_CHECK_VERSION(2,18,0)
+	return gtk_widget_get_state(widget);
+#else
+	return GTK_WIDGET_STATE(widget);
+#endif
+}
+
+gboolean gtkut_widget_get_mapped(GtkWidget *widget)
+{
+#if GTK_CHECK_VERSION(2,19,0)
+	return gtk_widget_get_mapped(widget);
+#else
+	return GTK_WIDGET_MAPPED(widget);
+#endif
+}
+
+gboolean gtkut_widget_get_has_window(GtkWidget *widget)
+{
+#if GTK_CHECK_VERSION(2,18,0)
+	return gtk_widget_get_has_window(widget);
+#else
+	return GTK_WIDGET_NO_WINDOW(widget);
+#endif
+}
+
+gboolean gtkut_widget_get_app_paintable(GtkWidget *widget)
+{
+#if GTK_CHECK_VERSION(2,18,0)
+	return gtk_widget_get_app_paintable(widget);
+#else
+	return GTK_WIDGET_APP_PAINTABLE(widget);
+#endif
 }

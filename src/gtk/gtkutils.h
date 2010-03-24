@@ -164,6 +164,19 @@ void gtkut_widget_init			(void);
 void gtkut_widget_set_app_icon		(GtkWidget	*widget);
 void gtkut_widget_set_composer_icon	(GtkWidget	*widget);
 
+gboolean gtkut_widget_get_app_paintable	(GtkWidget	*widget);
+gboolean gtkut_widget_get_can_focus	(GtkWidget	*widget);
+gboolean gtkut_widget_get_has_window	(GtkWidget	*widget);
+gboolean gtkut_widget_get_mapped	(GtkWidget	*widget);
+gboolean gtkut_widget_get_realized	(GtkWidget	*widget);
+gboolean gtkut_widget_get_sensitive	(GtkWidget	*widget);
+GtkStateType gtkut_widget_get_state	(GtkWidget	*widget);
+gboolean gtkut_widget_get_visible	(GtkWidget	*widget);
+gboolean gtkut_widget_has_grab		(GtkWidget	*widget);
+gboolean gtkut_widget_has_focus		(GtkWidget	*widget);
+gboolean gtkut_widget_is_drawable	(GtkWidget	*widget);
+gboolean gtkut_widget_is_sensitive	(GtkWidget	*widget);
+
 GtkWidget *gtkut_account_menu_new	(GList			*ac_list,
 				  	 GCallback	 	 callback,
 					 gpointer		 data);

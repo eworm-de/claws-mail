@@ -40,6 +40,7 @@
 #include "prefs_common.h"
 #include "codeconv.h"
 #include "defs.h"
+#include "gtkutils.h"
 
 static void claws_spell_entry_init		(ClawsSpellEntry *entry);
 static void claws_spell_entry_editable_init	(GtkEditableClass *iface);
@@ -427,7 +428,7 @@ void claws_spell_entry_recheck_all(ClawsSpellEntry *entry)
 	layout = gtk_entry_get_layout(GTK_ENTRY(entry));
 	pango_layout_set_attributes(layout, entry->priv->attr_list);
 
-	if (GTK_WIDGET_REALIZED(GTK_WIDGET(entry))) {
+	if (gtkut_widget_get_realized(GTK_WIDGET(entry))) {
 		rect.x = 0; rect.y = 0;
 		rect.width  = GTK_WIDGET(entry)->allocation.width;
 		rect.height = GTK_WIDGET(entry)->allocation.height;

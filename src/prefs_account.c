@@ -4494,7 +4494,7 @@ static void prefs_account_nntpauth_toggled(GtkToggleButton *button,
 {
 	gboolean auth;
 
-	if (!GTK_WIDGET_SENSITIVE (GTK_WIDGET (button)))
+	if (!gtkut_widget_get_sensitive (GTK_WIDGET (button)))
 		return;
 	auth = gtk_toggle_button_get_active (button);
 	gtk_widget_set_sensitive(basic_page.uid_label,  auth);

@@ -258,13 +258,13 @@ static gint headerview_show_xface(HeaderView *headerview, MsgInfo *msginfo)
 	    !msginfo->extradata->xface || 
 	    strlen(msginfo->extradata->xface) < 5) {
 		if (headerview->image &&
-		    GTK_WIDGET_VISIBLE(headerview->image)) {
+		    gtkut_widget_get_visible(headerview->image)) {
 			gtk_widget_hide(headerview->image);
 			gtk_widget_queue_resize(hbox);
 		}
 		return -1;
 	}
-	if (!GTK_WIDGET_VISIBLE(headerview->hbox)) return -1;
+	if (!gtkut_widget_get_visible(headerview->hbox)) return -1;
 
 	if (headerview->image) {
 		gtk_widget_destroy(headerview->image);
@@ -295,13 +295,13 @@ static gint headerview_show_face (HeaderView *headerview, MsgInfo *msginfo)
 
 	if (!msginfo->extradata || !msginfo->extradata->face) {
 		if (headerview->image &&
-		    GTK_WIDGET_VISIBLE(headerview->image)) {
+		    gtkut_widget_get_visible(headerview->image)) {
 			gtk_widget_hide(headerview->image);
 			gtk_widget_queue_resize(hbox);
 		}
 		return -1;
 	}
-	if (!GTK_WIDGET_VISIBLE(headerview->hbox)) return -1;
+	if (!gtkut_widget_get_visible(headerview->hbox)) return -1;
 
 	if (headerview->image) {
 		gtk_widget_destroy(headerview->image);
@@ -331,7 +331,7 @@ static void headerview_save_contact_pic (HeaderView *headerview, MsgInfo *msginf
 	GError *error = NULL;
 	GdkPixbuf *picture = NULL;
 
-	if (!GTK_WIDGET_VISIBLE(headerview->hbox)) return;
+	if (!gtkut_widget_get_visible(headerview->hbox)) return;
 
 	if (headerview->image) {
 		picture = gtk_image_get_pixbuf(GTK_IMAGE(headerview->image));
@@ -360,7 +360,7 @@ static gint headerview_show_contact_pic (HeaderView *headerview, MsgInfo *msginf
 	GdkPixbuf *picture = NULL;
 	gint w, h;
 
-	if (!GTK_WIDGET_VISIBLE(headerview->hbox)) return -1;
+	if (!gtkut_widget_get_visible(headerview->hbox)) return -1;
 
 	if (headerview->image) {
 		gtk_widget_destroy(headerview->image);
@@ -425,7 +425,7 @@ void headerview_clear(HeaderView *headerview)
 	gtk_widget_hide(headerview->tags_header_label);
 	gtk_widget_hide(headerview->tags_body_label);
 
-	if (headerview->image && GTK_WIDGET_VISIBLE(headerview->image)) {
+	if (headerview->image && gtkut_widget_get_visible(headerview->image)) {
 		gtk_widget_hide(headerview->image);
 		gtk_widget_queue_resize(headerview->hbox);
 	}

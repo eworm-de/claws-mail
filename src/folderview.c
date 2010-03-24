@@ -2174,7 +2174,7 @@ static void folderview_selected(GtkCMCTree *ctree, GtkCMCTreeNode *row,
 		gtk_cmctree_expand(ctree, row);
 
 	/* ungrab the mouse event */
-	if (GTK_WIDGET_HAS_GRAB(ctree)) {
+	if (gtkut_widget_has_grab(GTK_WIDGET(ctree))) {
 		gtk_grab_remove(GTK_WIDGET(ctree));
 		if (gdk_pointer_is_grabbed())
 			gdk_pointer_ungrab(GDK_CURRENT_TIME);

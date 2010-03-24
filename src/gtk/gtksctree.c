@@ -32,6 +32,7 @@
 #include "claws-marshal.h"
 #include "prefs_common.h"
 #include "utils.h"
+#include "gtkutils.h"
 
 #define CLIST_UNFROZEN(clist)     (((GtkCMCList*) (clist))->freeze_count == 0)
 #define CLIST_REFRESH(clist)    G_STMT_START { \
@@ -881,7 +882,7 @@ gtk_sctree_draw_row (GtkCMCList     *clist,
   cm_return_if_fail (clist != NULL);
 
   /* bail now if we arn't drawable yet */
-  if (!GTK_WIDGET_DRAWABLE (clist) || row < 0 || row >= clist->rows)
+  if (!gtkut_widget_is_drawable (GTK_WIDGET(clist)) || row < 0 || row >= clist->rows)
     return;
 
   widget = GTK_WIDGET (clist);
@@ -1251,7 +1252,7 @@ gtk_sctree_draw_row (GtkCMCList     *clist,
 
   /* draw focus rectangle */
   if (clist->focus_row == row &&
-      GTK_WIDGET_CAN_FOCUS (widget) && GTK_WIDGET_HAS_FOCUS (widget))
+      gtkut_widget_get_can_focus (widget) && gtkut_widget_has_focus (widget))
     {
       if (!area)
 	gdk_draw_rectangle (clist->clist_window, clist->xor_gc, FALSE,
@@ -1282,7 +1283,7 @@ gtk_sctree_change_focus_row_expansion (GtkCMCTree          *ctree,
   clist = GTK_CMCLIST (ctree);
 
   if (gdk_display_pointer_is_grabbed (gtk_widget_get_display (GTK_WIDGET (ctree))) && 
-      GTK_WIDGET_HAS_GRAB (ctree))
+      gtkut_widget_has_grab (GTK_WIDGET(ctree)))
     return;
   
   if (!(node =
@@ -1642,7 +1643,7 @@ gtk_sctree_button_press (GtkWidget *widget, GdkEventButton *event)
 
 	on_row = gtk_cmclist_get_selection_info (clist, event->x, event->y, &row, &col);
 
-	if (on_row && !GTK_WIDGET_HAS_FOCUS(widget))
+	if (on_row && !gtkut_widget_has_focus(widget))
 		gtk_widget_grab_focus (widget);
 
 	if (gtk_sctree_is_hot_spot (GTK_SCTREE(sctree), event->x, event->y)) {
@@ -2833,7 +2834,7 @@ srow_delete (GtkCMCTree    *ctree,
 	(clist, &(ctree_row->row), i, GTK_CMCELL_EMPTY, NULL, 0, NULL);
       if (ctree_row->row.cell[i].style)
 	{
-	  if (GTK_WIDGET_REALIZED (ctree))
+	  if (gtkut_widget_get_realized (GTK_WIDGET(ctree)))
 	    gtk_style_detach (ctree_row->row.cell[i].style);
 	  g_object_unref (ctree_row->row.cell[i].style);
 	}
@@ -2841,7 +2842,7 @@ srow_delete (GtkCMCTree    *ctree,
 
   if (ctree_row->row.style)
     {
-      if (GTK_WIDGET_REALIZED (ctree))
+      if (gtkut_widget_get_realized (GTK_WIDGET(ctree)))
 	gtk_style_detach (ctree_row->row.style);
       g_object_unref (ctree_row->row.style);
     }

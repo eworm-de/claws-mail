@@ -1,3 +1,29 @@
+2010-03-24 [pawel]	3.7.5cvs38
+
+	* src/addr_compl.c
+	* src/compose.c
+	* src/folderview.c
+	* src/grouplistdialog.c
+	* src/headerview.c
+	* src/mainwindow.c
+	* src/mimeview.c
+	* src/prefs_account.c
+	* src/gtk/gtkcmclist.c
+	* src/gtk/gtkcmctree.c
+	* src/gtk/gtkcmoptionmenu.c
+	* src/gtk/gtksctree.c
+	* src/gtk/gtkshruler.c
+	* src/gtk/gtkutils.c
+	* src/gtk/gtkutils.h
+	* src/gtk/gtkvscrollbutton.c
+	* src/gtk/inputdialog.c
+	* src/gtk/spell_entry.c
+	* src/plugins/trayicon/trayicon.c
+	* src/plugins/trayicon/libeggtrayicon/Makefile.am
+	* src/plugins/trayicon/libeggtrayicon/eggtrayicon.c
+	* src/plugins/trayicon/libeggtrayicon/gtkplugxembed.c
+		Fix build with GTK+ 2.19
+
 2010-03-23 [pawel]	3.7.5cvs37
 
 	* src/mainwindow.c

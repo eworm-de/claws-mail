@@ -5,7 +5,8 @@ libeggtrayicon_la_SOURCES = \
 
 INCLUDES = \
         -I../../../ \
-	-I../../../common 
+	-I../../../common \
+	-I../../../gtk 
 			
 AM_CPPFLAGS = \
 	$(GTK_CFLAGS)

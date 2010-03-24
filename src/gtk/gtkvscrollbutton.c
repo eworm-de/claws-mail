@@ -36,6 +36,7 @@
 #include <gtk/gtk.h>
 #include "utils.h"
 #include "gtkvscrollbutton.h"
+#include "gtkutils.h"
 
 #define SCROLL_TIMER_LENGTH  20
 #define SCROLL_INITIAL_DELAY 100	/* must hold button this long before ... */
@@ -252,7 +253,7 @@ static gint gtk_vscrollbutton_button_press(GtkWidget *widget,
 					   GdkEventButton *event,
 					   GtkVScrollbutton *scrollbutton)
 {
-    if (!GTK_WIDGET_HAS_FOCUS(widget))
+    if (!gtkut_widget_has_focus(widget))
 	gtk_widget_grab_focus(widget);
 
     if (scrollbutton->button == 0) {
@@ -274,7 +275,7 @@ static gint gtk_vscrollbutton_button_release(GtkWidget *widget,
 					     GdkEventButton *event,
 					     GtkVScrollbutton *scrollbutton)
 {
-    if (!GTK_WIDGET_HAS_FOCUS(widget))
+    if (!gtkut_widget_has_focus(widget))
 	gtk_widget_grab_focus(widget);
 
     if (scrollbutton->button == event->button) {
@@ -416,7 +417,7 @@ static gint gtk_real_vscrollbutton_timer(GtkVScrollbutton *scrollbutton)
 static void gtk_vscrollbutton_set_sensitivity   (GtkAdjustment    *adjustment,
 						 GtkVScrollbutton *scrollbutton)
 {
-	if (!GTK_WIDGET_REALIZED(GTK_WIDGET(scrollbutton))) return;
+	if (!gtkut_widget_get_realized(GTK_WIDGET(scrollbutton))) return;
 	if (scrollbutton->button != 0) return; /* not while something is pressed */
 	
 	gtk_widget_set_sensitive(scrollbutton->upbutton, 

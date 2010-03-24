@@ -35,6 +35,7 @@
 #include "gtkcmctree.h"
 #include "claws-marshal.h"
 #include "utils.h"
+#include "gtkutils.c"
 
 #define PM_SIZE                    8
 #define TAB_SIZE                   (PM_SIZE + 6)
@@ -891,7 +892,7 @@ gtk_cmctree_unrealize (GtkWidget *widget)
   ctree = GTK_CMCTREE (widget);
   clist = GTK_CMCLIST (widget);
 
-  if (GTK_WIDGET_REALIZED (widget))
+  if (gtkut_widget_get_realized (widget))
     {
       GtkCMCTreeNode *node;
       GtkCMCTreeNode *child;
@@ -1754,7 +1755,7 @@ draw_row (GtkCMCList     *clist,
   cm_return_if_fail (clist != NULL);
 
   /* bail now if we arn't drawable yet */
-  if (!GTK_WIDGET_DRAWABLE (clist) || row < 0 || row >= clist->rows)
+  if (!gtkut_widget_is_drawable (GTK_WIDGET(clist)) || row < 0 || row >= clist->rows)
     return;
 
   widget = GTK_WIDGET (clist);
@@ -2111,7 +2112,7 @@ draw_row (GtkCMCList     *clist,
 
   /* draw focus rectangle */
   if (clist->focus_row == row &&
-      GTK_WIDGET_CAN_FOCUS (widget) && GTK_WIDGET_HAS_FOCUS (widget))
+      gtkut_widget_get_can_focus (widget) && gtkut_widget_has_focus (widget))
     {
       if (!area)
 	gdk_draw_rectangle (clist->clist_window, clist->xor_gc, FALSE,
@@ -2590,7 +2591,7 @@ change_focus_row_expansion (GtkCMCTree          *ctree,
   clist = GTK_CMCLIST (ctree);
 
   if (gdk_display_pointer_is_grabbed (gtk_widget_get_display (GTK_WIDGET (ctree))) && 
-      GTK_WIDGET_HAS_GRAB (ctree))
+      gtkut_widget_has_grab (GTK_WIDGET(ctree)))
     return;
   
   if (!(node =
@@ -3303,7 +3304,7 @@ row_delete (GtkCMCTree    *ctree,
 	(clist, &(ctree_row->row), i, GTK_CMCELL_EMPTY, NULL, 0, NULL);
       if (ctree_row->row.cell[i].style)
 	{
-	  if (GTK_WIDGET_REALIZED (ctree))
+	  if (gtkut_widget_get_realized (GTK_WIDGET(ctree)))
 	    gtk_style_detach (ctree_row->row.cell[i].style);
 	  g_object_unref (ctree_row->row.cell[i].style);
 	}
@@ -3311,7 +3312,7 @@ row_delete (GtkCMCTree    *ctree,
 
   if (ctree_row->row.style)
     {
-      if (GTK_WIDGET_REALIZED (ctree))
+      if (gtkut_widget_get_realized (GTK_WIDGET(ctree)))
 	gtk_style_detach (ctree_row->row.style);
       g_object_unref (ctree_row->row.style);
     }
@@ -4804,7 +4805,7 @@ static void
 remove_grab (GtkCMCList *clist)
 {
   if (gdk_display_pointer_is_grabbed (gtk_widget_get_display (GTK_WIDGET (clist))) && 
-      GTK_WIDGET_HAS_GRAB (clist))
+      gtkut_widget_has_grab (GTK_WIDGET(clist)))
     {
       gtk_grab_remove (GTK_WIDGET (clist));
       gdk_display_pointer_ungrab (gtk_widget_get_display (GTK_WIDGET (clist)),
@@ -5012,7 +5013,7 @@ gtk_cmctree_node_set_cell_style (GtkCMCTree     *ctree,
 
   if (GTK_CMCTREE_ROW (node)->row.cell[column].style)
     {
-      if (GTK_WIDGET_REALIZED (ctree))
+      if (gtkut_widget_get_realized (GTK_WIDGET(ctree)))
         gtk_style_detach (GTK_CMCTREE_ROW (node)->row.cell[column].style);
       g_object_unref (GTK_CMCTREE_ROW (node)->row.cell[column].style);
     }
@@ -5023,7 +5024,7 @@ gtk_cmctree_node_set_cell_style (GtkCMCTree     *ctree,
     {
       g_object_ref (GTK_CMCTREE_ROW (node)->row.cell[column].style);
       
-      if (GTK_WIDGET_REALIZED (ctree))
+      if (gtkut_widget_get_realized (GTK_WIDGET(ctree)))
         GTK_CMCTREE_ROW (node)->row.cell[column].style =
 	  gtk_style_attach (GTK_CMCTREE_ROW (node)->row.cell[column].style,
 			    clist->clist_window);
@@ -5084,7 +5085,7 @@ gtk_cmctree_node_set_row_style (GtkCMCTree     *ctree,
 
   if (GTK_CMCTREE_ROW (node)->row.style)
     {
-      if (GTK_WIDGET_REALIZED (ctree))
+      if (gtkut_widget_get_realized (GTK_WIDGET(ctree)))
         gtk_style_detach (GTK_CMCTREE_ROW (node)->row.style);
       g_object_unref (GTK_CMCTREE_ROW (node)->row.style);
     }
@@ -5095,7 +5096,7 @@ gtk_cmctree_node_set_row_style (GtkCMCTree     *ctree,
     {
       g_object_ref (GTK_CMCTREE_ROW (node)->row.style);
       
-      if (GTK_WIDGET_REALIZED (ctree))
+      if (gtkut_widget_get_realized (GTK_WIDGET(ctree)))
         GTK_CMCTREE_ROW (node)->row.style =
 	  gtk_style_attach (GTK_CMCTREE_ROW (node)->row.style,
 			    clist->clist_window);
@@ -5134,7 +5135,7 @@ gtk_cmctree_node_set_foreground (GtkCMCTree       *ctree,
     {
       GTK_CMCTREE_ROW (node)->row.foreground = *color;
       GTK_CMCTREE_ROW (node)->row.fg_set = TRUE;
-      if (GTK_WIDGET_REALIZED (ctree))
+      if (gtkut_widget_get_realized (GTK_WIDGET(ctree)))
 	gdk_colormap_alloc_color (gtk_widget_get_colormap (GTK_WIDGET (ctree)),
 			 &GTK_CMCTREE_ROW (node)->row.foreground, TRUE, TRUE);
     }
@@ -5156,7 +5157,7 @@ gtk_cmctree_node_set_background (GtkCMCTree       *ctree,
     {
       GTK_CMCTREE_ROW (node)->row.background = *color;
       GTK_CMCTREE_ROW (node)->row.bg_set = TRUE;
-      if (GTK_WIDGET_REALIZED (ctree))
+      if (gtkut_widget_get_realized (GTK_WIDGET(ctree)))
 	gdk_colormap_alloc_color (gtk_widget_get_colormap (GTK_WIDGET (ctree)),
 			 &GTK_CMCTREE_ROW (node)->row.background, TRUE, TRUE);
     }
@@ -5349,23 +5350,23 @@ gtk_cmctree_set_line_style (GtkCMCTree          *ctree,
 	   clist->column[ctree->tree_column].width + 3);
     }
 
-  if (GTK_WIDGET_REALIZED (ctree))
+  if (gtkut_widget_get_realized (GTK_WIDGET(ctree)))
     {
       switch (line_style)
 	{
 	case GTK_CMCTREE_LINES_SOLID:
-	  if (GTK_WIDGET_REALIZED (ctree))
+	  if (gtkut_widget_get_realized (GTK_WIDGET(ctree)))
 	    gdk_gc_set_line_attributes (ctree->lines_gc, 1, GDK_LINE_SOLID, 
 					GDK_CAP_BUTT, GDK_JOIN_MITER);
 	  break;
 	case GTK_CMCTREE_LINES_DOTTED:
-	  if (GTK_WIDGET_REALIZED (ctree))
+	  if (gtkut_widget_get_realized (GTK_WIDGET(ctree)))
 	    gdk_gc_set_line_attributes (ctree->lines_gc, 1, 
 					GDK_LINE_ON_OFF_DASH, GDK_CAP_BUTT, GDK_JOIN_MITER);
 	  gdk_gc_set_dashes (ctree->lines_gc, 0, "\1\1", 2);
 	  break;
 	case GTK_CMCTREE_LINES_TABBED:
-	  if (GTK_WIDGET_REALIZED (ctree))
+	  if (gtkut_widget_get_realized (GTK_WIDGET(ctree)))
 	    gdk_gc_set_line_attributes (ctree->lines_gc, 1, GDK_LINE_SOLID, 
 					GDK_CAP_BUTT, GDK_JOIN_MITER);
 	  break;
@@ -5430,7 +5431,7 @@ gtk_cmctree_set_expander_style (GtkCMCTree              *ctree,
       gtk_cmclist_set_column_width (clist, ctree->tree_column, new_width);
     }
 
-  if (GTK_WIDGET_DRAWABLE (clist))
+  if (gtkut_widget_is_drawable (GTK_WIDGET(clist)))
     CLIST_REFRESH (clist);
 }
 
@@ -5761,7 +5762,8 @@ real_undo_selection (GtkCMCList *clist)
     if (GTK_CMCTREE_ROW (work->data)->row.selectable)
       gtk_cmctree_unselect (ctree, GTK_CMCTREE_NODE (work->data));
 
-  if (GTK_WIDGET_HAS_FOCUS (clist) && clist->focus_row != clist->undo_anchor)
+  if (gtkut_widget_has_focus (GTK_WIDGET(clist)) &&
+      clist->focus_row != clist->undo_anchor)
     {
       clist->focus_row = clist->undo_anchor;
       gtk_widget_queue_draw (GTK_WIDGET (clist));

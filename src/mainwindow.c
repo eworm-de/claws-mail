@@ -3563,7 +3563,7 @@ void main_window_popup(MainWindow *mainwin)
 {
 	static gboolean first_start = TRUE;
 
-	if (!GTK_WIDGET_VISIBLE(GTK_WIDGET(mainwin->window)))
+	if (!gtkut_widget_get_visible(GTK_WIDGET(mainwin->window)))
 		main_window_show(mainwin);
 
 	if (prefs_common.mainwin_maximised)
@@ -4795,7 +4795,7 @@ static void allsel_cb(GtkAction *action, gpointer data)
 	MessageView *msgview = mainwin->messageview;
 
 	if (messageview_is_visible(msgview) &&
-		 (GTK_WIDGET_HAS_FOCUS(msgview->mimeview->textview->text)))
+		 (gtkut_widget_has_focus(msgview->mimeview->textview->text)))
 		messageview_select_all(mainwin->messageview);
 	else
 		summary_select_all(mainwin->summaryview);

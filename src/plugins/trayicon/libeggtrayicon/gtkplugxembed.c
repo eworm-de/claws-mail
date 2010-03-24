@@ -32,6 +32,7 @@
 
 #include "xembed.h"
 #include "gtk2-funcs.h"
+#include "gtkutils.h"
 
 static void            gtk_plug_xembed_class_init            (GtkPlugXEmbedClass *klass);
 static void            gtk_plug_xembed_init                  (GtkPlugXEmbed      *plug);
@@ -195,7 +196,7 @@ gtk_plug_xembed_set_is_child (GtkPlugXEmbed  *plug,
        * here, but don't bother remapping -- we will get mapped
        * by gtk_widget_set_parent ().
        */
-      if (GTK_WIDGET_MAPPED (plug))
+      if (gtkut_widget_get_mapped (plug))
 	gtk_widget_unmap (GTK_WIDGET (plug));
       
       GTK_WIDGET_UNSET_FLAGS (plug, GTK_TOPLEVEL);
@@ -244,7 +245,7 @@ _gtk_plug_xembed_add_to_socket (GtkPlugXEmbed   *plug,
   
   g_return_if_fail (GTK_IS_PLUG_XEMBED (plug));
   g_return_if_fail (GTK_IS_SOCKET (socket));
-  g_return_if_fail (GTK_WIDGET_REALIZED (socket));
+  g_return_if_fail (gtkut_widget_get_realized (socket));
 
   widget = GTK_WIDGET (plug);
 
@@ -255,7 +256,7 @@ _gtk_plug_xembed_add_to_socket (GtkPlugXEmbed   *plug,
 
   plug->socket_window = GTK_WIDGET (socket)->window;
 
-  if (GTK_WIDGET_REALIZED (widget))
+  if (gtkut_widget_get_realized (widget))
     {
       gdk_drawable_get_size (GDK_DRAWABLE (widget->window), &w, &h);
       gdk_window_reparent (widget->window, plug->socket_window, -w, -h);
@@ -286,14 +287,14 @@ _gtk_plug_xembed_remove_from_socket (GtkPlugXEmbed   *plug,
 
   g_return_if_fail (GTK_IS_PLUG_XEMBED (plug));
   g_return_if_fail (GTK_IS_SOCKET (socket));
-  g_return_if_fail (GTK_WIDGET_REALIZED (plug));
+  g_return_if_fail (gtkut_widget_get_realized (plug));
 
   widget = GTK_WIDGET (plug);
 
   g_object_ref (plug);
   g_object_ref (socket);
 
-  widget_was_visible = GTK_WIDGET_VISIBLE (plug);
+  widget_was_visible = gtkut_widget_get_visible (plug);
   
   gdk_window_hide (widget->window);
   gdk_window_reparent (widget->window, GDK_ROOT_PARENT (), 0, 0);
@@ -327,7 +328,7 @@ _gtk_plug_xembed_remove_from_socket (GtkPlugXEmbed   *plug,
   gdk_window_unref (event.any.window);
   g_object_unref (plug);
 
-  if (widget_was_visible && GTK_WIDGET_VISIBLE (socket))
+  if (widget_was_visible && gtkut_widget_get_visible (socket))
     gtk_widget_queue_resize (GTK_WIDGET (socket));
 
   g_object_unref (socket);
@@ -395,7 +396,7 @@ gtk_plug_xembed_get_id (GtkPlugXEmbed *plug)
 {
   g_return_val_if_fail (GTK_IS_PLUG_XEMBED (plug), 0);
 
-  if (!GTK_WIDGET_REALIZED (plug))
+  if (!gtkut_widget_get_realized (plug))
     gtk_widget_realize (GTK_WIDGET (plug));
 
   return GDK_WINDOW_XWINDOW (GTK_WIDGET (plug)->window);
@@ -547,8 +548,8 @@ gtk_plug_xembed_map (GtkWidget *widget)
 	  GTK_WIDGET_SET_FLAGS (widget, GTK_MAPPED);
 	  
 	  if (bin->child &&
-	      GTK_WIDGET_VISIBLE (bin->child) &&
-	      !GTK_WIDGET_MAPPED (bin->child))
+	      gtkut_widget_get_visible (bin->child) &&
+	      !gtkut_widget_get_mapped (bin->child))
 		  gtk_widget_map (bin->child);
 	  xembed_set_info (widget->window, XEMBED_MAPPED);
 	  if (!GTK_WIDGET_NO_WINDOW (widget))
@@ -604,12 +605,12 @@ gtk_plug_xembed_size_allocate (GtkWidget     *widget,
 
       widget->allocation = *allocation;
 
-      if (GTK_WIDGET_REALIZED (widget))
+      if (gtkut_widget_get_realized (widget))
 	gdk_window_move_resize (widget->window,
 				allocation->x, allocation->y,
 				allocation->width, allocation->height);
 
-      if (bin->child && GTK_WIDGET_VISIBLE (bin->child))
+      if (bin->child && gtkut_widget_get_visible (bin->child))
 	{
 	  GtkAllocation child_allocation;
 	  
