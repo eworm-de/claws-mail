@@ -1,3 +1,8 @@
+2010-03-25 [paul]	3.7.5cvs39
+
+	* src/gtk/gtkcmclist.c
+		Fix build with GTK+ 2.20
+
 2010-03-24 [pawel]	3.7.5cvs38
 
 	* src/addr_compl.c

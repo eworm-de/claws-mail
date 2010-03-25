@@ -1477,9 +1477,15 @@ gtk_cmclist_column_title_passive (GtkCMCList *clist,
   clist->column[column].button_passive = TRUE;
 
   if (button->button_down)
-    gtk_button_released (button);
+	g_signal_connect(G_OBJECT (clist->column[column].button),
+			 "button-release-event",
+			 G_CALLBACK(column_title_passive_func),
+			 NULL);
   if (button->in_button)
-    gtk_button_leave (button);
+	g_signal_connect(G_OBJECT (clist->column[column].button),
+			 "leave-notify-event",
+			 G_CALLBACK(column_title_passive_func),
+			 NULL);
 
   g_signal_connect (G_OBJECT (clist->column[column].button), "event",
 		      G_CALLBACK(column_title_passive_func), NULL);
