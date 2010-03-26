@@ -1,3 +1,15 @@
+2010-03-26 [pawel]	3.7.5cvs40
+
+	* src/compose.c
+	* src/compose.h
+	* src/textview.c
+		Fix Bug 1928 Add "reply to this address" pop menu 
+		             on Message View
+		- Set composing account to email one when creating/replying
+		  from NNTP folder by clicking link or choosing option
+		  from popup menu
+		- Factorize code
+
 2010-03-25 [paul]	3.7.5cvs39
 
 	* src/gtk/gtkcmclist.c

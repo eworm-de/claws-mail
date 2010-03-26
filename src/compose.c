@@ -533,6 +533,8 @@ static void compose_set_dictionaries_from_folder_prefs(Compose *compose,
 						FolderItem *folder_item);
 #endif
 static void compose_attach_update_label(Compose *compose);
+static void compose_set_folder_prefs(Compose *compose, FolderItem *folder,
+				     gboolean respect_default_to);
 
 static GtkActionEntry compose_popup_entries[] =
 {
@@ -1030,24 +1032,8 @@ Compose *compose_generic_new(PrefsAccount *account, const gchar *mailto, FolderI
 		if (mailto && *mailto != '\0') {
 			mfield = compose_entries_set(compose, mailto, COMPOSE_TO);
 
-		} else if (item && item->prefs) {
-			if (item->prefs->enable_default_bcc) {
-				compose_entry_append(compose, item->prefs->default_bcc,
-						COMPOSE_BCC, PREF_FOLDER);
-			}
-			if (item->prefs->enable_default_cc) {
-				compose_entry_append(compose, item->prefs->default_cc,
-						COMPOSE_CC, PREF_FOLDER);
-			}
-			if (item->prefs->enable_default_replyto) {
-				compose_entry_append(compose, item->prefs->default_replyto,
-						COMPOSE_REPLYTO, PREF_FOLDER);
-			}
-			if (item->prefs->enable_default_to) {
-				compose_entry_append(compose, item->prefs->default_to,
-						COMPOSE_TO, PREF_FOLDER);
-				compose_entry_mark_default_to(compose, item->prefs->default_to);
-			}
+		} else {
+			compose_set_folder_prefs(compose, item, TRUE);
 		}
 		if (item && item->ret_rcpt) {
 			cm_toggle_menu_set_active_full(compose->ui_manager, "Menu/Options/RequestRetRcpt", TRUE);
@@ -1311,6 +1297,7 @@ static Compose *compose_reply_mode(ComposeMode mode, GSList *msginfo_list, gchar
 
 	switch (mode) {
 	case COMPOSE_REPLY:
+	case COMPOSE_REPLY_TO_ADDRESS:
 		compose = compose_reply(msginfo, COMPOSE_QUOTE_CHECK,
 		    	      FALSE, prefs_common.default_reply_list, FALSE, body);
 		break;
@@ -1422,6 +1409,9 @@ static Compose *compose_reply_mode(ComposeMode mode, GSList *msginfo_list, gchar
 		debug_print("reply mode List\n");
 		cm_toggle_menu_set_active_full(compose->ui_manager, "Menu/Options/ReplyMode/List", TRUE);
 		break;
+	case COMPOSE_REPLY_TO_ADDRESS:
+		cm_menu_set_sensitive_full(compose->ui_manager, "Menu/Options/ReplyMode", FALSE);
+		break;
 	default:
 		break;
 	}
@@ -1433,7 +1423,7 @@ static Compose *compose_reply(MsgInfo *msginfo,
 				   gboolean to_all,
 				   gboolean to_ml,
 				   gboolean to_sender, 
-		   const gchar *body)
+				   const gchar *body)
 {
 	return compose_generic_reply(msginfo, quote_mode, to_all, to_ml, 
 			      to_sender, FALSE, body);
@@ -3064,6 +3054,52 @@ static gboolean is_subscription(const gchar *ml_post, const gchar *from)
 	return result;
 }
 
+static void compose_set_folder_prefs(Compose *compose, FolderItem *folder,
+				     gboolean respect_default_to)
+{
+	if (!compose)
+		return;
+	if (!folder || !folder->prefs)
+		return;
+
+	if (respect_default_to && folder->prefs->enable_default_to) {
+		compose_entry_append(compose, folder->prefs->default_to,
+					COMPOSE_TO, PREF_FOLDER);
+		compose_entry_mark_default_to(compose, folder->prefs->default_to);
+	}
+	if (folder->prefs->enable_default_cc)
+		compose_entry_append(compose, folder->prefs->default_cc,
+					COMPOSE_CC, PREF_FOLDER);
+	if (folder->prefs->enable_default_bcc)
+		compose_entry_append(compose, folder->prefs->default_bcc,
+					COMPOSE_BCC, PREF_FOLDER);
+	if (folder->prefs->enable_default_replyto)
+		compose_entry_append(compose, folder->prefs->default_replyto,
+					COMPOSE_REPLYTO, PREF_FOLDER);
+}
+
+static void compose_reply_set_subject(Compose *compose, MsgInfo *msginfo)
+{
+	gchar *buf, *buf2;
+	gchar *p;
+	
+	if (!compose || !msginfo)
+		return;
+
+	if (msginfo->subject && *msginfo->subject) {
+		buf = p = g_strdup(msginfo->subject);
+		p += subject_get_prefix_length(p);
+		memmove(buf, p, strlen(p) + 1);
+
+		buf2 = g_strdup_printf("Re: %s", buf);
+		gtk_entry_set_text(GTK_ENTRY(compose->subject_entry), buf2);
+
+		g_free(buf2);
+		g_free(buf);
+	} else
+		gtk_entry_set_text(GTK_ENTRY(compose->subject_entry), "Re: ");
+}
+
 static void compose_reply_set_entry(Compose *compose, MsgInfo *msginfo,
 				    gboolean to_all, gboolean to_ml,
 				    gboolean to_sender,
@@ -3087,20 +3123,8 @@ static void compose_reply_set_entry(Compose *compose, MsgInfo *msginfo,
 		msginfo->folder->prefs->enable_default_reply_to;
 
 	if (compose->account->protocol != A_NNTP) {
-		if (msginfo && msginfo->folder && msginfo->folder->prefs) {
-			if (msginfo->folder->prefs->enable_default_replyto) {
-				compose_entry_append(compose, msginfo->folder->prefs->default_replyto,
-							COMPOSE_REPLYTO, PREF_FOLDER);
-			}
-			if (msginfo->folder->prefs->enable_default_bcc) {
-				compose_entry_append(compose, msginfo->folder->prefs->default_bcc,
-							COMPOSE_BCC, PREF_FOLDER);
-			}
-			if (msginfo->folder->prefs->enable_default_cc) {
-				compose_entry_append(compose, msginfo->folder->prefs->default_cc,
-							COMPOSE_CC, PREF_FOLDER);
-			}
-		}
+		compose_set_folder_prefs(compose, msginfo->folder, FALSE);
+
 		if (reply_to_ml && !default_reply_to) {
 			
 			gboolean is_subscr = is_subscription(compose->ml_post,
@@ -3198,22 +3222,7 @@ static void compose_reply_set_entry(Compose *compose, MsgInfo *msginfo,
 			 	 compose->newsgroups ? compose->newsgroups : "",
 			 	 COMPOSE_NEWSGROUPS, PREF_NONE);
 	}
-
-	if (msginfo->subject && *msginfo->subject) {
-		gchar *buf, *buf2;
-		gchar *p;
-
-		buf = p = g_strdup(msginfo->subject);
-		p += subject_get_prefix_length(p);
-		memmove(buf, p, strlen(p) + 1);
-
-		buf2 = g_strdup_printf("Re: %s", buf);
-		gtk_entry_set_text(GTK_ENTRY(compose->subject_entry), buf2);
-
-		g_free(buf2);
-		g_free(buf);
-	} else
-		gtk_entry_set_text(GTK_ENTRY(compose->subject_entry), "Re: ");
+	compose_reply_set_subject(compose, msginfo);
 
 	if (to_ml && compose->ml_post) return;
 	if (!to_all || compose->account->protocol == A_NNTP) return;
@@ -7717,6 +7726,7 @@ static GtkWidget *compose_account_option_menu_create(Compose *compose)
 	CLAWS_SET_TIP(from_name,
 		_("Sender address to be used"));
 
+	compose->account_combo = optmenu;
 	compose->from_name = from_name;
 	
 	return hbox;
@@ -11125,6 +11135,51 @@ void compose_reply_from_messageview(MessageView *msgview, GSList *msginfo_list,
 		 * single compose window */
 		compose_reply_from_messageview_real(msgview, msginfo_list, action, FALSE);
 	}
+}
+
+void compose_check_for_email_account(Compose *compose)
+{
+	PrefsAccount *ac = NULL, *curr = NULL;
+	GList *list;
+	
+	if (!compose)
+		return;
+
+	if (compose->account && compose->account->protocol == A_NNTP) {
+		ac = account_get_cur_account();
+		if (ac->protocol == A_NNTP) {
+			list = account_get_list();
+			
+			for( ; list != NULL ; list = g_list_next(list)) {
+				curr = (PrefsAccount *) list->data;
+				if (curr->protocol != A_NNTP) {
+					ac = curr;
+					break;
+				}
+			}
+		}
+		combobox_select_by_data(GTK_COMBO_BOX(compose->account_combo),
+					ac->account_id); 
+	}
+}
+
+void compose_reply_to_address(MessageView *msgview, MsgInfo *msginfo, 
+				const gchar *address)
+{
+	GSList *msginfo_list = NULL;
+	gchar *body =  messageview_get_selection(msgview);
+	Compose *compose;
+	
+	msginfo_list = g_slist_prepend(msginfo_list, msginfo);
+	
+	compose = compose_reply_mode(COMPOSE_REPLY_TO_ADDRESS, msginfo_list, body);
+	compose_check_for_email_account(compose);
+	compose_set_folder_prefs(compose, msginfo->folder, FALSE);
+	compose_entry_append(compose, address, COMPOSE_TO, PREF_NONE);
+	compose_reply_set_subject(compose, msginfo);
+
+	g_free(body);
+	hooks_invoke(COMPOSE_CREATED_HOOKLIST, compose);
 }
 
 void compose_set_position(Compose *compose, gint pos)

@@ -62,6 +62,7 @@ typedef enum
 	COMPOSE_REPLY_WITH_QUOTE,
 	COMPOSE_REPLY_WITHOUT_QUOTE,
 	COMPOSE_REPLY_TO_SENDER,
+	COMPOSE_REPLY_TO_ADDRESS,
 	COMPOSE_FOLLOWUP_AND_REPLY_TO,
 	COMPOSE_REPLY_TO_SENDER_WITH_QUOTE,
 	COMPOSE_REPLY_TO_SENDER_WITHOUT_QUOTE,
@@ -114,6 +115,7 @@ struct _Compose
 	/* Header */
 	GtkWidget *table_vbox;
 	GtkWidget *table;
+	GtkWidget *account_combo;
 	GtkWidget *subject_entry;
 	GtkWidget *paned;
 
@@ -313,6 +315,9 @@ void compose_destroy_all                (void);
 gboolean compose_draft	                (gpointer data, guint action);
 void compose_toolbar_cb			(gint 		action, 
 					 gpointer 	data);
+void compose_reply_to_address		(MessageView	*msgview,
+					 MsgInfo	*msginfo,
+					 const gchar	*address);
 void compose_reply_from_messageview	(MessageView 	*msgview, 
 					 GSList 	*msginfo_list, 
 					 guint 		 action);
@@ -336,4 +341,5 @@ void compose_close_toolbar		(Compose *compose);
 void compose_clear_exit_drafts		(void);
 void compose_reopen_exit_drafts		(void);
 void compose_attach_from_list (Compose *compose, GList *file_list, gboolean free_data);
+void compose_check_for_email_account(Compose *compose);
 #endif /* __COMPOSE_H__ */
