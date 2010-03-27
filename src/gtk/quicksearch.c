@@ -1377,18 +1377,21 @@ void quicksearch_set_search_strings(QuickSearch *quicksearch)
 			
 			if (matcher_list) {
 				quicksearch->extended_search_strings =
-					g_list_append(
+					g_list_prepend(
 						quicksearch->extended_search_strings,
-						strings->data);
+						g_strdup(strings->data));
 				matcherlist_free(matcher_list);
 			} else
 				quicksearch->normal_search_strings =
-					g_list_append(
+					g_list_prepend(
 						quicksearch->normal_search_strings,
-						strings->data);
+						g_strdup(strings->data));
 		}
 	
 	} while ((strings = g_list_next(strings)) != NULL);
+
+	quicksearch->normal_search_strings = g_list_reverse(quicksearch->normal_search_strings);
+	quicksearch->extended_search_strings = g_list_reverse(quicksearch->extended_search_strings);
 
 	quicksearch_set_popdown_strings(quicksearch);
 }

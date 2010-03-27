@@ -1,3 +1,9 @@
+2010-03-27 [colin]	3.7.5cvs42
+
+	* src/gtk/quicksearch.c
+		Fix double-free later in code. Optimize
+		list creation
+
 2010-03-27 [pawel]	3.7.5cvs41
 
 	* src/compose.c
