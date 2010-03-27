@@ -2999,6 +2999,15 @@ static gchar *compose_quote_fmt(Compose *compose, MsgInfo *msginfo,
 
 	gtk_text_buffer_get_start_iter(buffer, &iter);
 	gtk_text_buffer_get_iter_at_offset(buffer, &iter, cursor_pos);
+	
+	/* Some quotes may not end with new line - when replying with
+	 * quote from GtkTextBuffer selection for example. Add new
+	 * line character so cursor is at the beginning of the line */
+	if (!gtk_text_iter_starts_line(&iter)) {
+		gtk_text_buffer_insert(buffer, &iter, "\n", 1);
+		gtk_text_buffer_get_end_iter(buffer, &iter);
+		compose->set_cursor_pos = gtk_text_iter_get_offset(&iter);
+	}
 	gtk_text_buffer_place_cursor(buffer, &iter);
 
 	compose->autowrap = prev_autowrap;

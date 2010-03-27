@@ -1,3 +1,8 @@
+2010-03-27 [pawel]	3.7.5cvs41
+
+	* src/compose.c
+		Make sure that quote ends with new line char
+
 2010-03-26 [pawel]	3.7.5cvs40
 
 	* src/compose.c
