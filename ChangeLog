@@ -6,8 +6,6 @@
 		Disable matcher warnings when populating quicksearch
 		completion lists on startup
 
-		
-
 2010-03-27 [colin]	3.7.5cvs42
 
 	* src/gtk/quicksearch.c
