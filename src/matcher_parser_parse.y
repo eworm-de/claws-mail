@@ -46,6 +46,7 @@ static MatcherList *cond;
 static GSList *action_list = NULL;
 static FilteringAction *action = NULL;
 static gboolean matcher_is_fast = TRUE;
+static gboolean disable_warnings = FALSE;
 
 static FilteringProp *filtering;
 
@@ -73,6 +74,11 @@ void matcher_parser_switch_to_buffer(void * new_buffer);
 void matcher_parser_delete_buffer(void * b);
 void matcher_parserpop_buffer_state(void);
 int matcher_parserlex(void);
+
+void matcher_parser_disable_warnings(const gboolean disable)
+{
+	disable_warnings = disable;
+}
 
 void matcher_parser_start_parsing(FILE *f)
 {
@@ -288,8 +294,9 @@ void matcher_parsererror(char *str)
 		matchers_list = NULL;
 	}
 	cond = NULL;
-	g_warning("filtering parsing: %i: %s\n",
-		  matcher_parserlineno, str);
+	if (!disable_warnings)
+		g_warning("filtering parsing: %i: %s\n",
+		  	matcher_parserlineno, str);
 	error = 1;
 }
 

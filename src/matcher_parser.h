@@ -26,7 +26,7 @@
 extern FILE *matcher_parserin;
 extern int matcher_parserlineno;
 
-
+void matcher_parser_disable_warnings	(const gboolean disable);
 void matcher_parser_start_parsing	(FILE *f);
 int matcher_parserparse			(void);
 

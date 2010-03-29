@@ -1359,6 +1359,8 @@ void quicksearch_set_search_strings(QuickSearch *quicksearch)
 
 	if (!strings)
 		return;
+
+	matcher_parser_disable_warnings(TRUE);
 	
 	do {
 		newstr = expand_search_string((gchar *) strings->data);
@@ -1389,6 +1391,8 @@ void quicksearch_set_search_strings(QuickSearch *quicksearch)
 		}
 	
 	} while ((strings = g_list_next(strings)) != NULL);
+
+	matcher_parser_disable_warnings(FALSE);	
 
 	quicksearch->normal_search_strings = g_list_reverse(quicksearch->normal_search_strings);
 	quicksearch->extended_search_strings = g_list_reverse(quicksearch->extended_search_strings);
