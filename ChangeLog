@@ -1,3 +1,10 @@
+2010-04-12 [colin]	3.7.5cvs45
+
+	* configure.ac
+		Fix bug 2162, 'configure check for libetpan 
+		fails with libetpan 1.0'
+
+
 2010-04-09 [mones]	3.7.5cvs44
 
 	* manual/de/glossary.xml

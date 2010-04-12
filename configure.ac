@@ -12,7 +12,7 @@ MINOR_VERSION=7
 MICRO_VERSION=5
 INTERFACE_AGE=0
 BINARY_AGE=0
-EXTRA_VERSION=44
+EXTRA_VERSION=45
 EXTRA_RELEASE=
 EXTRA_GTK2_VERSION=
 
@@ -973,7 +973,11 @@ if test x"$ac_cv_enable_libetpan" = xyes; then
 	if test "x$libetpan_result" = "xyes"; then
 	   LIBETPAN_CPPFLAGS="`$libetpanconfig --cflags`"
 	   LIBETPAN_LIBS="`$libetpanconfig --libs`"
+           LIBETPAN_STABLE=`$libetpanconfig --version | grep -v ^0`
 	   LIBETPAN_VERSION=`$libetpanconfig --version | sed "s/\.//g" | sed "s/-.*$//"`
+           if test x"$LIBETPAN_STABLE" != "x"; then
+                LIBETPAN_VERSION="100"
+           fi
 	   if test "$LIBETPAN_VERSION" -lt "057"; then
 		AC_MSG_RESULT([*** Claws Mail requires libetpan 0.57 or newer. See http://www.etpan.org/])
 		AC_MSG_RESULT([*** You can use --disable-libetpan if you don't need IMAP4 and/or NNTP support.])
