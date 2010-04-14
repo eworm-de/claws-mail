@@ -3986,3 +3986,4 @@
 ( cvs diff -u -r 1.4.2.7 -r 1.4.2.8 src/matcher_parser.h;  cvs diff -u -r 1.25.2.34 -r 1.25.2.35 src/matcher_parser_parse.y;  cvs diff -u -r 1.1.2.91 -r 1.1.2.92 src/gtk/quicksearch.c;  ) > 3.7.5cvs43.patchset
 ( cvs diff -u -r 1.1.2.3 -r 1.1.2.4 manual/de/glossary.xml;  ) > 3.7.5cvs44.patchset
 ( cvs diff -u -r 1.654.2.4057 -r 1.654.2.4058 configure.ac;  ) > 3.7.5cvs45.patchset
+( cvs diff -u -r 1.274.2.309 -r 1.274.2.310 src/mainwindow.c;  ) > 3.7.5cvs46.patchset

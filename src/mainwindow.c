@@ -2012,8 +2012,6 @@ MainWindow *main_window_create()
 	g_signal_connect(G_OBJECT(warning_btn), "button-press-event", 
 			 G_CALLBACK(warning_icon_pressed),
 			 (gpointer) mainwin);
-	g_signal_connect(G_OBJECT(warning_btn), "visibility-notify-event",
-			 G_CALLBACK(warning_visi_notify), mainwin);
 	g_signal_connect(G_OBJECT(warning_btn), "motion-notify-event",
 			 G_CALLBACK(warning_visi_notify), mainwin);
 	g_signal_connect(G_OBJECT(warning_btn), "leave-notify-event",

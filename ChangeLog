@@ -1,3 +1,8 @@
+2010-04-14 [colin]	3.7.5cvs46
+
+	* src/mainwindow.c
+		Fix hand cursor after error symbol appears
+
 2010-04-12 [colin]	3.7.5cvs45
 
 	* configure.ac
