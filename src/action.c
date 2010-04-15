@@ -1108,23 +1108,18 @@ static gint wait_for_children(Children *children)
 	gboolean new_output;
 	ChildInfo *child_info;
 	GSList *cur;
-	gint nb = children->nb;
-
-	children->nb = 0;
 
 	cur = children->list;
 	new_output = FALSE;
 	while (cur) {
 		child_info = (ChildInfo *)cur->data;
-		if (child_info->pid)
-			children->nb++;
 		new_output |= child_info->new_out;
 		cur = cur->next;
 	}
 
 	children->output |= new_output;
 
-	if (new_output || (children->dialog && (nb != children->nb)))
+	if (new_output || (children->dialog && (children->initial_nb != children->nb)))
 		update_io_dialog(children);
 
 	if (children->nb)
@@ -1492,6 +1487,9 @@ static void catch_status(gpointer data, gint source, GdkInputCondition cond)
 		g_slist_free (child_info->msginfo_list);
 		child_info->msginfo_list = NULL;
 	}
+
+	if (!child_info->pid)
+		child_info->children->nb--;
 
 	wait_for_children(child_info->children);
 }
