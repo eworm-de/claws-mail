@@ -3988,3 +3988,4 @@
 ( cvs diff -u -r 1.654.2.4057 -r 1.654.2.4058 configure.ac;  ) > 3.7.5cvs45.patchset
 ( cvs diff -u -r 1.274.2.309 -r 1.274.2.310 src/mainwindow.c;  ) > 3.7.5cvs46.patchset
 ( cvs diff -u -r 1.12.2.58 -r 1.12.2.59 src/action.c;  ) > 3.7.5cvs47.patchset
+( cvs diff -u -r 1.105.2.159 -r 1.105.2.160 src/prefs_account.c;  ) > 3.7.5cvs48.patchset

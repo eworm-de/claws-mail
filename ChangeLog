@@ -1,3 +1,11 @@
+2010-04-15 [pawel]	3.7.5cvs48
+
+	* src/prefs_account.c
+		Fix Bug 2144 'When creating an account with IMAP4+SSL,
+				the port isn't configured properly'
+		When using SSL/TLS tunneling automatically use default
+		ports for encrypted connections: smtps, pop3s, imaps, nntps
+
 2010-04-15 [pawel]	3.7.5cvs47
 
 	* src/action.c
