@@ -1,3 +1,10 @@
+2010-04-22 [colin]	3.7.5cvs49
+
+	* src/imap.c
+		Fix error message when session isn't established
+	* po/fr.po
+		Update translation and fix a typo in it
+
 2010-04-15 [pawel]	3.7.5cvs48
 
 	* src/prefs_account.c
