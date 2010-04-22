@@ -1,3 +1,10 @@
+2010-04-22 [pawel]	3.7.5cvs50
+
+	* src/addressbook.c
+		fix compile warning
+	* src/vcard.c
+		first NULL check pointer, then use it
+
 2010-04-22 [colin]	3.7.5cvs49
 
 	* src/imap.c

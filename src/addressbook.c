@@ -168,7 +168,6 @@ static void addressbook_edit_address_post_cb( ItemPerson *person );
 
 static void addressbook_create			(void);
 static gint addressbook_close			(void);
-static void addressbook_button_set_sensitive	(void);
 
 static gboolean address_index_has_focus = FALSE;
 static gboolean address_list_has_focus = FALSE;

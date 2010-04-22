@@ -345,8 +345,8 @@ static void vcard_build_items(
 			if( *str != '\0' ) {
 				ItemEMail *email = addritem_create_item_email();
 				addritem_email_set_address( email, str );
-				str = nodeRemarks->data;
 				if( nodeRemarks ) {
+					str = nodeRemarks->data;
 					if( str ) {
 						if( g_utf8_collate( str, "internet" ) != 0 ) {
 							if( *str != '\0' )
