@@ -3992,3 +3992,4 @@
 ( cvs diff -u -r 1.179.2.250 -r 1.179.2.251 src/imap.c;  cvs diff -u -r 1.42.2.49 -r 1.42.2.50 po/fr.po;  ) > 3.7.5cvs49.patchset
 ( cvs diff -u -r 1.60.2.136 -r 1.60.2.137 src/addressbook.c;  cvs diff -u -r 1.14.2.18 -r 1.14.2.19 src/vcard.c;  ) > 3.7.5cvs50.patchset
 ( cvs diff -u -r 1.60.2.60 -r 1.60.2.61 po/es.po;  ) > 3.7.5cvs51.patchset
+( cvs diff -u -r 1.42.2.50 -r 1.42.2.51 po/fr.po;  ) > 3.7.5cvs52.patchset

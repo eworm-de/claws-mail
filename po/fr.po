@@ -12936,11 +12936,11 @@ msgstr "Affichage de la fenêtre « Plus de message non lu (ou nouveau) »"
 
 #: src/prefs_summaries.c:445
 msgid "Assume 'Yes'"
-msgstr "supposer « Oui »"
+msgstr "Supposer « Oui »"
 
 #: src/prefs_summaries.c:446
 msgid "Assume 'No'"
-msgstr "supposer « Non »"
+msgstr "Supposer « Non »"
 
 #: src/prefs_summaries.c:454
 msgid "Open message when selected"
