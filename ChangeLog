@@ -1,3 +1,20 @@
+2010-04-30 [paul]	3.7.5cvs53
+
+	* configure.ac
+	* po/uk.po
+		add Ukrainian translation, submitted by YUP
+	* po/cs.po
+	* po/de.po
+	* po/fi.po
+	* po/hu.po
+	* po/nl.po
+	* po/pt_BR.po
+	* po/pt_PT.po
+	* po/sk.po
+		updated by David Vachulka, Stephan Sachse, Flammie Pirinen,
+		Páder Rezső, Marcel Pol, Frederico Goncalves Guimaraes,
+		Tiago Faria, and Slavko
+
 2010-04-26 [wwp]	3.7.5cvs52
 
 	* po/fr.po
