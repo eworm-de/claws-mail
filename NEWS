@@ -1,5 +1,35 @@
 Changes of the  Claws Mail GTK2 branch
 
+* 3.7.6
+-------
+
+* Require GTK+ 2.10 or newer.
+
+* Enable building with GTK+ 2.19 or newer.
+
+* Enable building with libetpan 1.0.
+
+* Encrypt saved LDAP passwords.
+
+* FIltering/Processing: Added 'List-Id' to the pre-defined headers.
+
+* Added 'Reply to this address' to popup menu in the Message View.
+
+* Added separate search phrase completion for normal/extended
+  QuickSearch.
+
+* Several interface improvements.
+
+* Use in-reply-to info that is passed in mailto: links.
+
+* Added the GB18030 Chinese charset, which is a superset of GB2312
+  and (X-)GBK.
+
+* Added German translation of the manual.
+
+* Added Ukrainian translation.
+
+
 * 3.7.5
 -------
 

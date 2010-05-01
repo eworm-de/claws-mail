@@ -1,4 +1,4 @@
-31st January 2010                                    Claws Mail 3.7.5
+1st May 2010                                         Claws Mail 3.7.6
 
 		    CLAWS MAIL  RELEASE NOTES
                     http://www.claws-mail.org
@@ -6,17 +6,53 @@
 Claws Mail is a GTK+ based, user-friendly, lightweight, and fast 
 email client.
 
-In this release:
-~~~~~~~~~~~~~~~~
+New in this release:
+~~~~~~~~~~~~~~~~~~~~
+
+* Require GTK+ 2.10 or newer.
+
+* Enable building with GTK+ 2.19 or newer.
+
+* Enable building with libetpan 1.0.
+
+* Encrypt saved LDAP passwords.
+
+* FIltering/Processing: Added 'List-Id' to the pre-defined headers.
+
+* Added 'Reply to this address' to popup menu in the Message View.
+
+* Added separate search phrase completion for normal/extended
+  QuickSearch.
+
+* Several interface improvements.
+
+* Use in-reply-to info that is passed in mailto: links.
+
+* Added the GB18030 Chinese charset, which is a superset of GB2312
+  and (X-)GBK.
+
+* Added German translation of the manual, by Volker Ribbert.
+
+* Added Ukrainian translation, by YUP.
+
+* Updated translations: Brazilian Portuguese, Czech, Dutch, Finnish,
+  French, German, Hungarian, Portuguese, Simplified Chinese, Slovak,
+  and Spanish,
 
 * Bug fixes:
-	o bug 2059 'gpgme >=1.1.8 not compatible with S/MIME
-		    encryption'
-	o bug 2076 'having worked 2 times properly CLAWS ceased to
-		    decrypt incoming PGP mails -displays base64 
-		    instead - sucks completely'
-	o bug 2098, 'claws-mails crashes frequently with pgpcore'
-	o Address Book: fix button sensitivity in compose mode.
+	o bug 2107, 'Arrow keys don't work in message view window'
+	o bug 2144 'When creating an account with IMAP4+SSL, the port
+	  isn't configured properly'
+	o S/MIME: fix decoding of encrypted parts.
+	o Avoid displaying Bcc headers in messages sent to NNTP
+	  servers.
+	o fix headers filtering when 'Translate header names' is set.
+	o fix headers setting when changing composing account
+	o NetworkManager: when going offline delete IMAP connections.
+	  to avoid timeouts when coming back online in certain cases
+          when the TCP socket will have timed out.
+	o fix hand cursor after error symbol appears
+	o IMAP: fix error message when session isn't established
 
 For further details of the numbered bugs listed above consult
 http://www.thewildbeast.co.uk/claws-mail/bugzilla/index.cgi
