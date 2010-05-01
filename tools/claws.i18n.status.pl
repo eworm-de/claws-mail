@@ -28,6 +28,7 @@
 	'ru.po' => 'Russian',
 	'sk.po' => 'Slovak',
 	'sv.po' => 'Swedish',
+	'uk.po' => 'Ukrainian',
 	'zh_CN.po' => 'Simplified Chinese',
 );
 
@@ -51,6 +52,7 @@
 	'ru.po' => 'Aleksei Miheev <aleksei@miheev.info>',
 	'sk.po' => 'Slavko <slavino@slavino.sk>',
 	'sv.po' => 'Lars Persson Fink <lars.p.fink@gmail.com>',
+	'uk.po' => 'YUP <yupadmin@gmail.com>',
 	'zh_CN.po' => 'Ralgh Young <bamanzi@gmail.com>',
 );
 

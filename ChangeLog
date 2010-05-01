@@ -1,3 +1,8 @@
+2010-05-01 [paul]	3.7.5cvs55
+
+	* tools/claws.i18n.status.pl
+		add Ukrainian stat
+
 2010-05-01 [paul]	3.7.5cvs54
 
 	* src/gtk/authors.h
