@@ -1,3 +1,8 @@
+2010-05-01 [paul]	3.7.5cvs54
+
+	* src/gtk/authors.h
+		add YUP, new Ukrainian translator
+
 2010-04-30 [paul]	3.7.5cvs53
 
 	* configure.ac

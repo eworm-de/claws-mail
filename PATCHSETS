@@ -3994,3 +3994,4 @@
 ( cvs diff -u -r 1.60.2.60 -r 1.60.2.61 po/es.po;  ) > 3.7.5cvs51.patchset
 ( cvs diff -u -r 1.42.2.50 -r 1.42.2.51 po/fr.po;  ) > 3.7.5cvs52.patchset
 ( cvs diff -u -r 1.654.2.4065 -r 1.654.2.4066 configure.ac;  cvs diff -u -r 1.9.2.18 -r 1.9.2.19 po/cs.po;  cvs diff -u -r 1.58.2.46 -r 1.58.2.47 po/de.po;  cvs diff -u -r 1.1.2.24 -r 1.1.2.25 po/fi.po;  cvs diff -u -r 1.5.2.16 -r 1.5.2.17 po/hu.po;  cvs diff -u -r 1.28.2.14 -r 1.28.2.15 po/nl.po;  cvs diff -u -r 1.50.2.38 -r 1.50.2.39 po/pt_BR.po;  cvs diff -u -r 1.1.2.2 -r 1.1.2.3 po/pt_PT.po;  cvs diff -u -r 1.2.2.29 -r 1.2.2.30 po/sk.po;  diff -u /dev/null po/uk.po;  ) > 3.7.5cvs53.patchset
+( cvs diff -u -r 1.1.2.66 -r 1.1.2.67 src/gtk/authors.h;  ) > 3.7.5cvs54.patchset
