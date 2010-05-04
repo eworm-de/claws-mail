@@ -58,6 +58,7 @@ typedef struct _MessagePage
 	GtkWidget *checkbtn_smoothscroll;
 	GtkWidget *spinbtn_scrollstep;
 	GtkWidget *checkbtn_halfpage;
+	GtkWidget *checkbtn_hide_quoted;
 
 	GtkWidget *checkbtn_attach_desc;
 	GtkWidget *entry_quote_chars;
@@ -101,6 +102,7 @@ static void prefs_message_create_widget(PrefsPage *_page, GtkWindow *window,
 	GtkObject *spinbtn_scrollstep_adj;
 	GtkWidget *spinbtn_scrollstep;
 	GtkWidget *checkbtn_halfpage;
+	GtkWidget *checkbtn_hide_quoted;
 
 	GtkWidget *checkbtn_attach_desc;
 	
@@ -236,6 +238,7 @@ static void prefs_message_create_widget(PrefsPage *_page, GtkWindow *window,
 
 	hbox1 = gtk_hbox_new (FALSE, 32);
 	gtk_widget_show (hbox1);
+	PACK_CHECK_BUTTON(vbox_quote, checkbtn_hide_quoted, _("Collapse quoted text on double click"));
 	gtk_box_pack_start (GTK_BOX (vbox_quote), hbox1, FALSE, FALSE, 0);
 
 	hbox2 = gtk_hbox_new (FALSE, 8);
@@ -268,6 +271,8 @@ static void prefs_message_create_widget(PrefsPage *_page, GtkWindow *window,
 		prefs_common.promote_html_part);
 	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(checkbtn_smoothscroll),
 		prefs_common.enable_smooth_scroll);
+	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(checkbtn_hide_quoted),
+		prefs_common.hide_quoted);
 	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(checkbtn_halfpage),
 		prefs_common.scroll_halfpage);
 	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(checkbtn_attach_desc),
@@ -288,6 +293,7 @@ static void prefs_message_create_widget(PrefsPage *_page, GtkWindow *window,
 	prefs_message->checkbtn_promote_html_part = checkbtn_promote_html_part;
 	prefs_message->spinbtn_linespc = spinbtn_linespc;
 	prefs_message->checkbtn_smoothscroll = checkbtn_smoothscroll;
+	prefs_message->checkbtn_hide_quoted = checkbtn_hide_quoted;
 	prefs_message->spinbtn_scrollstep = spinbtn_scrollstep;
 	prefs_message->checkbtn_halfpage = checkbtn_halfpage;
 	prefs_message->checkbtn_attach_desc = checkbtn_attach_desc;
@@ -316,6 +322,8 @@ static void prefs_message_save(PrefsPage *_page)
 		GTK_TOGGLE_BUTTON(page->checkbtn_smoothscroll));
 	prefs_common.scroll_halfpage = gtk_toggle_button_get_active(
 		GTK_TOGGLE_BUTTON(page->checkbtn_halfpage));
+	prefs_common.hide_quoted = gtk_toggle_button_get_active(
+		GTK_TOGGLE_BUTTON(page->checkbtn_hide_quoted));
 	prefs_common.attach_desc = gtk_toggle_button_get_active(
 		GTK_TOGGLE_BUTTON(page->checkbtn_attach_desc));
 	prefs_common.line_space = gtk_spin_button_get_value_as_int(

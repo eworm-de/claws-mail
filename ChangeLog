@@ -1,3 +1,12 @@
+2010-05-04 [iwkse]	3.7.6cvs1
+
+	* src/prefs_message.c
+	* src/prefs_common.h
+	* src/prefs_common.c
+	* src/textview.c
+			Fix #2188
+			Option for collapsing via double-click
+
 2010-05-01 [paul]	3.7.6
 	* NEWS
 	* README

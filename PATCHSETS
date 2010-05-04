@@ -3996,3 +3996,4 @@
 ( cvs diff -u -r 1.654.2.4065 -r 1.654.2.4066 configure.ac;  cvs diff -u -r 1.9.2.18 -r 1.9.2.19 po/cs.po;  cvs diff -u -r 1.58.2.46 -r 1.58.2.47 po/de.po;  cvs diff -u -r 1.1.2.24 -r 1.1.2.25 po/fi.po;  cvs diff -u -r 1.5.2.16 -r 1.5.2.17 po/hu.po;  cvs diff -u -r 1.28.2.14 -r 1.28.2.15 po/nl.po;  cvs diff -u -r 1.50.2.38 -r 1.50.2.39 po/pt_BR.po;  cvs diff -u -r 1.1.2.2 -r 1.1.2.3 po/pt_PT.po;  cvs diff -u -r 1.2.2.29 -r 1.2.2.30 po/sk.po;  diff -u /dev/null po/uk.po;  ) > 3.7.5cvs53.patchset
 ( cvs diff -u -r 1.1.2.66 -r 1.1.2.67 src/gtk/authors.h;  ) > 3.7.5cvs54.patchset
 ( cvs diff -u -r 1.1.2.23 -r 1.1.2.24 tools/claws.i18n.status.pl;  ) > 3.7.5cvs55.patchset
+( cvs diff -u -r 1.1.2.30 -r 1.1.2.31 src/prefs_message.c;  cvs diff -u -r 1.103.2.128 -r 1.103.2.129 src/prefs_common.h;  cvs diff -u -r 1.204.2.195 -r 1.204.2.196 src/prefs_common.c;  cvs diff -u -r 1.96.2.223 -r 1.96.2.224 src/textview.c;  ) > 3.7.6cvs1.patchset

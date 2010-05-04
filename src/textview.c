@@ -2670,7 +2670,8 @@ static gboolean textview_uri_button_pressed(GtkTextTag *tag, GObject *obj,
 			} 
 			return TRUE;
 		} else if (qlink && bevent->button == 1) {
-			textview_toggle_quote(textview, NULL, uri, FALSE);
+			if (prefs_common.hide_quoted)
+				textview_toggle_quote(textview, NULL, uri, FALSE);
 			return TRUE;
 		} else if (!g_ascii_strncasecmp(uri->uri, "mailto:", 7)) {
 			if (bevent->button == 3) {
