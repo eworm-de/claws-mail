@@ -229,7 +229,7 @@ static void prefs_message_create_widget(PrefsPage *_page, GtkWindow *window,
 			  _("Show attachment descriptions (rather than names)"));
 
 	/* quote chars */
-	PACK_FRAME (vbox1, frame_quote, _("Quotation characters"));
+	PACK_FRAME (vbox1, frame_quote, _("Quotation"));
 
 	vbox_quote = gtk_vbox_new (FALSE, VSPACING_NARROW);
 	gtk_widget_show (vbox_quote);

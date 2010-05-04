@@ -1,3 +1,9 @@
+2010-05-04 [iwkse]	3.7.6cvs2
+
+	* src/prefs_message.c
+			Get a generic name as 'Quotation' for
+			the frame
+
 2010-05-04 [iwkse]	3.7.6cvs1
 
 	* src/prefs_message.c
