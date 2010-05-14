@@ -583,9 +583,14 @@ static gboolean pgpinline_sign(MimeInfo *mimeinfo, PrefsAccount *account, const 
 
 	/* get content node from message */
 	msgcontent = (MimeInfo *) mimeinfo->node->children->data;
-	if (msgcontent->type == MIMETYPE_MULTIPART)
+	if (msgcontent->type == MIMETYPE_MULTIPART) {
+		if (!msgcontent->node->children) {
+			debug_print("msgcontent->node->children NULL, bailing\n");
+			privacy_set_error(_("Malformed message"));
+			return FALSE;
+		}
 		msgcontent = (MimeInfo *) msgcontent->node->children->data;
-
+	}
 	/* get rid of quoted-printable or anything */
 	procmime_decode_content(msgcontent);
 
@@ -768,9 +773,14 @@ static gboolean pgpinline_encrypt(MimeInfo *mimeinfo, const gchar *encrypt_data)
 
 	/* get content node from message */
 	msgcontent = (MimeInfo *) mimeinfo->node->children->data;
-	if (msgcontent->type == MIMETYPE_MULTIPART)
+	if (msgcontent->type == MIMETYPE_MULTIPART) {
+		if (!msgcontent->node->children) {
+			debug_print("msgcontent->node->children NULL, bailing\n");
+			privacy_set_error(_("Malformed message"));
+			return FALSE;
+		}
 		msgcontent = (MimeInfo *) msgcontent->node->children->data;
-
+	}
 	/* get rid of quoted-printable or anything */
 	procmime_decode_content(msgcontent);
 

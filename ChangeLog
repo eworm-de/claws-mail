@@ -1,3 +1,8 @@
+2010-05-14 [colin]	3.7.6cvs3
+
+	* src/plugins/pgpinline/pgpinline.c
+		Fix bug 2205, 'PGPInline: segfault on malformed mails'
+
 2010-05-04 [iwkse]	3.7.6cvs2
 
 	* src/prefs_message.c
