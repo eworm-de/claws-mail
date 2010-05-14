@@ -1,3 +1,9 @@
+2010-05-14 [paul]	3.7.6cvs6
+
+	* src/compose.c
+		add a margin to the compose window text that matches
+		the margin in textview
+
 2010-05-14 [colin]	3.7.6cvs5
 
 	* src/gtk/sslcertwindow.c

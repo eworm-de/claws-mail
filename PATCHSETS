@@ -4001,3 +4001,4 @@
 ( cvs diff -u -r 1.1.2.44 -r 1.1.2.45 src/plugins/pgpinline/pgpinline.c;  ) > 3.7.6cvs3.patchset
 ( cvs diff -u -r 1.9.2.29 -r 1.9.2.30 src/gtk/sslcertwindow.c;  ) > 3.7.6cvs4.patchset
 ( cvs diff -u -r 1.9.2.30 -r 1.9.2.31 src/gtk/sslcertwindow.c;  ) > 3.7.6cvs5.patchset
+( cvs diff -u -r 1.382.2.550 -r 1.382.2.551 src/compose.c;  ) > 3.7.6cvs6.patchset
