@@ -3999,3 +3999,4 @@
 ( cvs diff -u -r 1.1.2.30 -r 1.1.2.31 src/prefs_message.c;  cvs diff -u -r 1.103.2.128 -r 1.103.2.129 src/prefs_common.h;  cvs diff -u -r 1.204.2.195 -r 1.204.2.196 src/prefs_common.c;  cvs diff -u -r 1.96.2.223 -r 1.96.2.224 src/textview.c;  ) > 3.7.6cvs1.patchset
 ( cvs diff -u -r 1.1.2.31 -r 1.1.2.32 src/prefs_message.c;  ) > 3.7.6cvs2.patchset
 ( cvs diff -u -r 1.1.2.44 -r 1.1.2.45 src/plugins/pgpinline/pgpinline.c;  ) > 3.7.6cvs3.patchset
+( cvs diff -u -r 1.9.2.29 -r 1.9.2.30 src/gtk/sslcertwindow.c;  ) > 3.7.6cvs4.patchset

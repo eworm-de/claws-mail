@@ -1,3 +1,10 @@
+2010-05-14 [colin]	3.7.6cvs4
+
+	* src/gtk/sslcertwindow.c
+		Fix bug 1993, 'Cannot send mail when SSL certificate is 
+		expired but certificate check is skipped' and maybe
+		bug 2200, 'SSL is not working with POP3'
+
 2010-05-14 [colin]	3.7.6cvs3
 
 	* src/plugins/pgpinline/pgpinline.c

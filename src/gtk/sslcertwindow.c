@@ -267,8 +267,10 @@ static gboolean sslcert_ask_hook(gpointer source, gpointer data)
 {
 	SSLCertHookData *hookdata = (SSLCertHookData *)source;
 
-	if (prefs_common.skip_ssl_cert_check)
+	if (prefs_common.skip_ssl_cert_check) {
+		hookdata->accept = TRUE;
 		return TRUE;
+	}
 
 	if (hookdata == NULL) {
 		return FALSE;
