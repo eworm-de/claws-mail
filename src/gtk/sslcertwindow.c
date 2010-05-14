@@ -267,14 +267,15 @@ static gboolean sslcert_ask_hook(gpointer source, gpointer data)
 {
 	SSLCertHookData *hookdata = (SSLCertHookData *)source;
 
+	if (hookdata == NULL) {
+		return FALSE;
+	}
+	
 	if (prefs_common.skip_ssl_cert_check) {
 		hookdata->accept = TRUE;
 		return TRUE;
 	}
 
-	if (hookdata == NULL) {
-		return FALSE;
-	}
 	if (hookdata->old_cert == NULL) {
 		if (hookdata->expired)
 			hookdata->accept = sslcertwindow_ask_expired_cert(hookdata->cert);
