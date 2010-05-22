@@ -4002,3 +4002,4 @@
 ( cvs diff -u -r 1.9.2.29 -r 1.9.2.30 src/gtk/sslcertwindow.c;  ) > 3.7.6cvs4.patchset
 ( cvs diff -u -r 1.9.2.30 -r 1.9.2.31 src/gtk/sslcertwindow.c;  ) > 3.7.6cvs5.patchset
 ( cvs diff -u -r 1.382.2.550 -r 1.382.2.551 src/compose.c;  ) > 3.7.6cvs6.patchset
+( cvs diff -u -r 1.1.2.53 -r 1.1.2.54 manual/advanced.xml;  cvs diff -u -r 1.382.2.551 -r 1.382.2.552 src/compose.c;  cvs diff -u -r 1.204.2.196 -r 1.204.2.197 src/prefs_common.c;  cvs diff -u -r 1.103.2.129 -r 1.103.2.130 src/prefs_common.h;  ) > 3.7.6cvs7.patchset

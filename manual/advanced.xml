@@ -694,7 +694,16 @@
 	  </para>
 	</listitem>
       </varlistentry>
-      <varlistentry>
+       <varlistentry>
+	<term><literal>show_compose_margin</literal></term>
+	<listitem>
+	  <para>
+	0 or 1. Adds margins to the message text area in the Compose window.
+	Default is 0, turned off.
+	  </para>
+	</listitem>
+      </varlistentry>
+     <varlistentry>
 	<term><literal>skip_ssl_cert_check</literal></term>
 	<listitem>
 	  <para>

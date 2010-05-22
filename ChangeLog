@@ -1,3 +1,14 @@
+2010-05-22 [paul]	3.7.6cvs7
+
+	* manual/advanced.xml
+	* src/compose.c
+	* src/prefs_common.c
+	* src/prefs_common.h
+		after using the compose margin for several days
+		I wanted the old style back - add a new hidden
+		pref 'show_compose_margin' to restore the old
+		behaviour (defaults to FALSE)
+
 2010-05-14 [paul]	3.7.6cvs6
 
 	* src/compose.c

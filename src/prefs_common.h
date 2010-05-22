@@ -157,6 +157,7 @@ struct _PrefsCommon
 	gboolean compose_with_format;
 	gchar *compose_subject_format;
 	gchar *compose_body_format;
+	gboolean show_compose_margin;
 
 	/* Quote */
 	gboolean reply_with_quote;

@@ -226,6 +226,9 @@ static PrefParam param[] = {
 	 &prefs_common.compose_subject_format, P_STRING, NULL, NULL, NULL},
 	{"compose_body_format", N_("Hello,\\n"),
 	 &prefs_common.compose_body_format, P_STRING, NULL, NULL, NULL},
+	{"show_compose_margin", "FALSE", &prefs_common.show_compose_margin, P_BOOL,
+	 NULL, NULL, NULL},
+	
 
 	{"linewrap_length", "72", &prefs_common.linewrap_len, P_INT,
 	 NULL, NULL, NULL},
