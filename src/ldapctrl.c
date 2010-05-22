@@ -36,6 +36,7 @@
 #include "passcrypt.h"
 #include "editaddress_other_attributes_ldap.h"
 #include "common/utils.h"
+#include "common/quoted-printable.h"
 
 /**
  * Create new LDAP control block object.
@@ -140,7 +141,7 @@ void ldapctl_set_bind_dn( LdapControl* ctl, const gchar *value ) {
  */
 void ldapctl_set_bind_password( 
 	LdapControl* ctl, const gchar *value, gboolean encrypt, gboolean change ) {
-	gchar *buf = NULL, *tmp;
+	gchar *buf, *tmp;
 
 	ctl->bindPass = mgu_replace_string( ctl->bindPass, value );
 
@@ -148,23 +149,36 @@ void ldapctl_set_bind_password(
 		return;
 
 	g_strstrip( ctl->bindPass );
-
+	
+	buf = tmp = NULL;
 	if ( encrypt ) {
 		/* If first char is not ! the password is not encrypted */
 		if (ctl->bindPass[0] == '!' || change) {
 			if (ctl->bindPass[0] != '!' && change)
 				buf = mgu_replace_string( buf, ctl->bindPass );
-			else
-				buf = mgu_replace_string( buf, ctl->bindPass + 1 );
+			else {
+				if (ctl->bindPass[1] != '|')
+					buf = mgu_replace_string( buf, ctl->bindPass + 1 );
+				else {
+					/* quoted printable decode */
+					buf = mgu_replace_string( buf, ctl->bindPass + 2 );
+					qp_decode_line(buf);
+				}
+			}
+			
 			passcrypt_encrypt( buf, strlen(buf) );
 			if (ctl->bindPass[0] != '!' && change) {
-				tmp = g_strconcat( "!", buf, NULL );
+				/* quoted printable encode */
+				tmp = g_malloc0(qp_get_q_encoding_len(buf) + 1);
+				qp_q_encode(tmp, buf);
 				g_free(buf);
-				buf = g_strdup(tmp);
+				buf = g_strconcat( "!|", tmp, NULL );
 				g_free(tmp);
 			}
+
 			ctl->bindPass = mgu_replace_string( ctl->bindPass, buf );
 			g_free(buf);
+			
 		}
 	}
 	debug_print("setting bindPassword\n");
@@ -182,9 +196,18 @@ gchar* ldapctl_get_bind_password( LdapControl* ctl ) {
 		pwd = mgu_replace_string( pwd, ctl->bindPass );
 		/* If first char is not ! the password is not encrypted */
 		if (pwd && pwd[0] == '!') {
-			buf = g_strdup(pwd + 1);
+			if (pwd[1] && pwd[1] == '|') {
+				buf = g_strdup(pwd + 2);
+				/* quoted printable decode */
+				qp_decode_line(buf);
+			}
+			else {
+				buf = g_strdup(pwd + 1);
+			}
 			g_free(pwd);
+			
 			passcrypt_decrypt( buf, strlen(buf) );
+
 			pwd = g_strdup(buf);
 			g_free(buf);
 		}
