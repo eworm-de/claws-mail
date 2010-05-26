@@ -208,6 +208,7 @@ void summary_select_last_read     (SummaryView		*summaryview);
 void summary_select_parent        (SummaryView		*summaryview);
 void summary_select_by_msgnum	  (SummaryView		*summaryview,
 				   guint		 msgnum);
+void summary_select_by_msg_list   (SummaryView		*summaryview, GSList *msginfos);
 guint summary_get_current_msgnum  (SummaryView		*summaryview);
 void summary_select_node	  (SummaryView		*summaryview,
 				   GtkCMCTreeNode		*node,

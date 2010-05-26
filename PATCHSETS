@@ -4004,3 +4004,4 @@
 ( cvs diff -u -r 1.382.2.550 -r 1.382.2.551 src/compose.c;  ) > 3.7.6cvs6.patchset
 ( cvs diff -u -r 1.1.2.53 -r 1.1.2.54 manual/advanced.xml;  cvs diff -u -r 1.382.2.551 -r 1.382.2.552 src/compose.c;  cvs diff -u -r 1.204.2.196 -r 1.204.2.197 src/prefs_common.c;  cvs diff -u -r 1.103.2.129 -r 1.103.2.130 src/prefs_common.h;  ) > 3.7.6cvs7.patchset
 ( cvs diff -u -r 1.2.2.20 -r 1.2.2.21 src/ldapctrl.c;  ) > 3.7.6cvs8.patchset
+( cvs diff -u -r 1.395.2.419 -r 1.395.2.420 src/summaryview.c;  cvs diff -u -r 1.68.2.55 -r 1.68.2.56 src/summaryview.h;  ) > 3.7.6cvs9.patchset

@@ -1,3 +1,10 @@
+2010-05-26 [holger]	3.7.6cvs9
+
+	* src/summaryview.c
+	* src/summaryview.h
+		Add function to select rows given a list of messages,
+		complementary to summary_get_selected_msg_list()
+
 2010-05-22 [mir]	3.7.6cvs8
 
 	* src/ldapctrl.c
