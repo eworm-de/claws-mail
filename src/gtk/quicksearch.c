@@ -217,23 +217,35 @@ static void searchbar_run(QuickSearch *quicksearch, gboolean run_only_if_fast)
 {
 	gchar *search_string = quicksearch_get_text(quicksearch);
 
-	/* add to history */
+	prepare_matcher(quicksearch);
+
+	/* add to history, for extended search add only correct matching rules */
 	if (!quicksearch->in_typing && search_string && strlen(search_string) != 0) {
-		if (prefs_common.summary_quicksearch_type == QUICK_SEARCH_EXTENDED)
-			quicksearch->extended_search_strings =
-				add_history(quicksearch->extended_search_strings,
-						search_string);
-		else
-			quicksearch->normal_search_strings =
-				add_history(quicksearch->normal_search_strings,
-						search_string);		
-		prefs_common.summary_quicksearch_history =
-			add_history(prefs_common.summary_quicksearch_history,
-					search_string);
+		switch (prefs_common.summary_quicksearch_type) {
+			case QUICK_SEARCH_EXTENDED:
+				if (quicksearch->matcher_list) {
+					quicksearch->extended_search_strings =
+						add_history(quicksearch->extended_search_strings,
+								search_string);
+					prefs_common.summary_quicksearch_history =
+						add_history(prefs_common.summary_quicksearch_history,
+								search_string);
+				}
+				break;
+			default:
+				quicksearch->normal_search_strings =
+					add_history(quicksearch->normal_search_strings,
+							search_string);		
+				prefs_common.summary_quicksearch_history =
+					add_history(prefs_common.summary_quicksearch_history,
+							search_string);
+				break;
+		}
+
 		quicksearch_set_popdown_strings(quicksearch);
+
 	}
 
-	prepare_matcher(quicksearch);
 	if (run_only_if_fast && !quicksearch->is_fast) {
 		g_free(search_string);
 		return;
@@ -1158,7 +1170,6 @@ static gchar *expand_search_string(const gchar *search_string)
 	   all available filtering expressions in quicksearch */
 	if (matcherstr->len > 0) returnstr = matcherstr->str;
 	else returnstr = g_strdup(search_string);
-
 	g_string_free(matcherstr, FALSE);
 	return returnstr;
 }

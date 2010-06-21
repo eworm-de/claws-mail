@@ -1,3 +1,9 @@
+2010-06-21 [iwkse]	3.7.6cvs10
+
+	* src/gtk/quicksearch.c
+			Do not add into quicksearch history
+			matching rules with bad syntax
+
 2010-05-26 [holger]	3.7.6cvs9
 
 	* src/summaryview.c
