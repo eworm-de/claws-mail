@@ -265,7 +265,7 @@ static void colorlabel_recreate_label(gint color)
 	int i;
 	
 	for (i = 0; i < NUM_MENUS; i++) {
-		if (!label_colors[i][color].changed & LCCF_LABEL)
+		if (!(label_colors[i][color].changed & LCCF_LABEL))
 			continue;
 
 		if (label_colors[i][color].label == NULL) 

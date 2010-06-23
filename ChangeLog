@@ -1,3 +1,9 @@
+2010-06-23 [wwp]	3.7.6cvs11
+
+	* src/gtk/colorlabel.c
+		Silent up a warning by avoiding possible confusion
+		in logical expression evaluation, thanks to TuxCM.
+
 2010-06-21 [iwkse]	3.7.6cvs10
 
 	* src/gtk/quicksearch.c

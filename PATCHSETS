@@ -4006,3 +4006,4 @@
 ( cvs diff -u -r 1.2.2.20 -r 1.2.2.21 src/ldapctrl.c;  ) > 3.7.6cvs8.patchset
 ( cvs diff -u -r 1.395.2.419 -r 1.395.2.420 src/summaryview.c;  cvs diff -u -r 1.68.2.55 -r 1.68.2.56 src/summaryview.h;  ) > 3.7.6cvs9.patchset
 ( cvs diff -u -r 1.1.2.92 -r 1.1.2.93 src/gtk/quicksearch.c;  ) > 3.7.6cvs10.patchset
+( cvs diff -u -r 1.2.2.28 -r 1.2.2.29 src/gtk/colorlabel.c;  ) > 3.7.6cvs11.patchset
