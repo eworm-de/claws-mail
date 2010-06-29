@@ -1,3 +1,8 @@
+2010-06-29 [pawel]	3.7.6cvs12
+
+	* src/compose.c
+		Revert 3.7.5cvs41, it breaks templates that use %X
+
 2010-06-23 [wwp]	3.7.6cvs11
 
 	* src/gtk/colorlabel.c
