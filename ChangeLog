@@ -1,3 +1,9 @@
+2010-07-08 [colin]	3.7.6cvs13
+
+	* src/gtk/filesel.c
+		Fix bug 2223, 'Compilation fails with GTK+
+		2.21.3'. Thanks to Jan Psota !
+
 2010-06-29 [pawel]	3.7.6cvs12
 
 	* src/compose.c
@@ -12,8 +18,8 @@
 2010-06-21 [iwkse]	3.7.6cvs10
 
 	* src/gtk/quicksearch.c
-			Do not add into quicksearch history
-			matching rules with bad syntax
+		Do not add into quicksearch history
+		matching rules with bad syntax
 
 2010-05-26 [holger]	3.7.6cvs9
 
@@ -25,10 +31,10 @@
 2010-05-22 [mir]	3.7.6cvs8
 
 	* src/ldapctrl.c
-	   Fix bug 2208. Encode encrypted password to qouted
-	   printable to avoid making invalid XML. Encoding
-	   will be activated the first time the password is
-	   changed.
+		Fix bug 2208. Encode encrypted password to qouted
+		printable to avoid making invalid XML. Encoding
+		will be activated the first time the password is
+		changed.
 
 2010-05-22 [paul]	3.7.6cvs7
 

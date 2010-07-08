@@ -68,7 +68,7 @@ update_preview_cb (GtkFileChooser *file_chooser, gpointer data)
 	if (pixbuf) {
 		have_preview = TRUE;
 		gtk_image_set_from_pixbuf (GTK_IMAGE (preview), pixbuf);
-		gdk_pixbuf_unref (pixbuf);
+		g_object_unref(G_OBJECT(pixbuf));
 	}
 
 	gtk_file_chooser_set_preview_widget_active (file_chooser, have_preview);
