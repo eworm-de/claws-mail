@@ -1540,6 +1540,8 @@ MainWindow *main_window_create()
 	debug_print("Creating main window...\n");
 	mainwin = g_new0(MainWindow, 1);
 
+	g_object_set(gtk_settings_get_default(), "gtk-button-images", TRUE, NULL);
+
 	/* main window */
 	window = GTK_WIDGET(gtkut_window_new(GTK_WINDOW_TOPLEVEL, "mainwindow"));
 	gtk_window_set_title(GTK_WINDOW(window), PROG_VERSION);

@@ -1,3 +1,9 @@
+2010-07-09 [iwkse]	3.7.6cvs14
+
+	* src/mainwindow.c
+			Bug #2224
+			Always use stock icons on buttons
+
 2010-07-08 [colin]	3.7.6cvs13
 
 	* src/gtk/filesel.c
