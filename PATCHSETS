@@ -4010,3 +4010,4 @@
 ( cvs diff -u -r 1.382.2.552 -r 1.382.2.553 src/compose.c;  ) > 3.7.6cvs12.patchset
 ( cvs diff -u -r 1.2.2.40 -r 1.2.2.41 src/gtk/filesel.c;  ) > 3.7.6cvs13.patchset
 ( cvs diff -u -r 1.274.2.310 -r 1.274.2.311 src/mainwindow.c;  ) > 3.7.6cvs14.patchset
+( cvs diff -u -r 1.39.2.57 -r 1.39.2.58 src/mainwindow.h;  cvs diff -u -r 1.274.2.311 -r 1.274.2.312 src/mainwindow.c;  ) > 3.7.6cvs15.patchset

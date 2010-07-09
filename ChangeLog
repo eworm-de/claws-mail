@@ -1,3 +1,9 @@
+2010-07-09 [iwkse]	3.7.6cvs15
+
+	* src/mainwindow.h
+	* src/mainwindow.c
+			Better fix for Bug #2224
+
 2010-07-09 [iwkse]	3.7.6cvs14
 
 	* src/mainwindow.c

@@ -1540,7 +1540,9 @@ MainWindow *main_window_create()
 	debug_print("Creating main window...\n");
 	mainwin = g_new0(MainWindow, 1);
 
-	g_object_set(gtk_settings_get_default(), "gtk-button-images", TRUE, NULL);
+	g_object_get(gtk_settings_get_default(), 
+				 "gtk-button-images", &mainwin->button_images, 
+				 NULL);
 
 	/* main window */
 	window = GTK_WIDGET(gtkut_window_new(GTK_WINDOW_TOPLEVEL, "mainwindow"));
@@ -2812,7 +2814,7 @@ void main_window_toggle_message_view(MainWindow *mainwin)
 	SummaryView *summaryview = mainwin->summaryview;
 	GtkWidget *ppaned = NULL;
 	GtkWidget *container = NULL;
-	
+
 	switch (prefs_common.layout_mode) {
 	case NORMAL_LAYOUT:
 	case VERTICAL_LAYOUT:
@@ -3659,6 +3661,23 @@ static void main_window_set_widgets(MainWindow *mainwin, LayoutType layout_mode)
 
 	cm_menu_set_sensitive_full(mainwin->ui_manager, "Menu/View/ShowHide/MessageView", 
 		(layout_mode != WIDE_MSGLIST_LAYOUT && layout_mode != SMALL_LAYOUT));
+	if (!mainwin->button_images) {
+		gboolean button_images = FALSE;
+		g_object_get(gtk_settings_get_default(), 
+					 "gtk-button-images", &button_images, 
+					 NULL);
+		if ((layout_mode == VERTICAL_LAYOUT || layout_mode == SMALL_LAYOUT) &&
+			!button_images) {
+			button_images = TRUE;
+			g_object_set(gtk_settings_get_default(), "gtk-button-images",
+						 TRUE, NULL);
+		}
+		else if(button_images) {
+			button_images = FALSE;
+			g_object_set(gtk_settings_get_default(), "gtk-button-images",
+						 FALSE, NULL);
+		}
+	}
 	switch (layout_mode) {
 	case VERTICAL_LAYOUT:
 	case NORMAL_LAYOUT:
