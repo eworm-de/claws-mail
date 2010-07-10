@@ -1,3 +1,9 @@
+2010-07-10 [iwkse]	3.7.6cvs17
+
+	* src/mainwindow.h
+			Remove forgotten variable from
+			the last bugfix #2224
+
 2010-07-10 [colin]	3.7.6cvs16
 
 	* src/mainwindow.c

@@ -138,7 +138,6 @@ struct _MainWindow
 	GtkWidget 	*tags_menu;
 	
 	gboolean	 in_folder;
-	gboolean	 button_images;
 	GtkActionGroup	*action_group;
 	GtkUIManager	*ui_manager;
 
