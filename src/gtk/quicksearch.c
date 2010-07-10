@@ -573,6 +573,31 @@ static gboolean search_condition_expr(GtkMenuItem *widget, gpointer data)
 	return TRUE;
 };
 
+static void quicksearch_set_button(GtkButton *button, const gchar *icon, const gchar *text)
+{
+	GList *children = gtk_container_get_children(GTK_CONTAINER(button));
+	GList *cur;
+	GtkWidget *box;
+	gboolean icon_visible;
+
+	g_object_get(gtk_settings_get_default(), 
+					 "gtk-button-images", &icon_visible, 
+					 NULL);
+
+	for (cur = children; cur; cur = cur->next)
+		gtk_container_remove(GTK_CONTAINER(button), GTK_WIDGET(cur->data));
+	
+	g_list_free(children);
+	box = gtk_hbox_new(FALSE, 0);
+	
+	gtk_container_add(GTK_CONTAINER(button), box);
+	if (icon_visible || !text || !*text)
+		gtk_box_pack_start(GTK_BOX(box), gtk_image_new_from_stock(icon, 
+			GTK_ICON_SIZE_BUTTON), FALSE, FALSE, 0);
+	gtk_box_pack_start(GTK_BOX(box), gtk_label_new_with_mnemonic(text), FALSE, FALSE, 0);
+	gtk_widget_show_all(box);
+}
+
 QuickSearch *quicksearch_new()
 {
 	QuickSearch *quicksearch;
@@ -757,6 +782,10 @@ QuickSearch *quicksearch_new()
 	quicksearch->press_timeout_id = -1;
 	quicksearch->normal_search_strings = NULL;
 	quicksearch->extended_search_strings = NULL;
+
+	quicksearch_set_button(GTK_BUTTON(quicksearch->search_description), GTK_STOCK_INFO, _("_Information"));
+	quicksearch_set_button(GTK_BUTTON(quicksearch->search_condition_expression), GTK_STOCK_EDIT, _("_Edit"));
+	quicksearch_set_button(GTK_BUTTON(quicksearch->clear_search), GTK_STOCK_CLEAR, _("_Clear"));
 	
 	update_extended_buttons(quicksearch);
 
@@ -769,21 +798,14 @@ void quicksearch_relayout(QuickSearch *quicksearch)
 	case NORMAL_LAYOUT:
 	case WIDE_LAYOUT:
 	case WIDE_MSGLIST_LAYOUT:
-		gtk_button_set_label(GTK_BUTTON(quicksearch->search_description), GTK_STOCK_INFO);
-		gtk_button_set_label(GTK_BUTTON(quicksearch->search_condition_expression), GTK_STOCK_EDIT);
-		gtk_button_set_label(GTK_BUTTON(quicksearch->clear_search), GTK_STOCK_CLEAR);
+		quicksearch_set_button(GTK_BUTTON(quicksearch->search_description), GTK_STOCK_INFO, _("_Information"));
+		quicksearch_set_button(GTK_BUTTON(quicksearch->search_condition_expression), GTK_STOCK_EDIT, _("_Edit"));
+		quicksearch_set_button(GTK_BUTTON(quicksearch->clear_search), GTK_STOCK_CLEAR, _("_Clear"));
 		break;
 	case VERTICAL_LAYOUT:
-		gtk_button_set_label(GTK_BUTTON(quicksearch->search_description), "");
-		gtk_button_set_label(GTK_BUTTON(quicksearch->search_condition_expression), "");
-		gtk_button_set_label(GTK_BUTTON(quicksearch->clear_search), "");
-
-		gtk_button_set_image(GTK_BUTTON(quicksearch->search_description),
-			gtk_image_new_from_stock(GTK_STOCK_INFO, GTK_ICON_SIZE_BUTTON));
-		gtk_button_set_image(GTK_BUTTON(quicksearch->search_condition_expression),
-			gtk_image_new_from_stock(GTK_STOCK_EDIT, GTK_ICON_SIZE_BUTTON));
-		gtk_button_set_image(GTK_BUTTON(quicksearch->clear_search),
-			gtk_image_new_from_stock(GTK_STOCK_CLEAR, GTK_ICON_SIZE_BUTTON));
+		quicksearch_set_button(GTK_BUTTON(quicksearch->search_description), GTK_STOCK_INFO, "");
+		quicksearch_set_button(GTK_BUTTON(quicksearch->search_condition_expression), GTK_STOCK_EDIT, "");
+		quicksearch_set_button(GTK_BUTTON(quicksearch->clear_search), GTK_STOCK_CLEAR, "");
 		break;
 	}
 }

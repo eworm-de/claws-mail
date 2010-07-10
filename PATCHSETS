@@ -4011,3 +4011,4 @@
 ( cvs diff -u -r 1.2.2.40 -r 1.2.2.41 src/gtk/filesel.c;  ) > 3.7.6cvs13.patchset
 ( cvs diff -u -r 1.274.2.310 -r 1.274.2.311 src/mainwindow.c;  ) > 3.7.6cvs14.patchset
 ( cvs diff -u -r 1.39.2.57 -r 1.39.2.58 src/mainwindow.h;  cvs diff -u -r 1.274.2.311 -r 1.274.2.312 src/mainwindow.c;  ) > 3.7.6cvs15.patchset
+( cvs diff -u -r 1.274.2.312 -r 1.274.2.313 src/mainwindow.c;  cvs diff -u -r 1.1.2.93 -r 1.1.2.94 src/gtk/quicksearch.c;  ) > 3.7.6cvs16.patchset
