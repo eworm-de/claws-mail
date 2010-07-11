@@ -718,7 +718,6 @@ QuickSearch *quicksearch_new()
 	gtk_widget_show(search_string_entry);
 
 	search_hbox = gtk_hbox_new(FALSE, 5);
-
 	clear_search = gtk_button_new_from_stock(GTK_STOCK_CLEAR);
 	gtk_box_pack_start(GTK_BOX(search_hbox), clear_search,
 			   FALSE, FALSE, 0);
@@ -802,6 +801,7 @@ void quicksearch_relayout(QuickSearch *quicksearch)
 		quicksearch_set_button(GTK_BUTTON(quicksearch->search_condition_expression), GTK_STOCK_EDIT, _("_Edit"));
 		quicksearch_set_button(GTK_BUTTON(quicksearch->clear_search), GTK_STOCK_CLEAR, _("_Clear"));
 		break;
+	case SMALL_LAYOUT:
 	case VERTICAL_LAYOUT:
 		quicksearch_set_button(GTK_BUTTON(quicksearch->search_description), GTK_STOCK_INFO, "");
 		quicksearch_set_button(GTK_BUTTON(quicksearch->search_condition_expression), GTK_STOCK_EDIT, "");

@@ -1,3 +1,8 @@
+2010-07-11 [iwkse]	3.7.6cvs18
+
+	* src/gtk/quicksearch.c
+		Add SMALL_LAYOUT to quicksearch_relayout
+
 2010-07-10 [iwkse]	3.7.6cvs17
 
 	* src/mainwindow.h
