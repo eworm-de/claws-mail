@@ -1,3 +1,9 @@
+2010-07-24 [colin]	3.7.6cvs19
+
+	* src/gtk/quicksearch.c
+		Finish 3.7.5cvs42 patch. Probably fixes bug 2232,
+		'freeze when using quick search'
+
 2010-07-11 [iwkse]	3.7.6cvs18
 
 	* src/gtk/quicksearch.c

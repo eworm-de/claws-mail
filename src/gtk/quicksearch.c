@@ -226,19 +226,19 @@ static void searchbar_run(QuickSearch *quicksearch, gboolean run_only_if_fast)
 				if (quicksearch->matcher_list) {
 					quicksearch->extended_search_strings =
 						add_history(quicksearch->extended_search_strings,
-								search_string);
+								g_strdup(search_string));
 					prefs_common.summary_quicksearch_history =
 						add_history(prefs_common.summary_quicksearch_history,
-								search_string);
+								g_strdup(search_string));
 				}
 				break;
 			default:
 				quicksearch->normal_search_strings =
 					add_history(quicksearch->normal_search_strings,
-							search_string);		
+							g_strdup(search_string));		
 				prefs_common.summary_quicksearch_history =
 					add_history(prefs_common.summary_quicksearch_history,
-							search_string);
+							g_strdup(search_string));
 				break;
 		}
 
@@ -1402,7 +1402,7 @@ void quicksearch_set_search_strings(QuickSearch *quicksearch)
 				quicksearch->normal_search_strings =
 					g_list_append(
 						quicksearch->normal_search_strings,
-						strings->data);
+						g_strdup(strings->data));
 				g_free(newstr);
 				continue;
 			}
