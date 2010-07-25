@@ -1002,7 +1002,6 @@ GList *add_history(GList *list, const gchar *str)
 
 	old = g_list_find_custom(list, (gpointer)str, (GCompareFunc)strcmp2);
 	if (old) {
-		g_free(old->data);
 		list = g_list_remove(list, old->data);
 	} else if (g_list_length(list) >= MAX_HISTORY_SIZE) {
 		GList *last;
@@ -1010,7 +1009,6 @@ GList *add_history(GList *list, const gchar *str)
 		last = g_list_last(list);
 		if (last) {
 			list = g_list_remove(list, last->data);
-			g_free(last->data);
 		}
 	}
 
