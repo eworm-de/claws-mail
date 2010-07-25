@@ -1009,8 +1009,8 @@ GList *add_history(GList *list, const gchar *str)
 
 		last = g_list_last(list);
 		if (last) {
-			g_free(last->data);
 			list = g_list_remove(list, last->data);
+			g_free(last->data);
 		}
 	}
 

@@ -1,3 +1,9 @@
+2010-07-25 [colin]	3.7.6cvs20
+
+	* src/common/utils.c
+		Reverse free/use with more logical and safe
+		use/free. Thanks to Michael Rasmussen !
+
 2010-07-24 [colin]	3.7.6cvs19
 
 	* src/gtk/quicksearch.c
