@@ -997,18 +997,23 @@ GSList *newsgroup_list_append(GSList *group_list, const gchar *str)
 GList *add_history(GList *list, const gchar *str)
 {
 	GList *old;
+	gchar *oldstr;
 
 	cm_return_val_if_fail(str != NULL, list);
 
 	old = g_list_find_custom(list, (gpointer)str, (GCompareFunc)strcmp2);
 	if (old) {
+		oldstr = old->data;
 		list = g_list_remove(list, old->data);
+		g_free(oldstr);
 	} else if (g_list_length(list) >= MAX_HISTORY_SIZE) {
 		GList *last;
 
 		last = g_list_last(list);
 		if (last) {
+			oldstr = last->data;
 			list = g_list_remove(list, last->data);
+			g_free(oldstr);
 		}
 	}
 

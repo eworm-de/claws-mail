@@ -1,3 +1,12 @@
+2010-07-25 [colin]	3.7.6cvs22
+
+	* src/common/utils.c
+		And now for a real fix. g_list_remove() doesn't, of
+		course, free the data. But we have to have a solid
+		pointer to it in order to free it ourselves instead
+		of relying on the old freed list pointer.
+		Maybe that's the last patch on the subject now ? :)
+
 2010-07-25 [colin]	3.7.6cvs21
 
 	* src/common/utils.c
