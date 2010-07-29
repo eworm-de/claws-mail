@@ -1,3 +1,9 @@
+2010-07-29 [holger]	3.7.6cvs23
+
+	* src/printing.c
+		Replace some gdk drawing with cairo, as the former
+		is going towards deprecation.
+
 2010-07-25 [colin]	3.7.6cvs22
 
 	* src/common/utils.c

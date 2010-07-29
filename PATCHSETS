@@ -4018,3 +4018,4 @@
 ( cvs diff -u -r 1.36.2.184 -r 1.36.2.185 src/common/utils.c;  ) > 3.7.6cvs20.patchset
 ( cvs diff -u -r 1.36.2.185 -r 1.36.2.186 src/common/utils.c;  ) > 3.7.6cvs21.patchset
 ( cvs diff -u -r 1.36.2.186 -r 1.36.2.187 src/common/utils.c;  ) > 3.7.6cvs22.patchset
+( cvs diff -u -r 1.1.2.29 -r 1.1.2.30 src/printing.c;  ) > 3.7.6cvs23.patchset

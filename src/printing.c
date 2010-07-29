@@ -659,49 +659,31 @@ static gboolean cb_preview_expose(GtkWidget *widget, GdkEventExpose *event,
 				  gpointer data)
 {
 	PreviewData *preview_data = data;
-	GdkGC *gc;
-	GdkColor white;
-	GdkColor black;
-	GdkColor gray;
 	cairo_t *cr;
 
 	debug_print("preview_expose (current %p)\n", preview_data->current_page);
-	gdk_window_clear(preview_data->area->window);
-
-	white.red   = 65535;
-	white.green = 65535;
-	white.blue  = 65535;
-	black.red   = 0;
-	black.green = 0;
-	black.blue  = 0;
-	gray.red   = 32700;
-	gray.green = 32700;
-	gray.blue  = 32700;
-
-	gc = gdk_gc_new(GDK_DRAWABLE(preview_data->area->window));
-
-	/* background */
-	gdk_gc_set_rgb_fg_color(gc, &gray);
-	gdk_draw_rectangle(preview_data->area->window, gc, TRUE, 0, 0,
-			   preview_data->area->allocation.width,
-			   preview_data->area->allocation.height);
-
-	/* shadow */
-	gdk_gc_set_rgb_fg_color(gc, &black);
-	gdk_draw_rectangle(preview_data->area->window, gc, TRUE,
-			   PREVIEW_SHADOW_OFFSET, PREVIEW_SHADOW_OFFSET,
-			   preview_data->page_width+PREVIEW_SHADOW_OFFSET,
-			   preview_data->page_height+PREVIEW_SHADOW_OFFSET);
-
-	/* paper */
-	gdk_gc_set_rgb_fg_color(gc, &white);
-	gdk_draw_rectangle(preview_data->area->window, gc, TRUE, 0, 0,
-			   preview_data->page_width,
-			   preview_data->page_height);
-
-	g_object_unref(gc);
 
 	cr = gdk_cairo_create(preview_data->area->window);
+
+	/* background */
+	cairo_set_source_rgb(cr, 0.5, 0.5, 0.5);
+	cairo_rectangle(cr, event->area.x, event->area.y, event->area.width, event->area.height);
+	cairo_fill(cr);
+
+	/* shadow */
+	cairo_set_source_rgb(cr, 0., 0., 0.);
+	cairo_rectangle(cr, PREVIEW_SHADOW_OFFSET, PREVIEW_SHADOW_OFFSET,
+	    preview_data->page_width+PREVIEW_SHADOW_OFFSET,
+	    preview_data->page_height+PREVIEW_SHADOW_OFFSET);
+	cairo_fill(cr);
+
+	/* paper */
+	cairo_set_source_rgb(cr, 1., 1., 1.);
+	cairo_rectangle(cr, 0, 0,
+	    preview_data->page_width,
+	    preview_data->page_height);
+	cairo_fill(cr);
+
 	gtk_print_context_set_cairo_context(preview_data->context, cr, PREVIEW_SCALE, PREVIEW_SCALE);
 	cairo_destroy(cr);
 
@@ -1460,4 +1442,3 @@ static void printing_preview_update_zoom_sensitivity(PreviewData *preview_data)
 	else
 		gtk_widget_set_sensitive(preview_data->zoom_out, TRUE);
 }
-
