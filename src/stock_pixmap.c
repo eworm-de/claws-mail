@@ -594,7 +594,7 @@ static gboolean pixmap_with_overlay_expose_event_cb(GtkWidget *widget, GdkEventE
 						    OverlayData *data) 
 {
 	GdkDrawable *drawable = widget->window;	
-	GdkGC *gc_pix;
+	cairo_t *cr;
 	gint left = 0;
 	gint top = 0;
 
@@ -604,8 +604,8 @@ static gboolean pixmap_with_overlay_expose_event_cb(GtkWidget *widget, GdkEventE
 	} else {
 		cm_return_val_if_fail(data->base_pixbuf != NULL, FALSE);
 	}
-	gc_pix = gdk_gc_new((GdkWindow *)drawable);
-						 
+	cr = gdk_cairo_create(drawable);
+
 	gdk_window_clear_area (drawable, expose->area.x, expose->area.y,
 			       expose->area.width, expose->area.height);
 
@@ -614,32 +614,32 @@ static gboolean pixmap_with_overlay_expose_event_cb(GtkWidget *widget, GdkEventE
 
 		mw = mainwindow_get_mainwindow();
 		if (mw != NULL && mw->menubar != NULL) {
-			GdkGC *gc_frame = gdk_gc_new((GdkWindow *)drawable);
+			cairo_t *cr;
 			GdkColor color = gtk_widget_get_style(mw->menubar)->base[GTK_STATE_SELECTED];
 
-			gdk_gc_set_foreground(gc_frame, &color);
-			gdk_gc_set_line_attributes(gc_frame, 1, GDK_LINE_SOLID,
-					GDK_CAP_BUTT, GDK_JOIN_BEVEL);
-			gdk_draw_rectangle(drawable, gc_frame, FALSE, data->border_x-2, data->border_y-2, 
-					data->base_width+3, data->base_height+3);
-			g_object_unref(gc_frame);
+			cr = gdk_cairo_create(drawable);
+			gdk_cairo_set_source_color(cr, &color);
+			cairo_set_antialias(cr, CAIRO_ANTIALIAS_NONE);
+			cairo_set_line_width(cr, 1.);
+			cairo_set_line_cap(cr, CAIRO_LINE_CAP_BUTT);
+			cairo_set_line_join(cr, CAIRO_LINE_JOIN_BEVEL);
+			cairo_rectangle(cr, data->border_x-2, data->border_y-2,
+			    data->base_width+3, data->base_height+3);
+			cairo_stroke(cr);
+			cairo_destroy(cr);
 		}
 	}
 
 	if (data->is_pixmap) {
-		gdk_gc_set_tile(gc_pix, data->base_pixmap);
-		gdk_gc_set_ts_origin(gc_pix, data->border_x, data->border_y);
-		gdk_gc_set_clip_mask(gc_pix, data->base_mask);
-		gdk_gc_set_clip_origin(gc_pix, data->border_x, data->border_y);
-		gdk_gc_set_fill(gc_pix, GDK_TILED);
-		gdk_draw_rectangle(drawable, gc_pix, TRUE, data->border_x, data->border_y, 
-			   data->base_width, data->base_height);
+		gdk_cairo_set_source_pixmap(cr, data->base_pixmap, data->border_x, data->border_y);
+		cairo_pattern_set_extend(cairo_get_source(cr), CAIRO_EXTEND_REPEAT);
+		cairo_rectangle(cr, data->border_x, data->border_y,
+        data->base_width, data->base_height);
+		cairo_fill(cr);
 	} else {
-		gdk_draw_pixbuf(drawable, gc_pix, data->base_pixbuf, 
-			0, 0, data->border_x, data->border_y,
-			-1, -1, GDK_RGB_DITHER_NONE, 0, 0);
+		gdk_cairo_set_source_pixbuf(cr, data->base_pixbuf, data->border_x, data->border_y);
+		cairo_paint(cr);
 	}
-
 
 	if (data->position != OVERLAY_NONE) {
 
@@ -688,27 +688,23 @@ static gboolean pixmap_with_overlay_expose_event_cb(GtkWidget *widget, GdkEventE
 				break;
 		}
 	}
+
 	if (data->position != OVERLAY_NONE) {
 		if (data->is_pixmap) {
 			cm_return_val_if_fail(data->overlay_pixmap != NULL, FALSE);
 			cm_return_val_if_fail(data->overlay_mask != NULL, FALSE);
-			gdk_gc_set_tile(gc_pix, data->overlay_pixmap);
-			gdk_gc_set_clip_mask(gc_pix, data->overlay_mask);
-
-			gdk_gc_set_ts_origin(gc_pix, left, top);
-			gdk_gc_set_clip_origin(gc_pix, left, top);
-			gdk_gc_set_fill(gc_pix, GDK_TILED);
-			gdk_draw_rectangle(drawable, gc_pix, TRUE, left, top, 
-				   data->overlay_width, data->overlay_height);
+			gdk_cairo_set_source_pixmap(cr, data->overlay_pixmap, left, top);
+			cairo_pattern_set_extend (cairo_get_source (cr), CAIRO_EXTEND_REPEAT);
+			cairo_rectangle (cr, left, top, data->overlay_width, data->overlay_height);
+			cairo_fill(cr);
 		} else {
-			cm_return_val_if_fail(data->overlay_pixbuf != NULL, FALSE);
-			gdk_draw_pixbuf(drawable, gc_pix, data->overlay_pixbuf, 
-				0, 0, left, top,
-				-1, -1, GDK_RGB_DITHER_NONE, 0, 0);
-
+      cm_return_val_if_fail(data->overlay_pixbuf != NULL, FALSE);
+      gdk_cairo_set_source_pixbuf(cr, data->overlay_pixbuf, left, top);
+      cairo_paint(cr);
 		}
 	}
-	g_object_unref(gc_pix);
+
+	cairo_destroy(cr);
 	
 	return TRUE;
 }
