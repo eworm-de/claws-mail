@@ -194,23 +194,24 @@ static gboolean colorlabel_drawing_area_expose_event_cb
 	GdkDrawable *drawable = widget->window;
 	gulong c = (gulong) GPOINTER_TO_INT(data);
 	GdkColor color;
-	GdkGC *gc;
+	cairo_t *cr;
 
 	INTCOLOR_TO_GDKCOLOR(c, color)
 
 	gdk_colormap_alloc_color(gtk_widget_get_colormap(widget), &color, FALSE, TRUE);
 
-	gc = gdk_gc_new(drawable);
-
-	gdk_gc_set_foreground(gc, &color);
-	gdk_draw_rectangle(drawable, widget->style->black_gc,
-			   FALSE, 0, 0, widget->allocation.width - 1,
-			   widget->allocation.height - 1);
-	gdk_draw_rectangle(drawable, gc,
-			   TRUE, 1, 1, widget->allocation.width - 2,
-			   widget->allocation.height - 2);
-
-	g_object_unref(gc);			   
+	cr = gdk_cairo_create(drawable);
+	cairo_set_source_rgb(cr, 0., 0., 0.);
+	cairo_rectangle(cr, 0, 0,
+	    widget->allocation.width - 1,
+	    widget->allocation.height - 1);
+	cairo_stroke(cr);
+	gdk_cairo_set_source_color(cr, &color);
+	cairo_rectangle(cr, 1, 1,
+	    widget->allocation.width - 2,
+	    widget->allocation.height - 2);
+	cairo_fill(cr);
+	cairo_destroy(cr);
 	
 	return FALSE;
 }
