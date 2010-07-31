@@ -4021,3 +4021,4 @@
 ( cvs diff -u -r 1.1.2.29 -r 1.1.2.30 src/printing.c;  ) > 3.7.6cvs23.patchset
 ( cvs diff -u -r 1.2.2.29 -r 1.2.2.30 src/gtk/colorlabel.c;  ) > 3.7.6cvs24.patchset
 ( cvs diff -u -r 1.25.2.66 -r 1.25.2.67 src/stock_pixmap.c;  ) > 3.7.6cvs25.patchset
+( cvs diff -u -r 1.1.4.12 -r 1.1.4.13 src/gtk/gtkshruler.c;  ) > 3.7.6cvs26.patchset

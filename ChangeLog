@@ -1,3 +1,8 @@
+2010-07-31 [holger]	3.7.6cvs26
+
+	* src/gtk/gtkshruler.c
+		Yet more GdkGC to Cairo porting
+
 2010-07-30 [holger]	3.7.6cvs25
 
 	* src/stock_pixmap.c

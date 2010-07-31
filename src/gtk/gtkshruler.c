@@ -115,7 +115,7 @@ static void
 gtk_shruler_draw_ticks(GtkRuler *ruler)
 {
 	GtkWidget *widget;
-	GdkGC *gc, *bg_gc;
+	cairo_t *cr;
 	gint i;
 	gint width, height;
 	gint xthickness;
@@ -130,8 +130,10 @@ gtk_shruler_draw_ticks(GtkRuler *ruler)
 
 	widget = GTK_WIDGET (ruler);
 	
-	gc = widget->style->fg_gc[GTK_STATE_NORMAL];
-	bg_gc = widget->style->bg_gc[GTK_STATE_NORMAL];
+	cr = gdk_cairo_create(ruler->backing_store);
+	cairo_set_antialias(cr, CAIRO_ANTIALIAS_NONE);
+	cairo_set_line_width(cr, 1.);
+	gdk_cairo_set_source_color(cr, &gtk_widget_get_style(widget)->text[GTK_STATE_NORMAL]);
 
 	xthickness = widget->style->xthickness;
 	ythickness = widget->style->ythickness;
@@ -154,9 +156,9 @@ gtk_shruler_draw_ticks(GtkRuler *ruler)
 		if ( pos % 10 == 0 ) length = ( 2 * height / 3 );
 		else if ( pos % 5 == 0 ) length = ( height / 3 );
 		
-		gdk_draw_line(ruler->backing_store, gc,
-			      i, height + ythickness,
-			      i, height - length);			
+		cairo_move_to(cr, i, height + ythickness);
+		cairo_line_to(cr, i, height - length);
+		cairo_stroke(cr);
 		
 		if ( pos % 10 == 0 ) {
 			gchar buf[8];
@@ -168,10 +170,12 @@ gtk_shruler_draw_ticks(GtkRuler *ruler)
 			layout = gtk_widget_create_pango_layout
 				(GTK_WIDGET(ruler), buf);
 
-			gdk_draw_layout(ruler->backing_store, gc, i + 2,
-					0, layout);
+			cairo_move_to(cr, i+2, 0);
+			pango_cairo_show_layout(cr, layout);
 
 			g_object_unref(layout);
 		}
 	}
+
+	cairo_destroy(cr);
 }
