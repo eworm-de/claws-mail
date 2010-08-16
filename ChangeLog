@@ -1,3 +1,10 @@
+2010-08-16 [colin]	3.7.6cvs27
+
+	* src/main.c
+		Use temp dir to store logs in Windows. Avoids doing
+		get_rc_dir() early, which prevents set_rc_dir()
+		working correctly.
+
 2010-07-31 [holger]	3.7.6cvs26
 
 	* src/gtk/gtkshruler.c
