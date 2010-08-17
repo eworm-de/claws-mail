@@ -1,3 +1,9 @@
+2010-08-17 [colin]	3.7.6cvs28
+
+	* src/main.c
+		Fix previous patch (our own tmp dir is inside
+		our rc dir)
+
 2010-08-16 [colin]	3.7.6cvs27
 
 	* src/main.c

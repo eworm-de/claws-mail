@@ -793,8 +793,8 @@ static void win32_log(const gchar *log_domain, GLogLevelFlags log_level, const g
 
 static void win32_open_log(void)
 {
-	gchar *logfile = g_strconcat(get_tmp_dir(), G_DIR_SEPARATOR_S, "claws-win32.log", NULL);
-	gchar *oldlogfile = g_strconcat(get_tmp_dir(), G_DIR_SEPARATOR_S, "claws-win32.log.bak", NULL);
+	gchar *logfile = g_strconcat(g_get_tmp_dir(), G_DIR_SEPARATOR_S, "claws-win32.log", NULL);
+	gchar *oldlogfile = g_strconcat(g_get_tmp_dir(), G_DIR_SEPARATOR_S, "claws-win32.log.bak", NULL);
 
 	if (is_file_exist(logfile)) {
 		if (rename_force(logfile, oldlogfile) < 0)
