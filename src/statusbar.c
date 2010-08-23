@@ -235,18 +235,20 @@ void statusbar_verbosity_set(gboolean verbose)
 
 void statusbar_progress_all (gint done, gint total, gint step) 
 {
+	GtkProgressBar *progressbar = GTK_PROGRESS_BAR(
+					mainwindow_get_mainwindow()->progressbar);
 	gchar buf[32];
+	
 	if (total && done % step == 0) {
 		g_snprintf(buf, sizeof(buf), "%d / %d", done, total);
-		gtk_progress_bar_set_text
-			(GTK_PROGRESS_BAR(mainwindow_get_mainwindow()->progressbar), buf);
-		gtk_progress_bar_set_fraction
-			(GTK_PROGRESS_BAR(mainwindow_get_mainwindow()->progressbar),
+		gtk_progress_bar_set_text(progressbar, buf);
+		gtk_progress_bar_set_fraction(progressbar,
 			 (total == 0) ? 0 : (gfloat)done / (gfloat)total);
+		if (!gtkut_widget_get_visible(GTK_WIDGET(progressbar)))
+			gtk_widget_show(GTK_WIDGET(progressbar));
 	} else if (total == 0) {
-		gtk_progress_bar_set_text
-			(GTK_PROGRESS_BAR(mainwindow_get_mainwindow()->progressbar), "");
-		gtk_progress_bar_set_fraction
-			(GTK_PROGRESS_BAR(mainwindow_get_mainwindow()->progressbar), 0.0);
+		gtk_progress_bar_set_text(progressbar, "");
+		gtk_progress_bar_set_fraction(progressbar, 0.0);
+		gtk_widget_hide(GTK_WIDGET(progressbar));
 	}
 }

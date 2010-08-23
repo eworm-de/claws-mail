@@ -508,10 +508,13 @@ static gint send_send_data_progressive(Session *session, guint cur_len,
 	progress_dialog_set_fraction
 		(dialog->dialog, (total_len == 0) ? 0 : (gfloat)cur_len / (gfloat)total_len);
 
-	if (mainwin)
+	if (mainwin) {
+		if (!gtkut_widget_get_visible(mainwin->progressbar))	
+			gtk_widget_show(mainwin->progressbar);
 		gtk_progress_bar_set_fraction
 			(GTK_PROGRESS_BAR(mainwin->progressbar),
 			 (total_len == 0) ? 0 : (gfloat)cur_len / (gfloat)total_len);
+	}
 
 	return 0;
 }
@@ -524,9 +527,11 @@ static gint send_send_data_finished(Session *session, guint len, gpointer data)
 	cm_return_val_if_fail(dialog != NULL, -1);
 
 	send_send_data_progressive(session, len, len, dialog);
-	if (mainwin)
+	if (mainwin) {
+		gtk_widget_hide(mainwin->progressbar);
 		gtk_progress_bar_set_fraction
 			(GTK_PROGRESS_BAR(mainwin->progressbar),(gfloat)0);
+	}
 
 	return 0;
 }
