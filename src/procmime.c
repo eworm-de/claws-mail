@@ -345,7 +345,7 @@ gboolean procmime_decode_content(MimeInfo *mimeinfo)
 			FLUSH_LASTLINE();
 	} else if (encoding == ENC_BASE64) {
 		gchar outbuf[BUFFSIZE];
-		gint len;
+		gint len, inlen, inread;
 		Base64Decoder *decoder;
 		gboolean got_error = FALSE;
 		gboolean uncanonicalize = FALSE;
@@ -366,14 +366,15 @@ gboolean procmime_decode_content(MimeInfo *mimeinfo)
 		}
 
 		decoder = base64_decoder_new();
-		while ((ftell(infp) < readend) && (fgets(buf, sizeof(buf), infp) != NULL)) {
-			len = base64_decoder_decode(decoder, buf, outbuf);
+		while ((inlen = MIN(readend - ftell(infp), sizeof(buf))) > 0 && !err) {
+			inread = fread(buf, 1, inlen, infp);
+			len = base64_decoder_decode(decoder, buf, outbuf, inread);
 			if (uncanonicalize == TRUE && strlen(outbuf) < len && starting) {
 				uncanonicalize = FALSE;
 				null_bytes = TRUE;
 			}
 			starting = FALSE;
-			if (len < 0 && !got_error) {
+			if (((inread != inlen) || len < 0) && !got_error) {
 				g_warning("Bad BASE64 content.\n");
 				if (fwrite(_("[Error decoding BASE64]\n"),
 					sizeof(gchar),

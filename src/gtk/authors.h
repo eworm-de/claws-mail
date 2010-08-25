@@ -176,6 +176,7 @@ static char *CONTRIBS_LIST[] = {
 "HIRAMATSU Masami",
 "Yasuzaki Masayoshi",
 "Jason McCarver",
+"Yotam Medini",
 "David Mehrmann",
 "Christian Mertes",
 "Bram Metsch",

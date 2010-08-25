@@ -1,3 +1,13 @@
+2010-08-25 [colin]	3.7.6cvs31
+
+	* src/procmime.c
+	* AUTHORS
+	* src/gtk/authors.h
+	* src/common/base64.c
+	* src/common/base64.h
+		Fix bug #2245, "base64 decoding fails with line breaks"
+		Patch by Yotam Medini
+
 2010-08-25 [colin]	3.7.6cvs30
 
 	* src/main.c

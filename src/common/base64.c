@@ -128,9 +128,12 @@ void base64_decoder_free(Base64Decoder *decoder)
 }
 
 gint base64_decoder_decode(Base64Decoder *decoder,
-			   const gchar *in, guchar *out)
+			   const gchar *in, guchar *out, gint inlen)
 {
+	const gchar *in_end = in + inlen;
 	gint len, total_len = 0;
+	gboolean in_more = inlen > 0;
+	gboolean got_eq = FALSE;
 	gint buf_len;
 	gchar buf[4];
 
@@ -138,32 +141,31 @@ gint base64_decoder_decode(Base64Decoder *decoder,
 	cm_return_val_if_fail(in != NULL, -1);
 	cm_return_val_if_fail(out != NULL, -1);
 
+	/* Start with previous saved tail */	
 	buf_len = decoder->buf_len;
 	memcpy(buf, decoder->buf, sizeof(buf));
 
-	for (;;) {
-		while (buf_len < 4) {
+	while (in_more) {
+		while (buf_len < 4 && in_more) {
 			gchar c = *in;
 
 			in++;
-			if (c == '\0') break;
-			if (c == '\r' || c == '\n') continue;
-			if (c != '=' && BASE64VAL(c) == -1)
-				return -1;
-			buf[buf_len++] = c;
+			got_eq = (c == '=');
+			if (got_eq || BASE64VAL(c) >= 0)
+				buf[buf_len++] = c;
+			in_more = (in < in_end) && !(got_eq && (buf_len == 4));
 		}
-		if (buf_len < 4 || buf[0] == '=' || buf[1] == '=') {
-			decoder->buf_len = buf_len;
-			memcpy(decoder->buf, buf, sizeof(buf));
-			return total_len;
-		}
-		len = base64_decode(out, buf, 4);
-		out += len;
-		total_len += len;
-		buf_len = 0;
-		if (len < 3) {
-			decoder->buf_len = 0;
-			return total_len;
+		if (buf_len == 4) {
+			len = base64_decode(out, buf, 4);
+			out += len;
+			total_len += len;
+			buf_len = 0;
 		}
 	}
+	if (buf_len < 4) { 
+		/* Save tail for next iteration call. It wll be ignored if ends here. */
+		decoder->buf_len = buf_len;
+		memcpy(decoder->buf, buf, buf_len);
+	}
+	return total_len;
 }

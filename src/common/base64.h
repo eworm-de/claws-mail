@@ -43,6 +43,7 @@ Base64Decoder *base64_decoder_new	(void);
 void	       base64_decoder_free	(Base64Decoder	*decoder);
 gint	       base64_decoder_decode	(Base64Decoder	*decoder,
 					 const gchar	*in,
-					 guchar		*out);
+					 guchar		*out,
+					 gint           inlen);
 
 #endif /* __BASE64_H__ */
