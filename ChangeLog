@@ -1,3 +1,8 @@
+2010-08-25 [colin]	3.7.6cvs30
+
+	* src/main.c
+		Fix bug #2241, "Empty trash on exit fails on scripted exit"
+
 2010-08-23 [pawel]	3.7.6cvs29
 
 	* src/inc.c

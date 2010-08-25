@@ -2386,6 +2386,9 @@ static void lock_socket_input_cb(gpointer data,
 		const gchar *target = buf+7;
 		mainwindow_jump_to(target, TRUE);
 	} else if (!strncmp(buf, "exit", 4)) {
+		if (prefs_common.clean_on_exit && !prefs_common.ask_on_clean) {
+			procmsg_empty_all_trash();
+                }
 		app_will_exit(NULL, mainwin);
 	}
 

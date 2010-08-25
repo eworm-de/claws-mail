@@ -4025,3 +4025,4 @@
 ( cvs diff -u -r 1.115.2.226 -r 1.115.2.227 src/main.c;  ) > 3.7.6cvs27.patchset
 ( cvs diff -u -r 1.115.2.227 -r 1.115.2.228 src/main.c;  ) > 3.7.6cvs28.patchset
 ( cvs diff -u -r 1.149.2.100 -r 1.149.2.101 src/inc.c;  cvs diff -u -r 1.17.2.56 -r 1.17.2.57 src/send_message.c;  cvs diff -u -r 1.5.2.26 -r 1.5.2.27 src/statusbar.c;  cvs diff -u -r 1.43.2.116 -r 1.43.2.117 src/toolbar.c;  ) > 3.7.6cvs29.patchset
+( cvs diff -u -r 1.115.2.228 -r 1.115.2.229 src/main.c;  ) > 3.7.6cvs30.patchset
