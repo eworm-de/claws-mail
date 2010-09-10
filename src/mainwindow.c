@@ -2035,6 +2035,7 @@ MainWindow *main_window_create()
 	online_pixmap = stock_pixmap_widget(hbox_stat, STOCK_PIXMAP_ONLINE);
 	offline_pixmap = stock_pixmap_widget(hbox_stat, STOCK_PIXMAP_OFFLINE);
 	online_switch = gtk_button_new ();
+	gtk_widget_set_can_focus(online_switch, FALSE);
 	CLAWS_SET_TIP(online_switch, 
 			     _("You are online. Click the icon to go offline"));
 	offline_switch = gtk_button_new ();

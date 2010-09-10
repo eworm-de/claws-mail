@@ -539,6 +539,7 @@ SummaryView *summary_create(MainWindow *mainwin)
 	toggle_search = gtk_toggle_button_new();
 	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(toggle_search),
 				     prefs_common.show_searchbar);
+	gtk_widget_set_can_focus(toggle_search, FALSE);
 	gtk_widget_show(toggle_search);
 
 	CLAWS_SET_TIP(toggle_search, _("Toggle quick search bar"));

@@ -1737,6 +1737,7 @@ static void toolbar_buttons_cb(GtkWidget   *widget,
 #ifndef GENERIC_UMPC
 #define TOOLBAR_ITEM(item,icon,text,tooltip) {								\
 	item = GTK_WIDGET(gtk_tool_button_new(icon, text));						\
+	gtk_widget_set_can_focus(gtk_bin_get_child(GTK_BIN(item)), FALSE);				\
 	gtk_tool_item_set_homogeneous(GTK_TOOL_ITEM(item), FALSE);					\
 	gtk_tool_item_set_is_important(GTK_TOOL_ITEM(item), TRUE);					\
 	g_signal_connect (G_OBJECT(item), "clicked", G_CALLBACK(toolbar_buttons_cb), toolbar_item);	\
@@ -1760,7 +1761,9 @@ static void toolbar_buttons_cb(GtkWidget   *widget,
 	gchild = gtk_container_get_children(								\
 			GTK_CONTAINER(child)); 								\
 	btn = (GtkWidget *)gchild->data;								\
+	gtk_widget_set_can_focus(btn, FALSE);								\
 	arr = (GtkWidget *)(gchild->next?gchild->next->data:NULL);					\
+	gtk_widget_set_can_focus(arr, FALSE);								\
 	g_list_free(gchild);										\
 	gchild = gtk_container_get_children(GTK_CONTAINER(arr));					\
 	gtk_widget_set_size_request(GTK_WIDGET(gchild->data), 9, -1);					\
@@ -1769,6 +1772,7 @@ static void toolbar_buttons_cb(GtkWidget   *widget,
 #else
 #define TOOLBAR_ITEM(item,icon,text,tooltip) {								\
 	item = GTK_WIDGET(gtk_tool_button_new(icon, text));						\
+	gtk_widget_set_can_focus(gtk_bin_get_child(GTK_BIN(item)), FALSE);				\
 	gtk_tool_item_set_homogeneous(GTK_TOOL_ITEM(item), FALSE);					\
 	gtk_tool_item_set_is_important(GTK_TOOL_ITEM(item), TRUE);					\
 	g_signal_connect (G_OBJECT(item), "clicked", G_CALLBACK(toolbar_buttons_cb), toolbar_item);	\
@@ -1787,7 +1791,9 @@ static void toolbar_buttons_cb(GtkWidget   *widget,
 	gchild = gtk_container_get_children(								\
 			GTK_CONTAINER(child)); 								\
 	btn = (GtkWidget *)gchild->data;								\
+	gtk_widget_set_can_focus(btn, FALSE);								\
 	arr = (GtkWidget *)(gchild->next?gchild->next->data:NULL);					\
+	gtk_widget_set_can_focus(arr, FALSE);								\
 	g_list_free(gchild);										\
 	gchild = gtk_container_get_children(GTK_CONTAINER(arr));					\
 	gtk_widget_set_size_request(GTK_WIDGET(gchild->data), 9, -1);					\
