@@ -4028,3 +4028,4 @@
 ( cvs diff -u -r 1.115.2.228 -r 1.115.2.229 src/main.c;  ) > 3.7.6cvs30.patchset
 ( cvs diff -u -r 1.49.2.132 -r 1.49.2.133 src/procmime.c;  cvs diff -u -r 1.100.2.74 -r 1.100.2.75 AUTHORS;  cvs diff -u -r 1.1.2.67 -r 1.1.2.68 src/gtk/authors.h;  cvs diff -u -r 1.1.4.9 -r 1.1.4.10 src/common/base64.c;  cvs diff -u -r 1.1.4.7 -r 1.1.4.8 src/common/base64.h;  ) > 3.7.6cvs31.patchset
 ( cvs diff -u -r 1.274.2.313 -r 1.274.2.314 src/mainwindow.c;  cvs diff -u -r 1.395.2.420 -r 1.395.2.421 src/summaryview.c;  cvs diff -u -r 1.43.2.117 -r 1.43.2.118 src/toolbar.c;  ) > 3.7.6cvs32.patchset
+( cvs diff -u -r 1.274.2.314 -r 1.274.2.315 src/mainwindow.c;  cvs diff -u -r 1.395.2.421 -r 1.395.2.422 src/summaryview.c;  cvs diff -u -r 1.43.2.118 -r 1.43.2.119 src/toolbar.c;  ) > 3.7.6cvs33.patchset

@@ -1,3 +1,11 @@
+2010-09-11 [pawel]	3.7.6cvs33
+
+	* src/mainwindow.c
+	* src/summaryview.c
+	* src/toolbar.c
+		gtk_widget_set_can_focus() -> GTK_WIDGET_UNSET_FLAGS()
+		fixes build with GTK+ < 2.18
+
 2010-09-10 [pawel]	3.7.6cvs32
 
 	* src/mainwindow.c
