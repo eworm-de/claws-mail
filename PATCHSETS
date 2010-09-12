@@ -4030,3 +4030,4 @@
 ( cvs diff -u -r 1.274.2.313 -r 1.274.2.314 src/mainwindow.c;  cvs diff -u -r 1.395.2.420 -r 1.395.2.421 src/summaryview.c;  cvs diff -u -r 1.43.2.117 -r 1.43.2.118 src/toolbar.c;  ) > 3.7.6cvs32.patchset
 ( cvs diff -u -r 1.274.2.314 -r 1.274.2.315 src/mainwindow.c;  cvs diff -u -r 1.395.2.421 -r 1.395.2.422 src/summaryview.c;  cvs diff -u -r 1.43.2.118 -r 1.43.2.119 src/toolbar.c;  ) > 3.7.6cvs33.patchset
 ( cvs diff -u -r 1.382.2.553 -r 1.382.2.554 src/compose.c;  ) > 3.7.6cvs34.patchset
+( cvs diff -u -r 1.382.2.554 -r 1.382.2.555 src/compose.c;  ) > 3.7.6cvs35.patchset

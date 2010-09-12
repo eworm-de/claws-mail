@@ -3214,10 +3214,11 @@ static void compose_reply_set_entry(Compose *compose, MsgInfo *msginfo,
 			 	 compose->followup_to ? compose->followup_to :
 			 	 compose->newsgroups ? compose->newsgroups : "",
 			 	 COMPOSE_NEWSGROUPS, PREF_NONE);
-		} else if (reply_to_ml)
+		} else if (reply_to_ml) {
+			compose_check_for_email_account(compose);
 			compose_entry_append(compose,
 				   compose->ml_post, COMPOSE_TO, PREF_ML); 
-		else 
+		} else 
 			compose_entry_append
 				(compose,
 			 	 compose->followup_to ? compose->followup_to :

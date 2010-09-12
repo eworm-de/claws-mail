@@ -1,3 +1,9 @@
+2010-09-12 [pawel]	3.7.6cvs35
+
+	* src/compose.c
+		Add forgotten bit to previous commit,
+		select email account when replying to ML
+
 2010-09-12 [pawel]	3.7.6cvs34
 
 	* src/compose.c
