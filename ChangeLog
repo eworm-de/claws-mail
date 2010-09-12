@@ -1,3 +1,10 @@
+2010-09-12 [pawel]	3.7.6cvs34
+
+	* src/compose.c
+		Fix bug #2247 "nntp reply-to-all broken?"
+		Make reply-to-all and reply-to-ml work as expected in
+		mailing list through NNTP case
+
 2010-09-11 [pawel]	3.7.6cvs33
 
 	* src/mainwindow.c

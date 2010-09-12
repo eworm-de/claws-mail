@@ -3214,7 +3214,9 @@ static void compose_reply_set_entry(Compose *compose, MsgInfo *msginfo,
 			 	 compose->followup_to ? compose->followup_to :
 			 	 compose->newsgroups ? compose->newsgroups : "",
 			 	 COMPOSE_NEWSGROUPS, PREF_NONE);
-		} 
+		} else if (reply_to_ml)
+			compose_entry_append(compose,
+				   compose->ml_post, COMPOSE_TO, PREF_ML); 
 		else 
 			compose_entry_append
 				(compose,
@@ -3225,7 +3227,7 @@ static void compose_reply_set_entry(Compose *compose, MsgInfo *msginfo,
 	compose_reply_set_subject(compose, msginfo);
 
 	if (to_ml && compose->ml_post) return;
-	if (!to_all || compose->account->protocol == A_NNTP) return;
+	if (!to_all) return;
 
 	if (compose->replyto) {
 		Xstrdup_a(replyto, compose->replyto, return);
