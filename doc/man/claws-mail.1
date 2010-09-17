@@ -239,7 +239,10 @@ subscribe to the given URI if possible
 open composition window with specified files attached
 .TP 
 \fB\-\-compose\fR "mailto:\fI%t\fR?subject=\fI%s\fR&cc=\fI%c\fR&body=\fI%b\fR"
-this syntax can be used in web\-browsers and CLI to open a pre\-populated Compose window
+this syntax can be used in web\-browsers and CLI to open a pre\-populated Compose window.
+Possible fields after the destination recipient are: subject, from, cc, bcc, in-reply-to,
+body, insert (insert a file in body part, needs an absolute path), attach (attach a file,
+needs an absolute path, see also: --attach)
 .TP 
 \fB\-\-receive\fR
 receive new messages
