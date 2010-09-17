@@ -4032,3 +4032,4 @@
 ( cvs diff -u -r 1.382.2.553 -r 1.382.2.554 src/compose.c;  ) > 3.7.6cvs34.patchset
 ( cvs diff -u -r 1.382.2.554 -r 1.382.2.555 src/compose.c;  ) > 3.7.6cvs35.patchset
 ( cvs diff -u -r 1.1.2.7 -r 1.1.2.8 doc/man/claws-mail.1;  ) > 3.7.6cvs36.patchset
+( cvs diff -u -r 1.382.2.555 -r 1.382.2.556 src/compose.c;  ) > 3.7.6cvs37.patchset

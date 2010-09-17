@@ -3194,6 +3194,9 @@ static void compose_reply_set_entry(Compose *compose, MsgInfo *msginfo,
 			}
 		}
 	} else {
+		if ((to_sender || to_ml) && prefs_common.reply_account_autosel)
+			compose_check_for_email_account(compose);
+
 		if (to_sender || (compose->followup_to && 
 			!strncmp(compose->followup_to, "poster", 6)))
 			compose_entry_append
@@ -3215,7 +3218,6 @@ static void compose_reply_set_entry(Compose *compose, MsgInfo *msginfo,
 			 	 compose->newsgroups ? compose->newsgroups : "",
 			 	 COMPOSE_NEWSGROUPS, PREF_NONE);
 		} else if (reply_to_ml) {
-			compose_check_for_email_account(compose);
 			compose_entry_append(compose,
 				   compose->ml_post, COMPOSE_TO, PREF_ML); 
 		} else 
@@ -11180,7 +11182,10 @@ void compose_reply_to_address(MessageView *msgview, MsgInfo *msginfo,
 	msginfo_list = g_slist_prepend(msginfo_list, msginfo);
 	
 	compose = compose_reply_mode(COMPOSE_REPLY_TO_ADDRESS, msginfo_list, body);
-	compose_check_for_email_account(compose);
+
+	if (prefs_common.reply_account_autosel)
+		compose_check_for_email_account(compose);
+
 	compose_set_folder_prefs(compose, msginfo->folder, FALSE);
 	compose_entry_append(compose, address, COMPOSE_TO, PREF_NONE);
 	compose_reply_set_subject(compose, msginfo);

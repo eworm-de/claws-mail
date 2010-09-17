@@ -1,3 +1,9 @@
+2010-09-17 [pawel]	3.7.6cvs37
+
+	* src/compose.c
+		Respect reply_account_autosel when changing compose
+		account to email one while replying to NNTP post
+
 2010-09-17 [wwp]	3.7.6cvs36
 
 	* doc/man/claws-mail.1
