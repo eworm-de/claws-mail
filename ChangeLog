@@ -1,3 +1,8 @@
+2010-09-19 [colin]	3.7.6cvs38
+
+	* src/compose.c
+		Revert previous commit (which breaks Reply to newsgroups)
+
 2010-09-17 [pawel]	3.7.6cvs37
 
 	* src/compose.c
