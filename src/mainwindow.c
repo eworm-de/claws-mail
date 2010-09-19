@@ -3348,10 +3348,13 @@ void main_create_mailing_list_menu (MainWindow *mainwin, MsgInfo *msginfo)
 	
 	if (msginfo) 
 		is_menu = mailing_list_create_submenu (mainwin, msginfo);
-	if (is_menu)
+	if (is_menu) {
 		cm_menu_set_sensitive_full(mainwin->ui_manager, "Menu/Message/MailingList", TRUE);
-	else
+		cm_menu_set_sensitive_full(mainwin->ui_manager, "Menu/Message/ReplyTo/List", TRUE);
+	} else {
 		cm_menu_set_sensitive_full(mainwin->ui_manager, "Menu/Message/MailingList", FALSE);
+		cm_menu_set_sensitive_full(mainwin->ui_manager, "Menu/Message/ReplyTo/List", FALSE);
+	}	
 }
 
 static gint mailing_list_create_submenu (MainWindow *mainwin, MsgInfo *msginfo)

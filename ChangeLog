@@ -1,3 +1,11 @@
+2010-09-19 [pawel]	3.7.6cvs40
+
+	* src/compose.c
+	* src/mainwindow.c
+	* src/summaryview.c
+		Set ML menus sensitivity accordingly to
+		possibility of reply to ML
+
 2010-09-19 [colin]	3.7.6cvs39
 
 	* src/compose.c
