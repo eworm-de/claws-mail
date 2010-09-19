@@ -1,3 +1,11 @@
+2010-09-19 [colin]	3.7.6cvs39
+
+	* src/compose.c
+		Fix cvs34 and cvs35. NNTP accounts are mandatory to post
+		to newsgroups, and NNTP accounts *can* send email. We 
+		should not force an email account when replying to_ml or
+		anything...
+
 2010-09-19 [colin]	3.7.6cvs38
 
 	* src/compose.c
