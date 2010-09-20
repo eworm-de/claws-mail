@@ -1620,7 +1620,6 @@ GSList *summary_get_selected_msg_list(SummaryView *summaryview)
 void summary_set_menu_sensitive(SummaryView *summaryview)
 {
 	SensitiveCond state;
-	MsgInfo *msginfo;
 	gboolean sensitive;
 	gint i;
 
@@ -1695,15 +1694,6 @@ void summary_set_menu_sensitive(SummaryView *summaryview)
 		sensitive = ((entry[i].cond & state) == entry[i].cond);
 		cm_menu_set_sensitive_full(summaryview->mainwin->ui_manager, entry[i].entry, sensitive);
 	}
-
-#ifndef GENERIC_UMPC
-	if ((msginfo = summary_get_selected_msg(summaryview)) && msginfo->extradata)
-		cm_menu_set_sensitive_full(summaryview->mainwin->ui_manager,
-			"Menus/SummaryViewPopup/ReplyTo/MailingList", TRUE);
-	else
-		cm_menu_set_sensitive_full(summaryview->mainwin->ui_manager,
-			"Menus/SummaryViewPopup/ReplyTo/MailingList", FALSE);
-#endif
 
 	summary_lock(summaryview);
 #ifndef GENERIC_UMPC

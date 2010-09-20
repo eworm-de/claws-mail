@@ -1535,9 +1535,7 @@ static Compose *compose_generic_reply(MsgInfo *msginfo,
 		compose_destroy(compose);
 		return NULL;
 	}
-	if (!compose->ml_post)
-		cm_menu_set_sensitive_full(compose->ui_manager, "Menu/Options/ReplyMode/List", FALSE);
-	
+
 	/* override from name according to folder properties */
 	if (msginfo->folder && msginfo->folder->prefs &&
 		msginfo->folder->prefs->reply_with_format &&
