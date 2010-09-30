@@ -1572,7 +1572,7 @@ static gboolean prefs_filtering_actions_selected
 		combobox_select_by_data(GTK_COMBO_BOX(filtering_action.action_combo),
 				     ACTION_COLOR);
 		gtk_cmoption_menu_set_history(GTK_CMOPTION_MENU(filtering_action.color_optmenu),
-					    action->labelcolor);     
+					    action->labelcolor + 1);
 		menu = gtk_cmoption_menu_get_menu(GTK_CMOPTION_MENU(
 						filtering_action.color_optmenu));
 		g_signal_emit_by_name(G_OBJECT(menu), "selection-done", menu);

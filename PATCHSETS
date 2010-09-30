@@ -4037,3 +4037,4 @@
 ( cvs diff -u -r 1.382.2.557 -r 1.382.2.558 src/compose.c;  ) > 3.7.6cvs39.patchset
 ( cvs diff -u -r 1.382.2.558 -r 1.382.2.559 src/compose.c;  cvs diff -u -r 1.274.2.315 -r 1.274.2.316 src/mainwindow.c;  cvs diff -u -r 1.395.2.422 -r 1.395.2.423 src/summaryview.c;  ) > 3.7.6cvs40.patchset
 ( cvs diff -u -r 1.382.2.559 -r 1.382.2.560 src/compose.c;  cvs diff -u -r 1.274.2.316 -r 1.274.2.317 src/mainwindow.c;  cvs diff -u -r 1.395.2.423 -r 1.395.2.424 src/summaryview.c;  ) > 3.7.6cvs41.patchset
+( cvs diff -u -r 1.105.2.160 -r 1.105.2.161 src/prefs_account.c;  cvs diff -u -r 1.1.4.63 -r 1.1.4.64 src/prefs_filtering_action.c;  cvs diff -u -r 1.43.2.84 -r 1.43.2.85 src/prefs_matcher.c;  ) > 3.7.6cvs42.patchset

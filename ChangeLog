@@ -1,3 +1,15 @@
+2010-09-30 [wwp]	3.7.6cvs42
+
+	* src/prefs_account.c
+	* src/prefs_filtering_action.c
+	* src/prefs_matcher.c
+			Fix bug #2274, wrong color label index range
+			used w/ gtk_cmoption_menu (behaviour change
+			has been introduced w/ 3.5.0cvs49 apparently),
+			now it must be 1..N so let's use colorlabel value
+			(0..N) + 1.
+			
+
 2010-09-20 [pawel]	3.7.6cvs41
 
 	* src/compose.c

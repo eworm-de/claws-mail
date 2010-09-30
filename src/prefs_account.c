@@ -3703,7 +3703,7 @@ static void prefs_account_crosspost_set_colormenu(PrefParam *pparam)
 	GtkWidget *menu;
 	GtkWidget *menuitem;
 
-	gtk_cmoption_menu_set_history(colormenu, colorlabel);
+	gtk_cmoption_menu_set_history(colormenu, colorlabel + 1);
 	menu = gtk_cmoption_menu_get_menu(colormenu);
 	menuitem = gtk_menu_get_active(GTK_MENU(menu));
 	gtk_menu_item_activate(GTK_MENU_ITEM(menuitem));

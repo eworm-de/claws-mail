@@ -2446,7 +2446,7 @@ static gboolean prefs_matcher_selected(GtkTreeSelection *selector,
 	case MATCHCRITERIA_NOT_COLORLABEL:
 	case MATCHCRITERIA_COLORLABEL:
 		gtk_cmoption_menu_set_history(GTK_CMOPTION_MENU(matcher.color_optmenu),
-					    prop->value);
+					    prop->value + 1);
 		menu = gtk_cmoption_menu_get_menu(GTK_CMOPTION_MENU(matcher.color_optmenu));
 		g_signal_emit_by_name(G_OBJECT(menu), "selection-done", menu);
 		break;
