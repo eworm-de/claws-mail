@@ -64,7 +64,6 @@ static GdkPixbuf *unreadmarkedmail_pixbuf[2] = {NULL, NULL};
 static GdkPixbuf *nomail_pixbuf[2] = {NULL, NULL};
 
 static GtkStatusIcon *trayicon;
-static GtkWidget *image = NULL;
 static GtkWidget *focused_widget = NULL;
 
 static GtkWidget *traymenu_popup;
@@ -339,8 +338,7 @@ static gboolean trayicon_update_theme(gpointer source, gpointer data)
 	stock_pixbuf_gdk(GTK_WIDGET(mainwin->window), STOCK_PIXMAP_TRAY_UNREADMARKEDMAIL_OFFLINE, &unreadmarkedmail_pixbuf[1]);
 	stock_pixbuf_gdk(GTK_WIDGET(mainwin->window), STOCK_PIXMAP_TRAY_NEWMARKEDMAIL_OFFLINE, &newmarkedmail_pixbuf[1]);
 
-	if (image != NULL)
-		update(NULL);
+	update(NULL);
 
 	return FALSE;
 }
