@@ -1,3 +1,29 @@
+2010-10-02 [mir]	3.7.6cvs50
+
+	* manual/de/dist/html/Makefile.am
+	* manual/de/dist/pdf/Makefile.am
+	* manual/de/dist/ps/Makefile.am
+	* manual/de/dist/txt/Makefile.am
+	* manual/dist/html/Makefile.am
+	* manual/dist/pdf/Makefile.am
+	* manual/dist/ps/Makefile.am
+	* manual/dist/txt/Makefile.am
+	* manual/es/dist/html/Makefile.am
+	* manual/es/dist/pdf/Makefile.am
+	* manual/es/dist/ps/Makefile.am
+	* manual/es/dist/txt/Makefile.am
+	* manual/fr/dist/html/Makefile.am
+	* manual/fr/dist/pdf/Makefile.am
+	* manual/fr/dist/ps/Makefile.am
+	* manual/fr/dist/txt/Makefile.am
+	* manual/pl/dist/html/Makefile.am
+	* manual/pl/dist/pdf/Makefile.am
+	* manual/pl/dist/ps/Makefile.am
+	* manual/pl/dist/txt/Makefile.am
+	    Part 2 of last commit which broke due to a permission error
+	    Avoid claws trying to build manuals if the required
+	    tools are not present.
+
 2010-10-02 [mir]	3.7.6cvs49
 
 	* configure.ac
