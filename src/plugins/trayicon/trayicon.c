@@ -70,8 +70,6 @@ static GtkWidget *focused_widget = NULL;
 static GtkWidget *traymenu_popup;
 static gboolean updating_menu = FALSE;
 
-guint destroy_signal_id;
-
 typedef enum
 {
 	TRAYICON_NEW,
@@ -358,7 +356,6 @@ static void create_trayicon()
 
 	gtk_status_icon_set_from_pixbuf(GTK_STATUS_ICON(trayicon), nomail_pixbuf[0]);
 
-	destroy_signal_id =
 	g_signal_connect(G_OBJECT(trayicon), "button-press-event",
 		G_CALLBACK(click_cb), NULL);
 
@@ -479,8 +476,6 @@ gboolean plugin_done(void)
 	if (claws_is_exiting())
 		return TRUE;
 
-	g_signal_handler_disconnect(G_OBJECT(trayicon), destroy_signal_id);
-	
 	g_object_unref(G_OBJECT(trayicon));
 	trayicon = NULL;
 

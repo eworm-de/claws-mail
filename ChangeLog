@@ -1,3 +1,8 @@
+2010-10-02 [colin]	3.7.6cvs47
+
+	* src/plugins/trayicon/trayicon.c
+		Got burnt by wrong indentation!
+
 2010-10-02 [colin]	3.7.6cvs46
 
 	* configure.ac
