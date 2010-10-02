@@ -112,11 +112,11 @@ HeaderView *headerview_create(void)
 	gtk_label_set_selectable(GTK_LABEL(subject_body_label), TRUE);
 	gtk_label_set_selectable(GTK_LABEL(tags_body_label), TRUE);
 
-	GTK_WIDGET_UNSET_FLAGS(from_body_label, GTK_CAN_FOCUS);
-	GTK_WIDGET_UNSET_FLAGS(to_body_label, GTK_CAN_FOCUS);
-	GTK_WIDGET_UNSET_FLAGS(ng_body_label, GTK_CAN_FOCUS);
-	GTK_WIDGET_UNSET_FLAGS(subject_body_label, GTK_CAN_FOCUS);
-	GTK_WIDGET_UNSET_FLAGS(tags_body_label, GTK_CAN_FOCUS);
+	gtkut_widget_set_can_focus(from_body_label, FALSE);
+	gtkut_widget_set_can_focus(to_body_label, FALSE);
+	gtkut_widget_set_can_focus(ng_body_label, FALSE);
+	gtkut_widget_set_can_focus(subject_body_label, FALSE);
+	gtkut_widget_set_can_focus(tags_body_label, FALSE);
 
 	gtk_box_pack_start(GTK_BOX(hbox1), from_header_label, FALSE, FALSE, 0);
 	gtk_box_pack_start(GTK_BOX(hbox1), from_body_label, FALSE, FALSE, 0);

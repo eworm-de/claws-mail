@@ -424,7 +424,7 @@ create_dialog (struct select_keys_s *sk)
 		    		   &dont_encrypt_btn, _("Do_n't encrypt"));
     
     cancel_btn = gtk_button_new_from_stock(GTK_STOCK_CANCEL);
-    GTK_WIDGET_SET_FLAGS(cancel_btn, GTK_CAN_DEFAULT);
+    gtkut_widget_set_can_default(cancel_btn, TRUE);
     gtk_box_pack_start(GTK_BOX(bbox), cancel_btn, TRUE, TRUE, 0);
     gtk_widget_show(cancel_btn);
     gtk_box_pack_end (GTK_BOX (hbox), bbox, FALSE, FALSE, 0);

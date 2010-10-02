@@ -1203,7 +1203,7 @@ int imap_threaded_starttls(Folder * folder, const gchar *host, int port)
 	struct connect_param param;
 	struct starttls_result result;
 	int cert_len;
-	unsigned char *certificate;
+	unsigned char *certificate = NULL;
 	
 	debug_print("imap starttls - begin\n");
 	

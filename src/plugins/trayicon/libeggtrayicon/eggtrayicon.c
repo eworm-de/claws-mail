@@ -162,7 +162,7 @@ egg_tray_icon_get_orientation_property (EggTrayIcon *icon)
   g_return_if_fail (icon->manager_window != None);
  
 #ifndef GDK_MULTIHEAD_SAFE
-  xdisplay = gdk_display;
+  xdisplay = gdk_display_get_default();
 #else
   xdisplay = GDK_DISPLAY_XDISPLAY (gtk_widget_get_display (GTK_WIDGET (icon)));
 #endif
@@ -279,7 +279,7 @@ egg_tray_icon_send_manager_message (EggTrayIcon *icon,
   ev.data.l[4] = data3;
 
 #ifndef GDK_MULTIHEAD_SAFE
-  display = gdk_display;
+  display = gdk_display_get_default();
 #else
   display = GDK_DISPLAY_XDISPLAY (gtk_widget_get_display (GTK_WIDGET (icon)));
 #endif
@@ -307,7 +307,7 @@ egg_tray_icon_update_manager_window (EggTrayIcon *icon, gboolean dock_if_realize
   Display *xdisplay;
   
 #ifndef GDK_MULTIHEAD_SAFE
-  xdisplay = gdk_display;
+  xdisplay = gdk_display_get_default();
 #else
   xdisplay = GDK_DISPLAY_XDISPLAY (gtk_widget_get_display (GTK_WIDGET (icon)));
 #endif
@@ -505,7 +505,7 @@ egg_tray_icon_send_message (EggTrayIcon *icon,
       Display *xdisplay;
 
 #ifndef GDK_MULTIHEAD_SAFE
-      xdisplay = gdk_display;
+      xdisplay = gdk_display_get_default();
 #else
       xdisplay = GDK_DISPLAY_XDISPLAY (gtk_widget_get_display (GTK_WIDGET (icon)));
 #endif

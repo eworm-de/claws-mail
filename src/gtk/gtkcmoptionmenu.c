@@ -183,8 +183,9 @@ gtk_cmoption_menu_child_type (GtkContainer       *container)
 static void
 gtk_cmoption_menu_init (GtkCMOptionMenu *option_menu)
 {
-  GTK_WIDGET_SET_FLAGS (option_menu, GTK_CAN_FOCUS);
-  GTK_WIDGET_UNSET_FLAGS (option_menu, GTK_CAN_DEFAULT | GTK_RECEIVES_DEFAULT);
+  gtkut_widget_set_can_focus (GTK_WIDGET(option_menu), TRUE);
+  gtkut_widget_set_can_default (GTK_WIDGET(option_menu), FALSE);
+  gtkut_widget_set_receives_default (GTK_WIDGET(option_menu), FALSE);
 
   option_menu->menu = NULL;
   option_menu->menu_item = NULL;

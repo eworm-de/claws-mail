@@ -1373,7 +1373,7 @@ static void address_completion_create_completion_window( GtkEntry *entry_ )
 	 *
 	 * GTK1: this gets rid of the irritating focus rectangle that doesn't
 	 * follow the selection */
-	GTK_WIDGET_UNSET_FLAGS(list_view, GTK_CAN_FOCUS);
+	gtkut_widget_set_can_focus(list_view, FALSE);
 }
 
 /**

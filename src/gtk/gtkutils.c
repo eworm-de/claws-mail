@@ -126,7 +126,7 @@ void gtkut_stock_button_add_help(GtkWidget *bbox, GtkWidget **help_btn)
 
 	*help_btn = gtk_button_new_from_stock(GTK_STOCK_HELP);
 
-	GTK_WIDGET_SET_FLAGS(*help_btn, GTK_CAN_DEFAULT);
+	gtkut_widget_set_can_default(*help_btn, TRUE);
 	gtk_box_pack_end(GTK_BOX (bbox), *help_btn, TRUE, TRUE, 0);
 	gtk_button_box_set_child_secondary(GTK_BUTTON_BOX (bbox),
 			*help_btn, TRUE);
@@ -163,20 +163,20 @@ void gtkut_stock_button_set_create(GtkWidget **bbox,
 	gtk_box_set_spacing(GTK_BOX(*bbox), 5);
 
 	*button1 = gtk_button_new_from_stock(label1);
-	GTK_WIDGET_SET_FLAGS(*button1, GTK_CAN_DEFAULT);
+	gtkut_widget_set_can_default(*button1, TRUE);
 	gtk_box_pack_start(GTK_BOX(*bbox), *button1, TRUE, TRUE, 0);
 	gtk_widget_show(*button1);
 
 	if (button2) {
 		*button2 = gtk_button_new_from_stock(label2);
-		GTK_WIDGET_SET_FLAGS(*button2, GTK_CAN_DEFAULT);
+		gtkut_widget_set_can_default(*button2, TRUE);
 		gtk_box_pack_start(GTK_BOX(*bbox), *button2, TRUE, TRUE, 0);
 		gtk_widget_show(*button2);
 	}
 
 	if (button3) {
 		*button3 = gtk_button_new_from_stock(label3);
-		GTK_WIDGET_SET_FLAGS(*button3, GTK_CAN_DEFAULT);
+		gtkut_widget_set_can_default(*button3, TRUE);
 		gtk_box_pack_start(GTK_BOX(*bbox), *button3, TRUE, TRUE, 0);
 		gtk_widget_show(*button3);
 	}
@@ -197,7 +197,7 @@ void gtkut_stock_with_text_button_set_create(GtkWidget **bbox,
 	*button1 = gtk_button_new_with_mnemonic(text1);
 	gtk_button_set_image(GTK_BUTTON(*button1),
 		gtk_image_new_from_stock(label1, GTK_ICON_SIZE_BUTTON));
-	GTK_WIDGET_SET_FLAGS(*button1, GTK_CAN_DEFAULT);
+	gtkut_widget_set_can_default(*button1, TRUE);
 	gtk_box_pack_start(GTK_BOX(*bbox), *button1, TRUE, TRUE, 0);
 	gtk_widget_show(*button1);
 
@@ -205,7 +205,7 @@ void gtkut_stock_with_text_button_set_create(GtkWidget **bbox,
 		*button2 = gtk_button_new_with_mnemonic(text2);
 		gtk_button_set_image(GTK_BUTTON(*button2),
 			gtk_image_new_from_stock(label2, GTK_ICON_SIZE_BUTTON));
-		GTK_WIDGET_SET_FLAGS(*button2, GTK_CAN_DEFAULT);
+		gtkut_widget_set_can_default(*button2, TRUE);
 		gtk_box_pack_start(GTK_BOX(*bbox), *button2, TRUE, TRUE, 0);
 		gtk_widget_show(*button2);
 	}
@@ -214,7 +214,7 @@ void gtkut_stock_with_text_button_set_create(GtkWidget **bbox,
 		*button3 = gtk_button_new_with_mnemonic(text3);
 		gtk_button_set_image(GTK_BUTTON(*button3),
 			gtk_image_new_from_stock(label3, GTK_ICON_SIZE_BUTTON));
-		GTK_WIDGET_SET_FLAGS(*button3, GTK_CAN_DEFAULT);
+		gtkut_widget_set_can_default(*button3, TRUE);
 		gtk_box_pack_start(GTK_BOX(*bbox), *button3, TRUE, TRUE, 0);
 		gtk_widget_show(*button3);
 	}
@@ -1795,5 +1795,77 @@ gboolean gtkut_widget_get_app_paintable(GtkWidget *widget)
 	return gtk_widget_get_app_paintable(widget);
 #else
 	return GTK_WIDGET_APP_PAINTABLE(widget);
+#endif
+}
+
+void gtkut_widget_set_mapped(GtkWidget *widget, gboolean mapped)
+{
+#if GTK_CHECK_VERSION(2,20,0)
+	gtk_widget_set_mapped(widget, mapped);
+#else
+	if (mapped)
+		GTK_WIDGET_SET_FLAGS(widget, GTK_MAPPED);
+	else
+		GTK_WIDGET_UNSET_FLAGS(widget, GTK_MAPPED);
+#endif
+}
+
+void gtkut_widget_set_realized(GtkWidget *widget, gboolean realized)
+{
+#if GTK_CHECK_VERSION(2,20,0)
+	gtk_widget_set_realized(widget, realized);
+#else
+	if (realized)
+		GTK_WIDGET_SET_FLAGS(widget, GTK_REALIZED);
+	else
+		GTK_WIDGET_UNSET_FLAGS(widget, GTK_REALIZED);
+#endif
+}
+
+void gtkut_widget_set_can_default(GtkWidget *widget, gboolean can_default)
+{
+#if GTK_CHECK_VERSION(2,20,0)
+	gtk_widget_set_can_default(widget, can_default);
+#else
+	if (can_default)
+		GTK_WIDGET_SET_FLAGS(widget, GTK_CAN_DEFAULT);
+	else
+		GTK_WIDGET_UNSET_FLAGS(widget, GTK_CAN_DEFAULT);
+#endif
+}
+
+void gtkut_widget_set_receives_default(GtkWidget *widget, gboolean receives_default)
+{
+#if GTK_CHECK_VERSION(2,20,0)
+	gtk_widget_set_receives_default(widget, receives_default);
+#else
+	if (receives_default)
+		GTK_WIDGET_SET_FLAGS(widget, GTK_RECEIVES_DEFAULT);
+	else
+		GTK_WIDGET_UNSET_FLAGS(widget, GTK_RECEIVES_DEFAULT);
+#endif
+}
+
+void gtkut_widget_set_can_focus(GtkWidget *widget, gboolean can_focus)
+{
+#if GTK_CHECK_VERSION(2,20,0)
+	gtk_widget_set_can_focus(widget, can_focus);
+#else
+	if (can_focus)
+		GTK_WIDGET_SET_FLAGS(widget, GTK_CAN_FOCUS);
+	else
+		GTK_WIDGET_UNSET_FLAGS(widget, GTK_CAN_FOCUS);
+#endif
+}
+
+void gtkut_widget_set_has_window(GtkWidget *widget, gboolean has_window)
+{
+#if GTK_CHECK_VERSION(2,20,0)
+	gtk_widget_set_has_window(widget, has_window);
+#else
+	if (has_window) /* Inverted logic there */
+		GTK_WIDGET_UNSET_FLAGS(widget, GTK_NO_WINDOW);
+	else
+		GTK_WIDGET_SET_FLAGS(widget, GTK_NO_WINDOW);
 #endif
 }

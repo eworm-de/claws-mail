@@ -280,7 +280,7 @@ static void edit_person_attrib_clear( gpointer data ) {
 	}
 }
 
-static void edit_person_switch_page( GtkNotebook *notebook, GtkNotebookPage *page,
+static void edit_person_switch_page( GtkNotebook *notebook, gpointer page,
 					gint pageNum, gpointer user_data)
 {
 	edit_person_set_window_title( pageNum );
@@ -1093,7 +1093,7 @@ static void addressbook_edit_person_page_email( gint pageNum, gchar *pageLbl ) {
 	gtk_cmclist_set_column_width( GTK_CMCLIST(clist), EMAIL_COL_ALIAS, EMAIL_COL_WIDTH_ALIAS );
 
 	for( i = 0; i < EMAIL_N_COLS; i++ )
-		GTK_WIDGET_UNSET_FLAGS(GTK_CMCLIST(clist)->column[i].button, GTK_CAN_FOCUS);
+		gtkut_widget_set_can_focus(GTK_CMCLIST(clist)->column[i].button, FALSE);
 
 	/* Data entry area */
 	table = gtk_table_new( 4, 2, FALSE);
@@ -1303,7 +1303,7 @@ static void addressbook_edit_person_page_attrib( gint pageNum, gchar *pageLbl ) 
 	gtk_cmclist_set_column_width( GTK_CMCLIST(clist), ATTRIB_COL_VALUE, ATTRIB_COL_WIDTH_VALUE );
 
 	for( i = 0; i < ATTRIB_N_COLS; i++ )
-		GTK_WIDGET_UNSET_FLAGS(GTK_CMCLIST(clist)->column[i].button, GTK_CAN_FOCUS);
+		gtkut_widget_set_can_focus(GTK_CMCLIST(clist)->column[i].button, FALSE);
 
 	/* Data entry area */
 #ifndef GENERIC_UMPC

@@ -291,8 +291,8 @@ MimeView *mimeview_create(MainWindow *mainwin)
 	gtk_cmclist_set_column_auto_resize(GTK_CMCLIST(ctree), COL_MIMETYPE, TRUE);
 	gtk_cmclist_set_column_auto_resize(GTK_CMCLIST(ctree), COL_NAME, TRUE);	
 	for (i = 0; i < N_MIMEVIEW_COLS; i++)
-		GTK_WIDGET_UNSET_FLAGS(GTK_CMCLIST(ctree)->column[i].button,
-				       GTK_CAN_FOCUS);
+		gtkut_widget_set_can_focus(GTK_CMCLIST(ctree)->column[i].button,
+				       FALSE);
 	gtk_widget_show(ctree);
 	gtk_container_add(GTK_CONTAINER(scrolledwin), ctree);
 
@@ -309,7 +309,7 @@ MimeView *mimeview_create(MainWindow *mainwin)
 
 	mime_notebook = gtk_notebook_new();
         gtk_widget_show(mime_notebook);
-        GTK_WIDGET_UNSET_FLAGS(mime_notebook, GTK_CAN_FOCUS);
+        gtkut_widget_set_can_focus(mime_notebook, FALSE);
         gtk_notebook_set_show_tabs(GTK_NOTEBOOK(mime_notebook), FALSE);
         gtk_notebook_set_show_border(GTK_NOTEBOOK(mime_notebook), FALSE);
 	

@@ -539,7 +539,7 @@ SummaryView *summary_create(MainWindow *mainwin)
 	toggle_search = gtk_toggle_button_new();
 	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(toggle_search),
 				     prefs_common.show_searchbar);
-	GTK_WIDGET_UNSET_FLAGS(toggle_search, GTK_CAN_FOCUS);
+	gtkut_widget_set_can_focus(toggle_search, FALSE);
 	gtk_widget_show(toggle_search);
 
 	CLAWS_SET_TIP(toggle_search, _("Toggle quick search bar"));
@@ -6320,8 +6320,8 @@ static GtkWidget *summary_ctree_create(SummaryView *summaryview)
 	g_object_set_data(G_OBJECT(ctree), "summaryview", (gpointer)summaryview); 
 
 	for (pos = 0; pos < N_SUMMARY_COLS; pos++) {
-		GTK_WIDGET_UNSET_FLAGS(GTK_CMCLIST(ctree)->column[pos].button,
-				       GTK_CAN_FOCUS);
+		gtkut_widget_set_can_focus(GTK_CMCLIST(ctree)->column[pos].button,
+				       FALSE);
 		if (((pos == summaryview->col_pos[S_COL_FROM] && !FOLDER_SHOWS_TO_HDR(summaryview->folder_item)) ||
 		     (pos == summaryview->col_pos[S_COL_TO] && FOLDER_SHOWS_TO_HDR(summaryview->folder_item)) ||
 		     pos == summaryview->col_pos[S_COL_DATE]) && vert &&

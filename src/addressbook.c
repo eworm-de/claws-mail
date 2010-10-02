@@ -1012,8 +1012,7 @@ static void addressbook_create(void)
 
 	/* Address index */
 	ctree = gtk_sctree_new_with_titles(N_INDEX_COLS, 0, index_titles);
-	GTK_WIDGET_UNSET_FLAGS(GTK_CMCLIST(ctree)->column[0].button,
-			       GTK_CAN_FOCUS);
+	gtkut_widget_set_can_focus(GTK_CMCLIST(ctree)->column[0].button, FALSE);
 
 	gtk_container_add(GTK_CONTAINER(ctree_swin), ctree);
 	gtk_cmclist_set_selection_mode(GTK_CMCLIST(ctree), GTK_SELECTION_BROWSE);
@@ -1103,8 +1102,8 @@ static void addressbook_create(void)
 		G_CALLBACK(addressbook_address_list_focus_evt_out), NULL);
 
 	for (i = 0; i < N_LIST_COLS; i++)
-		GTK_WIDGET_UNSET_FLAGS(GTK_CMCLIST(clist)->column[i].button,
-				       GTK_CAN_FOCUS);
+		gtkut_widget_set_can_focus(GTK_CMCLIST(clist)->column[i].button,
+					 FALSE);
 
 	g_signal_connect(G_OBJECT(clist), "tree_select_row",
 			 G_CALLBACK(addressbook_list_row_selected), NULL);
@@ -1172,18 +1171,18 @@ static void addressbook_create(void)
 	gtkut_stock_button_add_help(hbbox, &help_btn);
 
 	edit_btn = gtk_button_new_from_stock(GTK_STOCK_EDIT);
-	GTK_WIDGET_SET_FLAGS(edit_btn, GTK_CAN_DEFAULT);
+	gtkut_widget_set_can_default(edit_btn, TRUE);
 	gtk_box_pack_start(GTK_BOX(hbbox), edit_btn, TRUE, TRUE, 0);
 	del_btn = gtk_button_new_from_stock(GTK_STOCK_DELETE);
-	GTK_WIDGET_SET_FLAGS(del_btn, GTK_CAN_DEFAULT);
+	gtkut_widget_set_can_default(del_btn, TRUE);
 	gtk_box_pack_start(GTK_BOX(hbbox), del_btn, TRUE, TRUE, 0);
 	reg_btn = gtk_button_new_from_stock(GTK_STOCK_NEW);
-	GTK_WIDGET_SET_FLAGS(reg_btn, GTK_CAN_DEFAULT);
+	gtkut_widget_set_can_default(reg_btn, TRUE);
 	gtk_box_pack_start(GTK_BOX(hbbox), reg_btn, TRUE, TRUE, 0);
 
 
 	lup_btn = gtk_button_new_from_stock(GTK_STOCK_FIND);
-	GTK_WIDGET_SET_FLAGS(lup_btn, GTK_CAN_DEFAULT);
+	gtkut_widget_set_can_default(lup_btn, TRUE);
 	gtk_box_pack_start(GTK_BOX(hbox), lup_btn, TRUE, TRUE, 0);
 
 	g_signal_connect(G_OBJECT(help_btn), "clicked",
@@ -1201,19 +1200,19 @@ static void addressbook_create(void)
 
 	to_btn = gtk_button_new_with_label
 		(prefs_common_translated_header_name("To:"));
-	GTK_WIDGET_SET_FLAGS(to_btn, GTK_CAN_DEFAULT);
+	gtkut_widget_set_can_default(to_btn, TRUE);
 	gtk_box_pack_start(GTK_BOX(hbbox), to_btn, TRUE, TRUE, 0);
 	cc_btn = gtk_button_new_with_label
 		(prefs_common_translated_header_name("Cc:"));
-	GTK_WIDGET_SET_FLAGS(cc_btn, GTK_CAN_DEFAULT);
+	gtkut_widget_set_can_default(cc_btn, TRUE);
 	gtk_box_pack_start(GTK_BOX(hbbox), cc_btn, TRUE, TRUE, 0);
 	bcc_btn = gtk_button_new_with_label
 		(prefs_common_translated_header_name("Bcc:"));
-	GTK_WIDGET_SET_FLAGS(bcc_btn, GTK_CAN_DEFAULT);
+	gtkut_widget_set_can_default(bcc_btn, TRUE);
 	gtk_box_pack_start(GTK_BOX(hbbox), bcc_btn, TRUE, TRUE, 0);
 
 	close_btn = gtk_button_new_from_stock(GTK_STOCK_CLOSE);
-	GTK_WIDGET_SET_FLAGS(close_btn, GTK_CAN_DEFAULT);
+	gtkut_widget_set_can_default(close_btn, TRUE);
 	gtk_box_pack_start(GTK_BOX(hbbox), close_btn, TRUE, TRUE, 0);
 
 	g_signal_connect(G_OBJECT(to_btn), "clicked",

@@ -221,8 +221,7 @@ static void grouplist_dialog_create(void)
 	}
 
 	for (i = 0; i < 3; i++)
-		GTK_WIDGET_UNSET_FLAGS(GTK_CMCLIST(ctree)->column[i].button,
-				       GTK_CAN_FOCUS);
+		gtkut_widget_set_can_focus(GTK_CMCLIST(ctree)->column[i].button, FALSE);
 	g_signal_connect(G_OBJECT(ctree), "button-press-event",
 			 G_CALLBACK(button_press_cb), NULL);
 

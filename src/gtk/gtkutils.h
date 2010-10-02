@@ -176,6 +176,13 @@ gboolean gtkut_widget_has_grab		(GtkWidget	*widget);
 gboolean gtkut_widget_has_focus		(GtkWidget	*widget);
 gboolean gtkut_widget_is_drawable	(GtkWidget	*widget);
 gboolean gtkut_widget_is_sensitive	(GtkWidget	*widget);
+void gtkut_widget_set_mapped            (GtkWidget *widget, gboolean mapped);
+void gtkut_widget_set_realized          (GtkWidget *widget, gboolean realized);
+void gtkut_widget_set_can_default       (GtkWidget *widget, gboolean can_default);
+void gtkut_widget_set_receives_default  (GtkWidget *widget, gboolean receives_default);
+void gtkut_widget_set_can_focus         (GtkWidget *widget, gboolean can_focus);
+void gtkut_widget_set_has_window        (GtkWidget *widget, gboolean has_window);
+
 
 GtkWidget *gtkut_account_menu_new	(GList			*ac_list,
 				  	 GCallback	 	 callback,

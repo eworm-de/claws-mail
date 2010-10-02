@@ -2035,7 +2035,7 @@ MainWindow *main_window_create()
 	online_pixmap = stock_pixmap_widget(hbox_stat, STOCK_PIXMAP_ONLINE);
 	offline_pixmap = stock_pixmap_widget(hbox_stat, STOCK_PIXMAP_OFFLINE);
 	online_switch = gtk_button_new ();
-	GTK_WIDGET_UNSET_FLAGS(online_switch, GTK_CAN_FOCUS);
+	gtkut_widget_set_can_focus(online_switch, FALSE);
 	CLAWS_SET_TIP(online_switch, 
 			     _("You are online. Click the icon to go offline"));
 	offline_switch = gtk_button_new ();
@@ -2055,7 +2055,7 @@ MainWindow *main_window_create()
 
 	ac_button = gtk_button_new();
 	CLAWS_SET_TIP(ac_button, _("Select account"));
-	GTK_WIDGET_UNSET_FLAGS(ac_button, GTK_CAN_FOCUS);
+	gtkut_widget_set_can_focus(ac_button, FALSE);
 	gtk_widget_set_size_request(ac_button, -1, 0);
 	gtk_box_pack_end(GTK_BOX(hbox_stat), ac_button, FALSE, FALSE, 0);
 	g_signal_connect(G_OBJECT(ac_button), "button_press_event",

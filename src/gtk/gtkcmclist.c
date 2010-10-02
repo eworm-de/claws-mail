@@ -1052,8 +1052,8 @@ gtk_cmclist_init (GtkCMCList *clist)
 {
   clist->flags = 0;
 
-  GTK_WIDGET_UNSET_FLAGS (clist, GTK_NO_WINDOW);
-  GTK_WIDGET_SET_FLAGS (clist, GTK_CAN_FOCUS);
+  gtkut_widget_set_has_window (GTK_WIDGET(clist), TRUE);
+  gtkut_widget_set_can_focus (GTK_WIDGET(clist), TRUE);
   GTK_CMCLIST_SET_FLAG (clist, CMCLIST_DRAW_DRAG_LINE);
   GTK_CMCLIST_SET_FLAG (clist, CMCLIST_USE_DRAG_ICONS);
 
@@ -1454,7 +1454,7 @@ gtk_cmclist_column_title_active (GtkCMCList *clist,
   g_signal_handlers_disconnect_matched(G_OBJECT (clist->column[column].button), G_SIGNAL_MATCH_FUNC,
 		    0, 0, 0, column_title_passive_func, 0);
 
-  GTK_WIDGET_SET_FLAGS (clist->column[column].button, GTK_CAN_FOCUS);
+  gtkut_widget_set_can_focus (clist->column[column].button, TRUE);
   if (gtkut_widget_get_visible (GTK_WIDGET(clist)))
     gtk_widget_queue_draw (clist->column[column].button);
 }
@@ -1490,7 +1490,7 @@ gtk_cmclist_column_title_passive (GtkCMCList *clist,
   g_signal_connect (G_OBJECT (clist->column[column].button), "event",
 		      G_CALLBACK(column_title_passive_func), NULL);
 
-  GTK_WIDGET_UNSET_FLAGS (clist->column[column].button, GTK_CAN_FOCUS);
+  gtkut_widget_set_can_focus (clist->column[column].button, FALSE);
   if (gtkut_widget_get_visible (GTK_WIDGET(clist)))
     gtk_widget_queue_draw (clist->column[column].button);
 }
@@ -4521,7 +4521,7 @@ gtk_cmclist_realize (GtkWidget *widget)
 
   clist = GTK_CMCLIST (widget);
 
-  GTK_WIDGET_SET_FLAGS (widget, GTK_REALIZED);
+  gtkut_widget_set_realized (widget, TRUE);
 
   border_width = GTK_CONTAINER (widget)->border_width;
   
@@ -4679,7 +4679,7 @@ gtk_cmclist_unrealize (GtkWidget *widget)
   if (gtkut_widget_get_mapped (widget))
     gtk_cmclist_unmap (widget);
 
-  GTK_WIDGET_UNSET_FLAGS (widget, GTK_MAPPED);
+  gtkut_widget_set_mapped (widget, FALSE);
 
   /* detach optional row/cell styles */
   if (gtkut_widget_get_realized (widget))
@@ -4748,7 +4748,7 @@ gtk_cmclist_map (GtkWidget *widget)
 
   if (!gtkut_widget_get_mapped (widget))
     {
-      GTK_WIDGET_SET_FLAGS (widget, GTK_MAPPED);
+      gtkut_widget_set_mapped (widget, TRUE);
 
       /* map column buttons */
       for (i = 0; i < clist->columns; i++)
@@ -4787,7 +4787,7 @@ gtk_cmclist_unmap (GtkWidget *widget)
 
   if (gtkut_widget_get_mapped (widget))
     {
-      GTK_WIDGET_UNSET_FLAGS (widget, GTK_MAPPED);
+      gtkut_widget_set_mapped (widget, FALSE);
 
       if (clist_has_grab (clist))
 	{

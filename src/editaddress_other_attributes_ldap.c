@@ -335,7 +335,7 @@ void addressbook_edit_person_page_attrib_ldap(PersonEditDlg *dialog, gint pageNu
 	gtk_cmclist_set_auto_sort(GTK_CMCLIST(clist), TRUE);
 
 	for (i = 0; i < ATTRIB_N_COLS; i++)
-		GTK_WIDGET_UNSET_FLAGS(GTK_CMCLIST(clist)->column[i].button, GTK_CAN_FOCUS);
+		gtkut_widget_set_can_focus(GTK_CMCLIST(clist)->column[i].button, FALSE);
 
 	/* Data entry area */
 	table = gtk_table_new(4, 2, FALSE);

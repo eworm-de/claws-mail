@@ -167,6 +167,7 @@ static char *CONTRIBS_LIST[] = {
 "Jérôme Lelong",
 "Eric Limpens",
 "Thomas Link",
+"Reed Loden",
 "David Looney",
 "Alessandro Maestri",
 "Maki",

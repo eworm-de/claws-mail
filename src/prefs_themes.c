@@ -873,7 +873,7 @@ static void prefs_themes_create_widget(PrefsPage *page, GtkWindow *window, gpoin
 	btn_install = gtk_button_new_with_label (_("Install new..."));
 	gtk_widget_show (btn_install);
 	gtk_box_pack_start (GTK_BOX (hbox3), btn_install, FALSE, FALSE, 0);
-	GTK_WIDGET_SET_FLAGS (btn_install, GTK_CAN_DEFAULT);
+	gtkut_widget_set_can_default (btn_install, TRUE);
 
 	btn_more = gtkut_get_link_btn((GtkWidget *)window, THEMES_URI, _("Get more..."));
 	gtk_widget_show (btn_more);
@@ -1003,12 +1003,12 @@ static void prefs_themes_create_widget(PrefsPage *page, GtkWindow *window, gpoin
 	btn_use = gtk_button_new_with_label (_("Use this"));
 	gtk_widget_show (btn_use);
 	gtk_container_add (GTK_CONTAINER (hbuttonbox1), btn_use);
-	GTK_WIDGET_SET_FLAGS (btn_use, GTK_CAN_DEFAULT);
+	gtkut_widget_set_can_default (btn_use, TRUE);
 
 	btn_remove = gtk_button_new_with_label (_("Remove"));
 	gtk_widget_show (btn_remove);
 	gtk_container_add (GTK_CONTAINER (hbuttonbox1), btn_remove);
-	GTK_WIDGET_SET_FLAGS (btn_remove, GTK_CAN_DEFAULT);
+	gtkut_widget_set_can_default (btn_remove, TRUE);
 
 	g_signal_connect(G_OBJECT(btn_use), "clicked",
 			 G_CALLBACK(prefs_themes_btn_use_clicked_cb),

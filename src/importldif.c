@@ -764,9 +764,9 @@ static void imp_ldif_page_fields( gint pageNum, gchar *pageLbl ) {
 
 	/* Remove focus capability for column headers */
 	for( i = 0; i < FIELDS_N_COLS; i++ ) {
-		GTK_WIDGET_UNSET_FLAGS(
+		gtkut_widget_set_can_focus(
 			GTK_CMCLIST(clist_field)->column[i].button,
-			GTK_CAN_FOCUS);
+			FALSE);
 	}
 
 	/* Lower area - Edit area */
@@ -981,7 +981,7 @@ static void imp_ldif_dialog_create() {
 	btnProceed = gtk_button_new_with_mnemonic(_("Proceed"));
 	gtk_button_set_image(GTK_BUTTON(btnProceed),
 			gtk_image_new_from_stock(GTK_STOCK_OK, GTK_ICON_SIZE_BUTTON));
-	GTK_WIDGET_SET_FLAGS(btnProceed, GTK_CAN_DEFAULT);
+	gtkut_widget_set_can_default(btnProceed, TRUE);
 	gtk_box_pack_start(GTK_BOX(hbbox), btnProceed, TRUE, TRUE, 0);
 	gtk_widget_hide(btnProceed);
 

@@ -951,7 +951,7 @@ static ChildInfo *fork_child(gchar *cmd, const gchar *msg_str,
 			perror("setpgid");
 
 #ifdef GDK_WINDOWING_X11
-		(void)close(ConnectionNumber(gdk_display));
+		(void)close(ConnectionNumber(gdk_display_get_default()));
 #endif /* GDK_WINDOWING_X11 */
 
 		gch_pid = fork();

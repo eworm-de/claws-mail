@@ -219,23 +219,23 @@ static void message_search_create(void)
 	gtkut_stock_button_add_help(confirm_area, &help_btn);
 
 	prev_btn = gtk_button_new_from_stock(GTK_STOCK_GO_BACK);
-	GTK_WIDGET_SET_FLAGS(prev_btn, GTK_CAN_DEFAULT);
+	gtkut_widget_set_can_default(prev_btn, TRUE);
 	gtk_box_pack_start(GTK_BOX(confirm_area), prev_btn, TRUE, TRUE, 0);
 	gtk_widget_show(prev_btn);
 
 	next_btn = gtk_button_new_from_stock(GTK_STOCK_GO_FORWARD);
-	GTK_WIDGET_SET_FLAGS(next_btn, GTK_CAN_DEFAULT);
+	gtkut_widget_set_can_default(next_btn, TRUE);
 	gtk_box_pack_start(GTK_BOX(confirm_area), next_btn, TRUE, TRUE, 0);
 	gtk_widget_show(next_btn);
 
 	close_btn = gtk_button_new_from_stock(GTK_STOCK_CLOSE);
-	GTK_WIDGET_SET_FLAGS(close_btn, GTK_CAN_DEFAULT);
+	gtkut_widget_set_can_default(close_btn, TRUE);
 	gtk_box_pack_start(GTK_BOX(confirm_area), close_btn, TRUE, TRUE, 0);
 	gtk_widget_show(close_btn);
 
 	/* stop button hidden */
 	stop_btn = gtk_button_new_from_stock(GTK_STOCK_STOP);
-	GTK_WIDGET_SET_FLAGS(stop_btn, GTK_CAN_DEFAULT);
+	gtkut_widget_set_can_default(stop_btn, TRUE);
 	gtk_box_pack_start(GTK_BOX(confirm_area), stop_btn, TRUE, TRUE, 0);
 
 	gtk_widget_show (confirm_area);
