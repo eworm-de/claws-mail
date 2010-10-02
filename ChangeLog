@@ -1,3 +1,10 @@
+2010-10-02 [colin]	3.7.6cvs43
+
+	* configure.ac
+		It's now time to remove the temporary enable-openssl
+		option that was used when we removed OpenSSL. See 
+		bug #2276 comment #14.
+
 2010-09-30 [wwp]	3.7.6cvs42
 
 	* src/prefs_account.c
