@@ -1,3 +1,20 @@
+2010-10-02 [colin]	3.7.6cvs45
+
+	* src/plugins/trayicon/Makefile.am
+	* src/plugins/trayicon/trayicon.c
+	* src/plugins/trayicon/libeggtrayicon/.cvsignore
+	* src/plugins/trayicon/libeggtrayicon/Makefile.am
+	* src/plugins/trayicon/libeggtrayicon/eggtrayicon.c
+	* src/plugins/trayicon/libeggtrayicon/eggtrayicon.h
+	* src/plugins/trayicon/libeggtrayicon/gtk2-funcs.c
+	* src/plugins/trayicon/libeggtrayicon/gtk2-funcs.h
+	* src/plugins/trayicon/libeggtrayicon/gtkplugxembed.c
+	* src/plugins/trayicon/libeggtrayicon/gtkplugxembed.h
+	* src/plugins/trayicon/libeggtrayicon/xembed.h
+		Finally get rid of Eggtrayicon, use GtkStatusIcon
+		instead (which can be done safely now that we 
+		require GTK+ 2.10).
+
 2010-10-02 [colin]	3.7.6cvs44
 
 	* src/action.c

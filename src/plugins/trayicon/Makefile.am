@@ -1,5 +1,3 @@
-SUBDIRS = libeggtrayicon
-
 plugindir = $(pkglibdir)/plugins
 
 plugin_LTLIBRARIES = trayicon.la
@@ -18,7 +16,7 @@ trayicon_la_SOURCES = \
 trayicon_la_LDFLAGS = \
 	-avoid-version -module -no-undefined
 
-trayicon_la_LIBADD = libeggtrayicon/libeggtrayicon.la \
+trayicon_la_LIBADD = \
 	$(cygwin_export_lib) \
 	$(GTK_LIBS) \
 	-L/usr/X11R6/lib -lX11 \
@@ -27,8 +25,7 @@ trayicon_la_LIBADD = libeggtrayicon/libeggtrayicon.la \
 INCLUDES = \
 	-I$(top_srcdir)/src \
 	-I$(top_srcdir)/src/common \
-	-I$(top_srcdir)/src/gtk \
-	-I$(srcdir)/libeggtrayicon
+	-I$(top_srcdir)/src/gtk
 
 AM_CPPFLAGS = \
 	$(GLIB_CFLAGS) \

@@ -43,8 +43,6 @@
 #include "account.h"
 #include "gtk/manage_window.h"
 
-#include "eggtrayicon.h"
-
 #include "trayicon_prefs.h"
 
 #include "stock_pixmap.h"
@@ -59,20 +57,16 @@ static guint close_hook_id;
 static guint iconified_hook_id;
 static guint theme_hook_id;
 
-static GdkPixbuf *newmail_pixmap[2] = {NULL, NULL};
-static GdkPixbuf *unreadmail_pixmap[2] = {NULL, NULL};
-static GdkPixbuf *newmarkedmail_pixmap[2] = {NULL, NULL};
-static GdkPixbuf *unreadmarkedmail_pixmap[2] = {NULL, NULL};
-static GdkPixbuf *nomail_pixmap[2] = {NULL, NULL};
+static GdkPixbuf *newmail_pixbuf[2] = {NULL, NULL};
+static GdkPixbuf *unreadmail_pixbuf[2] = {NULL, NULL};
+static GdkPixbuf *newmarkedmail_pixbuf[2] = {NULL, NULL};
+static GdkPixbuf *unreadmarkedmail_pixbuf[2] = {NULL, NULL};
+static GdkPixbuf *nomail_pixbuf[2] = {NULL, NULL};
 
-static EggTrayIcon *trayicon;
-static GtkWidget *eventbox;
+static GtkStatusIcon *trayicon;
 static GtkWidget *image = NULL;
 static GtkWidget *focused_widget = NULL;
 
-#if !(GTK_CHECK_VERSION(2,12,0))
-static GtkTooltips *tooltips;
-#endif
 static GtkWidget *traymenu_popup;
 static gboolean updating_menu = FALSE;
 
@@ -93,7 +87,6 @@ static void trayicon_compose_acc_cb (GtkMenuItem *menuitem, gpointer data );
 static void trayicon_addressbook_cb (GtkAction *action, gpointer data);
 static void trayicon_exit_cb	    (GtkAction *action, gpointer data);
 static void trayicon_toggle_offline_cb	(GtkAction *action, gpointer data);
-static void resize_cb		    (GtkWidget *widget, GtkRequisition *req, gpointer user_data);
 
 static GtkActionEntry trayicon_popup_menu_entries[] =
 {
@@ -142,36 +135,36 @@ static gboolean trayicon_set_accounts_hook(gpointer source, gpointer data)
 	return FALSE;
 }
 
-static void set_trayicon_pixmap(TrayIconType icontype)
+static void set_trayicon_pixbuf(TrayIconType icontype)
 {
-	GdkPixbuf *pixmap = NULL;
-	static GdkPixbuf *last_pixmap = NULL;
+	GdkPixbuf *pixbuf = NULL;
+	static GdkPixbuf *last_pixbuf = NULL;
 
 	switch(icontype) {
 	case TRAYICON_NEW:
-		pixmap = newmail_pixmap[prefs_common.work_offline];
+		pixbuf = newmail_pixbuf[prefs_common.work_offline];
 		break;
 	case TRAYICON_NEWMARKED:
-		pixmap = newmarkedmail_pixmap[prefs_common.work_offline];
+		pixbuf = newmarkedmail_pixbuf[prefs_common.work_offline];
 		break;
 	case TRAYICON_UNREAD:
-		pixmap = unreadmail_pixmap[prefs_common.work_offline];
+		pixbuf = unreadmail_pixbuf[prefs_common.work_offline];
 		break;
 	case TRAYICON_UNREADMARKED:
-		pixmap = unreadmarkedmail_pixmap[prefs_common.work_offline];
+		pixbuf = unreadmarkedmail_pixbuf[prefs_common.work_offline];
 		break;
 	default:
-		pixmap = nomail_pixmap[prefs_common.work_offline];
+		pixbuf = nomail_pixbuf[prefs_common.work_offline];
 		break;
 	}
 
-	if (pixmap == last_pixmap) {
+	if (pixbuf == last_pixbuf) {
 		return;
 	}
 
-	gtk_image_set_from_pixbuf(GTK_IMAGE(image), pixmap);
+	gtk_status_icon_set_from_pixbuf(GTK_STATUS_ICON(trayicon), pixbuf);
 
-	last_pixmap = pixmap;
+	last_pixbuf = pixbuf;
 }
 
 static void update(FolderItem *removed_item)
@@ -192,10 +185,10 @@ static void update(FolderItem *removed_item)
 
 	buf = g_strdup_printf(_("New %d, Unread: %d, Total: %d"), new, unread, total);
 
-#if !(GTK_CHECK_VERSION(2,12,0))
-        gtk_tooltips_set_tip(tooltips, eventbox, buf, "");
+#if !(GTK_CHECK_VERSION(2,16,0))
+	gtk_status_icon_set_tooltip(trayicon, buf);
 #else
-	gtk_widget_set_tooltip_text(eventbox, buf);
+	gtk_status_icon_set_tooltip_text(trayicon, buf);
 #endif
 	g_free(buf);
 
@@ -209,7 +202,7 @@ static void update(FolderItem *removed_item)
 		icontype = TRAYICON_UNREAD;
 	}
 
-	set_trayicon_pixmap(icontype);
+	set_trayicon_pixbuf(icontype);
 }
 
 static gboolean folder_item_update_hook(gpointer source, gpointer data)
@@ -266,12 +259,6 @@ static gboolean trayicon_got_iconified_hook(gpointer source, gpointer data)
 		gtk_window_set_skip_taskbar_hint(GTK_WINDOW(mainwin->window), TRUE);
 	}
 	return FALSE;
-}
-
-static void resize_cb(GtkWidget *widget, GtkRequisition *req,
-		      gpointer user_data)
-{
-	update(NULL);
 }
 
 static void fix_folderview_scroll(MainWindow *mainwin)
@@ -339,26 +326,20 @@ static gboolean click_cb(GtkWidget * widget,
 
 static void create_trayicon(void);
 
-static void destroy_cb(GtkWidget *widget, gpointer *data)
-{
-	debug_print("Widget destroyed\n");
-
-	create_trayicon();
-}
-
 static gboolean trayicon_update_theme(gpointer source, gpointer data)
 {
-	stock_pixbuf_gdk(GTK_WIDGET(trayicon), STOCK_PIXMAP_TRAY_NOMAIL, &nomail_pixmap[0]);
-	stock_pixbuf_gdk(GTK_WIDGET(trayicon), STOCK_PIXMAP_TRAY_UNREADMAIL, &unreadmail_pixmap[0]);
-	stock_pixbuf_gdk(GTK_WIDGET(trayicon), STOCK_PIXMAP_TRAY_NEWMAIL, &newmail_pixmap[0]);
-	stock_pixbuf_gdk(GTK_WIDGET(trayicon), STOCK_PIXMAP_TRAY_UNREADMARKEDMAIL, &unreadmarkedmail_pixmap[0]);
-	stock_pixbuf_gdk(GTK_WIDGET(trayicon), STOCK_PIXMAP_TRAY_NEWMARKEDMAIL, &newmarkedmail_pixmap[0]);
+	MainWindow *mainwin = mainwindow_get_mainwindow();
+	stock_pixbuf_gdk(GTK_WIDGET(mainwin->window), STOCK_PIXMAP_TRAY_NOMAIL, &nomail_pixbuf[0]);
+	stock_pixbuf_gdk(GTK_WIDGET(mainwin->window), STOCK_PIXMAP_TRAY_UNREADMAIL, &unreadmail_pixbuf[0]);
+	stock_pixbuf_gdk(GTK_WIDGET(mainwin->window), STOCK_PIXMAP_TRAY_NEWMAIL, &newmail_pixbuf[0]);
+	stock_pixbuf_gdk(GTK_WIDGET(mainwin->window), STOCK_PIXMAP_TRAY_UNREADMARKEDMAIL, &unreadmarkedmail_pixbuf[0]);
+	stock_pixbuf_gdk(GTK_WIDGET(mainwin->window), STOCK_PIXMAP_TRAY_NEWMARKEDMAIL, &newmarkedmail_pixbuf[0]);
 
-	stock_pixbuf_gdk(GTK_WIDGET(trayicon), STOCK_PIXMAP_TRAY_NOMAIL_OFFLINE, &nomail_pixmap[1]);
-	stock_pixbuf_gdk(GTK_WIDGET(trayicon), STOCK_PIXMAP_TRAY_UNREADMAIL_OFFLINE, &unreadmail_pixmap[1]);
-	stock_pixbuf_gdk(GTK_WIDGET(trayicon), STOCK_PIXMAP_TRAY_NEWMAIL_OFFLINE, &newmail_pixmap[1]);
-	stock_pixbuf_gdk(GTK_WIDGET(trayicon), STOCK_PIXMAP_TRAY_UNREADMARKEDMAIL_OFFLINE, &unreadmarkedmail_pixmap[1]);
-	stock_pixbuf_gdk(GTK_WIDGET(trayicon), STOCK_PIXMAP_TRAY_NEWMARKEDMAIL_OFFLINE, &newmarkedmail_pixmap[1]);
+	stock_pixbuf_gdk(GTK_WIDGET(mainwin->window), STOCK_PIXMAP_TRAY_NOMAIL_OFFLINE, &nomail_pixbuf[1]);
+	stock_pixbuf_gdk(GTK_WIDGET(mainwin->window), STOCK_PIXMAP_TRAY_UNREADMAIL_OFFLINE, &unreadmail_pixbuf[1]);
+	stock_pixbuf_gdk(GTK_WIDGET(mainwin->window), STOCK_PIXMAP_TRAY_NEWMAIL_OFFLINE, &newmail_pixbuf[1]);
+	stock_pixbuf_gdk(GTK_WIDGET(mainwin->window), STOCK_PIXMAP_TRAY_UNREADMARKEDMAIL_OFFLINE, &unreadmarkedmail_pixbuf[1]);
+	stock_pixbuf_gdk(GTK_WIDGET(mainwin->window), STOCK_PIXMAP_TRAY_NEWMARKEDMAIL_OFFLINE, &newmarkedmail_pixbuf[1]);
 
 	if (image != NULL)
 		update(NULL);
@@ -369,32 +350,17 @@ static gboolean trayicon_update_theme(gpointer source, gpointer data)
 static void create_trayicon()
 {
 	GtkActionGroup *action_group;
-	trayicon = egg_tray_icon_new("Claws Mail");
-	gtk_widget_realize(GTK_WIDGET(trayicon));
-	gtk_window_set_default_size(GTK_WINDOW(trayicon), 16, 16);
-	gtk_container_set_border_width(GTK_CONTAINER(trayicon), 0);
-
+	trayicon = gtk_status_icon_new();
+#if GTK_CHECK_VERSION(2,14,0)
+	gtk_status_icon_set_title(GTK_STATUS_ICON(trayicon), _("Claws Mail"));
+#endif
 	trayicon_update_theme(NULL, NULL);
 
-	eventbox = gtk_event_box_new();
-	gtk_container_set_border_width(GTK_CONTAINER(eventbox), 0);
-	gtk_container_add(GTK_CONTAINER(trayicon), GTK_WIDGET(eventbox));
-
-	image = gtk_image_new_from_pixbuf(nomail_pixmap[0]);
-	gtk_container_add(GTK_CONTAINER(eventbox), image);
+	gtk_status_icon_set_from_pixbuf(GTK_STATUS_ICON(trayicon), nomail_pixbuf[0]);
 
 	destroy_signal_id =
-	g_signal_connect(G_OBJECT(trayicon), "destroy",
-		G_CALLBACK(destroy_cb), NULL);
-	g_signal_connect(G_OBJECT(trayicon), "size-request",
-		G_CALLBACK(resize_cb), NULL);
-	g_signal_connect(G_OBJECT(eventbox), "button-press-event",
+	g_signal_connect(G_OBJECT(trayicon), "button-press-event",
 		G_CALLBACK(click_cb), NULL);
-
-#if !(GTK_CHECK_VERSION(2,12,0))
-	tooltips = gtk_tooltips_new();
-	gtk_tooltips_enable(tooltips);
-#endif
 
 	action_group = cm_menu_create_action_group("TrayiconPopup", trayicon_popup_menu_entries,
 			G_N_ELEMENTS(trayicon_popup_menu_entries), (gpointer)NULL);
@@ -415,8 +381,6 @@ static void create_trayicon()
 
 	traymenu_popup = gtk_menu_item_get_submenu(GTK_MENU_ITEM(
 				gtk_ui_manager_get_widget(gtkut_ui_manager(), "/Menus/TrayiconPopup")) );
-
-	gtk_widget_show_all(GTK_WIDGET(trayicon));
 
 	update(NULL);
 }
@@ -517,7 +481,8 @@ gboolean plugin_done(void)
 
 	g_signal_handler_disconnect(G_OBJECT(trayicon), destroy_signal_id);
 	
-	gtk_widget_destroy(GTK_WIDGET(trayicon));
+	g_object_unref(G_OBJECT(trayicon));
+	trayicon = NULL;
 
 	while (gtk_events_pending()) {
 		gtk_main_iteration();
