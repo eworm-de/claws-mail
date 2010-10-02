@@ -1,5 +1,5 @@
 
-AC_PREREQ(2.60)
+AC_PREREQ(2.59)
 AC_INIT(src/main.c)
 AC_CONFIG_AUX_DIR(config)
 AC_CONFIG_MACRO_DIR([m4])
@@ -12,7 +12,7 @@ MINOR_VERSION=7
 MICRO_VERSION=6
 INTERFACE_AGE=0
 BINARY_AGE=0
-EXTRA_VERSION=48
+EXTRA_VERSION=49
 EXTRA_RELEASE=
 EXTRA_GTK2_VERSION=
 
@@ -207,6 +207,50 @@ AC_SUBST(manualdir)
 AC_ARG_ENABLE(manual,
 	[  --disable-manual           do not build manual],
 	[ac_cv_enable_manual=$enableval], [ac_cv_enable_manual=yes])
+
+dnl ******************************
+dnl ** Check for required tools **
+dnl ** to build manuals         **
+dnl ******************************
+SAXON=`which saxon 2> /dev/null`
+if test $? -ne 0; then
+	SAXON=
+fi
+if test -z "$SAXON"; then
+        SAXONJAR='/usr/share/java/saxon.jar'
+        if test ! -f "$SAXONJAR"; then
+                SAXONJAR='/usr/local/share/java/saxon.jar'
+                if test ! -f "$SAXONJAR"; then
+                        SAXONJAR=
+                fi
+        fi
+fi
+AM_CONDITIONAL(MANUAL_PDF, test -n "$SAXON" -o -n "$SAXONJAR")
+
+DOCBOOK2TXT=`which docbook2txt 2> /dev/null`
+if test $? -ne 0; then
+	DOCBOOK2TXT=
+fi
+AM_CONDITIONAL(MANUAL_TXT, test -n "$DOCBOOK2TXT")
+
+DOCBOOK2HTML=`which docbook2html 2> /dev/null`
+if test $? -ne 0; then
+        DOCBOOK2HTML=
+fi
+AM_CONDITIONAL(MANUAL_HTML, test -n "$DOCBOOK2HTML")
+
+DOCBOOK2PS=`which docbook2ps 2> /dev/null`
+if test $? -ne 0; then
+        DOCBOOK2PS=
+fi
+AM_CONDITIONAL(MANUAL_PS, test -n "$DOCBOOK2PS")
+
+if test -n "$DOCBOOK2TXT" -o -n "$DOCBOOK2HTML" -o -n "$DOCBOOK2PS" \
+	-o -n "$SAXON" -o -n "$SAXONJAR"; then
+	ac_cv_enable_manual="yes"
+else
+	ac_cv_enable_manual="no"
+fi
 
 AM_CONDITIONAL(BUILD_MANUAL, test x"$ac_cv_enable_manual" = xyes)
 
