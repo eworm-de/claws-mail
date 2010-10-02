@@ -12,7 +12,7 @@ MINOR_VERSION=7
 MICRO_VERSION=6
 INTERFACE_AGE=0
 BINARY_AGE=0
-EXTRA_VERSION=45
+EXTRA_VERSION=46
 EXTRA_RELEASE=
 EXTRA_GTK2_VERSION=
 
@@ -1027,7 +1027,6 @@ src/plugins/bogofilter/Makefile
 src/plugins/spamassassin/Makefile
 src/plugins/dillo_viewer/Makefile
 src/plugins/trayicon/Makefile
-src/plugins/trayicon/libeggtrayicon/Makefile
 src/plugins/pgpcore/Makefile
 src/plugins/pgpmime/Makefile
 src/plugins/pgpinline/Makefile

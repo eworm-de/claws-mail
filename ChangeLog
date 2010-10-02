@@ -1,3 +1,8 @@
+2010-10-02 [colin]	3.7.6cvs46
+
+	* configure.ac
+		Forgot to remove the directory from top-level
+
 2010-10-02 [colin]	3.7.6cvs45
 
 	* src/plugins/trayicon/Makefile.am
