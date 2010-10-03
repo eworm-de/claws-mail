@@ -1,6 +1,7 @@
+if MANUAL_HTML
 EXTRA_DIST=claws-mail-manual.html
-manualfr_DATA=claws-mail-manual.html
-manualfrdir=$(manualdir)/fr
+manualde_DATA=claws-mail-manual.html
+manualdedir=$(manualdir)/fr
 
 claws-mail-manual.html: \
 	../../account.xml \
@@ -20,3 +21,4 @@ claws-mail-manual.html: \
 	
 maintainer-clean:
 	-rm claws-mail-manual.html
+endif

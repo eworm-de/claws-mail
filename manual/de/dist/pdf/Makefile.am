@@ -1,3 +1,4 @@
+if MANUAL_PDF
 EXTRA_DIST=claws-mail-manual.pdf
 manualde_DATA=claws-mail-manual.pdf
 manualdedir=$(manualdir)/de
@@ -20,3 +21,4 @@ claws-mail-manual.pdf: \
 	
 maintainer-clean:
 	-rm claws-mail-manual.pdf claws-mail-manual.fo claws-mail-manual.xsl
+endif

@@ -1,3 +1,4 @@
+if MANUAL_PS
 EXTRA_DIST=claws-mail-manual.ps
 manualde_DATA=claws-mail-manual.ps
 manualdedir=$(manualdir)/de
@@ -20,3 +21,4 @@ claws-mail-manual.ps: \
 	
 maintainer-clean:
 	-rm claws-mail-manual.ps
+endif

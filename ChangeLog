@@ -1,3 +1,28 @@
+2010-10-03 [mir]	3.7.6cvs52
+
+	* manual/de/dist/html/Makefile.am
+	* manual/de/dist/pdf/Makefile.am
+	* manual/de/dist/ps/Makefile.am
+	* manual/de/dist/txt/Makefile.am
+	* manual/dist/html/Makefile.am
+	* manual/dist/pdf/Makefile.am
+	* manual/dist/ps/Makefile.am
+	* manual/dist/txt/Makefile.am
+	* manual/es/dist/html/Makefile.am
+	* manual/es/dist/pdf/Makefile.am
+	* manual/es/dist/ps/Makefile.am
+	* manual/es/dist/txt/Makefile.am
+	* manual/fr/dist/html/Makefile.am
+	* manual/fr/dist/pdf/Makefile.am
+	* manual/fr/dist/ps/Makefile.am
+	* manual/fr/dist/txt/Makefile.am
+	* manual/pl/dist/html/Makefile.am
+	* manual/pl/dist/pdf/Makefile.am
+	* manual/pl/dist/ps/Makefile.am
+	* manual/pl/dist/txt/Makefile.am
+	    Missing Makefile.am's for 3.7.6cvs49
+
+
 2010-10-03 [colin]	3.7.6cvs51
 
 	* po/POTFILES.in

@@ -1,3 +1,4 @@
+if MANUAL_HTML
 EXTRA_DIST=claws-mail-manual.html
 manualde_DATA=claws-mail-manual.html
 manualdedir=$(manualdir)/de
@@ -20,3 +21,4 @@ claws-mail-manual.html: \
 	
 maintainer-clean:
 	-rm claws-mail-manual.html
+endif
