@@ -98,21 +98,22 @@ struct MarkSum {
 /* CLAWS subject threading:
   
   in the first round it inserts subject lines in a 
-  relation (subject <-> node)
+  hashtable (subject <-> node)
 
   the second round finishes the threads by attaching
   matching subject lines to the one found in the
-  relation. will use the oldest node with the same
+  hashtable. will use the oldest node with the same
   subject that is not more then thread_by_subject_max_age
-  days old (see subject_relation_lookup)
+  days old (see subject_hashtable_lookup)
 */  
 
-static void subject_relation_insert(GRelation *relation, GNode *node)
+static void subject_hashtable_insert(GHashTable *hashtable, GNode *node)
 {
 	gchar *subject;
 	MsgInfo *msginfo;
+	GSList *list = NULL;
 
-	cm_return_if_fail(relation != NULL);
+	cm_return_if_fail(hashtable != NULL);
 	cm_return_if_fail(node != NULL);
 	msginfo = (MsgInfo *) node->data;
 	cm_return_if_fail(msginfo != NULL);
@@ -120,19 +121,24 @@ static void subject_relation_insert(GRelation *relation, GNode *node)
 	subject = msginfo->subject;
 	if (subject == NULL)
 		return;
+
 	subject += subject_get_prefix_length(subject);
 
-	g_relation_insert(relation, subject, node);
+	list = g_hash_table_lookup(hashtable, subject);
+	list = g_slist_prepend(list, node);
+	g_hash_table_insert(hashtable, subject, list);
 }
 
-static GNode *subject_relation_lookup(GRelation *relation, MsgInfo *msginfo)
+static GNode *subject_hashtable_lookup(GHashTable *hashtable, MsgInfo *msginfo)
 {
 	gchar *subject;
-	GTuples *tuples;
-	GNode *node = NULL;
+	GSList *list, *cur;
+	GNode *node = NULL, *hashtable_node = NULL;
 	gint prefix_length;
+	MsgInfo *hashtable_msginfo = NULL, *best_msginfo = NULL;
+	gboolean match;
     
-	cm_return_val_if_fail(relation != NULL, NULL);
+	cm_return_val_if_fail(hashtable != NULL, NULL);
 
 	subject = msginfo->subject;
 	if (subject == NULL)
@@ -142,47 +148,44 @@ static GNode *subject_relation_lookup(GRelation *relation, MsgInfo *msginfo)
 		return NULL;
 	subject += prefix_length;
 	
-	tuples = g_relation_select(relation, subject, 0);
-	if (tuples == NULL)
+	list = g_hash_table_lookup(hashtable, subject);
+	if (list == NULL)
 		return NULL;
 
-	if (tuples->len > 0) {
-		int i;
-		GNode *relation_node;
-		MsgInfo *relation_msginfo = NULL, *best_msginfo = NULL;
-		gboolean match;
+	/* check all nodes with the same subject to find the best parent */
+	for (cur = list; cur; cur = cur->next) {
+		hashtable_node = (GNode *)cur->data;
+		hashtable_msginfo = (MsgInfo *) hashtable_node->data;
+		match = FALSE;
 
-		/* check all nodes with the same subject to find the best parent */
-		for (i = 0; i < tuples->len; i++) {
-			relation_node = (GNode *) g_tuples_index(tuples, i, 1);
-			relation_msginfo = (MsgInfo *) relation_node->data;
+		/* best node should be the oldest in the found nodes */
+		/* parent node must not be older then msginfo */
+		if ((hashtable_msginfo->date_t < msginfo->date_t) &&
+		    ((best_msginfo == NULL) ||
+		     (best_msginfo->date_t > hashtable_msginfo->date_t)))
+			match = TRUE;
+
+		/* parent node must not be more then thread_by_subject_max_age
+		   days older then msginfo */
+		if (abs(difftime(msginfo->date_t, hashtable_msginfo->date_t)) >
+                    prefs_common.thread_by_subject_max_age * 3600 * 24)
 			match = FALSE;
 
-			/* best node should be the oldest in the found nodes */
-			/* parent node must not be older then msginfo */
-			if ((relation_msginfo->date_t < msginfo->date_t) &&
-			    ((best_msginfo == NULL) ||
-			     (best_msginfo->date_t > relation_msginfo->date_t)))
-				match = TRUE;
+		/* can add new tests for all matching
+		   nodes found by subject */
 
-			/* parent node must not be more then thread_by_subject_max_age
-			   days older then msginfo */
-			if (abs(difftime(msginfo->date_t, relation_msginfo->date_t)) >
-                            prefs_common.thread_by_subject_max_age * 3600 * 24)
-				match = FALSE;
-
-			/* can add new tests for all matching
-			   nodes found by subject */
-
-			if (match) {
-				node = relation_node;
-				best_msginfo = relation_msginfo;
-			}
-		}	    
+		if (match) {
+			node = hashtable_node;
+			best_msginfo = hashtable_msginfo;
+		}
 	}
 
-	g_tuples_destroy(tuples);
 	return node;
+}
+
+static void subject_hashtable_free(gpointer key, gpointer value, gpointer data)
+{
+	g_slist_free(value);
 }
 
 /* return the reversed thread tree */
@@ -190,7 +193,7 @@ GNode *procmsg_get_thread_tree(GSList *mlist)
 {
 	GNode *root, *parent, *node, *next;
 	GHashTable *msgid_table;
-	GRelation *subject_relation = NULL;
+	GHashTable *subject_hashtable = NULL;
 	MsgInfo *msginfo;
 	const gchar *msgid;
         GSList *reflist;
@@ -199,8 +202,7 @@ GNode *procmsg_get_thread_tree(GSList *mlist)
 	msgid_table = g_hash_table_new(g_str_hash, g_str_equal);
 	
 	if (prefs_common.thread_by_subject) {
-		subject_relation = g_relation_new(2);
-		g_relation_index(subject_relation, 0, g_str_hash, g_str_equal);
+		subject_hashtable = g_hash_table_new(g_str_hash, g_str_equal);
 	}
 
 	for (; mlist != NULL; mlist = mlist->next) {
@@ -219,9 +221,9 @@ GNode *procmsg_get_thread_tree(GSList *mlist)
 		if ((msgid = msginfo->msgid) && g_hash_table_lookup(msgid_table, msgid) == NULL)
 			g_hash_table_insert(msgid_table, (gchar *)msgid, node);
 
-		/* CLAWS: add subject to relation (without prefix) */
+		/* CLAWS: add subject to hashtable (without prefix) */
 		if (prefs_common.thread_by_subject) {
-			subject_relation_insert(subject_relation, node);
+			subject_hashtable_insert(subject_hashtable, node);
 		}
 	}
 
@@ -261,7 +263,7 @@ GNode *procmsg_get_thread_tree(GSList *mlist)
 			next = node->next;
 			msginfo = (MsgInfo *) node->data;
 			
-			parent = subject_relation_lookup(subject_relation, msginfo);
+			parent = subject_hashtable_lookup(subject_hashtable, msginfo);
 			
 			/* the node may already be threaded by IN-REPLY-TO, so go up 
 			 * in the tree to 
@@ -284,7 +286,10 @@ GNode *procmsg_get_thread_tree(GSList *mlist)
 	}
 	
 	if (prefs_common.thread_by_subject)
-		g_relation_destroy(subject_relation);
+	{
+		g_hash_table_foreach(subject_hashtable, subject_hashtable_free, NULL);
+		g_hash_table_destroy(subject_hashtable);
+	}
 
 	g_hash_table_destroy(msgid_table);
 	END_TIMING();
@@ -1131,7 +1136,8 @@ void procmsg_print_message(MsgInfo *msginfo, const gchar *cmdline)
 
 	g_strchomp(buf);
 	if (buf[strlen(buf) - 1] != '&') strcat(buf, "&");
-	system(buf);
+	if (system(buf) == -1)
+		g_warning("system(%s) failed.", buf);
 }
 
 MsgInfo *procmsg_msginfo_new_ref(MsgInfo *msginfo)

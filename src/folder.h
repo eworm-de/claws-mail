@@ -474,7 +474,7 @@ struct _FolderClass
 	gint     	(*add_msgs)             (Folder         *folder,
                                     		 FolderItem     *dest,
                                     		 GSList         *file_list,
-                                    		 GRelation	*relation);
+                                    		 GHashTable	*relation);
 	/**
 	 * Copy a message to a FolderItem
 	 *
@@ -505,7 +505,7 @@ struct _FolderClass
 	gint    	(*copy_msgs)		(Folder		*folder,
 						 FolderItem	*dest,
 						 MsgInfoList	*msglist,
-                                    		 GRelation	*relation);
+                                    		 GHashTable	*relation);
 	/**
 	 * Remove a message from a \c FolderItem.
 	 *
@@ -520,7 +520,7 @@ struct _FolderClass
 	gint    	(*remove_msgs)		(Folder		*folder,
 						 FolderItem	*item,
 						 MsgInfoList    *msglist,
-						 GRelation	*relation);
+						 GHashTable	*relation);
 	gint    	(*expunge)		(Folder		*folder,
 						 FolderItem	*item);
 	/**
@@ -578,7 +578,7 @@ struct _FolderClass
 	gint		(*get_flags)		(Folder		*folder,
 						 FolderItem	*item,
 						 MsgInfoList	*msglist,
-						 GRelation	*msgflags);
+						 GHashTable	*msgflags);
 	
 	/* Sets batch mode for a FolderItem. It means that numerous flags updates
 	 * could follow, and the FolderClass implementation can cache them in order

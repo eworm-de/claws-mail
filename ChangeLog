@@ -1,3 +1,14 @@
+2010-10-03 [colin]	3.7.6cvs53
+
+	* src/folder.c
+	* src/folder.h
+	* src/imap.c
+	* src/mh.c
+	* src/procmsg.c
+		Get rid of GRelation which were, mostly, used as
+		GHashTables. Probably fixes bug #2277, 'Segfault when
+		loading inbox for the first time'
+
 2010-10-03 [mir]	3.7.6cvs52
 
 	* manual/de/dist/html/Makefile.am

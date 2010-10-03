@@ -212,7 +212,7 @@ static gint 	imap_add_msg		(Folder 	*folder,
 static gint 	imap_add_msgs		(Folder 	*folder, 
 					 FolderItem 	*dest,
 			  		 GSList 	*file_list,
-			  		 GRelation 	*relation);
+			  		 GHashTable 	*relation);
 
 static gint 	imap_copy_msg		(Folder 	*folder,
 			  		 FolderItem 	*dest, 
@@ -220,7 +220,7 @@ static gint 	imap_copy_msg		(Folder 	*folder,
 static gint 	imap_copy_msgs		(Folder 	*folder, 
 					 FolderItem 	*dest, 
 		    			 MsgInfoList 	*msglist, 
-					 GRelation 	*relation);
+					 GHashTable 	*relation);
 
 static gint 	imap_remove_msg		(Folder 	*folder, 
 					 FolderItem 	*item, 
@@ -228,7 +228,7 @@ static gint 	imap_remove_msg		(Folder 	*folder,
 static gint 	imap_remove_msgs	(Folder 	*folder, 
 					 FolderItem 	*dest, 
 		    			 MsgInfoList 	*msglist, 
-					 GRelation 	*relation);
+					 GHashTable 	*relation);
 static gint 	imap_expunge		(Folder 	*folder, 
 					 FolderItem 	*dest);
 static gint 	imap_remove_all_msg	(Folder 	*folder, 
@@ -278,7 +278,7 @@ static FolderItem *imap_create_special_folder
 static gint imap_do_copy_msgs		(Folder		*folder,
 					 FolderItem	*dest,
 					 MsgInfoList	*msglist,
-					 GRelation	*relation);
+					 GHashTable	*relation);
 
 static void imap_delete_all_cached_messages	(FolderItem	*item);
 static void imap_set_batch		(Folder		*folder,
@@ -409,7 +409,7 @@ static void imap_change_flags			(Folder 	*folder,
 static gint imap_get_flags			(Folder 	*folder,
 						 FolderItem 	*item,
                     				 MsgInfoList 	*msglist,
-						 GRelation 	*msgflags);
+						 GHashTable 	*msgflags);
 static gchar *imap_folder_get_path		(Folder		*folder);
 static gchar *imap_item_get_path		(Folder		*folder,
 						 FolderItem	*item);
@@ -1577,7 +1577,7 @@ static gint imap_add_msg(Folder *folder, FolderItem *dest,
 }
 
 static gint imap_add_msgs(Folder *folder, FolderItem *dest, GSList *file_list,
-		   GRelation *relation)
+		   GHashTable *relation)
 {
 	gchar *destdir;
 	IMAPSession *session;
@@ -1672,7 +1672,7 @@ static gint imap_add_msgs(Folder *folder, FolderItem *dest, GSList *file_list,
 		}
 
 		if (relation != NULL)
-			g_relation_insert(relation, fileinfo->msginfo != NULL ? 
+			g_hash_table_insert(relation, fileinfo->msginfo != NULL ? 
 					  (gpointer) fileinfo->msginfo : (gpointer) fileinfo,
 					  GINT_TO_POINTER(new_uid));
 		if (last_uid < new_uid) {
@@ -1732,7 +1732,7 @@ static GSList *flatten_mailimap_set(struct mailimap_set * set)
 	return result;
 }
 static gint imap_do_copy_msgs(Folder *folder, FolderItem *dest, 
-			      MsgInfoList *msglist, GRelation *relation)
+			      MsgInfoList *msglist, GHashTable *relation)
 {
 	FolderItem *src;
 	gchar *destdir;
@@ -1865,7 +1865,7 @@ static gint imap_do_copy_msgs(Folder *folder, FolderItem *dest,
 		
 		if (hashval != NULL) {
 			gint num = GPOINTER_TO_INT(hashval);
-			g_relation_insert(relation, msginfo,
+			g_hash_table_insert(relation, msginfo,
 					  GINT_TO_POINTER(num));
 			if (num > last_num)
 				last_num = num;
@@ -1894,7 +1894,7 @@ static gint imap_do_copy_msgs(Folder *folder, FolderItem *dest,
 				g_free(cache_path);
 			}
 		} else
-			g_relation_insert(relation, msginfo,
+			g_hash_table_insert(relation, msginfo,
 					  GINT_TO_POINTER(0));
 	}
 	statusbar_pop_all();
@@ -1929,7 +1929,7 @@ static gint imap_copy_msg(Folder *folder, FolderItem *dest, MsgInfo *msginfo)
 }
 
 static gint imap_copy_msgs(Folder *folder, FolderItem *dest, 
-		    MsgInfoList *msglist, GRelation *relation)
+		    MsgInfoList *msglist, GHashTable *relation)
 {
 	MsgInfo *msginfo;
 	gint ret;
@@ -1947,7 +1947,7 @@ static gint imap_copy_msgs(Folder *folder, FolderItem *dest,
 
 
 static gint imap_do_remove_msgs(Folder *folder, FolderItem *dest, 
-			        MsgInfoList *msglist, GRelation *relation)
+			        MsgInfoList *msglist, GHashTable *relation)
 {
 	gchar *destdir, *dir;
 	GSList *numlist = NULL, *cur;
@@ -2027,7 +2027,7 @@ static gint imap_do_remove_msgs(Folder *folder, FolderItem *dest,
 }
 
 static gint imap_remove_msgs(Folder *folder, FolderItem *dest, 
-		    MsgInfoList *msglist, GRelation *relation)
+		    MsgInfoList *msglist, GHashTable *relation)
 {
 	MsgInfo *msginfo;
 
@@ -4546,7 +4546,7 @@ typedef struct _get_flags_data {
 	Folder *folder;
 	FolderItem *item;
 	MsgInfoList *msginfo_list;
-	GRelation *msgflags;
+	GHashTable *msgflags;
 	gboolean full_search;
 	gboolean done;
 } get_flags_data;
@@ -4557,7 +4557,7 @@ static /*gint*/ void *imap_get_flags_thread(void *data)
 	Folder *folder = stuff->folder;
 	FolderItem *fitem = (FolderItem *) stuff->item;
 	MsgInfoList *msginfo_list = stuff->msginfo_list;
-	GRelation *msgflags = stuff->msgflags;
+	GHashTable *msgflags = stuff->msgflags;
 	GSList *elem;
 	carray * lep_uidtab;
 	IMAPSession *session;
@@ -4821,7 +4821,7 @@ bail:
 			}
 		}
 
-		g_relation_insert(msgflags, msginfo, GINT_TO_POINTER(flags));
+		g_hash_table_insert(msgflags, msginfo, GINT_TO_POINTER(flags));
 	}
 	
 	if (got_alien_tags) {
@@ -4848,7 +4848,7 @@ bail:
 }
 
 static gint imap_get_flags(Folder *folder, FolderItem *item,
-                           MsgInfoList *msginfo_list, GRelation *msgflags)
+                           MsgInfoList *msginfo_list, GHashTable *msgflags)
 {
 	gint result;
 	get_flags_data *data = g_new0(get_flags_data, 1);

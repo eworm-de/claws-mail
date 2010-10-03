@@ -1883,7 +1883,7 @@ static gint folder_sort_folder_list(gconstpointer a, gconstpointer b)
 
 static gint syncronize_flags(FolderItem *item, MsgInfoList *msglist)
 {
-	GRelation *relation;
+	GHashTable *relation;
 	gint ret = 0;
 	GSList *cur;
 
@@ -1894,38 +1894,32 @@ static gint syncronize_flags(FolderItem *item, MsgInfoList *msglist)
 	if (item->no_select)
 		return 0;
 
-	relation = g_relation_new(2);
-	g_relation_index(relation, 0, g_direct_hash, g_direct_equal);
+	relation = g_hash_table_new(g_direct_hash, g_direct_equal);
 	if ((ret = item->folder->klass->get_flags(
 	    item->folder, item, msglist, relation)) == 0) {
-		GTuples *tuples;
+		gpointer data, old_key;
 		MsgInfo *msginfo;
 		MsgPermFlags permflags = 0;
-		gboolean skip;
 
 		folder_item_update_freeze();
 		folder_item_set_batch(item, TRUE);
 		for (cur = msglist; cur != NULL; cur = g_slist_next(cur)) {
 			msginfo = (MsgInfo *) cur->data;
 		
-			tuples = g_relation_select(relation, msginfo, 0);
-			skip = tuples->len < 1;
-			if (!skip)
-				permflags = GPOINTER_TO_INT(g_tuples_index(tuples, 0, 1));
-			g_tuples_destroy(tuples);
-			if (skip)
-				continue;
-			
-			if (msginfo->flags.perm_flags != permflags) {
-				procmsg_msginfo_change_flags(msginfo,
-					permflags & ~msginfo->flags.perm_flags, 0,
-					~permflags & msginfo->flags.perm_flags, 0);
+			if (g_hash_table_lookup_extended(relation, msginfo, &old_key, &data)) {
+				permflags = GPOINTER_TO_INT(data);
+
+				if (msginfo->flags.perm_flags != permflags) {
+					procmsg_msginfo_change_flags(msginfo,
+						permflags & ~msginfo->flags.perm_flags, 0,
+						~permflags & msginfo->flags.perm_flags, 0);
+				}
 			}
 		}
 		folder_item_set_batch(item, FALSE);
 		folder_item_update_thaw();
 	}
-	g_relation_destroy(relation);	
+	g_hash_table_destroy(relation);	
 
 	return ret;
 }
@@ -3123,7 +3117,7 @@ gint folder_item_add_msgs(FolderItem *dest, GSList *file_list,
         Folder *folder;
         gint ret, num, lastnum = -1;
 	GSList *file_cur;
-	GRelation *relation;
+	GHashTable *relation;
 	MsgFileInfo *fileinfo = NULL;
 	gboolean folderscan = FALSE;
 
@@ -3135,13 +3129,12 @@ gint folder_item_add_msgs(FolderItem *dest, GSList *file_list,
 
         folder = dest->folder;
 
-	relation = g_relation_new(2);
-	g_relation_index(relation, 0, g_direct_hash, g_direct_equal);
+	relation = g_hash_table_new(g_direct_hash, g_direct_equal);
 
 	if (folder->klass->add_msgs != NULL) {
     		ret = folder->klass->add_msgs(folder, dest, file_list, relation);
 		if (ret < 0) {
-			g_relation_destroy(relation);
+			g_hash_table_destroy(relation);
 			return ret;
 		}
 	} else {
@@ -3150,20 +3143,21 @@ gint folder_item_add_msgs(FolderItem *dest, GSList *file_list,
 
     			ret = folder->klass->add_msg(folder, dest, fileinfo->file, fileinfo->flags);
 			if (ret < 0) {
-				g_relation_destroy(relation);
+				g_hash_table_destroy(relation);
 				return ret;
 			}
-			g_relation_insert(relation, fileinfo, GINT_TO_POINTER(ret));
+			g_hash_table_insert(relation, fileinfo, GINT_TO_POINTER(ret));
 		}
 	}
 
 	for (file_cur = file_list; file_cur != NULL; file_cur = g_slist_next(file_cur)) {
-		GTuples *tuples;
+		gpointer data, old_key;
 
 		fileinfo = (MsgFileInfo *) file_cur->data;
-		tuples = g_relation_select(relation, fileinfo, 0);
-		num = GPOINTER_TO_INT(g_tuples_index(tuples, 0, 1));
-		g_tuples_destroy(tuples);
+		if (g_hash_table_lookup_extended(relation, fileinfo, &old_key, &data))
+			num = GPOINTER_TO_INT(data);
+		else
+			num = -1;
 
 		if (num >= 0) {
 			MsgInfo *newmsginfo;
@@ -3199,7 +3193,7 @@ gint folder_item_add_msgs(FolderItem *dest, GSList *file_list,
 		}
 	}
 
-	g_relation_destroy(relation);
+	g_hash_table_destroy(relation);
 
         return lastnum;
 }
@@ -3351,6 +3345,27 @@ gint folder_item_move_to(FolderItem *src, FolderItem *dest, FolderItem **new_ite
 	return F_MOVE_OK;
 }
 
+struct find_data
+{
+	gboolean found;
+};	
+static void find_num(gpointer key, gpointer value, gpointer data)
+{
+	struct find_data *fdata = (struct find_data *)data;
+	if (GPOINTER_TO_INT(value) == 0)
+		fdata->found = TRUE;
+}
+
+static gboolean some_msgs_have_zero_num(GHashTable *hashtable)
+{
+	struct find_data fdata;
+	
+	fdata.found = FALSE;
+	g_hash_table_foreach(hashtable, find_num, &fdata);
+	
+	return fdata.found;
+}
+
 /**
  * Copy a list of message to a new folder and remove
  * source messages if wanted
@@ -3361,7 +3376,7 @@ static gint do_copy_msgs(FolderItem *dest, GSList *msglist, gboolean remove_sour
 	GSList *l;
 	gint num, lastnum = -1;
 	gboolean folderscan = FALSE;
-	GRelation *relation;
+	GHashTable *relation;
 	GSList *not_moved = NULL;
 	gint total = 0, curmsg = 0;
 	MsgInfo *msginfo = NULL;
@@ -3409,9 +3424,7 @@ static gint do_copy_msgs(FolderItem *dest, GSList *msglist, gboolean remove_sour
 		return queue_err ? -1:0;
 	}
 
-	relation = g_relation_new(2);
-	g_relation_index(relation, 0, g_direct_hash, g_direct_equal);
-	g_relation_index(relation, 1, g_direct_hash, g_direct_equal);
+	relation = g_hash_table_new(g_direct_hash, g_direct_equal);
 
 	for (l = msglist ; l != NULL ; l = g_slist_next(l)) {
 		MsgInfo * msginfo = (MsgInfo *) l->data;
@@ -3430,7 +3443,7 @@ static gint do_copy_msgs(FolderItem *dest, GSList *msglist, gboolean remove_sour
 	 */
 	if (folder->klass->copy_msgs != NULL) {
 		if (folder->klass->copy_msgs(folder, dest, msglist, relation) < 0) {
-			g_relation_destroy(relation);
+			g_hash_table_destroy(relation);
 			return -1;
 		}
 	} else {
@@ -3441,7 +3454,7 @@ static gint do_copy_msgs(FolderItem *dest, GSList *msglist, gboolean remove_sour
 		if (l != NULL) {
 			msginfo = (MsgInfo *) l->data;
 			if (msginfo != NULL && msginfo->folder == dest) {
-				g_relation_destroy(relation);
+				g_hash_table_destroy(relation);
 				return -1;
 			}
 		}
@@ -3451,7 +3464,7 @@ static gint do_copy_msgs(FolderItem *dest, GSList *msglist, gboolean remove_sour
 
 			num = folder->klass->copy_msg(folder, dest, msginfo);
 			if (num > 0)
-				g_relation_insert(relation, msginfo, GINT_TO_POINTER(num));
+				g_hash_table_insert(relation, msginfo, GINT_TO_POINTER(num));
 			else
 				not_moved = g_slist_prepend(not_moved, msginfo);
 		}
@@ -3472,20 +3485,14 @@ static gint do_copy_msgs(FolderItem *dest, GSList *msglist, gboolean remove_sour
 								relation);
 		}
 		for (l = msglist; l != NULL; l = g_slist_next(l)) {
-            	        GTuples *tuples;
+            	        gpointer old_key, data;
 			msginfo = (MsgInfo *) l->data;
 			item = msginfo->folder;
 
-            		tuples = g_relation_select(relation, msginfo, 0);
-			if (tuples) {
-				if (tuples->len)
-		            	        num = GPOINTER_TO_INT(g_tuples_index(tuples, 0, 1));
-				else
-					num = 0;
-        	    		g_tuples_destroy(tuples);
-			} else {
+            		if (g_hash_table_lookup_extended(relation, msginfo, &old_key, &data))
+	            	        num = GPOINTER_TO_INT(data);
+			else
 				num = -1;
-			}
 
 			if (g_slist_find(not_moved, msginfo))
 				continue;
@@ -3509,7 +3516,7 @@ static gint do_copy_msgs(FolderItem *dest, GSList *msglist, gboolean remove_sour
 	 * Fetch new MsgInfos for new messages in dest folder,
 	 * add them to the msgcache and update folder message counts
 	 */
-	if (g_relation_count(relation, GINT_TO_POINTER(0), 1) > 0) {
+	if (some_msgs_have_zero_num(relation)) {
 		folder_item_scan_full(dest, FALSE);
 		folderscan = TRUE;
 	}
@@ -3524,19 +3531,16 @@ static gint do_copy_msgs(FolderItem *dest, GSList *msglist, gboolean remove_sour
 	folder_item_set_batch(dest, TRUE);
 	for (l = msglist; l != NULL; l = g_slist_next(l)) {
 		MsgInfo *msginfo = (MsgInfo *) l->data;
-                GTuples *tuples;
+                gpointer data, old_key;
 
 		if (!msginfo)
 			continue;
-                tuples = g_relation_select(relation, msginfo, 0);
-		if (tuples && tuples->len > 0) {
-	                num = GPOINTER_TO_INT(g_tuples_index(tuples, 0, 1));
-        	        g_tuples_destroy(tuples);
-		} else {
-			num = 0;
-			if (tuples)
-				g_tuples_destroy(tuples);
-		}
+
+                if (g_hash_table_lookup_extended(relation, msginfo, &old_key, &data))
+	                num = GPOINTER_TO_INT(data);
+		else
+			num = -1;
+
 		statusbar_progress_all(curmsg++,total, 100);
 		if (curmsg % 100 == 0)
 			GTK_EVENTS_FLUSH();
@@ -3590,7 +3594,7 @@ static gint do_copy_msgs(FolderItem *dest, GSList *msglist, gboolean remove_sour
 	statusbar_progress_all(0,0,0);
 	statusbar_pop_all();
 
-	g_relation_destroy(relation);
+	g_hash_table_destroy(relation);
 	if (not_moved != NULL) {
 		g_slist_free(not_moved);
 		return -1;

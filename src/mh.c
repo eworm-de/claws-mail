@@ -75,21 +75,21 @@ static gint     mh_add_msg		(Folder		*folder,
 static gint     mh_add_msgs		(Folder		*folder,
 					 FolderItem	*dest,
 					 GSList		*file_list,
-					 GRelation 	*relation);
+					 GHashTable 	*relation);
 static gint     mh_copy_msg		(Folder		*folder,
 					 FolderItem	*dest,
 					 MsgInfo	*msginfo);
 static gint	mh_copy_msgs		(Folder 	*folder, 
 					 FolderItem 	*dest, 
 					 MsgInfoList 	*msglist, 
-			 		 GRelation 	*relation);
+			 		 GHashTable 	*relation);
 static gint     mh_remove_msg		(Folder		*folder,
 					 FolderItem	*item,
 					 gint 		 num);
 static gint 	mh_remove_msgs		(Folder 	*folder, 
 					 FolderItem 	*item, 
 		    			 MsgInfoList 	*msglist, 
-					 GRelation 	*relation);
+					 GHashTable 	*relation);
 static gint     mh_remove_all_msg	(Folder		*folder,
 					 FolderItem	*item);
 static gboolean mh_is_msg_changed	(Folder		*folder,
@@ -134,7 +134,7 @@ static int mh_item_close		(Folder		*folder,
 					 FolderItem	*item);
 #if 0
 static gint mh_get_flags		(Folder *folder, FolderItem *item,
-                           		 MsgInfoList *msginfo_list, GRelation *msgflags);
+                           		 MsgInfoList *msginfo_list, GHashTable *msgflags);
 #endif
 static void mh_write_sequences		(FolderItem 	*item, gboolean remove_unseen);
 
@@ -401,7 +401,7 @@ static gint mh_add_msg(Folder *folder, FolderItem *dest, const gchar *file, MsgF
 } 
  
 static gint mh_add_msgs(Folder *folder, FolderItem *dest, GSList *file_list, 
-                 GRelation *relation)
+                 GHashTable *relation)
 { 
 	gchar *destfile;
 	GSList *cur;
@@ -435,7 +435,7 @@ static gint mh_add_msgs(Folder *folder, FolderItem *dest, GSList *file_list,
 #endif
 
 		if (relation != NULL)
-			g_relation_insert(relation, fileinfo, GINT_TO_POINTER(dest->last_num + 1));
+			g_hash_table_insert(relation, fileinfo, GINT_TO_POINTER(dest->last_num + 1));
 		g_free(destfile);
 		dest->last_num++;
 	}
@@ -456,7 +456,7 @@ static gint mh_copy_msg(Folder *folder, FolderItem *dest, MsgInfo *msginfo)
 }
 
 static gint mh_copy_msgs(Folder *folder, FolderItem *dest, MsgInfoList *msglist, 
-			 GRelation *relation)
+			 GHashTable *relation)
 {
 	gboolean dest_need_scan = FALSE;
 	gboolean src_need_scan = FALSE;
@@ -578,8 +578,12 @@ static gint mh_copy_msgs(Folder *folder, FolderItem *dest, MsgInfoList *msglist,
 			if (filemode & S_IRGRP) filemode |= S_IWGRP;
 			if (filemode & S_IROTH) filemode |= S_IWOTH;
 		}
-		if (relation)
-			g_relation_insert(relation, msginfo, GINT_TO_POINTER(dest->last_num+1));
+		if (relation) {
+			if (g_hash_table_lookup(relation, msginfo) != NULL)
+				g_warning("already in : %p", msginfo);
+			
+			g_hash_table_insert(relation, msginfo, GINT_TO_POINTER(dest->last_num+1));
+		}
 		g_free(srcfile);
 		g_free(destfile);
 		dest->last_num++;
@@ -640,7 +644,7 @@ static gint mh_remove_msg(Folder *folder, FolderItem *item, gint num)
 }
 
 static gint mh_remove_msgs(Folder *folder, FolderItem *item, 
-		    MsgInfoList *msglist, GRelation *relation)
+		    MsgInfoList *msglist, GHashTable *relation)
 {
 	gboolean need_scan = FALSE;
 	gchar *path, *file;
@@ -1238,104 +1242,6 @@ static gchar *get_unseen_seq_name(void)
 	}
 	return seq_name;	
 }
-
-#if 0
-static gint mh_get_flags(Folder *folder, FolderItem *item,
-                           MsgInfoList *msginfo_list, GRelation *msgflags)
-{
-	gchar *mh_sequences_filename;
-	FILE *mh_sequences_file;
-	gchar buf[BUFFSIZE];
-	gchar *unseen_list = NULL;
-	gchar *path;
-	MsgInfoList *mcur = NULL;
-/*
-	GTimer *timer = g_timer_new();
-	g_timer_start(timer);
-*/
-	if (!item)
-		return 0;
-
-	/* don't update from .mh_sequences if the item's opened: mails may have
-	 * been marked read/unread and it's not yet written in the file. */	
-	if (item->opened)
-		return 0;
-
-	path = folder_item_get_path(item);
-
-	mh_sequences_filename = g_strconcat(path, G_DIR_SEPARATOR_S,
-					    ".mh_sequences", NULL);
-	g_free(path);
-	if ((mh_sequences_file = g_fopen(mh_sequences_filename, "r+b")) != NULL) {
-		while (fgets(buf, sizeof(buf), mh_sequences_file) != NULL) {
-			if (!strncmp(buf, get_unseen_seq_name(), strlen(get_unseen_seq_name()))) {
-				unseen_list = g_strdup(buf+strlen(get_unseen_seq_name()));
-				break;
-			}
-		}
-		fclose(mh_sequences_file);
-	}
-	
-	g_free(mh_sequences_filename);
-	
-	if (unseen_list) {
-		gchar *cur = NULL;
-		gchar *token = NULL, *next = NULL, *boundary = NULL;
-		gint num = 0;
-		GHashTable *unseen_table = g_hash_table_new(g_direct_hash, g_direct_equal);
-
-		cur = unseen_list = strretchomp(unseen_list);
-		debug_print("found unseen list in .mh_sequences: %s\n", unseen_list);
-next_token:
-		while (*cur && *cur == ' ')
-			cur++;
-		
-		if ((next = strchr(cur, ' ')) != NULL) {
-			token = cur;
-			cur = next+1;
-			*next = '\0';
-		} else {
-			token = cur;
-			cur = NULL;
-		}
-		
-		if ((boundary = strchr(token, '-')) != NULL) {
-			gchar *start, *end;
-			int i;
-			start = token;
-			end = boundary+1;
-			*boundary='\0';
-			for (i = atoi(start); i <= atoi(end); i++) {
-				g_hash_table_insert(unseen_table, GINT_TO_POINTER(i), GINT_TO_POINTER(1));
-			}
-		} else if ((num = atoi(token)) > 0) {
-			g_hash_table_insert(unseen_table, GINT_TO_POINTER(num), GINT_TO_POINTER(1));
-		}
-		
-		if (cur)
-			goto next_token;
-		for (mcur = msginfo_list; mcur; mcur = mcur->next) {
-			MsgInfo *msginfo = (MsgInfo *)mcur->data;
-			MsgPermFlags flags = msginfo->flags.perm_flags;
-			if (g_hash_table_lookup(unseen_table, GINT_TO_POINTER(msginfo->msgnum))) {
-				flags |= MSG_UNREAD;
-			} else if (!(flags & MSG_NEW)) { /* don't mark new msgs as read */
-				flags &= ~(MSG_UNREAD);
-			}
-			if (flags != msginfo->flags.perm_flags)
-				g_relation_insert(msgflags, msginfo, GINT_TO_POINTER(flags));
-		}
-		g_hash_table_destroy(unseen_table);
-		g_free(unseen_list);
-	}
-/*
-	g_timer_stop(timer);
-	g_print("mh_get_flags: %f secs\n", g_timer_elapsed(timer, NULL));
-	g_timer_destroy(timer);
-*/
-	return 0;
-}
-#endif
 
 static void mh_write_sequences(FolderItem *item, gboolean remove_unseen)
 {
