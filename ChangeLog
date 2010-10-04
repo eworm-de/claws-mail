@@ -1,3 +1,9 @@
+2010-10-04 [mones]	3.7.6cvs54
+
+	* manual/dist/pdf/Makefile.am
+		Fix build of English PDF manual
+		(sh: Can't open ../../../xml2pdf)
+
 2010-10-03 [colin]	3.7.6cvs53
 
 	* src/folder.c
