@@ -31,16 +31,25 @@ typedef enum
 	QUICK_SEARCH_TAG
 } QuickSearchType;
 
+
 typedef struct _QuickSearch QuickSearch;
 typedef void (*QuickSearchExecuteCallback) (QuickSearch *quicksearch, gpointer data);
 
 #include "procmsg.h"
 
+void search_msgs_in_folder(GSList **messages, QuickSearch* quicksearch,
+			   FolderItem* folderItem);
+void search_msgs_in_folders(GSList **messages, QuickSearch* quicksearch,
+			    FolderItem* folderItem);
+QuickSearchType quicksearch_type(const gchar *type);
+
 QuickSearch *quicksearch_new();
+QuickSearch *quicksearch_new_nogui();
 GtkWidget *quicksearch_get_widget(QuickSearch *quicksearch);
 void quicksearch_show(QuickSearch *quicksearch);
 void quicksearch_hide(QuickSearch *quicksearch);
 void quicksearch_set(QuickSearch *quicksearch, QuickSearchType type, const gchar *matchstring);
+void quicksearch_set_recursive(QuickSearch *quicksearch, gboolean recursive);
 gboolean quicksearch_is_active(QuickSearch *quicksearch);
 void quicksearch_set_execute_callback(QuickSearch *quicksearch,
 				      QuickSearchExecuteCallback callback,

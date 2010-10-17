@@ -1,3 +1,13 @@
+2010-10-17 [colin]	3.7.6cvs55
+
+	* src/main.c
+	* src/gtk/authors.h
+	* src/gtk/quicksearch.c
+	* src/gtk/quicksearch.h
+		Add ability to search from the command-line.
+		Closes bug 2249, ' Making QuickSearch independent from the GUI'
+		Patch by Sebastien Bigarret.
+
 2010-10-04 [mones]	3.7.6cvs54
 
 	* manual/dist/pdf/Makefile.am

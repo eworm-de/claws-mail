@@ -107,6 +107,7 @@
 #include "tags.h"
 #include "hooks.h"
 #include "menu.h"
+#include "quicksearch.h"
 
 #ifdef HAVE_LIBETPAN
 #include "imap-thread.h"
@@ -191,6 +192,11 @@ static struct RemoteCmd {
 	gboolean compose;
 	const gchar *compose_mailto;
 	GPtrArray *attach_files;
+	gboolean search;
+	const gchar *search_folder;
+	const gchar *search_type;
+	const gchar *search_request;
+	gboolean search_recursive;
 	gboolean status;
 	gboolean status_full;
 	GPtrArray *status_folders;
@@ -1093,7 +1099,7 @@ int main(int argc, char *argv[])
 		return 0;
 	}
 
-	if (cmd.status || cmd.status_full) {
+	if (cmd.status || cmd.status_full || cmd.search) {
 		puts("0 Claws Mail not running.");
 		lock_socket_remove();
 		return 0;
@@ -1152,7 +1158,9 @@ int main(int argc, char *argv[])
 	hildon_program = HILDON_PROGRAM(hildon_program_get_instance());
 	static_osso_context = osso_context;
 #endif	
-	gtk_widget_set_default_colormap(gdk_rgb_get_colormap());
+	gtk_widget_set_default_colormap(
+		gdk_screen_get_system_colormap(
+			gdk_screen_get_default()));
 
 	gui_manager = gtkut_create_ui_manager();
 
@@ -1883,6 +1891,16 @@ static void parse_cmd_opt(int argc, char *argv[])
  				i++;
  				p = (i+1 < argc)?argv[i+1]:NULL;
  			}
+		} else if (!strncmp(argv[i], "--search", 8)) {
+			cmd.search_folder    = (i+1 < argc)?argv[i+1]:NULL;
+			cmd.search_type      = (i+2 < argc)?argv[i+2]:NULL;
+			cmd.search_request   = (i+3 < argc)?argv[i+3]:NULL;
+			const char* rec      = (i+4 < argc)?argv[i+4]:NULL;
+			cmd.search_recursive = TRUE;
+			if (rec && (tolower(*rec)=='n' || tolower(*rec)=='f' || *rec=='0'))
+				cmd.search_recursive = FALSE;
+			if (cmd.search_folder && cmd.search_type && cmd.search_request)
+				cmd.search = TRUE;
 		} else if (!strncmp(argv[i], "--online", 8)) {
 			cmd.online_mode = ONLINE_MODE_ONLINE;
 		} else if (!strncmp(argv[i], "--offline", 9)) {
@@ -1899,6 +1917,13 @@ static void parse_cmd_opt(int argc, char *argv[])
 			          "                         attached"));
 			g_print("%s\n", _("  --receive              receive new messages"));
 			g_print("%s\n", _("  --receive-all          receive new messages of all accounts"));
+			g_print("%s\n", _("  --search folder type request [recursive]"));
+			g_print("%s\n", _("                         searches mail"));
+			g_print("%s\n", _("                         folder ex.: \"#mh/Mailbox/inbox\" or \"Mail\""));
+			g_print("%s\n", _("                         type: s[ubject],f[rom],t[o],e[xtended],m[ixed] or g: tag"));
+			g_print("%s\n", _("                         request: search string"));
+			g_print("%s\n", _("                         recursive: false iff arg. starts with 0, n, N, f or F"));
+
 			g_print("%s\n", _("  --send                 send all queued messages"));
  			g_print("%s\n", _("  --status [folder]...   show the total number of messages"));
  			g_print("%s\n", _("  --status-full [folder]...\n"
@@ -2252,6 +2277,19 @@ static gint prohibit_duplicate_launch(void)
 		gchar *str = g_strdup_printf("select %s\n", cmd.target);
 		fd_write_all(uxsock, str, strlen(str));
 		g_free(str);
+	} else if (cmd.search) {
+		gchar buf[BUFFSIZE];
+		gchar *str =
+			g_strdup_printf("search %s\n%s\n%s\n%c\n",
+							cmd.search_folder, cmd.search_type, cmd.search_request,
+							(cmd.search_recursive==TRUE)?'1':'0');
+		fd_write_all(uxsock, str, strlen(str));
+		g_free(str);
+		for (;;) {
+			fd_gets(uxsock, buf, sizeof(buf));
+			if (!strncmp(buf, ".\n", 2)) break;
+			fputs(buf, stdout);
+		}
 	} else {
 #ifndef G_OS_WIN32
 		gchar buf[BUFSIZ];
@@ -2330,6 +2368,8 @@ static void lock_socket_input_cb(gpointer data,
 	MainWindow *mainwin = (MainWindow *)data;
 	gint sock;
 	gchar buf[BUFFSIZE];
+	/* re-use the same quicksearch (& avoid matcher_list mem.leaks) */
+	static QuickSearch *quicksearch = NULL;
 
 	sock = fd_accept(source);
 	fd_gets(sock, buf, sizeof(buf));
@@ -2385,14 +2425,80 @@ static void lock_socket_input_cb(gpointer data,
 	} else if (!strncmp(buf, "select ", 7)) {
 		const gchar *target = buf+7;
 		mainwindow_jump_to(target, TRUE);
+	} else if (!strncmp(buf, "search ", 7)) {
+		FolderItem* folderItem = NULL;
+		GSList *messages = NULL;
+		gchar *folder_name, *request;
+		QuickSearchType searchType = QUICK_SEARCH_EXTENDED;
+		gboolean recursive;
+
+		if (quicksearch==NULL)
+			quicksearch = quicksearch_new_nogui();
+		
+		folder_name = g_strdup(buf+7);
+		strretchomp(folder_name);
+
+		if (fd_gets(sock, buf, sizeof(buf)) <= 0) {
+			g_free(folder_name);
+			folder_name=NULL;
+		}
+		searchType = quicksearch_type(buf);
+		if (fd_gets(sock, buf, sizeof(buf)) <= 0) {
+			g_free(folder_name);
+			folder_name=NULL;
+		}
+		request = g_strdup(buf);
+		strretchomp(request);
+
+		recursive = TRUE;
+		if (fd_gets(sock, buf, sizeof(buf)) > 0)
+			if (buf[0]=='0')
+				recursive = FALSE;
+
+		debug_print("search: %s %i %s %i\n",folder_name,searchType,request,recursive);
+
+		if (folder_name)
+			folderItem = folder_find_item_from_identifier(folder_name);
+		if (folder_name && folderItem == NULL) {
+			debug_print("Unknow folder item : '%s', searching folder\n",folder_name);
+			Folder* folder = folder_find_from_path(folder_name);
+			if (folder != NULL)
+				folderItem = FOLDER_ITEM(folder->node->data);
+			else
+				debug_print("Unknown folder: '%s'\n",folder_name);
+		} else {
+			debug_print("%s %s\n",folderItem->name, folderItem->path);
+        }
+		if (folderItem != NULL) {
+			quicksearch_set(quicksearch, searchType, request);
+			quicksearch_set_recursive(quicksearch, recursive);
+			search_msgs_in_folders(&messages, quicksearch, folderItem);
+		} else {
+			g_print("Folder '%s' not found.\n'", folder_name);
+		}
+
+		GSList *cur;
+		for (cur=messages; cur != NULL; cur = cur->next) {
+			MsgInfo* msg = (MsgInfo *)cur->data;
+			gchar *file = procmsg_get_message_file_path(msg);
+			fd_write_all(sock, file, strlen(file));
+			fd_write_all(sock, "\n", 1);
+			g_free(file);
+		}
+		fd_write_all(sock, ".\n", 2);
+
+		if (messages != NULL)
+			procmsg_msg_list_free(messages);
+		g_free(folder_name);
+		g_free(request);
 	} else if (!strncmp(buf, "exit", 4)) {
 		if (prefs_common.clean_on_exit && !prefs_common.ask_on_clean) {
 			procmsg_empty_all_trash();
                 }
 		app_will_exit(NULL, mainwin);
 	}
-
 	fd_close(sock);
+
 }
 
 static void open_compose_new(const gchar *address, GPtrArray *attach_files)
