@@ -1378,7 +1378,6 @@ static void replace_with_create_dialog_cb(GtkWidget *w, gpointer data)
 
 	gtk_window_set_resizable(GTK_WINDOW(dialog), FALSE);
 	gtk_window_set_title(GTK_WINDOW(dialog),_("Replace unknown word"));
-	gtk_dialog_set_has_separator (GTK_DIALOG (dialog), FALSE);
 	gtk_window_move(GTK_WINDOW(dialog), xx, yy);
 
 	g_signal_connect_swapped(G_OBJECT(dialog), "destroy",

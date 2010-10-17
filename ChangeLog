@@ -1,3 +1,13 @@
+2010-10-17 [colin]	3.7.6cvs56
+
+	* src/prefs_themes.c
+	* src/gtk/gtkaspell.c
+	* src/gtk/gtkutils.c
+	* src/gtk/gtkutils.h
+	* src/gtk/inputdialog.c
+	* src/gtk/progressdialog.c
+		Undeprecate a few things
+
 2010-10-17 [colin]	3.7.6cvs55
 
 	* src/main.c

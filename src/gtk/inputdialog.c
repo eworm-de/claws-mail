@@ -313,7 +313,6 @@ static void input_dialog_create(gboolean is_password)
 	gtk_window_set_resizable(GTK_WINDOW(dialog), FALSE);
 	gtk_window_set_default_size(GTK_WINDOW(dialog), 375, 100);
 	gtk_window_set_title(GTK_WINDOW(dialog), "");
-	gtk_dialog_set_has_separator (GTK_DIALOG (dialog), FALSE);
 
 	g_signal_connect(G_OBJECT(dialog), "delete_event",
 			 G_CALLBACK(delete_event), NULL);

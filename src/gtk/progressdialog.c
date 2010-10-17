@@ -69,7 +69,6 @@ ProgressDialog *progress_dialog_create(void)
 	gtk_container_set_border_width
 		(GTK_CONTAINER(GTK_DIALOG(dialog)->action_area), 0);
 	gtk_box_set_spacing(GTK_BOX(GTK_DIALOG(dialog)->vbox), 8);
-	gtk_dialog_set_has_separator(GTK_DIALOG(dialog), FALSE);
 
 	hbox = gtk_hbox_new(FALSE, 0);
 	gtk_box_pack_start(GTK_BOX(GTK_DIALOG(dialog)->vbox), hbox,

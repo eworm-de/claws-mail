@@ -783,40 +783,6 @@ static gchar *prefs_themes_get_theme_stats(const gchar *dirname)
 	return stats;
 }
 
-/* BEGIN GLADE CODE */
-/* This is a dummy pixmap we use when a pixmap can't be found. */
-static char *dummy_pixmap_xpm[] = {
-	/* columns rows colors chars-per-pixel */
-	"1 1 1 1",
-	"  c None",
-	/* pixels */
-	" "
-};
-
-/* This is an internally used function to create pixmaps. */
-static GtkWidget* create_dummy_pixmap(GtkWidget *widget)
-{
-	GdkColormap *colormap;
-	GdkPixmap *gdkpixmap;
-	GdkBitmap *mask;
-	GtkWidget *pixmap;
-
-	colormap = gtk_widget_get_colormap (widget);
-	gdkpixmap = gdk_pixmap_colormap_create_from_xpm_d (NULL, colormap, &mask,
-			NULL, dummy_pixmap_xpm);
-	if (gdkpixmap == NULL)
-		g_error ("Couldn't create replacement pixmap.");
-	pixmap = gtk_image_new_from_pixmap(gdkpixmap, mask);
-	g_object_unref (gdkpixmap);
-	g_object_unref (mask);
-	return pixmap;
-}
-/* END GLADE CODE */
-
-/* glade generates some calls to a create_pixmap support function 
- * we don't really need. */
-#define create_pixmap(widget,filename) create_dummy_pixmap(widget)
-
 static void prefs_themes_create_widget(PrefsPage *page, GtkWindow *window, gpointer data)
 {
 	ThemesPage *prefs_themes = (ThemesPage *)page;
@@ -956,37 +922,37 @@ static void prefs_themes_create_widget(PrefsPage *page, GtkWindow *window, gpoin
 	gtk_widget_show (hbox1);
 	gtk_container_add (GTK_CONTAINER (frame_preview), hbox1);
 
-	icon_1 = create_pixmap (vbox1, NULL);
+	icon_1 = gtk_image_new();
 	gtk_widget_show (icon_1);
 	gtk_box_pack_start (GTK_BOX (hbox1), icon_1, TRUE, TRUE, 2);
 	gtk_misc_set_padding (GTK_MISC (icon_1), 0, 5);
 
-	icon_2 = create_pixmap (vbox1, NULL);
+	icon_2 = gtk_image_new();
 	gtk_widget_show (icon_2);
 	gtk_box_pack_start (GTK_BOX (hbox1), icon_2, TRUE, TRUE, 2);
 	gtk_misc_set_padding (GTK_MISC (icon_2), 0, 5);
 
-	icon_3 = create_pixmap (vbox1, NULL);
+	icon_3 = gtk_image_new();
 	gtk_widget_show (icon_3);
 	gtk_box_pack_start (GTK_BOX (hbox1), icon_3, TRUE, TRUE, 2);
 	gtk_misc_set_padding (GTK_MISC (icon_3), 0, 5);
 
-	icon_4 = create_pixmap (vbox1, NULL);
+	icon_4 = gtk_image_new();
 	gtk_widget_show (icon_4);
 	gtk_box_pack_start (GTK_BOX (hbox1), icon_4, TRUE, TRUE, 2);
 	gtk_misc_set_padding (GTK_MISC (icon_4), 0, 5);
 
-	icon_5 = create_pixmap (vbox1, NULL);
+	icon_5 = gtk_image_new();
 	gtk_widget_show (icon_5);
 	gtk_box_pack_start (GTK_BOX (hbox1), icon_5, TRUE, TRUE, 2);
 	gtk_misc_set_padding (GTK_MISC (icon_5), 0, 5);
 
-	icon_6 = create_pixmap (vbox1, NULL);
+	icon_6 = gtk_image_new();
 	gtk_widget_show (icon_6);
 	gtk_box_pack_start (GTK_BOX (hbox1), icon_6, TRUE, TRUE, 0);
 	gtk_misc_set_padding (GTK_MISC (icon_6), 0, 5);
 
-	icon_7 = create_pixmap (vbox1, NULL);
+	icon_7 = gtk_image_new();
 	gtk_widget_show (icon_7);
 	gtk_box_pack_start (GTK_BOX (hbox1), icon_7, TRUE, TRUE, 0);
 	gtk_misc_set_padding (GTK_MISC (icon_7), 0, 5);
