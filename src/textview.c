@@ -1018,7 +1018,7 @@ static void textview_write_body(TextView *textview, MimeInfo *mimeinfo)
 			argv = strsplit_with_quote(buf, " ", 0);
 			close(1);
 			close(pfd[0]);
-			dup(pfd[1]);
+			rc = dup(pfd[1]);
 			rc = execvp(argv[0], argv);
 			close(pfd[1]);
 			g_print(_("The command to view attachment "

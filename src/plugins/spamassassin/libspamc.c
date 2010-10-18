@@ -1309,8 +1309,8 @@ libspamc_log (int flags, int level, char *msg, ...)
 
         len += snprintf(buf+len, LOG_BUFSIZ-len, "\n");
         buf[LOG_BUFSIZ] = '\0';     /* ensure termination */
-        (void) write (2, buf, len);
-
+        if (write (2, buf, len) != len)
+		goto out;
     } else {
         vsnprintf(buf, LOG_BUFSIZ, msg, ap);
         buf[LOG_BUFSIZ] = '\0';     /* ensure termination */
@@ -1321,7 +1321,7 @@ libspamc_log (int flags, int level, char *msg, ...)
         g_printerr ("%s\n", buf);
 #endif
     }
-
+out:
     va_end(ap);
 }
 

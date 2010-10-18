@@ -1073,7 +1073,6 @@ GtkWidget *xface_get_from_header(const gchar *o_xface, GdkColor *background,
 {
 	static gchar *xpm_xface[XPM_XFACE_HEIGHT];
 	static gboolean xpm_xface_init = TRUE;
-	GdkBitmap *mask;
 	gchar xface[2048];
 	strncpy(xface, o_xface, sizeof(xface));
 

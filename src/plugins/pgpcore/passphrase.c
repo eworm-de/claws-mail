@@ -319,7 +319,9 @@ gpgmegtk_passphrase_cb(void *opaque, const char *uid_hint,
 	gpgmegtk_free_passphrase();
 	if (!pass) {
             debug_print ("%% cancel passphrase entry\n");
-            write(fd, "\n", 1);
+            if (write(fd, "\n", 1) != 1)
+		debug_print("short write");
+
             return GPG_ERR_CANCELED;
 	}
 	else {
@@ -347,8 +349,11 @@ gpgmegtk_passphrase_cb(void *opaque, const char *uid_hint,
         WriteFile ((HANDLE)fd, "\n", 1, &nwritten, NULL);
     }
 #else
-    write(fd, pass, strlen(pass));
-    write(fd, "\n", 1);
+    if (write(fd, pass, strlen(pass)) != strlen(pass))
+	debug_print("Short write");
+
+    if (write(fd, "\n", 1) != 1)
+	debug_print("Short write");
 #endif
     g_free(pass);
 

@@ -1604,16 +1604,6 @@ void search_msgs_in_folders(GSList **messages, QuickSearch* quicksearch,
 	*messages = g_slist_reverse(*messages);
 }
 
-/*
-static void search_msg_folder(GSList **messages, QuickSearch* quicksearch,
-							  QuickSearchType searchType,
-							  Folder* folder)
-{
-  search_msgs_in_folders(messages, quicksearch, searchType,
-			 FOLDER_ITEM(folder->node->data), TRUE);
-}
-*/
-
  /*
   * Returns the QuickSearchType associated to the supplied string.
   */

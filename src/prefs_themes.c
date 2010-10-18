@@ -698,8 +698,7 @@ static void prefs_themes_display_global_stats(const ThemesData *tdata)
 
 #define FGETS_INFOFILE_LINE() \
 	line[0] = '\0'; \
-	fgets(line, INFOFILE_LINE_LEN, finfo); \
-	if ((len = strlen(line)) > 0) { \
+	if (fgets(line, INFOFILE_LINE_LEN, finfo) != NULL && (len = strlen(line)) > 0) { \
 		if (line[len - 1] == '\n') line[len - 1] = '\0'; \
 	} \
 	else { \

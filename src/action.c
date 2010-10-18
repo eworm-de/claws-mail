@@ -947,11 +947,12 @@ static ChildInfo *fork_child(gchar *cmd, const gchar *msg_str,
 
 	pid = fork();
 	if (pid == 0) { /* Child */
+		int r = 0;
 		if (setpgid(0, 0))
 			perror("setpgid");
 
 #ifdef GDK_WINDOWING_X11
-		(void)close(ConnectionNumber(gdk_display_get_default()));
+		r = close(ConnectionNumber(gdk_display_get_default()));
 #endif /* GDK_WINDOWING_X11 */
 
 		gch_pid = fork();
@@ -965,21 +966,24 @@ static ChildInfo *fork_child(gchar *cmd, const gchar *msg_str,
 				    (ACTION_PIPE_IN |
 				     ACTION_USER_IN |
 				     ACTION_USER_HIDDEN_IN)) {
-					(void)close(fileno(stdin));
-					(void)dup  (chld_in[0]);
+					r |= close(fileno(stdin));
+					r |= dup  (chld_in[0]);
 				}
-				(void)close(chld_in[0]);
-				(void)close(chld_in[1]);
+				r |= close(chld_in[0]);
+				r |= close(chld_in[1]);
 
-				(void)close(fileno(stdout));
-				(void)dup  (chld_out[1]);
-				(void)close(chld_out[0]);
-				(void)close(chld_out[1]);
+				r |= close(fileno(stdout));
+				r |= dup  (chld_out[1]);
+				r |= close(chld_out[0]);
+				r |= close(chld_out[1]);
 
-				(void)close(fileno(stderr));
-				(void)dup  (chld_err[1]);
-				(void)close(chld_err[0]);
-				(void)close(chld_err[1]);
+				r |= close(fileno(stderr));
+				r |= dup  (chld_err[1]);
+				r |= close(chld_err[0]);
+				r |= close(chld_err[1]);
+
+				if (r != 0)
+					g_warning("%s(%d)", strerror(errno), errno);
 			}
 
 			cmdline[0] = "sh";
@@ -999,24 +1003,29 @@ static ChildInfo *fork_child(gchar *cmd, const gchar *msg_str,
 			_exit(1);
 		} else if (gch_pid < (pid_t) 0) { /* Fork error */
 			if (sync)
-				(void)write(chld_status[1], "1\n", 2);
+				r = write(chld_status[1], "1\n", 2);
+			if (r != 0)
+				g_warning("%s(%d)", strerror(errno), errno);
 			perror("fork");
 			_exit(1);
 		} else { /* Child */
 			if (sync) {
-				(void)close(chld_in[0]);
-				(void)close(chld_in[1]);
-				(void)close(chld_out[0]);
-				(void)close(chld_out[1]);
-				(void)close(chld_err[0]);
-				(void)close(chld_err[1]);
-				(void)close(chld_status[0]);
+				r |= close(chld_in[0]);
+				r |= close(chld_in[1]);
+				r |= close(chld_out[0]);
+				r |= close(chld_out[1]);
+				r |= close(chld_err[0]);
+				r |= close(chld_err[1]);
+				r |= close(chld_status[0]);
 
 				debug_print("Child: waiting for grandchild\n");
-				waitpid(gch_pid, NULL, 0);
+				r |= waitpid(gch_pid, NULL, 0);
 				debug_print("Child: grandchild ended\n");
-				(void)write(chld_status[1], "0\n", 2);
-				(void)close(chld_status[1]);
+				r |= write(chld_status[1], "0\n", 2);
+				r |= close(chld_status[1]);
+
+				if (r != 0)
+					g_warning("%s(%d)", strerror(errno), errno);
 			}
 			_exit(0);
 		}
@@ -1068,17 +1077,20 @@ static ChildInfo *fork_child(gchar *cmd, const gchar *msg_str,
 		return child_info;
 
 	if ((children->action_type & ACTION_PIPE_IN) && msg_str) {
+		int r;
 		ret_str = g_locale_from_utf8(msg_str, strlen(msg_str),
 					     &by_read, &by_written, NULL);
 		if (ret_str && by_written) {
-			(void)write(chld_in[1], ret_str, strlen(ret_str));
+			r = write(chld_in[1], ret_str, strlen(ret_str));
 			g_free(ret_str);
 		} else
-			(void)write(chld_in[1], msg_str, strlen(msg_str));
+			r = write(chld_in[1], msg_str, strlen(msg_str));
 		if (!(children->action_type &
 		      (ACTION_USER_IN | ACTION_USER_HIDDEN_IN)))
-			(void)close(chld_in[1]);
+			r = close(chld_in[1]);
 		child_info->chld_in = -1; /* No more input */
+		if (r != 0)
+			g_warning("%s(%d)", strerror(errno), errno);
 	}
 
 	return child_info;
@@ -1499,7 +1511,7 @@ static void catch_input(gpointer data, gint source, GdkInputCondition cond)
 	Children *children = (Children *)data;
 	ChildInfo *child_info = (ChildInfo *)children->list->data;
 	gchar *input, *ret_str;
-	gint c, count, len;
+	gint c, count, len, r;
 	gssize by_read = 0, by_written = 0;
 
 	debug_print("Sending input to grand child.\n");
@@ -1531,11 +1543,13 @@ static void catch_input(gpointer data, gint source, GdkInputCondition cond)
 	} while (c >= 0 && count < len);
 
 	if (c >= 0)
-		(void)write(child_info->chld_in, "\n", 2);
+		r = write(child_info->chld_in, "\n", 2);
 
 	g_free(input);
 
-	(void)close(child_info->chld_in);
+	r = close(child_info->chld_in);
+	if (r != 0)
+		g_warning("%s(%d)", strerror(errno), errno);
 	child_info->chld_in = -1;
 	debug_print("Input to grand child sent.\n");
 }

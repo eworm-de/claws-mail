@@ -37,8 +37,6 @@ typedef void (*QuickSearchExecuteCallback) (QuickSearch *quicksearch, gpointer d
 
 #include "procmsg.h"
 
-void search_msgs_in_folder(GSList **messages, QuickSearch* quicksearch,
-			   FolderItem* folderItem);
 void search_msgs_in_folders(GSList **messages, QuickSearch* quicksearch,
 			    FolderItem* folderItem);
 QuickSearchType quicksearch_type(const gchar *type);

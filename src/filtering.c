@@ -424,7 +424,8 @@ static gboolean filteringaction_apply(FilteringAction * action, MsgInfo * info)
 		if (cmd == NULL)
 			return FALSE;
 		else {
-			system(cmd);
+			if (system(cmd) == -1)
+				g_warning("couldn't run %s", cmd);
 			g_free(cmd);
 		}
 		return TRUE;

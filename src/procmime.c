@@ -2243,7 +2243,11 @@ static void write_parameters(gpointer key, gpointer value, gpointer user_data)
 				g_string_append_printf(buf, "%%%s", hexstr);
 			}
 		}
-		break;		
+		break;
+#else
+	case ENC_AS_EXTENDED:
+		debug_print("Unhandled ENC_AS_EXTENDED.");
+		break;
 #endif
 	case ENC_AS_ENCWORD:
 		len = MAX(strlen(val)*6, 512);

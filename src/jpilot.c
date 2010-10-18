@@ -535,9 +535,10 @@ static int jpilot_get_info_size( FILE *in, int *size ) {
 	DBHeader dbh;
 	unsigned int offset;
 	record_header rh;
+	int r;
 
 	fseek(in, 0, SEEK_SET);
-	fread(&rdbh, sizeof(RawDBHeader), 1, in);
+	r = fread(&rdbh, sizeof(RawDBHeader), 1, in);
 	if (feof(in)) {
 		return MGU_EOF;
 	}
@@ -557,7 +558,7 @@ static int jpilot_get_info_size( FILE *in, int *size ) {
 		return MGU_SUCCESS;
 	}
 
-	fread(&rh, sizeof(record_header), 1, in);
+	r = fread(&rh, sizeof(record_header), 1, in);
 	offset = ((rh.Offset[0]*256+rh.Offset[1])*256+rh.Offset[2])*256+rh.Offset[3];
 	*size=offset - dbh.app_info_offset;
 

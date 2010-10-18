@@ -712,14 +712,15 @@ static void addrharvest_harvest_dir(
 	struct dirent *d;
 	struct stat s;
 	gint num;
+	int r;
 
 	if( ( dp = opendir( dir ) ) == NULL ) {
 		return;
 	}
 
 	/* Process directory */
-	chdir( dir );
-	while( ( d = readdir( dp ) ) != NULL ) {
+	r = chdir( dir );
+	while( r == 0 && ( d = readdir( dp ) ) != NULL ) {
 		g_stat( d->d_name, &s );
 		if( S_ISDIR( s.st_mode ) ) {
 			if( harvester->folderRecurse ) {
@@ -736,7 +737,7 @@ static void addrharvest_harvest_dir(
 			}
 		}
 	}
-	chdir( ".." );
+	r = chdir( ".." );
 	closedir( dp );
 }
 
@@ -754,13 +755,14 @@ static void addrharvest_harvest_list(
 	gint num;
 	GList *node;
 	gchar msgNum[ MSGNUM_BUFFSIZE ];
+	int r;
 
 	if( ( dp = opendir( harvester->path ) ) == NULL ) {
 		return;
 	}
 
 	/* Process message list */
-	chdir( harvester->path );
+	r = chdir( harvester->path );
 	node = msgList;
 	while( node ) {
 		num = GPOINTER_TO_UINT( node->data );

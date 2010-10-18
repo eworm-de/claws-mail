@@ -1,3 +1,20 @@
+2010-10-18 [colin]	3.7.6cvs57
+
+	* src/action.c
+	* src/addrharvest.c
+	* src/alertpanel.c
+	* src/filtering.c
+	* src/jpilot.c
+	* src/prefs_themes.c
+	* src/procmime.c
+	* src/textview.c
+	* src/gtk/gtkutils.c
+	* src/gtk/quicksearch.c
+	* src/gtk/quicksearch.h
+	* src/plugins/pgpcore/passphrase.c
+	* src/plugins/spamassassin/libspamc.c
+		Fix warnings
+
 2010-10-17 [colin]	3.7.6cvs56
 
 	* src/prefs_themes.c
