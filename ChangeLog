@@ -1,3 +1,10 @@
+2010-10-26 [colin]	3.7.6cvs58
+
+	* src/imap_gtk.c
+	* src/mh_gtk.c
+		Fix copy-paste error, thanks to David Relson
+		for spotting it.
+
 2010-10-18 [colin]	3.7.6cvs57
 
 	* src/action.c

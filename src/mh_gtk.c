@@ -338,7 +338,7 @@ static void update_tree_cb(GtkAction *action, gpointer data)
 
 	DO_ACTION("FolderViewPopup/CheckNewMessages", folderview_check_new(item->folder));
 	DO_ACTION("FolderViewPopup/CheckNewFolders", folderview_rescan_tree(item->folder, FALSE));
-	DO_ACTION("FolderViewPopup/RebuildTree", folderview_rescan_tree(item->folder, FALSE));
+	DO_ACTION("FolderViewPopup/RebuildTree", folderview_rescan_tree(item->folder, TRUE));
 }
 
 static void remove_mailbox_cb(GtkAction *action, gpointer data)
