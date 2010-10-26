@@ -298,6 +298,7 @@ static Session *news_session_new(Folder *folder, const gchar *server, gushort po
 	session_init(SESSION(session), folder->account, FALSE);
 	SESSION(session)->type             = SESSION_NEWS;
 	SESSION(session)->server           = g_strdup(server);
+	SESSION(session)->port             = port;
  	SESSION(session)->sock             = NULL;
 	SESSION(session)->destroy          = news_session_destroy;
 	
@@ -404,6 +405,14 @@ static NewsSession *news_session_get(Folder *folder)
 		return NEWS_SESSION(rfolder->session);
 	}
 
+	/* Handle port change (also ssl/nossl change) without needing to
+	 * restart application. */
+	if (rfolder->session->port != folder->account->nntpport) {
+		session_destroy(rfolder->session);
+		rfolder->session = news_session_new_for_folder(folder);
+		goto newsession;
+	}
+	
 	if (time(NULL) - rfolder->session->last_access_time <
 		SESSION_TIMEOUT_INTERVAL) {
 		return NEWS_SESSION(rfolder->session);
@@ -421,7 +430,8 @@ static NewsSession *news_session_get(Folder *folder)
 			rfolder->session = news_session_new_for_folder(folder);
 		}
 	}
-	
+
+newsession:
 	if (rfolder->session)
 		session_set_access_time(rfolder->session);
 

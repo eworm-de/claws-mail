@@ -1,3 +1,9 @@
+2010-10-26 [ticho]	3.7.6cvs59
+
+	* src/news.c
+		Recreate NNTP session if server port setting has changed. Fixes
+		bug #2092.
+
 2010-10-26 [colin]	3.7.6cvs58
 
 	* src/imap_gtk.c
