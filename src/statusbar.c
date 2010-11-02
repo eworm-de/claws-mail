@@ -240,7 +240,13 @@ void statusbar_progress_all (gint done, gint total, gint step)
 	gchar buf[32];
 	
 	if (total && done % step == 0) {
-		g_snprintf(buf, sizeof(buf), "%d / %d", done, total);
+#ifdef GENERIC_UMPC
+		/* use a more compact format */
+		const gchar *format = "%d/%d";
+#else
+		const gchar *format = "%d / %d";
+#endif
+		g_snprintf(buf, sizeof(buf), format, done, total);
 		gtk_progress_bar_set_text(progressbar, buf);
 		gtk_progress_bar_set_fraction(progressbar,
 			 (total == 0) ? 0 : (gfloat)done / (gfloat)total);

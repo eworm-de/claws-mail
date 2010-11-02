@@ -1,3 +1,16 @@
+2010-11-02 [wwp]	3.7.6cvs60
+
+	* src/action.c
+	* src/statusbar.c
+	* src/toolbar.c
+		Enlarge the progress bar (main window) a bit when compiling
+		for UMPCs like maemo: this solves truncated text that might
+		appear in the progress bar while processing messages.
+		Also use a more compact string format when displaying
+		progress like 'number/total', still for UMPCs, this fixes
+		a previous inconsistency with these format strings where
+		no space around the / were used sometimes.
+
 2010-10-26 [ticho]	3.7.6cvs59
 
 	* src/news.c

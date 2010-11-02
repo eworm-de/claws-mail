@@ -2154,7 +2154,7 @@ Toolbar *toolbar_create(ToolbarType 	 type,
 		item = GTK_WIDGET(gtk_tool_item_new());
 		gtk_container_add (GTK_CONTAINER (item), progressbar);
 		gtk_widget_show(item);
-		gtk_widget_set_size_request(progressbar, 70, -1);
+		gtk_widget_set_size_request(progressbar, 84, -1);
 		gtk_toolbar_insert(GTK_TOOLBAR(toolbar), GTK_TOOL_ITEM(item), -1);
 		mainwin->progressbar = progressbar;
 #endif
