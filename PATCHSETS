@@ -4056,3 +4056,4 @@
 ( cvs diff -u -r 1.1.2.64 -r 1.1.2.65 src/imap_gtk.c;  cvs diff -u -r 1.2.2.37 -r 1.2.2.38 src/mh_gtk.c;  ) > 3.7.6cvs58.patchset
 ( cvs diff -u -r 1.101.2.61 -r 1.101.2.62 src/news.c;  ) > 3.7.6cvs59.patchset
 ( cvs diff -u -r 1.12.2.61 -r 1.12.2.62 src/action.c;  cvs diff -u -r 1.5.2.27 -r 1.5.2.28 src/statusbar.c;  cvs diff -u -r 1.43.2.120 -r 1.43.2.121 src/toolbar.c;  ) > 3.7.6cvs60.patchset
+( cvs diff -u -r 1.28.2.43 -r 1.28.2.44 src/addrindex.c;  ) > 3.7.6cvs61.patchset

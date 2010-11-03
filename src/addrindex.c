@@ -2343,12 +2343,10 @@ gint addrindex_read_data( AddressIndex *addrIndex ) {
 	addrindex_read_file( addrIndex );
 	if( addrIndex->retVal == MGU_SUCCESS ) {
 		if( addrIndex->needsConversion ) {
-			if( addrindex_convert_data( addrIndex ) == MGU_SUCCESS ) {
+			if( addrindex_convert_data( addrIndex ) == MGU_SUCCESS )
+				addrIndex->conversionError = FALSE;
+			else
 				addrIndex->conversionError = TRUE;
-			}
-			else {
-				addrIndex->conversionError = TRUE;
-			}
 		}
 		addrIndex->dirtyFlag = TRUE;
 	}

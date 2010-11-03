@@ -1,3 +1,9 @@
+2010-11-03 [colin]	3.7.6cvs61
+
+	* src/addrindex.c
+		Fix bug 2294, "addrindex.c: address index conversion always
+		fails". Clearly a copy-paste-bug. Patch by Nicolas Kaiser.
+
 2010-11-02 [wwp]	3.7.6cvs60
 
 	* src/action.c
