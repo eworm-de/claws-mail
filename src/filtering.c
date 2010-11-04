@@ -823,9 +823,10 @@ static gboolean filter_msginfo(GSList * filtering_list, MsgInfo * info, PrefsAcc
 		}
 	}
 
-	/* put in inbox if a final rule could not be applied, or
-	 * the last rule was not a final one. */
-	if ((final && !apply_next) || !final) {
+    /* put in inbox if the last rule was not a final one, or
+     * a final rule could not be applied.
+     * Either of these cases is likely. */
+    if (!final || !apply_next) {
 		return FALSE;
 	}
 

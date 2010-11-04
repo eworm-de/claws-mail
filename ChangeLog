@@ -1,3 +1,11 @@
+2010-11-04 [wwp]	3.7.6cvs62
+
+	* src/filtering.c
+		Fix bug 2293, "filtering: simplify expression", as simplifying
+		this expression doesn't make it less easy to understand and we
+		gain few cycles by making the logical expression more simple
+		by applying. Patch by Nicolas Kaiser.
+
 2010-11-03 [colin]	3.7.6cvs61
 
 	* src/addrindex.c
