@@ -772,6 +772,15 @@
 	  </para>
 	</listitem>
       </varlistentry>
+       <varlistentry>
+        <term><literal>show_compose_margin</literal></term>
+        <listitem>
+          <para>
+        0 o 1. Añade márgenes al área del texto del mensaje en la ventana
+	de composición. Por omisión es 0, desactivado.
+          </para>
+        </listitem>
+      </varlistentry>
       <varlistentry>
 	<term><literal>skip_ssl_cert_check</literal></term>
 	<listitem>

@@ -1,3 +1,8 @@
+2010-11-16 [mones]	3.7.6cvs63
+
+	* manual/es/advanced.xml
+		Synchronise with English version
+
 2010-11-04 [wwp]	3.7.6cvs62
 
 	* src/filtering.c
