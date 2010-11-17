@@ -1,3 +1,9 @@
+2010-11-17 [colin]	3.7.6cvs65
+
+	* src/common/utils.c
+		Separate email address from timestamp with a dot.
+		Fix coding style.
+
 2010-11-17 [colin]	3.7.6cvs64
 
 	* src/common/utils.c

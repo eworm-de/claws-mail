@@ -4060,3 +4060,4 @@
 ( cvs diff -u -r 1.60.2.55 -r 1.60.2.56 src/filtering.c;  ) > 3.7.6cvs62.patchset
 ( cvs diff -u -r 1.1.2.15 -r 1.1.2.16 manual/es/advanced.xml;  ) > 3.7.6cvs63.patchset
 ( cvs diff -u -r 1.36.2.187 -r 1.36.2.188 src/common/utils.c;  ) > 3.7.6cvs64.patchset
+( cvs diff -u -r 1.36.2.188 -r 1.36.2.189 src/common/utils.c;  ) > 3.7.6cvs65.patchset

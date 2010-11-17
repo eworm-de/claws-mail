@@ -3854,20 +3854,15 @@ gchar *generate_msgid(gchar *buf, gint len, gchar *user_addr)
 	lt = localtime_r(&t, &buft);
 
 	if (strcmp(buf, "") == 0) {
-		if (user_addr != NULL) {
-			addr = g_strconcat(user_addr, "@", get_domain_name(), NULL);
-		}
-		else {
+		if (user_addr != NULL)
+			addr = g_strconcat(".", user_addr, "@", get_domain_name(), NULL);
+		else
 			addr = g_strconcat("@", get_domain_name(), NULL);
-		}
-	}
-	else {
-		if (user_addr != NULL) {
-			addr = g_strconcat(user_addr, "@", buf, NULL);
-		}
-		else {
+	} else {
+		if (user_addr != NULL)
+			addr = g_strconcat(".", user_addr, "@", buf, NULL);
+		else
 			addr = g_strconcat("@", buf, NULL);
-		}
 	}
 
 	/* Replace all @ but the last one in addr, with underscores.
