@@ -1,3 +1,9 @@
+2010-11-17 [colin]	3.7.6cvs64
+
+	* src/common/utils.c
+		Fix multiple @ in generated message-ids.
+		That's not allowed in RFC 2822.
+
 2010-11-16 [mones]	3.7.6cvs63
 
 	* manual/es/advanced.xml

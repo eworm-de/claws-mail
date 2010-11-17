@@ -3870,6 +3870,12 @@ gchar *generate_msgid(gchar *buf, gint len, gchar *user_addr)
 		}
 	}
 
+	/* Replace all @ but the last one in addr, with underscores.
+	 * RFC 2822 States that msg-id syntax only allows one @.
+	 */
+	while (strchr(addr, '@') != NULL && strchr(addr, '@') != strrchr(addr, '@'))
+		*(strchr(addr, '@')) = '_';
+
 	g_snprintf(buf, len, "%04d%02d%02d%02d%02d%02d.%08x%s",
 		   lt->tm_year + 1900, lt->tm_mon + 1,
 		   lt->tm_mday, lt->tm_hour,
