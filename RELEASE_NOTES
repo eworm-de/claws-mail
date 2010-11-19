@@ -1,4 +1,4 @@
-1st May 2010                                         Claws Mail 3.7.6
+19th November 2010                                   Claws Mail 3.7.7
 
 		    CLAWS MAIL  RELEASE NOTES
                     http://www.claws-mail.org
@@ -9,50 +9,50 @@ email client.
 New in this release:
 ~~~~~~~~~~~~~~~~~~~~
 
-* Require GTK+ 2.10 or newer.
+* Enable building with GTK+ 2.22.
 
-* Enable building with GTK+ 2.19 or newer.
+* A QuickSearch can now be run from the command line using the
+  --search command. See `claws-mail --help` for more information.
 
-* Enable building with libetpan 1.0.
+* Added a hidden option to set a margin in the text area of the
+  Compose window. 'show_compose_margin', defaults to FALSE.
+		
+* updated manual and man page
 
-* Encrypt saved LDAP passwords.
-
-* FIltering/Processing: Added 'List-Id' to the pre-defined headers.
-
-* Added 'Reply to this address' to popup menu in the Message View.
-
-* Added separate search phrase completion for normal/extended
-  QuickSearch.
-
-* Several interface improvements.
-
-* Use in-reply-to info that is passed in mailto: links.
-
-* Added the GB18030 Chinese charset, which is a superset of GB2312
-  and (X-)GBK.
-
-* Added German translation of the manual, by Volker Ribbert.
-
-* Added Ukrainian translation, by YUP.
-
-* Updated translations: Brazilian Portuguese, Czech, Dutch, Finnish,
-  French, German, Hungarian, Portuguese, Simplified Chinese, Slovak,
-  and Spanish,
+* Updated translations: Brazilian Portuguese, Czech, Finnish, French,
+  German, Hungarian, Indonesian, Slovak, Spanish, and Ukrainian.
 
 * Bug fixes:
-	o bug 2107, 'Arrow keys don't work in message view window'
-	o bug 2144 'When creating an account with IMAP4+SSL, the port
-	  isn't configured properly'
-	o S/MIME: fix decoding of encrypted parts.
-	o Avoid displaying Bcc headers in messages sent to NNTP
-	  servers.
-	o fix headers filtering when 'Translate header names' is set.
-	o fix headers setting when changing composing account
-	o NetworkManager: when going offline delete IMAP connections.
-	  to avoid timeouts when coming back online in certain cases
-          when the TCP socket will have timed out.
-	o fix hand cursor after error symbol appears
-	o IMAP: fix error message when session isn't established
+	o bug 1993, 'Cannot send mail when SSL certificate is expired
+		     but certificate check is skipped'
+	o bug 2092, 'Changing NNTP account's SSL setting requires
+		     restart'
+	o bug 2188, 'disable double-click quote collapsing'
+	o bug 2200, 'SSL is not working with POP3'
+	o bug 2205, 'PGPInline: segfault on malformed mails'
+	o bug 2208, 'LDAP encrypted passwords produce invalid XML'
+	o bug 2223, 'Compilation fails with GTK+ 2.21.3'
+	o bug 2224, 'in some cases, button to clean quick search has
+		     no icon'
+	o bug 2232, 'freeze when using quick search'
+	o bug 2241, 'Empty trash on exit fails on scripted exit'
+	o bug 2245, 'base64 decoding fails with line breaks'
+	o bug 2247, 'nntp reply-to-all broken?'
+	o bug 2274, 'Colors not index correctly'
+	o bug 2276, 'Compile in maintainer mode fails on GTK+ 2.22'
+	o bug 2277, 'Segfault when loading inbox for the first time'
+	o bug 2293, 'filtering: simplify expression'
+	o bug 2294, 'addrindex.c: address index conversion always
+		     fails'
+	o QuickSearch: Do not add rules with bad syntax to history
+	o Hide progressbar on statusbar when not needed
+	o Downgrade autoconf requirements to 2.59 to allow building
+	  on oldest supported Linux distributions.
+	o Only try to build manuals if the necessary software is
+	  installed
+	o Fix multiple @ in generated message-ids, prohibited in RFC
+	  2822.
+	o UMPCs: Fix truncated text in progressbar and statusbar
 
 For further details of the numbered bugs listed above consult
 http://www.thewildbeast.co.uk/claws-mail/bugzilla/index.cgi
