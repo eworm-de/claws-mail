@@ -1922,7 +1922,7 @@ static void parse_cmd_opt(int argc, char *argv[])
 			g_print("%s\n", _("                         folder ex.: \"#mh/Mailbox/inbox\" or \"Mail\""));
 			g_print("%s\n", _("                         type: s[ubject],f[rom],t[o],e[xtended],m[ixed] or g: tag"));
 			g_print("%s\n", _("                         request: search string"));
-			g_print("%s\n", _("                         recursive: false iff arg. starts with 0, n, N, f or F"));
+			g_print("%s\n", _("                         recursive: false if arg. starts with 0, n, N, f or F"));
 
 			g_print("%s\n", _("  --send                 send all queued messages"));
  			g_print("%s\n", _("  --status [folder]...   show the total number of messages"));

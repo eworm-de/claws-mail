@@ -1,3 +1,11 @@
+2010-11-20 [wwp]	3.7.7cvs2
+
+	* src/main.c
+	  Fix either a typo or an irrelevant iff word there.
+	  IMO type and recursive possible values should be changed to
+	  smth simple and neat here, and help strings be really
+	  translatable.
+
 2010-11-20 [colin]	3.7.7cvs1
 
 	* AUTHORS
