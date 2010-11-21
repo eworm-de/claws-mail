@@ -1,3 +1,8 @@
+2010-11-21 [colin]	3.7.7cvs3
+
+	* src/plugins/pgpcore/claws.def
+		Win32 build fix
+
 2010-11-20 [wwp]	3.7.7cvs2
 
 	* src/main.c

@@ -38,6 +38,7 @@ gtk_cmclist_set_sort_type
 gtk_cmclist_sort
 gtkut_get_options_frame
 gtkut_stock_button_set_create
+gtkut_widget_set_can_default
 gtkut_window_new
 input_dialog
 label_window_create
