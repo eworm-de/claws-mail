@@ -4065,3 +4065,4 @@
 ( cvs diff -u -r 1.100.2.75 -r 1.100.2.76 AUTHORS;  ) > 3.7.7cvs1.patchset
 ( cvs diff -u -r 1.115.2.231 -r 1.115.2.232 src/main.c;  ) > 3.7.7cvs2.patchset
 ( cvs diff -u -r 1.1.2.5 -r 1.1.2.6 src/plugins/pgpcore/claws.def;  ) > 3.7.7cvs3.patchset
+( cvs diff -u -r 1.382.2.560 -r 1.382.2.561 src/compose.c;  ) > 3.7.7cvs4.patchset

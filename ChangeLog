@@ -1,3 +1,11 @@
+2010-11-22 [colin]	3.7.7cvs4
+
+	* src/compose.c
+		Revert 3.7.6cvs{39,38,37,35,34}. The fact that
+		five patches were needed to fix a corner case
+		is a good indicator that is was bound to break
+		something.
+
 2010-11-21 [colin]	3.7.7cvs3
 
 	* src/plugins/pgpcore/claws.def
