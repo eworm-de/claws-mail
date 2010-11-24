@@ -1,3 +1,9 @@
+2010-11-24 [mones]	3.7.7cvs5
+
+	* src/mainwindow.c
+		Add missing shortcuts for marking as spam and ham
+		Fixes Debian bug #599547
+
 2010-11-22 [colin]	3.7.7cvs4
 
 	* src/compose.c

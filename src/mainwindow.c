@@ -643,8 +643,8 @@ static GtkActionEntry mainwin_entries[] =
 	{"Message/Mark/UnwatchThread",		NULL, N_("Unwatch thread"), NULL, NULL, G_CALLBACK(unwatch_thread_cb) },
 	/* separation */
 
-	{"Message/Mark/MarkSpam",		NULL, N_("Mark as spam"), NULL, NULL, G_CALLBACK(mark_as_spam_cb) },
-	{"Message/Mark/MarkHam",		NULL, N_("Mark as ham"), NULL, NULL, G_CALLBACK(mark_as_ham_cb) },
+	{"Message/Mark/MarkSpam",		NULL, N_("Mark as _spam"), NULL, NULL, G_CALLBACK(mark_as_spam_cb) },
+	{"Message/Mark/MarkHam",		NULL, N_("Mark as _ham"), NULL, NULL, G_CALLBACK(mark_as_ham_cb) },
 	/* separation */
 
 	{"Message/Mark/Lock",			NULL, N_("Lock"), NULL, NULL, G_CALLBACK(lock_msgs_cb) },
