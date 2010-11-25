@@ -1,3 +1,10 @@
+2010-11-25 [paul]	3.7.7cvs6
+
+	* src/prefs_common.c
+		make "gtk_can_change_accels" FALSE by default.
+		fixes bug #2309, 'Shortcuts should not be modifiable
+		by default' (RFE)
+
 2010-11-24 [mones]	3.7.7cvs5
 
 	* src/mainwindow.c

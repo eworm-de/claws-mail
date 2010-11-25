@@ -924,7 +924,7 @@ static PrefParam param[] = {
 	{"filtering_debug_log_length", "500", &prefs_common.filtering_debug_loglength, P_INT,
 	 NULL, NULL, NULL},
 
-	{"gtk_can_change_accels", "TRUE", &prefs_common.gtk_can_change_accels, P_BOOL,
+	{"gtk_can_change_accels", "FALSE", &prefs_common.gtk_can_change_accels, P_BOOL,
 	 NULL, NULL, NULL},
 
 	{"color_new", "#0000b3", &prefs_common.color_new, P_COLOR,
