@@ -1597,9 +1597,10 @@ void search_msgs_in_folders(GSList **messages, QuickSearch* quicksearch,
 	for (; node != NULL; node = node->next) {
 		cur = FOLDER_ITEM(node->data);
 		debug_print("in: %s\n",cur->path);
-		search_msgs_in_folder(messages, quicksearch, cur);
 		if (cur->node->children)
 			search_msgs_in_folders(messages, quicksearch, cur);
+		else
+			search_msgs_in_folder(messages, quicksearch, cur);
 	}
 	*messages = g_slist_reverse(*messages);
 }

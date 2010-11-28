@@ -1,3 +1,9 @@
+2010-11-28 [colin]	3.7.7cvs7
+
+	* src/gtk/quicksearch.c
+		Fix bug #2313, 'CLI quicksearch sometimes returns 
+		the same messages twice'. Patch by Sebastien Bigaret
+
 2010-11-25 [paul]	3.7.7cvs6
 
 	* src/prefs_common.c

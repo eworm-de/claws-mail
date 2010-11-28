@@ -4068,3 +4068,4 @@
 ( cvs diff -u -r 1.382.2.560 -r 1.382.2.561 src/compose.c;  ) > 3.7.7cvs4.patchset
 ( cvs diff -u -r 1.274.2.318 -r 1.274.2.319 src/mainwindow.c;  ) > 3.7.7cvs5.patchset
 ( cvs diff -u -r 1.204.2.197 -r 1.204.2.198 src/prefs_common.c;  ) > 3.7.7cvs6.patchset
+( cvs diff -u -r 1.1.2.98 -r 1.1.2.99 src/gtk/quicksearch.c;  ) > 3.7.7cvs7.patchset
