@@ -978,12 +978,12 @@ static ChildInfo *fork_child(gchar *cmd, const gchar *msg_str,
 				r |= close(chld_out[1]);
 
 				r |= close(fileno(stderr));
-				r |= dup  (chld_err[1]);
+				r |= dup  (chld_err[1]); /* why does that fail ? */
 				r |= close(chld_err[0]);
 				r |= close(chld_err[1]);
 
 				if (r != 0)
-					g_warning("%s(%d)", strerror(errno), errno);
+					debug_print("%s(%d)", strerror(errno), errno);
 			}
 
 			cmdline[0] = "sh";
@@ -1005,7 +1005,7 @@ static ChildInfo *fork_child(gchar *cmd, const gchar *msg_str,
 			if (sync)
 				r = write(chld_status[1], "1\n", 2);
 			if (r != 0)
-				g_warning("%s(%d)", strerror(errno), errno);
+				debug_print("%s(%d)", strerror(errno), errno);
 			perror("fork");
 			_exit(1);
 		} else { /* Child */
@@ -1025,7 +1025,7 @@ static ChildInfo *fork_child(gchar *cmd, const gchar *msg_str,
 				r |= close(chld_status[1]);
 
 				if (r != 0)
-					g_warning("%s(%d)", strerror(errno), errno);
+					debug_print("%s(%d)", strerror(errno), errno);
 			}
 			_exit(0);
 		}
@@ -1090,7 +1090,7 @@ static ChildInfo *fork_child(gchar *cmd, const gchar *msg_str,
 			r = close(chld_in[1]);
 		child_info->chld_in = -1; /* No more input */
 		if (r != 0)
-			g_warning("%s(%d)", strerror(errno), errno);
+			debug_print("%s(%d)", strerror(errno), errno);
 	}
 
 	return child_info;
@@ -1561,7 +1561,7 @@ static void catch_input(gpointer data, gint source, GdkInputCondition cond)
 
 	r = close(child_info->chld_in);
 	if (r != 0)
-		g_warning("%s(%d)", strerror(errno), errno);
+		debug_print("%s(%d)", strerror(errno), errno);
 	child_info->chld_in = -1;
 	debug_print("Input to grand child sent.\n");
 }

@@ -1,3 +1,12 @@
+2010-11-30 [colin]	3.7.7cvs8
+
+	* src/action.c
+		Fix bug #2317, 'Action results in "Bad file descriptor"'
+		Introduced in 3.7.6cvs57. In fact the error has been there
+		since ages, and only new thing is the verification of the
+		various functions return code. Let the stuff work as it
+		does, as it seems to do the right thing since ages.
+
 2010-11-28 [colin]	3.7.7cvs7
 
 	* src/gtk/quicksearch.c
