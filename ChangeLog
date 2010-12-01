@@ -1,3 +1,8 @@
+2010-12-01 [pawel]	3.7.7cvs9
+
+	* src/crash.c
+		One more GTK+ 2.22 build fix
+
 2010-11-30 [colin]	3.7.7cvs8
 
 	* src/action.c

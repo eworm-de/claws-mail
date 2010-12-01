@@ -251,17 +251,17 @@ static GtkWidget *crash_dialog_show(const gchar *text, const gchar *debug_output
 	button3 = gtk_button_new_with_label(_("Close"));
 	gtk_widget_show(button3);
 	gtk_container_add(GTK_CONTAINER(hbuttonbox4), button3);
-	GTK_WIDGET_SET_FLAGS(button3, GTK_CAN_DEFAULT);
+	gtkut_widget_set_can_default(button3, TRUE);
 
 	button4 = gtk_button_new_with_label(_("Save..."));
 	gtk_widget_show(button4);
 	gtk_container_add(GTK_CONTAINER(hbuttonbox4), button4);
-	GTK_WIDGET_SET_FLAGS(button4, GTK_CAN_DEFAULT);
+	gtkut_widget_set_can_default(button4, TRUE);
 
 	button5 = gtk_button_new_with_label(_("Create bug report"));
 	gtk_widget_show(button5);
 	gtk_container_add(GTK_CONTAINER(hbuttonbox4), button5);
-	GTK_WIDGET_SET_FLAGS(button5, GTK_CAN_DEFAULT);
+	gtkut_widget_set_can_default(button5, TRUE);
 	
 	g_signal_connect(G_OBJECT(window1), "delete_event",
 			 G_CALLBACK(gtk_main_quit), NULL);
