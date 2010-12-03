@@ -12,7 +12,7 @@ MINOR_VERSION=7
 MICRO_VERSION=7
 INTERFACE_AGE=0
 BINARY_AGE=0
-EXTRA_VERSION=9
+EXTRA_VERSION=10
 EXTRA_RELEASE=
 EXTRA_GTK2_VERSION=
 
@@ -156,7 +156,7 @@ fi
 CFLAGS="$CFLAGS -Wall"
 
 if test $USE_MAINTAINER_MODE = yes; then
-	CFLAGS="$CFLAGS -DGTK_DISABLE_DEPRECATED -DGDK_DISABLE_DEPRECATED -DG_DISABLE_DEPRECATED -DGTK_DISABLE_SINGLE_INCLUDES"
+	CFLAGS="-g -Wall -DGTK_DISABLE_DEPRECATED -DGDK_DISABLE_DEPRECATED -DG_DISABLE_DEPRECATED -DGTK_DISABLE_SINGLE_INCLUDES"
 fi
 
 pthread_name=
@@ -245,11 +245,13 @@ if test $? -ne 0; then
 fi
 AM_CONDITIONAL(MANUAL_PS, test -n "$DOCBOOK2PS")
 
-if test -n "$DOCBOOK2TXT" -o -n "$DOCBOOK2HTML" -o -n "$DOCBOOK2PS" \
-	-o -n "$SAXON" -o -n "$SAXONJAR"; then
-	ac_cv_enable_manual="yes"
-else
-	ac_cv_enable_manual="no"
+if test x"$ac_cv_enable_manual" = x"yes"; then
+    if test -n "$DOCBOOK2TXT" -o -n "$DOCBOOK2HTML" \
+	-o -n "$DOCBOOK2PS" -o -n "$SAXON" -o -n "$SAXONJAR"; then
+	    ac_cv_enable_manual=yes
+	else
+	    ac_cv_enable_manual=no
+    fi
 fi
 
 AM_CONDITIONAL(BUILD_MANUAL, test x"$ac_cv_enable_manual" = xyes)

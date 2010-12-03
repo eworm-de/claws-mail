@@ -1,3 +1,9 @@
+2010-12-03 [mir]	3.7.7cvs10
+
+	* configure.ac
+	  Fix bug so that configure option --disable-manual
+	  actually disable building the manuals
+
 2010-12-01 [pawel]	3.7.7cvs9
 
 	* src/crash.c
