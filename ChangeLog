@@ -1,3 +1,14 @@
+2010-12-03 [paul]	3.7.7cvs11
+
+	* configure.ac
+	* manual/xml2pdf ** REMOVED **
+	* manual/dist/pdf/Makefile.am
+	* manual/es/dist/pdf/Makefile.am
+	* manual/fr/dist/pdf/Makefile.am
+	* manual/pl/dist/pdf/Makefile.am
+		simplify check for tools needed for manual building,
+		remove xml2pdf and use docbook2pdf instead
+
 2010-12-03 [mir]	3.7.7cvs10
 
 	* configure.ac
