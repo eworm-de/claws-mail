@@ -1,7 +1,8 @@
-2010-12-04 [paul]	3.7.7cvs12
-
-	* manual/de/dist/pdf/Makefile.am
-		forgotten in 3.7.7cvs11
+2010-12-04 [paul]	3.7.8
+	* NEWS
+	* README
+	* RELEASE_NOTES	
+		3.7.8 unleashed!
 
 2010-12-03 [paul]	3.7.7cvs11
 

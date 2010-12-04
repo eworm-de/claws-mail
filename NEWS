@@ -1,5 +1,20 @@
 Changes of the  Claws Mail GTK2 branch
 
+* 3.7.8
+-------
+
+* Bug fixes:
+	o rfe 2309, 'Shortcuts should not be modifiable by default'
+	o bug 2313, 'CLI quicksearch sometimes returns the same
+		     messages twice'
+	o bug 2317, 'Action results in "Bad file descriptor"'
+	o PGP/Core: Win32 build fix
+	o NNTP: fix replying (broken in corner case)
+	o fix configure option --disable-manual
+	o One more GTK+ 2.22 build fix
+	o Debian bug 599547, 'Please re-introduce quick shortcut for
+			      marking as spam'
+
 * 3.7.7
 -------
 
@@ -10,38 +25,6 @@ Changes of the  Claws Mail GTK2 branch
 
 * Added a hidden option to set a margin in the text area of the
   Compose window. 'show_compose_margin', defaults to FALSE.
-
-* Bug fixes:
-	o bug 1993, 'Cannot send mail when SSL certificate is expired
-		     but certificate check is skipped'
-	o bug 2092, 'Changing NNTP account's SSL setting requires
-		     restart'
-	o bug 2188, 'disable double-click quote collapsing'
-	o bug 2200, 'SSL is not working with POP3'
-	o bug 2205, 'PGPInline: segfault on malformed mails'
-	o bug 2208, 'LDAP encrypted passwords produce invalid XML'
-	o bug 2223, 'Compilation fails with GTK+ 2.21.3'
-	o bug 2224, 'in some cases, button to clean quick search has
-		     no icon'
-	o bug 2232, 'freeze when using quick search'
-	o bug 2241, 'Empty trash on exit fails on scripted exit'
-	o bug 2245, 'base64 decoding fails with line breaks'
-	o bug 2247, 'nntp reply-to-all broken?'
-	o bug 2274, 'Colors not index correctly'
-	o bug 2276, 'Compile in maintainer mode fails on GTK+ 2.22'
-	o bug 2277, 'Segfault when loading inbox for the first time'
-	o bug 2293, 'filtering: simplify expression'
-	o bug 2294, 'addrindex.c: address index conversion always
-		     fails'
-	o QuickSearch: Do not add rules with bad syntax to history
-	o Hide progressbar on statusbar when not needed
-	o Downgrade autoconf requirements to 2.59 to allow building
-	  on oldest supported Linux distributions.
-	o Only try to build manuals if the necessary software is
-	  installed
-	o Fix multiple @ in generated message-ids, prohibited in RFC
-	  2822.
-	o UMPCs: Fix truncated text in progressbar and statusbar
 
 * 3.7.6
 -------
