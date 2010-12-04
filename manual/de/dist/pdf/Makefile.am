@@ -17,7 +17,7 @@ claws-mail-manual.pdf: \
 	../../plugins.xml \
 	../../starting.xml \
 	../../claws-mail-manual.xml 
-	-sh ../../../xml2pdf ../../../dtd/manual.xsl ../../claws-mail-manual.xml
+	-docbook2pdf -o . ../../claws-mail-manual.xml
 	
 maintainer-clean:
 	-rm claws-mail-manual.pdf claws-mail-manual.fo claws-mail-manual.xsl

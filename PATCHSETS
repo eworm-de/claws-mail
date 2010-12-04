@@ -4073,3 +4073,4 @@
 ( cvs diff -u -r 1.23.2.34 -r 1.23.2.35 src/crash.c;  ) > 3.7.7cvs9.patchset
 ( cvs diff -u -r 1.654.2.4145 -r 1.654.2.4146 configure.ac;  ) > 3.7.7cvs10.patchset
 ( cvs diff -u -r 1.654.2.4146 -r 1.654.2.4147 configure.ac;  cvs diff -u -r -1.1.2.6 -r -1.1.2.7 manual/xml2pdf;  cvs diff -u -r 1.1.2.8 -r 1.1.2.9 manual/dist/pdf/Makefile.am;  cvs diff -u -r 1.1.2.3 -r 1.1.2.4 manual/es/dist/pdf/Makefile.am;  cvs diff -u -r 1.1.2.5 -r 1.1.2.6 manual/fr/dist/pdf/Makefile.am;  cvs diff -u -r 1.1.2.5 -r 1.1.2.6 manual/pl/dist/pdf/Makefile.am;  ) > 3.7.7cvs11.patchset
+( cvs diff -u -r 1.1.2.2 -r 1.1.2.3 manual/de/dist/pdf/Makefile.am;  ) > 3.7.7cvs12.patchset
