@@ -1,3 +1,10 @@
+2010-12-05 [colin]	3.7.8cvs1
+
+	* tools/make.themes.project
+		Seems wget has changed naming of targets downloaded.
+		Fix it by always providing our own name.
+		[Pushing mones' patch again after messing with CVSROOT]
+
 2010-12-04 [paul]	3.7.8
 	* NEWS
 	* README

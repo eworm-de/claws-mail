@@ -3,7 +3,7 @@
 # Generate the source directory for claws-mail-themes package
 # from the theme tarballs in http://www.claws-mail.org/themes.php
 #
-# Copyright (c) 2006-2009 Ricardo Mones <ricardo@mones.org>
+# Copyright (c) 2006-2010 Ricardo Mones <ricardo@mones.org>
 #                         Paul Mangan <paul@claws-mail.org>
 #
 # This program is free software; you can redistribute it and/or modify
@@ -58,7 +58,7 @@ function downloadThemes()
      test $tarf = "png" \
          && tarf=`echo $theme | cut -f3 -d/ `;
      echo -n "Downloading... ";
-     wget -q -a ${WLOG} -P ${DDIR} ${SITE}/$theme
+     wget -q -a ${WLOG} -O ${DDIR}/$tarf ${SITE}/$theme
      test ! -f ${DDIR}/$tarf && echo "Error: couldn't get $tarf" && exit 1;
      pushd ${DDIR} > /dev/null
      tarops="";
