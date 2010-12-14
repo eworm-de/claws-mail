@@ -33,7 +33,9 @@
 #include <stdlib.h>
 #include <unistd.h>
 #include <sys/types.h>
-#include <sys/wait.h>
+#if HAVE_SYS_WAIT_H
+#  include <sys/wait.h>
+#endif
 #include <signal.h>
 #include <ctype.h>
 #include <string.h>

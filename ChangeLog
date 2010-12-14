@@ -1,3 +1,8 @@
+2010-12-14 [colin]	3.7.8cvs2
+
+	* src/gtk/gtkaspell.c
+		Add missing guard for sys/wait.h
+
 2010-12-05 [colin]	3.7.8cvs1
 
 	* tools/make.themes.project
