@@ -4076,3 +4076,4 @@
 ( cvs diff -u -r 1.1.2.2 -r 1.1.2.3 manual/de/dist/pdf/Makefile.am;  ) > 3.7.7cvs12.patchset
 ( cvs diff -u -r 1.1.2.10 -r 1.1.2.11 tools/make.themes.project;  ) > 3.7.8cvs1.patchset
 ( cvs diff -u -r 1.9.2.69 -r 1.9.2.70 src/gtk/gtkaspell.c;  ) > 3.7.8cvs2.patchset
+( cvs diff -u -r 1.43.2.85 -r 1.43.2.86 src/prefs_matcher.c;  ) > 3.7.8cvs3.patchset

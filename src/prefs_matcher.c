@@ -869,6 +869,40 @@ static void prefs_matcher_list_view_set_row(GtkTreeIter *row, MatcherProp *prop)
 	g_free(matcher_str);
 }
 
+static gboolean match_combo2_model_set(void)
+{
+	GtkTreeModel *model = gtk_combo_box_get_model(GTK_COMBO_BOX(matcher.match_combo2));
+	if (model == matcher.model_age_units ||
+	    model == matcher.model_found ||
+	    model == matcher.model_partial ||
+	    model == matcher.model_phrase ||
+	    model == matcher.model_set ||
+	    model == matcher.model_size_units ||
+	    model == matcher.model_tags ||
+	    model == matcher.model_thread)
+		return TRUE;
+	else
+		debug_print("match_combo2 model unset.\n");
+
+	return FALSE;
+}
+
+static gboolean match_combo_model_set(void)
+{
+	GtkTreeModel *model = gtk_combo_box_get_model(GTK_COMBO_BOX(matcher.match_combo));
+	if (model == matcher.model_age ||
+	    model == matcher.model_contain ||
+	    model == matcher.model_flags ||
+	    model == matcher.model_score ||
+	    model == matcher.model_size ||
+	    model == matcher.model_test)
+		return TRUE;
+	else
+		debug_print("match_combo model unset.\n");
+
+	return FALSE;
+}
+
 /*!
  *\brief	Clears a condition in the list widget
  */
@@ -876,8 +910,10 @@ static void prefs_matcher_reset_condition(void)
 {
 	gtk_combo_box_set_active(GTK_COMBO_BOX(matcher.criteria_combo), MATCH_ALL);
 	gtk_combo_box_set_active(GTK_COMBO_BOX(matcher.criteria_combo2), 0);
-	gtk_combo_box_set_active(GTK_COMBO_BOX(matcher.match_combo), 0);
-	gtk_combo_box_set_active(GTK_COMBO_BOX(matcher.match_combo2), 0);
+	if (match_combo_model_set())
+		gtk_combo_box_set_active(GTK_COMBO_BOX(matcher.match_combo), 0);
+	if (match_combo2_model_set())
+		gtk_combo_box_set_active(GTK_COMBO_BOX(matcher.match_combo2), 0);
 	gtk_cmoption_menu_set_history(GTK_CMOPTION_MENU(matcher.color_optmenu), 0);
 	gtk_spin_button_set_value(GTK_SPIN_BUTTON(matcher.numeric_entry), 0);
 	gtk_entry_set_text(GTK_ENTRY(matcher.header_entry), "");
