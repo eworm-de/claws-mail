@@ -723,14 +723,91 @@ void ldapsrv_set_options (gint secs, LDAP *ld)
 	int rc;
 	timeout.tv_sec = secs;
 	timeout.tv_usec = 0;
-	rc=ldap_set_option(NULL, LDAP_OPT_X_TLS_REQUIRE_CERT, &i);
+	rc = ldap_set_option(NULL, LDAP_OPT_X_TLS_REQUIRE_CERT, &i);
 	debug_print("cert %s\n", ldap_err2string(rc));
 	
 	/* can crash old libldaps... */
-	rc=ldap_set_option(NULL, LDAP_OPT_NETWORK_TIMEOUT, &timeout);
+	rc = ldap_set_option(NULL, LDAP_OPT_NETWORK_TIMEOUT, &timeout);
 	debug_print("tm %s\n", ldap_err2string(rc));
 
 }
+
+/**
+ * Connect to LDAP server.
+ * \param  ctl Control object to process.
+ * \return LDAP Resource to LDAP.
+ */
+LDAP *ldapsvr_connect(LdapControl *ctl) {
+	LDAP *ld = NULL;
+	gint rc;
+	gint version;
+	gchar *uri = NULL;
+	gchar *pwd;
+
+	cm_return_val_if_fail(ctl != NULL, NULL);
+
+	ldapsrv_set_options (ctl->timeOut, NULL);
+	uri = g_strdup_printf("ldap%s://%s:%d",
+				ctl->enableSSL?"s":"",
+				ctl->hostName, ctl->port);
+	ldap_initialize(&ld, uri);
+	g_free(uri);
+
+	if (ld == NULL)
+		return NULL;
+
+
+	debug_print("connected to LDAP host %s on port %d\n", ctl->hostName, ctl->port);
+
+#ifdef USE_LDAP_TLS
+	/* Handle TLS */
+	version = LDAP_VERSION3;
+	rc = ldap_set_option(ld, LDAP_OPT_PROTOCOL_VERSION, &version);
+	if (rc == LDAP_OPT_SUCCESS) {
+		ctl->version = LDAP_VERSION3;
+	}
+
+	if (ctl->version == LDAP_VERSION3) {
+		if (ctl->enableTLS && !ctl->enableSSL) {
+			rc = ldap_start_tls_s(ld, NULL, NULL);
+			
+			if (rc != LDAP_SUCCESS) {
+				g_printerr("LDAP Error(tls): ldap_simple_bind_s: %s\n",
+					ldap_err2string(rc));
+				return NULL;
+			}
+		}
+	}
+#endif
+
+	/* Bind to the server, if required */
+	if (ctl->bindDN) {
+		if (* ctl->bindDN != '\0') {
+			pwd = ldapctl_get_bind_password(ctl);
+			rc = claws_ldap_simple_bind_s(ld, ctl->bindDN, pwd);
+			if (rc != LDAP_SUCCESS) {
+				g_printerr("bindDN: %s, bindPass xxx\n", ctl->bindDN);
+				g_printerr("LDAP Error(bind): ldap_simple_bind_s: %s\n",
+					ldap_err2string(rc));
+				g_free(pwd);
+				return NULL;
+			}
+			g_free(pwd);
+		}
+	}
+	return ld;
+}
+
+/**
+ * Disconnect to LDAP server.
+ * \param ld Resource to LDAP.
+ */
+void ldapsvr_disconnect(LDAP *ld) {
+	/* Disconnect */
+	cm_return_if_fail(ld != NULL);
+	ldap_unbind_ext(ld, NULL, NULL);
+}
+
 #endif	/* USE_LDAP */
 
 /*

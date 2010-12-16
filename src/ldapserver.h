@@ -93,8 +93,9 @@ void ldapsvr_retire_query	( LdapServer *server );
 
 gboolean ldapsvr_reuse_previous	( const LdapServer *server,
 				  const QueryRequest *req );
-
 void ldapsrv_set_options (gint secs, LDAP *ld);
+LDAP *ldapsvr_connect(LdapControl *ctl);
+void ldapsvr_disconnect(LDAP *ld);
 #endif	/* USE_LDAP */
 
 #endif /* __LDAPSERVER_H__ */

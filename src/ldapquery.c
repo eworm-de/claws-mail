@@ -36,6 +36,7 @@
 #include "ldaputil.h"
 #include "ldapquery.h"
 #include "ldapctrl.h"
+#include "ldapserver.h"
 #include "mgutils.h"
 
 #include "addritem.h"
@@ -688,10 +689,6 @@ void ldapqry_touch( LdapQuery *qry ) {
 static gint ldapqry_connect( LdapQuery *qry ) {
 	LdapControl *ctl;
 	LDAP *ld = NULL;
-	gint rc;
-	gint version;
-	gchar *uri = NULL;
-	gchar *pwd;
 
 	/* Initialize connection */
 	if (debug_get_mode()) {
@@ -708,13 +705,7 @@ static gint ldapqry_connect( LdapQuery *qry ) {
 	qry->elapsedTime = -1;
 	ADDRQUERY_RETVAL(qry) = LDAPRC_INIT;
 
-	ldapsrv_set_options (ctl->timeOut, NULL);
-
-	uri = g_strdup_printf("ldap%s://%s:%d",
-				ctl->enableSSL?"s":"",
-				ctl->hostName, ctl->port);
-	ldap_initialize(&ld, uri);
-	g_free(uri);
+	ld = ldapsvr_connect(ctl);
 
 	if (ld == NULL)
 		return ADDRQUERY_RETVAL(qry);
@@ -729,44 +720,6 @@ static gint ldapqry_connect( LdapQuery *qry ) {
 	debug_print("connected to LDAP host %s on port %d\n",
 			ctl->hostName?ctl->hostName:"null", ctl->port);
 
-#ifdef USE_LDAP_TLS
-	/* Handle TLS */
-	version = LDAP_VERSION3;
-	rc = ldap_set_option( ld, LDAP_OPT_PROTOCOL_VERSION, &version );
-	if( rc == LDAP_OPT_SUCCESS ) {
-		ctl->version = LDAP_VERSION3;
-	}
-
-	if( ctl->version == LDAP_VERSION3 ) {
-		if( ctl->enableTLS && !ctl->enableSSL ) {
-			ADDRQUERY_RETVAL(qry) = LDAPRC_TLS;
-			rc = ldap_start_tls_s( ld, NULL, NULL );
-			
-			debug_print("rc=%d\n", rc);
-			debug_print("LDAP Status: set_option: %s\n", ldap_err2string(rc));
-
-			if( rc != LDAP_SUCCESS ) {
-				return ADDRQUERY_RETVAL(qry);
-			}
-		}
-	}
-#endif
-
-	/* Bind to the server, if required */
-	ADDRQUERY_RETVAL(qry) = LDAPRC_BIND;
-	if( ctl->bindDN ) {
-		if( * ctl->bindDN != '\0' ) {
-			debug_print("binding...\n");
-			pwd = ldapctl_get_bind_password(ctl);
-			rc = claws_ldap_simple_bind_s(ld, ctl->bindDN, pwd);
-			g_free(pwd);
-			debug_print("rc=%d\n", rc);
-			if( rc != LDAP_SUCCESS ) {
-				debug_print("LDAP Error: ldap_simple_bind_s: %s\n",	ldap_err2string(rc));
-				return ADDRQUERY_RETVAL(qry);
-			}
-		}
-	}
 	ADDRQUERY_RETVAL(qry) = LDAPRC_STOP_FLAG;
 	if( ldapqry_get_stop_flag( qry ) ) {
 		return ADDRQUERY_RETVAL(qry);
@@ -900,19 +853,10 @@ static gint ldapqry_search_retrieve( LdapQuery *qry ) {
 		listEMail = ldapqry_process_single_entry( cache, qry, ld, e );
 
 		/* Process callback */
-		if( qry->callBackEntry ) {
+		if( qry->callBackEntry )
 			qry->callBackEntry( qry, ADDRQUERY_ID(qry), listEMail, qry->data );
-		}
-		else {
-			/*if (debug_get_mode()) {
-				GList *node = listEMail;
-				while (node) {
-					addritem_print_item_email(node->data, stdout);
-					node = g_list_next(node);
-				}
-			}*/
+		else
 			g_list_free( listEMail );
-		}
 		pthread_mutex_unlock( qry->mutexEntry );
 	}
 

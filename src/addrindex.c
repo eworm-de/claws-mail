@@ -1429,10 +1429,8 @@ static AddressDataSource *addrindex_parse_ldap( XMLFile *file ) {
 	ldapsvr_set_name( server, serverName );
 	ldapsvr_set_search_flag( server, bDynSearch );
 	ldapctl_set_matching_option( ctl, iMatch );
-#ifdef USE_LDAP_TLS
 	ldapctl_set_tls( ctl, bTLS );
 	ldapctl_set_ssl( ctl, bSSL );
-#endif
 	g_free( serverName );
 	ldapsvr_set_control( server, ctl );
 	ds->rawDataSource = server;
@@ -2031,28 +2029,6 @@ static void addrindex_consume_tree( XMLFile *file ) {
 		/* g_print( "\ttag  value : %s :\n", element ); */
 		addrindex_consume_tree( file );
 	}
-}
-
-/*
-* Print temporary tree.
-*/
-static void addrindex_print_node( AddressCvtNode *node, FILE *stream  ) {
-	GList *list;
-
-	fprintf( stream, "Node:\ttype :%d:\n", node->type );
-	fprintf( stream, "\tname :%s:\n", node->name );
-	fprintf( stream, "\taddr :%s:\n", node->address );
-	fprintf( stream, "\trems :%s:\n", node->remarks );
-	if( node->list ) {
-		fprintf( stream, "\t--list----\n" );
-	}
-	list = node->list;
-	while( list ) {
-		AddressCvtNode *lNode = list->data;
-		list = g_list_next( list );
-		addrindex_print_node( lNode, stream );
-	}
-	fprintf( stream, "\t==list-%d==\n", node->type );
 }
 
 /*

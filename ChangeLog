@@ -1,3 +1,15 @@
+2010-12-16 [colin]	3.7.8cvs5
+
+	* src/addrindex.c
+	* src/editldap.c
+	* src/ldapctrl.c
+	* src/ldapquery.c
+	* src/ldapserver.c
+	* src/ldapserver.h
+	* src/ldapupdate.c
+	* src/ldaputil.c
+		Try to rationalize a bit LDAP connections
+
 2010-12-16 [colin]	3.7.8cvs4
 
 	* src/prefs_spelling.c

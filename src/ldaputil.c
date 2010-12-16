@@ -34,6 +34,8 @@
 #include <lber.h>
 #include <errno.h>
 #include "common/utils.h"
+#include "ldapserver.h"
+#include "ldapctrl.h"
 
 #define SYLDAP_TEST_FILTER   "(objectclass=*)"
 #define SYLDAP_SEARCHBASE_V2 "cn=config"
@@ -210,9 +212,6 @@ int claws_ldap_simple_bind_s( LDAP *ld, LDAP_CONST char *dn, LDAP_CONST char *pa
 		NULL, NULL, NULL );
 }
 
-/* from ldapsrc.c */
-void ldapsrv_set_options (gint secs, LDAP *ld);
-
 /**
  * Attempt to discover the base DN for the server.
  * \param  host   Host name.
@@ -229,78 +228,40 @@ GList *ldaputil_read_basedn(
 {
 	GList *baseDN = NULL;
 	LDAP *ld = NULL;
+	LdapControl *ctl = ldapctl_create();
 	gint rc;
-	gchar *uri = NULL;
-	gint version;
 
-	if( host == NULL ) return baseDN;
-	if( port < 1 ) return baseDN;
+	if( host == NULL ) 
+		return NULL;
+	if( port < 1 ) 
+		return NULL;
 
-	/* Connect to server. */
+	ldapctl_set_tls(ctl, tls);
+	ldapctl_set_ssl(ctl, ssl);
+	ldapctl_set_port(ctl, port);
+	ldapctl_set_host(ctl, host);
+	ldapctl_set_timeout(ctl, tov);
+	ldapctl_set_bind_dn(ctl, bindDN);
+	ldapctl_set_bind_password(ctl, bindPW, FALSE, FALSE);
 
-	ldapsrv_set_options (tov, NULL);
-
-	uri = g_strdup_printf("ldap%s://%s:%d",
-			ssl?"s":"",
-			host, port);
-	debug_print("URI: %s\n", uri);
-	rc = ldap_initialize(&ld, uri);
-	g_free(uri);
-	
-	if( ld == NULL ) {
-		return baseDN;
+	ld = ldapsvr_connect(ctl);
+	if (ld == NULL) {
+		ldapctl_free(ctl);
+		return NULL;
 	}
-
-	if ((bindDN && *bindDN)
-#ifdef USE_LDAP_TLS
-	   || (tls && !ssl)
-#endif			
-	) {
-		version = LDAP_VERSION3;
-		rc = ldap_set_option( ld, LDAP_OPT_PROTOCOL_VERSION, &version );
-	}
-#ifdef USE_LDAP_TLS
-	
-	if( tls && !ssl ) {
-		/* Handle TLS */
-		if( rc != LDAP_OPT_SUCCESS ) {
-			ldap_unbind_ext( ld, NULL, NULL );
-			return baseDN;
-		}
-		rc = ldap_start_tls_s( ld, NULL, NULL );
-		if (rc != 0) {
-			ldap_unbind_ext( ld, NULL, NULL );
-			return baseDN;
-		}
-	}
-#endif
-
-	/* Bind to the server, if required */
-	if( bindDN ) {
-		if( *bindDN != '\0' ) {
-			rc = claws_ldap_simple_bind_s( ld, bindDN, bindPW );
-			if( rc != LDAP_SUCCESS ) {
-				g_printerr("LDAP: %s\n", ldap_err2string(rc));
-				ldap_unbind_ext( ld, NULL, NULL );
-				return baseDN;
-			}
-		}
-	}
-
-	/* Test for LDAP version 3 */
 	baseDN = ldaputil_test_v3( ld, tov, &rc );
-	if (baseDN) {
+	if (baseDN)
 		debug_print("Using LDAP v3\n");
-	}
 
 	if( baseDN == NULL && !LDAP_API_ERROR(rc) ) {
 		baseDN = ldaputil_test_v2( ld, tov );
-		if (baseDN) {
+		if (baseDN)
 			debug_print("Using LDAP v2\n");
-		}
 	}
-	if (ld && !LDAP_API_ERROR(rc))
-		ldap_unbind_ext( ld, NULL, NULL );
+	if (ld)
+		ldapsvr_disconnect(ld);
+
+	ldapctl_free(ctl);
 	
 	return baseDN;
 }
@@ -314,56 +275,23 @@ GList *ldaputil_read_basedn(
  */
 gboolean ldaputil_test_connect( const gchar *host, const gint port, int ssl, int tls, int secs ) {
 	gboolean retVal = FALSE;
+	LdapControl *ctl = ldapctl_create();
 	LDAP *ld;
-#ifdef USE_LDAP_TLS
-	gint rc;
-	gint version;
-#endif
-	gchar *uri = NULL;
 
-	if( host == NULL ) return retVal;
-	if( port < 1 ) return retVal;
-	
-	ldapsrv_set_options (secs, NULL);
-	uri = g_strdup_printf("ldap%s://%s:%d",
-				ssl?"s":"",
-				host, port);
-	debug_print("URI: %s\n", uri);
-	ldap_initialize(&ld, uri);
-	g_free(uri);
-	if (ld == NULL)
-		return FALSE;
+	ldapctl_set_tls(ctl, tls);
+	ldapctl_set_ssl(ctl, ssl);
+	ldapctl_set_port(ctl, port);
+	ldapctl_set_host(ctl, host);
+	ldapctl_set_timeout(ctl, secs);
 
-#ifdef USE_LDAP_TLS
-	if (ssl) {
-		GList *dummy = ldaputil_test_v3( ld, secs, &rc );
-		if (dummy)
-			g_list_free(dummy);
-		if (LDAP_API_ERROR(rc))
-			return FALSE;
-	}
-
-	if( tls && !ssl ) {
-		/* Handle TLS */
-		version = LDAP_VERSION3;
-		rc = ldap_set_option( ld, LDAP_OPT_PROTOCOL_VERSION, &version );
-		if( rc != LDAP_OPT_SUCCESS ) {
-			ldap_unbind_ext( ld, NULL, NULL );
-			return FALSE;
-		}
-
-		rc = ldap_start_tls_s( ld, NULL, NULL );
-		if (rc != 0) {
-			ldap_unbind_ext( ld, NULL, NULL );
-			return FALSE;
-		}
-	}
-#endif
+	ld = ldapsvr_connect(ctl);
 	if( ld != NULL ) {
-		ldap_unbind_ext( ld, NULL, NULL );
+		ldapsvr_disconnect(ld);
 		debug_print("ld != NULL\n");
 		retVal = TRUE;
 	}
+	ldapctl_free(ctl);
+
 	return retVal;
 }
 

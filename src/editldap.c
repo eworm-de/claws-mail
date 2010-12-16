@@ -1048,10 +1048,8 @@ AdapterDSource *addressbook_edit_ldap(
 		ldapctl_set_max_entries( ctl, iMaxE );
 		ldapctl_set_timeout( ctl, iTime );
 		ldapctl_set_max_query_age( ctl, iAge );
-#ifdef USE_LDAP_TLS
 		ldapctl_set_tls( ctl, tls );
 		ldapctl_set_ssl( ctl, ssl );
-#endif
 		ldapctl_set_matching_option(
 			ctl, bMatch ?
 			LDAPCTL_MATCH_CONTAINS : LDAPCTL_MATCH_BEGINWITH );

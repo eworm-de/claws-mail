@@ -294,13 +294,17 @@ void ldapctl_set_matching_option( LdapControl* ctl, const gint value ) {
  * \param value <i>TRUE</i> to enable TLS.
  */
 void ldapctl_set_tls( LdapControl* ctl, const gboolean value ) {
+#ifdef USE_LDAP_TLS
 	ctl->enableTLS = value;
 	debug_print("setting TLS: %d\n", ctl->enableTLS);
+#endif
 }
 
 void ldapctl_set_ssl( LdapControl* ctl, const gboolean value ) {
+#ifdef USE_LDAP_TLS
 	ctl->enableSSL = value;
 	debug_print("setting SSL: %d\n", ctl->enableSSL);
+#endif
 }
 
 /**
