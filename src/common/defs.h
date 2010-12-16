@@ -85,6 +85,7 @@
 #define MANUAL_URI		"http://www.claws-mail.org/documentation.php"
 #define FAQ_URI			"http://www.claws-mail.org/faq/index.php"
 #define PLUGINS_URI		"http://www.claws-mail.org/plugins.php"
+#define DICTS_URI		"http://www.claws-mail.org/win32/dictionaries.php"
 #define BUGZILLA_URI		"http://www.thewildbeast.co.uk/claws-mail/bugzilla/enter_bug.cgi"
 #define THEMES_URI		"http://www.claws-mail.org/themes.php"
 #define TOOLS_URI		"http://www.claws-mail.org/tools.php"

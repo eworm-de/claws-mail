@@ -1,3 +1,9 @@
+2010-12-16 [colin]	3.7.8cvs4
+
+	* src/prefs_spelling.c
+	* src/common/defs.h
+		Add a button to get dictionaries (win32)
+
 2010-12-16 [colin]	3.7.8cvs3
 
 	* src/prefs_matcher.c

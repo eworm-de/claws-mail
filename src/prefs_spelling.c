@@ -107,11 +107,15 @@ static void prefs_spelling_create_widget(PrefsPage *_page, GtkWindow *window, gp
 
 	GtkWidget *default_alt_dict_label;
 	GtkWidget *default_alt_dict_combo;
-
 	GtkWidget *both_dict_check;
+#ifdef WIN32
+	GtkWidget *get_dictionaries_btn;
+#endif
+
 	GtkWidget *misspelled_label;
 	GtkWidget *misspelled_hbox;
 	GtkWidget *misspelled_colorbtn;
+
 	CLAWS_TIP_DECL();
 
 	vbox1 = gtk_vbox_new (FALSE, VSPACING);
@@ -189,6 +193,14 @@ static void prefs_spelling_create_widget(PrefsPage *_page, GtkWindow *window, gp
 	gtk_table_attach (GTK_TABLE (table), both_dict_check, 1, 2, 2, 3,
 			  GTK_SHRINK, 0, 0, 0);
 
+#ifdef WIN32
+	get_dictionaries_btn = gtkut_get_link_btn(GTK_WIDGET(window), 
+				DICTS_URI, _("Get more dictionaries..."));
+
+	gtk_widget_show(get_dictionaries_btn);
+	gtk_table_attach (GTK_TABLE (table), get_dictionaries_btn, 1, 2, 3, 4,
+			  GTK_SHRINK, 0, 0, 0);
+#endif
 	misspelled_hbox = gtk_hbox_new(FALSE, 10);
 	gtk_widget_show(misspelled_hbox);
 	gtk_box_pack_start(GTK_BOX(vbox1), misspelled_hbox, FALSE, FALSE, 0);
