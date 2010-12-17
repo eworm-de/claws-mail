@@ -43,8 +43,6 @@
 #include <glib/gi18n.h>
 #include <sys/time.h>
 #include <string.h>
-#include <ldap.h>
-#include <lber.h>
 
 #include "ldapupdate.h"
 #include "mgutils.h"

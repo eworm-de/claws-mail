@@ -30,10 +30,9 @@
 #include <glib.h>
 #include <string.h>
 #include <sys/time.h>
-#include <ldap.h>
-#include <lber.h>
 #include <errno.h>
 #include "common/utils.h"
+#include "ldaputil.h"
 #include "ldapserver.h"
 #include "ldapctrl.h"
 
@@ -208,8 +207,12 @@ int claws_ldap_simple_bind_s( LDAP *ld, LDAP_CONST char *dn, LDAP_CONST char *pa
 	}
 
 	debug_print("binding: DN->%s\n", dn?dn:"null");
+#ifdef G_OS_UNIX
 	return ldap_sasl_bind_s( ld, dn, LDAP_SASL_SIMPLE, &cred,
 		NULL, NULL, NULL );
+#else
+	return ldap_simple_bind_s(ld, dn, passwd);
+#endif
 }
 
 /**
@@ -253,7 +256,11 @@ GList *ldaputil_read_basedn(
 	if (baseDN)
 		debug_print("Using LDAP v3\n");
 
+#ifdef G_OS_UNIX
 	if( baseDN == NULL && !LDAP_API_ERROR(rc) ) {
+#else
+	if( baseDN == NULL) {
+#endif
 		baseDN = ldaputil_test_v2( ld, tov );
 		if (baseDN)
 			debug_print("Using LDAP v2\n");

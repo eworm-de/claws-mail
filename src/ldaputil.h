@@ -27,7 +27,17 @@
 #ifdef USE_LDAP
 
 #include <glib.h>
+#ifdef G_OS_UNIX
 #include <ldap.h>
+#include <lber.h>
+#else
+#include <windows.h>
+#include <winldap.h>
+#define LDAP_CONST const
+#define ldap_unbind_ext(ld,x,y) ldap_unbind_s(ld)
+#define LDAP_ADMINLIMIT_EXCEEDED LDAP_ADMIN_LIMIT_EXCEEDED
+#define timeval l_timeval
+#endif
 /* Function Prototypes */
 GList *ldaputil_read_basedn	( const gchar *host, const gint port,
 				  const gchar *bindDN, const gchar *bindPW,

@@ -27,7 +27,19 @@
 #ifdef USE_LDAP
 
 #include <glib.h>
+#ifdef G_OS_UNIX
 #include <ldap.h>
+#else
+#include <stdio.h>
+#include <string.h>
+#include <stdarg.h>
+#include <stdlib.h>
+#include <ctype.h>
+#include <errno.h>
+#include <windows.h>
+#include <winldap.h>
+#include <winber.h>
+#endif
 
 #include "ldapctrl.h"
 #include "addritem.h"

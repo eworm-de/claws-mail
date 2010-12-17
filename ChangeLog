@@ -1,3 +1,17 @@
+2010-12-17 [colin]	3.7.8cvs6
+
+	* src/addressadd.c
+	* src/addressbook.c
+	* src/addrindex.c
+	* src/ldapquery.c
+	* src/ldapquery.h
+	* src/ldapserver.c
+	* src/ldapserver.h
+	* src/ldapupdate.c
+	* src/ldaputil.c
+	* src/ldaputil.h
+		Windows build fixes (w32 LDAP completely untested!)
+
 2010-12-16 [colin]	3.7.8cvs5
 
 	* src/addrindex.c

@@ -91,7 +91,9 @@
 #include "expldifdlg.h"
 #include "browseldap.h"
 #include "addrcustomattr.h"
-
+#ifdef G_OS_WIN32
+#undef interface
+#endif
 typedef enum
 {
 	COL_SOURCES	= 0,

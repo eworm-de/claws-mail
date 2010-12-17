@@ -30,7 +30,6 @@
 #include <glib.h>
 #include <sys/time.h>
 #include <string.h>
-#include <lber.h>
 
 #include "defs.h"
 #include "ldaputil.h"
@@ -992,9 +991,6 @@ static void ldapqry_destroyer( void * ptr ) {
 	qry = ( LdapQuery * ) ptr;
 	cm_return_if_fail( qry != NULL );
 
-	debug_print("ldapqry_destroyer::%d::%s\n", (int) pthread_self(),
-			ADDRQUERY_NAME(qry)?ADDRQUERY_NAME(qry):"null");
-
 	/* Perform any destruction here */
 	if( qry->control != NULL ) {
 		ldapctl_free( qry->control );
@@ -1011,8 +1007,6 @@ static void ldapqry_destroyer( void * ptr ) {
 void ldapqry_cancel( LdapQuery *qry ) {
 	cm_return_if_fail( qry != NULL );
 
-	debug_print("cancelling::%d::%s\n", (int) pthread_self(),
-			ADDRQUERY_NAME(qry)?ADDRQUERY_NAME(qry):"null");
 	if( ldapqry_get_busy_flag( qry ) ) {
 		if( qry->thread ) {
 			debug_print("calling pthread_cancel\n");

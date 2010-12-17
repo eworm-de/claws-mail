@@ -332,10 +332,10 @@ static void addressadd_load_data( AddressIndex *addrIndex ) {
 	gtk_cmclist_clear( GTK_CMCLIST( tree ) );
 	list = addrindex_get_interface_list( addrIndex );
 	while( list ) {
-		AddressInterface *interface = list->data;
-		if( interface->type == ADDR_IF_BOOK || 
-				interface->type == ADDR_IF_LDAP ) {
-			nodeDS = interface->listSource;
+		AddressInterface *ainterface = list->data;
+		if( ainterface->type == ADDR_IF_BOOK || 
+				ainterface->type == ADDR_IF_LDAP ) {
+			nodeDS = ainterface->listSource;
 			while( nodeDS ) {
 				ds = nodeDS->data;
 				dsName = g_strdup( addrindex_ds_get_name( ds ) );

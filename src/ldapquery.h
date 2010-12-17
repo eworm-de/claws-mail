@@ -30,8 +30,14 @@
 #include <stdio.h>
 #include <sys/time.h>
 #include <pthread.h>
-#include <ldap.h>
 
+#ifdef G_OS_UNIX
+#include <ldap.h>
+#include <lber.h>
+#else
+#include <windows.h>
+#include <winldap.h>
+#endif
 #include "addrquery.h"
 #include "ldapctrl.h"
 #include "addritem.h"
