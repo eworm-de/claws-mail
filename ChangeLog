@@ -1,3 +1,15 @@
+2010-12-17 [colin]	3.7.8cvs8
+
+	* configure.ac
+	* src/editldap.c
+	* src/ldapquery.c
+	* src/ldapserver.c
+	* src/ldapupdate.c
+	* src/ldaputil.c
+	* src/ldaputil.h
+		Better error logging. Disable LDAP SSL/TLS on
+		Windows, it's crashy/non-worky.
+
 2010-12-17 [colin]	3.7.8cvs7
 
 	* src/folder.c

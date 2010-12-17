@@ -12,7 +12,7 @@ MINOR_VERSION=7
 MICRO_VERSION=8
 INTERFACE_AGE=0
 BINARY_AGE=0
-EXTRA_VERSION=7
+EXTRA_VERSION=8
 EXTRA_RELEASE=
 EXTRA_GTK2_VERSION=
 
@@ -669,7 +669,6 @@ elif test x"$ac_cv_enable_ldap" = xyes -a x"$ac_cv_enable_pthread" = xno; then
 elif test x"$platform_win32" = xyes; then
 	AC_MSG_RESULT(yes)
 	AC_DEFINE(USE_LDAP, 1, Define if you want LDAP support in addressbook.)
-	AC_DEFINE(USE_LDAP_TLS, 1, Define if you want LDAP TLS support in addressbook.)
 	LDAP_LIBS="-lwldap32"
 	AC_SUBST(LDAP_LIBS)
 else

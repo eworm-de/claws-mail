@@ -243,7 +243,7 @@ static void edit_ldap_server_check( void ) {
 		debug_print("ldap server: %s\nport: %d\nssl: %d\ntls: %d\nbindDN: %s\n", sHost, iPort, ssl, tls, sBind);
 		if( ldaputil_test_connect( sHost, iPort, ssl, tls, iTime ) ) {
 			/* Attempt to read base DN */
-			baseDN = ldaputil_read_basedn( sHost, iPort, sBind, sPass, iTime, ssl, tls );
+			baseDN = ldaputil_read_basedn(sHost, iPort, sBind, sPass, iTime, ssl, tls);
 			if( baseDN ) {
 				GList *node = baseDN;
 				while( node ) {

@@ -45,6 +45,7 @@ GList *ldaputil_read_basedn	( const gchar *host, const gint port,
 gboolean ldaputil_test_connect	( const gchar *host, const gint port, int ssl, int tls, int secs);
 gboolean ldaputil_test_ldap_lib	( void );
 int claws_ldap_simple_bind_s( LDAP *ld, LDAP_CONST char *dn, LDAP_CONST char *passwd );
+const gchar *ldaputil_get_error(LDAP *ld);
 
 #endif	/* USE_LDAP */
 

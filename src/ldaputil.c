@@ -28,6 +28,7 @@
 #ifdef USE_LDAP
 
 #include <glib.h>
+#include <glib/gi18n.h>
 #include <string.h>
 #include <sys/time.h>
 #include <errno.h>
@@ -105,7 +106,9 @@ static GList *ldaputil_test_v3( LDAP *ld, gint tov, gint *errcode ) {
 			}
 			ber = NULL;
 		}
-	} 
+	} else
+		debug_print("LDAP: Error %d (%s)\n", rc, ldaputil_get_error(ld));
+	
 	if (errcode)
 		*errcode = rc;
 	if (result)
@@ -310,6 +313,20 @@ gboolean ldaputil_test_ldap_lib( void ) {
 	return TRUE;
 }
 
+const gchar *ldaputil_get_error(LDAP *ld)
+{
+	gchar *ld_error;
+	static gchar error[512];
+
+	ldap_get_option( ld, LDAP_OPT_ERROR_STRING, &ld_error);
+	if (ld_error != NULL)
+		strncpy2(error, ld_error, sizeof(error));
+	else
+		strncpy2(error, _("Unknown error"), sizeof(error));
+	ldap_memfree(ld_error);
+
+	return error;
+}
 #endif	/* USE_LDAP */
 
 /*

@@ -794,7 +794,7 @@ static gint ldapqry_search_retrieve( LdapQuery *qry ) {
 	rc = ldap_search_ext_s( ld, ctl->baseDN, LDAP_SCOPE_SUBTREE, criteria,
 		attribs, 0, NULL, NULL, &timeout, 0, &result );
 	debug_print("LDAP Error: ldap_search_st: %d\n", rc);
-	debug_print("LDAP Error: ldap_search_st: %s\n", ldap_err2string(rc));
+	debug_print("LDAP Error: ldap_search_st: %s\n", ldaputil_get_error(ld));
 	ldapctl_free_attribute_array( attribs );
 	g_free( criteria );
 	criteria = NULL;
@@ -816,7 +816,7 @@ static gint ldapqry_search_retrieve( LdapQuery *qry ) {
 	}
 	else {
 		debug_print("LDAP Error: ldap_search_st: %d\n", rc);
-		debug_print("LDAP Error: ldap_search_st: %s\n", ldap_err2string(rc));
+		debug_print("LDAP Error: ldap_search_st: %s\n", ldaputil_get_error(ld));
 		return ADDRQUERY_RETVAL(qry);
 	}
 	ADDRQUERY_RETVAL(qry) = LDAPRC_STOP_FLAG;
@@ -1209,7 +1209,7 @@ static gint ldapqry_locate_retrieve( LdapQuery *qry ) {
 	}
 	ADDRQUERY_RETVAL(qry) = LDAPRC_SEARCH;
 	if( rc != LDAP_SUCCESS ) {
-		debug_print("LDAP Error: ldap_search_st: %s\n", ldap_err2string(rc));
+		debug_print("LDAP Error: ldap_search_st: %s\n", ldaputil_get_error(ld));
 		return ADDRQUERY_RETVAL(qry);
 	}
 

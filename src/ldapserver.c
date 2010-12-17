@@ -724,13 +724,10 @@ void ldapsrv_set_options (gint secs, LDAP *ld)
 #ifdef G_OS_UNIX
 	i = LDAP_OPT_X_TLS_ALLOW;
 	rc = ldap_set_option(NULL, LDAP_OPT_X_TLS_REQUIRE_CERT, &i);
-	debug_print("cert %s\n", ldap_err2string(rc));
+	debug_print("cert %s\n", ldaputil_get_error(ld));
 	/* can crash old libldaps... */
 	rc = ldap_set_option(NULL, LDAP_OPT_NETWORK_TIMEOUT, &timeout);
-	debug_print("tm %s\n", ldap_err2string(rc));
-#else
-	rc = ldap_set_option(NULL, LDAP_OPT_TIMELIMIT, &secs);
-	debug_print("tm %s\n", ldap_err2string(rc));
+	debug_print("tm %s\n", ldaputil_get_error(ld));
 #endif
 }
 
@@ -756,6 +753,14 @@ LDAP *ldapsvr_connect(LdapControl *ctl) {
 	ldap_initialize(&ld, uri);
 #else
 	ld = ldap_sslinit(ctl->hostName, ctl->port, ctl->enableSSL);
+	if (ctl->enableSSL) {
+		ldap_get_option(ld,LDAP_OPT_SSL,(void*)&rc);
+		if ((void *)rc != LDAP_OPT_ON) {
+			debug_print("Enabling SSL\n");
+			if (ldap_set_option(ld,LDAP_OPT_SSL,LDAP_OPT_ON) != 0)
+				debug_print("Failed: %s\n", ldaputil_get_error(ld));
+		}
+	}
 #endif
 	g_free(uri);
 
@@ -763,23 +768,24 @@ LDAP *ldapsvr_connect(LdapControl *ctl) {
 		return NULL;
 
 
-	debug_print("connected to LDAP host %s on port %d\n", ctl->hostName, ctl->port);
+	debug_print("Got handle to LDAP host %s on port %d\n", ctl->hostName, ctl->port);
 
-#ifdef USE_LDAP_TLS
-	/* Handle TLS */
 	version = LDAP_VERSION3;
 	rc = ldap_set_option(ld, LDAP_OPT_PROTOCOL_VERSION, &version);
 	if (rc == LDAP_OPT_SUCCESS) {
 		ctl->version = LDAP_VERSION3;
-	}
-
+	} else
+		g_printerr("LDAP: Error %d (%s)\n",
+			rc, ldaputil_get_error(ld));
+#ifdef USE_LDAP_TLS
+	/* Handle TLS */
 	if (ctl->version == LDAP_VERSION3) {
 		if (ctl->enableTLS && !ctl->enableSSL) {
 			rc = ldap_start_tls_s(ld, NULL, NULL);
 			
 			if (rc != LDAP_SUCCESS) {
 				g_printerr("LDAP Error(tls): ldap_simple_bind_s: %s\n",
-					ldap_err2string(rc));
+					ldaputil_get_error(ld));
 				return NULL;
 			}
 		}
@@ -794,7 +800,7 @@ LDAP *ldapsvr_connect(LdapControl *ctl) {
 			if (rc != LDAP_SUCCESS) {
 				g_printerr("bindDN: %s, bindPass xxx\n", ctl->bindDN);
 				g_printerr("LDAP Error(bind): ldap_simple_bind_s: %s\n",
-					ldap_err2string(rc));
+					ldaputil_get_error(ld));
 				g_free(pwd);
 				return NULL;
 			}
