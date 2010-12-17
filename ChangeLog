@@ -1,3 +1,9 @@
+2010-12-17 [colin]	3.7.8cvs7
+
+	* src/folder.c
+		Fix bug #2325, "messages remains in folder cache after moving
+		from MH to IMAP boxes". Bug introduced in 3.7.6cvs53.
+
 2010-12-17 [colin]	3.7.8cvs6
 
 	* src/addressadd.c

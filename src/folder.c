@@ -3492,7 +3492,7 @@ static gint do_copy_msgs(FolderItem *dest, GSList *msglist, gboolean remove_sour
             		if (g_hash_table_lookup_extended(relation, msginfo, &old_key, &data))
 	            	        num = GPOINTER_TO_INT(data);
 			else
-				num = -1;
+				num = 0;
 
 			if (g_slist_find(not_moved, msginfo))
 				continue;
@@ -3539,7 +3539,7 @@ static gint do_copy_msgs(FolderItem *dest, GSList *msglist, gboolean remove_sour
                 if (g_hash_table_lookup_extended(relation, msginfo, &old_key, &data))
 	                num = GPOINTER_TO_INT(data);
 		else
-			num = -1;
+			num = 0;
 
 		statusbar_progress_all(curmsg++,total, 100);
 		if (curmsg % 100 == 0)
