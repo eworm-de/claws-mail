@@ -5973,12 +5973,17 @@ static int compose_add_attachments(Compose *compose, MimeInfo *parent)
 			}
 		}
 
-		if (compose->use_signing) {
+		if (mimepart->type == MIMETYPE_MESSAGE
+		    || mimepart->type == MIMETYPE_MULTIPART)
+			ainfo->encoding = ENC_BINARY;
+		else if (compose->use_signing) {
 			if (ainfo->encoding == ENC_7BIT)
 				ainfo->encoding = ENC_QUOTED_PRINTABLE;
 			else if (ainfo->encoding == ENC_8BIT)
 				ainfo->encoding = ENC_BASE64;
 		}
+
+		
 		
 		procmime_encode_content(mimepart, ainfo->encoding);
 

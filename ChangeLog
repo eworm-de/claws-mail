@@ -1,3 +1,11 @@
+2010-12-18 [colin]	3.7.8cvs10
+
+	* src/compose.c
+		Fix bug #2148, "Attachment content-transfer-encoding 
+		incorrectly set when signing emails". The RFC 2045
+		states that message/* and multipart/* encoding must
+		be either 7-bit, 8-bit or binary.
+
 2010-12-18 [mones]	3.7.8cvs9
 
 	* src/ldaputil.c
