@@ -315,7 +315,7 @@ gboolean ldaputil_test_ldap_lib( void ) {
 
 const gchar *ldaputil_get_error(LDAP *ld)
 {
-	gchar *ld_error;
+	gchar *ld_error = NULL;
 	static gchar error[512];
 
 	ldap_get_option( ld, LDAP_OPT_ERROR_STRING, &ld_error);
