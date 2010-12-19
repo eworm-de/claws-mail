@@ -724,10 +724,16 @@ void ldapsrv_set_options (gint secs, LDAP *ld)
 #ifdef G_OS_UNIX
 	i = LDAP_OPT_X_TLS_ALLOW;
 	rc = ldap_set_option(NULL, LDAP_OPT_X_TLS_REQUIRE_CERT, &i);
-	debug_print("cert %s\n", ldaputil_get_error(ld));
+	if (ld)
+		debug_print("cert %s\n", ldaputil_get_error(ld));
+	else
+		debug_print("cert %s\n", ldap_err2string(rc));
 	/* can crash old libldaps... */
 	rc = ldap_set_option(NULL, LDAP_OPT_NETWORK_TIMEOUT, &timeout);
-	debug_print("tm %s\n", ldaputil_get_error(ld));
+	if (ld)
+		debug_print("tm %s\n", ldaputil_get_error(ld));
+	else
+		debug_print("tm %s\n", ldap_err2string(rc));
 #endif
 }
 

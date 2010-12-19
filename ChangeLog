@@ -1,3 +1,8 @@
+2010-12-19 [colin]	3.7.8cvs11
+
+	* src/ldapserver.c
+		Better debug.
+
 2010-12-18 [colin]	3.7.8cvs10
 
 	* src/compose.c
