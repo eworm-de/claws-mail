@@ -23,6 +23,11 @@
 #endif
 #include "defs.h"
 
+/* We know this file uses some deprecated stuff. */
+#undef G_DISABLE_DEPRECATED
+#undef GTK_DISABLE_DEPRECATED
+#undef GDK_DISABLE_DEPRECATED
+
 #include <glib.h>
 #include <glib/gi18n.h>
 #include <gdk/gdkkeysyms.h>

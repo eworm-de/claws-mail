@@ -1,3 +1,17 @@
+2010-12-20 [colin]	3.7.8cvs15
+
+	* src/addrcindex.c
+	* src/addrcindex.h
+		Removed. Dead code since ages!
+	* src/addr_compl.c
+	* src/gtk/gtkcmclist.c
+	* src/gtk/gtkcmctree.c
+	* src/gtk/gtksctree.c
+		undefine *_DISABLE_DEPRECATED in the files that
+		use deprecated interfaces. Implicit declarations
+		can lead to crashes as prototypes are unknown, as
+		evidenced by bug #2315.
+
 2010-12-20 [colin]	3.7.8cvs14
 
 	* src/compose.c

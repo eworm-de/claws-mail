@@ -30,6 +30,12 @@
 
 #include <config.h>
 #include <stdlib.h>
+
+/* We know this file uses some deprecated stuff. */
+#undef G_DISABLE_DEPRECATED
+#undef GTK_DISABLE_DEPRECATED
+#undef GDK_DISABLE_DEPRECATED
+
 #include <gtk/gtk.h>
 #include <gdk/gdkkeysyms.h>
 #include "gtkcmctree.h"
