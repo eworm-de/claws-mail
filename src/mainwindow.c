@@ -2250,7 +2250,9 @@ MainWindow *main_window_create()
 	ADD_MENU_ACCEL_GROUP_TO_WINDOW(summaryview->popupmenu, mainwin->window);
 	
 #ifndef GENERIC_UMPC
+#ifdef G_OS_UNIX
 	gtk_window_iconify(GTK_WINDOW(mainwin->window));
+#endif
 #endif
 
 	g_signal_connect(G_OBJECT(window), "window_state_event",
@@ -3569,7 +3571,9 @@ void main_window_popup(MainWindow *mainwin)
 		gtk_window_maximize(GTK_WINDOW(mainwin->window));
 
 	if (first_start) {
+#ifdef G_OS_UNIX
 		gtk_window_deiconify(GTK_WINDOW(mainwin->window));
+#endif
 		first_start = FALSE;
 	} else {
 		gtkut_window_popup(mainwin->window);

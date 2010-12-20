@@ -1,3 +1,9 @@
+2010-12-20 [colin]	3.7.8cvs13
+
+	* src/mainwindow.c
+		Don't iconify at start on w32. This un-iconifies in the
+		background.
+
 2010-12-20 [colin]	3.7.8cvs12
 
 	* src/common/base64.c
