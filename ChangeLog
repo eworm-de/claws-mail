@@ -1,3 +1,12 @@
+2010-12-20 [colin]	3.7.8cvs14
+
+	* src/compose.c
+		Don't flush events when adding an header entry. This
+		can mess up the keypresses in the previous header.
+		Instead, make the scroll happen later (doing it on the
+		spot without flushing events doesn't work as the new
+		requisitions aren't set yet).
+
 2010-12-20 [colin]	3.7.8cvs13
 
 	* src/mainwindow.c

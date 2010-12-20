@@ -499,7 +499,7 @@ static Compose *compose_generic_reply(MsgInfo *msginfo,
 				  gboolean followup_and_reply_to,
 				  const gchar *body);
 
-static gboolean compose_headerentry_changed_cb	   (GtkWidget	       *entry,
+static void compose_headerentry_changed_cb	   (GtkWidget	       *entry,
 					    ComposeHeaderEntry *headerentry);
 static gboolean compose_headerentry_key_press_event_cb(GtkWidget	       *entry,
 					    GdkEventKey        *event,
@@ -10767,7 +10767,15 @@ static gboolean compose_headerentry_key_press_event_cb(GtkWidget *entry,
 	return FALSE;
 }
 
-static gboolean compose_headerentry_changed_cb(GtkWidget *entry,
+static gboolean scroll_postpone(gpointer data)
+{
+	Compose *compose = (Compose *)data;
+	GTK_EVENTS_FLUSH();
+	compose_show_first_last_header(compose, FALSE);
+	return FALSE;
+}
+
+static void compose_headerentry_changed_cb(GtkWidget *entry,
 				    ComposeHeaderEntry *headerentry)
 {
 	if (strlen(gtk_entry_get_text(GTK_ENTRY(entry))) != 0) {
@@ -10776,12 +10784,8 @@ static gboolean compose_headerentry_changed_cb(GtkWidget *entry,
 			(G_OBJECT(entry), G_SIGNAL_MATCH_DATA,
 			 0, 0, NULL, NULL, headerentry);
 		
-		/* Automatically scroll down */
-		GTK_EVENTS_FLUSH();
-		compose_show_first_last_header(headerentry->compose, FALSE);
-		
+		g_timeout_add(0, scroll_postpone, headerentry->compose);
 	}
-	return FALSE;
 }
 
 static void compose_show_first_last_header(Compose *compose, gboolean show_first)

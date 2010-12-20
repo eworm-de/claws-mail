@@ -4087,3 +4087,4 @@
 ( cvs diff -u -r 1.4.2.21 -r 1.4.2.22 src/ldapserver.c;  ) > 3.7.8cvs11.patchset
 ( cvs diff -u -r 1.1.4.10 -r 1.1.4.11 src/common/base64.c;  ) > 3.7.8cvs12.patchset
 ( cvs diff -u -r 1.274.2.319 -r 1.274.2.320 src/mainwindow.c;  ) > 3.7.8cvs13.patchset
+( cvs diff -u -r 1.382.2.562 -r 1.382.2.563 src/compose.c;  ) > 3.7.8cvs14.patchset
