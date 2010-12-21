@@ -4090,3 +4090,4 @@
 ( cvs diff -u -r 1.382.2.562 -r 1.382.2.563 src/compose.c;  ) > 3.7.8cvs14.patchset
 ( cvs diff -u -r 1.27.2.48 -r 1.27.2.49 src/addr_compl.c;  cvs diff -u -r -1.1.4.10 -r -1.1.4.11 src/addrcindex.c;  cvs diff -u -r -1.1.4.6 -r -1.1.4.7 src/addrcindex.h;  cvs diff -u -r 1.1.2.14 -r 1.1.2.15 src/gtk/gtkcmclist.c;  cvs diff -u -r 1.1.2.16 -r 1.1.2.17 src/gtk/gtkcmctree.c;  cvs diff -u -r 1.1.4.58 -r 1.1.4.59 src/gtk/gtksctree.c;  ) > 3.7.8cvs15.patchset
 ( cvs diff -u -r 1.96.2.225 -r 1.96.2.226 src/textview.c;  ) > 3.7.8cvs16.patchset
+( cvs diff -u -r 1.1.4.13 -r 1.1.4.14 src/etpan/etpan-thread-manager.c;  ) > 3.7.8cvs17.patchset

@@ -1,3 +1,8 @@
+2010-12-21 [colin]	3.7.8cvs17
+
+	* src/etpan/etpan-thread-manager.c
+		Dead code removal
+
 2010-12-21 [colin]	3.7.8cvs16
 
 	* src/textview.c

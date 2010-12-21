@@ -540,40 +540,6 @@ static int etpan_thread_op_cancelled(struct etpan_thread_op * op)
   return cancelled;
 }
 
-#if 0
-static void etpan_thread_op_cancel(struct etpan_thread_op * op)
-{ 
-  etpan_thread_op_lock(op);
-  if (op->cancelled) {
-    g_warning("cancelled twice");
-  }
-  op->cancelled = 1;
-  if ((op->callback != NULL) && (!op->callback_called)) {
-    op->callback(op->cancelled, op->result, op->callback_data);
-    op->callback_called = 1;
-  }
-  etpan_thread_op_unlock(op);
-}
-#endif
-
-#if 0
-static int etpan_thread_manager_op_schedule(struct etpan_thread_manager * manager,
-    struct etpan_thread_op * op)
-{
-  struct etpan_thread * thread;
-  
-  thread = etpan_thread_manager_get_thread(manager);
-  
-  if (thread == NULL)
-    goto err;
-  
-  return etpan_thread_op_schedule(thread, op);
-  
- err:
-  return ERROR_MEMORY;
-}
-#endif
-
 int etpan_thread_manager_get_fd(struct etpan_thread_manager * manager)
 {
   return manager->notify_fds[0];
