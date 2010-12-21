@@ -1,3 +1,13 @@
+2010-12-21 [colin]	3.7.8cvs18
+
+	* src/inc.c
+	* src/send_message.c
+	* src/common/session.c
+	* src/common/session.h
+		Differentiate between running sessions and connected
+		sessions. Fixes bug #2332, "Crash when hitting cancel
+		on the SMTP status window"
+
 2010-12-21 [colin]	3.7.8cvs17
 
 	* src/etpan/etpan-thread-manager.c

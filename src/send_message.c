@@ -368,7 +368,7 @@ gint send_message_smtp_full(PrefsAccount *ac_prefs, GSList *to_list, FILE *fp, g
 		smtp_from(smtp_session);
 	}
 
-	while (session_is_connected(session) && dialog->cancelled == FALSE
+	while (session_is_running(session) && dialog->cancelled == FALSE
 		&& SMTP_SESSION(session)->state != SMTP_MAIL_SENT_OK)
 		gtk_main_iteration();
 

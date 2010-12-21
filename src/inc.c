@@ -837,7 +837,7 @@ static IncState inc_pop3_session_do(IncSession *session)
 		return INC_CONNECT_ERROR;
 	}
 
-	while (session_is_connected(SESSION(pop3_session)) &&
+	while (session_is_running(SESSION(pop3_session)) &&
 	       session->inc_state != INC_CANCEL)
 		gtk_main_iteration();
 
