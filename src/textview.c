@@ -711,6 +711,9 @@ static void textview_add_part(TextView *textview, MimeInfo *mimeinfo)
 				else
 					pixbuf = gdk_pixbuf_new_from_file(filename, &error);
 			}
+			if (textview->stop_loading) {
+				return;
+			}
 			if (error != NULL) {
 				g_warning("%s\n", error->message);
 				g_error_free(error);
@@ -729,7 +732,10 @@ static void textview_add_part(TextView *textview, MimeInfo *mimeinfo)
 				uri->start = gtk_text_iter_get_offset(&iter);
 				
 				gtk_text_buffer_insert_pixbuf(buffer, &iter, pixbuf);
-				
+				if (textview->stop_loading) {
+					g_free(uri);
+					return;
+				}
 				uri->end = uri->start + 1;
 				uri->filename = procmime_get_part_file_name(mimeinfo);
 				textview->uri_list =
@@ -741,6 +747,10 @@ static void textview_add_part(TextView *textview, MimeInfo *mimeinfo)
 						&start_iter, &iter);
 			} else {
 				gtk_text_buffer_insert_pixbuf(buffer, &iter, pixbuf);
+				if (textview->stop_loading) {
+					g_free(uri);
+					return;
+				}
 				gtk_text_buffer_insert(buffer, &iter, " ", 1);
 			}
 

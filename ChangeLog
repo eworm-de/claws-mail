@@ -1,3 +1,10 @@
+2010-12-21 [colin]	3.7.8cvs16
+
+	* src/textview.c
+		Check whether we should continue loading the
+		current textview after inserting a possibly
+		big image.
+
 2010-12-20 [colin]	3.7.8cvs15
 
 	* src/addrcindex.c
