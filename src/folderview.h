@@ -83,6 +83,8 @@ struct _FolderView
 	GtkUIManager *ui_manager;
 	GtkActionGroup *popup_common_action_group;
 	GtkActionGroup *popup_specific_action_group;
+	gint scroll_timeout_id;
+	gint scroll_value;
 };
 
 struct _FolderViewPopup

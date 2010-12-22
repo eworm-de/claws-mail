@@ -1,3 +1,9 @@
+2010-12-22 [colin]	3.7.8cvs21
+
+	* src/folderview.c
+	* src/folderview.h
+		Implement a nicer scroll when drag and dropping
+
 2010-12-22 [colin]	3.7.8cvs20
 
 	* src/compose.c

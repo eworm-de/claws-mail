@@ -4094,3 +4094,4 @@
 ( cvs diff -u -r 1.149.2.101 -r 1.149.2.102 src/inc.c;  cvs diff -u -r 1.17.2.57 -r 1.17.2.58 src/send_message.c;  cvs diff -u -r 1.23.2.24 -r 1.23.2.25 src/common/session.c;  cvs diff -u -r 1.8.2.16 -r 1.8.2.17 src/common/session.h;  ) > 3.7.8cvs18.patchset
 ( cvs diff -u -r 1.96.2.226 -r 1.96.2.227 src/textview.c;  ) > 3.7.8cvs19.patchset
 ( cvs diff -u -r 1.382.2.563 -r 1.382.2.564 src/compose.c;  ) > 3.7.8cvs20.patchset
+( cvs diff -u -r 1.207.2.217 -r 1.207.2.218 src/folderview.c;  cvs diff -u -r 1.20.2.26 -r 1.20.2.27 src/folderview.h;  ) > 3.7.8cvs21.patchset

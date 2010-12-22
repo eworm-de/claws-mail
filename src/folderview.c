@@ -604,7 +604,7 @@ FolderView *folderview_create(void)
 	folderview->target_list = gtk_target_list_new(folderview_drag_types, 2);
 	folderview_list = g_list_append(folderview_list, folderview);
 	folderview->deferred_refresh_id = -1;
-
+	folderview->scroll_timeout_id = -1;
 	return folderview;
 }
 
@@ -2818,6 +2818,29 @@ static gboolean folderview_update_folder(gpointer source, gpointer userdata)
 	return FALSE;
 }
 
+static gboolean folderview_dnd_scroll_cb(gpointer data)
+{
+	FolderView *folderview = (FolderView *)data;
+	GtkAdjustment *pos = gtk_scrolled_window_get_vadjustment(
+				GTK_SCROLLED_WINDOW(folderview->scrolledwin));
+	gint new_val = (int)pos->value + folderview->scroll_value;
+	gint max = (int)pos->upper - (int)pos->page_size;
+
+	if (folderview->scroll_value == 0) {
+		folderview->scroll_timeout_id = -1;
+		return FALSE;
+	}
+
+	if (folderview->scroll_value > 0 && new_val > max) {
+		new_val = max;
+	} else if (folderview->scroll_value < 0 && new_val < 0) {
+		new_val = 0;
+	}
+	gtk_adjustment_set_value(pos, new_val);
+	
+	return TRUE;
+}
+
 static gboolean folderview_drag_motion_cb(GtkWidget      *widget,
 					  GdkDragContext *context,
 					  gint            x,
@@ -2835,18 +2858,25 @@ static gboolean folderview_drag_motion_cb(GtkWidget      *widget,
 	int total_height = (int)pos->upper;
 	int vpos = (int) pos->value;
 	int offset = prefs_common.show_col_headers ? 24:0;
-	
+	int dist;
+
 	if (gtk_cmclist_get_selection_info
 		(GTK_CMCLIST(widget), x - offset, y - offset, &row, &column)) {
 		GtkWidget *srcwidget;
 
-		if (y > height - 24 && height + vpos < total_height) {
-			gtk_adjustment_set_value(pos, (vpos+5 > total_height ? total_height : vpos+5));
-			gtk_adjustment_changed(pos);
+		if (y > height - (48 - offset) && height + vpos < total_height) {
+			dist = -(height - (48 - offset) - y);
+			folderview->scroll_value = 1.41f * (1+(dist / 6));
+		} else if (y < 72 - (24 - offset) && y >= 0) {
+			dist = 72 - (24 - offset) - y;
+			folderview->scroll_value = -1.41f * (1+(dist / 6));
+		} else {
+			folderview->scroll_value = 0;
 		}
-		if (y < 48 && y > 0) {
-			gtk_adjustment_set_value(pos, (vpos-5 < 0 ? 0 : vpos-5));
-			gtk_adjustment_changed(pos);
+		if (folderview->scroll_value != 0 && folderview->scroll_timeout_id == -1) {
+			folderview->scroll_timeout_id = 
+				g_timeout_add(30, folderview_dnd_scroll_cb,
+					      folderview);
 		}
 
 		node = gtk_cmctree_node_nth(GTK_CMCTREE(widget), row);
@@ -2912,6 +2942,7 @@ static void folderview_drag_leave_cb(GtkWidget      *widget,
 				     FolderView     *folderview)
 {
 	drag_state_stop(folderview);
+	folderview->scroll_value = 0;
 	gtk_cmctree_select(GTK_CMCTREE(widget), folderview->opened);
 }
 
@@ -2977,6 +3008,8 @@ static void folderview_drag_received_cb(GtkWidget        *widget,
 	FolderItem *item = NULL, *src_item;
 	GtkCMCTreeNode *node;
 	int offset = prefs_common.show_col_headers ? 24:0;
+
+	folderview->scroll_value = 0;
 
 	if (info == TARGET_DUMMY) {
 		drag_state_stop(folderview);
@@ -3076,6 +3109,7 @@ static void folderview_drag_end_cb(GtkWidget	    *widget,
                                    FolderView	    *folderview)
 {
 	drag_state_stop(folderview);
+	folderview->scroll_value = 0;
 	g_slist_free(folderview->nodes_to_recollapse);
 	folderview->nodes_to_recollapse = NULL;
 }
