@@ -1,3 +1,10 @@
+2010-12-22 [colin]	3.7.8cvs20
+
+	* src/compose.c
+		Store charset if available when attaching text/* parts
+		Fixes bug #2203, 'Problems in forwarding multipart/
+		alternative messages with HTML part'
+
 2010-12-22 [colin]	3.7.8cvs19
 
 	* src/textview.c

@@ -107,8 +107,9 @@ enum
 	COL_MIMETYPE = 0,
 	COL_SIZE     = 1,
 	COL_NAME     = 2,
-	COL_DATA     = 3,
-	COL_AUTODATA = 4,
+	COL_CHARSET  = 3,
+	COL_DATA     = 4,
+	COL_AUTODATA = 5,
 	N_COL_COLUMNS
 };
 
@@ -249,7 +250,8 @@ static ComposeInsertResult compose_insert_file	(Compose	*compose,
 static gboolean compose_attach_append		(Compose	*compose,
 						 const gchar	*file,
 						 const gchar	*type,
-						 const gchar	*content_type);
+						 const gchar	*content_type,
+						 const gchar	*charset);
 static void compose_attach_parts		(Compose	*compose,
 						 MsgInfo	*msginfo);
 
@@ -1147,7 +1149,7 @@ Compose *compose_generic_new(PrefsAccount *account, const gchar *mailto, FolderI
 
 		for (i = 0; i < attach_files->len; i++) {
 			file = g_ptr_array_index(attach_files, i);
-			compose_attach_append(compose, file, file, NULL);
+			compose_attach_append(compose, file, file, NULL, NULL);
 		}
 	}
 
@@ -1758,7 +1760,7 @@ Compose *compose_forward(PrefsAccount *account, MsgInfo *msginfo,
 			g_warning("%s: file not exist\n", msgfile);
 		else
 			compose_attach_append(compose, msgfile, msgfile,
-					      "message/rfc822");
+					      "message/rfc822", NULL);
 
 		g_free(msgfile);
 	} else {
@@ -1952,7 +1954,7 @@ static Compose *compose_forward_multiple(PrefsAccount *account, GSList *msginfo_
 			g_warning("%s: file not exist\n", msgfile);
 		else
 			compose_attach_append(compose, msgfile, msgfile,
-				"message/rfc822");
+				"message/rfc822", NULL);
 		g_free(msgfile);
 	}
 	
@@ -2667,7 +2669,7 @@ static MailField compose_entries_set(Compose *compose, const gchar *mailto, Comp
 		while (attach[i] != NULL) {
 			gchar *utf8_filename = conv_filename_to_utf8(attach[i]);
 			if (utf8_filename) {
-				if (compose_attach_append(compose, attach[i], utf8_filename, NULL)) {
+				if (compose_attach_append(compose, attach[i], utf8_filename, NULL, NULL)) {
 					gchar *tmp = g_strdup_printf("%s%s\n",
 							warn_files?warn_files:"",
 							utf8_filename);
@@ -3512,7 +3514,8 @@ static ComposeInsertResult compose_insert_file(Compose *compose, const gchar *fi
 
 static gboolean compose_attach_append(Compose *compose, const gchar *file,
 				  const gchar *filename,
-				  const gchar *content_type)
+				  const gchar *content_type,
+				  const gchar *charset)
 {
 	AttachInfo *ainfo;
 	GtkTreeIter iter;
@@ -3530,8 +3533,8 @@ static gboolean compose_attach_append(Compose *compose, const gchar *file,
 		if (file_from_uri && is_file_exist(file_from_uri)) {
 			result = compose_attach_append(
 						compose, file_from_uri,
-						filename,
-						content_type);
+						filename, content_type,
+						charset);
 		}
 		g_free(file_from_uri);
 		if (result)
@@ -3579,10 +3582,12 @@ static gboolean compose_attach_append(Compose *compose, const gchar *file,
 
 			procmsg_msginfo_free(msginfo);
 		} else {
-			if (!g_ascii_strncasecmp(content_type, "text", 4))
+			if (!g_ascii_strncasecmp(content_type, "text/", 5)) {
+				ainfo->charset = g_strdup(charset);
 				ainfo->encoding = procmime_get_encoding_for_text_file(file, &has_binary);
-			else
+			} else {
 				ainfo->encoding = ENC_BASE64;
+			}
 			name = g_path_get_basename(filename ? filename : file);
 			ainfo->name = g_strdup(name);
 		}
@@ -3593,7 +3598,7 @@ static gboolean compose_attach_append(Compose *compose, const gchar *file,
 			ainfo->content_type =
 				g_strdup("application/octet-stream");
 			ainfo->encoding = ENC_BASE64;
-		} else if (!g_ascii_strncasecmp(ainfo->content_type, "text", 4))
+		} else if (!g_ascii_strncasecmp(ainfo->content_type, "text/", 5))
 			ainfo->encoding =
 				procmime_get_encoding_for_text_file(file, &has_binary);
 		else
@@ -3612,6 +3617,8 @@ static gboolean compose_attach_append(Compose *compose, const gchar *file,
 	if (!strcmp(ainfo->content_type, "unknown") || has_binary) {
 		g_free(ainfo->content_type);
 		ainfo->content_type = g_strdup("application/octet-stream");
+		g_free(ainfo->charset);
+		ainfo->charset = NULL;
 	}
 
 	ainfo->size = (goffset)size;
@@ -3625,6 +3632,7 @@ static gboolean compose_attach_append(Compose *compose, const gchar *file,
 			   COL_MIMETYPE, ainfo->content_type,
 			   COL_SIZE, size_text,
 			   COL_NAME, ainfo->name,
+			   COL_CHARSET, ainfo->charset,
 			   COL_DATA, ainfo,
 			   COL_AUTODATA, auto_ainfo,
 			   -1);
@@ -3728,7 +3736,8 @@ static void compose_attach_parts(Compose *compose, MsgInfo *msginfo)
 				if (partname == NULL)
 					partname = "";
 				compose_attach_append(compose, outfile, 
-						      partname, content_type);
+						      partname, content_type,
+						      procmime_mimeinfo_get_parameter(child, "charset"));
 			} else {
 				compose_force_signing(compose, compose->account, NULL);
 			}
@@ -5972,6 +5981,9 @@ static int compose_add_attachments(Compose *compose, MimeInfo *parent)
 				mimepart->disposition = DISPOSITIONTYPE_ATTACHMENT;
 			}
 		}
+		if (mimepart->type == MIMETYPE_TEXT && ainfo->charset)
+			g_hash_table_insert(mimepart->typeparameters,
+					g_strdup("charset"), g_strdup(ainfo->charset));
 
 		if (mimepart->type == MIMETYPE_MESSAGE
 		    || mimepart->type == MIMETYPE_MULTIPART)
@@ -6721,6 +6733,7 @@ static GtkWidget *compose_create_attach(Compose *compose)
 				   G_TYPE_STRING,
 				   G_TYPE_STRING,
 				   G_TYPE_STRING,
+				   G_TYPE_STRING,
 				   G_TYPE_POINTER,
 				   G_TYPE_AUTO_POINTER,
 				   -1);
@@ -7054,6 +7067,7 @@ static Compose *compose_create(PrefsAccount *account,
 	titles[COL_MIMETYPE] = _("MIME type");
 	titles[COL_SIZE]     = _("Size");
 	titles[COL_NAME]     = _("Name");
+	titles[COL_CHARSET]  = _("Charset");
 
 	compose->batch = batch;
 	compose->account = account;
@@ -8387,6 +8401,7 @@ static void compose_attach_info_free(AttachInfo *ainfo)
 	g_free(ainfo->file);
 	g_free(ainfo->content_type);
 	g_free(ainfo->name);
+	g_free(ainfo->charset);
 	g_free(ainfo);
 }
 
@@ -8591,6 +8606,7 @@ static void compose_attach_property(GtkAction *action, gpointer data)
 				   COL_MIMETYPE, ainfo->content_type,
 				   COL_SIZE, text,
 				   COL_NAME, ainfo->name,
+				   COL_CHARSET, ainfo->charset,
 				   -1);
 		
 		break;
@@ -9620,7 +9636,7 @@ void compose_attach_from_list(Compose *compose, GList *file_list, gboolean free_
 		for ( tmp = file_list; tmp; tmp = tmp->next) {
 			gchar *file = (gchar *) tmp->data;
 			gchar *utf8_filename = conv_filename_to_utf8(file);
-			compose_attach_append(compose, file, utf8_filename, NULL);
+			compose_attach_append(compose, file, utf8_filename, NULL, NULL);
 			compose_changed_cb(NULL, compose);
 			if (free_data) {
 			g_free(file);
@@ -10546,7 +10562,7 @@ static void compose_attach_drag_received_cb (GtkWidget		*widget,
 			gchar *utf8_filename = conv_filename_to_utf8((const gchar *)tmp->data);
 			compose_attach_append
 				(compose, (const gchar *)tmp->data,
-				 utf8_filename, NULL);
+				 utf8_filename, NULL, NULL);
 			g_free(utf8_filename);
 		}
 		if (list) compose_changed_cb(NULL, compose);
@@ -10572,7 +10588,7 @@ static void compose_attach_drag_received_cb (GtkWidget		*widget,
 					TRUE, TRUE);
 			if (file) {
 				compose_attach_append(compose, (const gchar *)file, 
-					(const gchar *)file, "message/rfc822");
+					(const gchar *)file, "message/rfc822", NULL);
 				g_free(file);
 			}
 		}
