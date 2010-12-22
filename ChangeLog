@@ -1,3 +1,8 @@
+2010-12-22 [colin]	3.7.8cvs19
+
+	* src/textview.c
+		Fix wrong free
+
 2010-12-21 [colin]	3.7.8cvs18
 
 	* src/inc.c

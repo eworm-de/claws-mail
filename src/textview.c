@@ -748,7 +748,6 @@ static void textview_add_part(TextView *textview, MimeInfo *mimeinfo)
 			} else {
 				gtk_text_buffer_insert_pixbuf(buffer, &iter, pixbuf);
 				if (textview->stop_loading) {
-					g_free(uri);
 					return;
 				}
 				gtk_text_buffer_insert(buffer, &iter, " ", 1);
