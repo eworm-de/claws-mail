@@ -1,3 +1,8 @@
+2010-12-22 [paul]	3.7.8cvs22
+
+	* src/compose.h
+		fix missing file in 3.7.8cvs20
+
 2010-12-22 [colin]	3.7.8cvs21
 
 	* src/folderview.c

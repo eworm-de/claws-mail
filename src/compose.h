@@ -261,6 +261,7 @@ struct _AttachInfo
 	EncodingType encoding;
 	gchar *name;
 	goffset size;
+	gchar *charset;
 };
 
 typedef enum
