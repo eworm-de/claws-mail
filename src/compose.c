@@ -1676,6 +1676,7 @@ Compose *compose_forward(PrefsAccount *account, MsgInfo *msginfo,
 	GtkTextView *textview;
 	GtkTextBuffer *textbuf;
 	GtkTextIter iter;
+	ComposeMode mode;
 
 	cm_return_val_if_fail(msginfo != NULL, NULL);
 	cm_return_val_if_fail(msginfo->folder != NULL, NULL);
@@ -1685,7 +1686,11 @@ Compose *compose_forward(PrefsAccount *account, MsgInfo *msginfo,
 				(msginfo)))
 		account = cur_account;
 
-	compose = compose_create(account, msginfo->folder, COMPOSE_FORWARD, batch);
+	if (!prefs_common.forward_as_attachment)
+		mode = COMPOSE_FORWARD_INLINE;
+	else
+		mode = COMPOSE_FORWARD;
+	compose = compose_create(account, msginfo->folder, mode, batch);
 
 	compose->updating = TRUE;
 	compose->fwdinfo = procmsg_msginfo_get_full_info(msginfo);
@@ -5970,20 +5975,28 @@ static int compose_add_attachments(Compose *compose, MimeInfo *parent)
 		if (mimepart->type == MIMETYPE_MESSAGE && 
 		    !g_ascii_strcasecmp(mimepart->subtype, "rfc822")) {
 			mimepart->disposition = DISPOSITIONTYPE_INLINE;
-		} else {
-			if (ainfo->name) {
-				if (mimepart->type == MIMETYPE_APPLICATION && 
-				   !strcmp2(mimepart->subtype, "octet-stream"))
-					g_hash_table_insert(mimepart->typeparameters,
-						    g_strdup("name"), g_strdup(ainfo->name));
-				g_hash_table_insert(mimepart->dispositionparameters,
-					    g_strdup("filename"), g_strdup(ainfo->name));
+		} else if (mimepart->type == MIMETYPE_TEXT) {
+			if (!ainfo->name && compose->mode == COMPOSE_FORWARD_INLINE) {
+				/* Text parts with no name come from multipart/alternative
+				* forwards. Make sure the recipient won't look at the 
+				* original HTML part by mistake. */
 				mimepart->disposition = DISPOSITIONTYPE_ATTACHMENT;
+				ainfo->name = g_strdup_printf(_("Original %s part"),
+								mimepart->subtype);
 			}
+			if (ainfo->charset)
+				g_hash_table_insert(mimepart->typeparameters,
+						    g_strdup("charset"), g_strdup(ainfo->charset));
 		}
-		if (mimepart->type == MIMETYPE_TEXT && ainfo->charset)
-			g_hash_table_insert(mimepart->typeparameters,
-					g_strdup("charset"), g_strdup(ainfo->charset));
+		if (ainfo->name && mimepart->type != MIMETYPE_MESSAGE) {
+			if (mimepart->type == MIMETYPE_APPLICATION && 
+			   !strcmp2(mimepart->subtype, "octet-stream"))
+				g_hash_table_insert(mimepart->typeparameters,
+						g_strdup("name"), g_strdup(ainfo->name));
+			g_hash_table_insert(mimepart->dispositionparameters,
+					g_strdup("filename"), g_strdup(ainfo->name));
+			mimepart->disposition = DISPOSITIONTYPE_ATTACHMENT;
+		}
 
 		if (mimepart->type == MIMETYPE_MESSAGE
 		    || mimepart->type == MIMETYPE_MULTIPART)
@@ -7608,7 +7621,7 @@ static Compose *compose_create(PrefsAccount *account,
 			}
         	}
 	}
-    compose->gtkaspell = gtkaspell;
+	compose->gtkaspell = gtkaspell;
 	compose_spell_menu_changed(compose);
 	claws_spell_entry_set_gtkaspell(CLAWS_SPELL_ENTRY(subject_entry), gtkaspell);
 #endif

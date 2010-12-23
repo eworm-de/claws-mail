@@ -4096,3 +4096,4 @@
 ( cvs diff -u -r 1.382.2.563 -r 1.382.2.564 src/compose.c;  ) > 3.7.8cvs20.patchset
 ( cvs diff -u -r 1.207.2.217 -r 1.207.2.218 src/folderview.c;  cvs diff -u -r 1.20.2.26 -r 1.20.2.27 src/folderview.h;  ) > 3.7.8cvs21.patchset
 ( cvs diff -u -r 1.50.2.60 -r 1.50.2.61 src/compose.h;  ) > 3.7.8cvs22.patchset
+( cvs diff -u -r 1.382.2.564 -r 1.382.2.565 src/compose.c;  ) > 3.7.8cvs23.patchset

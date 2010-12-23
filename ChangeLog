@@ -1,3 +1,11 @@
+2010-12-23 [colin]	3.7.8cvs23
+
+	* src/compose.c
+		Finish fixing bug #2203: When forwarding (inline) and there
+		are some text/* parts with no name, set them a name and
+		set their disposition to attachment, so that recipients with
+		MUAs preferring HTML parts don't show them by default.
+
 2010-12-22 [paul]	3.7.8cvs22
 
 	* src/compose.h
