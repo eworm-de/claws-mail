@@ -1,3 +1,9 @@
+2011-01-03 [colin]	3.7.8cvs26
+
+	* src/unmime.c
+		Better quote-checking when unmim-ing headers
+		that may have comas.
+
 2011-01-03 [colin]	3.7.8cvs25
 
 	* src/unmime.c

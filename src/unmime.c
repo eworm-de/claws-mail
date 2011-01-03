@@ -45,11 +45,13 @@ gchar *unmime_header(const gchar *encoded_str)
 	GString *outbuf;
 	gchar *out_str;
 	gsize out_len;
+	int in_quote = FALSE;
 
 	outbuf = g_string_sized_new(strlen(encoded_str) * 2);
 
 	while (*p != '\0') {
 		gchar *decoded_text = NULL;
+		const gchar *quote_p;
 		gint len;
 
 		eword_begin_p = strstr(p, ENCODED_WORD_BEGIN);
@@ -57,6 +59,18 @@ gchar *unmime_header(const gchar *encoded_str)
 			g_string_append(outbuf, p);
 			break;
 		}
+		
+		quote_p = p;
+		while ((quote_p = strchr(quote_p, '"')) != NULL) {
+			if (quote_p && quote_p < eword_begin_p) {
+				/* Found a quote before the encoded word. */
+				in_quote = !in_quote;
+				quote_p++;
+			}
+			if (quote_p >= eword_begin_p)
+				break;
+		}
+
 		encoding_begin_p = strchr(eword_begin_p + 2, '?');
 		if (!encoding_begin_p) {
 			g_string_append(outbuf, p);
@@ -119,7 +133,7 @@ gchar *unmime_header(const gchar *encoded_str)
 		 * We check there are no quotes just to be sure. If there
 		 * are, well, the comma won't pose a problem, probably.
 		 */
-		if (strchr(decoded_text, ',') && !strchr(decoded_text, '"')) {
+		if (strchr(decoded_text, ',') && !in_quote) {
 			gchar *tmp = g_strdup_printf("\"%s\"", decoded_text);
 			g_free(decoded_text);
 			decoded_text = tmp;
