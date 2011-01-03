@@ -4098,3 +4098,4 @@
 ( cvs diff -u -r 1.50.2.60 -r 1.50.2.61 src/compose.h;  ) > 3.7.8cvs22.patchset
 ( cvs diff -u -r 1.382.2.564 -r 1.382.2.565 src/compose.c;  ) > 3.7.8cvs23.patchset
 ( cvs diff -u -r 1.47.2.51 -r 1.47.2.52 src/procheader.c;  ) > 3.7.8cvs24.patchset
+( cvs diff -u -r 1.8.2.14 -r 1.8.2.15 src/unmime.c;  ) > 3.7.8cvs25.patchset

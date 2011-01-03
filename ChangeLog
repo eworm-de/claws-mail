@@ -1,3 +1,12 @@
+2011-01-03 [colin]	3.7.8cvs25
+
+	* src/unmime.c
+		Fix bug #2299, "Incorrect handling of quoted printable coma
+		in headers". As this is really painful to fix by switching
+		the whole stuff to a list of headers tokens, we workaround
+		the problem by adding quotes around the encoded-word (making
+		it a quoted-string which continuity is already handled).
+
 2011-01-03 [colin]	3.7.8cvs24
 
 	* src/procheader.c

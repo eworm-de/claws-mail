@@ -114,6 +114,17 @@ gchar *unmime_header(const gchar *encoded_str)
 			continue;
 		}
 
+		/* An encoded word MUST not appear within a quoted string,
+		 * so quoting that word after decoding should be safe.
+		 * We check there are no quotes just to be sure. If there
+		 * are, well, the comma won't pose a problem, probably.
+		 */
+		if (strchr(decoded_text, ',') && !strchr(decoded_text, '"')) {
+			gchar *tmp = g_strdup_printf("\"%s\"", decoded_text);
+			g_free(decoded_text);
+			decoded_text = tmp;
+		}
+
 		/* convert to UTF-8 */
 		conv_str = conv_codeset_strdup(decoded_text, charset, NULL);
 		if (!conv_str || !g_utf8_validate(conv_str, -1, NULL)) {
