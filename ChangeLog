@@ -1,3 +1,8 @@
+2011-01-03 [colin]	3.7.8cvs24
+
+	* src/procheader.c
+		Remove dead code
+
 2010-12-23 [colin]	3.7.8cvs23
 
 	* src/compose.c

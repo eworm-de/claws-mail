@@ -201,21 +201,6 @@ GPtrArray *procheader_get_header_array_asis(FILE *fp)
 	while (procheader_get_one_field_asis(buf, sizeof(buf), fp) != -1) {
 		if ((header = procheader_parse_header(buf)) != NULL)
 			g_ptr_array_add(headers, header);
-			/*
-		if (*buf == ':') continue;
-		for (p = buf; *p && *p != ' '; p++) {
-			if (*p == ':') {
-				header = g_new(Header, 1);
-				header->name = g_strndup(buf, p - buf);
-				p++;
-				conv_unmime_header(tmp, sizeof(tmp), p, NULL);
-				header->body = g_strdup(tmp);
-
-				g_ptr_array_add(headers, header);
-				break;
-			}
-		}
-			*/
 	}
 
 	return headers;
