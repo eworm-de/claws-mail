@@ -550,8 +550,8 @@ static MimeInfo *pgpinline_decrypt(MimeInfo *mimeinfo)
 
 FILE_ERROR:
 	fclose(dstfp);
-       	g_free(fname);
-       	gpgme_data_release(plain);
+	g_free(fname);
+	gpgme_data_release(plain);
 	gpgme_release(ctx);
 	return NULL;
 }

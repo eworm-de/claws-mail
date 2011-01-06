@@ -390,6 +390,7 @@ GtkAspell *gtkaspell_new(const gchar *dictionary,
 		if (!alt_gtkaspeller) {
 			gtkaspell_checkers_error_message(
 				g_strdup_printf(_("Couldn't initialize %s speller."), dictionary));
+			gtkaspeller_delete(gtkaspeller);
 			g_free(gtkaspell);
 			return NULL;
 		}

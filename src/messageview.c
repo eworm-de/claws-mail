@@ -859,7 +859,7 @@ static gint disposition_notification_send(MsgInfo *msginfo)
 	addrp = addr;
 	
 	/* write queue headers */
-	ok=fprintf(fp, "AF:\n"
+	ok = fprintf(fp, "AF:\n"
 		    "NF:0\n"
 		    "PS:10\n"
 		    "SRH:1\n"
