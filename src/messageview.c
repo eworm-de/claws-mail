@@ -859,7 +859,7 @@ static gint disposition_notification_send(MsgInfo *msginfo)
 	addrp = addr;
 	
 	/* write queue headers */
-	if (fprintf(fp, "AF:\n"
+	ok=fprintf(fp, "AF:\n"
 		    "NF:0\n"
 		    "PS:10\n"
 		    "SRH:1\n"
@@ -875,14 +875,11 @@ static gint disposition_notification_send(MsgInfo *msginfo)
 		    "R:<%s>\n", 
 		    account->address,
 		    account->smtp_server?account->smtp_server:"",
-		    addrp) < 0) {
-		g_free(addrp);
-		fclose(fp);
-		claws_unlink(tmp);
-		return -1;
-	}
+		    addrp);
 
 	g_free(addrp);
+	if (ok < 0)
+		goto FILE_ERROR;
 	
 	/* check whether we need to save the message */
 	outbox = account_get_special_folder(account, F_OUTBOX); 
@@ -890,61 +887,40 @@ static gint disposition_notification_send(MsgInfo *msginfo)
 		outbox = NULL;
 	if (outbox) {
 		path = folder_item_get_identifier(outbox);
-		if (fprintf(fp, "SCF:%s\n", path) < 0) {
-			g_free(path);
-			fclose(fp);
-			claws_unlink(tmp);
-			return -1;
-		}
+		ok = fprintf(fp, "SCF:%s\n", path);
 		g_free(path);
+		
+		if (ok < 0)
+			goto FILE_ERROR;
 	}		
 
-	if (fprintf(fp, "X-Claws-End-Special-Headers: 1\n") < 0) {
-		fclose(fp);
-		claws_unlink(tmp);
-		return -1;
-	}
+	if (fprintf(fp, "X-Claws-End-Special-Headers: 1\n") < 0)
+		goto FILE_ERROR;
 
 	/* Date */
 	get_rfc822_date(buf, sizeof(buf));
-	if (fprintf(fp, "Date: %s\n", buf) < 0) {
-		fclose(fp);
-		claws_unlink(tmp);
-		return -1;
-	}
+	if (fprintf(fp, "Date: %s\n", buf) < 0)
+		goto FILE_ERROR;
 
 	/* From */
 	if (account->name && *account->name) {
 		notification_convert_header
 			(buf, sizeof(buf), account->name,
 			 strlen("From: "));
-		if (fprintf(fp, "From: %s <%s>\n", buf, account->address) < 0) {
-			fclose(fp);
-			claws_unlink(tmp);
-			return -1;
-		}
+		if (fprintf(fp, "From: %s <%s>\n", buf, account->address) < 0)
+			goto FILE_ERROR;
 	} else
-		if (fprintf(fp, "From: %s\n", account->address) < 0) {
-			fclose(fp);
-			claws_unlink(tmp);
-			return -1;
-		}
+		if (fprintf(fp, "From: %s\n", account->address) < 0)
+			goto FILE_ERROR;
 
-
-	if (fprintf(fp, "To: %s\n", to) < 0) {
-		fclose(fp);
-		claws_unlink(tmp);
-		return -1;
-	}
+	if (fprintf(fp, "To: %s\n", to) < 0)
+		goto FILE_ERROR;
 
 	/* Subject */
 	notification_convert_header(buf, sizeof(buf), msginfo->subject,
 				    strlen("Subject: "));
-	if (fprintf(fp, "Subject: Disposition notification: %s\n", buf) < 0) {
-		fclose(fp);
-		claws_unlink(tmp);
-		return -1;
-	}
+	if (fprintf(fp, "Subject: Disposition notification: %s\n", buf) < 0)
+		goto FILE_ERROR;
 
 	/* Message ID */
 	if (account->set_domain && account->domain) {
@@ -965,11 +941,8 @@ static gint disposition_notification_send(MsgInfo *msginfo)
 		}
 		generate_msgid(buf, sizeof(buf), addr);
 
-		if (fprintf(fp, "Message-ID: <%s>\n", buf) < 0) {
-			fclose(fp);
-			claws_unlink(tmp);
-			return -1;
-		}
+		if (fprintf(fp, "Message-ID: <%s>\n", buf) < 0)
+			goto FILE_ERROR;
 	}
 
 	boundary = generate_mime_boundary("DN");
@@ -984,7 +957,7 @@ static gint disposition_notification_send(MsgInfo *msginfo)
 		qp_encode_line(enc_sub, (const guchar *)msginfo->subject);
 		g_strstrip(enc_sub);
 	}
-	if (fprintf(fp, "MIME-Version: 1.0\n"
+	ok = fprintf(fp,"MIME-Version: 1.0\n"
 			"Content-Type: multipart/report; report-type=disposition-notification;\n"
 			"  boundary=\"%s\"\n"
 			"\n"
@@ -1033,17 +1006,15 @@ static gint disposition_notification_send(MsgInfo *msginfo)
 			orig_to?orig_to:"No To:",
 			account->address,
 			msginfo->msgid?msginfo->msgid:"NO MESSAGE ID",
-			boundary) < 0) {
-		fclose(fp);
-		claws_unlink(tmp);
-		g_free(boundary);
-		return -1;
-	}
+			boundary);
 
 	g_free(enc_sub);
 	g_free(orig_to);
 	g_free(date);
 	g_free(boundary);
+
+	if (ok < 0)
+		goto FILE_ERROR;	
 
 	if (fclose(fp) == EOF) {
 		FILE_OP_ERROR(tmp, "fclose");
@@ -1081,6 +1052,11 @@ static gint disposition_notification_send(MsgInfo *msginfo)
 		folder_item_remove_msg(queue, num);
 
 	return ok;
+
+FILE_ERROR:
+	fclose(fp);
+	claws_unlink(tmp);
+	return -1;
 }
 
 static gboolean find_encrypted_func(GNode *node, gpointer data)

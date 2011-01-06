@@ -654,6 +654,7 @@ gint procmime_get_part(const gchar *outfile, MimeInfo *mimeinfo)
 	while ((restlength > 0) && ((readlength = fread(buf, 1, restlength > BUFFSIZE ? BUFFSIZE : restlength, infp)) > 0)) {
 		if (fwrite(buf, 1, readlength, outfp) != readlength) {
 			saved_errno = errno;
+			fclose(infp);
 			fclose(outfp);
 			return -(saved_errno);
 		}

@@ -280,6 +280,7 @@ static gint pgpinline_check_signature(MimeInfo *mimeinfo)
 	if ((err = gpgme_new(&data->ctx)) != GPG_ERR_NO_ERROR) {
 		debug_print(("Couldn't initialize GPG context, %s"), gpgme_strerror(err));
 		privacy_set_error(_("Couldn't initialize GPG context, %s"), gpgme_strerror(err));
+		g_free(textdata);
 		return 0;
 	}
 	gpgme_set_textmode(data->ctx, 1);
@@ -450,10 +451,7 @@ static MimeInfo *pgpinline_decrypt(MimeInfo *mimeinfo)
 			src_codeset) < 0) {
         	FILE_OP_ERROR(fname, "fprintf");
 		privacy_set_error(_("Couldn't write to decrypted file %s"), fname);
-        	g_free(fname);
-        	gpgme_data_release(plain);
-		gpgme_release(ctx);
-		return NULL;
+		goto FILE_ERROR;
 	}
 
 	/* Store any part before encrypted text */
@@ -462,10 +460,7 @@ static MimeInfo *pgpinline_decrypt(MimeInfo *mimeinfo)
 	    if (fwrite(textdata, 1, pos - textdata, dstfp) < pos - textdata) {
         	FILE_OP_ERROR(fname, "fwrite");
 		privacy_set_error(_("Couldn't write to decrypted file %s"), fname);
-        	g_free(fname);
-        	gpgme_data_release(plain);
-		gpgme_release(ctx);
-		return NULL;
+		goto FILE_ERROR;
 	    }
 	}
 	
@@ -474,20 +469,14 @@ static MimeInfo *pgpinline_decrypt(MimeInfo *mimeinfo)
 		dstfp) < strlen(_("\n--- Start of PGP/Inline encrypted data ---\n"))) {
         	FILE_OP_ERROR(fname, "fwrite");
 		privacy_set_error(_("Couldn't write to decrypted file %s"), fname);
-        	g_free(fname);
-        	gpgme_data_release(plain);
-		gpgme_release(ctx);
-		return NULL;
+		goto FILE_ERROR;
 	}
 	chars = sgpgme_data_release_and_get_mem(plain, &len);
 	if (len > 0) {
 		if (fwrite(chars, 1, len, dstfp) < len) {
         		FILE_OP_ERROR(fname, "fwrite");
 			privacy_set_error(_("Couldn't write to decrypted file %s"), fname);
-        		g_free(fname);
-        		gpgme_data_release(plain);
-			gpgme_release(ctx);
-			return NULL;
+			goto FILE_ERROR;
 		}
 	}
 	/* Store any part after encrypted text */
@@ -496,10 +485,7 @@ static MimeInfo *pgpinline_decrypt(MimeInfo *mimeinfo)
 		dstfp) < strlen(_("--- End of PGP/Inline encrypted data ---\n"))) {
         		FILE_OP_ERROR(fname, "fwrite");
 			privacy_set_error(_("Couldn't write to decrypted file %s"), fname);
-        		g_free(fname);
-        		gpgme_data_release(plain);
-			gpgme_release(ctx);
-			return NULL;
+			goto FILE_ERROR;
 	}
 	if (pos != NULL) {
 	    pos = strstr(pos, end_indicator);
@@ -508,10 +494,7 @@ static MimeInfo *pgpinline_decrypt(MimeInfo *mimeinfo)
 		if (fwrite(pos, 1, strlen(pos), dstfp) < strlen(pos)) {
         		FILE_OP_ERROR(fname, "fwrite");
 			privacy_set_error(_("Couldn't write to decrypted file %s"), fname);
-        		g_free(fname);
-        		gpgme_data_release(plain);
-			gpgme_release(ctx);
-			return NULL;
+			goto FILE_ERROR;
 		}
 	    }
 	}
@@ -564,6 +547,13 @@ static MimeInfo *pgpinline_decrypt(MimeInfo *mimeinfo)
 		gpgme_release(ctx);
 
 	return decinfo;
+
+FILE_ERROR:
+	fclose(dstfp);
+       	g_free(fname);
+       	gpgme_data_release(plain);
+	gpgme_release(ctx);
+	return NULL;
 }
 
 static gboolean pgpinline_sign(MimeInfo *mimeinfo, PrefsAccount *account, const gchar *from_addr)
@@ -752,6 +742,7 @@ static gboolean pgpinline_encrypt(MimeInfo *mimeinfo, const gchar *encrypt_data)
 	if ((err = gpgme_new(&ctx)) != GPG_ERR_NO_ERROR) {
 		debug_print(("Couldn't initialize GPG context, %s"), gpgme_strerror(err));
 		privacy_set_error(_("Couldn't initialize GPG context, %s"), gpgme_strerror(err));
+		g_free(kset);
 		return FALSE;
 	}
 	i = 0;
@@ -761,6 +752,7 @@ static gboolean pgpinline_encrypt(MimeInfo *mimeinfo, const gchar *encrypt_data)
 		if (err) {
 			debug_print("can't add key '%s'[%d] (%s)\n", fprs[i],i, gpgme_strerror(err));
 			privacy_set_error(_("Couldn't add GPG key %s, %s"), fprs[i], gpgme_strerror(err));
+			g_free(kset);
 			return FALSE;
 		}
 		debug_print("found %s at %d\n", fprs[i], i);
@@ -777,6 +769,7 @@ static gboolean pgpinline_encrypt(MimeInfo *mimeinfo, const gchar *encrypt_data)
 		if (!msgcontent->node->children) {
 			debug_print("msgcontent->node->children NULL, bailing\n");
 			privacy_set_error(_("Malformed message"));
+			g_free(kset);
 			return FALSE;
 		}
 		msgcontent = (MimeInfo *) msgcontent->node->children->data;
@@ -788,6 +781,7 @@ static gboolean pgpinline_encrypt(MimeInfo *mimeinfo, const gchar *encrypt_data)
 	if (fp == NULL) {
 		privacy_set_error(_("Couldn't create temporary file, %s"), strerror(errno));
 		perror("my_tmpfile");
+		g_free(kset);
 		return FALSE;
 	}
 	procmime_write_mimeinfo(msgcontent, fp);
@@ -804,6 +798,7 @@ static gboolean pgpinline_encrypt(MimeInfo *mimeinfo, const gchar *encrypt_data)
 	if ((err = gpgme_new(&ctx)) != GPG_ERR_NO_ERROR) {
 		debug_print(("Couldn't initialize GPG context, %s"), gpgme_strerror(err));
 		privacy_set_error(_("Couldn't initialize GPG context, %s"), gpgme_strerror(err));
+		g_free(kset);
 		return FALSE;
 	}
 	gpgme_set_armor(ctx, 1);
@@ -811,6 +806,7 @@ static gboolean pgpinline_encrypt(MimeInfo *mimeinfo, const gchar *encrypt_data)
 	err = gpgme_op_encrypt(ctx, kset, GPGME_ENCRYPT_ALWAYS_TRUST, gpgtext, gpgenc);
 
 	enccontent = sgpgme_data_release_and_get_mem(gpgenc, &len);
+	g_free(kset);
 
 	if (enccontent == NULL || len <= 0) {
 		g_warning("sgpgme_data_release_and_get_mem failed");

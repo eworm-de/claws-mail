@@ -219,6 +219,7 @@ static void export_ok_cb(GtkWidget *widget, gpointer data)
 	if (!src) {
 		alertpanel_error(_("Couldn't find the source folder."));
 		gtk_widget_grab_focus(src_entry);
+		g_free(mbox);
 		return;
 	} else {
 		export_ok = export_to_mbox(src, mbox);

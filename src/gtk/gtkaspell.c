@@ -390,6 +390,7 @@ GtkAspell *gtkaspell_new(const gchar *dictionary,
 		if (!alt_gtkaspeller) {
 			gtkaspell_checkers_error_message(
 				g_strdup_printf(_("Couldn't initialize %s speller."), dictionary));
+			g_free(gtkaspell);
 			return NULL;
 		}
 
@@ -666,6 +667,7 @@ static GtkAspeller *gtkaspeller_real_new(Dictionary *dict)
 	if (!broker) {
 		gtkaspell_checkers_error_message(
 				g_strdup(_("Couldn't initialize Enchant broker.")));
+		g_free(gtkaspeller);
 		return NULL;
 	}
 	if ((speller = set_dictionary(broker, dict)) == NULL) {
@@ -673,6 +675,7 @@ static GtkAspeller *gtkaspeller_real_new(Dictionary *dict)
 				g_strdup_printf(_("Couldn't initialize %s dictionary:"), dict->fullname));
 		gtkaspell_checkers_error_message(
 				g_strdup(enchant_broker_get_error(broker)));
+		g_free(gtkaspeller);
 		return NULL;
 	}
 	gtkaspeller->speller = speller;

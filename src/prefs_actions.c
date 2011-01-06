@@ -506,6 +506,7 @@ void prefs_actions_write_config(void)
 		    fputc('\n', pfile->fp) == EOF) {
 			FILE_OP_ERROR(rcpath, "fputs || fputc");
 			prefs_file_close_revert(pfile);
+			g_free(act);
 			g_free(rcpath);
 			return;
 		}

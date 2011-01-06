@@ -227,6 +227,7 @@ static void import_ok_cb(GtkWidget *widget, gpointer data)
 	if (!dest) {
 		alertpanel_error(_("Can't find the destination folder."));
 		gtk_widget_grab_focus(dest_entry);
+		g_free(mbox);
 		return;
 	} else {
 		import_ok = proc_mbox(dest, mbox, FALSE, NULL);

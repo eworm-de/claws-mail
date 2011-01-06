@@ -459,6 +459,7 @@ static MimeInfo *smime_decrypt(MimeInfo *mimeinfo)
 	if (len > 0) {
 		if (fwrite(chars, 1, len, dstfp) < len) {
         		FILE_OP_ERROR(fname, "fwrite");
+        		fclose(dstfp);
         		g_free(fname);
         		g_free(chars);
         		gpgme_data_release(plain);
@@ -524,7 +525,7 @@ static MimeInfo *smime_decrypt(MimeInfo *mimeinfo)
 gboolean smime_sign(MimeInfo *mimeinfo, PrefsAccount *account, const gchar *from_addr)
 {
 	MimeInfo *msgcontent, *sigmultipart, *newinfo;
-	gchar *textstr, *micalg;
+	gchar *textstr, *micalg = NULL;
 	FILE *fp;
 	gchar *boundary = NULL;
 	gchar *sigcontent;
@@ -647,12 +648,14 @@ gboolean smime_sign(MimeInfo *mimeinfo, PrefsAccount *account, const gchar *from
 
 	if (!sigcontent) {
 		gpgme_release(ctx);
+		g_free(micalg);
 		return FALSE;
 	}
 	real_content = sigcontent+strlen("-----BEGIN SIGNED MESSAGE-----\n");
 	if (!strstr(real_content, "-----END SIGNED MESSAGE-----")) {
 		debug_print("missing end\n");
 		gpgme_release(ctx);
+		g_free(micalg);
 		return FALSE;
 	}
 	*strstr(real_content, "-----END SIGNED MESSAGE-----") = '\0';
@@ -806,6 +809,7 @@ gboolean smime_encrypt(MimeInfo *mimeinfo, const gchar *encrypt_data)
 	fp = g_fopen(tmpfile, "wb");
 	if (fp == NULL) {
 		perror("get_tmp_file");
+		g_free(kset);
 		return FALSE;
 	}
 	procmime_decode_content(msgcontent);
@@ -816,6 +820,7 @@ gboolean smime_encrypt(MimeInfo *mimeinfo, const gchar *encrypt_data)
 	fp = g_fopen(tmpfile, "rb");
 	if (fp == NULL) {
 		perror("get_tmp_file");
+		g_free(kset);
 		return FALSE;
 	}
 	g_free(tmpfile);
@@ -833,6 +838,7 @@ gboolean smime_encrypt(MimeInfo *mimeinfo, const gchar *encrypt_data)
 	gpgme_op_encrypt(ctx, kset, GPGME_ENCRYPT_ALWAYS_TRUST, gpgtext, gpgenc);
 
 	gpgme_release(ctx);
+	g_free(kset);
 	enccontent = sgpgme_data_release_and_get_mem(gpgenc, &len);
 
 	if (!enccontent) {
