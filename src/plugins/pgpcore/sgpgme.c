@@ -327,8 +327,21 @@ gchar *sgpgme_sigstat_info_full(gpgme_ctx_t ctx, gpgme_verify_result_t status)
 				user = user->next;
 			}
 			g_string_append_printf(siginfo,
-				_("Primary key fingerprint: %s\n"), 
-				sig ? sig->fpr: "?");
+				_("Primary key fingerprint:"));
+			const char* primary_fpr = NULL;
+			if (key && key->subkeys && key->subkeys->fpr)
+				primary_fpr = key->subkeys->fpr;
+			else
+				g_string_append(siginfo, " ?");
+			int idx; /* now pretty-print the fingerprint */
+			for (idx=0; primary_fpr && *primary_fpr!='\0'; idx++, primary_fpr++) {
+				if (idx%4==0)
+					g_string_append_c(siginfo, ' ');
+				if (idx%20==0)
+					g_string_append_c(siginfo, ' ');
+				g_string_append_c(siginfo, (gchar)*primary_fpr);
+			}
+			g_string_append_c(siginfo, '\n');
 #ifdef HAVE_GPGME_PKA_TRUST
                         if (sig->pka_trust == 1 && sig->pka_address) {
                                 g_string_append_printf(siginfo,

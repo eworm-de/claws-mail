@@ -1,3 +1,10 @@
+2011-01-06 [paul]	3.7.8cvs27
+
+	* src/plugins/pgpcore/sgpgme.c
+		fix bug #2322, 'GPG Full info: showing subkey
+		ID instead of primary key fingerprint'
+		Patch by Sébastien Bigaret.
+
 2011-01-03 [colin]	3.7.8cvs26
 
 	* src/unmime.c
