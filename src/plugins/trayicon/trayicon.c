@@ -350,10 +350,6 @@ static void create_trayicon()
 #if GTK_CHECK_VERSION(2,14,0)
 	gtk_status_icon_set_title(GTK_STATUS_ICON(trayicon), _("Claws Mail"));
 #endif
-	trayicon_update_theme(NULL, NULL);
-
-	gtk_status_icon_set_from_pixbuf(GTK_STATUS_ICON(trayicon), nomail_pixbuf[0]);
-
 	g_signal_connect(G_OBJECT(trayicon), "button-press-event",
 		G_CALLBACK(click_cb), NULL);
 
@@ -377,7 +373,7 @@ static void create_trayicon()
 	traymenu_popup = gtk_menu_item_get_submenu(GTK_MENU_ITEM(
 				gtk_ui_manager_get_widget(gtkut_ui_manager(), "/Menus/TrayiconPopup")) );
 
-	update(NULL);
+	trayicon_update_theme(NULL, NULL);
 }
 
 int plugin_init(gchar **error)
@@ -474,6 +470,7 @@ gboolean plugin_done(void)
 	if (claws_is_exiting())
 		return TRUE;
 
+	gtk_status_icon_set_visible(trayicon, FALSE);
 	g_object_unref(G_OBJECT(trayicon));
 	trayicon = NULL;
 

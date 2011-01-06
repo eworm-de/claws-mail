@@ -1,3 +1,11 @@
+2011-01-06 [pawel]	3.7.8cvs32
+
+	* src/plugins/trayicon/trayicon.c
+		- fix logic bug which caused icon to be
+		  always set no-mail status on plugin load
+		- force icon hide on plugin_done(), without
+		  it empty space(?!) is left in tray under KDE3 and KDE4
+
 2011-01-06 [colin]	3.7.8cvs31
 
 	* src/addrharvest.c
