@@ -116,6 +116,24 @@ void quote_fmt_quote_description(GtkWidget *widget, GtkWidget *pref_window)
 	description_window_create(&quote_desc_win);
 }
 
+static void quote_fmt_add_buttons(GtkWindow* parent_window, GtkWidget *parent_box,
+			gboolean add_info_button, void(*set_defaults_func)(void)) {
+	GtkWidget *hbox_btns;
+	
+	if (!add_info_button && !set_defaults_func)
+		return;
+	
+	hbox_btns = gtk_hbox_new(FALSE, 0);
+	gtk_box_pack_end (GTK_BOX(parent_box), hbox_btns, FALSE, TRUE, 0);	
+
+	if (add_info_button)
+		quotefmt_add_info_button(parent_window, hbox_btns);
+	if (set_defaults_func)
+		quotefmt_add_defaults_button(parent_window, hbox_btns, set_defaults_func);
+
+	gtk_widget_show(GTK_WIDGET(hbox_btns));
+}
+
 void quotefmt_create_new_msg_fmt_widgets(GtkWindow *parent_window,
 						GtkWidget *parent_box,
 						GtkWidget **checkbtn_compose_with_format,
@@ -230,10 +248,8 @@ void quotefmt_create_new_msg_fmt_widgets(GtkWindow *parent_window,
 		SET_TOGGLE_SENSITIVITY(checkbtn_use_format, text_format);
 	}
 
-	if (add_info_button)
-		quotefmt_add_info_button(parent_window, vbox_format);
-	if (set_defaults_func)
-		quotefmt_add_defaults_button(parent_window, vbox_format, set_defaults_func);
+	quote_fmt_add_buttons(parent_window, vbox_format,
+				add_info_button, set_defaults_func);
 
 	if (checkbtn_compose_with_format)
 		*checkbtn_compose_with_format = checkbtn_use_format;
@@ -362,10 +378,8 @@ void quotefmt_create_reply_fmt_widgets(GtkWindow *parent_window,
 		SET_TOGGLE_SENSITIVITY(checkbtn_use_format, text_quotefmt);
 	}
 
-	if (add_info_button)
-		quotefmt_add_info_button(parent_window, vbox_quote);
-	if (set_defaults_func)
-		quotefmt_add_defaults_button(parent_window, vbox_quote, set_defaults_func);
+	quote_fmt_add_buttons(parent_window, vbox_quote,
+				add_info_button, set_defaults_func);
 
 	if (checkbtn_reply_with_format)
 		*checkbtn_reply_with_format = checkbtn_use_format;
@@ -496,10 +510,8 @@ void quotefmt_create_forward_fmt_widgets(GtkWindow *parent_window,
 		SET_TOGGLE_SENSITIVITY(checkbtn_use_format, text_fw_quotefmt);
 	}
 
-	if (add_info_button)
-		quotefmt_add_info_button(parent_window, vbox_quote);
-	if (set_defaults_func)
-		quotefmt_add_defaults_button(parent_window, vbox_quote, set_defaults_func);
+	quote_fmt_add_buttons(parent_window, vbox_quote,
+				add_info_button, set_defaults_func);
 
 	if (checkbtn_forward_with_format)
 		*checkbtn_forward_with_format = checkbtn_use_format;
@@ -511,17 +523,11 @@ void quotefmt_create_forward_fmt_widgets(GtkWindow *parent_window,
 
 void quotefmt_add_info_button(GtkWindow *parent_window, GtkWidget *parent_box)
 {
-	GtkWidget *hbox_formatdesc;
 	GtkWidget *btn_formatdesc;
-
-	hbox_formatdesc = gtk_hbox_new (FALSE, 32);
-	gtk_widget_show (hbox_formatdesc);
-	gtk_box_pack_start (GTK_BOX (parent_box), hbox_formatdesc, FALSE, FALSE,
-				VBOX_BORDER);
 
 	btn_formatdesc = gtk_button_new_from_stock(GTK_STOCK_INFO);
 	gtk_widget_show (btn_formatdesc);
-	gtk_box_pack_start (GTK_BOX (hbox_formatdesc), btn_formatdesc, FALSE, FALSE, 0);
+	gtk_box_pack_start (GTK_BOX (parent_box), btn_formatdesc, FALSE, FALSE, 0);
 	g_signal_connect(G_OBJECT(btn_formatdesc), "clicked",
 			 G_CALLBACK(quote_fmt_quote_description), GTK_WIDGET(parent_window));
 }
@@ -530,21 +536,15 @@ void quotefmt_add_defaults_button(GtkWindow *parent_window,
 								  GtkWidget *parent_box,
 								  void(*set_defaults_func)(void))
 {
-	GtkWidget *hbox_formatdesc;
 	GtkWidget *btn_formatdesc;
 
 	cm_return_if_fail(set_defaults_func != NULL);
-
-	hbox_formatdesc = gtk_hbox_new (FALSE, 32);
-	gtk_widget_show (hbox_formatdesc);
-	gtk_box_pack_start (GTK_BOX (parent_box), hbox_formatdesc, FALSE, FALSE,
-				VBOX_BORDER);
 
 	btn_formatdesc = gtk_button_new_with_mnemonic (_("Defaults"));
 	gtk_button_set_image (GTK_BUTTON(btn_formatdesc),
 		gtk_image_new_from_stock(GTK_STOCK_UNDO, GTK_ICON_SIZE_BUTTON));
 	gtk_widget_show (btn_formatdesc);
-	gtk_box_pack_start (GTK_BOX (hbox_formatdesc), btn_formatdesc, FALSE, FALSE, 0);
+	gtk_box_pack_end (GTK_BOX (parent_box), btn_formatdesc, FALSE, FALSE, 0);
 	g_signal_connect(G_OBJECT(btn_formatdesc), "clicked",
 			 G_CALLBACK(set_defaults_func), GTK_WIDGET(parent_window));
 }

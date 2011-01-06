@@ -1332,6 +1332,7 @@ static void prefs_folder_item_templates_create_widget_func(PrefsPage * page_,
 	GtkWidget *new_msg_format_rec_checkbtn;
 	GtkWidget *reply_format_rec_checkbtn;
 	GtkWidget *forward_format_rec_checkbtn;
+	GtkWidget *hbox;
 
 	page->item = item;
 
@@ -1370,9 +1371,13 @@ static void prefs_folder_item_templates_create_widget_func(PrefsPage * page_,
 	address_completion_register_entry(GTK_ENTRY(page->compose_override_from_format),
 			TRUE);
 
+	hbox = gtk_hbox_new (FALSE, 0);
+	gtk_box_pack_end (GTK_BOX(vbox), hbox, FALSE, FALSE, 0);
+	quotefmt_add_info_button(window, hbox);
+	
 	new_msg_format_rec_checkbtn = gtk_check_button_new_with_label(
 			_("Apply to subfolders"));
-	gtk_box_pack_end (GTK_BOX(vbox), new_msg_format_rec_checkbtn, FALSE, FALSE, 0);
+	gtk_box_pack_end (GTK_BOX(hbox), new_msg_format_rec_checkbtn, FALSE, FALSE, 0);
 	gtk_notebook_append_page(GTK_NOTEBOOK(notebook), vbox, gtk_label_new(_("Compose")));
 
 	/* reply format */
@@ -1391,9 +1396,13 @@ static void prefs_folder_item_templates_create_widget_func(PrefsPage * page_,
 	address_completion_register_entry(GTK_ENTRY(page->reply_override_from_format),
 			TRUE);
 
+	hbox = gtk_hbox_new (FALSE, 0);
+	gtk_box_pack_end (GTK_BOX(vbox), hbox, FALSE, FALSE, 0);
+	quotefmt_add_info_button(window, hbox);
+
 	reply_format_rec_checkbtn = gtk_check_button_new_with_label(
 			_("Apply to subfolders"));
-	gtk_box_pack_end (GTK_BOX(vbox), reply_format_rec_checkbtn, FALSE, FALSE, 0);
+	gtk_box_pack_end (GTK_BOX(hbox), reply_format_rec_checkbtn, FALSE, FALSE, 0);
 	gtk_notebook_append_page(GTK_NOTEBOOK(notebook), vbox, gtk_label_new(_("Reply")));
 
 	/* forward format */
@@ -1412,13 +1421,14 @@ static void prefs_folder_item_templates_create_widget_func(PrefsPage * page_,
 	address_completion_register_entry(GTK_ENTRY(page->forward_override_from_format),
 			TRUE);
 
+	hbox = gtk_hbox_new (FALSE, 0);
+	gtk_box_pack_end (GTK_BOX(vbox), hbox, FALSE, FALSE, 0);
+	quotefmt_add_info_button(window, hbox);
+
 	forward_format_rec_checkbtn = gtk_check_button_new_with_label(
 			_("Apply to subfolders"));
-	gtk_box_pack_end (GTK_BOX(vbox), forward_format_rec_checkbtn, FALSE, FALSE, 0);
+	gtk_box_pack_end (GTK_BOX(hbox), forward_format_rec_checkbtn, FALSE, FALSE, 0);
 	gtk_notebook_append_page(GTK_NOTEBOOK(notebook), vbox, gtk_label_new(_("Forward")));
-
-	/* information button */
-	quotefmt_add_info_button(window, page_vbox);
 
 	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(page->checkbtn_compose_with_format),
 			item->prefs->compose_with_format);

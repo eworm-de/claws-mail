@@ -114,7 +114,7 @@ static void prefs_quote_create_widget(PrefsPage *_page, GtkWindow *window,
 				NULL,
 				&prefs_quote->entry_subject,
 				&prefs_quote->text_format,
-				FALSE, prefs_quote_set_default_new_msg_fmt);
+				TRUE, prefs_quote_set_default_new_msg_fmt);
 	gtk_notebook_append_page(GTK_NOTEBOOK(notebook), vbox2, gtk_label_new(_("Compose")));
 
 	/* reply */
@@ -129,7 +129,7 @@ static void prefs_quote_create_widget(PrefsPage *_page, GtkWindow *window,
 				NULL,
 				&prefs_quote->entry_quotemark,
 				&prefs_quote->text_quotefmt,
-				FALSE, prefs_quote_set_default_reply_fmt);
+				TRUE, prefs_quote_set_default_reply_fmt);
 	gtk_notebook_append_page(GTK_NOTEBOOK(notebook), vbox2, gtk_label_new(_("Reply")));
 
 	/* forward */
@@ -144,11 +144,8 @@ static void prefs_quote_create_widget(PrefsPage *_page, GtkWindow *window,
 				NULL,
 				&prefs_quote->entry_fw_quotemark,
 				&prefs_quote->text_fw_quotefmt,
-				FALSE, prefs_quote_set_default_forward_fmt);
+				TRUE, prefs_quote_set_default_forward_fmt);
 	gtk_notebook_append_page(GTK_NOTEBOOK(notebook), vbox2, gtk_label_new(_("Forward")));
-
-	/* info button */
-	quotefmt_add_info_button(window, vbox);
 
 	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(prefs_quote->checkbtn_compose_with_format),
 			prefs_common.compose_with_format);
