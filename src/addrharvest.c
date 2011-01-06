@@ -529,7 +529,7 @@ static void addrharvest_parse_address(
 			}
 			else {
 				name = buffer;
-				name = conv_unmime_header(buffer, NULL);
+				name = conv_unmime_header(buffer, NULL, TRUE);
 			}
 
 			/* Insert into address book */

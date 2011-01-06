@@ -1386,32 +1386,32 @@ static void procmime_parse_message_rfc822(MimeInfo *mimeinfo, gboolean short_sca
 	fseek(fp, mimeinfo->offset, SEEK_SET);
 	procheader_get_header_fields(fp, hentry);
 	if (hentry[0].body != NULL) {
-                tmp = conv_unmime_header(hentry[0].body, NULL);
+		tmp = conv_unmime_header(hentry[0].body, NULL, FALSE);
                 g_free(hentry[0].body);
                 hentry[0].body = tmp;
         }                
 	if (hentry[2].body != NULL) {
-                tmp = conv_unmime_header(hentry[2].body, NULL);
+		tmp = conv_unmime_header(hentry[2].body, NULL, FALSE);
                 g_free(hentry[2].body);
                 hentry[2].body = tmp;
         }                
 	if (hentry[4].body != NULL) {
-                tmp = conv_unmime_header(hentry[4].body, NULL);
+		tmp = conv_unmime_header(hentry[4].body, NULL, FALSE);
                 g_free(hentry[4].body);
                 hentry[4].body = tmp;
         }                
 	if (hentry[5].body != NULL) {
-                tmp = conv_unmime_header(hentry[5].body, NULL);
+		tmp = conv_unmime_header(hentry[5].body, NULL, FALSE);
                 g_free(hentry[5].body);
                 hentry[5].body = tmp;
         }                
 	if (hentry[7].body != NULL) {
-                tmp = conv_unmime_header(hentry[7].body, NULL);
+		tmp = conv_unmime_header(hentry[7].body, NULL, FALSE);
                 g_free(hentry[7].body);
                 hentry[7].body = tmp;
         }
 	if (hentry[8].body != NULL) {
-                tmp = conv_unmime_header(hentry[8].body, NULL);
+		tmp = conv_unmime_header(hentry[8].body, NULL, FALSE);
                 g_free(hentry[8].body);
                 hentry[8].body = tmp;
         }
@@ -1509,32 +1509,32 @@ bail:
 #define GET_HEADERS() {						\
 	procheader_get_header_fields(fp, hentry);		\
         if (hentry[0].body != NULL) {				\
-                tmp = conv_unmime_header(hentry[0].body, NULL);	\
+		tmp = conv_unmime_header(hentry[0].body, NULL, FALSE);	\
                 g_free(hentry[0].body);				\
                 hentry[0].body = tmp;				\
         }                					\
         if (hentry[2].body != NULL) {				\
-                tmp = conv_unmime_header(hentry[2].body, NULL);	\
+		tmp = conv_unmime_header(hentry[2].body, NULL, FALSE);	\
                 g_free(hentry[2].body);				\
                 hentry[2].body = tmp;				\
         }                					\
         if (hentry[4].body != NULL) {				\
-                tmp = conv_unmime_header(hentry[4].body, NULL);	\
+		tmp = conv_unmime_header(hentry[4].body, NULL, FALSE);	\
                 g_free(hentry[4].body);				\
                 hentry[4].body = tmp;				\
         }                					\
         if (hentry[5].body != NULL) {				\
-                tmp = conv_unmime_header(hentry[5].body, NULL);	\
+		tmp = conv_unmime_header(hentry[5].body, NULL, FALSE);	\
                 g_free(hentry[5].body);				\
                 hentry[5].body = tmp;				\
         }                					\
 	if (hentry[6].body != NULL) {				\
-                tmp = conv_unmime_header(hentry[6].body, NULL);	\
+		tmp = conv_unmime_header(hentry[6].body, NULL, FALSE);	\
                 g_free(hentry[6].body);				\
                 hentry[6].body = tmp;				\
         }                					\
 	if (hentry[7].body != NULL) {				\
-                tmp = conv_unmime_header(hentry[7].body, NULL);	\
+		tmp = conv_unmime_header(hentry[7].body, NULL, FALSE);	\
                 g_free(hentry[7].body);				\
                 hentry[7].body = tmp;				\
         }							\

@@ -800,10 +800,10 @@ static MsgInfo *news_parse_xover(struct newsnntp_xover_resp_item *item)
 	msginfo->date = g_strdup(item->ovr_date);
 	msginfo->date_t = procheader_date_parse(NULL, item->ovr_date, 0);
 
-        msginfo->from = conv_unmime_header(item->ovr_author, NULL);
+	msginfo->from = conv_unmime_header(item->ovr_author, NULL, TRUE);
 	msginfo->fromname = procheader_get_fromname(msginfo->from);
 
-        msginfo->subject = conv_unmime_header(item->ovr_subject, NULL);
+	msginfo->subject = conv_unmime_header(item->ovr_subject, NULL, TRUE);
 
 	remove_return(msginfo->from);
 	remove_return(msginfo->fromname);

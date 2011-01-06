@@ -22,6 +22,6 @@
 
 #include <glib.h>
 
-gchar *unmime_header	(const gchar	*encoded_str);
+gchar *unmime_header	(const gchar *encoded_str, gboolean addr_field);
 
 #endif /* __UNMIME_H__ */

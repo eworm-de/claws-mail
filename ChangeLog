@@ -1,3 +1,18 @@
+2011-01-06 [colin]	3.7.8cvs31
+
+	* src/addrharvest.c
+	* src/codeconv.c
+	* src/codeconv.h
+	* src/compose.c
+	* src/news.c
+	* src/procheader.c
+	* src/procmime.c
+	* src/unmime.c
+	* src/unmime.h
+		Unmime headers differently whether they're addresses or not:
+		It's useless to quote things containing commas if it's in
+		subject, for example. (introduced in 3.7.8cvs26)
+
 2011-01-06 [colin]	3.7.8cvs30
 
 	* src/gtk/gtkaspell.c

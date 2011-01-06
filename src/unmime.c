@@ -34,7 +34,7 @@
 
 /* Decodes headers based on RFC2045 and RFC2047. */
 
-gchar *unmime_header(const gchar *encoded_str)
+gchar *unmime_header(const gchar *encoded_str, gboolean addr_field)
 {
 	const gchar *p = encoded_str;
 	const gchar *eword_begin_p, *encoding_begin_p, *text_begin_p,
@@ -133,7 +133,7 @@ gchar *unmime_header(const gchar *encoded_str)
 		 * We check there are no quotes just to be sure. If there
 		 * are, well, the comma won't pose a problem, probably.
 		 */
-		if (strchr(decoded_text, ',') && !in_quote) {
+		if (addr_field && strchr(decoded_text, ',') && !in_quote) {
 			gchar *tmp = g_strdup_printf("\"%s\"", decoded_text);
 			g_free(decoded_text);
 			decoded_text = tmp;

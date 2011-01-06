@@ -2745,13 +2745,13 @@ static gint compose_parse_header(Compose *compose, MsgInfo *msginfo)
 		if (hentry[H_REPLY_TO].body[0] != '\0') {
 			compose->replyto =
 				conv_unmime_header(hentry[H_REPLY_TO].body,
-						   NULL);
+						   NULL, TRUE);
 		}
 		g_free(hentry[H_REPLY_TO].body);
 		hentry[H_REPLY_TO].body = NULL;
 	}
 	if (hentry[H_CC].body != NULL) {
-		compose->cc = conv_unmime_header(hentry[H_CC].body, NULL);
+		compose->cc = conv_unmime_header(hentry[H_CC].body, NULL, TRUE);
 		g_free(hentry[H_CC].body);
 		hentry[H_CC].body = NULL;
 	}
@@ -2768,7 +2768,7 @@ static gint compose_parse_header(Compose *compose, MsgInfo *msginfo)
 	if (hentry[H_BCC].body != NULL) {
 		if (compose->mode == COMPOSE_REEDIT)
 			compose->bcc =
-				conv_unmime_header(hentry[H_BCC].body, NULL);
+				conv_unmime_header(hentry[H_BCC].body, NULL, TRUE);
 		g_free(hentry[H_BCC].body);
 		hentry[H_BCC].body = NULL;
 	}
@@ -2780,7 +2780,7 @@ static gint compose_parse_header(Compose *compose, MsgInfo *msginfo)
 		if (hentry[H_FOLLOWUP_TO].body[0] != '\0') {
 			compose->followup_to =
 				conv_unmime_header(hentry[H_FOLLOWUP_TO].body,
-						   NULL);
+						   NULL, TRUE);
 		}
 		g_free(hentry[H_FOLLOWUP_TO].body);
 		hentry[H_FOLLOWUP_TO].body = NULL;

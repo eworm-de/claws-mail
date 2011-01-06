@@ -196,7 +196,8 @@ const gchar *conv_get_outgoing_charset_str	(void);
 const gchar *conv_get_current_locale		(void);
 
 gchar *conv_unmime_header		(const gchar	*str,
-                                         const gchar	*default_encoding);
+					  const gchar	*default_encoding,
+					  gboolean	 addr_field);
 void conv_encode_header			(gchar		*dest,
 					 gint		 len,
 					 const gchar	*src,
