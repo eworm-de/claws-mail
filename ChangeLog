@@ -1,3 +1,10 @@
+2011-01-14 [pawel]	3.7.8cvs34
+
+	* src/textview.c
+		Fix Bug #2165 'The date not localized in the message view'
+		Display Date header in messageview in the same way as in
+		summaryview by respecting date format set in preferences.
+
 2011-01-06 [pawel]	3.7.8cvs33
 
 	* src/prefs_account.c
