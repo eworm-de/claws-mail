@@ -1,3 +1,9 @@
+2011-01-14 [pawel]	3.7.8cvs35
+
+	* src/textview.c
+		strncpy2() NULLify strings just fine, no need to be
+		extra "clever"
+
 2011-01-14 [pawel]	3.7.8cvs34
 
 	* src/textview.c

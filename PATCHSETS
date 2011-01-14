@@ -4108,3 +4108,4 @@
 ( cvs diff -u -r 1.14.2.74 -r 1.14.2.75 src/plugins/trayicon/trayicon.c;  ) > 3.7.8cvs32.patchset
 ( cvs diff -u -r 1.105.2.161 -r 1.105.2.162 src/prefs_account.c;  cvs diff -u -r 1.52.2.79 -r 1.52.2.80 src/prefs_folder_item.c;  cvs diff -u -r 1.1.2.32 -r 1.1.2.33 src/prefs_quote.c;  cvs diff -u -r 1.8.2.42 -r 1.8.2.43 src/quote_fmt.c;  ) > 3.7.8cvs33.patchset
 ( cvs diff -u -r 1.96.2.227 -r 1.96.2.228 src/textview.c;  ) > 3.7.8cvs34.patchset
+( cvs diff -u -r 1.96.2.228 -r 1.96.2.229 src/textview.c;  ) > 3.7.8cvs35.patchset

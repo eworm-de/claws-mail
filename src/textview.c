@@ -2179,9 +2179,9 @@ static void textview_show_header(TextView *textview, GPtrArray *headers)
 			unfold_line(header->body);
 		
 		if (procheader_headername_equal(header->name, "Date")) {
-			gchar hbody[81];
+			gchar hbody[80];
 			
-			procheader_date_parse(hbody, header->body, sizeof(hbody)-1);
+			procheader_date_parse(hbody, header->body, sizeof(hbody));
 			gtk_text_buffer_get_end_iter (buffer, &iter);
 			gtk_text_buffer_insert_with_tags_by_name
 				(buffer, &iter, hbody, -1, "header", NULL);
