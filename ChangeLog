@@ -1,3 +1,11 @@
+2011-01-15 [pawel]	3.7.8cvs36
+
+	* src/prefs_folder_item.c
+		Rework subject regexp simplify gui a bit, this give us better
+		options page layout (window with min width was too short to 
+		show all contents and thigs were unwieldy) and better preview
+		of regexp working/not working
+
 2011-01-14 [pawel]	3.7.8cvs35
 
 	* src/textview.c

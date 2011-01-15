@@ -222,10 +222,9 @@ static void prefs_folder_item_general_create_widget_func(PrefsPage * page_,
 #ifndef G_OS_WIN32
 	GtkWidget *checkbtn_simplify_subject;
 	GtkWidget *entry_simplify_subject;
-	GtkWidget *hbox_regexp;
 	GtkWidget *label_regexp_test;
 	GtkWidget *entry_regexp_test_string;
-	GtkWidget *left_arrow;
+	GtkWidget *label_regexp_result;
 	GtkWidget *entry_regexp_test_result;
 #endif
 	GtkWidget *checkbtn_folder_chmod;
@@ -255,7 +254,7 @@ static void prefs_folder_item_general_create_widget_func(PrefsPage * page_,
 	page->item	   = item;
 
 	/* Table */
-	table = gtk_table_new(11, 4, FALSE);
+	table = gtk_table_new(12, 3, FALSE);
 	gtk_container_set_border_width (GTK_CONTAINER (table), VBOX_BORDER);
 	gtk_table_set_row_spacings(GTK_TABLE(table), 4);
 	gtk_table_set_col_spacings(GTK_TABLE(table), 4);
@@ -269,7 +268,7 @@ static void prefs_folder_item_general_create_widget_func(PrefsPage * page_,
 		gtk_label_set_use_markup(GTK_LABEL(no_save_warning), TRUE);
 		gtk_label_set_line_wrap(GTK_LABEL(no_save_warning), TRUE);
 		gtk_misc_set_alignment(GTK_MISC(no_save_warning), 0.0, 0.5);
-		gtk_table_attach(GTK_TABLE(table), no_save_warning, 0, 4,
+		gtk_table_attach(GTK_TABLE(table), no_save_warning, 0, 3,
 			 rowcount, rowcount + 1, GTK_FILL, 0, 0, 0);
 		rowcount++;
 	}
@@ -277,7 +276,7 @@ static void prefs_folder_item_general_create_widget_func(PrefsPage * page_,
 	/* Apply to subfolders */
 	label = gtk_label_new(_("Apply to\nsubfolders"));
 	gtk_misc_set_alignment(GTK_MISC(label), 0.5, 0.5);
-	gtk_table_attach(GTK_TABLE(table), label, 3, 4,
+	gtk_table_attach(GTK_TABLE(table), label, 2, 3,
 			 rowcount, rowcount + 1, GTK_SHRINK, GTK_SHRINK, 0, 0);
 	rowcount++;
 
@@ -324,7 +323,7 @@ static void prefs_folder_item_general_create_widget_func(PrefsPage * page_,
 			 rowcount, rowcount + 1, GTK_SHRINK | GTK_FILL, GTK_FILL, 0, 0);
 	gtk_table_attach(GTK_TABLE(table), folder_type, 1, 2, 
 			 rowcount, rowcount + 1, GTK_SHRINK | GTK_FILL, GTK_FILL, 0, 0);
-	gtk_table_attach(GTK_TABLE(table), dummy_checkbtn, 3, 4, 
+	gtk_table_attach(GTK_TABLE(table), dummy_checkbtn, 2, 3, 
 			 rowcount, rowcount + 1, GTK_SHRINK, GTK_SHRINK, 0, 0);
 
 	rowcount++;
@@ -341,7 +340,7 @@ static void prefs_folder_item_general_create_widget_func(PrefsPage * page_,
 			G_CALLBACK(folder_regexp_set_subject_example_cb), page);
 
 	entry_simplify_subject = gtk_entry_new();
-	gtk_table_attach(GTK_TABLE(table), entry_simplify_subject, 1, 3, 
+	gtk_table_attach(GTK_TABLE(table), entry_simplify_subject, 1, 2, 
 			 rowcount, rowcount + 1, GTK_EXPAND | GTK_FILL, GTK_FILL, 0, 0);
 	SET_TOGGLE_SENSITIVITY(checkbtn_simplify_subject, entry_simplify_subject);
 	gtk_entry_set_text(GTK_ENTRY(entry_simplify_subject), 
@@ -351,14 +350,14 @@ static void prefs_folder_item_general_create_widget_func(PrefsPage * page_,
 			G_CALLBACK(folder_regexp_test_cb), page);
 
 	simplify_subject_rec_checkbtn = gtk_check_button_new();
-	gtk_table_attach(GTK_TABLE(table), simplify_subject_rec_checkbtn, 3, 4, 
+	gtk_table_attach(GTK_TABLE(table), simplify_subject_rec_checkbtn, 2, 3, 
 			 rowcount, rowcount + 1, GTK_SHRINK, GTK_SHRINK, 0, 0);
 
 	rowcount++;
 
-	/* Test RegExp */
-	label_regexp_test = gtk_label_new(_("Test RegExp"));
-	gtk_misc_set_alignment(GTK_MISC(label_regexp_test), 0, 0.5);
+	/* Test string */
+	label_regexp_test = gtk_label_new(_("Test string:"));
+	gtk_misc_set_alignment(GTK_MISC(label_regexp_test), 1, 0.5);
 	gtk_table_attach(GTK_TABLE(table), label_regexp_test, 0, 1, 
 			 rowcount, rowcount + 1, GTK_SHRINK | GTK_FILL, GTK_FILL, 0, 0);
 	SET_TOGGLE_SENSITIVITY(checkbtn_simplify_subject, label_regexp_test);
@@ -371,18 +370,18 @@ static void prefs_folder_item_general_create_widget_func(PrefsPage * page_,
 	g_signal_connect(G_OBJECT(entry_regexp_test_string), "changed",
 			G_CALLBACK(folder_regexp_test_cb), page);
 
-	hbox_regexp = gtk_hbox_new (FALSE, 4);
-	gtk_widget_show (hbox_regexp);
-	gtk_table_attach(GTK_TABLE(table), hbox_regexp, 2, 3, 
-			 rowcount, rowcount + 1, GTK_EXPAND | GTK_FILL, GTK_FILL, 0, 0);
-
-	left_arrow = gtk_arrow_new(GTK_ARROW_RIGHT, GTK_SHADOW_OUT);
-	gtk_widget_show(left_arrow);
-	gtk_box_pack_start (GTK_BOX(hbox_regexp), left_arrow, FALSE, FALSE, 0);
-	SET_TOGGLE_SENSITIVITY(checkbtn_simplify_subject, left_arrow);
+	rowcount++;
+	
+	/* Test result */
+	label_regexp_result = gtk_label_new(_("Result:"));
+	gtk_misc_set_alignment(GTK_MISC(label_regexp_result), 1, 0.5);
+	gtk_table_attach(GTK_TABLE(table), label_regexp_result, 0, 1, 
+			 rowcount, rowcount + 1, GTK_SHRINK | GTK_FILL, GTK_FILL, 0, 0);
+	SET_TOGGLE_SENSITIVITY(checkbtn_simplify_subject, label_regexp_result);
 
 	entry_regexp_test_result = gtk_entry_new();
-	gtk_box_pack_end (GTK_BOX(hbox_regexp), entry_regexp_test_result, TRUE, TRUE, 0);
+	gtk_table_attach(GTK_TABLE(table), entry_regexp_test_result, 1, 2, 
+			 rowcount, rowcount + 1, GTK_EXPAND | GTK_FILL, GTK_FILL, 0, 0);
 	SET_TOGGLE_SENSITIVITY(checkbtn_simplify_subject, entry_regexp_test_result);
 	gtk_editable_set_editable(GTK_EDITABLE(entry_regexp_test_result), FALSE);
 
@@ -409,7 +408,7 @@ static void prefs_folder_item_general_create_widget_func(PrefsPage * page_,
 	}
 	
 	folder_chmod_rec_checkbtn = gtk_check_button_new();
-	gtk_table_attach(GTK_TABLE(table), folder_chmod_rec_checkbtn, 3, 4, 
+	gtk_table_attach(GTK_TABLE(table), folder_chmod_rec_checkbtn, 2, 3, 
 			 rowcount, rowcount + 1, GTK_SHRINK, GTK_SHRINK, 0, 0);
 
 	rowcount++;
@@ -439,7 +438,7 @@ static void prefs_folder_item_general_create_widget_func(PrefsPage * page_,
 	gtkut_set_widget_bgcolor_rgb(folder_color_btn, item->prefs->color);
 
 	folder_color_rec_checkbtn = gtk_check_button_new();
-	gtk_table_attach(GTK_TABLE(table), folder_color_rec_checkbtn, 3, 4, 
+	gtk_table_attach(GTK_TABLE(table), folder_color_rec_checkbtn, 2, 3, 
 			 rowcount, rowcount + 1, GTK_SHRINK, GTK_SHRINK, 0, 0);
 
 	rowcount++;
@@ -454,7 +453,7 @@ static void prefs_folder_item_general_create_widget_func(PrefsPage * page_,
 				     item->prefs->enable_processing);
 
 	enable_processing_rec_checkbtn = gtk_check_button_new();
-	gtk_table_attach(GTK_TABLE(table), enable_processing_rec_checkbtn, 3, 4, 
+	gtk_table_attach(GTK_TABLE(table), enable_processing_rec_checkbtn, 2, 3, 
 			 rowcount, rowcount + 1, GTK_SHRINK, GTK_SHRINK, 0, 0);
 	
 	rowcount++;
@@ -469,7 +468,7 @@ static void prefs_folder_item_general_create_widget_func(PrefsPage * page_,
 				     item->prefs->enable_processing_when_opening);
 
 	enable_processing_when_opening_rec_checkbtn = gtk_check_button_new();
-	gtk_table_attach(GTK_TABLE(table), enable_processing_when_opening_rec_checkbtn, 3, 4, 
+	gtk_table_attach(GTK_TABLE(table), enable_processing_when_opening_rec_checkbtn, 2, 3, 
 			 rowcount, rowcount + 1, GTK_SHRINK, GTK_SHRINK, 0, 0);
 	
 	rowcount++;
@@ -486,7 +485,7 @@ static void prefs_folder_item_general_create_widget_func(PrefsPage * page_,
 	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(checkbtn_newmailcheck),
 								 item->prefs->newmailcheck);
 	newmailcheck_rec_checkbtn = gtk_check_button_new();
-	gtk_table_attach(GTK_TABLE(table), newmailcheck_rec_checkbtn, 3, 4, 
+	gtk_table_attach(GTK_TABLE(table), newmailcheck_rec_checkbtn, 2, 3, 
 			 rowcount, rowcount + 1, GTK_SHRINK, GTK_SHRINK, 0, 0);
 
 	rowcount++;
@@ -497,14 +496,14 @@ static void prefs_folder_item_general_create_widget_func(PrefsPage * page_,
 			 rowcount, rowcount+1, GTK_EXPAND | GTK_FILL, GTK_FILL, 0, 0);
 	
 	offlinesync_rec_checkbtn = gtk_check_button_new();
-	gtk_table_attach(GTK_TABLE(table), offlinesync_rec_checkbtn, 3, 4, 
+	gtk_table_attach(GTK_TABLE(table), offlinesync_rec_checkbtn, 2, 3, 
 			 rowcount, rowcount + 1, GTK_SHRINK, GTK_SHRINK, 0, 0);
 
 	rowcount++;
 
 	hbox = gtk_hbox_new (FALSE, 8);
 	gtk_widget_show (hbox);
-	gtk_table_attach(GTK_TABLE(table), hbox, 0, 4,
+	gtk_table_attach(GTK_TABLE(table), hbox, 0, 3,
 			 rowcount, rowcount+1, GTK_EXPAND | GTK_FILL, GTK_FILL, 0, 0);
 	rowcount++;
 
@@ -532,7 +531,7 @@ static void prefs_folder_item_general_create_widget_func(PrefsPage * page_,
 
 	hbox2 = gtk_hbox_new (FALSE, 8);
 	gtk_widget_show (hbox2);
-	gtk_table_attach(GTK_TABLE(table), hbox2, 0, 4,
+	gtk_table_attach(GTK_TABLE(table), hbox2, 0, 3,
 			 rowcount, rowcount+1, GTK_EXPAND | GTK_FILL, GTK_FILL, 0, 0);
 	rowcount++;
 
