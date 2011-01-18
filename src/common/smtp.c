@@ -160,20 +160,26 @@ static gint smtp_auth(SMTPSession *session)
 
 	session->state = SMTP_AUTH;
 
-	if (session->forced_auth_type == SMTPAUTH_CRAM_MD5 ||
-	    (session->forced_auth_type == 0 &&
-	     (session->avail_auth_type & SMTPAUTH_CRAM_MD5) != 0))
+	if ((session->forced_auth_type == SMTPAUTH_CRAM_MD5
+	     || session->forced_auth_type == 0)
+            &&
+	     (session->avail_auth_type & SMTPAUTH_CRAM_MD5) != 0)
 		smtp_auth_cram_md5(session);
-	else if (session->forced_auth_type == SMTPAUTH_LOGIN ||
-		 (session->forced_auth_type == 0 &&
-		  (session->avail_auth_type & SMTPAUTH_LOGIN) != 0))
+	else if ((session->forced_auth_type == SMTPAUTH_LOGIN
+		  || session->forced_auth_type == 0)
+                 &&
+		  (session->avail_auth_type & SMTPAUTH_LOGIN) != 0)
 		smtp_auth_login(session);
-	else if (session->forced_auth_type == SMTPAUTH_PLAIN ||
-		 (session->forced_auth_type == 0 &&
-		  (session->avail_auth_type & SMTPAUTH_PLAIN) != 0))
+	else if ((session->forced_auth_type == SMTPAUTH_PLAIN
+		  || session->forced_auth_type == 0)
+                 &&
+		  (session->avail_auth_type & SMTPAUTH_PLAIN) != 0)
 		smtp_auth_plain(session);
-	else {
-		log_warning(LOG_PROTOCOL, _("SMTP AUTH not available\n"));
+	else if (session->forced_auth_type == 0) {
+		log_warning(LOG_PROTOCOL, _("No SMTP AUTH method available\n"));
+		return SM_AUTHFAIL;
+	} else {
+		log_warning(LOG_PROTOCOL, _("Selected SMTP AUTH method not available\n"));
 		return SM_AUTHFAIL;
 	}
 
