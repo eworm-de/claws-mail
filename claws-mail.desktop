@@ -1,11 +1,15 @@
 [Desktop Entry]
-Encoding=UTF-8
+Version=1.0
 Name=Claws Mail
+GenericName=E-mail client
+GenericName[pl]=Program poczty elektronicznej
 Exec=claws-mail
 Icon=claws-mail
-Info="Claws Mail"
 Categories=GTK;Network;Email;
-Comment="Gtk+ based Mail Client"
+Comment=Gtk+ based Mail Client
+Comment[pl]=Program pocztowy używający GTK+
 Terminal=false
 Type=Application
 StartupNotify=true
+MimeType=x-scheme-handler/mailto;
+X-Info=Claws Mail

@@ -1,3 +1,11 @@
+2011-01-19 [pawel]	3.7.8cvs38
+
+	* claws-mail.desktop
+		Fix Bug 2346 'Please register x-handler-scheme
+		 in .desktop file' patch by Laurent Bigonville
+		While I'm here update things to current
+		standards, fix desktop-file-validate warnings/errors
+
 2011-01-18 [colin]	3.7.8cvs37
 
 	* src/common/smtp.c
