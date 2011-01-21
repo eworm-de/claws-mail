@@ -1,3 +1,9 @@
+2011-01-21 [colin]	3.7.8cvs39
+
+	* src/plugins/spamassassin/spamassassin.c
+		Fix sa-learn when offline (its command line parsing is
+		space-dependant). Patch by Wolfgang Lorenz
+
 2011-01-19 [pawel]	3.7.8cvs38
 
 	* claws-mail.desktop

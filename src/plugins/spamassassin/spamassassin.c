@@ -442,9 +442,9 @@ int spamassassin_learn(MsgInfo *msginfo, GSList *msglist, gboolean spam)
 								spamc_wrapper, " ", file, NULL);
 			}
 		} else {
-			cmd = g_strdup_printf("sa-learn -u %s %s %s %s",
+			cmd = g_strdup_printf("sa-learn -u %s%s %s %s",
 							config.username,
-							prefs_common.work_offline?"-L":"",
+							prefs_common.work_offline?" -L":"",
 							spam?"--spam":"--ham", file);
 		}
 	}
@@ -476,9 +476,9 @@ int spamassassin_learn(MsgInfo *msginfo, GSList *msglist, gboolean spam)
 			g_free(spamc_wrapper);
 			return 0;
 		} else {
-			cmd = g_strdup_printf("sa-learn -u %s %s %s",
+			cmd = g_strdup_printf("sa-learn -u %s%s %s",
 					config.username,
-					prefs_common.work_offline?"-L":"",
+					prefs_common.work_offline?" -L":"",
 					spam?"--spam":"--ham");
 
 			/* concatenate all message tmpfiles to the sa-learn command-line */
