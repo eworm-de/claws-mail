@@ -1,3 +1,8 @@
+2011-01-21 [colin]	3.7.8cvs40
+
+	* claws-mail.desktop
+		Fix again bug #2346: We should have a %u parameter.
+
 2011-01-21 [colin]	3.7.8cvs39
 
 	* src/plugins/spamassassin/spamassassin.c

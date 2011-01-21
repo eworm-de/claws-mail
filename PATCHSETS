@@ -4113,3 +4113,4 @@
 ( cvs diff -u -r 1.11.2.28 -r 1.11.2.29 src/common/smtp.c;  ) > 3.7.8cvs37.patchset
 ( cvs diff -u -r 1.1.2.2 -r 1.1.2.3 claws-mail.desktop;  ) > 3.7.8cvs38.patchset
 ( cvs diff -u -r 1.18.2.63 -r 1.18.2.64 src/plugins/spamassassin/spamassassin.c;  ) > 3.7.8cvs39.patchset
+( cvs diff -u -r 1.1.2.3 -r 1.1.2.4 claws-mail.desktop;  ) > 3.7.8cvs40.patchset
