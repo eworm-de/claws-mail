@@ -1,3 +1,12 @@
+2011-01-21 [colin]	3.7.8cvs41
+
+	* src/procmime.c
+		Fix bug #2050, Clawsmail sends return receipt every seconds
+		We forgot to close the file when parsing 
+		disposition-notification fields, which made unlinking of the
+		corresponding emails in tempfolder/processing impossible in
+		Windows. Causing them to be re-fetched every time.
+
 2011-01-21 [colin]	3.7.8cvs40
 
 	* claws-mail.desktop

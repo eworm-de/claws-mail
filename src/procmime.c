@@ -1464,8 +1464,10 @@ static void procmime_parse_disposition_notification(MimeInfo *mimeinfo,
 	} else {
 		procheader_get_header_fields(fp, hentry);
 	}
+    
+        fclose(fp);
 
-	if (!hentry[0].body || !hentry[1].body) {
+    	if (!hentry[0].body || !hentry[1].body) {
 		debug_print("MsgId %s, Disp %s\n",
 			hentry[0].body ? hentry[0].body:"(nil)",
 			hentry[1].body ? hentry[1].body:"(nil)");
