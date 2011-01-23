@@ -1,3 +1,8 @@
+2011-01-23 [paul]	3.7.8cvs43
+
+	* src/gtk/about.c
+		it's 2011, update copyright line
+
 2011-01-23 [paul]	3.7.8cvs42
 
 	* manual/advanced.xml

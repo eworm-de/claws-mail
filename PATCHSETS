@@ -4116,3 +4116,4 @@
 ( cvs diff -u -r 1.1.2.3 -r 1.1.2.4 claws-mail.desktop;  ) > 3.7.8cvs40.patchset
 ( cvs diff -u -r 1.49.2.136 -r 1.49.2.137 src/procmime.c;  ) > 3.7.8cvs41.patchset
 ( cvs diff -u -r 1.1.2.54 -r 1.1.2.55 manual/advanced.xml;  cvs diff -u -r 1.204.2.198 -r 1.204.2.199 src/prefs_common.c;  cvs diff -u -r 1.103.2.130 -r 1.103.2.131 src/prefs_common.h;  cvs diff -u -r 1.96.2.229 -r 1.96.2.230 src/textview.c;  ) > 3.7.8cvs42.patchset
+( cvs diff -u -r 1.4.2.77 -r 1.4.2.78 src/gtk/about.c;  ) > 3.7.8cvs43.patchset
