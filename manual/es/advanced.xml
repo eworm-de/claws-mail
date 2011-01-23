@@ -729,6 +729,16 @@
 	</listitem>
       </varlistentry>
       <varlistentry>
+ 	<term><literal>msgview_date_format</literal></term>
+ 	<listitem>
+ 	  <para>
+	0 o 1. Utilizar en la vista de mensaje el mismo formato de
+	fecha definido para la lista de mensajes por el usuario.
+	Por omisión es 0, desactivado.
+ 	  </para>
+ 	</listitem>
+       </varlistentry>      
+       <varlistentry>
         <term><literal>outgoing_fallback_to_ascii</literal></term>
 	<listitem>
 	  <para>
