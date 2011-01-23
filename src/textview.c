@@ -1,6 +1,6 @@
 /*
  * Sylpheed -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 1999-2009 Hiroyuki Yamamoto and the Claws Mail team
+ * Copyright (C) 1999-2011 Hiroyuki Yamamoto and the Claws Mail team
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -2178,7 +2178,8 @@ static void textview_show_header(TextView *textview, GPtrArray *headers)
 		    procheader_headername_equal(header->name, "Cc"))
 			unfold_line(header->body);
 		
-		if (procheader_headername_equal(header->name, "Date")) {
+		if (procheader_headername_equal(header->name, "Date") &&
+		    prefs_common.msgview_date_format) {
 			gchar hbody[80];
 			
 			procheader_date_parse(hbody, header->body, sizeof(hbody));

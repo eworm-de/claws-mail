@@ -1,3 +1,15 @@
+2011-01-23 [paul]	3.7.8cvs42
+
+	* manual/advanced.xml
+	* src/prefs_common.c
+	* src/prefs_common.h
+	* src/textview.c
+		fix bug #2350, 'Make displaying localized date/time in
+		message view optional'.
+		This introduces a new hidden option (why do more?),
+		'msgview_date_format', which defaults to OFF, maintaining
+		the current and expected behaviour.
+
 2011-01-21 [colin]	3.7.8cvs41
 
 	* src/procmime.c

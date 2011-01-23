@@ -1,6 +1,6 @@
 /*
  * Sylpheed -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 1999-2009 Hiroyuki Yamamoto and the Claws Mail team
+ * Copyright (C) 1999-2011 Hiroyuki Yamamoto and the Claws Mail team
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -215,6 +215,7 @@ struct _PrefsCommon
 	gboolean swap_from;
 	gboolean use_addr_book;
 	gchar *date_format;
+	gboolean *msgview_date_format;
 
 	gboolean use_stripes_everywhere;
 	gboolean use_stripes_in_summaries; /* overrides if use_stripes_everywhere is set to TRUE */

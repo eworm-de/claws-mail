@@ -1,6 +1,6 @@
 /*
  * Sylpheed -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 1999-2009 Hiroyuki Yamamoto and the Claws Mail team
+ * Copyright (C) 1999-2011 Hiroyuki Yamamoto and the Claws Mail team
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -446,6 +446,8 @@ static PrefParam param[] = {
 	 NULL, NULL, NULL},
 	{"date_format", N_("%y/%m/%d(%a) %H:%M"), &prefs_common.date_format,
 	 P_STRING, NULL, NULL, NULL},
+	{"msgview_date_format", "FALSE", &prefs_common.msgview_date_format, P_BOOL,
+	 NULL, NULL, NULL},
 
 	{"bold_unread", "TRUE", &prefs_common.bold_unread, P_BOOL,
 	 NULL, NULL, NULL},
