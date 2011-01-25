@@ -190,8 +190,8 @@ MimeInfo *procmime_scan_message(MsgInfo *msginfo)
 {
 	gchar *filename;
 	MimeInfo *mimeinfo;
-	START_TIMING("");
-	filename = procmsg_get_message_file_path(msginfo);
+
+    	filename = procmsg_get_message_file_path(msginfo);
 	if (!filename || !is_file_exist(filename)) {
 		g_free(filename);
 		return NULL;
@@ -204,7 +204,6 @@ MimeInfo *procmime_scan_message(MsgInfo *msginfo)
 		mimeinfo = procmime_scan_queue_file(filename);
 	g_free(filename);
 
-	END_TIMING();
 	return mimeinfo;
 }
 
@@ -672,7 +671,7 @@ gint procmime_get_part(const gchar *outfile, MimeInfo *mimeinfo)
 	return 0;
 }
 
-static FILE *procmime_get_text_content(MimeInfo *mimeinfo)
+FILE *procmime_get_text_content(MimeInfo *mimeinfo)
 {
 	FILE *tmpfp, *outfp;
 	const gchar *src_codeset;
@@ -778,6 +777,38 @@ static FILE *procmime_get_text_content(MimeInfo *mimeinfo)
 	return outfp;
 }
 
+FILE *procmime_get_binary_content(MimeInfo *mimeinfo)
+{
+	FILE *outfp;
+	gchar *tmpfile;
+
+	cm_return_val_if_fail(mimeinfo != NULL, NULL);
+
+	if (!procmime_decode_content(mimeinfo))
+		return NULL;
+
+	tmpfile = procmime_get_tmp_file_name(mimeinfo);
+	if (tmpfile == NULL)
+		return NULL;
+
+	if (procmime_get_part(tmpfile, mimeinfo) < 0) {
+		g_free(tmpfile);
+		return NULL;
+	}
+
+	outfp = g_fopen(tmpfile, "rb");
+	if (outfp == NULL) {
+		g_unlink(tmpfile);
+		g_free(tmpfile);
+		return NULL;
+	}
+
+	g_unlink(tmpfile);
+	g_free(tmpfile);
+
+	return outfp;
+}
+
 /* search the first text part of (multipart) MIME message,
    decode, convert it and output to outfp. */
 FILE *procmime_get_first_text_content(MsgInfo *msginfo)
@@ -785,8 +816,8 @@ FILE *procmime_get_first_text_content(MsgInfo *msginfo)
 	FILE *outfp = NULL;
 	MimeInfo *mimeinfo, *partinfo;
 	gboolean empty_ok = FALSE, short_scan = TRUE;
-	START_TIMING("");
-	cm_return_val_if_fail(msginfo != NULL, NULL);
+
+    	cm_return_val_if_fail(msginfo != NULL, NULL);
 
 	/* first we try to short-scan (for speed), refusing empty parts */
 scan_again:
@@ -819,7 +850,6 @@ scan_again:
 		goto scan_again;
 	}
 	procmime_mimeinfo_free_all(mimeinfo);
-	END_TIMING();
 	return outfp;
 }
 
@@ -902,68 +932,6 @@ gboolean procmime_msginfo_is_encrypted(MsgInfo *msginfo)
 	procmime_mimeinfo_free_all(mimeinfo);
 
 	return result;
-}
-
-static gboolean procmime_find_string_part(MimeInfo *mimeinfo, const gchar *filename,
-				   const gchar *str, StrFindFunc find_func)
-{
-	FILE *outfp;
-	gchar buf[BUFFSIZE];
-
-	cm_return_val_if_fail(mimeinfo != NULL, FALSE);
-	cm_return_val_if_fail(mimeinfo->type == MIMETYPE_TEXT, FALSE);
-	cm_return_val_if_fail(str != NULL, FALSE);
-	cm_return_val_if_fail(find_func != NULL, FALSE);
-
-	outfp = procmime_get_text_content(mimeinfo);
-
-	if (!outfp)
-		return FALSE;
-
-	while (fgets(buf, sizeof(buf), outfp) != NULL) {
-		strretchomp(buf);
-		if (find_func(buf, str)) {
-			fclose(outfp);
-			return TRUE;
-		}
-	}
-
-	fclose(outfp);
-
-	return FALSE;
-}
-
-gboolean procmime_find_string(MsgInfo *msginfo, const gchar *str,
-			      StrFindFunc find_func)
-{
-	MimeInfo *mimeinfo;
-	MimeInfo *partinfo;
-	gchar *filename;
-	gboolean found = FALSE;
-
-	cm_return_val_if_fail(msginfo != NULL, FALSE);
-	cm_return_val_if_fail(str != NULL, FALSE);
-	cm_return_val_if_fail(find_func != NULL, FALSE);
-
-	filename = procmsg_get_message_file(msginfo);
-	if (!filename) return FALSE;
-	mimeinfo = procmime_scan_message(msginfo);
-
-	for (partinfo = mimeinfo; partinfo != NULL;
-	     partinfo = procmime_mimeinfo_next(partinfo)) {
-		if (partinfo->type == MIMETYPE_TEXT) {
-			if (procmime_find_string_part
-				(partinfo, filename, str, find_func) == TRUE) {
-				found = TRUE;
-				break;
-			}
-		}
-	}
-
-	procmime_mimeinfo_free_all(mimeinfo);
-	g_free(filename);
-
-	return found;
 }
 
 gchar *procmime_get_tmp_file_name(MimeInfo *mimeinfo)

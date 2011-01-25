@@ -502,10 +502,10 @@ static void summary_search_execute(gboolean backward, gboolean search_all)
 	gchar *from_str = NULL, *to_str = NULL, *subject_str = NULL;
 	gchar *body_str = NULL;
 	gchar *adv_condition = NULL;
-	StrFindFunc str_find_func = NULL;
 	gboolean is_fast = TRUE;
 	gint interval = 1000;
 	gint i = 0;
+	GSList *matchers = NULL;
 
 	if (summary_is_locked(summaryview)) {
 		return;
@@ -515,11 +515,11 @@ static void summary_search_execute(gboolean backward, gboolean search_all)
 	adv_search = gtk_toggle_button_get_active
 		(GTK_TOGGLE_BUTTON(search_window.adv_search_checkbtn));
 
+	if (search_window.matcher_list != NULL) {
+		matcherlist_free(search_window.matcher_list);
+		search_window.matcher_list = NULL;
+	}
 	if (adv_search) {
-		if (search_window.matcher_list != NULL) {
-			matcherlist_free(search_window.matcher_list);
-			search_window.matcher_list = NULL;
-		}
 		adv_condition = gtk_combo_box_get_active_text(GTK_COMBO_BOX(search_window.adv_condition_entry));
 		if (!adv_condition)
 			adv_condition = gtk_editable_get_chars(
@@ -549,12 +549,6 @@ static void summary_search_execute(gboolean backward, gboolean search_all)
 				GTK_COMBO_BOX(search_window.bool_optmenu));
 		case_sens = gtk_toggle_button_get_active
 			(GTK_TOGGLE_BUTTON(search_window.case_checkbtn));
-
-		if (case_sens) {
-			str_find_func = str_find;
-		} else {
-			str_find_func = str_case_find;
-		}
 
 		from_str    = gtk_combo_box_get_active_text(GTK_COMBO_BOX(search_window.from_entry));
 		to_str      = gtk_combo_box_get_active_text(GTK_COMBO_BOX(search_window.to_entry));
@@ -591,30 +585,51 @@ static void summary_search_execute(gboolean backward, gboolean search_all)
 		}
 
 		/* add to history */
-		if (from_str[0] != '\0')
+		if (from_str[0] != '\0') {
+			MatcherProp *prop = matcherprop_new(MATCHCRITERIA_FROM,
+						NULL, case_sens ? MATCHTYPE_MATCH:MATCHTYPE_MATCHCASE,
+						from_str, 0);
+			matchers = g_slist_append(matchers, prop);
 			combobox_unset_popdown_strings(GTK_COMBO_BOX(search_window.from_entry));
 			prefs_common.summary_search_from_history = add_history(
 					prefs_common.summary_search_from_history, from_str);
 			combobox_set_popdown_strings(GTK_COMBO_BOX(search_window.from_entry),
 					prefs_common.summary_search_from_history);
-		if (to_str[0] != '\0')
+		}
+		if (to_str[0] != '\0') {
+			MatcherProp *prop = matcherprop_new(MATCHCRITERIA_TO,
+						NULL, case_sens ? MATCHTYPE_MATCH:MATCHTYPE_MATCHCASE,
+						to_str, 0);
+			matchers = g_slist_append(matchers, prop);
 			combobox_unset_popdown_strings(GTK_COMBO_BOX(search_window.to_entry));
 			prefs_common.summary_search_to_history = add_history(
 					prefs_common.summary_search_to_history, to_str);
 			combobox_set_popdown_strings(GTK_COMBO_BOX(search_window.to_entry),
 					prefs_common.summary_search_to_history);
-		if (subject_str[0] != '\0')
+		}
+		if (subject_str[0] != '\0') {
+			MatcherProp *prop = matcherprop_new(MATCHCRITERIA_SUBJECT,
+						NULL, case_sens ? MATCHTYPE_MATCH:MATCHTYPE_MATCHCASE,
+						subject_str, 0);
+			matchers = g_slist_append(matchers, prop);
 			combobox_unset_popdown_strings(GTK_COMBO_BOX(search_window.subject_entry));
 			prefs_common.summary_search_subject_history = add_history(
 					prefs_common.summary_search_subject_history, subject_str);
 			combobox_set_popdown_strings(GTK_COMBO_BOX(search_window.subject_entry),
 					prefs_common.summary_search_subject_history);
-		if (body_str[0] != '\0')
+		}
+		if (body_str[0] != '\0') {
+			MatcherProp *prop = matcherprop_new(MATCHCRITERIA_BODY_PART,
+						NULL, case_sens ? MATCHTYPE_MATCH:MATCHTYPE_MATCHCASE,
+						body_str, 0);
+			matchers = g_slist_append(matchers, prop);
 			combobox_unset_popdown_strings(GTK_COMBO_BOX(search_window.body_entry));
 			prefs_common.summary_search_body_history = add_history(
 					prefs_common.summary_search_body_history, body_str);
 			combobox_set_popdown_strings(GTK_COMBO_BOX(search_window.body_entry),
 					prefs_common.summary_search_body_history);
+		}
+		search_window.matcher_list = matcherlist_new(matchers, bool_and);
 	}
 
 	search_window.is_searching = TRUE;
@@ -694,67 +709,7 @@ static void summary_search_execute(gboolean backward, gboolean search_all)
 		msginfo = gtk_cmctree_node_get_row_data(ctree, node);
 		body_matched = FALSE;
 
-		if (adv_search) {
-			matched = matcherlist_match(search_window.matcher_list, msginfo);
-		} else {
-			if (bool_and) {
-				matched = TRUE;
-				if (*from_str) {
-					if (!msginfo->from ||
-				    	!str_find_func(msginfo->from, from_str)) {
-						matched = FALSE;
-					}
-				}
-				if (matched && *to_str) {
-					if (!msginfo->to ||
-				    	!str_find_func(msginfo->to, to_str)) {
-						matched = FALSE;
-					}
-				}
-				if (matched && *subject_str) {
-					if (!msginfo->subject ||
-				    	!str_find_func(msginfo->subject, subject_str)) {
-						matched = FALSE;
-					}
-				}
-				if (matched && *body_str) {
-					if (procmime_find_string(msginfo, body_str,
-								 str_find_func)) {
-						body_matched = TRUE;
-					} else {
-						matched = FALSE;
-					}
-				}
-				if (matched && !*from_str && !*to_str &&
-			    	!*subject_str && !*body_str) {
-					matched = FALSE;
-				}
-			} else {
-				matched = FALSE;
-				if (*from_str && msginfo->from) {
-					if (str_find_func(msginfo->from, from_str)) {
-						matched = TRUE;
-					}
-				}
-				if (!matched && *to_str && msginfo->to) {
-					if (str_find_func(msginfo->to, to_str)) {
-						matched = TRUE;
-					}
-				}
-				if (!matched && *subject_str && msginfo->subject) {
-					if (str_find_func(msginfo->subject, subject_str)) {
-						matched = TRUE;
-					}
-				}
-				if (!matched && *body_str) {
-					if (procmime_find_string(msginfo, body_str,
-								 str_find_func)) {
-						matched = TRUE;
-						body_matched = TRUE;
-					}
-				}
-			}
-		}
+		matched = matcherlist_match(search_window.matcher_list, msginfo);
 
 		if (matched) {
 			if (search_all) {

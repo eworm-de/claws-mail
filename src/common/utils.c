@@ -301,16 +301,6 @@ void ptr_array_free_strings(GPtrArray *array)
 	}
 }
 
-gboolean str_find(const gchar *haystack, const gchar *needle)
-{
-	return strstr(haystack, needle) != NULL ? TRUE : FALSE;
-}
-
-gboolean str_case_find(const gchar *haystack, const gchar *needle)
-{
-	return strcasestr(haystack, needle) != NULL ? TRUE : FALSE;
-}
-
 gint to_number(const gchar *nstr)
 {
 	register const gchar *p;

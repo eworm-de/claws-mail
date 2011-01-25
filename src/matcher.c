@@ -599,48 +599,19 @@ const gchar *debug_context)
 	return FALSE;
 }
 
-/* FIXME body search is a hack. */
-static gboolean matcherprop_string_decode_match(MatcherProp *prop, const gchar *str,
-												const gchar *debug_context)
+static gboolean matcherprop_header_line_match(MatcherProp *prop, const gchar *hdr,
+					      const gchar *str, const gchar *debug_context)
 {
-	gchar *utf = NULL;
-	gchar tmp[BUFFSIZE];
+	gchar *line = NULL;
 	gboolean res = FALSE;
 
-	if (str == NULL)
+	if (hdr == NULL || str == NULL)
 		return FALSE;
 
-	/* we try to decode QP first, because it's faster than base64 */
-	qp_decode_const(tmp, BUFFSIZE-1, str);
-	if (!g_utf8_validate(tmp, -1, NULL)) {
-		utf = conv_codeset_strdup
-			(tmp, conv_get_locale_charset_str_no_utf8(),
-			 CS_INTERNAL);
-		res = matcherprop_string_match(prop, utf, debug_context);
-		g_free(utf);
-	} else {
-		res = matcherprop_string_match(prop, tmp, debug_context);
-	}
-	
-	if (res == FALSE && (strchr(prop->expr, '=') || strchr(prop->expr, '_')
-			    || strchr(str, '=') || strchr(str, '_'))) {
-		/* if searching for something with an equal char, maybe 
-		 * we should try to match the non-decoded string. 
-		 * In case it was not qp-encoded. */
-		if (!g_utf8_validate(str, -1, NULL)) {
-			utf = conv_codeset_strdup
-				(str, conv_get_locale_charset_str_no_utf8(),
-				 CS_INTERNAL);
-			res = matcherprop_string_match(prop, utf, debug_context);
-			g_free(utf);
-		} else {
-			res = matcherprop_string_match(prop, str, debug_context);
-		}
-	}
-
-	/* FIXME base64 decoding is too slow, especially since text can 
-	 * easily be handled as base64. Don't even try now. */
-
+	line = g_strdup_printf("%s %s", hdr, str);
+	res = matcherprop_string_match(prop, line, debug_context);
+	g_free(line);
+       
 	return res;
 }
 
@@ -1281,13 +1252,23 @@ static gboolean matcherprop_match_one_header(MatcherProp *matcher,
 		}
 		break;
 	case MATCHCRITERIA_HEADERS_PART:
-		return matcherprop_string_match(matcher, buf, _("header line"));
-	case MATCHCRITERIA_NOT_HEADERS_PART:
-		return !matcherprop_string_match(matcher, buf, _("headers line"));
 	case MATCHCRITERIA_MESSAGE:
-		return matcherprop_string_decode_match(matcher, buf, _("message line"));
+		header = procheader_parse_header(buf);
+		if (!header)
+			return FALSE;
+		result = matcherprop_header_line_match(matcher, 
+			       header->name, header->body, _("header line"));
+		procheader_header_free(header);
+		return result;
+	case MATCHCRITERIA_NOT_HEADERS_PART:
 	case MATCHCRITERIA_NOT_MESSAGE:
-		return !matcherprop_string_decode_match(matcher, buf, _("message line"));
+		header = procheader_parse_header(buf);
+		if (!header)
+			return FALSE;
+		result = !matcherprop_header_line_match(matcher, 
+			       header->name, header->body, _("header line"));
+		procheader_header_free(header);
+		return result;
 	case MATCHCRITERIA_FOUND_IN_ADDRESSBOOK:
 	case MATCHCRITERIA_NOT_FOUND_IN_ADDRESSBOOK:
 		{
@@ -1492,28 +1473,6 @@ static gboolean matcherprop_criteria_body(const MatcherProp *matcher)
 }
 
 /*!
- *\brief	Check if a (line) string matches the criteria
- *		described by a matcher structure
- *
- *\param	matcher Matcher structure
- *\param	line String
- *
- *\return	gboolean TRUE if string matches criteria
- */
-static gboolean matcherprop_match_line(MatcherProp *matcher, const gchar *line)
-{
-	switch (matcher->criteria) {
-	case MATCHCRITERIA_BODY_PART:
-	case MATCHCRITERIA_MESSAGE:
-		return matcherprop_string_decode_match(matcher, line, _("body line"));
-	case MATCHCRITERIA_NOT_BODY_PART:
-	case MATCHCRITERIA_NOT_MESSAGE:
-		return !matcherprop_string_decode_match(matcher, line, _("body line"));
-	}
-	return FALSE;
-}
-
-/*!
  *\brief	Check if a line in a message file's body matches
  *		the criteria
  *
@@ -1522,45 +1481,94 @@ static gboolean matcherprop_match_line(MatcherProp *matcher, const gchar *line)
  *
  *\return	gboolean TRUE if succesful match
  */
-static gboolean matcherlist_match_body(MatcherList *matchers, FILE *fp)
+static gboolean matcherlist_match_body(MatcherList *matchers, gboolean body_only, MsgInfo *info)
 {
 	GSList *l;
+	MimeInfo *mimeinfo = NULL;
+	MimeInfo *partinfo = NULL;
 	gchar buf[BUFFSIZE];
-	
-	while (fgets(buf, sizeof(buf), fp) != NULL) {
-		for (l = matchers->matchers ; l != NULL ; l = g_slist_next(l)) {
-			MatcherProp *matcher = (MatcherProp *) l->data;
-			
-			if (matcher->done) 
-				continue;
+	gboolean first_text_found = FALSE;
+	FILE *outfp = NULL;
 
-			/* if the criteria is ~body_part or ~message, ZERO lines
-			 * must NOT match for the rule to match. */
-			if (matcher->criteria == MATCHCRITERIA_NOT_BODY_PART ||
-			    matcher->criteria == MATCHCRITERIA_NOT_MESSAGE) {
-				if (matcherprop_match_line(matcher, buf)) {
-					matcher->result = TRUE;
-				} else {
-					matcher->result = FALSE;
-					matcher->done = TRUE;
-				}
-			/* else, just one line has to match */
-			} else if (matcherprop_criteria_body(matcher) ||
-			           matcherprop_criteria_message(matcher)) {
-				if (matcherprop_match_line(matcher, buf)) {
-					matcher->result = TRUE;
-					matcher->done = TRUE;
-				}
-			}
+	cm_return_val_if_fail(info != NULL, FALSE);
 
-			/* if the matchers are OR'ed and the rule matched,
-			 * no need to check the others. */
-			if (matcher->result && matcher->done) {
-				if (!matchers->bool_and)
-					return TRUE;
+	mimeinfo = procmime_scan_message(info);
+
+	/* Skip headers */
+	partinfo = procmime_mimeinfo_next(mimeinfo);
+
+	for (; partinfo != NULL; partinfo = procmime_mimeinfo_next(partinfo)) {
+
+		if (partinfo->type != MIMETYPE_TEXT && body_only)
+			continue;
+
+		if (partinfo->type == MIMETYPE_TEXT) {
+			first_text_found = TRUE;
+			outfp = procmime_get_text_content(partinfo);
+		} else
+			outfp = procmime_get_binary_content(partinfo);
+
+		if (!outfp) {
+			procmime_mimeinfo_free_all(mimeinfo);
+			return FALSE;
+		}
+
+		while (fgets(buf, sizeof(buf), outfp) != NULL) {
+			strretchomp(buf);
+
+			for (l = matchers->matchers ; l != NULL ; l = g_slist_next(l)) {
+				MatcherProp *matcher = (MatcherProp *) l->data;
+
+				if (matcher->done) 
+					continue;
+
+				/* Don't scan non-text parts when looking in body, only
+				 * when looking in whole message
+				 */
+				if (partinfo && partinfo->type != MIMETYPE_TEXT &&
+				(matcher->criteria == MATCHCRITERIA_NOT_BODY_PART ||
+				matcher->criteria == MATCHCRITERIA_BODY_PART))
+					continue;
+
+				/* if the criteria is ~body_part or ~message, ZERO lines
+				 * must match for the rule to match.
+				 */
+				if (matcher->criteria == MATCHCRITERIA_NOT_BODY_PART ||
+				    matcher->criteria == MATCHCRITERIA_NOT_MESSAGE) {
+					if (matcherprop_string_match(matcher, buf, 
+								_("body line"))) {
+						matcher->result = FALSE;
+						matcher->done = TRUE;
+					} else
+						matcher->result = TRUE;
+				/* else, just one line has to match */
+				} else if (matcherprop_criteria_body(matcher) ||
+					   matcherprop_criteria_message(matcher)) {
+					if (matcherprop_string_match(matcher, buf,
+								_("body line"))) {
+						matcher->result = TRUE;
+						matcher->done = TRUE;
+					}
+				}
+
+				/* if the matchers are OR'ed and the rule matched,
+				 * no need to check the others. */
+				if (matcher->result && matcher->done) {
+					if (!matchers->bool_and) {
+						procmime_mimeinfo_free_all(mimeinfo);
+						fclose(outfp);
+						return TRUE;
+					}
+				}
 			}
 		}
+		fclose(outfp);
+
+		if (body_only && first_text_found)
+			break;
 	}
+	procmime_mimeinfo_free_all(mimeinfo);
+
 	return FALSE;
 }
 
@@ -1578,6 +1586,7 @@ static gboolean matcherlist_match_file(MatcherList *matchers, MsgInfo *info,
 {
 	gboolean read_headers;
 	gboolean read_body;
+	gboolean body_only;
 	GSList *l;
 	FILE *fp;
 	gchar *file;
@@ -1586,6 +1595,7 @@ static gboolean matcherlist_match_file(MatcherList *matchers, MsgInfo *info,
 
 	read_headers = FALSE;
 	read_body = FALSE;
+	body_only = TRUE;
 	for (l = matchers->matchers ; l != NULL ; l = g_slist_next(l)) {
 		MatcherProp *matcher = (MatcherProp *) l->data;
 
@@ -1596,6 +1606,7 @@ static gboolean matcherlist_match_file(MatcherList *matchers, MsgInfo *info,
 		if (matcherprop_criteria_message(matcher)) {
 			read_headers = TRUE;
 			read_body = TRUE;
+			body_only = FALSE;
 		}
 		matcher->result = FALSE;
 		matcher->done = FALSE;
@@ -1625,7 +1636,7 @@ static gboolean matcherlist_match_file(MatcherList *matchers, MsgInfo *info,
 
 	/* read the body */
 	if (read_body) {
-		matcherlist_match_body(matchers, fp);
+		matcherlist_match_body(matchers, body_only, info);
 	}
 	
 	for (l = matchers->matchers; l != NULL; l = g_slist_next(l)) {

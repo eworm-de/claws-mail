@@ -287,13 +287,6 @@ guint str_case_hash		(gconstpointer	 key);
 
 void ptr_array_free_strings	(GPtrArray	*array);
 
-typedef gboolean (*StrFindFunc) (const gchar	*haystack,
-				 const gchar	*needle);
-
-gboolean str_find		(const gchar	*haystack,
-				 const gchar	*needle);
-gboolean str_case_find		(const gchar	*haystack,
-				 const gchar	*needle);
 /* number-string conversion */
 gint to_number			(const gchar *nstr);
 gchar *itos_buf			(gchar	     *nstr,

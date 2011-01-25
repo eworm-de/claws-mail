@@ -4120,3 +4120,4 @@
 ( cvs diff -u -r 1.1.2.16 -r 1.1.2.17 manual/es/advanced.xml;  ) > 3.7.8cvs44.patchset
 ( cvs diff -u -r 1.56.2.66 -r 1.56.2.67 src/pop.c;  ) > 3.7.8cvs45.patchset
 ( cvs diff -u -r 1.382.2.566 -r 1.382.2.567 src/compose.c;  cvs diff -u -r 1.204.2.199 -r 1.204.2.200 src/prefs_common.c;  cvs diff -u -r 1.2.2.9 -r 1.2.2.10 src/common/md5.c;  cvs diff -u -r 1.4.2.36 -r 1.4.2.37 src/common/ssl_certificate.c;  ) > 3.7.8cvs46.patchset
+( cvs diff -u -r 1.75.2.67 -r 1.75.2.68 src/matcher.c;  cvs diff -u -r 1.49.2.137 -r 1.49.2.138 src/procmime.c;  cvs diff -u -r 1.17.2.24 -r 1.17.2.25 src/procmime.h;  cvs diff -u -r 1.15.2.59 -r 1.15.2.60 src/summary_search.c;  cvs diff -u -r 1.36.2.189 -r 1.36.2.190 src/common/utils.c;  cvs diff -u -r 1.20.2.74 -r 1.20.2.75 src/common/utils.h;  ) > 3.7.8cvs47.patchset

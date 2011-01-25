@@ -1,3 +1,19 @@
+2011-01-25 [colin]	3.7.8cvs47
+
+	* src/matcher.c
+		Fix matcher body parsing: decode mails with our
+		MIME parser. This speeds up body search a bit as
+		binary attachments are not searched anymore, slows
+		down a bit full message searches, but not awfully.
+	* src/summary_search.c
+		Use matcher API to search, in all cases (advanced search or
+		not). Also, fix little logic bugs related to combos history
+	* src/common/utils.c
+	* src/common/utils.h
+	* src/procmime.c
+	* src/procmime.h
+		Remove dead code, export functions needed by matcher.c
+
 2011-01-25 [colin]	3.7.8cvs46
 
 	* src/compose.c

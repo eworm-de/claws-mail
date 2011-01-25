@@ -205,10 +205,6 @@ FILE *procmime_get_first_text_content	(MsgInfo	*msginfo);
 FILE *procmime_get_first_encrypted_text_content
 					(MsgInfo 	*msginfo);
 
-gboolean procmime_find_string		(MsgInfo	*msginfo,
-					 const gchar	*str,
-					 StrFindFunc	 find_func);
-
 gchar *procmime_get_tmp_file_name	(MimeInfo	*mimeinfo);
 gchar *procmime_get_part_file_name	(MimeInfo 	*mimeinfo);
 
@@ -237,6 +233,8 @@ gint procmime_write_mimeinfo(MimeInfo *mimeinfo, FILE *fp);
 
 void procmime_mimeparser_register(MimeParser *mimeparser);
 void procmime_mimeparser_unregister(MimeParser *mimeparser);
+FILE *procmime_get_text_content(MimeInfo *mimeinfo);
+FILE *procmime_get_binary_content(MimeInfo *mimeinfo);
 
 #ifdef __cplusplus
 }
