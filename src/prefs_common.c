@@ -1439,7 +1439,7 @@ void pref_set_textview_from_pref(GtkTextView *textview, const gchar *txt)
 	if (!txt) {
 		gtk_text_buffer_set_text(buffer, "", -1);
 	} else {
-		out = malloc(strlen(txt)+1);
+		out = g_malloc(strlen(txt)+1);
 
 		pref_get_unescaped_pref(out, txt);
 
@@ -1458,7 +1458,7 @@ void pref_set_entry_from_pref(GtkEntry *entry, const gchar *txt)
 	if (!txt) {
 		gtk_entry_set_text(entry, "");
 	} else {
-		out = malloc(strlen(txt)+1);
+		out = g_malloc(strlen(txt)+1);
 
 		pref_get_unescaped_pref(out, txt);
 

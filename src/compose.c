@@ -991,7 +991,7 @@ Compose *compose_generic_new(PrefsAccount *account, const gchar *mailto, FolderI
 			dummyinfo = compose_msginfo_new_from_compose(compose);
 
 			/* decode \-escape sequences in the internal representation of the quote format */
-			tmp = malloc(strlen(item->prefs->compose_override_from_format)+1);
+			tmp = g_malloc(strlen(item->prefs->compose_override_from_format)+1);
 			pref_get_unescaped_pref(tmp, item->prefs->compose_override_from_format);
 
 #ifdef USE_ENCHANT
@@ -1082,7 +1082,7 @@ Compose *compose_generic_new(PrefsAccount *account, const gchar *mailto, FolderI
 				dummyinfo = compose_msginfo_new_from_compose(compose);
 
 			/* decode \-escape sequences in the internal representation of the quote format */
-			tmp = malloc(strlen(subject_format)+1);
+			tmp = g_malloc(strlen(subject_format)+1);
 			pref_get_unescaped_pref(tmp, subject_format);
 
 			subject = gtk_editable_get_chars(GTK_EDITABLE(compose->subject_entry), 0, -1);
@@ -1548,7 +1548,7 @@ static Compose *compose_generic_reply(MsgInfo *msginfo,
 		gchar *buf = NULL;
 
 		/* decode \-escape sequences in the internal representation of the quote format */
-		tmp = malloc(strlen(msginfo->folder->prefs->reply_override_from_format)+1);
+		tmp = g_malloc(strlen(msginfo->folder->prefs->reply_override_from_format)+1);
 		pref_get_unescaped_pref(tmp, msginfo->folder->prefs->reply_override_from_format);
 
 #ifdef USE_ENCHANT
@@ -1729,7 +1729,7 @@ Compose *compose_forward(PrefsAccount *account, MsgInfo *msginfo,
 			full_msginfo = procmsg_msginfo_copy(msginfo);
 
 		/* decode \-escape sequences in the internal representation of the quote format */
-		tmp = malloc(strlen(msginfo->folder->prefs->forward_override_from_format)+1);
+		tmp = g_malloc(strlen(msginfo->folder->prefs->forward_override_from_format)+1);
 		pref_get_unescaped_pref(tmp, msginfo->folder->prefs->forward_override_from_format);
 
 #ifdef USE_ENCHANT
@@ -1924,7 +1924,7 @@ static Compose *compose_forward_multiple(PrefsAccount *account, GSList *msginfo_
 			gchar *buf = NULL;
 
 			/* decode \-escape sequences in the internal representation of the quote format */
-			tmp = malloc(strlen(msginfo->folder->prefs->forward_override_from_format)+1);
+			tmp = g_malloc(strlen(msginfo->folder->prefs->forward_override_from_format)+1);
 			pref_get_unescaped_pref(tmp, msginfo->folder->prefs->forward_override_from_format);
 
 #ifdef USE_ENCHANT
@@ -2959,7 +2959,7 @@ static gchar *compose_quote_fmt(Compose *compose, MsgInfo *msginfo,
 			gchar *tmp = NULL;
 
 			/* decode \-escape sequences in the internal representation of the quote format */
-			tmp = malloc(strlen(fmt)+1);
+			tmp = g_malloc(strlen(fmt)+1);
 			pref_get_unescaped_pref(tmp, fmt);
 			quote_fmt_scan_string(tmp);
 			quote_fmt_parse();
