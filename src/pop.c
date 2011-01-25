@@ -664,9 +664,11 @@ gint pop3_write_uidl_list(Pop3Session *session)
 	gchar *sanitized_uid = g_strdup(session->ac_prefs->userid);
 	
 	subst_for_filename(sanitized_uid);
-	
 
-	if (!session->uidl_is_valid) return 0;
+	if (!session->uidl_is_valid) {
+		g_free(sanitized_uid);
+		return 0;
+	}
 
 	path = g_strconcat(get_rc_dir(), G_DIR_SEPARATOR_S,
 			   "uidl", G_DIR_SEPARATOR_S,

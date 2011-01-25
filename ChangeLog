@@ -1,3 +1,8 @@
+2011-01-25 [colin]	3.7.8cvs45
+
+	* src/pop.c
+		Fix leak on error path
+
 2011-01-23 [mones]	3.7.8cvs44
 
 	* manual/es/advanced.xml
