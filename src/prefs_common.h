@@ -334,6 +334,7 @@ struct _PrefsCommon
 	gchar *attach_load_dir;
 
 	GList *mime_open_cmd_history;
+	gboolean show_inline_attachments;
 
 	/* Addressbook */
 	gboolean addressbook_use_editaddress_dialog;

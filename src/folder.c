@@ -2800,6 +2800,7 @@ static void msginfo_set_mime_flags(GNode *node, gpointer data)
 	     strcmp(mimeinfo->subtype, "pkcs7-signature")))) {
 		procmsg_msginfo_set_flags(msginfo, 0, MSG_HAS_ATTACHMENT);
 	} else if (mimeinfo->disposition == DISPOSITIONTYPE_UNKNOWN && 
+		 mimeinfo->id == NULL &&
 		 mimeinfo->type != MIMETYPE_TEXT &&
 		 mimeinfo->type != MIMETYPE_MULTIPART) {
 		if (!mimeinfo->subtype 
@@ -2808,6 +2809,7 @@ static void msginfo_set_mime_flags(GNode *node, gpointer data)
 		    strcmp(mimeinfo->subtype, "pkcs7-signature")))
 			procmsg_msginfo_set_flags(msginfo, 0, MSG_HAS_ATTACHMENT);
 	} else if (mimeinfo->disposition == DISPOSITIONTYPE_INLINE &&
+		 mimeinfo->id == NULL &&
 		(strcmp(mimeinfo->subtype, "pgp-signature") &&
 		 strcmp(mimeinfo->subtype, "x-pkcs7-signature") &&
 		 strcmp(mimeinfo->subtype, "pkcs7-signature")) && 

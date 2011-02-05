@@ -1,3 +1,17 @@
+2011-02-05 [pawel]	3.7.8cvs48
+
+	* manual/advanced.xml
+		Document new hidden pref
+	* src/folder.c
+		Dont treat mimeparts referenced by others as
+		real attachments
+	* src/mimeview.c
+	* src/prefs_common.c
+	* src/prefs_common.h
+		Add ability to hide inline attachments referenced
+		by other mimeparts in MimeView. To enable this
+		feature set show_inline_attachments=0 in your clawsrc
+
 2011-01-25 [colin]	3.7.8cvs47
 
 	* src/matcher.c

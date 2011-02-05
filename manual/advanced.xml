@@ -712,7 +712,16 @@
 	  </para>
 	</listitem>
       </varlistentry>
-     <varlistentry>
+      <varlistentry>
+	<term><literal>show_inline_attachments</literal></term>
+	<listitem>
+	  <para>
+	0 or 1. Show inline attachments in MimeView.
+	Default is 1, turned on.
+	  </para>
+	</listitem>
+      </varlistentry>
+      <varlistentry>
 	<term><literal>skip_ssl_cert_check</literal></term>
 	<listitem>
 	  <para>

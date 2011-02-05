@@ -756,6 +756,8 @@ static PrefParam param[] = {
 	 &SPECIFIC_PREFS.mime_textviewer,   P_STRING, NULL, NULL, NULL},
 	{"mime_open_command", "gedit '%s'",
 	 &SPECIFIC_PREFS.mime_open_cmd,     P_STRING, NULL, NULL, NULL},
+	{"show_inline_attachments", "TRUE", 
+	 &prefs_common.show_inline_attachments, P_BOOL, NULL, NULL, NULL},
 
 	/* Interface */
 #ifndef GENERIC_UMPC

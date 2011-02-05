@@ -1362,7 +1362,8 @@ skip:
 
 	if (node) {
 		partinfo = gtk_cmctree_node_get_row_data(ctree, node);
-		if (partinfo->type == MIMETYPE_MULTIPART)
+		if (partinfo->type == MIMETYPE_MULTIPART ||
+		    (!prefs_common.show_inline_attachments && partinfo->id))
 			goto skip;
 		gtk_sctree_unselect_all(GTK_SCTREE(ctree));
 		gtk_sctree_select(GTK_SCTREE(ctree), node);
@@ -2226,6 +2227,9 @@ static void icon_list_append_icon (MimeView *mimeview, MimeInfo *mimeinfo)
 	GtkTooltips *tips = mimeview->tooltips;
 #endif
 	
+	if (!prefs_common.show_inline_attachments && mimeinfo->id)
+		return;
+
 	vbox = mimeview->icon_vbox;
 	mimeview->icon_count++;
 	button = gtk_event_box_new();
