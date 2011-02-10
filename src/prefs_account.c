@@ -148,7 +148,6 @@ typedef struct ReceivePage
 	GtkWidget *imapdir_entry;
 	GtkWidget *subsonly_checkbtn;
 	GtkWidget *low_bandwidth_checkbtn;
-	GtkWidget *imap_use_trash_checkbtn;
 
 	GtkWidget *frame_maxarticle;
 	GtkWidget *maxarticle_label;
@@ -299,6 +298,7 @@ typedef struct AdvancedPage
 	GtkWidget *draft_folder_entry;
 	GtkWidget *trash_folder_checkbtn;
 	GtkWidget *trash_folder_entry;
+	GtkWidget *imap_use_trash_checkbtn;
 } AdvancedPage;
 
 static BasicPage basic_page;
@@ -490,10 +490,6 @@ static PrefParam receive_param[] = {
 
 	{"low_bandwidth", "FALSE", &tmp_ac_prefs.low_bandwidth, P_BOOL,
 	 &receive_page.low_bandwidth_checkbtn,
-	 prefs_set_data_from_toggle, prefs_set_toggle},
-
-	{"imap_use_trash", "TRUE", &tmp_ac_prefs.imap_use_trash, P_BOOL,
-	 &receive_page.imap_use_trash_checkbtn,
 	 prefs_set_data_from_toggle, prefs_set_toggle},
 
 	{NULL, NULL, NULL, P_OTHER, NULL, NULL, NULL}
@@ -843,6 +839,11 @@ static PrefParam advanced_param[] = {
 	{"trash_folder", NULL, &tmp_ac_prefs.trash_folder, P_STRING,
 	 &advanced_page.trash_folder_entry,
 	 prefs_set_data_from_entry, prefs_set_entry},
+	 
+	 {"imap_use_trash", "TRUE", &tmp_ac_prefs.imap_use_trash, P_BOOL,
+	 &advanced_page.imap_use_trash_checkbtn,
+	 prefs_set_data_from_toggle, prefs_set_toggle},
+
 
 	{NULL, NULL, NULL, P_OTHER, NULL, NULL, NULL}
 };
@@ -1354,7 +1355,6 @@ static void receive_create_widget_func(PrefsPage * _page,
 	GtkWidget *imapdir_entry;
 	GtkWidget *subsonly_checkbtn;
 	GtkWidget *low_bandwidth_checkbtn;
-	GtkWidget *imap_use_trash_checkbtn;
 	GtkWidget *local_frame;
 	GtkWidget *local_vbox;
 	GtkWidget *local_hbox;
@@ -1578,11 +1578,6 @@ static void receive_create_widget_func(PrefsPage * _page,
 	gtk_widget_show (hbox1);
 	gtk_box_pack_start (GTK_BOX (vbox2), hbox1, FALSE, FALSE, 4);
 
-	PACK_CHECK_BUTTON (hbox1, imap_use_trash_checkbtn,
-			   _("Move deleted mails to trash and expunge immediately"));
-	CLAWS_SET_TIP(imap_use_trash_checkbtn,
-			     _("Moves deleted mails to trash instead of using the \\Deleted flag without expunging."));
-
 	PACK_CHECK_BUTTON (vbox1, filter_on_recv_checkbtn,
 			   _("Filter messages on receiving"));
 
@@ -1617,7 +1612,6 @@ static void receive_create_widget_func(PrefsPage * _page,
 	page->imapdir_entry		= imapdir_entry;
 	page->subsonly_checkbtn		= subsonly_checkbtn;
 	page->low_bandwidth_checkbtn	= low_bandwidth_checkbtn;
-	page->imap_use_trash_checkbtn	= imap_use_trash_checkbtn;
 	page->local_frame		= local_frame;
 	page->local_inbox_label	= local_inbox_label;
 	page->local_inbox_entry	= local_inbox_entry;
@@ -2613,6 +2607,8 @@ static void advanced_create_widget_func(PrefsPage * _page,
 	GtkWidget *draft_folder_entry;
 	GtkWidget *trash_folder_checkbtn;
 	GtkWidget *trash_folder_entry;
+	GtkWidget *imap_use_trash_checkbtn;
+
 	CLAWS_TIP_DECL();
 	GtkSizeGroup *size_group = gtk_size_group_new(GTK_SIZE_GROUP_HORIZONTAL);
 #define PACK_HBOX(hbox) \
@@ -2692,6 +2688,11 @@ static void advanced_create_widget_func(PrefsPage * _page,
 	SET_TOGGLE_SENSITIVITY (checkbtn_tunnelcmd, entry_tunnelcmd);
 #endif
 	PACK_HBOX (hbox1);
+	PACK_CHECK_BUTTON (hbox1, imap_use_trash_checkbtn,
+			   _("Move deleted mails to trash and expunge immediately"));
+	CLAWS_SET_TIP(imap_use_trash_checkbtn,
+			     _("Moves deleted mails to trash instead of using the \\Deleted flag without expunging."));
+
 	PACK_CHECK_BUTTON (hbox1, checkbtn_crosspost, 
 			   _("Mark cross-posted messages as read and color:"));
 	g_signal_connect (G_OBJECT (checkbtn_crosspost), "toggled",
@@ -2786,6 +2787,7 @@ static void advanced_create_widget_func(PrefsPage * _page,
 	page->draft_folder_entry  = draft_folder_entry;
 	page->trash_folder_checkbtn = trash_folder_checkbtn;
 	page->trash_folder_entry  = trash_folder_entry;
+	page->imap_use_trash_checkbtn = imap_use_trash_checkbtn;
 
 	tmp_ac_prefs = *ac_prefs;
 
@@ -4141,11 +4143,11 @@ static void prefs_account_protocol_changed(GtkComboBox *combobox, gpointer data)
 		gtk_widget_hide(advanced_page.tunnelcmd_checkbtn);
 		gtk_widget_hide(advanced_page.tunnelcmd_entry);
 #endif
+		gtk_widget_hide(advanced_page.imap_use_trash_checkbtn);
 		gtk_widget_hide(receive_page.imapdir_label);
 		gtk_widget_hide(receive_page.imapdir_entry);
 		gtk_widget_hide(receive_page.subsonly_checkbtn);
 		gtk_widget_hide(receive_page.low_bandwidth_checkbtn);
-		gtk_widget_hide(receive_page.imap_use_trash_checkbtn);
 		break;
 	case A_LOCAL:
 		gtk_widget_show(send_page.msgid_checkbtn);
@@ -4236,11 +4238,11 @@ static void prefs_account_protocol_changed(GtkComboBox *combobox, gpointer data)
 		gtk_widget_hide(advanced_page.tunnelcmd_checkbtn);
 		gtk_widget_hide(advanced_page.tunnelcmd_entry);
 #endif
+		gtk_widget_hide(advanced_page.imap_use_trash_checkbtn);
 		gtk_widget_hide(receive_page.imapdir_label);
 		gtk_widget_hide(receive_page.imapdir_entry);
 		gtk_widget_hide(receive_page.subsonly_checkbtn);
 		gtk_widget_hide(receive_page.low_bandwidth_checkbtn);
-		gtk_widget_hide(receive_page.imap_use_trash_checkbtn);
 		break;
 	case A_IMAP4:
 #ifndef HAVE_LIBETPAN
@@ -4340,11 +4342,11 @@ static void prefs_account_protocol_changed(GtkComboBox *combobox, gpointer data)
 		gtk_widget_show(advanced_page.tunnelcmd_checkbtn);
 		gtk_widget_show(advanced_page.tunnelcmd_entry);
 #endif
+		gtk_widget_show(advanced_page.imap_use_trash_checkbtn);
 		gtk_widget_show(receive_page.imapdir_label);
 		gtk_widget_show(receive_page.imapdir_entry);
 		gtk_widget_show(receive_page.subsonly_checkbtn);
 		gtk_widget_show(receive_page.low_bandwidth_checkbtn);
-		gtk_widget_show(receive_page.imap_use_trash_checkbtn);
 		break;
 	case A_NONE:
 		gtk_widget_show(send_page.msgid_checkbtn);
@@ -4433,11 +4435,11 @@ static void prefs_account_protocol_changed(GtkComboBox *combobox, gpointer data)
 		gtk_widget_hide(advanced_page.tunnelcmd_checkbtn);
 		gtk_widget_hide(advanced_page.tunnelcmd_entry);
 #endif
+		gtk_widget_hide(advanced_page.imap_use_trash_checkbtn);
 		gtk_widget_hide(receive_page.imapdir_label);
 		gtk_widget_hide(receive_page.imapdir_entry);
 		gtk_widget_hide(receive_page.subsonly_checkbtn);
 		gtk_widget_hide(receive_page.low_bandwidth_checkbtn);
-		gtk_widget_hide(receive_page.imap_use_trash_checkbtn);
 		break;
 	case A_POP3:
 	default:
@@ -4532,11 +4534,11 @@ static void prefs_account_protocol_changed(GtkComboBox *combobox, gpointer data)
 		gtk_widget_hide(advanced_page.tunnelcmd_checkbtn);
 		gtk_widget_hide(advanced_page.tunnelcmd_entry);
 #endif
+		gtk_widget_hide(advanced_page.imap_use_trash_checkbtn);
 		gtk_widget_hide(receive_page.imapdir_label);
 		gtk_widget_hide(receive_page.imapdir_entry);
 		gtk_widget_hide(receive_page.subsonly_checkbtn);
 		gtk_widget_hide(receive_page.low_bandwidth_checkbtn);
-		gtk_widget_hide(receive_page.imap_use_trash_checkbtn);
 		break;
 	}
 

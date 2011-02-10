@@ -1,3 +1,9 @@
+2011-02-10 [paul]	3.7.8cvs49
+
+	* src/prefs_account.c
+		move the 'expunge immediately' option to a more
+		suitable page
+
 2011-02-05 [pawel]	3.7.8cvs48
 
 	* manual/advanced.xml
