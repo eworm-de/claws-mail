@@ -65,8 +65,8 @@ enum
 {
 	ITEM_FUNCTION	  = 0,
 	ITEM_USER_ACTION  = 1,
-	ITEM_SEPARATOR	  = 2,
-	ITEM_PLUGIN       = 3,
+	ITEM_PLUGIN       = 2,
+	ITEM_SEPARATOR	  = 3,
 };
 
 static const gint ToolbarIcons[] =
@@ -211,8 +211,8 @@ static void prefs_toolbar_down                   (GtkButton        *button,
 
 static void action_selection_changed		 (GtkComboBox *action_combo,
 						  ToolbarPage *prefs_toolbar);
-static void plugin_selection_changed         (GtkComboBox *action_combo,
-                          ToolbarPage *prefs_toolbar);
+static void plugin_selection_changed		 (GtkComboBox *action_combo,
+						  ToolbarPage *prefs_toolbar);
 
 static void func_selection_changed		 (GtkComboBox *action_combo,
 						  ToolbarPage *prefs_toolbar);
@@ -233,14 +233,14 @@ static void icon_chooser_create			 (GtkButton *button,
 
 static GHashTable** get_plugin_hash_from_toolbar_type(ToolbarType toolbar_type)
 {
-  if(toolbar_type == TOOLBAR_MAIN)
-    return &plugin_items_mainwin;
-  else if(toolbar_type == TOOLBAR_COMPOSE)
-    return &plugin_items_compose;
-  else if(toolbar_type == TOOLBAR_MSGVIEW)
-    return &plugin_items_msgview;
-  else
-    return NULL;
+	if (toolbar_type == TOOLBAR_MAIN)
+		return &plugin_items_mainwin;
+	else if (toolbar_type == TOOLBAR_COMPOSE)
+		return &plugin_items_compose;
+	else if (toolbar_type == TOOLBAR_MSGVIEW)
+		return &plugin_items_msgview;
+	else
+		return NULL;
 }
 
 static void prefs_toolbar_create_widget(PrefsPage *_page, GtkWindow *window, gpointer data)
@@ -370,7 +370,7 @@ static void prefs_toolbar_set_displayed(ToolbarPage *prefs_toolbar)
 
 static void add_item_to_plugin_combo(gpointer key, gpointer data, gpointer combo_box)
 {
-    gtk_combo_box_append_text(GTK_COMBO_BOX(combo_box), (const gchar*)key);
+	gtk_combo_box_append_text(GTK_COMBO_BOX(combo_box), (const gchar*)key);
 }
 
 static void prefs_toolbar_populate(ToolbarPage *prefs_toolbar)
@@ -396,12 +396,18 @@ static void prefs_toolbar_populate(ToolbarPage *prefs_toolbar)
 			g_free(act_name);
 		} 
 
-	}
+	} else
+		combobox_set_sensitive(GTK_COMBO_BOX(prefs_toolbar->item_type_combo),
+					ITEM_USER_ACTION, FALSE);
 	
 	/* items registered by plugins */
 	hash = get_plugin_hash_from_toolbar_type(prefs_toolbar->source);
-  if(hash && *hash)
-	  g_hash_table_foreach(*hash, add_item_to_plugin_combo, prefs_toolbar->item_plugin_combo);
+	if (hash && *hash)
+		g_hash_table_foreach(*hash, add_item_to_plugin_combo, 
+				prefs_toolbar->item_plugin_combo);
+	else
+		combobox_set_sensitive(GTK_COMBO_BOX(prefs_toolbar->item_type_combo),
+					ITEM_PLUGIN, FALSE);
 
 	gtk_combo_box_set_active(GTK_COMBO_BOX(prefs_toolbar->item_func_combo), 0);
 	gtk_combo_box_set_active(GTK_COMBO_BOX(prefs_toolbar->item_action_combo), 0);
@@ -759,8 +765,8 @@ static void item_type_changed(GtkComboBox *item_type_combo,
 			GTK_COMBO_BOX(prefs_toolbar->item_func_combo), -1);
 		gtk_combo_box_set_active(
 			GTK_COMBO_BOX(prefs_toolbar->item_action_combo), -1);
-        gtk_combo_box_set_active(
-            GTK_COMBO_BOX(prefs_toolbar->item_plugin_combo), -1);
+		gtk_combo_box_set_active(
+			GTK_COMBO_BOX(prefs_toolbar->item_plugin_combo), -1);
 		gtk_entry_set_text(GTK_ENTRY(prefs_toolbar->item_text_entry), "");
 		gtk_widget_set_sensitive(prefs_toolbar->item_action_combo, FALSE);
 		gtk_widget_set_sensitive(prefs_toolbar->item_text_entry, FALSE);
@@ -769,16 +775,16 @@ static void item_type_changed(GtkComboBox *item_type_combo,
 		gtk_widget_set_sensitive(prefs_toolbar->icon_button, FALSE);
 		break;
 	  case ITEM_PLUGIN:
-        gtk_widget_show(prefs_toolbar->item_plugin_combo);
-        gtk_widget_hide(prefs_toolbar->item_func_combo);
-        gtk_widget_hide(prefs_toolbar->item_action_combo);
-        gtk_combo_box_set_active(GTK_COMBO_BOX(prefs_toolbar->item_plugin_combo), 0);
-        gtk_button_set_label(GTK_BUTTON(prefs_toolbar->icon_button), "");
-        gtk_widget_set_sensitive(prefs_toolbar->item_text_entry, FALSE);
-        gtk_widget_set_sensitive(prefs_toolbar->item_plugin_combo, TRUE);
-        gtk_widget_set_sensitive(prefs_toolbar->icon_button, TRUE);
-        plugin_selection_changed(GTK_COMBO_BOX(prefs_toolbar->item_plugin_combo), prefs_toolbar);
-	    break;
+	  	gtk_widget_show(prefs_toolbar->item_plugin_combo);
+	  	gtk_widget_hide(prefs_toolbar->item_func_combo);
+	  	gtk_widget_hide(prefs_toolbar->item_action_combo);
+	  	gtk_combo_box_set_active(GTK_COMBO_BOX(prefs_toolbar->item_plugin_combo), 0);
+	  	gtk_button_set_label(GTK_BUTTON(prefs_toolbar->icon_button), "");
+	  	gtk_widget_set_sensitive(prefs_toolbar->item_text_entry, FALSE);
+	  	gtk_widget_set_sensitive(prefs_toolbar->item_plugin_combo, TRUE);
+	  	gtk_widget_set_sensitive(prefs_toolbar->icon_button, TRUE);
+	  	plugin_selection_changed(GTK_COMBO_BOX(prefs_toolbar->item_plugin_combo), prefs_toolbar);
+	  	break;
 	}
 
 }
@@ -800,10 +806,10 @@ static void plugin_selection_changed(GtkComboBox *action_combo,
 {
 	gchar *text = gtk_combo_box_get_active_text(GTK_COMBO_BOX(prefs_toolbar->item_plugin_combo));
 
-    if(text != NULL) { /* action */
-        gtk_entry_set_text(GTK_ENTRY(prefs_toolbar->item_text_entry), text);
-        g_free(text);
-    }
+	if (text != NULL) { /* action */
+		gtk_entry_set_text(GTK_ENTRY(prefs_toolbar->item_text_entry), text);
+		g_free(text);
+	}
 }
 
 static void func_selection_changed(GtkComboBox *action_combo,
@@ -841,6 +847,8 @@ static void prefs_toolbar_create(ToolbarPage *prefs_toolbar)
 	GtkWidget *icon_button;
 	GtkWidget *icon_hbox;
 	GtkWidget *item_type_combo;
+	GtkListStore *item_type_model;
+	GtkTreeIter iter;
 	GtkWidget *item_action_combo;
 	GtkWidget *item_plugin_combo;
 	GtkWidget *item_func_combo;
@@ -896,8 +904,13 @@ static void prefs_toolbar_create(ToolbarPage *prefs_toolbar)
 			 (GtkAttachOptions) (GTK_FILL),
 			 (GtkAttachOptions) (0), 0, 0);	
 	
-	item_type_combo = combobox_text_new(FALSE, _("Internal Function"),
-				_("User Action"), _("Separator"), _("Plugins"), NULL);
+	item_type_combo = gtkut_sc_combobox_create(NULL, TRUE);
+	item_type_model = GTK_LIST_STORE(gtk_combo_box_get_model(
+					 GTK_COMBO_BOX(item_type_combo)));
+	COMBOBOX_ADD(item_type_model, _("Internal Function"), ITEM_FUNCTION);
+	COMBOBOX_ADD(item_type_model, _("User Action"), ITEM_USER_ACTION);
+	COMBOBOX_ADD(item_type_model, _("Plugins"), ITEM_PLUGIN);
+	COMBOBOX_ADD(item_type_model, _("Separator"), ITEM_SEPARATOR);	
 	gtk_widget_set_size_request(item_type_combo, 200, -1);
 	gtk_table_attach(GTK_TABLE(table), item_type_combo, 1, 3, 0, 1,
 			 (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
@@ -926,9 +939,9 @@ static void prefs_toolbar_create(ToolbarPage *prefs_toolbar)
 	/* plugin-registered items */
 	item_plugin_combo = gtk_combo_box_new_text();
 	gtk_widget_set_size_request(item_plugin_combo, 200, -1);
-    gtk_table_attach(GTK_TABLE(table), item_plugin_combo, 1, 3, 1, 2,
-              (GtkAttachOptions) (GTK_FILL),
-              (GtkAttachOptions) (0), 0, 0);
+	gtk_table_attach(GTK_TABLE(table), item_plugin_combo, 1, 3, 1, 2,
+			 (GtkAttachOptions) (GTK_FILL),
+			 (GtkAttachOptions) (0), 0, 0);
 
 	/* toolbar item description */
 	label_icon_text = gtk_label_new(_("Toolbar text"));
@@ -1048,8 +1061,8 @@ static void prefs_toolbar_create(ToolbarPage *prefs_toolbar)
 			 G_CALLBACK(item_type_changed), prefs_toolbar);
 	g_signal_connect(G_OBJECT(item_action_combo), "changed",
 			 G_CALLBACK(action_selection_changed), prefs_toolbar);
-    g_signal_connect(G_OBJECT(item_plugin_combo), "changed",
-             G_CALLBACK(plugin_selection_changed), prefs_toolbar);
+	g_signal_connect(G_OBJECT(item_plugin_combo), "changed",
+			 G_CALLBACK(plugin_selection_changed), prefs_toolbar);
 	g_signal_connect(G_OBJECT(item_func_combo), "changed",
 			 G_CALLBACK(func_selection_changed), prefs_toolbar);
 	g_signal_connect(G_OBJECT(up_btn), "clicked",
@@ -1075,68 +1088,74 @@ ToolbarPage *prefs_toolbar_mainwindow;
 ToolbarPage *prefs_toolbar_composewindow;
 ToolbarPage *prefs_toolbar_messageview;
 
-static void toolbar_unregister_plugin_item_real(GHashTable *hash, const gchar *plugin_name, const gchar *item_name)
+static void toolbar_unregister_plugin_item_real(GHashTable *hash, 
+					const gchar *plugin_name, 
+					const gchar *item_name)
 {
-  gchar *key;
+	gchar *key;
 
-  if(!hash)
-    return;
+	if (!hash)
+		return;
 
-  key = g_strdup_printf(plugin_name, "/", item_name, NULL);
-  g_hash_table_remove(hash, key);
-  g_free(key);
+	key = g_strdup_printf(plugin_name, "/", item_name, NULL);
+	g_hash_table_remove(hash, key);
+	g_free(key);
 }
 
-void prefs_toolbar_unregister_plugin_item(ToolbarType toolbar_type, const gchar *plugin_name, const gchar *item_name)
+void prefs_toolbar_unregister_plugin_item(ToolbarType toolbar_type, 
+					const gchar *plugin_name, 
+					const gchar *item_name)
 {
-  GHashTable **hash;
-  hash = get_plugin_hash_from_toolbar_type(toolbar_type);
-  if(hash)
-    toolbar_unregister_plugin_item_real(*hash, plugin_name, item_name);
+	GHashTable **hash;
+	hash = get_plugin_hash_from_toolbar_type(toolbar_type);
+	if (hash)
+		toolbar_unregister_plugin_item_real(*hash, plugin_name, item_name);
 }
 
-static void prefs_toolbar_execute_plugin_item_real(gpointer parent, GHashTable *hash, const gchar *id)
+static void prefs_toolbar_execute_plugin_item_real(gpointer parent, 
+				GHashTable *hash, const gchar *id)
 {
-  ToolbarPluginItem *value;
-  GSList *walk;
-  gboolean found;
+	ToolbarPluginItem *value;
+	GSList *walk;
+	gboolean found;
 
-  if(!hash) {
-        debug_print("No plugin registered toolbar items yet\n");
-        return;
-  }
+	if (!hash) {
+		debug_print("No plugin registered toolbar items yet\n");
+		return;
+	}
 
-  value = g_hash_table_lookup(hash, id);
-  if(!value) {
-    debug_print("Could not find plugin toolbar item with id %s\n", id);
-    return;
-  }
+	value = g_hash_table_lookup(hash, id);
+	if (!value) {
+		debug_print("Could not find plugin toolbar item with id %s\n", id);
+		return;
+	}
 
-  /* check if corresponding plugin is currently loaded */
-  found = FALSE;
-  for(walk = plugin_get_list(); walk; walk = walk->next) {
-    const gchar *plugin_name;
-    Plugin *plugin = walk->data;
-    plugin_name = plugin_get_name(plugin);
-    if(!strcmp(plugin_name, value->plugin)) {
-      found = TRUE;
-      break;
-    }
-  }
-  if(!found) {
-        debug_print("Plugin '%s' is currently not loaded, cannot execute toolbar action\n", value->plugin);
-        return;
-  }
+	/* check if corresponding plugin is currently loaded */
+	found = FALSE;
+	for (walk = plugin_get_list(); walk; walk = walk->next) {
+		const gchar *plugin_name;
+		Plugin *plugin = walk->data;
+		plugin_name = plugin_get_name(plugin);
+		if (!strcmp(plugin_name, value->plugin)) {
+			found = TRUE;
+			break;
+		}
+	}
+	if (!found) {
+		debug_print("Plugin '%s' is currently not loaded, cannot execute toolbar action\n", value->plugin);
+		return;
+	}
 
-  value->cb(parent, value->item_name, value->cb_data);
+	value->cb(parent, value->item_name, value->cb_data);
 }
 
-void prefs_toolbar_execute_plugin_item(gpointer parent, ToolbarType toolbar_type, const gchar *id)
+void prefs_toolbar_execute_plugin_item(gpointer parent, 
+			ToolbarType toolbar_type, const gchar *id)
 {
-  GHashTable **hash;
-  hash = get_plugin_hash_from_toolbar_type(toolbar_type);
-  if(hash)
-    prefs_toolbar_execute_plugin_item_real(parent, *hash, id);
+	GHashTable **hash;
+	hash = get_plugin_hash_from_toolbar_type(toolbar_type);
+	if (hash)
+		prefs_toolbar_execute_plugin_item_real(parent, *hash, id);
 }
 
 static void destroy_plugin_item_hash_value(ToolbarPluginItem *item)
@@ -1146,34 +1165,44 @@ static void destroy_plugin_item_hash_value(ToolbarPluginItem *item)
 	g_free(item);
 }
 
-static void prefs_toolbar_register_plugin_item_real(GHashTable **hash, const gchar *plugin_name, const gchar *item_name, ToolbarPluginCallback cb, gpointer cb_data)
+static void prefs_toolbar_register_plugin_item_real(GHashTable **hash, 
+					const gchar *plugin_name, 
+					const gchar *item_name, 
+					ToolbarPluginCallback cb, 
+					gpointer cb_data)
 {
-  gchar *key;
-  ToolbarPluginItem *value;
+	gchar *key;
+	ToolbarPluginItem *value;
 
-  cm_return_if_fail(plugin_name && item_name);
+	cm_return_if_fail(plugin_name && item_name);
 
-  if(!*hash) {
-    *hash = g_hash_table_new_full(g_str_hash, g_str_equal, g_free, (GDestroyNotify)destroy_plugin_item_hash_value);
-    if(!*hash)
-      return;
-  }
+	if (!*hash) {
+		*hash = g_hash_table_new_full(g_str_hash, g_str_equal, g_free, 
+				(GDestroyNotify) destroy_plugin_item_hash_value);
+		if (!*hash)
+			return;
+	}
 
-  key = g_strconcat(plugin_name, "/", item_name, NULL);
-  value = g_new0(ToolbarPluginItem, 1);
-  value->plugin = g_strdup(plugin_name);
-  value->item_name = g_strdup(item_name);
-  value->cb = cb;
-  value->cb_data = cb_data;
-  g_hash_table_insert(*hash, key, value);
+	key = g_strconcat(plugin_name, "/", item_name, NULL);
+	value = g_new0(ToolbarPluginItem, 1);
+	value->plugin = g_strdup(plugin_name);
+	value->item_name = g_strdup(item_name);
+	value->cb = cb;
+	value->cb_data = cb_data;
+	g_hash_table_insert(*hash, key, value);
 }
 
-void prefs_toolbar_register_plugin_item(ToolbarType toolbar_type, const gchar *plugin_name, const gchar *item_name, ToolbarPluginCallback cb, gpointer cb_data)
+void prefs_toolbar_register_plugin_item(ToolbarType toolbar_type, 
+					const gchar *plugin_name, 
+					const gchar *item_name, 
+					ToolbarPluginCallback cb, 
+					gpointer cb_data)
 {
-  GHashTable **hash;
-  hash = get_plugin_hash_from_toolbar_type(toolbar_type);
-  if(hash)
-    prefs_toolbar_register_plugin_item_real(hash, plugin_name, item_name, cb, cb_data);
+	GHashTable **hash;
+	hash = get_plugin_hash_from_toolbar_type(toolbar_type);
+	if(hash)
+		prefs_toolbar_register_plugin_item_real(hash, plugin_name, 
+						item_name, cb, cb_data);
 }
 
 void prefs_toolbar_init(void)
@@ -1414,20 +1443,19 @@ static gboolean set_list_selected(GtkTreeSelection *selector,
 		return TRUE;
 	}
 
-  if (g_utf8_collate(toolbar_ret_descr_from_val(A_CLAWS_PLUGINS), descr) == 0) {
-      gtk_combo_box_set_active(GTK_COMBO_BOX(prefs_toolbar->item_type_combo), ITEM_PLUGIN);
+	if (g_utf8_collate(toolbar_ret_descr_from_val(A_CLAWS_PLUGINS), descr) == 0) {
+		gtk_combo_box_set_active(GTK_COMBO_BOX(prefs_toolbar->item_type_combo), ITEM_PLUGIN);
 
-   	  gtk_combo_box_set_active(GTK_COMBO_BOX(prefs_toolbar->item_plugin_combo), 0);
+		gtk_combo_box_set_active(GTK_COMBO_BOX(prefs_toolbar->item_plugin_combo), 0);
 
-      gtk_widget_show(prefs_toolbar->item_plugin_combo);
-      gtk_widget_hide(prefs_toolbar->item_func_combo);
-      gtk_widget_hide(prefs_toolbar->item_action_combo);
+		gtk_widget_show(prefs_toolbar->item_plugin_combo);
+		gtk_widget_hide(prefs_toolbar->item_func_combo);
+		gtk_widget_hide(prefs_toolbar->item_action_combo);
 
-      g_free(descr);
-      g_free(icon_text);
-      return TRUE;
-  }
-
+		g_free(descr);
+		g_free(icon_text);
+		return TRUE;
+	}
 	
 	/* scan combo list for selected description an set combo item accordingly */
 	for (cur = prefs_toolbar->combo_action_list, item_num = 0; cur != NULL; 

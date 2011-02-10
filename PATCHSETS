@@ -4124,3 +4124,4 @@
 ( cvs diff -u -r 1.1.2.55 -r 1.1.2.56 manual/advanced.xml;  cvs diff -u -r 1.213.2.198 -r 1.213.2.199 src/folder.c;  cvs diff -u -r 1.83.2.164 -r 1.83.2.165 src/mimeview.c;  cvs diff -u -r 1.204.2.200 -r 1.204.2.201 src/prefs_common.c;  cvs diff -u -r 1.103.2.131 -r 1.103.2.132 src/prefs_common.h;  ) > 3.7.8cvs48.patchset
 ( cvs diff -u -r 1.105.2.162 -r 1.105.2.163 src/prefs_account.c;  ) > 3.7.8cvs49.patchset
 ( cvs diff -u -r 1.105.2.163 -r 1.105.2.164 src/prefs_account.c;  ) > 3.7.8cvs50.patchset
+( cvs diff -u -r 1.30.2.61 -r 1.30.2.62 src/prefs_toolbar.c;  ) > 3.7.8cvs51.patchset

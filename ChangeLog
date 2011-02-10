@@ -1,3 +1,10 @@
+2011-02-10 [pawel]	3.7.8cvs51
+
+	* src/prefs_toolbar.c
+		- set menus sensitivity in item type combo depending on
+		  availability of actions / plugin hooks
+		- style fixes, spaces instead of tabs mostly
+
 2011-02-10 [paul]	3.7.8cvs50
 
 	* src/prefs_account.c
