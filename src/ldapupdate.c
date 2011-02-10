@@ -382,17 +382,16 @@ Rdn *ldapsvr_modify_dn(GHashTable *hash, gchar *dn) {
 		return NULL;
 	}
 	rdn = rdn_create();
-	rdn->value = g_strdup(val);
-	rdn->attribute = g_strdup(compare);
-	g_free(val);
+	rdn->value = val;
+	rdn->attribute = compare;
+
 	if (strcmp("mail", rdn->attribute) == 0) {
 		GList *list = g_hash_table_lookup(hash, rdn->attribute);
 		while (list) {
 			EmailKeyValue *item = list->data;
-			compare = g_strdup((gchar *) item->mail);
+			compare = (gchar *) item->mail;
 			if (strcmp(compare, rdn->value) == 0) {
 				update_rdn(rdn, compare, rest);
-				g_free(compare);
 				return rdn;
 			}
 			list = g_list_next(list);
@@ -401,12 +400,10 @@ Rdn *ldapsvr_modify_dn(GHashTable *hash, gchar *dn) {
 		if (strcmp(compare, rdn->attribute) != 0) {
 	 		/* RDN changed. Find new */
 			update_rdn(rdn, compare, rest);
-			g_free(compare);
 			return rdn;
 		}
 		else {
 			/* We cannot remove dn */
-			g_free(compare);
 			rdn_free(rdn);
 			return NULL;
 		}

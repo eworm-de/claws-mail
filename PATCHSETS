@@ -4125,3 +4125,4 @@
 ( cvs diff -u -r 1.105.2.162 -r 1.105.2.163 src/prefs_account.c;  ) > 3.7.8cvs49.patchset
 ( cvs diff -u -r 1.105.2.163 -r 1.105.2.164 src/prefs_account.c;  ) > 3.7.8cvs50.patchset
 ( cvs diff -u -r 1.30.2.61 -r 1.30.2.62 src/prefs_toolbar.c;  ) > 3.7.8cvs51.patchset
+( cvs diff -u -r 1.1.2.27 -r 1.1.2.28 src/ldapupdate.c;  ) > 3.7.8cvs52.patchset
