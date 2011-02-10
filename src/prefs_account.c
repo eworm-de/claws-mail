@@ -1,6 +1,6 @@
 /*
  * Sylpheed -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 1999-2009 Hiroyuki Yamamoto and the Claws Mail team
+ * Copyright (C) 1999-2011 Hiroyuki Yamamoto and the Claws Mail team
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -163,6 +163,7 @@ typedef struct SendPage
 
 	GtkWidget *msgid_checkbtn;
 	GtkWidget *customhdr_checkbtn;
+	GtkWidget *msgid_with_addr_checkbtn;
 	GtkWidget *smtp_auth_checkbtn;
 	GtkWidget *smtp_auth_type_optmenu;
 	GtkWidget *smtp_uid_entry;
@@ -281,7 +282,6 @@ typedef struct AdvancedPage
 	GtkWidget *nntpport_spinbtn;
 	GtkWidget *domain_checkbtn;
 	GtkWidget *domain_entry;
-	GtkWidget *msgid_with_addr_checkbtn;
 	GtkWidget *crosspost_checkbtn;
  	GtkWidget *crosspost_colormenu;
 
@@ -504,7 +504,11 @@ static PrefParam send_param[] = {
 	 &send_page.customhdr_checkbtn,
 	 prefs_set_data_from_toggle, prefs_set_toggle},
 
-	{"use_smtp_auth", "FALSE", &tmp_ac_prefs.use_smtp_auth, P_BOOL,
+	{"msgid_with_addr", "FALSE", &tmp_ac_prefs.msgid_with_addr, P_BOOL,
+	 &send_page.msgid_with_addr_checkbtn,
+	 prefs_set_data_from_toggle, prefs_set_toggle},
+
+	 {"use_smtp_auth", "FALSE", &tmp_ac_prefs.use_smtp_auth, P_BOOL,
 	 &send_page.smtp_auth_checkbtn,
 	 prefs_set_data_from_toggle, prefs_set_toggle},
 
@@ -791,9 +795,6 @@ static PrefParam advanced_param[] = {
 	 &advanced_page.domain_entry,
 	 prefs_set_data_from_entry, prefs_set_entry},
 
-	{"msgid_with_addr", "FALSE", &tmp_ac_prefs.msgid_with_addr, P_BOOL,
-	 &advanced_page.msgid_with_addr_checkbtn,
-	 prefs_set_data_from_toggle, prefs_set_toggle},
 #ifndef G_OS_WIN32
 	{"set_tunnelcmd", "FALSE", &tmp_ac_prefs.set_tunnelcmd, P_BOOL,
 	 &advanced_page.tunnelcmd_checkbtn,
@@ -1649,6 +1650,7 @@ static void send_create_widget_func(PrefsPage * _page,
 	GtkWidget *hbox;
 	GtkWidget *customhdr_checkbtn;
 	GtkWidget *customhdr_edit_btn;
+	GtkWidget *checkbtn_msgid_with_addr;
 	GtkWidget *vbox3;
 	GtkWidget *smtp_auth_checkbtn;
 	GtkWidget *optmenu;
@@ -1672,6 +1674,9 @@ static void send_create_widget_func(PrefsPage * _page,
 	vbox2 = gtkut_get_options_frame(vbox1, &frame, _("Header"));
 
 	PACK_CHECK_BUTTON (vbox2, msgid_checkbtn, _("Generate Message-ID"));
+
+	PACK_CHECK_BUTTON (vbox2, checkbtn_msgid_with_addr,
+			   _("Send account mail address in Message-ID"));
 
 	hbox = gtk_hbox_new (FALSE, 12);
 	gtk_widget_show (hbox);
@@ -1822,6 +1827,7 @@ static void send_create_widget_func(PrefsPage * _page,
 	
 	page->msgid_checkbtn     = msgid_checkbtn;
 	page->customhdr_checkbtn = customhdr_checkbtn;
+	page->msgid_with_addr_checkbtn	= checkbtn_msgid_with_addr;
 
 	page->smtp_auth_checkbtn       = smtp_auth_checkbtn;
 	page->smtp_auth_type_optmenu = optmenu;
@@ -2588,7 +2594,6 @@ static void advanced_create_widget_func(PrefsPage * _page,
 	GtkWidget *checkbtn_domain;
 	GtkWidget *entry_domain;
 	gchar *tip_domain;
-	GtkWidget *checkbtn_msgid_with_addr;
 	GtkWidget *checkbtn_crosspost;
  	GtkWidget *colormenu_crosspost;
  	GtkWidget *menu;
@@ -2674,9 +2679,6 @@ static void advanced_create_widget_func(PrefsPage * _page,
 	gtk_box_pack_start (GTK_BOX (hbox1), entry_domain, TRUE, TRUE, 0);
 	SET_TOGGLE_SENSITIVITY (checkbtn_domain, entry_domain);
 	CLAWS_SET_TIP(entry_domain, tip_domain);
-	PACK_HBOX (hbox1);
-	PACK_CHECK_BUTTON (hbox1, checkbtn_msgid_with_addr,
-			   _("Send account mail address in Message-ID"));
 
 #ifndef G_OS_WIN32	
 	PACK_HBOX (hbox1);
@@ -2771,7 +2773,6 @@ static void advanced_create_widget_func(PrefsPage * _page,
 	page->nntpport_spinbtn		= spinbtn_nntpport;
 	page->domain_checkbtn		= checkbtn_domain;
 	page->domain_entry		= entry_domain;
-	page->msgid_with_addr_checkbtn	= checkbtn_msgid_with_addr;
  	page->crosspost_checkbtn	= checkbtn_crosspost;
  	page->crosspost_colormenu	= colormenu_crosspost;
 
