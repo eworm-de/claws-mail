@@ -782,12 +782,21 @@
 	  </para>
 	</listitem>
       </varlistentry>
-       <varlistentry>
+      <varlistentry>
         <term><literal>show_compose_margin</literal></term>
         <listitem>
           <para>
         0 o 1. Añade márgenes al área del texto del mensaje en la ventana
 	de composición. Por omisión es 0, desactivado.
+          </para>
+        </listitem>
+      </varlistentry>
+      <varlistentry>
+        <term><literal>show_inline_attachments</literal></term>
+        <listitem>
+          <para>
+        0 o 1. Muestra los adjuntos incrustados en el cuerpo del mensaje en
+	la vista de la estructura MIME. Por omisión es 1, activado.
           </para>
         </listitem>
       </varlistentry>

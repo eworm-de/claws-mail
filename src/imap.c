@@ -5696,7 +5696,7 @@ char* imap_modified_utf7_to_utf8(const char *mbox, gboolean change_spaces)
   unsigned long ucs4, utf16, bitbuf;
   unsigned char base64[256];
   const char *src;
-  char *dst, *res  = malloc(2*strlen(mbox)+1);
+  char *dst, *res  = g_malloc(2*strlen(mbox)+1);
 
   bitbuf = 0;
   dst = res;
