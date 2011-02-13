@@ -1,3 +1,11 @@
+2011-02-13 [colin]	3.7.8cvs55
+
+	* src/mimeview.c
+	* src/mimeview.h
+		Fix bug #2361, "Claws crashes after PGP Check in separate
+		msg view". Don't let the cancel thread lie around after
+		the verification ended.
+
 2011-02-13 [paul]	3.7.8cvs54
 
 	* po/lt.po

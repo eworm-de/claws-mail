@@ -48,6 +48,7 @@ typedef struct _SigCheckData SigCheckData;
 struct _SigCheckData
 {
 	pthread_t th;
+	pthread_t cancel_th;
 	MimeInfo *siginfo;
 	gboolean free_after_use;
 	gboolean destroy_mimeview;

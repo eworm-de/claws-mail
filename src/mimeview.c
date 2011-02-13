@@ -530,7 +530,6 @@ void mimeview_destroy(MimeView *mimeview)
 	g_slist_free(mimeview->viewers);
 	gtk_target_list_unref(mimeview->target_list);
 
-	mimeview_free_mimeinfo(mimeview);
 #ifdef USE_PTHREAD
 	if (mimeview->check_data) {
 		mimeview->check_data->destroy_mimeview = TRUE;
@@ -538,6 +537,7 @@ void mimeview_destroy(MimeView *mimeview)
 	} else 
 #endif
 	{
+		mimeview_free_mimeinfo(mimeview);
 		g_free(mimeview->file);
 		g_free(mimeview);
 		mimeviews = g_slist_remove(mimeviews, mimeview);
@@ -938,22 +938,36 @@ static void update_signature_noticeview(MimeView *mimeview, MimeInfo *mimeinfo,
 /* reset all thread stuff, and do the cleanups we've been left to do */
 static void mimeview_check_data_reset(MimeView *mimeview)
 {
+	gboolean must_free;
+	gboolean must_destroy;
+
 	if (!mimeview->check_data)
 		return;
 
-	if (mimeview->check_data->free_after_use) {
+	must_free = mimeview->check_data->free_after_use;
+	must_destroy = mimeview->check_data->destroy_mimeview;
+	
+	if (mimeview->check_data->cancel_th) {
+		debug_print("killing canceller thread\n");
+		pthread_cancel(mimeview->check_data->cancel_th);
+		mimeview->check_data->cancel_th = 0;
+	}
+
+	g_free(mimeview->check_data);
+	mimeview->check_data = NULL;
+
+	if (must_free) {
 		debug_print("freeing deferred mimeinfo\n");
 		procmime_mimeinfo_free_all(mimeview->check_data->siginfo);
 	}
-	if (mimeview->check_data->destroy_mimeview) {
+	if (must_destroy) {
 		debug_print("freeing deferred mimeview\n");
+		mimeview_free_mimeinfo(mimeview);
 		g_free(mimeview->file);
 		g_free(mimeview);
 		mimeviews = g_slist_remove(mimeviews, mimeview);
 	}
 
-	g_free(mimeview->check_data);
-	mimeview->check_data = NULL;
 }
 
 /* GUI update once the checker thread is done or killed */
@@ -1013,9 +1027,13 @@ static void *mimeview_check_sig_worker_thread(void *data)
 	if (!mimeview->check_data)
 		return NULL;
 
-	if (mimeinfo && mimeinfo == mimeview->check_data->siginfo)
+	if (mimeinfo && mimeinfo == mimeview->check_data->siginfo) {
 		privacy_mimeinfo_check_signature(mimeinfo);
-	else {
+		if (mimeview->check_data->cancel_th) {
+			pthread_cancel(mimeview->check_data->cancel_th);
+			mimeview->check_data->cancel_th = 0;
+		}
+	} else {
 		/* that's strange! we changed message without 
 		 * getting killed. */
 		g_warning("different siginfo!\n");
@@ -1111,6 +1129,8 @@ static void mimeview_check_sig_in_thread(MimeView *mimeview)
 	pthread_create(&th2, &detach2, 
 			mimeview_check_sig_cancel_thread, 
 			mimeview);
+
+	mimeview->check_data->cancel_th = th2;
 }
 #endif
 
