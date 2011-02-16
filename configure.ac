@@ -12,7 +12,7 @@ MINOR_VERSION=7
 MICRO_VERSION=8
 INTERFACE_AGE=0
 BINARY_AGE=0
-EXTRA_VERSION=56
+EXTRA_VERSION=57
 EXTRA_RELEASE=
 EXTRA_GTK2_VERSION=
 
@@ -283,7 +283,7 @@ if test x"$use_threads" = xyes ; then
 		LIBS="$LIBS `$GLIB_CONFIG --libs gthread`"
 		AC_DEFINE(USE_THREADS, 1, Whether to use multithread or not)
 	else
-		AC_MSG_ERROR([Sylpheed requires GThread from GLib to use threading.])
+		AC_MSG_ERROR([Claws Mail requires GThread from GLib to use threading.])
 	fi
 else
 	AC_MSG_RESULT(no)

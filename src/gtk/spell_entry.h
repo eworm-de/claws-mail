@@ -3,7 +3,7 @@
  *
  * @Copyright (C) 2004-2006 Christian Hammond.
  * Some of this code is from gtkspell, Copyright (C) 2002 Evan Martin.
- * Adapted for Claws Mail (c) 2009 Pawel Pekala and the Claws Mail team
+ * Adapted for Claws Mail (c) 2009-2011 Pawel Pekala and the Claws Mail team
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by

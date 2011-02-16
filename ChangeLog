@@ -1,3 +1,8 @@
+2011-02-16 [paul]	3.7.8cvs57
+
+	* src/*
+		update copyright headers throughout
+
 2011-02-16 [paul]	3.7.8cvs56
 
 	* src/summaryview.c

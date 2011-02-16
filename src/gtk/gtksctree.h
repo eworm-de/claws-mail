@@ -1,4 +1,4 @@
-/* Mail Summary tree widget for Sylpheed */
+/* Mail Summary tree widget for Claws Mail */
 
 #ifndef __GTK_SCTREE_H__
 #define __GTK_SCTREE_H__
