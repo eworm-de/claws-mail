@@ -1,3 +1,8 @@
+2011-02-16 [paul]	3.7.8cvs56
+
+	* src/summaryview.c
+		use gettext plural form for "item selected"/"items selected"
+
 2011-02-13 [colin]	3.7.8cvs55
 
 	* src/mimeview.c

@@ -2542,10 +2542,7 @@ static void summary_status_show(SummaryView *summaryview)
 
 	if (n_selected) {
 		sel = g_strdup_printf(" (%s)", to_human_readable((goffset)sel_size));
-		if (n_selected == 1)
-			itstr = g_strdup(_(" item selected"));
-		else
-			itstr = g_strdup(_(" items selected"));
+		itstr = g_strdup_printf(ngettext(" item selected"," items selected", n_selected));
 	} else {
 		sel = g_strdup("");
 		itstr = g_strdup("");
