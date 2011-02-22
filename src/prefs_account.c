@@ -666,11 +666,16 @@ static PrefParam privacy_param[] = {
 	{"default_sign", "FALSE", &tmp_ac_prefs.default_sign, P_BOOL,
 	 &privacy_page.default_sign_checkbtn,
 	 prefs_set_data_from_toggle, prefs_set_toggle},
-
+#ifdef G_OS_UNIX
 	{"default_sign_reply", "TRUE", &tmp_ac_prefs.default_sign_reply, P_BOOL,
 	 &privacy_page.default_sign_reply_checkbtn,
 	 prefs_set_data_from_toggle, prefs_set_toggle},
-
+#else
+	/* Bug 2367: disturbing for Win32 users with no keypair */
+	{"default_sign_reply", "FALSE", &tmp_ac_prefs.default_sign_reply, P_BOOL,
+	 &privacy_page.default_sign_reply_checkbtn,
+	 prefs_set_data_from_toggle, prefs_set_toggle},
+#endif
 	{"save_clear_text", "FALSE", &tmp_ac_prefs.save_encrypted_as_clear_text, P_BOOL,
 	 &privacy_page.save_clear_text_checkbtn,
 	 prefs_set_data_from_toggle, prefs_set_toggle},
