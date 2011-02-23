@@ -90,6 +90,5 @@ libclawscommon_la_LIBADD = \
 	$(MAEMO_LIBS)
 
 EXTRA_DIST = \
-	valgrind.h \
 	version.h.in fnmatch_loop.c
 
