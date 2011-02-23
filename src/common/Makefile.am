@@ -66,7 +66,6 @@ clawscommoninclude_HEADERS = $(arch_headers) \
 	timing.h \
 	utils.h \
 	uuencode.h \
-	valgrind.h \
 	version.h \
 	xml.h \
 	xmlprops.h
@@ -77,6 +76,7 @@ INCLUDES = \
 AM_CPPFLAGS = \
 	$(GLIB_CFLAGS) \
 	$(MAEMO_CFLAGS) \
+	$(VALGRIND_CFLAGS) \
 	-DLOCALEDIR=\""$(localedir)"\" \
 	-DPLUGINDIR=\"$(PLUGINDIR)\" \
 	-DDATAROOTDIR=\""$(datarootdir)"\" \
@@ -90,5 +90,6 @@ libclawscommon_la_LIBADD = \
 	$(MAEMO_LIBS)
 
 EXTRA_DIST = \
+	valgrind.h \
 	version.h.in fnmatch_loop.c
 

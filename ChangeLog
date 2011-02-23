@@ -1,3 +1,13 @@
+2011-02-23 [colin]	3.7.8cvs59
+
+	* src/Makefile.am
+	* src/main.c
+	* src/common/Makefile.am
+	* src/common/plugin.c
+	* src/common/valgrind.h
+		Fix bug #2369, "valgrind.h should NOT be part of claws-mail"
+		Use valgrind's own header.
+
 2011-02-22 [colin]	3.7.8cvs58
 
 	* src/prefs_account.c

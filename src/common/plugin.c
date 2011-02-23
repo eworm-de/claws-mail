@@ -17,7 +17,15 @@
  * 
  */
 
+
+#ifdef HAVE_CONFIG_H
+#  include "config.h"
+#endif
+
 #include <stdio.h>
+#ifdef HAVE_VALGRIND
+#include <valgrind.h>
+#endif
 
 #include "defs.h"
 #include <glib.h>
@@ -35,9 +43,6 @@
 #include "claws.h"
 #include "timing.h"
 
-#ifdef HAVE_VALGRIND
-#include "valgrind.h"
-#endif
 struct _Plugin
 {
 	gchar	*filename;

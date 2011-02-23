@@ -57,6 +57,9 @@
 #ifdef HAVE_NETWORKMANAGER_SUPPORT
 #include <NetworkManager.h>
 #endif
+#ifdef HAVE_VALGRIND
+#include <valgrind.h>
+#endif
 
 #include "claws.h"
 #include "main.h"
@@ -114,9 +117,6 @@
 #include "nntp-thread.h"
 #endif
 #include "stock_pixmap.h"
-#ifdef HAVE_VALGRIND
-#include "valgrind.h"
-#endif
 #ifdef USE_GNUTLS
 #  include "ssl.h"
 #endif

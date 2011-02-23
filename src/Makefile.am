@@ -548,7 +548,8 @@ AM_CPPFLAGS = \
 	$(MAEMO_CFLAGS) \
 	$(CONIC_CFLAGS) \
 	$(DBUS_CFLAGS) \
-  $(NETWORKMANAGER_SUPPORT_CFLAGS)
+	$(NETWORKMANAGER_SUPPORT_CFLAGS) \
+	$(VALGRIND_CFLAGS)
 
 #no-unused-function is there because of bison stuff
 #no-deprecated-declarations because of gpgme_data_rewind, which we have
