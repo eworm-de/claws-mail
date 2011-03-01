@@ -1,3 +1,9 @@
+2011-03-01 [pawel]	3.7.8cvs61
+
+	* src/wizard.c
+		Wizard GUI cleanups. Make it look and behave more
+		like account preferences.
+
 2011-02-23 [colin]	3.7.8cvs60
 
 	* src/common/Makefile.am
