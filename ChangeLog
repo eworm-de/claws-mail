@@ -1,3 +1,9 @@
+2011-03-02 [pawel]	3.7.8cvs62
+
+	* src/wizard.c
+		Re-implement widgets aligning, switch from GtkSizeGroup
+		to GtkTable - this should fix disappearing labels
+
 2011-03-01 [pawel]	3.7.8cvs61
 
 	* src/wizard.c

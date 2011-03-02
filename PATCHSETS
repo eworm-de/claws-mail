@@ -4135,3 +4135,4 @@
 ( cvs diff -u -r 1.155.2.96 -r 1.155.2.97 src/Makefile.am;  cvs diff -u -r 1.115.2.233 -r 1.115.2.234 src/main.c;  cvs diff -u -r 1.24.2.20 -r 1.24.2.21 src/common/Makefile.am;  cvs diff -u -r 1.13.2.41 -r 1.13.2.42 src/common/plugin.c;  cvs diff -u -r -1.1.2.1 -r -1.1.2.2 src/common/valgrind.h;  ) > 3.7.8cvs59.patchset
 ( cvs diff -u -r 1.24.2.21 -r 1.24.2.22 src/common/Makefile.am;  ) > 3.7.8cvs60.patchset
 ( cvs diff -u -r 1.1.2.81 -r 1.1.2.82 src/wizard.c;  ) > 3.7.8cvs61.patchset
+( cvs diff -u -r 1.1.2.82 -r 1.1.2.83 src/wizard.c;  ) > 3.7.8cvs62.patchset

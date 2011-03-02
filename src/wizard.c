@@ -906,10 +906,8 @@ static GtkWidget* create_page (WizardWindow *wizard, const char * title)
 	return vbox;
 }
 
-#define PACK_BOX(hbox,text,entry,size_group) {				\
+#define PACK_BOX(hbox,text,entry) {					\
 	GtkWidget *label = gtk_label_new(text);				\
-	if (size_group)							\
-		gtk_size_group_add_widget(size_group, label);		\
 	gtk_label_set_use_markup(GTK_LABEL(label), TRUE);		\
 	if (GTK_IS_MISC(label))						\
 		gtk_misc_set_alignment(GTK_MISC(label), 1, 0.5);	\
@@ -994,8 +992,8 @@ static GtkWidget* user_page (WizardWindow * wizard)
 {
 	GtkWidget *table = gtk_table_new(1,1, FALSE);
 	GtkWidget *vbox;
-	GtkWidget *hbox;
-	GtkSizeGroup *size_group = gtk_size_group_new(GTK_SIZE_GROUP_BOTH);
+	GtkWidget *label;
+	GtkWidget *user_table;
 	
 	gtk_table_set_row_spacings(GTK_TABLE(table), 4);
 	gtk_table_set_col_spacings(GTK_TABLE(table), 8);
@@ -1006,25 +1004,38 @@ static GtkWidget* user_page (WizardWindow * wizard)
 	gtk_table_attach(GTK_TABLE(table), vbox, 0,1,1,2, 
 			 GTK_EXPAND|GTK_FILL, 0, 0, 0);
 
-	hbox = gtk_hbox_new(FALSE, VSPACING_NARROW);
-	gtk_box_pack_start (GTK_BOX(vbox), hbox, FALSE, FALSE, 0);
+	user_table = gtk_table_new(3, 2, FALSE);
+	gtk_table_set_row_spacings(GTK_TABLE(user_table), VSPACING_NARROW);
+	gtk_box_pack_start(GTK_BOX(vbox), user_table, FALSE, FALSE, 0);
+
+	label = gtk_label_new(_("<span weight=\"bold\">Your name:</span>"));
+	gtk_label_set_use_markup(GTK_LABEL(label), TRUE);
+	gtk_misc_set_alignment(GTK_MISC(label), 1, 0.5);
+	gtk_table_attach(GTK_TABLE(user_table), label, 0,1,0,1, 
+			 GTK_FILL, 0, VSPACING_NARROW, 0);
 	wizard->full_name = gtk_entry_new();
 	gtk_entry_set_text(GTK_ENTRY(wizard->full_name), tmpl.name?tmpl.name:"");
-	PACK_BOX(hbox, _("<span weight=\"bold\">Your name:</span>"),
-		 wizard->full_name, size_group);
-	
-	hbox = gtk_hbox_new(FALSE, VSPACING_NARROW);
-	gtk_box_pack_start (GTK_BOX(vbox), hbox, FALSE, FALSE, 0);
+	gtk_table_attach(GTK_TABLE(user_table), wizard->full_name, 1,2,0,1, 
+			 GTK_EXPAND|GTK_FILL, 0, 0, 0);
+
+	label = gtk_label_new(_("<span weight=\"bold\">Your email address:</span>"));
+	gtk_label_set_use_markup(GTK_LABEL(label), TRUE);
+	gtk_misc_set_alignment(GTK_MISC(label), 1, 0.5);
+	gtk_table_attach(GTK_TABLE(user_table), label, 0,1,1,2, 
+			 GTK_FILL, 0, VSPACING_NARROW, 0);
 	wizard->email = gtk_entry_new();
 	gtk_entry_set_text(GTK_ENTRY(wizard->email), tmpl.email?tmpl.email:"");
-	PACK_BOX(hbox, _("<span weight=\"bold\">Your email address:</span>"),
-		 wizard->email, size_group);
-	
-	hbox = gtk_hbox_new(FALSE, VSPACING_NARROW);
-	gtk_box_pack_start (GTK_BOX(vbox), hbox, FALSE, FALSE, 0);	
+	gtk_table_attach(GTK_TABLE(user_table), wizard->email, 1,2,1,2, 
+			 GTK_EXPAND|GTK_FILL, 0, 0, 0);
+
+	label = gtk_label_new(_("Your organization:"));
+	gtk_misc_set_alignment(GTK_MISC(label), 1, 0.5);
+	gtk_table_attach(GTK_TABLE(user_table), label, 0,1,2,3, 
+			 GTK_FILL, 0, VSPACING_NARROW, 0);
 	wizard->organization = gtk_entry_new();
 	gtk_entry_set_text(GTK_ENTRY(wizard->organization), tmpl.organization?tmpl.organization:"");
-	PACK_BOX(hbox, _("Your organization:"), wizard->organization, size_group);
+	gtk_table_attach(GTK_TABLE(user_table), wizard->organization, 1,2,2,3, 
+			 GTK_EXPAND|GTK_FILL, 0, 0, 0);
 	
 	g_signal_connect(G_OBJECT(wizard->email), "changed",
 			 G_CALLBACK(wizard_email_changed),
@@ -1198,8 +1209,7 @@ static GtkWidget* mailbox_page (WizardWindow * wizard)
 
 	hbox = gtk_hbox_new(FALSE, VSPACING_NARROW);
 	gtk_box_pack_start (GTK_BOX(vbox), hbox, FALSE, FALSE, 0);
-	PACK_BOX(hbox, _("<span weight=\"bold\">Store data</span>"),
-		 vbox2, NULL);
+	PACK_BOX(hbox, _("<span weight=\"bold\">Store data</span>"), vbox2);
 #endif
 
 	return table;
@@ -1242,13 +1252,13 @@ static GtkWidget* smtp_page (WizardWindow * wizard)
 	GtkWidget *vbox;
 	GtkWidget *hbox;
 	GtkWidget *hbox_spc;
+	GtkWidget *smtp_auth_table;
 #ifdef USE_GNUTLS
 	GtkWidget *label;
 	GtkWidget *button;
 	GtkWidget *smtp_cert_table;
 #endif
 	gchar *text;
-	GtkSizeGroup *size_group = gtk_size_group_new(GTK_SIZE_GROUP_BOTH);
 	CLAWS_TIP_DECL();
 	
 	gtk_table_set_row_spacings(GTK_TABLE(table), 4);
@@ -1272,8 +1282,7 @@ static GtkWidget* smtp_page (WizardWindow * wizard)
 			       "\"mail.example.com:25\""));
 
 	PACK_BOX(hbox, _("<span weight=\"bold\">SMTP server address:</span>"),
-		 wizard->smtp_server, NULL);
-
+		 wizard->smtp_server);
 
 	hbox = gtk_hbox_new(FALSE, VSPACING_NARROW);
 	gtk_box_pack_start (GTK_BOX(vbox), hbox, FALSE, FALSE, 0);
@@ -1291,27 +1300,30 @@ static GtkWidget* smtp_page (WizardWindow * wizard)
 	SET_TOGGLE_SENSITIVITY (wizard->smtp_auth, label);	
 	gtk_box_pack_end(GTK_BOX(hbox), label, FALSE, FALSE, 0);
 
-	text = get_default_smtp_account(wizard);
-
 	hbox = gtk_hbox_new(FALSE, VSPACING_NARROW);
 	gtk_box_pack_start (GTK_BOX(vbox), hbox, FALSE, FALSE, 0);
 	hbox_spc = gtk_hbox_new (FALSE, 0);
 	gtk_widget_set_size_request (hbox_spc, 12, -1);
+	gtk_box_pack_start (GTK_BOX (hbox), hbox_spc, FALSE, FALSE, 0);
+	smtp_auth_table = gtk_table_new(2, 2, FALSE);
+	SET_TOGGLE_SENSITIVITY (wizard->smtp_auth, smtp_auth_table);
+	gtk_box_pack_start(GTK_BOX(hbox), smtp_auth_table, TRUE, TRUE, 0);
+
+	wizard->smtp_username_label = gtk_label_new(_("SMTP username:"));
+	gtk_misc_set_alignment(GTK_MISC(wizard->smtp_username_label), 1, 0.5);	      
+	gtk_table_attach(GTK_TABLE(smtp_auth_table), wizard->smtp_username_label, 0,1,0,1, 
+			 GTK_FILL, 0, VSPACING_NARROW, 0);
+	text = get_default_smtp_account(wizard);
 	wizard->smtp_username = gtk_entry_new();
 	gtk_entry_set_text(GTK_ENTRY(wizard->smtp_username), text);
 	g_free(text);
-	wizard->smtp_username_label = gtk_label_new(_("SMTP username:"));
-	if (GTK_IS_MISC(wizard->smtp_username_label))						      
-		gtk_misc_set_alignment(GTK_MISC(wizard->smtp_username_label), 1, 0.5);	      
-	gtk_size_group_add_widget(size_group, wizard->smtp_username_label);
-	gtk_box_pack_start (GTK_BOX (hbox), hbox_spc, FALSE, FALSE, 0);
-	gtk_box_pack_start(GTK_BOX(hbox), wizard->smtp_username_label, FALSE, FALSE, 0);
-	gtk_box_pack_start(GTK_BOX(hbox), wizard->smtp_username, TRUE, TRUE, 0);
+	gtk_table_attach(GTK_TABLE(smtp_auth_table), wizard->smtp_username, 1,2,0,1, 
+			 GTK_EXPAND|GTK_FILL, 0, 0, 0);
 
-	hbox = gtk_hbox_new(FALSE, VSPACING_NARROW);
-	gtk_box_pack_start (GTK_BOX(vbox), hbox, FALSE, FALSE, 0);
-	hbox_spc = gtk_hbox_new (FALSE, 0);
-	gtk_widget_set_size_request (hbox_spc, 12, -1);
+	wizard->smtp_password_label = gtk_label_new(_("SMTP password:"));
+	gtk_misc_set_alignment(GTK_MISC(wizard->smtp_password_label), 1, 0.5);	      
+	gtk_table_attach(GTK_TABLE(smtp_auth_table), wizard->smtp_password_label, 0,1,1,2, 
+			 GTK_FILL, 0, VSPACING_NARROW, 0);
 	wizard->smtp_password = gtk_entry_new();
 	gtk_entry_set_text(GTK_ENTRY(wizard->smtp_password), tmpl.smtppass?tmpl.smtppass:""); 
 	gtk_entry_set_visibility(GTK_ENTRY(wizard->smtp_password), FALSE);
@@ -1319,13 +1331,8 @@ static GtkWidget* smtp_page (WizardWindow * wizard)
 	hildon_gtk_entry_set_input_mode(GTK_ENTRY(wizard->smtp_password), 
 		HILDON_GTK_INPUT_MODE_FULL | HILDON_GTK_INPUT_MODE_INVISIBLE);
 #endif
-	wizard->smtp_password_label = gtk_label_new(_("SMTP password:"));
-	if (GTK_IS_MISC(wizard->smtp_password_label))						      
-		gtk_misc_set_alignment(GTK_MISC(wizard->smtp_password_label), 1, 0.5);	      
-	gtk_size_group_add_widget(size_group, wizard->smtp_password_label);
-	gtk_box_pack_start (GTK_BOX (hbox), hbox_spc, FALSE, FALSE, 0);
-	gtk_box_pack_start(GTK_BOX(hbox), wizard->smtp_password_label, FALSE, FALSE, 0);
-	gtk_box_pack_start(GTK_BOX(hbox), wizard->smtp_password, TRUE, TRUE, 0);
+	gtk_table_attach(GTK_TABLE(smtp_auth_table), wizard->smtp_password, 1,2,1,2, 
+			 GTK_EXPAND|GTK_FILL, 0, 0, 0);
 #ifdef USE_GNUTLS
 	hbox = gtk_hbox_new(FALSE, VSPACING_NARROW);
 	gtk_box_pack_start (GTK_BOX(vbox), hbox, FALSE, FALSE, 0);
@@ -1348,8 +1355,7 @@ static GtkWidget* smtp_page (WizardWindow * wizard)
 	SET_TOGGLE_SENSITIVITY (wizard->smtp_use_ssl, wizard->smtp_use_tls);
 	
 	smtp_cert_table = gtk_table_new(3,3, FALSE);
-	gtk_container_set_border_width(GTK_CONTAINER(smtp_cert_table), 8);
-	gtk_box_pack_start (GTK_BOX(vbox), smtp_cert_table, FALSE, FALSE, 0);
+	gtk_box_pack_start (GTK_BOX(vbox), smtp_cert_table, FALSE, FALSE, 4);
 	hbox = gtk_hbox_new(FALSE, VSPACING_NARROW);
 	hbox_spc = gtk_hbox_new (FALSE, 0);
 	gtk_widget_set_size_request (hbox_spc, 12, -1);
@@ -1358,7 +1364,6 @@ static GtkWidget* smtp_page (WizardWindow * wizard)
 	gtk_misc_set_alignment(GTK_MISC(label), 0, 0.5);
 	gtk_box_pack_start (GTK_BOX (hbox), label, FALSE, FALSE, 0);
 	gtk_table_attach(GTK_TABLE(smtp_cert_table), hbox, 0, 3, 0, 1, GTK_FILL, 0, 0, 0);
-	SET_TOGGLE_SENSITIVITY (wizard->smtp_use_ssl, label);
 	hbox = gtk_hbox_new(FALSE, VSPACING_NARROW);
 	hbox_spc = gtk_hbox_new (FALSE, 0);
 	gtk_widget_set_size_request (hbox_spc, 12, -1);
@@ -1366,15 +1371,14 @@ static GtkWidget* smtp_page (WizardWindow * wizard)
 	label = gtk_label_new(_("File"));
 	gtk_misc_set_alignment(GTK_MISC(label), 1, 0.5);
 	gtk_box_pack_start (GTK_BOX (hbox), label, TRUE, TRUE, 0);
-	gtk_table_attach(GTK_TABLE(smtp_cert_table), hbox, 0, 1, 1, 2, GTK_FILL, 0, 2, 0);
+	gtk_table_attach(GTK_TABLE(smtp_cert_table), hbox, 0, 1, 1, 2, 
+			 GTK_FILL, 0, VSPACING_NARROW, 0);
 	wizard->smtp_ssl_cert_file = gtk_entry_new();
 	gtk_entry_set_text(GTK_ENTRY(wizard->smtp_ssl_cert_file), tmpl.smtpssl_cert?tmpl.smtpssl_cert:"");
 	gtk_table_attach(GTK_TABLE(smtp_cert_table), wizard->smtp_ssl_cert_file, 1, 2, 1, 2, GTK_FILL, 0, 0, 0);
 	button = gtkut_get_browse_file_btn(_("Browse"));
-	gtk_table_attach(GTK_TABLE(smtp_cert_table), button, 2, 3, 1, 2, GTK_FILL, 0, 2, 0);
-	SET_TOGGLE_SENSITIVITY (wizard->smtp_use_ssl, label);
-	SET_TOGGLE_SENSITIVITY (wizard->smtp_use_ssl, wizard->smtp_ssl_cert_file);
-	SET_TOGGLE_SENSITIVITY (wizard->smtp_use_ssl, button);
+	gtk_table_attach(GTK_TABLE(smtp_cert_table), button, 2, 3, 1, 2, 
+			 GTK_FILL, 0, VSPACING_NARROW, 0);
 	g_signal_connect(G_OBJECT(button), "clicked",
 			 G_CALLBACK(cert_browse_cb), wizard->smtp_ssl_cert_file);
 
@@ -1385,13 +1389,13 @@ static GtkWidget* smtp_page (WizardWindow * wizard)
 	label = gtk_label_new(_("Password"));
 	gtk_misc_set_alignment(GTK_MISC(label), 1, 0.5);
 	gtk_box_pack_start (GTK_BOX (hbox), label, TRUE, TRUE, 0);
-	gtk_table_attach(GTK_TABLE(smtp_cert_table), hbox, 0, 1, 2, 3, GTK_FILL, 0, 2, 0);
+	gtk_table_attach(GTK_TABLE(smtp_cert_table), hbox, 0, 1, 2, 3, 
+			 GTK_FILL, 0, VSPACING_NARROW, 0);
 	wizard->smtp_ssl_cert_pass = gtk_entry_new();
 	gtk_entry_set_visibility(GTK_ENTRY(wizard->smtp_ssl_cert_pass), FALSE);
 	gtk_entry_set_text(GTK_ENTRY(wizard->smtp_ssl_cert_pass), tmpl.smtpssl_cert_pass?tmpl.smtpssl_cert_pass:"");
 	gtk_table_attach(GTK_TABLE(smtp_cert_table), wizard->smtp_ssl_cert_pass, 1, 2, 2, 3, GTK_FILL, 0, 0, 0);
-	SET_TOGGLE_SENSITIVITY (wizard->smtp_use_ssl, label);
-	SET_TOGGLE_SENSITIVITY (wizard->smtp_use_ssl, wizard->smtp_ssl_cert_pass);
+	SET_TOGGLE_SENSITIVITY (wizard->smtp_use_ssl, smtp_cert_table);
 	wizard->smtp_cert_table = smtp_cert_table;
 #endif
 	smtp_auth_changed(NULL, wizard);
@@ -1509,9 +1513,10 @@ static GtkWidget* recv_page (WizardWindow * wizard)
 	GtkWidget *table = gtk_table_new(1,1, FALSE);
 	GtkWidget *vbox;
 	GtkWidget *hbox;
-#ifdef USE_GNUTLS
-	GtkWidget *hbox_spc;
+	GtkWidget *hbox_spc;	
+	GtkWidget *recv_table;
 	GtkWidget *label;
+#ifdef USE_GNUTLS
 	GtkWidget *button;
 	GtkWidget *recv_cert_table;
 #endif
@@ -1519,7 +1524,6 @@ static GtkWidget* recv_page (WizardWindow * wizard)
 	GtkTreeIter iter;
 	gchar *text;
 	gint index = 0;
-	GtkSizeGroup *size_group = gtk_size_group_new(GTK_SIZE_GROUP_BOTH);
 	CLAWS_TIP_DECL();
 
 	gtk_table_set_row_spacings(GTK_TABLE(table), 4);
@@ -1531,8 +1535,14 @@ static GtkWidget* recv_page (WizardWindow * wizard)
 	gtk_table_attach(GTK_TABLE(table), vbox, 0,1,1,2, 
 			 GTK_EXPAND|GTK_FILL, 0, 0, 0);
 
-	hbox = gtk_hbox_new(FALSE, VSPACING_NARROW);
-	gtk_box_pack_start (GTK_BOX(vbox), hbox, FALSE, FALSE, 0);
+	recv_table = gtk_table_new(4, 2, FALSE); 
+	gtk_box_pack_start(GTK_BOX(vbox), recv_table, FALSE, FALSE, 0);
+
+	label = gtk_label_new(_("<span weight=\"bold\">Server type:</span>"));
+	gtk_misc_set_alignment(GTK_MISC(label), 1, 0.5);
+	gtk_label_set_use_markup(GTK_LABEL(label), TRUE);
+	gtk_table_attach(GTK_TABLE(recv_table), label, 0,1,0,1, 
+			 GTK_FILL, 0, VSPACING_NARROW, 0);
 	wizard->recv_type = gtkut_sc_combobox_create(NULL, FALSE);
 	store = GTK_LIST_STORE(gtk_combo_box_get_model(
 			GTK_COMBO_BOX(wizard->recv_type)));
@@ -1558,11 +1568,14 @@ static GtkWidget* recv_page (WizardWindow * wizard)
 	g_signal_connect(G_OBJECT(wizard->recv_type), "changed",
 			 G_CALLBACK(wizard_protocol_changed),
 			 wizard);
-	PACK_BOX(hbox, _("<span weight=\"bold\">Server type:</span>"),
-		 wizard->recv_type, size_group);
+	gtk_table_attach(GTK_TABLE(recv_table), wizard->recv_type, 1,2,0,1, 
+			 GTK_EXPAND|GTK_FILL, 0, 0, 0);
 
-	hbox = gtk_hbox_new(FALSE, VSPACING_NARROW);
-	gtk_box_pack_start (GTK_BOX(vbox), hbox, FALSE, FALSE, 0);
+	wizard->recv_label = gtk_label_new(_("<span weight=\"bold\">Server address:</span>"));
+	gtk_misc_set_alignment(GTK_MISC(wizard->recv_label), 1, 0.5);
+	gtk_label_set_use_markup(GTK_LABEL(wizard->recv_label), TRUE);
+	gtk_table_attach(GTK_TABLE(recv_table), wizard->recv_label, 0,1,1,2, 
+			 GTK_FILL, 0, VSPACING_NARROW, 0);
 	wizard->recv_server = gtk_entry_new();
 	text = get_default_server(wizard, "pop");
 	gtk_entry_set_text(GTK_ENTRY(wizard->recv_server), text);
@@ -1571,45 +1584,34 @@ static GtkWidget* recv_page (WizardWindow * wizard)
 	CLAWS_SET_TIP(wizard->recv_server,
 			     _("You can specify the port number by appending it at the end: "
 			       "\"mail.example.com:110\""));
-
-	wizard->recv_label = gtk_label_new(_("<span weight=\"bold\">Server address:</span>"));
-	gtk_label_set_use_markup(GTK_LABEL(wizard->recv_label), TRUE);
-	gtk_size_group_add_widget(size_group, wizard->recv_label);
-	if (GTK_IS_MISC(wizard->recv_label))						      
-		gtk_misc_set_alignment(GTK_MISC(wizard->recv_label), 1, 0.5);	      
-	gtk_box_pack_start(GTK_BOX(hbox), wizard->recv_label, FALSE, FALSE, 0);
-	gtk_box_pack_start(GTK_BOX(hbox), wizard->recv_server, TRUE, TRUE, 0);
+	gtk_table_attach(GTK_TABLE(recv_table), wizard->recv_server, 1,2,1,2, 
+			 GTK_EXPAND|GTK_FILL, 0, 0, 0);
 	
-	hbox = gtk_hbox_new(FALSE, VSPACING_NARROW);
-	gtk_box_pack_start (GTK_BOX(vbox), hbox, FALSE, FALSE, 0);
-	wizard->recv_username = gtk_entry_new();
 	wizard->recv_username_label = gtk_label_new(_("<span weight=\"bold\">Username:</span>"));
+	gtk_misc_set_alignment(GTK_MISC(wizard->recv_username_label), 1, 0.5);
 	gtk_label_set_use_markup(GTK_LABEL(wizard->recv_username_label), TRUE);
-	gtk_size_group_add_widget(size_group, wizard->recv_username_label);
-	if (GTK_IS_MISC(wizard->recv_username_label))						      
-		gtk_misc_set_alignment(GTK_MISC(wizard->recv_username_label), 1, 0.5);	      
-	gtk_box_pack_start(GTK_BOX(hbox), wizard->recv_username_label, FALSE, FALSE, 0);
-	gtk_box_pack_start(GTK_BOX(hbox), wizard->recv_username, TRUE, TRUE, 0);
-	
+	gtk_table_attach(GTK_TABLE(recv_table), wizard->recv_username_label, 0,1,2,3, 
+			 GTK_FILL, 0, VSPACING_NARROW, 0);
+	wizard->recv_username = gtk_entry_new();
 	text = get_default_account(wizard);
 	gtk_entry_set_text(GTK_ENTRY(wizard->recv_username), text);
 	g_free(text);
-
-	hbox = gtk_hbox_new(FALSE, VSPACING_NARROW);
-	gtk_box_pack_start (GTK_BOX(vbox), hbox, FALSE, FALSE, 0);
+	gtk_table_attach(GTK_TABLE(recv_table), wizard->recv_username, 1,2,2,3, 
+			 GTK_EXPAND|GTK_FILL, 0, 0, 0);
+			 
+	wizard->recv_password_label = gtk_label_new(_("Password:"));
+	gtk_misc_set_alignment(GTK_MISC(wizard->recv_password_label), 1, 0.5);
+	gtk_table_attach(GTK_TABLE(recv_table), wizard->recv_password_label, 0,1,3,4, 
+			 GTK_FILL, 0, VSPACING_NARROW, 0);
 	wizard->recv_password = gtk_entry_new();
 	gtk_entry_set_text(GTK_ENTRY(wizard->recv_password), tmpl.recvpass?tmpl.recvpass:"");
-	wizard->recv_password_label = gtk_label_new(_("Password:"));
-	gtk_size_group_add_widget(size_group, wizard->recv_password_label);
-	if (GTK_IS_MISC(wizard->recv_password_label))						      
-		gtk_misc_set_alignment(GTK_MISC(wizard->recv_password_label), 1, 0.5);	      
 	gtk_entry_set_visibility(GTK_ENTRY(wizard->recv_password), FALSE);
+	gtk_table_attach(GTK_TABLE(recv_table), wizard->recv_password, 1,2,3,4, 
+			 GTK_EXPAND|GTK_FILL, 0, 0, 0);
 #ifdef MAEMO
 	hildon_gtk_entry_set_input_mode(GTK_ENTRY(wizard->recv_password), 
 		HILDON_GTK_INPUT_MODE_FULL | HILDON_GTK_INPUT_MODE_INVISIBLE);
 #endif
-	gtk_box_pack_start(GTK_BOX(hbox), wizard->recv_password_label, FALSE, FALSE, 0);
-	gtk_box_pack_start(GTK_BOX(hbox), wizard->recv_password, TRUE, TRUE, 0);
 	
 #ifdef USE_GNUTLS
 	hbox = gtk_hbox_new(FALSE, VSPACING_NARROW);
@@ -1633,8 +1635,7 @@ static GtkWidget* recv_page (WizardWindow * wizard)
 	SET_TOGGLE_SENSITIVITY (wizard->recv_use_ssl, wizard->recv_use_tls);
 
 	recv_cert_table = gtk_table_new(3,3, FALSE);
-	gtk_container_set_border_width(GTK_CONTAINER(recv_cert_table), 8);
-	gtk_box_pack_start (GTK_BOX(vbox), recv_cert_table, FALSE, FALSE, 0);
+	gtk_box_pack_start (GTK_BOX(vbox), recv_cert_table, FALSE, FALSE, 4);
 	hbox = gtk_hbox_new(FALSE, VSPACING_NARROW);
 	hbox_spc = gtk_hbox_new (FALSE, 0);
 	gtk_widget_set_size_request (hbox_spc, 12, -1);
@@ -1643,7 +1644,6 @@ static GtkWidget* recv_page (WizardWindow * wizard)
 	gtk_misc_set_alignment(GTK_MISC(label), 0, 0.5);
 	gtk_box_pack_start (GTK_BOX (hbox), label, FALSE, FALSE, 0);	
 	gtk_table_attach(GTK_TABLE(recv_cert_table), hbox, 0, 3, 0, 1, GTK_FILL, 0, 0, 0);
-	SET_TOGGLE_SENSITIVITY (wizard->recv_use_ssl, label);
 	hbox = gtk_hbox_new(FALSE, VSPACING_NARROW);
 	hbox_spc = gtk_hbox_new (FALSE, 0);
 	gtk_widget_set_size_request (hbox_spc, 12, -1);
@@ -1651,15 +1651,14 @@ static GtkWidget* recv_page (WizardWindow * wizard)
 	label = gtk_label_new(_("File"));
 	gtk_misc_set_alignment(GTK_MISC(label), 1, 0.5);
 	gtk_box_pack_start (GTK_BOX (hbox), label, TRUE, TRUE, 0);	
-	gtk_table_attach(GTK_TABLE(recv_cert_table), hbox, 0, 1, 1, 2, GTK_FILL, 0, 2, 0);
+	gtk_table_attach(GTK_TABLE(recv_cert_table), hbox, 0, 1, 1, 2, 
+			 GTK_FILL, 0, VSPACING_NARROW, 0);
 	wizard->recv_ssl_cert_file = gtk_entry_new();
 	gtk_entry_set_text(GTK_ENTRY(wizard->recv_ssl_cert_file), tmpl.recvssl_cert?tmpl.recvssl_cert:"");
 	gtk_table_attach(GTK_TABLE(recv_cert_table), wizard->recv_ssl_cert_file, 1, 2, 1, 2, GTK_FILL, 0, 0, 0);
 	button = gtkut_get_browse_file_btn(_("Browse"));
-	gtk_table_attach(GTK_TABLE(recv_cert_table), button, 2, 3, 1, 2, GTK_FILL, 0, 2, 0);
-	SET_TOGGLE_SENSITIVITY (wizard->recv_use_ssl, label);
-	SET_TOGGLE_SENSITIVITY (wizard->recv_use_ssl, wizard->recv_ssl_cert_file);
-	SET_TOGGLE_SENSITIVITY (wizard->recv_use_ssl, button);
+	gtk_table_attach(GTK_TABLE(recv_cert_table), button, 2, 3, 1, 2, 
+			 GTK_FILL, 0, VSPACING_NARROW, 0);
 	g_signal_connect(G_OBJECT(button), "clicked",
 			 G_CALLBACK(cert_browse_cb), wizard->recv_ssl_cert_file);
 
@@ -1670,13 +1669,13 @@ static GtkWidget* recv_page (WizardWindow * wizard)
 	label = gtk_label_new(_("Password"));
 	gtk_misc_set_alignment(GTK_MISC(label), 1, 0.5);
 	gtk_box_pack_start (GTK_BOX (hbox), label, TRUE, TRUE, 0);
-	gtk_table_attach(GTK_TABLE(recv_cert_table), hbox, 0, 1, 2, 3, GTK_FILL, 0, 2, 0);
+	gtk_table_attach(GTK_TABLE(recv_cert_table), hbox, 0, 1, 2, 3, 
+			 GTK_FILL, 0, VSPACING_NARROW, 0);
 	wizard->recv_ssl_cert_pass = gtk_entry_new();
 	gtk_entry_set_visibility(GTK_ENTRY(wizard->recv_ssl_cert_pass), FALSE);
 	gtk_entry_set_text(GTK_ENTRY(wizard->recv_ssl_cert_pass), tmpl.recvssl_cert_pass?tmpl.recvssl_cert_pass:"");
 	gtk_table_attach(GTK_TABLE(recv_cert_table), wizard->recv_ssl_cert_pass, 1, 2, 2, 3, GTK_FILL, 0, 0, 0);
-	SET_TOGGLE_SENSITIVITY (wizard->recv_use_ssl, label);
-	SET_TOGGLE_SENSITIVITY (wizard->recv_use_ssl, wizard->recv_ssl_cert_pass);
+	SET_TOGGLE_SENSITIVITY (wizard->recv_use_ssl, recv_cert_table);	
 	wizard->recv_cert_table = recv_cert_table;
 #endif	
 	hbox = gtk_hbox_new(FALSE, VSPACING_NARROW);
@@ -1684,13 +1683,15 @@ static GtkWidget* recv_page (WizardWindow * wizard)
 	wizard->recv_imap_subdir = gtk_entry_new();
 	gtk_entry_set_text(GTK_ENTRY(wizard->recv_imap_subdir), tmpl.imapdir?tmpl.imapdir:"");
 	wizard->recv_imap_label = gtk_label_new(_("IMAP server directory:"));
-	if (GTK_IS_MISC(wizard->recv_imap_label))						      
-		gtk_misc_set_alignment(GTK_MISC(wizard->recv_imap_label), 1, 0.5);	      
+	gtk_misc_set_alignment(GTK_MISC(wizard->recv_imap_label), 1, 0.5);	      
 	gtk_box_pack_start(GTK_BOX(hbox), wizard->recv_imap_label, FALSE, FALSE, 0);
 	gtk_box_pack_start(GTK_BOX(hbox), wizard->recv_imap_subdir, TRUE, TRUE, 0);
 	
 	hbox = gtk_hbox_new(FALSE, VSPACING_NARROW);
 	gtk_box_pack_start (GTK_BOX(vbox), hbox, FALSE, FALSE, 0);
+	hbox_spc = gtk_hbox_new (FALSE, 0);
+	gtk_widget_set_size_request (hbox_spc, 12, -1);
+	gtk_box_pack_start (GTK_BOX (hbox), hbox_spc, FALSE, FALSE, 0);
 	wizard->subsonly_checkbtn = gtk_check_button_new_with_label(
 			_("Show only subscribed folders"));
 	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(wizard->subsonly_checkbtn),
