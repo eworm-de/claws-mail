@@ -1,3 +1,14 @@
+2011-03-04 [colin]	3.7.8cvs63
+
+	* src/mimeview.c
+	* src/mimeview.h
+		Fix segfault on Windows
+	* src/exporthtml.c
+	* src/common/utils.c
+	* src/common/w32_unistd.c
+	* src/common/w32lib.h
+		Rationalize use of time_r() funcs (pthread do define them)
+
 2011-03-02 [pawel]	3.7.8cvs62
 
 	* src/wizard.c

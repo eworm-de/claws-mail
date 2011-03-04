@@ -49,6 +49,9 @@ struct _SigCheckData
 {
 	pthread_t th;
 	pthread_t cancel_th;
+	gboolean th_init;
+	gboolean cancel_th_init;
+
 	MimeInfo *siginfo;
 	gboolean free_after_use;
 	gboolean destroy_mimeview;

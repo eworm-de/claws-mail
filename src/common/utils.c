@@ -27,6 +27,10 @@
 
 #include <glib/gi18n.h>
 
+#ifdef USE_PTHREAD
+#include <pthread.h>
+#endif
+
 #include <stdio.h>
 #include <string.h>
 #include <ctype.h>
@@ -3528,9 +3532,7 @@ time_t tzoffset_sec(time_t *now)
 {
 	struct tm gmt, *lt;
 	gint off;
-#ifndef G_OS_WIN32
 	struct tm buf1, buf2;
-#endif
 #ifdef G_OS_WIN32
 	if (now && *now < 0)
 		return 0;
@@ -3564,9 +3566,7 @@ gchar *tzoffset(time_t *now)
 	struct tm gmt, *lt;
 	gint off;
 	gchar sign = '+';
-#ifndef G_OS_WIN32
 	struct tm buf1, buf2;
-#endif
 #ifdef G_OS_WIN32
 	if (now && *now < 0)
 		return 0;
@@ -3604,10 +3604,8 @@ void get_rfc822_date(gchar *buf, gint len)
 	time_t t;
 	gchar day[4], mon[4];
 	gint dd, hh, mm, ss, yyyy;
-#ifndef G_OS_WIN32
 	struct tm buf1;
 	gchar buf2[BUFFSIZE];
-#endif
 
 	t = time(NULL);
 	lt = localtime_r(&t, &buf1);
@@ -3836,9 +3834,7 @@ gchar *generate_msgid(gchar *buf, gint len, gchar *user_addr)
 	struct tm *lt;
 	time_t t;
 	gchar *addr;
-#ifndef G_OS_WIN32
 	struct tm buft;
-#endif
 
 	t = time(NULL);
 	lt = localtime_r(&t, &buft);

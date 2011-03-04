@@ -185,12 +185,10 @@ int gettimeofday( struct timeval *tv, struct timezone *tz );
 #endif
 
 /*** unistd ***/
-uid_t getuid( void );
 int setpgid( pid_t pid, pid_t pgid );
 pid_t getppid( void );
 pid_t fork( void );
 unsigned int sleep( unsigned int seconds );
-int link( const char *oldpath, const char *newpath );
 
 /*** stdlib ***/
 long int random( void );
@@ -212,12 +210,5 @@ int write_w32_registry_string( char *parent, char *section, char *value, char *d
 int write_w32_registry_dword( char *parent, char *section, char *value, int data );
 char *read_w32_registry_string( char *parent, char *section, char *key );
 char *get_content_type_from_registry_with_ext( char *ext );
-
-
-/* Simulate thread-safe versions of some functions.  */
-#define gmtime_r(time, resultp) gmtime (time)
-#define localtime_r(time, resultp) localtime (time)
-#define asctime_r(time, buffer) asctime (time)
-#define ctime_r(time, buffer) ctime (time)
 
 #endif

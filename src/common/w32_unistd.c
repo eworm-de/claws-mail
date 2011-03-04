@@ -23,10 +23,6 @@
 
 #include "w32lib.h"
 
-uid_t getuid( void ){
-  return 1;
-}
-
 int setpgid( pid_t pid, pid_t pgid ){
   return -1;
 }
@@ -40,12 +36,8 @@ pid_t fork( void ){
 }
 
 unsigned int sleep( unsigned int seconds ){
-  _sleep( seconds );
+  _sleep(seconds * 1000);
   return 0;
-}
-
-int link( const char *oldpath, const char *newpath ){
-  return -1;
 }
 
 int usleep( unsigned long usec ){

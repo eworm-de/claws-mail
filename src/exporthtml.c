@@ -25,6 +25,10 @@
 #  include "config.h"
 #endif
 
+#ifdef USE_PTHREAD
+#include <pthread.h>
+#endif
+
 #include <sys/stat.h>
 #include <dirent.h>
 #include <errno.h>

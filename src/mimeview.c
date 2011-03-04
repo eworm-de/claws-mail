@@ -947,10 +947,10 @@ static void mimeview_check_data_reset(MimeView *mimeview)
 	must_free = mimeview->check_data->free_after_use;
 	must_destroy = mimeview->check_data->destroy_mimeview;
 	
-	if (mimeview->check_data->cancel_th) {
+	if (mimeview->check_data->cancel_th_init) {
 		debug_print("killing canceller thread\n");
+		mimeview->check_data->cancel_th_init = FALSE;
 		pthread_cancel(mimeview->check_data->cancel_th);
-		mimeview->check_data->cancel_th = 0;
 	}
 
 	g_free(mimeview->check_data);
@@ -1029,9 +1029,9 @@ static void *mimeview_check_sig_worker_thread(void *data)
 
 	if (mimeinfo && mimeinfo == mimeview->check_data->siginfo) {
 		privacy_mimeinfo_check_signature(mimeinfo);
-		if (mimeview->check_data->cancel_th) {
+		if (mimeview->check_data && mimeview->check_data->cancel_th_init) {
+			mimeview->check_data->cancel_th_init = FALSE;
 			pthread_cancel(mimeview->check_data->cancel_th);
-			mimeview->check_data->cancel_th = 0;
 		}
 	} else {
 		/* that's strange! we changed message without 
@@ -1060,15 +1060,18 @@ static void *mimeview_check_sig_cancel_thread(void *data)
 	/* wait for a few seconds... */
 	debug_print("waiting a while\n");
 
-	sleep(5);
+	g_usleep(5 * 1000 * 1000);
 	
 	if (!mimeview->check_data)
 		return NULL; /* nothing to kill, it's done in time :) */
 	
 	/* too late, go away checker thread */
 	debug_print("killing checker thread\n");
-	pthread_cancel(mimeview->check_data->th);
-	
+	if (mimeview->check_data->th_init) {
+		mimeview->check_data->th_init = FALSE;
+		pthread_cancel(mimeview->check_data->th);
+	}
+
 	/* tell upstream it was a timeout */
 	mimeview->check_data->timeout = TRUE;
 	/* use g_timeout so that GUI updates is done from the
@@ -1085,7 +1088,10 @@ static void mimeview_check_sig_cancel_now(MimeView *mimeview)
 	if (!mimeview->check_data)
 		return;
 	debug_print("killing checker thread NOW\n");
-	pthread_cancel(mimeview->check_data->th);
+	if (mimeview->check_data->th_init) {
+		mimeview->check_data->th_init = FALSE;
+		pthread_cancel(mimeview->check_data->th);
+	}
 
 	/* tell upstream it was a timeout */
 	mimeview->check_data->timeout = TRUE;
@@ -1122,8 +1128,10 @@ static void mimeview_check_sig_in_thread(MimeView *mimeview)
 		g_free(mimeview->check_data);
 		mimeview->check_data = NULL;
 		return;
-	} else 
+	} else {
 		mimeview->check_data->th = th;
+		mimeview->check_data->th_init = TRUE;
+	}
 
 	/* create the killer thread */
 	pthread_create(&th2, &detach2, 
@@ -1131,6 +1139,7 @@ static void mimeview_check_sig_in_thread(MimeView *mimeview)
 			mimeview);
 
 	mimeview->check_data->cancel_th = th2;
+	mimeview->check_data->cancel_th_init = TRUE;
 }
 #endif
 
