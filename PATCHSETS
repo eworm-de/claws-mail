@@ -4137,3 +4137,4 @@
 ( cvs diff -u -r 1.1.2.81 -r 1.1.2.82 src/wizard.c;  ) > 3.7.8cvs61.patchset
 ( cvs diff -u -r 1.1.2.82 -r 1.1.2.83 src/wizard.c;  ) > 3.7.8cvs62.patchset
 ( cvs diff -u -r 1.155.2.97 -r 1.155.2.98 src/Makefile.am;  cvs diff -u -r 1.5.2.29 -r 1.5.2.30 src/exporthtml.c;  cvs diff -u -r 1.83.2.167 -r 1.83.2.168 src/mimeview.c;  cvs diff -u -r 1.20.2.31 -r 1.20.2.32 src/mimeview.h;  cvs diff -u -r 1.36.2.191 -r 1.36.2.192 src/common/utils.c;  cvs diff -u -r 1.1.2.2 -r 1.1.2.3 src/common/w32_unistd.c;  cvs diff -u -r 1.1.2.6 -r 1.1.2.7 src/common/w32lib.h;  ) > 3.7.8cvs63.patchset
+( cvs diff -u -r 1.100.2.77 -r 1.100.2.78 AUTHORS;  cvs diff -u -r 1.1.2.71 -r 1.1.2.72 src/gtk/authors.h;  cvs diff -u -r 1.115.2.234 -r 1.115.2.235 src/main.c;  ) > 3.7.8cvs64.patchset

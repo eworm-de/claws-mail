@@ -117,6 +117,7 @@ static char *CONTRIBS_LIST[] = {
 "Felix Eckhofer",
 "Charles A. Edwards",
 "Stefaan Eeckels",
+"Mikhail Efremov",
 "Willem van Engen",
 "Paul Evans",
 "Leonid Evdokimov",

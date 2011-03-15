@@ -1,3 +1,11 @@
+2011-03-15 [colin]	3.7.8cvs64
+
+	* AUTHORS
+	* src/gtk/authors.h
+	* src/main.c
+		Fix bug #2381, "Support for NetworkManager 0.9".
+		Patch by Mikhail Efremov
+
 2011-03-04 [colin]	3.7.8cvs63
 
 	* src/mimeview.c
