@@ -3049,7 +3049,7 @@ msgstr "Insérer ou joindre ?"
 
 #: src/compose.c:10628
 msgid "Do you want to insert the contents of the file(s) into the message body, or attach it to the email?"
-msgstr "Voulez-vous insérer le contenu du(des) fichier(s)s directement dans le corps du message ou le(s) joindre en tant que pièce jointe ?"
+msgstr "Voulez-vous insérer le contenu du(des) fichier(s) directement dans le corps du message ou le(s) joindre en tant que pièce(s) jointe(s) ?"
 
 #: src/compose.c:10630
 msgid "_Attach"

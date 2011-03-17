@@ -1,3 +1,9 @@
+2011-03-17 [wwp]	3.7.8cvs65
+
+	* po/fr.po
+		Fix a typo around plural form, as reported by
+		Yannick Palanque.
+
 2011-03-15 [colin]	3.7.8cvs64
 
 	* AUTHORS
