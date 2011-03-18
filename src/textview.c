@@ -855,7 +855,7 @@ void textview_show_error(TextView *textview)
 		      "  This is probably due to a network error.\n"
 		      "\n"
 		      "  Use "));
-	TEXTVIEW_INSERT_LINK(_("'View Log'"), "sc://view_log", NULL);
+	TEXTVIEW_INSERT_LINK(_("'Network Log'"), "sc://view_log", NULL);
 	TEXTVIEW_INSERT(_(" in the Tools menu for more information."));
 	textview_show_icon(textview, GTK_STOCK_DIALOG_ERROR);
 }

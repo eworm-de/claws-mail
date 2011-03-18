@@ -1,3 +1,9 @@
+2011-03-18 [paul]	3.7.8cvs66
+
+	* src/textview.c
+		make user-facing message more accurate -
+		'Network Log' not 'View Log'
+
 2011-03-17 [wwp]	3.7.8cvs65
 
 	* po/fr.po
