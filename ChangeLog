@@ -1,3 +1,9 @@
+2011-03-20 [colin]	3.7.8cvs67
+
+	* configure.ac
+		Drop the *_DISABLE_DEPRECATED. We'll put them back
+		when we'll have time to handle them
+
 2011-03-18 [paul]	3.7.8cvs66
 
 	* src/textview.c

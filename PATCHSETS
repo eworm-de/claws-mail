@@ -4140,3 +4140,4 @@
 ( cvs diff -u -r 1.100.2.77 -r 1.100.2.78 AUTHORS;  cvs diff -u -r 1.1.2.71 -r 1.1.2.72 src/gtk/authors.h;  cvs diff -u -r 1.115.2.234 -r 1.115.2.235 src/main.c;  ) > 3.7.8cvs64.patchset
 ( cvs diff -u -r 1.42.2.52 -r 1.42.2.53 po/fr.po;  ) > 3.7.8cvs65.patchset
 ( cvs diff -u -r 1.96.2.230 -r 1.96.2.231 src/textview.c;  ) > 3.7.8cvs66.patchset
+( cvs diff -u -r 1.654.2.4215 -r 1.654.2.4216 configure.ac;  ) > 3.7.8cvs67.patchset
