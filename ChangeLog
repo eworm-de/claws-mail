@@ -1,3 +1,9 @@
+2011-03-31 [paul]	3.7.8cvs69
+
+	* INSTALL
+		update as gtk >= 2.10 now required
+		(because I'll never remember to do this later)
+
 2011-03-26 [paul]	3.7.8cvs68
 
 	* src/messageview.c
