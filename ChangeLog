@@ -1,3 +1,11 @@
+2011-04-03 [colin]	3.7.8cvs70
+
+	* src/compose.c
+		Fix bug #2365 again, "Crash when auto-scrolling headers in
+		compose window".
+		Batch-mode compose windows (from filtering actions) shouldn't
+		try to access stuff after flushing events...
+
 2011-03-31 [paul]	3.7.8cvs69
 
 	* INSTALL

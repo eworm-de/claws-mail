@@ -4143,3 +4143,4 @@
 ( cvs diff -u -r 1.654.2.4215 -r 1.654.2.4216 configure.ac;  ) > 3.7.8cvs67.patchset
 ( cvs diff -u -r 1.94.2.213 -r 1.94.2.214 src/messageview.c;  ) > 3.7.8cvs68.patchset
 ( cvs diff -u -r 1.29.2.12 -r 1.29.2.13 INSTALL;  ) > 3.7.8cvs69.patchset
+( cvs diff -u -r 1.382.2.568 -r 1.382.2.569 src/compose.c;  ) > 3.7.8cvs70.patchset

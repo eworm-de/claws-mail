@@ -10799,6 +10799,9 @@ static gboolean compose_headerentry_key_press_event_cb(GtkWidget *entry,
 static gboolean scroll_postpone(gpointer data)
 {
 	Compose *compose = (Compose *)data;
+
+	cm_return_val_if_fail(!compose->batch, FALSE);
+
 	GTK_EVENTS_FLUSH();
 	compose_show_first_last_header(compose, FALSE);
 	return FALSE;
@@ -10812,8 +10815,9 @@ static void compose_headerentry_changed_cb(GtkWidget *entry,
 		g_signal_handlers_disconnect_matched
 			(G_OBJECT(entry), G_SIGNAL_MATCH_DATA,
 			 0, 0, NULL, NULL, headerentry);
-		
-		g_timeout_add(0, scroll_postpone, headerentry->compose);
+
+		if (!headerentry->compose->batch)
+			g_timeout_add(0, scroll_postpone, headerentry->compose);
 	}
 }
 
@@ -10822,6 +10826,7 @@ static void compose_show_first_last_header(Compose *compose, gboolean show_first
 	GtkAdjustment *vadj;
 
 	cm_return_if_fail(compose);
+	cm_return_if_fail(!compose->batch);
 	cm_return_if_fail(GTK_IS_WIDGET(compose->header_table));
 	cm_return_if_fail(GTK_IS_VIEWPORT(compose->header_table->parent));
 	vadj = gtk_viewport_get_vadjustment(GTK_VIEWPORT(compose->header_table->parent));
