@@ -192,7 +192,7 @@ typedef gint64 goffset;
 #define IS_ASCII(c) (((guchar) c) <= 0177 ? 1 : 0)
 
 /* from NetworkManager */
-#if HAVE_BACKTRACE
+#if (defined(HAVE_BACKTRACE) && !defined(__FreeBSD__))
 #define print_backtrace()						\
 G_STMT_START								\
 {									\
