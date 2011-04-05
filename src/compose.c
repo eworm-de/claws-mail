@@ -8968,7 +8968,7 @@ static gboolean compose_input_cb(GIOChannel *source, GIOCondition condition,
 	Compose *compose = (Compose *)data;
 	gsize bytes_read;
 
-	debug_print(_("Compose: input from monitoring process\n"));
+	debug_print("Compose: input from monitoring process\n");
 
 	g_io_channel_read_chars(source, buf, sizeof(buf), &bytes_read, NULL);
 

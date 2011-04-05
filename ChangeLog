@@ -1,3 +1,8 @@
+2011-04-05 [wwp]	3.7.8cvs72
+
+	* src/compose.c
+		A debug string not to translate.
+
 2011-04-03 [colin]	3.7.8cvs71
 
 	* src/common/utils.h
