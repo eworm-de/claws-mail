@@ -4149,3 +4149,4 @@
 ( cvs diff -u -r 1.2.2.42 -r 1.2.2.43 src/gtk/filesel.c;  ) > 3.7.8cvs73.patchset
 ( cvs diff -u -r 1.49.2.139 -r 1.49.2.140 src/procmime.c;  ) > 3.7.8cvs74.patchset
 ( cvs diff -u -r 1.61.2.96 -r 1.61.2.97 src/account.c;  cvs diff -u -r 1.213.2.200 -r 1.213.2.201 src/folder.c;  cvs diff -u -r 1.87.2.63 -r 1.87.2.64 src/folder.h;  cvs diff -u -r 1.2.2.36 -r 1.2.2.37 src/folder_item_prefs.c;  cvs diff -u -r 1.2.2.23 -r 1.2.2.24 src/folder_item_prefs.h;  cvs diff -u -r 1.105.2.165 -r 1.105.2.166 src/prefs_account.c;  ) > 3.7.8cvs75.patchset
+( cvs diff -u -r 1.12.2.64 -r 1.12.2.65 src/action.c;  ) > 3.7.8cvs76.patchset

@@ -89,6 +89,7 @@ struct _ChildInfo
 	Children	*children;
 	gchar		*cmd;
 	pid_t		 pid;
+	gint		 next_sig;
 	gint		 chld_in;
 	gint		 chld_out;
 	gint		 chld_err;
@@ -951,10 +952,6 @@ static ChildInfo *fork_child(gchar *cmd, const gchar *msg_str,
 		if (setpgid(0, 0))
 			perror("setpgid");
 
-#ifdef GDK_WINDOWING_X11
-		r = close(ConnectionNumber(gdk_display_get_default()));
-#endif /* GDK_WINDOWING_X11 */
-
 		gch_pid = fork();
 
 		if (gch_pid == 0) {
@@ -967,18 +964,18 @@ static ChildInfo *fork_child(gchar *cmd, const gchar *msg_str,
 				     ACTION_USER_IN |
 				     ACTION_USER_HIDDEN_IN)) {
 					r |= close(fileno(stdin));
-					r |= dup  (chld_in[0]);
+					(void) dup  (chld_in[0]);
 				}
 				r |= close(chld_in[0]);
 				r |= close(chld_in[1]);
 
 				r |= close(fileno(stdout));
-				r |= dup  (chld_out[1]);
+				(void) dup  (chld_out[1]);
 				r |= close(chld_out[0]);
 				r |= close(chld_out[1]);
 
 				r |= close(fileno(stderr));
-				r |= dup  (chld_err[1]); /* why does that fail ? */
+				(void) dup  (chld_err[1]);
 				r |= close(chld_err[0]);
 				r |= close(chld_err[1]);
 
@@ -1056,6 +1053,7 @@ static ChildInfo *fork_child(gchar *cmd, const gchar *msg_str,
 	child_info->children    = children;
 
 	child_info->pid         = pid;
+	child_info->next_sig	= SIGTERM;
 	child_info->cmd         = g_strdup(cmd);
 	child_info->new_out     = FALSE;
 	child_info->output      = g_string_new(NULL);
@@ -1109,8 +1107,9 @@ static void kill_children_cb(GtkWidget *widget, gpointer data)
 	for (cur = children->list; cur; cur = cur->next) {
 		child_info = (ChildInfo *)(cur->data);
 		debug_print("Killing child group id %d\n", child_info->pid);
-		if (child_info->pid && kill(-child_info->pid, SIGTERM) < 0)
+		if (child_info->pid && kill(-child_info->pid, child_info->next_sig) < 0)
 			perror("kill");
+		child_info->next_sig = SIGKILL;
 	}
 #endif /* G_OS_UNIX */
 }

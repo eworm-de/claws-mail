@@ -1,3 +1,11 @@
+2011-04-08 [colin]	3.7.8cvs76
+
+	* src/action.c
+		Fix action Stop: if child does not react to SIGTERM, it'll
+		probably start behaving when it'll get a SIGKILL on the user's
+		second press on Stop.
+		Fixes bug #2237, "User action makes Claws unresponsive".
+
 2011-04-08 [colin]	3.7.8cvs75
 
 	* src/account.c
