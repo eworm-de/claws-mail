@@ -1672,6 +1672,8 @@ static void parse_parameters(const gchar *parameters, GHashTable *table)
 				dstpos++;
 			}
 			*dstpos = '\0';
+			if (value[0] == '"')
+				extract_quote(value, '"');
 		} else {
 			if (value[0] == '"')
 				extract_quote(value, '"');

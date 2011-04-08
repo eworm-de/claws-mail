@@ -4147,3 +4147,4 @@
 ( cvs diff -u -r 1.20.2.76 -r 1.20.2.77 src/common/utils.h;  ) > 3.7.8cvs71.patchset
 ( cvs diff -u -r 1.382.2.569 -r 1.382.2.570 src/compose.c;  ) > 3.7.8cvs72.patchset
 ( cvs diff -u -r 1.2.2.42 -r 1.2.2.43 src/gtk/filesel.c;  ) > 3.7.8cvs73.patchset
+( cvs diff -u -r 1.49.2.139 -r 1.49.2.140 src/procmime.c;  ) > 3.7.8cvs74.patchset

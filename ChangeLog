@@ -1,3 +1,10 @@
+2011-04-08 [wwp]	3.7.8cvs74
+
+	* src/procmime.c
+	Add support for quoted values (*="value").
+	This commonly fixes a trailing quote appearing to filenames
+	sent by iphone Mail (not sure if it's culprit at all, though).
+
 2011-04-08 [colin]	3.7.8cvs73
 
 	* src/gtk/filesel.c
