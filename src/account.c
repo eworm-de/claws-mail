@@ -461,6 +461,7 @@ void account_open(PrefsAccount *ac_prefs)
 			folder_set_name(FOLDER(ac_prefs->folder),
 					ac_prefs->account_name);
 			folderview_set_all();
+			folder_prefs_save_config_recursive(FOLDER(ac_prefs->folder));
 		}
 
 		account_write_config_all();

@@ -1380,6 +1380,40 @@ gchar *folder_item_get_identifier(FolderItem *item)
 	return id;
 }
 
+Folder *folder_find_from_identifier(const gchar *identifier)
+{
+	Folder *folder;
+	gpointer d[2];
+	gchar *str;
+	gchar *p;
+	gchar *name;
+	gchar *path;
+	FolderClass *class;
+
+	cm_return_val_if_fail(identifier != NULL, NULL);
+
+	if (*identifier != '#')
+		return NULL;
+
+	Xstrdup_a(str, identifier, return NULL);
+
+	p = strchr(str, '/');
+	if (!p)
+		return NULL;
+	*p = '\0';
+	p++;
+	class = folder_get_class_from_string(&str[1]);
+	if (class == NULL)
+		return NULL;
+
+	name = p;
+	p = strchr(p, '/');
+	if (p)
+		return NULL;
+
+	return folder_find_from_name(name, class);
+}
+
 FolderItem *folder_find_item_from_identifier(const gchar *identifier)
 {
 	Folder *folder;

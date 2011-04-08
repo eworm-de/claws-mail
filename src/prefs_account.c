@@ -2888,14 +2888,14 @@ static gint prefs_basic_apply(void)
 	
 	if (protocol == A_IMAP4 || protocol == A_NNTP) 
 		old_id = g_strdup_printf("#%s/%s",
-				protocol == A_IMAP4 ? "imap":"nntp",
+				protocol == A_IMAP4 ? "imap":"news",
 				tmp_ac_prefs.account_name ? tmp_ac_prefs.account_name : "(null)");
 	
 	prefs_set_data_from_dialog(basic_param);
 	
 	if (protocol == A_IMAP4 || protocol == A_NNTP) {
 		new_id = g_strdup_printf("#%s/%s",
-				protocol == A_IMAP4 ? "imap":"nntp",
+				protocol == A_IMAP4 ? "imap":"news",
 				tmp_ac_prefs.account_name);
 		if (old_id != NULL && new_id != NULL)
 			prefs_filtering_rename_path(old_id, new_id);

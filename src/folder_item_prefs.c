@@ -146,7 +146,10 @@ void folder_item_prefs_save_config(FolderItem * item)
 	tmp_prefs = * item->prefs;
 
 	id = folder_item_get_identifier(item);
-	debug_print("saving prefs for %s\n", id?id:"(null)");
+	if (id == NULL)
+		return;
+
+	debug_print("saving prefs for %s\n", id);
 	prefs_write_config(param, id, FOLDERITEM_RC);
 	g_free(id);
 }
@@ -161,6 +164,12 @@ static gboolean folder_item_prefs_save_config_func(GNode *node, gpointer data)
 void folder_item_prefs_save_config_recursive(FolderItem * item)
 {	
 	g_node_traverse(item->node, G_PRE_ORDER, G_TRAVERSE_ALL,
+			-1, folder_item_prefs_save_config_func, NULL);
+}
+
+void folder_prefs_save_config_recursive(Folder *folder)
+{	
+	g_node_traverse(folder->node, G_PRE_ORDER, G_TRAVERSE_ALL,
 			-1, folder_item_prefs_save_config_func, NULL);
 }
 
