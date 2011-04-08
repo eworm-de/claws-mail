@@ -1,3 +1,10 @@
+2011-04-08 [colin]	3.7.8cvs73
+
+	* src/gtk/filesel.c
+		Fix bug #2393, "Crashes and rendering problems in the "Save as" menu 
+		caused by attachments with extended chars in the file name". Patch
+		derived from a patch bt Fabien Keil
+
 2011-04-05 [wwp]	3.7.8cvs72
 
 	* src/compose.c
