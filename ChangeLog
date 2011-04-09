@@ -1,3 +1,8 @@
+2011-04-09 [paul]	3.7.9cvs1
+
+	* src/prefs_summaries.c
+		fix typo in string. (thanks, Brad!)
+
 2011-04-09 [paul]	3.7.9
 	* NEWS
 	* README

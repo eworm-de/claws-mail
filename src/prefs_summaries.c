@@ -148,7 +148,7 @@ static GtkWidget *date_format_create(GtkButton *button, void *data)
 	GtkTreeViewColumn *column;
 	GtkTreeSelection *selection;
 
-	time_format[0].txt  = _("the full abbreviated weekday name");
+	time_format[0].txt  = _("the abbreviated weekday name");
 	time_format[1].txt  = _("the full weekday name");
 	time_format[2].txt  = _("the abbreviated month name");
 	time_format[3].txt  = _("the full month name");
