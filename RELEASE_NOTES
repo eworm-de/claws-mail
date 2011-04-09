@@ -1,4 +1,4 @@
-4th December 2010                                    Claws Mail 3.7.8
+9th April 2011                                       Claws Mail 3.7.9
 
 		    CLAWS MAIL  RELEASE NOTES
                     http://www.claws-mail.org
@@ -9,17 +9,83 @@ email client.
 New in this release:
 ~~~~~~~~~~~~~~~~~~~~
 
+* Added a hidden option, 'show_inline_attachments'. When this is
+  de-activated inline attachments referenced by other message parts,
+  (e.g. attached images referenced in an HTML message part), are
+  hidden. This is on by default, maintaining previous behaviour.
+
+* Added a hidden option, 'msgview_date_format'. When this option is
+  activated the Date format in the Message View will have the same
+  format as in the Message List. The format of the date is also
+  controlled in the same way, by the option on the Display/Summaries
+  page of the Preferences. This is off by default, maintaining
+  previous behaviour.
+		
+* Several GUI improvements:
+	o Reworked Simplify Subject RegExp in the Folder Properties
+	o The IMAP option 'Move deleted mails to trash and expunge
+	  immediately' has been moved to the Advanced page of the
+	  Account Preferences.
+	o The option 'Send account mail address in Message-ID' has
+	  been moved to theSend page of the Account Preferences.
+	o Improvements to the Preferences for the Toolbars.
+	o Improvements to the initial Set-up Wizard dialogues.
+	o Improvements to the Templates preferences pages.
+	o Implemented a nicer scroll when drag and dropping.
+	o Added a button to get dictionaries on WIndows.
+
+* New translation: Lithuanian.
+
+* Updated translations: Brazilian Portuguese, Czech, Finnish, French,
+  Slovak, Spanish, Ukranian.
+
 * Bug fixes:
-	o rfe 2309, 'Shortcuts should not be modifiable by default'
-	o bug 2313, 'CLI quicksearch sometimes returns the same
-		     messages twice'
-	o bug 2317, 'Action results in "Bad file descriptor"'
-	o PGP/Core: Win32 build fix
-	o NNTP: fix replying (broken in corner case)
-	o fix configure option --disable-manual
-	o One more GTK+ 2.22 build fix
-	o Debian bug 599547, 'Please re-introduce quick shortcut for
-			      marking as spam'
+	o bug 2039, 'SMTP AUTHENTICATION'
+	o bug 2050, 'Clawsmail sends return receipt every seconds'
+	o bug 2148, 'Attachment content-transfer-encoding incorrectly
+		     set when signing emails'
+	o bug 2165, 'The date not localized in the message view'
+	o bug 2203, 'Problems in forwarding multipart/alternative
+		     messages with HTML part'
+	o bug 2237, 'User action makes Claws unresponsive'
+	o bug 2279, 'crash when clicking 'define' in filter
+		     configuring'
+	o bug 2299, 'Incorrect handling of quoted printable coma
+		     in headers'
+	o bug 2315, 'claws-mail 3.7.7 crashes when trying to compose
+		     mail on FreeBSD 9.0 amd64 (GTK+ 2.22.1/GLib
+		     2.26.1)'
+	o bug 2322, 'GPG Full info: showing subkey ID instead of
+		     primary key fingerprint'
+	o bug 2325, 'messages remains in folder cache after moving
+		     from MH to IMAP boxes'
+	o bug 2331, 'Base64 is broken in 3.7.7 and 3.7.8'
+	o bug 2332, 'Crash when hitting cancel on the SMTP status
+		     window'
+	o bug 2346, 'Please register x-handler-scheme in .desktop
+		     file'
+	o bug 2350, 'Make displaying localized date/time in message
+		     view optional'
+	o bug 2361, 'Claws crashes after PGP Check in separate msg
+		     view'
+	o bug 2365, 'Crash when auto-scrolling headers in compose
+		     window'
+	o bug 2369, 'valgrind.h should NOT be part of claws-mail'
+	o bug 2381, 'Support for NetworkManager 0.9'
+	o bug 2383, 'folderitemrc not updated when account name is
+		     changed'
+	o bug 2393, 'Crashes and rendering problems in the "Save as"
+		     menu caused by attachments with umlauts in the
+		     file name'
+	o bug 2394, 'backtrace() crashes on FreeBSD'
+	o fix matcher body parsing
+	o fix crash when searching or adding a LDAP server
+	o fix sa-learn when offline
+	o TrayIcon plugin: fix logic bug which caused icon to be
+	  always set no-mail status on plugin load
+	o TrayIcon plugin: force icon hide on plugin_done(), without
+	   it an empty space is left in tray under KDE3 and KDE4
+	o fix segfault on Windows
 
 For further details of the numbered bugs listed above consult
 http://www.thewildbeast.co.uk/claws-mail/bugzilla/index.cgi
