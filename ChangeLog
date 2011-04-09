@@ -1,3 +1,10 @@
+2011-04-09 [colin]	3.7.8cvs77
+
+	* src/gtk/filesel.c
+		Revert part of yesterday's patch. While gtk_file_chooser_set_current_name()
+		wants an UTF-8 string, gtk_file_chooser_set_current_folder() wants a glib-
+		encoding filename. Hooray for stupid.
+
 2011-04-08 [colin]	3.7.8cvs76
 
 	* src/action.c

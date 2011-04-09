@@ -169,8 +169,11 @@ static GList *filesel_create(const gchar *title, const gchar *path,
 			realpath = g_strdup(get_home_dir());
 		}
 		if (g_utf8_validate(realpath, -1, NULL))
-			gtk_file_chooser_set_current_folder(GTK_FILE_CHOOSER(chooser),
-							    realpath);
+			tmp = g_filename_from_utf8(realpath, -1, NULL, NULL, NULL);
+		if (tmp == NULL)
+			tmp = g_strdup(realpath);
+		gtk_file_chooser_set_current_folder(GTK_FILE_CHOOSER(chooser), tmp);
+		g_free(tmp);
 		if (action == GTK_FILE_CHOOSER_ACTION_SAVE) {
 			if (g_utf8_validate(filename, -1, NULL))
 				gtk_file_chooser_set_current_name(GTK_FILE_CHOOSER(chooser),
