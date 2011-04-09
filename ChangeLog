@@ -1,3 +1,17 @@
+2011-04-09 [paul]	3.7.8cvs78
+
+	* po/cs.po
+	* po/es.po
+	* po/fi.po
+	* po/fr.po
+	* po/lt.po
+	* po/pt_BR.po
+	* po/sk.po
+	* po/uk.po
+		updated by David Vachulka, Ricardo Mones, Flammie Pirinen,
+		wwp, Mindaugas Baranauskas, Frederico Goncalves Guimaraes,
+		Slavko, and Yarema
+
 2011-04-09 [colin]	3.7.8cvs77
 
 	* src/gtk/filesel.c
