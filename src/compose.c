@@ -4714,7 +4714,7 @@ static void compose_select_account(Compose *compose, PrefsAccount *account,
 	}
 	
 	header_entry = (ComposeHeaderEntry *) compose->header_list->data;
-	header = gtk_combo_box_get_active_text(GTK_COMBO_BOX(header_entry->combo));
+	header = gtk_combo_box_text_get_active_text(GTK_COMBO_BOX(header_entry->combo));
 	
 	if (header && !strlen(gtk_entry_get_text(GTK_ENTRY(header_entry->entry)))) {
 		if (account->protocol == A_NNTP) {
@@ -8705,7 +8705,7 @@ static void compose_attach_property_create(gboolean *cancelled)
 
 	for (mime_type_list = strlist; mime_type_list != NULL; 
 		mime_type_list = mime_type_list->next) {
-		gtk_combo_box_append_text(GTK_COMBO_BOX(mimetype_entry), mime_type_list->data);
+		gtk_combo_box_text_append_text(GTK_COMBO_BOX(mimetype_entry), mime_type_list->data);
 		g_free(mime_type_list->data);
 	}
 	g_list_free(strlist);

@@ -233,6 +233,15 @@ claws_input_add    (gint	      source,
 	gtk_tooltips_set_tip(GTK_TOOLTIPS(tips), widget, 	\
 			    tip, NULL);				\
 }
-
 #endif
+
+#if !GTK_CHECK_VERSION(2,24,0)
+#define gtk_combo_box_text_new gtk_combo_box_new_text
+#define gtk_combo_box_text_append_text gtk_combo_box_append_text
+#define gtk_combo_box_text_insert_text gtk_combo_box_insert_text
+#define gtk_combo_box_text_prepend_text gtk_combo_box_prepend_text
+#define gtk_combo_box_text_get_active_text gtk_combo_box_get_active_text
+#define gtk_combo_box_text_remove gtk_combo_box_remove_text
+#endif
+
 #endif /* __GTKUTILS_H__ */

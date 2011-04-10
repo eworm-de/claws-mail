@@ -467,14 +467,14 @@ static void prefs_filtering_action_create(void)
 	gtk_table_attach(GTK_TABLE(table), hbox1, 1, 2, 1, 2, 
 			 GTK_FILL | GTK_EXPAND, GTK_SHRINK, 0, 0);
 
-	account_combo = gtk_combo_box_new_text ();
+	account_combo = gtk_combo_box_text_new ();
 	gtk_size_group_add_widget(size_action, account_combo);
 
 	for (accounts = account_get_list() ; accounts != NULL;
 	     accounts = accounts->next) {
 		PrefsAccount *ac = (PrefsAccount *)accounts->data;
 		gchar *name = g_strdup(ac->account_name);
-		gtk_combo_box_append_text(GTK_COMBO_BOX(account_combo), (gpointer) name);
+		gtk_combo_box_text_append_text(GTK_COMBO_BOX(account_combo), (gpointer) name);
 		g_free(name);
 	}
 
@@ -517,7 +517,7 @@ static void prefs_filtering_action_create(void)
 	     tmp = tmp->next) {
 		gchar *name = g_strdup(tags_get_tag(GPOINTER_TO_INT(tmp->data)));
 
-		gtk_combo_box_append_text(GTK_COMBO_BOX(tags_combo), (gpointer) name);
+		gtk_combo_box_text_append_text(GTK_COMBO_BOX(tags_combo), (gpointer) name);
 		g_free(name);
 	}
 
@@ -932,7 +932,7 @@ static FilteringAction * prefs_filtering_action_dialog_to_action(gboolean alert)
 		break;
 	case ACTION_SET_TAG:
 	case ACTION_UNSET_TAG:
-		destination = gtk_combo_box_get_active_text(GTK_COMBO_BOX(filtering_action.tags_combo));
+		destination = gtk_combo_box_text_get_active_text(GTK_COMBO_BOX(filtering_action.tags_combo));
 		if (!destination || *destination == '\0') {
 			if (alert)
                                 alertpanel_error(_("Tag name is empty."));

@@ -520,7 +520,7 @@ static void summary_search_execute(gboolean backward, gboolean search_all)
 		search_window.matcher_list = NULL;
 	}
 	if (adv_search) {
-		adv_condition = gtk_combo_box_get_active_text(GTK_COMBO_BOX(search_window.adv_condition_entry));
+		adv_condition = gtk_combo_box_text_get_active_text(GTK_COMBO_BOX(search_window.adv_condition_entry));
 		if (!adv_condition)
 			adv_condition = gtk_editable_get_chars(
 					GTK_EDITABLE(gtk_bin_get_child(GTK_BIN(search_window.adv_condition_entry))),0,-1);
@@ -550,10 +550,10 @@ static void summary_search_execute(gboolean backward, gboolean search_all)
 		case_sens = gtk_toggle_button_get_active
 			(GTK_TOGGLE_BUTTON(search_window.case_checkbtn));
 
-		from_str    = gtk_combo_box_get_active_text(GTK_COMBO_BOX(search_window.from_entry));
-		to_str      = gtk_combo_box_get_active_text(GTK_COMBO_BOX(search_window.to_entry));
-		subject_str = gtk_combo_box_get_active_text(GTK_COMBO_BOX(search_window.subject_entry));
-		body_str    = gtk_combo_box_get_active_text(GTK_COMBO_BOX(search_window.body_entry));
+		from_str    = gtk_combo_box_text_get_active_text(GTK_COMBO_BOX(search_window.from_entry));
+		to_str      = gtk_combo_box_text_get_active_text(GTK_COMBO_BOX(search_window.to_entry));
+		subject_str = gtk_combo_box_text_get_active_text(GTK_COMBO_BOX(search_window.subject_entry));
+		body_str    = gtk_combo_box_text_get_active_text(GTK_COMBO_BOX(search_window.body_entry));
 
 		if (!from_str)
 			from_str = gtk_editable_get_chars(
@@ -819,7 +819,7 @@ static void adv_condition_btn_clicked(GtkButton *button, gpointer data)
 
 	/* re-use the current search value if it's a condition expression,
 	   otherwise ignore it silently */
-	cond_str = gtk_combo_box_get_active_text(GTK_COMBO_BOX(search_window.adv_condition_entry));
+	cond_str = gtk_combo_box_text_get_active_text(GTK_COMBO_BOX(search_window.adv_condition_entry));
 	if (cond_str && *cond_str != '\0') {
 		matchers = matcher_parser_get_cond((gchar*)cond_str, NULL);
 	}

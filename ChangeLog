@@ -1,3 +1,18 @@
+2011-04-10 [colin]	3.7.9cvs4
+
+	* src/compose.c
+	* src/editaddress_other_attributes_ldap.c
+	* src/message_search.c
+	* src/prefs_display_header.c
+	* src/prefs_filtering_action.c
+	* src/prefs_other.c
+	* src/prefs_toolbar.c
+	* src/summary_search.c
+	* src/gtk/combobox.c
+	* src/gtk/gtkutils.h
+		gtk_combo_box_*_text() is deprecated, and
+		gtk_combo_box_text_*() is the new hotness.
+
 2011-04-10 [colin]	3.7.9cvs3
 
 	* src/addr_compl.c
