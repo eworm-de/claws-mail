@@ -2558,7 +2558,7 @@ static void compose_cb(GtkAction *action, gpointer data)
 	if (item) {
 		ac = account_find_from_item(item);
 		if (ac && ac->protocol == A_NNTP &&
-		    item->stype == F_NEWS) {
+		    item->type == F_NEWS) {
 			compose_new(ac, item->path, NULL);
 			return;
 		}
