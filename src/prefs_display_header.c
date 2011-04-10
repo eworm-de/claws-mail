@@ -274,9 +274,9 @@ static void prefs_display_header_create(void)
 	gtk_widget_show (hdr_label);
 	gtk_box_pack_start (GTK_BOX (hbox1), hdr_label, FALSE, FALSE, 0);
 
-	hdr_combo = gtk_combo_box_new_with_entry();
+	hdr_combo = gtk_combo_box_entry_new_text();
 	for(i=0; i < 9 ; i++)
-		gtk_combo_box_text_append_text(GTK_COMBO_BOX_TEXT(hdr_combo),
+		gtk_combo_box_append_text(GTK_COMBO_BOX (hdr_combo),
 			(*defaults[i] == '-') ? defaults[i]+1 : defaults[i]);
 	gtk_combo_box_set_active(GTK_COMBO_BOX(hdr_combo), 0);
 	gtk_widget_show (hdr_combo);
@@ -578,8 +578,7 @@ static void prefs_display_header_list_view_set_row(gboolean hidden)
 	gchar *entry_text;
 	GtkTreeModel *model;
 
-	entry_text = gtk_combo_box_text_get_active_text(
-		GTK_COMBO_BOX_TEXT(dispheader.hdr_combo));
+	entry_text = gtk_combo_box_get_active_text(GTK_COMBO_BOX(dispheader.hdr_combo));
 	if (!entry_text)
 		entry_text = gtk_editable_get_chars(
 				GTK_EDITABLE(gtk_bin_get_child(GTK_BIN(dispheader.hdr_combo))),0,-1);

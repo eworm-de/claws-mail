@@ -22,8 +22,6 @@
 #include <gdk/gdk.h>
 #include <gtk/gtk.h>
 
-#if !GTK_CHECK_VERSION(2,24,0)
-
 
 #ifdef __cplusplus
 extern "C" {
@@ -57,5 +55,4 @@ GtkWidget* gtk_shruler_new      (void);
 #endif /* __cplusplus */
 
 
-#endif /* GTK 2.24.0 */
 #endif /* __GTK_SHRULER_H__ */

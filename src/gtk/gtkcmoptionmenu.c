@@ -968,7 +968,7 @@ gtk_cmoption_menu_hide_all (GtkWidget *widget)
   container = GTK_CONTAINER (widget);
 
   gtk_widget_hide (widget);
-  gtk_container_foreach (container, (GtkCallback) gtk_widget_hide, NULL);
+  gtk_container_foreach (container, (GtkCallback) gtk_widget_hide_all, NULL);
 }
 
 static gboolean

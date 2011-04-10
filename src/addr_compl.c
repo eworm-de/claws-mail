@@ -850,7 +850,7 @@ static void addrcompl_resize_window( CompletionWindow *cw ) {
 	/* Get current geometry of window */
 	gdk_window_get_geometry( cw->window->window, &x, &y, &width, &height, &depth );
 
-	gtk_widget_hide( cw->window );
+	gtk_widget_hide_all( cw->window );
 	gtk_widget_show_all( cw->window );
 	gtk_widget_size_request( cw->list_view, &r );
 

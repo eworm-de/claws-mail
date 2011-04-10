@@ -1491,8 +1491,7 @@ static void addressbook_del_clicked(GtkButton *button, gpointer data)
 			item = node->data;
 			node = g_list_next( node );
 			aio = ( AddrItemObject * ) item->addressItem;
-			if(aio->type == ADDR_ITEM_PERSON ||
-			   aio->type == ADDR_ITEM_EMAIL ) {
+			if( aio->type == ADDR_ITEM_PERSON || aio->type == ADDR_ITEM_EMAIL ) {
 				group_delete = FALSE;
 				break;
 			}
