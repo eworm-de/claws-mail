@@ -512,7 +512,7 @@ static void prefs_filtering_action_create(void)
 	prefs_filtering_action_check_widget_width(color_optmenu);
 	gtk_box_pack_start(GTK_BOX(hbox1), color_optmenu, FALSE, FALSE, 0);
 
-	tags_combo = gtk_combo_box_new_text ();
+	tags_combo = gtk_combo_box_text_new ();
 	gtk_size_group_add_widget(size_action, tags_combo);
 
 	for (tmp = tags = tags_get_list() ; tmp != NULL;
@@ -1268,7 +1268,7 @@ static void prefs_filtering_action_enable_widget(GtkWidget* widget, const gboole
 
 	if(enable == TRUE)
 	{
-		if(GTK_IS_COMBO_BOX(widget) || GTK_IS_COMBO_BOX_ENTRY(widget))
+		if(GTK_IS_COMBO_BOX(widget))
 			gtk_combo_box_set_active(GTK_COMBO_BOX(widget), 0);
 		else if(GTK_IS_SPIN_BUTTON(widget))
 			gtk_spin_button_set_value(GTK_SPIN_BUTTON(widget), 0);

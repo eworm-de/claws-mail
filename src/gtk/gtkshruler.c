@@ -30,6 +30,9 @@
 #include <stdio.h>
 #include <string.h>
 #include <gtk/gtk.h>
+
+#if !GTK_CHECK_VERSION(2,24,0)
+
 #include "gtkshruler.h"
 #include "utils.h"
 #include "gtkutils.h"
@@ -179,3 +182,4 @@ gtk_shruler_draw_ticks(GtkRuler *ruler)
 
 	cairo_destroy(cr);
 }
+#endif

@@ -1,3 +1,15 @@
+2011-04-10 [colin]	3.7.9cvs8
+
+	* src/compose.c
+	* src/prefs_filtering_action.c
+	* src/gtk/combobox.c
+	* src/gtk/gtkshruler.c
+	* src/gtk/gtkshruler.h
+		More undeprecation. GTKSHRuler is #if'ed out. We can
+		still decide to maintain the old GtkRuler widget in-tree
+		if the lack of ruler in Compose window is too
+		annoying.
+
 2011-04-10 [colin]	3.7.9cvs7
 
 	* src/addr_compl.c
