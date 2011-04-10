@@ -50,10 +50,10 @@ GtkWidget *combobox_text_new(const gboolean with_entry, const gchar *text, ...)
 		combo = gtk_combo_box_new_text();
 	gtk_widget_show(combo);
 
-	gtk_combo_box_text_append_text(GTK_COMBO_BOX(combo), text);
+	gtk_combo_box_text_append_text(GTK_COMBO_BOX_TEXT(combo), text);
 	va_start(args, text);
 	while ((string = va_arg(args, gchar*)) != NULL)
-		gtk_combo_box_text_append_text(GTK_COMBO_BOX(combo), string);
+		gtk_combo_box_text_append_text(GTK_COMBO_BOX_TEXT(combo), string);
 	va_end(args);
 		
 	gtk_combo_box_set_active(GTK_COMBO_BOX(combo), 0);
@@ -160,7 +160,7 @@ void combobox_unset_popdown_strings(GtkComboBox *combobox)
 	model = gtk_combo_box_get_model(combobox);
 	count = gtk_tree_model_iter_n_children(model, NULL);
 	for (i = 0; i < count; i++)
-		gtk_combo_box_text_remove(combobox, 0);
+		gtk_combo_box_text_remove(GTK_COMBO_BOX_TEXT(combobox), 0);
 }
 
 void combobox_set_popdown_strings(GtkComboBox *combobox,
@@ -171,7 +171,8 @@ void combobox_set_popdown_strings(GtkComboBox *combobox,
 	cm_return_if_fail(combobox != NULL);
 
 	for (cur = list; cur != NULL; cur = g_list_next(cur))
-		gtk_combo_box_text_append_text(combobox, (const gchar*) cur->data);
+		gtk_combo_box_text_append_text(GTK_COMBO_BOX_TEXT(combobox),
+						(const gchar*) cur->data);
 }
 
 gboolean combobox_set_value_from_arrow_key(GtkComboBox *combobox,
@@ -204,7 +205,8 @@ gboolean combobox_set_value_from_arrow_key(GtkComboBox *combobox,
 		/* if current text is in list, get prev or next one */
 
 		if (keyval == GDK_Up) {
-			gchar *text = gtk_combo_box_text_get_active_text(combobox);
+			gchar *text = gtk_combo_box_text_get_active_text(
+					GTK_COMBO_BOX_TEXT(combobox));
 			if (!text)
 				text = gtk_editable_get_chars(GTK_EDITABLE(gtk_bin_get_child(GTK_BIN(combobox))),0,-1);
 			valid = gtkut_tree_model_text_iter_prev(model, &iter, text);

@@ -236,6 +236,7 @@ claws_input_add    (gint	      source,
 #endif
 
 #if !GTK_CHECK_VERSION(2,24,0)
+#define GTK_COMBO_BOX_TEXT GTK_COMBO_BOX
 #define gtk_combo_box_text_new gtk_combo_box_new_text
 #define gtk_combo_box_text_append_text gtk_combo_box_append_text
 #define gtk_combo_box_text_insert_text gtk_combo_box_insert_text

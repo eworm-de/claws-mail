@@ -370,7 +370,9 @@ static void prefs_toolbar_set_displayed(ToolbarPage *prefs_toolbar)
 
 static void add_item_to_plugin_combo(gpointer key, gpointer data, gpointer combo_box)
 {
-	gtk_combo_box_text_append_text(GTK_COMBO_BOX(combo_box), (const gchar*)key);
+	gtk_combo_box_text_append_text(
+		GTK_COMBO_BOX_TEXT(combo_box),
+		(const gchar*)key);
 }
 
 static void prefs_toolbar_populate(ToolbarPage *prefs_toolbar)
@@ -390,7 +392,7 @@ static void prefs_toolbar_populate(ToolbarPage *prefs_toolbar)
 			get_action_name(act, &act_name);
 			
 			gtk_combo_box_text_append_text(
-				GTK_COMBO_BOX(prefs_toolbar->item_action_combo),
+				GTK_COMBO_BOX_TEXT(prefs_toolbar->item_action_combo),
 				act_name);
 
 			g_free(act_name);
@@ -512,8 +514,8 @@ static void prefs_toolbar_register(GtkButton *button, ToolbarPage *prefs_toolbar
 		}
 				
 		if (item_type == ITEM_FUNCTION) {
-			event = gtk_combo_box_text_get_active_text(GTK_COMBO_BOX(
-						prefs_toolbar->item_func_combo));
+			event = gtk_combo_box_text_get_active_text(
+				GTK_COMBO_BOX_TEXT(prefs_toolbar->item_func_combo));
 						
 			if (is_duplicate(prefs_toolbar, event)) {
 				alertpanel_error(ERROR_MSG);
@@ -598,8 +600,8 @@ static void prefs_toolbar_substitute(GtkButton *button, ToolbarPage *prefs_toolb
 						  -1);
 		
 		if (item_type == ITEM_FUNCTION) {
-			icon_event = gtk_combo_box_text_get_active_text(GTK_COMBO_BOX(
-						prefs_toolbar->item_func_combo));
+			icon_event = gtk_combo_box_text_get_active_text(
+				GTK_COMBO_BOX_TEXT(prefs_toolbar->item_func_combo));
 						
 			if (is_duplicate(prefs_toolbar, icon_event)
 			&& g_utf8_collate(icon_event, set_event) != 0){
@@ -792,7 +794,7 @@ static void item_type_changed(GtkComboBox *item_type_combo,
 static void action_selection_changed(GtkComboBox *action_combo,
 				ToolbarPage *prefs_toolbar)
 {
-	gchar *text = gtk_combo_box_text_get_active_text(GTK_COMBO_BOX(
+	gchar *text = gtk_combo_box_text_get_active_text(GTK_COMBO_BOX_TEXT(
 			   prefs_toolbar->item_action_combo));
 
 	if(text != NULL) { /* action */
@@ -804,7 +806,7 @@ static void action_selection_changed(GtkComboBox *action_combo,
 static void plugin_selection_changed(GtkComboBox *action_combo,
                 ToolbarPage *prefs_toolbar)
 {
-	gchar *text = gtk_combo_box_text_get_active_text(GTK_COMBO_BOX(prefs_toolbar->item_plugin_combo));
+	gchar *text = gtk_combo_box_text_get_active_text(GTK_COMBO_BOX_TEXT(prefs_toolbar->item_plugin_combo));
 
 	if (text != NULL) { /* action */
 		gtk_entry_set_text(GTK_ENTRY(prefs_toolbar->item_text_entry), text);
@@ -815,7 +817,7 @@ static void plugin_selection_changed(GtkComboBox *action_combo,
 static void func_selection_changed(GtkComboBox *action_combo,
 				ToolbarPage *prefs_toolbar)
 {
-	gchar *text = gtk_combo_box_text_get_active_text(GTK_COMBO_BOX(
+	gchar *text = gtk_combo_box_text_get_active_text(GTK_COMBO_BOX_TEXT(
 			   prefs_toolbar->item_func_combo));
 
 	if(text != NULL) { /* action */

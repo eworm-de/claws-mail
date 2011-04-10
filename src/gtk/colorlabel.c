@@ -356,7 +356,7 @@ static void refresh_menu (GtkWidget *menushell, gpointer data)
 {
 	GtkMenu *menu = (GtkMenu *)data;
 	GtkWidget *widget = gtk_menu_get_attach_widget(menu);
-	gtk_widget_hide_all(widget);
+	gtk_widget_hide(widget);
 	gtk_widget_unrealize(widget);
 	gtk_widget_show_all(widget);
 	gtk_widget_queue_draw(widget);

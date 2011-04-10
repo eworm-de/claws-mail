@@ -1,3 +1,21 @@
+2011-04-10 [colin]	3.7.9cvs7
+
+	* src/addr_compl.c
+	* src/addressbook.c
+	* src/compose.c
+	* src/editaddress_other_attributes_ldap.c
+	* src/message_search.c
+	* src/prefs_display_header.c
+	* src/prefs_filtering_action.c
+	* src/prefs_other.c
+	* src/prefs_toolbar.c
+	* src/summary_search.c
+	* src/gtk/colorlabel.c
+	* src/gtk/combobox.c
+	* src/gtk/gtkcmoptionmenu.c
+	* src/gtk/gtkutils.h
+		More comboboxtext undeprecation
+
 2011-04-10 [colin]	3.7.9cvs6
 
 	* src/messageview.c
