@@ -1,3 +1,10 @@
+2011-04-10 [colin]	3.7.9cvs2
+
+	* src/mainwindow.c
+		Use gtkut_window_popup() to work around a bug in Gnome Shell.
+		This is the patch from bug #2396, it should be innocuous even
+		if that's useless to do deiconify + present window...
+
 2011-04-09 [paul]	3.7.9cvs1
 
 	* src/prefs_summaries.c

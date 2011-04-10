@@ -4153,3 +4153,4 @@
 ( cvs diff -u -r 1.2.2.43 -r 1.2.2.44 src/gtk/filesel.c;  ) > 3.7.8cvs77.patchset
 ( cvs diff -u -r 1.9.2.20 -r 1.9.2.21 po/cs.po;  cvs diff -u -r 1.60.2.62 -r 1.60.2.63 po/es.po;  cvs diff -u -r 1.1.2.26 -r 1.1.2.27 po/fi.po;  cvs diff -u -r 1.42.2.53 -r 1.42.2.54 po/fr.po;  cvs diff -u -r 1.1.2.2 -r 1.1.2.3 po/lt.po;  cvs diff -u -r 1.50.2.40 -r 1.50.2.41 po/pt_BR.po;  cvs diff -u -r 1.2.2.31 -r 1.2.2.32 po/sk.po;  cvs diff -u -r 1.1.2.2 -r 1.1.2.3 po/uk.po;  ) > 3.7.8cvs78.patchset
 ( cvs diff -u -r 1.1.2.65 -r 1.1.2.66 src/prefs_summaries.c;  ) > 3.7.9cvs1.patchset
+( cvs diff -u -r 1.274.2.321 -r 1.274.2.322 src/mainwindow.c;  ) > 3.7.9cvs2.patchset

@@ -3573,6 +3573,7 @@ void main_window_popup(MainWindow *mainwin)
 	if (first_start) {
 #ifdef G_OS_UNIX
 		gtk_window_deiconify(GTK_WINDOW(mainwin->window));
+		gtkut_window_popup(mainwin->window);
 #endif
 		first_start = FALSE;
 	} else {
