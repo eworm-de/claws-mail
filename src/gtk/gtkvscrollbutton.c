@@ -78,7 +78,7 @@ static void gtk_vscrollbutton_add_timer		(GtkVScrollbutton *scrollbutton);
 
 static void gtk_vscrollbutton_remove_timer	(GtkVScrollbutton *scrollbutton);
 
-static gint gtk_real_vscrollbutton_timer	(GtkVScrollbutton *scrollbutton);
+static gboolean gtk_real_vscrollbutton_timer	(GtkVScrollbutton *scrollbutton);
 
 static void gtk_vscrollbutton_set_sensitivity   (GtkAdjustment    *adjustment,
 						 GtkVScrollbutton *scrollbutton);
@@ -288,10 +288,10 @@ static gint gtk_vscrollbutton_button_release(GtkWidget *widget,
     return TRUE;
 }
 
-gint gtk_vscrollbutton_scroll(GtkVScrollbutton *scrollbutton)
+gboolean gtk_vscrollbutton_scroll(GtkVScrollbutton *scrollbutton)
 {
     gfloat new_value;
-    gint return_val;
+    gboolean return_val;
 
     cm_return_val_if_fail(scrollbutton != NULL, FALSE);
     cm_return_val_if_fail(GTK_IS_VSCROLLBUTTON(scrollbutton), FALSE);
@@ -354,7 +354,7 @@ gtk_vscrollbutton_timer_1st_time(GtkVScrollbutton *scrollbutton)
 	 */
 	g_source_remove(scrollbutton->timer);
 	scrollbutton->timer = g_timeout_add(SCROLL_LATER_DELAY,
-					    (GtkFunction)
+					    (GSourceFunc)
 					    gtk_real_vscrollbutton_timer,
 					    scrollbutton);
     }
@@ -371,7 +371,7 @@ static void gtk_vscrollbutton_add_timer(GtkVScrollbutton *scrollbutton)
     if (!scrollbutton->timer) {
 	scrollbutton->need_timer = TRUE;
 	scrollbutton->timer = g_timeout_add(SCROLL_INITIAL_DELAY,
-					    (GtkFunction)
+					    (GSourceFunc)
 					    gtk_vscrollbutton_timer_1st_time,
 					    scrollbutton);
     }
@@ -389,9 +389,9 @@ static void gtk_vscrollbutton_remove_timer(GtkVScrollbutton *scrollbutton)
     scrollbutton->need_timer = FALSE;
 }
 
-static gint gtk_real_vscrollbutton_timer(GtkVScrollbutton *scrollbutton)
+static gboolean gtk_real_vscrollbutton_timer(GtkVScrollbutton *scrollbutton)
 {
-    gint return_val;
+    gboolean return_val;
 
     GDK_THREADS_ENTER();
 
@@ -401,7 +401,7 @@ static gint gtk_real_vscrollbutton_timer(GtkVScrollbutton *scrollbutton)
 	if (scrollbutton->need_timer)
 	    scrollbutton->timer =
 		g_timeout_add(SCROLL_TIMER_LENGTH, 
-			      (GtkFunction) gtk_real_vscrollbutton_timer,
+			      (GSourceFunc) gtk_real_vscrollbutton_timer,
 			      (gpointer) scrollbutton);
 	else {
 	    GDK_THREADS_LEAVE();

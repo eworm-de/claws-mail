@@ -525,7 +525,6 @@ static void compose_check_backwards	   (GtkAction *action, gpointer data);
 static void compose_check_forwards_go	   (GtkAction *action, gpointer data);
 #endif
 
-static gint compose_defer_auto_save_draft	(Compose	*compose);
 static PrefsAccount *compose_guess_forward_account_from_msginfo	(MsgInfo *msginfo);
 
 static MsgInfo *compose_msginfo_new_from_compose(Compose *compose);
@@ -10821,6 +10820,13 @@ static void compose_headerentry_changed_cb(GtkWidget *entry,
 	}
 }
 
+static gboolean compose_defer_auto_save_draft(Compose *compose)
+{
+	compose->draft_timeout_tag = -1;
+	compose_draft((gpointer)compose, COMPOSE_AUTO_SAVE);
+	return FALSE;
+}
+
 static void compose_show_first_last_header(Compose *compose, gboolean show_first)
 {
 	GtkAdjustment *vadj;
@@ -10935,13 +10941,7 @@ static void text_inserted(GtkTextBuffer *buffer, GtkTextIter *iter,
 	    gtk_text_buffer_get_char_count(buffer) % prefs_common.autosave_length == 0 &&
 	    compose->draft_timeout_tag != -2 /* disabled while loading */)
 		compose->draft_timeout_tag = g_timeout_add
-			(500, (GtkFunction) compose_defer_auto_save_draft, compose);
-}
-static gint compose_defer_auto_save_draft(Compose *compose)
-{
-	compose->draft_timeout_tag = -1;
-	compose_draft((gpointer)compose, COMPOSE_AUTO_SAVE);
-	return FALSE;
+			(500, (GSourceFunc) compose_defer_auto_save_draft, compose);
 }
 
 #if USE_ENCHANT

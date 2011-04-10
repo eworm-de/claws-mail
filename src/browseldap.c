@@ -385,7 +385,7 @@ gboolean browseldap_entry( AddressDataSource *ds, const gchar *dn ) {
 	_queryID_ = ldaplocate_search_setup(
 			server, dn, browse_callback_entry, browse_callback_end );
 	debug_print("query id: %d\n", _queryID_);
-	_browseIdleID_ = g_idle_add( ( GtkFunction ) browse_idle, NULL );
+	_browseIdleID_ = g_idle_add( (GSourceFunc) browse_idle, NULL );
 
 	/* Start search */
 	debug_print("starting search\n");

@@ -71,7 +71,7 @@ extern "C" {
 
 GType    gtk_vscrollbutton_get_type	(void);
 GtkWidget* gtk_vscrollbutton_new	(GtkAdjustment *adjustment);
-gint 	   gtk_vscrollbutton_scroll	(GtkVScrollbutton *scrollbutton);
+gboolean gtk_vscrollbutton_scroll	(GtkVScrollbutton *scrollbutton);
 
 #ifdef __cplusplus
 }

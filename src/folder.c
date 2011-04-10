@@ -1382,12 +1382,9 @@ gchar *folder_item_get_identifier(FolderItem *item)
 
 Folder *folder_find_from_identifier(const gchar *identifier)
 {
-	Folder *folder;
-	gpointer d[2];
 	gchar *str;
 	gchar *p;
 	gchar *name;
-	gchar *path;
 	FolderClass *class;
 
 	cm_return_val_if_fail(identifier != NULL, NULL);

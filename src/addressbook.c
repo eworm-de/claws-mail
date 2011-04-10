@@ -4621,7 +4621,7 @@ static void addressbook_perform_search(
 
 	/* Set up idler function */
 	idleID = g_idle_add(
-			( GtkFunction ) addressbook_search_idle,
+			(GSourceFunc) addressbook_search_idle,
 			GINT_TO_POINTER( queryID ) );
 
 	/* Start search, sit back and wait for something to happen */

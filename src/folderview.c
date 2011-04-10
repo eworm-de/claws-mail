@@ -2705,7 +2705,7 @@ static void drag_state_stop(FolderView *folderview)
 	folderview->drag_node = NULL;
 }
 
-static gint folderview_defer_expand(FolderView *folderview)
+static gboolean folderview_defer_expand(FolderView *folderview)
 {
 	if (folderview->drag_node) {
 		folderview_recollapse_nodes(folderview, folderview->drag_node);
@@ -2729,7 +2729,7 @@ static void drag_state_start(FolderView *folderview, GtkCMCTreeNode *node, Folde
 	/* request expansion */
 	if (0 != (folderview->drag_timer = g_timeout_add
 			(prefs_common.hover_timeout, 
-			 (GtkFunction)folderview_defer_expand,
+			 (GSourceFunc)folderview_defer_expand,
 			 folderview))) {
 		folderview->drag_node = node;
 		folderview->drag_item = item;

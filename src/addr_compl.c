@@ -1057,7 +1057,7 @@ static void addrcompl_start_search( void ) {
 
 	/* Sit back and wait until something happens */
 	_completionIdleID_ =
-		g_idle_add( ( GtkFunction ) addrcompl_idle, NULL );
+		g_idle_add( (GSourceFunc) addrcompl_idle, NULL );
 	/* g_print( "addrindex_start_search::queryID=%d\n", _queryID_ ); */
 
 	addrindex_start_search( _queryID_ );
