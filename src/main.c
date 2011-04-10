@@ -1077,7 +1077,6 @@ int main(int argc, char *argv[])
 
 #ifdef CRASH_DIALOG
 	if (cmd.crash) {
-		gtk_set_locale();
 		gtk_init(&argc, &argv);
 		crash_main(cmd.crash_params);
 #ifdef G_OS_WIN32
@@ -1114,7 +1113,6 @@ int main(int argc, char *argv[])
 	if (!g_thread_supported())
 		g_thread_init(NULL);
 
-	gtk_set_locale();
 	gtk_init(&argc, &argv);
 
 #ifdef G_OS_WIN32

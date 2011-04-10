@@ -186,7 +186,7 @@ static void message_search_create(void)
 	gtk_widget_show (body_label);
 	gtk_box_pack_start (GTK_BOX (hbox1), body_label, FALSE, FALSE, 0);
 
-	body_entry = gtk_combo_box_entry_new_text ();
+	body_entry = gtk_combo_box_new_with_entry();
 	gtk_combo_box_set_active(GTK_COMBO_BOX(body_entry), -1);
 	if (prefs_common.message_search_history)
 		combobox_set_popdown_strings(GTK_COMBO_BOX(body_entry),

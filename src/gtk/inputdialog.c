@@ -374,7 +374,7 @@ static void input_dialog_create(gboolean is_password)
 	g_signal_connect(G_OBJECT(entry), "activate",
 			 G_CALLBACK(entry_activated), NULL);
 
-	combo = gtk_combo_box_entry_new_text();
+	combo = gtk_combo_box_new_with_entry();
 	gtk_box_pack_start(GTK_BOX(vbox), combo, FALSE, FALSE, 0);
 	g_signal_connect(G_OBJECT(gtk_bin_get_child(GTK_BIN((combo)))), "activate",
 			 G_CALLBACK(combo_activated), NULL);

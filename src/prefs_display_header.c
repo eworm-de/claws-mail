@@ -274,7 +274,7 @@ static void prefs_display_header_create(void)
 	gtk_widget_show (hdr_label);
 	gtk_box_pack_start (GTK_BOX (hbox1), hdr_label, FALSE, FALSE, 0);
 
-	hdr_combo = gtk_combo_box_entry_new_text();
+	hdr_combo = gtk_combo_box_new_with_entry();
 	for(i=0; i < 9 ; i++)
 		gtk_combo_box_text_append_text(GTK_COMBO_BOX_TEXT(hdr_combo),
 			(*defaults[i] == '-') ? defaults[i]+1 : defaults[i]);

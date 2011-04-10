@@ -44,12 +44,9 @@ GtkWidget *combobox_text_new(const gboolean with_entry, const gchar *text, ...)
 	if(text == NULL)
 		return NULL;
 	
-	if (with_entry) {
-		GtkListStore *store = gtk_list_store_new (1, G_TYPE_STRING);
-		combo = gtk_combo_box_entry_new_with_model (
-					GTK_TREE_MODEL(store), 0);
-		g_object_unref (store);
-	} else
+	if (with_entry)
+		combo = gtk_combo_box_new_with_entry();
+	else
 		combo = gtk_combo_box_text_new();
 	gtk_widget_show(combo);
 

@@ -1,3 +1,20 @@
+2011-04-10 [colin]	3.7.9cvs9
+
+	* src/compose.c
+	* src/editaddress.c
+	* src/editaddress_other_attributes_ldap.c
+	* src/main.c
+	* src/message_search.c
+	* src/prefs_display_header.c
+	* src/prefs_matcher.c
+	* src/prefs_toolbar.c
+	* src/summary_search.c
+	* src/gtk/combobox.c
+	* src/gtk/gtkutils.h
+	* src/gtk/inputdialog.c
+	* src/gtk/quicksearch.c
+		Finish fun with combo boxes. (hopefully)
+
 2011-04-10 [colin]	3.7.9cvs8
 
 	* src/compose.c

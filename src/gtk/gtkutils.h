@@ -243,6 +243,9 @@ claws_input_add    (gint	      source,
 #define gtk_combo_box_text_prepend_text gtk_combo_box_prepend_text
 #define gtk_combo_box_text_get_active_text gtk_combo_box_get_active_text
 #define gtk_combo_box_text_remove gtk_combo_box_remove_text
+#define gtk_combo_box_new_with_entry gtk_combo_box_entry_new_text
+#define gtk_combo_box_new_with_model_and_entry(x) \
+		gtk_combo_box_entry_new_with_model((x), 0)
 #endif
 
 #endif /* __GTKUTILS_H__ */

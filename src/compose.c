@@ -6492,7 +6492,7 @@ static void compose_create_header_entry(Compose *compose)
 
 	/* Combo box */
 	model = gtk_list_store_new(3, G_TYPE_STRING, G_TYPE_INT, G_TYPE_BOOLEAN);
-	combo = gtk_combo_box_entry_new_with_model(GTK_TREE_MODEL(model), 0);
+	combo = gtk_combo_box_new_with_model_and_entry(GTK_TREE_MODEL(model));
 	COMBOBOX_ADD(model, prefs_common_translated_header_name("To:"),
 			COMPOSE_TO);
 	COMBOBOX_ADD(model, prefs_common_translated_header_name("Cc:"),
@@ -6845,7 +6845,7 @@ static GtkWidget *compose_create_others(Compose *compose)
 	g_signal_connect(G_OBJECT(savemsg_checkbtn), "toggled",
 			 G_CALLBACK(compose_savemsg_checkbtn_cb), compose);
 
-	savemsg_combo = gtk_combo_box_entry_new_text();
+	savemsg_combo = gtk_combo_box_new_with_entry();
 	compose->savemsg_checkbtn = savemsg_checkbtn;
 	compose->savemsg_combo = savemsg_combo;
 	gtk_widget_show(savemsg_combo);
@@ -8695,7 +8695,7 @@ static void compose_attach_property_create(gboolean *cancelled)
 	gtk_table_attach(GTK_TABLE(table), label, 0, 1, 0, (0 + 1), 
 			 GTK_FILL, 0, 0, 0); 
 	gtk_misc_set_alignment(GTK_MISC(label), 0, 0.5); 
-	mimetype_entry = gtk_combo_box_entry_new_text(); 
+	mimetype_entry = gtk_combo_box_new_with_entry();
 	gtk_table_attach(GTK_TABLE(table), mimetype_entry, 1, 2, 0, (0 + 1), 
 			 GTK_EXPAND|GTK_SHRINK|GTK_FILL, 0, 0, 0);
 			 

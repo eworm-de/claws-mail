@@ -630,7 +630,7 @@ static void prefs_matcher_create(void)
 	gtk_box_pack_start(GTK_BOX(upper_hbox), criteria_label2, FALSE, FALSE, 0);
 
 	/* headers combo box entry */
-	headers_combo = gtk_combo_box_entry_new_with_model(matcher.model_headers, 0);
+	headers_combo = gtk_combo_box_new_with_model_and_entry(matcher.model_headers);
 	gtk_widget_set_size_request(headers_combo, 100, -1);
 	gtk_box_pack_start(GTK_BOX(upper_hbox), headers_combo, TRUE, TRUE, 0);
 	header_entry = gtk_bin_get_child(GTK_BIN((headers_combo)));

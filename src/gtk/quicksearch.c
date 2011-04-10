@@ -784,7 +784,7 @@ QuickSearch *quicksearch_new()
 
 	gtk_widget_show(search_type);
 
-	search_string_entry = gtk_combo_box_entry_new_text ();
+	search_string_entry = gtk_combo_box_new_with_entry ();
 	gtk_combo_box_set_active(GTK_COMBO_BOX(search_string_entry), -1);
 
 	vbox = gtk_vbox_new(TRUE, 0);

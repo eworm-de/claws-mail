@@ -925,21 +925,21 @@ static void prefs_toolbar_create(ToolbarPage *prefs_toolbar)
 			  (GtkAttachOptions) (GTK_FILL),
 			  (GtkAttachOptions) (0), 0, 0);
 
-	item_action_combo = gtk_combo_box_new_text();
+	item_action_combo = gtk_combo_box_text_new();
 	gtk_widget_set_size_request(item_action_combo, 200, -1);
 	gtk_table_attach (GTK_TABLE (table), item_action_combo, 1, 3, 1, 2,
 			  (GtkAttachOptions) (GTK_FILL),
 			  (GtkAttachOptions) (0), 0, 0);
 			  
 	/* available internal functions */
-	item_func_combo = gtk_combo_box_new_text();
+	item_func_combo = gtk_combo_box_text_new();
 	gtk_widget_set_size_request(item_func_combo, 200, -1);
 	gtk_table_attach (GTK_TABLE (table), item_func_combo, 1, 3, 1, 2,
 			  (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
 			  (GtkAttachOptions) (0), 0, 0);
 	
 	/* plugin-registered items */
-	item_plugin_combo = gtk_combo_box_new_text();
+	item_plugin_combo = gtk_combo_box_text_new();
 	gtk_widget_set_size_request(item_plugin_combo, 200, -1);
 	gtk_table_attach(GTK_TABLE(table), item_plugin_combo, 1, 3, 1, 2,
 			 (GtkAttachOptions) (GTK_FILL),

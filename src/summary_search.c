@@ -264,7 +264,7 @@ static void summary_search_create(void)
 	gtk_table_set_row_spacings (GTK_TABLE (table1), 8);
 	gtk_table_set_col_spacings (GTK_TABLE (table1), 8);
 
-	from_entry = gtk_combo_box_entry_new_text ();
+	from_entry = gtk_combo_box_new_with_entry ();
 	gtk_combo_box_set_active(GTK_COMBO_BOX(from_entry), -1);
 	if (prefs_common.summary_search_from_history)
 		combobox_set_popdown_strings(GTK_COMBO_BOX(from_entry),
@@ -279,7 +279,7 @@ static void summary_search_create(void)
 	g_signal_connect(G_OBJECT(gtk_bin_get_child(GTK_BIN((from_entry)))),
 			 "focus_out_event", G_CALLBACK(from_entry_focus_evt_out), NULL);
 
-	to_entry = gtk_combo_box_entry_new_text ();
+	to_entry = gtk_combo_box_new_with_entry ();
 	gtk_combo_box_set_active(GTK_COMBO_BOX(to_entry), -1);
 	if (prefs_common.summary_search_to_history)
 		combobox_set_popdown_strings(GTK_COMBO_BOX(to_entry),
@@ -294,7 +294,7 @@ static void summary_search_create(void)
 	g_signal_connect(G_OBJECT(gtk_bin_get_child(GTK_BIN((to_entry)))),
 			 "focus_out_event", G_CALLBACK(to_entry_focus_evt_out), NULL);
 
-	subject_entry = gtk_combo_box_entry_new_text ();
+	subject_entry = gtk_combo_box_new_with_entry ();
 	gtk_combo_box_set_active(GTK_COMBO_BOX(subject_entry), -1);
 	if (prefs_common.summary_search_subject_history)
 		combobox_set_popdown_strings(GTK_COMBO_BOX(subject_entry),
@@ -309,7 +309,7 @@ static void summary_search_create(void)
 	g_signal_connect(G_OBJECT(gtk_bin_get_child(GTK_BIN((subject_entry)))),
 			 "focus_out_event", G_CALLBACK(subject_entry_focus_evt_out), NULL);
 
-	body_entry = gtk_combo_box_entry_new_text ();
+	body_entry = gtk_combo_box_new_with_entry ();
 	gtk_combo_box_set_active(GTK_COMBO_BOX(body_entry), -1);
 	if (prefs_common.summary_search_body_history)
 		combobox_set_popdown_strings(GTK_COMBO_BOX(body_entry),
@@ -324,7 +324,7 @@ static void summary_search_create(void)
 	g_signal_connect(G_OBJECT(gtk_bin_get_child(GTK_BIN((body_entry)))),
 			 "focus_out_event", G_CALLBACK(body_entry_focus_evt_out), NULL);
 
-	adv_condition_entry = gtk_combo_box_entry_new_text ();
+	adv_condition_entry = gtk_combo_box_new_with_entry ();
 	gtk_combo_box_set_active(GTK_COMBO_BOX(adv_condition_entry), -1);
 	if (prefs_common.summary_search_adv_condition_history)
 		combobox_set_popdown_strings(GTK_COMBO_BOX(adv_condition_entry),
