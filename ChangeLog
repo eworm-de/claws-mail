@@ -1,3 +1,9 @@
+2011-04-11 [paul]	3.7.9cvs12
+
+	* src/plugins/trayicon/trayicon.c
+		fix build bug: gtk_status_icon_set_title() is available
+		since gtk 2.18.x not 2.14.x
+
 2011-04-11 [paul]	3.7.9cvs11
 
 	* po/hu.po

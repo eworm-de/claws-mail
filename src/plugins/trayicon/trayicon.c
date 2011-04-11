@@ -347,7 +347,7 @@ static void create_trayicon()
 {
 	GtkActionGroup *action_group;
 	trayicon = gtk_status_icon_new();
-#if GTK_CHECK_VERSION(2,14,0)
+#if GTK_CHECK_VERSION(2,18,0)
 	gtk_status_icon_set_title(GTK_STATUS_ICON(trayicon), _("Claws Mail"));
 #endif
 	g_signal_connect(G_OBJECT(trayicon), "button-press-event",
