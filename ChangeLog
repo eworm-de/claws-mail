@@ -1,3 +1,8 @@
+2011-04-11 [paul]	3.7.9cvs11
+
+	* po/hu.po
+		updated by Páder Rezső
+
 2011-04-10 [colin]	3.7.9cvs10
 
 	* src/addr_compl.c
