@@ -1,3 +1,10 @@
+2011-04-23 [paul]	3.7.9cvs13
+
+	* configure.ac
+		fix bug #2409, 'Failed to compile under GCC 3.x : option
+		 -Wno-pointer-sign badly set in configure.ac'. mistakenly
+		committed in 3.7.8cvs19 
+
 2011-04-11 [paul]	3.7.9cvs12
 
 	* src/plugins/trayicon/trayicon.c
