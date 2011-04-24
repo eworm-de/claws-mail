@@ -1,3 +1,12 @@
+2011-04-24 [paul]	3.7.9cvs16
+
+	* manual/claws-mail-manual.xml
+	* manual/de/claws-mail-manual.xml
+	* manual/es/claws-mail-manual.xml
+	* manual/fr/claws-mail-manual.xml
+	* manual/it/claws-mail-manual.xml
+		update copyright year
+
 2011-04-24 [paul]	3.7.9cvs15
 
 	* src/summaryview.c
