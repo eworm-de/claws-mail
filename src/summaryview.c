@@ -6496,7 +6496,6 @@ static gboolean summary_button_pressed(GtkWidget *ctree, GdkEventButton *event,
 	if (!event) return FALSE;
 
 	if (event->button == 3) {
-		summaryview->display_msg = messageview_is_visible(summaryview->messageview);
 		/* right clicked */
 		summary_set_menu_sensitive(summaryview);
 		cm_menu_set_sensitive_full(summaryview->mainwin->ui_manager, "Menus/SummaryViewPopup/Trash", 

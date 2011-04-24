@@ -1,3 +1,9 @@
+2011-04-24 [paul]	3.7.9cvs15
+
+	* src/summaryview.c
+		fix bug #2353, 'Right-clicking on spam in order to delete
+		it causes it to show in message window'
+
 2011-04-24 [paul]	3.7.9cvs14
 
 	* src/mainwindow.c
