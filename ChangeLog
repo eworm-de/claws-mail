@@ -1,3 +1,10 @@
+2011-04-24 [paul]	3.7.9cvs14
+
+	* src/mainwindow.c
+	* src/gtk/foldersort.c
+	* src/gtk/foldersort.h
+		fix labelling, 'change folder order' to 'change mailbox order'
+
 2011-04-23 [paul]	3.7.9cvs13
 
 	* configure.ac

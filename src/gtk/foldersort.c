@@ -1,6 +1,6 @@
 /*
- * Sylpheed -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 1999-2011 Hiroyuki Yamamoto and the Claws Mail Team
+ * Claws-Mail -- a GTK+ based, lightweight, and fast e-mail client
+ * Copyright (C) 2004-2011 the Claws Mail Team
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -153,7 +153,7 @@ void foldersort_open()
 	g_object_set_data(G_OBJECT(window), "window", window);
 	gtk_container_set_border_width(GTK_CONTAINER(window), 8);
 	gtk_window_set_position(GTK_WINDOW(window), GTK_WIN_POS_CENTER);
-	gtk_window_set_title(GTK_WINDOW(window), _("Set folder order"));
+	gtk_window_set_title(GTK_WINDOW(window), _("Set mailbox order"));
 	gtk_window_set_modal(GTK_WINDOW(window), TRUE);
 	gtk_window_set_default_size(GTK_WINDOW(window), 400, 300);
 	g_signal_connect(G_OBJECT(window), "delete_event",
@@ -187,8 +187,8 @@ void foldersort_open()
 	gtk_box_pack_start(GTK_BOX(vbox1), hbox, FALSE, FALSE, 0);
 
 	label1 = gtk_label_new(_
-		("Move folders up or down to change the sort order "
-		 "in the folder list."));
+		("Move mailboxes up or down to change the sort order "
+		 "in the Folder list."));
 	gtk_widget_show(label1);
 	gtk_widget_set_size_request(GTK_WIDGET(label1), 392, -1);
 	gtk_label_set_line_wrap(GTK_LABEL(label1), TRUE);
@@ -213,7 +213,7 @@ void foldersort_open()
 	gtk_cmclist_set_column_width(GTK_CMCLIST(folderlist), 0, 80);
 	gtk_cmclist_column_titles_show(GTK_CMCLIST(folderlist));
 
-	label2 = gtk_label_new(_("Folders"));
+	label2 = gtk_label_new(_("Mailboxes"));
 	gtk_widget_show(label2);
 	gtk_cmclist_set_column_widget(GTK_CMCLIST(folderlist), 0, label2);
 	gtk_label_set_justify(GTK_LABEL(label2), GTK_JUSTIFY_LEFT);

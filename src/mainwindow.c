@@ -480,7 +480,7 @@ static GtkActionEntry mainwin_entries[] =
 	{"File/AddMailbox/MH",			NULL, N_("MH..."), NULL, NULL, G_CALLBACK(add_mailbox_cb) },
 	{"File/---",				NULL, "---" },
 
-	{"File/SortFolders",			NULL, N_("Change folder order..."), NULL, NULL, G_CALLBACK(foldersort_cb) },
+	{"File/SortMailboxes",			NULL, N_("Change mailbox order..."), NULL, NULL, G_CALLBACK(foldersort_cb) },
 
 	/* {"File/---",				NULL, "---" }, */
 	{"File/ImportMbox",			NULL, N_("_Import mbox file..."), NULL, NULL, G_CALLBACK(import_mbox_cb) },
@@ -1612,7 +1612,7 @@ MainWindow *main_window_create()
 	MENUITEM_ADDUI_MANAGER(mainwin->ui_manager, "/Menu/File", "AddMailbox", "File/AddMailbox", GTK_UI_MANAGER_MENU)
 	MENUITEM_ADDUI_MANAGER(mainwin->ui_manager, "/Menu/File/AddMailbox", "MH", "File/AddMailbox/MH", GTK_UI_MANAGER_MENUITEM)
 	MENUITEM_ADDUI_MANAGER(mainwin->ui_manager, "/Menu/File", "Separator1", "File/---", GTK_UI_MANAGER_SEPARATOR)
-	MENUITEM_ADDUI_MANAGER(mainwin->ui_manager, "/Menu/File", "SortFolders", "File/SortFolders", GTK_UI_MANAGER_MENUITEM)
+	MENUITEM_ADDUI_MANAGER(mainwin->ui_manager, "/Menu/File", "SortMailboxes", "File/SortMailboxes", GTK_UI_MANAGER_MENUITEM)
 	MENUITEM_ADDUI_MANAGER(mainwin->ui_manager, "/Menu/File", "Separator2", "File/---", GTK_UI_MANAGER_SEPARATOR)
 	MENUITEM_ADDUI_MANAGER(mainwin->ui_manager, "/Menu/File", "ImportMbox", "File/ImportMbox", GTK_UI_MANAGER_MENUITEM)
 	MENUITEM_ADDUI_MANAGER(mainwin->ui_manager, "/Menu/File", "ExportMbox", "File/ExportMbox", GTK_UI_MANAGER_MENUITEM)
