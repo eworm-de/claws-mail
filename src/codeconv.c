@@ -1071,7 +1071,11 @@ static const struct {
 	{"ru_RU.KOI8-R"	, C_KOI8_R	, C_KOI8_R},
 	{"ru_RU.KOI8R"	, C_KOI8_R	, C_KOI8_R},
 	{"ru_RU.CP1251"	, C_WINDOWS_1251, C_KOI8_R},
+#ifdef G_OS_WIN32
+	{"ru_RU"	, C_WINDOWS_1251, C_KOI8_R},
+#else
 	{"ru_RU"	, C_ISO_8859_5	, C_KOI8_R},
+#endif
 	{"tg_TJ"	, C_KOI8_T	, C_KOI8_T},
 	{"ru_UA"	, C_KOI8_U	, C_KOI8_U},
 	{"uk_UA.CP1251"	, C_WINDOWS_1251, C_KOI8_U},

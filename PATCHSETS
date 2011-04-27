@@ -4168,3 +4168,4 @@
 ( cvs diff -u -r 1.274.2.322 -r 1.274.2.323 src/mainwindow.c;  cvs diff -u -r 1.1.2.20 -r 1.1.2.21 src/gtk/foldersort.c;  cvs diff -u -r 1.1.2.8 -r 1.1.2.9 src/gtk/foldersort.h;  ) > 3.7.9cvs14.patchset
 ( cvs diff -u -r 1.395.2.427 -r 1.395.2.428 src/summaryview.c;  ) > 3.7.9cvs15.patchset
 ( cvs diff -u -r 1.1.2.4 -r 1.1.2.5 manual/claws-mail-manual.xml;  cvs diff -u -r 1.1.2.1 -r 1.1.2.2 manual/de/claws-mail-manual.xml;  cvs diff -u -r 1.1.2.5 -r 1.1.2.6 manual/es/claws-mail-manual.xml;  cvs diff -u -r 1.1.2.2 -r 1.1.2.3 manual/fr/claws-mail-manual.xml;  cvs diff -u -r 1.1.2.1 -r 1.1.2.2 manual/it/claws-mail-manual.xml;  ) > 3.7.9cvs16.patchset
+( cvs diff -u -r 1.65.2.72 -r 1.65.2.73 src/codeconv.c;  ) > 3.7.9cvs17.patchset

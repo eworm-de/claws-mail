@@ -1,3 +1,9 @@
+2011-04-27 [colin]	3.7.9cvs17
+
+	* src/codeconv.c
+		Make Windows' encoding CP1251 for ru_RU locale
+		Part of bug #2397, "Gtkhtml2 viewer ignores message encoding"
+
 2011-04-24 [paul]	3.7.9cvs16
 
 	* manual/claws-mail-manual.xml
