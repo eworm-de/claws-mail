@@ -4169,3 +4169,4 @@
 ( cvs diff -u -r 1.395.2.427 -r 1.395.2.428 src/summaryview.c;  ) > 3.7.9cvs15.patchset
 ( cvs diff -u -r 1.1.2.4 -r 1.1.2.5 manual/claws-mail-manual.xml;  cvs diff -u -r 1.1.2.1 -r 1.1.2.2 manual/de/claws-mail-manual.xml;  cvs diff -u -r 1.1.2.5 -r 1.1.2.6 manual/es/claws-mail-manual.xml;  cvs diff -u -r 1.1.2.2 -r 1.1.2.3 manual/fr/claws-mail-manual.xml;  cvs diff -u -r 1.1.2.1 -r 1.1.2.2 manual/it/claws-mail-manual.xml;  ) > 3.7.9cvs16.patchset
 ( cvs diff -u -r 1.65.2.72 -r 1.65.2.73 src/codeconv.c;  ) > 3.7.9cvs17.patchset
+( cvs diff -u -r 1.115.2.237 -r 1.115.2.238 src/main.c;  ) > 3.7.9cvs18.patchset

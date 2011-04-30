@@ -1,3 +1,10 @@
+2011-04-30 [colin]	3.7.9cvs18
+
+	* src/main.c
+		Fix bug #2414, 'Claws segfaults on startup with
+		notification plugin enabled". Thanks Christian
+		Faulhammer for the patch.
+
 2011-04-27 [colin]	3.7.9cvs17
 
 	* src/codeconv.c

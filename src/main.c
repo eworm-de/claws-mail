@@ -331,7 +331,7 @@ static void startup_notification_complete(gboolean with_window)
 		gtk_widget_show(hack);
 	}
 
-	xdisplay = gdk_display_get_default();
+	xdisplay = GDK_DISPLAY_XDISPLAY(gdk_display_get_default());
 	sn_display = sn_display_new(xdisplay,
 				sn_error_trap_push,
 				sn_error_trap_pop);
