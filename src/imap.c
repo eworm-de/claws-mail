@@ -1039,7 +1039,8 @@ static IMAPSession *imap_session_new(Folder * folder,
 	gushort port;
 	int r;
 	int authenticated = FALSE;
-	
+	gchar *buf;
+
 #ifdef USE_GNUTLS
 	/* FIXME: IMAP over SSL only... */ 
 	SSLType ssl_type;
@@ -1066,7 +1067,12 @@ static IMAPSession *imap_session_new(Folder * folder,
 #endif
 
 	imap_init(folder);
-	statuswindow_print_all(_("Connecting to IMAP4 server: %s..."), folder->account->recv_server);
+	buf = g_strdup_printf(_("Account '%s': Connecting to IMAP4 server: %s..."),
+				folder->account->account_name, folder->account->recv_server);
+	statuswindow_print_all("%s", buf);
+	log_message(LOG_PROTOCOL, "%s\n", buf);
+	g_free(buf);
+
 #ifndef G_OS_WIN32
 	if (account->set_tunnelcmd) {
 		r = imap_threaded_connect_cmd(folder,

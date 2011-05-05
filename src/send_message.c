@@ -322,8 +322,8 @@ gint send_message_smtp_full(PrefsAccount *ac_prefs, GSList *to_list, FILE *fp, g
 			inc_pop_before_smtp(ac_prefs);
 		}
 
-		g_snprintf(buf, sizeof(buf), _("Connecting to SMTP server: %s ..."),
-			   ac_prefs->smtp_server);
+		g_snprintf(buf, sizeof(buf), _("Account '%s': Connecting to SMTP server: %s ..."),
+				ac_prefs->account_name, ac_prefs->smtp_server);
 		progress_dialog_set_label(dialog->dialog, buf);
 		log_message(LOG_PROTOCOL, "%s\n", buf);
 

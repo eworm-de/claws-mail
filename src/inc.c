@@ -768,6 +768,7 @@ static IncState inc_pop3_session_do(IncSession *session)
 	Pop3Session *pop3_session = POP3_SESSION(session->session);
 	IncProgressDialog *inc_dialog = (IncProgressDialog *)session->data;
 	gchar *server;
+	gchar *account_name;
 	gushort port;
 	gchar *buf;
 
@@ -782,6 +783,7 @@ static IncState inc_pop3_session_do(IncSession *session)
 	g_free(buf);
 
 	server = pop3_session->ac_prefs->recv_server;
+	account_name = pop3_session->ac_prefs->account_name;
 #ifdef USE_GNUTLS
 	port = pop3_session->ac_prefs->set_popport ?
 		pop3_session->ac_prefs->popport :
@@ -808,7 +810,8 @@ static IncState inc_pop3_session_do(IncSession *session)
 		pop3_session->ac_prefs->popport : 110;
 #endif
 
-	buf = g_strdup_printf(_("Connecting to POP3 server: %s..."), server);
+	buf = g_strdup_printf(_("Account '%s': Connecting to POP3 server: %s..."),
+				account_name, server);
 	statuswindow_print_all("%s", buf);
 	log_message(LOG_PROTOCOL, "%s\n", buf);
 

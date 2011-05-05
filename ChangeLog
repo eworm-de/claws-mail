@@ -1,3 +1,14 @@
+2011-05-05 [colin]	3.7.9cvs19
+
+	* src/imap.c
+	* src/inc.c
+	* src/news.c
+	* src/send_message.c
+		Fix bug #2184, "Add account name information inside network log".
+                Initial patch by MSulchan Darmawan, expanded to other protocols.
+		This stuff is too much copy-pasted.
+
+
 2011-04-30 [colin]	3.7.9cvs18
 
 	* src/main.c
