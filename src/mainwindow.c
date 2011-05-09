@@ -2067,6 +2067,7 @@ MainWindow *main_window_create()
 	gtk_widget_show_all(hbox_stat);
 
 	gtk_widget_hide(offline_switch);
+	gtk_widget_hide(progressbar);
 	gtk_widget_hide(warning_btn);
 #else
 	online_switch = gtk_button_new ();

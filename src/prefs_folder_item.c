@@ -1332,7 +1332,8 @@ static void prefs_folder_item_templates_create_widget_func(PrefsPage * page_,
 	GtkWidget *reply_format_rec_checkbtn;
 	GtkWidget *forward_format_rec_checkbtn;
 	GtkWidget *hbox;
-
+	GtkWidget *vbox_format;
+	
 	page->item = item;
 
 	page_vbox = gtk_vbox_new (FALSE, 0);
@@ -1369,9 +1370,12 @@ static void prefs_folder_item_templates_create_widget_func(PrefsPage * page_,
 				FALSE, FALSE);
 	address_completion_register_entry(GTK_ENTRY(page->compose_override_from_format),
 			TRUE);
+	
+	vbox_format = gtk_widget_get_parent(
+			gtk_widget_get_parent(page->compose_body_format));
 
 	hbox = gtk_hbox_new (FALSE, 0);
-	gtk_box_pack_end (GTK_BOX(vbox), hbox, FALSE, FALSE, 0);
+	gtk_box_pack_end (GTK_BOX(vbox_format), hbox, FALSE, FALSE, 0);
 	quotefmt_add_info_button(window, hbox);
 	
 	new_msg_format_rec_checkbtn = gtk_check_button_new_with_label(
@@ -1395,8 +1399,11 @@ static void prefs_folder_item_templates_create_widget_func(PrefsPage * page_,
 	address_completion_register_entry(GTK_ENTRY(page->reply_override_from_format),
 			TRUE);
 
+	vbox_format = gtk_widget_get_parent(
+			gtk_widget_get_parent(page->reply_body_format));
+
 	hbox = gtk_hbox_new (FALSE, 0);
-	gtk_box_pack_end (GTK_BOX(vbox), hbox, FALSE, FALSE, 0);
+	gtk_box_pack_end (GTK_BOX(vbox_format), hbox, FALSE, FALSE, 0);
 	quotefmt_add_info_button(window, hbox);
 
 	reply_format_rec_checkbtn = gtk_check_button_new_with_label(
@@ -1420,8 +1427,11 @@ static void prefs_folder_item_templates_create_widget_func(PrefsPage * page_,
 	address_completion_register_entry(GTK_ENTRY(page->forward_override_from_format),
 			TRUE);
 
+	vbox_format = gtk_widget_get_parent(
+			gtk_widget_get_parent(page->forward_body_format));
+
 	hbox = gtk_hbox_new (FALSE, 0);
-	gtk_box_pack_end (GTK_BOX(vbox), hbox, FALSE, FALSE, 0);
+	gtk_box_pack_end (GTK_BOX(vbox_format), hbox, FALSE, FALSE, 0);
 	quotefmt_add_info_button(window, hbox);
 
 	forward_format_rec_checkbtn = gtk_check_button_new_with_label(

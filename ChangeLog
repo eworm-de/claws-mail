@@ -1,3 +1,9 @@
+2011-05-09 [pawel]	3.7.9cvs20
+
+	* src/mainwindow.c
+	* src/prefs_folder_item.c
+		Small UI fixes
+
 2011-05-05 [colin]	3.7.9cvs19
 
 	* src/imap.c
