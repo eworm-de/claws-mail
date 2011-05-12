@@ -3839,17 +3839,12 @@ gchar *generate_msgid(gchar *buf, gint len, gchar *user_addr)
 	t = time(NULL);
 	lt = localtime_r(&t, &buft);
 
-	if (strcmp(buf, "") == 0) {
-		if (user_addr != NULL)
-			addr = g_strconcat(".", user_addr, "@", get_domain_name(), NULL);
-		else
-			addr = g_strconcat("@", get_domain_name(), NULL);
-	} else {
-		if (user_addr != NULL)
-			addr = g_strconcat(".", user_addr, "@", buf, NULL);
-		else
-			addr = g_strconcat("@", buf, NULL);
-	}
+	if (user_addr != NULL)
+	      addr = g_strdup_printf(".%s", user_addr);
+	else if (strlen(buf) != 0)
+	      addr = g_strdup_printf("@%s", buf);
+	else
+	      addr = g_strdup_printf("@%s", get_domain_name());
 
 	/* Replace all @ but the last one in addr, with underscores.
 	 * RFC 2822 States that msg-id syntax only allows one @.
