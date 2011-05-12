@@ -4172,3 +4172,4 @@
 ( cvs diff -u -r 1.115.2.237 -r 1.115.2.238 src/main.c;  ) > 3.7.9cvs18.patchset
 ( cvs diff -u -r 1.179.2.254 -r 1.179.2.255 src/imap.c;  cvs diff -u -r 1.149.2.103 -r 1.149.2.104 src/inc.c;  cvs diff -u -r 1.101.2.64 -r 1.101.2.65 src/news.c;  cvs diff -u -r 1.17.2.59 -r 1.17.2.60 src/send_message.c;  ) > 3.7.9cvs19.patchset
 ( cvs diff -u -r 1.274.2.323 -r 1.274.2.324 src/mainwindow.c;  cvs diff -u -r 1.52.2.82 -r 1.52.2.83 src/prefs_folder_item.c;  ) > 3.7.9cvs20.patchset
+( cvs diff -u -r 1.1.2.13 -r 1.1.2.14 src/etpan/nntp-thread.c;  ) > 3.7.9cvs21.patchset

@@ -1,3 +1,8 @@
+2011-05-12 [mones]	3.7.9cvs21
+
+	* src/etpan/nntp-thread.c
+		Fix bug #2418 "NNTP authentication is broken"
+
 2011-05-09 [pawel]	3.7.9cvs20
 
 	* src/mainwindow.c

@@ -592,10 +592,13 @@ static void login_run(struct etpan_thread_op * op)
 	mailstream_debug = 0;
 #endif
 
-	r = newsnntp_authinfo_username(param->nntp, param->login);
-	if (r == NEWSNNTP_NO_ERROR || 
-	    r == NEWSNNTP_WARNING_REQUEST_AUTHORIZATION_PASSWORD) {
-		r = newsnntp_authinfo_password(param->nntp, param->password);
+	r = newsnntp_mode_reader(param->nntp);
+	if (r == NEWSNNTP_NO_ERROR) {
+		r = newsnntp_authinfo_username(param->nntp, param->login);
+		if (r == NEWSNNTP_NO_ERROR || 
+		    r == NEWSNNTP_WARNING_REQUEST_AUTHORIZATION_PASSWORD) {
+			r = newsnntp_authinfo_password(param->nntp, param->password);
+		}
 	}
 	
 
