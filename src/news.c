@@ -1141,6 +1141,13 @@ static GSList *news_get_msginfos_for_range(NewsSession *session, FolderItem *ite
 
 	news_folder_lock(NEWS_FOLDER(item->folder));
 	
+	ok = news_select_group(item->folder, item->path, NULL, NULL, NULL);
+	if (ok != NEWSNNTP_NO_ERROR) {
+		log_warning(LOG_PROTOCOL, _("couldn't set group: %s\n"), item->path);
+		news_folder_unlock(NEWS_FOLDER(item->folder));
+		return NULL;
+	}
+
 	ok = nntp_threaded_xover(item->folder, begin, end, NULL, &msglist);
 	
 	if (ok != NEWSNNTP_NO_ERROR) {
