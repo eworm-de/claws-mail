@@ -1,3 +1,9 @@
+2011-05-25 [colin]	3.7.9cvs24
+
+	* src/action.c
+		Fix bug #2439, "use bitwise operator for bitmask instead of
+		logical operator". Thanks to Nicolas Kaiser for the patch.
+
 2011-05-18 [colin]	3.7.9cvs23
 
 	* src/news.c

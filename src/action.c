@@ -1526,7 +1526,7 @@ static void catch_input(gpointer data, gint source, GdkInputCondition cond)
 	gssize by_read = 0, by_written = 0;
 
 	debug_print("Sending input to grand child.\n");
-	if (!(cond && GDK_INPUT_WRITE))
+	if (!(cond & GDK_INPUT_WRITE))
 		return;
 
 	gtk_widget_set_sensitive(children->input_hbox, FALSE);
