@@ -294,7 +294,7 @@ msgstr "Nie je nastavené meno atribútu."
 
 #: src/addrcustomattr.c:472
 msgid "Dialog title|Edit attribute names"
-msgstr "Titulok dialógu|Upraviť mená atribútov"
+msgstr "Upraviť mená atribútov"
 
 #: src/addrcustomattr.c:486
 msgid "New attribute name:"
@@ -3660,45 +3660,45 @@ msgstr "Zabudované funkcie\n"
 
 #: src/gtk/about.c:408
 msgid "compface|adds support for the X-Face header\n"
-msgstr "compface|podpora hlavičky X-Face\n"
+msgstr "podpora hlavičky X-Face\n"
 
 #: src/gtk/about.c:418
 msgid "Enchant|adds support for spell checking\n"
-msgstr "Enchant|podpora kontroly pravopisu\n"
+msgstr "podpora kontroly pravopisu\n"
 
 #: src/gtk/about.c:428
 msgid "GnuTLS|adds support for encrypted connections to servers\n"
-msgstr "GnuTLS|podpora šifrovaného spojenia so serverom\n"
+msgstr "podpora šifrovaného spojenia so serverom\n"
 
 #: src/gtk/about.c:438
 msgid ""
 "IPv6|adds support for IPv6 addresses, the new Internet addressing protocol\n"
-msgstr "IPv6|podpora IPv6 adries\n"
+msgstr "podpora IPv6 adries\n"
 
 #: src/gtk/about.c:449
 msgid "iconv|allows converting to and from different character sets\n"
-msgstr "iconv|konverzia znakov medzi rôznymi kódovaniami\n"
+msgstr "konverzia znakov medzi rôznymi kódovaniami\n"
 
 #: src/gtk/about.c:459
 msgid "JPilot|adds support for PalmOS addressbooks\n"
-msgstr "JPilot|podpora adresárov PalmOS\n"
+msgstr "podpora adresárov PalmOS\n"
 
 #: src/gtk/about.c:469
 msgid "LDAP|adds support for LDAP shared addressbooks\n"
-msgstr "LDAP|podpora zdieľaných adresárov LDAP\n"
+msgstr "podpora zdieľaných adresárov LDAP\n"
 
 #: src/gtk/about.c:479
 msgid "libetpan|adds support for IMAP and NNTP servers\n"
-msgstr "libetpan|podpora protokolu pre IMAP a NNTP servery\n"
+msgstr "podpora protokolu pre IMAP a NNTP servery\n"
 
 #: src/gtk/about.c:489
 msgid "libSM|adds support for session handling\n"
-msgstr "libSM|podpora správy relácií\n"
+msgstr "podpora správy relácií\n"
 
 #: src/gtk/about.c:499
 msgid ""
 "NetworkManager|adds support for detection of network connection changes\n"
-msgstr "NetworkManager|pridáva podporu detekcie zmien sieťového pripojenia\n"
+msgstr "pridáva podporu detekcie zmien sieťového pripojenia\n"
 
 #: src/gtk/about.c:531
 msgid ""
@@ -14080,57 +14080,3 @@ msgid ""
 msgstr ""
 "Program Claws Mail je pripravený.\n"
 "Kliknite na Uložiť."
-
-#~ msgid ""
-#~ "\n"
-#~ "\n"
-#~ "Copyright (C) 1999-2010\n"
-#~ "Hiroyuki Yamamoto <hiro-y@kcn.ne.jp>\n"
-#~ "and the Claws Mail team"
-#~ msgstr ""
-#~ "\n"
-#~ "\n"
-#~ "Copyright (C) 1999-2010\n"
-#~ "Hiroyuki Yamamoto <hiro-y@kcn.ne.jp>\n"
-#~ "a Claws Mail tím"
-
-#~ msgid ""
-#~ "Copyright (C) 1999-2010\n"
-#~ "Hiroyuki Yamamoto <hiro-y@kcn.ne.jp>\n"
-#~ "and the Claws Mail team"
-#~ msgstr ""
-#~ "Copyright (C) 1999-2010\n"
-#~ "Hiroyuki Yamamoto <hiro-y@kcn.ne.jp>\n"
-#~ "a Claws Mail tím"
-
-#~ msgid "headers line"
-#~ msgstr "riadok hlavičiek"
-
-#~ msgid "message line"
-#~ msgstr "riadok správy"
-
-#~ msgid "Test RegExp"
-#~ msgstr "Test regulérneho výrazu"
-
-#~ msgid " items selected"
-#~ msgstr " položiek zvolených"
-
-#~ msgid "'View Log'"
-#~ msgstr "'Zobraziť záznam'"
-
-#~ msgid ""
-#~ "SMTP password:\n"
-#~ "<span size=\"small\">(empty to use the same as receive)</span>"
-#~ msgstr ""
-#~ "Heslo SMTP:\n"
-#~ "<span size=\"small\">(nechajte prázdne, ak je rovnaké ako pre príjem)</"
-#~ "span>"
-
-#~ msgid "Orientation"
-#~ msgstr "Orientácia"
-
-#~ msgid "The orientation of the tray."
-#~ msgstr "Orientácia lišty"
-
-#~ msgid "Quotation characters"
-#~ msgstr "Znak citácie"

@@ -4176,3 +4176,4 @@
 ( cvs diff -u -r 1.36.2.192 -r 1.36.2.193 src/common/utils.c;  ) > 3.7.9cvs22.patchset
 ( cvs diff -u -r 1.101.2.65 -r 1.101.2.66 src/news.c;  ) > 3.7.9cvs23.patchset
 ( cvs diff -u -r 1.12.2.65 -r 1.12.2.66 src/action.c;  ) > 3.7.9cvs24.patchset
+( cvs diff -u -r 1.1.2.18 -r 1.1.2.19 po/ca.po;  cvs diff -u -r 1.9.2.21 -r 1.9.2.22 po/cs.po;  cvs diff -u -r 1.58.2.48 -r 1.58.2.49 po/de.po;  cvs diff -u -r 1.34.2.29 -r 1.34.2.30 po/it.po;  cvs diff -u -r 1.16.2.11 -r 1.16.2.12 po/ja.po;  cvs diff -u -r 1.1.2.3 -r 1.1.2.4 po/pt_PT.po;  cvs diff -u -r 1.2.2.32 -r 1.2.2.33 po/sk.po;  cvs diff -u -r 1.1.2.3 -r 1.1.2.4 po/uk.po;  cvs diff -u -r 1.43.2.122 -r 1.43.2.123 src/toolbar.c;  cvs diff -u -r 1.4.2.78 -r 1.4.2.79 src/gtk/about.c;  ) > 3.7.9cvs25.patchset

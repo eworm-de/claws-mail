@@ -70,7 +70,7 @@ msgstr "Elimina account"
 
 #: src/account.c:1528
 msgid "Accounts List Get Column Name|G"
-msgstr "Lista account Nome colonna|G"
+msgstr "G"
 
 #: src/account.c:1534
 msgid "'Get Mail' retrieves mail from the checked accounts"
@@ -292,7 +292,7 @@ msgstr "Il nome dell'attributo non è impostato."
 
 #: src/addrcustomattr.c:471
 msgid "Dialog title|Edit attribute names"
-msgstr "Titolo finestra di dialogo|Modifica nomi attributi"
+msgstr "Modifica nomi attributi"
 
 #: src/addrcustomattr.c:485
 msgid "New attribute name:"
@@ -2798,7 +2798,7 @@ msgstr "L'etichetta non è impostata."
 
 #: src/edittags.c:521
 msgid "Dialog title|Apply tags"
-msgstr "Titolo finestra di dialogo|Applica etichette"
+msgstr "Applica etichette"
 
 #: src/edittags.c:535
 msgid "New tag:"
@@ -3665,54 +3665,54 @@ msgstr "Opzioni pre-compilate\n"
 
 #: src/gtk/about.c:408
 msgid "compface|adds support for the X-Face header\n"
-msgstr "compface|aggiunge il supporto per l'intestazione X-Face\n"
+msgstr "aggiunge il supporto per l'intestazione X-Face\n"
 
 #: src/gtk/about.c:418
 msgid "Enchant|adds support for spell checking\n"
-msgstr "Enchant|aggiunge il supporto per il controllo ortografico\n"
+msgstr "aggiunge il supporto per il controllo ortografico\n"
 
 #: src/gtk/about.c:428
 msgid "GnuTLS|adds support for encrypted connections to servers\n"
-msgstr "GnuTLS|aggiunge il supporto per la connessione crittata ai server\n"
+msgstr "aggiunge il supporto per la connessione crittata ai server\n"
 
 #: src/gtk/about.c:438
 msgid ""
 "IPv6|adds support for IPv6 addresses, the new Internet addressing protocol\n"
 msgstr ""
-"IPv6|aggiunge il supporto per gli indirizzi IPv6, il nuovo protocollo di "
+"aggiunge il supporto per gli indirizzi IPv6, il nuovo protocollo di "
 "indirizzamento di Internet\n"
 
 #: src/gtk/about.c:449
 msgid "iconv|allows converting to and from different character sets\n"
 msgstr ""
-"iconv|permette la conversione tra differenti insiemi di caratteri (charset)\n"
+"permette la conversione tra differenti insiemi di caratteri (charset)\n"
 
 #: src/gtk/about.c:459
 msgid "JPilot|adds support for PalmOS addressbooks\n"
-msgstr "JPilot|aggiunge il supporto per le rubriche PalmOS\n"
+msgstr "aggiunge il supporto per le rubriche PalmOS\n"
 
 #: src/gtk/about.c:469
 msgid "LDAP|adds support for LDAP shared addressbooks\n"
-msgstr "LDAP|aggiunge il supporto per le rubriche condivise LDAP\n"
+msgstr "aggiunge il supporto per le rubriche condivise LDAP\n"
 
 #: src/gtk/about.c:479
 msgid "libetpan|adds support for IMAP and NNTP servers\n"
-msgstr "libetpan|aggiunge il supporto per i server IMAP\n"
+msgstr "aggiunge il supporto per i server IMAP\n"
 
 #: src/gtk/about.c:490
 msgid "libgnomeprint|adds support for a complete print dialog\n"
 msgstr ""
-"libgnomeprint|aggiunge il supporto per una finestra di stampa completa\n"
+"aggiunge il supporto per una finestra di stampa completa\n"
 
 #: src/gtk/about.c:501
 msgid "libSM|adds support for session handling\n"
-msgstr "libSM|aggiunge il supporto per la gestione delle sessioni\n"
+msgstr "aggiunge il supporto per la gestione delle sessioni\n"
 
 #: src/gtk/about.c:511
 msgid ""
 "NetworkManager|adds support for detection of network connection changes\n"
 msgstr ""
-"NetworkManager|aggiunge il supporto per il rilevamento delle variazioni di "
+"aggiunge il supporto per il rilevamento delle variazioni di "
 "connessione alla rete\n"
 
 #: src/gtk/about.c:543
@@ -11361,7 +11361,7 @@ msgstr "Testo"
 
 #: src/prefs_msg_colors.c:206
 msgid "Tooltip|Pick color for 1st level text"
-msgstr "Tooltip|Selezionare colore per il testo di primo livello"
+msgstr "Selezionare colore per il testo di primo livello"
 
 #: src/prefs_msg_colors.c:212
 msgid "2nd Level"
@@ -11369,7 +11369,7 @@ msgstr "secondo livello"
 
 #: src/prefs_msg_colors.c:232
 msgid "Tooltip|Pick color for 2nd level text"
-msgstr "Tooltip|Selezionare colore per il testo di secondo livello"
+msgstr "Selezionare colore per il testo di secondo livello"
 
 #: src/prefs_msg_colors.c:238
 msgid "3rd Level"
@@ -11377,7 +11377,7 @@ msgstr "terzo livello"
 
 #: src/prefs_msg_colors.c:258
 msgid "Tooltip|Pick color for 3rd level text"
-msgstr "Tooltip|Selezionare colore per il testo di terzo livello"
+msgstr "Selezionare colore per il testo di terzo livello"
 
 #: src/prefs_msg_colors.c:265
 msgid "Enable coloration of text background"
@@ -11385,7 +11385,7 @@ msgstr "Abilita la colorazione dello sfondo del messaggio"
 
 #: src/prefs_msg_colors.c:281
 msgid "Tooltip|Pick color for 1st level text background"
-msgstr "Tooltip|Selezionare colore per lo sfondo del testo di primo livello"
+msgstr "Selezionare colore per lo sfondo del testo di primo livello"
 
 #: src/prefs_msg_colors.c:283 src/prefs_msg_colors.c:304
 #: src/prefs_msg_colors.c:325
@@ -11394,15 +11394,15 @@ msgstr "Sfondo"
 
 #: src/prefs_msg_colors.c:302
 msgid "Tooltip|Pick color for 2nd level text background"
-msgstr "Tootlip|Selezionare colore per lo sfondo del testo di secondo livello"
+msgstr "Selezionare colore per lo sfondo del testo di secondo livello"
 
 #: src/prefs_msg_colors.c:323
 msgid "Tooltip|Pick color for 3rd level text background"
-msgstr "Tooltip|Selezionare colore per lo sfondo del testo di terzo livello"
+msgstr "Selezionare colore per lo sfondo del testo di terzo livello"
 
 #: src/prefs_msg_colors.c:343
 msgid "Tooltip|Pick color for links"
-msgstr "Tooltip|Selezionare colore per i collegamenti"
+msgstr "Selezionare colore per i collegamenti"
 
 #: src/prefs_msg_colors.c:345
 msgid "URI link"
@@ -11410,7 +11410,7 @@ msgstr "Link URI"
 
 #: src/prefs_msg_colors.c:362
 msgid "Tooltip|Pick color for signatures"
-msgstr "Tooltip|Selezionare colore per le firme"
+msgstr "Selezionare colore per le firme"
 
 #: src/prefs_msg_colors.c:364
 msgid "Signatures"
@@ -11460,57 +11460,57 @@ msgstr "Selezione colore per il colore 'color %d'"
 #: src/prefs_msg_colors.c:592
 #, c-format
 msgid "Dialog title|Pick color for 'color %d'"
-msgstr "Titolo finestra di dialogo|Selezione colore per il colore 'color %d'"
+msgstr "Selezione colore per il colore 'color %d'"
 
 #: src/prefs_msg_colors.c:600
 msgid "Dialog title|Pick color for 1st level text"
 msgstr ""
-"Titolo finestra di dialogo|Selezionare colore per il testo di primo livello"
+"Selezionare colore per il testo di primo livello"
 
 #: src/prefs_msg_colors.c:603
 msgid "Dialog title|Pick color for 2nd level text"
 msgstr ""
-"Titolo finestra di dialogo|Selezionare colore per il testo di secondo livello"
+"Selezionare colore per il testo di secondo livello"
 
 #: src/prefs_msg_colors.c:606
 msgid "Dialog title|Pick color for 3rd level text"
 msgstr ""
-"Titolo finestra di dialogo|Selezionare colore per il testo di terzo livello"
+"Selezionare colore per il testo di terzo livello"
 
 #: src/prefs_msg_colors.c:609
 msgid "Dialog title|Pick color for 1st level text background"
 msgstr ""
-"Titolo finestra di dialogo|Selezionare colore per lo sfondo del testo di "
+"Selezionare colore per lo sfondo del testo di "
 "primo livello"
 
 #: src/prefs_msg_colors.c:612
 msgid "Dialog title|Pick color for 2nd level text background"
 msgstr ""
-"Titolo finestra di dialogo|Selezionare colore per lo sfondo del testo di "
+"Selezionare colore per lo sfondo del testo di "
 "secondo livello"
 
 #: src/prefs_msg_colors.c:615
 msgid "Dialog title|Pick color for 3rd level text background"
 msgstr ""
-"Titolo finestra di dialogo|Selezionare colore per lo sfondo del testo di "
+"Selezionare colore per lo sfondo del testo di "
 "terzo livello"
 
 #: src/prefs_msg_colors.c:618
 msgid "Dialog title|Pick color for links"
-msgstr "Titolo finestra di dialogo|Selezione colore per il colore 'color %d'"
+msgstr "Selezione colore per il colore 'color %d'"
 
 #: src/prefs_msg_colors.c:621
 msgid "Dialog title|Pick color for target folder"
 msgstr ""
-"Titolo finestra di dialogo|Selezionare colore per la cartella destinazione"
+"Selezionare colore per la cartella destinazione"
 
 #: src/prefs_msg_colors.c:624
 msgid "Dialog title|Pick color for signatures"
-msgstr "Titolo finestra di dialogo|Selezionare colore per le firme"
+msgstr "Selezionare colore per le firme"
 
 #: src/prefs_msg_colors.c:627
 msgid "Dialog title|Pick color for folder"
-msgstr "Titolo finestra di dialogo|Selezione colore per il colore 'color %d'"
+msgstr "Selezione colore per il colore 'color %d'"
 
 #: src/prefs_msg_colors.c:831
 msgid "Colors"
@@ -13929,7 +13929,7 @@ msgstr "Indirizzi disponibili:"
 
 #: src/uri_opener.c:171
 msgid "Dialog title|Open URLs"
-msgstr "Titolo finestra di dialogo|Apri indirizzi"
+msgstr "Apri indirizzi"
 
 #: src/uri_opener.c:196
 msgid "Please select the URL to open."

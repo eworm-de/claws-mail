@@ -129,7 +129,7 @@ static GtkWidget *about_create_child_page_info(void)
 				"link", NULL);
 	gtk_text_buffer_insert(buffer, &iter, _("\n\n"
 				"Claws Mail is free software released "
-				"under the GPL license. If you wish to donate "
+				"under the GPL. If you wish to donate "
 				"to the Claws Mail project you can do "
 				"so at:\n"), -1);
 	gtk_text_buffer_insert_with_tags_by_name(buffer, &iter, DONATE_URI, -1,

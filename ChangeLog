@@ -1,3 +1,21 @@
+2011-06-05 [paul]	3.7.9cvs25
+
+	* po/ca.po
+	* po/cs.po
+	* po/de.po
+	* po/it.po
+	* po/ja.po
+	* po/pt_PT.po
+	* po/sk.po
+	* po/uk.po
+		fix strings where an informational message has been
+		wrongly entered into the translated string
+	* src/toolbar.c
+		enable 'Trash' and 'Sender' to be translated based on
+		the context, e.g. as button text and as mail header
+	* src/gtk/about.c
+		fix english in Info tab
+
 2011-05-25 [colin]	3.7.9cvs24
 
 	* src/action.c

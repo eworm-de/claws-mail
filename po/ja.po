@@ -3864,15 +3864,15 @@ msgstr "組み込まれている機能\n"
 
 #: src/gtk/about.c:408
 msgid "compface|adds support for the X-Face header\n"
-msgstr "compface|X-Faceヘッダのサポートを追加します\n"
+msgstr "X-Faceヘッダのサポートを追加します\n"
 
 #: src/gtk/about.c:418
 msgid "Enchant|adds support for spell checking\n"
-msgstr "Enchant|スペルチェックのサポートを追加します\n"
+msgstr "スペルチェックのサポートを追加します\n"
 
 #: src/gtk/about.c:428
 msgid "GnuTLS|adds support for encrypted connections to servers\n"
-msgstr "GnuTLS|暗号化されたサーバ接続のサポートを追加します\n"
+msgstr "暗号化されたサーバ接続のサポートを追加します\n"
 
 #: src/gtk/about.c:438
 msgid "IPv6|adds support for IPv6 addresses, the new Internet addressing protocol\n"
@@ -3895,11 +3895,11 @@ msgid "libetpan|adds support for IMAP and NNTP servers\n"
 msgstr "IMAPやNNTPサーバのサポートを追加します\n"
 
 #: src/gtk/about.c:490
-msgid "libgnomeprint|adds support for a complete print dialog\n"
+msgid "adds support for a complete print dialog\n"
 msgstr "完全な印刷ダイアログのサポートを追加します\n"
 
 #: src/gtk/about.c:501
-msgid "libSM|adds support for session handling\n"
+msgid "adds support for session handling\n"
 msgstr "セッションを取り扱うサポートを追加します\n"
 
 #: src/gtk/about.c:511
@@ -14311,7 +14311,7 @@ msgstr "全て選択"
 
 #: src/wizard.c:537
 msgid "Welcome Mail Subject|Welcome to Claws Mail"
-msgstr "Welcome Mail Subject|ようこそClaws Mailへ"
+msgstr "ようこそClaws Mailへ"
 
 #: src/wizard.c:560
 #, c-format

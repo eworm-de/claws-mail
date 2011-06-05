@@ -312,7 +312,7 @@ msgstr "Назву властивості не встановлено"
 
 #: src/addrcustomattr.c:472
 msgid "Dialog title|Edit attribute names"
-msgstr "Назва діалогу|Редагувати назви атрибутів"
+msgstr "Редагувати назви атрибутів"
 
 #: src/addrcustomattr.c:486
 msgid "New attribute name:"
@@ -2974,7 +2974,7 @@ msgstr "Ярлик не встановлено."
 
 #: src/edittags.c:522
 msgid "Dialog title|Apply tags"
-msgstr "Назва діалогу|Застосувати ярлики"
+msgstr "Застосувати ярлики"
 
 #: src/edittags.c:536
 msgid "New tag:"
@@ -14503,57 +14503,3 @@ msgid ""
 msgstr ""
 "Claws Mail готовий до роботи.\n"
 "Клацніть 'Зберегти', щоб розпочати роботу."
-
-#~ msgid ""
-#~ "\n"
-#~ "\n"
-#~ "Copyright (C) 1999-2010\n"
-#~ "Hiroyuki Yamamoto <hiro-y@kcn.ne.jp>\n"
-#~ "and the Claws Mail team"
-#~ msgstr ""
-#~ "\n"
-#~ "\n"
-#~ "Всі права застережено (C) 1999-2010\n"
-#~ "Hiroyuki Yamamoto <hiro-y@kcn.ne.jp>\n"
-#~ "і команда Claws Mail"
-
-#~ msgid ""
-#~ "Copyright (C) 1999-2010\n"
-#~ "Hiroyuki Yamamoto <hiro-y@kcn.ne.jp>\n"
-#~ "and the Claws Mail team"
-#~ msgstr ""
-#~ "Всі права застережено (C) 1999-2010\n"
-#~ "Hiroyuki Yamamoto <hiro-y@kcn.ne.jp>\n"
-#~ "і команда Claws Mail"
-
-#~ msgid "headers line"
-#~ msgstr "лінійка заголовка"
-
-#~ msgid "message line"
-#~ msgstr "лінійка повідомлення"
-
-#~ msgid "Test RegExp"
-#~ msgstr "Тест RegExp"
-
-#~ msgid " items selected"
-#~ msgstr " елементів виділено"
-
-#~ msgid "'View Log'"
-#~ msgstr "'Переглянути логи'"
-
-#~ msgid ""
-#~ "SMTP password:\n"
-#~ "<span size=\"small\">(empty to use the same as receive)</span>"
-#~ msgstr ""
-#~ "Пароль SMTP-користувача:\n"
-#~ "<span size=\"small\">(залиште поле пустим, якщо той самий, що і для "
-#~ "отримання)</span>"
-
-#~ msgid "Orientation"
-#~ msgstr "Орієнтація"
-
-#~ msgid "The orientation of the tray."
-#~ msgstr "Орієнтація лотка"
-
-#~ msgid "Quotation characters"
-#~ msgstr "Символи цитування"
