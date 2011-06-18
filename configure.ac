@@ -12,7 +12,7 @@ MINOR_VERSION=7
 MICRO_VERSION=9
 INTERFACE_AGE=0
 BINARY_AGE=0
-EXTRA_VERSION=25
+EXTRA_VERSION=26
 EXTRA_RELEASE=
 EXTRA_GTK2_VERSION=
 
@@ -87,6 +87,7 @@ AM_PROG_LEX
 AC_PROG_YACC
 AC_LIB_PREFIX
 AC_LIBTOOL_WIN32_DLL
+LT_INIT
 LT_AC_PROG_RC
 AC_LIBTOOL_RC
 AC_PROG_LIBTOOL
@@ -146,7 +147,7 @@ fi
 AC_MSG_CHECKING([if gcc supports -Wno-pointer-sign])
 _gcc_cflags_save=$CFLAGS
 CFLAGS="-Wno-pointer-sign"
-AC_COMPILE_IFELSE(AC_LANG_PROGRAM([]),_gcc_psign=yes,_gcc_psign=no)
+AC_COMPILE_IFELSE([AC_LANG_PROGRAM([])],_gcc_psign=yes,_gcc_psign=no)
 AC_MSG_RESULT($_gcc_psign)
 CFLAGS=$_gcc_cflags_save;
 if test x"$_gcc_psign" = xyes ; then

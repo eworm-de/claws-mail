@@ -1,3 +1,8 @@
+2011-06-18 [mir]	3.7.9cvs26
+
+	* configure.ac
+	Fix autoconf warnings introduced in autoconf >= 2.64
+
 2011-06-05 [paul]	3.7.9cvs25
 
 	* po/ca.po
