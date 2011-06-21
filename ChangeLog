@@ -1,3 +1,8 @@
+2011-06-21 [paul]	3.7.9cvs27
+
+	* src/mainwindow.c
+		revert 3.7.9cvs2, it does no good
+
 2011-06-18 [mir]	3.7.9cvs26
 
 	* configure.ac
