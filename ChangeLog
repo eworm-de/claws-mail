@@ -1,3 +1,15 @@
+2011-07-03 [paul]	3.7.9cvs28
+
+	* src/mainwindow.c
+	* src/mainwindow.h
+	* src/summaryview.c
+		fix bug #2461, 'popup menu in message list displays
+		'move to trash' and 'delete''.
+		Add a new sensitivity condition 'M_NOT_TRASH' and
+		remove the broken workaround for right-click in summaryview.c.
+		Fix broken main menu sensitivity for "Menu/Message/Move" in
+		News folder.
+
 2011-06-21 [paul]	3.7.9cvs27
 
 	* src/mainwindow.c

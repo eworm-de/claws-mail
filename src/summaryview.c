@@ -1643,7 +1643,7 @@ void summary_set_menu_sensitive(SummaryView *summaryview)
 
 		{"Menus/SummaryViewPopup/Move"			, M_TARGET_EXIST|M_ALLOW_DELETE|M_NOT_NEWS},
 		{"Menus/SummaryViewPopup/Copy"			, M_TARGET_EXIST|M_EXEC},
-		{"Menus/SummaryViewPopup/Trash"		, M_TARGET_EXIST|M_ALLOW_DELETE|M_NOT_NEWS},
+		{"Menus/SummaryViewPopup/Trash"		, M_TARGET_EXIST|M_ALLOW_DELETE|M_NOT_NEWS|M_NOT_TRASH},
 #ifndef GENERIC_UMPC
 		{"Menus/SummaryViewPopup/Delete"			, M_TARGET_EXIST|M_ALLOW_DELETE},
 #endif
@@ -6498,8 +6498,6 @@ static gboolean summary_button_pressed(GtkWidget *ctree, GdkEventButton *event,
 	if (event->button == 3) {
 		/* right clicked */
 		summary_set_menu_sensitive(summaryview);
-		cm_menu_set_sensitive_full(summaryview->mainwin->ui_manager, "Menus/SummaryViewPopup/Trash", 
-			!folder_has_parent_of_type(summaryview->folder_item, F_TRASH) && summaryview->selected);
 		gtk_menu_popup(GTK_MENU(summaryview->popupmenu), NULL, NULL,
 			       NULL, NULL, event->button, event->time);
 	} else if (event->button == 2) {

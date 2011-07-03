@@ -3070,6 +3070,11 @@ SensitiveCond main_window_get_current_state(MainWindow *mainwin)
 		state |= M_NEWS;
 	else
 		state |= M_NOT_NEWS;
+	if (mainwin->summaryview->folder_item &&
+	    (mainwin->summaryview->folder_item->stype != F_TRASH ||
+	     !folder_has_parent_of_type(mainwin->summaryview->folder_item, F_TRASH)))
+		state |= M_NOT_TRASH;
+
 	if (prefs_common.actions_list && g_slist_length(prefs_common.actions_list))
 		state |= M_ACTIONS_EXIST;
 
@@ -3209,9 +3214,9 @@ void main_window_set_menu_sensitive(MainWindow *mainwin)
 		{"Menu/Message/Forward"               , M_HAVE_ACCOUNT|M_TARGET_EXIST|M_SUMMARY_ISLIST},
 		{"Menu/Message/ForwardAtt" , M_HAVE_ACCOUNT|M_TARGET_EXIST|M_SUMMARY_ISLIST},
         	{"Menu/Message/Redirect"		  , M_HAVE_ACCOUNT|M_TARGET_EXIST|M_SUMMARY_ISLIST},
-		{"Menu/Message/Move"		  , M_TARGET_EXIST|M_ALLOW_DELETE},
+		{"Menu/Message/Move"		  , M_TARGET_EXIST|M_ALLOW_DELETE|M_NOT_NEWS},
 		{"Menu/Message/Copy"		  , M_TARGET_EXIST|M_EXEC},
-		{"Menu/Message/Trash"	  , M_TARGET_EXIST|M_ALLOW_DELETE|M_NOT_NEWS},
+		{"Menu/Message/Trash"	  , M_TARGET_EXIST|M_ALLOW_DELETE|M_NOT_NEWS|M_NOT_TRASH},
 		{"Menu/Message/Delete" 		  , M_TARGET_EXIST|M_ALLOW_DELETE},
 		{"Menu/Message/CancelNews" , M_TARGET_EXIST|M_ALLOW_DELETE|M_NEWS},
 		{"Menu/Message/Mark"   		  , M_TARGET_EXIST|M_SUMMARY_ISLIST},
