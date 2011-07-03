@@ -1,3 +1,9 @@
+2011-07-03 [paul]	3.7.9cvs29
+
+	* src/wizard.c
+		fix bug 2462, 'Building without GnuTLS support leads to a
+		failure in wizard.c'
+
 2011-07-03 [paul]	3.7.9cvs28
 
 	* src/mainwindow.c

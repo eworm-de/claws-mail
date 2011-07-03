@@ -1253,8 +1253,8 @@ static GtkWidget* smtp_page (WizardWindow * wizard)
 	GtkWidget *hbox;
 	GtkWidget *hbox_spc;
 	GtkWidget *smtp_auth_table;
-#ifdef USE_GNUTLS
 	GtkWidget *label;
+#ifdef USE_GNUTLS
 	GtkWidget *button;
 	GtkWidget *smtp_cert_table;
 #endif
