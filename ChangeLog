@@ -1,3 +1,10 @@
+2011-07-03 [paul]	3.7.9cvs30
+
+	* src/main.c
+		do main_window_popup(mainwin); on plugin load error, or
+		else the warning dialogue and mainwindow stays minimised
+		and hidden
+
 2011-07-03 [paul]	3.7.9cvs29
 
 	* src/wizard.c

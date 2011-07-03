@@ -1536,6 +1536,7 @@ int main(int argc, char *argv[])
 			num_plugins++;
 		}
 		main_window_cursor_normal(mainwin);
+		main_window_popup(mainwin);
 		alertpanel_warning(ngettext(
 				     "The following plugin failed to load. "
 				     "Check the Plugins configuration "
