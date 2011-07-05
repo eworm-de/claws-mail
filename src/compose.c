@@ -947,6 +947,7 @@ Compose *compose_generic_new(PrefsAccount *account, const gchar *mailto, FolderI
 	gchar *mailto_from = NULL;
 	PrefsAccount *mailto_account = NULL;
 	MsgInfo* dummyinfo = NULL;
+	gint cursor_pos = -1;
 	MailField mfield = NO_FIELD_PRESENT;
 	gchar* buf;
 	GtkTextMark *mark;
@@ -1197,7 +1198,11 @@ Compose *compose_generic_new(PrefsAccount *account, const gchar *mailto, FolderI
 		     * is therefore created before placing the cursor
 		     */
 		case BODY_FIELD_PRESENT:
-			gtk_widget_grab_focus(compose->text);
+			cursor_pos = quote_fmt_get_cursor_pos();
+			if (cursor_pos == -1)
+				gtk_widget_grab_focus(compose->header_last->entry);
+			else
+				gtk_widget_grab_focus(compose->text);
 			break;
 	}
 
@@ -1212,7 +1217,7 @@ Compose *compose_generic_new(PrefsAccount *account, const gchar *mailto, FolderI
 	compose->modified = FALSE;
 	compose_set_title(compose);
 
-  hooks_invoke(COMPOSE_CREATED_HOOKLIST, compose);
+	hooks_invoke(COMPOSE_CREATED_HOOKLIST, compose);
 
         return compose;
 }

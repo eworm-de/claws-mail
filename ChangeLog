@@ -1,3 +1,9 @@
+2011-07-05 [paul]	3.7.9cvs31
+
+	* src/compose.c
+		when using a Compose template, only place the cursor
+		in the body when the cursor symbol, %cursor (%X), is used
+
 2011-07-03 [paul]	3.7.9cvs30
 
 	* src/main.c

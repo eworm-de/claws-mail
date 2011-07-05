@@ -4182,3 +4182,4 @@
 ( cvs diff -u -r 1.274.2.325 -r 1.274.2.326 src/mainwindow.c;  cvs diff -u -r 1.39.2.60 -r 1.39.2.61 src/mainwindow.h;  cvs diff -u -r 1.395.2.428 -r 1.395.2.429 src/summaryview.c;  ) > 3.7.9cvs28.patchset
 ( cvs diff -u -r 1.1.2.83 -r 1.1.2.84 src/wizard.c;  ) > 3.7.9cvs29.patchset
 ( cvs diff -u -r 1.115.2.238 -r 1.115.2.239 src/main.c;  ) > 3.7.9cvs30.patchset
+( cvs diff -u -r 1.382.2.576 -r 1.382.2.577 src/compose.c;  ) > 3.7.9cvs31.patchset
