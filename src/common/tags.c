@@ -38,6 +38,7 @@
 
 #include "defs.h"
 #include "utils.h"
+#include "tags.h"
 
 static GHashTable *tags_table = NULL;
 static GHashTable *tags_reverse_table = NULL;
@@ -77,11 +78,7 @@ void tags_read_tags(void)
 			continue;
 		g_strstrip(tag_name);
 		*(sep) = '\0';
-		if (strcmp(tag_name, "NonJunk") && 
-		    strcmp(tag_name, "NotJunk") && 
-		    strcmp(tag_name, "NoJunk") && 
-		    strcmp(tag_name, "$Forwarded") && 
-		    strcmp(tag_name, "Junk")) {
+		if (IS_NOT_RESERVED_TAG(tag_name)) {
 			id = atoi(tmp);
 			g_hash_table_insert(tags_table,
 					    GINT_TO_POINTER(id), g_strdup(tag_name));
@@ -171,11 +168,7 @@ gint tags_add_tag(const gchar *tag)
 	if (g_hash_table_lookup(tags_reverse_table, tag))
 		return -1;
 
-	if (strcmp(tag, "NonJunk") && 
-	    strcmp(tag, "NotJunk") && 
-	    strcmp(tag, "NoJunk") && 
-	    strcmp(tag, "$Forwarded") && 
-	    strcmp(tag, "Junk")) {
+	if (IS_NOT_RESERVED_TAG(tag)) {
 		tag_max_id++;
 		g_hash_table_insert(tags_table, GINT_TO_POINTER(tag_max_id), 
 			g_strdup(tag));
@@ -205,11 +198,7 @@ void tags_update_tag(gint id, const gchar *tag)
 {
 	gchar *old_tag = g_hash_table_lookup(tags_table, GINT_TO_POINTER(id));
 
-	if (strcmp(tag, "NonJunk") && 
-	    strcmp(tag, "NotJunk") && 
-	    strcmp(tag, "NoJunk") && 
-	    strcmp(tag, "$Forwarded") && 
-	    strcmp(tag, "Junk")) {
+	if (IS_NOT_RESERVED_TAG(tag)) {
 		if (old_tag) {
 			prefs_filtering_rename_tag(old_tag, tag);
 			g_hash_table_remove(tags_reverse_table, old_tag);

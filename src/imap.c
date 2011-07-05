@@ -1364,7 +1364,7 @@ static void imap_commit_tags(FolderItem *item, MsgInfo *msginfo, GSList *tags_se
 		for (cur = tags_set; cur; cur = cur->next) {
 			gint cur_tag = GPOINTER_TO_INT(cur->data);
 			const gchar *str = tags_get_tag(cur_tag);
-			if (strcmp(str, "$Forwarded") && strcmp(str, "Junk") && strcmp(str, "NonJunk") && strcmp(str, "NotJunk") && strcmp(str, "NoJunk") && strcmp(str, "Junk") )
+			if (IS_NOT_RESERVED_TAG(str))
 				list_set = g_slist_prepend(list_set, g_strdup(str));
 		}
 		if (list_set) {
@@ -1380,7 +1380,7 @@ static void imap_commit_tags(FolderItem *item, MsgInfo *msginfo, GSList *tags_se
 		for (cur = tags_unset; cur; cur = cur->next) {
 			gint cur_tag = GPOINTER_TO_INT(cur->data);
 			const gchar *str = tags_get_tag(cur_tag);
-			if (strcmp(str, "$Forwarded") && strcmp(str, "Junk") && strcmp(str, "NonJunk") && strcmp(str, "NotJunk") && strcmp(str, "NoJunk") && strcmp(str, "Junk") )
+			if (IS_NOT_RESERVED_TAG(str))
 				list_unset = g_slist_prepend(list_unset, g_strdup(str));
 		}
 		if (list_unset) {
@@ -5380,13 +5380,13 @@ static struct mailimap_flag_list * imap_flag_to_lep(IMAPFolderItem *item, IMAPFl
 				       mailimap_flag_new_draft());
 	if (IMAP_IS_FORWARDED(flags) && flag_ok(item, IMAP_FLAG_FORWARDED))
 		mailimap_flag_list_add(flag_list,
-				       mailimap_flag_new_flag_keyword(strdup("$Forwarded")));
+				       mailimap_flag_new_flag_keyword(strdup(RTAG_FORWARDED)));
 	if (IMAP_IS_SPAM(flags) && flag_ok(item, IMAP_FLAG_SPAM))
 		mailimap_flag_list_add(flag_list,
-				       mailimap_flag_new_flag_keyword(strdup("Junk")));
+				       mailimap_flag_new_flag_keyword(strdup(RTAG_JUNK)));
 	else if (IMAP_IS_HAM(flags) && flag_ok(item, IMAP_FLAG_HAM))
 		mailimap_flag_list_add(flag_list,
-				       mailimap_flag_new_flag_keyword(strdup("NonJunk")));
+				       mailimap_flag_new_flag_keyword(strdup(RTAG_NON_JUNK)));
 	
 	for (; cur; cur = cur->next) {
 		gchar *enc_str = 

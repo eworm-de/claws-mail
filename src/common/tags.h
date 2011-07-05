@@ -22,6 +22,20 @@
 
 #include <glib.h>
 
+/* Reserved tags */
+#define RTAG_NON_JUNK "NonJunk"
+#define RTAG_NOT_JUNK "NotJunk"
+#define RTAG_NO_JUNK "NoJunk"
+#define RTAG_JUNK "Junk"
+#define RTAG_FORWARDED "$Forwarded"
+
+#define IS_NOT_RESERVED_TAG(tag) \
+	(strcmp((tag), "NonJunk") && \
+         strcmp((tag), "NotJunk") && \
+         strcmp((tag), "NoJunk") && \
+         strcmp((tag), "Junk") && \
+         strcmp((tag), "$Forwarded")) 
+
 void tags_read_tags(void);
 void tags_write_tags(void);
 gint tags_add_tag(const gchar *tag);
