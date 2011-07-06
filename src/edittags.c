@@ -418,7 +418,7 @@ static void apply_window_add_tag(void)
 		gint id;
 		FindTagInStore fis;
 		if (!(IS_NOT_RESERVED_TAG(new_tag))) {
-			alertpanel_error(_("You entered a reserved tag name, please choose other instead."));
+			alertpanel_error(_("You entered a reserved tag name, please choose another instead."));
 			g_free(new_tag);
 			return;
 		}
