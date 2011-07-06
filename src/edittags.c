@@ -415,8 +415,14 @@ static void apply_window_add_tag(void)
 	gchar *new_tag = gtk_editable_get_chars(GTK_EDITABLE(applywindow.add_entry), 0, -1);
 	g_strstrip(new_tag);
 	if (new_tag && *new_tag) {
-		gint id = tags_get_id_for_str(new_tag);
+		gint id;
 		FindTagInStore fis;
+		if (!(IS_NOT_RESERVED_TAG(new_tag))) {
+			alertpanel_error(_("You entered a reserved tag name, please choose other instead."));
+			g_free(new_tag);
+			return;
+		}
+		id = tags_get_id_for_str(new_tag);
 		APPLYWINDOW_LOCK();
 		if (id == -1) {
 			id = tags_add_tag(new_tag);

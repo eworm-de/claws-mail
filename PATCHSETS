@@ -4184,3 +4184,4 @@
 ( cvs diff -u -r 1.115.2.238 -r 1.115.2.239 src/main.c;  ) > 3.7.9cvs30.patchset
 ( cvs diff -u -r 1.382.2.576 -r 1.382.2.577 src/compose.c;  ) > 3.7.9cvs31.patchset
 ( cvs diff -u -r 1.179.2.255 -r 1.179.2.256 src/imap.c;  cvs diff -u -r 1.1.2.11 -r 1.1.2.12 src/common/tags.c;  cvs diff -u -r 1.1.2.6 -r 1.1.2.7 src/common/tags.h;  cvs diff -u -r 1.1.4.113 -r 1.1.4.114 src/etpan/imap-thread.c;  ) > 3.7.9cvs32.patchset
+( cvs diff -u -r 1.1.2.22 -r 1.1.2.23 src/edittags.c;  ) > 3.7.9cvs33.patchset

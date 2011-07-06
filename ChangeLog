@@ -1,3 +1,9 @@
+2011-07-06 [mones]	3.7.9cvs33
+
+	* src/edittags.c
+		Do not create an empty tag name row in panel and
+		warn user about using a non-reserved tag instead
+
 2011-07-05 [mones]	3.7.9cvs32
 
 	* src/imap.c
