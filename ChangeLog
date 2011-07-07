@@ -1,3 +1,9 @@
+2011-07-07 [holger]	3.7.9cvs35
+
+	* claws-mail.desktop
+		Add indicator stuff to the desktop file
+		Taken from bug #2450
+
 2011-07-06 [paul]	3.7.9cvs34
 
 	* src/edittags.c

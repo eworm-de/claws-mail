@@ -4186,3 +4186,4 @@
 ( cvs diff -u -r 1.179.2.255 -r 1.179.2.256 src/imap.c;  cvs diff -u -r 1.1.2.11 -r 1.1.2.12 src/common/tags.c;  cvs diff -u -r 1.1.2.6 -r 1.1.2.7 src/common/tags.h;  cvs diff -u -r 1.1.4.113 -r 1.1.4.114 src/etpan/imap-thread.c;  ) > 3.7.9cvs32.patchset
 ( cvs diff -u -r 1.1.2.22 -r 1.1.2.23 src/edittags.c;  ) > 3.7.9cvs33.patchset
 ( cvs diff -u -r 1.1.2.23 -r 1.1.2.24 src/edittags.c;  ) > 3.7.9cvs34.patchset
+( cvs diff -u -r 1.1.2.4 -r 1.1.2.5 claws-mail.desktop;  ) > 3.7.9cvs35.patchset

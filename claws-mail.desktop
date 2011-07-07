@@ -13,3 +13,10 @@ Type=Application
 StartupNotify=true
 MimeType=x-scheme-handler/mailto;
 X-Info=Claws Mail
+X-Ayatana-Desktop-Shortcuts=Compose;
+X-Ubuntu-Gettext-Domain=claws-mail
+
+[Compose Shortcut Group]
+Name=Compose New Message
+Exec=claws-mail --compose
+OnlyShowIn=Messaging Menu
