@@ -473,9 +473,9 @@
     </term>
     <listitem>
       <para>
-	Una etiqueta que el usuario puede establecer en el mensaje de manera
-	que se llame la atención sobre él. Las marcas se muestran en la 
-	columna de marcas de la lista de mensajes.
+	Un indicador arbitrario que el usuario puede establecer en el mensaje
+	de manera que se atraiga la atención sobre él. Las marcas se muestran
+	en la columna de marcas de la lista de mensajes.
       </para>
     </listitem>
   </varlistentry>

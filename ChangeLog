@@ -1,3 +1,13 @@
+2011-07-18 [mones]	3.7.9cvs36
+
+	* manual/advanced.xml
+		Document briefly tags feature.
+	* manual/glossary.xml
+		Fix definition to avoid confussion with tags.
+	* manual/es/advanced.xml
+	* manual/es/glossary.xml
+		Synchronize Spanish translation with the above.
+
 2011-07-07 [holger]	3.7.9cvs35
 
 	* claws-mail.desktop

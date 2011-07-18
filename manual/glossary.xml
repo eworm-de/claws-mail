@@ -416,9 +416,9 @@
     </term>
     <listitem>
       <para>
-	A tag that can be set on a message by the user in order to draw 
-	attention to the message. Marks are shown in the Mark column of the 
-	Message List.
+	An arbitrary indicator that can be set on a message by the user in
+	order to draw  attention to the message. Marks are shown in the Mark
+	column of the Message List.
       </para>
     </listitem>
   </varlistentry>

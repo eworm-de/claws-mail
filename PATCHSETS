@@ -4187,3 +4187,4 @@
 ( cvs diff -u -r 1.1.2.22 -r 1.1.2.23 src/edittags.c;  ) > 3.7.9cvs33.patchset
 ( cvs diff -u -r 1.1.2.23 -r 1.1.2.24 src/edittags.c;  ) > 3.7.9cvs34.patchset
 ( cvs diff -u -r 1.1.2.4 -r 1.1.2.5 claws-mail.desktop;  ) > 3.7.9cvs35.patchset
+( cvs diff -u -r 1.1.2.56 -r 1.1.2.57 manual/advanced.xml;  cvs diff -u -r 1.1.2.17 -r 1.1.2.18 manual/glossary.xml;  cvs diff -u -r 1.1.2.18 -r 1.1.2.19 manual/es/advanced.xml;  cvs diff -u -r 1.1.2.5 -r 1.1.2.6 manual/es/glossary.xml;  ) > 3.7.9cvs36.patchset

@@ -173,6 +173,30 @@
 	<quote>Configuration/Preferences/Display/Colors</quote> page.
     </para>
   </section>
+  <section id="adv_tags">
+    <title>Tags</title>
+    <para>
+	Tags are short text notes which may be set on messages. They are useful
+	for classifying messages with your own words. These tags can be used
+	later to find the mails with Quick Search or to manage them with
+	filtering or processing rules, for example.
+    </para><para>
+	Tagged messages are displayed with a yellow background at the top of
+	the Message View. This line shows all tags associated with the
+	message. You can enable the "Tags" column in the Message List, so
+	tagged items can be seen without having to open the message.
+    </para><para>
+	Setting of tags is done by right-clicking on the message in the Message
+	List or by the corresponding option in Message menu. A panel with the
+	existing tags is shown and you can select some of them or just add a
+	new one. Removal of existing tags is also allowed, of course.
+    </para><para>
+	Once tags exist it's even easier, as the context menu allows you to
+	set and unset tags with just one click to the selected messages.
+	Mixed selections of tagged and untagged messages are allowed, and
+	Claws Mail is clever enough to do what you want to do in any case.
+    </para>
+  </section>
   <section id="adv_ml_support">
     <title>Mailing-List support</title>
     <para>

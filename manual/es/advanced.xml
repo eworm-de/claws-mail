@@ -190,6 +190,34 @@
 	<quote>Configuración/Preferencias/Ver/Colores</quote>.
   </para>
   </section>
+  <section id="adv_tags">
+  <title>Etiquetas</title>
+  <para>
+	Las etiquetas son notas de texto breves que se pueden establecer en
+	los mensajes. Son útiles para clasificarlos con sus propias palabras.
+	Estas etiquetas se pueden usar después para encontrar los correos con
+	la búsqueda rápida o, por ejemplo, gestionarlos con reglas de filtrado
+	o de procesamiento.
+  </para><para>
+	Los mensajes etiquetados se muestran con una línea de fondo amarillo
+	en la parte superior de la vista de mensaje. Esta línea muestra todas
+	las etiquetas asociadas al mensaje. También e puede habilitar la
+	columna «Etiquetas» en la lista de mensajes, de manera que los
+	elementos etiquetados se pueden ver si necesidad de abrirlos.
+  </para><para>
+	El establecimiento de etiquetas se realiza pulsando con el botón
+	derecho del ratón sobre el mensaje en la lista de mensajes o con la
+	correspondiente opción de menú de Mensaje. Se mostrará un panel con
+	las etiquetas existentes que se pueden seleccionar o simplemente
+	añadir una nueva. Por supuesto también se pueden eliminar.
+  </para><para>
+	Cuando ya existen etiquetas es aún más fácil, ya que el menú contextual
+	permite establecer o quitar etiquetas con un sólo clic sobre los
+	mensajes seleccionados. Se permiten selecciones que mezclen mensajes
+	etiquetados o no, y &SC; será lo suficientemente hábil para hacer lo
+	que el usuario desea en cualquier caso.
+  </para>
+  </section>
   <section id="adv_ml_support">
   <title>Soporte de listas de correo</title>
   <para>
