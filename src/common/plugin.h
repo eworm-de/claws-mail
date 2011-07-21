@@ -49,7 +49,7 @@ const gchar *plugin_desc	(void);
 const gchar *plugin_version	(void);
 struct PluginFeature *plugin_provides (void);
 
-/* Functions by the sylpheed plugin system */
+/* Functions by the Claws Mail plugin system */
 Plugin *plugin_load		(const gchar	 *filename,
 				 gchar		**error);
 void plugin_unload		(Plugin		 *plugin);

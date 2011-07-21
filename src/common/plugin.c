@@ -71,6 +71,22 @@ const gchar *plugin_feature_names[] =
 	  N_("things"),
 	  NULL };
 
+/* The plugin must be at least under one of these licences and have
+   the corresponding token returned by the plugin_licence function.
+ */
+const gchar const *plugin_licence_tokens[] = {
+  "LGPL2.1+", "LGPLv2.1+", "LGPL2.1", "LGPLv2.1",
+  "LGPL3+", "LGPLv3+", "LGPL3", "LGPLv3",
+  "GPL3+", "GPLv3+", "GPL3", "GPLv3",
+  "GPL2+", "GPLv2+",
+  "Apache2.0", "Apache 2.0", "Apache v2.0",
+  NULL
+};
+
+/* Dual (or more) licences are allowed, must be separated by one of these.
+ */
+#define IS_LICENCE_SEP(a) ((a) == ',' || (a) == ';' || (a) == '|' || (a) == '/' || (a) == '\0')
+
 /**
  * List of all loaded plugins
  */
@@ -299,6 +315,39 @@ static gchar *plugin_check_features(struct PluginFeature *features) {
 
 	return NULL;
 }
+
+static gboolean plugin_licence_check(const gchar *licence) {
+	gint i = 0;
+	gint len = 0;
+	
+	if (licence != NULL) {
+		len = strlen(licence);
+	}
+	if (len == 0) {
+		g_warning("plugin licence check failed: empty licence\n");
+		return FALSE;
+	}
+	while (plugin_licence_tokens[i] != NULL) {
+		gchar *found = g_strstr_len(licence, len, plugin_licence_tokens[i]);
+		if (found != NULL) {
+			gint tlen = strlen(plugin_licence_tokens[i]);
+			if (len != tlen) { /* not a single license */
+				if (((found == licence) &&  (!IS_LICENCE_SEP(licence[tlen])))
+						|| (!IS_LICENCE_SEP(*(found - 1))) 
+						|| (!IS_LICENCE_SEP(*(found + tlen)))) {
+					debug_print("plugin licence check failed: invalid separator\n");
+					return FALSE;
+				}
+			}
+			debug_print("plugin licence check passed: %s found\n", plugin_licence_tokens[i]);
+			return TRUE;
+		}
+		++i;
+	}
+	debug_print("plugin licence check failed: %s is not a valid licence\n", licence);
+	return FALSE;
+}
+
 /**
  * Loads a plugin
  *
@@ -365,9 +414,8 @@ init_plugin:
 		return NULL;
 	}
 	
-	if (strcmp(plugin_licence(), "GPL2+") && strncmp(plugin_licence(), "GPL3", strlen("GPL3"))
-	&&  strncmp(plugin_licence(), "GPL2+-compatible", strlen("GPL2+-compatible"))) {
-		*error = g_strdup(_("This module is not licensed under a GPL v2 or later compatible license."));
+	if (plugin_licence_check(plugin_licence()) != TRUE) {
+		*error = g_strdup(_("This module is not licensed under a GPL v3 or later compatible license."));
 		if (plugin->unloaded_hidden)
 			return NULL;
 		g_module_close(plugin->module);

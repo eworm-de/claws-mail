@@ -1,3 +1,11 @@
+2011-07-21 [mones]	3.7.9cvs37
+
+	* src/common/plugin.c
+	* src/common/plugin.h
+		Make licences allowed for plugins more explicit and also
+		accept dual (or more) licences when properly formatted.
+		Doesn't require any change on current plugins.
+
 2011-07-18 [mones]	3.7.9cvs36
 
 	* manual/advanced.xml
