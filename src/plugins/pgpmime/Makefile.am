@@ -67,7 +67,8 @@ pgpmime_la_LIBADD = $(plugin_ldadd) $(pgpcore_lib) $(cygwin_export_lib) \
         $(GTK_LIBS) \
 	$(GPGME_LIBS) \
 	$(MAEMO_LIBS) \
-	$(CONIC_LIBS)
+	$(CONIC_LIBS) \
+	$(ENCHANT_LIBS)
 
 INCLUDES = \
 	-I$(top_srcdir)/src \
@@ -81,6 +82,7 @@ AM_CPPFLAGS = \
 	$(GPGME_CFLAGS) \
 	$(MAEMO_CFLAGS) \
 	$(CONIC_CFLAGS) \
+	$(ENCHANT_CFLAGS) \
 	-Wno-deprecated-declarations
 
 clean-local:
