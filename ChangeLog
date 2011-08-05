@@ -1,3 +1,9 @@
+2011-08-05 [holger]	3.7.9cvs40
+
+	* claws-mail.desktop
+		Revert 3.7.9cvs35 for now, it may be problematic
+		(see bug #2450)
+
 2011-08-05 [paul]	3.7.9cvs39
 
 	* src/mainwindow.c
