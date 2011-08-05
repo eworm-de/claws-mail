@@ -177,8 +177,8 @@ struct {
 	gchar *index_str;
 	const gchar *descr;
 } toolbar_text [] = {
-	{ "A_RECEIVE_ALL",   	N_("Receive Mail on all Accounts")         },
-	{ "A_RECEIVE_CUR",   	N_("Receive Mail on current Account")      },
+	{ "A_RECEIVE_ALL",   	N_("Receive Mail from all Accounts")       },
+	{ "A_RECEIVE_CUR",   	N_("Receive Mail from current Account")    },
 	{ "A_SEND_QUEUED",   	N_("Send Queued Messages")                 },
 	{ "A_COMPOSE_EMAIL", 	N_("Compose Email")                        },
 	{ "A_COMPOSE_NEWS",  	N_("Compose News")                         },
@@ -1896,12 +1896,12 @@ Toolbar *toolbar_create(ToolbarType 	 type,
 			break;
 		case A_RECEIVE_ALL:
 			TOOLBAR_MENUITEM(item,icon_wid,toolbar_item->text,
-				_("Receive Mail on all Accounts"),
-				_("Receive Mail on selected Account"));
+				_("Receive Mail from all Accounts"),
+				_("Receive Mail from selected Account"));
 			toolbar_data->getall_btn = item;
 			break;
 		case A_RECEIVE_CUR:
-			TOOLBAR_ITEM(item,icon_wid,toolbar_item->text, _("Receive Mail on current Account"));
+			TOOLBAR_ITEM(item,icon_wid,toolbar_item->text, _("Receive Mail from current Account"));
 			toolbar_data->get_btn = item;
 			break;
 		case A_SEND_QUEUED:

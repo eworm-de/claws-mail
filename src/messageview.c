@@ -298,9 +298,9 @@ static GtkActionEntry msgview_entries[] =
 static GtkToggleActionEntry msgview_toggle_entries[] =
 {
 	{"View/AllHeaders",		NULL, N_("Show all _headers"), "<control>H", NULL, G_CALLBACK(show_all_header_cb) }, /* toggle */
-	{"View/Quotes/FoldAll",		NULL, N_("_Fold all"), "<control><shift>Q", NULL, G_CALLBACK(msg_hide_quotes_cb) }, /* 1 toggle */
-	{"View/Quotes/Fold2",		NULL, N_("Fold from level _2"), NULL, NULL, G_CALLBACK(msg_hide_quotes_cb) }, /* 2 toggle */
-	{"View/Quotes/Fold3",		NULL, N_("Fold from level _3"), NULL, NULL, G_CALLBACK(msg_hide_quotes_cb) }, /* 3 toggle */
+	{"View/Quotes/CollapseAll",	NULL, N_("_Collapse all"), "<control><shift>Q", NULL, G_CALLBACK(msg_hide_quotes_cb) }, /* 1 toggle */
+	{"View/Quotes/Collapse2",		NULL, N_("Collapse from level _2"), NULL, NULL, G_CALLBACK(msg_hide_quotes_cb) }, /* 2 toggle */
+	{"View/Quotes/Collapse3",		NULL, N_("Collapse from level _3"), NULL, NULL, G_CALLBACK(msg_hide_quotes_cb) }, /* 3 toggle */
 };
 
 static GtkRadioActionEntry msgview_radio_enc_entries[] =
@@ -556,9 +556,9 @@ static void messageview_add_toolbar(MessageView *msgview, GtkWidget *window)
 	MENUITEM_ADDUI_MANAGER(msgview->ui_manager, "/Menu/View", "MessageSource", "View/MessageSource", GTK_UI_MANAGER_MENUITEM)
 	MENUITEM_ADDUI_MANAGER(msgview->ui_manager, "/Menu/View", "AllHeaders", "View/AllHeaders", GTK_UI_MANAGER_MENUITEM)
 	MENUITEM_ADDUI_MANAGER(msgview->ui_manager, "/Menu/View", "Quotes", "View/Quotes", GTK_UI_MANAGER_MENU)
-	MENUITEM_ADDUI_MANAGER(msgview->ui_manager, "/Menu/View/Quotes", "FoldAll", "View/Quotes/FoldAll", GTK_UI_MANAGER_MENUITEM)
-	MENUITEM_ADDUI_MANAGER(msgview->ui_manager, "/Menu/View/Quotes", "Fold2", "View/Quotes/Fold2", GTK_UI_MANAGER_MENUITEM)
-	MENUITEM_ADDUI_MANAGER(msgview->ui_manager, "/Menu/View/Quotes", "Fold3", "View/Quotes/Fold3", GTK_UI_MANAGER_MENUITEM)
+	MENUITEM_ADDUI_MANAGER(msgview->ui_manager, "/Menu/View/Quotes", "CollapseAll", "View/Quotes/CollapseAll", GTK_UI_MANAGER_MENUITEM)
+	MENUITEM_ADDUI_MANAGER(msgview->ui_manager, "/Menu/View/Quotes", "Collapse2", "View/Quotes/Collapse2", GTK_UI_MANAGER_MENUITEM)
+	MENUITEM_ADDUI_MANAGER(msgview->ui_manager, "/Menu/View/Quotes", "Collapse3", "View/Quotes/Collapse3", GTK_UI_MANAGER_MENUITEM)
 
 /* Message menu */
 	MENUITEM_ADDUI_MANAGER(msgview->ui_manager, "/Menu/Message", "Compose", "Message/Compose", GTK_UI_MANAGER_MENUITEM)
@@ -2521,17 +2521,17 @@ static void msg_hide_quotes_cb(GtkToggleAction *action, gpointer data)
 		return;
 	if (gtk_toggle_action_get_active (GTK_TOGGLE_ACTION (action))) {
 		const gchar *a_name = gtk_action_get_name(GTK_ACTION(action));
-		if (!strcmp(a_name, "View/Quotes/FoldAll")) prefs_common.hide_quotes = 1;
-		else if (!strcmp(a_name, "View/Quotes/Fold2")) prefs_common.hide_quotes = 2;
-		else if (!strcmp(a_name, "View/Quotes/Fold3")) prefs_common.hide_quotes = 3;
+		if (!strcmp(a_name, "View/Quotes/CollapseAll")) prefs_common.hide_quotes = 1;
+		else if (!strcmp(a_name, "View/Quotes/Collapse2")) prefs_common.hide_quotes = 2;
+		else if (!strcmp(a_name, "View/Quotes/Collapse3")) prefs_common.hide_quotes = 3;
 	} else
 		prefs_common.hide_quotes = 0;
 	
 	updating_menu=TRUE;
 	
-	cm_toggle_menu_set_active_full(messageview->ui_manager, "Menu/View/Quotes/FoldAll", (prefs_common.hide_quotes == 1));
-	cm_toggle_menu_set_active_full(messageview->ui_manager, "Menu/View/Quotes/Fold2", (prefs_common.hide_quotes == 2));
-	cm_toggle_menu_set_active_full(messageview->ui_manager, "Menu/View/Quotes/Fold3", (prefs_common.hide_quotes == 3));
+	cm_toggle_menu_set_active_full(messageview->ui_manager, "Menu/View/Quotes/CollapseAll", (prefs_common.hide_quotes == 1));
+	cm_toggle_menu_set_active_full(messageview->ui_manager, "Menu/View/Quotes/Collapse2", (prefs_common.hide_quotes == 2));
+	cm_toggle_menu_set_active_full(messageview->ui_manager, "Menu/View/Quotes/Collapse3", (prefs_common.hide_quotes == 3));
 
 	updating_menu=FALSE;
 	if (!msginfo) return;
@@ -2710,9 +2710,9 @@ void messageview_set_menu_sensitive(MessageView *messageview)
 	/* do some smart things */
 	if (!messageview->menubar) return;
 
-	cm_toggle_menu_set_active_full(messageview->ui_manager, "Menu/View/Quotes/FoldAll", (prefs_common.hide_quotes == 1));
-	cm_toggle_menu_set_active_full(messageview->ui_manager, "Menu/View/Quotes/Fold2", (prefs_common.hide_quotes == 2));
-	cm_toggle_menu_set_active_full(messageview->ui_manager, "Menu/View/Quotes/Fold3", (prefs_common.hide_quotes == 3));
+	cm_toggle_menu_set_active_full(messageview->ui_manager, "Menu/View/Quotes/CollapseAll", (prefs_common.hide_quotes == 1));
+	cm_toggle_menu_set_active_full(messageview->ui_manager, "Menu/View/Quotes/Collapse2", (prefs_common.hide_quotes == 2));
+	cm_toggle_menu_set_active_full(messageview->ui_manager, "Menu/View/Quotes/Collapse3", (prefs_common.hide_quotes == 3));
 }
 
 void messageview_learn (MessageView *msgview, gboolean is_spam)

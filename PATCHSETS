@@ -4190,3 +4190,4 @@
 ( cvs diff -u -r 1.1.2.56 -r 1.1.2.57 manual/advanced.xml;  cvs diff -u -r 1.1.2.17 -r 1.1.2.18 manual/glossary.xml;  cvs diff -u -r 1.1.2.18 -r 1.1.2.19 manual/es/advanced.xml;  cvs diff -u -r 1.1.2.5 -r 1.1.2.6 manual/es/glossary.xml;  ) > 3.7.9cvs36.patchset
 ( cvs diff -u -r 1.13.2.42 -r 1.13.2.43 src/common/plugin.c;  cvs diff -u -r 1.5.2.16 -r 1.5.2.17 src/common/plugin.h;  ) > 3.7.9cvs37.patchset
 ( cvs diff -u -r 1.1.4.9 -r 1.1.4.10 src/etpan/Makefile.am;  cvs diff -u -r 1.1.2.11 -r 1.1.2.12 src/plugins/pgpcore/Makefile.am;  cvs diff -u -r 1.1.2.11 -r 1.1.2.12 src/plugins/pgpmime/Makefile.am;  cvs diff -u -r 1.1.2.2 -r 1.1.2.3 src/plugins/smime/Makefile.am;  ) > 3.7.9cvs38.patchset
+( cvs diff -u -r 1.274.2.326 -r 1.274.2.327 src/mainwindow.c;  cvs diff -u -r 1.94.2.216 -r 1.94.2.217 src/messageview.c;  cvs diff -u -r 1.43.2.123 -r 1.43.2.124 src/toolbar.c;  ) > 3.7.9cvs39.patchset

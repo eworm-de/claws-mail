@@ -1,3 +1,12 @@
+2011-08-05 [paul]	3.7.9cvs39
+
+	* src/mainwindow.c
+	* src/messageview.c
+		use 'Collapse quotes' rather than 'Fold quotes' on
+		labels, for consistency
+	* src/toolbar.c
+		use 'Receive mail from account' rather than 'on account'
+
 2011-07-30 [mir]	3.7.9cvs38
 
 	* src/etpan/Makefile.am
