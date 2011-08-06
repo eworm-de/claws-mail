@@ -1679,7 +1679,7 @@ Compose *compose_forward(PrefsAccount *account, MsgInfo *msginfo,
 	Compose *compose;
 	GtkTextView *textview;
 	GtkTextBuffer *textbuf;
-	GtkTextIter iter;
+	gint cursor_pos = -1;
 	ComposeMode mode;
 
 	cm_return_val_if_fail(msginfo != NULL, NULL);
@@ -1833,10 +1833,11 @@ Compose *compose_forward(PrefsAccount *account, MsgInfo *msginfo,
 
 	SIGNAL_UNBLOCK(textbuf);
 	
-	gtk_text_buffer_get_start_iter(textbuf, &iter);
-	gtk_text_buffer_place_cursor(textbuf, &iter);
-
-	gtk_widget_grab_focus(compose->header_last->entry);
+	cursor_pos = quote_fmt_get_cursor_pos();
+	if (cursor_pos == -1)
+		gtk_widget_grab_focus(compose->header_last->entry);
+	else
+		gtk_widget_grab_focus(compose->text);
 
 	if (!no_extedit && prefs_common.auto_exteditor)
 		compose_exec_ext_editor(compose);
