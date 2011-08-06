@@ -29,11 +29,11 @@
 	* src/plugins/pgpcore/Makefile.am
 	* src/plugins/pgpmime/Makefile.am
 	* src/plugins/smime/Makefile.am
-	  Fix broken build on Debian Sid. enchant.h cannot be
-	  found unless $(ENCHANT_CFLAGS) and $(ENCHANT_LIBS) are
-	  present in Makefile.am. Apparently enchant.h in older
-	  versions were placed in /usr/include which is always
-	  scanned be default.
+		Fix broken build on Debian Sid. enchant.h cannot be
+		found unless $(ENCHANT_CFLAGS) and $(ENCHANT_LIBS) are
+		present in Makefile.am. Apparently enchant.h in older
+		versions were placed in /usr/include which is always
+		scanned be default.
 
 2011-07-21 [mones]	3.7.9cvs37
 
