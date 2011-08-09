@@ -1,3 +1,8 @@
+2011-08-09 [paul]	3.7.9cvs43
+
+	* src/mimeview.c
+		fix bug 2420, 'Invalid markup in icon tooltip text after signature check'
+
 2011-08-06 [paul]	3.7.9cvs42
 
 	* src/compose.c
