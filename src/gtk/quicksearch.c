@@ -861,7 +861,7 @@ QuickSearch *quicksearch_new()
 
 	quicksearch_set_button(GTK_BUTTON(quicksearch->search_description), GTK_STOCK_INFO, _("_Information"));
 	quicksearch_set_button(GTK_BUTTON(quicksearch->search_condition_expression), GTK_STOCK_EDIT, _("_Edit"));
-	quicksearch_set_button(GTK_BUTTON(quicksearch->clear_search), GTK_STOCK_CLEAR, _("_Clear"));
+	quicksearch_set_button(GTK_BUTTON(quicksearch->clear_search), GTK_STOCK_CLEAR, _("C_lear"));
 	
 	update_extended_buttons(quicksearch);
 
@@ -876,7 +876,7 @@ void quicksearch_relayout(QuickSearch *quicksearch)
 	case WIDE_MSGLIST_LAYOUT:
 		quicksearch_set_button(GTK_BUTTON(quicksearch->search_description), GTK_STOCK_INFO, _("_Information"));
 		quicksearch_set_button(GTK_BUTTON(quicksearch->search_condition_expression), GTK_STOCK_EDIT, _("_Edit"));
-		quicksearch_set_button(GTK_BUTTON(quicksearch->clear_search), GTK_STOCK_CLEAR, _("_Clear"));
+		quicksearch_set_button(GTK_BUTTON(quicksearch->clear_search), GTK_STOCK_CLEAR, _("C_lear"));
 		break;
 	case SMALL_LAYOUT:
 	case VERTICAL_LAYOUT:

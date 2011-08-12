@@ -1,3 +1,8 @@
+2011-08-12 [wwp]	3.7.9cvs44
+
+	* src/gtk/quicksearch.c
+	 Fix duplicate key accel (thanks to Ra-Mones-Mones II).
+
 2011-08-09 [paul]	3.7.9cvs43
 
 	* src/mimeview.c
