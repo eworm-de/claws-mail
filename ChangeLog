@@ -1,3 +1,9 @@
+2011-08-12 [paul]	3.7.9cvs45
+
+	* src/mimeview.c
+		3.7.9cvs43 mistakenly dropped off the info
+		about the mime part from the tooltip
+
 2011-08-12 [wwp]	3.7.9cvs44
 
 	* src/gtk/quicksearch.c

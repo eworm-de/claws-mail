@@ -2404,7 +2404,7 @@ static void icon_list_append_icon (MimeView *mimeview, MimeInfo *mimeinfo)
 		g_free(tmp);
 	}
 	if (sigshort && *sigshort) {
-		tiptmp = g_markup_escape_text(sigshort, -1);
+		tiptmp = g_strjoin("\n", tip, g_markup_escape_text(sigshort, -1), NULL);
 		g_free(tip);
 		tip = tiptmp;
 	}
