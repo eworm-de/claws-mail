@@ -4197,3 +4197,4 @@
 ( cvs diff -u -r 1.83.2.168 -r 1.83.2.169 src/mimeview.c;  ) > 3.7.9cvs43.patchset
 ( cvs diff -u -r 1.1.2.102 -r 1.1.2.103 src/gtk/quicksearch.c;  ) > 3.7.9cvs44.patchset
 ( cvs diff -u -r 1.83.2.169 -r 1.83.2.170 src/mimeview.c;  ) > 3.7.9cvs45.patchset
+( cvs diff -u -r 1.1.2.14 -r 1.1.2.15 src/etpan/nntp-thread.c;  ) > 3.7.9cvs46.patchset
