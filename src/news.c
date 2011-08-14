@@ -328,6 +328,7 @@ static Session *news_session_new_for_folder(Folder *folder)
 	const gchar *userid = NULL;
 	gchar *passwd = NULL;
 	gushort port;
+	int r;
 
 	cm_return_val_if_fail(folder != NULL, NULL);
 	cm_return_val_if_fail(folder->account != NULL, NULL);
@@ -365,6 +366,48 @@ static Session *news_session_new_for_folder(Folder *folder)
 	port = ac->set_nntpport ? ac->nntpport : NNTP_PORT;
 	session = news_session_new(folder, ac->nntp_server, port, userid, passwd);
 #endif
+
+	r = nntp_threaded_mode_reader(folder);
+	if (r != NEWSNNTP_NO_ERROR) {
+	    if (r == NEWSNNTP_WARNING_REQUEST_AUTHORIZATION_USERNAME) {
+	        /*
+	           FIX ME when libetpan implements 480 to indicate authorization
+	           is required to use this capability. Libetpan treats a 480 as a
+	           381 which is clearly wrong.
+	           RFC 4643 section 2.
+	           Response code 480
+	           Generic response
+	           Meaning: command unavailable until the client
+	           has authenticated itself.
+	        */
+		/* if the server does not advertise the capability MODE-READER,
+		   we normally should not send MODE READER. However this can't
+		   hurt: a transit-only server returns 502 and closes the cnx.
+		   Ref.: http://tools.ietf.org/html/rfc3977#section-5.3
+		*/
+	        log_error(LOG_PROTOCOL, _("Libetpan does not support return code 480 "
+	        "so for now we choose to continue\n"));
+	    }
+	    else if (r == NEWSNNTP_ERROR_UNEXPECTED_RESPONSE) {
+		/* if the server does not advertise the capability MODE-READER,
+		   we normally should not send MODE READER. However this can't
+		   hurt: a transit-only server returns 502 and closes the cnx.
+		   Ref.: http://tools.ietf.org/html/rfc3977#section-5.3
+		*/
+		log_error(LOG_PROTOCOL, _("Mode reader failed, continuing nevertheless\n")); 
+	    }
+	    else {
+	        /* An error state bail out */
+	        log_error(LOG_PROTOCOL, _("Error creating session with %s:%d\n"), ac->nntp_server, port);
+		session_destroy(SESSION(session));
+		g_free(passwd);
+		if (ac->session_passwd) {
+			g_free(ac->session_passwd);
+			ac->session_passwd = NULL;
+		}
+		return NULL;
+	    }
+	}
 
 	if ((session != NULL) && ac->use_nntp_auth) { /* FIXME:  && ac->use_nntp_auth_onconnect */
 		if (nntp_threaded_login(folder, userid, passwd) !=
@@ -701,11 +744,6 @@ gint news_post(Folder *folder, const gchar *file)
 	
 	ok = nntp_threaded_post(folder, contents, strlen(contents));
 
-	if (ok != NEWSNNTP_NO_ERROR && ok != NEWSNNTP_ERROR_STREAM) {
-		ok = nntp_threaded_mode_reader(folder);
-		if (ok == NEWSNNTP_NO_ERROR)
-			ok = nntp_threaded_post(folder, contents, strlen(contents));
-	}
 	g_free(contents);
 
 	if (ok == NEWSNNTP_ERROR_STREAM) {
@@ -769,14 +807,6 @@ static gint news_select_group(Folder *folder, const gchar *group,
 
 	ok = nntp_threaded_group(folder, group, &info);
 	
-	if (ok != NEWSNNTP_NO_ERROR && 
-	    ok != NEWSNNTP_ERROR_STREAM && 
-	    ok != NEWSNNTP_WARNING_REQUEST_AUTHORIZATION_USERNAME) {
-		ok = nntp_threaded_mode_reader(folder);
-		if (ok == NEWSNNTP_NO_ERROR)
-			ok = nntp_threaded_group(folder, group, &info);
-	}
-
 	if (ok == NEWSNNTP_NO_ERROR && info) {
 		session->group = g_strdup(group);
 		*num = info->grp_first;

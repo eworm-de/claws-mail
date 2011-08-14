@@ -1,3 +1,10 @@
+2011-08-14 [mir]	3.7.9cvs47
+
+	* src/news.c
+	* src/etpan/nntp-thread.c
+	Fix bug 2418. Patch provided by Sébastien Bigaret with
+	some minor contribution by me.
+
 2011-08-13 [mir]	3.7.9cvs46
 
 	* src/etpan/nntp-thread.c
