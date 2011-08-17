@@ -1,3 +1,8 @@
+2011-08-17 [paul]	3.7.9cvs48
+
+	* tools/claws.i18n.status.pl
+		add Mindaugas Baranauskas (Lithuanian)
+
 2011-08-14 [mir]	3.7.9cvs47
 
 	* src/news.c
