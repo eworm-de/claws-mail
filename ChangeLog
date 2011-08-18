@@ -1,3 +1,8 @@
+2011-08-18 [paul]	3.7.9cvs49
+
+	* manual/handling.xml
+		fix typos. thanks to vilpan
+
 2011-08-17 [paul]	3.7.9cvs48
 
 	* tools/claws.i18n.status.pl

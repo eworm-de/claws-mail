@@ -94,8 +94,8 @@
 	the rule to mail retrieved from the named account only, skipping it for
 	mail retrieved from all other accounts. The default value is
 	<quote>All</quote>, which means that the rule is global and will
-	be applied  to all mail, reagrdless of the account from which it was
-	retireved, (see paragraph below). The condition format is an expression
+	be applied  to all mail, regardless of the account from which it was
+	retrieved, (see paragraph below). The condition format is an expression
 	defining what Claws Mail should look for when filtering mail, for
 	example: <quote>to matchcase claws-mail-users</quote> is for messages
 	sent to any address containing <quote>claws-mail-users</quote>. You can
@@ -114,7 +114,7 @@
 	<quote>Name</quote> entry. When you set a specific account the filtering
 	rule will only be applied to messages retrieved from the named account.
 	The default value is <quote>All</quote>, which means that the rule will
-	be appied globally, to messages retrieved from any account. When filtering
+	be applied globally, to messages retrieved from any account. When filtering
 	messages manually, if there are any per-account filtering rules defined,
 	you will be asked what you wish to do with those rules. Possible choices
 	are to skip the rules, or apply these rules regardless of the account to
