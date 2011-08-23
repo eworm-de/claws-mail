@@ -18,19 +18,19 @@
 
 	* src/news.c
 	* src/etpan/nntp-thread.c
-	Fix bug 2418. Patch provided by Sébastien Bigaret with
-	some minor contribution by me.
+		Fix bug 2418. Patch provided by Sébastien Bigaret with
+		some minor contribution by me.
 
 2011-08-13 [mir]	3.7.9cvs46
 
 	* src/etpan/nntp-thread.c
-	  Fix bug when NNTP server sends authentication warning
-	  as part of the connection session. Privously etpan would
-	  bail out for any return code other than NEWSNNTP_NO_ERROR
-	  but as early as the connection session a return code like
-	  NEWSNNTP_WARNING_REQUEST_AUTHORIZATION_USERNAME and
-          NEWSNNTP_WARNING_REQUEST_AUTHORIZATION_PASSWORD should not
-	  be considered as an error.
+		Fix bug when NNTP server sends authentication warning
+		as part of the connection session. Privously etpan would
+		bail out for any return code other than NEWSNNTP_NO_ERROR
+		but as early as the connection session a return code like
+		NEWSNNTP_WARNING_REQUEST_AUTHORIZATION_USERNAME and
+		NEWSNNTP_WARNING_REQUEST_AUTHORIZATION_PASSWORD should not
+		be considered as an error.
 
 2011-08-12 [paul]	3.7.9cvs45
 
@@ -168,7 +168,7 @@
 2011-06-18 [mir]	3.7.9cvs26
 
 	* configure.ac
-	Fix autoconf warnings introduced in autoconf >= 2.64
+		Fix autoconf warnings introduced in autoconf >= 2.64
 
 2011-06-05 [paul]	3.7.9cvs25
 
@@ -1023,8 +1023,8 @@
 2010-12-03 [mir]	3.7.7cvs10
 
 	* configure.ac
-	  Fix bug so that configure option --disable-manual
-	  actually disable building the manuals
+		Fix bug so that configure option --disable-manual
+		actually disable building the manuals
 
 2010-12-01 [pawel]	3.7.7cvs9
 
