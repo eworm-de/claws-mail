@@ -1,3 +1,11 @@
+2011-08-27 [paul]	3.7.10cvs1
+
+	* po/POTFILES.in
+	* src/common/ssl_certificate.c
+	* src/etpan/imap-thread.c
+	* src/etpan/nntp-thread.c
+		offer up some missing log_error() strings to translators
+
 2011-08-27 [paul]	3.7.10
 	* NEWS
 	* README

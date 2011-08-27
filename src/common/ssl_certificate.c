@@ -729,7 +729,7 @@ gnutls_x509_crt ssl_certificate_get_x509_from_pem_file(const gchar *file)
 			return x509;
 		}
 	} else {
-		log_error(LOG_PROTOCOL, "Can not open certificate file %s\n", file);
+		log_error(LOG_PROTOCOL, _("Cannot open certificate file %s\n"), file);
 	}
 	return NULL;
 }
@@ -748,7 +748,7 @@ gnutls_x509_privkey ssl_certificate_get_pkey_from_pem_file(const gchar *file)
 			return key;
 		}
 	} else {
-		log_error(LOG_PROTOCOL, "Can not open key file %s\n", file);
+		log_error(LOG_PROTOCOL, _("Cannot open key file %s\n"), file);
 	}
 	return NULL;
 }
@@ -896,7 +896,7 @@ void ssl_certificate_get_x509_and_pkey_from_p12_file(const gchar *file, const gc
 			fclose(fp);
 		}
 	} else {
-		log_error(LOG_PROTOCOL, "Can not open certificate file %s\n", file);
+		log_error(LOG_PROTOCOL, _("Cannot open certificate file %s\n"), file);
 	}
 	if (p12 != NULL) {
 		if ((r = parse_pkcs12(p12, password, pkey, x509)) == 0) {

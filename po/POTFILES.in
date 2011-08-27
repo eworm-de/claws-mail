@@ -29,6 +29,8 @@ src/editldap_basedn.c
 src/editldap.c
 src/edittags.c
 src/editvcard.c
+src/etpan/imap-thread.c
+src/etpan/nntp-thread.c
 src/exphtmldlg.c
 src/expldifdlg.c
 src/export.c

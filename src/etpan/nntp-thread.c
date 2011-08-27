@@ -23,6 +23,8 @@
 
 #ifdef HAVE_LIBETPAN
 
+#include <glib.h>
+#include <glib/gi18n.h>
 #include "nntp-thread.h"
 #include "news.h"
 #include <sys/types.h>
@@ -463,7 +465,7 @@ static void connect_ssl_context_cb(struct mailstream_ssl_context * ssl_context, 
 		if (x509_len > 0 && pkey_len > 0) {
 			if (mailstream_ssl_set_client_certificate_data(ssl_context, x509_der, x509_len) < 0 ||
 			    mailstream_ssl_set_client_private_key_data(ssl_context, pkey_der, pkey_len) < 0) 
-				log_error(LOG_PROTOCOL, "Impossible to set the client certificate.\n");
+				log_error(LOG_PROTOCOL, _("Impossible to set the client certificate.\n"));
 			g_free(x509_der);
 			g_free(pkey_der);
 		}
