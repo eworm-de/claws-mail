@@ -1,3 +1,9 @@
+2011-08-27 [paul]	3.7.10
+	* NEWS
+	* README
+	* RELEASE_NOTES	
+		3.7.10 unleashed!		
+
 2011-08-27 [paul]	3.7.9cvs52
 
 	* po/cs.po
@@ -6,7 +12,7 @@
 	* po/lt.po
 	* po/pt_BR.po
 	* po/sk.po
-		updated by David Vachulka, wwp, Páder Rezső, Mindaugas
+		updated by David Vachulka, wwp, Pader Rezso, Mindaugas
 		Baranauskas, Frederico Goncalves Guimaraes, and Slavko
 
 2011-08-27 [mones]	3.7.9cvs51
