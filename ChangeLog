@@ -1,3 +1,14 @@
+2011-08-27 [paul]	3.7.9cvs52
+
+	* po/cs.po
+	* po/fr.po
+	* po/hu.po
+	* po/lt.po
+	* po/pt_BR.po
+	* po/sk.po
+		updated by David Vachulka, wwp, Páder Rezső, Mindaugas
+		Baranauskas, Frederico Goncalves Guimaraes, and Slavko
+
 2011-08-27 [mones]	3.7.9cvs51
 
 	* claws-mail.desktop

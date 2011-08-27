@@ -6,8 +6,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Claws-Mail\n"
 "Report-Msgid-Bugs-To: paul@claws-mail.org\n"
-"POT-Creation-Date: 2011-04-02 06:56+0100\n"
-"PO-Revision-Date: 2011-04-08 11:03+0300\n"
+"POT-Creation-Date: 2011-08-20 12:24+0100\n"
+"PO-Revision-Date: 2011-08-20 19:27+0300\n"
 "Last-Translator: Mindaugas Baranauskas <embar@users.berlios.de>\n"
 "Language-Team: Lithuanian <komp_lt@konferencijos.lt>\n"
 "Language: lt\n"
@@ -30,11 +30,11 @@ msgstr ""
 msgid "Can't create folder."
 msgstr "Nepavyksta sukurti aplanko."
 
-#: src/account.c:700
+#: src/account.c:701
 msgid "Edit accounts"
 msgstr "Redaguoti paskyras"
 
-#: src/account.c:721
+#: src/account.c:722
 msgid ""
 "Using 'Get Mail' will retrieve messages from your Accounts in the order "
 "given, the checkbox indicates which accounts will be included. Bold text "
@@ -44,42 +44,42 @@ msgstr ""
 "nurodyta eilės tvarka. Varnelė „T“ stulpelyje nurodo, kurias paskyras "
 "tikrinti. Pusjuodžiu šriftu parašyta paskyra yra numatytoji."
 
-#: src/account.c:792
+#: src/account.c:793
 msgid " _Set as default account "
 msgstr " Padaryti _numatytąja paskyra "
 
-#: src/account.c:887
+#: src/account.c:888
 msgid "Accounts with remote folders cannot be copied."
 msgstr "Paskyrų su nuotoliniais aplankais kopijuoti negalima."
 
-#: src/account.c:894
+#: src/account.c:895
 #, c-format
 msgid "Copy of %s"
 msgstr "Nukopijuota iš %s"
 
-#: src/account.c:1053
+#: src/account.c:1054
 #, c-format
 msgid "Do you really want to delete the account '%s'?"
 msgstr "Tikrai pašalinti paskyrą „%s“?"
 
-#: src/account.c:1055
+#: src/account.c:1056
 msgid "(Untitled)"
 msgstr "(Bevardė)"
 
-#: src/account.c:1056
+#: src/account.c:1057
 msgid "Delete account"
 msgstr "Pašalinti paskyrą"
 
-#: src/account.c:1527
+#: src/account.c:1528
 msgid "Accounts List Get Column Name|G"
 msgstr "T"
 
-#: src/account.c:1533
+#: src/account.c:1534
 msgid "'Get Mail' retrieves mail from the checked accounts"
 msgstr "Nuspaudus „Tikrinti paštą“, parsiunčiami laiškai iš pažymėtų paskyrų"
 
-#: src/account.c:1540 src/addressadd.c:189 src/addressbook.c:124
-#: src/addrduplicates.c:480 src/compose.c:6772 src/compose.c:7082
+#: src/account.c:1541 src/addressadd.c:189 src/addressbook.c:124
+#: src/addrduplicates.c:480 src/compose.c:6777 src/compose.c:7087
 #: src/editaddress.c:1269 src/editaddress.c:1326 src/editaddress.c:1342
 #: src/editbook.c:169 src/editgroup.c:287 src/editjpilot.c:256
 #: src/editldap.c:428 src/editvcard.c:172 src/importmutt.c:222
@@ -89,29 +89,29 @@ msgstr "Nuspaudus „Tikrinti paštą“, parsiunčiami laiškai iš pažymėtų
 msgid "Name"
 msgstr "Vardas"
 
-#: src/account.c:1548 src/prefs_account.c:1079 src/prefs_account.c:3887
+#: src/account.c:1549 src/prefs_account.c:1079 src/prefs_account.c:3887
 msgid "Protocol"
 msgstr "Protokolas"
 
-#: src/account.c:1556 src/ssl_manager.c:102
+#: src/account.c:1557 src/ssl_manager.c:102
 msgid "Server"
 msgstr "Serveris"
 
-#: src/action.c:379
+#: src/action.c:380
 #, c-format
 msgid "Could not get message file %d"
 msgstr "Nepavyksta gauti laiško rinkmenos %d"
 
-#: src/action.c:410
+#: src/action.c:411
 msgid "Could not get message part."
 msgstr "Nepavyksta gauti dalies laiško."
 
-#: src/action.c:427
+#: src/action.c:428
 #, c-format
 msgid "Can't get part of multipart message: %s"
 msgstr "Nepavyksta gauti daugiadalio laiško dalies: %s"
 
-#: src/action.c:592
+#: src/action.c:593
 #, c-format
 msgid ""
 "The selected action cannot be used in the compose window\n"
@@ -120,11 +120,11 @@ msgstr ""
 "Rašymo lange negalima panaudoti pasirinkto veiksmo, \n"
 "nes jis turi %%f, %%F, %%as arba %%p."
 
-#: src/action.c:704
+#: src/action.c:705
 msgid "There is no filtering action set"
 msgstr "Neaprašytas filtravimo veiksmas"
 
-#: src/action.c:706
+#: src/action.c:707
 #, c-format
 msgid ""
 "Invalid filtering action(s):\n"
@@ -133,7 +133,7 @@ msgstr ""
 "Netinkamas(-i) filtravimo veiksmas(-ai):\n"
 "%s"
 
-#: src/action.c:929
+#: src/action.c:930
 #, c-format
 msgid ""
 "Command could not be started. Pipe creation failed.\n"
@@ -142,7 +142,7 @@ msgstr ""
 "Nepavyksta paleisti komandos. Nepavyko sukurti pipe kanalo.\n"
 "%s"
 
-#: src/action.c:1033
+#: src/action.c:1030
 #, c-format
 msgid ""
 "Could not fork to execute the following command:\n"
@@ -153,25 +153,25 @@ msgstr ""
 "%s\n"
 "%s"
 
-#: src/action.c:1257 src/action.c:1419
+#: src/action.c:1256 src/action.c:1418
 msgid "Completed"
 msgstr "Atlikta"
 
-#: src/action.c:1293
+#: src/action.c:1292
 #, c-format
 msgid "--- Running: %s\n"
 msgstr "--- Vykdoma: %s\n"
 
-#: src/action.c:1297
+#: src/action.c:1296
 #, c-format
 msgid "--- Ended: %s\n"
 msgstr "--- Baigta: %s\n"
 
-#: src/action.c:1330
+#: src/action.c:1329
 msgid "Action's input/output"
 msgstr "Veiksmo įvestis/išvestis"
 
-#: src/action.c:1660
+#: src/action.c:1659
 #, c-format
 msgid ""
 "Enter the argument for the following action:\n"
@@ -182,11 +182,11 @@ msgstr ""
 "(„%%h“ bus pakeistas argumentu)\n"
 "  %s"
 
-#: src/action.c:1665
+#: src/action.c:1664
 msgid "Action's hidden user argument"
 msgstr "Slaptas naudotojo veiksmo argumentas"
 
-#: src/action.c:1669
+#: src/action.c:1668
 #, c-format
 msgid ""
 "Enter the argument for the following action:\n"
@@ -197,7 +197,7 @@ msgstr ""
 "(„%%u“ bus pakeistas argumentu)\n"
 "  %s"
 
-#: src/action.c:1674
+#: src/action.c:1673
 msgid "Action's user argument"
 msgstr "Veiksmo argumentas"
 
@@ -359,17 +359,17 @@ msgid "_Book"
 msgstr "_Knyga"
 
 #: src/addressbook.c:402 src/addressbook.c:433 src/addressbook.c:461
-#: src/addressbook.c:478 src/compose.c:555 src/gtk/quicksearch.c:863
+#: src/addressbook.c:478 src/compose.c:554 src/gtk/quicksearch.c:863
 #: src/gtk/quicksearch.c:878 src/mainwindow.c:471 src/messageview.c:184
 msgid "_Edit"
 msgstr "Redaguo_ti"
 
-#: src/addressbook.c:403 src/compose.c:560 src/mainwindow.c:474
+#: src/addressbook.c:403 src/compose.c:559 src/mainwindow.c:474
 #: src/messageview.c:187
 msgid "_Tools"
 msgstr "Įran_kiai"
 
-#: src/addressbook.c:404 src/compose.c:561 src/mainwindow.c:476
+#: src/addressbook.c:404 src/compose.c:560 src/mainwindow.c:476
 #: src/messageview.c:188
 msgid "_Help"
 msgstr "_Pagalba"
@@ -402,11 +402,11 @@ msgstr "_Redaguoti knygą"
 msgid "_Delete book"
 msgstr "_Šalinti knygą"
 
-#: src/addressbook.c:423 src/compose.c:571
+#: src/addressbook.c:423 src/compose.c:570
 msgid "_Save"
 msgstr "Į_rašyti"
 
-#: src/addressbook.c:424 src/compose.c:573 src/messageview.c:196
+#: src/addressbook.c:424 src/compose.c:572 src/messageview.c:196
 msgid "_Close"
 msgstr "_Užverti"
 
@@ -419,12 +419,12 @@ msgid "C_ut"
 msgstr "_Iškirpti"
 
 #: src/addressbook.c:430 src/addressbook.c:469 src/addressbook.c:485
-#: src/compose.c:581 src/mainwindow.c:503 src/messageview.c:199
+#: src/compose.c:580 src/mainwindow.c:503 src/messageview.c:199
 msgid "_Copy"
 msgstr "_Kopijuoti"
 
 #: src/addressbook.c:431 src/addressbook.c:470 src/addressbook.c:486
-#: src/compose.c:582
+#: src/compose.c:581
 msgid "_Paste"
 msgstr "Į_dėti"
 
@@ -468,7 +468,7 @@ msgstr "Ieškoti pasikartojančiųjų..."
 msgid "Edit custom attributes..."
 msgstr "Keisti savitus atributus"
 
-#: src/addressbook.c:454 src/compose.c:661 src/mainwindow.c:739
+#: src/addressbook.c:454 src/compose.c:660 src/mainwindow.c:739
 #: src/messageview.c:295
 msgid "_About"
 msgstr "_Apie"
@@ -757,8 +757,8 @@ msgstr "Asmuo"
 
 #: src/addressbook.c:4900 src/exporthtml.c:883 src/folderview.c:338
 #: src/folderview.c:426 src/prefs_account.c:2723 src/prefs_folder_column.c:77
-#: src/prefs_folder_item.c:1741 src/prefs_folder_item.c:1759
-#: src/prefs_folder_item.c:1776
+#: src/prefs_folder_item.c:1751 src/prefs_folder_item.c:1769
+#: src/prefs_folder_item.c:1786
 msgid "Folder"
 msgstr "Aplankas"
 
@@ -923,17 +923,17 @@ msgstr "Adresų knygos kelias"
 msgid "Delete address"
 msgstr "Šalinti adresą"
 
-#: src/alertpanel.c:145 src/compose.c:8932
+#: src/alertpanel.c:145 src/compose.c:8937
 msgid "Notice"
 msgstr "Pranešimas"
 
-#: src/alertpanel.c:158 src/compose.c:5465 src/compose.c:5945
-#: src/compose.c:11159 src/messageview.c:801 src/messageview.c:814
-#: src/plugins/pgpcore/sgpgme.c:665 src/summaryview.c:4706
+#: src/alertpanel.c:158 src/compose.c:5470 src/compose.c:5950
+#: src/compose.c:11170 src/messageview.c:801 src/messageview.c:814
+#: src/plugins/pgpcore/sgpgme.c:665 src/summaryview.c:4720
 msgid "Warning"
 msgstr "Įspėjimas"
 
-#: src/alertpanel.c:171 src/alertpanel.c:194 src/compose.c:5406 src/inc.c:647
+#: src/alertpanel.c:171 src/alertpanel.c:194 src/compose.c:5411 src/inc.c:647
 #: src/plugins/pgpcore/sgpgme.c:153 src/plugins/pgpcore/sgpgme.c:247
 msgid "Error"
 msgstr "Klaida"
@@ -1002,30 +1002,30 @@ msgstr "įrankis"
 msgid "things"
 msgstr "dalykai"
 
-#: src/common/plugin.c:290
+#: src/common/plugin.c:306
 #, c-format
 msgid ""
 "This plugin provides %s (%s), which is already provided by the %s plugin."
 msgstr "Papildinys pateikia %s (%s), kurį jau pateikė papildinys %s."
 
-#: src/common/plugin.c:329
+#: src/common/plugin.c:378
 msgid "Plugin already loaded"
 msgstr "Papildinys jau įkeltas"
 
-#: src/common/plugin.c:340
+#: src/common/plugin.c:389
 msgid "Failed to allocate memory for Plugin"
 msgstr "Nepavyko paskirti atminties papildiniui"
 
-#: src/common/plugin.c:370
-msgid "This module is not licensed under a GPL v2 or later compatible license."
+#: src/common/plugin.c:418
+msgid "This module is not licensed under a GPL v3 or later compatible license."
 msgstr ""
-"Šis modulis nėra platinamas pagal GPL v2 ar vėlesnę suderintą licenciją."
+"Šis modulis nėra platinamas pagal GPL v3 ar vėlesnę derančią licenciją."
 
-#: src/common/plugin.c:379
+#: src/common/plugin.c:427
 msgid "This module is for Claws Mail GTK1."
 msgstr "Šis modulis skirtas Claws Mail GTK1."
 
-#: src/common/plugin.c:637
+#: src/common/plugin.c:685
 #, c-format
 msgid ""
 "Your version of Claws Mail is newer than the version the '%s' plugin was "
@@ -1033,23 +1033,23 @@ msgid ""
 msgstr ""
 "Jūsų Claws Mail versija yra naujesnė nei ta, kuriai skirtas „“%s papildinys."
 
-#: src/common/plugin.c:640
+#: src/common/plugin.c:688
 msgid ""
 "Your version of Claws Mail is newer than the version the plugin was built "
 "with."
 msgstr ""
 "Jūsų Claws Mail versija yra naujesnė nei ta, kuriai skirtas papildinys."
 
-#: src/common/plugin.c:649
+#: src/common/plugin.c:697
 #, c-format
 msgid "Your version of Claws Mail is too old for the '%s' plugin."
 msgstr "Jūsų Claws Mail versija yra per sena papildiniui „%s“."
 
-#: src/common/plugin.c:651
+#: src/common/plugin.c:699
 msgid "Your version of Claws Mail is too old for the plugin."
 msgstr "Jūsų Claws Mail versija yra per sena papildiniui."
 
-#: src/common/session.c:170 src/imap.c:1105
+#: src/common/session.c:170 src/imap.c:1111
 msgid "SSL handshake failed\n"
 msgstr "SSL prisijungimo klaida\n"
 
@@ -1131,503 +1131,503 @@ msgstr "%d.%02dMB"
 msgid "%.2fGB"
 msgstr "%.2fGB"
 
-#: src/common/utils.c:4918
+#: src/common/utils.c:4913
 msgid "Complete day name for use by strftime|Sunday"
 msgstr "sekmadienį"
 
-#: src/common/utils.c:4919
+#: src/common/utils.c:4914
 msgid "Complete day name for use by strftime|Monday"
 msgstr "pirmadienį"
 
-#: src/common/utils.c:4920
+#: src/common/utils.c:4915
 msgid "Complete day name for use by strftime|Tuesday"
 msgstr "antradienį"
 
-#: src/common/utils.c:4921
+#: src/common/utils.c:4916
 msgid "Complete day name for use by strftime|Wednesday"
 msgstr "trečiadienį"
 
-#: src/common/utils.c:4922
+#: src/common/utils.c:4917
 msgid "Complete day name for use by strftime|Thursday"
 msgstr "ketvirtadienį"
 
-#: src/common/utils.c:4923
+#: src/common/utils.c:4918
 msgid "Complete day name for use by strftime|Friday"
 msgstr "penktadienį"
 
-#: src/common/utils.c:4924
+#: src/common/utils.c:4919
 msgid "Complete day name for use by strftime|Saturday"
 msgstr "šeštadienį"
 
-#: src/common/utils.c:4926
+#: src/common/utils.c:4921
 msgid "Complete month name for use by strftime|January"
 msgstr "sausio"
 
-#: src/common/utils.c:4927
+#: src/common/utils.c:4922
 msgid "Complete month name for use by strftime|February"
 msgstr "vasario"
 
-#: src/common/utils.c:4928
+#: src/common/utils.c:4923
 msgid "Complete month name for use by strftime|March"
 msgstr "kovo"
 
-#: src/common/utils.c:4929
+#: src/common/utils.c:4924
 msgid "Complete month name for use by strftime|April"
 msgstr "balandžio"
 
-#: src/common/utils.c:4930
+#: src/common/utils.c:4925
 msgid "Complete month name for use by strftime|May"
 msgstr "gegužės"
 
-#: src/common/utils.c:4931
+#: src/common/utils.c:4926
 msgid "Complete month name for use by strftime|June"
 msgstr "birželio"
 
-#: src/common/utils.c:4932
+#: src/common/utils.c:4927
 msgid "Complete month name for use by strftime|July"
 msgstr "liepos"
 
-#: src/common/utils.c:4933
+#: src/common/utils.c:4928
 msgid "Complete month name for use by strftime|August"
 msgstr "rugpjūčio"
 
-#: src/common/utils.c:4934
+#: src/common/utils.c:4929
 msgid "Complete month name for use by strftime|September"
 msgstr "rugsėjo"
 
-#: src/common/utils.c:4935
+#: src/common/utils.c:4930
 msgid "Complete month name for use by strftime|October"
 msgstr "spalio"
 
-#: src/common/utils.c:4936
+#: src/common/utils.c:4931
 msgid "Complete month name for use by strftime|November"
 msgstr "lapkričio"
 
-#: src/common/utils.c:4937
+#: src/common/utils.c:4932
 msgid "Complete month name for use by strftime|December"
 msgstr "gruodžio"
 
-#: src/common/utils.c:4939
+#: src/common/utils.c:4934
 msgid "Abbr. day name for use by strftime|Sun"
 msgstr "S"
 
-#: src/common/utils.c:4940
+#: src/common/utils.c:4935
 msgid "Abbr. day name for use by strftime|Mon"
 msgstr "Pr"
 
-#: src/common/utils.c:4941
+#: src/common/utils.c:4936
 msgid "Abbr. day name for use by strftime|Tue"
 msgstr "A"
 
-#: src/common/utils.c:4942
+#: src/common/utils.c:4937
 msgid "Abbr. day name for use by strftime|Wed"
 msgstr "T"
 
-#: src/common/utils.c:4943
+#: src/common/utils.c:4938
 msgid "Abbr. day name for use by strftime|Thu"
 msgstr "K"
 
-#: src/common/utils.c:4944
+#: src/common/utils.c:4939
 msgid "Abbr. day name for use by strftime|Fri"
 msgstr "P"
 
-#: src/common/utils.c:4945
+#: src/common/utils.c:4940
 msgid "Abbr. day name for use by strftime|Sat"
 msgstr "Š"
 
-#: src/common/utils.c:4947
+#: src/common/utils.c:4942
 msgid "Abbr. month name for use by strftime|Jan"
 msgstr "Sau"
 
-#: src/common/utils.c:4948
+#: src/common/utils.c:4943
 msgid "Abbr. month name for use by strftime|Feb"
 msgstr "Vas"
 
-#: src/common/utils.c:4949
+#: src/common/utils.c:4944
 msgid "Abbr. month name for use by strftime|Mar"
 msgstr "Kov"
 
-#: src/common/utils.c:4950
+#: src/common/utils.c:4945
 msgid "Abbr. month name for use by strftime|Apr"
 msgstr "Bal"
 
-#: src/common/utils.c:4951
+#: src/common/utils.c:4946
 msgid "Abbr. month name for use by strftime|May"
 msgstr "Geg"
 
-#: src/common/utils.c:4952
+#: src/common/utils.c:4947
 msgid "Abbr. month name for use by strftime|Jun"
 msgstr "Bir"
 
-#: src/common/utils.c:4953
+#: src/common/utils.c:4948
 msgid "Abbr. month name for use by strftime|Jul"
 msgstr "Lie"
 
-#: src/common/utils.c:4954
+#: src/common/utils.c:4949
 msgid "Abbr. month name for use by strftime|Aug"
 msgstr "Rgp"
 
-#: src/common/utils.c:4955
+#: src/common/utils.c:4950
 msgid "Abbr. month name for use by strftime|Sep"
 msgstr "Rgs"
 
-#: src/common/utils.c:4956
+#: src/common/utils.c:4951
 msgid "Abbr. month name for use by strftime|Oct"
 msgstr "Spa"
 
-#: src/common/utils.c:4957
+#: src/common/utils.c:4952
 msgid "Abbr. month name for use by strftime|Nov"
 msgstr "Lap"
 
-#: src/common/utils.c:4958
+#: src/common/utils.c:4953
 msgid "Abbr. month name for use by strftime|Dec"
 msgstr "Grd"
 
-#: src/common/utils.c:4969
+#: src/common/utils.c:4964
 msgid "For use by strftime (morning)|AM"
 msgstr "ryto"
 
-#: src/common/utils.c:4970
+#: src/common/utils.c:4965
 msgid "For use by strftime (afternoon)|PM"
 msgstr "vakaro"
 
-#: src/common/utils.c:4971
+#: src/common/utils.c:4966
 msgid "For use by strftime (morning, lowercase)|am"
 msgstr "ryto"
 
-#: src/common/utils.c:4972
+#: src/common/utils.c:4967
 msgid "For use by strftime (afternoon, lowercase)|pm"
 msgstr "vakaro"
 
-#: src/common/utils.c:4979
+#: src/common/utils.c:4974
 msgid "For use by strftime (default date+time format)|%a %b %e %H:%M:%S %Y"
 msgstr "%Y m. %B %e %H:%M:%S"
 
-#: src/common/utils.c:4980
+#: src/common/utils.c:4975
 msgid "For use by strftime (default date format)|%m/%d/%y"
 msgstr "%y-%m-%d"
 
-#: src/common/utils.c:4981
+#: src/common/utils.c:4976
 msgid "For use by strftime (default time format)|%H:%M:%S"
 msgstr "%H:%M:%S"
 
-#: src/common/utils.c:4983
+#: src/common/utils.c:4978
 msgid "For use by strftime (default 12-hour time format)|%I:%M:%S %p"
 msgstr "%I:%M:%S %p"
 
-#: src/compose.c:544
+#: src/compose.c:543
 msgid "_Add..."
 msgstr "Pri_dėti..."
 
-#: src/compose.c:545 src/mh_gtk.c:362
+#: src/compose.c:544 src/mh_gtk.c:362
 msgid "_Remove"
 msgstr "Pa_šalinti"
 
-#: src/compose.c:547 src/folderview.c:234
+#: src/compose.c:546 src/folderview.c:234
 msgid "_Properties..."
 msgstr "_Savybės..."
 
-#: src/compose.c:554 src/mainwindow.c:473 src/messageview.c:186
+#: src/compose.c:553 src/mainwindow.c:473 src/messageview.c:186
 msgid "_Message"
 msgstr "_Laiškas"
 
-#: src/compose.c:557
+#: src/compose.c:556
 msgid "_Spelling"
 msgstr "_Rašybos tikrinimas"
 
-#: src/compose.c:559 src/compose.c:623
+#: src/compose.c:558 src/compose.c:622
 msgid "_Options"
 msgstr "_Parinktys"
 
-#: src/compose.c:563
+#: src/compose.c:562
 msgid "S_end"
 msgstr "_Siųsti"
 
-#: src/compose.c:564
+#: src/compose.c:563
 msgid "Send _later"
 msgstr "Siųsti _vėliau"
 
-#: src/compose.c:567
+#: src/compose.c:566
 msgid "_Attach file"
 msgstr "_Pridėti rinkmeną"
 
-#: src/compose.c:568
+#: src/compose.c:567
 msgid "_Insert file"
 msgstr "Į_terpti rinkmeną"
 
-#: src/compose.c:569
+#: src/compose.c:568
 msgid "Insert si_gnature"
 msgstr "Pas_irašyti"
 
-#: src/compose.c:576
+#: src/compose.c:575
 msgid "_Undo"
 msgstr "_Atsisakyti"
 
-#: src/compose.c:577
+#: src/compose.c:576
 msgid "_Redo"
 msgstr "_Grąžinti"
 
-#: src/compose.c:580
+#: src/compose.c:579
 msgid "Cu_t"
 msgstr "_Iškirpti"
 
-#: src/compose.c:584
+#: src/compose.c:583
 msgid "Special paste"
 msgstr "Įdėti ypatingai"
 
-#: src/compose.c:585
+#: src/compose.c:584
 msgid "as _quotation"
 msgstr "_cituojant"
 
-#: src/compose.c:586
+#: src/compose.c:585
 msgid "_wrapped"
 msgstr "_apgaubiant"
 
-#: src/compose.c:587
+#: src/compose.c:586
 msgid "_unwrapped"
 msgstr "_neapgaubiant"
 
-#: src/compose.c:589 src/mainwindow.c:504
+#: src/compose.c:588 src/mainwindow.c:504
 msgid "Select _all"
 msgstr "Pažymėti _viską"
 
-#: src/compose.c:591
+#: src/compose.c:590
 msgid "A_dvanced"
 msgstr "Su_dėtingiau"
 
-#: src/compose.c:592
+#: src/compose.c:591
 msgid "Move a character backward"
 msgstr "Pereiti rašmeniu atgal"
 
-#: src/compose.c:593
+#: src/compose.c:592
 msgid "Move a character forward"
 msgstr "Pereiti rašmeniu toliau"
 
-#: src/compose.c:594
+#: src/compose.c:593
 msgid "Move a word backward"
 msgstr "Pereiti žodžiu atgal"
 
-#: src/compose.c:595
+#: src/compose.c:594
 msgid "Move a word forward"
 msgstr "Pereiti žodžiu toliau"
 
-#: src/compose.c:596
+#: src/compose.c:595
 msgid "Move to beginning of line"
 msgstr "Pereiti į eilutės pradžią"
 
-#: src/compose.c:597
+#: src/compose.c:596
 msgid "Move to end of line"
 msgstr "Pereiti į eilutės galą"
 
-#: src/compose.c:598
+#: src/compose.c:597
 msgid "Move to previous line"
 msgstr "Eiti prie ankstesnės eilutės"
 
-#: src/compose.c:599
+#: src/compose.c:598
 msgid "Move to next line"
 msgstr "Pereiti prie kitos eilutės"
 
-#: src/compose.c:600
+#: src/compose.c:599
 msgid "Delete a character backward"
 msgstr "Šalinti ankstesnį rašmenį"
 
-#: src/compose.c:601
+#: src/compose.c:600
 msgid "Delete a character forward"
 msgstr "Šalinti tolesnį rašmenį"
 
-#: src/compose.c:602
+#: src/compose.c:601
 msgid "Delete a word backward"
 msgstr "Šalinti ankstesnį žodį"
 
-#: src/compose.c:603
+#: src/compose.c:602
 msgid "Delete a word forward"
 msgstr "Šalinti tolesnį žodį"
 
-#: src/compose.c:604
+#: src/compose.c:603
 msgid "Delete line"
 msgstr "Šalinti eilutę"
 
-#: src/compose.c:605
+#: src/compose.c:604
 msgid "Delete to end of line"
 msgstr "Šalinti iki eilutės pabaigos"
 
-#: src/compose.c:608 src/messageview.c:202
+#: src/compose.c:607 src/messageview.c:202
 msgid "_Find"
 msgstr "_Ieškoti"
 
-#: src/compose.c:611
+#: src/compose.c:610
 msgid "_Wrap current paragraph"
 msgstr "_Apgaubti šį pastraipą"
 
-#: src/compose.c:612
+#: src/compose.c:611
 msgid "Wrap all long _lines"
 msgstr "Apgaubti _visas ilgas eilutes"
 
-#: src/compose.c:614
+#: src/compose.c:613
 msgid "Edit with e_xternal editor"
 msgstr "_Redaguoti išorinėje rengyklėje"
 
-#: src/compose.c:617
+#: src/compose.c:616
 msgid "_Check all or check selection"
 msgstr "Tikrinti _viską arba pažymėtą sritį"
 
-#: src/compose.c:618
+#: src/compose.c:617
 msgid "_Highlight all misspelled words"
 msgstr "_Paryškinti visus neteisingai parašytus žodžius"
 
-#: src/compose.c:619
+#: src/compose.c:618
 msgid "Check _backwards misspelled word"
 msgstr "_Ankstesnis neteisingai parašytas žodis"
 
-#: src/compose.c:620
+#: src/compose.c:619
 msgid "_Forward to next misspelled word"
 msgstr "_Tolesnis neteisingai parašytas žodis"
 
-#: src/compose.c:628
+#: src/compose.c:627
 msgid "Reply _mode"
 msgstr "Atsakymo _veiksena"
 
-#: src/compose.c:630
+#: src/compose.c:629
 msgid "Privacy _System"
 msgstr "Privatumo _sistema"
 
-#: src/compose.c:635
+#: src/compose.c:634
 msgid "_Priority"
 msgstr "_Prioritetas"
 
-#: src/compose.c:637 src/mainwindow.c:556 src/messageview.c:228
+#: src/compose.c:636 src/mainwindow.c:556 src/messageview.c:228
 msgid "Character _encoding"
 msgstr "Rašmenų _koduotė"
 
-#: src/compose.c:642 src/mainwindow.c:561 src/messageview.c:233
+#: src/compose.c:641 src/mainwindow.c:561 src/messageview.c:233
 msgid "Western European"
 msgstr "Vakarų Europos"
 
-#: src/compose.c:643 src/mainwindow.c:562 src/messageview.c:234
+#: src/compose.c:642 src/mainwindow.c:562 src/messageview.c:234
 msgid "Baltic"
 msgstr "Baltų"
 
-#: src/compose.c:644 src/mainwindow.c:563 src/messageview.c:235
+#: src/compose.c:643 src/mainwindow.c:563 src/messageview.c:235
 msgid "Hebrew"
 msgstr "Hebrajų"
 
-#: src/compose.c:645 src/mainwindow.c:564 src/messageview.c:236
+#: src/compose.c:644 src/mainwindow.c:564 src/messageview.c:236
 msgid "Arabic"
 msgstr "Arabų"
 
-#: src/compose.c:646 src/mainwindow.c:565 src/messageview.c:237
+#: src/compose.c:645 src/mainwindow.c:565 src/messageview.c:237
 msgid "Cyrillic"
 msgstr "Kirilica"
 
-#: src/compose.c:647 src/mainwindow.c:566 src/messageview.c:238
+#: src/compose.c:646 src/mainwindow.c:566 src/messageview.c:238
 msgid "Japanese"
 msgstr "Japonų"
 
-#: src/compose.c:648 src/mainwindow.c:567 src/messageview.c:239
+#: src/compose.c:647 src/mainwindow.c:567 src/messageview.c:239
 msgid "Chinese"
 msgstr "Kinų"
 
-#: src/compose.c:649 src/mainwindow.c:568 src/messageview.c:240
+#: src/compose.c:648 src/mainwindow.c:568 src/messageview.c:240
 msgid "Korean"
 msgstr "Korėjiečių"
 
-#: src/compose.c:650 src/mainwindow.c:569 src/messageview.c:241
+#: src/compose.c:649 src/mainwindow.c:569 src/messageview.c:241
 msgid "Thai"
 msgstr "Tajų"
 
-#: src/compose.c:653 src/mainwindow.c:661 src/messageview.c:270
+#: src/compose.c:652 src/mainwindow.c:661 src/messageview.c:270
 msgid "_Address book"
 msgstr "_Adresų knyga"
 
-#: src/compose.c:655
+#: src/compose.c:654
 msgid "_Template"
 msgstr "Ša_blonas"
 
-#: src/compose.c:657 src/mainwindow.c:689 src/messageview.c:291
+#: src/compose.c:656 src/mainwindow.c:689 src/messageview.c:291
 msgid "Actio_ns"
 msgstr "_Veiksmai"
 
-#: src/compose.c:666
+#: src/compose.c:665
 msgid "Aut_o wrapping"
 msgstr "Aut_omatinis apgaubimas"
 
-#: src/compose.c:667
+#: src/compose.c:666
 msgid "Auto _indent"
 msgstr "Automatinis atitraukimas"
 
-#: src/compose.c:668
+#: src/compose.c:667
 msgid "Si_gn"
 msgstr "Pa_sirašyti"
 
-#: src/compose.c:669
+#: src/compose.c:668
 msgid "_Encrypt"
 msgstr "_Užšifruoti"
 
-#: src/compose.c:670
+#: src/compose.c:669
 msgid "_Request Return Receipt"
 msgstr "_Prašyti patvirtinimo apie laiško gavimą"
 
-#: src/compose.c:671
+#: src/compose.c:670
 msgid "Remo_ve references"
 msgstr "Šalinti _nuorodas"
 
-#: src/compose.c:672
+#: src/compose.c:671
 msgid "Show _ruler"
 msgstr "Rodyti _liniuotę"
 
-#: src/compose.c:677 src/compose.c:687
+#: src/compose.c:676 src/compose.c:686
 msgid "_Normal"
 msgstr "_Paprastas"
 
-#: src/compose.c:678
+#: src/compose.c:677
 msgid "_All"
 msgstr "_Visiems"
 
-#: src/compose.c:679
+#: src/compose.c:678
 msgid "_Sender"
 msgstr "_Siuntėjui"
 
-#: src/compose.c:680
+#: src/compose.c:679
 msgid "_Mailing-list"
 msgstr "_El. pašto grupei"
 
-#: src/compose.c:685
+#: src/compose.c:684
 msgid "_Highest"
 msgstr "A_ukščiausias"
 
-#: src/compose.c:686
+#: src/compose.c:685
 msgid "Hi_gh"
 msgstr "_Aukštas"
 
-#: src/compose.c:688
+#: src/compose.c:687
 msgid "Lo_w"
 msgstr "_Žemas"
 
-#: src/compose.c:689
+#: src/compose.c:688
 msgid "_Lowest"
 msgstr "Že_miausias"
 
-#: src/compose.c:694 src/mainwindow.c:804 src/messageview.c:308
+#: src/compose.c:693 src/mainwindow.c:804 src/messageview.c:308
 msgid "_Automatic"
 msgstr "_Automatinė"
 
-#: src/compose.c:695 src/mainwindow.c:805 src/messageview.c:309
+#: src/compose.c:694 src/mainwindow.c:805 src/messageview.c:309
 msgid "7bit ASCII (US-ASC_II)"
 msgstr "7 bitų ASCII (US-ASC_II)"
 
-#: src/compose.c:696 src/mainwindow.c:806 src/messageview.c:310
+#: src/compose.c:695 src/mainwindow.c:806 src/messageview.c:310
 msgid "Unicode (_UTF-8)"
 msgstr "Unikodas (_UTF-8)"
 
-#: src/compose.c:700 src/mainwindow.c:810 src/messageview.c:314
+#: src/compose.c:699 src/mainwindow.c:810 src/messageview.c:314
 msgid "Central European (ISO-8859-_2)"
 msgstr "Centrinės Europos (ISO-8859-_2)"
 
-#: src/compose.c:703 src/mainwindow.c:813 src/messageview.c:317
+#: src/compose.c:702 src/mainwindow.c:813 src/messageview.c:317
 msgid "Greek (ISO-8859-_7)"
 msgstr "Graikų (ISO-8859-_7)"
 
-#: src/compose.c:708 src/mainwindow.c:818 src/messageview.c:322
+#: src/compose.c:707 src/mainwindow.c:818 src/messageview.c:322
 msgid "Turkish (ISO-8859-_9)"
 msgstr "Turkų (ISO-8859-_9)"
 
@@ -1644,76 +1644,76 @@ msgstr "Naujų laiškų temos formato klaida."
 msgid "The body of the \"New message\" template has an error at line %d."
 msgstr "Naujo laiško šablono pagrindinėje dalyje yra klaida ties %d eilute."
 
-#: src/compose.c:1382
+#: src/compose.c:1386
 msgid "Unable to reply. The original email probably doesn't exist."
 msgstr "Negalima atsakyti. Greičiausiai nebėra originalaus laiško."
 
-#: src/compose.c:1565 src/quote_fmt.c:584
+#: src/compose.c:1569 src/quote_fmt.c:584
 msgid ""
 "The \"From\" field of the \"Reply\" template contains an invalid email "
 "address."
 msgstr "Atsakymo šablone nurodytas netinkamas siuntėjo el. pašto adresas."
 
-#: src/compose.c:1612 src/quote_fmt.c:587
+#: src/compose.c:1616 src/quote_fmt.c:587
 #, c-format
 msgid "The body of the \"Reply\" template has an error at line %d."
 msgstr "Atsakymo šablono pagrindinėje dalyje yra klaida ties %d eilute."
 
-#: src/compose.c:1746 src/compose.c:1941 src/quote_fmt.c:604
+#: src/compose.c:1750 src/compose.c:1946 src/quote_fmt.c:604
 msgid ""
 "The \"From\" field of the \"Forward\" template contains an invalid email "
 "address."
 msgstr "Persiuntimo šablone nurodytas netinkamas siuntėjo el. pašto adresas."
 
-#: src/compose.c:1811 src/quote_fmt.c:607
+#: src/compose.c:1815 src/quote_fmt.c:607
 #, c-format
 msgid "The body of the \"Forward\" template has an error at line %d."
 msgstr "Persiuntimo šablono pagrindinėje dalyje yra klaida ties %d eilute."
 
-#: src/compose.c:1983
+#: src/compose.c:1988
 msgid "Fw: multiple emails"
 msgstr "Persiunčiama: keletas adresų"
 
-#: src/compose.c:2405
+#: src/compose.c:2410
 #, c-format
 msgid "The body of the \"Redirect\" template has an error at line %d."
 msgstr "Peradresavimo šablono pagrindinėje dalyje yra klaida ties %d eilute."
 
-#: src/compose.c:2471 src/gtk/headers.h:13
+#: src/compose.c:2476 src/gtk/headers.h:13
 msgid "Cc:"
 msgstr "Kopija:"
 
-#: src/compose.c:2474 src/gtk/headers.h:14
+#: src/compose.c:2479 src/gtk/headers.h:14
 msgid "Bcc:"
 msgstr "Nematoma kopija:"
 
-#: src/compose.c:2477 src/gtk/headers.h:11
+#: src/compose.c:2482 src/gtk/headers.h:11
 msgid "Reply-To:"
 msgstr "Kam atsakyti:"
 
-#: src/compose.c:2480 src/compose.c:4725 src/compose.c:4727
+#: src/compose.c:2485 src/compose.c:4730 src/compose.c:4732
 #: src/gtk/headers.h:32
 msgid "Newsgroups:"
 msgstr "Naujienų grupė:"
 
-#: src/compose.c:2483 src/gtk/headers.h:33
+#: src/compose.c:2488 src/gtk/headers.h:33
 msgid "Followup-To:"
 msgstr "Kam peradresuoti:"
 
-#: src/compose.c:2486 src/gtk/headers.h:16
+#: src/compose.c:2491 src/gtk/headers.h:16
 msgid "In-Reply-To:"
 msgstr "Kam atsakant:"
 
-#: src/compose.c:2490 src/compose.c:4722 src/compose.c:4730
+#: src/compose.c:2495 src/compose.c:4727 src/compose.c:4735
 #: src/gtk/headers.h:12 src/summary_search.c:359
 msgid "To:"
 msgstr "Kam:"
 
-#: src/compose.c:2687
+#: src/compose.c:2692
 msgid "Couldn't attach a file (charset conversion failed)."
 msgstr "Nepavyksta pridėti rinkmenos (ženklų rinkinio konvertavimo klaida)."
 
-#: src/compose.c:2693
+#: src/compose.c:2698
 #, c-format
 msgid ""
 "The following file has been attached: \n"
@@ -1731,64 +1731,64 @@ msgstr[2] ""
 "Pridedamos rinkmenos: \n"
 "%s"
 
-#: src/compose.c:2941
+#: src/compose.c:2946
 msgid "The \"Quotation mark\" of the template is invalid."
 msgstr "Netinkama šablono „citavimo žymė“."
 
-#: src/compose.c:3430
+#: src/compose.c:3435
 #, c-format
 msgid "Could not get size of file '%s'."
 msgstr "Nepavyksta nustatyti rinkmenos „%s“ dydžio."
 
-#: src/compose.c:3441
+#: src/compose.c:3446
 #, c-format
 msgid ""
 "You are about to insert a file of %s in the message body. Are you sure you "
 "want to do that?"
 msgstr "Ketinate į laiško turinį įterpti rinkmeną %s. Tęsti?"
 
-#: src/compose.c:3444
+#: src/compose.c:3449
 msgid "Are you sure?"
 msgstr "Tikrai?"
 
-#: src/compose.c:3445 src/compose.c:10662
+#: src/compose.c:3450 src/compose.c:10667
 msgid "+_Insert"
 msgstr "+Į_terpti"
 
-#: src/compose.c:3555
+#: src/compose.c:3560
 #, c-format
 msgid "File %s is empty."
 msgstr "Rinkmena %s yra tuščia."
 
-#: src/compose.c:3559
+#: src/compose.c:3564
 #, c-format
 msgid "Can't read %s."
 msgstr "Nepavyksta perskaityti %s."
 
-#: src/compose.c:3586
+#: src/compose.c:3591
 #, c-format
 msgid "Message: %s"
 msgstr "Laiškas: %s"
 
-#: src/compose.c:4574
+#: src/compose.c:4579
 msgid " [Edited]"
 msgstr " [redaguota]"
 
-#: src/compose.c:4581
+#: src/compose.c:4586
 #, c-format
 msgid "%s - Compose message%s"
 msgstr "%s - Laiško rašymas %s"
 
-#: src/compose.c:4584
+#: src/compose.c:4589
 #, c-format
 msgid "[no subject] - Compose message%s"
 msgstr "[be temos] - Laiško rašymas %s"
 
-#: src/compose.c:4586
+#: src/compose.c:4591
 msgid "Compose message"
 msgstr "Rašyti laišką"
 
-#: src/compose.c:4613 src/messageview.c:836
+#: src/compose.c:4618 src/messageview.c:836
 msgid ""
 "Account for sending mail is not specified.\n"
 "Please select a mail account before sending."
@@ -1796,49 +1796,49 @@ msgstr ""
 "Nenurodyta paskyra, kuria siunčiama.\n"
 "Prieš siųsdami, pasirinkite paskyrą."
 
-#: src/compose.c:4823 src/compose.c:4855 src/compose.c:4897
+#: src/compose.c:4828 src/compose.c:4860 src/compose.c:4902
 #: src/prefs_account.c:3220 src/toolbar.c:391 src/toolbar.c:409
 msgid "Send"
 msgstr "Siųsti"
 
-#: src/compose.c:4824
+#: src/compose.c:4829
 msgid "The only recipient is the default CC address. Send anyway?"
 msgstr "Vienintelis gavėjas yra ties kopijos adresu. Vis tiek siųsti?"
 
-#: src/compose.c:4825 src/compose.c:4857 src/compose.c:4890 src/compose.c:5406
+#: src/compose.c:4830 src/compose.c:4862 src/compose.c:4895 src/compose.c:5411
 msgid "+_Send"
 msgstr "+_Siųsti"
 
-#: src/compose.c:4856
+#: src/compose.c:4861
 msgid "The only recipient is the default BCC address. Send anyway?"
 msgstr "Vienintelis gavėjas yra ties slaptos kopijos adresu. Vis tiek siųsti?"
 
-#: src/compose.c:4873
+#: src/compose.c:4878
 msgid "Recipient is not specified."
 msgstr "Nenurodytas gavėjas."
 
-#: src/compose.c:4892
+#: src/compose.c:4897
 msgid "+_Queue"
 msgstr "+Į siuntimo _eilę"
 
-#: src/compose.c:4893
+#: src/compose.c:4898
 #, c-format
 msgid "Subject is empty. %s"
 msgstr "Nenurodyta tema. %s"
 
-#: src/compose.c:4894
+#: src/compose.c:4899
 msgid "Send it anyway?"
 msgstr "Vis tiek siųsti?"
 
-#: src/compose.c:4895
+#: src/compose.c:4900
 msgid "Queue it anyway?"
 msgstr "Vis tiek įtraukti į siuntimo eilę?"
 
-#: src/compose.c:4897 src/toolbar.c:410
+#: src/compose.c:4902 src/toolbar.c:410
 msgid "Send later"
 msgstr "Siųsti vėliau"
 
-#: src/compose.c:4945 src/compose.c:9351
+#: src/compose.c:4950 src/compose.c:9356
 msgid ""
 "Could not queue message for sending:\n"
 "\n"
@@ -1848,7 +1848,7 @@ msgstr ""
 "\n"
 "Nepavyko konvertuoti koduotės."
 
-#: src/compose.c:4948 src/compose.c:9354
+#: src/compose.c:4953 src/compose.c:9359
 msgid ""
 "Could not queue message for sending:\n"
 "\n"
@@ -1858,7 +1858,7 @@ msgstr ""
 "\n"
 "Nepavyko gauti gavėjo šifravimo rakto."
 
-#: src/compose.c:4954 src/compose.c:9348
+#: src/compose.c:4959 src/compose.c:9353
 #, c-format
 msgid ""
 "Could not queue message for sending:\n"
@@ -1869,7 +1869,7 @@ msgstr ""
 "\n"
 "Nepavyko pasirašyti: %s"
 
-#: src/compose.c:4957
+#: src/compose.c:4962
 #, c-format
 msgid ""
 "Could not queue message for sending:\n"
@@ -1880,11 +1880,11 @@ msgstr ""
 "\n"
 "%s."
 
-#: src/compose.c:4959
+#: src/compose.c:4964
 msgid "Could not queue message for sending."
 msgstr "Laiško nepavyko įtraukti į siuntimo eilę."
 
-#: src/compose.c:4974 src/compose.c:5034
+#: src/compose.c:4979 src/compose.c:5039
 msgid ""
 "The message was queued but could not be sent.\n"
 "Use \"Send queued messages\" from the main window to retry."
@@ -1893,7 +1893,7 @@ msgstr ""
 "Norėdami vėl bandyti išsiųsti, pagrindiniame lange rinkitės „siųsti eilės "
 "laiškus“."
 
-#: src/compose.c:5030
+#: src/compose.c:5035
 #, c-format
 msgid ""
 "%s\n"
@@ -1903,7 +1903,7 @@ msgstr ""
 "Norėdami vėl bandyti išsiųsti, pagrindiniame lange rinkitės „siųsti eilės "
 "laiškus“."
 
-#: src/compose.c:5403
+#: src/compose.c:5408
 #, c-format
 msgid ""
 "Can't convert the character encoding of the message \n"
@@ -1914,7 +1914,7 @@ msgstr ""
 "pakeisti į nurodytą %s.\n"
 "Siųsti kaip %s?"
 
-#: src/compose.c:5461
+#: src/compose.c:5466
 #, c-format
 msgid ""
 "Line %d exceeds the line length limit (998 bytes).\n"
@@ -1927,67 +1927,67 @@ msgstr ""
 "\n"
 "Tikrai išsiųsti?"
 
-#: src/compose.c:5642
+#: src/compose.c:5647
 msgid "Encryption warning"
 msgstr "Įspėjimas apie šifravimą"
 
-#: src/compose.c:5643
+#: src/compose.c:5648
 msgid "+C_ontinue"
 msgstr "+_Tęsti"
 
-#: src/compose.c:5698
+#: src/compose.c:5703
 msgid "No account for sending mails available!"
 msgstr "Nėra paskyrų, sukonfigūruotų laiškų siuntimui!"
 
-#: src/compose.c:5708
+#: src/compose.c:5713
 msgid "Selected account isn't NNTP: Posting is impossible."
 msgstr "Pasirinkta paskyra nėra NNTP: siųsti neįmanoma."
 
-#: src/compose.c:5944
+#: src/compose.c:5949
 #, c-format
 msgid "Attachment %s doesn't exist anymore. Ignore?"
 msgstr "Priedo %s nebėra. Nepaisyti?"
 
-#: src/compose.c:5945
+#: src/compose.c:5950
 msgid "Cancel sending"
 msgstr "Atsisakyti siuntimo"
 
-#: src/compose.c:5945
+#: src/compose.c:5950
 msgid "Ignore attachment"
 msgstr "Nepaisyti priedo"
 
-#: src/compose.c:5984
+#: src/compose.c:5989
 #, c-format
 msgid "Original %s part"
 msgstr "Originali %s dalis"
 
-#: src/compose.c:6456
+#: src/compose.c:6461
 msgid "Add to address _book"
 msgstr "Įtraukti į adresų _knygą"
 
-#: src/compose.c:6547
+#: src/compose.c:6552
 msgid "Delete entry contents"
 msgstr "Šalinti įrašo turinį"
 
-#: src/compose.c:6551
+#: src/compose.c:6556
 msgid "Use <tab> to autocomplete from addressbook"
 msgstr "Norėdami užbaigti pagal adresų knygą, spauskite <tab>"
 
-#: src/compose.c:6760
+#: src/compose.c:6765
 msgid "Mime type"
 msgstr "MIME tipas"
 
-#: src/compose.c:6766 src/compose.c:7081 src/mimeview.c:271
+#: src/compose.c:6771 src/compose.c:7086 src/mimeview.c:271
 #: src/plugins/pgpcore/select-keys.c:394 src/prefs_matcher.c:609
 #: src/prefs_summary_column.c:84 src/summaryview.c:436
 msgid "Size"
 msgstr "Dydis"
 
-#: src/compose.c:6836
+#: src/compose.c:6841
 msgid "Save Message to "
 msgstr "Laišką įrašyti į"
 
-#: src/compose.c:6865 src/editjpilot.c:275 src/editldap.c:518
+#: src/compose.c:6870 src/editjpilot.c:275 src/editldap.c:518
 #: src/editvcard.c:191 src/export.c:163 src/import.c:162 src/importmutt.c:238
 #: src/importpine.c:237 src/plugins/bogofilter/bogofilter_gtk.c:186
 #: src/plugins/bogofilter/bogofilter_gtk.c:206
@@ -1995,31 +1995,31 @@ msgstr "Laišką įrašyti į"
 msgid "_Browse"
 msgstr "_Naršyti"
 
-#: src/compose.c:7080 src/compose.c:8683
+#: src/compose.c:7085 src/compose.c:8688
 msgid "MIME type"
 msgstr "MIME tipas"
 
-#: src/compose.c:7083
+#: src/compose.c:7088
 msgid "Charset"
 msgstr "Koduotė"
 
-#: src/compose.c:7359
+#: src/compose.c:7364
 msgid "Hea_der"
 msgstr "_Antraštė"
 
-#: src/compose.c:7364
+#: src/compose.c:7369
 msgid "_Attachments"
 msgstr "_Priedai"
 
-#: src/compose.c:7378
+#: src/compose.c:7383
 msgid "Othe_rs"
 msgstr "_Kita"
 
-#: src/compose.c:7393 src/gtk/headers.h:18 src/summary_search.c:366
+#: src/compose.c:7398 src/gtk/headers.h:18 src/summary_search.c:366
 msgid "Subject:"
 msgstr "Tema:"
 
-#: src/compose.c:7615
+#: src/compose.c:7620
 #, c-format
 msgid ""
 "Spell checker could not be started.\n"
@@ -2028,20 +2028,20 @@ msgstr ""
 "Nepavyksta paleisti rašybos tikrintuvės.\n"
 "%s"
 
-#: src/compose.c:7727
+#: src/compose.c:7732
 #, c-format
 msgid "From: <i>%s</i>"
 msgstr "Nuo: <i>%s</i>"
 
-#: src/compose.c:7761
+#: src/compose.c:7766
 msgid "Account to use for this email"
 msgstr "Šiam laiškui naudotina paskyra"
 
-#: src/compose.c:7763
+#: src/compose.c:7768
 msgid "Sender address to be used"
 msgstr "Naudotinas siuntėjo adresas"
 
-#: src/compose.c:7927
+#: src/compose.c:7932
 #, c-format
 msgid ""
 "The privacy system '%s' cannot be loaded. You will not be able to sign or "
@@ -2050,60 +2050,60 @@ msgstr ""
 "Nepavyksta įkelti privatumo sistemos „%s“. Todėl laiško negalėsite nei "
 "pasirašyti, nei užšifruoti."
 
-#: src/compose.c:8027
+#: src/compose.c:8032
 msgid "_None"
 msgstr "_Nieko"
 
-#: src/compose.c:8128 src/prefs_template.c:752
+#: src/compose.c:8133 src/prefs_template.c:752
 #, c-format
 msgid "The body of the template has an error at line %d."
 msgstr "Šablono pagrindinėje dalyje yra klaida ties %d eilute."
 
-#: src/compose.c:8244
+#: src/compose.c:8249
 msgid "Template From format error."
 msgstr "Šablone yra siuntėjo formato klaida."
 
-#: src/compose.c:8262
+#: src/compose.c:8267
 msgid "Template To format error."
 msgstr "Šablone yra gavėjo formato klaida."
 
-#: src/compose.c:8280
+#: src/compose.c:8285
 msgid "Template Cc format error."
 msgstr "Šablone yra laiško kopijos formato klaida."
 
-#: src/compose.c:8298
+#: src/compose.c:8303
 msgid "Template Bcc format error."
 msgstr "Šablone yra laiško nematomosios kopijos formato klaida."
 
-#: src/compose.c:8317
+#: src/compose.c:8322
 msgid "Template subject format error."
 msgstr "Šablone yra laiško temos formato klaida."
 
-#: src/compose.c:8577
+#: src/compose.c:8582
 msgid "Invalid MIME type."
 msgstr "Netinkamas MIME tipas."
 
-#: src/compose.c:8592
+#: src/compose.c:8597
 msgid "File doesn't exist or is empty."
 msgstr "Rinkmenos nėra arba ji tuščia."
 
-#: src/compose.c:8666
+#: src/compose.c:8671
 msgid "Properties"
 msgstr "Savybės"
 
-#: src/compose.c:8716
+#: src/compose.c:8721
 msgid "Encoding"
 msgstr "Koduotė"
 
-#: src/compose.c:8736
+#: src/compose.c:8741
 msgid "Path"
 msgstr "Kelias"
 
-#: src/compose.c:8737
+#: src/compose.c:8742
 msgid "File name"
 msgstr "Rinkmenos vardas"
 
-#: src/compose.c:8929
+#: src/compose.c:8934
 #, c-format
 msgid ""
 "The external editor is still working.\n"
@@ -2114,20 +2114,16 @@ msgstr ""
 "Priverstinai nutraukti šį procesą?\n"
 "proceso grupės id: %d"
 
-#: src/compose.c:8971
-msgid "Compose: input from monitoring process\n"
-msgstr "Rašymas: įvesti iš stebimo proceso\n"
-
-#: src/compose.c:9317 src/messageview.c:1042
+#: src/compose.c:9322 src/messageview.c:1042
 msgid "Claws Mail needs network access in order to send this email."
 msgstr ""
 "Tam, kad galėtų išsiųsti šį laišką, Claws Mail turi prisijungti prie tinklo."
 
-#: src/compose.c:9343
+#: src/compose.c:9348
 msgid "Could not queue message."
 msgstr "Nepavyksta laiško įtraukti į siuntimo eilę."
 
-#: src/compose.c:9345
+#: src/compose.c:9350
 #, c-format
 msgid ""
 "Could not queue message:\n"
@@ -2138,15 +2134,15 @@ msgstr ""
 "\n"
 "%s."
 
-#: src/compose.c:9508
+#: src/compose.c:9513
 msgid "Could not save draft."
 msgstr "Nepavyksta įrašyti juodraščio."
 
-#: src/compose.c:9512
+#: src/compose.c:9517
 msgid "Could not save draft"
 msgstr "Nepavyksta įrašyti juodraščio"
 
-#: src/compose.c:9513
+#: src/compose.c:9518
 msgid ""
 "Could not save draft.\n"
 "Do you want to cancel exit or discard this email?"
@@ -2154,24 +2150,24 @@ msgstr ""
 "Nepavyksta įrašyti juodraščio.\n"
 "Neišeiti ar sunaikinti atmetant šį laišką?"
 
-#: src/compose.c:9515
+#: src/compose.c:9520
 msgid "_Cancel exit"
 msgstr "_Neišeiti"
 
-#: src/compose.c:9515
+#: src/compose.c:9520
 msgid "_Discard email"
 msgstr "_Atmesti laišką"
 
-#: src/compose.c:9671 src/compose.c:9685
+#: src/compose.c:9676 src/compose.c:9690
 msgid "Select file"
 msgstr "Pasirinkite rinkmeną"
 
-#: src/compose.c:9699
+#: src/compose.c:9704
 #, c-format
 msgid "File '%s' could not be read."
 msgstr "Nepavyksta perskaityti rinkmenos „%s“."
 
-#: src/compose.c:9701
+#: src/compose.c:9706
 #, c-format
 msgid ""
 "File '%s' contained invalid characters\n"
@@ -2180,60 +2176,60 @@ msgstr ""
 "Rinkmena „%s“ turi šiai koduotei\n"
 "netinkančių rašmenų. Įterpimas gali būti netinkamas."
 
-#: src/compose.c:9773
+#: src/compose.c:9778
 msgid "Discard message"
 msgstr "Atmesti laišką"
 
-#: src/compose.c:9774
+#: src/compose.c:9779
 msgid "This message has been modified. Discard it?"
 msgstr "Šis laiškas pakeistas. Atmesti jį?"
 
-#: src/compose.c:9775
+#: src/compose.c:9780
 msgid "_Discard"
 msgstr "_Atmesti"
 
-#: src/compose.c:9775
+#: src/compose.c:9780
 msgid "_Save to Drafts"
 msgstr "Į_rašyti kaip juodraštį"
 
-#: src/compose.c:9777
+#: src/compose.c:9782
 msgid "Save changes"
 msgstr "Įrašyti pakeitimus"
 
-#: src/compose.c:9778
+#: src/compose.c:9783
 msgid "This message has been modified. Save the latest changes?"
 msgstr "Šis laiškas pakeistas. Įrašyti paskutinius pakeitimus?"
 
-#: src/compose.c:9779
+#: src/compose.c:9784
 msgid "_Don't save"
 msgstr "_Neįrašyti"
 
-#: src/compose.c:9779
+#: src/compose.c:9784
 msgid "+_Save to Drafts"
 msgstr "+Į_rašyti kaip juodraštį"
 
-#: src/compose.c:9830
+#: src/compose.c:9835
 #, c-format
 msgid "Do you want to apply the template '%s' ?"
 msgstr "Pritaikyti šabloną „%s“?"
 
-#: src/compose.c:9832
+#: src/compose.c:9837
 msgid "Apply template"
 msgstr "Pritaikyti šabloną"
 
-#: src/compose.c:9833
+#: src/compose.c:9838
 msgid "_Replace"
 msgstr "Pa_keisti"
 
-#: src/compose.c:9833
+#: src/compose.c:9838
 msgid "_Insert"
 msgstr "Į_terpti"
 
-#: src/compose.c:10659
+#: src/compose.c:10664
 msgid "Insert or attach?"
 msgstr "Įterpti ar pridėti?"
 
-#: src/compose.c:10660
+#: src/compose.c:10665
 msgid ""
 "Do you want to insert the contents of the file(s) into the message body, or "
 "attach it to the email?"
@@ -2241,16 +2237,16 @@ msgstr ""
 "Ar rinkmenos(-ų) turinį įtraukti į laiško pagrindinę dalį, ar prisegti kaip "
 "priedą prie laiško?"
 
-#: src/compose.c:10662
+#: src/compose.c:10667
 msgid "_Attach"
 msgstr "_Pridėti"
 
-#: src/compose.c:10863
+#: src/compose.c:10880
 #, c-format
 msgid "Quote format error at line %d."
 msgstr "Citavimo formato klaida ties %d eilute."
 
-#: src/compose.c:11153
+#: src/compose.c:11164
 #, c-format
 msgid ""
 "You are about to reply to %d messages. Opening the windows could take some "
@@ -2806,19 +2802,23 @@ msgstr "Visų gairių šalinimas"
 msgid "Do you really want to delete all tags?"
 msgstr "Tikrai pašalinti visas gaires?"
 
-#: src/edittags.c:457
+#: src/edittags.c:421
+msgid "You entered a reserved tag name, please choose another instead."
+msgstr ""
+
+#: src/edittags.c:463
 msgid "Tag is not set."
 msgstr "Gairė nenurodyta."
 
-#: src/edittags.c:522
+#: src/edittags.c:528
 msgid "Dialog title|Apply tags"
 msgstr "Pritaikyti gaires"
 
-#: src/edittags.c:536
+#: src/edittags.c:542
 msgid "New tag:"
 msgstr "Nauja gairė:"
 
-#: src/edittags.c:569
+#: src/edittags.c:575
 msgid "Please select tags to apply/remove. Changes are immediate."
 msgstr ""
 "Pasirinkite pritaikytinas/pašalintinas gaires. Pakeitimai atliekami iš karto."
@@ -2900,7 +2900,7 @@ msgstr "Stilius"
 
 #: src/exphtmldlg.c:452 src/gtk/colorlabel.c:380 src/gtk/gtkaspell.c:1518
 #: src/gtk/gtkaspell.c:2172 src/mainwindow.c:1110 src/prefs_account.c:928
-#: src/prefs_toolbar.c:760 src/prefs_toolbar.c:1399 src/summaryview.c:5844
+#: src/prefs_toolbar.c:760 src/prefs_toolbar.c:1399 src/summaryview.c:5858
 msgid "None"
 msgstr "Nėra"
 
@@ -3133,7 +3133,7 @@ msgstr "Adresų knygą eksportuoti į LDIF rinkmeną"
 msgid "Distinguished Name"
 msgstr "Unikalusis vardas (DN)"
 
-#: src/export.c:112 src/summaryview.c:7957
+#: src/export.c:112 src/summaryview.c:7968
 msgid "Export to mbox file"
 msgstr "Eksportuoti į mbox rinkmeną"
 
@@ -3195,52 +3195,51 @@ msgstr "Vardas yra per ilgas."
 msgid "Not specified."
 msgstr "Nenurodyta."
 
-#: src/folder.c:1529 src/foldersel.c:377 src/prefs_folder_item.c:303
+#: src/folder.c:1560 src/foldersel.c:377 src/prefs_folder_item.c:303
 msgid "Inbox"
 msgstr "Gauti laiškai"
 
-#: src/folder.c:1533 src/foldersel.c:381
+#: src/folder.c:1564 src/foldersel.c:381
 msgid "Sent"
 msgstr "Išsiųstieji"
 
-#: src/folder.c:1537 src/foldersel.c:385 src/prefs_folder_item.c:306
+#: src/folder.c:1568 src/foldersel.c:385 src/prefs_folder_item.c:306
 msgid "Queue"
 msgstr "Paruošti siųsti"
 
-#: src/folder.c:1541 src/foldersel.c:389 src/prefs_folder_item.c:307
-#: src/toolbar.c:364 src/toolbar.c:399
+#: src/folder.c:1572 src/foldersel.c:389 src/prefs_folder_item.c:307
 msgid "Trash"
 msgstr "Šiukšlės"
 
-#: src/folder.c:1545 src/foldersel.c:393 src/prefs_folder_item.c:305
+#: src/folder.c:1576 src/foldersel.c:393 src/prefs_folder_item.c:305
 msgid "Drafts"
 msgstr "Juodraščiai"
 
-#: src/folder.c:1975
+#: src/folder.c:2006
 #, c-format
 msgid "Processing (%s)...\n"
 msgstr "Apdorojama (%s)...\n"
 
-#: src/folder.c:3223
+#: src/folder.c:3254
 #, c-format
 msgid "Copying %s to %s...\n"
 msgstr "Kopijuojama: %s į %s...\n"
 
-#: src/folder.c:3223
+#: src/folder.c:3254
 #, c-format
 msgid "Moving %s to %s...\n"
 msgstr "Perkeliama: %s į %s...\n"
 
-#: src/folder.c:3526
+#: src/folder.c:3557
 #, c-format
 msgid "Updating cache for %s..."
 msgstr "Atnaujinamas podėlis: %s..."
 
-#: src/folder.c:4395
+#: src/folder.c:4426
 msgid "Processing messages..."
 msgstr "Apdorojami laiškai..."
 
-#: src/folder.c:4531
+#: src/folder.c:4562
 #, c-format
 msgid "Synchronising %s for offline use...\n"
 msgstr "%s sinchronizuojama naudojimui neprisijungus...\n"
@@ -3295,12 +3294,12 @@ msgid "Send _queue..."
 msgstr "Į siuntimo _eilę..."
 
 #: src/folderview.c:380 src/folderview.c:427 src/prefs_folder_column.c:78
-#: src/prefs_matcher.c:373 src/summaryview.c:6117
+#: src/prefs_matcher.c:373 src/summaryview.c:6131
 msgid "New"
 msgstr "Nauja"
 
 #: src/folderview.c:381 src/folderview.c:428 src/prefs_folder_column.c:79
-#: src/prefs_matcher.c:372 src/summaryview.c:6119
+#: src/prefs_matcher.c:372 src/summaryview.c:6133
 msgid "Unread"
 msgstr "Neskaityta"
 
@@ -3317,20 +3316,20 @@ msgstr "Nr."
 msgid "Setting folder info..."
 msgstr "Ruošiama aplankų informacija..."
 
-#: src/folderview.c:803 src/summaryview.c:3962
+#: src/folderview.c:803 src/summaryview.c:3976
 msgid "Mark all as read"
 msgstr "Visus pažymėti skaitytais"
 
-#: src/folderview.c:804 src/summaryview.c:3963
+#: src/folderview.c:804 src/summaryview.c:3977
 msgid "Do you really want to mark all mails in this folder as read ?"
 msgstr "Tikrai visus šio aplanko laiškus pažymėti skaitytais?"
 
-#: src/folderview.c:1027 src/imap.c:4073 src/mainwindow.c:5054 src/setup.c:90
+#: src/folderview.c:1027 src/imap.c:4079 src/mainwindow.c:5060 src/setup.c:90
 #, c-format
 msgid "Scanning folder %s%c%s ..."
 msgstr "Peržvelgiamas aplankas %s%c%s ..."
 
-#: src/folderview.c:1031 src/imap.c:4078 src/mainwindow.c:5059 src/setup.c:95
+#: src/folderview.c:1031 src/imap.c:4084 src/mainwindow.c:5065 src/setup.c:95
 #, c-format
 msgid "Scanning folder %s ..."
 msgstr "Peržvelgiamas aplankas %s ..."
@@ -3375,7 +3374,7 @@ msgstr "Atveriamas aplankas %s..."
 msgid "Folder could not be opened."
 msgstr "Nepavyksta atverti aplanko."
 
-#: src/folderview.c:2343 src/mainwindow.c:2971 src/mainwindow.c:2975
+#: src/folderview.c:2343 src/mainwindow.c:2972 src/mainwindow.c:2976
 msgid "Empty trash"
 msgstr "Išvalyti šiukšlinę"
 
@@ -3387,7 +3386,7 @@ msgstr "Pašalinti visus šiukšlinės laiškus?"
 msgid "+_Empty trash"
 msgstr "+Iš_valyti šiukšlinę"
 
-#: src/folderview.c:2389 src/inc.c:1593 src/toolbar.c:2591
+#: src/folderview.c:2389 src/inc.c:1596 src/toolbar.c:2591
 msgid "Offline warning"
 msgstr "Įspėjimas apie darbą neprisijungus"
 
@@ -3412,7 +3411,7 @@ msgstr "_Siųsti"
 msgid "Some errors occurred while sending queued messages."
 msgstr "Siunčiant eilės laiškus įvyko klaidų."
 
-#: src/folderview.c:2414 src/main.c:2549 src/toolbar.c:2634
+#: src/folderview.c:2414 src/main.c:2550 src/toolbar.c:2634
 #, c-format
 msgid ""
 "Some errors occurred while sending queued messages:\n"
@@ -3478,7 +3477,7 @@ msgstr "Perkelti nepavyko!"
 msgid "Processing configuration for folder %s"
 msgstr "Aplanko „%s“ apdorojimo konfigūracija"
 
-#: src/folderview.c:3027 src/summaryview.c:4399 src/summaryview.c:4498
+#: src/folderview.c:3027 src/summaryview.c:4413 src/summaryview.c:4512
 msgid "The destination folder can only be used to store subfolders."
 msgstr "Paskirties aplankas gali turėti tik paaplankius."
 
@@ -3550,8 +3549,8 @@ msgstr ""
 msgid ""
 "\n"
 "\n"
-"Claws Mail is free software released under the GPL license. If you wish to "
-"donate to the Claws Mail project you can do so at:\n"
+"Claws Mail is free software released under the GPL. If you wish to donate to "
+"the Claws Mail project you can do so at:\n"
 msgstr ""
 "\n"
 "\n"
@@ -3826,18 +3825,18 @@ msgid "Magenta"
 msgstr "Violetinė"
 
 #: src/gtk/foldersort.c:156
-msgid "Set folder order"
-msgstr "Aplankų tvarka"
+msgid "Set mailbox order"
+msgstr "Nustatyti aplankų tvarka"
 
 #: src/gtk/foldersort.c:190
-msgid "Move folders up or down to change the sort order in the folder list."
+msgid "Move mailboxes up or down to change the sort order in the Folder list."
 msgstr ""
-"Norėdami keisti aplankų tvarką aplankų sąraše, aplankus kelkite aukštyn arba "
-"nuleiskite žemyn."
+"Norėdami keisti aplankų tvarką aplankų sąraše, kelkite aukštyn arba "
+"nuleiskite žemyn pašto dėžutes."
 
-#: src/gtk/foldersort.c:216 src/toolbar.c:387
-msgid "Folders"
-msgstr "Aplankai"
+#: src/gtk/foldersort.c:216
+msgid "Mailboxes"
+msgstr "Pašto dėžutės"
 
 #: src/gtk/gtkaspell.c:338 src/gtk/gtkaspell.c:620
 msgid "No dictionary selected."
@@ -3968,7 +3967,7 @@ msgstr "Nuo"
 msgid "From:"
 msgstr "Nuo:"
 
-#: src/gtk/headers.h:10 src/toolbar.c:396
+#: src/gtk/headers.h:10
 msgid "Sender"
 msgstr "Siuntėjas"
 
@@ -4746,11 +4745,11 @@ msgstr "Rekursyviai"
 
 #: src/gtk/quicksearch.c:746
 msgid "Sticky"
-msgstr "Nuolatinis"
+msgstr "Išliekantis"
 
 #: src/gtk/quicksearch.c:756
 msgid "Type-ahead"
-msgstr "Dinaminis"
+msgstr "Filtruoti bevedant"
 
 #: src/gtk/quicksearch.c:768
 msgid "Run on select"
@@ -4773,7 +4772,7 @@ msgid "_Information"
 msgstr "_Informacija"
 
 #: src/gtk/quicksearch.c:864 src/gtk/quicksearch.c:879
-msgid "_Clear"
+msgid "C_lear"
 msgstr "Iš_valyti"
 
 #: src/gtk/quicksearch.c:1396 src/summaryview.c:1301
@@ -4904,12 +4903,12 @@ msgstr "Pakeistas SSL liudijimas"
 msgid "Tags:"
 msgstr "Gairės:"
 
-#: src/headerview.c:215 src/summaryview.c:3213 src/summaryview.c:3223
-#: src/summaryview.c:3244
+#: src/headerview.c:215 src/summaryview.c:3220 src/summaryview.c:3237
+#: src/summaryview.c:3258
 msgid "(No From)"
 msgstr "(nežinoma nuo ko)"
 
-#: src/headerview.c:230 src/summaryview.c:3257 src/summaryview.c:3261
+#: src/headerview.c:230 src/summaryview.c:3271 src/summaryview.c:3275
 msgid "(No Subject)"
 msgstr "(nežinoma tema)"
 
@@ -5193,18 +5192,18 @@ msgstr "Nepavyko prisijungti prie %s"
 msgid "IMAP4 connection to %s has been disconnected. Reconnecting...\n"
 msgstr "IMAP4 prisijungimas prie %s nutrūko. Jungiamasi iš naujo...\n"
 
-#: src/imap.c:959 src/imap.c:3116 src/imap.c:3779 src/imap.c:3876
-#: src/imap.c:4062 src/imap.c:4866
+#: src/imap.c:959 src/imap.c:3122 src/imap.c:3785 src/imap.c:3882
+#: src/imap.c:4068 src/imap.c:4872
 msgid "Claws Mail needs network access in order to access the IMAP server."
 msgstr ""
 "Tam, kad galėtų pasiekti IMAP serverį, Claws Mail turi prisijungti prie "
 "tinklo."
 
-#: src/imap.c:1052 src/inc.c:795 src/news.c:352 src/send_message.c:289
+#: src/imap.c:1053 src/inc.c:797 src/news.c:353 src/send_message.c:289
 msgid "Insecure connection"
 msgstr "Nesaugus ryšys"
 
-#: src/imap.c:1053 src/inc.c:796 src/news.c:353 src/send_message.c:290
+#: src/imap.c:1054 src/inc.c:798 src/news.c:354 src/send_message.c:290
 msgid ""
 "This connection is configured to be secured using SSL, but SSL is not "
 "available in this build of Claws Mail. \n"
@@ -5217,114 +5216,114 @@ msgstr ""
 "\n"
 "Vis tiek jungtis prie šio serverio? Ryšys nebus saugus."
 
-#: src/imap.c:1059 src/inc.c:802 src/news.c:359 src/send_message.c:296
+#: src/imap.c:1060 src/inc.c:804 src/news.c:360 src/send_message.c:296
 msgid "Con_tinue connecting"
 msgstr "_Tęsti prisijungimą"
 
-#: src/imap.c:1069
+#: src/imap.c:1070
 #, c-format
-msgid "Connecting to IMAP4 server: %s..."
-msgstr "Jungiamasi prie IMAP4 serverio: %s..."
+msgid "Account '%s': Connecting to IMAP4 server: %s..."
+msgstr "„%s“ paskyra: jungiamasi prie IMAP4 serverio: %s..."
 
-#: src/imap.c:1111
+#: src/imap.c:1117
 #, c-format
 msgid "Can't connect to IMAP4 server: %s:%d"
 msgstr "Nepavyksta prisijungti prie IMAP4 serverio: %s:%d"
 
-#: src/imap.c:1114
+#: src/imap.c:1120
 #, c-format
 msgid "Can't connect to IMAP4 server: %s:%d\n"
 msgstr "Nepavyksta prisijungti prie IMAP4 serverio: %s:%d\n"
 
-#: src/imap.c:1147 src/imap.c:3539
+#: src/imap.c:1153 src/imap.c:3545
 msgid "Can't start TLS session.\n"
 msgstr "Nepavyksta pradėti TLS sesijos.\n"
 
-#: src/imap.c:1189
+#: src/imap.c:1195
 #, c-format
 msgid "Connecting to IMAP4 server %s...\n"
 msgstr "Jungiamasi prie IMAP4 serverio: %s...\n"
 
-#: src/imap.c:1204
+#: src/imap.c:1210
 #, c-format
 msgid "Couldn't login to IMAP server %s.\n"
 msgstr "Nepavyksta prisijungti prie IMAP serverio %s.\n"
 
-#: src/imap.c:1207
+#: src/imap.c:1213
 #, c-format
 msgid "Couldn't login to IMAP server %s."
 msgstr "Nepavyksta prisijungti prie IMAP serverio %s."
 
-#: src/imap.c:1603
+#: src/imap.c:1609
 msgid "Adding messages..."
 msgstr "Pridedami laiškai..."
 
-#: src/imap.c:1806 src/mh.c:517
+#: src/imap.c:1812 src/mh.c:517
 msgid "Copying messages..."
 msgstr "Kopijuodami laiškai..."
 
-#: src/imap.c:1994
+#: src/imap.c:2000
 msgid "can't set deleted flags\n"
 msgstr "nepavyksta pažymėti pašalinimui\n"
 
-#: src/imap.c:2001 src/imap.c:4492
+#: src/imap.c:2007 src/imap.c:4498
 msgid "can't expunge\n"
 msgstr "negaliu išbraukti\n"
 
-#: src/imap.c:2352
+#: src/imap.c:2358
 #, c-format
 msgid "Looking for unsubscribed folders in %s..."
 msgstr "Ieškoma %s neprenumeruotų aplankų..."
 
-#: src/imap.c:2355
+#: src/imap.c:2361
 #, c-format
 msgid "Looking for subfolders of %s..."
 msgstr "Ieškoma %s paaplankių..."
 
-#: src/imap.c:2651
+#: src/imap.c:2657
 msgid "can't create mailbox: LIST failed\n"
 msgstr "nepavyksta sukurti pašto dėžutės: LIST klaida\n"
 
-#: src/imap.c:2666
+#: src/imap.c:2672
 msgid "can't create mailbox\n"
 msgstr "nepavyksta sukurti pašto dėžutės\n"
 
-#: src/imap.c:2757
+#: src/imap.c:2763
 msgid "New folder name must not contain the namespace path separator"
 msgstr ""
 "Naujo aplanko pavadinime negali būti simbolių, reiškiančių aplankų skirtukus"
 
-#: src/imap.c:2794
+#: src/imap.c:2800
 #, c-format
 msgid "can't rename mailbox: %s to %s\n"
 msgstr "nepavyksta pervadinti pašto dėžutės %s į %s\n"
 
-#: src/imap.c:2906
+#: src/imap.c:2912
 msgid "can't delete mailbox\n"
 msgstr "nepavyksta pašalinti pašto dėžutės\n"
 
-#: src/imap.c:3197
+#: src/imap.c:3203
 msgid "LIST failed\n"
 msgstr "LIST klaida\n"
 
-#: src/imap.c:3282
+#: src/imap.c:3288
 msgid "Flagging messages..."
 msgstr "Žymimi laiškai..."
 
-#: src/imap.c:3383
+#: src/imap.c:3389
 #, c-format
 msgid "can't select folder: %s\n"
 msgstr "nepavyksta pasirinkti aplanko: %s\n"
 
-#: src/imap.c:3536
+#: src/imap.c:3542
 msgid "Server requires TLS to log in.\n"
 msgstr "Prisijungimui serveris reikalauja TLS.\n"
 
-#: src/imap.c:3546
+#: src/imap.c:3552
 msgid "Can't refresh capabilities.\n"
 msgstr "Nepavyksta atnaujinti charakteristikų.\n"
 
-#: src/imap.c:3551
+#: src/imap.c:3557
 #, c-format
 msgid ""
 "Connection to %s failed: server requires TLS, but Claws Mail has been "
@@ -5333,20 +5332,20 @@ msgstr ""
 "Nepavyko prisijungti prie %s: serveris reikalauja TLS, tačiau Claws Mail "
 "sukompiliuotas be OpenSSL palaikymo.\n"
 
-#: src/imap.c:3559
+#: src/imap.c:3565
 msgid "Server logins are disabled.\n"
 msgstr "Prisijungimas prie serverio uždraustas.\n"
 
-#: src/imap.c:3784
+#: src/imap.c:3790
 msgid "Fetching message..."
 msgstr "Gaunamas laiškas..."
 
-#: src/imap.c:4485
+#: src/imap.c:4491
 #, c-format
 msgid "can't set deleted flags: %d\n"
 msgstr "nepavyksta pažymėti pašalinimui: %d\n"
 
-#: src/imap.c:5526
+#: src/imap.c:5532
 msgid ""
 "You have one or more IMAP accounts defined. However this version of Claws "
 "Mail has been built without IMAP support; your IMAP account(s) are "
@@ -5417,6 +5416,9 @@ msgid ""
 "(if you want to create a folder to store subfolders\n"
 "only and no mail, append '/' to the folder name)"
 msgstr ""
+"Įveskite naujo katalogo vardą:\n"
+"(jei norite sukurti katalogą talpinti pakatalogiams\n"
+"be laiškų, pridėkite „/“ prie vardo pabaigos)"
 
 #: src/imap_gtk.c:197 src/mh_gtk.c:145
 msgid "Inherit properties from parent folder"
@@ -5517,8 +5519,8 @@ msgstr "prenumeruoti"
 msgid "unsubscribe"
 msgstr "atsisakyti prenumeratos"
 
-#: src/imap_gtk.c:569 src/prefs_folder_item.c:1378
-#: src/prefs_folder_item.c:1403 src/prefs_folder_item.c:1428
+#: src/imap_gtk.c:569 src/prefs_folder_item.c:1382
+#: src/prefs_folder_item.c:1410 src/prefs_folder_item.c:1438
 msgid "Apply to subfolders"
 msgstr "Pritaikyti paaplankiams"
 
@@ -5752,7 +5754,7 @@ msgid "Auth failed"
 msgstr "Nepavyko patvirtinti tapatybės"
 
 #: src/inc.c:640 src/prefs_matcher.c:378 src/prefs_summary_column.c:87
-#: src/summaryview.c:2686 src/summaryview.c:6141
+#: src/summaryview.c:2686 src/summaryview.c:6155
 msgid "Locked"
 msgstr "Užrakinta"
 
@@ -5772,61 +5774,61 @@ msgstr[2] "Baigta (%d naujų laiškų)"
 msgid "Finished (no new messages)"
 msgstr "Baigta (naujų laiškų nėra)"
 
-#: src/inc.c:779
+#: src/inc.c:780
 #, c-format
 msgid "%s: Retrieving new messages"
 msgstr "%s: gaunami nauji laiškai"
 
-#: src/inc.c:811
+#: src/inc.c:813
 #, c-format
-msgid "Connecting to POP3 server: %s..."
-msgstr "Jungiamasi prie POP3 serverio: %s..."
+msgid "Account '%s': Connecting to POP3 server: %s..."
+msgstr "„%s“ paskyra: Jungiamasi prie POP3 serverio: %s..."
 
-#: src/inc.c:828
+#: src/inc.c:831
 #, c-format
 msgid "Can't connect to POP3 server: %s:%d"
 msgstr "Nepavyksta prisijungti prie POP3 serverio: %s:%d"
 
-#: src/inc.c:832
+#: src/inc.c:835
 #, c-format
 msgid "Can't connect to POP3 server: %s:%d\n"
 msgstr "Nepavyksta prisijungti prie POP3 serverio: %s:%d\n"
 
-#: src/inc.c:912 src/send_message.c:459
+#: src/inc.c:915 src/send_message.c:459
 msgid "Authenticating..."
 msgstr "Tikrinamas tapatumas..."
 
-#: src/inc.c:914
+#: src/inc.c:917
 #, c-format
 msgid "Retrieving messages from %s (%s) ..."
 msgstr "Gaunami laiškai iš %s (%s)"
 
-#: src/inc.c:920
+#: src/inc.c:923
 msgid "Getting the number of new messages (STAT)..."
 msgstr "Gaunamas naujų laiškų skaičius (STAT)..."
 
-#: src/inc.c:924
+#: src/inc.c:927
 msgid "Getting the number of new messages (LAST)..."
 msgstr "Gaunamas naujų laiškų skaičius (LAST)..."
 
-#: src/inc.c:928
+#: src/inc.c:931
 msgid "Getting the number of new messages (UIDL)..."
 msgstr "Gaunamas naujų laiškų skaičius (UIDL)..."
 
-#: src/inc.c:932
+#: src/inc.c:935
 msgid "Getting the size of messages (LIST)..."
 msgstr "Gaunamas naujų laiškų dydis (LIST)..."
 
-#: src/inc.c:939 src/send_message.c:477
+#: src/inc.c:942 src/send_message.c:477
 msgid "Quitting"
 msgstr "Baigiama"
 
-#: src/inc.c:964
+#: src/inc.c:967
 #, c-format
 msgid "Retrieving message (%d / %d) (%s / %s)"
 msgstr "Gaunamas laiškas (%d / %d) (%s / %s)"
 
-#: src/inc.c:977
+#: src/inc.c:980
 #, c-format
 msgid "Retrieving (%d message (%s) received)"
 msgid_plural "Retrieving (%d messages (%s) received)"
@@ -5834,20 +5836,20 @@ msgstr[0] "Gaunama (gautas %d laiškas (%s))"
 msgstr[1] "Gaunama (gauti %d laiškai (%s))"
 msgstr[2] "Gaunama (gauta %d laiškų (%s))"
 
-#: src/inc.c:1133
+#: src/inc.c:1136
 msgid "Connection failed."
 msgstr "Nepavyko prisijungti."
 
-#: src/inc.c:1137
+#: src/inc.c:1140
 #, c-format
 msgid "Connection to %s:%d failed."
 msgstr "Nepavyko prisijungti prie %s:%d."
 
-#: src/inc.c:1142
+#: src/inc.c:1145
 msgid "Error occurred while processing mail."
 msgstr "Klaida apdorojant paštą."
 
-#: src/inc.c:1148
+#: src/inc.c:1151
 #, c-format
 msgid ""
 "Error occurred while processing mail:\n"
@@ -5856,37 +5858,37 @@ msgstr ""
 "Klaida apdorojant paštą:\n"
 "%s"
 
-#: src/inc.c:1154
+#: src/inc.c:1157
 msgid "No disk space left."
 msgstr "Diske nebėra vietos."
 
-#: src/inc.c:1159
+#: src/inc.c:1162
 msgid "Can't write file."
 msgstr "Nepavyksta rašyti rinkmenos."
 
-#: src/inc.c:1164
+#: src/inc.c:1167
 msgid "Socket error."
 msgstr ""
 
-#: src/inc.c:1167
+#: src/inc.c:1170
 #, c-format
 msgid "Socket error on connection to %s:%d."
 msgstr ""
 
-#: src/inc.c:1172 src/send_message.c:387 src/send_message.c:641
+#: src/inc.c:1175 src/send_message.c:387 src/send_message.c:641
 msgid "Connection closed by the remote host."
 msgstr "Nuotolinis serveris nutraukė ryšį."
 
-#: src/inc.c:1175
+#: src/inc.c:1178
 #, c-format
 msgid "Connection to %s:%d closed by the remote host."
 msgstr "Nuotolinis serveris nutraukė %s:%d ryšį."
 
-#: src/inc.c:1180
+#: src/inc.c:1183
 msgid "Mailbox is locked."
 msgstr "Pašto dėžutė užrakinta."
 
-#: src/inc.c:1184
+#: src/inc.c:1187
 #, c-format
 msgid ""
 "Mailbox is locked:\n"
@@ -5895,11 +5897,11 @@ msgstr ""
 "Pašto dėžutė užrakinta:\n"
 "%s"
 
-#: src/inc.c:1190 src/send_message.c:626
+#: src/inc.c:1193 src/send_message.c:626
 msgid "Authentication failed."
 msgstr "Nepavyko nustatyti tapatumo."
 
-#: src/inc.c:1196 src/send_message.c:629
+#: src/inc.c:1199 src/send_message.c:629
 #, c-format
 msgid ""
 "Authentication failed:\n"
@@ -5908,22 +5910,22 @@ msgstr ""
 "Nepavyko nustatyti tapatumo:\n"
 "%s"
 
-#: src/inc.c:1201 src/send_message.c:645
+#: src/inc.c:1204 src/send_message.c:645
 msgid ""
 "Session timed out. You may be able to recover by increasing the timeout "
 "value in Preferences/Other/Miscellaneous."
 msgstr ""
 
-#: src/inc.c:1206
+#: src/inc.c:1209
 #, c-format
 msgid "Connection to %s:%d timed out."
 msgstr "Baigėsi prijungimo laikas prie %s:%d."
 
-#: src/inc.c:1244
+#: src/inc.c:1247
 msgid "Incorporation cancelled\n"
 msgstr ""
 
-#: src/inc.c:1430
+#: src/inc.c:1433
 #, c-format
 msgid "Claws Mail: %d new message"
 msgid_plural "Claws Mail: %d new messages"
@@ -5931,21 +5933,21 @@ msgstr[0] "Claws Mail: %d naujas laiškas"
 msgstr[1] "Claws Mail: %d nauji laiškai"
 msgstr[2] "Claws Mail: %d naujų laiškų"
 
-#: src/inc.c:1557
+#: src/inc.c:1560
 msgid "Unable to connect: you are offline."
 msgstr "Negalima prisijungti: dirbate neprisijungę."
 
-#: src/inc.c:1583
+#: src/inc.c:1586
 #, c-format
 msgid "%s%sYou're working offline. Override for %d minutes?"
 msgstr "%s%sDirbate neprisijungę. Prisijungti %d min.?"
 
-#: src/inc.c:1589
+#: src/inc.c:1592
 #, c-format
 msgid "%s%sYou're working offline. Override?"
 msgstr "%s%sDirbate neprisijungę. Nepaisyti?"
 
-#: src/inc.c:1596
+#: src/inc.c:1599
 msgid "On_ly once"
 msgstr "Tik _dabar"
 
@@ -6057,7 +6059,7 @@ msgstr "Sylpheed-Claws 1.9.15 (arba senesnė)"
 msgid "Sylpheed-Claws 1.0.5 (or older)"
 msgstr "Sylpheed-Claws 1.0.5 (arba senesnė)"
 
-#: src/main.c:1540
+#: src/main.c:1541
 #, c-format
 msgid ""
 "The following plugin failed to load. Check the Plugins configuration for "
@@ -6077,89 +6079,92 @@ msgstr[2] ""
 "Nepavyko įkelti sekančių papildinių. Patikrinkite papildinių konfigūraciją:\n"
 "%s"
 
-#: src/main.c:1568
+#: src/main.c:1569
 msgid ""
 "Claws Mail has detected a configured mailbox, but it is incomplete. It is "
 "possibly due to a failing IMAP account. Use \"Rebuild folder tree\" on the "
 "mailbox parent folder's context menu to try to fix it."
 msgstr ""
 
-#: src/main.c:1574
+#: src/main.c:1575
 msgid ""
 "Claws Mail has detected a configured mailbox, but could not load it. It is "
 "probably provided by an out-of-date external plugin. Please reinstall the "
 "plugin and try again."
 msgstr ""
 
-#: src/main.c:1603
+#: src/main.c:1604
 #, c-format
 msgid "Claws Mail can not start without its data volume (%s)."
 msgstr "Claws Mail programa negali būti paleista be jos duomenų tomo (%s)"
 
-#: src/main.c:1922
+#: src/main.c:1923
 #, c-format
 msgid "Usage: %s [OPTION]...\n"
 msgstr "Naudojimas: %s [PARINKTIS]...\n"
 
-#: src/main.c:1924
+#: src/main.c:1925
 msgid "  --compose [address]    open composition window"
 msgstr "  --compose [adresas]    atverti laiško rašymo langą"
 
-#: src/main.c:1925
+#: src/main.c:1926
 msgid "  --subscribe [uri]      subscribe to the given URI if possible"
 msgstr "  --subscribe [uri]      jei įmanoma, prenumeruoti duotą URI"
 
-#: src/main.c:1926
+#: src/main.c:1927
 msgid ""
 "  --attach file1 [file2]...\n"
 "                         open composition window with specified files\n"
 "                         attached"
 msgstr ""
+"  --attach 1rinkmena [2rinkmena]...\n"
+"                         atverti rašymo langą pridedant nurodytas\n"
+"                         rinkmenas"
 
-#: src/main.c:1929
+#: src/main.c:1930
 msgid "  --receive              receive new messages"
 msgstr "  --receive              priimti naujus laiškus"
 
-#: src/main.c:1930
+#: src/main.c:1931
 msgid "  --receive-all          receive new messages of all accounts"
 msgstr "  --receive-all          priimti visų paskyrų naujus laiškus"
 
-#: src/main.c:1931
+#: src/main.c:1932
 msgid "  --search folder type request [recursive]"
 msgstr ""
 
-#: src/main.c:1932
+#: src/main.c:1933
 msgid "                         searches mail"
 msgstr ""
 
-#: src/main.c:1933
+#: src/main.c:1934
 msgid "                         folder ex.: \"#mh/Mailbox/inbox\" or \"Mail\""
 msgstr ""
 
-#: src/main.c:1934
+#: src/main.c:1935
 msgid ""
 "                         type: s[ubject],f[rom],t[o],e[xtended],m[ixed] or "
 "g: tag"
 msgstr ""
 
-#: src/main.c:1935
+#: src/main.c:1936
 msgid "                         request: search string"
 msgstr ""
 
-#: src/main.c:1936
+#: src/main.c:1937
 msgid ""
 "                         recursive: false if arg. starts with 0, n, N, f or F"
 msgstr ""
 
-#: src/main.c:1938
+#: src/main.c:1939
 msgid "  --send                 send all queued messages"
 msgstr "  --send                 siųsti visus eilės laiškus"
 
-#: src/main.c:1939
+#: src/main.c:1940
 msgid "  --status [folder]...   show the total number of messages"
 msgstr "  --status [aplankas]... parodo bendrą laiškų skaičių"
 
-#: src/main.c:1940
+#: src/main.c:1941
 msgid ""
 "  --status-full [folder]...\n"
 "                         show the status of each folder"
@@ -6167,38 +6172,38 @@ msgstr ""
 "  --status-full [aplankas]...\n"
 "                         parodyti kiekvieno aplanko būseną"
 
-#: src/main.c:1942
+#: src/main.c:1943
 msgid ""
 "  --select folder[/msg]  jumps to the specified folder/message\n"
 "                         folder is a folder id like 'folder/sub_folder'"
 msgstr ""
 
-#: src/main.c:1944
+#: src/main.c:1945
 msgid "  --online               switch to online mode"
 msgstr "  --online               dirbti prisijungus prie tinklo"
 
-#: src/main.c:1945
+#: src/main.c:1946
 msgid "  --offline              switch to offline mode"
 msgstr "  --offline              dirbti neprisijungus prie tinklo"
 
-#: src/main.c:1946
+#: src/main.c:1947
 msgid "  --exit --quit -q       exit Claws Mail"
 msgstr "  --exit --quit -q       baigti darbą su Claws Mail"
 
-#: src/main.c:1947
+#: src/main.c:1948
 msgid "  --debug                debug mode"
 msgstr "  --debug                derinimo veiksena"
 
-#: src/main.c:1948
+#: src/main.c:1949
 msgid "  --help -h              display this help and exit"
 msgstr ""
 "  --help -h              parodyti šį pagalbos pranešimą ir baigti darbą"
 
-#: src/main.c:1949
+#: src/main.c:1950
 msgid "  --version -v           output version information and exit"
 msgstr "  --version -v           parodyti versiją ir baigti darbą"
 
-#: src/main.c:1950
+#: src/main.c:1951
 msgid ""
 "  --version-full -V      output version and built-in features information "
 "and exit"
@@ -6206,11 +6211,11 @@ msgstr ""
 "  --version-full -V      parodyti versiją ir sukompiliuotas savybes, o po to "
 "išeiti"
 
-#: src/main.c:1951
+#: src/main.c:1952
 msgid "  --config-dir           output configuration directory"
 msgstr "  --config-dir           parodo konfigūracijos aplanką"
 
-#: src/main.c:1952
+#: src/main.c:1953
 msgid ""
 "  --alternate-config-dir [dir]\n"
 "                         use specified configuration directory"
@@ -6218,32 +6223,32 @@ msgstr ""
 "  --alternate-config-dir [aplankas]\n"
 "                         naudoti nurodytą konfigūracijos aplanką"
 
-#: src/main.c:2002
+#: src/main.c:2003
 msgid "Unknown option\n"
 msgstr "Nežinoma parinktis\n"
 
-#: src/main.c:2020
+#: src/main.c:2021
 #, c-format
 msgid "Processing (%s)..."
 msgstr "Apdorojama (%s)..."
 
-#: src/main.c:2023
+#: src/main.c:2024
 msgid "top level folder"
 msgstr "šakninis aplankas"
 
-#: src/main.c:2106
+#: src/main.c:2107
 msgid "Queued messages"
 msgstr "Laiškai eilėje"
 
-#: src/main.c:2107
+#: src/main.c:2108
 msgid "Some unsent messages are queued. Exit now?"
 msgstr "Eilėje yra neišsiųstų laiškų. Baigti dabar?"
 
-#: src/main.c:2686
+#: src/main.c:2687
 msgid "NetworkManager: network is online.\n"
 msgstr "NetworkManager: prisijungta prie tinklo.\n"
 
-#: src/main.c:2692
+#: src/main.c:2693
 msgid "NetworkManager: network is offline.\n"
 msgstr "NetworkManager: atsijungta.\n"
 
@@ -6253,7 +6258,7 @@ msgstr "_Rinkmena"
 
 #: src/mainwindow.c:472 src/messageview.c:185 src/summaryview.c:425
 msgid "_View"
-msgstr "Ro_dinys"
+msgstr "Ro_dymas"
 
 #: src/mainwindow.c:475
 msgid "_Configuration"
@@ -6268,8 +6273,8 @@ msgid "MH..."
 msgstr "PD..."
 
 #: src/mainwindow.c:483
-msgid "Change folder order..."
-msgstr "Keisti aplankų tvarką..."
+msgid "Change mailbox order..."
+msgstr "Keisti pašto dėžučių tvarką..."
 
 #: src/mainwindow.c:486
 msgid "_Import mbox file..."
@@ -6818,15 +6823,15 @@ msgid "Show all _headers"
 msgstr "Rodyti visas _antraštes"
 
 #: src/mainwindow.c:756 src/messageview.c:301
-msgid "_Fold all"
-msgstr "Suskleisti _visas"
+msgid "_Collapse all"
+msgstr "Susk_leisti viską"
 
 #: src/mainwindow.c:757 src/messageview.c:302
-msgid "Fold from level _2"
+msgid "Collapse from level _2"
 msgstr "Suskleisti nuo _antro lygio"
 
 #: src/mainwindow.c:758 src/messageview.c:303
-msgid "Fold from level _3"
+msgid "Collapse from level _3"
 msgstr "Suskleisti nuo _trečio lygio"
 
 #: src/mainwindow.c:762
@@ -6941,7 +6946,7 @@ msgstr "Mažėjančiai"
 msgid "_Auto detect"
 msgstr "_Automatiškai aptikti"
 
-#: src/mainwindow.c:1235 src/summaryview.c:6069
+#: src/mainwindow.c:1235 src/summaryview.c:6083
 msgid "Apply tags..."
 msgstr "Pritaikyti gaires..."
 
@@ -6962,45 +6967,45 @@ msgstr "Esate atsijungę Norėdami prisijungti, spragtelėkite ženkliuką"
 msgid "Select account"
 msgstr "Pasirinkti paskyrą"
 
-#: src/mainwindow.c:2083 src/prefs_logging.c:140
+#: src/mainwindow.c:2084 src/prefs_logging.c:140
 msgid "Network log"
 msgstr "Tinklo žurnalas"
 
-#: src/mainwindow.c:2087
+#: src/mainwindow.c:2088
 msgid "Filtering/processing debug log"
 msgstr "Filtravimo / apdorojimo žurnalas"
 
-#: src/mainwindow.c:2106 src/prefs_logging.c:392
+#: src/mainwindow.c:2107 src/prefs_logging.c:392
 msgid "filtering log enabled\n"
 msgstr "filtravimo žurnalas įgalintas\n"
 
-#: src/mainwindow.c:2108 src/prefs_logging.c:394
+#: src/mainwindow.c:2109 src/prefs_logging.c:394
 msgid "filtering log disabled\n"
 msgstr "filtravimo žurnalas uždraustas\n"
 
-#: src/mainwindow.c:2554 src/mainwindow.c:2561 src/mainwindow.c:2603
-#: src/mainwindow.c:2636 src/mainwindow.c:2668 src/mainwindow.c:2713
+#: src/mainwindow.c:2555 src/mainwindow.c:2562 src/mainwindow.c:2604
+#: src/mainwindow.c:2637 src/mainwindow.c:2669 src/mainwindow.c:2714
 #: src/plugins/trayicon/trayicon.c:123 src/prefs_folder_item.c:1008
 msgid "Untitled"
 msgstr "Be vardo"
 
-#: src/mainwindow.c:2714 src/prefs_summary_open.c:113
+#: src/mainwindow.c:2715 src/prefs_summary_open.c:113
 msgid "none"
 msgstr "nieko"
 
-#: src/mainwindow.c:2972 src/mainwindow.c:2976
+#: src/mainwindow.c:2973 src/mainwindow.c:2977
 msgid "Delete all messages in trash folders?"
 msgstr "Pašalinti visus laiškus šiukšlinės aplankuose?"
 
-#: src/mainwindow.c:2973
+#: src/mainwindow.c:2974
 msgid "Don't quit"
 msgstr "Neišeiti"
 
-#: src/mainwindow.c:3002
+#: src/mainwindow.c:3003
 msgid "Add mailbox"
 msgstr "Pridėti pašto dėžutę"
 
-#: src/mainwindow.c:3003
+#: src/mainwindow.c:3004
 msgid ""
 "Input the location of mailbox.\n"
 "If an existing mailbox is specified, it will be\n"
@@ -7010,16 +7015,16 @@ msgstr ""
 "Jei nurodoma esama pašto dėžutė, ji\n"
 "bus išanalizuota automatiškai."
 
-#: src/mainwindow.c:3009
+#: src/mainwindow.c:3010
 #, c-format
 msgid "The mailbox '%s' already exists."
 msgstr "Pašto dėžutė „%s“ jau yra."
 
-#: src/mainwindow.c:3014 src/setup.c:51 src/wizard.c:772
+#: src/mainwindow.c:3015 src/setup.c:51 src/wizard.c:772
 msgid "Mailbox"
 msgstr "Pašto dėžutė"
 
-#: src/mainwindow.c:3019 src/setup.c:54
+#: src/mainwindow.c:3020 src/setup.c:54
 msgid ""
 "Creation of the mailbox failed.\n"
 "Maybe some files already exist, or you don't have the permission to write "
@@ -7028,43 +7033,43 @@ msgstr ""
 "Nepavyko sukurti pašto dėžutės.\n"
 "Galbūt kai kurios rinkmenos jau yra arba jūs neturite leidimo ten rašyti."
 
-#: src/mainwindow.c:3377
+#: src/mainwindow.c:3383
 msgid "No posting allowed"
 msgstr "Siųsti neleidžiama"
 
-#: src/mainwindow.c:3962
+#: src/mainwindow.c:3968
 msgid "Mbox import has failed."
 msgstr "Nepavyko importuoti mbox."
 
-#: src/mainwindow.c:3971 src/mainwindow.c:3980
+#: src/mainwindow.c:3977 src/mainwindow.c:3986
 msgid "Export to mbox has failed."
 msgstr "Nepavyko eksportuoti mbox."
 
-#: src/mainwindow.c:4021 src/plugins/trayicon/trayicon.c:554
+#: src/mainwindow.c:4027 src/plugins/trayicon/trayicon.c:554
 msgid "Exit"
 msgstr "Baigti"
 
-#: src/mainwindow.c:4021 src/plugins/trayicon/trayicon.c:554
+#: src/mainwindow.c:4027 src/plugins/trayicon/trayicon.c:554
 msgid "Exit Claws Mail?"
 msgstr "Baigti darbą su Claws Mail programa?"
 
-#: src/mainwindow.c:4199
+#: src/mainwindow.c:4205
 msgid "Folder synchronisation"
 msgstr "Aplankų sinchronizavimas"
 
-#: src/mainwindow.c:4200
+#: src/mainwindow.c:4206
 msgid "Do you want to synchronise your folders now?"
 msgstr "Sinchronizuoti aplankus dabar?"
 
-#: src/mainwindow.c:4201
+#: src/mainwindow.c:4207
 msgid "+_Synchronise"
 msgstr "+_Sinchronizuoti"
 
-#: src/mainwindow.c:4603
+#: src/mainwindow.c:4609
 msgid "Deleting duplicated messages..."
 msgstr "Šalinami besidubliuojantys laiškai..."
 
-#: src/mainwindow.c:4640
+#: src/mainwindow.c:4646
 #, c-format
 msgid "Deleted %d duplicate message in %d folders.\n"
 msgid_plural "Deleted %d duplicate messages in %d folders.\n"
@@ -7072,36 +7077,36 @@ msgstr[0] "Pašalintas %d besiduliuojantis laiškas %d aplanke(-uose).\n"
 msgstr[1] "Pašalinti %d besiduliuojantys laiškai %d aplanke(-uose).\n"
 msgstr[2] "Pašalinta %d besiduliuojančių laiškų %d aplanke(-uose).\n"
 
-#: src/mainwindow.c:4848 src/summaryview.c:5564
+#: src/mainwindow.c:4854 src/summaryview.c:5578
 msgid "Processing rules to apply before folder rules"
 msgstr "Apdorojimo taisyklės taikomos prieš aplankų taisykles"
 
-#: src/mainwindow.c:4856
+#: src/mainwindow.c:4862
 msgid "Processing rules to apply after folder rules"
 msgstr "Apdorojimo taisyklės taikomos po aplankų taisyklių"
 
-#: src/mainwindow.c:4864 src/summaryview.c:5575
+#: src/mainwindow.c:4870 src/summaryview.c:5589
 msgid "Filtering configuration"
 msgstr "Filtravimo konfigūracija"
 
-#: src/mainwindow.c:4979
+#: src/mainwindow.c:4985
 msgid "Can not register as default client: impossible to get executable path."
 msgstr ""
 "Nepavyksta įregistruoti kaip pagrindinio kliento: neįmanoma gauti vykdomojo "
 "kelio."
 
-#: src/mainwindow.c:5038
+#: src/mainwindow.c:5044
 msgid "Claws Mail has been registered as default client."
 msgstr "Claws Mail įregistruotas kaip pagrindinis klientas."
 
-#: src/mainwindow.c:5040
+#: src/mainwindow.c:5046
 msgid ""
 "Can not register as default client: impossible to write to the registry."
 msgstr ""
 "Nepavyksta įregistruoti kaip pagrindinio kliento: neįmanoma rašyti į "
 "registrą."
 
-#: src/mainwindow.c:5197
+#: src/mainwindow.c:5203
 #, c-format
 msgid "Forgotten %d password in %d accounts.\n"
 msgid_plural "Forgotten %d passwords in %d accounts.\n"
@@ -7277,7 +7282,7 @@ msgstr ""
 "Laiškas neatitinka MIME standarto. Jis gali būti blogai atvaizduojamas."
 
 #: src/messageview.c:1656 src/messageview.c:1659 src/mimeview.c:1845
-#: src/summaryview.c:4651 src/summaryview.c:4654 src/textview.c:2961
+#: src/summaryview.c:4665 src/summaryview.c:4668 src/textview.c:2961
 msgid "Save as"
 msgstr "Įrašyti kaip"
 
@@ -7285,8 +7290,8 @@ msgstr "Įrašyti kaip"
 msgid "Overwrite existing file?"
 msgstr "Perrašyti esamą rinkmeną?"
 
-#: src/messageview.c:1673 src/summaryview.c:4671 src/summaryview.c:4674
-#: src/summaryview.c:4689
+#: src/messageview.c:1673 src/summaryview.c:4685 src/summaryview.c:4688
+#: src/summaryview.c:4703
 #, c-format
 msgid "Couldn't save the file '%s'."
 msgstr "Nepavyksta įrašyti rinkmenos „%s“."
@@ -7392,8 +7397,8 @@ msgstr "_Siųsti pranešimą"
 msgid "Cannot print: the message doesn't contain text."
 msgstr "Negalima spausdinti: laiške nėra teksto."
 
-#: src/messageview.c:2724 src/messageview.c:2730 src/summaryview.c:4036
-#: src/summaryview.c:6823
+#: src/messageview.c:2724 src/messageview.c:2730 src/summaryview.c:4050
+#: src/summaryview.c:6834
 msgid "An error happened while learning.\n"
 msgstr "Apmokant įvyko klaida.\n"
 
@@ -7556,63 +7561,63 @@ msgstr "Aprašas:"
 
 #: src/news.c:295
 #, c-format
-msgid "creating NNTP connection to %s:%d ...\n"
-msgstr "kuriamas NNTP prisijungimas prie %s:%d ...\n"
+msgid "Account '%s': Connecting to NNTP server: %s...\n"
+msgstr "„%s“ paskyra: jungiamasi prie NNTP serverio: %s ...\n"
 
-#: src/news.c:315
+#: src/news.c:316
 #, c-format
 msgid "Error logging in to %s:%d ...\n"
 msgstr "Prisijungimo prie %s:%d klaida ...\n"
 
-#: src/news.c:371
+#: src/news.c:372
 #, c-format
 msgid "Error authenticating to %s:%d ...\n"
 msgstr "Tapatumo nustatymo klaida jungiantis prie %s:%d ...\n"
 
-#: src/news.c:398
+#: src/news.c:399
 msgid "Claws Mail needs network access in order to access the News server."
 msgstr ""
 "Tam, kad galėtų pasiekti naujienų serverį, Claws Mail turi prisijungti prie "
 "tinklo."
 
-#: src/news.c:424
+#: src/news.c:425
 #, c-format
 msgid "NNTP connection to %s:%d has been disconnected. Reconnecting...\n"
 msgstr "NNTP prisijungimas prie %s:%d nutrūko. Jungiamasi iš naujo...\n"
 
-#: src/news.c:786
+#: src/news.c:787
 #, c-format
 msgid "couldn't select group: %s\n"
 msgstr "nepavyksta parinkti grupės: %s\n"
 
-#: src/news.c:975
+#: src/news.c:976 src/news.c:1146
 #, c-format
 msgid "couldn't set group: %s\n"
 msgstr "nepavyksta nustatyti grupės: %s\n"
 
-#: src/news.c:984
+#: src/news.c:985
 #, c-format
 msgid "invalid article range: %d - %d\n"
 msgstr "netinkamas naujienų grupės laiškų intervalas: %d - %d\n"
 
-#: src/news.c:1054 src/news.c:1078 src/news.c:1102
+#: src/news.c:1055 src/news.c:1079 src/news.c:1103
 msgid "couldn't get xhdr\n"
 msgstr "nepavyksta gauti xhd\n"
 
-#: src/news.c:1138
+#: src/news.c:1139
 #, c-format
 msgid "getting xover %d - %d in %s...\n"
 msgstr "gaunamas xover %d - %d, %s...\n"
 
-#: src/news.c:1146
+#: src/news.c:1154
 msgid "couldn't get xover\n"
 msgstr "nepavyksta gauti xover\n"
 
-#: src/news.c:1161
+#: src/news.c:1169
 msgid "invalid xover line\n"
 msgstr "netinkama xover eilutė\n"
 
-#: src/news.c:1331
+#: src/news.c:1339
 msgid ""
 "You have one or more News accounts defined. However this version of Claws "
 "Mail has been built without News support; your News account(s) are "
@@ -7787,7 +7792,7 @@ msgstr "Įterpti X-Bogosity antraštę"
 
 #: src/plugins/bogofilter/bogofilter_gtk.c:216
 msgid "Only done for messages in MH folders"
-msgstr ""
+msgstr "Atlikta su PD aplankuose esančiais laiškais"
 
 #: src/plugins/bogofilter/bogofilter_gtk.c:222
 #: src/plugins/spamassassin/spamassassin_gtk.c:435
@@ -7818,13 +7823,16 @@ msgstr "Spauskite, jei norite pasirinkti adresų knygą ar adresų knygos aplank
 
 #: src/plugins/bogofilter/bogofilter_gtk.c:238
 msgid "Learn whitelisted emails as ham"
-msgstr ""
+msgstr "Patikimus laiškus apmokyti laikyti pageidaujamais"
 
 #: src/plugins/bogofilter/bogofilter_gtk.c:240
 msgid ""
 "If Bogofilter thought an email was spam or unsure, but it was whitelisted, "
 "learn it as ham."
 msgstr ""
+"Jei Bogofilter mano, kad laiškas yra brukalas ar nesaugus, tačiau Jūs žinote "
+"jį esant patikimu, "
+"apmokykite tokius laiškus laikyti pageidaujamais."
 
 #: src/plugins/bogofilter/bogofilter_gtk.c:249
 msgid "Bogofilter call"
@@ -8081,7 +8089,7 @@ msgstr "Galioja iki"
 
 #: src/plugins/pgpcore/prefs_gpg.c:137
 msgid "Setting to '0' will store the passphrase for the whole session"
-msgstr ""
+msgstr "Nustačius į „0“, slaptafrazės bus laikomos visos sesijos metu."
 
 #: src/plugins/pgpcore/prefs_gpg.c:141 src/prefs_receive.c:172
 msgid "minute(s)"
@@ -8097,7 +8105,7 @@ msgstr "Paleidžiant rodyti įspėjimą, jeigu GnuPG neveikia"
 
 #: src/plugins/pgpcore/prefs_gpg.c:292
 msgid "Sign key"
-msgstr ""
+msgstr "Parašo raktas"
 
 #: src/plugins/pgpcore/prefs_gpg.c:300
 msgid "Use default GnuPG key"
@@ -8686,9 +8694,8 @@ msgid ""
 "accessible."
 msgstr ""
 "SpamAssassin papildinys negali filtruoti laiškų. Greičiausiai klaida įvyko "
-"dėl to, jog "
-"nepavyksta pasiekti spamd tarnybos. Įsitikinkite, kad spamd paleista ir "
-"pasiekiama."
+"dėl to, jog nepavyksta pasiekti spamd tarnybos. Įsitikinkite, kad spamd "
+"paleista ir pasiekiama."
 
 #: src/plugins/spamassassin/spamassassin.c:428
 msgid ""
@@ -8811,7 +8818,7 @@ msgstr "Dirbti _neprisijungus"
 #: src/plugins/trayicon/trayicon.c:183
 #, c-format
 msgid "New %d, Unread: %d, Total: %d"
-msgstr "Naujų: %d, Neskaitytų: %d, Iš viso: %d"
+msgstr "Naujų: %d, neskaitytų: %d, iš viso: %d"
 
 #: src/plugins/trayicon/trayicon.c:351
 msgid "Claws Mail"
@@ -9193,7 +9200,7 @@ msgstr "Komandos išvestis"
 
 #: src/prefs_account.c:1964
 msgid "Automatically set the following addresses"
-msgstr ""
+msgstr "Automatiškai nustatyti šiuos adresus"
 
 #: src/prefs_account.c:2016
 msgid "Spell check dictionaries"
@@ -9210,19 +9217,19 @@ msgid "Default alternate dictionary"
 msgstr "Numatytasis alternatyvus žodynas"
 
 #: src/prefs_account.c:2125 src/prefs_account.c:3238
-#: src/prefs_compose_writing.c:349 src/prefs_folder_item.c:1380
-#: src/prefs_folder_item.c:1760 src/prefs_quote.c:118 src/prefs_quote.c:236
+#: src/prefs_compose_writing.c:349 src/prefs_folder_item.c:1384
+#: src/prefs_folder_item.c:1770 src/prefs_quote.c:118 src/prefs_quote.c:236
 #: src/prefs_spelling.c:337 src/prefs_wrapping.c:152
 msgid "Compose"
 msgstr "Rašyti"
 
-#: src/prefs_account.c:2140 src/prefs_folder_item.c:1405 src/prefs_quote.c:133
+#: src/prefs_account.c:2140 src/prefs_folder_item.c:1412 src/prefs_quote.c:133
 #: src/toolbar.c:394
 msgid "Reply"
 msgstr "Atsakyti"
 
 #: src/prefs_account.c:2155 src/prefs_filtering_action.c:176
-#: src/prefs_folder_item.c:1430 src/prefs_quote.c:148 src/toolbar.c:398
+#: src/prefs_folder_item.c:1440 src/prefs_quote.c:148 src/toolbar.c:398
 msgid "Forward"
 msgstr "Persiųsti"
 
@@ -9421,7 +9428,7 @@ msgstr "Neįvestas pašto komanda."
 msgid "Receive"
 msgstr "Gauti"
 
-#: src/prefs_account.c:3256 src/prefs_folder_item.c:1777 src/prefs_quote.c:237
+#: src/prefs_account.c:3256 src/prefs_folder_item.c:1787 src/prefs_quote.c:237
 msgid "Templates"
 msgstr "Šablonai"
 
@@ -10287,7 +10294,7 @@ msgid " Use default "
 msgstr "Naudoti numatytą"
 
 #: src/prefs_folder_item.c:265 src/prefs_folder_item.c:819
-#: src/prefs_folder_item.c:1343
+#: src/prefs_folder_item.c:1344
 msgid ""
 "<i>These preferences will not be saved as this folder is a top-level folder. "
 "However, you can set them for the whole mailbox tree by using \"Apply to "
@@ -10334,7 +10341,7 @@ msgstr "Aplanko „chmod“ leidimai"
 msgid "Folder color"
 msgstr "Aplanko spalva"
 
-#: src/prefs_folder_item.c:430 src/prefs_folder_item.c:1603
+#: src/prefs_folder_item.c:430 src/prefs_folder_item.c:1613
 msgid "Pick color for folder"
 msgstr "Pasirinkti aplanko spalvą"
 
@@ -10400,23 +10407,23 @@ msgstr " atsakymams"
 msgid "Default account"
 msgstr "Numatytoji paskyra"
 
-#: src/prefs_folder_item.c:1616
+#: src/prefs_folder_item.c:1626
 msgid "Discard cache"
 msgstr "Naikinti podėlį"
 
-#: src/prefs_folder_item.c:1617
+#: src/prefs_folder_item.c:1627
 msgid "Do you really want to discard the local cached data for this folder?"
 msgstr "Tikrai naikinti šio aplanko vietinį podėlį?"
 
-#: src/prefs_folder_item.c:1619
+#: src/prefs_folder_item.c:1629
 msgid "+Discard"
 msgstr "+Naikinti"
 
-#: src/prefs_folder_item.c:1742
+#: src/prefs_folder_item.c:1752
 msgid "General"
 msgstr "Bendra"
 
-#: src/prefs_folder_item.c:1816
+#: src/prefs_folder_item.c:1826
 #, c-format
 msgid "Properties for folder %s"
 msgstr "Aplanko „%s“ savybės"
@@ -10662,11 +10669,11 @@ msgstr "pagrindinėje dalyje"
 msgid "whole message"
 msgstr "visame laiške"
 
-#: src/prefs_matcher.c:374 src/summaryview.c:6131
+#: src/prefs_matcher.c:374 src/summaryview.c:6145
 msgid "Marked"
 msgstr "Pažymėtas"
 
-#: src/prefs_matcher.c:375 src/summaryview.c:6129
+#: src/prefs_matcher.c:375 src/summaryview.c:6143
 msgid "Deleted"
 msgstr "Pašalintas"
 
@@ -10674,11 +10681,11 @@ msgstr "Pašalintas"
 msgid "Replied"
 msgstr "Atsakytas"
 
-#: src/prefs_matcher.c:377 src/summaryview.c:6123
+#: src/prefs_matcher.c:377 src/summaryview.c:6137
 msgid "Forwarded"
 msgstr "Persiųstas"
 
-#: src/prefs_matcher.c:379 src/summaryview.c:6115 src/toolbar.c:401
+#: src/prefs_matcher.c:379 src/summaryview.c:6129 src/toolbar.c:401
 #: src/toolbar.c:926 src/toolbar.c:1947
 msgid "Spam"
 msgstr "Brukalas"
@@ -10687,7 +10694,7 @@ msgstr "Brukalas"
 msgid "Has attachment"
 msgstr "Turi priedą"
 
-#: src/prefs_matcher.c:381 src/summaryview.c:6149
+#: src/prefs_matcher.c:381 src/summaryview.c:6163
 msgid "Signed"
 msgstr "Pasirašytas"
 
@@ -10814,7 +10821,7 @@ msgstr "aukščiau pateiktas taisykles"
 
 #: src/prefs_matcher.c:1469 src/prefs_matcher.c:1527
 msgid "Search pattern is not set."
-msgstr ""
+msgstr "Nenurodytas paieškos šablonas"
 
 #: src/prefs_matcher.c:1478
 msgid "Test command is not set."
@@ -11627,7 +11634,7 @@ msgid "Spell Checking"
 msgstr "Rašybos tikrinimas"
 
 #: src/prefs_summaries.c:151
-msgid "the full abbreviated weekday name"
+msgid "the abbreviated weekday name"
 msgstr "sutrumpintas savaitės dienos pavadinimas"
 
 #: src/prefs_summaries.c:152
@@ -12682,8 +12689,8 @@ msgstr "POP prieš SMTP"
 
 #: src/send_message.c:325
 #, c-format
-msgid "Connecting to SMTP server: %s ..."
-msgstr "Jungiamasi prie SMTP serverio: %s ..."
+msgid "Account '%s': Connecting to SMTP server: %s ..."
+msgstr "„%s“ paskyra: jungiamasi prie SMTP serverio: %s ..."
 
 #: src/send_message.c:382
 msgid "Mail sent successfully."
@@ -12988,11 +12995,11 @@ msgstr "Pagal laiškų duomenis sudaroma santrauka..."
 msgid "(No Date)"
 msgstr "(Data nežinoma)"
 
-#: src/summaryview.c:3229
+#: src/summaryview.c:3243
 msgid "(No Recipient)"
 msgstr "(Gavėjo nėra)"
 
-#: src/summaryview.c:3264
+#: src/summaryview.c:3278
 #, c-format
 msgid ""
 "%s\n"
@@ -13001,7 +13008,7 @@ msgstr ""
 "%s\n"
 "<span color='%s' style='italic'>Nuo: %s, %s</span>"
 
-#: src/summaryview.c:3271
+#: src/summaryview.c:3285
 #, c-format
 msgid ""
 "%s\n"
@@ -13010,11 +13017,11 @@ msgstr ""
 "%s\n"
 "<span color='%s' style='italic'>Kam: %s, %s</span>"
 
-#: src/summaryview.c:4139
+#: src/summaryview.c:4153
 msgid "You're not the author of the article.\n"
 msgstr "Jūs nesate straipsnio autorius.\n"
 
-#: src/summaryview.c:4230
+#: src/summaryview.c:4244
 #, c-format
 msgid "Do you really want to delete the selected message?"
 msgid_plural "Do you really want to delete the %d selected messages?"
@@ -13022,62 +13029,62 @@ msgstr[0] "Tikrai šalinti pasirinktą %d laišką?"
 msgstr[1] "Tikrai šalinti pasirinktus %d laiškus?"
 msgstr[2] "Tikrai šalinti pasirinktus %d laiškų?"
 
-#: src/summaryview.c:4233
+#: src/summaryview.c:4247
 msgid "Delete message(s)"
 msgstr "Šalinti laišką(-us)"
 
-#: src/summaryview.c:4394
+#: src/summaryview.c:4408
 msgid "Destination is same as current folder."
 msgstr "Paskirtis sutampa su veikiamuoju aplanku."
 
-#: src/summaryview.c:4493
+#: src/summaryview.c:4507
 msgid "Destination to copy is same as current folder."
 msgstr "Kopijavimo paskirtis sutampa su veikiamuoju aplanku."
 
-#: src/summaryview.c:4658
+#: src/summaryview.c:4672
 msgid "Append or Overwrite"
 msgstr "Papildyti ar perrašyti"
 
-#: src/summaryview.c:4659
+#: src/summaryview.c:4673
 msgid "Append or overwrite existing file?"
 msgstr "Papildyti ar perrašyti esamas rinkmenas?"
 
-#: src/summaryview.c:4660
+#: src/summaryview.c:4674
 msgid "_Append"
 msgstr "P_apildyti"
 
-#: src/summaryview.c:4660
+#: src/summaryview.c:4674
 msgid "_Overwrite"
 msgstr "_Perrašyti"
 
-#: src/summaryview.c:4701
+#: src/summaryview.c:4715
 #, c-format
 msgid ""
 "You are about to print %d messages, one by one. Do you want to continue?"
 msgstr "Ketinate paeiliui atspausdinti laiškų: %d. Tęsti?"
 
-#: src/summaryview.c:5178
+#: src/summaryview.c:5192
 msgid "Building threads..."
 msgstr "Kuriamos gijos..."
 
-#: src/summaryview.c:5424
+#: src/summaryview.c:5438
 msgid "Skip these rules"
 msgstr "Praleisti šias taisykles"
 
-#: src/summaryview.c:5427
+#: src/summaryview.c:5441
 msgid "Apply these rules regardless of the account they belong to"
 msgstr "Šias taisykles pritaikyti nepaisant paskyros, kuriai priklauso"
 
-#: src/summaryview.c:5430
+#: src/summaryview.c:5444
 msgid "Apply these rules if they apply to the current account"
 msgstr ""
 "Šias taisykles pritaikyti tik tuomet, jei jos skirtos veikiamajai paskyrai"
 
-#: src/summaryview.c:5459
+#: src/summaryview.c:5473
 msgid "Filtering"
 msgstr "Filtruojama"
 
-#: src/summaryview.c:5460
+#: src/summaryview.c:5474
 msgid ""
 "There are some filtering rules that belong to an account.\n"
 "Please choose what to do with these rules:"
@@ -13085,55 +13092,55 @@ msgstr ""
 "Kai kurios filtravimo taisyklės priklauso paskyroms.\n"
 "Pasirinkite, ką norite daryti su tokiomis taisyklėmis:"
 
-#: src/summaryview.c:5462
+#: src/summaryview.c:5476
 msgid "_Filter"
 msgstr "_Filtruoti"
 
-#: src/summaryview.c:5490
+#: src/summaryview.c:5504
 msgid "Filtering..."
 msgstr "Filtruojama..."
 
-#: src/summaryview.c:5569
+#: src/summaryview.c:5583
 msgid "Processing configuration"
 msgstr "Apdorojimo konfigūracija"
 
-#: src/summaryview.c:6111
+#: src/summaryview.c:6125
 msgid "Ignored thread"
 msgstr "Nepaisomoji gija"
 
-#: src/summaryview.c:6113
+#: src/summaryview.c:6127
 msgid "Watched thread"
 msgstr "Stebimoji gija"
 
-#: src/summaryview.c:6121
+#: src/summaryview.c:6135
 msgid "Replied - click to see reply"
 msgstr "Atsakyta - norėdami pamatyti atsakymą, spragtelėkite"
 
-#: src/summaryview.c:6133
+#: src/summaryview.c:6147
 msgid "To be moved"
 msgstr "Bus perkeliama"
 
-#: src/summaryview.c:6135
+#: src/summaryview.c:6149
 msgid "To be copied"
 msgstr "Bus kopijuojama"
 
-#: src/summaryview.c:6147
+#: src/summaryview.c:6161
 msgid "Signed, has attachment(s)"
 msgstr "Pasirašytas, turi prieda(-ų)"
 
-#: src/summaryview.c:6151
+#: src/summaryview.c:6165
 msgid "Encrypted, has attachment(s)"
 msgstr "Užšifruotas, turi priedą(-ų)"
 
-#: src/summaryview.c:6153
+#: src/summaryview.c:6167
 msgid "Encrypted"
 msgstr "Užšifruotas"
 
-#: src/summaryview.c:6155
+#: src/summaryview.c:6169
 msgid "Has attachment(s)"
 msgstr "Turi priedą(-ų)"
 
-#: src/summaryview.c:7766
+#: src/summaryview.c:7777
 #, c-format
 msgid ""
 "Regular expression (regexp) error:\n"
@@ -13142,11 +13149,11 @@ msgstr ""
 "Reguliariojo reiškinio (regexp) klaida:\n"
 "%s"
 
-#: src/summaryview.c:7874
+#: src/summaryview.c:7885
 msgid "Go back to the folder list (You have unread messages)"
 msgstr "Grįžti į aplankų sąrašą (yra neskaitytų laiškų)"
 
-#: src/summaryview.c:7879
+#: src/summaryview.c:7890
 msgid "Go back to the folder list"
 msgstr "Grįžti į aplankų sąrašą"
 
@@ -13317,11 +13324,11 @@ msgid "_Open URL"
 msgstr "At_verti URL"
 
 #: src/toolbar.c:180 src/toolbar.c:1899
-msgid "Receive Mail on all Accounts"
+msgid "Receive Mail from all Accounts"
 msgstr "Parsiųsti laiškus iš visų paskyrų"
 
 #: src/toolbar.c:181 src/toolbar.c:1904
-msgid "Receive Mail on current Account"
+msgid "Receive Mail from current Account"
 msgstr "Parsiųsti veikiamosios paskyros laiškus"
 
 #: src/toolbar.c:182 src/toolbar.c:1908
@@ -13444,6 +13451,14 @@ msgstr "Užverti langą"
 msgid "Claws Mail Plugins"
 msgstr "Claws pašto papildiniai"
 
+#: src/toolbar.c:364 src/toolbar.c:399
+msgid "Toolbar|Trash"
+msgstr "Šiukšlė"
+
+#: src/toolbar.c:387
+msgid "Folders"
+msgstr "Aplankai"
+
 #: src/toolbar.c:388
 msgid "Open"
 msgstr "Atverti"
@@ -13463,6 +13478,10 @@ msgstr "Rašyti"
 #: src/toolbar.c:395
 msgid "All"
 msgstr "Visiems"
+
+#: src/toolbar.c:396
+msgid "Toolbar|Sender"
+msgstr "Siuntėjui"
 
 #: src/toolbar.c:397
 msgid "List"
@@ -13521,7 +13540,7 @@ msgid "Go to folder list"
 msgstr "Eiti į aplankų sąrašą"
 
 #: src/toolbar.c:1900
-msgid "Receive Mail on selected Account"
+msgid "Receive Mail from selected Account"
 msgstr "Parsiųsti pasirinktos paskyros laiškus"
 
 #: src/toolbar.c:1916
@@ -13896,48 +13915,3 @@ msgid ""
 msgstr ""
 "Claws Mail programa paruošta.\n"
 "Norėdami pradėti, spauskite „Įrašyti“."
-
-#~ msgid ""
-#~ "\n"
-#~ "\n"
-#~ "Copyright (C) 1999-2010\n"
-#~ "Hiroyuki Yamamoto <hiro-y@kcn.ne.jp>\n"
-#~ "and the Claws Mail team"
-#~ msgstr ""
-#~ "\n"
-#~ "\n"
-#~ "Autorinės teisės (C) 1999-2010\n"
-#~ "Hiroyuki Yamamoto <hiro-y@kcn.ne.jp>\n"
-#~ "ir Claws Mail komanda"
-
-#~ msgid ""
-#~ "Copyright (C) 1999-2010\n"
-#~ "Hiroyuki Yamamoto <hiro-y@kcn.ne.jp>\n"
-#~ "and the Claws Mail team"
-#~ msgstr ""
-#~ "Autorinės teisės (C) 1999-2010\n"
-#~ "Hiroyuki Yamamoto <hiro-y@kcn.ne.jp>\n"
-#~ "ir Claws Mail pašto komanda"
-
-#~ msgid "headers line"
-#~ msgstr "antraštės eilutė"
-
-#~ msgid "message line"
-#~ msgstr "laiško eilutė"
-
-#~ msgid "Test RegExp"
-#~ msgstr "Išbandyti reguliarųjį reiškinį"
-
-#~ msgid " items selected"
-#~ msgstr " pasirinkt."
-
-#~ msgid "'View Log'"
-#~ msgstr "„Peržiūrėti žurnalą“"
-
-#~ msgid ""
-#~ "SMTP password:\n"
-#~ "<span size=\"small\">(empty to use the same as receive)</span>"
-#~ msgstr ""
-#~ "SMTP slaptažodis:\n"
-#~ "<span size=\"small\">(palikus tuščią, bus naudojamas gavimo serverio "
-#~ "slaptažodis)</span>"
