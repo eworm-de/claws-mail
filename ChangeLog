@@ -1,3 +1,9 @@
+2011-08-27 [mones]	3.7.9cvs51
+
+	* claws-mail.desktop
+		Include generic name and comment translations
+		Thanks to all the people on the translators ML!
+
 2011-08-23 [paul]	3.7.9cvs50
 
 	* src/common/ssl.c
