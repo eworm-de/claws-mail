@@ -3208,9 +3208,16 @@ static inline void summary_set_header(SummaryView *summaryview, gchar *text[],
 	}
 
 	if (!prefs_common.use_addr_book) {
-		from_text = msginfo->fromname ? 
-				msginfo->fromname :
-				_("(No From)");
+		if (prefs_common.summary_from_show == SHOW_NAME)
+			from_text = msginfo->fromname;
+		else if (prefs_common.summary_from_show == SHOW_BOTH)
+			from_text = msginfo->from;
+		else {
+			from_text = msginfo->from;
+			extract_address(from_text);
+		}
+		if (!from_text)
+			_("(No From)");		
 	} else {
 		gchar *tmp = summary_complete_address(msginfo->from);
 		if (tmp) {
@@ -3218,9 +3225,16 @@ static inline void summary_set_header(SummaryView *summaryview, gchar *text[],
 			g_free(tmp);
 			from_text = buf;
 		} else {
-			from_text = (msginfo->fromname) ?
-					msginfo->fromname: 
-					_("(No From)");
+			if (prefs_common.summary_from_show == SHOW_NAME)
+				from_text = msginfo->fromname;
+			else if (prefs_common.summary_from_show == SHOW_BOTH)
+				from_text = msginfo->from;
+			else {
+				from_text = msginfo->from;
+				extract_address(from_text);
+			}
+			if (!from_text)
+				_("(No From)");		
 		}
 	}
 	

@@ -95,6 +95,13 @@ typedef enum
 	OPENMSG_WHEN_VIEW_VISIBLE
 } ShowMsgPolicy;
 
+typedef enum
+{
+	SHOW_NAME,
+	SHOW_ADDR,
+	SHOW_BOTH
+} SummaryFromShow;
+
 struct _PrefsCommon
 {
 #ifdef MAEMO
@@ -357,6 +364,7 @@ struct _PrefsCommon
 	EntryAction summary_select_prio[SUMMARY_OPEN_ACTIONS-1];
 
 	NextUnreadMsgDialogShow next_unread_msg_dialog;
+	SummaryFromShow summary_from_show;
 	gboolean add_address_by_click;
 	gchar *pixmap_theme_path;
 	int hover_timeout; /* msecs mouse hover timeout */

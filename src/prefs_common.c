@@ -803,6 +803,8 @@ static PrefParam param[] = {
 	 NULL, NULL, NULL},
 	{"nextunreadmsg_dialog", "1", &prefs_common.next_unread_msg_dialog, P_ENUM,
 	 NULL, NULL, NULL},
+	{"summary_from_show", "0", &prefs_common.summary_from_show, P_ENUM,
+	 NULL, NULL, NULL},
 
 	{"pixmap_theme_path", DEFAULT_PIXMAP_THEME, 
 	 &SPECIFIC_PREFS.pixmap_theme_path, P_STRING,

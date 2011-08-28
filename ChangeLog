@@ -1,3 +1,12 @@
+2011-08-28 [paul]	3.7.10cvs2
+
+	* src/prefs_common.c
+	* src/prefs_common.h
+	* src/summaryview.c
+		add new hidden option to control the display in the From
+		column in the Message List: 0 (default): show name,
+		1: show address, 2: show name + address
+
 2011-08-27 [paul]	3.7.10cvs1
 
 	* po/POTFILES.in
