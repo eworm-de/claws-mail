@@ -1,3 +1,12 @@
+2011-08-29 [colin]	3.7.10cvs6
+
+	* src/plugins/pgpcore/Makefile.am
+	* src/plugins/pgpinline/Makefile.am
+	* src/plugins/pgpmime/Makefile.am
+	* src/plugins/smime/Makefile.am
+		Windows build fix:
+		libtool: link: require no space between `-L' and `.'
+
 2011-08-29 [colin]	3.7.10cvs5
 
 	* src/account.c

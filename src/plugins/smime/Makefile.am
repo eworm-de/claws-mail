@@ -23,7 +23,7 @@ libclaws.a: claws.def
 libmypgpcore.a: mypgpcore.def
 	$(DLLTOOL) --output-lib $@ --def $<
 
-plugin_ldadd = -L . -lclaws  -lmypgpcore
+plugin_ldadd = -L. -lclaws  -lmypgpcore
 
 else
 plugin_res =

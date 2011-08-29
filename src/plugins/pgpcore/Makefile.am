@@ -19,7 +19,7 @@ plugin_deps = libclaws.a $(plugin_res) plugin.def
 libclaws.a: claws.def
 	$(DLLTOOL) --output-lib $@ --def $<
 
-plugin_ldadd = -L . -lclaws
+plugin_ldadd = -L. -lclaws
 
 else
 plugin_res =
