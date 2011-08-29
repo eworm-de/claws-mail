@@ -6254,10 +6254,12 @@ static gchar *compose_get_header(Compose *compose)
 		     cur = cur->next) {
 			CustomHeader *chdr = (CustomHeader *)cur->data;
 
-			if (custom_header_is_allowed(chdr->name)) {
+			if (custom_header_is_allowed(chdr->name)
+			    && chdr->value != NULL
+			    && *(chdr->value) != '\0') {
 				compose_convert_header
 					(compose, buf, sizeof(buf),
-					 chdr->value ? chdr->value : "",
+					 chdr->value,
 					 strlen(chdr->name) + 2, FALSE);
 				g_string_append_printf(header, "%s: %s\n", chdr->name, buf);
 			}

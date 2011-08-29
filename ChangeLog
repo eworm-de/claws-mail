@@ -1,3 +1,10 @@
+2011-08-29 [colin]	3.7.10cvs4
+
+	* src/compose.c
+		Don't insert custom headers that have empty values.
+		Allows not inserting X-Mailer if it's set to nothing.
+		Fixes bug #2471, "Make setting an X-Mailer header optional".
+
 2011-08-29 [colin]	3.7.10cvs3
 
 	* src/image_viewer.c
