@@ -6232,7 +6232,8 @@ static gchar *compose_get_header(Compose *compose)
 	}
 
 	/* Program version and system info */
-	if (g_slist_length(compose->to_list) && !IS_IN_CUSTOM_HEADER("X-Mailer") &&
+	if (compose->account->gen_xmailer &&
+	    g_slist_length(compose->to_list) && !IS_IN_CUSTOM_HEADER("X-Mailer") &&
 	    !compose->newsgroup_list) {
 		g_string_append_printf(header, "X-Mailer: %s (GTK+ %d.%d.%d; %s)\n",
 			prog_version,

@@ -1,3 +1,12 @@
+2011-08-29 [colin]	3.7.10cvs5
+
+	* src/account.c
+	* src/compose.c
+	* src/prefs_account.c
+	* src/prefs_account.h
+		Revert cvs4 which is rather illogical and instead
+		use Fabian's patch from bug #2471
+
 2011-08-29 [colin]	3.7.10cvs4
 
 	* src/compose.c

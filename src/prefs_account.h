@@ -106,6 +106,7 @@ struct _PrefsAccount
 
 	/* Send */
 	gboolean gen_msgid;
+	gboolean gen_xmailer;
 	gboolean add_customhdr;
 	gboolean use_smtp_auth;
 	SMTPAuthType smtp_auth_type;

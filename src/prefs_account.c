@@ -162,6 +162,7 @@ typedef struct SendPage
     GtkWidget *vbox;
 
 	GtkWidget *msgid_checkbtn;
+	GtkWidget *xmailer_checkbtn;
 	GtkWidget *customhdr_checkbtn;
 	GtkWidget *msgid_with_addr_checkbtn;
 	GtkWidget *smtp_auth_checkbtn;
@@ -498,6 +499,10 @@ static PrefParam receive_param[] = {
 static PrefParam send_param[] = {
 	{"generate_msgid", "TRUE", &tmp_ac_prefs.gen_msgid, P_BOOL,
 	 &send_page.msgid_checkbtn,
+	 prefs_set_data_from_toggle, prefs_set_toggle},
+
+	{"generate_xmailer", "TRUE", &tmp_ac_prefs.gen_xmailer, P_BOOL,
+	 &send_page.xmailer_checkbtn,
 	 prefs_set_data_from_toggle, prefs_set_toggle},
 
 	{"add_custom_header", "FALSE", &tmp_ac_prefs.add_customhdr, P_BOOL,
@@ -1652,6 +1657,7 @@ static void send_create_widget_func(PrefsPage * _page,
 	GtkWidget *vbox2;
 	GtkWidget *frame;
 	GtkWidget *msgid_checkbtn;
+	GtkWidget *xmailer_checkbtn;
 	GtkWidget *hbox;
 	GtkWidget *customhdr_checkbtn;
 	GtkWidget *customhdr_edit_btn;
@@ -1682,6 +1688,9 @@ static void send_create_widget_func(PrefsPage * _page,
 
 	PACK_CHECK_BUTTON (vbox2, checkbtn_msgid_with_addr,
 			   _("Send account mail address in Message-ID"));
+
+	PACK_CHECK_BUTTON (vbox2, xmailer_checkbtn,
+			   _("Generate X-Mailer header"));
 
 	hbox = gtk_hbox_new (FALSE, 12);
 	gtk_widget_show (hbox);
@@ -1831,6 +1840,7 @@ static void send_create_widget_func(PrefsPage * _page,
 	gtk_box_pack_start (GTK_BOX (hbox), pop_auth_minutes_lbl, FALSE, FALSE, 0);
 	
 	page->msgid_checkbtn     = msgid_checkbtn;
+	page->xmailer_checkbtn   = xmailer_checkbtn;
 	page->customhdr_checkbtn = customhdr_checkbtn;
 	page->msgid_with_addr_checkbtn	= checkbtn_msgid_with_addr;
 
@@ -3909,8 +3919,10 @@ static void prefs_account_protocol_set_optmenu(PrefParam *pparam)
 					GTK_TOGGLE_BUTTON(send_page.msgid_checkbtn), 
 					TRUE);
 			gtk_widget_hide(send_page.msgid_checkbtn);
+			gtk_widget_hide(send_page.xmailer_checkbtn);
 		} else {
 			gtk_widget_show(send_page.msgid_checkbtn);
+			gtk_widget_show(send_page.xmailer_checkbtn);
 		}
 	}
 }
@@ -4060,6 +4072,7 @@ static void prefs_account_protocol_changed(GtkComboBox *combobox, gpointer data)
 		gtk_widget_hide(protocol_optmenu->no_imap_warn_label);
 #endif
 		gtk_widget_show(send_page.msgid_checkbtn);
+		gtk_widget_show(send_page.xmailer_checkbtn);
 		gtk_widget_show(basic_page.nntpserv_label);
 		gtk_widget_show(basic_page.nntpserv_entry);
   		gtk_table_set_row_spacing (GTK_TABLE (basic_page.serv_table),
@@ -4157,6 +4170,7 @@ static void prefs_account_protocol_changed(GtkComboBox *combobox, gpointer data)
 		break;
 	case A_LOCAL:
 		gtk_widget_show(send_page.msgid_checkbtn);
+		gtk_widget_show(send_page.xmailer_checkbtn);
 		gtk_widget_hide(protocol_optmenu->no_imap_warn_icon);
 		gtk_widget_hide(protocol_optmenu->no_imap_warn_label);
 		gtk_widget_hide(basic_page.nntpserv_label);
@@ -4260,6 +4274,11 @@ static void prefs_account_protocol_changed(GtkComboBox *combobox, gpointer data)
 				GTK_TOGGLE_BUTTON(send_page.msgid_checkbtn), 
 				TRUE);
 		gtk_widget_hide(send_page.msgid_checkbtn);
+		if (new_account)
+			gtk_toggle_button_set_active(
+				GTK_TOGGLE_BUTTON(send_page.xmailer_checkbtn),
+				TRUE);
+		gtk_widget_hide(send_page.xmailer_checkbtn);
 		gtk_widget_hide(basic_page.nntpserv_label);
 		gtk_widget_hide(basic_page.nntpserv_entry);
   		gtk_table_set_row_spacing (GTK_TABLE (basic_page.serv_table),
@@ -4356,6 +4375,7 @@ static void prefs_account_protocol_changed(GtkComboBox *combobox, gpointer data)
 		break;
 	case A_NONE:
 		gtk_widget_show(send_page.msgid_checkbtn);
+		gtk_widget_show(send_page.xmailer_checkbtn);
 		gtk_widget_hide(protocol_optmenu->no_imap_warn_icon);
 		gtk_widget_hide(protocol_optmenu->no_imap_warn_label);
 		gtk_widget_hide(basic_page.nntpserv_label);
@@ -4450,6 +4470,7 @@ static void prefs_account_protocol_changed(GtkComboBox *combobox, gpointer data)
 	case A_POP3:
 	default:
 		gtk_widget_show(send_page.msgid_checkbtn);
+		gtk_widget_show(send_page.xmailer_checkbtn);
 		gtk_widget_hide(protocol_optmenu->no_imap_warn_icon);
 		gtk_widget_hide(protocol_optmenu->no_imap_warn_label);
 		gtk_widget_hide(basic_page.nntpserv_label);
