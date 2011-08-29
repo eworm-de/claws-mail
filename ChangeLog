@@ -1,3 +1,12 @@
+2011-08-29 [colin]	3.7.10cvs3
+
+	* src/image_viewer.c
+	* src/textview.c
+	* src/gtk/gtkutils.c
+	* src/gtk/gtkutils.h
+		Handle EXIF orientation in images (both in textview's
+		preview and image viewer)
+
 2011-08-28 [paul]	3.7.10cvs2
 
 	* src/prefs_common.c

@@ -679,8 +679,6 @@ static void textview_add_part(TextView *textview, MimeInfo *mimeinfo)
 		if (mimeinfo->type == MIMETYPE_IMAGE  &&
 		    prefs_common.inline_img ) {
 			GdkPixbuf *pixbuf;
-			gint avail_width;
-			gint avail_height;
 			GError *error = NULL;
 			gchar *filename;
 			ClickableText *uri;
@@ -697,20 +695,7 @@ static void textview_add_part(TextView *textview, MimeInfo *mimeinfo)
 				return;
 			}
 
-			if (!prefs_common.resize_img) {
-				pixbuf = gdk_pixbuf_new_from_file(filename, &error);
-			} else {
-				gint w, h;
-				gdk_pixbuf_get_file_info(filename, &w, &h);
-				avail_width = textview->scrolledwin->allocation.width;
-				avail_height = textview->scrolledwin->allocation.height;
-				if (avail_width - 100 > 0 &&
-				    (w > avail_width || h > avail_height))
-					pixbuf = gdk_pixbuf_new_from_file_at_scale(filename, 
-						avail_width, avail_height, TRUE, &error);
-				else
-					pixbuf = gdk_pixbuf_new_from_file(filename, &error);
-			}
+			pixbuf = gdk_pixbuf_new_from_file(filename, &error);
 			if (textview->stop_loading) {
 				return;
 			}
@@ -722,6 +707,14 @@ static void textview_add_part(TextView *textview, MimeInfo *mimeinfo)
 				g_warning("Can't load the image.");
 				g_free(filename);
 				END_TIMING();
+				return;
+			}
+
+			pixbuf = claws_load_pixbuf_fitting(pixbuf,
+					textview->scrolledwin->allocation.width,
+					textview->scrolledwin->allocation.height);
+
+			if (textview->stop_loading) {
 				return;
 			}
 

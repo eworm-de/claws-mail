@@ -210,6 +210,8 @@ gboolean gtkut_list_view_select_row(GtkWidget *list, gint row);
 GtkUIManager *gtkut_create_ui_manager(void);
 GtkUIManager *gtkut_ui_manager(void);
 
+GdkPixbuf *claws_load_pixbuf_fitting(GdkPixbuf *pixbuf, int box_width,
+				     int box_height);
 gint
 claws_input_add    (gint	      source,
 		    GdkInputCondition condition,

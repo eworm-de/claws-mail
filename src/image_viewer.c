@@ -71,28 +71,24 @@ static void image_viewer_load_file(ImageViewer *imageviewer, const gchar *imgfil
 {
 	GdkPixbufAnimation *animation = NULL;
 	GdkPixbuf *pixbuf = NULL;
-	gint avail_width;
-	gint avail_height;
 	GError *error = NULL;
 
 	debug_print("image_viewer_show_mimepart\n");
 
-	if (!imageviewer->resize_img) {
-		animation = gdk_pixbuf_animation_new_from_file(imgfile, &error);
-	} else {
-		gint w, h;
-		gdk_pixbuf_get_file_info(imgfile, &w, &h);
-		avail_width = imageviewer->notebook->parent->allocation.width;
-		avail_height = imageviewer->notebook->parent->allocation.height;
-		if (avail_width > 8) avail_width -= 8;
-		if (avail_height > 8) avail_height -= 8;
-		if (avail_width - 100 > 0 &&
-		    (w > avail_width || h > avail_height)) {
-			pixbuf = gdk_pixbuf_new_from_file_at_scale(imgfile, avail_width,
-				avail_height, TRUE, &error);
-		} else {
-			animation = gdk_pixbuf_animation_new_from_file(imgfile, &error);
-		}
+	animation = gdk_pixbuf_animation_new_from_file(imgfile, &error);
+	if (gdk_pixbuf_animation_is_static_image(animation)
+	    || imageviewer->resize_img) {
+		pixbuf = gdk_pixbuf_animation_get_static_image(animation);
+		g_object_ref(pixbuf);
+		g_object_unref(animation);
+		animation = NULL;
+
+		if (imageviewer->resize_img)
+			pixbuf = claws_load_pixbuf_fitting(pixbuf,
+				imageviewer->notebook->parent->allocation.width,
+				imageviewer->notebook->parent->allocation.height);
+		else
+			pixbuf = claws_load_pixbuf_fitting(pixbuf, -1, -1);
 	}
 
 	if (error && !pixbuf && !animation) {

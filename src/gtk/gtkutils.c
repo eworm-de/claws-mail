@@ -1864,3 +1864,108 @@ void gtkut_widget_set_has_window(GtkWidget *widget, gboolean has_window)
 		GTK_WIDGET_SET_FLAGS(widget, GTK_NO_WINDOW);
 #endif
 }
+
+/**
+ * Load a pixbuf fitting inside the specified size. EXIF orientation is
+ * respected if available.
+ *
+ * @param[in] filename		the file to load
+ * @param[in] box_width		the max width (-1 for no resize)
+ * @param[in] box_height	the max height (-1 for no resize)
+ * @param[out] error		the possible load error
+ *
+ * @return a GdkPixbuf
+ */
+GdkPixbuf *claws_load_pixbuf_fitting(GdkPixbuf *src_pixbuf, int box_width,
+				     int box_height)
+{
+	gint w, h, orientation, angle;
+	gint avail_width, avail_height;
+	gboolean flip_horiz, flip_vert;
+	const gchar *orient_str;
+	GdkPixbuf *pixbuf, *t_pixbuf;
+
+	pixbuf = src_pixbuf;
+
+	if (pixbuf == NULL)
+		return NULL;
+
+	angle = 0;
+	flip_horiz = flip_vert = FALSE;
+
+	/* EXIF orientation */
+	orient_str = gdk_pixbuf_get_option(pixbuf, "orientation");
+	if (orient_str != NULL && *orient_str != '\0') {
+		orientation = atoi(orient_str);
+		switch(orientation) {
+			/* See EXIF standard for different values */
+			case 1:	break;
+			case 2:	flip_horiz = 1;
+				break;
+			case 3:	angle = 180;
+				break;
+			case 4:	flip_vert = 1;
+				break;
+			case 5:	angle = 90;
+				flip_horiz = 1;
+				break;
+			case 6:	angle = 270;
+				break;
+			case 7:	angle = 90;
+				flip_vert = 1;
+				break;
+			case 8:	angle = 90;
+				break;
+		}
+	}
+
+	w = gdk_pixbuf_get_width(pixbuf);
+	h = gdk_pixbuf_get_height(pixbuf);
+
+	if (angle == 90 || angle == 270) {
+		avail_height = box_width;
+		avail_width = box_height;
+	} else {
+		avail_width = box_width;
+		avail_height = box_height;
+	}
+
+	/* Scale first */
+	if (box_width != -1 && box_height != -1 && avail_width - 100 > 0) {
+		if (w > avail_width) {
+			h = (avail_width * h) / w;
+			w = avail_width;
+		}
+		if (h > avail_height) {
+			w = (avail_height * w) / h;
+			h = avail_height;
+		}
+		t_pixbuf = gdk_pixbuf_scale_simple(pixbuf, 
+			w, h, GDK_INTERP_BILINEAR);
+		g_object_unref(pixbuf);
+		pixbuf = t_pixbuf;
+	}
+
+	/* Rotate if needed */
+	if (angle != 0) {
+		t_pixbuf = gdk_pixbuf_rotate_simple(pixbuf, angle);
+		g_object_unref(pixbuf);
+		pixbuf = t_pixbuf;
+	}
+
+	/* Flip horizontally if needed */
+	if (flip_horiz) {
+		t_pixbuf = gdk_pixbuf_flip(pixbuf, TRUE);
+		g_object_unref(pixbuf);
+		pixbuf = t_pixbuf;
+	}
+
+	/* Flip vertically if needed */
+	if (flip_vert) {
+		t_pixbuf = gdk_pixbuf_flip(pixbuf, FALSE);
+		g_object_unref(pixbuf);
+		pixbuf = t_pixbuf;
+	}
+
+	return pixbuf;
+}
