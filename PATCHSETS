@@ -4210,3 +4210,4 @@
 ( cvs diff -u -r 1.382.2.578 -r 1.382.2.579 src/compose.c;  ) > 3.7.10cvs4.patchset
 ( cvs diff -u -r 1.61.2.97 -r 1.61.2.98 src/account.c;  cvs diff -u -r 1.382.2.579 -r 1.382.2.580 src/compose.c;  cvs diff -u -r 1.105.2.166 -r 1.105.2.167 src/prefs_account.c;  cvs diff -u -r 1.49.2.45 -r 1.49.2.46 src/prefs_account.h;  ) > 3.7.10cvs5.patchset
 ( cvs diff -u -r 1.1.2.12 -r 1.1.2.13 src/plugins/pgpcore/Makefile.am;  cvs diff -u -r 1.1.2.9 -r 1.1.2.10 src/plugins/pgpinline/Makefile.am;  cvs diff -u -r 1.1.2.12 -r 1.1.2.13 src/plugins/pgpmime/Makefile.am;  cvs diff -u -r 1.1.2.3 -r 1.1.2.4 src/plugins/smime/Makefile.am;  ) > 3.7.10cvs6.patchset
+( cvs diff -u -r 1.105.2.167 -r 1.105.2.168 src/prefs_account.c;  ) > 3.7.10cvs7.patchset

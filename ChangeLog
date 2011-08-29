@@ -1,3 +1,8 @@
+2011-08-29 [colin]	3.7.10cvs7
+
+	* src/prefs_account.c
+		Fix X-Mailer option not appearing on IMAP
+
 2011-08-29 [colin]	3.7.10cvs6
 
 	* src/plugins/pgpcore/Makefile.am

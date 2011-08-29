@@ -3919,11 +3919,10 @@ static void prefs_account_protocol_set_optmenu(PrefParam *pparam)
 					GTK_TOGGLE_BUTTON(send_page.msgid_checkbtn), 
 					TRUE);
 			gtk_widget_hide(send_page.msgid_checkbtn);
-			gtk_widget_hide(send_page.xmailer_checkbtn);
-		} else {
+		} else
 			gtk_widget_show(send_page.msgid_checkbtn);
-			gtk_widget_show(send_page.xmailer_checkbtn);
-		}
+
+		gtk_widget_show(send_page.xmailer_checkbtn);
 	}
 }
 
