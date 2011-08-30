@@ -246,17 +246,6 @@ gboolean ssl_init_socket_with_method(SockInfo *sockinfo, SSLMethod method)
 {
 	gnutls_session session;
 	int r;
-	const int cipher_prio[] = { GNUTLS_CIPHER_AES_128_CBC,
-		  		GNUTLS_CIPHER_3DES_CBC,
-		  		GNUTLS_CIPHER_AES_256_CBC,
-		  		GNUTLS_CIPHER_ARCFOUR_128, 0 };
-	const int kx_prio[] = { GNUTLS_KX_DHE_RSA,
-			   GNUTLS_KX_RSA, 
-			   GNUTLS_KX_DHE_DSS, 0 };
-	const int mac_prio[] = { GNUTLS_MAC_SHA1,
-		  		GNUTLS_MAC_MD5, 0 };
-	const int proto_prio[] = { GNUTLS_TLS1,
-		  		  GNUTLS_SSL3, 0 };
 	const gnutls_datum *raw_cert_list;
 	unsigned int raw_cert_list_length;
 	gnutls_x509_crt cert = NULL;
@@ -272,10 +261,8 @@ gboolean ssl_init_socket_with_method(SockInfo *sockinfo, SSLMethod method)
   
 	gnutls_transport_set_lowat (session, 0); 
 	gnutls_set_default_priority(session);
-	gnutls_protocol_set_priority (session, proto_prio);
-	gnutls_cipher_set_priority (session, cipher_prio);
-	gnutls_kx_set_priority (session, kx_prio);
-	gnutls_mac_set_priority (session, mac_prio);
+
+	gnutls_priority_set_direct(session, "EXPORT", NULL);
 	gnutls_record_disable_padding(session);
 
 	gnutls_credentials_set(session, GNUTLS_CRD_CERTIFICATE, xcred);

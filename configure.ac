@@ -12,7 +12,7 @@ MINOR_VERSION=7
 MICRO_VERSION=10
 INTERFACE_AGE=0
 BINARY_AGE=0
-EXTRA_VERSION=10
+EXTRA_VERSION=11
 EXTRA_RELEASE=
 EXTRA_GTK2_VERSION=
 
@@ -415,10 +415,10 @@ if test "x$ac_cv_enable_gnutls" != "xno"; then
   OCPPFLAGS="$CPPFLAGS"
   OLDFLAGS="$LDFLAGS"
   GNUTLS_LIBS=""
-  PKG_CHECK_MODULES(GNUTLS, gnutls >= 2.0.3,
+  PKG_CHECK_MODULES(GNUTLS, gnutls >= 2.2,
   	[ac_cv_enable_gnutls=yes],
   	[ac_cv_enable_gnutls=no
-	 echo "GnuTLS version >= 2.0.3 not found"])
+	 echo "GnuTLS version >= 2.2 not found"])
   if test "x$ac_cv_enable_gnutls" = "xyes"; then
    AC_CHECK_HEADER(gpg-error.h,
    	[AC_CHECK_LIB(gpg-error, gpg_strerror,,
