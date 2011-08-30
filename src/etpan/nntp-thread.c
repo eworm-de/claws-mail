@@ -386,7 +386,7 @@ static int etpan_certificate_check(const unsigned char *certificate, int len, vo
 	if (cert == NULL) {
 		g_warning("nntp: can't get cert\n");
 		return 0;
-	} else if (ssl_certificate_check(cert, NULL,
+	} else if (ssl_certificate_check(cert,
 		(gchar *)param->server, (gushort)param->port) == TRUE) {
 		X509_free(cert);
 		return 0;
@@ -411,7 +411,7 @@ static int etpan_certificate_check(const unsigned char *certificate, int len, vo
 	if (gnutls_x509_crt_import(cert, &tmp, GNUTLS_X509_FMT_DER) < 0) {
 		g_warning("nntp: can't get cert\n");
 		return 0;
-	} else if (ssl_certificate_check(cert, (guint)-1, NULL,
+	} else if (ssl_certificate_check(cert, (guint)-1,
 		(gchar *)param->server, (gushort)param->port) == TRUE) {
 		gnutls_x509_crt_deinit(cert);
 		return 0;

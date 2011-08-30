@@ -535,8 +535,8 @@ static int etpan_certificate_check(const unsigned char *certificate, int len, vo
 	if (cert == NULL) {
 		g_warning("IMAP: can't get cert\n");
 		return 0;
-	} else if (ssl_certificate_check(cert, NULL,
-		(gchar *)param->server, (gushort)param->port) == TRUE) {
+	} else if (ssl_certificate_check(cert, (gchar *)param->server,
+			(gushort)param->port) == TRUE) {
 		X509_free(cert);
 		return 0;
 	} else {
@@ -560,8 +560,8 @@ static int etpan_certificate_check(const unsigned char *certificate, int len, vo
 	if (gnutls_x509_crt_import(cert, &tmp, GNUTLS_X509_FMT_DER) < 0) {
 		g_warning("IMAP: can't get cert\n");
 		return 0;
-	} else if (ssl_certificate_check(cert, (guint)-1, NULL,
-		(gchar *)param->server, (gushort)param->port) == TRUE) {
+	} else if (ssl_certificate_check(cert, (guint)-1, (gchar *)param->server,
+			(gushort)param->port) == TRUE) {
 		gnutls_x509_crt_deinit(cert);
 		return 0;
 	} else {

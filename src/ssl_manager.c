@@ -348,7 +348,7 @@ static void ssl_manager_load_certs (void)
 		port = get_port(d->d_name);
 		fp = get_fingerprint(d->d_name);
 		
-		cert = ssl_certificate_find_lookup(server, atoi(port), fp, FALSE);
+		cert = ssl_certificate_find(server, atoi(port), fp);
 
 		ssl_manager_list_view_insert_cert(manager.certlist, NULL, 
 						  server, port, cert);

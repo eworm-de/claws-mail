@@ -56,9 +56,8 @@ struct _SSLCertHookData
 	gboolean accept;
 };
 
-SSLCertificate *ssl_certificate_find (gchar *host, gushort port, const gchar *fingerprint);
-SSLCertificate *ssl_certificate_find_lookup (gchar *host, gushort port, const gchar *fingerprint, gboolean lookup);
-gboolean ssl_certificate_check (gnutls_x509_crt x509_cert, guint status, gchar *fqdn, gchar *host, gushort port);
+SSLCertificate *ssl_certificate_find (const gchar *host, gushort port, const gchar *fingerprint);
+gboolean ssl_certificate_check (gnutls_x509_crt x509_cert, guint status, const gchar *host, gushort port);
 void ssl_certificate_destroy(SSLCertificate *cert);
 void ssl_certificate_delete_from_disk(SSLCertificate *cert);
 char * readable_fingerprint(unsigned char *src, int len);
