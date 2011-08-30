@@ -374,27 +374,7 @@ int nntp_threaded_connect(Folder * folder, const char * server, int port)
 
 static int etpan_certificate_check(const unsigned char *certificate, int len, void *data)
 {
-#ifdef USE_OPENSSL
-	struct connect_param *param = (struct connect_param *)data;
-	X509 *cert = NULL;
-	
-	if (certificate == NULL || len < 0) {
-		g_warning("no cert presented.\n");
-		return 0;
-	}
-	cert = d2i_X509(NULL, (const unsigned char **)&certificate, len);
-	if (cert == NULL) {
-		g_warning("nntp: can't get cert\n");
-		return 0;
-	} else if (ssl_certificate_check(cert,
-		(gchar *)param->server, (gushort)param->port) == TRUE) {
-		X509_free(cert);
-		return 0;
-	} else {
-		X509_free(cert);
-		return -1;
-	}
-#elif USE_GNUTLS
+#ifdef USE_GNUTLS
 	struct connect_param *param = (struct connect_param *)data;
 	gnutls_x509_crt cert = NULL;
 	gnutls_datum tmp;
@@ -425,17 +405,12 @@ static int etpan_certificate_check(const unsigned char *certificate, int len, vo
 
 static void connect_ssl_context_cb(struct mailstream_ssl_context * ssl_context, void * data)
 {
-#if (defined(USE_OPENSSL) || defined(USE_GNUTLS))
+#ifdef USE_GNUTLS
 	PrefsAccount *account = (PrefsAccount *)data;
 	const gchar *cert_path = NULL;
 	const gchar *password = NULL;
-#ifdef USE_OPENSSL
-	X509 *x509 = NULL;
-	EVP_PKEY *pkey = NULL;
-#else
 	gnutls_x509_crt x509 = NULL;
 	gnutls_x509_privkey pkey = NULL;
-#endif
 
 	if (account->in_ssl_client_cert_file && *account->in_ssl_client_cert_file)
 		cert_path = account->in_ssl_client_cert_file;
@@ -455,13 +430,8 @@ static void connect_ssl_context_cb(struct mailstream_ssl_context * ssl_context, 
 		unsigned char *x509_der = NULL, *pkey_der = NULL;
 		size_t x509_len, pkey_len;
 		
-#ifndef USE_GNUTLS
-		x509_len = (size_t)i2d_X509(x509, &x509_der);
-		pkey_len = (size_t)i2d_PrivateKey(pkey, &pkey_der);
-#else
 		x509_len = (size_t)gnutls_i2d_X509(x509, &x509_der);
 		pkey_len = (size_t)gnutls_i2d_PrivateKey(pkey, &pkey_der);
-#endif
 		if (x509_len > 0 && pkey_len > 0) {
 			if (mailstream_ssl_set_client_certificate_data(ssl_context, x509_der, x509_len) < 0 ||
 			    mailstream_ssl_set_client_private_key_data(ssl_context, pkey_der, pkey_len) < 0) 
@@ -469,10 +439,8 @@ static void connect_ssl_context_cb(struct mailstream_ssl_context * ssl_context, 
 			g_free(x509_der);
 			g_free(pkey_der);
 		}
-#ifdef USE_GNUTLS
 		gnutls_x509_crt_deinit(x509);
 		gnutls_x509_privkey_deinit(pkey);
-#endif
 	}
 #endif
 }
