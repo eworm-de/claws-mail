@@ -1,3 +1,10 @@
+2011-08-30 [colin]	3.7.10cvs10
+
+	* src/common/socket.c
+	* src/common/ssl.c
+		Long-term fix for bug #2402, "GnuTLS change breaks socket
+		communication", as per http://savannah.gnu.org/support/?107660
+
 2011-08-30 [colin]	3.7.10cvs9
 
 	* src/etpan/imap-thread.c
