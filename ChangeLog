@@ -1,3 +1,9 @@
+2011-08-30 [colin]	3.7.10cvs12
+
+	* src/gtk/prefswindow.c
+		Fix layout issues (i.e. on SSL page if changing account
+		type prior to visiting it).
+
 2011-08-30 [colin]	3.7.10cvs11
 
 	* configure.ac

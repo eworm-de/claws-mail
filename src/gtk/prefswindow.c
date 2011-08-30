@@ -305,7 +305,9 @@ static void prefswindow_build_page(PrefsWindow *prefswindow, PrefsPage *page)
 
 		gtk_container_add(GTK_CONTAINER(prefswindow->notebook), scrolledwin);
 		tmp = gtk_bin_get_child(GTK_BIN(scrolledwin));
-		gtk_viewport_set_shadow_type(GTK_VIEWPORT(tmp), GTK_SHADOW_NONE);
+
+		gtk_widget_realize(tmp);
+		gtk_widget_realize(page->widget);
 		
 		page->widget	= scrolledwin;
 		page->page_open	= TRUE;
