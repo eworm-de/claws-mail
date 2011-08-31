@@ -4217,3 +4217,4 @@
 ( cvs diff -u -r 1.654.2.4291 -r 1.654.2.4292 configure.ac;  cvs diff -u -r 1.9.2.46 -r 1.9.2.47 src/common/ssl.c;  ) > 3.7.10cvs11.patchset
 ( cvs diff -u -r 1.12.2.55 -r 1.12.2.56 src/gtk/prefswindow.c;  ) > 3.7.10cvs12.patchset
 ( cvs diff -u -r 1.100.2.78 -r 1.100.2.79 AUTHORS;  cvs diff -u -r 1.1.2.72 -r 1.1.2.73 src/gtk/authors.h;  cvs diff -u -r 1.274.2.327 -r 1.274.2.328 src/mainwindow.c;  cvs diff -u -r 1.94.2.217 -r 1.94.2.218 src/messageview.c;  cvs diff -u -r 1.1.2.72 -r 1.1.2.73 src/gtk/authors.h;  ) > 3.7.10cvs13.patchset
+( cvs diff -u -r 1.1.2.48 -r 1.1.2.49 src/plugins/pgpinline/pgpinline.c;  cvs diff -u -r 1.1.2.58 -r 1.1.2.59 src/plugins/pgpmime/pgpmime.c;  ) > 3.7.10cvs14.patchset

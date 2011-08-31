@@ -364,6 +364,7 @@ static MimeInfo *pgpmime_decrypt(MimeInfo *mimeinfo)
 	if (len > 0) {
 		if (fwrite(chars, 1, len, dstfp) < len) {
         		FILE_OP_ERROR(fname, "fwrite");
+			g_free(chars);
 			fclose(dstfp);
 			privacy_set_error(_("Couldn't write to decrypted file %s"), fname);
         		g_free(fname);
@@ -373,6 +374,8 @@ static MimeInfo *pgpmime_decrypt(MimeInfo *mimeinfo)
 			return NULL;
 		}
 	}
+	g_free(chars);
+
 	if (fclose(dstfp) == EOF) {
         	FILE_OP_ERROR(fname, "fclose");
 		privacy_set_error(_("Couldn't close decrypted file %s"), fname);

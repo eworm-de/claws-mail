@@ -1,3 +1,9 @@
+2011-08-31 [colin]	3.7.10cvs14
+
+	* src/plugins/pgpinline/pgpinline.c
+	* src/plugins/pgpmime/pgpmime.c
+		Fix bug #2431, "Major memory leak in PGP message handling".
+
 2011-08-31 [colin]	3.7.10cvs13
 
 	* AUTHORS

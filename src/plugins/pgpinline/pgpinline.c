@@ -475,10 +475,12 @@ static MimeInfo *pgpinline_decrypt(MimeInfo *mimeinfo)
 	if (len > 0) {
 		if (fwrite(chars, 1, len, dstfp) < len) {
         		FILE_OP_ERROR(fname, "fwrite");
+			g_free(chars);
 			privacy_set_error(_("Couldn't write to decrypted file %s"), fname);
 			goto FILE_ERROR;
 		}
 	}
+	g_free(chars);
 	/* Store any part after encrypted text */
 	if (fwrite(_("--- End of PGP/Inline encrypted data ---\n"), 1,
 		strlen(_("--- End of PGP/Inline encrypted data ---\n")), 
