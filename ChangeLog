@@ -1,3 +1,13 @@
+2011-08-31 [colin]	3.7.10cvs13
+
+	* AUTHORS
+	* src/gtk/authors.h
+	* src/mainwindow.c
+	* src/messageview.c
+	* src/gtk/authors.h
+		Apply Steve Rader's patch from bug #2388, "Add 
+		message view scrolling menu items"
+
 2011-08-30 [colin]	3.7.10cvs12
 
 	* src/gtk/prefswindow.c

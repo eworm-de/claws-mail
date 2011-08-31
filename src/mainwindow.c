@@ -314,6 +314,15 @@ static void goto_folder_cb	 (GtkAction	*action,
 static void goto_unread_folder_cb(GtkAction	*action,
 				  gpointer	 data);
 
+static void scroll_prev_line_cb  (GtkAction      *action,
+                                  gpointer        data);
+static void scroll_next_line_cb  (GtkAction      *action,
+                                  gpointer        data);
+static void scroll_prev_page_cb  (GtkAction      *action,
+                                  gpointer        data);
+static void scroll_next_page_cb  (GtkAction      *action,
+                                  gpointer        data);
+
 static void copy_cb		 (GtkAction	*action,
 				  gpointer	 data);
 static void allsel_cb		 (GtkAction	*action,
@@ -551,8 +560,15 @@ static GtkActionEntry mainwin_entries[] =
 	/* {"View/Goto/---",			NULL, "---", NULL, NULL, NULL }, */
 	{"View/Goto/NextUnreadFolder",		NULL, N_("Next unread _folder"), "<shift>G", NULL, G_CALLBACK(goto_unread_folder_cb) },
 	{"View/Goto/OtherFolder",		NULL, N_("_Other folder..."), "G", NULL, G_CALLBACK(goto_folder_cb) },
-	/* {"View/---",				NULL, "---", NULL, NULL, NULL }, */
 
+        /* {"View/Scroll/---",                  NULL, "---", NULL, NULL, NULL }, */
+        {"View/Scroll",                         NULL, N_("Message Scroll") },
+        {"View/Scroll/PrevLine",                NULL, N_("Previous line"), NULL, NULL, G_CALLBACK(scroll_prev_line_cb) },
+        {"View/Scroll/NextLine",                NULL, N_("Next line"), NULL, NULL, G_CALLBACK(scroll_next_line_cb) },
+        {"View/Scroll/PrevPage",                NULL, N_("Previous page"), NULL, NULL, G_CALLBACK(scroll_prev_page_cb) },
+        {"View/Scroll/NextPage",                NULL, N_("Next page"), NULL, NULL, G_CALLBACK(scroll_next_page_cb) },
+
+	/* {"View/---",				NULL, "---", NULL, NULL, NULL }, */
 	{"View/Encoding",			NULL, N_("Character _encoding") }, /* set_charset_cb */
 	{"View/Encoding/---",			NULL, "---" },
 #define ENC_ACTION(cs_char,c_char,string) \
@@ -1722,6 +1738,11 @@ MainWindow *main_window_create()
 	MENUITEM_ADDUI_MANAGER(mainwin->ui_manager, "/Menu/View/Goto", "Separator6", "View/Goto/---", GTK_UI_MANAGER_SEPARATOR)
 	MENUITEM_ADDUI_MANAGER(mainwin->ui_manager, "/Menu/View/Goto", "NextUnreadFolder", "View/Goto/NextUnreadFolder", GTK_UI_MANAGER_MENUITEM)
 	MENUITEM_ADDUI_MANAGER(mainwin->ui_manager, "/Menu/View/Goto", "OtherFolder", "View/Goto/OtherFolder", GTK_UI_MANAGER_MENUITEM)
+        MENUITEM_ADDUI_MANAGER(mainwin->ui_manager, "/Menu/View", "Scroll", "View/Scroll", GTK_UI_MANAGER_MENU)
+        MENUITEM_ADDUI_MANAGER(mainwin->ui_manager, "/Menu/View/Scroll", "PrevLine", "View/Scroll/PrevLine", GTK_UI_MANAGER_MENUITEM)
+        MENUITEM_ADDUI_MANAGER(mainwin->ui_manager, "/Menu/View/Scroll", "NextLine", "View/Scroll/NextLine", GTK_UI_MANAGER_MENUITEM)
+        MENUITEM_ADDUI_MANAGER(mainwin->ui_manager, "/Menu/View/Scroll", "PrevPage", "View/Scroll/PrevPage", GTK_UI_MANAGER_MENUITEM)
+        MENUITEM_ADDUI_MANAGER(mainwin->ui_manager, "/Menu/View/Scroll", "NextPage", "View/Scroll/NextPage", GTK_UI_MANAGER_MENUITEM)
 	MENUITEM_ADDUI_MANAGER(mainwin->ui_manager, "/Menu/View", "Separator4", "View/---", GTK_UI_MANAGER_SEPARATOR)
 
 	MENUITEM_ADDUI_MANAGER(mainwin->ui_manager, "/Menu/View", "Encoding", "View/Encoding", GTK_UI_MANAGER_MENU)
@@ -4790,6 +4811,30 @@ static void goto_unread_folder_cb(GtkAction *action, gpointer data)
 {
 	MainWindow *mainwin = (MainWindow *)data;
 	folderview_select_next_unread(mainwin->folderview, FALSE);
+}
+
+static void scroll_prev_line_cb(GtkAction *action, gpointer data)
+{
+        MainWindow *mainwin = (MainWindow *)data;
+        mimeview_scroll_one_line(mainwin->messageview->mimeview,TRUE);
+}
+
+static void scroll_next_line_cb(GtkAction *action, gpointer data)
+{
+        MainWindow *mainwin = (MainWindow *)data;
+        mimeview_scroll_one_line(mainwin->messageview->mimeview,FALSE);
+}
+
+static void scroll_prev_page_cb(GtkAction *action, gpointer data)
+{
+        MainWindow *mainwin = (MainWindow *)data;
+        mimeview_scroll_page(mainwin->messageview->mimeview,TRUE);
+}
+
+static void scroll_next_page_cb(GtkAction *action, gpointer data)
+{
+        MainWindow *mainwin = (MainWindow *)data;
+        mimeview_scroll_page(mainwin->messageview->mimeview,FALSE);
 }
 
 static void copy_cb(GtkAction *action, gpointer data)
