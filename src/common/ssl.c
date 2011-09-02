@@ -29,8 +29,11 @@
 #include <glib/gi18n.h>
 #include <errno.h>
 #include <pthread.h>
+
+#if GNUTLS_VERSION_NUMBER <= 0x020b00
 #include <gcrypt.h>
 GCRY_THREAD_OPTION_PTHREAD_IMPL;
+#endif
 
 #include "claws.h"
 #include "utils.h"
@@ -153,7 +156,9 @@ const gchar *claws_ssl_get_cert_dir(void)
 
 void ssl_init(void)
 {
+#if GNUTLS_VERSION_NUMBER <= 0x020b00
 	gcry_control (GCRYCTL_SET_THREAD_CBS, &gcry_threads_pthread);
+#endif
 #ifdef HAVE_LIBETPAN
 	mailstream_gnutls_init_not_required();
 #endif	

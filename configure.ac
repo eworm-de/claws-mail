@@ -12,7 +12,7 @@ MINOR_VERSION=7
 MICRO_VERSION=10
 INTERFACE_AGE=0
 BINARY_AGE=0
-EXTRA_VERSION=14
+EXTRA_VERSION=15
 EXTRA_RELEASE=
 EXTRA_GTK2_VERSION=
 
@@ -412,44 +412,25 @@ AC_ARG_ENABLE(gnutls,    [  --enable-gnutls      enable GnuTLS support],
 
 AC_MSG_RESULT($ac_cv_enable_gnutls)
 if test "x$ac_cv_enable_gnutls" != "xno"; then
-  OCPPFLAGS="$CPPFLAGS"
-  OLDFLAGS="$LDFLAGS"
-  GNUTLS_LIBS=""
-  PKG_CHECK_MODULES(GNUTLS, gnutls >= 2.2,
-  	[ac_cv_enable_gnutls=yes],
-  	[ac_cv_enable_gnutls=no
-	 echo "GnuTLS version >= 2.2 not found"])
-  if test "x$ac_cv_enable_gnutls" = "xyes"; then
-   AC_CHECK_HEADER(gpg-error.h,
-   	[AC_CHECK_LIB(gpg-error, gpg_strerror,,
-		[ac_cv_enable_gnutls=no])
-  	],[ac_cv_enable_gnutls=no])
-  fi
-  if test "x$ac_cv_enable_gnutls" = "xyes"; then
-   GCRYPT_LIBS="-lgpg-error"
-   AC_CHECK_HEADER(gcrypt.h,
-     	[AC_CHECK_LIB(gcrypt, gcry_control,,
-		[ac_cv_enable_gnutls=no])
-  	],[ac_cv_enable_gnutls=no])
-  fi
-  if test "x$ac_cv_enable_gnutls" = "xyes"; then
-  	if test x"$platform_win32" = "xyes"; then
-		GNUTLS_LIBS="-lgnutls -lgcrypt ${GCRYPT_LIBS}"
-	else
-		GNUTLS_LIBS="-lgnutls -lgcrypt -lz ${GCRYPT_LIBS}"
-	fi
-  fi
-else
-   CPPFLAGS="$OCPPFLAGS"
-   LDFLAGS="$OLDFLAGS"
+        PKG_CHECK_MODULES(GNUTLS, gnutls >= 2.2,
+        [
+                AC_DEFINE(USE_GNUTLS, 1, gnutls)
+                echo "Building with GnuTLS"
+        ],
+        [
+                echo "Building without gnutls"
+        ])
+        PKG_CHECK_MODULES(GNUTLS, gnutls >= 2.11,
+        [
+                dnl No linking against libgcrypt needed
+        ],
+        [
+                dnl linking against libgcrypt *is* needed
+                GNUTLS_LIBS="$GNUTLS_LIBS -lgcrypt"
+        ])
+        AC_SUBST(GNUTLS_LIBS)
+        AC_SUBST(GNUTLS_CFLAGS)
 fi
-
-if test "x$ac_cv_enable_gnutls" = "xyes"; then
-  AC_DEFINE([USE_GNUTLS],1, [Define to use GnuTLS])
-else
-  GNUTLS_LIBS=""
-fi
-AC_SUBST(GNUTLS_LIBS)
 
 dnl password encryption
 OLDLIBS=$LIBS

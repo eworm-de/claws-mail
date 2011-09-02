@@ -1,3 +1,11 @@
+2011-09-02 [colin]	3.7.10cvs15
+
+	* configure.ac
+	* src/common/ssl.c
+		Linking against gcrypt explicitely in order to call
+		gcry_control() for mutex setup isn't necessary anymore
+		starting from gnuTLS 2.11.
+
 2011-08-31 [colin]	3.7.10cvs14
 
 	* src/plugins/pgpinline/pgpinline.c
