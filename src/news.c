@@ -367,7 +367,11 @@ static Session *news_session_new_for_folder(Folder *folder)
 	session = news_session_new(folder, ac->nntp_server, port, userid, passwd);
 #endif
 
-	r = nntp_threaded_mode_reader(folder);
+	if (session != NULL)
+		r = nntp_threaded_mode_reader(folder);
+	else
+		r = NEWSNNTP_ERROR_CONNECTION_REFUSED;
+
 	if (r != NEWSNNTP_NO_ERROR) {
 	    if (r == NEWSNNTP_WARNING_REQUEST_AUTHORIZATION_USERNAME) {
 	        /*

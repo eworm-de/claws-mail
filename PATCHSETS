@@ -4220,3 +4220,4 @@
 ( cvs diff -u -r 1.1.2.48 -r 1.1.2.49 src/plugins/pgpinline/pgpinline.c;  cvs diff -u -r 1.1.2.58 -r 1.1.2.59 src/plugins/pgpmime/pgpmime.c;  ) > 3.7.10cvs14.patchset
 ( cvs diff -u -r 1.654.2.4295 -r 1.654.2.4296 configure.ac;  cvs diff -u -r 1.9.2.47 -r 1.9.2.48 src/common/ssl.c;  ) > 3.7.10cvs15.patchset
 ( cvs diff -u -r 1.9.2.48 -r 1.9.2.49 src/common/ssl.c;  ) > 3.7.10cvs16.patchset
+( cvs diff -u -r 1.101.2.67 -r 1.101.2.68 src/news.c;  ) > 3.7.10cvs17.patchset
