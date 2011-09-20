@@ -263,9 +263,10 @@ gboolean ssl_init_socket_with_method(SockInfo *sockinfo, SSLMethod method)
 	r = gnutls_init(&session, GNUTLS_CLIENT);
 	if (session == NULL || r != 0)
 		return FALSE;
-  
-	gnutls_transport_set_lowat (session, 0); 
 
+#if GNUTLS_VERSION_NUMBER < 0x030003
+	gnutls_transport_set_lowat (session, 0); 
+#endif
 	gnutls_priority_set_direct(session, "NORMAL", NULL);
 	gnutls_record_disable_padding(session);
 
