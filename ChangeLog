@@ -1,3 +1,9 @@
+2011-10-07 [colin]	3.7.10cvs26
+
+	* src/prefs_filtering_action.c
+	* src/gtk/gtkutils.h
+		Fix build with GTK+2.20
+
 2011-10-07 [colin]	3.7.10cvs25
 
 	* src/gtk/Makefile.am

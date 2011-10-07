@@ -1282,7 +1282,11 @@ static void prefs_filtering_action_enable_widget(GtkWidget* widget, const gboole
 
 	if(enable == TRUE)
 	{
-		if(GTK_IS_COMBO_BOX(widget) && gtk_combo_box_get_has_entry(GTK_COMBO_BOX(widget)))
+#if !GTK_CHECK_VERSION(2,24,0)
+		if(GTK_IS_COMBO_BOX(widget) || GTK_IS_COMBO_BOX_ENTRY(widget))
+#else
+		if(GTK_IS_COMBO_BOX(widget))
+#endif
 			gtk_combo_box_set_active(GTK_COMBO_BOX(widget), 0);
 		else if(GTK_IS_SPIN_BUTTON(widget))
 			gtk_spin_button_set_value(GTK_SPIN_BUTTON(widget), 0);

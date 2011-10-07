@@ -243,6 +243,12 @@ claws_input_add    (gint	      source,
 	gtk_tooltips_set_tip(GTK_TOOLTIPS(tips), widget, 	\
 			    tip, NULL);				\
 }
-
+#endif
+#if !GTK_CHECK_VERSION(2,22,0)
+#define gdk_drag_context_get_selected_action(x) ((x)->action)
+#define gdk_drag_context_get_actions(x) ((x)->actions)
+#define gtk_text_view_get_vadjustment(x) ((x)->vadjustment)
+#define gdk_drag_context_get_suggested_action(x) ((x)->suggested_action)
+#define gtk_button_get_event_window(x) ((x)->event_window)
 #endif
 #endif /* __GTKUTILS_H__ */
