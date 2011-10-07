@@ -12,7 +12,7 @@ MINOR_VERSION=7
 MICRO_VERSION=10
 INTERFACE_AGE=0
 BINARY_AGE=0
-EXTRA_VERSION=21
+EXTRA_VERSION=22
 EXTRA_RELEASE=
 EXTRA_GTK2_VERSION=
 
@@ -468,18 +468,19 @@ AC_ARG_ENABLE(gtk3,
 	AS_HELP_STRING([--enable-gtk3],
 		[Determines whether to use Gtk+ 3.0 vclplug on platforms where Gtk+ 3.0 is available.]),
 		[ac_cv_enable_gtk3=$enableval],[ac_cv_enable_gtk3=no])
+AM_CONDITIONAL(GTK3, false)
+AM_CONDITIONAL(GTK2, true)
 if test x"$ac_cv_enable_gtk3" = x"yes"; then
 	PKG_CHECK_MODULES(GTK, gtk+-3.0 >= 3.0 cairo)
-	AC_SUBST(GTK3, 1)
+	AM_CONDITIONAL(GTK3, true)
+	AM_CONDITIONAL(GTK2, false)
 else
 	PKG_CHECK_MODULES(GTK, gtk+-2.0 >= 2.10)
-	AC_SUBST(GTK2, 1)
 
-dnl --disable-deprecated switch for GTK2 purification
-AC_ARG_ENABLE(deprecated, [  --disable-deprecated  disable deprecated GTK functions. ],
+	dnl --disable-deprecated switch for GTK2 purification
+	AC_ARG_ENABLE(deprecated, [  --disable-deprecated  disable deprecated GTK functions. ],
 			  [GTK_CFLAGS="$GTK_CFLAGS -DG_DISABLE_DEPRECATED -DGTK_DISABLE_DEPRECATED"], [])
 fi
-
 AC_SUBST(GTK_CFLAGS)
 AC_SUBST(GTK_LIBS)
 

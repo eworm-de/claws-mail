@@ -1,3 +1,10 @@
+2011-10-07 [colin]	3.7.10cvs22
+
+	* configure.ac
+	* src/messageview.c
+	* src/gtk/Makefile.am
+		GTK2 build fix
+
 2011-10-07 [colin]	3.7.10cvs21
 
 	* configure.ac

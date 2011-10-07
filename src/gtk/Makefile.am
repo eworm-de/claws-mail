@@ -6,6 +6,15 @@ noinst_LTLIBRARIES = libclawsgtk.la
 EXTRA_DIST = \
 	claws-marshal.list
 
+if GTK2
+gtk2_sources = \
+	gtkcmctree.c \
+	gtkcmclist.c \
+	gtkcmoptionmenu.c \
+	gtksctree.c \
+	gtkshruler.c
+endif
+
 libclawsgtk_la_SOURCES = \
 	about.c \
 	colorlabel.c \
@@ -15,6 +24,7 @@ libclawsgtk_la_SOURCES = \
 	filesel.c \
 	foldersort.c \
 	gtkaspell.c \
+	$(gtk2_sources) \
 	gtkutils.c \
 	gtkvscrollbutton.c \
 	icon_legend.c \
@@ -55,23 +65,12 @@ clawsgtkinclude_HEADERS = \
 	quicksearch.h \
 	spell_entry.h \
 	sslcertwindow.h \
-	claws-marshal.h
-
-if GTK2
-libclawsgtk_la_SOURCES += \
-	gtkcmctree.c \
-	gtkcmclist.c \
-	gtkcmoptionmenu.c \
-	gtksctree.c \
-	gtkshruler.c
-
-clawsgtkinclude_HEADERS += \
+	claws-marshal.h \
 	gtkcmctree.h \
 	gtkcmclist.h \
 	gtkcmoptionmenu.h \
 	gtksctree.h \
 	gtkshruler.h
-endif
 
 AM_CPPFLAGS = \
 	-I$(srcdir)/../common \

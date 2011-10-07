@@ -2668,8 +2668,8 @@ static void add_address_cb(GtkAction *action, gpointer data)
 	         full_msginfo->extradata &&
 		 full_msginfo->extradata->xface) {
 		image = xface_get_from_header(full_msginfo->extradata->xface,
-				&messageview->mainwin->summaryview->ctree->style->white,
-				messageview->window->window);	
+				&(gtk_widget_get_style(messageview->mainwin->summaryview->ctree)->white),
+				gtk_widget_get_window(messageview->window));
 	}
 #endif
 	procmsg_msginfo_free(full_msginfo);
