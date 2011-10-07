@@ -320,11 +320,12 @@ static void input_dialog_create(gboolean is_password)
 			 G_CALLBACK(key_pressed), NULL);
 	MANAGE_WINDOW_SIGNALS_CONNECT(dialog);
 
-	gtk_box_set_spacing (GTK_BOX (GTK_DIALOG (dialog)->vbox), 14);
+	vbox = gtk_dialog_get_content_area (GTK_DIALOG (dialog));
+	gtk_box_set_spacing (GTK_BOX (vbox), 14);
 	hbox = gtk_hbox_new (FALSE, 12);
 	gtk_container_set_border_width (GTK_CONTAINER (hbox), 5);
 	gtk_widget_show (hbox);
-	gtk_box_pack_start (GTK_BOX (GTK_DIALOG (dialog)->vbox), hbox,
+	gtk_box_pack_start (GTK_BOX (vbox), hbox,
 			    FALSE, FALSE, 0);
 
 	/* for title label */
@@ -353,7 +354,7 @@ static void input_dialog_create(gboolean is_password)
 		gint size;
 
 		size = pango_font_description_get_size
-			(msg_title->style->font_desc);
+			(gtk_widget_get_style(msg_title)->font_desc);
 		font_desc = pango_font_description_new();
 		pango_font_description_set_weight
 			(font_desc, PANGO_WEIGHT_BOLD);
@@ -389,11 +390,11 @@ static void input_dialog_create(gboolean is_password)
 				      &ok_button, GTK_STOCK_OK,
 				      NULL, NULL);
 
-	gtk_box_pack_end(GTK_BOX(GTK_DIALOG(dialog)->action_area),
+	gtk_box_pack_end(GTK_BOX(gtk_dialog_get_action_area(GTK_DIALOG(dialog))),
 			 confirm_area, FALSE, FALSE, 0);
 	gtk_container_set_border_width(GTK_CONTAINER(confirm_area), 5);
 
-	gtk_widget_show_all(GTK_DIALOG(dialog)->vbox);
+	gtk_widget_show_all(gtk_dialog_get_content_area(GTK_DIALOG(dialog)));
 	
 	gtk_widget_hide(remember_checkbtn);
 

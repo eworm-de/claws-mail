@@ -859,7 +859,7 @@ static void compose_create_tags(GtkTextView *text, Compose *compose)
 	color[5] = quote_bgcolor3;
 	color[6] = signature_color;
 	color[7] = uri_color;
-	cmap = gdk_drawable_get_colormap(compose->window->window);
+	cmap = gdk_drawable_get_colormap(gtk_widget_get_window(compose->window));
 	gdk_colormap_alloc_colors(cmap, color, 8, FALSE, TRUE, success);
 
 	for (i = 0; i < 8; i++) {
@@ -6910,7 +6910,7 @@ static gboolean text_clicked(GtkWidget *text, GdkEventButton *event,
                                        Compose *compose)
 {
 	gint prev_autowrap;
-	GtkTextBuffer *buffer = GTK_TEXT_VIEW(text)->buffer;
+	GtkTextBuffer *buffer = gtk_text_view_get_buffer(GTK_TEXT_VIEW(text));
 #if USE_ENCHANT
 	if (event->button == 3) {
 		GtkTextIter iter;
@@ -7867,7 +7867,7 @@ static void compose_set_privacy_system_cb(GtkWidget *widget, gpointer data)
 
 	cm_return_if_fail(GTK_IS_CHECK_MENU_ITEM(widget));
 
-	if (!GTK_CHECK_MENU_ITEM(widget)->active)
+	if (!gtk_check_menu_item_get_active(GTK_CHECK_MENU_ITEM(widget)))
 		return;
 
 	systemid = g_object_get_data(G_OBJECT(widget), "privacy_system");
@@ -7890,7 +7890,7 @@ static void compose_update_privacy_system_menu_item(Compose * compose, gboolean 
 {
 	static gchar *branch_path = "/Menu/Options/PrivacySystem";
 	GtkWidget *menuitem = NULL;
-	GList *amenu;
+	GList *children, *amenu;
 	gboolean can_sign = FALSE, can_encrypt = FALSE;
 	gboolean found = FALSE;
 
@@ -7900,11 +7900,10 @@ static void compose_update_privacy_system_menu_item(Compose * compose, gboolean 
 				gtk_ui_manager_get_widget(compose->ui_manager, branch_path)));
 		cm_return_if_fail(menuitem != NULL);
 
-		amenu = GTK_MENU_SHELL(menuitem)->children;
+		children = gtk_container_get_children(GTK_CONTAINER(GTK_MENU_SHELL(menuitem)));
+		amenu = children;
 		menuitem = NULL;
 		while (amenu != NULL) {
-		        GList *alist = amenu->next;
-
 			systemid = g_object_get_data(G_OBJECT(amenu->data), "privacy_system");
 			if (systemid != NULL) {
 				if (strcmp(systemid, compose->privacy_system) == 0 &&
@@ -7926,8 +7925,9 @@ static void compose_update_privacy_system_menu_item(Compose * compose, gboolean 
 					break;
 			}
 
-			amenu = alist;
+			amenu = amenu->next;
 		}
+		g_list_free(children);
 		if (menuitem != NULL)
 			gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM(menuitem), TRUE);
 		
@@ -8333,6 +8333,7 @@ static void compose_template_apply_fields(Compose *compose, Template *tmpl)
 
 static void compose_destroy(Compose *compose)
 {
+	GtkAllocation allocation;
 	GtkTextBuffer *buffer;
 	GtkClipboard *clipboard;
 
@@ -8398,8 +8399,9 @@ static void compose_destroy(Compose *compose)
 #endif
 
 	if (!compose->batch) {
-		prefs_common.compose_width = compose->scrolledwin->allocation.width;
-		prefs_common.compose_height = compose->window->allocation.height;
+		gtk_widget_get_allocation(compose->scrolledwin, &allocation);
+		prefs_common.compose_width = allocation.width;
+		prefs_common.compose_height = allocation.height;
 	}
 
 	if (!gtk_widget_get_parent(compose->paned))
@@ -10406,6 +10408,8 @@ static void compose_advanced_action_cb(GtkAction *gaction, gpointer data)
 
 static void compose_grab_focus_cb(GtkWidget *widget, Compose *compose)
 {
+	GtkAllocation allocation;
+	GtkWidget *parent;
 	gchar *str = NULL;
 	
 	if (GTK_IS_EDITABLE(widget)) {
@@ -10413,24 +10417,29 @@ static void compose_grab_focus_cb(GtkWidget *widget, Compose *compose)
 		gtk_editable_set_position(GTK_EDITABLE(widget), 
 			strlen(str));
 		g_free(str);
-		if (widget->parent && widget->parent->parent
-		 && widget->parent->parent->parent) {
-			if (GTK_IS_SCROLLED_WINDOW(widget->parent->parent->parent)) {
-				gint y = widget->allocation.y;
-				gint height = widget->allocation.height;
+		if ((parent = gtk_widget_get_parent(widget))
+		 && (parent = gtk_widget_get_parent(parent))
+		 && (parent = gtk_widget_get_parent(parent))) {
+			if (GTK_IS_SCROLLED_WINDOW(parent)) {
+				gtk_widget_get_allocation(widget, &allocation);
+				gint y = allocation.y;
+				gint height = allocation.height;
 				GtkAdjustment *shown = gtk_scrolled_window_get_vadjustment
-					(GTK_SCROLLED_WINDOW(widget->parent->parent->parent));
+					(GTK_SCROLLED_WINDOW(parent));
 
-				if (y < (int)shown->value) {
-					gtk_adjustment_set_value(GTK_ADJUSTMENT(shown), y - 1);
+				gfloat value = gtk_adjustment_get_value(shown);
+				gfloat upper = gtk_adjustment_get_upper(shown);
+				gfloat page_size = gtk_adjustment_get_page_size(shown);
+				if (y < (int)value) {
+					gtk_adjustment_set_value(shown, y - 1);
 				}
-				if (y + height > (int)shown->value + (int)shown->page_size) {
-					if (y - height - 1 < (int)shown->upper - (int)shown->page_size) {
-						gtk_adjustment_set_value(GTK_ADJUSTMENT(shown), 
-							y + height - (int)shown->page_size - 1);
+				if ((y + height) > ((int)value + (int)page_size)) {
+					if ((y - height - 1) < ((int)upper - (int)page_size)) {
+						gtk_adjustment_set_value(shown, 
+							y + height - (int)page_size - 1);
 					} else {
-						gtk_adjustment_set_value(GTK_ADJUSTMENT(shown), 
-							(int)shown->upper - (int)shown->page_size - 1);
+						gtk_adjustment_set_value(shown, 
+							(int)upper - (int)page_size - 1);
 					}
 				}
 			}
@@ -10571,14 +10580,17 @@ static void compose_attach_drag_received_cb (GtkWidget		*widget,
 {
 	Compose *compose = (Compose *)user_data;
 	GList *list, *tmp;
+	GdkAtom type;
 
-	if (((gdk_atom_name(data->type) && !strcmp(gdk_atom_name(data->type), "text/uri-list"))
+	type = gtk_selection_data_get_data_type(data);
+	if (((gdk_atom_name(type) && !strcmp(gdk_atom_name(type), "text/uri-list"))
 #ifdef G_OS_WIN32
-	 || (gdk_atom_name(data->type) && !strcmp(gdk_atom_name(data->type), "DROPFILES_DND"))
+	 || (gdk_atom_name(type) && !strcmp(gdk_atom_name(type), "DROPFILES_DND"))
 #endif
 	   ) && gtk_drag_get_source_widget(context) != 
 	        summary_get_main_widget(mainwindow_get_mainwindow()->summaryview)) {
-		list = uri_list_extract_filenames((const gchar *)data->data);
+		list = uri_list_extract_filenames(
+			(const gchar *)gtk_selection_data_get_data(data));
 		for (tmp = list; tmp != NULL; tmp = tmp->next) {
 			gchar *utf8_filename = conv_filename_to_utf8((const gchar *)tmp->data);
 			compose_attach_append
@@ -10638,20 +10650,23 @@ static void compose_insert_drag_received_cb (GtkWidget		*widget,
 {
 	Compose *compose = (Compose *)user_data;
 	GList *list, *tmp;
+	GdkAtom type;
 
 	/* strangely, testing data->type == gdk_atom_intern("text/uri-list", TRUE)
 	 * does not work */
+	type = gtk_selection_data_get_data_type(data);
 #ifndef G_OS_WIN32
-	if (gdk_atom_name(data->type) && !strcmp(gdk_atom_name(data->type), "text/uri-list")) {
+	if (gdk_atom_name(type) && !strcmp(gdk_atom_name(type), "text/uri-list")) {
 #else
-	if (gdk_atom_name(data->type) && !strcmp(gdk_atom_name(data->type), "DROPFILES_DND")) {
+	if (gdk_atom_name(type) && !strcmp(gdk_atom_name(type), "DROPFILES_DND")) {
 #endif
 		AlertValue val = G_ALERTDEFAULT;
+		const gchar* ddata = (const gchar *)gtk_selection_data_get_data(data);
 
-		list = uri_list_extract_filenames((const gchar *)data->data);
-		if (list == NULL && strstr((gchar *)(data->data), "://")) {
+		list = uri_list_extract_filenames(ddata);
+		if (list == NULL && strstr(ddata, "://")) {
 			/* Assume a list of no files, and data has ://, is a remote link */
-			gchar *tmpdata = g_strstrip(g_strdup((const gchar *)data->data));
+			gchar *tmpdata = g_strstrip(g_strdup(ddata));
 			gchar *tmpfile = get_tmp_file();
 			str_write_to_file(tmpdata, tmpfile);
 			g_free(tmpdata);  
@@ -10725,7 +10740,7 @@ static void compose_header_drag_received_cb (GtkWidget		*widget,
 					     gpointer		 user_data)
 {
 	GtkEditable *entry = (GtkEditable *)user_data;
-	gchar *email = (gchar *)data->data;
+	const gchar *email = (const gchar *)gtk_selection_data_get_data(data);
 
 	/* strangely, testing data->type == gdk_atom_intern("text/plain", TRUE)
 	 * does not work */
@@ -10734,8 +10749,7 @@ static void compose_header_drag_received_cb (GtkWidget		*widget,
 		gchar *decoded=g_new(gchar, strlen(email));
 		int start = 0;
 
-		email += strlen("mailto:");
-		decode_uri(decoded, email); /* will fit */
+		decode_uri(decoded, email + strlen("mailto:")); /* will fit */
 		gtk_editable_delete_text(entry, 0, -1);
 		gtk_editable_insert_text(entry, decoded, strlen(decoded), &start);
 		gtk_drag_finish(drag_context, TRUE, FALSE, time);
@@ -10843,9 +10857,13 @@ static void compose_show_first_last_header(Compose *compose, gboolean show_first
 	cm_return_if_fail(compose);
 	cm_return_if_fail(!compose->batch);
 	cm_return_if_fail(GTK_IS_WIDGET(compose->header_table));
-	cm_return_if_fail(GTK_IS_VIEWPORT(compose->header_table->parent));
-	vadj = gtk_viewport_get_vadjustment(GTK_VIEWPORT(compose->header_table->parent));
-	gtk_adjustment_set_value(vadj, (show_first ? vadj->lower : (vadj->upper - vadj->page_size)));
+	cm_return_if_fail(GTK_IS_VIEWPORT(gtk_widget_get_parent(compose->header_table)));
+	vadj = gtk_viewport_get_vadjustment(GTK_VIEWPORT(
+				gtk_widget_get_parent(compose->header_table)));
+	gtk_adjustment_set_value(vadj, (show_first ?
+				gtk_adjustment_get_lower(vadj) :
+				(gtk_adjustment_get_upper(vadj) -
+				gtk_adjustment_get_page_size(vadj))));
 	gtk_adjustment_changed(vadj);
 }
 

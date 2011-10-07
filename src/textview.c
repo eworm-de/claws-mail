@@ -233,8 +233,10 @@ static void scrolled_cb (GtkAdjustment *adj, TextView *textview)
 #  define HEIGHT 48
 #endif
 	if (textview->image) {
+		GtkAllocation allocation;
 		gint x, y, x1;
-		x1 = textview->text->allocation.width - WIDTH - 5;
+		gtk_widget_get_allocation(textview->text, &allocation);
+		x1 = allocation.width - WIDTH - 5;
 		gtk_text_view_buffer_to_window_coords(
 			GTK_TEXT_VIEW(textview->text),
 			GTK_TEXT_WINDOW_TEXT, x1, 5, &x, &y);
@@ -603,6 +605,7 @@ void textview_show_part(TextView *textview, MimeInfo *mimeinfo, FILE *fp)
 
 static void textview_add_part(TextView *textview, MimeInfo *mimeinfo)
 {
+	GtkAllocation allocation;
 	GtkTextView *text;
 	GtkTextBuffer *buffer;
 	GtkTextIter iter, start_iter;
@@ -710,9 +713,10 @@ static void textview_add_part(TextView *textview, MimeInfo *mimeinfo)
 				return;
 			}
 
+			gtk_widget_get_allocation(textview->scrolledwin, &allocation);
 			pixbuf = claws_load_pixbuf_fitting(pixbuf,
-					textview->scrolledwin->allocation.width,
-					textview->scrolledwin->allocation.height);
+					allocation.width,
+					allocation.height);
 
 			if (textview->stop_loading) {
 				return;
@@ -1850,6 +1854,7 @@ static GPtrArray *textview_scan_header(TextView *textview, FILE *fp)
 
 static void textview_show_face(TextView *textview)
 {
+	GtkAllocation allocation;
 	GtkTextView *text = GTK_TEXT_VIEW(textview->text);
 	MsgInfo *msginfo = textview->messageview->msginfo;
 	int x = 0;
@@ -1870,7 +1875,8 @@ static void textview_show_face(TextView *textview)
 
 	gtk_widget_show(textview->image);
 	
-	x = textview->text->allocation.width - WIDTH -5;
+	gtk_widget_get_allocation(textview->text, &allocation);
+	x = allocation.width - WIDTH -5;
 
 	gtk_text_view_add_child_in_window(text, textview->image, 
 		GTK_TEXT_WINDOW_TEXT, x, 5);
@@ -1887,6 +1893,7 @@ bail:
 
 void textview_show_icon(TextView *textview, const gchar *stock_id)
 {
+	GtkAllocation allocation;
 	GtkTextView *text = GTK_TEXT_VIEW(textview->text);
 	int x = 0;
 	
@@ -1898,7 +1905,8 @@ void textview_show_icon(TextView *textview, const gchar *stock_id)
 
 	gtk_widget_show(textview->image);
 	
-	x = textview->text->allocation.width - WIDTH -5;
+	gtk_widget_get_allocation(textview->text, &allocation);
+	x = allocation.width - WIDTH -5;
 
 	gtk_text_view_add_child_in_window(text, textview->image, 
 		GTK_TEXT_WINDOW_TEXT, x, 5);
@@ -1989,6 +1997,7 @@ static void textview_save_contact_pic(TextView *textview)
 
 static void textview_show_contact_pic(TextView *textview)
 {
+	GtkAllocation allocation;
 	MsgInfo *msginfo = textview->messageview->msginfo;
 	GtkTextView *text = GTK_TEXT_VIEW(textview->text);
 	int x = 0;
@@ -2040,7 +2049,8 @@ static void textview_show_contact_pic(TextView *textview)
 
 	gtk_widget_show(textview->image);
 	
-	x = textview->text->allocation.width - WIDTH -5;
+	gtk_widget_get_allocation(textview->text, &allocation);
+	x = allocation.width - WIDTH -5;
 
 	gtk_text_view_add_child_in_window(text, textview->image, 
 		GTK_TEXT_WINDOW_TEXT, x, 5);
@@ -2232,7 +2242,7 @@ gboolean textview_search_string_backward(TextView *textview, const gchar *str,
 void textview_scroll_one_line(TextView *textview, gboolean up)
 {
 	GtkTextView *text = GTK_TEXT_VIEW(textview->text);
-	GtkAdjustment *vadj = text->vadjustment;
+	GtkAdjustment *vadj = gtk_text_view_get_vadjustment(text);
 
 	gtkutils_scroll_one_line(GTK_WIDGET(text), vadj, up);
 }
@@ -2240,7 +2250,7 @@ void textview_scroll_one_line(TextView *textview, gboolean up)
 gboolean textview_scroll_page(TextView *textview, gboolean up)
 {
 	GtkTextView *text = GTK_TEXT_VIEW(textview->text);
-	GtkAdjustment *vadj = text->vadjustment;
+	GtkAdjustment *vadj = gtk_text_view_get_vadjustment(text);
 
 	return gtkutils_scroll_page(GTK_WIDGET(text), vadj, up);
 }
@@ -2252,6 +2262,7 @@ gboolean textview_scroll_page(TextView *textview, gboolean up)
 static gint textview_key_pressed(GtkWidget *widget, GdkEventKey *event,
 				 TextView *textview)
 {
+	GdkWindow *window;
 	SummaryView *summaryview = NULL;
 	MessageView *messageview = textview->messageview;
 
@@ -2308,11 +2319,12 @@ static gint textview_key_pressed(GtkWidget *widget, GdkEventKey *event,
 		}
 		/* possible fall through */
 	default:
+		window = gtk_widget_get_window(messageview->mainwin->window);
 		if (summaryview &&
-		    event->window != messageview->mainwin->window->window) {
+		    event->window != window) {
 			GdkEventKey tmpev = *event;
 
-			tmpev.window = messageview->mainwin->window->window;
+			tmpev.window = window;
 			KEY_PRESS_EVENT_STOP();
 			gtk_widget_event(messageview->mainwin->window,
 					 (GdkEvent *)&tmpev);
@@ -2330,7 +2342,7 @@ static gboolean textview_motion_notify(GtkWidget *widget,
 	if (textview->loading)
 		return FALSE;
 	textview_uri_update(textview, event->x, event->y);
-	gdk_window_get_pointer(widget->window, NULL, NULL, NULL);
+	gdk_window_get_pointer(gtk_widget_get_window(widget), NULL, NULL, NULL);
 
 	return FALSE;
 }
@@ -2363,7 +2375,7 @@ static gboolean textview_visibility_notify(GtkWidget *widget,
 	if (window != event->window)
 		return FALSE;
 	
-	gdk_window_get_pointer(widget->window, &wx, &wy, NULL);
+	gdk_window_get_pointer(gtk_widget_get_window(widget), &wx, &wy, NULL);
 	textview_uri_update(textview, wx, wy);
 
 	return FALSE;

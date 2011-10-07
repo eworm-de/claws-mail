@@ -28,11 +28,6 @@
 
 #include <stdlib.h>
 
-/* We know this file uses some deprecated stuff. */
-#undef G_DISABLE_DEPRECATED
-#undef GTK_DISABLE_DEPRECATED
-#undef GDK_DISABLE_DEPRECATED
-
 #include "gtksctree.h"
 #include "claws-marshal.h"
 #include "prefs_common.h"
@@ -207,10 +202,11 @@ gtk_sctree_get_cell_style (GtkCMCList     *clist,
 		GdkGC       **fg_gc,
 		GdkGC       **bg_gc)
 {
+  GtkStyle *gtkstyle;
   gint fg_state;
 
   if ((state == GTK_STATE_NORMAL) &&
-      (GTK_WIDGET (clist)->state == GTK_STATE_INSENSITIVE))
+      (gtk_widget_get_state (GTK_WIDGET (clist)) == GTK_STATE_INSENSITIVE))
     fg_state = GTK_STATE_INSENSITIVE;
   else
     fg_state = state;
@@ -242,15 +238,16 @@ gtk_sctree_get_cell_style (GtkCMCList     *clist,
     }
   else
     {
+      gtkstyle = gtk_widget_get_style (GTK_WIDGET (clist));
       if (style)
-	*style = GTK_WIDGET (clist)->style;
+	*style = gtkstyle;
       if (fg_gc)
-	*fg_gc = GTK_WIDGET (clist)->style->fg_gc[fg_state];
+	*fg_gc = gtkstyle->fg_gc[fg_state];
       if (bg_gc) {
 	if (state == GTK_STATE_SELECTED)
-	  *bg_gc = GTK_WIDGET (clist)->style->bg_gc[state];
+	  *bg_gc = gtkstyle->bg_gc[state];
 	else
-	  *bg_gc = GTK_WIDGET (clist)->style->base_gc[state];
+	  *bg_gc = gtkstyle->base_gc[state];
       }
 
       if (state != GTK_STATE_SELECTED)
@@ -574,7 +571,7 @@ gtk_sctree_draw_lines (GtkCMCTree     *ctree,
 		      else if (state == GTK_STATE_SELECTED)
 			bg_gc = style->base_gc[state];
 		      else
-			bg_gc = GTK_WIDGET (clist)->style->base_gc[state];
+			bg_gc = gtk_widget_get_style (GTK_WIDGET (clist))->base_gc[state];
 
 		      if (!area)
 			gdk_draw_rectangle (clist->clist_window, bg_gc, TRUE,
@@ -638,8 +635,8 @@ gtk_sctree_draw_lines (GtkCMCTree     *ctree,
 
 	  if (!area)
 	    gdk_draw_rectangle (clist->clist_window,
-				GTK_WIDGET
-				(ctree)->style->base_gc[GTK_STATE_NORMAL],
+				gtk_widget_get_style (GTK_WIDGET
+				(ctree))->base_gc[GTK_STATE_NORMAL],
 				TRUE,
 				tree_rectangle.x,
 				tree_rectangle.y,
@@ -648,8 +645,8 @@ gtk_sctree_draw_lines (GtkCMCTree     *ctree,
 	  else if (gdk_rectangle_intersect (area, &tree_rectangle,
 					    &tc_rectangle))
 	    gdk_draw_rectangle (clist->clist_window,
-				GTK_WIDGET
-				(ctree)->style->base_gc[GTK_STATE_NORMAL],
+				gtk_widget_get_style (GTK_WIDGET
+				(ctree))->base_gc[GTK_STATE_NORMAL],
 				TRUE,
 				tc_rectangle.x,
 				tc_rectangle.y,
@@ -845,6 +842,7 @@ gtk_sctree_draw_row (GtkCMCList     *clist,
 	  GtkCMCListRow  *clist_row)
 {
   GtkWidget *widget;
+  GtkStyle *style;
   GtkCMCTree  *ctree;
   GdkRectangle *rect;
   GdkRectangle *crect;
@@ -861,13 +859,17 @@ gtk_sctree_draw_row (GtkCMCList     *clist,
   static GdkColor greybg={0, 0, 0, 0};
   static gboolean color_change = TRUE;
 
+  cm_return_if_fail (clist != NULL);
+  widget = GTK_WIDGET (clist);
+  style = gtk_widget_get_style (widget);
+
   if (greybg.pixel == 0 &&
       greybg.red == 0 &&
       greybg.green == 0 &&
       greybg.blue == 0) {
 	GdkColor normalbg = {0, 0xffff, 0xffff, 0xffff};
-	if (GTK_WIDGET (clist)->style) {
-		normalbg = GTK_WIDGET (clist)->style->base[GTK_STATE_NORMAL];
+	if (style) {
+		normalbg = style->base[GTK_STATE_NORMAL];
 	}
 	if (normalbg.red > 0x8888 && normalbg.green > 0x8888 && normalbg.blue > 0x8888) {
 		greybg.pixel = normalbg.pixel;
@@ -884,13 +886,10 @@ gtk_sctree_draw_row (GtkCMCList     *clist,
 	}
   }
 
-  cm_return_if_fail (clist != NULL);
-
   /* bail now if we arn't drawable yet */
   if (!gtkut_widget_is_drawable (GTK_WIDGET(clist)) || row < 0 || row >= clist->rows)
     return;
 
-  widget = GTK_WIDGET (clist);
   ctree  = GTK_CMCTREE  (clist);
 
   /* if the function is passed the pointer to the row instead of null,
@@ -935,7 +934,7 @@ gtk_sctree_draw_row (GtkCMCList     *clist,
   state = clist_row->state;
 
   gdk_gc_set_foreground (ctree->lines_gc,
-			 &widget->style->fg[clist_row->state]);
+			 &style->fg[clist_row->state]);
 
   /* draw the cell borders */
   if (area)
@@ -945,7 +944,7 @@ gtk_sctree_draw_row (GtkCMCList     *clist,
 
       if (gdk_rectangle_intersect (area, &cell_rectangle, crect))
 	gdk_draw_rectangle (clist->clist_window,
-			    widget->style->base_gc[GTK_STATE_NORMAL], TRUE,
+			    style->base_gc[GTK_STATE_NORMAL], TRUE,
 			    crect->x, crect->y, crect->width, crect->height);
     }
   else
@@ -954,7 +953,7 @@ gtk_sctree_draw_row (GtkCMCList     *clist,
       crect = &cell_rectangle;
 
       gdk_draw_rectangle (clist->clist_window,
-			  widget->style->base_gc[GTK_STATE_NORMAL], TRUE,
+			  style->base_gc[GTK_STATE_NORMAL], TRUE,
 			  crect->x, crect->y, crect->width, crect->height);
     }
 
@@ -1001,7 +1000,7 @@ gtk_sctree_draw_row (GtkCMCList     *clist,
       if (!area || gdk_rectangle_intersect (area, &cell_rectangle, crect))
 	{
 	  gdk_draw_rectangle (clist->clist_window,
-			      widget->style->base_gc[GTK_STATE_NORMAL], TRUE,
+			      style->base_gc[GTK_STATE_NORMAL], TRUE,
 			      crect->x, crect->y, crect->width, crect->height);
 
 	  /* horizontal black lines */
@@ -1953,13 +1952,17 @@ gtk_sctree_column_auto_resize (GtkCMCList    *clist,
 	   old_width == clist->column[column].width)
     {
       GList *list;
+      GtkRequisition button_req;
       gint new_width;
 
       /* run a "gtk_cmclist_optimal_column_width" but break, if
        * the column doesn't shrink */
       if (GTK_CMCLIST_SHOW_TITLES (clist) && clist->column[column].button)
-	new_width = (clist->column[column].button->requisition.width -
+        {
+	gtk_widget_get_requisition (clist->column[column].button, &button_req);
+	new_width = (button_req.width -
 		     (CELL_SPACING + (2 * COLUMN_INSET)));
+        }
       else
 	new_width = 0;
 

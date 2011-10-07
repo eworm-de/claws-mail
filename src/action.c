@@ -476,15 +476,22 @@ void action_update_compose_menu(GtkUIManager *ui_manager,
 
 static GtkWidget *find_item_in_menu(GtkWidget *menu, gchar *name)
 {
-	GList *amenu = GTK_MENU_SHELL(menu)->children;
+	GList *children = gtk_container_get_children(GTK_CONTAINER(GTK_MENU_SHELL(menu)));
+	GList *amenu = children;
 	const gchar *existing_name;
 	while (amenu) {
 		GtkWidget *item = GTK_WIDGET(amenu->data);
 		if ((existing_name = g_object_get_data(G_OBJECT(item), "s_name")) != NULL &&
 		    !strcmp2(name, existing_name))
+		{
+			g_list_free(children);
 			 return item;
+		}
 		amenu = amenu->next;
 	}
+
+	g_list_free(children);
+
 	return NULL;
 }
 
@@ -1324,7 +1331,7 @@ static void create_io_dialog(Children *children)
 
 	dialog = gtk_dialog_new();
 	gtk_container_set_border_width
-		(GTK_CONTAINER(GTK_DIALOG(dialog)->action_area), 5);
+		(GTK_CONTAINER(gtk_dialog_get_action_area(GTK_DIALOG(dialog))), 5);
 	gtk_window_set_position(GTK_WINDOW(dialog), GTK_WIN_POS_CENTER);
 	gtk_window_set_title(GTK_WINDOW(dialog), _("Action's input/output"));
 	gtk_window_set_modal(GTK_WINDOW(dialog), TRUE);
@@ -1336,7 +1343,8 @@ static void create_io_dialog(Children *children)
 			 children);
 
 	vbox = gtk_vbox_new(FALSE, 8);
-	gtk_container_add(GTK_CONTAINER(GTK_DIALOG(dialog)->vbox), vbox);
+	gtk_container_add(GTK_CONTAINER(
+				gtk_dialog_get_content_area(GTK_DIALOG(dialog))), vbox);
 	gtk_container_set_border_width(GTK_CONTAINER(vbox), 8);
 	gtk_widget_show(vbox);
 
@@ -1435,7 +1443,8 @@ static void create_io_dialog(Children *children)
 	if (children->nb)
 		gtk_widget_set_sensitive(close_button, FALSE);
 
-	gtk_container_add(GTK_CONTAINER(GTK_DIALOG(dialog)->action_area), hbox);
+	gtk_container_add(GTK_CONTAINER(
+			gtk_dialog_get_action_area(GTK_DIALOG(dialog))), hbox);
 
 	children->dialog       = dialog;
 	children->scrolledwin  = scrolledwin;

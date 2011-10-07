@@ -90,12 +90,12 @@ static struct TagApplyWindow
 } applywindow;
 
 #define APPLYWINDOW_LOCK() {								\
-	gdk_window_set_cursor(applywindow.window->window, applywindow.watch_cursor);	\
+	gdk_window_set_cursor(gtk_widget_get_window(applywindow.window), applywindow.watch_cursor);	\
 	applywindow.busy = TRUE;							\
 }
 
 #define APPLYWINDOW_UNLOCK() {								\
-	gdk_window_set_cursor(applywindow.window->window, NULL);			\
+	gdk_window_set_cursor(gtk_widget_get_window(applywindow.window), NULL);			\
 	applywindow.busy = FALSE;							\
 }
 

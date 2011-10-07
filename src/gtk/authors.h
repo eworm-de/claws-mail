@@ -184,6 +184,7 @@ static char *CONTRIBS_LIST[] = {
 "David Mehrmann",
 "Christian Mertes",
 "Bram Metsch",
+"Hanno Meyer-Thurow",
 "George Michaelson",
 "Florian Mickler",
 "Neill Miller",

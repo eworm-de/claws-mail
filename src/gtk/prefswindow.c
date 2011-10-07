@@ -600,7 +600,7 @@ void prefswindow_open_full(const gchar *title, GSList *prefs_pages,
 #endif
 	adj = gtk_scrolled_window_get_vadjustment(
 			GTK_SCROLLED_WINDOW(prefswindow->scrolledwindow1));
-	gtk_adjustment_set_value(adj, adj->lower);
+	gtk_adjustment_set_value(adj, gtk_adjustment_get_lower(adj));
 	gtk_adjustment_changed(adj);
 }
 
@@ -686,6 +686,7 @@ static gboolean prefswindow_row_selected(GtkTreeSelection *selector,
 	PrefsTreeNode *prefsnode;
 	PrefsPage *page;
 	PrefsWindow *prefswindow = (PrefsWindow *) data;
+	gfloat lower;
 	gchar *labeltext;
 	gint pagenum, i;
 	GtkTreeIter iter;
@@ -730,11 +731,12 @@ static gboolean prefswindow_row_selected(GtkTreeSelection *selector,
 
 	adj = gtk_scrolled_window_get_vadjustment(
 			GTK_SCROLLED_WINDOW(page->widget));
-	gtk_adjustment_set_value(adj, adj->lower);
+	lower = gtk_adjustment_get_lower(adj);
+	gtk_adjustment_set_value(adj, lower);
 	gtk_adjustment_changed(adj);
 	adj = gtk_scrolled_window_get_hadjustment(
 			GTK_SCROLLED_WINDOW(page->widget));
-	gtk_adjustment_set_value(adj, adj->lower);
+	gtk_adjustment_set_value(adj, lower);
 	gtk_adjustment_changed(adj);
 
 #ifdef GENERIC_UMPC

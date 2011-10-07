@@ -1597,7 +1597,7 @@ static gboolean icon_window_button_press(GtkWidget *widget,
 				restore = FALSE;
 				break;
 			}
-			event_widget = event_widget->parent;
+			event_widget = gtk_widget_get_parent(event_widget);
 		}
 	}
 
@@ -1616,6 +1616,7 @@ static void icon_chooser_activated(GtkTreeView *treeview, GtkTreePath *path,
 
 static void icon_chooser_create(GtkButton *button, ToolbarPage *prefs_toolbar)
 {
+	GtkAllocation allocation;
 	GtkWidget *icon_chooser_win;
 	GtkWidget *scrollwin;
 	GtkWidget *icon_view;
@@ -1646,10 +1647,12 @@ static void icon_chooser_create(GtkButton *button, ToolbarPage *prefs_toolbar)
 #ifndef MAEMO
 	gtk_window_set_decorated(GTK_WINDOW(icon_chooser_win), FALSE);
 #endif
-	gdk_window_get_origin(GTK_WIDGET(prefs_toolbar->icon_button)->window, 
+	gdk_window_get_origin(gtk_widget_get_window(
+			GTK_WIDGET(prefs_toolbar->icon_button)), 
 			&x, &y);
-	x += GTK_WIDGET(prefs_toolbar->icon_button)->allocation.x;
-	y += GTK_WIDGET(prefs_toolbar->icon_button)->allocation.y;
+	gtk_widget_get_allocation(GTK_WIDGET(prefs_toolbar->icon_button), &allocation);
+	x += allocation.x;
+	y += allocation.y;
 	y += 50;
 	x -= 300-50;
 	gtk_window_move(GTK_WINDOW(icon_chooser_win), x, y);

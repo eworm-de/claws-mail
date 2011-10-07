@@ -23,11 +23,6 @@
 #endif
 #include "defs.h"
 
-/* We know this file uses some deprecated stuff. */
-#undef G_DISABLE_DEPRECATED
-#undef GTK_DISABLE_DEPRECATED
-#undef GDK_DISABLE_DEPRECATED
-
 #include <glib.h>
 #include <glib/gi18n.h>
 #include <gdk/gdkkeysyms.h>
@@ -848,9 +843,9 @@ static void addrcompl_resize_window( CompletionWindow *cw ) {
 	gint x, y, width, height, depth;
 
 	/* Get current geometry of window */
-	gdk_window_get_geometry( cw->window->window, &x, &y, &width, &height, &depth );
+	gdk_window_get_geometry( gtk_widget_get_window( cw->window ), &x, &y, &width, &height, &depth );
 
-	gtk_widget_hide_all( cw->window );
+	gtk_widget_hide( cw->window );
 	gtk_widget_show_all( cw->window );
 	gtk_widget_size_request( cw->list_view, &r );
 
@@ -1107,7 +1102,7 @@ static void completion_window_apply_selection(GtkTreeView *list_view,
 	g_free(text);
 
 	/* Move focus to next widget */
-	parent = GTK_WIDGET(entry)->parent;
+	parent = gtk_widget_get_parent(GTK_WIDGET(entry));
 	if( parent && move_focus) {
 		gtk_widget_child_focus( parent, GTK_DIR_TAB_FORWARD );
 	}
@@ -1317,6 +1312,7 @@ static void address_completion_create_completion_window( GtkEntry *entry_ )
 	GtkRequisition r;
 	GtkWidget *window;
 	GtkWidget *entry = GTK_WIDGET(entry_);
+	GdkWindow *gdkwin;
 
 	/* Create new window and list */
 	window = gtk_window_new(GTK_WINDOW_POPUP);
@@ -1340,8 +1336,9 @@ static void address_completion_create_completion_window( GtkEntry *entry_ )
 	gtk_scrolled_window_set_shadow_type(GTK_SCROLLED_WINDOW(scroll),
 		GTK_SHADOW_OUT);
 	/* Use entry widget to create initial window */
-	gdk_window_get_geometry(entry->window, &x, &y, &width, &height, &depth);
-	gdk_window_get_origin (entry->window, &x, &y);
+	gdkwin = gtk_widget_get_window(entry),
+	gdk_window_get_geometry(gdkwin, &x, &y, &width, &height, &depth);
+	gdk_window_get_origin (gdkwin, &x, &y);
 	y += height;
 	gtk_window_move(GTK_WINDOW(window), x, y);
 
@@ -1368,7 +1365,7 @@ static void address_completion_create_completion_window( GtkEntry *entry_ )
 			 "key-press-event",
 			 G_CALLBACK(completion_window_key_press),
 			 _compWindow_ );
-	gdk_pointer_grab(window->window, TRUE,
+	gdk_pointer_grab(gtk_widget_get_window(window), TRUE,
 			 GDK_POINTER_MOTION_MASK | GDK_BUTTON_PRESS_MASK |
 			 GDK_BUTTON_RELEASE_MASK,
 			 NULL, NULL, GDK_CURRENT_TIME);
@@ -1414,7 +1411,7 @@ static gboolean completion_window_button_press(GtkWidget *widget,
 				restore = FALSE;
 				break;
 			}
-			event_widget = event_widget->parent;
+			event_widget = gtk_widget_get_parent(event_widget);
 		}
 	}
 
@@ -1466,7 +1463,7 @@ static gboolean completion_window_key_press(GtkWidget *widget,
 	/* make tab move to next field */
 	if( event->keyval == GDK_Tab ) {
 		/* Reference to parent */
-		parent = GTK_WIDGET(entry)->parent;
+		parent = gtk_widget_get_parent(GTK_WIDGET(entry));
 
 		/* Discard the window */
 		clear_completion_cache();
@@ -1482,7 +1479,7 @@ static gboolean completion_window_key_press(GtkWidget *widget,
 	/* make backtab move to previous field */
 	if( event->keyval == GDK_ISO_Left_Tab ) {
 		/* Reference to parent */
-		parent = GTK_WIDGET(entry)->parent;
+		parent = gtk_widget_get_parent(GTK_WIDGET(entry));
 
 		/* Discard the window */
 		clear_completion_cache();
@@ -1540,7 +1537,7 @@ static gboolean completion_window_key_press(GtkWidget *widget,
 
 	/* make sure anything we typed comes in the edit box */
 	tmp_event.type       = event->type;
-	tmp_event.window     = entry->window;
+	tmp_event.window     = gtk_widget_get_window(GTK_WIDGET(entry));
 	tmp_event.send_event = TRUE;
 	tmp_event.time       = event->time;
 	tmp_event.state      = event->state;

@@ -5618,11 +5618,11 @@ static void addressbook_drag_data_get(GtkWidget        *widget,
 	if (aio && aio->type == ADDR_ITEM_PERSON) {
 		if( ds && ds->interface && ds->interface->readOnly)
 			gtk_selection_data_set(selection_data,
-				       selection_data->target, 8,
+				       gtk_selection_data_get_target(selection_data), 8,
 				       (const guchar *)"Dummy_addr_copy", 15);
 		else
 			gtk_selection_data_set(selection_data,
-				       selection_data->target, 8,
+				       gtk_selection_data_get_target(selection_data), 8,
 				       (const guchar *)"Dummy_addr_move", 15);
 	} 
 }
@@ -5634,14 +5634,18 @@ static gboolean addressbook_drag_motion_cb(GtkWidget      *widget,
 					  guint           time,
 					  void            *data)
 {
+	GtkAllocation allocation;
+	GtkRequisition requisition;
 	gint row, column;
 	GtkCMCTreeNode *node = NULL;
 	gboolean acceptable = FALSE;
-	gint height = addrbook.ctree->allocation.height;
-	gint total_height = addrbook.ctree->requisition.height;
+	gtk_widget_get_allocation(GTK_WIDGET(addrbook.ctree), &allocation);
+	gint height = allocation.height;
+	gtk_widget_get_requisition(GTK_WIDGET(addrbook.ctree), &requisition);
+	gint total_height = requisition.height;
 	GtkAdjustment *pos = gtk_scrolled_window_get_vadjustment(
 				GTK_SCROLLED_WINDOW(addrbook.ctree_swin));
-	gfloat vpos = pos->value;
+	gfloat vpos = gtk_adjustment_get_value(pos);
 	
 	if (gtk_cmclist_get_selection_info
 		(GTK_CMCLIST(widget), x - 24, y - 24, &row, &column)) {
@@ -5683,7 +5687,7 @@ static gboolean addressbook_drag_motion_cb(GtkWidget      *widget,
 			(G_OBJECT(widget),
 			 G_CALLBACK(addressbook_tree_selected), NULL);
 		gdk_drag_status(context, 
-					(context->actions == GDK_ACTION_COPY ?
+					(gdk_drag_context_get_actions(context) == GDK_ACTION_COPY ?
 					GDK_ACTION_COPY : GDK_ACTION_MOVE) , time);
 	} else {
 		gdk_drag_status(context, 0, time);
@@ -5721,7 +5725,7 @@ static void addressbook_drag_received_cb(GtkWidget        *widget,
 	GtkCMCTreeNode *node;
 	GtkCMCTreeNode *lastopened = addrbook.opened;
 
-	if (!strncmp(data->data, "Dummy_addr", 10)) {
+	if (!strncmp(gtk_selection_data_get_data(data), "Dummy_addr", 10)) {
 		if (gtk_cmclist_get_selection_info
 			(GTK_CMCLIST(widget), x - 24, y - 24, &row, &column) == 0) {
 			return;
@@ -5732,8 +5736,8 @@ static void addressbook_drag_received_cb(GtkWidget        *widget,
 			return;
 		
 		gtk_cmclist_freeze(GTK_CMCLIST(addrbook.clist));
-		if (drag_context->action == GDK_ACTION_COPY || 
-		    !strcmp(data->data, "Dummy_addr_copy"))
+		if (gdk_drag_context_get_selected_action(drag_context) == GDK_ACTION_COPY || 
+		    !strcmp(gtk_selection_data_get_data(data), "Dummy_addr_copy"))
 			addressbook_clip_copy_cb(NULL, NULL);
 		else
 			addressbook_clip_cut_cb(NULL, NULL);

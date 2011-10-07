@@ -31,11 +31,6 @@
 #include <config.h>
 #include <stdlib.h>
 
-/* We know this file uses some deprecated stuff. */
-#undef G_DISABLE_DEPRECATED
-#undef GTK_DISABLE_DEPRECATED
-#undef GDK_DISABLE_DEPRECATED
-
 #include <gtk/gtk.h>
 #include <gdk/gdkkeysyms.h>
 #include "gtkcmctree.h"
@@ -847,6 +842,7 @@ gtk_cmctree_realize (GtkWidget *widget)
   GdkGCValues values;
   GtkCMCTreeNode *node;
   GtkCMCTreeNode *child;
+  GtkStyle *style;
   gint i;
 
   cm_return_if_fail (GTK_IS_CMCTREE (widget));
@@ -866,8 +862,10 @@ gtk_cmctree_realize (GtkWidget *widget)
       node = GTK_CMCTREE_NODE_NEXT (node);
     }
 
-  values.foreground = widget->style->fg[GTK_STATE_NORMAL];
-  values.background = widget->style->base[GTK_STATE_NORMAL];
+  style = gtk_widget_get_style(widget);
+
+  values.foreground = style->fg[GTK_STATE_NORMAL];
+  values.background = style->base[GTK_STATE_NORMAL];
   values.subwindow_mode = GDK_INCLUDE_INFERIORS;
   values.line_style = GDK_LINE_SOLID;
   ctree->lines_gc = gdk_gc_new_with_values (GTK_CMCLIST(widget)->clist_window, 
@@ -977,6 +975,7 @@ draw_drag_highlight (GtkCMCList        *clist,
 		     gint             dest_row_number,
 		     GtkCMCListDragPos  drag_pos)
 {
+  GtkAllocation allocation;
   GtkCMCTree *ctree;
   GdkPoint points[4];
   gint level;
@@ -986,6 +985,7 @@ draw_drag_highlight (GtkCMCList        *clist,
   cm_return_if_fail (GTK_IS_CMCTREE (clist));
 
   ctree = GTK_CMCTREE (clist);
+  gtk_widget_get_allocation(GTK_WIDGET(ctree), &allocation);
 
   level = ((GtkCMCTreeRow *)(dest_row))->level;
 
@@ -1016,7 +1016,7 @@ draw_drag_highlight (GtkCMCList        *clist,
 			   COLUMN_LEFT_XPIXEL(clist, ctree->tree_column) + 
 			   ctree->tree_indent * level -
 			   (ctree->tree_indent - PM_SIZE) / 2, y,
-			   GTK_WIDGET (ctree)->allocation.width, y);
+			   allocation.width, y);
 	    break;
 	  case GTK_JUSTIFY_RIGHT:
 	    if (ctree->tree_column < clist->columns - 1)
@@ -1172,10 +1172,12 @@ get_cell_style (GtkCMCList     *clist,
 		GdkGC       **fg_gc,
 		GdkGC       **bg_gc)
 {
+  GtkStyle *gtkstyle;
   gint fg_state;
 
+  gtkstyle = gtk_widget_get_style (GTK_WIDGET (clist));
   if ((state == GTK_STATE_NORMAL) &&
-      (GTK_WIDGET (clist)->state == GTK_STATE_INSENSITIVE))
+      (gtk_widget_get_state(GTK_WIDGET (clist)) == GTK_STATE_INSENSITIVE))
     fg_state = GTK_STATE_INSENSITIVE;
   else
     fg_state = state;
@@ -1209,14 +1211,14 @@ get_cell_style (GtkCMCList     *clist,
   else
     {
       if (style)
-	*style = GTK_WIDGET (clist)->style;
+	*style = gtkstyle;
       if (fg_gc)
-	*fg_gc = GTK_WIDGET (clist)->style->fg_gc[fg_state];
+	*fg_gc = gtkstyle->fg_gc[fg_state];
       if (bg_gc) {
 	if (state == GTK_STATE_SELECTED)
-	  *bg_gc = GTK_WIDGET (clist)->style->bg_gc[state];
+	  *bg_gc = gtkstyle->bg_gc[state];
 	else
-	  *bg_gc = GTK_WIDGET (clist)->style->base_gc[state];
+	  *bg_gc = gtkstyle->base_gc[state];
       }
 
       if (state != GTK_STATE_SELECTED)
@@ -1537,7 +1539,7 @@ gtk_cmctree_draw_lines (GtkCMCTree     *ctree,
 		      else if (state == GTK_STATE_SELECTED)
 			bg_gc = style->base_gc[state];
 		      else
-			bg_gc = GTK_WIDGET (clist)->style->base_gc[state];
+			bg_gc = gtk_widget_get_style (GTK_WIDGET (clist))->base_gc[state];
 
 		      if (!area)
 			gdk_draw_rectangle (clist->clist_window, bg_gc, TRUE,
@@ -1601,8 +1603,8 @@ gtk_cmctree_draw_lines (GtkCMCTree     *ctree,
 
 	  if (!area)
 	    gdk_draw_rectangle (clist->clist_window,
-				GTK_WIDGET
-				(ctree)->style->base_gc[GTK_STATE_NORMAL],
+				gtk_widget_get_style (GTK_WIDGET
+				(ctree))->base_gc[GTK_STATE_NORMAL],
 				TRUE,
 				tree_rectangle.x,
 				tree_rectangle.y,
@@ -1611,8 +1613,8 @@ gtk_cmctree_draw_lines (GtkCMCTree     *ctree,
 	  else if (gdk_rectangle_intersect (area, &tree_rectangle,
 					    &tc_rectangle))
 	    gdk_draw_rectangle (clist->clist_window,
-				GTK_WIDGET
-				(ctree)->style->base_gc[GTK_STATE_NORMAL],
+				gtk_widget_get_style (GTK_WIDGET
+				(ctree))->base_gc[GTK_STATE_NORMAL],
 				TRUE,
 				tc_rectangle.x,
 				tc_rectangle.y,
@@ -1744,6 +1746,7 @@ draw_row (GtkCMCList     *clist,
 	  gint          row,
 	  GtkCMCListRow  *clist_row)
 {
+  GtkStyle *style;
   GtkWidget *widget;
   GtkCMCTree  *ctree;
   GdkRectangle *crect;
@@ -1801,8 +1804,9 @@ draw_row (GtkCMCList     *clist,
   
   state = clist_row->state;
 
+  style = gtk_widget_get_style (widget);
   gdk_gc_set_foreground (ctree->lines_gc,
-			 &widget->style->fg[clist_row->state]);
+			 &style->fg[clist_row->state]);
 
   /* draw the cell borders */
   if (area)
@@ -1811,7 +1815,7 @@ draw_row (GtkCMCList     *clist,
 
       if (gdk_rectangle_intersect (area, &cell_rectangle, crect))
 	gdk_draw_rectangle (clist->clist_window,
-			    widget->style->base_gc[GTK_STATE_NORMAL], TRUE,
+			    style->base_gc[GTK_STATE_NORMAL], TRUE,
 			    crect->x, crect->y, crect->width, crect->height);
     }
   else
@@ -1819,7 +1823,7 @@ draw_row (GtkCMCList     *clist,
       crect = &cell_rectangle;
 
       gdk_draw_rectangle (clist->clist_window,
-			  widget->style->base_gc[GTK_STATE_NORMAL], TRUE,
+			  style->base_gc[GTK_STATE_NORMAL], TRUE,
 			  crect->x, crect->y, crect->width, crect->height);
     }
 
@@ -1866,7 +1870,7 @@ draw_row (GtkCMCList     *clist,
       if (!area || gdk_rectangle_intersect (area, &cell_rectangle, crect))
 	{
 	  gdk_draw_rectangle (clist->clist_window,
-			      widget->style->base_gc[GTK_STATE_NORMAL], TRUE,
+			      gtk_widget_get_style (widget)->base_gc[GTK_STATE_NORMAL], TRUE,
 			      crect->x, crect->y, crect->width, crect->height);
 
 	  /* horizontal black lines */
@@ -2883,8 +2887,12 @@ column_auto_resize (GtkCMCList    *clist,
       /* run a "gtk_cmclist_optimal_column_width" but break, if
        * the column doesn't shrink */
       if (GTK_CMCLIST_SHOW_TITLES (clist) && clist->column[column].button)
-	new_width = (clist->column[column].button->requisition.width -
+        {
+	GtkRequisition req;
+	gtk_widget_get_requisition (clist->column[column].button, &req);
+	new_width = (req.width -
 		     (CELL_SPACING + (2 * COLUMN_INSET)));
+        }
       else
 	new_width = 0;
 
@@ -5864,14 +5872,18 @@ drag_dest_cell (GtkCMCList         *clist,
 		gint              y,
 		GtkCMCListDestInfo *dest_info)
 {
+  GtkStyle *style;
   GtkWidget *widget;
+  guint border_width;
 
   widget = GTK_WIDGET (clist);
+  style = gtk_widget_get_style (widget);
 
   dest_info->insert_pos = GTK_CMCLIST_DRAG_NONE;
 
-  y -= (GTK_CONTAINER (widget)->border_width +
-	widget->style->ythickness + clist->column_title_area.height);
+  border_width = gtk_container_get_border_width (GTK_CONTAINER (widget));
+  y -= (border_width +
+	style->ythickness + clist->column_title_area.height);
   dest_info->cell.row = ROW_FROM_YPIXEL (clist, y);
 
   if (dest_info->cell.row >= clist->rows)
@@ -5882,7 +5894,7 @@ drag_dest_cell (GtkCMCList         *clist,
   if (dest_info->cell.row < -1)
     dest_info->cell.row = -1;
   
-  x -= GTK_CONTAINER (widget)->border_width + widget->style->xthickness;
+  x -= border_width + style->xthickness;
 
   dest_info->cell.column = COLUMN_FROM_XPIXEL (clist, x);
 
@@ -5980,18 +5992,10 @@ gtk_cmctree_drag_motion (GtkWidget      *widget,
 
   if (GTK_CMCLIST_REORDERABLE (clist))
     {
-      GList *list;
       GdkAtom atom = gdk_atom_intern_static_string ("gtk-clist-drag-reorder");
+      GdkAtom found = gtk_drag_dest_find_target(widget, context, NULL);
 
-      list = context->targets;
-      while (list)
-	{
-	  if (atom == GDK_POINTER_TO_ATOM (list->data))
-	    break;
-	  list = list->next;
-	}
-
-      if (list)
+      if (atom == found)
 	{
 	  GtkCMCTreeNode *drag_source;
 	  GtkCMCTreeNode *drag_target;
@@ -6035,7 +6039,8 @@ gtk_cmctree_drag_motion (GtkWidget      *widget,
 	      clist->drag_highlight_row = dest_info->cell.row;
 	      clist->drag_highlight_pos = dest_info->insert_pos;
 
-	      gdk_drag_status (context, context->suggested_action, time);
+	      gdk_drag_status (context,
+		gdk_drag_context_get_suggested_action(context), time);
 	    }
 	  return TRUE;
 	}
@@ -6068,14 +6073,14 @@ gtk_cmctree_drag_data_received (GtkWidget        *widget,
 
   if (GTK_CMCLIST_REORDERABLE (clist) &&
       gtk_drag_get_source_widget (context) == widget &&
-      selection_data->target ==
+      gtk_selection_data_get_target (selection_data) ==
       gdk_atom_intern_static_string ("gtk-clist-drag-reorder") &&
-      selection_data->format == 8 &&
-      selection_data->length == sizeof (GtkCMCListCellInfo))
+      gtk_selection_data_get_format (selection_data) == 8 &&
+      gtk_selection_data_get_length (selection_data) == sizeof (GtkCMCListCellInfo))
     {
       GtkCMCListCellInfo *source_info;
 
-      source_info = (GtkCMCListCellInfo *)(selection_data->data);
+      source_info = (GtkCMCListCellInfo *)(gtk_selection_data_get_data (selection_data));
       if (source_info)
 	{
 	  GtkCMCListDestInfo dest_info;

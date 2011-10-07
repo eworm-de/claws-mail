@@ -892,7 +892,7 @@ static void mainwindow_colorlabel_menu_item_activate_item_cb(GtkMenuItem *menu_i
 	GtkMenuShell *menu;
 	GtkCheckMenuItem **items;
 	gint n;
-	GList *cur;
+	GList *children, *cur;
 	GSList *sel;
 
 	mainwin = (MainWindow *)data;
@@ -912,7 +912,8 @@ static void mainwindow_colorlabel_menu_item_activate_item_cb(GtkMenuItem *menu_i
 			  GINT_TO_POINTER(1));
 
 	/* clear items. get item pointers. */
-	for (n = 0, cur = menu->children; cur != NULL && cur->data != NULL; cur = cur->next) {
+	children = gtk_container_get_children(GTK_CONTAINER(menu));
+	for (n = 0, cur = children; cur != NULL && cur->data != NULL; cur = cur->next) {
 		if (GTK_IS_CHECK_MENU_ITEM(cur->data)) {
 			gtk_check_menu_item_set_active
 				(GTK_CHECK_MENU_ITEM(cur->data), FALSE);
@@ -920,6 +921,8 @@ static void mainwindow_colorlabel_menu_item_activate_item_cb(GtkMenuItem *menu_i
 			n++;
 		}
 	}
+
+	g_list_free(children);
 
 	if (n == (N_COLOR_LABELS + 1)) {
 		/* iterate all messages and set the state of the appropriate
@@ -931,7 +934,7 @@ static void mainwindow_colorlabel_menu_item_activate_item_cb(GtkMenuItem *menu_i
 			msginfo = (MsgInfo *)sel->data;
 			if (msginfo) {
 				clabel = MSG_GET_COLORLABEL_VALUE(msginfo->flags);
-				if (!items[clabel]->active)
+				if (!gtk_check_menu_item_get_active(items[clabel]))
 					gtk_check_menu_item_set_active
 						(items[clabel], TRUE);
 			}
@@ -967,7 +970,7 @@ static void mainwindow_tags_menu_item_activate_item_cb(GtkMenuItem *menu_item,
 {
 	MainWindow *mainwin;
 	GtkMenuShell *menu;
-	GList *cur;
+	GList *children, *cur;
 	GSList *sel;
 	GHashTable *menu_table = g_hash_table_new_full(
 					g_direct_hash,
@@ -993,7 +996,8 @@ static void mainwindow_tags_menu_item_activate_item_cb(GtkMenuItem *menu_item,
 			  GINT_TO_POINTER(1));
 
 	/* clear items. get item pointers. */
-	for (cur = menu->children; cur != NULL && cur->data != NULL; cur = cur->next) {
+	children = gtk_container_get_children(GTK_CONTAINER(menu));
+	for (cur = children; cur != NULL && cur->data != NULL; cur = cur->next) {
 		if (GTK_IS_CHECK_MENU_ITEM(cur->data)) {
 			gint id = GPOINTER_TO_INT(g_object_get_data(G_OBJECT(cur->data),
 				"tag_id"));
@@ -1004,6 +1008,8 @@ static void mainwindow_tags_menu_item_activate_item_cb(GtkMenuItem *menu_item,
 			g_hash_table_insert(menu_allsel_table, GINT_TO_POINTER(id), GINT_TO_POINTER(0));
 		}
 	}
+
+	g_list_free(children);
 
 	/* iterate all messages and set the state of the appropriate
 	 * items */
@@ -1024,7 +1030,7 @@ static void mainwindow_tags_menu_item_activate_item_cb(GtkMenuItem *menu_item,
 				gint num_checked = GPOINTER_TO_INT(g_hash_table_lookup(menu_allsel_table, tags->data));
 				id = GPOINTER_TO_INT(tags->data);
 				item = g_hash_table_lookup(menu_table, GINT_TO_POINTER(tags->data));
-				if (item && !item->active) {
+				if (item && !gtk_check_menu_item_get_active(item)) {
 					gtk_check_menu_item_set_active
 						(item, TRUE);
 				}
@@ -1034,7 +1040,8 @@ static void mainwindow_tags_menu_item_activate_item_cb(GtkMenuItem *menu_item,
 		}
 	}
 
-	for (cur = menu->children; cur != NULL && cur->data != NULL; cur = cur->next) {
+	children = gtk_container_get_children(GTK_CONTAINER(menu));
+	for (cur = children; cur != NULL && cur->data != NULL; cur = cur->next) {
 		if (GTK_IS_CHECK_MENU_ITEM(cur->data)) {
 			gint id = GPOINTER_TO_INT(g_object_get_data(G_OBJECT(cur->data),
 				"tag_id"));
@@ -1045,6 +1052,7 @@ static void mainwindow_tags_menu_item_activate_item_cb(GtkMenuItem *menu_item,
 				gtk_check_menu_item_set_inconsistent(GTK_CHECK_MENU_ITEM(cur->data), FALSE);
 		}
 	}
+	g_list_free(children);
 	g_slist_free(sel);
 	g_hash_table_destroy(menu_table);
 	g_hash_table_destroy(menu_allsel_table);
@@ -1281,7 +1289,7 @@ static gboolean warning_visi_notify(GtkWidget *widget,
 				       GdkEventVisibility *event,
 				       MainWindow *mainwindow)
 {
-	gdk_window_set_cursor(mainwindow->warning_btn->window, hand_cursor);
+	gdk_window_set_cursor(gtk_widget_get_window(mainwindow->warning_btn), hand_cursor);
 	return FALSE;
 }
 
@@ -1289,7 +1297,7 @@ static gboolean warning_leave_notify(GtkWidget *widget,
 				      GdkEventCrossing *event,
 				      MainWindow *mainwindow)
 {
-	gdk_window_set_cursor(mainwindow->warning_btn->window, NULL);
+	gdk_window_set_cursor(gtk_widget_get_window(mainwindow->warning_btn), NULL);
 	return FALSE;
 }
 
@@ -1297,7 +1305,7 @@ static gboolean warning_enter_notify(GtkWidget *widget,
 				      GdkEventCrossing *event,
 				      MainWindow *mainwindow)
 {
-	gdk_window_set_cursor(mainwindow->warning_btn->window, hand_cursor);
+	gdk_window_set_cursor(gtk_widget_get_window(mainwindow->warning_btn), hand_cursor);
 	return FALSE;
 }
 #endif
@@ -2198,7 +2206,7 @@ MainWindow *main_window_create()
 	color[2] = folderview->color_new;
 	color[3] = folderview->color_op;
 
-	colormap = gdk_drawable_get_colormap(window->window);
+	colormap = gdk_drawable_get_colormap(gtk_widget_get_window(window));
 	gdk_colormap_alloc_colors(colormap, color, 4, FALSE, TRUE, success);
 	for (i = 0; i < 4; i++) {
 		if (success[i] == FALSE)
@@ -2339,7 +2347,7 @@ void main_window_cursor_wait(MainWindow *mainwin)
 {
 
 	if (mainwin->cursor_count == 0) {
-		gdk_window_set_cursor(mainwin->window->window, watch_cursor);
+		gdk_window_set_cursor(gtk_widget_get_window(mainwin->window), watch_cursor);
 		textview_cursor_wait(mainwin->messageview->mimeview->textview);
 	}
 	
@@ -2354,7 +2362,7 @@ void main_window_cursor_normal(MainWindow *mainwin)
 		mainwin->cursor_count--;
 
 	if (mainwin->cursor_count == 0) {
-		gdk_window_set_cursor(mainwin->window->window, NULL);
+		gdk_window_set_cursor(gtk_widget_get_window(mainwin->window), NULL);
 		textview_cursor_normal(mainwin->messageview->mimeview->textview);
 	}
 	gdk_flush();
@@ -2472,20 +2480,22 @@ void main_window_reflect_prefs_all_now(void)
 void main_window_reflect_prefs_custom_colors(MainWindow *mainwin)
 {
 	GtkMenuShell *menu;
-	GList *cur;
+	GList *children, *cur;
 
 	/* re-create colorlabel submenu */
 	menu = GTK_MENU_SHELL(mainwin->colorlabel_menu);
 	cm_return_if_fail(menu != NULL);
 
 	/* clear items. get item pointers. */
-	for (cur = menu->children; cur != NULL && cur->data != NULL; cur = cur->next) {
+	children = gtk_container_get_children(GTK_CONTAINER(menu));
+	for (cur = children; cur != NULL && cur->data != NULL; cur = cur->next) {
 		g_signal_handlers_disconnect_matched
 			 (gtk_ui_manager_get_accel_group(mainwin->ui_manager), 
 			 G_SIGNAL_MATCH_DATA|G_SIGNAL_MATCH_FUNC,
 			 0, 0, NULL, mainwin_accel_changed_cb, cur->data);
 		gtk_menu_item_set_submenu(GTK_MENU_ITEM(cur->data), NULL);
 	}
+	g_list_free(children);
 	mainwindow_colorlabel_menu_create(mainwin, TRUE);
 	summary_reflect_prefs_custom_colors(mainwin->summaryview);
 	folderview_reinit_fonts(mainwin->folderview);
@@ -2495,7 +2505,7 @@ static gint tags_tag = 0;
 static gboolean main_window_reflect_tags_changes_real(gpointer data)
 {
 	GtkMenuShell *menu;
-	GList *cur;
+	GList *children, *cur;
 	MainWindow *mainwin = (MainWindow *)data;
 
 	if (summary_is_locked(mainwin->summaryview)) {
@@ -2507,9 +2517,11 @@ static gboolean main_window_reflect_tags_changes_real(gpointer data)
 	cm_return_val_if_fail(menu != NULL, FALSE);
 
 	/* clear items. get item pointers. */
-	for (cur = menu->children; cur != NULL && cur->data != NULL; cur = cur->next) {
+	children = gtk_container_get_children(GTK_CONTAINER(menu));
+	for (cur = children; cur != NULL && cur->data != NULL; cur = cur->next) {
 		gtk_menu_item_set_submenu(GTK_MENU_ITEM(cur->data), NULL);
 	}
+	g_list_free(children);
 	mainwindow_tags_menu_create(mainwin, TRUE);
 	summary_reflect_tags_changes(mainwin->summaryview);
 	
@@ -2590,7 +2602,7 @@ static void main_window_set_account_selector_menu(MainWindow *mainwin,
 static void main_window_set_account_receive_menu(MainWindow *mainwin,
 						 GList *account_list)
 {
-	GList *cur_ac, *cur_item;
+	GList *children, *child;
 	GtkWidget *menu;
 	GtkWidget *menuitem;
 	PrefsAccount *ac_prefs;
@@ -2599,23 +2611,24 @@ static void main_window_set_account_receive_menu(MainWindow *mainwin,
 		gtk_ui_manager_get_widget(mainwin->ui_manager, "/Menu/Message/Receive")));
 
 	/* search for separator */
-	for (cur_item = GTK_MENU_SHELL(menu)->children; cur_item != NULL;
-	     cur_item = cur_item->next) {
-		if (cur_item->data == gtk_ui_manager_get_widget(mainwin->ui_manager, "/Menu/Message/Receive/Separator1")) {
-			cur_item = cur_item->next;
+	children = gtk_container_get_children(GTK_CONTAINER(menu));
+	for (child = children; child != NULL; child = child->next) {
+		if (child->data == gtk_ui_manager_get_widget(mainwin->ui_manager, "/Menu/Message/Receive/Separator1")) {
+			child = child->next;
 			break;
 		}
 	}
 
 	/* destroy all previous menu item */
-	while (cur_item != NULL) {
-		GList *next = cur_item->next;
-		gtk_widget_destroy(GTK_WIDGET(cur_item->data));
-		cur_item = next;
+	while (child != NULL) {
+		gtk_widget_destroy(GTK_WIDGET(child->data));
+		child = child->next;
 	}
 
-	for (cur_ac = account_list; cur_ac != NULL; cur_ac = cur_ac->next) {
-		ac_prefs = (PrefsAccount *)cur_ac->data;
+	g_list_free(children);
+
+	for (child = account_list; child != NULL; child = child->next) {
+		ac_prefs = (PrefsAccount *)child->data;
 
 		if (ac_prefs->protocol == A_NONE)
 			continue;
@@ -2767,11 +2780,11 @@ static void main_window_separation_change(MainWindow *mainwin, LayoutType layout
 	g_object_ref(summary_wid);
 	g_object_ref(message_wid);
 	gtkut_container_remove
-		(GTK_CONTAINER(folder_wid->parent), folder_wid);
+		(GTK_CONTAINER(gtk_widget_get_parent(folder_wid)), folder_wid);
 	gtkut_container_remove
-		(GTK_CONTAINER(summary_wid->parent), summary_wid);
+		(GTK_CONTAINER(gtk_widget_get_parent(summary_wid)), summary_wid);
 	gtkut_container_remove
-		(GTK_CONTAINER(message_wid->parent), message_wid);
+		(GTK_CONTAINER(gtk_widget_get_parent(message_wid)), message_wid);
 
 	gtk_widget_hide(mainwin->window);
 	main_window_set_widgets(mainwin, layout_mode);
@@ -2842,7 +2855,7 @@ void main_window_toggle_message_view(MainWindow *mainwin)
 	case SMALL_LAYOUT:
 		ppaned = mainwin->vpaned;
 		container = mainwin->hpaned;
-		if (ppaned->parent != NULL) {
+		if (gtk_widget_get_parent(ppaned) != NULL) {
 			mainwin->messageview->visible = FALSE;
 			summaryview->displayed = NULL;
 			g_object_ref(ppaned);
@@ -2858,7 +2871,7 @@ void main_window_toggle_message_view(MainWindow *mainwin)
 	case WIDE_LAYOUT:
 		ppaned = mainwin->hpaned;
 		container = mainwin->vpaned;
-		if (mainwin->messageview->vbox->parent != NULL) {
+		if (gtk_widget_get_parent(mainwin->messageview->vbox) != NULL) {
 			mainwin->messageview->visible = FALSE;
 			summaryview->displayed = NULL;
 			g_object_ref(mainwin->messageview->vbox);
@@ -2900,7 +2913,7 @@ void main_window_toggle_message_view(MainWindow *mainwin)
 
 void main_window_get_size(MainWindow *mainwin)
 {
-	GtkAllocation *allocation;
+	GtkAllocation allocation;
 
 	if (mainwin_list == NULL || mainwin->messageview == NULL) {
 		debug_print("called after messageview "
@@ -2908,41 +2921,41 @@ void main_window_get_size(MainWindow *mainwin)
 		return;
 	}
 
-	allocation = &(GTK_WIDGET_PTR(mainwin->summaryview)->allocation);
-	
 	if (prefs_common.mainwin_fullscreen) {
 		debug_print("mainwin in full screen state. "
 			    "Keeping original settings\n");
 	}
-	if (allocation->width > 1 && allocation->height > 1 && !prefs_common.mainwin_fullscreen) {
-		prefs_common.summaryview_width = allocation->width;
+
+	gtk_widget_get_allocation(GTK_WIDGET_PTR(mainwin->summaryview), &allocation);
+	if (allocation.width > 1 && allocation.height > 1 && !prefs_common.mainwin_fullscreen) {
+		prefs_common.summaryview_width = allocation.width;
 
 		if (messageview_is_visible(mainwin->messageview))
-			prefs_common.summaryview_height = allocation->height;
+			prefs_common.summaryview_height = allocation.height;
 
-		prefs_common.mainview_width = allocation->width;
+		prefs_common.mainview_width = allocation.width;
 	}
 
-	allocation = &mainwin->window->allocation;
-	if (allocation->width > 1 && allocation->height > 1 &&
+	gtk_widget_get_allocation(mainwin->window, &allocation);
+	if (allocation.width > 1 && allocation.height > 1 &&
 	    !prefs_common.mainwin_maximised && !prefs_common.mainwin_fullscreen) {
-		prefs_common.mainview_height = allocation->height;
-		prefs_common.mainwin_width   = allocation->width;
-		prefs_common.mainwin_height  = allocation->height;
+		prefs_common.mainview_height = allocation.height;
+		prefs_common.mainwin_width   = allocation.width;
+		prefs_common.mainwin_height  = allocation.height;
 	}
 
-	allocation = &(GTK_WIDGET_PTR(mainwin->folderview)->allocation);
-	if (allocation->width > 1 && allocation->height > 1 &&
+	gtk_widget_get_allocation(GTK_WIDGET_PTR(mainwin->folderview), &allocation);
+	if (allocation.width > 1 && allocation.height > 1 &&
 	    !prefs_common.mainwin_fullscreen) {
-		prefs_common.folderview_width  = allocation->width;
-		prefs_common.folderview_height = allocation->height;
+		prefs_common.folderview_width  = allocation.width;
+		prefs_common.folderview_height = allocation.height;
 	}
 
-	allocation = &(GTK_WIDGET_PTR(mainwin->messageview)->allocation);
-	if (allocation->width > 1 && allocation->height > 1 &&
+	gtk_widget_get_allocation(GTK_WIDGET_PTR(mainwin->messageview), &allocation);
+	if (allocation.width > 1 && allocation.height > 1 &&
 	    !prefs_common.mainwin_fullscreen) {
-		prefs_common.msgview_width = allocation->width;
-		prefs_common.msgview_height = allocation->height;
+		prefs_common.msgview_width = allocation.width;
+		prefs_common.msgview_height = allocation.height;
 	}
 
 /*	debug_print("summaryview size: %d x %d\n",
@@ -3182,7 +3195,7 @@ void main_window_set_menu_sensitive(MainWindow *mainwin)
 	SummaryView *summaryview;
 	gchar *menu_path;
 	GtkWidget *menu;
-	GList *cur_item;
+	GList *children, *cur_item;
 	gint i;
 
 	static const struct {
@@ -3288,8 +3301,8 @@ void main_window_set_menu_sensitive(MainWindow *mainwin)
 	menu = gtk_menu_item_get_submenu(GTK_MENU_ITEM(
 		gtk_ui_manager_get_widget(mainwin->ui_manager, "/Menu/Message/Receive")));
 
-	for (cur_item = GTK_MENU_SHELL(menu)->children; cur_item != NULL;
-	     cur_item = cur_item->next) {
+	children = gtk_container_get_children(GTK_CONTAINER(menu));
+	for (cur_item = children; cur_item != NULL; cur_item = cur_item->next) {
 		if (cur_item->data == gtk_ui_manager_get_widget(mainwin->ui_manager, "/Menu/Message/Receive/Separator1")) {
 			cur_item = cur_item->next;
 			break;
@@ -3300,6 +3313,8 @@ void main_window_set_menu_sensitive(MainWindow *mainwin)
 		gtk_widget_set_sensitive(GTK_WIDGET(cur_item->data),
 					 (M_UNLOCKED & state) != 0);
 	}
+
+	g_list_free(children);
 
 	main_window_menu_callback_block(mainwin);
 
@@ -3440,19 +3455,19 @@ static gint mailing_list_populate_submenu (GtkWidget *menuitem, const gchar * li
 	GtkWidget *item, *menu;
 	const gchar *url_pt ;
 	gchar url_decoded[BUFFSIZE];
-	GList *amenu, *alist;
+	GList *children, *amenu;
 	gint menu_nb = 0;
 	
 	menu = gtk_menu_item_get_submenu(GTK_MENU_ITEM(menuitem));
 	
 	/* First delete old submenu */
 	/* FIXME: we can optimize this, and only change/add/delete necessary items */
-	for (amenu = (GTK_MENU_SHELL(menu)->children) ; amenu; ) {
-		alist = amenu->next;
+	children = gtk_container_get_children(GTK_CONTAINER(menu));
+	for (amenu = children; amenu; amenu = amenu->next) {
 		item = GTK_WIDGET (amenu->data);
 		gtk_widget_destroy (item);
-		amenu = alist;
 	}
+	g_list_free(children);
 	if (list_header) {
 		for (url_pt = list_header; url_pt && *url_pt;) {
 			get_url_part (&url_pt, url_decoded, BUFFSIZE);
@@ -3681,7 +3696,7 @@ static void main_window_set_widgets(MainWindow *mainwin, LayoutType layout_mode)
 #endif
 	/* clean top-most container */
 	if (mainwin->hpaned) {
-		if (mainwin->hpaned->parent == mainwin->vpaned)
+		if (gtk_widget_get_parent(mainwin->hpaned) == mainwin->vpaned)
 			gtk_widget_destroy(mainwin->vpaned);
 		else
 			gtk_widget_destroy(mainwin->hpaned);

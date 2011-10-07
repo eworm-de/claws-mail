@@ -119,7 +119,7 @@ static gboolean vscroll_visi_notify(GtkWidget *widget,
 				       GdkEventVisibility *event,
 				       gpointer data)
 {
-	gdk_window_set_cursor(widget->window, hand_cursor);
+	gdk_window_set_cursor(gtk_widget_get_window(widget), hand_cursor);
 	return FALSE;
 }
 
@@ -127,7 +127,7 @@ static gboolean vscroll_leave_notify(GtkWidget *widget,
 				      GdkEventCrossing *event,
 				       gpointer data)
 {
-	gdk_window_set_cursor(widget->window, NULL);
+	gdk_window_set_cursor(gtk_widget_get_window(widget), NULL);
 	return FALSE;
 }
 
@@ -135,7 +135,7 @@ static gboolean vscroll_enter_notify(GtkWidget *widget,
 				      GdkEventCrossing *event,
 				       gpointer data)
 {
-	gdk_window_set_cursor(widget->window, hand_cursor);
+	gdk_window_set_cursor(gtk_widget_get_window(widget), hand_cursor);
 	return FALSE;
 }
 
@@ -290,34 +290,36 @@ static gint gtk_vscrollbutton_button_release(GtkWidget *widget,
 
 gboolean gtk_vscrollbutton_scroll(GtkVScrollbutton *scrollbutton)
 {
+    gfloat bound;
     gfloat new_value;
+    gfloat page_size;
+    gfloat value;
     gboolean return_val;
 
     cm_return_val_if_fail(scrollbutton != NULL, FALSE);
     cm_return_val_if_fail(GTK_IS_VSCROLLBUTTON(scrollbutton), FALSE);
 
-    new_value = scrollbutton->adjustment->value;
+    new_value = value = gtk_adjustment_get_value(scrollbutton->adjustment);
     return_val = TRUE;
 
     switch (scrollbutton->scroll_type) {
 
     case GTK_SCROLL_STEP_BACKWARD:
-	new_value -= scrollbutton->adjustment->step_increment;
-	if (new_value <= scrollbutton->adjustment->lower) {
-	    new_value = scrollbutton->adjustment->lower;
+	new_value = value - gtk_adjustment_get_step_increment(scrollbutton->adjustment);
+	bound = gtk_adjustment_get_lower(scrollbutton->adjustment);
+	if (new_value <= bound) {
+	    new_value = bound;
 	    return_val = FALSE;
 	    scrollbutton->timer = 0;
 	}
 	break;
 
     case GTK_SCROLL_STEP_FORWARD:
-	new_value += scrollbutton->adjustment->step_increment;
-	if (new_value >=
-	    (scrollbutton->adjustment->upper -
-	     scrollbutton->adjustment->page_size)) {
-	    new_value =
-		scrollbutton->adjustment->upper -
-		scrollbutton->adjustment->page_size;
+	new_value = value + gtk_adjustment_get_step_increment(scrollbutton->adjustment);
+	bound = gtk_adjustment_get_upper(scrollbutton->adjustment);
+	page_size = gtk_adjustment_get_page_size(scrollbutton->adjustment);
+	if (new_value >= (bound - page_size)) {
+	    new_value = bound - page_size;
 	    return_val = FALSE;
 	    scrollbutton->timer = 0;
 	}
@@ -328,8 +330,8 @@ gboolean gtk_vscrollbutton_scroll(GtkVScrollbutton *scrollbutton)
     
     }
 
-    if (new_value != scrollbutton->adjustment->value) {
-	scrollbutton->adjustment->value = new_value;
+	if (new_value != value) {
+	gtk_adjustment_set_value(scrollbutton->adjustment, new_value);
 	g_signal_emit_by_name(G_OBJECT
 				(scrollbutton->adjustment),
 				"value_changed");
@@ -417,11 +419,14 @@ static gboolean gtk_real_vscrollbutton_timer(GtkVScrollbutton *scrollbutton)
 static void gtk_vscrollbutton_set_sensitivity   (GtkAdjustment    *adjustment,
 						 GtkVScrollbutton *scrollbutton)
 {
+	gfloat value;
 	if (!gtkut_widget_get_realized(GTK_WIDGET(scrollbutton))) return;
 	if (scrollbutton->button != 0) return; /* not while something is pressed */
 	
+	value = gtk_adjustment_get_value(adjustment);
 	gtk_widget_set_sensitive(scrollbutton->upbutton, 
-				 (adjustment->value > adjustment->lower));
+				 (value > gtk_adjustment_get_lower(adjustment)));
 	gtk_widget_set_sensitive(scrollbutton->downbutton, 
-				 (adjustment->value <  (adjustment->upper - adjustment->page_size)));
+				 (value < (gtk_adjustment_get_upper(adjustment) -
+                           gtk_adjustment_get_page_size(adjustment))));
 }

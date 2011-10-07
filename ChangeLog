@@ -1,3 +1,50 @@
+2011-10-07 [colin]	3.7.10cvs19
+
+	* AUTHORS
+	* src/account.c
+	* src/action.c
+	* src/addr_compl.c
+	* src/addressbook.c
+	* src/alertpanel.c
+	* src/compose.c
+	* src/edittags.c
+	* src/folderview.c
+	* src/grouplistdialog.c
+	* src/image_viewer.c
+	* src/mainwindow.c
+	* src/mimeview.c
+	* src/noticeview.c
+	* src/prefs_filtering_action.c
+	* src/prefs_folder_column.c
+	* src/prefs_msg_colors.c
+	* src/prefs_summary_column.c
+	* src/prefs_toolbar.c
+	* src/printing.c
+	* src/stock_pixmap.c
+	* src/summaryview.c
+	* src/textview.c
+	* src/undo.c
+	* src/wizard.c
+	* src/gtk/about.c
+	* src/gtk/authors.h
+	* src/gtk/colorlabel.c
+	* src/gtk/colorsel.c
+	* src/gtk/gtkcmclist.c
+	* src/gtk/gtkcmctree.c
+	* src/gtk/gtkcmoptionmenu.c
+	* src/gtk/gtksctree.c
+	* src/gtk/gtkutils.c
+	* src/gtk/gtkvscrollbutton.c
+	* src/gtk/inputdialog.c
+	* src/gtk/logwindow.c
+	* src/gtk/menu.c
+	* src/gtk/prefswindow.c
+	* src/gtk/progressdialog.c
+	* src/plugins/pgpcore/passphrase.c
+	* src/plugins/trayicon/trayicon.c
+		Bug #2371, "Port to GTK+ 3.0": Use accessor functions.
+		Patch by Hanno Thurow-Meyer, many thanks to him !
+
 2011-09-20 [colin]	3.7.10cvs18
 
 	* src/common/ssl.c

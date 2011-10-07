@@ -791,8 +791,10 @@ void summary_relayout(SummaryView *summaryview)
 	g_object_ref(summaryview->hbox_l);
 	g_object_ref(summaryview->statlabel_msgs);
 	
-	gtkut_container_remove(GTK_CONTAINER(summaryview->hbox_l->parent), summaryview->hbox_l);
-	gtkut_container_remove(GTK_CONTAINER(summaryview->statlabel_msgs->parent), summaryview->statlabel_msgs);
+	gtkut_container_remove(GTK_CONTAINER(
+		gtk_widget_get_parent(summaryview->hbox_l)), summaryview->hbox_l);
+	gtkut_container_remove(GTK_CONTAINER(
+		gtk_widget_get_parent(summaryview->statlabel_msgs)), summaryview->statlabel_msgs);
 
 	switch (prefs_common.layout_mode) {
 	case NORMAL_LAYOUT:
@@ -876,7 +878,7 @@ static void summary_set_fonts(SummaryView *summaryview)
 	if (prefs_common.derive_from_normal_font || !SMALL_FONT) {
 		font_desc = pango_font_description_new();
 		size = pango_font_description_get_size
-			(summaryview->ctree->style->font_desc);
+			(gtk_widget_get_style(summaryview->ctree)->font_desc);
 		pango_font_description_set_size(font_desc, size * PANGO_SCALE_SMALL);
 	} else {
 		font_desc = pango_font_description_from_string(SMALL_FONT);
@@ -2726,7 +2728,7 @@ static void summary_set_column_titles(SummaryView *summaryview)
 void summary_reflect_tags_changes(SummaryView *summaryview)
 {
 	GtkMenuShell *menu;
-	GList *cur;
+	GList *children, *cur;
 	GtkCMCTreeNode *node;
 	GtkCMCTree *ctree = GTK_CMCTREE(summaryview->ctree);
 	gboolean froze = FALSE;
@@ -2737,9 +2739,11 @@ void summary_reflect_tags_changes(SummaryView *summaryview)
 	cm_return_if_fail(menu != NULL);
 
 	/* clear items. get item pointers. */
-	for (cur = menu->children; cur != NULL && cur->data != NULL; cur = cur->next) {
+	children = gtk_container_get_children(GTK_CONTAINER(menu));
+	for (cur = children; cur != NULL && cur->data != NULL; cur = cur->next) {
 		gtk_menu_item_set_submenu(GTK_MENU_ITEM(cur->data), NULL);
 	}
+	g_list_free(children);
 	summary_tags_menu_create(summaryview, TRUE);
 
 	START_LONG_OPERATION(summaryview, TRUE);
@@ -5777,7 +5781,7 @@ static void summary_colorlabel_menu_item_activate_item_cb(GtkMenuItem *menu_item
 	GtkMenuShell *menu;
 	GtkCheckMenuItem **items;
 	gint n;
-	GList *cur, *sel;
+	GList *children, *cur, *sel;
 
 	summaryview = (SummaryView *)data;
 	cm_return_if_fail(summaryview != NULL);
@@ -5797,7 +5801,8 @@ static void summary_colorlabel_menu_item_activate_item_cb(GtkMenuItem *menu_item
 			  GINT_TO_POINTER(1));
 
 	/* clear items. get item pointers. */
-	for (n = 0, cur = menu->children; cur != NULL && cur->data != NULL; cur = cur->next) {
+	children = gtk_container_get_children(GTK_CONTAINER(menu));
+	for (n = 0, cur = children; cur != NULL && cur->data != NULL; cur = cur->next) {
 		if (GTK_IS_CHECK_MENU_ITEM(cur->data)) {
 			gtk_check_menu_item_set_active
 				(GTK_CHECK_MENU_ITEM(cur->data), FALSE);
@@ -5805,6 +5810,8 @@ static void summary_colorlabel_menu_item_activate_item_cb(GtkMenuItem *menu_item
 			n++;
 		}
 	}
+
+	g_list_free(children);
 
 	if (n == (N_COLOR_LABELS + 1)) {
 		/* iterate all messages and set the state of the appropriate
@@ -5818,7 +5825,7 @@ static void summary_colorlabel_menu_item_activate_item_cb(GtkMenuItem *menu_item
 				 GTK_CMCTREE_NODE(sel->data));
 			if (msginfo) {
 				clabel = MSG_GET_COLORLABEL_VALUE(msginfo->flags);
-				if (!items[clabel]->active)
+				if (!gtk_check_menu_item_get_active(items[clabel]))
 					gtk_check_menu_item_set_active
 						(items[clabel], TRUE);
 			}
@@ -5901,7 +5908,7 @@ static void summary_tags_menu_item_activate_item_cb(GtkMenuItem *menu_item,
 							  gpointer data)
 {
 	GtkMenuShell *menu;
-	GList *cur;
+	GList *children, *cur;
 	GList *sel;
 	GHashTable *menu_table = g_hash_table_new_full(
 					g_direct_hash,
@@ -5927,7 +5934,8 @@ static void summary_tags_menu_item_activate_item_cb(GtkMenuItem *menu_item,
 			  GINT_TO_POINTER(1));
 
 	/* clear items. get item pointers. */
-	for (cur = menu->children; cur != NULL && cur->data != NULL; cur = cur->next) {
+	children = gtk_container_get_children(GTK_CONTAINER(menu));
+	for (cur = children; cur != NULL && cur->data != NULL; cur = cur->next) {
 		if (GTK_IS_CHECK_MENU_ITEM(cur->data)) {
 			gint id = GPOINTER_TO_INT(g_object_get_data(G_OBJECT(cur->data),
 				"tag_id"));
@@ -5938,6 +5946,8 @@ static void summary_tags_menu_item_activate_item_cb(GtkMenuItem *menu_item,
 			g_hash_table_insert(menu_allsel_table, GINT_TO_POINTER(id), GINT_TO_POINTER(0));
 		}
 	}
+
+	g_list_free(children);
 
 	/* iterate all messages and set the state of the appropriate
 	 * items */
@@ -5960,7 +5970,7 @@ static void summary_tags_menu_item_activate_item_cb(GtkMenuItem *menu_item,
 				gint num_checked = GPOINTER_TO_INT(g_hash_table_lookup(menu_allsel_table, tags->data));
 				id = GPOINTER_TO_INT(tags->data);
 				item = g_hash_table_lookup(menu_table, GINT_TO_POINTER(tags->data));
-				if (item && !item->active) {
+				if (item && !gtk_check_menu_item_get_active(item)) {
 					gtk_check_menu_item_set_active
 						(item, TRUE);
 				}
@@ -5970,7 +5980,8 @@ static void summary_tags_menu_item_activate_item_cb(GtkMenuItem *menu_item,
 		}
 	}
 
-	for (cur = menu->children; cur != NULL && cur->data != NULL; cur = cur->next) {
+	children = gtk_container_get_children(GTK_CONTAINER(menu));
+	for (cur = children; cur != NULL && cur->data != NULL; cur = cur->next) {
 		if (GTK_IS_CHECK_MENU_ITEM(cur->data)) {
 			gint id = GPOINTER_TO_INT(g_object_get_data(G_OBJECT(cur->data),
 				"tag_id"));
@@ -5981,6 +5992,7 @@ static void summary_tags_menu_item_activate_item_cb(GtkMenuItem *menu_item,
 				gtk_check_menu_item_set_inconsistent(GTK_CHECK_MENU_ITEM(cur->data), FALSE);
 		}
 	}
+	g_list_free(children);
 	g_hash_table_destroy(menu_table);
 	g_hash_table_destroy(menu_allsel_table);
 	/* reset "dont_toggle" state */
@@ -6622,7 +6634,7 @@ static gboolean summary_key_pressed(GtkWidget *widget, GdkEventKey *event,
 	case GDK_Left:		/* Move focus */
 		adj = gtk_scrolled_window_get_hadjustment
 			(GTK_SCROLLED_WINDOW(summaryview->scrolledwin));
-		if (adj->lower != adj->value)
+		if (gtk_adjustment_get_lower(adj) != gtk_adjustment_get_value(adj))
 			break;
 		/* FALLTHROUGH */	
 	case GDK_Escape:
@@ -7024,7 +7036,7 @@ static void summary_start_drag(GtkWidget *widget, gint button, GdkEvent *event,
 				 GDK_ACTION_MOVE|GDK_ACTION_COPY|GDK_ACTION_DEFAULT, button, event);
 	gtk_drag_set_icon_default(context);
 	if (prefs_common.layout_mode == SMALL_LAYOUT) {
-		GtkWidget *paned = GTK_WIDGET_PTR(summaryview)->parent;
+		GtkWidget *paned = gtk_widget_get_parent(GTK_WIDGET_PTR(summaryview));
 		if (paned && GTK_IS_PANED(paned)) {
 	        	mainwindow_reset_paned(GTK_PANED(paned));
 		}
@@ -7101,14 +7113,14 @@ static void summary_drag_data_get(GtkWidget        *widget,
 
 		if (mail_list != NULL) {
 			gtk_selection_data_set(selection_data,
-					       selection_data->target, 8,
+					       gtk_selection_data_get_target(selection_data), 8,
 					       mail_list, strlen(mail_list));
 			g_free(mail_list);
 		} 
 	} else if (info == TARGET_DUMMY) {
 		if (GTK_CMCLIST(summaryview->ctree)->selection)
 			gtk_selection_data_set(selection_data,
-					       selection_data->target, 8,
+					       gtk_selection_data_get_target(selection_data), 8,
 					       "Dummy-Summaryview", 
 					       strlen("Dummy-Summaryview")+1);
 	} else if (info == TARGET_MAIL_CM_PATH_LIST) {
@@ -7140,7 +7152,7 @@ static void summary_drag_data_get(GtkWidget        *widget,
 
 		if (path_list != NULL) {
 			gtk_selection_data_set(selection_data,
-					       selection_data->target, 8,
+					       gtk_selection_data_get_target(selection_data), 8,
 					       path_list, strlen(path_list));
 			g_free(path_list);
 		}
@@ -7190,7 +7202,8 @@ static void summary_drag_data_received(GtkWidget        *widget,
 			gtk_drag_finish(drag_context, FALSE, FALSE, time);			
 			return;
 		} else {
-			folderview_finish_dnd(data->data, drag_context, time, item);
+			folderview_finish_dnd(gtk_selection_data_get_data(data),
+				drag_context, time, item);
 		}
 	}
 }
@@ -7723,20 +7736,22 @@ void summary_reflect_prefs_pixmap_theme(SummaryView *summaryview)
 void summary_reflect_prefs_custom_colors(SummaryView *summaryview)
 {
 	GtkMenuShell *menu;
-	GList *cur;
+	GList *children, *cur;
 
 	/* re-create colorlabel submenu */
 	menu = GTK_MENU_SHELL(summaryview->colorlabel_menu);
 	cm_return_if_fail(menu != NULL);
 
 	/* clear items. get item pointers. */
-	for (cur = menu->children; cur != NULL && cur->data != NULL; cur = cur->next) {
+	children = gtk_container_get_children(GTK_CONTAINER(menu));
+	for (cur = children; cur != NULL && cur->data != NULL; cur = cur->next) {
 		g_signal_handlers_disconnect_matched
 			 (gtk_ui_manager_get_accel_group(summaryview->mainwin->ui_manager), 
 			 G_SIGNAL_MATCH_DATA|G_SIGNAL_MATCH_FUNC,
 			 0, 0, NULL, mainwin_accel_changed_cb, cur->data);
 		gtk_menu_item_set_submenu(GTK_MENU_ITEM(cur->data), NULL);
 	}
+	g_list_free(children);
 	summary_colorlabel_menu_create(summaryview, TRUE);
 }
 

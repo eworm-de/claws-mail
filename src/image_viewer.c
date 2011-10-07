@@ -69,6 +69,7 @@ static GtkWidget *image_viewer_get_widget(MimeViewer *_mimeviewer)
 
 static void image_viewer_load_file(ImageViewer *imageviewer, const gchar *imgfile)
 {
+	GtkAllocation allocation;
 	GdkPixbufAnimation *animation = NULL;
 	GdkPixbuf *pixbuf = NULL;
 	GError *error = NULL;
@@ -83,10 +84,13 @@ static void image_viewer_load_file(ImageViewer *imageviewer, const gchar *imgfil
 		g_object_unref(animation);
 		animation = NULL;
 
-		if (imageviewer->resize_img)
+		if (imageviewer->resize_img) {
+			gtk_widget_get_allocation(
+				gtk_widget_get_parent(imageviewer->notebook), &allocation);
 			pixbuf = claws_load_pixbuf_fitting(pixbuf,
-				imageviewer->notebook->parent->allocation.width,
-				imageviewer->notebook->parent->allocation.height);
+				allocation.width,
+				allocation.height);
+		}
 		else
 			pixbuf = claws_load_pixbuf_fitting(pixbuf, -1, -1);
 	}

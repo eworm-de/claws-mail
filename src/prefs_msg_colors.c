@@ -579,6 +579,8 @@ static void quote_color_set_dialog(GtkWidget *widget, gpointer data)
 	GdkColor color;
 	gint rgbvalue = 0;
 	GtkColorSelectionDialog *dialog;
+	GtkWidget button_ok;
+	GtkWidget button_cancel;
 	gint c;
 
 	/* custom colors */
@@ -638,9 +640,13 @@ static void quote_color_set_dialog(GtkWidget *widget, gpointer data)
 	gtk_window_set_resizable(GTK_WINDOW(color_dialog), FALSE);
 	manage_window_set_transient(GTK_WINDOW(color_dialog));
 
-	g_signal_connect(G_OBJECT(GTK_COLOR_SELECTION_DIALOG(color_dialog)->cancel_button),
+	g_object_get(color_dialog, "ok-button", &button_ok,
+                               "cancel-button", &button_cancel,
+                               NULL);
+
+	g_signal_connect(G_OBJECT(&button_cancel),
 			 "clicked", G_CALLBACK(quote_colors_set_dialog_cancel), data);
-	g_signal_connect(G_OBJECT(GTK_COLOR_SELECTION_DIALOG(color_dialog)->ok_button),
+	g_signal_connect(G_OBJECT(&button_ok),
 			 "clicked", G_CALLBACK(quote_colors_set_dialog_ok), data);
 	g_signal_connect(G_OBJECT(color_dialog), "key_press_event",
 			 G_CALLBACK(quote_colors_set_dialog_key_pressed),data);
@@ -651,15 +657,16 @@ static void quote_color_set_dialog(GtkWidget *widget, gpointer data)
 
 	dialog = GTK_COLOR_SELECTION_DIALOG(color_dialog);
 	gtk_color_selection_set_current_color
-		(GTK_COLOR_SELECTION(dialog->colorsel), &color);
+		(GTK_COLOR_SELECTION(gtk_color_selection_dialog_get_color_selection(dialog)), &color);
 
 	gtk_widget_show(color_dialog);
 }
 
 static void quote_colors_set_dialog_ok(GtkWidget *widget, gpointer data)
 {
-	GtkColorSelection *colorsel = (GtkColorSelection *)
-						((GtkColorSelectionDialog *)color_dialog)->colorsel;
+	GtkColorSelection *colorsel = GTK_COLOR_SELECTION(
+		gtk_color_selection_dialog_get_color_selection
+						((GtkColorSelectionDialog *)color_dialog));
 	GdkColor color;
 	gint rgbvalue;
 	gchar *type = (gchar *)data;
@@ -727,23 +734,27 @@ static gboolean quote_colors_set_dialog_key_pressed(GtkWidget *widget,
 						GdkEventKey *event,
 						gpointer data)
 {
+	GtkColorSelectionDialog *dialog;
+	GtkWidget button_ok;
+	GtkWidget button_cancel;
+
+	dialog = GTK_COLOR_SELECTION_DIALOG(widget);
+	g_object_get(dialog, "ok-button", &button_ok,
+                         "cancel-button", &button_cancel,
+                          NULL);
+
 	if (event) {
 		switch (event->keyval) {
 			case GDK_Escape:
-				gtk_button_clicked(GTK_BUTTON(GTK_COLOR_SELECTION_DIALOG
-							(widget)->cancel_button));
+				gtk_button_clicked(GTK_BUTTON(&button_cancel));
 				return TRUE;
 			case GDK_Return: 
 			case GDK_KP_Enter:
 				/* NOTE: changing focus makes widget accept all currently 
 				 * changed settings! */
-				gtk_widget_grab_focus
-					(GTK_COLOR_SELECTION_DIALOG
-						(widget)->ok_button);
+				gtk_widget_grab_focus(&button_ok);
 				/* call ok handler */						
-				gtk_button_clicked(GTK_BUTTON
-					(GTK_COLOR_SELECTION_DIALOG
-						(widget)->ok_button));
+				gtk_button_clicked(GTK_BUTTON(&button_ok));
 				return TRUE;
 			default:
 				break;

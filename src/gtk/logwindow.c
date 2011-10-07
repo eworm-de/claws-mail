@@ -178,7 +178,7 @@ void log_window_init(LogWindow *logwin)
 	logwin->status_nok_color = color[6];
 	logwin->status_skip_color = color[7];
 
-	colormap = gdk_drawable_get_colormap(logwin->window->window);
+	colormap = gdk_drawable_get_colormap(gtk_widget_get_window(logwin->window));
 	gdk_colormap_alloc_colors(colormap, color, LOG_COLORS, FALSE, TRUE, success);
 
 	for (i = 0; i < LOG_COLORS; i++) {
@@ -364,10 +364,12 @@ static gboolean log_window_append(gpointer source, gpointer data)
 	       log_window_clip (logwindow, logwindow->clip_length);
 
 	if (!logwindow->hidden) {
-		GtkAdjustment *vadj = text->vadjustment;
-		gfloat upper = vadj->upper - vadj->page_size;
-		if (vadj->value == upper || 
-		    (upper - vadj->value < 16 && vadj->value < 8))
+		GtkAdjustment *vadj = gtk_text_view_get_vadjustment(text);
+		gfloat upper = gtk_adjustment_get_upper(vadj) -
+		    gtk_adjustment_get_page_size(vadj);
+		gfloat value = gtk_adjustment_get_value(vadj);
+		if (value == upper || 
+		    (upper - value < 16 && value < 8))
 			gtk_text_view_scroll_mark_onscreen(text, logwindow->end_mark);
 	}
 

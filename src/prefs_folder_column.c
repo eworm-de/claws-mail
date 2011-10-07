@@ -791,7 +791,8 @@ static void drag_data_get(GtkTreeView *tree_view, GdkDragContext *context,
 			   -1);
 
 	/* send the type */
-	gtk_selection_data_set(data, data->target, 8, (gchar *) &type, sizeof type);
+	gtk_selection_data_set(data, gtk_selection_data_get_target(data), 8,
+		(gchar *) &type, sizeof type);
 }
 
 static void drag_data_received(GtkTreeView *tree_view, GdkDragContext *context,
@@ -861,7 +862,7 @@ static void drag_data_received(GtkTreeView *tree_view, GdkDragContext *context,
 		gtk_tree_selection_get_selected(gtk_tree_view_get_selection(
 						GTK_TREE_VIEW(source)),
 						&sel_model, &isel);
-		type = *((gint *) data->data);
+		type = *((gint *) gtk_selection_data_get_data(data));
 		name = gettext(col_name[type]);
 		gtk_list_store_remove(GTK_LIST_STORE(sel_model), &isel);
 

@@ -77,6 +77,7 @@ passphrase_mbox(const gchar *uid_hint, const gchar *pass_hint, gint prev_bad, gi
     GtkWidget *pass_entry;
     GtkWidget *ok_button;
     GtkWidget *cancel_button;
+    GdkWindow *gdkwin;
 
     SummaryView *summaryview = mainwindow_get_mainwindow()->summaryview;
     
@@ -147,14 +148,15 @@ passphrase_mbox(const gchar *uid_hint, const gchar *pass_hint, gint prev_bad, gi
         int err = 0, cnt = 0;
         /* make sure that window is viewable */
         gtk_widget_show_now(window);
-	gdk_window_process_updates(window->window, TRUE);
+	gdkwin = gtk_widget_get_window(window);
+	gdk_window_process_updates(gdkwin, TRUE);
 	gdk_flush();
 	while(gtk_events_pending()) {
 		gtk_main_iteration();
 	}
 try_again:
-        if ((err = gdk_pointer_grab(window->window, TRUE, 0,
-                             window->window, NULL, GDK_CURRENT_TIME))) {
+        if ((err = gdk_pointer_grab(gdkwin, TRUE, 0,
+                             gdkwin, NULL, GDK_CURRENT_TIME))) {
 	    if (err == GDK_GRAB_NOT_VIEWABLE && cnt < 10) {
 	        cnt++;
 		g_warning("trying to grab mouse again\n");
@@ -166,7 +168,7 @@ try_again:
                 return NULL;
 	    }
         }
-        if (gdk_keyboard_grab(window->window, FALSE, GDK_CURRENT_TIME)) {
+        if (gdk_keyboard_grab(gdkwin, FALSE, GDK_CURRENT_TIME)) {
             gdk_display_pointer_ungrab(gdk_display_get_default(),
 			 	       GDK_CURRENT_TIME);
             g_warning("OOPS: Could not grab keyboard\n");

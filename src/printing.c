@@ -537,7 +537,7 @@ static gboolean cb_preview(GtkPrintOperation        *operation,
 	preview_data->area = da;
 
 	/* cairo context */
-	cr = gdk_cairo_create(da->window);
+	cr = gdk_cairo_create(gtk_widget_get_window(da));
 	gtk_print_context_set_cairo_context(context, cr, PREVIEW_SCALE, PREVIEW_SCALE);
 	cairo_destroy(cr);
 
@@ -663,7 +663,7 @@ static gboolean cb_preview_expose(GtkWidget *widget, GdkEventExpose *event,
 
 	debug_print("preview_expose (current %p)\n", preview_data->current_page);
 
-	cr = gdk_cairo_create(preview_data->area->window);
+	cr = gdk_cairo_create(gtk_widget_get_window(preview_data->area));
 
 	/* background */
 	cairo_set_source_rgb(cr, 0.5, 0.5, 0.5);
@@ -768,13 +768,15 @@ static void cb_preview_zoom_100(GtkButton *button, gpointer data)
 static void cb_preview_zoom_fit(GtkButton *button, gpointer data)
 {
 	PreviewData *preview_data = (PreviewData*) data;
+	GtkAllocation allocation;
 	gdouble zoom_w;
 	gdouble zoom_h;
 
-	zoom_w = ((gdouble)preview_data->scrolled_window->allocation.width) /
+	gtk_widget_get_allocation(preview_data->scrolled_window, &allocation);
+	zoom_w = ((gdouble)allocation.width) /
 		 ((gdouble)preview_data->page_width/preview_data->print_data->zoom +
 		  PREVIEW_SHADOW_OFFSET);
-	zoom_h = ((gdouble)preview_data->scrolled_window->allocation.height) /
+	zoom_h = ((gdouble)allocation.height) /
 		 ((gdouble)preview_data->page_height/preview_data->print_data->zoom +
 		  PREVIEW_SHADOW_OFFSET);
 

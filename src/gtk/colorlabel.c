@@ -191,7 +191,8 @@ gchar *colorlabel_get_color_default_text(gint color_index)
 static gboolean colorlabel_drawing_area_expose_event_cb
 	(GtkWidget *widget, GdkEventExpose *expose, gpointer data)
 {
-	GdkDrawable *drawable = widget->window;
+	GdkDrawable *drawable = gtk_widget_get_window(widget);
+	GtkAllocation allocation;
 	gulong c = (gulong) GPOINTER_TO_INT(data);
 	GdkColor color;
 	cairo_t *cr;
@@ -199,17 +200,18 @@ static gboolean colorlabel_drawing_area_expose_event_cb
 	INTCOLOR_TO_GDKCOLOR(c, color)
 
 	gdk_colormap_alloc_color(gtk_widget_get_colormap(widget), &color, FALSE, TRUE);
+	gtk_widget_get_allocation(widget, &allocation);
 
 	cr = gdk_cairo_create(drawable);
 	cairo_set_source_rgb(cr, 0., 0., 0.);
 	cairo_rectangle(cr, 0, 0,
-	    widget->allocation.width - 1,
-	    widget->allocation.height - 1);
+	    allocation.width - 1,
+	    allocation.height - 1);
 	cairo_stroke(cr);
 	gdk_cairo_set_source_color(cr, &color);
 	cairo_rectangle(cr, 1, 1,
-	    widget->allocation.width - 2,
-	    widget->allocation.height - 2);
+	    allocation.width - 2,
+	    allocation.height - 2);
 	cairo_fill(cr);
 	cairo_destroy(cr);
 	

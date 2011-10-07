@@ -284,7 +284,8 @@ static gboolean click_cb(GtkWidget * widget,
 	switch (event->button) {
 	case 1:
 		if (gtkut_widget_get_visible(GTK_WIDGET(mainwin->window))) {
-			if ((gdk_window_get_state(GTK_WIDGET(mainwin->window)->window)&GDK_WINDOW_STATE_ICONIFIED)
+			if ((gdk_window_get_state(gtk_widget_get_window(
+				GTK_WIDGET(mainwin->window)))&GDK_WINDOW_STATE_ICONIFIED)
 					|| mainwindow_is_obscured()) {
 				gtk_window_deiconify(GTK_WINDOW(mainwin->window));
 				gtk_window_set_skip_taskbar_hint(GTK_WINDOW(mainwin->window), FALSE);

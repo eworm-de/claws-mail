@@ -847,7 +847,7 @@ static gboolean about_textview_motion_notify(GtkWidget *widget,
 					GtkWidget *textview)
 {
 	about_textview_uri_update(textview, event->x, event->y);
-	gdk_window_get_pointer(widget->window, NULL, NULL, NULL);
+	gdk_window_get_pointer(gtk_widget_get_window(widget), NULL, NULL, NULL);
 
 	return FALSE;
 }
