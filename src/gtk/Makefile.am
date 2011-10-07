@@ -15,11 +15,6 @@ libclawsgtk_la_SOURCES = \
 	filesel.c \
 	foldersort.c \
 	gtkaspell.c \
-	gtkcmctree.c \
-	gtkcmclist.c \
-	gtkcmoptionmenu.c \
-	gtkshruler.c \
-	gtksctree.c \
 	gtkutils.c \
 	gtkvscrollbutton.c \
 	icon_legend.c \
@@ -46,11 +41,6 @@ clawsgtkinclude_HEADERS = \
 	filesel.h \
 	foldersort.h \
 	gtkaspell.h \
-	gtkcmctree.h \
-	gtkcmclist.h \
-	gtkcmoptionmenu.h \
-	gtksctree.h \
-	gtkshruler.h \
 	gtkutils.h \
 	gtkvscrollbutton.h \
 	headers.h \
@@ -66,6 +56,22 @@ clawsgtkinclude_HEADERS = \
 	spell_entry.h \
 	sslcertwindow.h \
 	claws-marshal.h
+
+if GTK2
+libclawsgtk_la_SOURCES += \
+	gtkcmctree.c \
+	gtkcmclist.c \
+	gtkcmoptionmenu.c \
+	gtksctree.c \
+	gtkshruler.c
+
+clawsgtkinclude_HEADERS += \
+	gtkcmctree.h \
+	gtkcmclist.h \
+	gtkcmoptionmenu.h \
+	gtksctree.h \
+	gtkshruler.h
+endif
 
 AM_CPPFLAGS = \
 	-I$(srcdir)/../common \

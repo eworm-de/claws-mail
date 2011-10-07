@@ -42,7 +42,9 @@
 #include "main.h"
 #endif
 
+#if !GTK_CHECK_VERSION(3, 0, 0)
 #include "gtkcmctree.h"
+#endif
 
 #define GTK_EVENTS_FLUSH() \
 { \
@@ -92,6 +94,7 @@ void gtkut_stock_with_text_button_set_create(GtkWidget **bbox,
 				   GtkWidget **button2, const gchar *label2, const gchar *text2,
 				   GtkWidget **button3, const gchar *label3, const gchar *text3);
 
+#if !GTK_CHECK_VERSION(3, 0, 0)
 void gtkut_ctree_node_move_if_on_the_edge
 					(GtkCMCTree	*ctree,
 					 GtkCMCTreeNode	*node,
@@ -113,6 +116,7 @@ gboolean gtkut_ctree_node_is_parent	(GtkCMCTreeNode 	*parent,
 					 GtkCMCTreeNode 	*node);
 void gtkut_ctree_set_focus_row		(GtkCMCTree	*ctree,
 					 GtkCMCTreeNode	*node);
+#endif
 
 void gtkut_clist_set_focus_row		(GtkCMCList	*clist,
 					 gint		 row);

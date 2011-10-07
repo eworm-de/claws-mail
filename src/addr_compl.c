@@ -1157,7 +1157,7 @@ void address_completion_register_entry(GtkEntry *entry, gboolean allow_commas)
  */
 void address_completion_unregister_entry(GtkEntry *entry)
 {
-	GtkObject *entry_obj;
+	GObject *entry_obj;
 
 	cm_return_if_fail(entry != NULL);
 	cm_return_if_fail(GTK_IS_ENTRY(entry));

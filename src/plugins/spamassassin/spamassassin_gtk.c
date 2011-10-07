@@ -229,17 +229,17 @@ static void spamassassin_create_widget_func(PrefsPage * _page,
 	GtkWidget *spamd_label;
 	GtkWidget *spamd_hostname_entry;
 	GtkWidget *spamd_colon_label;
-	GtkObject *spamd_port_spinbtn_adj;
+	GtkAdjustment *spamd_port_spinbtn_adj;
 	GtkWidget *spamd_port_spinbtn;
 	GtkWidget *spamd_socket_entry;
 
 	GtkWidget *max_size_label;
-	GtkObject *max_size_spinbtn_adj;
+	GtkAdjustment *max_size_spinbtn_adj;
 	GtkWidget *max_size_spinbtn;
 	GtkWidget *max_size_kb_label;
 
 	GtkWidget *timeout_label;
-	GtkObject *timeout_spinbtn_adj;
+	GtkAdjustment *timeout_spinbtn_adj;
 	GtkWidget *timeout_spinbtn;
 	GtkWidget *timeout_seconds_label;
 

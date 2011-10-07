@@ -84,7 +84,7 @@ static void prefs_gpg_create_widget_func(PrefsPage *_page,
 	GtkWidget *hbox1;
 	GtkWidget *vbox1, *vbox2;
 	GtkWidget *label_expire1;
-	GtkObject *spinbtn_store_passphrase_adj;
+	GtkAdjustment *spinbtn_store_passphrase_adj;
 	GtkWidget *spinbtn_store_passphrase;
 	GtkWidget *label_expire2;
 	GtkWidget *frame_passphrase;

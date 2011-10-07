@@ -133,8 +133,10 @@ struct _Compose
 
 	/* Textedit */
 	GtkWidget *edit_vbox;
+#if !GTK_CHECK_VERSION(3, 0, 0)
 	GtkWidget *ruler_hbox;
 	GtkWidget *ruler;
+#endif
 	GtkWidget *scrolledwin;
 	GtkWidget *text;
 	GtkWidget *from_name;

@@ -29,7 +29,9 @@
 #include <gtk/gtk.h>
 #include <gdk/gdkkeysyms.h>
 
+#if !GTK_CHECK_VERSION(3, 0, 0)
 #include "gtkcmoptionmenu.h"
+#endif
 #include "utils.h"
 #include "combobox.h"
 #include "menu.h"
@@ -57,7 +59,9 @@ struct _QuickSearch
 {
 	GtkWidget			*hbox_search;
 	GtkWidget			*search_type;
+#if !GTK_CHECK_VERSION(3, 0, 0)
 	GtkWidget			*search_type_opt;
+#endif
 	GtkWidget			*search_string_entry;
 	GtkWidget			*search_condition_expression;
 	GtkWidget			*search_description;
@@ -113,6 +117,7 @@ void quicksearch_set_recursive(QuickSearch *quicksearch, gboolean recursive)
 
 static void quicksearch_set_type(QuickSearch *quicksearch, gint type)
 {
+#if !GTK_CHECK_VERSION(3, 0, 0)
 	gint index;
 	quicksearch->request->type = type;
 	if (quicksearch->gui == FALSE)
@@ -121,6 +126,7 @@ static void quicksearch_set_type(QuickSearch *quicksearch, gint type)
 					GINT_TO_POINTER(type),
 					NULL);
 	gtk_cmoption_menu_set_history(GTK_CMOPTION_MENU(quicksearch->search_type_opt), index);	
+#endif
 }
 
 static gchar *quicksearch_get_text(QuickSearch * quicksearch)
@@ -679,7 +685,9 @@ QuickSearch *quicksearch_new()
 	QuickSearch *quicksearch;
 
 	GtkWidget *hbox_search;
+#if !GTK_CHECK_VERSION(3, 0, 0)
 	GtkWidget *search_type_opt;
+#endif
 	GtkWidget *search_type;
 	GtkWidget *search_string_entry;
 	GtkWidget *search_hbox;
@@ -696,9 +704,11 @@ QuickSearch *quicksearch_new()
 	/* quick search */
 	hbox_search = gtk_hbox_new(FALSE, 0);
 
+#if !GTK_CHECK_VERSION(3, 0, 0)
 	search_type_opt = gtk_cmoption_menu_new();
 	gtk_widget_show(search_type_opt);
 	gtk_box_pack_start(GTK_BOX(hbox_search), search_type_opt, FALSE, FALSE, 0);
+#endif
 
 	search_type = gtk_menu_new();
 	MENUITEM_ADD (search_type, menuitem,
@@ -777,9 +787,11 @@ QuickSearch *quicksearch_new()
 			 G_CALLBACK(searchtype_autorun_changed),
 			 quicksearch);
 
+#if !GTK_CHECK_VERSION(3, 0, 0)
 	gtk_cmoption_menu_set_menu(GTK_CMOPTION_MENU(search_type_opt), search_type);
 
 	quicksearch->search_type_opt = search_type_opt;
+#endif
 	quicksearch_set_type(quicksearch, prefs_common.summary_quicksearch_type);
 
 	gtk_widget_show(search_type);
@@ -980,10 +992,16 @@ gboolean quicksearch_is_active(QuickSearch *quicksearch)
 
 static void quicksearch_set_active(QuickSearch *quicksearch, gboolean active)
 {
+#if !GTK_CHECK_VERSION(3, 0, 0)
 	static GdkColor yellow;
 	static GdkColor red;
 	static GdkColor black;
 	static gboolean colors_initialised = FALSE;
+#else
+	static GdkColor yellow = { (guint32)0, (guint16)0xf5, (guint16)0xf6, (guint16)0xbe };
+	static GdkColor red = { (guint32)0, (guint16)0xff, (guint16)0x70, (guint16)0x70 };
+	static GdkColor black = { (guint32)0, (guint16)0x0, (guint16)0x0, (guint16)0x0 };
+#endif
 	gboolean error = FALSE;
 
 	
@@ -991,6 +1009,7 @@ static void quicksearch_set_active(QuickSearch *quicksearch, gboolean active)
 	if (quicksearch->gui == FALSE)
 		return;
 
+#if !GTK_CHECK_VERSION(3, 0, 0)
 	if (!colors_initialised) {
 		gdk_color_parse("#f5f6be", &yellow);
 		gdk_color_parse("#000000", &black);
@@ -1002,6 +1021,7 @@ static void quicksearch_set_active(QuickSearch *quicksearch, gboolean active)
 		colors_initialised &= gdk_colormap_alloc_color(
 			gdk_colormap_get_system(), &red, FALSE, TRUE);
 	}
+#endif
 
 	if (active && 
 		(prefs_common.summary_quicksearch_type == QUICK_SEARCH_EXTENDED
@@ -1010,14 +1030,18 @@ static void quicksearch_set_active(QuickSearch *quicksearch, gboolean active)
 
 	if (active) {
 		gtk_widget_set_sensitive(quicksearch->clear_search, TRUE);
+#if !GTK_CHECK_VERSION(3, 0, 0)
 		if (colors_initialised) {
+#endif
 			gtk_widget_modify_base(
 				gtk_bin_get_child(GTK_BIN((quicksearch->search_string_entry))),
 				GTK_STATE_NORMAL, error ? &red : &yellow);
 			gtk_widget_modify_text(
 				gtk_bin_get_child(GTK_BIN((quicksearch->search_string_entry))),
 				GTK_STATE_NORMAL, &black);
+#if !GTK_CHECK_VERSION(3, 0, 0)
 		}
+#endif
 	} else {
 		gtk_widget_set_sensitive(quicksearch->clear_search, FALSE);
 		if (colors_initialised) {
@@ -1027,7 +1051,9 @@ static void quicksearch_set_active(QuickSearch *quicksearch, gboolean active)
 			gtk_widget_modify_text(
 				gtk_bin_get_child(GTK_BIN((quicksearch->search_string_entry))),
 				GTK_STATE_NORMAL, NULL);
+#if !GTK_CHECK_VERSION(3, 0, 0)
 		}
+#endif
 	}
 
 	if (!active) {

@@ -57,8 +57,13 @@ GtkWidget *statusbar_create(void)
 	statusbar = gtk_statusbar_new();
 	gtk_widget_set_size_request(statusbar, 1, -1);
 	statusbar_list = g_list_append(statusbar_list, statusbar);
+#if !GTK_CHECK_VERSION(3, 0, 0)
 	gtk_statusbar_set_has_resize_grip(GTK_STATUSBAR(statusbar), 
 					  FALSE);
+#else
+	gtk_window_set_has_resize_grip(GTK_WINDOW(statusbar), 
+					  FALSE);
+#endif
 	gtk_container_set_border_width(GTK_CONTAINER(statusbar), 1);
 #if GTK_CHECK_VERSION (2, 19, 1)
 	child = gtk_statusbar_get_message_area(GTK_STATUSBAR(statusbar));

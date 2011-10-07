@@ -32,7 +32,9 @@
 #include <string.h>
 #include <errno.h>
 
+#if !GTK_CHECK_VERSION(3, 0, 0)
 #include "gtkcmoptionmenu.h"
+#endif
 #include "main.h"
 #include "prefs_gtk.h"
 #include "prefs_filtering_action.h"
@@ -113,7 +115,9 @@ static struct FilteringAction_ {
 	GtkWidget *dest_entry;
 	GtkWidget *dest_btn;
 	GtkWidget *exec_btn;
+#if !GTK_CHECK_VERSION(3, 0, 0)
 	GtkWidget *color_optmenu;
+#endif
 	GtkWidget *header_combo;
 	GtkWidget *header_entry;
 	GtkWidget *addressbook_btn;
@@ -172,7 +176,9 @@ static struct {
 	{ N_("Message flags"), 	N_("Mark as spam"),		ACTION_MARK_AS_SPAM },
 	{ N_("Message flags"), 	N_("Mark as ham"),		ACTION_MARK_AS_HAM },
 	{ NULL, 		N_("Execute"),			ACTION_EXECUTE },
+#if !GTK_CHECK_VERSION(3, 0, 0)
 	{ NULL, 		N_("Color label"),		ACTION_COLOR },
+#endif
 	{ N_("Resend"), 	N_("Forward"),			ACTION_FORWARD },
 	{ N_("Resend"), 	N_("Forward as attachment"),	ACTION_FORWARD_AS_ATTACHMENT },
 	{ N_("Resend"), 	N_("Redirect"),			ACTION_REDIRECT },
@@ -270,9 +276,11 @@ void prefs_filtering_action_open(GSList *action_list,
 	if (!filtering_action.window) {
 		prefs_filtering_action_create();
 	} else {
+#if !GTK_CHECK_VERSION(3, 0, 0)
 		/* update color label menu */
 		gtk_cmoption_menu_set_menu(GTK_CMOPTION_MENU(filtering_action.color_optmenu),
 				colorlabel_create_color_menu());
+#endif
 	}
 
 	manage_window_set_transient(GTK_WINDOW(filtering_action.window));
@@ -355,7 +363,9 @@ static void prefs_filtering_action_create(void)
 
 	GtkWidget *exec_btn;
 
+#if !GTK_CHECK_VERSION(3, 0, 0)
 	GtkWidget *color_optmenu;
+#endif
 
 	static GdkGeometry geometry;
 
@@ -503,12 +513,14 @@ static void prefs_filtering_action_create(void)
 	score_entry = gtk_spin_button_new_with_range(-1000, 1000, 1);
 	gtk_box_pack_start(GTK_BOX(hbox1), score_entry, FALSE, FALSE, 0);
 	
+#if !GTK_CHECK_VERSION(3, 0, 0)
 	color_optmenu = gtk_cmoption_menu_new();
 	gtk_size_group_add_widget(size_action, color_optmenu);
 	gtk_cmoption_menu_set_menu(GTK_CMOPTION_MENU(color_optmenu),
 				 colorlabel_create_color_menu());
 	prefs_filtering_action_check_widget_width(color_optmenu);
 	gtk_box_pack_start(GTK_BOX(hbox1), color_optmenu, FALSE, FALSE, 0);
+#endif
 
 	tags_combo = gtk_combo_box_new_text ();
 	gtk_size_group_add_widget(size_action, tags_combo);
@@ -627,7 +639,9 @@ static void prefs_filtering_action_create(void)
 	filtering_action.dest_entry = dest_entry;
 	filtering_action.dest_btn = dest_btn;
 	filtering_action.exec_btn = exec_btn;
+#if !GTK_CHECK_VERSION(3, 0, 0)
 	filtering_action.color_optmenu = color_optmenu;
+#endif
 	filtering_action.score_entry = score_entry;
 	filtering_action.header_combo = header_combo;
 	filtering_action.header_entry = header_entry;
@@ -826,8 +840,10 @@ static gint prefs_filtering_action_get_matching_from_action(Action action_id)
 		return MATCHACTION_REDIRECT;
 	case ACTION_EXECUTE:
 		return MATCHACTION_EXECUTE;
+#if !GTK_CHECK_VERSION(3, 0, 0)
 	case ACTION_COLOR:
 		return MATCHACTION_COLOR;
+#endif
 	case ACTION_HIDE:
 		return MATCHACTION_HIDE;
 	case ACTION_IGNORE:
@@ -899,11 +915,13 @@ static FilteringAction * prefs_filtering_action_dialog_to_action(gboolean alert)
 			return NULL;
 		}
 		break;
+#if !GTK_CHECK_VERSION(3, 0, 0)
 	case ACTION_COLOR:
 		labelcolor = colorlabel_get_color_menu_active_item(
 			gtk_cmoption_menu_get_menu(GTK_CMOPTION_MENU(filtering_action.color_optmenu)));
 		destination = NULL;	
 		break;
+#endif
         case ACTION_CHANGE_SCORE:
         case ACTION_SET_SCORE:
         	score = gtk_spin_button_get_value_as_int(GTK_SPIN_BUTTON(
@@ -1335,8 +1353,10 @@ static void prefs_filtering_action_type_selection_changed(GtkWidget *combo,
 	prefs_filtering_action_enable_widget(filtering_action.exec_btn,
 						(value == ACTION_EXECUTE));
 
+#if !GTK_CHECK_VERSION(3, 0, 0)
 	prefs_filtering_action_enable_widget(filtering_action.color_optmenu,
 						(value == ACTION_COLOR));
+#endif
 
 	prefs_filtering_action_enable_widget(filtering_action.header_combo,
 					(value == ACTION_ADD_TO_ADDRESSBOOK));	
@@ -1362,9 +1382,11 @@ static void prefs_filtering_action_type_selection_changed(GtkWidget *combo,
 	case ACTION_MOVE:
 		gtk_label_set_text(GTK_LABEL(filtering_action.label3), _("Destination"));
 		break;
+#if !GTK_CHECK_VERSION(3, 0, 0)
 	case ACTION_COLOR:
 		gtk_label_set_text(GTK_LABEL(filtering_action.label3), _("Color"));
 		break;
+#endif
 	case ACTION_EXECUTE:
 		gtk_label_set_text(GTK_LABEL(filtering_action.label3), _("Execute"));
 		break;
@@ -1568,6 +1590,7 @@ static gboolean prefs_filtering_actions_selected
 		combobox_select_by_data(GTK_COMBO_BOX(filtering_action.action_combo),
 				     ACTION_EXECUTE);
 		break;
+#if !GTK_CHECK_VERSION(3, 0, 0)
 	case MATCHACTION_COLOR:
 		combobox_select_by_data(GTK_COMBO_BOX(filtering_action.action_combo),
 				     ACTION_COLOR);
@@ -1577,6 +1600,7 @@ static gboolean prefs_filtering_actions_selected
 						filtering_action.color_optmenu));
 		g_signal_emit_by_name(G_OBJECT(menu), "selection-done", menu);
 		break;
+#endif
 	case MATCHACTION_CHANGE_SCORE:
 		combobox_select_by_data(GTK_COMBO_BOX(filtering_action.action_combo),
 				     ACTION_CHANGE_SCORE);

@@ -86,7 +86,9 @@
 #include "socket.h"
 #include "alertpanel.h"
 #include "manage_window.h"
+#if !GTK_CHECK_VERSION(3, 0, 0)
 #include "gtkshruler.h"
+#endif
 #include "folder.h"
 #include "addr_compl.h"
 #include "quote_fmt.h"
@@ -351,9 +353,11 @@ static void compose_add_field_list	( Compose *compose,
 
 /* callback functions */
 
+#if !GTK_CHECK_VERSION(3, 0, 0)
 static gboolean compose_edit_size_alloc (GtkEditable	*widget,
 					 GtkAllocation	*allocation,
 					 GtkSHRuler	*shruler);
+#endif
 static void account_activated		(GtkComboBox *optmenu,
 					 gpointer	 data);
 static void attach_selected		(GtkTreeView	*tree_view, 
@@ -437,8 +441,10 @@ static void compose_toggle_autowrap_cb	(GtkToggleAction *action,
 static void compose_toggle_autoindent_cb(GtkToggleAction *action,
 					 gpointer	 data);
 
+#if !GTK_CHECK_VERSION(3, 0, 0)
 static void compose_toggle_ruler_cb	(GtkToggleAction *action,
 					 gpointer	 data);
+#endif
 static void compose_toggle_sign_cb	(GtkToggleAction *action,
 					 gpointer	 data);
 static void compose_toggle_encrypt_cb	(GtkToggleAction *action,
@@ -668,7 +674,9 @@ static GtkToggleActionEntry compose_toggle_entries[] =
 	{"Options/Encrypt",		NULL, N_("_Encrypt"), NULL, NULL, G_CALLBACK(compose_toggle_encrypt_cb) }, /* Toggle */
 	{"Options/RequestRetRcpt",	NULL, N_("_Request Return Receipt"), NULL, NULL, G_CALLBACK(compose_toggle_return_receipt_cb) }, /* TOGGLE */
 	{"Options/RemoveReferences",	NULL, N_("Remo_ve references"), NULL, NULL, G_CALLBACK(compose_toggle_remove_refs_cb) }, /* TOGGLE */
+#if !GTK_CHECK_VERSION(3, 0, 0)
 	{"Tools/ShowRuler",		NULL, N_("Show _ruler"), NULL, NULL, G_CALLBACK(compose_toggle_ruler_cb) }, /* Toggle */
+#endif
 };
 
 static GtkRadioActionEntry compose_radio_rm_entries[] =
@@ -786,9 +794,11 @@ static void compose_create_tags(GtkTextView *text, Compose *compose)
 {
 	GtkTextBuffer *buffer;
 	GdkColor black = {(gulong)0, (gushort)0, (gushort)0, (gushort)0};
+#if !GTK_CHECK_VERSION(3, 0, 0)
 	GdkColormap *cmap;
-	GdkColor color[8];
 	gboolean success[8];
+#endif
+	GdkColor color[8];
 	int i;
 
 	buffer = gtk_text_view_get_buffer(text);
@@ -859,6 +869,7 @@ static void compose_create_tags(GtkTextView *text, Compose *compose)
 	color[5] = quote_bgcolor3;
 	color[6] = signature_color;
 	color[7] = uri_color;
+#if !GTK_CHECK_VERSION(3, 0, 0)
 	cmap = gdk_drawable_get_colormap(gtk_widget_get_window(compose->window));
 	gdk_colormap_alloc_colors(cmap, color, 8, FALSE, TRUE, success);
 
@@ -873,6 +884,7 @@ static void compose_create_tags(GtkTextView *text, Compose *compose)
 				signature_color = uri_color = black;
 		}
 	}
+#endif
 }
 
 Compose *compose_new(PrefsAccount *account, const gchar *mailto,
@@ -2424,7 +2436,9 @@ Compose *compose_redirect(PrefsAccount *account, MsgInfo *msginfo,
 	cm_menu_set_sensitive_full(compose->ui_manager, "Menu/Message/InsertSig", FALSE);
 	cm_menu_set_sensitive_full(compose->ui_manager, "Menu/Edit", FALSE);
 	cm_menu_set_sensitive_full(compose->ui_manager, "Menu/Options", FALSE);
+#if !GTK_CHECK_VERSION(3, 0, 0)
 	cm_menu_set_sensitive_full(compose->ui_manager, "Menu/Tools/ShowRuler", FALSE);
+#endif
 	cm_menu_set_sensitive_full(compose->ui_manager, "Menu/Tools/Actions", FALSE);
 	
 	if (compose->toolbar->draft_btn)
@@ -2533,12 +2547,18 @@ void compose_entry_append(Compose *compose, const gchar *address,
 
 static void compose_entry_mark_default_to(Compose *compose, const gchar *mailto)
 {
+#if !GTK_CHECK_VERSION(3, 0, 0)
 	static GdkColor yellow;
 	static GdkColor black;
 	static gboolean yellow_initialised = FALSE;
+#else
+	static GdkColor yellow = { (guint32)0, (guint16)0xf5, (guint16)0xf6, (guint16)0xbe };
+	static GdkColor black = { (guint32)0, (guint16)0x0, (guint16)0x0, (guint16)0x0 };
+#endif
 	GSList *h_list;
 	GtkEntry *entry;
 		
+#if !GTK_CHECK_VERSION(3, 0, 0)
 	if (!yellow_initialised) {
 		gdk_color_parse("#f5f6be", &yellow);
 		gdk_color_parse("#000000", &black);
@@ -2547,19 +2567,24 @@ static void compose_entry_mark_default_to(Compose *compose, const gchar *mailto)
 		yellow_initialised &= gdk_colormap_alloc_color(
 			gdk_colormap_get_system(), &black, FALSE, TRUE);
 	}
+#endif
 
 	for (h_list = compose->header_list; h_list != NULL; h_list = h_list->next) {
 		entry = GTK_ENTRY(((ComposeHeaderEntry *)h_list->data)->entry);
 		if (gtk_entry_get_text(entry) && 
 		    !g_utf8_collate(gtk_entry_get_text(entry), mailto)) {
+#if !GTK_CHECK_VERSION(3, 0, 0)
 			if (yellow_initialised) {
+#endif
 				gtk_widget_modify_base(
 					GTK_WIDGET(((ComposeHeaderEntry *)h_list->data)->entry),
 					GTK_STATE_NORMAL, &yellow);
 				gtk_widget_modify_text(
 					GTK_WIDGET(((ComposeHeaderEntry *)h_list->data)->entry),
 					GTK_STATE_NORMAL, &black);
+#if !GTK_CHECK_VERSION(3, 0, 0)
 			}
+#endif
 		}
 	}
 }
@@ -7059,8 +7084,10 @@ static Compose *compose_create(PrefsAccount *account,
 	GtkWidget *paned;
 
 	GtkWidget *edit_vbox;
+#if !GTK_CHECK_VERSION(3, 0, 0)
 	GtkWidget *ruler_hbox;
 	GtkWidget *ruler;
+#endif
 	GtkWidget *scrolledwin;
 	GtkWidget *text;
 	GtkTextBuffer *buffer;
@@ -7316,7 +7343,9 @@ static Compose *compose_create(PrefsAccount *account,
 /* phew. */
 
 /* Tools menu */
+#if !GTK_CHECK_VERSION(3, 0, 0)
 	MENUITEM_ADDUI_MANAGER(compose->ui_manager, "/Menu/Tools", "ShowRuler", "Tools/ShowRuler", GTK_UI_MANAGER_MENUITEM)
+#endif
 	MENUITEM_ADDUI_MANAGER(compose->ui_manager, "/Menu/Tools", "AddressBook", "Tools/AddressBook", GTK_UI_MANAGER_MENUITEM)
 	MENUITEM_ADDUI_MANAGER(compose->ui_manager, "/Menu/Tools", "Template", "Tools/Template", GTK_UI_MANAGER_MENU)
 	MENUITEM_ADDUI_MANAGER(compose->ui_manager, "/Menu/Tools/Template", "PlaceHolder", "Tools/Template/PlaceHolder", GTK_UI_MANAGER_MENUITEM)
@@ -7418,6 +7447,7 @@ static Compose *compose_create(PrefsAccount *account,
 
 	gtk_box_pack_start(GTK_BOX(edit_vbox), subject_hbox, FALSE, FALSE, 0);
 
+#if !GTK_CHECK_VERSION(3, 0, 0)
 	/* ruler */
 	ruler_hbox = gtk_hbox_new(FALSE, 0);
 	gtk_box_pack_start(GTK_BOX(edit_vbox), ruler_hbox, FALSE, FALSE, 0);
@@ -7426,6 +7456,7 @@ static Compose *compose_create(PrefsAccount *account,
 	gtk_ruler_set_range(GTK_RULER(ruler), 0.0, 100.0, 1.0, 100.0);
 	gtk_box_pack_start(GTK_BOX(ruler_hbox), ruler, TRUE, TRUE,
 			   BORDER_WIDTH);
+#endif
 
 	/* text widget */
 	scrolledwin = gtk_scrolled_window_new(NULL, NULL);
@@ -7449,10 +7480,11 @@ static Compose *compose_create(PrefsAccount *account,
 	gtk_text_buffer_add_selection_clipboard(buffer, clipboard);
 	
 	gtk_container_add(GTK_CONTAINER(scrolledwin), text);
-
+#if !GTK_CHECK_VERSION(3, 0, 0)
 	g_signal_connect_after(G_OBJECT(text), "size_allocate",
 			       G_CALLBACK(compose_edit_size_alloc),
 			       ruler);
+#endif
 	g_signal_connect(G_OBJECT(buffer), "changed",
 			 G_CALLBACK(compose_changed_cb), compose);
 	g_signal_connect(G_OBJECT(text), "grab_focus",
@@ -7546,8 +7578,10 @@ static Compose *compose_create(PrefsAccount *account,
 
 	compose->notebook      = notebook;
 	compose->edit_vbox     = edit_vbox;
+#if !GTK_CHECK_VERSION(3, 0, 0)
 	compose->ruler_hbox    = ruler_hbox;
 	compose->ruler         = ruler;
+#endif
 	compose->scrolledwin   = scrolledwin;
 	compose->text	       = text;
 
@@ -7666,10 +7700,12 @@ static Compose *compose_create(PrefsAccount *account,
 
 	compose_list = g_list_append(compose_list, compose);
 
+#if !GTK_CHECK_VERSION(3, 0, 0)
 	if (!prefs_common.show_ruler)
 		gtk_widget_hide(ruler_hbox);
 		
 	cm_toggle_menu_set_active_full(compose->ui_manager, "Menu/Tools/ShowRuler", prefs_common.show_ruler);
+#endif
 
 	/* Priority */
 	compose->priority = PRIORITY_NORMAL;
@@ -9113,6 +9149,7 @@ static void compose_undo_state_changed(UndoMain *undostruct, gint undo_state,
  * includes "non-client" (windows-izm) in calculation, so this calculation
  * may not be accurate.
  */
+#if !GTK_CHECK_VERSION(3, 0, 0)
 static gboolean compose_edit_size_alloc(GtkEditable *widget,
 					GtkAllocation *allocation,
 					GtkSHRuler *shruler)
@@ -9134,6 +9171,7 @@ static gboolean compose_edit_size_alloc(GtkEditable *widget,
 
 	return TRUE;
 }
+#endif
 
 typedef struct {
 	gchar 			*header;
@@ -10555,6 +10593,7 @@ static void activate_privacy_system(Compose *compose, PrefsAccount *account, gbo
 	compose_update_privacy_system_menu_item(compose, warn);
 }
 
+#if !GTK_CHECK_VERSION(3, 0, 0)
 static void compose_toggle_ruler_cb(GtkToggleAction *action, gpointer data)
 {
 	Compose *compose = (Compose *)data;
@@ -10568,6 +10607,7 @@ static void compose_toggle_ruler_cb(GtkToggleAction *action, gpointer data)
 		prefs_common.show_ruler = FALSE;
 	}
 }
+#endif
 
 static void compose_attach_drag_received_cb (GtkWidget		*widget,
 					     GdkDragContext	*context,

@@ -34,7 +34,6 @@
 #include "manage_window.h"
 #include "utils.h"
 #include "mainwindow.h"
-#include "gtksctree.h"
 #include "alertpanel.h"
 #include "sslcertwindow.h"
 #include "prefs_common.h"

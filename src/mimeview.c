@@ -73,12 +73,14 @@ typedef enum
 
 #define N_MIMEVIEW_COLS	3
 
+#if !GTK_CHECK_VERSION(3, 0, 0)
 static void mimeview_set_multipart_tree		(MimeView	*mimeview,
 						 MimeInfo	*mimeinfo,
 						 GtkCMCTreeNode	*parent);
 static GtkCMCTreeNode *mimeview_append_part	(MimeView	*mimeview,
 						 MimeInfo	*partinfo,
 						 GtkCMCTreeNode	*parent);
+#endif
 static void mimeview_show_message_part		(MimeView	*mimeview,
 						 MimeInfo	*partinfo);
 static void mimeview_change_view_type		(MimeView	*mimeview,
@@ -89,10 +91,12 @@ static gchar *mimeview_get_filename_for_part		(MimeInfo	*partinfo,
 static gboolean mimeview_write_part		(const gchar	*filename,
 						 MimeInfo	*partinfo);
 
+#if !GTK_CHECK_VERSION(3, 0, 0)
 static void mimeview_selected		(GtkCMCTree	*ctree,
 					 GtkCMCTreeNode	*node,
 					 gint		 column,
 					 MimeView	*mimeview);
+#endif
 static void mimeview_start_drag 	(GtkWidget	*widget,
 					 gint		 button,
 					 GdkEvent	*event,

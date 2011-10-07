@@ -380,10 +380,16 @@ static void textview_create_tags(GtkTextView *text, TextView *textview)
 {
 	GtkTextBuffer *buffer;
 	GtkTextTag *tag, *qtag;
+#if !GTK_CHECK_VERSION(3, 0, 0)
 	static GdkColor yellow, black;
 	static gboolean color_init = FALSE;
+#else
+	static GdkColor yellow = { (guint32)0, (guint16)0xf5, (guint16)0xf6, (guint16)0xbe };
+	static GdkColor black = { (guint32)0, (guint16)0x0, (guint16)0x0, (guint16)0x0 };
+#endif
 	static PangoFontDescription *font_desc, *bold_font_desc;
 	
+#if !GTK_CHECK_VERSION(3, 0, 0)
 	if (!color_init) {
 		gdk_color_parse("#f5f6be", &yellow);
 		gdk_color_parse("#000000", &black);
@@ -392,6 +398,7 @@ static void textview_create_tags(GtkTextView *text, TextView *textview)
 		color_init &= gdk_colormap_alloc_color(
 			gdk_colormap_get_system(), &black, FALSE, TRUE);
 	}
+#endif
 
 	if (!font_desc)
 		font_desc = pango_font_description_from_string

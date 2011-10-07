@@ -26,7 +26,9 @@
 #include <gdk/gdkkeysyms.h>
 #include <gdk/gdk.h>
 #include <gtk/gtk.h>
+#if !GTK_CHECK_VERSION(3, 0, 0)
 #include "gtk/gtksctree.h"
+#endif
 #include <stdlib.h>
 #include <stdarg.h>
 #include <sys/stat.h>
@@ -49,7 +51,9 @@
 #include "defs.h"
 #include "gtkutils.h"
 #include "utils.h"
+#if !GTK_CHECK_VERSION(3, 0, 0)
 #include "gtksctree.h"
+#endif
 #include "codeconv.h"
 #include "stock_pixmap.h"
 #include "menu.h"
@@ -1215,9 +1219,11 @@ GtkWidget *gtkut_get_link_btn(GtkWidget *window, const gchar *url, const gchar *
 {
 	GtkWidget *btn;
 	GtkWidget *btn_label;
+#if !GTK_CHECK_VERSION(3, 0, 0)
 	GdkColormap *cmap;
-	GdkColor uri_color[2] = {{0, 0, 0, 0xffff}, {0, 0xffff, 0, 0}};
 	gboolean success[2];
+#endif
+	GdkColor uri_color[2] = {{0, 0, 0, 0xffff}, {0, 0xffff, 0, 0}};
 	gchar *local_url = NULL;
 	if (!url)
 		return NULL;
@@ -1230,9 +1236,11 @@ GtkWidget *gtkut_get_link_btn(GtkWidget *window, const gchar *url, const gchar *
 	btn = gtk_button_new_with_label(label?label:url);
 	gtk_button_set_relief(GTK_BUTTON(btn), GTK_RELIEF_NONE);
 	btn_label = gtk_bin_get_child(GTK_BIN((btn)));
+#if !GTK_CHECK_VERSION(3, 0, 0)
 	cmap = gdk_drawable_get_colormap(gtk_widget_get_window(window));
 	gdk_colormap_alloc_colors(cmap, uri_color, 2, FALSE, TRUE, success);
 	if (success[0] == TRUE && success[1] == TRUE) {
+#endif
 		GtkStyle *style;
 		gtk_widget_ensure_style(btn_label);
 		style = gtk_style_copy
@@ -1241,8 +1249,10 @@ GtkWidget *gtkut_get_link_btn(GtkWidget *window, const gchar *url, const gchar *
 		style->fg[GTK_STATE_ACTIVE]   = uri_color[1];
 		style->fg[GTK_STATE_PRELIGHT] = uri_color[0];
 		gtk_widget_set_style(btn_label, style);
+#if !GTK_CHECK_VERSION(3, 0, 0)
 	} else
 		g_warning("about_create(): color allocation failed.\n");
+#endif
 
 	g_signal_connect(G_OBJECT(btn), "enter",
 			 G_CALLBACK(link_btn_enter), window);

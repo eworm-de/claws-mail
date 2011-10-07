@@ -318,7 +318,7 @@ static void prefs_summaries_create_widget(PrefsPage *_page, GtkWindow *window,
 	GtkWidget *hbox1;
 	GtkWidget *label_ng_abbrev;
 	GtkWidget *spinbtn_ng_abbrev_len;
-	GtkObject *spinbtn_ng_abbrev_len_adj;
+	GtkAdjustment *spinbtn_ng_abbrev_len_adj;
 	GtkWidget *vbox2;
 	GtkWidget *vbox3;
 	GtkWidget *checkbtn_useaddrbook;
@@ -333,7 +333,7 @@ static void prefs_summaries_create_widget(PrefsPage *_page, GtkWindow *window,
 	GtkWidget *checkbtn_reopen_last_folder;
 	GtkWidget *optmenu_always_show_msg;
 	GtkWidget *spinbtn_mark_as_read_delay;
-	GtkObject *spinbtn_mark_as_read_delay_adj;
+	GtkAdjustment *spinbtn_mark_as_read_delay_adj;
 	GtkWidget *checkbtn_immedexec;
 	GtkWidget *checkbtn_ask_mark_all_read;
 	GtkWidget *label, *label_fill;

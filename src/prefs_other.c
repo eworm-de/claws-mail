@@ -446,7 +446,7 @@ static void prefs_other_create_widget(PrefsPage *_page, GtkWindow *window,
 
 	GtkWidget *label_iotimeout;
 	GtkWidget *spinbtn_iotimeout;
-	GtkObject *spinbtn_iotimeout_adj;
+	GtkAdjustment *spinbtn_iotimeout_adj;
 
 	GtkWidget *vbox2;
 	GtkWidget *checkbtn_askonclean;

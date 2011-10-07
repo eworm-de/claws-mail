@@ -106,7 +106,7 @@ static void bogofilter_create_widget_func(PrefsPage * _page,
 	GtkWidget *hbox_mark_as_read;
 
 	GtkWidget *max_size_label;
-	GtkObject *max_size_spinbtn_adj;
+	GtkAdjustment *max_size_spinbtn_adj;
 	GtkWidget *max_size_spinbtn;
 	GtkWidget *max_size_kb_label;
 

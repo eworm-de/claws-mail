@@ -60,7 +60,7 @@ static void prefs_wrapping_create_widget(PrefsPage *_page, GtkWindow *window,
 	GtkWidget *vbox1;
 	GtkWidget *vbox2;
 	GtkWidget *label_linewrap;
-	GtkObject *spinbtn_linewrap_adj;
+	GtkAdjustment *spinbtn_linewrap_adj;
 	GtkWidget *spinbtn_linewrap;
 	GtkWidget *checkbtn_wrapquote;
 	GtkWidget *checkbtn_wrappastes;

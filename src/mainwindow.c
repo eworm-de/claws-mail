@@ -1553,9 +1553,11 @@ MainWindow *main_window_create()
 	FolderView *folderview;
 	SummaryView *summaryview;
 	MessageView *messageview;
+#if !GTK_CHECK_VERSION(3, 0, 0)
 	GdkColormap *colormap;
-	GdkColor color[4];
 	gboolean success[4];
+#endif
+	GdkColor color[4];
 	GtkWidget *ac_menu;
 	gint i;
 
@@ -2206,12 +2208,14 @@ MainWindow *main_window_create()
 	color[2] = folderview->color_new;
 	color[3] = folderview->color_op;
 
+#if !GTK_CHECK_VERSION(3, 0, 0)
 	colormap = gdk_drawable_get_colormap(gtk_widget_get_window(window));
 	gdk_colormap_alloc_colors(colormap, color, 4, FALSE, TRUE, success);
 	for (i = 0; i < 4; i++) {
 		if (success[i] == FALSE)
 			g_warning("MainWindow: color allocation %d failed\n", i);
 	}
+#endif
 
 	debug_print("done.\n");
 

@@ -22,7 +22,9 @@
 
 #include <glib.h>
 #include <gtk/gtk.h>
+#if !GTK_CHECK_VERSION(3, 0, 0)
 #include "gtkcmoptionmenu.h"
+#endif
 
 #define MENU_VAL_ID "Claws::Menu::ValueID"
 #define MENU_VAL_DATA "Claws::Menu::ValueDATA"
@@ -92,8 +94,10 @@ void cm_toggle_menu_set_active(gchar *menu, gboolean active);
 void cm_menu_set_sensitive_full(GtkUIManager *gui_manager, gchar *menu, gboolean sensitive);
 void cm_toggle_menu_set_active_full(GtkUIManager *gui_manager, gchar *menu, gboolean active);
 
+#if !GTK_CHECK_VERSION(3, 0, 0)
 gint menu_find_option_menu_index(GtkCMOptionMenu *optmenu, gpointer data,
 				 GCompareFunc func);
+#endif
 
 void menu_button_position	(GtkMenu		*menu,
 				 gint			*x,

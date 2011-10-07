@@ -396,7 +396,7 @@ static void addressbook_edit_ldap_page_basic( gint pageNum, gchar *pageLbl ) {
 	GtkWidget *entry_name;
 	GtkWidget *entry_server;
 	GtkWidget *hbox_spin;
-	GtkObject *spinbtn_port_adj;
+	GtkAdjustment *spinbtn_port_adj;
 	GtkWidget *spinbtn_port;
 #ifdef USE_LDAP_TLS
 	GtkWidget *enable_ssl_checkbtn, *enable_tls_checkbtn;
@@ -550,7 +550,7 @@ static void addressbook_edit_ldap_page_search( gint pageNum, gchar *pageLbl ) {
 	GtkWidget *label;
 	GtkWidget *entry_criteria;
 	GtkWidget *hbox_spin;
-	GtkObject *spinbtn_queryage_adj;
+	GtkAdjustment *spinbtn_queryage_adj;
 	GtkWidget *spinbtn_queryage;
 	GtkWidget *check_dynsearch;
 	GtkWidget *check_matchoption;
@@ -675,9 +675,9 @@ static void addressbook_edit_ldap_page_extended( gint pageNum, gchar *pageLbl ) 
 	GtkWidget *entry_bindDN;
 	GtkWidget *entry_bindPW;
 	GtkWidget *hbox_spin;
-	GtkObject *spinbtn_timeout_adj;
+	GtkAdjustment *spinbtn_timeout_adj;
 	GtkWidget *spinbtn_timeout;
-	GtkObject *spinbtn_maxentry_adj;
+	GtkAdjustment *spinbtn_maxentry_adj;
 	GtkWidget *spinbtn_maxentry;
 	CLAWS_TIP_DECL();
 	gint top;

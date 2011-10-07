@@ -91,7 +91,7 @@ static void prefs_message_create_widget(PrefsPage *_page, GtkWindow *window,
 	GtkWidget *checkbtn_promote_html_part;
 	GtkWidget *hbox_linespc;
 	GtkWidget *label_linespc;
-	GtkObject *spinbtn_linespc_adj;
+	GtkAdjustment *spinbtn_linespc_adj;
 	GtkWidget *spinbtn_linespc;
 
 	GtkWidget *frame;
@@ -99,7 +99,7 @@ static void prefs_message_create_widget(PrefsPage *_page, GtkWindow *window,
 	GtkWidget *checkbtn_smoothscroll;
 	GtkWidget *hbox_scr;
 	GtkWidget *label_scr;
-	GtkObject *spinbtn_scrollstep_adj;
+	GtkAdjustment *spinbtn_scrollstep_adj;
 	GtkWidget *spinbtn_scrollstep;
 	GtkWidget *checkbtn_halfpage;
 	GtkWidget *checkbtn_hide_quoted;

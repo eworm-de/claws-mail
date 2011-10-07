@@ -271,7 +271,7 @@ static void addrgather_page_fields(gint pageNum, gchar *pageLbl)
 	GtkWidget *frameHeader;
 	GtkWidget *checkHeader[NUM_FIELDS];
 	GtkWidget *spinbtnFolder;
-	GtkObject *adjFolder;
+	GtkAdjustment *adjFolder;
 	GtkWidget *checkRecurse;
 	gint top;
 	gint i;

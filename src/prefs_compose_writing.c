@@ -85,12 +85,12 @@ static void prefs_compose_writing_create_widget(PrefsPage *_page, GtkWindow *win
 
 	GtkWidget *hbox_undolevel;
 	GtkWidget *label_undolevel;
-	GtkObject *spinbtn_undolevel_adj;
+	GtkAdjustment *spinbtn_undolevel_adj;
 	GtkWidget *spinbtn_undolevel;
 
 	GtkWidget *hbox_warn_large_insert;
 	GtkWidget *checkbtn_warn_large_insert;
-	GtkObject *spinbtn_warn_large_insert_adj;
+	GtkAdjustment *spinbtn_warn_large_insert_adj;
 	GtkWidget *spinbtn_warn_large_insert_size;
 	GtkWidget *label_warn_large_insert_size;
 
@@ -102,7 +102,7 @@ static void prefs_compose_writing_create_widget(PrefsPage *_page, GtkWindow *win
 
 	GtkWidget *hbox_autosave;
 	GtkWidget *checkbtn_autosave;
-	GtkObject *spinbtn_autosave_adj;
+	GtkAdjustment *spinbtn_autosave_adj;
 	GtkWidget *spinbtn_autosave_length;
 	GtkWidget *label_autosave_length;
 	

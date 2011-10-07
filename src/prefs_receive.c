@@ -100,7 +100,7 @@ static void prefs_receive_create_widget(PrefsPage *_page, GtkWindow *window,
 
 	GtkWidget *hbox_autochk;
 	GtkWidget *checkbtn_autochk;
-	GtkObject *spinbtn_autochk_adj;
+	GtkAdjustment *spinbtn_autochk_adj;
 	GtkWidget *spinbtn_autochk;
 	GtkWidget *label_autochk2;
 	GtkWidget *checkbtn_chkonstartup;
