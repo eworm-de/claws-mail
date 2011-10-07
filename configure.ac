@@ -12,7 +12,7 @@ MINOR_VERSION=7
 MICRO_VERSION=10
 INTERFACE_AGE=0
 BINARY_AGE=0
-EXTRA_VERSION=23
+EXTRA_VERSION=24
 EXTRA_RELEASE=
 EXTRA_GTK2_VERSION=
 
@@ -157,7 +157,7 @@ fi
 CFLAGS="$CFLAGS -Wall"
 
 #if test $USE_MAINTAINER_MODE = yes; then
-#	CFLAGS="-g -Wall -Wno-pointer-sign -DGTK_DISABLE_DEPRECATED -DGDK_DISABLE_DEPRECATED -DG_DISABLE_DEPRECATED -DGTK_DISABLE_SINGLE_INCLUDESi -DGDK_PIXBUF_DISABLE_DEPRECATED -DGSEAL_ENABLE"
+#	CFLAGS="-g -Wall -Wno-pointer-sign -DGTK_DISABLE_DEPRECATED -DGDK_DISABLE_DEPRECATED -DG_DISABLE_DEPRECATED -DGTK_DISABLE_SINGLE_INCLUDES -DGDK_PIXBUF_DISABLE_DEPRECATED -DGSEAL_ENABLE"
 #fi
 
 pthread_name=
@@ -466,7 +466,7 @@ dnl ************************
 dnl Checks for GTK
 AC_ARG_ENABLE(gtk3,
 	AS_HELP_STRING([--enable-gtk3],
-		[Determines whether to use Gtk+ 3.0 vclplug on platforms where Gtk+ 3.0 is available.]),
+		[Determines whether to use Gtk+ 3.0.]),
 		[ac_cv_enable_gtk3=$enableval],[ac_cv_enable_gtk3=no])
 AM_CONDITIONAL(GTK3, false)
 AM_CONDITIONAL(GTK2, true)
