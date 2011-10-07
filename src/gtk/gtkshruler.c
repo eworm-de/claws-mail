@@ -34,6 +34,8 @@
 #include "utils.h"
 #include "gtkutils.h"
 
+#if !GTK_CHECK_VERSION(2,24,0)
+
 #define RULER_HEIGHT          14
 #define MINIMUM_INCR          5
 #define MAXIMUM_SUBDIVIDE     5
@@ -179,3 +181,4 @@ gtk_shruler_draw_ticks(GtkRuler *ruler)
 
 	cairo_destroy(cr);
 }
+#endif

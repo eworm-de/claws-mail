@@ -1,3 +1,10 @@
+2011-10-07 [colin]	3.7.10cvs23
+
+	* src/compose.c
+	* src/gtk/gtkshruler.c
+	* src/gtk/gtkshruler.h
+		Disable ruler starting from 2.24.
+
 2011-10-07 [colin]	3.7.10cvs22
 
 	* configure.ac
