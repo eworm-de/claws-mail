@@ -88,7 +88,7 @@ static gint addressadd_delete_event( GtkWidget *widget, GdkEventAny *event, gboo
 }
 
 static gboolean addressadd_key_pressed( GtkWidget *widget, GdkEventKey *event, gboolean *cancelled ) {
-	if (event && event->keyval == GDK_Escape) {
+	if (event && event->keyval == GDK_KEY_Escape) {
 		addressadd_cancelled = TRUE;
 		gtk_main_quit();
 	}

@@ -6581,7 +6581,7 @@ static gboolean summary_key_pressed(GtkWidget *widget, GdkEventKey *event,
 	if (summaryview->selected) {
 		gboolean handled = FALSE;
 		switch (event->keyval) {
-		case GDK_space:		/* Page down or go to the next */
+		case GDK_KEY_space:		/* Page down or go to the next */
 			handled = TRUE;
 			if (event->state & GDK_CONTROL_MASK) {
 				handled = FALSE;
@@ -6604,12 +6604,12 @@ static gboolean summary_key_pressed(GtkWidget *widget, GdkEventKey *event,
 				}				
 			}
 			break;
-		case GDK_BackSpace:	/* Page up */
+		case GDK_KEY_BackSpace:	/* Page up */
 			handled = TRUE;
 			mimeview_scroll_page(messageview->mimeview, TRUE);
 			break;
-		case GDK_Return:	/* Scroll up/down one line */
-		case GDK_KP_Enter:
+		case GDK_KEY_Return:	/* Scroll up/down one line */
+		case GDK_KEY_KP_Enter:
 			handled = TRUE;
 			if (summaryview->displayed != summaryview->selected) {
 #ifndef GENERIC_UMPC
@@ -6631,21 +6631,21 @@ static gboolean summary_key_pressed(GtkWidget *widget, GdkEventKey *event,
 		return TRUE;
 
 	switch (event->keyval) {
-	case GDK_Left:		/* Move focus */
+	case GDK_KEY_Left:		/* Move focus */
 		adj = gtk_scrolled_window_get_hadjustment
 			(GTK_SCROLLED_WINDOW(summaryview->scrolledwin));
 		if (gtk_adjustment_get_lower(adj) != gtk_adjustment_get_value(adj))
 			break;
 		/* FALLTHROUGH */	
-	case GDK_Escape:
+	case GDK_KEY_Escape:
 		gtk_widget_grab_focus(summaryview->folderview->ctree);
 		mainwindow_exit_folder(summaryview->mainwin);
 		return TRUE;
-	case GDK_Home:
-	case GDK_End:
+	case GDK_KEY_Home:
+	case GDK_KEY_End:
 		if ((node = summaryview->selected) != NULL) {
 			GtkCMCTreeNode *next = NULL;
-			next = (event->keyval == GDK_Home)
+			next = (event->keyval == GDK_KEY_Home)
 					? gtk_cmctree_node_nth(ctree, 0)
 					: gtk_cmctree_node_nth(ctree, 
 						g_list_length(GTK_CMCLIST(ctree)->row_list)-1);
@@ -6673,16 +6673,16 @@ static gboolean summary_key_pressed(GtkWidget *widget, GdkEventKey *event,
 	}
 
 	switch (event->keyval) {
-	case GDK_Delete:
+	case GDK_KEY_Delete:
 		BREAK_ON_MODIFIER_KEY();
 		summary_delete_trash(summaryview);
 		break;
-	case GDK_y:
-	case GDK_t:
-	case GDK_l:
-	case GDK_o:
-	case GDK_c:
-	case GDK_a:
+	case GDK_KEY_y:
+	case GDK_KEY_t:
+	case GDK_KEY_l:
+	case GDK_KEY_o:
+	case GDK_KEY_c:
+	case GDK_KEY_a:
 		if ((event->state & (GDK_MOD1_MASK|GDK_CONTROL_MASK)) == 0) {
 			g_signal_stop_emission_by_name(G_OBJECT(widget), 
                                        "key_press_event");

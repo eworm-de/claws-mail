@@ -114,7 +114,7 @@ static gint edit_group_delete_event(GtkWidget *widget, GdkEventAny *event, gbool
 }
 
 static gboolean edit_group_key_pressed(GtkWidget *widget, GdkEventKey *event, gboolean *cancelled) {
-	if (event && event->keyval == GDK_Escape) {
+	if (event && event->keyval == GDK_KEY_Escape) {
 		*cancelled = TRUE;
 		gtk_main_quit();
 	}

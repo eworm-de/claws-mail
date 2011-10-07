@@ -1443,8 +1443,8 @@ static gint mimeview_key_pressed(GtkWidget *widget, GdkEventKey *event,
 		return FALSE;
 		
 	switch (event->keyval) {
-	case GDK_Page_Down:
-	case GDK_space:
+	case GDK_KEY_Page_Down:
+	case GDK_KEY_space:
 		if (mimeview_scroll_page(mimeview,
 					 (event->state & GDK_SHIFT_MASK) != 0))
 			return TRUE;
@@ -1452,59 +1452,59 @@ static gint mimeview_key_pressed(GtkWidget *widget, GdkEventKey *event,
 		if (!(event->state & GDK_SHIFT_MASK))
 			mimeview_select_next_part(mimeview);
 		return TRUE;
-	case GDK_Page_Up:
-	case GDK_BackSpace:
+	case GDK_KEY_Page_Up:
+	case GDK_KEY_BackSpace:
 		mimeview_scroll_page(mimeview, TRUE);
 		return TRUE;
-	case GDK_Return:
-	case GDK_KP_Enter:
+	case GDK_KEY_Return:
+	case GDK_KEY_KP_Enter:
 		mimeview_scroll_one_line(mimeview,
 					 (event->state & GDK_MOD1_MASK) != 0);
 		return TRUE;
-	case GDK_Up:
-	case GDK_Down:
-		mimeview_scroll_one_line(mimeview, (event->keyval == GDK_Up));
+	case GDK_KEY_Up:
+	case GDK_KEY_Down:
+		mimeview_scroll_one_line(mimeview, (event->keyval == GDK_KEY_Up));
 		return TRUE;
-	case GDK_n:
-	case GDK_N:
+	case GDK_KEY_n:
+	case GDK_KEY_N:
 		BREAK_ON_MODIFIER_KEY();
 		mimeview_select_next_part(mimeview);
 		return TRUE;
 
-	case GDK_p:
-	case GDK_P:
+	case GDK_KEY_p:
+	case GDK_KEY_P:
 		BREAK_ON_MODIFIER_KEY();
 		mimeview_select_prev_part(mimeview);
 		return TRUE;
 
-	case GDK_y:
+	case GDK_KEY_y:
 		BREAK_ON_MODIFIER_KEY();
 		KEY_PRESS_EVENT_STOP();
 		mimeview_save_as(mimeview);
 		return TRUE;
-	case GDK_t:
+	case GDK_KEY_t:
 		BREAK_ON_MODIFIER_KEY();
 		KEY_PRESS_EVENT_STOP();
 		mimeview_display_as_text(mimeview);
 		return TRUE;	
-	case GDK_l:
+	case GDK_KEY_l:
 		BREAK_ON_MODIFIER_KEY();
 		KEY_PRESS_EVENT_STOP();
 		mimeview_launch(mimeview, NULL);
 		return TRUE;
-	case GDK_o:
+	case GDK_KEY_o:
 		BREAK_ON_MODIFIER_KEY();
 		KEY_PRESS_EVENT_STOP();
 #ifndef G_OS_WIN32
 		mimeview_open_with(mimeview);
 #endif
 		return TRUE;
-	case GDK_c:
+	case GDK_KEY_c:
 		BREAK_ON_MODIFIER_KEY();
 		KEY_PRESS_EVENT_STOP();
 		mimeview_check_signature(mimeview);
 		return TRUE;
-	case GDK_a:
+	case GDK_KEY_a:
 		BREAK_ON_MODIFIER_KEY();
 		KEY_PRESS_EVENT_STOP();
 		mimeview_select_next_part(mimeview);
@@ -2159,7 +2159,7 @@ static gint icon_key_pressed(GtkWidget *button, GdkEventKey *event,
 	textview = mimeview->textview;
 
 	switch (event->keyval) {
-	case GDK_space:
+	case GDK_KEY_space:
 		if (mimeview_scroll_page(mimeview, FALSE))
 			return TRUE;
 
@@ -2167,50 +2167,50 @@ static gint icon_key_pressed(GtkWidget *button, GdkEventKey *event,
 		return TRUE;
 
 		break;
-	case GDK_BackSpace:
+	case GDK_KEY_BackSpace:
 		mimeview_scroll_page(mimeview, TRUE);
 		return TRUE;
-	case GDK_Return:
-	case GDK_KP_Enter:
+	case GDK_KEY_Return:
+	case GDK_KEY_KP_Enter:
 		mimeview_scroll_one_line(mimeview,
 					 (event->state & GDK_MOD1_MASK) != 0);
 		return TRUE;
 
-	case GDK_n:
-	case GDK_N:
+	case GDK_KEY_n:
+	case GDK_KEY_N:
 		BREAK_ON_MODIFIER_KEY();
 		mimeview_select_next_part(mimeview);
 		return TRUE;
 		
-	case GDK_p:
-	case GDK_P:
+	case GDK_KEY_p:
+	case GDK_KEY_P:
 		BREAK_ON_MODIFIER_KEY();
 		mimeview_select_prev_part(mimeview);
 		break;
 
-	case GDK_y:
+	case GDK_KEY_y:
 		BREAK_ON_MODIFIER_KEY();
 		mimeview_save_as(mimeview);
 		return TRUE;
-	case GDK_t:
+	case GDK_KEY_t:
 		BREAK_ON_MODIFIER_KEY();
 		mimeview_display_as_text(mimeview);
 		return TRUE;	
-	case GDK_l:
+	case GDK_KEY_l:
 		BREAK_ON_MODIFIER_KEY();
 		mimeview_launch(mimeview, NULL);
 		return TRUE;
 #ifndef G_OS_WIN32
-	case GDK_o:
+	case GDK_KEY_o:
 		BREAK_ON_MODIFIER_KEY();
 		mimeview_open_with(mimeview);
 		return TRUE;
 #endif
-	case GDK_c:
+	case GDK_KEY_c:
 		BREAK_ON_MODIFIER_KEY();
 		mimeview_check_signature(mimeview);
 		return TRUE;
-	case GDK_a:
+	case GDK_KEY_a:
 		BREAK_ON_MODIFIER_KEY();
 		mimeview_select_next_part(mimeview);
 		return TRUE;

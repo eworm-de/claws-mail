@@ -179,7 +179,7 @@ static gint browse_delete_event(
 static void browse_key_pressed(
 		GtkWidget *widget, GdkEventKey *event, gboolean *cancelled )
 {
-	if (event && event->keyval == GDK_Escape) {
+	if (event && event->keyval == GDK_KEY_Escape) {
 		gtk_main_quit();
 	}
 }

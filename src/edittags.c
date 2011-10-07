@@ -488,9 +488,9 @@ static gboolean apply_window_key_pressed(GtkWidget *widget, GdkEventKey *event, 
 {
 	if (applywindow.busy)
 		return FALSE;
-	if (event && event->keyval == GDK_Escape)
+	if (event && event->keyval == GDK_KEY_Escape)
 		apply_window_close();
-	else if (event && event->keyval == GDK_Delete)
+	else if (event && event->keyval == GDK_KEY_Delete)
 		apply_popup_delete(NULL, NULL);
 	return FALSE;
 }
@@ -500,7 +500,7 @@ static gboolean apply_window_add_key_pressed(GtkWidget *widget, GdkEventKey *eve
 	if (applywindow.busy)
 		return FALSE;
 
-	if (event && (event->keyval == GDK_KP_Enter || event->keyval == GDK_Return)) {
+	if (event && (event->keyval == GDK_KEY_KP_Enter || event->keyval == GDK_KEY_Return)) {
 		apply_window_add_tag();
 		gtk_entry_set_text(GTK_ENTRY(applywindow.add_entry), "");
 		gtk_widget_grab_focus(applywindow.taglist);

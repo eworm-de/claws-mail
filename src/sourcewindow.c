@@ -206,17 +206,17 @@ static gboolean key_pressed(GtkWidget *widget, GdkEventKey *event,
 	if (!event || !sourcewin) return FALSE;
 	
 	switch (event->keyval) {
-	case GDK_A:
-	case GDK_a:
+	case GDK_KEY_A:
+	case GDK_KEY_a:
 		if ((event->state & GDK_CONTROL_MASK) != 0)
 			gtk_editable_select_region(GTK_EDITABLE(sourcewin->text), 0, -1);
 		break;
-	case GDK_W:
-	case GDK_w:
+	case GDK_KEY_W:
+	case GDK_KEY_w:
 		if ((event->state & GDK_CONTROL_MASK) != 0)
 			gtk_widget_destroy(sourcewin->window);
 		break;
-	case GDK_Escape:
+	case GDK_KEY_Escape:
 		source_window_destroy(sourcewin);
 		return TRUE;
 		break;

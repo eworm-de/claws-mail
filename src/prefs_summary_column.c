@@ -671,7 +671,7 @@ static gboolean prefs_summary_column_key_pressed(GtkWidget *widget,
 						 GdkEventKey *event,
 						 gpointer data)
 {
-	if (event && event->keyval == GDK_Escape)
+	if (event && event->keyval == GDK_KEY_Escape)
 		summary_col.finished = TRUE;
 	return FALSE;
 }

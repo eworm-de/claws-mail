@@ -526,7 +526,7 @@ static gboolean prefs_summary_open_key_pressed(GtkWidget *widget,
 					     GdkEventKey *event,
 					     gpointer data)
 {
-	if (event && event->keyval == GDK_Escape)
+	if (event && event->keyval == GDK_KEY_Escape)
 		prefs_summary_open_cancel();
 	return FALSE;
 }

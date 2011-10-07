@@ -148,7 +148,7 @@ static gint export_ldif_delete_event( GtkWidget *widget, GdkEventAny *event, gpo
  * \param data   User data.
  */
 static gboolean export_ldif_key_pressed( GtkWidget *widget, GdkEventKey *event, gpointer data ) {
-	if (event && event->keyval == GDK_Escape) {
+	if (event && event->keyval == GDK_KEY_Escape) {
 		export_ldif_cancel( widget, data );
 	}
 	return FALSE;

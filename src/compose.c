@@ -8797,11 +8797,11 @@ static gboolean attach_property_key_pressed(GtkWidget *widget,
 					    GdkEventKey *event,
 					    gboolean *cancelled)
 {
-	if (event && event->keyval == GDK_Escape) {
+	if (event && event->keyval == GDK_KEY_Escape) {
 		*cancelled = TRUE;
 		gtk_main_quit();
 	}
-	if (event && event->keyval == GDK_Return) {
+	if (event && event->keyval == GDK_KEY_Return) {
 		*cancelled = FALSE;
 		gtk_main_quit();
 		return TRUE;
@@ -9295,7 +9295,7 @@ static gboolean attach_key_pressed(GtkWidget *widget, GdkEventKey *event,
 	if (!event) return FALSE;
 
 	switch (event->keyval) {
-	case GDK_Delete:
+	case GDK_KEY_Delete:
 		compose_attach_remove_selected(NULL, compose);
 		break;
 	}
@@ -10793,7 +10793,7 @@ static gboolean compose_headerentry_key_press_event_cb(GtkWidget *entry,
 	if ((g_slist_length(headerentry->compose->header_list) > 0) &&
 	    ((headerentry->headernum + 1) != headerentry->compose->header_nextrow) &&
 	    !(event->state & GDK_MODIFIER_MASK) &&
-	    (event->keyval == GDK_BackSpace) &&
+	    (event->keyval == GDK_KEY_BackSpace) &&
 	    (strlen(gtk_entry_get_text(GTK_ENTRY(entry))) == 0)) {
 		gtk_container_remove
 			(GTK_CONTAINER(headerentry->compose->header_table),
@@ -10805,7 +10805,7 @@ static gboolean compose_headerentry_key_press_event_cb(GtkWidget *entry,
 			g_slist_remove(headerentry->compose->header_list,
 				       headerentry);
 		g_free(headerentry);
-	} else 	if (event->keyval == GDK_Tab) {
+	} else 	if (event->keyval == GDK_KEY_Tab) {
 		if (headerentry->compose->header_last == headerentry) {
 			/* Override default next focus, and give it to subject_entry
 			 * instead of notebook tabs

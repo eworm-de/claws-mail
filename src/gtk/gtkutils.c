@@ -662,7 +662,7 @@ static void gtkut_clist_bindings_add(GtkWidget *clist)
 	binding_set = gtk_binding_set_by_class
 		(GTK_CMCLIST_GET_CLASS(clist));
 
-	gtk_binding_entry_add_signal(binding_set, GDK_n, GDK_CONTROL_MASK,
+	gtk_binding_entry_add_signal(binding_set, GDK_KEY_n, GDK_CONTROL_MASK,
 				     "scroll_vertical", 2,
 				     G_TYPE_ENUM, GTK_SCROLL_STEP_FORWARD,
 				     G_TYPE_FLOAT, 0.0);

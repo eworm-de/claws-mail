@@ -2019,10 +2019,10 @@ static gboolean folderview_key_pressed(GtkWidget *widget, GdkEventKey *event,
 		return FALSE;
 
 	switch (event->keyval) {
-	case GDK_Right:
+	case GDK_KEY_Right:
 #ifndef GENERIC_UMPC
-	case GDK_Return:
-	case GDK_KP_Enter:
+	case GDK_KEY_Return:
+	case GDK_KEY_KP_Enter:
 #endif
 		if (folderview->selected) {
 			folderview_select_node(folderview,
@@ -2030,7 +2030,7 @@ static gboolean folderview_key_pressed(GtkWidget *widget, GdkEventKey *event,
 		}
 		break;
 #ifdef GENERIC_UMPC
-	case GDK_Return:
+	case GDK_KEY_Return:
 		if (folderview->selected && GTK_CMCTREE_ROW(folderview->selected)->children) {
 			gtk_cmctree_toggle_expansion(
 				GTK_CMCTREE(folderview->ctree),
@@ -2038,7 +2038,7 @@ static gboolean folderview_key_pressed(GtkWidget *widget, GdkEventKey *event,
 		}
 		break;	
 #endif
-	case GDK_space:
+	case GDK_KEY_space:
 		BREAK_ON_MODIFIER_KEY();
 		if (folderview->selected) {
 			if (folderview->opened == folderview->selected &&

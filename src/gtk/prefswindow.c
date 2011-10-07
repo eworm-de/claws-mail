@@ -222,11 +222,11 @@ static gboolean prefswindow_key_pressed(GtkWidget *widget, GdkEventKey *event,
 
 	if (event) {
 		switch (event->keyval) {
-			case GDK_Escape :
+			case GDK_KEY_Escape :
 				cancel_button_clicked(NULL, data);
 				break;
-			case GDK_Return : 
-			case GDK_KP_Enter :
+			case GDK_KEY_Return : 
+			case GDK_KEY_KP_Enter :
 				focused_child = gtkut_get_focused_child
 					(GTK_CONTAINER(data->notebook));
 				/* Press ok, if the focused child is not a text view

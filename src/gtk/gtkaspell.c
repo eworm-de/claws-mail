@@ -1349,10 +1349,10 @@ static gboolean replace_key_pressed(GtkWidget *widget,
 				   GdkEventKey *event,
 				   GtkAspell *gtkaspell)
 {
-	if (event && event->keyval == GDK_Escape) {
+	if (event && event->keyval == GDK_KEY_Escape) {
 		gtk_widget_destroy(widget);
 		return TRUE;
-	} else if (event && event->keyval == GDK_Return) {
+	} else if (event && event->keyval == GDK_KEY_Return) {
 		replace_with_supplied_word_cb(widget, gtkaspell);
 		return TRUE;
 	}
@@ -1719,11 +1719,11 @@ static gboolean aspell_key_pressed(GtkWidget *widget,
 				   GdkEventKey *event,
 				   GtkAspell *gtkaspell)
 {
-	if (event && (isascii(event->keyval) || event->keyval == GDK_Return)) {
+	if (event && (isascii(event->keyval) || event->keyval == GDK_KEY_Return)) {
 		gtk_accel_groups_activate(
 				G_OBJECT(gtkaspell->parent_window),
 				event->keyval, event->state);
-	} else if (event && event->keyval == GDK_Escape) {
+	} else if (event && event->keyval == GDK_KEY_Escape) {
 		destroy_menu(NULL, gtkaspell);
 	}
 	return FALSE;
@@ -1775,7 +1775,7 @@ static GSList *make_sug_menu(GtkAspell *gtkaspell)
         g_signal_connect(G_OBJECT(item), "activate",
 			 G_CALLBACK(add_word_to_session_cb), 
 			 gtkaspell);
-	gtk_widget_add_accelerator(item, "activate", accel, GDK_space,
+	gtk_widget_add_accelerator(item, "activate", accel, GDK_KEY_space,
 				   GDK_CONTROL_MASK,
 				   GTK_ACCEL_LOCKED | GTK_ACCEL_VISIBLE);
 
@@ -1785,7 +1785,7 @@ static GSList *make_sug_menu(GtkAspell *gtkaspell)
         g_signal_connect(G_OBJECT(item), "activate",
 			 G_CALLBACK(add_word_to_personal_cb), 
 			 gtkaspell);
-	gtk_widget_add_accelerator(item, "activate", accel, GDK_Return,
+	gtk_widget_add_accelerator(item, "activate", accel, GDK_KEY_Return,
 				   GDK_CONTROL_MASK,
 				   GTK_ACCEL_LOCKED | GTK_ACCEL_VISIBLE);
 
@@ -1795,9 +1795,9 @@ static GSList *make_sug_menu(GtkAspell *gtkaspell)
         g_signal_connect(G_OBJECT(item), "activate",
 			 G_CALLBACK(replace_with_create_dialog_cb), 
 			 gtkaspell);
-	gtk_widget_add_accelerator(item, "activate", accel, GDK_R, 0,
+	gtk_widget_add_accelerator(item, "activate", accel, GDK_KEY_R, 0,
 				   GTK_ACCEL_LOCKED | GTK_ACCEL_VISIBLE);
-	gtk_widget_add_accelerator(item, "activate", accel, GDK_R, 
+	gtk_widget_add_accelerator(item, "activate", accel, GDK_KEY_R, 
 				   GDK_CONTROL_MASK,
 				   GTK_ACCEL_LOCKED);
 
@@ -1811,9 +1811,9 @@ static GSList *make_sug_menu(GtkAspell *gtkaspell)
 		g_signal_connect(G_OBJECT(item), "activate",
 				 G_CALLBACK(check_with_alternate_cb),
 				 gtkaspell);
-		gtk_widget_add_accelerator(item, "activate", accel, GDK_X, 0,
+		gtk_widget_add_accelerator(item, "activate", accel, GDK_KEY_X, 0,
 					   GTK_ACCEL_LOCKED | GTK_ACCEL_VISIBLE);
-		gtk_widget_add_accelerator(item, "activate", accel, GDK_X, 
+		gtk_widget_add_accelerator(item, "activate", accel, GDK_KEY_X, 
 					   GDK_CONTROL_MASK,
 					   GTK_ACCEL_LOCKED);
 	}
@@ -1864,12 +1864,12 @@ static GSList *make_sug_menu(GtkAspell *gtkaspell)
 			if (curmenu == NULL && count < MENUCOUNT) {
 				gtk_widget_add_accelerator(item, "activate",
 							   accel,
-							   GDK_A + count, 0,
+							   GDK_KEY_A + count, 0,
 							   GTK_ACCEL_LOCKED | 
 							   GTK_ACCEL_VISIBLE);
 				gtk_widget_add_accelerator(item, "activate", 
 							   accel,
-							   GDK_A + count, 
+							   GDK_KEY_A + count, 
 							   GDK_CONTROL_MASK,
 							   GTK_ACCEL_LOCKED);
 				}

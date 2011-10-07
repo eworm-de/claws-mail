@@ -121,7 +121,7 @@ static gint addrgather_dlg_delete_event(
 static gboolean addrgather_dlg_key_pressed(
 	GtkWidget *widget, GdkEventKey *event, gpointer data )
 {
-	if( event && event->keyval == GDK_Escape ) {
+	if( event && event->keyval == GDK_KEY_Escape ) {
 		addrgather_dlg.cancelled = TRUE;
 		gtk_main_quit();
 	}

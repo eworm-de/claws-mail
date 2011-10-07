@@ -1091,7 +1091,7 @@ void mainwin_accel_changed_cb (GtkAccelGroup *accelgroup, guint keyval, GdkModif
 			GtkLabel *label = g_object_get_data(G_OBJECT(item), "accel_label");
 			gchar *new_accel;
 			
-			if (keyval == GDK_BackSpace) {
+			if (keyval == GDK_KEY_BackSpace) {
 				const gchar *accel_path;
 #if GTK_CHECK_VERSION(2,14,0)
 				accel_path = gtk_menu_item_get_accel_path(item);
@@ -1338,7 +1338,7 @@ static gboolean mainwindow_key_pressed (GtkWidget *widget, GdkEventKey *event,
 	}
 
 	switch (event->keyval) {
-	case GDK_Q:             /* Quit */
+	case GDK_KEY_Q:             /* Quit */
 #ifndef MAEMO
 		BREAK_ON_MODIFIER_KEY();
 
@@ -1347,7 +1347,7 @@ static gboolean mainwindow_key_pressed (GtkWidget *widget, GdkEventKey *event,
 		}
 #endif
 		return FALSE;
-	case GDK_space:
+	case GDK_KEY_space:
 		BREAK_ON_MODIFIER_KEY();
 		if (gtk_window_is_active(GTK_WINDOW(mainwin->window))) {
 			if (mainwin->folderview != NULL && mainwin->summaryview != NULL
@@ -1363,14 +1363,14 @@ static gboolean mainwindow_key_pressed (GtkWidget *widget, GdkEventKey *event,
 		break;
 
 #ifdef MAEMO
-	case GDK_F6:
+	case GDK_KEY_F6:
 		if (maemo_mainwindow_is_fullscreen(widget)) {
                 	gtk_window_unfullscreen(GTK_WINDOW(widget));
                 } else {
                 	gtk_window_fullscreen(GTK_WINDOW(widget));
                 }
 		break;
-	case GDK_F7:
+	case GDK_KEY_F7:
 		{
 			PangoFontDescription *font_desc;
 			int size;
@@ -1394,7 +1394,7 @@ static gboolean mainwindow_key_pressed (GtkWidget *widget, GdkEventKey *event,
 			pango_font_description_free(font_desc);
 		}
 		break;
-	case GDK_F8:
+	case GDK_KEY_F8:
 		{
 			PangoFontDescription *font_desc;
 			int size;
@@ -1418,7 +1418,7 @@ static gboolean mainwindow_key_pressed (GtkWidget *widget, GdkEventKey *event,
 			pango_font_description_free(font_desc);
 		}
 		break;
-	case GDK_Escape:
+	case GDK_KEY_Escape:
 		if (mainwin->summaryview && 
 		    mainwin->summaryview->ext_messageview && 
 		    mainwin->summaryview->ext_messageview->window && 

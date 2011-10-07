@@ -885,9 +885,9 @@ static gboolean cb_finder_results_dialog_key_pressed(GtkWidget *widget,
         gpointer data)
 {
 	if(event) {
-		if(event->keyval == GDK_Delete && detail_view_has_focus)
+		if(event->keyval == GDK_KEY_Delete && detail_view_has_focus)
 			cb_del_btn_clicked(NULL,NULL);
-		else if(event->keyval == GDK_Escape)
+		else if(event->keyval == GDK_KEY_Escape)
 			gtk_widget_destroy(dialog);
 	}
 

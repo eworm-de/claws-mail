@@ -1129,7 +1129,7 @@ static void prefs_filtering_action_down(void)
 static gboolean prefs_filtering_action_key_pressed(GtkWidget *widget,
     GdkEventKey *event, gpointer data)
 {
-	if (event && event->keyval == GDK_Escape) {
+	if (event && event->keyval == GDK_KEY_Escape) {
 		prefs_filtering_action_cancel();
 		return TRUE;		
 	}

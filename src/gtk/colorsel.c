@@ -40,11 +40,11 @@ static gboolean quote_colors_set_dialog_key_pressed(GtkWidget *widget,
 						GdkEventKey *event,
 						gpointer data)
 {
-	if (event && event->keyval == GDK_Escape) {
+	if (event && event->keyval == GDK_KEY_Escape) {
 		*((gint *) data) = 1;
 		gtk_main_quit();
 		return TRUE;
-	} else if (event && event->keyval == GDK_Return) {
+	} else if (event && event->keyval == GDK_KEY_Return) {
 		*((gint *) data) = 0;
 		gtk_main_quit();
 		return FALSE;

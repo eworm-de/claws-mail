@@ -421,7 +421,7 @@ static gboolean alertpanel_close(GtkWidget *widget, GdkEventAny *event,
 				 gpointer data)
 {
 	if (event->type == GDK_KEY_PRESS)
-		if (((GdkEventKey *)event)->keyval != GDK_Escape)
+		if (((GdkEventKey *)event)->keyval != GDK_KEY_Escape)
 			return FALSE;
 
 	value = (value & ~G_ALERT_VALUE_MASK) | (AlertValue)data;

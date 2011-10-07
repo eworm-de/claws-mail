@@ -123,7 +123,7 @@ static gint delete_event(GtkWidget *widget, GdkEventAny *event, FolderSortDialog
 
 static gboolean key_pressed(GtkWidget *widget, GdkEventKey *event, FolderSortDialog *dialog)
 {
-	if (event && event->keyval == GDK_Escape)
+	if (event && event->keyval == GDK_KEY_Escape)
 		destroy_dialog(dialog);
 	return FALSE;
 }

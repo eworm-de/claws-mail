@@ -192,7 +192,7 @@ static gboolean description_window_key_pressed(GtkWidget *widget,
 				 	       GdkEventKey *event,
 					       gpointer data)
 {
-	if (event && event->keyval == GDK_Escape)
+	if (event && event->keyval == GDK_KEY_Escape)
 		description_window_destroy(widget, data);
 	return FALSE;
 }

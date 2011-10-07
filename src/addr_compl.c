@@ -1212,14 +1212,14 @@ static gboolean address_completion_entry_key_pressed(GtkEntry    *entry,
 						     GdkEventKey *ev,
 						     gpointer     data)
 {
-	if (ev->keyval == GDK_Tab) {
+	if (ev->keyval == GDK_KEY_Tab) {
 		addrcompl_clear_queue();
 		_allowCommas_ = GPOINTER_TO_INT(g_object_get_data(G_OBJECT(entry), ENTRY_DATA_ALLOW_COMMAS));
 		if( address_completion_complete_address_in_entry( entry, TRUE ) ) {
 			/* route a void character to the default handler */
 			/* this is a dirty hack; we're actually changing a key
 			 * reported by the system. */
-			ev->keyval = GDK_AudibleBell_Enable;
+			ev->keyval = GDK_KEY_AudibleBell_Enable;
 			ev->state &= ~GDK_SHIFT_MASK;
 
 			/* Create window */			
@@ -1233,16 +1233,16 @@ static gboolean address_completion_entry_key_pressed(GtkEntry    *entry,
 		else {
 			/* old behaviour */
 		}
-	} else if (ev->keyval == GDK_Shift_L
-		|| ev->keyval == GDK_Shift_R
-		|| ev->keyval == GDK_Control_L
-		|| ev->keyval == GDK_Control_R
-		|| ev->keyval == GDK_Caps_Lock
-		|| ev->keyval == GDK_Shift_Lock
-		|| ev->keyval == GDK_Meta_L
-		|| ev->keyval == GDK_Meta_R
-		|| ev->keyval == GDK_Alt_L
-		|| ev->keyval == GDK_Alt_R) {
+	} else if (ev->keyval == GDK_KEY_Shift_L
+		|| ev->keyval == GDK_KEY_Shift_R
+		|| ev->keyval == GDK_KEY_Control_L
+		|| ev->keyval == GDK_KEY_Control_R
+		|| ev->keyval == GDK_KEY_Caps_Lock
+		|| ev->keyval == GDK_KEY_Shift_Lock
+		|| ev->keyval == GDK_KEY_Meta_L
+		|| ev->keyval == GDK_KEY_Meta_R
+		|| ev->keyval == GDK_KEY_Alt_L
+		|| ev->keyval == GDK_KEY_Alt_R) {
 		/* these buttons should not clear the cache... */
 	} else
 		clear_completion_cache();
@@ -1451,17 +1451,17 @@ static gboolean completion_window_key_press(GtkWidget *widget,
 	cm_return_val_if_fail(entry != NULL, FALSE);
 
 	/* allow keyboard navigation in the alternatives tree view */
-	if (event->keyval == GDK_Up || event->keyval == GDK_Down ||
-	    event->keyval == GDK_Page_Up || event->keyval == GDK_Page_Down) {
+	if (event->keyval == GDK_KEY_Up || event->keyval == GDK_KEY_Down ||
+	    event->keyval == GDK_KEY_Page_Up || event->keyval == GDK_KEY_Page_Down) {
 		completion_window_advance_selection
 			(GTK_TREE_VIEW(list_view),
-			 event->keyval == GDK_Down ||
-			 event->keyval == GDK_Page_Down ? TRUE : FALSE);
+			 event->keyval == GDK_KEY_Down ||
+			 event->keyval == GDK_KEY_Page_Down ? TRUE : FALSE);
 		return FALSE;
 	}		
 
 	/* make tab move to next field */
-	if( event->keyval == GDK_Tab ) {
+	if( event->keyval == GDK_KEY_Tab ) {
 		/* Reference to parent */
 		parent = gtk_widget_get_parent(GTK_WIDGET(entry));
 
@@ -1477,7 +1477,7 @@ static gboolean completion_window_key_press(GtkWidget *widget,
 	}
 
 	/* make backtab move to previous field */
-	if( event->keyval == GDK_ISO_Left_Tab ) {
+	if( event->keyval == GDK_KEY_ISO_Left_Tab ) {
 		/* Reference to parent */
 		parent = gtk_widget_get_parent(GTK_WIDGET(entry));
 
@@ -1494,17 +1494,17 @@ static gboolean completion_window_key_press(GtkWidget *widget,
 	_allowCommas_ = GPOINTER_TO_INT(g_object_get_data(G_OBJECT(entry), ENTRY_DATA_ALLOW_COMMAS));
 
 	/* look for presses that accept the selection */
-	if (event->keyval == GDK_Return || event->keyval == GDK_space ||
-			event->keyval == GDK_KP_Enter ||
-			(_allowCommas_ && event->keyval == GDK_comma)) {
+	if (event->keyval == GDK_KEY_Return || event->keyval == GDK_KEY_space ||
+			event->keyval == GDK_KEY_KP_Enter ||
+			(_allowCommas_ && event->keyval == GDK_KEY_comma)) {
 		/* User selected address with a key press */
 
 		/* Display selected address in entry field */		
 		completion_window_apply_selection(
 			GTK_TREE_VIEW(list_view), GTK_ENTRY(entry),
-			event->keyval != GDK_comma);
+			event->keyval != GDK_KEY_comma);
 
-		if (event->keyval == GDK_comma) {
+		if (event->keyval == GDK_KEY_comma) {
 			gint pos = gtk_editable_get_position(GTK_EDITABLE(entry));
 			gtk_editable_insert_text(GTK_EDITABLE(entry), ", ", 2, &pos);
 			gtk_editable_set_position(GTK_EDITABLE(entry), pos + 1);
@@ -1517,16 +1517,16 @@ static gboolean completion_window_key_press(GtkWidget *widget,
 	}
 
 	/* key state keys should never be handled */
-	if (event->keyval == GDK_Shift_L
-		 || event->keyval == GDK_Shift_R
-		 || event->keyval == GDK_Control_L
-		 || event->keyval == GDK_Control_R
-		 || event->keyval == GDK_Caps_Lock
-		 || event->keyval == GDK_Shift_Lock
-		 || event->keyval == GDK_Meta_L
-		 || event->keyval == GDK_Meta_R
-		 || event->keyval == GDK_Alt_L
-		 || event->keyval == GDK_Alt_R) {
+	if (event->keyval == GDK_KEY_Shift_L
+		 || event->keyval == GDK_KEY_Shift_R
+		 || event->keyval == GDK_KEY_Control_L
+		 || event->keyval == GDK_KEY_Control_R
+		 || event->keyval == GDK_KEY_Caps_Lock
+		 || event->keyval == GDK_KEY_Shift_Lock
+		 || event->keyval == GDK_KEY_Meta_L
+		 || event->keyval == GDK_KEY_Meta_R
+		 || event->keyval == GDK_KEY_Alt_L
+		 || event->keyval == GDK_KEY_Alt_R) {
 		return FALSE;
 	}
 

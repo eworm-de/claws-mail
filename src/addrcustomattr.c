@@ -433,9 +433,9 @@ static void custom_attr_window_del_attr_cb(GtkWidget *widget,
 static gboolean custom_attr_window_key_pressed(GtkWidget *widget,
 											   GdkEventKey *event, gpointer data)
 {
-	if (event && event->keyval == GDK_Escape)
+	if (event && event->keyval == GDK_KEY_Escape)
 		custom_attr_window_close();
-	else if (event && event->keyval == GDK_Delete)
+	else if (event && event->keyval == GDK_KEY_Delete)
 		custom_attr_popup_delete(NULL, NULL);
 	return FALSE;
 }
@@ -443,7 +443,7 @@ static gboolean custom_attr_window_key_pressed(GtkWidget *widget,
 static gboolean custom_attr_window_add_key_pressed(GtkWidget *widget,
 												   GdkEventKey *event, gpointer data)
 {
-	if (event && (event->keyval == GDK_KP_Enter || event->keyval == GDK_Return)) {
+	if (event && (event->keyval == GDK_KEY_KP_Enter || event->keyval == GDK_KEY_Return)) {
 		custom_attr_window_add_attr();
 		gtk_entry_set_text(GTK_ENTRY(custom_attr_window.add_entry), "");
 		gtk_widget_grab_focus(custom_attr_window.attr_list);

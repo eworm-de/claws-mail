@@ -487,7 +487,7 @@ key_pressed_cb (GtkWidget *widget, GdkEventKey *event, gpointer data)
     struct select_keys_s *sk = data;
 
     cm_return_val_if_fail (sk, FALSE);
-    if (event && event->keyval == GDK_Escape) {
+    if (event && event->keyval == GDK_KEY_Escape) {
         sk->okay = 0;
         gtk_main_quit ();
     }

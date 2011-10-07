@@ -227,7 +227,7 @@ passphrase_deleted(GtkWidget *widget, GdkEventAny *event, gpointer data)
 static gboolean
 passphrase_key_pressed(GtkWidget *widget, GdkEventKey *event, gpointer data)
 {
-    if (event && event->keyval == GDK_Escape)
+    if (event && event->keyval == GDK_KEY_Escape)
         passphrase_cancel_cb(NULL, NULL);
     return FALSE;
 }

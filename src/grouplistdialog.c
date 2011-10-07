@@ -551,7 +551,7 @@ static void refresh_clicked(GtkWidget *widget, gpointer data)
 
 static gboolean key_pressed(GtkWidget *widget, GdkEventKey *event, gpointer data)
 {
-	if (event && event->keyval == GDK_Escape)
+	if (event && event->keyval == GDK_KEY_Escape)
 		cancel_clicked(NULL, NULL);
 	return FALSE;
 }

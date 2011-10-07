@@ -200,7 +200,7 @@ static gint edit_person_delete_event(GtkWidget *widget, GdkEventAny *event, gboo
 
 static gboolean edit_person_key_pressed(GtkWidget *widget, GdkEventKey *event, gboolean *cancelled) {
 	if (prefs_common.addressbook_use_editaddress_dialog) {
-	if (event && event->keyval == GDK_Escape) {
+	if (event && event->keyval == GDK_KEY_Escape) {
 		*cancelled = TRUE;
 		gtk_main_quit();
 	}
@@ -1021,7 +1021,7 @@ static void edit_person_entry_email_changed (GtkWidget *entry, gpointer data)
 
 static gboolean edit_person_entry_email_pressed(GtkWidget *widget, GdkEventKey *event, gpointer data)
 {
-	if (event && event->keyval == GDK_Return) {
+	if (event && event->keyval == GDK_KEY_Return) {
 		if (email_saving)
 			edit_person_email_modify(NULL);		
 		else if (email_adding)
@@ -1236,7 +1236,7 @@ static void edit_person_entry_att_changed (GtkWidget *entry, gpointer data)
 
 static gboolean edit_person_entry_att_pressed(GtkWidget *widget, GdkEventKey *event, gpointer data)
 {
-	if (event && event->keyval == GDK_Return) {
+	if (event && event->keyval == GDK_KEY_Return) {
 		if (attrib_saving)
 			edit_person_attrib_modify(NULL);
 		else if (attrib_adding)

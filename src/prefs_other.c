@@ -159,7 +159,7 @@ static void prefs_keybind_select(void)
 static gboolean prefs_keybind_key_pressed(GtkWidget *widget, GdkEventKey *event,
 					  gpointer data)
 {
-	if (event && event->keyval == GDK_Escape)
+	if (event && event->keyval == GDK_KEY_Escape)
 		prefs_keybind_cancel();
 	return FALSE;
 }

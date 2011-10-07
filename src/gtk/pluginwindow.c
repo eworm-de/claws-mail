@@ -232,21 +232,21 @@ static gboolean pluginwindow_key_pressed(GtkWidget *widget, GdkEventKey *event,
 {
 	if (event) {
 		switch (event->keyval) {
-			case GDK_Escape : 
-			case GDK_Return : 
-			case GDK_KP_Enter :
+			case GDK_KEY_Escape : 
+			case GDK_KEY_Return : 
+			case GDK_KEY_KP_Enter :
 				close_cb(NULL, pluginwindow);
 				break;
-			case GDK_Insert : 
-			case GDK_KP_Insert :
-			case GDK_KP_Add : 
-			case GDK_plus :
+			case GDK_KEY_Insert : 
+			case GDK_KEY_KP_Insert :
+			case GDK_KEY_KP_Add : 
+			case GDK_KEY_plus :
 				load_cb(NULL, pluginwindow);
 				break;
-			case GDK_Delete : 
-			case GDK_KP_Delete :
-			case GDK_KP_Subtract : 
-			case GDK_minus :
+			case GDK_KEY_Delete : 
+			case GDK_KEY_KP_Delete :
+			case GDK_KEY_KP_Subtract : 
+			case GDK_KEY_minus :
 				unload_cb(NULL, pluginwindow);
 				break;
 			default :

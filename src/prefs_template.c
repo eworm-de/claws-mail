@@ -510,7 +510,7 @@ static gint prefs_template_deleted_cb(GtkWidget *widget, GdkEventAny *event,
 static gboolean prefs_template_key_pressed_cb(GtkWidget *widget,
 					      GdkEventKey *event, gpointer data)
 {
-	if (event && event->keyval == GDK_Escape)
+	if (event && event->keyval == GDK_KEY_Escape)
 		prefs_template_cancel_cb(NULL, NULL);
 	else {
 		GtkWidget *focused = gtkut_get_focused_child(

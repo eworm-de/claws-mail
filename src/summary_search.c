@@ -934,7 +934,7 @@ static gboolean adv_condition_entry_focus_evt_out(GtkWidget *widget, GdkEventFoc
 static gboolean key_pressed(GtkWidget *widget, GdkEventKey *event,
 			    gpointer data)
 {
-	if (event && (event->keyval == GDK_Escape)) {
+	if (event && (event->keyval == GDK_KEY_Escape)) {
 		/* ESC key will:
 			- stop a running search
 			- close the search window if no search is running
@@ -946,13 +946,13 @@ static gboolean key_pressed(GtkWidget *widget, GdkEventKey *event,
 		}
 	}
 
-	if (event && (event->keyval == GDK_Return || event->keyval == GDK_KP_Enter)) {
+	if (event && (event->keyval == GDK_KEY_Return || event->keyval == GDK_KEY_KP_Enter)) {
 		if (!search_window.is_searching) {
 			summary_search_execute(FALSE, FALSE);
 		}
 	}
 
-	if (event && (event->keyval == GDK_Down || event->keyval == GDK_Up)) {
+	if (event && (event->keyval == GDK_KEY_Down || event->keyval == GDK_KEY_Up)) {
 		if (search_window.from_entry_has_focus) {
 			combobox_set_value_from_arrow_key(
 					GTK_COMBO_BOX(search_window.from_entry),

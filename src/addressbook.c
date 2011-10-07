@@ -694,9 +694,9 @@ void addressbook_refresh( void )
 
 static gboolean key_pressed(GtkWidget *widget, GdkEventKey *event, gpointer data)
 {
-	if (event && event->keyval == GDK_Escape)
+	if (event && event->keyval == GDK_KEY_Escape)
 		addressbook_close();
-	else if (event && event->keyval == GDK_Delete) {
+	else if (event && event->keyval == GDK_KEY_Delete) {
 		/* TODO: enable deletion when focus is in ctree (needs implementation in _del_clicked() */
 		if ( /* address_index_has_focus || */ address_list_has_focus )
 			addressbook_del_clicked(NULL, NULL);
@@ -4378,7 +4378,7 @@ void addressbook_export_to_file( void ) {
 
 static gboolean addressbook_entry_key_pressed(GtkWidget *widget, GdkEventKey *event, gpointer data)
 {
-	if (event && (event->keyval == GDK_Return || event->keyval == GDK_KP_Enter))
+	if (event && (event->keyval == GDK_KEY_Return || event->keyval == GDK_KEY_KP_Enter))
 		addressbook_lup_clicked(NULL, NULL);
 	return FALSE;
 }

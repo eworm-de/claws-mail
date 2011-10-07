@@ -331,7 +331,7 @@ static void searchbar_changed_cb(GtkWidget *widget, QuickSearch *qs)
 static gboolean searchbar_pressed(GtkWidget *widget, GdkEventKey *event,
 			      	  QuickSearch *quicksearch)
 {
-	if (event && (event->keyval == GDK_Escape)) {
+	if (event && (event->keyval == GDK_KEY_Escape)) {
 		gchar *str;
 
 		quicksearch->in_typing = FALSE;
@@ -353,7 +353,7 @@ static gboolean searchbar_pressed(GtkWidget *widget, GdkEventKey *event,
 		return TRUE;
 	}
 
-	if (event != NULL && (event->keyval == GDK_Return || event->keyval == GDK_KP_Enter)) {
+	if (event != NULL && (event->keyval == GDK_KEY_Return || event->keyval == GDK_KEY_KP_Enter)) {
 		if (quicksearch->press_timeout_id != -1) {
 			g_source_remove(quicksearch->press_timeout_id);
 			quicksearch->press_timeout_id = -1;
@@ -366,7 +366,7 @@ static gboolean searchbar_pressed(GtkWidget *widget, GdkEventKey *event,
 		return TRUE;
 	}
 
-	if (event && (event->keyval == GDK_Down || event->keyval == GDK_Up)) {
+	if (event && (event->keyval == GDK_KEY_Down || event->keyval == GDK_KEY_Up)) {
 		combobox_set_value_from_arrow_key(
 				GTK_COMBO_BOX(quicksearch->search_string_entry),
 				event->keyval);

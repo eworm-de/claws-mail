@@ -74,7 +74,7 @@ static gint edit_ldap_bdn_delete_event( GtkWidget *widget, GdkEventAny *event, g
 }
 
 static gboolean edit_ldap_bdn_key_pressed( GtkWidget *widget, GdkEventKey *event, gboolean *cancelled ) {
-	if (event && event->keyval == GDK_Escape) {
+	if (event && event->keyval == GDK_KEY_Escape) {
 		ldapedit_basedn_cancelled = TRUE;
 		gtk_main_quit();
 	}

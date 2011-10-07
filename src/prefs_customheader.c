@@ -778,7 +778,7 @@ static gboolean prefs_custom_header_key_pressed(GtkWidget *widget,
 						GdkEventKey *event,
 						gpointer data)
 {
-	if (event && event->keyval == GDK_Escape)
+	if (event && event->keyval == GDK_KEY_Escape)
 		prefs_custom_header_cancel();
 	return FALSE;
 }

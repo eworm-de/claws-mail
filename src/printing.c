@@ -581,7 +581,7 @@ static gboolean cb_preview_close(GtkWidget *widget, GdkEventAny *event,
 {
 	PreviewData *preview_data = (PreviewData *)data;
 	if (event->type == GDK_KEY_PRESS)
- 		 if (((GdkEventKey *)event)->keyval != GDK_Escape)
+ 		 if (((GdkEventKey *)event)->keyval != GDK_KEY_Escape)
     			return FALSE;
 	if (preview_data->rendering)
 		return FALSE; 

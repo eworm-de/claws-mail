@@ -696,8 +696,8 @@ gtk_cmoption_menu_key_press (GtkWidget   *widget,
 
   switch (event->keyval)
     {
-    case GDK_KP_Space:
-    case GDK_space:
+    case GDK_KEY_KP_Space:
+    case GDK_KEY_space:
       gtk_cmoption_menu_remove_contents (option_menu);
       gtk_menu_popup (GTK_MENU (option_menu->menu), NULL, NULL,
 		      gtk_cmoption_menu_position, option_menu,

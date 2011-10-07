@@ -2271,19 +2271,19 @@ static gint textview_key_pressed(GtkWidget *widget, GdkEventKey *event,
 		summaryview = messageview->mainwin->summaryview;
 
 	switch (event->keyval) {
-	case GDK_Tab:
-	case GDK_Home:
-	case GDK_Left:
-	case GDK_Up:
-	case GDK_Right:
-	case GDK_Down:
-	case GDK_Page_Up:
-	case GDK_Page_Down:
-	case GDK_End:
-	case GDK_Control_L:
-	case GDK_Control_R:
+	case GDK_KEY_Tab:
+	case GDK_KEY_Home:
+	case GDK_KEY_Left:
+	case GDK_KEY_Up:
+	case GDK_KEY_Right:
+	case GDK_KEY_Down:
+	case GDK_KEY_Page_Up:
+	case GDK_KEY_Page_Down:
+	case GDK_KEY_End:
+	case GDK_KEY_Control_L:
+	case GDK_KEY_Control_R:
 		return FALSE;
-	case GDK_space:
+	case GDK_KEY_space:
 		if (summaryview)
 			summary_pass_key_press_event(summaryview, event);
 		else
@@ -2292,25 +2292,25 @@ static gint textview_key_pressed(GtkWidget *widget, GdkEventKey *event,
 				 (event->state &
 				  (GDK_SHIFT_MASK|GDK_MOD1_MASK)) != 0);
 		break;
-	case GDK_BackSpace:
+	case GDK_KEY_BackSpace:
 		mimeview_scroll_page(messageview->mimeview, TRUE);
 		break;
-	case GDK_Return:
-	case GDK_KP_Enter:
+	case GDK_KEY_Return:
+	case GDK_KEY_KP_Enter:
 		mimeview_scroll_one_line
 			(messageview->mimeview, (event->state &
 				    (GDK_SHIFT_MASK|GDK_MOD1_MASK)) != 0);
 		break;
-	case GDK_Delete:
+	case GDK_KEY_Delete:
 		if (summaryview)
 			summary_pass_key_press_event(summaryview, event);
 		break;
-	case GDK_y:
-	case GDK_t:
-	case GDK_l:
-	case GDK_o:
-	case GDK_c:
-	case GDK_a:
+	case GDK_KEY_y:
+	case GDK_KEY_t:
+	case GDK_KEY_l:
+	case GDK_KEY_o:
+	case GDK_KEY_c:
+	case GDK_KEY_a:
 		if ((event->state & (GDK_MOD1_MASK|GDK_CONTROL_MASK)) == 0) {
 			KEY_PRESS_EVENT_STOP();
 			mimeview_pass_key_press_event(messageview->mimeview,

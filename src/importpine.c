@@ -174,7 +174,7 @@ static gint imp_pine_delete_event( GtkWidget *widget, GdkEventAny *event, gboole
 }
 
 static gboolean imp_pine_key_pressed( GtkWidget *widget, GdkEventKey *event, gboolean *cancelled ) {
-	if (event && event->keyval == GDK_Escape) {
+	if (event && event->keyval == GDK_KEY_Escape) {
 		*cancelled = TRUE;
 		gtk_main_quit();
 	}

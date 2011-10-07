@@ -90,7 +90,7 @@ static gint addressbook_foldersel_delete_event( GtkWidget *widget, GdkEventAny *
 
 static gboolean addressbook_foldersel_key_pressed( GtkWidget *widget, GdkEventKey *event, gboolean *cancelled )
 {
-	if ( event && event->keyval == GDK_Escape ) {
+	if ( event && event->keyval == GDK_KEY_Escape ) {
 		addressbook_foldersel_cancelled = TRUE;
 		gtk_main_quit();
 	}

@@ -1536,7 +1536,7 @@ static void icon_chooser_cancel_clicked(GtkButton *button,
 static gboolean icon_chooser_key_pressed(GtkWidget *widget, GdkEventKey *event,
 			ToolbarPage *prefs_toolbar)
 {
-	if (event && event->keyval == GDK_Escape) {
+	if (event && event->keyval == GDK_KEY_Escape) {
 		icon_chooser_cancel_clicked(NULL, prefs_toolbar);
 		return TRUE;
 	}
@@ -1548,9 +1548,9 @@ static gboolean icon_list_key_pressed(GtkWidget *widget, GdkEventKey *event,
 			ToolbarPage *prefs_toolbar)
 {
 	if (event) {
-		if (event->keyval == GDK_KP_Enter ||
-		    event->keyval == GDK_Return ||
-		    event->keyval == GDK_space) {
+		if (event->keyval == GDK_KEY_KP_Enter ||
+		    event->keyval == GDK_KEY_Return ||
+		    event->keyval == GDK_KEY_space) {
 			icon_chooser_ok_clicked(NULL, prefs_toolbar);
 			return TRUE;
 		}

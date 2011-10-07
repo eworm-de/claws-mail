@@ -613,7 +613,7 @@ static gint imp_ldif_delete_event( GtkWidget *widget, GdkEventAny *event, gpoint
  * \param data   User data.
  */
 static gboolean imp_ldif_key_pressed( GtkWidget *widget, GdkEventKey *event, gpointer data ) {
-	if (event && event->keyval == GDK_Escape) {
+	if (event && event->keyval == GDK_KEY_Escape) {
 		imp_ldif_cancel( widget, data );
 	}
 	return FALSE;

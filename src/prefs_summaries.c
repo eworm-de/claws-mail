@@ -733,7 +733,7 @@ static void date_format_cancel_btn_clicked(GtkButton *button,
 static gboolean date_format_key_pressed(GtkWidget *keywidget, GdkEventKey *event,
 					GtkWidget **widget)
 {
-	if (event && event->keyval == GDK_Escape)
+	if (event && event->keyval == GDK_KEY_Escape)
 		date_format_cancel_btn_clicked(NULL, widget);
 	return FALSE;
 }
