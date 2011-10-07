@@ -1,3 +1,10 @@
+2011-10-07 [colin]	3.7.10cvs25
+
+	* src/gtk/Makefile.am
+	* src/gtk/gdkkeysyms-new.h
+	* src/gtk/gtkutils.h
+		Copy the new GDK_KEY_* definitions for older GTKs
+
 2011-10-07 [colin]	3.7.10cvs24
 
 	* configure.ac
