@@ -4230,3 +4230,4 @@
 ( cvs diff -u -r 1.654.2.4304 -r 1.654.2.4305 configure.ac;  ) > 3.7.10cvs24.patchset
 ( cvs diff -u -r 1.20.2.26 -r 1.20.2.27 src/gtk/Makefile.am;  diff -u /dev/null src/gtk/gdkkeysyms-new.h;  cvs diff -u -r 1.4.2.58 -r 1.4.2.59 src/gtk/gtkutils.h;  ) > 3.7.10cvs25.patchset
 ( cvs diff -u -r 1.1.4.72 -r 1.1.4.73 src/prefs_filtering_action.c;  cvs diff -u -r 1.4.2.59 -r 1.4.2.60 src/gtk/gtkutils.h;  ) > 3.7.10cvs26.patchset
+( cvs diff -u -r 1.27.2.56 -r 1.27.2.57 src/addr_compl.c;  ) > 3.7.10cvs27.patchset
