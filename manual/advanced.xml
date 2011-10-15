@@ -772,6 +772,16 @@
 	</listitem>
       </varlistentry>
       <varlistentry>
+	<term><literal>summary_from_show</literal></term>
+	<listitem>
+	<para>
+	Controls the data displayed in the From column in the Message List.
+	Default value 0 displays name, 1 displays address and 2 displays both
+	name and address. 
+	</para>
+	</listitem>
+      </varlistentry>
+      <varlistentry>
 	<term><literal>textview_cursor_visible</literal></term>
 	<listitem>
 	  <para>

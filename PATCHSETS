@@ -4232,3 +4232,4 @@
 ( cvs diff -u -r 1.1.4.72 -r 1.1.4.73 src/prefs_filtering_action.c;  cvs diff -u -r 1.4.2.59 -r 1.4.2.60 src/gtk/gtkutils.h;  ) > 3.7.10cvs26.patchset
 ( cvs diff -u -r 1.27.2.56 -r 1.27.2.57 src/addr_compl.c;  ) > 3.7.10cvs27.patchset
 ( cvs diff -u -r 1.382.2.584 -r 1.382.2.585 src/compose.c;  ) > 3.7.10cvs28.patchset
+( cvs diff -u -r 1.1.2.57 -r 1.1.2.58 manual/advanced.xml;  ) > 3.7.10cvs29.patchset
