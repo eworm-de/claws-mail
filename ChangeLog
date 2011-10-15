@@ -1,3 +1,9 @@
+2011-10-15 [paul]	3.7.10cvs28
+
+	* src/compose.c
+		compose_create_tags() - fix misplaced 'int i'
+		compose_entry_mark_default_to() - fix To field highlighting
+
 2011-10-09 [colin]	3.7.10cvs27
 
 	* src/addr_compl.c

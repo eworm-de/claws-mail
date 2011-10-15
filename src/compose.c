@@ -797,9 +797,9 @@ static void compose_create_tags(GtkTextView *text, Compose *compose)
 #if !GTK_CHECK_VERSION(2, 24, 0)
 	GdkColormap *cmap;
 	gboolean success[8];
+	int i;
 #endif
 	GdkColor color[8];
-	int i;
 
 	buffer = gtk_text_view_get_buffer(text);
 
@@ -2547,7 +2547,7 @@ void compose_entry_append(Compose *compose, const gchar *address,
 
 static void compose_entry_mark_default_to(Compose *compose, const gchar *mailto)
 {
-#if !GTK_CHECK_VERSION(2, 24, 0)
+#if !GTK_CHECK_VERSION(3, 0, 0)
 	static GdkColor yellow;
 	static GdkColor black;
 	static gboolean yellow_initialised = FALSE;
@@ -2558,7 +2558,7 @@ static void compose_entry_mark_default_to(Compose *compose, const gchar *mailto)
 	GSList *h_list;
 	GtkEntry *entry;
 		
-#if !GTK_CHECK_VERSION(2, 24, 0)
+#if !GTK_CHECK_VERSION(3, 0, 0)
 	if (!yellow_initialised) {
 		gdk_color_parse("#f5f6be", &yellow);
 		gdk_color_parse("#000000", &black);
@@ -2573,7 +2573,7 @@ static void compose_entry_mark_default_to(Compose *compose, const gchar *mailto)
 		entry = GTK_ENTRY(((ComposeHeaderEntry *)h_list->data)->entry);
 		if (gtk_entry_get_text(entry) && 
 		    !g_utf8_collate(gtk_entry_get_text(entry), mailto)) {
-#if !GTK_CHECK_VERSION(2, 24, 0)
+#if !GTK_CHECK_VERSION(3, 0, 0)
 			if (yellow_initialised) {
 #endif
 				gtk_widget_modify_base(
@@ -2582,7 +2582,7 @@ static void compose_entry_mark_default_to(Compose *compose, const gchar *mailto)
 				gtk_widget_modify_text(
 					GTK_WIDGET(((ComposeHeaderEntry *)h_list->data)->entry),
 					GTK_STATE_NORMAL, &black);
-#if !GTK_CHECK_VERSION(2, 24, 0)
+#if !GTK_CHECK_VERSION(3, 0, 0)
 			}
 #endif
 		}
