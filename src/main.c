@@ -1813,6 +1813,94 @@ static void exit_claws(MainWindow *mainwin)
 	claws_done();
 }
 
+#define G_STRING_APPEND_ENCODED_URI(gstring,source)	\
+	{						\
+		gchar tmpbuf[BUFFSIZE];			\
+		encode_uri(tmpbuf, BUFFSIZE, (source));	\
+		g_string_append((gstring), tmpbuf);	\
+	}
+
+#define G_PRINT_EXIT(msg)	\
+	{			\
+		g_print(msg);	\
+		exit(1);	\
+	}
+
+static GString * parse_cmd_compose_from_file(const gchar *fn)
+{
+	GString *headers = g_string_new(NULL);
+	GString *body = g_string_new(NULL);
+	gchar *to = NULL;
+	gchar *h;
+	gchar *v;
+	gchar fb[BUFFSIZE];
+	FILE *fp;
+	gboolean isstdin;
+
+	if (fn == NULL || *fn == '\0')
+		G_PRINT_EXIT(_("Missing filename\n"));
+	isstdin = (*fn == '-' && *(fn + 1) == '\0');
+	if (isstdin)
+		fp = stdin;
+	else {
+		fp = g_fopen(fn, "r");
+		if (!fp)
+			G_PRINT_EXIT(_("Cannot open filename for reading\n"));
+	}
+
+	while (fgets(fb, sizeof(fb), fp)) {
+		gchar *tmp;	
+		strretchomp(fb);
+		if (*fb == '\0')
+			break;
+		h = fb;
+		while (*h && *h != ':') { ++h; } /* search colon */
+        	if (*h == '\0')
+			G_PRINT_EXIT(_("Malformed header\n"));
+		v = h + 1;
+		while (*v && *v == ' ') { ++v; } /* trim value start */
+		*h = '\0';
+		tmp = g_ascii_strdown(fb, -1); /* get header name */
+		if (!strcmp(tmp, "to")) {
+			if (to != NULL)
+				G_PRINT_EXIT(_("Duplicated 'To:' header\n"));
+			to = g_strdup(v);
+		} else {
+			g_string_append_c(headers, '&');
+			g_string_append(headers, tmp);
+			g_string_append_c(headers, '=');
+#if GLIB_CHECK_VERSION(2,16,0)
+			g_string_append_uri_escaped(headers, v, NULL, TRUE);
+#else
+			G_STRING_APPEND_ENCODED_URI(headers, v);
+#endif	
+		}
+		g_free(tmp);
+	}
+	if (to == NULL)
+		G_PRINT_EXIT(_("Missing required 'To:' header\n"));
+	g_string_append(body, to);
+	g_free(to);
+	g_string_append(body, "?body=");
+	while (fgets(fb, sizeof(fb), fp)) {
+#if GLIB_CHECK_VERSION(2,16,0)
+		g_string_append_uri_escaped(body, fb, NULL, TRUE);
+#else
+		G_STRING_APPEND_ENCODED_URI(body, fb);
+#endif
+	}
+	if (!isstdin)
+		fclose(fp);
+	/* append the remaining headers */
+	g_string_append(body, headers->str);
+	g_string_free(headers, TRUE);
+
+	return body;
+}
+
+#undef G_STRING_APPEND_ENCODED_URI
+#undef G_PRINT_EXIT
+
 static void parse_cmd_opt(int argc, char *argv[])
 {
 	gint i;
@@ -1822,6 +1910,13 @@ static void parse_cmd_opt(int argc, char *argv[])
 			cmd.receive_all = TRUE;
 		} else if (!strncmp(argv[i], "--receive", 9)) {
 			cmd.receive = TRUE;
+		} else if (!strncmp(argv[i], "--compose-from-file", 19)) {
+			const gchar *p = (i+1 < argc)?argv[i+1]:NULL;
+
+			GString *mailto = parse_cmd_compose_from_file(p);
+			cmd.compose = TRUE;
+			cmd.compose_mailto = mailto->str;
+			i++;
 		} else if (!strncmp(argv[i], "--compose", 9)) {
 			const gchar *p = (i+1 < argc)?argv[i+1]:NULL;
 
@@ -1923,6 +2018,11 @@ static void parse_cmd_opt(int argc, char *argv[])
 			g_print(_("Usage: %s [OPTION]...\n"), base);
 
 			g_print("%s\n", _("  --compose [address]    open composition window"));
+			g_print("%s\n", _("  --compose-from-file file\n"
+				  	  "                         open composition window with data from given file;\n"
+			  	  	  "                         use - as file name for reading from standard input;\n"
+			  	  	  "                         content format: headers first (To: required) until an\n"
+				  	  "                         empty line, then mail body until end of file."));
 			g_print("%s\n", _("  --subscribe [uri]      subscribe to the given URI if possible"));
 			g_print("%s\n", _("  --attach file1 [file2]...\n"
 			          "                         open composition window with specified files\n"

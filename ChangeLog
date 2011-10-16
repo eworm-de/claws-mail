@@ -1,3 +1,10 @@
+2011-10-16 [mones]	3.7.10cvs30
+
+	* src/main.c
+		Add --compose-from-file option to open composition
+		window with the headers and body from a file; based
+		on Debian patch to fix http://bugs.debian.org/544868
+
 2011-10-15 [mones]	3.7.10cvs29
 
 	* manual/advanced.xml

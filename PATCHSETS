@@ -4233,3 +4233,4 @@
 ( cvs diff -u -r 1.27.2.56 -r 1.27.2.57 src/addr_compl.c;  ) > 3.7.10cvs27.patchset
 ( cvs diff -u -r 1.382.2.584 -r 1.382.2.585 src/compose.c;  ) > 3.7.10cvs28.patchset
 ( cvs diff -u -r 1.1.2.57 -r 1.1.2.58 manual/advanced.xml;  ) > 3.7.10cvs29.patchset
+( cvs diff -u -r 1.115.2.239 -r 1.115.2.240 src/main.c;  ) > 3.7.10cvs30.patchset
