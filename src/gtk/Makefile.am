@@ -11,8 +11,7 @@ gtk2_sources = \
 	gtkcmctree.c \
 	gtkcmclist.c \
 	gtkcmoptionmenu.c \
-	gtksctree.c \
-	gtkshruler.c
+	gtksctree.c
 endif
 
 libclawsgtk_la_SOURCES = \
@@ -24,7 +23,9 @@ libclawsgtk_la_SOURCES = \
 	filesel.c \
 	foldersort.c \
 	gtkaspell.c \
+	gtkunit.c \
 	$(gtk2_sources) \
+	gtkshruler.c \
 	gtkutils.c \
 	gtkvscrollbutton.c \
 	icon_legend.c \
@@ -52,6 +53,7 @@ clawsgtkinclude_HEADERS = \
 	foldersort.h \
 	gtkaspell.h \
 	gtkutils.h \
+	gtkunit.h \
 	gtkvscrollbutton.h \
 	headers.h \
 	icon_legend.h \

@@ -1,3 +1,15 @@
+2011-10-17 [colin]	3.7.10cvs32
+
+	* src/compose.c
+	* src/compose.h
+	* src/gtk/Makefile.am
+	* src/gtk/gtkshruler.c
+	* src/gtk/gtkshruler.h
+	* src/gtk/gtkunit.c
+	* src/gtk/gtkunit.h
+		Reimplement ruler using the GTK widgets. Thanks
+		to Hanno for the initial patch.
+
 2011-10-17 [colin]	3.7.10cvs31
 
 	* src/action.c
