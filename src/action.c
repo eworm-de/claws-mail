@@ -180,13 +180,13 @@ static gint io_dialog_key_pressed_cb	(GtkWidget	*widget,
 
 static void catch_output		(gpointer		 data,
 					 gint			 source,
-					 GdkInputCondition	 cond);
+					 GIOCondition		 cond);
 static void catch_input			(gpointer		 data, 
 					 gint			 source,
-					 GdkInputCondition	 cond);
+					 GIOCondition		 cond);
 static void catch_status		(gpointer		 data,
 					 gint			 source,
-					 GdkInputCondition	 cond);
+					 GIOCondition		 cond);
 
 static gchar *get_user_string		(const gchar	*action,
 					 ActionType	 type);
@@ -905,7 +905,7 @@ static gboolean execute_actions(gchar *action, GSList *msg_list,
 			child_info->data = data;
 			child_info->tag_status = 
 				claws_input_add(child_info->chld_status,
-					      GDK_INPUT_READ,
+					      G_IO_IN | G_IO_HUP | G_IO_ERR,
 					      catch_status, child_info,
 					      FALSE);
 		}
@@ -1072,9 +1072,9 @@ static ChildInfo *fork_child(gchar *cmd, const gchar *msg_str,
 	child_info->chld_err    = chld_err[0];
 	child_info->chld_status = chld_status[0];
 	child_info->tag_in      = -1;
-	child_info->tag_out     = claws_input_add(chld_out[0], GDK_INPUT_READ,
+	child_info->tag_out     = claws_input_add(chld_out[0], G_IO_IN | G_IO_HUP | G_IO_ERR,
 						catch_output, child_info, FALSE);
-	child_info->tag_err     = claws_input_add(chld_err[0], GDK_INPUT_READ,
+	child_info->tag_err     = claws_input_add(chld_err[0], G_IO_IN | G_IO_HUP | G_IO_ERR,
 						catch_output, child_info, FALSE);
 
 	if (!(children->action_type &
@@ -1158,7 +1158,7 @@ static void send_input(GtkWidget *w, gpointer data)
 	ChildInfo *child_info = (ChildInfo *) children->list->data;
 
 	child_info->tag_in = claws_input_add(child_info->chld_in,
-					   GDK_INPUT_WRITE,
+					   G_IO_OUT | G_IO_ERR,
 					   catch_input, children, FALSE);
 }
 
@@ -1465,7 +1465,7 @@ static void create_io_dialog(Children *children)
 	gtk_widget_show(dialog);
 }
 
-static void catch_status(gpointer data, gint source, GdkInputCondition cond)
+static void catch_status(gpointer data, gint source, GIOCondition cond)
 {
 	ChildInfo *child_info = (ChildInfo *)data;
 	gchar buf;
@@ -1533,7 +1533,7 @@ static void catch_status(gpointer data, gint source, GdkInputCondition cond)
 	wait_for_children(child_info->children);
 }
 	
-static void catch_input(gpointer data, gint source, GdkInputCondition cond)
+static void catch_input(gpointer data, gint source, GIOCondition cond)
 {
 	Children *children = (Children *)data;
 	ChildInfo *child_info = (ChildInfo *)children->list->data;
@@ -1542,7 +1542,7 @@ static void catch_input(gpointer data, gint source, GdkInputCondition cond)
 	gssize by_read = 0, by_written = 0;
 
 	debug_print("Sending input to grand child.\n");
-	if (!(cond & GDK_INPUT_WRITE))
+	if (!(cond & (G_IO_OUT | G_IO_ERR)))
 		return;
 
 	gtk_widget_set_sensitive(children->input_hbox, FALSE);
@@ -1581,7 +1581,7 @@ static void catch_input(gpointer data, gint source, GdkInputCondition cond)
 	debug_print("Input to grand child sent.\n");
 }
 
-static void catch_output(gpointer data, gint source, GdkInputCondition cond)
+static void catch_output(gpointer data, gint source, GIOCondition cond)
 {
 	ChildInfo *child_info = (ChildInfo *)data;
 	gint c;

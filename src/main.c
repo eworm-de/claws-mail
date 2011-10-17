@@ -222,7 +222,7 @@ static gchar * get_crashfile_name	(void);
 static gint lock_socket_remove		(void);
 static void lock_socket_input_cb	(gpointer	   data,
 					 gint		   source,
-					 GdkInputCondition condition);
+					 GIOCondition      condition);
 
 static void open_compose_new		(const gchar	*address,
 					 GPtrArray	*attach_files);
@@ -587,8 +587,8 @@ static void sc_ice_io_error_handler (IceConn connection)
 		(*sc_ice_installed_handler) (connection);
 }
 static gboolean sc_process_ice_messages (GIOChannel   *source,
-		      GIOCondition  condition,
-		      gpointer      data)
+					 GIOCondition  condition,
+					 gpointer      data)
 {
 	IceConn connection = (IceConn) data;
 	IceProcessMessagesStatus status;
@@ -1396,7 +1396,7 @@ int main(int argc, char *argv[])
 
 	/* register the callback of unix domain socket input */
 	lock_socket_tag = claws_input_add(lock_socket,
-					GDK_INPUT_READ | GDK_INPUT_EXCEPTION,
+					G_IO_IN | G_IO_HUP | G_IO_ERR | G_IO_PRI,
 					lock_socket_input_cb,
 					mainwin, TRUE);
 
@@ -2475,7 +2475,7 @@ static GPtrArray *get_folder_item_list(gint sock)
 
 static void lock_socket_input_cb(gpointer data,
 				 gint source,
-				 GdkInputCondition condition)
+				 GIOCondition condition)
 {
 	MainWindow *mainwin = (MainWindow *)data;
 	gint sock;

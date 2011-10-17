@@ -220,12 +220,15 @@ GtkUIManager *gtkut_ui_manager(void);
 
 GdkPixbuf *claws_load_pixbuf_fitting(GdkPixbuf *pixbuf, int box_width,
 				     int box_height);
+
+typedef void (*ClawsIOFunc)(gpointer data, gint source, GIOCondition condition);
 gint
 claws_input_add    (gint	      source,
-		    GdkInputCondition condition,
-		    GdkInputFunction  function,
+		    GIOCondition      condition,
+		    ClawsIOFunc       function,
 		    gpointer	      data,
 		    gboolean          is_sock);
+
 #if GTK_CHECK_VERSION(2,12,0)
 #define CLAWS_TIP_DECL() {}
 #define CLAWS_SET_TIP(widget,tip) { 					\

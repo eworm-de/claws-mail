@@ -1626,36 +1626,26 @@ GtkUIManager *gtkut_ui_manager(void)
 	return gui_manager;
 }
 
-#define READ_CONDITION (G_IO_IN | G_IO_HUP | G_IO_ERR)
-#define WRITE_CONDITION (G_IO_OUT | G_IO_ERR)
-#define EXCEPTION_CONDITION (G_IO_PRI)
 typedef struct _ClawsIOClosure ClawsIOClosure;
 
 struct _ClawsIOClosure
 {
-  GdkInputFunction function;
-  GdkInputCondition condition;
+  ClawsIOFunc function;
+  GIOCondition condition;
   GDestroyNotify notify;
   gpointer data;
 };
 
 static gboolean  
 claws_io_invoke (GIOChannel   *source,
-	       GIOCondition  condition,
-	       gpointer      data)
+	         GIOCondition  condition,
+	         gpointer      data)
 {
   ClawsIOClosure *closure = data;
-  GdkInputCondition gdk_cond = 0;
 
-  if (condition & READ_CONDITION)
-    gdk_cond |= GDK_INPUT_READ;
-  if (condition & WRITE_CONDITION)
-    gdk_cond |= GDK_INPUT_WRITE;
-  if (condition & EXCEPTION_CONDITION)
-    gdk_cond |= GDK_INPUT_EXCEPTION;
-
-  if (closure->condition & gdk_cond)
-    closure->function (closure->data, g_io_channel_unix_get_fd (source), gdk_cond);
+  if (closure->condition & condition)
+    closure->function (closure->data, g_io_channel_unix_get_fd (source),
+    		       condition);
 
   return TRUE;
 }
@@ -1673,27 +1663,19 @@ claws_io_destroy (gpointer data)
 
 gint
 claws_input_add    (gint	      source,
-		    GdkInputCondition condition,
-		    GdkInputFunction  function,
+		    GIOCondition      condition,
+		    ClawsIOFunc       function,
 		    gpointer	      data,
 		    gboolean	      is_sock)
 {
   guint result;
   ClawsIOClosure *closure = g_new (ClawsIOClosure, 1);
   GIOChannel *channel;
-  GIOCondition cond = 0;
 
   closure->function = function;
   closure->condition = condition;
   closure->notify = NULL;
   closure->data = data;
-
-  if (condition & GDK_INPUT_READ)
-    cond |= READ_CONDITION;
-  if (condition & GDK_INPUT_WRITE)
-    cond |= WRITE_CONDITION;
-  if (condition & GDK_INPUT_EXCEPTION)
-    cond |= EXCEPTION_CONDITION;
 
 #ifndef G_OS_WIN32
   channel = g_io_channel_unix_new (source);
@@ -1703,7 +1685,7 @@ claws_input_add    (gint	      source,
   else
     channel = g_io_channel_win32_new_fd(source);
 #endif
-  result = g_io_add_watch_full (channel, G_PRIORITY_DEFAULT, cond, 
+  result = g_io_add_watch_full (channel, G_PRIORITY_DEFAULT, condition, 
 				claws_io_invoke,
 				closure, claws_io_destroy);
   g_io_channel_unref (channel);
