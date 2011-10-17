@@ -115,8 +115,6 @@ typedef struct
 
   gint             xsrc;
   gint             ysrc;
-
-  GList           *track_widgets;
 } GtkSHRulerPrivate;
 
 #define GTK_SHRULER_GET_PRIVATE(ruler) \
@@ -283,9 +281,6 @@ gtk_shruler_dispose (GObject *object)
   GtkSHRuler        *ruler = GTK_SHRULER (object);
   GtkSHRulerPrivate *priv  = GTK_SHRULER_GET_PRIVATE (ruler);
 
-  while (priv->track_widgets)
-    gtk_shruler_remove_track_widget (ruler, priv->track_widgets->data);
-
   G_OBJECT_CLASS (parent_class)->dispose (object);
 }
 
@@ -423,169 +418,6 @@ gtk_shruler_update_position (GtkSHRuler *ruler,
                                lower +
                                (upper - lower) * y / allocation.height);
     }
-}
-
-/* Returns TRUE if a translation should be done */
-static gboolean
-gtk_widget_get_translation_to_window (GtkWidget *widget,
-                                      GdkWindow *window,
-                                      int       *x,
-                                      int       *y)
-{
-  GdkWindow *w, *widget_window;
-
-  if (! gtk_widget_get_has_window (widget))
-    {
-      GtkAllocation allocation;
-
-      gtk_widget_get_allocation (widget, &allocation);
-
-      *x = -allocation.x;
-      *y = -allocation.y;
-    }
-  else
-    {
-      *x = 0;
-      *y = 0;
-    }
-
-  widget_window = gtk_widget_get_window (widget);
-
-  for (w = window;
-       w && w != widget_window;
-       w = gdk_window_get_effective_parent (w))
-    {
-      gdouble px, py;
-
-      gdk_window_coords_to_parent (w, *x, *y, &px, &py);
-
-      *x += px;
-      *y += py;
-    }
-
-  if (w == NULL)
-    {
-      *x = 0;
-      *y = 0;
-      return FALSE;
-    }
-
-  return TRUE;
-}
-
-static void
-gtk_shruler_event_to_widget_coords (GtkWidget *widget,
-                                   GdkWindow *window,
-                                   gdouble    event_x,
-                                   gdouble    event_y,
-                                   gint      *widget_x,
-                                   gint      *widget_y)
-{
-  gint tx, ty;
-
-  if (gtk_widget_get_translation_to_window (widget, window, &tx, &ty))
-    {
-      event_x += tx;
-      event_y += ty;
-    }
-
-  *widget_x = event_x;
-  *widget_y = event_y;
-}
-
-static gboolean
-gtk_shruler_track_widget_motion_notify (GtkWidget      *widget,
-                                       GdkEventMotion *mevent,
-                                       GtkSHRuler      *ruler)
-{
-  gint widget_x;
-  gint widget_y;
-  gint ruler_x;
-  gint ruler_y;
-
-  widget = gtk_get_event_widget ((GdkEvent *) mevent);
-
-  gtk_shruler_event_to_widget_coords (widget, mevent->window,
-                                     mevent->x, mevent->y,
-                                     &widget_x, &widget_y);
-
-  if (gtk_widget_translate_coordinates (widget, GTK_WIDGET (ruler),
-                                        widget_x, widget_y,
-                                        &ruler_x, &ruler_y))
-    {
-      gtk_shruler_update_position (ruler, ruler_x, ruler_y);
-    }
-
-  return FALSE;
-}
-
-/**
- * gtk_shruler_add_track_widget:
- * @ruler: a #GtkSHRuler
- * @widget: the track widget to add
- *
- * Adds a "track widget" to the ruler. The ruler will connect to
- * GtkWidget:motion-notify-event: on the track widget and update its
- * position marker accordingly. The marker is correctly updated also
- * for the track widget's children, regardless of whether they are
- * ordinary children of off-screen children.
- *
- * Since: GTK 2.8
- */
-void
-gtk_shruler_add_track_widget (GtkSHRuler *ruler,
-                             GtkWidget *widget)
-{
-  GtkSHRulerPrivate *priv;
-
-  g_return_if_fail (GTK_IS_SHRULER (ruler));
-  g_return_if_fail (GTK_IS_WIDGET (ruler));
-
-  priv = GTK_SHRULER_GET_PRIVATE (ruler);
-
-  g_return_if_fail (g_list_find (priv->track_widgets, widget) == NULL);
-
-  priv->track_widgets = g_list_prepend (priv->track_widgets, widget);
-
-  g_signal_connect (widget, "motion-notify-event",
-                    G_CALLBACK (gtk_shruler_track_widget_motion_notify),
-                    ruler);
-  g_signal_connect_swapped (widget, "destroy",
-                            G_CALLBACK (gtk_shruler_remove_track_widget),
-                            ruler);
-}
-
-/**
- * gtk_shruler_remove_track_widget:
- * @ruler: a #GtkSHRuler
- * @widget: the track widget to remove
- *
- * Removes a previously added track widget from the ruler. See
- * gtk_shruler_add_track_widget().
- *
- * Since: GTK 2.8
- */
-void
-gtk_shruler_remove_track_widget (GtkSHRuler *ruler,
-                                GtkWidget *widget)
-{
-  GtkSHRulerPrivate *priv;
-
-  g_return_if_fail (GTK_IS_SHRULER (ruler));
-  g_return_if_fail (GTK_IS_WIDGET (ruler));
-
-  priv = GTK_SHRULER_GET_PRIVATE (ruler);
-
-  g_return_if_fail (g_list_find (priv->track_widgets, widget) != NULL);
-
-  priv->track_widgets = g_list_remove (priv->track_widgets, widget);
-
-  g_signal_handlers_disconnect_by_func (widget,
-                                        gtk_shruler_track_widget_motion_notify,
-                                        ruler);
-  g_signal_handlers_disconnect_by_func (widget,
-                                        gtk_shruler_remove_track_widget,
-                                        ruler);
 }
 
 /**
@@ -997,17 +829,7 @@ gtk_shruler_draw_ticks (GtkSHRuler *ruler)
   cr = cairo_create (priv->backing_store);
   gdk_cairo_set_source_color (cr, &style->bg[state]);
 
-#if 0
-  gtk_paint_box (style, priv->backing_store,
-                 GTK_STATE_NORMAL, GTK_SHADOW_OUT,
-                 NULL, widget,
-                 priv->orientation == GTK_ORIENTATION_HORIZONTAL ?
-                 "hruler" : "vruler",
-                 0, 0,
-                 allocation.width, allocation.height);
-#else
   cairo_paint (cr);
-#endif
 
   gdk_cairo_set_source_color (cr, &style->fg[state]);
 
@@ -1135,6 +957,31 @@ out:
   cairo_destroy (cr);
 }
 
+static cairo_surface_t *
+cm_gdk_window_create_similar_surface (GdkWindow *     window,
+                                   cairo_content_t content,
+                                   int             width,
+                                   int             height)
+{
+#if !GTK_CHECK_VERSION(2, 22, 0)
+  cairo_surface_t *window_surface, *surface;
+
+  g_return_val_if_fail (GDK_IS_WINDOW (window), NULL);
+
+  window_surface = _gdk_drawable_ref_cairo_surface (window);
+
+  surface = cairo_surface_create_similar (window_surface,
+                                          content,
+                                          width, height);
+
+  cairo_surface_destroy (window_surface);
+
+  return surface;
+#else
+  return gdk_window_create_similar_surface(window, content, width, height);
+#endif
+}
+
 static void
 gtk_shruler_make_pixmap (GtkSHRuler *ruler)
 {
@@ -1148,7 +995,7 @@ gtk_shruler_make_pixmap (GtkSHRuler *ruler)
     cairo_surface_destroy (priv->backing_store);
 
   priv->backing_store =
-    gdk_window_create_similar_surface (gtk_widget_get_window (widget),
+    cm_gdk_window_create_similar_surface (gtk_widget_get_window (widget),
                                        CAIRO_CONTENT_COLOR,
                                        allocation.width,
                                        allocation.height);
