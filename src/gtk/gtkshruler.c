@@ -968,7 +968,7 @@ cm_gdk_window_create_similar_surface (GdkWindow *     window,
 
   g_return_val_if_fail (GDK_IS_WINDOW (window), NULL);
 
-  window_surface = _gdk_drawable_ref_cairo_surface (window);
+  window_surface = GDK_DRAWABLE_GET_CLASS(window)->ref_cairo_surface(window);
 
   surface = cairo_surface_create_similar (window_surface,
                                           content,

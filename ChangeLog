@@ -1,3 +1,8 @@
+2011-10-17 [colin]	3.7.10cvs36
+
+	* src/gtk/gtkshruler.c
+		(Probably) fix GTK+ <= 2.22
+
 2011-10-17 [colin]	3.7.10cvs35
 
 	* src/gtk/gtkshruler.c
