@@ -569,7 +569,7 @@ gchar *vcard_find_gnomecard( void ) {
 	homedir = get_home_dir();
 	if( ! homedir ) return NULL;
 
-	strcpy( str, homedir );
+	strncpy( str, homedir, WORK_BUFLEN );
 	len = strlen( str );
 	if( len > 0 ) {
 		if( str[ len-1 ] != G_DIR_SEPARATOR ) {
@@ -577,9 +577,9 @@ gchar *vcard_find_gnomecard( void ) {
 			str[ ++len ] = '\0';
 		}
 	}
-	strcat( str, GNOMECARD_DIR );
-	strcat( str, G_DIR_SEPARATOR_S );
-	strcat( str, GNOMECARD_FILE );
+	strncat( str, GNOMECARD_DIR, WORK_BUFLEN );
+	strncat( str, G_DIR_SEPARATOR_S, WORK_BUFLEN );
+	strncat( str, GNOMECARD_FILE, WORK_BUFLEN );
 
 	fileSpec = NULL;
 	if( ( fp = g_fopen( str, "rb" ) ) != NULL ) {

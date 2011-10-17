@@ -642,7 +642,7 @@ gchar *pine_find_file( void ) {
 	homedir = get_home_dir();
 	if( ! homedir ) return g_strdup( "" );
 
-	strcpy( str, homedir );
+	strncpy( str, homedir, WORK_BUFLEN );
 	len = strlen( str );
 	if( len > 0 ) {
 		if( str[ len-1 ] != G_DIR_SEPARATOR ) {
@@ -650,7 +650,7 @@ gchar *pine_find_file( void ) {
 			str[ ++len ] = '\0';
 		}
 	}
-	strcat( str, PINE_HOME_FILE );
+	strncat( str, PINE_HOME_FILE, WORK_BUFLEN );
 
 	/* Attempt to open */
 	if( ( fp = g_fopen( str, "rb" ) ) != NULL ) {

@@ -231,23 +231,23 @@ static gchar *exportldif_fmt_dn(
 	if( attr ) {
 		if( value ) {
 			if( strlen( value ) > 0 ) {
-				strcat( buf, attr );
-				strcat( buf, "=" );
+				strncat( buf, attr, FMT_BUFSIZE );
+				strncat( buf, "=", FMT_BUFSIZE );
 				if( dupval ) {
 					/* Format and free duplicated value */
-					strcat( buf, dupval );
+					strncat( buf, dupval, FMT_BUFSIZE );
 					g_free( dupval );
 				}
 				else {
 					/* Use original value */
-					strcat( buf, value );
+					strncat( buf, value, FMT_BUFSIZE );
 				}
 
 				/* Append suffix */
 				if( ctl->suffix ) {
 					if( strlen( ctl->suffix ) > 0 ) {
-						strcat( buf, "," );
-						strcat( buf, ctl->suffix );
+						strncat( buf, ",", FMT_BUFSIZE );
+						strncat( buf, ctl->suffix, FMT_BUFSIZE );
 					}
 				}
 

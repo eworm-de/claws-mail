@@ -1610,9 +1610,9 @@ gchar *jpilot_find_pilotdb( void ) {
 			str[ ++len ] = '\0';
 		}
 	}
-	strcat( str, JPILOT_DBHOME_DIR );
-	strcat( str, G_DIR_SEPARATOR_S );
-	strcat( str, JPILOT_DBHOME_FILE );
+	strncat( str, JPILOT_DBHOME_DIR, WORK_BUFLEN );
+	strncat( str, G_DIR_SEPARATOR_S, WORK_BUFLEN );
+	strncat( str, JPILOT_DBHOME_FILE, WORK_BUFLEN );
 
 	/* Attempt to open */
 	if( ( fp = g_fopen( str, "rb" ) ) != NULL ) {

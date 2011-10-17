@@ -1817,7 +1817,7 @@ GList *addrbook_get_bookfile_list(AddressBookFile *book) {
 		return NULL;
 	}
 
-	strcpy(buf, book->path);
+	strncpy(buf, book->path, WORK_BUFLEN);
 	len = strlen(buf);
 	if (len > 0) {
 		if (buf[len-1] != G_DIR_SEPARATOR) {
@@ -1827,7 +1827,7 @@ GList *addrbook_get_bookfile_list(AddressBookFile *book) {
 	}
 
 	adbookdir = g_strdup(buf);
-	strcat(buf, ADDRBOOK_PREFIX);
+	strncat(buf, ADDRBOOK_PREFIX, WORK_BUFLEN);
 
 	if( ( dir = g_dir_open( adbookdir, 0, NULL ) ) == NULL ) {
 		book->retVal = MGU_OPEN_DIRECTORY;
@@ -1845,8 +1845,8 @@ GList *addrbook_get_bookfile_list(AddressBookFile *book) {
 		gint i;
 		gboolean flg;
 
-		strcpy(buf, adbookdir);
-		strcat( buf, dir_name );
+		strncpy(buf, adbookdir, WORK_BUFLEN);
+		strncat(buf, dir_name, WORK_BUFLEN);
 		g_stat(buf, &statbuf);
 		if (S_ISREG(statbuf.st_mode)) {
 			if (strncmp(
