@@ -2025,16 +2025,16 @@ static void parse_cmd_opt(int argc, char *argv[])
 				  	  "                         empty line, then mail body until end of file."));
 			g_print("%s\n", _("  --subscribe [uri]      subscribe to the given URI if possible"));
 			g_print("%s\n", _("  --attach file1 [file2]...\n"
-			          "                         open composition window with specified files\n"
-			          "                         attached"));
+					  "                         open composition window with specified files\n"
+					  "                         attached"));
 			g_print("%s\n", _("  --receive              receive new messages"));
 			g_print("%s\n", _("  --receive-all          receive new messages of all accounts"));
-			g_print("%s\n", _("  --search folder type request [recursive]"));
-			g_print("%s\n", _("                         searches mail"));
-			g_print("%s\n", _("                         folder ex.: \"#mh/Mailbox/inbox\" or \"Mail\""));
-			g_print("%s\n", _("                         type: s[ubject],f[rom],t[o],e[xtended],m[ixed] or g: tag"));
-			g_print("%s\n", _("                         request: search string"));
-			g_print("%s\n", _("                         recursive: false if arg. starts with 0, n, N, f or F"));
+			g_print("%s\n", _("  --search folder type request [recursive]\n"
+					  "                         searches mail\n"
+					  "                         folder ex.: \"#mh/Mailbox/inbox\" or \"Mail\"\n"
+					  "                         type: s[ubject],f[rom],t[o],e[xtended],m[ixed] or g: tag\n"
+					  "                         request: search string\n"
+					  "                         recursive: false if arg. starts with 0, n, N, f or F"));
 
 			g_print("%s\n", _("  --send                 send all queued messages"));
  			g_print("%s\n", _("  --status [folder]...   show the total number of messages"));
