@@ -579,8 +579,8 @@ static void quote_color_set_dialog(GtkWidget *widget, gpointer data)
 	GdkColor color;
 	gint rgbvalue = 0;
 	GtkColorSelectionDialog *dialog;
-	GtkWidget button_ok;
-	GtkWidget button_cancel;
+	GtkWidget *button_ok;
+	GtkWidget *button_cancel;
 	gint c;
 
 	/* custom colors */
@@ -633,7 +633,7 @@ static void quote_color_set_dialog(GtkWidget *widget, gpointer data)
 		}
 	}
 
-	color_dialog = gtk_color_selection_dialog_new(title);
+	color_dialog = GTK_COLOR_SELECTION_DIALOG(gtk_color_selection_dialog_new(title));
 	g_free(title);
 	gtk_window_set_position(GTK_WINDOW(color_dialog), GTK_WIN_POS_CENTER);
 	gtk_window_set_modal(GTK_WINDOW(color_dialog), TRUE);
@@ -644,9 +644,9 @@ static void quote_color_set_dialog(GtkWidget *widget, gpointer data)
                                "cancel-button", &button_cancel,
                                NULL);
 
-	g_signal_connect(G_OBJECT(&button_cancel),
+	g_signal_connect(G_OBJECT(button_cancel),
 			 "clicked", G_CALLBACK(quote_colors_set_dialog_cancel), data);
-	g_signal_connect(G_OBJECT(&button_ok),
+	g_signal_connect(G_OBJECT(button_ok),
 			 "clicked", G_CALLBACK(quote_colors_set_dialog_ok), data);
 	g_signal_connect(G_OBJECT(color_dialog), "key_press_event",
 			 G_CALLBACK(quote_colors_set_dialog_key_pressed),data);
@@ -735,8 +735,8 @@ static gboolean quote_colors_set_dialog_key_pressed(GtkWidget *widget,
 						gpointer data)
 {
 	GtkColorSelectionDialog *dialog;
-	GtkWidget button_ok;
-	GtkWidget button_cancel;
+	GtkWidget *button_ok;
+	GtkWidget *button_cancel;
 
 	dialog = GTK_COLOR_SELECTION_DIALOG(widget);
 	g_object_get(dialog, "ok-button", &button_ok,
@@ -752,9 +752,9 @@ static gboolean quote_colors_set_dialog_key_pressed(GtkWidget *widget,
 			case GDK_KEY_KP_Enter:
 				/* NOTE: changing focus makes widget accept all currently 
 				 * changed settings! */
-				gtk_widget_grab_focus(&button_ok);
+				gtk_widget_grab_focus(button_ok);
 				/* call ok handler */						
-				gtk_button_clicked(GTK_BUTTON(&button_ok));
+				gtk_button_clicked(GTK_BUTTON(button_ok));
 				return TRUE;
 			default:
 				break;

@@ -1,3 +1,8 @@
+2011-10-19 [mones]	3.7.10cvs37
+
+	* src/prefs_msg_colors.c
+		Fix Ok/Cancel buttons in color selector of preferences
+
 2011-10-17 [colin]	3.7.10cvs36
 
 	* src/gtk/gtkshruler.c
