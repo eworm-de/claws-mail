@@ -1,3 +1,9 @@
+2011-10-20 [mones]	3.7.10cvs38
+
+	* po/fr.po
+	* src/common/defs.h
+		Fix references to old dotsrc mailing lists
+
 2011-10-19 [mones]	3.7.10cvs37
 
 	* src/prefs_msg_colors.c

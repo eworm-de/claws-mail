@@ -90,7 +90,7 @@
 #define THEMES_URI		"http://www.claws-mail.org/themes.php"
 #define TOOLS_URI		"http://www.claws-mail.org/tools.php"
 #define MAILING_LIST_URI	"http://www.claws-mail.org/MLs.php"
-#define USERS_ML_ADDR		"claws-mail-users@dotsrc.org"
+#define USERS_ML_ADDR		"users@lists.claws-mail.org"
 #define GPL_URI			"http://www.gnu.org/licenses/gpl.html"
 #define DONATE_URI		"http://www.claws-mail.org/sponsors.php"
 #define RELEASE_NOTES_FILE	"RELEASE_NOTES"

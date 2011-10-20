@@ -4241,3 +4241,4 @@
 ( cvs diff -u -r 1.1.4.18 -r 1.1.4.19 src/gtk/gtkshruler.c;  ) > 3.7.10cvs35.patchset
 ( cvs diff -u -r 1.1.4.19 -r 1.1.4.20 src/gtk/gtkshruler.c;  ) > 3.7.10cvs36.patchset
 ( cvs diff -u -r 1.1.2.44 -r 1.1.2.45 src/prefs_msg_colors.c;  ) > 3.7.10cvs37.patchset
+( cvs diff -u -r 1.42.2.55 -r 1.42.2.56 po/fr.po;  cvs diff -u -r 1.9.2.51 -r 1.9.2.52 src/common/defs.h;  ) > 3.7.10cvs38.patchset
