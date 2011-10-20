@@ -1,3 +1,11 @@
+2011-10-20 [paul]	3.7.10cvs39
+
+	* AUTHORS
+	* src/ldif.c
+	* src/gtk/authors.h
+		fix bug 2479, 'LDIF address book import matches tags case sensitive'
+		Patch by Bodo Graumann <mail@bodograumann.de>
+
 2011-10-20 [mones]	3.7.10cvs38
 
 	* po/fr.po

@@ -130,6 +130,7 @@ static char *CONTRIBS_LIST[] = {
 "Marius Glauser",
 "Thierry Godefroy",
 "Alex Gorbachenko",
+"Bodo Graumann",
 "Yang Guilong",
 "Daniel Gustafson",
 "HIROSHIMA",

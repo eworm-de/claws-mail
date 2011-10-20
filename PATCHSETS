@@ -4242,3 +4242,4 @@
 ( cvs diff -u -r 1.1.4.19 -r 1.1.4.20 src/gtk/gtkshruler.c;  ) > 3.7.10cvs36.patchset
 ( cvs diff -u -r 1.1.2.44 -r 1.1.2.45 src/prefs_msg_colors.c;  ) > 3.7.10cvs37.patchset
 ( cvs diff -u -r 1.42.2.55 -r 1.42.2.56 po/fr.po;  cvs diff -u -r 1.9.2.51 -r 1.9.2.52 src/common/defs.h;  ) > 3.7.10cvs38.patchset
+( cvs diff -u -r 1.100.2.80 -r 1.100.2.81 AUTHORS;  cvs diff -u -r 1.12.2.23 -r 1.12.2.24 src/ldif.c;  cvs diff -u -r 1.1.2.74 -r 1.1.2.75 src/gtk/authors.h;  ) > 3.7.10cvs39.patchset
