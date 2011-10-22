@@ -145,7 +145,6 @@ static void prefs_send_create_widget(PrefsPage *_page, GtkWindow *window,
 	GtkWidget *checkbtn_confirm_send_queued_messages;
 	GtkWidget *checkbtn_never_send_retrcpt;
 	GtkWidget *table;
-	CLAWS_TIP_DECL();
 
 	vbox1 = gtk_vbox_new (FALSE, VSPACING);
 	gtk_widget_show (vbox1);

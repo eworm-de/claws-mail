@@ -176,8 +176,6 @@ void quotefmt_create_new_msg_fmt_widgets(GtkWindow *parent_window,
 	gtk_container_set_border_width (GTK_CONTAINER (vbox_format), 8);
 
 	if (override_from_format) {
-		CLAWS_TIP_DECL();
-
 		hbox2_format = gtk_hbox_new (FALSE, 8);
 		gtk_widget_show (hbox2_format);
 		gtk_box_pack_start (GTK_BOX (vbox_format), hbox2_format, FALSE, FALSE, 0);
@@ -302,8 +300,6 @@ void quotefmt_create_reply_fmt_widgets(GtkWindow *parent_window,
 	gtk_container_set_border_width (GTK_CONTAINER (vbox_quote), 8);
 
 	if (override_from_format) {
-		CLAWS_TIP_DECL();
-
 		hbox3 = gtk_hbox_new (FALSE, 8);
 		gtk_widget_show (hbox3);
 		gtk_box_pack_start (GTK_BOX (vbox_quote), hbox3, FALSE, FALSE, 0);
@@ -432,8 +428,6 @@ void quotefmt_create_forward_fmt_widgets(GtkWindow *parent_window,
 	gtk_container_set_border_width (GTK_CONTAINER (vbox_quote), 8);
 
 	if (override_from_format) {
-		CLAWS_TIP_DECL();
-
 		hbox3 = gtk_hbox_new (FALSE, 8);
 		gtk_widget_show (hbox3);
 		gtk_box_pack_start (GTK_BOX (vbox_quote), hbox3, FALSE, FALSE, 0);

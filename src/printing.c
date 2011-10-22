@@ -193,7 +193,6 @@ GtkPageSetup *printing_get_page_setup(void)
 
 		read_from_file = FALSE;
 
-#if GTK_CHECK_VERSION(2,14,0)
 		/* try reading the page setup from file */
 		page_setup_filename = g_strconcat(get_rc_dir(), G_DIR_SEPARATOR_S, 
 						  PRINTING_PAGE_SETUP_STORAGE_FILE, NULL);
@@ -212,11 +211,6 @@ GtkPageSetup *printing_get_page_setup(void)
 		} else {
 			debug_print("Printing: Could not read page setup from key file\n");
 		}
-#else
-		key_file_read = FALSE;
-		keyfile = NULL;
-		page_setup_filename = NULL;
-#endif
 
 		/* if reading from file did not work, or has not been tried (GTK+ < 2.14), use prefs */
 		if (!read_from_file) {
@@ -282,10 +276,8 @@ void printing_print_full(GtkWindow *parent, PrintRenderer *renderer, gpointer re
 	/* Config for printing */
 	gtk_print_operation_set_print_settings(op, settings);
 	gtk_print_operation_set_default_page_setup(op, page_setup);
-#if GTK_CHECK_VERSION(2, 18, 0)
         /* enable Page Size and Orientation in the print dialog */
 	gtk_print_operation_set_embed_page_setup(op, TRUE);
-#endif
 
 	/* signals */
 	g_signal_connect(op, "begin_print", G_CALLBACK(renderer->cb_begin_print), print_data);
@@ -387,7 +379,6 @@ void printing_page_setup(GtkWindow *parent)
 	prefs_common.print_margin_right  = (int) (100*gtk_page_setup_get_right_margin(page_setup,
 								PAGE_MARGIN_STORAGE_UNIT));
 
-#if GTK_CHECK_VERSION(2,14,0)
 	/* save to file */
 	keyfile = g_strconcat(get_rc_dir(), G_DIR_SEPARATOR_S,
 			      PRINTING_PAGE_SETUP_STORAGE_FILE, NULL);
@@ -395,7 +386,6 @@ void printing_page_setup(GtkWindow *parent)
 		debug_print("Printing: Could not store page setup in file `%s'\n", keyfile);
 	}
 	g_free(keyfile);
-#endif
 }
 
 static gboolean cb_preview(GtkPrintOperation        *operation,
@@ -416,7 +406,6 @@ static gboolean cb_preview(GtkPrintOperation        *operation,
 	static GdkGeometry geometry;
 	GtkWidget *dialog = NULL;
 	GtkWidget *statusbar = gtk_hbox_new(2, FALSE);
-	CLAWS_TIP_DECL();
 
 	debug_print("Creating internal print preview\n");
 

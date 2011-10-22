@@ -97,7 +97,6 @@ static void create_trayicon_prefs_page(PrefsPage *page,
         GtkWidget *hide_at_startup_checkbox;
         GtkWidget *close_to_tray_checkbox;
         GtkWidget *hide_when_iconified_checkbox;
-	CLAWS_TIP_DECL();
 
         vbox = gtk_vbox_new(FALSE, 3);
         gtk_container_set_border_width(GTK_CONTAINER(vbox), VBOX_BORDER);

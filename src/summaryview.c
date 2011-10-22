@@ -512,7 +512,6 @@ SummaryView *summary_create(MainWindow *mainwin)
 	GtkWidget *toggle_arrow;
 	GtkWidget *toggle_search;
 	QuickSearch *quicksearch;
-	CLAWS_TIP_DECL();
 
 	debug_print("Creating summary view...\n");
 	summaryview = g_new0(SummaryView, 1);
@@ -2450,9 +2449,7 @@ static void summary_status_show(SummaryView *summaryview)
 	goffset sel_size = 0, n_size = 0;
 	MsgInfo *msginfo;
 	gchar *name;
-#if GTK_CHECK_VERSION(2, 12, 0)
 	gchar *tooltip;
-#endif
 	
 	if (!summaryview->folder_item) {
 		gtk_label_set_text(GTK_LABEL(summaryview->statlabel_folder), "");
@@ -2569,7 +2566,6 @@ static void summary_status_show(SummaryView *summaryview)
 
 		gtk_label_set_text(GTK_LABEL(summaryview->statlabel_msgs), str);
 		g_free(str);
-#if GTK_CHECK_VERSION(2, 12, 0)
 		tooltip = g_strdup_printf(_("<b>Message summary</b>\n"
 					    "<b>New:</b> %d\n"
 					    "<b>Unread:</b> %d\n"
@@ -2589,7 +2585,6 @@ static void summary_status_show(SummaryView *summaryview)
 		gtk_widget_set_tooltip_markup(GTK_WIDGET(summaryview->statlabel_msgs),
 				            tooltip); 
 		g_free(tooltip);
-#endif
 	} else {
 		gchar *ssize, *tsize;
 		if (n_selected) {
@@ -3137,13 +3132,9 @@ static inline void summary_set_header(SummaryView *summaryview, gchar *text[],
 	gchar *from_text = NULL, *to_text = NULL, *tags_text = NULL;
 	gboolean should_swap = FALSE;
 	gboolean vert = (prefs_common.layout_mode == VERTICAL_LAYOUT);
-#if GTK_CHECK_VERSION(2,12,0)
 	static const gchar *color_dim_rgb = NULL;
 	if (!color_dim_rgb)
 		color_dim_rgb = gdk_color_to_string(&summaryview->color_dim);
-#else
-	static const gchar *color_dim_rgb = "#888888";
-#endif
 	text[col_pos[S_COL_FROM]]   = "";
 	text[col_pos[S_COL_TO]]     = "";
 	text[col_pos[S_COL_SUBJECT]]= "";
@@ -6122,7 +6113,7 @@ static gboolean summary_popup_menu(GtkWidget *widget, gpointer data)
 	return TRUE;
 }
 
-#if GTK_CHECK_VERSION(2,12,0) && !GENERIC_UMPC
+#if !GENERIC_UMPC
 static gchar *summaryview_get_tooltip_text(SummaryView *summaryview, MsgInfo *info, gint column)
 {
 	MsgFlags flags;
@@ -6436,7 +6427,7 @@ static GtkWidget *summary_ctree_create(SummaryView *summaryview)
 			 G_CALLBACK(summary_drag_motion_cb),
 			 summaryview);
 
-#if GTK_CHECK_VERSION(2,12,0) && !GENERIC_UMPC
+#if !GENERIC_UMPC
 	g_object_set (G_OBJECT(ctree), "has-tooltip", TRUE, NULL);
 	g_signal_connect(G_OBJECT(ctree), "query-tooltip", 
 			 G_CALLBACK(tooltip_cb),

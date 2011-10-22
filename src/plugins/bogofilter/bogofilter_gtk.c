@@ -130,7 +130,6 @@ static void bogofilter_create_widget_func(PrefsPage * _page,
 
 	GtkWidget *whitelist_ab_folder_combo;
 	GtkWidget *whitelist_ab_select_btn;
-	CLAWS_TIP_DECL();
 
 	vbox1 = gtk_vbox_new (FALSE, VSPACING);
 	gtk_widget_show (vbox1);

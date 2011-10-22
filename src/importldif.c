@@ -631,7 +631,6 @@ static void imp_ldif_page_file( gint pageNum, gchar *pageLbl ) {
 	GtkWidget *entryFile;
 	GtkWidget *entryName;
 	GtkWidget *btnFile;
-	CLAWS_TIP_DECL();
 	gint top;
 
 	vbox = gtk_vbox_new(FALSE, 8);
@@ -717,7 +716,6 @@ static void imp_ldif_page_fields( gint pageNum, gchar *pageLbl ) {
 	GtkWidget *checkSelect;
 	GtkWidget *btnModify;
 	GtkWidget *eventBox;
-	CLAWS_TIP_DECL();
 	gint top;
 
 	gchar *titles[ FIELDS_N_COLS ];

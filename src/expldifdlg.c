@@ -463,7 +463,6 @@ static void export_ldif_page_dn( gint pageNum, gchar *pageLbl ) {
 	GtkWidget *checkEMail;
 	GtkListStore *store;
 	GtkTreeIter iter;
-	CLAWS_TIP_DECL();
 	gint top;
 
 	vbox = gtk_vbox_new(FALSE, 8);

@@ -249,7 +249,6 @@ static void prefs_folder_item_general_create_widget_func(PrefsPage * page_,
 	GtkWidget *enable_processing_when_opening_rec_checkbtn;
 	GtkWidget *newmailcheck_rec_checkbtn;
 	GtkWidget *offlinesync_rec_checkbtn;
-	CLAWS_TIP_DECL();
 
 	page->item	   = item;
 

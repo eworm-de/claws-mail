@@ -197,7 +197,6 @@ static void prefs_actions_create(MainWindow *mainwin)
 	GtkWidget *up_btn;
 	GtkWidget *down_btn;
 	static GdkGeometry geometry;
-	CLAWS_TIP_DECL();
 
 	debug_print("Creating actions configuration window...\n");
 

@@ -1029,7 +1029,7 @@ gtk_cmclist_get_arg (GObject *object,
       g_value_set_boolean(value, TRUE);
       for (i = 0; i < clist->columns; i++)
 	if (clist->column[i].button &&
-	    !gtkut_widget_get_sensitive (clist->column[i].button))
+	    !gtk_widget_get_sensitive (clist->column[i].button))
 	  {
 	    g_value_set_boolean(value, FALSE);
 	    break;
@@ -1332,7 +1332,7 @@ gtk_cmclist_set_shadow_type (GtkCMCList      *clist,
 
   clist->shadow_type = type;
 
-  if (gtkut_widget_get_visible (GTK_WIDGET(clist)))
+  if (gtk_widget_get_visible (GTK_WIDGET(clist)))
     gtk_widget_queue_resize (GTK_WIDGET (clist));
 }
 
@@ -1455,7 +1455,7 @@ gtk_cmclist_column_title_active (GtkCMCList *clist,
 		    0, 0, 0, column_title_passive_func, 0);
 
   gtkut_widget_set_can_focus (clist->column[column].button, TRUE);
-  if (gtkut_widget_get_visible (GTK_WIDGET(clist)))
+  if (gtk_widget_get_visible (GTK_WIDGET(clist)))
     gtk_widget_queue_draw (clist->column[column].button);
 }
 
@@ -1491,7 +1491,7 @@ gtk_cmclist_column_title_passive (GtkCMCList *clist,
 		      G_CALLBACK(column_title_passive_func), NULL);
 
   gtkut_widget_set_can_focus (clist->column[column].button, FALSE);
-  if (gtkut_widget_get_visible (GTK_WIDGET(clist)))
+  if (gtk_widget_get_visible (GTK_WIDGET(clist)))
     gtk_widget_queue_draw (clist->column[column].button);
 }
 
@@ -1577,7 +1577,7 @@ gtk_cmclist_set_column_title (GtkCMCList    *clist,
 
   /* if this button didn't previously exist, then the
    * column button positions have to be re-computed */
-  if (gtkut_widget_get_visible (GTK_WIDGET(clist)) && new_button)
+  if (gtk_widget_get_visible (GTK_WIDGET(clist)) && new_button)
     size_allocate_title_buttons (clist);
 }
 
@@ -1631,7 +1631,7 @@ gtk_cmclist_set_column_widget (GtkCMCList  *clist,
 
   /* if this button didn't previously exist, then the
    * column button positions have to be re-computed */
-  if (gtkut_widget_get_visible (GTK_WIDGET(clist)) && new_button)
+  if (gtk_widget_get_visible (GTK_WIDGET(clist)) && new_button)
     size_allocate_title_buttons (clist);
 }
 
@@ -1752,7 +1752,7 @@ gtk_cmclist_set_column_resizeable (GtkCMCList *clist,
   if (resizeable)
     clist->column[column].auto_resize = FALSE;
 
-  if (gtkut_widget_get_visible (GTK_WIDGET(clist)))
+  if (gtk_widget_get_visible (GTK_WIDGET(clist)))
     size_allocate_title_buttons (clist);
 }
 
@@ -1781,7 +1781,7 @@ gtk_cmclist_set_column_auto_resize (GtkCMCList *clist,
 	}
     }
 
-  if (gtkut_widget_get_visible (GTK_WIDGET(clist)))
+  if (gtk_widget_get_visible (GTK_WIDGET(clist)))
     size_allocate_title_buttons (clist);
 }
 
@@ -2025,7 +2025,7 @@ size_allocate_title_buttons (GtkCMCList *clist)
   gint last_button = 0;
   gint i;
 
-  if (!gtkut_widget_get_realized (GTK_WIDGET(clist)))
+  if (!gtk_widget_get_realized (GTK_WIDGET(clist)))
     return;
 
   button_allocation.x = clist->hoffset;
@@ -2232,7 +2232,7 @@ column_button_create (GtkCMCList *clist,
   gtk_container_set_border_width(GTK_CONTAINER(button), 0);
   gtk_widget_pop_composite_child ();
 
-  if (gtkut_widget_get_realized (GTK_WIDGET(clist)) && clist->title_window)
+  if (gtk_widget_get_realized (GTK_WIDGET(clist)) && clist->title_window)
     gtk_widget_set_parent_window (clist->column[column].button,
 				  clist->title_window);
   gtk_widget_set_parent (button, GTK_WIDGET (clist));
@@ -3299,7 +3299,7 @@ gtk_cmclist_set_foreground (GtkCMCList       *clist,
     {
       clist_row->foreground = *color;
       clist_row->fg_set = TRUE;
-      if (gtkut_widget_get_realized (GTK_WIDGET(clist)))
+      if (gtk_widget_get_realized (GTK_WIDGET(clist)))
 	gdk_colormap_alloc_color (gtk_widget_get_colormap (GTK_WIDGET (clist)),
 			 &clist_row->foreground, TRUE, TRUE);
     }
@@ -3328,7 +3328,7 @@ gtk_cmclist_set_background (GtkCMCList       *clist,
     {
       clist_row->background = *color;
       clist_row->bg_set = TRUE;
-      if (gtkut_widget_get_realized (GTK_WIDGET(clist)))
+      if (gtk_widget_get_realized (GTK_WIDGET(clist)))
 	gdk_colormap_alloc_color (gtk_widget_get_colormap (GTK_WIDGET (clist)),
 			 &clist_row->background, TRUE, TRUE);
     }
@@ -3374,7 +3374,7 @@ gtk_cmclist_set_cell_style (GtkCMCList *clist,
 
   if (clist_row->cell[column].style)
     {
-      if (gtkut_widget_get_realized (GTK_WIDGET(clist)))
+      if (gtk_widget_get_realized (GTK_WIDGET(clist)))
         gtk_style_detach (clist_row->cell[column].style);
       g_object_unref (clist_row->cell[column].style);
     }
@@ -3385,7 +3385,7 @@ gtk_cmclist_set_cell_style (GtkCMCList *clist,
     {
       g_object_ref (clist_row->cell[column].style);
       
-      if (gtkut_widget_get_realized (GTK_WIDGET(clist)))
+      if (gtk_widget_get_realized (GTK_WIDGET(clist)))
         clist_row->cell[column].style =
 	  gtk_style_attach (clist_row->cell[column].style,
 			    clist->clist_window);
@@ -3453,7 +3453,7 @@ gtk_cmclist_set_row_style (GtkCMCList *clist,
 
   if (clist_row->style)
     {
-      if (gtkut_widget_get_realized (GTK_WIDGET(clist)))
+      if (gtk_widget_get_realized (GTK_WIDGET(clist)))
         gtk_style_detach (clist_row->style);
       g_object_unref (clist_row->style);
     }
@@ -3464,7 +3464,7 @@ gtk_cmclist_set_row_style (GtkCMCList *clist,
     {
       g_object_ref (clist_row->style);
       
-      if (gtkut_widget_get_realized (GTK_WIDGET(clist)))
+      if (gtk_widget_get_realized (GTK_WIDGET(clist)))
         clist_row->style = gtk_style_attach (clist_row->style,
 					     clist->clist_window);
     }
@@ -3696,7 +3696,7 @@ fake_toggle_row (GtkCMCList *clist,
 static gboolean
 clist_has_grab (GtkCMCList *clist)
 {
-  return (gtkut_widget_has_grab (GTK_WIDGET(clist)) &&
+  return (gtk_widget_has_grab (GTK_WIDGET(clist)) &&
 	  gdk_display_pointer_is_grabbed (gtk_widget_get_display (GTK_WIDGET (clist))));
 }
 
@@ -4013,7 +4013,7 @@ real_undo_selection (GtkCMCList *clist)
 		       GPOINTER_TO_INT (work->data), -1, NULL);
     }
 
-  if (gtkut_widget_has_focus(GTK_WIDGET(clist)) && clist->focus_row != clist->undo_anchor)
+  if (gtk_widget_has_focus(GTK_WIDGET(clist)) && clist->focus_row != clist->undo_anchor)
     {
       gtk_cmclist_draw_focus (GTK_WIDGET (clist));
       clist->focus_row = clist->undo_anchor;
@@ -4355,7 +4355,7 @@ end_selection (GtkCMCList *clist)
   cm_return_if_fail (GTK_IS_CMCLIST (clist));
 
   if (gdk_display_pointer_is_grabbed (gtk_widget_get_display (GTK_WIDGET (clist))) &&
-      gtkut_widget_has_focus (GTK_WIDGET(clist)))
+      gtk_widget_has_focus (GTK_WIDGET(clist)))
     return;
 
   GTK_CMCLIST_GET_CLASS (clist)->resync_selection (clist, NULL);
@@ -4705,13 +4705,13 @@ gtk_cmclist_unrealize (GtkWidget *widget)
   /* freeze the list */
   clist->freeze_count++;
 
-  if (gtkut_widget_get_mapped (widget))
+  if (gtk_widget_get_mapped (widget))
     gtk_cmclist_unmap (widget);
 
   gtkut_widget_set_mapped (widget, FALSE);
 
   /* detach optional row/cell styles */
-  if (gtkut_widget_get_realized (widget))
+  if (gtk_widget_get_realized (widget))
     {
       GtkCMCListRow *clist_row;
       GList *list;
@@ -4775,7 +4775,7 @@ gtk_cmclist_map (GtkWidget *widget)
 
   clist = GTK_CMCLIST (widget);
 
-  if (!gtkut_widget_get_mapped (widget))
+  if (!gtk_widget_get_mapped (widget))
     {
       gtkut_widget_set_mapped (widget, TRUE);
 
@@ -4783,8 +4783,8 @@ gtk_cmclist_map (GtkWidget *widget)
       for (i = 0; i < clist->columns; i++)
 	{
 	  if (clist->column[i].button &&
-	      gtkut_widget_get_visible (clist->column[i].button) &&
-	      !gtkut_widget_get_mapped (clist->column[i].button))
+	      gtk_widget_get_visible (clist->column[i].button) &&
+	      !gtk_widget_get_mapped (clist->column[i].button))
 	    gtk_widget_map (clist->column[i].button);
 	}
       
@@ -4814,7 +4814,7 @@ gtk_cmclist_unmap (GtkWidget *widget)
 
   clist = GTK_CMCLIST (widget);
 
-  if (gtkut_widget_get_mapped (widget))
+  if (gtk_widget_get_mapped (widget))
     {
       gtkut_widget_set_mapped (widget, FALSE);
 
@@ -4852,7 +4852,7 @@ gtk_cmclist_unmap (GtkWidget *widget)
       /* unmap column buttons */
       for (i = 0; i < clist->columns; i++)
 	if (clist->column[i].button &&
-	    gtkut_widget_get_mapped (clist->column[i].button))
+	    gtk_widget_get_mapped (clist->column[i].button))
 	  gtk_widget_unmap (clist->column[i].button);
 
       /* freeze the list */
@@ -4874,7 +4874,7 @@ gtk_cmclist_expose (GtkWidget      *widget,
   window = gtk_widget_get_window (widget);
   style = gtk_widget_get_style (widget);
 
-  if (gtkut_widget_is_drawable (widget))
+  if (gtk_widget_is_drawable (widget))
     {
       clist = GTK_CMCLIST (widget);
 
@@ -4933,7 +4933,7 @@ gtk_cmclist_style_set (GtkWidget *widget,
 
   clist = GTK_CMCLIST (widget);
 
-  if (gtkut_widget_get_realized (widget))
+  if (gtk_widget_get_realized (widget))
     {
       style = gtk_widget_get_style (widget);
       gtk_style_set_background (style, gtk_widget_get_window (widget),
@@ -5029,7 +5029,7 @@ gtk_cmclist_button_press (GtkWidget      *widget,
 	      if (GTK_CMCLIST_ADD_MODE(clist))
 		{
 		  GTK_CMCLIST_UNSET_FLAG (clist, CMCLIST_ADD_MODE);
-		  if (gtkut_widget_has_focus(widget))
+		  if (gtk_widget_has_focus(widget))
 		    {
 		      gtk_cmclist_draw_focus (widget);
 		      gdk_gc_set_line_attributes (clist->xor_gc, 1,
@@ -5046,7 +5046,7 @@ gtk_cmclist_button_press (GtkWidget      *widget,
 		}
 	      else if (row != clist->focus_row)
 		{
-		  if (gtkut_widget_has_focus(widget))
+		  if (gtk_widget_has_focus(widget))
 		    {
 		      gtk_cmclist_draw_focus (widget);
 		      clist->focus_row = row;
@@ -5057,7 +5057,7 @@ gtk_cmclist_button_press (GtkWidget      *widget,
 		}
 	    }
 
-	  if (!gtkut_widget_has_focus(widget))
+	  if (!gtk_widget_has_focus(widget))
 	    gtk_widget_grab_focus (widget);
 
 	  if (button_actions & GTK_CMBUTTON_SELECTS)
@@ -5165,7 +5165,7 @@ gtk_cmclist_button_press (GtkWidget      *widget,
 	      	g_signal_handlers_block_matched(G_OBJECT(clist), G_SIGNAL_MATCH_DATA,
 					0, 0, 0, 0, drag_data);
 
-	if (!gtkut_widget_has_focus(widget))
+	if (!gtk_widget_has_focus(widget))
 	  gtk_widget_grab_focus (widget);
 
 	clist->drag_pos = i;
@@ -5253,7 +5253,7 @@ gtk_cmclist_button_release (GtkWidget      *widget,
 	    {
 	    case GTK_SELECTION_MULTIPLE:
 	      if (!(event->state & GDK_SHIFT_MASK) ||
-		  !gtkut_widget_get_can_focus (widget) ||
+		  !gtk_widget_get_can_focus (widget) ||
 		  event->x < 0 || event->x >= clist->clist_window_width ||
 		  event->y < 0 || event->y >= clist->clist_window_height)
 		GTK_CMCLIST_GET_CLASS (clist)->resync_selection
@@ -5379,13 +5379,8 @@ gtk_cmclist_motion (GtkWidget      *widget,
       if (clist->htimer)
 	return FALSE;
 
-#if GTK_CHECK_VERSION(2,12,0)
       clist->htimer = gdk_threads_add_timeout
 	(SCROLL_TIME, (GSourceFunc) horizontal_timeout, clist);
-#else
-      clist->htimer = g_timeout_add
-	(SCROLL_TIME, (GSourceFunc) horizontal_timeout, clist);
-#endif
       value = gtk_adjustment_get_value (clist->hadjustment);
       if (!((x < 0 && value == 0) ||
 	    (x >= clist->clist_window_width &&
@@ -5415,13 +5410,8 @@ gtk_cmclist_motion (GtkWidget      *widget,
     {
       if (clist->vtimer)
 	return FALSE;
-#if GTK_CHECK_VERSION(2,12,0)
       clist->vtimer = gdk_threads_add_timeout (SCROLL_TIME,
 				     (GSourceFunc) vertical_timeout, clist);
-#else
-      clist->vtimer = g_timeout_add (SCROLL_TIME,
-				     (GSourceFunc) vertical_timeout, clist);
-#endif
       if (clist->drag_button &&
 	  ((y < 0 && clist->focus_row == 0) ||
 	   (y >= clist->clist_window_height &&
@@ -5529,7 +5519,7 @@ gtk_cmclist_size_allocate (GtkWidget     *widget,
   gtk_widget_set_allocation (widget, allocation);
   border_width = gtk_container_get_border_width (GTK_CONTAINER (widget));
 
-  if (gtkut_widget_get_realized (widget))
+  if (gtk_widget_get_realized (widget))
     {
       gdk_window_move_resize (gtk_widget_get_window (widget),
 			      allocation->x + border_width,
@@ -5563,7 +5553,7 @@ gtk_cmclist_size_allocate (GtkWidget     *widget,
   clist->clist_window_width = clist_allocation.width;
   clist->clist_window_height = clist_allocation.height;
   
-  if (gtkut_widget_get_realized (widget))
+  if (gtk_widget_get_realized (widget))
     {
       gdk_window_move_resize (clist->clist_window,
 			      clist_allocation.x,
@@ -5577,7 +5567,7 @@ gtk_cmclist_size_allocate (GtkWidget     *widget,
   clist->column_title_area.y = style->ythickness;
   clist->column_title_area.width = clist_allocation.width;
   
-  if (gtkut_widget_get_realized (widget))
+  if (gtk_widget_get_realized (widget))
     {
       gdk_window_move_resize (clist->title_window,
 			      clist->column_title_area.x,
@@ -5754,7 +5744,7 @@ draw_row (GtkCMCList     *clist,
   cm_return_if_fail (clist != NULL);
 
   /* bail now if we arn't drawable yet */
-  if (!gtkut_widget_is_drawable (GTK_WIDGET(clist)) || row < 0 || row >= clist->rows)
+  if (!gtk_widget_is_drawable (GTK_WIDGET(clist)) || row < 0 || row >= clist->rows)
     return;
 
   widget = GTK_WIDGET (clist);
@@ -5986,7 +5976,7 @@ draw_row (GtkCMCList     *clist,
 
   /* draw focus rectangle */
   if (clist->focus_row == row &&
-      gtkut_widget_get_can_focus (widget) && gtkut_widget_has_focus(widget))
+      gtk_widget_get_can_focus (widget) && gtk_widget_has_focus(widget))
     {
       if (!area)
 	gdk_draw_rectangle (clist->clist_window, clist->xor_gc, FALSE,
@@ -6018,7 +6008,7 @@ draw_rows (GtkCMCList     *clist,
   cm_return_if_fail (GTK_IS_CMCLIST (clist));
 
   if (clist->row_height == 0 ||
-      !gtkut_widget_is_drawable (GTK_WIDGET(clist)))
+      !gtk_widget_is_drawable (GTK_WIDGET(clist)))
     return;
 
   if (area)
@@ -6253,7 +6243,7 @@ vadjustment_value_changed (GtkAdjustment *adjustment,
   dy = value - clist->voffset;
   clist->voffset = value;
 
-  if (gtkut_widget_is_drawable (GTK_WIDGET(clist)))
+  if (gtk_widget_is_drawable (GTK_WIDGET(clist)))
     {
       gdk_window_scroll (clist->clist_window, 0, dy);
       gdk_window_process_updates (clist->clist_window, FALSE);
@@ -6270,7 +6260,7 @@ typedef struct
 
 /* The window to which widget->window is relative */
 #define ALLOCATION_WINDOW(widget)		\
-   (!gtkut_widget_get_has_window (widget) ?		\
+   (!gtk_widget_get_has_window (widget) ?		\
 	gtk_widget_get_window (widget) :         \
 	gdk_window_get_parent (gtk_widget_get_window(widget)))
 
@@ -6283,9 +6273,9 @@ adjust_allocation_recurse (GtkWidget *widget,
 
   gtk_widget_get_allocation (widget, &allocation);
   
-  if (!gtkut_widget_get_realized (widget))
+  if (!gtk_widget_get_realized (widget))
     {
-      if (gtkut_widget_get_visible (widget))
+      if (gtk_widget_get_visible (widget))
 	{
 	  GdkRectangle tmp_rectangle = allocation;
 	  tmp_rectangle.x += scroll_data->dx;
@@ -6314,7 +6304,7 @@ adjust_allocation (GtkWidget *widget,
 {
   ScrollData scroll_data;
 
-  if (gtkut_widget_get_realized (widget))
+  if (gtk_widget_get_realized (widget))
     scroll_data.window = ALLOCATION_WINDOW (widget);
   else
     scroll_data.window = NULL;
@@ -6349,7 +6339,7 @@ hadjustment_value_changed (GtkAdjustment *adjustment,
 
   dx = -value - clist->hoffset;
 
-  if (gtkut_widget_get_realized (GTK_WIDGET(clist)))
+  if (gtk_widget_get_realized (GTK_WIDGET(clist)))
     gdk_window_scroll (clist->title_window, dx, 0);
 
   /* adjust the column button's allocations */
@@ -6359,11 +6349,11 @@ hadjustment_value_changed (GtkAdjustment *adjustment,
 
   clist->hoffset = -value;
 
-  if (gtkut_widget_is_drawable (GTK_WIDGET(clist)))
+  if (gtk_widget_is_drawable (GTK_WIDGET(clist)))
     {
       GtkWidget *focus_child = gtk_container_get_focus_child (container);
-      if (gtkut_widget_get_can_focus(GTK_WIDGET(clist)) && 
-          gtkut_widget_has_focus(GTK_WIDGET(clist)) &&
+      if (gtk_widget_get_can_focus(GTK_WIDGET(clist)) && 
+          gtk_widget_has_focus(GTK_WIDGET(clist)) &&
           !focus_child && GTK_CMCLIST_ADD_MODE(clist))
         {
           y = ROW_TOP_YPIXEL (clist, clist->focus_row);
@@ -6376,8 +6366,8 @@ hadjustment_value_changed (GtkAdjustment *adjustment,
       gdk_window_scroll (clist->clist_window, dx, 0);
       gdk_window_process_updates (clist->clist_window, FALSE);
 
-      if (gtkut_widget_get_can_focus(GTK_WIDGET(clist)) && 
-          gtkut_widget_has_focus(GTK_WIDGET(clist)) &&
+      if (gtk_widget_get_can_focus(GTK_WIDGET(clist)) && 
+          gtk_widget_has_focus(GTK_WIDGET(clist)) &&
           !focus_child)
         {
           if (GTK_CMCLIST_ADD_MODE(clist))
@@ -6527,7 +6517,7 @@ row_delete (GtkCMCList    *clist,
 	(clist, clist_row, i, GTK_CMCELL_EMPTY, NULL, 0, NULL);
       if (clist_row->cell[i].style)
 	{
-	  if (gtkut_widget_get_realized (GTK_WIDGET(clist)))
+	  if (gtk_widget_get_realized (GTK_WIDGET(clist)))
 	    gtk_style_detach (clist_row->cell[i].style);
 	  g_object_unref (clist_row->cell[i].style);
 	}
@@ -6535,7 +6525,7 @@ row_delete (GtkCMCList    *clist,
 
   if (clist_row->style)
     {
-      if (gtkut_widget_get_realized (GTK_WIDGET(clist)))
+      if (gtk_widget_get_realized (GTK_WIDGET(clist)))
         gtk_style_detach (clist_row->style);
       g_object_unref (clist_row->style);
     }
@@ -6585,7 +6575,7 @@ gtk_cmclist_focus (GtkWidget        *widget,
   GtkWidget *focus_child;
   gboolean is_current_focus;
 
-  if (!gtkut_widget_is_sensitive (widget))
+  if (!gtk_widget_is_sensitive (widget))
     return FALSE;
 
   focus_child = gtk_container_get_focus_child (GTK_CONTAINER (widget));
@@ -6667,7 +6657,7 @@ gtk_cmclist_draw_focus (GtkWidget *widget)
 
   cm_return_if_fail (GTK_IS_CMCLIST (widget));
 
-  if (!gtkut_widget_is_drawable (widget) || !gtkut_widget_get_can_focus (widget))
+  if (!gtk_widget_is_drawable (widget) || !gtk_widget_get_can_focus (widget))
     return;
 
   clist = GTK_CMCLIST (widget);
@@ -6724,7 +6714,7 @@ focus_column (GtkCMCList *clist, gint column, gint dir)
     {
       return TRUE;
     }
-  else if (gtkut_widget_get_can_focus (child))
+  else if (gtk_widget_get_can_focus (child))
     {
       gtk_widget_grab_focus (child);
       return TRUE;
@@ -6831,7 +6821,7 @@ title_focus_move (GtkCMCList *clist,
   while (!return_val && j >= 0 && j < clist->columns)
     {
       if (clist->column[j].button &&
-	  gtkut_widget_get_visible (clist->column[j].button))
+	  gtk_widget_get_visible (clist->column[j].button))
 	{
 	  if (focus_column (clist, j, dir))
 	    {
@@ -6851,7 +6841,7 @@ title_focus_move (GtkCMCList *clist,
       while (!return_val && j != i)
 	{
 	  if (clist->column[j].button &&
-	      gtkut_widget_get_visible (clist->column[j].button))
+	      gtk_widget_get_visible (clist->column[j].button))
 	    {
 	      if (focus_column (clist, j, dir))
 		{
@@ -7214,7 +7204,7 @@ remove_grab (GtkCMCList *clist)
 {
   GtkWidget *widget = GTK_WIDGET (clist);
   
-  if (gtkut_widget_has_grab (widget))
+  if (gtk_widget_has_grab (widget))
     {
       GdkDisplay *display = gtk_widget_get_display (widget);
       
@@ -7922,7 +7912,7 @@ gtk_cmclist_set_button_actions (GtkCMCList *clist,
   if (button < MAX_BUTTON)
     {
       if (gdk_display_pointer_is_grabbed (gtk_widget_get_display (GTK_WIDGET (clist))) || 
-	  gtkut_widget_has_grab (GTK_WIDGET(clist)))
+	  gtk_widget_has_grab (GTK_WIDGET(clist)))
 	{
 	  remove_grab (clist);
 	  clist->drag_button = 0;

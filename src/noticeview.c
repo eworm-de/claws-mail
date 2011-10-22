@@ -68,7 +68,6 @@ NoticeView *noticeview_create(MainWindow *mainwin)
 	GtkWidget  *widget;
 	GtkWidget  *widget2;
 	GtkWidget  *evtbox;
-	CLAWS_TIP_DECL();
 
 	debug_print("Creating notice view...\n");
 	noticeview = g_new0(NoticeView, 1);

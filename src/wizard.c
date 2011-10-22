@@ -1123,7 +1123,6 @@ static GtkWidget* mailbox_page (WizardWindow * wizard)
 	gchar *uri, *mount_path;
 #endif
 	GtkWidget *hbox;
-	CLAWS_TIP_DECL();
 
 	gtk_table_set_row_spacings(GTK_TABLE(table), 4);
 	gtk_table_set_col_spacings(GTK_TABLE(table), 8);
@@ -1259,7 +1258,6 @@ static GtkWidget* smtp_page (WizardWindow * wizard)
 	GtkWidget *smtp_cert_table;
 #endif
 	gchar *text;
-	CLAWS_TIP_DECL();
 	
 	gtk_table_set_row_spacings(GTK_TABLE(table), 4);
 	gtk_table_set_col_spacings(GTK_TABLE(table), 8);
@@ -1524,7 +1522,6 @@ static GtkWidget* recv_page (WizardWindow * wizard)
 	GtkTreeIter iter;
 	gchar *text;
 	gint index = 0;
-	CLAWS_TIP_DECL();
 
 	gtk_table_set_row_spacings(GTK_TABLE(table), 4);
 	gtk_table_set_col_spacings(GTK_TABLE(table), 8);

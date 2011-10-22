@@ -330,7 +330,6 @@ static void prefs_filtering_create(void)
 	GtkWidget *bottom_btn;
 	GtkWidget *table;
 	static GdkGeometry geometry;
-	CLAWS_TIP_DECL();
 
 	debug_print("Creating filtering configuration window...\n");
 

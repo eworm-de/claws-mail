@@ -82,7 +82,6 @@ static void prefs_ext_prog_create_widget(PrefsPage *_page, GtkWindow *window,
 	GtkWidget *exteditor_entry;
 	GtkWidget *astextviewer_label;
 	GtkWidget *astextviewer_entry;
-	CLAWS_TIP_DECL();
 	int i = 0;
 	gchar *tmp;
 

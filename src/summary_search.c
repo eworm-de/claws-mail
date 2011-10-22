@@ -222,7 +222,6 @@ static void summary_search_create(void)
 	GtkWidget *close_btn;
 	GtkWidget *stop_btn;
 	gboolean is_searching = FALSE;
-	CLAWS_TIP_DECL();
 
 	window = gtkut_window_new(GTK_WINDOW_TOPLEVEL, "summary_search");
 	gtk_window_set_title(GTK_WINDOW (window), _("Search messages"));

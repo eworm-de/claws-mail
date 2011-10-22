@@ -133,7 +133,6 @@ static void prefs_msg_colors_create_widget(PrefsPage *_page, GtkWindow *window,
 	gint c;
 	gchar *tooltip_btn_text = NULL;
 	gchar *tooltip_entry_text = NULL;
-	CLAWS_TIP_DECL();
 
 	notebook = gtk_notebook_new();
 	gtk_widget_show(notebook);

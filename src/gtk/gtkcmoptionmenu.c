@@ -436,7 +436,7 @@ gtk_cmoption_menu_size_request (GtkWidget      *widget,
   gtk_cmoption_menu_get_props (option_menu, &props);
  
   child = gtk_bin_get_child (GTK_BIN (option_menu));
-  if (child && gtkut_widget_get_visible (child))
+  if (child && gtk_widget_get_visible (child))
     {
       gtk_widget_size_request (child, &child_requisition);
 
@@ -477,13 +477,13 @@ gtk_cmoption_menu_size_allocate (GtkWidget     *widget,
   border_width = gtk_container_get_border_width (GTK_CONTAINER (widget));
 
   gtk_widget_set_allocation (widget, allocation);
-  if (gtkut_widget_get_realized (widget))
+  if (gtk_widget_get_realized (widget))
 	gdk_window_move_resize (gtk_button_get_event_window (button),
 			    allocation->x + border_width, allocation->y + border_width,
 			    allocation->width - border_width * 2, allocation->height - border_width * 2);
 
   child = gtk_bin_get_child (GTK_BIN (widget));
-  if (child && gtkut_widget_get_visible (child))
+  if (child && gtk_widget_get_visible (child))
     {
       style = gtk_widget_get_style (widget);
       gint xthickness = style->xthickness;
@@ -520,7 +520,7 @@ gtk_cmoption_menu_paint (GtkWidget    *widget,
   cm_return_if_fail (GTK_IS_CMOPTION_MENU (widget));
   cm_return_if_fail (area != NULL);
 
-  if (gtkut_widget_is_drawable (widget))
+  if (gtk_widget_is_drawable (widget))
     {
       gtk_widget_get_allocation (widget, &allocation);
       border_width = gtk_container_get_border_width (GTK_CONTAINER (widget));
@@ -531,7 +531,7 @@ gtk_cmoption_menu_paint (GtkWidget    *widget,
       button_area.width = allocation.width - 2 * border_width;
       button_area.height = allocation.height - 2 * border_width;
 
-      if (!props.interior_focus && gtkut_widget_has_focus (widget))
+      if (!props.interior_focus && gtk_widget_has_focus (widget))
 	{
 	  button_area.x += props.focus_width + props.focus_pad;
 	  button_area.y += props.focus_width + props.focus_pad;
@@ -542,7 +542,7 @@ gtk_cmoption_menu_paint (GtkWidget    *widget,
       style = gtk_widget_get_style (widget);
       window = gtk_widget_get_window (widget);
       gtk_paint_box (style, window,
-		     gtkut_widget_get_state (widget), GTK_SHADOW_OUT,
+		     gtk_widget_get_state (widget), GTK_SHADOW_OUT,
 		     area, widget, "optionmenu",
 		     button_area.x, button_area.y,
 		     button_area.width, button_area.height);
@@ -556,13 +556,13 @@ gtk_cmoption_menu_paint (GtkWidget    *widget,
 	  style->xthickness;
 
       gtk_paint_tab (style, window,
-		     gtkut_widget_get_state (widget), GTK_SHADOW_OUT,
+		     gtk_widget_get_state (widget), GTK_SHADOW_OUT,
 		     area, widget, "optionmenutab",
 		     tab_x,
 		     button_area.y + (button_area.height - props.indicator_size.height) / 2,
 		     props.indicator_size.width, props.indicator_size.height);
       
-      if (gtkut_widget_has_focus (widget))
+      if (gtk_widget_has_focus (widget))
 	{
 	  if (props.interior_focus)
 	    {
@@ -586,7 +586,7 @@ gtk_cmoption_menu_paint (GtkWidget    *widget,
 	      button_area.height += 2 * (props.focus_width + props.focus_pad);
 	    }
 	    
-	  gtk_paint_focus (style, window, gtkut_widget_get_state (widget),
+	  gtk_paint_focus (style, window, gtk_widget_get_state (widget),
 			   area, widget, "button",
 			   button_area.x, 
 			   button_area.y, 
@@ -604,7 +604,7 @@ gtk_cmoption_menu_expose (GtkWidget      *widget,
   cm_return_val_if_fail (GTK_IS_CMOPTION_MENU (widget), FALSE);
   cm_return_val_if_fail (event != NULL, FALSE);
 
-  if (gtkut_widget_is_drawable (widget))
+  if (gtk_widget_is_drawable (widget))
     {
       gtk_cmoption_menu_paint (widget, &event->area);
 
@@ -739,7 +739,7 @@ gtk_cmoption_menu_select_first_sensitive (GtkCMOptionMenu *option_menu)
 
       while (children)
 	{
-	  if (gtkut_widget_get_sensitive (children->data))
+	  if (gtk_widget_get_sensitive (children->data))
 	    {
 	      gtk_cmoption_menu_set_history (option_menu, index);
 	      return;
@@ -760,8 +760,8 @@ gtk_cmoption_menu_item_state_changed_cb (GtkWidget      *widget,
 {
   GtkWidget *child = gtk_bin_get_child (GTK_BIN (option_menu));
 
-  if (child && gtkut_widget_get_sensitive (child) != gtkut_widget_is_sensitive (widget))
-    gtk_widget_set_sensitive (child, gtkut_widget_is_sensitive (widget));
+  if (child && gtk_widget_get_sensitive (child) != gtk_widget_is_sensitive (widget))
+    gtk_widget_set_sensitive (child, gtk_widget_is_sensitive (widget));
 }
 
 static void
@@ -803,7 +803,7 @@ gtk_cmoption_menu_update_contents (GtkCMOptionMenu *option_menu)
 	  child = gtk_bin_get_child (GTK_BIN (option_menu->menu_item));
 	  if (child)
 	    {
-	      if (!gtkut_widget_is_sensitive (option_menu->menu_item))
+	      if (!gtk_widget_is_sensitive (option_menu->menu_item))
 		gtk_widget_set_sensitive (child, FALSE);
 	      gtk_widget_reparent (child, GTK_WIDGET (option_menu));
 	    }
@@ -818,7 +818,7 @@ gtk_cmoption_menu_update_contents (GtkCMOptionMenu *option_menu)
 	  gtk_widget_size_allocate (GTK_WIDGET (option_menu),
 				    &allocation);
 
-	  if (gtkut_widget_is_drawable (GTK_WIDGET(option_menu)))
+	  if (gtk_widget_is_drawable (GTK_WIDGET(option_menu)))
 	    gtk_widget_queue_draw (GTK_WIDGET (option_menu));
 	}
 
@@ -879,7 +879,7 @@ gtk_cmoption_menu_calc_size (GtkCMOptionMenu *option_menu)
 	  child = children->data;
 	  children = children->next;
 
-	  if (gtkut_widget_get_visible (child))
+	  if (gtk_widget_get_visible (child))
 	    {
 	      GtkWidget *inner = gtk_bin_get_child (GTK_BIN (child));
 
@@ -948,7 +948,7 @@ gtk_cmoption_menu_position (GtkMenu  *menu,
       if (active == child)
 	break;
 
-      if (gtkut_widget_get_visible (child))
+      if (gtk_widget_get_visible (child))
 	{
 	  gtk_widget_get_child_requisition (child, &requisition);
 	  menu_ypos -= requisition.height;
@@ -1048,8 +1048,8 @@ gtk_cmoption_menu_scroll_event (GtkWidget          *widget,
 
 	  l = g_list_nth (children, index);
 	  item = GTK_MENU_ITEM (l->data);
-	  if (gtkut_widget_get_visible (GTK_WIDGET(item)) && 
-	      gtkut_widget_is_sensitive (GTK_WIDGET(item)))
+	  if (gtk_widget_get_visible (GTK_WIDGET(item)) && 
+	      gtk_widget_is_sensitive (GTK_WIDGET(item)))
 	    {
 	      gtk_cmoption_menu_set_history (option_menu, index);
 	      gtk_menu_item_activate (GTK_MENU_ITEM (item));

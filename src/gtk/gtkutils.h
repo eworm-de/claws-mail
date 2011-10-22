@@ -152,18 +152,6 @@ void gtkut_widget_init			(void);
 void gtkut_widget_set_app_icon		(GtkWidget	*widget);
 void gtkut_widget_set_composer_icon	(GtkWidget	*widget);
 
-gboolean gtkut_widget_get_app_paintable	(GtkWidget	*widget);
-gboolean gtkut_widget_get_can_focus	(GtkWidget	*widget);
-gboolean gtkut_widget_get_has_window	(GtkWidget	*widget);
-gboolean gtkut_widget_get_mapped	(GtkWidget	*widget);
-gboolean gtkut_widget_get_realized	(GtkWidget	*widget);
-gboolean gtkut_widget_get_sensitive	(GtkWidget	*widget);
-GtkStateType gtkut_widget_get_state	(GtkWidget	*widget);
-gboolean gtkut_widget_get_visible	(GtkWidget	*widget);
-gboolean gtkut_widget_has_grab		(GtkWidget	*widget);
-gboolean gtkut_widget_has_focus		(GtkWidget	*widget);
-gboolean gtkut_widget_is_drawable	(GtkWidget	*widget);
-gboolean gtkut_widget_is_sensitive	(GtkWidget	*widget);
 void gtkut_widget_set_mapped            (GtkWidget *widget, gboolean mapped);
 void gtkut_widget_set_realized          (GtkWidget *widget, gboolean realized);
 void gtkut_widget_set_can_default       (GtkWidget *widget, gboolean can_default);
@@ -229,8 +217,6 @@ claws_input_add    (gint	      source,
 		    gpointer	      data,
 		    gboolean          is_sock);
 
-#if GTK_CHECK_VERSION(2,12,0)
-#define CLAWS_TIP_DECL() {}
 #define CLAWS_SET_TIP(widget,tip) { 					\
 	if (tip != NULL)						\
 		gtk_widget_set_tooltip_text(GTK_WIDGET(widget), tip); 	\
@@ -238,15 +224,6 @@ claws_input_add    (gint	      source,
 		gtk_widget_set_has_tooltip(GTK_WIDGET(widget), FALSE);	\
 }
 
-#else
-#define CLAWS_TIP_DECL() \
-	GtkTooltips *tips = gtk_tooltips_new();
-
-#define CLAWS_SET_TIP(widget,tip) { 				\
-	gtk_tooltips_set_tip(GTK_TOOLTIPS(tips), widget, 	\
-			    tip, NULL);				\
-}
-#endif
 #if !GTK_CHECK_VERSION(2,22,0)
 #define gdk_drag_context_get_selected_action(x) ((x)->action)
 #define gdk_drag_context_get_actions(x) ((x)->actions)
@@ -256,9 +233,22 @@ claws_input_add    (gint	      source,
 #endif
 #if !GTK_CHECK_VERSION(2,20,0)
 #define gtk_widget_get_requisition(x,r) (*(r) = (x)->requisition)
+#define gtk_statusbar_get_message_area(x) ((x)->label)
+#define gtk_widget_get_realized(x) (GTK_WIDGET_REALIZED(x))
+#define gtk_widget_get_mapped(x) (GTK_WIDGET_MAPPED(x))
 #endif
 #if !GTK_CHECK_VERSION(2,18,0)
-#define gtk_widget_get_allocation(x,a) (*(a) = (x)->allocation)
-#define gtk_widget_get_state(x) ((x)->state)
+#define gtk_widget_has_focus(x) (GTK_WIDGET_HAS_FOCUS(x))
+#define gtk_widget_get_can_focus(x) (GTK_WIDGET_CAN_FOCUS(x))
+#define gtk_widget_has_grab(x) (GTK_WIDGET_HAS_GRAB(x))
+#define gtk_widget_get_visible(x) (GTK_WIDGET_VISIBLE(x))
+#define gtk_widget_get_realized(x) (GTK_WIDGET_REALIZED(x))
+#define gtk_widget_is_sensitive(x) (GTK_WIDGET_IS_SENSITIVE(x))
+#define gtk_widget_get_sensitive(x) (GTK_WIDGET_SENSITIVE(x))
+#define gtk_widget_is_drawable(x) (GTK_WIDGET_DRAWABLE(x))
+#define gtk_widget_get_state(x) (GTK_WIDGET_STATE(x))
+#define gtk_widget_get_mapped(x) (GTK_WIDGET_MAPPED(x))
+#define gtk_widget_get_has_window(x) (!(GTK_WIDGET_NO_WINDOW(x)))
+#define gtk_widget_get_app_paintable(x) (GTK_WIDGET_APP_PAINTABLE(x))
 #endif
 #endif /* __GTKUTILS_H__ */

@@ -1391,7 +1391,6 @@ static void receive_create_widget_func(PrefsPage * _page,
 	GtkWidget *maxarticle_label;
 	GtkWidget *maxarticle_spinbtn;
 	GtkAdjustment *maxarticle_spinbtn_adj;
-	CLAWS_TIP_DECL();
 
 	vbox1 = gtk_vbox_new (FALSE, VSPACING);
 	gtk_widget_show (vbox1);
@@ -2404,7 +2403,6 @@ static void ssl_create_widget_func(PrefsPage * _page,
 	GtkWidget *hbox;
 	GtkWidget *hbox_spc;
 	GtkWidget *label;
-	CLAWS_TIP_DECL();
 
 	vbox1 = gtk_vbox_new (FALSE, VSPACING);
 	gtk_widget_show (vbox1);
@@ -2638,8 +2636,6 @@ static void advanced_create_widget_func(PrefsPage * _page,
 	GtkWidget *trash_folder_checkbtn;
 	GtkWidget *trash_folder_entry;
 	GtkWidget *imap_use_trash_checkbtn;
-
-	CLAWS_TIP_DECL();
 	GtkSizeGroup *size_group = gtk_size_group_new(GTK_SIZE_GROUP_HORIZONTAL);
 #define PACK_HBOX(hbox) \
 	{ \
@@ -4602,7 +4598,7 @@ static void prefs_account_nntpauth_toggled(GtkToggleButton *button,
 {
 	gboolean auth;
 
-	if (!gtkut_widget_get_sensitive (GTK_WIDGET (button)))
+	if (!gtk_widget_get_sensitive (GTK_WIDGET (button)))
 		return;
 	auth = gtk_toggle_button_get_active (button);
 	gtk_widget_set_sensitive(basic_page.uid_label,  auth);

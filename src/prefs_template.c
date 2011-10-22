@@ -184,7 +184,6 @@ static void prefs_template_window_create(void)
 	GtkWidget         *ok_btn;
 	static GdkGeometry geometry;
 	gint i;
-	CLAWS_TIP_DECL();
 
 	debug_print("Creating templates configuration window...\n");
 

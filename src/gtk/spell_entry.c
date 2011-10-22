@@ -450,7 +450,7 @@ void claws_spell_entry_recheck_all(ClawsSpellEntry *entry)
 	layout = gtk_entry_get_layout(GTK_ENTRY(entry));
 	pango_layout_set_attributes(layout, entry->priv->attr_list);
 
-	if (gtkut_widget_get_realized(GTK_WIDGET(entry))) {
+	if (gtk_widget_get_realized(GTK_WIDGET(entry))) {
 		rect.x = 0; rect.y = 0;
 		rect.width  = GTK_WIDGET(entry)->allocation.width;
 		rect.height = GTK_WIDGET(entry)->allocation.height;

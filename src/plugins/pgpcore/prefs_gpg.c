@@ -88,7 +88,6 @@ static void prefs_gpg_create_widget_func(PrefsPage *_page,
 	GtkWidget *spinbtn_store_passphrase;
 	GtkWidget *label_expire2;
 	GtkWidget *frame_passphrase;
-	CLAWS_TIP_DECL();
 
 	vbox1 = gtk_vbox_new (FALSE, VSPACING);
 	gtk_widget_show (vbox1);

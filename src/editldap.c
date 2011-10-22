@@ -404,7 +404,6 @@ static void addressbook_edit_ldap_page_basic( gint pageNum, gchar *pageLbl ) {
 	GtkWidget *entry_baseDN;
 	GtkWidget *check_btn;
 	GtkWidget *lookdn_btn;
-	CLAWS_TIP_DECL();
 	gint top;
 
 	vbox = gtk_vbox_new( FALSE, 8 );
@@ -555,7 +554,6 @@ static void addressbook_edit_ldap_page_search( gint pageNum, gchar *pageLbl ) {
 	GtkWidget *check_dynsearch;
 	GtkWidget *check_matchoption;
 	GtkWidget *reset_btn;
-	CLAWS_TIP_DECL();
 	gint top;
 
 	vbox = gtk_vbox_new( FALSE, 8 );
@@ -679,7 +677,6 @@ static void addressbook_edit_ldap_page_extended( gint pageNum, gchar *pageLbl ) 
 	GtkWidget *spinbtn_timeout;
 	GtkAdjustment *spinbtn_maxentry_adj;
 	GtkWidget *spinbtn_maxentry;
-	CLAWS_TIP_DECL();
 	gint top;
 
 	vbox = gtk_vbox_new( FALSE, 8 );

@@ -461,7 +461,6 @@ static void prefs_other_create_widget(PrefsPage *_page, GtkWindow *window,
 	GtkWidget *flush_metadata_safer_radiobtn;
 
 	gchar *shred_binary = NULL;
-	CLAWS_TIP_DECL();
 
 	vbox1 = gtk_vbox_new (FALSE, VSPACING);
 	gtk_widget_show (vbox1);

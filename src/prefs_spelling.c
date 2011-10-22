@@ -116,8 +116,6 @@ static void prefs_spelling_create_widget(PrefsPage *_page, GtkWindow *window, gp
 	GtkWidget *misspelled_hbox;
 	GtkWidget *misspelled_colorbtn;
 
-	CLAWS_TIP_DECL();
-
 	vbox1 = gtk_vbox_new (FALSE, VSPACING);
 	gtk_widget_show (vbox1);
 	gtk_container_set_border_width (GTK_CONTAINER (vbox1), VBOX_BORDER);

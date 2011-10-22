@@ -253,7 +253,7 @@ static gint gtk_vscrollbutton_button_press(GtkWidget *widget,
 					   GdkEventButton *event,
 					   GtkVScrollbutton *scrollbutton)
 {
-    if (!gtkut_widget_has_focus(widget))
+    if (!gtk_widget_has_focus(widget))
 	gtk_widget_grab_focus(widget);
 
     if (scrollbutton->button == 0) {
@@ -275,7 +275,7 @@ static gint gtk_vscrollbutton_button_release(GtkWidget *widget,
 					     GdkEventButton *event,
 					     GtkVScrollbutton *scrollbutton)
 {
-    if (!gtkut_widget_has_focus(widget))
+    if (!gtk_widget_has_focus(widget))
 	gtk_widget_grab_focus(widget);
 
     if (scrollbutton->button == event->button) {
@@ -420,7 +420,7 @@ static void gtk_vscrollbutton_set_sensitivity   (GtkAdjustment    *adjustment,
 						 GtkVScrollbutton *scrollbutton)
 {
 	gfloat value;
-	if (!gtkut_widget_get_realized(GTK_WIDGET(scrollbutton))) return;
+	if (!gtk_widget_get_realized(GTK_WIDGET(scrollbutton))) return;
 	if (scrollbutton->button != 0) return; /* not while something is pressed */
 	
 	value = gtk_adjustment_get_value(adjustment);

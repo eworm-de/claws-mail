@@ -157,7 +157,6 @@ static void create_dillo_prefs_page(PrefsPage *page,
 	GtkWidget *whitelist_ab_folder_combo;
 	GtkWidget *whitelist_ab_select_btn;
 	GtkWidget *hbox_whitelist, *spacer;
-	CLAWS_TIP_DECL();
 
         vbox = gtk_vbox_new(FALSE, 3);
         gtk_container_set_border_width(GTK_CONTAINER(vbox), VBOX_BORDER);

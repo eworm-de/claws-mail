@@ -509,7 +509,7 @@ static gint send_send_data_progressive(Session *session, guint cur_len,
 		(dialog->dialog, (total_len == 0) ? 0 : (gfloat)cur_len / (gfloat)total_len);
 
 	if (mainwin) {
-		if (!gtkut_widget_get_visible(mainwin->progressbar))	
+		if (!gtk_widget_get_visible(mainwin->progressbar))	
 			gtk_widget_show(mainwin->progressbar);
 		gtk_progress_bar_set_fraction
 			(GTK_PROGRESS_BAR(mainwin->progressbar),

@@ -7080,7 +7080,6 @@ static Compose *compose_create(PrefsAccount *account,
 	GtkWidget *text;
 	GtkTextBuffer *buffer;
 	GtkClipboard *clipboard;
-	CLAWS_TIP_DECL();
 
 	UndoMain *undostruct;
 
@@ -9988,7 +9987,7 @@ static void compose_cut_cb(GtkAction *action, gpointer data)
 	Compose *compose = (Compose *)data;
 	if (compose->focused_editable 
 #ifndef GENERIC_UMPC
-	    && gtkut_widget_has_focus(compose->focused_editable)
+	    && gtk_widget_has_focus(compose->focused_editable)
 #endif
 	    )
 		entry_cut_clipboard(compose->focused_editable);
@@ -9999,7 +9998,7 @@ static void compose_copy_cb(GtkAction *action, gpointer data)
 	Compose *compose = (Compose *)data;
 	if (compose->focused_editable 
 #ifndef GENERIC_UMPC
-	    && gtkut_widget_has_focus(compose->focused_editable)
+	    && gtk_widget_has_focus(compose->focused_editable)
 #endif
 	    )
 		entry_copy_clipboard(compose->focused_editable);
@@ -10012,14 +10011,14 @@ static void compose_paste_cb(GtkAction *action, gpointer data)
 	GtkTextBuffer *buffer;
 	BLOCK_WRAP();
 	if (compose->focused_editable &&
-	    gtkut_widget_has_focus(compose->focused_editable))
+	    gtk_widget_has_focus(compose->focused_editable))
 		entry_paste_clipboard(compose, compose->focused_editable, 
 				prefs_common.linewrap_pastes,
 				GDK_SELECTION_CLIPBOARD, NULL);
 	UNBLOCK_WRAP();
 
 #ifdef USE_ENCHANT
-	if (gtkut_widget_has_focus(compose->text) &&
+	if (gtk_widget_has_focus(compose->text) &&
 	    compose->gtkaspell && 
             compose->gtkaspell->check_while_typing)
 	    	gtkaspell_highlight_all(compose->gtkaspell);
@@ -10032,7 +10031,7 @@ static void compose_paste_as_quote_cb(GtkAction *action, gpointer data)
 	gint wrap_quote = prefs_common.linewrap_quote;
 	if (compose->focused_editable 
 #ifndef GENERIC_UMPC
-	    && gtkut_widget_has_focus(compose->focused_editable)
+	    && gtk_widget_has_focus(compose->focused_editable)
 #endif
 	    ) {
 		/* let text_insert() (called directly or at a later time
@@ -10061,7 +10060,7 @@ static void compose_paste_no_wrap_cb(GtkAction *action, gpointer data)
 	BLOCK_WRAP();
 	if (compose->focused_editable 
 #ifndef GENERIC_UMPC
-	    && gtkut_widget_has_focus(compose->focused_editable)
+	    && gtk_widget_has_focus(compose->focused_editable)
 #endif
 	    )
 		entry_paste_clipboard(compose, compose->focused_editable, FALSE,
@@ -10069,7 +10068,7 @@ static void compose_paste_no_wrap_cb(GtkAction *action, gpointer data)
 	UNBLOCK_WRAP();
 
 #ifdef USE_ENCHANT
-	if (gtkut_widget_has_focus(compose->text) &&
+	if (gtk_widget_has_focus(compose->text) &&
 	    compose->gtkaspell && 
             compose->gtkaspell->check_while_typing)
 	    	gtkaspell_highlight_all(compose->gtkaspell);
@@ -10084,7 +10083,7 @@ static void compose_paste_wrap_cb(GtkAction *action, gpointer data)
 	BLOCK_WRAP();
 	if (compose->focused_editable 
 #ifndef GENERIC_UMPC
-	    && gtkut_widget_has_focus(compose->focused_editable)
+	    && gtk_widget_has_focus(compose->focused_editable)
 #endif
 	    )
 		entry_paste_clipboard(compose, compose->focused_editable, TRUE,
@@ -10092,7 +10091,7 @@ static void compose_paste_wrap_cb(GtkAction *action, gpointer data)
 	UNBLOCK_WRAP();
 
 #ifdef USE_ENCHANT
-	if (gtkut_widget_has_focus(compose->text) &&
+	if (gtk_widget_has_focus(compose->text) &&
 	    compose->gtkaspell &&
             compose->gtkaspell->check_while_typing)
 	    	gtkaspell_highlight_all(compose->gtkaspell);
@@ -10104,7 +10103,7 @@ static void compose_allsel_cb(GtkAction *action, gpointer data)
 	Compose *compose = (Compose *)data;
 	if (compose->focused_editable 
 #ifndef GENERIC_UMPC
-	    && gtkut_widget_has_focus(compose->focused_editable)
+	    && gtk_widget_has_focus(compose->focused_editable)
 #endif
 	    )
 		entry_allsel(compose->focused_editable);
@@ -10408,7 +10407,7 @@ static void compose_advanced_action_cb(GtkAction *gaction, gpointer data)
 		{textview_delete_to_line_end}
 	};
 
-	if (!gtkut_widget_has_focus(GTK_WIDGET(text))) return;
+	if (!gtk_widget_has_focus(GTK_WIDGET(text))) return;
 
 	if (action >= COMPOSE_CALL_ADVANCED_ACTION_MOVE_BEGINNING_OF_LINE &&
 	    action <= COMPOSE_CALL_ADVANCED_ACTION_DELETE_TO_LINE_END) {
@@ -10991,7 +10990,7 @@ static void compose_check_all(GtkAction *action, gpointer data)
 	if (!compose->gtkaspell)
 		return;
 		
-	if (gtkut_widget_has_focus(compose->subject_entry))
+	if (gtk_widget_has_focus(compose->subject_entry))
 		claws_spell_entry_check_all(
 			CLAWS_SPELL_ENTRY(compose->subject_entry));		
 	else
@@ -11016,7 +11015,7 @@ static void compose_check_backwards(GtkAction *action, gpointer data)
 		return;
 	}
 
-	if (gtkut_widget_has_focus(compose->subject_entry))
+	if (gtk_widget_has_focus(compose->subject_entry))
 		claws_spell_entry_check_backwards(
 			CLAWS_SPELL_ENTRY(compose->subject_entry));
 	else
@@ -11031,7 +11030,7 @@ static void compose_check_forwards_go(GtkAction *action, gpointer data)
 		return;
 	}
 
-	if (gtkut_widget_has_focus(compose->subject_entry))
+	if (gtk_widget_has_focus(compose->subject_entry))
 		claws_spell_entry_check_forwards_go(
 			CLAWS_SPELL_ENTRY(compose->subject_entry));
 	else

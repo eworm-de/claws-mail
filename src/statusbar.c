@@ -65,11 +65,7 @@ GtkWidget *statusbar_create(void)
 					  FALSE);
 #endif
 	gtk_container_set_border_width(GTK_CONTAINER(statusbar), 1);
-#if GTK_CHECK_VERSION (2, 19, 1)
 	child = gtk_statusbar_get_message_area(GTK_STATUSBAR(statusbar));
-#else
-	child = GTK_STATUSBAR(statusbar)->label;
-#endif
 	parent = gtk_widget_get_parent(child);
 	gtk_container_remove(GTK_CONTAINER(parent), g_object_ref(child));
 	hbox = gtk_hbox_new(FALSE, 0);
@@ -255,7 +251,7 @@ void statusbar_progress_all (gint done, gint total, gint step)
 		gtk_progress_bar_set_text(progressbar, buf);
 		gtk_progress_bar_set_fraction(progressbar,
 			 (total == 0) ? 0 : (gfloat)done / (gfloat)total);
-		if (!gtkut_widget_get_visible(GTK_WIDGET(progressbar)))
+		if (!gtk_widget_get_visible(GTK_WIDGET(progressbar)))
 			gtk_widget_show(GTK_WIDGET(progressbar));
 	} else if (total == 0) {
 		gtk_progress_bar_set_text(progressbar, "");

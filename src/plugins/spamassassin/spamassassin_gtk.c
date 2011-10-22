@@ -254,7 +254,6 @@ static void spamassassin_create_widget_func(PrefsPage * _page,
 	GtkListStore *store;
 	GtkCellRenderer *renderer;
 	GtkTreeIter iter;
-	CLAWS_TIP_DECL();
 
 	vbox1 = gtk_vbox_new (FALSE, VSPACING);
 	gtk_widget_show (vbox1);

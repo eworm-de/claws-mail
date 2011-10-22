@@ -1262,7 +1262,7 @@ static gboolean address_completion_complete_address_in_entry(GtkEntry *entry,
 
 	cm_return_val_if_fail(entry != NULL, FALSE);
 
-	if (!gtkut_widget_has_focus(GTK_WIDGET(entry))) return FALSE;
+	if (!gtk_widget_has_focus(GTK_WIDGET(entry))) return FALSE;
 
 	/* get an address component from the cursor */
 	searchTerm = get_address_from_edit( entry, &cursor_pos );

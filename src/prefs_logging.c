@@ -130,7 +130,6 @@ static void prefs_logging_create_widget(PrefsPage *_page, GtkWindow *window,
 	GtkWidget *checkbtn_log_error;
 	GtkWidget *checkbtn_log_status;
 	GtkSizeGroup *log_size_group;
-	CLAWS_TIP_DECL();
 	
 	vbox1 = gtk_vbox_new (FALSE, VSPACING);
 	gtk_widget_show (vbox1);

@@ -275,7 +275,6 @@ static void addrgather_page_fields(gint pageNum, gchar *pageLbl)
 	GtkWidget *checkRecurse;
 	gint top;
 	gint i;
-	CLAWS_TIP_DECL();
 
 	/* Container */
 	vbox = gtk_vbox_new(FALSE, 6);

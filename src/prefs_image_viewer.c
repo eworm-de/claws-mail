@@ -58,7 +58,6 @@ static void imageviewer_create_widget_func(PrefsPage * _page,
 	GtkWidget *resize_img;
 	GtkWidget *inline_img;
 	GtkWidget *print_imgs;
-	CLAWS_TIP_DECL();
 
 	table = gtk_table_new(4, 1, FALSE);
 	gtk_widget_show(table);

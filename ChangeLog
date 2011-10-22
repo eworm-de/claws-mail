@@ -1,3 +1,60 @@
+2011-10-22 [colin]	3.7.10cvs41
+
+	* src/account.c
+	* src/addr_compl.c
+	* src/addrgather.c
+	* src/compose.c
+	* src/editldap.c
+	* src/expldifdlg.c
+	* src/folderview.c
+	* src/grouplistdialog.c
+	* src/headerview.c
+	* src/importldif.c
+	* src/main.c
+	* src/mainwindow.c
+	* src/mimeview.c
+	* src/noticeview.c
+	* src/prefs_account.c
+	* src/prefs_actions.c
+	* src/prefs_ext_prog.c
+	* src/prefs_filtering.c
+	* src/prefs_folder_item.c
+	* src/prefs_image_viewer.c
+	* src/prefs_logging.c
+	* src/prefs_msg_colors.c
+	* src/prefs_other.c
+	* src/prefs_send.c
+	* src/prefs_spelling.c
+	* src/prefs_summaries.c
+	* src/prefs_template.c
+	* src/printing.c
+	* src/quote_fmt.c
+	* src/send_message.c
+	* src/statusbar.c
+	* src/summary_search.c
+	* src/summaryview.c
+	* src/wizard.c
+	* src/gtk/gtkcmclist.c
+	* src/gtk/gtkcmctree.c
+	* src/gtk/gtkcmoptionmenu.c
+	* src/gtk/gtksctree.c
+	* src/gtk/gtkutils.c
+	* src/gtk/gtkutils.h
+	* src/gtk/gtkvscrollbutton.c
+	* src/gtk/inputdialog.c
+	* src/gtk/pluginwindow.c
+	* src/gtk/quicksearch.c
+	* src/gtk/spell_entry.c
+	* src/plugins/bogofilter/bogofilter_gtk.c
+	* src/plugins/dillo_viewer/dillo_prefs.c
+	* src/plugins/pgpcore/prefs_gpg.c
+	* src/plugins/spamassassin/spamassassin_gtk.c
+	* src/plugins/trayicon/trayicon.c
+	* src/plugins/trayicon/trayicon_prefs.c
+		Remove all possible #if GTK_CHECK_VERSION() checks,
+		and make Claws build with GTK+2.16 (untested right
+		now), as the Gpg4Win project uses GTK+2.16 currently.
+
 2011-10-22 [colin]	3.7.10cvs40
 
 	* src/gtk/gtkutils.h

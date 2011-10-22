@@ -1093,11 +1093,7 @@ void mainwin_accel_changed_cb (GtkAccelGroup *accelgroup, guint keyval, GdkModif
 			
 			if (keyval == GDK_KEY_BackSpace) {
 				const gchar *accel_path;
-#if GTK_CHECK_VERSION(2,14,0)
 				accel_path = gtk_menu_item_get_accel_path(item);
-#else
-				accel_path = GTK_MENU_ITEM(item)->accel_path;
-#endif
 				keyval = 0; modifier = 0;
 				gtk_accel_map_change_entry (accel_path, keyval, modifier, TRUE);
 			}
@@ -1546,7 +1542,6 @@ MainWindow *main_window_create()
 	GtkWidget *offline_pixmap;
 	GtkWidget *warning_icon;
 	GtkWidget *warning_btn;
-	CLAWS_TIP_DECL();
 #endif
 	GtkWidget *online_switch;
 	GtkWidget *offline_switch;
@@ -3610,7 +3605,7 @@ void main_window_popup(MainWindow *mainwin)
 {
 	static gboolean first_start = TRUE;
 
-	if (!gtkut_widget_get_visible(GTK_WIDGET(mainwin->window)))
+	if (!gtk_widget_get_visible(GTK_WIDGET(mainwin->window)))
 		main_window_show(mainwin);
 
 	if (prefs_common.mainwin_maximised)
@@ -4868,7 +4863,7 @@ static void allsel_cb(GtkAction *action, gpointer data)
 	MessageView *msgview = mainwin->messageview;
 
 	if (messageview_is_visible(msgview) &&
-		 (gtkut_widget_has_focus(msgview->mimeview->textview->text)))
+		 (gtk_widget_has_focus(msgview->mimeview->textview->text)))
 		messageview_select_all(mainwin->messageview);
 	else
 		summary_select_all(mainwin->summaryview);

@@ -345,7 +345,6 @@ static void prefs_summaries_create_widget(PrefsPage *_page, GtkWindow *window,
 	GtkWidget *button_edit_actions;
 	GtkWidget *radio_mark_as_read_on_select;
 	GtkWidget *radio_mark_as_read_on_new_win;
-	CLAWS_TIP_DECL();
 
 	vbox1 = gtk_vbox_new (FALSE, VSPACING);
 	gtk_widget_show (vbox1);

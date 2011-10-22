@@ -424,7 +424,6 @@ static gboolean migrate_old_config(const gchar *old_cfg_dir, const gchar *new_cf
 	gint r = 0;
 	GtkWidget *window = NULL;
 	GtkWidget *keep_backup_chk;
-	CLAWS_TIP_DECL();
 	gboolean backup = TRUE;
 
 	keep_backup_chk = gtk_check_button_new_with_label (_("Keep old configuration"));
@@ -1181,33 +1180,6 @@ int main(int argc, char *argv[])
 	if (!g_thread_supported()) {
 		g_error(_("g_thread is not supported by glib.\n"));
 	}
-
-	/* check that we're not on a too recent/old gtk+ */
-#if GTK_CHECK_VERSION(2, 9, 0)
-	if (gtk_check_version(2, 9, 0) != NULL) {
-		alertpanel_error(_("Claws Mail has been compiled with "
-				   "a more recent GTK+ library than is "
-				   "currently available. This will cause "
-				   "crashes. You need to upgrade GTK+ or "
-				   "recompile Claws Mail."));
-#ifdef G_OS_WIN32
-		win32_close_log();
-#endif
-		exit(1);
-	}
-#else
-	if (gtk_check_version(2, 9, 0) == NULL) {
-		alertpanel_error(_("Claws Mail has been compiled with "
-				   "an older GTK+ library than is "
-				   "currently available. This will cause "
-				   "crashes. You need to recompile "
-				   "Claws Mail."));
-#ifdef G_OS_WIN32
-		win32_close_log();
-#endif
-		exit(1);
-	}
-#endif	
 
 #ifdef G_OS_WIN32
 	CHDIR_EXEC_CODE_RETURN_VAL_IF_FAIL(get_home_dir(), 1, win32_close_log(););

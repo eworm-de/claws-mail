@@ -695,7 +695,6 @@ QuickSearch *quicksearch_new()
 	GtkWidget *clear_search;
 	GtkWidget *search_condition_expression;
 	GtkWidget *menuitem;
-	CLAWS_TIP_DECL();
 	GtkWidget *vbox;
 
 	quicksearch = quicksearch_new_nogui();

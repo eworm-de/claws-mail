@@ -293,7 +293,6 @@ void pluginwindow_create()
 	GtkWidget *vbox3;
 	GtkWidget *hbox_info;
 	static GdkGeometry geometry;
-	CLAWS_TIP_DECL();	
 
 	debug_print("Creating plugins window...\n");
 

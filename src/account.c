@@ -1518,7 +1518,6 @@ static void account_create_list_view_columns(GtkWidget *list_view)
 {
 	GtkTreeViewColumn *column;
 	GtkCellRenderer *renderer;
-	CLAWS_TIP_DECL();
 
 	renderer = gtk_cell_renderer_toggle_new();
 	g_object_set(renderer, 

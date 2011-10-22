@@ -238,7 +238,7 @@ static gboolean trayicon_close_hook(gpointer source, gpointer data)
 			*close_allowed = FALSE;
 			focused_widget = gtk_window_get_focus(GTK_WINDOW(mainwin->window));
 			
-			if (gtkut_widget_get_visible(GTK_WIDGET(mainwin->window)))
+			if (gtk_widget_get_visible(GTK_WIDGET(mainwin->window)))
 				main_window_hide(mainwin);
 		}
 	}
@@ -250,7 +250,7 @@ static gboolean trayicon_got_iconified_hook(gpointer source, gpointer data)
 	MainWindow *mainwin = mainwindow_get_mainwindow();
 
 	if (trayicon_prefs.hide_when_iconified
-			&& gtkut_widget_get_visible(GTK_WIDGET(mainwin->window))
+			&& gtk_widget_get_visible(GTK_WIDGET(mainwin->window))
 			&& !gtk_window_get_skip_taskbar_hint(GTK_WINDOW(mainwin->window))) {
 		focused_widget = gtk_window_get_focus(GTK_WINDOW(mainwin->window));
 		gtk_window_set_skip_taskbar_hint(GTK_WINDOW(mainwin->window), TRUE);
@@ -283,7 +283,7 @@ static gboolean click_cb(GtkWidget * widget,
 
 	switch (event->button) {
 	case 1:
-		if (gtkut_widget_get_visible(GTK_WIDGET(mainwin->window))) {
+		if (gtk_widget_get_visible(GTK_WIDGET(mainwin->window))) {
 			if ((gdk_window_get_state(gtk_widget_get_window(
 				GTK_WIDGET(mainwin->window)))&GDK_WINDOW_STATE_ICONIFIED)
 					|| mainwindow_is_obscured()) {
@@ -348,9 +348,7 @@ static void create_trayicon()
 {
 	GtkActionGroup *action_group;
 	trayicon = gtk_status_icon_new();
-#if GTK_CHECK_VERSION(2,18,0)
 	gtk_status_icon_set_title(GTK_STATUS_ICON(trayicon), _("Claws Mail"));
-#endif
 	g_signal_connect(G_OBJECT(trayicon), "button-press-event",
 		G_CALLBACK(click_cb), NULL);
 
@@ -433,7 +431,7 @@ int plugin_init(gchar **error)
 	if (trayicon_prefs.hide_at_startup && claws_is_starting()) {
 		MainWindow *mainwin = mainwindow_get_mainwindow();
 
-		if (gtkut_widget_get_visible(GTK_WIDGET(mainwin->window)))
+		if (gtk_widget_get_visible(GTK_WIDGET(mainwin->window)))
 			main_window_hide(mainwin);
 		main_set_show_at_startup(FALSE);
 	}
