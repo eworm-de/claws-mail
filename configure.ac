@@ -12,7 +12,7 @@ MINOR_VERSION=7
 MICRO_VERSION=10
 INTERFACE_AGE=0
 BINARY_AGE=0
-EXTRA_VERSION=39
+EXTRA_VERSION=40
 EXTRA_RELEASE=
 EXTRA_GTK2_VERSION=
 
@@ -475,7 +475,7 @@ if test x"$ac_cv_enable_gtk3" = x"yes"; then
 	AM_CONDITIONAL(GTK3, true)
 	AM_CONDITIONAL(GTK2, false)
 else
-	PKG_CHECK_MODULES(GTK, gtk+-2.0 >= 2.10)
+	PKG_CHECK_MODULES(GTK, gtk+-2.0 >= 2.18)
 
 	dnl --disable-deprecated switch for GTK2 purification
 	AC_ARG_ENABLE(deprecated, [  --disable-deprecated  disable deprecated GTK functions. ],

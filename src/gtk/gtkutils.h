@@ -254,4 +254,11 @@ claws_input_add    (gint	      source,
 #define gdk_drag_context_get_suggested_action(x) ((x)->suggested_action)
 #define gtk_button_get_event_window(x) ((x)->event_window)
 #endif
+#if !GTK_CHECK_VERSION(2,20,0)
+#define gtk_widget_get_requisition(x,r) (*(r) = (x)->requisition)
+#endif
+#if !GTK_CHECK_VERSION(2,18,0)
+#define gtk_widget_get_allocation(x,a) (*(a) = (x)->allocation)
+#define gtk_widget_get_state(x) ((x)->state)
+#endif
 #endif /* __GTKUTILS_H__ */

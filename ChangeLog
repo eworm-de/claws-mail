@@ -1,3 +1,9 @@
+2011-10-22 [colin]	3.7.10cvs40
+
+	* src/gtk/gtkutils.h
+	* configure.ac
+		Fix (hopefully) build with GTK+ 2.18.
+
 2011-10-20 [paul]	3.7.10cvs39
 
 	* AUTHORS
