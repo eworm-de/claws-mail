@@ -238,6 +238,8 @@ claws_input_add    (gint	      source,
 #define gtk_widget_get_mapped(x) (GTK_WIDGET_MAPPED(x))
 #endif
 #if !GTK_CHECK_VERSION(2,18,0)
+#define gtk_widget_get_allocation(x,a) (*(a) = (x)->allocation)
+#define gtk_widget_set_allocation(x,a) ((x)->allocation = *(a))
 #define gtk_widget_has_focus(x) (GTK_WIDGET_HAS_FOCUS(x))
 #define gtk_widget_get_can_focus(x) (GTK_WIDGET_CAN_FOCUS(x))
 #define gtk_widget_has_grab(x) (GTK_WIDGET_HAS_GRAB(x))
@@ -250,5 +252,11 @@ claws_input_add    (gint	      source,
 #define gtk_widget_get_mapped(x) (GTK_WIDGET_MAPPED(x))
 #define gtk_widget_get_has_window(x) (!(GTK_WIDGET_NO_WINDOW(x)))
 #define gtk_widget_get_app_paintable(x) (GTK_WIDGET_APP_PAINTABLE(x))
+#define gtk_widget_set_window(x,w) {			\
+	if ((x)->window != w) {				\
+		(x)->window = w;			\
+		g_object_notify (G_OBJECT(x), "window");\
+	}						\
+}
 #endif
 #endif /* __GTKUTILS_H__ */

@@ -1,3 +1,10 @@
+2011-10-22 [colin]	3.7.10cvs42
+
+	* src/printing.c
+	* src/gtk/gtkshruler.c
+	* src/gtk/gtkutils.h
+		Fix GTK+2.16 build
+
 2011-10-22 [colin]	3.7.10cvs41
 
 	* src/account.c

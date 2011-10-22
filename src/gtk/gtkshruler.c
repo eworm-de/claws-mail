@@ -23,6 +23,7 @@
 
 #include <gtk/gtk.h>
 
+#include "gtkutils.h"
 #include "gtkshruler.h"
 #include "gtkunit.h"
 
@@ -263,7 +264,7 @@ gtk_shruler_init (GtkSHRuler *ruler)
 {
   GtkSHRulerPrivate *priv = GTK_SHRULER_GET_PRIVATE (ruler);
 
-  gtk_widget_set_has_window (GTK_WIDGET (ruler), FALSE);
+  gtkut_widget_set_has_window (GTK_WIDGET (ruler), FALSE);
 
   priv->orientation   = GTK_ORIENTATION_HORIZONTAL;
   priv->unit          = GTK_PIXELS;
