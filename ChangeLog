@@ -1,3 +1,8 @@
+2011-10-23 [colin]	3.7.10cvs45
+
+	* src/gtk/gtkcmclist.h
+		Fix build (this was not meant to be commited)
+
 2011-10-23 [colin]	3.7.10cvs44
 
 	* src/addressadd.c
