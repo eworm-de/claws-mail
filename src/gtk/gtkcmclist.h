@@ -206,12 +206,7 @@ struct _GtkCMCList
   GtkAdjustment *hadjustment;
   GtkAdjustment *vadjustment;
   
-  /* xor GC for the vertical drag line */
-  GdkGC *xor_gc;
-  
-  /* gc for drawing unselected cells */
-  GdkGC *fg_gc;
-  GdkGC *bg_gc;
+  gint dash_mode;
   
   /* cursor used to indicate dragging */
   GdkCursor *cursor_drag;
@@ -290,10 +285,6 @@ struct _GtkCMCListClass
 				 GdkRectangle   *area,
 				 gint            row,
 				 GtkCMCListRow    *clist_row);
-  void   (*draw_drag_highlight) (GtkCMCList        *clist,
-				 GtkCMCListRow     *target_row,
-				 gint             target_row_number,
-				 GtkCMCListDragPos  drag_pos);
   void   (*clear)               (GtkCMCList       *clist);
   void   (*fake_unselect_all)   (GtkCMCList       *clist,
 				 gint            row);

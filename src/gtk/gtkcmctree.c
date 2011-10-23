@@ -194,10 +194,6 @@ static void ctree_attach_styles         (GtkCMCTree       *ctree,
 static void ctree_detach_styles         (GtkCMCTree       *ctree,
 					 GtkCMCTreeNode   *node, 
 					 gpointer        data);
-static void draw_drag_highlight         (GtkCMCList        *clist,
-					 GtkCMCListRow     *dest_row,
-					 gint             dest_row_number,
-					 GtkCMCListDragPos  drag_pos);
 static void set_cell_contents           (GtkCMCList      *clist,
 					 GtkCMCListRow   *clist_row,
 					 gint           column,
@@ -999,7 +995,6 @@ gtk_cmctree_class_init (GtkCMCTreeClass *klass)
   clist_class->selection_find = selection_find;
   clist_class->click_column = NULL;
   clist_class->draw_row = draw_row;
-  clist_class->draw_drag_highlight = draw_drag_highlight;
   clist_class->clear = real_clear;
   clist_class->select_all = real_select_all;
   clist_class->unselect_all = real_unselect_all;
@@ -1477,160 +1472,6 @@ gtk_cmctree_button_press (GtkWidget      *widget,
     }
   
   return GTK_WIDGET_CLASS (parent_class)->button_press_event (widget, event);
-}
-
-static void
-draw_drag_highlight (GtkCMCList        *clist,
-		     GtkCMCListRow     *dest_row,
-		     gint             dest_row_number,
-		     GtkCMCListDragPos  drag_pos)
-{
-  GtkAllocation allocation;
-  GtkCMCTree *ctree;
-  GdkPoint points[4];
-  gint level;
-  gint i;
-  gint y = 0;
-
-  cm_return_if_fail (GTK_IS_CMCTREE (clist));
-
-  ctree = GTK_CMCTREE (clist);
-  gtk_widget_get_allocation(GTK_WIDGET(ctree), &allocation);
-
-  level = ((GtkCMCTreeRow *)(dest_row))->level;
-
-  y = ROW_TOP_YPIXEL (clist, dest_row_number) - 1;
-
-  switch (drag_pos)
-    {
-    case GTK_CMCLIST_DRAG_NONE:
-      break;
-    case GTK_CMCLIST_DRAG_AFTER:
-      y += clist->row_height + 1;
-    case GTK_CMCLIST_DRAG_BEFORE:
-      
-      if (clist->column[ctree->tree_column].visible)
-	switch (clist->column[ctree->tree_column].justification)
-	  {
-	  case GTK_JUSTIFY_CENTER:
-	  case GTK_JUSTIFY_FILL:
-	  case GTK_JUSTIFY_LEFT:
-	    if (ctree->tree_column > 0)
-	      gdk_draw_line (clist->clist_window, clist->xor_gc, 
-			     COLUMN_LEFT_XPIXEL(clist, 0), y,
-			     COLUMN_LEFT_XPIXEL(clist, ctree->tree_column - 1)+
-			     clist->column[ctree->tree_column - 1].area.width,
-			     y);
-
-	    gdk_draw_line (clist->clist_window, clist->xor_gc, 
-			   COLUMN_LEFT_XPIXEL(clist, ctree->tree_column) + 
-			   ctree->tree_indent * level -
-			   (ctree->tree_indent - PM_SIZE) / 2, y,
-			   allocation.width, y);
-	    break;
-	  case GTK_JUSTIFY_RIGHT:
-	    if (ctree->tree_column < clist->columns - 1)
-	      gdk_draw_line (clist->clist_window, clist->xor_gc, 
-			     COLUMN_LEFT_XPIXEL(clist, ctree->tree_column + 1),
-			     y,
-			     COLUMN_LEFT_XPIXEL(clist, clist->columns - 1) +
-			     clist->column[clist->columns - 1].area.width, y);
-      
-	    gdk_draw_line (clist->clist_window, clist->xor_gc, 
-			   0, y, COLUMN_LEFT_XPIXEL(clist, ctree->tree_column)
-			   + clist->column[ctree->tree_column].area.width -
-			   ctree->tree_indent * level +
-			   (ctree->tree_indent - PM_SIZE) / 2, y);
-	    break;
-	  }
-      else
-	gdk_draw_line (clist->clist_window, clist->xor_gc, 
-		       0, y, clist->clist_window_width, y);
-      break;
-    case GTK_CMCLIST_DRAG_INTO:
-      y = ROW_TOP_YPIXEL (clist, dest_row_number) + clist->row_height;
-
-      if (clist->column[ctree->tree_column].visible)
-	switch (clist->column[ctree->tree_column].justification)
-	  {
-	  case GTK_JUSTIFY_CENTER:
-	  case GTK_JUSTIFY_FILL:
-	  case GTK_JUSTIFY_LEFT:
-	    points[0].x =  COLUMN_LEFT_XPIXEL(clist, ctree->tree_column) + 
-	      ctree->tree_indent * level - (ctree->tree_indent - PM_SIZE) / 2;
-	    points[0].y = y;
-	    points[3].x = points[0].x;
-	    points[3].y = y - clist->row_height - 1;
-	    points[1].x = clist->clist_window_width - 1;
-	    points[1].y = points[0].y;
-	    points[2].x = points[1].x;
-	    points[2].y = points[3].y;
-
-	    for (i = 0; i < 3; i++)
-	      gdk_draw_line (clist->clist_window, clist->xor_gc,
-			     points[i].x, points[i].y,
-			     points[i+1].x, points[i+1].y);
-
-	    if (ctree->tree_column > 0)
-	      {
-		points[0].x = COLUMN_LEFT_XPIXEL(clist,
-						 ctree->tree_column - 1) +
-		  clist->column[ctree->tree_column - 1].area.width ;
-		points[0].y = y;
-		points[3].x = points[0].x;
-		points[3].y = y - clist->row_height - 1;
-		points[1].x = 0;
-		points[1].y = points[0].y;
-		points[2].x = 0;
-		points[2].y = points[3].y;
-
-		for (i = 0; i < 3; i++)
-		  gdk_draw_line (clist->clist_window, clist->xor_gc,
-				 points[i].x, points[i].y, points[i+1].x, 
-				 points[i+1].y);
-	      }
-	    break;
-	  case GTK_JUSTIFY_RIGHT:
-	    points[0].x =  COLUMN_LEFT_XPIXEL(clist, ctree->tree_column) - 
-	      ctree->tree_indent * level + (ctree->tree_indent - PM_SIZE) / 2 +
-	      clist->column[ctree->tree_column].area.width;
-	    points[0].y = y;
-	    points[3].x = points[0].x;
-	    points[3].y = y - clist->row_height - 1;
-	    points[1].x = 0;
-	    points[1].y = points[0].y;
-	    points[2].x = 0;
-	    points[2].y = points[3].y;
-
-	    for (i = 0; i < 3; i++)
-	      gdk_draw_line (clist->clist_window, clist->xor_gc,
-			     points[i].x, points[i].y,
-			     points[i+1].x, points[i+1].y);
-
-	    if (ctree->tree_column < clist->columns - 1)
-	      {
-		points[0].x = COLUMN_LEFT_XPIXEL(clist, ctree->tree_column +1);
-		points[0].y = y;
-		points[3].x = points[0].x;
-		points[3].y = y - clist->row_height - 1;
-		points[1].x = clist->clist_window_width - 1;
-		points[1].y = points[0].y;
-		points[2].x = points[1].x;
-		points[2].y = points[3].y;
-
-		for (i = 0; i < 3; i++)
-		  gdk_draw_line (clist->clist_window, clist->xor_gc,
-				 points[i].x, points[i].y,
-				 points[i+1].x, points[i+1].y);
-	      }
-	    break;
-	  }
-      else
-	gdk_draw_rectangle (clist->clist_window, clist->xor_gc, FALSE,
-			    0, y - clist->row_height,
-			    clist->clist_window_width - 1, clist->row_height);
-      break;
-    }
 }
 
 static gint
@@ -5459,20 +5300,9 @@ gtk_cmctree_drag_motion (GtkWidget      *widget,
 	      (new_info.cell.row == dest_info->cell.row &&
 	       dest_info->insert_pos != new_info.insert_pos))
 	    {
-	      if (dest_info->cell.row >= 0)
-		GTK_CMCLIST_GET_CLASS (clist)->draw_drag_highlight
-		  (clist,
-		   g_list_nth (clist->row_list, dest_info->cell.row)->data,
-		   dest_info->cell.row, dest_info->insert_pos);
-
 	      dest_info->insert_pos  = new_info.insert_pos;
 	      dest_info->cell.row    = new_info.cell.row;
 	      dest_info->cell.column = new_info.cell.column;
-
-	      GTK_CMCLIST_GET_CLASS (clist)->draw_drag_highlight
-		(clist,
-		 g_list_nth (clist->row_list, dest_info->cell.row)->data,
-		 dest_info->cell.row, dest_info->insert_pos);
 
 	      clist->drag_highlight_row = dest_info->cell.row;
 	      clist->drag_highlight_pos = dest_info->insert_pos;
