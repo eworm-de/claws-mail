@@ -2931,7 +2931,7 @@ static gboolean summary_insert_gnode_func(GtkCMCTree *ctree, guint depth, GNode 
 
 	summary_set_header(summaryview, text, msginfo);
 
-	gtk_sctree_set_node_info(ctree, cnode, text[col_pos[S_COL_SUBJECT]], 2,
+	gtk_cmctree_set_node_info(ctree, cnode, text[col_pos[S_COL_SUBJECT]], 2,
 				NULL, NULL, FALSE, summaryview->threaded && !summaryview->thread_collapsed);
 #define SET_TEXT(col) {						\
 	gtk_cmctree_node_set_text(ctree, cnode, col_pos[col], 	\
@@ -6318,15 +6318,9 @@ static GtkWidget *summary_ctree_create(SummaryView *summaryview)
 	gtk_cmclist_set_column_width(GTK_CMCLIST(ctree), col_pos[S_COL_TAGS],
 				   prefs_common.summary_col_size[S_COL_TAGS]);
 
-	if (prefs_common.enable_dotted_lines) {
-		gtk_cmctree_set_line_style(GTK_CMCTREE(ctree), GTK_CMCTREE_LINES_DOTTED);
-		gtk_cmctree_set_expander_style(GTK_CMCTREE(ctree),
-				     GTK_CMCTREE_EXPANDER_SQUARE);
-	} else {
-		gtk_cmctree_set_line_style(GTK_CMCTREE(ctree), GTK_CMCTREE_LINES_NONE);
-		gtk_cmctree_set_expander_style(GTK_CMCTREE(ctree),
-				     GTK_CMCTREE_EXPANDER_TRIANGLE);
-	}
+	gtk_cmctree_set_line_style(GTK_CMCTREE(ctree), GTK_CMCTREE_LINES_NONE);
+	gtk_cmctree_set_expander_style(GTK_CMCTREE(ctree),
+			     GTK_CMCTREE_EXPANDER_TRIANGLE);
 
 	gtk_sctree_set_stripes(GTK_SCTREE(ctree), prefs_common.use_stripes_in_summaries);
 

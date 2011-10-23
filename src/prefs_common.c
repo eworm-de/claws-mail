@@ -1064,8 +1064,6 @@ static PrefParam param[] = {
 	 NULL, NULL, NULL},
 	{"stripes_color_offset", "4000", &prefs_common.stripes_color_offset, P_INT,
 	 NULL, NULL, NULL},
-	{"enable_dotted_lines", "FALSE", &prefs_common.enable_dotted_lines, P_BOOL,
-	 NULL, NULL, NULL},
 	{"enable_hscrollbar", "TRUE", &prefs_common.enable_hscrollbar, P_BOOL,
 	 NULL, NULL, NULL},
 	{"folderview_vscrollbar_policy", "0",

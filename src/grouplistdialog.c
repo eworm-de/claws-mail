@@ -211,15 +211,9 @@ static void grouplist_dialog_create(void)
 	gtk_cmclist_set_column_auto_resize(GTK_CMCLIST(ctree), 0, TRUE);
 	gtk_cmclist_set_selection_mode(GTK_CMCLIST(ctree), GTK_SELECTION_MULTIPLE);
 	
-	if (prefs_common.enable_dotted_lines) {	
-		gtk_cmctree_set_line_style(GTK_CMCTREE(ctree), GTK_CMCTREE_LINES_DOTTED);
-		gtk_cmctree_set_expander_style(GTK_CMCTREE(ctree),
-					GTK_CMCTREE_EXPANDER_SQUARE);
-	} else {
-		gtk_cmctree_set_line_style(GTK_CMCTREE(ctree), GTK_CMCTREE_LINES_NONE);
-		gtk_cmctree_set_expander_style(GTK_CMCTREE(ctree),
-					GTK_CMCTREE_EXPANDER_TRIANGLE);
-	}
+	gtk_cmctree_set_line_style(GTK_CMCTREE(ctree), GTK_CMCTREE_LINES_NONE);
+	gtk_cmctree_set_expander_style(GTK_CMCTREE(ctree),
+				GTK_CMCTREE_EXPANDER_TRIANGLE);
 
 	for (i = 0; i < 3; i++)
 		gtkut_widget_set_can_focus(GTK_CMCLIST(ctree)->column[i].button, FALSE);
@@ -360,7 +354,7 @@ static GtkCMCTreeNode *grouplist_create_branch(NewsGroupInfo *ginfo,
 	parent = grouplist_create_parent(parent_name, pattern);
 	node = grouplist_hash_get_branch_node(name);
 	if (node) {
-		gtk_sctree_set_node_info(GTK_CMCTREE(ctree), node, cols[0], 0,
+		gtk_cmctree_set_node_info(GTK_CMCTREE(ctree), node, cols[0], 0,
 					NULL, NULL, FALSE, FALSE);
 		gtk_cmctree_node_set_text(GTK_CMCTREE(ctree), node, 1, cols[1]);
 		gtk_cmctree_node_set_text(GTK_CMCTREE(ctree), node, 2, cols[2]);

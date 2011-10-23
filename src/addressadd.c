@@ -233,15 +233,9 @@ static void addressadd_create( void ) {
 	tree_folder = gtk_sctree_new_with_titles( 1, 0, titles );
 	gtk_container_add( GTK_CONTAINER(tree_win), tree_folder );
 	gtk_cmclist_column_titles_show( GTK_CMCLIST(tree_folder) );
-	if (prefs_common.enable_dotted_lines) {
-		gtk_cmctree_set_line_style(GTK_CMCTREE(tree_folder), GTK_CMCTREE_LINES_DOTTED);
-		gtk_cmctree_set_expander_style(GTK_CMCTREE(tree_folder),
-				     GTK_CMCTREE_EXPANDER_SQUARE);
-	} else {
-		gtk_cmctree_set_line_style(GTK_CMCTREE(tree_folder), GTK_CMCTREE_LINES_NONE);
-		gtk_cmctree_set_expander_style(GTK_CMCTREE(tree_folder),
+	gtk_cmctree_set_line_style(GTK_CMCTREE(tree_folder), GTK_CMCTREE_LINES_NONE);
+	gtk_cmctree_set_expander_style(GTK_CMCTREE(tree_folder),
 				     GTK_CMCTREE_EXPANDER_TRIANGLE);
-	}
 	gtk_sctree_set_stripes(GTK_SCTREE(tree_folder), prefs_common.use_stripes_everywhere);
 	gtk_cmclist_set_selection_mode( GTK_CMCLIST(tree_folder), GTK_SELECTION_BROWSE );
 	gtk_cmctree_set_indent( GTK_CMCTREE(tree_folder), CTREE_INDENT );

@@ -445,15 +445,9 @@ static GtkWidget *folderview_ctree_create(FolderView *folderview)
 	gtk_cmclist_set_column_justification(GTK_CMCLIST(ctree), 
 					   col_pos[F_COL_TOTAL],
 					   GTK_JUSTIFY_RIGHT);
-	if (prefs_common.enable_dotted_lines) {
-		gtk_cmctree_set_line_style(GTK_CMCTREE(ctree), GTK_CMCTREE_LINES_DOTTED);
-		gtk_cmctree_set_expander_style(GTK_CMCTREE(ctree),
-				     GTK_CMCTREE_EXPANDER_SQUARE);
-	} else {
-		gtk_cmctree_set_line_style(GTK_CMCTREE(ctree), GTK_CMCTREE_LINES_NONE);
-		gtk_cmctree_set_expander_style(GTK_CMCTREE(ctree),
-				     GTK_CMCTREE_EXPANDER_TRIANGLE);
-	}
+	gtk_cmctree_set_line_style(GTK_CMCTREE(ctree), GTK_CMCTREE_LINES_NONE);
+	gtk_cmctree_set_expander_style(GTK_CMCTREE(ctree),
+			     GTK_CMCTREE_EXPANDER_TRIANGLE);
 
 	gtk_sctree_set_stripes(GTK_SCTREE(ctree), prefs_common.use_stripes_in_summaries);
 	gtk_sctree_set_recursive_expand(GTK_SCTREE(ctree), FALSE);
@@ -1595,7 +1589,7 @@ static void folderview_update_node(FolderView *folderview, GtkCMCTreeNode *node)
 			str = g_strdup_printf("%s", name);
 		}
 	}
-	gtk_sctree_set_node_info(ctree, node, str, FOLDER_SPACING,
+	gtk_cmctree_set_node_info(ctree, node, str, FOLDER_SPACING,
 				xpm, openxpm, 
 				FALSE, GTK_CMCTREE_ROW(node)->expanded);
 	g_free(str);

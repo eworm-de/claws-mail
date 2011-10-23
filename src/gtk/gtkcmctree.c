@@ -80,9 +80,6 @@ gtk_cmctree_line_style_get_type (void)
   if (etype == 0) {
     static const GEnumValue values[] = {
       { GTK_CMCTREE_LINES_NONE, "GTK_CMCTREE_LINES_NONE", "none" },
-      { GTK_CMCTREE_LINES_SOLID, "GTK_CMCTREE_LINES_SOLID", "solid" },
-      { GTK_CMCTREE_LINES_DOTTED, "GTK_CMCTREE_LINES_DOTTED", "dotted" },
-      { GTK_CMCTREE_LINES_TABBED, "GTK_CMCTREE_LINES_TABBED", "tabbed" },
       { 0, NULL, NULL }
     };
 #if GLIB_CHECK_VERSION(2,10,0)
@@ -100,9 +97,7 @@ gtk_cmctree_expander_style_get_type (void)
   if (etype == 0) {
     static const GEnumValue values[] = {
       { GTK_CMCTREE_EXPANDER_NONE, "GTK_CMCTREE_EXPANDER_NONE", "none" },
-      { GTK_CMCTREE_EXPANDER_SQUARE, "GTK_CMCTREE_EXPANDER_SQUARE", "square" },
       { GTK_CMCTREE_EXPANDER_TRIANGLE, "GTK_CMCTREE_EXPANDER_TRIANGLE", "triangle" },
-      { GTK_CMCTREE_EXPANDER_CIRCULAR, "GTK_CMCTREE_EXPANDER_CIRCULAR", "circular" },
       { 0, NULL, NULL }
     };
 #if GLIB_CHECK_VERSION(2,10,0)
@@ -199,46 +194,10 @@ static void ctree_attach_styles         (GtkCMCTree       *ctree,
 static void ctree_detach_styles         (GtkCMCTree       *ctree,
 					 GtkCMCTreeNode   *node, 
 					 gpointer        data);
-static gint draw_cell_pixbuf            (GdkWindow      *window,
-					 GdkRectangle   *clip_rectangle,
-					 GdkGC          *fg_gc,
-					 GdkPixbuf      *pixbuf,
-					 gint            x,
-					 gint            y,
-					 gint            width,
-					 gint            height);
-static void get_cell_style              (GtkCMCList       *clist,
-					 GtkCMCListRow    *clist_row,
-					 gint            state,
-					 gint            column,
-					 GtkStyle      **style,
-					 GdkGC         **fg_gc,
-					 GdkGC         **bg_gc);
-static gint gtk_cmctree_draw_expander     (GtkCMCTree       *ctree,
-					 GtkCMCTreeRow    *ctree_row,
-					 GtkStyle       *style,
-					 GdkRectangle   *clip_rectangle,
-					 gint            x);
-static gint gtk_cmctree_draw_lines        (GtkCMCTree       *ctree,
-					 GtkCMCTreeRow    *ctree_row,
-					 gint            row,
-					 gint            column,
-					 gint            state,
-					 GdkRectangle   *clip_rectangle,
-					 GdkRectangle   *cell_rectangle,
-					 GdkRectangle   *crect,
-					 GdkRectangle   *area,
-					 GtkStyle       *style);
-static void draw_row                    (GtkCMCList       *clist,
-					 GdkRectangle   *area,
-					 gint            row,
-					 GtkCMCListRow    *clist_row);
 static void draw_drag_highlight         (GtkCMCList        *clist,
 					 GtkCMCListRow     *dest_row,
 					 gint             dest_row_number,
 					 GtkCMCListDragPos  drag_pos);
-static void tree_draw_node              (GtkCMCTree      *ctree,
-					 GtkCMCTreeNode  *node);
 static void set_cell_contents           (GtkCMCList      *clist,
 					 GtkCMCListRow   *clist_row,
 					 gint           column,
@@ -428,6 +387,578 @@ gtk_cmctree_get_type (void)
     }
 
   return ctree_type;
+}
+
+static gint
+draw_cell_pixbuf (GdkWindow    *window,
+		  GdkRectangle *clip_rectangle,
+		  cairo_t      *cr,
+		  GdkPixbuf    *pixbuf,
+		  gint          x,
+		  gint          y,
+		  gint          width,
+		  gint          height)
+{
+  gint xsrc = 0;
+  gint ysrc = 0;
+
+  if (!pixbuf || (width == 0 && height == 0))
+	return x;
+
+  if (x < clip_rectangle->x)
+    {
+      xsrc = clip_rectangle->x - x;
+      width -= xsrc;
+      x = clip_rectangle->x;
+    }
+  if (x + width > clip_rectangle->x + clip_rectangle->width)
+    width = clip_rectangle->x + clip_rectangle->width - x;
+
+  if (y < clip_rectangle->y)
+    {
+      ysrc = clip_rectangle->y - y;
+      height -= ysrc;
+      y = clip_rectangle->y;
+    }
+
+  if (y + height > clip_rectangle->y + clip_rectangle->height)
+    height = clip_rectangle->y + clip_rectangle->height - y;
+
+  gdk_cairo_set_source_pixbuf(cr, pixbuf, x, y);
+  cairo_paint(cr);
+
+  return x + MAX (width, 0);
+}
+
+static gint
+draw_expander (GtkCMCTree     *ctree,
+               GtkCMCTreeRow  *ctree_row,
+	       GtkStyle     *style,
+	       GdkRectangle *clip_rectangle,
+	       cairo_t	    *cr,
+	       gint          x)
+{
+  GtkCMCList *clist;
+  GdkPoint points[3];
+  gint justification_factor;
+  gint y;
+
+ if (ctree->expander_style == GTK_CMCTREE_EXPANDER_NONE)
+   return x;
+
+  clist = GTK_CMCLIST (ctree);
+  if (clist->column[ctree->tree_column].justification == GTK_JUSTIFY_RIGHT)
+    justification_factor = -1;
+  else
+    justification_factor = 1;
+  if (!GTK_CMCLIST_ROW_HEIGHT_SET(GTK_CMCLIST(clist)))
+      y = (clip_rectangle->y + (clip_rectangle->height - PM_SIZE) / 2 -
+          (clip_rectangle->height + 1) % 2) + 1;
+  else
+      y = (clip_rectangle->y + (clip_rectangle->height/2 - PM_SIZE) / 2 -
+          (clip_rectangle->height/2 + 1) % 2) + 1;
+
+  if (!ctree_row->children)
+    {
+	  return x + justification_factor * (PM_SIZE + 3);
+    }
+
+  if (ctree_row->expanded)
+  {
+	  points[0].x = x;
+	  points[0].y = y + (PM_SIZE + 2) / 6;
+	  points[1].x = points[0].x + justification_factor * (PM_SIZE + 2);
+	  points[1].y = points[0].y;
+	  points[2].x = (points[0].x +
+			 justification_factor * (PM_SIZE + 2) / 2);
+	  points[2].y = y + 2 * (PM_SIZE + 2) / 3;
+  }
+  else
+  {
+	  points[0].x = x + justification_factor * ((PM_SIZE + 2) / 6 + 2);
+	  points[0].y = y - 1;
+	  points[1].x = points[0].x;
+	  points[1].y = points[0].y + (PM_SIZE + 2);
+	  points[2].x = (points[0].x +
+			 justification_factor * (2 * (PM_SIZE + 2) / 3 - 1));
+	  points[2].y = points[0].y + (PM_SIZE + 2) / 2;
+  }
+
+
+  cairo_new_path(cr);
+  cairo_set_source_rgb(cr, 255, 255, 255);
+  cairo_set_line_width(cr, 1);
+  cairo_set_antialias(cr, CAIRO_ANTIALIAS_NONE);
+  cairo_move_to(cr, points[0].x, points[0].y);
+  cairo_line_to(cr, points[1].x, points[1].y);
+  cairo_line_to(cr, points[2].x, points[2].y);
+  cairo_close_path(cr);
+  cairo_fill(cr);
+ 
+  cairo_new_path(cr);
+  gdk_cairo_set_source_color(cr, &gtk_widget_get_style(ctree)->fg[GTK_STATE_NORMAL]);
+  cairo_set_line_width(cr, 1);
+  cairo_set_antialias(cr, CAIRO_ANTIALIAS_NONE);
+  cairo_move_to(cr, points[0].x, points[0].y);
+  cairo_line_to(cr, points[1].x, points[1].y);
+  cairo_line_to(cr, points[2].x, points[2].y);
+  cairo_close_path(cr);
+  cairo_stroke(cr);
+  cairo_set_antialias(cr, CAIRO_ANTIALIAS_DEFAULT);
+
+  x += justification_factor * (PM_SIZE + 3);
+
+  return x;
+}
+
+static gint
+get_offset(GtkCMCTree     *ctree,
+		      GtkCMCTreeRow  *ctree_row,
+		      gint            column,
+		      GdkRectangle   *clip_rectangle)
+{
+  gint justify_right;
+  justify_right = (GTK_CMCLIST (ctree)->column[column].justification == GTK_JUSTIFY_RIGHT);
+
+  if (justify_right)
+      return (clip_rectangle->x + clip_rectangle->width - 1 -
+		ctree->tree_indent * (ctree_row->level - 1));
+
+  return clip_rectangle->x + ctree->tree_indent * (ctree_row->level - 1);
+}
+
+ static void
+get_cell_style (GtkCMCList     *clist,
+		GtkCMCListRow  *clist_row,
+		gint          state,
+		gint          column,
+		GtkStyle    **style)
+{
+  GtkStyle *gtkstyle;
+
+  gtkstyle = gtk_widget_get_style (GTK_WIDGET (clist));
+
+  if (clist_row->cell[column].style)
+    {
+      if (style)
+	*style = clist_row->cell[column].style;
+    }
+  else if (clist_row->style)
+    {
+      if (style)
+	*style = clist_row->style;
+    }
+  else
+    {
+      if (style)
+	*style = gtkstyle;
+    }
+}
+
+static gboolean filter_fg (PangoAttribute *attribute, gpointer data)
+{
+	const PangoAttrClass *klass = attribute->klass;
+	if (klass->type == PANGO_ATTR_FOREGROUND)
+		return TRUE;
+
+	return FALSE;	
+}
+
+static PangoLayout *
+create_cell_layout (GtkCMCList       *clist,
+			       GtkCMCListRow    *clist_row,
+			       gint            column)
+{
+  PangoLayout *layout;
+  GtkStyle *style;
+  GtkCMCell *cell;
+  gchar *text;
+
+  get_cell_style (clist, clist_row, GTK_STATE_NORMAL, column, &style);
+
+
+  cell = &clist_row->cell[column];
+  switch (cell->type)
+    {
+    case GTK_CMCELL_TEXT:
+    case GTK_CMCELL_PIXTEXT:
+      text = ((cell->type == GTK_CMCELL_PIXTEXT) ?
+	      GTK_CMCELL_PIXTEXT (*cell)->text :
+	      GTK_CMCELL_TEXT (*cell)->text);
+
+      if (!text)
+	return NULL;
+      
+      if (!GTK_SCTREE(clist)->use_markup[column]) {
+	      layout = gtk_widget_create_pango_layout (GTK_WIDGET (clist),
+						       ((cell->type == GTK_CMCELL_PIXTEXT) ?
+							GTK_CMCELL_PIXTEXT (*cell)->text :
+							GTK_CMCELL_TEXT (*cell)->text));
+	      pango_layout_set_font_description (layout, style->font_desc);
+      } else {
+	      PangoContext *context = gtk_widget_get_pango_context (GTK_WIDGET(clist));
+	      layout = pango_layout_new (context);
+	      pango_layout_set_markup (layout, text, -1);
+	      pango_layout_set_font_description (layout, style->font_desc);
+	      if (clist_row->state == GTK_STATE_SELECTED) {
+		      /* for selected row, we should remove any forced foreground color
+		       * or it looks like shit */
+		      PangoAttrList *list = pango_layout_get_attributes(layout);
+		      PangoAttrList *rem = pango_attr_list_filter(list, filter_fg, NULL);
+		      if (rem)
+			      pango_attr_list_unref(rem);
+	      }
+      }
+      
+      return layout;
+      
+    default:
+      return NULL;
+    }
+}
+
+
+static void
+draw_row (GtkCMCList     *clist,
+	  GdkRectangle *area,
+	  gint          row,
+	  GtkCMCListRow  *clist_row)
+{
+  GtkWidget *widget;
+  GtkStyle *style;
+  GtkCMCTree  *ctree;
+  GdkRectangle *rect;
+  GdkRectangle *crect;
+  GdkRectangle row_rectangle;
+  GdkRectangle cell_rectangle; 
+  GdkRectangle clip_rectangle;
+  GdkRectangle intersect_rectangle;
+  gint last_column;
+  gint column_left = 0;
+  gint column_right = 0;
+  gint offset = 0;
+  gint state;
+  gint i;
+  static GdkColor greybg={0, 0, 0, 0};
+  static gboolean color_change = TRUE;
+  cairo_t *cr;
+  GdkColor *fgcolor, *bgcolor, *focuscolor;
+
+  cm_return_if_fail (clist != NULL);
+  widget = GTK_WIDGET (clist);
+  style = gtk_widget_get_style (widget);
+
+  if (greybg.pixel == 0 &&
+      greybg.red == 0 &&
+      greybg.green == 0 &&
+      greybg.blue == 0) {
+	GdkColor normalbg = {0, 0xffff, 0xffff, 0xffff};
+	if (style) {
+		normalbg = style->base[GTK_STATE_NORMAL];
+	}
+	if (normalbg.red > 0x8888 && normalbg.green > 0x8888 && normalbg.blue > 0x8888) {
+		greybg.pixel = normalbg.pixel;
+		greybg.red = normalbg.red - prefs_common.stripes_color_offset;
+		greybg.green = normalbg.green - prefs_common.stripes_color_offset;
+		greybg.blue = normalbg.blue - prefs_common.stripes_color_offset;
+	} else if (normalbg.red < 0x8888 && normalbg.green < 0x8888 && normalbg.blue < 0x8888) {
+		greybg.pixel = normalbg.pixel;
+		greybg.red = normalbg.red + prefs_common.stripes_color_offset;
+		greybg.green = normalbg.green + prefs_common.stripes_color_offset;
+		greybg.blue = normalbg.blue + prefs_common.stripes_color_offset;
+	} else {
+		color_change = FALSE;
+	}
+  }
+
+  /* bail now if we arn't drawable yet */
+  if (!gtk_widget_is_drawable (GTK_WIDGET(clist)) || row < 0 || row >= clist->rows)
+    return;
+
+  ctree  = GTK_CMCTREE  (clist);
+
+  /* if the function is passed the pointer to the row instead of null,
+   * it avoids this expensive lookup */
+  if (!clist_row)
+    clist_row = (g_list_nth (clist->row_list, row))->data;
+
+  /* rectangle of the entire row */
+  row_rectangle.x = 0;
+  row_rectangle.y = ROW_TOP_YPIXEL (clist, row);
+  row_rectangle.width = clist->clist_window_width;
+  row_rectangle.height = clist->row_height;
+
+  /* rectangle of the cell spacing above the row */
+  cell_rectangle.x = 0;
+  cell_rectangle.y = row_rectangle.y - CELL_SPACING;
+  cell_rectangle.width = row_rectangle.width;
+  cell_rectangle.height = CELL_SPACING;
+
+  /* rectangle used to clip drawing operations, its y and height
+   * positions only need to be set once, so we set them once here. 
+   * the x and width are set withing the drawing loop below once per
+   * column */
+  clip_rectangle.y = row_rectangle.y;
+  clip_rectangle.height = row_rectangle.height;
+
+  if (prefs_common.use_stripes_everywhere && GTK_SCTREE(ctree)->show_stripes
+      && color_change && row % 2) {
+    bgcolor = &greybg;
+    focuscolor = &greybg;
+  } else {
+    bgcolor = &style->base[GTK_STATE_NORMAL];
+    focuscolor = &style->base[GTK_STATE_NORMAL];
+  }
+  state = clist_row->state;
+
+  cr = gdk_cairo_create(clist->clist_window);
+  fgcolor = &style->fg[clist_row->state];
+  /* draw the cell borders */
+  if (area)
+    {
+      rect = &intersect_rectangle;
+      crect = &intersect_rectangle;
+
+      if (gdk_rectangle_intersect (area, &cell_rectangle, crect)) {
+        gdk_cairo_rectangle(cr, crect);
+	gdk_cairo_set_source_color(cr, &style->base[GTK_STATE_NORMAL]);
+	cairo_fill(cr);
+      }
+    }
+  else
+    {
+      rect = &clip_rectangle;
+      crect = &cell_rectangle;
+
+      gdk_cairo_rectangle(cr, crect);
+      gdk_cairo_set_source_color(cr, &style->base[GTK_STATE_NORMAL]);
+      cairo_fill(cr);
+    }
+
+  /* the last row has to clear its bottom cell spacing too */
+  if (clist_row == clist->row_list_end->data)
+    {
+      cell_rectangle.y += clist->row_height + CELL_SPACING;
+
+      if (!area || gdk_rectangle_intersect (area, &cell_rectangle, crect))
+	{
+          gdk_cairo_rectangle(cr, crect);
+	  gdk_cairo_set_source_color(cr, &style->base[GTK_STATE_NORMAL]);
+	  cairo_fill(cr);
+	}
+    }	  
+
+  for (last_column = clist->columns - 1;
+       last_column >= 0 && !clist->column[last_column].visible; last_column--)
+    ;
+
+  /* iterate and draw all the columns (row cells) and draw their contents */
+  for (i = 0; i < clist->columns; i++)
+    {
+      GtkStyle *style;
+      PangoLayout *layout = NULL;
+      PangoRectangle logical_rect;
+
+      gint width;
+      gint height;
+      gint pixbuf_width;
+      gint string_width;
+      gint old_offset;
+
+      if (!clist->column[i].visible)
+	continue;
+
+      get_cell_style (clist, clist_row, state, i, &style);
+
+      /* calculate clipping region */
+      clip_rectangle.x = clist->column[i].area.x + clist->hoffset;
+      clip_rectangle.width = clist->column[i].area.width;
+
+      cell_rectangle.x = clip_rectangle.x - COLUMN_INSET - CELL_SPACING;
+      cell_rectangle.width = (clip_rectangle.width + 2 * COLUMN_INSET +
+			      (1 + (i == last_column)) * CELL_SPACING);
+      cell_rectangle.y = clip_rectangle.y;
+      cell_rectangle.height = clip_rectangle.height;
+
+      string_width = 0;
+      pixbuf_width = 0;
+      height = 0;
+
+          gdk_cairo_rectangle(cr, &cell_rectangle);
+	  if (state == GTK_STATE_NORMAL)
+		gdk_cairo_set_source_color(cr, bgcolor);
+	  else
+		gdk_cairo_set_source_color(cr, &style->base[state]);
+	  cairo_fill(cr);
+      if (area && !gdk_rectangle_intersect (area, &cell_rectangle,
+					    &intersect_rectangle))
+	{
+	  if (i != ctree->tree_column)
+	    continue;
+	}
+      else
+	{
+	  layout = create_cell_layout (clist, clist_row, i);
+	  if (layout)
+	    {
+	      pango_layout_get_pixel_extents (layout, NULL, &logical_rect);
+	      width = logical_rect.width;
+	    }
+	  else
+	    width = 0;
+
+	  switch (clist_row->cell[i].type)
+	    {
+	    case GTK_CMCELL_PIXBUF:
+	      pixbuf_width = gdk_pixbuf_get_width(GTK_CMCELL_PIXBUF (clist_row->cell[i])->pixbuf);
+	      height = gdk_pixbuf_get_height(GTK_CMCELL_PIXBUF (clist_row->cell[i])->pixbuf);
+	      width += pixbuf_width;
+	      break;
+	    case GTK_CMCELL_PIXTEXT:
+	      if (GTK_CMCELL_PIXTEXT (clist_row->cell[i])->pixbuf)
+		{
+		  pixbuf_width = gdk_pixbuf_get_width(GTK_CMCELL_PIXTEXT (clist_row->cell[i])->pixbuf);
+		  height = gdk_pixbuf_get_height(GTK_CMCELL_PIXTEXT (clist_row->cell[i])->pixbuf);
+		  width += pixbuf_width;
+		}
+
+	      if (GTK_CMCELL_PIXTEXT (clist_row->cell[i])->text &&
+		  GTK_CMCELL_PIXTEXT (clist_row->cell[i])->pixbuf)
+		width +=  GTK_CMCELL_PIXTEXT (clist_row->cell[i])->spacing;
+
+	      if (i == ctree->tree_column)
+		width += (ctree->tree_indent *
+			  ((GtkCMCTreeRow *)clist_row)->level);
+	      break;
+	    default:
+	      break;
+	    }
+
+	  switch (clist->column[i].justification)
+	    {
+	    case GTK_JUSTIFY_LEFT:
+	      offset = clip_rectangle.x + clist_row->cell[i].horizontal;
+	      break;
+	    case GTK_JUSTIFY_RIGHT:
+	      offset = (clip_rectangle.x + clist_row->cell[i].horizontal +
+			clip_rectangle.width - width);
+	      break;
+	    case GTK_JUSTIFY_CENTER:
+	    case GTK_JUSTIFY_FILL:
+	      offset = (clip_rectangle.x + clist_row->cell[i].horizontal +
+			(clip_rectangle.width / 2) - (width / 2));
+	      break;
+	    };
+
+	  if (i != ctree->tree_column)
+	    {
+	      int start_y = (clip_rectangle.height - height) / 2;
+	      if (GTK_CMCLIST_ROW_HEIGHT_SET(GTK_CMCLIST(clist)))
+		      start_y = (clip_rectangle.height/2 - height) / 2;
+
+	      offset += clist_row->cell[i].horizontal;
+	      switch (clist_row->cell[i].type)
+		{
+		case GTK_CMCELL_PIXBUF:
+		  draw_cell_pixbuf
+		    (clist->clist_window, &clip_rectangle, cr,
+		     GTK_CMCELL_PIXBUF (clist_row->cell[i])->pixbuf,
+		     offset,
+		     clip_rectangle.y + clist_row->cell[i].vertical +
+		     start_y,
+		     pixbuf_width, height);
+		  break;
+		case GTK_CMCELL_PIXTEXT:
+		  offset = draw_cell_pixbuf
+		    (clist->clist_window, &clip_rectangle, cr,
+		     GTK_CMCELL_PIXTEXT (clist_row->cell[i])->pixbuf,
+		     offset,
+		     clip_rectangle.y + clist_row->cell[i].vertical +
+		     start_y,
+		     pixbuf_width, height);
+		  offset += GTK_CMCELL_PIXTEXT (clist_row->cell[i])->spacing;
+
+		  /* Fall through */
+		case GTK_CMCELL_TEXT:
+		  if (layout)
+		    {
+		      gint row_center_offset = (clist->row_height - logical_rect.height) / 2;
+		      gdk_cairo_set_source_color(cr, fgcolor);
+		      cairo_move_to(cr, offset, row_rectangle.y + row_center_offset + clist_row->cell[i].vertical);
+		      pango_cairo_show_layout(cr, layout);
+		      g_object_unref (G_OBJECT (layout));
+		    }
+		  break;
+		default:
+		  break;
+		}
+	      continue;
+	    }
+	}
+
+      /* draw ctree->tree_column */
+      cell_rectangle.y -= CELL_SPACING;
+      cell_rectangle.height += CELL_SPACING;
+
+      if (area && !gdk_rectangle_intersect (area, &cell_rectangle,
+					    &intersect_rectangle))
+	{
+	  if (layout)
+            g_object_unref (G_OBJECT (layout));
+	  continue;
+	}
+
+
+      /* draw lines */
+      offset = get_offset (ctree, (GtkCMCTreeRow *)clist_row, i,
+				      &clip_rectangle);
+
+      /* draw expander */
+      offset = draw_expander (ctree, (GtkCMCTreeRow *)clist_row,
+					style, &clip_rectangle, cr, offset);
+
+      if (clist->column[i].justification == GTK_JUSTIFY_RIGHT)
+	offset -= ctree->tree_spacing;
+      else
+	offset += ctree->tree_spacing;
+
+      if (clist->column[i].justification == GTK_JUSTIFY_RIGHT)
+	offset -= (pixbuf_width + clist_row->cell[i].horizontal);
+      else
+	offset += clist_row->cell[i].horizontal;
+
+      old_offset = offset;
+      offset = draw_cell_pixbuf (clist->clist_window, &clip_rectangle, cr,
+				 GTK_CMCELL_PIXTEXT (clist_row->cell[i])->pixbuf,
+				 offset, 
+				 clip_rectangle.y + clist_row->cell[i].vertical
+				 + (clip_rectangle.height - height) / 2,
+				 pixbuf_width, height);
+
+      if (layout)
+	{
+	  gint row_center_offset = (clist->row_height - logical_rect.height) / 2;
+	  
+	  if (clist->column[i].justification == GTK_JUSTIFY_RIGHT)
+	    {
+	      offset = (old_offset - string_width);
+	      if (GTK_CMCELL_PIXTEXT (clist_row->cell[i])->pixbuf)
+		offset -= GTK_CMCELL_PIXTEXT (clist_row->cell[i])->spacing;
+	    }
+	  else
+	    {
+	      if (GTK_CMCELL_PIXTEXT (clist_row->cell[i])->pixbuf)
+		offset += GTK_CMCELL_PIXTEXT (clist_row->cell[i])->spacing;
+	    }
+	  
+	  cairo_move_to(cr, offset, row_rectangle.y + row_center_offset + clist_row->cell[i].vertical);
+	  gdk_cairo_set_source_color(cr, fgcolor);
+	  pango_cairo_show_layout(cr, layout);
+
+          g_object_unref (G_OBJECT (layout));
+	}
+    }
+    cairo_destroy(cr);
 }
 
 static void
@@ -777,8 +1308,8 @@ gtk_cmctree_init (GtkCMCTree *ctree)
   ctree->tree_indent    = 20;
   ctree->tree_spacing   = 5;
   ctree->tree_column    = 0;
-  ctree->line_style     = GTK_CMCTREE_LINES_SOLID;
-  ctree->expander_style = GTK_CMCTREE_EXPANDER_SQUARE;
+  ctree->line_style     = GTK_CMCTREE_LINES_NONE;
+  ctree->expander_style = GTK_CMCTREE_EXPANDER_TRIANGLE;
   ctree->drag_compare   = NULL;
   ctree->show_stub      = TRUE;
 
@@ -839,7 +1370,6 @@ gtk_cmctree_realize (GtkWidget *widget)
 {
   GtkCMCTree *ctree;
   GtkCMCList *clist;
-  GdkGCValues values;
   GtkCMCTreeNode *node;
   GtkCMCTreeNode *child;
   GtkStyle *style;
@@ -863,24 +1393,6 @@ gtk_cmctree_realize (GtkWidget *widget)
     }
 
   style = gtk_widget_get_style(widget);
-
-  values.foreground = style->fg[GTK_STATE_NORMAL];
-  values.background = style->base[GTK_STATE_NORMAL];
-  values.subwindow_mode = GDK_INCLUDE_INFERIORS;
-  values.line_style = GDK_LINE_SOLID;
-  ctree->lines_gc = gdk_gc_new_with_values (GTK_CMCLIST(widget)->clist_window, 
-					    &values,
-					    GDK_GC_FOREGROUND |
-					    GDK_GC_BACKGROUND |
-					    GDK_GC_SUBWINDOW |
-					    GDK_GC_LINE_STYLE);
-
-  if (ctree->line_style == GTK_CMCTREE_LINES_DOTTED)
-    {
-      gdk_gc_set_line_attributes (ctree->lines_gc, 1, 
-				  GDK_LINE_ON_OFF_DASH, GDK_CAP_BUTT, GDK_JOIN_MITER);
-      gdk_gc_set_dashes (ctree->lines_gc, 0, "\1\1", 2);
-    }
 }
 
 static void
@@ -913,8 +1425,6 @@ gtk_cmctree_unrealize (GtkWidget *widget)
 	  node = GTK_CMCTREE_NODE_NEXT (node);
 	}
     }
-
-  g_object_unref (ctree->lines_gc);
 }
 
 static gint
@@ -1124,1046 +1634,18 @@ draw_drag_highlight (GtkCMCList        *clist,
 }
 
 static gint
-draw_cell_pixbuf (GdkWindow    *window,
-		  GdkRectangle *clip_rectangle,
-		  GdkGC        *fg_gc,
-		  GdkPixbuf    *pixbuf,
-		  gint          x,
-		  gint          y,
-		  gint          width,
-		  gint          height)
-{
-  gint xsrc = 0;
-  gint ysrc = 0;
-
-  gdk_gc_set_clip_origin (fg_gc, x, y);
-  if (x < clip_rectangle->x)
-    {
-      xsrc = clip_rectangle->x - x;
-      width -= xsrc;
-      x = clip_rectangle->x;
-    }
-  if (x + width > clip_rectangle->x + clip_rectangle->width)
-    width = clip_rectangle->x + clip_rectangle->width - x;
-
-  if (y < clip_rectangle->y)
-    {
-      ysrc = clip_rectangle->y - y;
-      height -= ysrc;
-      y = clip_rectangle->y;
-    }
-  if (y + height > clip_rectangle->y + clip_rectangle->height)
-    height = clip_rectangle->y + clip_rectangle->height - y;
-
-  if (width > 0 && height > 0)
-    gdk_draw_pixbuf (window, fg_gc, pixbuf, xsrc, ysrc, x, y, width, height, GDK_RGB_DITHER_NONE, 0, 0);
-
-  gdk_gc_set_clip_origin (fg_gc, 0, 0);
-
-  return x + MAX (width, 0);
-}
-
-static void
-get_cell_style (GtkCMCList     *clist,
-		GtkCMCListRow  *clist_row,
-		gint          state,
-		gint          column,
-		GtkStyle    **style,
-		GdkGC       **fg_gc,
-		GdkGC       **bg_gc)
-{
-  GtkStyle *gtkstyle;
-  gint fg_state;
-
-  gtkstyle = gtk_widget_get_style (GTK_WIDGET (clist));
-  if ((state == GTK_STATE_NORMAL) &&
-      (gtk_widget_get_state(GTK_WIDGET (clist)) == GTK_STATE_INSENSITIVE))
-    fg_state = GTK_STATE_INSENSITIVE;
-  else
-    fg_state = state;
-
-  if (clist_row->cell[column].style)
-    {
-      if (style)
-	*style = clist_row->cell[column].style;
-      if (fg_gc)
-	*fg_gc = clist_row->cell[column].style->fg_gc[fg_state];
-      if (bg_gc) {
-	if (state == GTK_STATE_SELECTED)
-	  *bg_gc = clist_row->cell[column].style->bg_gc[state];
-	else
-	  *bg_gc = clist_row->cell[column].style->base_gc[state];
-      }
-    }
-  else if (clist_row->style)
-    {
-      if (style)
-	*style = clist_row->style;
-      if (fg_gc)
-	*fg_gc = clist_row->style->fg_gc[fg_state];
-      if (bg_gc) {
-	if (state == GTK_STATE_SELECTED)
-	  *bg_gc = clist_row->style->bg_gc[state];
-	else
-	  *bg_gc = clist_row->style->base_gc[state];
-      }
-    }
-  else
-    {
-      if (style)
-	*style = gtkstyle;
-      if (fg_gc)
-	*fg_gc = gtkstyle->fg_gc[fg_state];
-      if (bg_gc) {
-	if (state == GTK_STATE_SELECTED)
-	  *bg_gc = gtkstyle->bg_gc[state];
-	else
-	  *bg_gc = gtkstyle->base_gc[state];
-      }
-
-      if (state != GTK_STATE_SELECTED)
-	{
-	  if (fg_gc && clist_row->fg_set)
-	    *fg_gc = clist->fg_gc;
-	  if (bg_gc && clist_row->bg_set)
-	    *bg_gc = clist->bg_gc;
-	}
-    }
-}
-
-static gint
-gtk_cmctree_draw_expander (GtkCMCTree     *ctree,
-			 GtkCMCTreeRow  *ctree_row,
-			 GtkStyle     *style,
-			 GdkRectangle *clip_rectangle,
-			 gint          x)
-{
-  GtkCMCList *clist;
-  GdkPoint points[3];
-  gint justification_factor;
-  gint y;
-
- if (ctree->expander_style == GTK_CMCTREE_EXPANDER_NONE)
-   return x;
-
-  clist = GTK_CMCLIST (ctree);
-  if (clist->column[ctree->tree_column].justification == GTK_JUSTIFY_RIGHT)
-    justification_factor = -1;
-  else
-    justification_factor = 1;
-  y = (clip_rectangle->y + (clip_rectangle->height - PM_SIZE) / 2 -
-       (clip_rectangle->height + 1) % 2);
-
-  if (!ctree_row->children)
-    {
-      switch (ctree->expander_style)
-	{
-	case GTK_CMCTREE_EXPANDER_NONE:
-	  return x;
-	case GTK_CMCTREE_EXPANDER_TRIANGLE:
-	  return x + justification_factor * (PM_SIZE + 3);
-	case GTK_CMCTREE_EXPANDER_SQUARE:
-	case GTK_CMCTREE_EXPANDER_CIRCULAR:
-	  return x + justification_factor * (PM_SIZE + 1);
-	}
-    }
-
-  gdk_gc_set_clip_rectangle (style->fg_gc[GTK_STATE_NORMAL], clip_rectangle);
-  gdk_gc_set_clip_rectangle (style->base_gc[GTK_STATE_NORMAL], clip_rectangle);
-
-  switch (ctree->expander_style)
-    {
-    case GTK_CMCTREE_EXPANDER_NONE:
-      break;
-    case GTK_CMCTREE_EXPANDER_TRIANGLE:
-      if (ctree_row->expanded)
-	{
-	  points[0].x = x;
-	  points[0].y = y + (PM_SIZE + 2) / 6;
-	  points[1].x = points[0].x + justification_factor * (PM_SIZE + 2);
-	  points[1].y = points[0].y;
-	  points[2].x = (points[0].x +
-			 justification_factor * (PM_SIZE + 2) / 2);
-	  points[2].y = y + 2 * (PM_SIZE + 2) / 3;
-	}
-      else
-	{
-	  points[0].x = x + justification_factor * ((PM_SIZE + 2) / 6 + 2);
-	  points[0].y = y - 1;
-	  points[1].x = points[0].x;
-	  points[1].y = points[0].y + (PM_SIZE + 2);
-	  points[2].x = (points[0].x +
-			 justification_factor * (2 * (PM_SIZE + 2) / 3 - 1));
-	  points[2].y = points[0].y + (PM_SIZE + 2) / 2;
-	}
-
-      gdk_draw_polygon (clist->clist_window, style->base_gc[GTK_STATE_NORMAL],
-			TRUE, points, 3);
-      gdk_draw_polygon (clist->clist_window, style->fg_gc[GTK_STATE_NORMAL],
-			FALSE, points, 3);
-
-      x += justification_factor * (PM_SIZE + 3);
-      break;
-    case GTK_CMCTREE_EXPANDER_SQUARE:
-    case GTK_CMCTREE_EXPANDER_CIRCULAR:
-      if (justification_factor == -1)
-	x += justification_factor * (PM_SIZE + 1);
-
-      if (ctree->expander_style == GTK_CMCTREE_EXPANDER_CIRCULAR)
-	{
-	  gdk_draw_arc (clist->clist_window, style->base_gc[GTK_STATE_NORMAL],
-			TRUE, x, y, PM_SIZE, PM_SIZE, 0, 360 * 64);
-	  gdk_draw_arc (clist->clist_window, style->fg_gc[GTK_STATE_NORMAL],
-			FALSE, x, y, PM_SIZE, PM_SIZE, 0, 360 * 64);
-	}
-      else
-	{
-	  gdk_draw_rectangle (clist->clist_window,
-			      style->base_gc[GTK_STATE_NORMAL], TRUE,
-			      x, y, PM_SIZE, PM_SIZE);
-	  gdk_draw_rectangle (clist->clist_window,
-			      style->fg_gc[GTK_STATE_NORMAL], FALSE,
-			      x, y, PM_SIZE, PM_SIZE);
-	}
-
-      gdk_draw_line (clist->clist_window, style->fg_gc[GTK_STATE_NORMAL], 
-		     x + 2, y + PM_SIZE / 2, x + PM_SIZE - 2, y + PM_SIZE / 2);
-
-      if (!ctree_row->expanded)
-	gdk_draw_line (clist->clist_window, style->fg_gc[GTK_STATE_NORMAL],
-		       x + PM_SIZE / 2, y + 2,
-		       x + PM_SIZE / 2, y + PM_SIZE - 2);
-
-      if (justification_factor == 1)
-	x += justification_factor * (PM_SIZE + 1);
-      break;
-    }
-
-  gdk_gc_set_clip_rectangle (style->fg_gc[GTK_STATE_NORMAL], NULL);
-  gdk_gc_set_clip_rectangle (style->base_gc[GTK_STATE_NORMAL], NULL);
-
-  return x;
-}
-
-
-static gint
-gtk_cmctree_draw_lines (GtkCMCTree     *ctree,
+gtk_cmctree_get_offset(GtkCMCTree     *ctree,
 		      GtkCMCTreeRow  *ctree_row,
-		      gint          row,
 		      gint          column,
-		      gint          state,
-		      GdkRectangle *clip_rectangle,
-		      GdkRectangle *cell_rectangle,
-		      GdkRectangle *crect,
-		      GdkRectangle *area,
-		      GtkStyle     *style)
+		      GdkRectangle *clip_rectangle)
 {
-  GtkCMCList *clist;
-  GtkCMCTreeNode *node;
-  GtkCMCTreeNode *parent;
-  GdkRectangle tree_rectangle;
-  GdkRectangle tc_rectangle;
-  GdkGC *bg_gc;
-  gint offset;
-  gint offset_x;
-  gint offset_y;
-  gint xcenter;
-  gint ycenter;
-  gint next_level;
-  gint column_right;
-  gint column_left;
-  gint justify_right;
-  gint justification_factor;
-  
-  clist = GTK_CMCLIST (ctree);
-  ycenter = clip_rectangle->y + (clip_rectangle->height / 2);
-  justify_right = (clist->column[column].justification == GTK_JUSTIFY_RIGHT);
+  gint justify_right = (GTK_CMCLIST (ctree)->column[column].justification == GTK_JUSTIFY_RIGHT);
 
   if (justify_right)
-    {
-      offset = (clip_rectangle->x + clip_rectangle->width - 1 -
+      return (clip_rectangle->x + clip_rectangle->width - 1 -
 		ctree->tree_indent * (ctree_row->level - 1));
-      justification_factor = -1;
-    }
-  else
-    {
-      offset = clip_rectangle->x + ctree->tree_indent * (ctree_row->level - 1);
-      justification_factor = 1;
-    }
 
-  switch (ctree->line_style)
-    {
-    case GTK_CMCTREE_LINES_NONE:
-      break;
-    case GTK_CMCTREE_LINES_TABBED:
-      xcenter = offset + justification_factor * TAB_SIZE;
-
-      column_right = (COLUMN_LEFT_XPIXEL (clist, ctree->tree_column) +
-		      clist->column[ctree->tree_column].area.width +
-		      COLUMN_INSET);
-      column_left = (COLUMN_LEFT_XPIXEL (clist, ctree->tree_column) -
-		     COLUMN_INSET - CELL_SPACING);
-
-      if (area)
-	{
-	  tree_rectangle.y = crect->y;
-	  tree_rectangle.height = crect->height;
-
-	  if (justify_right)
-	    {
-	      tree_rectangle.x = xcenter;
-	      tree_rectangle.width = column_right - xcenter;
-	    }
-	  else
-	    {
-	      tree_rectangle.x = column_left;
-	      tree_rectangle.width = xcenter - column_left;
-	    }
-
-	  if (!gdk_rectangle_intersect (area, &tree_rectangle, &tc_rectangle))
-	    {
-	      offset += justification_factor * 3;
-	      break;
-	    }
-	}
-
-      gdk_gc_set_clip_rectangle (ctree->lines_gc, crect);
-
-      next_level = ctree_row->level;
-
-      if (!ctree_row->sibling || (ctree_row->children && ctree_row->expanded))
-	{
-	  node = gtk_cmctree_find_node_ptr (ctree, ctree_row);
-	  if (GTK_CMCTREE_NODE_NEXT (node))
-	    next_level = GTK_CMCTREE_ROW (GTK_CMCTREE_NODE_NEXT (node))->level;
-	  else
-	    next_level = 0;
-	}
-
-      if (ctree->tree_indent > 0)
-	{
-	  node = ctree_row->parent;
-	  while (node)
-	    {
-	      xcenter -= (justification_factor * ctree->tree_indent);
-
-	      if ((justify_right && xcenter < column_left) ||
-		  (!justify_right && xcenter > column_right))
-		{
-		  node = GTK_CMCTREE_ROW (node)->parent;
-		  continue;
-		}
-
-	      tree_rectangle.y = cell_rectangle->y;
-	      tree_rectangle.height = cell_rectangle->height;
-	      if (justify_right)
-		{
-		  tree_rectangle.x = MAX (xcenter - ctree->tree_indent + 1,
-					  column_left);
-		  tree_rectangle.width = MIN (xcenter - column_left,
-					      ctree->tree_indent);
-		}
-	      else
-		{
-		  tree_rectangle.x = xcenter;
-		  tree_rectangle.width = MIN (column_right - xcenter,
-					      ctree->tree_indent);
-		}
-
-	      if (!area || gdk_rectangle_intersect (area, &tree_rectangle,
-						    &tc_rectangle))
-		{
-		  get_cell_style (clist, &GTK_CMCTREE_ROW (node)->row,
-				  state, column, NULL, NULL, &bg_gc);
-
-		  if (bg_gc == clist->bg_gc)
-		    gdk_gc_set_foreground
-		      (clist->bg_gc, &GTK_CMCTREE_ROW (node)->row.background);
-
-		  if (!area)
-		    gdk_draw_rectangle (clist->clist_window, bg_gc, TRUE,
-					tree_rectangle.x,
-					tree_rectangle.y,
-					tree_rectangle.width,
-					tree_rectangle.height);
-		  else 
-		    gdk_draw_rectangle (clist->clist_window, bg_gc, TRUE,
-					tc_rectangle.x,
-					tc_rectangle.y,
-					tc_rectangle.width,
-					tc_rectangle.height);
-		}
-	      if (next_level > GTK_CMCTREE_ROW (node)->level)
-		gdk_draw_line (clist->clist_window, ctree->lines_gc,
-			       xcenter, crect->y,
-			       xcenter, crect->y + crect->height);
-	      else
-		{
-		  gint width;
-
-		  offset_x = MIN (ctree->tree_indent, 2 * TAB_SIZE);
-		  width = offset_x / 2 + offset_x % 2;
-
-		  parent = GTK_CMCTREE_ROW (node)->parent;
-
-		  tree_rectangle.y = ycenter;
-		  tree_rectangle.height = (cell_rectangle->y - ycenter +
-					   cell_rectangle->height);
-
-		  if (justify_right)
-		    {
-		      tree_rectangle.x = MAX(xcenter + 1 - width, column_left);
-		      tree_rectangle.width = MIN (xcenter + 1 - column_left,
-						  width);
-		    }
-		  else
-		    {
-		      tree_rectangle.x = xcenter;
-		      tree_rectangle.width = MIN (column_right - xcenter,
-						  width);
-		    }
-
-		  if (!area ||
-		      gdk_rectangle_intersect (area, &tree_rectangle,
-					       &tc_rectangle))
-		    {
-		      if (parent)
-			{
-			  get_cell_style (clist, &GTK_CMCTREE_ROW (parent)->row,
-					  state, column, NULL, NULL, &bg_gc);
-			  if (bg_gc == clist->bg_gc)
-			    gdk_gc_set_foreground
-			      (clist->bg_gc,
-			       &GTK_CMCTREE_ROW (parent)->row.background);
-			}
-		      else if (state == GTK_STATE_SELECTED)
-			bg_gc = style->base_gc[state];
-		      else
-			bg_gc = gtk_widget_get_style (GTK_WIDGET (clist))->base_gc[state];
-
-		      if (!area)
-			gdk_draw_rectangle (clist->clist_window, bg_gc, TRUE,
-					    tree_rectangle.x,
-					    tree_rectangle.y,
-					    tree_rectangle.width,
-					    tree_rectangle.height);
-		      else
-			gdk_draw_rectangle (clist->clist_window,
-					    bg_gc, TRUE,
-					    tc_rectangle.x,
-					    tc_rectangle.y,
-					    tc_rectangle.width,
-					    tc_rectangle.height);
-		    }
-
-		  get_cell_style (clist, &GTK_CMCTREE_ROW (node)->row,
-				  state, column, NULL, NULL, &bg_gc);
-		  if (bg_gc == clist->bg_gc)
-		    gdk_gc_set_foreground
-		      (clist->bg_gc, &GTK_CMCTREE_ROW (node)->row.background);
-
-		  gdk_gc_set_clip_rectangle (bg_gc, crect);
-		  gdk_draw_arc (clist->clist_window, bg_gc, TRUE,
-				xcenter - (justify_right * offset_x),
-				cell_rectangle->y,
-				offset_x, clist->row_height,
-				(180 + (justify_right * 90)) * 64, 90 * 64);
-		  gdk_gc_set_clip_rectangle (bg_gc, NULL);
-
-		  gdk_draw_line (clist->clist_window, ctree->lines_gc, 
-				 xcenter, cell_rectangle->y, xcenter, ycenter);
-
-		  if (justify_right)
-		    gdk_draw_arc (clist->clist_window, ctree->lines_gc, FALSE,
-				  xcenter - offset_x, cell_rectangle->y,
-				  offset_x, clist->row_height,
-				  270 * 64, 90 * 64);
-		  else
-		    gdk_draw_arc (clist->clist_window, ctree->lines_gc, FALSE,
-				  xcenter, cell_rectangle->y,
-				  offset_x, clist->row_height,
-				  180 * 64, 90 * 64);
-		}
-	      node = GTK_CMCTREE_ROW (node)->parent;
-	    }
-	}
-
-      if (state != GTK_STATE_SELECTED)
-	{
-	  tree_rectangle.y = clip_rectangle->y;
-	  tree_rectangle.height = clip_rectangle->height;
-	  tree_rectangle.width = COLUMN_INSET + CELL_SPACING +
-	    MIN (clist->column[ctree->tree_column].area.width + COLUMN_INSET,
-		 TAB_SIZE);
-
-	  if (justify_right)
-	    tree_rectangle.x = MAX (xcenter + 1, column_left);
-	  else
-	    tree_rectangle.x = column_left;
-
-	  if (!area)
-	    gdk_draw_rectangle (clist->clist_window,
-				gtk_widget_get_style (GTK_WIDGET
-				(ctree))->base_gc[GTK_STATE_NORMAL],
-				TRUE,
-				tree_rectangle.x,
-				tree_rectangle.y,
-				tree_rectangle.width,
-				tree_rectangle.height);
-	  else if (gdk_rectangle_intersect (area, &tree_rectangle,
-					    &tc_rectangle))
-	    gdk_draw_rectangle (clist->clist_window,
-				gtk_widget_get_style (GTK_WIDGET
-				(ctree))->base_gc[GTK_STATE_NORMAL],
-				TRUE,
-				tc_rectangle.x,
-				tc_rectangle.y,
-				tc_rectangle.width,
-				tc_rectangle.height);
-	}
-
-      xcenter = offset + (justification_factor * ctree->tree_indent / 2);
-
-      get_cell_style (clist, &ctree_row->row, state, column, NULL, NULL,
-		      &bg_gc);
-      if (bg_gc == clist->bg_gc)
-	gdk_gc_set_foreground (clist->bg_gc, &ctree_row->row.background);
-
-      gdk_gc_set_clip_rectangle (bg_gc, crect);
-      if (ctree_row->is_leaf)
-	{
-	  GdkPoint points[6];
-
-	  points[0].x = offset + justification_factor * TAB_SIZE;
-	  points[0].y = cell_rectangle->y;
-
-	  points[1].x = points[0].x - justification_factor * 4;
-	  points[1].y = points[0].y;
-
-	  points[2].x = points[1].x - justification_factor * 2;
-	  points[2].y = points[1].y + 3;
-
-	  points[3].x = points[2].x;
-	  points[3].y = points[2].y + clist->row_height - 5;
-
-	  points[4].x = points[3].x + justification_factor * 2;
-	  points[4].y = points[3].y + 3;
-
-	  points[5].x = points[4].x + justification_factor * 4;
-	  points[5].y = points[4].y;
-
-	  gdk_draw_polygon (clist->clist_window, bg_gc, TRUE, points, 6);
-	  gdk_draw_lines (clist->clist_window, ctree->lines_gc, points, 6);
-	}
-      else 
-	{
-	  gdk_draw_arc (clist->clist_window, bg_gc, TRUE,
-			offset - (justify_right * 2 * TAB_SIZE),
-			cell_rectangle->y,
-			2 * TAB_SIZE, clist->row_height,
-			(90 + (180 * justify_right)) * 64, 180 * 64);
-	  gdk_draw_arc (clist->clist_window, ctree->lines_gc, FALSE,
-			offset - (justify_right * 2 * TAB_SIZE),
-			cell_rectangle->y,
-			2 * TAB_SIZE, clist->row_height,
-			(90 + (180 * justify_right)) * 64, 180 * 64);
-	}
-      gdk_gc_set_clip_rectangle (bg_gc, NULL);
-      gdk_gc_set_clip_rectangle (ctree->lines_gc, NULL);
-
-      offset += justification_factor * 3;
-      break;
-    default:
-      xcenter = offset + justification_factor * PM_SIZE / 2;
-
-      if (area)
-	{
-	  tree_rectangle.y = crect->y;
-	  tree_rectangle.height = crect->height;
-
-	  if (justify_right)
-	    {
-	      tree_rectangle.x = xcenter - PM_SIZE / 2 - 2;
-	      tree_rectangle.width = (clip_rectangle->x +
-				      clip_rectangle->width -tree_rectangle.x);
-	    }
-	  else
-	    {
-	      tree_rectangle.x = clip_rectangle->x + PM_SIZE / 2;
-	      tree_rectangle.width = (xcenter + PM_SIZE / 2 + 2 -
-				      clip_rectangle->x);
-	    }
-
-	  if (!gdk_rectangle_intersect (area, &tree_rectangle, &tc_rectangle))
-	    break;
-	}
-
-      offset_x = 1;
-      offset_y = 0;
-      if (ctree->line_style == GTK_CMCTREE_LINES_DOTTED)
-	{
-	  offset_x += abs((clip_rectangle->x + clist->hoffset) % 2);
-	  offset_y  = abs((cell_rectangle->y + clist->voffset) % 2);
-	}
-
-      clip_rectangle->y--;
-      clip_rectangle->height++;
-      gdk_gc_set_clip_rectangle (ctree->lines_gc, clip_rectangle);
-      gdk_draw_line (clist->clist_window, ctree->lines_gc,
-		     xcenter,
-		     (ctree->show_stub || clist->row_list->data != ctree_row) ?
-		     cell_rectangle->y + offset_y : ycenter,
-		     xcenter,
-		     (ctree_row->sibling) ? crect->y +crect->height : ycenter);
-
-      gdk_draw_line (clist->clist_window, ctree->lines_gc,
-		     xcenter + (justification_factor * offset_x), ycenter,
-		     xcenter + (justification_factor * (PM_SIZE / 2 + 2)),
-		     ycenter);
-
-      node = ctree_row->parent;
-      while (node)
-	{
-	  xcenter -= (justification_factor * ctree->tree_indent);
-
-	  if (GTK_CMCTREE_ROW (node)->sibling)
-	    gdk_draw_line (clist->clist_window, ctree->lines_gc, 
-			   xcenter, cell_rectangle->y + offset_y,
-			   xcenter, crect->y + crect->height);
-	  node = GTK_CMCTREE_ROW (node)->parent;
-	}
-      gdk_gc_set_clip_rectangle (ctree->lines_gc, NULL);
-      clip_rectangle->y++;
-      clip_rectangle->height--;
-      break;
-    }
-  return offset;
-}
-
-static void
-draw_row (GtkCMCList     *clist,
-	  GdkRectangle *area,
-	  gint          row,
-	  GtkCMCListRow  *clist_row)
-{
-  GtkStyle *style;
-  GtkWidget *widget;
-  GtkCMCTree  *ctree;
-  GdkRectangle *crect;
-  GdkRectangle row_rectangle;
-  GdkRectangle cell_rectangle; 
-  GdkRectangle clip_rectangle;
-  GdkRectangle intersect_rectangle;
-  gint last_column;
-  gint column_left = 0;
-  gint column_right = 0;
-  gint offset = 0;
-  gint state;
-  gint i;
-
-  cm_return_if_fail (clist != NULL);
-
-  /* bail now if we arn't drawable yet */
-  if (!gtk_widget_is_drawable (GTK_WIDGET(clist)) || row < 0 || row >= clist->rows)
-    return;
-
-  widget = GTK_WIDGET (clist);
-  ctree  = GTK_CMCTREE  (clist);
-
-  /* if the function is passed the pointer to the row instead of null,
-   * it avoids this expensive lookup */
-  if (!clist_row)
-    clist_row = (g_list_nth (clist->row_list, row))->data;
-
-  /* rectangle of the entire row */
-  row_rectangle.x = 0;
-  row_rectangle.y = ROW_TOP_YPIXEL (clist, row);
-  row_rectangle.width = clist->clist_window_width;
-  row_rectangle.height = clist->row_height;
-
-  /* rectangle of the cell spacing above the row */
-  cell_rectangle.x = 0;
-  cell_rectangle.y = row_rectangle.y - CELL_SPACING;
-  cell_rectangle.width = row_rectangle.width;
-  cell_rectangle.height = CELL_SPACING;
-
-  /* rectangle used to clip drawing operations, its y and height
-   * positions only need to be set once, so we set them once here. 
-   * the x and width are set withing the drawing loop below once per
-   * column */
-  clip_rectangle.y = row_rectangle.y;
-  clip_rectangle.height = row_rectangle.height;
-
-  if (clist_row->state == GTK_STATE_NORMAL)
-    {
-      if (clist_row->fg_set)
-	gdk_gc_set_foreground (clist->fg_gc, &clist_row->foreground);
-      if (clist_row->bg_set)
-	gdk_gc_set_foreground (clist->bg_gc, &clist_row->background);
-    }
-  
-  state = clist_row->state;
-
-  style = gtk_widget_get_style (widget);
-  gdk_gc_set_foreground (ctree->lines_gc,
-			 &style->fg[clist_row->state]);
-
-  /* draw the cell borders */
-  if (area)
-    {
-      crect = &intersect_rectangle;
-
-      if (gdk_rectangle_intersect (area, &cell_rectangle, crect))
-	gdk_draw_rectangle (clist->clist_window,
-			    style->base_gc[GTK_STATE_NORMAL], TRUE,
-			    crect->x, crect->y, crect->width, crect->height);
-    }
-  else
-    {
-      crect = &cell_rectangle;
-
-      gdk_draw_rectangle (clist->clist_window,
-			  style->base_gc[GTK_STATE_NORMAL], TRUE,
-			  crect->x, crect->y, crect->width, crect->height);
-    }
-
-  /* horizontal black lines */
-  if (ctree->line_style == GTK_CMCTREE_LINES_TABBED)
-    { 
-
-      column_right = (COLUMN_LEFT_XPIXEL (clist, ctree->tree_column) +
-		      clist->column[ctree->tree_column].area.width +
-		      COLUMN_INSET);
-      column_left = (COLUMN_LEFT_XPIXEL (clist, ctree->tree_column) -
-		     COLUMN_INSET - (ctree->tree_column != 0) * CELL_SPACING);
-
-      switch (clist->column[ctree->tree_column].justification)
-	{
-	case GTK_JUSTIFY_CENTER:
-	case GTK_JUSTIFY_FILL:
-	case GTK_JUSTIFY_LEFT:
-	  offset = (column_left + ctree->tree_indent *
-		    (((GtkCMCTreeRow *)clist_row)->level - 1));
-
-	  gdk_draw_line (clist->clist_window, ctree->lines_gc, 
-			 MIN (offset + TAB_SIZE, column_right),
-			 cell_rectangle.y,
-			 clist->clist_window_width, cell_rectangle.y);
-	  break;
-	case GTK_JUSTIFY_RIGHT:
-	  offset = (column_right - 1 - ctree->tree_indent *
-		    (((GtkCMCTreeRow *)clist_row)->level - 1));
-
-	  gdk_draw_line (clist->clist_window, ctree->lines_gc,
-			 -1, cell_rectangle.y,
-			 MAX (offset - TAB_SIZE, column_left),
-			 cell_rectangle.y);
-	  break;
-	}
-    }
-
-  /* the last row has to clear its bottom cell spacing too */
-  if (clist_row == clist->row_list_end->data)
-    {
-      cell_rectangle.y += clist->row_height + CELL_SPACING;
-
-      if (!area || gdk_rectangle_intersect (area, &cell_rectangle, crect))
-	{
-	  gdk_draw_rectangle (clist->clist_window,
-			      gtk_widget_get_style (widget)->base_gc[GTK_STATE_NORMAL], TRUE,
-			      crect->x, crect->y, crect->width, crect->height);
-
-	  /* horizontal black lines */
-	  if (ctree->line_style == GTK_CMCTREE_LINES_TABBED)
-	    { 
-	      switch (clist->column[ctree->tree_column].justification)
-		{
-		case GTK_JUSTIFY_CENTER:
-		case GTK_JUSTIFY_FILL:
-		case GTK_JUSTIFY_LEFT:
-		  gdk_draw_line (clist->clist_window, ctree->lines_gc, 
-				 MIN (column_left + TAB_SIZE + COLUMN_INSET +
-				      (((GtkCMCTreeRow *)clist_row)->level > 1) *
-				      MIN (ctree->tree_indent / 2, TAB_SIZE),
-				      column_right),
-				 cell_rectangle.y,
-				 clist->clist_window_width, cell_rectangle.y);
-		  break;
-		case GTK_JUSTIFY_RIGHT:
-		  gdk_draw_line (clist->clist_window, ctree->lines_gc, 
-				 -1, cell_rectangle.y,
-				 MAX (column_right - TAB_SIZE - 1 -
-				      COLUMN_INSET -
-				      (((GtkCMCTreeRow *)clist_row)->level > 1) *
-				      MIN (ctree->tree_indent / 2, TAB_SIZE),
-				      column_left - 1), cell_rectangle.y);
-		  break;
-		}
-	    }
-	}
-    }	  
-
-  for (last_column = clist->columns - 1;
-       last_column >= 0 && !clist->column[last_column].visible; last_column--)
-    ;
-
-  /* iterate and draw all the columns (row cells) and draw their contents */
-  for (i = 0; i < clist->columns; i++)
-    {
-      GtkStyle *style;
-      GdkGC *fg_gc; 
-      GdkGC *bg_gc;
-      PangoLayout *layout = NULL;
-      PangoRectangle logical_rect;
-
-      gint width;
-      gint height;
-      gint pixbuf_width;
-      gint string_width;
-      gint old_offset;
-
-      if (!clist->column[i].visible)
-	continue;
-
-      get_cell_style (clist, clist_row, state, i, &style, &fg_gc, &bg_gc);
-
-      /* calculate clipping region */
-      clip_rectangle.x = clist->column[i].area.x + clist->hoffset;
-      clip_rectangle.width = clist->column[i].area.width;
-
-      cell_rectangle.x = clip_rectangle.x - COLUMN_INSET - CELL_SPACING;
-      cell_rectangle.width = (clip_rectangle.width + 2 * COLUMN_INSET +
-			      (1 + (i == last_column)) * CELL_SPACING);
-      cell_rectangle.y = clip_rectangle.y;
-      cell_rectangle.height = clip_rectangle.height;
-
-      string_width = 0;
-      pixbuf_width = 0;
-      height = 0;
-
-      if (area && !gdk_rectangle_intersect (area, &cell_rectangle,
-					    &intersect_rectangle))
-	{
-	  if (i != ctree->tree_column)
-	    continue;
-	}
-      else
-	{
-	  gdk_draw_rectangle (clist->clist_window, bg_gc, TRUE,
-			      crect->x, crect->y, crect->width, crect->height);
-
-
-	  layout = _gtk_cmclist_create_cell_layout (clist, clist_row, i);
-	  if (layout)
-	    {
-	      pango_layout_get_pixel_extents (layout, NULL, &logical_rect);
-	      width = logical_rect.width;
-	    }
-	  else
-	    width = 0;
-
-	  switch (clist_row->cell[i].type)
-	    {
-	    case GTK_CMCELL_PIXBUF:
-	      pixbuf_width = gdk_pixbuf_get_width(GTK_CMCELL_PIXBUF (clist_row->cell[i])->pixbuf);
-	      height = gdk_pixbuf_get_height(GTK_CMCELL_PIXBUF (clist_row->cell[i])->pixbuf);
-	      width += pixbuf_width;
-	      break;
-	    case GTK_CMCELL_PIXTEXT:
-	      if (GTK_CMCELL_PIXTEXT (clist_row->cell[i])->pixbuf)
-		{
-		  pixbuf_width = gdk_pixbuf_get_width(GTK_CMCELL_PIXTEXT (clist_row->cell[i])->pixbuf);
-		  height = gdk_pixbuf_get_height(GTK_CMCELL_PIXTEXT (clist_row->cell[i])->pixbuf);
-		  width += pixbuf_width;
-		}
-
-	      if (GTK_CMCELL_PIXTEXT (clist_row->cell[i])->text &&
-		  GTK_CMCELL_PIXTEXT (clist_row->cell[i])->pixbuf)
-		width +=  GTK_CMCELL_PIXTEXT (clist_row->cell[i])->spacing;
-
-	      if (i == ctree->tree_column)
-		width += (ctree->tree_indent *
-			  ((GtkCMCTreeRow *)clist_row)->level);
-	      break;
-	    default:
-	      break;
-	    }
-
-	  switch (clist->column[i].justification)
-	    {
-	    case GTK_JUSTIFY_LEFT:
-	      offset = clip_rectangle.x + clist_row->cell[i].horizontal;
-	      break;
-	    case GTK_JUSTIFY_RIGHT:
-	      offset = (clip_rectangle.x + clist_row->cell[i].horizontal +
-			clip_rectangle.width - width);
-	      break;
-	    case GTK_JUSTIFY_CENTER:
-	    case GTK_JUSTIFY_FILL:
-	      offset = (clip_rectangle.x + clist_row->cell[i].horizontal +
-			(clip_rectangle.width / 2) - (width / 2));
-	      break;
-	    };
-
-	  if (i != ctree->tree_column)
-	    {
-	      offset += clist_row->cell[i].horizontal;
-	      switch (clist_row->cell[i].type)
-		{
-		case GTK_CMCELL_PIXBUF:
-		  draw_cell_pixbuf
-		    (clist->clist_window, &clip_rectangle, fg_gc,
-		     GTK_CMCELL_PIXBUF (clist_row->cell[i])->pixbuf,
-		     offset,
-		     clip_rectangle.y + clist_row->cell[i].vertical +
-		     (clip_rectangle.height - height) / 2,
-		     pixbuf_width, height);
-		  break;
-		case GTK_CMCELL_PIXTEXT:
-		  offset = draw_cell_pixbuf
-		    (clist->clist_window, &clip_rectangle, fg_gc,
-		     GTK_CMCELL_PIXTEXT (clist_row->cell[i])->pixbuf,
-		     offset,
-		     clip_rectangle.y + clist_row->cell[i].vertical +
-		     (clip_rectangle.height - height) / 2,
-		     pixbuf_width, height);
-		  offset += GTK_CMCELL_PIXTEXT (clist_row->cell[i])->spacing;
-
-		  /* Fall through */
-		case GTK_CMCELL_TEXT:
-		  if (layout)
-		    {
-		      gint row_center_offset = (clist->row_height - logical_rect.height) / 2;
-
-		      gdk_gc_set_clip_rectangle (fg_gc, &clip_rectangle);
-		      gdk_draw_layout (clist->clist_window, fg_gc,
-				       offset,
-				       row_rectangle.y + row_center_offset + clist_row->cell[i].vertical,
-				       layout);
-		      gdk_gc_set_clip_rectangle (fg_gc, NULL);
-		      g_object_unref (G_OBJECT (layout));
-		    }
-		  break;
-		default:
-		  break;
-		}
-	      continue;
-	    }
-	}
-
-      if (bg_gc == clist->bg_gc)
-	gdk_gc_set_background (ctree->lines_gc, &clist_row->background);
-
-      /* draw ctree->tree_column */
-      cell_rectangle.y -= CELL_SPACING;
-      cell_rectangle.height += CELL_SPACING;
-
-      if (area && !gdk_rectangle_intersect (area, &cell_rectangle,
-					    &intersect_rectangle))
-	{
-	  if (layout)
-            g_object_unref (G_OBJECT (layout));
-	  continue;
-	}
-
-      /* draw lines */
-      offset = gtk_cmctree_draw_lines (ctree, (GtkCMCTreeRow *)clist_row, row, i,
-				     state, &clip_rectangle, &cell_rectangle,
-				     crect, area, style);
-
-      /* draw expander */
-      offset = gtk_cmctree_draw_expander (ctree, (GtkCMCTreeRow *)clist_row,
-					style, &clip_rectangle, offset);
-
-      if (clist->column[i].justification == GTK_JUSTIFY_RIGHT)
-	offset -= ctree->tree_spacing;
-      else
-	offset += ctree->tree_spacing;
-
-      if (clist->column[i].justification == GTK_JUSTIFY_RIGHT)
-	offset -= (pixbuf_width + clist_row->cell[i].horizontal);
-      else
-	offset += clist_row->cell[i].horizontal;
-
-      old_offset = offset;
-      offset = draw_cell_pixbuf (clist->clist_window, &clip_rectangle, fg_gc,
-				 GTK_CMCELL_PIXTEXT (clist_row->cell[i])->pixbuf,
-				 offset, 
-				 clip_rectangle.y + clist_row->cell[i].vertical
-				 + (clip_rectangle.height - height) / 2,
-				 pixbuf_width, height);
-
-      if (layout)
-	{
-	  gint row_center_offset = (clist->row_height - logical_rect.height) / 2;
-	  
-	  if (clist->column[i].justification == GTK_JUSTIFY_RIGHT)
-	    {
-	      offset = (old_offset - string_width);
-	      if (GTK_CMCELL_PIXTEXT (clist_row->cell[i])->pixbuf)
-		offset -= GTK_CMCELL_PIXTEXT (clist_row->cell[i])->spacing;
-	    }
-	  else
-	    {
-	      if (GTK_CMCELL_PIXTEXT (clist_row->cell[i])->pixbuf)
-		offset += GTK_CMCELL_PIXTEXT (clist_row->cell[i])->spacing;
-	    }
-	  
-	  gdk_gc_set_clip_rectangle (fg_gc, &clip_rectangle);
-	  gdk_draw_layout (clist->clist_window, fg_gc,
-			   offset,
-			   row_rectangle.y + row_center_offset + clist_row->cell[i].vertical,
-			   layout);
-
-          g_object_unref (G_OBJECT (layout));
-	}
-      gdk_gc_set_clip_rectangle (fg_gc, NULL);
-    }
-
-  /* draw focus rectangle */
-  if (clist->focus_row == row &&
-      gtk_widget_get_can_focus (widget) && gtk_widget_has_focus (widget))
-    {
-      if (!area)
-	gdk_draw_rectangle (clist->clist_window, clist->xor_gc, FALSE,
-			    row_rectangle.x, row_rectangle.y,
-			    row_rectangle.width - 1, row_rectangle.height - 1);
-      else if (gdk_rectangle_intersect (area, &row_rectangle,
-					&intersect_rectangle))
-	{
-	  gdk_gc_set_clip_rectangle (clist->xor_gc, &intersect_rectangle);
-	  gdk_draw_rectangle (clist->clist_window, clist->xor_gc, FALSE,
-			      row_rectangle.x, row_rectangle.y,
-			      row_rectangle.width - 1,
-			      row_rectangle.height - 1);
-	  gdk_gc_set_clip_rectangle (clist->xor_gc, NULL);
-	}
-    }
-}
-
-static void
-tree_draw_node (GtkCMCTree     *ctree, 
-	        GtkCMCTreeNode *node)
-{
-  GtkCMCList *clist;
-  
-  clist = GTK_CMCLIST (ctree);
-
-  if (CLIST_UNFROZEN (clist) && gtk_cmctree_is_viewable (ctree, node))
-    {
-      GtkCMCTreeNode *work;
-      gint num = 0;
-      
-      work = GTK_CMCTREE_NODE (clist->row_list);
-      while (work && work != node)
-	{
-	  work = GTK_CMCTREE_NODE_NEXT (work);
-	  num++;
-	}
-      if (work && gtk_cmclist_row_is_visible (clist, num) != GTK_VISIBILITY_NONE)
-	GTK_CMCLIST_GET_CLASS (clist)->draw_row
-	  (clist, NULL, num, GTK_CMCLIST_ROW ((GList *) node));
-    }
+  return clip_rectangle->x + ctree->tree_indent * (ctree_row->level - 1);
 }
 
 static GtkCMCTreeNode *
@@ -2938,7 +2420,7 @@ cell_size_request (GtkCMCList       *clist,
 
   ctree = GTK_CMCTREE (clist);
 
-  layout = _gtk_cmclist_create_cell_layout (clist, clist_row, column);
+  layout = create_cell_layout (clist, clist_row, column);
   if (layout)
     {
       pango_layout_get_pixel_extents (layout, NULL, &logical_rect);
@@ -2980,13 +2462,7 @@ cell_size_request (GtkCMCList       *clist,
 	    case GTK_CMCTREE_EXPANDER_TRIANGLE:
 	      requisition->width += PM_SIZE + 3;
 	      break;
-	    case GTK_CMCTREE_EXPANDER_SQUARE:
-	    case GTK_CMCTREE_EXPANDER_CIRCULAR:
-	      requisition->width += PM_SIZE + 1;
-	      break;
 	    }
-	  if (ctree->line_style == GTK_CMCTREE_LINES_TABBED)
-	    requisition->width += 3;
 	}
       break;
     case GTK_CMCELL_PIXBUF:
@@ -3393,6 +2869,31 @@ real_unselect_row (GtkCMCList *clist,
 }
 
 static void
+tree_draw_node (GtkCMCTree     *ctree, 
+               GtkCMCTreeNode *node)
+{
+  GtkCMCList *clist;
+  
+  clist = GTK_CMCLIST (ctree);
+
+  if (CLIST_UNFROZEN (clist) && gtk_cmctree_is_viewable (ctree, node))
+    {
+      GtkCMCTreeNode *work;
+      gint num = 0;
+
+      work = GTK_CMCTREE_NODE (clist->row_list);
+      while (work && work != node)
+	{
+	  work = GTK_CMCTREE_NODE_NEXT (work);
+	  num++;
+	}
+      if (work && gtk_cmclist_row_is_visible (clist, num) != GTK_VISIBILITY_NONE)
+	GTK_CMCLIST_GET_CLASS(ctree)->draw_row
+	  (clist, NULL, num, GTK_CMCLIST_ROW ((GList *) node));
+    }
+}
+
+static void
 real_tree_select (GtkCMCTree     *ctree,
 		  GtkCMCTreeNode *node,
 		  gint          column)
@@ -3608,12 +3109,10 @@ ctree_is_hot_spot (GtkCMCTree     *ctree,
   if (clist->column[ctree->tree_column].justification == GTK_JUSTIFY_RIGHT)
     xl = (clist->column[ctree->tree_column].area.x + 
 	  clist->column[ctree->tree_column].area.width - 1 + clist->hoffset -
-	  (tree_row->level - 1) * ctree->tree_indent - PM_SIZE -
-	  (ctree->line_style == GTK_CMCTREE_LINES_TABBED) * 3);
+	  (tree_row->level - 1) * ctree->tree_indent - PM_SIZE);
   else
     xl = (clist->column[ctree->tree_column].area.x + clist->hoffset +
-	  (tree_row->level - 1) * ctree->tree_indent +
-	  (ctree->line_style == GTK_CMCTREE_LINES_TABBED) * 3);
+	  (tree_row->level - 1) * ctree->tree_indent);
 
   return (x >= xl && x <= xl + PM_SIZE && y >= yu && y <= yu + PM_SIZE);
 }
@@ -5338,59 +4837,6 @@ void
 gtk_cmctree_set_line_style (GtkCMCTree          *ctree, 
 			  GtkCMCTreeLineStyle  line_style)
 {
-  GtkCMCList *clist;
-  GtkCMCTreeLineStyle old_style;
-
-  cm_return_if_fail (GTK_IS_CMCTREE (ctree));
-
-  if (line_style == ctree->line_style)
-    return;
-
-  clist = GTK_CMCLIST (ctree);
-
-  old_style = ctree->line_style;
-  ctree->line_style = line_style;
-
-  if (clist->column[ctree->tree_column].auto_resize &&
-      !GTK_CMCLIST_AUTO_RESIZE_BLOCKED (clist))
-    {
-      if (old_style == GTK_CMCTREE_LINES_TABBED)
-	gtk_cmclist_set_column_width
-	  (clist, ctree->tree_column,
-	   clist->column[ctree->tree_column].width - 3);
-      else if (line_style == GTK_CMCTREE_LINES_TABBED)
-	gtk_cmclist_set_column_width
-	  (clist, ctree->tree_column,
-	   clist->column[ctree->tree_column].width + 3);
-    }
-
-  if (gtk_widget_get_realized (GTK_WIDGET(ctree)))
-    {
-      switch (line_style)
-	{
-	case GTK_CMCTREE_LINES_SOLID:
-	  if (gtk_widget_get_realized (GTK_WIDGET(ctree)))
-	    gdk_gc_set_line_attributes (ctree->lines_gc, 1, GDK_LINE_SOLID, 
-					GDK_CAP_BUTT, GDK_JOIN_MITER);
-	  break;
-	case GTK_CMCTREE_LINES_DOTTED:
-	  if (gtk_widget_get_realized (GTK_WIDGET(ctree)))
-	    gdk_gc_set_line_attributes (ctree->lines_gc, 1, 
-					GDK_LINE_ON_OFF_DASH, GDK_CAP_BUTT, GDK_JOIN_MITER);
-	  gdk_gc_set_dashes (ctree->lines_gc, 0, "\1\1", 2);
-	  break;
-	case GTK_CMCTREE_LINES_TABBED:
-	  if (gtk_widget_get_realized (GTK_WIDGET(ctree)))
-	    gdk_gc_set_line_attributes (ctree->lines_gc, 1, GDK_LINE_SOLID, 
-					GDK_CAP_BUTT, GDK_JOIN_MITER);
-	  break;
-	case GTK_CMCTREE_LINES_NONE:
-	  break;
-	default:
-	  return;
-	}
-      CLIST_REFRESH (ctree);
-    }
 }
 
 void 
@@ -5423,10 +4869,6 @@ gtk_cmctree_set_expander_style (GtkCMCTree              *ctree,
 	case GTK_CMCTREE_EXPANDER_TRIANGLE:
 	  new_width -= PM_SIZE + 3;
 	  break;
-	case GTK_CMCTREE_EXPANDER_SQUARE:
-	case GTK_CMCTREE_EXPANDER_CIRCULAR:
-	  new_width -= PM_SIZE + 1;
-	  break;
 	}
 
       switch (expander_style)
@@ -5435,10 +4877,6 @@ gtk_cmctree_set_expander_style (GtkCMCTree              *ctree,
 	  break;
 	case GTK_CMCTREE_EXPANDER_TRIANGLE:
 	  new_width += PM_SIZE + 3;
-	  break;
-	case GTK_CMCTREE_EXPANDER_SQUARE:
-	case GTK_CMCTREE_EXPANDER_CIRCULAR:
-	  new_width += PM_SIZE + 1;
 	  break;
 	}
 

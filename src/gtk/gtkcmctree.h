@@ -68,18 +68,13 @@ typedef enum
 
 typedef enum
 {
-  GTK_CMCTREE_LINES_NONE,
-  GTK_CMCTREE_LINES_SOLID,
-  GTK_CMCTREE_LINES_DOTTED,
-  GTK_CMCTREE_LINES_TABBED
+  GTK_CMCTREE_LINES_NONE
 } GtkCMCTreeLineStyle;
 
 typedef enum
 {
   GTK_CMCTREE_EXPANDER_NONE,
-  GTK_CMCTREE_EXPANDER_SQUARE,
-  GTK_CMCTREE_EXPANDER_TRIANGLE,
-  GTK_CMCTREE_EXPANDER_CIRCULAR
+  GTK_CMCTREE_EXPANDER_TRIANGLE
 } GtkCMCTreeExpanderStyle;
 
 typedef enum
@@ -115,8 +110,6 @@ typedef gboolean (*GtkCMCTreeCompareDragFunc) (GtkCMCTree     *ctree,
 struct _GtkCMCTree
 {
   GtkCMCList clist;
-  
-  GdkGC *lines_gc;
   
   gint tree_indent;
   gint tree_spacing;

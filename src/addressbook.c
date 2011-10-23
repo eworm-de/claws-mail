@@ -1019,15 +1019,9 @@ static void addressbook_create(void)
 	gtk_container_add(GTK_CONTAINER(ctree_swin), ctree);
 	gtk_cmclist_set_selection_mode(GTK_CMCLIST(ctree), GTK_SELECTION_BROWSE);
 	gtk_cmclist_set_column_width(GTK_CMCLIST(ctree), 0, COL_FOLDER_WIDTH);
-	if (prefs_common.enable_dotted_lines) {
-		gtk_cmctree_set_line_style(GTK_CMCTREE(ctree), GTK_CMCTREE_LINES_DOTTED);
-		gtk_cmctree_set_expander_style(GTK_CMCTREE(ctree),
-				     GTK_CMCTREE_EXPANDER_SQUARE);
-	} else {
-		gtk_cmctree_set_line_style(GTK_CMCTREE(ctree), GTK_CMCTREE_LINES_NONE);
-		gtk_cmctree_set_expander_style(GTK_CMCTREE(ctree),
-				     GTK_CMCTREE_EXPANDER_TRIANGLE);
-	}
+	gtk_cmctree_set_line_style(GTK_CMCTREE(ctree), GTK_CMCTREE_LINES_NONE);
+	gtk_cmctree_set_expander_style(GTK_CMCTREE(ctree),
+			     GTK_CMCTREE_EXPANDER_TRIANGLE);
 	gtk_sctree_set_stripes(GTK_SCTREE(ctree), prefs_common.use_stripes_in_summaries);
 	gtk_cmctree_set_indent(GTK_CMCTREE(ctree), CTREE_INDENT);
 	gtk_cmclist_set_compare_func(GTK_CMCLIST(ctree),
@@ -1074,15 +1068,9 @@ static void addressbook_create(void)
 	clist = gtk_sctree_new_with_titles(N_LIST_COLS, 0, list_titles);
 	gtk_container_add(GTK_CONTAINER(clist_swin), clist);
 	gtk_cmclist_set_selection_mode(GTK_CMCLIST(clist), GTK_SELECTION_EXTENDED);
-	if (prefs_common.enable_dotted_lines) {
-		gtk_cmctree_set_line_style(GTK_CMCTREE(clist), GTK_CMCTREE_LINES_DOTTED);
-		gtk_cmctree_set_expander_style(GTK_CMCTREE(clist),
-				     GTK_CMCTREE_EXPANDER_SQUARE);
-	} else {
-		gtk_cmctree_set_line_style(GTK_CMCTREE(clist), GTK_CMCTREE_LINES_NONE);
-		gtk_cmctree_set_expander_style(GTK_CMCTREE(clist),
-				     GTK_CMCTREE_EXPANDER_TRIANGLE);
-	}
+	gtk_cmctree_set_line_style(GTK_CMCTREE(clist), GTK_CMCTREE_LINES_NONE);
+	gtk_cmctree_set_expander_style(GTK_CMCTREE(clist),
+			     GTK_CMCTREE_EXPANDER_TRIANGLE);
 	gtk_sctree_set_stripes(GTK_SCTREE(ctree), prefs_common.use_stripes_in_summaries);
 	gtk_cmctree_set_indent(GTK_CMCTREE(clist), CTREE_INDENT);
 	gtk_cmclist_set_column_width(GTK_CMCLIST(clist), COL_NAME,
@@ -2743,7 +2731,7 @@ static void addressbook_change_node_name(GtkCMCTreeNode *node, const gchar *name
 	gtk_cmctree_get_node_info(ctree, node, text, &spacing,
 				&pix_cl, &pix_op,
 				&is_leaf, &expanded);
-	gtk_sctree_set_node_info(ctree, node, name, spacing,
+	gtk_cmctree_set_node_info(ctree, node, name, spacing,
 				pix_cl, pix_op,
 				is_leaf, expanded);
 }

@@ -206,13 +206,6 @@ struct _GtkCMCList
   GtkAdjustment *hadjustment;
   GtkAdjustment *vadjustment;
   
-  /* xor GC for the vertical drag line */
-  GdkGC *xor_gc;
-  
-  /* gc for drawing unselected cells */
-  GdkGC *fg_gc;
-  GdkGC *bg_gc;
-  
   /* cursor used to indicate dragging */
   GdkCursor *cursor_drag;
   

@@ -1,3 +1,23 @@
+2011-10-23 [colin]	3.7.10cvs44
+
+	* src/addressadd.c
+	* src/addressbook.c
+	* src/addressbook_foldersel.c
+	* src/editgroup.c
+	* src/foldersel.c
+	* src/folderview.c
+	* src/grouplistdialog.c
+	* src/prefs_common.c
+	* src/prefs_common.h
+	* src/summaryview.c
+	* src/gtk/gtkcmclist.c
+	* src/gtk/gtkcmclist.h
+	* src/gtk/gtkcmctree.c
+	* src/gtk/gtkcmctree.h
+	* src/gtk/gtksctree.c
+		Refactor some tree stuff (lots of code duplication there)
+		and switch to cairo for tree rendering.
+
 2011-10-23 [holger]	3.7.10cvs43
 
 	* src/filtering.c
