@@ -738,8 +738,8 @@ static gboolean filtering_apply_rule(FilteringProp *filtering, MsgInfo *info,
 							log_warning(LOG_DEBUG_FILTERING, _("action could not apply\n"));
 						log_print(LOG_DEBUG_FILTERING,
 								_("no further processing after action [ %s ]\n"), buf);
-					} else
-						g_warning("No further processing after rule %s\n", buf);
+					}
+ 					debug_print("No further processing after rule %s\n", buf);
                 }
                 g_free(buf);
                 if (filtering_is_final_action(action)) {

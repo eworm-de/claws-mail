@@ -1,3 +1,9 @@
+2011-10-23 [holger]	3.7.10cvs43
+
+	* src/filtering.c
+		Don't issue a warning for designed behaviour of the stop rule.
+		Fixes bug #2520, 'Please remove verbose "No further processing after rule %s" message.'
+
 2011-10-22 [colin]	3.7.10cvs42
 
 	* src/printing.c
