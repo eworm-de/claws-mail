@@ -600,14 +600,6 @@ static gboolean do_pix_draw(GtkWidget *widget, cairo_t *cr,
 	} else {
 		cm_return_val_if_fail(data->base_pixbuf != NULL, FALSE);
 	}
-	cairo_pattern_t *pattern = gdk_window_get_background_pattern(drawable);
-	if (pattern == NULL)
-		pattern = gdk_window_get_background_pattern(gdk_window_get_parent(drawable));
-	
-	cairo_pattern_reference(pattern);
-	cairo_set_source(cr, pattern);
-	cairo_fill(cr);
-	cairo_pattern_destroy(pattern);
 
 	if (data->highlight) {
 		MainWindow *mw = NULL;
