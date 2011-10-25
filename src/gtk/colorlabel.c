@@ -352,7 +352,7 @@ GtkWidget *colorlabel_create_check_color_menu_item(gint color_index, gboolean fo
 	gtk_box_pack_start(GTK_BOX(hbox), vbox, FALSE, FALSE, 0);
 	gtk_box_pack_start(GTK_BOX(hbox), label, FALSE, FALSE, 4);
 	if (color_index < 9) {
-		accel = gtk_accelerator_get_label(GDK_1+color_index, GDK_CONTROL_MASK);
+		accel = gtk_accelerator_get_label(GDK_KEY_1+color_index, GDK_CONTROL_MASK);
 		label = gtk_label_new(accel);
 		gtk_widget_show(label);
 		gtk_misc_set_alignment(GTK_MISC(label), 1, 0.5);

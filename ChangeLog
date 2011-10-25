@@ -1,3 +1,10 @@
+2011-10-25 [colin]	3.7.10cvs49
+
+	* src/gtk/colorlabel.c
+		GDK_ => GDK_KEY
+	* src/gtk/gtkcmclist.c
+		Make row height closer to what it was
+
 2011-10-25 [colin]	3.7.10cvs48
 
 	* src/stock_pixmap.c

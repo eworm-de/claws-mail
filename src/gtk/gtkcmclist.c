@@ -3123,7 +3123,7 @@ gtk_cmclist_set_row_height (GtkCMCList *clist,
 	{
 	  clist->row_height = (pango_font_metrics_get_ascent (metrics) +
 			       pango_font_metrics_get_descent (metrics));
-	  clist->row_height = PANGO_PIXELS (clist->row_height) + 2;
+	  clist->row_height = PANGO_PIXELS (clist->row_height) + 1;
 	}
 
       pango_font_metrics_unref (metrics);
