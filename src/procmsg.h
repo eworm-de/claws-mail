@@ -330,6 +330,8 @@ void	procmsg_empty_all_trash		(void);
 gint	procmsg_send_queue		(FolderItem	*queue,
 					 gboolean	 save_msgs,
 					 gchar		**errstr);
+gboolean procmsg_queue_lock		(gchar		**errstr);
+void     procmsg_queue_unlock		(void);
 gboolean procmsg_queue_is_empty	(FolderItem *queue);
 void	procmsg_print_message		(MsgInfo	*msginfo,
 					 const gchar	*cmdline);
@@ -343,6 +345,12 @@ MsgInfo *procmsg_msginfo_get_full_info_from_file
 					const gchar *file);
 void	 procmsg_msginfo_free		(MsgInfo	*msginfo);
 guint	 procmsg_msginfo_memusage	(MsgInfo	*msginfo);
+
+gint procmsg_send_message_queue_with_lock(const gchar *file,
+					  gchar **errstr,
+					  FolderItem *queue,
+					  gint msgnum,
+					  gboolean *queued_removed);
 
 gint procmsg_send_message_queue		(const gchar *file,
 					 gchar **errstr,

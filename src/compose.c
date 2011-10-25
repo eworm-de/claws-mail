@@ -5003,10 +5003,10 @@ gint compose_send(Compose *compose)
 	}
 	if (msgpath == NULL) {
 		msgpath = folder_item_fetch_msg(folder, msgnum);
-		val = procmsg_send_message_queue(msgpath, &errstr, folder, msgnum, &queued_removed);
+		val = procmsg_send_message_queue_with_lock(msgpath, &errstr, folder, msgnum, &queued_removed);
 		g_free(msgpath);
 	} else {
-		val = procmsg_send_message_queue(msgpath, &errstr, folder, msgnum, &queued_removed);
+		val = procmsg_send_message_queue_with_lock(msgpath, &errstr, folder, msgnum, &queued_removed);
 		claws_unlink(msgpath);
 		g_free(msgpath);
 	}

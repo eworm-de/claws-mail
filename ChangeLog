@@ -1,3 +1,11 @@
+2011-10-25 [colin]	3.7.10cvs50
+
+	* src/compose.c
+	* src/messageview.c
+	* src/procmsg.c
+	* src/procmsg.h
+		Fix locking when sending a single message
+
 2011-10-25 [colin]	3.7.10cvs49
 
 	* src/gtk/colorlabel.c

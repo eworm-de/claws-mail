@@ -845,6 +845,25 @@ static gboolean procmsg_is_last_for_account(FolderItem *queue, MsgInfo *msginfo,
 }
 
 static gboolean send_queue_lock = FALSE;
+
+gboolean procmsg_queue_lock(char **errstr)
+{
+	if (send_queue_lock) {
+		/* Avoid having to translate two similar strings */
+		log_warning(LOG_PROTOCOL, "%s\n", _("Already trying to send."));
+		if (errstr) {
+			if (*errstr) g_free(*errstr);
+			*errstr = g_strdup_printf(_("Already trying to send."));
+		}
+		return FALSE;
+	}
+	send_queue_lock = TRUE;
+	return TRUE;
+}
+void procmsg_queue_unlock(void)
+{
+	send_queue_lock = FALSE;
+}
 /*!
  *\brief	Send messages in queue
  *
@@ -861,23 +880,16 @@ gint procmsg_send_queue(FolderItem *queue, gboolean save_msgs, gchar **errstr)
 	GSList *sorted_list = NULL;
 	GNode *node, *next;
 	
-	if (send_queue_lock) {
-		/* Avoid having to translate two similar strings */
-		log_warning(LOG_PROTOCOL, "%s\n", _("Already trying to send."));
-		if (errstr) {
-			if (*errstr) g_free(*errstr);
-			*errstr = g_strdup_printf(_("Already trying to send."));
-		}
+	if (!procmsg_queue_lock(errstr)) {
 		toolbar_main_set_sensitive(mainwindow_get_mainwindow());
 		return -1;
 	}
-	send_queue_lock = TRUE;
 	inc_lock();
 	if (!queue)
 		queue = folder_get_default_queue();
 	
 	if (queue == NULL) {
-		send_queue_lock = FALSE;
+		procmsg_queue_unlock();
 		inc_unlock();
 		return -1;
 	}
@@ -937,7 +949,7 @@ gint procmsg_send_queue(FolderItem *queue, gboolean save_msgs, gchar **errstr)
 			node = next;
 		}
 	}
-	send_queue_lock = FALSE;
+	procmsg_queue_unlock();
 	inc_unlock();
 	toolbar_main_set_sensitive(mainwindow_get_mainwindow());
 
@@ -1810,6 +1822,17 @@ gint procmsg_send_message_queue(const gchar *file, gchar **errstr, FolderItem *q
 	gint result = procmsg_send_message_queue_full(file, FALSE, errstr, queue, msgnum, queued_removed);
 	toolbar_main_set_sensitive(mainwindow_get_mainwindow());
 	return result;
+}
+
+gint procmsg_send_message_queue_with_lock(const gchar *file, gchar **errstr, FolderItem *queue, gint msgnum, gboolean *queued_removed)
+{
+	gint val;
+	if (procmsg_queue_lock(errstr)) {
+		val = procmsg_send_message_queue(file, errstr, queue, msgnum, queued_removed);
+		procmsg_queue_unlock();
+		return val;
+	}
+	return -1;
 }
 
 static void update_folder_msg_counts(FolderItem *item, MsgInfo *msginfo, MsgPermFlags old_flags)
