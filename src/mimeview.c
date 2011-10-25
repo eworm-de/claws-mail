@@ -1290,7 +1290,9 @@ static void mimeview_start_drag(GtkWidget *widget, gint button,
 	cm_return_if_fail(mimeview != NULL);
 
 	partinfo = mimeview_get_selected_part(mimeview);
-	if (partinfo->disposition == DISPOSITIONTYPE_INLINE) return;
+	if (partinfo == NULL || 
+	    partinfo->disposition == DISPOSITIONTYPE_INLINE)
+		return;
 
 	context = gtk_drag_begin(widget, mimeview->target_list,
 				 GDK_ACTION_COPY, button, event);
