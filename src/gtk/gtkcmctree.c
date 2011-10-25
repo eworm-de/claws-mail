@@ -638,7 +638,7 @@ draw_row (GtkCMCList     *clist,
   static GdkColor greybg={0, 0, 0, 0};
   static gboolean color_change = TRUE;
   cairo_t *cr;
-  GdkColor *fgcolor, *bgcolor, *focuscolor;
+  GdkColor *fgcolor, *bgcolor;
 
   cm_return_if_fail (clist != NULL);
   widget = GTK_WIDGET (clist);
@@ -700,10 +700,8 @@ draw_row (GtkCMCList     *clist,
   if (prefs_common.use_stripes_everywhere && GTK_SCTREE(ctree)->show_stripes
       && color_change && row % 2) {
     bgcolor = &greybg;
-    focuscolor = &greybg;
   } else {
     bgcolor = &style->base[GTK_STATE_NORMAL];
-    focuscolor = &style->base[GTK_STATE_NORMAL];
   }
   state = clist_row->state;
 
@@ -716,7 +714,7 @@ draw_row (GtkCMCList     *clist,
       crect = &intersect_rectangle;
 
       if (gdk_rectangle_intersect (area, &cell_rectangle, crect)) {
-        gdk_cairo_rectangle(cr, crect);
+        gdk_cairo_rectangle(cr, &cell_rectangle);
 	gdk_cairo_set_source_color(cr, &style->base[GTK_STATE_NORMAL]);
 	cairo_fill(cr);
       }
@@ -726,7 +724,7 @@ draw_row (GtkCMCList     *clist,
       rect = &clip_rectangle;
       crect = &cell_rectangle;
 
-      gdk_cairo_rectangle(cr, crect);
+      gdk_cairo_rectangle(cr, &cell_rectangle);
       gdk_cairo_set_source_color(cr, &style->base[GTK_STATE_NORMAL]);
       cairo_fill(cr);
     }
@@ -780,12 +778,6 @@ draw_row (GtkCMCList     *clist,
       pixbuf_width = 0;
       height = 0;
 
-          gdk_cairo_rectangle(cr, &cell_rectangle);
-	  if (state == GTK_STATE_NORMAL)
-		gdk_cairo_set_source_color(cr, bgcolor);
-	  else
-		gdk_cairo_set_source_color(cr, &style->base[state]);
-	  cairo_fill(cr);
       if (area && !gdk_rectangle_intersect (area, &cell_rectangle,
 					    &intersect_rectangle))
 	{
@@ -794,6 +786,13 @@ draw_row (GtkCMCList     *clist,
 	}
       else
 	{
+	  gdk_cairo_rectangle(cr, &cell_rectangle);
+	  if (state == GTK_STATE_NORMAL)
+		gdk_cairo_set_source_color(cr, bgcolor);
+	  else
+		gdk_cairo_set_source_color(cr, &style->base[state]);
+	  cairo_fill(cr);
+
 	  layout = create_cell_layout (clist, clist_row, i);
 	  if (layout)
 	    {
@@ -954,6 +953,22 @@ draw_row (GtkCMCList     *clist,
           g_object_unref (G_OBJECT (layout));
 	}
     }
+   /* draw focus rectangle */
+  if (clist->focus_row == row &&
+      gtk_widget_get_can_focus (widget) && gtk_widget_has_focus (widget))
+    {
+      if (!area || gdk_rectangle_intersect (area, &row_rectangle,
+					&intersect_rectangle))
+	{
+	    cairo_set_line_width(cr, 1.0);
+	    cairo_set_antialias(cr, CAIRO_ANTIALIAS_NONE);
+	    gdk_cairo_set_source_color(cr, &style->fg[GTK_STATE_NORMAL]);
+	    cairo_rectangle(cr, row_rectangle.x, row_rectangle.y,
+			      row_rectangle.width + 1,
+			      row_rectangle.height);
+	    cairo_stroke(cr);
+	}
+     }
     cairo_destroy(cr);
 }
 

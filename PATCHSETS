@@ -4255,3 +4255,4 @@
 ( cvs diff -u -r 1.2.2.35 -r 1.2.2.36 src/gtk/colorlabel.c;  cvs diff -u -r 1.1.2.20 -r 1.1.2.21 src/gtk/gtkcmclist.c;  ) > 3.7.10cvs49.patchset
 ( cvs diff -u -r 1.382.2.587 -r 1.382.2.588 src/compose.c;  cvs diff -u -r 1.94.2.220 -r 1.94.2.221 src/messageview.c;  cvs diff -u -r 1.150.2.118 -r 1.150.2.119 src/procmsg.c;  cvs diff -u -r 1.60.2.56 -r 1.60.2.57 src/procmsg.h;  ) > 3.7.10cvs50.patchset
 ( cvs diff -u -r 1.25.2.71 -r 1.25.2.72 src/stock_pixmap.c;  ) > 3.7.10cvs51.patchset
+( cvs diff -u -r 1.1.2.21 -r 1.1.2.22 src/gtk/gtkcmclist.c;  cvs diff -u -r 1.1.2.22 -r 1.1.2.23 src/gtk/gtkcmctree.c;  ) > 3.7.10cvs52.patchset

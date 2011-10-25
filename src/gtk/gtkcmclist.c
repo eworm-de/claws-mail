@@ -5861,16 +5861,16 @@ draw_row (GtkCMCList     *clist,
       gtk_widget_get_can_focus (widget) && gtk_widget_has_focus(widget))
     {
       if (!area) {
-	cairo_rectangle(cr, row_rectangle.x + 1, row_rectangle.y,
-			    row_rectangle.width - 1, row_rectangle.height);
+	cairo_rectangle(cr, row_rectangle.x, row_rectangle.y,
+			    row_rectangle.width + 1, row_rectangle.height);
 	gdk_cairo_set_source_color(cr, &style->fg[GTK_STATE_NORMAL]);
 	cairo_stroke(cr);
       }
       else if (gdk_rectangle_intersect (area, &row_rectangle,
 					&intersect_rectangle))
 	{
-	  cairo_rectangle(cr, row_rectangle.x + 1, row_rectangle.y,
-			    row_rectangle.width - 1, row_rectangle.height);
+	  cairo_rectangle(cr, row_rectangle.x, row_rectangle.y,
+			    row_rectangle.width + 1, row_rectangle.height);
 	  gdk_cairo_set_source_color(cr, &style->fg[GTK_STATE_NORMAL]);
 	  cairo_stroke(cr);
 	}
@@ -5929,11 +5929,19 @@ draw_rows (GtkCMCList     *clist,
 
   if (!area) {
     int w, h, y;
-    gdk_drawable_get_size (GDK_DRAWABLE (clist->clist_window), &w, &h);
+    cairo_t *cr;
+#if GTK_CHECK_VERSION(2,24,0)
+    w = gdk_window_get_width(clist->clist_window);
+    h = gdk_window_get_height(clist->clist_window);
+#else
+    gdk_drawable_get_size(clist->clist_window, &w, &h);
+#endif
+    cr = gdk_cairo_create(clist->clist_window);
     y = ROW_TOP_YPIXEL (clist, i);
-    gdk_window_clear_area (clist->clist_window,
-                           0, y,
-                           w, h - y);
+    gdk_cairo_set_source_color(cr, &gtk_widget_get_style(GTK_WIDGET(clist))->base[GTK_STATE_NORMAL]);
+    cairo_rectangle(cr, 0, y, w, h - y);
+    cairo_fill(cr);
+    cairo_destroy(cr);
   }
 }
 
@@ -6239,18 +6247,19 @@ hadjustment_value_changed (GtkAdjustment *adjustment,
   if (gtk_widget_is_drawable (GTK_WIDGET(clist)))
     {
       GtkWidget *focus_child = gtk_container_get_focus_child (container);
+ 
+      gdk_window_scroll (clist->clist_window, dx, 0);
+      gdk_window_process_updates (clist->clist_window, FALSE);
+
       if (gtk_widget_get_can_focus(GTK_WIDGET(clist)) && 
           gtk_widget_has_focus(GTK_WIDGET(clist)) &&
           !focus_child && GTK_CMCLIST_ADD_MODE(clist))
         {
           y = ROW_TOP_YPIXEL (clist, clist->focus_row);
-	  cairo_rectangle(cr, 0, y, clist->clist_window_width - 1,
-                              clist->row_height - 1);
+	  cairo_rectangle(cr, 0, y, clist->clist_window_width + 1,
+                              clist->row_height);
 	  cairo_stroke(cr);
         }
- 
-      gdk_window_scroll (clist->clist_window, dx, 0);
-      gdk_window_process_updates (clist->clist_window, FALSE);
 
       if (gtk_widget_get_can_focus(GTK_WIDGET(clist)) && 
           gtk_widget_has_focus(GTK_WIDGET(clist)) &&
@@ -6265,34 +6274,10 @@ hadjustment_value_changed (GtkAdjustment *adjustment,
               draw_rows (clist, &area);
               clist->focus_row = focus_row;
 	  
-	      cairo_rectangle(cr, 0, y, clist->clist_window_width - 1,
-                              clist->row_height - 1);
+	      cairo_rectangle(cr, 0, y, clist->clist_window_width + 1,
+                              clist->row_height);
 	      cairo_stroke(cr);
               return;
-            }
-          else if (ABS(dx) < clist->clist_window_width - 1)
-            {
-              gint x0;
-              gint x1;
-	  
-              if (dx > 0)
-                {
-                  x0 = clist->clist_window_width - 1;
-                  x1 = dx;
-                }
-              else
-                {
-                  x0 = 0;
-                  x1 = clist->clist_window_width - 1 + dx;
-                }
-
-              y = ROW_TOP_YPIXEL (clist, clist->focus_row);
-	      cairo_move_to(cr, x0, y + 1);
-	      cairo_line_to(cr, x0, y + clist->row_height - 2);
-	      cairo_stroke(cr);
-	      cairo_move_to(cr, x1, y + 1);
-	      cairo_line_to(cr, x1, y + clist->row_height - 2);
-	      cairo_stroke(cr);
             }
         }
     }
@@ -6556,8 +6541,8 @@ gtk_cmclist_draw_focus (GtkWidget *widget)
     cairo_dash_from_add_mode(clist, cr);
     cairo_set_line_width(cr, 1.0);
     cairo_set_antialias(cr, CAIRO_ANTIALIAS_NONE);
-    cairo_rectangle(cr, 1, ROW_TOP_YPIXEL(clist, clist->focus_row),
-			clist->clist_window_width - 1,
+    cairo_rectangle(cr, 0, ROW_TOP_YPIXEL(clist, clist->focus_row),
+			clist->clist_window_width + 1,
 			clist->row_height);
     cairo_stroke(cr);
     cairo_destroy(cr);
@@ -6568,17 +6553,32 @@ static void
 gtk_cmclist_undraw_focus (GtkWidget *widget)
 {
   GtkCMCList *clist;
-
+  int row;
   cm_return_if_fail (GTK_IS_CMCLIST (widget));
+
+  clist = GTK_CMCLIST(widget);
+
+  if (clist->focus_row < 0)
+    return;
 
   if (!gtk_widget_is_drawable (widget) || !gtk_widget_get_can_focus (widget))
     return;
 
   clist = GTK_CMCLIST (widget);
   if (clist->focus_row >= 0) {
-    GTK_CMCLIST_GET_CLASS(clist)->draw_row(clist, NULL, clist->focus_row, 
-	ROW_ELEMENT (clist, clist->focus_row)->data);
+    cairo_t *cr = gdk_cairo_create(clist->clist_window);
+    cairo_set_line_width(cr, 1.0);
+    gdk_cairo_set_source_color(cr, &gtk_widget_get_style(widget)->base[GTK_STATE_NORMAL]);
+    cairo_set_antialias(cr, CAIRO_ANTIALIAS_NONE);
+    cairo_rectangle(cr, 0, ROW_TOP_YPIXEL(clist, clist->focus_row),
+			clist->clist_window_width + 1,
+			clist->row_height);
+    cairo_stroke(cr);
+    cairo_destroy(cr);
   }
+
+  row = clist->focus_row;
+  GTK_CMCLIST_GET_CLASS(GTK_CMCLIST(widget))->draw_row(clist, NULL, row, ROW_ELEMENT (clist, row)->data);
 }
 
 static gint
