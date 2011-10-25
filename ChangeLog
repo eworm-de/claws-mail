@@ -1,3 +1,9 @@
+2011-10-25 [colin]	3.7.10cvs53
+
+	* src/gtk/gtkcmclist.c
+	* src/gtk/gtkcmctree.c
+		Fix colors, fix warnings
+
 2011-10-25 [colin]	3.7.10cvs52
 
 	* src/gtk/gtkcmclist.c

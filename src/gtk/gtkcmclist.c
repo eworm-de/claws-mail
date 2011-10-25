@@ -364,11 +364,7 @@ static void column_button_clicked     (GtkWidget      *widget,
 /* Adjustments */
 static void adjust_adjustments        (GtkCMCList       *clist,
 				       gboolean        block_resize);
-static void vadjustment_changed       (GtkAdjustment  *adjustment,
-				       gpointer        data);
 static void vadjustment_value_changed (GtkAdjustment  *adjustment,
-				       gpointer        data);
-static void hadjustment_changed       (GtkAdjustment  *adjustment,
 				       gpointer        data);
 static void hadjustment_value_changed (GtkAdjustment  *adjustment,
 				       gpointer        data);
@@ -1231,9 +1227,6 @@ gtk_cmclist_set_hadjustment (GtkCMCList      *clist,
       gtk_object_ref (G_OBJECT (clist->hadjustment));
       gtk_object_sink (G_OBJECT (clist->hadjustment));
 #endif
-      g_signal_connect (G_OBJECT (clist->hadjustment), "changed",
-			  G_CALLBACK( hadjustment_changed),
-			  (gpointer) clist);
       g_signal_connect (G_OBJECT (clist->hadjustment), "value_changed",
 			  G_CALLBACK( hadjustment_value_changed),
 			  (gpointer) clist);
@@ -1284,9 +1277,6 @@ gtk_cmclist_set_vadjustment (GtkCMCList      *clist,
       gtk_object_sink (G_OBJECT (clist->vadjustment));
 #endif
 
-      g_signal_connect (G_OBJECT (clist->vadjustment), "changed",
-			  G_CALLBACK(vadjustment_changed),
-			  (gpointer) clist);
       g_signal_connect (G_OBJECT (clist->vadjustment), "value_changed",
 			  G_CALLBACK(vadjustment_value_changed),
 			  (gpointer) clist);
@@ -4512,7 +4502,6 @@ gtk_cmclist_realize (GtkWidget *widget)
   GtkStyle *style;
   GdkWindow *window;
   GdkWindowAttr attributes;
-  GdkGCValues values;
   GtkCMCListRow *clist_row;
   GList *list;
   gint attributes_mask;
@@ -4821,31 +4810,14 @@ static gint
 gtk_cmclist_expose (GtkWidget      *widget,
 		  GdkEventExpose *event)
 {
-  GdkWindow *window;
   GtkCMCList *clist;
-  GtkStyle *style;
 
   cm_return_val_if_fail (GTK_IS_CMCLIST (widget), FALSE);
   cm_return_val_if_fail (event != NULL, FALSE);
 
-  window = gtk_widget_get_window (widget);
-  style = gtk_widget_get_style (widget);
-
   if (gtk_widget_is_drawable (widget))
     {
       clist = GTK_CMCLIST (widget);
-
-      /* draw border */
-      if (event->window == window)
-	gtk_paint_shadow (style, window,
-			 GTK_STATE_NORMAL, clist->shadow_type,
-			 NULL, NULL, NULL,
-			 0, 0,
-			 clist->clist_window_width +
-			 (2 * style->xthickness),
-			 clist->clist_window_height +
-			 (2 * style->ythickness) +
-			 clist->column_title_area.height);
 
       /* exposure events on the list */
       if (event->window == clist->clist_window)
@@ -5396,7 +5368,6 @@ gtk_cmclist_size_request (GtkWidget      *widget,
   GtkCMCList *clist;
   GtkStyle *style;
   gint i;
-  gint font_height = 0;
   guint border_width;
   cm_return_if_fail (GTK_IS_CMCLIST (widget));
   cm_return_if_fail (requisition != NULL);
@@ -5410,7 +5381,6 @@ gtk_cmclist_size_request (GtkWidget      *widget,
   /* compute the size of the column title (title) area */
   clist->column_title_area.height = 0;
   if (GTK_CMCLIST_SHOW_TITLES(clist)) {
-    font_height = (pango_font_description_get_size(style->font_desc)/PANGO_SCALE)*2+4;
     for (i = 0; i < clist->columns; i++)
       if (clist->column[i].button)
 	{
@@ -5646,7 +5616,6 @@ draw_row (GtkCMCList     *clist,
   gint state;
   gint i;
   cairo_t *cr;
-  const double dashes[] = {4.0, 4.0};
   cm_return_if_fail (clist != NULL);
 
   /* bail now if we arn't drawable yet */
@@ -5654,7 +5623,7 @@ draw_row (GtkCMCList     *clist,
     return;
 
   widget = GTK_WIDGET (clist);
-  style = gtk_widget_get_style (widget);
+  style = clist_row->style ? clist_row->style : gtk_widget_get_style (widget);
 
   /* if the function is passed the pointer to the row instead of null,
    * it avoids this expensive lookup */
@@ -5842,7 +5811,7 @@ draw_row (GtkCMCList     *clist,
 	  if (layout)
 	    {
 	      gint row_center_offset = (clist->row_height - logical_rect.height - 1) / 2;
-	      gdk_cairo_set_source_color(cr, &gtk_widget_get_style(GTK_WIDGET(clist))->fg[state]);
+	      gdk_cairo_set_source_color(cr, clist_row->fg_set ? &clist_row->foreground : &style->fg[state]);
 	      cairo_move_to(cr, offset, row_rectangle.y + row_center_offset + clist_row->cell[i].vertical);
 	      pango_cairo_show_layout(cr, layout);
               g_object_unref (G_OBJECT (layout));
@@ -6088,30 +6057,6 @@ adjust_adjustments (GtkCMCList *clist,
 	   requisition.height != allocation.height))
 	gtk_widget_queue_resize (widget);
     }
-}
-
-static void
-vadjustment_changed (GtkAdjustment *adjustment,
-		     gpointer       data)
-{
-  GtkCMCList *clist;
-
-  cm_return_if_fail (adjustment != NULL);
-  cm_return_if_fail (data != NULL);
-
-  clist = GTK_CMCLIST (data);
-}
-
-static void
-hadjustment_changed (GtkAdjustment *adjustment,
-		     gpointer       data)
-{
-  GtkCMCList *clist;
-
-  cm_return_if_fail (adjustment != NULL);
-  cm_return_if_fail (data != NULL);
-
-  clist = GTK_CMCLIST (data);
 }
 
 static void

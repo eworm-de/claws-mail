@@ -492,7 +492,7 @@ draw_expander (GtkCMCTree     *ctree,
   cairo_fill(cr);
  
   cairo_new_path(cr);
-  gdk_cairo_set_source_color(cr, &gtk_widget_get_style(ctree)->fg[GTK_STATE_NORMAL]);
+  gdk_cairo_set_source_color(cr, &gtk_widget_get_style(GTK_WIDGET(ctree))->fg[GTK_STATE_NORMAL]);
   cairo_set_line_width(cr, 1);
   cairo_set_antialias(cr, CAIRO_ANTIALIAS_NONE);
   cairo_move_to(cr, points[0].x, points[0].y);
@@ -623,15 +623,12 @@ draw_row (GtkCMCList     *clist,
   GtkWidget *widget;
   GtkStyle *style;
   GtkCMCTree  *ctree;
-  GdkRectangle *rect;
   GdkRectangle *crect;
   GdkRectangle row_rectangle;
   GdkRectangle cell_rectangle; 
   GdkRectangle clip_rectangle;
   GdkRectangle intersect_rectangle;
   gint last_column;
-  gint column_left = 0;
-  gint column_right = 0;
   gint offset = 0;
   gint state;
   gint i;
@@ -642,7 +639,7 @@ draw_row (GtkCMCList     *clist,
 
   cm_return_if_fail (clist != NULL);
   widget = GTK_WIDGET (clist);
-  style = gtk_widget_get_style (widget);
+  style = clist_row->style ? clist_row->style : gtk_widget_get_style (widget);
 
   if (greybg.pixel == 0 &&
       greybg.red == 0 &&
@@ -706,11 +703,14 @@ draw_row (GtkCMCList     *clist,
   state = clist_row->state;
 
   cr = gdk_cairo_create(clist->clist_window);
-  fgcolor = &style->fg[clist_row->state];
+  
+  if (clist_row->fg_set && state != GTK_STATE_SELECTED)
+	fgcolor = &clist_row->foreground;
+  else
+	fgcolor = &style->fg[clist_row->state];
   /* draw the cell borders */
   if (area)
     {
-      rect = &intersect_rectangle;
       crect = &intersect_rectangle;
 
       if (gdk_rectangle_intersect (area, &cell_rectangle, crect)) {
@@ -721,7 +721,6 @@ draw_row (GtkCMCList     *clist,
     }
   else
     {
-      rect = &clip_rectangle;
       crect = &cell_rectangle;
 
       gdk_cairo_rectangle(cr, &cell_rectangle);
@@ -1382,7 +1381,6 @@ gtk_cmctree_realize (GtkWidget *widget)
   GtkCMCList *clist;
   GtkCMCTreeNode *node;
   GtkCMCTreeNode *child;
-  GtkStyle *style;
   gint i;
 
   cm_return_if_fail (GTK_IS_CMCTREE (widget));
@@ -1401,8 +1399,6 @@ gtk_cmctree_realize (GtkWidget *widget)
 	  gtk_cmctree_pre_recursive (ctree, child, ctree_attach_styles, NULL);
       node = GTK_CMCTREE_NODE_NEXT (node);
     }
-
-  style = gtk_widget_get_style(widget);
 }
 
 static void
@@ -5227,14 +5223,12 @@ gtk_cmctree_drag_begin (GtkWidget	     *widget,
 		      GdkDragContext *context)
 {
   GtkCMCList *clist;
-  GtkCMCTree *ctree;
   gboolean use_icons;
 
   cm_return_if_fail (GTK_IS_CMCTREE (widget));
   cm_return_if_fail (context != NULL);
 
   clist = GTK_CMCLIST (widget);
-  ctree = GTK_CMCTREE (widget);
 
   use_icons = GTK_CMCLIST_USE_DRAG_ICONS (clist);
   GTK_CMCLIST_UNSET_FLAG (clist, CMCLIST_USE_DRAG_ICONS);
@@ -5242,11 +5236,7 @@ gtk_cmctree_drag_begin (GtkWidget	     *widget,
 
   if (use_icons)
     {
-      GtkCMCTreeNode *node;
-
       GTK_CMCLIST_SET_FLAG (clist, CMCLIST_USE_DRAG_ICONS);
-      node = GTK_CMCTREE_NODE (g_list_nth (clist->row_list,
-					 clist->click_cell.row));
       gtk_drag_set_icon_default (context);
     }
 }
