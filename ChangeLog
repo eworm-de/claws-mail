@@ -1,3 +1,8 @@
+2011-10-25 [colin]	3.7.10cvs48
+
+	* src/stock_pixmap.c
+		Always use cairo to draw
+
 2011-10-25 [colin]	3.7.10cvs47
 
 	* src/mimeview.c
