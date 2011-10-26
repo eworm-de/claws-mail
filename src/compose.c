@@ -580,7 +580,7 @@ static GtkActionEntry compose_entries[] =
 	{"Edit/Copy",			NULL, N_("_Copy"), "<control>C", NULL, G_CALLBACK(compose_copy_cb) },
 	{"Edit/Paste",			NULL, N_("_Paste"), "<control>V", NULL, G_CALLBACK(compose_paste_cb) },
 
-	{"Edit/SpecialPaste",		NULL, N_("Special paste") },
+	{"Edit/SpecialPaste",		NULL, N_("_Special paste") },
 	{"Edit/SpecialPaste/AsQuotation",	NULL, N_("as _quotation"), NULL, NULL, G_CALLBACK(compose_paste_as_quote_cb) },
 	{"Edit/SpecialPaste/Wrapped",	NULL, N_("_wrapped"), NULL, NULL, G_CALLBACK(compose_paste_wrap_cb) },
 	{"Edit/SpecialPaste/Unwrapped",	NULL, N_("_unwrapped"), NULL, NULL, G_CALLBACK(compose_paste_no_wrap_cb) },
