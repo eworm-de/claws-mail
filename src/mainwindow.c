@@ -2949,7 +2949,7 @@ void main_window_get_size(MainWindow *mainwin)
 		prefs_common.folderview_width  = allocation.width;
 		prefs_common.folderview_height = allocation.height;
 	}
-
+	
 	gtk_widget_get_allocation(GTK_WIDGET_PTR(mainwin->messageview), &allocation);
 	if (allocation.width > 1 && allocation.height > 1 &&
 	    !prefs_common.mainwin_fullscreen) {
@@ -3614,6 +3614,7 @@ void main_window_popup(MainWindow *mainwin)
 	if (first_start) {
 #ifdef G_OS_UNIX
 		gtk_window_deiconify(GTK_WINDOW(mainwin->window));
+		gtk_window_present(GTK_WINDOW(mainwin->window));
 #endif
 		first_start = FALSE;
 	} else {
@@ -3637,7 +3638,7 @@ void main_window_show(MainWindow *mainwin)
         gtk_window_move(GTK_WINDOW(mainwin->window),
                                  prefs_common.mainwin_x,
                                  prefs_common.mainwin_y);
-
+	
 	gtk_widget_set_size_request(GTK_WIDGET_PTR(mainwin->folderview),
 			     prefs_common.folderview_width,
 			     prefs_common.folderview_height);

@@ -204,6 +204,7 @@ static void alertpanel_show(void)
 {
 	gtk_window_set_modal(GTK_WINDOW(dialog), TRUE);
 	manage_window_set_transient(GTK_WINDOW(dialog));
+	gtk_widget_show_all(dialog);
 	value = G_ALERTWAIT;
 
 	if (gdk_pointer_is_grabbed())
