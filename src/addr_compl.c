@@ -849,13 +849,20 @@ static void addrcompl_resize_window( CompletionWindow *cw ) {
 	gtk_widget_hide_all( cw->window );
 	gtk_widget_show_all( cw->window );
 	gtk_widget_size_request( cw->list_view, &r );
-
+printf("%d  + %d < %d\n", y, r.height, gdk_screen_height());
 	/* Adjust window height to available screen space */
-	if( ( y + r.height ) > gdk_screen_height() ) {
-		gtk_window_set_resizable(GTK_WINDOW(cw->window), FALSE);
-		gtk_widget_set_size_request( cw->window, width, gdk_screen_height() - y );
-	} else
-		gtk_widget_set_size_request(cw->window, width, r.height);
+	if( y + r.height > gdk_screen_height())
+		r.height = gdk_screen_height() - y;
+
+	gtk_widget_set_size_request(cw->window, width, r.height);
+
+	gdk_pointer_grab(gtk_widget_get_window(cw->window), TRUE,
+			 GDK_POINTER_MOTION_MASK | GDK_BUTTON_PRESS_MASK |
+			 GDK_BUTTON_RELEASE_MASK,
+			 NULL, NULL, GDK_CURRENT_TIME);
+	gdk_keyboard_grab(gtk_widget_get_window(cw->window), FALSE, GDK_CURRENT_TIME);
+	gtk_grab_add(cw->window);
+
 }
 
 static GdkPixbuf *group_pixbuf = NULL;
@@ -1370,13 +1377,8 @@ static void address_completion_create_completion_window( GtkEntry *entry_ )
 			 GDK_POINTER_MOTION_MASK | GDK_BUTTON_PRESS_MASK |
 			 GDK_BUTTON_RELEASE_MASK,
 			 NULL, NULL, GDK_CURRENT_TIME);
+	gdk_keyboard_grab(gtk_widget_get_window(window), FALSE, GDK_CURRENT_TIME);
 	gtk_grab_add( window );
-
-	/* XXX: GTK2 too??? 
-	 *
-	 * GTK1: this gets rid of the irritating focus rectangle that doesn't
-	 * follow the selection */
-	gtkut_widget_set_can_focus(list_view, FALSE);
 }
 
 /**
