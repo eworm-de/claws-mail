@@ -1,3 +1,8 @@
+2011-10-29 [colin]	3.7.10cvs56
+
+	* src/folderview.c
+		Fix flicker on recursive quicksearch
+
 2011-10-28 [colin]	3.7.10cvs55
 
 	* src/alertpanel.c

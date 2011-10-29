@@ -1685,7 +1685,7 @@ void folderview_update_search_icon(FolderItem *item, gboolean matches)
 		ctree = GTK_CMCTREE(folderview->ctree);
 
 		node = gtk_cmctree_find_by_row_data(ctree, NULL, item);
-		if (node) {
+		if (node && item->search_match != matches) {
 			item->search_match = matches;
 			folderview_update_node(folderview, node);
 		}
