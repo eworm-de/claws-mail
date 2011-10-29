@@ -2,6 +2,8 @@
 
 	* src/addr_compl.c
 		Fix focus of completion window with gnome shell
+		Fixes bug #2525, "Address completion window does not get
+		keyboard focus"
 
 2011-10-29 [colin]	3.7.10cvs56
 
