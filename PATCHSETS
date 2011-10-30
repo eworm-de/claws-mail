@@ -4264,3 +4264,4 @@
 ( cvs diff -u -r 1.83.2.175 -r 1.83.2.176 src/mimeview.c;  ) > 3.7.10cvs58.patchset
 ( cvs diff -u -r 1.52.2.85 -r 1.52.2.86 src/prefs_folder_item.c;  ) > 3.7.10cvs59.patchset
 ( cvs diff -u -r 1.12.2.77 -r 1.12.2.78 src/prefs_template.c;  ) > 3.7.10cvs60.patchset
+( cvs diff -u -r 1.382.2.589 -r 1.382.2.590 src/compose.c;  ) > 3.7.10cvs61.patchset

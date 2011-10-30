@@ -1,3 +1,8 @@
+2011-10-30 [pawel]	3.7.10cvs61
+
+	* src/compose.c
+		Those entries should not be editable
+
 2011-10-30 [pawel]	3.7.10cvs60
 
 	* src/prefs_template.c
