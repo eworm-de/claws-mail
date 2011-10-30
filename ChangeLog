@@ -1,3 +1,9 @@
+2011-10-30 [pawel]	3.7.10cvs58
+
+	* src/mimeview.c
+		Remove key-press-event blocking, it only
+		emits GLib-GObject warnings
+
 2011-10-29 [colin]	3.7.10cvs57
 
 	* src/addr_compl.c

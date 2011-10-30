@@ -1429,15 +1429,10 @@ skip:
 #define BREAK_ON_MODIFIER_KEY() \
 	if ((event->state & (GDK_MOD1_MASK|GDK_CONTROL_MASK)) != 0) break
 
-#define KEY_PRESS_EVENT_STOP() \
-        g_signal_stop_emission_by_name(G_OBJECT(ctree), \
-                                       "key_press_event");
-
 static gint mimeview_key_pressed(GtkWidget *widget, GdkEventKey *event,
 				 MimeView *mimeview)
 {
 	SummaryView *summaryview;
-	GtkCMCTree *ctree = GTK_CMCTREE(widget);
 
 	if (!event) return FALSE;
 	if (!mimeview->opened) return FALSE;
@@ -1484,34 +1479,28 @@ static gint mimeview_key_pressed(GtkWidget *widget, GdkEventKey *event,
 
 	case GDK_KEY_y:
 		BREAK_ON_MODIFIER_KEY();
-		KEY_PRESS_EVENT_STOP();
 		mimeview_save_as(mimeview);
 		return TRUE;
 	case GDK_KEY_t:
 		BREAK_ON_MODIFIER_KEY();
-		KEY_PRESS_EVENT_STOP();
 		mimeview_display_as_text(mimeview);
 		return TRUE;	
 	case GDK_KEY_l:
 		BREAK_ON_MODIFIER_KEY();
-		KEY_PRESS_EVENT_STOP();
 		mimeview_launch(mimeview, NULL);
 		return TRUE;
 	case GDK_KEY_o:
 		BREAK_ON_MODIFIER_KEY();
-		KEY_PRESS_EVENT_STOP();
 #ifndef G_OS_WIN32
 		mimeview_open_with(mimeview);
 #endif
 		return TRUE;
 	case GDK_KEY_c:
 		BREAK_ON_MODIFIER_KEY();
-		KEY_PRESS_EVENT_STOP();
 		mimeview_check_signature(mimeview);
 		return TRUE;
 	case GDK_KEY_a:
 		BREAK_ON_MODIFIER_KEY();
-		KEY_PRESS_EVENT_STOP();
 		mimeview_select_next_part(mimeview);
 		return TRUE;
 	default:
@@ -1520,8 +1509,7 @@ static gint mimeview_key_pressed(GtkWidget *widget, GdkEventKey *event,
 
 	if (!mimeview->messageview->mainwin) return FALSE;
 
-	summary_pass_key_press_event(summaryview, event);
-	return TRUE;
+	return summary_pass_key_press_event(summaryview, event);
 }
 
 static void mimeview_drag_data_get(GtkWidget	    *widget,
