@@ -1,3 +1,8 @@
+2011-10-30 [pawel]	3.7.10cvs59
+
+	* src/prefs_folder_item.c
+		Update summaryview after changing folder prefs when needed
+
 2011-10-30 [pawel]	3.7.10cvs58
 
 	* src/mimeview.c

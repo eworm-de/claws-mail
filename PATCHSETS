@@ -4262,3 +4262,4 @@
 ( cvs diff -u -r 1.207.2.224 -r 1.207.2.225 src/folderview.c;  ) > 3.7.10cvs56.patchset
 ( cvs diff -u -r 1.27.2.58 -r 1.27.2.59 src/addr_compl.c;  ) > 3.7.10cvs57.patchset
 ( cvs diff -u -r 1.83.2.175 -r 1.83.2.176 src/mimeview.c;  ) > 3.7.10cvs58.patchset
+( cvs diff -u -r 1.52.2.85 -r 1.52.2.86 src/prefs_folder_item.c;  ) > 3.7.10cvs59.patchset

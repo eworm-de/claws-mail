@@ -628,8 +628,9 @@ static void general_save_folder_prefs(FolderItem *folder, FolderItemGeneralPage 
 {
 	FolderItemPrefs *prefs = folder->prefs;
 	gchar *buf;
-	gboolean all = FALSE;
+	gboolean all = FALSE, summary_update_needed = FALSE;
 	SpecialFolderItemType type = F_NORMAL;
+	FolderView *folderview = mainwindow_get_mainwindow()->folderview;
 
 	if (folder->path == NULL)
 		return;
@@ -642,14 +643,20 @@ static void general_save_folder_prefs(FolderItem *folder, FolderItemGeneralPage 
 	type = combobox_get_active_data(GTK_COMBO_BOX(page->folder_type));
 	if (all && folder->stype != type && page->item->parent_stype == F_NORMAL) {
 		folder_item_change_type(folder, type);
+		summary_update_needed = TRUE;
 	}
 
 #ifndef G_OS_WIN32
 	if (all || gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(page->simplify_subject_rec_checkbtn))) {
+		gboolean old_simplify_subject = prefs->enable_simplify_subject;
+		int regexp_diffs = strcmp2(prefs->simplify_subject_regexp, gtk_editable_get_chars(
+					GTK_EDITABLE(page->entry_simplify_subject), 0, -1));
 		prefs->enable_simplify_subject =
 			gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(page->checkbtn_simplify_subject));
 		ASSIGN_STRING(prefs->simplify_subject_regexp,
 			      gtk_editable_get_chars(GTK_EDITABLE(page->entry_simplify_subject), 0, -1));
+		if (old_simplify_subject != prefs->enable_simplify_subject || regexp_diffs != 0)
+			summary_update_needed = TRUE;
 	}
 #endif	
 	if (all || gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(page->folder_chmod_rec_checkbtn))) {
@@ -694,6 +701,11 @@ static void general_save_folder_prefs(FolderItem *folder, FolderItemGeneralPage 
 	}
 
 	folder_item_prefs_save_config(folder);
+
+	if (folder->opened && summary_update_needed) {
+		summary_set_prefs_from_folderitem(folderview->summaryview, folder);
+		summary_show(folderview->summaryview, folder);
+	}	
 }	
 
 static gboolean general_save_recurse_func(GNode *node, gpointer data)
