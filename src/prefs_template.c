@@ -423,7 +423,7 @@ static void prefs_template_window_create(void)
 
 	if (!geometry.min_height) {
 		geometry.min_width = 500;
-		geometry.min_height = 540;
+		geometry.min_height = 560;
 	}
 
 	gtk_window_set_geometry_hints(GTK_WINDOW(window), NULL, &geometry,
@@ -894,6 +894,7 @@ static void prefs_template_delete_cb(gpointer action, gpointer data)
 		return;
 
 	gtk_list_store_remove(GTK_LIST_STORE(model), &iter);
+	prefs_template_reset_dialog();
 	modified_list = TRUE;	
 }
 

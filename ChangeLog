@@ -1,3 +1,9 @@
+2011-10-30 [pawel]	3.7.10cvs60
+
+	* src/prefs_template.c
+		- Dialog needs more height to fit all widgets
+		- Clear template contents on delete
+
 2011-10-30 [pawel]	3.7.10cvs59
 
 	* src/prefs_folder_item.c
