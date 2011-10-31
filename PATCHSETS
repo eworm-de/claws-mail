@@ -4268,3 +4268,4 @@
 ( cvs diff -u -r 1.382.2.590 -r 1.382.2.591 src/compose.c;  ) > 3.7.10cvs62.patchset
 ( cvs diff -u -r 1.12.2.78 -r 1.12.2.79 src/prefs_template.c;  ) > 3.7.10cvs63.patchset
 ( cvs diff -u -r 1.395.2.434 -r 1.395.2.435 src/summaryview.c;  cvs diff -u -r 1.5.2.100 -r 1.5.2.101 src/gtk/gtkutils.c;  ) > 3.7.10cvs64.patchset
+( cvs diff -u -r 1.9.2.52 -r 1.9.2.53 src/common/defs.h;  ) > 3.7.10cvs65.patchset

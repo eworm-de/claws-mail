@@ -24,7 +24,7 @@
 #  include "config.h"
 #endif
 
-#include <glibconfig.h>
+#include <glib.h>
 
 #ifdef G_OS_WIN32
 #  include <glib/gwin32.h>

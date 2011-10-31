@@ -1,3 +1,8 @@
+2011-10-31 [colin]	3.7.10cvs65
+
+	* src/common/defs.h
+		Fix build with GLib 2.31. Thanks to Charles A. Edwards
+
 2011-10-31 [pawel]	3.7.10cvs64
 
 	* src/summaryview.c
