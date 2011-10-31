@@ -1,3 +1,17 @@
+2011-10-31 [pawel]	3.7.10cvs66
+
+	* src/messageview.c
+	* src/mimeview.c
+	* src/mimeview.h
+	* src/summaryview.c
+		Fix bug #2526 'When reading message in separate window,
+		n and p keys do not work'
+		- fix key event handling in messageview
+		- remove bindings for 'n' and 'p' keys in mimeview (next-part
+		  and prev-part actions)
+		- instead add 'z' key for prev-part, we have 'a' key 
+		  for next-part already
+
 2011-10-31 [colin]	3.7.10cvs65
 
 	* src/common/defs.h

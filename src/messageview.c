@@ -1727,10 +1727,7 @@ static gboolean key_pressed(GtkWidget *widget, GdkEventKey *event,
 	if (event && (event->state & GDK_SHIFT_MASK) && event->keyval != GDK_KEY_space) 
 		return FALSE;
 
-	g_signal_stop_emission_by_name(G_OBJECT(widget),
-					"key_press_event");
-	mimeview_pass_key_press_event(messageview->mimeview, event);
-	return FALSE;
+	return mimeview_pass_key_press_event(messageview->mimeview, event);
 }
 #endif
 

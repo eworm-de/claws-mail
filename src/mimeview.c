@@ -194,6 +194,11 @@ static void mimeview_select_next_part_cb(GtkAction *action, gpointer data)
 	mimeview_select_next_part((MimeView *)data);
 }
 
+static void mimeview_select_prev_part_cb(GtkAction *action, gpointer data)
+{
+	mimeview_select_prev_part((MimeView *)data);
+}
+
 static GtkActionEntry mimeview_menu_actions[] = {
 	{ "MimeView", NULL, "MimeView" },
 	{ "MimeView/Open", NULL, N_("_Open (l)"), NULL, "Open MIME part", G_CALLBACK(mimeview_launch_cb) },
@@ -203,7 +208,8 @@ static GtkActionEntry mimeview_menu_actions[] = {
 	{ "MimeView/DisplayAsText", NULL, N_("_Display as text (t)"), NULL, "Display as text", G_CALLBACK(mimeview_display_as_text_cb) },
 	{ "MimeView/SaveAs", NULL, N_("_Save as (y)..."), NULL, "Save as", G_CALLBACK(mimeview_save_as_cb) },
 	{ "MimeView/SaveAll", NULL, N_("Save _all..."), NULL, "Save all parts", G_CALLBACK(mimeview_save_all_cb) },
-	{ "MimeView/NextPart", NULL, N_("Next part (a)"), NULL, "Next part", G_CALLBACK(mimeview_select_next_part_cb) }
+	{ "MimeView/NextPart", NULL, N_("Next part (a)"), NULL, "Next part", G_CALLBACK(mimeview_select_next_part_cb) },
+	{ "MimeView/PrevPart", NULL, N_("Previous part (z)"), NULL, "Previous part", G_CALLBACK(mimeview_select_prev_part_cb) }
 };
 
 static GtkTargetEntry mimeview_mime_types[] =
@@ -386,6 +392,9 @@ MimeView *mimeview_create(MainWindow *mainwin)
 			GTK_UI_MANAGER_MENUITEM);
 	MENUITEM_ADDUI_MANAGER(mimeview->ui_manager, 
 			"/Menus/MimeView/", "NextPart", "MimeView/NextPart",
+			GTK_UI_MANAGER_MENUITEM);
+	MENUITEM_ADDUI_MANAGER(mimeview->ui_manager, 
+			"/Menus/MimeView/", "PrevPart", "MimeView/PrevPart",
 			GTK_UI_MANAGER_MENUITEM);
 
 	popupmenu = gtk_menu_item_get_submenu(GTK_MENU_ITEM(
@@ -1378,9 +1387,9 @@ static gboolean part_button_pressed(MimeView *mimeview, GdkEventButton *event,
 }
 
 
-void mimeview_pass_key_press_event(MimeView *mimeview, GdkEventKey *event)
+gboolean mimeview_pass_key_press_event(MimeView *mimeview, GdkEventKey *event)
 {
-	mimeview_key_pressed(mimeview->ctree, event, mimeview);
+	return mimeview_key_pressed(mimeview->ctree, event, mimeview);
 }
 
 static void mimeview_select_next_part(MimeView *mimeview)
@@ -1465,18 +1474,6 @@ static gint mimeview_key_pressed(GtkWidget *widget, GdkEventKey *event,
 	case GDK_KEY_Down:
 		mimeview_scroll_one_line(mimeview, (event->keyval == GDK_KEY_Up));
 		return TRUE;
-	case GDK_KEY_n:
-	case GDK_KEY_N:
-		BREAK_ON_MODIFIER_KEY();
-		mimeview_select_next_part(mimeview);
-		return TRUE;
-
-	case GDK_KEY_p:
-	case GDK_KEY_P:
-		BREAK_ON_MODIFIER_KEY();
-		mimeview_select_prev_part(mimeview);
-		return TRUE;
-
 	case GDK_KEY_y:
 		BREAK_ON_MODIFIER_KEY();
 		mimeview_save_as(mimeview);
@@ -1503,11 +1500,15 @@ static gint mimeview_key_pressed(GtkWidget *widget, GdkEventKey *event,
 		BREAK_ON_MODIFIER_KEY();
 		mimeview_select_next_part(mimeview);
 		return TRUE;
+	case GDK_KEY_z:
+		BREAK_ON_MODIFIER_KEY();
+		mimeview_select_prev_part(mimeview);
+		return TRUE;
 	default:
 		break;
 	}
 
-	if (!mimeview->messageview->mainwin) return FALSE;
+	if (mimeview->messageview->new_window) return FALSE;
 
 	return summary_pass_key_press_event(summaryview, event);
 }
@@ -2168,19 +2169,6 @@ static gint icon_key_pressed(GtkWidget *button, GdkEventKey *event,
 		mimeview_scroll_one_line(mimeview,
 					 (event->state & GDK_MOD1_MASK) != 0);
 		return TRUE;
-
-	case GDK_KEY_n:
-	case GDK_KEY_N:
-		BREAK_ON_MODIFIER_KEY();
-		mimeview_select_next_part(mimeview);
-		return TRUE;
-		
-	case GDK_KEY_p:
-	case GDK_KEY_P:
-		BREAK_ON_MODIFIER_KEY();
-		mimeview_select_prev_part(mimeview);
-		break;
-
 	case GDK_KEY_y:
 		BREAK_ON_MODIFIER_KEY();
 		mimeview_save_as(mimeview);

@@ -161,7 +161,7 @@ void mimeview_clear		(MimeView	*mimeview);
 
 MimeInfo *mimeview_get_selected_part	(MimeView	*mimeview);
 
-void mimeview_pass_key_press_event	(MimeView	*mimeview,
+gboolean mimeview_pass_key_press_event	(MimeView	*mimeview,
 					 GdkEventKey	*event);
 
 void mimeview_register_viewer_factory	(MimeViewerFactory *factory);
