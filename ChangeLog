@@ -1,3 +1,10 @@
+2011-10-31 [paul]	3.7.10cvs63
+
+	* src/prefs_template.c
+		revert part of 3.7.10cvs60 - it was a subjective change, all widgets
+		fit at 540 here, for those where they don't the dialogue can be made
+		larger by the user
+
 2011-10-31 [paul]	3.7.10cvs62
 
 	* src/compose.c

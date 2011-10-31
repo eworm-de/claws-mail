@@ -423,7 +423,7 @@ static void prefs_template_window_create(void)
 
 	if (!geometry.min_height) {
 		geometry.min_width = 500;
-		geometry.min_height = 560;
+		geometry.min_height = 540;
 	}
 
 	gtk_window_set_geometry_hints(GTK_WINDOW(window), NULL, &geometry,
