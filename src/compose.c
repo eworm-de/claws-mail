@@ -8659,7 +8659,6 @@ static void compose_attach_property(GtkAction *action, gpointer data)
 	gtk_misc_set_alignment(GTK_MISC(label), 0, 0.5); \
  \
 	entry = gtk_entry_new(); \
-	gtk_editable_set_editable(GTK_EDITABLE(entry), FALSE); \
 	gtk_table_attach(GTK_TABLE(table), entry, 1, 2, top, (top + 1), \
 			 GTK_EXPAND|GTK_SHRINK|GTK_FILL, 0, 0, 0); \
 }

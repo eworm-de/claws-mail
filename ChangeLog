@@ -1,3 +1,8 @@
+2011-10-31 [paul]	3.7.10cvs62
+
+	* src/compose.c
+		revert 3.7.10cvs61, these entries _should_ be editable
+
 2011-10-30 [pawel]	3.7.10cvs61
 
 	* src/compose.c
