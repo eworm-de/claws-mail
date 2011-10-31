@@ -532,6 +532,7 @@ void gtkut_text_view_set_position(GtkTextView *text, gint pos)
 {
 	GtkTextBuffer *buffer;
 	GtkTextIter iter;
+	GtkTextMark *mark;
 
 	cm_return_if_fail(text != NULL);
 
@@ -539,7 +540,8 @@ void gtkut_text_view_set_position(GtkTextView *text, gint pos)
 
 	gtk_text_buffer_get_iter_at_offset(buffer, &iter, pos);
 	gtk_text_buffer_place_cursor(buffer, &iter);
-	gtk_text_view_scroll_to_iter(text, &iter, 0.0, FALSE, 0.0, 0.0);
+	mark = gtk_text_buffer_create_mark(buffer, NULL, &iter, TRUE);
+	gtk_text_view_scroll_to_mark(text, mark, 0.0, FALSE, 0.0, 0.0);
 }
 
 gboolean gtkut_text_view_search_string(GtkTextView *text, const gchar *str,

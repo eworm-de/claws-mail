@@ -3426,7 +3426,8 @@ static void summary_display_msg_full(SummaryView *summaryview,
 	gint val;
 	START_TIMING("");
 	if (!new_window) {
-		if (summaryview->displayed == row)
+		if (summaryview->displayed == row &&
+		    messageview_is_visible(summaryview->messageview))
 			return;
 		else if (summaryview->messageview)
 			summaryview->messageview->filtered = FALSE;
@@ -3473,7 +3474,8 @@ static void summary_display_msg_full(SummaryView *summaryview,
 			msgview = summaryview->messageview;
 			summaryview->last_displayed = summaryview->displayed;
 			summaryview->displayed = row;
-			if (!messageview_is_visible(msgview)) {
+			if (!messageview_is_visible(msgview) &&
+			    gtk_window_is_active(GTK_WINDOW(summaryview->mainwin->window))) {
 				main_window_toggle_message_view(summaryview->mainwin);
 				GTK_EVENTS_FLUSH();
 			}
