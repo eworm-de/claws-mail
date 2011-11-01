@@ -1584,7 +1584,8 @@ static Compose *compose_generic_reply(MsgInfo *msginfo,
 
 	undo_block(compose->undostruct);
 #ifdef USE_ENCHANT
-		compose_set_dictionaries_from_folder_prefs(compose, msginfo->folder);
+	compose_set_dictionaries_from_folder_prefs(compose, msginfo->folder);
+	gtkaspell_block_check(compose->gtkaspell);
 #endif
 
 	if (quote_mode == COMPOSE_QUOTE_FORCED ||
@@ -1620,10 +1621,6 @@ static Compose *compose_generic_reply(MsgInfo *msginfo,
 					  _("The body of the \"Reply\" template has an error at line %d."));
 		compose_attach_from_list(compose, quote_fmt_get_attachments_list(), FALSE);
 		quote_fmt_reset_vartable();
-#ifdef USE_ENCHANT
-		if (compose->gtkaspell && compose->gtkaspell->check_while_typing)
-			gtkaspell_highlight_all(compose->gtkaspell);
-#endif
 	}
 
 	if (MSG_IS_ENCRYPTED(compose->replyinfo->flags)) {
@@ -1643,6 +1640,11 @@ static Compose *compose_generic_reply(MsgInfo *msginfo,
 
 	compose_wrap_all(compose);
 
+#ifdef USE_ENCHANT
+	if (compose->gtkaspell && compose->gtkaspell->check_while_typing)
+		gtkaspell_highlight_all(compose->gtkaspell);
+	gtkaspell_unblock_check(compose->gtkaspell);
+#endif
 	SIGNAL_UNBLOCK(textbuf);
 	
 	gtk_widget_grab_focus(compose->text);
@@ -1741,6 +1743,7 @@ Compose *compose_forward(PrefsAccount *account, MsgInfo *msginfo,
 		pref_get_unescaped_pref(tmp, msginfo->folder->prefs->forward_override_from_format);
 
 #ifdef USE_ENCHANT
+		gtkaspell_block_check(compose->gtkaspell);
 		quote_fmt_init(full_msginfo, NULL, NULL, FALSE, compose->account, FALSE,
 				compose->gtkaspell);
 #else
@@ -1822,10 +1825,6 @@ Compose *compose_forward(PrefsAccount *account, MsgInfo *msginfo,
 		compose_attach_parts(compose, msginfo);
 
 		procmsg_msginfo_free(full_msginfo);
-#ifdef USE_ENCHANT
-		if (compose->gtkaspell && compose->gtkaspell->check_while_typing)
-			gtkaspell_highlight_all(compose->gtkaspell);
-#endif
 	}
 
 	SIGNAL_BLOCK(textbuf);
@@ -1835,6 +1834,11 @@ Compose *compose_forward(PrefsAccount *account, MsgInfo *msginfo,
 
 	compose_wrap_all(compose);
 
+#ifdef USE_ENCHANT
+	if (compose->gtkaspell && compose->gtkaspell->check_while_typing)
+		gtkaspell_highlight_all(compose->gtkaspell);
+	gtkaspell_unblock_check(compose->gtkaspell);
+#endif
 	SIGNAL_UNBLOCK(textbuf);
 	
 	cursor_pos = quote_fmt_get_cursor_pos();
@@ -4555,7 +4559,7 @@ end:
 		*par_iter = iter;
 	undo_wrapping(compose->undostruct, FALSE);
 	compose->autowrap = prev_autowrap;
-	
+
 	return modified;
 }
 

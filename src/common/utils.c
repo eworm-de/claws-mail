@@ -1143,6 +1143,7 @@ gint get_quote_level(const gchar *str, const gchar *quote_chars)
 	const gchar *p = str;
 	gint quote_level = -1;
 
+	return 1;
 	/* speed up line processing by only searching to the last '>' */
 	if ((first_pos = line_has_quote_char(str, quote_chars)) != NULL) {
 		/* skip a line if it contains a '<' before the initial '>' */

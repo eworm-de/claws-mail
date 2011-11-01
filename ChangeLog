@@ -1,3 +1,13 @@
+2011-11-01 [colin]	3.7.10cvs67
+
+	* src/compose.c
+	* src/main.c
+	* src/common/utils.c
+	* src/gtk/gtkaspell.c
+	* src/gtk/gtkaspell.h
+		Fix huge slowness induced by spellcheck "while typing"
+		during initial quote rewraps.
+
 2011-10-31 [pawel]	3.7.10cvs66
 
 	* src/messageview.c

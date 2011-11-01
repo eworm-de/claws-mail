@@ -1188,6 +1188,28 @@ static void replace_word_cb(GtkWidget *w, gpointer data)
 	set_point_continue(gtkaspell);
 }
 
+void gtkaspell_block_check(GtkAspell *gtkaspell)
+{
+	GtkTextView *gtktext = gtkaspell->gtktext;
+	g_signal_handlers_block_by_func(G_OBJECT(gtktext),
+					 G_CALLBACK(entry_insert_cb),
+					 gtkaspell);
+	g_signal_handlers_block_by_func(G_OBJECT(gtktext),
+					 G_CALLBACK(entry_delete_cb),
+					 gtkaspell);
+}
+
+void gtkaspell_unblock_check(GtkAspell *gtkaspell)
+{
+	GtkTextView *gtktext = gtkaspell->gtktext;
+	g_signal_handlers_unblock_by_func(G_OBJECT(gtktext),
+					 G_CALLBACK(entry_insert_cb),
+					 gtkaspell);
+	g_signal_handlers_unblock_by_func(G_OBJECT(gtktext),
+					 G_CALLBACK(entry_delete_cb),
+					 gtkaspell);
+}
+
 static void replace_real_word(GtkAspell *gtkaspell, const gchar *newword)
 {
 	int		oldlen, newlen, wordlen;

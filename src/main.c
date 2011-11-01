@@ -2552,7 +2552,7 @@ static void lock_socket_input_cb(gpointer data,
 				debug_print("Unknown folder: '%s'\n",folder_name);
 		} else {
 			debug_print("%s %s\n",folderItem->name, folderItem->path);
-        }
+		}
 		if (folderItem != NULL) {
 			quicksearch_set(quicksearch, searchType, request);
 			quicksearch_set_recursive(quicksearch, recursive);

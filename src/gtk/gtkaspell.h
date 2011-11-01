@@ -169,6 +169,8 @@ int 		gtkaspell_misspelled_test		(GtkAspell *gtkaspell,
 void		gtkaspell_dict_changed			(GtkAspell *gtkaspell);
 void		gtkaspell_context_set			(GtkAspell *gtkaspell);
 void		gtkaspell_free_suggestions_list		(GtkAspell *gtkaspell);
+void		gtkaspell_block_check			(GtkAspell *gtkaspell);
+void		gtkaspell_unblock_check			(GtkAspell *gtkaspell);
 
 
 #endif /* USE_ENCHANT */
