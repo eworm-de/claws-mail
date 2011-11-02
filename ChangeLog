@@ -1,3 +1,14 @@
+2011-11-02 [mones]	3.7.10cvs69
+
+	* doc/man/claws-mail.1
+		fixed hyphens (patch from Debian packaging)
+		fixed header to follow man style closely 
+		documented new option --compose-from-file
+		removed INSTALLATION section, doesn't belong to manpage
+		added ENVIRONMENT, COPYRIGHT and BUGS sections
+		expanded FILES section to include certs and autofaces dirs
+		expanded SEE ALSO section to include manual and plugins
+
 2011-11-01 [colin]	3.7.10cvs68
 
 	* src/common/utils.c

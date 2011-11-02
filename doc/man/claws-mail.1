@@ -1,4 +1,4 @@
-.TH "Claws Mail" "1" "January 09, 2009" "Hiroyuki Yamamoto & the Claws Mail team"
+.TH "CLAWS MAIL" "1" "November 1, 2011" "The Claws Mail team" "User Manuals"
 
 .SH "NAME"
 .LP 
@@ -10,7 +10,7 @@ Claws Mail \- a GTK+ based fast email and news client
 
 .SH "DESCRIPTION"
 .TP 
-Claws Mail is an email client (and news reader) based on GTK+, running on X Window System, and aiming for
+Claws Mail is an email client (and news reader) based on GTK+, running on the X Window System, and aiming for:
 .br 
 * Quick response
 .br 
@@ -95,6 +95,8 @@ This list is not complete.
 .LP 
 \fB \-\-compose\fR [address]
 .br 
+\fB \-\-compose\-from\-file\fR file
+.br 
 \fB \-\-subscribe\fR [uri]
 .br 
 \fB \-\-attach file1 [file2]...\fR
@@ -158,6 +160,12 @@ Default directory for user's configuration files directory
 $HOME/.claws\-mail/addrbook/*
 Addressbook files
 .TP 
+$HOME/.claws\-mail/autofaces/*
+Automatic Faces and X\-Faces files for accounts
+.TP 
+$HOME/.claws\-mail/certs/*
+SSL certificates received from mail servers
+.TP 
 $HOME/.claws\-mail/templates
 User\-defined templates directory
 .TP 
@@ -207,7 +215,7 @@ $HOME/.claws\-mail/messagesearch_history
 User\-specified searches in message bodies
 .TP 
 $HOME/.claws\-mail/quicksearch_history
-User\-specified quick-search list
+User\-specified quick\-search list
 .TP 
 $HOME/.claws\-mail/messagesearch_history
 User\-specified searches in message bodies
@@ -231,6 +239,12 @@ Alternatively you can run it with the following options:
 .TP 
 \fB\-\-compose [address]\fR 
 to open a Compose window
+.TP
+\fB\-\-compose\-from\-file file
+open composition window with data from given file. Use \- as file name
+for reading from standard input. Content format: headers first (To: 
+header required) until an empty line is found, then mail body until
+end of file.
 .TP 
 \fB\-\-subscribe [uri]\fR
 subscribe to the given URI if possible
@@ -240,9 +254,9 @@ open composition window with specified files attached
 .TP 
 \fB\-\-compose\fR "mailto:\fI%t\fR?subject=\fI%s\fR&cc=\fI%c\fR&body=\fI%b\fR"
 this syntax can be used in web\-browsers and CLI to open a pre\-populated Compose window.
-Possible fields after the destination recipient are: subject, from, cc, bcc, in-reply-to,
+Possible fields after the destination recipient are: subject, from, cc, bcc, in\-reply\-to,
 body, insert (insert a file in body part, needs an absolute path), attach (attach a file,
-needs an absolute path, see also: --attach)
+needs an absolute path, see also: \-\-attach)
 .TP 
 \fB\-\-receive\fR
 receive new messages
@@ -270,13 +284,13 @@ show the total number of messages per folder
 [new][unread][unread answers to marked][total]
 .TP 
 \fB\-\-select [#mh/mailbox/]folder[/msg|/msgid]\fR
-On startup, jumps to the specified folder/message
+on startup, jumps to the specified folder/message
 .TP 
 \fB\-\-online\fR
-Start claws\-mail in (or switch to, if already running) online mode
+start Claws Mail in (or switch to, if already running) online mode
 .TP 
 \fB\-\-offline\fR
-Start claws\-mail in (or switch to, if already running) offline mode
+start Claws Mail in (or switch to, if already running) offline mode
 .TP 
 \fB\-\-help\fR
 display the help message and exit
@@ -290,8 +304,8 @@ for debug mode
 \fB\-\-version\fR
 display version number and exit
 .TP 
-\fB\-\-version-full\fR
-display version number and compiled-in features then exit
+\fB\-\-version\-full\fR
+display version number and compiled\-in features then exit
 .TP 
 \fB\-\-config\-dir\fR
 display the CONFIG\-DIR and exit
@@ -299,27 +313,65 @@ display the CONFIG\-DIR and exit
 \fB\-\-alternate\-config\-dir [dir]\fR
 start Claws Mail with the configuration stored in [dir] directory
 
-.SH "INSTALLATION"
-.LP 
-This program requires GTK+ 2.6.x or higher to be compiled.
-.LP 
-Please make sure that gtk\-devel and glib\-devel (or similar) packages are
-installed before the compilation (you may also require flex (lex) and bison
-(yacc)).
-.LP 
-To compile and install, just type:
-.LP 
-% ./configure
-.br 
-% make
-.br 
-% su
-.br 
-Password: [Enter password]
-.br 
-# make install
-.LP 
-Refer to ./configure \-\-help for further information.
+.SH "ENVIRONMENT"
+.LP
+.TP
+\fBLC_ALL\fR
+.TP
+\fBLC_CTYPE\fR
+.TP
+\fBLANG\fR
+locale to use for non-win32 systems (the first one not empty is used)
+.TP
+\fBSSL_CERT_FILE\fR
+use this CA certificates file instead of searching known system files
+.TP
+\fBSSL_CERT_DIR\fR
+use this CA certificates directory instead known system directories
+.TP
+\fBPOSIXLY_CORRECT\fR
+if defined regular expressions matching follows POSIX standards
+.TP
+\fBHOME\fR
+full path of the user's home directory
+.TP
+\fBCLAWS_NO_CRASH\fR
+if defined disables crash dialog (only if Claws Mail has been built with
+crash dialog feature enabled)
+.TP
+\fBG_BROKEN_FILENAMES\fR
+assumes that filenames are in the locale encoding rather than in UTF-8
+.TP
+\fBPILOT_CHARSET\fR
+if defined overrides default J-Pilot charset (CP1252)
+.TP
+\fBSESSION_MANAGER\fR
+if defined tries to use the Session Manager (only if Claws Mail has been
+built with libSM feature enabled)
+.TP
+\fBDISPLAY\fR
+default host and display number to use
+.TP
+\fBGPG_AGENT_INFO\fR
+the information to access the GPG agent if using GPG agent is enabled in
+GPG plugin preferences (this is usually set by the agent when launched,
+otherwise it likely means the GPG agent is not running)
+.TP
+\fBSHELL\fR
+if defined overrides default shell "sh" used by Spamassassin plugin to
+launch spamc wrappers
+
+.SH "BUGS"
+.LP
+.TP
+You can search for existing bugs and report new ones on Claws Mail bugzilla:
+.br
+<http://www.thewildbeast.co.uk/claws-mail/bugzilla/>
+
+.SH "COPYRIGHT"
+.LP
+.TP
+1999-2011 Hiroyuki Yamamoto and the Claws Mail team
 
 .SH "AUTHORS"
 .LP 
@@ -380,3 +432,10 @@ Hiroyuki Yamamoto
 .TP 
 Claws Mail Homepage
 <http://www.claws\-mail.org>
+.TP
+Claws Mail online manual
+<http://www.claws\-mail.org/manual>
+.TP
+Claws Mail plugins
+<http://www.claws\-mail.org/plugins.php>
+
