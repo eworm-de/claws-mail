@@ -4273,3 +4273,4 @@
 ( cvs diff -u -r 1.382.2.591 -r 1.382.2.592 src/compose.c;  cvs diff -u -r 1.115.2.243 -r 1.115.2.244 src/main.c;  cvs diff -u -r 1.36.2.193 -r 1.36.2.194 src/common/utils.c;  cvs diff -u -r 1.9.2.73 -r 1.9.2.74 src/gtk/gtkaspell.c;  cvs diff -u -r 1.5.2.18 -r 1.5.2.19 src/gtk/gtkaspell.h;  ) > 3.7.10cvs67.patchset
 ( cvs diff -u -r 1.36.2.194 -r 1.36.2.195 src/common/utils.c;  ) > 3.7.10cvs68.patchset
 ( cvs diff -u -r 1.1.2.8 -r 1.1.2.9 doc/man/claws-mail.1;  ) > 3.7.10cvs69.patchset
+( cvs diff -u -r 1.9.2.74 -r 1.9.2.75 src/gtk/gtkaspell.c;  ) > 3.7.10cvs70.patchset

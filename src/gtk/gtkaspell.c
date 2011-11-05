@@ -1190,7 +1190,11 @@ static void replace_word_cb(GtkWidget *w, gpointer data)
 
 void gtkaspell_block_check(GtkAspell *gtkaspell)
 {
-	GtkTextView *gtktext = gtkaspell->gtktext;
+	GtkTextView *gtktext;
+	
+	cm_return_if_fail(gtkaspell);
+		
+	gtktext = gtkaspell->gtktext;
 	g_signal_handlers_block_by_func(G_OBJECT(gtktext),
 					 G_CALLBACK(entry_insert_cb),
 					 gtkaspell);
@@ -1201,7 +1205,11 @@ void gtkaspell_block_check(GtkAspell *gtkaspell)
 
 void gtkaspell_unblock_check(GtkAspell *gtkaspell)
 {
-	GtkTextView *gtktext = gtkaspell->gtktext;
+	GtkTextView *gtktext;
+
+	cm_return_if_fail(gtkaspell);
+		
+	gtktext = gtkaspell->gtktext;
 	g_signal_handlers_unblock_by_func(G_OBJECT(gtktext),
 					 G_CALLBACK(entry_insert_cb),
 					 gtkaspell);
