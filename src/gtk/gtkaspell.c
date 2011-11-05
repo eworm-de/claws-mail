@@ -1192,7 +1192,8 @@ void gtkaspell_block_check(GtkAspell *gtkaspell)
 {
 	GtkTextView *gtktext;
 	
-	cm_return_if_fail(gtkaspell);
+	if (gtkaspell == null)
+		return;
 		
 	gtktext = gtkaspell->gtktext;
 	g_signal_handlers_block_by_func(G_OBJECT(gtktext),
@@ -1207,7 +1208,8 @@ void gtkaspell_unblock_check(GtkAspell *gtkaspell)
 {
 	GtkTextView *gtktext;
 
-	cm_return_if_fail(gtkaspell);
+	if (gtkaspell == null)
+		return;
 		
 	gtktext = gtkaspell->gtktext;
 	g_signal_handlers_unblock_by_func(G_OBJECT(gtktext),

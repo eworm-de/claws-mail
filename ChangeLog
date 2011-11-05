@@ -1,3 +1,8 @@
+2011-11-05 [colin]	3.7.10cvs71
+
+	* src/gtk/gtkaspell.c
+		No need to show a backtrace if gtkaspell is null
+
 2011-11-05 [pawel]	3.7.10cvs70
 
 	* src/gtk/gtkaspell.c
