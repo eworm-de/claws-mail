@@ -1,3 +1,8 @@
+2011-11-05 [wwp]	3.7.10cvs72
+
+	* src/gtk/gtkaspell.c
+		Fix compilation where 'null' is undefined (use NULL instead).
+
 2011-11-05 [colin]	3.7.10cvs71
 
 	* src/gtk/gtkaspell.c

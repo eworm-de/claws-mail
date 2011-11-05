@@ -1192,7 +1192,7 @@ void gtkaspell_block_check(GtkAspell *gtkaspell)
 {
 	GtkTextView *gtktext;
 	
-	if (gtkaspell == null)
+	if (gtkaspell == NULL)
 		return;
 		
 	gtktext = gtkaspell->gtktext;
@@ -1208,7 +1208,7 @@ void gtkaspell_unblock_check(GtkAspell *gtkaspell)
 {
 	GtkTextView *gtktext;
 
-	if (gtkaspell == null)
+	if (gtkaspell == NULL)
 		return;
 		
 	gtktext = gtkaspell->gtktext;
