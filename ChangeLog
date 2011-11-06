@@ -1,3 +1,9 @@
+2011-11-06 [colin]	3.7.10cvs75
+
+	* src/mainwindow.c
+		Don't iconify/deiconify. Instead, just show nothing
+		before asked to.
+
 2011-11-06 [pawel]	3.7.10cvs74
 
 	* src/compose.c
