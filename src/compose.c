@@ -7122,7 +7122,8 @@ static Compose *compose_create(PrefsAccount *account,
 	window = gtkut_window_new(GTK_WINDOW_TOPLEVEL, "compose");
 
 	gtk_window_set_resizable(GTK_WINDOW(window), TRUE);
-	gtk_widget_set_size_request(window, -1, prefs_common.compose_height);
+	gtk_widget_set_size_request(window, prefs_common.compose_width,
+					prefs_common.compose_height);
 
 	if (!geometry.max_width) {
 		geometry.max_width = gdk_screen_width();
@@ -7453,7 +7454,6 @@ static Compose *compose_create(PrefsAccount *account,
 	gtk_scrolled_window_set_shadow_type(GTK_SCROLLED_WINDOW(scrolledwin),
 					    GTK_SHADOW_IN);
 	gtk_box_pack_start(GTK_BOX(edit_vbox), scrolledwin, TRUE, TRUE, 0);
-	gtk_widget_set_size_request(scrolledwin, prefs_common.compose_width, -1);
 
 	text = gtk_text_view_new();
 	if (prefs_common.show_compose_margin) {
@@ -8416,7 +8416,7 @@ static void compose_destroy(Compose *compose)
 #endif
 
 	if (!compose->batch) {
-		gtk_widget_get_allocation(compose->scrolledwin, &allocation);
+		gtk_widget_get_allocation(compose->window, &allocation);
 		prefs_common.compose_width = allocation.width;
 		prefs_common.compose_height = allocation.height;
 	}

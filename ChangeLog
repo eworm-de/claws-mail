@@ -1,3 +1,8 @@
+2011-11-06 [pawel]	3.7.10cvs74
+
+	* src/compose.c
+		Fix compose window size saving / restoring
+
 2011-11-06 [pawel]	3.7.10cvs73
 
 	* src/mimeview.c
