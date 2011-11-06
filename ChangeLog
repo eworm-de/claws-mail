@@ -1,3 +1,12 @@
+2011-11-06 [pawel]	3.7.10cvs73
+
+	* src/mimeview.c
+	* src/messageview.c
+		Optimize message displaying, in some conditions parts were
+		displayed twice causing flickering. For example first html
+		source and then rendering output from html plugin of the
+		same part.
+
 2011-11-05 [wwp]	3.7.10cvs72
 
 	* src/gtk/gtkaspell.c

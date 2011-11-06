@@ -1131,7 +1131,7 @@ gint messageview_show(MessageView *messageview, MsgInfo *msginfo,
 {
 	gchar *text = NULL;
 	gchar *file;
-	MimeInfo *mimeinfo, *encinfo, *brokeninfo;
+	MimeInfo *mimeinfo, *encinfo, *brokeninfo, *root;
 	gchar *subject = NULL;
 	cm_return_val_if_fail(msginfo != NULL, -1);
 
@@ -1310,6 +1310,7 @@ gint messageview_show(MessageView *messageview, MsgInfo *msginfo,
 		noticeview_show(messageview->noticeview);
 	}
 			
+	root = mimeinfo;
 	mimeinfo = procmime_mimeinfo_next(mimeinfo);
 	if (!all_headers && mimeinfo 
 			&& (mimeinfo->type != MIMETYPE_TEXT || 
@@ -1381,7 +1382,8 @@ gint messageview_show(MessageView *messageview, MsgInfo *msginfo,
 			if (!mimeinfo) 
 				mimeinfo = saved_mimeinfo;
 
-			mimeview_show_part(messageview->mimeview,mimeinfo);
+			if (!mimeview_show_part(messageview->mimeview, mimeinfo))
+				mimeview_select_mimepart_icon(messageview->mimeview, root);
 			goto done;
 		} else if (prefs_common.invoke_plugin_on_html) {
 			mimeview_select_mimepart_icon(messageview->mimeview, mimeinfo);
@@ -1401,6 +1403,8 @@ gint messageview_show(MessageView *messageview, MsgInfo *msginfo,
 			mimeinfo = procmime_mimeinfo_next(mimeinfo);
 		}
 	}
+
+	mimeview_select_mimepart_icon(messageview->mimeview, root);
 done:
 	/* plugins may hook in here to work with the message view */
 	hooks_invoke(MESSAGE_VIEW_SHOW_DONE_HOOKLIST, messageview);

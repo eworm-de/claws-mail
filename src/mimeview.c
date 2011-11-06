@@ -495,17 +495,9 @@ void mimeview_show_message(MimeView *mimeview, MimeInfo *mimeinfo,
 	mimeview_set_multipart_tree(mimeview, mimeinfo, NULL);
 	icon_list_clear(mimeview);
 	icon_list_create(mimeview, mimeinfo);
-
+	
 	g_signal_handlers_unblock_by_func(G_OBJECT(ctree),
 					  mimeview_selected, mimeview);
-
-	node = GTK_CMCTREE_NODE(GTK_CMCLIST(ctree)->row_list);
-	if (node) {
-		gtk_cmctree_select(ctree, node);
-		icon_list_toggle_by_mime_info
-			(mimeview, gtk_cmctree_node_get_row_data(ctree, node));
-		gtkut_ctree_set_focus_row(ctree, node);
-	}
 }
 
 #ifdef USE_PTHREAD
@@ -791,10 +783,10 @@ gboolean mimeview_show_part(MimeView *mimeview, MimeInfo *partinfo)
 	if (mimeview->mimeviewer != NULL)
 		mimeview->mimeviewer->clear_viewer(mimeview->mimeviewer);
 
-	if (mimeview->mimeviewer != viewer) {
+	if (mimeview->mimeviewer != viewer)
 		mimeview->mimeviewer = viewer;
-		mimeview_change_view_type(mimeview, MIMEVIEW_VIEWER);
-	}
+
+	mimeview_change_view_type(mimeview, MIMEVIEW_VIEWER);
 	viewer->mimeview = mimeview;
 	viewer->show_mimepart(viewer, mimeview->file, partinfo);
 
