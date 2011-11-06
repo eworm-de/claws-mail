@@ -1,3 +1,8 @@
+2011-11-06 [colin]	3.7.10cvs76
+
+	* src/mainwindow.c
+		Oops, some unwanted undo got commited.
+
 2011-11-06 [colin]	3.7.10cvs75
 
 	* src/mainwindow.c

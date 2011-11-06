@@ -2290,8 +2290,6 @@ MainWindow *main_window_create()
 	}
 	summary_update_unread(mainwin->summaryview, NULL);
 	
-	gtk_widget_show(mainwin->window);
-
 	/* initialize views */
 	folderview_init(folderview);
 	summary_init(summaryview);

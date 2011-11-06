@@ -4279,3 +4279,4 @@
 ( cvs diff -u -r 1.83.2.177 -r 1.83.2.178 src/mimeview.c;  cvs diff -u -r 1.94.2.222 -r 1.94.2.223 src/messageview.c;  ) > 3.7.10cvs73.patchset
 ( cvs diff -u -r 1.382.2.592 -r 1.382.2.593 src/compose.c;  ) > 3.7.10cvs74.patchset
 ( cvs diff -u -r 1.274.2.333 -r 1.274.2.334 src/mainwindow.c;  ) > 3.7.10cvs75.patchset
+( cvs diff -u -r 1.274.2.334 -r 1.274.2.335 src/mainwindow.c;  ) > 3.7.10cvs76.patchset
