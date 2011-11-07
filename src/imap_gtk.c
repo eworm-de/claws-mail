@@ -533,7 +533,9 @@ static void subscribe_cb_full(FolderView *folderview, guint action)
 				transc_list = g_list_append(transc_list, 
 					imap_modified_utf7_to_utf8(cur->data, FALSE));
 			}
-
+			
+			transc_list = g_list_sort(transc_list, g_str_equal);
+			
 			child_folder = input_dialog_combo(_("Subscribe"), 
 					msg,
 					transc_list->next?_("All of them"):transc_list->data, transc_list);

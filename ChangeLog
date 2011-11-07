@@ -1,3 +1,8 @@
+2011-11-07 [pawel]	3.7.10cvs78
+
+	* src/imap_gtk.c
+		Fix bug #2493 'Subscription pull down should be alphabetized'
+
 2011-11-07 [pawel]	3.7.10cvs77
 
 	* src/mimeview.c
