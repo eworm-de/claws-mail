@@ -473,7 +473,6 @@ void mimeview_show_message(MimeView *mimeview, MimeInfo *mimeinfo,
 			   const gchar *file)
 {
 	GtkCMCTree *ctree = GTK_CMCTREE(mimeview->ctree);
-	GtkCMCTreeNode *node;
 
 	mimeview_clear(mimeview);
 
@@ -1444,6 +1443,11 @@ static gint mimeview_key_pressed(GtkWidget *widget, GdkEventKey *event,
 		return FALSE;
 		
 	switch (event->keyval) {
+	case GDK_KEY_Home:
+	case GDK_KEY_End:
+		textview_scroll_max(mimeview->textview,
+				    (event->keyval == GDK_KEY_Home));
+		return TRUE;
 	case GDK_KEY_Page_Down:
 	case GDK_KEY_space:
 		if (mimeview_scroll_page(mimeview,

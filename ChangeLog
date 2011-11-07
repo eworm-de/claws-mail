@@ -1,3 +1,10 @@
+2011-11-07 [pawel]	3.7.10cvs77
+
+	* src/mimeview.c
+	* src/textview.c
+	* src/textview.h
+		Make Home & End keys work in textview
+
 2011-11-06 [colin]	3.7.10cvs76
 
 	* src/mainwindow.c

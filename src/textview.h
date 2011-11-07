@@ -108,6 +108,8 @@ void textview_scroll_one_line	(TextView	*textview,
 				 gboolean	 up);
 gboolean textview_scroll_page	(TextView	*textview,
 				 gboolean	 up);
+void textview_scroll_max	(TextView 	*textview,
+				 gboolean 	 up);
 
 gboolean textview_search_string			(TextView	*textview,
 						 const gchar	*str,

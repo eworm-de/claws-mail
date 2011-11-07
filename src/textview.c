@@ -2262,6 +2262,23 @@ gboolean textview_scroll_page(TextView *textview, gboolean up)
 	return gtkutils_scroll_page(GTK_WIDGET(text), vadj, up);
 }
 
+void textview_scroll_max(TextView *textview, gboolean up)
+{
+	GtkTextBuffer *buffer = gtk_text_view_get_buffer(GTK_TEXT_VIEW(textview->text));
+	GtkTextIter iter;
+	
+	if (up) {
+		gtk_text_buffer_get_start_iter(buffer, &iter);
+		gtk_text_view_scroll_to_iter(GTK_TEXT_VIEW(textview->text),
+						&iter, 0.0, TRUE, 0.0, 1.0);
+	
+	} else {
+		gtk_text_buffer_get_end_iter(buffer, &iter);
+		gtk_text_view_scroll_to_iter(GTK_TEXT_VIEW(textview->text),
+						&iter, 0.0, TRUE, 0.0, 0.0);
+	}
+}
+
 #define KEY_PRESS_EVENT_STOP() \
 	g_signal_stop_emission_by_name(G_OBJECT(widget), \
 				       "key_press_event");
@@ -2279,17 +2296,19 @@ static gint textview_key_pressed(GtkWidget *widget, GdkEventKey *event,
 
 	switch (event->keyval) {
 	case GDK_KEY_Tab:
-	case GDK_KEY_Home:
 	case GDK_KEY_Left:
 	case GDK_KEY_Up:
 	case GDK_KEY_Right:
 	case GDK_KEY_Down:
 	case GDK_KEY_Page_Up:
 	case GDK_KEY_Page_Down:
-	case GDK_KEY_End:
 	case GDK_KEY_Control_L:
 	case GDK_KEY_Control_R:
 		return FALSE;
+	case GDK_KEY_Home:
+	case GDK_KEY_End:
+		textview_scroll_max(textview,(event->keyval == GDK_KEY_Home));
+		return TRUE;
 	case GDK_KEY_space:
 		if (summaryview)
 			summary_pass_key_press_event(summaryview, event);
