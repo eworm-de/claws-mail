@@ -3637,6 +3637,8 @@ void summary_toggle_view(SummaryView *summaryview)
 {
 	if (prefs_common.layout_mode == SMALL_LAYOUT)
 		return;
+	if (summary_is_locked(summaryview))
+		return;
 	if (!messageview_is_visible(summaryview->messageview) &&
 	    summaryview->selected && summary_is_list(summaryview))
 		summary_display_msg(summaryview,

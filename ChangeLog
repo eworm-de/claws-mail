@@ -1,3 +1,10 @@
+2011-11-08 [pawel]	3.7.10cvs80
+
+	* src/summaryview.c
+		Fix bug #2422 'Toggle Message View w/ V crashes Claws'
+		Fix race condition - don't try to hide messageview while
+		being in the middle of message displaying routine.
+
 2011-11-08 [colin]	3.7.10cvs79
 
 	* src/codeconv.c
