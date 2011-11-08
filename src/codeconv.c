@@ -1693,6 +1693,7 @@ void conv_encode_header_full(gchar *dest, gint len, const gchar *src,
 					cur_len += mb_len;
 					p += mb_len;
 				} else if (cur_len == 0) {
+					left = 0;
 					LBREAK_IF_REQUIRED(1, FALSE);
 					continue;
 				} else {

@@ -1,3 +1,10 @@
+2011-11-08 [colin]	3.7.10cvs79
+
+	* src/codeconv.c
+		Make sure we break line when we need to. Very probably
+		fixes bug #2310 "Crash when hitting Ctrl+R to reply to a 
+		particular mail"
+
 2011-11-07 [pawel]	3.7.10cvs78
 
 	* src/imap_gtk.c
