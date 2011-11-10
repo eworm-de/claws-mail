@@ -1,3 +1,8 @@
+2011-11-10 [paul]	3.7.10cvs81
+
+	* src/prefs_common.c
+		use european date format as default
+
 2011-11-08 [pawel]	3.7.10cvs80
 
 	* src/summaryview.c

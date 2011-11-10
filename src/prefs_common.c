@@ -444,7 +444,7 @@ static PrefParam param[] = {
 	 NULL, NULL, NULL},
 	{"thread_by_subject", "TRUE", &prefs_common.thread_by_subject, P_BOOL,
 	 NULL, NULL, NULL},
-	{"date_format", N_("%y/%m/%d(%a) %H:%M"), &prefs_common.date_format,
+	{"date_format", N_("%d/%m/%y(%a) %H:%M"), &prefs_common.date_format,
 	 P_STRING, NULL, NULL, NULL},
 	{"msgview_date_format", "FALSE", &prefs_common.msgview_date_format, P_BOOL,
 	 NULL, NULL, NULL},
