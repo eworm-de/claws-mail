@@ -4285,3 +4285,4 @@
 ( cvs diff -u -r 1.65.2.73 -r 1.65.2.74 src/codeconv.c;  ) > 3.7.10cvs79.patchset
 ( cvs diff -u -r 1.395.2.436 -r 1.395.2.437 src/summaryview.c;  ) > 3.7.10cvs80.patchset
 ( cvs diff -u -r 1.204.2.203 -r 1.204.2.204 src/prefs_common.c;  ) > 3.7.10cvs81.patchset
+( cvs diff -u -r 1.204.2.204 -r 1.204.2.205 src/prefs_common.c;  ) > 3.7.10cvs82.patchset

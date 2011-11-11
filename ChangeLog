@@ -1,3 +1,9 @@
+2011-11-11 [colin]	3.7.10cvs82
+
+	* src/prefs_common.c
+		Use %x (The preferred date representation for the current locale
+		without the time)
+
 2011-11-10 [paul]	3.7.10cvs81
 
 	* src/prefs_common.c
