@@ -12,7 +12,7 @@ MINOR_VERSION=7
 MICRO_VERSION=10
 INTERFACE_AGE=0
 BINARY_AGE=0
-EXTRA_VERSION=83
+EXTRA_VERSION=84
 EXTRA_RELEASE=
 EXTRA_GTK2_VERSION=
 
@@ -181,6 +181,9 @@ esac
   
 dnl Checks for iconv
 AM_ICONV
+
+dnl floor and ceil are  in -lm
+LIBS="$LIBS -lm"
 
 dnl
 dnl Check for bind_textdomain_codeset, including -lintl if GLib brings it in.

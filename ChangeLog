@@ -1,3 +1,9 @@
+2011-11-11 [colin]	3.7.10cvs84
+
+	* configure.ac
+		Fix build on Fedora 16. -lm was probably pulled by something
+		else previously.
+
 2011-11-11 [pawel]	3.7.10cvs83
 
 	* src/mainwindow.c
