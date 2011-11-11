@@ -3466,7 +3466,7 @@ static void summary_display_msg_full(SummaryView *summaryview,
 			summaryview->last_displayed = summaryview->displayed;
 			summaryview->displayed = row;
 			val = messageview_show(msgview, msginfo, all_headers);
-			if (GTK_CMCLIST(msgview->mimeview->ctree)->row_list == NULL)
+			if (mimeview_tree_is_empty(msgview->mimeview))
 				gtk_widget_grab_focus(summaryview->ctree);
 			gtkut_ctree_node_move_if_on_the_edge(ctree, row,
 				GTK_CMCLIST(summaryview->ctree)->focus_row);
@@ -3480,7 +3480,7 @@ static void summary_display_msg_full(SummaryView *summaryview,
 				GTK_EVENTS_FLUSH();
 			}
 			val = messageview_show(msgview, msginfo, all_headers);
-			if (GTK_CMCLIST(msgview->mimeview->ctree)->row_list == NULL)
+			if (mimeview_tree_is_empty(msgview->mimeview))
 				gtk_widget_grab_focus(summaryview->ctree);
 			gtkut_ctree_node_move_if_on_the_edge(ctree, row,
 				GTK_CMCLIST(summaryview->ctree)->focus_row);

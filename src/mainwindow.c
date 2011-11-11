@@ -4130,12 +4130,12 @@ static void toggle_col_headers_cb(GtkAction *gaction, gpointer data)
 	if (gtk_toggle_action_get_active (GTK_TOGGLE_ACTION (gaction))) {
 		gtk_cmclist_column_titles_show(GTK_CMCLIST(folderview->ctree));
 		gtk_cmclist_column_titles_show(GTK_CMCLIST(summaryview->ctree));
-  		gtk_cmclist_column_titles_show(GTK_CMCLIST(mimeview->ctree));
+  		gtk_tree_view_set_headers_visible(GTK_TREE_VIEW(mimeview->ctree), TRUE);
 		prefs_common.show_col_headers = TRUE;
 	} else {
 		gtk_cmclist_column_titles_hide(GTK_CMCLIST(folderview->ctree));
 		gtk_cmclist_column_titles_hide(GTK_CMCLIST(summaryview->ctree));
-   		gtk_cmclist_column_titles_hide(GTK_CMCLIST(mimeview->ctree));		
+   		gtk_tree_view_set_headers_visible(GTK_TREE_VIEW(mimeview->ctree), FALSE);		
 		prefs_common.show_col_headers = FALSE;
 	}
 }

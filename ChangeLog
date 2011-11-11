@@ -1,3 +1,11 @@
+2011-11-11 [pawel]	3.7.10cvs83
+
+	* src/mainwindow.c
+	* src/mimeview.c
+	* src/mimeview.h
+	* src/summaryview.c
+		Port MimeView to GtkTreeView
+
 2011-11-11 [colin]	3.7.10cvs82
 
 	* src/prefs_common.c

@@ -68,19 +68,15 @@ typedef enum
 {
 	COL_MIMETYPE = 0,
 	COL_SIZE     = 1,
-	COL_NAME     = 2
+	COL_NAME     = 2,
+	COL_DATA     = 3,
 } MimeViewColumnPos;
 
-#define N_MIMEVIEW_COLS	3
+#define N_MIMEVIEW_COLS	4
 
-#if !GTK_CHECK_VERSION(3, 0, 0)
 static void mimeview_set_multipart_tree		(MimeView	*mimeview,
 						 MimeInfo	*mimeinfo,
-						 GtkCMCTreeNode	*parent);
-static GtkCMCTreeNode *mimeview_append_part	(MimeView	*mimeview,
-						 MimeInfo	*partinfo,
-						 GtkCMCTreeNode	*parent);
-#endif
+						 GtkTreeIter	*parent);
 static void mimeview_show_message_part		(MimeView	*mimeview,
 						 MimeInfo	*partinfo);
 static void mimeview_change_view_type		(MimeView	*mimeview,
@@ -91,12 +87,8 @@ static gchar *mimeview_get_filename_for_part		(MimeInfo	*partinfo,
 static gboolean mimeview_write_part		(const gchar	*filename,
 						 MimeInfo	*partinfo);
 
-#if !GTK_CHECK_VERSION(3, 0, 0)
-static void mimeview_selected		(GtkCMCTree	*ctree,
-					 GtkCMCTreeNode	*node,
-					 gint		 column,
+static void mimeview_selected		(GtkTreeSelection	*selection,
 					 MimeView	*mimeview);
-#endif
 static void mimeview_start_drag 	(GtkWidget	*widget,
 					 gint		 button,
 					 GdkEvent	*event,
@@ -160,6 +152,8 @@ static void icon_scroll_size_allocate_cb(GtkWidget 	*widget,
 					 GtkAllocation  *layout_size, 
 					 MimeView 	*mimeview);
 static MimeInfo *mimeview_get_part_to_use(MimeView *mimeview);
+static const gchar *get_part_name(MimeInfo *partinfo);
+static const gchar *get_part_description(MimeInfo *partinfo);
 
 static void mimeview_launch_cb(GtkAction *action, gpointer data)
 {
@@ -266,9 +260,13 @@ MimeView *mimeview_create(MainWindow *mainwin)
 	GtkWidget *hbox;
 	NoticeView *siginfoview;
 	GtkRequisition r;
+	GtkTreeStore *model;
+	GtkCellRenderer *renderer;
+	GtkTreeViewColumn *column;
+	GtkTreeSelection *selection;
 
 	gchar *titles[N_MIMEVIEW_COLS];
-	gint i;
+	gint cols;
 
 	if (!hand_cursor)
 		hand_cursor = gdk_cursor_new(GDK_HAND2);
@@ -285,35 +283,56 @@ MimeView *mimeview_create(MainWindow *mainwin)
 	gtk_scrolled_window_set_policy(GTK_SCROLLED_WINDOW(scrolledwin),
 				       GTK_POLICY_AUTOMATIC,
 				       GTK_POLICY_AUTOMATIC);
+				       
+	model = gtk_tree_store_new(N_MIMEVIEW_COLS,
+				   G_TYPE_STRING,
+				   G_TYPE_STRING,
+				   G_TYPE_STRING,
+				   G_TYPE_POINTER);
 
-	ctree = gtk_sctree_new_with_titles(N_MIMEVIEW_COLS, 0, titles);
+	ctree = gtk_tree_view_new_with_model(GTK_TREE_MODEL(model));
+	gtk_tree_view_set_enable_search(GTK_TREE_VIEW(ctree), FALSE);
+	gtk_tree_view_set_rules_hint(GTK_TREE_VIEW(ctree),
+					prefs_common.use_stripes_everywhere);
+	gtk_tree_view_set_headers_visible(GTK_TREE_VIEW(ctree),
+					prefs_common.show_col_headers);
 
-	if (prefs_common.show_col_headers == FALSE)
-		gtk_cmclist_column_titles_hide(GTK_CMCLIST(ctree));
+	renderer = gtk_cell_renderer_text_new();
+	cols = gtk_tree_view_insert_column_with_attributes(GTK_TREE_VIEW(ctree),
+					-1, titles[COL_MIMETYPE],renderer,
+					"text", COL_MIMETYPE, NULL);
+	column = gtk_tree_view_get_column(GTK_TREE_VIEW(ctree), cols-1);
+							   
+	renderer = gtk_cell_renderer_text_new();
+	gtk_cell_renderer_set_alignment(renderer, 1, 0.5);
+	cols = gtk_tree_view_insert_column_with_attributes(GTK_TREE_VIEW(ctree),
+					-1, titles[COL_SIZE], renderer,
+					"text", COL_SIZE, NULL);
+	column = gtk_tree_view_get_column(GTK_TREE_VIEW(ctree), cols-1);
+	gtk_tree_view_column_set_alignment(GTK_TREE_VIEW_COLUMN(column), 1);
+	
+	renderer = gtk_cell_renderer_text_new();
+	cols = gtk_tree_view_insert_column_with_attributes(GTK_TREE_VIEW(ctree),
+					-1, titles[COL_NAME], renderer,
+					"text", COL_NAME, NULL);
+	column = gtk_tree_view_get_column(GTK_TREE_VIEW(ctree), cols-1);
+	gtk_tree_view_column_set_expand(GTK_TREE_VIEW_COLUMN(column), TRUE);
 
-	gtk_cmclist_set_selection_mode(GTK_CMCLIST(ctree), GTK_SELECTION_BROWSE);
-	gtk_cmctree_set_line_style(GTK_CMCTREE(ctree), GTK_CMCTREE_LINES_NONE);
-	gtk_cmclist_set_column_justification(GTK_CMCLIST(ctree), COL_SIZE,
-					   GTK_JUSTIFY_RIGHT);
-	gtk_cmclist_set_column_width(GTK_CMCLIST(ctree), COL_MIMETYPE, 240);
-	gtk_cmclist_set_column_width(GTK_CMCLIST(ctree), COL_SIZE, 90);
-	gtk_cmclist_set_column_auto_resize(GTK_CMCLIST(ctree), COL_MIMETYPE, TRUE);
-	gtk_cmclist_set_column_auto_resize(GTK_CMCLIST(ctree), COL_NAME, TRUE);	
-	for (i = 0; i < N_MIMEVIEW_COLS; i++)
-		gtkut_widget_set_can_focus(GTK_CMCLIST(ctree)->column[i].button,
-				       FALSE);
+	selection = gtk_tree_view_get_selection(GTK_TREE_VIEW(ctree));
+	gtk_tree_selection_set_mode(selection, GTK_SELECTION_BROWSE);
+
 	gtk_widget_show(ctree);
 	gtk_container_add(GTK_CONTAINER(scrolledwin), ctree);
 
-	g_signal_connect(G_OBJECT(ctree), "tree_select_row",
+	g_signal_connect(G_OBJECT(selection), "changed",
 			 G_CALLBACK(mimeview_selected), mimeview);
-	g_signal_connect(G_OBJECT(ctree), "button_release_event",
+	g_signal_connect(G_OBJECT(ctree), "button-release-event",
 			 G_CALLBACK(mimeview_button_pressed), mimeview);
-	g_signal_connect(G_OBJECT(ctree), "key_press_event",
+	g_signal_connect(G_OBJECT(ctree), "key-press-event",
 			 G_CALLBACK(mimeview_key_pressed), mimeview);
-	g_signal_connect(G_OBJECT (ctree),"start_drag",
+	g_signal_connect(G_OBJECT (ctree),"drag-begin",
 			 G_CALLBACK (mimeview_start_drag), mimeview);
-	g_signal_connect(G_OBJECT(ctree), "drag_data_get",
+	g_signal_connect(G_OBJECT(ctree), "drag-data-get",
 			 G_CALLBACK(mimeview_drag_data_get), mimeview);
 
 	mime_notebook = gtk_notebook_new();
@@ -472,7 +491,7 @@ static gboolean any_part_is_signed(MimeInfo *mimeinfo)
 void mimeview_show_message(MimeView *mimeview, MimeInfo *mimeinfo,
 			   const gchar *file)
 {
-	GtkCMCTree *ctree = GTK_CMCTREE(mimeview->ctree);
+	GtkTreeView *ctree = GTK_TREE_VIEW(mimeview->ctree);
 
 	mimeview_clear(mimeview);
 
@@ -492,6 +511,7 @@ void mimeview_show_message(MimeView *mimeview, MimeInfo *mimeinfo,
 		debug_print("signed mail\n");
 
 	mimeview_set_multipart_tree(mimeview, mimeinfo, NULL);
+	gtk_tree_view_expand_all(ctree);
 	icon_list_clear(mimeview);
 	icon_list_create(mimeview, mimeinfo);
 	
@@ -541,6 +561,7 @@ void mimeview_destroy(MimeView *mimeview)
 #endif
 	{
 		mimeview_free_mimeinfo(mimeview);
+		gtk_tree_path_free(mimeview->opened);
 		g_free(mimeview->file);
 		g_free(mimeview);
 		mimeviews = g_slist_remove(mimeviews, mimeview);
@@ -550,46 +571,187 @@ void mimeview_destroy(MimeView *mimeview)
 
 MimeInfo *mimeview_get_selected_part(MimeView *mimeview)
 {
-	return gtk_cmctree_node_get_row_data
-		(GTK_CMCTREE(mimeview->ctree), mimeview->opened);
+	GtkTreeModel *model = gtk_tree_view_get_model(GTK_TREE_VIEW(mimeview->ctree));
+	GtkTreeIter iter;
+	GtkTreeSelection *selection;
+	MimeInfo *partinfo;
+	
+	selection = gtk_tree_view_get_selection(GTK_TREE_VIEW(mimeview->ctree));
+	gtk_tree_selection_get_selected(selection, NULL, &iter);
+	
+	gtk_tree_model_get(model, &iter, COL_DATA, &partinfo, -1);
+	return partinfo;
+}
+
+MimeInfo *mimeview_get_node_part(MimeView *mimeview, GtkTreePath *path)
+{
+	GtkTreeModel *model = gtk_tree_view_get_model(GTK_TREE_VIEW(mimeview->ctree));
+	GtkTreeIter iter;
+	MimeInfo *partinfo;
+	
+	gtk_tree_model_get_iter(model, &iter, path);
+	gtk_tree_model_get(model, &iter, COL_DATA, &partinfo, -1);
+	return partinfo;
+}
+
+gboolean mimeview_tree_is_empty(MimeView *mimeview)
+{
+	GtkTreeModel *model = gtk_tree_view_get_model(GTK_TREE_VIEW(mimeview->ctree));
+	GtkTreeIter iter;
+	return !gtk_tree_model_get_iter_first(model, &iter);
+}
+
+static gboolean mimeview_tree_next(GtkTreeModel *model, GtkTreePath *path)
+{
+	GtkTreeIter iter, parent;
+	gboolean has_parent;
+	
+	gtk_tree_model_get_iter(model, &iter, path);
+	
+	if (gtk_tree_model_iter_has_child(model, &iter)) {
+		gtk_tree_path_down(path);
+		return TRUE;
+	}
+
+	has_parent = gtk_tree_model_iter_parent(model, &parent, &iter);
+	
+	if (!gtk_tree_model_iter_next(model, &iter)) {
+		if (has_parent && gtk_tree_model_iter_next(model, &parent)) {
+			gtk_tree_path_up(path);
+			gtk_tree_path_next(path);
+			return TRUE;
+		}
+		
+	} else {
+		gtk_tree_path_next(path);
+		return TRUE;
+	}
+
+	return FALSE;
+}
+
+static gboolean mimeview_tree_prev(MimeView *mimeview, GtkTreePath *path)
+{
+	GtkTreeModel *model = gtk_tree_view_get_model(GTK_TREE_VIEW(mimeview->ctree));
+	GtkTreeIter iter, child, parent;
+	gboolean has_parent;
+
+	gtk_tree_model_get_iter(model, &iter, path);	
+	has_parent = gtk_tree_model_iter_parent(model, &parent, &iter);
+
+	if (gtk_tree_path_prev(path)) {
+		gtk_tree_model_get_iter(model, &iter, path);
+		
+		if (gtk_tree_model_iter_nth_child(model, &child, &iter, 0)) {
+			gtk_tree_path_down(path);
+			
+			while (gtk_tree_model_iter_next(model, &child))
+				gtk_tree_path_next(path);
+		}
+		
+		return TRUE;
+	}
+
+	if (has_parent) {
+		gtk_tree_path_up(path);
+		return TRUE;
+	}
+
+	return FALSE;
 }
 
 gint mimeview_get_selected_part_num(MimeView *mimeview)
 {
+	GtkTreeModel *model = gtk_tree_view_get_model(GTK_TREE_VIEW(mimeview->ctree));
+	GtkTreeIter iter;
+	GtkTreePath *path;
 	gint i = 0;
-	GList *rows = GTK_CMCLIST(mimeview->ctree)->row_list;
-	while (rows) {
-		if (mimeview->opened == GTK_CMCTREE_NODE(rows))
+
+	gtk_tree_model_get_iter_first(model, &iter);
+	path = gtk_tree_model_get_path(model, &iter);
+	
+	do {
+		if (!gtk_tree_path_compare(mimeview->opened, path)) {
+			gtk_tree_path_free(path);
 			return i;
+		}
+
 		i++;
-		rows = rows->next;
-	}
+	} while (mimeview_tree_next(model, path));
+
+	gtk_tree_path_free(path);
+
 	return -1;
 }
 
 void mimeview_select_part_num(MimeView *mimeview, gint i)
 {
+	GtkTreeModel *model = gtk_tree_view_get_model(GTK_TREE_VIEW(mimeview->ctree));
+	GtkTreeIter iter;
+	GtkTreePath *path;
+	GtkTreeSelection *selection;
+	gint x = 0;
+	
 	if (i < 0)
 		return;
-	gtk_cmclist_unselect_all(GTK_CMCLIST(mimeview->ctree));
-	gtk_cmclist_select_row(GTK_CMCLIST(mimeview->ctree), i, -1);
-	gtkut_clist_set_focus_row(GTK_CMCLIST(mimeview->ctree), i);
+	
+	gtk_tree_model_get_iter_first(model, &iter);
+	path = gtk_tree_model_get_path(model, &iter);
+	
+	while (x != i) {
+		if (!mimeview_tree_next(model, path)) {
+			gtk_tree_path_free(path);
+			return;
+		}
+		x++;
+	}
+	
+	selection = gtk_tree_view_get_selection(GTK_TREE_VIEW(mimeview->ctree));
+	gtk_tree_selection_select_path(selection, path);
+	gtk_tree_path_free(path);
 }
 
 static void mimeview_set_multipart_tree(MimeView *mimeview,
 					MimeInfo *mimeinfo,
-					GtkCMCTreeNode *parent)
+					GtkTreeIter *parent)
 {
-	GtkCMCTreeNode *node;
+	GtkTreeStore *model = GTK_TREE_STORE(gtk_tree_view_get_model(
+					GTK_TREE_VIEW(mimeview->ctree)));
+	GtkTreeIter iter;
+	gchar *content_type, *length, *name;
 
 	cm_return_if_fail(mimeinfo != NULL);
 
 	while (mimeinfo != NULL) {
-		node = mimeview_append_part(mimeview, mimeinfo, parent);
+		if (mimeinfo->type != MIMETYPE_UNKNOWN && mimeinfo->subtype)
+			content_type = g_strdup_printf("%s/%s",
+					procmime_get_media_type_str(mimeinfo->type),
+					mimeinfo->subtype);
+		else
+			content_type = g_strdup("UNKNOWN");
+
+		length = g_strdup(to_human_readable((goffset) mimeinfo->length));
+
+		if (prefs_common.attach_desc)
+			name = g_strdup(get_part_description(mimeinfo));
+		else
+			name = g_strdup(get_part_name(mimeinfo));
+
+		gtk_tree_store_append(model, &iter, parent);
+		gtk_tree_store_set(model, &iter,
+				COL_MIMETYPE, content_type,
+				COL_SIZE, length,
+				COL_NAME, name,
+				COL_DATA, mimeinfo, -1);
+		g_free(content_type);
+		g_free(length);
+		g_free(name);
 
 		if (mimeinfo->node->children)
-			mimeview_set_multipart_tree(mimeview, (MimeInfo *) mimeinfo->node->children->data, node);
-		mimeinfo = mimeinfo->node->next != NULL ? (MimeInfo *) mimeinfo->node->next->data : NULL;
+			mimeview_set_multipart_tree(mimeview, 
+				(MimeInfo *) mimeinfo->node->children->data, &iter);
+		mimeinfo = mimeinfo->node->next != NULL ? 
+				(MimeInfo *) mimeinfo->node->next->data : NULL;
 	}
 }
 
@@ -621,36 +783,6 @@ static const gchar *get_part_description(MimeInfo *partinfo)
 		return partinfo->description;
 	else
 		return get_part_name(partinfo);
-}
-
-static GtkCMCTreeNode *mimeview_append_part(MimeView *mimeview,
-					  MimeInfo *partinfo,
-					  GtkCMCTreeNode *parent)
-{
-	GtkCMCTree *ctree = GTK_CMCTREE(mimeview->ctree);
-	GtkCMCTreeNode *node;
-	static gchar content_type[64];
-	gchar *str[N_MIMEVIEW_COLS];
-
-	if (partinfo->type != MIMETYPE_UNKNOWN && partinfo->subtype) {
-		g_snprintf(content_type, 64, "%s/%s", procmime_get_media_type_str(partinfo->type), partinfo->subtype);
-	} else {
-		g_snprintf(content_type, 64, "UNKNOWN");
-	}
-
-	str[COL_MIMETYPE] = content_type;
-	str[COL_SIZE] = to_human_readable((goffset)partinfo->length);
-	if (prefs_common.attach_desc)
-		str[COL_NAME] = (gchar *) get_part_description(partinfo);
-	else
-		str[COL_NAME] = (gchar *) get_part_name(partinfo);
-
-	node = gtk_sctree_insert_node(ctree, parent, NULL, str, 0,
-				     NULL, NULL,
-				     FALSE, TRUE);
-	gtk_cmctree_node_set_row_data(ctree, node, partinfo);
-
-	return node;
 }
 
 static void mimeview_show_message_part(MimeView *mimeview, MimeInfo *partinfo)
@@ -825,7 +957,7 @@ static void mimeview_change_view_type(MimeView *mimeview, MimeViewType type)
 
 void mimeview_clear(MimeView *mimeview)
 {
-	GtkCMCList *clist = NULL;
+	GtkTreeModel *model;
 	
 	if (!mimeview)
 		return;
@@ -833,11 +965,11 @@ void mimeview_clear(MimeView *mimeview)
 	if (g_slist_find(mimeviews, mimeview) == NULL)
 		return;
 	
-	clist = GTK_CMCLIST(mimeview->ctree);
-	
 	noticeview_hide(mimeview->siginfoview);
 
-	gtk_cmclist_clear(clist);
+	model = gtk_tree_view_get_model(GTK_TREE_VIEW(mimeview->ctree));
+	gtk_tree_store_clear(GTK_TREE_STORE(model));
+
 	textview_clear(mimeview->textview);
 	if (mimeview->mimeviewer != NULL)
 		mimeview->mimeviewer->clear_viewer(mimeview->mimeviewer);
@@ -846,6 +978,7 @@ void mimeview_clear(MimeView *mimeview)
 
 	mimeview->mimeinfo = NULL;
 
+	gtk_tree_path_free(mimeview->opened);
 	mimeview->opened = NULL;
 
 	g_free(mimeview->file);
@@ -966,6 +1099,7 @@ static void mimeview_check_data_reset(MimeView *mimeview)
 	if (must_destroy) {
 		debug_print("freeing deferred mimeview\n");
 		mimeview_free_mimeinfo(mimeview);
+		gtk_tree_path_free(mimeview->opened);
 		g_free(mimeview->file);
 		g_free(mimeview);
 		mimeviews = g_slist_remove(mimeviews, mimeview);
@@ -1181,9 +1315,10 @@ static void mimeview_check_signature(MimeView *mimeview)
 static void redisplay_email(GtkWidget *widget, gpointer user_data)
 {
 	MimeView *mimeview = (MimeView *) user_data;
-	GtkCMCTreeNode *node = mimeview->opened;
+	gtk_tree_path_free(mimeview->opened);
 	mimeview->opened = NULL;
-	mimeview_selected(GTK_CMCTREE(mimeview->ctree), node, 0, mimeview);
+	mimeview_selected(gtk_tree_view_get_selection(
+			GTK_TREE_VIEW(mimeview->ctree)), mimeview);
 }
 
 static void display_full_info_cb(GtkWidget *widget, gpointer user_data)
@@ -1240,16 +1375,31 @@ static void update_signature_info(MimeView *mimeview, MimeInfo *selected)
 	noticeview_show(mimeview->siginfoview);
 }
 
-static void mimeview_selected(GtkCMCTree *ctree, GtkCMCTreeNode *node, gint column,
-			      MimeView *mimeview)
+static void mimeview_selected(GtkTreeSelection *selection, MimeView *mimeview)
 {
+	GtkTreeView *ctree = GTK_TREE_VIEW(mimeview->ctree);
+	GtkTreeModel *model;
+	GtkTreeIter iter;
+	GtkTreePath *path;
 	MimeInfo *partinfo;
-	if (mimeview->opened == node) return;
-	mimeview->opened = node;
-	mimeview->spec_part = NULL;
-	gtk_cmctree_node_moveto(ctree, node, -1, 0.5, 0);
 
-	partinfo = gtk_cmctree_node_get_row_data(ctree, node);
+	selection = gtk_tree_view_get_selection(ctree);
+	if (!gtk_tree_selection_get_selected(selection, &model, &iter))
+		return;
+
+	path = gtk_tree_model_get_path(model, &iter);
+
+	if (mimeview->opened && !gtk_tree_path_compare(mimeview->opened, path)) {
+		gtk_tree_path_free(path);
+		return;
+	}
+	
+	gtk_tree_path_free(mimeview->opened);
+	mimeview->opened = path;
+	mimeview->spec_part = NULL;
+	gtk_tree_view_scroll_to_cell(ctree, path, NULL, TRUE, 0.5, 0);
+
+	partinfo = mimeview_get_node_part(mimeview, path);
 	if (!partinfo) return;
 
 	/* ungrab the mouse event */
@@ -1302,18 +1452,17 @@ static void mimeview_start_drag(GtkWidget *widget, gint button,
 static gint mimeview_button_pressed(GtkWidget *widget, GdkEventButton *event,
 				    MimeView *mimeview)
 {
-	GtkCMCList *clist = GTK_CMCLIST(widget);
-	gint row, column;
+	GtkTreeSelection *selection;
+	GtkTreeIter iter;
 
 	if (!event) return FALSE;
 
 	if (event->button == 2 || event->button == 3) {
-		if (!gtk_cmclist_get_selection_info(clist, event->x, event->y,
-						  &row, &column))
+		selection = gtk_tree_view_get_selection(GTK_TREE_VIEW(widget));
+		if (!gtk_tree_selection_get_selected(selection, NULL, &iter))
 			return FALSE;
-		gtk_cmclist_unselect_all(clist);
-		gtk_cmclist_select_row(clist, row, column);
-		gtkut_clist_set_focus_row(clist, row);
+		
+		gtk_tree_selection_select_iter(selection, &iter);
 	}
 	part_button_pressed(mimeview, event, mimeview_get_selected_part(mimeview));
 
@@ -1385,45 +1534,67 @@ gboolean mimeview_pass_key_press_event(MimeView *mimeview, GdkEventKey *event)
 
 static void mimeview_select_next_part(MimeView *mimeview)
 {
-	GtkCMCTree *ctree = GTK_CMCTREE(mimeview->ctree);
-	GtkCMCTreeNode *node = mimeview->opened;
+	GtkTreeView *ctree = GTK_TREE_VIEW(mimeview->ctree);
+	GtkTreeModel *model = gtk_tree_view_get_model(ctree);
+	GtkTreeSelection *selection;
+	GtkTreeIter iter;
+	GtkTreePath *path;
 	MimeInfo *partinfo = NULL;
+	gboolean has_next;
 	
+	gtk_tree_model_get_iter(model, &iter, mimeview->opened);
+	path = gtk_tree_model_get_path(model, &iter);
 skip:
-	node = GTK_CMCTREE_NODE_NEXT(node);
-	if (!node)
-		node = gtk_cmctree_node_nth(GTK_CMCTREE(ctree), 0);
+	has_next = mimeview_tree_next(model, path);
+	if (!has_next) {
+		has_next = gtk_tree_model_get_iter_first(model, &iter);
+		gtk_tree_path_free(path);
+		path = gtk_tree_model_get_path(model, &iter);
+	}
 
-	if (node) {
-		partinfo = gtk_cmctree_node_get_row_data(ctree, node);
+	if (has_next) {
+		partinfo = mimeview_get_node_part(mimeview, path);
 		if (partinfo->type == MIMETYPE_MULTIPART ||
 		    (!prefs_common.show_inline_attachments && partinfo->id))
 			goto skip;
-		gtk_sctree_unselect_all(GTK_SCTREE(ctree));
-		gtk_sctree_select(GTK_SCTREE(ctree), node);
+		selection = gtk_tree_view_get_selection(ctree);
+		gtk_tree_selection_select_path(selection, path);
 		icon_list_toggle_by_mime_info(mimeview, partinfo);
 	}
+	
+	gtk_tree_path_free(path);
 }
 
 static void mimeview_select_prev_part(MimeView *mimeview)
 {
-	GtkCMCTree *ctree = GTK_CMCTREE(mimeview->ctree);
-	GtkCMCTreeNode *node = mimeview->opened;
+	GtkTreeView *ctree = GTK_TREE_VIEW(mimeview->ctree);
+	GtkTreeModel *model = gtk_tree_view_get_model(ctree);
+	GtkTreeSelection *selection;
+	GtkTreeIter iter;
+	GtkTreePath *path;
 	MimeInfo *partinfo = NULL;
+	gboolean has_prev;
 	
+	gtk_tree_model_get_iter(model, &iter, mimeview->opened);
+	path = gtk_tree_model_get_path(model, &iter);
 skip:
-	node = GTK_CMCTREE_NODE_PREV(node);
-	if (!node)
-		node = gtk_cmctree_node_nth(GTK_CMCTREE(ctree), GTK_CMCLIST(ctree)->rows - 1);
+	has_prev = mimeview_tree_prev(mimeview, path);
+	if (!has_prev) {
+		while (mimeview_tree_next(model, path)) {}
+		has_prev = TRUE;
+	}
 
-	if (node) {
-		partinfo = gtk_cmctree_node_get_row_data(ctree, node);
-		if (partinfo->type == MIMETYPE_MULTIPART)
+	if (has_prev) {
+		partinfo = mimeview_get_node_part(mimeview, path);
+		if (partinfo->type == MIMETYPE_MULTIPART ||
+		    (!prefs_common.show_inline_attachments && partinfo->id))
 			goto skip;
-		gtk_sctree_unselect_all(GTK_SCTREE(ctree));
-		gtk_sctree_select(GTK_SCTREE(ctree), node);
+		selection = gtk_tree_view_get_selection(ctree);
+		gtk_tree_selection_select_path(selection, path);
 		icon_list_toggle_by_mime_info(mimeview, partinfo);
 	}
+	
+	gtk_tree_path_free(path);
 }
 
 #define BREAK_ON_MODIFIER_KEY() \
@@ -2120,11 +2291,27 @@ static gboolean icon_clicked_cb (GtkWidget *button, GdkEventButton *event, MimeV
 
 static void icon_selected (MimeView *mimeview, gint num, MimeInfo *partinfo)
 {
-	GtkCMCTreeNode *node;
-	node = gtk_cmctree_find_by_row_data(GTK_CMCTREE(mimeview->ctree), NULL, partinfo);
-
-	if (node)
-		gtk_cmctree_select(GTK_CMCTREE(mimeview->ctree), node);
+	GtkTreeModel *model = gtk_tree_view_get_model(GTK_TREE_VIEW(mimeview->ctree));
+	GtkTreeIter iter;
+	GtkTreePath *path;
+	MimeInfo *curr = NULL;
+	
+	gtk_tree_model_get_iter_first(model, &iter);
+	path = gtk_tree_model_get_path(model, &iter);
+	
+	do {
+		gtk_tree_model_get_iter(model, &iter, path);
+		gtk_tree_model_get(model, &iter, COL_DATA, &curr, -1);
+		if (curr == partinfo) {
+			GtkTreeSelection *sel = gtk_tree_view_get_selection(
+						GTK_TREE_VIEW(mimeview->ctree));
+			gtk_tree_selection_select_iter(sel, &iter);
+			gtk_tree_path_free(path);
+			return;
+		}
+	} while (mimeview_tree_next(model, path));
+	
+	gtk_tree_path_free(path);
 }		
 
 void mimeview_select_mimepart_icon(MimeView *mimeview, MimeInfo *partinfo)
@@ -2532,10 +2719,9 @@ static gint mime_toggle_button_cb(GtkWidget *button, GdkEventButton *event,
 				   button, FALSE, FALSE, 0);
 		gtk_box_reorder_child(GTK_BOX(gtk_widget_get_parent(button)), button, 0);
 		if (mimeview->opened)
-			icon_list_toggle_by_mime_info
-				(mimeview, gtk_cmctree_node_get_row_data(GTK_CMCTREE(mimeview->ctree), 
-								       mimeview->opened));
-
+			icon_list_toggle_by_mime_info(mimeview,
+					mimeview_get_node_part(mimeview, mimeview->opened));
+		summary_grab_focus(mimeview->mainwin->summaryview);
 	}
 	g_object_unref(button);
 	return TRUE;
