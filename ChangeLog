@@ -1,3 +1,8 @@
+2011-11-13 [colin]	3.7.10cvs85
+
+	* src/compose.c
+		Make compose windows printable
+
 2011-11-11 [colin]	3.7.10cvs84
 
 	* configure.ac

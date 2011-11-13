@@ -4288,3 +4288,4 @@
 ( cvs diff -u -r 1.204.2.204 -r 1.204.2.205 src/prefs_common.c;  ) > 3.7.10cvs82.patchset
 ( cvs diff -u -r 1.274.2.335 -r 1.274.2.336 src/mainwindow.c;  cvs diff -u -r 1.83.2.179 -r 1.83.2.180 src/mimeview.c;  cvs diff -u -r 1.20.2.34 -r 1.20.2.35 src/mimeview.h;  cvs diff -u -r 1.395.2.437 -r 1.395.2.438 src/summaryview.c;  ) > 3.7.10cvs83.patchset
 ( cvs diff -u -r 1.654.2.4364 -r 1.654.2.4365 configure.ac;  ) > 3.7.10cvs84.patchset
+( cvs diff -u -r 1.382.2.593 -r 1.382.2.594 src/compose.c;  ) > 3.7.10cvs85.patchset

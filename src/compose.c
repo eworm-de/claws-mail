@@ -381,6 +381,8 @@ static void compose_insert_sig_cb	(GtkAction	*action,
 
 static void compose_close_cb		(GtkAction	*action,
 					 gpointer	 data);
+static void compose_print_cb		(GtkAction	*action,
+					 gpointer	 data);
 
 static void compose_set_encoding_cb	(GtkAction	*action, GtkRadioAction *current, gpointer data);
 
@@ -568,6 +570,8 @@ static GtkActionEntry compose_entries[] =
 	{"Message/InsertSig",		NULL, N_("Insert si_gnature"), "<control>G", NULL, G_CALLBACK(compose_insert_sig_cb) },
 	/* {"Message/---",		NULL, "---" }, */
 	{"Message/Save",		NULL, N_("_Save"), "<control>S", NULL, G_CALLBACK(compose_save_cb) }, /*COMPOSE_KEEP_EDITING*/
+	/* {"Message/---",		NULL, "---" }, */
+	{"Message/Print",		NULL, N_("_Print"), NULL, NULL, G_CALLBACK(compose_print_cb) },
 	/* {"Message/---",		NULL, "---" }, */
 	{"Message/Close",		NULL, N_("_Close"), "<control>W", NULL, G_CALLBACK(compose_close_cb) },
 
@@ -7191,6 +7195,8 @@ static Compose *compose_create(PrefsAccount *account,
 	MENUITEM_ADDUI_MANAGER(compose->ui_manager, "/Menu/Message", "Separator2", "Message/---", GTK_UI_MANAGER_SEPARATOR)
 	MENUITEM_ADDUI_MANAGER(compose->ui_manager, "/Menu/Message", "Save", "Message/Save", GTK_UI_MANAGER_MENUITEM)
 	MENUITEM_ADDUI_MANAGER(compose->ui_manager, "/Menu/Message", "Separator3", "Message/---", GTK_UI_MANAGER_SEPARATOR)
+	MENUITEM_ADDUI_MANAGER(compose->ui_manager, "/Menu/Message", "Print", "Message/Print", GTK_UI_MANAGER_MENUITEM)
+	MENUITEM_ADDUI_MANAGER(compose->ui_manager, "/Menu/Message", "Separator4", "Message/---", GTK_UI_MANAGER_SEPARATOR)
 	MENUITEM_ADDUI_MANAGER(compose->ui_manager, "/Menu/Message", "Close", "Message/Close", GTK_UI_MANAGER_MENUITEM)
 
 /* Edit menu */
@@ -9819,6 +9825,15 @@ static void compose_close_cb(GtkAction *action, gpointer data)
 	}
 
 	compose_close(compose);
+}
+
+static void compose_print_cb(GtkAction *action, gpointer data)
+{
+	Compose *compose = (Compose *) data;
+
+	compose_draft((gpointer)compose, COMPOSE_AUTO_SAVE);
+	if (compose->targetinfo)
+		messageview_print(compose->targetinfo, FALSE, -1, -1, 0);
 }
 
 static void compose_set_encoding_cb(GtkAction *action, GtkRadioAction *current, gpointer data)
