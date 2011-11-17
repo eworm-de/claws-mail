@@ -574,12 +574,12 @@ MimeInfo *mimeview_get_selected_part(MimeView *mimeview)
 	GtkTreeModel *model = gtk_tree_view_get_model(GTK_TREE_VIEW(mimeview->ctree));
 	GtkTreeIter iter;
 	GtkTreeSelection *selection;
-	MimeInfo *partinfo;
+	MimeInfo *partinfo = NULL;
 	
 	selection = gtk_tree_view_get_selection(GTK_TREE_VIEW(mimeview->ctree));
-	gtk_tree_selection_get_selected(selection, NULL, &iter);
-	
-	gtk_tree_model_get(model, &iter, COL_DATA, &partinfo, -1);
+	if (gtk_tree_selection_get_selected(selection, NULL, &iter))
+		gtk_tree_model_get(model, &iter, COL_DATA, &partinfo, -1);
+
 	return partinfo;
 }
 
