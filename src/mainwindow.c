@@ -3659,26 +3659,6 @@ static void main_window_set_widgets(MainWindow *mainwin, LayoutType layout_mode)
 	gboolean first_set = (mainwin->hpaned == NULL);
 	debug_print("Setting widgets... ");
 
-	if (layout_mode == SMALL_LAYOUT && first_set) {
-		gtk_widget_set_size_request(GTK_WIDGET_PTR(mainwin->folderview),
-				    prefs_common.folderview_width,
-				    prefs_common.folderview_height);
-		gtk_widget_set_size_request(GTK_WIDGET_PTR(mainwin->summaryview),
-				    0,0);
-		gtk_widget_set_size_request(GTK_WIDGET_PTR(mainwin->messageview),
-				    0,0);
-	} else {
-		gtk_widget_set_size_request(GTK_WIDGET_PTR(mainwin->folderview),
-				    prefs_common.folderview_width,
-				    prefs_common.folderview_height);
-		gtk_widget_set_size_request(GTK_WIDGET_PTR(mainwin->summaryview),
-				    prefs_common.summaryview_width,
-				    prefs_common.summaryview_height);
-		gtk_widget_set_size_request(GTK_WIDGET_PTR(mainwin->messageview),
-				    prefs_common.msgview_width,
-				    prefs_common.msgview_height);
-	}
-
 #ifndef GENERIC_UMPC
 	mainwin->messageview->statusbar = mainwin->statusbar;
 	mainwin->messageview->statusbar_cid = mainwin->messageview_cid;
@@ -3801,6 +3781,19 @@ static void main_window_set_widgets(MainWindow *mainwin, LayoutType layout_mode)
 				prefs_common.mainwin_width,
 				prefs_common.mainwin_height);
 		gtk_paned_set_position(GTK_PANED(mainwin->hpaned), 800);
+	} else {
+		gtk_widget_set_size_request(GTK_WIDGET_PTR(mainwin->folderview),
+				    prefs_common.folderview_width,
+				    prefs_common.folderview_height);
+		gtk_widget_set_size_request(GTK_WIDGET_PTR(mainwin->summaryview),
+				    prefs_common.summaryview_width,
+				    prefs_common.summaryview_height);
+		gtk_widget_set_size_request(GTK_WIDGET_PTR(mainwin->messageview),
+				    prefs_common.msgview_width,
+				    prefs_common.msgview_height);
+		gtk_widget_set_size_request(GTK_WIDGET(mainwin->window),
+				    prefs_common.mainwin_width,
+				    prefs_common.mainwin_height);
 	} 
 	/* remove headerview if not in prefs */
 	headerview_set_visibility(mainwin->messageview->headerview,

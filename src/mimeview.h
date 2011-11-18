@@ -96,7 +96,6 @@ struct _MimeView
 #if !GTK_CHECK_VERSION(2,12,0)
 	GtkTooltips *tooltips;
 #endif
-	gint oldsize;
 
 	NoticeView *siginfoview;
 	MimeInfo *siginfo;

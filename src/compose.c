@@ -355,6 +355,9 @@ static void compose_add_field_list	( Compose *compose,
 
 /* callback functions */
 
+static void compose_notebook_size_alloc (GtkNotebook *notebook,
+					 GtkAllocation *allocation,
+					 Compose *compose);
 static gboolean compose_edit_size_alloc (GtkEditable	*widget,
 					 GtkAllocation	*allocation,
 					 GtkSHRuler	*shruler);
@@ -7483,7 +7486,7 @@ static Compose *compose_create(PrefsAccount *account,
 	
 	/* Notebook */
 	notebook = gtk_notebook_new();
-	gtk_widget_set_size_request(notebook, -1, 130);
+	gtk_widget_set_size_request(notebook, -1, prefs_common.compose_notebook_height);
 	gtk_widget_show(notebook);
 
 	/* header labels and entries */
@@ -7573,6 +7576,8 @@ static Compose *compose_create(PrefsAccount *account,
 	gtk_text_buffer_add_selection_clipboard(buffer, clipboard);
 	
 	gtk_container_add(GTK_CONTAINER(scrolledwin), text);
+	g_signal_connect(G_OBJECT(notebook), "size_allocate",
+			 G_CALLBACK(compose_notebook_size_alloc), compose);	
 	g_signal_connect_after(G_OBJECT(text), "size_allocate",
 			       G_CALLBACK(compose_edit_size_alloc),
 			       ruler);
@@ -9231,6 +9236,13 @@ static void compose_undo_state_changed(UndoMain *undostruct, gint undo_state,
 }
 
 /* callback functions */
+
+static void compose_notebook_size_alloc(GtkNotebook *notebook,
+					GtkAllocation *allocation,
+					Compose *compose)
+{
+	prefs_common.compose_notebook_height = allocation->height;
+}
 
 /* compose_edit_size_alloc() - called when resized. don't know whether Gtk
  * includes "non-client" (windows-izm) in calculation, so this calculation

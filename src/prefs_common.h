@@ -292,11 +292,14 @@ struct _PrefsCommon
 	gint msgwin_width;
 	gint msgwin_height;
 
+	gint mimeview_tree_height;
+	
 	gint sourcewin_width;
 	gint sourcewin_height;
 
 	gint compose_width;
 	gint compose_height;
+	gint compose_notebook_height;
 	gint compose_x;
 	gint compose_y;
 

@@ -652,6 +652,8 @@ static PrefParam param[] = {
 	 NULL, NULL, NULL},
 	{"messagewin_height", "540", &prefs_common.msgwin_height, P_INT,
 	 NULL, NULL, NULL},
+	{"mimeview_tree_height", "60", &prefs_common.mimeview_tree_height, P_INT,
+	 NULL, NULL, NULL},	 
 	{"sourcewin_width", "600", &prefs_common.sourcewin_width, P_INT,
 	 NULL, NULL, NULL},
 	{"sourcewin_height", "500", &prefs_common.sourcewin_height, P_INT,
@@ -678,6 +680,8 @@ static PrefParam param[] = {
 	{"compose_height", "470", &prefs_common.compose_height, P_INT,
 	 NULL, NULL, NULL},
 #endif
+	{"compose_notebook_height", "130", &prefs_common.compose_notebook_height, P_INT,
+	 NULL, NULL, NULL},
 	{"compose_x", "0", &prefs_common.compose_x, P_INT,
 	 NULL, NULL, NULL},
 	{"compose_y", "0", &prefs_common.compose_y, P_INT,

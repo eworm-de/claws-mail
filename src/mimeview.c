@@ -143,6 +143,9 @@ static void icon_list_create		(MimeView 	*mimeview,
 static void icon_list_clear		(MimeView	*mimeview);
 static void icon_list_toggle_by_mime_info (MimeView	*mimeview,
 					   MimeInfo	*mimeinfo);
+static void ctree_size_allocate_cb	(GtkWidget	*widget,
+					 GtkAllocation	*allocation,
+					 MimeView	*mimeview);
 static gint mime_toggle_button_cb(GtkWidget *button, GdkEventButton *event,
 				    MimeView *mimeview);
 static gboolean part_button_pressed	(MimeView 	*mimeview, 
@@ -383,6 +386,8 @@ MimeView *mimeview_create(MainWindow *mainwin)
 	
 	ctree_mainbox = gtk_hbox_new(FALSE, 0);	
 	gtk_box_pack_start(GTK_BOX(ctree_mainbox), scrolledwin, TRUE, TRUE, 0);
+	g_signal_connect(G_OBJECT(ctree_mainbox), "size_allocate", 
+			 G_CALLBACK(ctree_size_allocate_cb), mimeview);
 
 	mimeview->ui_manager = gtk_ui_manager_new();
 	mimeview->action_group = cm_menu_create_action_group_full(mimeview->ui_manager,
@@ -458,7 +463,6 @@ MimeView *mimeview_create(MainWindow *mainwin)
 #if !(GTK_CHECK_VERSION(2,12,0))
 	mimeview->tooltips      = tips;
 #endif
-	mimeview->oldsize       = 60;
 	mimeview->mime_toggle   = mime_toggle;
 	mimeview->siginfoview	= siginfoview;
 	mimeview->scrollbutton  = scrollbutton;
@@ -2684,10 +2688,15 @@ static void icon_list_toggle_by_mime_info (MimeView	*mimeview,
 	}
 }
 
+static void ctree_size_allocate_cb(GtkWidget *widget, GtkAllocation *allocation,
+				    MimeView *mimeview)
+{
+	prefs_common.mimeview_tree_height = allocation->height;
+}
+
 static gint mime_toggle_button_cb(GtkWidget *button, GdkEventButton *event,
 				    MimeView *mimeview)
 {
-	GtkAllocation allocation;
 	g_object_ref(button); 
 
 	mimeview_leave_notify(button, NULL, NULL);
@@ -2698,7 +2707,8 @@ static gint mime_toggle_button_cb(GtkWidget *button, GdkEventButton *event,
 					GTK_SHADOW_NONE);
 		gtk_widget_hide(mimeview->icon_mainbox);
 		gtk_widget_show(mimeview->ctree_mainbox);
-		gtk_paned_set_position(GTK_PANED(mimeview->paned), mimeview->oldsize);
+		gtk_paned_set_position(GTK_PANED(mimeview->paned),
+					prefs_common.mimeview_tree_height);
 
 		gtkut_container_remove(GTK_CONTAINER(mimeview->icon_mainbox), 
 					button);
@@ -2707,8 +2717,6 @@ static gint mime_toggle_button_cb(GtkWidget *button, GdkEventButton *event,
 	} else {
 		gtk_arrow_set(GTK_ARROW(gtk_bin_get_child(GTK_BIN((button)))), GTK_ARROW_LEFT, 
 			      GTK_SHADOW_NONE);
-		gtk_widget_get_allocation(mimeview->ctree_mainbox, &allocation);
-		mimeview->oldsize = allocation.height;
 		gtk_widget_hide(mimeview->ctree_mainbox);
 		gtk_widget_show(mimeview->icon_mainbox);
 		gtk_paned_set_position(GTK_PANED(mimeview->paned), 0);
