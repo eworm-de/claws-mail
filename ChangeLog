@@ -1,3 +1,11 @@
+2011-11-18 [mones]	3.7.10cvs87
+
+	* src/compose.c
+	* src/procheader.c
+	* src/procheader.h
+		Fixes bug #2509, "manually added headers are lost unless
+		mail is sent inmediately"
+
 2011-11-17 [pawel]	3.7.10cvs86
 
 	* src/mimeview.c

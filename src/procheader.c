@@ -1033,3 +1033,51 @@ gint procheader_get_header_from_msginfo(MsgInfo *msginfo, gchar *buf, gint len, 
 
 	return 0;
 }
+
+HeaderEntry *procheader_entries_from_str(const gchar *str)
+{
+	HeaderEntry *entries = NULL, *he;
+	int numh = 0, i = 0;
+	gchar **names = NULL;
+	gchar *s = str;
+
+	if (s == NULL) {
+		return NULL;
+	}
+	while (*s != '\0') {
+		if (*s == ' ') ++numh;
+		++s;
+	}
+	if (numh == 0) {
+		return NULL;
+	}
+	entries = g_new0(HeaderEntry, numh + 1); /* room for last NULL */
+	s = str;
+	++s; /* skip first space */
+	names = g_strsplit(s, " ", numh);
+	he = entries;
+	while (names[i]) {
+		he->name = g_strdup_printf("%s:", names[i]);
+		he->body = NULL;
+		he->unfold = FALSE;
+		++i, ++he;
+	}
+	he->name = NULL;
+	g_strfreev(names);
+	return entries;
+}
+
+void procheader_entries_free (HeaderEntry *entries)
+{
+	if (entries != NULL) {
+		HeaderEntry *he = entries;
+		while (he->name != NULL) {
+			g_free(he->name);
+			if (he->body != NULL)
+				g_free(he->body);
+			++he;			
+		}
+		g_free(entries);
+	}
+}
+

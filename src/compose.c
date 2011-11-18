@@ -220,6 +220,9 @@ static MailField compose_entries_set		(Compose	*compose,
 						 ComposeEntryType to_type);
 static gint compose_parse_header		(Compose	*compose,
 						 MsgInfo	*msginfo);
+static gint compose_parse_manual_headers	(Compose	*compose,
+						 MsgInfo	*msginfo,
+						 HeaderEntry	*entries);
 static gchar *compose_parse_references		(const gchar	*ref,
 						 const gchar	*msgid);
 
@@ -291,6 +294,7 @@ static gint compose_queue_sub			(Compose	*compose,
 static int compose_add_attachments		(Compose	*compose,
 						 MimeInfo	*parent);
 static gchar *compose_get_header		(Compose	*compose);
+static gchar *compose_get_manual_headers_info	(Compose	*compose);
 
 static void compose_convert_header		(Compose	*compose,
 						 gchar		*dest,
@@ -2125,6 +2129,7 @@ Compose *compose_reedit(MsgInfo *msginfo, gboolean batch)
 	MsgInfo *replyinfo = NULL, *fwdinfo = NULL;
 	gboolean autowrap = prefs_common.autowrap;
 	gboolean autoindent = prefs_common.auto_indent;
+	HeaderEntry *manual_headers = NULL;
 
 	cm_return_val_if_fail(msginfo != NULL, NULL);
 	cm_return_val_if_fail(msginfo->folder != NULL, NULL);
@@ -2230,6 +2235,15 @@ Compose *compose_reedit(MsgInfo *msginfo, gboolean batch)
 				}
 			}
 			g_strfreev(tokens);
+		}
+		/* Get manual headers */
+		if (!procheader_get_header_from_msginfo(msginfo, queueheader_buf, sizeof(queueheader_buf), "X-Claws-Manual-Headers:")) {
+			gchar *listmh = g_strdup(&queueheader_buf[strlen("X-Claws-Manual-Headers:")]);
+			if (*listmh != '\0') {
+				debug_print("Got manual headers: %s\n", listmh);
+				manual_headers = procheader_entries_from_str(listmh);
+			}
+			g_free(listmh);
 		}
 	} else {
 		account = msginfo->folder->folder->account;
@@ -2338,6 +2352,16 @@ Compose *compose_reedit(MsgInfo *msginfo, gboolean batch)
 	g_signal_handlers_unblock_by_func(G_OBJECT(textbuf),
 					G_CALLBACK(compose_changed_cb),
 					compose);
+
+	if (manual_headers != NULL) {
+		if (compose_parse_manual_headers(compose, msginfo, manual_headers) < 0) {
+			procheader_entries_free(manual_headers);
+			compose->updating = FALSE;
+			compose_destroy(compose);
+			return NULL;
+		}
+		procheader_entries_free(manual_headers);
+	}
 
 	gtk_widget_grab_focus(compose->text);
 
@@ -2874,6 +2898,33 @@ static gint compose_parse_header(Compose *compose, MsgInfo *msginfo)
 				g_strconcat("<", msginfo->inreplyto, ">",
 					    NULL);
 		}
+	}
+
+	return 0;
+}
+
+static gint compose_parse_manual_headers(Compose *compose, MsgInfo *msginfo, HeaderEntry *entries)
+{
+	FILE *fp;
+	HeaderEntry *he;
+
+	cm_return_val_if_fail(msginfo != NULL, -1);
+
+	if ((fp = procmsg_open_message(msginfo)) == NULL) return -1;
+	procheader_get_header_fields(fp, entries);
+	fclose(fp);
+
+	he = entries;
+	while (he != NULL && he->name != NULL) {
+		GtkTreeIter iter;
+		GtkListStore *model = NULL;
+
+		debug_print("Adding manual header: %s with value %s\n", he->name, he->body);
+		model = GTK_LIST_STORE(gtk_combo_box_get_model(GTK_COMBO_BOX(compose->header_last->combo)));
+		COMBOBOX_ADD(model, he->name, COMPOSE_TO);
+		gtk_combo_box_set_active_iter(GTK_COMBO_BOX(compose->header_last->combo), &iter);
+		gtk_entry_set_text(GTK_ENTRY(compose->header_last->entry), he->body);
+		++he;
 	}
 
 	return 0;
@@ -6104,6 +6155,55 @@ static void compose_add_headerfield_from_headerlist(Compose *compose,
 	g_string_free(fieldstr, TRUE);
 
 	return;
+}
+
+static gchar *compose_get_manual_headers_info(Compose *compose)
+{
+	GString *sh_header = g_string_new(" ");
+	GSList *list;
+	gchar *std_headers[] = {"To:", "Cc:", "Bcc:", "Newsgroups:", "Reply-To:", "Followup-To:", NULL};
+
+	for (list = compose->header_list; list; list = list->next) {
+    		ComposeHeaderEntry *headerentry;
+		gchar *tmp;
+		gchar *headername;
+		gchar *headername_wcolon;
+		const gchar *headername_trans;
+		gchar **string;
+		gboolean standard_header = FALSE;
+
+		headerentry = ((ComposeHeaderEntry *)list->data);
+
+		tmp = g_strdup(gtk_entry_get_text(GTK_ENTRY(gtk_bin_get_child(GTK_BIN((headerentry->combo))))));
+		g_strstrip(tmp);
+		if (*tmp == '\0' || strchr(tmp, ' ') != NULL || strchr(tmp, '\r') != NULL || strchr(tmp, '\n') != NULL) {
+			g_free(tmp);
+			continue;
+		}
+
+		if (!strstr(tmp, ":")) {
+			headername_wcolon = g_strconcat(tmp, ":", NULL);
+			headername = g_strdup(tmp);
+		} else {
+			headername_wcolon = g_strdup(tmp);
+			headername = g_strdup(strtok(tmp, ":"));
+		}
+		g_free(tmp);
+		
+		string = std_headers;
+		while (*string != NULL) {
+			headername_trans = prefs_common_translated_header_name(*string);
+			if (!strcmp(headername_trans, headername_wcolon))
+				standard_header = TRUE;
+			string++;
+		}
+		if (!standard_header && !IS_IN_CUSTOM_HEADER(headername))
+			g_string_append_printf(sh_header, "%s ", headername);
+		g_free(headername);
+		g_free(headername_wcolon);
+	}
+	g_string_truncate(sh_header, strlen(sh_header->str) - 1); /* remove last space */
+	return g_string_free(sh_header, FALSE);
 }
 
 static gchar *compose_get_header(Compose *compose)
@@ -9412,6 +9512,7 @@ gboolean compose_draft (gpointer data, guint action)
 	Compose *compose = (Compose *)data;
 	FolderItem *draft;
 	gchar *tmp;
+	gchar *sheaders;
 	gint msgnum;
 	MsgFlags flag = {0, 0};
 	static gboolean lock = FALSE;
@@ -9491,6 +9592,10 @@ gboolean compose_draft (gpointer data, guint action)
 
 	err |= (fprintf(fp, "X-Claws-Auto-Wrapping:%d\n", compose->autowrap) < 0);
 	err |= (fprintf(fp, "X-Claws-Auto-Indent:%d\n", compose->autoindent) < 0);
+
+	sheaders = compose_get_manual_headers_info(compose);
+	err |= (fprintf(fp, "X-Claws-Manual-Headers:%s\n", sheaders) < 0);
+	g_free(sheaders);
 
 	/* end of headers */
 	err |= (fprintf(fp, "X-Claws-End-Special-Headers: 1\n") < 0);

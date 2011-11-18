@@ -4290,3 +4290,4 @@
 ( cvs diff -u -r 1.654.2.4364 -r 1.654.2.4365 configure.ac;  ) > 3.7.10cvs84.patchset
 ( cvs diff -u -r 1.382.2.593 -r 1.382.2.594 src/compose.c;  ) > 3.7.10cvs85.patchset
 ( cvs diff -u -r 1.83.2.180 -r 1.83.2.181 src/mimeview.c;  ) > 3.7.10cvs86.patchset
+( cvs diff -u -r 1.382.2.594 -r 1.382.2.595 src/compose.c;  cvs diff -u -r 1.47.2.54 -r 1.47.2.55 src/procheader.c;  cvs diff -u -r 1.11.2.12 -r 1.11.2.13 src/procheader.h;  ) > 3.7.10cvs87.patchset
