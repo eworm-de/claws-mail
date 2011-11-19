@@ -1709,7 +1709,7 @@ void summary_set_menu_sensitive(SummaryView *summaryview)
 	&&  summaryview->messageview->mimeview
 	&&  summaryview->messageview->mimeview->textview)
 		cm_toggle_menu_set_active_full(summaryview->mainwin->ui_manager, "Menus/SummaryViewPopup/View/AllHeaders",
-			summaryview->messageview->mimeview->textview->show_all_headers);
+			prefs_common.show_all_headers);
 #endif
 	summary_unlock(summaryview);
 }

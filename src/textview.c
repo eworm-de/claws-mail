@@ -370,7 +370,6 @@ TextView *textview_create(void)
 	textview->text               = text;
 	textview->uri_list           = NULL;
 	textview->body_pos           = 0;
-	textview->show_all_headers   = FALSE;
 	textview->last_buttonpress   = GDK_NOTHING;
 	textview->image		     = NULL;
 	return textview;
@@ -504,7 +503,6 @@ void textview_init(TextView *textview)
 		watch_cursor = gdk_cursor_new(GDK_WATCH);
 
 	textview_reflect_prefs(textview);
-	textview_set_all_headers(textview, FALSE);
 	textview_set_font(textview, NULL);
 	textview_create_tags(GTK_TEXT_VIEW(textview->text), textview);
 }
@@ -1671,11 +1669,6 @@ void textview_destroy(TextView *textview)
 	g_free(textview);
 }
 
-void textview_set_all_headers(TextView *textview, gboolean all_headers)
-{
-	textview->show_all_headers = all_headers;
-}
-
 #define CHANGE_TAG_FONT(tagname, font) { \
 	tag = gtk_text_tag_table_lookup(tags, tagname); \
 	if (tag) \
@@ -1797,7 +1790,7 @@ static GPtrArray *textview_scan_header(TextView *textview, FILE *fp)
 
 	cm_return_val_if_fail(fp != NULL, NULL);
 
-	if (textview->show_all_headers) {
+	if (prefs_common.show_all_headers) {
 		headers = procheader_get_header_array_asis(fp);
 		sorted_headers = g_ptr_array_new();
 		for (i = 0; i < headers->len; i++) {

@@ -1,3 +1,15 @@
+2011-11-19 [pawel]	3.7.10cvs91
+
+	* src/mainwindow.c
+	* src/messageview.c
+	* src/prefs_common.c
+	* src/prefs_common.h
+	* src/summaryview.c
+	* src/textview.c
+	* src/textview.h
+		Fix bug #2377 'Show All Headers - make change persistent
+		between sessions'
+
 2011-11-19 [pawel]	3.7.10cvs90
 
 	* src/folder.c

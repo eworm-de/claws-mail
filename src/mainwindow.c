@@ -3377,7 +3377,7 @@ void main_window_set_menu_sensitive(MainWindow *mainwin)
 	&&  mainwin->messageview->mimeview
 	&&  mainwin->messageview->mimeview->textview)
 		cm_toggle_menu_set_active_full(mainwin->ui_manager, "Menu/View/AllHeaders",
-			      mainwin->messageview->mimeview->textview->show_all_headers);
+			      			prefs_common.show_all_headers);
 	cm_toggle_menu_set_active_full(mainwin->ui_manager, "Menu/View/ThreadView", (state & M_THREADED) != 0);
 	cm_menu_set_sensitive_full(mainwin->ui_manager, "Menu/View/ExpandThreads", (state & M_THREADED) != 0);
 	cm_menu_set_sensitive_full(mainwin->ui_manager, "Menu/View/CollapseThreads", (state & M_THREADED) != 0);
@@ -4364,7 +4364,7 @@ static void show_all_header_cb(GtkAction *action, gpointer data)
 {
 	MainWindow *mainwin = (MainWindow *)data;
 	if (mainwin->menu_lock_count) return;
-	mainwin->summaryview->messageview->all_headers = 
+	prefs_common.show_all_headers = 
 			gtk_toggle_action_get_active (GTK_TOGGLE_ACTION (action));
 	summary_display_msg_selected(mainwin->summaryview,
 				     gtk_toggle_action_get_active (GTK_TOGGLE_ACTION (action)));
@@ -4497,7 +4497,7 @@ static void open_urls_cb(GtkAction *action, gpointer data)
 	MainWindow *mainwin = (MainWindow *)data;
 	if (!mainwin->summaryview->displayed && mainwin->summaryview->selected) {
 		summary_display_msg_selected(mainwin->summaryview, 
-			mainwin->messageview->mimeview->textview->show_all_headers);
+					     prefs_common.show_all_headers);
 	}
 	messageview_list_urls(mainwin->messageview);
 }

@@ -330,6 +330,7 @@ struct _PrefsCommon
 	gboolean scroll_halfpage;
 	gboolean hide_quoted;
 	gboolean respect_flowed_format;
+	gboolean show_all_headers;
 
 	gboolean show_other_header;
 	GSList *disphdr_list;

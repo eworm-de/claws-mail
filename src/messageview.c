@@ -631,6 +631,9 @@ static void messageview_add_toolbar(MessageView *msgview, GtkWidget *window)
 	hildon_window_set_menu(HILDON_WINDOW(window), GTK_MENU(menubar));
 #endif
 
+	cm_toggle_menu_set_active_full(msgview->ui_manager, "Menu/View/AllHeaders",
+					prefs_common.show_all_headers);
+
 	if (prefs_common.toolbar_detachable) {
 		handlebox = gtk_handle_box_new();
 	} else {
@@ -1238,9 +1241,6 @@ gint messageview_show(MessageView *messageview, MsgInfo *msginfo,
 	headerview_show(messageview->headerview, messageview->msginfo);
 
 	messageview_set_position(messageview, 0);
-
-	textview_set_all_headers(messageview->mimeview->textview, 
-			messageview->all_headers);
 
 #ifdef MAEMO
 	maemo_window_full_screen_if_needed(GTK_WINDOW(messageview->window));
@@ -2548,13 +2548,14 @@ static void show_all_header_cb(GtkToggleAction *action, gpointer data)
 	if (messageview->updating)
 		return;
 
-	messageview->all_headers = 
+	messageview->all_headers = prefs_common.show_all_headers =
 			gtk_toggle_action_get_active (GTK_TOGGLE_ACTION (action));
 	if (!msginfo) return;
 	messageview->msginfo = NULL;
-	messageview_show(messageview, msginfo,gtk_toggle_action_get_active (GTK_TOGGLE_ACTION (action)));
+	messageview_show(messageview, msginfo, messageview->all_headers);
 	procmsg_msginfo_free(msginfo);
 	main_window_set_menu_sensitive(messageview->mainwin);
+	summary_redisplay_msg(messageview->mainwin->summaryview);
 }
 
 static void msg_hide_quotes_cb(GtkToggleAction *action, gpointer data)
