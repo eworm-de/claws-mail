@@ -1,3 +1,24 @@
+2011-11-19 [pawel]	3.7.10cvs90
+
+	* src/folder.c
+	* src/folder.h
+	* src/folder_item_prefs.c
+	* src/folderview.c
+	* src/mainwindow.c
+	* src/mainwindow.h
+	* src/summaryview.c
+	* src/summaryview.h
+	* src/gtk/authors.h
+		Fix bug #1563 'Folder view: show complete threads if they
+		contain unread messages'
+		Add option to show only threads with unread messages
+		initial patch by Paul Ollis, my small additions:
+		- when checking thread for unread finish on first unread
+		- make thread options unavailable when threading is off
+		- hide_unread_msgs and hide_unread_threads are mutually
+		  exclusive options, set menus sensitivity accordingly
+		- set folder item icon type similiar to hide_unread_msgs
+
 2011-11-19 [colin]	3.7.10cvs89
 
 	* src/procheader.c

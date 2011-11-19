@@ -331,6 +331,7 @@ void folder_item_prefs_copy_prefs(FolderItem * src, FolderItem * dest)
 	dest->ret_rcpt  = src->ret_rcpt;
 	dest->hide_read_msgs = src->hide_read_msgs;
 	dest->hide_del_msgs = src->hide_del_msgs;
+	dest->hide_read_threads = src->hide_read_threads;
 	dest->sort_key  = src->sort_key;
 	dest->sort_type = src->sort_type;
 

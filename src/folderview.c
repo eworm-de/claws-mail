@@ -1461,7 +1461,7 @@ static void folderview_update_node(FolderView *folderview, GtkCMCTreeNode *node)
 	}
 	switch (stype) {
 	case F_INBOX:
-		if (item->hide_read_msgs) {
+		if (item->hide_read_msgs || item->hide_read_threads) {
 			xpm = mark?m_inboxhrmxpm:inboxhrmxpm;
 			openxpm = mark?m_inboxopenhrmxpm:inboxopenhrmxpm;
 		} else {
@@ -1470,7 +1470,7 @@ static void folderview_update_node(FolderView *folderview, GtkCMCTreeNode *node)
 		}
 		break;
 	case F_OUTBOX:
-		if (item->hide_read_msgs) {
+		if (item->hide_read_msgs || item->hide_read_threads) {
 			xpm = mark?m_outboxhrmxpm:outboxhrmxpm;
 			openxpm = mark?m_outboxopenhrmxpm:outboxopenhrmxpm;
 		} else {
@@ -1479,7 +1479,7 @@ static void folderview_update_node(FolderView *folderview, GtkCMCTreeNode *node)
 		}
 		break;
 	case F_QUEUE:
-		if (item->hide_read_msgs) {
+		if (item->hide_read_msgs || item->hide_read_threads) {
 			xpm = mark?m_queuehrmxpm:queuehrmxpm;
 			openxpm = mark?m_queueopenhrmxpm:queueopenhrmxpm;
 		} else {
@@ -1488,7 +1488,7 @@ static void folderview_update_node(FolderView *folderview, GtkCMCTreeNode *node)
 		}
 		break;
 	case F_TRASH:
-		if (item->hide_read_msgs) {
+		if (item->hide_read_msgs || item->hide_read_threads) {
 			xpm = mark?m_trashhrmxpm:trashhrmxpm;
 			openxpm = mark?m_trashopenhrmxpm:trashopenhrmxpm;
 		} else {
@@ -1501,7 +1501,7 @@ static void folderview_update_node(FolderView *folderview, GtkCMCTreeNode *node)
 		openxpm = mark?m_draftsopenxpm:draftsopenxpm;
 		break;
 	default:
-		if (item->hide_read_msgs) {
+		if (item->hide_read_msgs || item->hide_read_threads) {
 			xpm = mark?m_folderhrmxpm:folderhrmxpm;
 			openxpm = mark?m_folderopenhrmxpm:folderopenhrmxpm;
 		} else {

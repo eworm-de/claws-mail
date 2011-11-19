@@ -66,7 +66,8 @@ typedef enum
 	M_FOLDER_SELECTED     = 1 << 25,
 	M_SESSION_PASSWORDS   = 1 << 26,
 	M_DELETED_EXISTS      = 1 << 27,
-	M_NOT_TRASH	      = 1 << 28
+	M_NOT_TRASH	      = 1 << 28,
+	M_HIDE_READ_THREADS   = 1 << 29
 } SensitiveCond;
 
 typedef enum

@@ -247,6 +247,8 @@ static void set_decode_cb		(GtkAction *action, GtkRadioAction *current, gpointer
 
 static void hide_read_messages   (GtkAction	*action,
 				  gpointer	 data);
+static void hide_read_threads   (GtkAction	*action,
+				  gpointer	 data);
 static void hide_del_messages   (GtkAction	*action,
 				  gpointer	 data);
 
@@ -763,6 +765,7 @@ static GtkToggleActionEntry mainwin_toggle_entries[] = {
 #endif
 	{"View/ShowHide/ColumnHeaders",		NULL, N_("Column headers"), NULL, NULL, G_CALLBACK(toggle_col_headers_cb) }, /* toggle */
 	{"View/ThreadView",			NULL, N_("Th_read view"), "<control>T", NULL, G_CALLBACK(thread_cb) }, /* toggle */
+	{"View/HideReadThreads",		NULL, N_("Hide read threads"), NULL, NULL, G_CALLBACK(hide_read_threads) }, /* toggle */
 	{"View/HideReadMessages",		NULL, N_("_Hide read messages"), NULL, NULL, G_CALLBACK(hide_read_messages) }, /* toggle */
 	{"View/HideDelMessages",		NULL, N_("Hide deleted messages"), NULL, NULL, G_CALLBACK(hide_del_messages) }, /* toggle */
 #ifndef MAEMO
@@ -1718,6 +1721,7 @@ MainWindow *main_window_create()
 	MENUITEM_ADDUI_MANAGER(mainwin->ui_manager, "/Menu/View", "ThreadView", "View/ThreadView", GTK_UI_MANAGER_MENUITEM)
 	MENUITEM_ADDUI_MANAGER(mainwin->ui_manager, "/Menu/View", "ExpandThreads", "View/ExpandThreads", GTK_UI_MANAGER_MENUITEM)
 	MENUITEM_ADDUI_MANAGER(mainwin->ui_manager, "/Menu/View", "CollapseThreads", "View/CollapseThreads", GTK_UI_MANAGER_MENUITEM)
+	MENUITEM_ADDUI_MANAGER(mainwin->ui_manager, "/Menu/View", "HideReadThreads", "View/HideReadThreads", GTK_UI_MANAGER_MENUITEM)
 	MENUITEM_ADDUI_MANAGER(mainwin->ui_manager, "/Menu/View", "HideReadMessages", "View/HideReadMessages", GTK_UI_MANAGER_MENUITEM)
 	MENUITEM_ADDUI_MANAGER(mainwin->ui_manager, "/Menu/View", "HideDelMessages", "View/HideDelMessages", GTK_UI_MANAGER_MENUITEM)
 	MENUITEM_ADDUI_MANAGER(mainwin->ui_manager, "/Menu/View", "Separator3", "View/---", GTK_UI_MANAGER_SEPARATOR)
@@ -3080,6 +3084,10 @@ SensitiveCond main_window_get_current_state(MainWindow *mainwin)
 		if ((selection == SUMMARY_NONE && item->hide_read_msgs)
 		    || selection != SUMMARY_NONE)
 			state |= M_HIDE_READ_MSG;
+
+		if ((selection == SUMMARY_NONE && item->hide_read_threads)
+		    || selection != SUMMARY_NONE)
+			state |= M_HIDE_READ_THREADS;
 	}		
 	if (mainwin->summaryview->threaded)
 		state |= M_THREADED;
@@ -3208,6 +3216,7 @@ void main_window_set_menu_sensitive(MainWindow *mainwin)
 		{"Menu/View/ThreadView"               , M_EXEC|M_SUMMARY_ISLIST},
 		{"Menu/View/ExpandThreads"        , M_MSG_EXIST|M_SUMMARY_ISLIST},
 		{"Menu/View/CollapseThreads"      , M_MSG_EXIST|M_SUMMARY_ISLIST},
+		{"Menu/View/HideReadThreads"	   , M_HIDE_READ_THREADS|M_SUMMARY_ISLIST},
 		{"Menu/View/HideReadMessages"	   , M_HIDE_READ_MSG|M_SUMMARY_ISLIST},
 		{"Menu/View/HideDelMessages"	   , M_SUMMARY_ISLIST},
 		{"Menu/View/Goto/Prev"        , M_MSG_EXIST},
@@ -3370,10 +3379,18 @@ void main_window_set_menu_sensitive(MainWindow *mainwin)
 		cm_toggle_menu_set_active_full(mainwin->ui_manager, "Menu/View/AllHeaders",
 			      mainwin->messageview->mimeview->textview->show_all_headers);
 	cm_toggle_menu_set_active_full(mainwin->ui_manager, "Menu/View/ThreadView", (state & M_THREADED) != 0);
+	cm_menu_set_sensitive_full(mainwin->ui_manager, "Menu/View/ExpandThreads", (state & M_THREADED) != 0);
+	cm_menu_set_sensitive_full(mainwin->ui_manager, "Menu/View/CollapseThreads", (state & M_THREADED) != 0);
+	cm_menu_set_sensitive_full(mainwin->ui_manager, "Menu/View/HideReadThreads", (state & M_THREADED) != 0);
 	cm_toggle_menu_set_active_full(mainwin->ui_manager, "Menu/View/Quotes/CollapseAll", (prefs_common.hide_quotes == 1));
 	cm_toggle_menu_set_active_full(mainwin->ui_manager, "Menu/View/Quotes/Collapse2", (prefs_common.hide_quotes == 2));
 	cm_toggle_menu_set_active_full(mainwin->ui_manager, "Menu/View/Quotes/Collapse3", (prefs_common.hide_quotes == 3));
 
+	if (mainwin->summaryview->folder_item && mainwin->summaryview->folder_item->hide_read_msgs)
+		cm_menu_set_sensitive_full(mainwin->ui_manager, "Menu/View/HideReadThreads", FALSE);
+	if (mainwin->summaryview->folder_item && mainwin->summaryview->folder_item->hide_read_threads)
+		cm_menu_set_sensitive_full(mainwin->ui_manager, "Menu/View/HideReadMessages", FALSE);
+		
 	main_window_menu_callback_unblock(mainwin);
 }
 
@@ -4541,6 +4558,16 @@ static void hide_del_messages (GtkAction *action, gpointer data)
 	    || g_object_get_data(G_OBJECT(menuitem), "dont_toggle"))
 		return;
 	summary_toggle_show_del_messages(mainwin->summaryview);
+}
+
+static void hide_read_threads (GtkAction *action, gpointer data)
+{
+	MainWindow *mainwin = (MainWindow *)data;
+	GtkWidget *menuitem = gtk_ui_manager_get_widget(mainwin->ui_manager, "/Menu/View/HideReadThreads");
+	if (!mainwin->summaryview->folder_item
+	    || g_object_get_data(G_OBJECT(menuitem), "dont_toggle"))
+		return;
+	summary_toggle_show_read_threads(mainwin->summaryview);
 }
 
 static void thread_cb(GtkAction *action, gpointer data)

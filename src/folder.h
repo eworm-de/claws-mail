@@ -672,6 +672,7 @@ struct _FolderItem
 	guint ret_rcpt       : 1; /* return receipt       */
 	guint search_match   : 1;
 	guint hide_del_msgs : 1; /* hide deleted messages   */
+	guint hide_read_threads : 1; /* hide threads with only read messages   */
 
 	gint op_count;
 	guint opened         : 1; /* opened by summary view */
@@ -711,6 +712,7 @@ struct _PersistPrefs
 	guint		hide_read_msgs	: 1; /* CLAWS */
 	guint		ret_rcpt	: 1; /* CLAWS */
 	guint		hide_del_msgs	: 1; /* CLAWS */
+	guint		hide_read_threads	: 1;
 };
 
 struct _FolderUpdateData

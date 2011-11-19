@@ -125,6 +125,8 @@ static void summary_set_hide_read_msgs_menu (SummaryView *summaryview,
 					     guint action);
 static void summary_set_hide_del_msgs_menu (SummaryView *summaryview,
 					     guint action);
+static void summary_set_hide_read_threads_menu (SummaryView *summaryview,
+					     guint action);
 
 static GtkCMCTreeNode *summary_find_prev_msg
 					(SummaryView		*summaryview,
@@ -1212,6 +1214,7 @@ gboolean summary_show(SummaryView *summaryview, FolderItem *item)
 				item?item->no_select:FALSE);
 		summary_set_hide_read_msgs_menu(summaryview, FALSE);
 		summary_set_hide_del_msgs_menu(summaryview, FALSE);
+		summary_set_hide_read_threads_menu(summaryview, FALSE);
 		summary_clear_all(summaryview);
 		summaryview->folder_item = item;
 		summary_thaw(summaryview);
@@ -1252,12 +1255,15 @@ gboolean summary_show(SummaryView *summaryview, FolderItem *item)
 		mlist = folder_item_get_msg_list(item);
 	}
 
-	if ((summaryview->folder_item->hide_read_msgs || summaryview->folder_item->hide_del_msgs) &&
+	if ((summaryview->folder_item->hide_read_msgs
+             || summaryview->folder_item->hide_del_msgs
+             || summaryview->folder_item->hide_read_threads) &&
 	    quicksearch_is_active(summaryview->quicksearch) == FALSE) {
 		GSList *not_killed;
 		
 		summary_set_hide_read_msgs_menu(summaryview, summaryview->folder_item->hide_read_msgs);
 		summary_set_hide_del_msgs_menu(summaryview, summaryview->folder_item->hide_del_msgs);
+		summary_set_hide_read_threads_menu(summaryview, summaryview->folder_item->hide_read_threads);
 		not_killed = NULL;
 		for(cur = mlist ; cur != NULL && cur->data != NULL ; cur = g_slist_next(cur)) {
 			MsgInfo * msginfo = (MsgInfo *) cur->data;
@@ -1292,6 +1298,7 @@ gboolean summary_show(SummaryView *summaryview, FolderItem *item)
 	} else {
 		summary_set_hide_read_msgs_menu(summaryview, FALSE);
 		summary_set_hide_del_msgs_menu(summaryview, FALSE);
+		summary_set_hide_read_threads_menu(summaryview, FALSE);
 	}
 
 	if (quicksearch_is_active(summaryview->quicksearch)) {
@@ -2472,6 +2479,7 @@ static void summary_status_show(SummaryView *summaryview)
 	
 	if (summaryview->folder_item->hide_read_msgs 
 	|| summaryview->folder_item->hide_del_msgs
+	|| summaryview->folder_item->hide_read_threads
 	|| quicksearch_is_active(summaryview->quicksearch)) {
 		rowlist = GTK_CMCLIST(summaryview->ctree)->row_list;
 		for (cur = rowlist; cur != NULL && cur->data != NULL; cur = cur->next) {
@@ -2918,6 +2926,30 @@ static void summary_find_thread_age(GNode *gnode)
 	msginfo->thread_date = most_recent;
 }
 
+static gboolean summary_update_is_read(GNode *node, gpointer data)
+{
+	MsgInfo *msginfo = node->data;
+	gboolean *all_read = (gboolean *)data;
+
+	if (MSG_IS_UNREAD(msginfo->flags)) {
+		*all_read = FALSE;
+		return TRUE;
+	}
+	return FALSE;
+}	
+
+static gboolean summary_thread_is_read(GNode *gnode)
+{
+	MsgInfo *msginfo = (MsgInfo *)gnode->data;
+	gboolean all_read = TRUE;
+
+	if (!msginfo)
+		return all_read;
+
+	g_node_traverse(gnode, G_IN_ORDER, G_TRAVERSE_ALL, -1, summary_update_is_read, &all_read);
+    return all_read;
+}
+
 static gboolean summary_insert_gnode_func(GtkCMCTree *ctree, guint depth, GNode *gnode,
 				   GtkCMCTreeNode *cnode, gpointer data)
 {
@@ -3011,10 +3043,14 @@ static void summary_set_ctree_from_list(SummaryView *summaryview,
 		
 		for (gnode = root->children; gnode != NULL;
 		     gnode = gnode->next) {
-			summary_find_thread_age(gnode);
-			node = gtk_sctree_insert_gnode
-				(ctree, NULL, node, gnode,
-				 summary_insert_gnode_func, summaryview);
+            if (!summaryview->folder_item->hide_read_threads ||
+                    !summary_thread_is_read(gnode))
+            {
+                summary_find_thread_age(gnode);
+                node = gtk_sctree_insert_gnode
+                    (ctree, NULL, node, gnode,
+                     summary_insert_gnode_func, summaryview);
+            }
 		}
 
 		g_node_destroy(root);
@@ -7650,12 +7686,40 @@ void summary_toggle_show_del_messages(SummaryView *summaryview)
  	summary_show(summaryview, summaryview->folder_item);
 }
  
+void summary_toggle_show_read_threads(SummaryView *summaryview)
+{
+	FolderItemUpdateData source;
+	if (summaryview->folder_item->hide_read_threads)
+ 		summaryview->folder_item->hide_read_threads = 0;
+ 	else
+ 		summaryview->folder_item->hide_read_threads = 1;
+
+	source.item = summaryview->folder_item;
+	source.update_flags = F_ITEM_UPDATE_NAME;
+	source.msg = NULL;
+	hooks_invoke(FOLDER_ITEM_UPDATE_HOOKLIST, &source);
+ 	summary_show(summaryview, summaryview->folder_item);
+}
+ 
 static void summary_set_hide_read_msgs_menu (SummaryView *summaryview,
  					     guint action)
 {
  	GtkWidget *widget;
 
  	widget = gtk_ui_manager_get_widget(summaryview->mainwin->ui_manager, "/Menu/View/HideReadMessages");
+ 	g_object_set_data(G_OBJECT(widget), "dont_toggle",
+ 			  GINT_TO_POINTER(1));
+ 	gtk_check_menu_item_set_active (GTK_CHECK_MENU_ITEM(widget), action);
+ 	g_object_set_data(G_OBJECT(widget), "dont_toggle",
+ 			  GINT_TO_POINTER(0));
+}
+
+static void summary_set_hide_read_threads_menu (SummaryView *summaryview,
+ 					     guint action)
+{
+ 	GtkWidget *widget;
+
+ 	widget = gtk_ui_manager_get_widget(summaryview->mainwin->ui_manager, "/Menu/View/HideReadThreads");
  	g_object_set_data(G_OBJECT(widget), "dont_toggle",
  			  GINT_TO_POINTER(1));
  	gtk_check_menu_item_set_active (GTK_CHECK_MENU_ITEM(widget), action);

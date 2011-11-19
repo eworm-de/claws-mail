@@ -207,6 +207,7 @@ static char *CONTRIBS_LIST[] = {
 "Jens Oberender",
 "Ofer",
 "Ohmasa",
+"Paul Ollis",
 "Fredrik Olofssen",
 "Reza Pakdel",
 "Martin Pool",
