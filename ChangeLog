@@ -1,3 +1,10 @@
+2011-11-19 [mones]	3.7.10cvs92
+
+	* manual/advanced.xml
+	* manual/es/advanced.xml
+		Document undocumented hidden option 'zero_replacement_char'
+		Synchronize Spanish manual with English version
+
 2011-11-19 [pawel]	3.7.10cvs91
 
 	* src/mainwindow.c

@@ -845,6 +845,17 @@
 	</listitem>
       </varlistentry>
       <varlistentry>
+	<term><literal>summary_from_show</literal></term>
+	<listitem>
+	  <para>
+	Controla la información mostrada en la columna «Desde» de la lista
+	de mensajes. El valor predeterminado 0 muestra el nombre, 1 muestra
+	la dirección de correo electrónico y 2 muestra ambos valores, nombre
+	y dirección.
+	  </para>
+	</listitem>
+      </varlistentry>
+      <varlistentry>
 	<term><literal>textview_cursor_visible</literal></term>
 	<listitem>
 	  <para>
@@ -884,6 +895,15 @@
 	<listitem>
 	  <para>
 	Mostrar un diálogo de confirmación al arrastrar y soltar carpetas.
+	  </para>
+	</listitem>
+      </varlistentry>
+      <varlistentry>
+	<term><literal>zero_replacement_char</literal></term>
+	<listitem>
+	  <para>
+	Caracter mostrado en las columnas numéricas de la lista de carpetas
+	cuando una carpeta no contiene mensajes. El valor predeterminado es 0.
 	  </para>
 	</listitem>
       </varlistentry>

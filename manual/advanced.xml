@@ -868,6 +868,16 @@
 	  </para>
 	</listitem>
       </varlistentry>
+      <varlistentry>
+	<term><literal>zero_replacement_char</literal></term>
+	<listitem>
+	  <para>
+	Character to show in Folder List counter columns when a folder contains
+	no messages. Default value is 0.
+	  </para>
+	</listitem>
+      </varlistentry>
+    </variablelist>
     </variablelist>
   </section>
   <section id="adv_autofaces">
