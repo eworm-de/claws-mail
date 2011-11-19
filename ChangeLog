@@ -1,3 +1,8 @@
+2011-11-19 [colin]	3.7.10cvs89
+
+	* src/procheader.c
+		Constness fix
+
 2011-11-18 [pawel]	3.7.10cvs88
 
 	* src/compose.c

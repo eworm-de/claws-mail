@@ -1039,7 +1039,7 @@ HeaderEntry *procheader_entries_from_str(const gchar *str)
 	HeaderEntry *entries = NULL, *he;
 	int numh = 0, i = 0;
 	gchar **names = NULL;
-	gchar *s = str;
+	const gchar *s = str;
 
 	if (s == NULL) {
 		return NULL;
