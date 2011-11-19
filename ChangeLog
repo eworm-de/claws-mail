@@ -1,3 +1,9 @@
+2011-11-19 [pawel]	3.7.10cvs94
+
+	* src/mimeview.c
+		Don't highlight icons on right-click, they are not
+		selected and other part is shown which is confusing
+
 2011-11-19 [mones]	3.7.10cvs93
 
 	* manual/advanced.xml
