@@ -1102,6 +1102,21 @@ static GtkActionEntry prefs_template_popup_entries[] =
 	{"PrefsTemplatePopup/Duplicate",	NULL, N_("D_uplicate"), NULL, NULL, G_CALLBACK(prefs_template_duplicate_cb) },
 };
 
+static void prefs_template_row_selected(GtkTreeSelection *selection,
+					GtkTreeView *list_view)
+{
+	GtkTreePath *path;
+	GtkTreeIter iter;
+	GtkTreeModel *model;
+	
+	if (!gtk_tree_selection_get_selected(selection, &model, &iter))
+		return;
+	
+	path = gtk_tree_model_get_path(model, &iter);
+	prefs_template_select_row(list_view, path);
+	gtk_tree_path_free(path);
+}
+
 static gint prefs_template_list_btn_pressed(GtkWidget *widget, GdkEventButton *event,
 				   GtkTreeView *list_view)
 {
@@ -1195,6 +1210,8 @@ static GtkWidget *prefs_template_list_view_create(void)
 
 	selector = gtk_tree_view_get_selection(list_view);
 	gtk_tree_selection_set_mode(selector, GTK_SELECTION_BROWSE);
+	g_signal_connect(G_OBJECT(selector), "changed",
+			 G_CALLBACK(prefs_template_row_selected), list_view);
 
 	/* create the columns */
 	prefs_template_create_list_view_columns(GTK_WIDGET(list_view));

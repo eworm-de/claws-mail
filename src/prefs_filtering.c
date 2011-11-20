@@ -114,6 +114,8 @@ static void prefs_filtering_bottom	(gpointer action, gpointer data);
 static gint prefs_filtering_deleted	(GtkWidget	*widget,
 					 GdkEventAny	*event,
 					 gpointer	 data);
+static void prefs_filtering_row_selected(GtkTreeSelection *selection,
+					 GtkTreeView *list_view);
 static gboolean prefs_filtering_key_pressed(GtkWidget	*widget,
 					 GdkEventKey	*event,
 					 gpointer	 data);
@@ -1261,7 +1263,9 @@ static void prefs_filtering_substitute_cb(gpointer action, gpointer data)
 
 	filteringprop_free(prop);
 
-	prefs_filtering_reset_dialog();
+	prefs_filtering_row_selected(gtk_tree_view_get_selection(
+				GTK_TREE_VIEW(filtering.cond_list_view)),
+				GTK_TREE_VIEW(filtering.cond_list_view));
 	modified = TRUE;
 }
 
@@ -1777,6 +1781,21 @@ static GtkActionEntry prefs_filtering_popup_entries[] =
 #endif
 };
 
+static void prefs_filtering_row_selected(GtkTreeSelection *selection,
+					 GtkTreeView *list_view)
+{
+	GtkTreePath *path;
+	GtkTreeIter iter;
+	GtkTreeModel *model;
+	
+	if (!gtk_tree_selection_get_selected(selection, &model, &iter))
+		return;
+	
+	path = gtk_tree_model_get_path(model, &iter);
+	prefs_filtering_select_row(list_view, path);
+	gtk_tree_path_free(path);
+}
+
 static gint prefs_filtering_list_btn_pressed(GtkWidget *widget, GdkEventButton *event,
 				    GtkTreeView *list_view)
 {
@@ -1880,6 +1899,8 @@ static GtkWidget *prefs_filtering_list_view_create(void)
 	
 	selector = gtk_tree_view_get_selection(list_view);
 	gtk_tree_selection_set_mode(selector, GTK_SELECTION_BROWSE);
+	g_signal_connect(G_OBJECT(selector), "changed",
+			 G_CALLBACK(prefs_filtering_row_selected), list_view);
 
 	/* create the columns */
 	prefs_filtering_create_list_view_columns(GTK_WIDGET(list_view));

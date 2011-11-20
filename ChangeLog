@@ -1,3 +1,12 @@
+2011-11-20 [pawel]	3.7.10cvs95
+
+	* src/prefs_actions.c
+	* src/prefs_filtering.c
+	* src/prefs_template.c
+		Fix bug #1870 'arrow scrolling in filters'
+		Allow arrow scrolling in dialogs with list view widgets
+		plus couple fixes of issues I found along the way
+
 2011-11-19 [pawel]	3.7.10cvs94
 
 	* src/mimeview.c

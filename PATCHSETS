@@ -4298,3 +4298,4 @@
 ( cvs diff -u -r 1.1.2.58 -r 1.1.2.59 manual/advanced.xml;  cvs diff -u -r 1.1.2.19 -r 1.1.2.20 manual/es/advanced.xml;  ) > 3.7.10cvs92.patchset
 ( cvs diff -u -r 1.1.2.59 -r 1.1.2.60 manual/advanced.xml;  ) > 3.7.10cvs93.patchset
 ( cvs diff -u -r 1.83.2.182 -r 1.83.2.183 src/mimeview.c;  ) > 3.7.10cvs94.patchset
+( cvs diff -u -r 1.60.2.75 -r 1.60.2.76 src/prefs_actions.c;  cvs diff -u -r 1.59.2.84 -r 1.59.2.85 src/prefs_filtering.c;  cvs diff -u -r 1.12.2.79 -r 1.12.2.80 src/prefs_template.c;  ) > 3.7.10cvs95.patchset

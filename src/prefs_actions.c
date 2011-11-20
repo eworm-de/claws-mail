@@ -424,6 +424,7 @@ static void prefs_actions_reset_dialog(void)
 {
 	gtk_entry_set_text(GTK_ENTRY(actions.name_entry), "");
 	gtk_entry_set_text(GTK_ENTRY(actions.cmd_entry), "");
+	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(actions.shell_radiobtn), TRUE);
 }
 
 void prefs_actions_read_config(void)
@@ -537,6 +538,7 @@ static void prefs_actions_set_dialog(void)
 				(GTK_TREE_VIEW(actions.actions_list_view)));
 
 	prefs_actions_clear_list(store);	
+	prefs_actions_reset_dialog();
 
 	for (cur = prefs_common.actions_list; cur != NULL; cur = cur->next) {
 		gchar *action = (gchar *) cur->data;
@@ -1078,6 +1080,20 @@ static GtkActionEntry prefs_actions_popup_entries[] =
 	{"PrefsActionsPopup/Duplicate",	NULL, N_("D_uplicate"), NULL, NULL, G_CALLBACK(prefs_actions_duplicate_cb) },
 };
 
+static void prefs_actions_row_selected(GtkTreeSelection *selection, GtkTreeView *list_view)
+{
+	GtkTreePath *path;
+	GtkTreeIter iter;
+	GtkTreeModel *model;
+	
+	if (!gtk_tree_selection_get_selected(selection, &model, &iter))
+		return;
+	
+	path = gtk_tree_model_get_path(model, &iter);
+	prefs_actions_select_row(list_view, path);
+	gtk_tree_path_free(path);
+}
+
 static gint prefs_actions_list_btn_pressed(GtkWidget *widget, GdkEventButton *event,
 				   GtkTreeView *list_view)
 {
@@ -1172,6 +1188,8 @@ static GtkWidget *prefs_actions_list_view_create(void)
 
 	selector = gtk_tree_view_get_selection(list_view);
 	gtk_tree_selection_set_mode(selector, GTK_SELECTION_BROWSE);
+	g_signal_connect(G_OBJECT(selector), "changed",
+			 G_CALLBACK(prefs_actions_row_selected), list_view);
 
 	/* create the columns */
 	prefs_actions_create_list_view_columns(GTK_WIDGET(list_view));
