@@ -1324,6 +1324,7 @@ static void prefs_action_define_filter_done(GSList * action_list)
 	if (action_list == NULL)
 		return;
 
+	action_list = filtering_action_list_sort(action_list);
 	str = filteringaction_list_to_string(action_list);
 
 	if (str != NULL) {

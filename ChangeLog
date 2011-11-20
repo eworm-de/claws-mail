@@ -1,3 +1,12 @@
+2011-11-20 [pawel]	3.7.10cvs96
+
+	* src/filtering.c
+	* src/filtering.h
+	* src/prefs_actions.c
+		Fix bug #1489 'Filter action mark_as_read inoperative
+		following move action'
+		Sort actions lists to have proper order of execution
+
 2011-11-20 [pawel]	3.7.10cvs95
 
 	* src/prefs_actions.c

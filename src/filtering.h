@@ -106,4 +106,6 @@ extern GSList * post_global_processing;
 
 gboolean filtering_peek_per_account_rules(GSList *filtering_list);
 
+GSList *filtering_action_list_sort(GSList *action_list);
+
 #endif

@@ -93,6 +93,19 @@ void filteringaction_free(FilteringAction * action)
 	g_free(action);
 }
 
+static gint action_list_sort(gconstpointer a, gconstpointer b)
+{
+	int first  = filtering_is_final_action((FilteringAction *) a) ? 1 : 0;
+	int second = filtering_is_final_action((FilteringAction *) b) ? 1 : 0;
+	
+	return (first - second);
+}
+
+GSList *filtering_action_list_sort(GSList *action_list)
+{
+	return g_slist_sort(action_list, action_list_sort);
+}
+
 FilteringProp * filteringprop_new(gboolean enabled,
 				  const gchar *name,
 				  gint account_id,
@@ -106,7 +119,7 @@ FilteringProp * filteringprop_new(gboolean enabled,
 	filtering->name = name ? g_strdup(name): NULL;
 	filtering->account_id = account_id;
 	filtering->matchers = matchers;
-	filtering->action_list = action_list;
+	filtering->action_list = filtering_action_list_sort(action_list);
 
 	return filtering;
 }
