@@ -118,6 +118,8 @@ static void account_list_view_add	(PrefsAccount	*ac_prefs);
 static void account_list_view_set	(void);
 
 static void account_list_set		(void);
+static void account_rename_path_prefix	(const gchar	*old_prefix,
+					 const gchar	*new_prefix);
 
 typedef struct FindAccountInStore {
 	gint		 account_id;
@@ -442,7 +444,7 @@ void account_add(void)
 void account_open(PrefsAccount *ac_prefs)
 {
 	gboolean prev_default;
-	gchar *ac_name;
+	gchar *ac_name, *old_prefix, *new_prefix;
 	gboolean account_dirty = FALSE;
 
 	cm_return_if_fail(ac_prefs != NULL);
@@ -458,10 +460,18 @@ void account_open(PrefsAccount *ac_prefs)
 			account_set_as_default(ac_prefs);
 
 		if (ac_prefs->folder && strcmp2(ac_name, ac_prefs->account_name) != 0) {
+			old_prefix = folder_get_identifier(FOLDER(ac_prefs->folder));
 			folder_set_name(FOLDER(ac_prefs->folder),
 					ac_prefs->account_name);
 			folderview_set_all();
 			folder_prefs_save_config_recursive(FOLDER(ac_prefs->folder));
+			new_prefix = folder_get_identifier(FOLDER(ac_prefs->folder));
+
+			account_rename_path_prefix(old_prefix, new_prefix);
+			prefs_filtering_rename_path_prefix(old_prefix, new_prefix);
+			
+			g_free(old_prefix);
+			g_free(new_prefix);
 		}
 
 		account_write_config_all();
@@ -559,6 +569,32 @@ void account_rename_path(const gchar *old_id, const gchar *new_id)
 }
 
 #undef CHECK_CHANGE_FOLDER
+
+#define CHANGE_FOLDER_PREFIX(folder) {						\
+	if (folder && g_str_has_prefix(folder, old_prefix)) {			\
+		gchar *new_path = g_strconcat(new_prefix,			\
+				   (folder + strlen(old_prefix)), NULL);	\
+		g_free(folder);							\
+		folder = new_path;						\
+	}									\
+}
+
+static void account_rename_path_prefix(const gchar *old_prefix,
+				const gchar *new_prefix)
+{
+	GList *cur = account_list;
+	for (; cur != NULL; cur = g_list_next(cur)) {
+		PrefsAccount *ap = (PrefsAccount *)cur->data;
+		CHANGE_FOLDER_PREFIX(ap->inbox);
+		CHANGE_FOLDER_PREFIX(ap->local_inbox);
+		CHANGE_FOLDER_PREFIX(ap->queue_folder);
+		CHANGE_FOLDER_PREFIX(ap->sent_folder);
+		CHANGE_FOLDER_PREFIX(ap->draft_folder);
+		CHANGE_FOLDER_PREFIX(ap->trash_folder);
+	}
+}
+
+#undef CHANGE_FOLDER_PREFIX
 
 FolderItem *account_get_special_folder(PrefsAccount *ac_prefs,
 				       SpecialFolderItemType type)

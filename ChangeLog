@@ -1,3 +1,17 @@
+2011-11-21 [pawel]	3.7.10cvs97
+
+	* src/account.c
+	* src/prefs_filtering.c
+	* src/prefs_filtering.h
+		Fix bug #2404 'matcherrc updates upon account renaming'
+		Fix bug #2406 'some part of accountrc not updated upon
+		account rename'
+		Renaming account cause changing of it's root folder prefix
+		from #<type>/<old_name> to #<type>/<new_name> so every
+		path directing to it must be altered. Fix paths in account
+		preferences, global processing and filtering rules, folder
+		processing rules upon rename
+
 2011-11-20 [pawel]	3.7.10cvs96
 
 	* src/filtering.c
