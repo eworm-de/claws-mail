@@ -3698,8 +3698,16 @@ PrefsAccount *prefs_account_open(PrefsAccount *ac_prefs, gboolean *dirty)
 	if (cancelled && new_account) {
 		prefs_account_free(ac_prefs);
 		return NULL;
-	} else 
+	} else {
+		if (ac_prefs->recv_server)
+			g_strstrip(ac_prefs->recv_server);
+		if (ac_prefs->smtp_server)
+			g_strstrip(ac_prefs->smtp_server);
+		if (ac_prefs->nntp_server)
+			g_strstrip(ac_prefs->nntp_server);
+
 		return ac_prefs;
+	}
 }
 
 #if !GTK_CHECK_VERSION(3, 0, 0)

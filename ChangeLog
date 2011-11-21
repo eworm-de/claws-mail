@@ -1,3 +1,10 @@
+2011-11-21 [pawel]	3.7.10cvs98
+
+	* src/prefs_account.c
+		Fix bug #2116 'Rip spaces off server names in account
+		configuration'
+		g_strstrip() domain names to be sure they are valid
+
 2011-11-21 [pawel]	3.7.10cvs97
 
 	* src/account.c

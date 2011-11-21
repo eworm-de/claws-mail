@@ -4301,3 +4301,4 @@
 ( cvs diff -u -r 1.60.2.75 -r 1.60.2.76 src/prefs_actions.c;  cvs diff -u -r 1.59.2.84 -r 1.59.2.85 src/prefs_filtering.c;  cvs diff -u -r 1.12.2.79 -r 1.12.2.80 src/prefs_template.c;  ) > 3.7.10cvs95.patchset
 ( cvs diff -u -r 1.60.2.58 -r 1.60.2.59 src/filtering.c;  cvs diff -u -r 1.21.2.19 -r 1.21.2.20 src/filtering.h;  cvs diff -u -r 1.60.2.76 -r 1.60.2.77 src/prefs_actions.c;  ) > 3.7.10cvs96.patchset
 ( cvs diff -u -r 1.61.2.101 -r 1.61.2.102 src/account.c;  cvs diff -u -r 1.59.2.85 -r 1.59.2.86 src/prefs_filtering.c;  cvs diff -u -r 1.6.2.10 -r 1.6.2.11 src/prefs_filtering.h;  ) > 3.7.10cvs97.patchset
+( cvs diff -u -r 1.105.2.170 -r 1.105.2.171 src/prefs_account.c;  ) > 3.7.10cvs98.patchset
