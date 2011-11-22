@@ -47,8 +47,6 @@ void prefs_filtering_open(GSList ** p_processing,
 
 void prefs_filtering_rename_path	(const gchar	*old_path,
 				 	 const gchar	*new_path);
-void prefs_filtering_rename_path_prefix	(const gchar	*old_prefix,
-				 	 const gchar	*new_prefix);
 void prefs_filtering_delete_path	(const gchar	*path);
 
 void prefs_filtering_rename_tag(const gchar *old_tag, const gchar *new_tag);

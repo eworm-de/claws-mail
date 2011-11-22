@@ -1,3 +1,13 @@
+2011-11-22 [colin]	3.7.10cvs99
+
+	* src/account.c
+	* src/prefs_filtering.c
+	* src/prefs_filtering.h
+		Partly revert 3.7.10cvs97 (bug #2404, bug #2406):
+		The existing functions should do the job as well
+		if not better, as they take into account the
+		separator.
+
 2011-11-21 [pawel]	3.7.10cvs98
 
 	* src/prefs_account.c
