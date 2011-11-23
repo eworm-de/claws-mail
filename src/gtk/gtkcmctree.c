@@ -435,7 +435,6 @@ draw_expander (GtkCMCTree     *ctree,
 	       gint          x)
 {
   GtkCMCList *clist;
-  GdkPoint points[3];
   gint justification_factor;
   gint y;
 
@@ -459,48 +458,28 @@ draw_expander (GtkCMCTree     *ctree,
 	  return x + justification_factor * (PM_SIZE + 3);
     }
 
+  /* pixel offsets +/- 1 or +/- justification_factor here and there ..
+   * to fill correctly, somewhat ... what do I do wrong?
+   */
+  gdk_cairo_set_source_color(cr, &gtk_widget_get_style(GTK_WIDGET(ctree))->fg[GTK_STATE_NORMAL]);
   if (ctree_row->expanded)
   {
-	  points[0].x = x;
-	  points[0].y = y + (PM_SIZE + 2) / 6;
-	  points[1].x = points[0].x + justification_factor * (PM_SIZE + 2);
-	  points[1].y = points[0].y;
-	  points[2].x = (points[0].x +
-			 justification_factor * (PM_SIZE + 2) / 2);
-	  points[2].y = y + 2 * (PM_SIZE + 2) / 3;
+    gint tmp3 = PM_SIZE / 2;
+    gint tmp6 = PM_SIZE / 6;
+    cairo_move_to(cr, x + justification_factor * (tmp3 + tmp6) + (PM_SIZE / 2), y + 1);
+    cairo_rel_line_to(cr, 0, tmp3 + tmp6 + 1);
+    cairo_rel_line_to(cr, -justification_factor * (tmp3 + tmp6) - justification_factor, -1);
+    cairo_close_path(cr);
   }
   else
   {
-	  points[0].x = x + justification_factor * ((PM_SIZE + 2) / 6 + 2);
-	  points[0].y = y - 1;
-	  points[1].x = points[0].x;
-	  points[1].y = points[0].y + (PM_SIZE + 2);
-	  points[2].x = (points[0].x +
-			 justification_factor * (2 * (PM_SIZE + 2) / 3 - 1));
-	  points[2].y = points[0].y + (PM_SIZE + 2) / 2;
+    gint tmp3 = PM_SIZE / 2;
+    gint tmp6 = PM_SIZE / 6;
+    cairo_move_to(cr, x + tmp6 - justification_factor + (PM_SIZE / 2), y + tmp6 - 1);
+    cairo_rel_line_to(cr, justification_factor * tmp3, tmp3);
+    cairo_rel_line_to(cr, -justification_factor * tmp3, tmp3);
   }
-
-
-  cairo_new_path(cr);
-  cairo_set_source_rgb(cr, 255, 255, 255);
-  cairo_set_line_width(cr, 1);
-  cairo_set_antialias(cr, CAIRO_ANTIALIAS_NONE);
-  cairo_move_to(cr, points[0].x, points[0].y);
-  cairo_line_to(cr, points[1].x, points[1].y);
-  cairo_line_to(cr, points[2].x, points[2].y);
-  cairo_close_path(cr);
   cairo_fill(cr);
- 
-  cairo_new_path(cr);
-  gdk_cairo_set_source_color(cr, &gtk_widget_get_style(GTK_WIDGET(ctree))->fg[GTK_STATE_NORMAL]);
-  cairo_set_line_width(cr, 1);
-  cairo_set_antialias(cr, CAIRO_ANTIALIAS_NONE);
-  cairo_move_to(cr, points[0].x, points[0].y);
-  cairo_line_to(cr, points[1].x, points[1].y);
-  cairo_line_to(cr, points[2].x, points[2].y);
-  cairo_close_path(cr);
-  cairo_stroke(cr);
-  cairo_set_antialias(cr, CAIRO_ANTIALIAS_DEFAULT);
 
   x += justification_factor * (PM_SIZE + 3);
 

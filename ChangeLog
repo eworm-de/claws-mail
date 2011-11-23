@@ -1,3 +1,10 @@
+2011-11-23 [wwp]	3.7.10cvs100
+
+	* src/gtk/gtkcmctree.c
+		Make arrows in gtkcmctree's less big (get rid of the outlining),
+		patch by Hanno Meyer-Thurow (h.mth@web.de), with few adaptations in offsets/sizes
+		calculation.
+
 2011-11-22 [colin]	3.7.10cvs99
 
 	* src/account.c
