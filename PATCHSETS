@@ -4304,3 +4304,4 @@
 ( cvs diff -u -r 1.105.2.170 -r 1.105.2.171 src/prefs_account.c;  ) > 3.7.10cvs98.patchset
 ( cvs diff -u -r 1.61.2.102 -r 1.61.2.103 src/account.c;  cvs diff -u -r 1.59.2.86 -r 1.59.2.87 src/prefs_filtering.c;  cvs diff -u -r 1.6.2.11 -r 1.6.2.12 src/prefs_filtering.h;  ) > 3.7.10cvs99.patchset
 ( cvs diff -u -r 1.1.2.24 -r 1.1.2.25 src/gtk/gtkcmctree.c;  ) > 3.7.10cvs100.patchset
+( cvs diff -u -r 1.1.2.25 -r 1.1.2.26 src/gtk/gtkcmctree.c;  ) > 3.7.10cvs101.patchset

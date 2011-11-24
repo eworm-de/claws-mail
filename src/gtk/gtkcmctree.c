@@ -469,7 +469,6 @@ draw_expander (GtkCMCTree     *ctree,
     cairo_move_to(cr, x + justification_factor * (tmp3 + tmp6) + (PM_SIZE / 2), y + 1);
     cairo_rel_line_to(cr, 0, tmp3 + tmp6 + 1);
     cairo_rel_line_to(cr, -justification_factor * (tmp3 + tmp6) - justification_factor, -1);
-    cairo_close_path(cr);
   }
   else
   {
