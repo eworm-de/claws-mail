@@ -1,3 +1,8 @@
+2011-11-24 [pawel]	3.7.10cvs103
+
+	* src/prefs_filtering.c
+		Complete cvs102, forgot to commit this
+
 2011-11-24 [pawel]	3.7.10cvs102
 
 	* src/account.c
