@@ -51,6 +51,7 @@
 #include "remotefolder.h"
 #include "manual.h"
 #include "filtering.h"
+#include "prefs_actions.h"
 
 enum {
 	ACCOUNT_IS_DEFAULT,
@@ -467,6 +468,7 @@ void account_open(PrefsAccount *ac_prefs)
 
 			account_rename_path(old_prefix, new_prefix);
 			prefs_filtering_rename_path(old_prefix, new_prefix);
+			prefs_actions_rename_path(old_prefix, new_prefix);
 			
 			g_free(old_prefix);
 			g_free(new_prefix);

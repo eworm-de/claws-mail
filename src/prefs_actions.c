@@ -1336,3 +1336,31 @@ static void prefs_action_define_filter_done(GSList * action_list)
 		modified = TRUE;
 	}
 }
+
+void prefs_actions_rename_path(const gchar *old_path, const gchar *new_path)
+{
+	gchar **tokens, *action_str;
+	GSList *action, *action_list;
+	
+	for (action = prefs_common.actions_list; action != NULL;
+			action = action->next) {
+		action_str = (gchar *)action->data;
+		tokens = g_strsplit_set(action_str, "{}", 5);
+		
+		if (tokens[0] && tokens[1] && *tokens[1] != '\0')
+			action_list = matcher_parser_get_action_list(tokens[1]);
+		else
+			action_list = NULL;
+
+		if (action_list &&
+		    filtering_action_list_rename_path(action_list,
+						old_path, new_path)) {
+			g_free(action->data);
+			action->data = g_strconcat(tokens[0], "{",
+				filteringaction_list_to_string(action_list),
+				"}", NULL);
+		}
+
+		g_strfreev(tokens);
+	}
+}

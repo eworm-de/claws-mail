@@ -1,3 +1,16 @@
+2011-11-24 [pawel]	3.7.10cvs102
+
+	* src/account.c
+	* src/filtering.c
+	* src/filtering.h
+	* src/imap_gtk.c
+	* src/mh_gtk.c
+	* src/prefs_actions.c
+	* src/prefs_actions.h
+		Implement actions updating on folder/account rename
+		This fixes bug #2543 'filter actions in actionsrc not
+		updated upon account renaming'
+
 2011-11-24 [wwp]	3.7.10cvs101
 
 	* src/gtk/gtkcmctree.c
