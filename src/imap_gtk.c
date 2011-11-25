@@ -42,6 +42,7 @@
 #include "prefs_common.h"
 #include "statusbar.h"
 #include "summaryview.h"
+#include "prefs_actions.h"
 
 static void new_folder_cb(GtkAction *action, gpointer data);
 static void rename_folder_cb(GtkAction *action, gpointer data);

@@ -38,6 +38,7 @@
 #include "mh.h"
 #include "foldersel.h"
 #include "prefs_common.h"
+#include "prefs_actions.h"
 
 static void new_folder_cb(GtkAction *action, gpointer data);
 static void delete_folder_cb(GtkAction *action, gpointer data);

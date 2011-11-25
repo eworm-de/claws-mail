@@ -1,3 +1,9 @@
+2011-11-25 [colin]	3.7.10cvs104
+
+	* src/imap_gtk.c
+	* src/mh_gtk.c
+		Warning fixes
+
 2011-11-24 [pawel]	3.7.10cvs103
 
 	* src/prefs_filtering.c
