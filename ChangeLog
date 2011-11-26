@@ -1,3 +1,8 @@
+2011-11-26 [pawel]	3.7.10cvs105
+
+	* src/folder.c
+		Fix bug #2505 'tagsdb becomes polluted with old folder entries'
+
 2011-11-25 [colin]	3.7.10cvs104
 
 	* src/imap_gtk.c
