@@ -2948,7 +2948,11 @@ static void addressbook_treenode_delete_cb(GtkAction *action, gpointer data)
 	if( obj->type == ADDR_DATASOURCE ) {
 		/* Remove node from tree */
 		gtk_cmctree_remove_node( ctree, node );
-	
+		
+		if (delType == ADDRTREE_DEL_DATA &&
+		    ds->interface && ds->interface->type == ADDR_IF_BOOK)
+			addrbook_delete_book_file((AddressBookFile *) ds->rawDataSource);
+			
 		/* Remove data source. */
 		if( addrindex_index_remove_datasource( _addressIndex_, ds ) ) {
 			addrindex_free_datasource( ds );

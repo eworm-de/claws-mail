@@ -104,5 +104,6 @@ ItemPerson *addrbook_add_contact	( AddressBookFile *book, ItemFolder *folder,
 					  const gchar *remarks );
 
 gchar *addrbook_guess_next_file		( AddressBookFile *book );
+void addrbook_delete_book_file		( AddressBookFile *book );
 
 #endif /* __ADDRBOOK_H__ */
