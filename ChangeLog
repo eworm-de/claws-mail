@@ -1,3 +1,8 @@
+2011-11-29 [wwp]	3.7.10cvs108
+
+	* src/plugins/trayicon/libeggtrayicon/.cvsignore
+	More generated stuff to ignore.
+
 2011-11-29 [wwp]	3.7.10cvs107
 
 	* src/prefs_folder_item.c
