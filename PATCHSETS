@@ -4312,3 +4312,4 @@
 ( cvs diff -u -r 1.22.2.25 -r 1.22.2.26 src/addrbook.c;  cvs diff -u -r 1.7.2.4 -r 1.7.2.5 src/addrbook.h;  cvs diff -u -r 1.60.2.146 -r 1.60.2.147 src/addressbook.c;  ) > 3.7.10cvs106.patchset
 ( cvs diff -u -r 1.66 -r 1.67 src/prefs_folder_item.c;  ) > 3.7.10cvs107.patchset
 ( diff -u /dev/null src/plugins/trayicon/libeggtrayicon/.cvsignore;  ) > 3.7.10cvs108.patchset
+( cvs diff -u -r 1.274.2.339 -r 1.274.2.340 src/mainwindow.c;  cvs diff -u -r 1.94.2.224 -r 1.94.2.225 src/messageview.c;  ) > 3.7.10cvs109.patchset

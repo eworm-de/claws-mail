@@ -564,7 +564,7 @@ static GtkActionEntry mainwin_entries[] =
 	{"View/Goto/OtherFolder",		NULL, N_("_Other folder..."), "G", NULL, G_CALLBACK(goto_folder_cb) },
 
         /* {"View/Scroll/---",                  NULL, "---", NULL, NULL, NULL }, */
-        {"View/Scroll",                         NULL, N_("Message Scroll") },
+        {"View/Scroll",                         NULL, N_("Message scroll") },
         {"View/Scroll/PrevLine",                NULL, N_("Previous line"), NULL, NULL, G_CALLBACK(scroll_prev_line_cb) },
         {"View/Scroll/NextLine",                NULL, N_("Next line"), NULL, NULL, G_CALLBACK(scroll_next_line_cb) },
         {"View/Scroll/PrevPage",                NULL, N_("Previous page"), NULL, NULL, G_CALLBACK(scroll_prev_page_cb) },
