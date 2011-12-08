@@ -6814,12 +6814,27 @@ static void compose_remove_header_entries(Compose *compose)
 static GtkWidget *compose_create_header(Compose *compose) 
 {
 	GtkWidget *from_optmenu_hbox;
+	GtkWidget *header_scrolledwin_main;
+	GtkWidget *header_table_main;
 	GtkWidget *header_scrolledwin;
 	GtkWidget *header_table;
 
-	gint count = 0;
+	/* parent with account selection and from header */
+	header_scrolledwin_main = gtk_scrolled_window_new(NULL, NULL);
+	gtk_widget_show(header_scrolledwin_main);
+	gtk_scrolled_window_set_policy(GTK_SCROLLED_WINDOW(header_scrolledwin_main), GTK_POLICY_NEVER, GTK_POLICY_AUTOMATIC);
 
-	/* header labels and entries */
+	header_table_main = gtk_table_new(2, 2, FALSE);
+	gtk_widget_show(header_table_main);
+	gtk_container_set_border_width(GTK_CONTAINER(header_table_main), BORDER_WIDTH);
+	gtk_scrolled_window_add_with_viewport(GTK_SCROLLED_WINDOW(header_scrolledwin_main), header_table_main);
+	gtk_viewport_set_shadow_type(GTK_VIEWPORT(gtk_bin_get_child(GTK_BIN((header_scrolledwin_main)))), GTK_SHADOW_NONE);
+
+	from_optmenu_hbox = compose_account_option_menu_create(compose);
+	gtk_table_attach(GTK_TABLE(header_table_main), from_optmenu_hbox,
+				  0, 2, 0, 1, GTK_EXPAND | GTK_FILL, GTK_SHRINK, 0, 0);
+
+	/* child with header labels and entries */
 	header_scrolledwin = gtk_scrolled_window_new(NULL, NULL);
 	gtk_widget_show(header_scrolledwin);
 	gtk_scrolled_window_set_policy(GTK_SCROLLED_WINDOW(header_scrolledwin), GTK_POLICY_NEVER, GTK_POLICY_AUTOMATIC);
@@ -6829,23 +6844,19 @@ static GtkWidget *compose_create_header(Compose *compose)
 	gtk_container_set_border_width(GTK_CONTAINER(header_table), BORDER_WIDTH);
 	gtk_scrolled_window_add_with_viewport(GTK_SCROLLED_WINDOW(header_scrolledwin), header_table);
 	gtk_viewport_set_shadow_type(GTK_VIEWPORT(gtk_bin_get_child(GTK_BIN((header_scrolledwin)))), GTK_SHADOW_NONE);
-	count = 0;
 
-	/* option menu for selecting accounts */
-	from_optmenu_hbox = compose_account_option_menu_create(compose);
-	gtk_table_attach(GTK_TABLE(header_table), from_optmenu_hbox,
-				  0, 2, count, count + 1, GTK_EXPAND | GTK_FILL, GTK_SHRINK, 0, 0);
-	count++;
+	gtk_table_attach(GTK_TABLE(header_table_main), header_scrolledwin,
+				  0, 2, 1, 2, GTK_EXPAND | GTK_FILL, GTK_EXPAND | GTK_FILL, 0, 2);
 
 	compose->header_table = header_table;
 	compose->header_list = NULL;
-	compose->header_nextrow = count;
+	compose->header_nextrow = 0;
 
 	compose_create_header_entry(compose);
 
-	compose->table	          = NULL;
+	compose->table = NULL;
 
-	return header_scrolledwin ;
+	return header_scrolledwin_main;
 }
 
 static gboolean popup_attach_button_pressed(GtkWidget *widget, gpointer data)
@@ -10147,14 +10158,20 @@ static void compose_paste_cb(GtkAction *action, gpointer data)
 	GtkTextBuffer *buffer;
 	BLOCK_WRAP();
 	if (compose->focused_editable &&
-	    gtk_widget_has_focus(compose->focused_editable))
+#ifndef GENERIC_UMPC
+	    gtk_widget_has_focus(compose->focused_editable)
+#endif
+		)
 		entry_paste_clipboard(compose, compose->focused_editable, 
 				prefs_common.linewrap_pastes,
 				GDK_SELECTION_CLIPBOARD, NULL);
 	UNBLOCK_WRAP();
 
 #ifdef USE_ENCHANT
-	if (gtk_widget_has_focus(compose->text) &&
+	if (
+#ifndef GENERIC_UMPC
+		gtk_widget_has_focus(compose->text) &&
+#endif
 	    compose->gtkaspell && 
             compose->gtkaspell->check_while_typing)
 	    	gtkaspell_highlight_all(compose->gtkaspell);
@@ -10204,7 +10221,10 @@ static void compose_paste_no_wrap_cb(GtkAction *action, gpointer data)
 	UNBLOCK_WRAP();
 
 #ifdef USE_ENCHANT
-	if (gtk_widget_has_focus(compose->text) &&
+	if (
+#ifndef GENERIC_UMPC
+		gtk_widget_has_focus(compose->text) &&
+#endif
 	    compose->gtkaspell && 
             compose->gtkaspell->check_while_typing)
 	    	gtkaspell_highlight_all(compose->gtkaspell);
@@ -10227,7 +10247,10 @@ static void compose_paste_wrap_cb(GtkAction *action, gpointer data)
 	UNBLOCK_WRAP();
 
 #ifdef USE_ENCHANT
-	if (gtk_widget_has_focus(compose->text) &&
+	if (
+#ifndef GENERIC_UMPC
+		gtk_widget_has_focus(compose->text) &&
+#endif
 	    compose->gtkaspell &&
             compose->gtkaspell->check_while_typing)
 	    	gtkaspell_highlight_all(compose->gtkaspell);

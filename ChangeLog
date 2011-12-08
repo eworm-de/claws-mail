@@ -1,3 +1,13 @@
+2011-12-08 [wwp]	3.7.10cvs110
+
+	* src/compose.c
+	Make "From" widget set independant from recipient lists below,
+	so that it doesn't scroll when several recipients headers
+	are added and eventually are scrolling the view.
+	Path by Christian Hesse <mail@earthworm.de>.
+	Fixes bug #2481 'do not scroll "from" dropdown list and sender
+	address'.
+
 2011-12-02 [paul]	3.7.10cvs109
 
 	* src/mainwindow.c
