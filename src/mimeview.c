@@ -2286,11 +2286,9 @@ static gboolean icon_clicked_cb (GtkWidget *button, GdkEventButton *event, MimeV
 	if (event->button == 1) {
 		icon_selected(mimeview, num, partinfo);
 		gtk_widget_grab_focus(button);
+		icon_list_toggle_by_mime_info(mimeview, partinfo);
 	}
 	part_button_pressed(mimeview, event, partinfo);
-	
-	if (event->button != 3)
-		icon_list_toggle_by_mime_info(mimeview, partinfo);
 
 	return FALSE;
 }

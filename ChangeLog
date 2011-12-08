@@ -1,3 +1,8 @@
+2011-12-08 [pawel]	3.7.10cvs111
+
+	* src/mimeview.c
+		Better fix for cvs94
+
 2011-12-08 [wwp]	3.7.10cvs110
 
 	* src/compose.c
