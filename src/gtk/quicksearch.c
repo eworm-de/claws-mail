@@ -50,7 +50,6 @@ struct _QuickSearchRequest
 {
 	QuickSearchType			 type;
 	gchar				*matchstring;
-	FolderItem			*folderItem;
 	gboolean			 recursive;
 };
 typedef struct _QuickSearchRequest QuickSearchRequest;
@@ -1509,6 +1508,12 @@ void quicksearch_reset_cur_folder_item(QuickSearch *quicksearch)
 					       quicksearch->root_folder_item);
 
 	quicksearch->root_folder_item = NULL;
+}
+
+void quicksearch_folder_item_invalidate(QuickSearch *quicksearch, FolderItem *item)
+{
+	if (quicksearch->root_folder_item == item)
+		quicksearch->root_folder_item = NULL;
 }
 
 gboolean quicksearch_is_in_typing(QuickSearch *quicksearch)

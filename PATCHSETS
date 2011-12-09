@@ -4315,3 +4315,4 @@
 ( cvs diff -u -r 1.274.2.339 -r 1.274.2.340 src/mainwindow.c;  cvs diff -u -r 1.94.2.224 -r 1.94.2.225 src/messageview.c;  ) > 3.7.10cvs109.patchset
 ( cvs diff -u -r 1.382.2.596 -r 1.382.2.597 src/compose.c;  ) > 3.7.10cvs110.patchset
 ( cvs diff -u -r 1.83.2.183 -r 1.83.2.184 src/mimeview.c;  ) > 3.7.10cvs111.patchset
+( cvs diff -u -r 1.395.2.440 -r 1.395.2.441 src/summaryview.c;  cvs diff -u -r 1.1.2.106 -r 1.1.2.107 src/gtk/quicksearch.c;  cvs diff -u -r 1.1.2.22 -r 1.1.2.23 src/gtk/quicksearch.h;  ) > 3.7.10cvs112.patchset

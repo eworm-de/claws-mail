@@ -7984,9 +7984,11 @@ static gboolean summary_update_folder_hook(gpointer source, gpointer data)
 	FolderUpdateData *hookdata;
 	SummaryView *summaryview = (SummaryView *)data;
 	hookdata = source;
-	if (hookdata->update_flags & FOLDER_REMOVE_FOLDERITEM)
+	if (hookdata->update_flags & FOLDER_REMOVE_FOLDERITEM) {
 		summary_update_unread(summaryview, hookdata->item);
-	else
+		quicksearch_folder_item_invalidate(summaryview->quicksearch,
+						   hookdata->item);
+	} else
 		summary_update_unread(summaryview, NULL);
 
 	return FALSE;

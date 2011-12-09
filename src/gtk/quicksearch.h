@@ -65,4 +65,5 @@ gboolean quicksearch_is_fast(QuickSearch *quicksearch);
 gboolean quicksearch_is_in_typing(QuickSearch *quicksearch);
 void quicksearch_relayout(QuickSearch *quicksearch);
 void quicksearch_set_search_strings(QuickSearch *quicksearch);
+void quicksearch_folder_item_invalidate(QuickSearch *quicksearch, FolderItem *item);
 #endif /* QUICKSEARCH_H */
