@@ -1,3 +1,18 @@
+2011-12-16 [paul]	3.7.10cvs113
+
+	* configure.ac
+	* po/cs.po
+	* po/es.po
+	* po/fr.po
+	* po/hu.po
+	* po/id.po **REMOVED**
+	* po/id_ID.po **ADDED**
+	* po/pt_BR.po
+	* po/ru.po
+	* po/sk.po
+	* po/uk.po
+		updates
+
 2011-12-09 [pawel]	3.7.10cvs112
 
 	* src/summaryview.c
