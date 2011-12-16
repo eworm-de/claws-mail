@@ -1,3 +1,8 @@
+2011-12-16 [mir]	3.8.0cvs3
+
+	* src/Makefile.am
+	    Added forgotten replied_and_forwarded.xpm to EXTRA_DIST
+
 2011-12-16 [wwp]	3.8.0cvs2
 
 	* src/procmsg.c

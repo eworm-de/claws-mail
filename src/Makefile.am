@@ -487,7 +487,8 @@ EXTRA_DIST = \
 	pixmaps/tray_unreadmail.xpm \
 	pixmaps/tray_unreadmarkedmail.offline.xpm \
 	pixmaps/tray_unreadmarkedmail.xpm \
-	pixmaps/empty.xpm
+	pixmaps/empty.xpm \
+	pixmaps/replied_and_forwarded.xpm
 
 
 INCLUDES = \
