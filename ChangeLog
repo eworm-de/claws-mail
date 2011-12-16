@@ -1,3 +1,8 @@
+2011-12-16 [paul]	3.8.0cvs1
+
+	* tools/claws.i18n.status.pl
+		update id to id_ID
+
 2011-12-16 [paul]	3.8.0
 	* NEWS
 	* README

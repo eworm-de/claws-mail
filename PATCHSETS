@@ -4317,3 +4317,4 @@
 ( cvs diff -u -r 1.83.2.183 -r 1.83.2.184 src/mimeview.c;  ) > 3.7.10cvs111.patchset
 ( cvs diff -u -r 1.395.2.440 -r 1.395.2.441 src/summaryview.c;  cvs diff -u -r 1.1.2.106 -r 1.1.2.107 src/gtk/quicksearch.c;  cvs diff -u -r 1.1.2.22 -r 1.1.2.23 src/gtk/quicksearch.h;  ) > 3.7.10cvs112.patchset
 ( cvs diff -u -r 1.654.2.4393 -r 1.654.2.4394 configure.ac;  cvs diff -u -r 1.9.2.23 -r 1.9.2.24 po/cs.po;  cvs diff -u -r 1.60.2.63 -r 1.60.2.64 po/es.po;  cvs diff -u -r 1.42.2.56 -r 1.42.2.57 po/fr.po;  cvs diff -u -r 1.5.2.20 -r 1.5.2.21 po/hu.po;  cvs diff -u -r -1.1.2.5 -r -1.1.2.6 po/id.po;  diff -u /dev/null po/id_ID.po;  cvs diff -u -r 1.50.2.42 -r 1.50.2.43 po/pt_BR.po;  cvs diff -u -r 1.17.2.21 -r 1.17.2.22 po/ru.po;  cvs diff -u -r 1.2.2.34 -r 1.2.2.35 po/sk.po;  cvs diff -u -r 1.1.2.4 -r 1.1.2.5 po/uk.po;  ) > 3.7.10cvs113.patchset
+( cvs diff -u -r 1.1.2.25 -r 1.1.2.26 tools/claws.i18n.status.pl;  ) > 3.8.0cvs1.patchset
