@@ -1,4 +1,4 @@
-27th August 2011                                    Claws Mail 3.7.10
+16th December 2011                                   Claws Mail 3.8.0
 
 		    CLAWS MAIL  RELEASE NOTES
                     http://www.claws-mail.org
@@ -9,46 +9,88 @@ email client.
 New in this release:
 ~~~~~~~~~~~~~~~~~~~~
 
-* The name of the account is now included within the Network Log
-  output. (See enhancement request 2184)
+* GnuTLS 2.2 is now a minimum requirement if encrypted connections to
+  servers are required.
 
-* Right-clicking a message in the Message List no longer opens the
-  message. (See enhancement request 2353)
-  
-* Updated manuals.
+* The list displays have been updated to use newer GTK+ functions,
+  this means that the expanders look different and the optional dotted
+  lines have been dropped.
 
-* Updated translations: Brazilian Portuguese, Czech, French, Hungarian,
-  Lithuanian, and Slovak.
+* A hidden option, 'summary_from_show', which controls the display in
+  the From column of the Message List: 0 (default): show name,
+  1: show address, 2: show name + address
+		
+* The image viewer now uses the EXIF Orientation.
+		
+* 'Generate X-Mailer header' has been added as an Account option.
+
+* /View/Message scroll has been added, allowing keyboard shortcuts to
+  be added and used for message scrolling.
+
+* Home and End keys now function in the Message View.
+
+* /Message/Print has been added to the Compose window.
+
+* Updated manuals
+
+* Update man page
+
+* Updated translations: Brazilian Portuguese, Czech, French,
+	Hungarian, Indonesian, Russian, Slovak, Spanish, Ukrainian.
 
 * Bug fixes:
-	o bug 1963, 'Preferences Templates Information Window Focus
-		     loss'
-	o bug 2397, 'Gtkhtml2 viewer ignores message encoding'
-	o bug 2402, 'can't download message from pop3 server'
-	o bug 2409, 'Failed to compile under GCC 3.x : option
-		     -Wno-pointer-sign badly set in configure.ac'
-	o bug 2412, 'Send account mail address in Message-ID wrongly
-		     implemented'
-	o bug 2414, 'Claws segfaults on startup with notification
-		     plugin enabled'
-	o bug 2418, 'NNTP authentication is broken'
-	o bug 2420, 'Invalid markup in icon tooltip text after
-		     signature check'
-	o bug 2439, 'use bitwise operator for bitmask instead of
-		     logical operator'
-	o bug 2461, 'popup menu in message list displays 'move to
-		     trash' and 'delete''
-	o bug 2462, 'Building without GnuTLS support leads to a
-		     failure in wizard.c'
-	o fix trayicon build with gtk < 2.18.x
-	o don't minimise/hide warning dialogue on plugin load error
-	o when using a Compose template, only place the cursor in the
-	  body when the cursor symbol, %cursor (%X), is used
-	o fix build on Debian Sid.
-	o fix cursor placement in Forward template
-	o fix duplicate key accels
-	o fix NNTP server sending authentication warning as part of
-	  the connection session
+	o bug 1489, 'Filter action mark_as_read inoperative
+		     following move action
+	o bug 1563, 'Folder view: show complete threads if they
+		     contain unread messages'
+	o bug 1870, 'arrow scrolling in filters'
+	o bug 2116, 'Rip spaces off server names in account
+		     configuration'
+	o bug 2127, 'SSL cert check uses canonical name instead of
+		     specified name'
+	o bug 2177, 'addrbook/addrbook-00000?.xml is not deleted
+		     after removing the address book in the GUI'
+	o bug 2303, 'Next unread message enables message view'
+	o bug 2310, 'Crash when hitting Ctrl+R to reply to a 
+		     particular mail'
+	o bug 2377, 'Show All Headers - make change persistent
+		     between sessions'
+	o bug 2402, 'GnuTLS change breaks socket communication'
+	o bug 2404, 'matcherrc updates upon account renaming'
+	o bug 2406, 'some part of accountrc not updated upon account
+		     rename'
+	o bug 2408, 'Some UI elements are not persistent between
+		     sessions'
+	o bug 2422, 'Toggle Message View w/ V crashes Claws'
+	o bug 2479, 'LDIF address book import matches tags case
+		     sensitive'
+	o bug 2481, 'do not scroll "from" dropdown list and sender
+		     address'
+	o bug 2493, 'Subscription pull down should be alphabetized'
+	o bug 2502, 'gnutls_transport_set_lowat removed in gnutls
+		     3.0.3'
+	o bug 2505, 'tagsdb becomes polluted with old folder entries'
+	o bug 2509, 'manually added headers are lost unless mail is
+		     sent inmediately'
+	o bug 2520, 'Please remove verbose "No further processing
+		     after rule %s" message.'
+	o bug 2525, 'Address completion window does not get keyboard
+		     focus'
+	o bug 2526, 'When reading message in separate window, n and p
+		     keys do not work'
+	o bug 2529, 'crash in mimeview_start_drag after deleting
+		     message'
+	o bug 2543, 'filter actions in actionsrc not updated upon
+		     account renaming'
+	o bug 2560, 'crash when unsubscribing newsgroup and having
+		     active search field'
+	o Fix focus problem on Gnome shell
+	o Fix flicker on recursive quicksearch
+	o Fix huge slowness induced by spellcheck "while typing"
+	  during initial quote rewraps.
+	o Fix build with GLib 2.31.
+	o Fix crasher when spellchecking is not enabled
+	o Fix compose window size saving/restoring
 
 For further details of the numbered bugs listed above consult
 http://www.thewildbeast.co.uk/claws-mail/bugzilla/

@@ -17,7 +17,8 @@ Claws Mail - a GTK+ based, lightweight, and fast e-mail client
 
    You should have received a copy of the GNU General Public License
    along with this program; if not, write to the Free Software
-   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
+   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, 
+   MA 02110-1301, USA.
 
    For more details see the file COPYING.
 
@@ -366,7 +367,7 @@ http://www.claws-mail.org/plugins.php
 8. Hidden options
 -----------------
 
-    It is recommnede that you use Clawsker to edit these options,
+    It is recommended that you use Clawsker to edit these options,
     http://www.claws-mail.org/clawsker
 
     addressbook_use_editaddress_dialog	(default: 1)
@@ -690,6 +691,7 @@ http://www.thewildbeast.co.uk/claws-mail/bugzilla/index.cgi
 
 GTK 2 Version
 -------------
+2011-12-16	3.8.0
 2011-08-27	3.7.10
 2011-04-09	3.7.9
 2010-12-04	3.7.8
