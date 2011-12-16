@@ -97,6 +97,7 @@ static GdkPixbuf *newxpm;
 static GdkPixbuf *unreadxpm;
 static GdkPixbuf *repliedxpm;
 static GdkPixbuf *forwardedxpm;
+static GdkPixbuf *repliedandforwardedxpm;
 static GdkPixbuf *ignorethreadxpm;
 static GdkPixbuf *watchthreadxpm;
 static GdkPixbuf *lockedxpm;
@@ -931,6 +932,8 @@ void summary_init(SummaryView *summaryview)
 			 &repliedxpm);
 	stock_pixbuf_gdk(summaryview->ctree, STOCK_PIXMAP_FORWARDED,
 			 &forwardedxpm);
+	stock_pixbuf_gdk(summaryview->ctree, STOCK_PIXMAP_REPLIED_AND_FORWARDED,
+			 &repliedandforwardedxpm);
 	stock_pixbuf_gdk(summaryview->ctree, STOCK_PIXMAP_CLIP,
 			 &clipxpm);
 	stock_pixbuf_gdk(summaryview->ctree, STOCK_PIXMAP_LOCKED,
@@ -3753,6 +3756,9 @@ static void summary_set_row_marks(SummaryView *summaryview, GtkCMCTreeNode *row)
 	} else if (MSG_IS_UNREAD(flags)) {
 		gtk_cmctree_node_set_pixbuf(ctree, row, col_pos[S_COL_STATUS],
 					  unreadxpm);
+	} else if (MSG_IS_REPLIED(flags) && MSG_IS_FORWARDED(flags)) {
+		gtk_cmctree_node_set_pixbuf(ctree, row, col_pos[S_COL_STATUS],
+					  repliedandforwardedxpm);
 	} else if (MSG_IS_REPLIED(flags)) {
 		gtk_cmctree_node_set_pixbuf(ctree, row, col_pos[S_COL_STATUS],
 					  repliedxpm);
@@ -6174,6 +6180,8 @@ static gchar *summaryview_get_tooltip_text(SummaryView *summaryview, MsgInfo *in
 				return _("New");
 			} else if (MSG_IS_UNREAD(flags)) {
 				return _("Unread");
+			} else if (MSG_IS_REPLIED(flags) && MSG_IS_FORWARDED(flags)) {
+				return _("Replied but also forwarded - click to see reply");
 			} else if (MSG_IS_REPLIED(flags)) {
 				return _("Replied - click to see reply");
 			} else if (MSG_IS_FORWARDED(flags)) {
@@ -7751,6 +7759,7 @@ void summary_reflect_prefs_pixmap_theme(SummaryView *summaryview)
 	stock_pixbuf_gdk(ctree, STOCK_PIXMAP_UNREAD, &unreadxpm);
 	stock_pixbuf_gdk(ctree, STOCK_PIXMAP_REPLIED, &repliedxpm);
 	stock_pixbuf_gdk(ctree, STOCK_PIXMAP_FORWARDED, &forwardedxpm);
+	stock_pixbuf_gdk(ctree, STOCK_PIXMAP_REPLIED_AND_FORWARDED, &repliedandforwardedxpm);
 	stock_pixbuf_gdk(ctree, STOCK_PIXMAP_CLIP, &clipxpm);
 	stock_pixbuf_gdk(ctree, STOCK_PIXMAP_LOCKED, &lockedxpm);
 	stock_pixbuf_gdk(ctree, STOCK_PIXMAP_IGNORETHREAD, &ignorethreadxpm);

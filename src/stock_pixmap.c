@@ -57,6 +57,7 @@
 #include "pixmaps/locked.xpm"
 #include "pixmaps/new.xpm"
 #include "pixmaps/replied.xpm"
+#include "pixmaps/replied_and_forwarded.xpm"
 #include "pixmaps/close.xpm"
 #include "pixmaps/down_arrow.xpm"
 #include "pixmaps/up_arrow.xpm"
@@ -121,13 +122,13 @@
 #include "pixmaps/privacy_failed.xpm"
 #include "pixmaps/privacy_unknown.xpm"
 #include "pixmaps/privacy_expired.xpm"
-#include "pixmaps/privacy_warn.xpm"                 
+#include "pixmaps/privacy_warn.xpm"
 #include "pixmaps/privacy_emblem_encrypted.xpm"
 #include "pixmaps/privacy_emblem_signed.xpm"
 #include "pixmaps/privacy_emblem_passed.xpm"
 #include "pixmaps/privacy_emblem_failed.xpm"
 #include "pixmaps/privacy_emblem_warn.xpm"
-#include "pixmaps/mime_message.xpm"                  
+#include "pixmaps/mime_message.xpm"
 #include "pixmaps/address_search.xpm"
 #include "pixmaps/check_spelling.xpm"
 
@@ -304,6 +305,7 @@ static StockPixmapData pixmaps[] =
 	{outbox_open_mark_xpm			, NULL, NULL, "outbox_open_mark", NULL},
 	{outbox_open_hrm_mark_xpm		, NULL, NULL, "outbox_open_hrm_mark", NULL},
 	{replied_xpm				, NULL, NULL, "replied", NULL},
+	{replied_and_forwarded_xpm	, NULL, NULL, "replied_and_forwarded", NULL},
 	{paste_xpm				, NULL, NULL, "paste", NULL},
 	{preferences_xpm			, NULL, NULL, "preferences", NULL},
 	{properties_xpm				, NULL, NULL, "properties", NULL},

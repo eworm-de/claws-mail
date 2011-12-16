@@ -1,3 +1,15 @@
+2011-12-16 [wwp]	3.8.0cvs2
+
+	* src/procmsg.c
+	* src/stock_pixmap.c
+	* src/stock_pixmap.h
+	* src/summaryview.c
+	* src/gtk/icon_legend.c
+	* src/pixmaps/replied_and_forwarded.xpm
+	  Make replied and forwarded status flags non exclusive.
+	  Introduce a new message state (and relevant icon in message list)
+	  where both the replied and forwarded flags are set.
+
 2011-12-16 [paul]	3.8.0cvs1
 
 	* tools/claws.i18n.status.pl
