@@ -1,3 +1,9 @@
+2011-12-18 [mir]	3.8.0cvs4
+
+	* src/ldapctrl.c
+	    Fix bug in search criteria when doing a
+	    complete directory search using '*'
+
 2011-12-16 [mir]	3.8.0cvs3
 
 	* src/Makefile.am

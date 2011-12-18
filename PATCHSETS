@@ -4320,3 +4320,4 @@
 ( cvs diff -u -r 1.1.2.25 -r 1.1.2.26 tools/claws.i18n.status.pl;  ) > 3.8.0cvs1.patchset
 ( cvs diff -u -r 1.150.2.119 -r 1.150.2.120 src/procmsg.c;  cvs diff -u -r 1.25.2.72 -r 1.25.2.73 src/stock_pixmap.c;  cvs diff -u -r 1.18.2.42 -r 1.18.2.43 src/stock_pixmap.h;  cvs diff -u -r 1.395.2.441 -r 1.395.2.442 src/summaryview.c;  cvs diff -u -r 1.1.2.20 -r 1.1.2.21 src/gtk/icon_legend.c;  diff -u /dev/null src/pixmaps/replied_and_forwarded.xpm;  ) > 3.8.0cvs2.patchset
 ( cvs diff -u -r 1.155.2.97 -r 1.155.2.98 src/Makefile.am;  ) > 3.8.0cvs3.patchset
+( cvs diff -u -r 1.2.2.23 -r 1.2.2.24 src/ldapctrl.c;  ) > 3.8.0cvs4.patchset

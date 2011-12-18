@@ -632,8 +632,15 @@ gchar *ldapctl_format_criteria( LdapControl *ctl, const gchar *searchVal ) {
 			/* Subsequent time through */
 			gchar *crit;
 
-			/* Format query criteria */
-			crit = g_strdup_printf( criteriaFmt, attr, searchVal );
+			debug_print("crit: %s\n", searchVal);
+			/* fix bug when doing a search any */
+			if (strcmp("*@", searchVal) == 0) {
+			    crit = g_strdup_printf( "(%s=*)", attr );
+			}
+			else {
+			    /* Format query criteria */
+			    crit = g_strdup_printf( criteriaFmt, attr, searchVal );
+			}
 
 			/* Append to existing criteria */			
 			g_free( p2 );
@@ -643,7 +650,13 @@ gchar *ldapctl_format_criteria( LdapControl *ctl, const gchar *searchVal ) {
 		}
 		else {
 			/* First time through - Format query criteria */
-			p2 = g_strdup_printf( criteriaFmt, attr, searchVal );
+                        /* fix bug when doing a search any */
+			if (strcmp("*@", searchVal) == 0) {
+			    p2 = g_strdup_printf( "(%s=*)", attr );
+			}
+			else {
+			    p2 = g_strdup_printf( criteriaFmt, attr, searchVal );
+			}
 		}
 	}
 
