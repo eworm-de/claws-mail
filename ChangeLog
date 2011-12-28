@@ -1,3 +1,8 @@
+2011-12-28 [colin]	3.8.0cvs5
+
+	* src/mimeview.c
+		Fix GTK+2.16 build (w32)
+
 2011-12-18 [mir]	3.8.0cvs4
 
 	* src/ldapctrl.c
