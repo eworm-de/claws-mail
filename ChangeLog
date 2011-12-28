@@ -1,3 +1,8 @@
+2011-12-28 [paul]	3.8.0cvs7
+
+	* src/prefs_account.c
+		show 'Generate X-Mailer header' option on new IMAP account creation dialogue
+
 2011-12-28 [colin]	3.8.0cvs6
 
 	* src/mimeview.c

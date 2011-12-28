@@ -4297,11 +4297,7 @@ static void prefs_account_protocol_changed(GtkComboBox *combobox, gpointer data)
 				GTK_TOGGLE_BUTTON(send_page.msgid_checkbtn), 
 				TRUE);
 		gtk_widget_hide(send_page.msgid_checkbtn);
-		if (new_account)
-			gtk_toggle_button_set_active(
-				GTK_TOGGLE_BUTTON(send_page.xmailer_checkbtn),
-				TRUE);
-		gtk_widget_hide(send_page.xmailer_checkbtn);
+		gtk_widget_show(send_page.xmailer_checkbtn);
 		gtk_widget_hide(basic_page.nntpserv_label);
 		gtk_widget_hide(basic_page.nntpserv_entry);
   		gtk_table_set_row_spacing (GTK_TABLE (basic_page.serv_table),
