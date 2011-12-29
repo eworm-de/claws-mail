@@ -180,7 +180,7 @@ static GList *compose_list = NULL;
 static Compose *compose_generic_new			(PrefsAccount	*account,
 						 const gchar	*to,
 						 FolderItem	*item,
-						 GPtrArray 	*attach_files,
+						 GList		*attach_files,
 						 GList          *listAddress );
 
 static Compose *compose_create			(PrefsAccount	*account,
@@ -891,7 +891,7 @@ static void compose_create_tags(GtkTextView *text, Compose *compose)
 }
 
 Compose *compose_new(PrefsAccount *account, const gchar *mailto,
-		     GPtrArray *attach_files)
+		     GList *attach_files)
 {
 	return compose_generic_new(account, mailto, NULL, attach_files, NULL);
 }
@@ -951,7 +951,7 @@ static gchar *compose_get_save_to(Compose *compose)
 }
 
 Compose *compose_generic_new(PrefsAccount *account, const gchar *mailto, FolderItem *item,
-			     GPtrArray *attach_files, GList *listAddress )
+			     GList *attach_files, GList *listAddress )
 {
 	Compose *compose;
 	GtkTextView *textview;
@@ -1159,12 +1159,13 @@ Compose *compose_generic_new(PrefsAccount *account, const gchar *mailto, FolderI
 	procmsg_msginfo_free( dummyinfo );
 
 	if (attach_files) {
-		gint i;
-		gchar *file;
+		GList *curr;
+		AttachInfo *ainfo;
 
-		for (i = 0; i < attach_files->len; i++) {
-			file = g_ptr_array_index(attach_files, i);
-			compose_attach_append(compose, file, file, NULL, NULL);
+		for (curr = attach_files ; curr != NULL ; curr = curr->next) {
+			ainfo = (AttachInfo *) curr->data;
+			compose_attach_append(compose, ainfo->file, ainfo->name,
+					ainfo->content_type, ainfo->charset);
 		}
 	}
 

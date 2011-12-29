@@ -121,6 +121,8 @@ static void mimeview_open_part_with	(MimeView	*mimeview,
 					 MimeInfo	*partinfo,
 					 gboolean	 automatic);
 #endif
+static void mimeview_send_to		(MimeView	*mimeview,
+					 MimeInfo	*partinfo);
 static void mimeview_select_next_part	(MimeView	*mimeview);
 static void mimeview_select_prev_part	(MimeView	*mimeview);
 static void mimeview_view_file		(const gchar	*filename,
@@ -171,6 +173,12 @@ static void mimeview_open_with_cb(GtkAction *action, gpointer data)
 }
 #endif
 
+static void mimeview_send_to_cb(GtkAction *action, gpointer data)
+{
+	MimeView *mimeview = (MimeView *)data;	
+	mimeview_send_to(mimeview, mimeview_get_part_to_use(mimeview));
+}
+
 static void mimeview_display_as_text_cb(GtkAction *action, gpointer data)
 {
 	mimeview_display_as_text((MimeView *)data);
@@ -202,6 +210,7 @@ static GtkActionEntry mimeview_menu_actions[] = {
 #if (!defined MAEMO && !defined G_OS_WIN32)
 	{ "MimeView/OpenWith", NULL, N_("Open _with (o)..."), NULL, "Open MIME part with...", G_CALLBACK(mimeview_open_with_cb) },
 #endif
+	{ "MimeView/SendTo", NULL, N_("Send to..."), NULL, "Send to", G_CALLBACK(mimeview_send_to_cb) },
 	{ "MimeView/DisplayAsText", NULL, N_("_Display as text (t)"), NULL, "Display as text", G_CALLBACK(mimeview_display_as_text_cb) },
 	{ "MimeView/SaveAs", NULL, N_("_Save as (y)..."), NULL, "Save as", G_CALLBACK(mimeview_save_as_cb) },
 	{ "MimeView/SaveAll", NULL, N_("Save _all..."), NULL, "Save all parts", G_CALLBACK(mimeview_save_all_cb) },
@@ -407,6 +416,9 @@ MimeView *mimeview_create(MainWindow *mainwin)
 			"/Menus/MimeView/", "OpenWith", "MimeView/OpenWith",
 			GTK_UI_MANAGER_MENUITEM);
 #endif
+	MENUITEM_ADDUI_MANAGER(mimeview->ui_manager, 
+			"/Menus/MimeView/", "SendTo", "MimeView/SendTo",
+			GTK_UI_MANAGER_MENUITEM);
 	MENUITEM_ADDUI_MANAGER(mimeview->ui_manager, 
 			"/Menus/MimeView/", "DisplayAsText", "MimeView/DisplayAsText",
 			GTK_UI_MANAGER_MENUITEM);
@@ -2197,6 +2209,44 @@ out:
 	g_free(filename);
 }
 #endif
+
+static void mimeview_send_to(MimeView *mimeview, MimeInfo *partinfo)
+{
+	GList *attach_file = NULL;
+	AttachInfo *ainfo = NULL;
+	gchar *filename;
+	gint err;
+
+	if (!mimeview->opened) return;
+	if (!mimeview->file) return;
+
+	cm_return_if_fail(partinfo != NULL);
+
+	filename = procmime_get_tmp_file_name(partinfo);
+
+	if (!(err = procmime_get_part(filename, partinfo))) {
+		ainfo = g_new0(AttachInfo, 1);
+		ainfo->file = filename;
+		ainfo->name = g_strdup(get_part_name(partinfo));
+		ainfo->content_type = procmime_get_content_type_str(
+					partinfo->type, partinfo->subtype);
+		ainfo->charset = g_strdup(procmime_mimeinfo_get_parameter(
+					partinfo, "charset"));
+		attach_file = g_list_append(attach_file, ainfo);
+		
+		compose_new(NULL, NULL, attach_file);
+		
+		g_free(ainfo->name);
+		g_free(ainfo->content_type);
+		g_free(ainfo->charset);
+		g_free(ainfo);
+		g_list_free(attach_file);
+	} else
+		alertpanel_error
+			(_("Couldn't save the part of multipart message: %s"), 
+				strerror(-err));
+	g_free(filename);
+}
 
 static void mimeview_view_file(const gchar *filename, MimeInfo *partinfo,
 			       const gchar *cmd, MimeView *mimeview)

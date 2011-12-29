@@ -276,7 +276,7 @@ typedef enum
 /* attache_files will be locale encode */
 Compose *compose_new			(PrefsAccount	*account,
 				 	 const gchar	*mailto,
-				 	 GPtrArray	*attach_files);
+				 	 GList		*attach_files);
 
 Compose *compose_new_with_folderitem	(PrefsAccount	*account,
 					 FolderItem	*item,

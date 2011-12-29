@@ -1,3 +1,13 @@
+2011-12-29 [pawel]	3.8.0cvs8
+
+	* src/compose.c
+	* src/compose.h
+	* src/main.c
+	* src/mimeview.c
+		Make forwarding selected attachment possible from
+		mimeview's context menu
+		Fixex bug #2047 'forward attachments'
+
 2011-12-28 [paul]	3.8.0cvs7
 
 	* src/prefs_account.c
