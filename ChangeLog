@@ -1,3 +1,8 @@
+2012-01-03 [colin]	3.8.0cvs9
+
+	* src/gtk/gtkcmctree.c
+		Fix bug #2566, 'wrapped Subject not bounded'
+
 2011-12-29 [pawel]	3.8.0cvs8
 
 	* src/compose.c

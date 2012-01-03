@@ -769,7 +769,6 @@ draw_row (GtkCMCList     *clist,
 	  else
 		gdk_cairo_set_source_color(cr, &style->base[state]);
 	  cairo_fill(cr);
-
 	  layout = create_cell_layout (clist, clist_row, i);
 	  if (layout)
 	    {
@@ -855,9 +854,12 @@ draw_row (GtkCMCList     *clist,
 		  if (layout)
 		    {
 		      gint row_center_offset = (clist->row_height - logical_rect.height) / 2;
+		      gdk_cairo_rectangle(cr, &clip_rectangle);
+		      cairo_clip(cr);
 		      gdk_cairo_set_source_color(cr, fgcolor);
 		      cairo_move_to(cr, offset, row_rectangle.y + row_center_offset + clist_row->cell[i].vertical);
 		      pango_cairo_show_layout(cr, layout);
+		      cairo_reset_clip(cr);
 		      g_object_unref (G_OBJECT (layout));
 		    }
 		  break;
@@ -923,10 +925,12 @@ draw_row (GtkCMCList     *clist,
 		offset += GTK_CMCELL_PIXTEXT (clist_row->cell[i])->spacing;
 	    }
 	  
+	  gdk_cairo_rectangle(cr, &clip_rectangle);
+	  cairo_clip(cr);
 	  cairo_move_to(cr, offset, row_rectangle.y + row_center_offset + clist_row->cell[i].vertical);
 	  gdk_cairo_set_source_color(cr, fgcolor);
 	  pango_cairo_show_layout(cr, layout);
-
+	  cairo_reset_clip(cr);
           g_object_unref (G_OBJECT (layout));
 	}
     }
