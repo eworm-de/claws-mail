@@ -1,3 +1,8 @@
+2012-01-03 [colin]	3.8.0cvs10
+
+	* src/gtk/gtkcmctree.c
+		Revert previous patch, it's buggy on headers
+
 2012-01-03 [colin]	3.8.0cvs9
 
 	* src/gtk/gtkcmctree.c
