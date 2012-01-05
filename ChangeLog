@@ -1,3 +1,8 @@
+2012-01-05 [colin]	3.8.0cvs11
+
+	* src/main.c
+		Fix crasher infinite loop
+
 2012-01-03 [colin]	3.8.0cvs10
 
 	* src/gtk/gtkcmctree.c

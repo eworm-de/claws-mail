@@ -2489,6 +2489,7 @@ static void lock_socket_input_cb(gpointer data,
 			ainfo = (AttachInfo *)curr->data;
 			g_free(ainfo->file);
 			g_free(ainfo);
+			curr = curr->next;
 		}
 		g_list_free(files);
 		g_free(mailto);

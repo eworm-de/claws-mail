@@ -4327,3 +4327,4 @@
 ( cvs diff -u -r 1.382.2.597 -r 1.382.2.598 src/compose.c;  cvs diff -u -r 1.50.2.64 -r 1.50.2.65 src/compose.h;  cvs diff -u -r 1.115.2.244 -r 1.115.2.245 src/main.c;  cvs diff -u -r 1.83.2.186 -r 1.83.2.187 src/mimeview.c;  ) > 3.8.0cvs8.patchset
 ( cvs diff -u -r 1.1.2.26 -r 1.1.2.27 src/gtk/gtkcmctree.c;  ) > 3.8.0cvs9.patchset
 ( cvs diff -u -r 1.1.2.27 -r 1.1.2.28 src/gtk/gtkcmctree.c;  ) > 3.8.0cvs10.patchset
+( cvs diff -u -r 1.115.2.245 -r 1.115.2.246 src/main.c;  ) > 3.8.0cvs11.patchset
