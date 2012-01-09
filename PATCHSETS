@@ -4328,3 +4328,4 @@
 ( cvs diff -u -r 1.1.2.26 -r 1.1.2.27 src/gtk/gtkcmctree.c;  ) > 3.8.0cvs9.patchset
 ( cvs diff -u -r 1.1.2.27 -r 1.1.2.28 src/gtk/gtkcmctree.c;  ) > 3.8.0cvs10.patchset
 ( cvs diff -u -r 1.115.2.245 -r 1.115.2.246 src/main.c;  ) > 3.8.0cvs11.patchset
+( cvs diff -u -r 1.395.2.442 -r 1.395.2.443 src/summaryview.c;  ) > 3.8.0cvs12.patchset

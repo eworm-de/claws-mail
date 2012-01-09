@@ -3794,13 +3794,24 @@ static void summary_set_row_marks(SummaryView *summaryview, GtkCMCTreeNode *row)
 	} else if (MSG_IS_MOVE(flags)) {
 		gtk_cmctree_node_set_pixbuf(ctree, row, col_pos[S_COL_MARK],
 					  movedxpm);
-		if (style)
-			style = bold_marked_style;
-		else {
-			style = small_marked_style;
-		}
+		if (!msginfo->to_folder ||
+		    !folder_has_parent_of_type(msginfo->to_folder, F_TRASH)) {
+			if (style)
+				style = bold_marked_style;
+			else {
+				style = small_marked_style;
+			}
 			gtk_cmctree_node_set_foreground
 				(ctree, row, &summaryview->color_marked);
+		} else {
+			if (style)
+				style = bold_deleted_style;
+			else {
+				style = small_deleted_style;
+			}
+				gtk_cmctree_node_set_foreground
+					(ctree, row, &summaryview->color_dim);
+		}
 	} else if (MSG_IS_COPY(flags)) {
 		gtk_cmctree_node_set_pixbuf(ctree, row, col_pos[S_COL_MARK],
 					  copiedxpm);
