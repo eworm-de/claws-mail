@@ -6,12 +6,12 @@
    it under the terms of the GNU General Public License as published by
    the Free Software Foundation; either version 3 of the License, or
    (at your option) any later version.
-   
+
    This program is distributed in the hope that it will be useful,
    but WITHOUT ANY WARRANTY; without even the implied warranty of
    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
    GNU General Public License for more details.
-   
+
    You should have received a copy of the GNU General Public License
    along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
@@ -3128,6 +3128,9 @@ SensitiveCond main_window_get_current_state(MainWindow *mainwin)
 	if (cur_account)
 		state |= M_HAVE_ACCOUNT;
 	
+	if (cur_account && cur_account->protocol != A_NONE)
+		state |= M_HAVE_RETRIEVABLE_ACCOUNT;
+
 	if (any_folder_want_synchronise())
 		state |= M_WANT_SYNC;
 
@@ -3136,6 +3139,13 @@ SensitiveCond main_window_get_current_state(MainWindow *mainwin)
 
 	if (g_list_length(account_list) > 1)
 		state |= M_HAVE_MULTI_ACCOUNT;
+
+	for ( ; account_list != NULL; account_list = account_list->next) {
+		if (((PrefsAccount*)account_list->data)->protocol != A_NONE) {
+			state |= M_HAVE_ANY_RETRIEVABLE_ACCOUNT;
+			break;
+		}
+	}
 
 	for ( ; account_list != NULL; account_list = account_list->next) {
 		if (((PrefsAccount*)account_list->data)->protocol == A_NNTP) {
@@ -3234,9 +3244,9 @@ void main_window_set_menu_sensitive(MainWindow *mainwin)
 		{"Menu/View/Quotes"                    , M_SINGLE_TARGET_EXIST},
 
 		{"Menu/Message/Receive/CurrentAccount"
-						 , M_HAVE_ACCOUNT|M_UNLOCKED},
+						 , M_HAVE_ACCOUNT|M_UNLOCKED|M_HAVE_RETRIEVABLE_ACCOUNT},
 		{"Menu/Message/Receive/AllAccounts"
-						 , M_HAVE_ACCOUNT|M_UNLOCKED},
+						 , M_HAVE_ACCOUNT|M_UNLOCKED|M_HAVE_ANY_RETRIEVABLE_ACCOUNT},
 		{"Menu/Message/Receive/CancelReceiving"
 						 , M_INC_ACTIVE},
 		{"Menu/Message/SendQueue"  , M_HAVE_ACCOUNT|M_HAVE_QUEUED_MAILS},

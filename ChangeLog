@@ -1,3 +1,12 @@
+2012-01-10 [wwp]	3.8.0cvs13
+
+	* src/mainwindow.c
+	* src/mainwindow.h
+	* src/toolbar.c
+		Fix sensitivity of toolbar's get_btn (retrieve mail from current
+		account) and of mainwindows's relevant entry when current account
+		is not able to retrieve (SMTP-only).
+
 2012-01-09 [colin]	3.8.0cvs12
 
 	* src/summaryview.c

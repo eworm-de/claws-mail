@@ -2348,11 +2348,11 @@ void toolbar_main_set_sensitive(gpointer data)
 	
 	if (toolbar->get_btn)
 		SET_WIDGET_COND(toolbar->get_btn, 
-			M_HAVE_ACCOUNT|M_UNLOCKED);
+			M_HAVE_ACCOUNT|M_UNLOCKED|M_HAVE_RETRIEVABLE_ACCOUNT);
 
 	if (toolbar->getall_btn) {
 		SET_WIDGET_COND(toolbar->getall_btn, 
-			M_HAVE_ACCOUNT|M_UNLOCKED);
+			M_HAVE_ACCOUNT|M_UNLOCKED|M_HAVE_ANY_RETRIEVABLE_ACCOUNT);
 	}
 	if (toolbar->send_btn) {
 		SET_WIDGET_COND(toolbar->send_btn,

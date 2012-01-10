@@ -67,7 +67,9 @@ typedef enum
 	M_SESSION_PASSWORDS   = 1 << 26,
 	M_DELETED_EXISTS      = 1 << 27,
 	M_NOT_TRASH	      = 1 << 28,
-	M_HIDE_READ_THREADS   = 1 << 29
+	M_HIDE_READ_THREADS   = 1 << 29,
+	M_HAVE_RETRIEVABLE_ACCOUNT = 1 << 30,
+	M_HAVE_ANY_RETRIEVABLE_ACCOUNT = 1 << 31
 } SensitiveCond;
 
 typedef enum
