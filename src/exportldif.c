@@ -197,7 +197,7 @@ static gchar *exportldif_fmt_value( gchar *value ) {
 static gchar *exportldif_fmt_dn(
 		ExportLdifCtl *ctl, const ItemPerson *person )
 {
-	gchar buf[ FMT_BUFSIZE ];
+	gchar buf[ FMT_BUFSIZE + 1 ];
 	gchar *retVal = NULL;
 	gchar *attr = NULL;
 	gchar *value = NULL;
@@ -231,23 +231,23 @@ static gchar *exportldif_fmt_dn(
 	if( attr ) {
 		if( value ) {
 			if( strlen( value ) > 0 ) {
-				strncat( buf, attr, FMT_BUFSIZE );
-				strncat( buf, "=", FMT_BUFSIZE );
+				strncat( buf, attr, FMT_BUFSIZE - strlen(buf) );
+				strncat( buf, "=", FMT_BUFSIZE - strlen(buf) );
 				if( dupval ) {
 					/* Format and free duplicated value */
-					strncat( buf, dupval, FMT_BUFSIZE );
+					strncat( buf, dupval, FMT_BUFSIZE - strlen(buf) );
 					g_free( dupval );
 				}
 				else {
 					/* Use original value */
-					strncat( buf, value, FMT_BUFSIZE );
+					strncat( buf, value, FMT_BUFSIZE - strlen(buf) );
 				}
 
 				/* Append suffix */
 				if( ctl->suffix ) {
 					if( strlen( ctl->suffix ) > 0 ) {
-						strncat( buf, ",", FMT_BUFSIZE );
-						strncat( buf, ctl->suffix, FMT_BUFSIZE );
+						strncat( buf, ",", FMT_BUFSIZE - strlen(buf) );
+						strncat( buf, ctl->suffix, FMT_BUFSIZE - strlen(buf) );
 					}
 				}
 

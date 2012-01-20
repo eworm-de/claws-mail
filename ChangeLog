@@ -1,3 +1,10 @@
+2012-01-20 [pawel]	3.8.0cvs16
+
+	* src/addrbook.c
+	* src/exportldif.c
+		Fix bug #2574 'Statement might be overflowing a
+		buffer in strncat'
+
 2012-01-20 [pawel]	3.8.0cvs15
 
 	* src/mimeview.c
