@@ -4331,3 +4331,4 @@
 ( cvs diff -u -r 1.395.2.442 -r 1.395.2.443 src/summaryview.c;  ) > 3.8.0cvs12.patchset
 ( cvs diff -u -r 1.274.2.340 -r 1.274.2.341 src/mainwindow.c;  cvs diff -u -r 1.39.2.62 -r 1.39.2.63 src/mainwindow.h;  cvs diff -u -r 1.43.2.124 -r 1.43.2.125 src/toolbar.c;  ) > 3.8.0cvs13.patchset
 ( cvs diff -u -r 1.1.2.39 -r 1.1.2.40 commitHelper;  ) > 3.8.0cvs14.patchset
+( cvs diff -u -r 1.83.2.187 -r 1.83.2.188 src/mimeview.c;  ) > 3.8.0cvs15.patchset
