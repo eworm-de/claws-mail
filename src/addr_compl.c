@@ -849,7 +849,7 @@ static void addrcompl_resize_window( CompletionWindow *cw ) {
 	gtk_widget_hide_all( cw->window );
 	gtk_widget_show_all( cw->window );
 	gtk_widget_size_request( cw->list_view, &r );
-printf("%d  + %d < %d\n", y, r.height, gdk_screen_height());
+
 	/* Adjust window height to available screen space */
 	if( y + r.height > gdk_screen_height())
 		r.height = gdk_screen_height() - y;

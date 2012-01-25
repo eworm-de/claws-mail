@@ -4333,3 +4333,4 @@
 ( cvs diff -u -r 1.1.2.39 -r 1.1.2.40 commitHelper;  ) > 3.8.0cvs14.patchset
 ( cvs diff -u -r 1.83.2.187 -r 1.83.2.188 src/mimeview.c;  ) > 3.8.0cvs15.patchset
 ( cvs diff -u -r 1.22.2.26 -r 1.22.2.27 src/addrbook.c;  cvs diff -u -r 1.1.4.23 -r 1.1.4.24 src/exportldif.c;  ) > 3.8.0cvs16.patchset
+( cvs diff -u -r 1.27.2.59 -r 1.27.2.60 src/addr_compl.c;  ) > 3.8.0cvs17.patchset
