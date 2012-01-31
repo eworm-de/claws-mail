@@ -4335,3 +4335,4 @@
 ( cvs diff -u -r 1.22.2.26 -r 1.22.2.27 src/addrbook.c;  cvs diff -u -r 1.1.4.23 -r 1.1.4.24 src/exportldif.c;  ) > 3.8.0cvs16.patchset
 ( cvs diff -u -r 1.27.2.59 -r 1.27.2.60 src/addr_compl.c;  ) > 3.8.0cvs17.patchset
 ( cvs diff -u -r 1.1.4.28 -r 1.1.4.29 src/gtk/progressdialog.c;  cvs diff -u -r 1.1.4.16 -r 1.1.4.17 src/gtk/progressdialog.h;  cvs diff -u -r 1.149.2.104 -r 1.149.2.105 src/inc.c;  cvs diff -u -r 1.17.2.61 -r 1.17.2.62 src/send_message.c;  ) > 3.8.0cvs18.patchset
+( cvs diff -u -r 1.5.2.101 -r 1.5.2.102 src/gtk/gtkutils.c;  ) > 3.8.0cvs19.patchset

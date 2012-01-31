@@ -451,7 +451,7 @@ static gboolean gtkut_text_buffer_find(GtkTextBuffer *buffer, const GtkTextIter 
 
 	wcs = g_utf8_to_ucs4(str, -1, &items_read, &items_written, &error);
 	if (error != NULL) {
-		g_warning("An error occured while converting a string from UTF-8 to UCS-4: %s\n",
+		g_warning("An error occurred while converting a string from UTF-8 to UCS-4: %s\n",
 			  error->message);
 		g_error_free(error);
 	}
@@ -487,7 +487,8 @@ static gboolean gtkut_text_buffer_find_backward(GtkTextBuffer *buffer,
 
 	wcs = g_utf8_to_ucs4(str, -1, &items_read, &items_written, &error);
 	if (error != NULL) {
-		g_warning("An error occured while converting a string from UTF-8 to UCS-4: %s\n", error->message);
+		g_warning("An error occurred while converting a string from UTF-8 to UCS-4: %s\n",
+			  error->message);
 		g_error_free(error);
 	}
 	if (!wcs || items_written <= 0) return FALSE;
@@ -1147,7 +1148,7 @@ GtkWidget *face_get_from_header(const gchar *o_face)
 
 	if ((gdk_pixbuf_get_width(pixbuf) != 48) || (gdk_pixbuf_get_height(pixbuf) != 48)) {
 		g_object_unref(pixbuf);
-		g_warning("wrong_size");
+		g_warning("wrong_size\n");
 		return NULL;
 	}
 
@@ -1253,7 +1254,7 @@ GtkWidget *gtkut_get_link_btn(GtkWidget *window, const gchar *url, const gchar *
 		gtk_widget_set_style(btn_label, style);
 #if !GTK_CHECK_VERSION(3, 0, 0)
 	} else
-		g_warning("about_create(): color allocation failed.\n");
+		g_warning("color allocation failed\n");
 #endif
 
 	g_signal_connect(G_OBJECT(btn), "enter",
