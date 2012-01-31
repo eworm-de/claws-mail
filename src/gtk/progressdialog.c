@@ -50,6 +50,7 @@ ProgressDialog *progress_dialog_create(void)
 	GtkWidget *hbox;
 	GtkWidget *vbox;
 	GtkWidget *label;
+	GtkWidget *showlog_btn;
 	GtkWidget *cancel_btn;
 	GtkWidget *progressbar;
 	GtkWidget *scrolledwin;
@@ -81,6 +82,9 @@ ProgressDialog *progress_dialog_create(void)
 	gtk_box_pack_start(GTK_BOX(hbox), label, FALSE, FALSE, 8);
 	gtk_widget_show(label);
 
+	showlog_btn = gtk_dialog_add_button(GTK_DIALOG(dialog),
+					   _("_Show log"),
+					   GTK_RESPONSE_NONE);
 	cancel_btn = gtk_dialog_add_button(GTK_DIALOG(dialog),
 					   GTK_STOCK_CANCEL,
 					   GTK_RESPONSE_NONE);
@@ -99,7 +103,6 @@ ProgressDialog *progress_dialog_create(void)
 	gtk_scrolled_window_set_policy(GTK_SCROLLED_WINDOW(scrolledwin),
 				       GTK_POLICY_AUTOMATIC,
 				       GTK_POLICY_AUTOMATIC);
-
 
 	store = gtk_list_store_new(N_PROGRESS_COLUMNS, GDK_TYPE_PIXBUF, G_TYPE_STRING,
 				   G_TYPE_STRING, G_TYPE_POINTER);
@@ -142,6 +145,7 @@ ProgressDialog *progress_dialog_create(void)
 	
 	progress->window      = dialog;
 	progress->label       = label;
+	progress->showlog_btn  = showlog_btn;
 	progress->cancel_btn  = cancel_btn;
 	progress->progressbar = progressbar;
 	progress->treeview    = treeview;

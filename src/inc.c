@@ -57,6 +57,7 @@
 #include "filtering.h"
 #include "log.h"
 #include "hooks.h"
+#include "logwindow.h"
 
 #ifdef MAEMO
 #ifdef CHINOOK
@@ -133,6 +134,8 @@ static gint inc_drop_message		(Pop3Session	*session,
 static void inc_put_error		(IncState	 istate,
 					 Pop3Session 	*session);
 
+static void inc_showlog_cb		(GtkWidget	*widget,
+					 gpointer	 data);
 static void inc_cancel_cb		(GtkWidget	*widget,
 					 gpointer	 data);
 static gint inc_dialog_delete_cb	(GtkWidget	*widget,
@@ -413,6 +416,8 @@ static IncProgressDialog *inc_progress_dialog_create(gboolean autocheck)
 	progress = progress_dialog_create();
 	gtk_window_set_title(GTK_WINDOW(progress->window),
 			     _("Retrieving new messages"));
+	g_signal_connect(G_OBJECT(progress->showlog_btn), "clicked",
+			 G_CALLBACK(inc_showlog_cb), dialog);
 	g_signal_connect(G_OBJECT(progress->cancel_btn), "clicked",
 			 G_CALLBACK(inc_cancel_cb), dialog);
 	g_signal_connect(G_OBJECT(progress->window), "delete_event",
@@ -1258,6 +1263,13 @@ void inc_cancel_all(void)
 
 	for (cur = inc_dialog_list; cur != NULL; cur = cur->next)
 		inc_cancel((IncProgressDialog *)cur->data);
+}
+
+static void inc_showlog_cb(GtkWidget *widget, gpointer data)
+{
+	MainWindow *mainwin = mainwindow_get_mainwindow();
+
+	log_window_show(mainwin->logwin);
 }
 
 static void inc_cancel_cb(GtkWidget *widget, gpointer data)

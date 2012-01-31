@@ -29,6 +29,7 @@ struct _ProgressDialog
 {
 	GtkWidget *window;
 	GtkWidget *label;
+	GtkWidget *showlog_btn;
 	GtkWidget *cancel_btn;
 	GtkWidget *progressbar;
 	GtkWidget *treeview;

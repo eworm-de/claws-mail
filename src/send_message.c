@@ -47,6 +47,7 @@
 #include "inputdialog.h"
 #include "alertpanel.h"
 #include "manage_window.h"
+#include "logwindow.h"
 #include "socket.h"
 #include "utils.h"
 #include "gtkutils.h"
@@ -76,6 +77,8 @@ static gint send_send_data_finished	(Session		*session,
 static SendProgressDialog *send_progress_dialog_create(void);
 static void send_progress_dialog_destroy(SendProgressDialog *dialog);
 
+static void send_showlog_button_cb	(GtkWidget	*widget,
+					 gpointer	 data);
 static void send_cancel_button_cb	(GtkWidget	*widget,
 					 gpointer	 data);
 
@@ -556,6 +559,8 @@ static SendProgressDialog *send_progress_dialog_create(void)
 	progress = progress_dialog_create();
 	gtk_window_set_title(GTK_WINDOW(progress->window),
 			     _("Sending message"));
+	g_signal_connect(G_OBJECT(progress->showlog_btn), "clicked",
+			 G_CALLBACK(send_showlog_button_cb), dialog);
 	g_signal_connect(G_OBJECT(progress->cancel_btn), "clicked",
 			 G_CALLBACK(send_cancel_button_cb), dialog);
 	g_signal_connect(G_OBJECT(progress->window), "delete_event",
@@ -593,6 +598,13 @@ static void send_progress_dialog_destroy(SendProgressDialog *dialog)
 		progress_dialog_destroy(dialog->dialog);
 	}
 	g_free(dialog);
+}
+
+static void send_showlog_button_cb(GtkWidget *widget, gpointer data)
+{
+	MainWindow *mainwin = mainwindow_get_mainwindow();
+
+	log_window_show(mainwin->logwin);
 }
 
 static void send_cancel_button_cb(GtkWidget *widget, gpointer data)
