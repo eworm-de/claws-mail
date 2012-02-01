@@ -1147,7 +1147,8 @@ void procmsg_print_message(MsgInfo *msginfo, const gchar *cmdline)
 	g_free(prtmp);
 
 	g_strchomp(buf);
-	if (buf[strlen(buf) - 1] != '&') strncat(buf, "&", sizeof(buf));
+	if (buf[strlen(buf) - 1] != '&')
+		strncat(buf, "&", sizeof(buf) - strlen(buf) - 1);
 	if (system(buf) == -1)
 		g_warning("system(%s) failed.", buf);
 }

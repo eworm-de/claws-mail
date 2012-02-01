@@ -561,7 +561,7 @@ GList *vcard_get_all_persons( VCardFile *cardFile ) {
 gchar *vcard_find_gnomecard( void ) {
 	const gchar *homedir;
 	gchar buf[ WORK_BUFLEN ];
-	gchar str[ WORK_BUFLEN ];
+	gchar str[ WORK_BUFLEN + 1 ];
 	gchar *fileSpec;
 	gint len, lenlbl, i;
 	FILE *fp;
@@ -577,9 +577,9 @@ gchar *vcard_find_gnomecard( void ) {
 			str[ ++len ] = '\0';
 		}
 	}
-	strncat( str, GNOMECARD_DIR, WORK_BUFLEN );
-	strncat( str, G_DIR_SEPARATOR_S, WORK_BUFLEN );
-	strncat( str, GNOMECARD_FILE, WORK_BUFLEN );
+	strncat( str, GNOMECARD_DIR, WORK_BUFLEN - strlen(str) );
+	strncat( str, G_DIR_SEPARATOR_S, WORK_BUFLEN - strlen(str) );
+	strncat( str, GNOMECARD_FILE, WORK_BUFLEN - strlen(str) );
 
 	fileSpec = NULL;
 	if( ( fp = g_fopen( str, "rb" ) ) != NULL ) {

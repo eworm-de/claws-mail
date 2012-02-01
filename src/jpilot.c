@@ -1595,7 +1595,7 @@ GList *jpilot_get_all_persons( JPilotFile *pilotFile ) {
  */
 gchar *jpilot_find_pilotdb( void ) {
 	const gchar *homedir;
-	gchar str[ WORK_BUFLEN ];
+	gchar str[ WORK_BUFLEN + 1 ];
 	gint len;
 	FILE *fp;
 
@@ -1610,9 +1610,9 @@ gchar *jpilot_find_pilotdb( void ) {
 			str[ ++len ] = '\0';
 		}
 	}
-	strncat( str, JPILOT_DBHOME_DIR, WORK_BUFLEN );
-	strncat( str, G_DIR_SEPARATOR_S, WORK_BUFLEN );
-	strncat( str, JPILOT_DBHOME_FILE, WORK_BUFLEN );
+	strncat( str, JPILOT_DBHOME_DIR, WORK_BUFLEN - strlen(str) );
+	strncat( str, G_DIR_SEPARATOR_S, WORK_BUFLEN - strlen(str) );
+	strncat( str, JPILOT_DBHOME_FILE, WORK_BUFLEN - strlen(str) );
 
 	/* Attempt to open */
 	if( ( fp = g_fopen( str, "rb" ) ) != NULL ) {

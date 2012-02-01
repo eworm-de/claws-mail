@@ -4336,3 +4336,4 @@
 ( cvs diff -u -r 1.27.2.59 -r 1.27.2.60 src/addr_compl.c;  ) > 3.8.0cvs17.patchset
 ( cvs diff -u -r 1.1.4.28 -r 1.1.4.29 src/gtk/progressdialog.c;  cvs diff -u -r 1.1.4.16 -r 1.1.4.17 src/gtk/progressdialog.h;  cvs diff -u -r 1.149.2.104 -r 1.149.2.105 src/inc.c;  cvs diff -u -r 1.17.2.61 -r 1.17.2.62 src/send_message.c;  ) > 3.8.0cvs18.patchset
 ( cvs diff -u -r 1.5.2.101 -r 1.5.2.102 src/gtk/gtkutils.c;  ) > 3.8.0cvs19.patchset
+( cvs diff -u -r 1.18.2.33 -r 1.18.2.34 src/jpilot.c;  cvs diff -u -r 1.6.10.19 -r 1.6.10.20 src/mutt.c;  cvs diff -u -r 1.6.2.18 -r 1.6.2.19 src/pine.c;  cvs diff -u -r 1.150.2.120 -r 1.150.2.121 src/procmsg.c;  cvs diff -u -r 1.14.2.21 -r 1.14.2.22 src/vcard.c;  cvs diff -u -r 1.9.2.32 -r 1.9.2.33 src/gtk/sslcertwindow.c;  ) > 3.8.0cvs20.patchset

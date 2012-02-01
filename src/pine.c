@@ -635,7 +635,7 @@ gint pine_import_data( PineFile *pineFile, AddressCache *cache ) {
  */
 gchar *pine_find_file( void ) {
 	const gchar *homedir;
-	gchar str[ WORK_BUFLEN ];
+	gchar str[ WORK_BUFLEN + 1 ];
 	gint len;
 	FILE *fp;
 
@@ -650,7 +650,7 @@ gchar *pine_find_file( void ) {
 			str[ ++len ] = '\0';
 		}
 	}
-	strncat( str, PINE_HOME_FILE, WORK_BUFLEN );
+	strncat( str, PINE_HOME_FILE, WORK_BUFLEN - strlen(str) );
 
 	/* Attempt to open */
 	if( ( fp = g_fopen( str, "rb" ) ) != NULL ) {

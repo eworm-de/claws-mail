@@ -94,8 +94,8 @@ static GtkWidget *cert_presenter(SSLCertificate *cert)
 		tmp = g_malloc(BUFFSIZE);
 		if (gnutls_x509_crt_get_issuer_dn_by_oid(cert->x509_cert, 
 			GNUTLS_OID_X520_COUNTRY_NAME, 0, 0, tmp, &n) == 0) {
-			strncat(issuer_location, ", ", BUFFSIZE-strlen(issuer_location));
-			strncat(issuer_location, tmp, BUFFSIZE-strlen(issuer_location));
+			strncat(issuer_location, ", ", BUFFSIZE-strlen(issuer_location)-1);
+			strncat(issuer_location, tmp, BUFFSIZE-strlen(issuer_location)-1);
 		}
 		g_free(tmp);
 	}
@@ -121,8 +121,8 @@ static GtkWidget *cert_presenter(SSLCertificate *cert)
 		tmp = g_malloc(BUFFSIZE);
 		if (gnutls_x509_crt_get_dn_by_oid(cert->x509_cert, 
 			GNUTLS_OID_X520_COUNTRY_NAME, 0, 0, tmp, &n) == 0) {
-			strncat(subject_location, ", ", BUFFSIZE-strlen(subject_location));
-			strncat(subject_location, tmp, BUFFSIZE-strlen(subject_location));
+			strncat(subject_location, ", ", BUFFSIZE-strlen(subject_location)-1);
+			strncat(subject_location, tmp, BUFFSIZE-strlen(subject_location)-1);
 		}
 		g_free(tmp);
 	}

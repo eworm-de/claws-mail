@@ -533,7 +533,7 @@ gint mutt_import_data( MuttFile *muttFile, AddressCache *cache ) {
 */
 gchar *mutt_find_file( void ) {
 	const gchar *homedir;
-	gchar str[ WORK_BUFLEN ];
+	gchar str[ WORK_BUFLEN + 1 ];
 	gint len;
 	FILE *fp;
 
@@ -548,7 +548,7 @@ gchar *mutt_find_file( void ) {
 			str[ ++len ] = '\0';
 		}
 	}
-	strncat( str, MUTT_HOME_FILE, WORK_BUFLEN );
+	strncat( str, MUTT_HOME_FILE, WORK_BUFLEN - strlen(str) );
 
 	/* Attempt to open */
 	if( ( fp = g_fopen( str, "rb" ) ) != NULL ) {
