@@ -2080,7 +2080,7 @@ void folderview_close_opened(FolderView *folderview)
 		olditem = gtk_cmctree_node_get_row_data(GTK_CMCTREE(folderview->ctree), 
 						      folderview->opened);
 		if (olditem) {
-			gchar *buf = g_strdup_printf(_("Closing Folder %s..."), 
+			gchar *buf = g_strdup_printf(_("Closing folder %s..."), 
 				olditem->path ? olditem->path:olditem->name);
 			/* will be null if we just moved the previously opened folder */
 			STATUSBAR_PUSH(folderview->mainwin, buf);
@@ -2175,7 +2175,7 @@ static void folderview_selected(GtkCMCTree *ctree, GtkCMCTreeNode *row,
 
 	/* Open Folder */
 	/* TODO: wwp: avoid displaying (null) in the status bar */
-    	buf = g_strdup_printf(_("Opening Folder %s..."), item->path ? 
+    	buf = g_strdup_printf(_("Opening folder %s..."), item->path ? 
 					item->path : "(null)");
 	debug_print("%s\n", buf);
 	STATUSBAR_PUSH(folderview->mainwin, buf);

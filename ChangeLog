@@ -1,3 +1,9 @@
+2012-02-02 [pawel]	3.8.0cvs23
+
+	* src/folderview.c
+		Fix bug #2590 'Un-capitalize strings'
+		Patch by Christian Hesse
+
 2012-02-02 [pawel]	3.8.0cvs22
 
 	* src/mainwindow.c
