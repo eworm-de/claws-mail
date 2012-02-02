@@ -3717,8 +3717,8 @@ static void main_window_set_widgets(MainWindow *mainwin, LayoutType layout_mode)
 
 		if (messageview_is_visible(mainwin->messageview)) {
 			gtk_paned_add2(GTK_PANED(hpaned), vpaned);
-			gtk_paned_add1(GTK_PANED(vpaned),
-				       GTK_WIDGET_PTR(mainwin->summaryview));
+			gtk_paned_pack1(GTK_PANED(vpaned),
+				       GTK_WIDGET_PTR(mainwin->summaryview), TRUE, TRUE);
 		} else {
 			gtk_paned_add2(GTK_PANED(hpaned),
 				       GTK_WIDGET_PTR(mainwin->summaryview));

@@ -4338,3 +4338,4 @@
 ( cvs diff -u -r 1.5.2.101 -r 1.5.2.102 src/gtk/gtkutils.c;  ) > 3.8.0cvs19.patchset
 ( cvs diff -u -r 1.18.2.33 -r 1.18.2.34 src/jpilot.c;  cvs diff -u -r 1.6.10.19 -r 1.6.10.20 src/mutt.c;  cvs diff -u -r 1.6.2.18 -r 1.6.2.19 src/pine.c;  cvs diff -u -r 1.150.2.120 -r 1.150.2.121 src/procmsg.c;  cvs diff -u -r 1.14.2.21 -r 1.14.2.22 src/vcard.c;  cvs diff -u -r 1.9.2.32 -r 1.9.2.33 src/gtk/sslcertwindow.c;  ) > 3.8.0cvs20.patchset
 ( cvs diff -u -r 1.213.2.204 -r 1.213.2.205 src/folder.c;  cvs diff -u -r 1.94.2.225 -r 1.94.2.226 src/messageview.c;  cvs diff -u -r 1.19.2.26 -r 1.19.2.27 src/messageview.h;  cvs diff -u -r 1.60.2.57 -r 1.60.2.58 src/procmsg.h;  ) > 3.8.0cvs21.patchset
+( cvs diff -u -r 1.274.2.341 -r 1.274.2.342 src/mainwindow.c;  ) > 3.8.0cvs22.patchset
