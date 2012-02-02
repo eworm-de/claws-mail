@@ -1,3 +1,13 @@
+2012-02-02 [pawel]	3.8.0cvs21
+
+	* src/folder.c
+	* src/messageview.c
+	* src/messageview.h
+	* src/procmsg.h
+		Fix bug #2501 'opened message blanks when moved to other folder'
+		Detect message move and update message window contents 
+		accordingly, if	message is moved to trash close window
+
 2012-02-01 [pawel]	3.8.0cvs20
 
 	* src/jpilot.c

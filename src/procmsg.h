@@ -174,7 +174,8 @@ typedef guint32 MsgTmpFlags;
 
 typedef enum {
 	MSGINFO_UPDATE_FLAGS = 1 << 0,
-	MSGINFO_UPDATE_DELETED = 1 << 1
+	MSGINFO_UPDATE_DELETED = 1 << 1,
+	MSGINFO_UPDATE_ADDED = 1 << 2
 } MsgInfoUpdateFlags;
 
 #include "procmime.h"

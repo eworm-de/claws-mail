@@ -75,6 +75,7 @@ struct _MessageView
 	gboolean all_headers;
 
 	gint msginfo_update_callback_id;
+	gint msginfo_moved_callback_id;
 	gboolean updating;
 	gboolean deferred_destroy;
 	

@@ -178,6 +178,7 @@ static void about_cb			(GtkAction	*action,
 static void messageview_update		(MessageView	*msgview,
 					 MsgInfo	*old_msginfo);
 static gboolean messageview_update_msg	(gpointer source, gpointer data);
+static gboolean messageview_msg_moved	(gpointer source, gpointer data);
 
 static void messageview_nothing_cb	   (GtkAction *action, gpointer data)
 {
@@ -408,6 +409,7 @@ MessageView *messageview_create(MainWindow *mainwin)
 
 	messageview->msginfo_update_callback_id =
 		hooks_register_hook(MSGINFO_UPDATE_HOOKLIST, messageview_update_msg, (gpointer) messageview);
+	messageview->msginfo_moved_callback_id = 0;
 
 	return messageview;
 }
@@ -710,6 +712,8 @@ static MessageView *messageview_create_with_new_window_visible(MainWindow *mainw
 	g_signal_connect(G_OBJECT(window), "key_press_event",
 			 G_CALLBACK(key_pressed), msgview);
 #endif
+	msgview->msginfo_moved_callback_id = hooks_register_hook(MSGINFO_UPDATE_HOOKLIST,
+					messageview_msg_moved, (gpointer) msgview);
 	messageview_add_toolbar(msgview, window);
 
 	if (show) {
@@ -1454,6 +1458,9 @@ void messageview_destroy(MessageView *messageview)
 	if (!messageview->deferred_destroy) {
 		hooks_unregister_hook(MSGINFO_UPDATE_HOOKLIST,
 			      messageview->msginfo_update_callback_id);
+		if (messageview->new_window)
+			hooks_unregister_hook(MSGINFO_UPDATE_HOOKLIST,
+				messageview->msginfo_moved_callback_id);
 	}
 
 	if (messageview->updating) {
@@ -2741,12 +2748,37 @@ static gboolean messageview_update_msg(gpointer source, gpointer data)
 	if (messageview->msginfo != msginfo_update->msginfo)
 		return FALSE;
 
-	if (msginfo_update->flags & MSGINFO_UPDATE_DELETED) {
+	if ((msginfo_update->flags & MSGINFO_UPDATE_DELETED) &&
+		!messageview->new_window)
+	{
 		MsgInfo *old_msginfo = messageview->msginfo;
 		messageview_clear(messageview);
 		messageview_update(messageview, old_msginfo);
 	}
 
+	return FALSE;
+}
+
+static gboolean messageview_msg_moved(gpointer source, gpointer data)
+{
+	MsgInfoUpdate *msginfo_update = (MsgInfoUpdate *) source;
+	MessageView *messageview = (MessageView *) data;
+	MsgInfo *msg_old = messageview->msginfo;
+	MsgInfo *msg_new = msginfo_update->msginfo;
+
+	if (strcmp2(msg_new->msgid, msg_old->msgid))
+		return FALSE;
+
+	if ((msginfo_update->flags & MSGINFO_UPDATE_ADDED) &&
+	    (folder_item_get_msginfo(msg_old->folder, msg_old->msgnum) == NULL))
+	{
+		if (folder_has_parent_of_type(msg_new->folder, F_TRASH))
+			messageview_destroy(messageview);
+		else
+			messageview_show(messageview, msg_new,
+					 messageview->all_headers);
+	}
+	
 	return FALSE;
 }
 
