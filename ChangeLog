@@ -1,3 +1,9 @@
+2012-02-03 [wwp]	3.8.0cvs24
+
+	* src/gtk/progressdialog.c
+	Make translators life easier: use View log instead of Show log
+	(thanks, gusnan!).
+
 2012-02-02 [pawel]	3.8.0cvs23
 
 	* src/folderview.c

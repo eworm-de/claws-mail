@@ -83,7 +83,7 @@ ProgressDialog *progress_dialog_create(void)
 	gtk_widget_show(label);
 
 	showlog_btn = gtk_dialog_add_button(GTK_DIALOG(dialog),
-					   _("_Show log"),
+					   _("_View log"),
 					   GTK_RESPONSE_NONE);
 	cancel_btn = gtk_dialog_add_button(GTK_DIALOG(dialog),
 					   GTK_STOCK_CANCEL,
