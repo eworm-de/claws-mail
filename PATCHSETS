@@ -4341,3 +4341,4 @@
 ( cvs diff -u -r 1.274.2.341 -r 1.274.2.342 src/mainwindow.c;  ) > 3.8.0cvs22.patchset
 ( cvs diff -u -r 1.207.2.226 -r 1.207.2.227 src/folderview.c;  ) > 3.8.0cvs23.patchset
 ( cvs diff -u -r 1.1.4.29 -r 1.1.4.30 src/gtk/progressdialog.c;  ) > 3.8.0cvs24.patchset
+( cvs diff -u -r 1.49.2.140 -r 1.49.2.141 src/procmime.c;  ) > 3.8.0cvs25.patchset

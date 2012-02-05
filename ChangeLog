@@ -1,3 +1,8 @@
+2012-02-05 [colin]	3.8.0cvs25
+
+	* src/procmime.c
+		Fix inverted comparison in list_find_custom.
+
 2012-02-03 [wwp]	3.8.0cvs24
 
 	* src/gtk/progressdialog.c
