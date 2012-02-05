@@ -126,7 +126,9 @@ static void prev_labeled_cb		(GtkAction	*action,
 					 gpointer	 data);
 static void next_labeled_cb		(GtkAction	*action,
 					 gpointer	 data);
-static void last_read_cb		(GtkAction	*action,
+static void prev_history_cb		(GtkAction	*action,
+					 gpointer	 data);
+static void next_history_cb		(GtkAction	*action,
 					 gpointer	 data);
 static void parent_cb			(GtkAction	*action,
 					 gpointer	 data);
@@ -227,8 +229,10 @@ static GtkActionEntry msgview_entries[] =
 	/* {"View/Goto/---",		NULL, "---", NULL, NULL, NULL }, */
 	{"View/Goto/PrevLabeled",	NULL, N_("Previous _labeled message"), NULL, NULL, G_CALLBACK(prev_labeled_cb) },
 	{"View/Goto/NextLabeled",	NULL, N_("Next la_beled message"), NULL, NULL, G_CALLBACK(next_labeled_cb) },
+	/* {"View/Goto/---",			NULL, "---", NULL, NULL, NULL }, */
+	{"View/Goto/PrevHistory",	NULL, N_("Previous opened message"), "<alt>Left", NULL, G_CALLBACK(prev_history_cb) },
+	{"View/Goto/NextHistory",	NULL, N_("Next opened message"), "<alt>Right", NULL, G_CALLBACK(next_history_cb) },
 	/* {"View/Goto/---",		NULL, "---", NULL, NULL, NULL }, */
-	{"View/Goto/LastRead",		NULL, N_("Last read message"), NULL, NULL, G_CALLBACK(last_read_cb) },
 	{"View/Goto/ParentMessage",	NULL, N_("Parent message"), "<control>Up", NULL, G_CALLBACK(parent_cb) },
 	/* {"View/Goto/---",		NULL, "---", NULL, NULL, NULL }, */
 	{"View/Goto/NextUnreadFolder",	NULL, N_("Next unread _folder"), "<shift>G", NULL, G_CALLBACK(goto_unread_folder_cb) },
@@ -495,9 +499,11 @@ static void messageview_add_toolbar(MessageView *msgview, GtkWidget *window)
 	MENUITEM_ADDUI_MANAGER(msgview->ui_manager, "/Menu/View/Goto", "PrevLabeled", "View/Goto/PrevLabeled", GTK_UI_MANAGER_MENUITEM)
 	MENUITEM_ADDUI_MANAGER(msgview->ui_manager, "/Menu/View/Goto", "NextLabeled", "View/Goto/NextLabeled", GTK_UI_MANAGER_MENUITEM)
 	MENUITEM_ADDUI_MANAGER(msgview->ui_manager, "/Menu/View/Goto", "Separator5", "View/Goto/---", GTK_UI_MANAGER_SEPARATOR)
-	MENUITEM_ADDUI_MANAGER(msgview->ui_manager, "/Menu/View/Goto", "LastRead", "View/Goto/LastRead", GTK_UI_MANAGER_MENUITEM)
-	MENUITEM_ADDUI_MANAGER(msgview->ui_manager, "/Menu/View/Goto", "ParentMessage", "View/Goto/ParentMessage", GTK_UI_MANAGER_MENUITEM)
+	MENUITEM_ADDUI_MANAGER(msgview->ui_manager, "/Menu/View/Goto", "PrevHistory", "View/Goto/PrevHistory", GTK_UI_MANAGER_MENUITEM)
+	MENUITEM_ADDUI_MANAGER(msgview->ui_manager, "/Menu/View/Goto", "NextHistory", "View/Goto/NextHistory", GTK_UI_MANAGER_MENUITEM)
 	MENUITEM_ADDUI_MANAGER(msgview->ui_manager, "/Menu/View/Goto", "Separator6", "View/Goto/---", GTK_UI_MANAGER_SEPARATOR)
+	MENUITEM_ADDUI_MANAGER(msgview->ui_manager, "/Menu/View/Goto", "ParentMessage", "View/Goto/ParentMessage", GTK_UI_MANAGER_MENUITEM)
+	MENUITEM_ADDUI_MANAGER(msgview->ui_manager, "/Menu/View/Goto", "Separator7", "View/Goto/---", GTK_UI_MANAGER_SEPARATOR)
 	MENUITEM_ADDUI_MANAGER(msgview->ui_manager, "/Menu/View/Goto", "NextUnreadFolder", "View/Goto/NextUnreadFolder", GTK_UI_MANAGER_MENUITEM)
 	MENUITEM_ADDUI_MANAGER(msgview->ui_manager, "/Menu/View/Goto", "OtherFolder", "View/Goto/OtherFolder", GTK_UI_MANAGER_MENUITEM)
 
@@ -1133,6 +1139,118 @@ static MimeInfo *find_broken_part(MimeInfo *rootinfo)
 	return brokeninfo;
 }
 
+static void messageview_register_nav(MessageView *messageview)
+{
+	gchar *id;
+	gint pos = -1;
+	GList *existing;
+
+	cm_return_if_fail(messageview);
+	cm_return_if_fail(messageview->msginfo);
+
+	id = procmsg_msginfo_get_identifier(messageview->msginfo);
+	existing = g_list_find_custom(messageview->trail, id, (GCompareFunc)g_strcmp0);
+
+	if (existing != NULL)
+		pos = g_list_position(messageview->trail, existing);
+	else
+		pos = -1;
+
+	if (pos != -1) {
+		messageview->trail_pos = pos;
+		g_free(id);
+	} else {
+		/* Cut the end of the list */
+		GList *end = g_list_nth(messageview->trail, messageview->trail_pos + 1);
+		if (end) {
+			if (end->prev) {
+				end->prev->next = NULL;
+				end->prev = NULL;
+				list_free_strings(end);
+				g_list_free(end);
+			} else {
+				list_free_strings(messageview->trail);
+				g_list_free(messageview->trail);
+				messageview->trail = NULL;
+			}
+		}
+		messageview->trail = g_list_append(messageview->trail, id);
+		messageview->trail_pos = g_list_length(messageview->trail) - 1;
+		
+		/* Cut the beginning if needed */
+		while (messageview->trail_pos > prefs_common.nav_history_length) {
+			g_free(messageview->trail->data);
+			messageview->trail = g_list_delete_link(messageview->trail,
+						messageview->trail);
+			messageview->trail_pos--;
+		}
+	}
+	messageview_set_menu_sensitive(messageview);
+}
+
+gboolean messageview_nav_has_prev(MessageView *messageview) {
+	return messageview->trail != NULL &&  messageview->trail_pos > 0;
+}
+
+gboolean messageview_nav_has_next(MessageView *messageview) {
+	if (!messageview->trail)
+		return FALSE;
+	
+	return sc_g_list_bigger(messageview->trail, messageview->trail_pos + 1);
+}
+
+MsgInfo *messageview_nav_get_prev(MessageView *messageview) {
+	GList *item;
+	MsgInfo *info;
+
+	cm_return_val_if_fail(messageview, NULL);
+	cm_return_val_if_fail(messageview->trail, NULL);
+
+	do {
+		if (!messageview_nav_has_prev(messageview))
+			return NULL;
+
+		item = g_list_nth(messageview->trail, messageview->trail_pos - 1);
+		cm_return_val_if_fail(item != NULL, NULL);
+
+		info = procmsg_get_msginfo_from_identifier((const gchar *)item->data);
+		if (info != NULL)
+			break;
+
+		g_free(item->data);
+		messageview->trail = g_list_delete_link(messageview->trail, item);
+		if (messageview->trail_pos > 0)
+			messageview->trail_pos--;
+	} while (info == NULL);
+
+	return info;
+}
+
+MsgInfo *messageview_nav_get_next(MessageView *messageview) {
+	GList *item;
+	MsgInfo *info;
+
+	cm_return_val_if_fail(messageview, NULL);
+	cm_return_val_if_fail(messageview->trail, NULL);
+
+	do {
+		if (!messageview_nav_has_next(messageview))
+			return NULL;
+
+		item = g_list_nth(messageview->trail, messageview->trail_pos + 1);
+		cm_return_val_if_fail(item != NULL, NULL);
+
+		info = procmsg_get_msginfo_from_identifier((const gchar *)item->data);
+		if (info != NULL)
+			break;
+
+		g_free(item->data);
+		messageview->trail = g_list_delete_link(messageview->trail, item);
+	} while (info == NULL);
+	
+	return info;
+}
+
 gint messageview_show(MessageView *messageview, MsgInfo *msginfo,
 		      gboolean all_headers)
 {
@@ -1244,6 +1362,7 @@ gint messageview_show(MessageView *messageview, MsgInfo *msginfo,
 	}
 	headerview_show(messageview->headerview, messageview->msginfo);
 
+	messageview_register_nav(messageview);
 	messageview_set_position(messageview, 0);
 
 #ifdef MAEMO
@@ -1489,7 +1608,9 @@ void messageview_destroy(MessageView *messageview)
 		toolbar_destroy(messageview->toolbar);
 		g_free(messageview->toolbar);
 	}
-	
+
+	list_free_strings(messageview->trail);
+	g_list_free(messageview->trail);
 	msgview_list = g_list_remove(msgview_list, messageview); 
 
 	if (messageview->window)
@@ -2369,28 +2490,39 @@ static void next_labeled_cb(GtkAction *action, gpointer data)
 	}
 }
 
-static void last_read_cb(GtkAction *action, gpointer data)
+static void prev_history_cb(GtkAction *action, gpointer data)
 {
 	MessageView *messageview = (MessageView *)data;
-	messageview->updating = TRUE;
-	summary_select_last_read(messageview->mainwin->summaryview);
-	messageview->updating = FALSE;
-
-	if (messageview->deferred_destroy) {
-		debug_print("messageview got away!\n");
-		messageview_destroy(messageview);
-		return;
-	}
-	if (messageview->mainwin->summaryview->selected) {
-#ifndef GENERIC_UMPC
-		MsgInfo * msginfo = summary_get_selected_msg(messageview->mainwin->summaryview);
-		       
-		if (msginfo)
-			messageview_show(messageview, msginfo, 
+	MsgInfo *info = messageview_nav_get_prev(messageview);
+	if (info) {
+		messageview->updating = TRUE;
+		messageview_show(messageview, info, 
 					 messageview->all_headers);
-#endif
-	} else {
-		gtk_widget_destroy(messageview->window);
+		messageview->updating = FALSE;
+		procmsg_msginfo_free(info);
+		if (messageview->deferred_destroy) {
+			debug_print("messageview got away!\n");
+			messageview_destroy(messageview);
+			return;
+		}
+	}
+}
+
+static void next_history_cb(GtkAction *action, gpointer data)
+{
+	MessageView *messageview = (MessageView *)data;
+	MsgInfo *info = messageview_nav_get_next(messageview);
+	if (info) {
+		messageview->updating = TRUE;
+		messageview_show(messageview, info, 
+					 messageview->all_headers);
+		messageview->updating = FALSE;
+		procmsg_msginfo_free(info);
+		if (messageview->deferred_destroy) {
+			debug_print("messageview got away!\n");
+			messageview_destroy(messageview);
+			return;
+		}
 	}
 }
 
@@ -2792,6 +2924,8 @@ void messageview_set_menu_sensitive(MessageView *messageview)
 	cm_toggle_menu_set_active_full(messageview->ui_manager, "Menu/View/Quotes/CollapseAll", (prefs_common.hide_quotes == 1));
 	cm_toggle_menu_set_active_full(messageview->ui_manager, "Menu/View/Quotes/Collapse2", (prefs_common.hide_quotes == 2));
 	cm_toggle_menu_set_active_full(messageview->ui_manager, "Menu/View/Quotes/Collapse3", (prefs_common.hide_quotes == 3));
+	cm_menu_set_sensitive_full(messageview->ui_manager, "Menu/View/Goto/PrevHistory", messageview_nav_has_prev(messageview));
+	cm_menu_set_sensitive_full(messageview->ui_manager, "Menu/View/Goto/NextHistory", messageview_nav_has_next(messageview));
 }
 
 void messageview_learn (MessageView *msgview, gboolean is_spam)

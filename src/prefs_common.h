@@ -519,6 +519,7 @@ struct _PrefsCommon
 	gboolean inherit_folder_props;
 	gboolean flush_metadata;
 
+	gint nav_history_length;
 };
 
 extern PrefsCommon prefs_common;

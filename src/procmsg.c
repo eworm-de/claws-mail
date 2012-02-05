@@ -756,6 +756,52 @@ static PrefsAccount *procmsg_get_account_from_file(const gchar *file)
 	return mailac;
 }
 
+gchar *procmsg_msginfo_get_identifier(MsgInfo *msginfo)
+{
+	gchar *folder_id;
+	const gchar *msgid;
+	gchar *id;
+
+	cm_return_val_if_fail(msginfo != NULL, NULL);
+	folder_id = folder_item_get_identifier(msginfo->folder);
+	msgid = msginfo->msgid;
+
+	id = g_strconcat(folder_id, G_DIR_SEPARATOR_S, msgid, NULL);
+
+	g_free(folder_id);
+
+	return id;
+}
+
+MsgInfo *procmsg_get_msginfo_from_identifier(const gchar *id)
+{
+	gchar *folder_id = g_strdup(id);
+	gchar *separator = strrchr(folder_id, G_DIR_SEPARATOR);
+	const gchar *msgid;
+	FolderItem *item;
+	MsgInfo *msginfo;
+
+	if (separator == NULL) {
+		g_free(folder_id);
+		return NULL;
+	}
+
+	*separator = '\0';
+	msgid = separator + 1;
+
+	item = folder_find_item_from_identifier(folder_id);
+
+	if (item == NULL) {
+		g_free(folder_id);
+		return NULL;
+	}
+
+	msginfo = folder_item_get_msginfo_by_msgid(item, msgid);
+	g_free(folder_id);
+
+	return msginfo;
+}
+
 static GSList *procmsg_list_sort_by_account(FolderItem *queue, GSList *list)
 {
 	GSList *result = NULL;

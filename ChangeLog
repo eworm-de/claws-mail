@@ -1,3 +1,17 @@
+2012-02-05 [colin]	3.8.0cvs26
+
+	* src/main.c
+	* src/mainwindow.c
+	* src/messageview.c
+	* src/messageview.h
+	* src/prefs_common.c
+	* src/prefs_common.h
+	* src/procmsg.c
+	* src/procmsg.h
+	* src/summaryview.c
+	* src/summaryview.h
+		Add an history to navigate in mails
+
 2012-02-05 [colin]	3.8.0cvs25
 
 	* src/procmime.c

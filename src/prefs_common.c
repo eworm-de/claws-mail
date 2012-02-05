@@ -1165,6 +1165,9 @@ static PrefParam param[] = {
 	{"flush_metadata", "TRUE", &prefs_common.flush_metadata, P_BOOL,
 	 NULL, NULL, NULL},
 
+	{"nav_history_length", "50", &prefs_common.nav_history_length, P_INT,
+	 NULL, NULL, NULL},
+
 	{NULL, NULL, NULL, P_OTHER, NULL, NULL, NULL}
 };
 

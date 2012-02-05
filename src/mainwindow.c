@@ -306,7 +306,9 @@ static void prev_labeled_cb	 (GtkAction	*action,
 				  gpointer	 data);
 static void next_labeled_cb	 (GtkAction	*action,
 				  gpointer	 data);
-static void last_read_cb	 (GtkAction	*action,
+static void prev_history_cb	 (GtkAction	*action,
+				  gpointer	 data);
+static void next_history_cb	 (GtkAction	*action,
 				  gpointer	 data);
 static void parent_cb		 (GtkAction	*action,
 				  gpointer	 data);
@@ -557,7 +559,9 @@ static GtkActionEntry mainwin_entries[] =
 	{"View/Goto/PrevLabeled",		NULL, N_("Previous _labeled message"), NULL, NULL, G_CALLBACK(prev_labeled_cb) },
 	{"View/Goto/NextLabeled",		NULL, N_("Next la_beled message"), NULL, NULL, G_CALLBACK(next_labeled_cb) },
 	/* {"View/Goto/---",			NULL, "---", NULL, NULL, NULL }, */
-	{"View/Goto/LastRead",			NULL, N_("Last read message"), NULL, NULL, G_CALLBACK(last_read_cb) },
+	{"View/Goto/PrevHistory",		NULL, N_("Previous opened message"), "<alt>Left", NULL, G_CALLBACK(prev_history_cb) },
+	{"View/Goto/NextHistory",		NULL, N_("Next opened message"), "<alt>Right", NULL, G_CALLBACK(next_history_cb) },
+	/* {"View/Goto/---",			NULL, "---", NULL, NULL, NULL }, */
 	{"View/Goto/ParentMessage",		NULL, N_("Parent message"), "<control>Up", NULL, G_CALLBACK(parent_cb) },
 	/* {"View/Goto/---",			NULL, "---", NULL, NULL, NULL }, */
 	{"View/Goto/NextUnreadFolder",		NULL, N_("Next unread _folder"), "<shift>G", NULL, G_CALLBACK(goto_unread_folder_cb) },
@@ -1020,7 +1024,6 @@ static void mainwindow_tags_menu_item_activate_item_cb(GtkMenuItem *menu_item,
 	for (; sel != NULL; sel = sel->next) {
 		MsgInfo *msginfo;
 		GSList *tags = NULL;
-		gint id;
 		GtkCheckMenuItem *item;
 		msginfo = (MsgInfo *)sel->data;
 		sel_len++;
@@ -1031,7 +1034,6 @@ static void mainwindow_tags_menu_item_activate_item_cb(GtkMenuItem *menu_item,
 
 			for (; tags; tags = tags->next) {
 				gint num_checked = GPOINTER_TO_INT(g_hash_table_lookup(menu_allsel_table, tags->data));
-				id = GPOINTER_TO_INT(tags->data);
 				item = g_hash_table_lookup(menu_table, GINT_TO_POINTER(tags->data));
 				if (item && !gtk_check_menu_item_get_active(item)) {
 					gtk_check_menu_item_set_active
@@ -1742,9 +1744,11 @@ MainWindow *main_window_create()
 	MENUITEM_ADDUI_MANAGER(mainwin->ui_manager, "/Menu/View/Goto", "PrevLabeled", "View/Goto/PrevLabeled", GTK_UI_MANAGER_MENUITEM)
 	MENUITEM_ADDUI_MANAGER(mainwin->ui_manager, "/Menu/View/Goto", "NextLabeled", "View/Goto/NextLabeled", GTK_UI_MANAGER_MENUITEM)
 	MENUITEM_ADDUI_MANAGER(mainwin->ui_manager, "/Menu/View/Goto", "Separator5", "View/Goto/---", GTK_UI_MANAGER_SEPARATOR)
-	MENUITEM_ADDUI_MANAGER(mainwin->ui_manager, "/Menu/View/Goto", "LastRead", "View/Goto/LastRead", GTK_UI_MANAGER_MENUITEM)
-	MENUITEM_ADDUI_MANAGER(mainwin->ui_manager, "/Menu/View/Goto", "ParentMessage", "View/Goto/ParentMessage", GTK_UI_MANAGER_MENUITEM)
+	MENUITEM_ADDUI_MANAGER(mainwin->ui_manager, "/Menu/View/Goto", "PrevHistory", "View/Goto/PrevHistory", GTK_UI_MANAGER_MENUITEM)
+	MENUITEM_ADDUI_MANAGER(mainwin->ui_manager, "/Menu/View/Goto", "NextHistory", "View/Goto/NextHistory", GTK_UI_MANAGER_MENUITEM)
 	MENUITEM_ADDUI_MANAGER(mainwin->ui_manager, "/Menu/View/Goto", "Separator6", "View/Goto/---", GTK_UI_MANAGER_SEPARATOR)
+	MENUITEM_ADDUI_MANAGER(mainwin->ui_manager, "/Menu/View/Goto", "ParentMessage", "View/Goto/ParentMessage", GTK_UI_MANAGER_MENUITEM)
+	MENUITEM_ADDUI_MANAGER(mainwin->ui_manager, "/Menu/View/Goto", "Separator7", "View/Goto/---", GTK_UI_MANAGER_SEPARATOR)
 	MENUITEM_ADDUI_MANAGER(mainwin->ui_manager, "/Menu/View/Goto", "NextUnreadFolder", "View/Goto/NextUnreadFolder", GTK_UI_MANAGER_MENUITEM)
 	MENUITEM_ADDUI_MANAGER(mainwin->ui_manager, "/Menu/View/Goto", "OtherFolder", "View/Goto/OtherFolder", GTK_UI_MANAGER_MENUITEM)
         MENUITEM_ADDUI_MANAGER(mainwin->ui_manager, "/Menu/View", "Scroll", "View/Scroll", GTK_UI_MANAGER_MENU)
@@ -3236,7 +3240,6 @@ void main_window_set_menu_sensitive(MainWindow *mainwin)
 		{"Menu/View/Goto/PrevMarked" , M_MSG_EXIST},
 		{"Menu/View/Goto/PrevLabeled", M_MSG_EXIST},
 		{"Menu/View/Goto/NextLabeled", M_MSG_EXIST},
-		{"Menu/View/Goto/LastRead"   , M_SINGLE_TARGET_EXIST},
 		{"Menu/View/Goto/ParentMessage"      , M_SINGLE_TARGET_EXIST},
 		{"Menu/View/OpenNewWindow"        , M_SINGLE_TARGET_EXIST},
 		{"Menu/View/MessageSource"            , M_SINGLE_TARGET_EXIST},
@@ -3400,7 +3403,12 @@ void main_window_set_menu_sensitive(MainWindow *mainwin)
 		cm_menu_set_sensitive_full(mainwin->ui_manager, "Menu/View/HideReadThreads", FALSE);
 	if (mainwin->summaryview->folder_item && mainwin->summaryview->folder_item->hide_read_threads)
 		cm_menu_set_sensitive_full(mainwin->ui_manager, "Menu/View/HideReadMessages", FALSE);
-		
+
+	cm_menu_set_sensitive_full(mainwin->ui_manager, "Menu/View/Goto/PrevHistory",
+		messageview_nav_has_prev(mainwin->messageview));
+	cm_menu_set_sensitive_full(mainwin->ui_manager, "Menu/View/Goto/NextHistory",
+		messageview_nav_has_next(mainwin->messageview));
+
 	main_window_menu_callback_unblock(mainwin);
 }
 
@@ -3896,7 +3904,7 @@ void main_window_destroy_all(void)
 {
 	while (mainwin_list != NULL) {
 		MainWindow *mainwin = (MainWindow*)mainwin_list->data;
-		
+
 		/* free toolbar stuff */
 		toolbar_clear_list(TOOLBAR_MAIN);
 		TOOLBAR_DESTROY_ACTIONS(mainwin->toolbar->action_list);
@@ -4818,10 +4826,33 @@ static void next_labeled_cb(GtkAction *action, gpointer data)
 	summary_select_next_labeled(mainwin->summaryview);
 }
 
-static void last_read_cb(GtkAction *action, gpointer data)
+static void prev_history_cb(GtkAction *action, gpointer data)
 {
 	MainWindow *mainwin = (MainWindow *)data;
-	summary_select_last_read(mainwin->summaryview);
+	MsgInfo *info = messageview_nav_get_prev(mainwin->messageview);
+	if (info) {
+		if (info->folder != mainwin->summaryview->folder_item)
+			folderview_select(mainwin->folderview, info->folder);
+		summary_display_by_msgnum(mainwin->summaryview, info->msgnum);
+		summary_display_msg_selected(mainwin->summaryview, FALSE);
+		procmsg_msginfo_free(info);
+		main_window_set_menu_sensitive(mainwindow_get_mainwindow());
+		toolbar_main_set_sensitive(mainwindow_get_mainwindow());
+	}
+}
+
+static void next_history_cb(GtkAction *action, gpointer data)
+{
+	MainWindow *mainwin = (MainWindow *)data;
+	MsgInfo *info = messageview_nav_get_next(mainwin->messageview);
+	if (info) {
+		if (info->folder != mainwin->summaryview->folder_item)
+			folderview_select(mainwin->folderview, info->folder);
+		summary_display_by_msgnum(mainwin->summaryview, info->msgnum);
+		procmsg_msginfo_free(info);
+		main_window_set_menu_sensitive(mainwindow_get_mainwindow());
+		toolbar_main_set_sensitive(mainwindow_get_mainwindow());
+	}
 }
 
 static void parent_cb(GtkAction *action, gpointer data)
