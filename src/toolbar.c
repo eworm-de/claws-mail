@@ -812,38 +812,50 @@ static void toolbar_action_execute(GtkWidget    *widget,
 			    gpointer     data,
 			    gint         source) 
 {
-	GSList *cur, *lop;
-	gchar *action, *action_p;
-	gboolean found = FALSE;
+	GSList *cur;
 	gint i = 0;
 
 	for (cur = action_list; cur != NULL;  cur = cur->next) {
 		ToolbarClawsActions *act = (ToolbarClawsActions*)cur->data;
 
 		if (widget == act->widget) {
-			
-			for (lop = prefs_common.actions_list; lop != NULL; lop = lop->next) {
-				action = g_strdup((gchar*)lop->data);
+			i = prefs_actions_find_by_name(act->name);
 
-				action_p = strstr(action, ": ");
-				action_p[0] = 0x00;
-				if (g_utf8_collate(act->name, action) == 0) {
-					found = TRUE;
-					g_free(action);
-					break;
-				} else 
-					i++;
-				g_free(action);
-			}
-			if (found) 
+			if (i != -1) 
 				break;
 		}
 	}
 
-	if (found) 
+	if (i != -1) 
 		actions_execute(data, i, widget, source);
 	else
 		g_warning ("Error: did not find Claws Action to execute");
+}
+
+gboolean toolbar_check_action_btns(ToolbarType type)
+{
+	GSList *temp, *curr, *list = toolbar_config[type].item_list;
+	gboolean modified = FALSE;
+	
+	curr = list;
+	while (curr != NULL) {
+		ToolbarItem *toolbar_item = (ToolbarItem *) curr->data;
+		temp = curr;
+		curr = curr->next;
+		
+		if (toolbar_item->index != A_CLAWS_ACTIONS)
+			continue;
+
+		if (prefs_actions_find_by_name(toolbar_item->text) == -1) {
+			list = g_slist_delete_link(list, temp);
+			g_free(toolbar_item->file);
+			g_free(toolbar_item->text);
+			g_free(toolbar_item);
+			modified = TRUE;
+		}
+	}
+	
+	return modified;
 }
 
 #if !(GTK_CHECK_VERSION(2,12,0))

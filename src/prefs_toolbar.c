@@ -41,6 +41,7 @@
 #include "mainwindow.h"
 #include "alertpanel.h"
 #include "prefs_common.h"
+#include "prefs_actions.h"
 
 #include "utils.h"
 
@@ -291,7 +292,6 @@ static void prefs_toolbar_save(PrefsPage *_page)
 			item->index = toolbar_ret_val_from_descr(event);
 			g_free(event);
 
-			/* TODO: save A_CLAWS_ACTIONS only if they are still active */
 			toolbar_set_list_item(item, prefs_toolbar->source);
 
 			g_free(item->file);
@@ -1264,6 +1264,24 @@ void prefs_toolbar_done(void)
 	prefs_gtk_unregister_page((PrefsPage *) prefs_toolbar_messageview);
 	g_free(prefs_toolbar_messageview->item_icon_file);
 	g_free(prefs_toolbar_messageview);
+}
+
+void prefs_toolbar_update_action_btns(void) 
+{
+	if (toolbar_check_action_btns(TOOLBAR_MAIN)) {
+		toolbar_save_config_file(TOOLBAR_MAIN);
+		toolbar_update(TOOLBAR_MAIN, mainwindow_get_mainwindow());
+	}
+
+	if (toolbar_check_action_btns(TOOLBAR_COMPOSE)) {
+		toolbar_save_config_file(TOOLBAR_COMPOSE);
+		compose_reflect_prefs_pixmap_theme();
+	}
+
+	if (toolbar_check_action_btns(TOOLBAR_MSGVIEW)) {
+		toolbar_save_config_file(TOOLBAR_MSGVIEW);
+		messageview_reflect_prefs_pixmap_theme();
+	}
 }
 
 static void set_visible_if_not_text(GtkTreeViewColumn *col,

@@ -264,4 +264,5 @@ void toolbar_set_learn_button		(Toolbar	*toolbar,
 					 LearnButtonType  learn_btn_type);
 const gchar *toolbar_get_short_text	(int action);
 int	     toolbar_get_icon		(int action);
+gboolean toolbar_check_action_btns	(ToolbarType	type);
 #endif /* __CUSTOM_TOOLBAR_H__ */

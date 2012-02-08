@@ -27,5 +27,6 @@ void prefs_actions_write_config		(void);
 void prefs_actions_open			(MainWindow	*mainwin);
 void prefs_actions_rename_path		(const gchar *old_path,
 					 const gchar *new_path);
+gint prefs_actions_find_by_name		(const gchar *name);
 
 #endif /* __PREFS_ACTIONS_H__ */

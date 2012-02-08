@@ -49,6 +49,7 @@
 #include "filtering.h"
 #include "prefs_filtering_action.h"
 #include "matcher_parser.h"
+#include "prefs_toolbar.h"
 
 enum {
 	PREFS_ACTIONS_STRING,	/*!< string pointer managed by list store, 
@@ -585,7 +586,7 @@ static void prefs_actions_set_list(void)
 static gint prefs_actions_clist_set_row(gint row)
 {
 	const gchar *entry_text;
-	gint len;
+	gint len, action_nb;
 	gchar action[PREFSBUFSIZE];
 	gchar *new_action;
 	GtkListStore *store;
@@ -609,6 +610,12 @@ static gint prefs_actions_clist_set_row(gint row)
 		return -1;
 	}
 
+	action_nb = prefs_actions_find_by_name(entry_text);
+	if ((action_nb != -1) && ((row == -1) || (row != action_nb + 1))) {
+		alertpanel_error(_("There is action with this name already."));
+		return -1;
+	}
+	
 	strncpy(action, entry_text, PREFSBUFSIZE - 1);
 
 	while (strstr(action, "//")) {
@@ -949,6 +956,9 @@ static void prefs_actions_ok(GtkWidget *widget, gpointer data)
 		compose_update_actions_menu(compose);
 	}
 
+	/* Update toolbars */
+	prefs_toolbar_update_action_btns();
+	
 	gtk_widget_hide(actions.window);
 	gtk_window_set_modal(GTK_WINDOW(actions.window), FALSE);
 	inc_unlock();
@@ -1363,4 +1373,27 @@ void prefs_actions_rename_path(const gchar *old_path, const gchar *new_path)
 
 		g_strfreev(tokens);
 	}
+}
+
+gint prefs_actions_find_by_name(const gchar *name)
+{
+	GSList *act = prefs_common.actions_list;
+	gchar *action_name, *action_p;
+	gint action_nb = 0;
+	
+	for (; act != NULL; act = act->next) {
+		action_name = g_strdup((gchar *)act->data);
+		action_p = strstr(action_name, ": ");
+		action_p[0] = 0x00;
+
+		if (g_utf8_collate(name, action_name) == 0) {
+			g_free(action_name);
+			return action_nb;
+		}
+
+		g_free(action_name);
+		action_nb++;
+	}
+
+	return -1;
 }

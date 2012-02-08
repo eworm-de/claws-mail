@@ -1,3 +1,18 @@
+2012-02-08 [pawel]	3.8.0cvs27
+
+	* src/prefs_actions.c
+	* src/prefs_actions.h
+	* src/prefs_toolbar.c
+	* src/prefs_toolbar.h
+	* src/toolbar.c
+	* src/toolbar.h
+		- Implement automatic removal of toolbar action buttons when
+		  associated action is removed
+		- Don't allow creation of two actions with the same name,
+		  before all executions/removals were performed on first action
+		  with duplicated name in linked list which wasn't always
+		  correct behaviour
+
 2012-02-05 [colin]	3.8.0cvs26
 
 	* src/main.c
