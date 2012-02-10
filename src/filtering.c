@@ -300,6 +300,9 @@ static gboolean filteringaction_apply(FilteringAction * action, MsgInfo * info)
 
 	switch(action->type) {
 	case MATCHACTION_MOVE:
+		if (MSG_IS_LOCKED(info->flags))
+			return FALSE;
+			
 		dest_folder =
 			folder_find_item_from_identifier(action->destination);
 		if (!dest_folder) {

@@ -1,3 +1,8 @@
+2012-02-10 [pawel]	3.8.0cvs28
+
+	* src/filtering.c
+		Fix bug #2598 'Actions can move locked messages'
+
 2012-02-08 [pawel]	3.8.0cvs27
 
 	* src/prefs_actions.c
