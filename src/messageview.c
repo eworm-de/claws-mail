@@ -2898,6 +2898,9 @@ static gboolean messageview_msg_moved(gpointer source, gpointer data)
 	MsgInfo *msg_old = messageview->msginfo;
 	MsgInfo *msg_new = msginfo_update->msginfo;
 
+	if (msg_new == NULL || msg_old == NULL)
+		return FALSE;
+
 	if (strcmp2(msg_new->msgid, msg_old->msgid))
 		return FALSE;
 

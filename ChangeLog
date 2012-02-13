@@ -1,3 +1,10 @@
+2012-02-13 [pawel]	3.8.0cvs29
+
+	* src/messageview.c
+		Fix crasher when double clicking on IMAP message and
+		MessageView is not shown introduced in cvs21
+		Patch by mones
+
 2012-02-10 [pawel]	3.8.0cvs28
 
 	* src/filtering.c
