@@ -1,3 +1,11 @@
+2012-02-29 [colin]	3.8.0cvs30
+
+	* src/gtk/gtkcmctree.c
+		Fix bug #2577, "Focus rectangle on folder list and message 
+		list headings doesn't get properly cleared when switching 
+		heading and horizontally scrolling list (underlines and 
+		vertical lines remain on screen)". Patch by Michael Shell
+
 2012-02-13 [pawel]	3.8.0cvs29
 
 	* src/messageview.c
