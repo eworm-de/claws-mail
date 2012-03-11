@@ -934,7 +934,8 @@ draw_row (GtkCMCList     *clist,
     }
    /* draw focus rectangle */
   if (clist->focus_row == row &&
-      gtk_widget_get_can_focus (widget) && gtk_widget_has_focus (widget))
+      gtk_widget_get_can_focus (widget) && gtk_widget_has_focus (widget)
+       && state == GTK_STATE_SELECTED)
     {
       if (!area || gdk_rectangle_intersect (area, &row_rectangle,
 					&intersect_rectangle))

@@ -232,6 +232,7 @@ static char *CONTRIBS_LIST[] = {
 "Markus Schwarzenberg",
 "Rodrigo Dias Arruda Senra",
 "Setoh",
+"Michael Shell",
 "shigeri",
 "Gustavo Noronha Silva",
 "Jesse Skinner",

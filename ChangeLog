@@ -1,3 +1,11 @@
+2012-03-11 [colin]	3.8.0cvs31
+
+	* src/gtk/gtkcmctree.c
+	* src/gtk/authors.h
+	* AUTHORS
+		Fix focus rectangle on unfocused rows
+		Patch by Michael Shell
+
 2012-02-29 [colin]	3.8.0cvs30
 
 	* src/gtk/gtkcmctree.c
