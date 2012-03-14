@@ -1,3 +1,18 @@
+2012-03-14 [pawel]	3.8.0cvs32
+
+	* src/folder.c
+	* src/messageview.c
+	* src/messageview.h
+	* src/procmsg.h
+	* src/summaryview.c
+	* src/textview.c
+	* src/textview.h
+		Better fix for bug #2501
+		Instead of leaving blank window after message move or delete,
+		update separate view to next message in message list or
+		display info why view is blank. This was discussed
+		in bug #2621 comments.
+
 2012-03-11 [colin]	3.8.0cvs31
 
 	* src/gtk/gtkcmctree.c

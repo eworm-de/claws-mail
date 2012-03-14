@@ -75,12 +75,12 @@ struct _MessageView
 	gboolean all_headers;
 
 	gint msginfo_update_callback_id;
-	gint msginfo_moved_callback_id;
 	gboolean updating;
 	gboolean deferred_destroy;
 	
 	gboolean show_full_text;
 	gboolean partial_display_shown;
+	gboolean update_needed;
 	GtkUIManager *ui_manager;
 	GList *trail;
 	gint trail_pos;

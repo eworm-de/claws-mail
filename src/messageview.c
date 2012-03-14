@@ -180,7 +180,6 @@ static void about_cb			(GtkAction	*action,
 static void messageview_update		(MessageView	*msgview,
 					 MsgInfo	*old_msginfo);
 static gboolean messageview_update_msg	(gpointer source, gpointer data);
-static gboolean messageview_msg_moved	(gpointer source, gpointer data);
 
 static void messageview_nothing_cb	   (GtkAction *action, gpointer data)
 {
@@ -410,10 +409,10 @@ MessageView *messageview_create(MainWindow *mainwin)
 	messageview->statusbar_cid = 0;
 
 	messageview->show_full_text= FALSE;
+	messageview->update_needed = FALSE;
 
 	messageview->msginfo_update_callback_id =
 		hooks_register_hook(MSGINFO_UPDATE_HOOKLIST, messageview_update_msg, (gpointer) messageview);
-	messageview->msginfo_moved_callback_id = 0;
 
 	return messageview;
 }
@@ -718,8 +717,6 @@ static MessageView *messageview_create_with_new_window_visible(MainWindow *mainw
 	g_signal_connect(G_OBJECT(window), "key_press_event",
 			 G_CALLBACK(key_pressed), msgview);
 #endif
-	msgview->msginfo_moved_callback_id = hooks_register_hook(MSGINFO_UPDATE_HOOKLIST,
-					messageview_msg_moved, (gpointer) msgview);
 	messageview_add_toolbar(msgview, window);
 
 	if (show) {
@@ -1556,6 +1553,13 @@ void messageview_clear(MessageView *messageview)
 	procmsg_msginfo_free(messageview->msginfo);
 	messageview->msginfo = NULL;
 	messageview->filtered = FALSE;
+
+	if (messageview->window) {
+		gtk_window_set_title(GTK_WINDOW(messageview->window), 
+				_("Claws Mail - Message View"));
+		GTK_EVENTS_FLUSH();
+	}
+
 	mimeview_clear(messageview->mimeview);
 	headerview_clear(messageview->headerview);
 	noticeview_hide(messageview->noticeview);
@@ -1574,13 +1578,9 @@ void messageview_destroy(MessageView *messageview)
 		messageview->mainwin->summaryview->displayed = NULL;
 		messageview->mainwin->summaryview->ext_messageview = NULL;
 	}
-	if (!messageview->deferred_destroy) {
+	if (!messageview->deferred_destroy)
 		hooks_unregister_hook(MSGINFO_UPDATE_HOOKLIST,
 			      messageview->msginfo_update_callback_id);
-		if (messageview->new_window)
-			hooks_unregister_hook(MSGINFO_UPDATE_HOOKLIST,
-				messageview->msginfo_moved_callback_id);
-	}
 
 	if (messageview->updating) {
 		debug_print("uh oh, better not touch that now (fetching)\n");
@@ -2876,44 +2876,35 @@ static gboolean messageview_update_msg(gpointer source, gpointer data)
 {
 	MsgInfoUpdate *msginfo_update = (MsgInfoUpdate *) source;
 	MessageView *messageview = (MessageView *)data;
+	MsgInfo *old_msginfo = messageview->msginfo;
 
 	if (messageview->msginfo != msginfo_update->msginfo)
 		return FALSE;
 
-	if ((msginfo_update->flags & MSGINFO_UPDATE_DELETED) &&
-		!messageview->new_window)
+	if ((msginfo_update->flags & MSGINFO_UPDATE_DELETED) ||
+	    MSG_IS_DELETED(old_msginfo->flags))
 	{
-		MsgInfo *old_msginfo = messageview->msginfo;
-		messageview_clear(messageview);
-		messageview_update(messageview, old_msginfo);
-	}
+		if (messageview->new_window) {
+			if (old_msginfo->folder && old_msginfo->folder->total_msgs == 0) {
+				messageview_clear(messageview);
+				textview_show_info(messageview->mimeview->textview,
+					_("\n  There are no messages in this folder"));
+				return FALSE;
+			}
+			
+			if (!prefs_common.always_show_msg) {
+				messageview_clear(messageview);
+				textview_show_info(messageview->mimeview->textview,
+					_("\n  Message has been deleted"));
+			} else
+				messageview->update_needed = TRUE;
 
-	return FALSE;
-}
+		} else {
+			messageview_clear(messageview);
+			messageview_update(messageview, old_msginfo);
+		}
+	} 
 
-static gboolean messageview_msg_moved(gpointer source, gpointer data)
-{
-	MsgInfoUpdate *msginfo_update = (MsgInfoUpdate *) source;
-	MessageView *messageview = (MessageView *) data;
-	MsgInfo *msg_old = messageview->msginfo;
-	MsgInfo *msg_new = msginfo_update->msginfo;
-
-	if (msg_new == NULL || msg_old == NULL)
-		return FALSE;
-
-	if (strcmp2(msg_new->msgid, msg_old->msgid))
-		return FALSE;
-
-	if ((msginfo_update->flags & MSGINFO_UPDATE_ADDED) &&
-	    (folder_item_get_msginfo(msg_old->folder, msg_old->msgnum) == NULL))
-	{
-		if (folder_has_parent_of_type(msg_new->folder, F_TRASH))
-			messageview_destroy(messageview);
-		else
-			messageview_show(messageview, msg_new,
-					 messageview->all_headers);
-	}
-	
 	return FALSE;
 }
 

@@ -6817,6 +6817,8 @@ static void summary_unselected(GtkCMCTree *ctree, GtkCMCTreeNode *row,
 static void summary_selected(GtkCMCTree *ctree, GtkCMCTreeNode *row,
 			     gint column, SummaryView *summaryview)
 {
+	GList *list, *cur;
+	MessageView *msgview;
 	MsgInfo *msginfo;
 	gboolean marked_unread = FALSE;
 
@@ -6906,6 +6908,17 @@ static void summary_selected(GtkCMCTree *ctree, GtkCMCTreeNode *row,
 		break;
 	default:
 		break;
+	}
+
+	list = messageview_get_msgview_list();
+	for (cur = list; cur != NULL; cur = cur->next) {
+		msgview = (MessageView *) cur->data;
+		
+		if (msgview->new_window && msgview->update_needed) {
+			MsgInfo *new_msginfo = summary_get_selected_msg(summaryview);
+			messageview_show(msgview, new_msginfo, msgview->all_headers);
+			msgview->update_needed = FALSE;		
+		}
 	}
 
 	if (summaryview->display_msg ||

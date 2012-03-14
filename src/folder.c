@@ -3066,8 +3066,6 @@ static void copy_msginfo_flags(MsgInfo *source, MsgInfo *dest)
 
 static void add_msginfo_to_cache(FolderItem *item, MsgInfo *newmsginfo, MsgInfo *flagsource)
 {
-	MsgInfoUpdate msginfo_update;
-
 	/* update folder stats */
 	if (MSG_IS_NEW(newmsginfo->flags))
 		item->new_msgs++;
@@ -3093,10 +3091,6 @@ static void add_msginfo_to_cache(FolderItem *item, MsgInfo *newmsginfo, MsgInfo 
 
 	if (!item->cache)
 		folder_item_read_cache(item);
-
-	msginfo_update.msginfo = newmsginfo;
-	msginfo_update.flags = MSGINFO_UPDATE_ADDED;
-	hooks_invoke(MSGINFO_UPDATE_HOOKLIST, &msginfo_update);
 
 	msgcache_add_msg(item->cache, newmsginfo);
 	copy_msginfo_flags(flagsource, newmsginfo);
