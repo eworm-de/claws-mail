@@ -877,6 +877,7 @@ void textview_show_info(TextView *textview, const gchar *info_str)
 
 	TEXTVIEW_INSERT(info_str);
 	textview_show_icon(textview, GTK_STOCK_DIALOG_INFO);
+	textview_cursor_normal(textview);
 }
 
 void textview_show_mime_part(TextView *textview, MimeInfo *partinfo)

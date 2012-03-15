@@ -2895,7 +2895,9 @@ static gboolean messageview_update_msg(gpointer source, gpointer data)
 			if (!prefs_common.always_show_msg) {
 				messageview_clear(messageview);
 				textview_show_info(messageview->mimeview->textview,
-					_("\n  Message has been deleted"));
+					MSG_IS_DELETED(old_msginfo->flags) ?
+					_("\n  Message has been deleted") :
+					_("\n  Message has been moved to trash"));
 			} else
 				messageview->update_needed = TRUE;
 

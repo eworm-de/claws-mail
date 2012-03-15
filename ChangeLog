@@ -1,3 +1,11 @@
+2012-03-15 [pawel]	3.8.0cvs33
+
+	* src/messageview.c
+	* src/textview.c
+		- Make separate window info more accurate about
+		move to trash/deletion.
+		- Fix busy cursor
+
 2012-03-14 [pawel]	3.8.0cvs32
 
 	* src/folder.c
