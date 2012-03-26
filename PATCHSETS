@@ -4350,3 +4350,4 @@
 ( cvs diff -u -r 1.1.2.29 -r 1.1.2.30 src/gtk/gtkcmctree.c;  cvs diff -u -r 1.1.2.76 -r 1.1.2.77 src/gtk/authors.h;  cvs diff -u -r 1.100.2.81 -r 1.100.2.82 AUTHORS;  ) > 3.8.0cvs31.patchset
 ( cvs diff -u -r 1.213.2.205 -r 1.213.2.206 src/folder.c;  cvs diff -u -r 1.94.2.228 -r 1.94.2.229 src/messageview.c;  cvs diff -u -r 1.19.2.28 -r 1.19.2.29 src/messageview.h;  cvs diff -u -r 1.60.2.59 -r 1.60.2.60 src/procmsg.h;  cvs diff -u -r 1.395.2.444 -r 1.395.2.445 src/summaryview.c;  cvs diff -u -r 1.96.2.237 -r 1.96.2.238 src/textview.c;  cvs diff -u -r 1.12.2.29 -r 1.12.2.30 src/textview.h;  ) > 3.8.0cvs32.patchset
 ( cvs diff -u -r 1.94.2.229 -r 1.94.2.230 src/messageview.c;  cvs diff -u -r 1.96.2.238 -r 1.96.2.239 src/textview.c;  ) > 3.8.0cvs33.patchset
+( cvs diff -u -r 1.13.2.43 -r 1.13.2.44 src/common/plugin.c;  ) > 3.8.0cvs34.patchset

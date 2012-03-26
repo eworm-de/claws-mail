@@ -1,3 +1,8 @@
+2012-03-26 [mones]	3.8.0cvs34
+
+	* src/common/plugin.c
+		Support 2 and 3-clause BSD licensed plugins
+
 2012-03-15 [pawel]	3.8.0cvs33
 
 	* src/messageview.c

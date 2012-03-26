@@ -80,6 +80,8 @@ const gchar const *plugin_licence_tokens[] = {
   "GPL3+", "GPLv3+", "GPL3", "GPLv3",
   "GPL2+", "GPLv2+",
   "Apache2.0", "Apache 2.0", "Apache v2.0",
+  "2-clause BSD", "Simplified BSD", "FreeBSD",
+  "3-clause BSD", "New BSD", "Modified BSD",
   NULL
 };
 
