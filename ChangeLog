@@ -4,7 +4,7 @@
 	* src/gtk/authors.h
 	* src/gtk/quicksearch.c
 		add 'ha', short version of 'has_attachment' in quick search
-		Patch by Andreas RÃ¶nnquist
+		Patch by Andreas Rönnquist
 
 2012-03-26 [mones]	3.8.0cvs34
 
