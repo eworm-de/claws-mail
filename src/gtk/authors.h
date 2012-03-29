@@ -220,6 +220,7 @@ static char *CONTRIBS_LIST[] = {
 "David Relson",
 "Chad Robinson",
 "Paul Rolland",
+"Andreas Rönnquist",
 "Luca Rosellini",
 "Guy Rouillier",
 "Stephan Sachse",
