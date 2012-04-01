@@ -93,7 +93,11 @@
 #include "manage_window.h"
 #include "alertpanel.h"
 #include "statusbar.h"
-#include "addressbook.h"
+#ifndef USE_NEW_ADDRBOOK
+	#include "addressbook.h"
+#else
+	#include "addressbook-dbus.h"
+#endif
 #include "compose.h"
 #include "folder.h"
 #include "setup.h"
@@ -1315,8 +1319,18 @@ int main(int argc, char *argv[])
 	prefs_actions_read_config();
 	prefs_display_header_read_config();
 	/* prefs_filtering_read_config(); */
+#ifndef USE_NEW_ADDRBOOK
 	addressbook_read_file();
-
+#else
+	g_clear_error(&error);
+	if (! addressbook_start_service(&error)) {
+		g_warning("%s", error->message);
+		g_clear_error(&error);
+	}
+	else {
+		addressbook_install_hooks(&error);
+	}
+#endif
 	gtkut_widget_init();
 	stock_pixbuf_gdk(NULL, STOCK_PIXMAP_CLAWS_MAIL_ICON, &icon);
 	gtk_window_set_default_icon(icon);
@@ -1719,8 +1733,9 @@ static void exit_claws(MainWindow *mainwin)
 
 	prefs_common_write_config();
 	account_write_config_all();
+#ifndef USE_NEW_ADDRBOOK
 	addressbook_export_to_file();
-
+#endif
 	filename = g_strconcat(get_rc_dir(), G_DIR_SEPARATOR_S, MENU_RC, NULL);
 	gtk_accel_map_save(filename);
 	g_free(filename);
@@ -1759,8 +1774,9 @@ static void exit_claws(MainWindow *mainwin)
 
 	prefs_toolbar_done();
 
+#ifndef USE_NEW_ADDRBOOK
 	addressbook_destroy();
-
+#endif
 	prefs_themes_done();
 	prefs_fonts_done();
 	prefs_ext_prog_done();

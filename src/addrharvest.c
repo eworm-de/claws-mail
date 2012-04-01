@@ -31,6 +31,9 @@
 #include "addrharvest.h"
 #include "codeconv.h"
 #include "addritem.h"
+#ifdef USE_NEW_ADDRBOOK
+	#include "addressbook-dbus.h"
+#endif
 
 /* Mail header names of interest */
 static gchar *_headerFrom_     = HEADER_FROM;
@@ -62,6 +65,14 @@ struct _HeaderEntry {
 	ItemFolder *folder;
 	gint       count;
 };
+
+#ifdef USE_NEW_ADDRBOOK
+typedef enum {
+    FIRST = 0,
+    LAST,
+} Namepart;
+
+#endif
 
 /*
  * Build header table entry.
@@ -269,6 +280,32 @@ void addrharvest_free( AddressHarvester *harvester ) {
 	g_free( harvester );
 }
 
+#ifdef USE_NEW_ADDRBOOK
+static gchar* get_namepart(const gchar* name, Namepart namepart) {
+    gchar *pos, *part = NULL;
+    gchar *token = g_strdup(name);
+
+    pos = g_strrstr(token, " ");
+    if (namepart == FIRST) {
+        if (pos) {
+            *pos = '\0';
+            part = g_strdup(token);
+            *pos = ' ';
+        }
+    }
+    else {
+        if (! pos)
+            part = g_strdup(token);
+        else {
+            pos +=1;
+            part = g_strdup(pos);
+        }
+    }        
+    g_free(token);
+    return part;
+}
+#endif
+
 /*
  * Insert address into cache.
  * Enter: harvester Harvester object.
@@ -282,6 +319,7 @@ static void addrharvest_insert_cache(
 		AddressCache *cache, const gchar *name,
 		const gchar *address )
 {
+#ifndef USE_NEW_ADDRBOOK
 	ItemPerson *person;
 	ItemFolder *folder;
 	gchar *folderName;
@@ -297,10 +335,15 @@ static void addrharvest_insert_cache(
 	if( entry->count % harvester->folderSize == 0 ) {
 		newFolder = TRUE;	/* Folder is full */
 	}
+#else
+    ContactEntry* person;
+    gchar* key;
+#endif
 
 	/* Insert address */
 	key = g_utf8_strdown( address, -1 );
 	person = g_hash_table_lookup( harvester->dupTable, key );
+#ifndef USE_NEW_ADDRBOOK
 	if( person ) {
 		/* Update existing person to use longest name */
 		value = ADDRITEM_NAME(person);
@@ -331,6 +374,16 @@ static void addrharvest_insert_cache(
 		entry->count++;
 	}
 	addritem_parse_first_last( person );
+#else
+	if (! person) {
+		person = g_new0(ContactEntry, 1);
+		person->first_name = get_namepart(name, FIRST);
+		person->last_name = get_namepart(name, LAST);
+		person->email = g_strdup(address);
+		g_hash_table_insert(harvester->dupTable, key, person);
+		entry->count++;
+	}
+#endif
 }
 
 /*
@@ -533,8 +586,13 @@ static void addrharvest_parse_address(
 			}
 
 			/* Insert into address book */
+#ifndef USE_NEW_ADDRBOOK
 			addrharvest_insert_cache(
 				harvester, entry, cache, name, email );
+#else
+			addrharvest_insert_cache(
+				harvester, entry, NULL, name, email);
+#endif
 			g_free( email );
 			g_free( name );
 		}
@@ -791,13 +849,16 @@ gint addrharvest_harvest(
 
 	retVal = MGU_BAD_ARGS;
 	cm_return_val_if_fail( harvester != NULL, retVal );
+#ifndef USE_NEW_ADDRBOOK
 	cm_return_val_if_fail( cache != NULL, retVal );
+#endif
 	cm_return_val_if_fail( harvester->path != NULL, retVal );
 
+#ifndef USE_NEW_ADDRBOOK
 	/* Clear cache */
 	addrcache_clear( cache );
 	cache->dataRead = FALSE;
-
+#endif
 	/* Build list of headers of interest */
 	listHdr = NULL;
 	node = harvester->headerTable;
@@ -823,10 +884,11 @@ gint addrharvest_harvest(
 	}
 	mgu_free_dlist( listHdr );
 
+#ifndef USE_NEW_ADDRBOOK
 	/* Mark cache */
 	cache->modified = FALSE;
 	cache->dataRead = TRUE;
-
+#endif
 	return retVal;
 }
 

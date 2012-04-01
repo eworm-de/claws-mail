@@ -25,11 +25,20 @@
 #define __ADDR_GATHER_H__
 
 /* Function prototypes */
+#include "folder.h"
+
+#ifndef USE_NEW_ADDRBOOK
+#include "addrbook.h"
+
 AddressBookFile *addrgather_dlg_execute( FolderItem *folderItem,
 					 AddressIndex *addrIndex,
 					 gboolean sourceInd,
 					 GList *msgList );
-
+#else
+void addrgather_dlg_execute( FolderItem *folderItem,
+					 		 gboolean sourceInd,
+					 		 GList *msgList );
+#endif
 #endif /* __ADDR_GATHER_H__ */
 
 /*

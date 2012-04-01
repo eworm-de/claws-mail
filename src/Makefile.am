@@ -29,32 +29,61 @@ claws_mail_res_ldflag =
 claws_mail_deps =
 endif
 
-claws_mail_SOURCES = \
-	account.c \
-	action.c \
+if BUILD_NEWADDRBOOK
+abook_headers = \
+	addressbook-dbus.h
+abook_source = \
+	addressbook-dbus.c
+else
+abook_headers = \
+	addrbook.h \
+	addrclip.h \
+	addrcustomattr.h \
+	addressbook.h \
+	addressbook_foldersel.h \
+	addrindex.h \
+	addrquery.h \
+	addrselect.h \
+	addrduplicates.h \
+	browseldap.h \
+	editaddress.h \
+	editaddress_other_attributes_ldap.h \
+	editbook.h \
+	editgroup.h \
+	editjpilot.h \
+	editldap_basedn.h \
+	editldap.h \
+	editvcard.h \
+	exphtmldlg.h \
+	expldifdlg.h \
+	exporthtml.h \
+	exportldif.h \
+	importldif.h \
+	importmutt.h \
+	importpine.h \
+	jpilot.h \
+	ldapctrl.h \
+	ldaplocate.h \
+	ldapquery.h \
+	ldapserver.h \
+	ldapupdate.h \
+	ldaputil.h \
+	ldif.h \
+	mutt.h \
+	pine.h \
+	vcard.h
+
+abook_source = \
 	addrbook.c \
-	addrcache.c \
 	addrclip.c \
-	addr_compl.c \
 	addrcustomattr.c \
-	addressadd.c \
 	addressbook.c \
 	addressbook_foldersel.c \
-	addrgather.c \
-	addrharvest.c \
 	addrindex.c \
-	addritem.c \
 	addrquery.c \
 	addrselect.c \
 	addrduplicates.c \
-	alertpanel.c \
-	autofaces.c \
 	browseldap.c \
-	codeconv.c \
-	compose.c \
-	crash.c \
-	customheader.c \
-	displayheader.c \
 	editaddress.c \
 	editaddress_other_attributes_ldap.c \
 	editbook.c \
@@ -62,14 +91,46 @@ claws_mail_SOURCES = \
 	editjpilot.c \
 	editldap_basedn.c \
 	editldap.c \
-	edittags.c \
 	editvcard.c \
-	enriched.c \
 	exphtmldlg.c \
 	expldifdlg.c \
-	export.c \
 	exporthtml.c \
 	exportldif.c \
+	importldif.c \
+	importmutt.c \
+	importpine.c \
+	jpilot.c \
+	ldapctrl.c \
+	ldaplocate.c \
+	ldapquery.c \
+	ldapserver.c \
+	ldapupdate.c \
+	ldaputil.c \
+	ldif.c \
+	mutt.c \
+	pine.c \
+	vcard.c
+endif
+
+claws_mail_SOURCES = \
+	account.c \
+	action.c \
+	addrcache.c \
+	addr_compl.c \
+	addressadd.c \
+	addrgather.c \
+	addrharvest.c \
+	addritem.c \
+	alertpanel.c \
+	autofaces.c \
+	codeconv.c \
+	compose.c \
+	crash.c \
+	customheader.c \
+	displayheader.c \
+	edittags.c \
+	enriched.c \
+	export.c \
 	filtering.c \
 	folder.c \
 	folder_item_prefs.c \
@@ -83,18 +144,7 @@ claws_mail_SOURCES = \
 	imap.c \
 	imap_gtk.c \
 	import.c \
-	importldif.c \
-	importmutt.c \
-	importpine.c \
 	inc.c \
-	jpilot.c \
-	ldapctrl.c \
-	ldaplocate.c \
-	ldapquery.c \
-	ldapserver.c \
-	ldapupdate.c \
-	ldaputil.c \
-	ldif.c \
 	localfolder.c \
 	main.c \
 	mainwindow.c \
@@ -109,12 +159,10 @@ claws_mail_SOURCES = \
 	mh_gtk.c \
 	mimeview.c \
 	msgcache.c \
-	mutt.c \
 	news.c \
 	news_gtk.c \
 	noticeview.c \
 	partial_download.c \
-	pine.c \
 	pop.c \
 	prefs_account.c \
 	prefs_actions.c \
@@ -170,54 +218,31 @@ claws_mail_SOURCES = \
 	undo.c \
 	unmime.c \
 	uri_opener.c \
-	vcard.c \
-	wizard.c
+	wizard.c \
+	$(abook_source)
 
 claws_mailincludedir = $(pkgincludedir)
 claws_mailinclude_HEADERS = \
 	account.h \
 	action.h \
-	adbookbase.h \
-	addrbook.h \
 	addrcache.h \
-	addrclip.h \
 	addr_compl.h \
 	addrdefs.h \
-	addrcustomattr.h \
 	addressadd.h \
-	addressbook.h \
-	addressbook_foldersel.h \
+	addritem.h \
 	addressitem.h \
 	addrgather.h \
 	addrharvest.h \
-	addrindex.h \
-	addritem.h \
-	addrquery.h \
-	addrselect.h \
-	addrduplicates.h \
 	alertpanel.h \
 	autofaces.h \
-	browseldap.h \
 	codeconv.h \
 	compose.h \
 	crash.h \
 	customheader.h \
 	displayheader.h \
-	editaddress.h \
-	editaddress_other_attributes_ldap.h \
-	editbook.h \
-	editgroup.h \
-	editjpilot.h \
-	editldap_basedn.h \
-	editldap.h \
 	edittags.h \
-	editvcard.h \
 	enriched.h \
-	exphtmldlg.h \
-	expldifdlg.h \
 	export.h \
-	exporthtml.h \
-	exportldif.h \
 	filtering.h \
 	folder.h \
 	folder_item_prefs.h \
@@ -231,18 +256,7 @@ claws_mailinclude_HEADERS = \
 	imap.h \
 	imap_gtk.h \
 	import.h \
-	importldif.h \
-	importmutt.h \
-	importpine.h \
 	inc.h \
-	jpilot.h \
-	ldapctrl.h \
-	ldaplocate.h \
-	ldapquery.h \
-	ldapserver.h \
-	ldapupdate.h \
-	ldaputil.h \
-	ldif.h \
 	localfolder.h \
 	main.h \
 	mainwindow.h \
@@ -258,12 +272,10 @@ claws_mailinclude_HEADERS = \
 	mh_gtk.h \
 	mimeview.h \
 	msgcache.h \
-	mutt.h \
 	news.h \
 	news_gtk.h \
 	noticeview.h \
 	partial_download.h \
-	pine.h \
 	pop.h \
 	prefs_account.h \
 	prefs_actions.h \
@@ -318,12 +330,21 @@ claws_mailinclude_HEADERS = \
 	undo.h \
 	unmime.h \
 	uri_opener.h \
-	vcard.h \
-	wizard.h
+	wizard.h \
+	$(abook_headers)
 
 BUILT_SOURCES = \
 	matcher_parser_parse.h \
-	quote_fmt_parse.h
+	quote_fmt_parse.h \
+	client-bindings.h
+
+client-bindings.h: claws-contacts.xml
+if BUILD_NEWADDRBOOK
+	dbus-binding-tool --prefix=abook --mode=glib-client --output=$@ claws-contacts.xml
+
+CLEANFILES = \
+	     client-bindings.h
+endif
 
 EXTRA_DIST = \
 	w32-logo.ico w32-resource.rc \
@@ -488,7 +509,8 @@ EXTRA_DIST = \
 	pixmaps/tray_unreadmarkedmail.offline.xpm \
 	pixmaps/tray_unreadmarkedmail.xpm \
 	pixmaps/empty.xpm \
-	pixmaps/replied_and_forwarded.xpm
+	pixmaps/replied_and_forwarded.xpm \
+	claws-contacts.xml
 
 
 INCLUDES = \
@@ -528,7 +550,8 @@ claws_mail_LDADD = \
 	$(LIBETPAN_LIBS) \
 	$(MAEMO_LIBS) \
 	$(CONIC_LIBS) \
-	$(DBUS_LIBS)
+	$(DBUS_LIBS) \
+	$(CONTACTS_LIBS)
 
 pixmapdir=$(datadir)/icons/hicolor/48x48/apps
 
@@ -550,7 +573,8 @@ AM_CPPFLAGS = \
 	$(CONIC_CFLAGS) \
 	$(DBUS_CFLAGS) \
 	$(NETWORKMANAGER_SUPPORT_CFLAGS) \
-	$(VALGRIND_CFLAGS)
+	$(VALGRIND_CFLAGS) \
+	$(CONTACTS_CFLAGS)
 
 #no-unused-function is there because of bison stuff
 #no-deprecated-declarations because of gpgme_data_rewind, which we have

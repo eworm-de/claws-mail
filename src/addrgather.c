@@ -45,9 +45,12 @@
 #include "prefs_common.h"
 
 #include "addrharvest.h"
-#include "addrindex.h"
-#include "addrbook.h"
-
+#ifndef USE_NEW_ADDRBOOK
+	#include "addrindex.h"
+	#include "addrbook.h"
+#else
+	#include "addressbook-dbus.h"
+#endif
 #define PAGE_FIELDS     0
 #define PAGE_FINISH     1
 
@@ -74,7 +77,9 @@ static struct _AddrHarvest {
 	GtkWidget *labelFolder;
 	GtkWidget *entryBook;
 	GtkWidget *checkHeader[ NUM_FIELDS ];
+#ifndef USE_NEW_ADDRBOOK
 	GtkWidget *spinbtnFolder;
+#endif
 	GtkWidget *checkRecurse;
 	GtkWidget *btnOk;
 	GtkWidget *btnCancel;
@@ -86,8 +91,10 @@ static struct _AddrHarvest {
 	GtkWidget *clistCount;
 } addrgather_dlg;
 
+#ifndef USE_NEW_ADDRBOOK
 static AddressIndex *_harv_addressIndex_;
 static AddressBookFile *_harv_addressBook_;
+#endif
 static gchar *_harv_headerNames_[] = {
 	HEADER_FROM,
 	HEADER_REPLY_TO,
@@ -143,12 +150,19 @@ static gboolean addrgather_dlg_harvest() {
 	GtkCMCList *clist;
 	gchar *text[ FIELDS_N_COLS ];
 	AddressHarvester *harvester;
-	AddressBookFile *abf;
 	gchar *name;
+#ifndef USE_NEW_ADDRBOOK
+	AddressBookFile *abf;
 	gchar *newFile;
+#else
+    GList* list;
+    ContactData* contact;
+    GError* error = NULL;
+#endif
 	gchar str[ FMT_BUFSIZE ];
 	gint cnt;
 	gint i;
+#ifndef USE_NEW_ADDRBOOK
 	gint sz;
 
 	name = gtk_editable_get_chars( GTK_EDITABLE(addrgather_dlg.entryBook), 0, -1 );
@@ -157,6 +171,14 @@ static gboolean addrgather_dlg_harvest() {
 			_( "Please specify name for address book." ) );
 		g_free( name );
 		return FALSE;
+#else
+	name = gtk_combo_box_get_active_text(GTK_COMBO_BOX(addrgather_dlg.entryBook));
+	if( name == NULL || strlen( name ) < 1 ) {
+		addrgather_dlg_status_show(
+			_("No available address book."));
+		g_free( name );
+		return FALSE;
+#endif
 	}
 
 	/* Create harvest helper */
@@ -183,10 +205,13 @@ static gboolean addrgather_dlg_harvest() {
 	/* Go fer it */
 	addrgather_dlg_status_show( _( "Collecting addresses..." ) );
 	GTK_EVENTS_FLUSH();
+#ifndef USE_NEW_ADDRBOOK
 	sz = gtk_spin_button_get_value_as_int(
 		GTK_SPIN_BUTTON( addrgather_dlg.spinbtnFolder ) );
 	addrharvest_set_folder_size( harvester, sz );
+#endif
 
+#ifndef USE_NEW_ADDRBOOK
 	/* Create address book */
 	abf = addrbook_create_book();
 	addrbook_set_path( abf, _harv_addressIndex_->filePath );
@@ -195,12 +220,38 @@ static gboolean addrgather_dlg_harvest() {
 	addrbook_set_name( abf, name );
 	g_free( newFile );
 	g_free( name );
+#endif
 
 	/* Harvest addresses */
+#ifndef USE_NEW_ADDRBOOK
 	addrharvest_harvest(
 		harvester, abf->addressCache, _harv_messageList_ );
+	/* save address book */
 	addrbook_save_data( abf );
 	_harv_addressBook_ = abf;
+#else
+	addrharvest_harvest(
+		harvester, NULL, _harv_messageList_ );
+	list = g_hash_table_get_values(harvester->dupTable);
+	for (; list; list = g_list_next(list)) {
+		contact = g_new0(ContactData, 1);
+		ContactEntry* person = (ContactEntry *) list->data;
+		if (person->first_name)
+			contact->name = g_strconcat(
+					person->first_name, " ", person->last_name, NULL);
+		else
+			contact->name = g_strdup(person->last_name);
+		if (! contact->name || strlen(contact->name) < 1)
+			contact->name = g_strdup(person->email);
+		contact->remarks = g_strdup(N_("address added by claws-mail"));
+		contact->email = g_strdup(person->email);
+		contact->book = g_strdup(name);
+		addressbook_dbus_add_contact(contact, &error);
+		contact_data_free(&contact);
+	}
+	g_list_free(list);
+	g_free(name);
+#endif
 
 	/* Update summary count */
 	clist = GTK_CMCLIST(addrgather_dlg.clistCount);
@@ -263,18 +314,24 @@ static void addrgather_page_fields(gint pageNum, gchar *pageLbl)
 {
 	GtkWidget *vbox;
 	GtkWidget *vboxf;
-	GtkWidget *hboxs;
 	GtkWidget *table;
 	GtkWidget *label;
 	GtkWidget *labelFolder;
 	GtkWidget *entryBook;
 	GtkWidget *frameHeader;
 	GtkWidget *checkHeader[NUM_FIELDS];
+#ifndef USE_NEW_ADDRBOOK
+	GtkWidget *hboxs;
 	GtkWidget *spinbtnFolder;
-	GtkAdjustment *adjFolder;
+	GtkObject *adjFolder;
+#endif
 	GtkWidget *checkRecurse;
 	gint top;
 	gint i;
+#ifdef USE_NEW_ADDRBOOK
+	GError* error = NULL;
+	GSList *books, *cur;
+#endif
 
 	/* Container */
 	vbox = gtk_vbox_new(FALSE, 6);
@@ -311,10 +368,27 @@ static void addrgather_page_fields(gint pageNum, gchar *pageLbl)
 	gtk_table_attach( GTK_TABLE(table), label, 0, 1, top, (top + 1), GTK_FILL, 0, 0, 0 );
 	gtk_misc_set_alignment( GTK_MISC(label), 1.0, 0.5 );
 
+#ifndef USE_NEW_ADDRBOOK
 	entryBook = gtk_entry_new();
+#else
+        books = addressbook_dbus_get_books(&error);
+        entryBook = gtk_combo_box_new_text();
+        if (books) {
+            for (cur = books; cur; cur = g_slist_next(cur)) {
+                gchar* book = (gchar *) cur->data;
+                gtk_combo_box_prepend_text(GTK_COMBO_BOX(entryBook), book);
+                g_free(book);
+            }
+            g_slist_free(books);
+       	}
+        else
+            gtk_combo_box_prepend_text(GTK_COMBO_BOX(entryBook), "");
+        gtk_combo_box_set_active(GTK_COMBO_BOX(entryBook), 0);
+#endif
 	gtk_table_attach( GTK_TABLE(table), entryBook, 1, 2, top, (top + 1),
 		GTK_EXPAND|GTK_SHRINK|GTK_FILL, 0, 0, 0 );
 
+#ifndef USE_NEW_ADDRBOOK
 	/* Third row */
 	top = 2;
 	label = gtk_label_new(_("Address book folder size:"));
@@ -332,7 +406,7 @@ static void addrgather_page_fields(gint pageNum, gchar *pageLbl)
 	gtk_table_attach(GTK_TABLE(table), hboxs, 1, 2, top, (top + 1), GTK_FILL, 0, 0, 0);
 	CLAWS_SET_TIP(spinbtnFolder,
 			_("Maximum amount of entries per folder within the newly created address book"));
-
+#endif
 	/* Fourth row */
 	top = 3;
 	frameHeader = gtk_frame_new(_("Process these mail header fields"));
@@ -360,7 +434,9 @@ static void addrgather_page_fields(gint pageNum, gchar *pageLbl)
 
 	addrgather_dlg.labelFolder   = labelFolder;
 	addrgather_dlg.entryBook     = entryBook;
+#ifndef USE_NEW_ADDRBOOK
 	addrgather_dlg.spinbtnFolder = spinbtnFolder;
+#endif
 	addrgather_dlg.checkRecurse  = checkRecurse;
 }
 
@@ -376,7 +452,6 @@ static void addrgather_page_finish( gint pageNum, gchar *pageLbl ) {
 	GtkWidget *clistCount;
 	gchar *titles[ FIELDS_N_COLS ];
 	gint i;
-
 	titles[ FIELD_COL_HEADER ] = _("Header Name");
 	titles[ FIELD_COL_COUNT  ] = _("Address Count");
 
@@ -501,13 +576,19 @@ static void addrgather_dlg_create(void)
  *        msgList    List of message numbers, or NULL to process folder.
  * Return: Populated address book file, or NULL if none created.
  */
+#ifndef USE_NEW_ADDRBOOK
 AddressBookFile *addrgather_dlg_execute(FolderItem *folderItem, AddressIndex *addrIndex,
 					gboolean sourceInd, GList *msgList)
+#else
+void addrgather_dlg_execute(FolderItem *folderItem, gboolean sourceInd, GList *msgList)
+#endif
 {
 	gint i;
 
+#ifndef USE_NEW_ADDRBOOK
 	_harv_addressIndex_ = addrIndex;
 	_harv_addressBook_ = NULL;
+#endif
 	_harv_messageList_ = msgList;
 
 	/* Create dialog */
@@ -520,8 +601,11 @@ AddressBookFile *addrgather_dlg_execute(FolderItem *folderItem, AddressIndex *ad
 	addrgather_dlg.folderPath = folder_item_get_path(folderItem);
 
 	/* Setup some default values */
+
 	gtk_label_set_text(GTK_LABEL(addrgather_dlg.labelFolder), folderItem->path);
+#ifndef USE_NEW_ADDRBOOK
 	gtk_entry_set_text(GTK_ENTRY(addrgather_dlg.entryBook), folderItem->path);
+#endif
 
 	for (i = 0; i < NUM_FIELDS; i++) {
 		gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(addrgather_dlg.checkHeader[i]),
@@ -558,14 +642,15 @@ AddressBookFile *addrgather_dlg_execute(FolderItem *folderItem, AddressIndex *ad
 	addrgather_dlg.folderPath = NULL;
 	gtk_widget_hide(addrgather_dlg.window);
 	gtk_window_set_modal(GTK_WINDOW(addrgather_dlg.window), FALSE);
+#ifndef USE_NEW_ADDRBOOK
 	_harv_addressIndex_ = NULL;
 
 	if (addrgather_dlg.cancelled == TRUE)
 		return NULL;
 
 	return _harv_addressBook_;
+#endif
 }
-
 /*
 * End of Source.
 */

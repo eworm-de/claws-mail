@@ -52,7 +52,11 @@
 #include "prefs_template.h"
 #include "action.h"
 #include "account.h"
-#include "addressbook.h"
+#ifndef USE_NEW_ADDRBOOK
+	#include "addressbook.h"
+#else
+	#include "addressbook-dbus.h"
+#endif
 #include "logwindow.h"
 #include "manage_window.h"
 #include "alertpanel.h"
@@ -2432,7 +2436,9 @@ static gboolean reflect_prefs_timeout_cb(gpointer data)
 			folderview_reinit_fonts(mainwin->folderview);
 			summary_reflect_prefs_pixmap_theme(mainwin->summaryview);
 			foldersel_reflect_prefs_pixmap_theme();
+#ifndef USE_NEW_ADDRBOOK
 			addressbook_reflect_prefs_pixmap_theme();
+#endif
 #ifndef GENERIC_UMPC
 			pixmap = stock_pixmap_widget(mainwin->hbox_stat, STOCK_PIXMAP_ONLINE);
 			gtk_container_remove(GTK_CONTAINER(mainwin->online_switch), 
@@ -4315,7 +4321,18 @@ static void online_switch_clicked (GtkButton *btn, gpointer data)
 
 static void addressbook_open_cb(GtkAction *action, gpointer data)
 {
+#ifndef USE_NEW_ADDRBOOK
 	addressbook_open(NULL);
+#else
+	GError* error = NULL;
+	
+	addressbook_dbus_open(FALSE, &error);
+	if (error) {
+		g_warning("Failed to open address book");
+		g_warning("%s", error->message);
+		g_error_free(error);
+	}
+#endif
 }
 
 static void log_window_show_cb(GtkAction *action, gpointer data)
@@ -5235,6 +5252,7 @@ gboolean mainwindow_is_obscured(void)
 static void addr_harvest_cb( GtkAction *action, gpointer data)
 {
 	MainWindow *mainwin = (MainWindow *)data;
+
 	addressbook_harvest( mainwin->summaryview->folder_item, FALSE, NULL );
 }
 

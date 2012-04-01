@@ -76,7 +76,9 @@ static gint prefs_filtering_action_deleted(GtkWidget *widget,
 static void prefs_filtering_action_type_selection_changed(GtkWidget *widget,
     gpointer user_data);
 static void prefs_filtering_action_select_dest(void);
+#ifndef USE_NEW_ADDRBOOK
 static void prefs_filtering_action_select_addressbook(void);
+#endif
 static void prefs_filtering_action_up(void);
 static void prefs_filtering_action_down(void);
 static void prefs_filtering_action_set_dialog(GSList *action_list);
@@ -550,10 +552,13 @@ static void prefs_filtering_action_create(void)
 
 	addressbook_btn = gtk_button_new_with_label (_("Select ..."));
 	gtk_box_pack_start (GTK_BOX (hbox1), addressbook_btn, FALSE, FALSE, 0);
+#ifndef USE_NEW_ADDRBOOK
 	g_signal_connect (G_OBJECT (addressbook_btn), "clicked",
 			  G_CALLBACK(prefs_filtering_action_select_addressbook),
 			  NULL);
-
+#else
+	gtk_widget_set_sensitive(GTK_WIDGET(addressbook_btn), FALSE);
+#endif
 	exec_btn = gtk_button_new_from_stock(GTK_STOCK_INFO);
 	gtk_box_pack_start (GTK_BOX (hbox1), exec_btn, FALSE, FALSE, 0);
 	g_signal_connect (G_OBJECT (exec_btn), "clicked",
@@ -645,7 +650,9 @@ static void prefs_filtering_action_create(void)
 	filtering_action.score_entry = score_entry;
 	filtering_action.header_combo = header_combo;
 	filtering_action.header_entry = header_entry;
+#ifndef USE_NEW_ADDRBOOK
 	filtering_action.addressbook_btn = addressbook_btn;
+#endif
 	filtering_action.ok_btn = ok_btn;
 	filtering_action.action_list_view = action_list_view;
 	
@@ -1263,6 +1270,7 @@ static void prefs_filtering_action_select_dest(void)
 	g_free(path);
 }
 
+#ifndef USE_NEW_ADDRBOOK
 static void prefs_filtering_action_select_addressbook(void)
 {
 	const gchar *folderpath = NULL;
@@ -1275,6 +1283,7 @@ static void prefs_filtering_action_select_addressbook(void)
 		g_free(new_path);
 	} 
 }
+#endif
 
 static void prefs_filtering_action_enable_widget(GtkWidget* widget, const gboolean enable)
 {

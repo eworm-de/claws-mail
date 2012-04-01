@@ -92,6 +92,7 @@ struct Transport transports[] = {
 	{ N_("Unix Socket"),	SPAMASSASSIN_TRANSPORT_UNIX,		PAGE_UNIX,    0 },
 };
 
+#ifndef USE_NEW_ADDRBOOK
 static void spamassassin_whitelist_ab_select_cb(GtkWidget *widget, gpointer data)
 {
 	struct SpamAssassinPage *page = (struct SpamAssassinPage *) data;
@@ -105,6 +106,7 @@ static void spamassassin_whitelist_ab_select_cb(GtkWidget *widget, gpointer data
 		g_free(new_path);
 	} 
 }
+#endif
 
 static void foldersel_cb(GtkWidget *widget, gpointer data)
 {
@@ -456,14 +458,19 @@ static void spamassassin_create_widget_func(PrefsPage * _page,
 	SET_TOGGLE_SENSITIVITY(enable_sa_checkbtn, hbox_process_emails);
 	SET_TOGGLE_SENSITIVITY(save_spam_checkbtn, mark_as_read_checkbtn);
 	SET_TOGGLE_SENSITIVITY(whitelist_ab_checkbtn, whitelist_ab_folder_combo);
+#ifndef USE_NEW_ADDRBOOK
 	SET_TOGGLE_SENSITIVITY(whitelist_ab_checkbtn, whitelist_ab_select_btn);
-
+#endif
 	config = spamassassin_get_config();
 
 	g_signal_connect(G_OBJECT(save_spam_folder_select), "clicked",
 			G_CALLBACK(foldersel_cb), page);
+#ifndef USE_NEW_ADDRBOOK
 	g_signal_connect(G_OBJECT (whitelist_ab_select_btn), "clicked",
 			 G_CALLBACK(spamassassin_whitelist_ab_select_cb), page);
+#else
+	gtk_widget_set_sensitive(GTK_WIDGET(whitelist_ab_select_btn), FALSE);
+#endif
 
 	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(enable_sa_checkbtn), config->enable);
 	if (config->username != NULL)

@@ -39,7 +39,6 @@
 #include "filesel.h"
 #include "foldersel.h"
 #include "sourcewindow.h"
-#include "addressbook.h"
 #include "alertpanel.h"
 #include "inputdialog.h"
 #include "mainwindow.h"
@@ -66,7 +65,12 @@
 #include "quoted-printable.h"
 #include "version.h"
 #include "statusbar.h"
-
+#ifndef USE_NEW_ADDRBOOK
+	#include "addressbook.h"
+#else
+	#include "addressadd.h"
+	#include "addressbook-dbus.h"
+#endif
 static GList *messageview_list = NULL;
 
 static gint messageview_delete_cb	(GtkWidget		*widget,
@@ -2779,7 +2783,18 @@ static void reply_cb(GtkAction *gaction, gpointer data)
 
 static void addressbook_open_cb(GtkAction *action, gpointer data)
 {
+#ifndef USE_NEW_ADDRBOOK
 	addressbook_open(NULL);
+#else
+	GError* error = NULL;
+	
+	addressbook_dbus_open(FALSE, &error);
+	if (error) {
+		g_warning("Failed to open address book");
+		g_warning("%s", error->message);
+		g_error_free(error);
+	}
+#endif
 }
 
 static void add_address_cb(GtkAction *action, gpointer data)
@@ -2817,8 +2832,13 @@ static void add_address_cb(GtkAction *action, gpointer data)
 	if (image)
 		picture = gtk_image_get_pixbuf(GTK_IMAGE(image));
 
+#ifndef USE_NEW_ADDRBOOK
 	addressbook_add_contact(msginfo->fromname, from, NULL, picture);
-
+#else
+	if (addressadd_selection(msginfo->fromname, from, NULL, picture)) {
+		debug_print( "addressbook_add_contact - added\n" );
+	}
+#endif
 	if (image)
 		gtk_widget_destroy(image);
 }

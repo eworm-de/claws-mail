@@ -42,6 +42,9 @@
 #include "alertpanel.h"
 #include "account.h"
 #include "gtk/manage_window.h"
+#ifdef USE_NEW_ADDRBOOK
+	#include "addressbook-dbus.h"
+#endif
 
 #include "trayicon_prefs.h"
 
@@ -530,7 +533,16 @@ static void trayicon_compose_acc_cb( GtkMenuItem *menuitem, gpointer data )
 
 static void trayicon_addressbook_cb( GtkAction *action, gpointer data )
 {
+#ifndef USE_NEW_ADDRBOOK
 	addressbook_open(NULL);
+#else
+	GError* error = NULL;
+	addressbook_dbus_open(FALSE, &error);
+	if (error) {
+		g_warning("%s", error->message);
+		g_error_free(error);
+	}
+#endif
 }
 
 static void trayicon_toggle_offline_cb( GtkAction *action, gpointer data )

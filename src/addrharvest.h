@@ -47,6 +47,14 @@ struct _AddressHarvester {
 	gboolean   folderRecurse;
 };
 
+#ifdef USE_NEW_ADDRBOOK
+typedef struct {
+    gchar* first_name;
+    gchar* last_name;
+    gchar* email;
+} ContactEntry;
+#endif
+
 /* Function prototypes */
 AddressHarvester *addrharvest_create	( void );
 void addrharvest_free			( AddressHarvester *harvester );

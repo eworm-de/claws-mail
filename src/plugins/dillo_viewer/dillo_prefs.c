@@ -77,6 +77,7 @@ static void create_dillo_prefs_page	(PrefsPage *page,
 static void destroy_dillo_prefs_page	(PrefsPage *page);
 static void save_dillo_prefs		(PrefsPage *page);
 
+#ifndef USE_NEW_ADDRBOOK
 static void dillo_whitelist_ab_select_cb(GtkWidget *widget, gpointer data)
 {
 	DilloBrowserPage *page = (DilloBrowserPage *) data;
@@ -90,6 +91,7 @@ static void dillo_whitelist_ab_select_cb(GtkWidget *widget, gpointer data)
 		g_free(new_path);
 	} 
 }
+#endif
 
 static void local_checkbox_toggled(GtkToggleButton *button,
 					  gpointer user_data)
@@ -100,8 +102,10 @@ static void local_checkbox_toggled(GtkToggleButton *button,
 	gtk_widget_set_sensitive(prefs_page->whitelist_ab, active);
 	gtk_widget_set_sensitive(prefs_page->whitelist_ab_folder_combo, active && 
 			gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(prefs_page->whitelist_ab)));
+#ifndef USE_NEW_ADDRBOOK
 	gtk_widget_set_sensitive(prefs_page->whitelist_ab_select_btn, active && 
 			gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(prefs_page->whitelist_ab)));
+#endif
 }
 
 static void whitelist_checkbox_toggled(GtkToggleButton *button,
@@ -233,9 +237,12 @@ static void create_dillo_prefs_page(PrefsPage *page,
 			 G_CALLBACK(whitelist_checkbox_toggled),
 			 prefs_page);
 
+#ifndef USE_NEW_ADDRBOOK
 	g_signal_connect(G_OBJECT (whitelist_ab_select_btn), "clicked",
 			 G_CALLBACK(dillo_whitelist_ab_select_cb), prefs_page);
-
+#else
+	gtk_widget_set_sensitive(GTK_WIDGET(whitelist_ab_select_btn), FALSE);
+#endif
 	gtk_widget_set_sensitive(whitelist_ab_checkbtn, !dillo_prefs.local);
 	gtk_widget_set_sensitive(whitelist_ab_folder_combo, !dillo_prefs.local && dillo_prefs.whitelist_ab);
 	gtk_widget_set_sensitive(whitelist_ab_select_btn, !dillo_prefs.local && dillo_prefs.whitelist_ab);

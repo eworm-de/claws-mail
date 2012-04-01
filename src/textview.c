@@ -55,7 +55,13 @@
 #include "html.h"
 #include "enriched.h"
 #include "compose.h"
-#include "addressbook.h"
+#ifndef USE_NEW_ADDRBOOK
+	#include "addressbook.h"
+	#include "addrindex.h"
+#else
+	#include "addressbook-dbus.h"
+	#include "addressadd.h"
+#endif
 #include "displayheader.h"
 #include "account.h"
 #include "mimeview.h"
@@ -67,7 +73,6 @@
 #include "inputdialog.h"
 #include "timing.h"
 #include "tags.h"
-#include "addrindex.h"
 
 static GdkColor quote_colors[3] = {
 	{(gulong)0, (gushort)0, (gushort)0, (gushort)0},
@@ -1938,6 +1943,7 @@ void textview_show_icon(TextView *textview, const gchar *stock_id)
 #if HAVE_LIBCOMPFACE
 static void textview_show_xface(TextView *textview)
 {
+	GtkAllocation allocation;
 	MsgInfo *msginfo = textview->messageview->msginfo;
 	GtkTextView *text = GTK_TEXT_VIEW(textview->text);
 	int x = 0;
@@ -1970,7 +1976,8 @@ static void textview_show_xface(TextView *textview)
 
 	gtk_widget_show(textview->image);
 	
-	x = textview->text->allocation.width - WIDTH -5;
+	gtk_widget_get_allocation(textview->text, &allocation);
+	x = allocation.width - WIDTH -5;
 
 	gtk_text_view_add_child_in_window(text, textview->image, 
 		GTK_TEXT_WINDOW_TEXT, x, 5);
@@ -1988,6 +1995,7 @@ bail:
 
 static void textview_save_contact_pic(TextView *textview)
 {
+#ifndef USE_NEW_ADDRBOOK
 	MsgInfo *msginfo = textview->messageview->msginfo;
 	gchar *filename = NULL;
 	GError *error = NULL;
@@ -2011,11 +2019,14 @@ static void textview_save_contact_pic(TextView *textview)
 		}
 	}
 	g_free(filename);
+#else
+	/* new address book */
+#endif
 }
 
 static void textview_show_contact_pic(TextView *textview)
 {
-	GtkAllocation allocation;
+#ifndef USE_NEW_ADDRBOOK
 	MsgInfo *msginfo = textview->messageview->msginfo;
 	GtkTextView *text = GTK_TEXT_VIEW(textview->text);
 	int x = 0;
@@ -2067,8 +2078,7 @@ static void textview_show_contact_pic(TextView *textview)
 
 	gtk_widget_show(textview->image);
 	
-	gtk_widget_get_allocation(textview->text, &allocation);
-	x = allocation.width - WIDTH -5;
+	x = textview->text->allocation.width - WIDTH -5;
 
 	gtk_text_view_add_child_in_window(text, textview->image, 
 		GTK_TEXT_WINDOW_TEXT, x, 5);
@@ -2080,7 +2090,9 @@ bail:
 	if (textview->image) 
 		gtk_widget_destroy(textview->image);
 	textview->image = NULL;
-	
+#else
+	/* new address book */
+#endif	
 }
 
 static gint textview_tag_cmp_list(gconstpointer a, gconstpointer b)
@@ -3064,6 +3076,7 @@ static void add_uri_to_addrbook_cb (GtkAction *action, TextView *textview)
 	GtkWidget *image = NULL;
 	GdkPixbuf *picture = NULL;
 	gboolean use_picture = FALSE;
+
 	if (uri == NULL)
 		return;
 
@@ -3096,7 +3109,13 @@ static void add_uri_to_addrbook_cb (GtkAction *action, TextView *textview)
 	if (image)
 		picture = gtk_image_get_pixbuf(GTK_IMAGE(image));
 
+#ifndef USE_NEW_ADDRBOOK
 	addressbook_add_contact( fromname, fromaddress, NULL, picture);
+#else
+	if (addressadd_selection(fromname, fromaddress, NULL, picture)) {
+		debug_print( "addressbook_add_contact - added\n" );
+	}
+#endif
 
 	g_free(fromaddress);
 	g_free(fromname);

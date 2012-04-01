@@ -57,7 +57,12 @@
 #include "colorlabel.h"
 #include "inc.h"
 #include "imap.h"
-#include "addressbook.h"
+#ifndef USE_NEW_ADDRBOOK
+	#include "addressbook.h"
+#else
+	#include "addressbook-dbus.h"
+	#include "addressadd.h"
+#endif
 #include "addr_compl.h"
 #include "folder_item_prefs.h"
 #include "filtering.h"
@@ -4626,8 +4631,13 @@ void summary_add_address(SummaryView *summaryview)
 	if (image)
 		picture = gtk_image_get_pixbuf(GTK_IMAGE(image));
 
+#ifndef USE_NEW_ADDRBOOK
 	addressbook_add_contact(msginfo->fromname, from, NULL, picture);
-
+#else
+	if (addressadd_selection(msginfo->fromname, from, NULL, picture)) {
+		debug_print( "addressbook_add_contact - added\n" );
+	}
+#endif
 	if (image)
 		gtk_widget_destroy(image);
 }
@@ -7856,7 +7866,9 @@ void summary_harvest_address(SummaryView *summaryview)
 			continue;
 		msgList = g_list_append( msgList, GUINT_TO_POINTER( msginfo->msgnum ) );
 	}
+
 	addressbook_harvest( summaryview->folder_item, TRUE, msgList );
+
 	g_list_free( msgList );
 }
 

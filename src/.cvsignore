@@ -13,3 +13,4 @@ matcher_parser_lex.c
 matcher_parser_parse.c
 matcher_parser_parse.h
 ylwrap
+client-bindings.h

@@ -12,7 +12,7 @@ MINOR_VERSION=8
 MICRO_VERSION=0
 INTERFACE_AGE=0
 BINARY_AGE=0
-EXTRA_VERSION=35
+EXTRA_VERSION=36
 EXTRA_RELEASE=
 EXTRA_GTK2_VERSION=
 
@@ -142,6 +142,7 @@ AM_CONDITIONAL(CYGWIN, test x"$env_cygwin" = x"yes")
 if test "$GCC" = "yes"
 then
 	CFLAGS="$CFLAGS -Wno-unused-function"
+	#CFLAGS="-g -Wall -Wno-unused-function"
 fi
 
 AC_MSG_CHECKING([if gcc supports -Wno-pointer-sign])
@@ -478,7 +479,7 @@ if test x"$ac_cv_enable_gtk3" = x"yes"; then
 	AM_CONDITIONAL(GTK3, true)
 	AM_CONDITIONAL(GTK2, false)
 else
-	PKG_CHECK_MODULES(GTK, gtk+-2.0 >= 2.16)
+	PKG_CHECK_MODULES(GTK, gtk+-2.0 >= 2.18)
 
 	dnl --disable-deprecated switch for GTK2 purification
 	AC_ARG_ENABLE(deprecated, [  --disable-deprecated  disable deprecated GTK functions. ],
@@ -649,116 +650,6 @@ fi
 AC_SUBST(LIBRESOLV)
 
 LIBS="$LIBS $LIBRESOLV"
- 	  	 
-dnl for LDAP support in addressbook
-dnl no check for libraries; dynamically loaded
-AC_ARG_ENABLE(ldap,
-	[  --disable-ldap         disable LDAP support],
-	[ac_cv_enable_ldap=$enableval], [ac_cv_enable_ldap=yes])
-AC_MSG_CHECKING([whether to use LDAP])
-if test x"$ac_cv_enable_ldap" = xno; then
-	AC_MSG_RESULT(no)
-elif test x"$ac_cv_enable_ldap" = xyes -a x"$ac_cv_enable_pthread" = xno; then
-	AC_MSG_RESULT(no - LDAP support needs pthread support)
-
-	ac_cv_enable_ldap=no
-elif test x"$platform_win32" = xyes; then
-	AC_MSG_RESULT(yes)
-	AC_DEFINE(USE_LDAP, 1, Define if you want LDAP support in addressbook.)
-	LDAP_LIBS="-lwldap32"
-	AC_SUBST(LDAP_LIBS)
-else
-	AC_MSG_RESULT(yes)
-
-	dnl check for available libraries, and pull them in
-	AC_CHECK_LIB(resolv, res_query, LDAP_LIBS="$LDAP_LIBS -lresolv")
-	AC_CHECK_LIB(socket, bind, LDAP_LIBS="$LDAP_LIBS -lsocket")
-	AC_CHECK_LIB(nsl, gethostbyaddr, LDAP_LIBS="$LDAP_LIBS -lnsl")
-	AC_CHECK_LIB(lber, ber_get_tag, LDAP_LIBS="$LDAP_LIBS -llber",,
-		     $LDAP_LIBS)
-
-	AC_CHECK_HEADERS(ldap.h lber.h,
-			 [ ac_cv_enable_ldap=yes ],
-			 [ ac_cv_enable_ldap=no ])
-
-	if test "$ac_cv_enable_ldap" = yes; then
-		AC_CHECK_LIB(ldap, ldap_open,
-			     [ ac_cv_enable_ldap=yes ],
-			     [ ac_cv_enable_ldap=no ],
-			     $LDAP_LIBS)
-
-		AC_CHECK_LIB(ldap, ldap_start_tls_s,
-	     		     [ ac_cv_have_tls=yes ],
-	     		     [ ac_cv_have_tls=no ])
-
-	fi
-
-	AC_MSG_CHECKING([whether ldap library is available])
-	AC_MSG_RESULT($ac_cv_enable_ldap)
-
-	AC_MSG_CHECKING([whether TLS library is available])
-	AC_MSG_RESULT($ac_cv_have_tls)
-
-	if test "$ac_cv_enable_ldap" = yes; then
-		AC_DEFINE(USE_LDAP, 1, Define if you want LDAP support in addressbook.)
-		LDAP_LIBS="$LDAP_LIBS -lldap"
-		AC_SUBST(LDAP_LIBS)
-		if test "$ac_cv_have_tls" = yes; then
-			AC_DEFINE(USE_LDAP_TLS, 1, Define if you want LDAP TLS support in addressbook.)
-		fi
-		dnl As of OpenLDAP API version 3000 a number of functions has
-		dnl been deprecated. As Claws-mail compiles and runs on many
-		dnl platforms and many versions of OpenLDAP we need to be able
-		dnl to switch between the old and new API because new API has
-		dnl added new functions replacing old ones and at the same time
-		dnl old functions has been changed.
-		dnl If cross-compiling defaults to enable deprecated features
-		dnl for maximum portability
-		AC_MSG_CHECKING([The API version of OpenLDAP])
-		AC_RUN_IFELSE(
-			[AC_LANG_PROGRAM(
-			 [#include <ldap.h>],
-			 [if (LDAP_API_VERSION >= 3000)
-					return 1
-			])],
-			[AC_MSG_RESULT([version < 3000])
-			 AC_DEFINE(OPEN_LDAP_API_AT_LEAST_3000, 0, Define if OpenLDAP API is at least version 3000.)],
-			[AC_MSG_RESULT([version >= 3000])
-			 AC_DEFINE(OPEN_LDAP_API_AT_LEAST_3000, 1, Define if OpenLDAP API is at least version 3000.)],
-			[AC_MSG_RESULT([Enabling deprecated features in OpenLDAP])
-			 AC_DEFINE(OPEN_LDAP_API_AT_LEAST_3000, 0, Define if OpenLDAP API is at least version 3000.)
-			 AC_DEFINE(LDAP_DEPRECATED, 1, Define to activate deprecated features in OpenLDAP)]
-		)
-	fi
-fi
-
-dnl for JPilot support in addressbook
-dnl no check for libraries; these are dynamically loaded
-AC_ARG_ENABLE(jpilot,
-	[  --disable-jpilot         disable JPilot support],
-	[ac_cv_enable_jpilot=$enableval], [ac_cv_enable_jpilot=yes])
-AC_MSG_CHECKING([whether to use JPilot])
-if test "$ac_cv_enable_jpilot" = yes; then
-	AC_MSG_RESULT(yes)
-	AC_CHECK_HEADERS(pi-args.h pi-appinfo.h pi-address.h pi-version.h,
-			 [ AC_DEFINE(USE_JPILOT, 1, Define if you want JPilot support in addressbook.) ],
-			 [ ac_cv_enable_jpilot=no ])
-	if test "$ac_cv_enable_jpilot" = no; then
-		AC_CHECK_HEADERS(libpisock/pi-args.h libpisock/pi-appinfo.h libpisock/pi-address.h libpisock/pi-version.h,
-				 [ ac_cv_enable_jpilot=yes
-				   AC_DEFINE(USE_JPILOT, 1, Define if you want JPilot support in addressbook.) ])
-	fi
-
-	AC_CHECK_LIB(pisock, unpack_Address, [JPILOT_LIBS="-lpisock"], [JPILOT_LIBS="" ac_cv_enable_jpilot="no"])
-	if test x"$ac_cv_enable_jpilot" = xyes; then
-		AC_DEFINE(USE_JPILOT, 1, Define if you want JPilot support in addressbook.)
-	else
-		AC_MSG_NOTICE([JPilot support not available])
-	fi
-	AC_SUBST(JPILOT_LIBS)
-else
-	AC_MSG_RESULT(no)
-fi
 
 dnl #######################################################################
 dnl # Check for startup notification
@@ -799,6 +690,156 @@ if test "x$enable_dbus" = "xyes"; then
 	AC_SUBST(DBUS_CFLAGS)
 	AC_SUBST(DBUS_LIBS)
 fi
+
+dnl #######################################################################
+dnl # Configure address book support
+dnl #######################################################################
+
+dnl #######################################################################
+dnl # Check for new address book support
+dnl #######################################################################
+AC_MSG_CHECKING([whether DBUS support for new address book is present])
+if test x"$enable_dbus_glib" = xyes; then
+	AC_MSG_RESULT([yes])
+	AC_MSG_CHECKING([whether to enable new address book])
+	AC_ARG_ENABLE(new-addrbook, [  --enable-new-addrbook     enable new address book],,enable_new_addrbook=no)
+	if test x"$enable_new_addrbook" = xyes; then
+		AC_MSG_RESULT([yes])
+		PKG_CHECK_MODULES(CONTACTS, [claws-contacts],
+		[
+			AC_DEFINE(USE_NEW_ADDRBOOK, 1, [Define if new address book is to be activated.])
+			enable_new_addrbook=yes
+			AC_SUBST(CONTACTS_CFLAGS)
+			AC_SUBST(CONTACTS_LIBS)
+		],
+		[
+			enable_new_addrbook=no
+		])
+	else
+		AC_MSG_RESULT([no])
+		enable_new_addrbook=no
+	fi
+else
+	AC_MSG_RESULT([no])
+	enable_new_addrbook=no
+fi
+
+dnl #######################################################################
+dnl # Check for old address book support
+dnl #######################################################################
+if test x"$enable_new_addrbook" = xno; then
+	dnl for LDAP support in addressbook
+	dnl no check for libraries; dynamically loaded
+	AC_ARG_ENABLE(ldap,
+		[  --disable-ldap         disable LDAP support],
+		[ac_cv_enable_ldap=$enableval], [ac_cv_enable_ldap=yes])
+	AC_MSG_CHECKING([whether to use LDAP])
+	if test x"$ac_cv_enable_ldap" = xno; then
+		AC_MSG_RESULT(no)
+	elif test x"$ac_cv_enable_ldap" = xyes -a x"$ac_cv_enable_pthread" = xno; then
+		AC_MSG_RESULT(no - LDAP support needs pthread support)
+
+		ac_cv_enable_ldap=no
+	elif test x"$platform_win32" = xyes; then
+		AC_MSG_RESULT(yes)
+		AC_DEFINE(USE_LDAP, 1, Define if you want LDAP support in addressbook.)
+		LDAP_LIBS="-lwldap32"
+		AC_SUBST(LDAP_LIBS)
+	else
+		AC_MSG_RESULT(yes)
+
+		dnl check for available libraries, and pull them in
+		AC_CHECK_LIB(resolv, res_query, LDAP_LIBS="$LDAP_LIBS -lresolv")
+		AC_CHECK_LIB(socket, bind, LDAP_LIBS="$LDAP_LIBS -lsocket")
+		AC_CHECK_LIB(nsl, gethostbyaddr, LDAP_LIBS="$LDAP_LIBS -lnsl")
+		AC_CHECK_LIB(lber, ber_get_tag, LDAP_LIBS="$LDAP_LIBS -llber",,
+				 $LDAP_LIBS)
+
+		AC_CHECK_HEADERS(ldap.h lber.h,
+				 [ ac_cv_enable_ldap=yes ],
+				 [ ac_cv_enable_ldap=no ])
+
+		if test "$ac_cv_enable_ldap" = yes; then
+			AC_CHECK_LIB(ldap, ldap_open,
+					 [ ac_cv_enable_ldap=yes ],
+					 [ ac_cv_enable_ldap=no ],
+					 $LDAP_LIBS)
+
+			AC_CHECK_LIB(ldap, ldap_start_tls_s,
+			 		     [ ac_cv_have_tls=yes ],
+			 		     [ ac_cv_have_tls=no ])
+
+		fi
+
+		AC_MSG_CHECKING([whether ldap library is available])
+		AC_MSG_RESULT($ac_cv_enable_ldap)
+
+		AC_MSG_CHECKING([whether TLS library is available])
+		AC_MSG_RESULT($ac_cv_have_tls)
+
+		if test "$ac_cv_enable_ldap" = yes; then
+			AC_DEFINE(USE_LDAP, 1, Define if you want LDAP support in addressbook.)
+			LDAP_LIBS="$LDAP_LIBS -lldap"
+			AC_SUBST(LDAP_LIBS)
+			if test "$ac_cv_have_tls" = yes; then
+				AC_DEFINE(USE_LDAP_TLS, 1, Define if you want LDAP TLS support in addressbook.)
+			fi
+			dnl As of OpenLDAP API version 3000 a number of functions has
+			dnl been deprecated. As Claws-mail compiles and runs on many
+			dnl platforms and many versions of OpenLDAP we need to be able
+			dnl to switch between the old and new API because new API has
+			dnl added new functions replacing old ones and at the same time
+			dnl old functions has been changed.
+			dnl If cross-compiling defaults to enable deprecated features
+			dnl for maximum portability
+			AC_MSG_CHECKING([The API version of OpenLDAP])
+			AC_RUN_IFELSE(
+				[AC_LANG_PROGRAM(
+				 [#include <ldap.h>],
+				 [if (LDAP_API_VERSION >= 3000)
+						return 1
+				])],
+				[AC_MSG_RESULT([version < 3000])
+				 AC_DEFINE(OPEN_LDAP_API_AT_LEAST_3000, 0, Define if OpenLDAP API is at least version 3000.)],
+				[AC_MSG_RESULT([version >= 3000])
+				 AC_DEFINE(OPEN_LDAP_API_AT_LEAST_3000, 1, Define if OpenLDAP API is at least version 3000.)],
+				[AC_MSG_RESULT([Enabling deprecated features in OpenLDAP])
+				 AC_DEFINE(OPEN_LDAP_API_AT_LEAST_3000, 0, Define if OpenLDAP API is at least version 3000.)
+				 AC_DEFINE(LDAP_DEPRECATED, 1, Define to activate deprecated features in OpenLDAP)]
+			)
+		fi
+	fi
+
+	dnl for JPilot support in addressbook
+	dnl no check for libraries; these are dynamically loaded
+	AC_ARG_ENABLE(jpilot,
+		[  --disable-jpilot         disable JPilot support],
+		[ac_cv_enable_jpilot=$enableval], [ac_cv_enable_jpilot=yes])
+	AC_MSG_CHECKING([whether to use JPilot])
+	if test "$ac_cv_enable_jpilot" = yes; then
+		AC_MSG_RESULT(yes)
+		AC_CHECK_HEADERS(pi-args.h pi-appinfo.h pi-address.h pi-version.h,
+				 [ AC_DEFINE(USE_JPILOT, 1, Define if you want JPilot support in addressbook.) ],
+				 [ ac_cv_enable_jpilot=no ])
+		if test "$ac_cv_enable_jpilot" = no; then
+			AC_CHECK_HEADERS(libpisock/pi-args.h libpisock/pi-appinfo.h libpisock/pi-address.h libpisock/pi-version.h,
+					 [ ac_cv_enable_jpilot=yes
+					   AC_DEFINE(USE_JPILOT, 1, Define if you want JPilot support in addressbook.) ])
+		fi
+
+		AC_CHECK_LIB(pisock, unpack_Address, [JPILOT_LIBS="-lpisock"], [JPILOT_LIBS="" ac_cv_enable_jpilot="no"])
+		if test x"$ac_cv_enable_jpilot" = xyes; then
+			AC_DEFINE(USE_JPILOT, 1, Define if you want JPilot support in addressbook.)
+		else
+			AC_MSG_NOTICE([JPilot support not available])
+		fi
+		AC_SUBST(JPILOT_LIBS)
+	else
+		AC_MSG_RESULT(no)
+	fi
+fi
+
+AM_CONDITIONAL(BUILD_NEWADDRBOOK, test x"$enable_new_addrbook" = x"yes")
 
 dnl #######################################################################
 dnl # Check for NetworkManager support
@@ -1098,24 +1139,29 @@ dnl Output the configuration summary
 echo ""
 echo "$PACKAGE $VERSION"
 echo ""
-echo "JPilot            : $ac_cv_enable_jpilot"
-echo "LDAP              : $ac_cv_enable_ldap"
-echo "gnuTLS            : $ac_cv_enable_gnutls"
-echo "iconv             : $am_cv_func_iconv"
-echo "compface          : $ac_cv_enable_compface"
-echo "IPv6              : $ac_cv_enable_ipv6"
-echo "enchant           : $ac_cv_enable_enchant"
-echo "IMAP4             : $ac_cv_enable_libetpan"
-echo "NNTP              : $ac_cv_enable_libetpan"
-echo "Crash dialog      : $ac_cv_enable_crash_dialog"
-echo "LibSM             : $ac_cv_enable_libsm"
-echo "DBUS              : $enable_dbus"
-echo "NetworkManager    : $enable_networkmanager_support"
-echo "Manual            : $ac_cv_enable_manual"
-echo "Plugins           : $PLUGINS"
-echo "Generic UMPC code : $ac_cv_enable_generic_umpc"
-echo "Maemo  build      : $ac_cv_enable_maemo"
-echo "Config dir        : $ac_cv_with_config_dir"
+if test x"$enable_new_addrbook" = xyes; then
+	echo "Using Address Book : New experimental interface"
+else
+	echo "Using Address Book : Old stable interface"
+	echo "JPilot             : $ac_cv_enable_jpilot"
+	echo "LDAP               : $ac_cv_enable_ldap"
+fi
+echo "gnuTLS             : $ac_cv_enable_gnutls"
+echo "iconv              : $am_cv_func_iconv"
+echo "compface           : $ac_cv_enable_compface"
+echo "IPv6               : $ac_cv_enable_ipv6"
+echo "enchant            : $ac_cv_enable_enchant"
+echo "IMAP4              : $ac_cv_enable_libetpan"
+echo "NNTP               : $ac_cv_enable_libetpan"
+echo "Crash dialog       : $ac_cv_enable_crash_dialog"
+echo "LibSM              : $ac_cv_enable_libsm"
+echo "DBUS               : $enable_dbus"
+echo "NetworkManager     : $enable_networkmanager_support"
+echo "Manual             : $ac_cv_enable_manual"
+echo "Plugins            : $PLUGINS"
+echo "Generic UMPC code  : $ac_cv_enable_generic_umpc"
+echo "Maemo  build       : $ac_cv_enable_maemo"
+echo "Config dir         : $ac_cv_with_config_dir"
 echo ""
 echo "The binary will be installed in $prefix/bin"
 echo ""

@@ -60,7 +60,12 @@
 #include "main.h"
 #include "mainwindow.h"
 #include "compose.h"
-#include "addressbook.h"
+#ifndef USE_NEW_ADDRBOOK
+	#include "addressbook.h"
+#else
+	#include "addressbook-dbus.h"
+	#include "addressadd.h"
+#endif
 #include "folderview.h"
 #include "procmsg.h"
 #include "menu.h"
@@ -5010,7 +5015,7 @@ gint compose_send(Compose *compose)
 	compose_allow_user_actions (compose, FALSE);
 	compose->sending = TRUE;
 
-	if (compose_check_entries(compose, TRUE) == FALSE) {
+	if ((compose, TRUE) == FALSE) {
 		if (compose->batch) {
 			gtk_widget_show_all(compose->window);
 		}
@@ -6571,7 +6576,14 @@ static void compose_add_to_addressbook_cb(GtkMenuItem *menuitem, gpointer user_d
 	if (*address != '\0') {
 		gchar *name = procheader_get_fromname(address);
 		extract_address(address);
+#ifndef USE_NEW_ADDRBOOK
 		addressbook_add_contact(name, address, NULL, NULL);
+#else
+		debug_print("%s: %s\n", name, address);
+		if (addressadd_selection(name, address, NULL, NULL)) {
+			debug_print( "addressbook_add_contact - added\n" );
+		}
+#endif
 	}
 	g_free(address);
 }
@@ -7796,8 +7808,9 @@ static Compose *compose_create(PrefsAccount *account,
 		gtk_entry_set_text(GTK_ENTRY(gtk_bin_get_child(GTK_BIN((compose->header_last->combo)))),
 				prefs_common_translated_header_name("Newsgroups:"));
 
+#ifndef USE_NEW_ADDRBOOK
 	addressbook_set_target_compose(compose);
-	
+#endif	
 	if (mode != COMPOSE_REDIRECT)
 		compose_set_template_menu(compose);
 	else {
@@ -8528,9 +8541,10 @@ static void compose_destroy(Compose *compose)
 
 	g_free(compose->privacy_system);
 
+#ifndef USE_NEW_ADDRBOOK
 	if (addressbook_get_target_compose() == compose)
 		addressbook_set_target_compose(NULL);
-
+#endif
 #if USE_ENCHANT
         if (compose->gtkaspell) {
 	        gtkaspell_delete(compose->gtkaspell);
@@ -9979,7 +9993,17 @@ static void compose_address_cb(GtkAction *action, gpointer data)
 {
 	Compose *compose = (Compose *)data;
 
+#ifndef USE_NEW_ADDRBOOK
 	addressbook_open(compose);
+#else
+	GError* error = NULL;
+	addressbook_connect_signals(compose);
+	addressbook_dbus_open(TRUE, &error);
+	if (error) {
+		g_warning("%s", error->message);
+		g_error_free(error);
+	}
+#endif
 }
 
 static void about_show_cb(GtkAction *action, gpointer data)

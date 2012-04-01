@@ -34,7 +34,13 @@
 #include "prefs_gtk.h"
 #include "compose.h"
 #include "prefs_common.h"
-#include "addrbook.h"
+#include "addritem.h"
+#ifndef USE_NEW_ADDRBOOK
+	#include "addrbook.h"
+#else
+	#include "addressbook-dbus.h"
+	#include "addressadd.h"
+#endif
 #include "addr_compl.h"
 #include "tags.h"
 #include "log.h"
@@ -476,13 +482,16 @@ static gboolean filteringaction_apply(FilteringAction * action, MsgInfo * info)
 
 	case MATCHACTION_ADD_TO_ADDRESSBOOK:
 		{
+#ifndef USE_NEW_ADDRBOOK
 			AddressDataSource *book = NULL;
 			AddressBookFile *abf = NULL;
 			ItemFolder *folder = NULL;
+#endif
 			gchar buf[BUFFSIZE];
 			Header *header;
 			gint errors = 0;
 
+#ifndef USE_NEW_ADDRBOOK
 			if (!addressbook_peek_folder_exists(action->destination, &book, &folder)) {
 				g_warning("addressbook folder not found '%s'\n", action->destination?action->destination:"(null)");
 				return FALSE;
@@ -493,7 +502,7 @@ static gboolean filteringaction_apply(FilteringAction * action, MsgInfo * info)
 			}
 
 			abf = book->rawDataSource;
-
+#endif
 			/* get the header */
 			procheader_get_header_from_msginfo(info, buf, sizeof(buf), action->header);
 			header = procheader_parse_header(buf);
@@ -520,7 +529,11 @@ static gboolean filteringaction_apply(FilteringAction * action, MsgInfo * info)
 					if (complete_matches_found(walk->data) == 0) {
 						debug_print("adding address '%s' to addressbook '%s'\n",
 								stripped_addr, action->destination);
+#ifndef USE_NEW_ADDRBOOK
 						if (!addrbook_add_contact(abf, folder, stripped_addr, stripped_addr, NULL)) {
+#else
+						if (!addressadd_selection(NULL, stripped_addr, NULL, NULL)) {
+#endif
 							g_warning("contact could not been added\n");
 							errors++;
 						}
@@ -538,7 +551,6 @@ static gboolean filteringaction_apply(FilteringAction * action, MsgInfo * info)
 			}
 			return (errors == 0);
 		}
-
 	default:
 		break;
 	}

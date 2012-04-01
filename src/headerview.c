@@ -327,6 +327,7 @@ static gint headerview_show_face (HeaderView *headerview, MsgInfo *msginfo)
 
 static void headerview_save_contact_pic (HeaderView *headerview, MsgInfo *msginfo)
 {
+#ifndef USE_NEW_ADDRBOOK
 	gchar *filename = NULL;
 	GError *error = NULL;
 	GdkPixbuf *picture = NULL;
@@ -349,10 +350,14 @@ static void headerview_save_contact_pic (HeaderView *headerview, MsgInfo *msginf
 		}
 	}
 	g_free(filename);
+#else
+	/* new address book */
+#endif
 }	
 
 static gint headerview_show_contact_pic (HeaderView *headerview, MsgInfo *msginfo)
 {
+#ifndef USE_NEW_ADDRBOOK
 	GtkWidget *hbox = headerview->hbox;
 	GtkWidget *image;
 	gchar *filename = NULL;
@@ -406,6 +411,10 @@ static gint headerview_show_contact_pic (HeaderView *headerview, MsgInfo *msginf
 		return -1;
 	else 
 		return 0;
+#else
+	/* new address book */
+	return -1;
+#endif
 }
 
 void headerview_clear(HeaderView *headerview)

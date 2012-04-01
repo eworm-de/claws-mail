@@ -57,6 +57,9 @@
 #include "prefs_toolbar.h"
 #include "alertpanel.h"
 #include "imap.h"
+#ifdef USE_NEW_ADDRBOOK
+	#include "addressbook-dbus.h"
+#endif
 
 /* elements */
 #define TOOLBAR_TAG_INDEX        "toolbar"
@@ -1315,7 +1318,17 @@ static void toolbar_addrbook_cb(GtkWidget *widget, gpointer data)
 	default:
 		return;
 	}
+#ifndef USE_NEW_ADDRBOOK
 	addressbook_open(compose);
+#else
+	GError* error = NULL;
+	addressbook_connect_signals(compose);
+	addressbook_dbus_open(TRUE, &error);
+	if (error) {
+		g_warning("%s", error->message);
+		g_error_free(error);
+	}
+#endif
 }
 
 

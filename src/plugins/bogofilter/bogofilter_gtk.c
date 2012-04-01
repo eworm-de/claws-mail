@@ -78,6 +78,7 @@ static void foldersel_cb(GtkWidget *widget, gpointer data)
 	}
 }
 
+#ifndef USE_NEW_ADDRBOOK
 static void bogofilter_whitelist_ab_select_cb(GtkWidget *widget, gpointer data)
 {
 	struct BogofilterPage *page = (struct BogofilterPage *) data;
@@ -91,6 +92,7 @@ static void bogofilter_whitelist_ab_select_cb(GtkWidget *widget, gpointer data)
 		g_free(new_path);
 	} 
 }
+#endif
 
 static void bogofilter_create_widget_func(PrefsPage * _page,
 					    GtkWindow * window,
@@ -268,7 +270,9 @@ static void bogofilter_create_widget_func(PrefsPage * _page,
 	SET_TOGGLE_SENSITIVITY(save_unsure_checkbtn, save_unsure_folder_entry);
 	SET_TOGGLE_SENSITIVITY(save_unsure_checkbtn, save_unsure_folder_select);
 	SET_TOGGLE_SENSITIVITY(whitelist_ab_checkbtn, whitelist_ab_folder_combo);
+#ifndef USE_NEW_ADDRBOOK
 	SET_TOGGLE_SENSITIVITY(whitelist_ab_checkbtn, whitelist_ab_select_btn);
+#endif
 	SET_TOGGLE_SENSITIVITY(whitelist_ab_checkbtn, learn_from_whitelist_chkbtn);
 	SET_TOGGLE_SENSITIVITY(save_spam_checkbtn, mark_as_read_checkbtn);
 
@@ -278,9 +282,12 @@ static void bogofilter_create_widget_func(PrefsPage * _page,
 			G_CALLBACK(foldersel_cb), save_spam_folder_entry);
 	g_signal_connect(G_OBJECT(save_unsure_folder_select), "clicked",
 			G_CALLBACK(foldersel_cb), save_unsure_folder_entry);
+#ifndef USE_NEW_ADDRBOOK
 	g_signal_connect(G_OBJECT (whitelist_ab_select_btn), "clicked",
 			 G_CALLBACK(bogofilter_whitelist_ab_select_cb), page);
-
+#else
+	gtk_widget_set_sensitive(GTK_WIDGET(whitelist_ab_select_btn), FALSE);
+#endif
 	gtk_spin_button_set_value(GTK_SPIN_BUTTON(max_size_spinbtn), (float) config->max_size);
 	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(process_emails_checkbtn), config->process_emails);
 	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(save_spam_checkbtn), config->receive_spam);

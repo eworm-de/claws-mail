@@ -59,7 +59,9 @@
 #include "stock_pixmap.h"
 #include "prefswindow.h"
 #include "colorlabel.h"
-#include "addrcustomattr.h"
+#ifndef USE_NEW_ADDRBOOK
+	#include "addrcustomattr.h"
+#endif
 
 enum {
 	DATEFMT_FMT,
@@ -1261,9 +1263,9 @@ void prefs_common_read_config(void)
 		prefs_common_read_history(MESSAGE_SEARCH_HISTORY);
 	prefs_common.compose_save_to_history =
 		prefs_common_read_history(COMPOSE_SAVE_TO_HISTORY);
-
+#ifndef USE_NEW_ADDRBOOK
 	prefs_common.addressbook_custom_attributes = addressbook_update_custom_attr_from_prefs();
-
+#endif
 	colorlabel_update_colortable_from_prefs();
 }
 
@@ -1360,9 +1362,11 @@ void prefs_common_write_config(void)
 	prefs_common_save_history(COMPOSE_SAVE_TO_HISTORY, 
 		prefs_common.compose_save_to_history);
 
-	prefs_common_save_history_to_dir(ADDRBOOK_DIR,
+#ifndef USE_NEW_ADDRBOOK
+		prefs_common_save_history_to_dir(ADDRBOOK_DIR,
 		ADDRESSBOOK_CUSTOM_ATTRIBUTES, 
 		prefs_common.addressbook_custom_attributes);
+#endif
 }
 
 /* make a copy of string 'in' into buffer 'out'. un-escape \ sequences.
