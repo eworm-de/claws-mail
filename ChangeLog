@@ -1,3 +1,8 @@
+2012-04-02 [colin]	3.8.0cvs38
+
+	* src/Makefile.am
+		Fix incomplete make dist
+
 2012-04-02 [colin]	3.8.0cvs37
 
 	* src/compose.c

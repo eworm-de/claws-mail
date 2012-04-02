@@ -29,51 +29,9 @@ claws_mail_res_ldflag =
 claws_mail_deps =
 endif
 
-if BUILD_NEWADDRBOOK
-abook_headers = \
-	addressbook-dbus.h
-abook_source = \
+new_abook_source = \
 	addressbook-dbus.c
-else
-abook_headers = \
-	addrbook.h \
-	addrclip.h \
-	addrcustomattr.h \
-	addressbook.h \
-	addressbook_foldersel.h \
-	addrindex.h \
-	addrquery.h \
-	addrselect.h \
-	addrduplicates.h \
-	browseldap.h \
-	editaddress.h \
-	editaddress_other_attributes_ldap.h \
-	editbook.h \
-	editgroup.h \
-	editjpilot.h \
-	editldap_basedn.h \
-	editldap.h \
-	editvcard.h \
-	exphtmldlg.h \
-	expldifdlg.h \
-	exporthtml.h \
-	exportldif.h \
-	importldif.h \
-	importmutt.h \
-	importpine.h \
-	jpilot.h \
-	ldapctrl.h \
-	ldaplocate.h \
-	ldapquery.h \
-	ldapserver.h \
-	ldapupdate.h \
-	ldaputil.h \
-	ldif.h \
-	mutt.h \
-	pine.h \
-	vcard.h
-
-abook_source = \
+old_abook_source = \
 	addrbook.c \
 	addrclip.c \
 	addrcustomattr.c \
@@ -110,7 +68,54 @@ abook_source = \
 	mutt.c \
 	pine.c \
 	vcard.c
+
+if BUILD_NEWADDRBOOK
+	abook_source = $(new_abook_source)
+	abook_extra = $(old_abook_source)
+else
+	abook_source = $(old_abook_source)
+	abook_extra = $(new_abook_source)
 endif
+
+abook_headers = \
+	addressbook-dbus.h \
+	adbookbase.h \
+	addrbook.h \
+	addrclip.h \
+	addrcustomattr.h \
+	addressbook.h \
+	addressbook_foldersel.h \
+	addrindex.h \
+	addrquery.h \
+	addrselect.h \
+	addrduplicates.h \
+	browseldap.h \
+	editaddress.h \
+	editaddress_other_attributes_ldap.h \
+	editbook.h \
+	editgroup.h \
+	editjpilot.h \
+	editldap_basedn.h \
+	editldap.h \
+	editvcard.h \
+	exphtmldlg.h \
+	expldifdlg.h \
+	exporthtml.h \
+	exportldif.h \
+	importldif.h \
+	importmutt.h \
+	importpine.h \
+	jpilot.h \
+	ldapctrl.h \
+	ldaplocate.h \
+	ldapquery.h \
+	ldapserver.h \
+	ldapupdate.h \
+	ldaputil.h \
+	ldif.h \
+	mutt.h \
+	pine.h \
+	vcard.h
 
 claws_mail_SOURCES = \
 	account.c \
@@ -510,7 +515,8 @@ EXTRA_DIST = \
 	pixmaps/tray_unreadmarkedmail.xpm \
 	pixmaps/empty.xpm \
 	pixmaps/replied_and_forwarded.xpm \
-	claws-contacts.xml
+	claws-contacts.xml \
+	$(abook_extra)
 
 
 INCLUDES = \
