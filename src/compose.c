@@ -5015,7 +5015,7 @@ gint compose_send(Compose *compose)
 	compose_allow_user_actions (compose, FALSE);
 	compose->sending = TRUE;
 
-	if ((compose, TRUE) == FALSE) {
+	if (compose_check_entries(compose, TRUE) == FALSE) {
 		if (compose->batch) {
 			gtk_widget_show_all(compose->window);
 		}
