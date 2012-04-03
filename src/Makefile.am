@@ -70,11 +70,11 @@ old_abook_source = \
 	vcard.c
 
 if BUILD_NEWADDRBOOK
-	abook_source = $(new_abook_source)
-	abook_extra = $(old_abook_source)
+abook_source = $(new_abook_source)
+abook_extra = $(old_abook_source)
 else
-	abook_source = $(old_abook_source)
-	abook_extra = $(new_abook_source)
+abook_source = $(old_abook_source)
+abook_extra = $(new_abook_source)
 endif
 
 abook_headers = \
