@@ -630,10 +630,15 @@ static gboolean mimeview_tree_next(GtkTreeModel *model, GtkTreePath *path)
 	has_parent = gtk_tree_model_iter_parent(model, &parent, &iter);
 	
 	if (!gtk_tree_model_iter_next(model, &iter)) {
-		if (has_parent && gtk_tree_model_iter_next(model, &parent)) {
+		while (has_parent) {
+			GtkTreeIter saved_parent = parent;
 			gtk_tree_path_up(path);
-			gtk_tree_path_next(path);
-			return TRUE;
+			if (gtk_tree_model_iter_next(model, &parent)) {
+				gtk_tree_path_next(path);
+				return TRUE;
+			} else {
+				has_parent = gtk_tree_model_iter_parent(model, &parent, &saved_parent);
+			}
 		}
 		
 	} else {

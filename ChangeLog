@@ -1,3 +1,12 @@
+2012-05-11 [colin]	3.8.0cvs40
+
+	* src/mimeview.c
+	* src/common/utils.c
+		Fix bug 2659, 'E-mail attachments are handled
+		inconsistently'
+		Fix problems iterating the mime tree, and determine
+		whether a file is an email without To:
+
 2012-04-03 [colin]	3.8.0cvs39
 
 	* src/Makefile.am

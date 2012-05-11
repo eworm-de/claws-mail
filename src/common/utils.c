@@ -4844,9 +4844,11 @@ gboolean file_is_email (const gchar *filename)
 	       && fgets(buffer, sizeof (buffer), fp) > 0) {
 		if (!strncmp(buffer, "From:", strlen("From:")))
 			score++;
-		if (!strncmp(buffer, "To:", strlen("To:")))
+		else if (!strncmp(buffer, "Date:", strlen("Date:")))
 			score++;
-		if (!strncmp(buffer, "Subject:", strlen("Subject:")))
+		else if (!strncmp(buffer, "Message-ID:", strlen("Message-ID:")))
+			score++;
+		else if (!strncmp(buffer, "Subject:", strlen("Subject:")))
 			score++;
 		i++;
 	}
