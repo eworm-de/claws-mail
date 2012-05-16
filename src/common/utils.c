@@ -2322,6 +2322,17 @@ gint remove_numbered_files(const gchar *dir, guint first, guint last)
 	gchar *prev_dir;
 	gint file_no;
 
+	if (first == last) {
+		/* Skip all the dir reading part. */
+		gchar *filename = g_strdup_printf("%s%s%u", dir, G_DIR_SEPARATOR_S, first);
+		if (claws_unlink(filename) < 0) {
+			FILE_OP_ERROR(filename, "unlink");
+			g_free(filename);
+			return -1;
+		}
+		return 0;
+	}
+
 	prev_dir = g_get_current_dir();
 
 	if (g_chdir(dir) < 0) {

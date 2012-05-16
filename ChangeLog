@@ -1,3 +1,9 @@
+2012-05-16 [colin]	3.8.0cvs44
+
+	* src/common/utils.c
+		Make remove_numbered_files much faster when there's
+		just one file to remove.
+
 2012-05-16 [paul]	3.8.0cvs43
 
 	* src/matcher.c
