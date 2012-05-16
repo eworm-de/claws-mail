@@ -686,7 +686,7 @@ parse_pkcs12 (gnutls_pkcs12_t p12,
 	      gnutls_x509_privkey * key,
 	      gnutls_x509_crt_t * cert)
 {
-  gnutls_pkcs12_bag bag = NULL;
+  gnutls_pkcs12_bag_t bag = NULL;
   int index = 0;
   int ret;
 

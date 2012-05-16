@@ -1,3 +1,9 @@
+2012-05-16 [paul]	3.8.0cvs41
+
+	* src/common/ssl_certificate.c
+		fix bug 2646, 'Compile fails with gnutls-3.0.18'
+		Patch by Christian Hesse
+
 2012-05-11 [colin]	3.8.0cvs40
 
 	* src/mimeview.c
