@@ -925,7 +925,7 @@ gboolean matcherprop_match(MatcherProp *prop,
 
 		t = time(NULL);
 		age = ((t - info->date_t) / (60 * 60 * 24));
-		ret = (age > prop->value);
+		ret = (age >= prop->value);
 
 		/* debug output */
 		if (debug_filtering_session

@@ -1,3 +1,8 @@
+2012-05-16 [paul]	3.8.0cvs43
+
+	* src/matcher.c
+		fix bug 2662, '"ag" quicksearch adds "1" to value'
+
 2012-05-16 [paul]	3.8.0cvs42
 
 	* src/gtk/description_window.c
