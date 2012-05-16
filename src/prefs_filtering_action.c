@@ -122,7 +122,9 @@ static struct FilteringAction_ {
 #endif
 	GtkWidget *header_combo;
 	GtkWidget *header_entry;
+#ifndef USE_NEW_ADDRBOOK
 	GtkWidget *addressbook_btn;
+#endif
 	GtkWidget *score_entry;
 	GtkWidget *tags_combo;
 
@@ -342,7 +344,9 @@ static void prefs_filtering_action_create(void)
 	GtkWidget *account_combo;
 	GtkWidget *header_combo;
 	GtkWidget *header_entry;
+#ifndef USE_NEW_ADDRBOOK
 	GtkWidget *addressbook_btn;
+#endif
 	GtkWidget *dest_entry;
 	GtkWidget *dest_btn;
 	GtkWidget *score_entry;
@@ -550,15 +554,14 @@ static void prefs_filtering_action_create(void)
 			  G_CALLBACK(prefs_filtering_action_select_dest),
 			  NULL);
 
+#ifndef USE_NEW_ADDRBOOK
 	addressbook_btn = gtk_button_new_with_label (_("Select ..."));
 	gtk_box_pack_start (GTK_BOX (hbox1), addressbook_btn, FALSE, FALSE, 0);
-#ifndef USE_NEW_ADDRBOOK
 	g_signal_connect (G_OBJECT (addressbook_btn), "clicked",
 			  G_CALLBACK(prefs_filtering_action_select_addressbook),
 			  NULL);
-#else
-	gtk_widget_set_sensitive(GTK_WIDGET(addressbook_btn), FALSE);
 #endif
+
 	exec_btn = gtk_button_new_from_stock(GTK_STOCK_INFO);
 	gtk_box_pack_start (GTK_BOX (hbox1), exec_btn, FALSE, FALSE, 0);
 	g_signal_connect (G_OBJECT (exec_btn), "clicked",
@@ -1373,10 +1376,10 @@ static void prefs_filtering_action_type_selection_changed(GtkWidget *combo,
 
 	prefs_filtering_action_enable_widget(filtering_action.header_combo,
 					(value == ACTION_ADD_TO_ADDRESSBOOK));	
-
+#ifndef USE_NEW_ADDRBOOK
 	prefs_filtering_action_enable_widget(filtering_action.addressbook_btn,
 					(value == ACTION_ADD_TO_ADDRESSBOOK));
-
+#endif
 	prefs_filtering_action_enable_widget(filtering_action.score_entry,
 						ACTION_SCORE(value));
 		

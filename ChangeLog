@@ -1,3 +1,10 @@
+2012-05-16 [paul]	3.8.0cvs46
+
+	* src/prefs_filtering_action.c
+		fix disabled 'select...' button that never goes away
+		when using the new addr book
+		
+
 2012-05-16 [colin]	3.8.0cvs45
 
 	* src/common/utils.c

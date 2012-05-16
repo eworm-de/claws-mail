@@ -4362,3 +4362,4 @@
 ( cvs diff -u -r 1.75.2.69 -r 1.75.2.70 src/matcher.c;  ) > 3.8.0cvs43.patchset
 ( cvs diff -u -r 1.36.2.196 -r 1.36.2.197 src/common/utils.c;  ) > 3.8.0cvs44.patchset
 ( cvs diff -u -r 1.36.2.197 -r 1.36.2.198 src/common/utils.c;  ) > 3.8.0cvs45.patchset
+( cvs diff -u -r 1.1.4.74 -r 1.1.4.75 src/prefs_filtering_action.c;  ) > 3.8.0cvs46.patchset
