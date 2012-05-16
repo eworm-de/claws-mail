@@ -1,3 +1,8 @@
+2012-05-16 [paul]	3.8.0cvs42
+
+	* src/gtk/description_window.c
+		fix bug 2624, 'dialog "Action Configuration" cannot be closed'
+
 2012-05-16 [paul]	3.8.0cvs41
 
 	* src/common/ssl_certificate.c

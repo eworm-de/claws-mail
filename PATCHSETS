@@ -4358,3 +4358,4 @@
 ( cvs diff -u -r 1.155.2.100 -r 1.155.2.101 src/Makefile.am;  ) > 3.8.0cvs39.patchset
 ( cvs diff -u -r 1.83.2.188 -r 1.83.2.189 src/mimeview.c;  cvs diff -u -r 1.36.2.195 -r 1.36.2.196 src/common/utils.c;  ) > 3.8.0cvs40.patchset
 ( cvs diff -u -r 1.4.2.40 -r 1.4.2.41 src/common/ssl_certificate.c;  ) > 3.8.0cvs41.patchset
+( cvs diff -u -r 1.5.2.32 -r 1.5.2.33 src/gtk/description_window.c;  ) > 3.8.0cvs42.patchset

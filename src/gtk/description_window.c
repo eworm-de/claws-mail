@@ -50,7 +50,7 @@ void description_window_create(DescriptionWindow *dwindow)
 		description_create(dwindow);
 	
 		gtk_window_set_transient_for(GTK_WINDOW(dwindow->window), GTK_WINDOW(dwindow->parent));
-		gtk_window_set_modal(GTK_WINDOW(dwindow->parent), FALSE);
+		gtk_window_set_modal(GTK_WINDOW(dwindow->parent), TRUE);
 		gtk_window_set_destroy_with_parent(GTK_WINDOW(dwindow->window), TRUE);
 		gtk_widget_show(dwindow->window);
 
