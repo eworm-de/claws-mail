@@ -1,3 +1,8 @@
+2012-05-16 [colin]	3.8.0cvs45
+
+	* src/common/utils.c
+		And fix leak
+
 2012-05-16 [colin]	3.8.0cvs44
 
 	* src/common/utils.c

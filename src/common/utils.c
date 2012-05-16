@@ -2330,6 +2330,7 @@ gint remove_numbered_files(const gchar *dir, guint first, guint last)
 			g_free(filename);
 			return -1;
 		}
+		g_free(filename);
 		return 0;
 	}
 
