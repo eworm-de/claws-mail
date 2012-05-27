@@ -143,7 +143,7 @@ static GtkWidget *about_create_child_page_info(void)
 				NULL);
 #ifdef GENERIC_UMPC
 	gtk_text_buffer_insert(buffer, &iter, _(
-				"\n\nCopyright (C) 1999-2011\nThe Claws Mail Team\n"
+				"\n\nCopyright (C) 1999-2012\nThe Claws Mail Team\n"
 				" and Hiroyuki Yamamoto"), -1);
 #endif
 	gtk_text_buffer_insert_with_tags_by_name(buffer, &iter, (_("\n\nSystem Information\n")), -1,
@@ -708,7 +708,7 @@ static void about_create(void)
 	gtk_box_pack_start(GTK_BOX(vbox2), button, FALSE, FALSE, 0);
 #ifndef GENERIC_UMPC
 	label = gtk_label_new
-		(_("Copyright (C) 1999-2011\nThe Claws Mail Team\n"
+		(_("Copyright (C) 1999-2012\nThe Claws Mail Team\n"
 		 "and Hiroyuki Yamamoto"));
 	gtk_label_set_selectable(GTK_LABEL(label), TRUE);
 	gtk_label_set_justify(GTK_LABEL(label), GTK_JUSTIFY_CENTER);

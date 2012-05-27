@@ -1,3 +1,10 @@
+2012-05-27 [paul]	3.8.0cvs47
+
+	* src/editldap.c
+	* src/prefs_actions.c
+	* src/gtk/about.c
+		fix some typos in strings, thanks to Thomas Bellmann
+
 2012-05-16 [paul]	3.8.0cvs46
 
 	* src/prefs_filtering_action.c

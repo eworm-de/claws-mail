@@ -471,11 +471,11 @@ static void addressbook_edit_ldap_page_basic( gint pageNum, gchar *pageLbl ) {
 	SET_TOGGLE_SENSITIVITY_REVERSE(enable_tls_checkbtn, enable_ssl_checkbtn);
 	SET_TOGGLE_SENSITIVITY_REVERSE(enable_ssl_checkbtn, enable_tls_checkbtn);
 	CLAWS_SET_TIP(enable_tls_checkbtn, _( 
-		"Enable secure connection to the LDAP server via TLS."
+		"Enable secure connection to the LDAP server via TLS. "
 		"If connection fails, be sure to check the correct "
 		"configuration in ldap.conf (TLS_CACERTDIR and TLS_REQCERT fields)." ));
 	CLAWS_SET_TIP(enable_ssl_checkbtn, _( 
-		"Enable secure connection to the LDAP server via SSL."
+		"Enable secure connection to the LDAP server via SSL. "
 		"If connection fails, be sure to check the correct "
 		"configuration in ldap.conf (TLS_CACERTDIR and TLS_REQCERT fields)." ));
 
