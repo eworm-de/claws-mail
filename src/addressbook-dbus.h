@@ -1,7 +1,7 @@
 /*
  * $Id$
  */
-/* vim:et:ts=4:sw=4:et:sts=4:ai:set list listchars=tab\:»·,trail\:·: */
+/* vim:et:ts=4:sw=4:et:sts=4:ai:set list listchars=tab\:ï¿½ï¿½,trail\:ï¿½: */
 
 /*
  * Claws-contacts is a proposed new design for the address book feature
@@ -12,7 +12,7 @@
  * More lightweight is achieved by design, in that sence that the whole
  * structure is based on a plugable design.
  *
- * Claws Mail is Copyright (C) 1999-2011 by the Claws Mail Team and
+ * Claws Mail is Copyright (C) 1999-2012 by the Claws Mail Team and
  * Claws-contacts is Copyright (C) 2011 by Michael Rasmussen.
  *
  * This program is free software; you can redistribute it and/or modify
