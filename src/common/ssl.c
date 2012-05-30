@@ -267,7 +267,10 @@ gboolean ssl_init_socket_with_method(SockInfo *sockinfo, SSLMethod method)
 #if GNUTLS_VERSION_NUMBER < 0x030003
 	gnutls_transport_set_lowat (session, 0); 
 #endif
-	gnutls_priority_set_direct(session, "NORMAL", NULL);
+	if (method == 0)
+		gnutls_priority_set_direct(session, "NORMAL:-VERS-TLS1.0:-VERS-TLS1.1:-VERS-TLS1.2", NULL);
+	else
+		gnutls_priority_set_direct(session, "NORMAL", NULL);
 	gnutls_record_disable_padding(session);
 
 	gnutls_credentials_set(session, GNUTLS_CRD_CERTIFICATE, xcred);
