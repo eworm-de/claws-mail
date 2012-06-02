@@ -49,6 +49,8 @@
 #include "timing.h"
 #include "inc.h"
 
+extern SessionStats session_stats;
+
 static gint procmsg_send_message_queue_full(const gchar *file, gboolean keep_session, gchar **errstr,
 					    FolderItem *queue, gint msgnum, gboolean *queued_removed);
 static void procmsg_update_unread_children	(MsgInfo 	*info,
@@ -1760,6 +1762,19 @@ send_mail:
 	}
 
 	fclose(fp);
+
+	/* update session statistics */
+	if (mailval == 0 && newsval == 0) {
+		/* update session stats */
+		if (replymessageid)
+			session_stats.replied++;
+		else if (fwdmessageid)
+			session_stats.forwarded++;
+		else
+			session_stats.sent++;
+fprintf(stdout, "++ STATS ++ SENT %d %d %d\n", session_stats.sent, session_stats.replied, session_stats.forwarded);
+fflush(stdout);
+	}
 
 	/* save message to outbox */
 	if (mailval == 0 && newsval == 0 && savecopyfolder) {

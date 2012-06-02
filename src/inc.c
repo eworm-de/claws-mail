@@ -78,6 +78,8 @@ static gboolean maemo_warned_offline = FALSE;
 #endif
 #endif
 
+extern SessionStats session_stats;
+
 static GList *inc_dialog_list = NULL;
 
 guint inc_lock_count = 0;
@@ -88,6 +90,7 @@ static GdkPixbuf *okpix;
 
 #define MSGBUFSIZE	8192
 
+static void inc_update_stats(gint new_msgs);
 static void inc_finished		(MainWindow		*mainwin,
 					 gboolean		 new_messages,
 					 gboolean		 autocheck);
@@ -153,7 +156,15 @@ static gint inc_autocheck_func			(gpointer	 data);
 
 static void inc_notify_cmd		(gint new_msgs, 
  					 gboolean notify);
-	
+
+static void inc_update_stats(gint new_msgs)
+{
+	/* update session statistics */
+	session_stats.received += new_msgs;
+fprintf(stdout, "++ STATS ++ INC %d %d\n", session_stats.received, new_msgs);
+fflush(stdout);
+}
+
 /**
  * inc_finished:
  * @mainwin: Main window.
@@ -214,6 +225,7 @@ void inc_mail(MainWindow *mainwin, gboolean notify)
 			new_msgs += account_new_msgs;
 	}
 
+	inc_update_stats(new_msgs);
 	inc_finished(mainwin, new_msgs > 0, FALSE);
 	main_window_unlock(mainwin);
  	inc_notify_cmd(new_msgs, notify);
@@ -307,6 +319,7 @@ gint inc_account_mail(MainWindow *mainwin, PrefsAccount *account)
 
 	new_msgs = inc_account_mail_real(mainwin, account);
 
+	inc_update_stats(new_msgs);
 	inc_finished(mainwin, new_msgs > 0, FALSE);
 	main_window_unlock(mainwin);
 	inc_autocheck_timer_set();
@@ -335,6 +348,7 @@ void inc_all_account_mail(MainWindow *mainwin, gboolean autocheck,
 
 	list = account_get_list();
 	if (!list) {
+		inc_update_stats(new_msgs);
 		inc_finished(mainwin, new_msgs > 0, autocheck);
 		main_window_unlock(mainwin);
  		inc_notify_cmd(new_msgs, notify);
@@ -390,6 +404,7 @@ void inc_all_account_mail(MainWindow *mainwin, gboolean autocheck,
 		new_msgs += inc_start(inc_dialog);
 	}
 
+	inc_update_stats(new_msgs);
 	inc_finished(mainwin, new_msgs > 0, autocheck);
 	main_window_unlock(mainwin);
  	inc_notify_cmd(new_msgs, notify);
@@ -1407,7 +1422,6 @@ osso_context_t *get_osso_context(void);
 
 static void inc_notify_cmd(gint new_msgs, gboolean notify)
 {
-
 #ifndef MAEMO
 	gchar *buf, *numpos, *ret_str;
 	gssize by_read = 0, by_written = 0;

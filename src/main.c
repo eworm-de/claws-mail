@@ -207,6 +207,8 @@ static struct RemoteCmd {
 	gboolean search_recursive;
 	gboolean status;
 	gboolean status_full;
+	gboolean statistics;
+	gboolean reset_statistics;
 	GPtrArray *status_folders;
 	GPtrArray *status_full_folders;
 	gboolean send;
@@ -219,6 +221,10 @@ static struct RemoteCmd {
 	const gchar *target;
 } cmd;
 
+SessionStats session_stats;
+
+static void reset_statistics(void);
+		
 static void parse_cmd_opt(int argc, char *argv[]);
 
 static gint prohibit_duplicate_launch	(void);
@@ -1031,6 +1037,16 @@ static void install_dbus_status_handler(void)
 }
 #endif
 
+static void reset_statistics(void)
+{
+	/* (re-)initialize session statistics */
+	session_stats.received = 0;
+	session_stats.sent = 0;
+	session_stats.replied = 0;
+	session_stats.forwarded = 0;
+	session_stats.time_started = time(NULL);
+}
+		
 int main(int argc, char *argv[])
 {
 #ifdef MAEMO
@@ -1106,7 +1122,8 @@ int main(int argc, char *argv[])
 		return 0;
 	}
 
-	if (cmd.status || cmd.status_full || cmd.search) {
+	if (cmd.status || cmd.status_full || cmd.search ||
+		cmd.statistics || cmd.reset_statistics) {
 		puts("0 Claws Mail not running.");
 		lock_socket_remove();
 		return 0;
@@ -1117,6 +1134,8 @@ int main(int argc, char *argv[])
 	if (!g_thread_supported())
 		g_thread_init(NULL);
 
+	reset_statistics();
+	
 	gtk_set_locale();
 	gtk_init(&argc, &argv);
 
@@ -2000,6 +2019,10 @@ static void parse_cmd_opt(int argc, char *argv[])
 			cmd.online_mode = ONLINE_MODE_ONLINE;
 		} else if (!strncmp(argv[i], "--offline", 9)) {
 			cmd.online_mode = ONLINE_MODE_OFFLINE;
+		} else if (!strncmp(argv[i], "--statistics", 12)) {
+			cmd.statistics = TRUE;
+		} else if (!strncmp(argv[i], "--reset-statistics", 18)) {
+			cmd.reset_statistics = TRUE;
 		} else if (!strncmp(argv[i], "--help", 6) ||
 			   !strncmp(argv[i], "-h", 2)) {
 			gchar *base = g_path_get_basename(argv[0]);
@@ -2028,6 +2051,8 @@ static void parse_cmd_opt(int argc, char *argv[])
  			g_print("%s\n", _("  --status [folder]...   show the total number of messages"));
  			g_print("%s\n", _("  --status-full [folder]...\n"
  			                  "                         show the status of each folder"));
+ 			g_print("%s\n", _("  --statistics           show session statistics"));
+ 			g_print("%s\n", _("  --reset-statistics     reset session statistics"));
 			g_print("%s\n", _("  --select folder[/msg]  jumps to the specified folder/message\n" 
 			                  "                         folder is a folder id like 'folder/sub_folder'"));
 			g_print("%s\n", _("  --online               switch to online mode"));
@@ -2373,6 +2398,16 @@ static gint prohibit_duplicate_launch(void)
  		}
 	} else if (cmd.exit) {
 		fd_write_all(uxsock, "exit\n", 5);
+	} else if (cmd.statistics) {
+		gchar buf[BUFSIZ];
+		fd_write(uxsock, "statistics\n", 11);
+ 		for (;;) {
+ 			fd_gets(uxsock, buf, sizeof(buf));
+ 			if (!strncmp(buf, ".\n", 2)) break;
+ 			fputs(buf, stdout);
+ 		}
+	} else if (cmd.reset_statistics) {
+		fd_write(uxsock, "reset_statistics\n", 17);
 	} else if (cmd.target) {
 		gchar *str = g_strdup_printf("select %s\n", cmd.target);
 		fd_write_all(uxsock, str, strlen(str));
@@ -2532,6 +2567,48 @@ static void lock_socket_input_cb(gpointer data,
  		fd_write_all(sock, ".\n", 2);
  		g_free(status);
  		if (folders) g_ptr_array_free(folders, TRUE);
+	} else if (!strncmp(buf, "statistics", 10)) {
+		gchar tmp[BUFSIZ];
+
+		g_snprintf(tmp, sizeof(tmp), _("Session statistics\n"));
+ 		fd_write_all(sock, tmp, strlen(tmp));
+
+		g_snprintf(tmp, sizeof(tmp), _("Started: %s\n"),
+				ctime(&session_stats.time_started));
+ 		fd_write_all(sock, tmp, strlen(tmp));
+
+		g_snprintf(tmp, sizeof(tmp), _("Incoming traffic\n"));
+ 		fd_write_all(sock, tmp, strlen(tmp));
+
+		g_snprintf(tmp, sizeof(tmp), _("Received messages: %d\n"),
+				session_stats.received);
+ 		fd_write_all(sock, tmp, strlen(tmp));
+
+ 		fd_write_all(sock, "\n", 1);
+
+		g_snprintf(tmp, sizeof(tmp), _("Outgoing traffic\n"));
+ 		fd_write_all(sock, tmp, strlen(tmp));
+
+		g_snprintf(tmp, sizeof(tmp), _("New/redirected messages: %d\n"),
+				session_stats.sent);
+ 		fd_write_all(sock, tmp, strlen(tmp));
+
+		g_snprintf(tmp, sizeof(tmp), _("Replied messages: %d\n"),
+				session_stats.replied);
+ 		fd_write_all(sock, tmp, strlen(tmp));
+
+		g_snprintf(tmp, sizeof(tmp), _("Forwarded messages: %d\n"),
+				session_stats.forwarded);
+ 		fd_write_all(sock, tmp, strlen(tmp));
+
+		g_snprintf(tmp, sizeof(tmp), _("Total outgoing messages: %d\n"),
+				(session_stats.sent + session_stats.replied +
+				 session_stats.forwarded));
+ 		fd_write_all(sock, tmp, strlen(tmp));
+
+ 		fd_write_all(sock, ".\n", 2);
+	} else if (!strncmp(buf, "reset_statistics", 16)) {
+		reset_statistics();
 	} else if (!strncmp(buf, "select ", 7)) {
 		const gchar *target = buf+7;
 		mainwindow_jump_to(target, TRUE);

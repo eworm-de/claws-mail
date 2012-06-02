@@ -30,6 +30,7 @@
 #include <hildon-widgets/hildon-window.h>
 #endif
 #endif
+#include <sys/time.h>
 
 extern gchar *prog_version;
 extern gboolean debug_mode;
@@ -37,6 +38,17 @@ extern gboolean debug_mode;
 #ifdef MAEMO
 extern HildonProgram *hildon_program;
 #endif
+
+typedef struct _SessionStats SessionStats;
+
+struct _SessionStats
+{
+	gint received;
+	gint sent;
+	gint replied;
+	gint forwarded;
+	time_t time_started;
+};
 
 void app_will_exit	(GtkWidget *widget, gpointer data);
 gboolean clean_quit	(gpointer data);
