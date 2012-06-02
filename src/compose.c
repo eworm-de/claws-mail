@@ -501,6 +501,10 @@ static gboolean compose_drag_drop	    (GtkWidget *widget,
 					     GdkDragContext *drag_context,
 					     gint x, gint y,
 					     guint time, gpointer user_data);
+static gboolean completion_set_focus_to_subject
+					(GtkWidget    *widget,
+					 GdkEventKey  *event,
+					 Compose      *user_data);
 
 static void text_inserted		(GtkTextBuffer	*buffer,
 					 GtkTextIter	*iter,
@@ -7635,6 +7639,9 @@ static Compose *compose_create(PrefsAccount *account,
 	g_signal_connect(G_OBJECT(text), "drag-drop",
 			 G_CALLBACK(compose_drag_drop),
 			 compose);
+	g_signal_connect(G_OBJECT(text), "key-press-event",
+			 G_CALLBACK(completion_set_focus_to_subject),
+			 compose);
 	gtk_widget_show_all(vbox);
 
 	/* pane between attach clist and text */
@@ -10833,6 +10840,21 @@ static gboolean compose_drag_drop(GtkWidget *widget,
 	/* not handling this signal makes compose_insert_drag_received_cb
 	 * called twice */
 	return TRUE;					 
+}
+
+static gboolean completion_set_focus_to_subject
+					(GtkWidget    *widget,
+					 GdkEventKey  *event,
+					 Compose      *compose)
+{
+	cm_return_val_if_fail(compose != NULL, FALSE);
+
+	/* make backtab move to subject field */
+	if(event->keyval == GDK_KEY_ISO_Left_Tab) {
+		gtk_widget_grab_focus(compose->subject_entry);
+		return TRUE;
+	}
+	return FALSE;
 }
 
 static void compose_insert_drag_received_cb (GtkWidget		*widget,

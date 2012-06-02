@@ -1,3 +1,8 @@
+2012-06-02 [wwp]	3.8.0cvs51
+
+	* src/compose.c
+		Fix bug 2620: shift+tab from subject field not working.
+
 2012-06-02 [wwp]	3.8.0cvs50
 
 	* src/compose.c
