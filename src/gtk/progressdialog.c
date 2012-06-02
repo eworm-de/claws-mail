@@ -43,6 +43,9 @@ static gint progress_dialog_insert_account(ProgressDialog *progress,
 					   const gchar	  *status,
 					   GdkPixbuf	  *image);
 
+static void progress_dialog_hide_btn_cb(GtkWidget *widget, gpointer data);
+static void progress_dialog_delete_event_btn_cb(GtkWidget *widget, gpointer data);
+
 ProgressDialog *progress_dialog_create(void)
 {
 	ProgressDialog *progress;
@@ -50,6 +53,7 @@ ProgressDialog *progress_dialog_create(void)
 	GtkWidget *hbox;
 	GtkWidget *vbox;
 	GtkWidget *label;
+	GtkWidget *hide_btn;
 	GtkWidget *showlog_btn;
 	GtkWidget *cancel_btn;
 	GtkWidget *progressbar;
@@ -82,6 +86,9 @@ ProgressDialog *progress_dialog_create(void)
 	gtk_box_pack_start(GTK_BOX(hbox), label, FALSE, FALSE, 8);
 	gtk_widget_show(label);
 
+	hide_btn = gtk_dialog_add_button(GTK_DIALOG(dialog),
+					   _("_Hide"),
+					   GTK_RESPONSE_NONE);
 	showlog_btn = gtk_dialog_add_button(GTK_DIALOG(dialog),
 					   _("_View log"),
 					   GTK_RESPONSE_NONE);
@@ -142,7 +149,13 @@ ProgressDialog *progress_dialog_create(void)
 	gtk_tree_view_column_set_resizable(column, TRUE);
 	gtk_tree_view_column_set_sizing(column, GTK_TREE_VIEW_COLUMN_FIXED);
 	gtk_tree_view_append_column(GTK_TREE_VIEW(treeview), column);
-	
+
+	/* the WM close and hide buttons are handled internally and not published to caller */
+	g_signal_connect(G_OBJECT(dialog), "delete_event",
+				G_CALLBACK(progress_dialog_delete_event_btn_cb), NULL);
+	g_signal_connect(G_OBJECT(hide_btn), "clicked",
+				G_CALLBACK(progress_dialog_hide_btn_cb), dialog);
+
 	progress->window      = dialog;
 	progress->label       = label;
 	progress->showlog_btn  = showlog_btn;
@@ -259,4 +272,14 @@ static gint progress_dialog_insert_account(ProgressDialog *progress,
 				   -1);
 
 	return result;
+}
+
+static void progress_dialog_hide_btn_cb(GtkWidget *widget, gpointer data)
+{
+		gtk_widget_hide(GTK_WIDGET(data));
+}
+
+static void progress_dialog_delete_event_btn_cb(GtkWidget *widget, gpointer data)
+{
+		gtk_widget_hide(widget);
 }
