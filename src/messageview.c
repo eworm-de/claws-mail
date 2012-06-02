@@ -280,9 +280,9 @@ static GtkActionEntry msgview_entries[] =
 
 	{"Message/Reply",		NULL, N_("_Reply"), "<control>R", NULL, G_CALLBACK(reply_cb) }, /* COMPOSE_REPLY */
 	{"Message/ReplyTo",		NULL, N_("Repl_y to") }, 
-	{"Message/ReplyTo/All",		NULL, N_("_all"), "<control><shift>R", NULL, G_CALLBACK(reply_cb) }, /* COMPOSE_REPLY_TO_ALL */
-	{"Message/ReplyTo/Sender",	NULL, N_("_sender"), NULL, NULL, G_CALLBACK(reply_cb) }, /* COMPOSE_REPLY_TO_SENDER */
-	{"Message/ReplyTo/List",	NULL, N_("mailing _list"), "<control>L", NULL, G_CALLBACK(reply_cb) }, /* COMPOSE_REPLY_TO_LIST */
+	{"Message/ReplyTo/All",		NULL, N_("_All"), "<control><shift>R", NULL, G_CALLBACK(reply_cb) }, /* COMPOSE_REPLY_TO_ALL */
+	{"Message/ReplyTo/Sender",	NULL, N_("_Sender"), NULL, NULL, G_CALLBACK(reply_cb) }, /* COMPOSE_REPLY_TO_SENDER */
+	{"Message/ReplyTo/List",	NULL, N_("Mailing _list"), "<control>L", NULL, G_CALLBACK(reply_cb) }, /* COMPOSE_REPLY_TO_LIST */
 	/* {"Message/---",			NULL, "---", NULL, NULL, NULL }, */
 
 	{"Message/Forward",		NULL, N_("_Forward"), "<control><alt>F", NULL, G_CALLBACK(reply_cb) }, /* COMPOSE_FORWARD_INLINE */

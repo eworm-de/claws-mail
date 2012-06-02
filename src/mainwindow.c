@@ -531,8 +531,8 @@ static GtkActionEntry mainwin_entries[] =
 	{"View/ShowHide/Toolbar",		NULL, N_("_Toolbar") },
 
 	{"View/SetColumns",			NULL, N_("Set displayed _columns") },
-	{"View/SetColumns/Folderlist",		NULL, N_("in _Folder list..."), NULL, NULL, G_CALLBACK(set_folder_display_item_cb) },
-	{"View/SetColumns/Messagelist",		NULL, N_("in _Message list..."), NULL, NULL, G_CALLBACK(set_summary_display_item_cb) },
+	{"View/SetColumns/Folderlist",		NULL, N_("In _folder list..."), NULL, NULL, G_CALLBACK(set_folder_display_item_cb) },
+	{"View/SetColumns/Messagelist",		NULL, N_("In _message list..."), NULL, NULL, G_CALLBACK(set_summary_display_item_cb) },
 	{"View/---",				NULL, "---" },
 
 
@@ -623,9 +623,9 @@ static GtkActionEntry mainwin_entries[] =
 
 	{"Message/Reply",			NULL, N_("_Reply"), "<control>R", NULL, G_CALLBACK(main_window_reply_cb) }, /* COMPOSE_REPLY */
 	{"Message/ReplyTo",			NULL, N_("Repl_y to") }, 
-	{"Message/ReplyTo/All",			NULL, N_("_all"), "<control><shift>R", NULL, G_CALLBACK(main_window_reply_cb) }, /* COMPOSE_REPLY_TO_ALL */
-	{"Message/ReplyTo/Sender",		NULL, N_("_sender"), NULL, NULL, G_CALLBACK(main_window_reply_cb) }, /* COMPOSE_REPLY_TO_SENDER */
-	{"Message/ReplyTo/List",		NULL, N_("mailing _list"), "<control>L", NULL, G_CALLBACK(main_window_reply_cb) }, /* COMPOSE_REPLY_TO_LIST */
+	{"Message/ReplyTo/All",			NULL, N_("_All"), "<control><shift>R", NULL, G_CALLBACK(main_window_reply_cb) }, /* COMPOSE_REPLY_TO_ALL */
+	{"Message/ReplyTo/Sender",		NULL, N_("_Sender"), NULL, NULL, G_CALLBACK(main_window_reply_cb) }, /* COMPOSE_REPLY_TO_SENDER */
+	{"Message/ReplyTo/List",		NULL, N_("Mailing _list"), "<control>L", NULL, G_CALLBACK(main_window_reply_cb) }, /* COMPOSE_REPLY_TO_LIST */
 	{"Message/FollowupReply",		NULL, N_("Follow-up and reply to"), NULL, NULL, G_CALLBACK(main_window_reply_cb) }, /* COMPOSE_FOLLOWUP_AND_REPLY_TO */
 	/*{"Message/---",			NULL, "---" },*/
 
@@ -688,8 +688,8 @@ static GtkActionEntry mainwin_entries[] =
 	{"Tools/AddSenderToAB",			NULL, N_("Add sender to address boo_k"), NULL, NULL, G_CALLBACK(add_address_cb) }, 
 
 	{"Tools/CollectAddresses",		NULL, N_("C_ollect addresses") }, 
-	{"Tools/CollectAddresses/FromFolder",	NULL, N_("from Current _folder..."), NULL, NULL, G_CALLBACK(addr_harvest_cb) }, 
-	{"Tools/CollectAddresses/FromSelected",	NULL, N_("from Selected _messages..."), NULL, NULL, G_CALLBACK(addr_harvest_msg_cb) }, 
+	{"Tools/CollectAddresses/FromFolder",	NULL, N_("From current _folder..."), NULL, NULL, G_CALLBACK(addr_harvest_cb) }, 
+	{"Tools/CollectAddresses/FromSelected",	NULL, N_("From selected _messages..."), NULL, NULL, G_CALLBACK(addr_harvest_msg_cb) }, 
 	{"Tools/---",				NULL, "---", NULL, NULL, NULL },
 
 	{"Tools/FilterFolder",			NULL, N_("_Filter all messages in folder"), NULL, NULL, G_CALLBACK(filter_cb) }, 
@@ -804,20 +804,20 @@ static GtkRadioActionEntry mainwin_layout_radio_entries[] = { /* set_layout_cb *
 };
 #endif
 static GtkRadioActionEntry mainwin_sort_radio_entries[] = { /* sort_summary_cb */
-	{"View/Sort/Number",			NULL, N_("by _Number"), NULL, NULL, SORT_BY_NUMBER }, /* radio SORT_BY_NUMBER */
-	{"View/Sort/Size",			NULL, N_("by S_ize"), NULL, NULL, SORT_BY_SIZE }, /* radio SORT_BY_SIZE */
-	{"View/Sort/Date",			NULL, N_("by _Date"), NULL, NULL, SORT_BY_DATE }, /* radio SORT_BY_DATE */
-	{"View/Sort/ThreadDate",		NULL, N_("by Thread date"), NULL, NULL, SORT_BY_THREAD_DATE }, /* radio SORT_BY_THREAD_DATE */
-	{"View/Sort/From",			NULL, N_("by _From"), NULL, NULL, SORT_BY_FROM }, /* radio SORT_BY_FROM */
-	{"View/Sort/To",			NULL, N_("by _To"), NULL, NULL, SORT_BY_TO }, /* radio SORT_BY_TO */
-	{"View/Sort/Subject",			NULL, N_("by S_ubject"), NULL, NULL, SORT_BY_SUBJECT }, /* radio SORT_BY_SUBJECT */
-	{"View/Sort/Color",			NULL, N_("by _Color label"), NULL, NULL, SORT_BY_LABEL }, /* radio SORT_BY_LABEL */
-	{"View/Sort/Tag",			NULL, N_("by Tag"), NULL, NULL, SORT_BY_TAGS }, /* radio SORT_BY_TAGS */
-	{"View/Sort/Mark",			NULL, N_("by _Mark"), NULL, NULL, SORT_BY_MARK }, /* radio SORT_BY_MARK */
-	{"View/Sort/Status",			NULL, N_("by _Status"), NULL, NULL, SORT_BY_STATUS }, /* radio SORT_BY_STATUS */
-	{"View/Sort/Attachment",		NULL, N_("by A_ttachment"), NULL, NULL, SORT_BY_MIME }, /* radio SORT_BY_MIME */
-	{"View/Sort/Score",			NULL, N_("by Score"), NULL, NULL, SORT_BY_SCORE }, /* radio SORT_BY_SCORE */
-	{"View/Sort/Locked",			NULL, N_("by Locked"), NULL, NULL, SORT_BY_LOCKED }, /* radio SORT_BY_LOCKED */
+	{"View/Sort/Number",			NULL, N_("By _number"), NULL, NULL, SORT_BY_NUMBER }, /* radio SORT_BY_NUMBER */
+	{"View/Sort/Size",			NULL, N_("By s_ize"), NULL, NULL, SORT_BY_SIZE }, /* radio SORT_BY_SIZE */
+	{"View/Sort/Date",			NULL, N_("By _date"), NULL, NULL, SORT_BY_DATE }, /* radio SORT_BY_DATE */
+	{"View/Sort/ThreadDate",		NULL, N_("By thread date"), NULL, NULL, SORT_BY_THREAD_DATE }, /* radio SORT_BY_THREAD_DATE */
+	{"View/Sort/From",			NULL, N_("By _From"), NULL, NULL, SORT_BY_FROM }, /* radio SORT_BY_FROM */
+	{"View/Sort/To",			NULL, N_("By _To"), NULL, NULL, SORT_BY_TO }, /* radio SORT_BY_TO */
+	{"View/Sort/Subject",			NULL, N_("By s_ubject"), NULL, NULL, SORT_BY_SUBJECT }, /* radio SORT_BY_SUBJECT */
+	{"View/Sort/Color",			NULL, N_("By _color label"), NULL, NULL, SORT_BY_LABEL }, /* radio SORT_BY_LABEL */
+	{"View/Sort/Tag",			NULL, N_("By tag"), NULL, NULL, SORT_BY_TAGS }, /* radio SORT_BY_TAGS */
+	{"View/Sort/Mark",			NULL, N_("By _mark"), NULL, NULL, SORT_BY_MARK }, /* radio SORT_BY_MARK */
+	{"View/Sort/Status",			NULL, N_("By _status"), NULL, NULL, SORT_BY_STATUS }, /* radio SORT_BY_STATUS */
+	{"View/Sort/Attachment",		NULL, N_("By a_ttachment"), NULL, NULL, SORT_BY_MIME }, /* radio SORT_BY_MIME */
+	{"View/Sort/Score",			NULL, N_("By score"), NULL, NULL, SORT_BY_SCORE }, /* radio SORT_BY_SCORE */
+	{"View/Sort/Locked",			NULL, N_("By locked"), NULL, NULL, SORT_BY_LOCKED }, /* radio SORT_BY_LOCKED */
 	{"View/Sort/DontSort",			NULL, N_("D_on't sort"), NULL, NULL, SORT_BY_NONE }, /* radio SORT_BY_NONE */
 };
 
@@ -2123,7 +2123,7 @@ MainWindow *main_window_create()
 	set_log_prefs(LOG_PROTOCOL,
 			&prefs_common.logwin_width,
 			&prefs_common.logwin_height);
-	set_log_title(LOG_DEBUG_FILTERING, _("Filtering/processing debug log"));
+	set_log_title(LOG_DEBUG_FILTERING, _("Filtering/Processing debug log"));
 	set_log_prefs(LOG_DEBUG_FILTERING,
 			&prefs_common.filtering_debugwin_width,
 			&prefs_common.filtering_debugwin_height);
