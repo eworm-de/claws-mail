@@ -1,3 +1,9 @@
+2012-06-20 [ticho]	3.8.0cvs55
+
+	* src/mh.c
+		Fix for bug #1090 - Standard-folders appear again
+		after rescanning tree
+
 2012-06-20 [paul]	3.8.0cvs54
 
 	* src/prefs_common.c

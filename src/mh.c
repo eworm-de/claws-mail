@@ -778,7 +778,7 @@ static gint mh_scan_tree(Folder *folder)
 
 static gint mh_create_tree(Folder *folder)
 {
-	gchar *rootpath;
+	gchar *rootpath, *f;
 
 	cm_return_val_if_fail(folder != NULL, -1);
 
@@ -786,11 +786,42 @@ static gint mh_create_tree(Folder *folder)
 	rootpath = LOCAL_FOLDER(folder)->rootpath;
 	MAKE_DIR_IF_NOT_EXIST(rootpath);
 	CHDIR_RETURN_VAL_IF_FAIL(rootpath, -1);
-	MAKE_DIR_IF_NOT_EXIST(INBOX_DIR);
-	MAKE_DIR_IF_NOT_EXIST(OUTBOX_DIR);
-	MAKE_DIR_IF_NOT_EXIST(QUEUE_DIR);
-	MAKE_DIR_IF_NOT_EXIST(DRAFT_DIR);
-	MAKE_DIR_IF_NOT_EXIST(TRASH_DIR);
+
+	/* Create special directories as needed */
+	if (folder->inbox != NULL &&
+			folder->inbox->path != NULL)
+		f = folder->inbox->path;
+	else
+		f = INBOX_DIR;
+	MAKE_DIR_IF_NOT_EXIST(f);
+
+	if (folder->outbox != NULL &&
+			folder->outbox->path != NULL)
+		f = folder->outbox->path;
+	else
+		f = OUTBOX_DIR;
+	MAKE_DIR_IF_NOT_EXIST(f);
+
+	if (folder->draft != NULL &&
+			folder->draft->path != NULL)
+		f = folder->draft->path;
+	else
+		f = DRAFT_DIR;
+	MAKE_DIR_IF_NOT_EXIST(f);
+
+	if (folder->queue != NULL &&
+			folder->queue->path != NULL)
+		f = folder->queue->path;
+	else
+		f = QUEUE_DIR;
+	MAKE_DIR_IF_NOT_EXIST(f);
+
+	if (folder->trash != NULL &&
+			folder->trash->path != NULL)
+		f = folder->trash->path;
+	else
+		f = TRASH_DIR;
+	MAKE_DIR_IF_NOT_EXIST(f);
 
 	return 0;
 }
