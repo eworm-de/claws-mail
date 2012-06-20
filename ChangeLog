@@ -1,3 +1,12 @@
+2012-06-20 [paul]	3.8.0cvs54
+
+	* src/prefs_common.c
+	* src/prefs_common.h
+	* src/textview.c
+	* src/textview.h
+		colourise attached patches.
+		Patch by Ticho
+
 2012-06-02 [wwp]	3.8.0cvs53
 
 	* src/gtk/progressdialog.c

@@ -1170,6 +1170,13 @@ static PrefParam param[] = {
 	{"nav_history_length", "50", &prefs_common.nav_history_length, P_INT,
 	 NULL, NULL, NULL},
 
+	{"diff_added_color", "#008b8b", &prefs_common.diff_added_color, P_COLOR,
+	 NULL, NULL, NULL},
+	{"diff_deleted_color", "#6a5acd", &prefs_common.diff_deleted_color, P_COLOR,
+	 NULL, NULL, NULL},
+	{"diff_hunk_color", "#a52a2a", &prefs_common.diff_hunk_color, P_COLOR,
+	 NULL, NULL, NULL},
+
 	{NULL, NULL, NULL, P_OTHER, NULL, NULL, NULL}
 };
 

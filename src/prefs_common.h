@@ -520,6 +520,10 @@ struct _PrefsCommon
 	gboolean flush_metadata;
 
 	gint nav_history_length;
+
+	gulong diff_added_color;
+	gulong diff_deleted_color;
+	gulong diff_hunk_color;
 };
 
 extern PrefsCommon prefs_common;

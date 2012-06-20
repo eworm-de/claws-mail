@@ -106,6 +106,27 @@ static GdkColor emphasis_color = {
 	(gushort)0
 };
 
+static GdkColor diff_added_color = {
+	(gulong)0,
+	(gushort)0,
+	(gushort)0,
+	(gushort)0
+};
+
+static GdkColor diff_deleted_color = {
+	(gulong)0,
+	(gushort)0,
+	(gushort)0,
+	(gushort)0
+};
+
+static GdkColor diff_hunk_color = {
+	(gulong)0,
+	(gushort)0,
+	(gushort)0,
+	(gushort)0
+};
+
 static GdkCursor *hand_cursor = NULL;
 static GdkCursor *text_cursor = NULL;
 static GdkCursor *watch_cursor= NULL;
@@ -488,6 +509,24 @@ static void textview_create_tags(GtkTextView *text, TextView *textview)
 	gtk_text_buffer_create_tag(buffer, "link-hover",
 			"underline", PANGO_UNDERLINE_SINGLE,
 			NULL);
+	gtk_text_buffer_create_tag(buffer, "diff-add",
+			"foreground-gdk", &diff_added_color,
+			NULL);
+	gtk_text_buffer_create_tag(buffer, "diff-del",
+			"foreground-gdk", &diff_deleted_color,
+			NULL);
+	gtk_text_buffer_create_tag(buffer, "diff-add-file",
+			"foreground-gdk", &diff_added_color,
+			"weight", PANGO_WEIGHT_BOLD,
+			NULL);
+	gtk_text_buffer_create_tag(buffer, "diff-del-file",
+			"foreground-gdk", &diff_deleted_color,
+			"weight", PANGO_WEIGHT_BOLD,
+			NULL);
+	gtk_text_buffer_create_tag(buffer, "diff-hunk",
+			"foreground-gdk", &diff_hunk_color,
+			"weight", PANGO_WEIGHT_BOLD,
+			NULL);
 	g_signal_connect(G_OBJECT(qtag), "event",
                          G_CALLBACK(textview_uri_button_pressed), textview);
 	g_signal_connect(G_OBJECT(tag), "event",
@@ -527,8 +566,9 @@ static void textview_update_message_colors(TextView *textview)
 	GtkTextTag *tag = NULL;
 
 	quote_bgcolors[0] = quote_bgcolors[1] = quote_bgcolors[2] = black;
-	quote_colors[0] = quote_colors[1] = quote_colors[2] = 
-		uri_color = emphasis_color = signature_color = black;
+	quote_colors[0] = quote_colors[1] = quote_colors[2] = black;
+	uri_color = emphasis_color = signature_color = diff_added_color =
+		diff_deleted_color = diff_hunk_color = black;
 
 	if (prefs_common.enable_color) {
 		/* grab the quote colors, converting from an int to a GdkColor */
@@ -544,6 +584,12 @@ static void textview_update_message_colors(TextView *textview)
 					       &signature_color);
 		gtkut_convert_int_to_gdk_color(prefs_common.emphasis_col,
 					       &emphasis_color);
+		gtkut_convert_int_to_gdk_color(prefs_common.diff_added_color,
+					       &diff_added_color);
+		gtkut_convert_int_to_gdk_color(prefs_common.diff_deleted_color,
+					       &diff_deleted_color);
+		gtkut_convert_int_to_gdk_color(prefs_common.diff_hunk_color,
+					       &diff_hunk_color);
 	}
 	if (prefs_common.enable_color && prefs_common.enable_bgcolor) {
 		gtkut_convert_int_to_gdk_color(prefs_common.quote_level1_bgcol,
@@ -565,6 +611,11 @@ static void textview_update_message_colors(TextView *textview)
 	CHANGE_TAG_COLOR("signature", &signature_color, NULL);
 	CHANGE_TAG_COLOR("link", &uri_color, NULL);
 	CHANGE_TAG_COLOR("link-hover", &uri_color, NULL);
+	CHANGE_TAG_COLOR("diff-add", &diff_added_color, NULL);
+	CHANGE_TAG_COLOR("diff-del", &diff_deleted_color, NULL);
+	CHANGE_TAG_COLOR("diff-add-file", &diff_added_color, NULL);
+	CHANGE_TAG_COLOR("diff-del-file", &diff_deleted_color, NULL);
+	CHANGE_TAG_COLOR("diff-hunk", &diff_hunk_color, NULL);
 }
 #undef CHANGE_TAG_COLOR
 
@@ -991,6 +1042,7 @@ static void textview_write_body(TextView *textview, MimeInfo *mimeinfo)
 	procmime_force_encoding(textview->messageview->forced_encoding);
 	
 	textview->is_in_signature = FALSE;
+	textview->is_diff = FALSE;
 
 	procmime_decode_content(mimeinfo);
 
@@ -1080,6 +1132,10 @@ static void textview_write_body(TextView *textview, MimeInfo *mimeinfo)
 #endif
 	} else {
 textview_default:
+		if (!g_ascii_strcasecmp(mimeinfo->subtype, "x-patch")
+				|| !g_ascii_strcasecmp(mimeinfo->subtype, "x-diff"))
+			textview->is_diff = TRUE;
+
 		if (mimeinfo->content == MIMECONTENT_MEM)
 			tmpfp = str_open_as_stream(mimeinfo->data.mem);
 		else
@@ -1521,10 +1577,25 @@ static void textview_write_line(TextView *textview, const gchar *str,
 		fg_color = quote_tag_str;
 	}
 
-	if (prefs_common.enable_color && 
-	    (strcmp(buf,"-- \n") == 0 || strcmp(buf, "- -- \n") == 0 || textview->is_in_signature)) {
-		fg_color = "signature";
-		textview->is_in_signature = TRUE;
+	if (prefs_common.enable_color) {
+		if (textview->is_diff) {
+			if (strncmp(buf, "+++ ", 4) == 0)
+				fg_color = "diff-add-file";
+			else if (buf[0] == '+')
+				fg_color = "diff-add";
+			else if (strncmp(buf, "--- ", 4) == 0)
+				fg_color = "diff-del-file";
+			else if (buf[0] == '-')
+				fg_color = "diff-del";
+			else if (strncmp(buf, "@@ ", 3) == 0 &&
+					strcmp(buf+strlen(buf)-4, " @@\n") == 0)
+				fg_color = "diff-hunk";
+		} else if (strcmp(buf,"-- \n") == 0
+				|| strcmp(buf, "- -- \n") == 0
+				|| textview->is_in_signature) {
+			fg_color = "signature";
+			textview->is_in_signature = TRUE;
+		}
 	}
 
 	if (real_quotelevel > -1 && do_quote_folding) {
