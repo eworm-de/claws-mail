@@ -3741,7 +3741,8 @@ gint folder_item_remove_msg(FolderItem *item, gint num)
 
 	if (!item->folder->account || item->folder->account->imap_use_trash) {
 		if (msginfo != NULL) {
-			remove_msginfo_from_cache(item, msginfo);
+			if (ret == 0)
+				remove_msginfo_from_cache(item, msginfo);
 			procmsg_msginfo_free(msginfo);
 		}
 	}

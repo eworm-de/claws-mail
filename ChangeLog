@@ -1,3 +1,10 @@
+2012-06-25 [mir]	3.8.0cvs56
+
+	* src/folder.c
+	    If a folder class returns <> 0 then the message has not
+	    been removed from the file system and therefore it should
+	    not be removed from the cache either.
+
 2012-06-20 [ticho]	3.8.0cvs55
 
 	* src/mh.c

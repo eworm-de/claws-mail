@@ -4372,3 +4372,4 @@
 ( cvs diff -u -r 1.1.4.31 -r 1.1.4.32 src/gtk/progressdialog.c;  ) > 3.8.0cvs53.patchset
 ( cvs diff -u -r 1.204.2.210 -r 1.204.2.211 src/prefs_common.c;  cvs diff -u -r 1.103.2.138 -r 1.103.2.139 src/prefs_common.h;  cvs diff -u -r 1.96.2.241 -r 1.96.2.242 src/textview.c;  cvs diff -u -r 1.12.2.31 -r 1.12.2.32 src/textview.h;  ) > 3.8.0cvs54.patchset
 ( cvs diff -u -r 1.79.2.72 -r 1.79.2.73 src/mh.c;  ) > 3.8.0cvs55.patchset
+( cvs diff -u -r 1.213.2.207 -r 1.213.2.208 src/folder.c;  ) > 3.8.0cvs56.patchset
