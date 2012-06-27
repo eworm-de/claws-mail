@@ -1,5 +1,62 @@
 Changes of the  Claws Mail GTK2 branch
 
+* 3.8.1
+-------
+
+* Replied and Forwarded message status flags are now non-exclusive.
+  Introduced a new message state (and relevant icon in message list)
+  where both the Replied and Forwarded flags are set
+
+* 'Send to...' has been added to the context menu of a message's
+  parts. This causes a new Compose window to open with the selected
+  mime part attached.
+
+* 'Hide' and 'View Log' buttons have been added to the Send and
+   Receive dialogues. The former will hide the dialogue, the latter
+   will open the Network Log dialogue.
+
+* A short symbol has been added the QuickSearch Extended mode: 'ha',
+  an abbreviated form of 'has_attachment'.
+
+* Basic session statistics are now available, from the Statistics
+  tab in About dialog and the command-line.
+
+* The display of attached patches, (text/x-patch or text/x-diff), is
+  now colourised. The colours are controlled by 3 new hidden
+  preferences: diff_added_color, diff_deleted_color, and
+  diff_hunk_color.
+
+* Updated translations: Brazilian Portuguese, Czech, German, French, Hungarian,
+  Indonesian, Lithuanian, Simplified Chinese, Slovak, Spanish, Swedish,
+  Traditional Chinese.
+
+* Bug fixes:
+	o bug 1090, 'Standard-folders appear again after rescanning tree'
+	o bug 1924, 'Messages marked move to Trash appear identical to
+		     messages marked move to $FOLDER'
+	o bug 2598, 'Actions can move locked messages'
+	o bug 2501, 'opened message blanks when moved to other folder'
+	o bug 2574, 'Statement might be overflowing a buffer in strncat'
+	o bug 2577, 'Focus rectangle on folder list and message
+		     list headings doesn't get properly cleared when switching
+                     heading and horizontally scrolling list (underlines and
+                     vertical lines remain on screen)'
+	o bug 2582, 'Expanded mimeview drag n drop no longer works'
+	o bug 2595, 'Change expand behavior for message list / message view'
+	o bug 2620, 'shift+tab from subject field not working'
+	o bug 2624, 'dialog "Action Configuration" cannot be closed'
+	o bug 2646, 'Compile fails with gnutls-3.0.18'
+	o bug 2659, 'E-mail attachments are handled inconsistently'
+	o bug 2662, '"ag" quicksearch adds "1" to value'
+	o Fix bug in search criteria when doing a complete directory
+	  search using '*'
+	o Fix GTK+2.16 build (w32)
+	o Fix sensitivity of toolbar's get_btn (retrieve mail from current
+          account) and of mainwindows's relevant entry when current account
+          is not able to retrieve (SMTP-only).
+	o don't do TLS if not requested by user. fixes connecting to servers
+	  which, for example, want SSL 3 only
+
 * 3.8.0
 -------
 
