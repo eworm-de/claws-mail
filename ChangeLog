@@ -1,3 +1,23 @@
+2012-06-27 [paul]	3.8.0cvs57
+
+	* configure.ac
+	* po/cs.po
+	* po/de.po
+	* po/es.po
+	* po/fr.po
+	* po/hu.po
+	* po/id_ID.po
+	* po/lt.po
+	* po/pt_BR.po
+	* po/sk.po
+	* po/sv.po
+	* po/zh_CN.po
+	* po/zh_TW.po
+		updated translations
+	* src/gtk/authors.h
+	* tools/claws.i18n.status.pl
+		updated based on currently active
+
 2012-06-25 [mir]	3.8.0cvs56
 
 	* src/folder.c
