@@ -1,3 +1,8 @@
+2012-06-30 [paul]	3.8.1cvs1
+
+	* Makefile.am
+		fix bug 2579, 'Installed headers redefine autotools-specific constants'
+
 2012-06-27 [paul]	3.8.1
 	* NEWS
 	* README
