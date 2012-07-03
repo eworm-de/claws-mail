@@ -1,3 +1,10 @@
+2012-07-03 [mir]	3.8.1cvs5
+
+	* src/procmime.c
+	    fix bug 2642, 'improve transfer encoding selection'.
+	    Patch provided by Christopher Zimmermann
+	    (madroach claws at gmerlin dot de)
+
 2012-07-03 [mir]	3.8.1cvs4
 
 	* src/procmime.c

@@ -1199,11 +1199,12 @@ EncodingType procmime_get_encoding_for_text_file(const gchar *file, gboolean *ha
 {
 	FILE *fp;
 	guchar buf[BUFFSIZE];
+	gboolean cr = FALSE;
 	size_t len;
+	gint linelen = 0, maxlinelen = 0;
 	size_t octet_chars = 0;
 	size_t total_len = 0;
 	gfloat octet_percentage;
-	gboolean force_b64 = FALSE;
 
 	if ((fp = g_fopen(file, "rb")) == NULL) {
 		FILE_OP_ERROR(file, "fopen");
@@ -1215,11 +1216,27 @@ EncodingType procmime_get_encoding_for_text_file(const gchar *file, gboolean *ha
 		gint i;
 
 		for (p = buf, i = 0; i < len; ++p, ++i) {
-			if (*p & 0x80)
-				++octet_chars;
-			if (*p == '\0') {
-				force_b64 = TRUE;
+			switch (*p) {
+			case '\n':
+				if (cr) linelen--;
+				maxlinelen = MAX(linelen, maxlinelen);
+				linelen = 0;
+				cr = FALSE;
+				break;
+			case '\r':
+				cr = TRUE;
+				linelen++;
+				break;
+			case '\0':
 				*has_binary = TRUE;
+				maxlinelen = G_MAXINT;
+				cr = FALSE;
+				break;
+			default:
+				if (*p & 0x80)
+					octet_chars++;
+				linelen++;
+				cr = FALSE;
 			}
 		}
 		total_len += len;
@@ -1233,15 +1250,20 @@ EncodingType procmime_get_encoding_for_text_file(const gchar *file, gboolean *ha
 		octet_percentage = 0.0;
 
 	debug_print("procmime_get_encoding_for_text_file(): "
-		    "8bit chars: %zd / %zd (%f%%)\n", octet_chars, total_len,
-		    100.0 * octet_percentage);
+		    "8bit chars: %zd / %zd (%f%%). "
+		    "maximum line length: %d chars\n",
+		    octet_chars, total_len, 100.0 * octet_percentage,
+		    maxlinelen);
 
-	if (octet_percentage > 0.20 || force_b64) {
+	if (octet_percentage > 0.20) {
 		debug_print("using BASE64\n");
 		return ENC_BASE64;
-	} else if (octet_chars > 0) {
+	} else if (maxlinelen > MAXSMTPTEXTLEN-2) {
 		debug_print("using quoted-printable\n");
 		return ENC_QUOTED_PRINTABLE;
+	} else if (octet_chars > 0) {
+		debug_print("using 8bit\n");
+		return ENC_8BIT;
 	} else {
 		debug_print("using 7bit\n");
 		return ENC_7BIT;
