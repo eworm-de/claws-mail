@@ -988,8 +988,9 @@ static gint disposition_notification_send(MsgInfo *msginfo)
 		extract_address(orig_to);
 	}
 	if (msginfo->subject && *(msginfo->subject)) {
-		enc_sub = g_malloc0(strlen(msginfo->subject)*8);
-		qp_encode_line(enc_sub, (const guchar *)msginfo->subject);
+		gint len = strlen(msginfo->subject);
+		enc_sub = g_malloc0(len*8);
+		qp_encode(TRUE, enc_sub, (const guchar *)msginfo->subject, len);
 		g_strstrip(enc_sub);
 	}
 	ok = fprintf(fp,"MIME-Version: 1.0\n"
