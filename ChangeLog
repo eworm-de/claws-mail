@@ -4,7 +4,7 @@
 	* src/procmime.c
 	* src/common/quoted-printable.c
 	* src/common/quoted-printable.h
-	    Patch fixes bug 2640.
+	    fix bug 2640, 'improve quoted-printable encoding'
 	    Patch provided by madroach claws at gmerlin dot de
 
 2012-06-30 [paul]	3.8.1cvs1
