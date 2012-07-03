@@ -1,3 +1,22 @@
+2012-07-03 [mir]	3.8.1cvs4
+
+	* src/procmime.c
+	* src/common/defs.h
+            fix bug 2641, '7bit or 8bit encoded attachments can
+            have lines longer than 998 characters'.
+            Patch provided by Christopher Zimmermann
+            (madroach claws at gmerlin dot de)
+
+
+2012-07-03 [mir]	3.8.1cvs3
+
+	* src/procmime.c
+	* src/common/defs.h
+	    fix bug 2641, '7bit or 8bit encoded attachments can
+	    have lines longer than 998 characters'.
+	    Patch provided by Christopher Zimmermann
+	    (madroach claws at gmerlin dot de)
+
 2012-07-03 [mir]	3.8.1cvs2
 
 	* src/messageview.c

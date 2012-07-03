@@ -562,29 +562,16 @@ gboolean procmime_encode_content(MimeInfo *mimeinfo, EncodingType encoding)
 			g_free(tmp_file);
 		}
 	} else if (encoding == ENC_QUOTED_PRINTABLE) {
-		gchar inbuf[79], outbuf[77];
-		gint n, len = 0;
-		gboolean firstrun = TRUE;
+		gchar inbuf[BUFFSIZE], outbuf[BUFFSIZE * 4];
 
-		while ((len += fread(inbuf + len, 1,
-			sizeof(inbuf) - len - 1,
-			infp)) > 0)
-		{
-			if (firstrun == FALSE)
-				if (fputs("\r\n", outfp) == EOF)
-					err = TRUE;
-
-			inbuf[len] = '\0';
-			n = qp_encode(mimeinfo->type == MIMETYPE_TEXT,
-					outbuf, inbuf, len);
-			len -= n;
-			memmove(inbuf, inbuf + n, len);
+		while (fgets(inbuf, sizeof(inbuf), infp) != NULL) {
+			qp_encode_line(outbuf, inbuf);
 
 			if (!strncmp("From ", outbuf, sizeof("From ")-1)) {
 				gchar *tmpbuf = outbuf;
-
+				
 				tmpbuf += sizeof("From ")-1;
-
+				
 				if (fputs("=46rom ", outfp) == EOF)
 					err = TRUE;
 				if (fputs(tmpbuf, outfp) == EOF)
@@ -593,15 +580,39 @@ gboolean procmime_encode_content(MimeInfo *mimeinfo, EncodingType encoding)
 				if (fputs(outbuf, outfp) == EOF)
 					err = TRUE;
 			}
-			firstrun = FALSE;
 		}
 	} else {
-		gchar buf[BUFFSIZE];
+		gchar buf[MAXSMTPTEXTLEN+1];
+		gint leftover = 0;
 
-		while (fgets(buf, sizeof(buf), infp) != NULL) {
-			strcrchomp(buf);
-			if (fputs(buf, outfp) == EOF)
-				err = TRUE;
+		while (fgets(buf + leftover,
+			sizeof(buf) - leftover,
+			infp) != NULL)
+		{
+		    gchar *l, *c = buf;
+		    leftover = 0;
+		    
+		    while (*c != '\0') {
+			if (
+			    *c == '\n'
+			    || (*c == '\r' && *(c+1) == '\n'))
+			{
+			    *c = '\0';
+			    break;
+			}
+			c++;
+		    }
+		    while (c - buf > MAXSMTPTEXTLEN - 2) {
+			*c = *(c-1);
+			*--c = '\0';
+			leftover++;
+		    }
+		    
+		    if (fputs(buf, outfp) == EOF || putc('\n', outfp) == EOF)
+			err = TRUE;
+
+		    for (l = buf; l-buf < leftover; l++)
+			*l = *++c;
 		}
 	}
 
