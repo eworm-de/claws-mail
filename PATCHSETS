@@ -4380,3 +4380,4 @@
 ( cvs diff -u -r 1.49.2.143 -r 1.49.2.144 src/procmime.c;  cvs diff -u -r 1.9.2.54 -r 1.9.2.55 src/common/defs.h;  ) > 3.8.1cvs3.patchset
 ( cvs diff -u -r 1.49.2.143 -r 1.49.2.144 src/procmime.c;  cvs diff -u -r 1.9.2.54 -r 1.9.2.55 src/common/defs.h;  ) > 3.8.1cvs4.patchset
 ( cvs diff -u -r 1.49.2.144 -r 1.49.2.145 src/procmime.c;  ) > 3.8.1cvs5.patchset
+( cvs diff -u -r 1.115.2.250 -r 1.115.2.251 src/main.c;  cvs diff -u -r 1.4.2.84 -r 1.4.2.85 src/gtk/about.c;  ) > 3.8.1cvs6.patchset

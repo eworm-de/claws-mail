@@ -693,11 +693,22 @@ static void about_update_stats(void)
 				(_("Session statistics\n")), -1,
 				"underlined-list-title", NULL);
 
-		g_snprintf(buf, sizeof(buf), _("Started: %s\n"),
-					ctime(&session_stats.time_started));
+		if (prefs_common.date_format) {
+			struct tm *lt;
+			gint len = 100;
+			gchar date[len];
+
+			lt = localtime(&session_stats.time_started);
+			fast_strftime(date, len, prefs_common.date_format, lt);
+			g_snprintf(buf, sizeof(buf), _("Started: %s\n"),
+						lt ? date : ctime(&session_stats.time_started));
+		} else
+			g_snprintf(buf, sizeof(buf), _("Started: %s\n"),
+						ctime(&session_stats.time_started));
 		gtk_text_buffer_insert_with_tags_by_name(stats_text_buffer, &iter, buf, -1,
 				"indented-list-item", NULL);
 
+		gtk_text_buffer_insert(stats_text_buffer, &iter, "\n", 1);
 		gtk_text_buffer_insert_with_tags_by_name(stats_text_buffer, &iter,
 				(_("Incoming traffic\n")), -1,
 				"underlined-list-title", NULL);

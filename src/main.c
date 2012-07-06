@@ -2573,9 +2573,21 @@ static void lock_socket_input_cb(gpointer data,
 		g_snprintf(tmp, sizeof(tmp), _("Session statistics\n"));
  		fd_write_all(sock, tmp, strlen(tmp));
 
-		g_snprintf(tmp, sizeof(tmp), _("Started: %s\n"),
-				ctime(&session_stats.time_started));
+		if (prefs_common.date_format) {
+			struct tm *lt;
+			gint len = 100;
+			gchar date[len];
+
+			lt = localtime(&session_stats.time_started);
+			fast_strftime(date, len, prefs_common.date_format, lt);
+			g_snprintf(tmp, sizeof(tmp), _("Started: %s\n"),
+					lt ? date : ctime(&session_stats.time_started));
+		} else
+			g_snprintf(tmp, sizeof(tmp), _("Started: %s\n"),
+					ctime(&session_stats.time_started));
  		fd_write_all(sock, tmp, strlen(tmp));
+
+ 		fd_write_all(sock, "\n", 1);
 
 		g_snprintf(tmp, sizeof(tmp), _("Incoming traffic\n"));
  		fd_write_all(sock, tmp, strlen(tmp));

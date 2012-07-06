@@ -1,3 +1,10 @@
+2012-07-06 [wwp]	3.8.1cvs6
+
+	* src/main.c
+	* src/gtk/about.c
+		Session statistics: format date following global prefs,
+		and fix stats output a little bit.
+
 2012-07-03 [mir]	3.8.1cvs5
 
 	* src/procmime.c
