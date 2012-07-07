@@ -403,9 +403,6 @@ static void crash_debug(unsigned long crash_pid,
 static const gchar *get_compiled_in_features(void)
 {
 	return g_strdup_printf("%s",
-#if USE_THREADS
-		   " gthread"
-#endif
 #if INET6
 		   " IPv6"
 #endif

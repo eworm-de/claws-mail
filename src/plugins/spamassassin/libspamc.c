@@ -16,6 +16,7 @@
  */
 
 #include "config.h"
+#include "claws-features.h"
 #include "libspamc.h"
 #include "utils.h"
 

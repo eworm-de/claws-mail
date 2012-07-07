@@ -22,6 +22,7 @@
 
 #ifdef HAVE_CONFIG_H
 #  include "config.h"
+#include "claws-features.h"
 #endif
 
 #if (defined (_XOPEN_SOURCE) && !defined (_BSD_SOURCE))

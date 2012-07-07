@@ -12,7 +12,7 @@ MINOR_VERSION=8
 MICRO_VERSION=1
 INTERFACE_AGE=0
 BINARY_AGE=0
-EXTRA_VERSION=6
+EXTRA_VERSION=7
 EXTRA_RELEASE=
 EXTRA_GTK2_VERSION=
 
@@ -71,6 +71,7 @@ AC_SUBST(LT_AGE)
 
 dnl Specify a header configuration file
 AC_CONFIG_HEADERS(config.h)
+AC_CONFIG_HEADERS(claws-features.h)
 
 AM_MAINTAINER_MODE
 
@@ -274,25 +275,6 @@ else
 	AC_MSG_RESULT(no)
 fi
 AC_SUBST(SM_LIBS)
-
-dnl for GThread support (currently disabled)
-dnl AC_ARG_ENABLE(threads,
-dnl	[  --enable-threads        Enable multithread support [default=no]],
-dnl	[use_threads=$enableval], [use_threads=no])
-
-AC_MSG_CHECKING([whether to use threads])
-if test x"$use_threads" = xyes ; then
-	AC_MSG_RESULT(yes)
-	if test ! -z `$GLIB_CONFIG --help 2>&1 |grep 'gthread'` ; then
-		CFLAGS="$CFLAGS `$GLIB_CONFIG --cflags gthread`"
-		LIBS="$LIBS `$GLIB_CONFIG --libs gthread`"
-		AC_DEFINE(USE_THREADS, 1, Whether to use multithread or not)
-	else
-		AC_MSG_ERROR([Claws Mail requires GThread from GLib to use threading.])
-	fi
-else
-	AC_MSG_RESULT(no)
-fi
 
 dnl Check for d_type member in struct dirent
 AC_MSG_CHECKING([whether struct dirent has d_type member])

@@ -20,6 +20,7 @@
  */
 
 #include "config.h"
+#include "claws-features.h"
 
 #include "gtkunit.h"
 

@@ -14,7 +14,8 @@ EXTRA_DIST = \
 	claws-mail.pc.in \
 	claws-mail.desktop \
 	claws-mail.png \
-	autogen.sh
+	autogen.sh \
+	claws-features.h.in
 
 # hicolor icon theme, base class of all icon themes
 pixmapdir=$(datadir)/icons/hicolor/48x48/apps
@@ -68,6 +69,8 @@ pkgconfigdir = $(libdir)/pkgconfig
 pkgconfig_DATA = claws-mail.pc
 
 clawsincludedir = $(pkgincludedir)
+clawsinclude_HEADERS = \
+	claws-features.h
 
 relnotesdir = $(docdir)
 relnotes_DATA = RELEASE_NOTES
