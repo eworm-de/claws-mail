@@ -17,6 +17,11 @@
  * 
  */
 
+#ifdef HAVE_CONFIG_H
+#include "config.h"
+#include "claws-features.h"
+#endif
+
 #include <gtk/gtk.h>
 #include <glib.h>
 #include <glib/gi18n.h>

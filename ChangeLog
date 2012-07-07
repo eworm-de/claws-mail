@@ -1,3 +1,8 @@
+2012-07-07 [paul]	3.8.1cvs9
+
+	* src/plugins/pgpcore/prefs_gpg.c
+		fix build
+
 2012-07-07 [colin]	3.8.1cvs8
 
 	* claws-features.h.in
