@@ -1,3 +1,38 @@
+2012-07-07 [colin]	3.8.1cvs8
+
+	* claws-features.h.in
+	* src/codeconv.h
+	* src/imap_gtk.h
+	* src/inc.h
+	* src/jpilot.h
+	* src/messageview.h
+	* src/msgcache.h
+	* src/news_gtk.h
+	* src/partial_download.h
+	* src/pop.h
+	* src/prefs_account.h
+	* src/prefs_common.h
+	* src/printing.h
+	* src/procmime.h
+	* src/procmsg.h
+	* src/stock_pixmap.c
+	* src/textview.h
+	* src/common/defs.h
+	* src/common/log.h
+	* src/common/session.h
+	* src/common/smtp.h
+	* src/common/socket.h
+	* src/common/ssl.h
+	* src/common/ssl_certificate.h
+	* src/common/timing.h
+	* src/common/utils.h
+	* src/gtk/gtkaspell.h
+	* src/gtk/gtkutils.h
+	* src/gtk/pluginwindow.h
+	* src/gtk/spell_entry.h
+	* src/gtk/sslcertwindow.h
+		Don't export config.h in public headers
+
 2012-07-07 [colin]	3.8.1cvs7
 
 	* claws-features.h.in

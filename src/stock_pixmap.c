@@ -23,6 +23,7 @@
 #include <string.h>
 #include <dirent.h>
 
+#include "config.h"
 #include "stock_pixmap.h"
 #include "gtkutils.h"
 #include "utils.h"
