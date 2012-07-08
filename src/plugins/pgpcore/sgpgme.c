@@ -212,11 +212,11 @@ gchar *sgpgme_sigstat_info_short(gpgme_ctx_t ctx, gpgme_verify_result_t status)
 	switch (gpg_err_code(sig->status)) {
 	case GPG_ERR_NO_ERROR:
 		switch (gpg_err_code(sig->validity)) {
-		case GPGME_VALIDITY_MARGINAL:
 		case GPGME_VALIDITY_FULL:
 		case GPGME_VALIDITY_ULTIMATE:
 			result = g_strdup_printf(_("Good signature from %s."), uname);
 			break;
+		case GPGME_VALIDITY_MARGINAL:
 		case GPGME_VALIDITY_UNKNOWN:
 		case GPGME_VALIDITY_UNDEFINED:
 		case GPGME_VALIDITY_NEVER:

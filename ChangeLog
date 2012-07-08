@@ -1,3 +1,9 @@
+2012-07-08 [ticho]	3.8.1cvs11
+
+	* src/plugins/pgpcore/sgpgme.c
+		Consider marginal signature validity as untrusted. Suggested by
+		Jean-Benoist Leger (leger at crans.org).
+
 2012-07-08 [paul]	3.8.1cvs10
 
 	* src/gtk/icon_legend.c
