@@ -1,3 +1,8 @@
+2012-07-08 [paul]	3.8.1cvs10
+
+	* src/gtk/icon_legend.c
+		fix (reveal) hidden icon in gui and build warning
+
 2012-07-07 [paul]	3.8.1cvs9
 
 	* src/plugins/pgpcore/prefs_gpg.c
