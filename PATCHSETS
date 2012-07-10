@@ -4386,3 +4386,4 @@
 ( cvs diff -u -r 1.1.2.37 -r 1.1.2.38 src/plugins/pgpcore/prefs_gpg.c;  ) > 3.8.1cvs9.patchset
 ( cvs diff -u -r 1.1.2.23 -r 1.1.2.24 src/gtk/icon_legend.c;  ) > 3.8.1cvs10.patchset
 ( cvs diff -u -r 1.1.2.70 -r 1.1.2.71 src/plugins/pgpcore/sgpgme.c;  ) > 3.8.1cvs11.patchset
+( cvs diff -u -r 1.1.2.71 -r 1.1.2.72 src/plugins/pgpcore/sgpgme.c;  ) > 3.8.1cvs12.patchset

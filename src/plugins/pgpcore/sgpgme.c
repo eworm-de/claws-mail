@@ -327,7 +327,7 @@ gchar *sgpgme_sigstat_info_full(gpgme_ctx_t ctx, gpgme_verify_result_t status)
 				j++;
 				user = user->next;
 			}
-			g_string_append_printf(siginfo,
+			g_string_append(siginfo,
 				_("Primary key fingerprint:"));
 			const char* primary_fpr = NULL;
 			if (key && key->subkeys && key->subkeys->fpr)
