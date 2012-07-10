@@ -22,81 +22,66 @@
 
 #include "utils.h"
 
-
 #define MAX_LINELEN	76
 
 #define IS_LBREAK(p) \
-	((p)[0] == '\n' ? 1 : ((p)[0] == '\r' && (p)[1] == '\n') ? 2 : 0)
+	(*(p) == '\0' || *(p) == '\n' || (*(p) == '\r' && *((p) + 1) == '\n'))
 
-gint qp_encode(gboolean text, gchar *out, const guchar *in, gint len)
+#define SOFT_LBREAK_IF_REQUIRED(n)					\
+	if (len + (n) > MAX_LINELEN ||					\
+	    (len + (n) == MAX_LINELEN && (!IS_LBREAK(inp + 1)))) {	\
+		*outp++ = '=';						\
+		*outp++ = '\n';						\
+		len = 0;						\
+	}
+
+void qp_encode_line(gchar *out, const guchar *in)
 {
-	/* counters of input/output characters */
-	gint inc = 0;
-	gint outc = 1; /* one character reserved for '=' soft line break */
+	const guchar *inp = in;
+	gchar *outp = out;
+	guchar ch;
+	gint len = 0;
 
-	while(inc < len) {
-		/* allow literal linebreaks in text */
-		if(text) {
-			if(IS_LBREAK(in)) {
-				/* inserting linebreaks is the job of our caller */
-				g_assert(outc <= MAX_LINELEN);
-				*out = '\0';
-				return inc + IS_LBREAK(in);
+	while (*inp != '\0') {
+		ch = *inp;
+
+		if (IS_LBREAK(inp)) {
+			*outp++ = '\n';
+			len = 0;
+			if (*inp == '\r')
+				inp++;
+			inp++;
+		} else if (ch == '\t' || ch == ' ') {
+			if (IS_LBREAK(inp + 1)) {
+				SOFT_LBREAK_IF_REQUIRED(3);
+				*outp++ = '=';
+				get_hex_str(outp, ch);
+				outp += 2;
+				len += 3;
+				inp++;
+			} else {
+				SOFT_LBREAK_IF_REQUIRED(1);
+				*outp++ = *inp++;
+				len++;
 			}
-			if(IS_LBREAK(in+1)) {
-				/* free the reserved character since no softbreak
-				 * will be needed after the current character */
-				outc--;
-				/* guard against whitespace before a literal linebreak */
-				if(*in == ' ' || *in == '\t') {
-					goto escape;
-				}
-			}
-		}
-		if(*in == '=') {
-			goto escape;
-		}
-		/* Cave: Whitespace is unconditionally output literally,
-		 * but according to the RFC it must not be output before a
-		 * linebreak. 
-		 * This requirement is obeyed by quoting all linebreaks
-		 * and therefore ending all lines with '='. */
-		else if((*in >= ' ' && *in <= '~') || *in == '\t') {
-			if(outc + 1 <= MAX_LINELEN) {
-				*out++ = *in++;
-				outc++;
-				inc++;
-			}
-			else break;
-		}
-		else {
-escape:
-			if(outc + 3 <= MAX_LINELEN) {
-				*out++ = '=';
-				outc++;
-				get_hex_str(out, *in);
-				out += 2;
-				outc += 2;
-				in++;
-				inc++;
-			}
-			else break;
+		} else if ((ch >= 33 && ch <= 60) || (ch >= 62 && ch <= 126)) {
+			SOFT_LBREAK_IF_REQUIRED(1);
+			*outp++ = *inp++;
+			len++;
+		} else {
+			SOFT_LBREAK_IF_REQUIRED(3);
+			*outp++ = '=';
+			get_hex_str(outp, ch);
+			outp += 2;
+			len += 3;
+			inp++;
 		}
 	}
-	g_assert(outc <= MAX_LINELEN);
-	*out++ = '=';
-	*out = '\0';
-	return inc;
-}
 
-void qp_encode_line(gchar *out, const guchar *in) {
-	while (*in != '\0') {
-		in += qp_encode(TRUE, out, in, strlen(in));
+	if (len > 0)
+		*outp++ = '\n';
 
-		while(*out != '\0') out++;
-		*out++ = '\n';
-		*out++ = '\0';
-	}
+	*outp = '\0';
 }
 
 gint qp_decode_line(gchar *str)

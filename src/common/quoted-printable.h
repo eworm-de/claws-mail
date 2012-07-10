@@ -22,18 +22,6 @@
 
 #include <glib.h>
 
-/* Processes at most 78 characters from in buffer,
- * and stores one NULL-terminated line of at most 76 characters (excl. \0) of
- * quoted-printable output without terminating newline characters in out buffer.
- * Except when encoding text, every output line ends in a soft line break.
- * Therefore the caller can chain multiple lines of encoded data resulting from
- * sequential runs by glueing them together with line breaks.
- * The number of processed input characters is returned. */
-gint qp_encode			(gboolean	text,
-				 gchar		*out,
-				 const guchar	*in,
-				 gint		len);
-/* Deprecated */
 void qp_encode_line		(gchar		*out,
 				 const guchar	*in);
 gint qp_decode_line		(gchar		*str);

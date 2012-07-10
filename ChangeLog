@@ -1,3 +1,12 @@
+2012-07-10 [paul]	3.8.1cvs13
+
+	* src/messageview.c
+	* src/common/defs.h
+	* src/common/quoted-printable.c
+	* src/common/quoted-printable.h
+		revert 3.8.1cvs2,3,4,5  because they (somewhere!) cause
+		the bug: partial message text loss
+
 2012-07-10 [mones]	3.8.1cvs12
 
 	* src/plugins/pgpcore/sgpgme.c

@@ -148,9 +148,6 @@
 
 #define BUFFSIZE			8192
 
-/* according to RFC 821 1000 characters including CRLF */
-#define MAXSMTPTEXTLEN			1000
-
 #ifndef MAXPATHLEN
 #  define MAXPATHLEN			4095
 #endif
