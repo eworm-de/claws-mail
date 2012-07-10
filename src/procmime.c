@@ -583,37 +583,12 @@ gboolean procmime_encode_content(MimeInfo *mimeinfo, EncodingType encoding)
 			}
 		}
 	} else {
-		gchar buf[MAXSMTPTEXTLEN+1];
-		gint leftover = 0;
+		gchar buf[BUFFSIZE];
 
-		while (fgets(buf + leftover,
-			sizeof(buf) - leftover,
-			infp) != NULL)
-		{
-		    gchar *l, *c = buf;
-		    leftover = 0;
-		    
-		    while (*c != '\0') {
-			if (
-			    *c == '\n'
-			    || (*c == '\r' && *(c+1) == '\n'))
-			{
-			    *c = '\0';
-			    break;
-			}
-			c++;
-		    }
-		    while (c - buf > MAXSMTPTEXTLEN - 2) {
-			*c = *(c-1);
-			*--c = '\0';
-			leftover++;
-		    }
-		    
-		    if (fputs(buf, outfp) == EOF || putc('\n', outfp) == EOF)
-			err = TRUE;
-
-		    for (l = buf; l-buf < leftover; l++)
-			*l = *++c;
+		while (fgets(buf, sizeof(buf), infp) != NULL) {
+			strcrchomp(buf);
+			if (fputs(buf, outfp) == EOF)
+				err = TRUE;
 		}
 	}
 
@@ -1200,12 +1175,11 @@ EncodingType procmime_get_encoding_for_text_file(const gchar *file, gboolean *ha
 {
 	FILE *fp;
 	guchar buf[BUFFSIZE];
-	gboolean cr = FALSE;
 	size_t len;
-	gint linelen = 0, maxlinelen = 0;
 	size_t octet_chars = 0;
 	size_t total_len = 0;
 	gfloat octet_percentage;
+	gboolean force_b64 = FALSE;
 
 	if ((fp = g_fopen(file, "rb")) == NULL) {
 		FILE_OP_ERROR(file, "fopen");
@@ -1217,27 +1191,11 @@ EncodingType procmime_get_encoding_for_text_file(const gchar *file, gboolean *ha
 		gint i;
 
 		for (p = buf, i = 0; i < len; ++p, ++i) {
-			switch (*p) {
-			case '\n':
-				if (cr) linelen--;
-				maxlinelen = MAX(linelen, maxlinelen);
-				linelen = 0;
-				cr = FALSE;
-				break;
-			case '\r':
-				cr = TRUE;
-				linelen++;
-				break;
-			case '\0':
+			if (*p & 0x80)
+				++octet_chars;
+			if (*p == '\0') {
+				force_b64 = TRUE;
 				*has_binary = TRUE;
-				maxlinelen = G_MAXINT;
-				cr = FALSE;
-				break;
-			default:
-				if (*p & 0x80)
-					octet_chars++;
-				linelen++;
-				cr = FALSE;
 			}
 		}
 		total_len += len;
@@ -1251,20 +1209,15 @@ EncodingType procmime_get_encoding_for_text_file(const gchar *file, gboolean *ha
 		octet_percentage = 0.0;
 
 	debug_print("procmime_get_encoding_for_text_file(): "
-		    "8bit chars: %zd / %zd (%f%%). "
-		    "maximum line length: %d chars\n",
-		    octet_chars, total_len, 100.0 * octet_percentage,
-		    maxlinelen);
+		    "8bit chars: %zd / %zd (%f%%)\n", octet_chars, total_len,
+		    100.0 * octet_percentage);
 
-	if (octet_percentage > 0.20) {
+	if (octet_percentage > 0.20 || force_b64) {
 		debug_print("using BASE64\n");
 		return ENC_BASE64;
-	} else if (maxlinelen > MAXSMTPTEXTLEN-2) {
+	} else if (octet_chars > 0) {
 		debug_print("using quoted-printable\n");
 		return ENC_QUOTED_PRINTABLE;
-	} else if (octet_chars > 0) {
-		debug_print("using 8bit\n");
-		return ENC_8BIT;
 	} else {
 		debug_print("using 7bit\n");
 		return ENC_7BIT;
