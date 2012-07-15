@@ -1,3 +1,8 @@
+2012-07-15 [wwp]	3.8.1cvs15
+
+	* src/procmime.c
+		Fix bug 2697, thanks to Mikhail Efremov (wrong list ptr used).
+
 2012-07-10 [paul]	3.8.1cvs14
 
 	* src/procmime.c

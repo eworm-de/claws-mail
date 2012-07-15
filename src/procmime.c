@@ -1705,7 +1705,7 @@ static void parse_parameters(const gchar *parameters, GHashTable *table)
 			    (g_slist_find_custom(concatlist, down_attr, g_strcmp0) == NULL))
 				concatlist = g_slist_prepend(concatlist, g_strdup(tmpattr));
 
-			if (convert && (g_slist_find_custom(convlist, down_attr, g_strcmp0) == NULL))
+			if (convert && (g_slist_find_custom(convlist, tmpattr, g_strcmp0) == NULL))
 				convlist = g_slist_prepend(convlist, g_strdup(tmpattr));
 
 			g_free(tmpattr);
