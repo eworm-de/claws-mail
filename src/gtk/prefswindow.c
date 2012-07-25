@@ -32,6 +32,7 @@
 #include "prefswindow.h"
 #include "gtkutils.h"
 #include "prefs_common.h"
+#include "gtk/manage_window.h"
 
 enum { 
 	PREFS_PAGE_TITLE,		/* page title */
@@ -460,6 +461,8 @@ void prefswindow_open_full(const gchar *title, GSList *prefs_pages,
 	gtk_window_set_position (GTK_WINDOW(prefswindow->window), GTK_WIN_POS_CENTER);
 	gtk_window_set_modal (GTK_WINDOW (prefswindow->window), TRUE);
 	gtk_window_set_resizable (GTK_WINDOW(prefswindow->window), TRUE);
+	gtk_window_set_transient_for (GTK_WINDOW(prefswindow->window),
+			GTK_WINDOW(mainwindow_get_mainwindow()->window));
 	gtk_container_set_border_width(GTK_CONTAINER(prefswindow->window), 4);
 
 	prefswindow->vbox = gtk_vbox_new(FALSE, 6);
@@ -603,6 +606,8 @@ void prefswindow_open_full(const gchar *title, GSList *prefs_pages,
 			GTK_SCROLLED_WINDOW(prefswindow->scrolledwindow1));
 	gtk_adjustment_set_value(adj, gtk_adjustment_get_lower(adj));
 	gtk_adjustment_changed(adj);
+
+	manage_window_focus_in(prefswindow->window, NULL, NULL);
 }
 
 void prefswindow_open(const gchar *title, GSList *prefs_pages, gpointer data,

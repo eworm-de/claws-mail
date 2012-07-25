@@ -4391,3 +4391,4 @@
 ( cvs diff -u -r 1.49.2.146 -r 1.49.2.147 src/procmime.c;  ) > 3.8.1cvs14.patchset
 ( cvs diff -u -r 1.49.2.147 -r 1.49.2.148 src/procmime.c;  ) > 3.8.1cvs15.patchset
 ( cvs diff -u -r 1.1.2.110 -r 1.1.2.111 src/gtk/quicksearch.c;  ) > 3.8.1cvs16.patchset
+( cvs diff -u -r 1.12.2.60 -r 1.12.2.61 src/gtk/prefswindow.c;  ) > 3.8.1cvs17.patchset

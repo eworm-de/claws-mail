@@ -1,3 +1,9 @@
+2012-07-25 [ticho]	3.8.1cvs17
+
+	* src/gtk/prefswindow.c
+		Correctly set transient_for property for preferences window,
+		as well as for color picker dialogs. Fixes bug #2710.
+
 2012-07-25 [ticho]	3.8.1cvs16
 
 	* src/gtk/quicksearch.c
