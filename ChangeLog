@@ -1,3 +1,9 @@
+2012-07-25 [ticho]	3.8.1cvs16
+
+	* src/gtk/quicksearch.c
+		Allow quicksearch syntax description window to be correctly
+		set transient for main window.
+
 2012-07-15 [wwp]	3.8.1cvs15
 
 	* src/procmime.c
