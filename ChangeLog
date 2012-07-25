@@ -1,3 +1,9 @@
+2012-07-25 [ticho]	3.8.1cvs19
+
+	* manual/advanced.xml
+		Add the three hidden preferences related to colored display
+		of unified diffs to manual.
+
 2012-07-25 [ticho]	3.8.1cvs18
 
 	* src/gtk/gtkaspell.c

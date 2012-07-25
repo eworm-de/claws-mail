@@ -877,6 +877,16 @@
 	  </para>
 	</listitem>
       </varlistentry>
+      <varlistentry>
+	<term><literal>diff_added_color</literal></term>
+	<term><literal>diff_deleted_color</literal></term>
+	<term><literal>diff_hunk_color</literal></term>
+	<listitem>
+		<para>
+	Colors to use when displaying attachments in unified diff format.
+		</para>
+	</listitem>
+      </varlistentry>
     </variablelist>
   </section>
   <section id="adv_autofaces">

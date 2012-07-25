@@ -4393,3 +4393,4 @@
 ( cvs diff -u -r 1.1.2.110 -r 1.1.2.111 src/gtk/quicksearch.c;  ) > 3.8.1cvs16.patchset
 ( cvs diff -u -r 1.12.2.60 -r 1.12.2.61 src/gtk/prefswindow.c;  ) > 3.8.1cvs17.patchset
 ( cvs diff -u -r 1.9.2.78 -r 1.9.2.79 src/gtk/gtkaspell.c;  ) > 3.8.1cvs18.patchset
+( cvs diff -u -r 1.1.2.60 -r 1.1.2.61 manual/advanced.xml;  ) > 3.8.1cvs19.patchset
