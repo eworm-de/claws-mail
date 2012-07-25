@@ -1762,12 +1762,72 @@ static gboolean aspell_key_pressed(GtkWidget *widget,
 	return FALSE;
 }
 
+/* Create a paged submenu with choice of available dictionaries */
+static GtkWidget *make_dictionary_list_submenu(GtkAspell *gtkaspell)
+{
+	GtkWidget *menu, *curmenu, *moremenu, *item;
+	int count = 2;
+	Dictionary *dict;
+	GSList *tmp;
+
+	/* Dict list */
+	if (gtkaspellcheckers->dictionary_list == NULL)
+		gtkaspell_get_dictionary_list(FALSE);
+
+	tmp = gtkaspellcheckers->dictionary_list;
+
+	menu = gtk_menu_new();
+	curmenu = menu;
+
+	item = gtk_menu_item_new_with_label(_("Change to..."));
+	gtk_menu_shell_append(GTK_MENU_SHELL(menu), item);
+
+	item = gtk_separator_menu_item_new();
+	gtk_menu_shell_append(GTK_MENU_SHELL(menu), item);
+
+	for (tmp = gtkaspellcheckers->dictionary_list; tmp != NULL; 
+			tmp = g_slist_next(tmp)) {
+		if (count == MENUCOUNT) {
+
+			moremenu = gtk_menu_new();
+			item = gtk_menu_item_new_with_label(_("More..."));
+			gtk_menu_item_set_submenu(GTK_MENU_ITEM(item), 
+						  moremenu);
+
+			gtk_menu_shell_append(GTK_MENU_SHELL(curmenu), item);
+			curmenu = moremenu;
+			count = 0;
+		}
+		dict = (Dictionary *) tmp->data;
+		item = gtk_check_menu_item_new_with_label(dict->fullname);
+		g_object_set_data(G_OBJECT(item), "dict_name",
+				  dict->dictname); 
+		if (strcmp2(dict->fullname,
+		    gtkaspell->gtkaspeller->dictionary->fullname))
+			gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM(item), FALSE);
+		else {
+			gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM(item), TRUE);
+			gtk_widget_set_sensitive(GTK_WIDGET(item),
+						 FALSE);
+		}
+		g_signal_connect(G_OBJECT(item), "activate",
+				 G_CALLBACK(change_dict_cb),
+				 gtkaspell);
+		gtk_menu_shell_append(GTK_MENU_SHELL(curmenu), item);
+
+		count++;
+	}
+
+	gtk_widget_show_all(menu);
+	return menu;
+}
+
 /* make_sug_menu() - Add menus to accept this word for this session 
  * and to add it to personal dictionary 
  */
 static GSList *make_sug_menu(GtkAspell *gtkaspell) 
 {
-	GtkWidget 	*item;
+	GtkWidget 	*item, *submenu;
 	char	*caption;
 	GtkTextView 	*gtktext;
 	GtkAccelGroup 	*accel;
@@ -1788,10 +1848,12 @@ static GSList *make_sug_menu(GtkAspell *gtkaspell)
 	}
 
 	utf8buf  = g_strdup(l->data);
-	caption = g_strdup_printf(_("\"%s\" unknown in %s"), 
+	caption = g_strdup_printf(_("\"%s\" unknown in dictionary '%s'"), 
 				  utf8buf, 
 				  gtkaspell->gtkaspeller->dictionary->dictname);
 	item = gtk_menu_item_new_with_label(caption);
+	submenu = make_dictionary_list_submenu(gtkaspell);
+	gtk_menu_item_set_submenu(GTK_MENU_ITEM(item), submenu);
 	g_free(utf8buf);
 	gtk_widget_show(item);
 	list = g_slist_append(list, item);
@@ -1936,6 +1998,8 @@ static GSList *populate_submenu(GtkAspell *gtkaspell)
 	item = gtk_menu_item_new_with_label(dictname);
 	gtk_misc_set_alignment(GTK_MISC(gtk_bin_get_child(GTK_BIN((item)))), 0.5, 0.5);
 	g_free(dictname);
+	submenu = make_dictionary_list_submenu(gtkaspell);
+	gtk_menu_item_set_submenu(GTK_MENU_ITEM(item), submenu);
 	gtk_widget_show(item);
 	list = g_slist_append(list, item);
 
@@ -1980,62 +2044,6 @@ static GSList *populate_submenu(GtkAspell *gtkaspell)
 	gtk_widget_show(item);
 	list = g_slist_append(list, item);
 
-	item = gtk_menu_item_new();
-        gtk_widget_show(item);
-        list = g_slist_append(list, item);
-
-	submenu = gtk_menu_new();
-        item = gtk_menu_item_new_with_label(_("Change dictionary"));
-        gtk_menu_item_set_submenu(GTK_MENU_ITEM(item),submenu);
-        gtk_widget_show(item);
-        list = g_slist_append(list, item);
-
-	/* Dict list */
-        if (gtkaspellcheckers->dictionary_list == NULL)
-		gtkaspell_get_dictionary_list(FALSE);
-        {
-		GtkWidget * curmenu = submenu;
-		int count = 0;
-		Dictionary *dict;
-		GSList *tmp;
-		tmp = gtkaspellcheckers->dictionary_list;
-		
-		for (tmp = gtkaspellcheckers->dictionary_list; tmp != NULL; 
-				tmp = g_slist_next(tmp)) {
-			if (count == MENUCOUNT) {
-				GtkWidget *newmenu;
-				
-				newmenu = gtk_menu_new();
-				item = gtk_menu_item_new_with_label(_("More..."));
-				gtk_menu_item_set_submenu(GTK_MENU_ITEM(item), 
-							  newmenu);
-				
-				gtk_menu_shell_append(GTK_MENU_SHELL(curmenu), item);
-				gtk_widget_show(item);
-				curmenu = newmenu;
-				count = 0;
-			}
-			dict = (Dictionary *) tmp->data;
-			item = gtk_check_menu_item_new_with_label(dict->dictname);
-			g_object_set_data(G_OBJECT(item), "dict_name",
-					  dict->fullname); 
-			if (strcmp2(dict->fullname,
-			    gtkaspell->gtkaspeller->dictionary->fullname))
-				gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM(item), FALSE);
-			else {
-				gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM(item), TRUE);
-				gtk_widget_set_sensitive(GTK_WIDGET(item),
-							 FALSE);
-			}
-			g_signal_connect(G_OBJECT(item), "activate",
-					 G_CALLBACK(change_dict_cb),
-					 gtkaspell);
-			gtk_widget_show(item);
-			gtk_menu_shell_append(GTK_MENU_SHELL(curmenu), item);
-			
-			count++;
-		}
-        }  
 	return list;
 }
 

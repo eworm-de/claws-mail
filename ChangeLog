@@ -1,3 +1,10 @@
+2012-07-25 [ticho]	3.8.1cvs18
+
+	* src/gtk/gtkaspell.c
+		Create "Change directory" submenu in a separate function, change
+		wording a bit, and make the submenu always available in a context
+		menu of body edit box in compose window.
+
 2012-07-25 [ticho]	3.8.1cvs17
 
 	* src/gtk/prefswindow.c
