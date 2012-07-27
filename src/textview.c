@@ -74,6 +74,7 @@
 #include "inputdialog.h"
 #include "timing.h"
 #include "tags.h"
+#include "manage_window.h"
 
 static GdkColor quote_colors[3] = {
 	{(gulong)0, (gushort)0, (gushort)0, (gushort)0},
@@ -3060,6 +3061,8 @@ static void save_file_cb (GtkAction *action, TextView *textview)
 	gchar *filepath = NULL;
 	gchar *filedir = NULL;
 	gchar *tmp_filename = NULL;
+	GtkWidget *window;
+
 	if (uri == NULL)
 		return;
 
@@ -3083,6 +3086,14 @@ static void save_file_cb (GtkAction *action, TextView *textview)
 		filepath = g_strdup(filename);
 
 	g_free(filename);
+
+	/* Pick correct window to set the file dialog "transient for" */
+	if (textview->messageview->window != NULL)
+		window = textview->messageview->window;
+	else
+		window = textview->messageview->mainwin->window;
+
+	manage_window_focus_in(window, NULL, NULL);
 
 	filename = filesel_select_file_save(_("Save as"), filepath);
 	if (!filename) {

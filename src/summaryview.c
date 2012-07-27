@@ -79,6 +79,7 @@
 #include "log.h"
 #include "edittags.h"
 #include "manual.h"
+#include "manage_window.h"
 
 #define SUMMARY_COL_MARK_WIDTH		10
 #define SUMMARY_COL_STATUS_WIDTH	13
@@ -4713,6 +4714,9 @@ void summary_save_as(SummaryView *summaryview)
 		Xstrdup_a(filename, msginfo->subject, return);
 		subst_for_filename(filename);
 	}
+
+	manage_window_focus_in(summaryview->window, NULL, NULL);
+
 	if (filename && !g_utf8_validate(filename, -1, NULL)) {
 		gchar *oldstr = filename;
 		filename = conv_codeset_strdup(filename,

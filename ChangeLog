@@ -1,3 +1,10 @@
+2012-07-27 [ticho]	3.8.1cvs22
+
+	* src/summaryview.c
+	* src/textview.c
+		Fixed setting "transient for" property for summaryview file
+		dialog and messageview's image save dialog.
+
 2012-07-27 [ticho]	3.8.1cvs21
 
 	* src/crash.c
