@@ -55,6 +55,7 @@
 #include "gtk/gtkvscrollbutton.h"
 #include "gtk/logwindow.h"
 #include "timing.h"
+#include "manage_window.h"
 
 #ifdef MAEMO
 #include <libosso.h>
@@ -1893,6 +1894,7 @@ static void mimeview_save_all(MimeView *mimeview)
 	else
 		startdir = g_strdup(get_home_dir());
 
+	manage_window_focus_in(gtk_widget_get_ancestor(mimeview->hbox, GTK_TYPE_WINDOW), NULL, NULL);
 	dirname = filesel_select_file_save_folder(_("Select destination folder"), startdir);
 	if (!dirname) {
 		g_free(startdir);
@@ -2006,6 +2008,7 @@ static void mimeview_save_as(MimeView *mimeview)
 
 	g_free(partname);
 
+	manage_window_focus_in(gtk_widget_get_ancestor(mimeview->hbox, GTK_TYPE_WINDOW), NULL, NULL);
 	filename = filesel_select_file_save(_("Save as"), filepath);
 	if (!filename) {
 		g_free(filepath);

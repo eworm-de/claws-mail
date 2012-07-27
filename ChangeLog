@@ -1,3 +1,10 @@
+2012-07-27 [ticho]	3.8.1cvs21
+
+	* src/crash.c
+	* src/mimeview.c
+		Fix setting "transient for" property for file select dialogs
+		in crash report and mimeview.
+
 2012-07-27 [ticho]	3.8.1cvs20
 
 	* src/compose.c

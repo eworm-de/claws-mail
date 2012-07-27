@@ -53,6 +53,7 @@
 #include "filesel.h"
 #include "version.h"
 #include "prefs_common.h"
+#include "manage_window.h"
 
 /*
  * NOTE: the crash dialog is called when claws is not 
@@ -271,6 +272,8 @@ static GtkWidget *crash_dialog_show(const gchar *text, const gchar *debug_output
 			 G_CALLBACK(crash_save_crash_log), crash_report);
 	g_signal_connect(G_OBJECT(button5), "clicked",
 			 G_CALLBACK(crash_create_bug_report), NULL);
+
+	MANAGE_WINDOW_SIGNALS_CONNECT(window1);
 
 	gtk_widget_show(window1);
 
