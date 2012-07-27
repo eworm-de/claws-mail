@@ -4394,3 +4394,4 @@
 ( cvs diff -u -r 1.12.2.60 -r 1.12.2.61 src/gtk/prefswindow.c;  ) > 3.8.1cvs17.patchset
 ( cvs diff -u -r 1.9.2.78 -r 1.9.2.79 src/gtk/gtkaspell.c;  ) > 3.8.1cvs18.patchset
 ( cvs diff -u -r 1.1.2.60 -r 1.1.2.61 manual/advanced.xml;  ) > 3.8.1cvs19.patchset
+( cvs diff -u -r 1.382.2.604 -r 1.382.2.605 src/compose.c;  ) > 3.8.1cvs20.patchset

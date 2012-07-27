@@ -1,3 +1,10 @@
+2012-07-27 [ticho]	3.8.1cvs20
+
+	* src/compose.c
+		Fixed "transient for" property for file attach dialog when
+		called from Attachments list popup menu. Simplified menu item
+		sensitivities setting code logic for this menu.
+
 2012-07-25 [ticho]	3.8.1cvs19
 
 	* manual/advanced.xml

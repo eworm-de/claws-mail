@@ -9438,14 +9438,8 @@ static gboolean attach_button_pressed(GtkWidget *widget, GdkEventButton *event,
 		attach_selection = gtk_tree_view_get_selection(GTK_TREE_VIEW(widget));
 		attach_nr_selected = gtk_tree_selection_count_selected_rows(attach_selection);
 			
-		if (attach_nr_selected > 0)
-		{
-			cm_menu_set_sensitive_full(compose->ui_manager, "Popup/Compose/Remove", TRUE);
-			cm_menu_set_sensitive_full(compose->ui_manager, "Popup/Compose/Properties", TRUE);
-		} else {
-			cm_menu_set_sensitive_full(compose->ui_manager, "Popup/Compose/Remove", FALSE);
-			cm_menu_set_sensitive_full(compose->ui_manager, "Popup/Compose/Properties", FALSE);
-		}
+		cm_menu_set_sensitive_full(compose->ui_manager, "Popup/Compose/Remove", (attach_nr_selected > 0));
+		cm_menu_set_sensitive_full(compose->ui_manager, "Popup/Compose/Properties", (attach_nr_selected > 0));
 			
 		gtk_menu_popup(GTK_MENU(compose->popupmenu), NULL, NULL,
 			       NULL, NULL, event->button, event->time);
@@ -9850,6 +9844,10 @@ static void compose_attach_cb(GtkAction *action, gpointer data)
 
 	if (compose->redirect_filename != NULL)
 		return;
+
+	/* Set focus_window properly, in case we were called via popup menu,
+	 * which unsets it (via focus_out_event callback on compose window). */
+	manage_window_focus_in(compose->window, NULL, NULL);
 
 	file_list = filesel_select_multiple_files_open(_("Select file"));
 
