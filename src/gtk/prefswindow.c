@@ -572,11 +572,13 @@ void prefswindow_open_full(const gchar *title, GSList *prefs_pages,
 			   G_CALLBACK(prefswindow_key_pressed), &(prefswindow->window));
 #endif
 
-	/* connect to callback only if we hhave non-NULL pointers to store size to */
+	/* connect to callback only if we have non-NULL pointers to store size to */
 	if (prefswindow->save_width && prefswindow->save_height) {
 		g_signal_connect(G_OBJECT(prefswindow->window), "size_allocate",
 				 G_CALLBACK(prefs_size_allocate_cb), prefswindow);
 	}
+
+	MANAGE_WINDOW_SIGNALS_CONNECT(prefswindow->window);
 
 	if (!geometry.min_height) {
 		
@@ -606,8 +608,6 @@ void prefswindow_open_full(const gchar *title, GSList *prefs_pages,
 			GTK_SCROLLED_WINDOW(prefswindow->scrolledwindow1));
 	gtk_adjustment_set_value(adj, gtk_adjustment_get_lower(adj));
 	gtk_adjustment_changed(adj);
-
-	manage_window_focus_in(prefswindow->window, NULL, NULL);
 }
 
 void prefswindow_open(const gchar *title, GSList *prefs_pages, gpointer data,

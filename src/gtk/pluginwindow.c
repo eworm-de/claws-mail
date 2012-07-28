@@ -409,6 +409,7 @@ void pluginwindow_create()
 			   G_CALLBACK(pluginwindow_key_pressed), pluginwindow);
 	g_signal_connect(G_OBJECT(window), "delete_event",
 			 G_CALLBACK(pluginwindow_delete_cb), pluginwindow);
+	MANAGE_WINDOW_SIGNALS_CONNECT(window);
 
 	CLAWS_SET_TIP(load_btn,
 			_("Click here to load one or more plugins"));

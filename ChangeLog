@@ -1,3 +1,10 @@
+2012-07-28 [ticho]	3.8.1cvs23
+
+	* src/gtk/pluginwindow.c
+	* src/gtk/prefswindow.c
+		Fixed setting "transient for" property for plugin load/unload
+		file dialog. Connected manage_window signals to prefswindow events.
+
 2012-07-27 [ticho]	3.8.1cvs22
 
 	* src/summaryview.c
