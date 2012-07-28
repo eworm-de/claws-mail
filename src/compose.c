@@ -6656,9 +6656,10 @@ static void compose_create_header_entry(Compose *compose)
 			COMPOSE_FOLLOWUPTO);
 
 	gtk_combo_box_set_active(GTK_COMBO_BOX(combo), 0);
-	g_signal_connect(G_OBJECT(gtk_bin_get_child(GTK_BIN((combo)))), "grab_focus",
+	g_signal_connect(G_OBJECT(gtk_bin_get_child(GTK_BIN(combo))), "grab_focus",
 			 G_CALLBACK(compose_grab_focus_cb), compose);
 	gtk_widget_show(combo);
+
 	gtk_table_attach(GTK_TABLE(compose->header_table), combo, 0, 1,
 			compose->header_nextrow, compose->header_nextrow+1,
 			GTK_SHRINK, GTK_FILL, 0, 0);
@@ -8706,7 +8707,8 @@ static void compose_attach_property(GtkAction *action, gpointer data)
 	gtk_window_set_modal(GTK_WINDOW(attach_prop.window), TRUE);
 	gtk_widget_grab_focus(attach_prop.ok_btn);
 	gtk_widget_show(attach_prop.window);
-	manage_window_set_transient(GTK_WINDOW(attach_prop.window));
+	gtk_window_set_transient_for(GTK_WINDOW(attach_prop.window),
+			GTK_WINDOW(compose->window));
 
 	optmenu = GTK_COMBO_BOX(attach_prop.encoding_optmenu);
 	if (ainfo->encoding == ENC_UNKNOWN)

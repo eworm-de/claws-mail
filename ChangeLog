@@ -1,3 +1,11 @@
+2012-07-28 [ticho]	3.8.1cvs24
+
+	* src/compose.c
+		Properly fix setting "transient for" for attachment properties
+		dialog when called via popup menu (since we're stealing focus
+		few lines before, we need to do it directly, not via
+		manage_window_*).
+
 2012-07-28 [ticho]	3.8.1cvs23
 
 	* src/gtk/pluginwindow.c
