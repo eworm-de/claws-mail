@@ -6659,6 +6659,11 @@ static void compose_create_header_entry(Compose *compose)
 	g_signal_connect(G_OBJECT(gtk_bin_get_child(GTK_BIN(combo))), "grab_focus",
 			 G_CALLBACK(compose_grab_focus_cb), compose);
 	gtk_widget_show(combo);
+	
+	GList *l = NULL;
+	l = g_list_prepend(l, gtk_bin_get_child(GTK_BIN(combo)));
+	gtk_container_set_focus_chain(GTK_CONTAINER(combo), l);
+	g_list_free(l);
 
 	gtk_table_attach(GTK_TABLE(compose->header_table), combo, 0, 1,
 			compose->header_nextrow, compose->header_nextrow+1,

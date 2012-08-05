@@ -4399,3 +4399,4 @@
 ( cvs diff -u -r 1.395.2.447 -r 1.395.2.448 src/summaryview.c;  cvs diff -u -r 1.96.2.243 -r 1.96.2.244 src/textview.c;  ) > 3.8.1cvs22.patchset
 ( cvs diff -u -r 1.5.2.63 -r 1.5.2.64 src/gtk/pluginwindow.c;  cvs diff -u -r 1.12.2.61 -r 1.12.2.62 src/gtk/prefswindow.c;  ) > 3.8.1cvs23.patchset
 ( cvs diff -u -r 1.382.2.605 -r 1.382.2.606 src/compose.c;  ) > 3.8.1cvs24.patchset
+( cvs diff -u -r 1.382.2.606 -r 1.382.2.607 src/compose.c;  ) > 3.8.1cvs25.patchset

@@ -1,3 +1,9 @@
+2012-08-05 [ticho]	3.8.1cvs25
+
+	* src/compose.c
+		Avoid header combo box to get focus twice (first text within,
+		then combobox widget itself) when switching focus with TAB.
+
 2012-07-28 [ticho]	3.8.1cvs24
 
 	* src/compose.c
