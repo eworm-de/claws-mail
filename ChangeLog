@@ -1,3 +1,8 @@
+2012-08-09 [colin]	3.8.1cvs27
+
+	* src/gtk/sslcertwindow.c
+		Fix leak
+
 2012-08-09 [colin]	3.8.1cvs26
 
 	* src/common/ssl.c

@@ -336,6 +336,8 @@ static gboolean sslcertwindow_ask_new_cert(SSLCertificate *cert)
 
 	vbox = gtk_vbox_new(FALSE, 5);
 	buf = g_strdup_printf(_("Certificate for %s is unknown.\n%sDo you want to accept it?"), cert->host, invalid_str);
+	g_free(invalid_str);
+
 	label = gtk_label_new(buf);
 	gtk_misc_set_alignment (GTK_MISC (label), 0, 0.5);
 	gtk_box_pack_start(GTK_BOX(vbox), label, TRUE, TRUE, 0);
