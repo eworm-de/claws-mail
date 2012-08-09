@@ -1,3 +1,9 @@
+2012-08-09 [colin]	3.8.1cvs28
+
+	* src/prefs_filtering.c
+		Make treeView type-ahead case insensitive
+		Patch by Andreas Ronnquist
+
 2012-08-09 [colin]	3.8.1cvs27
 
 	* src/gtk/sslcertwindow.c

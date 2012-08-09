@@ -911,7 +911,7 @@ static gboolean prefs_filtering_search_func_cb (GtkTreeModel *model, gint column
 	if (!store_string || !key) return FALSE;
 
 
-	retval = (strncmp (key, store_string, strlen(key)) != 0);
+	retval = (g_ascii_strncasecmp (key, store_string, strlen(key)) != 0);
 
 	g_free(store_string);
 	debug_print("selecting row\n");
