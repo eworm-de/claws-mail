@@ -63,13 +63,13 @@ void ssl_certificate_delete_from_disk(SSLCertificate *cert);
 char * readable_fingerprint(unsigned char *src, int len);
 char *ssl_certificate_check_signer (gnutls_x509_crt cert, guint status);
 
-#ifdef USE_GNUTLS
 gnutls_x509_crt ssl_certificate_get_x509_from_pem_file(const gchar *file);
 gnutls_x509_privkey ssl_certificate_get_pkey_from_pem_file(const gchar *file);
 void ssl_certificate_get_x509_and_pkey_from_p12_file(const gchar *file, 
 			const gchar *password, gnutls_x509_crt *crt, gnutls_x509_privkey *key);
 size_t gnutls_i2d_X509(gnutls_x509_crt x509_cert, unsigned char **output);
 size_t gnutls_i2d_PrivateKey(gnutls_x509_privkey pkey, unsigned char **output);
-#endif
+gboolean ssl_certificate_check_subject_cn(SSLCertificate *cert);
+gchar *ssl_certificate_get_subject_cn(SSLCertificate *cert);
 #endif /* USE_GNUTLS */
 #endif /* SSL_CERTIFICATE_H */

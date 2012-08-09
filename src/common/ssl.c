@@ -105,6 +105,7 @@ const gchar *claws_ssl_get_cert_file(void)
 	const char *cert_files[]={
 		"/etc/pki/tls/certs/ca-bundle.crt",
 		"/etc/certs/ca-bundle.crt",
+		"/etc/ssl/ca-bundle.pem",
 		"/usr/share/ssl/certs/ca-bundle.crt",
 		"/etc/ssl/certs/ca-certificates.crt",
 		"/usr/local/ssl/certs/ca-bundle.crt",

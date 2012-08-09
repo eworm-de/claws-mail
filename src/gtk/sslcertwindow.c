@@ -285,6 +285,7 @@ static gboolean sslcert_ask_hook(gpointer source, gpointer data)
 	} else {
 		hookdata->accept = sslcertwindow_ask_changed_cert(hookdata->old_cert, hookdata->cert);
 	}
+
 	return TRUE;
 }
 
@@ -304,6 +305,24 @@ void sslcertwindow_show_cert(SSLCertificate *cert)
 	g_free(buf);
 }
 
+static gchar *sslcertwindow_get_invalid_str(SSLCertificate *cert)
+{
+	gchar *subject_cn = NULL;
+	gchar *str = NULL;
+
+	if (ssl_certificate_check_subject_cn(cert))
+		return g_strdup("");
+	
+	subject_cn = ssl_certificate_get_subject_cn(cert);
+	
+	str = g_strdup_printf(_("Certificate is for %s, but connection is to %s.\n"
+				"You may be connecting to a rogue server.\n\n"), 
+				subject_cn, cert->host);
+	g_free(subject_cn);
+	
+	return str;
+}
+
 static gboolean sslcertwindow_ask_new_cert(SSLCertificate *cert)
 {
 	gchar *buf, *sig_status;
@@ -312,9 +331,11 @@ static gboolean sslcertwindow_ask_new_cert(SSLCertificate *cert)
 	GtkWidget *label;
 	GtkWidget *button;
 	GtkWidget *cert_widget;
-	
+	gchar *invalid_str = sslcertwindow_get_invalid_str(cert);
+	const gchar *title;
+
 	vbox = gtk_vbox_new(FALSE, 5);
-	buf = g_strdup_printf(_("Certificate for %s is unknown.\nDo you want to accept it?"), cert->host);
+	buf = g_strdup_printf(_("Certificate for %s is unknown.\n%sDo you want to accept it?"), cert->host, invalid_str);
 	label = gtk_label_new(buf);
 	gtk_misc_set_alignment (GTK_MISC (label), 0, 0.5);
 	gtk_box_pack_start(GTK_BOX(vbox), label, TRUE, TRUE, 0);
@@ -337,7 +358,12 @@ static gboolean sslcertwindow_ask_new_cert(SSLCertificate *cert)
 	cert_widget = cert_presenter(cert);
 	gtk_container_add(GTK_CONTAINER(button), cert_widget);
 
-	val = alertpanel_full(_("Unknown SSL Certificate"), NULL,
+	if (!ssl_certificate_check_subject_cn(cert))
+		title = _("SSL certificate is invalid");
+	else
+		title = _("SSL Certificate is unknown");
+
+	val = alertpanel_full(title, NULL,
 			      _("_Cancel connection"), _("_Accept and save"), NULL,
 	 		      FALSE, vbox, ALERT_QUESTION, G_ALERTDEFAULT);
 	
@@ -352,9 +378,13 @@ static gboolean sslcertwindow_ask_expired_cert(SSLCertificate *cert)
 	GtkWidget *label;
 	GtkWidget *button;
 	GtkWidget *cert_widget;
-	
+	gchar *invalid_str = sslcertwindow_get_invalid_str(cert);
+	const gchar *title;
+
 	vbox = gtk_vbox_new(FALSE, 5);
-	buf = g_strdup_printf(_("Certificate for %s is expired.\nDo you want to continue?"), cert->host);
+	buf = g_strdup_printf(_("Certificate for %s is expired.\n%sDo you want to continue?"), cert->host, invalid_str);
+	g_free(invalid_str);
+
 	label = gtk_label_new(buf);
 	gtk_misc_set_alignment (GTK_MISC (label), 0, 0.5);
 	gtk_box_pack_start(GTK_BOX(vbox), label, TRUE, TRUE, 0);
@@ -378,7 +408,12 @@ static gboolean sslcertwindow_ask_expired_cert(SSLCertificate *cert)
 	cert_widget = cert_presenter(cert);
 	gtk_container_add(GTK_CONTAINER(button), cert_widget);
 
-	val = alertpanel_full(_("Expired SSL Certificate"), NULL,
+	if (!ssl_certificate_check_subject_cn(cert))
+		title = _("SSL certificate is invalid and expired");
+	else
+		title = _("SSL certificate is expired");
+
+	val = alertpanel_full(title, NULL,
 			      _("_Cancel connection"), _("_Accept"), NULL,
 	 		      FALSE, vbox, ALERT_QUESTION, G_ALERTDEFAULT);
 	
@@ -395,7 +430,9 @@ static gboolean sslcertwindow_ask_changed_cert(SSLCertificate *old_cert, SSLCert
 	GtkWidget *label;
 	GtkWidget *button;
 	AlertValue val;
-	
+	gchar *invalid_str = sslcertwindow_get_invalid_str(new_cert);
+	const gchar *title;
+
 	vbox = gtk_vbox_new(FALSE, 5);
 	label = gtk_label_new(_("New certificate:"));
 	gtk_misc_set_alignment (GTK_MISC (label), 0, 0.5);
@@ -409,7 +446,9 @@ static gboolean sslcertwindow_ask_changed_cert(SSLCertificate *old_cert, SSLCert
 	gtk_widget_show_all(vbox);
 	
 	vbox2 = gtk_vbox_new(FALSE, 5);
-	buf = g_strdup_printf(_("Certificate for %s has changed. Do you want to accept it?"), new_cert->host);
+	buf = g_strdup_printf(_("Certificate for %s has changed.\n%sDo you want to accept it?"), new_cert->host, invalid_str);
+	g_free(invalid_str);
+
 	label = gtk_label_new(buf);
 	gtk_misc_set_alignment (GTK_MISC (label), 0, 0.5);
 	gtk_box_pack_start(GTK_BOX(vbox2), label, TRUE, TRUE, 0);
@@ -432,7 +471,11 @@ static gboolean sslcertwindow_ask_changed_cert(SSLCertificate *old_cert, SSLCert
 	gtk_box_pack_start(GTK_BOX(vbox2), button, FALSE, FALSE, 0);
 	gtk_container_add(GTK_CONTAINER(button), vbox);
 
-	val = alertpanel_full(_("Changed SSL Certificate"), NULL,
+	if (!ssl_certificate_check_subject_cn(new_cert))
+		title = _("SSL certificate changed and is invalid");
+	else
+		title = _("SSL certificate changed");
+	val = alertpanel_full(title, NULL,
 			      _("_Cancel connection"), _("_Accept and save"), NULL,
 	 		      FALSE, vbox2, ALERT_WARNING, G_ALERTDEFAULT);
 	
