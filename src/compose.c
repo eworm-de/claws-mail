@@ -6069,7 +6069,7 @@ static int compose_add_attachments(Compose *compose, MimeInfo *parent)
 		    !g_ascii_strcasecmp(mimepart->subtype, "rfc822")) {
 			mimepart->disposition = DISPOSITIONTYPE_INLINE;
 		} else if (mimepart->type == MIMETYPE_TEXT) {
-			if (!ainfo->name && compose->mode == COMPOSE_FORWARD_INLINE) {
+			if (!ainfo->name) {
 				/* Text parts with no name come from multipart/alternative
 				* forwards. Make sure the recipient won't look at the 
 				* original HTML part by mistake. */

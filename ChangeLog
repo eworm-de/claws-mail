@@ -1,3 +1,12 @@
+2012-08-12 [colin]	3.8.1cvs29
+
+	* src/compose.c
+		Make sure text/* attachments are not made
+		inline, regardless of the compose mode.
+		Finishes fixing bug #2203 after auto-save
+		switches mode to COMPOSE_REEDIT. Thanks to
+		Michael Gmelin for finding this.
+
 2012-08-09 [colin]	3.8.1cvs28
 
 	* src/prefs_filtering.c
