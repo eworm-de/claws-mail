@@ -152,7 +152,7 @@ const gchar *claws_ssl_get_cert_dir(void)
 	}
 	return NULL;
 #else
-	return "put_what_s_needed_here";
+	return NULL;
 #endif
 }
 

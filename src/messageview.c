@@ -1469,6 +1469,7 @@ gint messageview_show(MessageView *messageview, MsgInfo *msginfo,
 						goto done;
 					} else if (mimeinfo->type == MIMETYPE_TEXT && 
 					    !strcasecmp(mimeinfo->subtype, "html") &&
+					    mimeinfo->disposition == DISPOSITIONTYPE_ATTACHMENT &&
 					    prefs_common.promote_html_part) {
 						mimeview_select_mimepart_icon(messageview->mimeview, mimeinfo);
 						goto done;
@@ -1487,6 +1488,7 @@ gint messageview_show(MessageView *messageview, MsgInfo *msginfo,
 						 * not to show html attachments */
 						continue;
 					}
+					
 					if (mimeinfo->type == MIMETYPE_TEXT && 
 					    !strcasecmp(mimeinfo->subtype, "calendar") &&
 					    mimeview_has_viewer_for_content_type(messageview->mimeview,
@@ -1495,6 +1497,7 @@ gint messageview_show(MessageView *messageview, MsgInfo *msginfo,
 						goto done;
 					} else if (mimeinfo->type == MIMETYPE_TEXT && 
 					    !strcasecmp(mimeinfo->subtype, "html") &&
+					    mimeinfo->disposition != DISPOSITIONTYPE_ATTACHMENT &&
 					    prefs_common.promote_html_part) {
 						mimeview_select_mimepart_icon(messageview->mimeview, mimeinfo);
 						goto done;

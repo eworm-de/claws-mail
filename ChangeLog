@@ -1,3 +1,13 @@
+2012-08-12 [colin]	3.8.1cvs30
+
+	* src/messageview.c
+		Only show HTML parts by default (if the pref
+		is set so) if the part disposition-type is
+		inline or unknown, but not attachment.
+	* src/common/ssl.c
+		Remove useless hook that won't ever be used
+		on windows
+
 2012-08-12 [colin]	3.8.1cvs29
 
 	* src/compose.c
