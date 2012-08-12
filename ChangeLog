@@ -1,3 +1,8 @@
+2012-08-12 [colin]	3.8.1cvs31
+
+	* src/messageview.c
+		Fix comparison, thanks to Michael Gmelin
+
 2012-08-12 [colin]	3.8.1cvs30
 
 	* src/messageview.c

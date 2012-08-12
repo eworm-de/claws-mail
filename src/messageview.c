@@ -1469,7 +1469,7 @@ gint messageview_show(MessageView *messageview, MsgInfo *msginfo,
 						goto done;
 					} else if (mimeinfo->type == MIMETYPE_TEXT && 
 					    !strcasecmp(mimeinfo->subtype, "html") &&
-					    mimeinfo->disposition == DISPOSITIONTYPE_ATTACHMENT &&
+					    mimeinfo->disposition != DISPOSITIONTYPE_ATTACHMENT &&
 					    prefs_common.promote_html_part) {
 						mimeview_select_mimepart_icon(messageview->mimeview, mimeinfo);
 						goto done;
