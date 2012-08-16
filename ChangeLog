@@ -1,3 +1,10 @@
+2012-08-16 [colin]	3.8.1cvs33
+
+	* src/imap.c
+		Always clear the tags list when fetching a folder, or
+		Claws will never untag an untagged email. Patch by
+		Igor Mammedov <imammedo@redhat.com>
+
 2012-08-12 [colin]	3.8.1cvs32
 
 	* src/compose.c

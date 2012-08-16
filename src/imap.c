@@ -4804,10 +4804,9 @@ bail:
 				GSList *tags = g_hash_table_lookup(tags_hash, GINT_TO_POINTER(msginfo->msgnum));
 				GSList *cur;
 
-				if (tags != NULL) {
-					g_slist_free(msginfo->tags);
-					msginfo->tags = NULL;
-				}
+				g_slist_free(msginfo->tags);
+				msginfo->tags = NULL;
+
 				for (cur = tags; cur; cur = cur->next) {
 					gchar *real_tag = imap_modified_utf7_to_utf8(cur->data, TRUE);
 					gint id = 0;
@@ -4816,11 +4815,9 @@ bail:
 						id = tags_add_tag(real_tag);
 						got_alien_tags = TRUE;
 					}
-					if (!g_slist_find(msginfo->tags, GINT_TO_POINTER(id))) {
-						msginfo->tags = g_slist_append(
+					msginfo->tags = g_slist_append(
 								msginfo->tags,
 								GINT_TO_POINTER(id));
-					}
 					g_free(real_tag);
 				}
 				slist_free_strings(tags);
