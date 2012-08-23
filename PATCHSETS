@@ -4408,3 +4408,4 @@
 ( cvs diff -u -r 1.94.2.236 -r 1.94.2.237 src/messageview.c;  ) > 3.8.1cvs31.patchset
 ( cvs diff -u -r 1.382.2.608 -r 1.382.2.609 src/compose.c;  ) > 3.8.1cvs32.patchset
 ( cvs diff -u -r 1.179.2.258 -r 1.179.2.259 src/imap.c;  ) > 3.8.1cvs33.patchset
+( cvs diff -u -r 1.274.2.346 -r 1.274.2.347 src/mainwindow.c;  ) > 3.8.1cvs34.patchset

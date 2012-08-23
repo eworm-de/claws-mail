@@ -1,3 +1,9 @@
+2012-08-23 [colin]	3.8.1cvs34
+
+	* src/mainwindow.c
+		Fix --offline asking if one wants to sync,
+		due to re-entering. Thanks <ebik@ucw.cz>.
+
 2012-08-16 [colin]	3.8.1cvs33
 
 	* src/imap.c
