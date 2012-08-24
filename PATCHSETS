@@ -4409,3 +4409,4 @@
 ( cvs diff -u -r 1.382.2.608 -r 1.382.2.609 src/compose.c;  ) > 3.8.1cvs32.patchset
 ( cvs diff -u -r 1.179.2.258 -r 1.179.2.259 src/imap.c;  ) > 3.8.1cvs33.patchset
 ( cvs diff -u -r 1.274.2.346 -r 1.274.2.347 src/mainwindow.c;  ) > 3.8.1cvs34.patchset
+( cvs diff -u -r 1.1.2.61 -r 1.1.2.62 manual/advanced.xml;  cvs diff -u -r 1.1.2.1 -r 1.1.2.2 manual/de/advanced.xml;  cvs diff -u -r 1.1.2.2 -r 1.1.2.3 manual/de/dist/html/Makefile.am;  cvs diff -u -r 1.1.2.6 -r 1.1.2.7 manual/dist/html/Makefile.am;  cvs diff -u -r 1.1.2.20 -r 1.1.2.21 manual/es/advanced.xml;  cvs diff -u -r 1.1.2.3 -r 1.1.2.4 manual/es/dist/html/Makefile.am;  cvs diff -u -r 1.1.2.19 -r 1.1.2.20 manual/fr/advanced.xml;  cvs diff -u -r 1.1.2.4 -r 1.1.2.5 manual/fr/dist/html/Makefile.am;  cvs diff -u -r 1.1.2.4 -r 1.1.2.5 manual/pl/dist/html/Makefile.am;  ) > 3.8.1cvs35.patchset

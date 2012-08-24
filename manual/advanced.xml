@@ -555,8 +555,8 @@
 	There's a small tool written in Perl-GTK called Clawsker which 
 	provides a user-friendly GUI for tweaking these settings instead of
 	direct editing of <filename>clawsrc</filename>. You can read more
-	about it on the <ulink url="http://www.claws-mail.org/clawsker">Clawsker
-	page</ulink>.
+	about it on the <ulink 
+	url="http://www.claws-mail.org/clawsker.php">Clawsker page</ulink>.
     </para>
     <variablelist>
       <varlistentry>
@@ -599,6 +599,16 @@
 	<listitem>
 	  <para>
 	Don't use bold and italic text in Compose dialogue's account selector.
+	  </para>
+	</listitem>
+      </varlistentry>
+      <varlistentry>
+	<term><literal>diff_added_color</literal></term>
+	<term><literal>diff_deleted_color</literal></term>
+	<term><literal>diff_hunk_color</literal></term>
+	<listitem>
+	  <para>
+	Colors to use when displaying attachments in unified diff format.
 	  </para>
 	</listitem>
       </varlistentry>
@@ -875,16 +885,6 @@
 	Character to show in Folder List counter columns when a folder contains
 	no messages. Default value is 0.
 	  </para>
-	</listitem>
-      </varlistentry>
-      <varlistentry>
-	<term><literal>diff_added_color</literal></term>
-	<term><literal>diff_deleted_color</literal></term>
-	<term><literal>diff_hunk_color</literal></term>
-	<listitem>
-		<para>
-	Colors to use when displaying attachments in unified diff format.
-		</para>
 	</listitem>
       </varlistentry>
     </variablelist>

@@ -210,7 +210,7 @@
 	Un petit outil nommé Clawsker, écrit en Perl-GTK, permet d'éditer les options
 	cachées de Claws Mail en passant par une interface utilisateur classique
 	au lieu d'avoir à éditer manuellement le fichier <filename>clawsrc</filename>.
-	Pour en savoir plus, consulter <ulink url="http://www.claws-mail.org/clawsker">
+	Pour en savoir plus, consulter <ulink url="http://www.claws-mail.org/clawsker.php">
 	la page dédiée à Clawsker</ulink>.
     </para>
     <variablelist>

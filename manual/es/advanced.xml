@@ -633,6 +633,16 @@
 	</listitem>
       </varlistentry>
       <varlistentry>
+	<term><literal>diff_added_color</literal></term>
+	<term><literal>diff_deleted_color</literal></term>
+	<term><literal>diff_hunk_color</literal></term>
+	<listitem>
+	  <para>
+	Colores a usar para mostrar los adjuntos en formato unificado de diff.
+	  </para>
+	</listitem>
+      </varlistentry>
+      <varlistentry>
 	<term><literal>emphasis_color</literal></term>
 	<listitem>
 	  <para>

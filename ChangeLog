@@ -1,3 +1,20 @@
+2012-08-24 [mones]	3.8.1cvs35
+
+	* manual/advanced.xml
+		Keep alphabetic order of hidden options lost
+		and update Clawsker URL.
+	* manual/de/advanced.xml
+	* manual/fr/advanced.xml
+		Update Clawsker URL.
+	* manual/es/advanced.xml
+		Sync with English version and update Clawsker URL.
+	* manual/de/dist/html/Makefile.am
+	* manual/es/dist/html/Makefile.am
+	* manual/fr/dist/html/Makefile.am
+	* manual/pl/dist/html/Makefile.am
+	* manual/dist/html/Makefile.am
+		Fix bug 2723 'Missing encoding in generated html manual'
+
 2012-08-23 [colin]	3.8.1cvs34
 
 	* src/mainwindow.c
