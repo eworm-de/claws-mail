@@ -1772,8 +1772,6 @@ send_mail:
 			session_stats.forwarded++;
 		else
 			session_stats.sent++;
-fprintf(stdout, "++ STATS ++ SENT %d %d %d\n", session_stats.sent, session_stats.replied, session_stats.forwarded);
-fflush(stdout);
 	}
 
 	/* save message to outbox */

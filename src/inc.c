@@ -162,8 +162,6 @@ static void inc_update_stats(gint new_msgs)
 {
 	/* update session statistics */
 	session_stats.received += new_msgs;
-fprintf(stdout, "++ STATS ++ INC %d %d\n", session_stats.received, new_msgs);
-fflush(stdout);
 }
 
 /**
