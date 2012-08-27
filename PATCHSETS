@@ -4413,3 +4413,4 @@
 ( cvs diff -u -r 1.149.2.108 -r 1.149.2.109 src/inc.c;  cvs diff -u -r 1.150.2.124 -r 1.150.2.125 src/procmsg.c;  ) > 3.8.1cvs36.patchset
 ( cvs diff -u -r 1.274.2.347 -r 1.274.2.348 src/mainwindow.c;  cvs diff -u -r 1.395.2.448 -r 1.395.2.449 src/summaryview.c;  ) > 3.8.1cvs37.patchset
 ( cvs diff -u -r 1.395.2.449 -r 1.395.2.450 src/summaryview.c;  ) > 3.8.1cvs38.patchset
+( cvs diff -u -r 1.115.2.252 -r 1.115.2.253 src/main.c;  ) > 3.8.1cvs39.patchset

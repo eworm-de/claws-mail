@@ -1069,9 +1069,10 @@ int main(int argc, char *argv[])
 	gint num_folder_class = 0;
 	gboolean asked_for_migration = FALSE;
 	gboolean start_done = TRUE;
-	GtkUIManager *gui_manager = NULL;
 	GSList *plug_list = NULL;
 	gboolean never_ran = FALSE;
+	gboolean mainwin_shown = FALSE;
+
 	START_TIMING("startup");
 
 	sc_starting = TRUE;
@@ -1196,7 +1197,7 @@ int main(int argc, char *argv[])
 		gdk_screen_get_system_colormap(
 			gdk_screen_get_default()));
 
-	gui_manager = gtkut_create_ui_manager();
+	gtkut_create_ui_manager();
 
 	/* Create container for all the menus we will be adding */
 	MENUITEM_ADDUI("/", "Menus", NULL, GTK_UI_MANAGER_MENUBAR);
@@ -1467,8 +1468,10 @@ int main(int argc, char *argv[])
 
 	/* if crashed, show window early so that the user
 	 * sees what's happening */
-	if (claws_crashed())
+	if (claws_crashed()) {
 		main_window_popup(mainwin);
+		mainwin_shown = TRUE;
+	}
 
 	account_set_missing_folder();
 	folder_set_missing_folders();
@@ -1543,6 +1546,7 @@ int main(int argc, char *argv[])
 		}
 		main_window_cursor_normal(mainwin);
 		main_window_popup(mainwin);
+		mainwin_shown = TRUE;
 		alertpanel_warning(ngettext(
 				     "The following plugin failed to load. "
 				     "Check the Plugins configuration "
@@ -1562,7 +1566,7 @@ int main(int argc, char *argv[])
 	 	plugin_load_standard_plugins ();
 	}
 	/* if not crashed, show window now */
-	if (!claws_crashed()) {
+	if (!mainwin_shown) {
 		/* apart if something told not to show */
 		if (show_at_startup)
 			main_window_popup(mainwin);

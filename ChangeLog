@@ -1,3 +1,10 @@
+2012-08-27 [colin]	3.8.1cvs39
+
+	* src/main.c
+		Fix double mainwindow presentation that confuses GNOME3
+		when some plugins fail to load (subsequent Claws windows
+		got no focus in that case)
+
 2012-08-27 [colin]	3.8.1cvs38
 
 	* src/summaryview.c
