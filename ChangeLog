@@ -1,3 +1,10 @@
+2012-08-27 [colin]	3.8.1cvs37
+
+	* src/mainwindow.c
+	* src/summaryview.c
+		Separate "Mark all read" from "Mark as read"
+		and "Ignore thread"
+
 2012-08-27 [wwp]	3.8.1cvs36
 
 	* src/inc.c

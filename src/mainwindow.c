@@ -646,14 +646,14 @@ static GtkActionEntry mainwin_entries[] =
 	{"Message/MailingList/ViewArchive/PlaceHolder",	NULL, "Placeholder", NULL, NULL, G_CALLBACK(mainwindow_nothing_cb) },
 	{"Message/MailingList/ContactOwner",	NULL, N_("Contact owner") }, 
 	{"Message/MailingList/ContactOwner/PlaceHolder",	NULL, "Placeholder", NULL, NULL, G_CALLBACK(mainwindow_nothing_cb) },
-	/*{"Message/---",			NULL, "---" },*/
+	/* separation */
 
 	{"Message/Move",			NULL, N_("M_ove..."), "<control>O", NULL, G_CALLBACK(move_to_cb) },
 	{"Message/Copy",			NULL, N_("_Copy..."), "<shift><control>O", NULL, G_CALLBACK(copy_to_cb) },
 	{"Message/Trash",			NULL, N_("Move to _trash"), "<control>D", NULL, G_CALLBACK(delete_trash_cb) },
 	{"Message/Delete",			NULL, N_("_Delete..."), NULL, NULL, G_CALLBACK(delete_cb) },
 	{"Message/CancelNews",			NULL, N_("Cancel a news message"), NULL, NULL, G_CALLBACK(cancel_cb) },
-	/*{"Message/---",			NULL, "---" },*/
+	/* separation */
  	
 	{"Message/Mark",			NULL, N_("_Mark") },
 	{"Message/Mark/Mark",			NULL, N_("_Mark"), "<shift>asterisk", NULL, G_CALLBACK(mark_cb) },
@@ -662,7 +662,9 @@ static GtkActionEntry mainwin_entries[] =
 
 	{"Message/Mark/MarkUnread",		NULL, N_("Mark as unr_ead"), "<shift>exclam", NULL, G_CALLBACK(mark_as_unread_cb) },
 	{"Message/Mark/MarkRead",		NULL, N_("Mark as rea_d"), NULL, NULL, G_CALLBACK(mark_as_read_cb) },
+	/* separation */
 	{"Message/Mark/MarkAllRead",		NULL, N_("Mark all read"), NULL, NULL, G_CALLBACK(mark_all_read_cb) },
+	/* separation */
 	{"Message/Mark/IgnoreThread",		NULL, N_("Ignore thread"), NULL, NULL, G_CALLBACK(ignore_thread_cb) },
 	{"Message/Mark/UnignoreThread",		NULL, N_("Unignore thread"), NULL, NULL, G_CALLBACK(unignore_thread_cb) },
 	{"Message/Mark/WatchThread",		NULL, N_("Watch thread"), NULL, NULL, G_CALLBACK(watch_thread_cb) },
@@ -1889,15 +1891,17 @@ MainWindow *main_window_create()
 	MENUITEM_ADDUI_MANAGER(mainwin->ui_manager, "/Menu/Message/Mark", "Separator1", "Message/Mark/---", GTK_UI_MANAGER_SEPARATOR)
 	MENUITEM_ADDUI_MANAGER(mainwin->ui_manager, "/Menu/Message/Mark", "MarkUnread", "Message/Mark/MarkUnread", GTK_UI_MANAGER_MENUITEM)
 	MENUITEM_ADDUI_MANAGER(mainwin->ui_manager, "/Menu/Message/Mark", "MarkRead", "Message/Mark/MarkRead", GTK_UI_MANAGER_MENUITEM)
+	MENUITEM_ADDUI_MANAGER(mainwin->ui_manager, "/Menu/Message/Mark", "Separator2", "Message/Mark/---", GTK_UI_MANAGER_SEPARATOR)
 	MENUITEM_ADDUI_MANAGER(mainwin->ui_manager, "/Menu/Message/Mark", "MarkAllRead", "Message/Mark/MarkAllRead", GTK_UI_MANAGER_MENUITEM)
+	MENUITEM_ADDUI_MANAGER(mainwin->ui_manager, "/Menu/Message/Mark", "Separator3", "Message/Mark/---", GTK_UI_MANAGER_SEPARATOR)
 	MENUITEM_ADDUI_MANAGER(mainwin->ui_manager, "/Menu/Message/Mark", "IgnoreThread", "Message/Mark/IgnoreThread", GTK_UI_MANAGER_MENUITEM)
 	MENUITEM_ADDUI_MANAGER(mainwin->ui_manager, "/Menu/Message/Mark", "UnignoreThread", "Message/Mark/UnignoreThread", GTK_UI_MANAGER_MENUITEM)
 	MENUITEM_ADDUI_MANAGER(mainwin->ui_manager, "/Menu/Message/Mark", "WatchThread", "Message/Mark/WatchThread", GTK_UI_MANAGER_MENUITEM)
 	MENUITEM_ADDUI_MANAGER(mainwin->ui_manager, "/Menu/Message/Mark", "UnwatchThread", "Message/Mark/UnwatchThread", GTK_UI_MANAGER_MENUITEM)
-	MENUITEM_ADDUI_MANAGER(mainwin->ui_manager, "/Menu/Message/Mark", "Separator2", "Message/Mark/---", GTK_UI_MANAGER_SEPARATOR)
+	MENUITEM_ADDUI_MANAGER(mainwin->ui_manager, "/Menu/Message/Mark", "Separator4", "Message/Mark/---", GTK_UI_MANAGER_SEPARATOR)
 	MENUITEM_ADDUI_MANAGER(mainwin->ui_manager, "/Menu/Message/Mark", "MarkSpam", "Message/Mark/MarkSpam", GTK_UI_MANAGER_MENUITEM)
 	MENUITEM_ADDUI_MANAGER(mainwin->ui_manager, "/Menu/Message/Mark", "MarkHam", "Message/Mark/MarkHam", GTK_UI_MANAGER_MENUITEM)
-	MENUITEM_ADDUI_MANAGER(mainwin->ui_manager, "/Menu/Message/Mark", "Separator3", "Message/Mark/---", GTK_UI_MANAGER_SEPARATOR)
+	MENUITEM_ADDUI_MANAGER(mainwin->ui_manager, "/Menu/Message/Mark", "Separator5", "Message/Mark/---", GTK_UI_MANAGER_SEPARATOR)
 	MENUITEM_ADDUI_MANAGER(mainwin->ui_manager, "/Menu/Message/Mark", "Lock", "Message/Mark/Lock", GTK_UI_MANAGER_MENUITEM)
 	MENUITEM_ADDUI_MANAGER(mainwin->ui_manager, "/Menu/Message/Mark", "Unlock", "Message/Mark/Unlock", GTK_UI_MANAGER_MENUITEM)
 	MENUITEM_ADDUI_MANAGER(mainwin->ui_manager, "/Menu/Message", "ColorLabel", "Message/ColorLabel", GTK_UI_MANAGER_MENUITEM)
