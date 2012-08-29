@@ -89,6 +89,9 @@ static GtkAspellCheckers *gtkaspellcheckers;
 static void gtkaspell_checkers_error_message	(gchar	*message);
 
 /* Callbacks */
+static gboolean key_press_cb			(GtkWidget    *text_view,
+						 GdkEventKey  *event,
+                                                 GtkAspell      *gtkaspell);
 static void entry_insert_cb			(GtkTextBuffer	*textbuf,
 						 GtkTextIter	*iter,
 						 gchar		*newtext, 
@@ -423,6 +426,8 @@ GtkAspell *gtkaspell_new(const gchar *dictionary,
 
 	allocate_color(gtkaspell, misspelled_color);
 
+	g_signal_connect(G_OBJECT(gtktext), "key_press_event",
+			       G_CALLBACK(key_press_cb), gtkaspell);
 	g_signal_connect_after(G_OBJECT(buffer), "insert-text",
 			       G_CALLBACK(entry_insert_cb), gtkaspell);
 	g_signal_connect_after(G_OBJECT(buffer), "delete-range",
@@ -442,6 +447,9 @@ void gtkaspell_delete(GtkAspell *gtkaspell)
 {
 	GtkTextView *gtktext = gtkaspell->gtktext;
 	
+        g_signal_handlers_disconnect_by_func(G_OBJECT(gtktext),
+					     G_CALLBACK(key_press_cb),
+					     gtkaspell);
         g_signal_handlers_disconnect_by_func(G_OBJECT(gtktext),
 					     G_CALLBACK(entry_insert_cb),
 					     gtkaspell);
@@ -476,6 +484,41 @@ void gtkaspell_dict_changed(GtkAspell *gtkaspell)
 		return;
 
 	gtkaspell->dict_changed_cb(gtkaspell->menu_changed_data);
+}
+
+static gboolean key_press_cb			(GtkWidget    *text_view,
+						 GdkEventKey  *event,
+                                                 GtkAspell    *gtkaspell)
+{
+	gint pos;
+	GtkTextBuffer *textbuf = gtk_text_view_get_buffer(text_view);
+
+	cm_return_val_if_fail(gtkaspell->gtkaspeller->speller, FALSE);
+
+	if (!gtkaspell->check_while_typing)
+		return FALSE;
+
+	switch (event->keyval) {
+		case GDK_KEY_Home:
+		case GDK_KEY_Left:
+		case GDK_KEY_Up:
+		case GDK_KEY_Right:
+		case GDK_KEY_Down:
+		case GDK_KEY_Page_Up:
+		case GDK_KEY_Page_Down:
+		case GDK_KEY_End:
+		case GDK_KEY_Begin:
+			pos = get_textview_buffer_offset(text_view);
+			if (pos > 0)
+				check_at(gtkaspell, pos - 1);
+			else
+				check_at(gtkaspell, pos);
+			break;
+		default:
+			break;
+	}
+
+	return FALSE;
 }
 
 static void entry_insert_cb(GtkTextBuffer *textbuf,
@@ -1198,6 +1241,9 @@ void gtkaspell_block_check(GtkAspell *gtkaspell)
 		
 	gtktext = gtkaspell->gtktext;
 	g_signal_handlers_block_by_func(G_OBJECT(gtktext),
+					 G_CALLBACK(key_press_cb),
+					 gtkaspell);
+	g_signal_handlers_block_by_func(G_OBJECT(gtktext),
 					 G_CALLBACK(entry_insert_cb),
 					 gtkaspell);
 	g_signal_handlers_block_by_func(G_OBJECT(gtktext),
@@ -1213,6 +1259,9 @@ void gtkaspell_unblock_check(GtkAspell *gtkaspell)
 		return;
 		
 	gtktext = gtkaspell->gtktext;
+	g_signal_handlers_unblock_by_func(G_OBJECT(gtktext),
+					 G_CALLBACK(key_press_cb),
+					 gtkaspell);
 	g_signal_handlers_unblock_by_func(G_OBJECT(gtktext),
 					 G_CALLBACK(entry_insert_cb),
 					 gtkaspell);
@@ -1242,12 +1291,7 @@ static void replace_real_word(GtkAspell *gtkaspell, const gchar *newword)
 
 	newlen = strlen(newword); /* FIXME: multybyte characters? */
 
-	g_signal_handlers_block_by_func(G_OBJECT(gtktext),
-					 G_CALLBACK(entry_insert_cb),
-					 gtkaspell);
-	g_signal_handlers_block_by_func(G_OBJECT(gtktext),
-					 G_CALLBACK(entry_delete_cb),
-					 gtkaspell);
+	gtkaspell_block_check(gtkaspell);
 
 	gtk_text_buffer_get_iter_at_offset(textbuf, &startiter,
 					   gtkaspell->start_pos);
@@ -1258,12 +1302,7 @@ static void replace_real_word(GtkAspell *gtkaspell, const gchar *newword)
 	g_signal_emit_by_name(G_OBJECT(textbuf), "insert-text",
 			      &startiter, newword, newlen, gtkaspell);
 
-	g_signal_handlers_unblock_by_func(G_OBJECT(gtktext),
-					   G_CALLBACK(entry_insert_cb),
-					   gtkaspell);
-	g_signal_handlers_unblock_by_func(G_OBJECT(gtktext),
-					   G_CALLBACK(entry_delete_cb),
-					   gtkaspell);
+	gtkaspell_unblock_check(gtkaspell);
 
 	/* Put the point and the position where we clicked with the mouse
 	 * It seems to be a hack, as I must thaw,freeze,thaw the widget

@@ -4416,3 +4416,4 @@
 ( cvs diff -u -r 1.115.2.252 -r 1.115.2.253 src/main.c;  ) > 3.8.1cvs39.patchset
 ( cvs diff -u -r 1.274.2.348 -r 1.274.2.349 src/mainwindow.c;  cvs diff -u -r 1.94.2.237 -r 1.94.2.238 src/messageview.c;  cvs diff -u -r 1.83.2.192 -r 1.83.2.193 src/mimeview.c;  cvs diff -u -r 1.20.2.37 -r 1.20.2.38 src/mimeview.h;  cvs diff -u -r 1.395.2.450 -r 1.395.2.451 src/summaryview.c;  cvs diff -u -r 1.96.2.244 -r 1.96.2.245 src/textview.c;  cvs diff -u -r 1.5.2.46 -r 1.5.2.47 src/gtk/menu.c;  cvs diff -u -r 1.4.2.26 -r 1.4.2.27 src/gtk/menu.h;  ) > 3.8.1cvs40.patchset
 ( cvs diff -u -r 1.1.2.72 -r 1.1.2.73 src/plugins/pgpcore/sgpgme.c;  ) > 3.8.1cvs41.patchset
+( cvs diff -u -r 1.9.2.79 -r 1.9.2.80 src/gtk/gtkaspell.c;  ) > 3.8.1cvs42.patchset
