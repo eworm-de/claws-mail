@@ -102,6 +102,8 @@ struct _MimeView
 	MimeInfo *spec_part;
 	GtkUIManager *ui_manager;
 	GtkActionGroup *action_group;
+	gboolean signed_part;
+
 #ifdef USE_PTHREAD
 	SigCheckData *check_data;
 #endif
@@ -177,6 +179,17 @@ gboolean mimeview_has_viewer_for_content_type
 					(MimeView	*mimeview,
 					 const gchar	*content_type);
 gboolean mimeview_tree_is_empty		(MimeView 	*mimeview);
+void mimeview_save_as		(MimeView	*mimeview);
+void mimeview_display_as_text	(MimeView	*mimeview);
+void mimeview_launch		(MimeView	*mimeview,
+				 MimeInfo	*partinfo);
+#ifndef G_OS_WIN32
+void mimeview_open_with		(MimeView	*mimeview);
+#endif
+void mimeview_check_signature(MimeView *mimeview);
+void mimeview_select_next_part(MimeView *mimeview);
+void mimeview_select_prev_part(MimeView *mimeview);
+
 
 #ifdef __cplusplus
 }

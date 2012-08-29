@@ -6734,20 +6734,6 @@ static gboolean summary_key_pressed(GtkWidget *widget, GdkEventKey *event,
 		BREAK_ON_MODIFIER_KEY();
 		summary_delete_trash(summaryview);
 		break;
-	case GDK_KEY_y:
-	case GDK_KEY_t:
-	case GDK_KEY_l:
-	case GDK_KEY_o:
-	case GDK_KEY_c:
-	case GDK_KEY_a:
-	case GDK_KEY_z:
-		if ((event->state & (GDK_MOD1_MASK|GDK_CONTROL_MASK)) == 0) {
-			g_signal_stop_emission_by_name(G_OBJECT(widget), 
-                                       "key_press_event");
-			mimeview_pass_key_press_event(messageview->mimeview,
-						      event);
-			break;
-		}
 	default:
 		break;
 	}

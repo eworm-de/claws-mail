@@ -185,6 +185,16 @@ static void messageview_update		(MessageView	*msgview,
 					 MsgInfo	*old_msginfo);
 static gboolean messageview_update_msg	(gpointer source, gpointer data);
 
+static void save_part_as_cb(GtkAction *action, gpointer data);
+static void view_part_as_text_cb(GtkAction *action, gpointer data);
+static void open_part_cb(GtkAction *action, gpointer data);
+#ifndef G_OS_WIN32
+static void open_part_with_cb(GtkAction *action, gpointer data);
+#endif
+static void check_signature_cb(GtkAction *action, gpointer data);
+static void goto_next_part_cb(GtkAction *action, gpointer data);
+static void goto_prev_part_cb(GtkAction *action, gpointer data);
+
 static void messageview_nothing_cb	   (GtkAction *action, gpointer data)
 {
 
@@ -204,7 +214,8 @@ static GtkActionEntry msgview_entries[] =
 	{"PlaceHolder",			NULL, "Placeholder", NULL, NULL, G_CALLBACK(messageview_nothing_cb) },
 
 /* File menu */
-	{"File/SaveAs",			NULL, N_("_Save as..."), "<control>S", NULL, G_CALLBACK(save_as_cb) },
+	{"File/SaveAs",			NULL, N_("_Save email as..."), "<control>S", NULL, G_CALLBACK(save_as_cb) },
+	{"File/SavePartAs",		NULL, N_("_Save part as..."), "Y", NULL, G_CALLBACK(save_part_as_cb) },
 	{"File/PageSetup",		NULL, N_("Page setup..."), NULL, NULL, G_CALLBACK(page_setup_cb) },
 	{"File/Print",			NULL, N_("_Print..."), "<control>P", NULL, G_CALLBACK(print_cb) },
 	{"File/---",			NULL, "---", NULL, NULL, NULL },
@@ -241,6 +252,8 @@ static GtkActionEntry msgview_entries[] =
 	{"View/Goto/NextUnreadFolder",	NULL, N_("Next unread _folder"), "<shift>G", NULL, G_CALLBACK(goto_unread_folder_cb) },
 	{"View/Goto/OtherFolder",	NULL, N_("_Other folder..."), "G", NULL, G_CALLBACK(goto_folder_cb) },
 	/* {"View/Goto/---",		NULL, "---", NULL, NULL, NULL }, */
+	{"View/Goto/NextPart",		NULL, N_("Next part"), "A", NULL, G_CALLBACK(goto_next_part_cb) },
+	{"View/Goto/PrevPart",		NULL, N_("Previous part"), "Z", NULL, G_CALLBACK(goto_prev_part_cb) },
         {"View/Scroll",                 NULL, N_("Message scroll") },
         {"View/Scroll/PrevLine",        NULL, N_("Previous line"), NULL, NULL, G_CALLBACK(scroll_prev_line_cb) },
         {"View/Scroll/NextLine",        NULL, N_("Next line"), NULL, NULL, G_CALLBACK(scroll_next_line_cb) },
@@ -271,6 +284,12 @@ static GtkActionEntry msgview_entries[] =
 
 	{"View/---",			NULL, "---", NULL, NULL, NULL },
 	{"View/MessageSource",		NULL, N_("Mess_age source"), "<control>U", NULL, G_CALLBACK(view_source_cb) },
+	{"View/Part",			NULL, N_("Message part") },
+	{"View/Part/AsText",		NULL, N_("View as text"), "T", NULL, G_CALLBACK(view_part_as_text_cb) },
+	{"View/Part/Open",		NULL, N_("Open"), "L", NULL, G_CALLBACK(open_part_cb) },
+#ifndef G_OS_WIN32
+	{"View/Part/OpenWith",		NULL, N_("Open with..."), "O", NULL, G_CALLBACK(open_part_with_cb) },
+#endif
 
 	{"View/Quotes",			NULL, N_("Quotes") }, 
 
@@ -288,6 +307,7 @@ static GtkActionEntry msgview_entries[] =
 	{"Message/Forward",		NULL, N_("_Forward"), "<control><alt>F", NULL, G_CALLBACK(reply_cb) }, /* COMPOSE_FORWARD_INLINE */
 	{"Message/ForwardAtt",		NULL, N_("For_ward as attachment"), NULL, NULL, G_CALLBACK(reply_cb) }, /* COMPOSE_FORWARD_AS_ATTACH */
 	{"Message/Redirect",		NULL, N_("Redirec_t"), NULL, NULL, G_CALLBACK(reply_cb) }, /* COMPOSE_REDIRECT */
+	{"Message/CheckSignature",		NULL, N_("Check signature"), "C", NULL, G_CALLBACK(check_signature_cb) },
 
 /* Tools menu */	
 	{"Tools/AddressBook",		NULL, N_("_Address book"), "<control><shift>A", NULL, G_CALLBACK(addressbook_open_cb) }, 
@@ -474,9 +494,11 @@ static void messageview_add_toolbar(MessageView *msgview, GtkWidget *window)
 
 /* File menu */
 	MENUITEM_ADDUI_MANAGER(msgview->ui_manager, "/Menu/File", "SaveAs", "File/SaveAs", GTK_UI_MANAGER_MENUITEM)
+	MENUITEM_ADDUI_MANAGER(msgview->ui_manager, "/Menu/File", "SavePartAs", "File/SavePartAs", GTK_UI_MANAGER_MENUITEM)
+	MENUITEM_ADDUI_MANAGER(msgview->ui_manager, "/Menu/File", "Separator1", "File/---", GTK_UI_MANAGER_SEPARATOR)
 	MENUITEM_ADDUI_MANAGER(msgview->ui_manager, "/Menu/File", "PageSetup", "File/PageSetup", GTK_UI_MANAGER_MENUITEM)
 	MENUITEM_ADDUI_MANAGER(msgview->ui_manager, "/Menu/File", "Print", "File/Print", GTK_UI_MANAGER_MENUITEM)
-	MENUITEM_ADDUI_MANAGER(msgview->ui_manager, "/Menu/File", "Separator1", "File/---", GTK_UI_MANAGER_SEPARATOR)
+	MENUITEM_ADDUI_MANAGER(msgview->ui_manager, "/Menu/File", "Separator2", "File/---", GTK_UI_MANAGER_SEPARATOR)
 	MENUITEM_ADDUI_MANAGER(msgview->ui_manager, "/Menu/File", "Close", "File/Close", GTK_UI_MANAGER_MENUITEM)
 
 /* Edit menu */
@@ -509,6 +531,9 @@ static void messageview_add_toolbar(MessageView *msgview, GtkWidget *window)
 	MENUITEM_ADDUI_MANAGER(msgview->ui_manager, "/Menu/View/Goto", "Separator7", "View/Goto/---", GTK_UI_MANAGER_SEPARATOR)
 	MENUITEM_ADDUI_MANAGER(msgview->ui_manager, "/Menu/View/Goto", "NextUnreadFolder", "View/Goto/NextUnreadFolder", GTK_UI_MANAGER_MENUITEM)
 	MENUITEM_ADDUI_MANAGER(msgview->ui_manager, "/Menu/View/Goto", "OtherFolder", "View/Goto/OtherFolder", GTK_UI_MANAGER_MENUITEM)
+	MENUITEM_ADDUI_MANAGER(msgview->ui_manager, "/Menu/View/Goto", "Separator8", "View/Goto/---", GTK_UI_MANAGER_SEPARATOR)
+	MENUITEM_ADDUI_MANAGER(msgview->ui_manager, "/Menu/View/Goto", "NextPart", "View/Goto/NextPart", GTK_UI_MANAGER_MENUITEM)
+	MENUITEM_ADDUI_MANAGER(msgview->ui_manager, "/Menu/View/Goto", "PrevPart", "View/Goto/PrevPart", GTK_UI_MANAGER_MENUITEM)
 
         MENUITEM_ADDUI_MANAGER(msgview->ui_manager, "/Menu/View", "Scroll", "View/Scroll", GTK_UI_MANAGER_MENU)
         MENUITEM_ADDUI_MANAGER(msgview->ui_manager, "/Menu/View/Scroll", "PrevLine", "View/Scroll/PrevLine", GTK_UI_MANAGER_MENUITEM)
@@ -591,6 +616,12 @@ static void messageview_add_toolbar(MessageView *msgview, GtkWidget *window)
 	MENUITEM_ADDUI_MANAGER(msgview->ui_manager, "/Menu/View/Quotes", "CollapseAll", "View/Quotes/CollapseAll", GTK_UI_MANAGER_MENUITEM)
 	MENUITEM_ADDUI_MANAGER(msgview->ui_manager, "/Menu/View/Quotes", "Collapse2", "View/Quotes/Collapse2", GTK_UI_MANAGER_MENUITEM)
 	MENUITEM_ADDUI_MANAGER(msgview->ui_manager, "/Menu/View/Quotes", "Collapse3", "View/Quotes/Collapse3", GTK_UI_MANAGER_MENUITEM)
+	MENUITEM_ADDUI_MANAGER(msgview->ui_manager, "/Menu/View", "Part", "View/Part", GTK_UI_MANAGER_MENU)
+	MENUITEM_ADDUI_MANAGER(msgview->ui_manager, "/Menu/View/Part", "AsText", "View/Part/AsText", GTK_UI_MANAGER_MENUITEM)
+	MENUITEM_ADDUI_MANAGER(msgview->ui_manager, "/Menu/View/Part", "Open", "View/Part/Open", GTK_UI_MANAGER_MENUITEM)
+#ifndef G_OS_WIN32
+	MENUITEM_ADDUI_MANAGER(msgview->ui_manager, "/Menu/View/Part", "OpenWith", "View/Part/OpenWith", GTK_UI_MANAGER_MENUITEM)
+#endif
 
 /* Message menu */
 	MENUITEM_ADDUI_MANAGER(msgview->ui_manager, "/Menu/Message", "Compose", "Message/Compose", GTK_UI_MANAGER_MENUITEM)
@@ -604,6 +635,7 @@ static void messageview_add_toolbar(MessageView *msgview, GtkWidget *window)
 	MENUITEM_ADDUI_MANAGER(msgview->ui_manager, "/Menu/Message", "Forward", "Message/Forward", GTK_UI_MANAGER_MENUITEM)
 	MENUITEM_ADDUI_MANAGER(msgview->ui_manager, "/Menu/Message", "ForwardAtt", "Message/ForwardAtt", GTK_UI_MANAGER_MENUITEM)
 	MENUITEM_ADDUI_MANAGER(msgview->ui_manager, "/Menu/Message", "Redirect", "Message/Redirect", GTK_UI_MANAGER_MENUITEM)
+	MENUITEM_ADDUI_MANAGER(msgview->ui_manager, "/Menu/Message", "CheckSignature", "Message/CheckSignature", GTK_UI_MANAGER_MENUITEM)
 
 /* Tools menu */
 	MENUITEM_ADDUI_MANAGER(msgview->ui_manager, "/Menu/Tools", "AddressBook", "Tools/AddressBook", GTK_UI_MANAGER_MENUITEM)
@@ -2945,6 +2977,8 @@ void messageview_set_menu_sensitive(MessageView *messageview)
 	cm_toggle_menu_set_active_full(messageview->ui_manager, "Menu/View/Quotes/Collapse3", (prefs_common.hide_quotes == 3));
 	cm_menu_set_sensitive_full(messageview->ui_manager, "Menu/View/Goto/PrevHistory", messageview_nav_has_prev(messageview));
 	cm_menu_set_sensitive_full(messageview->ui_manager, "Menu/View/Goto/NextHistory", messageview_nav_has_next(messageview));
+
+	cm_menu_set_sensitive_full(messageview->ui_manager, "Menu/Message/CheckSignature", messageview->mimeview->signed_part);
 }
 
 void messageview_learn (MessageView *msgview, gboolean is_spam)
@@ -3007,3 +3041,60 @@ void messageview_list_urls (MessageView	*msgview)
 	g_slist_free(newlist);
 	g_hash_table_destroy(uri_hashtable);
 }
+
+static void save_part_as_cb(GtkAction *action, gpointer data)
+{
+	MessageView *messageview = (MessageView *)data;
+
+	if (messageview->mimeview)
+		mimeview_save_as(messageview->mimeview);
+}
+
+static void view_part_as_text_cb(GtkAction *action, gpointer data)
+{
+	MessageView *messageview = (MessageView *)data;
+
+	if (messageview->mimeview)
+		mimeview_display_as_text(messageview->mimeview);
+}
+
+static void open_part_cb(GtkAction *action, gpointer data)
+{
+	MessageView *messageview = (MessageView *)data;
+
+	if (messageview->mimeview)
+		mimeview_launch(messageview->mimeview, NULL);
+}
+#ifndef G_OS_WIN32
+static void open_part_with_cb(GtkAction *action, gpointer data)
+{
+	MessageView *messageview = (MessageView *)data;
+
+	if (messageview->mimeview)
+		mimeview_open_with(messageview->mimeview);
+}
+#endif
+static void check_signature_cb(GtkAction *action, gpointer data)
+{
+	MessageView *messageview = (MessageView *)data;
+
+	if (messageview->mimeview)
+		mimeview_check_signature(messageview->mimeview);
+}
+
+static void goto_next_part_cb(GtkAction *action, gpointer data)
+{
+	MessageView *messageview = (MessageView *)data;
+
+	if (messageview->mimeview)
+		mimeview_select_next_part(messageview->mimeview);
+}
+
+static void goto_prev_part_cb(GtkAction *action, gpointer data)
+{
+	MessageView *messageview = (MessageView *)data;
+
+	if (messageview->mimeview)
+		mimeview_select_prev_part(messageview->mimeview);
+}
+

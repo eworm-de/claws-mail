@@ -108,21 +108,15 @@ static void mimeview_drag_data_get      (GtkWidget	  *widget,
 static gboolean mimeview_scrolled	(GtkWidget	*widget,
 					 GdkEventScroll	*event,
 					 MimeView	*mimeview);
-static void mimeview_display_as_text	(MimeView	*mimeview);
-static void mimeview_save_as		(MimeView	*mimeview);
+
 static void mimeview_save_all		(MimeView	*mimeview);
-static void mimeview_launch		(MimeView	*mimeview,
-					 MimeInfo	*partinfo);
 #ifndef G_OS_WIN32
-static void mimeview_open_with		(MimeView	*mimeview);
 static void mimeview_open_part_with	(MimeView	*mimeview,
 					 MimeInfo	*partinfo,
 					 gboolean	 automatic);
 #endif
 static void mimeview_send_to		(MimeView	*mimeview,
 					 MimeInfo	*partinfo);
-static void mimeview_select_next_part	(MimeView	*mimeview);
-static void mimeview_select_prev_part	(MimeView	*mimeview);
 static void mimeview_view_file		(const gchar	*filename,
 					 MimeInfo	*partinfo,
 					 const gchar	*cmd,
@@ -204,16 +198,16 @@ static void mimeview_select_prev_part_cb(GtkAction *action, gpointer data)
 
 static GtkActionEntry mimeview_menu_actions[] = {
 	{ "MimeView", NULL, "MimeView" },
-	{ "MimeView/Open", NULL, N_("_Open (l)"), NULL, "Open MIME part", G_CALLBACK(mimeview_launch_cb) },
+	{ "MimeView/Open", NULL, N_("_Open"), NULL, "Open MIME part", G_CALLBACK(mimeview_launch_cb) },
 #if (!defined MAEMO && !defined G_OS_WIN32)
-	{ "MimeView/OpenWith", NULL, N_("Open _with (o)..."), NULL, "Open MIME part with...", G_CALLBACK(mimeview_open_with_cb) },
+	{ "MimeView/OpenWith", NULL, N_("Open _with..."), NULL, "Open MIME part with...", G_CALLBACK(mimeview_open_with_cb) },
 #endif
 	{ "MimeView/SendTo", NULL, N_("Send to..."), NULL, "Send to", G_CALLBACK(mimeview_send_to_cb) },
-	{ "MimeView/DisplayAsText", NULL, N_("_Display as text (t)"), NULL, "Display as text", G_CALLBACK(mimeview_display_as_text_cb) },
-	{ "MimeView/SaveAs", NULL, N_("_Save as (y)..."), NULL, "Save as", G_CALLBACK(mimeview_save_as_cb) },
+	{ "MimeView/DisplayAsText", NULL, N_("_Display as text"), NULL, "Display as text", G_CALLBACK(mimeview_display_as_text_cb) },
+	{ "MimeView/SaveAs", NULL, N_("_Save as..."), NULL, "Save as", G_CALLBACK(mimeview_save_as_cb) },
 	{ "MimeView/SaveAll", NULL, N_("Save _all..."), NULL, "Save all parts", G_CALLBACK(mimeview_save_all_cb) },
-	{ "MimeView/NextPart", NULL, N_("Next part (a)"), NULL, "Next part", G_CALLBACK(mimeview_select_next_part_cb) },
-	{ "MimeView/PrevPart", NULL, N_("Previous part (z)"), NULL, "Previous part", G_CALLBACK(mimeview_select_prev_part_cb) }
+	{ "MimeView/NextPart", NULL, N_("Next part"), NULL, "Next part", G_CALLBACK(mimeview_select_next_part_cb) },
+	{ "MimeView/PrevPart", NULL, N_("Previous part"), NULL, "Previous part", G_CALLBACK(mimeview_select_prev_part_cb) }
 };
 
 static GtkTargetEntry mimeview_mime_types[] =
@@ -1010,7 +1004,6 @@ void mimeview_clear(MimeView *mimeview)
 }
 
 static void check_signature_cb(GtkWidget *widget, gpointer user_data);
-static void mimeview_check_signature(MimeView *mimeview);
 static void display_full_info_cb(GtkWidget *widget, gpointer user_data);
 
 static void update_signature_noticeview(MimeView *mimeview, MimeInfo *mimeinfo, 
@@ -1328,7 +1321,7 @@ static void check_signature_cb(GtkWidget *widget, gpointer user_data)
 	}
 }
 
-static void mimeview_check_signature(MimeView *mimeview)
+void mimeview_check_signature(MimeView *mimeview)
 {
 	check_signature_cb(NULL, mimeview);	
 }
@@ -1386,7 +1379,13 @@ static void update_signature_info(MimeView *mimeview, MimeInfo *selected)
 		siginfo = procmime_mimeinfo_parent(siginfo);
 	}
 	mimeview->siginfo = siginfo;
-	
+
+	/* This shortcut boolean is there to correctly set the menu's
+	 * CheckSignature item sensitivity without killing performance
+	 * each time the menu sensitiveness is updated (a lot).
+	 */
+	mimeview->signed_part = (siginfo == selected);
+
 	if (siginfo == NULL) {
 		noticeview_hide(mimeview->siginfoview);
 		return;
@@ -1535,7 +1534,7 @@ gboolean mimeview_pass_key_press_event(MimeView *mimeview, GdkEventKey *event)
 	return mimeview_key_pressed(mimeview->ctree, event, mimeview);
 }
 
-static void mimeview_select_next_part(MimeView *mimeview)
+void mimeview_select_next_part(MimeView *mimeview)
 {
 	GtkTreeView *ctree = GTK_TREE_VIEW(mimeview->ctree);
 	GtkTreeModel *model = gtk_tree_view_get_model(ctree);
@@ -1568,7 +1567,7 @@ skip:
 	gtk_tree_path_free(path);
 }
 
-static void mimeview_select_prev_part(MimeView *mimeview)
+void mimeview_select_prev_part(MimeView *mimeview)
 {
 	GtkTreeView *ctree = GTK_TREE_VIEW(mimeview->ctree);
 	GtkTreeModel *model = gtk_tree_view_get_model(ctree);
@@ -1643,36 +1642,6 @@ static gint mimeview_key_pressed(GtkWidget *widget, GdkEventKey *event,
 	case GDK_KEY_Up:
 	case GDK_KEY_Down:
 		mimeview_scroll_one_line(mimeview, (event->keyval == GDK_KEY_Up));
-		return TRUE;
-	case GDK_KEY_y:
-		BREAK_ON_MODIFIER_KEY();
-		mimeview_save_as(mimeview);
-		return TRUE;
-	case GDK_KEY_t:
-		BREAK_ON_MODIFIER_KEY();
-		mimeview_display_as_text(mimeview);
-		return TRUE;	
-	case GDK_KEY_l:
-		BREAK_ON_MODIFIER_KEY();
-		mimeview_launch(mimeview, NULL);
-		return TRUE;
-	case GDK_KEY_o:
-		BREAK_ON_MODIFIER_KEY();
-#ifndef G_OS_WIN32
-		mimeview_open_with(mimeview);
-#endif
-		return TRUE;
-	case GDK_KEY_c:
-		BREAK_ON_MODIFIER_KEY();
-		mimeview_check_signature(mimeview);
-		return TRUE;
-	case GDK_KEY_a:
-		BREAK_ON_MODIFIER_KEY();
-		mimeview_select_next_part(mimeview);
-		return TRUE;
-	case GDK_KEY_z:
-		BREAK_ON_MODIFIER_KEY();
-		mimeview_select_prev_part(mimeview);
 		return TRUE;
 	default:
 		break;
@@ -1965,7 +1934,7 @@ static MimeInfo *mimeview_get_part_to_use(MimeView *mimeview)
  * Menu callback: Save the selected attachment
  * \param mimeview Current display
  */
-static void mimeview_save_as(MimeView *mimeview)
+void mimeview_save_as(MimeView *mimeview)
 {
 	gchar *filename;
 	gchar *filepath = NULL;
@@ -2027,7 +1996,7 @@ static void mimeview_save_as(MimeView *mimeview)
 	g_free(filepath);
 }
 
-static void mimeview_display_as_text(MimeView *mimeview)
+void mimeview_display_as_text(MimeView *mimeview)
 {
 	MimeInfo *partinfo;
 
@@ -2039,7 +2008,7 @@ static void mimeview_display_as_text(MimeView *mimeview)
 	mimeview_show_message_part(mimeview, partinfo);
 }
 
-static void mimeview_launch(MimeView *mimeview, MimeInfo *partinfo)
+void mimeview_launch(MimeView *mimeview, MimeInfo *partinfo)
 {
 	gchar *filename;
 	gint err;
@@ -2065,7 +2034,7 @@ static void mimeview_launch(MimeView *mimeview, MimeInfo *partinfo)
 }
 
 #ifndef G_OS_WIN32
-static void mimeview_open_with(MimeView *mimeview)
+void mimeview_open_with(MimeView *mimeview)
 {
 	MimeInfo *partinfo;
 
@@ -2366,17 +2335,9 @@ void mimeview_select_mimepart_icon(MimeView *mimeview, MimeInfo *partinfo)
 static gint icon_key_pressed(GtkWidget *button, GdkEventKey *event,
 			     MimeView *mimeview)
 {
-	gint          num;
-	MimeInfo     *partinfo;
 	SummaryView  *summaryview;
-	TextView     *textview;
-
-	num      = GPOINTER_TO_INT(g_object_get_data(G_OBJECT(button), "icon_number"));
-	partinfo = g_object_get_data(G_OBJECT(button), "partinfo");
 	
 	if (!event) return FALSE;
-
-	textview = mimeview->textview;
 
 	switch (event->keyval) {
 	case GDK_KEY_space:

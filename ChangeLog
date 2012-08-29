@@ -1,3 +1,15 @@
+2012-08-29 [colin]	3.8.1cvs40
+
+	* src/mainwindow.c
+	* src/messageview.c
+	* src/mimeview.c
+	* src/mimeview.h
+	* src/summaryview.c
+	* src/textview.c
+	* src/gtk/menu.c
+	* src/gtk/menu.h
+		Move the hardcoded mimeview shortcuts to standard menus.
+
 2012-08-27 [colin]	3.8.1cvs39
 
 	* src/main.c

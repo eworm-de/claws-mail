@@ -106,6 +106,33 @@ void cm_menu_set_sensitive_full(GtkUIManager *gui_manager, gchar *menu, gboolean
 	g_free(path);
 }
 
+gchar *cm_menu_item_get_shortcut(GtkUIManager *gui_manager, gchar *menu)
+{
+	GtkWidget *widget;
+	gchar *path = g_strdup_printf("/%s/", menu);
+	const gchar *accel = NULL;
+	GtkAccelKey key;
+
+	widget = gtk_ui_manager_get_widget(gui_manager, path);
+	if( !GTK_IS_WIDGET(widget) ) {
+		g_message("Blah, '%s' is not a widget.\n", path);
+	}
+
+	if( !GTK_IS_MENU_ITEM(widget) ) {
+		g_message("Blah, '%s' is not a menu item.\n", path);
+	}
+
+	g_free(path);
+
+	accel = gtk_menu_item_get_accel_path(GTK_MENU_ITEM(widget));
+
+	if (accel && gtk_accel_map_lookup_entry(accel, &key))
+		return gtk_accelerator_get_label (key.accel_key, key.accel_mods);
+	else
+		return g_strdup(_("None"));
+
+}
+
 void cm_toggle_menu_set_active_full(GtkUIManager *gui_manager, gchar *menu, gboolean active)
 {
 	GtkWidget *widget;

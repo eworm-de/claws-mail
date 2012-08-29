@@ -944,9 +944,15 @@ void textview_show_mime_part(TextView *textview, MimeInfo *partinfo)
 	GtkTextBuffer *buffer;
 	GtkTextIter iter;
 	const gchar *name;
-	gchar *content_type;
+	gchar *content_type, *shortcut;
+	GtkUIManager *ui_manager;
 
 	if (!partinfo) return;
+
+	if (textview->messageview->window != NULL)
+		ui_manager = textview->messageview->ui_manager;
+	else
+		ui_manager = textview->messageview->mainwin->ui_manager;
 
 	textview_set_font(textview, NULL);
 	textview_clear(textview);
@@ -982,7 +988,11 @@ void textview_show_mime_part(TextView *textview, MimeInfo *partinfo)
 	TEXTVIEW_INSERT(_("     - To save, select "));
 	TEXTVIEW_INSERT_LINK(_("'Save as...'"), "sc://save_as", NULL);
 #ifndef GENERIC_UMPC
-	TEXTVIEW_INSERT(_(" (Shortcut key: 'y')"));
+	TEXTVIEW_INSERT(_(" (Shortcut key: '"));
+	shortcut = cm_menu_item_get_shortcut(ui_manager, "Menu/File/SavePartAs");
+	TEXTVIEW_INSERT(shortcut);
+	g_free(shortcut);
+	TEXTVIEW_INSERT("')");
 #endif
 	TEXTVIEW_INSERT("\n");
 
@@ -990,7 +1000,11 @@ void textview_show_mime_part(TextView *textview, MimeInfo *partinfo)
 	TEXTVIEW_INSERT_LINK(_("'Display as text'"), "sc://display_as_text", NULL);
 
 #ifndef GENERIC_UMPC
-	TEXTVIEW_INSERT(_(" (Shortcut key: 't')"));
+	TEXTVIEW_INSERT(_(" (Shortcut key: '"));
+	shortcut = cm_menu_item_get_shortcut(ui_manager, "Menu/View/PartAsText");
+	TEXTVIEW_INSERT(shortcut);
+	g_free(shortcut);
+	TEXTVIEW_INSERT("')");
 #endif
 	TEXTVIEW_INSERT("\n");
 
@@ -998,13 +1012,21 @@ void textview_show_mime_part(TextView *textview, MimeInfo *partinfo)
 	TEXTVIEW_INSERT_LINK(_("'Open'"), "sc://open", NULL);
 
 #ifndef GENERIC_UMPC
-	TEXTVIEW_INSERT(_(" (Shortcut key: 'l')\n"));
+	TEXTVIEW_INSERT(_(" (Shortcut key: '"));
+	shortcut = cm_menu_item_get_shortcut(ui_manager, "Menu/View/OpenPartWith");
+	TEXTVIEW_INSERT(shortcut);
+	g_free(shortcut);
+	TEXTVIEW_INSERT("')\n");
 	TEXTVIEW_INSERT(_("       (alternately double-click, or click the middle "));
 	TEXTVIEW_INSERT(_("mouse button)\n"));
 #ifndef G_OS_WIN32
 	TEXTVIEW_INSERT(_("     - Or use "));
 	TEXTVIEW_INSERT_LINK(_("'Open with...'"), "sc://open_with", NULL);
-	TEXTVIEW_INSERT(_(" (Shortcut key: 'o')"));
+	TEXTVIEW_INSERT(_(" (Shortcut key: '"));
+	shortcut = cm_menu_item_get_shortcut(ui_manager, "Menu/View/OpenPart");
+	TEXTVIEW_INSERT(shortcut);
+	g_free(shortcut);
+	TEXTVIEW_INSERT("')");
 #endif
 #endif
 	TEXTVIEW_INSERT("\n");
@@ -2427,19 +2449,6 @@ static gint textview_key_pressed(GtkWidget *widget, GdkEventKey *event,
 		if (summaryview)
 			summary_pass_key_press_event(summaryview, event);
 		break;
-	case GDK_KEY_y:
-	case GDK_KEY_t:
-	case GDK_KEY_l:
-	case GDK_KEY_o:
-	case GDK_KEY_c:
-	case GDK_KEY_a:
-		if ((event->state & (GDK_MOD1_MASK|GDK_CONTROL_MASK)) == 0) {
-			KEY_PRESS_EVENT_STOP();
-			mimeview_pass_key_press_event(messageview->mimeview,
-						      event);
-			break;
-		}
-		/* possible fall through */
 	default:
 		window = gtk_widget_get_window(messageview->mainwin->window);
 		if (summaryview &&
