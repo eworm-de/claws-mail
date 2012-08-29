@@ -1,3 +1,9 @@
+2012-08-29 [colin]	3.8.1cvs41
+
+	* src/plugins/pgpcore/sgpgme.c
+		Set gpgme's locale to UTF-8. Fixes bug #2650,
+		"segfault in pgp when gpgme_strerror() returns a non utf-8 string"
+
 2012-08-29 [colin]	3.8.1cvs40
 
 	* src/mainwindow.c

@@ -611,13 +611,36 @@ bail:
 
 void sgpgme_init()
 {
+	gchar *ctype_locale = NULL, *messages_locale = NULL;
+	gchar *ctype_utf8_locale = NULL, *messages_utf8_locale = NULL;
+
 	gpgme_engine_info_t engineInfo;
 	if (gpgme_check_version("1.0.0")) {
 #ifdef LC_CTYPE
-		gpgme_set_locale(NULL, LC_CTYPE, setlocale(LC_CTYPE, NULL));
+		ctype_locale = g_strdup(setlocale(LC_CTYPE, NULL));
+		if (strchr(ctype_locale, '.'))
+			*(strchr(ctype_locale, '.')) = '\0';
+		else if (strchr(ctype_locale, '@'))
+			*(strchr(ctype_locale, '@')) = '\0';
+		ctype_utf8_locale = g_strconcat(ctype_locale, ".UTF-8", NULL);
+
+		gpgme_set_locale(NULL, LC_CTYPE, ctype_utf8_locale);
+
+		g_free(ctype_utf8_locale);
+		g_free(ctype_locale);
 #endif
 #ifdef LC_MESSAGES
-		gpgme_set_locale(NULL, LC_MESSAGES, setlocale(LC_MESSAGES, NULL));
+		messages_locale = g_strdup(setlocale(LC_MESSAGES, NULL));
+		if (strchr(messages_locale, '.'))
+			*(strchr(messages_locale, '.')) = '\0';
+		else if (strchr(messages_locale, '@'))
+			*(strchr(messages_locale, '@')) = '\0';
+		messages_utf8_locale = g_strconcat(messages_locale, ".UTF-8", NULL);
+
+		gpgme_set_locale(NULL, LC_MESSAGES, messages_utf8_locale);
+
+		g_free(messages_utf8_locale);
+		g_free(messages_locale);
 #endif
 		if (!gpgme_get_engine_info(&engineInfo)) {
 			while (engineInfo) {
