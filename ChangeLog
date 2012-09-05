@@ -1,3 +1,11 @@
+2012-09-05 [colin]	3.8.1cvs44
+
+	* src/matcher.c
+	* src/matcher.h
+	* src/prefs_matcher.c
+		Drop matcherprop_new_create, which is just a copy of
+		matcherprop_new, and staticalize what can be
+
 2012-09-05 [colin]	3.8.1cvs43
 
 	* src/plugins/pgpcore/select-keys.c

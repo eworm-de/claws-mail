@@ -153,19 +153,11 @@ MatcherProp *matcherprop_new		(gint		 criteria,
 					 gint		 matchtype, 
 					 const gchar	*expr,
 					 int	         value);
-MatcherProp *matcherprop_new_create	(gint		 criteria, 
-					 const gchar	*header,
-					 gint		 matchtype, 
-					 const gchar	*expr,
-					 int	         value);
 void matcherprop_free			(MatcherProp *prop);
 
 MatcherProp *matcherprop_parse		(gchar	**str);
 
 MatcherProp *matcherprop_copy		(const MatcherProp *src);
-
-gboolean matcherprop_match		(MatcherProp	*prop, 
-					 MsgInfo	*info);
 
 MatcherList * matcherlist_new		(GSList		*matchers, 
 					 gboolean	bool_and);

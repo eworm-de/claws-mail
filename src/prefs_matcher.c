@@ -1592,7 +1592,7 @@ static MatcherProp *prefs_matcher_dialog_to_matcher(void)
 		break;
 	}
 
-	matcherprop = matcherprop_new_create(criteria, header, matchtype,
+	matcherprop = matcherprop_new(criteria, header, matchtype,
 				      expr, value);
 
 	return matcherprop;
