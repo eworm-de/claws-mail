@@ -83,7 +83,7 @@ static void sort_keys (struct select_keys_s *sk, enum col_titles column);
 static void sort_keys_name (GtkWidget *widget, gpointer data);
 static void sort_keys_email (GtkWidget *widget, gpointer data);
 
-static gboolean use_untrusted (gpgme_key_t, gpgme_protocol_t proto);
+static gboolean use_untrusted (gpgme_key_t, gpgme_user_id_t uid, gpgme_protocol_t proto);
 
 static void
 update_progress (struct select_keys_s *sk, int running, const char *pattern)
@@ -274,6 +274,7 @@ fill_clist (struct select_keys_s *sk, const char *pattern, gpgme_protocol_t prot
     int num_results = 0;
     gboolean exact_match = FALSE;
     gpgme_key_t last_key = NULL;
+    gpgme_user_id_t last_uid = NULL;
     cm_return_val_if_fail (sk, NULL);
     clist = sk->clist;
     cm_return_val_if_fail (clist, NULL);
@@ -315,6 +316,7 @@ fill_clist (struct select_keys_s *sk, const char *pattern, gpgme_protocol_t prot
 		extract_address(raw_mail);
 		if (!strcasecmp(pattern, raw_mail)) {
 			exact_match = TRUE;
+			last_uid = uid;
 			g_free(raw_mail);
 			break;
 		}
@@ -330,7 +332,7 @@ fill_clist (struct select_keys_s *sk, const char *pattern, gpgme_protocol_t prot
  
     if (exact_match == TRUE && num_results == 1) {
 	    if (last_key->uids->validity < GPGME_VALIDITY_FULL && 
-		!use_untrusted(last_key, proto))
+		!use_untrusted(last_key, last_uid, proto))
 		    exact_match = FALSE;
     }
 
@@ -511,8 +513,25 @@ select_btn_cb (GtkWidget *widget, gpointer data)
     row = GPOINTER_TO_INT(sk->clist->selection->data);
     key = gtk_cmclist_get_row_data(sk->clist, row);
     if (key) {
-        if ( key->uids->validity < GPGME_VALIDITY_FULL ) {
-            use_key = use_untrusted(key, sk->proto);
+        gpgme_user_id_t uid;
+	for (uid = key->uids; uid; uid = uid->next) {
+		gchar *raw_mail = NULL;
+
+		if (!uid->email)
+			continue;
+		raw_mail = g_strdup(uid->email);
+		extract_address(raw_mail);
+		if (sk->pattern && !strcasecmp(sk->pattern, raw_mail)) {
+			g_free(raw_mail);
+			break;
+		}
+		g_free(raw_mail);
+	}
+	if (!uid)
+		uid = key->uids;
+
+        if ( uid->validity < GPGME_VALIDITY_FULL ) {
+            use_key = use_untrusted(key, uid, sk->proto);
             if (!use_key) {
                 debug_print ("** Key untrusted, will not encrypt");
                 return;
@@ -578,23 +597,26 @@ other_btn_cb (GtkWidget *widget, gpointer data)
 
 
 static gboolean
-use_untrusted (gpgme_key_t key, gpgme_protocol_t proto)
+use_untrusted (gpgme_key_t key, gpgme_user_id_t uid, gpgme_protocol_t proto)
 {
     AlertValue aval;
     gchar *buf = NULL;
-    
+    gchar *title = NULL;
     if (proto != GPGME_PROTOCOL_OpenPGP)
     	return TRUE;
 
-    buf = g_strdup_printf(_("The key of '%s' is not fully trusted.\n"
-	       "If you choose to encrypt the message with this key you don't\n"
-	       "know for sure that it will go to the person you mean it to.\n"
-	       "Do you trust it enough to use it anyway?"), key->uids->email);
+    title = g_strdup_printf(_("Encrypt to %s <%s>"), uid->name, uid->email);
+    buf = g_strdup_printf(_("This encryption key is not fully trusted.\n"
+	       "If you choose to encrypt the message with this key, you don't\n"
+	       "know for sure that it will go to the person you mean it to.\n\n"
+	       "Key details: ID %s, primary identity %s &lt;%s&gt;\n\n"
+	       "Do you trust this key enough to use it anyway?"), 
+	       key->subkeys->keyid, key->uids->name, key->uids->email);
     aval = alertpanel
-	    (_("Trust key"),
-	     buf,
+	    (title, buf,
 	     GTK_STOCK_NO, GTK_STOCK_YES, NULL);
     g_free(buf);
+    g_free(title);
     if (aval == G_ALERTALTERNATE)
 	return TRUE;
     else

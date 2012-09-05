@@ -1,3 +1,9 @@
+2012-09-05 [colin]	3.8.1cvs43
+
+	* src/plugins/pgpcore/select-keys.c
+		Fix bug #2390, "Non-fully-trusted-key-warning appears
+		based on primary UID rather than recipient e-mail"
+
 2012-08-29 [colin]	3.8.1cvs42
 
 	* src/gtk/gtkaspell.c
