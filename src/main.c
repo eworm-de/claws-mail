@@ -101,6 +101,7 @@
 #endif
 #include "compose.h"
 #include "folder.h"
+#include "folder_item_prefs.h"
 #include "setup.h"
 #include "utils.h"
 #include "gtkutils.h"

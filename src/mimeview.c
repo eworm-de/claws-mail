@@ -56,6 +56,7 @@
 #include "gtk/logwindow.h"
 #include "timing.h"
 #include "manage_window.h"
+#include "privacy.h"
 
 #ifdef MAEMO
 #include <libosso.h>

@@ -27,13 +27,8 @@
 #include <glib.h>
 #include <gtk/gtk.h>
 
-typedef struct _MessageView	MessageView;
-
 #include "mainwindow.h"
-#include "headerview.h"
-#include "textview.h"
-#include "mimeview.h"
-#include "noticeview.h"
+#include "viewtypes.h"
 #include "procmsg.h"
 #include "procmime.h"
 #include "toolbar.h"

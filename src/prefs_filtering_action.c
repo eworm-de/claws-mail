@@ -55,6 +55,10 @@
 #include "matcher_parser.h"
 #include "colorlabel.h"
 #include "combobox.h"
+#include "account.h"
+#ifndef USE_NEW_ADDRBOOK
+	#include "addressbook.h"
+#endif
 
 enum {
 	PFA_ACTION,

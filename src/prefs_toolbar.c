@@ -51,6 +51,7 @@
 #include "prefswindow.h"
 #include "prefs_gtk.h"
 #include "plugin.h"
+#include "messageview.h"
 
 enum
 {

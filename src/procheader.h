@@ -24,10 +24,7 @@
 #include <stdio.h>
 #include <time.h>
 
-#include "procmsg.h"
-
-typedef struct _HeaderEntry	HeaderEntry;
-typedef struct _Header		Header;
+#include "proctypes.h"
 
 struct _HeaderEntry
 {

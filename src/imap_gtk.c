@@ -32,6 +32,7 @@
 
 #include "utils.h"
 #include "folder.h"
+#include "folder_item_prefs.h"
 #include "folderview.h"
 #include "menu.h"
 #include "account.h"

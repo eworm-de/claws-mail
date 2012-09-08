@@ -24,11 +24,9 @@
 
 typedef struct _MainWindow  MainWindow;
 
-#include "folderview.h"
-#include "summaryview.h"
-#include "headerview.h"
-#include "messageview.h"
+#include "viewtypes.h"
 #include "logwindow.h"
+#include "procmsg.h"
 #include "toolbar.h"
 
 #define OFFLINE_SWITCH_HOOKLIST "offline_switch"

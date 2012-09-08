@@ -317,6 +317,7 @@ claws_mailinclude_HEADERS = \
 	procheader.h \
 	procmime.h \
 	procmsg.h \
+	proctypes.h \
 	quote_fmt.h \
 	quote_fmt_lex.h \
 	quote_fmt_parse.h \
@@ -335,6 +336,7 @@ claws_mailinclude_HEADERS = \
 	undo.h \
 	unmime.h \
 	uri_opener.h \
+	viewtypes.h \
 	wizard.h \
 	$(abook_headers)
 

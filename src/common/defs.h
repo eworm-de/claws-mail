@@ -168,6 +168,12 @@
 #define PROGRESS_UPDATE_INTERVAL	200	/* msec */
 #define SESSION_TIMEOUT_INTERVAL	60	/* sec */
 #define MAX_HISTORY_SIZE		32
+#define HSPACING_NARROW			4
+#define VSPACING			10
+#define VSPACING_NARROW			4
+#define VSPACING_NARROW_2		2
+#define VBOX_BORDER			8
+#define DEFAULT_ENTRY_WIDTH		80
 
 #define BOLD_FONT prefs_common.boldfont
 #define NORMAL_FONT prefs_common.normalfont

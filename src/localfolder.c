@@ -22,6 +22,7 @@
 #include "folder.h"
 #include "localfolder.h"
 #include "xml.h"
+#include "utils.h"
 
 void folder_local_folder_init(Folder *folder, const gchar *name,
 			      const gchar *path)

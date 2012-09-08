@@ -60,6 +60,7 @@
 #include "uri_opener.h"
 #include "inc.h"
 #include "log.h"
+#include "privacy.h"
 #include "combobox.h"
 #include "printing.h"
 #include "quoted-printable.h"

@@ -46,6 +46,7 @@
 #include "account.h"
 #include "mainwindow.h"
 #include "manage_window.h"
+#include "folder.h"
 #include "foldersel.h"
 #include "inc.h"
 #include "menu.h"
@@ -61,6 +62,7 @@
 #include "setup.h"
 #include "quote_fmt.h"
 #include "hooks.h"
+#include "privacy.h"
 #include "inputdialog.h"
 #include "ssl_certificate.h"
 

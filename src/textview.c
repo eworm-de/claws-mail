@@ -75,6 +75,7 @@
 #include "timing.h"
 #include "tags.h"
 #include "manage_window.h"
+#include "folder_item_prefs.h"
 
 static GdkColor quote_colors[3] = {
 	{(gulong)0, (gushort)0, (gushort)0, (gushort)0},

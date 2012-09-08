@@ -1,3 +1,62 @@
+2012-09-08 [colin]	3.8.1cvs46
+
+	* AUTHORS
+	* src/Makefile.am
+	* src/action.c
+	* src/addr_compl.c
+	* src/addrbook.c
+	* src/compose.c
+	* src/compose.h
+	* src/editaddress.c
+	* src/filtering.c
+	* src/folder.c
+	* src/folder.h
+	* src/folderview.h
+	* src/headerview.h
+	* src/imap_gtk.c
+	* src/localfolder.c
+	* src/main.c
+	* src/mainwindow.c
+	* src/mainwindow.h
+	* src/matcher.c
+	* src/matcher_parser_parse.y
+	* src/messageview.c
+	* src/messageview.h
+	* src/mh.c
+	* src/mh_gtk.c
+	* src/mimeview.c
+	* src/mimeview.h
+	* src/noticeview.h
+	* src/prefs_account.c
+	* src/prefs_account.h
+	* src/prefs_filtering.c
+	* src/prefs_filtering_action.c
+	* src/prefs_gtk.h
+	* src/prefs_matcher.c
+	* src/prefs_template.c
+	* src/prefs_toolbar.c
+	* src/privacy.c
+	* src/procheader.h
+	* src/procmime.c
+	* src/procmime.h
+	* src/procmsg.c
+	* src/procmsg.h
+	* src/proctypes.h
+	* src/remotefolder.c
+	* src/summaryview.c
+	* src/summaryview.h
+	* src/textview.c
+	* src/textview.h
+	* src/toolbar.c
+	* src/uri_opener.c
+	* src/viewtypes.h
+	* src/common/defs.h
+	* src/gtk/authors.h
+	* src/gtk/description_window.c
+	* src/plugins/trayicon/trayicon.c
+		Break circular dependencies in Claws' headers,
+		Patch by Sean Buckheister <s_buckhe@cs.uni-kl.de>
+
 2012-09-08 [colin]	3.8.1cvs45
 
 	* src/textview.c

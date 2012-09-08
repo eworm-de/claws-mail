@@ -47,6 +47,7 @@
 #include "prefs_common.h"
 #include "log.h"
 #include "tags.h"
+#include "folder_item_prefs.h"
 
 /*!
  *\brief	Keyword lookup element

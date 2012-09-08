@@ -28,16 +28,12 @@ typedef struct _AttachInfo	AttachInfo;
 
 #include "procmsg.h"
 #include "procmime.h"
-#ifndef USE_NEW_ADDRBOOK
-#include "addressbook.h"
-#endif
 #include "prefs_account.h"
 #include "undo.h"
 #include "toolbar.h"
-#include "messageview.h"
 #include "codeconv.h"
 #include "template.h"
-#include "textview.h"
+#include "viewtypes.h"
 #include "folder.h"
 
 #ifdef USE_ENCHANT

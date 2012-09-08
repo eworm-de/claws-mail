@@ -59,6 +59,8 @@
 #include "timing.h"
 #include "compose.h"
 #include "main.h"
+#include "msgcache.h"
+#include "privacy.h"
 
 /* Dependecies to be removed ?! */
 #include "prefs_common.h"

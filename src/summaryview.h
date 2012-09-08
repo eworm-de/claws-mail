@@ -27,7 +27,7 @@
 #include <gdk/gdk.h>
 #include <gtk/gtk.h>
 
-typedef struct _SummaryView		SummaryView;
+#include "viewtypes.h"
 typedef struct _SummaryColumnState	SummaryColumnState;
 
 #define MAIL_MANUAL_FILTERING_HOOKLIST "mail_manual_filtering_hooklist"
@@ -66,9 +66,6 @@ typedef enum
 } TargetInfo;
 
 #include "mainwindow.h"
-#include "folderview.h"
-#include "headerview.h"
-#include "messageview.h"
 #include "compose.h"
 #include "folder.h"
 #include "gtksctree.h"

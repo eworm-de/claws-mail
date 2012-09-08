@@ -20,8 +20,7 @@
 #ifndef NOTICEVIEW_H__
 #define NOTICEVIEW_H__
 
-typedef struct _NoticeView	NoticeView;
-
+#include "viewtypes.h"
 #include "stock_pixmap.h"
 
 struct _NoticeView 

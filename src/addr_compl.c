@@ -43,6 +43,7 @@
 #include "claws.h"
 #include "hooks.h"
 #include "gtkutils.h"
+#include "stock_pixmap.h"
 #include <pthread.h>
 
 #ifndef USE_NEW_ADDRBOOK

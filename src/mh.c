@@ -34,6 +34,7 @@
 #include <time.h>
 
 #include "folder.h"
+#include "folder_item_prefs.h"
 #include "mh.h"
 #include "procmsg.h"
 #include "procheader.h"

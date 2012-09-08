@@ -29,6 +29,7 @@
 #include "matcher_parser.h"
 #include "matcher_parser_lex.h"
 #include "colorlabel.h"
+#include "folder_item_prefs.h"
 
 static gint error = 0;
 static gint bool_op = 0;

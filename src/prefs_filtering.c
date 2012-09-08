@@ -46,11 +46,13 @@
 #include "gtkutils.h"
 #include "alertpanel.h"
 #include "folder.h"
+#include "folder_item_prefs.h"
 #include "filtering.h"
 #include "addr_compl.h"
 #include "manual.h"
 #include "combobox.h"
 #include "menu.h"
+#include "account.h"
 
 #include "matcher_parser.h"
 #include "matcher.h"

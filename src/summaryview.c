@@ -36,6 +36,7 @@
 #include "folderview.h"
 #include "summaryview.h"
 #include "messageview.h"
+#include "mimeview.h"
 #include "foldersel.h"
 #include "procmsg.h"
 #include "procheader.h"

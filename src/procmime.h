@@ -24,13 +24,8 @@
 #include "claws-features.h"
 #endif
 
-typedef struct _MimeType	MimeType;
-typedef struct _MimeInfo	MimeInfo;
-typedef struct _MimeParser	MimeParser;
-
-#include "procmsg.h"
 #include "utils.h"
-
+#include "proctypes.h"
 typedef enum
 {
 	ENC_7BIT,
@@ -71,8 +66,7 @@ typedef enum
 #include <glib.h>
 #include <stdio.h>
 
-#include "procmsg.h"
-#include "privacy.h"
+struct _PrivacyData;
 
 struct _MimeType
 {
@@ -150,7 +144,7 @@ struct _MimeInfo
 	GHashTable	*dispositionparameters;
 
 	/* Privacy */
-	PrivacyData	*privacy;
+	struct _PrivacyData	*privacy;
 
 	gboolean	 broken;
 };

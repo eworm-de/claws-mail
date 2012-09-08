@@ -26,6 +26,7 @@
 #include <math.h>
 #include <setjmp.h>
 
+#include "utils.h"
 #include "xml.h"
 #include "mgutils.h"
 #include "addritem.h"

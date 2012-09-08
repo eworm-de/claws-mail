@@ -1,6 +1,6 @@
 /*
- * Sylpheed -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 2002-2012 by the Claws Mail Team and Hiroyuki Yamamoto
+ * Claws Mail -- a GTK+ based, lightweight, and fast e-mail client
+ * Copyright (C) 2012 the Claws Mail team
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -17,22 +17,28 @@
  * 
  */
 
-#include <glib.h>
+#ifndef VIEWTYPES_H
+#define VIEWTYPES_H
 
-#include "utils.h"
-#include "remotefolder.h"
+struct _SummaryView;
+typedef struct _SummaryView SummaryView;
 
-void folder_remote_folder_init(Folder *folder, const gchar *name,
-			       const gchar *path)
-{
-	folder_init(folder, name);
-	REMOTE_FOLDER(folder)->session = NULL;
-}
+struct _FolderView;
+typedef struct _FolderView	FolderView;
 
-void folder_remote_folder_destroy(RemoteFolder *rfolder)
-{
-	cm_return_if_fail(rfolder != NULL);
+struct _HeaderView;
+typedef struct _HeaderView	HeaderView;
 
-	if (rfolder->session)
-		session_destroy(rfolder->session);
-}
+struct _MessageView;
+typedef struct _MessageView	MessageView;
+
+struct _TextView;
+typedef struct _TextView	TextView;
+
+struct _MimeView;
+typedef struct _MimeView	MimeView;
+
+struct _NoticeView;
+typedef struct _NoticeView	NoticeView;
+
+#endif

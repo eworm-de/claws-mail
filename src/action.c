@@ -52,6 +52,7 @@
 #include "action.h"
 #include "compose.h"
 #include "procmsg.h"
+#include "msgcache.h"
 #include "textview.h"
 #include "matcher_parser.h" /* CLAWS */
 #include "filtering.h"

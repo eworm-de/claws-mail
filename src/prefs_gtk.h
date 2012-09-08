@@ -28,15 +28,8 @@ typedef struct _PrefParam	PrefParam;
 typedef struct _PrefsDialog	PrefsDialog;
 
 #include "prefs.h"
-#include "account.h"
 #include "gtk/prefswindow.h"
 
-#define HSPACING_NARROW		4
-#define VSPACING		10
-#define VSPACING_NARROW		4
-#define VSPACING_NARROW_2	2
-#define VBOX_BORDER		8
-#define DEFAULT_ENTRY_WIDTH	80
 #define PREFSBUFSIZE		32768
 
 typedef enum

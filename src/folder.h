@@ -129,12 +129,11 @@ typedef void (*FolderItemFunc)	(FolderItem	*item,
 					 gpointer	 data);
 
 
-#include "folder_item_prefs.h"
-
-#include "procmsg.h"
-#include "msgcache.h"
+#include "proctypes.h"
 #include "xml.h"
 #include "prefs_account.h"
+
+struct _MsgCache;
 
 struct _Folder
 {
@@ -633,6 +632,8 @@ enum {
 	ITEM_SCANNING
 };
 
+struct _FolderItemPrefs;
+
 struct _FolderItem
 {
 	SpecialFolderItemType stype;
@@ -657,7 +658,7 @@ struct _FolderItem
 
 	gint last_num;
 
-	MsgCache *cache;
+	struct _MsgCache *cache;
 	gboolean cache_dirty;
 	gboolean mark_dirty;
 	gboolean tags_dirty;
@@ -693,7 +694,7 @@ struct _FolderItem
 
 	gpointer data;
 
-	FolderItemPrefs * prefs;
+	struct _FolderItemPrefs * prefs;
 	
 	/* for faster search of special parents */
 	SpecialFolderItemType parent_stype;

@@ -27,6 +27,7 @@
 #include <gtk/gtk.h>
 #include <gdk/gdkkeysyms.h>
 
+#include "defs.h"
 #include "manage_window.h"
 #include "description_window.h"
 #include "gtkutils.h"

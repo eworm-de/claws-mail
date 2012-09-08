@@ -20,7 +20,6 @@
 #ifndef __FOLDERVIEW_H__
 #define __FOLDERVIEW_H__
 
-typedef struct _FolderView	FolderView;
 typedef struct _FolderViewPopup	FolderViewPopup;
 typedef struct _FolderColumnState	FolderColumnState;
 
@@ -29,7 +28,7 @@ typedef struct _FolderColumnState	FolderColumnState;
 #include "gtk/gtksctree.h"
 
 #include "mainwindow.h"
-#include "summaryview.h"
+#include "viewtypes.h"
 #include "folder.h"
 
 typedef enum

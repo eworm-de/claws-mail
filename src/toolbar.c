@@ -58,7 +58,10 @@
 #include "prefs_toolbar.h"
 #include "alertpanel.h"
 #include "imap.h"
-#ifdef USE_NEW_ADDRBOOK
+#include "account.h"
+#ifndef USE_NEW_ADDRBOOK
+	#include "addressbook.h"
+#else
 	#include "addressbook-dbus.h"
 #endif
 

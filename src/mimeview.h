@@ -20,7 +20,6 @@
 #ifndef MIMEVIEW_H
 #define MIMEVIEW_H
 
-typedef struct _MimeView		MimeView;
 typedef struct _MimeViewerFactory 	MimeViewerFactory;
 typedef struct _MimeViewer 		MimeViewer;
 

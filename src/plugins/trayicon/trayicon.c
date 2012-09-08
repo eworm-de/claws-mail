@@ -43,7 +43,9 @@
 #include "alertpanel.h"
 #include "account.h"
 #include "gtk/manage_window.h"
-#ifdef USE_NEW_ADDRBOOK
+#ifndef USE_NEW_ADDRBOOK
+	#include "addressbook.h"
+#else
 	#include "addressbook-dbus.h"
 #endif
 

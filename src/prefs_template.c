@@ -43,6 +43,7 @@
 #include "manual.h"
 #include "gtkutils.h"
 #include "menu.h"
+#include "account.h"
 
 enum {
 	TEMPL_TEXT,

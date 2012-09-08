@@ -37,6 +37,7 @@
 #include "addritem.h"
 #ifndef USE_NEW_ADDRBOOK
 	#include "addrbook.h"
+	#include "addressbook.h"
 #else
 	#include "addressbook-dbus.h"
 	#include "addressadd.h"
@@ -44,6 +45,9 @@
 #include "addr_compl.h"
 #include "tags.h"
 #include "log.h"
+#include "account.h"
+#include "addrindex.h"
+#include "folder_item_prefs.h"
 
 GSList * pre_global_processing = NULL;
 GSList * post_global_processing = NULL;

@@ -35,6 +35,7 @@
 #include "gtkutils.h"
 #include "alertpanel.h"
 #include "textview.h"
+#include "mimeview.h"
 #include "prefs_common.h"
 #include "prefs_common.h"
 

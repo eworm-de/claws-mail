@@ -30,6 +30,7 @@
 #include <gtk/gtk.h>
 
 #include "alertpanel.h"
+#include "stock_pixmap.h"
 #include "mgutils.h"
 #include "addressbook.h"
 #include "addressitem.h"

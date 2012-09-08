@@ -94,6 +94,7 @@
 #include "alertpanel.h"
 #include "manage_window.h"
 #include "folder.h"
+#include "folder_item_prefs.h"
 #include "addr_compl.h"
 #include "quote_fmt.h"
 #include "undo.h"

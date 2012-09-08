@@ -48,6 +48,7 @@
 #include "tags.h"
 #include "timing.h"
 #include "inc.h"
+#include "privacy.h"
 
 extern SessionStats session_stats;
 

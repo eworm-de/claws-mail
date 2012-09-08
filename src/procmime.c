@@ -52,6 +52,7 @@
 #include "prefs_gtk.h"
 #include "alertpanel.h"
 #include "timing.h"
+#include "privacy.h"
 
 static GHashTable *procmime_get_mime_type_table	(void);
 static MimeInfo *procmime_scan_file_short(const gchar *filename);

@@ -30,17 +30,7 @@
 #include <sys/types.h>
 #include <string.h>
 #include "utils.h"
-
-typedef struct _MsgInfo			MsgInfo;
-typedef struct _MsgFlags		MsgFlags;
-typedef struct _MsgFileInfo     	MsgFileInfo;
-typedef struct _MsgInfoUpdate 		MsgInfoUpdate;
-typedef struct _MailFilteringData	MailFilteringData;
-
-typedef struct _MsgInfoExtraData	MsgInfoExtraData;
-
-typedef GSList MsgInfoList;
-typedef GSList MsgNumberList;
+#include "proctypes.h"
 
 #define MSG_NEW			(1U << 0)
 #define MSG_UNREAD		(1U << 1)
@@ -95,8 +85,6 @@ typedef GSList MsgNumberList;
 #define	MSG_RESERVED_CLAWS	(1U << 30)   /* for claws-mail */
 #define	MSG_RESERVED		(1U << 31)
 
-typedef guint32 MsgPermFlags;
-
 #define MSG_MOVE		(1U << 0)
 #define MSG_COPY		(1U << 1)
 #define MSG_MOVE_DONE		(1U << 15)		
@@ -109,8 +97,6 @@ typedef guint32 MsgPermFlags;
 #define MSG_MULTIPART		(1U << 29)
 #define MSG_HAS_ATTACHMENT	(1U << 30)
 #define MSG_SCANNED		(1U << 31)
-
-typedef guint32 MsgTmpFlags;
 
 #define MSG_CACHED_FLAG_MASK	(MSG_MULTIPART | MSG_ENCRYPTED | MSG_SIGNED | MSG_HAS_ATTACHMENT | MSG_SCANNED)
 
@@ -177,7 +163,7 @@ typedef enum {
 	MSGINFO_UPDATE_DELETED = 1 << 1
 } MsgInfoUpdateFlags;
 
-#include "procmime.h"
+#include "prefs_account.h"
 #include "prefs_filtering.h"
 #include "folder.h"
 

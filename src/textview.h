@@ -27,7 +27,6 @@
 #include <glib.h>
 #include <gtk/gtk.h>
 
-typedef struct _TextView	TextView;
 typedef struct _ClickableText	ClickableText;
 struct _ClickableText
 {
@@ -47,7 +46,7 @@ struct _ClickableText
 };
 
 
-#include "messageview.h"
+#include "viewtypes.h"
 #include "procmime.h"
 
 struct _TextView

@@ -55,6 +55,9 @@
 #include "matcher_parser.h"
 #include "colorlabel.h"
 #include "tags.h"
+#ifndef USE_NEW_ADDRBOOK
+	#include "addressbook.h"
+#endif
 
 #ifndef USE_NEW_ADDRBOOK
 static void prefs_matcher_addressbook_select(void);

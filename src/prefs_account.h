@@ -46,8 +46,9 @@ typedef enum {
 #include <glib.h>
 
 #include "smtp.h"
-#include "folder.h"
 #include "gtk/prefswindow.h"
+
+struct _Folder;
 
 /* Changes to this data structure might need to be reflected
  * in account_clone() */
@@ -201,7 +202,7 @@ struct _PrefsAccount
 	/* Unique account ID */
 	gint account_id;
 
-	Folder *folder;
+	struct _Folder *folder;
 	GHashTable *privacy_prefs;
 	SMTPSession *session;
 };
