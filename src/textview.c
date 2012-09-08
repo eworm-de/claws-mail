@@ -1001,7 +1001,7 @@ void textview_show_mime_part(TextView *textview, MimeInfo *partinfo)
 
 #ifndef GENERIC_UMPC
 	TEXTVIEW_INSERT(_(" (Shortcut key: '"));
-	shortcut = cm_menu_item_get_shortcut(ui_manager, "Menu/View/PartAsText");
+	shortcut = cm_menu_item_get_shortcut(ui_manager, "Menu/View/Part/AsText");
 	TEXTVIEW_INSERT(shortcut);
 	g_free(shortcut);
 	TEXTVIEW_INSERT("')");
@@ -1013,7 +1013,7 @@ void textview_show_mime_part(TextView *textview, MimeInfo *partinfo)
 
 #ifndef GENERIC_UMPC
 	TEXTVIEW_INSERT(_(" (Shortcut key: '"));
-	shortcut = cm_menu_item_get_shortcut(ui_manager, "Menu/View/OpenPartWith");
+	shortcut = cm_menu_item_get_shortcut(ui_manager, "Menu/View/Part/Open");
 	TEXTVIEW_INSERT(shortcut);
 	g_free(shortcut);
 	TEXTVIEW_INSERT("')\n");
@@ -1023,7 +1023,7 @@ void textview_show_mime_part(TextView *textview, MimeInfo *partinfo)
 	TEXTVIEW_INSERT(_("     - Or use "));
 	TEXTVIEW_INSERT_LINK(_("'Open with...'"), "sc://open_with", NULL);
 	TEXTVIEW_INSERT(_(" (Shortcut key: '"));
-	shortcut = cm_menu_item_get_shortcut(ui_manager, "Menu/View/OpenPart");
+	shortcut = cm_menu_item_get_shortcut(ui_manager, "Menu/View/Part/OpenWith");
 	TEXTVIEW_INSERT(shortcut);
 	g_free(shortcut);
 	TEXTVIEW_INSERT("')");
