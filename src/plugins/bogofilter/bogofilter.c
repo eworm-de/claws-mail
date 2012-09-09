@@ -74,6 +74,9 @@
 #ifdef HAVE_PWD_H
 #include <pwd.h>
 #endif
+#ifdef USE_PTHREAD
+#include <pthread.h>
+#endif
 
 #define PLUGIN_NAME (_("Bogofilter"))
 
