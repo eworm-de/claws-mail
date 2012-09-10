@@ -1088,13 +1088,24 @@ int main(int argc, char *argv[])
 		return 0;
 	}
 
-	main_dump_features_list(TRUE);
-
 	prog_version = PROG_VERSION;
 	argv0 = g_strdup(argv[0]);
 
 	parse_cmd_opt(argc, argv);
 
+	sock_init();
+
+	/* check and create unix domain socket for remote operation */
+	lock_socket = prohibit_duplicate_launch();
+	if (lock_socket < 0) {
+#ifdef HAVE_STARTUP_NOTIFICATION
+		if(gtk_init_check(&argc, &argv))
+			startup_notification_complete(TRUE);
+#endif
+		return 0;
+	}
+
+	main_dump_features_list(TRUE);
 	prefs_prepare_cache();
 
 #ifdef CRASH_DIALOG
@@ -1113,17 +1124,6 @@ int main(int argc, char *argv[])
 #if (defined linux && defined SIGIO)
 	install_memory_sighandler();
 #endif
-	sock_init();
-
-	/* check and create unix domain socket for remote operation */
-	lock_socket = prohibit_duplicate_launch();
-	if (lock_socket < 0) {
-#ifdef HAVE_STARTUP_NOTIFICATION
-		if(gtk_init_check(&argc, &argv))
-			startup_notification_complete(TRUE);
-#endif
-		return 0;
-	}
 
 	if (cmd.status || cmd.status_full || cmd.search ||
 		cmd.statistics || cmd.reset_statistics) {
