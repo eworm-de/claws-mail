@@ -45,6 +45,10 @@
 #include <X11/SM/SMlib.h>
 #endif
 
+#if HAVE_FLOCK
+#include <sys/file.h>
+#endif
+
 #include "wizard.h"
 #ifdef HAVE_STARTUP_NOTIFICATION
 # define SN_API_NOT_YET_FROZEN
@@ -2301,14 +2305,51 @@ static gint prohibit_duplicate_launch(void)
 	gchar *path;
 
 	path = claws_get_socket_name();
+	/* Try to connect to the control socket */
 	uxsock = fd_connect_unix(path);
 	
 	if (x_display == NULL)
 		x_display = g_strdup(g_getenv("DISPLAY"));
 
 	if (uxsock < 0) {
+#if HAVE_FLOCK
+		gchar *socket_lock;
+		gint lock_fd;
+		gint ret;
+		/* If connect failed, no other process is running.
+		 * Unlink the potentially existing socket, then
+		 * open it. This has to be done locking a temporary
+		 * file to avoid the race condition where another
+		 * process could have created the socket just in
+		 * between.
+		 */
+		socket_lock = g_strconcat(path, ".lock",
+					  NULL);
+		lock_fd = g_open(socket_lock, O_RDWR|O_CREAT, 0);
+		if (lock_fd < 0) {
+			debug_print("Couldn't open %s: %s (%d)\n", socket_lock,
+				strerror(errno), errno);
+			g_free(socket_lock);
+			return -1;
+		}
+		if (flock(lock_fd, LOCK_EX) < 0) {
+			debug_print("Couldn't lock %s: %s (%d)\n", socket_lock,
+				strerror(errno), errno);
+			close(lock_fd);
+			g_free(socket_lock);
+			return -1;
+		}
+#endif
+
 		claws_unlink(path);
-		return fd_open_unix(path);
+		debug_print("Opening socket %s\n", path);
+		ret = fd_open_unix(path);
+#if HAVE_FLOCK
+		flock(lock_fd, LOCK_UN);
+		claws_unlink(socket_lock);
+		g_free(socket_lock);
+#endif
+		return ret;
 	}
 #else
         HANDLE hmutex;

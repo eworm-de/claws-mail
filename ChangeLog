@@ -1,3 +1,8 @@
+2012-09-11 [colin]	3.8.1cvs49
+
+	* src/main.c
+		Fix race condition at start.
+
 2012-09-10 [colin]	3.8.1cvs48
 
 	* src/main.c
