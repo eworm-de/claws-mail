@@ -1,3 +1,8 @@
+2012-09-12 [colin]	3.8.1cvs53
+
+	* src/procmsg.c
+		Revert that hunk, logic is unclear.
+
 2012-09-12 [colin]	3.8.1cvs52
 
 	* src/addressbook.c

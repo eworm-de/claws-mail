@@ -827,6 +827,7 @@ static GSList *procmsg_list_sort_by_account(FolderItem *queue, GSList *list)
 	debug_print("\n");
 
 parse_again:	
+	nothing_to_sort = TRUE;
 	cur = orig;
 	while (cur) {
 		gchar *file = NULL;
@@ -843,7 +844,6 @@ parse_again:
 			nothing_to_sort = FALSE;
 			goto parse_again;
 		}
-		nothing_to_sort = TRUE;
 		cur = cur->next;
 	}
 	
