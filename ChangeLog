@@ -1,3 +1,10 @@
+2012-09-12 [colin]	3.8.1cvs50
+
+	* claws-mail.pc.in
+		Put Claws-Mail CFLAGS first; fixes build on Fink/OS X
+		where the included menu.h could come from Ncurses.
+		Thanks to 'Stainless Steel Rat' <ratinox@gweep.net>
+
 2012-09-11 [colin]	3.8.1cvs49
 
 	* src/main.c

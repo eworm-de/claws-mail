@@ -4424,3 +4424,4 @@
 ( cvs diff -u -r 1.1.2.43 -r 1.1.2.44 src/plugins/bogofilter/bogofilter.c;  ) > 3.8.1cvs47.patchset
 ( cvs diff -u -r 1.115.2.254 -r 1.115.2.255 src/main.c;  ) > 3.8.1cvs48.patchset
 ( cvs diff -u -r 1.115.2.255 -r 1.115.2.256 src/main.c;  ) > 3.8.1cvs49.patchset
+( cvs diff -u -r 1.1.2.3 -r 1.1.2.4 claws-mail.pc.in;  ) > 3.8.1cvs50.patchset
