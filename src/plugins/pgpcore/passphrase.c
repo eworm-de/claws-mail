@@ -58,8 +58,7 @@ static gint passphrase_deleted(GtkWidget *widget, GdkEventAny *event,
 static gboolean passphrase_key_pressed(GtkWidget *widget, GdkEventKey *event,
 				       gpointer data);
 
-static GtkWidget *create_description(const gchar *uid_hint,
-				     const gchar *pass_hint, gint prev_bad, gint new_key);
+static GtkWidget *create_description(const gchar *uid_hint, gint prev_bad, gint new_key);
 
 void
 gpgmegtk_set_passphrase_grab(gint yes)
@@ -102,7 +101,7 @@ passphrase_mbox(const gchar *uid_hint, const gchar *pass_hint, gint prev_bad, gi
 
     if (uid_hint || pass_hint) {
         GtkWidget *label, *icon;
-        label = create_description (uid_hint, pass_hint, prev_bad, new_key);
+        label = create_description (uid_hint, prev_bad, new_key);
 	icon = gtk_image_new_from_stock(GTK_STOCK_DIALOG_AUTHENTICATION,
         			GTK_ICON_SIZE_DIALOG); 
 
@@ -244,9 +243,9 @@ linelen (const gchar *s)
 }
 
 static GtkWidget *
-create_description(const gchar *uid_hint, const gchar *pass_hint, gint prev_bad, gint new_key)
+create_description(const gchar *uid_hint, gint prev_bad, gint new_key)
 {
-    const gchar *uid = NULL, *info = NULL;
+    const gchar *uid = NULL;
     gchar *buf;
     GtkWidget *label;
     gchar *my_uid = NULL;
@@ -254,10 +253,6 @@ create_description(const gchar *uid_hint, const gchar *pass_hint, gint prev_bad,
         uid = _("[no user id]");
     else
         uid = uid_hint;
-    if (!pass_hint)
-        info = "";
-    else
-        info = pass_hint;
 
     my_uid = g_strdup(uid);
     while (strchr(my_uid, '<')) 

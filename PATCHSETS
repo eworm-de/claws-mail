@@ -4425,3 +4425,4 @@
 ( cvs diff -u -r 1.115.2.254 -r 1.115.2.255 src/main.c;  ) > 3.8.1cvs48.patchset
 ( cvs diff -u -r 1.115.2.255 -r 1.115.2.256 src/main.c;  ) > 3.8.1cvs49.patchset
 ( cvs diff -u -r 1.1.2.3 -r 1.1.2.4 claws-mail.pc.in;  ) > 3.8.1cvs50.patchset
+( cvs diff -u -r 1.382.2.610 -r 1.382.2.611 src/compose.c;  cvs diff -u -r 1.79.2.75 -r 1.79.2.76 src/mh.c;  cvs diff -u -r 1.9.2.55 -r 1.9.2.56 src/common/ssl.c;  cvs diff -u -r 1.1.2.37 -r 1.1.2.38 src/plugins/pgpcore/passphrase.c;  ) > 3.8.1cvs51.patchset

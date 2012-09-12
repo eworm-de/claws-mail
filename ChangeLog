@@ -1,3 +1,14 @@
+2012-09-12 [colin]	3.8.1cvs51
+
+	* src/compose.c
+	* src/mh.c
+	* src/common/ssl.c
+	* src/plugins/pgpcore/passphrase.c
+		Apply patches from bug #1961, "patches for
+		a couple of clang warnings":
+		- Check return codes
+		- Remove dead code
+
 2012-09-12 [colin]	3.8.1cvs50
 
 	* claws-mail.pc.in

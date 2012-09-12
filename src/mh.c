@@ -465,7 +465,6 @@ static gint mh_copy_msgs(Folder *folder, FolderItem *dest, MsgInfoList *msglist,
 	FolderItem *src = NULL;
 	gchar *srcfile;
 	gchar *destfile;
-	gint filemode = 0;
 	FolderItemPrefs *prefs;
 	MsgInfo *msginfo = NULL;
 	MsgInfoList *cur = NULL;
@@ -574,11 +573,6 @@ static gint mh_copy_msgs(Folder *folder, FolderItem *dest, MsgInfoList *msglist,
 		if (prefs && prefs->enable_folder_chmod && prefs->folder_chmod) {
 			if (chmod(destfile, prefs->folder_chmod) < 0)
 				FILE_OP_ERROR(destfile, "chmod");
-
-			/* for mark file */
-			filemode = prefs->folder_chmod;
-			if (filemode & S_IRGRP) filemode |= S_IWGRP;
-			if (filemode & S_IROTH) filemode |= S_IWOTH;
 		}
 		if (relation) {
 			if (g_hash_table_lookup(relation, msginfo) != NULL)

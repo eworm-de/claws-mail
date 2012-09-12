@@ -1807,11 +1807,6 @@ Compose *compose_forward(PrefsAccount *account, MsgInfo *msginfo,
 		const gchar *body_fmt = NULL;
 		MsgInfo *full_msginfo;
 
-		if (prefs_common.fw_quotefmt && *prefs_common.fw_quotefmt)
-			body_fmt = gettext(prefs_common.fw_quotefmt);
-		else
-			body_fmt = "";
-	
 		full_msginfo = procmsg_msginfo_get_full_info(msginfo);
 		if (!full_msginfo)
 			full_msginfo = procmsg_msginfo_copy(msginfo);
@@ -5897,6 +5892,8 @@ static gint compose_queue_sub(Compose *compose, gint *msgnum, FolderItem **item,
 				err |= (fprintf(fp, "X-Claws-Encrypt:%d\n", compose->use_encryption) < 0);
 				/* and if encdata was null, it means there's been a problem in 
 				 * key selection */
+				if (err == TRUE)
+					g_warning("failed to write queue message");
 				lock = FALSE;
 				fclose(fp);
 				claws_unlink(tmp);

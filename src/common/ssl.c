@@ -316,7 +316,7 @@ gboolean ssl_init_socket_with_method(SockInfo *sockinfo, SSLMethod method)
 
 	r = gnutls_certificate_verify_peers2(session, &status);
 
-	if (!ssl_certificate_check(cert, status, sockinfo->hostname, sockinfo->port)) {
+	if (r < 0 || !ssl_certificate_check(cert, status, sockinfo->hostname, sockinfo->port)) {
 		gnutls_x509_crt_deinit(cert);
 		gnutls_certificate_free_credentials(xcred);
 		gnutls_deinit(session);
