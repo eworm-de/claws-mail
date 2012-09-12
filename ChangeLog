@@ -1,3 +1,39 @@
+2012-09-12 [colin]	3.8.1cvs52
+
+	* src/addressbook.c
+	* src/addrharvest.c
+	* src/addrindex.c
+	* src/addritem.c
+	* src/compose.c
+	* src/edittags.c
+	* src/folder.c
+	* src/imap.c
+	* src/inc.c
+	* src/ldif.c
+	* src/mainwindow.c
+	* src/mbox.c
+	* src/mimeview.c
+	* src/mutt.c
+	* src/partial_download.c
+	* src/prefs_filtering_action.c
+	* src/prefs_toolbar.c
+	* src/printing.c
+	* src/procheader.c
+	* src/procmime.c
+	* src/procmsg.c
+	* src/summaryview.c
+	* src/textview.c
+	* src/common/utils.c
+	* src/etpan/imap-thread.c
+	* src/gtk/gtkaspell.c
+	* src/plugins/pgpcore/sgpgme.c
+		More fixes from bug #1961:
+		- Write-only variables
+		- Null pointer dereferences
+		- A couple other fixes for which the reporter
+		  was unsure, but which showed problems.
+		More details in bug #1961 comments.
+
 2012-09-12 [colin]	3.8.1cvs51
 
 	* src/compose.c

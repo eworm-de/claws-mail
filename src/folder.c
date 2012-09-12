@@ -407,7 +407,7 @@ void folder_item_remove(FolderItem *item)
 	cm_return_if_fail(item->folder != NULL);
 	cm_return_if_fail(item->folder->node != NULL);
 
-	start_node = node = item->node;
+	start_node = item->node;
 	
 	node = item->folder->node;
 	
@@ -2775,13 +2775,11 @@ void folder_item_write_cache(FolderItem *item)
 
 MsgInfo *folder_item_get_msginfo(FolderItem *item, gint num)
 {
-	Folder *folder;
 	MsgInfo *msginfo = NULL;
 	
 	cm_return_val_if_fail(item != NULL, NULL);
 	if (item->no_select)
 		return NULL;
-	folder = item->folder;
 	if (!item->cache)
 		folder_item_read_cache(item);
 	
@@ -2799,7 +2797,6 @@ MsgInfo *folder_item_get_msginfo(FolderItem *item, gint num)
 
 MsgInfo *folder_item_get_msginfo_by_msgid(FolderItem *item, const gchar *msgid)
 {
-	Folder *folder;
 	MsgInfo *msginfo;
 	
 	cm_return_val_if_fail(item != NULL, NULL);
@@ -2807,7 +2804,6 @@ MsgInfo *folder_item_get_msginfo_by_msgid(FolderItem *item, const gchar *msgid)
 	if (item->no_select)
 		return FALSE;
 	
-	folder = item->folder;
 	if (!item->cache)
 		folder_item_read_cache(item);
 	
@@ -3341,8 +3337,6 @@ gint folder_item_move_to(FolderItem *src, FolderItem *dest, FolderItem **new_ite
 		}
 		tmp = folder_item_parent(tmp);
 	}
-	
-	tmp = folder_item_parent(src);
 	
 	src_identifier = folder_item_get_identifier(src);
 	dst_identifier = folder_item_get_identifier(dest);

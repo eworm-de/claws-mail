@@ -212,9 +212,9 @@ static GSList *mutt_parse_rcplist( gchar *rcpList, gint *addrCount ) {
 	list = NULL;
 	cnt = 0;
 	pStart = rcpList;
-	while( *pStart ) {
+	while( pStart && *pStart ) {
 		ptr = pStart;
-		address = name = NULL;
+		address = NULL;
 		pName = pAddr = NULL;
 		/* Chew up spaces */
 		while( *ptr ) {

@@ -1050,13 +1050,11 @@ static void update_signature_noticeview(MimeView *mimeview, MimeInfo *mimeinfo,
 		icon = STOCK_PIXMAP_PRIVACY_FAILED;
 		break;
 	case SIGNATURE_CHECK_FAILED:
-		button_text = _("Check again");
-		func = check_signature_cb;
-		icon = STOCK_PIXMAP_PRIVACY_UNKNOWN;
 	case SIGNATURE_CHECK_TIMEOUT:
 		button_text = _("Check again");
 		func = check_signature_cb;
 		icon = STOCK_PIXMAP_PRIVACY_UNKNOWN;
+		break;
 	default:
 		break;
 	}

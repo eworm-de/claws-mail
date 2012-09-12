@@ -1536,7 +1536,6 @@ static void procmime_parse_multipart(MimeInfo *mimeinfo, gboolean short_scan)
 	gchar buf[BUFFSIZE];
 	FILE *fp;
 	int result = 0;
-	gboolean done = FALSE;
 	gboolean start_found = FALSE;
 	gboolean end_found = FALSE;
 
@@ -1572,10 +1571,9 @@ static void procmime_parse_multipart(MimeInfo *mimeinfo, gboolean short_scan)
 							hentry[6].body, hentry[7].body,
 							mimeinfo->data.filename, lastoffset,
 							len, short_scan);
-				if (result == 1 && short_scan) {
-					done = TRUE;
+				if (result == 1 && short_scan)
 					break;
-				}
+				
 			} 
 			
 			if (buf[2 + boundary_len]     == '-' &&

@@ -1361,7 +1361,7 @@ static void textview_make_clickable_parts(TextView *textview,
 	gtk_text_buffer_get_end_iter(buffer, &iter);
 
 	/* parse for clickable parts, and build a list of begin and end positions  */
-	for (walk = mybuf, n = 0;;) {
+	for (walk = mybuf;;) {
 		gint last_index = PARSE_ELEMS;
 		gchar *scanpos = NULL;
 
@@ -1481,7 +1481,7 @@ static void textview_make_clickable_parts_later(TextView *textview,
 	offset = gtk_text_iter_get_offset(&start_iter);
 
 	/* parse for clickable parts, and build a list of begin and end positions  */
-	for (walk = mybuf, n = 0;;) {
+	for (walk = mybuf;;) {
 		gint last_index = PARSE_ELEMS;
 		gchar *scanpos = NULL;
 

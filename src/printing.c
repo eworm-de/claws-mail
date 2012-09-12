@@ -884,7 +884,6 @@ static void printing_textview_cb_begin_print(GtkPrintOperation *op, GtkPrintCont
 	PangoFontDescription *desc;
 	int start, ii;
 	PangoLayoutIter *iter;
-	double start_pos;
 	gint header_end_pos;
 	gint num_header_lines;
 	gint dummy;
@@ -923,7 +922,6 @@ static void printing_textview_cb_begin_print(GtkPrintOperation *op, GtkPrintCont
 	page_height = 0;
 	start = 0;
 	ii = 0;
-	start_pos = 0.;
 	iter = pango_layout_get_iter(print_data->layout);
 
 	/* find the last character of the header */

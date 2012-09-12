@@ -706,7 +706,7 @@ void eliminate_parenthesis(gchar *str, gchar op, gchar cl)
 	register gchar *srcp, *destp;
 	gint in_brace;
 
-	srcp = destp = str;
+	destp = str;
 
 	while ((destp = strchr(destp, op))) {
 		in_brace = 1;
@@ -730,7 +730,7 @@ void extract_parenthesis(gchar *str, gchar op, gchar cl)
 	register gchar *srcp, *destp;
 	gint in_brace;
 
-	srcp = destp = str;
+	destp = str;
 
 	while ((srcp = strchr(destp, op))) {
 		if (destp > str)
@@ -759,7 +759,7 @@ static void extract_parenthesis_with_skip_quote(gchar *str, gchar quote_chr,
 	gint in_brace;
 	gboolean in_quote = FALSE;
 
-	srcp = destp = str;
+	destp = str;
 
 	while ((srcp = strchr_with_skip_quote(destp, quote_chr, op))) {
 		if (destp > str)
@@ -805,7 +805,7 @@ void eliminate_address_comment(gchar *str)
 	register gchar *srcp, *destp;
 	gint in_brace;
 
-	srcp = destp = str;
+	destp = str;
 
 	while ((destp = strchr(destp, '"'))) {
 		if ((srcp = strchr(destp + 1, '"'))) {
@@ -822,7 +822,7 @@ void eliminate_address_comment(gchar *str)
 		}
 	}
 
-	srcp = destp = str;
+	destp = str;
 
 	while ((destp = strchr_with_skip_quote(destp, '"', '('))) {
 		in_brace = 1;
@@ -2886,7 +2886,7 @@ gint canonicalize_file_replace(const gchar *file)
 
 gchar *normalize_newlines(const gchar *str)
 {
-	const gchar *p = str;
+	const gchar *p;
 	gchar *out, *outp;
 
 	out = outp = g_malloc(strlen(str) + 1);
@@ -4021,7 +4021,7 @@ void get_hex_str(gchar *out, guchar ch)
 	INT_TO_HEX(hex, ch >> 4);
 	*out++ = hex;
 	INT_TO_HEX(hex, ch & 0x0f);
-	*out++ = hex;
+	*out   = hex;
 }
 
 #undef REF_DEBUG
@@ -5250,7 +5250,7 @@ size_t fast_strftime(gchar *buf, gint buflen, const gchar *format, struct tm *lt
 			*curpos++ = *format++; 
 		}
 	}
-	*curpos++ = '\0';
+	*curpos = '\0';
 	return total_done;
 }
 

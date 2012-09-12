@@ -2900,7 +2900,7 @@ static void addressbook_treenode_delete_cb(GtkAction *action, gpointer data)
 	/* Confirm deletion */
 	delType = ADDRTREE_DEL_NONE;
 	if( obj->type == ADDR_ITEM_FOLDER ) {
-		if( iface->externalQuery ) {
+		if( iface && iface->externalQuery ) {
 			message = g_strdup_printf( _(
 				"Do you want to delete the query " \
 				"results and addresses in '%s' ?" ),
@@ -2967,7 +2967,7 @@ static void addressbook_treenode_delete_cb(GtkAction *action, gpointer data)
 	cache = adbase->addressCache;
 
 	/* Remove query results folder */
-	if( iface->externalQuery ) {
+	if( iface && iface->externalQuery ) {
 		AdapterFolder *adapter = ADAPTER_FOLDER(obj);
 		ItemFolder *folder = adapter->itemFolder;
 
@@ -3708,11 +3708,9 @@ static void addressbook_folder_refresh_one_person( GtkCMCTree *clist, ItemPerson
 
 static void addressbook_folder_remove_one_person( GtkCMCTree *clist, ItemPerson *person ) {
 	GtkCMCTreeNode *node;
-	gint row;
 	
 	if( person == NULL ) return;
 	node = gtk_cmctree_find_by_row_data( clist, NULL, person );
-	row  = gtk_cmclist_find_row_from_data( GTK_CMCLIST(clist), person );
 	if( node ) {
 		addressbook_folder_remove_node( clist, node );
 	}
@@ -3875,15 +3873,15 @@ static void addressbook_set_clist( AddressObject *obj, gboolean refresh ) {
 
 	if( obj->type == ADDR_DATASOURCE ) {
 		ads = ADAPTER_DSOURCE(obj);
-		ds = ADAPTER_DSOURCE(obj)->dataSource;
+		ds = ads->dataSource;
 		if( ds ) {
 			/* Load root folder */
 			ItemFolder *rootFolder = NULL;
 			rootFolder = addrindex_ds_get_root_folder( ds );
 			addressbook_folder_load_person(
-				ctreelist, addrindex_ds_get_root_folder( ds ) );
+				ctreelist, rootFolder );
 			addressbook_folder_load_group(
-				ctreelist, addrindex_ds_get_root_folder( ds ) );
+				ctreelist, rootFolder );
 		}
 	}
 	else {
@@ -4577,8 +4575,6 @@ static void addressbook_perform_search(
 		AddressDataSource *ds, gchar *searchTerm,
 		GtkCMCTreeNode *pNode )
 {
-	AddrBookBase *adbase;
-	AddressCache *cache;
 	ItemFolder *folder;
 	gchar *name;
 	gint queryID;
@@ -4598,9 +4594,6 @@ static void addressbook_perform_search(
 	else {
 		return;
 	}
-	/* Get reference to address cache */	
-	adbase = ( AddrBookBase * ) ds->rawDataSource;
-	cache = adbase->addressCache;
 
 	/* Create a folder for the search results */
 	name = g_strdup_printf( _queryFolderLabel_, searchTerm );

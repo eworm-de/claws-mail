@@ -718,7 +718,6 @@ static void ldif_read_file( LdifFile *ldifFile, AddressCache *cache ) {
 							mgu_free_list( listValue );
 							lastTag = NULL;
 							listValue = NULL;
-							last64 = FALSE;
 						}
 
 						lastTag = g_strdup( tagName );

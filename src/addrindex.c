@@ -1572,7 +1572,6 @@ static int addrindex_write_ldap( FILE *fp, AddressDataSource *ds, gint lvl ) {
  * \param  file Address index file.
  */
 static void addrindex_read_index( AddressIndex *addrIndex, XMLFile *file ) {
-	guint prev_level;
 	XMLTag *xtag;
 	AddressInterface *iface = NULL, *dsIFace = NULL;
 	AddressDataSource *ds;
@@ -1580,7 +1579,6 @@ static void addrindex_read_index( AddressIndex *addrIndex, XMLFile *file ) {
 
 	addrIndex->loadedFlag = FALSE;
 	for (;;) {
-		prev_level = file->level;
 		rc = xml_parse_next_tag( file );
 		if( file->level == 0 ) return;
 

@@ -2918,7 +2918,6 @@ void main_window_toggle_message_view(MainWindow *mainwin)
 		}
 		break;
 	case WIDE_LAYOUT:
-		ppaned = mainwin->hpaned;
 		container = mainwin->vpaned;
 		if (gtk_widget_get_parent(mainwin->messageview->vbox) != NULL) {
 			mainwin->messageview->visible = FALSE;
@@ -3391,7 +3390,6 @@ void main_window_set_menu_sensitive(MainWindow *mainwin)
 			      messageview_is_visible(mainwin->messageview));
 
 	summaryview = mainwin->summaryview;
-	menu_path = "Menu/View/Sort/DontSort";
 
 	switch (summaryview->sort_key) {
 	case SORT_BY_NUMBER:

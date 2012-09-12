@@ -284,7 +284,7 @@ static gboolean header_is_addr_field(const gchar *hdr)
 
 Header * procheader_parse_header(gchar * buf)
 {
-	gchar *p = buf;
+	gchar *p;
 	Header * header;
 	gboolean addr_field = FALSE;
 

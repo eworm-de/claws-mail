@@ -3896,7 +3896,6 @@ static void summary_mark_row(SummaryView *summaryview, GtkCMCTreeNode *row)
 
 static void summary_lock_row(SummaryView *summaryview, GtkCMCTreeNode *row)
 {
-	gboolean changed = FALSE;
 	GtkCMCTree *ctree = GTK_CMCTREE(summaryview->ctree);
 	MsgInfo *msginfo;
 
@@ -3906,11 +3905,9 @@ static void summary_lock_row(SummaryView *summaryview, GtkCMCTreeNode *row)
 		summaryview->deleted--;
 	if (MSG_IS_MOVE(msginfo->flags)) {
 		summaryview->moved--;
-		changed = TRUE;
 	}
 	if (MSG_IS_COPY(msginfo->flags)) {
 		summaryview->copied--;
-		changed = TRUE;
 	}
 	procmsg_msginfo_set_to_folder(msginfo, NULL);
 	summary_msginfo_change_flags(msginfo, MSG_LOCKED, 0, MSG_DELETED, 
@@ -6018,7 +6015,6 @@ static void summary_tags_menu_item_activate_item_cb(GtkMenuItem *menu_item,
 	for (; sel != NULL; sel = sel->next) {
 		MsgInfo *msginfo;
 		GSList *tags = NULL;
-		gint id;
 		GtkCheckMenuItem *item;
 		msginfo = gtk_cmctree_node_get_row_data
 			(GTK_CMCTREE(summaryview->ctree),
@@ -6031,7 +6027,6 @@ static void summary_tags_menu_item_activate_item_cb(GtkMenuItem *menu_item,
 
 			for (; tags; tags = tags->next) {
 				gint num_checked = GPOINTER_TO_INT(g_hash_table_lookup(menu_allsel_table, tags->data));
-				id = GPOINTER_TO_INT(tags->data);
 				item = g_hash_table_lookup(menu_table, GINT_TO_POINTER(tags->data));
 				if (item && !gtk_check_menu_item_get_active(item)) {
 					gtk_check_menu_item_set_active
@@ -6620,7 +6615,6 @@ static gboolean summary_key_pressed(GtkWidget *widget, GdkEventKey *event,
 	GtkCMCTree *ctree = GTK_CMCTREE(widget);
 	GtkCMCTreeNode *node;
 	MessageView *messageview;
-	TextView *textview;
 	GtkAdjustment *adj;
 	gboolean mod_pressed;
 
@@ -6631,7 +6625,6 @@ static gboolean summary_key_pressed(GtkWidget *widget, GdkEventKey *event,
 		return FALSE;
 
 	messageview = summaryview->messageview;
-	textview = messageview->mimeview->textview;
 
 	mod_pressed =
 		((event->state & (GDK_SHIFT_MASK|GDK_MOD1_MASK)) != 0);

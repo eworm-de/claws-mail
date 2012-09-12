@@ -85,7 +85,6 @@ gpgme_verify_result_t sgpgme_verify_signature(gpgme_ctx_t ctx, gpgme_data_t sig,
 
 SignatureStatus sgpgme_sigstat_gpgme_to_privacy(gpgme_ctx_t ctx, gpgme_verify_result_t status)
 {
-	unsigned long validity = 0;
 	gpgme_signature_t sig = NULL;
 	
 	if (GPOINTER_TO_INT(status) == -GPG_ERR_SYSTEM_ERROR) {
@@ -103,7 +102,6 @@ SignatureStatus sgpgme_sigstat_gpgme_to_privacy(gpgme_ctx_t ctx, gpgme_verify_re
 		debug_print("sig == NULL\n");
 		return SIGNATURE_UNCHECKED;
 	}
-	validity = sig->validity;
 
 	debug_print("err code %d\n", gpg_err_code(sig->status));
 	switch (gpg_err_code(sig->status)) {

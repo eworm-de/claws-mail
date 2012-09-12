@@ -154,14 +154,10 @@ gint proc_mbox(FolderItem *dest, const gchar *mbox, gboolean apply_filter,
 
 		empty_lines = 0;
 		lines = 0;
-		more = FALSE;
 
 		/* process all lines from mboxrc file */
 		while (fgets(buf, sizeof(buf), mbox_fp) != NULL) {
 			int offset;
-
-			/* eof not reached, expect more lines */
-			more = TRUE;
 
 			/* eat empty lines */
 			if (buf[0] == '\n' || buf[0] == '\r') {

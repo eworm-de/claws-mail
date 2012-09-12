@@ -183,7 +183,7 @@ static void inc_finished(MainWindow *mainwin, gboolean new_messages, gboolean au
 
 		if (cur_account && cur_account->inbox)
 			item = folder_find_item_from_identifier(cur_account->inbox);
-		if (item == NULL && cur_account->folder)
+		if (item == NULL && cur_account && cur_account->folder)
 			item = cur_account->folder->inbox;
 		if (item == NULL)
 			item = folder_get_default_inbox();

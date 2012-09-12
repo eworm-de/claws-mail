@@ -589,7 +589,7 @@ void addritem_person_add_attribute(
  * \param  attrib Attribute to remove.
  */
 void addritem_person_remove_attribute(	ItemPerson *person, const gchar *attrib ) {
-	cm_return_if_fail( person != NULL || attrib != NULL );
+	cm_return_if_fail( person != NULL && attrib != NULL );
 	GList *attrib_list;
 
 	attrib_list = person->listAttrib;

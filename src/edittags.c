@@ -236,7 +236,7 @@ static void apply_popup_delete (GtkAction *action, gpointer data)
 
 static void apply_popup_delete_all (GtkAction *action, gpointer data)
 {
-	GSList *cur;
+	GSList *cur, *tags;
 	GtkTreeModel *model;
 	SummaryView *summaryview = NULL;
 	
@@ -252,13 +252,14 @@ static void apply_popup_delete_all (GtkAction *action, gpointer data)
 
 	if (mainwindow_get_mainwindow() != NULL)
 		summaryview = mainwindow_get_mainwindow()->summaryview;
-	cur = tags_get_list();
+	cur = tags = tags_get_list();
 	for (; cur; cur = cur->next) {
 		gint id = GPOINTER_TO_INT(cur->data);
 		if (summaryview)
 			summary_set_tag(summaryview, -id, NULL);
 		tags_remove_tag(id);
 	}
+	g_slist_free(tags);
 	tags_write_tags();
 
 	APPLYWINDOW_UNLOCK();
@@ -756,13 +757,14 @@ static void apply_window_list_view_insert_tag(GtkWidget *list_view,
 
 static void apply_window_load_tags (void) 
 {
-	GSList *cur;
+	GSList *cur, *tags;
 	gint id;
 	apply_window_list_view_clear_tags(applywindow.taglist);
 	
-	cur = tags_get_list();
+	cur = tags = tags_get_list();
 	for (; cur; cur = cur->next) {
 		id = GPOINTER_TO_INT(cur->data);
 		apply_window_list_view_insert_tag(applywindow.taglist, NULL, id);
 	}
+	g_slist_free(tags);
 }

@@ -543,6 +543,7 @@ static void prefs_filtering_action_create(void)
 		gtk_combo_box_append_text(GTK_COMBO_BOX(tags_combo), (gpointer) name);
 		g_free(name);
 	}
+	g_slist_free(tags);
 
 	prefs_filtering_action_check_widget_width(tags_combo);
 	gtk_combo_box_set_active(GTK_COMBO_BOX(tags_combo), 0);

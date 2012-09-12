@@ -827,7 +827,6 @@ static GSList *procmsg_list_sort_by_account(FolderItem *queue, GSList *list)
 	debug_print("\n");
 
 parse_again:	
-	nothing_to_sort = TRUE;
 	cur = orig;
 	while (cur) {
 		gchar *file = NULL;
@@ -844,6 +843,7 @@ parse_again:
 			nothing_to_sort = FALSE;
 			goto parse_again;
 		}
+		nothing_to_sort = TRUE;
 		cur = cur->next;
 	}
 	
@@ -875,7 +875,7 @@ static gboolean procmsg_is_last_for_account(FolderItem *queue, MsgInfo *msginfo,
 {
 	gchar *file = folder_item_fetch_msg(queue, msginfo->msgnum);
 	PrefsAccount *ac = procmsg_get_account_from_file(file);
-	GSList *cur = elem;
+	GSList *cur;
 	g_free(file);
 	for (cur = elem; cur; cur = cur->next) {
 		MsgInfo *cur_msginfo = (MsgInfo *)cur->data;
@@ -1526,8 +1526,6 @@ static gint procmsg_send_message_queue_full(const gchar *file, gboolean keep_ses
 	gboolean save_clear_text = TRUE;
 	gchar *tmp_enc_file = NULL;
 
-	int local = 0;
-
 	cm_return_val_if_fail(file != NULL, -1);
 
 	if ((fp = g_fopen(file, "rb")) == NULL) {
@@ -1671,7 +1669,6 @@ send_mail:
 		} else if (mailac && mailac->use_mail_command &&
 			   mailac->mail_command && (* mailac->mail_command)) {
 			mailval = send_message_local(mailac->mail_command, fp);
-			local = 1;
 		} else {
 			if (!mailac) {
 				mailac = account_find_from_smtp_server(from, smtpserver);

@@ -577,13 +577,10 @@ static void addrharvest_parse_address(
 			mgu_str_ltc2space( buffer, '(', ')' );
 			g_strstrip( buffer );
 
-			if( g_ascii_strcasecmp( buffer, email ) == 0 ) {
+			if( g_ascii_strcasecmp( buffer, email ) == 0 )
 				name = g_strdup("");
-			}
-			else {
-				name = buffer;
+			else
 				name = conv_unmime_header(buffer, NULL, TRUE);
-			}
 
 			/* Insert into address book */
 #ifndef USE_NEW_ADDRBOOK

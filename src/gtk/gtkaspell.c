@@ -561,7 +561,7 @@ static void entry_delete_cb(GtkTextBuffer *textbuf,
 			    GtkAspell *gtkaspell)
 {
 	int origpos;
-	gint start, end;
+	gint start;
     
 	cm_return_if_fail(gtkaspell->gtkaspeller->speller);
 
@@ -569,7 +569,6 @@ static void entry_delete_cb(GtkTextBuffer *textbuf,
 		return;
 
 	start = gtk_text_iter_get_offset(startiter);
-	end = gtk_text_iter_get_offset(enditer);
 	origpos = get_textview_buffer_offset(gtkaspell->gtktext);
 	if (start) {
 		check_at(gtkaspell, start - 1);
@@ -961,12 +960,9 @@ static gboolean check_at(GtkAspell *gtkaspell, gint from_pos)
 {
 	gint	      start, end;
 	char buf[GTKASPELLWORDSIZE];
-	GtkTextView     *gtktext;
 
 	cm_return_val_if_fail(from_pos >= 0, FALSE);
     
-	gtktext = gtkaspell->gtktext;
-
 	if (!get_word_from_pos(gtkaspell, from_pos, buf, sizeof(buf), 
 			       &start, &end))
 		return FALSE;
@@ -1272,7 +1268,7 @@ void gtkaspell_unblock_check(GtkAspell *gtkaspell)
 
 static void replace_real_word(GtkAspell *gtkaspell, const gchar *newword)
 {
-	int		oldlen, newlen, wordlen;
+	int		oldlen, newlen;
 	gint		origpos;
 	gint		pos;
 	GtkTextView	*gtktext;
@@ -1287,7 +1283,6 @@ static void replace_real_word(GtkAspell *gtkaspell, const gchar *newword)
 	origpos = gtkaspell->orig_pos;
 	pos     = origpos;
 	oldlen  = gtkaspell->end_pos - gtkaspell->start_pos;
-	wordlen = strlen(gtkaspell->theword);
 
 	newlen = strlen(newword); /* FIXME: multybyte characters? */
 
@@ -1342,10 +1337,7 @@ static void replace_real_word_cb(gpointer data, const gchar *newword)
 /* Accept this word for this session */
 static void add_word_to_session_cb(GtkWidget *w, gpointer data)
 {
-	GtkTextView *gtktext;
    	GtkAspell *gtkaspell = (GtkAspell *) data; 
-	gtktext = gtkaspell->gtktext;
-
 
 	enchant_dict_add_to_session(gtkaspell->gtkaspeller->speller, gtkaspell->theword, strlen(gtkaspell->theword));
 
@@ -1436,7 +1428,6 @@ static void replace_with_create_dialog_cb(GtkWidget *w, gpointer data)
 	static PangoFontDescription *font_desc;
 	GtkWidget *dialog;
 	GtkWidget *label;
-	GtkWidget *w_hbox;
 	GtkWidget *hbox;
 	GtkWidget *vbox;
 	GtkWidget *entry;
@@ -1474,8 +1465,6 @@ static void replace_with_create_dialog_cb(GtkWidget *w, gpointer data)
 	thelabel = g_strdup_printf(_("<span weight=\"bold\" "
 					"size=\"larger\">Replace \"%s\" with: </span>"), 
 				   utf8buf);
-	/* for title label */
-	w_hbox = gtk_hbox_new(FALSE, 0);
 	
 	icon = gtk_image_new_from_stock(GTK_STOCK_DIALOG_QUESTION,
         				GTK_ICON_SIZE_DIALOG); 
@@ -1523,8 +1512,6 @@ static void replace_with_create_dialog_cb(GtkWidget *w, gpointer data)
 	gtk_label_set_justify(GTK_LABEL(label), GTK_JUSTIFY_LEFT);
 	gtk_box_pack_start(GTK_BOX(vbox), label, FALSE, FALSE, 0);
 	gtk_widget_show(label);
-
-	hbox = gtk_hbox_new(TRUE, 0);
 
 	gtkut_stock_button_set_create(&confirm_area,
 				      &cancel_button, GTK_STOCK_CANCEL,
@@ -1813,8 +1800,6 @@ static GtkWidget *make_dictionary_list_submenu(GtkAspell *gtkaspell)
 	if (gtkaspellcheckers->dictionary_list == NULL)
 		gtkaspell_get_dictionary_list(FALSE);
 
-	tmp = gtkaspellcheckers->dictionary_list;
-
 	menu = gtk_menu_new();
 	curmenu = menu;
 
@@ -1868,12 +1853,10 @@ static GSList *make_sug_menu(GtkAspell *gtkaspell)
 {
 	GtkWidget 	*item, *submenu;
 	char	*caption;
-	GtkTextView 	*gtktext;
 	GtkAccelGroup 	*accel;
 	GList 		*l = gtkaspell->suggestions_list;
 	gchar		*utf8buf;
 	GSList *list = NULL;
-	gtktext = gtkaspell->gtktext;
 
 	if (l == NULL)
 		return NULL;
@@ -2274,10 +2257,6 @@ static void switch_to_alternate_cb(GtkWidget *w,
 
 static void set_point_continue(GtkAspell *gtkaspell)
 {
-	GtkTextView  *gtktext;
-
-	gtktext = gtkaspell->gtktext;
-
 	gtkaspell->ctx.set_position(gtkaspell->ctx.data, gtkaspell->orig_pos);
 
 	if (gtkaspell->continue_check)

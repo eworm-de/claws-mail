@@ -1602,10 +1602,8 @@ static gboolean icon_window_button_press(GtkWidget *widget,
 					       GdkEventButton *event,
 					       ToolbarPage *prefs_toolbar )
 {
-	GtkWidget *event_widget, *button;
+	GtkWidget *event_widget;
 	gboolean restore = TRUE;
-
-	button = prefs_toolbar->icon_button;
 
 	/* Test where mouse was clicked */
 	event_widget = gtk_get_event_widget((GdkEvent *)event);

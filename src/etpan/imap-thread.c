@@ -2649,10 +2649,8 @@ imap_fetch_result_to_envelop_list(clist * fetch_result,
 				  carray ** p_env_list)
 {
 	clistiter * cur;
-	unsigned int i;
 	carray * env_list;
 
-	i = 0;
 	env_list = carray_new(16);
   
   	if (fetch_result) {

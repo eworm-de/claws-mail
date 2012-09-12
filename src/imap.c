@@ -1749,7 +1749,6 @@ static gint imap_do_copy_msgs(Folder *folder, FolderItem *dest,
 	gint ok = MAILIMAP_NO_ERROR;
 	GHashTable *uid_hash;
 	gint last_num = 0;
-	gboolean single = FALSE;
 
 	g_return_val_if_fail(folder != NULL, -1);
 	g_return_val_if_fail(dest != NULL, -1);
@@ -1763,8 +1762,6 @@ static gint imap_do_copy_msgs(Folder *folder, FolderItem *dest,
 	}
 
 	msginfo = (MsgInfo *)msglist->data;
-	if (msglist->next == NULL)
-		single = TRUE;
 	src = msginfo->folder;
 	if (src == dest) {
 		g_warning("the src folder is identical to the dest.\n");
@@ -3077,9 +3074,7 @@ static GSList *imap_get_uncached_messages(IMAPSession *session,
 	GSList *result = NULL;
 	GSList * cur;
 	uncached_data *data = g_new0(uncached_data, 1);
-	int finished;
 	
-	finished = 0;
 	cur = numlist;
 	data->total = g_slist_length(numlist);
 	data->ok = MAILIMAP_NO_ERROR;
@@ -3965,7 +3960,7 @@ static gint get_list_of_uids(IMAPSession *session, Folder *folder, IMAPFolderIte
 	GSList *uidlist, *elem;
 	int r = -1;
 	clist * lep_uidlist;
-	gint ok, nummsgs = 0, lastuid_old;
+	gint ok, nummsgs = 0;
 
 	if (session == NULL) {
 		return -1;
@@ -4015,8 +4010,6 @@ static gint get_list_of_uids(IMAPSession *session, Folder *folder, IMAPFolderIte
 		return -1;
 	}
 
-	lastuid_old = item->lastuid;
-
 	for (elem = uidlist; elem != NULL; elem = g_slist_next(elem)) {
 		guint msgnum;
 
@@ -4041,7 +4034,6 @@ gint imap_get_num_list(Folder *folder, FolderItem *_item, GSList **msgnum_list, 
 	gint nummsgs;
 	GSList *uidlist = NULL;
 	gchar *dir;
-	gboolean selected_folder;
 	gint known_list_len = 0;
 	debug_print("get_num_list\n");
 	
@@ -4085,9 +4077,6 @@ gint imap_get_num_list(Folder *folder, FolderItem *_item, GSList **msgnum_list, 
 		statusbar_print_all(_("Scanning folder %s ..."),
 				      FOLDER_ITEM(item)->folder->name);
 
-	selected_folder = (session->mbox != NULL) &&
-			  (!strcmp(session->mbox, item->item.path));
-	
 	if (item->should_trash_cache) {
 		*old_uids_valid = FALSE;
 		debug_print("get_num_list: trashing num list\n");
@@ -5702,7 +5691,6 @@ char* imap_modified_utf7_to_utf8(const char *mbox, gboolean change_spaces)
   const char *src;
   char *dst, *res  = g_malloc(2*strlen(mbox)+1);
 
-  bitbuf = 0;
   dst = res;
   src = mbox;
   if(!dst) return NULL;
@@ -5836,7 +5824,6 @@ char* imap_utf8_to_modified_utf7(const char *src, gboolean change_spaces)
     /* Encode US-ASCII characters as themselves */
     if (c < 0x80) {
       ucs4 = c;
-      utf8total = 1;
     } else if (utf8total) {
       /* save UTF8 bits into UCS4 */
       ucs4 = (ucs4 << 6) | (c & 0x3FUL);

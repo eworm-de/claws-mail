@@ -72,7 +72,6 @@ int partial_msg_in_uidl_list(MsgInfo *msginfo)
 	gchar uidl[POPBUFSIZE];
 	time_t recv_time;
 	time_t now;
-	gint partial_recv;
 	gchar *sanitized_uid = NULL;
 	
 	if (!msginfo->extradata)
@@ -112,7 +111,6 @@ int partial_msg_in_uidl_list(MsgInfo *msginfo)
 		gchar tmp[POPBUFSIZE];
 		strretchomp(buf);
 		recv_time = RECV_TIME_NONE;
-		partial_recv = POP3_TOTALLY_RECEIVED;
 		
 		if (sscanf(buf, "%s\t%ld\t%s", uidl, (long int *) &recv_time, 
 			   tmp) < 2) {
@@ -386,7 +384,6 @@ gchar *partial_get_filename(const gchar *server, const gchar *login,
 	gchar uidl[POPBUFSIZE];
 	time_t recv_time;
 	time_t now;
-	gint partial_recv;
 	gchar *sanitized_uid = g_strdup(login);	
 
 	subst_for_filename(sanitized_uid);
@@ -416,7 +413,6 @@ gchar *partial_get_filename(const gchar *server, const gchar *login,
 		gchar tmp[POPBUFSIZE];
 		strretchomp(buf);
 		recv_time = RECV_TIME_NONE;
-		partial_recv = POP3_TOTALLY_RECEIVED;
 		
 		if (sscanf(buf, "%s\t%ld\t%s", uidl, (long int *) &recv_time, 
 			   tmp) < 2) {

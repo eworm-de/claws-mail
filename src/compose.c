@@ -889,10 +889,7 @@ static void compose_create_tags(GtkTextView *text, Compose *compose)
 
 	for (i = 0; i < 8; i++) {
 		if (success[i] == FALSE) {
-			GtkStyle *style;
-
 			g_warning("Compose: color allocation failed.\n");
-			style = gtk_widget_get_style(GTK_WIDGET(text));
 			quote_color1 = quote_color2 = quote_color3 = 
 				quote_bgcolor1 = quote_bgcolor2 = quote_bgcolor3 = 
 				signature_color = uri_color = black;
@@ -2344,8 +2341,8 @@ Compose *compose_reedit(MsgInfo *msginfo, gboolean batch)
 	}
 
 	if (fp != NULL) {
-		gboolean prev_autowrap = compose->autowrap;
-		GtkTextBuffer *buffer = textbuf;
+		gboolean prev_autowrap;
+		GtkTextBuffer *buffer;
 		BLOCK_WRAP();
 		while (fgets(buf, sizeof(buf), fp) != NULL) {
 			strcrchomp(buf);
@@ -2568,8 +2565,6 @@ void compose_entry_append(Compose *compose, const gchar *address,
 		gchar *tmp = g_strdup(begin);
 		gchar *o_tmp = tmp;
 		tmp[cur-begin]='\0';
-		cur++;
-		begin = cur;
 		while (*tmp == ' ' || *tmp == '\t')
 			tmp++;
 		compose_add_header_entry(compose, header, tmp, pref_type);
@@ -7035,8 +7030,6 @@ static GtkWidget *compose_create_others(Compose *compose)
 	g_signal_connect(G_OBJECT(savemsg_select), "clicked",
 			 G_CALLBACK(compose_savemsg_select_cb),
 			 compose);
-
-	rowcount++;
 
 	return table;	
 }
