@@ -194,6 +194,10 @@ static void prefs_keybind_apply(struct KeyBind keybind[], gint num)
 		const gchar *accel_key
 			= keybind[i].accel_key ? keybind[i].accel_key : "";
 		gtk_accelerator_parse(accel_key, &key, &mods);
+		if (key == 0 && mods == 0) {
+			g_message("Failed parsing accelerator '%s' for path '%s'\n",
+				  accel_key, keybind[i].accel_path);
+		}
 		gtk_accel_map_change_entry(keybind[i].accel_path,
 					   key, mods, TRUE);
 	}
@@ -222,11 +226,11 @@ static void prefs_keybind_apply_clicked(GtkWidget *widget)
 
 		{"<Actions>/Menu/View/ShowHide/MessageView",		"V"},
 		{"<Actions>/Menu/View/ThreadView",			"<control>T"},
-		{"<Actions>/Menu/View/GoTo/Prev",			"P"},
-		{"<Actions>/Menu/View/GoTo/Next",			"N"},
-		{"<Actions>/Menu/View/GoTo/PrevUnread",			"<shift>P"},
-		{"<Actions>/Menu/View/GoTo/NextUnread",			"<shift>N"},
-		{"<Actions>/Menu/View/GoTo/OtherFolder",		"G"},
+		{"<Actions>/Menu/View/Goto/Prev",			"P"},
+		{"<Actions>/Menu/View/Goto/Next",			"N"},
+		{"<Actions>/Menu/View/Goto/PrevUnread",			"<shift>P"},
+		{"<Actions>/Menu/View/Goto/NextUnread",			"<shift>N"},
+		{"<Actions>/Menu/View/Goto/OtherFolder",		"G"},
 		{"<Actions>/Menu/View/OpenNewWindow",			"<control><alt>N"},
 		{"<Actions>/Menu/View/MessageSource",			"<control>U"},
 		{"<Actions>/Menu/View/AllHeaders",			"<control>H"},
@@ -302,11 +306,11 @@ static void prefs_keybind_apply_clicked(GtkWidget *widget)
 
 		{"<Actions>/Menu/View/ShowHide/MessageView",		""},
 		{"<Actions>/Menu/View/ThreadView",			"<shift>T"},
-		{"<Actions>/Menu/View/GoTo/Prev",			"P"},
-		{"<Actions>/Menu/View/GoTo/Next",			"N"},
-		{"<Actions>/Menu/View/GoTo/PrevUnread",			"<shift>P"},
-		{"<Actions>/Menu/View/GoTo/NextUnread",			"<shift>N"},
-		{"<Actions>/Menu/View/GoTo/OtherFolder",		"G"},
+		{"<Actions>/Menu/View/Goto/Prev",			"P"},
+		{"<Actions>/Menu/View/Goto/Next",			"N"},
+		{"<Actions>/Menu/View/Goto/PrevUnread",			"<shift>P"},
+		{"<Actions>/Menu/View/Goto/NextUnread",			"<shift>N"},
+		{"<Actions>/Menu/View/Goto/OtherFolder",		"G"},
 		{"<Actions>/Menu/View/OpenNewWindow",			"<control><alt>N"},
 		{"<Actions>/Menu/View/MessageSource",			"<control>U"},
 		{"<Actions>/Menu/View/AllHeaders",			"<shift>H"},
@@ -346,56 +350,53 @@ static void prefs_keybind_apply_clicked(GtkWidget *widget)
 
 	static struct KeyBind mutt_menurc[] = {
 		/* main */
-		{"<Actions>/Menu/File/EmptyTrashes",			""},
-		{"<Actions>/Menu/File/SaveAs",				"S"},
-		{"<Actions>/Menu/File/Print",				"P"},
-		{"<Actions>/Menu/File/Exit",				"Q"},
+		{"<Actions>/Menu/File/SaveAs",				"S"}, /* save-message */
+		{"<Actions>/Menu/File/Print",				"P"}, /* print-message */
+		{"<Actions>/Menu/File/Exit",				"Q"}, /* quit */
 
-		{"<Actions>/Menu/Edit/Copy",				"<control>C"},
-		{"<Actions>/Menu/Edit/SelectAll",			"<control>A"},
-		{"<Actions>/Menu/Edit/Find",				"<control>F"},
-		{"<Actions>/Menu/Edit/SearchFolder",			"/"},
+		{"<Actions>/Menu/Edit/Copy",				"<control>C"}, /* - */
+		{"<Actions>/Menu/Edit/SelectAll",			"<control>A"}, /* - */
+		{"<Actions>/Menu/Edit/Find",				"<alt>B"}, /* <esc>B: search in message bodies */
+		{"<Actions>/Menu/Edit/SearchFolder",			"slash"}, /* search */
+		{"<Actions>/Menu/Edit/QuickSearch",			"L"}, /* limit */
 
-		{"<Actions>/Menu/View/ShowHide/MessageView",		"V"},
-		{"<Actions>/Menu/View/ThreadView",			"<control>T"},
-		{"<Actions>/Menu/View/GoTo/Prev",			""},
-		{"<Actions>/Menu/View/GoTo/Next",			""},
-		{"<Actions>/Menu/View/GoTo/PrevUnread",			""},
-		{"<Actions>/Menu/View/GoTo/NextUnread",			""},
-		{"<Actions>/Menu/View/GoTo/OtherFolder",		"C"},
-		{"<Actions>/Menu/View/OpenNewWindow",			"<control><alt>N"},
-		{"<Actions>/Menu/View/MessageSource",			"<control>U"},
-		{"<Actions>/Menu/View/AllHeaders",			"<control>H"},
-		{"<Actions>/Menu/View/UpdateSummary",			"<control><alt>U"},
+		{"<Actions>/Menu/View/ShowHide/MessageView",		"V"}, /* - */
+		{"<Actions>/Menu/View/ThreadView",			"<control>T"}, /* - */
+		{"<Actions>/Menu/View/Goto/Prev",			"K"}, /* previous-entry */
+		{"<Actions>/Menu/View/Goto/Next",			"J"}, /* next-entry */
+		{"<Actions>/Menu/View/Goto/PrevUnread",			"<alt>U"}, /* <esc>Tab: previous-new-then-unread */
+		{"<Actions>/Menu/View/Goto/NextUnread",			"U"}, /* Tab: next-new-then-unread */
+		{"<Actions>/Menu/View/Goto/OtherFolder",		"C"}, /* change-folder */
+		{"<Actions>/Menu/View/OpenNewWindow",			"<control><alt>N"}, /* - */
+		{"<Actions>/Menu/View/MessageSource",			"E"}, /* edit the raw message */
+		{"<Actions>/Menu/View/AllHeaders",			"H"}, /* display-toggle-weed */
+		{"<Actions>/Menu/View/UpdateSummary",			"<control><alt>U"}, /* - */
 
-		{"<Actions>/Menu/Message/Receive/CurrentAccount",
-									"<control>I"},
-		{"<Actions>/Menu/Message/Receive/AllAccounts",		"<shift><control>I"},
-		{"<Actions>/Menu/Message/ComposeEmail",			"M"},
-		{"<Actions>/Menu/Message/Reply",			"R"},
-		{"<Actions>/Menu/Message/ReplyTo/All",			"G"},
-		{"<Actions>/Menu/Message/ReplyTo/Sender",		""},
-		{"<Actions>/Menu/Message/ReplyTo/List",			"<control>L"},
-		{"<Actions>/Menu/Message/Forward",			"F"},
-		{"<Actions>/Menu/Message/Move",				"<control>O"},
-		{"<Actions>/Menu/Message/Copy",				"<shift>C"},
-		{"<Actions>/Menu/Message/Trash",			"D"},
-		{"<Actions>/Menu/Message/Mark/Mark",			"<shift>F"},
-		{"<Actions>/Menu/Message/Mark/Unmark",			"U"},
-		{"<Actions>/Menu/Message/Mark/MarkUnread",		"<shift>N"},
-		{"<Actions>/Menu/Message/Mark/MarkRead",		""},
+		{"<Actions>/Menu/Message/Receive/CurrentAccount",	"<control>I"}, /* - */
+		{"<Actions>/Menu/Message/Receive/AllAccounts",		"<shift>G"}, /* fetch-mail */
+		{"<Actions>/Menu/Message/ComposeEmail",			"M"}, /* mail */
+		{"<Actions>/Menu/Message/Reply",			"R"}, /* reply */
+		{"<Actions>/Menu/Message/ReplyTo/All",			"G"}, /* group-reply */
+		{"<Actions>/Menu/Message/ReplyTo/List",			"<shift>L"}, /* list-reply */
+		{"<Actions>/Menu/Message/Forward",			"F"}, /* forward-message */
+		{"<Actions>/Menu/Message/Move",				"<control>O"}, /* - */
+		{"<Actions>/Menu/Message/Copy",				"<shift>C"}, /* copy-message */
+		{"<Actions>/Menu/Message/Trash",			"D"}, /* delete-message */
+		{"<Actions>/Menu/Message/Mark/Mark",			"<shift>F"}, /* flag-message */
+		{"<Actions>/Menu/Message/Mark/Unmark",			"<control><shift>F"}, /* - */
+		{"<Actions>/Menu/Message/Mark/MarkUnread",		"<shift>N"}, /* toggle-new */
+		{"<Actions>/Menu/Message/Mark/MarkRead",		"<control>R"}, /* read-thread */
 
-		{"<Actions>/Menu/Tools/AddressBook",			"<shift><control>A"},
-		{"<Actions>/Menu/Tools/Execute",			"X"},
-		{"<Actions>/Menu/Tools/NetworkLog",			"<shift><control>L"},
+		{"<Actions>/Menu/Tools/AddressBook",			"<shift><control>A"}, /* - */
+		{"<Actions>/Menu/Tools/Execute",			"dollar"}, /* sync-mailbox */
+		{"<Actions>/Menu/Tools/NetworkLog",			"<shift><control>L"}, /* - */
 		/* compose */
-		{"<Actions>/Menu/Message/Close",			"<alt>W"},
-		{"<Actions>/Menu/Edit/SelectAll",			""},
-		{"<Actions>/Menu/Edit/Advanced/BackWord",		"<alt>B"},
-		{"<Actions>/Menu/Edit/Advanced/ForwWord",		"<alt>F"},
-		{"<Actions>/Menu/Edit/Advanced/BegLine",		"<control>A"},
-		{"<Actions>/Menu/Edit/Advanced/DelBackWord",		"<control>W"},
-		{"<Actions>/Menu/Edit/Advanced/DelForwWord",		"<alt>D"},
+		{"<Actions>/Menu/Message/Close",			"<alt>W"}, /* - */
+		{"<Actions>/Menu/Edit/Advanced/BackWord",		"<alt>B"}, /* - */
+		{"<Actions>/Menu/Edit/Advanced/ForwWord",		"<alt>F"}, /* - */
+		{"<Actions>/Menu/Edit/Advanced/BegLine",		"<control>A"}, /* - */
+		{"<Actions>/Menu/Edit/Advanced/DelBackWord",		"<control>W"}, /* - */
+		{"<Actions>/Menu/Edit/Advanced/DelForwWord",		"<alt>D"}, /* - */
 	};
 
 	text = gtk_combo_box_get_active_text(GTK_COMBO_BOX(keybind.combo));

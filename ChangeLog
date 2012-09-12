@@ -1,3 +1,9 @@
+2012-09-12 [mones]	3.8.1cvs54
+
+	* src/prefs_other.c
+		Fix 1975 'preference mutt key bindings do not take effect'
+		(and the other invalid paths too)
+
 2012-09-12 [colin]	3.8.1cvs53
 
 	* src/procmsg.c
