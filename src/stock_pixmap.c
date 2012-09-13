@@ -494,7 +494,7 @@ static void stock_pixmap_find_themes_in_dir(GList **list, const gchar *dirname)
 	static const char *extension[]={".png", ".xpm", NULL};
 	
 	if ((dp = opendir(dirname)) == NULL) {
-		debug_print("dir %s not found, skipping theme scan", dirname?dirname:"(null)");
+		debug_print("dir %s not found, skipping theme scan\n", dirname?dirname:"(null)");
 		return;
 	}
 	

@@ -1,3 +1,8 @@
+2012-09-13 [colin]	3.8.1cvs57
+
+	* src/stock_pixmap.c
+		Fix missing \n in debug line
+
 2012-09-13 [colin]	3.8.1cvs56
 
 	* src/main.c
