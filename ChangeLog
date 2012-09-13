@@ -1,3 +1,10 @@
+2012-09-13 [colin]	3.8.1cvs56
+
+	* src/main.c
+		Don't listen on the Unix socket before we're
+		ready. The 'popup' order from another instance
+		may provoke a race and trash configuration files.
+
 2012-09-13 [colin]	3.8.1cvs55
 
 	* src/imap.c

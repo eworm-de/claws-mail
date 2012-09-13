@@ -1406,13 +1406,6 @@ int main(int argc, char *argv[])
 	gtk_cmclist_freeze(GTK_CMCLIST(mainwin->folderview->ctree));
 	folder_item_update_freeze();
 
-	/* register the callback of unix domain socket input */
-	lock_socket_tag = claws_input_add(lock_socket,
-					G_IO_IN | G_IO_HUP | G_IO_ERR | G_IO_PRI,
-					lock_socket_input_cb,
-					mainwin, TRUE);
-
-
 	prefs_account_init();
 	account_read_config_all();
 
@@ -1691,6 +1684,13 @@ int main(int argc, char *argv[])
 		main_window_set_menu_sensitive(mainwin);
 		toolbar_main_set_sensitive(mainwin);
 	}
+
+	/* register the callback of unix domain socket input */
+	lock_socket_tag = claws_input_add(lock_socket,
+					G_IO_IN | G_IO_HUP | G_IO_ERR | G_IO_PRI,
+					lock_socket_input_cb,
+					mainwin, TRUE);
+
 	END_TIMING();
 
 	gtk_main();

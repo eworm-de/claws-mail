@@ -4430,3 +4430,4 @@
 ( cvs diff -u -r 1.150.2.127 -r 1.150.2.128 src/procmsg.c;  ) > 3.8.1cvs53.patchset
 ( cvs diff -u -r 1.1.2.46 -r 1.1.2.47 src/prefs_other.c;  ) > 3.8.1cvs54.patchset
 ( cvs diff -u -r 1.179.2.260 -r 1.179.2.261 src/imap.c;  ) > 3.8.1cvs55.patchset
+( cvs diff -u -r 1.115.2.256 -r 1.115.2.257 src/main.c;  ) > 3.8.1cvs56.patchset
