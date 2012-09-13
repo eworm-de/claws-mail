@@ -1713,7 +1713,7 @@ static GSList *flatten_mailimap_set(struct mailimap_set * set)
 {
 	GSList *result = NULL;
 	clistiter *list;
-	int start, end, t;
+	guint32 start, end, t;
 	GSList *cur;
 
 	if (!set || !set->set_list)
@@ -1723,8 +1723,10 @@ static GSList *flatten_mailimap_set(struct mailimap_set * set)
 		struct mailimap_set_item *item = (struct mailimap_set_item *)clist_content(list);
 		start = item->set_first;
 		end = item->set_last;
-		for (t = start; t <= end; t++) {
-			result = g_slist_prepend(result, GINT_TO_POINTER(t));
+		if (start <= end) {
+			for (t = start; t <= end; t++) {
+				result = g_slist_prepend(result, GINT_TO_POINTER(t));
+			}
 		}
 	}
 	result = g_slist_reverse(result);
@@ -5281,9 +5283,6 @@ static void imap_flags_hash_from_lep_uid_flags_tab(carray * list,
 						   GHashTable * tags_hash)
 {
 	unsigned int i;
-	GSList * result;
-	
-	result = NULL;
 	
 	for(i = 0 ; i < carray_count(list) ; i += 3) {
 		uint32_t * puid;
