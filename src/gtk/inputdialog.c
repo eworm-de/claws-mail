@@ -303,7 +303,6 @@ gchar *input_dialog_query_password_keep(const gchar *server, const gchar *user, 
 static void input_dialog_create(gboolean is_password)
 {
 	static PangoFontDescription *font_desc;
-	GtkWidget *w_hbox;
 	GtkWidget *hbox;
 	GtkWidget *vbox;
 	GtkWidget *cancel_button;
@@ -330,8 +329,6 @@ static void input_dialog_create(gboolean is_password)
 			    FALSE, FALSE, 0);
 
 	/* for title label */
-	w_hbox = gtk_hbox_new(FALSE, 0);
-	
 	icon_q = gtk_image_new_from_stock(GTK_STOCK_DIALOG_QUESTION,
         			GTK_ICON_SIZE_DIALOG); 
 	gtk_misc_set_alignment (GTK_MISC (icon_q), 0.5, 0.0);
