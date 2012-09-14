@@ -4433,3 +4433,4 @@
 ( cvs diff -u -r 1.115.2.256 -r 1.115.2.257 src/main.c;  ) > 3.8.1cvs56.patchset
 ( cvs diff -u -r 1.25.2.75 -r 1.25.2.76 src/stock_pixmap.c;  ) > 3.8.1cvs57.patchset
 ( cvs diff -u -r 1.2.2.47 -r 1.2.2.48 src/gtk/inputdialog.c;  ) > 3.8.1cvs58.patchset
+( cvs diff -u -r 1.6.2.24 -r 1.6.2.25 src/common/log.c;  ) > 3.8.1cvs59.patchset

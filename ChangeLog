@@ -1,3 +1,9 @@
+2012-09-14 [mones]	3.8.1cvs59
+
+	* src/common/log.c
+		Check file operation results (and remove and
+		unused var warning)
+
 2012-09-14 [colin]	3.8.1cvs58
 
 	* src/gtk/inputdialog.c
