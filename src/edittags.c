@@ -275,7 +275,6 @@ static GtkActionEntry apply_popup_actions[] =
 static gint apply_list_btn_pressed(GtkWidget *widget, GdkEventButton *event,
 				    GtkTreeView *list_view)
 {
-	GtkActionGroup *actions;
 	GtkUIManager *gui_manager = gtkut_ui_manager();
 
 	if (applywindow.busy)
@@ -287,7 +286,7 @@ static gint apply_list_btn_pressed(GtkWidget *widget, GdkEventButton *event,
 		gboolean non_empty;
 
 		if (!apply_popup_menu) {
-			actions = cm_menu_create_action_group("EditTags", apply_popup_actions,
+			(void) cm_menu_create_action_group("EditTags", apply_popup_actions,
 					G_N_ELEMENTS(apply_popup_actions), (gpointer)list_view);
 
 			MENUITEM_ADDUI("/Menus", "EditTags", "EditTags", GTK_UI_MANAGER_MENU)

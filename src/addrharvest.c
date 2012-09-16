@@ -813,11 +813,16 @@ static void addrharvest_harvest_list(
 	int r;
 
 	if( ( dp = opendir( harvester->path ) ) == NULL ) {
+		g_message("cannot opendir %s\n", harvester->path);
 		return;
 	}
 
 	/* Process message list */
 	r = chdir( harvester->path );
+	if (r != 0) {
+		g_message("cannot chdir %s\n", harvester->path);
+		return;
+	}
 	node = msgList;
 	while( node ) {
 		num = GPOINTER_TO_UINT( node->data );

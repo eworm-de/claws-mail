@@ -96,12 +96,9 @@ static void nntp_logger(int direction, const char * str, size_t size)
 static void delete_nntp(Folder *folder, newsnntp *nntp)
 {
 	chashdatum key;
-	chashdatum value;
 
 	key.data = &folder;
 	key.len = sizeof(folder);
-	value.data = nntp;
-	value.len = 0;
 	chash_delete(session_hash, &key, NULL);
 	
 	key.data = &nntp;

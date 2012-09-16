@@ -2400,8 +2400,14 @@ static void matcher_add_rulenames(const gchar *rcpath)
 		&& strncmp(buf, "disabled rulename \"", 18)) {
 			r = fwrite("enabled rulename \"\" ",
 				strlen("enabled rulename \"\" "), 1, dst);
+			if (r != 1) {
+				g_message("cannot fwrite rulename\n");
+			}
 		}
 		r = fwrite(buf, strlen(buf), 1, dst);
+		if (r != 1) {
+			g_message("cannot fwrite rule\n");
+		}
 	}
 	fclose(dst);
 	fclose(src);

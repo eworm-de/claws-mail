@@ -906,7 +906,6 @@ static void prefs_account_edit_custom_header	(void);
 static void privacy_system_activated(GtkWidget *combobox)
 {
 	const gchar *system_id;
-	gboolean privacy_enabled = FALSE;
 	gint privacy_enabled_int;
 	GtkTreeIter iter;
 	GtkListStore *menu = GTK_LIST_STORE(gtk_combo_box_get_model(
@@ -919,11 +918,6 @@ static void privacy_system_activated(GtkWidget *combobox)
 			COMBOBOX_DATA, &privacy_enabled_int,
 			-1);
 	
-	privacy_enabled = strcmp(system_id, "");
-
-	if( privacy_enabled_int == 0 )
-		privacy_enabled = FALSE;
-
 	gtk_widget_set_sensitive (privacy_page.save_clear_text_checkbtn, 
 		!gtk_toggle_button_get_active(
 				GTK_TOGGLE_BUTTON(privacy_page.encrypt_to_self_checkbtn)));

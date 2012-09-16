@@ -501,10 +501,6 @@ static void prefs_custom_header_list_view_set_row(PrefsAccount *ac)
 	CustomHeader *ch;
 	const gchar *entry_text;
 	gchar *ch_str;
-	GtkListStore *store;
-
-	store = GTK_LIST_STORE(gtk_tree_view_get_model
-				(GTK_TREE_VIEW(customhdr.list_view)));
 
 	entry_text = gtk_entry_get_text(GTK_ENTRY(customhdr.hdr_entry));
 	if (entry_text[0] == '\0') {

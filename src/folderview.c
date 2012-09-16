@@ -2473,9 +2473,7 @@ static void folderview_recollapse_nodes(FolderView *folderview, GtkCMCTreeNode *
 void folderview_move_folder(FolderView *folderview, FolderItem *from_folder,
 		            FolderItem *to_folder, gboolean copy)
 {
-	FolderItem *from_parent = NULL;
 	FolderItem *new_folder = NULL;
-	GtkCMCTreeNode *src_node = NULL;
 	gchar *buf;
 	gint status;
 
@@ -2483,9 +2481,6 @@ void folderview_move_folder(FolderView *folderview, FolderItem *from_folder,
 	cm_return_if_fail(from_folder != NULL);
 	cm_return_if_fail(to_folder != NULL);
 
-	src_node = gtk_cmctree_find_by_row_data(GTK_CMCTREE(folderview->ctree), NULL, from_folder);
-	from_parent = folder_item_parent(from_folder);
-	
 	if (prefs_common.warn_dnd) {
 		buf = g_strdup_printf(copy ? _("Do you really want to copy folder '%s' in '%s' ?"):
 					     _("Do you really want to make folder '%s' a subfolder of '%s' ?"), 

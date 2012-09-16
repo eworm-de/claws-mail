@@ -1255,7 +1255,8 @@ static GSList *news_get_msginfos(Folder *folder, FolderItem *item, GSList *msgnu
 	NewsSession *session;
 	GSList *elem, *msginfo_list = NULL, *tmp_msgnum_list, *tmp_msginfo_list;
 	guint first, last, next;
-	guint tofetch, fetched;
+/*	guint tofetch, fetched;
+*/
 	
 	cm_return_val_if_fail(folder != NULL, NULL);
 	cm_return_val_if_fail(FOLDER_CLASS(folder) == &news_class, NULL);
@@ -1269,8 +1270,9 @@ static GSList *news_get_msginfos(Folder *folder, FolderItem *item, GSList *msgnu
 	tmp_msgnum_list = g_slist_sort(tmp_msgnum_list, g_int_compare);
 
 	progressindicator_start(PROGRESS_TYPE_NETWORK);
-	tofetch = g_slist_length(tmp_msgnum_list);
+/*	tofetch = g_slist_length(tmp_msgnum_list);
 	fetched = 0;
+*/
 
 	first = GPOINTER_TO_INT(tmp_msgnum_list->data);
 	last = first;
@@ -1285,7 +1287,8 @@ static GSList *news_get_msginfos(Folder *folder, FolderItem *item, GSList *msgnu
 */
 			tmp_msginfo_list = news_get_msginfos_for_range(session, item, first, last);
 			msginfo_list = g_slist_concat(msginfo_list, tmp_msginfo_list);
-			fetched = last - first + 1;
+/*			fetched = last - first + 1;
+*/
 			first = next;
 		}
 		last = next;

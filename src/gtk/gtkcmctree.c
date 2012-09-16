@@ -1467,21 +1467,6 @@ gtk_cmctree_button_press (GtkWidget      *widget,
   return GTK_WIDGET_CLASS (parent_class)->button_press_event (widget, event);
 }
 
-static gint
-gtk_cmctree_get_offset(GtkCMCTree     *ctree,
-		      GtkCMCTreeRow  *ctree_row,
-		      gint          column,
-		      GdkRectangle *clip_rectangle)
-{
-  gint justify_right = (GTK_CMCLIST (ctree)->column[column].justification == GTK_JUSTIFY_RIGHT);
-
-  if (justify_right)
-      return (clip_rectangle->x + clip_rectangle->width - 1 -
-		ctree->tree_indent * (ctree_row->level - 1));
-
-  return clip_rectangle->x + ctree->tree_indent * (ctree_row->level - 1);
-}
-
 static GtkCMCTreeNode *
 gtk_cmctree_last_visible (GtkCMCTree     *ctree,
 			GtkCMCTreeNode *node)

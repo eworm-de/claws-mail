@@ -280,9 +280,6 @@ gtk_shruler_init (GtkSHRuler *ruler)
 static void
 gtk_shruler_dispose (GObject *object)
 {
-  GtkSHRuler        *ruler = GTK_SHRULER (object);
-  GtkSHRulerPrivate *priv  = GTK_SHRULER_GET_PRIVATE (ruler);
-
   G_OBJECT_CLASS (parent_class)->dispose (object);
 }
 

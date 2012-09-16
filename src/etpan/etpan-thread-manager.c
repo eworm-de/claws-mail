@@ -281,6 +281,9 @@ static void manager_notify(struct etpan_thread_manager * manager)
   
   ch = 1;
   r = write(manager->notify_fds[1], &ch, 1);
+  if (r < 0) {
+    g_warning("error writing notification to etpan thread manager");
+  }
 }
 
 static void manager_ack(struct etpan_thread_manager * manager)
@@ -289,6 +292,9 @@ static void manager_ack(struct etpan_thread_manager * manager)
   char ch;
   ssize_t r;
   r = read(manager->notify_fds[0], &ch, 1);
+  if (r != 1) {
+    g_warning("error reading notification from etpan thread manager");
+  }
 #else
   /* done in the GIOChannel handler in imap-thread.c and nntp-thread.c */
 #endif
@@ -590,11 +596,8 @@ void etpan_thread_manager_loop(struct etpan_thread_manager * manager)
   
   for(i = 0 ; i < carray_count(op_to_notify) ; i ++) {
     struct etpan_thread_op * op;
-    int cancelled;
     
     op = carray_get(op_to_notify, i);
-    
-    cancelled = etpan_thread_op_cancelled(op);
     
     etpan_thread_op_lock(op);
     

@@ -1138,6 +1138,7 @@ static gint procmsg_save_to_outbox(FolderItem *outbox, const gchar *file,
 	return 0;
 }
 
+
 void procmsg_print_message(MsgInfo *msginfo, const gchar *cmdline)
 {
 	static const gchar *def_cmd = "lpr %s";
@@ -1168,17 +1169,20 @@ void procmsg_print_message(MsgInfo *msginfo, const gchar *cmdline)
 		return;
 	}
 
-	if (msginfo->date) r = fprintf(prfp, "Date: %s\n", msginfo->date);
-	if (msginfo->from) r = fprintf(prfp, "From: %s\n", msginfo->from);
-	if (msginfo->to)   r = fprintf(prfp, "To: %s\n", msginfo->to);
-	if (msginfo->cc)   r = fprintf(prfp, "Cc: %s\n", msginfo->cc);
-	if (msginfo->newsgroups)
-		r = fprintf(prfp, "Newsgroups: %s\n", msginfo->newsgroups);
-	if (msginfo->subject) r = fprintf(prfp, "Subject: %s\n", msginfo->subject);
-	fputc('\n', prfp);
+	if (msginfo->date) { r = fprintf(prfp, "Date: %s\n", msginfo->date); if (r < 0) goto fpferr; }
+	if (msginfo->from) { r = fprintf(prfp, "From: %s\n", msginfo->from); if (r < 0) goto fpferr; }
+	if (msginfo->to)   { r = fprintf(prfp, "To: %s\n", msginfo->to); if (r < 0) goto fpferr; }
+	if (msginfo->cc)   { r = fprintf(prfp, "Cc: %s\n", msginfo->cc); if (r < 0) goto fpferr; }
+	if (msginfo->newsgroups) {
+		r = fprintf(prfp, "Newsgroups: %s\n", msginfo->newsgroups); if (r < 0) goto fpferr;
+	}
+	if (msginfo->subject) { r = fprintf(prfp, "Subject: %s\n", msginfo->subject); if (r < 0) goto fpferr; }
+	if (fputc('\n', prfp) == EOF) goto fpferr;
 
-	while (fgets(buf, sizeof(buf), tmpfp) != NULL)
+	while (fgets(buf, sizeof(buf), tmpfp) != NULL) {
 		r = fputs(buf, prfp);
+		if (r == EOF) goto fpferr;
+	}
 
 	fclose(prfp);
 	fclose(tmpfp);
@@ -1200,6 +1204,12 @@ void procmsg_print_message(MsgInfo *msginfo, const gchar *cmdline)
 		strncat(buf, "&", sizeof(buf) - strlen(buf) - 1);
 	if (system(buf) == -1)
 		g_warning("system(%s) failed.", buf);
+	return;
+fpferr:
+	FILE_OP_ERROR(prtmp, "fprintf/fputc/fputs");
+	g_free(prtmp);
+	fclose(tmpfp);
+	fclose(prfp);
 }
 
 MsgInfo *procmsg_msginfo_new_ref(MsgInfo *msginfo)

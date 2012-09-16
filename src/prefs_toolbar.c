@@ -249,10 +249,6 @@ static GHashTable** get_plugin_hash_from_toolbar_type(ToolbarType toolbar_type)
 static void prefs_toolbar_create_widget(PrefsPage *_page, GtkWindow *window, gpointer data)
 {
 	ToolbarPage *prefs_toolbar = (ToolbarPage *) _page;
-	gchar *win_titles[3];
-	win_titles[TOOLBAR_MAIN]    = _("Main toolbar configuration");
-	win_titles[TOOLBAR_COMPOSE] = _("Compose toolbar configuration");  
-	win_titles[TOOLBAR_MSGVIEW] = _("Message view toolbar configuration");  
 
 	prefs_toolbar->window = GTK_WIDGET(window);
 

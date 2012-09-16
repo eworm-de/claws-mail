@@ -812,8 +812,8 @@ static void compose_create_tags(GtkTextView *text, Compose *compose)
 	GdkColormap *cmap;
 	gboolean success[8];
 	int i;
-#endif
 	GdkColor color[8];
+#endif
 
 	buffer = gtk_text_view_get_buffer(text);
 
@@ -875,6 +875,7 @@ static void compose_create_tags(GtkTextView *text, Compose *compose)
 	compose->no_wrap_tag = gtk_text_buffer_create_tag(buffer, "no_wrap", NULL);
 	compose->no_join_tag = gtk_text_buffer_create_tag(buffer, "no_join", NULL);
 
+#if !GTK_CHECK_VERSION(2, 24, 0)
 	color[0] = quote_color1;
 	color[1] = quote_color2;
 	color[2] = quote_color3;
@@ -883,7 +884,7 @@ static void compose_create_tags(GtkTextView *text, Compose *compose)
 	color[5] = quote_bgcolor3;
 	color[6] = signature_color;
 	color[7] = uri_color;
-#if !GTK_CHECK_VERSION(2, 24, 0)
+
 	cmap = gdk_drawable_get_colormap(gtk_widget_get_window(compose->window));
 	gdk_colormap_alloc_colors(cmap, color, 8, FALSE, TRUE, success);
 
@@ -5749,17 +5750,13 @@ static gint compose_queue_sub(Compose *compose, gint *msgnum, FolderItem **item,
 	FILE *fp;
 	GSList *cur;
 	gint num;
-        static gboolean lock = FALSE;
 	PrefsAccount *mailac = NULL, *newsac = NULL;
 	gboolean err = FALSE;
 
 	debug_print("queueing message...\n");
 	cm_return_val_if_fail(compose->account != NULL, -1);
 
-        lock = TRUE;
-	
 	if (compose_check_entries(compose, check_subject) == FALSE) {
-                lock = FALSE;
 		if (compose->batch) {
 			gtk_widget_show_all(compose->window);
 		}
@@ -5768,7 +5765,6 @@ static gint compose_queue_sub(Compose *compose, gint *msgnum, FolderItem **item,
 
 	if (!compose->to_list && !compose->newsgroup_list) {
 	        g_warning("can't get recipient list.");
-	        lock = FALSE;
                 return -1;
         }
 
@@ -5778,7 +5774,6 @@ static gint compose_queue_sub(Compose *compose, gint *msgnum, FolderItem **item,
 		else if (cur_account && cur_account->protocol != A_NNTP)
 	    		mailac = cur_account;
 		else if (!(mailac = compose_current_mail_account())) {
-			lock = FALSE;
 			alertpanel_error(_("No account for sending mails available!"));
 			return -1;
 		}
@@ -5788,7 +5783,6 @@ static gint compose_queue_sub(Compose *compose, gint *msgnum, FolderItem **item,
                 if (compose->account->protocol == A_NNTP)
                         newsac = compose->account;
                 else {
-			lock = FALSE;
 			alertpanel_error(_("Selected account isn't NNTP: Posting is impossible."));
 			return -1;
 		}			
@@ -5801,7 +5795,6 @@ static gint compose_queue_sub(Compose *compose, gint *msgnum, FolderItem **item,
 	if ((fp = g_fopen(tmp, "wb")) == NULL) {
 		FILE_OP_ERROR(tmp, "fopen");
 		g_free(tmp);
-		lock = FALSE;
 		return -2;
 	}
 
@@ -5863,7 +5856,6 @@ static gint compose_queue_sub(Compose *compose, gint *msgnum, FolderItem **item,
 		if (compose->use_encryption) {
 			gchar *encdata;
 			if (!compose_warn_encryption(compose)) {
-				lock = FALSE;
 				fclose(fp);
 				claws_unlink(tmp);
 				g_free(tmp);
@@ -5889,7 +5881,6 @@ static gint compose_queue_sub(Compose *compose, gint *msgnum, FolderItem **item,
 				 * key selection */
 				if (err == TRUE)
 					g_warning("failed to write queue message");
-				lock = FALSE;
 				fclose(fp);
 				claws_unlink(tmp);
 				g_free(tmp);
@@ -5936,7 +5927,6 @@ static gint compose_queue_sub(Compose *compose, gint *msgnum, FolderItem **item,
 
 	if (compose->redirect_filename != NULL) {
 		if (compose_redirect_write_to_file(compose, fp) < 0) {
-			lock = FALSE;
 			fclose(fp);
 			claws_unlink(tmp);
 			g_free(tmp);
@@ -5945,7 +5935,6 @@ static gint compose_queue_sub(Compose *compose, gint *msgnum, FolderItem **item,
 	} else {
 		gint result = 0;
 		if ((result = compose_write_to_file(compose, fp, COMPOSE_WRITE_FOR_SEND, TRUE)) < 0) {
-			lock = FALSE;
 			fclose(fp);
 			claws_unlink(tmp);
 			g_free(tmp);
@@ -5957,14 +5946,12 @@ static gint compose_queue_sub(Compose *compose, gint *msgnum, FolderItem **item,
 		fclose(fp);
 		claws_unlink(tmp);
 		g_free(tmp);
-		lock = FALSE;
 		return -2;
 	}
 	if (fclose(fp) == EOF) {
 		FILE_OP_ERROR(tmp, "fclose");
 		claws_unlink(tmp);
 		g_free(tmp);
-		lock = FALSE;
 		return -2;
 	}
 
@@ -5977,7 +5964,6 @@ static gint compose_queue_sub(Compose *compose, gint *msgnum, FolderItem **item,
 		g_warning("can't find queue folder\n");
 		claws_unlink(tmp);
 		g_free(tmp);
-		lock = FALSE;
 		return -1;
 	}
 	folder_item_scan(queue);
@@ -5985,7 +5971,6 @@ static gint compose_queue_sub(Compose *compose, gint *msgnum, FolderItem **item,
 		g_warning("can't queue the message\n");
 		claws_unlink(tmp);
 		g_free(tmp);
-		lock = FALSE;
 		return -1;
 	}
 	
@@ -7220,7 +7205,6 @@ static Compose *compose_create(PrefsAccount *account,
 
 	UndoMain *undostruct;
 
-	gchar *titles[N_ATTACH_COLS];
 	GtkWidget *popupmenu;
 	GtkWidget *tmpl_menu;
 	GtkActionGroup *action_group = NULL;
@@ -7235,11 +7219,6 @@ static Compose *compose_create(PrefsAccount *account,
 
 	debug_print("Creating compose window...\n");
 	compose = g_new0(Compose, 1);
-
-	titles[COL_MIMETYPE] = _("MIME type");
-	titles[COL_SIZE]     = _("Size");
-	titles[COL_NAME]     = _("Name");
-	titles[COL_CHARSET]  = _("Charset");
 
 	compose->batch = batch;
 	compose->account = account;
@@ -10366,14 +10345,12 @@ static void textview_move_backward_word (GtkTextView *text)
 	GtkTextBuffer *buffer;
 	GtkTextMark *mark;
 	GtkTextIter ins;
-	gint count;
 
 	cm_return_if_fail(GTK_IS_TEXT_VIEW(text));
 
 	buffer = gtk_text_view_get_buffer(GTK_TEXT_VIEW(text));
 	mark = gtk_text_buffer_get_insert(buffer);
 	gtk_text_buffer_get_iter_at_mark(buffer, &ins, mark);
-	count = gtk_text_iter_inside_word (&ins) ? 2 : 1;
 	if (gtk_text_iter_backward_word_starts(&ins, 1))
 		gtk_text_buffer_place_cursor(buffer, &ins);
 }

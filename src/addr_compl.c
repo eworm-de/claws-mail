@@ -254,13 +254,10 @@ void addr_compl_add_address1(const char *str, address_entry *ae)
 static gint add_address(const gchar *name, const gchar *address, 
 			const gchar *nick, const gchar *alias, GList *grp_emails)
 {
-	address_entry    *ae;
-	gboolean is_group = FALSE;
+	address_entry *ae;
 
 	if (!name || !address) {
-		if (!address && !nick && !alias && grp_emails) {
-			is_group = TRUE;
-		} else
+		if (address || nick || alias || !grp_emails) 
 			return -1;
 	}
 

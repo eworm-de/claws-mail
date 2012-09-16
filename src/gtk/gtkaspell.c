@@ -191,8 +191,6 @@ static Dictionary *	dictionary_dup			(const Dictionary *dict);
 static void 		reset_theword_data		(GtkAspell *gtkaspell);
 static void 		free_checkers			(gpointer elt, 
 							 gpointer data);
-static gint 		find_gtkaspeller		(gconstpointer aa, 
-							 gconstpointer bb);
 
 static void destroy_menu(GtkWidget *widget, gpointer user_data);	
 
@@ -491,7 +489,6 @@ static gboolean key_press_cb			(GtkWidget    *text_view,
                                                  GtkAspell    *gtkaspell)
 {
 	gint pos;
-	GtkTextBuffer *textbuf = gtk_text_view_get_buffer(text_view);
 
 	cm_return_val_if_fail(gtkaspell->gtkaspeller->speller, FALSE);
 
@@ -649,7 +646,6 @@ static void button_press_intercept_cb(GtkTextView *gtktext,
 /* Checker creation */
 static GtkAspeller *gtkaspeller_new(Dictionary *dictionary)
 {
-	GSList 		*exist;
 	GtkAspeller	*gtkaspeller = NULL;
 	GtkAspeller	*tmp;
 	Dictionary	*dict;
@@ -669,9 +665,6 @@ static GtkAspeller *gtkaspeller_new(Dictionary *dictionary)
 	tmp = g_new0(GtkAspeller, 1);
 	tmp->dictionary = dict;
 
-	exist = g_slist_find_custom(gtkaspellcheckers->checkers, tmp, 
-				    find_gtkaspeller);
-	
 	g_free(tmp);
 
 	if ((gtkaspeller = gtkaspeller_real_new(dict)) != NULL) {
@@ -2387,17 +2380,6 @@ static void free_checkers(gpointer elt, gpointer data)
 	cm_return_if_fail(gtkaspeller);
 
 	gtkaspeller_real_delete(gtkaspeller);
-}
-
-static gint find_gtkaspeller(gconstpointer aa, gconstpointer bb)
-{
-	Dictionary *a = ((GtkAspeller *) aa)->dictionary;
-	Dictionary *b = ((GtkAspeller *) bb)->dictionary;
-
-	if (a && b && a->fullname && b->fullname)
-		return strcmp(a->fullname, b->fullname);
-
-	return 1;
 }
 
 gchar *gtkaspell_get_default_dictionary(GtkAspell *gtkaspell)

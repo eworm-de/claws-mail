@@ -734,10 +734,7 @@ static gboolean prefs_template_list_view_set_row(gint row)
 	gchar *value;
 	GtkTextBuffer *buffer;
 	GtkTextIter start, end;
-	GtkTreeModel *model;
 	gint line;
-
-	model = gtk_tree_view_get_model(GTK_TREE_VIEW(templates.list_view));
 
 	buffer = gtk_text_view_get_buffer(GTK_TEXT_VIEW(templates.text_value));
 	gtk_text_buffer_get_start_iter(buffer, &start);
@@ -901,14 +898,11 @@ static void prefs_template_delete_cb(gpointer action, gpointer data)
 
 static void prefs_template_delete_all_cb(gpointer action, gpointer data)
 {
-	GtkListStore *list_store;
-
 	if (alertpanel(_("Delete all templates"),
 			  _("Do you really want to delete all the templates?"),
 			  GTK_STOCK_CANCEL, "+"GTK_STOCK_DELETE, NULL) == G_ALERTDEFAULT)
 	   return;
 
-	list_store = GTK_LIST_STORE(gtk_tree_view_get_model(GTK_TREE_VIEW(templates.list_view)));
 	prefs_template_clear_list();
 	modified = FALSE;
 

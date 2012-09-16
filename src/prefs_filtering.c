@@ -1289,14 +1289,13 @@ static void prefs_filtering_top(gpointer action, gpointer data)
 
 static void prefs_filtering_page_up(gpointer action, gpointer data)
 {
-	gint row, target_row, n_rows;
+	gint row, target_row;
 	GtkTreeIter selected, target;
 	GtkTreeModel *model;
 	GtkTreePath *path;
 	GdkRectangle cell_rect, view_rect;
 
 	model = gtk_tree_view_get_model(GTK_TREE_VIEW(filtering.cond_list_view));	
-	n_rows = gtk_tree_model_iter_n_children(model, NULL);
 	row = gtkut_list_view_get_selected_row(filtering.cond_list_view);
 	if (row <= 1)
 		return;

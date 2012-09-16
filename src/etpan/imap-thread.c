@@ -61,12 +61,9 @@ static GIOChannel * io_channel = NULL;
 static void delete_imap(Folder *folder, mailimap *imap)
 {
 	chashdatum key;
-	chashdatum value;
 
 	key.data = &folder;
 	key.len = sizeof(folder);
-	value.data = imap;
-	value.len = 0;
 	chash_delete(session_hash, &key, NULL);
 	
 	key.data = &imap;
@@ -2679,30 +2676,24 @@ imap_fetch_result_to_envelop_list(clist * fetch_result,
 static int imap_add_envelope_fetch_att(struct mailimap_fetch_type * fetch_type)
 {
 	struct mailimap_fetch_att * fetch_att;
-	int r;
+	int i;
 	char * header;
 	clist * hdrlist;
 	struct mailimap_header_list * imap_hdrlist;
 	struct mailimap_section * section;
+	char *headers[] = {
+			"Date", "From", "To", "Cc", "Subject", "Message-ID",
+			"References", "In-Reply-To", NULL
+		};
 
 	hdrlist = clist_new();
-  
-	header = strdup("Date");
-	r = clist_append(hdrlist, header);
-	header = strdup("From");
-	r = clist_append(hdrlist, header);
-	header = strdup("To");
-	r = clist_append(hdrlist, header);
-	header = strdup("Cc");
-	r = clist_append(hdrlist, header);
-	header = strdup("Subject");
-	r = clist_append(hdrlist, header);
-	header = strdup("Message-ID");
-	r = clist_append(hdrlist, header);
-	header = strdup("References");
-	r = clist_append(hdrlist, header);
-	header = strdup("In-Reply-To");
-	r = clist_append(hdrlist, header);
+	i = 0;
+	while (headers[i] != NULL) {
+  		header = strdup(headers[i]);
+		if (header == NULL || clist_append(hdrlist, header) != 0)
+			return MAIL_ERROR_MEMORY;
+		++i;
+	}
   
 	imap_hdrlist = mailimap_header_list_new(hdrlist);
 	section = mailimap_section_new_header_fields(imap_hdrlist);

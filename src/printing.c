@@ -634,14 +634,12 @@ static void cb_preview_got_page_size(GtkPrintOperationPreview *preview,
 				     gpointer                  data)
 {
 	PreviewData *preview_data;
-	GtkPageOrientation orientation;
 	GtkPaperSize *paper_size;
 	gint paper_width;
 	gint paper_height;
 
 	preview_data = (PreviewData*) data;
 	debug_print("got_page_size\n");
-	orientation  = gtk_page_setup_get_orientation(page_setup);
 	paper_size   = gtk_page_setup_get_paper_size(page_setup);
 	paper_width  = (gint)(gtk_paper_size_get_width(paper_size, GTK_UNIT_INCH)  
 			      * PREVIEW_SCALE);
@@ -950,15 +948,10 @@ static void printing_textview_cb_begin_print(GtkPrintOperation *op, GtkPrintCont
 
 	do {
 		PangoRectangle logical_rect;
-		PangoLayoutLine *line;
 		PangoAttrShape *attr = NULL;
-		int baseline;
 
 		if (ii >= start) {
-			line = pango_layout_iter_get_line(iter);
-
 			pango_layout_iter_get_line_extents(iter, NULL, &logical_rect);
-			baseline = pango_layout_iter_get_baseline(iter);
 
 			if ((attr = g_hash_table_lookup(print_data->images,
 						GINT_TO_POINTER(pango_layout_iter_get_index(iter)))) != NULL) {
@@ -1429,12 +1422,10 @@ static gboolean printing_is_pango_gdk_color_equal(PangoColor *p, GdkColor *g)
  */
 static gint printing_text_iter_get_offset_bytes(PrintData *print_data, const GtkTextIter *iter)
 {
-	gint off_chars;
 	gint off_bytes;
 	gchar *text;
 	GtkTextIter start;
 
-	off_chars = gtk_text_iter_get_offset(iter);
 	if (print_data->sel_start < 0 || print_data->sel_end <= print_data->sel_start) {
 		gtk_text_buffer_get_start_iter(gtk_text_iter_get_buffer(iter), &start);
 	} else {

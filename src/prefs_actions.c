@@ -590,10 +590,6 @@ static gint prefs_actions_clist_set_row(gint row)
 	gint len, action_nb;
 	gchar action[PREFSBUFSIZE];
 	gchar *new_action;
-	GtkListStore *store;
-
-	store = GTK_LIST_STORE(gtk_tree_view_get_model
-				(GTK_TREE_VIEW(actions.actions_list_view)));
 
 	GET_ENTRY(actions.name_entry);
 	if (entry_text[0] == '\0') {
