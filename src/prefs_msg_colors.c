@@ -633,7 +633,7 @@ static void quote_color_set_dialog(GtkWidget *widget, gpointer data)
 		}
 	}
 
-	color_dialog = GTK_COLOR_SELECTION_DIALOG(gtk_color_selection_dialog_new(title));
+	color_dialog = gtk_color_selection_dialog_new(title);
 	g_free(title);
 	gtk_window_set_position(GTK_WINDOW(color_dialog), GTK_WIN_POS_CENTER);
 	gtk_window_set_modal(GTK_WINDOW(color_dialog), TRUE);

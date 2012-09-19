@@ -505,7 +505,7 @@ static gboolean key_press_cb			(GtkWidget    *text_view,
 		case GDK_KEY_Page_Down:
 		case GDK_KEY_End:
 		case GDK_KEY_Begin:
-			pos = get_textview_buffer_offset(text_view);
+			pos = get_textview_buffer_offset(GTK_TEXT_VIEW(text_view));
 			if (pos > 0)
 				check_at(gtkaspell, pos - 1);
 			else

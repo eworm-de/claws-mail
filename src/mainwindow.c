@@ -3616,7 +3616,9 @@ static void get_url_part (const gchar **buffer, gchar *url_decoded, gint maxlen)
 		buf++;
 		if (!strncmp(buf, "mailto:", strlen("mailto:")))
 			with_plus = FALSE;
-		for (i = 0; *buf != '>' && *buf != 0x00 && i<maxlen; tmp[i++] = *(buf++));
+		for (i = 0;
+		     *buf != '>' && *buf != 0x00 && i<maxlen && i < sizeof(tmp) - 1;
+			tmp[i++] = *(buf++));
 		buf++;
 	}
 	else  {

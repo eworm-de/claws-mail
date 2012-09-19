@@ -147,7 +147,7 @@ static void prefs_compose_writing_create_widget(PrefsPage *_page, GtkWindow *win
 	PACK_CHECK_BUTTON (hbox_autosave, checkbtn_autosave,
 			   _("Automatically save message to Drafts folder every"));
 
-	spinbtn_autosave_adj = gtk_adjustment_new (50, 0, 1000, 1, 10, 0);
+	spinbtn_autosave_adj = GTK_ADJUSTMENT(gtk_adjustment_new (50, 0, 1000, 1, 10, 0));
 	spinbtn_autosave_length = gtk_spin_button_new
 		(GTK_ADJUSTMENT (spinbtn_autosave_adj), 1, 0);
 	gtk_widget_set_size_request (spinbtn_autosave_length, 64, -1);	
@@ -168,7 +168,7 @@ static void prefs_compose_writing_create_widget(PrefsPage *_page, GtkWindow *win
 	gtk_widget_show (label_undolevel);
 	gtk_box_pack_start (GTK_BOX (hbox_undolevel), label_undolevel, FALSE, FALSE, 0);
 
-	spinbtn_undolevel_adj = gtk_adjustment_new (50, 0, 100, 1, 10, 0);
+	spinbtn_undolevel_adj = GTK_ADJUSTMENT(gtk_adjustment_new (50, 0, 100, 1, 10, 0));
 	spinbtn_undolevel = gtk_spin_button_new
 		(GTK_ADJUSTMENT (spinbtn_undolevel_adj), 1, 0);
 	gtk_widget_show (spinbtn_undolevel);
@@ -184,7 +184,7 @@ static void prefs_compose_writing_create_widget(PrefsPage *_page, GtkWindow *win
 	PACK_CHECK_BUTTON (hbox_warn_large_insert, checkbtn_warn_large_insert,
 			   _("Warn when inserting a file larger than"));
 
-	spinbtn_warn_large_insert_adj = gtk_adjustment_new (50, 0, 10000, 1, 10, 0);
+	spinbtn_warn_large_insert_adj = GTK_ADJUSTMENT(gtk_adjustment_new (50, 0, 10000, 1, 10, 0));
 	spinbtn_warn_large_insert_size = gtk_spin_button_new
 		(GTK_ADJUSTMENT (spinbtn_warn_large_insert_adj), 1, 0);
 	gtk_widget_set_size_request (spinbtn_warn_large_insert_size, 64, -1);	

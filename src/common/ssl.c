@@ -266,9 +266,6 @@ gboolean ssl_init_socket_with_method(SockInfo *sockinfo, SSLMethod method)
 	if (session == NULL || r != 0)
 		return FALSE;
 
-#if GNUTLS_VERSION_NUMBER < 0x030003
-	gnutls_transport_set_lowat (session, 0); 
-#endif
 	if (method == 0)
 		gnutls_priority_set_direct(session, "NORMAL:-VERS-TLS1.0:-VERS-TLS1.1:-VERS-TLS1.2", NULL);
 	else
@@ -288,7 +285,7 @@ gboolean ssl_init_socket_with_method(SockInfo *sockinfo, SSLMethod method)
 	}
 	gnutls_certificate_set_verify_flags (xcred, GNUTLS_VERIFY_ALLOW_X509_V1_CA_CRT);
 
-	gnutls_transport_set_ptr(session, (gnutls_transport_ptr) sockinfo->sock);
+	gnutls_transport_set_ptr(session, (gnutls_transport_ptr) GINT_TO_POINTER(sockinfo->sock));
 	gnutls_session_set_ptr(session, sockinfo);
 	gnutls_certificate_client_set_retrieve_function(xcred, gnutls_client_cert_cb);
 

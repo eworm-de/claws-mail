@@ -1,3 +1,22 @@
+2012-09-19 [colin]	3.8.1cvs64
+
+	* src/mainwindow.c
+		Check possible overflow
+	* src/prefs_account.c
+	* src/prefs_compose_writing.c
+	* src/prefs_logging.c
+	* src/prefs_message.c
+	* src/prefs_msg_colors.c
+	* src/prefs_other.c
+	* src/prefs_receive.c
+	* src/prefs_summaries.c
+	* src/prefs_wrapping.c
+		fix GtkAdjustment casts
+	* src/common/ssl.c
+		fix warnings
+	* src/gtk/gtkaspell.c
+		fix warnings
+
 2012-09-19 [mones]	3.8.1cvs63
 
 	* src/addritem.c
