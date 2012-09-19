@@ -630,7 +630,7 @@ ItemGroup *addritem_create_item_group( void ) {
 ItemGroup *addritem_copy_item_group( ItemGroup *item ) {
 	ItemGroup *itemNew;
 
-	itemNew = g_new0( ItemGroup, 1 );
+	itemNew = NULL;
 	if( item ) {
 		itemNew = addritem_create_item_group();
 		ADDRITEM_NAME(itemNew) = g_strdup( ADDRITEM_NAME(item) );
