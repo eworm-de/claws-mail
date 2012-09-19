@@ -439,7 +439,7 @@ static gint mailing_list_create_submenu(MainWindow *mainwindow,
 
 static gint mailing_list_populate_submenu(GtkWidget *menu, const gchar * list_header);
 	
-static void get_url_part(const gchar **buf, gchar *url_decoded, gint maxlen);
+static void get_url_part(const gchar **buf, gchar *url_decoded);
 
 static void mailing_list_compose(GtkWidget *w, gpointer *data);
  
@@ -3561,7 +3561,7 @@ static gint mailing_list_populate_submenu (GtkWidget *menuitem, const gchar * li
 	g_list_free(children);
 	if (list_header) {
 		for (url_pt = list_header; url_pt && *url_pt;) {
-			get_url_part (&url_pt, url_decoded, BUFFSIZE);
+			get_url_part (&url_pt, url_decoded);
 			item = NULL;
 			if (!g_ascii_strncasecmp(url_decoded, "mailto:", 7)) {
  				item = gtk_menu_item_new_with_label ((url_decoded));
@@ -3593,7 +3593,7 @@ static gint mailing_list_populate_submenu (GtkWidget *menuitem, const gchar * li
 	return menu_nb;
 }
 
-static void get_url_part (const gchar **buffer, gchar *url_decoded, gint maxlen)
+static void get_url_part (const gchar **buffer, gchar *url_decoded)
 {
 	gchar tmp[BUFFSIZE];
 	const gchar *buf;
@@ -3617,7 +3617,7 @@ static void get_url_part (const gchar **buffer, gchar *url_decoded, gint maxlen)
 		if (!strncmp(buf, "mailto:", strlen("mailto:")))
 			with_plus = FALSE;
 		for (i = 0;
-		     *buf != '>' && *buf != 0x00 && i<maxlen && i < sizeof(tmp) - 1;
+		     *buf != '>' && *buf != 0x00 && i < BUFFSIZE;
 			tmp[i++] = *(buf++));
 		buf++;
 	}
@@ -3627,13 +3627,13 @@ static void get_url_part (const gchar **buffer, gchar *url_decoded, gint maxlen)
 		return;
 	}
 	
-	tmp[i]       = 0x00;
 	*url_decoded = '\0';
 	*buffer = NULL;
 	
-	if (i == maxlen) {
+	if (i == BUFFSIZE) {
 		return;
 	}
+	tmp[i] = 0x00;
 	decode_uri_with_plus (url_decoded, (const gchar *)tmp, with_plus);
 
 	/* Prepare the work for the next url in the list */
