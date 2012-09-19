@@ -884,7 +884,6 @@ static void addressbook_edit_person_page_basic( gint pageNum, gchar *pageLbl ) {
 	GtkWidget *entry_nn;
 	const gchar *locale;
 	gint top = 0;
-	GtkActionGroup *action_group;
 
 	vbox = gtk_vbox_new( FALSE, 20 );
 	hbox = gtk_hbox_new( FALSE, 8 );
@@ -892,7 +891,7 @@ static void addressbook_edit_person_page_basic( gint pageNum, gchar *pageLbl ) {
 	gtk_widget_show( vbox );	
 
 	if (!editaddr_popup_menu) {
-		action_group = cm_menu_create_action_group("EditAddressPopup", editaddr_popup_entries,
+		cm_menu_create_action_group("EditAddressPopup", editaddr_popup_entries,
 			G_N_ELEMENTS(editaddr_popup_entries), (gpointer)NULL);
 		MENUITEM_ADDUI("/Menus", "EditAddressPopup", "EditAddressPopup", GTK_UI_MANAGER_MENU)
 		MENUITEM_ADDUI("/Menus/EditAddressPopup", "SetPicture", "EditAddressPopup/SetPicture", GTK_UI_MANAGER_MENUITEM)

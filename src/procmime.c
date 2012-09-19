@@ -1701,15 +1701,15 @@ static void parse_parameters(const gchar *parameters, GHashTable *table)
 			tmp[0] = '\0';
 
 			if ((tmp[1] == '0') && (tmp[2] == '\0') && 
-			    (g_slist_find_custom(concatlist, down_attr, g_strcmp0) == NULL))
+			    (g_slist_find_custom(concatlist, down_attr, (GCompareFunc)g_strcmp0) == NULL))
 				concatlist = g_slist_prepend(concatlist, g_strdup(tmpattr));
 
-			if (convert && (g_slist_find_custom(convlist, tmpattr, g_strcmp0) == NULL))
+			if (convert && (g_slist_find_custom(convlist, tmpattr, (GCompareFunc)g_strcmp0) == NULL))
 				convlist = g_slist_prepend(convlist, g_strdup(tmpattr));
 
 			g_free(tmpattr);
 		} else if (convert) {
-			if (g_slist_find_custom(convlist, down_attr, g_strcmp0) == NULL)
+			if (g_slist_find_custom(convlist, down_attr, (GCompareFunc)g_strcmp0) == NULL)
 				convlist = g_slist_prepend(convlist, g_strdup(down_attr));
 		}
 

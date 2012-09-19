@@ -560,6 +560,9 @@ static int jpilot_get_info_size( FILE *in, int *size ) {
 	}
 
 	r = fread(&rh, sizeof(record_header), 1, in);
+	if (r < 1)
+		return MGU_ERROR_READ;
+
 	offset = ((rh.Offset[0]*256+rh.Offset[1])*256+rh.Offset[2])*256+rh.Offset[3];
 	*size=offset - dbh.app_info_offset;
 
@@ -676,6 +679,8 @@ static int read_header(FILE *pc_in, PC3RecordHeader *header) {
 	unsigned char packed_header[256];
 	int num;
 
+	memset(header, 0, sizeof(PC3RecordHeader));
+
 	num = fread(&l, sizeof(l), 1, pc_in);
 	if (feof(pc_in)) {
 		return -1;
@@ -718,12 +723,12 @@ static gint jpilot_read_next_pc( FILE *in, buf_rec *br ) {
 	}
 	num = read_header( in, &header );
 	if( num < 1 ) {
-		if( ferror( in ) ) {
+		if( ferror( in ) )
 			return MGU_ERROR_READ;
-		}
-		if( feof( in ) ) {
+		else if( feof( in ) )
 			return MGU_EOF;
-		}
+		else
+			return -1;
 	}
 	rec_len = header.rec_len;
 	record = malloc( rec_len );
@@ -1089,7 +1094,6 @@ static void jpilot_load_address(
 	gchar *labelEntry;
 	GList *node;
 	gchar* extID;
-	struct AddressAppInfo *ai;
 	gchar **firstName = NULL;
 	gchar **lastName = NULL;
 #if (PILOT_LINK_MAJOR > 11)
@@ -1167,19 +1171,9 @@ static void jpilot_load_address(
 	g_free( extID );
 	extID = NULL;
 
-	/* Pointer to address metadata. */
-	ai = & pilotFile->addrInfo;
-
 	/* Add entry for each email address listed under phone labels. */
 	indPhoneLbl = addr.phoneLabel;
 	for( k = 0; k < JPILOT_NUM_ADDR_PHONE; k++ ) {
-		gint ind;
-
-		ind = indPhoneLbl[k];
-		/*
-		* g_print( "%d : %d : %20s : %s\n", k, ind,
-		* ai->phoneLabels[ind], addrEnt[3+k] );
-		*/
 		if( indPhoneLbl[k] == IND_PHONE_EMAIL ) {
 			labelEntry = addrEnt[ OFFSET_PHONE_LABEL + k ];
 			jpilot_parse_label( pilotFile, labelEntry, person );

@@ -128,7 +128,7 @@ static void prefs_gpg_create_widget_func(PrefsPage *_page,
 	gtk_box_pack_start (GTK_BOX (hbox1), label_expire1, FALSE, FALSE, 0);
 
 	spinbtn_store_passphrase_adj =
-	    gtk_adjustment_new(1, 0, 1440, 1, 10, 0);
+	    GTK_ADJUSTMENT(gtk_adjustment_new(1, 0, 1440, 1, 10, 0));
 	spinbtn_store_passphrase =
 	    gtk_spin_button_new(GTK_ADJUSTMENT
 				(spinbtn_store_passphrase_adj), 1, 0);

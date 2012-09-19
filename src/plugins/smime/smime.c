@@ -266,8 +266,7 @@ static gint smime_check_signature(MimeInfo *mimeinfo)
 			if (textstr && len) {
 				gchar *tmp_file = get_tmp_file();
 				MimeInfo *newinfo = NULL, *decinfo = NULL, *parentinfo = NULL;
-				gint childnumber = 0;
-								
+
 				str_write_to_file(textstr, tmp_file);
 				newinfo = procmime_scan_file(tmp_file);
 				decinfo = g_node_first_child(newinfo->node) != NULL ?
@@ -280,7 +279,7 @@ static gint smime_check_signature(MimeInfo *mimeinfo)
 				procmime_mimeinfo_free_all(newinfo);
 				decinfo->tmp = TRUE;
 				parentinfo = procmime_mimeinfo_parent(mimeinfo);
-				childnumber = g_node_child_index(parentinfo->node, mimeinfo);
+
 				if (parentinfo->type == MIMETYPE_MESSAGE && 
 				    !strcmp(parentinfo->subtype, "rfc822")) {
 					procmime_decode_content(parentinfo);

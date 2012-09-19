@@ -874,7 +874,7 @@ static void exporthtml_fmt_folder(
 	const GList *node;
 	GList *listHeir, *list;
 	const gchar *name;
-	gboolean ret1, ret2;
+	gboolean ret1;
 
 	name = ADDRITEM_NAME( folder );
 	if( name ) {
@@ -889,7 +889,7 @@ static void exporthtml_fmt_folder(
 	}
 
 	ret1 = exporthtml_fmt_person( ctl, stream, folder );
-	ret2 = exporthtml_fmt_group( ctl, stream, folder, ret1 );
+	exporthtml_fmt_group( ctl, stream, folder, ret1 );
 
 	node = list = exporthtml_sort_name( folder->listFolder );
 	while( node ) {

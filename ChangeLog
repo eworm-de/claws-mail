@@ -1,3 +1,18 @@
+2012-09-19 [colin]	3.8.1cvs65
+
+	* src/addrindex.c
+	* src/editaddress.c
+	* src/editldap.c
+	* src/exporthtml.c
+	* src/jpilot.c
+	* src/procmime.c
+	* src/plugins/bogofilter/bogofilter_gtk.c
+	* src/plugins/pgpcore/prefs_gpg.c
+	* src/plugins/smime/smime.c
+	* src/plugins/spamassassin/spamassassin_gtk.c
+		More warning fixes, casts, useless variables and
+		unchecked return values
+
 2012-09-19 [colin]	3.8.1cvs64
 
 	* src/mainwindow.c

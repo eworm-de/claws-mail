@@ -1580,7 +1580,7 @@ static void addrindex_read_index( AddressIndex *addrIndex, XMLFile *file ) {
 	addrIndex->loadedFlag = FALSE;
 	for (;;) {
 		rc = xml_parse_next_tag( file );
-		if( file->level == 0 ) return;
+		if( rc < 0 || file->level == 0 ) return;
 
 		xtag = xml_get_current_tag( file );
 
@@ -2015,21 +2015,13 @@ static void addrindex_add_obj( XMLFile *file, AddressCvtNode *node ) {
 */
 static void addrindex_consume_tree( XMLFile *file ) {
 	guint prev_level;
-	gchar *element;
-	GList *attr;
-	XMLTag *xtag;
 
 	for (;;) {
 		prev_level = file->level;
 		xml_parse_next_tag( file );
-		if (file->level < prev_level) return;
+		if (file->level < prev_level)
+			return;
 
-		xtag = xml_get_current_tag( file );
-		/* g_print( "tag : %s\n", xtag->tag ); */
-		element = xml_get_element( file );
-		attr = xml_get_current_tag_attr( file );
-		/* show_attribs( attr ); */
-		/* g_print( "\ttag  value : %s :\n", element ); */
 		addrindex_consume_tree( file );
 	}
 }
@@ -2197,8 +2189,6 @@ static gboolean addrindex_process_book( AddressIndex *addrIndex, XMLFile *file, 
 */
 static void addrindex_convert_tree( AddressIndex *addrIndex, XMLFile *file ) {
 	guint prev_level;
-	gchar *element;
-	GList *attr;
 	XMLTag *xtag;
 
 	/* Process file */
@@ -2225,10 +2215,6 @@ static void addrindex_convert_tree( AddressIndex *addrIndex, XMLFile *file ) {
 			}
 			return;
 		}
-		element = xml_get_element( file );
-		attr = xml_get_current_tag_attr( file );
-		/* show_attribs( attr ); */
-		/* g_print( "\ttag  value : %s :\n", element ); */
 		addrindex_consume_tree( file );
 	}
 }
@@ -2791,7 +2777,6 @@ gboolean addrindex_start_search( const gint queryID ) {
  */
 void addrindex_remove_results( AddressDataSource *ds, ItemFolder *folder ) {
 	AddrBookBase *adbase;
-	AddressCache *cache;
 	gint queryID = 0;
 
 	/* g_print( "addrindex_remove_results/start\n" ); */
@@ -2801,7 +2786,6 @@ void addrindex_remove_results( AddressDataSource *ds, ItemFolder *folder ) {
 	/* g_print( "folder name ::%s::\n", ADDRITEM_NAME(folder) ); */
 	adbase = ( AddrBookBase * ) ds->rawDataSource;
 	if( adbase == NULL ) return;
-	cache = adbase->addressCache;
 
 	/* Hide folder to prevent re-display */
 	addritem_folder_set_hidden( folder, TRUE );
