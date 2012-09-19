@@ -293,8 +293,8 @@ static Session *news_session_new(Folder *folder, const gchar *server, gushort po
 	int r = 0;
 	cm_return_val_if_fail(server != NULL, NULL);
 
-	log_message(LOG_PROTOCOL, _("Account '%s': Connecting to NNTP server: %s...\n"),
-				    folder->account->account_name, server);
+	log_message(LOG_PROTOCOL, _("Account '%s': Connecting to NNTP server: %s:%d...\n"),
+				    folder->account->account_name, server, port);
 
 	session = g_new0(NewsSession, 1);
 	session_init(SESSION(session), folder->account, FALSE);

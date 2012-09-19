@@ -1068,8 +1068,9 @@ static IMAPSession *imap_session_new(Folder * folder,
 #endif
 
 	imap_init(folder);
-	buf = g_strdup_printf(_("Account '%s': Connecting to IMAP4 server: %s..."),
-				folder->account->account_name, folder->account->recv_server);
+	buf = g_strdup_printf(_("Account '%s': Connecting to IMAP4 server: %s:%d..."),
+				folder->account->account_name, folder->account->recv_server,
+				port);
 	statuswindow_print_all("%s", buf);
 	log_message(LOG_PROTOCOL, "%s\n", buf);
 	g_free(buf);
@@ -1193,10 +1194,7 @@ try_again:
 	} else if (account->imap_auth_type == IMAP_AUTH_ANON || account->imap_auth_type == IMAP_AUTH_GSSAPI) {
 		pass = "";
 	}
-	statuswindow_print_all(_("Connecting to IMAP4 server %s...\n"),
-				account->recv_server);
 	if ((ok = imap_auth(session, account->userid, pass, account->imap_auth_type)) != MAILIMAP_NO_ERROR) {
-		statusbar_pop_all();
 		
 		if (!failed && !is_fatal(ok)) {
 			acc_pass = NULL;

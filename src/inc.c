@@ -829,8 +829,8 @@ static IncState inc_pop3_session_do(IncSession *session)
 		pop3_session->ac_prefs->popport : 110;
 #endif
 
-	buf = g_strdup_printf(_("Account '%s': Connecting to POP3 server: %s..."),
-				account_name, server);
+	buf = g_strdup_printf(_("Account '%s': Connecting to POP3 server: %s:%d..."),
+				account_name, server, port);
 	statuswindow_print_all("%s", buf);
 	log_message(LOG_PROTOCOL, "%s\n", buf);
 
@@ -1152,7 +1152,6 @@ static void inc_put_error(IncState istate, Pop3Session *session)
 
 	switch (istate) {
 	case INC_CONNECT_ERROR:
-		log_msg = _("Connection failed.");
 		fatal_error = TRUE;
 		if (prefs_common.no_recv_err_panel)
 			break;

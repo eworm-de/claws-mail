@@ -1,3 +1,12 @@
+2012-09-19 [colin]	3.8.1cvs61
+
+	* src/imap.c
+	* src/inc.c
+	* src/news.c
+	* src/send_message.c
+	* src/common/socket.c
+		More precise error logging
+
 2012-09-16 [mones]	3.8.1cvs60
 
         * src/action.c                                                          

@@ -570,6 +570,7 @@ static gint fd_check_io(gint fd, GIOCondition cond)
 		return 0;
 	} else {
 		g_warning("Socket IO timeout\n");
+		log_error(LOG_PROTOCOL, _("Socket IO timeout.\n"));
 		return -1;
 	}
 }
@@ -598,6 +599,7 @@ static gint sock_connect_with_timeout(gint sock,
 		alarm(0);
 		signal(SIGALRM, prev_handler);
 		errno = ETIMEDOUT;
+		log_error(LOG_PROTOCOL, _("Connection timed out.\n"));
 		return -1;
 	}
 	alarm(timeout_secs);
@@ -625,6 +627,7 @@ struct hostent *my_gethostbyname(const gchar *hostname)
 		alarm(0);
 		signal(SIGALRM, prev_handler);
 		g_printerr("%s: host lookup timed out.\n", hostname);
+		log_error(LOG_PROTOCOL, _("%s: host lookup timed out.\n"), hostname);
 		errno = 0;
 		return NULL;
 	}
@@ -637,6 +640,7 @@ struct hostent *my_gethostbyname(const gchar *hostname)
 		signal(SIGALRM, prev_handler);
 #endif
 		g_printerr("%s: unknown host.\n", hostname);
+		log_error(LOG_PROTOCOL, _("%s: unknown host.\n"), hostname);
 		errno = 0;
 		return NULL;
 	}
@@ -824,6 +828,9 @@ static gboolean sock_connect_async_cb(GIOChannel *source,
 
 	if (val != 0) {
 		close(fd);
+		log_error(LOG_PROTOCOL, _("%s:%d: connection failed (%s).\n"),
+			  conn_data->hostname, conn_data->port,
+			  strerror(val));
 		sock_connect_address_list_async(conn_data);
 		return FALSE;
 	}
@@ -948,6 +955,7 @@ static gint sock_connect_address_list_async(SockConnectData *conn_data)
 		if ((sock = socket(addr_data->family, addr_data->socktype,
 				   addr_data->protocol)) < 0) {
 			perror("socket");
+
 			continue;
 		}
 
@@ -960,14 +968,12 @@ static gint sock_connect_address_list_async(SockConnectData *conn_data)
 				perror("connect");
 				close(sock);
 			}
-		} else
+		} else {
 			break;
+		}
 	}
 
 	if (conn_data->cur_addr == NULL) {
-		g_warning("sock_connect_address_list_async: "
-			  "connection to %s:%d failed\n",
-			  conn_data->hostname, conn_data->port);
 		conn_data->func(NULL, conn_data->data);
 		sock_connect_async_cancel(conn_data->id);
 		return -1;
@@ -1062,6 +1068,8 @@ static gboolean sock_get_address_info_async_cb(GIOChannel *source,
 
 		if (ai_member[0] == AF_UNSPEC) {
 			g_warning("DNS lookup failed\n");
+			log_error(LOG_PROTOCOL, _("%s:%d: unknown host.\n"),
+				lookup_data->hostname, lookup_data->port);
 			break;
 		}
 
@@ -1155,6 +1163,8 @@ static void address_info_async_child(void *opaque)
 		gchar len = 0;
                 g_warning("getaddrinfo for %s:%s failed: %s\n",
                           parm->hostname, port_str, gai_strerror(gai_err));
+		log_error(LOG_PROTOCOL, _("%s:%s: host lookup failed (%s).\n"),
+			  parm->hostname, port_str, gai_strerror(gai_err));
 	        fd_write_all(parm->pipe_fds[1], &len,
                      sizeof(len));
                 fd_write_all(parm->pipe_fds[1], (gchar *)ai_member,
