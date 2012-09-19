@@ -324,10 +324,6 @@ static void custom_attr_selected_attr_edited(GtkCellRendererText *widget,
 {
 	GtkTreeIter iter;
 	GtkTreeModel *model = gtk_tree_view_get_model(GTK_TREE_VIEW(list_view));
-	SummaryView *summaryview = NULL;
-
-	if (mainwindow_get_mainwindow() != NULL)
-		summaryview = mainwindow_get_mainwindow()->summaryview;
 
 	if (!gtk_tree_model_get_iter_from_string(model, &iter, path))
 		return;

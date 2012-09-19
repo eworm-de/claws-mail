@@ -879,6 +879,9 @@ void msgcache_read_mark(MsgCache *cache, const gchar *mark_file)
 	}
 bail_err:
 	fclose(fp);
+	if (error) {
+		debug_print("error reading cache mark from %s\n", mark_file);
+	}
 }
 
 void msgcache_read_tags(MsgCache *cache, const gchar *tags_file)
@@ -986,6 +989,9 @@ void msgcache_read_tags(MsgCache *cache, const gchar *tags_file)
 	}
 bail_err:
 	fclose(fp);
+	if (error) {
+		debug_print("error reading cache tags from %s\n", tags_file);
+	}
 }
 
 static int msgcache_write_cache(MsgInfo *msginfo, FILE *fp)

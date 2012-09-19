@@ -705,8 +705,6 @@ void toolbar_read_config_file(ToolbarType source)
 {
 	XMLFile *file   = NULL;
 	gchar *fileSpec = NULL;
-	GList *attr;
-	gboolean retVal;
 	jmp_buf    jumper;
 
 	debug_print("read Toolbar Configuration from %s\n", toolbar_config[source].conf_file);
@@ -726,9 +724,6 @@ void toolbar_read_config_file(ToolbarType source)
 			return;
 		}
 
-		attr = xml_get_current_tag_attr(file);
-		
-		retVal = TRUE;
 		for (;;) {
 			if (!file->level) 
 				break;

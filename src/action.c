@@ -1473,6 +1473,9 @@ static void catch_status(gpointer data, gint source, GIOCondition cond)
 	g_source_remove(child_info->tag_status);
 
 	c = read(source, &buf, 1);
+	if (c != 1) {
+		g_message("error reading child return status\n");
+	}
 	debug_print("Child returned %c\n", buf);
 
 #ifdef G_OS_UNIX

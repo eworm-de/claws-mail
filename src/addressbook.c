@@ -2142,6 +2142,9 @@ static void addressbook_treenode_add_list(
 
 			group = ( ItemGroup * ) aio;
 			nn = addressbook_node_add_group( treeNode, ds, group );
+			if (nn == NULL) {
+				g_message("error adding addressbook group\n");
+			}
 		}
 		else if( ADDRESS_OBJECT_TYPE(aio) == ITEMTYPE_FOLDER ) {
 			ItemFolder *folder;
@@ -2149,6 +2152,9 @@ static void addressbook_treenode_add_list(
 			folder = ( ItemFolder * ) aio;
 			nn = addressbook_node_add_folder(
 				treeNode, ds, folder, ADDR_ITEM_FOLDER );
+			if (nn == NULL) {
+				g_message("error adding addressbook folder\n");
+			}
 		}
 		node = g_list_next( node );
 	}
@@ -2678,6 +2684,9 @@ static void addressbook_new_folder_cb(GtkAction *action, gpointer data)
 		GtkCMCTreeNode *nn;
 		nn = addressbook_node_add_folder(
 			addrbook.treeSelected, ds, folder, ADDR_ITEM_FOLDER );
+		if (nn == NULL) {
+			g_message("error adding addressbook folder\n");
+		}
 		gtk_cmctree_expand( ctree, addrbook.treeSelected );
 		if( addrbook.treeSelected == addrbook.opened )
 			addressbook_set_clist(obj, TRUE);
@@ -2715,6 +2724,9 @@ static void addressbook_new_group_cb(GtkAction *action, gpointer data)
 	if( group ) {
 		GtkCMCTreeNode *nn;
 		nn = addressbook_node_add_group( addrbook.treeSelected, ds, group );
+		if (nn == NULL) {
+			g_message("error adding addressbook group\n");
+		}
 		gtk_cmctree_expand( ctree, addrbook.treeSelected );
 		if( addrbook.treeSelected == addrbook.opened )
 			addressbook_set_clist(obj, TRUE);
@@ -3978,12 +3990,14 @@ static void addressbook_load_tree( void ) {
 				nodeDS = iface->listSource;
 				while( nodeDS ) {
 					ds = nodeDS->data;
-					newNode = NULL;
 					name = addrindex_ds_get_name( ds );
 					ads = addressbook_create_ds_adapter(
 							ds, atci->objectType, name );
 					newNode = addressbook_add_object(
 							node, ADDRESS_OBJECT(ads) );
+					if (newNode == NULL) {
+						g_message("error adding addressbook object\n");
+					}
 					nodeDS = g_list_next( nodeDS );
 				}
 				gtk_cmctree_expand( ctree, node );
@@ -4579,21 +4593,11 @@ static void addressbook_perform_search(
 	gchar *name;
 	gint queryID;
 	guint idleID;
-#ifdef USE_LDAP
-	AddressObjectType aoType = ADDR_NONE;
-#endif
 
 	/* Setup a query */
 	if( *searchTerm == '\0' || strlen( searchTerm ) < 1 ) return;
 
-	if( ds && ds->type == ADDR_IF_LDAP ) {
-#if USE_LDAP
-		aoType = ADDR_LDAP_QUERY;
-#endif
-	}
-	else {
-		return;
-	}
+	if( !ds || ds->type != ADDR_IF_LDAP ) return;
 
 	/* Create a folder for the search results */
 	name = g_strdup_printf( _queryFolderLabel_, searchTerm );
@@ -4609,6 +4613,9 @@ static void addressbook_perform_search(
 	idleID = g_idle_add(
 			(GSourceFunc) addressbook_search_idle,
 			GINT_TO_POINTER( queryID ) );
+	if (idleID == 0) {
+		g_message("error adding addressbook_search_idle\n");
+	}
 
 	/* Start search, sit back and wait for something to happen */
 	addrindex_start_search( queryID );
@@ -5076,7 +5083,7 @@ static void addrbookctl_build_ifselect( void ) {
 	gint ifType;
 	gint i;
 	gchar *endptr = NULL;
-	gboolean enabled;
+	/* gboolean enabled; */
 	AdapterInterface *adapter;
 
 	selectStr = g_strdup( ADDRESSBOOK_IFACE_SELECTION );
@@ -5087,12 +5094,13 @@ static void addrbookctl_build_ifselect( void ) {
 		if( splitStr[i] ) {
 			/* g_print( "%d : %s\n", i, splitStr[i] ); */
 			ifType = strtol( splitStr[i], &endptr, 10 );
-			enabled = TRUE;
+			/* enabled = TRUE;
 			if( *endptr ) {
 				if( strcmp( endptr, "/n" ) == 0 ) {
 					enabled = FALSE;
 				}
 			}
+			*/
 			/* g_print( "\t%d : %s\n", ifType, enabled ? "yes" : "no" ); */
 			adapter = addrbookctl_find_interface( ifType );
 			if( adapter ) {
@@ -5482,6 +5490,9 @@ void addressbook_harvest(
 				newNode = addressbook_add_object(
 						adapter->treeNode,
 						ADDRESS_OBJECT(ads) );
+				if (newNode == NULL) {
+					g_message("error adding addressbook object\n");
+				}
 			}
 		}
 

@@ -379,6 +379,9 @@ static ItemFolder *addrclip_cache_copy_folder(
 		node = g_list_next( node );
 		newGroup = addrclip_cache_add_group(
 				cache, newFolder, item, copyList );
+		if (newGroup == NULL) {
+			g_message("error allocating memory for new group\n");
+		}
 	}
 	g_list_free( copyList );
 

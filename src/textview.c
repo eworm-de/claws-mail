@@ -1685,7 +1685,6 @@ do_quote:
 void textview_write_link(TextView *textview, const gchar *str,
 			 const gchar *uri, CodeConverter *conv)
 {
-    	GdkColor *link_color = NULL;
 	GtkTextView *text;
 	GtkTextBuffer *buffer;
 	GtkTextIter iter;
@@ -1726,9 +1725,6 @@ void textview_write_link(TextView *textview, const gchar *str,
 	if (bufp > buf)
 		gtk_text_buffer_insert(buffer, &iter, buf, bufp - buf);
 
-    	if (prefs_common.enable_color) {
-		link_color = &uri_color;
-    	}
 	r_uri = g_new0(ClickableText, 1);
 	r_uri->uri = g_strdup(uri);
 	r_uri->start = gtk_text_iter_get_offset(&iter);

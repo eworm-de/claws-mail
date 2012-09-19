@@ -401,7 +401,6 @@ static void addrbook_parse_address(AddressBookFile *book, XMLFile *file,
 static void addrbook_parse_addr_list(AddressBookFile *book, XMLFile *file, 
 				     ItemPerson *person)
 {
-	GList *attr;
 	guint prev_level;
 
 	for (;;) {
@@ -411,7 +410,6 @@ static void addrbook_parse_addr_list(AddressBookFile *book, XMLFile *file,
 		}
 		if (file->level < prev_level) return;
 		if (xml_compare_tag(file, AB_ELTAG_ADDRESS)) {
-			attr = xml_get_current_tag_attr(file);
 			addrbook_parse_address(book, file, person);
 			addrbook_parse_addr_list(book, file, person);
 		}
@@ -467,7 +465,6 @@ static void addrbook_parse_attribute(XMLFile *file, ItemPerson *person)
 static void addrbook_parse_attr_list(AddressBookFile *book, XMLFile *file, 
 				     ItemPerson *person)
 {
-	GList *attr;
 	guint prev_level;
 
 	for (;;) {
@@ -477,7 +474,6 @@ static void addrbook_parse_attr_list(AddressBookFile *book, XMLFile *file,
 		}
 		if (file->level < prev_level) return;
 		if (xml_compare_tag(file, AB_ELTAG_ATTRIBUTE)) {
-			attr = xml_get_current_tag_attr(file);
 			addrbook_parse_attribute(file, person);
 			addrbook_parse_attr_list(book, file, person);
 		}
@@ -579,7 +575,6 @@ static void addrbook_parse_member(AddressBookFile *book, XMLFile *file,
 static void addrbook_parse_member_list(AddressBookFile *book, XMLFile *file, 
 				       ItemGroup *group)
 {
-	GList *attr;
 	guint prev_level;
 
 	for (;;) {
@@ -590,12 +585,8 @@ static void addrbook_parse_member_list(AddressBookFile *book, XMLFile *file,
 		if (file->level < prev_level)
 			return;
 		if (xml_compare_tag(file, AB_ELTAG_MEMBER)) {
-			attr = xml_get_current_tag_attr(file);
 			addrbook_parse_member(book, file, group);
 			addrbook_parse_member_list(book, file, group);
-		}
-		else {
-			attr = xml_get_current_tag_attr(file);
 		}
 	}
 }
@@ -674,7 +665,6 @@ static void addrbook_parse_folder_item(AddressBookFile *book, XMLFile *file,
 static void addrbook_parse_folder_list(AddressBookFile *book, XMLFile *file,
 				       ItemFolder *folder)
 {
-	GList *attr;
 	guint prev_level;
 
 	for (;;) {
@@ -685,12 +675,8 @@ static void addrbook_parse_folder_list(AddressBookFile *book, XMLFile *file,
 		if (file->level < prev_level)
 			return;
 		if (xml_compare_tag(file, AB_ELTAG_ITEM)) {
-			attr = xml_get_current_tag_attr(file);
 			addrbook_parse_folder_item(book, file, folder);
 			addrbook_parse_folder_list(book, file, folder);
-		}
-		else {
-			attr = xml_get_current_tag_attr(file);
 		}
 	}
 }
@@ -1924,9 +1910,10 @@ gchar *addrbook_gen_new_file_name(gint fileNum) {
  * \param book Address book.
  * \param file XML file handle.
  */
-static void addrbook_chkparse_addr_list( AddressBookFile *book, XMLFile *file ){
+static void addrbook_chkparse_addr_list( AddressBookFile *book, XMLFile *file )
+{
 	guint prev_level;
-	GList *attr;
+	/* GList *attr; */
 
 	for (;;) {
 		prev_level = file->level;
@@ -1934,7 +1921,7 @@ static void addrbook_chkparse_addr_list( AddressBookFile *book, XMLFile *file ){
 			longjmp(book->jumper, 1);
 		if (file->level < prev_level)
 			return;
-		attr = xml_get_current_tag_attr(file);
+		/* attr = xml_get_current_tag_attr(file); */
 		/* addrbook_show_attribs( attr ); */
 		if (xml_compare_tag(file, AB_ELTAG_ADDRESS))
 			addrbook_chkparse_addr_list(book, file);
@@ -1948,12 +1935,12 @@ static void addrbook_chkparse_addr_list( AddressBookFile *book, XMLFile *file ){
  */
 static void addrbook_chkparse_attribute(AddressBookFile *book, XMLFile *file)
 {
-	GList *attr;
-	gchar *element;
+	/* GList *attr; */
+	/* gchar *element; */
 
-	attr = xml_get_current_tag_attr(file);
+	/* attr = xml_get_current_tag_attr(file); */
 	/* addrbook_show_attribs( attr ); */
-	element = xml_get_element(file);
+	/* element = xml_get_element(file); */
 	/* g_print( "\t\tattrib value : %s\n", element ); */
 }
 
@@ -1986,9 +1973,9 @@ static void addrbook_chkparse_attr_list(AddressBookFile *book, XMLFile *file)
  */
 static void addrbook_chkparse_person(AddressBookFile *book, XMLFile *file)
 {
-	GList *attr;
+	/* GList *attr; */
 
-	attr = xml_get_current_tag_attr(file);
+	/* attr = xml_get_current_tag_attr(file); */
 	/* addrbook_show_attribs( attr ); */
 	if (xml_parse_next_tag(file)) /* Consume closing tag */
 		longjmp(book->jumper, 1);
@@ -2010,7 +1997,7 @@ static void addrbook_chkparse_person(AddressBookFile *book, XMLFile *file)
  */
 static void addrbook_chkparse_member_list(AddressBookFile *book, XMLFile *file)
 {
-	GList *attr;
+	/* GList *attr; */
 	guint prev_level;
 
 	for (;;) {
@@ -2022,12 +2009,12 @@ static void addrbook_chkparse_member_list(AddressBookFile *book, XMLFile *file)
 			return;
 			
 		if (xml_compare_tag(file, AB_ELTAG_MEMBER)) {
-			attr = xml_get_current_tag_attr(file);
+			/* attr = xml_get_current_tag_attr(file); */
 			/* addrbook_show_attribs( attr ); */
 			addrbook_chkparse_member_list(book, file);
 		}
 		else {
-			attr = xml_get_current_tag_attr(file);
+			/* attr = xml_get_current_tag_attr(file); */
 			/* addrbook_show_attribs( attr ); */
 		}
 	}
@@ -2040,9 +2027,9 @@ static void addrbook_chkparse_member_list(AddressBookFile *book, XMLFile *file)
  */
 static void addrbook_chkparse_group(AddressBookFile *book, XMLFile *file)
 {
-	GList *attr;
+	/* GList *attr; */
 
-	attr = xml_get_current_tag_attr(file);
+	/* attr = xml_get_current_tag_attr(file); */
 	/* addrbook_show_attribs( attr ); */
 	if (xml_parse_next_tag(file))	/* Consume closing tag */
 		longjmp(book->jumper, 1);
@@ -2058,7 +2045,7 @@ static void addrbook_chkparse_group(AddressBookFile *book, XMLFile *file)
  */
 static void addrbook_chkparse_folder_list(AddressBookFile *book, XMLFile *file)
 {
-	GList *attr;
+	/* GList *attr; */
 	guint prev_level;
 
 	for (;;) {
@@ -2070,12 +2057,12 @@ static void addrbook_chkparse_folder_list(AddressBookFile *book, XMLFile *file)
 			return;
 			
 		if (xml_compare_tag(file, AB_ELTAG_ITEM)) {
-			attr = xml_get_current_tag_attr(file);
+			/* attr = xml_get_current_tag_attr(file); */
 			/* addrbook_show_attribs( attr ); */
 			addrbook_chkparse_folder_list(book, file);
 		}
 		else {
-			attr = xml_get_current_tag_attr(file);
+			/* attr = xml_get_current_tag_attr(file); */
 			/* addrbook_show_attribs( attr ); */
 		}
 	}
@@ -2088,9 +2075,9 @@ static void addrbook_chkparse_folder_list(AddressBookFile *book, XMLFile *file)
  */
 static void addrbook_chkparse_folder(AddressBookFile *book, XMLFile *file)
 {
-	GList *attr;
+	/* GList *attr; */
 
-	attr = xml_get_current_tag_attr(file);
+	/* attr = xml_get_current_tag_attr(file); */
 	/* addrbook_show_attribs( attr ); */
 	if (xml_parse_next_tag(file))	/* Consume closing tag */
 		longjmp(book->jumper, 1);
@@ -2106,7 +2093,7 @@ static void addrbook_chkparse_folder(AddressBookFile *book, XMLFile *file)
  */
 static gboolean addrbook_chkread_tree(AddressBookFile *book, XMLFile *file)
 {
-	GList *attr;
+	/* GList *attr; */
 	gboolean retVal;
 
 	if (xml_get_dtd(file))
@@ -2118,7 +2105,7 @@ static gboolean addrbook_chkread_tree(AddressBookFile *book, XMLFile *file)
 	if (!xml_compare_tag(file, AB_ELTAG_ADDRESS_BOOK))
 		return FALSE;
 
-	attr = xml_get_current_tag_attr(file);
+	/* attr = xml_get_current_tag_attr(file); */
 	/* addrbook_show_attribs( attr ); */
 
 	retVal = TRUE;

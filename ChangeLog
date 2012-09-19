@@ -1,3 +1,24 @@
+2012-09-19 [mones]	3.8.1cvs62
+
+	* src/action.c
+		Use unused var c to check result and emit messages on error
+	* src/addrbook.c
+		Remove unused vars: attr (several functions), element
+	* src/addrclip.c
+		Use unused var newGroup to check result
+	* src/addrcustomattr.c
+		Remove unused var summaryview and related code
+	* src/addressbook.c
+		Use unused vars nn, newNode, idleID to check result
+		Remove unused var aoType and refactor logic around it
+		Comment var enabled and related debug code
+	* src/msgcache.c
+		Use unused var error to check result and emit debug messages
+	* src/textview.c
+		Remove unused var link_color
+	* src/toolbar.c
+		Remove unused vars: attr, retVal
+
 2012-09-19 [colin]	3.8.1cvs61
 
 	* src/imap.c
