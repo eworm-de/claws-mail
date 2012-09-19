@@ -199,7 +199,7 @@ static gchar *addrselect_format_address( AddrItemObject * aio ) {
 	gchar *name = NULL;
 	gchar *address = NULL;
 
-	if( aio->type == ADDR_ITEM_EMAIL ) {
+	if( aio->type == ITEMTYPE_EMAIL ) {
 		ItemPerson *person = NULL;
 		ItemEMail *email = ( ItemEMail * ) aio;
 
@@ -220,7 +220,7 @@ static gchar *addrselect_format_address( AddrItemObject * aio ) {
 			address = email->address;
 		}
 	}
-	else if( aio->type == ADDR_ITEM_PERSON ) {
+	else if( aio->type == ITEMTYPE_PERSON ) {
 		ItemPerson *person = ( ItemPerson * ) aio;
 		GList *node = person->listEMail;
 
@@ -276,9 +276,9 @@ void addrselect_list_add_obj( AddrSelectList *asl, AddrItemObject *aio, gchar *c
 	/* Check whether object is in list */
 	if( addrselect_list_find( asl->listSelect, aio ) ) return;
 
-	if( aio->type == ADDR_ITEM_PERSON ||
-	    aio->type == ADDR_ITEM_EMAIL ||
-	    aio->type == ADDR_ITEM_GROUP ) {
+	if( aio->type == ITEMTYPE_PERSON ||
+	    aio->type == ITEMTYPE_EMAIL ||
+	    aio->type == ITEMTYPE_GROUP ) {
 		item = addrselect_create_item( aio );
 		item->cacheID = g_strdup( cacheID );
 		asl->listSelect = g_list_append( asl->listSelect, item );
@@ -349,7 +349,7 @@ GList *addrselect_build_list( AddrSelectList *asl ) {
 		item = node->data;
 		aio = ( AddrItemObject * ) item->addressItem;
 		if( aio ) {
-			if( aio->type == ADDR_ITEM_GROUP ) {
+			if( aio->type == ITEMTYPE_GROUP ) {
 				ItemGroup *group = ( ItemGroup * ) aio;
 				GList *node = group->listEMail;
 				while( node ) {

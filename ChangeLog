@@ -1,3 +1,11 @@
+2012-09-19 [colin]	3.8.1cvs66
+
+	* src/addressbook.c
+	* src/addrselect.c
+		Un-mix mixed enum comparison which happened
+		to work because multiple enums define the same
+		values.
+
 2012-09-19 [colin]	3.8.1cvs65
 
 	* src/addrindex.c

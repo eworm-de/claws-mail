@@ -1480,7 +1480,7 @@ static void addressbook_del_clicked(GtkButton *button, gpointer data)
 			item = node->data;
 			node = g_list_next( node );
 			aio = ( AddrItemObject * ) item->addressItem;
-			if( aio->type == ADDR_ITEM_PERSON || aio->type == ADDR_ITEM_EMAIL ) {
+			if( aio->type == ITEMTYPE_PERSON || aio->type == ITEMTYPE_EMAIL ) {
 				group_delete = FALSE;
 				break;
 			}
@@ -1510,10 +1510,10 @@ static void addressbook_del_clicked(GtkButton *button, gpointer data)
 			aio = ( AddrItemObject * ) item->addressItem;
 			if (!aio)
 				continue;
-			if( aio->type == ADDR_ITEM_GROUP ) {
+			if( aio->type == ITEMTYPE_GROUP ) {
 				groups = g_list_prepend(groups, item);
 			}
-			else if( aio->type == ADDR_ITEM_PERSON ) {
+			else if( aio->type == ITEMTYPE_PERSON ) {
 				persons = g_list_prepend(persons, item);
 			}
 		}
@@ -1526,7 +1526,7 @@ static void addressbook_del_clicked(GtkButton *button, gpointer data)
 			aio = ( AddrItemObject * ) item->addressItem;
 			if (!aio)
 				continue;
-			if( aio->type == ADDR_ITEM_EMAIL ) {
+			if( aio->type == ITEMTYPE_EMAIL ) {
 				ItemEMail *sitem = ( ItemEMail * ) aio;
 				ItemPerson *person = ( ItemPerson * ) ADDRITEM_PARENT(sitem);
 				if (!g_list_find_custom(persons, person, (GCompareFunc)(find_person))) {
@@ -1543,7 +1543,7 @@ static void addressbook_del_clicked(GtkButton *button, gpointer data)
 			aio = ( AddrItemObject * ) item->addressItem;
 			if (!aio)
 				continue;
-			if( aio->type == ADDR_ITEM_GROUP ) {
+			if( aio->type == ITEMTYPE_GROUP ) {
 				ItemGroup *item = ( ItemGroup * ) aio;
 				GtkCMCTreeNode *nd = NULL;
 				nd = addressbook_find_group_node( addrbook.opened, item );
@@ -1564,7 +1564,7 @@ static void addressbook_del_clicked(GtkButton *button, gpointer data)
 			aio = ( AddrItemObject * ) item->addressItem;
 			if (!aio)
 				continue;
-			if( aio->type == ADDR_ITEM_PERSON ) {
+			if( aio->type == ITEMTYPE_PERSON ) {
 				ItemPerson *item = ( ItemPerson * ) aio;
 				item->status = DELETE_ENTRY; 
 				addressbook_folder_remove_one_person( clist, item );
@@ -1596,7 +1596,7 @@ static void addressbook_del_clicked(GtkButton *button, gpointer data)
 			if (!aio)
 				continue;
 
-			if( aio->type == ADDR_ITEM_EMAIL ) {
+			if( aio->type == ITEMTYPE_EMAIL ) {
 				ItemEMail *sitem = ( ItemEMail * ) aio;
 				ItemPerson *person = ( ItemPerson * ) ADDRITEM_PARENT(sitem);
 				sitem = addrbook_person_remove_email( abf, person, sitem );
@@ -1632,7 +1632,7 @@ static void addressbook_del_clicked(GtkButton *button, gpointer data)
 			item = node->data;
 			node = g_list_next( node );
 			aio = ( AddrItemObject * ) item->addressItem;
-			if( aio->type == ADDR_ITEM_EMAIL ) {
+			if( aio->type == ITEMTYPE_EMAIL ) {
 				ItemEMail *item = ( ItemEMail * ) aio;
 				ItemPerson *person = ( ItemPerson * ) ADDRITEM_PARENT(item);
 				item = addrbook_person_remove_email( abf, person, item );
@@ -1674,7 +1674,7 @@ static gchar *addressbook_format_address( AddrItemObject * aio ) {
 	gchar *name = NULL;
 	gchar *address = NULL;
 
-	if( aio->type == ADDR_ITEM_EMAIL ) {
+	if( aio->type == ITEMTYPE_EMAIL ) {
 		ItemPerson *person = NULL;
 		ItemEMail *email = ( ItemEMail * ) aio;
 
@@ -1695,7 +1695,7 @@ static gchar *addressbook_format_address( AddrItemObject * aio ) {
 			address = email->address;
 		}
 	}
-	else if( aio->type == ADDR_ITEM_PERSON ) {
+	else if( aio->type == ITEMTYPE_PERSON ) {
 		ItemPerson *person = ( ItemPerson * ) aio;
 		GList *node = person->listEMail;
 
@@ -1746,14 +1746,14 @@ static void addressbook_to_clicked(GtkButton *button, gpointer data)
 			item = node->data;
 			node = g_list_next( node );
 			aio = item->addressItem;
-			if( aio->type == ADDR_ITEM_PERSON ||
-			    aio->type == ADDR_ITEM_EMAIL ) {
+			if( aio->type == ITEMTYPE_PERSON ||
+			    aio->type == ITEMTYPE_EMAIL ) {
 				addr = addressbook_format_address( aio );
 				compose_entry_append(
 					compose, addr, (ComposeEntryType) data, PREF_NONE );
 				g_free( addr );
 			}
-			else if( aio->type == ADDR_ITEM_GROUP ) {
+			else if( aio->type == ITEMTYPE_GROUP ) {
 				ItemGroup *group = ( ItemGroup * ) aio;
 				GList *nodeMail = group->listEMail;
 				while( nodeMail ) {
@@ -2137,7 +2137,7 @@ static void addressbook_treenode_add_list(
 		GtkCMCTreeNode *nn;
 
 		aio = node->data;
-		if( ADDRESS_OBJECT_TYPE(aio) == ITEMTYPE_GROUP ) {
+		if( ADDRESS_OBJECT_TYPE(aio) == ADDR_ITEM_GROUP ) {
 			ItemGroup *group;
 
 			group = ( ItemGroup * ) aio;
@@ -2146,7 +2146,7 @@ static void addressbook_treenode_add_list(
 				g_message("error adding addressbook group\n");
 			}
 		}
-		else if( ADDRESS_OBJECT_TYPE(aio) == ITEMTYPE_FOLDER ) {
+		else if( ADDRESS_OBJECT_TYPE(aio) == ADDR_ITEM_FOLDER ) {
 			ItemFolder *folder;
 
 			folder = ( ItemFolder * ) aio;
@@ -3185,7 +3185,7 @@ static void addressbook_new_address_cb( GtkAction *action, gpointer data ) {
 			ItemPerson *person;
 			ItemFolder *folder = NULL;
 #ifdef USE_LDAP
-			if (abf && abf->type == ADDR_IF_LDAP) {
+			if (abf && abf->type == ADBOOKTYPE_LDAP) {
 				GtkCMCTreeNode *parentNode;
 				ds = addressbook_find_datasource( GTK_CMCTREE_NODE( addrbook.treeSelected ) );
 				if( ds == NULL ) return;
@@ -3213,7 +3213,7 @@ static void addressbook_new_address_cb( GtkAction *action, gpointer data ) {
 								  addressbook_new_address_from_book_post_cb,
 								  TRUE );
 #ifdef USE_LDAP
-			if (ds && abf && abf->type == ADDR_IF_LDAP) {
+			if (ds && abf && abf->type == ADBOOKTYPE_LDAP) {
 				LdapServer *server = ds->rawDataSource;
 				ldapsvr_set_modified(server, TRUE);
 				ldapsvr_update_book(server, NULL);
@@ -3235,7 +3235,7 @@ static void addressbook_new_address_cb( GtkAction *action, gpointer data ) {
 		ItemFolder *folder = ADAPTER_FOLDER(pobj)->itemFolder;
 		ItemPerson *person;
 #ifdef USE_LDAP
-		if (abf && abf->type == ADDR_IF_LDAP) {
+		if (abf && abf->type == ADBOOKTYPE_LDAP) {
 			GtkCMCTreeNode *parentNode;
 			ds = addressbook_find_datasource( GTK_CMCTREE_NODE( addrbook.treeSelected ) );
 			if( ds == NULL ) return;
@@ -3264,7 +3264,7 @@ static void addressbook_new_address_cb( GtkAction *action, gpointer data ) {
 							  addressbook_new_address_from_folder_post_cb,
 							  TRUE );
 #ifdef USE_LDAP
-		if (ds && abf && abf->type == ADDR_IF_LDAP) {
+		if (ds && abf && abf->type == ADBOOKTYPE_LDAP) {
 			LdapServer *server = ds->rawDataSource;
 			ldapsvr_set_modified(server, TRUE);
 			ldapsvr_update_book(server, NULL);
@@ -3364,7 +3364,7 @@ static void addressbook_edit_address_post_cb( ItemPerson *person )
 #ifdef USE_LDAP
 		AddressBookFile *abf = addressbook_get_book_file();
 
-		if (abf && abf->type == ADDR_IF_LDAP) {
+		if (abf && abf->type == ADBOOKTYPE_LDAP) {
 			if (strcmp2(person->nickName, ADDRITEM_NAME(person)))
 				addritem_person_set_nick_name( person, ADDRITEM_NAME(person));
 		}
@@ -3440,7 +3440,7 @@ static void addressbook_edit_address( gpointer data, guint action, GtkWidget *wi
 										   (prefs_common.addressbook_use_editaddress_dialog||force_focus) )
 				  != NULL ) { 
 #ifdef USE_LDAP
-				if (abf && abf->type == ADDR_IF_LDAP) {
+				if (abf && abf->type == ADBOOKTYPE_LDAP) {
 					ldapsvr_set_modified( (LdapServer *) abf, TRUE );
 					person->status = UPDATE_ENTRY;
 				}
@@ -3459,7 +3459,7 @@ static void addressbook_edit_address( gpointer data, guint action, GtkWidget *wi
 									  (prefs_common.addressbook_use_editaddress_dialog||force_focus) )
 			!= NULL ) {
 #ifdef USE_LDAP
-				if (abf && abf->type == ADDR_IF_LDAP) {
+				if (abf && abf->type == ADBOOKTYPE_LDAP) {
 					ldapsvr_set_modified( (LdapServer *) abf, TRUE );
 					person->status = UPDATE_ENTRY;
 				}
@@ -3613,7 +3613,7 @@ static void addressbook_folder_load_one_person(
 				text[COL_NAME] = addressbook_set_col_name_guard(str);
 			}
 #ifdef USE_LDAP
-			else if( abf && abf->type == ADDR_IF_LDAP && 
+			else if( abf && abf->type == ADBOOKTYPE_LDAP && 
 				 person && person->nickName ) {
 				if (person->nickName) {
 					if (strcmp(person->nickName, "") != 0) {
@@ -5607,12 +5607,12 @@ static void addressbook_drag_data_get(GtkWidget        *widget,
 	for(cur = GTK_CMCLIST(addrbook.clist)->selection; cur; cur = cur->next) {
 		aio = (AddrItemObject *)gtk_cmctree_node_get_row_data(GTK_CMCTREE(addrbook.clist),
 			GTK_CMCTREE_NODE(cur->data));
-		while (aio && aio->type != ADDR_ITEM_PERSON) {
+		while (aio && aio->type != ITEMTYPE_PERSON) {
 			aio = aio->parent;
 		}
        }
 
-	if (aio && aio->type == ADDR_ITEM_PERSON) {
+	if (aio && aio->type == ITEMTYPE_PERSON) {
 		if( ds && ds->interface && ds->interface->readOnly)
 			gtk_selection_data_set(selection_data,
 				       gtk_selection_data_get_target(selection_data), 8,
