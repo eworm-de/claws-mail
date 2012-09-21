@@ -1,3 +1,10 @@
+2012-09-21 [colin]	3.8.1cvs70
+
+	* src/folder.c
+		Fix warning where msgcount was used
+		uninitialized in case the search was
+		to be performed on a message list subset.
+
 2012-09-21 [colin]	3.8.1cvs69
 
 	* src/gtk/quicksearch.c

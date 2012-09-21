@@ -4773,6 +4773,7 @@ gint folder_item_search_msgs_local	(Folder			*folder,
 			return -1;
 	} else {
 		nums = *msgs;
+		msgcount = g_slist_length(nums);
 	}
 
 	for (cur = nums; cur != NULL; cur = cur->next) {
