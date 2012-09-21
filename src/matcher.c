@@ -48,6 +48,7 @@
 #include "log.h"
 #include "tags.h"
 #include "folder_item_prefs.h"
+#include "procmsg.h"
 
 /*!
  *\brief	Keyword lookup element

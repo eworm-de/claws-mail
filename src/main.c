@@ -121,6 +121,7 @@
 #include "hooks.h"
 #include "menu.h"
 #include "quicksearch.h"
+#include "advsearch.h"
 
 #ifdef HAVE_LIBETPAN
 #include "imap-thread.h"
@@ -2550,8 +2551,6 @@ static void lock_socket_input_cb(gpointer data,
 	MainWindow *mainwin = (MainWindow *)data;
 	gint sock;
 	gchar buf[BUFFSIZE];
-	/* re-use the same quicksearch (& avoid matcher_list mem.leaks) */
-	static QuickSearch *quicksearch = NULL;
 
 	sock = fd_accept(source);
 	fd_gets(sock, buf, sizeof(buf));
@@ -2674,37 +2673,44 @@ static void lock_socket_input_cb(gpointer data,
 	} else if (!strncmp(buf, "search ", 7)) {
 		FolderItem* folderItem = NULL;
 		GSList *messages = NULL;
-		gchar *folder_name, *request;
-		QuickSearchType searchType = QUICK_SEARCH_EXTENDED;
+		gchar *folder_name = NULL;
+		gchar *request = NULL;
+		AdvancedSearch *search;
 		gboolean recursive;
-
-		if (quicksearch==NULL)
-			quicksearch = quicksearch_new_nogui();
+		AdvancedSearchType searchType = ADVANCED_SEARCH_EXTENDED;
 		
+		search = advsearch_new();
+
 		folder_name = g_strdup(buf+7);
 		strretchomp(folder_name);
 
-		if (fd_gets(sock, buf, sizeof(buf)) <= 0) {
-			g_free(folder_name);
-			folder_name=NULL;
+		if (fd_gets(sock, buf, sizeof(buf)) <= 0) 
+			goto search_exit;
+
+		switch (toupper(buf[0])) {
+		case 'S': searchType = ADVANCED_SEARCH_SUBJECT; break;
+		case 'F': searchType = ADVANCED_SEARCH_FROM; break;
+		case 'T': searchType = ADVANCED_SEARCH_TO; break;
+		case 'M': searchType = ADVANCED_SEARCH_MIXED; break;
+		case 'G': searchType = ADVANCED_SEARCH_TAG; break;
+		case 'E': searchType = ADVANCED_SEARCH_EXTENDED; break;
 		}
-		searchType = quicksearch_type(buf);
-		if (fd_gets(sock, buf, sizeof(buf)) <= 0) {
-			g_free(folder_name);
-			folder_name=NULL;
-		}
+
+		if (fd_gets(sock, buf, sizeof(buf)) <= 0) 
+			goto search_exit;
+
 		request = g_strdup(buf);
 		strretchomp(request);
 
 		recursive = TRUE;
 		if (fd_gets(sock, buf, sizeof(buf)) > 0)
-			if (buf[0]=='0')
-				recursive = FALSE;
+			recursive = buf[0] != '0';
 
-		debug_print("search: %s %i %s %i\n",folder_name,searchType,request,recursive);
+		debug_print("search: %s %i %s %i\n", folder_name, searchType, request, recursive);
 
 		if (folder_name)
 			folderItem = folder_find_item_from_identifier(folder_name);
+
 		if (folder_name && folderItem == NULL) {
 			debug_print("Unknown folder item : '%s', searching folder\n",folder_name);
 			Folder* folder = folder_find_from_path(folder_name);
@@ -2715,16 +2721,16 @@ static void lock_socket_input_cb(gpointer data,
 		} else {
 			debug_print("%s %s\n",folderItem->name, folderItem->path);
 		}
+
 		if (folderItem != NULL) {
-			quicksearch_set(quicksearch, searchType, request);
-			quicksearch_set_recursive(quicksearch, recursive);
-			search_msgs_in_folders(&messages, quicksearch, folderItem);
+			advsearch_set(search, searchType, request);
+			advsearch_search_msgs_in_folders(search, &messages, folderItem, recursive);
 		} else {
 			g_print("Folder '%s' not found.\n'", folder_name);
 		}
 
 		GSList *cur;
-		for (cur=messages; cur != NULL; cur = cur->next) {
+		for (cur = messages; cur != NULL; cur = cur->next) {
 			MsgInfo* msg = (MsgInfo *)cur->data;
 			gchar *file = procmsg_get_message_file_path(msg);
 			fd_write_all(sock, file, strlen(file));
@@ -2733,10 +2739,12 @@ static void lock_socket_input_cb(gpointer data,
 		}
 		fd_write_all(sock, ".\n", 2);
 
-		if (messages != NULL)
-			procmsg_msg_list_free(messages);
+search_exit:
 		g_free(folder_name);
 		g_free(request);
+		advsearch_free(search);
+		if (messages != NULL)
+			procmsg_msg_list_free(messages);
 	} else if (!strncmp(buf, "exit", 4)) {
 		if (prefs_common.clean_on_exit && !prefs_common.ask_on_clean) {
 			procmsg_empty_all_trash();

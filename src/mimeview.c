@@ -2787,7 +2787,7 @@ void mimeview_handle_cmd(MimeView *mimeview, const gchar *cmd, GdkEventButton *e
 				GTK_TOGGLE_BUTTON(mimeview->messageview->mainwin->summaryview->toggle_search), 
 				TRUE);
 		quicksearch_set(mimeview->messageview->mainwin->summaryview->quicksearch, 
-				QUICK_SEARCH_EXTENDED, buf);
+				ADVANCED_SEARCH_EXTENDED, buf);
 		g_free(buf);
 	}
 }

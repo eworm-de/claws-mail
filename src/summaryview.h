@@ -166,6 +166,10 @@ private:
 	gint folder_update_callback_id;
 
 	GtkTargetList *target_list; /* DnD */
+
+	// folders with matches for recursive quicksearch queries
+	GSList *recursive_matched_folders;
+	FolderItem *search_root_folder;
 	
 #if !GTK_CHECK_VERSION(2,12,0)
 	GtkTooltips *tooltips;

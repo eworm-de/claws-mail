@@ -4689,6 +4689,22 @@ gboolean folder_has_parent_of_type(FolderItem *item,
 	return FALSE;
 }
 
+gboolean folder_is_child_of(FolderItem *item, FolderItem *parent)
+{
+	if (item == NULL || parent == NULL)
+		return FALSE;
+
+	while (item != NULL) {
+		if (parent == item)
+			return TRUE;
+
+		item = folder_item_parent(item);
+	}
+
+	return FALSE;
+}
+
+
 gboolean folder_subscribe (const gchar *uri)
 {
 	GList *cur;
@@ -4715,3 +4731,74 @@ gboolean folder_get_sort_type		(Folder		*folder,
 	folder->klass->get_sort_type(folder, sort_key, sort_type); 
 	return TRUE;
 }
+
+gint folder_item_search_msgs	(Folder			*folder,
+				 FolderItem		*container,
+				 MsgNumberList		**msgs,
+				 gboolean		*on_server,
+				 MatcherList		*predicate,
+				 SearchProgressNotify	progress_cb,
+				 gpointer		progress_data)
+{
+	if (folder->klass->search_msgs) {
+		return folder->klass->search_msgs(folder, container,
+				msgs, on_server, predicate, progress_cb, progress_data);
+	} else {
+		return folder_item_search_msgs_local(folder, container,
+				msgs, on_server, predicate, progress_cb, progress_data);
+	}
+}
+
+gint folder_item_search_msgs_local	(Folder			*folder,
+					 FolderItem		*container,
+					 MsgNumberList		**msgs,
+					 gboolean		*on_server,
+					 MatcherList		*predicate,
+					 SearchProgressNotify	progress_cb,
+					 gpointer		progress_data)
+{
+	GSList *result = NULL;
+	GSList *cur = NULL;
+	gint matched_count = 0;
+	guint processed_count = 0;
+	gint msgcount;
+	GSList *nums = NULL;
+
+	if (*msgs == NULL) {
+		gboolean old_valid = TRUE;
+	       
+		msgcount = folder->klass->get_num_list(folder, container, &nums, &old_valid);
+		
+		if (msgcount < 0)
+			return -1;
+	} else {
+		nums = *msgs;
+	}
+
+	for (cur = nums; cur != NULL; cur = cur->next) {
+		guint msgnum = GPOINTER_TO_UINT(cur->data);
+		MsgInfo *msg = folder_item_get_msginfo(container, msgnum);
+
+		if (msg == NULL) {
+			g_slist_free(result);
+			return -1;
+		}
+
+		if (matcherlist_match(predicate, msg)) {
+			result = g_slist_prepend(result, GUINT_TO_POINTER(msg->msgnum));
+			matched_count++;
+		}
+		processed_count++;
+
+		if (progress_cb != NULL
+		    && !progress_cb(progress_data, FALSE, processed_count,
+			    matched_count, msgcount))
+			break;
+	}
+
+	g_slist_free(nums);
+	*msgs = g_slist_reverse(result);
+
+	return matched_count;
+}
+

@@ -158,6 +158,7 @@ FolderClass *news_get_class(void)
 		news_class.type = F_NEWS;
 		news_class.idstr = "news";
 		news_class.uistr = "News";
+		news_class.supports_server_search = FALSE;
 
 		/* Folder functions */
 		news_class.new_folder = news_folder_new;
@@ -175,6 +176,7 @@ FolderClass *news_get_class(void)
 		news_class.get_msginfos = news_get_msginfos;
 		news_class.fetch_msg = news_fetch_msg;
 		news_class.synchronise = news_synchronise;
+		news_class.search_msgs = folder_item_search_msgs_local;
 		news_class.remove_msg = news_remove_msg;
 		news_class.remove_cached_msg = news_remove_cached_msg;
 	};

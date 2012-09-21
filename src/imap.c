@@ -445,6 +445,7 @@ FolderClass *imap_get_class(void)
 		imap_class.type = F_IMAP;
 		imap_class.idstr = "imap";
 		imap_class.uistr = "IMAP4";
+		imap_class.supports_server_search = FALSE;
 
 		/* Folder functions */
 		imap_class.new_folder = imap_folder_new;
@@ -476,6 +477,7 @@ FolderClass *imap_get_class(void)
 		imap_class.add_msgs = imap_add_msgs;
 		imap_class.copy_msg = imap_copy_msg;
 		imap_class.copy_msgs = imap_copy_msgs;
+		imap_class.search_msgs = folder_item_search_msgs_local;
 		imap_class.remove_msg = imap_remove_msg;
 		imap_class.remove_msgs = imap_remove_msgs;
 		imap_class.expunge = imap_expunge;

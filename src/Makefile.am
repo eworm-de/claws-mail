@@ -126,6 +126,7 @@ claws_mail_SOURCES = \
 	addrgather.c \
 	addrharvest.c \
 	addritem.c \
+	advsearch.c \
 	alertpanel.c \
 	autofaces.c \
 	codeconv.c \
@@ -238,6 +239,7 @@ claws_mailinclude_HEADERS = \
 	addressitem.h \
 	addrgather.h \
 	addrharvest.h \
+	advsearch.h \
 	alertpanel.h \
 	autofaces.h \
 	codeconv.h \
@@ -267,6 +269,7 @@ claws_mailinclude_HEADERS = \
 	mainwindow.h \
 	manual.h \
 	matcher.h \
+	matchertypes.h \
 	matcher_parser.h \
 	matcher_parser_lex.h \
 	matcher_parser_parse.h \

@@ -1,3 +1,29 @@
+2012-09-21 [colin]	3.8.1cvs68
+
+	* src/Makefile.am
+	* src/advsearch.c ** ADDED **
+	* src/advsearch.h ** ADDED **
+	* src/folder.c
+	* src/folder.h
+	* src/folderview.c
+	* src/imap.c
+	* src/main.c
+	* src/matcher.c
+	* src/matcher.h
+	* src/matchertypes.h ** ADDED **
+	* src/mh.c
+	* src/mimeview.c
+	* src/news.c
+	* src/proctypes.h
+	* src/summary_search.c
+	* src/summaryview.c
+	* src/summaryview.h
+	* src/gtk/quicksearch.c
+	* src/gtk/quicksearch.h
+		Separated GUI and logic for search
+		Use same logic for quicksearch and folder search
+		Patch by Sean Buckheister <s_buckhe@cs.uni-kl.de>
+
 2012-09-19 [mones]	3.8.1cvs67
 
 	* src/mainwindow.c

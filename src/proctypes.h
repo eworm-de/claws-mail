@@ -20,6 +20,8 @@
 #ifndef PROCTYPES_H
 #define PROCTYPES_H
 
+#include <glib.h>
+
 struct _MsgInfo;
 typedef struct _MsgInfo			MsgInfo;
 

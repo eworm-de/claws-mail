@@ -148,6 +148,7 @@ FolderClass *mh_get_class(void)
 		mh_class.type = F_MH;
 		mh_class.idstr = "mh";
 		mh_class.uistr = "MH";
+		mh_class.supports_server_search = FALSE;
 		
 		/* Folder functions */
 		mh_class.new_folder = mh_folder_new;
@@ -175,6 +176,7 @@ FolderClass *mh_get_class(void)
 		mh_class.add_msgs = mh_add_msgs;
 		mh_class.copy_msg = mh_copy_msg;
 		mh_class.copy_msgs = mh_copy_msgs;
+		mh_class.search_msgs = folder_item_search_msgs_local;
 		mh_class.remove_msg = mh_remove_msg;
 		mh_class.remove_msgs = mh_remove_msgs;
 		mh_class.remove_all_msg = mh_remove_all_msg;

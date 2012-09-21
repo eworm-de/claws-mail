@@ -394,6 +394,7 @@ static gint summary_cmp_by_tags		(GtkCMCList 		*clist,
 
 static void quicksearch_execute_cb	(QuickSearch    *quicksearch,
 					 gpointer	 data);
+
 static void tog_searchbar_cb		(GtkWidget	*w,
 					 gpointer	 data);
 
@@ -1068,16 +1069,101 @@ static void summary_switch_from_to(SummaryView *summaryview, FolderItem *item)
 	summary_set_column_titles(summaryview);
 }
 
-static gboolean summaryview_quicksearch_recurse(gpointer data)
+static void summaryview_reset_recursive_folder_match(SummaryView *summaryview)
 {
-	SummaryView *summaryview = (SummaryView *)data;
+	GSList *cur;
+
+	for (cur = summaryview->recursive_matched_folders; cur != NULL; cur = cur->next) {
+		folderview_update_search_icon(cur->data, FALSE);
+	}
+
+	g_slist_free(summaryview->recursive_matched_folders);
+	summaryview->recursive_matched_folders = NULL;
+	summaryview->search_root_folder = NULL;
+}
+
+static gboolean summaryview_quicksearch_recursive_progress(gpointer data, guint at, guint matched, guint total)
+{
+	QuickSearch *search = (QuickSearch*) data;
+	gint interval = quicksearch_is_fast(search) ? 5000 : 100;
+
+	statusbar_progress_all(at, total, interval);
+	if (at % interval == 0)
+		GTK_EVENTS_FLUSH();
+
+	if (matched > 0)
+		return FALSE;
+
+	return TRUE;
+}
+
+static void summaryview_quicksearch_recurse_step(SummaryView *summaryview, FolderItem *item)
+{
+	MsgInfoList *msgs = NULL;
+	gboolean result = TRUE;
+
+	statusbar_print_all(_("Searching in %s... \n"),
+		item->path ? item->path : "(null)");
+	folder_item_update_freeze();
+
+	quicksearch_set_on_progress_cb(summaryview->quicksearch, summaryview_quicksearch_recursive_progress, summaryview->quicksearch);
+	if (!quicksearch_run_on_folder(summaryview->quicksearch, item, &msgs))
+		result = FALSE;
+
+	result = result && msgs != NULL;
+
+	if (msgs != NULL)
+		procmsg_msg_list_free(msgs);
+
+	folder_item_update_thaw();
+	statusbar_progress_all(0, 0, 0);
+	statusbar_pop_all();
+
+	if (result) {
+		summaryview->recursive_matched_folders = g_slist_prepend(
+				summaryview->recursive_matched_folders, item);
+	
+		folderview_update_search_icon(item, TRUE);
+	}
+}
+
+static void summaryview_quicksearch_search_subfolders(SummaryView *summaryview, FolderItem *folder_item)
+{
+	FolderItem *cur = NULL;
+	GNode *node = folder_item->node->children;
+
+	if (!prefs_common.summary_quicksearch_recurse
+			|| !quicksearch_has_sat_predicate(summaryview->quicksearch)
+			|| quicksearch_is_in_typing(summaryview->quicksearch))
+		return;
+
+	for (; node != NULL; node = node->next) {
+		if (!quicksearch_has_sat_predicate(summaryview->quicksearch))
+			return;
+
+		cur = FOLDER_ITEM(node->data);
+		summaryview_quicksearch_recurse_step(summaryview, cur);
+		if (cur->node->children)
+			summaryview_quicksearch_search_subfolders(summaryview, cur);
+	}
+}
+
+static void summaryview_quicksearch_recurse(SummaryView *summaryview)
+{
+	if (!prefs_common.summary_quicksearch_recurse
+		|| !quicksearch_has_sat_predicate(summaryview->quicksearch)
+		|| summaryview->folder_item == NULL) {
+		return;
+	}
+
 	main_window_cursor_wait(summaryview->mainwin);
-	quicksearch_reset_cur_folder_item(summaryview->quicksearch);
-	quicksearch_search_subfolders(summaryview->quicksearch, 
-			      summaryview->folderview,
-			      summaryview->folder_item);
+
+	summaryview_reset_recursive_folder_match(summaryview);
+	summaryview->search_root_folder = summaryview->folder_item;
+
+	summaryview_quicksearch_search_subfolders(summaryview, summaryview->folder_item);
+	
 	main_window_cursor_normal(summaryview->mainwin);
-	return FALSE;
 }
 
 static gboolean summary_check_consistency(FolderItem *item, GSList *mlist)
@@ -1125,6 +1211,20 @@ static gboolean summary_check_consistency(FolderItem *item, GSList *mlist)
 	return TRUE;
 }
 
+static gboolean summaryview_quicksearch_root_progress(gpointer data, guint at, guint matched, guint total)
+{
+	SummaryView *summaryview = (SummaryView*) data;
+
+	gint interval = quicksearch_is_fast(summaryview->quicksearch) ? 5000 : 100;
+	
+	statusbar_progress_all(at, total, interval);
+
+	if (at % interval == 0)
+		GTK_EVENTS_FLUSH();
+
+	return TRUE;
+}
+
 gboolean summary_show(SummaryView *summaryview, FolderItem *item)
 {
 	GtkCMCTree *ctree = GTK_CMCTREE(summaryview->ctree);
@@ -1169,8 +1269,8 @@ gboolean summary_show(SummaryView *summaryview, FolderItem *item)
 	}
 	if (!prefs_common.summary_quicksearch_sticky
 	 && (!prefs_common.summary_quicksearch_recurse
-	  || !quicksearch_is_active(summaryview->quicksearch)
-	  || (item && !quicksearch_is_in_subfolder(summaryview->quicksearch, item)))
+	  || !quicksearch_has_sat_predicate(summaryview->quicksearch)
+	  || (item && !folder_is_child_of(item, summaryview->search_root_folder)))
 	 && !quicksearch_is_running(summaryview->quicksearch)
 	 && !is_refresh) {
 		quicksearch_set(summaryview->quicksearch, prefs_common.summary_quicksearch_type, "");
@@ -1207,7 +1307,7 @@ gboolean summary_show(SummaryView *summaryview, FolderItem *item)
 			END_TIMING();
 			return FALSE;
 		}
-		if (changed || !quicksearch_is_active(summaryview->quicksearch))
+		if (changed || !quicksearch_has_sat_predicate(summaryview->quicksearch))
 			folder_update_op_count();
 	}
 	
@@ -1231,16 +1331,7 @@ gboolean summary_show(SummaryView *summaryview, FolderItem *item)
 		summary_thaw(summaryview);
 		summary_unlock(summaryview);
 		inc_unlock();
-		if (item && quicksearch_is_running(summaryview->quicksearch)) {
-			main_window_cursor_wait(summaryview->mainwin);
-			quicksearch_reset_cur_folder_item(summaryview->quicksearch);
-			if (quicksearch_is_active(summaryview->quicksearch))
-				quicksearch_search_subfolders(summaryview->quicksearch, 
-					      summaryview->folderview,
-					      summaryview->folder_item);
-			main_window_cursor_normal(summaryview->mainwin);
-		}	
-		END_TIMING();		
+		END_TIMING();
 		return TRUE;
 	}
 	g_free(buf);
@@ -1266,10 +1357,44 @@ gboolean summary_show(SummaryView *summaryview, FolderItem *item)
 		mlist = folder_item_get_msg_list(item);
 	}
 
+	if (quicksearch_has_sat_predicate(summaryview->quicksearch)) {
+		procmsg_msg_list_free(mlist);
+		mlist = NULL;
+
+		START_TIMING("quicksearch");
+
+		statusbar_print_all(_("Searching in %s... \n"), 
+			summaryview->folder_item->path ? 
+			summaryview->folder_item->path : "(null)");
+
+		folder_item_update_freeze();
+
+		quicksearch_set_on_progress_cb(summaryview->quicksearch, summaryview_quicksearch_root_progress, summaryview);
+		quicksearch_run_on_folder(summaryview->quicksearch, summaryview->folder_item, &mlist);
+
+		folder_item_update_thaw();
+		statusbar_progress_all(0, 0, 0);
+		statusbar_pop_all();
+
+		if (!quicksearch_has_sat_predicate(summaryview->quicksearch)) {
+			debug_print("search cancelled!\n");
+			printf("search cancelled!\n");
+			summary_thaw(summaryview);
+			STATUSBAR_POP(summaryview->mainwin);
+			main_window_cursor_normal(summaryview->mainwin);
+			summary_unlock(summaryview);
+			inc_unlock();
+			summary_show(summaryview, summaryview->folder_item);
+			END_TIMING();
+			return FALSE;
+		}
+		END_TIMING();
+	}
+
 	if ((summaryview->folder_item->hide_read_msgs
              || summaryview->folder_item->hide_del_msgs
              || summaryview->folder_item->hide_read_threads) &&
-	    quicksearch_is_active(summaryview->quicksearch) == FALSE) {
+	    quicksearch_has_sat_predicate(summaryview->quicksearch) == FALSE) {
 		GSList *not_killed;
 		
 		summary_set_hide_read_msgs_menu(summaryview, summaryview->folder_item->hide_read_msgs);
@@ -1312,52 +1437,6 @@ gboolean summary_show(SummaryView *summaryview, FolderItem *item)
 		summary_set_hide_read_threads_menu(summaryview, FALSE);
 	}
 
-	if (quicksearch_is_active(summaryview->quicksearch)) {
-		GSList *not_killed;
-		gint interval = quicksearch_is_fast(summaryview->quicksearch) ? 5000:100;
-		START_TIMING("quicksearch");
-		gint num = 0, total = summaryview->folder_item->total_msgs;
-		statusbar_print_all(_("Searching in %s... \n"), 
-			summaryview->folder_item->path ? 
-			summaryview->folder_item->path : "(null)");
-		not_killed = NULL;
-		folder_item_update_freeze();
-		for (cur = mlist ; cur != NULL && cur->data != NULL ; cur = g_slist_next(cur)) {
-			MsgInfo * msginfo = (MsgInfo *) cur->data;
-
-			statusbar_progress_all(num++,total, interval);
-
-			if (!msginfo->hidden && quicksearch_match(summaryview->quicksearch, msginfo))
-				not_killed = g_slist_prepend(not_killed, msginfo);
-			else
-				procmsg_msginfo_free(msginfo);
-			if (num % interval == 0)
-				GTK_EVENTS_FLUSH();
-			if (!quicksearch_is_active(summaryview->quicksearch)) {
-				break;
-			}
-		}
-		folder_item_update_thaw();
-		statusbar_progress_all(0,0,0);
-		statusbar_pop_all();
-		
-		hidden_removed = TRUE;
-		if (!quicksearch_is_active(summaryview->quicksearch)) {
-			debug_print("search cancelled!\n");
-			summary_thaw(summaryview);
-			STATUSBAR_POP(summaryview->mainwin);
-			main_window_cursor_normal(summaryview->mainwin);
-			summary_unlock(summaryview);
-			inc_unlock();
-			summary_show(summaryview, summaryview->folder_item);
-			END_TIMING();
-			return FALSE;
-		}
-		g_slist_free(mlist);
-		mlist = not_killed;
-		END_TIMING();
-	}
-
 	if (!hidden_removed) {
 		START_TIMING("removing hidden");
         	not_killed = NULL;
@@ -1381,13 +1460,6 @@ gboolean summary_show(SummaryView *summaryview, FolderItem *item)
 	summary_set_ctree_from_list(summaryview, mlist);
 
 	g_slist_free(mlist);
-
-	if (quicksearch_is_active(summaryview->quicksearch) &&
-	    quicksearch_is_running(summaryview->quicksearch)) {
-		/* only scan subfolders when quicksearch changed,
-		 * not when search is the same and folder changed */
-		g_timeout_add(100, summaryview_quicksearch_recurse, summaryview);
-	}
 
 	if (is_refresh) {
 		if (!quicksearch_is_in_typing(summaryview->quicksearch)) {
@@ -2492,7 +2564,7 @@ static void summary_status_show(SummaryView *summaryview)
 	if (summaryview->folder_item->hide_read_msgs 
 	|| summaryview->folder_item->hide_del_msgs
 	|| summaryview->folder_item->hide_read_threads
-	|| quicksearch_is_active(summaryview->quicksearch)) {
+	|| quicksearch_has_sat_predicate(summaryview->quicksearch)) {
 		rowlist = GTK_CMCLIST(summaryview->ctree)->row_list;
 		for (cur = rowlist; cur != NULL && cur->data != NULL; cur = cur->next) {
 			msginfo = gtk_cmctree_node_get_row_data
@@ -6738,7 +6810,11 @@ static void quicksearch_execute_cb(QuickSearch *quicksearch, gpointer data)
 {
 	SummaryView *summaryview = data;
 
-	summary_show(summaryview, summaryview->folder_item);
+	summaryview_reset_recursive_folder_match(summaryview);
+	if (summary_show(summaryview, summaryview->folder_item))
+		summaryview_quicksearch_recurse(summaryview);
+	else
+		summaryview_reset_recursive_folder_match(summaryview);
 }
 
 static void tog_searchbar_cb(GtkWidget *w, gpointer data)
@@ -8014,8 +8090,6 @@ static gboolean summary_update_folder_hook(gpointer source, gpointer data)
 	hookdata = source;
 	if (hookdata->update_flags & FOLDER_REMOVE_FOLDERITEM) {
 		summary_update_unread(summaryview, hookdata->item);
-		quicksearch_folder_item_invalidate(summaryview->quicksearch,
-						   hookdata->item);
 	} else
 		summary_update_unread(summaryview, NULL);
 
@@ -8052,7 +8126,7 @@ static void summary_find_answers (SummaryView *summaryview, MsgInfo *msg)
 	
 	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(summaryview->toggle_search), TRUE);
 
-	quicksearch_set(summaryview->quicksearch, QUICK_SEARCH_EXTENDED, buf);
+	quicksearch_set(summaryview->quicksearch, ADVANCED_SEARCH_EXTENDED, buf);
 	g_free(buf);
 
 	node = gtk_cmctree_node_nth(GTK_CMCTREE(summaryview->ctree), 0);

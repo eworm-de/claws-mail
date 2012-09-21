@@ -1713,7 +1713,7 @@ static gboolean folderview_update_item_claws(gpointer source, gpointer data)
 		if ((update_info->update_flags & F_ITEM_UPDATE_CONTENT) && 
 		     update_info->item == folderview->summaryview->folder_item &&
 		     update_info->item != NULL)
-			if (!quicksearch_is_active(folderview->summaryview->quicksearch))
+			if (!quicksearch_has_sat_predicate(folderview->summaryview->quicksearch))
 				summary_show(folderview->summaryview, update_info->item);
 	}
 	

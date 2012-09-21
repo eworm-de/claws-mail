@@ -21,49 +21,33 @@
 #ifndef QUICKSEARCH_H
 #define QUICKSEARCH_H 1
 
-typedef enum
-{
-	QUICK_SEARCH_SUBJECT,
-	QUICK_SEARCH_FROM,
-	QUICK_SEARCH_TO,
-	QUICK_SEARCH_EXTENDED,
-	QUICK_SEARCH_MIXED,
-	QUICK_SEARCH_TAG
-} QuickSearchType;
-
+#include "advsearch.h"
 
 typedef struct _QuickSearch QuickSearch;
 typedef void (*QuickSearchExecuteCallback) (QuickSearch *quicksearch, gpointer data);
 
 #include "procmsg.h"
 
-void search_msgs_in_folders(GSList **messages, QuickSearch* quicksearch,
-			    FolderItem* folderItem);
-QuickSearchType quicksearch_type(const gchar *type);
-
 QuickSearch *quicksearch_new();
-QuickSearch *quicksearch_new_nogui();
 GtkWidget *quicksearch_get_widget(QuickSearch *quicksearch);
 void quicksearch_show(QuickSearch *quicksearch);
 void quicksearch_hide(QuickSearch *quicksearch);
-void quicksearch_set(QuickSearch *quicksearch, QuickSearchType type, const gchar *matchstring);
+void quicksearch_set(QuickSearch *quicksearch, AdvancedSearchType type, const gchar *matchstring);
 void quicksearch_set_recursive(QuickSearch *quicksearch, gboolean recursive);
-gboolean quicksearch_is_active(QuickSearch *quicksearch);
+gboolean quicksearch_has_sat_predicate(QuickSearch *quicksearch);
 void quicksearch_set_execute_callback(QuickSearch *quicksearch,
 				      QuickSearchExecuteCallback callback,
 				      gpointer data);
-gboolean quicksearch_match(QuickSearch *quicksearch, MsgInfo *msginfo);
+void quicksearch_set_on_progress_cb(QuickSearch* search,
+		gboolean (*cb)(gpointer data, guint at, guint matched, guint total), gpointer data);
+
+gboolean quicksearch_run_on_folder(QuickSearch* quicksearch, FolderItem *folderItem, MsgInfoList **result);
+
 gboolean quicksearch_is_running(QuickSearch *quicksearch);
 gboolean quicksearch_has_focus(QuickSearch *quicksearch);
 void quicksearch_pass_key(QuickSearch *quicksearch, guint val, GdkModifierType mod);
-void quicksearch_reset_cur_folder_item(QuickSearch *quicksearch);
-void quicksearch_search_subfolders(QuickSearch *quicksearch, 
-				   FolderView  *folderview,
-				   FolderItem  *folder_item);
-gboolean quicksearch_is_in_subfolder(QuickSearch *quicksearch, FolderItem *cur);
 gboolean quicksearch_is_fast(QuickSearch *quicksearch);
 gboolean quicksearch_is_in_typing(QuickSearch *quicksearch);
 void quicksearch_relayout(QuickSearch *quicksearch);
 void quicksearch_set_search_strings(QuickSearch *quicksearch);
-void quicksearch_folder_item_invalidate(QuickSearch *quicksearch, FolderItem *item);
 #endif /* QUICKSEARCH_H */
