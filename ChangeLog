@@ -1,3 +1,8 @@
+2012-09-21 [colin]	3.8.1cvs69
+
+	* src/gtk/quicksearch.c
+		Fix error background not appearing
+
 2012-09-21 [colin]	3.8.1cvs68
 
 	* src/Makefile.am

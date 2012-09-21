@@ -109,13 +109,14 @@ static void quicksearch_invoke_execute(QuickSearch *quicksearch, gboolean run_on
 	}
 
 	do {
+		gboolean active = g_strcmp0(quicksearch->request.matchstring, "");
 		advsearch_set(quicksearch->asearch, quicksearch->request.type,
 				quicksearch->request.matchstring);
 
 		if (run_only_if_fast && !advsearch_is_fast(quicksearch->asearch))
 			return;
 
-		quicksearch_set_active(quicksearch, advsearch_has_proper_predicate(quicksearch->asearch));
+		quicksearch_set_active(quicksearch, active);
 
 		quicksearch->want_reexec = FALSE;
 		quicksearch_set_running(quicksearch, TRUE);
