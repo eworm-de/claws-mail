@@ -1,3 +1,9 @@
+2012-09-22 [mir]	3.8.1cvs72
+
+	* src/advsearch.c
+	    Fix for not searching in folders marked 'no_select'
+	    patch provide by colin.
+
 2012-09-22 [mones]	3.8.1cvs71
 
 	* src/advsearch.c

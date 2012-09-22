@@ -4446,3 +4446,4 @@
 ( cvs diff -u -r 1.1.2.112 -r 1.1.2.113 src/gtk/quicksearch.c;  ) > 3.8.1cvs69.patchset
 ( cvs diff -u -r 1.213.2.212 -r 1.213.2.213 src/folder.c;  ) > 3.8.1cvs70.patchset
 ( cvs diff -u -r 1.1.2.1 -r 1.1.2.2 src/advsearch.c;  ) > 3.8.1cvs71.patchset
+( cvs diff -u -r 1.1.2.2 -r 1.1.2.3 src/advsearch.c;  ) > 3.8.1cvs72.patchset

@@ -482,7 +482,7 @@ static gboolean search_impl(MsgInfoList **messages, AdvancedSearch* search,
 					return FALSE;
 			}
 		}
-	} else {
+	} else if (!folderItem->no_select) {
 		MsgNumberList *msgnums = NULL;
 		MsgNumberList *cur;
 		MsgInfoList *msgs = NULL;
