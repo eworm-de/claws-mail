@@ -535,6 +535,16 @@ static gboolean summary_search_verify_match(MsgInfo *msg)
 		return FALSE;
 }
 
+static gboolean summary_search_progress_cb(gpointer data, guint at, guint matched, guint total)
+{
+	if (!search_window.is_searching) {
+		search_window.matcher_is_outdated = TRUE;
+		return FALSE;
+	}
+
+	return summaryview_search_root_progress(search_window.summaryview, at, matched, total);
+}
+
 static gboolean summary_search_prepare_matcher()
 {
 	gboolean adv_search;
@@ -553,8 +563,7 @@ static gboolean summary_search_prepare_matcher()
 		search_window.advsearch = advsearch_new();
 		advsearch_set_on_error_cb(search_window.advsearch, NULL, NULL); /* TODO */
 		advsearch_set_on_progress_cb(search_window.advsearch, 
-			summaryview_search_root_progress, 
-			search_window.summaryview);
+			summary_search_progress_cb, NULL);
 	}
 
 	adv_search = gtk_toggle_button_get_active

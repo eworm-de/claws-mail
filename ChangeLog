@@ -1,3 +1,10 @@
+2012-09-26 [colin]	3.8.1cvs77
+
+	* src/summary_search.c
+		Fix unresponsive stop button
+	* src/gtk/quicksearch.c
+		Fix busy cursor
+
 2012-09-26 [colin]	3.8.1cvs76
 
 	* src/summary_search.c

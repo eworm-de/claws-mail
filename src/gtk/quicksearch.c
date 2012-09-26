@@ -169,7 +169,7 @@ gboolean quicksearch_run_on_folder(QuickSearch* quicksearch, FolderItem *folderI
 		gboolean searchres;
 		main_window_cursor_wait(mainwindow_get_mainwindow());
 		searchres = advsearch_search_msgs_in_folders(quicksearch->asearch, result, folderItem, FALSE);
-		main_window_cursor_wait(mainwindow_get_mainwindow());
+		main_window_cursor_normal(mainwindow_get_mainwindow());
 		if (quicksearch->want_reexec) {
 			advsearch_set(quicksearch->asearch, quicksearch->request.type, "");
 		}
