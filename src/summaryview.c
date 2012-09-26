@@ -2157,12 +2157,8 @@ void summary_select_by_msg_list(SummaryView	*summaryview, GSList *msginfos)
 
 	ctree = GTK_CMCTREE(summaryview->ctree);
 
-	msgnum_list = NULL;
-	for(walk = msginfos; walk; walk = walk->next) {
-		MsgInfo *msginfo;
-		msginfo = walk->data;
-		msgnum_list = g_slist_prepend(msgnum_list, GUINT_TO_POINTER(msginfo->msgnum));
-	}
+	msgnum_list = procmsg_get_number_list_for_msgs(msginfos);
+
 	START_LONG_OPERATION(summaryview, FALSE);
 	for(walk = msgnum_list; walk; walk = walk->next) {
 		GtkCMCTreeNode *node;

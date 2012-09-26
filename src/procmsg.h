@@ -281,7 +281,8 @@ struct _MailFilteringData
 
 GSList *procmsg_read_cache		(FolderItem	*item,
 					 gboolean	 scan_file);
-void	procmsg_msg_list_free		(GSList		*mlist);
+void	procmsg_msg_list_free		(MsgInfoList	*mlist);
+MsgNumberList *procmsg_get_number_list_for_msgs(MsgInfoList *msglist);
 void	procmsg_get_mark_sum		(const gchar	*folder,
 					 gint		*new_msgs,
 					 gint		*unread_msgs,

@@ -4749,6 +4749,17 @@ gint folder_item_search_msgs	(Folder			*folder,
 	}
 }
 
+MsgNumberList *folder_item_get_number_list(FolderItem *item)
+{
+	GSList *nums = NULL;
+	GSList *msglist = folder_item_get_msg_list(item);
+
+	nums = procmsg_get_number_list_for_msgs(msglist);
+	procmsg_msg_list_free(msglist);
+	
+	return nums;
+}
+
 gint folder_item_search_msgs_local	(Folder			*folder,
 					 FolderItem		*container,
 					 MsgNumberList		**msgs,
@@ -4765,16 +4776,15 @@ gint folder_item_search_msgs_local	(Folder			*folder,
 	GSList *nums = NULL;
 
 	if (*msgs == NULL) {
-		gboolean old_valid = TRUE;
-	       
-		msgcount = folder->klass->get_num_list(folder, container, &nums, &old_valid);
-		
-		if (msgcount < 0)
-			return -1;
+		nums = folder_item_get_number_list(container);
 	} else {
 		nums = *msgs;
-		msgcount = g_slist_length(nums);
 	}
+
+	msgcount = g_slist_length(nums);
+
+	if (msgcount < 0)
+		return -1;
 
 	for (cur = nums; cur != NULL; cur = cur->next) {
 		guint msgnum = GPOINTER_TO_UINT(cur->data);

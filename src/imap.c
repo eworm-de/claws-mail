@@ -5226,15 +5226,10 @@ static GSList * imap_get_lep_set_from_numlist(IMAPFolder *folder, MsgNumberList 
 static GSList * imap_get_lep_set_from_msglist(IMAPFolder *folder, MsgInfoList *msglist)
 {
 	MsgNumberList *numlist = NULL;
-	MsgInfoList *cur;
 	GSList *seq_list;
 
-	for (cur = msglist; cur != NULL; cur = g_slist_next(cur)) {
-		MsgInfo *msginfo = (MsgInfo *) cur->data;
+	numlist = procmsg_get_number_list_for_msgs(msglist);
 
-		numlist = g_slist_prepend(numlist, GINT_TO_POINTER(msginfo->msgnum));
-	}
-	numlist = g_slist_reverse(numlist);
 	seq_list = imap_get_lep_set_from_numlist(folder, numlist);
 	g_slist_free(numlist);
 

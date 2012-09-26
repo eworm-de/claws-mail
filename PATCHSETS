@@ -4448,3 +4448,4 @@
 ( cvs diff -u -r 1.1.2.1 -r 1.1.2.2 src/advsearch.c;  ) > 3.8.1cvs71.patchset
 ( cvs diff -u -r 1.1.2.2 -r 1.1.2.3 src/advsearch.c;  ) > 3.8.1cvs72.patchset
 ( cvs diff -u -r 1.1.2.113 -r 1.1.2.114 src/gtk/quicksearch.c;  ) > 3.8.1cvs73.patchset
+( cvs diff -u -r 1.213.2.213 -r 1.213.2.214 src/folder.c;  cvs diff -u -r 1.87.2.68 -r 1.87.2.69 src/folder.h;  cvs diff -u -r 1.179.2.263 -r 1.179.2.264 src/imap.c;  cvs diff -u -r 1.150.2.129 -r 1.150.2.130 src/procmsg.c;  cvs diff -u -r 1.60.2.64 -r 1.60.2.65 src/procmsg.h;  cvs diff -u -r 1.395.2.454 -r 1.395.2.455 src/summaryview.c;  ) > 3.8.1cvs74.patchset

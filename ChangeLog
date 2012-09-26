@@ -1,3 +1,15 @@
+2012-09-26 [colin]	3.8.1cvs74
+
+	* src/folder.c
+	* src/folder.h
+	* src/imap.c
+	* src/procmsg.c
+	* src/procmsg.h
+	* src/summaryview.c
+		Factorize msg list to num list code;
+		Make search faster using cache instead
+		of network I/O
+
 2012-09-25 [mones]	3.8.1cvs73
 
 	* src/gtk/quicksearch.c

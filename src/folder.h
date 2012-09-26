@@ -912,6 +912,8 @@ MsgInfo *folder_item_get_msginfo	(FolderItem 	*item,
 MsgInfo *folder_item_get_msginfo_by_msgid(FolderItem 	*item,
 					 const gchar 	*msgid);
 GSList *folder_item_get_msg_list	(FolderItem 	*item);
+MsgNumberList *folder_item_get_number_list(FolderItem *item);
+
 /* return value is locale charset */
 gchar *folder_item_fetch_msg		(FolderItem	*item,
 					 gint		 num);
