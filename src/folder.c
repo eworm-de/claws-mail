@@ -4740,13 +4740,21 @@ gint folder_item_search_msgs	(Folder			*folder,
 				 SearchProgressNotify	progress_cb,
 				 gpointer		progress_data)
 {
+	gint result;
+	
+	folder_item_update_freeze();
+
 	if (folder->klass->search_msgs) {
-		return folder->klass->search_msgs(folder, container,
+		result = folder->klass->search_msgs(folder, container,
 				msgs, on_server, predicate, progress_cb, progress_data);
 	} else {
-		return folder_item_search_msgs_local(folder, container,
+		result = folder_item_search_msgs_local(folder, container,
 				msgs, on_server, predicate, progress_cb, progress_data);
 	}
+	
+	folder_item_update_thaw();
+
+	return result;
 }
 
 MsgNumberList *folder_item_get_number_list(FolderItem *item)

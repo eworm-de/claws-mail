@@ -1,3 +1,10 @@
+2012-09-26 [colin]	3.8.1cvs75
+
+	* src/folder.c
+		Fix body search triggering GUI updates
+		for every message when it gets MSG_SCANNED
+		set.
+
 2012-09-26 [colin]	3.8.1cvs74
 
 	* src/folder.c
