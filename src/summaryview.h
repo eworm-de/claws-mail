@@ -328,4 +328,5 @@ void summary_set_menu_sensitive	(SummaryView		*summaryview);
 void summary_relayout(SummaryView *summaryview);
 void summary_update_unread(SummaryView *summaryview, FolderItem *removed_item);
 gboolean summary_is_list(SummaryView *summaryview);
+gboolean summaryview_search_root_progress(gpointer data, guint at, guint matched, guint total);
 #endif /* __SUMMARY_H__ */

@@ -47,6 +47,7 @@
 #include "prefs_gtk.h"
 #include "manage_window.h"
 #include "alertpanel.h"
+#include "advsearch.h"
 #include "matcher.h"
 #include "matcher_parser.h"
 #include "prefs_matcher.h"
@@ -79,12 +80,11 @@ static struct SummarySearchWindow {
 
 	SummaryView *summaryview;
 
-	MatcherList	*matcher_list;
+	AdvancedSearch	*advsearch;
 	gboolean	is_fast;
 	gboolean	matcher_is_outdated;
 	gboolean	search_in_progress;
 	GHashTable	*matched_msgnums;
-	GHashTable	*unverified_msgnums;
 
 	gboolean is_searching;
 	gboolean from_entry_has_focus;
@@ -515,11 +515,10 @@ static void summary_search_create(void)
 	search_window.next_btn = next_btn;
 	search_window.close_btn = close_btn;
 	search_window.stop_btn = stop_btn;
-	search_window.matcher_list = NULL;
+	search_window.advsearch = NULL;
 	search_window.matcher_is_outdated = TRUE;
 	search_window.search_in_progress = FALSE;
 	search_window.matched_msgnums = NULL;
-	search_window.unverified_msgnums = NULL;
 	search_window.is_searching = is_searching;
 #ifdef MAEMO
 	maemo_window_full_screen_if_needed(GTK_WINDOW(search_window.window));
@@ -532,31 +531,8 @@ static gboolean summary_search_verify_match(MsgInfo *msg)
 
 	if (g_hash_table_lookup(search_window.matched_msgnums, msgnum) != NULL)
 		return TRUE;
-
-	if (g_hash_table_lookup(search_window.unverified_msgnums, msgnum) != NULL) {
-		GSList *num = g_slist_prepend(NULL, msgnum);
-		gint match;
-
-		match = folder_item_search_msgs(msg->folder->folder,
-		      msg->folder,
-		      &num,
-		      NULL,
-		      search_window.matcher_list,
-		      NULL,
-		      NULL);
-
-		g_slist_free(num);
-		g_hash_table_remove(search_window.unverified_msgnums, msgnum);
-
-		if (match > 0) {
-			g_hash_table_insert(search_window.matched_msgnums, msgnum, GINT_TO_POINTER(1));
-			return TRUE;
-		} else {
-			return FALSE;
-		}
-	}
-
-	return FALSE;
+	else
+		return FALSE;
 }
 
 static gboolean summary_search_prepare_matcher()
@@ -564,7 +540,7 @@ static gboolean summary_search_prepare_matcher()
 	gboolean adv_search;
 	gboolean bool_and = FALSE;
 	gboolean case_sens = FALSE;
-	gchar *adv_condition = NULL;
+	gchar *matcher_str;
 	gint match_type;
 	gchar *from_str = NULL, *to_str = NULL, *subject_str = NULL;
 	gchar *body_str = NULL;
@@ -573,26 +549,21 @@ static gboolean summary_search_prepare_matcher()
 	if (!search_window.matcher_is_outdated)
 		return TRUE;
 
-	if (search_window.matcher_list != NULL) {
-		matcherlist_free(search_window.matcher_list);
-		search_window.matcher_list = NULL;
+	if (search_window.advsearch == NULL) {
+		search_window.advsearch = advsearch_new();
+		advsearch_set_on_error_cb(search_window.advsearch, NULL, NULL); /* TODO */
+		advsearch_set_on_progress_cb(search_window.advsearch, 
+			summaryview_search_root_progress, 
+			search_window.summaryview);
 	}
 
 	adv_search = gtk_toggle_button_get_active
 		(GTK_TOGGLE_BUTTON(search_window.adv_search_checkbtn));
 
 	if (adv_search) {
-		adv_condition = add_history_get(search_window.adv_condition_entry, &prefs_common.summary_search_adv_condition_history);
-		if (adv_condition) {
-			search_window.matcher_list = matcher_parser_get_cond(adv_condition, &search_window.is_fast);
-			/* TODO: check for condition parsing error and show an error dialog */
-			g_free(adv_condition);
-		} else {
-			/* TODO: warn if no search condition? (or make buttons enabled only when
-				at least one search condition has been set */
-			return FALSE;
-		}
+		matcher_str = add_history_get(search_window.adv_condition_entry, &prefs_common.summary_search_adv_condition_history);
 	} else {
+		MatcherList *matcher_list;
 		bool_and = combobox_get_active_data(GTK_COMBO_BOX(search_window.bool_optmenu));
 		case_sens = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(search_window.case_checkbtn));
 
@@ -625,13 +596,28 @@ static gboolean summary_search_prepare_matcher()
 			MatcherProp *prop = matcherprop_new(MATCHCRITERIA_BODY_PART, NULL, match_type, body_str, 0);
 			matchers = g_slist_append(matchers, prop);
 		}
-		search_window.matcher_list = matcherlist_new(matchers, bool_and);
-
 		g_free(from_str);
 		g_free(to_str);
 		g_free(subject_str);
 		g_free(body_str);
+
+		matcher_list = matcherlist_new(matchers, bool_and);
+		if (!matcher_list)
+			return FALSE;
+		matcher_str = matcherlist_to_string(matcher_list);
+		matcherlist_free(matcher_list);
 	}
+	if (!matcher_str)
+		return FALSE;
+
+	advsearch_set(search_window.advsearch, ADVANCED_SEARCH_EXTENDED,
+		      matcher_str);
+
+	debug_print("Advsearch set: %s\n", matcher_str);
+	g_free(matcher_str);
+
+	if (!advsearch_has_proper_predicate(search_window.advsearch))
+		return FALSE;
 
 	search_window.matcher_is_outdated = FALSE;
 
@@ -640,64 +626,47 @@ static gboolean summary_search_prepare_matcher()
 
 static gboolean summary_search_prereduce_msg_list()
 {
-	MsgInfo *msginfo;
-	FolderItem *folder;
-	gint matched_count;
+	MsgInfoList *msglist = NULL;
 	MsgNumberList *msgnums = NULL;
 	MsgNumberList *cur;
 	SummaryView *summaryview = search_window.summaryview;
-	GtkCMCTree *ctree = GTK_CMCTREE(summaryview->ctree);
-	gboolean on_server;
+	gboolean result;
+	FolderItem *item = summaryview->folder_item;
+	static GdkCursor *watch_cursor = NULL;
+	if (!watch_cursor)
+		watch_cursor = gdk_cursor_new(GDK_WATCH);
 
 	if (search_window.matcher_is_outdated && !summary_search_prepare_matcher()) {
 		return FALSE;
 	}
 
-	msginfo = gtk_cmctree_node_get_row_data(
-	        ctree,
-	        GTK_CMCTREE_NODE(GTK_CMCLIST(ctree)->row_list));
-	folder = msginfo->folder;
+	main_window_cursor_wait(mainwindow_get_mainwindow());
+	gdk_window_set_cursor(gtk_widget_get_window(search_window.window), watch_cursor);
+	statusbar_print_all(_("Searching in %s... \n"),
+		item->path ? item->path : "(null)");
 
-	on_server = folder->folder->klass->supports_server_search;
+	result = advsearch_search_msgs_in_folders(search_window.advsearch,
+			&msglist, item, FALSE);
+	statusbar_pop_all();
+	statusbar_progress_all(0, 0, 0);
+	gdk_window_set_cursor(gtk_widget_get_window(search_window.window), NULL);
+	main_window_cursor_normal(mainwindow_get_mainwindow());
 
-	if (on_server) {
-		matched_count = folder_item_search_msgs(folder->folder,
-		              folder,
-		              &msgnums,
-		              &on_server,
-		              search_window.matcher_list,
-		              NULL,
-		              NULL);
+	if (!result)
+		return FALSE;
+	msgnums = procmsg_get_number_list_for_msgs(msglist);
+	procmsg_msg_list_free(msglist);
 
-		if (matched_count < 0) {
-			alertpanel_error(_("Something went wrong during search. Please check you logs."));
-			return FALSE;
-		}
-	} else {
-		gboolean old_valid = TRUE;
+	if (search_window.matched_msgnums == NULL)
+		search_window.matched_msgnums = g_hash_table_new(g_direct_hash, NULL);
 
-		folder->folder->klass->get_num_list(folder->folder, folder, &msgnums, &old_valid);
-	}
+	g_hash_table_remove_all(search_window.matched_msgnums);
 
-	if (search_window.unverified_msgnums != NULL) {
-		g_hash_table_unref(search_window.unverified_msgnums);
-	}
-	if (search_window.matched_msgnums != NULL) {
-		g_hash_table_unref(search_window.matched_msgnums);
-	}
-
-	search_window.unverified_msgnums = g_hash_table_new(g_direct_hash, NULL);
-	search_window.matched_msgnums = g_hash_table_new(g_direct_hash, NULL);
 	for (cur = msgnums; cur != NULL; cur = cur->next) {
-		g_hash_table_insert(search_window.unverified_msgnums, cur->data, GINT_TO_POINTER(1));
+		g_hash_table_insert(search_window.matched_msgnums, cur->data, GINT_TO_POINTER(1));
 	}
+
 	g_slist_free(msgnums);
-	
-	if (msginfo->folder->folder->klass->supports_server_search && on_server) {
-		GHashTable *tmp = search_window.matched_msgnums;
-		search_window.matched_msgnums = search_window.unverified_msgnums;
-		search_window.unverified_msgnums = tmp;
-	}
 
 	return TRUE;
 }

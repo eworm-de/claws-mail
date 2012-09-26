@@ -1211,7 +1211,7 @@ static gboolean summary_check_consistency(FolderItem *item, GSList *mlist)
 	return TRUE;
 }
 
-static gboolean summaryview_quicksearch_root_progress(gpointer data, guint at, guint matched, guint total)
+gboolean summaryview_search_root_progress(gpointer data, guint at, guint matched, guint total)
 {
 	SummaryView *summaryview = (SummaryView*) data;
 
@@ -1369,7 +1369,7 @@ gboolean summary_show(SummaryView *summaryview, FolderItem *item)
 
 		folder_item_update_freeze();
 
-		quicksearch_set_on_progress_cb(summaryview->quicksearch, summaryview_quicksearch_root_progress, summaryview);
+		quicksearch_set_on_progress_cb(summaryview->quicksearch, summaryview_search_root_progress, summaryview);
 		quicksearch_run_on_folder(summaryview->quicksearch, summaryview->folder_item, &mlist);
 
 		folder_item_update_thaw();

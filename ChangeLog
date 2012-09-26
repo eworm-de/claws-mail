@@ -1,3 +1,13 @@
+2012-09-26 [colin]	3.8.1cvs76
+
+	* src/summary_search.c
+	* src/summaryview.c
+	* src/summaryview.h
+	* src/gtk/quicksearch.c
+		Factorize search code in summary_search and
+		add a progress indicator as that slows down
+		the first result in case of body search.
+
 2012-09-26 [colin]	3.8.1cvs75
 
 	* src/folder.c

@@ -166,7 +166,10 @@ static void quicksearch_invoke_execute(QuickSearch *quicksearch, gboolean run_on
 gboolean quicksearch_run_on_folder(QuickSearch* quicksearch, FolderItem *folderItem, MsgInfoList **result)
 {
 	if (quicksearch_has_sat_predicate(quicksearch)) {
-		gboolean searchres = advsearch_search_msgs_in_folders(quicksearch->asearch, result, folderItem, FALSE);
+		gboolean searchres;
+		main_window_cursor_wait(mainwindow_get_mainwindow());
+		searchres = advsearch_search_msgs_in_folders(quicksearch->asearch, result, folderItem, FALSE);
+		main_window_cursor_wait(mainwindow_get_mainwindow());
 		if (quicksearch->want_reexec) {
 			advsearch_set(quicksearch->asearch, quicksearch->request.type, "");
 		}
