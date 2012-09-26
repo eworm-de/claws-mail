@@ -1337,6 +1337,7 @@ int main(int argc, char *argv[])
 	prefs_receive_init();
 	prefs_send_init();
 	tags_read_tags();
+	matcher_init();
 #ifdef USE_ENCHANT
 	gtkaspell_checkers_init();
 	prefs_spelling_init();
@@ -1802,6 +1803,7 @@ static void exit_claws(MainWindow *mainwin)
 	
 	plugin_unload_all("GTK2");
 
+	matcher_done();
 	prefs_toolbar_done();
 
 #ifndef USE_NEW_ADDRBOOK

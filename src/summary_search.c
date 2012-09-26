@@ -53,6 +53,7 @@
 #include "prefs_matcher.h"
 #include "manual.h"
 #include "prefs_common.h"
+#include "statusbar.h"
 
 static struct SummarySearchWindow {
 	GtkWidget *window;

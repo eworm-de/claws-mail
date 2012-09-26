@@ -1,3 +1,14 @@
+2012-09-26 [colin]	3.8.1cvs79
+
+	* src/main.c
+	* src/matcher.c
+	* src/matcher.h
+		Prepare the context strings, their translation take
+		CPU time. Shaves 6 seconds out of 17 on my reference
+		folder body search.
+	* src/summary_search.c
+		Fix a warning
+
 2012-09-26 [colin]	3.8.1cvs78
 
 	* src/matcher.c

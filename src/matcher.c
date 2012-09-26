@@ -182,6 +182,50 @@ enum {
 	MATCH_ONE = 2
 };
 
+enum {
+	CONTEXT_SUBJECT,
+	CONTEXT_FROM,
+	CONTEXT_TO,
+	CONTEXT_CC,
+	CONTEXT_NEWSGROUPS,
+	CONTEXT_IN_REPLY_TO,
+	CONTEXT_REFERENCES,
+	CONTEXT_HEADER,
+	CONTEXT_HEADER_LINE,
+	CONTEXT_BODY_LINE,
+	CONTEXT_TAG,
+	N_CONTEXT_STRS
+};
+
+static gchar *context_str[N_CONTEXT_STRS];
+
+void matcher_init(void)
+{
+	if (context_str[CONTEXT_SUBJECT] != NULL)
+		return;
+
+	context_str[CONTEXT_SUBJECT] = g_strdup_printf(_("%s header"), prefs_common_translated_header_name("Subject:"));
+	context_str[CONTEXT_FROM] = g_strdup_printf(_("%s header"), prefs_common_translated_header_name("From:"));
+	context_str[CONTEXT_TO] = g_strdup_printf(_("%s header"), prefs_common_translated_header_name("To:"));
+	context_str[CONTEXT_CC] = g_strdup_printf(_("%s header"), prefs_common_translated_header_name("Cc:"));
+	context_str[CONTEXT_NEWSGROUPS] = g_strdup_printf(_("%s header"), prefs_common_translated_header_name("Newsgroups:"));
+	context_str[CONTEXT_IN_REPLY_TO] = g_strdup_printf(_("%s header"), prefs_common_translated_header_name("In-Reply-To:"));
+	context_str[CONTEXT_REFERENCES] = g_strdup_printf(_("%s header"), prefs_common_translated_header_name("References:"));
+	context_str[CONTEXT_HEADER] = g_strdup(_("header"));
+	context_str[CONTEXT_HEADER_LINE] = g_strdup(_("header line"));
+	context_str[CONTEXT_BODY_LINE] = g_strdup(_("body line"));
+	context_str[CONTEXT_TAG]  = g_strdup(_("tag"));
+}
+
+void matcher_done(void)
+{
+	int i;
+	for (i = 0; i < N_CONTEXT_STRS; i++) {
+		g_free(context_str[i]);
+		context_str[i] = NULL;
+	}
+}
+
 extern gboolean debug_filtering_session;
 
 /*!
@@ -806,86 +850,35 @@ static gboolean matcherprop_match(MatcherProp *prop,
 	case MATCHCRITERIA_NOT_WATCH_THREAD:
 		return !MSG_IS_WATCH_THREAD(info->flags);
 	case MATCHCRITERIA_SUBJECT:
-		return matcherprop_string_match(prop, info->subject,
-						prefs_common_translated_header_name("Subject:"));
+		return matcherprop_string_match(prop, info->subject, context_str[CONTEXT_SUBJECT]);
 	case MATCHCRITERIA_NOT_SUBJECT:
-		return !matcherprop_string_match(prop, info->subject,
-						prefs_common_translated_header_name("Subject:"));
+		return !matcherprop_string_match(prop, info->subject, context_str[CONTEXT_SUBJECT]);
 	case MATCHCRITERIA_FROM:
+		return matcherprop_string_match(prop, info->from, context_str[CONTEXT_FROM]);
 	case MATCHCRITERIA_NOT_FROM:
-	{
-		gchar *context;
-		gboolean ret;
-
-		context = g_strdup_printf(_("%s header"), prefs_common_translated_header_name("From:"));
-		ret = matcherprop_string_match(prop, info->from, context);
-		g_free(context);
-		return (prop->criteria == MATCHCRITERIA_FROM)? ret : !ret;
-	}
+		return !matcherprop_string_match(prop, info->from, context_str[CONTEXT_FROM]);
 	case MATCHCRITERIA_TO:
+		return matcherprop_string_match(prop, info->to, context_str[CONTEXT_TO]);
 	case MATCHCRITERIA_NOT_TO:
-	{
-		gchar *context;
-		gboolean ret;
-
-		context = g_strdup_printf(_("%s header"), prefs_common_translated_header_name("To:"));
-		ret = matcherprop_string_match(prop, info->to, context);
-		g_free(context);
-		return (prop->criteria == MATCHCRITERIA_TO)? ret : !ret;
-	}
+		return !matcherprop_string_match(prop, info->to, context_str[CONTEXT_TO]);
 	case MATCHCRITERIA_CC:
+		return matcherprop_string_match(prop, info->cc, context_str[CONTEXT_CC]);
 	case MATCHCRITERIA_NOT_CC:
-	{
-		gchar *context;
-		gboolean ret;
-
-		context = g_strdup_printf(_("%s header"), prefs_common_translated_header_name("Cc:"));
-		ret = matcherprop_string_match(prop, info->cc, context);
-		g_free(context);
-		return (prop->criteria == MATCHCRITERIA_CC)? ret : !ret;
-	}
+		return !matcherprop_string_match(prop, info->cc, context_str[CONTEXT_CC]);
 	case MATCHCRITERIA_TO_OR_CC:
-	{
-		gchar *context1, *context2;
-		gboolean ret;
-
-		context1 = g_strdup_printf(_("%s header"), prefs_common_translated_header_name("To:"));
-		context2 = g_strdup_printf(_("%s header"), prefs_common_translated_header_name("Cc:"));
-		ret = matcherprop_string_match(prop, info->to, context1)
-			|| matcherprop_string_match(prop, info->cc, context2);
-		g_free(context1);
-		g_free(context2);
-		return ret;
-	}
+		return matcherprop_string_match(prop, info->to, context_str[CONTEXT_TO])
+		     || matcherprop_string_match(prop, info->cc, context_str[CONTEXT_CC]);
 	case MATCHCRITERIA_NOT_TO_AND_NOT_CC:
-	{
-		gchar *context1, *context2;
-		gboolean ret;
-
-		context1 = g_strdup_printf(_("%s header"), prefs_common_translated_header_name("To:"));
-		context2 = g_strdup_printf(_("%s header"), prefs_common_translated_header_name("Cc:"));
-		ret = !(matcherprop_string_match(prop, info->to, context1)
-			|| matcherprop_string_match(prop, info->cc, context2));
-		g_free(context1);
-		g_free(context2);
-		return ret;
-	}
+		return !matcherprop_string_match(prop, info->to, context_str[CONTEXT_TO])
+		     && !matcherprop_string_match(prop, info->cc, context_str[CONTEXT_CC]);
 	case MATCHCRITERIA_TAG:
+		return matcherprop_tag_match(prop, info, context_str[CONTEXT_TAG]);
 	case MATCHCRITERIA_NOT_TAG:
-	{
-		gboolean ret;
-
-		ret = matcherprop_tag_match(prop, info, _("Tag"));
-		return (prop->criteria == MATCHCRITERIA_TAG)? ret : !ret;
-	}
+		return !matcherprop_tag_match(prop, info, context_str[CONTEXT_TAG]);
 	case MATCHCRITERIA_TAGGED:
+		return info->tags != NULL;
 	case MATCHCRITERIA_NOT_TAGGED:
-	{
-		gboolean ret;
-
-		ret = (info->tags != NULL);
-		return (prop->criteria == MATCHCRITERIA_TAGGED)? ret : !ret;
-	}
+		return info->tags == NULL;
 	case MATCHCRITERIA_AGE_GREATER:
 	{
 		gboolean ret;
@@ -1090,41 +1083,17 @@ static gboolean matcherprop_match(MatcherProp *prop,
 		return ret;
 	}
 	case MATCHCRITERIA_NEWSGROUPS:
+		return matcherprop_string_match(prop, info->newsgroups, context_str[CONTEXT_NEWSGROUPS]);
 	case MATCHCRITERIA_NOT_NEWSGROUPS:
-	{
-		gchar *context;
-		gboolean ret;
-
-		context = g_strdup_printf(_("%s header"),
-						prefs_common_translated_header_name("Newsgroups:"));
-		ret = matcherprop_string_match(prop, info->newsgroups, context);
-		g_free(context);
-		return (prop->criteria == MATCHCRITERIA_NEWSGROUPS)? ret : !ret;
-	}
+		return !matcherprop_string_match(prop, info->newsgroups, context_str[CONTEXT_NEWSGROUPS]);
 	case MATCHCRITERIA_INREPLYTO:
+		return matcherprop_string_match(prop, info->inreplyto, context_str[CONTEXT_IN_REPLY_TO]);
 	case MATCHCRITERIA_NOT_INREPLYTO:
-	{
-		gchar *context;
-		gboolean ret;
-
-		context = g_strdup_printf(_("%s header"),
-						prefs_common_translated_header_name("In-Reply-To:"));
-		ret = matcherprop_string_match(prop, info->inreplyto, context);
-		g_free(context);
-		return (prop->criteria == MATCHCRITERIA_INREPLYTO)? ret : !ret;
-	}
+		return !matcherprop_string_match(prop, info->inreplyto, context_str[CONTEXT_IN_REPLY_TO]);
 	case MATCHCRITERIA_REFERENCES:
+		return matcherprop_list_match(prop, info->references, context_str[CONTEXT_REFERENCES]);
 	case MATCHCRITERIA_NOT_REFERENCES:
-	{
-		gchar *context;
-		gboolean ret;
-
-		context = g_strdup_printf(_("%s header"),
-						prefs_common_translated_header_name("References:"));
-		ret = matcherprop_list_match(prop, info->references, context);
-		g_free(context);
-		return (prop->criteria == MATCHCRITERIA_REFERENCES)? ret : !ret;
-	}
+		return !matcherprop_list_match(prop, info->references, context_str[CONTEXT_REFERENCES]);
 	case MATCHCRITERIA_TEST:
 		return matcherprop_match_test(prop, info);
 	case MATCHCRITERIA_NOT_TEST:
@@ -1209,9 +1178,9 @@ static gboolean matcherprop_match_one_header(MatcherProp *matcher,
 		if (procheader_headername_equal(header->name,
 						matcher->header)) {
 			if (matcher->criteria == MATCHCRITERIA_HEADER)
-				result = matcherprop_string_match(matcher, header->body, _("header"));
+				result = matcherprop_string_match(matcher, header->body, context_str[CONTEXT_HEADER]);
 			else
-				result = !matcherprop_string_match(matcher, header->body, _("header"));
+				result = !matcherprop_string_match(matcher, header->body, context_str[CONTEXT_HEADER]);
 			procheader_header_free(header);
 			return result;
 		}
@@ -1225,7 +1194,7 @@ static gboolean matcherprop_match_one_header(MatcherProp *matcher,
 		if (!header)
 			return FALSE;
 		result = matcherprop_header_line_match(matcher, 
-			       header->name, header->body, _("header line"));
+			       header->name, header->body, context_str[CONTEXT_HEADER_LINE]);
 		procheader_header_free(header);
 		return result;
 	case MATCHCRITERIA_NOT_HEADERS_PART:
@@ -1234,7 +1203,7 @@ static gboolean matcherprop_match_one_header(MatcherProp *matcher,
 		if (!header)
 			return FALSE;
 		result = !matcherprop_header_line_match(matcher, 
-			       header->name, header->body, _("header line"));
+			       header->name, header->body, context_str[CONTEXT_HEADER_LINE]);
 		procheader_header_free(header);
 		return result;
 	case MATCHCRITERIA_FOUND_IN_ADDRESSBOOK:
@@ -1439,7 +1408,7 @@ static gboolean matcherprop_criteria_body(const MatcherProp *matcher)
 		return FALSE;
 	}
 }
-
+	
 static gboolean matcherlist_match_binary_content(MatcherList *matchers, MimeInfo *partinfo)
 {
 	FILE *outfp;
@@ -1477,7 +1446,7 @@ static gboolean matcherlist_match_binary_content(MatcherList *matchers, MimeInfo
 			if (matcher->criteria == MATCHCRITERIA_NOT_BODY_PART ||
 			    matcher->criteria == MATCHCRITERIA_NOT_MESSAGE) {
 				if (matcherprop_string_match(matcher, buf, 
-							_("body line"))) {
+							context_str[CONTEXT_BODY_LINE])) {
 					matcher->result = FALSE;
 					matcher->done = TRUE;
 				} else
@@ -1486,7 +1455,7 @@ static gboolean matcherlist_match_binary_content(MatcherList *matchers, MimeInfo
 			} else if (matcherprop_criteria_body(matcher) ||
 				   matcherprop_criteria_message(matcher)) {
 				if (matcherprop_string_match(matcher, buf,
-							_("body line"))) {
+							context_str[CONTEXT_BODY_LINE])) {
 					matcher->result = TRUE;
 					matcher->done = TRUE;
 				}
@@ -1525,7 +1494,7 @@ static gboolean match_content_cb(const gchar *buf, gpointer data)
 		if (matcher->criteria == MATCHCRITERIA_NOT_BODY_PART ||
 		    matcher->criteria == MATCHCRITERIA_NOT_MESSAGE) {
 			if (matcherprop_string_match(matcher, buf, 
-						_("body line"))) {
+						context_str[CONTEXT_BODY_LINE])) {
 				matcher->result = FALSE;
 				matcher->done = TRUE;
 			} else
@@ -1534,7 +1503,7 @@ static gboolean match_content_cb(const gchar *buf, gpointer data)
 		} else if (matcherprop_criteria_body(matcher) ||
 			   matcherprop_criteria_message(matcher)) {
 			if (matcherprop_string_match(matcher, buf,
-						_("body line"))) {
+						context_str[CONTEXT_BODY_LINE])) {
 				matcher->result = TRUE;
 				matcher->done = TRUE;
 			}

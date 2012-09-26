@@ -142,6 +142,9 @@ enum {
 	MB_(AND)
 };
 
+void matcher_init(void);
+void matcher_done(void);
+
 const gchar *get_matchparser_tab_str	(gint id);
 gint get_matchparser_tab_id		(const gchar *str); 
 
