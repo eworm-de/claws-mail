@@ -1,3 +1,13 @@
+2012-09-26 [colin]	3.8.1cvs78
+
+	* src/matcher.c
+	* src/procmime.c
+	* src/procmime.h
+		Unlock I/O in procmime, give a way
+		for matcher to avoid having to
+		read/write tmp/rewind/read tmp for
+		body matches.
+
 2012-09-26 [colin]	3.8.1cvs77
 
 	* src/summary_search.c

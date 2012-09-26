@@ -230,6 +230,14 @@ void procmime_mimeparser_unregister(MimeParser *mimeparser);
 FILE *procmime_get_text_content(MimeInfo *mimeinfo);
 FILE *procmime_get_binary_content(MimeInfo *mimeinfo);
 
+/* scans mimeinfo contents, calling scan_callback() once per line.
+ * return TRUE and scan is aborted if scan_callback returns TRUE.
+ * return TRUE on error.
+ * return FALSE if scan completed and scan_callback never returned TRUE.
+ */
+gboolean procmime_scan_text_content(MimeInfo *mimeinfo,
+		gboolean (*scan_callback)(const gchar *str, gpointer cb_data),
+		gpointer cb_data);
 #ifdef __cplusplus
 }
 #endif /* __cplusplus */

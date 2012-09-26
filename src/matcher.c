@@ -1440,6 +1440,128 @@ static gboolean matcherprop_criteria_body(const MatcherProp *matcher)
 	}
 }
 
+static gboolean matcherlist_match_binary_content(MatcherList *matchers, MimeInfo *partinfo)
+{
+	FILE *outfp;
+	gchar buf[BUFFSIZE];
+	GSList *l;
+
+	if (partinfo->type == MIMETYPE_TEXT)
+		return FALSE;
+	else
+		outfp = procmime_get_binary_content(partinfo);
+
+	if (!outfp)
+		return FALSE;
+
+	while (fgets(buf, sizeof(buf), outfp) != NULL) {
+		strretchomp(buf);
+
+		for (l = matchers->matchers ; l != NULL ; l = g_slist_next(l)) {
+			MatcherProp *matcher = (MatcherProp *) l->data;
+
+			if (matcher->done) 
+				continue;
+
+			/* Don't scan non-text parts when looking in body, only
+			 * when looking in whole message
+			 */
+			if (partinfo && partinfo->type != MIMETYPE_TEXT &&
+			(matcher->criteria == MATCHCRITERIA_NOT_BODY_PART ||
+			matcher->criteria == MATCHCRITERIA_BODY_PART))
+				continue;
+
+			/* if the criteria is ~body_part or ~message, ZERO lines
+			 * must match for the rule to match.
+			 */
+			if (matcher->criteria == MATCHCRITERIA_NOT_BODY_PART ||
+			    matcher->criteria == MATCHCRITERIA_NOT_MESSAGE) {
+				if (matcherprop_string_match(matcher, buf, 
+							_("body line"))) {
+					matcher->result = FALSE;
+					matcher->done = TRUE;
+				} else
+					matcher->result = TRUE;
+			/* else, just one line has to match */
+			} else if (matcherprop_criteria_body(matcher) ||
+				   matcherprop_criteria_message(matcher)) {
+				if (matcherprop_string_match(matcher, buf,
+							_("body line"))) {
+					matcher->result = TRUE;
+					matcher->done = TRUE;
+				}
+			}
+
+			/* if the matchers are OR'ed and the rule matched,
+			 * no need to check the others. */
+			if (matcher->result && matcher->done) {
+				if (!matchers->bool_and) {
+					fclose(outfp);
+					return TRUE;
+				}
+			}
+		}
+	}
+
+	fclose(outfp);
+	return FALSE;
+}
+
+static gboolean match_content_cb(const gchar *buf, gpointer data)
+{
+	MatcherList *matchers = (MatcherList *)data;
+	gboolean all_done = TRUE;
+	GSList *l;
+
+	for (l = matchers->matchers ; l != NULL ; l = g_slist_next(l)) {
+		MatcherProp *matcher = (MatcherProp *) l->data;
+
+		if (matcher->done) 
+			continue;
+
+		/* if the criteria is ~body_part or ~message, ZERO lines
+		 * must match for the rule to match.
+		 */
+		if (matcher->criteria == MATCHCRITERIA_NOT_BODY_PART ||
+		    matcher->criteria == MATCHCRITERIA_NOT_MESSAGE) {
+			if (matcherprop_string_match(matcher, buf, 
+						_("body line"))) {
+				matcher->result = FALSE;
+				matcher->done = TRUE;
+			} else
+				matcher->result = TRUE;
+		/* else, just one line has to match */
+		} else if (matcherprop_criteria_body(matcher) ||
+			   matcherprop_criteria_message(matcher)) {
+			if (matcherprop_string_match(matcher, buf,
+						_("body line"))) {
+				matcher->result = TRUE;
+				matcher->done = TRUE;
+			}
+		}
+
+		/* if the matchers are OR'ed and the rule matched,
+		 * no need to check the others. */
+		if (matcher->result && matcher->done) {
+			if (!matchers->bool_and) {
+				return TRUE;
+			}
+		}
+
+		if (!matcher->done)
+			all_done = FALSE;
+	}
+	return all_done;
+}
+
+static gboolean matcherlist_match_text_content(MatcherList *matchers, MimeInfo *partinfo)
+{
+	if (partinfo->type != MIMETYPE_TEXT)
+		return FALSE;
+
+	return procmime_scan_text_content(partinfo, match_content_cb, matchers);
+}
+
 /*!
  *\brief	Check if a line in a message file's body matches
  *		the criteria
@@ -1451,12 +1573,9 @@ static gboolean matcherprop_criteria_body(const MatcherProp *matcher)
  */
 static gboolean matcherlist_match_body(MatcherList *matchers, gboolean body_only, MsgInfo *info)
 {
-	GSList *l;
 	MimeInfo *mimeinfo = NULL;
 	MimeInfo *partinfo = NULL;
-	gchar buf[BUFFSIZE];
 	gboolean first_text_found = FALSE;
-	FILE *outfp = NULL;
 
 	cm_return_val_if_fail(info != NULL, FALSE);
 
@@ -1472,65 +1591,14 @@ static gboolean matcherlist_match_body(MatcherList *matchers, gboolean body_only
 
 		if (partinfo->type == MIMETYPE_TEXT) {
 			first_text_found = TRUE;
-			outfp = procmime_get_text_content(partinfo);
-		} else
-			outfp = procmime_get_binary_content(partinfo);
-
-		if (!outfp) {
-			procmime_mimeinfo_free_all(mimeinfo);
-			return FALSE;
-		}
-
-		while (fgets(buf, sizeof(buf), outfp) != NULL) {
-			strretchomp(buf);
-
-			for (l = matchers->matchers ; l != NULL ; l = g_slist_next(l)) {
-				MatcherProp *matcher = (MatcherProp *) l->data;
-
-				if (matcher->done) 
-					continue;
-
-				/* Don't scan non-text parts when looking in body, only
-				 * when looking in whole message
-				 */
-				if (partinfo && partinfo->type != MIMETYPE_TEXT &&
-				(matcher->criteria == MATCHCRITERIA_NOT_BODY_PART ||
-				matcher->criteria == MATCHCRITERIA_BODY_PART))
-					continue;
-
-				/* if the criteria is ~body_part or ~message, ZERO lines
-				 * must match for the rule to match.
-				 */
-				if (matcher->criteria == MATCHCRITERIA_NOT_BODY_PART ||
-				    matcher->criteria == MATCHCRITERIA_NOT_MESSAGE) {
-					if (matcherprop_string_match(matcher, buf, 
-								_("body line"))) {
-						matcher->result = FALSE;
-						matcher->done = TRUE;
-					} else
-						matcher->result = TRUE;
-				/* else, just one line has to match */
-				} else if (matcherprop_criteria_body(matcher) ||
-					   matcherprop_criteria_message(matcher)) {
-					if (matcherprop_string_match(matcher, buf,
-								_("body line"))) {
-						matcher->result = TRUE;
-						matcher->done = TRUE;
-					}
-				}
-
-				/* if the matchers are OR'ed and the rule matched,
-				 * no need to check the others. */
-				if (matcher->result && matcher->done) {
-					if (!matchers->bool_and) {
-						procmime_mimeinfo_free_all(mimeinfo);
-						fclose(outfp);
-						return TRUE;
-					}
-				}
+			if (matcherlist_match_text_content(matchers, partinfo)) {
+				procmime_mimeinfo_free_all(mimeinfo);
+				return TRUE;
 			}
+		} else if (matcherlist_match_binary_content(matchers, partinfo)) {
+			procmime_mimeinfo_free_all(mimeinfo);
+			return TRUE;
 		}
-		fclose(outfp);
 
 		if (body_only && first_text_found)
 			break;
