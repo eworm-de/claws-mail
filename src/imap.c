@@ -223,6 +223,14 @@ static gint 	imap_copy_msgs		(Folder 	*folder,
 		    			 MsgInfoList 	*msglist, 
 					 GHashTable 	*relation);
 
+static gint	search_msgs		(Folder			*folder,
+					 FolderItem		*container,
+					 MsgNumberList		**msgs,
+					 gboolean		*on_server,
+					 MatcherList		*predicate,
+					 SearchProgressNotify	progress_cb,
+					 gpointer		progress_data);
+
 static gint 	imap_remove_msg		(Folder 	*folder, 
 					 FolderItem 	*item, 
 					 gint 		 uid);
@@ -422,7 +430,7 @@ static GSList * imap_list_from_lep(IMAPFolder * folder,
 				   clist * list, const gchar * real_path, gboolean all);
 static GSList * imap_get_lep_set_from_numlist(IMAPFolder *folder, MsgNumberList *numlist);
 static GSList * imap_get_lep_set_from_msglist(IMAPFolder *folder, MsgInfoList *msglist);
-static GSList * imap_uid_list_from_lep(clist * list);
+static GSList * imap_uid_list_from_lep(clist * list, gint* length);
 static GSList * imap_uid_list_from_lep_tab(carray * list);
 static void imap_flags_hash_from_lep_uid_flags_tab(carray * list,
 						   GHashTable * hash,
@@ -445,7 +453,7 @@ FolderClass *imap_get_class(void)
 		imap_class.type = F_IMAP;
 		imap_class.idstr = "imap";
 		imap_class.uistr = "IMAP4";
-		imap_class.supports_server_search = FALSE;
+		imap_class.supports_server_search = TRUE;
 
 		/* Folder functions */
 		imap_class.new_folder = imap_folder_new;
@@ -477,7 +485,7 @@ FolderClass *imap_get_class(void)
 		imap_class.add_msgs = imap_add_msgs;
 		imap_class.copy_msg = imap_copy_msg;
 		imap_class.copy_msgs = imap_copy_msgs;
-		imap_class.search_msgs = folder_item_search_msgs_local;
+		imap_class.search_msgs = search_msgs;
 		imap_class.remove_msg = imap_remove_msg;
 		imap_class.remove_msgs = imap_remove_msgs;
 		imap_class.expunge = imap_expunge;
@@ -1949,6 +1957,286 @@ static gint imap_copy_msgs(Folder *folder, FolderItem *dest,
 
 	ret = imap_do_copy_msgs(folder, dest, msglist, relation);
 	return ret;
+}
+
+
+static IMAPSearchKey* search_make_key(MatcherProp* match, gboolean* is_all)
+{
+	if (match->matchtype == MATCHTYPE_MATCHCASE || match->matchtype == MATCHTYPE_MATCH) {
+		IMAPSearchKey* result = NULL;
+		gboolean invert = FALSE;
+		gint matchertype = match->criteria;
+
+		if (is_all) {
+			*is_all = FALSE;
+		}
+
+		switch (matchertype) {
+		case MATCHCRITERIA_NOT_NEW: invert = TRUE; matchertype = MATCHCRITERIA_NEW; break;
+		case MATCHCRITERIA_NOT_MARKED: invert = TRUE; matchertype = MATCHCRITERIA_MARKED; break;
+		case MATCHCRITERIA_NOT_FORWARDED: invert = TRUE; matchertype = MATCHCRITERIA_FORWARDED; break;
+		case MATCHCRITERIA_NOT_SPAM: invert = TRUE; matchertype = MATCHCRITERIA_SPAM; break;
+		case MATCHCRITERIA_NOT_SUBJECT: invert = TRUE; matchertype = MATCHCRITERIA_SUBJECT; break;
+		case MATCHCRITERIA_NOT_FROM: invert = TRUE; matchertype = MATCHCRITERIA_FROM; break;
+		case MATCHCRITERIA_NOT_TO: invert = TRUE; matchertype = MATCHCRITERIA_TO; break;
+		case MATCHCRITERIA_NOT_CC: invert = TRUE; matchertype = MATCHCRITERIA_CC; break;
+		case MATCHCRITERIA_NOT_REFERENCES: invert = TRUE; matchertype = MATCHCRITERIA_REFERENCES; break;
+		case MATCHCRITERIA_NOT_HEADER: invert = TRUE; matchertype = MATCHCRITERIA_HEADER; break;
+		case MATCHCRITERIA_NOT_TAG: invert = TRUE; matchertype = MATCHCRITERIA_TAG; break;
+		case MATCHCRITERIA_NOT_HEADERS_PART: invert = TRUE; matchertype = MATCHCRITERIA_HEADERS_PART; break;
+		case MATCHCRITERIA_NOT_MESSAGE: invert = TRUE; matchertype = MATCHCRITERIA_MESSAGE; break;
+		case MATCHCRITERIA_NOT_BODY_PART: invert = TRUE; matchertype = MATCHCRITERIA_BODY_PART; break;
+		case MATCHCRITERIA_NOT_TO_AND_NOT_CC: invert = TRUE; matchertype = MATCHCRITERIA_TO_OR_CC; break;
+		case MATCHCRITERIA_NOT_INREPLYTO: invert = TRUE; matchertype = MATCHCRITERIA_INREPLYTO; break;
+		}
+
+		/* 
+		 * this aborts conversion even for predicates understood by the following code.
+		 * while that might seem wasteful, claws local search for information listed below
+		 * has proven faster than IMAP search plus network roundtrips. once this changes,
+		 * consider removing these exceptions.
+		 */
+		switch (matchertype) {
+		case MATCHCRITERIA_FROM:
+		case MATCHCRITERIA_TO:
+		case MATCHCRITERIA_CC:
+		case MATCHCRITERIA_TO_OR_CC:
+		case MATCHCRITERIA_SUBJECT:
+		case MATCHCRITERIA_REFERENCES:
+		case MATCHCRITERIA_INREPLYTO:
+		case MATCHCRITERIA_AGE_GREATER:
+		case MATCHCRITERIA_AGE_LOWER:
+		case MATCHCRITERIA_FORWARDED:
+		case MATCHCRITERIA_SPAM:
+		case MATCHCRITERIA_UNREAD:
+		case MATCHCRITERIA_NEW:
+		case MATCHCRITERIA_MARKED:
+		case MATCHCRITERIA_REPLIED:
+		case MATCHCRITERIA_DELETED:
+		case MATCHCRITERIA_SIZE_GREATER:
+		case MATCHCRITERIA_SIZE_SMALLER:
+		case MATCHCRITERIA_SIZE_EQUAL:
+			return NULL;
+		}
+
+		/* the Message-ID header is also cached */
+		if (matchertype == MATCHCRITERIA_HEADER && g_strcmp0("Message-ID", match->header) == 0) {
+			return NULL;
+		}
+
+		switch (matchertype) {
+		case MATCHCRITERIA_FORWARDED:
+			result = imap_search_new(IMAP_SEARCH_CRITERIA_TAG, NULL, RTAG_FORWARDED, 0);
+			break;
+
+		case MATCHCRITERIA_SPAM:
+			result = imap_search_new(IMAP_SEARCH_CRITERIA_TAG, NULL, RTAG_JUNK, 0);
+			break;
+
+		case MATCHCRITERIA_INREPLYTO:
+			result = imap_search_new(IMAP_SEARCH_CRITERIA_HEADER, "In-Reply-To", match->expr, 0);
+			break;
+
+		case MATCHCRITERIA_REFERENCES:
+			result = imap_search_new(IMAP_SEARCH_CRITERIA_HEADER, "References", match->expr, 0);
+			break;
+
+		case MATCHCRITERIA_TO_OR_CC:
+			result = imap_search_or(
+					imap_search_new(IMAP_SEARCH_CRITERIA_TO, NULL, match->expr, 0),
+					imap_search_new(IMAP_SEARCH_CRITERIA_CC, NULL, match->expr, 0)
+					);
+			break;
+
+		case MATCHCRITERIA_HEADERS_PART:
+			result = imap_search_and(
+					imap_search_not(imap_search_new(IMAP_SEARCH_CRITERIA_BODY, NULL, match->expr, 0)),
+					imap_search_new(IMAP_SEARCH_CRITERIA_MESSAGE, NULL, match->expr, 0)
+					);
+			break;
+
+		case MATCHCRITERIA_SIZE_EQUAL:
+			result = imap_search_and(
+					imap_search_not(imap_search_new(IMAP_SEARCH_CRITERIA_SIZE_SMALLER, NULL, NULL, match->value)),
+					imap_search_not(imap_search_new(IMAP_SEARCH_CRITERIA_SIZE_GREATER, NULL, NULL, match->value))
+					);
+			break;
+
+		case MATCHCRITERIA_NOT_UNREAD:
+			result = imap_search_new(IMAP_SEARCH_CRITERIA_READ, NULL, NULL, 0);
+			break;
+
+		case MATCHCRITERIA_UNREAD:
+			result = imap_search_new(IMAP_SEARCH_CRITERIA_UNREAD, NULL, NULL, 0);
+			break;
+
+		case MATCHCRITERIA_NEW:
+			result = imap_search_new(IMAP_SEARCH_CRITERIA_NEW, NULL, NULL, 0);
+			break;
+
+		case MATCHCRITERIA_MARKED:
+			result = imap_search_new(IMAP_SEARCH_CRITERIA_MARKED, NULL, NULL, 0);
+			break;
+
+		case MATCHCRITERIA_DELETED:
+			result = imap_search_new(IMAP_SEARCH_CRITERIA_DELETED, NULL, NULL, 0);
+			break;
+
+		case MATCHCRITERIA_REPLIED:
+			result = imap_search_new(IMAP_SEARCH_CRITERIA_REPLIED, NULL, NULL, 0);
+			break;
+
+		case MATCHCRITERIA_TAG:
+			result = imap_search_new(IMAP_SEARCH_CRITERIA_TAG, NULL, match->expr, 0);
+			break;
+
+		case MATCHCRITERIA_SUBJECT:
+			result = imap_search_new(IMAP_SEARCH_CRITERIA_SUBJECT, NULL, match->expr, 0);
+			break;
+
+		case MATCHCRITERIA_FROM:
+			result = imap_search_new(IMAP_SEARCH_CRITERIA_FROM, NULL, match->expr, 0);
+			break;
+
+		case MATCHCRITERIA_TO:
+			result = imap_search_new(IMAP_SEARCH_CRITERIA_TO, NULL, match->expr, 0);
+			break;
+
+		case MATCHCRITERIA_CC:
+			result = imap_search_new(IMAP_SEARCH_CRITERIA_CC, NULL, match->expr, 0);
+			break;
+
+		case MATCHCRITERIA_AGE_GREATER:
+			result = imap_search_new(IMAP_SEARCH_CRITERIA_AGE_GREATER, NULL, NULL, match->value);
+			break;
+
+		case MATCHCRITERIA_AGE_LOWER:
+			result = imap_search_new(IMAP_SEARCH_CRITERIA_AGE_LOWER, NULL, NULL, match->value);
+			break;
+
+		case MATCHCRITERIA_BODY_PART:
+			result = imap_search_new(IMAP_SEARCH_CRITERIA_BODY, NULL, match->expr, 0);
+			break;
+
+		case MATCHCRITERIA_MESSAGE:
+			result = imap_search_new(IMAP_SEARCH_CRITERIA_MESSAGE, NULL, match->expr, 0);
+			break;
+
+		case MATCHCRITERIA_HEADER:
+			result = imap_search_new(IMAP_SEARCH_CRITERIA_HEADER, match->header, match->expr, 0);
+			break;
+
+		case MATCHCRITERIA_SIZE_GREATER:
+			result = imap_search_new(IMAP_SEARCH_CRITERIA_SIZE_GREATER, NULL, NULL, match->value);
+			break;
+
+		case MATCHCRITERIA_SIZE_SMALLER:
+			result = imap_search_new(IMAP_SEARCH_CRITERIA_SIZE_SMALLER, NULL, NULL, match->value);
+			break;
+
+		default:
+			result = imap_search_new(IMAP_SEARCH_CRITERIA_ALL, NULL, NULL, 0);
+			if (is_all) {
+				*is_all = TRUE;
+			}
+			break;
+		}
+
+		if (invert) {
+			result = imap_search_not(result);
+			if (is_all && *is_all) {
+				*is_all = FALSE;
+			}
+		}
+
+		return result;
+	}
+
+	return NULL;
+}
+
+static gint	search_msgs		(Folder			*folder,
+					 FolderItem		*container,
+					 MsgNumberList		**msgs,
+					 gboolean		*on_server,
+					 MatcherList		*predicate,
+					 SearchProgressNotify	progress_cb,
+					 gpointer		progress_data)
+{
+	IMAPSearchKey* key = NULL;
+	GSList* cur;
+	int result = -1;
+	clist* uidlist = NULL;
+	gboolean server_filtering_useless;
+
+	if (on_server == NULL || !*on_server) {
+		return folder_item_search_msgs_local(folder, container, msgs, on_server,
+				predicate, progress_cb, progress_data);
+	}
+
+	for (cur = predicate->matchers; cur != NULL; cur = cur->next) {
+		IMAPSearchKey* matcherPart = NULL;
+		MatcherProp* prop = (MatcherProp*) cur->data;
+		gboolean is_all;
+
+		matcherPart = search_make_key(prop, &is_all);
+
+		if (on_server) {
+			*on_server &= matcherPart != NULL && prop->matchtype == MATCHTYPE_MATCHCASE;
+		}
+
+		if (matcherPart) {
+			if (key == NULL) {
+				key = matcherPart;
+				server_filtering_useless = is_all;
+			} else if (predicate->bool_and) {
+				key = imap_search_and(key, matcherPart);
+				server_filtering_useless &= is_all;
+			} else {
+				key = imap_search_or(key, matcherPart);
+				server_filtering_useless |= is_all;
+			}
+		}
+	}
+
+	if (server_filtering_useless) {
+		imap_search_free(key);
+		key = NULL;
+	}
+
+	if (key == NULL && progress_cb != NULL) {
+		GSList* cur;
+		GSList* list;
+		int count = 0;
+
+		progress_cb(progress_data, TRUE, 0, 0, container->total_msgs);
+		progress_cb(progress_data, TRUE, container->total_msgs, 0, container->total_msgs);
+
+		list = folder_item_get_msg_list(container);
+		for (cur = list; cur != NULL; cur = cur->next) {
+			*msgs = g_slist_prepend(*msgs, GUINT_TO_POINTER(((MsgInfo*) cur->data)->msgnum));
+			count++;
+		}
+		*msgs = g_slist_reverse(*msgs);
+		return count;
+	}
+
+	if (progress_cb)
+		progress_cb(progress_data, TRUE, 0, 0, container->total_msgs);
+	result = imap_threaded_search(folder, IMAP_SEARCH_TYPE_KEYED, key, NULL, &uidlist);
+	if (progress_cb)
+		progress_cb(progress_data, TRUE, container->total_msgs, 0, container->total_msgs);
+
+	if (result == MAILIMAP_NO_ERROR) {
+		gint result = 0;
+
+		*msgs = imap_uid_list_from_lep(uidlist, &result);
+		mailimap_search_result_free(uidlist);
+
+		return result;
+	} else {
+		return -1;
+	}
 }
 
 
@@ -3980,13 +4268,13 @@ static gint get_list_of_uids(IMAPSession *session, Folder *folder, IMAPFolderIte
 	uidlist = NULL;
 	
 	if (folder->account && folder->account->low_bandwidth) {
-		r = imap_threaded_search(folder, IMAP_SEARCH_TYPE_SIMPLE, NULL,
-				 &lep_uidlist);
+		r = imap_threaded_search(folder, IMAP_SEARCH_TYPE_SIMPLE,
+				NULL, NULL, &lep_uidlist);
 	}
 	
 	if (r == MAILIMAP_NO_ERROR) {
 		GSList * fetchuid_list =
-			imap_uid_list_from_lep(lep_uidlist);
+			imap_uid_list_from_lep(lep_uidlist, NULL);
 		mailimap_search_result_free(lep_uidlist);
 		
 		uidlist = g_slist_concat(fetchuid_list, uidlist);
@@ -4615,18 +4903,18 @@ static /*gint*/ void *imap_get_flags_thread(void *data)
 
 			imapset = cur->data;
 			if (reverse_seen) {
-				r = imap_threaded_search(folder, IMAP_SEARCH_TYPE_SEEN,
+				r = imap_threaded_search(folder, IMAP_SEARCH_TYPE_SEEN, NULL,
 							 full_search ? NULL:imapset, &lep_uidlist);
 			}
 			else {
 				r = imap_threaded_search(folder,
-							 IMAP_SEARCH_TYPE_UNSEEN,
+							 IMAP_SEARCH_TYPE_UNSEEN, NULL,
 							 full_search ? NULL:imapset, &lep_uidlist);
 			}
 			if (r == MAILIMAP_NO_ERROR) {
 				GSList * uidlist;
 
-				uidlist = imap_uid_list_from_lep(lep_uidlist);
+				uidlist = imap_uid_list_from_lep(lep_uidlist, NULL);
 				mailimap_search_result_free(lep_uidlist);
 
 				unseen = g_slist_concat(unseen, uidlist);
@@ -4635,12 +4923,12 @@ static /*gint*/ void *imap_get_flags_thread(void *data)
 				goto bail;
 			}
 
-			r = imap_threaded_search(folder, IMAP_SEARCH_TYPE_FLAGGED,
+			r = imap_threaded_search(folder, IMAP_SEARCH_TYPE_FLAGGED, NULL,
 						 full_search ? NULL:imapset, &lep_uidlist);
 			if (r == MAILIMAP_NO_ERROR) {
 				GSList * uidlist;
 
-				uidlist = imap_uid_list_from_lep(lep_uidlist);
+				uidlist = imap_uid_list_from_lep(lep_uidlist, NULL);
 				mailimap_search_result_free(lep_uidlist);
 
 				flagged = g_slist_concat(flagged, uidlist);
@@ -4650,12 +4938,12 @@ static /*gint*/ void *imap_get_flags_thread(void *data)
 			}
 
 			if (fitem->opened || fitem->processing_pending || fitem == folder->inbox) {
-				r = imap_threaded_search(folder, IMAP_SEARCH_TYPE_ANSWERED,
+				r = imap_threaded_search(folder, IMAP_SEARCH_TYPE_ANSWERED, NULL,
 							 full_search ? NULL:imapset, &lep_uidlist);
 				if (r == MAILIMAP_NO_ERROR) {
 					GSList * uidlist;
 
-					uidlist = imap_uid_list_from_lep(lep_uidlist);
+					uidlist = imap_uid_list_from_lep(lep_uidlist, NULL);
 					mailimap_search_result_free(lep_uidlist);
 
 					answered = g_slist_concat(answered, uidlist);
@@ -4665,12 +4953,12 @@ static /*gint*/ void *imap_get_flags_thread(void *data)
 				}
 
 				if (flag_ok(IMAP_FOLDER_ITEM(fitem), IMAP_FLAG_FORWARDED)) {
-					r = imap_threaded_search(folder, IMAP_SEARCH_TYPE_FORWARDED,
+					r = imap_threaded_search(folder, IMAP_SEARCH_TYPE_FORWARDED, NULL,
 								 full_search ? NULL:imapset, &lep_uidlist);
 					if (r == MAILIMAP_NO_ERROR) {
 						GSList * uidlist;
 
-						uidlist = imap_uid_list_from_lep(lep_uidlist);
+						uidlist = imap_uid_list_from_lep(lep_uidlist, NULL);
 						mailimap_search_result_free(lep_uidlist);
 
 						forwarded = g_slist_concat(forwarded, uidlist);
@@ -4681,12 +4969,12 @@ static /*gint*/ void *imap_get_flags_thread(void *data)
 				}
 
 				if (flag_ok(IMAP_FOLDER_ITEM(fitem), IMAP_FLAG_SPAM)) {
-					r = imap_threaded_search(folder, IMAP_SEARCH_TYPE_SPAM,
+					r = imap_threaded_search(folder, IMAP_SEARCH_TYPE_SPAM, NULL,
 								 full_search ? NULL:imapset, &lep_uidlist);
 					if (r == MAILIMAP_NO_ERROR) {
 						GSList * uidlist;
 
-						uidlist = imap_uid_list_from_lep(lep_uidlist);
+						uidlist = imap_uid_list_from_lep(lep_uidlist, NULL);
 						mailimap_search_result_free(lep_uidlist);
 
 						spam = g_slist_concat(spam, uidlist);
@@ -4696,12 +4984,12 @@ static /*gint*/ void *imap_get_flags_thread(void *data)
 					}
 				}
 
-				r = imap_threaded_search(folder, IMAP_SEARCH_TYPE_DELETED,
+				r = imap_threaded_search(folder, IMAP_SEARCH_TYPE_DELETED, NULL,
 							 full_search ? NULL:imapset, &lep_uidlist);
 				if (r == MAILIMAP_NO_ERROR) {
 					GSList * uidlist;
 
-					uidlist = imap_uid_list_from_lep(lep_uidlist);
+					uidlist = imap_uid_list_from_lep(lep_uidlist, NULL);
 					mailimap_search_result_free(lep_uidlist);
 
 					deleted = g_slist_concat(deleted, uidlist);
@@ -5236,10 +5524,11 @@ static GSList * imap_get_lep_set_from_msglist(IMAPFolder *folder, MsgInfoList *m
 	return seq_list;
 }
 
-static GSList * imap_uid_list_from_lep(clist * list)
+static GSList * imap_uid_list_from_lep(clist * list, gint* length)
 {
 	clistiter * iter;
 	GSList * result;
+	gint len = 0;
 	
 	result = NULL;
 	
@@ -5250,9 +5539,12 @@ static GSList * imap_uid_list_from_lep(clist * list)
 
 			puid = clist_content(iter);
 			result = g_slist_prepend(result, GINT_TO_POINTER(* puid));
+			len++;
 		}
 		result = g_slist_reverse(result);
-	}	
+	}
+	if (length)
+		*length = len;
 	return result;
 }
 

@@ -444,6 +444,7 @@ static gboolean search_filter_folder(MsgNumberList **msgnums, AdvancedSearch *se
 					  FolderItem *folderItem, gboolean onServer)
 {
 	gint matched;
+	gboolean tried_server = onServer;
 
 	matched = folder_item_search_msgs(folderItem->folder,
 		folderItem,
@@ -459,7 +460,7 @@ static gboolean search_filter_folder(MsgNumberList **msgnums, AdvancedSearch *se
 		return FALSE;
 	}
 
-	if (folderItem->folder->klass->supports_server_search && !onServer) {
+	if (folderItem->folder->klass->supports_server_search && tried_server && !onServer) {
 		return search_filter_folder(msgnums, search, folderItem, onServer);
 	} else {
 		return TRUE;

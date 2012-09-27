@@ -1554,6 +1554,7 @@ struct search_param {
 	mailimap * imap;
 	int type;
 	struct mailimap_set * set;
+	IMAPSearchKey* key;
 };
 
 struct search_result {
@@ -1588,7 +1589,7 @@ static void search_run(struct etpan_thread_op * op)
 	int r;
 	struct mailimap_search_key * key = NULL;
 	struct mailimap_search_key * uid_key = NULL;
-	struct mailimap_search_key * search_type_key;
+	struct mailimap_search_key * search_type_key = NULL;
 	clist * search_result;
 	
 	param = op->param;
@@ -1602,70 +1603,33 @@ static void search_run(struct etpan_thread_op * op)
 	} else if (param->type == IMAP_SEARCH_TYPE_SIMPLE) {
 		uid_key = mailimap_search_key_new_all();
 	}
-	search_type_key = NULL;
 	switch (param->type) {
 	case IMAP_SEARCH_TYPE_SIMPLE:
 		search_type_key = NULL;
 		break;
-		
 	case IMAP_SEARCH_TYPE_SEEN:
-		search_type_key = mailimap_search_key_new(MAILIMAP_SEARCH_KEY_SEEN,
-							  NULL, NULL, NULL, NULL, NULL,
-							  NULL, NULL, NULL, NULL, NULL,
-							  NULL, NULL, NULL, NULL, 0,
-							  NULL, NULL, NULL, NULL, NULL,
-							  NULL, 0, NULL, NULL, NULL);
+		search_type_key = imap_search_new(IMAP_SEARCH_CRITERIA_READ, NULL, NULL, 0);
 		break;
-		
 	case IMAP_SEARCH_TYPE_UNSEEN:
-		search_type_key = mailimap_search_key_new(MAILIMAP_SEARCH_KEY_UNSEEN,
-							  NULL, NULL, NULL, NULL, NULL,
-							  NULL, NULL, NULL, NULL, NULL,
-							  NULL, NULL, NULL, NULL, 0,
-							  NULL, NULL, NULL, NULL, NULL,
-							  NULL, 0, NULL, NULL, NULL);
+		search_type_key = imap_search_new(IMAP_SEARCH_CRITERIA_UNREAD, NULL, NULL, 0);
 		break;
-		
 	case IMAP_SEARCH_TYPE_ANSWERED:
-		search_type_key = mailimap_search_key_new(MAILIMAP_SEARCH_KEY_ANSWERED,
-							  NULL, NULL, NULL, NULL, NULL,
-							  NULL, NULL, NULL, NULL, NULL,
-							  NULL, NULL, NULL, NULL, 0,
-							  NULL, NULL, NULL, NULL, NULL,
-							  NULL, 0, NULL, NULL, NULL);
+		search_type_key = imap_search_new(IMAP_SEARCH_CRITERIA_REPLIED, NULL, NULL, 0);
 		break;
-		
 	case IMAP_SEARCH_TYPE_FLAGGED:
-		search_type_key = mailimap_search_key_new(MAILIMAP_SEARCH_KEY_FLAGGED,
-							  NULL, NULL, NULL, NULL, NULL,
-							  NULL, NULL, NULL, NULL, NULL,
-							  NULL, NULL, NULL, NULL, 0,
-							  NULL, NULL, NULL, NULL, NULL,
-							  NULL, 0, NULL, NULL, NULL);
+		search_type_key = imap_search_new(IMAP_SEARCH_CRITERIA_MARKED, NULL, NULL, 0);
 		break;
 	case IMAP_SEARCH_TYPE_DELETED:
-		search_type_key = mailimap_search_key_new(MAILIMAP_SEARCH_KEY_DELETED,
-							  NULL, NULL, NULL, NULL, NULL,
-							  NULL, NULL, NULL, NULL, NULL,
-							  NULL, NULL, NULL, NULL, 0,
-							  NULL, NULL, NULL, NULL, NULL,
-							  NULL, 0, NULL, NULL, NULL);
+		search_type_key = imap_search_new(IMAP_SEARCH_CRITERIA_DELETED, NULL, NULL, 0);
 		break;
 	case IMAP_SEARCH_TYPE_FORWARDED:
-		search_type_key = mailimap_search_key_new(MAILIMAP_SEARCH_KEY_KEYWORD,
-							  NULL, NULL, NULL, NULL, NULL,
-							  strdup(RTAG_FORWARDED), NULL, NULL, NULL, NULL,
-							  NULL, NULL, NULL, NULL, 0,
-							  NULL, NULL, NULL, NULL, NULL,
-							  NULL, 0, NULL, NULL, NULL);
+		search_type_key = imap_search_new(IMAP_SEARCH_CRITERIA_TAG, NULL, RTAG_FORWARDED, 0);
 		break;
 	case IMAP_SEARCH_TYPE_SPAM:
-		search_type_key = mailimap_search_key_new(MAILIMAP_SEARCH_KEY_KEYWORD,
-							  NULL, NULL, NULL, NULL, NULL,
-							  strdup(RTAG_JUNK), NULL, NULL, NULL, NULL,
-							  NULL, NULL, NULL, NULL, 0,
-							  NULL, NULL, NULL, NULL, NULL,
-							  NULL, 0, NULL, NULL, NULL);
+		search_type_key = imap_search_new(IMAP_SEARCH_CRITERIA_TAG, NULL, RTAG_JUNK, 0);
+		break;
+	case IMAP_SEARCH_TYPE_KEYED:
+		search_type_key = param->key;
 		break;
 	}
 	
@@ -1702,7 +1666,7 @@ static void search_run(struct etpan_thread_op * op)
 	debug_print("imap search run - end %i\n", result->error);
 }
 
-int imap_threaded_search(Folder * folder, int search_type,
+int imap_threaded_search(Folder * folder, int search_type, IMAPSearchKey* key,
 			 struct mailimap_set * set, clist ** search_result)
 {
 	struct search_param param;
@@ -1715,7 +1679,8 @@ int imap_threaded_search(Folder * folder, int search_type,
 	param.imap = imap;
 	param.set = set;
 	param.type = search_type;
-	
+	param.key = key;
+
 	threaded_run(folder, &param, &result, search_run);
 	
 	if (result.error != MAILIMAP_NO_ERROR)
@@ -1726,6 +1691,160 @@ int imap_threaded_search(Folder * folder, int search_type,
 	* search_result = result.search_result;
 	
 	return result.error;
+}
+
+
+struct _IMAPSearchKey {
+	struct mailimap_search_key* key;
+};
+
+IMAPSearchKey*	imap_search_new(gint		 criteria, 
+				const gchar	*header,
+				const gchar	*expr,
+				int		 value)
+{
+	char* sk_bcc = NULL;
+	struct mailimap_date* sk_before = NULL;
+	char* sk_body = NULL;
+	char* sk_cc = NULL;
+	char* sk_from = NULL;
+	char* sk_keyword = NULL;
+	struct mailimap_date* sk_on = NULL;
+	struct mailimap_date* sk_since = NULL;
+	char* sk_subject = NULL;
+	char* sk_text = NULL;
+	char* sk_to = NULL;
+	char* sk_unkeyword = NULL;
+	char* sk_header_name = NULL;
+	char* sk_header_value = NULL;
+	uint32_t sk_larger = 0;
+	struct mailimap_search_key* sk_not = NULL;
+	struct mailimap_search_key* sk_or1 = NULL;
+	struct mailimap_search_key* sk_or2 = NULL;
+	struct mailimap_date* sk_sentbefore = NULL;
+	struct mailimap_date* sk_senton = NULL;
+	struct mailimap_date* sk_sentsince = NULL;
+	uint32_t sk_smaller = 0;
+	struct mailimap_set* sk_uid = NULL;
+	struct mailimap_set* sk_set = NULL;
+	clist* sk_multiple = NULL;
+	int etpan_matcher_type;
+
+	switch (criteria) {
+	case IMAP_SEARCH_CRITERIA_ALL: etpan_matcher_type = MAILIMAP_SEARCH_KEY_ALL; break;
+	case IMAP_SEARCH_CRITERIA_READ: etpan_matcher_type = MAILIMAP_SEARCH_KEY_SEEN; break;
+	case IMAP_SEARCH_CRITERIA_UNREAD: etpan_matcher_type = MAILIMAP_SEARCH_KEY_UNSEEN; break;
+	case IMAP_SEARCH_CRITERIA_NEW: etpan_matcher_type = MAILIMAP_SEARCH_KEY_NEW; break;
+	case IMAP_SEARCH_CRITERIA_MARKED: etpan_matcher_type = MAILIMAP_SEARCH_KEY_FLAGGED; break;
+	case IMAP_SEARCH_CRITERIA_REPLIED: etpan_matcher_type = MAILIMAP_SEARCH_KEY_ANSWERED; break;
+	case IMAP_SEARCH_CRITERIA_DELETED: etpan_matcher_type = MAILIMAP_SEARCH_KEY_DELETED; break;
+
+	case IMAP_SEARCH_CRITERIA_TAG:
+		sk_keyword = strdup(expr);
+		etpan_matcher_type = MAILIMAP_SEARCH_KEY_KEYWORD;
+		break;
+
+	case IMAP_SEARCH_CRITERIA_SUBJECT:
+		etpan_matcher_type = MAILIMAP_SEARCH_KEY_SUBJECT;
+		sk_subject = strdup(expr);
+		break;
+
+	case IMAP_SEARCH_CRITERIA_TO:
+		etpan_matcher_type = MAILIMAP_SEARCH_KEY_TO;
+		sk_to = strdup(expr);
+		break;
+
+	case IMAP_SEARCH_CRITERIA_CC:
+		etpan_matcher_type = MAILIMAP_SEARCH_KEY_CC;
+		sk_cc = strdup(expr);
+		break;
+
+	case IMAP_SEARCH_CRITERIA_AGE_GREATER:
+	case IMAP_SEARCH_CRITERIA_AGE_LOWER:
+		{
+			struct tm tm;
+			time_t limit = time(NULL) - 60 * 60 * 24 * value;
+
+			tzset();
+			localtime_r(&limit, &tm);
+			if (criteria == IMAP_SEARCH_CRITERIA_AGE_GREATER) {
+				etpan_matcher_type = MAILIMAP_SEARCH_KEY_SENTBEFORE;
+				sk_sentbefore = mailimap_date_new(tm.tm_mday, tm.tm_mon, tm.tm_year + 1900);
+			} else {
+				etpan_matcher_type = MAILIMAP_SEARCH_KEY_SENTSINCE;
+				sk_sentsince = mailimap_date_new(tm.tm_mday, tm.tm_mon, tm.tm_year + 1900);
+			}
+			break;
+		}
+
+	case IMAP_SEARCH_CRITERIA_BODY:
+		etpan_matcher_type = MAILIMAP_SEARCH_KEY_BODY;
+		sk_body = strdup(expr);
+		break;
+
+	case IMAP_SEARCH_CRITERIA_MESSAGE:
+		etpan_matcher_type = MAILIMAP_SEARCH_KEY_TEXT;
+		sk_text = strdup(expr);
+		break;
+
+	case IMAP_SEARCH_CRITERIA_HEADER:
+		etpan_matcher_type = MAILIMAP_SEARCH_KEY_HEADER;
+		sk_header_name = strdup(header);
+		sk_header_value = strdup(expr);
+		break;
+
+	case IMAP_SEARCH_CRITERIA_FROM:
+		etpan_matcher_type = MAILIMAP_SEARCH_KEY_FROM;
+		sk_from = strdup(expr);
+		break;
+
+	case IMAP_SEARCH_CRITERIA_SIZE_GREATER:
+		etpan_matcher_type = MAILIMAP_SEARCH_KEY_LARGER;
+		sk_larger = value;
+		break;
+
+	case IMAP_SEARCH_CRITERIA_SIZE_SMALLER:
+		etpan_matcher_type = MAILIMAP_SEARCH_KEY_SMALLER;
+		sk_smaller = value;
+		break;
+
+	default:
+		return NULL;
+	}
+
+	return mailimap_search_key_new(etpan_matcher_type,
+		sk_bcc, sk_before, sk_body, sk_cc, sk_from, sk_keyword,
+		sk_on, sk_since, sk_subject, sk_text, sk_to,
+		sk_unkeyword, sk_header_name,sk_header_value, sk_larger,
+		sk_not, sk_or1, sk_or2, sk_sentbefore, sk_senton,
+		sk_sentsince, sk_smaller, sk_uid, sk_set, sk_multiple);
+}
+
+IMAPSearchKey* imap_search_not(IMAPSearchKey* key)
+{
+	return mailimap_search_key_new_not(key);
+}
+
+IMAPSearchKey* imap_search_or(IMAPSearchKey* l, IMAPSearchKey* r)
+{
+	return mailimap_search_key_new_or(l, r);
+}
+
+IMAPSearchKey* imap_search_and(IMAPSearchKey* l, IMAPSearchKey* r)
+{
+	IMAPSearchKey* result = mailimap_search_key_new_multiple_empty();
+	mailimap_search_key_multiple_add(result, l);
+	mailimap_search_key_multiple_add(result, r);
+
+	return result;
+}
+
+void imap_search_free(IMAPSearchKey* key)
+{
+	if (!key)
+	    return;
+
+	mailimap_search_key_free(key);
 }
 
 

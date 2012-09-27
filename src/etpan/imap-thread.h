@@ -99,9 +99,44 @@ enum {
 	IMAP_SEARCH_TYPE_DELETED,
 	IMAP_SEARCH_TYPE_FORWARDED,
 	IMAP_SEARCH_TYPE_SPAM,
+
+	IMAP_SEARCH_TYPE_KEYED,
 };
 
-int imap_threaded_search(Folder * folder, int search_type,
+typedef struct mailimap_search_key IMAPSearchKey;
+
+enum {
+	IMAP_SEARCH_CRITERIA_ALL,
+	IMAP_SEARCH_CRITERIA_READ,
+	IMAP_SEARCH_CRITERIA_UNREAD,
+	IMAP_SEARCH_CRITERIA_NEW,
+	IMAP_SEARCH_CRITERIA_MARKED,
+	IMAP_SEARCH_CRITERIA_DELETED,
+	IMAP_SEARCH_CRITERIA_REPLIED,
+	IMAP_SEARCH_CRITERIA_TAG,
+	IMAP_SEARCH_CRITERIA_SUBJECT,
+	IMAP_SEARCH_CRITERIA_FROM,
+	IMAP_SEARCH_CRITERIA_TO,
+	IMAP_SEARCH_CRITERIA_CC,
+	IMAP_SEARCH_CRITERIA_AGE_GREATER,
+	IMAP_SEARCH_CRITERIA_AGE_LOWER,
+	IMAP_SEARCH_CRITERIA_BODY,
+	IMAP_SEARCH_CRITERIA_MESSAGE,
+	IMAP_SEARCH_CRITERIA_HEADER,
+	IMAP_SEARCH_CRITERIA_SIZE_GREATER,
+	IMAP_SEARCH_CRITERIA_SIZE_SMALLER,
+};
+
+IMAPSearchKey*	imap_search_new(gint		 criteria, 
+				const gchar	*header,
+				const gchar	*expr,
+				int		 value);
+IMAPSearchKey* imap_search_not(IMAPSearchKey* key);
+IMAPSearchKey* imap_search_or(IMAPSearchKey* l, IMAPSearchKey* r);
+IMAPSearchKey* imap_search_and(IMAPSearchKey* l, IMAPSearchKey* r);
+void		imap_search_free(IMAPSearchKey* search);
+
+int imap_threaded_search(Folder * folder, int search_type, IMAPSearchKey* key,
 			 struct mailimap_set * set, clist ** result);
 
 int imap_threaded_fetch_uid(Folder * folder, uint32_t first_index,
