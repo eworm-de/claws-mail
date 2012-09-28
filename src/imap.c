@@ -2167,7 +2167,8 @@ static gint	search_msgs		(Folder			*folder,
 	GSList* cur;
 	int result = -1;
 	clist* uidlist = NULL;
-	gboolean server_filtering_useless;
+	gboolean server_filtering_useless = FALSE;
+        IMAPSession *session;
 
 	if (on_server == NULL || !*on_server) {
 		return folder_item_search_msgs_local(folder, container, msgs, on_server,
@@ -2220,6 +2221,15 @@ static gint	search_msgs		(Folder			*folder,
 		*msgs = g_slist_reverse(*msgs);
 		return count;
 	}
+
+	session = imap_session_get(folder);
+        if (!session) {
+                return -1;
+        }
+	result = imap_select(session, IMAP_FOLDER(folder), FOLDER_ITEM(container),
+			 NULL, NULL, NULL, NULL, NULL, TRUE);
+	if (result != MAILIMAP_NO_ERROR)
+		return -1;
 
 	if (progress_cb)
 		progress_cb(progress_data, TRUE, 0, 0, container->total_msgs);

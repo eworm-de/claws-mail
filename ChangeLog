@@ -1,3 +1,12 @@
+2012-09-28 [colin]	3.8.1cvs81
+
+	* src/advsearch.c
+		Never search on server if we're offline
+		(Asking the user would and will be better)
+	* src/imap.c
+		Fix uninitialized variable (bogus) warning
+		Fix SELECT of the folder before searching
+
 2012-09-27 [colin]	3.8.1cvs80
 
 	* src/advsearch.c

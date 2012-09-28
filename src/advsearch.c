@@ -30,6 +30,7 @@
 #include "matcher.h"
 #include "matcher_parser.h"
 #include "utils.h"
+#include "prefs_common.h"
 
 struct _AdvancedSearch {
 	struct {
@@ -487,9 +488,12 @@ static gboolean search_impl(MsgInfoList **messages, AdvancedSearch* search,
 		MsgNumberList *msgnums = NULL;
 		MsgNumberList *cur;
 		MsgInfoList *msgs = NULL;
+		gboolean can_search_on_server = 
+				folderItem->folder->klass->supports_server_search 
+				&& !prefs_common.work_offline;
 
 		if (!search_filter_folder(&msgnums, search, folderItem,
-					folderItem->folder->klass->supports_server_search)) {
+					  can_search_on_server)) {
 			g_slist_free(msgnums);
 			return FALSE;
 		}
