@@ -1835,6 +1835,8 @@ static void parse_parameters(const gchar *parameters, GHashTable *table)
 			continue;
 
 		charset = value;
+		if (charset == NULL)
+			continue;
 		lang = strchr(charset, '\'');
 		if (lang == NULL)
 			continue;
