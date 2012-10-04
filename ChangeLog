@@ -1,3 +1,8 @@
+2012-10-04 [colin]	3.8.1cvs84
+
+	* src/imap.c
+		Fix keywords with spaces
+
 2012-10-04 [colin]	3.8.1cvs83
 
 	* src/advsearch.c

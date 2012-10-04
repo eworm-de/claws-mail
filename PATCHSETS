@@ -4458,3 +4458,4 @@
 ( cvs diff -u -r 1.1.2.4 -r 1.1.2.5 src/advsearch.c;  cvs diff -u -r 1.179.2.265 -r 1.179.2.266 src/imap.c;  ) > 3.8.1cvs81.patchset
 ( cvs diff -u -r 1.49.2.152 -r 1.49.2.153 src/procmime.c;  ) > 3.8.1cvs82.patchset
 ( cvs diff -u -r 1.1.2.5 -r 1.1.2.6 src/advsearch.c;  ) > 3.8.1cvs83.patchset
+( cvs diff -u -r 1.179.2.266 -r 1.179.2.267 src/imap.c;  ) > 3.8.1cvs84.patchset

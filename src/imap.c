@@ -2087,7 +2087,11 @@ static IMAPSearchKey* search_make_key(MatcherProp* match, gboolean* is_all)
 			break;
 
 		case MATCHCRITERIA_TAG:
-			result = imap_search_new(IMAP_SEARCH_CRITERIA_TAG, NULL, match->expr, 0);
+			{
+				gchar *tmp = imap_utf8_to_modified_utf7(match->expr, TRUE);
+				result = imap_search_new(IMAP_SEARCH_CRITERIA_TAG, NULL, tmp, 0);
+				g_free(tmp);
+			}
 			break;
 
 		case MATCHCRITERIA_SUBJECT:
