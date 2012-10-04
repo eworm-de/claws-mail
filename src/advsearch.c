@@ -377,7 +377,6 @@ static void prepare_matcher_mixed(AdvancedSearch *search)
 	prepare_matcher_header(search, MATCHCRITERIA_SUBJECT);
 	prepare_matcher_header(search, MATCHCRITERIA_FROM);
 	prepare_matcher_header(search, MATCHCRITERIA_TO);
-	prepare_matcher_header(search, MATCHCRITERIA_TAG);
 }
 
 static void prepare_matcher(AdvancedSearch *search)

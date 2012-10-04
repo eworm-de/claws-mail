@@ -1,3 +1,10 @@
+2012-10-04 [colin]	3.8.1cvs83
+
+	* src/advsearch.c
+		Fix double-tag search. Maybe fixes bug #2744,
+		'Quick search throws bad command argument 
+		error since recent change'. Patch by Sean.
+
 2012-10-03 [mones]	3.8.1cvs82
 
 	* src/procmime.c
