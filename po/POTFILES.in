@@ -48,6 +48,7 @@ src/gtk/headers.h
 src/gtk/icon_legend.c
 src/gtk/inputdialog.c
 src/gtk/logwindow.c
+src/gtk/menu.c
 src/gtk/pluginwindow.c
 src/gtk/prefswindow.c
 src/gtk/progressdialog.c

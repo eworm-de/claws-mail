@@ -1,3 +1,16 @@
+2012-10-06 [mones]	3.8.1cvs85
+
+	* po/POTFILES.in
+		Added src/gtk/menu.c
+	* src/common/defs.h
+	* src/gtk/menu.c
+	* src/gtk/menu.h
+		New function cm_menu_item_new_label_from_url to
+		avoid crashing on huge URL strings and warn user
+		about the possible causes
+	* src/mainwindow.c
+		Use it to create List menu items safely
+
 2012-10-04 [colin]	3.8.1cvs84
 
 	* src/imap.c

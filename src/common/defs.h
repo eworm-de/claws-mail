@@ -174,6 +174,9 @@
 #define VSPACING_NARROW_2		2
 #define VBOX_BORDER			8
 #define DEFAULT_ENTRY_WIDTH		80
+/* labels bigger than this causes crash with the X Window System error:
+   'BadAlloc (insufficient resources for operation)' */
+#define MAX_MENU_LABEL_LENGTH		5453
 
 #define BOLD_FONT prefs_common.boldfont
 #define NORMAL_FONT prefs_common.normalfont

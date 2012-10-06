@@ -3564,7 +3564,7 @@ static gint mailing_list_populate_submenu (GtkWidget *menuitem, const gchar * li
 			get_url_part (&url_pt, url_decoded);
 			item = NULL;
 			if (!g_ascii_strncasecmp(url_decoded, "mailto:", 7)) {
- 				item = gtk_menu_item_new_with_label ((url_decoded));
+ 				item = cm_menu_item_new_label_from_url ((url_decoded));
 				g_signal_connect(G_OBJECT(item), "activate",
 						 G_CALLBACK(mailing_list_compose),
 						 NULL);
@@ -3572,7 +3572,7 @@ static gint mailing_list_populate_submenu (GtkWidget *menuitem, const gchar * li
  			else if (!g_ascii_strncasecmp(url_decoded, "http:", 5) ||
 				 !g_ascii_strncasecmp(url_decoded, "https:",6)) {
 
-				item = gtk_menu_item_new_with_label ((url_decoded));
+				item = cm_menu_item_new_label_from_url ((url_decoded));
 				g_signal_connect(G_OBJECT(item), "activate",
 						 G_CALLBACK(mailing_list_open_uri),
 						 NULL);
