@@ -183,6 +183,7 @@ typedef enum {
 #define MAX_REFERENCES_LEN	999
 
 static GList *compose_list = NULL;
+static GSList *extra_headers = NULL;
 
 static Compose *compose_generic_new			(PrefsAccount	*account,
 						 const gchar	*to,
@@ -6597,6 +6598,54 @@ static void compose_entry_popup_extend(GtkEntry *entry, GtkMenu *menu, gpointer 
 	gtk_widget_show(menuitem);
 }
 
+void compose_add_extra_header(gchar *header, GtkListStore *model)
+{
+	GtkTreeIter iter;
+	if (strcmp(header, "")) {
+		COMBOBOX_ADD(model, header, COMPOSE_TO);
+	}
+}
+
+void compose_add_extra_header_entries(GtkListStore *model)
+{
+	FILE *exh;
+	gchar *exhrc;
+	gchar buf[BUFFSIZE];
+	gint lastc;
+
+	if (extra_headers == NULL) {
+		exhrc = g_strconcat(get_rc_dir(), G_DIR_SEPARATOR_S, "extraheaderrc", NULL);
+		if ((exh = g_fopen(exhrc, "rb")) == NULL) {
+			debug_print("extra headers file not found\n");
+			goto extra_headers_done;
+		}
+		while (fgets(buf, BUFFSIZE, exh) != NULL) {
+			lastc = strlen(buf) - 1;        /* remove trailing \n */
+			buf[lastc] = (buf[lastc] == '\n')? '\0': buf[lastc];
+			--lastc;
+			if (lastc > 0 && buf[0] != '#' && buf[lastc] == ':') {
+				buf[lastc] = '\0'; /* remove trailing : for comparison */
+				if (custom_header_is_allowed(buf)) {
+					buf[lastc] = ':';
+					extra_headers = g_slist_prepend(extra_headers, g_strdup(buf));
+				}
+				else
+					g_message("disallowed extra header line: %s\n", buf);
+			}
+			else {
+				if (buf[0] != '#')
+					g_message("invalid extra header line: %s\n", buf);
+			}
+		}
+		fclose(exh);
+extra_headers_done:
+		g_free(exhrc);
+		extra_headers = g_slist_prepend(extra_headers, g_strdup("")); /* end of list */
+		extra_headers = g_slist_reverse(extra_headers);
+	}
+	g_slist_foreach(extra_headers, (GFunc)compose_add_extra_header, (gpointer)model);
+}
+
 static void compose_create_header_entry(Compose *compose) 
 {
 	gchar *headers[] = {"To:", "Cc:", "Bcc:", "Newsgroups:", "Reply-To:", "Followup-To:", NULL};
@@ -6632,6 +6681,7 @@ static void compose_create_header_entry(Compose *compose)
 			COMPOSE_REPLYTO);
 	COMBOBOX_ADD(model, prefs_common_translated_header_name("Followup-To:"),
 			COMPOSE_FOLLOWUPTO);
+	compose_add_extra_header_entries(model);
 
 	gtk_combo_box_set_active(GTK_COMBO_BOX(combo), 0);
 	g_signal_connect(G_OBJECT(gtk_bin_get_child(GTK_BIN(combo))), "grab_focus",
@@ -8491,6 +8541,9 @@ static void compose_destroy(Compose *compose)
 	g_slist_free(compose->newsgroup_list);
 	slist_free_strings(compose->header_list);
 	g_slist_free(compose->header_list);
+
+	slist_free_strings(extra_headers);
+	extra_headers = NULL;
 
 	compose->header_list = compose->newsgroup_list = compose->to_list = NULL;
 

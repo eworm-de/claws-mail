@@ -258,10 +258,14 @@ void list_free_strings(GList *list)
 
 void slist_free_strings(GSList *list)
 {
+#if GLIB_CHECK_VERSION(2,28,0)
+	g_slist_free_full(list, (GDestroyNotify)g_free);
+#else
 	while (list != NULL) {
 		g_free(list->data);
 		list = list->next;
 	}
+#endif
 }
 
 static void hash_free_strings_func(gpointer key, gpointer value, gpointer data)

@@ -1,3 +1,13 @@
+2012-10-09 [mones]	3.8.1cvs86
+
+	* doc/man/claws-mail.1
+	* src/compose.c
+	* src/common/utils.c
+		New extra headers feature for adding user-defined
+		extra headers to the combobox in the compose window
+		Headers are stablished in 'extraheaderrc', one per
+		line with a final colon
+
 2012-10-06 [mones]	3.8.1cvs85
 
 	* po/POTFILES.in
@@ -113,8 +123,8 @@
 2012-09-22 [mir]	3.8.1cvs72
 
 	* src/advsearch.c
-	    Fix for not searching in folders marked 'no_select'
-	    patch provide by colin.
+		Fix for not searching in folders marked 'no_select'
+		patch provided by Colin.
 
 2012-09-22 [mones]	3.8.1cvs71
 
@@ -244,53 +254,53 @@
 
 2012-09-16 [mones]	3.8.1cvs60
 
-        * src/action.c                                                          
-                Removed dup calls with ignored result
-        * src/addr_compl.c                                                      
-                Removed unused var is_group and simplified logic around it      
-        * src/addrharvest.c                                                     
-        * src/matcher.c
-        * src/procmsg.c                                                         
-        * src/etpan/etpan-thread-manager.c                                      
-                Use unused var r to verify result and emit messages on error
-        * src/compose.c                                                         
-                Move color variable into conditional usage blocks
-                Remove assigned but not used vars: lock, titles, count          
-        * src/edittags.c
-                Remove assigned but not used var actions                        
-        * src/folderview.c
-                Remove assigned but not used vars: from_parent, src_node        
-        * src/imap_gtk.c
-        * src/mh_gtk.c                                                          
-                Remove malloc-ed but not used var: old_path                     
-        * src/news.c
-                Comment unused vars from commented block: tofetch, fetched      
-        * src/prefs_account.c
-                Remove assigned but not used var: privacy_enabled
-        * src/prefs_actions.c
-        * src/prefs_customheader.c
-                Remove assigned but not used var: store
-        * src/prefs_filtering.c
-                Remove assigned but not used var: n_rows
-        * src/prefs_template.c
-                Remove assigned but not used vars: model, list_store
-        * src/prefs_toolbar.c
-                Remove assigned but not used var: win_titles
-        * src/printing.c
-                Remove assigned but not used vars: orientation, line, baseline,
-                off_chars 
-        * src/etpan/imap-thread.c
-                Remove assigned but not used var: value, r
-                Refactor to check correct memory allocation
-        * src/etpan/nntp-thread.c
-                Remove assigned but not used var: value
-        * src/gtk/gtkaspell.c
-                Remove assigned but not used vars: textbuf, exist
-                Remove unused function: find_gtkaspeller
-        * src/gtk/gtkcmctree.c
-                Remove unused function: gtk_cmctree_get_offset
-        * src/gtk/gtkshruler.c
-                Remove assigned but not used vars: ruler, priv
+	* src/action.c                                                          
+		Removed dup calls with ignored result
+	* src/addr_compl.c						      
+		Removed unused var is_group and simplified logic around it      
+	* src/addrharvest.c						     
+	* src/matcher.c
+	* src/procmsg.c							 
+	* src/etpan/etpan-thread-manager.c				      
+		Use unused var r to verify result and emit messages on error
+	* src/compose.c							 
+		Move color variable into conditional usage blocks
+		Remove assigned but not used vars: lock, titles, count	  
+	* src/edittags.c
+		Remove assigned but not used var actions			
+	* src/folderview.c
+		Remove assigned but not used vars: from_parent, src_node	
+	* src/imap_gtk.c
+	* src/mh_gtk.c							  
+		Remove malloc-ed but not used var: old_path		     
+	* src/news.c
+		Comment unused vars from commented block: tofetch, fetched      
+	* src/prefs_account.c
+		Remove assigned but not used var: privacy_enabled
+	* src/prefs_actions.c
+	* src/prefs_customheader.c
+		Remove assigned but not used var: store
+	* src/prefs_filtering.c
+		Remove assigned but not used var: n_rows
+	* src/prefs_template.c
+		Remove assigned but not used vars: model, list_store
+	* src/prefs_toolbar.c
+		Remove assigned but not used var: win_titles
+	* src/printing.c
+		Remove assigned but not used vars: orientation, line, baseline,
+		off_chars 
+	* src/etpan/imap-thread.c
+		Remove assigned but not used var: value, r
+		Refactor to check correct memory allocation
+	* src/etpan/nntp-thread.c
+		Remove assigned but not used var: value
+	* src/gtk/gtkaspell.c
+		Remove assigned but not used vars: textbuf, exist
+		Remove unused function: find_gtkaspeller
+	* src/gtk/gtkcmctree.c
+		Remove unused function: gtk_cmctree_get_offset
+	* src/gtk/gtkshruler.c
+		Remove assigned but not used vars: ruler, priv
 
 2012-09-14 [mones]	3.8.1cvs59
 
@@ -326,8 +336,8 @@
 2012-09-12 [mones]	3.8.1cvs54
 
 	* src/prefs_other.c
-		Fix 1975 'preference mutt key bindings do not take effect'
-		(and the other invalid paths too)
+		Fix bug #1975 'preference mutt key bindings do not take
+		effect' (and the other invalid paths too)
 
 2012-09-12 [colin]	3.8.1cvs53
 
