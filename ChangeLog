@@ -1,3 +1,12 @@
+2012-10-10 [colin]	3.8.1cvs90
+
+	* src/inc.c
+	* src/mbox.c
+	* src/common/smtp.c
+	* src/common/smtp.h
+		Fix bug #2639, "The MSGBUFSIZE definition collides with a definition of OpenBSD"
+		Patch by "madroach"
+
 2012-10-10 [colin]	3.8.1cvs89
 
 	* autogen.sh

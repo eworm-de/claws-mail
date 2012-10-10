@@ -53,7 +53,7 @@
 #include "alertpanel.h"
 #include "statusbar.h"
 
-#define MSGBUFSIZE	8192
+#define MESSAGEBUFSIZE	8192
 
 #ifdef HAVE_FGETS_UNLOCKED
 #define SC_FGETS fgets_unlocked
@@ -83,7 +83,7 @@ gint proc_mbox(FolderItem *dest, const gchar *mbox, gboolean apply_filter,
 /* return values: -1 error, >=0 number of msgs added */
 {
 	FILE *mbox_fp;
-	gchar buf[MSGBUFSIZE];
+	gchar buf[MESSAGEBUFSIZE];
 	gchar *tmp_file;
 	gint msgs = 0;
 	gint lines;

@@ -4464,3 +4464,4 @@
 ( cvs diff -u -r 1.36.2.202 -r 1.36.2.203 src/common/utils.c;  ) > 3.8.1cvs87.patchset
 ( cvs diff -u -r 1.382.2.614 -r 1.382.2.615 src/compose.c;  ) > 3.8.1cvs88.patchset
 ( cvs diff -u -r 1.4.2.10 -r 1.4.2.11 autogen.sh;  ) > 3.8.1cvs89.patchset
+( cvs diff -u -r 1.149.2.111 -r 1.149.2.112 src/inc.c;  cvs diff -u -r 1.28.2.53 -r 1.28.2.54 src/mbox.c;  cvs diff -u -r 1.11.2.32 -r 1.11.2.33 src/common/smtp.c;  cvs diff -u -r 1.6.2.21 -r 1.6.2.22 src/common/smtp.h;  ) > 3.8.1cvs90.patchset

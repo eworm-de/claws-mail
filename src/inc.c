@@ -89,7 +89,7 @@ static GdkPixbuf *currentpix;
 static GdkPixbuf *errorpix;
 static GdkPixbuf *okpix;
 
-#define MSGBUFSIZE	8192
+#define MESSAGEBUFSIZE	8192
 
 static void inc_update_stats(gint new_msgs);
 static void inc_finished		(MainWindow		*mainwin,
@@ -968,7 +968,7 @@ static void inc_progress_dialog_set_label(IncProgressDialog *inc_dialog,
 static void inc_progress_dialog_set_progress(IncProgressDialog *inc_dialog,
 					     IncSession *inc_session)
 {
-	gchar buf[MSGBUFSIZE];
+	gchar buf[MESSAGEBUFSIZE];
 	Pop3Session *pop3_session = POP3_SESSION(inc_session->session);
 	gchar *total_size_str;
 	gint cur_total;

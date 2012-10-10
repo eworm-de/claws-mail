@@ -125,7 +125,7 @@ static void smtp_session_destroy(Session *session)
 
 gint smtp_from(SMTPSession *session)
 {
-	gchar buf[MSGBUFSIZE];
+	gchar buf[MESSAGEBUFSIZE];
 	gchar *mail_size = NULL;
 
 	cm_return_val_if_fail(session->from != NULL, SM_ERROR);
@@ -189,7 +189,7 @@ static gint smtp_auth(SMTPSession *session)
 
 static gint smtp_auth_recv(SMTPSession *session, const gchar *msg)
 {
-	gchar buf[MSGBUFSIZE];
+	gchar buf[MESSAGEBUFSIZE];
 
 	switch (session->auth_type) {
 	case SMTPAUTH_LOGIN:
@@ -265,7 +265,7 @@ static gint smtp_auth_recv(SMTPSession *session, const gchar *msg)
 
 static gint smtp_auth_login_user_recv(SMTPSession *session, const gchar *msg)
 {
-	gchar buf[MSGBUFSIZE];
+	gchar buf[MESSAGEBUFSIZE];
 
 	session->state = SMTP_AUTH_LOGIN_PASS;
 
@@ -285,7 +285,7 @@ static gint smtp_auth_login_user_recv(SMTPSession *session, const gchar *msg)
 
 static gint smtp_ehlo(SMTPSession *session)
 {
-	gchar buf[MSGBUFSIZE];
+	gchar buf[MESSAGEBUFSIZE];
 
 	session->state = SMTP_EHLO;
 
@@ -364,7 +364,7 @@ static gint smtp_auth_cram_md5(SMTPSession *session)
 
 static gint smtp_auth_plain(SMTPSession *session)
 {
-	gchar buf[MSGBUFSIZE];
+	gchar buf[MESSAGEBUFSIZE];
 
 	/* 
  	 * +1      +1      +1
@@ -429,7 +429,7 @@ static gint smtp_auth_login(SMTPSession *session)
 
 static gint smtp_helo(SMTPSession *session)
 {
-	gchar buf[MSGBUFSIZE];
+	gchar buf[MESSAGEBUFSIZE];
 
 	session->state = SMTP_HELO;
 
@@ -444,7 +444,7 @@ static gint smtp_helo(SMTPSession *session)
 
 static gint smtp_rcpt(SMTPSession *session)
 {
-	gchar buf[MSGBUFSIZE];
+	gchar buf[MESSAGEBUFSIZE];
 	gchar *to;
 
 	cm_return_val_if_fail(session->cur_to != NULL, SM_ERROR);

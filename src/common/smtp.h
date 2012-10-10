@@ -32,7 +32,7 @@ typedef struct _SMTPSession	SMTPSession;
 
 #define SMTP_SESSION(obj)	((SMTPSession *)obj)
 
-#define MSGBUFSIZE		8192
+#define MESSAGEBUFSIZE		8192
 
 typedef enum
 {
