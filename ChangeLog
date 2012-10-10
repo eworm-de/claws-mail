@@ -1,3 +1,8 @@
+2012-10-10 [colin]	3.8.1cvs88
+
+	* src/compose.c
+		Leak fix (thanks Ricardo!)
+
 2012-10-10 [colin]	3.8.1cvs87
 
 	* src/common/utils.c

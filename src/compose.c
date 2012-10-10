@@ -8543,6 +8543,7 @@ static void compose_destroy(Compose *compose)
 	g_slist_free(compose->header_list);
 
 	slist_free_strings(extra_headers);
+	g_slist_free(extra_headers);
 	extra_headers = NULL;
 
 	compose->header_list = compose->newsgroup_list = compose->to_list = NULL;
