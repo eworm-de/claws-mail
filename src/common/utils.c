@@ -258,14 +258,10 @@ void list_free_strings(GList *list)
 
 void slist_free_strings(GSList *list)
 {
-#if GLIB_CHECK_VERSION(2,28,0)
-	g_slist_free_full(list, (GDestroyNotify)g_free);
-#else
 	while (list != NULL) {
 		g_free(list->data);
 		list = list->next;
 	}
-#endif
 }
 
 static void hash_free_strings_func(gpointer key, gpointer value, gpointer data)
@@ -2382,6 +2378,10 @@ gint remove_numbered_files_not_in_list(const gchar *dir, GSList *numberlist)
 	const gchar *dir_name;
 	gchar *prev_dir;
 	gint file_no;
+	GHashTable *file_no_tbl;
+
+	if (numberlist == NULL)
+	    return 0;
 
 	prev_dir = g_get_current_dir();
 
@@ -2397,18 +2397,26 @@ gint remove_numbered_files_not_in_list(const gchar *dir, GSList *numberlist)
 		return -1;
 	}
 
+	file_no_tbl = g_hash_table_new(g_direct_hash, g_direct_equal);
 	while ((dir_name = g_dir_read_name(dp)) != NULL) {
 		file_no = to_number(dir_name);
-		if (file_no > 0 && (g_slist_find(numberlist, GINT_TO_POINTER(file_no)) == NULL)) {
-			debug_print("removing unwanted file %d from %s\n", file_no, dir);
-			if (is_dir_exist(dir_name))
-				continue;
+		if (is_dir_exist(dir_name))
+		    continue;
+		if (file_no > 0)
+		    g_hash_table_insert(file_no_tbl, GINT_TO_POINTER(file_no), GINT_TO_POINTER(1));
+	}
+	
+	do {
+		if (g_hash_table_lookup(file_no_tbl, numberlist->data) == NULL) {
+			debug_print("removing unwanted file %d from %s\n", 
+				    GPOINTER_TO_INT(numberlist->data), dir);
 			if (claws_unlink(dir_name) < 0)
 				FILE_OP_ERROR(dir_name, "unlink");
 		}
-	}
+	} while ((numberlist = g_slist_next(numberlist)));
 
 	g_dir_close(dp);
+	g_hash_table_destroy(file_no_tbl);
 
 	if (g_chdir(prev_dir) < 0) {
 		FILE_OP_ERROR(prev_dir, "chdir");

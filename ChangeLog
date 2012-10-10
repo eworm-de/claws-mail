@@ -1,3 +1,13 @@
+2012-10-10 [colin]	3.8.1cvs87
+
+	* src/common/utils.c
+		Fix O(n^2) algorithm in remove_numbered_files_not_in_list
+		Initial patch by Igor Mammedov <imammedo@redhat.com> with
+		fixes by Michael Rasmussen and myself.
+		Also revert part of 3.8.1cvs86, g_slist_free_full() 
+		semantics are different from slist_free_strings() in that
+		slist_free_strings does not free the list itself.
+
 2012-10-09 [mones]	3.8.1cvs86
 
 	* doc/man/claws-mail.1
