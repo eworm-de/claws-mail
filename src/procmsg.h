@@ -231,6 +231,7 @@ struct _MsgInfo
 	gint total_size;
 	gint planned_download;
 
+	/* list of tags ids */
 	GSList *tags;
 
 	MsgInfoExtraData *extradata;
