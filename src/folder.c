@@ -4740,17 +4740,16 @@ gint folder_item_search_msgs	(Folder			*folder,
 				 SearchProgressNotify	progress_cb,
 				 gpointer		progress_data)
 {
-	gint result;
+	gint result = -1;
 	
 	folder_item_update_freeze();
 
-	if (folder->klass->search_msgs) {
+	if (folder->klass->search_msgs)
 		result = folder->klass->search_msgs(folder, container,
 				msgs, on_server, predicate, progress_cb, progress_data);
-	} else {
+	if (result < 0)
 		result = folder_item_search_msgs_local(folder, container,
 				msgs, on_server, predicate, progress_cb, progress_data);
-	}
 	
 	folder_item_update_thaw();
 

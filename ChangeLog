@@ -1,3 +1,12 @@
+2012-10-10 [colin]	3.8.1cvs92
+
+	* src/folder.c
+		Fix bug #2744, "Quick search throws bad command 
+		argument error on Microsoft Exchange". Fall back
+		to local search if folder-specific search fails.
+	* src/gtk/quicksearch.c
+		Typo fix.
+
 2012-10-10 [colin]	3.8.1cvs91
 
 	* src/procmsg.h

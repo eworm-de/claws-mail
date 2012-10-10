@@ -584,7 +584,7 @@ static void quicksearch_set_button(GtkButton *button, const gchar *icon, const g
 
 static void quicksearch_error(gpointer data)
 {
-	alertpanel_error(_("Something went wrong during search. Please check you logs."));
+	alertpanel_error(_("Something went wrong during search. Please check your logs."));
 }
 
 QuickSearch *quicksearch_new()
