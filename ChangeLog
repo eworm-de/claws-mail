@@ -1,3 +1,8 @@
+2012-10-10 [colin]	3.8.1cvs89
+
+	* autogen.sh
+		Fix bug #2638, "Respect $LEX environment variable in autogen.sh"
+
 2012-10-10 [colin]	3.8.1cvs88
 
 	* src/compose.c

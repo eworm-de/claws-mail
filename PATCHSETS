@@ -4463,3 +4463,4 @@
 ( cvs diff -u -r 1.396.2.3641 -r 1.396.2.3642 ChangeLog;  cvs diff -u -r 1.1.2.10 -r 1.1.2.11 doc/man/claws-mail.1;  cvs diff -u -r 1.382.2.613 -r 1.382.2.614 src/compose.c;  cvs diff -u -r 1.36.2.201 -r 1.36.2.202 src/common/utils.c;  ) > 3.8.1cvs86.patchset
 ( cvs diff -u -r 1.36.2.202 -r 1.36.2.203 src/common/utils.c;  ) > 3.8.1cvs87.patchset
 ( cvs diff -u -r 1.382.2.614 -r 1.382.2.615 src/compose.c;  ) > 3.8.1cvs88.patchset
+( cvs diff -u -r 1.4.2.10 -r 1.4.2.11 autogen.sh;  ) > 3.8.1cvs89.patchset

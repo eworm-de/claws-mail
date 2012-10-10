@@ -55,7 +55,11 @@ if [ "$bisonver" = "" ]; then
 	exit 1
 fi
 
-flexver=`flex --version|sed "s/.* //"`
+if [ "$LEX" != "" ]; then
+	flexver=`$LEX --version|sed "s/.* //"`
+else
+	flexver=`flex --version|sed "s/.* //"`
+fi
 
 if [ "$flexver" = "" ]; then
 	echo Flex 2.5.31 or greater is needed to compile Claws Mail CVS
