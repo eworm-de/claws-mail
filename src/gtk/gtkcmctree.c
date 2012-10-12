@@ -2910,7 +2910,8 @@ ctree_is_hot_spot (GtkCMCTree     *ctree,
   GtkCMCList *clist;
   gint xl;
   gint yu;
-  
+  gint hotspot_size;
+
   cm_return_val_if_fail (GTK_IS_CMCTREE (ctree), FALSE);
   cm_return_val_if_fail (node != NULL, FALSE);
 
@@ -2922,18 +2923,22 @@ ctree_is_hot_spot (GtkCMCTree     *ctree,
 
   tree_row = GTK_CMCTREE_ROW (node);
 
-  yu = (ROW_TOP_YPIXEL (clist, row) + (clist->row_height - PM_SIZE) / 2 -
+  hotspot_size = clist->row_height-2;
+  if (hotspot_size > clist->column[ctree->tree_column].area.width - 2)
+	hotspot_size = clist->column[ctree->tree_column].area.width - 2;
+
+  yu = (ROW_TOP_YPIXEL (clist, row) + (clist->row_height - hotspot_size) / 2 -
 	(clist->row_height - 1) % 2);
 
   if (clist->column[ctree->tree_column].justification == GTK_JUSTIFY_RIGHT)
     xl = (clist->column[ctree->tree_column].area.x + 
 	  clist->column[ctree->tree_column].area.width - 1 + clist->hoffset -
-	  (tree_row->level - 1) * ctree->tree_indent - PM_SIZE);
+	  (tree_row->level - 1) * ctree->tree_indent - hotspot_size);
   else
     xl = (clist->column[ctree->tree_column].area.x + clist->hoffset +
 	  (tree_row->level - 1) * ctree->tree_indent);
 
-  return (x >= xl && x <= xl + PM_SIZE && y >= yu && y <= yu + PM_SIZE);
+  return (x >= xl && x <= xl + hotspot_size && y >= yu && y <= yu + hotspot_size);
 }
 
 /***********************************************************

@@ -4470,3 +4470,4 @@
 ( cvs diff -u -r 1.382.2.615 -r 1.382.2.616 src/compose.c;  cvs diff -u -r 1.105.2.177 -r 1.105.2.178 src/prefs_account.c;  cvs diff -u -r 1.36.2.203 -r 1.36.2.204 src/common/utils.c;  cvs diff -u -r 1.20.2.80 -r 1.20.2.81 src/common/utils.h;  ) > 3.8.1cvs93.patchset
 ( cvs diff -u -r 1.36.2.204 -r 1.36.2.205 src/common/utils.c;  ) > 3.8.1cvs94.patchset
 ( cvs diff -u -r 1.36.2.205 -r 1.36.2.206 src/common/utils.c;  ) > 3.8.1cvs95.patchset
+( cvs diff -u -r 1.1.2.31 -r 1.1.2.32 src/gtk/gtkcmctree.c;  cvs diff -u -r 1.1.4.64 -r 1.1.4.65 src/gtk/gtksctree.c;  ) > 3.8.1cvs96.patchset

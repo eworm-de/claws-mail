@@ -418,6 +418,7 @@ sctree_is_hot_spot (GtkSCTree     *sctree,
   GtkCMCTree *ctree;
   gint xl, xmax;
   gint yu;
+  gint hotspot_size;
   
   cm_return_val_if_fail (GTK_IS_SCTREE (sctree), FALSE);
   cm_return_val_if_fail (node != NULL, FALSE);
@@ -431,41 +432,45 @@ sctree_is_hot_spot (GtkSCTree     *sctree,
 
   tree_row = GTK_CMCTREE_ROW (node);
 
+  hotspot_size = clist->row_height-2;
+  if (hotspot_size > clist->column[ctree->tree_column].area.width - 2)
+	hotspot_size = clist->column[ctree->tree_column].area.width - 2;
+
   if (!GTK_CMCLIST_ROW_HEIGHT_SET(GTK_CMCLIST(clist)))
-     yu = (ROW_TOP_YPIXEL (clist, row) + (clist->row_height - PM_SIZE) / 2 -
+     yu = (ROW_TOP_YPIXEL (clist, row) + (clist->row_height - hotspot_size) / 2 -
 	(clist->row_height - 1) % 2);
   else
-     yu = (ROW_TOP_YPIXEL (clist, row) + (clist->row_height/2 - PM_SIZE) / 2 -
+     yu = (ROW_TOP_YPIXEL (clist, row) + (clist->row_height/2 - hotspot_size) / 2 -
 	(clist->row_height/2 - 1) % 2);
 
 #ifndef GENERIC_UMPC
   if (clist->column[ctree->tree_column].justification == GTK_JUSTIFY_RIGHT)
     xl = clist->column[ctree->tree_column].area.x + 
 	  clist->column[ctree->tree_column].area.width - 1 + clist->hoffset -
-	  (tree_row->level - 1) * ctree->tree_indent - PM_SIZE;
+	  (tree_row->level - 1) * ctree->tree_indent - hotspot_size;
   else
     xl = clist->column[ctree->tree_column].area.x + clist->hoffset +
 	  (tree_row->level - 1) * ctree->tree_indent;
 
-  xmax = xl + PM_SIZE;
+  xmax = xl + hotspot_size;
 #else
   if (clist->column[ctree->tree_column].justification == GTK_JUSTIFY_RIGHT) {
     xl = clist->column[ctree->tree_column].area.x + 
 	  clist->column[ctree->tree_column].area.width - 1 + clist->hoffset -
-	  (tree_row->level - 1) * ctree->tree_indent - PM_SIZE;
-    xmax = xl + PM_SIZE;
+	  (tree_row->level - 1) * ctree->tree_indent - hotspot_size;
+    xmax = xl + hotspot_size;
   } else if (ctree->tree_column == 0) {
     xl = clist->column[ctree->tree_column].area.x + clist->hoffset;
     xmax = clist->column[ctree->tree_column].area.x + clist->hoffset +
 	   (tree_row->level - 1) * ctree->tree_indent +
-	   PM_SIZE;
+	   hotspot_size;
   } else {
     xl = clist->column[ctree->tree_column].area.x + clist->hoffset +
 	  (tree_row->level - 1) * ctree->tree_indent;
-    xmax = xl + PM_SIZE;
+    xmax = xl + hotspot_size;
   }
 #endif
-  return (x >= xl && x <= xmax && y >= yu && y <= yu + PM_SIZE);
+  return (x >= xl && x <= xmax && y >= yu && y <= yu + hotspot_size);
 }
 
 gboolean
