@@ -7274,7 +7274,7 @@ static Compose *compose_create(PrefsAccount *account,
 	compose->account = account;
 	compose->folder = folder;
 	
-	compose->mutex = g_mutex_new();
+	compose->mutex = cm_mutex_new();
 	compose->set_cursor_pos = -1;
 
 #if !(GTK_CHECK_VERSION(2,12,0))
@@ -8607,7 +8607,7 @@ static void compose_destroy(Compose *compose)
 	gtk_widget_destroy(compose->window);
 	toolbar_destroy(compose->toolbar);
 	g_free(compose->toolbar);
-	g_mutex_free(compose->mutex);
+	cm_mutex_free(compose->mutex);
 	g_free(compose);
 }
 

@@ -5308,3 +5308,23 @@ int claws_unlink(const gchar *filename)
 	}
 	return g_unlink(filename);
 }
+
+GMutex *cm_mutex_new(void) {
+#if GLIB_CHECK_VERSION(2,32,0)
+	GMutex *m = mutex;
+	m = g_new0(GMutex, 1);
+	g_mutex_init(m);
+	return m;
+#else
+	return g_mutex_new();
+#endif
+}
+
+void cm_mutex_free(GMutex *mutex) {
+#if GLIB_CHECK_VERSION(2,32,0)
+	g_mutex_clear(mutex);
+	g_free(m);
+#else
+	g_mutex_free(mutex);
+#endif
+}

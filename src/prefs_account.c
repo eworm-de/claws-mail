@@ -3368,7 +3368,7 @@ static gboolean sslcert_get_password(gpointer source, gpointer data)
 	struct GetPassData pass_data;
 	/* do complicated stuff to be able to call GTK from the mainloop */
 	pass_data.cond = g_cond_new();
-	pass_data.mutex = g_mutex_new();
+	pass_data.mutex = cm_mutex_new();
 	pass_data.pass = (gchar **)source;
 
 	g_mutex_lock(pass_data.mutex);
@@ -3378,7 +3378,7 @@ static gboolean sslcert_get_password(gpointer source, gpointer data)
 	g_cond_wait(pass_data.cond, pass_data.mutex);
 	g_cond_free(pass_data.cond);
 	g_mutex_unlock(pass_data.mutex);
-	g_mutex_free(pass_data.mutex);
+	cm_mutex_free(pass_data.mutex);
 
 	return TRUE;
 }
