@@ -278,6 +278,7 @@ gboolean superuser_p (void);
 
 void list_free_strings		(GList		*list);
 void slist_free_strings		(GSList		*list);
+void slist_free_strings_full	(GSList		*list);
 
 void hash_free_strings		(GHashTable	*table);
 

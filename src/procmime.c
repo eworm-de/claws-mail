@@ -1822,8 +1822,7 @@ static void parse_parameters(const gchar *parameters, GHashTable *table)
 		g_hash_table_insert(table, g_strdup(attribute), g_strdup(value->str));
 		g_string_free(value, TRUE);
 	}
-	slist_free_strings(concatlist);
-	g_slist_free(concatlist);
+	slist_free_strings_full(concatlist);
 
 	for (cur = convlist; cur != NULL; cur = g_slist_next(cur)) {
 		gchar *attribute, *key, *value;
@@ -1856,8 +1855,7 @@ static void parse_parameters(const gchar *parameters, GHashTable *table)
 
 		g_hash_table_insert(table, g_strdup(attribute), newvalue);
 	}
-	slist_free_strings(convlist);
-	g_slist_free(convlist);
+	slist_free_strings_full(convlist);
 
 	g_free(params);
 }	

@@ -2136,8 +2136,7 @@ result_to_uid_flags_list(clist * fetch_result, carray ** result)
   
  free_list:
 	imap_fetch_uid_flags_list_free(tab);
-	slist_free_strings(tags);
-	g_slist_free(tags);
+	slist_free_strings_full(tags);
  err:
 	return res;
 }

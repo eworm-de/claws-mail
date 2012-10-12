@@ -1379,8 +1379,7 @@ static void imap_commit_tags(FolderItem *item, MsgInfo *msginfo, GSList *tags_se
 		if (list_set) {
 			ok = imap_set_message_flags(session, 
 				IMAP_FOLDER_ITEM(item), &numlist, 0, list_set, TRUE);
-			slist_free_strings(list_set);
-			g_slist_free(list_set);
+			slist_free_strings_full(list_set);
 			if (ok != MAILIMAP_NO_ERROR) {
 				return;
 			}
@@ -1395,8 +1394,7 @@ static void imap_commit_tags(FolderItem *item, MsgInfo *msginfo, GSList *tags_se
 		if (list_unset) {
 			ok = imap_set_message_flags(session, 
 				IMAP_FOLDER_ITEM(item), &numlist, 0, list_unset, FALSE);
-			slist_free_strings(list_unset);
-			g_slist_free(list_unset);
+			slist_free_strings_full(list_unset);
 			if (ok != MAILIMAP_NO_ERROR) {
 				return;
 			}
@@ -3312,8 +3310,7 @@ static void *imap_get_uncached_messages_thread(void *data)
 			tags = carray_get(env_list, i+1);
 			msginfo = imap_envelope_from_lep(info, item);
 			if (msginfo == NULL) {
-				slist_free_strings(tags);
-				g_slist_free(tags);
+				slist_free_strings_full(tags);
 				continue;
 			}
 			g_slist_free(msginfo->tags);
@@ -3336,8 +3333,7 @@ static void *imap_get_uncached_messages_thread(void *data)
 			}
 			if (msginfo->tags)
 				msginfo->tags = g_slist_reverse(msginfo->tags);
-			slist_free_strings(tags);
-			g_slist_free(tags);
+			slist_free_strings_full(tags);
 			msginfo->folder = item;
 			if (!newlist)
 				llast = newlist = g_slist_append(newlist, msginfo);
@@ -3821,8 +3817,7 @@ static gint imap_status(IMAPSession *session, IMAPFolder *folder,
 
 static void imap_free_capabilities(IMAPSession *session)
 {
-	slist_free_strings(session->capability);
-	g_slist_free(session->capability);
+	slist_free_strings_full(session->capability);
 	session->capability = NULL;
 }
 
@@ -5113,8 +5108,7 @@ bail:
 								GINT_TO_POINTER(id));
 					g_free(real_tag);
 				}
-				slist_free_strings(tags);
-				g_slist_free(tags);
+				slist_free_strings_full(tags);
 			}
 		}
 

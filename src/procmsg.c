@@ -1431,8 +1431,7 @@ void procmsg_msginfo_free(MsgInfo *msginfo)
 		g_free(msginfo->extradata->account_login);
 		g_free(msginfo->extradata);
 	}
-	slist_free_strings(msginfo->references);
-	g_slist_free(msginfo->references);
+	slist_free_strings_full(msginfo->references);
 	g_slist_free(msginfo->tags);
 
 	g_free(msginfo->plaintext_file);
@@ -1642,10 +1641,8 @@ send_mail:
 			procmime_mimeinfo_free_all(mimeinfo);
 			g_free(from);
 			g_free(smtpserver);
-			slist_free_strings(to_list);
-			g_slist_free(to_list);
-			slist_free_strings(newsgroup_list);
-			g_slist_free(newsgroup_list);
+			slist_free_strings_full(to_list);
+			slist_free_strings_full(newsgroup_list);
 			g_free(savecopyfolder);
 			g_free(replymessageid);
 			g_free(fwdmessageid);
@@ -1884,10 +1881,8 @@ send_mail:
 
 	g_free(from);
 	g_free(smtpserver);
-	slist_free_strings(to_list);
-	g_slist_free(to_list);
-	slist_free_strings(newsgroup_list);
-	g_slist_free(newsgroup_list);
+	slist_free_strings_full(to_list);
+	slist_free_strings_full(newsgroup_list);
 	g_free(savecopyfolder);
 	g_free(replymessageid);
 	g_free(fwdmessageid);

@@ -123,8 +123,7 @@ GSList *grouplist_dialog(Folder *folder)
 	gtk_widget_hide(dialog);
 
 	if (!ack) {
-		slist_free_strings(subscribed);
-		g_slist_free(subscribed);
+		slist_free_strings_full(subscribed);
 		subscribed = NULL;
 
 		for (node = folder->node->children; node != NULL;

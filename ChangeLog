@@ -1,3 +1,17 @@
+2012-10-12 [mones]	3.8.1cvs98
+
+	* src/compose.c
+	* src/grouplistdialog.c
+	* src/imap.c
+	* src/news_gtk.c
+	* src/procmime.c
+	* src/procmsg.c
+	* src/common/utils.c
+	* src/common/utils.h
+	* src/etpan/imap-thread.c
+		New slist_free_strings_full wrapper for g_slist_free_full
+		and simplify calls where it was being used
+
 2012-10-12 [colin]	3.8.1cvs97
 
 	* src/common/defs.h

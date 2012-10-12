@@ -231,8 +231,7 @@ static void subscribe_newsgroup_cb(GtkAction *action, gpointer data)
 
 	gtk_cmclist_thaw(GTK_CMCLIST(ctree));
 
-	slist_free_strings(new_subscr);
-	g_slist_free(new_subscr);
+	slist_free_strings_full(new_subscr);
 
 	folder_write_list();
 }

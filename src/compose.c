@@ -2963,8 +2963,7 @@ static gchar *compose_parse_references(const gchar *ref, const gchar *msgid)
 				ref_id_list = g_slist_remove
 					(ref_id_list, ref_id_list->next->data);
 			} else {
-				slist_free_strings(ref_id_list);
-				g_slist_free(ref_id_list);
+				slist_free_strings_full(ref_id_list);
 				return NULL;
 			}
 		} else
@@ -2978,8 +2977,7 @@ static gchar *compose_parse_references(const gchar *ref, const gchar *msgid)
 		g_string_append_printf(new_ref, "<%s>", (gchar *)cur->data);
 	}
 
-	slist_free_strings(ref_id_list);
-	g_slist_free(ref_id_list);
+	slist_free_strings_full(ref_id_list);
 
 	new_ref_str = new_ref->str;
 	g_string_free(new_ref, FALSE);
@@ -3354,8 +3352,7 @@ static void compose_reply_set_entry(Compose *compose, MsgInfo *msginfo,
 			g_free(addr);
 		}
 		
-		slist_free_strings(cc_list);
-		g_slist_free(cc_list);
+		slist_free_strings_full(cc_list);
 	}
 	
 	g_free(ac_email);
@@ -4843,12 +4840,10 @@ gboolean compose_check_for_valid_recipient(Compose *compose) {
 	gchar **strptr;
 
 	/* free to and newsgroup list */
-        slist_free_strings(compose->to_list);
-	g_slist_free(compose->to_list);
+        slist_free_strings_full(compose->to_list);
 	compose->to_list = NULL;
 			
-	slist_free_strings(compose->newsgroup_list);
-        g_slist_free(compose->newsgroup_list);
+	slist_free_strings_full(compose->newsgroup_list);
         compose->newsgroup_list = NULL;
 
 	/* search header entries for to and newsgroup entries */
@@ -8535,15 +8530,11 @@ static void compose_destroy(Compose *compose)
 	 * however this may change. */
 	address_completion_end(compose->window);
 
-	slist_free_strings(compose->to_list);
-	g_slist_free(compose->to_list);
-	slist_free_strings(compose->newsgroup_list);
-	g_slist_free(compose->newsgroup_list);
-	slist_free_strings(compose->header_list);
-	g_slist_free(compose->header_list);
+	slist_free_strings_full(compose->to_list);
+	slist_free_strings_full(compose->newsgroup_list);
+	slist_free_strings_full(compose->header_list);
 
-	slist_free_strings(extra_headers);
-	g_slist_free(extra_headers);
+	slist_free_strings_full(extra_headers);
 	extra_headers = NULL;
 
 	compose->header_list = compose->newsgroup_list = compose->to_list = NULL;
