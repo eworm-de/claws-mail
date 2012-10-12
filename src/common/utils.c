@@ -5322,7 +5322,7 @@ GMutex *cm_mutex_new(void) {
 void cm_mutex_free(GMutex *mutex) {
 #if GLIB_CHECK_VERSION(2,32,0)
 	g_mutex_clear(mutex);
-	g_free(m);
+	g_free(mutex);
 #else
 	g_mutex_free(mutex);
 #endif
