@@ -1,3 +1,9 @@
+2012-10-12 [colin]	3.8.1cvs97
+
+	* src/common/defs.h
+		Drop include of internal glib header
+		Patch by Werner Koch
+
 2012-10-12 [colin]	3.8.1cvs96
 
 	* src/gtk/gtkcmctree.c

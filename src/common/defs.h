@@ -26,10 +26,6 @@
 
 #include <glib.h>
 
-#ifdef G_OS_WIN32
-#  include <glib/gwin32.h>
-#endif
-
 #if HAVE_PATHS_H
 #  include <paths.h>
 #endif
