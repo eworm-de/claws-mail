@@ -93,6 +93,7 @@ static gnutls_x509_crt x509_crt_copy(gnutls_x509_crt src)
     size_t size;
     gnutls_datum tmp;
     gnutls_x509_crt dest;
+    size = 0;
     
     if (gnutls_x509_crt_init(&dest) != 0) {
     	g_warning("couldn't gnutls_x509_crt_init\n");
