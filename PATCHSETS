@@ -4474,3 +4474,4 @@
 ( cvs diff -u -r 1.9.2.60 -r 1.9.2.61 src/common/defs.h;  ) > 3.8.1cvs97.patchset
 ( cvs diff -u -r 1.382.2.616 -r 1.382.2.617 src/compose.c;  cvs diff -u -r 1.14.2.34 -r 1.14.2.35 src/grouplistdialog.c;  cvs diff -u -r 1.179.2.267 -r 1.179.2.268 src/imap.c;  cvs diff -u -r 1.2.2.36 -r 1.2.2.37 src/news_gtk.c;  cvs diff -u -r 1.49.2.153 -r 1.49.2.154 src/procmime.c;  cvs diff -u -r 1.150.2.130 -r 1.150.2.131 src/procmsg.c;  cvs diff -u -r 1.36.2.206 -r 1.36.2.207 src/common/utils.c;  cvs diff -u -r 1.20.2.81 -r 1.20.2.82 src/common/utils.h;  cvs diff -u -r 1.1.4.122 -r 1.1.4.123 src/etpan/imap-thread.c;  ) > 3.8.1cvs98.patchset
 ( cvs diff -u -r 1.4.2.44 -r 1.4.2.45 src/common/ssl_certificate.c;  ) > 3.8.1cvs99.patchset
+( cvs diff -u -r 1.4.2.45 -r 1.4.2.46 src/common/ssl_certificate.c;  ) > 3.8.1cvs100.patchset

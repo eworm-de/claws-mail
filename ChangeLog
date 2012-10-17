@@ -1,3 +1,10 @@
+2012-10-17 [colin]	3.8.1cvs100
+
+	* src/common/ssl_certificate.c
+		Fix bug #2759, "Error messages regarding bad
+		client certificates are less than helpful"
+		Based on patch by bug reporter.
+
 2012-10-13 [paul]	3.8.1cvs99
 
 	* src/common/ssl_certificate.c

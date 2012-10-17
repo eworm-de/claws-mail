@@ -34,6 +34,7 @@
 #include <stdio.h>
 #include <glib.h>
 #include <glib/gi18n.h>
+#include <errno.h>
 #ifdef G_OS_WIN32
 #  include <winsock2.h>
 #else
@@ -273,14 +274,16 @@ static gnutls_pkcs12_t gnutls_d2i_PKCS12_fp(FILE *fp, int format)
 	struct stat s;
 	int r;
 	if (fstat(fileno(fp), &s) < 0) {
-		perror("fstat");
+		log_error(LOG_PROTOCOL, _("Cannot stat P12 certificate file (%s)\n"),
+				  strerror(errno));
 		return NULL;
 	}
 	tmp.data = malloc(s.st_size);
 	memset(tmp.data, 0, s.st_size);
 	tmp.size = s.st_size;
 	if (fread (tmp.data, 1, s.st_size, fp) < s.st_size) {
-		perror("fread");
+		log_error(LOG_PROTOCOL, _("Cannot read P12 certificate file (%s)\n"),
+				  strerror(errno));
 		free(tmp.data);
 		return NULL;
 	}
@@ -288,7 +291,8 @@ static gnutls_pkcs12_t gnutls_d2i_PKCS12_fp(FILE *fp, int format)
 	gnutls_pkcs12_init(&p12);
 
 	if ((r = gnutls_pkcs12_import(p12, &tmp, (format == 0)?GNUTLS_X509_FMT_DER:GNUTLS_X509_FMT_PEM,0)) < 0) {
-		g_warning("p12 import failed: %s\n", gnutls_strerror(r));
+		log_error(LOG_PROTOCOL, _("Cannot import P12 certificate file (%s)\n"),
+				  gnutls_strerror(r));
 		gnutls_pkcs12_deinit(p12);
 		p12 = NULL;
 	}
@@ -655,9 +659,13 @@ gnutls_x509_crt ssl_certificate_get_x509_from_pem_file(const gchar *file)
 			x509 = gnutls_d2i_X509_fp(fp, 1);
 			fclose(fp);
 			return x509;
+		} else {
+			log_error(LOG_PROTOCOL, _("Cannot open certificate file %s: %s\n"),
+				  file, strerror(errno));
 		}
 	} else {
-		log_error(LOG_PROTOCOL, _("Cannot open certificate file %s\n"), file);
+		log_error(LOG_PROTOCOL, _("Certificate file %s missing (%s)\n"),
+			  file, strerror(errno));
 	}
 	return NULL;
 }
@@ -674,9 +682,13 @@ gnutls_x509_privkey ssl_certificate_get_pkey_from_pem_file(const gchar *file)
 			key = gnutls_d2i_key_fp(fp, 1);
 			fclose(fp);
 			return key;
+		} else {
+			log_error(LOG_PROTOCOL, _("Cannot open key file %s (%s)\n"),
+			file, strerror(errno));
 		}
 	} else {
-		log_error(LOG_PROTOCOL, _("Cannot open key file %s\n"), file);
+		log_error(LOG_PROTOCOL, _("Key file %s missing (%s)\n"), file,
+			  strerror(errno));
 	}
 	return NULL;
 }
@@ -822,9 +834,16 @@ void ssl_certificate_get_x509_and_pkey_from_p12_file(const gchar *file, const gc
 		if (fp) {
 			p12 = gnutls_d2i_PKCS12_fp(fp, 0);
 			fclose(fp);
+			if (!p12) {
+				log_error(LOG_PROTOCOL, _("Failed to read P12 certificate file %s\n"), file);
+			}
+		} else {
+			log_error(LOG_PROTOCOL, _("Cannot open P12 certificate file %s (%s)\n"),
+				  file, strerror(errno));
 		}
 	} else {
-		log_error(LOG_PROTOCOL, _("Cannot open certificate file %s\n"), file);
+		log_error(LOG_PROTOCOL, _("P12 Certificate file %s missing (%s)\n"), file,
+			  strerror(errno));
 	}
 	if (p12 != NULL) {
 		if ((r = parse_pkcs12(p12, password, pkey, x509)) == 0) {
