@@ -42,7 +42,7 @@
 #	include <sys/utsname.h>
 #endif
 
-#if defined(__GNU_LIBRARY__)
+#if defined(__GNU_LIBRARY__) && !defined(__UCLIBC__)
 #	include <gnu/libc-version.h>
 #endif
 
@@ -443,7 +443,9 @@ static const gchar *get_compiled_in_features(void)
  */
 static const gchar *get_lib_version(void)
 {
-#if defined(__GNU_LIBRARY__)
+#if defined(__UCLIBC__)
+	return g_strdup_printf("uClibc %i.%i.%i", __UCLIBC_MAJOR__, __UCLIBC_MINOR__, __UCLIBC_SUBLEVEL__);
+#elif defined(__GNU_LIBRARY__)
 	return g_strdup_printf("GNU libc %s", gnu_get_libc_version());
 #else
 	return g_strdup(_("Unknown"));

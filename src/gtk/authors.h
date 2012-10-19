@@ -100,6 +100,7 @@ static char *CONTRIBS_LIST[] = {
 "Tsu-Fan Cheng",
 "Manrat Chobchuen",
 "Rich Coe",
+"Natanael Copa",
 "Jonathan Corbet",
 "Christian Cornelssen",
 "George Danchev",

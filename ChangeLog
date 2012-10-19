@@ -1,3 +1,12 @@
+2012-10-19 [paul]	3.8.1cvs102
+
+	* AUTHORS
+	* src/crash.c
+	* src/gtk/authors.h
+		fix bug 2760, 'display correct libc version in crash dialog 
+		when uclibc is used'.
+		fixes build with uclibc. patch by Natanael Copa.
+
 2012-10-18 [mones]	3.8.1cvs101
 
 	* claws-mail.desktop

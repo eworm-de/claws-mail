@@ -2,7 +2,6 @@ Claws Mail (http://www.claws-mail.org)
 
 	Holger Berndt		<berndth@users.sf.net>
 	Tristan Chabredier	<wwp@claws-mail.org>
-	Hoa viet Dinh		<dinh.viet.hoa@free.fr>
 	Andrej Kacian		<andrej@kacian.sk> 
 	Darko Koruga		<darko@users.sourceforge.net>
 	Colin Leroy		<colin@colino.net>
@@ -11,6 +10,7 @@ Claws Mail (http://www.claws-mail.org)
 	Salvatore De Paolis	<iwkse@claws-mail.org>
  
 	Ex Team Members
+	Hoa viet Dinh		<dinh.viet.hoa@free.fr>
 	Keith Edmunds 		<keith@midnighthax.com>	
 	Match Grun		<match@dimensional.com>
 	Melvin Hadasht		<melvin.hadasht@free.fr>
@@ -290,3 +290,4 @@ contributors (in addition to the above; based on Changelog)
 	Michael Shell
 	Andreas Rönnquist
 	Sean Buckheister
+	Natanael Copa
