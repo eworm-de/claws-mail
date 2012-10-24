@@ -487,9 +487,7 @@ static gboolean search_impl(MsgInfoList **messages, AdvancedSearch* search,
 		MsgNumberList *msgnums = NULL;
 		MsgNumberList *cur;
 		MsgInfoList *msgs = NULL;
-		gboolean can_search_on_server = 
-				folderItem->folder->klass->supports_server_search 
-				&& !prefs_common.work_offline;
+		gboolean can_search_on_server = folderItem->folder->klass->supports_server_search;
 
 		if (!search_filter_folder(&msgnums, search, folderItem,
 					  can_search_on_server)) {
