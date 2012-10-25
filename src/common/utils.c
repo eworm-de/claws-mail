@@ -534,9 +534,15 @@ freeout:
 /* Similar to `strstr' but this function ignores the case of both strings.  */
 gchar *strcasestr(const gchar *haystack, const gchar *needle)
 {
-	register size_t haystack_len, needle_len;
+	size_t haystack_len = strlen(haystack);
 
-	haystack_len = strlen(haystack);
+	return strncasestr(haystack, haystack_len, needle);
+}
+
+gchar *strncasestr(const gchar *haystack, gint haystack_len, const gchar *needle)
+{
+	register size_t needle_len;
+
 	needle_len   = strlen(needle);
 
 	if (haystack_len < needle_len || needle_len == 0)

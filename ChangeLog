@@ -1,3 +1,12 @@
+2012-10-25 [colin]	3.8.1cvs106
+
+	* src/common/utils.c
+	* src/common/utils.h
+	* src/textview.c
+		Avoid strlen() on inner loop in textview_make_clickable_parts*()
+		reduces cost of strcasestr() in textview_make_clickable_parts*()
+		from 30% to 15%. Patch by Igor Mammedov
+
 2012-10-25 [colin]	3.8.1cvs105
 
 	* src/textview.c

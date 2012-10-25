@@ -309,6 +309,9 @@ gchar *strcrchomp	(gchar		*str);
 gint file_strip_crs	(const gchar 	*file);
 gchar *strcasestr	(const gchar	*haystack,
 			 const gchar	*needle);
+gchar *strncasestr	(const gchar	*haystack,
+			 gint		 haystack_len,
+			 const gchar	*needle);
 gpointer my_memmem	(gconstpointer	 haystack,
 			 size_t		 haystacklen,
 			 gconstpointer	 needle,
