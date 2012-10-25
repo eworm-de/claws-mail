@@ -1,3 +1,14 @@
+2012-10-25 [colin]	3.8.1cvs104
+
+	* src/textview.c
+	* src/textview.h
+		Avoid strlen() on big buffers, use precomputed length instead
+		it reduces cost of textview_write_line() from 32% to 3% for
+		big messages. Patch by Igor Mammedov
+	* AUTHORS
+	* src/gtk/authors.h
+		Add Igor
+
 2012-10-24 [mones]	3.8.1cvs103
 
 	* src/advsearch.c

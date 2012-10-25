@@ -174,6 +174,7 @@ static char *CONTRIBS_LIST[] = {
 "Alessandro Maestri",
 "Maki",
 "Jindrich Makovicka",
+"Igor Mammedov",
 "Tim Mann",
 "Ivan Francolin Martinez",
 "HIRAMATSU Masami",

@@ -35,6 +35,7 @@ struct _ClickableText
 	gchar *filename;
 
 	gpointer data;
+	gint data_len;
 
 	guint start;
 	guint end;

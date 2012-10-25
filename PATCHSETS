@@ -4478,3 +4478,4 @@
 ( cvs diff -u -r 1.1.2.7 -r 1.1.2.8 claws-mail.desktop;  ) > 3.8.1cvs101.patchset
 ( cvs diff -u -r 1.100.2.84 -r 1.100.2.85 AUTHORS;  cvs diff -u -r 1.23.2.39 -r 1.23.2.40 src/crash.c;  cvs diff -u -r 1.1.2.80 -r 1.1.2.81 src/gtk/authors.h;  ) > 3.8.1cvs102.patchset
 ( cvs diff -u -r 1.1.2.6 -r 1.1.2.7 src/advsearch.c;  ) > 3.8.1cvs103.patchset
+( cvs diff -u -r 1.100.2.85 -r 1.100.2.86 AUTHORS;  cvs diff -u -r 1.96.2.249 -r 1.96.2.250 src/textview.c;  cvs diff -u -r 1.12.2.35 -r 1.12.2.36 src/textview.h;  cvs diff -u -r 1.1.2.81 -r 1.1.2.82 src/gtk/authors.h;  ) > 3.8.1cvs104.patchset

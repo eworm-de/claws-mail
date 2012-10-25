@@ -1637,6 +1637,7 @@ do_quote:
 			uri = g_new0(ClickableText, 1);
 			uri->uri = g_strdup("");
 			uri->data = g_strdup(buf);
+			uri->data_len = strlen(uri->data);
 			uri->start = gtk_text_iter_get_offset(&iter);
 			uri->is_quote = TRUE;
 			uri->quote_level = real_quotelevel;
@@ -1669,11 +1670,12 @@ do_quote:
 					textview->prev_quote_level = -1;
 					goto do_quote;
 				}
-				e_len = lasturi->data ? strlen(lasturi->data):0;
+				e_len = lasturi->data ? lasturi->data_len:0;
 				n_len = strlen(buf);
 				lasturi->data = g_realloc((gchar *)lasturi->data, e_len + n_len + 1);
 				strcpy((gchar *)lasturi->data + e_len, buf);
 				*((gchar *)lasturi->data + e_len + n_len) = '\0';
+				lasturi->data_len += n_len;
 			}
 		}
 	} else {
