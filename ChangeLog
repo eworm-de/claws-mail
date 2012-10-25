@@ -1,3 +1,9 @@
+2012-10-25 [colin]	3.8.1cvs107
+
+	* src/textview.c
+		Verify the previous URI wasn't the same...
+		fixes http://www. URIs.
+
 2012-10-25 [colin]	3.8.1cvs106
 
 	* src/common/utils.c

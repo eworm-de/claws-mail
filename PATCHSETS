@@ -4481,3 +4481,4 @@
 ( cvs diff -u -r 1.100.2.85 -r 1.100.2.86 AUTHORS;  cvs diff -u -r 1.96.2.249 -r 1.96.2.250 src/textview.c;  cvs diff -u -r 1.12.2.35 -r 1.12.2.36 src/textview.h;  cvs diff -u -r 1.1.2.81 -r 1.1.2.82 src/gtk/authors.h;  ) > 3.8.1cvs104.patchset
 ( cvs diff -u -r 1.96.2.250 -r 1.96.2.251 src/textview.c;  ) > 3.8.1cvs105.patchset
 ( cvs diff -u -r 1.36.2.207 -r 1.36.2.208 src/common/utils.c;  cvs diff -u -r 1.20.2.82 -r 1.20.2.83 src/common/utils.h;  cvs diff -u -r 1.96.2.251 -r 1.96.2.252 src/textview.c;  ) > 3.8.1cvs106.patchset
+( cvs diff -u -r 1.96.2.252 -r 1.96.2.253 src/textview.c;  ) > 3.8.1cvs107.patchset

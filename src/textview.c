@@ -1388,11 +1388,18 @@ static void textview_make_clickable_parts(TextView *textview,
 	/* colorize this line */
 	if (head.next) {
 		const gchar *normal_text = mybuf;
+		struct txtpos *previous = NULL;
 
 		/* insert URIs */
 		for (last = head.next; last != NULL;
 		     normal_text = last->ep, last = last->next) {
 			ClickableText *uri;
+
+			if (previous != NULL
+			    && previous->bp < last->bp 
+			    && previous->ep == last->ep)
+				continue;
+
 			uri = g_new0(ClickableText, 1);
 			if (last->bp - normal_text > 0)
 				gtk_text_buffer_insert_with_tags_by_name
@@ -1410,6 +1417,7 @@ static void textview_make_clickable_parts(TextView *textview,
 			uri->filename = NULL;
 			textview->uri_list =
 				g_slist_prepend(textview->uri_list, uri);
+			previous = last;
 		}
 
 		if (*normal_text)
@@ -1501,12 +1509,19 @@ static void textview_make_clickable_parts_later(TextView *textview,
 
 	/* colorize this line */
 	if (head.next) {
+		struct txtpos *previous = NULL;
 		/* insert URIs */
 		for (last = head.next; last != NULL; last = last->next) {
 			ClickableText *uri;
 			gint start_offset, end_offset;
 			gchar *tmp_str;
 			gchar old_char;
+
+			if (previous != NULL
+			    && previous->bp < last->bp 
+			    && previous->ep == last->ep)
+				continue;
+
 			uri = g_new0(ClickableText, 1);
 			uri->uri = parser[last->pti].build_uri(last->bp,
 							       last->ep);
@@ -1533,6 +1548,7 @@ static void textview_make_clickable_parts_later(TextView *textview,
 			uri->filename = NULL;
 			textview->uri_list =
 				g_slist_prepend(textview->uri_list, uri);
+			previous = last;
 		}
 	} 
 
