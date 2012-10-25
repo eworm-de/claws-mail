@@ -1361,34 +1361,21 @@ static void textview_make_clickable_parts(TextView *textview,
 	gtk_text_buffer_get_end_iter(buffer, &iter);
 
 	/* parse for clickable parts, and build a list of begin and end positions  */
-	for (walk = mybuf;;) {
-		gint last_index = PARSE_ELEMS;
-		gchar *scanpos = NULL;
-
-		/* FIXME: this looks phony. scanning for anything in the parse table */
-		for (n = 0; n < PARSE_ELEMS; n++) {
-			gchar *tmp;
-
-			tmp = parser[n].search(walk, parser[n].needle);
-			if (tmp) {
-				if (scanpos == NULL || tmp < scanpos) {
-					scanpos = tmp;
-					last_index = n;
-				}
-			}					
-		}
-
-		if (scanpos) {
-			/* check if URI can be parsed */
-			if (parser[last_index].parse(walk, scanpos, &bp, &ep, hdr)
-			    && (size_t) (ep - bp - 1) > strlen(parser[last_index].needle)) {
-					ADD_TXT_POS(bp, ep, last_index);
+	for (n = 0; n < PARSE_ELEMS; n++) {
+		for (walk = mybuf;;) {
+			gchar *scanpos = parser[n].search(walk, parser[n].needle);
+			if (scanpos) {
+				/* check if URI can be parsed */
+				if (parser[n].parse(walk, scanpos, &bp, &ep, hdr)
+						&& (size_t) (ep - bp - 1) > strlen(parser[n].needle)) {
+					ADD_TXT_POS(bp, ep, n);
 					walk = ep;
+				} else
+					walk = scanpos +
+						strlen(parser[n].needle);
 			} else
-				walk = scanpos +
-					strlen(parser[last_index].needle);
-		} else
-			break;
+				break;
+		}
 	}
 
 	/* colorize this line */
@@ -1481,34 +1468,21 @@ static void textview_make_clickable_parts_later(TextView *textview,
 	offset = gtk_text_iter_get_offset(&start_iter);
 
 	/* parse for clickable parts, and build a list of begin and end positions  */
-	for (walk = mybuf;;) {
-		gint last_index = PARSE_ELEMS;
-		gchar *scanpos = NULL;
-
-		/* FIXME: this looks phony. scanning for anything in the parse table */
-		for (n = 0; n < PARSE_ELEMS; n++) {
-			gchar *tmp;
-
-			tmp = parser[n].search(walk, parser[n].needle);
-			if (tmp) {
-				if (scanpos == NULL || tmp < scanpos) {
-					scanpos = tmp;
-					last_index = n;
-				}
-			}					
-		}
-
-		if (scanpos) {
-			/* check if URI can be parsed */
-			if (parser[last_index].parse(walk, scanpos, &bp, &ep, FALSE)
-			    && (size_t) (ep - bp - 1) > strlen(parser[last_index].needle)) {
-					ADD_TXT_POS_LATER(bp, ep, last_index);
+	for (n = 0; n < PARSE_ELEMS; n++) {
+		for (walk = mybuf;;) {
+			gchar *scanpos = parser[n].search(walk, parser[n].needle);
+			if (scanpos) {
+				/* check if URI can be parsed */
+				if (parser[n].parse(walk, scanpos, &bp, &ep, FALSE)
+						&& (size_t) (ep - bp - 1) > strlen(parser[n].needle)) {
+					ADD_TXT_POS_LATER(bp, ep, n);
 					walk = ep;
+				} else
+					walk = scanpos +
+						strlen(parser[n].needle);
 			} else
-				walk = scanpos +
-					strlen(parser[last_index].needle);
-		} else
-			break;
+				break;
+		}
 	}
 
 	/* colorize this line */

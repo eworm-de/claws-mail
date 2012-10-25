@@ -1,3 +1,11 @@
+2012-10-25 [colin]	3.8.1cvs105
+
+	* src/textview.c
+		Do not allow search cost to explode in case of bad message
+		parsing in textview_make_clickable_parts_later(); reduces
+		cost of textview_make_clickable_parts_later() from 99% to
+		17% for big bad-case message. Patch by Igor Mammedov
+
 2012-10-25 [colin]	3.8.1cvs104
 
 	* src/textview.c
