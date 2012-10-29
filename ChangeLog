@@ -1,3 +1,9 @@
+2012-10-29 [wwp]	3.8.1cvs108
+
+	* src/textview.c
+	Revert cvs107, cvs106 and parts of cvs105 (all in textview.c), fixing
+	broken URL parsing.
+
 2012-10-25 [colin]	3.8.1cvs107
 
 	* src/textview.c

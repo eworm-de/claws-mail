@@ -1311,8 +1311,7 @@ static void textview_make_clickable_parts(TextView *textview,
 	GtkTextView *text = GTK_TEXT_VIEW(textview->text);
 	GtkTextBuffer *buffer = gtk_text_view_get_buffer(text);
 	GtkTextIter iter;
-	gint mybuf_len = strlen(linebuf);
-	gchar *mybuf = g_strndup(linebuf, mybuf_len);
+	gchar *mybuf = g_strdup(linebuf);
 	
 	/* parse table - in order of priority */
 	struct table {
@@ -1320,7 +1319,6 @@ static void textview_make_clickable_parts(TextView *textview,
 
 		/* token search function */
 		gchar    *(*search)	(const gchar *haystack,
-					 gint  haystack_len,
 					 const gchar *needle);
 		/* part parsing function */
 		gboolean  (*parse)	(const gchar *start,
@@ -1334,14 +1332,14 @@ static void textview_make_clickable_parts(TextView *textview,
 	};
 
 	static struct table parser[] = {
-		{"http://",  strncasestr, get_uri_part,   make_uri_string},
-		{"https://", strncasestr, get_uri_part,   make_uri_string},
-		{"ftp://",   strncasestr, get_uri_part,   make_uri_string},
-		{"sftp://",  strncasestr, get_uri_part,   make_uri_string},
-		{"gopher://",strncasestr, get_uri_part,   make_uri_string},
-		{"www.",     strncasestr, get_uri_part,   make_http_string},
-		{"mailto:",  strncasestr, get_uri_part,   make_uri_string},
-		{"@",        strncasestr, get_email_part, make_email_string}
+		{"http://",  strcasestr, get_uri_part,   make_uri_string},
+		{"https://", strcasestr, get_uri_part,   make_uri_string},
+		{"ftp://",   strcasestr, get_uri_part,   make_uri_string},
+		{"sftp://",  strcasestr, get_uri_part,   make_uri_string},
+		{"gopher://",strcasestr, get_uri_part,   make_uri_string},
+		{"www.",     strcasestr, get_uri_part,   make_http_string},
+		{"mailto:",  strcasestr, get_uri_part,   make_uri_string},
+		{"@",        strcasestr, get_email_part, make_email_string}
 	};
 	const gint PARSE_ELEMS = sizeof parser / sizeof parser[0];
 
@@ -1356,50 +1354,51 @@ static void textview_make_clickable_parts(TextView *textview,
 
 	if (!g_utf8_validate(linebuf, -1, NULL)) {
 		g_free(mybuf);
-		mybuf = g_malloc(mybuf_len*2 +1);
-		conv_localetodisp(mybuf, mybuf_len*2 +1, linebuf);
-		mybuf_len = strlen(mybuf);
+		mybuf = g_malloc(strlen(linebuf)*2 +1);
+		conv_localetodisp(mybuf, strlen(linebuf)*2 +1, linebuf);
 	}
 
 	gtk_text_buffer_get_end_iter(buffer, &iter);
 
 	/* parse for clickable parts, and build a list of begin and end positions  */
-	for (n = 0; n < PARSE_ELEMS; n++) {
-		gint len = mybuf_len;
-		gint needle_len = strlen(parser[n].needle);
-		for (walk = mybuf;;) {
-			gchar *scanpos = parser[n].search(walk, len, parser[n].needle);
-			if (scanpos) {
-				/* check if URI can be parsed */
-				if (parser[n].parse(walk, scanpos, &bp, &ep, hdr)
-						&& (size_t) (ep - bp - 1) > needle_len) {
-					ADD_TXT_POS(bp, ep, n);
-					len -= ep - walk;
-					walk = ep;
-				} else {
-					len -= (scanpos + needle_len) - walk;
-					walk = scanpos + needle_len;
+	for (walk = mybuf;;) {
+		gint last_index = PARSE_ELEMS;
+		gchar *scanpos = NULL;
+
+		/* FIXME: this looks phony. scanning for anything in the parse table */
+		for (n = 0; n < PARSE_ELEMS; n++) {
+			gchar *tmp;
+
+			tmp = parser[n].search(walk, parser[n].needle);
+			if (tmp) {
+				if (scanpos == NULL || tmp < scanpos) {
+					scanpos = tmp;
+					last_index = n;
 				}
-			} else
-				break;
+			}					
 		}
+
+		if (scanpos) {
+			/* check if URI can be parsed */
+			if (parser[last_index].parse(walk, scanpos, &bp, &ep, hdr)
+			    && (size_t) (ep - bp - 1) > strlen(parser[last_index].needle)) {
+					ADD_TXT_POS(bp, ep, last_index);
+					walk = ep;
+			} else
+				walk = scanpos +
+					strlen(parser[last_index].needle);
+		} else
+			break;
 	}
 
 	/* colorize this line */
 	if (head.next) {
 		const gchar *normal_text = mybuf;
-		struct txtpos *previous = NULL;
 
 		/* insert URIs */
 		for (last = head.next; last != NULL;
 		     normal_text = last->ep, last = last->next) {
 			ClickableText *uri;
-
-			if (previous != NULL
-			    && previous->bp < last->bp 
-			    && previous->ep == last->ep)
-				continue;
-
 			uri = g_new0(ClickableText, 1);
 			if (last->bp - normal_text > 0)
 				gtk_text_buffer_insert_with_tags_by_name
@@ -1417,7 +1416,6 @@ static void textview_make_clickable_parts(TextView *textview,
 			uri->filename = NULL;
 			textview->uri_list =
 				g_slist_prepend(textview->uri_list, uri);
-			previous = last;
 		}
 
 		if (*normal_text)
@@ -1438,7 +1436,6 @@ static void textview_make_clickable_parts_later(TextView *textview,
 	GtkTextBuffer *buffer = gtk_text_view_get_buffer(text);
 	GtkTextIter start_iter, end_iter;
 	gchar *mybuf;
-	gint mybuf_len;
 	gint offset = 0;
 	/* parse table - in order of priority */
 	struct table {
@@ -1446,7 +1443,6 @@ static void textview_make_clickable_parts_later(TextView *textview,
 
 		/* token search function */
 		gchar    *(*search)	(const gchar *haystack,
-					 gint  haystack_len,
 					 const gchar *needle);
 		/* part parsing function */
 		gboolean  (*parse)	(const gchar *start,
@@ -1460,13 +1456,13 @@ static void textview_make_clickable_parts_later(TextView *textview,
 	};
 
 	static struct table parser[] = {
-		{"http://",  strncasestr, get_uri_part,   make_uri_string},
-		{"https://", strncasestr, get_uri_part,   make_uri_string},
-		{"ftp://",   strncasestr, get_uri_part,   make_uri_string},
-		{"sftp://",  strncasestr, get_uri_part,   make_uri_string},
-		{"www.",     strncasestr, get_uri_part,   make_http_string},
-		{"mailto:",  strncasestr, get_uri_part,   make_uri_string},
-		{"@",        strncasestr, get_email_part, make_email_string}
+		{"http://",  strcasestr, get_uri_part,   make_uri_string},
+		{"https://", strcasestr, get_uri_part,   make_uri_string},
+		{"ftp://",   strcasestr, get_uri_part,   make_uri_string},
+		{"sftp://",  strcasestr, get_uri_part,   make_uri_string},
+		{"www.",     strcasestr, get_uri_part,   make_http_string},
+		{"mailto:",  strcasestr, get_uri_part,   make_uri_string},
+		{"@",        strcasestr, get_email_part, make_email_string}
 	};
 	const gint PARSE_ELEMS = sizeof parser / sizeof parser[0];
 
@@ -1485,43 +1481,44 @@ static void textview_make_clickable_parts_later(TextView *textview,
 	offset = gtk_text_iter_get_offset(&start_iter);
 
 	/* parse for clickable parts, and build a list of begin and end positions  */
-	mybuf_len = strlen(mybuf);
-	for (n = 0; n < PARSE_ELEMS; n++) {
-		gint len = mybuf_len;
-		gint needle_len = strlen(parser[n].needle);
-		for (walk = mybuf;;) {
-			gchar *scanpos = parser[n].search(walk, len, parser[n].needle);
-			if (scanpos) {
-				/* check if URI can be parsed */
-				if (parser[n].parse(walk, scanpos, &bp, &ep, FALSE)
-						&& (size_t) (ep - bp - 1) > needle_len) {
-					ADD_TXT_POS_LATER(bp, ep, n);
-					len -= ep - walk;
-					walk = ep;
-				} else {
-					len -= (scanpos + needle_len) - walk;
-					walk = scanpos + needle_len;
+	for (walk = mybuf;;) {
+		gint last_index = PARSE_ELEMS;
+		gchar *scanpos = NULL;
+
+		/* FIXME: this looks phony. scanning for anything in the parse table */
+		for (n = 0; n < PARSE_ELEMS; n++) {
+			gchar *tmp;
+
+			tmp = parser[n].search(walk, parser[n].needle);
+			if (tmp) {
+				if (scanpos == NULL || tmp < scanpos) {
+					scanpos = tmp;
+					last_index = n;
 				}
-			} else
-				break;
+			}					
 		}
+
+		if (scanpos) {
+			/* check if URI can be parsed */
+			if (parser[last_index].parse(walk, scanpos, &bp, &ep, FALSE)
+			    && (size_t) (ep - bp - 1) > strlen(parser[last_index].needle)) {
+					ADD_TXT_POS_LATER(bp, ep, last_index);
+					walk = ep;
+			} else
+				walk = scanpos +
+					strlen(parser[last_index].needle);
+		} else
+			break;
 	}
 
 	/* colorize this line */
 	if (head.next) {
-		struct txtpos *previous = NULL;
 		/* insert URIs */
 		for (last = head.next; last != NULL; last = last->next) {
 			ClickableText *uri;
 			gint start_offset, end_offset;
 			gchar *tmp_str;
 			gchar old_char;
-
-			if (previous != NULL
-			    && previous->bp < last->bp 
-			    && previous->ep == last->ep)
-				continue;
-
 			uri = g_new0(ClickableText, 1);
 			uri->uri = parser[last->pti].build_uri(last->bp,
 							       last->ep);
@@ -1548,7 +1545,6 @@ static void textview_make_clickable_parts_later(TextView *textview,
 			uri->filename = NULL;
 			textview->uri_list =
 				g_slist_prepend(textview->uri_list, uri);
-			previous = last;
 		}
 	} 
 

@@ -4482,3 +4482,4 @@
 ( cvs diff -u -r 1.96.2.250 -r 1.96.2.251 src/textview.c;  ) > 3.8.1cvs105.patchset
 ( cvs diff -u -r 1.36.2.207 -r 1.36.2.208 src/common/utils.c;  cvs diff -u -r 1.20.2.82 -r 1.20.2.83 src/common/utils.h;  cvs diff -u -r 1.96.2.251 -r 1.96.2.252 src/textview.c;  ) > 3.8.1cvs106.patchset
 ( cvs diff -u -r 1.96.2.252 -r 1.96.2.253 src/textview.c;  ) > 3.8.1cvs107.patchset
+( cvs diff -u -r 1.96.2.253 -r 1.96.2.254 src/textview.c;  ) > 3.8.1cvs108.patchset
