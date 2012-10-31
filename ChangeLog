@@ -1,3 +1,8 @@
+2012-10-31 [colin]	3.8.1cvs110
+
+	* src/prefs_folder_item.c
+		Fix prefs text and extra semi-colon. Thanks to Paul!
+
 2012-10-31 [colin]	3.8.1cvs109
 
 	* src/folder_item_prefs.c

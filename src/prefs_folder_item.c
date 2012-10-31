@@ -501,7 +501,7 @@ static void prefs_folder_item_general_create_widget_func(PrefsPage * page_,
 	gtk_table_attach (GTK_TABLE(table), hbox, 0, 2,
 			rowcount, rowcount+1, GTK_FILL, GTK_FILL, 0, 0);
 
-	label = gtk_label_new(_("Select the HTML part of multipart messages:"));
+	label = gtk_label_new(_("Select the HTML part of multipart messages"));
 	gtk_widget_show (label);
 	gtk_box_pack_start (GTK_BOX(hbox), label, FALSE, FALSE, 0);
 
@@ -519,8 +519,8 @@ static void prefs_folder_item_general_create_widget_func(PrefsPage * page_,
 			item->prefs->promote_html_part);
 
 	CLAWS_SET_TIP(hbox, _(
-				"\"Default\" will follow global preference (found in Preferences -> "
-				"Message View -> Text Options"));
+				"\"Default\" will follow global preference (found in /Preferences/"
+				"Message View/Text Options"));
 
 	promote_html_part_rec_checkbtn = gtk_check_button_new();
 	gtk_widget_show (promote_html_part_rec_checkbtn);
