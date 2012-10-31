@@ -1,3 +1,8 @@
+2012-10-31 [paul]	3.8.1cvs111
+
+	* src/prefs_folder_item.c
+		add missing closing bracket. thanks to Andreas Rönnquist.
+
 2012-10-31 [colin]	3.8.1cvs110
 
 	* src/prefs_folder_item.c
