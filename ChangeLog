@@ -1,3 +1,13 @@
+2012-10-31 [colin]	3.8.1cvs109
+
+	* src/folder_item_prefs.c
+	* src/folder_item_prefs.h
+	* src/messageview.c
+	* src/prefs_folder_item.c
+		Implement feature from bug #2569, 
+		"select html part on folder specific properties"
+		Patch based on Andrej's patch.
+
 2012-10-29 [wwp]	3.8.1cvs108
 
 	* src/textview.c

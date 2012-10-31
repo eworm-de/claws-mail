@@ -4483,3 +4483,4 @@
 ( cvs diff -u -r 1.36.2.207 -r 1.36.2.208 src/common/utils.c;  cvs diff -u -r 1.20.2.82 -r 1.20.2.83 src/common/utils.h;  cvs diff -u -r 1.96.2.251 -r 1.96.2.252 src/textview.c;  ) > 3.8.1cvs106.patchset
 ( cvs diff -u -r 1.96.2.252 -r 1.96.2.253 src/textview.c;  ) > 3.8.1cvs107.patchset
 ( cvs diff -u -r 1.96.2.253 -r 1.96.2.254 src/textview.c;  ) > 3.8.1cvs108.patchset
+( cvs diff -u -r 1.2.2.40 -r 1.2.2.41 src/folder_item_prefs.c;  cvs diff -u -r 1.2.2.25 -r 1.2.2.26 src/folder_item_prefs.h;  cvs diff -u -r 1.94.2.239 -r 1.94.2.240 src/messageview.c;  cvs diff -u -r 1.52.2.88 -r 1.52.2.89 src/prefs_folder_item.c;  ) > 3.8.1cvs109.patchset

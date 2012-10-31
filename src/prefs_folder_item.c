@@ -94,6 +94,7 @@ struct _FolderItemGeneralPage
 	GtkWidget *entry_offlinesync;
 	GtkWidget *label_end_offlinesync;
 	GtkWidget *checkbtn_remove_old_offlinesync;
+	GtkWidget *promote_html_part;
 	
 	/* apply to sub folders */
 #ifndef G_OS_WIN32
@@ -105,6 +106,7 @@ struct _FolderItemGeneralPage
 	GtkWidget *enable_processing_when_opening_rec_checkbtn;
 	GtkWidget *newmailcheck_rec_checkbtn;
 	GtkWidget *offlinesync_rec_checkbtn;
+	GtkWidget *promote_html_part_rec_checkbtn;
 
 	gint	   folder_color;
 };
@@ -240,6 +242,8 @@ static void prefs_folder_item_general_create_widget_func(PrefsPage * page_,
 	GtkWidget *entry_offlinesync;
 	GtkWidget *label_end_offlinesync;
 	GtkWidget *checkbtn_remove_old_offlinesync;
+	GtkWidget *promote_html_part;
+	GtkListStore *promote_html_part_menu;
 
 #ifndef G_OS_WIN32
 	GtkWidget *simplify_subject_rec_checkbtn;
@@ -250,6 +254,7 @@ static void prefs_folder_item_general_create_widget_func(PrefsPage * page_,
 	GtkWidget *enable_processing_when_opening_rec_checkbtn;
 	GtkWidget *newmailcheck_rec_checkbtn;
 	GtkWidget *offlinesync_rec_checkbtn;
+	GtkWidget *promote_html_part_rec_checkbtn;
 
 	page->item	   = item;
 
@@ -490,6 +495,39 @@ static void prefs_folder_item_general_create_widget_func(PrefsPage * page_,
 
 	rowcount++;
 
+	/* Select HTML part by default? */
+	hbox = gtk_hbox_new (FALSE, 2);
+	gtk_widget_show (hbox);
+	gtk_table_attach (GTK_TABLE(table), hbox, 0, 2,
+			rowcount, rowcount+1, GTK_FILL, GTK_FILL, 0, 0);
+
+	label = gtk_label_new(_("Select the HTML part of multipart messages:"));
+	gtk_widget_show (label);
+	gtk_box_pack_start (GTK_BOX(hbox), label, FALSE, FALSE, 0);
+
+	promote_html_part = gtkut_sc_combobox_create (NULL, FALSE);
+	gtk_widget_show (promote_html_part);
+	gtk_box_pack_start (GTK_BOX(hbox), promote_html_part, FALSE, FALSE, 0);
+
+	promote_html_part_menu = GTK_LIST_STORE(gtk_combo_box_get_model(
+				GTK_COMBO_BOX(promote_html_part)));
+	COMBOBOX_ADD (promote_html_part_menu, _("Default"), HTML_PROMOTE_DEFAULT);
+	COMBOBOX_ADD (promote_html_part_menu, _("No"), HTML_PROMOTE_NEVER);
+	COMBOBOX_ADD (promote_html_part_menu, _("Yes"), HTML_PROMOTE_ALWAYS);
+
+	combobox_select_by_data(GTK_COMBO_BOX(promote_html_part),
+			item->prefs->promote_html_part);
+
+	CLAWS_SET_TIP(hbox, _(
+				"\"Default\" will follow global preference (found in Preferences -> "
+				"Message View -> Text Options"));
+
+	promote_html_part_rec_checkbtn = gtk_check_button_new();
+	gtk_widget_show (promote_html_part_rec_checkbtn);
+	gtk_table_attach(GTK_TABLE(table), promote_html_part_rec_checkbtn, 2, 3, 
+			 rowcount, rowcount + 1, GTK_SHRINK, GTK_SHRINK, 0, 0);
+	rowcount++;
+
 	/* Synchronise folder for offline use */
 	checkbtn_offlinesync = gtk_check_button_new_with_label(_("Synchronise for offline use"));
 	gtk_table_attach(GTK_TABLE(table), checkbtn_offlinesync, 0, 2,
@@ -597,6 +635,7 @@ static void prefs_folder_item_general_create_widget_func(PrefsPage * page_,
 	page->entry_offlinesync = entry_offlinesync;
 	page->label_end_offlinesync = label_end_offlinesync;
 	page->checkbtn_remove_old_offlinesync = checkbtn_remove_old_offlinesync;
+	page->promote_html_part = promote_html_part;
 
 #ifndef G_OS_WIN32
 	page->simplify_subject_rec_checkbtn  = simplify_subject_rec_checkbtn;
@@ -607,6 +646,7 @@ static void prefs_folder_item_general_create_widget_func(PrefsPage * page_,
 	page->enable_processing_when_opening_rec_checkbtn = enable_processing_when_opening_rec_checkbtn;
 	page->newmailcheck_rec_checkbtn	     = newmailcheck_rec_checkbtn;
 	page->offlinesync_rec_checkbtn	     = offlinesync_rec_checkbtn;
+	page->promote_html_part_rec_checkbtn = promote_html_part_rec_checkbtn;
 
 	page->page.widget = table;
 
@@ -632,6 +672,7 @@ static void general_save_folder_prefs(FolderItem *folder, FolderItemGeneralPage 
 	gboolean all = FALSE, summary_update_needed = FALSE;
 	SpecialFolderItemType type = F_NORMAL;
 	FolderView *folderview = mainwindow_get_mainwindow()->folderview;
+	HTMLPromoteType promote_html_part = HTML_PROMOTE_DEFAULT;
 
 	if (folder->path == NULL)
 		return;
@@ -646,6 +687,11 @@ static void general_save_folder_prefs(FolderItem *folder, FolderItemGeneralPage 
 		folder_item_change_type(folder, type);
 		summary_update_needed = TRUE;
 	}
+
+	promote_html_part =
+		combobox_get_active_data(GTK_COMBO_BOX(page->promote_html_part));
+	if (all || gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(page->promote_html_part_rec_checkbtn)))
+		prefs->promote_html_part = promote_html_part;
 
 #ifndef G_OS_WIN32
 	if (all || gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(page->simplify_subject_rec_checkbtn))) {
@@ -732,7 +778,9 @@ static gboolean general_save_recurse_func(GNode *node, gpointer data)
 	      gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(page->enable_processing_rec_checkbtn)) ||
 	      gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(page->enable_processing_when_opening_rec_checkbtn)) ||
 	      gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(page->newmailcheck_rec_checkbtn)) ||
-	      gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(page->offlinesync_rec_checkbtn))))
+	      gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(page->offlinesync_rec_checkbtn)) ||
+				gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(page->promote_html_part_rec_checkbtn))
+			))
 		return TRUE;
 	else 
 		return FALSE;

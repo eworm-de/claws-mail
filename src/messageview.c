@@ -66,6 +66,7 @@
 #include "quoted-printable.h"
 #include "version.h"
 #include "statusbar.h"
+#include "folder_item_prefs.h"
 #ifndef USE_NEW_ADDRBOOK
 	#include "addressbook.h"
 #else
@@ -1503,7 +1504,9 @@ gint messageview_show(MessageView *messageview, MsgInfo *msginfo,
 					} else if (mimeinfo->type == MIMETYPE_TEXT && 
 					    !strcasecmp(mimeinfo->subtype, "html") &&
 					    mimeinfo->disposition != DISPOSITIONTYPE_ATTACHMENT &&
-					    prefs_common.promote_html_part) {
+							(msginfo->folder->prefs->promote_html_part == HTML_PROMOTE_ALWAYS ||
+							 (msginfo->folder->prefs->promote_html_part == HTML_PROMOTE_DEFAULT &&
+								prefs_common.promote_html_part))) {
 						mimeview_select_mimepart_icon(messageview->mimeview, mimeinfo);
 						goto done;
 					}
@@ -1531,7 +1534,9 @@ gint messageview_show(MessageView *messageview, MsgInfo *msginfo,
 					} else if (mimeinfo->type == MIMETYPE_TEXT && 
 					    !strcasecmp(mimeinfo->subtype, "html") &&
 					    mimeinfo->disposition != DISPOSITIONTYPE_ATTACHMENT &&
-					    prefs_common.promote_html_part) {
+							(msginfo->folder->prefs->promote_html_part == HTML_PROMOTE_ALWAYS ||
+							 (msginfo->folder->prefs->promote_html_part == HTML_PROMOTE_DEFAULT &&
+								prefs_common.promote_html_part))) {
 						mimeview_select_mimepart_icon(messageview->mimeview, mimeinfo);
 						goto done;
 					}

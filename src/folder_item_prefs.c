@@ -95,6 +95,8 @@ static PrefParam param[] = {
 	 NULL, NULL, NULL},
 	{"remove_old_bodies", "FALSE", &tmp_prefs.remove_old_bodies, P_BOOL,
 	 NULL, NULL, NULL},
+	{"promote_html_part", "0", &tmp_prefs.promote_html_part, P_ENUM,
+	 NULL, NULL, NULL},
 
 	{"compose_with_format", "FALSE", &tmp_prefs.compose_with_format, P_BOOL,
 	 NULL, NULL, NULL},
@@ -211,6 +213,7 @@ static FolderItemPrefs *folder_item_prefs_clear(FolderItemPrefs *prefs)
 	prefs->offlinesync = FALSE;
 	prefs->offlinesync_days = 0;
 	prefs->remove_old_bodies = FALSE;
+	prefs->promote_html_part = HTML_PROMOTE_DEFAULT;
 
 	prefs->compose_with_format = FALSE;
 	prefs->compose_subject_format = NULL;
@@ -270,6 +273,7 @@ void folder_item_prefs_copy_prefs(FolderItem * src, FolderItem * dest)
 	tmp_prefs.offlinesync                   = src->prefs->offlinesync;
 	tmp_prefs.offlinesync_days              = src->prefs->offlinesync_days;
 	tmp_prefs.remove_old_bodies             = src->prefs->remove_old_bodies;
+	tmp_prefs.promote_html_part             = src->prefs->promote_html_part;
 
 	prefs_matcher_read_config();
 

@@ -26,6 +26,11 @@
 typedef struct _FolderItemPrefs FolderItemPrefs;
 
 #include "folder.h"
+typedef enum {
+	HTML_PROMOTE_DEFAULT=0,
+	HTML_PROMOTE_NEVER,
+	HTML_PROMOTE_ALWAYS
+} HTMLPromoteType;
 
 struct _FolderItemPrefs {
 	gchar * directory;
@@ -38,6 +43,7 @@ struct _FolderItemPrefs {
 	int offlinesync;
 	int offlinesync_days;
 	int remove_old_bodies;
+	HTMLPromoteType promote_html_part;
 
 	gboolean request_return_receipt;
 	gboolean enable_default_to;
