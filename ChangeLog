@@ -1,3 +1,10 @@
+2012-11-06 [mones]	3.8.1cvs112
+
+	* doc/man/claws-mail.1
+		Sync with AUTHORS file
+	* src/gtk/quicksearch.c
+		Add number units where appropriate
+
 2012-10-31 [paul]	3.8.1cvs111
 
 	* src/prefs_folder_item.c
