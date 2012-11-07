@@ -1,3 +1,8 @@
+2012-11-07 [colin]	3.8.1cvs113
+
+	* src/mbox.c
+		Fix Windows build
+
 2012-11-06 [mones]	3.8.1cvs112
 
 	* doc/man/claws-mail.1

@@ -26,6 +26,10 @@
 #define _GNU_SOURCE
 #include <stdio.h>
 
+#ifdef USE_PTHREAD
+#include <pthread.h>
+#endif
+
 #include "defs.h"
 #include <glib.h>
 #include <glib/gi18n.h>
