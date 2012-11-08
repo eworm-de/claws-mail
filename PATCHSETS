@@ -4490,3 +4490,4 @@
 ( cvs diff -u -r 1.28.2.54 -r 1.28.2.55 src/mbox.c;  ) > 3.8.1cvs113.patchset
 ( cvs diff -u -r 1.1.2.118 -r 1.1.2.119 src/gtk/quicksearch.c;  ) > 3.8.1cvs114.patchset
 ( cvs diff -u -r 1.1.2.74 -r 1.1.2.75 src/plugins/pgpcore/sgpgme.c;  ) > 3.8.1cvs115.patchset
+( cvs diff -u -r 1.13.2.50 -r 1.13.2.51 src/common/socket.c;  cvs diff -u -r 1.5.2.104 -r 1.5.2.105 src/gtk/gtkutils.c;  ) > 3.8.1cvs116.patchset

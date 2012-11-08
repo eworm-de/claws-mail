@@ -1,3 +1,9 @@
+2012-11-08 [colin]	3.8.1cvs116
+
+	* src/common/socket.c
+	* src/gtk/gtkutils.c
+		Fix socket communication
+
 2012-11-08 [colin]	3.8.1cvs115
 
 	* src/plugins/pgpcore/sgpgme.c

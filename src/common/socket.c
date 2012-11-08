@@ -1574,6 +1574,7 @@ gint fd_gets(gint fd, gchar *buf, gint len)
 		return -1;
 
 #ifdef G_OS_WIN32
+	fd_check_io(fd, G_IO_IN);
 	do {
 /*
 XXX:tm try nonblock

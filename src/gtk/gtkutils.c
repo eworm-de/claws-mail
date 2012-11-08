@@ -1646,10 +1646,14 @@ claws_io_invoke (GIOChannel   *source,
 	         gpointer      data)
 {
   ClawsIOClosure *closure = data;
-
+  int fd;
+#ifndef G_OS_WIN32
+  fd = g_io_channel_unix_get_fd (source);
+#else
+  fd = g_io_channel_win32_get_fd (source);
+#endif
   if (closure->condition & condition)
-    closure->function (closure->data, g_io_channel_unix_get_fd (source),
-    		       condition);
+    closure->function (closure->data, fd, condition);
 
   return TRUE;
 }
