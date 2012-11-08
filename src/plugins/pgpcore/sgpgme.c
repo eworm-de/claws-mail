@@ -615,28 +615,44 @@ void sgpgme_init()
 	gpgme_engine_info_t engineInfo;
 	if (gpgme_check_version("1.0.0")) {
 #ifdef LC_CTYPE
+		debug_print("setting gpgme CTYPE locale\n");
+#ifdef G_OS_WIN32
+		ctype_locale = g_win32_getlocale();
+#else
 		ctype_locale = g_strdup(setlocale(LC_CTYPE, NULL));
+#endif
+		debug_print("setting gpgme locale to: %s\n", ctype_locale ? ctype_locale : "NULL");
 		if (strchr(ctype_locale, '.'))
 			*(strchr(ctype_locale, '.')) = '\0';
 		else if (strchr(ctype_locale, '@'))
 			*(strchr(ctype_locale, '@')) = '\0';
 		ctype_utf8_locale = g_strconcat(ctype_locale, ".UTF-8", NULL);
 
+		debug_print("setting gpgme locale to UTF8: %s\n", ctype_utf8_locale ? ctype_utf8_locale : "NULL");
 		gpgme_set_locale(NULL, LC_CTYPE, ctype_utf8_locale);
 
+		debug_print("done\n");
 		g_free(ctype_utf8_locale);
 		g_free(ctype_locale);
 #endif
 #ifdef LC_MESSAGES
+		debug_print("setting gpgme MESSAGES locale\n");
+#ifdef G_OS_WIN32
+		messages_locale = g_win32_getlocale();
+#else
 		messages_locale = g_strdup(setlocale(LC_MESSAGES, NULL));
+#endif
+		debug_print("setting gpgme locale to: %s\n", messages_locale ? messages_locale : "NULL");
 		if (strchr(messages_locale, '.'))
 			*(strchr(messages_locale, '.')) = '\0';
 		else if (strchr(messages_locale, '@'))
 			*(strchr(messages_locale, '@')) = '\0';
 		messages_utf8_locale = g_strconcat(messages_locale, ".UTF-8", NULL);
+		debug_print("setting gpgme locale to UTF8: %s\n", messages_utf8_locale ? messages_utf8_locale : "NULL");
 
 		gpgme_set_locale(NULL, LC_MESSAGES, messages_utf8_locale);
 
+		debug_print("done\n");
 		g_free(messages_utf8_locale);
 		g_free(messages_locale);
 #endif

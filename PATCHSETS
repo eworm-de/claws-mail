@@ -4489,3 +4489,4 @@
 ( cvs diff -u -r 1.1.2.11 -r 1.1.2.12 doc/man/claws-mail.1;  cvs diff -u -r 1.1.2.117 -r 1.1.2.118 src/gtk/quicksearch.c;  ) > 3.8.1cvs112.patchset
 ( cvs diff -u -r 1.28.2.54 -r 1.28.2.55 src/mbox.c;  ) > 3.8.1cvs113.patchset
 ( cvs diff -u -r 1.1.2.118 -r 1.1.2.119 src/gtk/quicksearch.c;  ) > 3.8.1cvs114.patchset
+( cvs diff -u -r 1.1.2.74 -r 1.1.2.75 src/plugins/pgpcore/sgpgme.c;  ) > 3.8.1cvs115.patchset

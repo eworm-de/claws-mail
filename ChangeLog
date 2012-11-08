@@ -1,3 +1,8 @@
+2012-11-08 [colin]	3.8.1cvs115
+
+	* src/plugins/pgpcore/sgpgme.c
+		Fix Windows runtime crash
+
 2012-11-08 [colin]	3.8.1cvs114
 
 	* src/gtk/quicksearch.c
