@@ -144,7 +144,8 @@ static void quicksearch_invoke_execute(QuickSearch *quicksearch, gboolean run_on
 	}
 
 	do {
-		gboolean active = g_strcmp0(quicksearch->request.matchstring, "");
+		gboolean active = quicksearch->request.matchstring != NULL 
+				   && g_strcmp0(quicksearch->request.matchstring, "");
 		advsearch_set(quicksearch->asearch, quicksearch->request.type,
 				quicksearch->request.matchstring);
 

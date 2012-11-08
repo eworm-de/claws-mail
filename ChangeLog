@@ -1,3 +1,9 @@
+2012-11-08 [colin]	3.8.1cvs114
+
+	* src/gtk/quicksearch.c
+		Fix going active with NULL matchstring (for example
+		when changing type before typing anything)
+
 2012-11-07 [colin]	3.8.1cvs113
 
 	* src/mbox.c
