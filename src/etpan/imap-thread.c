@@ -1653,7 +1653,7 @@ static void search_run(struct etpan_thread_op * op)
 	} else {
 		mailstream_logger = imap_logger_uid;
 
-		r = mailimap_uid_search(param->imap, NULL, key, &search_result);
+		r = mailimap_uid_search(param->imap, "UTF-8", key, &search_result);
 
 		mailstream_logger = imap_logger_cmd;
 

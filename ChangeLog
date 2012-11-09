@@ -1,3 +1,8 @@
+2012-11-09 [colin]	3.8.1cvs117
+
+	* src/etpan/imap-thread.c
+		Specify search charset. Thanks to Aleksei Miheev
+
 2012-11-08 [colin]	3.8.1cvs116
 
 	* src/common/socket.c
