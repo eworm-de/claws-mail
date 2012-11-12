@@ -758,7 +758,6 @@ static MessageView *messageview_create_with_new_window_visible(MainWindow *mainw
 	messageview_add_toolbar(msgview, window);
 
 	if (show) {
-		gtk_widget_grab_focus(msgview->mimeview->textview->text);
 		gtk_widget_show(window);
 	} else {
 		gtk_widget_realize(window);
@@ -771,6 +770,11 @@ static MessageView *messageview_create_with_new_window_visible(MainWindow *mainw
 	toolbar_set_style(msgview->toolbar->toolbar, msgview->handlebox, 
 			  prefs_common.toolbar_style);
 	messageview_init(msgview);
+
+	if (show) {
+		GTK_EVENTS_FLUSH();
+		gtk_widget_grab_focus(msgview->mimeview->textview->text);
+	}
 
 	return msgview;
 }

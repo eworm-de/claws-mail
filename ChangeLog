@@ -1,3 +1,9 @@
+2012-11-12 [colin]	3.8.1cvs118
+
+	* src/messageview.c
+		Fix initial focus on textview. Fixes bug #2776,
+		"Make all menu shortcuts work properly in the message window"
+
 2012-11-09 [colin]	3.8.1cvs117
 
 	* src/etpan/imap-thread.c
