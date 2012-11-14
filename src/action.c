@@ -973,18 +973,23 @@ static ChildInfo *fork_child(gchar *cmd, const gchar *msg_str,
 				     ACTION_USER_IN |
 				     ACTION_USER_HIDDEN_IN)) {
 					r |= close(fileno(stdin));
-					(void) dup  (chld_in[0]);
+					if (dup(chld_in[0]) < 0)
+						r = -1;
 				}
 				r |= close(chld_in[0]);
 				r |= close(chld_in[1]);
 
 				r |= close(fileno(stdout));
-				(void) dup  (chld_out[1]);
+				if (dup(chld_out[1]) < 0)
+					r = -1;
+
 				r |= close(chld_out[0]);
 				r |= close(chld_out[1]);
 
 				r |= close(fileno(stderr));
-				(void) dup  (chld_err[1]);
+				if (dup(chld_err[1]) < 0)
+					r = -1;
+
 				r |= close(chld_err[0]);
 				r |= close(chld_err[1]);
 
