@@ -1,3 +1,18 @@
+2012-11-14 [paul]	3.8.1cvs123
+
+	* po/de.po
+	* po/es.po
+	* po/fi.po
+	* po/fr.po
+	* po/hu.po
+	* po/pt_BR.po
+	* po/sv.po
+	* po/uk.po
+	* po/zh_TW.po
+		updated by Thomas Bellmann, Ricardo Mones, Flammie Pirinen,
+		wwp, Páder Rezső, Frederico Goncalves Guimaraes, Andreas Rönnquist,
+		YUP, Wei-Lun Chao
+
 2012-11-14 [paul]	3.8.1cvs122
 
 	* tools/README
