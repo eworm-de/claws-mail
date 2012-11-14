@@ -1,3 +1,9 @@
+2012-11-14 [paul]	3.9.0
+	* NEWS
+	* README
+	* RELEASE_NOTES	
+		3.9.0 unleashed!
+
 2012-11-14 [paul]	3.8.1cvs123
 
 	* po/de.po
@@ -10,7 +16,7 @@
 	* po/uk.po
 	* po/zh_TW.po
 		updated by Thomas Bellmann, Ricardo Mones, Flammie Pirinen,
-		wwp, Páder Rezső, Frederico Goncalves Guimaraes, Andreas Rönnquist,
+		wwp, Pader Rezso, Frederico Goncalves Guimaraes, Andreas Ronnquist,
 		YUP, Wei-Lun Chao
 
 2012-11-14 [paul]	3.8.1cvs122
