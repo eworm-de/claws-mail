@@ -351,6 +351,38 @@ static gboolean plugin_licence_check(const gchar *licence) {
 	return FALSE;
 }
 
+static gboolean plugin_filename_is_standard_dir(const gchar *filename) {
+	return strncmp(filename, get_plugin_dir(), strlen(get_plugin_dir())) == 0;
+}
+
+static Plugin *plugin_load_in_default_dir(const gchar *filename, gchar **error)
+{
+	Plugin *plugin = NULL;
+	gchar *filename_default_dir = NULL;
+	gchar *default_error = NULL;
+	gchar *plugin_name = g_path_get_basename(filename);
+
+	filename_default_dir = g_strconcat(get_plugin_dir(), plugin_name, NULL);
+
+	debug_print("trying to load %s in default plugin directory %s\n",
+		    plugin_name, get_plugin_dir());
+
+	g_free(plugin_name);
+
+	plugin = plugin_load(filename_default_dir, &default_error);
+	
+	g_free(filename_default_dir);
+	
+	if (plugin) {
+		g_free(*error);
+		*error = NULL;
+	} else {
+		g_free(default_error);
+	}
+
+	return plugin;
+}
+
 /**
  * Loads a plugin
  *
@@ -398,7 +430,10 @@ Plugin *plugin_load(const gchar *filename, gchar **error)
 	if (plugin->module == NULL) {
 		*error = g_strdup(g_module_error());
 		g_free(plugin);
-		return NULL;
+		if (!plugin_filename_is_standard_dir(filename))
+			return plugin_load_in_default_dir(filename, error);
+		else
+			return NULL;
 	}
 
 init_plugin:

@@ -1,3 +1,12 @@
+2012-11-14 [colin]	3.8.1cvs119
+
+	* src/common/plugin.c
+		If plugin fails to load from absolute path, try from
+		default plugin path. 
+		Fixes bug #1137, 'loading plugins with same profile on different archs'
+		Fixes bug #2777, 'Installing latest cvs116 package 14 Windows version
+		results in wrong paths in clawsrc'
+
 2012-11-12 [colin]	3.8.1cvs118
 
 	* src/messageview.c
