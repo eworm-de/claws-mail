@@ -4496,3 +4496,4 @@
 ( cvs diff -u -r 1.13.2.46 -r 1.13.2.47 src/common/plugin.c;  ) > 3.8.1cvs119.patchset
 ( cvs diff -u -r 1.12.2.75 -r 1.12.2.76 src/action.c;  ) > 3.8.1cvs120.patchset
 ( cvs diff -u -r 1.12.2.76 -r 1.12.2.77 src/action.c;  ) > 3.8.1cvs121.patchset
+( cvs diff -u -r 1.30.2.32 -r 1.30.2.33 tools/README;  cvs diff -u -r 1.1.2.6 -r 1.1.2.7 tools/fix_date.sh;  ) > 3.8.1cvs122.patchset

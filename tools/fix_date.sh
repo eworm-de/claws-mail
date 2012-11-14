@@ -21,12 +21,14 @@
 
 # usage: fix_date.sh <filename> [<filename>..]
 # It will replace the Date: value w/ the one picked up from more recent
-# Received: field if this field resides in one line. Otherwise, it will
-# take the file modification time (using a RFC 2822-compliant form).
-# If no X-Original-Date already exist, the former Date value will be set
-# in such field.
+# Fetchinfo time header, Received: field.. Otherwise, it will take the file
+#  modification time (using a RFC 2822-compliant form).
+# Any already existing X-Original-Date is kept, if missing we're adding it
+# if the Date: was set (even if set w/ non conform value)
 
-VERSION="0.0.5"
+# TODO: fallback to X-OriginalArrivalTime: ?
+
+VERSION="0.1.2"
 
 
 version()
@@ -58,6 +60,13 @@ date_valid()
 		
 	echo "$1" | grep -qEim 1 "$REGEXP"
 	DATE_VALID=$?
+}
+
+dump_date_fields()
+{
+	test -z "$X_ORIGINAL_DATE" -a -n "$DATE" && \
+		echo "X-Original-Date:$DATE" >> "$TMP"
+	echo "Date:$REPLACEMENT_DATE" >> "$TMP"
 }
 
 # use --force to always (re-)write the Date header
@@ -101,9 +110,11 @@ test $# -lt 1 && \
 	usage 1
 
 TMP="/tmp/${0##*/}.tmp"
+HEADERS="/tmp/${0##*/}.headers.tmp"
+BODY="/tmp/${0##*/}.body.tmp"
 
-DATE_REGEXP="( (Mon|Tue|Wed|Thu|Fri|Sat|Sun),)? [0-9]+ (Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dev) [0-9]+ [0-9]+:[0-9]+:[0-9}+ [-+][0-9]+"
-DATE_REGEXP_STRICT="(Mon|Tue|Wed|Thu|Fri|Sat|Sun), [0-9]+ (Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dev) [0-9]+ [0-9]+:[0-9]+:[0-9}+ [-+][0-9]+"
+DATE_REGEXP='( (Mon|Tue|Wed|Thu|Fri|Sat|Sun),)? [0-9]+ (Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec) [0-9]+ [0-9]+:[0-9]+:[0-9]+ [-+]?[0-9]+'
+DATE_REGEXP_STRICT='(Mon|Tue|Wed|Thu|Fri|Sat|Sun), [0-9]+ (Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec) [0-9]+ [0-9]+:[0-9]+:[0-9]+ [-+]?[0-9]+'
 
 while [ -n "$1" ]
 do
@@ -113,41 +124,71 @@ do
 		shift
 		continue
 	fi
+	SKIP=0
 
-	X_ORIGINAL_DATE=$(grep -Eim 1 '^X-Original-Date: ' "$1" | cut -d ':' -f 2-)
-	DATE=$(grep -Eim 1 '^Date: ' "$1" | cut -d ':' -f 2-)
-	test $STRICT -eq 1 && \
-		RECEIVED_DATE=$(grep -Eim 1 ";$DATE_REGEXP" "$1" | cut -d ';' -f 2) || \
-		RECEIVED_DATE=$(grep -Eim 1 "; $DATE_REGEXP_STRICT" "$1" | cut -d ';' -f 2)
-	FILE_DATE=$(ls -l --time-style="+%a, %d %b %Y %X %z" "$1" | tr -s ' ' ' ' | cut -d ' ' -f 6-11)
-	# we could also use the system date as a possible replacement
-	#SYSTEM_DATE="$(date -R)"
-
-	# determine which replacement date to use
-	if [ -z "$RECEIVED_DATE" ]
+	# split headers and body
+	# get the empty line (separation between headers and body)
+	SEP=`grep -nEm1 "^$" "$1" 2>/dev/null | cut -d ':' -f 1`
+	if [ -z "$SEP" -o "$SEP" = "0" ]
 	then
-		# don't forget the leading whitespace here
-		REPLACEMENT_DATE=" $FILE_DATE"
-		REPLACEMENT="file date"
-#		REPLACEMENT_DATE=" $SYSTEM_DATE"
-#		REPLACEMENT="system date"
+		cp -f "$1" "$HEADERS"
+		:> "$BODY"
 	else
-		REPLACEMENT_DATE="$RECEIVED_DATE"
-		REPLACEMENT="received date"
+		sed -n '1,'`expr $SEP - 1`'p' "$1" > "$HEADERS"
+		sed '1,'`expr $SEP - 1`'d' "$1" > "$BODY"
 	fi
 
-	# ensure that a X-Original-Date is set (but don't override it)
-	if [ -z "$X_ORIGINAL_DATE" ]
+	# work on headers only
+
+	# get the Date and X-Original-Date
+	X_ORIGINAL_DATE=`sed -n '/^X-Original-Date:/,/^[^\t]/p' "$HEADERS" | head -n -1 | cut -d ':' -f 2-`
+	DATE=`sed -n '/^Date:/,/^[^\t]/p' "$HEADERS" | head -n -1 | cut -d ':' -f 2-`
+
+	# work on headers, minus Date and X-Original-Date
+	test -n "$X_ORIGINAL_DATE" && \
+		sed -i '/^X-Original-Date:/,/^[^\t]/d' "$HEADERS"
+	test -n "$DATE" && \
+		sed -i '/^Date:/,/^[^\t]/d' "$HEADERS"
+
+	# found a replacement date in Fetchinfo headers
+	FETCH_DATE=`grep -im1 'X-FETCH-TIME: ' "$HEADERS" | cut -d ' ' -f 2-`
+	
+	# or in Received: headers ..
+	test $STRICT -eq 1 && \
+		REGEXP="$DATE_REGEXP" || \
+		REGEXP="$DATE_REGEXP_STRICT"
+	RECEIVED_DATE=`sed -n '/^Received:/,/^[^\t]/p' "$HEADERS" | head -n -1 | grep -Eoim 1 "$REGEXP"`
+
+	# .. or from FS
+	FILE_DATE=`LC_ALL=POSIX LANG=POSIX ls -l --time-style="+%a, %d %b %Y %X %z" "$1" | tr -s ' ' | cut -d ' ' -f 6-11`
+	# we could also use the system date as a possible replacement
+	SYSTEM_DATE="`date -R`"
+
+	# determine which replacement date to use
+	if [ -z "$FETCH_DATE" ]
 	then
-		if [ -z "$DATE" ]
+		if [ -z "$RECEIVED_DATE" ]
 		then
-			echo "X-Original-Date:$REPLACEMENT_DATE" > "$TMP"
+			# don't forget the leading whitespace here
+			REPLACEMENT_DATE=" $FILE_DATE"
+			REPLACEMENT="file date"
+#			REPLACEMENT_DATE=" $SYSTEM_DATE"
+#			REPLACEMENT="system date"
 		else
-			test $FORCE -eq 1 && \
-				echo "X-Original-Date:$DATE" > "$TMP"
+			REPLACEMENT_DATE="$RECEIVED_DATE"
+			REPLACEMENT="received date"
 		fi
 	else
-		:> "$TMP"
+		# don't forget the leading whitespace here
+		REPLACEMENT_DATE=" $FETCH_DATE"
+		REPLACEMENT="Fetchinfo time header"
+	fi
+
+	# ensure that the original X-Original-Date is kept
+	:> "$TMP"
+	if [ -n "$X_ORIGINAL_DATE" ]
+	then
+		echo "X-Original-Date:$X_ORIGINAL_DATE" >> "$TMP"
 	fi
 
 	# replace/set the date and write all lines
@@ -157,14 +198,13 @@ do
 	then
 		test $DEBUG -eq 1 && \
 			echo "$1: date not found, using $REPLACEMENT now"
-		echo "Date:$REPLACEMENT_DATE" >> "$TMP"
-		cat "$1" >> "$TMP"
+		dump_date_fields
 	else
 		if [ $FORCE -eq 1 ]
 		then
 			test $DEBUG -eq 1 && \
 				echo "$1: date already found, replacing with $REPLACEMENT"
-			sed "s/^Date: .*/Date:$REPLACEMENT_DATE/" "$1" >> "$TMP"
+			dump_date_fields
 		else
 			if [ $RFC -eq 1 ]
 			then
@@ -172,29 +212,35 @@ do
 				then
 					test $DEBUG -eq 1 && \
 						echo "$1: date already found but not RFC-compliant, replacing with $REPLACEMENT"
-					sed "s/^Date: .*/Date:$REPLACEMENT_DATE/" "$1" >> "$TMP"
+					dump_date_fields
 				else
 					test $DEBUG -eq 1 && \
 						echo "$1: date already found and RFC-compliant, skipping"
-					cat "$1" >> "$TMP"
+					SKIP=1
 				fi
 			else
 				test $DEBUG -eq 1 && \
 					echo "$1: date already found, skipping"
-				cat "$1" >> "$TMP"
+				SKIP=1
 			fi
 		fi
 	fi
 
-	# uncomment the following line to backup the original file
-	#mv -f "$1" "$1.bak"
-
-	mv -f "$TMP" "$1"
-	if [ $? -ne 0 ]
+	if [ $SKIP -eq 0 ]
 	then
-		echo "error while moving '$TMP' to '$1'"
-		exit 1
+		# uncomment the following line to backup the original file
+		#mv -f "$1" "$1.bak"
+
+		cat "$HEADERS" >> "$TMP"
+		cat "$BODY" >> "$TMP"
+		mv -f "$TMP" "$1"
+		if [ $? -ne 0 ]
+		then
+			echo "error while moving '$TMP' to '$1'"
+			exit 1
+		fi
 	fi
+	rm -f "$HEADERS" "$BODY" "$TMP" >/dev/null 2>&1
 
 	shift
 done

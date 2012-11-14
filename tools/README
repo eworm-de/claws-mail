@@ -588,14 +588,23 @@ Other tools
 * fix-date.sh
 
  WHAT IT DOES
-	It will replace the Date: value w/ the one picked up from
-	more recent Received: field if this field resides in one
-	line. Otherwise, it will take the file modification time
-	(using a RFC 2822-compliant form). If no X-Original-Date already
-	exist, the former Date value will be set in such field.
-
+	Add a 'Date:' header to the selected email(s) when such header is 
+	missing. The correct date is guessed from other headers that contain 
+	timestamp information (preferred: Fetchinfo header if found) or from 
+	the file or system date as a fallback. The order or preference for the
+	date valuereplacement can be changed by editing the script.
+	This script can be used to fix messages that show non RFC-compliant
+	Date headers as well.
+	X-Original-Date is always added too if not already existing (if so,
+	it's left untouched), to keep track of the original value if any.
+	An existing Date: header is not overwritten unless you use the --force
+	switch.
+	Non RFC-compliant dates can be overwritten using the --rfc switch. Use
+	--strict to use strict RFC matching patterns for date values in other
+	headers.
+	
   HOW TO USE IT
-	fix_date.sh <filename> [<filename>..]
+	fix_date.sh %F
 
   Contact: wwp <wwp@claws-mail.org>
 
