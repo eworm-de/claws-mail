@@ -1,3 +1,9 @@
+2012-11-15 [wwp]	3.9.0cvs2
+
+	* src/ssl_manager.c
+	* src/gtk/sslcertwindow.c
+		Fix Capitalization.
+
 2012-11-15 [paul]	3.9.0cvs1
 
 	* po/cs.po

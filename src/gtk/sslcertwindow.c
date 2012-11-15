@@ -363,7 +363,7 @@ static gboolean sslcertwindow_ask_new_cert(SSLCertificate *cert)
 	if (!ssl_certificate_check_subject_cn(cert))
 		title = _("SSL certificate is invalid");
 	else
-		title = _("SSL Certificate is unknown");
+		title = _("SSL certificate is unknown");
 
 	val = alertpanel_full(title, NULL,
 			      _("_Cancel connection"), _("_Accept and save"), NULL,
