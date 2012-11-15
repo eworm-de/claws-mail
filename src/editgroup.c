@@ -356,7 +356,7 @@ static void addressbook_edit_group_create( gboolean *cancelled ) {
 	gtk_cmctree_set_expander_style(GTK_CMCTREE(clist_group),
 			     GTK_CMCTREE_EXPANDER_TRIANGLE);
 	gtk_sctree_set_stripes(GTK_SCTREE(clist_group), prefs_common.use_stripes_in_summaries);
-	gtk_cmclist_set_selection_mode( GTK_CMCLIST(clist_group), GTK_SELECTION_EXTENDED );
+	gtk_cmclist_set_selection_mode( GTK_CMCLIST(clist_group), GTK_SELECTION_MULTIPLE );
 	gtk_cmclist_set_column_width( GTK_CMCLIST(clist_group), GROUP_COL_NAME, GROUP_COL_WIDTH_NAME );
 	gtk_cmclist_set_column_width( GTK_CMCLIST(clist_group), GROUP_COL_EMAIL, GROUP_COL_WIDTH_EMAIL );
 	gtk_cmclist_set_compare_func( GTK_CMCLIST(clist_group), edit_group_list_compare_func );
@@ -388,7 +388,7 @@ static void addressbook_edit_group_create( gboolean *cancelled ) {
 	gtk_cmctree_set_line_style(GTK_CMCTREE(clist_avail), GTK_CMCTREE_LINES_NONE);
 	gtk_cmctree_set_expander_style(GTK_CMCTREE(clist_avail),
 			     GTK_CMCTREE_EXPANDER_TRIANGLE);
-	gtk_cmclist_set_selection_mode( GTK_CMCLIST(clist_avail), GTK_SELECTION_EXTENDED );
+	gtk_cmclist_set_selection_mode( GTK_CMCLIST(clist_avail), GTK_SELECTION_MULTIPLE );
 	gtk_cmclist_set_column_width( GTK_CMCLIST(clist_avail), GROUP_COL_NAME, GROUP_COL_WIDTH_NAME );
 	gtk_cmclist_set_column_width( GTK_CMCLIST(clist_avail), GROUP_COL_EMAIL, GROUP_COL_WIDTH_EMAIL );
 	gtk_cmclist_set_compare_func( GTK_CMCLIST(clist_avail), edit_group_list_compare_func );

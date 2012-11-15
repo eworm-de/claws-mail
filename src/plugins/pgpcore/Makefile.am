@@ -2,7 +2,7 @@ EXTRA_DIST = version.rc plugin.def claws.def
 
 if OS_WIN32
 
-LTRCCOMPILE = $(LIBTOOL) --mode=compile $(RC) \
+LTRCCOMPILE = $(LIBTOOL) --mode=compile --tag=RC $(RC) \
      `echo $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) | \
      sed -e 's/-I/--include-dir /g;s/-D/--define /g'`
 

@@ -4758,8 +4758,11 @@ compose_current_mail_account(void)
 static void compose_select_account(Compose *compose, PrefsAccount *account,
 				   gboolean init)
 {
-	gchar *from = NULL, *header;
+	gchar *from = NULL, *header = NULL;
 	ComposeHeaderEntry *header_entry;
+#if GTK_CHECK_VERSION(2, 24, 0)
+	GtkTreeIter iter;
+#endif
 
 	cm_return_if_fail(account != NULL);
 
@@ -4798,7 +4801,13 @@ static void compose_select_account(Compose *compose, PrefsAccount *account,
 	}
 	
 	header_entry = (ComposeHeaderEntry *) compose->header_list->data;
+#if !GTK_CHECK_VERSION(2, 24, 0)
 	header = gtk_combo_box_get_active_text(GTK_COMBO_BOX(header_entry->combo));
+#else
+	if (gtk_combo_box_get_active_iter(GTK_COMBO_BOX(header_entry->combo), &iter))
+		gtk_tree_model_get(gtk_combo_box_get_model(GTK_COMBO_BOX(
+			header_entry->combo)), &iter, COMBOBOX_TEXT, &header, -1);
+#endif
 	
 	if (header && !strlen(gtk_entry_get_text(GTK_ENTRY(header_entry->entry)))) {
 		if (account->protocol == A_NNTP) {
@@ -6661,9 +6670,11 @@ static void compose_create_header_entry(Compose *compose)
 	
 	headerentry = g_new0(ComposeHeaderEntry, 1);
 
-	/* Combo box */
+	/* Combo box model */
 	model = gtk_list_store_new(3, G_TYPE_STRING, G_TYPE_INT, G_TYPE_BOOLEAN);
+#if !GTK_CHECK_VERSION(2, 24, 0)
 	combo = gtk_combo_box_entry_new_with_model(GTK_TREE_MODEL(model), 0);
+#endif
 	COMBOBOX_ADD(model, prefs_common_translated_header_name("To:"),
 			COMPOSE_TO);
 	COMBOBOX_ADD(model, prefs_common_translated_header_name("Cc:"),
@@ -6678,6 +6689,14 @@ static void compose_create_header_entry(Compose *compose)
 			COMPOSE_FOLLOWUPTO);
 	compose_add_extra_header_entries(model);
 
+	/* Combo box */
+#if GTK_CHECK_VERSION(2, 24, 0)
+	combo = gtk_combo_box_new_with_model_and_entry(GTK_TREE_MODEL(model));
+	GtkCellRenderer *cell = gtk_cell_renderer_text_new();
+	gtk_cell_renderer_set_alignment(cell, 0.0, 0.5);
+	gtk_cell_layout_pack_start(GTK_CELL_LAYOUT(combo), cell, TRUE);
+	gtk_combo_box_set_entry_text_column(combo, 0);
+#endif
 	gtk_combo_box_set_active(GTK_COMBO_BOX(combo), 0);
 	g_signal_connect(G_OBJECT(gtk_bin_get_child(GTK_BIN(combo))), "grab_focus",
 			 G_CALLBACK(compose_grab_focus_cb), compose);
@@ -7034,7 +7053,11 @@ static GtkWidget *compose_create_others(Compose *compose)
 	g_signal_connect(G_OBJECT(savemsg_checkbtn), "toggled",
 			 G_CALLBACK(compose_savemsg_checkbtn_cb), compose);
 
+#if !GTK_CHECK_VERSION(2, 24, 0)
 	savemsg_combo = gtk_combo_box_entry_new_text();
+#else
+	savemsg_combo = gtk_combo_box_text_new_with_entry();
+#endif
 	compose->savemsg_checkbtn = savemsg_checkbtn;
 	compose->savemsg_combo = savemsg_combo;
 	gtk_widget_show(savemsg_combo);
@@ -8878,7 +8901,11 @@ static void compose_attach_property_create(gboolean *cancelled)
 	gtk_table_attach(GTK_TABLE(table), label, 0, 1, 0, (0 + 1), 
 			 GTK_FILL, 0, 0, 0); 
 	gtk_misc_set_alignment(GTK_MISC(label), 0, 0.5); 
+#if !GTK_CHECK_VERSION(2, 24, 0)
 	mimetype_entry = gtk_combo_box_entry_new_text(); 
+#else
+	mimetype_entry = gtk_combo_box_text_new_with_entry();
+#endif
 	gtk_table_attach(GTK_TABLE(table), mimetype_entry, 1, 2, 0, (0 + 1), 
 			 GTK_EXPAND|GTK_SHRINK|GTK_FILL, 0, 0, 0);
 			 
@@ -8900,7 +8927,11 @@ static void compose_attach_property_create(gboolean *cancelled)
 
 	for (mime_type_list = strlist; mime_type_list != NULL; 
 		mime_type_list = mime_type_list->next) {
+#if !GTK_CHECK_VERSION(2, 24, 0)
 		gtk_combo_box_append_text(GTK_COMBO_BOX(mimetype_entry), mime_type_list->data);
+#else
+		gtk_combo_box_text_append_text(GTK_COMBO_BOX_TEXT(mimetype_entry), mime_type_list->data);
+#endif
 		g_free(mime_type_list->data);
 	}
 	g_list_free(strlist);
@@ -9344,8 +9375,12 @@ static void account_activated(GtkComboBox *optmenu, gpointer data)
 	GSList *list, *saved_list = NULL;
 	HeaderEntryState *state;
 	GtkRcStyle *style = NULL;
+#if !GTK_CHECK_VERSION(3, 0, 0)
 	static GdkColor yellow;
 	static gboolean color_set = FALSE;
+#else
+	static GdkColor yellow = { (guint32)0, (guint32)0xf5, (guint32)0xf6, (guint32)0xbe };
+#endif
 
 	/* Get ID of active account in the combo box */
 	menu = gtk_combo_box_get_model(optmenu);
@@ -9373,12 +9408,14 @@ static void account_activated(GtkComboBox *optmenu, gpointer data)
 					GTK_EDITABLE(hentry->entry), 0, -1);
 			state->type = hentry->type;
 				
+#if !GTK_CHECK_VERSION(3, 0, 0)
 			if (!color_set) {
 				gdk_color_parse("#f5f6be", &yellow);
 				color_set = gdk_colormap_alloc_color(
 							gdk_colormap_get_system(),
 							&yellow, FALSE, TRUE);
 			}
+#endif
 				
 			style = gtk_widget_get_modifier_style(hentry->entry);
 			state->entry_marked = gdk_color_equal(&yellow,

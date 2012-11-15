@@ -714,7 +714,11 @@ QuickSearch *quicksearch_new()
 
 	gtk_widget_show(search_type);
 
+#if !GTK_CHECK_VERSION(2, 24, 0)
 	search_string_entry = gtk_combo_box_entry_new_text ();
+#else
+	search_string_entry = gtk_combo_box_text_new_with_entry ();
+#endif
 	gtk_combo_box_set_active(GTK_COMBO_BOX(search_string_entry), -1);
 
 	vbox = gtk_vbox_new(TRUE, 0);
@@ -942,7 +946,9 @@ static void quicksearch_set_active(QuickSearch *quicksearch, gboolean active)
 #endif
 	} else {
 		gtk_widget_set_sensitive(quicksearch->clear_search, FALSE);
+#if !GTK_CHECK_VERSION(3, 0, 0)
 		if (colors_initialised) {
+#endif
 			gtk_widget_modify_base(
 				gtk_bin_get_child(GTK_BIN((quicksearch->search_string_entry))),
 				GTK_STATE_NORMAL, NULL);

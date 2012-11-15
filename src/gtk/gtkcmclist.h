@@ -35,6 +35,16 @@
 G_BEGIN_DECLS
 
 
+#if GTK_CHECK_VERSION(3, 0, 0)
+/* Generic visibility flags */
+typedef enum
+{
+  GTK_VISIBILITY_NONE,
+  GTK_VISIBILITY_PARTIAL,
+  GTK_VISIBILITY_FULL
+} GtkVisibility;
+#endif
+
 /* clist flags */
 enum {
   GTK_CMCLIST_IN_DRAG             = 1 <<  0,

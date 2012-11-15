@@ -534,7 +534,9 @@ static void prefs_matcher_create(void)
 
 	GtkWidget *test_btn;
 	GtkWidget *addressbook_select_btn;
+#if !GTK_CHECK_VERSION(3, 0, 0)
 	GtkWidget *color_optmenu;
+#endif
 
 	static GdkGeometry geometry;
 	GtkSizeGroup *size_group;
@@ -641,7 +643,11 @@ static void prefs_matcher_create(void)
 	gtk_box_pack_start(GTK_BOX(upper_hbox), criteria_label2, FALSE, FALSE, 0);
 
 	/* headers combo box entry */
+#if !GTK_CHECK_VERSION(2, 24, 0)
 	headers_combo = gtk_combo_box_entry_new_with_model(matcher.model_headers, 0);
+#else
+	headers_combo = gtk_combo_box_new_with_model_and_entry(matcher.model_headers);
+#endif
 	gtk_widget_set_size_request(headers_combo, 100, -1);
 	gtk_box_pack_start(GTK_BOX(upper_hbox), headers_combo, TRUE, TRUE, 0);
 	header_entry = gtk_bin_get_child(GTK_BIN((headers_combo)));
@@ -842,7 +848,9 @@ static void prefs_matcher_create(void)
 #ifndef USE_NEW_ADDRBOOK
 	matcher.addressbook_select_btn = addressbook_select_btn;
 #endif
+#if !GTK_CHECK_VERSION(3, 0, 0)
 	matcher.color_optmenu = color_optmenu;
+#endif
 	matcher.match_label = match_label;
 	matcher.criteria_label2 = criteria_label2;
 	matcher.headers_combo = headers_combo;

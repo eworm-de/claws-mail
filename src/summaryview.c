@@ -6001,7 +6001,11 @@ static void summary_colorlabel_menu_create(SummaryView *summaryview, gboolean re
 	accel_path = g_strdup_printf("<ClawsColorLabels>/None");
 	gtk_menu_item_set_accel_path(GTK_MENU_ITEM(item), accel_path);
 	g_free(accel_path);
+#if !GTK_CHECK_VERSION(2, 24, 0)
 	gtk_accel_map_add_entry("<ClawsColorLabels>/None", GDK_0, GDK_CONTROL_MASK);
+#else
+	gtk_accel_map_add_entry("<ClawsColorLabels>/None", GDK_KEY_0, GDK_CONTROL_MASK);
+#endif
 
 	item = gtk_menu_item_new();
 	gtk_menu_shell_append(GTK_MENU_SHELL(menu), item);
@@ -6021,7 +6025,11 @@ static void summary_colorlabel_menu_create(SummaryView *summaryview, gboolean re
 		accel_path = g_strdup_printf("<ClawsColorLabels>/%d", i+1);
 		gtk_menu_item_set_accel_path(GTK_MENU_ITEM(item), accel_path);
 		if (i < 9)
+#if !GTK_CHECK_VERSION(2, 24, 0)
 			gtk_accel_map_add_entry(accel_path, GDK_1+i, GDK_CONTROL_MASK);
+#else
+			gtk_accel_map_add_entry(accel_path, GDK_KEY_1+i, GDK_CONTROL_MASK);
+#endif
 		g_free(accel_path);
 		g_signal_connect (gtk_ui_manager_get_accel_group(mainwindow_get_mainwindow()->ui_manager), 
 			"accel-changed", G_CALLBACK (mainwin_accel_changed_cb), item);
@@ -6415,7 +6423,7 @@ static GtkWidget *summary_ctree_create(SummaryView *summaryview)
 	if (prefs_common.show_col_headers == FALSE)
 		gtk_cmclist_column_titles_hide(GTK_CMCLIST(ctree));
 
-	gtk_cmclist_set_selection_mode(GTK_CMCLIST(ctree), GTK_SELECTION_EXTENDED);
+	gtk_cmclist_set_selection_mode(GTK_CMCLIST(ctree), GTK_SELECTION_MULTIPLE);
 	gtk_cmclist_set_column_justification(GTK_CMCLIST(ctree), col_pos[S_COL_MARK],
 					   GTK_JUSTIFY_CENTER);
 	gtk_cmclist_set_column_justification(GTK_CMCLIST(ctree), col_pos[S_COL_STATUS],

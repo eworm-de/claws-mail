@@ -1068,7 +1068,7 @@ static void addressbook_create(void)
 	/* Address list */
 	clist = gtk_sctree_new_with_titles(N_LIST_COLS, 0, list_titles);
 	gtk_container_add(GTK_CONTAINER(clist_swin), clist);
-	gtk_cmclist_set_selection_mode(GTK_CMCLIST(clist), GTK_SELECTION_EXTENDED);
+	gtk_cmclist_set_selection_mode(GTK_CMCLIST(clist), GTK_SELECTION_MULTIPLE);
 	gtk_cmctree_set_line_style(GTK_CMCTREE(clist), GTK_CMCTREE_LINES_NONE);
 	gtk_cmctree_set_expander_style(GTK_CMCTREE(clist),
 			     GTK_CMCTREE_EXPANDER_TRIANGLE);

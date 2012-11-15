@@ -770,9 +770,11 @@ GtkWidget *stock_pixmap_widget_with_overlay(GtkWidget *window, StockPixmap icon,
 	stock_wid = stock_pixmap_widget(window, icon);
 	gtk_widget_get_requisition(stock_wid, &requisition);
 
+#if !GTK_CHECK_VERSION(3, 0, 0)
 	if (gtk_image_get_storage_type(GTK_IMAGE(stock_wid)) == GTK_IMAGE_PIXMAP)
 		data->is_pixmap = TRUE;
 	else
+#endif
 		data->is_pixmap = FALSE;
 
 	if (data->is_pixmap) {

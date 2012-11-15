@@ -42,9 +42,7 @@
 #include "main.h"
 #endif
 
-#if !GTK_CHECK_VERSION(3, 0, 0)
 #include "gtkcmctree.h"
-#endif
 
 #ifndef GDK_KEY_Escape
 #include "gdkkeysyms-new.h"
@@ -98,7 +96,6 @@ void gtkut_stock_with_text_button_set_create(GtkWidget **bbox,
 				   GtkWidget **button2, const gchar *label2, const gchar *text2,
 				   GtkWidget **button3, const gchar *label3, const gchar *text3);
 
-#if !GTK_CHECK_VERSION(3, 0, 0)
 void gtkut_ctree_node_move_if_on_the_edge
 					(GtkCMCTree	*ctree,
 					 GtkCMCTreeNode	*node,
@@ -120,7 +117,6 @@ gboolean gtkut_ctree_node_is_parent	(GtkCMCTreeNode 	*parent,
 					 GtkCMCTreeNode 	*node);
 void gtkut_ctree_set_focus_row		(GtkCMCTree	*ctree,
 					 GtkCMCTreeNode	*node);
-#endif
 
 void gtkut_clist_set_focus_row		(GtkCMCList	*clist,
 					 gint		 row);
@@ -224,6 +220,24 @@ claws_input_add    (gint	      source,
 		gtk_widget_set_has_tooltip(GTK_WIDGET(widget), FALSE);	\
 }
 
+#if GTK_CHECK_VERSION (3, 2, 0)
+#define GTK_TYPE_VBOX GTK_TYPE_BOX
+#define GtkVBox GtkBox
+#define GtkVBoxClass GtkBoxClass
+#define gtk_vbox_new(hmg,spc) g_object_new (GTK_TYPE_BOX, \
+    "homogeneous", hmg, "spacing", spc, \
+    "orientation", GTK_ORIENTATION_VERTICAL, NULL)
+#define GTK_TYPE_HBOX GTK_TYPE_BOX
+#define GtkHBox GtkBox
+#define GtkHBoxClass GtkBoxClass
+#define gtk_hbox_new(hmg,spc) g_object_new (GTK_TYPE_BOX, \
+    "homogeneous", hmg, "spacing", spc, \
+    "orientation", GTK_ORIENTATION_HORIZONTAL, NULL)
+#define gtk_hseparator_new() g_object_new (GTK_TYPE_SEPARATOR, NULL)
+#define gtk_hpaned_new() g_object_new (GTK_TYPE_PANED, NULL)
+#define gtk_vpaned_new() g_object_new (GTK_TYPE_PANED, \
+    "orientation", GTK_ORIENTATION_VERTICAL, NULL)
+#endif
 #if !GTK_CHECK_VERSION(2,22,0)
 #define gdk_drag_context_get_selected_action(x) ((x)->action)
 #define gdk_drag_context_get_actions(x) ((x)->actions)

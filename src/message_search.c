@@ -186,7 +186,11 @@ static void message_search_create(void)
 	gtk_widget_show (body_label);
 	gtk_box_pack_start (GTK_BOX (hbox1), body_label, FALSE, FALSE, 0);
 
+#if !GTK_CHECK_VERSION(2, 24, 0)
 	body_entry = gtk_combo_box_entry_new_text ();
+#else
+	body_entry = gtk_combo_box_text_new_with_entry ();
+#endif
 	gtk_combo_box_set_active(GTK_COMBO_BOX(body_entry), -1);
 	if (prefs_common.message_search_history)
 		combobox_set_popdown_strings(GTK_COMBO_BOX(body_entry),
@@ -275,7 +279,11 @@ static void message_search_execute(gboolean backward)
 	gboolean all_searched = FALSE;
 	gchar *body_str;
 
+#if !GTK_CHECK_VERSION(2, 24, 0)
 	body_str = gtk_combo_box_get_active_text(GTK_COMBO_BOX(search_window.body_entry));
+#else
+	body_str = gtk_combo_box_text_get_active_text(GTK_COMBO_BOX_TEXT(search_window.body_entry));
+#endif
 	if (!body_str)
 		body_str = gtk_editable_get_chars(
 				GTK_EDITABLE(gtk_bin_get_child(GTK_BIN(search_window.body_entry))),0,-1);

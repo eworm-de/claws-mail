@@ -1,3 +1,45 @@
+2012-11-15 [colin]	3.9.0cvs4
+
+	* src/Makefile.am
+	* src/action.c
+	* src/addr_compl.c
+	* src/addressbook.c
+	* src/addrgather.c
+	* src/compose.c
+	* src/editaddress.c
+	* src/editgroup.c
+	* src/main.c
+	* src/mainwindow.c
+	* src/message_search.c
+	* src/prefs_display_header.c
+	* src/prefs_filtering_action.c
+	* src/prefs_matcher.c
+	* src/prefs_other.c
+	* src/prefs_toolbar.c
+	* src/printing.c
+	* src/stock_pixmap.c
+	* src/summary_search.c
+	* src/summaryview.c
+	* src/textview.c
+	* src/gtk/Makefile.am
+	* src/gtk/colorlabel.c
+	* src/gtk/combobox.c
+	* src/gtk/combobox.h
+	* src/gtk/gtkcmclist.c
+	* src/gtk/gtkcmclist.h
+	* src/gtk/gtkcmctree.c
+	* src/gtk/gtksctree.c
+	* src/gtk/gtkshruler.c
+	* src/gtk/gtkutils.c
+	* src/gtk/gtkutils.h
+	* src/gtk/inputdialog.c
+	* src/gtk/quicksearch.c
+	* src/plugins/pgpcore/Makefile.am
+	* src/plugins/pgpinline/Makefile.am
+	* src/plugins/pgpmime/Makefile.am
+	* src/plugins/smime/Makefile.am
+		Big GTK+3 patch from Hanno Meyer-Thurow
+
 2012-11-15 [wwp]	3.9.0cvs3
 
 	* doc/man/claws-mail.1

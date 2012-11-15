@@ -658,7 +658,7 @@ static void cb_preview_got_page_size(GtkPrintOperationPreview *preview,
 static gboolean cb_preview_expose(GtkWidget *widget, GdkEventExpose *event,
 				  gpointer data)
 #else
-static gboolean cb_preview_expose(GtkWidget *widget, cairo_t *event,
+static gboolean cb_preview_expose(GtkWidget *widget, cairo_t *cr,
 				  gpointer data)
 #endif
 {
@@ -677,8 +677,6 @@ static gboolean cb_preview_expose(GtkWidget *widget, cairo_t *event,
 	cairo_set_source_rgb(cr, 0.5, 0.5, 0.5);
 #if !GTK_CHECK_VERSION(3, 0, 0)
 	cairo_rectangle(cr, event->area.x, event->area.y, event->area.width, event->area.height);
-#else
-	cairo_rectangle(cr, 0, 0, event->area.width, event->area.height);
 #endif
 	cairo_fill(cr);
 

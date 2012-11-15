@@ -8,10 +8,7 @@ EXTRA_DIST = \
 
 if GTK2
 gtk2_sources = \
-	gtkcmctree.c \
-	gtkcmclist.c \
-	gtkcmoptionmenu.c \
-	gtksctree.c
+	gtkcmoptionmenu.c
 endif
 
 libclawsgtk_la_SOURCES = \
@@ -23,6 +20,9 @@ libclawsgtk_la_SOURCES = \
 	filesel.c \
 	foldersort.c \
 	gtkaspell.c \
+	gtkcmctree.c \
+	gtkcmclist.c \
+	gtksctree.c \
 	gtkunit.c \
 	$(gtk2_sources) \
 	gtkshruler.c \

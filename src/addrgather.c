@@ -324,7 +324,7 @@ static void addrgather_page_fields(gint pageNum, gchar *pageLbl)
 #ifndef USE_NEW_ADDRBOOK
 	GtkWidget *hboxs;
 	GtkWidget *spinbtnFolder;
-	GtkObject *adjFolder;
+	GtkWidget *adjFolder;
 #endif
 	GtkWidget *checkRecurse;
 	gint top;

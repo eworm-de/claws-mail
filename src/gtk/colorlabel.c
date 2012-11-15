@@ -376,9 +376,15 @@ static void refresh_menu (GtkWidget *menushell, gpointer data)
 {
 	GtkMenu *menu = (GtkMenu *)data;
 	GtkWidget *widget = gtk_menu_get_attach_widget(menu);
+#if !GTK_CHECK_VERSION(3, 0, 0)
 	gtk_widget_hide_all(widget);
 	gtk_widget_unrealize(widget);
 	gtk_widget_show_all(widget);
+#else
+	gtk_widget_hide(widget);
+	gtk_widget_unrealize(widget);
+	gtk_widget_show(widget);
+#endif
 	gtk_widget_queue_draw(widget);
 }
 

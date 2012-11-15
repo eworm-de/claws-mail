@@ -27,9 +27,7 @@
 #include <gdk/gdkkeysyms.h>
 #include <gdk/gdk.h>
 #include <gtk/gtk.h>
-#if !GTK_CHECK_VERSION(3, 0, 0)
 #include "gtk/gtksctree.h"
-#endif
 #include <stdlib.h>
 #include <stdarg.h>
 #include <sys/stat.h>
@@ -52,9 +50,7 @@
 #include "defs.h"
 #include "gtkutils.h"
 #include "utils.h"
-#if !GTK_CHECK_VERSION(3, 0, 0)
 #include "gtksctree.h"
-#endif
 #include "codeconv.h"
 #include "stock_pixmap.h"
 #include "menu.h"
@@ -674,7 +670,7 @@ static void gtkut_clist_bindings_add(GtkWidget *clist)
 				     "scroll_vertical", 2,
 				     G_TYPE_ENUM, GTK_SCROLL_STEP_FORWARD,
 				     G_TYPE_FLOAT, 0.0);
-	gtk_binding_entry_add_signal(binding_set, GDK_p, GDK_CONTROL_MASK,
+	gtk_binding_entry_add_signal(binding_set, GDK_KEY_p, GDK_CONTROL_MASK,
 				     "scroll_vertical", 2,
 				     G_TYPE_ENUM, GTK_SCROLL_STEP_BACKWARD,
 				     G_TYPE_FLOAT, 0.0);

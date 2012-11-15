@@ -15,7 +15,7 @@ install-exec-hook:
 	@ln -s claws-mail $(DESTDIR)$(bindir)/sylpheed-claws
 
 if PLATFORM_WIN32
-LTRCCOMPILE = $(LIBTOOL) --mode=compile $(RC) \
+LTRCCOMPILE = $(LIBTOOL) --mode=compile --tag=RC $(RC) \
      `echo $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) | \
      sed -e 's/-I/--include-dir /g;s/-D/--define /g'`
 

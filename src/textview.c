@@ -2128,6 +2128,7 @@ static void textview_show_contact_pic(TextView *textview)
 	GError *error = NULL;
 	GdkPixbuf *picture = NULL;
 	gint w, h;
+	GtkAllocation allocation;
 				
 	if (prefs_common.display_header_pane
 	||  !prefs_common.display_xface)
@@ -2172,7 +2173,8 @@ static void textview_show_contact_pic(TextView *textview)
 
 	gtk_widget_show(textview->image);
 	
-	x = textview->text->allocation.width - WIDTH -5;
+	gtk_widget_get_allocation(textview->text, &allocation);
+	x = allocation.width - WIDTH -5;
 
 	gtk_text_view_add_child_in_window(text, textview->image, 
 		GTK_TEXT_WINDOW_TEXT, x, 5);

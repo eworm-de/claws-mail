@@ -859,11 +859,20 @@ static void addrcompl_resize_window( CompletionWindow *cw ) {
 	gint x, y, width, height, depth;
 
 	/* Get current geometry of window */
+#if !GTK_CHECK_VERSION(3, 0, 0)
 	gdk_window_get_geometry( gtk_widget_get_window( cw->window ), &x, &y, &width, &height, &depth );
+#else
+	gdk_window_get_geometry( gtk_widget_get_window( cw->window ), &x, &y, &width, &height );
+#endif
 
 	/* simple _hide breaks size requisition !? */
+#if !GTK_CHECK_VERSION(3, 0, 0)
 	gtk_widget_hide_all( cw->window );
 	gtk_widget_show_all( cw->window );
+#else
+	gtk_widget_hide( cw->window );
+	gtk_widget_show( cw->window );
+#endif
 	gtk_widget_size_request( cw->list_view, &r );
 
 	/* Adjust window height to available screen space */
@@ -1369,7 +1378,11 @@ static void address_completion_create_completion_window( GtkEntry *entry_ )
 		GTK_SHADOW_OUT);
 	/* Use entry widget to create initial window */
 	gdkwin = gtk_widget_get_window(entry),
+#if !GTK_CHECK_VERSION(3, 0, 0)
 	gdk_window_get_geometry(gdkwin, &x, &y, &width, &height, &depth);
+#else
+	gdk_window_get_geometry(gdkwin, &x, &y, &width, &height);
+#endif
 	gdk_window_get_origin (gdkwin, &x, &y);
 	y += height;
 	gtk_window_move(GTK_WINDOW(window), x, y);

@@ -1177,7 +1177,7 @@ static void mainwindow_colorlabel_menu_create(MainWindow *mainwin, gboolean refr
 	accel_path = g_strdup_printf("<ClawsColorLabels>/None");
 	gtk_menu_item_set_accel_path(GTK_MENU_ITEM(item), accel_path);
 	g_free(accel_path);
-	gtk_accel_map_add_entry("<ClawsColorLabels>/None", GDK_0, GDK_CONTROL_MASK);
+	gtk_accel_map_add_entry("<ClawsColorLabels>/None", GDK_KEY_0, GDK_CONTROL_MASK);
 
 	item = gtk_menu_item_new();
 	gtk_menu_shell_append(GTK_MENU_SHELL(menu), item);
@@ -1197,7 +1197,7 @@ static void mainwindow_colorlabel_menu_create(MainWindow *mainwin, gboolean refr
 		accel_path = g_strdup_printf("<ClawsColorLabels>/%d", i+1);
 		gtk_menu_item_set_accel_path(GTK_MENU_ITEM(item), accel_path);
 		if (i < 9)
-			gtk_accel_map_add_entry(accel_path, GDK_1+i, GDK_CONTROL_MASK);
+			gtk_accel_map_add_entry(accel_path, GDK_KEY_1+i, GDK_CONTROL_MASK);
 		g_free(accel_path);
 		g_signal_connect (gtk_ui_manager_get_accel_group(mainwin->ui_manager), 
 			"accel-changed", G_CALLBACK (mainwin_accel_changed_cb), item);
@@ -1302,7 +1302,7 @@ static void mainwindow_tags_menu_create(MainWindow *mainwin, gboolean refresh)
 	accel_path = g_strdup_printf("<ClawsTags>/ApplyTags");
 	gtk_menu_item_set_accel_path(GTK_MENU_ITEM(item), accel_path);
 	g_free(accel_path);
-	gtk_accel_map_add_entry("<ClawsTags>/ApplyTags", GDK_T, GDK_CONTROL_MASK|GDK_SHIFT_MASK);
+	gtk_accel_map_add_entry("<ClawsTags>/ApplyTags", GDK_KEY_T, GDK_CONTROL_MASK|GDK_SHIFT_MASK);
 
 	g_slist_free(orig);
 	gtk_widget_show(menu);
