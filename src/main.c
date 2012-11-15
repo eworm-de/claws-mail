@@ -615,7 +615,7 @@ static gboolean sc_process_ice_messages (GIOChannel   *source,
 	if (status == IceProcessMessagesIOError) {
 		IcePointer context = IceGetConnectionContext (connection);
 
-		if (context && GTK_IS_OBJECT (context)) {
+		if (context && G_IS_OBJECT(context)) {
 		guint disconnect_id = g_signal_lookup ("disconnect", G_OBJECT_TYPE (context));
 
 		if (disconnect_id > 0)

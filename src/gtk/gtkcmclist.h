@@ -248,9 +248,11 @@ struct _GtkCMCListClass
 {
   GtkContainerClass parent_class;
   
+#if !GTK_CHECK_VERSION(3, 0, 0)
   void  (*set_scroll_adjustments) (GtkCMCList       *clist,
 				   GtkAdjustment  *hadjustment,
 				   GtkAdjustment  *vadjustment);
+#endif
   void   (*refresh)             (GtkCMCList       *clist);
   void   (*select_row)          (GtkCMCList       *clist,
 				 gint            row,

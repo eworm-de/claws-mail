@@ -1,3 +1,11 @@
+2012-11-15 [colin]	3.9.0cvs5
+
+	* src/main.c
+	* src/statusbar.c
+	* src/gtk/gtkcmclist.c
+	* src/gtk/gtkcmclist.h
+		a few more GTK+3 fixes. Segfaults on me, though.
+
 2012-11-15 [colin]	3.9.0cvs4
 
 	* src/Makefile.am
