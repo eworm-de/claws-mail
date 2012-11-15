@@ -1,3 +1,9 @@
+2012-11-15 [colin]	3.9.0cvs6
+
+	* src/summaryview.c
+		Fix bug #2785, "Marking mails for deletion reopens internal 
+		message view"
+
 2012-11-15 [colin]	3.9.0cvs5
 
 	* src/main.c

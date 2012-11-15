@@ -4353,6 +4353,7 @@ void summary_delete(SummaryView *summaryview)
 	AlertValue aval;
 	MsgInfo *msginfo;
 	gboolean froze = FALSE;
+	gboolean show = FALSE;
 
 	if (!item) return;
 
@@ -4402,7 +4403,11 @@ void summary_delete(SummaryView *summaryview)
 	if (!node)
 		node = summary_find_prev_msg(summaryview, sel_last);
 
-	summary_select_node(summaryview, node, prefs_common.always_show_msg, TRUE);
+	show = (prefs_common.always_show_msg == OPENMSG_ALWAYS) ||
+		((prefs_common.always_show_msg == OPENMSG_WHEN_VIEW_VISIBLE &&
+				messageview_is_visible(summaryview->messageview)));
+
+	summary_select_node(summaryview, node, show, TRUE);
 	
 	if (prefs_common.immediate_exec || folder_has_parent_of_type(item, F_TRASH)) {
 		summary_execute(summaryview);
