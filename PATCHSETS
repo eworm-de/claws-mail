@@ -4505,3 +4505,4 @@
 ( cvs diff -u -r 1.115.2.261 -r 1.115.2.262 src/main.c;  cvs diff -u -r 1.5.2.33 -r 1.5.2.34 src/statusbar.c;  cvs diff -u -r 1.1.2.24 -r 1.1.2.25 src/gtk/gtkcmclist.c;  cvs diff -u -r 1.1.2.10 -r 1.1.2.11 src/gtk/gtkcmclist.h;  ) > 3.9.0cvs5.patchset
 ( cvs diff -u -r 1.395.2.457 -r 1.395.2.458 src/summaryview.c;  ) > 3.9.0cvs6.patchset
 ( cvs diff -u -r 1.58.2.51 -r 1.58.2.52 po/de.po;  ) > 3.9.0cvs7.patchset
+( cvs diff -u -r 1.1.2.7 -r 1.1.2.8 src/advsearch.c;  ) > 3.9.0cvs8.patchset
