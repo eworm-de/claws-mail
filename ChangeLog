@@ -1,3 +1,33 @@
+2012-11-16 [ticho]	3.9.0cvs12
+
+	* po/bg.po
+	* po/ca.po
+	* po/cs.po
+	* po/de.po
+	* po/en_GB.po
+	* po/es.po
+	* po/fi.po
+	* po/fr.po
+	* po/he.po
+	* po/hu.po
+	* po/id_ID.po
+	* po/it.po
+	* po/ja.po
+	* po/lt.po
+	* po/nl.po
+	* po/pl.po
+	* po/pt_BR.po
+	* po/pt_PT.po
+	* po/ru.po
+	* po/sk.po
+	* po/sr.po
+	* po/sv.po
+	* po/uk.po
+	* po/zh_CN.po
+	* po/zh_TW.po
+	* po/Makevars
+		Update message catalogs to match changes in 3.9.0cvs11.
+
 2012-11-16 [ticho]	3.9.0cvs11
 
 	* src/account.c

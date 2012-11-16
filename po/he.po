@@ -63,7 +63,8 @@ msgid "Delete account"
 msgstr "מחק חשבון"
 
 #: src/account.c:1508
-msgid "Accounts List Get Column Name|G"
+msgctxt "Accounts List Get Column Name"
+msgid "G"
 msgstr "רשימת חשבונות קבל שם עמודה|ׂG"
 
 #: src/account.c:1514
@@ -293,7 +294,8 @@ msgid "Attribute name is not set."
 msgstr "שם תכונה אינו מוגדר"
 
 #: src/addrcustomattr.c:467
-msgid "Dialog title|Edit attribute names"
+msgctxt "Dialog title"
+msgid "Edit attribute names"
 msgstr ""
 
 #: src/addrcustomattr.c:481
@@ -1283,187 +1285,233 @@ msgid "%.2fGB"
 msgstr ""
 
 #: src/common/utils.c:4698
-msgid "Complete day name for use by strftime|Sunday"
+msgctxt "Complete day name for use by strftime"
+msgid "Sunday"
 msgstr ""
 
 #: src/common/utils.c:4699
-msgid "Complete day name for use by strftime|Monday"
+msgctxt "Complete day name for use by strftime"
+msgid "Monday"
 msgstr ""
 
 #: src/common/utils.c:4700
-msgid "Complete day name for use by strftime|Tuesday"
+msgctxt "Complete day name for use by strftime"
+msgid "Tuesday"
 msgstr ""
 
 #: src/common/utils.c:4701
-msgid "Complete day name for use by strftime|Wednesday"
+msgctxt "Complete day name for use by strftime"
+msgid "Wednesday"
 msgstr ""
 
 #: src/common/utils.c:4702
-msgid "Complete day name for use by strftime|Thursday"
+msgctxt "Complete day name for use by strftime"
+msgid "Thursday"
 msgstr ""
 
 #: src/common/utils.c:4703
-msgid "Complete day name for use by strftime|Friday"
+msgctxt "Complete day name for use by strftime"
+msgid "Friday"
 msgstr ""
 
 #: src/common/utils.c:4704
-msgid "Complete day name for use by strftime|Saturday"
+msgctxt "Complete day name for use by strftime"
+msgid "Saturday"
 msgstr ""
 
 #: src/common/utils.c:4706
-msgid "Complete month name for use by strftime|January"
+msgctxt "Complete month name for use by strftime"
+msgid "January"
 msgstr ""
 
 #: src/common/utils.c:4707
-msgid "Complete month name for use by strftime|February"
+msgctxt "Complete month name for use by strftime"
+msgid "February"
 msgstr ""
 
 #: src/common/utils.c:4708
-msgid "Complete month name for use by strftime|March"
+msgctxt "Complete month name for use by strftime"
+msgid "March"
 msgstr ""
 
 #: src/common/utils.c:4709
-msgid "Complete month name for use by strftime|April"
+msgctxt "Complete month name for use by strftime"
+msgid "April"
 msgstr ""
 
 #: src/common/utils.c:4710
-msgid "Complete month name for use by strftime|May"
+msgctxt "Complete month name for use by strftime"
+msgid "May"
 msgstr ""
 
 #: src/common/utils.c:4711
-msgid "Complete month name for use by strftime|June"
+msgctxt "Complete month name for use by strftime"
+msgid "June"
 msgstr ""
 
 #: src/common/utils.c:4712
-msgid "Complete month name for use by strftime|July"
+msgctxt "Complete month name for use by strftime"
+msgid "July"
 msgstr ""
 
 #: src/common/utils.c:4713
-msgid "Complete month name for use by strftime|August"
+msgctxt "Complete month name for use by strftime"
+msgid "August"
 msgstr ""
 
 #: src/common/utils.c:4714
-msgid "Complete month name for use by strftime|September"
+msgctxt "Complete month name for use by strftime"
+msgid "September"
 msgstr ""
 
 #: src/common/utils.c:4715
-msgid "Complete month name for use by strftime|October"
+msgctxt "Complete month name for use by strftime"
+msgid "October"
 msgstr ""
 
 #: src/common/utils.c:4716
-msgid "Complete month name for use by strftime|November"
+msgctxt "Complete month name for use by strftime"
+msgid "November"
 msgstr ""
 
 #: src/common/utils.c:4717
-msgid "Complete month name for use by strftime|December"
+msgctxt "Complete month name for use by strftime"
+msgid "December"
 msgstr ""
 
 #: src/common/utils.c:4719
-msgid "Abbr. day name for use by strftime|Sun"
+msgctxt "Abbr. day name for use by strftime"
+msgid "Sun"
 msgstr ""
 
 #: src/common/utils.c:4720
-msgid "Abbr. day name for use by strftime|Mon"
+msgctxt "Abbr. day name for use by strftime"
+msgid "Mon"
 msgstr ""
 
 #: src/common/utils.c:4721
-msgid "Abbr. day name for use by strftime|Tue"
+msgctxt "Abbr. day name for use by strftime"
+msgid "Tue"
 msgstr ""
 
 #: src/common/utils.c:4722
-msgid "Abbr. day name for use by strftime|Wed"
+msgctxt "Abbr. day name for use by strftime"
+msgid "Wed"
 msgstr ""
 
 #: src/common/utils.c:4723
-msgid "Abbr. day name for use by strftime|Thu"
+msgctxt "Abbr. day name for use by strftime"
+msgid "Thu"
 msgstr ""
 
 #: src/common/utils.c:4724
-msgid "Abbr. day name for use by strftime|Fri"
+msgctxt "Abbr. day name for use by strftime"
+msgid "Fri"
 msgstr ""
 
 #: src/common/utils.c:4725
-msgid "Abbr. day name for use by strftime|Sat"
+msgctxt "Abbr. day name for use by strftime"
+msgid "Sat"
 msgstr ""
 
 #: src/common/utils.c:4727
-msgid "Abbr. month name for use by strftime|Jan"
+msgctxt "Abbr. month name for use by strftime"
+msgid "Jan"
 msgstr ""
 
 #: src/common/utils.c:4728
-msgid "Abbr. month name for use by strftime|Feb"
+msgctxt "Abbr. month name for use by strftime"
+msgid "Feb"
 msgstr ""
 
 #: src/common/utils.c:4729
-msgid "Abbr. month name for use by strftime|Mar"
+msgctxt "Abbr. month name for use by strftime"
+msgid "Mar"
 msgstr ""
 
 #: src/common/utils.c:4730
-msgid "Abbr. month name for use by strftime|Apr"
+msgctxt "Abbr. month name for use by strftime"
+msgid "Apr"
 msgstr ""
 
 #: src/common/utils.c:4731
-msgid "Abbr. month name for use by strftime|May"
+msgctxt "Abbr. month name for use by strftime"
+msgid "May"
 msgstr ""
 
 #: src/common/utils.c:4732
-msgid "Abbr. month name for use by strftime|Jun"
+msgctxt "Abbr. month name for use by strftime"
+msgid "Jun"
 msgstr ""
 
 #: src/common/utils.c:4733
-msgid "Abbr. month name for use by strftime|Jul"
+msgctxt "Abbr. month name for use by strftime"
+msgid "Jul"
 msgstr ""
 
 #: src/common/utils.c:4734
-msgid "Abbr. month name for use by strftime|Aug"
+msgctxt "Abbr. month name for use by strftime"
+msgid "Aug"
 msgstr ""
 
 #: src/common/utils.c:4735
-msgid "Abbr. month name for use by strftime|Sep"
+msgctxt "Abbr. month name for use by strftime"
+msgid "Sep"
 msgstr ""
 
 #: src/common/utils.c:4736
-msgid "Abbr. month name for use by strftime|Oct"
+msgctxt "Abbr. month name for use by strftime"
+msgid "Oct"
 msgstr ""
 
 #: src/common/utils.c:4737
-msgid "Abbr. month name for use by strftime|Nov"
+msgctxt "Abbr. month name for use by strftime"
+msgid "Nov"
 msgstr ""
 
 #: src/common/utils.c:4738
-msgid "Abbr. month name for use by strftime|Dec"
+msgctxt "Abbr. month name for use by strftime"
+msgid "Dec"
 msgstr ""
 
 #: src/common/utils.c:4740
-msgid "For use by strftime (morning)|AM"
+msgctxt "For use by strftime (morning)"
+msgid "AM"
 msgstr ""
 
 #: src/common/utils.c:4741
-msgid "For use by strftime (afternoon)|PM"
+msgctxt "For use by strftime (afternoon)"
+msgid "PM"
 msgstr ""
 
 #: src/common/utils.c:4742
-msgid "For use by strftime (morning, lowercase)|am"
+msgctxt "For use by strftime (morning, lowercase)"
+msgid "am"
 msgstr ""
 
 #: src/common/utils.c:4743
-msgid "For use by strftime (afternoon, lowercase)|pm"
+msgctxt "For use by strftime (afternoon, lowercase)"
+msgid "pm"
 msgstr ""
 
 #: src/common/utils.c:4745
-msgid "For use by strftime (default date+time format)|%a %b %e %H:%M:%S %Y"
+msgctxt "For use by strftime (default date+time format)"
+msgid "%a %b %e %H:%M:%S %Y"
 msgstr ""
 
 #: src/common/utils.c:4746
-msgid "For use by strftime (default date format)|%m/%d/%y"
+msgctxt "For use by strftime (default date format)"
+msgid "%m/%d/%y"
 msgstr ""
 
 #: src/common/utils.c:4747
-msgid "For use by strftime (default time format)|%H:%M:%S"
+msgctxt "For use by strftime (default time format)"
+msgid "%H:%M:%S"
 msgstr ""
 
 #: src/common/utils.c:4749
-msgid "For use by strftime (default 12-hour time format)|%I:%M:%S %p"
+msgctxt "For use by strftime (default 12-hour time format)"
+msgid "%I:%M:%S %p"
 msgstr ""
 
 #: src/compose.c:556
@@ -2991,7 +3039,8 @@ msgid "Tag is not set."
 msgstr "תגית לא הוגדרה"
 
 #: src/edittags.c:512
-msgid "Dialog title|Apply tags"
+msgctxt "Dialog title"
+msgid "Apply tags"
 msgstr ""
 
 #: src/edittags.c:526
@@ -3869,55 +3918,68 @@ msgid "Compiled-in Features\n"
 msgstr ""
 
 #: src/gtk/about.c:423
-msgid "compface|adds support for the X-Face header\n"
+msgctxt "compface"
+msgid "adds support for the X-Face header\n"
 msgstr ""
 
 #: src/gtk/about.c:433
-msgid "GNU/aspell|adds support for spell checking\n"
+msgctxt "GNU/aspell"
+msgid "adds support for spell checking\n"
 msgstr ""
 
 #: src/gtk/about.c:443
-msgid "GnuTLS|adds support for encrypted connections to servers\n"
+msgctxt "GnuTLS"
+msgid "adds support for encrypted connections to servers\n"
 msgstr ""
 
 #: src/gtk/about.c:453
-msgid "GTK+ >= 2.10.0|adds support for a complete print dialog\n"
+msgctxt "GTK+ >= 2.10.0"
+msgid "adds support for a complete print dialog\n"
 msgstr "adds support for a complete print dialogue\n"
 
 #: src/gtk/about.c:463
-msgid "IPv6|adds support for IPv6 addresses, the new Internet addressing protocol\n"
+msgctxt "IPv6"
+msgid "adds support for IPv6 addresses, the new Internet addressing protocol\n"
 msgstr ""
 
 #: src/gtk/about.c:474
-msgid "iconv|allows converting to and from different character sets\n"
+msgctxt "iconv"
+msgid "allows converting to and from different character sets\n"
 msgstr ""
 
 #: src/gtk/about.c:484
-msgid "JPilot|adds support for PalmOS addressbooks\n"
+msgctxt "JPilot"
+msgid "adds support for PalmOS addressbooks\n"
 msgstr ""
 
 #: src/gtk/about.c:494
-msgid "LDAP|adds support for LDAP shared addressbooks\n"
+msgctxt "LDAP"
+msgid "adds support for LDAP shared addressbooks\n"
 msgstr ""
 
 #: src/gtk/about.c:504
-msgid "libetpan|adds support for IMAP and NNTP servers\n"
+msgctxt "libetpan"
+msgid "adds support for IMAP and NNTP servers\n"
 msgstr ""
 
 #: src/gtk/about.c:514
-msgid "libgnomeprint|adds support for a complete print dialog\n"
+msgctxt "libgnomeprint"
+msgid "adds support for a complete print dialog\n"
 msgstr "adds support for a complete print dialogue\n"
 
 #: src/gtk/about.c:524
-msgid "libSM|adds support for session handling\n"
+msgctxt "libSM"
+msgid "adds support for session handling\n"
 msgstr ""
 
 #: src/gtk/about.c:534
-msgid "NetworkManager|adds support for network connection changes\n"
+msgctxt "NetworkManager"
+msgid "adds support for network connection changes\n"
 msgstr ""
 
 #: src/gtk/about.c:544
-msgid "OpenSSL|adds support for encrypted connections to servers\n"
+msgctxt "OpenSSL"
+msgid "adds support for encrypted connections to servers\n"
 msgstr ""
 
 #: src/gtk/about.c:576
@@ -7707,7 +7769,8 @@ msgstr ""
 #: src/prefs_matcher.c:1457
 #: src/prefs_matcher.c:1472
 #: src/prefs_matcher.c:2320
-msgid "Filtering Matcher Menu|All"
+msgctxt "Filtering Matcher Menu"
+msgid "All"
 msgstr ""
 
 #: src/matcher.c:1483
@@ -10814,7 +10877,8 @@ msgstr ""
 #: src/prefs_filtering.c:257
 #: src/prefs_filtering.c:927
 #: src/prefs_filtering.c:1018
-msgid "Filtering Account Menu|All"
+msgctxt "Filtering Account Menu"
+msgid "All"
 msgstr ""
 
 #: src/prefs_filtering.c:405
@@ -11684,7 +11748,8 @@ msgid "Text"
 msgstr ""
 
 #: src/prefs_msg_colors.c:207
-msgid "Tooltip|Pick color for 1st level text"
+msgctxt "Tooltip"
+msgid "Pick color for 1st level text"
 msgstr "Pick colour for 1st level text"
 
 #: src/prefs_msg_colors.c:213
@@ -11692,7 +11757,8 @@ msgid "2nd Level"
 msgstr ""
 
 #: src/prefs_msg_colors.c:233
-msgid "Tooltip|Pick color for 2nd level text"
+msgctxt "Tooltip"
+msgid "Pick color for 2nd level text"
 msgstr "Pick colour for 2nd level text"
 
 #: src/prefs_msg_colors.c:239
@@ -11700,7 +11766,8 @@ msgid "3rd Level"
 msgstr ""
 
 #: src/prefs_msg_colors.c:259
-msgid "Tooltip|Pick color for 3rd level text"
+msgctxt "Tooltip"
+msgid "Pick color for 3rd level text"
 msgstr "Pick colour for 3rd level text"
 
 #: src/prefs_msg_colors.c:266
@@ -11708,7 +11775,8 @@ msgid "Enable coloration of text background"
 msgstr "Enable colouration of text background"
 
 #: src/prefs_msg_colors.c:282
-msgid "Tooltip|Pick color for 1st level text background"
+msgctxt "Tooltip"
+msgid "Pick color for 1st level text background"
 msgstr "Pick colour for 1st level text background"
 
 #: src/prefs_msg_colors.c:284
@@ -11718,15 +11786,18 @@ msgid "Background"
 msgstr ""
 
 #: src/prefs_msg_colors.c:303
-msgid "Tooltip|Pick color for 2nd level text background"
+msgctxt "Tooltip"
+msgid "Pick color for 2nd level text background"
 msgstr "Pick colour for 2nd level text background"
 
 #: src/prefs_msg_colors.c:324
-msgid "Tooltip|Pick color for 3rd level text background"
+msgctxt "Tooltip"
+msgid "Pick color for 3rd level text background"
 msgstr "Pick colour for 3rd level text background"
 
 #: src/prefs_msg_colors.c:344
-msgid "Tooltip|Pick color for links"
+msgctxt "Tooltip"
+msgid "Pick color for links"
 msgstr "Pick colour for links"
 
 #: src/prefs_msg_colors.c:346
@@ -11734,7 +11805,8 @@ msgid "URI link"
 msgstr ""
 
 #: src/prefs_msg_colors.c:363
-msgid "Tooltip|Pick color for signatures"
+msgctxt "Tooltip"
+msgid "Pick color for signatures"
 msgstr "Pick colour for signatures"
 
 #: src/prefs_msg_colors.c:365
@@ -11767,7 +11839,8 @@ msgstr ""
 #: src/prefs_msg_colors.c:431
 #: src/prefs_msg_colors.c:463
 #, c-format
-msgid "Tooltip|Pick color for 'color %d'"
+msgctxt "Tooltip"
+msgid "Pick color for 'color %d'"
 msgstr "Pick colour for 'color %d'"
 
 #. TRANSLATORS: 'color %d' refers to the filtering/processing
@@ -11782,47 +11855,58 @@ msgstr "Pick colour for 'color %d'"
 #. rule name and should not be translated
 #: src/prefs_msg_colors.c:596
 #, c-format
-msgid "Dialog title|Pick color for 'color %d'"
+msgctxt "Dialog title"
+msgid "Pick color for 'color %d'"
 msgstr "Pick colour for 'color %d'"
 
 #: src/prefs_msg_colors.c:604
-msgid "Dialog title|Pick color for 1st level text"
+msgctxt "Dialog title"
+msgid "Pick color for 1st level text"
 msgstr "Pick colour for 1st level text"
 
 #: src/prefs_msg_colors.c:607
-msgid "Dialog title|Pick color for 2nd level text"
+msgctxt "Dialog title"
+msgid "Pick color for 2nd level text"
 msgstr "Pick colour for 2nd level text"
 
 #: src/prefs_msg_colors.c:610
-msgid "Dialog title|Pick color for 3rd level text"
+msgctxt "Dialog title"
+msgid "Pick color for 3rd level text"
 msgstr "Pick colour for 3rd level text"
 
 #: src/prefs_msg_colors.c:613
-msgid "Dialog title|Pick color for 1st level text background"
+msgctxt "Dialog title"
+msgid "Pick color for 1st level text background"
 msgstr "Pick colour for 1st level text background"
 
 #: src/prefs_msg_colors.c:616
-msgid "Dialog title|Pick color for 2nd level text background"
+msgctxt "Dialog title"
+msgid "Pick color for 2nd level text background"
 msgstr "Pick colour for 2nd level text background"
 
 #: src/prefs_msg_colors.c:619
-msgid "Dialog title|Pick color for 3rd level text background"
+msgctxt "Dialog title"
+msgid "Pick color for 3rd level text background"
 msgstr "Pick colour for 3rd level text background"
 
 #: src/prefs_msg_colors.c:622
-msgid "Dialog title|Pick color for links"
+msgctxt "Dialog title"
+msgid "Pick color for links"
 msgstr "Pick colour for links"
 
 #: src/prefs_msg_colors.c:625
-msgid "Dialog title|Pick color for target folder"
+msgctxt "Dialog title"
+msgid "Pick color for target folder"
 msgstr "Pick colour for target folder"
 
 #: src/prefs_msg_colors.c:628
-msgid "Dialog title|Pick color for signatures"
+msgctxt "Dialog title"
+msgid "Pick color for signatures"
 msgstr "Pick colour for signatures"
 
 #: src/prefs_msg_colors.c:631
-msgid "Dialog title|Pick color for folder"
+msgctxt "Dialog title"
+msgid "Pick color for folder"
 msgstr "Pick colour for folder"
 
 #: src/prefs_msg_colors.c:839
@@ -14108,7 +14192,8 @@ msgstr "קבל"
 
 #: src/toolbar.c:420
 #: src/toolbar.c:421
-msgid "Toolbar|Compose"
+msgctxt "Toolbar"
+msgid "Compose"
 msgstr "Toolbar|חבר הודעה"
 
 #: src/toolbar.c:423
@@ -14212,7 +14297,8 @@ msgid "Available URLs:"
 msgstr "כתובות אינטרנט זמינות:"
 
 #: src/uri_opener.c:171
-msgid "Dialog title|Open URLs"
+msgctxt "Dialog title"
+msgid "Open URLs"
 msgstr "Dialog title|פתח כתובת אינטרנט"
 
 #: src/uri_opener.c:196
@@ -14224,7 +14310,8 @@ msgid "Select All"
 msgstr "בחר הכל"
 
 #: src/wizard.c:496
-msgid "Welcome Mail Subject|Welcome to Claws Mail"
+msgctxt "Welcome Mail Subject"
+msgid "Welcome to Claws Mail"
 msgstr "Welcome Mail Subject|ברוכים הבאים ל-Claws Mail"
 
 #: src/wizard.c:519

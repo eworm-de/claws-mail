@@ -74,7 +74,8 @@ msgid "Delete account"
 msgstr " Обриши налог "
 
 #: src/account.c:1511
-msgid "Accounts List Default Column Name|D"
+msgctxt "Accounts List Default Column Name"
+msgid "D"
 msgstr "Н"
 
 #: src/account.c:1517 src/prefs_folder_item.c:833
@@ -82,7 +83,8 @@ msgid "Default account"
 msgstr "Подразумевани налог"
 
 #: src/account.c:1525
-msgid "Accounts List Get Column Name|G"
+msgctxt "Accounts List Get Column Name"
+msgid "G"
 msgstr "П"
 
 #: src/account.c:1531
@@ -1079,187 +1081,233 @@ msgid "%.2fGB"
 msgstr "%.2fGB"
 
 #: src/common/utils.c:4960
-msgid "Complete day name for use by strftime|Sunday"
+msgctxt "Complete day name for use by strftime"
+msgid "Sunday"
 msgstr "Недеља"
 
 #: src/common/utils.c:4961
-msgid "Complete day name for use by strftime|Monday"
+msgctxt "Complete day name for use by strftime"
+msgid "Monday"
 msgstr "Понедељак"
 
 #: src/common/utils.c:4962
-msgid "Complete day name for use by strftime|Tuesday"
+msgctxt "Complete day name for use by strftime"
+msgid "Tuesday"
 msgstr "Уторак"
 
 #: src/common/utils.c:4963
-msgid "Complete day name for use by strftime|Wednesday"
+msgctxt "Complete day name for use by strftime"
+msgid "Wednesday"
 msgstr "Среда"
 
 #: src/common/utils.c:4964
-msgid "Complete day name for use by strftime|Thursday"
+msgctxt "Complete day name for use by strftime"
+msgid "Thursday"
 msgstr "Четвртак"
 
 #: src/common/utils.c:4965
-msgid "Complete day name for use by strftime|Friday"
+msgctxt "Complete day name for use by strftime"
+msgid "Friday"
 msgstr "Петак"
 
 #: src/common/utils.c:4966
-msgid "Complete day name for use by strftime|Saturday"
+msgctxt "Complete day name for use by strftime"
+msgid "Saturday"
 msgstr "Субота"
 
 #: src/common/utils.c:4968
-msgid "Complete month name for use by strftime|January"
+msgctxt "Complete month name for use by strftime"
+msgid "January"
 msgstr "Јануар"
 
 #: src/common/utils.c:4969
-msgid "Complete month name for use by strftime|February"
+msgctxt "Complete month name for use by strftime"
+msgid "February"
 msgstr "Фебруар"
 
 #: src/common/utils.c:4970
-msgid "Complete month name for use by strftime|March"
+msgctxt "Complete month name for use by strftime"
+msgid "March"
 msgstr "Март"
 
 #: src/common/utils.c:4971
-msgid "Complete month name for use by strftime|April"
+msgctxt "Complete month name for use by strftime"
+msgid "April"
 msgstr "Април"
 
 #: src/common/utils.c:4972
-msgid "Complete month name for use by strftime|May"
+msgctxt "Complete month name for use by strftime"
+msgid "May"
 msgstr "Мај"
 
 #: src/common/utils.c:4973
-msgid "Complete month name for use by strftime|June"
+msgctxt "Complete month name for use by strftime"
+msgid "June"
 msgstr "Јун"
 
 #: src/common/utils.c:4974
-msgid "Complete month name for use by strftime|July"
+msgctxt "Complete month name for use by strftime"
+msgid "July"
 msgstr "Јул"
 
 #: src/common/utils.c:4975
-msgid "Complete month name for use by strftime|August"
+msgctxt "Complete month name for use by strftime"
+msgid "August"
 msgstr "Август"
 
 #: src/common/utils.c:4976
-msgid "Complete month name for use by strftime|September"
+msgctxt "Complete month name for use by strftime"
+msgid "September"
 msgstr "Септембар"
 
 #: src/common/utils.c:4977
-msgid "Complete month name for use by strftime|October"
+msgctxt "Complete month name for use by strftime"
+msgid "October"
 msgstr "Октобар"
 
 #: src/common/utils.c:4978
-msgid "Complete month name for use by strftime|November"
+msgctxt "Complete month name for use by strftime"
+msgid "November"
 msgstr "Новембар"
 
 #: src/common/utils.c:4979
-msgid "Complete month name for use by strftime|December"
+msgctxt "Complete month name for use by strftime"
+msgid "December"
 msgstr "Децембар"
 
 #: src/common/utils.c:4981
-msgid "Abbr. day name for use by strftime|Sun"
+msgctxt "Abbr. day name for use by strftime"
+msgid "Sun"
 msgstr "Нед"
 
 #: src/common/utils.c:4982
-msgid "Abbr. day name for use by strftime|Mon"
+msgctxt "Abbr. day name for use by strftime"
+msgid "Mon"
 msgstr "Пон"
 
 #: src/common/utils.c:4983
-msgid "Abbr. day name for use by strftime|Tue"
+msgctxt "Abbr. day name for use by strftime"
+msgid "Tue"
 msgstr "Уто"
 
 #: src/common/utils.c:4984
-msgid "Abbr. day name for use by strftime|Wed"
+msgctxt "Abbr. day name for use by strftime"
+msgid "Wed"
 msgstr "Сре"
 
 #: src/common/utils.c:4985
-msgid "Abbr. day name for use by strftime|Thu"
+msgctxt "Abbr. day name for use by strftime"
+msgid "Thu"
 msgstr "Чет"
 
 #: src/common/utils.c:4986
-msgid "Abbr. day name for use by strftime|Fri"
+msgctxt "Abbr. day name for use by strftime"
+msgid "Fri"
 msgstr "Пет"
 
 #: src/common/utils.c:4987
-msgid "Abbr. day name for use by strftime|Sat"
+msgctxt "Abbr. day name for use by strftime"
+msgid "Sat"
 msgstr "Суб"
 
 #: src/common/utils.c:4989
-msgid "Abbr. month name for use by strftime|Jan"
+msgctxt "Abbr. month name for use by strftime"
+msgid "Jan"
 msgstr "Јан"
 
 #: src/common/utils.c:4990
-msgid "Abbr. month name for use by strftime|Feb"
+msgctxt "Abbr. month name for use by strftime"
+msgid "Feb"
 msgstr "Феб"
 
 #: src/common/utils.c:4991
-msgid "Abbr. month name for use by strftime|Mar"
+msgctxt "Abbr. month name for use by strftime"
+msgid "Mar"
 msgstr "Мар"
 
 #: src/common/utils.c:4992
-msgid "Abbr. month name for use by strftime|Apr"
+msgctxt "Abbr. month name for use by strftime"
+msgid "Apr"
 msgstr "Апр"
 
 #: src/common/utils.c:4993
-msgid "Abbr. month name for use by strftime|May"
+msgctxt "Abbr. month name for use by strftime"
+msgid "May"
 msgstr "Мај"
 
 #: src/common/utils.c:4994
-msgid "Abbr. month name for use by strftime|Jun"
+msgctxt "Abbr. month name for use by strftime"
+msgid "Jun"
 msgstr "Јун"
 
 #: src/common/utils.c:4995
-msgid "Abbr. month name for use by strftime|Jul"
+msgctxt "Abbr. month name for use by strftime"
+msgid "Jul"
 msgstr "Јул"
 
 #: src/common/utils.c:4996
-msgid "Abbr. month name for use by strftime|Aug"
+msgctxt "Abbr. month name for use by strftime"
+msgid "Aug"
 msgstr "Авг"
 
 #: src/common/utils.c:4997
-msgid "Abbr. month name for use by strftime|Sep"
+msgctxt "Abbr. month name for use by strftime"
+msgid "Sep"
 msgstr "Сеп"
 
 #: src/common/utils.c:4998
-msgid "Abbr. month name for use by strftime|Oct"
+msgctxt "Abbr. month name for use by strftime"
+msgid "Oct"
 msgstr "Окт"
 
 #: src/common/utils.c:4999
-msgid "Abbr. month name for use by strftime|Nov"
+msgctxt "Abbr. month name for use by strftime"
+msgid "Nov"
 msgstr "Нов"
 
 #: src/common/utils.c:5000
-msgid "Abbr. month name for use by strftime|Dec"
+msgctxt "Abbr. month name for use by strftime"
+msgid "Dec"
 msgstr "Дец"
 
 #: src/common/utils.c:5002
-msgid "For use by strftime (morning)|AM"
+msgctxt "For use by strftime (morning)"
+msgid "AM"
 msgstr ""
 
 #: src/common/utils.c:5003
-msgid "For use by strftime (afternoon)|PM"
+msgctxt "For use by strftime (afternoon)"
+msgid "PM"
 msgstr ""
 
 #: src/common/utils.c:5004
-msgid "For use by strftime (morning, lowercase)|am"
+msgctxt "For use by strftime (morning, lowercase)"
+msgid "am"
 msgstr ""
 
 #: src/common/utils.c:5005
-msgid "For use by strftime (afternoon, lowercase)|pm"
+msgctxt "For use by strftime (afternoon, lowercase)"
+msgid "pm"
 msgstr ""
 
 #: src/common/utils.c:5007
-msgid "For use by strftime (default date+time format)|%a %b %e %H:%M:%S %Y"
+msgctxt "For use by strftime (default date+time format)"
+msgid "%a %b %e %H:%M:%S %Y"
 msgstr "%a, %d.%m.%Y. %H:%M:%S"
 
 #: src/common/utils.c:5008
-msgid "For use by strftime (default date format)|%m/%d/%y"
+msgctxt "For use by strftime (default date format)"
+msgid "%m/%d/%y"
 msgstr "%d.%m.%Y."
 
 #: src/common/utils.c:5009
-msgid "For use by strftime (default time format)|%H:%M:%S"
+msgctxt "For use by strftime (default time format)"
+msgid "%H:%M:%S"
 msgstr "%H:%M:%S"
 
 #: src/common/utils.c:5011
-msgid "For use by strftime (default 12-hour time format)|%I:%M:%S %p"
+msgctxt "For use by strftime (default 12-hour time format)"
+msgid "%I:%M:%S %p"
 msgstr "%I:%M:%S %p"
 
 #: src/compose.c:552
@@ -2717,7 +2765,8 @@ msgid "Tag"
 msgstr "Ознака"
 
 #: src/edittags.c:821
-msgid "Dialog title|Apply tags"
+msgctxt "Dialog title"
+msgid "Apply tags"
 msgstr "Додавање ознака"
 
 #: src/edittags.c:835
@@ -3588,43 +3637,53 @@ msgid "Compiled-in Features\n"
 msgstr "Уграђене могућности:\n"
 
 #: src/gtk/about.c:422
-msgid "IPv6|adds support for IPv6 addresses, the new internet addressing protocol\n"
+msgctxt "IPv6"
+msgid "adds support for IPv6 addresses, the new internet addressing protocol\n"
 msgstr "омогућава подршку за IPv6 адресе, нови Интенет протокол\n"
 
 #: src/gtk/about.c:433
-msgid "iconv|allows converting to and from different character sets\n"
+msgctxt "iconv"
+msgid "allows converting to and from different character sets\n"
 msgstr "омогућава конверзију између расличитих кôдних страна\n"
 
 #: src/gtk/about.c:443
-msgid "compface|adds support for the X-Face header\n"
+msgctxt "compface"
+msgid "adds support for the X-Face header\n"
 msgstr "омогућава подршку за X-Face захлавље\n"
 
 #: src/gtk/about.c:453
-msgid "OpenSSL|adds support for encrypted connections to servers\n"
+msgctxt "OpenSSL"
+msgid "adds support for encrypted connections to servers\n"
 msgstr "омогућава подршку криптовану везу са сервером\n"
 
 #: src/gtk/about.c:463
-msgid "LDAP|adds support for LDAP shared addressbooks\n"
+msgctxt "LDAP"
+msgid "adds support for LDAP shared addressbooks\n"
 msgstr "омогућава подршку за LDAP дељене адресаре\n"
 
 #: src/gtk/about.c:473
-msgid "JPilot|adds support for PalmOS addressbooks\n"
+msgctxt "JPilot"
+msgid "adds support for PalmOS addressbooks\n"
 msgstr "омогућава подршку за PalmOS адресаре\n"
 
 #: src/gtk/about.c:483
-msgid "GNU/aspell|adds support for spell checking\n"
+msgctxt "GNU/aspell"
+msgid "adds support for spell checking\n"
 msgstr "омогућава подршку за проверу правописа\n"
 
 #: src/gtk/about.c:493
-msgid "libetpan|adds support for IMAP servers\n"
+msgctxt "libetpan"
+msgid "adds support for IMAP servers\n"
 msgstr "омогућава подршку за IMAP сервере\n"
 
 #: src/gtk/about.c:503
-msgid "libgnomeprint|adds support for a complete print dialog\n"
+msgctxt "libgnomeprint"
+msgid "adds support for a complete print dialog\n"
 msgstr "омогућава подршку за комплетан дијалог за штампање\n"
 
 #: src/gtk/about.c:513
-msgid "libSM|adds support for session handling\n"
+msgctxt "libSM"
+msgid "adds support for session handling\n"
 msgstr "омогућава подршку за управљање сесијама\n"
 
 #: src/gtk/about.c:545
@@ -7074,7 +7133,8 @@ msgstr "линија поруке"
 
 #: src/matcher.c:1246 src/matcher.c:1379 src/prefs_matcher.c:560
 #: src/prefs_matcher.c:1405 src/prefs_matcher.c:1422 src/prefs_matcher.c:2185
-msgid "Filtering Matcher Menu|All"
+msgctxt "Filtering Matcher Menu"
+msgid "All"
 msgstr "Све"
 
 #: src/matcher.c:1453 src/matcher.c:1456
@@ -10017,7 +10077,8 @@ msgstr "Подешавање филтрирања/обраде"
 
 #: src/prefs_filtering.c:247 src/prefs_filtering.c:778
 #: src/prefs_filtering.c:869
-msgid "Filtering Account Menu|All"
+msgctxt "Filtering Account Menu"
+msgid "All"
 msgstr "Све"
 
 #: src/prefs_filtering.c:388
@@ -10675,7 +10736,8 @@ msgid "Text"
 msgstr "Текст"
 
 #: src/prefs_msg_colors.c:202
-msgid "Tooltip|Pick color for 1st level text"
+msgctxt "Tooltip"
+msgid "Pick color for 1st level text"
 msgstr "Одаберите боју првог нивоа текста"
 
 #: src/prefs_msg_colors.c:208
@@ -10683,7 +10745,8 @@ msgid "2nd Level"
 msgstr "Други ниво"
 
 #: src/prefs_msg_colors.c:228
-msgid "Tooltip|Pick color for 2nd level text"
+msgctxt "Tooltip"
+msgid "Pick color for 2nd level text"
 msgstr "Одаберите боју другог нивоа текста"
 
 #: src/prefs_msg_colors.c:234
@@ -10691,7 +10754,8 @@ msgid "3rd Level"
 msgstr "Трећи ниво"
 
 #: src/prefs_msg_colors.c:254
-msgid "Tooltip|Pick color for 3rd level text"
+msgctxt "Tooltip"
+msgid "Pick color for 3rd level text"
 msgstr "Одаберите боју трећег нивоа текста"
 
 #: src/prefs_msg_colors.c:261
@@ -10699,7 +10763,8 @@ msgid "Enable coloration of text background"
 msgstr "Омогући бојење позадине текста"
 
 #: src/prefs_msg_colors.c:277
-msgid "Tooltip|Pick color for 1st level text background"
+msgctxt "Tooltip"
+msgid "Pick color for 1st level text background"
 msgstr "Одаберите боју позадине првог нивоа текста"
 
 #: src/prefs_msg_colors.c:279 src/prefs_msg_colors.c:300
@@ -10708,15 +10773,18 @@ msgid "Background"
 msgstr "Позадина"
 
 #: src/prefs_msg_colors.c:298
-msgid "Tooltip|Pick color for 2nd level text background"
+msgctxt "Tooltip"
+msgid "Pick color for 2nd level text background"
 msgstr "Одаберите боју позадине другог нивоа текста"
 
 #: src/prefs_msg_colors.c:319
-msgid "Tooltip|Pick color for 3rd level text background"
+msgctxt "Tooltip"
+msgid "Pick color for 3rd level text background"
 msgstr "Одаберите боју позадине трећег нивоа текста"
 
 #: src/prefs_msg_colors.c:339
-msgid "Tooltip|Pick color for links"
+msgctxt "Tooltip"
+msgid "Pick color for links"
 msgstr "Одаберите боју веза"
 
 #: src/prefs_msg_colors.c:341
@@ -10724,7 +10792,8 @@ msgid "URI link"
 msgstr "УРЛ веза"
 
 #: src/prefs_msg_colors.c:358
-msgid "Tooltip|Pick color for signatures"
+msgctxt "Tooltip"
+msgid "Pick color for signatures"
 msgstr "Одаберите боју потписа"
 
 #: src/prefs_msg_colors.c:360
@@ -10763,7 +10832,8 @@ msgstr "Називи боја"
 #. rule name and should not be translated
 #: src/prefs_msg_colors.c:428 src/prefs_msg_colors.c:460
 #, c-format
-msgid "Tooltip|Pick color for 'color %d'"
+msgctxt "Tooltip"
+msgid "Pick color for 'color %d'"
 msgstr "Одаберите боју за „боја %d“"
 
 #. TRANSLATORS: 'color %d' refers to the filtering/processing
@@ -10777,47 +10847,58 @@ msgstr "Боја за „боја %d“"
 #. rule name and should not be translated
 #: src/prefs_msg_colors.c:592
 #, c-format
-msgid "Dialog title|Pick color for 'color %d'"
+msgctxt "Dialog title"
+msgid "Pick color for 'color %d'"
 msgstr "Избор боје за „боја %d“"
 
 #: src/prefs_msg_colors.c:600
-msgid "Dialog title|Pick color for 1st level text"
+msgctxt "Dialog title"
+msgid "Pick color for 1st level text"
 msgstr "Избор боје за први ниво текста"
 
 #: src/prefs_msg_colors.c:603
-msgid "Dialog title|Pick color for 2nd level text"
+msgctxt "Dialog title"
+msgid "Pick color for 2nd level text"
 msgstr "Избор боје за други ниво текста"
 
 #: src/prefs_msg_colors.c:606
-msgid "Dialog title|Pick color for 3rd level text"
+msgctxt "Dialog title"
+msgid "Pick color for 3rd level text"
 msgstr "Избор боје за трећи ниво текста"
 
 #: src/prefs_msg_colors.c:609
-msgid "Dialog title|Pick color for 1st level text background"
+msgctxt "Dialog title"
+msgid "Pick color for 1st level text background"
 msgstr "Избор боје позадине за први ниво текста"
 
 #: src/prefs_msg_colors.c:612
-msgid "Dialog title|Pick color for 2nd level text background"
+msgctxt "Dialog title"
+msgid "Pick color for 2nd level text background"
 msgstr "Избор боје позадине за други ниво текста"
 
 #: src/prefs_msg_colors.c:615
-msgid "Dialog title|Pick color for 3rd level text background"
+msgctxt "Dialog title"
+msgid "Pick color for 3rd level text background"
 msgstr "Избор боје позадине за терћи ниво текста"
 
 #: src/prefs_msg_colors.c:618
-msgid "Dialog title|Pick color for links"
+msgctxt "Dialog title"
+msgid "Pick color for links"
 msgstr "Избор боје везе"
 
 #: src/prefs_msg_colors.c:621
-msgid "Dialog title|Pick color for target folder"
+msgctxt "Dialog title"
+msgid "Pick color for target folder"
 msgstr "Избор боје циљног директоријума"
 
 #: src/prefs_msg_colors.c:624
-msgid "Dialog title|Pick color for signatures"
+msgctxt "Dialog title"
+msgid "Pick color for signatures"
 msgstr "Избор боје потписа"
 
 #: src/prefs_msg_colors.c:627
-msgid "Dialog title|Pick color for folder"
+msgctxt "Dialog title"
+msgid "Pick color for folder"
 msgstr "Избор боје директоријума"
 
 #: src/prefs_msg_colors.c:835
@@ -12973,7 +13054,8 @@ msgid "Get Mail"
 msgstr "Провера поште"
 
 #: src/toolbar.c:422
-msgid "Toolbar|Compose"
+msgctxt "Toolbar"
+msgid "Compose"
 msgstr "Писање нове поруке"
 
 #: src/toolbar.c:424 src/toolbar.c:529
@@ -13061,7 +13143,8 @@ msgid "Available URLs:"
 msgstr "Доступне УРЛ адресе:"
 
 #: src/uri_opener.c:159
-msgid "Dialog title|Open URLs"
+msgctxt "Dialog title"
+msgid "Open URLs"
 msgstr "Отварање УРЛ адресе"
 
 #: src/uri_opener.c:173
@@ -13073,7 +13156,8 @@ msgid "Please select the URL to open."
 msgstr "Одаберите УРЛ за отварање."
 
 #: src/wizard.c:486
-msgid "Welcome Mail Subject|Welcome to Claws Mail"
+msgctxt "Welcome Mail Subject"
+msgid "Welcome to Claws Mail"
 msgstr "Добро дошли у Claws Mail"
 
 #: src/wizard.c:509

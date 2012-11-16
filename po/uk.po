@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: claws-svn\n"
 "Report-Msgid-Bugs-To: paul@claws-mail.org\n"
-"POT-Creation-Date: 2012-11-07 12:53+0000\n"
+"POT-Creation-Date: 2012-11-16 23:57+0100\n"
 "PO-Revision-Date: 2012-11-08 21:15+0100\n"
 "Last-Translator: \n"
 "Language-Team: Ukrainian <translation@linux.org.ua>\n"
@@ -70,7 +70,8 @@ msgid "Delete account"
 msgstr "Видалити обліковий запис"
 
 #: src/account.c:1537
-msgid "Accounts List Get Column Name|G"
+msgctxt "Accounts List Get Column Name"
+msgid "G"
 msgstr "G"
 
 #: src/account.c:1543
@@ -78,8 +79,8 @@ msgid "'Get Mail' retrieves mail from the checked accounts"
 msgstr "'Отримати пошту' скачає пошту з позначеної поштової скриньки"
 
 #: src/account.c:1550 src/addressadd.c:215 src/addressbook.c:125
-#: src/addrduplicates.c:481 src/compose.c:6964 src/editaddress.c:1270
-#: src/editaddress.c:1327 src/editaddress.c:1343 src/editbook.c:170
+#: src/addrduplicates.c:481 src/compose.c:6983 src/editaddress.c:1270
+#: src/editaddress.c:1327 src/editaddress.c:1347 src/editbook.c:170
 #: src/editgroup.c:288 src/editjpilot.c:257 src/editldap.c:428
 #: src/editvcard.c:173 src/importmutt.c:223 src/importpine.c:222
 #: src/mimeview.c:284 src/plugins/pgpcore/select-keys.c:398
@@ -141,7 +142,7 @@ msgstr ""
 "Не можу виконати команду. Створити канал не вдалося. \n"
 "%s"
 
-#: src/action.c:1036
+#: src/action.c:1044
 #, c-format
 msgid ""
 "Could not fork to execute the following command:\n"
@@ -152,25 +153,25 @@ msgstr ""
 "%s\n"
 "%s"
 
-#: src/action.c:1262 src/action.c:1432
+#: src/action.c:1270 src/action.c:1440
 msgid "Completed"
 msgstr "Завершено"
 
-#: src/action.c:1298
+#: src/action.c:1306
 #, c-format
 msgid "--- Running: %s\n"
 msgstr "--- Виконую: %s\n"
 
-#: src/action.c:1302
+#: src/action.c:1310
 #, c-format
 msgid "--- Ended: %s\n"
 msgstr "--- Закінчено: %s\n"
 
-#: src/action.c:1335
+#: src/action.c:1343
 msgid "Action's input/output"
 msgstr "Ввід/вивід дії"
 
-#: src/action.c:1677
+#: src/action.c:1685
 #, c-format
 msgid ""
 "Enter the argument for the following action:\n"
@@ -181,11 +182,11 @@ msgstr ""
 "('%%h' буде замінено цим аргументом)\n"
 "  %s"
 
-#: src/action.c:1682
+#: src/action.c:1690
 msgid "Action's hidden user argument"
 msgstr "Схований аргумент користувача дії"
 
-#: src/action.c:1686
+#: src/action.c:1694
 #, c-format
 msgid ""
 "Enter the argument for the following action:\n"
@@ -196,7 +197,7 @@ msgstr ""
 "('%%u' буде замінено цим аргументом)\n"
 "  %s"
 
-#: src/action.c:1691
+#: src/action.c:1699
 msgid "Action's user argument"
 msgstr "Аргумент користувача дії"
 
@@ -292,7 +293,8 @@ msgid "Attribute name is not set."
 msgstr "Назву властивості не встановлено"
 
 #: src/addrcustomattr.c:469
-msgid "Dialog title|Edit attribute names"
+msgctxt "Dialog title"
+msgid "Edit attribute names"
 msgstr "Редагувати назви атрибутів"
 
 #: src/addrcustomattr.c:483
@@ -329,7 +331,7 @@ msgstr "Примітки"
 msgid "Select Address Book Folder"
 msgstr "Вибрати теку адресної книжки"
 
-#: src/addressadd.c:483 src/editaddress.c:1577 src/headerview.c:348
+#: src/addressadd.c:483 src/editaddress.c:1585 src/headerview.c:348
 #: src/textview.c:2110
 #, c-format
 msgid ""
@@ -358,8 +360,8 @@ msgid "_Book"
 msgstr "_Книжка"
 
 #: src/addressbook.c:403 src/addressbook.c:434 src/addressbook.c:462
-#: src/addressbook.c:479 src/compose.c:575 src/gtk/quicksearch.c:791
-#: src/gtk/quicksearch.c:806 src/mainwindow.c:499 src/messageview.c:211
+#: src/addressbook.c:479 src/compose.c:575 src/gtk/quicksearch.c:796
+#: src/gtk/quicksearch.c:811 src/mainwindow.c:499 src/messageview.c:211
 msgid "_Edit"
 msgstr "_Редагувати"
 
@@ -582,7 +584,7 @@ msgstr "Сильна (сильніша) авторизація вимагаєт�
 msgid "Sources"
 msgstr "Джерела"
 
-#: src/addressbook.c:917 src/prefs_matcher.c:622 src/prefs_other.c:471
+#: src/addressbook.c:917 src/prefs_matcher.c:624 src/prefs_other.c:475
 #: src/toolbar.c:219 src/toolbar.c:2131
 msgid "Address book"
 msgstr "Адресна книжка"
@@ -790,10 +792,10 @@ msgstr "Запит LDAP"
 #: src/plugins/spamassassin/spamassassin.c:117
 #: src/plugins/spamassassin/spamassassin_gtk.c:443
 #: src/plugins/spamassassin/spamassassin_gtk.c:490
-#: src/plugins/spamassassin/spamassassin_gtk.c:613 src/prefs_matcher.c:657
-#: src/prefs_matcher.c:692 src/prefs_matcher.c:1576 src/prefs_matcher.c:1583
-#: src/prefs_matcher.c:1591 src/prefs_matcher.c:1593 src/prefs_matcher.c:2463
-#: src/prefs_matcher.c:2467
+#: src/plugins/spamassassin/spamassassin_gtk.c:613 src/prefs_matcher.c:663
+#: src/prefs_matcher.c:698 src/prefs_matcher.c:1584 src/prefs_matcher.c:1591
+#: src/prefs_matcher.c:1599 src/prefs_matcher.c:1601 src/prefs_matcher.c:2471
+#: src/prefs_matcher.c:2475
 msgid "Any"
 msgstr "Будь-що"
 
@@ -846,7 +848,7 @@ msgstr "Обробити ці поля заголовків листів"
 msgid "Include subfolders"
 msgstr "Включати під-каталоги"
 
-#: src/addrgather.c:456 src/prefs_filtering_action.c:1400
+#: src/addrgather.c:456 src/prefs_filtering_action.c:1422
 msgid "Header Name"
 msgstr "Назва заголовку"
 
@@ -928,17 +930,17 @@ msgstr "Шлях до адресної книжки"
 msgid "Delete address"
 msgstr "Видалити адресу"
 
-#: src/alertpanel.c:146 src/compose.c:9126
+#: src/alertpanel.c:146 src/compose.c:9157
 msgid "Notice"
 msgstr "Примітка"
 
-#: src/alertpanel.c:159 src/compose.c:5546 src/compose.c:6012
-#: src/compose.c:11428 src/messageview.c:870 src/messageview.c:883
-#: src/plugins/pgpcore/sgpgme.c:687 src/summaryview.c:4852
+#: src/alertpanel.c:159 src/compose.c:5555 src/compose.c:6021
+#: src/compose.c:11465 src/messageview.c:874 src/messageview.c:887
+#: src/plugins/pgpcore/sgpgme.c:703 src/summaryview.c:4857
 msgid "Warning"
 msgstr "Попередження"
 
-#: src/alertpanel.c:172 src/alertpanel.c:195 src/compose.c:5487 src/inc.c:666
+#: src/alertpanel.c:172 src/alertpanel.c:195 src/compose.c:5496 src/inc.c:666
 #: src/plugins/pgpcore/sgpgme.c:152 src/plugins/pgpcore/sgpgme.c:246
 msgid "Error"
 msgstr "Помилка"
@@ -1013,24 +1015,24 @@ msgid ""
 "This plugin provides %s (%s), which is already provided by the %s plugin."
 msgstr "Цей додаток забезпечує %s (%s), яке вже запропоновано додатком %s."
 
-#: src/common/plugin.c:381
+#: src/common/plugin.c:413
 msgid "Plugin already loaded"
 msgstr "Додаток вже запущено"
 
-#: src/common/plugin.c:392
+#: src/common/plugin.c:424
 msgid "Failed to allocate memory for Plugin"
 msgstr "Не вдалося виділити пам’ять для додатку"
 
-#: src/common/plugin.c:421
+#: src/common/plugin.c:456
 msgid "This module is not licensed under a GPL v3 or later compatible license."
 msgstr ""
 "Цей модуль не ліцензійовано згідно GPL v3 або пізнішої відповідної ліцензії."
 
-#: src/common/plugin.c:430
+#: src/common/plugin.c:465
 msgid "This module is for Claws Mail GTK1."
 msgstr "Цей модуль для Claws Mail GTK1."
 
-#: src/common/plugin.c:688
+#: src/common/plugin.c:723
 #, c-format
 msgid ""
 "Your version of Claws Mail is newer than the version the '%s' plugin was "
@@ -1039,19 +1041,19 @@ msgstr ""
 "Ваша версія Claws Mail новіша ніж версія з якою був скомпільований додаток "
 "'%s'."
 
-#: src/common/plugin.c:691
+#: src/common/plugin.c:726
 msgid ""
 "Your version of Claws Mail is newer than the version the plugin was built "
 "with."
 msgstr ""
 "Ваша версія Claws Mail новіша ніж версія з якою був скомпільований додаток."
 
-#: src/common/plugin.c:700
+#: src/common/plugin.c:735
 #, c-format
 msgid "Your version of Claws Mail is too old for the '%s' plugin."
 msgstr "Ваша версія Claws Mail застара для додатка '%s'."
 
-#: src/common/plugin.c:702
+#: src/common/plugin.c:737
 msgid "Your version of Claws Mail is too old for the plugin."
 msgstr "Ваша версія Claws Mail застара для додатка."
 
@@ -1228,187 +1230,233 @@ msgid "%.2fGB"
 msgstr "%.2fГБ"
 
 #: src/common/utils.c:4959
-msgid "Complete day name for use by strftime|Sunday"
+msgctxt "Complete day name for use by strftime"
+msgid "Sunday"
 msgstr "Неділя"
 
 #: src/common/utils.c:4960
-msgid "Complete day name for use by strftime|Monday"
+msgctxt "Complete day name for use by strftime"
+msgid "Monday"
 msgstr "Понеділок"
 
 #: src/common/utils.c:4961
-msgid "Complete day name for use by strftime|Tuesday"
+msgctxt "Complete day name for use by strftime"
+msgid "Tuesday"
 msgstr "Вівторок"
 
 #: src/common/utils.c:4962
-msgid "Complete day name for use by strftime|Wednesday"
+msgctxt "Complete day name for use by strftime"
+msgid "Wednesday"
 msgstr "Середа"
 
 #: src/common/utils.c:4963
-msgid "Complete day name for use by strftime|Thursday"
+msgctxt "Complete day name for use by strftime"
+msgid "Thursday"
 msgstr "Четвер"
 
 #: src/common/utils.c:4964
-msgid "Complete day name for use by strftime|Friday"
+msgctxt "Complete day name for use by strftime"
+msgid "Friday"
 msgstr "П’ятниця"
 
 #: src/common/utils.c:4965
-msgid "Complete day name for use by strftime|Saturday"
+msgctxt "Complete day name for use by strftime"
+msgid "Saturday"
 msgstr "Субота"
 
 #: src/common/utils.c:4967
-msgid "Complete month name for use by strftime|January"
+msgctxt "Complete month name for use by strftime"
+msgid "January"
 msgstr "Січень"
 
 #: src/common/utils.c:4968
-msgid "Complete month name for use by strftime|February"
+msgctxt "Complete month name for use by strftime"
+msgid "February"
 msgstr "Лютий"
 
 #: src/common/utils.c:4969
-msgid "Complete month name for use by strftime|March"
+msgctxt "Complete month name for use by strftime"
+msgid "March"
 msgstr "Березень"
 
 #: src/common/utils.c:4970
-msgid "Complete month name for use by strftime|April"
+msgctxt "Complete month name for use by strftime"
+msgid "April"
 msgstr "Квітень"
 
 #: src/common/utils.c:4971
-msgid "Complete month name for use by strftime|May"
+msgctxt "Complete month name for use by strftime"
+msgid "May"
 msgstr "Травень"
 
 #: src/common/utils.c:4972
-msgid "Complete month name for use by strftime|June"
+msgctxt "Complete month name for use by strftime"
+msgid "June"
 msgstr "Червень"
 
 #: src/common/utils.c:4973
-msgid "Complete month name for use by strftime|July"
+msgctxt "Complete month name for use by strftime"
+msgid "July"
 msgstr "Липень"
 
 #: src/common/utils.c:4974
-msgid "Complete month name for use by strftime|August"
+msgctxt "Complete month name for use by strftime"
+msgid "August"
 msgstr "Серпень"
 
 #: src/common/utils.c:4975
-msgid "Complete month name for use by strftime|September"
+msgctxt "Complete month name for use by strftime"
+msgid "September"
 msgstr "Вересень"
 
 #: src/common/utils.c:4976
-msgid "Complete month name for use by strftime|October"
+msgctxt "Complete month name for use by strftime"
+msgid "October"
 msgstr "Жовтень"
 
 #: src/common/utils.c:4977
-msgid "Complete month name for use by strftime|November"
+msgctxt "Complete month name for use by strftime"
+msgid "November"
 msgstr "Листопад"
 
 #: src/common/utils.c:4978
-msgid "Complete month name for use by strftime|December"
+msgctxt "Complete month name for use by strftime"
+msgid "December"
 msgstr "Грудень"
 
 #: src/common/utils.c:4980
-msgid "Abbr. day name for use by strftime|Sun"
+msgctxt "Abbr. day name for use by strftime"
+msgid "Sun"
 msgstr "Нед"
 
 #: src/common/utils.c:4981
-msgid "Abbr. day name for use by strftime|Mon"
+msgctxt "Abbr. day name for use by strftime"
+msgid "Mon"
 msgstr "Пн"
 
 #: src/common/utils.c:4982
-msgid "Abbr. day name for use by strftime|Tue"
+msgctxt "Abbr. day name for use by strftime"
+msgid "Tue"
 msgstr "Вт"
 
 #: src/common/utils.c:4983
-msgid "Abbr. day name for use by strftime|Wed"
+msgctxt "Abbr. day name for use by strftime"
+msgid "Wed"
 msgstr "Ср"
 
 #: src/common/utils.c:4984
-msgid "Abbr. day name for use by strftime|Thu"
+msgctxt "Abbr. day name for use by strftime"
+msgid "Thu"
 msgstr "Чт"
 
 #: src/common/utils.c:4985
-msgid "Abbr. day name for use by strftime|Fri"
+msgctxt "Abbr. day name for use by strftime"
+msgid "Fri"
 msgstr "Пт"
 
 #: src/common/utils.c:4986
-msgid "Abbr. day name for use by strftime|Sat"
+msgctxt "Abbr. day name for use by strftime"
+msgid "Sat"
 msgstr "Сб"
 
 #: src/common/utils.c:4988
-msgid "Abbr. month name for use by strftime|Jan"
+msgctxt "Abbr. month name for use by strftime"
+msgid "Jan"
 msgstr "Січ"
 
 #: src/common/utils.c:4989
-msgid "Abbr. month name for use by strftime|Feb"
+msgctxt "Abbr. month name for use by strftime"
+msgid "Feb"
 msgstr "Лют"
 
 #: src/common/utils.c:4990
-msgid "Abbr. month name for use by strftime|Mar"
+msgctxt "Abbr. month name for use by strftime"
+msgid "Mar"
 msgstr "Бер"
 
 #: src/common/utils.c:4991
-msgid "Abbr. month name for use by strftime|Apr"
+msgctxt "Abbr. month name for use by strftime"
+msgid "Apr"
 msgstr "Квіт"
 
 #: src/common/utils.c:4992
-msgid "Abbr. month name for use by strftime|May"
+msgctxt "Abbr. month name for use by strftime"
+msgid "May"
 msgstr "Тра"
 
 #: src/common/utils.c:4993
-msgid "Abbr. month name for use by strftime|Jun"
+msgctxt "Abbr. month name for use by strftime"
+msgid "Jun"
 msgstr "Черв"
 
 #: src/common/utils.c:4994
-msgid "Abbr. month name for use by strftime|Jul"
+msgctxt "Abbr. month name for use by strftime"
+msgid "Jul"
 msgstr "Лип"
 
 #: src/common/utils.c:4995
-msgid "Abbr. month name for use by strftime|Aug"
+msgctxt "Abbr. month name for use by strftime"
+msgid "Aug"
 msgstr "Срп"
 
 #: src/common/utils.c:4996
-msgid "Abbr. month name for use by strftime|Sep"
+msgctxt "Abbr. month name for use by strftime"
+msgid "Sep"
 msgstr "Вер"
 
 #: src/common/utils.c:4997
-msgid "Abbr. month name for use by strftime|Oct"
+msgctxt "Abbr. month name for use by strftime"
+msgid "Oct"
 msgstr "Жов"
 
 #: src/common/utils.c:4998
-msgid "Abbr. month name for use by strftime|Nov"
+msgctxt "Abbr. month name for use by strftime"
+msgid "Nov"
 msgstr "Лис"
 
 #: src/common/utils.c:4999
-msgid "Abbr. month name for use by strftime|Dec"
+msgctxt "Abbr. month name for use by strftime"
+msgid "Dec"
 msgstr "Гру"
 
 #: src/common/utils.c:5010
-msgid "For use by strftime (morning)|AM"
+msgctxt "For use by strftime (morning)"
+msgid "AM"
 msgstr "ДП"
 
 #: src/common/utils.c:5011
-msgid "For use by strftime (afternoon)|PM"
+msgctxt "For use by strftime (afternoon)"
+msgid "PM"
 msgstr "ПП"
 
 #: src/common/utils.c:5012
-msgid "For use by strftime (morning, lowercase)|am"
+msgctxt "For use by strftime (morning, lowercase)"
+msgid "am"
 msgstr "дп"
 
 #: src/common/utils.c:5013
-msgid "For use by strftime (afternoon, lowercase)|pm"
+msgctxt "For use by strftime (afternoon, lowercase)"
+msgid "pm"
 msgstr "пп"
 
 #: src/common/utils.c:5020
-msgid "For use by strftime (default date+time format)|%a %b %e %H:%M:%S %Y"
+msgctxt "For use by strftime (default date+time format)"
+msgid "%a %b %e %H:%M:%S %Y"
 msgstr "%a %b %e %H:%M:%S %Y"
 
 #: src/common/utils.c:5021
-msgid "For use by strftime (default date format)|%m/%d/%y"
+msgctxt "For use by strftime (default date format)"
+msgid "%m/%d/%y"
 msgstr "%m/%d/%y"
 
 #: src/common/utils.c:5022
-msgid "For use by strftime (default time format)|%H:%M:%S"
+msgctxt "For use by strftime (default time format)"
+msgid "%H:%M:%S"
 msgstr "%H:%M:%S"
 
 #: src/common/utils.c:5024
-msgid "For use by strftime (default 12-hour time format)|%I:%M:%S %p"
+msgctxt "For use by strftime (default 12-hour time format)"
+msgid "%I:%M:%S %p"
 msgstr "%I:%M:%S %p"
 
 #: src/compose.c:564
@@ -1791,7 +1839,7 @@ msgstr "Bcc:"
 msgid "Reply-To:"
 msgstr "Відповісти до:"
 
-#: src/compose.c:2530 src/compose.c:4808 src/compose.c:4810
+#: src/compose.c:2530 src/compose.c:4817 src/compose.c:4819
 #: src/gtk/headers.h:32
 msgid "Newsgroups:"
 msgstr "Групи новин:"
@@ -1804,8 +1852,8 @@ msgstr "Доповнення до:"
 msgid "In-Reply-To:"
 msgstr "На-Відповідь-До:"
 
-#: src/compose.c:2540 src/compose.c:4805 src/compose.c:4813
-#: src/gtk/headers.h:12 src/summary_search.c:395
+#: src/compose.c:2540 src/compose.c:4814 src/compose.c:4822
+#: src/gtk/headers.h:12 src/summary_search.c:419
 msgid "To:"
 msgstr "До:"
 
@@ -1853,7 +1901,7 @@ msgstr ""
 msgid "Are you sure?"
 msgstr "Ви впевнені?"
 
-#: src/compose.c:3528 src/compose.c:10922
+#: src/compose.c:3528 src/compose.c:10959
 msgid "+_Insert"
 msgstr "+_Вставити"
 
@@ -1890,7 +1938,7 @@ msgstr "[no subject] - Створити повідомлення%s"
 msgid "Compose message"
 msgstr "Створити повідомлення"
 
-#: src/compose.c:4696 src/messageview.c:905
+#: src/compose.c:4696 src/messageview.c:909
 msgid ""
 "Account for sending mail is not specified.\n"
 "Please select a mail account before sending."
@@ -1898,49 +1946,49 @@ msgstr ""
 "Обліковий запис для висилання повідомлення не вказано.\n"
 "Виберіть його перед висиланням."
 
-#: src/compose.c:4904 src/compose.c:4936 src/compose.c:4978
+#: src/compose.c:4913 src/compose.c:4945 src/compose.c:4987
 #: src/prefs_account.c:3237 src/toolbar.c:398 src/toolbar.c:416
 msgid "Send"
 msgstr "Вислати"
 
-#: src/compose.c:4905
+#: src/compose.c:4914
 msgid "The only recipient is the default CC address. Send anyway?"
 msgstr "Єдиною адресою є адреса CC. Вислати все одно?"
 
-#: src/compose.c:4906 src/compose.c:4938 src/compose.c:4971 src/compose.c:5487
+#: src/compose.c:4915 src/compose.c:4947 src/compose.c:4980 src/compose.c:5496
 msgid "+_Send"
 msgstr "+_Вислати"
 
-#: src/compose.c:4937
+#: src/compose.c:4946
 msgid "The only recipient is the default BCC address. Send anyway?"
 msgstr "Єдиною адресою є адреса BCC. Вислати все одно?"
 
-#: src/compose.c:4954
+#: src/compose.c:4963
 msgid "Recipient is not specified."
 msgstr "Адресат не вказаний."
 
-#: src/compose.c:4973
+#: src/compose.c:4982
 msgid "+_Queue"
 msgstr "+_В черзі"
 
-#: src/compose.c:4974
+#: src/compose.c:4983
 #, c-format
 msgid "Subject is empty. %s"
 msgstr "Тема є незаповненою. %s"
 
-#: src/compose.c:4975
+#: src/compose.c:4984
 msgid "Send it anyway?"
 msgstr "Вислати все одно?"
 
-#: src/compose.c:4976
+#: src/compose.c:4985
 msgid "Queue it anyway?"
 msgstr "Поставити в чергу все одно?"
 
-#: src/compose.c:4978 src/toolbar.c:417
+#: src/compose.c:4987 src/toolbar.c:417
 msgid "Send later"
 msgstr "Вислати пізніше"
 
-#: src/compose.c:5026 src/compose.c:9545
+#: src/compose.c:5035 src/compose.c:9582
 msgid ""
 "Could not queue message for sending:\n"
 "\n"
@@ -1950,7 +1998,7 @@ msgstr ""
 "\n"
 "Пертворення символів не вдалося."
 
-#: src/compose.c:5029 src/compose.c:9548
+#: src/compose.c:5038 src/compose.c:9585
 msgid ""
 "Could not queue message for sending:\n"
 "\n"
@@ -1960,7 +2008,7 @@ msgstr ""
 "\n"
 "Не можу отримати ключ шифрування адресата."
 
-#: src/compose.c:5035 src/compose.c:9542
+#: src/compose.c:5044 src/compose.c:9579
 #, c-format
 msgid ""
 "Could not queue message for sending:\n"
@@ -1971,7 +2019,7 @@ msgstr ""
 "\n"
 "Помилка підпису: %s"
 
-#: src/compose.c:5038
+#: src/compose.c:5047
 #, c-format
 msgid ""
 "Could not queue message for sending:\n"
@@ -1982,11 +2030,11 @@ msgstr ""
 "\n"
 "%s."
 
-#: src/compose.c:5040
+#: src/compose.c:5049
 msgid "Could not queue message for sending."
 msgstr "Не можу поставити повідомлення в чергу для висилки."
 
-#: src/compose.c:5055 src/compose.c:5115
+#: src/compose.c:5064 src/compose.c:5124
 msgid ""
 "The message was queued but could not be sent.\n"
 "Use \"Send queued messages\" from the main window to retry."
@@ -1995,7 +2043,7 @@ msgstr ""
 "Використайте \"Відправити повідомлення в черзі\" з головного вікна для "
 "поновної спроби."
 
-#: src/compose.c:5111
+#: src/compose.c:5120
 #, c-format
 msgid ""
 "%s\n"
@@ -2005,7 +2053,7 @@ msgstr ""
 "Використайте \"Відправити повідомлення в черзі\" з головного вікна для "
 "поновної спроби."
 
-#: src/compose.c:5484
+#: src/compose.c:5493
 #, c-format
 msgid ""
 "Can't convert the character encoding of the message \n"
@@ -2016,7 +2064,7 @@ msgstr ""
 "до вказаного кодування %s.\n"
 "Відправити як %s?"
 
-#: src/compose.c:5542
+#: src/compose.c:5551
 #, c-format
 msgid ""
 "Line %d exceeds the line length limit (998 bytes).\n"
@@ -2029,66 +2077,66 @@ msgstr ""
 "\n"
 "Вислати все одно?"
 
-#: src/compose.c:5723
+#: src/compose.c:5732
 msgid "Encryption warning"
 msgstr "Попередження шифрування"
 
-#: src/compose.c:5724
+#: src/compose.c:5733
 msgid "+C_ontinue"
 msgstr "+П_родовжити"
 
-#: src/compose.c:5773
+#: src/compose.c:5782
 msgid "No account for sending mails available!"
 msgstr "Нема доступного облікового запису для висилки листів!"
 
-#: src/compose.c:5782
+#: src/compose.c:5791
 msgid "Selected account isn't NNTP: Posting is impossible."
 msgstr "Вибраний обліковий запис не є NNTP: відправка повідомлення неможлива."
 
-#: src/compose.c:6011
+#: src/compose.c:6020
 #, c-format
 msgid "Attachment %s doesn't exist anymore. Ignore?"
 msgstr "Долучення %s більше не існує. Ігнорувати?"
 
-#: src/compose.c:6012
+#: src/compose.c:6021
 msgid "Cancel sending"
 msgstr "Скасувати висилку"
 
-#: src/compose.c:6012
+#: src/compose.c:6021
 msgid "Ignore attachment"
 msgstr "Ігнорувати долучення"
 
-#: src/compose.c:6051
+#: src/compose.c:6060
 #, c-format
 msgid "Original %s part"
 msgstr "Оригінальна %s частина"
 
-#: src/compose.c:6582
+#: src/compose.c:6591
 msgid "Add to address _book"
 msgstr "Додати до адресної книжки"
 
-#: src/compose.c:6728
+#: src/compose.c:6747
 msgid "Delete entry contents"
 msgstr "Видалити вміст введення"
 
-#: src/compose.c:6732
+#: src/compose.c:6751
 msgid "Use <tab> to autocomplete from addressbook"
 msgstr "Використайте <tab> для автодоповненя з адресної книжки"
 
-#: src/compose.c:6952
+#: src/compose.c:6971
 msgid "Mime type"
 msgstr "Тип Mime"
 
-#: src/compose.c:6958 src/mimeview.c:283 src/plugins/pgpcore/select-keys.c:396
-#: src/prefs_matcher.c:620 src/prefs_summary_column.c:85 src/summaryview.c:447
+#: src/compose.c:6977 src/mimeview.c:283 src/plugins/pgpcore/select-keys.c:396
+#: src/prefs_matcher.c:622 src/prefs_summary_column.c:85 src/summaryview.c:447
 msgid "Size"
 msgstr "Розмір"
 
-#: src/compose.c:7028
+#: src/compose.c:7047
 msgid "Save Message to "
 msgstr "Зберегти повідомлення до "
 
-#: src/compose.c:7057 src/editjpilot.c:276 src/editldap.c:518
+#: src/compose.c:7080 src/editjpilot.c:276 src/editldap.c:518
 #: src/editvcard.c:192 src/export.c:164 src/import.c:163 src/importmutt.c:239
 #: src/importpine.c:238 src/plugins/bogofilter/bogofilter_gtk.c:188
 #: src/plugins/bogofilter/bogofilter_gtk.c:208
@@ -2096,23 +2144,23 @@ msgstr "Зберегти повідомлення до "
 msgid "_Browse"
 msgstr "П_ереглянути"
 
-#: src/compose.c:7545
+#: src/compose.c:7568
 msgid "Hea_der"
 msgstr "За_головок"
 
-#: src/compose.c:7550
+#: src/compose.c:7573
 msgid "_Attachments"
 msgstr "_Долучення"
 
-#: src/compose.c:7564
+#: src/compose.c:7587
 msgid "Othe_rs"
 msgstr "Ін_ші"
 
-#: src/compose.c:7579 src/gtk/headers.h:18 src/summary_search.c:402
+#: src/compose.c:7602 src/gtk/headers.h:18 src/summary_search.c:426
 msgid "Subject:"
 msgstr "Тема:"
 
-#: src/compose.c:7804
+#: src/compose.c:7827
 #, c-format
 msgid ""
 "Spell checker could not be started.\n"
@@ -2121,20 +2169,20 @@ msgstr ""
 "Не можу запустити перевірку правопису.\n"
 "%s"
 
-#: src/compose.c:7917
+#: src/compose.c:7940
 #, c-format
 msgid "From: <i>%s</i>"
 msgstr "Від: <i>%s</i>"
 
-#: src/compose.c:7951
+#: src/compose.c:7974
 msgid "Account to use for this email"
 msgstr "Обліковий запис для використання з цим листом"
 
-#: src/compose.c:7953
+#: src/compose.c:7976
 msgid "Sender address to be used"
 msgstr "Адреса відправника, що буде використана"
 
-#: src/compose.c:8117
+#: src/compose.c:8140
 #, c-format
 msgid ""
 "The privacy system '%s' cannot be loaded. You will not be able to sign or "
@@ -2143,64 +2191,64 @@ msgstr ""
 "Система приватності '%s' не можна запустити. Ви не зможете підписати або "
 "зашифрувати це повідомлення."
 
-#: src/compose.c:8217
+#: src/compose.c:8240
 msgid "_None"
 msgstr "_Нічого"
 
-#: src/compose.c:8318 src/prefs_template.c:749
+#: src/compose.c:8341 src/prefs_template.c:749
 #, c-format
 msgid "The body of the template has an error at line %d."
 msgstr "Тіло шаблону має помилку в лінійці %d."
 
-#: src/compose.c:8434
+#: src/compose.c:8457
 msgid "Template From format error."
 msgstr "Помилка формату Від в шаблоні."
 
-#: src/compose.c:8452
+#: src/compose.c:8475
 msgid "Template To format error."
 msgstr "Помилка формату До в шаблоні."
 
-#: src/compose.c:8470
+#: src/compose.c:8493
 msgid "Template Cc format error."
 msgstr "Помилка формату Копія в шаблоні."
 
-#: src/compose.c:8488
+#: src/compose.c:8511
 msgid "Template Bcc format error."
 msgstr "Помилка формату Bcc в шаблоні."
 
-#: src/compose.c:8507
+#: src/compose.c:8530
 msgid "Template subject format error."
 msgstr "Помилка формату Тема в шаблоні."
 
-#: src/compose.c:8771
+#: src/compose.c:8794
 msgid "Invalid MIME type."
 msgstr "Неправильний тип MIME."
 
-#: src/compose.c:8786
+#: src/compose.c:8809
 msgid "File doesn't exist or is empty."
 msgstr "Файл не існує або порожній."
 
-#: src/compose.c:8860
+#: src/compose.c:8883
 msgid "Properties"
 msgstr "Властивості"
 
-#: src/compose.c:8877
+#: src/compose.c:8900
 msgid "MIME type"
 msgstr "Тип MIME"
 
-#: src/compose.c:8910
+#: src/compose.c:8941
 msgid "Encoding"
 msgstr "Кодування"
 
-#: src/compose.c:8930
+#: src/compose.c:8961
 msgid "Path"
 msgstr "Шлях"
 
-#: src/compose.c:8931
+#: src/compose.c:8962
 msgid "File name"
 msgstr "Назва файлу"
 
-#: src/compose.c:9123
+#: src/compose.c:9154
 #, c-format
 msgid ""
 "The external editor is still working.\n"
@@ -2211,15 +2259,15 @@ msgstr ""
 "Завершити примусово процес?\n"
 "ID групи процесу: %d"
 
-#: src/compose.c:9511 src/messageview.c:1111
+#: src/compose.c:9548 src/messageview.c:1115
 msgid "Claws Mail needs network access in order to send this email."
 msgstr "Claws Mail потребує доступу до мережі для висилання цього листа."
 
-#: src/compose.c:9537
+#: src/compose.c:9574
 msgid "Could not queue message."
 msgstr "Не можу поставити в чергу повідомлення."
 
-#: src/compose.c:9539
+#: src/compose.c:9576
 #, c-format
 msgid ""
 "Could not queue message:\n"
@@ -2230,15 +2278,15 @@ msgstr ""
 "\n"
 "%s."
 
-#: src/compose.c:9707
+#: src/compose.c:9744
 msgid "Could not save draft."
 msgstr "Не можу зберегти чернетку."
 
-#: src/compose.c:9711
+#: src/compose.c:9748
 msgid "Could not save draft"
 msgstr "Не можу зберегти чернетку"
 
-#: src/compose.c:9712
+#: src/compose.c:9749
 msgid ""
 "Could not save draft.\n"
 "Do you want to cancel exit or discard this email?"
@@ -2246,24 +2294,24 @@ msgstr ""
 "Не можу зберегти чернетку.\n"
 "Ви бажаєте скасувати вихід або відмовитися від цього листа?"
 
-#: src/compose.c:9714
+#: src/compose.c:9751
 msgid "_Cancel exit"
 msgstr "_Скасувати вихід"
 
-#: src/compose.c:9714
+#: src/compose.c:9751
 msgid "_Discard email"
 msgstr "С_касувати лист"
 
-#: src/compose.c:9874 src/compose.c:9888
+#: src/compose.c:9911 src/compose.c:9925
 msgid "Select file"
 msgstr "Вибрати файл"
 
-#: src/compose.c:9902
+#: src/compose.c:9939
 #, c-format
 msgid "File '%s' could not be read."
 msgstr "Файл '%s' не можна прочитати."
 
-#: src/compose.c:9904
+#: src/compose.c:9941
 #, c-format
 msgid ""
 "File '%s' contained invalid characters\n"
@@ -2272,60 +2320,60 @@ msgstr ""
 "Файл '%s' містив неправильні символи\n"
 "для поточного кодування, вставка може бути некоректною."
 
-#: src/compose.c:9976
+#: src/compose.c:10013
 msgid "Discard message"
 msgstr "Скасувати повідомлення"
 
-#: src/compose.c:9977
+#: src/compose.c:10014
 msgid "This message has been modified. Discard it?"
 msgstr "Це повідомлення змінене. Ігнорувати зміни?"
 
-#: src/compose.c:9978
+#: src/compose.c:10015
 msgid "_Discard"
 msgstr "_Відкинути зміни"
 
-#: src/compose.c:9978
+#: src/compose.c:10015
 msgid "_Save to Drafts"
 msgstr "_Зберегти чернетку"
 
-#: src/compose.c:9980
+#: src/compose.c:10017
 msgid "Save changes"
 msgstr "Зберегти зміни"
 
-#: src/compose.c:9981
+#: src/compose.c:10018
 msgid "This message has been modified. Save the latest changes?"
 msgstr "Це повідомлення змінене. Записати останні зміни?"
 
-#: src/compose.c:9982
+#: src/compose.c:10019
 msgid "_Don't save"
 msgstr "Не _зберігати"
 
-#: src/compose.c:9982
+#: src/compose.c:10019
 msgid "+_Save to Drafts"
 msgstr "+_Зберегти чернетку"
 
-#: src/compose.c:10052
+#: src/compose.c:10089
 #, c-format
 msgid "Do you want to apply the template '%s' ?"
 msgstr "Ви бажаєте застосувати шаблон '%s' ?"
 
-#: src/compose.c:10054
+#: src/compose.c:10091
 msgid "Apply template"
 msgstr "Застосувати шаблон"
 
-#: src/compose.c:10055
+#: src/compose.c:10092
 msgid "_Replace"
 msgstr "За_мінити"
 
-#: src/compose.c:10055
+#: src/compose.c:10092
 msgid "_Insert"
 msgstr "_Вставити"
 
-#: src/compose.c:10919
+#: src/compose.c:10956
 msgid "Insert or attach?"
 msgstr "Вставити чи долучити?"
 
-#: src/compose.c:10920
+#: src/compose.c:10957
 msgid ""
 "Do you want to insert the contents of the file(s) into the message body, or "
 "attach it to the email?"
@@ -2333,16 +2381,16 @@ msgstr ""
 "Ви бажаєте вставити вміст файлу(ів) в тіло повідомлення, або долучити до "
 "листа?"
 
-#: src/compose.c:10922
+#: src/compose.c:10959
 msgid "_Attach"
 msgstr "_Долучити"
 
-#: src/compose.c:11138
+#: src/compose.c:11175
 #, c-format
 msgid "Quote format error at line %d."
 msgstr "Неправильний формат цитування в лінійці %d."
 
-#: src/compose.c:11422
+#: src/compose.c:11459
 #, c-format
 msgid ""
 "You are about to reply to %d messages. Opening the windows could take some "
@@ -2511,20 +2559,20 @@ msgstr "Кличка (nickname)"
 msgid "Alias"
 msgstr "Псевдонім"
 
-#: src/editaddress.c:1271 src/editaddress.c:1336 src/editaddress.c:1352
+#: src/editaddress.c:1271 src/editaddress.c:1340 src/editaddress.c:1360
 #: src/prefs_customheader.c:223
 msgid "Value"
 msgstr "Значення"
 
-#: src/editaddress.c:1419
+#: src/editaddress.c:1427
 msgid "_User Data"
 msgstr "_Дані користувача"
 
-#: src/editaddress.c:1420
+#: src/editaddress.c:1428
 msgid "_Email Addresses"
 msgstr "_Адреса email"
 
-#: src/editaddress.c:1423 src/editaddress.c:1426
+#: src/editaddress.c:1431 src/editaddress.c:1434
 msgid "O_ther Attributes"
 msgstr "Інші атрибути"
 
@@ -2882,7 +2930,7 @@ msgstr "Базове"
 msgid "Search"
 msgstr "Пошук"
 
-#: src/editldap.c:785 src/gtk/quicksearch.c:657
+#: src/editldap.c:785 src/gtk/quicksearch.c:658
 msgid "Extended"
 msgstr "Розширене"
 
@@ -2890,7 +2938,7 @@ msgstr "Розширене"
 msgid "Add New LDAP Server"
 msgstr "Додати новий сервер LDAP"
 
-#: src/edittags.c:187 src/prefs_filtering_action.c:1421
+#: src/edittags.c:187 src/prefs_filtering_action.c:1443
 msgid "Tag"
 msgstr "Ярлик"
 
@@ -2919,7 +2967,8 @@ msgid "Tag is not set."
 msgstr "Ярлик не встановлено."
 
 #: src/edittags.c:529
-msgid "Dialog title|Apply tags"
+msgctxt "Dialog title"
+msgid "Apply tags"
 msgstr "Застосувати ярлики"
 
 #: src/edittags.c:543
@@ -3009,15 +3058,15 @@ msgstr "_Показати"
 msgid "Stylesheet"
 msgstr "Таблиця стилів"
 
-#: src/exphtmldlg.c:453 src/gtk/colorlabel.c:400 src/gtk/gtkaspell.c:1570
+#: src/exphtmldlg.c:453 src/gtk/colorlabel.c:406 src/gtk/gtkaspell.c:1570
 #: src/gtk/gtkaspell.c:2228 src/gtk/menu.c:133 src/mainwindow.c:1169
-#: src/prefs_account.c:938 src/prefs_toolbar.c:758 src/prefs_toolbar.c:1415
-#: src/summaryview.c:5993
+#: src/prefs_account.c:938 src/prefs_toolbar.c:775 src/prefs_toolbar.c:1456
+#: src/summaryview.c:5998
 msgid "None"
 msgstr "Нічого"
 
 #: src/exphtmldlg.c:454 src/prefs_folder_item.c:514 src/prefs_other.c:116
-#: src/prefs_other.c:404
+#: src/prefs_other.c:408
 msgid "Default"
 msgstr "Типово"
 
@@ -3247,7 +3296,7 @@ msgstr "Експорт адресної книжки до LDIF файлу"
 msgid "Distinguished Name"
 msgstr "Характерна назва"
 
-#: src/export.c:113 src/summaryview.c:8137
+#: src/export.c:113 src/summaryview.c:8150
 msgid "Export to mbox file"
 msgstr "Експорт до файлу mbox"
 
@@ -3406,12 +3455,12 @@ msgid "Send _queue..."
 msgstr "Вислати поставлені в _черзі..."
 
 #: src/folderview.c:380 src/folderview.c:427 src/prefs_folder_column.c:79
-#: src/prefs_matcher.c:383 src/summaryview.c:6269
+#: src/prefs_matcher.c:383 src/summaryview.c:6282
 msgid "New"
 msgstr "Нове"
 
 #: src/folderview.c:381 src/folderview.c:428 src/prefs_folder_column.c:80
-#: src/prefs_matcher.c:382 src/summaryview.c:6271
+#: src/prefs_matcher.c:382 src/summaryview.c:6284
 msgid "Unread"
 msgstr "Непрочитані"
 
@@ -3514,7 +3563,7 @@ msgstr "Вислати повідомлення в черзі"
 msgid "Send all queued messages?"
 msgstr "Вислати всі повідомлення в черзі?"
 
-#: src/folderview.c:2397 src/messageview.c:871 src/messageview.c:888
+#: src/folderview.c:2397 src/messageview.c:875 src/messageview.c:892
 #: src/toolbar.c:2637
 msgid "_Send"
 msgstr "_Вислати"
@@ -3523,7 +3572,7 @@ msgstr "_Вислати"
 msgid "Some errors occurred while sending queued messages."
 msgstr "Виникли помилки під час висилання повідомлень з черги."
 
-#: src/folderview.c:2408 src/main.c:2794 src/toolbar.c:2658
+#: src/folderview.c:2408 src/main.c:2809 src/toolbar.c:2658
 #, c-format
 msgid ""
 "Some errors occurred while sending queued messages:\n"
@@ -3589,7 +3638,7 @@ msgstr "Перенесення не вдалося!"
 msgid "Processing configuration for folder %s"
 msgstr "Обробка конфігурацію для теки %s"
 
-#: src/folderview.c:3018 src/summaryview.c:4537 src/summaryview.c:4636
+#: src/folderview.c:3018 src/summaryview.c:4542 src/summaryview.c:4641
 msgid "The destination folder can only be used to store subfolders."
 msgstr "Каьалог призначення може бути використана для збереження підкаталогів."
 
@@ -3758,45 +3807,53 @@ msgid "Compiled-in Features\n"
 msgstr "Скомпільовані властивості\n"
 
 #: src/gtk/about.c:416
-msgid "compface|adds support for the X-Face header\n"
+msgctxt "compface"
+msgid "adds support for the X-Face header\n"
 msgstr "додає підтримку заголовку X-Face\n"
 
 #: src/gtk/about.c:426
-msgid "Enchant|adds support for spell checking\n"
+msgctxt "Enchant"
+msgid "adds support for spell checking\n"
 msgstr "додає підтримку для перевірки правопису\n"
 
 #: src/gtk/about.c:436
-msgid "GnuTLS|adds support for encrypted connections to servers\n"
+msgctxt "GnuTLS"
+msgid "adds support for encrypted connections to servers\n"
 msgstr "додає підтримку шифрованого з’єднання з сервером\n"
 
 #: src/gtk/about.c:446
-msgid ""
-"IPv6|adds support for IPv6 addresses, the new Internet addressing protocol\n"
+msgctxt "IPv6"
+msgid "adds support for IPv6 addresses, the new Internet addressing protocol\n"
 msgstr "додає підтримку для адрес IPv6, нового протоколу адресації мережі\n"
 
 #: src/gtk/about.c:457
-msgid "iconv|allows converting to and from different character sets\n"
+msgctxt "iconv"
+msgid "allows converting to and from different character sets\n"
 msgstr "дозволяє конвертувати між різними кодуваннями\n"
 
 #: src/gtk/about.c:467
-msgid "JPilot|adds support for PalmOS addressbooks\n"
+msgctxt "JPilot"
+msgid "adds support for PalmOS addressbooks\n"
 msgstr "додає підтримку адресних книжок PalmOS\n"
 
 #: src/gtk/about.c:477
-msgid "LDAP|adds support for LDAP shared addressbooks\n"
+msgctxt "LDAP"
+msgid "adds support for LDAP shared addressbooks\n"
 msgstr "додає підтримку для розшарених адресних книжок LDAP\n"
 
 #: src/gtk/about.c:487
-msgid "libetpan|adds support for IMAP and NNTP servers\n"
+msgctxt "libetpan"
+msgid "adds support for IMAP and NNTP servers\n"
 msgstr "додає підтримку для серверів IMAP і NNTP\n"
 
 #: src/gtk/about.c:497
-msgid "libSM|adds support for session handling\n"
+msgctxt "libSM"
+msgid "adds support for session handling\n"
 msgstr "додає підтримку для сесій\n"
 
 #: src/gtk/about.c:507
-msgid ""
-"NetworkManager|adds support for detection of network connection changes\n"
+msgctxt "NetworkManager"
+msgid "adds support for detection of network connection changes\n"
 msgstr "додає підтримку для визначення змін в мережних підключеннях\n"
 
 #: src/gtk/about.c:539
@@ -3843,44 +3900,44 @@ msgstr ""
 ">. \n"
 "\n"
 
-#: src/gtk/about.c:694 src/main.c:2621
+#: src/gtk/about.c:694 src/main.c:2636
 msgid "Session statistics\n"
 msgstr "Сатистика сесії\n"
 
-#: src/gtk/about.c:704 src/gtk/about.c:707 src/main.c:2631 src/main.c:2634
+#: src/gtk/about.c:704 src/gtk/about.c:707 src/main.c:2646 src/main.c:2649
 #, c-format
 msgid "Started: %s\n"
 msgstr "Початок: %s\n"
 
-#: src/gtk/about.c:714 src/main.c:2640
+#: src/gtk/about.c:714 src/main.c:2655
 msgid "Incoming traffic\n"
 msgstr "Вхідний трафік\n"
 
-#: src/gtk/about.c:717 src/main.c:2643
+#: src/gtk/about.c:717 src/main.c:2658
 #, c-format
 msgid "Received messages: %d\n"
 msgstr "Отримані повідомлення: %d\n"
 
-#: src/gtk/about.c:724 src/main.c:2649
+#: src/gtk/about.c:724 src/main.c:2664
 msgid "Outgoing traffic\n"
 msgstr "Вихідний трафік\n"
 
-#: src/gtk/about.c:727 src/main.c:2652
+#: src/gtk/about.c:727 src/main.c:2667
 #, c-format
 msgid "New/redirected messages: %d\n"
 msgstr "Нові/перекеровані повідомлення: %d\n"
 
-#: src/gtk/about.c:732 src/main.c:2656
+#: src/gtk/about.c:732 src/main.c:2671
 #, c-format
 msgid "Replied messages: %d\n"
 msgstr "Повідомлення на які відповіли: %d\n"
 
-#: src/gtk/about.c:737 src/main.c:2660
+#: src/gtk/about.c:737 src/main.c:2675
 #, c-format
 msgid "Forwarded messages: %d\n"
 msgstr "Переслані повідомлення: %d\n"
 
-#: src/gtk/about.c:742 src/main.c:2664
+#: src/gtk/about.c:742 src/main.c:2679
 #, c-format
 msgid "Total outgoing messages: %d\n"
 msgstr "Всіх вихідних повідомлень: %d\n"
@@ -4106,8 +4163,8 @@ msgstr ""
 "Перевірка правопису не може змінити альтернативний словник.\n"
 "%s"
 
-#: src/gtk/headers.h:8 src/prefs_filtering_action.c:1237
-#: src/prefs_matcher.c:2120 src/prefs_summary_column.c:84 src/quote_fmt.c:49
+#: src/gtk/headers.h:8 src/prefs_filtering_action.c:1257
+#: src/prefs_matcher.c:2128 src/prefs_summary_column.c:84 src/quote_fmt.c:49
 #: src/summaryview.c:446
 msgid "Date"
 msgstr "Дата"
@@ -4116,13 +4173,13 @@ msgstr "Дата"
 msgid "Date:"
 msgstr "Дата:"
 
-#: src/gtk/headers.h:9 src/prefs_filtering_action.c:1234
-#: src/prefs_matcher.c:2117 src/prefs_summary_column.c:82 src/quote_fmt.c:50
+#: src/gtk/headers.h:9 src/prefs_filtering_action.c:1254
+#: src/prefs_matcher.c:2125 src/prefs_summary_column.c:82 src/quote_fmt.c:50
 #: src/summaryview.c:444
 msgid "From"
 msgstr "Від"
 
-#: src/gtk/headers.h:9 src/summary_search.c:388
+#: src/gtk/headers.h:9 src/summary_search.c:412
 msgid "From:"
 msgstr "Від:"
 
@@ -4138,14 +4195,14 @@ msgstr "Відправник:"
 msgid "Reply-To"
 msgstr "Відповісти до"
 
-#: src/gtk/headers.h:12 src/prefs_filtering_action.c:1235
-#: src/prefs_matcher.c:2118 src/prefs_summary_column.c:83 src/quote_fmt.c:57
+#: src/gtk/headers.h:12 src/prefs_filtering_action.c:1255
+#: src/prefs_matcher.c:2126 src/prefs_summary_column.c:83 src/quote_fmt.c:57
 #: src/summaryview.c:445
 msgid "To"
 msgstr "До"
 
-#: src/gtk/headers.h:13 src/prefs_filtering_action.c:1236
-#: src/prefs_matcher.c:2119 src/quote_fmt.c:58
+#: src/gtk/headers.h:13 src/prefs_filtering_action.c:1256
+#: src/prefs_matcher.c:2127 src/quote_fmt.c:58
 msgid "Cc"
 msgstr "Копія"
 
@@ -4153,8 +4210,8 @@ msgstr "Копія"
 msgid "Bcc"
 msgstr "Bcc"
 
-#: src/gtk/headers.h:15 src/prefs_filtering_action.c:1238
-#: src/prefs_matcher.c:2121 src/quote_fmt.c:61
+#: src/gtk/headers.h:15 src/prefs_filtering_action.c:1258
+#: src/prefs_matcher.c:2129 src/quote_fmt.c:61
 msgid "Message-ID"
 msgstr "ID повідомлення"
 
@@ -4166,8 +4223,8 @@ msgstr "ID повідомлення:"
 msgid "In-Reply-To"
 msgstr "На відповідь до"
 
-#: src/gtk/headers.h:17 src/prefs_filtering_action.c:1240
-#: src/prefs_matcher.c:2123 src/quote_fmt.c:60
+#: src/gtk/headers.h:17 src/prefs_filtering_action.c:1260
+#: src/prefs_matcher.c:2131 src/quote_fmt.c:60
 msgid "References"
 msgstr "Відсилачі"
 
@@ -4175,8 +4232,8 @@ msgstr "Відсилачі"
 msgid "References:"
 msgstr "Відсилачі:"
 
-#: src/gtk/headers.h:18 src/prefs_filtering_action.c:1233
-#: src/prefs_matcher.c:2116 src/prefs_summary_column.c:81 src/quote_fmt.c:56
+#: src/gtk/headers.h:18 src/prefs_filtering_action.c:1253
+#: src/prefs_matcher.c:2124 src/prefs_summary_column.c:81 src/quote_fmt.c:56
 #: src/summaryview.c:443
 msgid "Subject"
 msgstr "Тема"
@@ -4269,8 +4326,8 @@ msgstr "Отримано"
 msgid "Received:"
 msgstr "Отримано:"
 
-#: src/gtk/headers.h:32 src/prefs_filtering_action.c:1239
-#: src/prefs_matcher.c:2122 src/quote_fmt.c:59
+#: src/gtk/headers.h:32 src/prefs_filtering_action.c:1259
+#: src/prefs_matcher.c:2130 src/quote_fmt.c:59
 msgid "Newsgroups"
 msgstr "Групи новин"
 
@@ -4616,7 +4673,7 @@ msgstr "Введіть пароль"
 msgid "Remember password for this session"
 msgstr "Пам’ятати пароль для цієї сесії"
 
-#: src/gtk/inputdialog.c:381 src/gtk/inputdialog.c:430
+#: src/gtk/inputdialog.c:385 src/gtk/inputdialog.c:434
 msgid "Remember this"
 msgstr "Пам’ятати це"
 
@@ -4671,7 +4728,7 @@ msgstr ""
 #: src/plugins/dillo_viewer/dillo_prefs.c:129
 #: src/plugins/pgpcore/prefs_gpg.c:557
 #: src/plugins/spamassassin/spamassassin_gtk.c:648
-#: src/plugins/trayicon/trayicon_prefs.c:69 src/prefs_toolbar.c:910
+#: src/plugins/trayicon/trayicon_prefs.c:69 src/prefs_toolbar.c:939
 msgid "Plugins"
 msgstr "Додатки"
 
@@ -4718,200 +4775,200 @@ msgstr "П_риховати"
 #: src/gtk/progressdialog.c:141 src/prefs_account.c:3200
 #: src/prefs_account.c:3218 src/prefs_account.c:3236 src/prefs_account.c:3254
 #: src/prefs_account.c:3272 src/prefs_account.c:3290 src/prefs_account.c:3309
-#: src/prefs_account.c:3391 src/prefs_filtering_action.c:1396
+#: src/prefs_account.c:3391 src/prefs_filtering_action.c:1418
 #: src/prefs_filtering.c:397 src/prefs_filtering.c:1881
 msgid "Account"
 msgstr "Обліковий запис"
 
-#: src/gtk/quicksearch.c:432
+#: src/gtk/quicksearch.c:433
 msgid "all messages"
 msgstr "всі повідомлення"
 
-#: src/gtk/quicksearch.c:433
+#: src/gtk/quicksearch.c:434
 msgid "messages whose age is greater than # days"
 msgstr "повідомлення старіші за # днів"
 
-#: src/gtk/quicksearch.c:434
+#: src/gtk/quicksearch.c:435
 msgid "messages whose age is less than # days"
 msgstr "повідомлення молодші за # днів"
 
-#: src/gtk/quicksearch.c:435
+#: src/gtk/quicksearch.c:436
 msgid "messages which contain S in the message body"
 msgstr "повідомлення, що містять S в тілі повідомлення"
 
-#: src/gtk/quicksearch.c:436
+#: src/gtk/quicksearch.c:437
 msgid "messages which contain S in the whole message"
 msgstr "повідомлення, що містять S в цілому повідомленні"
 
-#: src/gtk/quicksearch.c:437
+#: src/gtk/quicksearch.c:438
 msgid "messages carbon-copied to S"
 msgstr "повідомлення 'Копія' до S"
 
-#: src/gtk/quicksearch.c:438
+#: src/gtk/quicksearch.c:439
 msgid "message is either to: or cc: to S"
 msgstr "повідомлення або \"До:\" або \"Копія:\" для S"
 
-#: src/gtk/quicksearch.c:439
+#: src/gtk/quicksearch.c:440
 msgid "deleted messages"
 msgstr "видалені повідомлення"
 
-#: src/gtk/quicksearch.c:440
+#: src/gtk/quicksearch.c:441
 msgid "messages which contain S in the Sender field"
 msgstr "повідомлення що містять S  в полі \"Відправник\""
 
-#: src/gtk/quicksearch.c:441
+#: src/gtk/quicksearch.c:442
 msgid "true if execute \"S\" succeeds"
 msgstr "вірно, якщо виконання \"S\" успішне"
 
-#: src/gtk/quicksearch.c:442
+#: src/gtk/quicksearch.c:443
 msgid "messages originating from user S"
 msgstr "повідомлення від користувача S"
 
-#: src/gtk/quicksearch.c:443
+#: src/gtk/quicksearch.c:444
 msgid "forwarded messages"
 msgstr "переслані повідомлення"
 
-#: src/gtk/quicksearch.c:444
+#: src/gtk/quicksearch.c:445
 msgid "messages which have attachments"
 msgstr "повідомлення що містять додатки"
 
-#: src/gtk/quicksearch.c:445
+#: src/gtk/quicksearch.c:446
 msgid "messages which contain header S"
 msgstr "повідомлення, що містять заголовок S"
 
-#: src/gtk/quicksearch.c:446
+#: src/gtk/quicksearch.c:447
 msgid "messages which contain S in Message-ID header"
 msgstr ""
 "повідомлення, що містять заголовок S в заголовку ідентифікатора повідомлення "
 "(Message ID)"
 
-#: src/gtk/quicksearch.c:447
+#: src/gtk/quicksearch.c:448
 msgid "messages which contain S in In-Reply-To header"
 msgstr "повідомлення, що містять S в заголовку \"У відповідь на:\""
 
-#: src/gtk/quicksearch.c:448
+#: src/gtk/quicksearch.c:449
 msgid "messages which are marked with color #"
 msgstr "повідомлення, що позначені кольором #"
 
-#: src/gtk/quicksearch.c:449
+#: src/gtk/quicksearch.c:450
 msgid "locked messages"
 msgstr "заблоковані повідомлення"
 
-#: src/gtk/quicksearch.c:450
+#: src/gtk/quicksearch.c:451
 msgid "messages which are in newsgroup S"
 msgstr "повідомлення, що є в групі новин S"
 
-#: src/gtk/quicksearch.c:451
+#: src/gtk/quicksearch.c:452
 msgid "new messages"
 msgstr "нові повідомлення"
 
-#: src/gtk/quicksearch.c:452
+#: src/gtk/quicksearch.c:453
 msgid "old messages"
 msgstr "старі повідомлення"
 
-#: src/gtk/quicksearch.c:453
+#: src/gtk/quicksearch.c:454
 msgid "incomplete messages (not entirely downloaded)"
 msgstr "неповні повідомлення (завантажені не повністю)"
 
-#: src/gtk/quicksearch.c:454
+#: src/gtk/quicksearch.c:455
 msgid "messages which have been replied to"
 msgstr "повідомлення, на які відповіли"
 
-#: src/gtk/quicksearch.c:455
+#: src/gtk/quicksearch.c:456
 msgid "read messages"
 msgstr "прочитані повідомлення"
 
-#: src/gtk/quicksearch.c:456
+#: src/gtk/quicksearch.c:457
 msgid "messages which contain S in subject"
 msgstr "повідомлення, які містять S в темі"
 
-#: src/gtk/quicksearch.c:457
+#: src/gtk/quicksearch.c:458
 msgid "messages whose score is equal to # points"
 msgstr "повідомлення з рахунком, що дорівнює # пунктам"
 
-#: src/gtk/quicksearch.c:458
+#: src/gtk/quicksearch.c:459
 msgid "messages whose score is greater than # points"
 msgstr "повідомлення з рахунком вищим за # пунктів"
 
-#: src/gtk/quicksearch.c:459
+#: src/gtk/quicksearch.c:460
 msgid "messages whose score is lower than # points"
 msgstr "повідомлення з рахунком нижчим ніж # пунктів"
 
-#: src/gtk/quicksearch.c:460
+#: src/gtk/quicksearch.c:461
 msgid "messages whose size is equal to # bytes"
 msgstr "повідомлення з розміром, що дорівнює # байтам"
 
-#: src/gtk/quicksearch.c:461
+#: src/gtk/quicksearch.c:462
 msgid "messages whose size is greater than # bytes"
 msgstr "повідомлення з розміром більшим ніж # байт"
 
-#: src/gtk/quicksearch.c:462
+#: src/gtk/quicksearch.c:463
 msgid "messages whose size is smaller than # bytes"
 msgstr "повідомлення з розміром меншим ніж # байт"
 
-#: src/gtk/quicksearch.c:463
+#: src/gtk/quicksearch.c:464
 msgid "messages which have been sent to S"
 msgstr "повідомлення, що відправлені до S"
 
-#: src/gtk/quicksearch.c:464
+#: src/gtk/quicksearch.c:465
 msgid "messages which tags contain S"
 msgstr "повідомлення, чия позначка містить S"
 
-#: src/gtk/quicksearch.c:465
+#: src/gtk/quicksearch.c:466
 msgid "messages which have tag(s)"
 msgstr "повідомлення що містять позначку(ки)"
 
-#: src/gtk/quicksearch.c:466
+#: src/gtk/quicksearch.c:467
 msgid "marked messages"
 msgstr "помічені повідомлення"
 
-#: src/gtk/quicksearch.c:467
+#: src/gtk/quicksearch.c:468
 msgid "unread messages"
 msgstr "непрочитані повідомлення"
 
-#: src/gtk/quicksearch.c:468
+#: src/gtk/quicksearch.c:469
 msgid "messages which contain S in References header"
 msgstr "повідомлення, що містять S в заголовку посилань"
 
-#: src/gtk/quicksearch.c:469
+#: src/gtk/quicksearch.c:470
 #, c-format
 msgid "messages returning 0 when passed to command - %F is message file"
 msgstr "повідомлення видають 0 при передачі команди - %F є файл повідомлення"
 
-#: src/gtk/quicksearch.c:470
+#: src/gtk/quicksearch.c:471
 msgid "messages which contain S in X-Label header"
 msgstr "повідомлення що містять S в заголовку X-Label"
 
-#: src/gtk/quicksearch.c:472
+#: src/gtk/quicksearch.c:473
 msgid "logical AND operator"
 msgstr "логічний оператор AND (i)"
 
-#: src/gtk/quicksearch.c:473
+#: src/gtk/quicksearch.c:474
 msgid "logical OR operator"
 msgstr "логічний оператор OR (або)"
 
-#: src/gtk/quicksearch.c:474
+#: src/gtk/quicksearch.c:475
 msgid "logical NOT operator"
 msgstr "логічний оператор NOT (ні)"
 
-#: src/gtk/quicksearch.c:475
+#: src/gtk/quicksearch.c:476
 msgid "case sensitive search"
 msgstr "пошук з врахуванням регістру"
 
-#: src/gtk/quicksearch.c:476
+#: src/gtk/quicksearch.c:477
 msgid "match using regular expressions instead of substring search"
 msgstr ""
 "співпадіння використовуючи регулярні вирази замість пошуку по частині стрічки"
 
-#: src/gtk/quicksearch.c:478
+#: src/gtk/quicksearch.c:479
 msgid "all filtering expressions are allowed"
 msgstr "дозволені всі вирази фітрування"
 
-#: src/gtk/quicksearch.c:486 src/summary_search.c:433
+#: src/gtk/quicksearch.c:487 src/summary_search.c:457
 msgid "Extended Search"
 msgstr "Розширений пошук"
 
-#: src/gtk/quicksearch.c:487
+#: src/gtk/quicksearch.c:488
 msgid ""
 "Extended Search allows the user to define criteria that messages must have "
 "in order to match and be displayed in the message list.\n"
@@ -4921,48 +4978,48 @@ msgstr ""
 "відображення їх із списку повідомлень.\n"
 "Наступні символи можуть використовуватися:"
 
-#: src/gtk/quicksearch.c:587
+#: src/gtk/quicksearch.c:588
 msgid "Something went wrong during search. Please check your logs."
 msgstr ""
 "Щось пішло не так під час пошуку. Перевірте, будь ласка, журнал помилок."
 
-#: src/gtk/quicksearch.c:653
+#: src/gtk/quicksearch.c:654
 msgid "From/To/Subject/Tag"
 msgstr "Від/До/Тема/Ярлик"
 
-#: src/gtk/quicksearch.c:664
+#: src/gtk/quicksearch.c:665
 msgid "Recursive"
 msgstr "Рекурсивно"
 
-#: src/gtk/quicksearch.c:673
+#: src/gtk/quicksearch.c:674
 msgid "Sticky"
 msgstr "Закріплено"
 
-#: src/gtk/quicksearch.c:683
+#: src/gtk/quicksearch.c:684
 msgid "Type-ahead"
 msgstr "Випереджуючий ввід"
 
-#: src/gtk/quicksearch.c:695
+#: src/gtk/quicksearch.c:696
 msgid "Run on select"
 msgstr "Запустити на вибір"
 
-#: src/gtk/quicksearch.c:733
+#: src/gtk/quicksearch.c:738
 msgid "Clear the current search"
 msgstr "Очистити поточний пошук"
 
-#: src/gtk/quicksearch.c:743 src/summary_search.c:386
+#: src/gtk/quicksearch.c:748 src/summary_search.c:410
 msgid "Edit search criteria"
 msgstr "Редагувати критерії пошуку"
 
-#: src/gtk/quicksearch.c:752
+#: src/gtk/quicksearch.c:757
 msgid "Information about extended symbols"
 msgstr "Інформація про розширені символи"
 
-#: src/gtk/quicksearch.c:790 src/gtk/quicksearch.c:805
+#: src/gtk/quicksearch.c:795 src/gtk/quicksearch.c:810
 msgid "_Information"
 msgstr "Інформація"
 
-#: src/gtk/quicksearch.c:792 src/gtk/quicksearch.c:807
+#: src/gtk/quicksearch.c:797 src/gtk/quicksearch.c:812
 msgid "C_lear"
 msgstr "З_акрити"
 
@@ -5044,7 +5101,8 @@ msgid "SSL certificate is invalid"
 msgstr "SSL сертифікат недійсний."
 
 #: src/gtk/sslcertwindow.c:366
-msgid "SSL Certificate is unknown"
+#, fuzzy
+msgid "SSL certificate is unknown"
 msgstr "SSL сертифікат невідомий"
 
 #: src/gtk/sslcertwindow.c:369 src/gtk/sslcertwindow.c:419
@@ -5964,7 +6022,7 @@ msgid "Auth failed"
 msgstr "Авторизація не вдалася"
 
 #: src/inc.c:659 src/prefs_matcher.c:388 src/prefs_summary_column.c:88
-#: src/summaryview.c:2771 src/summaryview.c:6295
+#: src/summaryview.c:2771 src/summaryview.c:6308
 msgid "Locked"
 msgstr "Замкнено"
 
@@ -6163,7 +6221,7 @@ msgstr "Ті_льки раз"
 msgid "Nick Name"
 msgstr "Кличка (nick name)"
 
-#: src/main.c:266
+#: src/main.c:267
 #, c-format
 msgid ""
 "File '%s' already exists.\n"
@@ -6172,11 +6230,11 @@ msgstr ""
 "Файл '%s' вже існує.\n"
 "Не можу створити теку."
 
-#: src/main.c:288 src/main.c:301
+#: src/main.c:289 src/main.c:302
 msgid "Exiting..."
 msgstr "Виходжу..."
 
-#: src/main.c:432
+#: src/main.c:433
 #, c-format
 msgid ""
 "Configuration for %s found.\n"
@@ -6185,7 +6243,7 @@ msgstr ""
 "Знайдено конфігурацію для %s.\n"
 "Чи Ви бажаєте використати цю конфігурацію?"
 
-#: src/main.c:434
+#: src/main.c:435
 #, c-format
 msgid ""
 "\n"
@@ -6198,11 +6256,11 @@ msgstr ""
 "Ваші правила фільтрації від Sylpheed можуть бути імпортовані\n"
 "за допомогою скрипта, який доступний за адресою:% s."
 
-#: src/main.c:446
+#: src/main.c:447
 msgid "Keep old configuration"
 msgstr "Зберегти стару конфігурацію"
 
-#: src/main.c:449
+#: src/main.c:450
 msgid ""
 "Keeping a backup will allow you to go back to an older version, but may take "
 "a while if you have cached IMAP or News data, and will take some extra room "
@@ -6212,47 +6270,47 @@ msgstr ""
 "зайняти якийсь час, в разі якщо у Вас багато кешованих даних IMAP або NNTP, "
 "а також додаткового місця на диску."
 
-#: src/main.c:457
+#: src/main.c:458
 msgid "Migration of configuration"
 msgstr "Міграція налаштувань"
 
-#: src/main.c:468
+#: src/main.c:469
 msgid "Copying configuration... This may take a while..."
 msgstr "Копіювання конфігурації... Це може зайняти якийсь час..."
 
-#: src/main.c:477
+#: src/main.c:478
 msgid "Migration failed!"
 msgstr "Міграція не повелася."
 
-#: src/main.c:486
+#: src/main.c:487
 msgid "Migrating configuration..."
 msgstr "Міграція налаштувань..."
 
-#: src/main.c:1033 src/plugins/trayicon/trayicon.c:392
+#: src/main.c:1034 src/plugins/trayicon/trayicon.c:392
 msgid "Failed to register folder item update hook"
 msgstr "Не вдалося зареєструвати hook для 'item update'"
 
-#: src/main.c:1040 src/plugins/trayicon/trayicon.c:398
+#: src/main.c:1041 src/plugins/trayicon/trayicon.c:398
 msgid "Failed to register folder update hook"
 msgstr "Не вдалося зареєструвати hook для 'folder update'"
 
-#: src/main.c:1212
+#: src/main.c:1219
 msgid "g_thread is not supported by glib.\n"
 msgstr "g_thread не підтримується glib.\n"
 
-#: src/main.c:1231
+#: src/main.c:1238
 msgid "Sylpheed-Claws 2.6.0 (or older)"
 msgstr "Sylpheed-Claws 2.6.0 (або старіший)"
 
-#: src/main.c:1234
+#: src/main.c:1241
 msgid "Sylpheed-Claws 1.9.15 (or older)"
 msgstr "Sylpheed-Claws 1.9.15 (або старіший)"
 
-#: src/main.c:1237
+#: src/main.c:1244
 msgid "Sylpheed-Claws 1.0.5 (or older)"
 msgstr "Sylpheed-Claws 1.0.5 (або старіший)"
 
-#: src/main.c:1551
+#: src/main.c:1558
 #, c-format
 msgid ""
 "The following plugin failed to load. Check the Plugins configuration for "
@@ -6275,7 +6333,7 @@ msgstr[2] ""
 "додатків.\n"
 "%s"
 
-#: src/main.c:1579
+#: src/main.c:1586
 msgid ""
 "Claws Mail has detected a configured mailbox, but it is incomplete. It is "
 "possibly due to a failing IMAP account. Use \"Rebuild folder tree\" on the "
@@ -6286,7 +6344,7 @@ msgstr ""
 "вибрати \"Перебудувати дерево тек\" з контекстного меню кореневої теки "
 "облікового запису."
 
-#: src/main.c:1585
+#: src/main.c:1592
 msgid ""
 "Claws Mail has detected a configured mailbox, but could not load it. It is "
 "probably provided by an out-of-date external plugin. Please reinstall the "
@@ -6296,41 +6354,41 @@ msgstr ""
 "використовувати їх. Можливо це викликано збоєм застарілого додатку. "
 "Переінсталюйте додаток і спробуйте знову."
 
-#: src/main.c:1614
+#: src/main.c:1621
 #, c-format
 msgid "Claws Mail can not start without its data volume (%s)."
 msgstr "Claws Mail не може бути запущений без розділу з його даними (%s)."
 
-#: src/main.c:1861
+#: src/main.c:1868
 msgid "Missing filename\n"
 msgstr "Пропущена назва файла\n"
 
-#: src/main.c:1868
+#: src/main.c:1875
 msgid "Cannot open filename for reading\n"
 msgstr "Неможливо відкрити файл для читання\n"
 
-#: src/main.c:1879
+#: src/main.c:1886
 msgid "Malformed header\n"
 msgstr "Пошкоджений заголовок\n"
 
-#: src/main.c:1886
+#: src/main.c:1893
 msgid "Duplicated 'To:' header\n"
 msgstr "Дублікат заголовка 'До:'\n"
 
-#: src/main.c:1901
+#: src/main.c:1908
 msgid "Missing required 'To:' header\n"
 msgstr "Пропущено заголовок 'До:'\n"
 
-#: src/main.c:2042
+#: src/main.c:2051
 #, c-format
 msgid "Usage: %s [OPTION]...\n"
 msgstr "Використання: %s [ОПЦІЯ]...\n"
 
-#: src/main.c:2044
+#: src/main.c:2053
 msgid "  --compose [address]    open composition window"
 msgstr "  --compose [адреса]    відкрити вікно створення листа"
 
-#: src/main.c:2045
+#: src/main.c:2054
 msgid ""
 "  --compose-from-file file\n"
 "                         open composition window with data from given file;\n"
@@ -6349,11 +6407,11 @@ msgstr ""
 "аж до\n"
 "                         пустої стрічки, тоді тіло листа до кінця файлу."
 
-#: src/main.c:2050
+#: src/main.c:2059
 msgid "  --subscribe [uri]      subscribe to the given URI if possible"
 msgstr " --subscribe [uri]       підписатися на даний URI, якщо можливо"
 
-#: src/main.c:2051
+#: src/main.c:2060
 msgid ""
 "  --attach file1 [file2]...\n"
 "                         open composition window with specified files\n"
@@ -6363,16 +6421,21 @@ msgstr ""
 "                         відкрити створення повідомлення з долученням\n"
 "                         вказаних файлів"
 
-#: src/main.c:2054
+#: src/main.c:2063
 msgid "  --receive              receive new messages"
 msgstr "  --receive              отримати нові повідомлення"
 
-#: src/main.c:2055
+#: src/main.c:2064
 msgid "  --receive-all          receive new messages of all accounts"
 msgstr ""
 "  --receive-all          отримати нові повідомлення з усіх облікових записів"
 
-#: src/main.c:2056
+#: src/main.c:2065
+#, fuzzy
+msgid "  --cancel-receiving     cancel receiving of messages"
+msgstr "  --receive              отримати нові повідомлення"
+
+#: src/main.c:2066
 msgid ""
 "  --search folder type request [recursive]\n"
 "                         searches mail\n"
@@ -6391,15 +6454,15 @@ msgstr ""
 "                         рекурсивно: неправда якщо аргумент починається з 0, "
 "n, N, f або F"
 
-#: src/main.c:2063
+#: src/main.c:2073
 msgid "  --send                 send all queued messages"
 msgstr "  --send                 послати всі повідомлення з черги"
 
-#: src/main.c:2064
+#: src/main.c:2074
 msgid "  --status [folder]...   show the total number of messages"
 msgstr "  --status [тека]       показати загальну кількість повідомлень"
 
-#: src/main.c:2065
+#: src/main.c:2075
 msgid ""
 "  --status-full [folder]...\n"
 "                         show the status of each folder"
@@ -6407,15 +6470,15 @@ msgstr ""
 "  --status-full [тека]  \n"
 "                         показати статус кожної теки"
 
-#: src/main.c:2067
+#: src/main.c:2077
 msgid "  --statistics           show session statistics"
 msgstr "  --statistics           показати статистику сесії"
 
-#: src/main.c:2068
+#: src/main.c:2078
 msgid "  --reset-statistics     reset session statistics"
 msgstr "  --reset-statistics     скинути статистику сесії"
 
-#: src/main.c:2069
+#: src/main.c:2079
 msgid ""
 "  --select folder[/msg]  jumps to the specified folder/message\n"
 "                         folder is a folder id like 'folder/sub_folder'"
@@ -6424,43 +6487,43 @@ msgstr ""
 "                         тека тут є ідентифікатор теки, наприклад 'тека/"
 "підтека'"
 
-#: src/main.c:2071
+#: src/main.c:2081
 msgid "  --online               switch to online mode"
 msgstr ""
 "  --online               переключитися в режим підключення до інтернету"
 
-#: src/main.c:2072
+#: src/main.c:2082
 msgid "  --offline              switch to offline mode"
 msgstr "  --offline              переключити до автономного режиму"
 
-#: src/main.c:2073
+#: src/main.c:2083
 msgid "  --exit --quit -q       exit Claws Mail"
 msgstr "  --exit --quit -q       вихід з Claws Mail"
 
-#: src/main.c:2074
+#: src/main.c:2084
 msgid "  --debug                debug mode"
 msgstr "  --debug                режим відладки"
 
-#: src/main.c:2075
+#: src/main.c:2085
 msgid "  --help -h              display this help and exit"
 msgstr "  --help -h              показати цю допомогу і вийти"
 
-#: src/main.c:2076
+#: src/main.c:2086
 msgid "  --version -v           output version information and exit"
 msgstr "  --version -v           показати інформацію про версію і вийти"
 
-#: src/main.c:2077
+#: src/main.c:2087
 msgid ""
 "  --version-full -V      output version and built-in features information "
 "and exit"
 msgstr ""
 "  --version-full -V      показати інформацію про версію і можливості і вийти"
 
-#: src/main.c:2078
+#: src/main.c:2088
 msgid "  --config-dir           output configuration directory"
 msgstr "  --config-dir           показує каталог з настройками"
 
-#: src/main.c:2079
+#: src/main.c:2089
 msgid ""
 "  --alternate-config-dir [dir]\n"
 "                         use specified configuration directory"
@@ -6468,32 +6531,32 @@ msgstr ""
 "  --alternate-config-dir [dir]\n"
 "                         використовувати вказаний каталог с настройками"
 
-#: src/main.c:2129
+#: src/main.c:2139
 msgid "Unknown option\n"
 msgstr "Невідома опція\n"
 
-#: src/main.c:2147
+#: src/main.c:2157
 #, c-format
 msgid "Processing (%s)..."
 msgstr "Обробка (%s)..."
 
-#: src/main.c:2150
+#: src/main.c:2160
 msgid "top level folder"
 msgstr "тека вищого рівня"
 
-#: src/main.c:2233
+#: src/main.c:2243
 msgid "Queued messages"
 msgstr "Повідомлення в черзі"
 
-#: src/main.c:2234
+#: src/main.c:2244
 msgid "Some unsent messages are queued. Exit now?"
 msgstr "Деякі невислані повідомлення є в черзі. Вийти зараз?"
 
-#: src/main.c:2931
+#: src/main.c:2946
 msgid "NetworkManager: network is online.\n"
 msgstr "Менеджер Мереж: є мережа.\n"
 
-#: src/main.c:2937
+#: src/main.c:2952
 msgid "NetworkManager: network is offline.\n"
 msgstr "Менеджер Мереж: немає мережі.\n"
 
@@ -7231,7 +7294,7 @@ msgstr "По зменшенню"
 msgid "_Auto detect"
 msgstr "_Автовизначення"
 
-#: src/mainwindow.c:1294 src/summaryview.c:6221
+#: src/mainwindow.c:1294 src/summaryview.c:6234
 msgid "Apply tags..."
 msgstr "Застосувати ярлики..."
 
@@ -7361,7 +7424,7 @@ msgstr[0] "Видалено %d дублікат повідомлення в %d �
 msgstr[1] "Видалено %d дублікати повідомлень в %d теках.\n"
 msgstr[2] "Видалено %d дублікатів повідомлень в %d теках.\n"
 
-#: src/mainwindow.c:5051 src/summaryview.c:5710
+#: src/mainwindow.c:5051 src/summaryview.c:5715
 msgid "Processing rules to apply before folder rules"
 msgstr "Обробка правил для застосування перед правилами теки"
 
@@ -7369,7 +7432,7 @@ msgstr "Обробка правил для застосування перед �
 msgid "Processing rules to apply after folder rules"
 msgstr "Обробка правил для застосування після правил теки"
 
-#: src/mainwindow.c:5067 src/summaryview.c:5721
+#: src/mainwindow.c:5067 src/summaryview.c:5726
 msgid "Filtering configuration"
 msgstr "Налаштування фільтрування"
 
@@ -7421,7 +7484,7 @@ msgid "tag"
 msgstr "тег"
 
 #: src/matcher.c:515 src/matcher.c:520 src/matcher.c:540 src/matcher.c:545
-#: src/message_search.c:208 src/prefs_matcher.c:722 src/summary_search.c:428
+#: src/message_search.c:212 src/prefs_matcher.c:728 src/summary_search.c:452
 msgid "Case sensitive"
 msgstr "Чуттєво до регістру"
 
@@ -7447,7 +7510,7 @@ msgstr "повідомлення не відповідає\n"
 msgid "(none)"
 msgstr "(нічого)"
 
-#: src/mbox.c:103
+#: src/mbox.c:107
 #, c-format
 msgid ""
 "Could not open mbox file:\n"
@@ -7456,25 +7519,25 @@ msgstr ""
 "Не можу відкрити файл mbox:\n"
 "%s\n"
 
-#: src/mbox.c:139
+#: src/mbox.c:143
 #, c-format
 msgid "Importing from mbox... (%d mails imported)"
 msgstr "Імпортування з mbox...(%d листів імпортовано)"
 
-#: src/mbox.c:547
+#: src/mbox.c:551
 msgid "Overwrite mbox file"
 msgstr "Перезаписати файл mbox"
 
-#: src/mbox.c:548
+#: src/mbox.c:552
 msgid "This file already exists. Do you want to overwrite it?"
 msgstr "Цей файл вже існує. Ви бажаєте перезаписати його?"
 
-#: src/mbox.c:549 src/messageview.c:1862 src/mimeview.c:1827
-#: src/prefs_themes.c:553 src/textview.c:3118
+#: src/mbox.c:553 src/messageview.c:1866 src/mimeview.c:1827
+#: src/prefs_themes.c:553 src/textview.c:3120
 msgid "Overwrite"
 msgstr "Перезаписати"
 
-#: src/mbox.c:558
+#: src/mbox.c:562
 #, c-format
 msgid ""
 "Could not create mbox file:\n"
@@ -7483,7 +7546,7 @@ msgstr ""
 "Не можу створити файл mbox:\n"
 "%s\n"
 
-#: src/mbox.c:566
+#: src/mbox.c:570
 msgid "Exporting to mbox..."
 msgstr "Експортування в файл mbox..."
 
@@ -7495,23 +7558,23 @@ msgstr "Знайти в поточному повідомленні"
 msgid "Find text:"
 msgstr "Знайти текст:"
 
-#: src/message_search.c:324 src/summary_search.c:744
+#: src/message_search.c:332 src/summary_search.c:768
 msgid "Search failed"
 msgstr "Пошук не вдався"
 
-#: src/message_search.c:325 src/summary_search.c:745
+#: src/message_search.c:333 src/summary_search.c:769
 msgid "Search string not found."
 msgstr "Пошук стрічки не вдався."
 
-#: src/message_search.c:334
+#: src/message_search.c:342
 msgid "Beginning of message reached; continue from end?"
 msgstr "Досягнуто початок повідомлення; почати з кінця?"
 
-#: src/message_search.c:337
+#: src/message_search.c:345
 msgid "End of message reached; continue from beginning?"
 msgstr "Досягнуто кінець повідомлення; почати з початку?"
 
-#: src/message_search.c:340 src/summary_search.c:756
+#: src/message_search.c:348 src/summary_search.c:780
 msgid "Search finished"
 msgstr "Пошук закінчено"
 
@@ -7519,15 +7582,15 @@ msgstr "Пошук закінчено"
 msgid "Compose _new message"
 msgstr "Створити _нове повідомлення"
 
-#: src/messageview.c:729 src/messageview.c:1408 src/messageview.c:1604
+#: src/messageview.c:729 src/messageview.c:1412 src/messageview.c:1608
 msgid "Claws Mail - Message View"
 msgstr "Claws Mail - Вигляд повідомлення"
 
-#: src/messageview.c:856
+#: src/messageview.c:860
 msgid "<No Return-Path found>"
 msgstr "<Не знайдено шляху повернення>"
 
-#: src/messageview.c:864
+#: src/messageview.c:868
 #, c-format
 msgid ""
 "The notification address to which the return receipt is\n"
@@ -7542,11 +7605,11 @@ msgstr ""
 "Адреса відправника: %s\n"
 "Рекомендується не відсилати повідомлення про вручення."
 
-#: src/messageview.c:871 src/messageview.c:888
+#: src/messageview.c:875 src/messageview.c:892
 msgid "_Don't Send"
 msgstr "Не _висилати"
 
-#: src/messageview.c:884
+#: src/messageview.c:888
 msgid ""
 "This message is asking for a return receipt notification\n"
 "but according to its 'To:' and 'CC:' headers it was not\n"
@@ -7558,65 +7621,65 @@ msgstr ""
 "офіційно адресовано вам.\n"
 "Автоматичне повідомлення про вручення не буде відіслано."
 
-#: src/messageview.c:1336
+#: src/messageview.c:1340
 #, c-format
 msgid "Fetching message (%s)..."
 msgstr "Отримую повідомлення (%s)..."
 
-#: src/messageview.c:1372 src/procmime.c:981
+#: src/messageview.c:1376 src/procmime.c:981
 #, c-format
 msgid "Couldn't decrypt: %s"
 msgstr "Не можу розшифрувати: %s"
 
-#: src/messageview.c:1455 src/messageview.c:1463
+#: src/messageview.c:1459 src/messageview.c:1467
 msgid "Message doesn't conform to MIME standard. It may render wrongly."
 msgstr ""
 "Повідомлення не відповідає стандарту MIME. Воно може відображатися "
 "неправильно."
 
-#: src/messageview.c:1854 src/messageview.c:1857 src/mimeview.c:1980
-#: src/summaryview.c:4797 src/summaryview.c:4800 src/textview.c:3106
+#: src/messageview.c:1858 src/messageview.c:1861 src/mimeview.c:1980
+#: src/summaryview.c:4802 src/summaryview.c:4805 src/textview.c:3108
 msgid "Save as"
 msgstr "Зберегти як"
 
-#: src/messageview.c:1863
+#: src/messageview.c:1867
 msgid "Overwrite existing file?"
 msgstr "Перезаписати існуючий файл?"
 
-#: src/messageview.c:1871 src/summaryview.c:4817 src/summaryview.c:4820
-#: src/summaryview.c:4835
+#: src/messageview.c:1875 src/summaryview.c:4822 src/summaryview.c:4825
+#: src/summaryview.c:4840
 #, c-format
 msgid "Couldn't save the file '%s'."
 msgstr "Не можу зберегти файл '%s'."
 
-#: src/messageview.c:1925
+#: src/messageview.c:1929
 #, c-format
 msgid "Show all %s."
 msgstr "Показати всі %s."
 
-#: src/messageview.c:1927
+#: src/messageview.c:1931
 msgid "Only the first megabyte of text is shown."
 msgstr "Показано тільки перший мегабайт тексту."
 
-#: src/messageview.c:1958
+#: src/messageview.c:1962
 msgid ""
 "You got a return receipt for this message : it has been displayed by the "
 "recipient."
 msgstr "Ви отримали повідомлення про прочитання цього повідомлення адресатом."
 
-#: src/messageview.c:1961
+#: src/messageview.c:1965
 msgid "You asked for a return receipt in this message."
 msgstr "Ви попросили повідомити про вручення цього повідомлення."
 
-#: src/messageview.c:1967
+#: src/messageview.c:1971
 msgid "This message asks for a return receipt."
 msgstr "Це повідомлення містить запит про вручення."
 
-#: src/messageview.c:1968
+#: src/messageview.c:1972
 msgid "Send receipt"
 msgstr "Послати зворотню адресу"
 
-#: src/messageview.c:2011
+#: src/messageview.c:2015
 msgid ""
 "This message has been partially retrieved,\n"
 "and has been deleted from the server."
@@ -7624,7 +7687,7 @@ msgstr ""
 "Це повідомлення було отримано не повністю\n"
 "і було видалено з сервера."
 
-#: src/messageview.c:2017
+#: src/messageview.c:2021
 #, c-format
 msgid ""
 "This message has been partially retrieved;\n"
@@ -7633,15 +7696,15 @@ msgstr ""
 "Це повідомлення було отримано не повністю;\n"
 "це %s."
 
-#: src/messageview.c:2021 src/messageview.c:2043
+#: src/messageview.c:2025 src/messageview.c:2047
 msgid "Mark for download"
 msgstr "Позначити для скачування"
 
-#: src/messageview.c:2022 src/messageview.c:2034
+#: src/messageview.c:2026 src/messageview.c:2038
 msgid "Mark for deletion"
 msgstr "Позначити для видалення"
 
-#: src/messageview.c:2027
+#: src/messageview.c:2031
 #, c-format
 msgid ""
 "This message has been partially retrieved;\n"
@@ -7650,12 +7713,12 @@ msgstr ""
 "Це повідомлення було отримано не повністю;\n"
 "це %s і буде завантажено."
 
-#: src/messageview.c:2032 src/messageview.c:2045
+#: src/messageview.c:2036 src/messageview.c:2049
 #: src/prefs_filtering_action.c:180
 msgid "Unmark"
 msgstr "Зняти позначку"
 
-#: src/messageview.c:2038
+#: src/messageview.c:2042
 #, c-format
 msgid ""
 "This message has been partially retrieved;\n"
@@ -7664,11 +7727,11 @@ msgstr ""
 "Це повідомлення було отримано не повністю;\n"
 "це %s і буде видалено."
 
-#: src/messageview.c:2111
+#: src/messageview.c:2115
 msgid "Return Receipt Notification"
 msgstr "Повідомлення про вручення"
 
-#: src/messageview.c:2112
+#: src/messageview.c:2116
 msgid ""
 "The message was sent to several of your accounts.\n"
 "Please choose which account do you want to use for sending the receipt "
@@ -7678,19 +7741,19 @@ msgstr ""
 "Виберіть, будь-ласка, обліковий запис для відправки повідомлення про "
 "вручення."
 
-#: src/messageview.c:2116
+#: src/messageview.c:2120
 msgid "_Cancel"
 msgstr "_Відмінити"
 
-#: src/messageview.c:2116
+#: src/messageview.c:2120
 msgid "_Send Notification"
 msgstr "Послати _сповіщення"
 
-#: src/messageview.c:2183
+#: src/messageview.c:2187
 msgid "Cannot print: the message doesn't contain text."
 msgstr "Не можу надрукувати: повідомлення не містить тексту."
 
-#: src/messageview.c:2952
+#: src/messageview.c:2956
 msgid ""
 "\n"
 "  There are no messages in this folder"
@@ -7698,7 +7761,7 @@ msgstr ""
 "\n"
 "  В цій теці немає повідомлень"
 
-#: src/messageview.c:2960
+#: src/messageview.c:2964
 msgid ""
 "\n"
 "  Message has been deleted"
@@ -7706,7 +7769,7 @@ msgstr ""
 "\n"
 "  Повідомлення було вилучено"
 
-#: src/messageview.c:2961
+#: src/messageview.c:2965
 msgid ""
 "\n"
 "  Message has been moved to trash"
@@ -7714,8 +7777,8 @@ msgstr ""
 "\n"
 "  Повідомлення було переміщено до смітника"
 
-#: src/messageview.c:2996 src/messageview.c:3002 src/summaryview.c:4174
-#: src/summaryview.c:6958
+#: src/messageview.c:3000 src/messageview.c:3006 src/summaryview.c:4174
+#: src/summaryview.c:6971
 msgid "An error happened while learning.\n"
 msgstr "Сталася помилка при навчанні.\n"
 
@@ -7810,7 +7873,7 @@ msgstr "Повернутися до листа"
 msgid "Couldn't save the part of multipart message: %s"
 msgstr "Не можу зберегти частину багаточастинного повідомлення: %s"
 
-#: src/mimeview.c:1824 src/textview.c:3116
+#: src/mimeview.c:1824 src/textview.c:3118
 #, c-format
 msgid "Overwrite existing file '%s'?"
 msgstr "Перезаписати існуючий файл '%s'?"
@@ -7828,11 +7891,11 @@ msgstr "'%s' не є каталогом"
 msgid "No registered viewer for this file type."
 msgstr "Не зареєстровано переглядач для цього типу файла."
 
-#: src/mimeview.c:2134 src/mimeview.c:2141 src/textview.c:3037
+#: src/mimeview.c:2134 src/mimeview.c:2141 src/textview.c:3039
 msgid "Open with"
 msgstr "Відкрити з"
 
-#: src/mimeview.c:2135 src/mimeview.c:2142 src/textview.c:3038
+#: src/mimeview.c:2135 src/mimeview.c:2142 src/textview.c:3040
 #, c-format
 msgid ""
 "Enter the command-line to open file:\n"
@@ -8161,8 +8224,8 @@ msgstr ""
 #: src/plugins/bogofilter/bogofilter_gtk.c:234
 #: src/plugins/dillo_viewer/dillo_prefs.c:204
 #: src/plugins/spamassassin/spamassassin_gtk.c:447
-#: src/prefs_filtering_action.c:557 src/prefs_filtering_action.c:564
-#: src/prefs_matcher.c:661
+#: src/prefs_filtering_action.c:573 src/prefs_filtering_action.c:580
+#: src/prefs_matcher.c:667
 msgid "Select ..."
 msgstr "Вибір ..."
 
@@ -8705,14 +8768,14 @@ msgstr "Підозрілий опис секретного ключа"
 msgid "Error setting secret key: %s"
 msgstr "Помилка встановлення секретного ключа: %s"
 
-#: src/plugins/pgpcore/sgpgme.c:658
+#: src/plugins/pgpcore/sgpgme.c:674
 #, c-format
 msgid "Gpgme protocol '%s' is unusable: Engine '%s' isn't installed properly."
 msgstr ""
 "Неможливо використати протокол Gpgme '%s': двигун  '%s' не встановлено "
 "належним чином."
 
-#: src/plugins/pgpcore/sgpgme.c:664
+#: src/plugins/pgpcore/sgpgme.c:680
 #, c-format
 msgid ""
 "Gpgme protocol '%s' is unusable: Engine '%s' version %s is installed, but "
@@ -8721,12 +8784,12 @@ msgstr ""
 "Неможливо використати протокол Gpgme '%s': Двигун '%s' версії %s "
 "встановлено, але вимагається версія %s.\n"
 
-#: src/plugins/pgpcore/sgpgme.c:672
+#: src/plugins/pgpcore/sgpgme.c:688
 #, c-format
 msgid "Gpgme protocol '%s' is unusable (unknown problem)"
 msgstr "Неможливо використати протокол Gpgme '%s': (невідома проблема)"
 
-#: src/plugins/pgpcore/sgpgme.c:688
+#: src/plugins/pgpcore/sgpgme.c:704
 msgid ""
 "GnuPG is not installed properly, or needs to be upgraded.\n"
 "OpenPGP support disabled."
@@ -8734,7 +8797,7 @@ msgstr ""
 "GnuPG не встановлено правильно, або його потрібно оновити.\n"
 "Підтримка OpenGPG відключено."
 
-#: src/plugins/pgpcore/sgpgme.c:722
+#: src/plugins/pgpcore/sgpgme.c:738
 msgid ""
 "You have to save the account's information with \"OK\" before being able to "
 "generate a key pair.\n"
@@ -8742,11 +8805,11 @@ msgstr ""
 "Ви повинні зберегти інформацію про обліковий запис за допомогою кнопки \"OK"
 "\" перед генерацією пари ключів.\n"
 
-#: src/plugins/pgpcore/sgpgme.c:727
+#: src/plugins/pgpcore/sgpgme.c:743
 msgid "No PGP key found"
 msgstr "Не знайдено ключа GPG"
 
-#: src/plugins/pgpcore/sgpgme.c:728
+#: src/plugins/pgpcore/sgpgme.c:744
 msgid ""
 "Claws Mail did not find a secret PGP key, which means that you won't be able "
 "to sign emails or receive encrypted emails.\n"
@@ -8757,12 +8820,12 @@ msgstr ""
 "інших.\n"
 "Чи бажаєте Ви створити нову пару ключів?"
 
-#: src/plugins/pgpcore/sgpgme.c:798 src/plugins/pgpcore/sgpgme.c:814
+#: src/plugins/pgpcore/sgpgme.c:814 src/plugins/pgpcore/sgpgme.c:830
 #, c-format
 msgid "Couldn't generate a new key pair: %s"
 msgstr "Не можу згенерувати нову пару ключів: %s"
 
-#: src/plugins/pgpcore/sgpgme.c:805
+#: src/plugins/pgpcore/sgpgme.c:821
 msgid ""
 "Generating your new key pair... Please move the mouse around to help "
 "generate entropy..."
@@ -8770,11 +8833,11 @@ msgstr ""
 "Генерую нову пару ключів... Будь-ласка, рухайте курсором мишки для кращого "
 "генерування..."
 
-#: src/plugins/pgpcore/sgpgme.c:820
+#: src/plugins/pgpcore/sgpgme.c:836
 msgid "Couldn't generate a new key pair: unknown error"
 msgstr "Не можу згенерувати нову пару ключів: невідома помилка"
 
-#: src/plugins/pgpcore/sgpgme.c:824
+#: src/plugins/pgpcore/sgpgme.c:840
 #, c-format
 msgid ""
 "Your new key pair has been generated. Its fingerprint is:\n"
@@ -8787,19 +8850,19 @@ msgstr ""
 "\n"
 "Ви бажаєте експортувати його на сервер ключів?"
 
-#: src/plugins/pgpcore/sgpgme.c:828
+#: src/plugins/pgpcore/sgpgme.c:844
 msgid "Key generated"
 msgstr "Ключ згенеровано."
 
-#: src/plugins/pgpcore/sgpgme.c:867
+#: src/plugins/pgpcore/sgpgme.c:883
 msgid "Key exported."
 msgstr "Ключ експортовано."
 
-#: src/plugins/pgpcore/sgpgme.c:869
+#: src/plugins/pgpcore/sgpgme.c:885
 msgid "Couldn't export key."
 msgstr "Не можу експортувати ключ."
 
-#: src/plugins/pgpcore/sgpgme.c:873
+#: src/plugins/pgpcore/sgpgme.c:889
 msgid "Key export isn't implemented in Windows."
 msgstr "Експорт ключів не підтримується в Віндовс"
 
@@ -9205,7 +9268,7 @@ msgstr ""
 "Максимальний час для перевірки. Якщо перевірка займає довший час, то вона "
 "буде перервана."
 
-#: src/plugins/spamassassin/spamassassin_gtk.c:391 src/prefs_other.c:554
+#: src/plugins/spamassassin/spamassassin_gtk.c:391 src/prefs_other.c:558
 #: src/prefs_summaries.c:496
 msgid "seconds"
 msgstr "секунди"
@@ -9572,7 +9635,7 @@ msgid "'Get Mail' checks for new messages on this account"
 msgstr "'Отримати пошту' перевіряє цей обліковий запис на нові повідомлення"
 
 #: src/prefs_account.c:1689 src/prefs_customheader.c:209
-#: src/prefs_matcher.c:613 src/prefs_matcher.c:1921 src/prefs_matcher.c:1942
+#: src/prefs_matcher.c:615 src/prefs_matcher.c:1929 src/prefs_matcher.c:1950
 msgid "Header"
 msgstr "Заголовок"
 
@@ -9938,9 +10001,9 @@ msgstr "Редагувати дію фільтра"
 msgid "Append the new action above to the list"
 msgstr "Додати нову дію вище до списку"
 
-#: src/prefs_actions.c:329 src/prefs_filtering_action.c:594
-#: src/prefs_filtering.c:477 src/prefs_matcher.c:753 src/prefs_template.c:309
-#: src/prefs_toolbar.c:1002
+#: src/prefs_actions.c:329 src/prefs_filtering_action.c:610
+#: src/prefs_filtering.c:477 src/prefs_matcher.c:759 src/prefs_template.c:309
+#: src/prefs_toolbar.c:1043
 msgid "Replace"
 msgstr "Заміна"
 
@@ -9968,9 +10031,9 @@ msgstr "Перемістити вибрану дію догори"
 msgid "Move selected action down"
 msgstr "Перемістити вибрану дію донизу"
 
-#: src/prefs_actions.c:531 src/prefs_filtering_action.c:686
+#: src/prefs_actions.c:531 src/prefs_filtering_action.c:702
 #: src/prefs_filtering.c:833 src/prefs_filtering.c:835
-#: src/prefs_filtering.c:836 src/prefs_filtering.c:946 src/prefs_matcher.c:874
+#: src/prefs_filtering.c:836 src/prefs_filtering.c:946 src/prefs_matcher.c:882
 #: src/prefs_template.c:465
 msgid "(New)"
 msgstr "(Нове)"
@@ -10031,7 +10094,7 @@ msgid "Do you really want to delete all the actions?"
 msgstr "Ви дійсно бажаєте видалити всі дії?"
 
 #: src/prefs_actions.c:894 src/prefs_actions.c:925 src/prefs_filtering.c:1496
-#: src/prefs_filtering.c:1518 src/prefs_matcher.c:2071
+#: src/prefs_filtering.c:1518 src/prefs_matcher.c:2079
 #: src/prefs_template.c:565 src/prefs_template.c:590
 msgid "Entry not saved"
 msgstr "Ввід не збережено"
@@ -10044,7 +10107,7 @@ msgstr "Ввід не збережено. Закрити все одно?"
 
 #: src/prefs_actions.c:896 src/prefs_actions.c:901 src/prefs_actions.c:927
 #: src/prefs_filtering.c:1476 src/prefs_filtering.c:1498
-#: src/prefs_filtering.c:1520 src/prefs_matcher.c:2073
+#: src/prefs_filtering.c:1520 src/prefs_matcher.c:2081
 #: src/prefs_template.c:567 src/prefs_template.c:592 src/prefs_template.c:597
 msgid "+_Continue editing"
 msgstr "+_Продовжувати редагування"
@@ -10281,8 +10344,8 @@ msgstr "Запис"
 msgid "Custom header configuration"
 msgstr "Користувацька конфігурація заголовку"
 
-#: src/prefs_customheader.c:507 src/prefs_display_header.c:587
-#: src/prefs_matcher.c:1552 src/prefs_matcher.c:1567
+#: src/prefs_customheader.c:507 src/prefs_display_header.c:599
+#: src/prefs_matcher.c:1560 src/prefs_matcher.c:1575
 msgid "Header name is not set."
 msgstr "Назва заголовку не встановлена."
 
@@ -10357,19 +10420,19 @@ msgstr "Показана конфігурація заголовку"
 msgid "Header name"
 msgstr "Назва заголовку"
 
-#: src/prefs_display_header.c:309
+#: src/prefs_display_header.c:317
 msgid "Displayed Headers"
 msgstr "Показані заголовки"
 
-#: src/prefs_display_header.c:371
+#: src/prefs_display_header.c:379
 msgid "Hidden headers"
 msgstr "Приховані заголовки"
 
-#: src/prefs_display_header.c:397
+#: src/prefs_display_header.c:405
 msgid "Show all unspecified headers"
 msgstr "Показати всі невказані заголовки"
 
-#: src/prefs_display_header.c:597
+#: src/prefs_display_header.c:609
 msgid "This header is already in the list."
 msgstr "Цей заголовок вже є в списку"
 
@@ -10451,7 +10514,7 @@ msgstr "Позначити як спам"
 msgid "Mark as ham"
 msgstr "Позначити як не спам"
 
-#: src/prefs_filtering_action.c:187 src/prefs_filtering_action.c:1413
+#: src/prefs_filtering_action.c:187 src/prefs_filtering_action.c:1435
 #: src/toolbar.c:200 src/toolbar.c:427 src/toolbar.c:2081
 msgid "Execute"
 msgstr "Виконати"
@@ -10470,7 +10533,7 @@ msgid "Redirect"
 msgstr "Перенаправити"
 
 #: src/prefs_filtering_action.c:194 src/prefs_filtering_action.c:195
-#: src/prefs_filtering_action.c:1417 src/prefs_matcher.c:619
+#: src/prefs_filtering_action.c:1439 src/prefs_matcher.c:621
 #: src/prefs_summary_column.c:87 src/summaryview.c:449
 msgid "Score"
 msgstr "Оцінка"
@@ -10484,7 +10547,7 @@ msgid "Set score"
 msgstr "Встановити оцінку"
 
 #: src/prefs_filtering_action.c:196 src/prefs_filtering_action.c:197
-#: src/prefs_filtering_action.c:198 src/prefs_matcher.c:623
+#: src/prefs_filtering_action.c:198 src/prefs_matcher.c:625
 #: src/prefs_summary_column.c:89 src/summaryview.c:451
 msgid "Tags"
 msgstr "Ярлики"
@@ -10514,7 +10577,7 @@ msgid "Action configuration"
 msgstr "Конфігурація дії"
 
 #: src/prefs_filtering_action.c:427 src/prefs_filtering.c:1892
-#: src/prefs_matcher.c:576
+#: src/prefs_matcher.c:578
 msgid "Rule"
 msgstr "Правило"
 
@@ -10522,65 +10585,65 @@ msgstr "Правило"
 msgid "Action"
 msgstr "Дія"
 
-#: src/prefs_filtering_action.c:917
+#: src/prefs_filtering_action.c:933
 msgid "Command-line not set"
 msgstr "Командну стрічку не встановлено"
 
-#: src/prefs_filtering_action.c:918
+#: src/prefs_filtering_action.c:934
 msgid "Destination is not set."
 msgstr "Призначення не встановлено."
 
-#: src/prefs_filtering_action.c:929
+#: src/prefs_filtering_action.c:945
 msgid "Recipient is not set."
 msgstr "Адресат не встановлений"
 
-#: src/prefs_filtering_action.c:947
+#: src/prefs_filtering_action.c:963
 msgid "Score is not set"
 msgstr "Оцінка не встановлена"
 
-#: src/prefs_filtering_action.c:955
+#: src/prefs_filtering_action.c:971
 msgid "Header is not set."
 msgstr "Заголовок не встановлений"
 
-#: src/prefs_filtering_action.c:962
+#: src/prefs_filtering_action.c:978
 msgid "Target addressbook/folder is not set."
 msgstr "Не вибрано цільової адресної книжки/теки."
 
-#: src/prefs_filtering_action.c:972
+#: src/prefs_filtering_action.c:992
 msgid "Tag name is empty."
 msgstr "Назва ярлика порожня."
 
-#: src/prefs_filtering_action.c:1194
+#: src/prefs_filtering_action.c:1214
 msgid "No action was defined."
 msgstr "Не визначено жодної дії."
 
-#: src/prefs_filtering_action.c:1232 src/prefs_matcher.c:2115
+#: src/prefs_filtering_action.c:1252 src/prefs_matcher.c:2123
 #: src/quote_fmt.c:79
 msgid "literal %"
 msgstr "літерал %"
 
-#: src/prefs_filtering_action.c:1241 src/prefs_matcher.c:2124
+#: src/prefs_filtering_action.c:1261 src/prefs_matcher.c:2132
 msgid "filename (should not be modified)"
 msgstr "навза файлу (не повинна змінюватися)"
 
-#: src/prefs_filtering_action.c:1242 src/prefs_matcher.c:2125
+#: src/prefs_filtering_action.c:1262 src/prefs_matcher.c:2133
 #: src/quote_fmt.c:87
 msgid "new line"
 msgstr "нова лінійка"
 
-#: src/prefs_filtering_action.c:1243 src/prefs_matcher.c:2126
+#: src/prefs_filtering_action.c:1263 src/prefs_matcher.c:2134
 msgid "escape character for quotes"
 msgstr "забрати знак цитування"
 
-#: src/prefs_filtering_action.c:1244 src/prefs_matcher.c:2127
+#: src/prefs_filtering_action.c:1264 src/prefs_matcher.c:2135
 msgid "quote character"
 msgstr "знак цитування"
 
-#: src/prefs_filtering_action.c:1252
+#: src/prefs_filtering_action.c:1272
 msgid "Filtering Action: 'Execute'"
 msgstr "Дія фільтрування: ’Виконати’"
 
-#: src/prefs_filtering_action.c:1253
+#: src/prefs_filtering_action.c:1273
 msgid ""
 "'Execute' allows you to send a message or message element to an external "
 "program or script.\n"
@@ -10590,23 +10653,23 @@ msgstr ""
 "зовнішньої програми або скрипта.\n"
 "Можна використовувати наступні символи:"
 
-#: src/prefs_filtering_action.c:1397
+#: src/prefs_filtering_action.c:1419
 msgid "Recipient"
 msgstr "Адресат"
 
-#: src/prefs_filtering_action.c:1401
+#: src/prefs_filtering_action.c:1423
 msgid "Book/Folder"
 msgstr "Книжка/Тека"
 
-#: src/prefs_filtering_action.c:1405
+#: src/prefs_filtering_action.c:1427
 msgid "Destination"
 msgstr "Призначення"
 
-#: src/prefs_filtering_action.c:1409
+#: src/prefs_filtering_action.c:1431
 msgid "Color"
 msgstr "Колір"
 
-#: src/prefs_filtering_action.c:1495
+#: src/prefs_filtering_action.c:1517
 msgid "Current action list"
 msgstr "Список поточних дій"
 
@@ -10616,7 +10679,8 @@ msgstr "Фільтрування/Обробка конфігурації"
 
 #: src/prefs_filtering.c:266 src/prefs_filtering.c:864
 #: src/prefs_filtering.c:978
-msgid "Filtering Account Menu|All"
+msgctxt "Filtering Account Menu"
+msgid "All"
 msgstr "Все"
 
 #: src/prefs_filtering.c:411
@@ -10741,7 +10805,7 @@ msgid "Displayed columns"
 msgstr "Колонки для показу"
 
 #: src/prefs_folder_column.c:329 src/prefs_msg_colors.c:494
-#: src/prefs_summary_column.c:343 src/prefs_toolbar.c:1014
+#: src/prefs_summary_column.c:343 src/prefs_toolbar.c:1055
 msgid " Use default "
 msgstr " Використати типове "
 
@@ -10907,7 +10971,7 @@ msgstr "Властивості для теки %s"
 msgid "Folder and Message Lists"
 msgstr "Списки тек і повідомлень"
 
-#: src/prefs_fonts.c:99 src/prefs_matcher.c:1992
+#: src/prefs_fonts.c:99 src/prefs_matcher.c:2000
 msgid "Message"
 msgstr "Повідомлення"
 
@@ -11086,7 +11150,7 @@ msgstr "Повідомлення про помилки"
 msgid "Status messages for filtering/processing log"
 msgstr "Повідомлення статусу для фільтрування/обробки"
 
-#: src/prefs_logging.c:427 src/prefs_msg_colors.c:145 src/prefs_other.c:685
+#: src/prefs_logging.c:427 src/prefs_msg_colors.c:145 src/prefs_other.c:689
 msgid "Other"
 msgstr "Інше"
 
@@ -11158,11 +11222,11 @@ msgstr "тіло повідомлення"
 msgid "whole message"
 msgstr "все повідомлення"
 
-#: src/prefs_matcher.c:384 src/summaryview.c:6285
+#: src/prefs_matcher.c:384 src/summaryview.c:6298
 msgid "Marked"
 msgstr "Помічене"
 
-#: src/prefs_matcher.c:385 src/summaryview.c:6283
+#: src/prefs_matcher.c:385 src/summaryview.c:6296
 msgid "Deleted"
 msgstr "Видалене"
 
@@ -11170,11 +11234,11 @@ msgstr "Видалене"
 msgid "Replied"
 msgstr "Відписано"
 
-#: src/prefs_matcher.c:387 src/summaryview.c:6277
+#: src/prefs_matcher.c:387 src/summaryview.c:6290
 msgid "Forwarded"
 msgstr "Переслано"
 
-#: src/prefs_matcher.c:389 src/summaryview.c:6267 src/toolbar.c:408
+#: src/prefs_matcher.c:389 src/summaryview.c:6280 src/toolbar.c:408
 #: src/toolbar.c:940 src/toolbar.c:1971
 msgid "Spam"
 msgstr "Спам"
@@ -11183,7 +11247,7 @@ msgstr "Спам"
 msgid "Has attachment"
 msgstr "Має долучення"
 
-#: src/prefs_matcher.c:391 src/summaryview.c:6303
+#: src/prefs_matcher.c:391 src/summaryview.c:6316
 msgid "Signed"
 msgstr "Підписане"
 
@@ -11243,93 +11307,94 @@ msgstr "0 (Пройшло)"
 msgid "non-0 (Failed)"
 msgstr "ні-0 (помилкове)"
 
-#: src/prefs_matcher.c:559
+#: src/prefs_matcher.c:561
 msgid "Condition configuration"
 msgstr "Налаштування умови"
 
-#: src/prefs_matcher.c:603
+#: src/prefs_matcher.c:605
 msgid "Match criteria:"
 msgstr "Відповідає критерію:"
 
-#: src/prefs_matcher.c:612
+#: src/prefs_matcher.c:614
 msgid "All messages"
 msgstr "Всі повідомлення"
 
-#: src/prefs_matcher.c:614
+#: src/prefs_matcher.c:616
 msgid "Age"
 msgstr "Вік"
 
-#: src/prefs_matcher.c:615
+#: src/prefs_matcher.c:617
 msgid "Phrase"
 msgstr "Фраза"
 
-#: src/prefs_matcher.c:616
+#: src/prefs_matcher.c:618
 msgid "Flags"
 msgstr "Прапори"
 
-#: src/prefs_matcher.c:617 src/prefs_msg_colors.c:410
+#: src/prefs_matcher.c:619 src/prefs_msg_colors.c:410
 msgid "Color labels"
 msgstr "Мітки кольорів"
 
-#: src/prefs_matcher.c:618
+#: src/prefs_matcher.c:620
 msgid "Thread"
 msgstr "Виток"
 
-#: src/prefs_matcher.c:621
+#: src/prefs_matcher.c:623
 msgid "Partially downloaded"
 msgstr "Чостково завантажено"
 
-#: src/prefs_matcher.c:624
+#: src/prefs_matcher.c:626
 msgid "External program test"
 msgstr "Тест зовнішньої програми"
 
-#: src/prefs_matcher.c:692 src/prefs_matcher.c:1573 src/prefs_matcher.c:1588
-#: src/prefs_matcher.c:2460
-msgid "Filtering Matcher Menu|All"
+#: src/prefs_matcher.c:698 src/prefs_matcher.c:1581 src/prefs_matcher.c:1596
+#: src/prefs_matcher.c:2468
+msgctxt "Filtering Matcher Menu"
+msgid "All"
 msgstr "Все"
 
-#: src/prefs_matcher.c:724
+#: src/prefs_matcher.c:730
 msgid "Use regexp"
 msgstr "Використовувати regexp"
 
-#: src/prefs_matcher.c:797
+#: src/prefs_matcher.c:803
 msgid "Message must match"
 msgstr "Повідомлення повинно співпадати"
 
-#: src/prefs_matcher.c:801
+#: src/prefs_matcher.c:807
 msgid "at least one"
 msgstr "хоча б одне"
 
-#: src/prefs_matcher.c:802
+#: src/prefs_matcher.c:808
 msgid "all"
 msgstr "все"
 
-#: src/prefs_matcher.c:805
+#: src/prefs_matcher.c:811
 msgid "of above rules"
 msgstr "з правил вище"
 
-#: src/prefs_matcher.c:1497 src/prefs_matcher.c:1557
+#: src/prefs_matcher.c:1505 src/prefs_matcher.c:1565
 msgid "Search pattern is not set."
 msgstr "Не вказано стрічку пошуку."
 
-#: src/prefs_matcher.c:1506
+#: src/prefs_matcher.c:1514
 msgid "Test command is not set."
 msgstr "Команду тесту не встановлено"
 
-#: src/prefs_matcher.c:1574
+#: src/prefs_matcher.c:1582
 msgid "all addresses in all headers"
 msgstr "всі адреси у всіх заголовках"
 
-#: src/prefs_matcher.c:1577
+#: src/prefs_matcher.c:1585
 msgid "any address in any header"
 msgstr "всі адреси в будь-якому заголовку"
 
-#: src/prefs_matcher.c:1579
+#: src/prefs_matcher.c:1587
 #, c-format
 msgid "the address(es) in header '%s'"
 msgstr "адреса(и) в заголовку '%s'"
 
-#: src/prefs_matcher.c:1580
+#: src/prefs_matcher.c:1588
 #, c-format
 msgid ""
 "Book/folder path is not set.\n"
@@ -11342,79 +11407,79 @@ msgstr ""
 "Якщо Ви бажаєте перевірити на співпадіння %s по всій адресній книжці, Ви "
 "повинні вибрати '%s' з списку книжок/тек."
 
-#: src/prefs_matcher.c:1793
+#: src/prefs_matcher.c:1801
 msgid "Headers part"
 msgstr "Заголовки"
 
-#: src/prefs_matcher.c:1797
+#: src/prefs_matcher.c:1805
 msgid "Body part"
 msgstr "Тіло повідомлення"
 
-#: src/prefs_matcher.c:1801
+#: src/prefs_matcher.c:1809
 msgid "Whole message"
 msgstr "Все повідомлення"
 
-#: src/prefs_matcher.c:1920 src/prefs_matcher.c:1963
+#: src/prefs_matcher.c:1928 src/prefs_matcher.c:1971
 msgid "in"
 msgstr "в"
 
-#: src/prefs_matcher.c:1922
+#: src/prefs_matcher.c:1930
 msgid "content is"
 msgstr "вміст є"
 
-#: src/prefs_matcher.c:1930
+#: src/prefs_matcher.c:1938
 msgid "Age is"
 msgstr "Вік є"
 
-#: src/prefs_matcher.c:1935
+#: src/prefs_matcher.c:1943
 msgid "Flag"
 msgstr "Знак"
 
-#: src/prefs_matcher.c:1936 src/prefs_matcher.c:1953
+#: src/prefs_matcher.c:1944 src/prefs_matcher.c:1961
 msgid "is"
 msgstr "є"
 
-#: src/prefs_matcher.c:1941
+#: src/prefs_matcher.c:1949
 msgid "Name:"
 msgstr "Назва:"
 
-#: src/prefs_matcher.c:1952
+#: src/prefs_matcher.c:1960
 msgid "Label"
 msgstr "Мітка"
 
-#: src/prefs_matcher.c:1958
+#: src/prefs_matcher.c:1966
 msgid "Value:"
 msgstr "Значення:"
 
-#: src/prefs_matcher.c:1975
+#: src/prefs_matcher.c:1983
 msgid "Score is"
 msgstr "Оцінка є"
 
-#: src/prefs_matcher.c:1976
+#: src/prefs_matcher.c:1984
 msgid "points"
 msgstr "пунктів"
 
-#: src/prefs_matcher.c:1986
+#: src/prefs_matcher.c:1994
 msgid "Size is"
 msgstr "Розмір є"
 
-#: src/prefs_matcher.c:1991
+#: src/prefs_matcher.c:1999
 msgid "Scope:"
 msgstr "Масштаб:"
 
-#: src/prefs_matcher.c:1993
+#: src/prefs_matcher.c:2001
 msgid "tags"
 msgstr "теги"
 
-#: src/prefs_matcher.c:1998
+#: src/prefs_matcher.c:2006
 msgid "type is"
 msgstr "тип є"
 
-#: src/prefs_matcher.c:2002
+#: src/prefs_matcher.c:2010
 msgid "Program returns"
 msgstr "Програма повертає"
 
-#: src/prefs_matcher.c:2072
+#: src/prefs_matcher.c:2080
 msgid ""
 "The entry was not saved.\n"
 "Close anyway?"
@@ -11422,11 +11487,11 @@ msgstr ""
 "Введення не збережено.\n"
 "Закрити все одно?"
 
-#: src/prefs_matcher.c:2135
+#: src/prefs_matcher.c:2143
 msgid "Match Type: 'Test'"
 msgstr "Тип співпадіння: 'Тест'"
 
-#: src/prefs_matcher.c:2136
+#: src/prefs_matcher.c:2144
 msgid ""
 "'Test' allows you to test a message or message element using an external "
 "program or script. The program will return either 0 or 1.\n"
@@ -11438,7 +11503,7 @@ msgstr ""
 "\n"
 "Можна використовувати наступні символи:"
 
-#: src/prefs_matcher.c:2235
+#: src/prefs_matcher.c:2243
 msgid "Current condition rules"
 msgstr "Поточні правила умов"
 
@@ -11552,7 +11617,8 @@ msgid "Text"
 msgstr "Текст"
 
 #: src/prefs_msg_colors.c:204
-msgid "Tooltip|Pick color for 1st level text"
+msgctxt "Tooltip"
+msgid "Pick color for 1st level text"
 msgstr "Вказати колір для цитат 1-го рівня"
 
 #: src/prefs_msg_colors.c:210
@@ -11560,7 +11626,8 @@ msgid "2nd Level"
 msgstr "2й рівень"
 
 #: src/prefs_msg_colors.c:230
-msgid "Tooltip|Pick color for 2nd level text"
+msgctxt "Tooltip"
+msgid "Pick color for 2nd level text"
 msgstr "Вказати колір для цитат 2-го рівня"
 
 #: src/prefs_msg_colors.c:236
@@ -11568,7 +11635,8 @@ msgid "3rd Level"
 msgstr "3й рівень"
 
 #: src/prefs_msg_colors.c:256
-msgid "Tooltip|Pick color for 3rd level text"
+msgctxt "Tooltip"
+msgid "Pick color for 3rd level text"
 msgstr "Вказати колір для цитат 3-го рівня"
 
 #: src/prefs_msg_colors.c:263
@@ -11576,7 +11644,8 @@ msgid "Enable coloration of text background"
 msgstr "Включити забарвлення фону тексту повідомлення"
 
 #: src/prefs_msg_colors.c:279
-msgid "Tooltip|Pick color for 1st level text background"
+msgctxt "Tooltip"
+msgid "Pick color for 1st level text background"
 msgstr "Вказати колір тла для цитат 1-го рівня"
 
 #: src/prefs_msg_colors.c:281 src/prefs_msg_colors.c:302
@@ -11585,15 +11654,18 @@ msgid "Background"
 msgstr "Тло"
 
 #: src/prefs_msg_colors.c:300
-msgid "Tooltip|Pick color for 2nd level text background"
+msgctxt "Tooltip"
+msgid "Pick color for 2nd level text background"
 msgstr "Вказати колір тла для цитат 2-го рівня"
 
 #: src/prefs_msg_colors.c:321
-msgid "Tooltip|Pick color for 3rd level text background"
+msgctxt "Tooltip"
+msgid "Pick color for 3rd level text background"
 msgstr "Вказати колір тла для цитат 3-го рівня"
 
 #: src/prefs_msg_colors.c:341
-msgid "Tooltip|Pick color for links"
+msgctxt "Tooltip"
+msgid "Pick color for links"
 msgstr "Вказати колір для посилань"
 
 #: src/prefs_msg_colors.c:343
@@ -11601,7 +11673,8 @@ msgid "URI link"
 msgstr "Посилання URI "
 
 #: src/prefs_msg_colors.c:360
-msgid "Tooltip|Pick color for signatures"
+msgctxt "Tooltip"
+msgid "Pick color for signatures"
 msgstr "Вказати колір для підписів"
 
 #: src/prefs_msg_colors.c:362
@@ -11637,7 +11710,8 @@ msgstr "Тека з новими повідомленнями"
 #. rule name and should not be translated
 #: src/prefs_msg_colors.c:428 src/prefs_msg_colors.c:459
 #, c-format
-msgid "Tooltip|Pick color for 'color %d'"
+msgctxt "Tooltip"
+msgid "Pick color for 'color %d'"
 msgstr "Вказати колір для 'колір %d'"
 
 #. TRANSLATORS: 'color %d' refers to the filtering/processing
@@ -11651,47 +11725,58 @@ msgstr "Встановити мітку для 'кольор %d'"
 #. rule name and should not be translated
 #: src/prefs_msg_colors.c:592
 #, c-format
-msgid "Dialog title|Pick color for 'color %d'"
+msgctxt "Dialog title"
+msgid "Pick color for 'color %d'"
 msgstr "Вказати колір для 'колір %d'"
 
 #: src/prefs_msg_colors.c:600
-msgid "Dialog title|Pick color for 1st level text"
+msgctxt "Dialog title"
+msgid "Pick color for 1st level text"
 msgstr "Вказати колір для цитат 1-го рівня"
 
 #: src/prefs_msg_colors.c:603
-msgid "Dialog title|Pick color for 2nd level text"
+msgctxt "Dialog title"
+msgid "Pick color for 2nd level text"
 msgstr "Вказати колір для цитат 2-го рівня"
 
 #: src/prefs_msg_colors.c:606
-msgid "Dialog title|Pick color for 3rd level text"
+msgctxt "Dialog title"
+msgid "Pick color for 3rd level text"
 msgstr "Вказати колір для цитат 3-го рівня"
 
 #: src/prefs_msg_colors.c:609
-msgid "Dialog title|Pick color for 1st level text background"
+msgctxt "Dialog title"
+msgid "Pick color for 1st level text background"
 msgstr "Вказати колір для тла цитат 1-го рівня"
 
 #: src/prefs_msg_colors.c:612
-msgid "Dialog title|Pick color for 2nd level text background"
+msgctxt "Dialog title"
+msgid "Pick color for 2nd level text background"
 msgstr "Вказати колір для тла цитат 2-го рівня"
 
 #: src/prefs_msg_colors.c:615
-msgid "Dialog title|Pick color for 3rd level text background"
+msgctxt "Dialog title"
+msgid "Pick color for 3rd level text background"
 msgstr "Вказати колір для тла цитат 3-го рівня"
 
 #: src/prefs_msg_colors.c:618
-msgid "Dialog title|Pick color for links"
+msgctxt "Dialog title"
+msgid "Pick color for links"
 msgstr "Вказати колір для посилань"
 
 #: src/prefs_msg_colors.c:621
-msgid "Dialog title|Pick color for target folder"
+msgctxt "Dialog title"
+msgid "Pick color for target folder"
 msgstr "Вказати колір для теки призначення"
 
 #: src/prefs_msg_colors.c:624
-msgid "Dialog title|Pick color for signatures"
+msgctxt "Dialog title"
+msgid "Pick color for signatures"
 msgstr "Вказати колір для підписів"
 
 #: src/prefs_msg_colors.c:627
-msgid "Dialog title|Pick color for folder"
+msgctxt "Dialog title"
+msgid "Pick color for folder"
 msgstr "Вказати колір для теки"
 
 #: src/prefs_msg_colors.c:840
@@ -11714,35 +11799,35 @@ msgstr ""
 "Ви також можете змінити скорочення меню натисканням\n"
 "будь-якої клавіші при наведенні курсора миші на елемент."
 
-#: src/prefs_other.c:475
+#: src/prefs_other.c:479
 msgid "Add address to destination when double-clicked"
 msgstr "Додати адрес до призначення подвійним клацанням"
 
-#: src/prefs_other.c:478
+#: src/prefs_other.c:482
 msgid "On exit"
 msgstr "На вихід"
 
-#: src/prefs_other.c:481
+#: src/prefs_other.c:485
 msgid "Confirm on exit"
 msgstr "Підтвердити при виході"
 
-#: src/prefs_other.c:488
+#: src/prefs_other.c:492
 msgid "Empty trash on exit"
 msgstr "Спорожнити смітник при виході"
 
-#: src/prefs_other.c:491
+#: src/prefs_other.c:495
 msgid "Warn if there are queued messages"
 msgstr "Попереджати якщо є повідомлення в черзі"
 
-#: src/prefs_other.c:493
+#: src/prefs_other.c:497
 msgid "Keyboard shortcuts"
 msgstr "Скорочення клавіш"
 
-#: src/prefs_other.c:496
+#: src/prefs_other.c:500
 msgid "Enable customisable keyboard shortcuts"
 msgstr "Дозволити скорочення клавіатури, які можна настроїти"
 
-#: src/prefs_other.c:499
+#: src/prefs_other.c:503
 msgid ""
 "If checked, you can change the keyboard shortcuts of most of the menu items "
 "by focusing on the menu item and pressing a key combination.\n"
@@ -11752,15 +11837,15 @@ msgstr ""
 "меню, вказуючи на пункт і натискаючи потрібну комбінацію клавіш.\n"
 "Вимкніть цей параметр, щоб заблокувати існуючі налаштування скорочень клавіш."
 
-#: src/prefs_other.c:506
+#: src/prefs_other.c:510
 msgid " Choose preset keyboard shortcuts... "
 msgstr " Виберіть скорочення клавіш... "
 
-#: src/prefs_other.c:516
+#: src/prefs_other.c:520
 msgid "Metadata handling"
 msgstr "Обробка метаданих"
 
-#: src/prefs_other.c:517
+#: src/prefs_other.c:521
 msgid ""
 "Safer mode asks the OS to write metadata to disk directly;\n"
 "it avoids data loss after crashes but can take some time."
@@ -11769,33 +11854,33 @@ msgstr ""
 "даних на диск. Це зменшує ймовірність псування даних,\n"
 "але працює повільніше."
 
-#: src/prefs_other.c:521
+#: src/prefs_other.c:525
 msgid "Safer"
 msgstr "Безпечніше"
 
-#: src/prefs_other.c:523
+#: src/prefs_other.c:527
 msgid "Faster"
 msgstr "Швидше"
 
-#: src/prefs_other.c:541
+#: src/prefs_other.c:545
 msgid "Socket I/O timeout"
 msgstr "Час очікування даних сокету"
 
-#: src/prefs_other.c:563
+#: src/prefs_other.c:567
 msgid "Ask before emptying trash"
 msgstr "Запитувати перед спорожненням смітника"
 
-#: src/prefs_other.c:565
+#: src/prefs_other.c:569
 msgid "Ask about account specific filtering rules when filtering manually"
 msgstr ""
 "Запит про специфічні правила фільтрування для облікового запису при "
 "фільтруванні вручну"
 
-#: src/prefs_other.c:570
+#: src/prefs_other.c:574
 msgid "Use secure file deletion if possible"
 msgstr "Використовувати безпечне видалення файлів, якщо є така можливість"
 
-#: src/prefs_other.c:574
+#: src/prefs_other.c:578
 msgid ""
 "Use secure file deletion if possible\n"
 "(the 'shred' program is not available)"
@@ -11803,7 +11888,7 @@ msgstr ""
 "Використовувати безпечне видалення файлів, якщо можливо\n"
 "(програма 'shred' є недоступна)"
 
-#: src/prefs_other.c:579
+#: src/prefs_other.c:583
 msgid ""
 "Use the 'shred' program to overwrite files with random data before deleting "
 "them. This slows down deletion. Be sure to read shred's man page for caveats."
@@ -11812,11 +11897,11 @@ msgstr ""
 "їх видаленням. Це сповільнює процес видалення. Почитайте інструкцію shred з "
 "приводу можливих проблем і підводних каменів."
 
-#: src/prefs_other.c:583
+#: src/prefs_other.c:587
 msgid "Synchronise offline folders as soon as possible"
 msgstr "Синхронізувати теки якогомога швидше"
 
-#: src/prefs_other.c:686
+#: src/prefs_other.c:690
 msgid "Miscellaneous"
 msgstr "Різне"
 
@@ -12675,63 +12760,63 @@ msgstr "Не задано іконку об’єкта"
 msgid "Item has no text defined."
 msgstr "Не задано текст об’єкта."
 
-#: src/prefs_toolbar.c:882
+#: src/prefs_toolbar.c:911
 msgid "Toolbar item"
 msgstr "Об’єкт панелі інструментів"
 
-#: src/prefs_toolbar.c:898
+#: src/prefs_toolbar.c:927
 msgid "Item type"
 msgstr "Тип об’єкту"
 
-#: src/prefs_toolbar.c:908
+#: src/prefs_toolbar.c:937
 msgid "Internal Function"
 msgstr "Внутрішня функція"
 
-#: src/prefs_toolbar.c:909
+#: src/prefs_toolbar.c:938
 msgid "User Action"
 msgstr "Дія користувача"
 
-#: src/prefs_toolbar.c:911 src/toolbar.c:226
+#: src/prefs_toolbar.c:940 src/toolbar.c:226
 msgid "Separator"
 msgstr "Роздільник"
 
-#: src/prefs_toolbar.c:918
+#: src/prefs_toolbar.c:947
 msgid "Event executed on click"
 msgstr "Подія, що виконується при клацанні клавішою миші"
 
-#: src/prefs_toolbar.c:945
+#: src/prefs_toolbar.c:986
 msgid "Toolbar text"
 msgstr "Текст панелі інструментів"
 
-#: src/prefs_toolbar.c:960 src/prefs_toolbar.c:1331
+#: src/prefs_toolbar.c:1001 src/prefs_toolbar.c:1372
 msgid "Icon"
 msgstr "Іконка"
 
-#: src/prefs_toolbar.c:1211 src/prefs_toolbar.c:1225 src/prefs_toolbar.c:1239
+#: src/prefs_toolbar.c:1252 src/prefs_toolbar.c:1266 src/prefs_toolbar.c:1280
 msgid "Toolbars"
 msgstr "Панелі інструментів"
 
-#: src/prefs_toolbar.c:1212
+#: src/prefs_toolbar.c:1253
 msgid "Main Window"
 msgstr "Основне вікно"
 
-#: src/prefs_toolbar.c:1226
+#: src/prefs_toolbar.c:1267
 msgid "Message Window"
 msgstr "Вікно повідомлення"
 
-#: src/prefs_toolbar.c:1240
+#: src/prefs_toolbar.c:1281
 msgid "Compose Window"
 msgstr "Вікно компонування"
 
-#: src/prefs_toolbar.c:1354
+#: src/prefs_toolbar.c:1395
 msgid "Icon text"
 msgstr "Текст іконки"
 
-#: src/prefs_toolbar.c:1363
+#: src/prefs_toolbar.c:1404
 msgid "Mapped event"
 msgstr "Співставлена дія"
 
-#: src/prefs_toolbar.c:1660
+#: src/prefs_toolbar.c:1701
 msgid "Toolbar item icon"
 msgstr "Значок об’єкту панелі інструментів"
 
@@ -12787,7 +12872,7 @@ msgstr "Збільшити"
 msgid "Zoom out"
 msgstr "Зменшити"
 
-#: src/printing.c:709
+#: src/printing.c:707
 #, c-format
 msgid "Page %d"
 msgstr "Сторінка %d"
@@ -13271,7 +13356,8 @@ msgid "%s - Source"
 msgstr "%s - Джерело"
 
 #: src/ssl_manager.c:157
-msgid "Saved SSL Certificates"
+#, fuzzy
+msgid "Saved SSL certificates"
 msgstr "Збережені сертифікати SSL"
 
 #: src/ssl_manager.c:428
@@ -13282,40 +13368,40 @@ msgstr "Видалити сертифікат"
 msgid "Do you really want to delete this certificate?"
 msgstr "Ви дійсно бажаєте видалити цей сертифікат?"
 
-#: src/summary_search.c:262
+#: src/summary_search.c:266
 msgid "Search messages"
 msgstr "Шукати повідомлення"
 
-#: src/summary_search.c:288
+#: src/summary_search.c:292
 msgid "Match any of the following"
 msgstr "Співпадає з будь-яким з наступного"
 
-#: src/summary_search.c:290
+#: src/summary_search.c:294
 msgid "Match all of the following"
 msgstr "Співпадіння по всіх з наступних"
 
-#: src/summary_search.c:409
+#: src/summary_search.c:433
 msgid "Body:"
 msgstr "Тіло:"
 
-#: src/summary_search.c:416
+#: src/summary_search.c:440
 msgid "Condition:"
 msgstr "Умова:"
 
-#: src/summary_search.c:446
+#: src/summary_search.c:470
 msgid "Find _all"
 msgstr "Знайти _все"
 
-#: src/summary_search.c:655 src/summaryview.c:1105 src/summaryview.c:1366
+#: src/summary_search.c:679 src/summaryview.c:1105 src/summaryview.c:1366
 #, c-format
 msgid "Searching in %s... \n"
 msgstr "Шукаю в %s...\n"
 
-#: src/summary_search.c:752
+#: src/summary_search.c:776
 msgid "Beginning of list reached; continue from end?"
 msgstr "Початок списку досягнутий; продовжити з кінця?"
 
-#: src/summary_search.c:754
+#: src/summary_search.c:778
 msgid "End of list reached; continue from beginning?"
 msgstr "Досягнуто кінець списку; почати з початку?"
 
@@ -13523,7 +13609,7 @@ msgstr ""
 msgid "You're not the author of the article.\n"
 msgstr "Ви не є автором статті.\n"
 
-#: src/summaryview.c:4368
+#: src/summaryview.c:4369
 #, c-format
 msgid "Do you really want to delete the selected message?"
 msgid_plural "Do you really want to delete the %d selected messages?"
@@ -13531,63 +13617,63 @@ msgstr[0] "Ви дійсно бажаєте видалити %d виділене
 msgstr[1] "Ви дійсно бажаєте видалити %d виділених повідомлень?"
 msgstr[2] "Ви дійсно бажаєте видалити %d виділених повідомлень?"
 
-#: src/summaryview.c:4371
+#: src/summaryview.c:4372
 msgid "Delete message(s)"
 msgstr "Видалити повідомлень(я)"
 
-#: src/summaryview.c:4532
+#: src/summaryview.c:4537
 msgid "Destination is same as current folder."
 msgstr "Призначення співпадає з поточною текою."
 
-#: src/summaryview.c:4631
+#: src/summaryview.c:4636
 msgid "Destination to copy is same as current folder."
 msgstr "Призначення копіювання співпадає з поточною текою."
 
-#: src/summaryview.c:4804
+#: src/summaryview.c:4809
 msgid "Append or Overwrite"
 msgstr "Дописати або перезаписати"
 
-#: src/summaryview.c:4805
+#: src/summaryview.c:4810
 msgid "Append or overwrite existing file?"
 msgstr "Дописати або перезаписати існуючий файл?"
 
-#: src/summaryview.c:4806
+#: src/summaryview.c:4811
 msgid "_Append"
 msgstr "_Дописати"
 
-#: src/summaryview.c:4806
+#: src/summaryview.c:4811
 msgid "_Overwrite"
 msgstr "П_ерезаписати"
 
-#: src/summaryview.c:4847
+#: src/summaryview.c:4852
 #, c-format
 msgid ""
 "You are about to print %d messages, one by one. Do you want to continue?"
 msgstr "Ви збираєтеся надрукувати %d повідомлень, одне за одним. Продовжити?"
 
-#: src/summaryview.c:5324
+#: src/summaryview.c:5329
 msgid "Building threads..."
 msgstr "Будую витки..."
 
-#: src/summaryview.c:5570
+#: src/summaryview.c:5575
 msgid "Skip these rules"
 msgstr "Пропустити ці правила"
 
-#: src/summaryview.c:5573
+#: src/summaryview.c:5578
 msgid "Apply these rules regardless of the account they belong to"
 msgstr ""
 "Застосувати ці правила, незважаючи на те, до якого облікового запису вони "
 "належать"
 
-#: src/summaryview.c:5576
+#: src/summaryview.c:5581
 msgid "Apply these rules if they apply to the current account"
 msgstr "Застосувати ці правила, якщо повідомлення належать до поточної теки"
 
-#: src/summaryview.c:5605
+#: src/summaryview.c:5610
 msgid "Filtering"
 msgstr "Фільтрування"
 
-#: src/summaryview.c:5606
+#: src/summaryview.c:5611
 msgid ""
 "There are some filtering rules that belong to an account.\n"
 "Please choose what to do with these rules:"
@@ -13595,59 +13681,59 @@ msgstr ""
 "Деякі правила фільтрації прив'язані до облікових записів.\n"
 "Виберіть, що Ви збираєтеся робити з цими правилами:"
 
-#: src/summaryview.c:5608
+#: src/summaryview.c:5613
 msgid "_Filter"
 msgstr "_Фільтр"
 
-#: src/summaryview.c:5636
+#: src/summaryview.c:5641
 msgid "Filtering..."
 msgstr "Фільтрування..."
 
-#: src/summaryview.c:5715
+#: src/summaryview.c:5720
 msgid "Processing configuration"
 msgstr "Обробка конфігурацію"
 
-#: src/summaryview.c:6263
+#: src/summaryview.c:6276
 msgid "Ignored thread"
 msgstr "Проігнорований виток"
 
-#: src/summaryview.c:6265
+#: src/summaryview.c:6278
 msgid "Watched thread"
 msgstr "Виток під спостереженням"
 
-#: src/summaryview.c:6273
+#: src/summaryview.c:6286
 msgid "Replied but also forwarded - click to see reply"
 msgstr "Відписано, але також переслано - клацніть щоб побачити відповідь"
 
-#: src/summaryview.c:6275
+#: src/summaryview.c:6288
 msgid "Replied - click to see reply"
 msgstr "Відписано - клацніть щоб побачити відповідь"
 
-#: src/summaryview.c:6287
+#: src/summaryview.c:6300
 msgid "To be moved"
 msgstr "Буде переміщено"
 
-#: src/summaryview.c:6289
+#: src/summaryview.c:6302
 msgid "To be copied"
 msgstr "Буде скопійовано"
 
-#: src/summaryview.c:6301
+#: src/summaryview.c:6314
 msgid "Signed, has attachment(s)"
 msgstr "Підписане, має долучення"
 
-#: src/summaryview.c:6305
+#: src/summaryview.c:6318
 msgid "Encrypted, has attachment(s)"
 msgstr "Зашифроване, має долучення"
 
-#: src/summaryview.c:6307
+#: src/summaryview.c:6320
 msgid "Encrypted"
 msgstr "Зашифровано"
 
-#: src/summaryview.c:6309
+#: src/summaryview.c:6322
 msgid "Has attachment(s)"
 msgstr "Має долучення"
 
-#: src/summaryview.c:7946
+#: src/summaryview.c:7959
 #, c-format
 msgid ""
 "Regular expression (regexp) error:\n"
@@ -13656,11 +13742,11 @@ msgstr ""
 "Помилка в регулярному виразі (regexp):\n"
 "%s"
 
-#: src/summaryview.c:8054
+#: src/summaryview.c:8067
 msgid "Go back to the folder list (You have unread messages)"
 msgstr "Повернутися до списку тек (Ви маєте непрочитані повідомлення)"
 
-#: src/summaryview.c:8059
+#: src/summaryview.c:8072
 msgid "Go back to the folder list"
 msgstr "Вернутися до списку тек"
 
@@ -13788,11 +13874,11 @@ msgstr ""
 "    %s\n"
 "Код виходу %d\n"
 
-#: src/textview.c:2237
+#: src/textview.c:2239
 msgid "Tags: "
 msgstr "Теги: "
 
-#: src/textview.c:2939
+#: src/textview.c:2941
 #, c-format
 msgid ""
 "The real URL is different from the displayed URL.\n"
@@ -13807,11 +13893,11 @@ msgstr ""
 "відображеного (%s).\n"
 "/nВідкрити все одно?"
 
-#: src/textview.c:2948
+#: src/textview.c:2950
 msgid "Phishing attempt warning"
 msgstr "Попередження: спроба фішінгу"
 
-#: src/textview.c:2949
+#: src/textview.c:2951
 msgid "_Open URL"
 msgstr "_Відкрити посилання"
 
@@ -13944,7 +14030,8 @@ msgid "Claws Mail Plugins"
 msgstr "Додатки Claws Mail"
 
 #: src/toolbar.c:371 src/toolbar.c:406
-msgid "Toolbar|Trash"
+msgctxt "Toolbar"
+msgid "Trash"
 msgstr "Смітник"
 
 #: src/toolbar.c:394
@@ -13960,7 +14047,8 @@ msgid "Get"
 msgstr "Отримати"
 
 #: src/toolbar.c:399 src/toolbar.c:400
-msgid "Toolbar|Compose"
+msgctxt "Toolbar"
+msgid "Compose"
 msgstr "Створення"
 
 #: src/toolbar.c:402
@@ -13968,7 +14056,8 @@ msgid "All"
 msgstr "Всім"
 
 #: src/toolbar.c:403
-msgid "Toolbar|Sender"
+msgctxt "Toolbar"
+msgid "Sender"
 msgstr "Відправник"
 
 #: src/toolbar.c:404
@@ -14088,7 +14177,8 @@ msgid "Available URLs:"
 msgstr "Доступні URL:"
 
 #: src/uri_opener.c:181
-msgid "Dialog title|Open URLs"
+msgctxt "Dialog title"
+msgid "Open URLs"
 msgstr "Відкрити посилання"
 
 #: src/uri_opener.c:206
@@ -14100,7 +14190,8 @@ msgid "Select All"
 msgstr "Виділити все"
 
 #: src/wizard.c:539
-msgid "Welcome Mail Subject|Welcome to Claws Mail"
+msgctxt "Welcome Mail Subject"
+msgid "Welcome to Claws Mail"
 msgstr "Ласкаво просимо до Claws Mail"
 
 #: src/wizard.c:562
