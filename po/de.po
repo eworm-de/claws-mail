@@ -13954,11 +13954,11 @@ msgstr "Nachricht löschen"
 
 #: src/toolbar.c:201 src/toolbar.c:2085
 msgid "Go to Previous Unread Message"
-msgstr "Zurück zu voriger ungelesener Nachricht"
+msgstr "Zurück zur vorherigen ungelesenen Nachricht"
 
 #: src/toolbar.c:202 src/toolbar.c:2089
 msgid "Go to Next Unread Message"
-msgstr "Weiter zur nächsten Nachricht"
+msgstr "Weiter zur nächsten ungelesenen Nachricht"
 
 #: src/toolbar.c:205 src/toolbar.c:413
 msgid "Print"
