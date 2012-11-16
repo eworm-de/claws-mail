@@ -201,7 +201,7 @@ static void prefs_msg_colors_create_widget(PrefsPage *_page, GtkWindow *window,
 	SET_TOGGLE_SENSITIVITY(checkbtn_enable_colors, color_buttons.btn_quote_level1);
 
 	CLAWS_SET_TIP(color_buttons.btn_quote_level1,
-			     Q_("Tooltip|Pick color for 1st level text"));
+			     C_("Tooltip", "Pick color for 1st level text"));
 
 	hbox = gtk_hbox_new(FALSE, VBOX_BORDER);
 	gtk_widget_show (hbox);
@@ -227,7 +227,7 @@ static void prefs_msg_colors_create_widget(PrefsPage *_page, GtkWindow *window,
 	SET_TOGGLE_SENSITIVITY(checkbtn_enable_colors, color_buttons.btn_quote_level2);
 
 	CLAWS_SET_TIP(color_buttons.btn_quote_level2,
-			     Q_("Tooltip|Pick color for 2nd level text"));
+			     C_("Tooltip", "Pick color for 2nd level text"));
 
 	hbox = gtk_hbox_new(FALSE, VBOX_BORDER);
 	gtk_widget_show (hbox);
@@ -253,7 +253,7 @@ static void prefs_msg_colors_create_widget(PrefsPage *_page, GtkWindow *window,
 	SET_TOGGLE_SENSITIVITY(checkbtn_enable_colors, color_buttons.btn_quote_level3);
 
 	CLAWS_SET_TIP(color_buttons.btn_quote_level3,
-			     Q_("Tooltip|Pick color for 3rd level text"));
+			     C_("Tooltip", "Pick color for 3rd level text"));
 
 	hbox = gtk_hbox_new(FALSE, VBOX_BORDER);
 	gtk_widget_show (hbox);
@@ -276,7 +276,7 @@ static void prefs_msg_colors_create_widget(PrefsPage *_page, GtkWindow *window,
 	SET_TOGGLE_SENSITIVITY(checkbtn_enable_bgcolors, color_buttons.btn_quote_level1_bg);
 
 	CLAWS_SET_TIP(color_buttons.btn_quote_level1_bg,
-			     Q_("Tooltip|Pick color for 1st level text background"));
+			     C_("Tooltip", "Pick color for 1st level text background"));
 
 	label_quote_bgcolor1 = gtk_label_new (_("Background"));
 	gtk_widget_show(label_quote_bgcolor1);
@@ -297,7 +297,7 @@ static void prefs_msg_colors_create_widget(PrefsPage *_page, GtkWindow *window,
 	SET_TOGGLE_SENSITIVITY(checkbtn_enable_bgcolors, color_buttons.btn_quote_level2_bg);
 
 	CLAWS_SET_TIP(color_buttons.btn_quote_level2_bg,
-			     Q_("Tooltip|Pick color for 2nd level text background"));
+			     C_("Tooltip", "Pick color for 2nd level text background"));
 
 	label_quote_bgcolor2 = gtk_label_new (_("Background"));
 	gtk_widget_show(label_quote_bgcolor2);
@@ -318,7 +318,7 @@ static void prefs_msg_colors_create_widget(PrefsPage *_page, GtkWindow *window,
 	SET_TOGGLE_SENSITIVITY(checkbtn_enable_bgcolors, color_buttons.btn_quote_level3_bg);
 
 	CLAWS_SET_TIP(color_buttons.btn_quote_level3_bg,
-			     Q_("Tooltip|Pick color for 3rd level text background"));
+			     C_("Tooltip", "Pick color for 3rd level text background"));
 
 	label_quote_bgcolor3 = gtk_label_new (_("Background"));
 	gtk_widget_show(label_quote_bgcolor3);
@@ -338,7 +338,7 @@ static void prefs_msg_colors_create_widget(PrefsPage *_page, GtkWindow *window,
 	SET_TOGGLE_SENSITIVITY(checkbtn_enable_colors, color_buttons.btn_uri);
 
 	CLAWS_SET_TIP(color_buttons.btn_uri,
-			     Q_("Tooltip|Pick color for links"));
+			     C_("Tooltip", "Pick color for links"));
 
 	lable_uri = gtk_label_new (_("URI link"));
 	gtk_widget_show(lable_uri);
@@ -357,7 +357,7 @@ static void prefs_msg_colors_create_widget(PrefsPage *_page, GtkWindow *window,
 	SET_TOGGLE_SENSITIVITY(checkbtn_enable_colors, color_buttons.btn_signature);
 
 	CLAWS_SET_TIP(color_buttons.btn_signature,
-			     Q_("Tooltip|Pick color for signatures"));
+			     C_("Tooltip", "Pick color for signatures"));
 
 	label_signature = gtk_label_new (_("Signatures"));
 	gtk_widget_show(label_signature);
@@ -425,7 +425,7 @@ static void prefs_msg_colors_create_widget(PrefsPage *_page, GtkWindow *window,
 	for (c = 0; c < (COLORLABELS>>1)+(COLORLABELS&1); c++) {
 		/* TRANSLATORS: 'color %d' refers to the filtering/processing 
 		   rule name and should not be translated */
-		tooltip_btn_text = g_strdup_printf(Q_("Tooltip|Pick color for 'color %d'"), c+1);
+		tooltip_btn_text = g_strdup_printf(C_("Tooltip", "Pick color for 'color %d'"), c+1);
 
 		/* TRANSLATORS: 'color %d' refers to the filtering/processing 
 		   rule name and should not be translated */
@@ -456,7 +456,7 @@ static void prefs_msg_colors_create_widget(PrefsPage *_page, GtkWindow *window,
 	for (c = (COLORLABELS>>1)+(COLORLABELS&1); c < COLORLABELS; c++) {
 		/* TRANSLATORS: 'color %d' refers to the filtering/processing 
 		   rule name and should not be translated */
-		tooltip_btn_text = g_strdup_printf(Q_("Tooltip|Pick color for 'color %d'"), c+1);
+		tooltip_btn_text = g_strdup_printf(C_("Tooltip", "Pick color for 'color %d'"), c+1);
 
 		/* TRANSLATORS: 'color %d' refers to the filtering/processing 
 		   rule name and should not be translated */
@@ -589,7 +589,7 @@ static void quote_color_set_dialog(GtkWidget *widget, gpointer data)
 		if (GPOINTER_TO_INT(type) == c) {
 			/* TRANSLATORS: 'color %d' refers to the filtering/processing 
 			   rule name and should not be translated */
-			title = g_strdup_printf(Q_("Dialog title|Pick color for 'color %d'"), c+1);
+			title = g_strdup_printf(C_("Dialog title", "Pick color for 'color %d'"), c+1);
 			rgbvalue = prefs_common.custom_colorlabel[c].color;
 			break;
 		}
@@ -597,34 +597,34 @@ static void quote_color_set_dialog(GtkWidget *widget, gpointer data)
 	/* other colors */
 	if (c == COLORLABELS) {
 		if(g_ascii_strcasecmp(type, "LEVEL1") == 0) {
-			title = g_strdup(Q_("Dialog title|Pick color for 1st level text"));
+			title = g_strdup(C_("Dialog title", "Pick color for 1st level text"));
 			rgbvalue = prefs_common.quote_level1_col;
 		} else if(g_ascii_strcasecmp(type, "LEVEL2") == 0) {
-			title = g_strdup(Q_("Dialog title|Pick color for 2nd level text"));
+			title = g_strdup(C_("Dialog title", "Pick color for 2nd level text"));
 			rgbvalue = prefs_common.quote_level2_col;
 		} else if(g_ascii_strcasecmp(type, "LEVEL3") == 0) {
-			title = g_strdup(Q_("Dialog title|Pick color for 3rd level text"));
+			title = g_strdup(C_("Dialog title", "Pick color for 3rd level text"));
 			rgbvalue = prefs_common.quote_level3_col;
 		} else if(g_ascii_strcasecmp(type, "LEVEL1BG") == 0) {
-			title = g_strdup(Q_("Dialog title|Pick color for 1st level text background"));
+			title = g_strdup(C_("Dialog title", "Pick color for 1st level text background"));
 			rgbvalue = prefs_common.quote_level1_bgcol;
 		} else if(g_ascii_strcasecmp(type, "LEVEL2BG") == 0) {
-			title = g_strdup(Q_("Dialog title|Pick color for 2nd level text background"));
+			title = g_strdup(C_("Dialog title", "Pick color for 2nd level text background"));
 			rgbvalue = prefs_common.quote_level2_bgcol;
 		} else if(g_ascii_strcasecmp(type, "LEVEL3BG") == 0) {
-			title = g_strdup(Q_("Dialog title|Pick color for 3rd level text background"));
+			title = g_strdup(C_("Dialog title", "Pick color for 3rd level text background"));
 			rgbvalue = prefs_common.quote_level3_bgcol;
 		} else if(g_ascii_strcasecmp(type, "URI") == 0) {
-			title = g_strdup(Q_("Dialog title|Pick color for links"));
+			title = g_strdup(C_("Dialog title", "Pick color for links"));
 			rgbvalue = prefs_common.uri_col;
 		} else if(g_ascii_strcasecmp(type, "TGTFLD") == 0) {
-			title = g_strdup(Q_("Dialog title|Pick color for target folder"));
+			title = g_strdup(C_("Dialog title", "Pick color for target folder"));
 			rgbvalue = prefs_common.tgt_folder_col;
 		} else if(g_ascii_strcasecmp(type, "SIGNATURE") == 0) {
-			title = g_strdup(Q_("Dialog title|Pick color for signatures"));
+			title = g_strdup(C_("Dialog title", "Pick color for signatures"));
 			rgbvalue = prefs_common.signature_col;
 		} else if(g_ascii_strcasecmp(type, "NEW") == 0) {
-			title = g_strdup(Q_("Dialog title|Pick color for folder"));
+			title = g_strdup(C_("Dialog title", "Pick color for folder"));
 			rgbvalue = prefs_common.color_new;
 		} else {
 			/* Should never be called */

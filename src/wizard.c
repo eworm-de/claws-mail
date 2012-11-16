@@ -536,7 +536,7 @@ static void write_welcome_email(WizardWindow *wizard)
 	get_rfc822_date(buf_date, sizeof(buf_date));
 
 	conv_encode_header_full(enc_subject, sizeof(enc_subject), 
-			Q_("Welcome Mail Subject|Welcome to Claws Mail"),
+			C_("Welcome Mail Subject", "Welcome to Claws Mail"),
 			strlen("Subject: "), FALSE, CS_INTERNAL);
 	conv_encode_header_full(enc_to_name, sizeof(enc_to_name), 
 			gtk_entry_get_text(GTK_ENTRY(wizard->full_name)),

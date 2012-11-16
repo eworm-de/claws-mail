@@ -526,7 +526,7 @@ static void apply_window_create(void)
 
 	window = gtkut_window_new(GTK_WINDOW_TOPLEVEL, "tag_apply_window");
 	gtk_window_set_title (GTK_WINDOW(window),
-			      Q_("Dialog title|Apply tags"));
+			      C_("Dialog title", "Apply tags"));
 
 	gtk_container_set_border_width (GTK_CONTAINER (window), 8);
 	gtk_window_set_position (GTK_WINDOW (window), GTK_WIN_POS_CENTER);

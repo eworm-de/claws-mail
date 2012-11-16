@@ -1534,7 +1534,7 @@ static void account_create_list_view_columns(GtkWidget *list_view)
 		     "activatable", TRUE,
 		      NULL);
 	column = gtk_tree_view_column_new_with_attributes
-		(Q_("Accounts List Get Column Name|G"), renderer,
+		(C_("Accounts List Get Column Name", "G"), renderer,
 		 "active", ACCOUNT_ENABLE_GET_ALL,
 		 NULL);
 	gtk_tree_view_append_column(GTK_TREE_VIEW(list_view), column);		

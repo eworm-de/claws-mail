@@ -413,7 +413,7 @@ static GtkWidget *about_create_child_page_features(void)
 	gtk_text_buffer_insert_with_tags_by_name(buffer, &iter, (" compface "), -1,
 						 "bold", NULL);
 	gtk_text_buffer_insert(buffer, &iter, 
-		(gchar *)Q_("compface|adds support for the X-Face header\n"), -1);
+		(gchar *)C_("compface", "adds support for the X-Face header\n"), -1);
 
 #if USE_ENCHANT
 	gtk_text_buffer_insert_pixbuf(buffer, &iter, active_pixbuf);
@@ -423,7 +423,7 @@ static GtkWidget *about_create_child_page_features(void)
 	gtk_text_buffer_insert_with_tags_by_name(buffer, &iter, (" Enchant "), -1,
 						 "bold", NULL);
 	gtk_text_buffer_insert(buffer, &iter, 
-		(gchar *)Q_("Enchant|adds support for spell checking\n"), -1);
+		(gchar *)C_("Enchant", "adds support for spell checking\n"), -1);
 
 #if USE_GNUTLS
 	gtk_text_buffer_insert_pixbuf(buffer, &iter, active_pixbuf);
@@ -433,7 +433,7 @@ static GtkWidget *about_create_child_page_features(void)
 	gtk_text_buffer_insert_with_tags_by_name(buffer, &iter, (" GnuTLS "), -1,
 						 "bold", NULL);
 	gtk_text_buffer_insert(buffer, &iter, 
-		(gchar *)Q_("GnuTLS|adds support for encrypted connections to servers\n"), -1);
+		(gchar *)C_("GnuTLS", "adds support for encrypted connections to servers\n"), -1);
 
 #if INET6
 	gtk_text_buffer_insert_pixbuf(buffer, &iter, active_pixbuf);
@@ -443,7 +443,7 @@ static GtkWidget *about_create_child_page_features(void)
 	gtk_text_buffer_insert_with_tags_by_name(buffer, &iter, (" IPv6 "), -1,
 						 "bold", NULL);
 	gtk_text_buffer_insert(buffer, &iter, 
-		(gchar *)Q_("IPv6|adds support for IPv6 addresses, the new Internet "
+		(gchar *)C_("IPv6", "adds support for IPv6 addresses, the new Internet "
 			    "addressing protocol\n"), -1);
 
 #if HAVE_ICONV
@@ -454,7 +454,7 @@ static GtkWidget *about_create_child_page_features(void)
 	gtk_text_buffer_insert_with_tags_by_name(buffer, &iter, (" iconv "), -1,
 						 "bold", NULL);
 	gtk_text_buffer_insert(buffer, &iter, 
-		(gchar *)Q_("iconv|allows converting to and from different character sets\n"), -1);
+		(gchar *)C_("iconv", "allows converting to and from different character sets\n"), -1);
 
 #if USE_JPILOT
 	gtk_text_buffer_insert_pixbuf(buffer, &iter, active_pixbuf);
@@ -464,7 +464,7 @@ static GtkWidget *about_create_child_page_features(void)
 	gtk_text_buffer_insert_with_tags_by_name(buffer, &iter, (" JPilot "), -1,
 						 "bold", NULL);
 	gtk_text_buffer_insert(buffer, &iter, 
-		(gchar *)Q_("JPilot|adds support for PalmOS addressbooks\n"), -1);
+		(gchar *)C_("JPilot", "adds support for PalmOS addressbooks\n"), -1);
 
 #if USE_LDAP
 	gtk_text_buffer_insert_pixbuf(buffer, &iter, active_pixbuf);
@@ -474,7 +474,7 @@ static GtkWidget *about_create_child_page_features(void)
 	gtk_text_buffer_insert_with_tags_by_name(buffer, &iter, (" LDAP "), -1,
 						 "bold", NULL);
 	gtk_text_buffer_insert(buffer, &iter, 
-		(gchar *)Q_("LDAP|adds support for LDAP shared addressbooks\n"), -1);
+		(gchar *)C_("LDAP", "adds support for LDAP shared addressbooks\n"), -1);
 
 #if HAVE_LIBETPAN
 	gtk_text_buffer_insert_pixbuf(buffer, &iter, active_pixbuf);
@@ -484,7 +484,7 @@ static GtkWidget *about_create_child_page_features(void)
 	gtk_text_buffer_insert_with_tags_by_name(buffer, &iter, (" libetpan "), -1,
 						 "bold", NULL);
 	gtk_text_buffer_insert(buffer, &iter, 
-		(gchar *)Q_("libetpan|adds support for IMAP and NNTP servers\n"), -1);
+		(gchar *)C_("libetpan", "adds support for IMAP and NNTP servers\n"), -1);
 
 #if HAVE_LIBSM
 	gtk_text_buffer_insert_pixbuf(buffer, &iter, active_pixbuf);
@@ -494,7 +494,7 @@ static GtkWidget *about_create_child_page_features(void)
 	gtk_text_buffer_insert_with_tags_by_name(buffer, &iter, (" libSM "), -1,
 						 "bold", NULL);
 	gtk_text_buffer_insert(buffer, &iter, 
-		(gchar *)Q_("libSM|adds support for session handling\n"), -1);
+		(gchar *)C_("libSM", "adds support for session handling\n"), -1);
 
 #if HAVE_NETWORKMANAGER_SUPPORT
 	gtk_text_buffer_insert_pixbuf(buffer, &iter, active_pixbuf);
@@ -504,7 +504,7 @@ static GtkWidget *about_create_child_page_features(void)
 	gtk_text_buffer_insert_with_tags_by_name(buffer, &iter, (" NetworkManager "), -1,
 						 "bold", NULL);
 	gtk_text_buffer_insert(buffer, &iter,
-		(gchar *)Q_("NetworkManager|adds support for detection of network connection changes\n"), -1);
+		(gchar *)C_("NetworkManager", "adds support for detection of network connection changes\n"), -1);
 
 	return scrolledwin;
 }

@@ -368,7 +368,7 @@ static void toolbar_parse_item(XMLFile *file, ToolbarType source)
 			g_free(item->file);
 			item->file = g_strdup("trash_btn");
 			g_free(item->text);
-			item->text = g_strdup(Q_("Toolbar|Trash"));
+			item->text = g_strdup(C_("Toolbar", "Trash"));
 			rewrite = TRUE;
 		}
 		if (item->index == -1 && !strcmp(value, "A_SYL_ACTIONS")) {
@@ -396,14 +396,14 @@ const gchar *toolbar_get_short_text(int action) {
 	case A_RECEIVE_ALL: 	return _("Get Mail");
 	case A_RECEIVE_CUR: 	return _("Get");
 	case A_SEND_QUEUED: 	return _("Send");
-	case A_COMPOSE_EMAIL: 	return Q_("Toolbar|Compose");
-	case A_COMPOSE_NEWS: 	return Q_("Toolbar|Compose");
+	case A_COMPOSE_EMAIL: 	return C_("Toolbar", "Compose");
+	case A_COMPOSE_NEWS: 	return C_("Toolbar", "Compose");
 	case A_REPLY_MESSAGE: 	return _("Reply");
 	case A_REPLY_ALL: 	return _("All");
-	case A_REPLY_SENDER: 	return Q_("Toolbar|Sender");
+	case A_REPLY_SENDER: 	return C_("Toolbar", "Sender");
 	case A_REPLY_ML: 	return _("List");
 	case A_FORWARD: 	return _("Forward");
-	case A_TRASH: 		return Q_("Toolbar|Trash");
+	case A_TRASH: 		return C_("Toolbar", "Trash");
 	case A_DELETE_REAL:	return _("Delete");
 	case A_LEARN_SPAM: 	return _("Spam");
 	case A_GOTO_PREV: 	return _("Prev");

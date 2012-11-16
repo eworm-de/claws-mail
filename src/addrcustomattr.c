@@ -466,7 +466,7 @@ static void custom_attr_window_create(void)
 
 	window = gtkut_window_new(GTK_WINDOW_TOPLEVEL, "custom_attr_edit_window");
 	gtk_window_set_title (GTK_WINDOW(window),
-			      Q_("Dialog title|Edit attribute names"));
+			      C_("Dialog title", "Edit attribute names"));
 
 	gtk_container_set_border_width (GTK_CONTAINER (window), 8);
 	gtk_window_set_position (GTK_WINDOW (window), GTK_WIN_POS_CENTER);

@@ -695,7 +695,7 @@ static void prefs_matcher_create(void)
 	
 	/* address header name */
 	header_addr_combo = combobox_text_new(TRUE,
-			      Q_("Filtering Matcher Menu|All"), _("Any"),
+			      C_("Filtering Matcher Menu", "All"), _("Any"),
 			      "From", "To", "Cc", "Reply-To", "Sender", NULL);
 	gtk_box_pack_start(GTK_BOX(match_hbox), header_addr_combo, FALSE, FALSE, 0);
 	header_addr_entry = gtk_bin_get_child(GTK_BIN((header_addr_combo)));
@@ -1578,7 +1578,7 @@ static MatcherProp *prefs_matcher_dialog_to_matcher(void)
 		if (*expr == '\0') {
 			gchar *tmp;
 
-			if (g_utf8_collate(header, Q_("Filtering Matcher Menu|All")) == 0)
+			if (g_utf8_collate(header, C_("Filtering Matcher Menu", "All")) == 0)
 				tmp = g_strdup(_("all addresses in all headers"));
 			else
 			if (g_utf8_collate(header, _("Any")) == 0)
@@ -1593,7 +1593,7 @@ static MatcherProp *prefs_matcher_dialog_to_matcher(void)
 		    return NULL;
 		}
 		/* store UNtranslated "Any"/"All" in matcher expressions */
-		if (g_utf8_collate(header, Q_("Filtering Matcher Menu|All")) == 0)
+		if (g_utf8_collate(header, C_("Filtering Matcher Menu", "All")) == 0)
 			header = "All";
 		else
 			if (g_utf8_collate(header, _("Any")) == 0)
@@ -2466,7 +2466,7 @@ static gboolean prefs_matcher_selected(GtkTreeSelection *selector,
 		/* matcher expressions contain UNtranslated "Any"/"All",
 		  select the relevant translated combo item */
 		if (strcasecmp(prop->header, "All") == 0)
-			header = (gchar*)Q_("Filtering Matcher Menu|All");
+			header = (gchar*)C_("Filtering Matcher Menu", "All");
 		else
 			if (strcasecmp(prop->header, "Any") == 0)
 				header = _("Any");

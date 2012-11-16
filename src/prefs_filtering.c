@@ -263,7 +263,7 @@ static void prefs_filtering_account_option_menu_populate(void)
 
 	cm_return_if_fail(accounts != NULL);
 
-	COMBOBOX_ADD(filtering.account_combobox_list, Q_("Filtering Account Menu|All"), 0);
+	COMBOBOX_ADD(filtering.account_combobox_list, C_("Filtering Account Menu", "All"), 0);
 	COMBOBOX_ADD(filtering.account_combobox_list, NULL, 0);
 	for (; accounts != NULL; accounts = accounts->next) {
 		PrefsAccount *ac = (PrefsAccount *)accounts->data;
@@ -861,7 +861,7 @@ static void prefs_filtering_set_dialog(const gchar *header, const gchar *key)
 				account_name = ac_prefs->account_name;
 		}
 		if (account_name == NULL)
-			account_name = (gchar *)Q_("Filtering Account Menu|All");
+			account_name = (gchar *)C_("Filtering Account Menu", "All");
 
 		cond_str = filteringprop_to_string(prop);
 		subst_char(cond_str, '\t', ':');
@@ -975,7 +975,7 @@ static gint prefs_filtering_list_view_set_row(gint row, FilteringProp * prop)
 	GtkListStore *list_store;
 	gchar *name = NULL;
 	gint account_id = 0;
-	gchar *account_name = (gchar *)Q_("Filtering Account Menu|All");
+	gchar *account_name = (gchar *)C_("Filtering Account Menu", "All");
 	gboolean enabled = TRUE;
 
 	if (prop)

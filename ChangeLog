@@ -1,3 +1,20 @@
+2012-11-16 [ticho]	3.9.0cvs11
+
+	* src/account.c
+	* src/addrcustomattr.c
+	* src/edittags.c
+	* src/prefs_filtering.c
+	* src/prefs_matcher.c
+	* src/prefs_msg_colors.c
+	* src/toolbar.c
+	* src/uri_opener.c
+	* src/wizard.c
+	* src/common/utils.c
+	* src/gtk/about.c
+		Use pgettext() and friends for i18n context strings, instead of
+		having a pipe character in msgid for context separation. This uses
+		glib's C_ macro, instead of Q_.
+
 2012-11-16 [colin]	3.9.0cvs10
 
 	* src/foldersel.c

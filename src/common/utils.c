@@ -4956,47 +4956,47 @@ static void init_time_names(void)
 {
 	int i = 0;
 
-	daynames[0] = Q_("Complete day name for use by strftime|Sunday");
-	daynames[1] = Q_("Complete day name for use by strftime|Monday");
-	daynames[2] = Q_("Complete day name for use by strftime|Tuesday");
-	daynames[3] = Q_("Complete day name for use by strftime|Wednesday");
-	daynames[4] = Q_("Complete day name for use by strftime|Thursday");
-	daynames[5] = Q_("Complete day name for use by strftime|Friday");
-	daynames[6] = Q_("Complete day name for use by strftime|Saturday");
+	daynames[0] = C_("Complete day name for use by strftime", "Sunday");
+	daynames[1] = C_("Complete day name for use by strftime", "Monday");
+	daynames[2] = C_("Complete day name for use by strftime", "Tuesday");
+	daynames[3] = C_("Complete day name for use by strftime", "Wednesday");
+	daynames[4] = C_("Complete day name for use by strftime", "Thursday");
+	daynames[5] = C_("Complete day name for use by strftime", "Friday");
+	daynames[6] = C_("Complete day name for use by strftime", "Saturday");
 
-	monthnames[0] = Q_("Complete month name for use by strftime|January");
-	monthnames[1] = Q_("Complete month name for use by strftime|February");
-	monthnames[2] = Q_("Complete month name for use by strftime|March");
-	monthnames[3] = Q_("Complete month name for use by strftime|April");
-	monthnames[4] = Q_("Complete month name for use by strftime|May");
-	monthnames[5] = Q_("Complete month name for use by strftime|June");
-	monthnames[6] = Q_("Complete month name for use by strftime|July");
-	monthnames[7] = Q_("Complete month name for use by strftime|August");
-	monthnames[8] = Q_("Complete month name for use by strftime|September");
-	monthnames[9] = Q_("Complete month name for use by strftime|October");
-	monthnames[10] = Q_("Complete month name for use by strftime|November");
-	monthnames[11] = Q_("Complete month name for use by strftime|December");
+	monthnames[0] = C_("Complete month name for use by strftime", "January");
+	monthnames[1] = C_("Complete month name for use by strftime", "February");
+	monthnames[2] = C_("Complete month name for use by strftime", "March");
+	monthnames[3] = C_("Complete month name for use by strftime", "April");
+	monthnames[4] = C_("Complete month name for use by strftime", "May");
+	monthnames[5] = C_("Complete month name for use by strftime", "June");
+	monthnames[6] = C_("Complete month name for use by strftime", "July");
+	monthnames[7] = C_("Complete month name for use by strftime", "August");
+	monthnames[8] = C_("Complete month name for use by strftime", "September");
+	monthnames[9] = C_("Complete month name for use by strftime", "October");
+	monthnames[10] = C_("Complete month name for use by strftime", "November");
+	monthnames[11] = C_("Complete month name for use by strftime", "December");
 
-	s_daynames[0] = Q_("Abbr. day name for use by strftime|Sun");
-	s_daynames[1] = Q_("Abbr. day name for use by strftime|Mon");
-	s_daynames[2] = Q_("Abbr. day name for use by strftime|Tue");
-	s_daynames[3] = Q_("Abbr. day name for use by strftime|Wed");
-	s_daynames[4] = Q_("Abbr. day name for use by strftime|Thu");
-	s_daynames[5] = Q_("Abbr. day name for use by strftime|Fri");
-	s_daynames[6] = Q_("Abbr. day name for use by strftime|Sat");
+	s_daynames[0] = C_("Abbr. day name for use by strftime", "Sun");
+	s_daynames[1] = C_("Abbr. day name for use by strftime", "Mon");
+	s_daynames[2] = C_("Abbr. day name for use by strftime", "Tue");
+	s_daynames[3] = C_("Abbr. day name for use by strftime", "Wed");
+	s_daynames[4] = C_("Abbr. day name for use by strftime", "Thu");
+	s_daynames[5] = C_("Abbr. day name for use by strftime", "Fri");
+	s_daynames[6] = C_("Abbr. day name for use by strftime", "Sat");
 	
-	s_monthnames[0] = Q_("Abbr. month name for use by strftime|Jan");
-	s_monthnames[1] = Q_("Abbr. month name for use by strftime|Feb");
-	s_monthnames[2] = Q_("Abbr. month name for use by strftime|Mar");
-	s_monthnames[3] = Q_("Abbr. month name for use by strftime|Apr");
-	s_monthnames[4] = Q_("Abbr. month name for use by strftime|May");
-	s_monthnames[5] = Q_("Abbr. month name for use by strftime|Jun");
-	s_monthnames[6] = Q_("Abbr. month name for use by strftime|Jul");
-	s_monthnames[7] = Q_("Abbr. month name for use by strftime|Aug");
-	s_monthnames[8] = Q_("Abbr. month name for use by strftime|Sep");
-	s_monthnames[9] = Q_("Abbr. month name for use by strftime|Oct");
-	s_monthnames[10] = Q_("Abbr. month name for use by strftime|Nov");
-	s_monthnames[11] = Q_("Abbr. month name for use by strftime|Dec");
+	s_monthnames[0] = C_("Abbr. month name for use by strftime", "Jan");
+	s_monthnames[1] = C_("Abbr. month name for use by strftime", "Feb");
+	s_monthnames[2] = C_("Abbr. month name for use by strftime", "Mar");
+	s_monthnames[3] = C_("Abbr. month name for use by strftime", "Apr");
+	s_monthnames[4] = C_("Abbr. month name for use by strftime", "May");
+	s_monthnames[5] = C_("Abbr. month name for use by strftime", "Jun");
+	s_monthnames[6] = C_("Abbr. month name for use by strftime", "Jul");
+	s_monthnames[7] = C_("Abbr. month name for use by strftime", "Aug");
+	s_monthnames[8] = C_("Abbr. month name for use by strftime", "Sep");
+	s_monthnames[9] = C_("Abbr. month name for use by strftime", "Oct");
+	s_monthnames[10] = C_("Abbr. month name for use by strftime", "Nov");
+	s_monthnames[11] = C_("Abbr. month name for use by strftime", "Dec");
 
 	for (i = 0; i < 7; i++) {
 		daynames_len[i] = strlen(daynames[i]);
@@ -5007,21 +5007,21 @@ static void init_time_names(void)
 		s_monthnames_len[i] = strlen(s_monthnames[i]);
 	}
 
-	s_am_up = Q_("For use by strftime (morning)|AM");
-	s_pm_up = Q_("For use by strftime (afternoon)|PM");
-	s_am_low = Q_("For use by strftime (morning, lowercase)|am");
-	s_pm_low = Q_("For use by strftime (afternoon, lowercase)|pm");
+	s_am_up = C_("For use by strftime (morning)", "AM");
+	s_pm_up = C_("For use by strftime (afternoon)", "PM");
+	s_am_low = C_("For use by strftime (morning, lowercase)", "am");
+	s_pm_low = C_("For use by strftime (afternoon, lowercase)", "pm");
 	
 	s_am_up_len = strlen(s_am_up);
 	s_pm_up_len = strlen(s_pm_up);
 	s_am_low_len = strlen(s_am_low);
 	s_pm_low_len = strlen(s_pm_low);
 	
-	def_loc_format = Q_("For use by strftime (default date+time format)|%a %b %e %H:%M:%S %Y");
-	date_loc_format = Q_("For use by strftime (default date format)|%m/%d/%y");
-	time_loc_format = Q_("For use by strftime (default time format)|%H:%M:%S");
+	def_loc_format = C_("For use by strftime (default date+time format)", "%a %b %e %H:%M:%S %Y");
+	date_loc_format = C_("For use by strftime (default date format)", "%m/%d/%y");
+	time_loc_format = C_("For use by strftime (default time format)", "%H:%M:%S");
 
-	time_am_pm = Q_("For use by strftime (default 12-hour time format)|%I:%M:%S %p");
+	time_am_pm = C_("For use by strftime (default 12-hour time format)", "%I:%M:%S %p");
 
 	time_names_init_done = TRUE;
 }
