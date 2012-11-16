@@ -4507,3 +4507,4 @@
 ( cvs diff -u -r 1.58.2.51 -r 1.58.2.52 po/de.po;  ) > 3.9.0cvs7.patchset
 ( cvs diff -u -r 1.1.2.7 -r 1.1.2.8 src/advsearch.c;  ) > 3.9.0cvs8.patchset
 ( cvs diff -u -r 1.1.2.8 -r 1.1.2.9 src/advsearch.c;  ) > 3.9.0cvs9.patchset
+( cvs diff -u -r 1.26.2.49 -r 1.26.2.50 src/foldersel.c;  cvs diff -u -r 1.60.2.83 -r 1.60.2.84 src/prefs_actions.c;  cvs diff -u -r 1.1.4.80 -r 1.1.4.81 src/prefs_filtering_action.c;  cvs diff -u -r 1.43.2.97 -r 1.43.2.98 src/prefs_matcher.c;  cvs diff -u -r 1.8.2.47 -r 1.8.2.48 src/quote_fmt.c;  cvs diff -u -r 1.5.2.36 -r 1.5.2.37 src/gtk/description_window.c;  cvs diff -u -r 1.1.4.10 -r 1.1.4.11 src/gtk/description_window.h;  cvs diff -u -r 1.2.2.49 -r 1.2.2.50 src/gtk/inputdialog.c;  cvs diff -u -r 1.1.4.11 -r 1.1.4.12 src/gtk/manage_window.c;  cvs diff -u -r 1.1.2.120 -r 1.1.2.121 src/gtk/quicksearch.c;  ) > 3.9.0cvs10.patchset

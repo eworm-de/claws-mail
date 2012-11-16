@@ -1267,7 +1267,8 @@ static gchar *exec_desc_strings[] = {
 
 static DescriptionWindow exec_desc_win = { 
 	NULL,
-        NULL, 
+        NULL,
+	TRUE,
         2,
         N_("Filtering Action: 'Execute'"),
 	N_("'Execute' allows you to send a message or message element "

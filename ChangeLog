@@ -1,3 +1,27 @@
+2012-11-16 [colin]	3.9.0cvs10
+
+	* src/foldersel.c
+	* src/prefs_actions.c
+	* src/prefs_filtering_action.c
+	* src/prefs_matcher.c
+	* src/quote_fmt.c
+	* src/gtk/description_window.c
+	* src/gtk/description_window.h
+	* src/gtk/inputdialog.c
+	* src/gtk/manage_window.c
+	* src/gtk/quicksearch.c
+		Try to better fix focus problems. Should address:
+		Bug #2774
+		Bug #2624
+		Bug #1963
+		Please check using your favorite WM that the following works:
+		Information button (Quicksearch, Templates, 'Test' filtering 
+		condition)
+		Folder selection (Move/Copy contextual menu,
+		various preferences, including 'New folder').
+		Tested with XFCE, Gnome Shell and Windows.
+		
+
 2012-11-16 [colin]	3.9.0cvs9
 
 	* src/advsearch.c

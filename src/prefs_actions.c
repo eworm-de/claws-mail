@@ -995,6 +995,7 @@ static gchar *actions_desc_strings[] = {
 static DescriptionWindow actions_desc_win = { 
 	NULL,
 	NULL,
+	TRUE,
 	2,
 	N_("Actions"),
   	N_("The Actions feature is a way for the user to launch "

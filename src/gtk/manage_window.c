@@ -21,14 +21,21 @@
 #include <gtk/gtk.h>
 
 #include "manage_window.h"
-/* #include "utils.h" */
+#include "utils.h"
 
 GtkWidget *focus_window;
 
 gint manage_window_focus_in(GtkWidget *widget, GdkEventFocus *event,
 			    gpointer data)
 {
-	/* debug_print("Focus in event: window: %p\n", widget); */
+	const gchar *title = NULL;
+
+	if (!GTK_IS_WINDOW(widget))
+		return FALSE;
+	
+	title = gtk_window_get_title(GTK_WINDOW(widget));
+	debug_print("Focus in event: window: %p - %s\n", widget,
+		    title ? title : "no title");
 
 	focus_window = widget;
 
@@ -38,8 +45,14 @@ gint manage_window_focus_in(GtkWidget *widget, GdkEventFocus *event,
 gint manage_window_focus_out(GtkWidget *widget, GdkEventFocus *event,
 			     gpointer data)
 {
-	/* debug_print("Focused window: %p\n", focus_window); */
-	/* debug_print("Focus out event: window: %p\n", widget); */
+	const gchar *title = NULL;
+
+	if (!GTK_IS_WINDOW(widget))
+		return FALSE;
+
+	title = gtk_window_get_title(GTK_WINDOW(widget));
+	debug_print("Focus out event: window: %p - %s\n", widget,
+		    title ? title : "no title");
 
 	if (focus_window == widget)
 		focus_window = NULL;
@@ -49,7 +62,9 @@ gint manage_window_focus_out(GtkWidget *widget, GdkEventFocus *event,
 
 gint manage_window_unmap(GtkWidget *widget, GdkEventAny *event, gpointer data)
 {
-	/* debug_print("unmap event: %p\n", widget); */
+	const gchar *title = gtk_window_get_title(GTK_WINDOW(widget));
+	debug_print("Unmap event: window: %p - %s\n", widget,
+		    title ? title : "no title");
 
 	if (focus_window == widget)
 		focus_window = NULL;
@@ -59,7 +74,10 @@ gint manage_window_unmap(GtkWidget *widget, GdkEventAny *event, gpointer data)
 
 void manage_window_destroy(GtkWidget *widget, gpointer data)
 {
-	/* debug_print("destroy event: %p\n", widget); */
+	const gchar *title = gtk_window_get_title(GTK_WINDOW(widget));
+	debug_print("Destroy event: window: %p - %s\n", widget,
+		    title ? title : "no title");
+
 
 	if (focus_window == widget)
 		focus_window = NULL;

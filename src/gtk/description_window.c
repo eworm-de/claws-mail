@@ -52,7 +52,12 @@ void description_window_create(DescriptionWindow *dwindow)
 		description_create(dwindow);
 	
 		gtk_window_set_transient_for(GTK_WINDOW(dwindow->window), GTK_WINDOW(dwindow->parent));
+		dwindow->parent_modal = gtk_window_get_modal(GTK_WINDOW(dwindow->parent));
+#ifndef G_OS_WIN32
 		gtk_window_set_modal(GTK_WINDOW(dwindow->parent), TRUE);
+#else
+		gtk_window_set_modal(GTK_WINDOW(dwindow->window), TRUE);
+#endif
 		gtk_window_set_destroy_with_parent(GTK_WINDOW(dwindow->window), TRUE);
 		gtk_widget_show(dwindow->window);
 
@@ -228,7 +233,10 @@ static void description_window_destroy (GtkWidget *widget, gpointer data)
 		dwindow->window = NULL;
 	}
 	
-	if(dwindow->parent)
+	if(dwindow->parent) {
+		if (GTK_IS_WINDOW(dwindow->parent))
+			gtk_window_set_modal(GTK_WINDOW(dwindow->parent), dwindow->parent_modal);
 		g_signal_handlers_disconnect_by_func(G_OBJECT(dwindow->parent), 
 					description_window_destroy, dwindow->parent);
+	}
 }

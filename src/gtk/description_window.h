@@ -26,6 +26,7 @@ struct _DescriptionWindow
 {
 	GtkWidget 	* window;
 	GtkWidget	* parent;
+	gboolean	parent_modal;
 	/** Number of columns for each line of data **/
 	int		  columns;
 	/** title of the window **/

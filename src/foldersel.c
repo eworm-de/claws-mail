@@ -178,7 +178,7 @@ FolderItem *foldersel_folder_sel(Folder *cur_folder, FolderSelectionType type,
 	gtk_widget_grab_focus(ok_button);
 	gtk_widget_grab_focus(treeview);
 
-	gtk_widget_show(window);
+	gtk_window_present(window);
 	gtk_window_set_modal(GTK_WINDOW(window), TRUE);
 	manage_window_set_transient(GTK_WINDOW(window));
 
@@ -187,10 +187,8 @@ FolderItem *foldersel_folder_sel(Folder *cur_folder, FolderSelectionType type,
 	while (finished == FALSE)
 		gtk_main_iteration();
 
-	gtk_widget_hide(window);
-	gtk_window_set_modal(GTK_WINDOW(window), FALSE);
-	gtk_entry_set_text(GTK_ENTRY(entry), "");
-	gtk_tree_store_clear(tree_store);
+	gtk_widget_destroy(window);
+	window = NULL;
 
 	if (!cancelled &&
 	    selected_item && (selected_item->path || root_selectable)) {

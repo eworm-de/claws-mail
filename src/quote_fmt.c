@@ -104,6 +104,7 @@ static gchar *quote_desc_strings[] = {
 static DescriptionWindow quote_desc_win = { 
         NULL,
 	NULL,
+	TRUE,
         2,
         N_("Description of symbols"),
 	N_("The following symbols and commands can be used:"),

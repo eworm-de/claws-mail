@@ -483,6 +483,7 @@ static gchar *search_descr_strings[] = {
 static DescriptionWindow search_descr = {
 	NULL,
 	NULL,
+	FALSE,
 	2,
 	N_("Extended Search"),
 	N_("Extended Search allows the user to define criteria that messages must "

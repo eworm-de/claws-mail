@@ -2139,6 +2139,7 @@ static gchar *test_desc_strings[] = {
 static DescriptionWindow test_desc_win = { 
 	NULL,
         NULL, 
+	TRUE,
         2,
         N_("Match Type: 'Test'"),
 	N_("'Test' allows you to test a message or message element "
