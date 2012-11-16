@@ -368,6 +368,7 @@ static void prepare_matcher_header(AdvancedSearch *search, gint match_header)
 	if (search->predicate == NULL) {
 		search->predicate = g_new0(MatcherList, 1);
 		search->predicate->bool_and = FALSE;
+		search->is_fast = TRUE;
 	}
 
 	matcher = matcherprop_new(match_header, NULL, MATCHTYPE_MATCHCASE,

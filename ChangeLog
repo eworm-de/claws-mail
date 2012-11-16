@@ -1,3 +1,8 @@
+2012-11-16 [colin]	3.9.0cvs9
+
+	* src/advsearch.c
+		Init is_fast too
+
 2012-11-16 [colin]	3.9.0cvs8
 
 	* src/advsearch.c
