@@ -1,3 +1,9 @@
+2012-11-18 [ticho]	3.9.0cvs13
+
+	* src/mbox.c
+		Improve i18n plural handling in a string used while
+		importing from mbox.
+
 2012-11-16 [ticho]	3.9.0cvs12
 
 	* po/bg.po
