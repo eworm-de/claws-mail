@@ -183,7 +183,10 @@ enum {
 	CRITERIA_TAGGED = 36,
 
 	CRITERIA_HAS_ATTACHMENT = 37,
-	CRITERIA_SIGNED = 38
+	CRITERIA_SIGNED = 38,
+
+	CRITERIA_AGE_GREATER_HOURS = 39,
+	CRITERIA_AGE_LOWER_HOURS = 40
 };
 
 enum {
@@ -203,8 +206,9 @@ enum {
 };
 
 enum {
-	AGE_DAYS  = 0,
-	AGE_WEEKS = 1
+	AGE_HOURS = 0,
+	AGE_DAYS  = 1,
+	AGE_WEEKS = 2
 };
 
 enum {
@@ -326,6 +330,7 @@ static void prefs_matcher_models_create(void)
 	matcher.model_age = GTK_TREE_MODEL(store);
 
 	store = gtk_list_store_new(3, G_TYPE_STRING, G_TYPE_INT, G_TYPE_BOOLEAN);
+	COMBOBOX_ADD(store, _("hours"), AGE_HOURS);
 	COMBOBOX_ADD(store, _("days"), AGE_DAYS);
 	COMBOBOX_ADD(store, _("weeks"), AGE_WEEKS);
 	matcher.model_age_units = GTK_TREE_MODEL(store);
@@ -1136,6 +1141,10 @@ static gint prefs_matcher_get_criteria_from_matching(gint matching_id)
 	case MATCHCRITERIA_NOT_HEADER:
 	case MATCHCRITERIA_HEADER:
 		return CRITERIA_HEADER;
+	case MATCHCRITERIA_AGE_GREATER_HOURS:
+		return CRITERIA_AGE_GREATER_HOURS;
+	case MATCHCRITERIA_AGE_LOWER_HOURS:
+		return CRITERIA_AGE_LOWER_HOURS;
 	case MATCHCRITERIA_AGE_GREATER:
 		return CRITERIA_AGE_GREATER;
 	case MATCHCRITERIA_AGE_LOWER:
@@ -1230,6 +1239,10 @@ static gint prefs_matcher_get_matching_from_criteria(gint criteria_id)
 		return MATCHCRITERIA_AGE_GREATER;
 	case CRITERIA_AGE_LOWER:
 		return MATCHCRITERIA_AGE_LOWER;
+	case CRITERIA_AGE_GREATER_HOURS:
+		return MATCHCRITERIA_AGE_GREATER_HOURS;
+	case CRITERIA_AGE_LOWER_HOURS:
+		return MATCHCRITERIA_AGE_LOWER_HOURS;
 	case CRITERIA_SCORE_GREATER:
 		return MATCHCRITERIA_SCORE_GREATER;
 	case CRITERIA_SCORE_LOWER:
@@ -1439,12 +1452,6 @@ static MatcherProp *prefs_matcher_dialog_to_matcher(void)
 	if (value_criteria == -1)
 		return NULL;
 
-	criteria = prefs_matcher_get_matching_from_criteria(value_criteria);
-
-	value_pred = prefs_matcher_get_pred(value_criteria);
-	if(value_pred)
-		criteria = prefs_matcher_not_criteria(criteria);
-
 #ifndef G_OS_WIN32
 	use_regexp = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(matcher.regexp_checkbtn));
 #else
@@ -1523,6 +1530,12 @@ static MatcherProp *prefs_matcher_dialog_to_matcher(void)
 		sel = gtk_combo_box_get_active(GTK_COMBO_BOX(matcher.match_combo2));
 		if(sel == AGE_WEEKS)
 			value *= 7;
+		else if (sel == AGE_HOURS) {
+			if (value_criteria == CRITERIA_AGE_GREATER)
+				value_criteria = CRITERIA_AGE_GREATER_HOURS;
+			else 
+				value_criteria = CRITERIA_AGE_LOWER_HOURS;
+		}
 		break;
 			
 	case CRITERIA_SCORE_GREATER:
@@ -1602,6 +1615,12 @@ static MatcherProp *prefs_matcher_dialog_to_matcher(void)
 			expr = "Any";
 		break;
 	}
+
+	criteria = prefs_matcher_get_matching_from_criteria(value_criteria);
+
+	value_pred = prefs_matcher_get_pred(value_criteria);
+	if(value_pred)
+		criteria = prefs_matcher_not_criteria(criteria);
 
 	matcherprop = matcherprop_new(criteria, header, matchtype,
 				      expr, value);
@@ -1935,6 +1954,7 @@ static void prefs_matcher_criteria_select(GtkWidget *widget,
 		gtk_spin_button_set_range(GTK_SPIN_BUTTON(
 				  matcher.numeric_entry), 0, 1000);
 		gtk_spin_button_set_value(GTK_SPIN_BUTTON(matcher.numeric_entry), 0);
+		gtk_combo_box_set_active(GTK_COMBO_BOX(matcher.match_combo2), AGE_DAYS);
 		gtk_label_set_text(GTK_LABEL(matcher.match_label), _("Age is"));
 		break;
 	case MATCH_FLAG:
@@ -2261,6 +2281,8 @@ static void prefs_matcher_set_criteria(const gint criteria)
 		break;
 	case CRITERIA_AGE_GREATER:
 	case CRITERIA_AGE_LOWER:
+	case CRITERIA_AGE_GREATER_HOURS:
+	case CRITERIA_AGE_LOWER_HOURS:
 		match_criteria = MATCH_AGE;
 		break;
 	case CRITERIA_SCORE_GREATER:
@@ -2495,6 +2517,14 @@ static gboolean prefs_matcher_selected(GtkTreeSelection *selector,
 			gtk_spin_button_set_value(GTK_SPIN_BUTTON(
 					matcher.numeric_entry), prop->value);
 		}
+		break;
+		
+	case MATCHCRITERIA_AGE_GREATER_HOURS:
+	case MATCHCRITERIA_AGE_LOWER_HOURS:
+		gtk_combo_box_set_active(GTK_COMBO_BOX(matcher.match_combo2),
+					 AGE_HOURS);
+		gtk_spin_button_set_value(GTK_SPIN_BUTTON(
+				matcher.numeric_entry), prop->value);
 		break;
 		
 	case MATCHCRITERIA_SCORE_GREATER:

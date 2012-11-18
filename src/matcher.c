@@ -110,6 +110,8 @@ static const MatchParser matchparser_tab[] = {
 	{MATCHCRITERIA_NOT_TAGGED, "~tagged"},
 	{MATCHCRITERIA_AGE_GREATER, "age_greater"},
 	{MATCHCRITERIA_AGE_LOWER, "age_lower"},
+	{MATCHCRITERIA_AGE_GREATER_HOURS, "age_greater_hours"},
+	{MATCHCRITERIA_AGE_LOWER_HOURS, "age_lower_hours"},
 	{MATCHCRITERIA_NEWSGROUPS, "newsgroups"},
 	{MATCHCRITERIA_NOT_NEWSGROUPS, "~newsgroups"},
 	{MATCHCRITERIA_INREPLYTO, "inreplyto"},
@@ -757,6 +759,7 @@ static gboolean matcherprop_match(MatcherProp *prop,
 				  MsgInfo *info)
 {
 	time_t t;
+	gint age_mult_hours = 1;
 
 	switch(prop->criteria) {
 	case MATCHCRITERIA_ALL:
@@ -880,12 +883,15 @@ static gboolean matcherprop_match(MatcherProp *prop,
 	case MATCHCRITERIA_NOT_TAGGED:
 		return info->tags == NULL;
 	case MATCHCRITERIA_AGE_GREATER:
+		age_mult_hours = 24;
+		/* Fallthrough intended */
+	case MATCHCRITERIA_AGE_GREATER_HOURS:
 	{
 		gboolean ret;
 		gint age;
 
 		t = time(NULL);
-		age = ((t - info->date_t) / (60 * 60 * 24));
+		age = ((t - info->date_t) / (60 * 60 * age_mult_hours));
 		ret = (age >= prop->value);
 
 		/* debug output */
@@ -904,12 +910,15 @@ static gboolean matcherprop_match(MatcherProp *prop,
 		return ret;
 	}
 	case MATCHCRITERIA_AGE_LOWER:
+		age_mult_hours = 24;
+		/* Fallthrough intended */
+	case MATCHCRITERIA_AGE_LOWER_HOURS:
 	{
 		gboolean ret;
 		gint age;
 
 		t = time(NULL);
-		age = ((t - info->date_t) / (60 * 60 * 24));
+		age = ((t - info->date_t) / (60 * 60 * age_mult_hours));
 		ret = (age < prop->value);
 
 		/* debug output */
@@ -1748,6 +1757,8 @@ gboolean matcherlist_match(MatcherList *matchers, MsgInfo *info)
 		case MATCHCRITERIA_NOT_TAGGED:
 		case MATCHCRITERIA_AGE_GREATER:
 		case MATCHCRITERIA_AGE_LOWER:
+		case MATCHCRITERIA_AGE_GREATER_HOURS:
+		case MATCHCRITERIA_AGE_LOWER_HOURS:
 		case MATCHCRITERIA_NEWSGROUPS:
 		case MATCHCRITERIA_NOT_NEWSGROUPS:
 		case MATCHCRITERIA_INREPLYTO:
@@ -1895,6 +1906,8 @@ gchar *matcherprop_to_string(MatcherProp *matcher)
 	switch (matcher->criteria) {
 	case MATCHCRITERIA_AGE_GREATER:
 	case MATCHCRITERIA_AGE_LOWER:
+	case MATCHCRITERIA_AGE_GREATER_HOURS:
+	case MATCHCRITERIA_AGE_LOWER_HOURS:
 	case MATCHCRITERIA_SCORE_GREATER:
 	case MATCHCRITERIA_SCORE_LOWER:
 	case MATCHCRITERIA_SCORE_EQUAL:

@@ -150,6 +150,8 @@ gchar *advsearch_expand_search_string(const gchar *search_string)
 		{ "a",	"all",				0,	FALSE,	FALSE },
 		{ "ag",	"age_greater",			1,	FALSE,	FALSE },
 		{ "al",	"age_lower",			1,	FALSE,	FALSE },
+		{ "agh","age_greater_hours",		1,	FALSE,	FALSE },
+		{ "alh","age_lower_hours",		1,	FALSE,	FALSE },
 		{ "b",	"body_part",			1,	TRUE,	TRUE  },
 		{ "B",	"message",			1,	TRUE,	TRUE  },
 		{ "c",	"cc",				1,	TRUE,	TRUE  },

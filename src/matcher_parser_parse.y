@@ -319,6 +319,7 @@ int matcher_parserwrap(void)
 %token MATCHER_FROM  MATCHER_NOT_FROM  MATCHER_TO  MATCHER_NOT_TO
 %token MATCHER_CC  MATCHER_NOT_CC  MATCHER_TO_OR_CC  MATCHER_NOT_TO_AND_NOT_CC
 %token MATCHER_AGE_GREATER  MATCHER_AGE_LOWER  MATCHER_NEWSGROUPS
+%token MATCHER_AGE_GREATER_HOURS  MATCHER_AGE_LOWER_HOURS
 %token MATCHER_NOT_NEWSGROUPS  MATCHER_INREPLYTO  MATCHER_NOT_INREPLYTO
 %token MATCHER_REFERENCES  MATCHER_NOT_REFERENCES  MATCHER_SCORE_GREATER
 %token MATCHER_SCORE_LOWER  MATCHER_HEADER  MATCHER_NOT_HEADER
@@ -950,6 +951,24 @@ MATCHER_ALL
 	gint value = 0;
 
 	criteria = MATCHCRITERIA_AGE_LOWER;
+	value = strtol($2, NULL, 0);
+	prop = matcherprop_new(criteria, NULL, 0, NULL, value);
+}
+| MATCHER_AGE_GREATER_HOURS MATCHER_INTEGER
+{
+	gint criteria = 0;
+	gint value = 0;
+
+	criteria = MATCHCRITERIA_AGE_GREATER_HOURS;
+	value = strtol($2, NULL, 0);
+	prop = matcherprop_new(criteria, NULL, 0, NULL, value);
+}
+| MATCHER_AGE_LOWER_HOURS MATCHER_INTEGER
+{
+	gint criteria = 0;
+	gint value = 0;
+
+	criteria = MATCHCRITERIA_AGE_LOWER_HOURS;
 	value = strtol($2, NULL, 0);
 	prop = matcherprop_new(criteria, NULL, 0, NULL, value);
 }

@@ -1,3 +1,16 @@
+2012-11-18 [colin]	3.9.0cvs14
+
+	* AUTHORS
+	* src/advsearch.c
+	* src/matcher.c
+	* src/matcher.h
+	* src/matcher_parser_parse.y
+	* src/prefs_matcher.c
+	* src/gtk/authors.h
+	* src/gtk/quicksearch.c
+		Add age_{greater,lower}_hours matcher criteria
+		Initial patch by Abhay S. Kushwaha.
+
 2012-11-18 [ticho]	3.9.0cvs13
 
 	* src/mbox.c

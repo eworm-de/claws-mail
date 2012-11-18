@@ -433,6 +433,8 @@ static gchar *search_descr_strings[] = {
 	"a",	 N_("all messages"),
 	"ag #",  N_("messages whose age is greater than # days"),
 	"al #",  N_("messages whose age is less than # days"),
+	"agh #",  N_("messages whose age is greater than # hours"),
+	"alh #",  N_("messages whose age is less than # hours"),
 	"b S",	 N_("messages which contain S in the message body"),
 	"B S",	 N_("messages which contain S in the whole message"),
 	"c S",	 N_("messages carbon-copied to S"),
