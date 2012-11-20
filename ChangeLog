@@ -1,3 +1,8 @@
+2012-11-20 [ticho]	3.9.0cvs15
+
+	* src/prefs_folder_item.c
+		Remove useless "Folder" root in page index of folder preferences UI.
+
 2012-11-18 [colin]	3.9.0cvs14
 
 	* AUTHORS
