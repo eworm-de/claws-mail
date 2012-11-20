@@ -1,3 +1,9 @@
+2012-11-20 [ticho]	3.9.0cvs16
+
+	* src/gtk/prefswindow.c
+		Actually allow folder preference pages which are in top level of
+		page index UI to be selected.
+
 2012-11-20 [ticho]	3.9.0cvs15
 
 	* src/prefs_folder_item.c

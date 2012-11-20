@@ -4513,3 +4513,4 @@
 ( cvs diff -u -r 1.28.2.55 -r 1.28.2.56 src/mbox.c;  ) > 3.9.0cvs13.patchset
 ( cvs diff -u -r 1.100.2.86 -r 1.100.2.87 AUTHORS;  cvs diff -u -r 1.1.2.9 -r 1.1.2.10 src/advsearch.c;  cvs diff -u -r 1.75.2.78 -r 1.75.2.79 src/matcher.c;  cvs diff -u -r 1.39.2.23 -r 1.39.2.24 src/matcher.h;  cvs diff -u -r 1.25.2.36 -r 1.25.2.37 src/matcher_parser_parse.y;  cvs diff -u -r 1.43.2.99 -r 1.43.2.100 src/prefs_matcher.c;  cvs diff -u -r 1.1.2.82 -r 1.1.2.83 src/gtk/authors.h;  cvs diff -u -r 1.1.2.121 -r 1.1.2.122 src/gtk/quicksearch.c;  ) > 3.9.0cvs14.patchset
 ( cvs diff -u -r 1.52.2.91 -r 1.52.2.92 src/prefs_folder_item.c;  ) > 3.9.0cvs15.patchset
+( cvs diff -u -r 1.12.2.62 -r 1.12.2.63 src/gtk/prefswindow.c;  ) > 3.9.0cvs16.patchset
