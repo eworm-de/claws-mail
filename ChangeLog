@@ -1,3 +1,8 @@
+2012-11-21 [colin]	3.9.0cvs18
+
+	* src/etpan/imap-thread.c
+		Don't set charset on simple searches. Fixes Exchange 2007.
+
 2012-11-20 [colin]	3.9.0cvs17
 
 	* src/prefs_matcher.c

@@ -1591,7 +1591,8 @@ static void search_run(struct etpan_thread_op * op)
 	struct mailimap_search_key * uid_key = NULL;
 	struct mailimap_search_key * search_type_key = NULL;
 	clist * search_result;
-	
+	static const char *charset = NULL;
+
 	param = op->param;
 	result = op->result;
 
@@ -1629,6 +1630,7 @@ static void search_run(struct etpan_thread_op * op)
 		search_type_key = imap_search_new(IMAP_SEARCH_CRITERIA_TAG, NULL, RTAG_JUNK, 0);
 		break;
 	case IMAP_SEARCH_TYPE_KEYED:
+		charset = "UTF-8";
 		search_type_key = param->key;
 		break;
 	}
@@ -1653,7 +1655,7 @@ static void search_run(struct etpan_thread_op * op)
 	} else {
 		mailstream_logger = imap_logger_uid;
 
-		r = mailimap_uid_search(param->imap, "UTF-8", key, &search_result);
+		r = mailimap_uid_search(param->imap, charset, key, &search_result);
 
 		mailstream_logger = imap_logger_cmd;
 

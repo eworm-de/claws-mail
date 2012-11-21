@@ -4515,3 +4515,4 @@
 ( cvs diff -u -r 1.52.2.91 -r 1.52.2.92 src/prefs_folder_item.c;  ) > 3.9.0cvs15.patchset
 ( cvs diff -u -r 1.12.2.62 -r 1.12.2.63 src/gtk/prefswindow.c;  ) > 3.9.0cvs16.patchset
 ( cvs diff -u -r 1.43.2.100 -r 1.43.2.101 src/prefs_matcher.c;  ) > 3.9.0cvs17.patchset
+( cvs diff -u -r 1.1.4.124 -r 1.1.4.125 src/etpan/imap-thread.c;  ) > 3.9.0cvs18.patchset
