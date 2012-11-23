@@ -4516,3 +4516,4 @@
 ( cvs diff -u -r 1.12.2.62 -r 1.12.2.63 src/gtk/prefswindow.c;  ) > 3.9.0cvs16.patchset
 ( cvs diff -u -r 1.43.2.100 -r 1.43.2.101 src/prefs_matcher.c;  ) > 3.9.0cvs17.patchset
 ( cvs diff -u -r 1.1.4.124 -r 1.1.4.125 src/etpan/imap-thread.c;  ) > 3.9.0cvs18.patchset
+( cvs diff -u -r 1.100.2.87 -r 1.100.2.88 AUTHORS;  cvs diff -u -r 1.1.2.83 -r 1.1.2.84 src/gtk/authors.h;  ) > 3.9.0cvs19.patchset

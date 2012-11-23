@@ -1,3 +1,9 @@
+2012-11-23 [colin]	3.9.0cvs19
+
+	* AUTHORS
+	* src/gtk/authors.h
+		Add Christian Hesse which was forgotten for some reason
+
 2012-11-21 [colin]	3.9.0cvs18
 
 	* src/etpan/imap-thread.c
