@@ -56,6 +56,11 @@ typedef enum {
 	CTE_8BIT
 } TransferEncodingMethod;
 
+typedef enum {
+	ZOOM_IN,
+	ZOOM_OUT
+} ZoomType;
+
 typedef enum
 {
 /* U = unread, N = new, M = marked */
@@ -195,13 +200,11 @@ struct _PrefsCommon
 	gchar *smallfont_gtk1;
 
 	/* new fonts */
-	gchar *widgetfont;
 	gchar *textfont;
 	gchar *printfont;
 	gchar *boldfont;
 	gchar *normalfont;
 	gchar *smallfont;
-	gchar *titlefont;
 	gboolean use_different_print_font;
 	gboolean derive_from_normal_font;
 
@@ -544,4 +547,5 @@ gchar *pref_get_pref_from_entry(GtkEntry *entry);
 const gchar *prefs_common_translated_header_name(const gchar *header_name);
 const gchar *prefs_common_get_uri_cmd(void);
 const gchar *prefs_common_get_ext_editor_cmd(void);
+void prefs_common_zoom_font(gchar **font, ZoomType type);
 #endif /* __PREFS_COMMON_H__ */

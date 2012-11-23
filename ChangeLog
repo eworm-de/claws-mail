@@ -1,3 +1,22 @@
+2012-11-23 [colin]	3.9.0cvs20
+
+	* src/jpilot.c
+	* src/main.c
+	* src/mainwindow.c
+	* src/matcher.c
+	* src/prefs_common.c
+	* src/prefs_common.h
+	* src/procmsg.c
+	* src/common/socket.c
+	* src/common/socket.h
+	* src/common/ssl.c
+	* src/common/ssl_certificate.c
+	* src/common/ssl_certificate.h
+	* src/etpan/imap-thread.c
+	* src/etpan/nntp-thread.c
+		Cleanup some warnings and deprecated types. Patch by
+		Christian Hesse, fixing bug #2617. Thanks!
+
 2012-11-23 [colin]	3.9.0cvs19
 
 	* AUTHORS

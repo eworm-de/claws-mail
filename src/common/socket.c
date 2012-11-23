@@ -1388,7 +1388,7 @@ static gint fd_read(gint fd, gchar *buf, gint len)
 }
 
 #if USE_GNUTLS
-static gint ssl_read(gnutls_session ssl, gchar *buf, gint len)
+static gint ssl_read(gnutls_session_t ssl, gchar *buf, gint len)
 {
 	gint r;
 
@@ -1453,7 +1453,7 @@ gint fd_write(gint fd, const gchar *buf, gint len)
 }
 
 #if USE_GNUTLS
-static gint ssl_write(gnutls_session ssl, const gchar *buf, gint len)
+static gint ssl_write(gnutls_session_t ssl, const gchar *buf, gint len)
 {
 	gint ret;
 
@@ -1522,7 +1522,7 @@ gint fd_write_all(gint fd, const gchar *buf, gint len)
 }
 
 #ifdef USE_GNUTLS
-static gint ssl_write_all(gnutls_session ssl, const gchar *buf, gint len)
+static gint ssl_write_all(gnutls_session_t ssl, const gchar *buf, gint len)
 {
 	gint n, wrlen = 0;
 

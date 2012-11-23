@@ -59,10 +59,10 @@ struct _SockInfo
 {
 	gint sock;
 #if USE_GNUTLS
-	gnutls_session ssl;
+	gnutls_session_t ssl;
 	gnutls_certificate_credentials_t xcred;
-	gnutls_x509_crt client_crt;
-	gnutls_x509_privkey client_key;
+	gnutls_x509_crt_t client_crt;
+	gnutls_x509_privkey_t client_key;
 #endif
 	guint g_source;
 	GIOChannel *sock_ch;

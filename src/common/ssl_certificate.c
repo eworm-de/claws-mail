@@ -88,12 +88,12 @@ char * readable_fingerprint(unsigned char *src, int len)
 }
 
 #if USE_GNUTLS
-static gnutls_x509_crt x509_crt_copy(gnutls_x509_crt src)
+static gnutls_x509_crt_t x509_crt_copy(gnutls_x509_crt_t src)
 {
     int ret;
     size_t size;
-    gnutls_datum tmp;
-    gnutls_x509_crt dest;
+    gnutls_datum_t tmp;
+    gnutls_x509_crt_t dest;
     size = 0;
     
     if (gnutls_x509_crt_init(&dest) != 0) {
@@ -130,7 +130,7 @@ static gnutls_x509_crt x509_crt_copy(gnutls_x509_crt src)
 }
 #endif
 
-static SSLCertificate *ssl_certificate_new(gnutls_x509_crt x509_cert, const gchar *host, gushort port)
+static SSLCertificate *ssl_certificate_new(gnutls_x509_crt_t x509_cert, const gchar *host, gushort port)
 {
 	SSLCertificate *cert = g_new0(SSLCertificate, 1);
 	size_t n;
@@ -153,7 +153,7 @@ static SSLCertificate *ssl_certificate_new(gnutls_x509_crt x509_cert, const gcha
 }
 
 #ifdef USE_GNUTLS
-static void gnutls_i2d_X509_fp(FILE *fp, gnutls_x509_crt x509_cert)
+static void gnutls_i2d_X509_fp(FILE *fp, gnutls_x509_crt_t x509_cert)
 {
 	char output[10*1024];
 	size_t cert_size = 10*1024;
@@ -169,7 +169,7 @@ static void gnutls_i2d_X509_fp(FILE *fp, gnutls_x509_crt x509_cert)
 	}
 }
 
-size_t gnutls_i2d_X509(gnutls_x509_crt x509_cert, unsigned char **output)
+size_t gnutls_i2d_X509(gnutls_x509_crt_t x509_cert, unsigned char **output)
 {
 	size_t cert_size = 10*1024;
 	int r;
@@ -188,7 +188,7 @@ size_t gnutls_i2d_X509(gnutls_x509_crt x509_cert, unsigned char **output)
 	return cert_size;
 }
 
-size_t gnutls_i2d_PrivateKey(gnutls_x509_privkey pkey, unsigned char **output)
+size_t gnutls_i2d_PrivateKey(gnutls_x509_privkey_t pkey, unsigned char **output)
 {
 	size_t key_size = 10*1024;
 	int r;
@@ -207,10 +207,10 @@ size_t gnutls_i2d_PrivateKey(gnutls_x509_privkey pkey, unsigned char **output)
 	return key_size;
 }
 
-static gnutls_x509_crt gnutls_d2i_X509_fp(FILE *fp, int format)
+static gnutls_x509_crt_t gnutls_d2i_X509_fp(FILE *fp, int format)
 {
-	gnutls_x509_crt cert = NULL;
-	gnutls_datum tmp;
+	gnutls_x509_crt_t cert = NULL;
+	gnutls_datum_t tmp;
 	struct stat s;
 	int r;
 	if (fstat(fileno(fp), &s) < 0) {
@@ -237,10 +237,10 @@ static gnutls_x509_crt gnutls_d2i_X509_fp(FILE *fp, int format)
 	return cert;
 }
 
-static gnutls_x509_privkey gnutls_d2i_key_fp(FILE *fp, int format)
+static gnutls_x509_privkey_t gnutls_d2i_key_fp(FILE *fp, int format)
 {
-	gnutls_x509_privkey key = NULL;
-	gnutls_datum tmp;
+	gnutls_x509_privkey_t key = NULL;
+	gnutls_datum_t tmp;
 	struct stat s;
 	int r;
 	if (fstat(fileno(fp), &s) < 0) {
@@ -270,7 +270,7 @@ static gnutls_x509_privkey gnutls_d2i_key_fp(FILE *fp, int format)
 static gnutls_pkcs12_t gnutls_d2i_PKCS12_fp(FILE *fp, int format)
 {
 	gnutls_pkcs12_t p12 = NULL;
-	gnutls_datum tmp;
+	gnutls_datum_t tmp;
 	struct stat s;
 	int r;
 	if (fstat(fileno(fp), &s) < 0) {
@@ -364,7 +364,7 @@ SSLCertificate *ssl_certificate_find (const gchar *host, gushort port, const gch
 	gchar *file = NULL;
 	gchar *buf;
 	SSLCertificate *cert = NULL;
-	gnutls_x509_crt tmp_x509;
+	gnutls_x509_crt_t tmp_x509;
 	FILE *fp = NULL;
 	gboolean must_rename = FALSE;
 
@@ -469,12 +469,12 @@ static gboolean ssl_certificate_compare (SSLCertificate *cert_a, SSLCertificate 
 	return TRUE;
 }
 
-static guint check_cert(gnutls_x509_crt cert)
+static guint check_cert(gnutls_x509_crt_t cert)
 {
-	gnutls_x509_crt *ca_list;
+	gnutls_x509_crt_t *ca_list;
 	unsigned int max = 512;
 	unsigned int flags = 0;
-	gnutls_datum tmp;
+	gnutls_datum_t tmp;
 	struct stat s;
 	int r, i;
 	unsigned int status;
@@ -527,7 +527,7 @@ static guint check_cert(gnutls_x509_crt cert)
 
 }
 
-char *ssl_certificate_check_signer (gnutls_x509_crt cert, guint status) 
+char *ssl_certificate_check_signer (gnutls_x509_crt_t cert, guint status) 
 {
 	if (status == (guint)-1) {
 		status = check_cert(cert);
@@ -549,7 +549,7 @@ char *ssl_certificate_check_signer (gnutls_x509_crt cert, guint status)
 	return NULL;
 }
 
-gboolean ssl_certificate_check (gnutls_x509_crt x509_cert, guint status, const gchar *host, gushort port)
+gboolean ssl_certificate_check (gnutls_x509_crt_t x509_cert, guint status, const gchar *host, gushort port)
 {
 	SSLCertificate *current_cert = NULL;
 	SSLCertificate *known_cert;
@@ -647,9 +647,9 @@ gboolean ssl_certificate_check (gnutls_x509_crt x509_cert, guint status, const g
 	return TRUE;
 }
 
-gnutls_x509_crt ssl_certificate_get_x509_from_pem_file(const gchar *file)
+gnutls_x509_crt_t ssl_certificate_get_x509_from_pem_file(const gchar *file)
 {
-	gnutls_x509_crt x509 = NULL;
+	gnutls_x509_crt_t x509 = NULL;
 	if (!file)
 		return NULL;
 	
@@ -670,9 +670,9 @@ gnutls_x509_crt ssl_certificate_get_x509_from_pem_file(const gchar *file)
 	return NULL;
 }
 
-gnutls_x509_privkey ssl_certificate_get_pkey_from_pem_file(const gchar *file)
+gnutls_x509_privkey_t ssl_certificate_get_pkey_from_pem_file(const gchar *file)
 {
-	gnutls_x509_privkey key = NULL;
+	gnutls_x509_privkey_t key = NULL;
 	if (!file)
 		return NULL;
 	
@@ -697,7 +697,7 @@ gnutls_x509_privkey ssl_certificate_get_pkey_from_pem_file(const gchar *file)
 static int
 parse_pkcs12 (gnutls_pkcs12_t p12,
 	      const char *password,
-	      gnutls_x509_privkey * key,
+	      gnutls_x509_privkey_t * key,
 	      gnutls_x509_crt_t * cert)
 {
   gnutls_pkcs12_bag_t bag = NULL;
@@ -748,7 +748,7 @@ parse_pkcs12 (gnutls_pkcs12_t p12,
       for (i = 0; i < elements_in_bag; i++)
 	{
 	  int type;
-	  gnutls_datum data;
+	  gnutls_datum_t data;
 
 	  type = gnutls_pkcs12_bag_get_type (bag, i);
 	  if (type < 0)
@@ -818,7 +818,7 @@ done:
   return ret;
 }
 void ssl_certificate_get_x509_and_pkey_from_p12_file(const gchar *file, const gchar *password,
-			gnutls_x509_crt *x509, gnutls_x509_privkey *pkey)
+			gnutls_x509_crt_t *x509, gnutls_x509_privkey_t *pkey)
 {
 	gnutls_pkcs12_t p12 = NULL;
 

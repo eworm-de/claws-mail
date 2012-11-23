@@ -523,8 +523,8 @@ static int etpan_certificate_check(const unsigned char *certificate, int len, vo
 {
 #ifdef USE_GNUTLS
 	struct connect_param *param = (struct connect_param *)data;
-	gnutls_x509_crt cert = NULL;
-	gnutls_datum tmp;
+	gnutls_x509_crt_t cert = NULL;
+	gnutls_datum_t tmp;
 	
 	if (certificate == NULL || len < 0) {
 		g_warning("no cert presented.\n");
@@ -556,8 +556,8 @@ static void connect_ssl_context_cb(struct mailstream_ssl_context * ssl_context, 
 	PrefsAccount *account = (PrefsAccount *)data;
 	const gchar *cert_path = NULL;
 	const gchar *password = NULL;
-	gnutls_x509_crt x509 = NULL;
-	gnutls_x509_privkey pkey = NULL;
+	gnutls_x509_crt_t x509 = NULL;
+	gnutls_x509_privkey_t pkey = NULL;
 
 	if (account->in_ssl_client_cert_file && *account->in_ssl_client_cert_file)
 		cert_path = account->in_ssl_client_cert_file;

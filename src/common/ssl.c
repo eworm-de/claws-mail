@@ -52,21 +52,21 @@ GCRY_THREAD_OPTION_PTHREAD_IMPL;
 
 #ifdef USE_PTHREAD
 typedef struct _thread_data {
-	gnutls_session ssl;
+	gnutls_session_t ssl;
 	gboolean done;
 } thread_data;
 #endif
 
-static int gnutls_client_cert_cb(gnutls_session session,
-                               const gnutls_datum *req_ca_rdn, int nreqs,
-                               const gnutls_pk_algorithm *sign_algos,
+static int gnutls_client_cert_cb(gnutls_session_t session,
+                               const gnutls_datum_t *req_ca_rdn, int nreqs,
+                               const gnutls_pk_algorithm_t *sign_algos,
                                int sign_algos_length, gnutls_retr_st *st)
 {
 	SSLClientCertHookData hookdata;
 	SockInfo *sockinfo = (SockInfo *)gnutls_session_get_ptr(session);
-	gnutls_certificate_type type = gnutls_certificate_type_get(session);
-	gnutls_x509_crt crt;
-	gnutls_x509_privkey key;
+	gnutls_certificate_type_t type = gnutls_certificate_type_get(session);
+	gnutls_x509_crt_t crt;
+	gnutls_x509_privkey_t key;
 
 	st->ncerts = 0;
 
@@ -190,7 +190,7 @@ static void *SSL_connect_thread(void *data)
 }
 #endif
 
-static gint SSL_connect_nb(gnutls_session ssl)
+static gint SSL_connect_nb(gnutls_session_t ssl)
 {
 	int result;
 #ifdef USE_PTHREAD
@@ -251,11 +251,11 @@ gboolean ssl_init_socket(SockInfo *sockinfo)
 
 gboolean ssl_init_socket_with_method(SockInfo *sockinfo, SSLMethod method)
 {
-	gnutls_session session;
+	gnutls_session_t session;
 	int r;
-	const gnutls_datum *raw_cert_list;
+	const gnutls_datum_t *raw_cert_list;
 	unsigned int raw_cert_list_length;
-	gnutls_x509_crt cert = NULL;
+	gnutls_x509_crt_t cert = NULL;
 	guint status;
 	gnutls_certificate_credentials_t xcred;
 
@@ -285,8 +285,11 @@ gboolean ssl_init_socket_with_method(SockInfo *sockinfo, SSLMethod method)
 	}
 	gnutls_certificate_set_verify_flags (xcred, GNUTLS_VERIFY_ALLOW_X509_V1_CA_CRT);
 
-	gnutls_transport_set_ptr(session, (gnutls_transport_ptr) GINT_TO_POINTER(sockinfo->sock));
+	gnutls_transport_set_ptr(session, (gnutls_transport_ptr_t) GINT_TO_POINTER(sockinfo->sock));
 	gnutls_session_set_ptr(session, sockinfo);
+	/* TODO: gnutls_certificate_client_set_retrieve_function() is deprecated and should be replaced with
+	 * gnutls_certificate_set_retrieve_function() which was introduced in gnutls 2.12 in March 2011
+	 * getting this right with defines is not easy, so how long do we need compatibility to gntls <= 2.10? */
 	gnutls_certificate_client_set_retrieve_function(xcred, gnutls_client_cert_cb);
 
 	gnutls_dh_set_prime_bits(session, 512);

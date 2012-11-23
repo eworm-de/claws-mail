@@ -540,6 +540,8 @@ static int jpilot_get_info_size( FILE *in, int *size ) {
 
 	fseek(in, 0, SEEK_SET);
 	r = fread(&rdbh, sizeof(RawDBHeader), 1, in);
+	if (r < 1)
+		return MGU_ERROR_READ;
 	if (feof(in)) {
 		return MGU_EOF;
 	}

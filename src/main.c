@@ -94,6 +94,7 @@
 #include "account.h"
 #include "procmsg.h"
 #include "inc.h"
+#include "imap.h"
 #include "import.h"
 #include "manage_window.h"
 #include "alertpanel.h"

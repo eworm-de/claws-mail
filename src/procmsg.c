@@ -1161,6 +1161,7 @@ void procmsg_print_message(MsgInfo *msginfo, const gchar *cmdline)
 	gchar buf[1024];
 	gchar *p;
 	int r;
+
 	cm_return_if_fail(msginfo);
 
 	if (procmime_msginfo_is_encrypted(msginfo))

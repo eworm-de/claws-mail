@@ -274,6 +274,10 @@ static void sort_summary_type_cb (GtkAction *action, GtkRadioAction *current, gp
 static void attract_by_subject_cb(GtkAction	*action,
 				  gpointer	 data);
 
+static void zoom_in_cb		 (GtkAction	*action,
+				  gpointer	 data);
+static void zoom_out_cb		 (GtkAction	*action,
+				  gpointer	 data);
 static void delete_duplicated_cb (GtkAction	*action,
 				  gpointer	 data);
 static void delete_duplicated_all_cb (GtkAction	*action,
@@ -547,6 +551,9 @@ static GtkActionEntry mainwin_entries[] =
 	{"View/SetColumns/Folderlist",		NULL, N_("In _folder list..."), NULL, NULL, G_CALLBACK(set_folder_display_item_cb) },
 	{"View/SetColumns/Messagelist",		NULL, N_("In _message list..."), NULL, NULL, G_CALLBACK(set_summary_display_item_cb) },
 	{"View/---",				NULL, "---" },
+	{"View/Zoom",				NULL, N_("_Zoom") },
+	{"View/Zoom/In",			NULL, N_("_In"), "<control>plus", NULL, G_CALLBACK(zoom_in_cb) },
+	{"View/Zoom/Out",			NULL, N_("_Out"), "<control>minus", NULL, G_CALLBACK(zoom_out_cb) },
 
 
 #ifndef GENERIC_UMPC
@@ -1350,6 +1357,25 @@ void mainwindow_show_error(void)
 	gtk_widget_show(mainwin->warning_btn);
 }
 
+static void main_window_zoom(ZoomType type)
+{
+	static gboolean zooming = FALSE;
+
+	if (zooming)
+		return;
+	zooming = TRUE;
+
+	prefs_common_zoom_font(&prefs_common.textfont, type);
+	prefs_common_zoom_font(&prefs_common.printfont, type);
+	prefs_common_zoom_font(&prefs_common.boldfont, type);
+	prefs_common_zoom_font(&prefs_common.normalfont, type);
+	prefs_common_zoom_font(&prefs_common.smallfont, type);
+
+	main_window_reflect_prefs_all();
+
+	zooming = FALSE;
+}
+
 void mainwindow_clear_error(MainWindow *mainwin)
 {
 	gtk_widget_hide(mainwin->warning_btn);
@@ -1407,50 +1433,12 @@ static gboolean mainwindow_key_pressed (GtkWidget *widget, GdkEventKey *event,
 		break;
 	case GDK_KEY_F7:
 		{
-			PangoFontDescription *font_desc;
-			int size;
-			font_desc = pango_font_description_from_string(prefs_common.normalfont);
-			size = pango_font_description_get_size(font_desc)/PANGO_SCALE;
-			if (size < 30) {
-				size++; pango_font_description_set_size(font_desc, size*PANGO_SCALE);
-				g_free(prefs_common.normalfont); 
-				prefs_common.normalfont = pango_font_description_to_string(font_desc);
-				main_window_reflect_prefs_all();
-			}
-			pango_font_description_free(font_desc);
-			font_desc = pango_font_description_from_string(prefs_common.textfont);
-			size = pango_font_description_get_size(font_desc)/PANGO_SCALE;
-			if (size < 30) {
-				size++; pango_font_description_set_size(font_desc, size*PANGO_SCALE);
-				g_free(prefs_common.textfont); 
-				prefs_common.textfont = pango_font_description_to_string(font_desc);
-				main_window_reflect_prefs_all();
-			}
-			pango_font_description_free(font_desc);
+			main_window_zoom(ZOOM_IN);
 		}
 		break;
 	case GDK_KEY_F8:
 		{
-			PangoFontDescription *font_desc;
-			int size;
-			font_desc = pango_font_description_from_string(prefs_common.normalfont);
-			size = pango_font_description_get_size(font_desc)/PANGO_SCALE;
-			if (size > 5) {
-				size--; pango_font_description_set_size(font_desc, size*PANGO_SCALE);
-				g_free(prefs_common.normalfont); 
-				prefs_common.normalfont = pango_font_description_to_string(font_desc);
-				main_window_reflect_prefs_all();
-			}
-			pango_font_description_free(font_desc);
-			font_desc = pango_font_description_from_string(prefs_common.textfont);
-			size = pango_font_description_get_size(font_desc)/PANGO_SCALE;
-			if (size > 5) {
-				size--; pango_font_description_set_size(font_desc, size*PANGO_SCALE);
-				g_free(prefs_common.textfont); 
-				prefs_common.textfont = pango_font_description_to_string(font_desc);
-				main_window_reflect_prefs_all();
-			}
-			pango_font_description_free(font_desc);
+			main_window_zoom(ZOOM_OUT);
 		}
 		break;
 	case GDK_KEY_Escape:
@@ -1719,6 +1707,11 @@ MainWindow *main_window_create()
 	MENUITEM_ADDUI_MANAGER(mainwin->ui_manager, "/Menu/View", "SetColumns", "View/SetColumns", GTK_UI_MANAGER_MENU)
 	MENUITEM_ADDUI_MANAGER(mainwin->ui_manager, "/Menu/View/SetColumns", "Folderlist", "View/SetColumns/Folderlist", GTK_UI_MANAGER_MENUITEM)
 	MENUITEM_ADDUI_MANAGER(mainwin->ui_manager, "/Menu/View/SetColumns", "Messagelist", "View/SetColumns/Messagelist", GTK_UI_MANAGER_MENUITEM)
+	MENUITEM_ADDUI_MANAGER(mainwin->ui_manager, "/Menu/View", "Separator0", "View/---", GTK_UI_MANAGER_SEPARATOR)
+
+	MENUITEM_ADDUI_MANAGER(mainwin->ui_manager, "/Menu/View", "Zoom", "View/Zoom", GTK_UI_MANAGER_MENU)
+	MENUITEM_ADDUI_MANAGER(mainwin->ui_manager, "/Menu/View/Zoom", "In", "View/Zoom/In", GTK_UI_MANAGER_MENUITEM)
+	MENUITEM_ADDUI_MANAGER(mainwin->ui_manager, "/Menu/View/Zoom", "Out", "View/Zoom/Out", GTK_UI_MANAGER_MENUITEM)
 	MENUITEM_ADDUI_MANAGER(mainwin->ui_manager, "/Menu/View", "Separator1", "View/---", GTK_UI_MANAGER_SEPARATOR)
 
 #ifndef MAEMO
@@ -4702,6 +4695,16 @@ static void collapse_threads_cb(GtkAction *action, gpointer data)
 {
 	MainWindow *mainwin = (MainWindow *)data;
 	summary_collapse_threads(mainwin->summaryview);
+}
+
+static void zoom_in_cb(GtkAction *action, gpointer data)
+{
+	main_window_zoom(ZOOM_IN);
+}
+
+static void zoom_out_cb(GtkAction *action, gpointer data)
+{
+	main_window_zoom(ZOOM_OUT);
 }
 
 static void set_summary_display_item_cb(GtkAction *action, gpointer data)

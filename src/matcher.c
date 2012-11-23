@@ -2429,6 +2429,7 @@ static void matcher_add_rulenames(const gchar *rcpath)
 	FILE *dst = g_fopen(newpath, "wb");
 	gchar buf[BUFFSIZE];
 	int r;
+
 	if (src == NULL) {
 		perror("fopen");
 		if (dst)
