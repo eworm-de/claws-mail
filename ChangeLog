@@ -1,3 +1,11 @@
+2012-11-27 [wwp]	3.9.0cvs21
+
+	* doc/man/claws-mail.1
+	* src/main.c
+	* src/send_message.c
+	* src/send_message.h
+		Add --cancel-sending command-line switch.
+
 2012-11-23 [colin]	3.9.0cvs20
 
 	* src/jpilot.c

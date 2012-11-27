@@ -206,6 +206,7 @@ static struct RemoteCmd {
 	gboolean receive;
 	gboolean receive_all;
 	gboolean cancel_receiving;
+	gboolean cancel_sending;
 	gboolean compose;
 	const gchar *compose_mailto;
 	GList *attach_files;
@@ -385,6 +386,11 @@ static gboolean defer_check_all(void *data)
 	inc_all_account_mail(static_mainwindow, autochk, 
 			prefs_common.newmail_notify_manu);
 
+	/* Accounts using a specific timer need to be checked separately
+	 * at startup
+	 */
+	inc_all_account_spec_timer_check_mail();
+	
 	if (sc_starting) {
 		sc_starting = FALSE;
 		main_window_set_menu_sensitive(static_mainwindow);
@@ -1135,7 +1141,8 @@ int main(int argc, char *argv[])
 #endif
 
 	if (cmd.status || cmd.status_full || cmd.search ||
-		cmd.statistics || cmd.reset_statistics || cmd.cancel_receiving) {
+		cmd.statistics || cmd.reset_statistics || 
+		cmd.cancel_receiving || cmd.cancel_sending) {
 		puts("0 Claws Mail not running.");
 		lock_socket_remove();
 		return 0;
@@ -1941,6 +1948,8 @@ static void parse_cmd_opt(int argc, char *argv[])
 			cmd.receive = TRUE;
 		} else if (!strncmp(argv[i], "--cancel-receiving", 18)) {
 			cmd.cancel_receiving = TRUE;
+		} else if (!strncmp(argv[i], "--cancel-sending", 16)) {
+			cmd.cancel_sending = TRUE;
 		} else if (!strncmp(argv[i], "--compose-from-file", 19)) {
 			const gchar *p = (i+1 < argc)?argv[i+1]:NULL;
 
@@ -2064,6 +2073,7 @@ static void parse_cmd_opt(int argc, char *argv[])
 			g_print("%s\n", _("  --receive              receive new messages"));
 			g_print("%s\n", _("  --receive-all          receive new messages of all accounts"));
 			g_print("%s\n", _("  --cancel-receiving     cancel receiving of messages"));
+			g_print("%s\n", _("  --cancel-sending       cancel sending of messages"));
 			g_print("%s\n", _("  --search folder type request [recursive]\n"
 					  "                         searches mail\n"
 					  "                         folder ex.: \"#mh/Mailbox/inbox\" or \"Mail\"\n"
@@ -2394,6 +2404,8 @@ static gint prohibit_duplicate_launch(void)
 		fd_write_all(uxsock, "receive\n", 8);
 	} else if (cmd.cancel_receiving) {
 		fd_write_all(uxsock, "cancel_receiving\n", 17);
+	} else if (cmd.cancel_sending) {
+		fd_write_all(uxsock, "cancel_sending\n", 15);
 	} else if (cmd.compose && cmd.attach_files) {
 		gchar *str, *compose_str;
 
@@ -2582,6 +2594,8 @@ static void lock_socket_input_cb(gpointer data,
 	} else if (!strncmp(buf, "cancel_receiving", 16)) {
 		inc_cancel_all();
 		imap_cancel_all();
+	} else if (!strncmp(buf, "cancel_sending", 14)) {
+		send_cancel();
 	} else if (!strncmp(buf, "compose_attach", 14)) {
 		GList *files = NULL, *curr;
 		AttachInfo *ainfo;

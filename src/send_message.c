@@ -64,6 +64,8 @@ struct _SendProgressDialog
 	gboolean cancelled;
 };
 
+static SendProgressDialog *send_dialog = NULL;
+
 static gint send_recv_message		(Session		*session,
 					 const gchar		*msg,
 					 gpointer		 data);
@@ -85,6 +87,12 @@ static void send_cancel_button_cb	(GtkWidget	*widget,
 
 static void send_put_error		(Session	*session);
 
+
+void send_cancel(void)
+{
+	if (send_dialog)
+		send_cancel_button_cb(NULL, send_dialog);
+}
 
 gint send_message(const gchar *file, PrefsAccount *ac_prefs, GSList *to_list)
 {
@@ -200,7 +208,6 @@ gint send_message_smtp_full(PrefsAccount *ac_prefs, GSList *to_list, FILE *fp, g
 	Session *session;
 	SMTPSession *smtp_session;
 	gushort port = 0;
-	SendProgressDialog *dialog;
 	gchar buf[BUFFSIZE];
 	gint ret = 0;
 	gboolean was_inited = FALSE;
@@ -307,11 +314,11 @@ gint send_message_smtp_full(PrefsAccount *ac_prefs, GSList *to_list, FILE *fp, g
 		port = ac_prefs->set_smtpport ? ac_prefs->smtpport : SMTP_PORT;
 #endif
 
-		dialog = send_progress_dialog_create();
-		dialog->session = session;
-		smtp_session->dialog = dialog;
+		send_dialog = send_progress_dialog_create();
+		send_dialog->session = session;
+		smtp_session->dialog = send_dialog;
 
-		progress_dialog_list_set(dialog->dialog, 0, NULL, 
+		progress_dialog_list_set(send_dialog->dialog, 0, NULL, 
 					 ac_prefs->smtp_server, 
 					 _("Connecting"));
 
@@ -320,21 +327,21 @@ gint send_message_smtp_full(PrefsAccount *ac_prefs, GSList *to_list, FILE *fp, g
 		    && (time(NULL) - ac_prefs->last_pop_login_time) > (60 * ac_prefs->pop_before_smtp_timeout)) {
 			g_snprintf(buf, sizeof(buf), _("Doing POP before SMTP..."));
 			log_message(LOG_PROTOCOL, "%s\n", buf);
-			progress_dialog_set_label(dialog->dialog, buf);
-			progress_dialog_list_set_status(dialog->dialog, 0, _("POP before SMTP"));
+			progress_dialog_set_label(send_dialog->dialog, buf);
+			progress_dialog_list_set_status(send_dialog->dialog, 0, _("POP before SMTP"));
 			GTK_EVENTS_FLUSH();
 			inc_pop_before_smtp(ac_prefs);
 		}
 
 		g_snprintf(buf, sizeof(buf), _("Account '%s': Connecting to SMTP server: %s:%d..."),
 				ac_prefs->account_name, ac_prefs->smtp_server, port);
-		progress_dialog_set_label(dialog->dialog, buf);
+		progress_dialog_set_label(send_dialog->dialog, buf);
 		log_message(LOG_PROTOCOL, "%s\n", buf);
 
-		session_set_recv_message_notify(session, send_recv_message, dialog);
+		session_set_recv_message_notify(session, send_recv_message, send_dialog);
 		session_set_send_data_progressive_notify
-			(session, send_send_data_progressive, dialog);
-		session_set_send_data_notify(session, send_send_data_finished, dialog);
+			(session, send_send_data_progressive, send_dialog);
+		session_set_send_data_notify(session, send_send_data_finished, send_dialog);
 
 	} else {
 		/* everything is ready to start at MAIL FROM:, just
@@ -344,7 +351,7 @@ gint send_message_smtp_full(PrefsAccount *ac_prefs, GSList *to_list, FILE *fp, g
 		ac_prefs->session = NULL;
 		smtp_session = SMTP_SESSION(session);
 		smtp_session->state = SMTP_HELO;
-		dialog = (SendProgressDialog *)smtp_session->dialog;
+		send_dialog = (SendProgressDialog *)smtp_session->dialog;
 		was_inited = TRUE;
 	}
 
@@ -360,7 +367,7 @@ gint send_message_smtp_full(PrefsAccount *ac_prefs, GSList *to_list, FILE *fp, g
 	/* connect if necessary */
 	if (!was_inited && session_connect(session, ac_prefs->smtp_server, port) < 0) {
 		session_destroy(session);
-		send_progress_dialog_destroy(dialog);
+		send_progress_dialog_destroy(send_dialog);
 		ac_prefs->session = NULL;
 		return -1;
 	}
@@ -372,7 +379,7 @@ gint send_message_smtp_full(PrefsAccount *ac_prefs, GSList *to_list, FILE *fp, g
 		smtp_from(smtp_session);
 	}
 
-	while (session_is_running(session) && dialog->cancelled == FALSE
+	while (session_is_running(session) && send_dialog->cancelled == FALSE
 		&& SMTP_SESSION(session)->state != SMTP_MAIL_SENT_OK)
 		gtk_main_iteration();
 
@@ -396,13 +403,13 @@ gint send_message_smtp_full(PrefsAccount *ac_prefs, GSList *to_list, FILE *fp, g
 		   SMTP_SESSION(session)->state == SMTP_ERROR ||
 		   SMTP_SESSION(session)->error_val != SM_OK)
 		ret = -1;
-	else if (dialog->cancelled == TRUE)
+	else if (send_dialog->cancelled == TRUE)
 		ret = -1;
 
 	if (ret == -1) {
-		manage_window_focus_in(dialog->dialog->window, NULL, NULL);
+		manage_window_focus_in(send_dialog->dialog->window, NULL, NULL);
 		send_put_error(session);
-		manage_window_focus_out(dialog->dialog->window, NULL, NULL);
+		manage_window_focus_out(send_dialog->dialog->window, NULL, NULL);
 	}
 
 	/* if we should close the connection, let's do it.
@@ -412,11 +419,11 @@ gint send_message_smtp_full(PrefsAccount *ac_prefs, GSList *to_list, FILE *fp, g
 	if (!keep_session || ret != 0) {
 		if (session_is_connected(session))
 			smtp_quit(smtp_session);
-		while (session_is_connected(session) && !dialog->cancelled)
+		while (session_is_connected(session) && !send_dialog->cancelled)
 			gtk_main_iteration();
 		session_destroy(session);
 		ac_prefs->session = NULL;
-		send_progress_dialog_destroy(dialog);
+		send_progress_dialog_destroy(send_dialog);
 	} else {
 		g_free(smtp_session->from);
 		g_free(smtp_session->send_data);
@@ -599,6 +606,7 @@ static void send_progress_dialog_destroy(SendProgressDialog *dialog)
 		progress_dialog_destroy(dialog->dialog);
 	}
 	g_free(dialog);
+	dialog = NULL;
 }
 
 static void send_showlog_button_cb(GtkWidget *widget, gpointer data)
