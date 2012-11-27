@@ -95,6 +95,8 @@ static PrefParam param_os_specific[] = {
 	 &prefs_common.newmail_notify_cmd, P_STRING, NULL, NULL, NULL},
 
 	/* new fonts */
+	{"widget_font_gtk2",	NULL,
+	  &prefs_common.widgetfont,		P_STRING, NULL, NULL, NULL},
 	{"message_font_gtk2",	"Monospace 9",
 	 &prefs_common.textfont,		P_STRING, NULL, NULL, NULL},
         {"print_font_gtk2",     "Monospace 9",
@@ -315,6 +317,8 @@ static PrefParam param[] = {
 
 	/* Display */
 	/* Obsolete fonts. For coexisting with Gtk+-1.2 version */
+	{"widget_font",		NULL,
+	  &prefs_common.widgetfont_gtk1,	P_STRING, NULL, NULL, NULL},
 	{"message_font",	"-misc-fixed-medium-r-normal--14-*-*-*-*-*-*-*",
 	 &prefs_common.textfont_gtk1,		P_STRING, NULL, NULL, NULL},
 	{"small_font",		"-*-helvetica-medium-r-normal--10-*-*-*-*-*-*-*",
@@ -326,6 +330,8 @@ static PrefParam param[] = {
 
 	/* new fonts */
 #ifndef GENERIC_UMPC
+	{"widget_font_gtk2",	NULL,
+	  &SPECIFIC_PREFS.widgetfont,		P_STRING, NULL, NULL, NULL},
 	{"message_font_gtk2",	"Monospace 9",
 	 &SPECIFIC_PREFS.textfont,			P_STRING, NULL, NULL, NULL},
         {"print_font_gtk2",     "Monospace 9",
@@ -337,6 +343,8 @@ static PrefParam param[] = {
 	{"bold_font_gtk2",	"Sans Bold 9",
 	  &SPECIFIC_PREFS.boldfont,		P_STRING, NULL, NULL, NULL},
 #else
+	{"widget_font_gtk2",	NULL,
+	  &SPECIFIC_PREFS.widgetfont,		P_STRING, NULL, NULL, NULL},
 	{"message_font_gtk2",	"Monospace 8",
 	 &SPECIFIC_PREFS.textfont,			P_STRING, NULL, NULL, NULL},
         {"print_font_gtk2",     "Monospace 8",
@@ -1623,27 +1631,4 @@ gboolean prefs_common_get_flush_metadata (void)
 PrefsCommon *prefs_common_get_prefs(void)
 {
 	return &prefs_common;
-}
-
-void prefs_common_zoom_font(gchar **font, ZoomType type)
-{
-	PangoFontDescription *font_desc;
-	int size;
-
-	if (font == NULL || *font == '\0')
-		return;
-
-	font_desc = pango_font_description_from_string(*font);
-	size = pango_font_description_get_size(font_desc)/PANGO_SCALE;
-
-	if (type == ZOOM_IN && size < 30)
-		size++;
-	if (type == ZOOM_OUT && size > 5)
-		size--;
-
-	pango_font_description_set_size(font_desc, size*PANGO_SCALE);
-
-	g_free(*font); 
-	*font = pango_font_description_to_string(font_desc);
-	pango_font_description_free(font_desc);
 }

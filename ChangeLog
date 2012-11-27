@@ -1,3 +1,11 @@
+2012-11-27 [colin]	3.9.0cvs22
+
+	* src/mainwindow.c
+	* src/prefs_common.c
+	* src/prefs_common.h
+		Unsneak a work-in-progress patch that I mistakengly
+		commited with a cleanup
+
 2012-11-27 [wwp]	3.9.0cvs21
 
 	* doc/man/claws-mail.1
