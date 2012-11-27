@@ -386,11 +386,6 @@ static gboolean defer_check_all(void *data)
 	inc_all_account_mail(static_mainwindow, autochk, 
 			prefs_common.newmail_notify_manu);
 
-	/* Accounts using a specific timer need to be checked separately
-	 * at startup
-	 */
-	inc_all_account_spec_timer_check_mail();
-	
 	if (sc_starting) {
 		sc_starting = FALSE;
 		main_window_set_menu_sensitive(static_mainwindow);

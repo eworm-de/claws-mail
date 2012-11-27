@@ -4522,3 +4522,4 @@
 ( cvs diff -u -r 1.274.2.356 -r 1.274.2.357 src/mainwindow.c;  cvs diff -u -r 1.204.2.213 -r 1.204.2.214 src/prefs_common.c;  cvs diff -u -r 1.103.2.142 -r 1.103.2.143 src/prefs_common.h;  ) > 3.9.0cvs22.patchset
 ( cvs diff -u -r 1.1.4.12 -r 1.1.4.13 src/gtk/manage_window.c;  ) > 3.9.0cvs23.patchset
 ( cvs diff -u -r 1.9.2.58 -r 1.9.2.59 src/common/ssl.c;  ) > 3.9.0cvs24.patchset
+( cvs diff -u -r 1.115.2.264 -r 1.115.2.265 src/main.c;  ) > 3.9.0cvs25.patchset
