@@ -4521,3 +4521,4 @@
 ( cvs diff -u -r 1.1.2.13 -r 1.1.2.14 doc/man/claws-mail.1;  cvs diff -u -r 1.115.2.263 -r 1.115.2.264 src/main.c;  cvs diff -u -r 1.17.2.65 -r 1.17.2.66 src/send_message.c;  cvs diff -u -r 1.1.4.12 -r 1.1.4.13 src/send_message.h;  ) > 3.9.0cvs21.patchset
 ( cvs diff -u -r 1.274.2.356 -r 1.274.2.357 src/mainwindow.c;  cvs diff -u -r 1.204.2.213 -r 1.204.2.214 src/prefs_common.c;  cvs diff -u -r 1.103.2.142 -r 1.103.2.143 src/prefs_common.h;  ) > 3.9.0cvs22.patchset
 ( cvs diff -u -r 1.1.4.12 -r 1.1.4.13 src/gtk/manage_window.c;  ) > 3.9.0cvs23.patchset
+( cvs diff -u -r 1.9.2.58 -r 1.9.2.59 src/common/ssl.c;  ) > 3.9.0cvs24.patchset

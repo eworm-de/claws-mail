@@ -1,3 +1,9 @@
+2012-11-27 [colin]	3.9.0cvs24
+
+	* src/common/ssl.c
+		Fix bug #2826, "replace deprecated gnutls function"
+		Patch by Christian Hesse
+
 2012-11-27 [colin]	3.9.0cvs23
 
 	* src/gtk/manage_window.c

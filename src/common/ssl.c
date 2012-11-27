@@ -57,10 +57,17 @@ typedef struct _thread_data {
 } thread_data;
 #endif
 
+#if GNUTLS_VERSION_NUMBER <= 0x020c00
 static int gnutls_client_cert_cb(gnutls_session_t session,
                                const gnutls_datum_t *req_ca_rdn, int nreqs,
                                const gnutls_pk_algorithm_t *sign_algos,
                                int sign_algos_length, gnutls_retr_st *st)
+#else
+static int gnutls_cert_cb(gnutls_session_t session,
+                               const gnutls_datum_t *req_ca_rdn, int nreqs,
+                               const gnutls_pk_algorithm_t *sign_algos,
+                               int sign_algos_length, gnutls_retr2_st *st)
+#endif
 {
 	SSLClientCertHookData hookdata;
 	SockInfo *sockinfo = (SockInfo *)gnutls_session_get_ptr(session);
@@ -91,7 +98,11 @@ static int gnutls_client_cert_cb(gnutls_session_t session,
 
 	if (type == GNUTLS_CRT_X509 && sockinfo->client_crt && sockinfo->client_key) {
 		st->ncerts = 1;
+#if GNUTLS_VERSION_NUMBER <= 0x020c00
 		st->type = type;
+#else
+		st->key_type = type;
+#endif
 		st->cert.x509 = &(sockinfo->client_crt);
 		st->key.x509 = sockinfo->client_key;
 		st->deinit_all = 0;
@@ -287,10 +298,11 @@ gboolean ssl_init_socket_with_method(SockInfo *sockinfo, SSLMethod method)
 
 	gnutls_transport_set_ptr(session, (gnutls_transport_ptr_t) GINT_TO_POINTER(sockinfo->sock));
 	gnutls_session_set_ptr(session, sockinfo);
-	/* TODO: gnutls_certificate_client_set_retrieve_function() is deprecated and should be replaced with
-	 * gnutls_certificate_set_retrieve_function() which was introduced in gnutls 2.12 in March 2011
-	 * getting this right with defines is not easy, so how long do we need compatibility to gntls <= 2.10? */
+#if GNUTLS_VERSION_NUMBER <= 0x020c00
 	gnutls_certificate_client_set_retrieve_function(xcred, gnutls_client_cert_cb);
+#else
+	gnutls_certificate_set_retrieve_function(xcred, gnutls_cert_cb);
+#endif
 
 	gnutls_dh_set_prime_bits(session, 512);
 
