@@ -46,6 +46,8 @@
 #include "ssl_certificate.h"
 #include "socket.h"
 #include "remotefolder.h"
+#include "main.h"
+#include "account.h"
 
 #define DISABLE_LOG_DURING_LOGIN
 
@@ -158,6 +160,7 @@ void nntp_main_init(gboolean skip_ssl_cert_check)
 
 void nntp_main_done(gboolean have_connectivity)
 {
+	nntp_disconnect_all(have_connectivity);
 	etpan_thread_manager_stop(thread_manager);
 #if defined(__NetBSD__) || defined(__OpenBSD__) || defined(__FreeBSD__)
 	return;
@@ -968,6 +971,11 @@ int nntp_threaded_xhdr(Folder * folder, const char *header, guint32 beg, guint32
 	return result.error;
 }
 
+void nntp_main_set_timeout(int sec)
+{
+	mailstream_network_delay.tv_sec = sec;
+	mailstream_network_delay.tv_usec = 0;
+}
 
 #else
 

@@ -50,5 +50,6 @@ int news_folder_locked			(Folder 	*folder);
 guint nntp_folder_get_refcnt(Folder *folder);
 void nntp_folder_ref(Folder *folder);
 void nntp_folder_unref(Folder *folder);
+void nntp_disconnect_all(gboolean have_connectivity);
 
 #endif /* __NEWS_H__ */

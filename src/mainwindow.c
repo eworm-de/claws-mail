@@ -85,6 +85,7 @@
 #include "tags.h"
 #include "textview.h"
 #include "imap.h"
+#include "news.h"
 #include "socket.h"
 #include "printing.h"
 #ifdef G_OS_WIN32
@@ -4372,6 +4373,7 @@ static void online_switch_clicked (GtkButton *btn, gpointer data)
 			mainwindow_check_synchronise(mainwin, TRUE);
 		prefs_common.work_offline = TRUE;
 		imap_disconnect_all(have_connectivity);
+		nntp_disconnect_all(have_connectivity);
 		hooks_invoke(OFFLINE_SWITCH_HOOKLIST, NULL);
 	} else {
 		/*go online */

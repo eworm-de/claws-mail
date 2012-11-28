@@ -1380,6 +1380,48 @@ static gint news_remove_folder(Folder *folder, FolderItem *item)
 	return 0;
 }
 
+void nntp_disconnect_all(gboolean have_connectivity)
+{
+	GList *list;
+	gboolean short_timeout;
+#ifdef HAVE_NETWORKMANAGER_SUPPORT
+	GError *error;
+#endif
+
+#ifdef HAVE_NETWORKMANAGER_SUPPORT
+	error = NULL;
+	short_timeout = !networkmanager_is_online(&error);
+	if(error) {
+		short_timeout = TRUE;
+		g_error_free(error);
+	}
+#else
+	short_timeout = TRUE;
+#endif
+
+	if(short_timeout)
+		nntp_main_set_timeout(1);
+
+	for (list = account_get_list(); list != NULL; list = list->next) {
+		PrefsAccount *account = list->data;
+		if (account->protocol == A_NNTP) {
+			RemoteFolder *folder = (RemoteFolder *)account->folder;
+			if (folder && folder->session) {
+				NewsSession *session = (NewsSession *)folder->session;
+				if (have_connectivity)
+					nntp_threaded_disconnect(FOLDER(folder));
+				SESSION(session)->state = SESSION_DISCONNECTED;
+				SESSION(session)->sock = NULL;
+				session_destroy(SESSION(session));
+				folder->session = NULL;
+			}
+		}
+	}
+
+	if(short_timeout)
+		nntp_main_set_timeout(prefs_common.io_timeout_secs);
+}
+
 #else
 #include <glib.h>
 #include <glib/gi18n.h>
@@ -1456,5 +1498,8 @@ FolderClass *news_get_class(void)
 	return &news_class;
 }
 
+void nntp_disconnect_all(gboolean have_connectivity)
+{
+}
 
 #endif
