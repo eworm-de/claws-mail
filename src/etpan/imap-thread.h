@@ -137,7 +137,7 @@ IMAPSearchKey* imap_search_and(IMAPSearchKey* l, IMAPSearchKey* r);
 void		imap_search_free(IMAPSearchKey* search);
 
 int imap_threaded_search(Folder * folder, int search_type, IMAPSearchKey* key,
-			 struct mailimap_set * set, clist ** result);
+			 const char *charset, struct mailimap_set * set, clist ** result);
 
 int imap_threaded_fetch_uid(Folder * folder, uint32_t first_index,
 			    carray ** result);

@@ -95,6 +95,8 @@ struct _IMAPFolder
 	gchar last_seen_separator;
 	guint refcnt;
 	guint max_set_size;
+	const gchar *search_charset;
+	gboolean search_charset_supported;
 };
 
 struct _IMAPSession
@@ -749,6 +751,8 @@ static void imap_folder_init(Folder *folder, const gchar *name,
 {
 	folder_remote_folder_init((Folder *)folder, name, path);
 	IMAP_FOLDER(folder)->max_set_size = IMAP_SET_MAX_COUNT;
+	IMAP_FOLDER(folder)->search_charset_supported = TRUE;
+	IMAP_FOLDER(folder)->search_charset = "UTF-8";
 }
 
 static FolderItem *imap_folder_item_new(Folder *folder)
@@ -1957,6 +1961,32 @@ static gint imap_copy_msgs(Folder *folder, FolderItem *dest,
 	return ret;
 }
 
+static gboolean imap_matcher_type_is_local(gint matchertype)
+{
+	switch (matchertype) {
+	case MATCHCRITERIA_FROM:
+	case MATCHCRITERIA_TO:
+	case MATCHCRITERIA_CC:
+	case MATCHCRITERIA_TO_OR_CC:
+	case MATCHCRITERIA_SUBJECT:
+	case MATCHCRITERIA_REFERENCES:
+	case MATCHCRITERIA_INREPLYTO:
+	case MATCHCRITERIA_AGE_GREATER:
+	case MATCHCRITERIA_AGE_LOWER:
+	case MATCHCRITERIA_FORWARDED:
+	case MATCHCRITERIA_SPAM:
+	case MATCHCRITERIA_UNREAD:
+	case MATCHCRITERIA_NEW:
+	case MATCHCRITERIA_MARKED:
+	case MATCHCRITERIA_REPLIED:
+	case MATCHCRITERIA_DELETED:
+	case MATCHCRITERIA_SIZE_GREATER:
+	case MATCHCRITERIA_SIZE_SMALLER:
+	case MATCHCRITERIA_SIZE_EQUAL:
+		return TRUE;
+	}
+	return FALSE;
+}
 
 static IMAPSearchKey* search_make_key(MatcherProp* match, gboolean* is_all)
 {
@@ -1994,28 +2024,8 @@ static IMAPSearchKey* search_make_key(MatcherProp* match, gboolean* is_all)
 		 * has proven faster than IMAP search plus network roundtrips. once this changes,
 		 * consider removing these exceptions.
 		 */
-		switch (matchertype) {
-		case MATCHCRITERIA_FROM:
-		case MATCHCRITERIA_TO:
-		case MATCHCRITERIA_CC:
-		case MATCHCRITERIA_TO_OR_CC:
-		case MATCHCRITERIA_SUBJECT:
-		case MATCHCRITERIA_REFERENCES:
-		case MATCHCRITERIA_INREPLYTO:
-		case MATCHCRITERIA_AGE_GREATER:
-		case MATCHCRITERIA_AGE_LOWER:
-		case MATCHCRITERIA_FORWARDED:
-		case MATCHCRITERIA_SPAM:
-		case MATCHCRITERIA_UNREAD:
-		case MATCHCRITERIA_NEW:
-		case MATCHCRITERIA_MARKED:
-		case MATCHCRITERIA_REPLIED:
-		case MATCHCRITERIA_DELETED:
-		case MATCHCRITERIA_SIZE_GREATER:
-		case MATCHCRITERIA_SIZE_SMALLER:
-		case MATCHCRITERIA_SIZE_EQUAL:
+		if (imap_matcher_type_is_local(matchertype))
 			return NULL;
-		}
 
 		/* the Message-ID header is also cached */
 		if (matchertype == MATCHCRITERIA_HEADER && g_strcmp0("Message-ID", match->header) == 0) {
@@ -2157,6 +2167,70 @@ static IMAPSearchKey* search_make_key(MatcherProp* match, gboolean* is_all)
 	return NULL;
 }
 
+static void imap_change_search_charset(IMAPFolder *folder)
+{
+	/* If server supports charset in searches, but the last used one failed,
+	 * changed to the next preferred charset. If none are still available,
+	 * disable charset searches.
+	 * Charsets are tried in the following order: 
+	 * UTF-8, locale's charset, UTF-7.
+	 */
+
+	if (folder->search_charset_supported) {
+		if (folder->search_charset && !strcmp(folder->search_charset, "UTF-8"))
+			folder->search_charset = conv_get_locale_charset_str_no_utf8();
+		else if (folder->search_charset && !strcmp(folder->search_charset, conv_get_locale_charset_str_no_utf8()))
+			folder->search_charset = "UTF-7";
+		else {
+			folder->search_charset = NULL;
+			folder->search_charset_supported = FALSE;
+		}
+	}
+}
+
+static MatcherProp *imap_matcher_prop_set_charset(IMAPFolder *folder,
+						  MatcherProp *utf8_prop,
+						  gchar **charset)
+{
+	/* If the match is going to be done locally, or the criteria is on
+	 * tag (special-cased to modified-UTF-7), or the expression searched
+	 * is ASCII, don't bother converting.
+	 */
+	if (imap_matcher_type_is_local(utf8_prop->criteria)
+	 || utf8_prop->criteria == MATCHCRITERIA_TAG
+	 || utf8_prop->criteria == MATCHCRITERIA_NOT_TAG
+	 || is_ascii_str(utf8_prop->expr))
+		return matcherprop_new(utf8_prop->criteria,
+			       utf8_prop->header,
+			       utf8_prop->matchtype,
+			       utf8_prop->expr,
+			       utf8_prop->value);
+	else {
+		gchar *conv_expr = NULL;
+
+		/* If the search is server-side and the server doesn't support
+		 * searching with the charsets we handle, bail out.
+		 */
+		if (folder->search_charset_supported == FALSE)
+			return NULL;
+
+		/* Else, convert. */
+		if (*charset == NULL)
+			*charset = g_strdup(folder->search_charset);
+
+		conv_expr = conv_codeset_strdup(utf8_prop->expr, CS_UTF_8, *charset);
+
+		if (conv_expr == NULL)
+			conv_expr = g_strdup(utf8_prop->expr);
+
+		return matcherprop_new(utf8_prop->criteria,
+			       utf8_prop->header,
+			       utf8_prop->matchtype,
+			       conv_expr,
+			       utf8_prop->value);
+	}
+}
+
 static gint	search_msgs		(Folder			*folder,
 					 FolderItem		*container,
 					 MsgNumberList		**msgs,
@@ -2171,6 +2245,7 @@ static gint	search_msgs		(Folder			*folder,
 	clist* uidlist = NULL;
 	gboolean server_filtering_useless = FALSE;
         IMAPSession *session;
+	gchar *charset_to_use = NULL;
 
 	if (on_server == NULL || !*on_server) {
 		return folder_item_search_msgs_local(folder, container, msgs, on_server,
@@ -2181,8 +2256,17 @@ static gint	search_msgs		(Folder			*folder,
 		IMAPSearchKey* matcherPart = NULL;
 		MatcherProp* prop = (MatcherProp*) cur->data;
 		gboolean is_all;
+		MatcherProp *imap_prop = imap_matcher_prop_set_charset(IMAP_FOLDER(folder), prop, &charset_to_use);
 
-		matcherPart = search_make_key(prop, &is_all);
+		if (imap_prop == NULL) {
+			/* Couldn't convert matcherprop to IMAP - probably not ascii
+			 * and server doesn't support the charsets we do. */
+			 return -1;
+		}
+
+		matcherPart = search_make_key(imap_prop, &is_all);
+
+		matcherprop_free(imap_prop);
 
 		if (on_server) {
 			*on_server &= matcherPart != NULL && prop->matchtype == MATCHTYPE_MATCHCASE;
@@ -2235,7 +2319,7 @@ static gint	search_msgs		(Folder			*folder,
 
 	if (progress_cb)
 		progress_cb(progress_data, TRUE, 0, 0, container->total_msgs);
-	result = imap_threaded_search(folder, IMAP_SEARCH_TYPE_KEYED, key, NULL, &uidlist);
+	result = imap_threaded_search(folder, IMAP_SEARCH_TYPE_KEYED, key, charset_to_use, NULL, &uidlist);
 	if (progress_cb)
 		progress_cb(progress_data, TRUE, container->total_msgs, 0, container->total_msgs);
 
@@ -2243,9 +2327,25 @@ static gint	search_msgs		(Folder			*folder,
 		gint result = 0;
 
 		*msgs = imap_uid_list_from_lep(uidlist, &result);
+
 		mailimap_search_result_free(uidlist);
 
+		if (charset_to_use != NULL)
+			g_free(charset_to_use);
+
 		return result;
+	} else if (charset_to_use != NULL) {
+		/* If search failed and was on an 8-bit string, try the next
+		 * available charset to search if there still are some.
+		 */
+		g_free(charset_to_use);
+		
+		imap_change_search_charset(IMAP_FOLDER(folder));
+		if (IMAP_FOLDER(folder)->search_charset_supported)
+			return search_msgs(folder, container, msgs, on_server, predicate,
+				   progress_cb, progress_data);
+		else
+			return -1;
 	} else {
 		return -1;
 	}
@@ -4278,7 +4378,7 @@ static gint get_list_of_uids(IMAPSession *session, Folder *folder, IMAPFolderIte
 	
 	if (folder->account && folder->account->low_bandwidth) {
 		r = imap_threaded_search(folder, IMAP_SEARCH_TYPE_SIMPLE,
-				NULL, NULL, &lep_uidlist);
+				NULL, NULL, NULL, &lep_uidlist);
 	}
 	
 	if (r == MAILIMAP_NO_ERROR) {
@@ -4913,12 +5013,12 @@ static /*gint*/ void *imap_get_flags_thread(void *data)
 			imapset = cur->data;
 			if (reverse_seen) {
 				r = imap_threaded_search(folder, IMAP_SEARCH_TYPE_SEEN, NULL,
-							 full_search ? NULL:imapset, &lep_uidlist);
+							 NULL, full_search ? NULL:imapset, &lep_uidlist);
 			}
 			else {
 				r = imap_threaded_search(folder,
 							 IMAP_SEARCH_TYPE_UNSEEN, NULL,
-							 full_search ? NULL:imapset, &lep_uidlist);
+							 NULL, full_search ? NULL:imapset, &lep_uidlist);
 			}
 			if (r == MAILIMAP_NO_ERROR) {
 				GSList * uidlist;
@@ -4933,7 +5033,7 @@ static /*gint*/ void *imap_get_flags_thread(void *data)
 			}
 
 			r = imap_threaded_search(folder, IMAP_SEARCH_TYPE_FLAGGED, NULL,
-						 full_search ? NULL:imapset, &lep_uidlist);
+						 NULL, full_search ? NULL:imapset, &lep_uidlist);
 			if (r == MAILIMAP_NO_ERROR) {
 				GSList * uidlist;
 
@@ -4948,7 +5048,7 @@ static /*gint*/ void *imap_get_flags_thread(void *data)
 
 			if (fitem->opened || fitem->processing_pending || fitem == folder->inbox) {
 				r = imap_threaded_search(folder, IMAP_SEARCH_TYPE_ANSWERED, NULL,
-							 full_search ? NULL:imapset, &lep_uidlist);
+							 NULL, full_search ? NULL:imapset, &lep_uidlist);
 				if (r == MAILIMAP_NO_ERROR) {
 					GSList * uidlist;
 
@@ -4963,7 +5063,7 @@ static /*gint*/ void *imap_get_flags_thread(void *data)
 
 				if (flag_ok(IMAP_FOLDER_ITEM(fitem), IMAP_FLAG_FORWARDED)) {
 					r = imap_threaded_search(folder, IMAP_SEARCH_TYPE_FORWARDED, NULL,
-								 full_search ? NULL:imapset, &lep_uidlist);
+								 NULL, full_search ? NULL:imapset, &lep_uidlist);
 					if (r == MAILIMAP_NO_ERROR) {
 						GSList * uidlist;
 
@@ -4979,7 +5079,7 @@ static /*gint*/ void *imap_get_flags_thread(void *data)
 
 				if (flag_ok(IMAP_FOLDER_ITEM(fitem), IMAP_FLAG_SPAM)) {
 					r = imap_threaded_search(folder, IMAP_SEARCH_TYPE_SPAM, NULL,
-								 full_search ? NULL:imapset, &lep_uidlist);
+								 NULL, full_search ? NULL:imapset, &lep_uidlist);
 					if (r == MAILIMAP_NO_ERROR) {
 						GSList * uidlist;
 
@@ -4994,7 +5094,7 @@ static /*gint*/ void *imap_get_flags_thread(void *data)
 				}
 
 				r = imap_threaded_search(folder, IMAP_SEARCH_TYPE_DELETED, NULL,
-							 full_search ? NULL:imapset, &lep_uidlist);
+							 NULL, full_search ? NULL:imapset, &lep_uidlist);
 				if (r == MAILIMAP_NO_ERROR) {
 					GSList * uidlist;
 
