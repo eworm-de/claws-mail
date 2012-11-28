@@ -1713,68 +1713,79 @@ void summary_set_menu_sensitive(SummaryView *summaryview)
 	gboolean sensitive;
 	gint i;
 
-	static const struct {
-		gchar *const entry;
-		SensitiveCond cond;
-	} entry[] = {
-		{"Menus/SummaryViewPopup/Reply"			, M_HAVE_ACCOUNT|M_TARGET_EXIST},
+#define N_ENTRIES 38
+	static struct {
+		const gchar *entry;
+		SensitiveCondMask cond;
+	} entry[N_ENTRIES];
+
+	i = 0;
+#define FILL_TABLE(entry_str, ...) \
+do { \
+	entry[i].entry = (const gchar *) entry_str; entry[i++].cond = main_window_get_mask(__VA_ARGS__, -1); \
+} while (0)
+
+	FILL_TABLE("Menus/SummaryViewPopup/Reply", M_HAVE_ACCOUNT, M_TARGET_EXIST);
 #ifndef GENERIC_UMPC
-		{"Menus/SummaryViewPopup/ReplyTo"			, M_HAVE_ACCOUNT|M_TARGET_EXIST},
-		{"Menus/SummaryViewPopup/ReplyTo/All"		, M_HAVE_ACCOUNT|M_TARGET_EXIST},
-		{"Menus/SummaryViewPopup/ReplyTo/Sender"             , M_HAVE_ACCOUNT|M_TARGET_EXIST},
-		{"Menus/SummaryViewPopup/ReplyTo/MailingList"       , M_HAVE_ACCOUNT|M_TARGET_EXIST},
+	FILL_TABLE("Menus/SummaryViewPopup/ReplyTo", M_HAVE_ACCOUNT, M_TARGET_EXIST);
+	FILL_TABLE("Menus/SummaryViewPopup/ReplyTo/All", M_HAVE_ACCOUNT, M_TARGET_EXIST);
+	FILL_TABLE("Menus/SummaryViewPopup/ReplyTo/Sender", M_HAVE_ACCOUNT, M_TARGET_EXIST);
+	FILL_TABLE("Menus/SummaryViewPopup/ReplyTo/MailingList", M_HAVE_ACCOUNT, M_TARGET_EXIST);
 #endif
 
-		{"Menus/SummaryViewPopup/Forward"			, M_HAVE_ACCOUNT|M_TARGET_EXIST},
+	FILL_TABLE("Menus/SummaryViewPopup/Forward", M_HAVE_ACCOUNT, M_TARGET_EXIST);
 #ifndef GENERIC_UMPC
-		{"Menus/SummaryViewPopup/ForwardAtt"	, M_HAVE_ACCOUNT|M_TARGET_EXIST},
-        	{"Menus/SummaryViewPopup/Redirect"			, M_HAVE_ACCOUNT|M_TARGET_EXIST},
+	FILL_TABLE("Menus/SummaryViewPopup/ForwardAtt", M_HAVE_ACCOUNT, M_TARGET_EXIST);
+	FILL_TABLE("Menus/SummaryViewPopup/Redirect", M_HAVE_ACCOUNT, M_TARGET_EXIST);
 #endif
 
-		{"Menus/SummaryViewPopup/Move"			, M_TARGET_EXIST|M_ALLOW_DELETE|M_NOT_NEWS},
-		{"Menus/SummaryViewPopup/Copy"			, M_TARGET_EXIST|M_EXEC},
-		{"Menus/SummaryViewPopup/Trash"		, M_TARGET_EXIST|M_ALLOW_DELETE|M_NOT_NEWS|M_NOT_TRASH},
+	FILL_TABLE("Menus/SummaryViewPopup/Move", M_TARGET_EXIST, M_ALLOW_DELETE, M_NOT_NEWS);
+	FILL_TABLE("Menus/SummaryViewPopup/Copy", M_TARGET_EXIST, M_EXEC);
+	FILL_TABLE("Menus/SummaryViewPopup/Trash", M_TARGET_EXIST, M_ALLOW_DELETE, M_NOT_NEWS, M_NOT_TRASH);
 #ifndef GENERIC_UMPC
-		{"Menus/SummaryViewPopup/Delete"			, M_TARGET_EXIST|M_ALLOW_DELETE},
+	FILL_TABLE("Menus/SummaryViewPopup/Delete", M_TARGET_EXIST, M_ALLOW_DELETE);
 #endif
 
-		{"Menus/SummaryViewPopup/Mark"			, M_TARGET_EXIST},
-		{"Menus/SummaryViewPopup/Mark/Mark"   		, M_TARGET_EXIST},
-		{"Menus/SummaryViewPopup/Mark/Unmark"   		, M_TARGET_EXIST},
-		{"Menus/SummaryViewPopup/Mark/MarkUnread"   	, M_TARGET_EXIST},
-		{"Menus/SummaryViewPopup/Mark/MarkRead"   	, M_TARGET_EXIST},
-		{"Menus/SummaryViewPopup/Mark/MarkAllRead"   	, M_TARGET_EXIST},
-		{"Menus/SummaryViewPopup/Mark/IgnoreThread"   	, M_TARGET_EXIST},
-		{"Menus/SummaryViewPopup/Mark/UnignoreThread"   	, M_TARGET_EXIST},
-		{"Menus/SummaryViewPopup/Mark/WatchThread"   		, M_TARGET_EXIST},
-		{"Menus/SummaryViewPopup/Mark/UnwatchThread"   	, M_TARGET_EXIST},
-		{"Menus/SummaryViewPopup/Mark/Unlock"   		, M_TARGET_EXIST},
-		{"Menus/SummaryViewPopup/Mark/Lock"   		, M_TARGET_EXIST},
-		{"Menus/SummaryViewPopup/Mark/MarkSpam"	  	, M_TARGET_EXIST|M_CAN_LEARN_SPAM},
-		{"Menus/SummaryViewPopup/Mark/MarkHam" 		, M_TARGET_EXIST|M_CAN_LEARN_SPAM},
-		{"Menus/SummaryViewPopup/ColorLabel"			, M_TARGET_EXIST},
-		{"Menus/SummaryViewPopup/Tags"			, M_TARGET_EXIST},
+	FILL_TABLE("Menus/SummaryViewPopup/Mark", M_TARGET_EXIST);
+	FILL_TABLE("Menus/SummaryViewPopup/Mark/Mark", M_TARGET_EXIST);
+	FILL_TABLE("Menus/SummaryViewPopup/Mark/Unmark", M_TARGET_EXIST);
+	FILL_TABLE("Menus/SummaryViewPopup/Mark/MarkUnread", M_TARGET_EXIST);
+	FILL_TABLE("Menus/SummaryViewPopup/Mark/MarkRead", M_TARGET_EXIST);
+	FILL_TABLE("Menus/SummaryViewPopup/Mark/MarkAllRead", M_TARGET_EXIST);
+	FILL_TABLE("Menus/SummaryViewPopup/Mark/IgnoreThread", M_TARGET_EXIST);
+	FILL_TABLE("Menus/SummaryViewPopup/Mark/UnignoreThread", M_TARGET_EXIST);
+	FILL_TABLE("Menus/SummaryViewPopup/Mark/WatchThread", M_TARGET_EXIST);
+	FILL_TABLE("Menus/SummaryViewPopup/Mark/UnwatchThread", M_TARGET_EXIST);
+	FILL_TABLE("Menus/SummaryViewPopup/Mark/Unlock", M_TARGET_EXIST);
+	FILL_TABLE("Menus/SummaryViewPopup/Mark/Lock", M_TARGET_EXIST);
+	FILL_TABLE("Menus/SummaryViewPopup/Mark/MarkSpam", M_TARGET_EXIST, M_CAN_LEARN_SPAM);
+	FILL_TABLE("Menus/SummaryViewPopup/Mark/MarkHam", M_TARGET_EXIST, M_CAN_LEARN_SPAM);
+	FILL_TABLE("Menus/SummaryViewPopup/ColorLabel", M_TARGET_EXIST);
+	FILL_TABLE("Menus/SummaryViewPopup/Tags", M_TARGET_EXIST);
 
 #ifndef GENERIC_UMPC
-		{"Menus/SummaryViewPopup/AddSenderToAB"	, M_SINGLE_TARGET_EXIST},
+	FILL_TABLE("Menus/SummaryViewPopup/AddSenderToAB", M_SINGLE_TARGET_EXIST);
 #endif
-		{"Menus/SummaryViewPopup/CreateFilterRule"		, M_SINGLE_TARGET_EXIST|M_UNLOCKED},
+	FILL_TABLE("Menus/SummaryViewPopup/CreateFilterRule", M_SINGLE_TARGET_EXIST, M_UNLOCKED);
 #ifndef GENERIC_UMPC
-		{"Menus/SummaryViewPopup/CreateProcessingRule"	, M_SINGLE_TARGET_EXIST|M_UNLOCKED},
+	FILL_TABLE("Menus/SummaryViewPopup/CreateProcessingRule", M_SINGLE_TARGET_EXIST, M_UNLOCKED);
 #endif
 
-		{"Menus/SummaryViewPopup/View"			, M_SINGLE_TARGET_EXIST},
-		{"Menus/SummaryViewPopup/View/OpenNewWindow"     , M_SINGLE_TARGET_EXIST},
-		{"Menus/SummaryViewPopup/View/MessageSource"		, M_SINGLE_TARGET_EXIST},
+	FILL_TABLE("Menus/SummaryViewPopup/View", M_SINGLE_TARGET_EXIST);
+	FILL_TABLE("Menus/SummaryViewPopup/View/OpenNewWindow", M_SINGLE_TARGET_EXIST);
+	FILL_TABLE("Menus/SummaryViewPopup/View/MessageSource", M_SINGLE_TARGET_EXIST);
 #ifndef GENERIC_UMPC
-		{"Menus/SummaryViewPopup/View/AllHeaders"		, M_SINGLE_TARGET_EXIST},
+	FILL_TABLE("Menus/SummaryViewPopup/View/AllHeaders", M_SINGLE_TARGET_EXIST);
 #endif
-		{"Menus/SummaryViewPopup/SaveAs"			, M_TARGET_EXIST},
+	FILL_TABLE("Menus/SummaryViewPopup/SaveAs", M_TARGET_EXIST);
 #ifndef GENERIC_UMPC
-		{"Menus/SummaryViewPopup/Print"			, M_TARGET_EXIST},
+	FILL_TABLE("Menus/SummaryViewPopup/Print", M_TARGET_EXIST);
 #endif
-		{NULL, 0}
-	};
+	FILL_TABLE(NULL, 0);
+#undef FILL_TABLE
+	if (i != N_ENTRIES)
+		g_error("summaryview menu entry table size mismatch (%d/%d)", i, N_ENTRIES);
+#undef ENTRIES
 
 	main_window_set_menu_sensitive(summaryview->mainwin);
 

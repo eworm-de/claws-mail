@@ -36,45 +36,50 @@ typedef struct _MainWindow  MainWindow;
 #define THEME_CHANGED_HOOKLIST "theme_changed"
 typedef enum
 {
-	M_UNLOCKED            = 1 << 0,
-	M_MSG_EXIST           = 1 << 1,
-	M_TARGET_EXIST        = 1 << 2,
-	M_SINGLE_TARGET_EXIST = 1 << 3,
-	M_EXEC                = 1 << 4,
-	M_ALLOW_REEDIT        = 1 << 5,
-	M_HAVE_ACCOUNT        = 1 << 6,
-	M_THREADED	      = 1 << 7,
-	M_UNTHREADED	      = 1 << 8,
-	M_ALLOW_DELETE	      = 1 << 9,
-	M_INC_ACTIVE	      = 1 << 10,
-	M_NEWS                = 1 << 11,
-	M_HAVE_NEWS_ACCOUNT   = 1 << 12,
-	M_HIDE_READ_MSG	      = 1 << 13,
-	M_DELAY_EXEC	      = 1 << 14,
-	M_NOT_NEWS	      = 1 << 15,
-	M_CAN_LEARN_SPAM      = 1 << 16,
-	M_ACTIONS_EXIST       = 1 << 17,
-	M_HAVE_QUEUED_MAILS   = 1 << 18,
-	M_WANT_SYNC	      = 1 << 19,
-	M_TAGS_EXIST	      = 1 << 20,
-	M_HAVE_PROCESSING     = 1 << 21,
-	M_SUMMARY_ISLIST      = 1 << 22,
-	M_IN_MSGLIST	      = 1 << 23,
-	M_HAVE_MULTI_ACCOUNT  = 1 << 24,
-	M_FOLDER_SELECTED     = 1 << 25,
-	M_SESSION_PASSWORDS   = 1 << 26,
-	M_DELETED_EXISTS      = 1 << 27,
-	M_NOT_TRASH	      = 1 << 28,
-	M_HIDE_READ_THREADS   = 1 << 29,
-	M_HAVE_RETRIEVABLE_ACCOUNT = 1 << 30,
-	M_HAVE_ANY_RETRIEVABLE_ACCOUNT = 1 << 31
+	M_UNLOCKED,
+	M_MSG_EXIST,
+	M_TARGET_EXIST,
+	M_SINGLE_TARGET_EXIST,
+	M_EXEC,
+	M_ALLOW_REEDIT,
+	M_HAVE_ACCOUNT,
+	M_THREADED,
+	M_UNTHREADED,
+	M_ALLOW_DELETE,
+	M_INC_ACTIVE,
+	M_NEWS,
+	M_HAVE_NEWS_ACCOUNT,
+	M_HIDE_READ_MSG,
+	M_DELAY_EXEC,
+	M_NOT_NEWS,
+	M_CAN_LEARN_SPAM,
+	M_ACTIONS_EXIST,
+	M_HAVE_QUEUED_MAILS,
+	M_WANT_SYNC,
+	M_TAGS_EXIST,
+	M_HAVE_PROCESSING,
+	M_SUMMARY_ISLIST,
+	M_IN_MSGLIST,
+	M_HAVE_MULTI_ACCOUNT,
+	M_FOLDER_SELECTED,
+	M_SESSION_PASSWORDS,
+	M_DELETED_EXISTS,
+	M_NOT_TRASH,
+	M_HIDE_READ_THREADS,
+	M_HAVE_RETRIEVABLE_ACCOUNT,
+	M_HAVE_ANY_RETRIEVABLE_ACCOUNT,
+
+/* reserved */
+    M_MAX_RESERVED
 } SensitiveCond;
+
+typedef guint64 SensitiveCondMask;
 
 typedef enum
 {
-	NORMAL_LAYOUT	 = 0,
-	VERTICAL_LAYOUT	 = 1 << 0,
-	WIDE_LAYOUT = 1 << 1,
+	NORMAL_LAYOUT       = 0,
+	VERTICAL_LAYOUT     = 1 << 0,
+	WIDE_LAYOUT         = 1 << 1,
 	WIDE_MSGLIST_LAYOUT = 1 << 2,
 	SMALL_LAYOUT
 } LayoutType;
@@ -182,6 +187,8 @@ void main_window_progress_off		(MainWindow	*mainwin);
 gboolean main_window_empty_trash	(MainWindow	*mainwin,
 					 gboolean	 confirm,
 					 gboolean 	 for_quit);
+
+guint64 main_window_get_mask(SensitiveCond cond, ...);
 
 void main_window_set_menu_sensitive	(MainWindow	*mainwin);
 

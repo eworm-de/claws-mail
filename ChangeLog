@@ -1,3 +1,12 @@
+2012-11-28 [wwp]	3.9.0cvs29
+
+	* src/mainwindow.c
+	* src/mainwindow.h
+	* src/summaryview.c
+	* src/toolbar.c
+	Rework SensitiveCond enum to allow more than 32 flags for GUI status checking.
+	Complete toolbar_init(), which was missing few inits.
+
 2012-11-28 [colin]	3.9.0cvs28
 
 	* src/mainwindow.c

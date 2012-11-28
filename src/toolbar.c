@@ -2357,26 +2357,27 @@ void toolbar_main_set_sensitive(gpointer data)
 	typedef struct _Entry Entry;
 	struct _Entry {
 		GtkWidget *widget;
-		SensitiveCond cond;
+		SensitiveCondMask cond;
 		gboolean empty;
 	};
 
-#define SET_WIDGET_COND(w, c)     \
-{ \
+#define SET_WIDGET_COND(w, ...)     \
+do { \
 	Entry *e = g_new0(Entry, 1); \
 	e->widget = w; \
-	e->cond   = c; \
+	e->cond = main_window_get_mask(__VA_ARGS__, -1); \
 	entry_list = g_slist_append(entry_list, e); \
-}
-
+} while (0)
 	
+	/* match all bit flags */
+
 	if (toolbar->get_btn)
 		SET_WIDGET_COND(toolbar->get_btn, 
-			M_HAVE_ACCOUNT|M_UNLOCKED|M_HAVE_RETRIEVABLE_ACCOUNT);
+			M_HAVE_ACCOUNT, M_UNLOCKED, M_HAVE_RETRIEVABLE_ACCOUNT);
 
 	if (toolbar->getall_btn) {
 		SET_WIDGET_COND(toolbar->getall_btn, 
-			M_HAVE_ACCOUNT|M_UNLOCKED|M_HAVE_ANY_RETRIEVABLE_ACCOUNT);
+			M_HAVE_ACCOUNT, M_UNLOCKED, M_HAVE_ANY_RETRIEVABLE_ACCOUNT);
 	}
 	if (toolbar->send_btn) {
 		SET_WIDGET_COND(toolbar->send_btn,
@@ -2392,42 +2393,42 @@ void toolbar_main_set_sensitive(gpointer data)
 	}
 	if (toolbar->open_mail_btn) {
 		SET_WIDGET_COND(toolbar->open_mail_btn, 
-			M_TARGET_EXIST|M_SUMMARY_ISLIST);
+			M_TARGET_EXIST, M_SUMMARY_ISLIST);
 	}
 	if (toolbar->reply_btn) {
 		SET_WIDGET_COND(toolbar->reply_btn,
-			M_HAVE_ACCOUNT|M_TARGET_EXIST|M_SUMMARY_ISLIST);
+			M_HAVE_ACCOUNT, M_TARGET_EXIST, M_SUMMARY_ISLIST);
 	}
 	if (toolbar->replyall_btn) {
 		SET_WIDGET_COND(toolbar->replyall_btn,
-			M_HAVE_ACCOUNT|M_TARGET_EXIST|M_SUMMARY_ISLIST);
+			M_HAVE_ACCOUNT, M_TARGET_EXIST, M_SUMMARY_ISLIST);
 	}
 	if (toolbar->replylist_btn) {
 		SET_WIDGET_COND(toolbar->replylist_btn,
-			M_HAVE_ACCOUNT|M_TARGET_EXIST|M_SUMMARY_ISLIST);
+			M_HAVE_ACCOUNT, M_TARGET_EXIST, M_SUMMARY_ISLIST);
 	}
 	if (toolbar->replysender_btn) {
 		SET_WIDGET_COND(toolbar->replysender_btn,
-			M_HAVE_ACCOUNT|M_TARGET_EXIST|M_SUMMARY_ISLIST);
+			M_HAVE_ACCOUNT, M_TARGET_EXIST, M_SUMMARY_ISLIST);
 	}
 	if (toolbar->fwd_btn) {
 		SET_WIDGET_COND(toolbar->fwd_btn, 
-			M_HAVE_ACCOUNT|M_TARGET_EXIST|M_SUMMARY_ISLIST);
+			M_HAVE_ACCOUNT, M_TARGET_EXIST, M_SUMMARY_ISLIST);
 	}
 
 	if (prefs_common.next_unread_msg_dialog == NEXTUNREADMSGDIALOG_ASSUME_NO) {
-		SET_WIDGET_COND(toolbar->next_btn, M_MSG_EXIST|M_SUMMARY_ISLIST);
+		SET_WIDGET_COND(toolbar->next_btn, M_MSG_EXIST, M_SUMMARY_ISLIST);
 	} else {
 		SET_WIDGET_COND(toolbar->next_btn, 0);
 	}
 	
 	if (toolbar->trash_btn)
 		SET_WIDGET_COND(toolbar->trash_btn,
-			M_TARGET_EXIST|M_ALLOW_DELETE|M_NOT_NEWS);
+			M_TARGET_EXIST, M_ALLOW_DELETE, M_NOT_NEWS);
 
 	if (toolbar->delete_btn)
 		SET_WIDGET_COND(toolbar->delete_btn,
-			M_TARGET_EXIST|M_ALLOW_DELETE);
+			M_TARGET_EXIST, M_ALLOW_DELETE);
 
 	if (toolbar->exec_btn)
 		SET_WIDGET_COND(toolbar->exec_btn, 
@@ -2435,7 +2436,7 @@ void toolbar_main_set_sensitive(gpointer data)
 	
 	if (toolbar->learn_spam_btn)
 		SET_WIDGET_COND(toolbar->learn_spam_btn, 
-			M_TARGET_EXIST|M_CAN_LEARN_SPAM|M_SUMMARY_ISLIST);
+			M_TARGET_EXIST, M_CAN_LEARN_SPAM, M_SUMMARY_ISLIST);
 
 	if (toolbar->cancel_inc_btn)
 		SET_WIDGET_COND(toolbar->cancel_inc_btn,
@@ -2444,10 +2445,8 @@ void toolbar_main_set_sensitive(gpointer data)
 	for (cur = toolbar->action_list; cur != NULL;  cur = cur->next) {
 		ToolbarClawsActions *act = (ToolbarClawsActions*)cur->data;
 		
-		SET_WIDGET_COND(act->widget, M_TARGET_EXIST|M_UNLOCKED);
+		SET_WIDGET_COND(act->widget, M_TARGET_EXIST, M_UNLOCKED);
 	}
-
-#undef SET_WIDGET_COND
 
 	state = main_window_get_current_state(mainwin);
 
@@ -2467,12 +2466,33 @@ void toolbar_main_set_sensitive(gpointer data)
 		entry_list = g_slist_remove(entry_list, e);
 	}
 
+	/* match any bit flags */
+
+	/*
+	for (cur = entry_list; cur != NULL; cur = cur->next) {
+		Entry *e = (Entry*) cur->data;
+
+		if (e->widget != NULL) {
+			sensitive = ((e->cond & state) != 0);
+			GTK_BUTTON_SET_SENSITIVE(e->widget, sensitive);	
+		}
+	}
+	*/
+
+	while (entry_list != NULL) {
+		Entry *e = (Entry*) entry_list->data;
+
+		g_free(e);
+		entry_list = g_slist_remove(entry_list, e);
+	}
+
 	g_slist_free(entry_list);
 
 	activate_compose_button(toolbar, 
 				prefs_common.toolbar_style,
 				toolbar->compose_btn_type);
 	
+#undef SET_WIDGET_COND
 }
 
 void toolbar_comp_set_sensitive(gpointer data, gboolean sensitive)
@@ -2516,38 +2536,51 @@ void toolbar_comp_set_sensitive(gpointer data, gboolean sensitive)
 static void toolbar_init(Toolbar * toolbar)
 {
 
-	toolbar->toolbar          	= NULL;
-	toolbar->folders_btn		= NULL;
-	toolbar->get_btn          	= NULL;
-	toolbar->getall_btn       	= NULL;
-	toolbar->send_btn         	= NULL;
-	toolbar->compose_mail_btn 	= NULL;
-	toolbar->compose_mail_icon 	= NULL;
-	toolbar->compose_news_icon 	= NULL;
-	toolbar->reply_btn        	= NULL;
-	toolbar->replysender_btn  	= NULL;
-	toolbar->replyall_btn     	= NULL;
-	toolbar->replylist_btn    	= NULL;
-	toolbar->fwd_btn          	= NULL;
-	toolbar->trash_btn       	= NULL;
-	toolbar->delete_btn       	= NULL;
-	toolbar->prev_btn         	= NULL;
-	toolbar->next_btn         	= NULL;
-	toolbar->exec_btn         	= NULL;
-	toolbar->open_mail_btn		= NULL;
-	toolbar->close_window_btn	= NULL;
+	toolbar->toolbar           = NULL;
+	toolbar->folders_btn       = NULL;
+	toolbar->get_btn           = NULL;
+	toolbar->getall_btn        = NULL;
+	toolbar->send_btn          = NULL;
+	toolbar->compose_mail_btn  = NULL;
+	toolbar->compose_mail_icon = NULL;
+	toolbar->compose_news_icon = NULL;
+	toolbar->reply_btn         = NULL;
+	toolbar->replysender_btn   = NULL;
+	toolbar->replyall_btn      = NULL;
+	toolbar->replylist_btn     = NULL;
+	toolbar->fwd_btn           = NULL;
+	toolbar->trash_btn         = NULL;
+	toolbar->delete_btn        = NULL;
+	toolbar->prev_btn          = NULL;
+	toolbar->next_btn          = NULL;
+	toolbar->exec_btn          = NULL;
+	toolbar->separator         = NULL;
+	toolbar->learn_spam_btn    = NULL;
+	toolbar->learn_spam_icon   = NULL;
+	toolbar->learn_ham_icon    = NULL;
+	toolbar->cancel_inc_btn    = NULL;
+
 	/* compose buttons */ 
-	toolbar->sendl_btn        	= NULL;
-	toolbar->draft_btn        	= NULL;
-	toolbar->insert_btn       	= NULL;
-	toolbar->attach_btn       	= NULL;
-	toolbar->sig_btn          	= NULL;	
-	toolbar->exteditor_btn    	= NULL;	
-	toolbar->linewrap_current_btn	= NULL;	
-	toolbar->linewrap_all_btn     	= NULL;	
-	toolbar->addrbook_btn     	= NULL;	
+	toolbar->sendl_btn         = NULL;
+	toolbar->draft_btn         = NULL;
+	toolbar->insert_btn        = NULL;
+	toolbar->attach_btn        = NULL;
+	toolbar->sig_btn           = NULL; 
+	toolbar->exteditor_btn     = NULL; 
+	toolbar->linewrap_current_btn = NULL;	
+	toolbar->linewrap_all_btn  = NULL;	
+	toolbar->addrbook_btn      = NULL; 
+
+	toolbar->open_mail_btn     = NULL;
+	toolbar->close_window_btn  = NULL;
+	toolbar->preferences_btn   = NULL;
+	toolbar->action_list       = NULL;
+	toolbar->item_list         = NULL;
 #ifdef USE_ENCHANT
-	toolbar->spellcheck_btn   	= NULL;
+	toolbar->spellcheck_btn    = NULL;
+#endif
+#if !GTK_CHECK_VERSION(2,12,0)
+	toolbar->tooltips          = NULL;
 #endif
 
 	toolbar_destroy(toolbar);
