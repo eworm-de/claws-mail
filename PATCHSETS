@@ -4524,3 +4524,4 @@
 ( cvs diff -u -r 1.9.2.58 -r 1.9.2.59 src/common/ssl.c;  ) > 3.9.0cvs24.patchset
 ( cvs diff -u -r 1.115.2.264 -r 1.115.2.265 src/main.c;  ) > 3.9.0cvs25.patchset
 ( cvs diff -u -r 1.179.2.268 -r 1.179.2.269 src/imap.c;  cvs diff -u -r 1.1.4.126 -r 1.1.4.127 src/etpan/imap-thread.c;  cvs diff -u -r 1.1.4.30 -r 1.1.4.31 src/etpan/imap-thread.h;  ) > 3.9.0cvs26.patchset
+( cvs diff -u -r 1.179.2.269 -r 1.179.2.270 src/imap.c;  cvs diff -u -r 1.101.2.73 -r 1.101.2.74 src/news.c;  cvs diff -u -r 1.23.2.28 -r 1.23.2.29 src/common/session.c;  cvs diff -u -r 1.8.2.21 -r 1.8.2.22 src/common/session.h;  ) > 3.9.0cvs27.patchset

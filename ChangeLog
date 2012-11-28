@@ -1,3 +1,11 @@
+2012-11-28 [colin]	3.9.0cvs27
+
+	* src/imap.c
+	* src/news.c
+	* src/common/session.c
+	* src/common/session.h
+		Add keep-alive pings on IMAP and NNTP
+
 2012-11-28 [colin]	3.9.0cvs26
 
 	* src/imap.c

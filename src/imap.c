@@ -544,6 +544,24 @@ static void unlock_session(IMAPSession *session)
 	}
 }
 
+static gboolean imap_ping(gpointer data)
+{
+	Session *session = (Session *)data;
+	IMAPSession *imap_session = IMAP_SESSION(session);
+	int r;
+
+	if (session->state != SESSION_READY)
+		return FALSE;
+	if (imap_session->busy || !imap_session->authenticated)
+		return TRUE;
+	
+	lock_session(imap_session);
+	r = imap_cmd_noop(imap_session);
+	unlock_session(imap_session);
+
+	return r == MAILIMAP_NO_ERROR;
+}
+
 static void imap_disc_session_destroy(IMAPSession *session)
 {
 	RemoteFolder *rfolder = NULL;
@@ -752,7 +770,7 @@ static void imap_folder_init(Folder *folder, const gchar *name,
 	folder_remote_folder_init((Folder *)folder, name, path);
 	IMAP_FOLDER(folder)->max_set_size = IMAP_SET_MAX_COUNT;
 	IMAP_FOLDER(folder)->search_charset_supported = TRUE;
-	IMAP_FOLDER(folder)->search_charset = "UTF-8";
+	IMAP_FOLDER(folder)->search_charset = conv_get_locale_charset_str_no_utf8();
 }
 
 static FolderItem *imap_folder_item_new(Folder *folder)
@@ -1183,6 +1201,8 @@ static IMAPSession *imap_session_new(Folder * folder,
 	log_message(LOG_PROTOCOL, "IMAP connection is %s-authenticated\n",
 		    (session->authenticated) ? "pre" : "un");
 	
+	session_register_ping(SESSION(session), imap_ping);
+
 	return session;
 }
 
@@ -2177,9 +2197,9 @@ static void imap_change_search_charset(IMAPFolder *folder)
 	 */
 
 	if (folder->search_charset_supported) {
-		if (folder->search_charset && !strcmp(folder->search_charset, "UTF-8"))
-			folder->search_charset = conv_get_locale_charset_str_no_utf8();
-		else if (folder->search_charset && !strcmp(folder->search_charset, conv_get_locale_charset_str_no_utf8()))
+		if (folder->search_charset && !strcmp(folder->search_charset, conv_get_locale_charset_str_no_utf8()))
+			folder->search_charset = "UTF-8";
+		else if (folder->search_charset && !strcmp(folder->search_charset, "UTF-8"))
 			folder->search_charset = "UTF-7";
 		else {
 			folder->search_charset = NULL;
@@ -3991,8 +4011,6 @@ static gint imap_cmd_noop(IMAPSession *session)
 		debug_print("noop err %d\n", r);
 		return r;
 	}
-
-	session->folder_content_changed = FALSE;
 
 	if ((exists && exists != session->exists)
 	 || (recent && recent != session->recent)

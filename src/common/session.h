@@ -154,6 +154,8 @@ struct _Session
 	const void *account;
 	gboolean is_smtp;
 
+	gint ping_tag;
+
 #ifdef USE_GNUTLS
 	SSLType ssl_type;
 #endif
@@ -207,5 +209,6 @@ gint session_send_data	(Session	*session,
 gint session_recv_data	(Session	*session,
 			 guint		 size,
 			 const gchar	*terminator);
+void session_register_ping(Session *session, gboolean (*ping_cb)(gpointer data));
 
 #endif /* __SESSION_H__ */

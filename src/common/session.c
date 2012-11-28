@@ -100,6 +100,8 @@ void session_init(Session *session, const void *prefs_account, gboolean is_smtp)
 	session->data = NULL;
 	session->account = prefs_account;
 	session->is_smtp = is_smtp;
+
+	session->ping_tag = -1;
 }
 
 /*!
@@ -214,6 +216,8 @@ void session_destroy(Session *session)
 {
 	cm_return_if_fail(session != NULL);
 	cm_return_if_fail(session->destroy != NULL);
+
+	session_register_ping(session, NULL);
 
 	session_close(session);
 	session->destroy(session);
@@ -866,4 +870,23 @@ static gboolean session_write_data_cb(SockInfo *source,
 				  session->send_data_notify_data);
 
 	return FALSE;
+}
+
+void session_register_ping(Session *session, gboolean (*ping_cb)(gpointer data))
+{
+	if (!session)
+		return;
+	if (session->ping_tag > -1)
+		g_source_remove(session->ping_tag);
+
+	session->ping_tag = -1;
+
+	if (ping_cb != NULL)
+#if GLIB_CHECK_VERSION(2,14,0)
+		session->ping_tag =
+			g_timeout_add_seconds(60, ping_cb, session);
+#else
+		session->ping_tag =
+			g_timeout_add(60*1000, ping_cb, session);
+#endif
 }

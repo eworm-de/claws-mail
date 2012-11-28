@@ -83,7 +83,7 @@ struct _NewsFolder
 struct _NewsSession
 {
 	Session session;
-
+	Folder *folder;
 	gchar *group;
 };
 
@@ -282,6 +282,34 @@ static void news_session_destroy(Session *session)
 		g_free(news_session->group);
 }
 
+static gboolean nntp_ping(gpointer data)
+{
+	Session *session = (Session *)data;
+	NewsSession *news_session = NEWS_SESSION(session);
+	int r;
+	struct tm lt;
+
+	if (session->state != SESSION_READY || news_folder_locked(news_session->folder))
+		return FALSE;
+	
+	if ((r = nntp_threaded_date(news_session->folder, &lt)) != NEWSNNTP_NO_ERROR) {
+		if (r != NEWSNNTP_ERROR_COMMAND_NOT_SUPPORTED &&
+		    r != NEWSNNTP_ERROR_COMMAND_NOT_UNDERSTOOD) {
+			log_warning(LOG_PROTOCOL, _("NNTP connection to %s:%d has been"
+			      " disconnected.\n"),
+			    news_session->folder->account->nntp_server,
+			    news_session->folder->account->set_nntpport ?
+			    news_session->folder->account->nntpport : NNTP_PORT);
+			REMOTE_FOLDER(news_session->folder)->session = NULL;
+			session_destroy(session);
+			return FALSE;
+		}
+	}
+	session_set_access_time(session);
+	return TRUE;
+}
+
+
 #ifdef USE_GNUTLS
 static Session *news_session_new(Folder *folder, const gchar *server, gushort port,
 				 const gchar *userid, const gchar *passwd,
@@ -320,7 +348,10 @@ static Session *news_session_new(Folder *folder, const gchar *server, gushort po
 		session_destroy(SESSION(session));
 		return NULL;
 	}
-	
+
+	session->folder = folder;
+
+	session_register_ping(SESSION(session), nntp_ping);
 	return SESSION(session);
 }
 
@@ -437,8 +468,6 @@ static Session *news_session_new_for_folder(Folder *folder)
 static NewsSession *news_session_get(Folder *folder)
 {
 	RemoteFolder *rfolder = REMOTE_FOLDER(folder);
-	struct tm lt;
-	int r;
 	
 	cm_return_val_if_fail(folder != NULL, NULL);
 	cm_return_val_if_fail(FOLDER_CLASS(folder) == &news_class, NULL);
@@ -469,18 +498,8 @@ static NewsSession *news_session_get(Folder *folder)
 		return NEWS_SESSION(rfolder->session);
 	}
 
-	if ((r = nntp_threaded_date(folder, &lt)) != NEWSNNTP_NO_ERROR) {
-		if (r != NEWSNNTP_ERROR_COMMAND_NOT_SUPPORTED &&
-		    r != NEWSNNTP_ERROR_COMMAND_NOT_UNDERSTOOD) {
-			log_warning(LOG_PROTOCOL, _("NNTP connection to %s:%d has been"
-			      " disconnected. Reconnecting...\n"),
-			    folder->account->nntp_server,
-			    folder->account->set_nntpport ?
-			    folder->account->nntpport : NNTP_PORT);
-			session_destroy(rfolder->session);
-			rfolder->session = news_session_new_for_folder(folder);
-		}
-	}
+	if (!nntp_ping(rfolder->session))
+		rfolder->session = news_session_new_for_folder(folder);
 
 newsession:
 	if (rfolder->session)
