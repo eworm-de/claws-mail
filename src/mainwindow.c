@@ -3414,7 +3414,7 @@ do { \
 
 	for (; cur_item != NULL; cur_item = cur_item->next) {
 		gtk_widget_set_sensitive(GTK_WIDGET(cur_item->data),
-					 (M_UNLOCKED & state) != 0);
+					 (main_window_get_mask(M_UNLOCKED, -1) & state) != 0);
 	}
 
 	g_list_free(children);
@@ -3480,10 +3480,10 @@ do { \
 	&&  mainwin->messageview->mimeview->textview)
 		cm_toggle_menu_set_active_full(mainwin->ui_manager, "Menu/View/AllHeaders",
 			      			prefs_common.show_all_headers);
-	cm_toggle_menu_set_active_full(mainwin->ui_manager, "Menu/View/ThreadView", (state & M_THREADED) != 0);
-	cm_menu_set_sensitive_full(mainwin->ui_manager, "Menu/View/ExpandThreads", (state & M_THREADED) != 0);
-	cm_menu_set_sensitive_full(mainwin->ui_manager, "Menu/View/CollapseThreads", (state & M_THREADED) != 0);
-	cm_menu_set_sensitive_full(mainwin->ui_manager, "Menu/View/HideReadThreads", (state & M_THREADED) != 0);
+	cm_toggle_menu_set_active_full(mainwin->ui_manager, "Menu/View/ThreadView", (state & main_window_get_mask(M_THREADED, -1)) != 0);
+	cm_menu_set_sensitive_full(mainwin->ui_manager, "Menu/View/ExpandThreads", (state & main_window_get_mask(M_THREADED, -1)) != 0);
+	cm_menu_set_sensitive_full(mainwin->ui_manager, "Menu/View/CollapseThreads", (state & main_window_get_mask(M_THREADED, -1)) != 0);
+	cm_menu_set_sensitive_full(mainwin->ui_manager, "Menu/View/HideReadThreads", (state & main_window_get_mask(M_THREADED, -1)) != 0);
 	cm_toggle_menu_set_active_full(mainwin->ui_manager, "Menu/View/Quotes/CollapseAll", (prefs_common.hide_quotes == 1));
 	cm_toggle_menu_set_active_full(mainwin->ui_manager, "Menu/View/Quotes/Collapse2", (prefs_common.hide_quotes == 2));
 	cm_toggle_menu_set_active_full(mainwin->ui_manager, "Menu/View/Quotes/Collapse3", (prefs_common.hide_quotes == 3));
