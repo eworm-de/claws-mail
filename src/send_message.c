@@ -94,6 +94,11 @@ void send_cancel(void)
 		send_cancel_button_cb(NULL, send_dialog);
 }
 
+gboolean send_is_active(void)
+{
+	return (send_dialog != NULL);
+}
+
 gint send_message(const gchar *file, PrefsAccount *ac_prefs, GSList *to_list)
 {
 	FILE *fp;
@@ -606,7 +611,7 @@ static void send_progress_dialog_destroy(SendProgressDialog *dialog)
 		progress_dialog_destroy(dialog->dialog);
 	}
 	g_free(dialog);
-	dialog = NULL;
+	send_dialog = NULL;
 }
 
 static void send_showlog_button_cb(GtkWidget *widget, gpointer data)

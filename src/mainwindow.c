@@ -187,6 +187,8 @@ static void filtering_debug_window_show_cb	(GtkAction	*action,
 
 static void inc_cancel_cb		(GtkAction	*action,
 				  gpointer	 data);
+static void send_cancel_cb		(GtkAction	*action,
+				  gpointer	 data);
 
 static void open_msg_cb			(GtkAction	*action,
 				  gpointer	 data);
@@ -642,6 +644,7 @@ static GtkActionEntry mainwin_entries[] =
 	{"Message/Receive/---",			NULL, "---" },
 	{"Message/Receive/PlaceHolder",		NULL, "PlaceHolder,", NULL, NULL, G_CALLBACK(mainwindow_nothing_cb) },
 	{"Message/SendQueue",			NULL, N_("_Send queued messages"), NULL, NULL, G_CALLBACK(mw_send_queue_cb) },
+	{"Message/CancelSending",	NULL, N_("Cancel sending"), NULL, NULL, G_CALLBACK(send_cancel_cb) },
 
 	{"Message/---",				NULL, "---" },
 
@@ -1792,11 +1795,11 @@ MainWindow *main_window_create()
 	MENUITEM_ADDUI_MANAGER(mainwin->ui_manager, "/Menu/View/Goto", "Separator8", "View/Goto/---", GTK_UI_MANAGER_SEPARATOR)
 	MENUITEM_ADDUI_MANAGER(mainwin->ui_manager, "/Menu/View/Goto", "NextPart", "View/Goto/NextPart", GTK_UI_MANAGER_MENUITEM)
 	MENUITEM_ADDUI_MANAGER(mainwin->ui_manager, "/Menu/View/Goto", "PrevPart", "View/Goto/PrevPart", GTK_UI_MANAGER_MENUITEM)
-        MENUITEM_ADDUI_MANAGER(mainwin->ui_manager, "/Menu/View", "Scroll", "View/Scroll", GTK_UI_MANAGER_MENU)
-        MENUITEM_ADDUI_MANAGER(mainwin->ui_manager, "/Menu/View/Scroll", "PrevLine", "View/Scroll/PrevLine", GTK_UI_MANAGER_MENUITEM)
-        MENUITEM_ADDUI_MANAGER(mainwin->ui_manager, "/Menu/View/Scroll", "NextLine", "View/Scroll/NextLine", GTK_UI_MANAGER_MENUITEM)
-        MENUITEM_ADDUI_MANAGER(mainwin->ui_manager, "/Menu/View/Scroll", "PrevPage", "View/Scroll/PrevPage", GTK_UI_MANAGER_MENUITEM)
-        MENUITEM_ADDUI_MANAGER(mainwin->ui_manager, "/Menu/View/Scroll", "NextPage", "View/Scroll/NextPage", GTK_UI_MANAGER_MENUITEM)
+	MENUITEM_ADDUI_MANAGER(mainwin->ui_manager, "/Menu/View", "Scroll", "View/Scroll", GTK_UI_MANAGER_MENU)
+	MENUITEM_ADDUI_MANAGER(mainwin->ui_manager, "/Menu/View/Scroll", "PrevLine", "View/Scroll/PrevLine", GTK_UI_MANAGER_MENUITEM)
+	MENUITEM_ADDUI_MANAGER(mainwin->ui_manager, "/Menu/View/Scroll", "NextLine", "View/Scroll/NextLine", GTK_UI_MANAGER_MENUITEM)
+	MENUITEM_ADDUI_MANAGER(mainwin->ui_manager, "/Menu/View/Scroll", "PrevPage", "View/Scroll/PrevPage", GTK_UI_MANAGER_MENUITEM)
+	MENUITEM_ADDUI_MANAGER(mainwin->ui_manager, "/Menu/View/Scroll", "NextPage", "View/Scroll/NextPage", GTK_UI_MANAGER_MENUITEM)
 	MENUITEM_ADDUI_MANAGER(mainwin->ui_manager, "/Menu/View", "Separator4", "View/---", GTK_UI_MANAGER_SEPARATOR)
 
 	MENUITEM_ADDUI_MANAGER(mainwin->ui_manager, "/Menu/View", "Encoding", "View/Encoding", GTK_UI_MANAGER_MENU)
@@ -1889,6 +1892,7 @@ MainWindow *main_window_create()
 	MENUITEM_ADDUI_MANAGER(mainwin->ui_manager, "/Menu/Message/Receive", "Separator1", "Message/Receive/---", GTK_UI_MANAGER_SEPARATOR)
 	MENUITEM_ADDUI_MANAGER(mainwin->ui_manager, "/Menu/Message/Receive", "PlaceHolder", "Message/Receive/PlaceHolder", GTK_UI_MANAGER_MENUITEM)
 	MENUITEM_ADDUI_MANAGER(mainwin->ui_manager, "/Menu/Message", "SendQueue", "Message/SendQueue", GTK_UI_MANAGER_MENUITEM)
+	MENUITEM_ADDUI_MANAGER(mainwin->ui_manager, "/Menu/Message", "CancelSending", "Message/CancelSending", GTK_UI_MANAGER_MENUITEM)
 	MENUITEM_ADDUI_MANAGER(mainwin->ui_manager, "/Menu/Message", "Separator1", "Message/---", GTK_UI_MANAGER_SEPARATOR)
 
 	MENUITEM_ADDUI_MANAGER(mainwin->ui_manager, "/Menu/Message", "ComposeEmail", "Message/ComposeEmail", GTK_UI_MANAGER_MENUITEM)
@@ -3230,6 +3234,9 @@ SensitiveCond main_window_get_current_state(MainWindow *mainwin)
 	if (imap_cancel_all_enabled())
 		UPDATE_STATE(M_INC_ACTIVE);
 
+	if (send_is_active() | procmsg_is_sending())
+		UPDATE_STATE(M_SEND_ACTIVE);
+
 	if (mainwin->summaryview->deleted > 0)
 		UPDATE_STATE(M_DELETED_EXISTS);
 
@@ -3291,7 +3298,7 @@ void main_window_set_menu_sensitive(MainWindow *mainwin)
 	gint i;
 	gboolean mimepart_selected = FALSE;
 
-#define N_ENTRIES 81
+#define N_ENTRIES 82
 	static struct {
 		const gchar *entry;
 		SensitiveCond cond;
@@ -3342,6 +3349,7 @@ do { \
 	FILL_TABLE("Menu/Message/Receive/AllAccounts", M_HAVE_ACCOUNT, M_UNLOCKED, M_HAVE_ANY_RETRIEVABLE_ACCOUNT);
 	FILL_TABLE("Menu/Message/Receive/CancelReceiving", M_INC_ACTIVE);
 	FILL_TABLE("Menu/Message/SendQueue", M_HAVE_ACCOUNT, M_HAVE_QUEUED_MAILS);
+	FILL_TABLE("Menu/Message/CancelSending", M_SEND_ACTIVE);
 	FILL_TABLE("Menu/Message/ComposeEmail", M_HAVE_ACCOUNT);
 	FILL_TABLE("Menu/Message/ComposeNews", M_HAVE_NEWS_ACCOUNT);
 	FILL_TABLE("Menu/Message/Reply", M_HAVE_ACCOUNT, M_TARGET_EXIST, M_SUMMARY_ISLIST);
@@ -4457,6 +4465,11 @@ static void inc_cancel_cb(GtkAction *action, gpointer data)
 {
 	inc_cancel_all();
 	imap_cancel_all();
+}
+
+static void send_cancel_cb(GtkAction *action, gpointer data)
+{
+	send_cancel();
 }
 
 static void move_to_cb(GtkAction *action, gpointer data)

@@ -77,6 +77,8 @@ struct _Toolbar {
 	GtkWidget *learn_ham_icon;
 	
 	GtkWidget *cancel_inc_btn;
+	GtkWidget *cancel_send_btn;
+	GtkWidget *cancel_all_btn;
 	
 	ComposeButtonType compose_btn_type;
 	LearnButtonType learn_btn_type;
@@ -194,6 +196,8 @@ enum {
 	/* common items */
 	A_CLAWS_ACTIONS,
 	A_CANCEL_INC,
+	A_CANCEL_SEND,
+	A_CANCEL_ALL,
 	A_CLOSE,
 
 	A_SEPARATOR,

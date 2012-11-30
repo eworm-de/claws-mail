@@ -1,3 +1,16 @@
+2012-11-30 [wwp]	3.9.0cvs31
+
+	* src/mainwindow.c
+	* src/mainwindow.h
+	* src/procmsg.c
+	* src/send_message.c
+	* src/send_message.h
+	* src/toolbar.c
+	* src/toolbar.h
+	Add Message/Cancel sending (same as --cancel-sending), adds the
+	relevant toolbar icon, and an extra cancel sending+receiving icon
+	for convenience.
+
 2012-11-29 [colin]	3.9.0cvs30
 
 	* src/mainwindow.c

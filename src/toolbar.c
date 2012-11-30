@@ -179,6 +179,10 @@ static void toolbar_check_spelling_cb  		(GtkWidget   	*widget,
 #endif
 static void toolbar_cancel_inc_cb		(GtkWidget	*widget,
 						 gpointer	 data);
+static void toolbar_cancel_send_cb		(GtkWidget	*widget,
+						 gpointer	 data);
+static void toolbar_cancel_all_cb		(GtkWidget	*widget,
+						 gpointer	 data);
 
 struct {
 	gchar *index_str;
@@ -193,19 +197,19 @@ struct {
 	{ "A_REPLY_SENDER",  	N_("Reply to Sender")                      },
 	{ "A_REPLY_ALL",     	N_("Reply to All")                         },
 	{ "A_REPLY_ML",      	N_("Reply to Mailing-list")                },
-	{ "A_OPEN_MAIL",	N_("Open email")			   },
+	{ "A_OPEN_MAIL",        N_("Open email")                           },
 	{ "A_FORWARD",       	N_("Forward Message")                      }, 
 	{ "A_TRASH",        	N_("Trash Message")   	                   },
 	{ "A_DELETE_REAL",    	N_("Delete Message")                       },
 	{ "A_EXECUTE",       	N_("Execute")                              },
 	{ "A_GOTO_PREV",     	N_("Go to Previous Unread Message")        },
 	{ "A_GOTO_NEXT",     	N_("Go to Next Unread Message")            },
-	{ "A_IGNORE_THREAD", 	N_("Ignore thread")			   },
-	{ "A_WATCH_THREAD", 	N_("Watch thread")			   },
-	{ "A_PRINT",	     	N_("Print")				   },
-	{ "A_LEARN_SPAM",	N_("Learn Spam or Ham")			   },
+	{ "A_IGNORE_THREAD", 	N_("Ignore thread")                        },
+	{ "A_WATCH_THREAD", 	N_("Watch thread")                         },
+	{ "A_PRINT",	     	N_("Print")                                },
+	{ "A_LEARN_SPAM",       N_("Learn Spam or Ham")                    },
 	{ "A_GO_FOLDERS",   	N_("Open folder/Go to folder list")        },
-	{ "A_PREFERENCES",	N_("Preferences")			   },
+	{ "A_PREFERENCES",      N_("Preferences")                          },
 
 	{ "A_SEND",          	N_("Send Message")                         },
 	{ "A_SENDL",         	N_("Put into queue folder and send later") },
@@ -220,11 +224,13 @@ struct {
 #ifdef USE_ENCHANT
 	{ "A_CHECK_SPELLING",	N_("Check spelling")                       },
 #endif
-	{ "A_CLAWS_ACTIONS",   	N_("Claws Mail Actions Feature")	   }, 
-	{ "A_CANCEL_INC",	N_("Cancel receiving")			   },
-	{ "A_CLOSE",		N_("Close window")			   },
-	{ "A_SEPARATOR",     	N_("Separator")				},
-	{ "A_CLAWS_PLUGINS",    N_("Claws Mail Plugins")       },
+	{ "A_CLAWS_ACTIONS",   	N_("Claws Mail Actions Feature")           }, 
+	{ "A_CANCEL_INC",       N_("Cancel receiving")                     },
+	{ "A_CANCEL_SEND",      N_("Cancel sending")                       },
+	{ "A_CANCEL_ALL",       N_("Cancel receiving/sending")             },
+	{ "A_CLOSE",            N_("Close window")                         },
+	{ "A_SEPARATOR",     	N_("Separator")                            },
+	{ "A_CLAWS_PLUGINS",    N_("Claws Mail Plugins")                   },
 };
 
 /* struct holds configuration files and a list of
@@ -305,13 +311,13 @@ GList *toolbar_get_action_items(ToolbarType source)
 	gint i = 0;
 	
 	if (source == TOOLBAR_MAIN) {
-		gint main_items[]   = { A_RECEIVE_ALL,   A_RECEIVE_CUR,   A_SEND_QUEUED,
+		gint main_items[] = { A_RECEIVE_ALL,   A_RECEIVE_CUR,   A_SEND_QUEUED,
 					A_COMPOSE_EMAIL, A_REPLY_MESSAGE, A_REPLY_SENDER, 
-					A_REPLY_ALL,     A_REPLY_ML,      A_OPEN_MAIL, 	A_FORWARD, 
-					A_TRASH , A_DELETE_REAL,       A_EXECUTE,       A_GOTO_PREV, 
-					A_GOTO_NEXT,	A_IGNORE_THREAD,  A_WATCH_THREAD,	A_PRINT,
-					A_ADDRBOOK, 	A_LEARN_SPAM, A_GO_FOLDERS, 
-					A_CANCEL_INC,   A_PREFERENCES };
+					A_REPLY_ALL,     A_REPLY_ML,      A_OPEN_MAIL,     A_FORWARD, 
+					A_TRASH,         A_DELETE_REAL,   A_EXECUTE,       A_GOTO_PREV, 
+					A_GOTO_NEXT,     A_IGNORE_THREAD, A_WATCH_THREAD,  A_PRINT,
+					A_ADDRBOOK,      A_LEARN_SPAM,    A_GO_FOLDERS, 
+					A_CANCEL_INC,    A_CANCEL_SEND,   A_CANCEL_ALL,    A_PREFERENCES };
 
 		for (i = 0; i < sizeof main_items / sizeof main_items[0]; i++)  {
 			items = g_list_append(items, gettext(toolbar_text[main_items[i]].descr));
@@ -424,6 +430,8 @@ const gchar *toolbar_get_short_text(int action) {
 	case A_LINEWRAP_ALL:	return _("Wrap all");
 	case A_ADDRBOOK: 	return _("Address");
 	case A_CANCEL_INC:	return _("Stop");
+	case A_CANCEL_SEND:	return _("Stop");
+	case A_CANCEL_ALL:	return _("Stop all");
 	case A_EXECUTE:		return _("Execute");
 	#ifdef USE_ENCHANT
 	case A_CHECK_SPELLING:	return _("Check spelling");
@@ -467,6 +475,8 @@ gint toolbar_get_icon(int action) {
 	case A_LINEWRAP_ALL:	return STOCK_PIXMAP_LINEWRAP_ALL;
 	case A_ADDRBOOK: 	return STOCK_PIXMAP_ADDRESS_BOOK;
 	case A_CANCEL_INC:	return STOCK_PIXMAP_CANCEL;
+	case A_CANCEL_SEND:	return STOCK_PIXMAP_CANCEL;
+	case A_CANCEL_ALL:	return STOCK_PIXMAP_CANCEL;
 	case A_EXECUTE:		return STOCK_PIXMAP_EXEC;
 	#ifdef USE_ENCHANT
 	case A_CHECK_SPELLING:	return STOCK_PIXMAP_CHECK_SPELLING;
@@ -1486,6 +1496,19 @@ static void toolbar_cancel_inc_cb(GtkWidget *widget, gpointer data)
 	imap_cancel_all();
 }
 
+static void toolbar_cancel_send_cb(GtkWidget *widget, gpointer data)
+{
+	ToolbarItem *toolbar_item = (ToolbarItem*)data;
+
+	cm_return_if_fail(toolbar_item != NULL);
+	send_cancel();
+}
+
+static void toolbar_cancel_all_cb(GtkWidget *widget, gpointer data)
+{
+	toolbar_cancel_inc_cb(widget, data);
+	toolbar_cancel_send_cb(widget, data);
+}
 
 static void toolbar_print_cb(GtkWidget *widget, gpointer data)
 {
@@ -1746,6 +1769,8 @@ static void toolbar_buttons_cb(GtkWidget   *widget,
 #endif
 		{ A_CLAWS_ACTIONS,	toolbar_actions_execute_cb	},
 		{ A_CANCEL_INC,		toolbar_cancel_inc_cb		},
+		{ A_CANCEL_SEND,	toolbar_cancel_send_cb		},
+		{ A_CANCEL_ALL,		toolbar_cancel_all_cb		},
 		{ A_CLAWS_PLUGINS,  toolbar_plugins_execute_cb  },
 	};
 
@@ -2152,6 +2177,14 @@ Toolbar *toolbar_create(ToolbarType 	 type,
 			TOOLBAR_ITEM(item,icon_wid,toolbar_item->text,_("Cancel receiving"));
 			toolbar_data->cancel_inc_btn = item;
 			break;
+		case A_CANCEL_SEND:
+			TOOLBAR_ITEM(item,icon_wid,toolbar_item->text,_("Cancel sending"));
+			toolbar_data->cancel_send_btn = item;
+			break;
+		case A_CANCEL_ALL:
+			TOOLBAR_ITEM(item,icon_wid,toolbar_item->text,_("Cancel receiving/sending"));
+			toolbar_data->cancel_all_btn = item;
+			break;
 		case A_CLAWS_PLUGINS:
 			TOOLBAR_ITEM(item,icon_wid,toolbar_item->text, toolbar_item->text);
 			break;
@@ -2442,6 +2475,10 @@ do { \
 		SET_WIDGET_COND(toolbar->cancel_inc_btn,
 				M_INC_ACTIVE);
 
+	if (toolbar->cancel_send_btn)
+		SET_WIDGET_COND(toolbar->cancel_send_btn,
+				M_SEND_ACTIVE);
+
 	for (cur = toolbar->action_list; cur != NULL;  cur = cur->next) {
 		ToolbarClawsActions *act = (ToolbarClawsActions*)cur->data;
 		
@@ -2468,7 +2505,10 @@ do { \
 
 	/* match any bit flags */
 
-	/*
+	if (toolbar->cancel_all_btn)
+		SET_WIDGET_COND(toolbar->cancel_all_btn,
+				M_INC_ACTIVE, M_SEND_ACTIVE);
+
 	for (cur = entry_list; cur != NULL; cur = cur->next) {
 		Entry *e = (Entry*) cur->data;
 
@@ -2477,7 +2517,6 @@ do { \
 			GTK_BUTTON_SET_SENSITIVE(e->widget, sensitive);	
 		}
 	}
-	*/
 
 	while (entry_list != NULL) {
 		Entry *e = (Entry*) entry_list->data;
@@ -2559,6 +2598,8 @@ static void toolbar_init(Toolbar * toolbar)
 	toolbar->learn_spam_icon   = NULL;
 	toolbar->learn_ham_icon    = NULL;
 	toolbar->cancel_inc_btn    = NULL;
+	toolbar->cancel_send_btn   = NULL;
+	toolbar->cancel_all_btn    = NULL;
 
 	/* compose buttons */ 
 	toolbar->sendl_btn         = NULL;

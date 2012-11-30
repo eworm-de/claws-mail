@@ -943,6 +943,7 @@ gint procmsg_send_queue(FolderItem *queue, gboolean save_msgs, gchar **errstr)
 	GNode *node, *next;
 	
 	if (!procmsg_queue_lock(errstr)) {
+		main_window_set_menu_sensitive(mainwindow_get_mainwindow());
 		toolbar_main_set_sensitive(mainwindow_get_mainwindow());
 		return -1;
 	}
@@ -956,6 +957,7 @@ gint procmsg_send_queue(FolderItem *queue, gboolean save_msgs, gchar **errstr)
 		return -1;
 	}
 
+	main_window_set_menu_sensitive(mainwindow_get_mainwindow());
 	toolbar_main_set_sensitive(mainwindow_get_mainwindow());
 
 	folder_item_scan(queue);
@@ -1013,6 +1015,7 @@ gint procmsg_send_queue(FolderItem *queue, gboolean save_msgs, gchar **errstr)
 	}
 	procmsg_queue_unlock();
 	inc_unlock();
+	main_window_set_menu_sensitive(mainwindow_get_mainwindow());
 	toolbar_main_set_sensitive(mainwindow_get_mainwindow());
 
 	return (err != 0 ? -err : sent);
@@ -1896,6 +1899,7 @@ send_mail:
 gint procmsg_send_message_queue(const gchar *file, gchar **errstr, FolderItem *queue, gint msgnum, gboolean *queued_removed)
 {
 	gint result = procmsg_send_message_queue_full(file, FALSE, errstr, queue, msgnum, queued_removed);
+	main_window_set_menu_sensitive(mainwindow_get_mainwindow());
 	toolbar_main_set_sensitive(mainwindow_get_mainwindow());
 	return result;
 }
