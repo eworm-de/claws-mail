@@ -1,3 +1,15 @@
+2012-11-30 [mones]	3.9.0cvs33
+
+	* src/common/plugin.c
+		Fixes #1137 completely, saving path-less plugins as is
+		in config. With this patch user can edit plugin list on
+		clawsrc and remove absolute paths from shared plugins,
+		leaving only the "pluginname.so". Those will be tried to
+		load from plugin dir of the loading core. Notice that
+		those will also fail to load on older versions, and will
+		probably be removed from your config without warning by
+		the older version.
+
 2012-11-30 [wwp]	3.9.0cvs32
 
 	* src/mainwindow.c

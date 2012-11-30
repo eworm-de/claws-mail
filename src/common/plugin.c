@@ -58,6 +58,7 @@ struct _Plugin
 	GSList *rdeps;
 	gchar *error;
 	gboolean unloaded_hidden;
+	gboolean in_prefix_dir;
 };
 
 const gchar *plugin_feature_names[] =
@@ -119,6 +120,21 @@ static gint list_find_by_plugin_filename(const Plugin *plugin, const gchar *file
 	return strcmp(filename, plugin->filename);
 }
 
+static gboolean plugin_filename_is_standard_dir(const gchar *filename) {
+	return strncmp(filename, get_plugin_dir(), strlen(get_plugin_dir())) == 0;
+}
+
+static gchar * plugin_canonical_name(const Plugin *plugin)
+{
+	if (plugin->in_prefix_dir == TRUE) {
+		if (plugin_filename_is_standard_dir(plugin->filename) == TRUE) {
+			gchar *plugin_name = g_path_get_basename(plugin->filename);
+			return plugin_name;
+		}
+	}
+	return g_strdup(plugin->filename);
+}
+
 void plugin_save_list(void)
 {
 	gchar *rcpath, *block;
@@ -147,9 +163,13 @@ void plugin_save_list(void)
 			if (plugin->unloaded_hidden)
 				continue;
 
-			if (!strcmp(plugin->type(), type_cur->data))
-				if (fprintf(pfile->fp, "%s\n", plugin->filename) < 0)
+			if (!strcmp(plugin->type(), type_cur->data)) {
+				gchar * name = plugin_canonical_name(plugin);
+				int err = fprintf(pfile->fp, "%s\n", name);
+				g_free(name);
+				if (err < 0)
 					goto revert;
+			}
 		}
 		for (plugin_cur = unloaded_plugins; plugin_cur != NULL; plugin_cur = g_slist_next(plugin_cur)) {
 			plugin = (Plugin *) plugin_cur->data;
@@ -157,9 +177,13 @@ void plugin_save_list(void)
 			if (plugin->unloaded_hidden)
 				continue;
 			
-			if (!strcmp(plugin->type(), type_cur->data))
-				if (fprintf(pfile->fp, "%s\n", plugin->filename) < 0)
+			if (!strcmp(plugin->type(), type_cur->data)) {
+				gchar * name = plugin_canonical_name(plugin);
+				int err = fprintf(pfile->fp, "%s\n", name);
+				g_free(name);
+				if (err < 0)
 					goto revert;
+			}
 		}
 		if (fprintf(pfile->fp, "\n") < 0)
 			goto revert;
@@ -241,6 +265,7 @@ static gint plugin_load_deps(const gchar *filename, gchar **error)
 				fclose(fp);
 				return -1;
 			}
+			dep_plugin->in_prefix_dir = TRUE;
 		}
 		g_free(path);
 		if (!g_slist_find_custom(dep_plugin->rdeps, 
@@ -351,10 +376,6 @@ static gboolean plugin_licence_check(const gchar *licence) {
 	return FALSE;
 }
 
-static gboolean plugin_filename_is_standard_dir(const gchar *filename) {
-	return strncmp(filename, get_plugin_dir(), strlen(get_plugin_dir())) == 0;
-}
-
 static Plugin *plugin_load_in_default_dir(const gchar *filename, gchar **error)
 {
 	Plugin *plugin = NULL;
@@ -376,6 +397,8 @@ static Plugin *plugin_load_in_default_dir(const gchar *filename, gchar **error)
 	if (plugin) {
 		g_free(*error);
 		*error = NULL;
+		plugin->in_prefix_dir = TRUE;
+
 	} else {
 		g_free(default_error);
 	}
@@ -434,7 +457,9 @@ Plugin *plugin_load(const gchar *filename, gchar **error)
 			return plugin_load_in_default_dir(filename, error);
 		else
 			return NULL;
-	}
+	} else {
+		plugin->in_prefix_dir = FALSE;
+        }
 
 init_plugin:
 	if (!g_module_symbol(plugin->module, "plugin_name", &plugin_name) ||
