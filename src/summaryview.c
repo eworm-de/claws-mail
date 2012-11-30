@@ -1709,7 +1709,7 @@ GSList *summary_get_selected_msg_list(SummaryView *summaryview)
 
 void summary_set_menu_sensitive(SummaryView *summaryview)
 {
-	SensitiveCond state;
+	SensitiveCondMask state;
 	gboolean sensitive;
 	gint i;
 

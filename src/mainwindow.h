@@ -189,7 +189,7 @@ gboolean main_window_empty_trash	(MainWindow	*mainwin,
 					 gboolean	 confirm,
 					 gboolean 	 for_quit);
 
-guint64 main_window_get_mask(SensitiveCond cond, ...);
+SensitiveCondMask main_window_get_mask(SensitiveCond cond, ...);
 
 void main_window_set_menu_sensitive	(MainWindow	*mainwin);
 
@@ -198,7 +198,7 @@ void main_window_show			(MainWindow 	*mainwin);
 void main_window_hide			(MainWindow 	*mainwin);
 void main_window_popup			(MainWindow	*mainwin);
 
-SensitiveCond main_window_get_current_state   (MainWindow *mainwin);
+SensitiveCondMask main_window_get_current_state   (MainWindow *mainwin);
 
 void toolbar_set_compose_button               (Toolbar		 *toolbar, 
 					       ComposeButtonType  compose_btn_type);

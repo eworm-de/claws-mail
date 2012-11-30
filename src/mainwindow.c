@@ -3117,9 +3117,9 @@ static void main_window_add_mailbox(MainWindow *mainwin)
 	folder_set_ui_func(folder, NULL, NULL);
 }
 
-SensitiveCond main_window_get_current_state(MainWindow *mainwin)
+SensitiveCondMask main_window_get_current_state(MainWindow *mainwin)
 {
-	SensitiveCond state = 0;
+	SensitiveCondMask state = 0;
 	SummarySelection selection;
 	FolderItem *item = mainwin->summaryview->folder_item;
 	GList *account_list = account_get_list();
@@ -3204,14 +3204,14 @@ SensitiveCond main_window_get_current_state(MainWindow *mainwin)
 	if (g_list_length(account_list) > 1)
 		UPDATE_STATE(M_HAVE_MULTI_ACCOUNT);
 
-	for ( ; account_list != NULL; account_list = account_list->next) {
+	for (account_list = account_get_list(); account_list != NULL; account_list = account_list->next) {
 		if (((PrefsAccount*)account_list->data)->protocol != A_NONE) {
 			UPDATE_STATE(M_HAVE_ANY_RETRIEVABLE_ACCOUNT);
 			break;
 		}
 	}
 
-	for ( ; account_list != NULL; account_list = account_list->next) {
+	for (account_list = account_get_list(); account_list != NULL; account_list = account_list->next) {
 		if (((PrefsAccount*)account_list->data)->protocol == A_NNTP) {
 			UPDATE_STATE(M_HAVE_NEWS_ACCOUNT);
 			break;
@@ -3289,7 +3289,7 @@ SensitiveCondMask main_window_get_mask(SensitiveCond cond, ...)
 
 void main_window_set_menu_sensitive(MainWindow *mainwin)
 {
-	SensitiveCond state;
+	SensitiveCondMask state;
 	gboolean sensitive;
 	SummaryView *summaryview;
 	gchar *menu_path;
@@ -3301,7 +3301,7 @@ void main_window_set_menu_sensitive(MainWindow *mainwin)
 #define N_ENTRIES 82
 	static struct {
 		const gchar *entry;
-		SensitiveCond cond;
+		SensitiveCondMask cond;
 	} entry[N_ENTRIES];
 
 	i = 0;

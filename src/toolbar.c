@@ -2380,7 +2380,7 @@ void toolbar_update(ToolbarType type, gpointer data)
 
 void toolbar_main_set_sensitive(gpointer data)
 {
-	SensitiveCond state;
+	SensitiveCondMask state;
 	gboolean sensitive;
 	MainWindow *mainwin = (MainWindow*)data;
 	Toolbar *toolbar = mainwin->toolbar;
