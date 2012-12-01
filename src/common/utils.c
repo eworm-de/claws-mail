@@ -1874,21 +1874,26 @@ const gchar *get_rc_dir(void)
 
 void set_rc_dir(const gchar *dir)
 {
+	gchar *canonical_dir;
 	if (claws_rc_dir != NULL) {
 		g_print("Error: rc_dir already set\n");
 	} else {
-		rc_dir_alt = TRUE;
-		if (g_path_is_absolute(dir))
-			claws_rc_dir = g_strdup(dir);
-		else {
-			claws_rc_dir = g_strconcat(g_get_current_dir(),
-				G_DIR_SEPARATOR_S, dir, NULL);
+		int err = cm_canonicalize_filename(dir, &canonical_dir);
+		if (err) {
+			g_print("Error looking for %s: %d(%s)\n",
+				dir, -err, strerror(-err));
+			exit(0);
 		}
+		rc_dir_alt = TRUE;
+
+		claws_rc_dir = canonical_dir;
+		
 		debug_print("set rc_dir to %s\n", claws_rc_dir);
 		if (!is_dir_exist(claws_rc_dir)) {
 			if (make_dir_hier(claws_rc_dir) != 0) {
 				g_print("Error: can't create %s\n",
 				claws_rc_dir);
+				exit(0);
 			}
 		}
 	}
@@ -5345,4 +5350,140 @@ void cm_mutex_free(GMutex *mutex) {
 #else
 	g_mutex_free(mutex);
 #endif
+}
+
+static gchar *canonical_list_to_file(GSList *list)
+{
+	GString *result = g_string_new(NULL);
+	GSList *pathlist = g_slist_reverse(g_slist_copy(list));
+	GSList *cur;
+	gchar *str;
+
+	result = g_string_append(result, G_DIR_SEPARATOR_S);
+
+	for (cur = pathlist; cur; cur = cur->next) {
+		result = g_string_append(result, (gchar *)cur->data);
+		if (cur->next)
+			result = g_string_append(result, G_DIR_SEPARATOR_S);
+	}
+	g_slist_free(pathlist);
+
+	str = result->str;
+	g_string_free(result, FALSE);
+
+	return str;
+}
+
+static GSList *cm_split_path(const gchar *filename, int depth)
+{
+	gchar **path_parts;
+	GSList *canonical_parts = NULL;
+	struct stat st;
+	int i;
+	gboolean follow_symlinks = TRUE;
+
+	if (depth > 32) {
+		errno = ELOOP;
+		return NULL;
+	}
+
+	if (!g_path_is_absolute(filename)) {
+		errno =EINVAL;
+		return NULL;
+	}
+
+	path_parts = g_strsplit(filename, G_DIR_SEPARATOR_S, -1);
+
+	for (i = 0; path_parts[i] != NULL; i++) {
+		if (!strcmp(path_parts[i], ""))
+			continue;
+		if (!strcmp(path_parts[i], "."))
+			continue;
+		else if (!strcmp(path_parts[i], "..")) {
+			if (i == 0) {
+				errno =ENOTDIR;
+				return NULL;
+			}
+			else /* Remove the last inserted element */
+				canonical_parts = 
+					g_slist_delete_link(canonical_parts,
+							    canonical_parts);
+		} else {
+			gchar *tmp_path;
+
+			canonical_parts = g_slist_prepend(canonical_parts,
+						g_strdup(path_parts[i]));
+
+			tmp_path = canonical_list_to_file(canonical_parts);
+
+			if(g_stat(tmp_path, &st) < 0) {
+				if (errno == ENOENT) {
+					errno = 0;
+					follow_symlinks = FALSE;
+				}
+				if (errno != 0) {
+					g_free(tmp_path);
+					slist_free_strings_full(canonical_parts);
+					g_strfreev(path_parts);
+
+					return NULL;
+				}
+			}
+			if (follow_symlinks && g_file_test(tmp_path, G_FILE_TEST_IS_SYMLINK)) {
+				GError *error = NULL;
+				gchar *target = g_file_read_link(tmp_path, &error);
+
+				slist_free_strings_full(canonical_parts);
+				canonical_parts = NULL;
+				if (!error)
+					canonical_parts = cm_split_path(target, depth + 1);
+				else
+					g_error_free(error);
+				if (canonical_parts == NULL) {
+					g_free(tmp_path);
+					g_strfreev(path_parts);
+					return NULL;
+				}
+				g_free(target);
+			}
+			g_free(tmp_path);
+		}
+	}
+	g_strfreev(path_parts);
+	return canonical_parts;
+}
+
+/*
+ * Canonicalize a filename, resolving symlinks along the way.
+ * Returns a negative errno in case of error.
+ */
+int cm_canonicalize_filename(const gchar *filename, gchar **canonical_name) {
+	GSList *canonical_parts;
+	gboolean is_absolute;
+
+	if (filename == NULL)
+		return -EINVAL;
+	if (canonical_name == NULL)
+		return -EINVAL;
+	*canonical_name = NULL;
+
+	is_absolute = g_path_is_absolute(filename);
+	if (!is_absolute) {
+		/* Always work on absolute filenames. */
+		gchar *cur = g_get_current_dir();
+		gchar *absolute_filename = g_strconcat(cur, G_DIR_SEPARATOR_S,
+						       filename, NULL);
+		
+		canonical_parts = cm_split_path(absolute_filename, 0);
+		g_free(absolute_filename);
+		g_free(cur);
+	} else
+		canonical_parts = cm_split_path(filename, 0);
+
+	if (canonical_parts == NULL)
+		return -errno;
+
+	*canonical_name = canonical_list_to_file(canonical_parts);
+	slist_free_strings_full(canonical_parts);
+	return 0;
 }

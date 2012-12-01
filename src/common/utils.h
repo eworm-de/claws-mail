@@ -591,6 +591,7 @@ int claws_unlink(const gchar *filename);
 GMutex *cm_mutex_new(void);
 void cm_mutex_free(GMutex *mutex);
 
+int cm_canonicalize_filename(const gchar *filename, gchar **canonical_name);
 #ifdef __cplusplus
 }
 #endif
