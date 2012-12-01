@@ -4532,3 +4532,4 @@
 ( cvs diff -u -r 1.274.2.361 -r 1.274.2.362 src/mainwindow.c;  cvs diff -u -r 1.39.2.67 -r 1.39.2.68 src/mainwindow.h;  cvs diff -u -r 1.395.2.459 -r 1.395.2.460 src/summaryview.c;  cvs diff -u -r 1.43.2.134 -r 1.43.2.135 src/toolbar.c;  ) > 3.9.0cvs32.patchset
 ( cvs diff -u -r 1.13.2.47 -r 1.13.2.48 src/common/plugin.c;  ) > 3.9.0cvs33.patchset
 ( cvs diff -u -r 1.36.2.209 -r 1.36.2.210 src/common/utils.c;  cvs diff -u -r 1.20.2.83 -r 1.20.2.84 src/common/utils.h;  ) > 3.9.0cvs34.patchset
+( cvs diff -u -r 1.36.2.210 -r 1.36.2.211 src/common/utils.c;  ) > 3.9.0cvs35.patchset

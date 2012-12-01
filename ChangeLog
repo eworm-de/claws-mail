@@ -1,3 +1,9 @@
+2012-12-01 [colin]	3.9.0cvs35
+
+	* src/common/utils.c
+		As usual, Windows is a little bit different
+		(you have to love it the same as the normal OSes...)
+
 2012-12-01 [colin]	3.9.0cvs34
 
 	* src/common/utils.c

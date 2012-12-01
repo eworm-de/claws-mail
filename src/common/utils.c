@@ -5359,7 +5359,19 @@ static gchar *canonical_list_to_file(GSList *list)
 	GSList *cur;
 	gchar *str;
 
+#ifndef G_OS_WIN32
 	result = g_string_append(result, G_DIR_SEPARATOR_S);
+#else
+	if (pathlist->data) {
+		const gchar *root = (gchar *)pathlist->data;
+		if (root[0] != '\0' && g_ascii_isalpha(root[0]) &&
+		    root[1] == ':') {
+			/* drive - don't prepend dir separator */
+		} else {
+			result = g_string_append(result, G_DIR_SEPARATOR_S);
+		}
+	}
+#endif
 
 	for (cur = pathlist; cur; cur = cur->next) {
 		result = g_string_append(result, (gchar *)cur->data);
@@ -5383,7 +5395,11 @@ static GSList *cm_split_path(const gchar *filename, int depth)
 	gboolean follow_symlinks = TRUE;
 
 	if (depth > 32) {
+#ifndef G_OS_WIN32
 		errno = ELOOP;
+#else
+		errno = EINVAL; /* can't happen, no symlink handling */
+#endif
 		return NULL;
 	}
 
@@ -5429,6 +5445,7 @@ static GSList *cm_split_path(const gchar *filename, int depth)
 					return NULL;
 				}
 			}
+#ifndef G_OS_WIN32
 			if (follow_symlinks && g_file_test(tmp_path, G_FILE_TEST_IS_SYMLINK)) {
 				GError *error = NULL;
 				gchar *target = g_file_read_link(tmp_path, &error);
@@ -5446,6 +5463,7 @@ static GSList *cm_split_path(const gchar *filename, int depth)
 				}
 				g_free(target);
 			}
+#endif
 			g_free(tmp_path);
 		}
 	}
