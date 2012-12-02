@@ -2280,6 +2280,7 @@ gboolean claws_is_starting(void)
 	return sc_starting;
 }
 
+#ifdef G_OS_UNIX
 /*
  * CLAWS: want this public so crash dialog can delete the
  * lock file too
@@ -2323,6 +2324,7 @@ gchar *claws_get_socket_name(void)
 
 	return filename;
 }
+#endif
 
 static gchar *get_crashfile_name(void)
 {
