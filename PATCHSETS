@@ -4533,3 +4533,4 @@
 ( cvs diff -u -r 1.13.2.47 -r 1.13.2.48 src/common/plugin.c;  ) > 3.9.0cvs33.patchset
 ( cvs diff -u -r 1.36.2.209 -r 1.36.2.210 src/common/utils.c;  cvs diff -u -r 1.20.2.83 -r 1.20.2.84 src/common/utils.h;  ) > 3.9.0cvs34.patchset
 ( cvs diff -u -r 1.36.2.210 -r 1.36.2.211 src/common/utils.c;  ) > 3.9.0cvs35.patchset
+( cvs diff -u -r 1.115.2.265 -r 1.115.2.266 src/main.c;  ) > 3.9.0cvs36.patchset

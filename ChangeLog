@@ -1,3 +1,19 @@
+2012-12-02 [colin]	3.9.0cvs36
+
+	* src/main.c
+		Move control sockets inside their own directory,
+		$TMPDIR/claws-mail-$UID/, and name them after the configuration 		directory md5 hash. That allows
+		- cleaner separation of sockets and config dirs in
+		  case of alternate config directories
+		- forward migration is handled: if $TMPDIR/claws-mail-$UID
+		  exists as a socket, use it to control the running entity
+		- backwards migration is handled: starting an old Claws Mail
+		  version will bail out as creating the legacy socket won't
+		  be possible.
+		- migration for alternate-config-dirs is not handled, which
+		  could be mentioned in release notes.
+		Fixes bug #2828, "Use MD5 digest for socket name"
+
 2012-12-01 [colin]	3.9.0cvs35
 
 	* src/common/utils.c

@@ -95,6 +95,8 @@
 #include "procmsg.h"
 #include "inc.h"
 #include "imap.h"
+#include "send_message.h"
+#include "md5.h"
 #include "import.h"
 #include "manage_window.h"
 #include "alertpanel.h"
@@ -2286,19 +2288,37 @@ gchar *claws_get_socket_name(void)
 {
 	static gchar *filename = NULL;
 	const gchar *socket_dir = NULL;
-	
-	if (rc_dir_is_alt())
-		socket_dir = get_rc_dir();
-	else
-		socket_dir = g_get_tmp_dir();
+	gchar md5sum[33];
+
 	if (filename == NULL) {
-		filename = g_strdup_printf("%s%cclaws-mail-%d",
-					   socket_dir, G_DIR_SEPARATOR,
+		struct stat st;
+		socket_dir = g_strdup_printf("%s%cclaws-mail-%d",
+					   g_get_tmp_dir(), G_DIR_SEPARATOR,
 #if HAVE_GETUID
 					   getuid());
 #else
-					   0);						
+					   0);
 #endif
+		if (stat(socket_dir, &st) < 0 && errno != ENOENT) {
+			g_print("Error stat'ing socket_dir %s: %s\n",
+				socket_dir, strerror(errno));
+		} else if (S_ISSOCK(st.st_mode)) {
+			/* old versions used a sock in $TMPDIR/claws-mail-$UID */
+			debug_print("Using legacy socket %s\n", socket_dir);
+			filename = g_strdup(socket_dir);
+			return filename;
+		}
+
+		if (!is_dir_exist(socket_dir) && make_dir(socket_dir) < 0) {
+			g_print("Error creating socket_dir %s: %s\n",
+				socket_dir, strerror(errno));
+		}
+
+		md5_hex_digest(md5sum, get_rc_dir());
+
+		filename = g_strdup_printf("%s%c%s", socket_dir, G_DIR_SEPARATOR,
+					   md5sum);
+		debug_print("Using control socket %s\n", filename);
 	}
 
 	return filename;
@@ -2521,7 +2541,7 @@ static gint prohibit_duplicate_launch(void)
 static gint lock_socket_remove(void)
 {
 #ifdef G_OS_UNIX
-	gchar *filename;
+	gchar *filename, *dirname;
 #endif
 	if (lock_socket < 0) {
 		return -1;
@@ -2534,7 +2554,10 @@ static gint lock_socket_remove(void)
 
 #ifdef G_OS_UNIX
 	filename = claws_get_socket_name();
+	dirname = g_path_get_dirname(filename);
 	claws_unlink(filename);
+	g_rmdir(dirname);
+	g_free(dirname);
 #endif
 
 	return 0;
