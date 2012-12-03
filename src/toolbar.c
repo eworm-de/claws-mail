@@ -2452,7 +2452,7 @@ do { \
 	if (prefs_common.next_unread_msg_dialog == NEXTUNREADMSGDIALOG_ASSUME_NO) {
 		SET_WIDGET_COND(toolbar->next_btn, M_MSG_EXIST, M_SUMMARY_ISLIST);
 	} else {
-		SET_WIDGET_COND(toolbar->next_btn, 0);
+		SET_WIDGET_COND(toolbar->next_btn, -1);
 	}
 	
 	if (toolbar->trash_btn)
