@@ -1,3 +1,11 @@
+2012-12-03 [wwp]	3.9.0cvs40
+
+	* src/summaryview.c
+	* src/mainwindow.c
+	Avoid any possible confusion: 0 is not a neutral value when passed
+	to main_window_get_mask() - use -1 instead, even in those cases we
+	don't care.
+
 2012-12-03 [wwp]	3.9.0cvs39
 
 	* src/toolbar.c

@@ -3396,7 +3396,7 @@ do { \
 	FILL_TABLE("Menu/Configuration/AccountPrefs", M_UNLOCKED);
 	FILL_TABLE("Menu/Configuration/CreateAccount", M_UNLOCKED);
 	FILL_TABLE("Menu/Configuration/EditAccounts", M_UNLOCKED);
-	FILL_TABLE(NULL, 0);
+	FILL_TABLE(NULL, -1);
 #undef FILL_TABLE
 	if (i > N_ENTRIES)
 		g_error("main window menu entry table overrun (%d/%d)", i, N_ENTRIES);

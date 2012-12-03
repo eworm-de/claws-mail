@@ -1781,7 +1781,7 @@ do { \
 #ifndef GENERIC_UMPC
 	FILL_TABLE("Menus/SummaryViewPopup/Print", M_TARGET_EXIST);
 #endif
-	FILL_TABLE(NULL, 0);
+	FILL_TABLE(NULL, -1);
 #undef FILL_TABLE
 	if (i != N_ENTRIES)
 		g_error("summaryview menu entry table size mismatch (%d/%d)", i, N_ENTRIES);
