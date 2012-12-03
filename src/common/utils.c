@@ -1865,10 +1865,11 @@ static gboolean rc_dir_alt = FALSE;
 const gchar *get_rc_dir(void)
 {
 
-	if (!claws_rc_dir)
+	if (!claws_rc_dir) {
 		claws_rc_dir = g_strconcat(get_home_dir(), G_DIR_SEPARATOR_S,
 				     RC_DIR, NULL);
-
+		debug_print("using default rc_dir %s\n", claws_rc_dir);
+	}
 	return claws_rc_dir;
 }
 
@@ -1879,6 +1880,8 @@ void set_rc_dir(const gchar *dir)
 		g_print("Error: rc_dir already set\n");
 	} else {
 		int err = cm_canonicalize_filename(dir, &canonical_dir);
+		int len;
+
 		if (err) {
 			g_print("Error looking for %s: %d(%s)\n",
 				dir, -err, strerror(-err));
@@ -1887,6 +1890,10 @@ void set_rc_dir(const gchar *dir)
 		rc_dir_alt = TRUE;
 
 		claws_rc_dir = canonical_dir;
+		
+		len = strlen(claws_rc_dir);
+		if (claws_rc_dir[len - 1] == G_DIR_SEPARATOR)
+			claws_rc_dir[len - 1] = '\0';
 		
 		debug_print("set rc_dir to %s\n", claws_rc_dir);
 		if (!is_dir_exist(claws_rc_dir)) {
@@ -5450,6 +5457,21 @@ static GSList *cm_split_path(const gchar *filename, int depth)
 				GError *error = NULL;
 				gchar *target = g_file_read_link(tmp_path, &error);
 
+				if (!g_path_is_absolute(target)) {
+					/* remove the last inserted element */
+					canonical_parts = 
+						g_slist_delete_link(canonical_parts,
+							    canonical_parts);
+					/* add the target */
+					canonical_parts = g_slist_prepend(canonical_parts,
+						g_strdup(target));
+					g_free(target);
+
+					/* and get the new target */
+					target = canonical_list_to_file(canonical_parts);
+				}
+
+				/* restart from absolute target */
 				slist_free_strings_full(canonical_parts);
 				canonical_parts = NULL;
 				if (!error)
