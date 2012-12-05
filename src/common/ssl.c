@@ -345,7 +345,8 @@ gboolean ssl_init_socket_with_method(SockInfo *sockinfo, SSLMethod method)
 void ssl_done_socket(SockInfo *sockinfo)
 {
 	if (sockinfo && sockinfo->ssl) {
-		gnutls_certificate_free_credentials(sockinfo->xcred);
+		if (sockinfo->xcred)
+			gnutls_certificate_free_credentials(sockinfo->xcred);
 		gnutls_deinit(sockinfo->ssl);
 		if (sockinfo->client_crt)
 			gnutls_x509_crt_deinit(sockinfo->client_crt);
@@ -353,6 +354,7 @@ void ssl_done_socket(SockInfo *sockinfo)
 			gnutls_x509_privkey_deinit(sockinfo->client_key);
 		sockinfo->client_key = NULL;
 		sockinfo->client_crt = NULL;
+		sockinfo->xcred = NULL;
 		sockinfo->ssl = NULL;
 	}
 }

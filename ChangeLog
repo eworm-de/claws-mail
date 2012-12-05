@@ -1,3 +1,8 @@
+2012-12-05 [colin]	3.9.0cvs41
+
+	* src/common/ssl.c
+		Nullify xcred pointer like the other ones
+
 2012-12-03 [wwp]	3.9.0cvs40
 
 	* src/summaryview.c
