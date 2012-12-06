@@ -354,7 +354,7 @@ Address book conversion
 	the script and change its value if you are sure you exported all
 	fields and script gives the 'unknown csv file format' error.
 
-  Contact: Ricardo Mones Lastra <mones@aic.uniovi.es>
+  Contact: Ricardo Mones <ricardo@mones.org>
 
 
 * tb2claws-mail
@@ -798,7 +798,7 @@ Extra tools
   	method is valid only if you don't have any other custom header set or
   	they will be lost!).
 
-  Contact: Ricardo Mones Lastra <mones@aic.uniovi.es>
+  Contact: Ricardo Mones <ricardo@mones.org>
 
 
 * update-po

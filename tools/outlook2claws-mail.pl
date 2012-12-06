@@ -1,23 +1,23 @@
 #!/usr/bin/perl -w
 
-#  * Copyright 2002-2003 Ricardo Mones Lastra <mones@aic.uniovi.es>
-#  *
-#  * This file is free software; you can redistribute it and/or modify it
-#  * under the terms of the GNU General Public License as published by
-#  * the Free Software Foundation; either version 3 of the License, or
-#  * (at your option) any later version.
-#  *
-#  * This program is distributed in the hope that it will be useful, but
-#  * WITHOUT ANY WARRANTY; without even the implied warranty of
-#  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-#  * General Public License for more details.
-#  *
-#  * You should have received a copy of the GNU General Public License
-#  * along with this program; if not, write to the Free Software
-#  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
+# Copyright 2002-2003 Ricardo Mones <ricardo@mones.org>
+# 
+# This file is free software; you can redistribute it and/or modify it
+# under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 3 of the License, or
+# (at your option) any later version.
+# 
+# This program is distributed in the hope that it will be useful, but
+# WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+# General Public License for more details.
+# 
+# You should have received a copy of the GNU General Public License
+# along with this program; if not, write to the Free Software
+# Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
 #
 # outlook2claws-mail.pl -- perl script to convert an Outlook generated 
-# 			 contact list into a Claws Mail XML address book.
+# 			   contact list into a Claws Mail XML address book.
 # 
 # This script is based on:
 # 	out2syl.sh by Rafael Lossurdo <mugas@via-rs.net>

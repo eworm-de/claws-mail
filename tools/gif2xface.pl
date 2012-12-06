@@ -2,9 +2,7 @@
 #
 # gif2xface -- converts a 48x48 GIF file to an X-Face mail header
 #
-# Author:  Ricardo Mones Lastra <mones@aic.uniovi.es>
-#
-# URL:     http://www.aic.uniovi.es/mones
+# Author:  Ricardo Mones <ricardo@mones.org>
 #
 #   This is a hack over the original xbm2face script. The xbm files generated
 #   by some graphic tools (notably The Gimp version 1.2.1) aren't suitable to
