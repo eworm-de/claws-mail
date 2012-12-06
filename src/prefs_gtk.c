@@ -452,11 +452,9 @@ void prefs_set_default(PrefParam *param)
 						g_strconcat(get_home_dir(),
 							    param[i].defval + 1,
 							    NULL);
-				else if (param[i].defval[0] != '\0')
+				else 
 					*((gchar **)param[i].data) =
 						g_strdup(param[i].defval);
-				else
-					*((gchar **)param[i].data) = NULL;
 			} else
 				*((gchar **)param[i].data) = NULL;
 			break;

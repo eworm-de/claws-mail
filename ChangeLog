@@ -1,3 +1,9 @@
+2012-12-05 [mones]	3.9.0cvs42
+
+	* src/prefs_gtk.c
+		Do not set to NULL string preferences which have "" as
+		default value
+
 2012-12-05 [colin]	3.9.0cvs41
 
 	* src/common/ssl.c
