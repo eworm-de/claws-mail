@@ -292,6 +292,8 @@ static gboolean nntp_ping(gpointer data)
 	if (session->state != SESSION_READY || news_folder_locked(news_session->folder))
 		return FALSE;
 	
+	news_folder_lock(NEWS_FOLDER(news_session->folder));
+
 	if ((r = nntp_threaded_date(news_session->folder, &lt)) != NEWSNNTP_NO_ERROR) {
 		if (r != NEWSNNTP_ERROR_COMMAND_NOT_SUPPORTED &&
 		    r != NEWSNNTP_ERROR_COMMAND_NOT_UNDERSTOOD) {
@@ -301,10 +303,15 @@ static gboolean nntp_ping(gpointer data)
 			    news_session->folder->account->set_nntpport ?
 			    news_session->folder->account->nntpport : NNTP_PORT);
 			REMOTE_FOLDER(news_session->folder)->session = NULL;
+			news_folder_unlock(NEWS_FOLDER(news_session->folder));
+			session->state = SESSION_DISCONNECTED;
+			session->sock = NULL;
 			session_destroy(session);
 			return FALSE;
 		}
 	}
+
+	news_folder_unlock(NEWS_FOLDER(news_session->folder));
 	session_set_access_time(session);
 	return TRUE;
 }
@@ -351,7 +358,6 @@ static Session *news_session_new(Folder *folder, const gchar *server, gushort po
 
 	session->folder = folder;
 
-	session_register_ping(SESSION(session), nntp_ping);
 	return SESSION(session);
 }
 
@@ -482,6 +488,7 @@ static NewsSession *news_session_get(Folder *folder)
 
 	if (!rfolder->session) {
 		rfolder->session = news_session_new_for_folder(folder);
+		session_register_ping(SESSION(rfolder->session), nntp_ping);
 		return NEWS_SESSION(rfolder->session);
 	}
 
@@ -490,6 +497,7 @@ static NewsSession *news_session_get(Folder *folder)
 	if (rfolder->session->port != folder->account->nntpport) {
 		session_destroy(rfolder->session);
 		rfolder->session = news_session_new_for_folder(folder);
+		session_register_ping(SESSION(rfolder->session), nntp_ping);
 		goto newsession;
 	}
 	
@@ -498,8 +506,10 @@ static NewsSession *news_session_get(Folder *folder)
 		return NEWS_SESSION(rfolder->session);
 	}
 
-	if (!nntp_ping(rfolder->session))
+	if (!nntp_ping(rfolder->session)) {
 		rfolder->session = news_session_new_for_folder(folder);
+		session_register_ping(SESSION(rfolder->session), nntp_ping);
+	}
 
 newsession:
 	if (rfolder->session)

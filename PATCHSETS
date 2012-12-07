@@ -4541,3 +4541,4 @@
 ( cvs diff -u -r 1.9.2.59 -r 1.9.2.60 src/common/ssl.c;  ) > 3.9.0cvs41.patchset
 ( cvs diff -u -r 1.10.2.44 -r 1.10.2.45 src/prefs_gtk.c;  ) > 3.9.0cvs42.patchset
 ( cvs diff -u -r 1.30.2.33 -r 1.30.2.34 tools/README;  cvs diff -u -r 1.1 -r 1.2 tools/gif2xface.pl;  cvs diff -u -r 1.1.2.4 -r 1.1.2.5 tools/outlook2claws-mail.pl;  ) > 3.9.0cvs43.patchset
+( cvs diff -u -r 1.101.2.75 -r 1.101.2.76 src/news.c;  ) > 3.9.0cvs44.patchset
