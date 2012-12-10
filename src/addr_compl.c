@@ -256,30 +256,30 @@ static gint add_address(const gchar *name, const gchar *address,
 {
 	address_entry *ae;
 
-	if (!name || !address) {
-		if (address || nick || alias || !grp_emails) 
-			return -1;
-	}
+	if (!address && !grp_emails)
+		return -1;
+
+	if (!name)
+		name = "";
 
 	ae = g_new0(address_entry, 1);
-
 	cm_return_val_if_fail(ae != NULL, -1);
 
-	ae->name    = g_strdup(name);
+	ae->name = g_strdup(name);
 	ae->address = g_strdup(address);
 	ae->grp_emails = grp_emails;
 	g_address_list = g_list_prepend(g_address_list, ae);
 
 	addr_compl_add_address1(name, ae);
+
 	if (address != NULL && *address != '\0')
 		addr_compl_add_address1(address, ae);
 
 	if (nick != NULL && *nick != '\0')
 		addr_compl_add_address1(nick, ae);
 
-	if ( alias != NULL && *alias != '\0') {
+	if (alias != NULL && *alias != '\0')
 		addr_compl_add_address1(alias, ae);
-	}
 
 	return 0;
 }

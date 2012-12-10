@@ -1,3 +1,9 @@
+2012-12-10 [mones]	3.9.0cvs45
+
+	* src/addr_compl.c
+		Fix bug #2835 (core part) to allow NULL names which
+		have an address
+
 2012-12-07 [colin]	3.9.0cvs44
 
 	* src/news.c
