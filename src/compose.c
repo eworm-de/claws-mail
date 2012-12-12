@@ -557,6 +557,7 @@ static void compose_set_dictionaries_from_folder_prefs(Compose *compose,
 static void compose_attach_update_label(Compose *compose);
 static void compose_set_folder_prefs(Compose *compose, FolderItem *folder,
 				     gboolean respect_default_to);
+static void compose_subject_entry_activated(GtkWidget *widget, gpointer data);
 
 static GtkActionEntry compose_popup_entries[] =
 {
@@ -7672,7 +7673,9 @@ static Compose *compose_create(PrefsAccount *account,
 			 G_CALLBACK(compose_popup_menu), compose);
 #endif
 	g_signal_connect(G_OBJECT(subject_entry), "changed",
-			 G_CALLBACK(compose_changed_cb), compose);
+			G_CALLBACK(compose_changed_cb), compose);
+	g_signal_connect(G_OBJECT(subject_entry), "activate",
+			G_CALLBACK(compose_subject_entry_activated), compose);
 
 	/* drag and drop */
 	gtk_drag_dest_set(text, GTK_DEST_DEFAULT_ALL, compose_mime_types, 
@@ -11646,6 +11649,15 @@ static void compose_set_dictionaries_from_folder_prefs(Compose *compose,
 	}
 }
 #endif
+
+static void compose_subject_entry_activated(GtkWidget *widget, gpointer data)
+{
+	Compose *compose = (Compose *)data;
+
+	cm_return_if_fail(compose != NULL);
+
+	gtk_widget_grab_focus(compose->text);
+}
 
 /*
  * End of Source.
