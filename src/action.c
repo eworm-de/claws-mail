@@ -58,6 +58,10 @@
 #include "filtering.h"
 #include "procheader.h"
 
+#ifdef G_OS_WIN32
+#include <windows.h>
+#endif
+
 typedef struct _Children		Children;
 typedef struct _ChildInfo		ChildInfo;
 typedef struct _UserStringDialog	UserStringDialog;
@@ -90,12 +94,11 @@ struct _ChildInfo
 {
 	Children	*children;
 	gchar		*cmd;
-	pid_t		 pid;
+	GPid		 pid;
 	gint		 next_sig;
 	gint		 chld_in;
 	gint		 chld_out;
 	gint		 chld_err;
-	gint		 chld_status;
 	gint		 tag_in;
 	gint		 tag_out;
 	gint		 tag_err;
@@ -186,9 +189,7 @@ static void catch_output		(gpointer		 data,
 static void catch_input			(gpointer		 data, 
 					 gint			 source,
 					 GIOCondition		 cond);
-static void catch_status		(gpointer		 data,
-					 gint			 source,
-					 GIOCondition		 cond);
+static void catch_status		(GPid pid, gint status, gpointer data);
 
 static gchar *get_user_string		(const gchar	*action,
 					 ActionType	 type);
@@ -385,6 +386,7 @@ static gboolean parse_append_filename(GString *cmd, MsgInfo *msginfo)
 	}
 
 	p = filename;
+#ifdef G_OS_UNIX
 	while ((q = strpbrk(p, "$\"`'\\ \t*?[]&|;<>()!#~")) != NULL) {
 		escape_ch[1] = *q;
 		*q = '\0';
@@ -392,8 +394,13 @@ static gboolean parse_append_filename(GString *cmd, MsgInfo *msginfo)
 		g_string_append(cmd, escape_ch);
 		p = q + 1;
 	}
-	g_string_append(cmd, p);
 
+	g_string_append(cmd, p);
+#else
+	g_string_append(cmd, "\"");
+	g_string_append(cmd, filename);
+	g_string_append(cmd, "\"");
+#endif
 	g_free(filename);
 
 	return TRUE;
@@ -906,10 +913,7 @@ static gboolean execute_actions(gchar *action, GSList *msg_list,
 			child_info->callback = callback;
 			child_info->data = data;
 			child_info->tag_status = 
-				claws_input_add(child_info->chld_status,
-					      G_IO_IN | G_IO_HUP | G_IO_ERR,
-					      catch_status, child_info,
-					      FALSE);
+				g_child_watch_add(child_info->pid, catch_status, child_info);
 		}
 
 		create_io_dialog(children);
@@ -920,168 +924,82 @@ static gboolean execute_actions(gchar *action, GSList *msg_list,
 static ChildInfo *fork_child(gchar *cmd, const gchar *msg_str,
 			     Children *children)
 {
-#ifdef G_OS_UNIX
-	gint chld_in[2], chld_out[2], chld_err[2], chld_status[2];
-	gchar *cmdline[4], *ret_str;
-	pid_t pid, gch_pid;
+	gint chld_in, chld_out, chld_err;
+	gchar **argv, *ret_str;
+	GPid pid;
 	ChildInfo *child_info;
-	gint sync;
+	gint follow_child;
 	gssize by_written = 0, by_read = 0;
+	gboolean result = FALSE;
+	GError *error = NULL;
 
-	sync = !(children->action_type & ACTION_ASYNC);
+	follow_child = !(children->action_type & ACTION_ASYNC);
 
-	chld_in[0] = chld_in[1] = chld_out[0] = chld_out[1] = chld_err[0]
-		= chld_err[1] = chld_status[0] = chld_status[1] = -1;
+	chld_in = chld_out = chld_err = -1;
 
-	if (sync) {
-		if (pipe(chld_status) || pipe(chld_in) || pipe(chld_out) ||
-		    pipe(chld_err)) {
-			alertpanel_error(_("Command could not be started. "
-					   "Pipe creation failed.\n%s"),
-					g_strerror(errno));
-			/* Closing fd = -1 fails silently */
-			(void)close(chld_in[0]);
-			(void)close(chld_in[1]);
-			(void)close(chld_out[0]);
-			(void)close(chld_out[1]);
-			(void)close(chld_err[0]);
-			(void)close(chld_err[1]);
-			(void)close(chld_status[0]);
-			(void)close(chld_status[1]);
-			return NULL; /* Pipe error */
-		}
+	ret_str = g_locale_from_utf8(cmd, strlen(cmd),
+				     &by_read, &by_written,
+				     NULL);
+	if (ret_str && by_written)
+		argv = strsplit_with_quote(ret_str, " ", 0);
+	else
+		argv = strsplit_with_quote(cmd, " ", 0);
+
+	g_free(ret_str);
+
+	if (follow_child) {
+		result = g_spawn_async_with_pipes(NULL, argv, NULL,
+			  G_SPAWN_DO_NOT_REAP_CHILD | G_SPAWN_SEARCH_PATH,
+			  NULL, NULL, &pid, &chld_in, &chld_out,
+			  &chld_err, &error);
+	} else {
+		result = g_spawn_async(NULL, argv, NULL, 
+			  G_SPAWN_DO_NOT_REAP_CHILD | G_SPAWN_SEARCH_PATH, NULL, NULL,
+			  &pid, &error);
 	}
 
-	debug_print("Forking child and grandchild.\n");
-	debug_print("Executing: /bin/sh -c %s\n", cmd);
+	debug_print("spawning %s: %d\n", cmd, result);
 
-	pid = fork();
-	if (pid == 0) { /* Child */
-		int r = 0;
-		if (setpgid(0, 0))
-			perror("setpgid");
+	g_strfreev(argv);
 
-		gch_pid = fork();
-
-		if (gch_pid == 0) {
-			if (setpgid(0, getppid()))
-				perror("setpgid");
-
-			if (sync) {
-				if (children->action_type &
-				    (ACTION_PIPE_IN |
-				     ACTION_USER_IN |
-				     ACTION_USER_HIDDEN_IN)) {
-					r |= close(fileno(stdin));
-					if (dup(chld_in[0]) < 0)
-						r = -1;
-				}
-				r |= close(chld_in[0]);
-				r |= close(chld_in[1]);
-
-				r |= close(fileno(stdout));
-				if (dup(chld_out[1]) < 0)
-					r = -1;
-
-				r |= close(chld_out[0]);
-				r |= close(chld_out[1]);
-
-				r |= close(fileno(stderr));
-				if (dup(chld_err[1]) < 0)
-					r = -1;
-
-				r |= close(chld_err[0]);
-				r |= close(chld_err[1]);
-
-				if (r != 0)
-					debug_print("%s(%d)", strerror(errno), errno);
-			}
-
-			cmdline[0] = "sh";
-			cmdline[1] = "-c";
-			ret_str = g_locale_from_utf8(cmd, strlen(cmd),
-						     &by_read, &by_written,
-						     NULL);
-			if (ret_str && by_written)
-				cmdline[2] = ret_str;
-			else
-				cmdline[2] = cmd;
-			cmdline[3] = NULL;
-			execvp("/bin/sh", cmdline);
-
-			perror("execvp");
-			g_free(ret_str);
-			_exit(1);
-		} else if (gch_pid < (pid_t) 0) { /* Fork error */
-			if (sync)
-				r = write(chld_status[1], "1\n", 2);
-			if (r != 0)
-				debug_print("%s(%d)", strerror(errno), errno);
-			perror("fork");
-			_exit(1);
-		} else { /* Child */
-			if (sync) {
-				r |= close(chld_in[0]);
-				r |= close(chld_in[1]);
-				r |= close(chld_out[0]);
-				r |= close(chld_out[1]);
-				r |= close(chld_err[0]);
-				r |= close(chld_err[1]);
-				r |= close(chld_status[0]);
-
-				debug_print("Child: waiting for grandchild\n");
-				r |= waitpid(gch_pid, NULL, 0);
-				debug_print("Child: grandchild ended\n");
-				r |= write(chld_status[1], "0\n", 2);
-				r |= close(chld_status[1]);
-
-				if (r != 0)
-					debug_print("%s(%d)", strerror(errno), errno);
-			}
-			_exit(0);
-		}
-	} else if (pid < 0) { /* Fork error */
+	if (!result) {
 		alertpanel_error(_("Could not fork to execute the following "
-				   "command:\n%s\n%s"),
-				 cmd, g_strerror(errno));
-		return NULL; 
-	}
-
-	/* Parent */
-
-	if (!sync) {
-		waitpid(pid, NULL, 0);
+				"command:\n%s\n%s"),
+				 cmd, error->message);
+		g_free(error);
 		return NULL;
 	}
 
-	(void)close(chld_in[0]);
 	if (!(children->action_type &
 	      (ACTION_PIPE_IN | ACTION_USER_IN | ACTION_USER_HIDDEN_IN)))
-		(void)close(chld_in[1]);
-	(void)close(chld_out[1]);
-	(void)close(chld_err[1]);
-	(void)close(chld_status[1]);
+		(void)close(chld_in);
 
+	if (!follow_child) {
+		g_spawn_close_pid(pid);
+		return NULL;
+	}
 	child_info = g_new0(ChildInfo, 1);
 
 	child_info->children    = children;
 
 	child_info->pid         = pid;
+#ifdef G_OS_UNIX
 	child_info->next_sig	= SIGTERM;
+#endif
 	child_info->cmd         = g_strdup(cmd);
 	child_info->new_out     = FALSE;
 	child_info->output      = g_string_new(NULL);
 	child_info->chld_in     =
 		(children->action_type &
 		 (ACTION_PIPE_IN | ACTION_USER_IN | ACTION_USER_HIDDEN_IN))
-			? chld_in [1] : -1;
-	child_info->chld_out    = chld_out[0];
-	child_info->chld_err    = chld_err[0];
-	child_info->chld_status = chld_status[0];
+			? chld_in : -1;
+	child_info->chld_out    = chld_out;
+	child_info->chld_err    = chld_err;
+	child_info->tag_status  = -1;
 	child_info->tag_in      = -1;
-	child_info->tag_out     = claws_input_add(chld_out[0], G_IO_IN | G_IO_HUP | G_IO_ERR,
+	child_info->tag_out     = claws_input_add(chld_out, G_IO_IN | G_IO_HUP | G_IO_ERR,
 						catch_output, child_info, FALSE);
-	child_info->tag_err     = claws_input_add(chld_err[0], G_IO_IN | G_IO_HUP | G_IO_ERR,
+	child_info->tag_err     = claws_input_add(chld_err, G_IO_IN | G_IO_HUP | G_IO_ERR,
 						catch_output, child_info, FALSE);
 
 	if (!(children->action_type &
@@ -1093,27 +1011,23 @@ static ChildInfo *fork_child(gchar *cmd, const gchar *msg_str,
 		ret_str = g_locale_from_utf8(msg_str, strlen(msg_str),
 					     &by_read, &by_written, NULL);
 		if (ret_str && by_written) {
-			r = write(chld_in[1], ret_str, strlen(ret_str));
+			r = write(chld_in, ret_str, strlen(ret_str));
 			g_free(ret_str);
 		} else
-			r = write(chld_in[1], msg_str, strlen(msg_str));
+			r = write(chld_in, msg_str, strlen(msg_str));
 		if (!(children->action_type &
 		      (ACTION_USER_IN | ACTION_USER_HIDDEN_IN)))
-			r = close(chld_in[1]);
+			r = close(chld_in);
 		child_info->chld_in = -1; /* No more input */
 		if (r != 0)
 			debug_print("%s(%d)", strerror(errno), errno);
 	}
 
 	return child_info;
-#else
-	return NULL;
-#endif /* G_OS_UNIX */
 }
 
 static void kill_children_cb(GtkWidget *widget, gpointer data)
 {
-#ifdef G_OS_UNIX
 	GSList *cur;
 	Children *children = (Children *) data;
 	ChildInfo *child_info;
@@ -1121,11 +1035,14 @@ static void kill_children_cb(GtkWidget *widget, gpointer data)
 	for (cur = children->list; cur; cur = cur->next) {
 		child_info = (ChildInfo *)(cur->data);
 		debug_print("Killing child group id %d\n", child_info->pid);
-		if (child_info->pid && kill(-child_info->pid, child_info->next_sig) < 0)
+#ifdef G_OS_UNIX
+		if (child_info->pid && kill(child_info->pid, child_info->next_sig) < 0)
 			perror("kill");
 		child_info->next_sig = SIGKILL;
+#else
+		TerminateProcess(child_info->pid, 0);
+#endif
 	}
-#endif /* G_OS_UNIX */
 }
 
 static gint wait_for_children(Children *children)
@@ -1219,8 +1136,6 @@ static void childinfo_close_pipes(ChildInfo *child_info)
 		(void)close(child_info->chld_out);
 	if (child_info->chld_err >= 0)
 		(void)close(child_info->chld_err);
-
-	(void)close(child_info->chld_status);
 }
 
 static void free_children(Children *children)
@@ -1472,24 +1387,14 @@ static void create_io_dialog(Children *children)
 	gtk_widget_show(dialog);
 }
 
-static void catch_status(gpointer data, gint source, GIOCondition cond)
+static void catch_status(GPid pid, gint status, gpointer data)
 {
 	ChildInfo *child_info = (ChildInfo *)data;
-	gchar buf;
-	gint c;
 
-	g_source_remove(child_info->tag_status);
+	debug_print("Child returned %d\n", status);
 
-	c = read(source, &buf, 1);
-	if (c != 1) {
-		g_message("error reading child return status\n");
-	}
-	debug_print("Child returned %c\n", buf);
-
-#ifdef G_OS_UNIX
-	waitpid(-child_info->pid, NULL, 0);
-#endif
 	childinfo_close_pipes(child_info);
+	g_spawn_close_pid(child_info->pid);
 	child_info->pid = 0;
 
 	if (child_info->children->action_type & (ACTION_SINGLE | ACTION_MULTIPLE)
@@ -1585,6 +1490,7 @@ static void catch_input(gpointer data, gint source, GIOCondition cond)
 	g_free(input);
 
 	r = close(child_info->chld_in);
+	child_info->chld_in = -1;
 	if (r != 0)
 		debug_print("%s(%d)", strerror(errno), errno);
 	child_info->chld_in = -1;
@@ -1621,14 +1527,14 @@ static void catch_output(gpointer data, gint source, GIOCondition cond)
 				break;
 
 			ret_str = g_locale_to_utf8
-				(buf, c, &bytes_read, &bytes_written, NULL);
+				(buf, c - 1, &bytes_read, &bytes_written, NULL);
 			if (ret_str && bytes_written > 0) {
 				gtk_text_buffer_insert
 					(textbuf, &iter, ret_str,
 					 -1);
 				g_free(ret_str);
 			} else
-				gtk_text_buffer_insert(textbuf, &iter, buf, c);
+				gtk_text_buffer_insert(textbuf, &iter, buf, c - 1);
 		}
 
 		if (child_info->children->is_selection) {

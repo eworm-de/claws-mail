@@ -1,3 +1,10 @@
+2012-12-12 [colin]	3.9.0cvs47
+
+	* src/action.c
+		Port to g_spawn API and make actions work better on Win32
+	* src/mainwindow.c
+		Indentation
+
 2012-12-12 [ticho]	3.9.0cvs46
 
 	* src/compose.c

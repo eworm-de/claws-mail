@@ -4544,3 +4544,4 @@
 ( cvs diff -u -r 1.101.2.75 -r 1.101.2.76 src/news.c;  ) > 3.9.0cvs44.patchset
 ( cvs diff -u -r 1.27.2.66 -r 1.27.2.67 src/addr_compl.c;  ) > 3.9.0cvs45.patchset
 ( cvs diff -u -r 1.382.2.618 -r 1.382.2.619 src/compose.c;  ) > 3.9.0cvs46.patchset
+( cvs diff -u -r 1.12.2.78 -r 1.12.2.79 src/action.c;  cvs diff -u -r 1.274.2.363 -r 1.274.2.364 src/mainwindow.c;  ) > 3.9.0cvs47.patchset
