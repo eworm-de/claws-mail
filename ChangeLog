@@ -1,3 +1,8 @@
+2012-12-15 [paul]	3.9.0cvs48
+
+	* src/addrselect.c
+		fix bug 2832, 'mail to from adress-book splitt names'
+
 2012-12-12 [colin]	3.9.0cvs47
 
 	* src/action.c
