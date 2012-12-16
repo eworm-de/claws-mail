@@ -1056,6 +1056,7 @@ static gint disposition_notification_send(MsgInfo *msginfo)
 			"\n"
 			"--%s\n"
 			"Content-Type: application/octet-stream\n"
+			"\n"
 			"Reporting-UA: %s\n"
 			"Original-Recipient: rfc822;%s\n"
 			"Final-Recipient: rfc822;%s\n"
