@@ -76,7 +76,7 @@ static struct _LDAPEdit {
 	GtkWidget *spinbtn_queryage;
 	GtkWidget *check_dynsearch;
 	GtkWidget *check_matchoption;
-#ifdef USE_LDAP_TLS
+#if (defined USE_LDAP_TLS || defined G_OS_WIN32)
 	GtkWidget *enable_ssl;
 	GtkWidget *enable_tls;
 #endif
@@ -231,7 +231,7 @@ static void edit_ldap_server_check( void ) {
 	sPass = gtk_editable_get_chars( GTK_EDITABLE(ldapedit.entry_bindPW), 0, -1 );
 	iPort = gtk_spin_button_get_value_as_int( GTK_SPIN_BUTTON( ldapedit.spinbtn_port ) );
 	iTime = gtk_spin_button_get_value_as_int( GTK_SPIN_BUTTON( ldapedit.spinbtn_timeout ) );
-#ifdef USE_LDAP_TLS
+#if (defined USE_LDAP_TLS || defined G_OS_WIN32)
 	tls = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(ldapedit.enable_tls));
 	ssl = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(ldapedit.enable_ssl));
 #endif
@@ -294,7 +294,7 @@ static void edit_ldap_basedn_select( void ) {
 	sPass = gtk_editable_get_chars( GTK_EDITABLE(ldapedit.entry_bindPW), 0, -1 );
 	iPort = gtk_spin_button_get_value_as_int( GTK_SPIN_BUTTON( ldapedit.spinbtn_port ) );
 	iTime = gtk_spin_button_get_value_as_int( GTK_SPIN_BUTTON( ldapedit.spinbtn_timeout ) );
-#ifdef USE_LDAP_TLS
+#if (defined USE_LDAP_TLS || defined G_OS_WIN32)
 	tls = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(ldapedit.enable_tls));
 	ssl = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(ldapedit.enable_ssl));
 #endif
@@ -399,7 +399,7 @@ static void addressbook_edit_ldap_page_basic( gint pageNum, gchar *pageLbl ) {
 	GtkWidget *hbox_spin;
 	GtkAdjustment *spinbtn_port_adj;
 	GtkWidget *spinbtn_port;
-#ifdef USE_LDAP_TLS
+#if (defined USE_LDAP_TLS || defined G_OS_WIN32)
 	GtkWidget *enable_ssl_checkbtn, *enable_tls_checkbtn;
 #endif
 	GtkWidget *entry_baseDN;
@@ -466,7 +466,7 @@ static void addressbook_edit_ldap_page_basic( gint pageNum, gchar *pageLbl ) {
 	gtk_widget_set_size_request (spinbtn_port, 64, -1);
 	gtk_spin_button_set_numeric (GTK_SPIN_BUTTON (spinbtn_port), TRUE);
 	
-#ifdef USE_LDAP_TLS
+#if (defined USE_LDAP_TLS || defined G_OS_WIN32)
 	enable_tls_checkbtn = gtk_check_button_new_with_label(_("TLS"));
 	enable_ssl_checkbtn = gtk_check_button_new_with_label(_("SSL"));
 	SET_TOGGLE_SENSITIVITY_REVERSE(enable_tls_checkbtn, enable_ssl_checkbtn);
@@ -480,7 +480,9 @@ static void addressbook_edit_ldap_page_basic( gint pageNum, gchar *pageLbl ) {
 		"If connection fails, be sure to check the correct "
 		"configuration in ldap.conf (TLS_CACERTDIR and TLS_REQCERT fields)." ));
 
+#ifdef G_OS_UNIX /* Win32's ldap_start_tls_s() does not work, for some reason. */
 	gtk_box_pack_start (GTK_BOX (hbox_spin), enable_tls_checkbtn, TRUE, FALSE, 0);
+#endif
 	gtk_box_pack_start (GTK_BOX (hbox_spin), enable_ssl_checkbtn, TRUE, FALSE, 0);
 #endif
 
@@ -535,7 +537,7 @@ static void addressbook_edit_ldap_page_basic( gint pageNum, gchar *pageLbl ) {
 	ldapedit.entry_server = entry_server;
 	ldapedit.spinbtn_port = spinbtn_port;
 	ldapedit.entry_baseDN = entry_baseDN;
-#ifdef USE_LDAP_TLS
+#if (defined USE_LDAP_TLS || defined G_OS_WIN32)
 	ldapedit.enable_ssl = enable_ssl_checkbtn;
 	ldapedit.enable_tls = enable_tls_checkbtn;
 
@@ -875,7 +877,7 @@ static void edit_ldap_clear_fields(void) {
 		GTK_TOGGLE_BUTTON( ldapedit.check_dynsearch), TRUE );
 	gtk_toggle_button_set_active(
 		GTK_TOGGLE_BUTTON( ldapedit.check_matchoption), FALSE );
-#ifdef USE_LDAP_TLS
+#if (defined USE_LDAP_TLS || defined G_OS_WIN32)
 	gtk_toggle_button_set_active(
 		GTK_TOGGLE_BUTTON( ldapedit.enable_ssl), FALSE );
 	gtk_toggle_button_set_active(
@@ -915,7 +917,7 @@ static void edit_ldap_set_fields( LdapServer *server ) {
 		GTK_SPIN_BUTTON(ldapedit.spinbtn_timeout), ctl->timeOut );
 	gtk_spin_button_set_value(
 		GTK_SPIN_BUTTON(ldapedit.spinbtn_maxentry), ctl->maxEntries );
-#ifdef USE_LDAP_TLS
+#if (defined USE_LDAP_TLS || defined G_OS_WIN32)
 	gtk_toggle_button_set_active(
 		GTK_TOGGLE_BUTTON(ldapedit.enable_tls), ctl->enableTLS );
 	gtk_toggle_button_set_active(
@@ -1012,7 +1014,7 @@ AdapterDSource *addressbook_edit_ldap(
 			GTK_TOGGLE_BUTTON( ldapedit.check_dynsearch ) );
 	bMatch = gtk_toggle_button_get_active(
 			GTK_TOGGLE_BUTTON( ldapedit.check_matchoption ) );
-#ifdef USE_LDAP_TLS
+#if (defined USE_LDAP_TLS || defined G_OS_WIN32)
 	ssl = gtk_toggle_button_get_active(
 			GTK_TOGGLE_BUTTON( ldapedit.enable_ssl ) );
 	tls = gtk_toggle_button_get_active(

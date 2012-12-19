@@ -738,6 +738,17 @@ void ldapsrv_set_options (gint secs, LDAP *ld)
 #endif
 }
 
+#ifdef G_OS_WIN32
+#if LDAP_UNICODE
+#define LDAP_START_TLS_S "ldap_start_tls_sW"
+typedef ULONG (* PFldap_start_tls_s) (LDAP *, PULONG, LDAPMessage **, PLDAPControlW *, PLDAPControlW *);
+#else
+#define LDAP_START_TLS_S "ldap_start_tls_sA"
+typedef ULONG (* PFldap_start_tls_s) (LDAP *, PULONG, LDAPMessage **, PLDAPControlA *, PLDAPControlA *);
+#endif /* LDAP_UNICODE */
+PFldap_start_tls_s Win32_ldap_start_tls_s = NULL;
+#endif
+
 /**
  * Connect to LDAP server.
  * \param  ctl Control object to process.
@@ -760,13 +771,30 @@ LDAP *ldapsvr_connect(LdapControl *ctl) {
 	ldap_initialize(&ld, uri);
 #else
 	ld = ldap_sslinit(ctl->hostName, ctl->port, ctl->enableSSL);
-	if (ctl->enableSSL) {
-		ldap_get_option(ld,LDAP_OPT_SSL,(void*)&rc);
+	if (ld && ctl->enableSSL) {
+		version = LDAP_VERSION3;
+		debug_print("Setting version 3\n");
+		rc = ldap_set_option(ld, LDAP_OPT_PROTOCOL_VERSION, (void *)&version);
+		if (rc == LDAP_SUCCESS)
+			ctl->version = LDAP_VERSION3;
+		else
+			debug_print("Failed: %s\n", ldaputil_get_error(ld));
+
+		if (ldap_get_option(ld,LDAP_OPT_SSL,(void*)&rc) != LDAP_SUCCESS)
+			debug_print("Can't get SSL state\n");
+
 		if ((void *)rc != LDAP_OPT_ON) {
 			debug_print("Enabling SSL\n");
-			if (ldap_set_option(ld,LDAP_OPT_SSL,LDAP_OPT_ON) != 0)
+			if (ldap_set_option(ld,LDAP_OPT_SSL,LDAP_OPT_ON) != LDAP_SUCCESS)
 				debug_print("Failed: %s\n", ldaputil_get_error(ld));
+			else {
+				ldap_get_option(ld,LDAP_OPT_SSL,(void*)&rc);
+				debug_print("SSL now %d\n", rc);
+			}
+
 		}
+		if (!ld || (rc = ldap_connect(ld, NULL)) != LDAP_SUCCESS)
+			debug_print("ldap_connect failed: %d %s\n", rc, ldaputil_get_error(ld));
 	}
 #endif
 	g_free(uri);
@@ -778,22 +806,43 @@ LDAP *ldapsvr_connect(LdapControl *ctl) {
 	debug_print("Got handle to LDAP host %s on port %d\n", ctl->hostName, ctl->port);
 
 	version = LDAP_VERSION3;
+	debug_print("Setting version 3\n");
 	rc = ldap_set_option(ld, LDAP_OPT_PROTOCOL_VERSION, &version);
 	if (rc == LDAP_OPT_SUCCESS) {
 		ctl->version = LDAP_VERSION3;
 	} else
 		g_printerr("LDAP: Error %d (%s)\n",
 			rc, ldaputil_get_error(ld));
-#ifdef USE_LDAP_TLS
+
+#if (defined USE_LDAP_TLS || defined G_OS_WIN32)
 	/* Handle TLS */
 	if (ctl->version == LDAP_VERSION3) {
 		if (ctl->enableTLS && !ctl->enableSSL) {
+#ifdef G_OS_WIN32
+			ULONG serv_rc;
+			if (Win32_ldap_start_tls_s == NULL) {
+				void *lib = LoadLibrary("wldap32.dll");
+				if (!lib || (Win32_ldap_start_tls_s = (PFldap_start_tls_s) GetProcAddress(lib, LDAP_START_TLS_S)) == NULL) {
+					g_printerr("LDAP Error(tls): ldap_start_tls_s: not supported on this platform");
+					if (lib)
+						FreeLibrary(lib);
+					return NULL;
+				}
+			}
+			debug_print("Setting TLS\n");
+			rc = Win32_ldap_start_tls_s(ld, &serv_rc, NULL, NULL, NULL);
+			debug_print("ldap_start_tls_s: %d server %d %s\n",
+					rc, serv_rc, ldaputil_get_error(ld));
+#else
+			debug_print("Setting TLS\n");
 			rc = ldap_start_tls_s(ld, NULL, NULL);
-			
+#endif
 			if (rc != LDAP_SUCCESS) {
-				g_printerr("LDAP Error(tls): ldap_simple_bind_s: %s\n",
-					ldaputil_get_error(ld));
+				g_printerr("LDAP Error(tls): ldap_start_tls_s: %d %s\n",
+					rc, ldaputil_get_error(ld));
 				return NULL;
+			} else {
+				debug_print("Done\n");
 			}
 		}
 	}
