@@ -925,7 +925,7 @@ static ChildInfo *fork_child(gchar *cmd, const gchar *msg_str,
 			     Children *children)
 {
 	gint chld_in, chld_out, chld_err;
-	gchar **argv, *ret_str;
+	gchar **argv, *ret_str, *trim_cmd;
 	GPid pid;
 	ChildInfo *child_info;
 	gint follow_child;
@@ -940,10 +940,15 @@ static ChildInfo *fork_child(gchar *cmd, const gchar *msg_str,
 	ret_str = g_locale_from_utf8(cmd, strlen(cmd),
 				     &by_read, &by_written,
 				     NULL);
-	if (ret_str && by_written)
-		argv = strsplit_with_quote(ret_str, " ", 0);
-	else
-		argv = strsplit_with_quote(cmd, " ", 0);
+	if (!ret_str || !by_written)
+		ret_str = g_strdup(cmd);
+
+	trim_cmd = ret_str;
+
+	while (g_ascii_isspace(trim_cmd[0]))
+		trim_cmd++;
+
+	argv = strsplit_with_quote(trim_cmd, " ", 0);
 
 	g_free(ret_str);
 
@@ -965,8 +970,9 @@ static ChildInfo *fork_child(gchar *cmd, const gchar *msg_str,
 	if (!result) {
 		alertpanel_error(_("Could not fork to execute the following "
 				"command:\n%s\n%s"),
-				 cmd, error->message);
-		g_free(error);
+				 cmd, error ? error->message : _("Unknown error"));
+		if (error)
+			g_error_free(error);
 		return NULL;
 	}
 
