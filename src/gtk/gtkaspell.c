@@ -1,6 +1,7 @@
 /* gtkaspell - a spell-checking addon for GtkText
  * Copyright (c) 2000 Evan Martin (original code for ispell).
  * Copyright (c) 2002 Melvin Hadasht.
+ * Copyright (C) 2001-2013 the Claws Mail Team
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -1999,7 +2000,7 @@ static GSList *make_sug_menu(GtkAspell *gtkaspell)
 
 static GSList *populate_submenu(GtkAspell *gtkaspell)
 {
-	GtkWidget *item, *submenu;
+	GtkWidget *item, *submenu, *both_dicts_item;
 	gchar *dictname;
 	GtkAspeller *gtkaspeller = NULL;
 	GSList *list = NULL;
@@ -2034,15 +2035,17 @@ static GSList *populate_submenu(GtkAspell *gtkaspell)
 		list = g_slist_append(list, item);
 	}
 
-	item = gtk_check_menu_item_new_with_label(_("Use both dictionaries"));
-	if (gtkaspell->use_both_dicts) {
-		gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM(item), TRUE);
+	both_dicts_item = gtk_check_menu_item_new_with_label(_("Use both dictionaries"));
+	if (gtkaspell->use_both_dicts && gtkaspell->use_alternate) {
+		gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM(both_dicts_item), TRUE);
 	} 
-	g_signal_connect(G_OBJECT(item), "activate",
+	gtk_widget_set_sensitive(both_dicts_item, gtkaspell->use_alternate);
+	
+	g_signal_connect(G_OBJECT(both_dicts_item), "activate",
 			 G_CALLBACK(set_use_both_cb),
 			 gtkaspell);
-	gtk_widget_show(item);
-	list = g_slist_append(list, item);
+	gtk_widget_show(both_dicts_item);
+	list = g_slist_append(list, both_dicts_item);
 	
 	item = gtk_menu_item_new();
         gtk_widget_show(item);

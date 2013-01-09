@@ -1,3 +1,8 @@
+2013-01-09 [paul]	3.9.0cvs54
+
+	* src/gtk/gtkaspell.c
+		fix sensitivity of 'Use both dictionaries' in compose window
+
 2013-01-09 [mir]	3.9.0cvs53
 
 	* tools/vcard2xml.py
