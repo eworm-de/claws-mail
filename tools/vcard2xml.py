@@ -1,4 +1,5 @@
 #!/usr/bin/python2.2
+# -*- coding: latin-1 -*-
 """
 
 Copyright © 2003 Bogdan Sumanariu <zarrok@yahoo.com>
