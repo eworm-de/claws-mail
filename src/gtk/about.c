@@ -136,6 +136,11 @@ static GtkWidget *about_create_child_page_info(void)
 	gtk_text_buffer_insert_with_tags_by_name(buffer, &iter, HOMEPAGE_URI, -1,
 				"link", NULL);
 	gtk_text_buffer_insert(buffer, &iter, _("\n\n"
+				"For support and discussion subscribe to the Claws Mail "
+				"users' mailing list:\n"),-1);
+	gtk_text_buffer_insert_with_tags_by_name(buffer, &iter, USERS_ML_URI, -1,
+				"link", NULL);
+	gtk_text_buffer_insert(buffer, &iter, _("\n\n"
 				"Claws Mail is free software released "
 				"under the GPL. If you wish to donate "
 				"to the Claws Mail project you can do "

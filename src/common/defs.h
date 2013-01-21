@@ -87,6 +87,7 @@
 #define TOOLS_URI		"http://www.claws-mail.org/tools.php"
 #define MAILING_LIST_URI	"http://www.claws-mail.org/MLs.php"
 #define USERS_ML_ADDR		"users@lists.claws-mail.org"
+#define USERS_ML_URI		"http://lists.claws-mail.org/cgi-bin/mailman/listinfo/users"
 #define GPL_URI			"http://www.gnu.org/licenses/gpl.html"
 #define DONATE_URI		"http://www.claws-mail.org/sponsors.php"
 #define RELEASE_NOTES_FILE	"RELEASE_NOTES"
