@@ -4554,3 +4554,4 @@
 ( cvs diff -u -r 1.9.2.83 -r 1.9.2.84 src/gtk/gtkaspell.c;  ) > 3.9.0cvs54.patchset
 ( cvs diff -u -r 1.1.2.14 -r 1.1.2.15 doc/man/claws-mail.1;  cvs diff -u -r 1.4.2.87 -r 1.4.2.88 src/gtk/about.c;  ) > 3.9.0cvs55.patchset
 ( cvs diff -u -r 1.9.2.61 -r 1.9.2.62 src/common/defs.h;  cvs diff -u -r 1.4.2.88 -r 1.4.2.89 src/gtk/about.c;  ) > 3.9.0cvs56.patchset
+( cvs diff -u -r 1.15.2.29 -r 1.15.2.30 src/codeconv.h;  cvs diff -u -r 1.49.2.154 -r 1.49.2.155 src/procmime.c;  ) > 3.9.0cvs57.patchset

@@ -1,3 +1,11 @@
+2013-01-21 [paul]	3.9.0cvs57
+
+	* src/codeconv.h
+	* src/procmime.c
+		fix bug 2862, 'Segmentation fault when replying to a
+		message where the "code conversion" fails'. add support
+		for X-VIET-VPS encoding
+
 2013-01-21 [paul]	3.9.0cvs56
 
 	* src/common/defs.h

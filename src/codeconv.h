@@ -168,6 +168,7 @@ struct _CodeConverter
 #define CS_WINDOWS_874		"Windows-874"
 #define CS_GEORGIAN_PS		"GEORGIAN-PS"
 #define CS_TCVN5712_1		"TCVN5712-1"
+#define CS_X_VIET_VPS		"X-VIET-VPS"
 
 #define C_INTERNAL		C_UTF_8
 #define CS_INTERNAL		CS_UTF_8
