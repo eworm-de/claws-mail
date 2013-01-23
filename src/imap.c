@@ -2219,6 +2219,7 @@ static MatcherProp *imap_matcher_prop_set_charset(IMAPFolder *folder,
 	if (imap_matcher_type_is_local(utf8_prop->criteria)
 	 || utf8_prop->criteria == MATCHCRITERIA_TAG
 	 || utf8_prop->criteria == MATCHCRITERIA_NOT_TAG
+	 || utf8_prop->expr == NULL
 	 || is_ascii_str(utf8_prop->expr))
 		return matcherprop_new(utf8_prop->criteria,
 			       utf8_prop->header,
