@@ -386,8 +386,9 @@ static gboolean parse_append_filename(GString *cmd, MsgInfo *msginfo)
 	}
 
 	p = filename;
+	g_string_append(cmd, "\"");
 #ifdef G_OS_UNIX
-	while ((q = strpbrk(p, "$\"`'\\ \t*?[]&|;<>()!#~")) != NULL) {
+	while ((q = strpbrk(p, "$\"`\\~")) != NULL) {
 		escape_ch[1] = *q;
 		*q = '\0';
 		g_string_append(cmd, p);
@@ -397,10 +398,9 @@ static gboolean parse_append_filename(GString *cmd, MsgInfo *msginfo)
 
 	g_string_append(cmd, p);
 #else
-	g_string_append(cmd, "\"");
 	g_string_append(cmd, filename);
-	g_string_append(cmd, "\"");
 #endif
+	g_string_append(cmd, "\"");
 	g_free(filename);
 
 	return TRUE;
@@ -948,8 +948,15 @@ static ChildInfo *fork_child(gchar *cmd, const gchar *msg_str,
 	while (g_ascii_isspace(trim_cmd[0]))
 		trim_cmd++;
 
+#ifdef G_OS_UNIX
+	argv = g_new0(gchar *, 4);
+	argv[0] = g_strdup("/bin/sh");
+	argv[1] = g_strdup("-c");
+	argv[2] = g_strdup(trim_cmd);
+	argv[3] = 0;
+#else
 	argv = strsplit_with_quote(trim_cmd, " ", 0);
-
+#endif
 	g_free(ret_str);
 
 	if (follow_child) {

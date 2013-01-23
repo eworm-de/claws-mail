@@ -1273,6 +1273,9 @@ static gchar *strstr_with_skip_quote(const gchar *haystack, const gchar *needle)
 				in_dquote = FALSE;
 			else if (!in_squote)
 				in_dquote = TRUE;
+		} else if (*haystack == '\\') {
+			haystack++;
+			haystack_len--;
 		}
 
 		haystack++;
