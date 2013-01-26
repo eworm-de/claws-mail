@@ -1,3 +1,13 @@
+2013-01-26 [mir]	3.9.0cvs60
+
+	* tools/vcard2xml.py
+	Fixes bugs:
+	    1) Lines split over more than one line breaks parser
+	    2) Get email addres correct. Not only email;internet
+	Improvements:
+	    1) Basic handling of vcard 3.0
+
+
 2013-01-23 [colin]	3.9.0cvs59
 
 	* src/action.c

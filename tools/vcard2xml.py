@@ -1,4 +1,4 @@
-#!/usr/bin/python2.2
+#!/usr/bin/env python
 # -*- coding: latin-1 -*-
 """
 
@@ -31,15 +31,70 @@ import string
 import sys
 import time
 import os
+import StringIO
 
 keywds = ('x-evolution-file-as','fn', 'n','email;internet','nickname', 'url', 'org')
 
+def normalizeLongLines(file):
+	"""
+	Skip line breaks after 72 chars
+	"""
+	buf = ''
+	
+	line = file.readline()
+	while line:
+		if line[0] == ' ':
+			buf = buf.rstrip('\n')
+			line = line.lstrip();
+			buf += line
+		else:
+			buf += line
+		line = file.readline()
+	
+	return buf
+
+def getEmailAddress(vcard):
+	"""
+	Get email address.
+	Supported formats:
+		- email;something
+		- email;type=something
+	something := (internet,work,home, other)
+	"""
+	
+	for key in vcard:
+		items = key.split(';')
+		if len(items) == 2:
+			if items[0].lower() == 'email':
+				list = vcard[key]
+				return list[0]
+		else:
+			if key.lower() == 'email':
+				list = vcard[key]
+				return list[0]
+	
+	return ""
+
+def findName(vcard):
+	"""
+	Find a version 3.0 name
+	"""
+	for key in vcard:
+		items = key.split(';')
+		if len(items) == 2:
+			if items[0].lower() == 'n':
+				return  vcard[key]
+		else:
+			if key.lower() == 'n':
+				return  vcard[key]
+	
+	return None
 
 ################################################################################
 ##  reads a vcard and stores as hash pairs key/value where value is a list    ##
 ################################################################################
 
-def readVCARD (file) :
+def readVCARD (buffer) :
 
 	"""
 
@@ -55,14 +110,14 @@ def readVCARD (file) :
 	bgn,end = -1, -1;
 	d = dict()
 	while r and bgn < 0 :
-		r = file.readline()
+		r = buffer.readline()
 		if len (r)  == 0 : return dict()
 		if string.find('begin',string.lower(string.strip(r))) :
 			bgn = 1
 	while r and end < 0 :
-		r = file.readline()
+		r = buffer.readline()
 		s = string.split(string.lower(string.strip(r)),':')
-		if s[0] <> '' :
+ 		if s[0] <> '' :
 			if d.has_key(s[0]) :
 				d[s[0]].append(s[1])
 			elif len(s) > 1:
@@ -73,7 +128,6 @@ def readVCARD (file) :
 	return d
 
 ##################################################################################
-				 
 
 ###############################################################################################
 ## writes on a given file an xml representation for claws-mail addressbook received as a hash  ##
@@ -87,11 +141,18 @@ def writeXMLREPR (vcard,file,uid) :
 	      XML schema)
 	"""
 	if len (vcard.keys()) == 0 : return
-	name = string.split(vcard.get(keywds[2])[0],';')
+	item = vcard.get(keywds[2]);
+	if item:
+		name = string.split(item[0],';')
+	else:
+		""" version 3.0 n ?"""
+		name = findName(vcard)
+		if not name:
+			return
 
 	fn, ln, nick, cn, a = '', '', '', '', ''
 
-	if len(name) == 2 :
+	if len(name) >= 2 :
 		fn = name[0]
 		ln = name[1]
 	elif len(name) ==1 :
@@ -112,8 +173,9 @@ def writeXMLREPR (vcard,file,uid) :
 			uid[0] = uid[0] + 1
 			a += '\t\t<address uid=\"' + str(uid[0]) + '\" alias=\"' + nick  + '\" email=\"' + c + '\" remarks=\"\" />\n'
 	else :
+		email = getEmailAddress(vcard)
 		uid[0] = uid[0]+1
-		a += '\t\t<address uid=\"' + str(uid[0]) + '\" alias=\"' +  nick + '\" email=\"\" remarks=\"\" />\n'
+		a += '\t\t<address uid=\"' + str(uid[0]) + '\" alias=\"' +  nick + '\" email=\"' + email + '\" remarks=\"\" />\n'
 	a += '\t</address-list>\n'
 	a += '\t<attribute-list>\n'
 	for key in keywds[5:] :
@@ -130,17 +192,20 @@ def writeXMLREPR (vcard,file,uid) :
 
 def convert (in_f, o_f, name='INBOX') :
 	d = {'d':1}
-        uid = [int(time.time())]
-	try : 
-	        print 'proccessing...\n'
-        	o_f.write('<?xml version="1.0" encoding="ISO-8859-1" ?>\n<address-book name="'+name+'" >\n');
-
-	        while len(d.keys()) > 0 :
-        	        d = readVCARD(in_f)
-                	writeXMLREPR (d, o_f, uid)
-	                uid[0] = uid [0]+1
-
-        	o_f.write('\n</address-book>')
+	uid = [int(time.time())]
+	
+	try :
+		print 'proccessing...\n'
+		o_f.write('<?xml version="1.0" encoding="ISO-8859-1" ?>\n<address-book name="'+name+'" >\n');
+		
+		buf = normalizeLongLines(in_f)
+		buffer = StringIO.StringIO(buf)
+		while len(d.keys()) > 0 :
+			d = readVCARD(buffer)
+			writeXMLREPR (d, o_f, uid)
+			uid[0] = uid [0]+1
+		
+		o_f.write('\n</address-book>')
 		print 'finished processing...\n'
 	except IOError, err :
 		print 'Caught an IOError : ',err,'\t ABORTING!!!'
