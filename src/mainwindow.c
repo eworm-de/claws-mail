@@ -1,6 +1,6 @@
 /*
    Claws Mail -- a GTK+ based, lightweight, and fast e-mail client
-   Copyright (C) 1999-2012 Hiroyuki Yamamoto and the Claws Mail team
+   Copyright (C) 1999-2013 Hiroyuki Yamamoto and the Claws Mail team
 
    This program is free software; you can redistribute it and/or modify
    it under the terms of the GNU General Public License as published by
@@ -1135,7 +1135,7 @@ void mainwin_accel_changed_cb (GtkAccelGroup *accelgroup, guint keyval, GdkModif
 			GtkLabel *label = g_object_get_data(G_OBJECT(item), "accel_label");
 			gchar *new_accel;
 			
-			if (keyval == GDK_KEY_BackSpace) {
+			if (keyval == GDK_KEY_Delete) {
 				const gchar *accel_path;
 				accel_path = gtk_menu_item_get_accel_path(item);
 				keyval = 0; modifier = 0;
@@ -1182,8 +1182,11 @@ static void mainwindow_colorlabel_menu_create(MainWindow *mainwin, gboolean refr
 	accel_path = g_strdup_printf("<ClawsColorLabels>/None");
 	gtk_menu_item_set_accel_path(GTK_MENU_ITEM(item), accel_path);
 	g_free(accel_path);
+#if !GTK_CHECK_VERSION(2, 24, 0)
+	gtk_accel_map_add_entry("<ClawsColorLabels>/None", GDK_0, GDK_CONTROL_MASK);
+#else
 	gtk_accel_map_add_entry("<ClawsColorLabels>/None", GDK_KEY_0, GDK_CONTROL_MASK);
-
+#endif
 	item = gtk_menu_item_new();
 	gtk_menu_shell_append(GTK_MENU_SHELL(menu), item);
 	gtk_widget_show(item);
@@ -1201,9 +1204,13 @@ static void mainwindow_colorlabel_menu_create(MainWindow *mainwin, gboolean refr
 		gtk_widget_show(item);
 		accel_path = g_strdup_printf("<ClawsColorLabels>/%d", i+1);
 		gtk_menu_item_set_accel_path(GTK_MENU_ITEM(item), accel_path);
-		if (i < 9)
-			gtk_accel_map_add_entry(accel_path, GDK_KEY_1+i, GDK_CONTROL_MASK);
 		g_free(accel_path);
+		if (i < 9)
+#if !GTK_CHECK_VERSION(2, 24, 0)
+			gtk_accel_map_add_entry(accel_path, GDK_1+i, GDK_CONTROL_MASK);
+#else
+			gtk_accel_map_add_entry(accel_path, GDK_KEY_1+i, GDK_CONTROL_MASK);
+#endif
 		g_signal_connect (gtk_ui_manager_get_accel_group(mainwin->ui_manager), 
 			"accel-changed", G_CALLBACK (mainwin_accel_changed_cb), item);
 
@@ -1307,8 +1314,11 @@ static void mainwindow_tags_menu_create(MainWindow *mainwin, gboolean refresh)
 	accel_path = g_strdup_printf("<ClawsTags>/ApplyTags");
 	gtk_menu_item_set_accel_path(GTK_MENU_ITEM(item), accel_path);
 	g_free(accel_path);
+#if !GTK_CHECK_VERSION(2, 24, 0)
+	gtk_accel_map_add_entry("<ClawsTags>/ApplyTags", GDK_T, GDK_CONTROL_MASK|GDK_SHIFT_MASK);
+#else
 	gtk_accel_map_add_entry("<ClawsTags>/ApplyTags", GDK_KEY_T, GDK_CONTROL_MASK|GDK_SHIFT_MASK);
-
+#endif
 	g_slist_free(orig);
 	gtk_widget_show(menu);
 	gtk_menu_item_set_submenu(GTK_MENU_ITEM(label_menuitem), menu);
