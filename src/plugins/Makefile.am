@@ -18,6 +18,10 @@ if BUILD_FANCY_PLUGIN
 fancy_dir = fancy
 endif
 
+if BUILD_VCALENDAR_PLUGIN
+vcalendar_dir = vcalendar
+endif
+
 if BUILD_TRAYICON_PLUGIN
 trayicon_dir = trayicon
 endif
@@ -44,4 +48,5 @@ SUBDIRS = $(demo_dir) \
 	$(pgpcore_dir) \
 	$(pgpmime_dir) \
 	$(pgpinline_dir) \
-	$(smime_dir)
+	$(smime_dir) \
+	$(vcalendar_dir)

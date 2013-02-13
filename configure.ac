@@ -12,7 +12,7 @@ MINOR_VERSION=9
 MICRO_VERSION=0
 INTERFACE_AGE=0
 BINARY_AGE=0
-EXTRA_VERSION=64
+EXTRA_VERSION=65
 EXTRA_RELEASE=
 EXTRA_GTK2_VERSION=
 
@@ -983,6 +983,11 @@ else
 fi
 AM_CONDITIONAL(BUILD_DILLO_VIEWER_PLUGIN, test x"$ac_cv_enable_dillo_viewer_plugin" = xyes)
 
+dnl Find curl-config, used by fancy, vcalendar
+PKG_CHECK_MODULES(CURL, libcurl)
+AC_SUBST(CURL_LIBS)
+AC_SUBST(CURL_CFLAGS)
+
 
 dnl --- Fancy ---
 AC_MSG_CHECKING([whether to build Fancy plugin])
@@ -1012,11 +1017,6 @@ if test x"$ac_cv_enable_fancy_plugin" = xyes; then
 	AC_SUBST(LIBSOUP_GNOME_CFLAGS)
 	AC_SUBST(LIBSOUP_GNOME_LIBS)
 	
-	dnl Find curl-config
-	PKG_CHECK_MODULES(CURL, libcurl)
-	AC_SUBST(CURL_LIBS)
-	AC_SUBST(CURL_CFLAGS)
-	
 	PKG_CHECK_MODULES(GTKPRINTUNIX, gtk+-unix-print-2.0, ac_cv_enable_gtkprint=yes, ac_cv_enable_gtkprint=no)        
 	if test x$ac_cv_enable_gtkprint = xyes; then
 		AC_DEFINE(USE_PRINTUNIX, 1, Define if you want gtk+-unix-print support)
@@ -1027,6 +1027,17 @@ if test x"$ac_cv_enable_fancy_plugin" = xyes; then
 	AC_SUBST(GTKPRINTUNIX_LIBS)
 fi
 AM_CONDITIONAL(BUILD_FANCY_PLUGIN, test x"$ac_cv_enable_fancy_plugin" = xyes)
+
+dnl --- Fancy ---
+AC_MSG_CHECKING([whether to build vCalendar plugin])
+AC_ARG_ENABLE(vcalendar-plugin,
+	[  --disable-vcalendar-plugin     do not build vcalendar plugin for ical rendering],
+	[ac_cv_enable_vcalendar_plugin=$enableval], [ac_cv_enable_vcalendar_plugin=yes])
+if test x"$ac_cv_enable_vcalendar_plugin" = xyes; then
+	AC_MSG_RESULT(yes)
+	PLUGINS="vcalendar $PLUGINS"
+fi
+AM_CONDITIONAL(BUILD_VCALENDAR_PLUGIN, test x"$ac_cv_enable_vcalendar_plugin" = xyes)
 
 dnl --- Demo ---
 AC_ARG_ENABLE(demo-plugin,
@@ -1125,6 +1136,12 @@ src/plugins/pgpcore/Makefile
 src/plugins/pgpmime/Makefile
 src/plugins/pgpinline/Makefile
 src/plugins/smime/Makefile
+src/plugins/vcalendar/Makefile
+src/plugins/vcalendar/libical/Makefile
+src/plugins/vcalendar/libical/libical/icalversion.h
+src/plugins/vcalendar/libical/libical/Makefile
+src/plugins/vcalendar/libical/design-data/Makefile
+src/plugins/vcalendar/libical/scripts/Makefile
 doc/Makefile
 doc/man/Makefile
 tools/Makefile
