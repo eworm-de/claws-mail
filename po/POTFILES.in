@@ -80,6 +80,8 @@ src/plugins/bogofilter/bogofilter_gtk.c
 src/plugins/demo/demo.c
 src/plugins/dillo_viewer/dillo_prefs.c
 src/plugins/dillo_viewer/dillo_viewer.c
+src/plugins/fancy/fancy_viewer.c
+src/plugins/fancy/fancy_prefs.c
 src/plugins/pgpcore/passphrase.c
 src/plugins/pgpcore/pgp_viewer.c
 src/plugins/pgpcore/plugin.c

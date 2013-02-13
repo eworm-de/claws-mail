@@ -14,6 +14,10 @@ if BUILD_DILLO_VIEWER_PLUGIN
 dillo_viewer_dir = dillo_viewer
 endif
 
+if BUILD_FANCY_PLUGIN
+fancy_dir = fancy
+endif
+
 if BUILD_TRAYICON_PLUGIN
 trayicon_dir = trayicon
 endif
@@ -35,6 +39,7 @@ SUBDIRS = $(demo_dir) \
 	$(spamassasssin_dir) \
 	$(bogofilter_dir) \
 	$(dillo_viewer_dir) \
+	$(fancy_dir) \
 	$(trayicon_dir) \
 	$(pgpcore_dir) \
 	$(pgpmime_dir) \

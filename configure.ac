@@ -12,7 +12,7 @@ MINOR_VERSION=9
 MICRO_VERSION=0
 INTERFACE_AGE=0
 BINARY_AGE=0
-EXTRA_VERSION=61
+EXTRA_VERSION=62
 EXTRA_RELEASE=
 EXTRA_GTK2_VERSION=
 
@@ -983,6 +983,51 @@ else
 fi
 AM_CONDITIONAL(BUILD_DILLO_VIEWER_PLUGIN, test x"$ac_cv_enable_dillo_viewer_plugin" = xyes)
 
+
+dnl --- Fancy ---
+AC_MSG_CHECKING([whether to build Fancy plugin])
+AC_ARG_ENABLE(fancy-plugin,
+	[  --disable-fancy-plugin     do not build Fancy plugin for html mail rendering],
+	[ac_cv_enable_fancy_plugin=$enableval], [ac_cv_enable_fancy_plugin=yes])
+if test x"$ac_cv_enable_fancy_plugin" = xyes; then
+	AC_MSG_RESULT(yes)
+	dnl Check for WebKit
+	PKG_CHECK_MODULES(WEBKIT, webkit-1.0,
+		[ 
+			PLUGINS="fancy $PLUGINS"
+		],
+		[
+			echo "webkit-1.0 not found."
+			ac_cv_enable_fancy_plugin=no
+		])
+		AC_SUBST(WEBKIT_LIBS)
+		AC_SUBST(WEBKIT_CFLAGS)
+fi
+if test x"$ac_cv_enable_fancy_plugin" = xyes; then
+	dnl Check for libsoup-gnome
+	PKG_CHECK_MODULES(LIBSOUP_GNOME, libsoup-gnome-2.4 >= 2.26, ac_cv_enable_soup_gnome=yes, ac_cv_enable_soup_gnome=no)        
+	if test x$ac_cv_enable_soup_gnome = xyes; then
+			AC_DEFINE(HAVE_LIBSOUP_GNOME, 1, Define if you want soup gnome proxy support)
+	fi
+	AC_SUBST(LIBSOUP_GNOME_CFLAGS)
+	AC_SUBST(LIBSOUP_GNOME_LIBS)
+	
+	dnl Find curl-config
+	PKG_CHECK_MODULES(CURL, libcurl)
+	AC_SUBST(CURL_LIBS)
+	AC_SUBST(CURL_CFLAGS)
+	
+	PKG_CHECK_MODULES(GTKPRINTUNIX, gtk+-unix-print-2.0, ac_cv_enable_gtkprint=yes, ac_cv_enable_gtkprint=no)        
+	if test x$ac_cv_enable_gtkprint = xyes; then
+		AC_DEFINE(USE_PRINTUNIX, 1, Define if you want gtk+-unix-print support)
+	else
+		AC_MSG_RESULT(not found)
+	fi
+	AC_SUBST(GTKPRINTUNIX_CFLAGS)
+	AC_SUBST(GTKPRINTUNIX_LIBS)
+fi
+AM_CONDITIONAL(BUILD_FANCY_PLUGIN, test x"$ac_cv_enable_fancy_plugin" = xyes)
+
 dnl --- Demo ---
 AC_ARG_ENABLE(demo-plugin,
 	[  --enable-demo-plugin              build demo plugin],
@@ -991,7 +1036,7 @@ if test x"$ac_cv_enable_demo_plugin" = xyes; then
 	PLUGINS="demo $PLUGINS"
 fi
 AM_CONDITIONAL(BUILD_DEMO_PLUGIN, test x"$ac_cv_enable_demo_plugin" = xyes)
-
+	
 dnl Libetpan
 AC_MSG_CHECKING([whether to use libetpan])
 AC_ARG_ENABLE(libetpan,
@@ -1074,6 +1119,7 @@ src/plugins/demo/Makefile
 src/plugins/bogofilter/Makefile
 src/plugins/spamassassin/Makefile
 src/plugins/dillo_viewer/Makefile
+src/plugins/fancy/Makefile
 src/plugins/trayicon/Makefile
 src/plugins/pgpcore/Makefile
 src/plugins/pgpmime/Makefile

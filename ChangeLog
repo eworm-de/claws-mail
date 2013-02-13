@@ -1,3 +1,15 @@
+2013-02-13 [paul]	3.9.0cvs62
+
+	* configure.ac
+	* po/POTFILES.in
+	* src/plugins/Makefile.am
+	* src/plugins/fancy/Makefile.am
+	* src/plugins/fancy/fancy_prefs.c
+	* src/plugins/fancy/fancy_prefs.h
+	* src/plugins/fancy/fancy_viewer.c
+	* src/plugins/fancy/fancy_viewer.h
+		move the Fancy plugin into core
+
 2013-02-11 [paul]	3.9.0cvs61
 
 	* src/mainwindow.c
