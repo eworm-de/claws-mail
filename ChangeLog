@@ -1,3 +1,31 @@
+2013-02-13 [colin]	3.9.0cvs64
+
+	* src/plugins/acpi_notifier/placeholder.txt
+	* src/plugins/address_dup_finder/placeholder.txt
+	* src/plugins/address_keeper/placeholder.txt
+	* src/plugins/archive/placeholder.txt
+	* src/plugins/att_remover/placeholder.txt
+	* src/plugins/attachwarner/placeholder.txt
+	* src/plugins/bsfilter/placeholder.txt
+	* src/plugins/clamd/placeholder.txt
+	* src/plugins/fetchinfo/placeholder.txt
+	* src/plugins/gdata/placeholder.txt
+	* src/plugins/geolocation/placeholder.txt
+	* src/plugins/gtkhtml2_viewer/placeholder.txt
+	* src/plugins/mailmbox/placeholder.txt
+	* src/plugins/newmail/placeholder.txt
+	* src/plugins/notification/placeholder.txt
+	* src/plugins/pdf_viewer/placeholder.txt
+	* src/plugins/perl/placeholder.txt
+	* src/plugins/python/placeholder.txt
+	* src/plugins/rssyl/placeholder.txt
+	* src/plugins/spam_report/placeholder.txt
+	* src/plugins/synce/placeholder.txt
+	* src/plugins/tnef_parse/placeholder.txt
+	* src/plugins/vcalendar/placeholder.txt
+		Add temporary placeholders for ex-extra-plugins to be
+		integrated.
+
 2013-02-13 [paul]	3.9.0cvs63
 
 	* src/plugins/fancy/Makefile.am
