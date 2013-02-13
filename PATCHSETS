@@ -4560,3 +4560,4 @@
 ( cvs diff -u -r 1.1.4.7 -r 1.1.4.8 tools/vcard2xml.py;  ) > 3.9.0cvs60.patchset
 ( cvs diff -u -r 1.274.2.364 -r 1.274.2.365 src/mainwindow.c;  ) > 3.9.0cvs61.patchset
 ( cvs diff -u -r 1.654.2.4638 -r 1.654.2.4639 configure.ac;  cvs diff -u -r 1.53.2.39 -r 1.53.2.40 po/POTFILES.in;  cvs diff -u -r 1.8.2.8 -r 1.8.2.9 src/plugins/Makefile.am;  diff -u /dev/null src/plugins/fancy/Makefile.am;  diff -u /dev/null src/plugins/fancy/fancy_prefs.c;  diff -u /dev/null src/plugins/fancy/fancy_prefs.h;  diff -u /dev/null src/plugins/fancy/fancy_viewer.c;  diff -u /dev/null src/plugins/fancy/fancy_viewer.h;  ) > 3.9.0cvs62.patchset
+( cvs diff -u -r 1.1.2.1 -r 1.1.2.2 src/plugins/fancy/Makefile.am;  ) > 3.9.0cvs63.patchset
