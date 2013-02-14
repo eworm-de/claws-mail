@@ -12,7 +12,7 @@ MINOR_VERSION=9
 MICRO_VERSION=0
 INTERFACE_AGE=0
 BINARY_AGE=0
-EXTRA_VERSION=66
+EXTRA_VERSION=67
 EXTRA_RELEASE=
 EXTRA_GTK2_VERSION=
 
@@ -1034,8 +1034,14 @@ AC_ARG_ENABLE(vcalendar-plugin,
 	[  --disable-vcalendar-plugin     do not build vcalendar plugin for ical rendering],
 	[ac_cv_enable_vcalendar_plugin=$enableval], [ac_cv_enable_vcalendar_plugin=yes])
 if test x"$ac_cv_enable_vcalendar_plugin" = xyes; then
-	AC_MSG_RESULT(yes)
-	PLUGINS="vcalendar $PLUGINS"
+	AC_CHECK_PROGS(PERL, perl5 perl)
+	if test x"$PERL" != x; then
+		AC_MSG_RESULT(yes)
+		PLUGINS="vcalendar $PLUGINS"
+	else
+		AC_MSG_RESULT(no)
+		ac_cv_enable_vcalendar_plugin=no
+	fi
 fi
 AM_CONDITIONAL(BUILD_VCALENDAR_PLUGIN, test x"$ac_cv_enable_vcalendar_plugin" = xyes)
 
