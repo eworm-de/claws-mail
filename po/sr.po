@@ -18,7 +18,8 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms:  nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
+"Plural-Forms:  nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n"
+"%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
 "X-Generator: KBabel 1.11.4\n"
 
 #: src/account.c:383
@@ -946,7 +947,8 @@ msgstr "Ствари"
 
 #: src/common/plugin.c:269
 #, c-format
-msgid "This plugin provides %s (%s), which is already provided by the %s plugin."
+msgid ""
+"This plugin provides %s (%s), which is already provided by the %s plugin."
 msgstr "Овај додатак омогућава %s (%s), што је већ омогућено додатком %s."
 
 #: src/common/plugin.c:309
@@ -959,7 +961,8 @@ msgstr "Неуспешно резервисање меморије за дода
 
 #: src/common/plugin.c:350
 msgid "This module is not licenced under a GPL v2 or later compatible licence."
-msgstr "Овај модул није лиценциран под ГНУ ОЈЛ в3 или новијом компатибилном лиценцом."
+msgstr ""
+"Овај модул није лиценциран под ГНУ ОЈЛ в3 или новијом компатибилном лиценцом."
 
 #: src/common/plugin.c:359
 msgid "This module is for Claws Mail GTK1."
@@ -2557,7 +2560,8 @@ msgstr ""
 msgid ""
 "Press this button to lookup the name of available directory names on the "
 "server."
-msgstr "Притисните ово дугме за листање доступних назива директоријума на серверу."
+msgstr ""
+"Притисните ово дугме за листање доступних назива директоријума на серверу."
 
 #: src/editldap.c:599
 msgid "Search Attributes"
@@ -2676,7 +2680,8 @@ msgid "Maximum Entries"
 msgstr "Максималан број уписа"
 
 #: src/editldap.c:802
-msgid "The maximum number of entries that should be returned in the search result."
+msgid ""
+"The maximum number of entries that should be returned in the search result."
 msgstr "Максималан број ставки који ће се добити у резултатима претраге."
 
 #: src/editldap.c:818 src/prefs_account.c:2940
@@ -3292,7 +3297,8 @@ msgid "Rebuild folder tree"
 msgstr "Ажурирај стабло директоријума"
 
 #: src/folderview.c:1100
-msgid "Rebuilding the folder tree will remove local caches. Do you want to continue?"
+msgid ""
+"Rebuilding the folder tree will remove local caches. Do you want to continue?"
 msgstr ""
 "Ажурирање стабла директоријума ће уклонити локалну оставу. Желите ли да "
 "наставите?"
@@ -3435,7 +3441,8 @@ msgstr "Постављање подешавања за директоријум 
 
 #: src/folderview.c:3002 src/summaryview.c:4182 src/summaryview.c:4279
 msgid "The destination folder can only be used to store subfolders."
-msgstr "Одредишни директоријум може се користити само за смештање поддиректоријума."
+msgstr ""
+"Одредишни директоријум може се користити само за смештање поддиректоријума."
 
 #: src/gedit-print.c:145 src/messageview.c:1565 src/summaryview.c:4476
 #: src/toolbar.c:193
@@ -3847,7 +3854,8 @@ msgstr "Подешавање распореда директоријума"
 
 #: src/gtk/foldersort.c:190
 msgid "Move folders up or down to change the sort order in the folder list."
-msgstr "Преместите директоријуме горе или доле за промену поретка у стаблу налога."
+msgstr ""
+"Преместите директоријуме горе или доле за промену поретка у стаблу налога."
 
 #: src/gtk/foldersort.c:214 src/toolbar.c:414
 msgid "Folders"
@@ -5357,7 +5365,8 @@ msgstr "Није могуће уклонити директоријум „%s“
 #: src/imap_gtk.c:447
 #, c-format
 msgid "Do you want to search for unsubscribed subfolders of '%s'?"
-msgstr "Да ли заиста желите да претражујете поддиректоријуме „%s“ које не пратите?"
+msgstr ""
+"Да ли заиста желите да претражујете поддиректоријуме „%s“ које не пратите?"
 
 #: src/imap_gtk.c:450
 msgid "Search recursively"
@@ -5946,7 +5955,8 @@ msgstr "Sylpheed-Claws 1.0.5 (или старији)"
 msgid ""
 "Some plugin(s) failed to load. Check the Plugins configuration for more "
 "information."
-msgstr "Неки додаци нису учитани. Погледајте поставке додатака за више информација."
+msgstr ""
+"Неки додаци нису учитани. Погледајте поставке додатака за више информација."
 
 #: src/main.c:1201
 msgid ""
@@ -7018,7 +7028,8 @@ msgstr "ништа"
 
 #: src/mainwindow.c:2398
 msgid "Delete all messages in trash folders?"
-msgstr "Да ли заиста желите да све поруке у директоријуму „Смеће“ буду обрисане?"
+msgstr ""
+"Да ли заиста желите да све поруке у директоријуму „Смеће“ буду обрисане?"
 
 #: src/mainwindow.c:2417
 msgid "Add mailbox"
@@ -7796,7 +7807,8 @@ msgstr "Сачувај нежељену поруку у"
 
 #: src/plugins/bogofilter/bogofilter_gtk.c:191
 #: src/plugins/spamassassin/spamassassin_gtk.c:384
-msgid "Folder for storing identified spam. Leave empty to use the trash folder."
+msgid ""
+"Folder for storing identified spam. Leave empty to use the trash folder."
 msgstr ""
 "Директоријум за смештање пронађених нежељених порука. Оставите празно за "
 "коришћење директоријума за смеће."
@@ -7804,7 +7816,8 @@ msgstr ""
 #: src/plugins/bogofilter/bogofilter_gtk.c:198
 #: src/plugins/spamassassin/spamassassin_gtk.c:391
 msgid "Click this button to select a folder for storing spam"
-msgstr "Кликните на ово дугме за избор директоријума за смештање нежељених порука."
+msgstr ""
+"Кликните на ово дугме за избор директоријума за смештање нежељених порука."
 
 #: src/plugins/bogofilter/bogofilter_gtk.c:205
 msgid "When unsure, move to"
@@ -7931,7 +7944,8 @@ msgid "Save mail that contains viruses"
 msgstr "Чување порука које садрже вирусе"
 
 #: src/plugins/clamav/clamav_plugin_gtk.c:142
-msgid "Folder for storing infected mail. Leave empty to use the default trash folder"
+msgid ""
+"Folder for storing infected mail. Leave empty to use the default trash folder"
 msgstr ""
 "Директоријум за смештање инфицираних порука. Оставите празно за коришћење "
 "директоријума за смеће"
@@ -7993,7 +8007,8 @@ msgstr "Дило HTML прегледник"
 
 #: src/plugins/dillo_viewer/dillo_viewer.c:176
 msgid "Can't find the dillo executable in PATH. Is it installed?"
-msgstr "Не могу да пронађем dillo извршну датотеку у PATH-у. Да ли је инсталиран?"
+msgstr ""
+"Не могу да пронађем dillo извршну датотеку у PATH-у. Да ли је инсталиран?"
 
 #: src/plugins/dillo_viewer/dillo_viewer.c:203
 msgid ""
@@ -8429,7 +8444,8 @@ msgstr "Грешка при постављању тајног кључа: %s"
 #: src/plugins/pgpcore/sgpgme.c:552
 #, c-format
 msgid "Gpgme protocol '%s' is unusable: Engine '%s' isn't installed properly."
-msgstr "Gpgme протокол „%s“ је неупотребљив: Машина „%s“ није правилно инсталирана."
+msgstr ""
+"Gpgme протокол „%s“ је неупотребљив: Машина „%s“ није правилно инсталирана."
 
 #: src/plugins/pgpcore/sgpgme.c:558
 #, c-format
@@ -9186,7 +9202,8 @@ msgstr "Режим уштеде протока"
 
 #: src/prefs_account.c:1519
 msgid "This mode uses less bandwidth, but can be slower with some servers."
-msgstr "Овај режим користи мање протока, али може да буде спор са неким серверима."
+msgstr ""
+"Овај режим користи мање протока, али може да буде спор са неким серверима."
 
 #: src/prefs_account.c:1523
 msgid "Filter messages on receiving"
@@ -9305,7 +9322,8 @@ msgstr "Увек криптуј поруке при одговору на кри
 
 #: src/prefs_account.c:2147
 msgid "Encrypt sent messages with your own key in addition to recipient's"
-msgstr "Криптуј послате поруке властитим кључем након криптовања кључем примаоца"
+msgstr ""
+"Криптуј послате поруке властитим кључем након криптовања кључем примаоца"
 
 #: src/prefs_account.c:2149
 msgid "Save sent encrypted messages as clear text"
@@ -9549,7 +9567,8 @@ msgstr "<span weight=\"bold\" underline=\"single\">Назив менија:</spa
 
 #: src/prefs_actions.c:810
 msgid "Use / in menu name to make submenus."
-msgstr "Користите обрнуту косу црту „/“ у називу менија за формирање подменија."
+msgstr ""
+"Користите обрнуту косу црту „/“ у називу менија за формирање подменија."
 
 #: src/prefs_actions.c:812
 msgid "<span weight=\"bold\" underline=\"single\">Command line:</span>"
@@ -9569,7 +9588,8 @@ msgstr "за слање кориснички дефинисаног текста
 
 #: src/prefs_actions.c:816
 msgid "to send user provided hidden text to command's standard input"
-msgstr "за слање скривеног кориснички дефинисаног текста стандардном улазу команде"
+msgstr ""
+"за слање скривеног кориснички дефинисаног текста стандардном улазу команде"
 
 #: src/prefs_actions.c:817
 msgid "<span weight=\"bold\">End with:</span>"
@@ -9596,7 +9616,8 @@ msgid "for the file of the selected message in RFC822/2822 format "
 msgstr "за датотеку одабране поруке у RFC822/2822 формату"
 
 #: src/prefs_actions.c:823
-msgid "for the list of the files of the selected messages in RFC822/2822 format"
+msgid ""
+"for the list of the files of the selected messages in RFC822/2822 format"
 msgstr "за листу датотека одабраних порука у RFC822/2822 формату"
 
 #: src/prefs_actions.c:824
@@ -9653,8 +9674,8 @@ msgid ""
 "\\n}?c{Cc: %c\\n}?n{Newsgroups: %n\\n}?s{Subject: %s\\n}\\n\\n%M"
 msgstr ""
 "\\n\\nПочетак прослеђене поруке:\\n\\n?d{Датум: %d\\n}?f{Аутор: %f\\n}?t"
-"{Прималац: %t\\n}?c{Копија: %c\\n}?n{Дискусиона група: %n\\n}?s{Тема: %s\\n}"
-"\\n\\n%M"
+"{Прималац: %t\\n}?c{Копија: %c\\n}?n{Дискусиона група: %n\\n}?s{Тема: %s"
+"\\n}\\n\\n%M"
 
 #: src/prefs_common.c:421
 msgid "%y/%m/%d(%a) %H:%M"
@@ -11297,7 +11318,8 @@ msgstr "Боја погрешно написаних речи"
 
 #: src/prefs_spelling.c:312
 msgid "Pick color for misspelled word. Use black to underline"
-msgstr "Одаберите боју за погрешно написане речи. Користите црну за подвлачење."
+msgstr ""
+"Одаберите боју за погрешно написане речи. Користите црну за подвлачење."
 
 #: src/prefs_spelling.c:442
 msgid "Spell Checking"
@@ -12504,8 +12526,10 @@ msgstr "Нема непрочитаних порука. Да наставим п
 
 #: src/summaryview.c:1693 src/summaryview.c:1745 src/summaryview.c:1792
 #: src/summaryview.c:1844 src/summaryview.c:1923
-msgid "Internal error: unexpected value for prefs_common.next_unread_msg_dialog\n"
-msgstr "Интерна грешка: неочекивана вредност за prefs_common.next_unread_msg_dialog\n"
+msgid ""
+"Internal error: unexpected value for prefs_common.next_unread_msg_dialog\n"
+msgstr ""
+"Интерна грешка: неочекивана вредност за prefs_common.next_unread_msg_dialog\n"
 
 #: src/summaryview.c:1701
 msgid "No unread messages."
@@ -12663,7 +12687,8 @@ msgstr "_Препиши"
 
 #: src/summaryview.c:4462
 #, c-format
-msgid "You are about to print %d messages, one by one. Do you want to continue?"
+msgid ""
+"You are about to print %d messages, one by one. Do you want to continue?"
 msgstr "Желите да штампате %d порука, једну по једну. Желите ли да наставите?"
 
 #: src/summaryview.c:4783
@@ -13298,7 +13323,8 @@ msgstr "<span weight=\"bold\">Назив сандучета:</span>"
 msgid ""
 "You can also specify an absolute path, for example: \"/home/john/Documents/"
 "Mail\""
-msgstr "Можете одредити и апсолутну путању, на пример: „/home/urke/Documents/Mail“"
+msgstr ""
+"Можете одредити и апсолутну путању, на пример: „/home/urke/Documents/Mail“"
 
 #: src/wizard.c:1082
 msgid "on internal memory"
@@ -13450,3 +13476,946 @@ msgstr ""
 "Claws Mail је сада спреман.\n"
 "Кликните на „Сачувај“ за покретање."
 
+#: src/plugin.c:47 src/plugin.c:68 src/vcal_prefs.c:644
+msgid "vCalendar"
+msgstr "vCalendar"
+
+#: src/plugin.c:73
+msgid ""
+"This plugin enables vCalendar message handling like that produced by "
+"Evolution or Outlook.\n"
+"\n"
+"When loaded, it will create a vCalendar mailbox in the Folder List, which "
+"will be populated by meetings that you have accepted or created.\n"
+"Meeting requests that you receive will be presented in an appropriate form "
+"and you will be able to accept or decline them.\n"
+"To create a meeting right-click on the vCalendar or Meetings folder and "
+"choose \"New meeting...\".\n"
+"\n"
+"You will also be able to subscribe to remote webCal feeds,export your "
+"meetings and calendars, publish your free/busy information and retrieve that "
+"information from others."
+msgstr ""
+"Овај додатак омогућава управљање vCalendar порукама које праве Evolution и "
+"Outlook.\n"
+"\n"
+"Када је учитан, направиће vCalendar сандуче у листи директоријума, у које ће "
+"се смештати састанци које прихватите или закажете.\n"
+"Захтеви за састанке које добијете биће приказани у одговарајућем облику и "
+"моћићете да их прихватите или одбијете.\n"
+"Да би заказали састанак, кликните десним тастером миша на vCalendar или на "
+"директоријум састанака и изаберите ставку „Нови састанак...“.\n"
+"\n"
+"Такође ћете моћи да с епријавите на удаљене webCal изворе, да извезете Ваше "
+"састанке и календаре, објавите Ваше слободан/заузет информације и прибавите "
+"те информације од других."
+
+#: src/plugin.c:106
+msgid "Calendar"
+msgstr "Календар"
+
+#: src/vcalendar.c:96
+msgid "Create meeting from message..."
+msgstr ""
+
+#: src/vcalendar.c:116
+#, c-format
+msgid ""
+"You are about to create %d meetings, one by one. Do you want to continue?"
+msgstr ""
+
+#: src/vcalendar.c:135
+#, fuzzy
+msgid "Creating meeting..."
+msgstr "Откажи састанак..."
+
+#: src/vcalendar.c:154
+msgid "no subject"
+msgstr ""
+
+#: src/vcalendar.c:389
+msgid "Accept"
+msgstr "Прихвати"
+
+#: src/vcalendar.c:390
+msgid "Tentatively accept"
+msgstr "Прихвати привремено"
+
+#: src/vcalendar.c:391
+msgid "Decline"
+msgstr "Одбиј"
+
+#: src/vcalendar.c:478
+msgid "You have a Todo item."
+msgstr "Имате Обавезу."
+
+#: src/vcalendar.c:479 src/vcalendar.c:486 src/vcalendar.c:491
+#: src/vcalendar.c:499 src/vcalendar.c:508 src/vcalendar.c:746
+msgid "Details follow:"
+msgstr "Следе детаљи:"
+
+#: src/vcalendar.c:485
+msgid "You have created a meeting."
+msgstr "Заказали сте нови састанак."
+
+#: src/vcalendar.c:490
+msgid "You have been invited to a meeting."
+msgstr "Позвани сте на састанак."
+
+#: src/vcalendar.c:498
+msgid "A meeting to which you had been invited has been cancelled."
+msgstr "Састанак на који сте позвани је отказан."
+
+#: src/vcalendar.c:507
+msgid "You have been forwarded an appointment."
+msgstr "Прослеђен вам је састанак."
+
+#: src/vcalendar.c:560
+#, c-format
+msgid "%s <span weight=\"bold\">(this event recurs)</span>"
+msgstr "%s <span weight=\"bold\">(догађај се понавља)</span>"
+
+#: src/vcalendar.c:566
+#, c-format
+msgid ""
+"%s <span weight=\"bold\">(this event is part of a recurring event)</span>"
+msgstr "%s <span weight=\"bold\">(догађај је део понављајућег догађаја)</span>"
+
+#: src/vcalendar.c:745
+msgid "You have received an answer to an unknown meeting proposal."
+msgstr "Стигао Вам је одговор за непознати заказани састанак."
+
+#: src/vcalendar.c:749
+#, c-format
+msgid ""
+"You have received an answer to a meeting proposal.\n"
+"%s has %s the invitation whose details follow:"
+msgstr ""
+"Примили сте одговор за заказани састанак.\n"
+"%s има %s позива чији детаљи следе:"
+
+#: src/vcalendar.c:828
+#, fuzzy
+msgid "Error - could not get the calendar MIME part."
+msgstr "Није могућ извоз календара."
+
+#: src/vcalendar.c:835
+msgid "Error - no calendar part found."
+msgstr ""
+
+#: src/vcalendar.c:849
+msgid "Error - Unknown calendar component type."
+msgstr ""
+
+#: src/vcalendar.c:978
+msgid "Send a notification to the attendees"
+msgstr ""
+
+#: src/vcalendar.c:987
+msgid "Cancel meeting"
+msgstr "Обустави састанак"
+
+#: src/vcalendar.c:988
+#, fuzzy
+msgid "Are you sure you want to cancel this meeting?"
+msgstr ""
+"Да ли сте сигурни да желите обуставити овај састанак?\n"
+"Обавештење ће бити послато особи која Вас је позвала."
+
+#: src/vcalendar.c:1083
+msgid "No account found"
+msgstr "Није пронађен налог"
+
+#: src/vcalendar.c:1084
+msgid ""
+"You have no account matching any attendee.\n"
+"Do you want to reply anyway ?"
+msgstr ""
+"Немате налог који је садржан у позиву.\n"
+"Да ли заиста желите да одговорите?"
+
+#: src/vcalendar.c:1086
+msgid "+Reply anyway"
+msgstr "+Ипак одговори"
+
+#: src/vcalendar.c:1215
+msgid "Answer"
+msgstr "Одговор"
+
+#: src/vcalendar.c:1216
+msgid "Edit meeting..."
+msgstr "Уреди састанак..."
+
+#: src/vcalendar.c:1217
+msgid "Cancel meeting..."
+msgstr "Откажи састанак..."
+
+#: src/vcalendar.c:1218
+msgid "Launch website"
+msgstr "Посети презентацију"
+
+#: src/vcalendar.c:1222
+msgid "You are already busy at this time."
+msgstr "Већ сте заузети у то време."
+
+#: src/vcalendar.c:1261 src/vcal_meeting_gtk.c:1734
+msgid "Event:"
+msgstr "Догађај:"
+
+#: src/vcalendar.c:1262 src/vcal_meeting_gtk.c:1712
+#: src/vcal_meeting_gtk.c:1723
+msgid "Organizer:"
+msgstr "Организатор:"
+
+#: src/vcalendar.c:1263 src/vcal_meeting_gtk.c:1715
+#: src/vcal_meeting_gtk.c:1725
+#, fuzzy
+msgid "Location:"
+msgstr "Акција:"
+
+#: src/vcalendar.c:1264 src/vcal_meeting_gtk.c:1713
+#: src/vcal_meeting_gtk.c:1724
+msgid "Summary:"
+msgstr "Садржај:"
+
+#: src/vcalendar.c:1265
+msgid "Starting:"
+msgstr "Почетак:"
+
+#: src/vcalendar.c:1266
+msgid "Ending:"
+msgstr "Свршетак:"
+
+#: src/vcalendar.c:1267 src/vcal_meeting_gtk.c:1716
+#: src/vcal_meeting_gtk.c:1726
+msgid "Description:"
+msgstr "Опис:"
+
+#: src/vcalendar.c:1268 src/vcal_meeting_gtk.c:1717
+#: src/vcal_meeting_gtk.c:1727
+msgid "Attendees:"
+msgstr "Позвани:"
+
+#: src/vcalendar.c:1270
+msgid "Action:"
+msgstr "Акција:"
+
+#: src/vcal_folder.c:160
+#, fuzzy
+msgid "_New meeting..."
+msgstr "/_Нови састанак..."
+
+#: src/vcal_folder.c:161
+#, fuzzy
+msgid "_Export calendar..."
+msgstr "/_Извоз календара..."
+
+#: src/vcal_folder.c:162
+#, fuzzy
+msgid "_Subscribe to webCal..."
+msgstr "/_Пријава на webCal..."
+
+#: src/vcal_folder.c:163
+#, fuzzy
+msgid "_Unsubscribe..."
+msgstr "/_Одјава..."
+
+#: src/vcal_folder.c:164
+#, fuzzy
+msgid "_Rename..."
+msgstr "/_Преименуј..."
+
+#: src/vcal_folder.c:165
+#, fuzzy
+msgid "U_pdate subscriptions"
+msgstr "/О_свежи пријаве"
+
+#: src/vcal_folder.c:166
+msgid "_List view"
+msgstr ""
+
+#: src/vcal_folder.c:167
+msgid "_Week view"
+msgstr ""
+
+#: src/vcal_folder.c:168
+msgid "_Month view"
+msgstr ""
+
+#: src/vcal_folder.c:1471
+msgid "in the past"
+msgstr "прошло"
+
+#: src/vcal_folder.c:1474
+msgid "today"
+msgstr "данас"
+
+#: src/vcal_folder.c:1477
+msgid "tomorrow"
+msgstr "сутра"
+
+#: src/vcal_folder.c:1480
+msgid "this week"
+msgstr "ове недеље"
+
+#: src/vcal_folder.c:1483
+msgid "later"
+msgstr "касније"
+
+#: src/vcal_folder.c:1487
+#, c-format
+msgid ""
+"\n"
+"These are the events planned %s:\n"
+msgstr ""
+"\n"
+"Ово су планирани састанци %s:\n"
+
+#: src/vcal_folder.c:1580
+#, c-format
+msgid "Timeout (%d seconds) connecting to %s\n"
+msgstr "Истекло је време (%d секунди) за повезивање на %s\n"
+
+#: src/vcal_folder.c:1589
+msgid "401 (Authorisation required)"
+msgstr "401 (Потребна ауторизација)"
+
+#: src/vcal_folder.c:1592
+msgid "403 (Unauthorised)"
+msgstr "403 (Неауторизован)"
+
+#: src/vcal_folder.c:1595
+msgid "404 (Not found)"
+msgstr "404 (Није пронађено)"
+
+#: src/vcal_folder.c:1598
+#, fuzzy, c-format
+msgid "Error %ld"
+msgstr "Грешка %d"
+
+#: src/vcal_folder.c:1795
+#, fuzzy, c-format
+msgid ""
+"Could not retrieve the Webcal URL:\n"
+"%s:\n"
+"\n"
+"%s"
+msgstr ""
+"Није могуће добавити webCal адресу:\n"
+"%s\n"
+"%s"
+
+#: src/vcal_folder.c:1799
+#, fuzzy, c-format
+msgid ""
+"Could not retrieve the Webcal URL:\n"
+"%s:\n"
+"\n"
+"%s\n"
+msgstr ""
+"Није могуће добавити webCal адресу:\n"
+"%s\n"
+"%s\n"
+
+#: src/vcal_folder.c:1810
+#, c-format
+msgid ""
+"This URL does not look like a WebCal URL:\n"
+"%s\n"
+"%s"
+msgstr ""
+"Ова адреса не личи на webCal адресу:\n"
+"%s\n"
+"%s"
+
+#: src/vcal_folder.c:1813
+#, c-format
+msgid ""
+"This URL does not look like a WebCal URL:\n"
+"%s\n"
+"%s\n"
+msgstr ""
+"Ова адреса не личи на webCal адресу:\n"
+"%s\n"
+"%s\n"
+
+#: src/vcal_folder.c:1881
+#, fuzzy, c-format
+msgid "Fetching calendar for %s..."
+msgstr "Прикупљање „%s“ у току..."
+
+#: src/vcal_folder.c:1882
+#, fuzzy
+msgid "new subscription"
+msgstr "/Освежи пријаве"
+
+#: src/vcal_folder.c:1905
+msgid "Subscribe to WebCal"
+msgstr "Пријава на webCal"
+
+#: src/vcal_folder.c:1905
+msgid "Enter the WebCal URL:"
+msgstr "Унесите webCal адресу:"
+
+#: src/vcal_folder.c:1919
+msgid "Could not parse the URL."
+msgstr "Није могуће расчланити адресу."
+
+#: src/vcal_folder.c:1948
+msgid "Do you really want to unsubscribe?"
+msgstr "Да ли заиста желите да се одјавите?"
+
+#: src/vcal_manager.c:105
+msgid "accepted"
+msgstr "прихваћено"
+
+#: src/vcal_manager.c:106
+msgid "tentatively accepted"
+msgstr "привремено прихваћено"
+
+#: src/vcal_manager.c:107
+msgid "declined"
+msgstr "одбијено"
+
+#: src/vcal_manager.c:108
+msgid "did not answer"
+msgstr "није одговорено"
+
+#: src/vcal_manager.c:138
+msgid "individual"
+msgstr "индивидуално"
+
+#: src/vcal_manager.c:139
+msgid "group"
+msgstr "групно"
+
+#: src/vcal_manager.c:140
+msgid "resource"
+msgstr "извор"
+
+#: src/vcal_manager.c:141
+msgid "room"
+msgstr "соба"
+
+#: src/vcal_manager.c:552
+msgid "Past"
+msgstr "Прошло"
+
+#: src/vcal_manager.c:555
+msgid "Today"
+msgstr "Данас"
+
+#: src/vcal_manager.c:558
+msgid "Tomorrow"
+msgstr "Сутра"
+
+#: src/vcal_manager.c:561
+msgid "This week"
+msgstr "Ове недеље"
+
+#: src/vcal_manager.c:564
+msgid "Later"
+msgstr "Касније"
+
+#: src/vcal_manager.c:1230
+msgid "Accepted: "
+msgstr "Прихваћено: "
+
+#: src/vcal_manager.c:1232
+msgid "Declined: "
+msgstr "Одбијено: "
+
+#: src/vcal_manager.c:1234
+msgid "Tentatively Accepted: "
+msgstr "Привремено прихваћено: "
+
+#: src/vcal_meeting_gtk.c:309
+msgid "Individual"
+msgstr "Индивидуално"
+
+#: src/vcal_meeting_gtk.c:311
+msgid "Resource"
+msgstr "Извор"
+
+#: src/vcal_meeting_gtk.c:312
+msgid "Room"
+msgstr "Соба"
+
+#: src/vcal_meeting_gtk.c:325
+msgid "Add..."
+msgstr "Додај..."
+
+#: src/vcal_meeting_gtk.c:784
+msgid ""
+"The following person(s) are busy at the time of your planned meeting:\n"
+"- "
+msgstr ""
+"Следеће особе(а) су заузете у врме Вашег планираног састанка:\n"
+"- "
+
+#: src/vcal_meeting_gtk.c:785 src/vcal_meeting_gtk.c:877
+#: src/vcal_meeting_gtk.c:963
+msgid "You"
+msgstr "Ви"
+
+#: src/vcal_meeting_gtk.c:786
+msgid "You are busy at the time of your planned meeting"
+msgstr "Ви сте заузети у време састанка који сте планирали"
+
+#: src/vcal_meeting_gtk.c:788
+#, c-format
+msgid "%s is busy at the time of your planned meeting"
+msgstr "%s је заузет у време састанка који сте планирали"
+
+#: src/vcal_meeting_gtk.c:790
+#, c-format
+msgid "%d hour sooner"
+msgstr "за %d сат"
+
+#: src/vcal_meeting_gtk.c:792
+#, c-format
+msgid "%d hours sooner"
+msgstr "за %d сати"
+
+#: src/vcal_meeting_gtk.c:794
+#, c-format
+msgid "%d hours and %d minutes sooner"
+msgstr "за %d сати и %d минута"
+
+#: src/vcal_meeting_gtk.c:796
+#, c-format
+msgid "%d minutes sooner"
+msgstr "за %d минута"
+
+#: src/vcal_meeting_gtk.c:801
+#, c-format
+msgid "%d hour later"
+msgstr "касни %d сат"
+
+#: src/vcal_meeting_gtk.c:803
+#, c-format
+msgid "%d hours later"
+msgstr "касни %d сати"
+
+#: src/vcal_meeting_gtk.c:805
+#, c-format
+msgid "%d hours and %d minutes later"
+msgstr "касни %d сати и %d минута"
+
+#: src/vcal_meeting_gtk.c:807
+#, c-format
+msgid "%d minutes later"
+msgstr "касни %d минута"
+
+#: src/vcal_meeting_gtk.c:813
+#, c-format
+msgid ""
+"\n"
+"\n"
+"Everyone would be available %s or %s."
+msgstr ""
+"\n"
+"\n"
+"Сви ће бити слободни %s или %s."
+
+#: src/vcal_meeting_gtk.c:815
+#, c-format
+msgid ""
+"\n"
+"\n"
+"Everyone would be available %s."
+msgstr ""
+"\n"
+"\n"
+"Сви ће бити слободни %s."
+
+#: src/vcal_meeting_gtk.c:817
+msgid ""
+"\n"
+"\n"
+"It isn't possible to have this meeting with everyone in the previous or next "
+"6 hours."
+msgstr ""
+"\n"
+"\n"
+"Није могуће одржати овај састанак нисаким у претходних или следећих 6 сати."
+
+#: src/vcal_meeting_gtk.c:822
+#, c-format
+msgid "would be available %s or %s"
+msgstr "ће бити слободан %s или %s"
+
+#: src/vcal_meeting_gtk.c:824
+#, c-format
+msgid "would be available %s"
+msgstr "ће бити слободан %s"
+
+#: src/vcal_meeting_gtk.c:826 src/vcal_meeting_gtk.c:890
+#: src/vcal_meeting_gtk.c:960
+msgid "not available"
+msgstr "није слободан"
+
+#: src/vcal_meeting_gtk.c:829
+#, c-format
+msgid ", but would be available %s or %s."
+msgstr ", али ће бити слободан %s или %s."
+
+#: src/vcal_meeting_gtk.c:831
+#, c-format
+msgid ", but would be available %s."
+msgstr ", али ће бити слободан %s."
+
+#: src/vcal_meeting_gtk.c:833
+msgid ", and isn't available in the previous or next 6 hours."
+msgstr ", и није слободан у претходних или следећих 6 сати."
+
+#: src/vcal_meeting_gtk.c:893
+msgid "available"
+msgstr "слободан"
+
+#: src/vcal_meeting_gtk.c:895 src/vcal_meeting_gtk.c:1146
+msgid "Free/busy retrieval failed"
+msgstr "Неуспело прибављање информација слободан/заузет"
+
+#: src/vcal_meeting_gtk.c:977
+msgid "Not everyone is available"
+msgstr "Нису сви слободни"
+
+#: src/vcal_meeting_gtk.c:978
+msgid "Send anyway"
+msgstr "Ипак пошаљи"
+
+#: src/vcal_meeting_gtk.c:989
+msgid "Not everyone is available. See tooltips for more info..."
+msgstr "Нису сви слободни. Погледајте Савет за више информација..."
+
+#: src/vcal_meeting_gtk.c:1128
+#, fuzzy, c-format
+msgid "Fetching planning for %s..."
+msgstr "Прикупљање „%s“ у току..."
+
+#: src/vcal_meeting_gtk.c:1155
+msgid "Available"
+msgstr "Слободан"
+
+#: src/vcal_meeting_gtk.c:1168 src/vcal_meeting_gtk.c:1175
+#: src/vcal_meeting_gtk.c:1183
+msgid "Everyone is available."
+msgstr "Сви су слободни."
+
+#: src/vcal_meeting_gtk.c:1184
+msgid ""
+"Everyone seems available, but some free/busy information failed to be "
+"retrieved."
+msgstr ""
+"Изгледа да су сви слободни, али неке слободан/заузет информације нису могле "
+"да буду прибављене"
+
+#: src/vcal_meeting_gtk.c:1356
+msgid ""
+"Could not send the meeting invitation.\n"
+"Check the recipients."
+msgstr ""
+"Није могуће послати позивницу за састанак.\n"
+"Проверите примаоце."
+
+#: src/vcal_meeting_gtk.c:1472
+msgid "Save & Send"
+msgstr "Сачувај и пошаљи"
+
+#: src/vcal_meeting_gtk.c:1473
+msgid "Check availability"
+msgstr "Провери доступност"
+
+#: src/vcal_meeting_gtk.c:1596
+msgid "<b>Starts at:</b> "
+msgstr "<b>Почиње у:</b> "
+
+#: src/vcal_meeting_gtk.c:1601 src/vcal_meeting_gtk.c:1623
+msgid "<b> on:</b>"
+msgstr "<b> у:</b>"
+
+#: src/vcal_meeting_gtk.c:1618
+msgid "<b>Ends at:</b> "
+msgstr "<b>Завршава се:</b> "
+
+#: src/vcal_meeting_gtk.c:1657
+msgid "New meeting"
+msgstr "Нови састанак"
+
+#: src/vcal_meeting_gtk.c:1659
+#, c-format
+msgid "%s - Edit meeting"
+msgstr "%s - Уреди састанак"
+
+#: src/vcal_meeting_gtk.c:1714 src/vcal_meeting_gtk.c:1738
+msgid "Time:"
+msgstr "Време:"
+
+#: src/vcal_meeting_gtk.c:1874
+#, c-format
+msgid "%d hour"
+msgid_plural "%d hours"
+msgstr[0] "%d сат"
+msgstr[1] "%d сата"
+msgstr[2] "%d сати"
+
+#: src/vcal_meeting_gtk.c:1877
+#, c-format
+msgid "%d minute"
+msgid_plural "%d minutes"
+msgstr[0] "%d минут"
+msgstr[1] "%d минута"
+msgstr[2] "%d минута"
+
+#: src/vcal_meeting_gtk.c:1888
+#, c-format
+msgid "Upcoming event: %s"
+msgstr "Следе догађаји: %s"
+
+#: src/vcal_meeting_gtk.c:1889
+#, fuzzy, c-format
+msgid ""
+"You have a meeting or event soon.\n"
+"It starts at %s and ends %s later.\n"
+"Location: %s\n"
+"More information:\n"
+"\n"
+"%s"
+msgstr ""
+"Ускоро имате састанак или догађај.\n"
+"Он почиње у %s а завршава се %s касније.\n"
+"Више информација:\n"
+"\n"
+"%s"
+
+#: src/vcal_meeting_gtk.c:1906
+#, c-format
+msgid "Remind me in %d minute"
+msgid_plural "Remind me in %d minutes"
+msgstr[0] "Подсети ме за %d минут"
+msgstr[1] "Подсети ме за %d минута"
+msgstr[2] "Подсети ме за %d минута"
+
+#: src/vcal_meeting_gtk.c:2032
+msgid "Empty calendar"
+msgstr "Празан календар"
+
+#: src/vcal_meeting_gtk.c:2033
+msgid "There is nothing to export."
+msgstr "Нема ничега за извоз."
+
+#: src/vcal_meeting_gtk.c:2073
+msgid "Could not export the calendar."
+msgstr "Није могућ извоз календара."
+
+#: src/vcal_meeting_gtk.c:2090
+msgid "Export calendar to ICS"
+msgstr "Извези календар у ICS"
+
+#: src/vcal_meeting_gtk.c:2112
+#, c-format
+msgid "Couldn't export calendar to '%s'\n"
+msgstr "Није могућ извоз календара у „%s“\n"
+
+#: src/vcal_meeting_gtk.c:2228
+msgid "Could not export the freebusy info."
+msgstr "Није могућ извоз информације слободан/заузет."
+
+#: src/vcal_meeting_gtk.c:2259
+#, c-format
+msgid "Couldn't export free/busy to '%s'\n"
+msgstr "Није могућ извоз слободан/заузет у „%s“\n"
+
+#: src/vcal_prefs.c:254
+msgid "Reminders"
+msgstr "Подсетници"
+
+#: src/vcal_prefs.c:263
+msgid "Alert me"
+msgstr "Обавести ме"
+
+#: src/vcal_prefs.c:275
+msgid "minutes before an event"
+msgstr "минута пре догађаја"
+
+#: src/vcal_prefs.c:287
+msgid "Calendar export"
+msgstr "Извоз календара"
+
+#: src/vcal_prefs.c:298
+msgid "Automatically export calendar to"
+msgstr "Аутоматски извези календар у"
+
+#: src/vcal_prefs.c:307 src/vcal_prefs.c:413
+msgid "You can export to a local file or URL"
+msgstr "Можете да извршите извоз у локалну датотеку или адресу"
+
+#: src/vcal_prefs.c:309
+msgid "Specify a local file or URL (http://server/path/file.ics)"
+msgstr "Одредите локалну датотек или адресу (http://server/path/file.ics)"
+
+#: src/vcal_prefs.c:339
+msgid "Include webcal subscriptions in export"
+msgstr "Укључи webcal пријаве у извоз"
+
+#: src/vcal_prefs.c:349
+msgid "Command to run after calendar export"
+msgstr "Команда која ће се извршити по извозу календара"
+
+#: src/vcal_prefs.c:378
+#, fuzzy
+msgid "Register Claws' calendar in XFCE's Orage clock"
+msgstr "Региструј Claws Calendar у XFCE Orange планер."
+
+#: src/vcal_prefs.c:380
+msgid "Allows Orage (version greater than 4.4) to see Claws Mail's calendar"
+msgstr ""
+"Дозвољава Orange планеру (верзије веће од 4.4) да виде Claws Mail календар"
+
+#: src/vcal_prefs.c:392
+msgid "Free/Busy information"
+msgstr "Информација слободан/заузет"
+
+#: src/vcal_prefs.c:404
+msgid "Automatically export free/busy status to"
+msgstr "Аутоматски извези слободан/заузет статус у"
+
+#: src/vcal_prefs.c:415
+msgid "Specify a local file or URL (http://server/path/file.ifb)"
+msgstr "Одредите локалну датотеку или адресу (http://server/path/file.ifb)"
+
+#: src/vcal_prefs.c:445
+msgid "Command to run after free/busy status export"
+msgstr "Команда која ће се извршити по извозу статуса слободан/заузет"
+
+#: src/vcal_prefs.c:472
+msgid "Get free/busy status of others from"
+msgstr "Прибави слободан/заузет статус од других са"
+
+#: src/vcal_prefs.c:480
+#, c-format
+msgid ""
+"Specify a local file or URL (http://server/path/file.ifb). Use %u for the "
+"left part of the email address, %d for the domain"
+msgstr ""
+"Одредите локалну датотеку или адресу (http://server/path/file.ifb). "
+"Користите %u за леви део адресе е-поште, %d домен"
+
+#: src/day-view.c:597 src/month-view.c:697
+#, fuzzy
+msgid "Start"
+msgstr "Почетак:"
+
+#: src/day-view.c:610 src/month-view.c:710
+msgid "Show"
+msgstr ""
+
+#: src/month-view.c:107
+msgid "Monday"
+msgstr ""
+
+#: src/month-view.c:108
+msgid "Tuesday"
+msgstr ""
+
+#: src/month-view.c:109
+msgid "Wednesday"
+msgstr ""
+
+#: src/month-view.c:110
+msgid "Thursday"
+msgstr ""
+
+#: src/month-view.c:111
+msgid "Friday"
+msgstr ""
+
+#: src/month-view.c:112
+msgid "Saturday"
+msgstr ""
+
+#: src/month-view.c:113
+msgid "Sunday"
+msgstr ""
+
+#: src/month-view.c:116
+msgid "January"
+msgstr ""
+
+#: src/month-view.c:117
+msgid "February"
+msgstr ""
+
+#: src/month-view.c:118
+msgid "March"
+msgstr ""
+
+#: src/month-view.c:119
+msgid "April"
+msgstr ""
+
+#: src/month-view.c:120
+msgid "May"
+msgstr ""
+
+#: src/month-view.c:121
+msgid "June"
+msgstr ""
+
+#: src/month-view.c:122
+msgid "July"
+msgstr ""
+
+#: src/month-view.c:123
+msgid "August"
+msgstr ""
+
+#: src/month-view.c:124
+msgid "September"
+msgstr ""
+
+#: src/month-view.c:125
+msgid "October"
+msgstr ""
+
+#: src/month-view.c:126
+msgid "November"
+msgstr ""
+
+#: src/month-view.c:127
+msgid "December"
+msgstr ""
+
+#: src/month-view.c:805
+msgid "Week number"
+msgstr ""
+
+#: src/month-view.c:903
+msgid "Previous month"
+msgstr ""
+
+#: src/month-view.c:926
+msgid "Next month"
+msgstr ""
+
+#~ msgid "/New meeting..."
+#~ msgstr "/Нови састанак..."
+
+#~ msgid "/Export calendar..."
+#~ msgstr "/Извези календар..."
+
+#~ msgid "/Subscribe to webCal..."
+#~ msgstr "/Пријава на webCal..."
+
+#~ msgid "/Unsubscribe..."
+#~ msgstr "/Одјава..."
+
+#~ msgid "/Rename..."
+#~ msgstr "/Преименуј..."
+
+#~ msgid "Claws Mail needs network access in order to update the Webcal feed."
+#~ msgstr "Claws Mail захтева приступ мрежи да би освежио webCal извор."
+
+#~ msgid "Claws Mail needs network access in order to update the subscription."
+#~ msgstr "Claws Mail захтева приступ мрежи да би освежио праћени садржај."
