@@ -1,3 +1,14 @@
+2013-02-14 [colin]	3.9.0cvs66
+
+	* src/plugins/vcalendar/claws.def
+	* src/plugins/vcalendar/plugin.def
+		Add missing files
+	* src/plugins/vcalendar/libical/Makefile.in
+	* src/plugins/vcalendar/libical/design-data/Makefile.in
+	* src/plugins/vcalendar/libical/libical/Makefile.in
+	* src/plugins/vcalendar/libical/scripts/Makefile.in
+		Remove extraneous files
+
 2013-02-13 [colin]	3.9.0cvs65
 
 	* src/plugins/address_dup_finder/placeholder.txt
