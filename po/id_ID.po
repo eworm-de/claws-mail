@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Claws Mail\n"
 "Report-Msgid-Bugs-To: paul@claws-mail.org\n"
-"POT-Creation-Date: 2013-02-14 11:15+0100\n"
+"POT-Creation-Date: 2013-02-14 11:13+0000\n"
 "PO-Revision-Date: 2012-06-25 16:35+0700\n"
 "Last-Translator: MSulchan Darmawan <bleketux@gmail.com>\n"
 "Language-Team: MSulchan Darmawan <bleketux@gmail.com>\n"
@@ -9556,68 +9556,69 @@ msgstr "Sembunyikan ke tray"
 msgid "Hide Claws Mail using the tray icon instead of minimizing it"
 msgstr "Sembunyikan Claws Mail menggunakan ikon tray daripada meminimasi"
 
-#: src/vcalendar.c:96
+#: src/plugins/vcalendar/vcalendar.c:100
 msgid "Create meeting from message..."
 msgstr "Buat pertemuan dari pesan..."
 
-#: src/vcalendar.c:116
+#: src/plugins/vcalendar/vcalendar.c:120
 #, c-format
 msgid ""
 "You are about to create %d meetings, one by one. Do you want to continue?"
 msgstr ""
 "Anda akan membuat %d pertemuan, satu per satu. Apakah akan anda lanjutkan?"
 
-#: src/vcalendar.c:135
+#: src/plugins/vcalendar/vcalendar.c:139
 msgid "Creating meeting..."
 msgstr "Membuat pertemuan..."
 
-#: src/vcalendar.c:154
+#: src/plugins/vcalendar/vcalendar.c:158
 msgid "no subject"
 msgstr "Tidak ada subyek"
 
-#: src/vcalendar.c:389
+#: src/plugins/vcalendar/vcalendar.c:393
 msgid "Accept"
 msgstr "Terima"
 
-#: src/vcalendar.c:390
+#: src/plugins/vcalendar/vcalendar.c:394
 msgid "Tentatively accept"
 msgstr "Terima untuk sementara"
 
-#: src/vcalendar.c:391
+#: src/plugins/vcalendar/vcalendar.c:395
 msgid "Decline"
 msgstr "Tolak"
 
-#: src/vcalendar.c:478
+#: src/plugins/vcalendar/vcalendar.c:482
 msgid "You have a Todo item."
 msgstr "Anda memiliki item yg Akandilakukan."
 
-#: src/vcalendar.c:479 src/vcalendar.c:486 src/vcalendar.c:491
-#: src/vcalendar.c:499 src/vcalendar.c:508 src/vcalendar.c:746
+#: src/plugins/vcalendar/vcalendar.c:483 src/plugins/vcalendar/vcalendar.c:490
+#: src/plugins/vcalendar/vcalendar.c:495 src/plugins/vcalendar/vcalendar.c:503
+#: src/plugins/vcalendar/vcalendar.c:512 src/plugins/vcalendar/vcalendar.c:750
 msgid "Details follow:"
 msgstr "Detail berikut:"
 
-#: src/vcalendar.c:485
+#: src/plugins/vcalendar/vcalendar.c:489
 msgid "You have created a meeting."
 msgstr "Anda telah membuat sebuah pertemuan."
 
-#: src/vcalendar.c:490
+#: src/plugins/vcalendar/vcalendar.c:494
 msgid "You have been invited to a meeting."
 msgstr "Anda telah diundang ke sebuah pertemuan."
 
-#: src/vcalendar.c:498
+#: src/plugins/vcalendar/vcalendar.c:502
 msgid "A meeting to which you had been invited has been cancelled."
 msgstr "Pertemuan yang mana anda telah diundang telah dibatalkan."
 
-#: src/vcalendar.c:507
+#: src/plugins/vcalendar/vcalendar.c:511
 msgid "You have been forwarded an appointment."
 msgstr "Anda telah diterusi sebuah perjanjian."
 
-#: src/vcalendar.c:560
+#: src/plugins/vcalendar/vcalendar.c:564
 #, c-format
 msgid "%s <span weight=\"bold\">(this event recurs)</span>"
 msgstr "%s <span weight=\"bold\">(kegiatan ini rekursif)</span>"
 
-#: src/vcalendar.c:566
+#: src/plugins/vcalendar/vcalendar.c:570
 #, c-format
 msgid ""
 "%s <span weight=\"bold\">(this event is part of a recurring event)</span>"
@@ -9625,12 +9626,12 @@ msgstr ""
 "%s <span weight=\"bold\">(kegiatan ini bagian dari kegiatan yang rekursif)</"
 "span>"
 
-#: src/vcalendar.c:745
+#: src/plugins/vcalendar/vcalendar.c:749
 msgid "You have received an answer to an unknown meeting proposal."
 msgstr ""
 "Anda telah menerima jawaban terhadap proposal pertemuan yang tidak diketahui."
 
-#: src/vcalendar.c:749
+#: src/plugins/vcalendar/vcalendar.c:753
 #, c-format
 msgid ""
 "You have received an answer to a meeting proposal.\n"
@@ -9639,35 +9640,35 @@ msgstr ""
 "Anda telah menerima jawaban terhadap proposal pertemuan.\n"
 "%s telah %s undangan dengan detail sebagai berikut:"
 
-#: src/vcalendar.c:828
+#: src/plugins/vcalendar/vcalendar.c:832
 msgid "Error - could not get the calendar MIME part."
 msgstr "Kesalahan - tidak dapat mengambil bagian MIME kalender."
 
-#: src/vcalendar.c:835
+#: src/plugins/vcalendar/vcalendar.c:839
 msgid "Error - no calendar part found."
 msgstr "Kesalahan - tidak ada bagian kalender yang ditemukan."
 
-#: src/vcalendar.c:849
+#: src/plugins/vcalendar/vcalendar.c:853
 msgid "Error - Unknown calendar component type."
 msgstr "Kesalahan - Tipe komponen kalender tidak diketahui."
 
-#: src/vcalendar.c:978
+#: src/plugins/vcalendar/vcalendar.c:982
 msgid "Send a notification to the attendees"
 msgstr "Kirim pemberitahuan ke peserta"
 
-#: src/vcalendar.c:987
+#: src/plugins/vcalendar/vcalendar.c:991
 msgid "Cancel meeting"
 msgstr "Batalkan pertemuan"
 
-#: src/vcalendar.c:988
+#: src/plugins/vcalendar/vcalendar.c:992
 msgid "Are you sure you want to cancel this meeting?"
 msgstr "Apakah anda yakin ingin membatalkan pertemuan ini?"
 
-#: src/vcalendar.c:1083
+#: src/plugins/vcalendar/vcalendar.c:1087
 msgid "No account found"
 msgstr "Tidak ada akun yang ditemukan"
 
-#: src/vcalendar.c:1084
+#: src/plugins/vcalendar/vcalendar.c:1088
 msgid ""
 "You have no account matching any attendee.\n"
 "Do you want to reply anyway ?"
@@ -9675,91 +9676,97 @@ msgstr ""
 "Anda tidak memiliki akun yang cocok dengan setiap peserta.\n"
 "Apakah anda akan tetap balas ?"
 
-#: src/vcalendar.c:1086
+#: src/plugins/vcalendar/vcalendar.c:1090
 msgid "+Reply anyway"
 msgstr "+Balas saja"
 
-#: src/vcalendar.c:1215
+#: src/plugins/vcalendar/vcalendar.c:1219
 msgid "Answer"
 msgstr "Jawab"
 
-#: src/vcalendar.c:1216
+#: src/plugins/vcalendar/vcalendar.c:1220
 msgid "Edit meeting..."
 msgstr "Sunting pertemuan..."
 
-#: src/vcalendar.c:1217
+#: src/plugins/vcalendar/vcalendar.c:1221
 msgid "Cancel meeting..."
 msgstr "Batalkan pertemuan..."
 
-#: src/vcalendar.c:1218
+#: src/plugins/vcalendar/vcalendar.c:1222
 msgid "Launch website"
 msgstr "Luncurkan situs"
 
-#: src/vcalendar.c:1222
+#: src/plugins/vcalendar/vcalendar.c:1226
 msgid "You are already busy at this time."
 msgstr "Anda sudah sibuk pada waktu ini."
 
-#: src/vcalendar.c:1261 src/vcal_meeting_gtk.c:1734
+#: src/plugins/vcalendar/vcalendar.c:1265
+#: src/plugins/vcalendar/vcal_meeting_gtk.c:1738
 msgid "Event:"
 msgstr "Kegiatan:"
 
-#: src/vcalendar.c:1262 src/vcal_meeting_gtk.c:1712
-#: src/vcal_meeting_gtk.c:1723
+#: src/plugins/vcalendar/vcalendar.c:1266
+#: src/plugins/vcalendar/vcal_meeting_gtk.c:1716
+#: src/plugins/vcalendar/vcal_meeting_gtk.c:1727
 msgid "Organizer:"
 msgstr "Pelaksana:"
 
-#: src/vcalendar.c:1263 src/vcal_meeting_gtk.c:1715
-#: src/vcal_meeting_gtk.c:1725
+#: src/plugins/vcalendar/vcalendar.c:1267
+#: src/plugins/vcalendar/vcal_meeting_gtk.c:1719
+#: src/plugins/vcalendar/vcal_meeting_gtk.c:1729
 msgid "Location:"
 msgstr "Lokasi:"
 
-#: src/vcalendar.c:1264 src/vcal_meeting_gtk.c:1713
-#: src/vcal_meeting_gtk.c:1724
+#: src/plugins/vcalendar/vcalendar.c:1268
+#: src/plugins/vcalendar/vcal_meeting_gtk.c:1717
+#: src/plugins/vcalendar/vcal_meeting_gtk.c:1728
 msgid "Summary:"
 msgstr "Ringkasan:"
 
-#: src/vcalendar.c:1265
+#: src/plugins/vcalendar/vcalendar.c:1269
 msgid "Starting:"
 msgstr "Mulai:"
 
-#: src/vcalendar.c:1266
+#: src/plugins/vcalendar/vcalendar.c:1270
 msgid "Ending:"
 msgstr "Selesai:"
 
-#: src/vcalendar.c:1268 src/vcal_meeting_gtk.c:1717
-#: src/vcal_meeting_gtk.c:1727
+#: src/plugins/vcalendar/vcalendar.c:1272
+#: src/plugins/vcalendar/vcal_meeting_gtk.c:1721
+#: src/plugins/vcalendar/vcal_meeting_gtk.c:1731
 msgid "Attendees:"
 msgstr "Peserta:"
 
-#: src/vcalendar.c:1270
+#: src/plugins/vcalendar/vcalendar.c:1274
 msgid "Action:"
 msgstr "Aksi:"
 
-#: src/vcal_prefs.c:254
+#: src/plugins/vcalendar/vcal_prefs.c:256
 msgid "Reminders"
 msgstr "Pengingat"
 
-#: src/vcal_prefs.c:263
+#: src/plugins/vcalendar/vcal_prefs.c:265
 msgid "Alert me"
 msgstr "Beritahu saya"
 
-#: src/vcal_prefs.c:275
+#: src/plugins/vcalendar/vcal_prefs.c:277
 msgid "minutes before an event"
 msgstr "menit sebelum kegiatan"
 
-#: src/vcal_prefs.c:287
+#: src/plugins/vcalendar/vcal_prefs.c:289
 msgid "Calendar export"
 msgstr "Ekspor kalender"
 
-#: src/vcal_prefs.c:298
+#: src/plugins/vcalendar/vcal_prefs.c:300
 msgid "Automatically export calendar to"
 msgstr "Otomatis mengekspor kalender ke"
 
-#: src/vcal_prefs.c:307 src/vcal_prefs.c:413
+#: src/plugins/vcalendar/vcal_prefs.c:309
+#: src/plugins/vcalendar/vcal_prefs.c:415
 msgid "You can export to a local file or URL"
 msgstr "Anda dapat mengekspor ke berkas lokal atau URL"
 
-#: src/vcal_prefs.c:309
+#: src/plugins/vcalendar/vcal_prefs.c:311
 msgid "Specify a local file or URL (http://server/path/file.ics)"
 msgstr "Tentukan berkas lokal atau URL (http://server/jalur/berkas.ics)"
 
@@ -9776,45 +9783,45 @@ msgstr "ID Pengguna"
 msgid "Password"
 msgstr "Sandi"
 
-#: src/vcal_prefs.c:339
+#: src/plugins/vcalendar/vcal_prefs.c:341
 msgid "Include webcal subscriptions in export"
 msgstr "Sertakan langganan webcal dalam ekspor"
 
-#: src/vcal_prefs.c:349
+#: src/plugins/vcalendar/vcal_prefs.c:351
 msgid "Command to run after calendar export"
 msgstr "Perintah untuk dijalankan setelah mengekspor kalender"
 
-#: src/vcal_prefs.c:378
+#: src/plugins/vcalendar/vcal_prefs.c:380
 msgid "Register Claws' calendar in XFCE's Orage clock"
 msgstr "Registrasi kalender Claws pada jam Orage XFCE"
 
-#: src/vcal_prefs.c:380
+#: src/plugins/vcalendar/vcal_prefs.c:382
 msgid "Allows Orage (version greater than 4.4) to see Claws Mail's calendar"
 msgstr ""
 "Perbolehkan Orage (versi lebih besar dari 4.4) untuk melihat kalender Claws "
 "Mail"
 
-#: src/vcal_prefs.c:392
+#: src/plugins/vcalendar/vcal_prefs.c:394
 msgid "Free/Busy information"
 msgstr "Informasi Bebas/Sibuk"
 
-#: src/vcal_prefs.c:404
+#: src/plugins/vcalendar/vcal_prefs.c:406
 msgid "Automatically export free/busy status to"
 msgstr "Otomatis ekspor status bebas/sibuk ke"
 
-#: src/vcal_prefs.c:415
+#: src/plugins/vcalendar/vcal_prefs.c:417
 msgid "Specify a local file or URL (http://server/path/file.ifb)"
 msgstr "Tentukan berkas lokal atau URL (http://server/jalur/berkas.ifb)"
 
-#: src/vcal_prefs.c:445
+#: src/plugins/vcalendar/vcal_prefs.c:447
 msgid "Command to run after free/busy status export"
 msgstr "Perintah untuk dijalankan setelah mengekspor status bebas/sibuk"
 
-#: src/vcal_prefs.c:472
+#: src/plugins/vcalendar/vcal_prefs.c:474
 msgid "Get free/busy status of others from"
 msgstr "Ambil status bebas/sibuk lainnya dari"
 
-#: src/vcal_prefs.c:480
+#: src/plugins/vcalendar/vcal_prefs.c:482
 #, c-format
 msgid ""
 "Specify a local file or URL (http://server/path/file.ifb). Use %u for the "
@@ -9823,63 +9830,64 @@ msgstr ""
 "Tentukan berkas lokal atau URL (http://server/jalur/berkas.ifb). Gunakan %u "
 "untuk bagian kiri dari alamat email, %d untuk domain"
 
-#: src/plugin.c:47 src/plugin.c:68 src/vcal_prefs.c:644
+#: src/plugins/vcalendar/vcal_prefs.c:646 src/plugins/vcalendar/plugin.c:44
+#: src/plugins/vcalendar/plugin.c:65
 msgid "vCalendar"
 msgstr "vCalendar"
 
-#: src/vcal_folder.c:160
+#: src/plugins/vcalendar/vcal_folder.c:164
 msgid "_New meeting..."
 msgstr "Pertemua_n baru..."
 
-#: src/vcal_folder.c:161
+#: src/plugins/vcalendar/vcal_folder.c:165
 msgid "_Export calendar..."
 msgstr "_Ekspor kalender..."
 
-#: src/vcal_folder.c:162
+#: src/plugins/vcalendar/vcal_folder.c:166
 msgid "_Subscribe to webCal..."
 msgstr "_Langganan ke webCal..."
 
-#: src/vcal_folder.c:164
+#: src/plugins/vcalendar/vcal_folder.c:168
 msgid "_Rename..."
 msgstr "_Ganti nama..."
 
-#: src/vcal_folder.c:165
+#: src/plugins/vcalendar/vcal_folder.c:169
 msgid "U_pdate subscriptions"
 msgstr "_Perbaharui langganan"
 
-#: src/vcal_folder.c:166
+#: src/plugins/vcalendar/vcal_folder.c:170
 msgid "_List view"
 msgstr "Tampi_lan daftar"
 
-#: src/vcal_folder.c:167
+#: src/plugins/vcalendar/vcal_folder.c:171
 msgid "_Week view"
 msgstr "Tampilan _minggu"
 
-#: src/vcal_folder.c:168
+#: src/plugins/vcalendar/vcal_folder.c:172
 msgid "_Month view"
 msgstr "Tampilan _bulan"
 
-#: src/vcal_folder.c:1471
+#: src/plugins/vcalendar/vcal_folder.c:1475
 msgid "in the past"
 msgstr "di masa lalu"
 
-#: src/vcal_folder.c:1474
+#: src/plugins/vcalendar/vcal_folder.c:1478
 msgid "today"
 msgstr "hari ini"
 
-#: src/vcal_folder.c:1477
+#: src/plugins/vcalendar/vcal_folder.c:1481
 msgid "tomorrow"
 msgstr "besok"
 
-#: src/vcal_folder.c:1480
+#: src/plugins/vcalendar/vcal_folder.c:1484
 msgid "this week"
 msgstr "minggu ini"
 
-#: src/vcal_folder.c:1483
+#: src/plugins/vcalendar/vcal_folder.c:1487
 msgid "later"
 msgstr "nanti"
 
-#: src/vcal_folder.c:1487
+#: src/plugins/vcalendar/vcal_folder.c:1491
 #, c-format
 msgid ""
 "\n"
@@ -9888,29 +9896,29 @@ msgstr ""
 "\n"
 "Berikut ini adalah kegiatan yang direncanakan %s:\n"
 
-#: src/vcal_folder.c:1580
+#: src/plugins/vcalendar/vcal_folder.c:1584
 #, c-format
 msgid "Timeout (%d seconds) connecting to %s\n"
 msgstr "Waktuhabis (%d detik) menyambung ke %s\n"
 
-#: src/vcal_folder.c:1589
+#: src/plugins/vcalendar/vcal_folder.c:1593
 msgid "401 (Authorisation required)"
 msgstr "401 (Authorisation required)"
 
-#: src/vcal_folder.c:1592
+#: src/plugins/vcalendar/vcal_folder.c:1596
 msgid "403 (Unauthorised)"
 msgstr "403 (Unauthorised)"
 
-#: src/vcal_folder.c:1595
+#: src/plugins/vcalendar/vcal_folder.c:1599
 msgid "404 (Not found)"
 msgstr "404 (Not found)"
 
-#: src/vcal_folder.c:1598
+#: src/plugins/vcalendar/vcal_folder.c:1602
 #, c-format
 msgid "Error %ld"
 msgstr "Kesalahan %ld"
 
-#: src/vcal_folder.c:1795
+#: src/plugins/vcalendar/vcal_folder.c:1799
 #, c-format
 msgid ""
 "Could not retrieve the Webcal URL:\n"
@@ -9923,7 +9931,7 @@ msgstr ""
 "\n"
 "%s"
 
-#: src/vcal_folder.c:1799
+#: src/plugins/vcalendar/vcal_folder.c:1803
 #, c-format
 msgid ""
 "Could not retrieve the Webcal URL:\n"
@@ -9936,7 +9944,7 @@ msgstr ""
 "\n"
 "%s\n"
 
-#: src/vcal_folder.c:1810
+#: src/plugins/vcalendar/vcal_folder.c:1814
 #, c-format
 msgid ""
 "This URL does not look like a WebCal URL:\n"
@@ -9947,7 +9955,7 @@ msgstr ""
 "%s\n"
 "%s"
 
-#: src/vcal_folder.c:1813
+#: src/plugins/vcalendar/vcal_folder.c:1817
 #, c-format
 msgid ""
 "This URL does not look like a WebCal URL:\n"
@@ -9957,6 +9965,10 @@ msgstr ""
 "URL ini sepertinya bukan URL WebCal:\n"
 "%s\n"
 "%s\n"
+
+#: src/plugins/vcalendar/vcal_folder.c:1874
+msgid "Claws Mail needs network access in order to update the Webcal feed."
+msgstr "Claws Mail membutuhkan akses jaringan untuk memperbaharui feed Webcal."
 
 #: src/plugins/vcalendar/vcal_folder.c:1885
 #, fuzzy, c-format
@@ -9968,35 +9980,39 @@ msgstr "Memperbaharui tampungan untuk %s..."
 msgid "new subscription"
 msgstr "Pendaftaran Newsgroup"
 
-#: src/vcal_folder.c:1905
+#: src/plugins/vcalendar/vcal_folder.c:1897
+msgid "Claws Mail needs network access in order to update the subscription."
+msgstr "Claws Mail membutuhkan akses jaringan untuk memperbaharui langganan."
+
+#: src/plugins/vcalendar/vcal_folder.c:1909
 msgid "Subscribe to WebCal"
 msgstr "Langganan ke WebCal"
 
-#: src/vcal_folder.c:1905
+#: src/plugins/vcalendar/vcal_folder.c:1909
 msgid "Enter the WebCal URL:"
 msgstr "Masukkan URL WebCal:"
 
-#: src/vcal_folder.c:1919
+#: src/plugins/vcalendar/vcal_folder.c:1923
 msgid "Could not parse the URL."
 msgstr "Tidak dapat mengurai URL."
 
-#: src/vcal_folder.c:1948
+#: src/plugins/vcalendar/vcal_folder.c:1952
 msgid "Do you really want to unsubscribe?"
 msgstr "Apakah anda benar-benar ingin berhenti langganan?"
 
-#: src/vcal_meeting_gtk.c:309
+#: src/plugins/vcalendar/vcal_meeting_gtk.c:313
 msgid "Individual"
 msgstr "Individu"
 
-#: src/vcal_meeting_gtk.c:311
+#: src/plugins/vcalendar/vcal_meeting_gtk.c:315
 msgid "Resource"
 msgstr "Sumberdaya"
 
-#: src/vcal_meeting_gtk.c:312
+#: src/plugins/vcalendar/vcal_meeting_gtk.c:316
 msgid "Room"
 msgstr "Ruangan"
 
-#: src/vcal_meeting_gtk.c:325
+#: src/plugins/vcalendar/vcal_meeting_gtk.c:329
 msgid "Add..."
 msgstr "Tambah..."
 
@@ -10004,7 +10020,7 @@ msgstr "Tambah..."
 msgid "Remove"
 msgstr "Hapus"
 
-#: src/vcal_meeting_gtk.c:784
+#: src/plugins/vcalendar/vcal_meeting_gtk.c:788
 msgid ""
 "The following person(s) are busy at the time of your planned meeting:\n"
 "- "
@@ -10012,61 +10028,62 @@ msgstr ""
 "Orang-orang berikut sibuk di waktu yang anda rencanakan untuk pertemuan:\n"
 "- "
 
-#: src/vcal_meeting_gtk.c:785 src/vcal_meeting_gtk.c:877
-#: src/vcal_meeting_gtk.c:963
+#: src/plugins/vcalendar/vcal_meeting_gtk.c:789
+#: src/plugins/vcalendar/vcal_meeting_gtk.c:881
+#: src/plugins/vcalendar/vcal_meeting_gtk.c:967
 msgid "You"
 msgstr "Anda"
 
-#: src/vcal_meeting_gtk.c:786
+#: src/plugins/vcalendar/vcal_meeting_gtk.c:790
 msgid "You are busy at the time of your planned meeting"
 msgstr "Anda sibuk di waktu yang anda rencanakan untuk pertemuan"
 
-#: src/vcal_meeting_gtk.c:788
+#: src/plugins/vcalendar/vcal_meeting_gtk.c:792
 #, c-format
 msgid "%s is busy at the time of your planned meeting"
 msgstr "%s sibuk pada waktu pertemuan yang anda rencanakan"
 
-#: src/vcal_meeting_gtk.c:790
+#: src/plugins/vcalendar/vcal_meeting_gtk.c:794
 #, c-format
 msgid "%d hour sooner"
 msgstr "%d jam lebih cepat"
 
-#: src/vcal_meeting_gtk.c:792
+#: src/plugins/vcalendar/vcal_meeting_gtk.c:796
 #, c-format
 msgid "%d hours sooner"
 msgstr "%d jam lebih cepat"
 
-#: src/vcal_meeting_gtk.c:794
+#: src/plugins/vcalendar/vcal_meeting_gtk.c:798
 #, c-format
 msgid "%d hours and %d minutes sooner"
 msgstr "%d jam dan %d menit lebih cepat"
 
-#: src/vcal_meeting_gtk.c:796
+#: src/plugins/vcalendar/vcal_meeting_gtk.c:800
 #, c-format
 msgid "%d minutes sooner"
 msgstr "%d menit lebih cepat"
 
-#: src/vcal_meeting_gtk.c:801
+#: src/plugins/vcalendar/vcal_meeting_gtk.c:805
 #, c-format
 msgid "%d hour later"
 msgstr "%d jam lebih lambat"
 
-#: src/vcal_meeting_gtk.c:803
+#: src/plugins/vcalendar/vcal_meeting_gtk.c:807
 #, c-format
 msgid "%d hours later"
 msgstr "%d jam lebih lambat"
 
-#: src/vcal_meeting_gtk.c:805
+#: src/plugins/vcalendar/vcal_meeting_gtk.c:809
 #, c-format
 msgid "%d hours and %d minutes later"
 msgstr "%d jam dan %d menit lebih lambat"
 
-#: src/vcal_meeting_gtk.c:807
+#: src/plugins/vcalendar/vcal_meeting_gtk.c:811
 #, c-format
 msgid "%d minutes later"
 msgstr "%d menit lebih lambat"
 
-#: src/vcal_meeting_gtk.c:813
+#: src/plugins/vcalendar/vcal_meeting_gtk.c:817
 #, c-format
 msgid ""
 "\n"
@@ -10077,7 +10094,7 @@ msgstr ""
 "\n"
 "Setiap orang akan tersedia %s atau %s."
 
-#: src/vcal_meeting_gtk.c:815
+#: src/plugins/vcalendar/vcal_meeting_gtk.c:819
 #, c-format
 msgid ""
 "\n"
@@ -10088,7 +10105,7 @@ msgstr ""
 "\n"
 "Setiap orang akan tersedia %s."
 
-#: src/vcal_meeting_gtk.c:817
+#: src/plugins/vcalendar/vcal_meeting_gtk.c:821
 msgid ""
 "\n"
 "\n"
@@ -10100,52 +10117,54 @@ msgstr ""
 "Sangat tidak mungkin untuk melakukan pertemuan dengan setiap orang selama "
 "sebelum atau setelah 6 jam."
 
-#: src/vcal_meeting_gtk.c:822
+#: src/plugins/vcalendar/vcal_meeting_gtk.c:826
 #, c-format
 msgid "would be available %s or %s"
 msgstr "akan tersedia %s atau %s"
 
-#: src/vcal_meeting_gtk.c:824
+#: src/plugins/vcalendar/vcal_meeting_gtk.c:828
 #, c-format
 msgid "would be available %s"
 msgstr "akan tersedia %s"
 
-#: src/vcal_meeting_gtk.c:826 src/vcal_meeting_gtk.c:890
-#: src/vcal_meeting_gtk.c:960
+#: src/plugins/vcalendar/vcal_meeting_gtk.c:830
+#: src/plugins/vcalendar/vcal_meeting_gtk.c:894
+#: src/plugins/vcalendar/vcal_meeting_gtk.c:964
 msgid "not available"
 msgstr "tidak tersedia"
 
-#: src/vcal_meeting_gtk.c:829
+#: src/plugins/vcalendar/vcal_meeting_gtk.c:833
 #, c-format
 msgid ", but would be available %s or %s."
 msgstr ", namun akan tersedia %s atau %s."
 
-#: src/vcal_meeting_gtk.c:831
+#: src/plugins/vcalendar/vcal_meeting_gtk.c:835
 #, c-format
 msgid ", but would be available %s."
 msgstr ", namun akan tersedia %s."
 
-#: src/vcal_meeting_gtk.c:833
+#: src/plugins/vcalendar/vcal_meeting_gtk.c:837
 msgid ", and isn't available in the previous or next 6 hours."
 msgstr ", dan tidak tersedia dalam sebelum atau setelah 6 jam."
 
-#: src/vcal_meeting_gtk.c:893
+#: src/plugins/vcalendar/vcal_meeting_gtk.c:897
 msgid "available"
 msgstr "tersedia"
 
-#: src/vcal_meeting_gtk.c:895 src/vcal_meeting_gtk.c:1146
+#: src/plugins/vcalendar/vcal_meeting_gtk.c:899
+#: src/plugins/vcalendar/vcal_meeting_gtk.c:1150
 msgid "Free/busy retrieval failed"
 msgstr "Pengambilan Bebas/sibuk gagal"
 
-#: src/vcal_meeting_gtk.c:977
+#: src/plugins/vcalendar/vcal_meeting_gtk.c:981
 msgid "Not everyone is available"
 msgstr "Tidak semua orang tersedia"
 
-#: src/vcal_meeting_gtk.c:978
+#: src/plugins/vcalendar/vcal_meeting_gtk.c:982
 msgid "Send anyway"
 msgstr "Kirim saja"
 
-#: src/vcal_meeting_gtk.c:989
+#: src/plugins/vcalendar/vcal_meeting_gtk.c:993
 msgid "Not everyone is available. See tooltips for more info..."
 msgstr "Tidak semua orang tersedia. Lihat tips untuk info lebih..."
 
@@ -10154,16 +10173,17 @@ msgstr "Tidak semua orang tersedia. Lihat tips untuk info lebih..."
 msgid "Fetching planning for %s..."
 msgstr "Memindai direktori %s ..."
 
-#: src/vcal_meeting_gtk.c:1155
+#: src/plugins/vcalendar/vcal_meeting_gtk.c:1159
 msgid "Available"
 msgstr "Tersedia"
 
-#: src/vcal_meeting_gtk.c:1168 src/vcal_meeting_gtk.c:1175
-#: src/vcal_meeting_gtk.c:1183
+#: src/plugins/vcalendar/vcal_meeting_gtk.c:1172
+#: src/plugins/vcalendar/vcal_meeting_gtk.c:1179
+#: src/plugins/vcalendar/vcal_meeting_gtk.c:1187
 msgid "Everyone is available."
 msgstr "Setiap orang tersedia."
 
-#: src/vcal_meeting_gtk.c:1184
+#: src/plugins/vcalendar/vcal_meeting_gtk.c:1188
 msgid ""
 "Everyone seems available, but some free/busy information failed to be "
 "retrieved."
@@ -10171,7 +10191,7 @@ msgstr ""
 "Setiap orang kelihatannya tersedia, namun beberapa informasi bebas/sibuk "
 "gagal diambil."
 
-#: src/vcal_meeting_gtk.c:1356
+#: src/plugins/vcalendar/vcal_meeting_gtk.c:1360
 msgid ""
 "Could not send the meeting invitation.\n"
 "Check the recipients."
@@ -10179,57 +10199,61 @@ msgstr ""
 "Tidak dapat mengirim undangan pertemuan.\n"
 "Periksa penerima."
 
-#: src/vcal_meeting_gtk.c:1472
+#: src/plugins/vcalendar/vcal_meeting_gtk.c:1476
 msgid "Save & Send"
 msgstr "Simpan & Kirim"
 
-#: src/vcal_meeting_gtk.c:1473
+#: src/plugins/vcalendar/vcal_meeting_gtk.c:1477
 msgid "Check availability"
 msgstr "Periksa ketersediaan"
 
-#: src/vcal_meeting_gtk.c:1596
+#: src/plugins/vcalendar/vcal_meeting_gtk.c:1600
 msgid "<b>Starts at:</b> "
 msgstr "<b>Mulai pada:</b> "
 
-#: src/vcal_meeting_gtk.c:1601 src/vcal_meeting_gtk.c:1623
+#: src/plugins/vcalendar/vcal_meeting_gtk.c:1605
+#: src/plugins/vcalendar/vcal_meeting_gtk.c:1627
 msgid "<b> on:</b>"
 msgstr "<b> pada:</b>"
 
-#: src/vcal_meeting_gtk.c:1618
+#: src/plugins/vcalendar/vcal_meeting_gtk.c:1622
 msgid "<b>Ends at:</b> "
 msgstr "<b>Berakhir pada:</b> "
 
-#: src/vcal_meeting_gtk.c:1657
+#: src/plugins/vcalendar/vcal_meeting_gtk.c:1661
 msgid "New meeting"
 msgstr "Pertemuan baru"
 
-#: src/vcal_meeting_gtk.c:1659
+#: src/plugins/vcalendar/vcal_meeting_gtk.c:1663
 #, c-format
 msgid "%s - Edit meeting"
 msgstr "%s - Sunting pertemuan"
 
-#: src/vcal_meeting_gtk.c:1714 src/vcal_meeting_gtk.c:1738
+#: src/plugins/vcalendar/vcal_meeting_gtk.c:1718
+#: src/plugins/vcalendar/vcal_meeting_gtk.c:1742
 msgid "Time:"
 msgstr "Waktu:"
 
-#: src/vcal_meeting_gtk.c:1874
+#: src/plugins/vcalendar/vcal_meeting_gtk.c:1878
 #, c-format
 msgid "%d hour"
 msgid_plural "%d hours"
 msgstr[0] "%d jam"
+msgstr[1] "%d jam"
 
-#: src/vcal_meeting_gtk.c:1877
+#: src/plugins/vcalendar/vcal_meeting_gtk.c:1881
 #, c-format
 msgid "%d minute"
 msgid_plural "%d minutes"
 msgstr[0] "%d menit"
+msgstr[1] "%d menit"
 
-#: src/vcal_meeting_gtk.c:1888
+#: src/plugins/vcalendar/vcal_meeting_gtk.c:1892
 #, c-format
 msgid "Upcoming event: %s"
 msgstr "Kegiatan berikut: %s"
 
-#: src/vcal_meeting_gtk.c:1889
+#: src/plugins/vcalendar/vcal_meeting_gtk.c:1893
 #, c-format
 msgid ""
 "You have a meeting or event soon.\n"
@@ -10246,111 +10270,112 @@ msgstr ""
 "\n"
 "%s"
 
-#: src/vcal_meeting_gtk.c:1906
+#: src/plugins/vcalendar/vcal_meeting_gtk.c:1910
 #, c-format
 msgid "Remind me in %d minute"
 msgid_plural "Remind me in %d minutes"
 msgstr[0] "Ingatkan saya dalam %d menit"
+msgstr[1] "Ingatkan saya dalam %d menit"
 
-#: src/vcal_meeting_gtk.c:2032
+#: src/plugins/vcalendar/vcal_meeting_gtk.c:2036
 msgid "Empty calendar"
 msgstr "Kalender kosong"
 
-#: src/vcal_meeting_gtk.c:2033
+#: src/plugins/vcalendar/vcal_meeting_gtk.c:2037
 msgid "There is nothing to export."
 msgstr "Tidak ada yang di ekspor."
 
-#: src/vcal_meeting_gtk.c:2073
+#: src/plugins/vcalendar/vcal_meeting_gtk.c:2077
 msgid "Could not export the calendar."
 msgstr "Tidak dapat mengekspor kalender."
 
-#: src/vcal_meeting_gtk.c:2090
+#: src/plugins/vcalendar/vcal_meeting_gtk.c:2094
 msgid "Export calendar to ICS"
 msgstr "Ekspor kalender ke ICS"
 
-#: src/vcal_meeting_gtk.c:2112
+#: src/plugins/vcalendar/vcal_meeting_gtk.c:2116
 #, c-format
 msgid "Couldn't export calendar to '%s'\n"
 msgstr "Tidak dapat mengekspor kalender ke '%s'\n"
 
-#: src/vcal_meeting_gtk.c:2228
+#: src/plugins/vcalendar/vcal_meeting_gtk.c:2232
 msgid "Could not export the freebusy info."
 msgstr "Tidak dapat mengekspor info bebas/sibuk."
 
-#: src/vcal_meeting_gtk.c:2259
+#: src/plugins/vcalendar/vcal_meeting_gtk.c:2263
 #, c-format
 msgid "Couldn't export free/busy to '%s'\n"
 msgstr "Tidak dapat mengekspor bebas/sibuk ke '%s'\n"
 
-#: src/vcal_manager.c:105
+#: src/plugins/vcalendar/vcal_manager.c:109
 msgid "accepted"
 msgstr "diterima"
 
-#: src/vcal_manager.c:106
+#: src/plugins/vcalendar/vcal_manager.c:110
 msgid "tentatively accepted"
 msgstr "diterima sementara"
 
-#: src/vcal_manager.c:107
+#: src/plugins/vcalendar/vcal_manager.c:111
 msgid "declined"
 msgstr "ditolak"
 
-#: src/vcal_manager.c:108
+#: src/plugins/vcalendar/vcal_manager.c:112
 msgid "did not answer"
 msgstr "tidak menjawab"
 
-#: src/vcal_manager.c:138
+#: src/plugins/vcalendar/vcal_manager.c:142
 msgid "individual"
 msgstr "individu"
 
-#: src/vcal_manager.c:139
+#: src/plugins/vcalendar/vcal_manager.c:143
 msgid "group"
 msgstr "kelompok"
 
-#: src/vcal_manager.c:140
+#: src/plugins/vcalendar/vcal_manager.c:144
 msgid "resource"
 msgstr "sumberdaya"
 
-#: src/vcal_manager.c:141
+#: src/plugins/vcalendar/vcal_manager.c:145
 msgid "room"
 msgstr "ruangan"
 
-#: src/vcal_manager.c:552
+#: src/plugins/vcalendar/vcal_manager.c:556
 msgid "Past"
 msgstr "Yang lalu"
 
-#: src/vcal_manager.c:555
+#: src/plugins/vcalendar/vcal_manager.c:559
 msgid "Today"
 msgstr "Hari ini"
 
-#: src/vcal_manager.c:558
+#: src/plugins/vcalendar/vcal_manager.c:562
 msgid "Tomorrow"
 msgstr "Besok"
 
-#: src/vcal_manager.c:561
+#: src/plugins/vcalendar/vcal_manager.c:565
 msgid "This week"
 msgstr "Minggu ini"
 
-#: src/vcal_manager.c:564
+#: src/plugins/vcalendar/vcal_manager.c:568
 msgid "Later"
 msgstr "Nanti"
 
-#: src/vcal_manager.c:1230
+#: src/plugins/vcalendar/vcal_manager.c:1234
 msgid "Accepted: "
 msgstr "Diterima:"
 
-#: src/vcal_manager.c:1232
+#: src/plugins/vcalendar/vcal_manager.c:1236
 msgid "Declined: "
 msgstr "Ditolak:"
 
-#: src/vcal_manager.c:1234
+#: src/plugins/vcalendar/vcal_manager.c:1238
 msgid "Tentatively Accepted: "
 msgstr "Diterima Sementara:"
 
-#: src/day-view.c:597 src/month-view.c:697
+#: src/plugins/vcalendar/day-view.c:601 src/plugins/vcalendar/month-view.c:701
 msgid "Start"
 msgstr "Mulai"
 
-#: src/day-view.c:610 src/month-view.c:710
+#: src/plugins/vcalendar/day-view.c:614 src/plugins/vcalendar/month-view.c:714
 msgid "Show"
 msgstr "Perlihatkan"
 
@@ -10360,7 +10385,7 @@ msgstr "Perlihatkan"
 msgid "days"
 msgstr "hari"
 
-#: src/plugin.c:73
+#: src/plugins/vcalendar/plugin.c:70
 msgid ""
 "This plugin enables vCalendar message handling like that produced by "
 "Evolution or Outlook.\n"
@@ -10391,95 +10416,95 @@ msgstr ""
 "kalender anda, publikasikan informasi kesibukan/waktu bebas anda dan "
 "mengambil informasi tersebut dari lainnya."
 
-#: src/plugin.c:106
+#: src/plugins/vcalendar/plugin.c:103
 msgid "Calendar"
 msgstr "Kalender"
 
-#: src/month-view.c:107
+#: src/plugins/vcalendar/month-view.c:111
 msgid "Monday"
 msgstr "Senin"
 
-#: src/month-view.c:108
+#: src/plugins/vcalendar/month-view.c:112
 msgid "Tuesday"
 msgstr "Selasa"
 
-#: src/month-view.c:109
+#: src/plugins/vcalendar/month-view.c:113
 msgid "Wednesday"
 msgstr "Rabu"
 
-#: src/month-view.c:110
+#: src/plugins/vcalendar/month-view.c:114
 msgid "Thursday"
 msgstr "Kamis"
 
-#: src/month-view.c:111
+#: src/plugins/vcalendar/month-view.c:115
 msgid "Friday"
 msgstr "Jumat"
 
-#: src/month-view.c:112
+#: src/plugins/vcalendar/month-view.c:116
 msgid "Saturday"
 msgstr "Sabtu"
 
-#: src/month-view.c:113
+#: src/plugins/vcalendar/month-view.c:117
 msgid "Sunday"
 msgstr "Minggu"
 
-#: src/month-view.c:116
+#: src/plugins/vcalendar/month-view.c:120
 msgid "January"
 msgstr "Januari"
 
-#: src/month-view.c:117
+#: src/plugins/vcalendar/month-view.c:121
 msgid "February"
 msgstr "Februari"
 
-#: src/month-view.c:118
+#: src/plugins/vcalendar/month-view.c:122
 msgid "March"
 msgstr "Maret"
 
-#: src/month-view.c:119
+#: src/plugins/vcalendar/month-view.c:123
 msgid "April"
 msgstr "April"
 
-#: src/month-view.c:120
+#: src/plugins/vcalendar/month-view.c:124
 msgid "May"
 msgstr "Mei"
 
-#: src/month-view.c:121
+#: src/plugins/vcalendar/month-view.c:125
 msgid "June"
 msgstr "Juni"
 
-#: src/month-view.c:122
+#: src/plugins/vcalendar/month-view.c:126
 msgid "July"
 msgstr "Juli"
 
-#: src/month-view.c:123
+#: src/plugins/vcalendar/month-view.c:127
 msgid "August"
 msgstr "Agustus"
 
-#: src/month-view.c:124
+#: src/plugins/vcalendar/month-view.c:128
 msgid "September"
 msgstr "September"
 
-#: src/month-view.c:125
+#: src/plugins/vcalendar/month-view.c:129
 msgid "October"
 msgstr "Oktober"
 
-#: src/month-view.c:126
+#: src/plugins/vcalendar/month-view.c:130
 msgid "November"
 msgstr "Nopember"
 
-#: src/month-view.c:127
+#: src/plugins/vcalendar/month-view.c:131
 msgid "December"
 msgstr "Desember"
 
-#: src/month-view.c:805
+#: src/plugins/vcalendar/month-view.c:809
 msgid "Week number"
 msgstr "Nomor minggu"
 
-#: src/month-view.c:903
+#: src/plugins/vcalendar/month-view.c:907
 msgid "Previous month"
 msgstr "Bulan sebelum"
 
-#: src/month-view.c:926
+#: src/plugins/vcalendar/month-view.c:930
 msgid "Next month"
 msgstr "Bulan berikut"
 
@@ -15603,366 +15628,3 @@ msgid ""
 msgstr ""
 "Claws Mail telah siap.\n"
 "Klik Simpan untuk memulai."
-
-#~ msgid "Claws Mail needs network access in order to update the Webcal feed."
-#~ msgstr ""
-#~ "Claws Mail membutuhkan akses jaringan untuk memperbaharui feed Webcal."
-
-#~ msgid "Claws Mail needs network access in order to update the subscription."
-#~ msgstr ""
-#~ "Claws Mail membutuhkan akses jaringan untuk memperbaharui langganan."
-
-#~ msgid "Navigation to "
-#~ msgstr "Diarahkan ke"
-
-#~ msgid " blocked"
-#~ msgstr " di blok"
-
-#~ msgid ""
-#~ "Command could not be started. Pipe creation failed.\n"
-#~ "%s"
-#~ msgstr ""
-#~ "Perintah tidak dapat dijalankan. Hasil pemipaan gagal.\n"
-#~ "%s"
-
-#~ msgid "Charset"
-#~ msgstr "SetKarakter"
-
-#~ msgid "Change dictionary"
-#~ msgstr "Ganti kamus"
-
-#~ msgid "Unknown SSL Certificate"
-#~ msgstr "Sertifikat SSL tidak dikenal"
-
-#~ msgid "Expired SSL Certificate"
-#~ msgstr "Sertifikat SSL telah kadaluarsa"
-
-#~ msgid "Changed SSL Certificate"
-#~ msgstr "Sertifikat SSL yang telah diubah"
-
-#~ msgid "Connecting to IMAP4 server %s...\n"
-#~ msgstr "Menyambung ke server IMAP4 %s...\n"
-
-#~ msgid "_Open (l)"
-#~ msgstr "_Buka (l)"
-
-#~ msgid "Open _with (o)..."
-#~ msgstr "Buka _dengan (o)..."
-
-#~ msgid "_Display as text (t)"
-#~ msgstr "_Tampilkan sebagai teks (t)"
-
-#~ msgid "_Save as (y)..."
-#~ msgstr "_Simpan sebagai (y)..."
-
-#~ msgid "Trust key"
-#~ msgstr "Kunci yang dipercaya"
-
-#~ msgid "Main toolbar configuration"
-#~ msgstr "Konfigurasi toolbar Utama"
-
-#~ msgid "Compose toolbar configuration"
-#~ msgstr "Konfigurasi toolbar Tulis"
-
-#~ msgid "Message view toolbar configuration"
-#~ msgstr "Konfigurasi toolbar Tampilan pesan"
-
-#~ msgid " (Shortcut key: 't')"
-#~ msgstr " (Tombol pintas: 't')"
-
-#~ msgid " (Shortcut key: 'l')\n"
-#~ msgstr " (Tombol pintas: 'l')\n"
-
-#~ msgid " (Shortcut key: 'o')"
-#~ msgstr " (Tombol pintas: 'o')"
-
-#~ msgid "Last read message"
-#~ msgstr "Pesan terakhir dibaca"
-
-#~ msgid "_all"
-#~ msgstr "semu_a"
-
-#~ msgid "_sender"
-#~ msgstr "_pengirim"
-
-#~ msgid "by _Date"
-#~ msgstr "berdasar _Tanggal"
-
-#~ msgid "by _From"
-#~ msgstr "berdasar _Pengirim"
-
-#~ msgid "by _To"
-#~ msgstr "berdasar _Kepada"
-
-#~ msgid "by S_ubject"
-#~ msgstr "berdasar S_ubyek"
-
-#~ msgid "by Tag"
-#~ msgstr "berdasar Tag"
-
-#~ msgid "by _Mark"
-#~ msgstr "berdasar _Mark"
-
-#~ msgid "Compose: input from monitoring process\n"
-#~ msgstr "Tulis: masukan dari proses pengawasan\n"
-
-#~ msgid ""
-#~ "\n"
-#~ "\n"
-#~ "Copyright (C) 1999-2010\n"
-#~ "Hiroyuki Yamamoto <hiro-y@kcn.ne.jp>\n"
-#~ "and the Claws Mail team"
-#~ msgstr ""
-#~ "\n"
-#~ "\n"
-#~ "Hakcipta (C) 1999-2010\n"
-#~ "Hiroyuki Yamamoto <hiro-y@kcn.ne.jp>\n"
-#~ "dan tim Claws Mail"
-
-#~ msgid ""
-#~ "Copyright (C) 1999-2010\n"
-#~ "Hiroyuki Yamamoto <hiro-y@kcn.ne.jp>\n"
-#~ "and the Claws Mail team"
-#~ msgstr ""
-#~ "Hakcipta (C) 1999-2010\n"
-#~ "Hiroyuki Yamamoto <hiro-y@kcn.ne.jp>\n"
-#~ "dan tim Claws Mail"
-
-#~ msgid ""
-#~ "Claws Mail has been compiled with a more recent GTK+ library than is "
-#~ "currently available. This will cause crashes. You need to upgrade GTK+ or "
-#~ "recompile Claws Mail."
-#~ msgstr ""
-#~ "Claws Mail telah dikompilasi dengan pustaka GTK+ yang baru dari yang ada "
-#~ "sekarang. Hal ini akan menyebabkan kegagalan. Anda perlu memperbarui GTK+ "
-#~ "atau kompilasi ulang Claws Mail."
-
-#~ msgid ""
-#~ "Claws Mail has been compiled with an older GTK+ library than is currently "
-#~ "available. This will cause crashes. You need to recompile Claws Mail."
-#~ msgstr ""
-#~ "Claws Mail telah dikompilasi dengan pustaka GTK+ yang lebih lama dari "
-#~ "yang ada sekarang. Hal ini akan menyebabkan kegagalan. Anda perlu "
-#~ "melakukan kompilasi ulang Claws Mail."
-
-#~ msgid "  --search folder type request [recursive]"
-#~ msgstr "--cari direktori tipe permintaan [rekursif]"
-
-#~ msgid "                         searches mail"
-#~ msgstr "                         pencarian surat"
-
-#~ msgid ""
-#~ "                         folder ex.: \"#mh/Mailbox/inbox\" or \"Mail\""
-#~ msgstr ""
-#~ "                         direktori contoh : \"#mh/Mailbox/inbox\" atau "
-#~ "\"Mail\""
-
-#~ msgid ""
-#~ "                         type: s[ubject],f[rom],t[o],e[xtended],m[ixed] "
-#~ "or g: tag"
-#~ msgstr ""
-#~ "                         tipe: s[ubyek],d[ari],k[epada],p[erluasan],c"
-#~ "[ampuran] atau g: penanda"
-
-#~ msgid "                         request: search string"
-#~ msgstr "                         permintaan: kalimat yang dicari"
-
-#~ msgid ""
-#~ "                         recursive: false iff arg. starts with 0, n, N, f "
-#~ "or F"
-#~ msgstr ""
-#~ "                         rekursif: false iff arg. dimulai dengan 0, n, N, "
-#~ "f atau F"
-
-#~ msgid "_Fold all"
-#~ msgstr "_Tutup semua"
-
-#~ msgid "headers line"
-#~ msgstr "garis headers"
-
-#~ msgid "message line"
-#~ msgstr "garis pesan"
-
-#~ msgid "creating NNTP connection to %s:%d ...\n"
-#~ msgstr "Membuat sambungan NNTP ke %s:%d ...\n"
-
-#~ msgid "Test RegExp"
-#~ msgstr "Tes RegExp"
-
-#~ msgid " items selected"
-#~ msgstr " item terpilih"
-
-#~ msgid "'View Log'"
-#~ msgstr "'Lihat Catatan'"
-
-#~ msgid ""
-#~ "SMTP password:\n"
-#~ "<span size=\"small\">(empty to use the same as receive)</span>"
-#~ msgstr ""
-#~ "Sandi SMTP:\n"
-#~ "<span size=\"small\">(kosongkan jika sama dengan terima)</span>"
-
-#~ msgid "Preparing pages..."
-#~ msgstr "Mempersiapkan halaman..."
-
-#~ msgid "Rendering page %d of %d..."
-#~ msgstr "Menggambar halaman %d dari %d..."
-
-#~ msgid "Printing page %d of %d..."
-#~ msgstr "Mencetak halaman %d dari %d..."
-
-#~ msgid "Page %N of %Q"
-#~ msgstr "Halaman %N dari %Q"
-
-#~ msgid "libgnomeprint|adds support for a complete print dialog\n"
-#~ msgstr "tambahkan dukungan untuk jendela pencetakan komplit\n"
-
-#~ msgid "Configuration"
-#~ msgstr "Konfigurasi"
-
-#~ msgid "Configuration options for the print job"
-#~ msgstr "Pilihan konfigurasi untuk tugas pencetakan"
-
-#~ msgid "Source Buffer"
-#~ msgstr "Penyangga Sumber"
-
-#~ msgid "GtkTextBuffer object to print"
-#~ msgstr "Obyek GtkTextBuffer akan dicetak"
-
-#~ msgid "Tabs Width"
-#~ msgstr "Lebar tab"
-
-#~ msgid "Width in equivalent space characters of tabs"
-#~ msgstr "Lebar dalam spasi karakter yang sama dari tab"
-
-#~ msgid "Wrap Mode"
-#~ msgstr "Modus Penggal"
-
-#~ msgid "Word wrapping mode"
-#~ msgstr "Modus penggal kata"
-
-#~ msgid "Highlight"
-#~ msgstr "Sorot"
-
-#~ msgid "Whether to print the document with highlighted syntax"
-#~ msgstr "Akan mencetak dokumen dengan sintaks yang disoroti"
-
-#~ msgid "Font"
-#~ msgstr "Huruf"
-
-#~ msgid "GnomeFont name to use for the document text (deprecated)"
-#~ msgstr "Nama GnomeFont yang akan digunakan untuk teks dokumen (deprecated)"
-
-#~ msgid "Font Description"
-#~ msgstr "Deskripsi Huruf"
-
-#~ msgid "Font to use for the document text (e.g. \"Monospace 10\")"
-#~ msgstr ""
-#~ "Huruf yang akan digunakan untuk teks dokumen (contoh \"Monospace 10\")"
-
-#~ msgid "Numbers Font"
-#~ msgstr "Jumlah Huruf"
-
-#~ msgid "GnomeFont name to use for the line numbers (deprecated)"
-#~ msgstr "Nama GnomeFont yang akan digunakan untuk nomor baris (deprecated)"
-
-#~ msgid "Font description to use for the line numbers"
-#~ msgstr "Deskripsi huruf yang akan digunakan untuk nomor baris"
-
-#~ msgid "Print Line Numbers"
-#~ msgstr "Cetak Nomor Baris"
-
-#~ msgid "Interval of printed line numbers (0 means no numbers)"
-#~ msgstr "Jeda dari nomor baris yang tercetak (0 berarti tidak ada nomor)"
-
-#~ msgid "Print Header"
-#~ msgstr "Cetak Header"
-
-#~ msgid "Whether to print a header in each page"
-#~ msgstr "Akan mencetak sebuah header disetiap halaman"
-
-#~ msgid "Print Footer"
-#~ msgstr "Cetak Footer"
-
-#~ msgid "Whether to print a footer in each page"
-#~ msgstr "Akan mencetak sebuah footer disetiap halaman"
-
-#~ msgid "Header and Footer Font"
-#~ msgstr "Huruf Header dan Footer"
-
-#~ msgid "GnomeFont name to use for the header and footer (deprecated)"
-#~ msgstr ""
-#~ "Nama GnomeFont yang akan digunakan untuk header dan footer (deprecated)"
-
-#~ msgid "Header and Footer Font Description"
-#~ msgstr "Deskripsi Huruf Header dan Footer"
-
-#~ msgid "Font to use for headers and footers (e.g. \"Monospace 10\")"
-#~ msgstr ""
-#~ "Huruf yang akan digunakan untuk header dan footer (contoh \"Monospace "
-#~ "10\")"
-
-#~ msgid " Clear "
-#~ msgstr " Bersih "
-
-#~ msgid " Extended Symbols... "
-#~ msgstr " Simbol Tambahan... "
-
-#~ msgid "Info"
-#~ msgstr "Info"
-
-#~ msgid ""
-#~ "Enter the print command-line:\n"
-#~ "('%s' will be replaced with file name)"
-#~ msgstr ""
-#~ "Masukkan baris-perintah cetak:\n"
-#~ "('%s' akan diganti dengan nama berkas)"
-
-#~ msgid ""
-#~ "Print command-line is invalid:\n"
-#~ "'%s'"
-#~ msgstr ""
-#~ "Baris-perintah cetak salah:\n"
-#~ "'%s'"
-
-#~ msgid "Orientation"
-#~ msgstr "Orientasi"
-
-#~ msgid "Info..."
-#~ msgstr "Info..."
-
-#~ msgid "Print command"
-#~ msgstr "Perintah cetak"
-
-#~ msgid "Default To:"
-#~ msgstr "Standar Kepada:"
-
-#~ msgid "Default Cc:"
-#~ msgstr "Standar Cc:"
-
-#~ msgid "Default Bcc:"
-#~ msgstr "Standar Bcc:"
-
-#~ msgid "Default Reply-to:"
-#~ msgstr "Standar Balas-kepada:"
-
-#~ msgid "Quotation characters"
-#~ msgstr "Karakter kutipan"
-
-#~ msgid " Symbols... "
-#~ msgstr "Simbol..."
-
-#~ msgid "Description of symbols..."
-#~ msgstr "Deskripsi simbol..."
-
-#~ msgid "Insert signature automatically"
-#~ msgstr "Sisipkan tandatangan secara otomatis"
-
-#~ msgid "From file..."
-#~ msgstr "Dari berkas..."
-
-#~ msgid "Wrap messages at"
-#~ msgstr "Penggal pesan pada"
-
-#~ msgid "Unblock links"
-#~ msgstr "Lepas blokir tautan"
