@@ -12,7 +12,7 @@ MINOR_VERSION=9
 MICRO_VERSION=0
 INTERFACE_AGE=0
 BINARY_AGE=0
-EXTRA_VERSION=73
+EXTRA_VERSION=74
 EXTRA_RELEASE=
 EXTRA_GTK2_VERSION=
 
@@ -875,6 +875,30 @@ if test x"$ac_cv_enable_address_keeper_plugin" = xyes; then
 fi
 AM_CONDITIONAL(BUILD_ADDRESS_KEEPER_PLUGIN, test x"$ac_cv_enable_address_keeper_plugin" = xyes)
 	
+dnl --- archive ---
+AC_ARG_ENABLE(archive-plugin,
+	[  --enable-archive-plugin              build archive plugin],
+	[ac_cv_enable_archive_plugin=$enableval], [ac_cv_enable_archive_plugin=yes])
+if test x"$ac_cv_enable_archive_plugin" = xyes; then
+	AC_SEARCH_LIBS([archive_read_new], [archive],
+		       ARCHIVE_LIBS=-larchive
+		       AC_SUBST(ARCHIVE_LIBS),
+		       echo "You need to install libarchive"
+		       exit 1
+		       )
+	PLUGINS="archive $PLUGINS"
+fi
+AM_CONDITIONAL(BUILD_ARCHIVE_PLUGIN, test x"$ac_cv_enable_archive_plugin" = xyes)
+
+dnl --- att_remover ---
+AC_ARG_ENABLE(att_remover-plugin,
+	[  --enable-att_remover-plugin              build att_remover plugin],
+	[ac_cv_enable_att_remover_plugin=$enableval], [ac_cv_enable_att_remover_plugin=yes])
+if test x"$ac_cv_enable_att_remover_plugin" = xyes; then
+	PLUGINS="att_remover $PLUGINS"
+fi
+AM_CONDITIONAL(BUILD_ATT_REMOVER_PLUGIN, test x"$ac_cv_enable_att_remover_plugin" = xyes)
+
 dnl --- attachwarner ---
 AC_ARG_ENABLE(attachwarner-plugin,
 	[  --enable-attachwarner-plugin              build attachwarner plugin],
@@ -897,6 +921,16 @@ else
 	AC_MSG_RESULT(no)
 fi
 AM_CONDITIONAL(BUILD_BOGOFILTER_PLUGIN, test x"$ac_cv_enable_bogofilter_plugin" = xyes)
+
+dnl --- bsfilter ---
+AC_MSG_CHECKING([whether to build bsfilter plugin])
+AC_ARG_ENABLE(bsfilter-plugin,
+	[  --disable-bsfilter-plugin      do not build bsfilter plugin],
+	[ac_cv_enable_bsfilter_plugin=$enableval], [ac_cv_enable_bsfilter_plugin=yes])
+if test x"$ac_cv_enable_bsfilter_plugin" = xyes; then
+	PLUGINS="bsfilter $PLUGINS"
+fi
+AM_CONDITIONAL(BUILD_BSFILTER_PLUGIN, test x"$ac_cv_enable_bsfilter_plugin" = xyes)
 
 dnl --- Demo ---
 AC_ARG_ENABLE(demo-plugin,
@@ -1175,8 +1209,11 @@ src/etpan/Makefile
 src/plugins/Makefile
 src/plugins/acpi_notifier/Makefile
 src/plugins/address_keeper/Makefile
+src/plugins/archive/Makefile
+src/plugins/att_remover/Makefile
 src/plugins/attachwarner/Makefile
 src/plugins/bogofilter/Makefile
+src/plugins/bsfilter/Makefile
 src/plugins/demo/Makefile
 src/plugins/dillo_viewer/Makefile
 src/plugins/fancy/Makefile

@@ -6,12 +6,24 @@ if BUILD_ADDRESS_KEEPER_PLUGIN
 address_keeper_dir = address_keeper
 endif
 
+if BUILD_ARCHIVE_PLUGIN
+archive_dir = archive
+endif
+
 if BUILD_ATTACHWARNER_PLUGIN
 attachwarner_dir = attachwarner
 endif
 
+if BUILD_ATT_REMOVER_PLUGIN
+att_remover_dir = att_remover
+endif
+
 if BUILD_BOGOFILTER_PLUGIN
 bogofilter_dir = bogofilter
+endif
+
+if BUILD_BSFILTER_PLUGIN
+bsfilter_dir = bsfilter
 endif
 
 if BUILD_DEMO_PLUGIN
@@ -58,8 +70,11 @@ endif
 SUBDIRS = \
 	$(acpi_notifier_dir) \
 	$(address_keeper_dir) \
+	$(archive_dir) \
+	$(att_remover_dir) \
 	$(attachwarner_dir) \
 	$(bogofilter_dir) \
+	$(bsfilter_dir) \
 	$(demo_dir) \
 	$(dillo_viewer_dir) \
 	$(fancy_dir) \

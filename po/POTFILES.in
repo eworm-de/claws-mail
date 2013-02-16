@@ -76,6 +76,10 @@ src/mimeview.c
 src/news.c
 src/news_gtk.c
 src/plugins/acpi_notifier/acpi_notifier.c
+src/plugins/archive/archiver.c
+src/plugins/archive/archiver_gtk.c
+src/plugins/archive/archiver_prefs.c
+src/plugins/att_remover/att_remover.c
 src/plugins/attachwarner/attachwarner.c
 src/plugins/attachwarner/attachwarner_prefs.c
 src/plugins/address_keeper/address_keeper.c
@@ -83,6 +87,8 @@ src/plugins/address_keeper/address_keeper.h
 src/plugins/address_keeper/address_keeper_prefs.c
 src/plugins/bogofilter/bogofilter.c
 src/plugins/bogofilter/bogofilter_gtk.c
+src/plugins/bsfilter/bsfilter_gtk.c
+src/plugins/bsfilter/bsfilter.c
 src/plugins/demo/demo.c
 src/plugins/dillo_viewer/dillo_prefs.c
 src/plugins/dillo_viewer/dillo_viewer.c

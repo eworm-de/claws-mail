@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: claws-mail\n"
 "Report-Msgid-Bugs-To: paul@claws-mail.org\n"
-"POT-Creation-Date: 2013-02-16 13:46+0100\n"
+"POT-Creation-Date: 2013-02-16 14:36+0100\n"
 "PO-Revision-Date: 2012-11-08 21:13+0100\n"
 "Last-Translator: Slavko <linux@slavino.sk>\n"
 "Language-Team: slovenčina <debian-l10n-slovak@lists.debian.org>\n"
@@ -336,7 +336,8 @@ msgstr ""
 "predvoleným nastavením?"
 
 #: src/addrcustomattr.c:212 src/addressbook.c:435 src/addressbook.c:463
-#: src/addressbook.c:480 src/edittags.c:271 src/prefs_actions.c:1086
+#: src/addressbook.c:480 src/edittags.c:271
+#: src/plugins/archive/archiver_gtk.c:1193 src/prefs_actions.c:1086
 #: src/prefs_filtering.c:1692 src/prefs_template.c:1095
 msgid "_Delete"
 msgstr "Z_mazať"
@@ -694,7 +695,8 @@ msgid "Do you want to delete the query results and addresses in '%s' ?"
 msgstr "Chcete zmazať výsledky požiadavky a adresy v „%s”?"
 
 #: src/addressbook.c:2920 src/addressbook.c:2946 src/addressbook.c:2953
-#: src/prefs_filtering_action.c:177 src/toolbar.c:413
+#: src/plugins/archive/archiver_prefs.c:337 src/prefs_filtering_action.c:177
+#: src/toolbar.c:413
 msgid "Delete"
 msgstr "Odstrániť"
 
@@ -846,6 +848,9 @@ msgstr "LDAP požiadavka"
 #: src/plugins/bogofilter/bogofilter_gtk.c:230
 #: src/plugins/bogofilter/bogofilter_gtk.c:306
 #: src/plugins/bogofilter/bogofilter_gtk.c:383
+#: src/plugins/bsfilter/bsfilter_gtk.c:197
+#: src/plugins/bsfilter/bsfilter_gtk.c:266
+#: src/plugins/bsfilter/bsfilter_gtk.c:326 src/plugins/bsfilter/bsfilter.c:107
 #: src/plugins/dillo_viewer/dillo_prefs.c:67
 #: src/plugins/dillo_viewer/dillo_prefs.c:200
 #: src/plugins/dillo_viewer/dillo_prefs.c:213
@@ -2205,8 +2210,10 @@ msgstr "Uložiť správu do "
 
 #: src/compose.c:7081 src/editjpilot.c:276 src/editldap.c:520
 #: src/editvcard.c:192 src/export.c:164 src/import.c:163 src/importmutt.c:239
-#: src/importpine.c:238 src/plugins/bogofilter/bogofilter_gtk.c:188
+#: src/importpine.c:238 src/plugins/archive/archiver_gtk.c:1028
+#: src/plugins/bogofilter/bogofilter_gtk.c:188
 #: src/plugins/bogofilter/bogofilter_gtk.c:208
+#: src/plugins/bsfilter/bsfilter_gtk.c:181
 #: src/plugins/spamassassin/spamassassin_gtk.c:418
 msgid "_Browse"
 msgstr "_Prehliadať"
@@ -2258,7 +2265,7 @@ msgstr ""
 "Nemožno načítať systém súkromia „%s”. Nebude možné podpísať ani zašifrovať "
 "túto správu."
 
-#: src/compose.c:8243
+#: src/compose.c:8243 src/plugins/archive/archiver_gtk.c:1082
 msgid "_None"
 msgstr "Žiad_na"
 
@@ -3128,8 +3135,8 @@ msgstr "Štýlopis"
 
 #: src/exphtmldlg.c:453 src/gtk/colorlabel.c:406 src/gtk/gtkaspell.c:1571
 #: src/gtk/gtkaspell.c:2231 src/gtk/menu.c:133 src/mainwindow.c:1174
-#: src/prefs_account.c:938 src/prefs_toolbar.c:775 src/prefs_toolbar.c:1456
-#: src/summaryview.c:6009
+#: src/plugins/archive/archiver_prefs.c:241 src/prefs_account.c:938
+#: src/prefs_toolbar.c:775 src/prefs_toolbar.c:1456 src/summaryview.c:6009
 msgid "None"
 msgstr "Žiadna"
 
@@ -3399,6 +3406,7 @@ msgid "Full Name"
 msgstr "Celé meno"
 
 #: src/exporthtml.c:771 src/importldif.c:1021
+#: src/plugins/archive/archiver_gtk.c:736
 msgid "Attributes"
 msgstr "Atribúty"
 
@@ -3753,7 +3761,8 @@ msgstr "moderovaná"
 msgid "readonly"
 msgstr "len na čítanie"
 
-#: src/grouplistdialog.c:351 src/plugins/vcalendar/vcal_manager.c:113
+#: src/grouplistdialog.c:351 src/plugins/att_remover/att_remover.c:297
+#: src/plugins/vcalendar/vcal_manager.c:113
 #: src/plugins/vcalendar/vcal_manager.c:146
 msgid "unknown"
 msgstr "neznáma"
@@ -4806,9 +4815,12 @@ msgstr ""
 "%s\n"
 
 #: src/gtk/pluginwindow.c:304 src/plugins/acpi_notifier/acpi_notifier.c:790
+#: src/plugins/archive/archiver_prefs.c:92
+#: src/plugins/att_remover/att_remover.c:519
 #: src/plugins/attachwarner/attachwarner_prefs.c:201
 #: src/plugins/address_keeper/address_keeper_prefs.c:208
 #: src/plugins/bogofilter/bogofilter_gtk.c:457
+#: src/plugins/bsfilter/bsfilter_gtk.c:400
 #: src/plugins/dillo_viewer/dillo_prefs.c:129
 #: src/plugins/fancy/fancy_prefs.c:110 src/plugins/pgpcore/prefs_gpg.c:557
 #: src/plugins/rssyl/rssyl_prefs.c:63
@@ -5080,7 +5092,7 @@ msgstr ""
 msgid "From/To/Subject/Tag"
 msgstr "Od/Komu/Predmet/Značka"
 
-#: src/gtk/quicksearch.c:668
+#: src/gtk/quicksearch.c:668 src/plugins/archive/archiver_prefs.c:322
 msgid "Recursive"
 msgstr "Rekurzívne"
 
@@ -7985,11 +7997,11 @@ msgstr "Nemožno uložiť časť viacdielnej správy: %s"
 msgid "Overwrite existing file '%s'?"
 msgstr "Prepísať existujúci súbor „%s”?"
 
-#: src/mimeview.c:1866
+#: src/mimeview.c:1866 src/plugins/archive/archiver_prefs.c:128
 msgid "Select destination folder"
 msgstr "Zvoľte cieľovú zložku"
 
-#: src/mimeview.c:1873
+#: src/mimeview.c:1873 src/plugins/archive/archiver_prefs.c:134
 #, c-format
 msgid "'%s' is not a directory."
 msgstr "„%s” nie je zložka."
@@ -8265,6 +8277,516 @@ msgstr "Tento zásuvný modul ovláda rôzne ACPI LED pošty."
 msgid "Laptop LED"
 msgstr "LED notebooka"
 
+#: src/plugins/archive/archiver.c:43 src/plugins/archive/archiver_prefs.c:93
+msgid "Mail Archiver"
+msgstr "Archivácia pošty"
+
+#: src/plugins/archive/archiver.c:54
+msgid "Create Archive..."
+msgstr "Vytvoriť archív..."
+
+#: src/plugins/archive/archiver.c:113
+msgid ""
+"This plugin adds archiving features to Claws Mail.\n"
+"\n"
+"It enables you to select a mail folder that you want to be archived, and "
+"then choose a name, format and location for the archive. Subfolders can be "
+"included and MD5 checksums can be added for each file in the archive. "
+"Several archiving options are also available.\n"
+"\n"
+"The archive can be stored as:\n"
+"\tTAR\n"
+"\tPAX\n"
+"\tSHAR\n"
+"\tCPIO\n"
+"\n"
+"The archive can be compressed using:\n"
+"\tGZIP/ZIP\n"
+"\tBZIP2\n"
+"\tCOMPRESS\n"
+"\n"
+"The archives can be restored with any standard tool that supports the chosen "
+"format and compression.\n"
+"\n"
+"The supported folder types are MH, IMAP, RSSyl and vCalendar.\n"
+"\n"
+"To activate the archiving feature go to /Tools/Create Archive\n"
+"\n"
+"Default options can be set in /Configuration/Preferences/Plugins/Mail "
+"Archiver"
+msgstr ""
+"Tento zásuvný modul pridáva do Claws Mail možnosti archivácie.\n"
+"\n"
+"Umožňuje zvoliť poštovú zložku, ktorú chcete archivovať a zvoliť meno, "
+"formát a umiestnenie archívu. Umožňuje zahrnúť podzložky a pridať kontrolný "
+"súčet MD5 každého súboru v archíve. Dostupné sú viaceré voľby archivácie.\n"
+"\n"
+"Archív môže byť vytvorený ako:\n"
+"\tTAR\n"
+"\tPAX\n"
+"\tSHAR\n"
+"\tCPIO\n"
+"\n"
+"Archív môže byť komprimovaný pomocou:\n"
+"\tGZIP/ZIP\n"
+"\tBZIP2\n"
+"\tCOMPRESS\n"
+"\n"
+"Archívy môžu byť obnovené pomocou štandardných nástrojov, ktoré podporujú "
+"zvolený formát a kompresiu.\n"
+"\n"
+"Podporované typy zložiek sú: MH, IMAP, RSSyl a vCalendar.\n"
+"\n"
+"Na aktiváciu archivácie prejdite do /Nástroje/Vytvoriť archív\n"
+"\n"
+"Predvolené voľby možno nastaviť v menu Nastavenie/Nastavenia/Zásuvné moduly/"
+"Archivácia pošty"
+
+#: src/plugins/archive/archiver.c:145
+msgid "Archiver"
+msgstr "Archivácia"
+
+#: src/plugins/archive/archiver_gtk.c:104
+msgid "Archiving"
+msgstr "Archivácia"
+
+#: src/plugins/archive/archiver_gtk.c:122
+msgid "Press Cancel button to stop archiving"
+msgstr "Na zastavenie archivácie stlačte tlačidlo Zrušiť"
+
+#: src/plugins/archive/archiver_gtk.c:138
+msgid "Archiving:"
+msgstr "Archivácia:"
+
+#: src/plugins/archive/archiver_gtk.c:506
+msgid "Folder and archive must be selected"
+msgstr "Musíte vybrať zložku a archív"
+
+#: src/plugins/archive/archiver_gtk.c:515
+#, c-format
+msgid "%s: Exists. Continue anyway?"
+msgstr "%s: existuje. Pokračovať i tak?"
+
+#: src/plugins/archive/archiver_gtk.c:518
+#, c-format
+msgid "%s: Is a link. Cannot continue"
+msgstr "%s: je odkaz. Nemožno pokračovať"
+
+#: src/plugins/archive/archiver_gtk.c:521
+#, c-format
+msgid "%s: Is a directory. Cannot continue"
+msgstr "%s: je adresár. Nemožno pokračovať"
+
+#: src/plugins/archive/archiver_gtk.c:524
+#, c-format
+msgid "%s: Missing permissions. Cannot continue"
+msgstr "%s: Nedostatočné práva. Nemožno pokračovať"
+
+#: src/plugins/archive/archiver_gtk.c:527
+#, c-format
+msgid "%s: Unknown error. Cannot continue"
+msgstr "%s: Neznáma chyba. Nemožno pokračovať"
+
+#: src/plugins/archive/archiver_gtk.c:564
+#, c-format
+msgid ""
+"Not a valid file name:\n"
+"%s."
+msgstr ""
+"Neplatné meno súboru:\n"
+"%s."
+
+#: src/plugins/archive/archiver_gtk.c:577
+#, c-format
+msgid ""
+"Not a valid Claws Mail folder:\n"
+"%s."
+msgstr ""
+"Neplatná zložka Claws Mail:\n"
+"%s."
+
+#: src/plugins/archive/archiver_gtk.c:606
+#, c-format
+msgid ""
+"Adding files in folder failed\n"
+"Files in folder: %d\n"
+"Files in list:   %d\n"
+"\n"
+"Continue anyway?"
+msgstr ""
+"Zlyhalo pridanie súborov v zložke\n"
+"Súbory v zložke: %d\n"
+"Súbory v zozname:   %d\n"
+"\n"
+"Pokračovať?"
+
+#: src/plugins/archive/archiver_gtk.c:710
+msgid "Archive result"
+msgstr "Výsledok archívu"
+
+#: src/plugins/archive/archiver_gtk.c:740
+msgid "Values"
+msgstr "Hodnoty"
+
+#: src/plugins/archive/archiver_gtk.c:749
+msgid "Archive"
+msgstr "Archív"
+
+#: src/plugins/archive/archiver_gtk.c:755
+msgid "Archive format"
+msgstr "Formát archívu"
+
+#: src/plugins/archive/archiver_gtk.c:762
+msgid "Compression method"
+msgstr "Kompresná metóda"
+
+#: src/plugins/archive/archiver_gtk.c:770
+msgid "Number of files"
+msgstr "Počet súborov"
+
+#: src/plugins/archive/archiver_gtk.c:778
+msgid "Archive Size"
+msgstr "Veľkosť archívu"
+
+#: src/plugins/archive/archiver_gtk.c:786
+msgid "Folder Size"
+msgstr "Veľkosť zložky"
+
+#: src/plugins/archive/archiver_gtk.c:795
+msgid "Compression level"
+msgstr "Úroveň kompresie"
+
+#: src/plugins/archive/archiver_gtk.c:800
+#: src/plugins/archive/archiver_gtk.c:808
+#: src/plugins/archive/archiver_gtk.c:816 src/prefs_folder_item.c:516
+msgid "Yes"
+msgstr "Áno"
+
+#: src/plugins/archive/archiver_gtk.c:800
+#: src/plugins/archive/archiver_gtk.c:808
+#: src/plugins/archive/archiver_gtk.c:816 src/prefs_folder_item.c:515
+#: src/prefs_summaries.c:369
+msgid "No"
+msgstr "Nie"
+
+#: src/plugins/archive/archiver_gtk.c:803
+msgid "MD5 checksum"
+msgstr "Kontrolný súčet MD5"
+
+#: src/plugins/archive/archiver_gtk.c:811
+msgid "Descriptive names"
+msgstr "Popisné mená"
+
+#: src/plugins/archive/archiver_gtk.c:819
+msgid "Delete selected files"
+msgstr "Zmazať zvolené súbory"
+
+#: src/plugins/archive/archiver_gtk.c:828
+#: src/plugins/archive/archiver_gtk.c:1210
+msgid "Select mails before"
+msgstr "Najprv vyberať správy"
+
+#: src/plugins/archive/archiver_gtk.c:904
+msgid "Select file name for archive [suffix should reflect archive like .tgz]"
+msgstr ""
+"Vyberte meno súboru archívu [prípona musí zodpovedať archívu, napr. .tgz]"
+
+#: src/plugins/archive/archiver_gtk.c:952
+#, c-format
+msgid "%ld of %ld"
+msgstr "%ld z %ld"
+
+#: src/plugins/archive/archiver_gtk.c:991
+msgid "Create Archive"
+msgstr "Vytvoriť archív"
+
+#: src/plugins/archive/archiver_gtk.c:1006
+msgid "Enter Archiver arguments"
+msgstr "Zadajte argumenty archivácie"
+
+#: src/plugins/archive/archiver_gtk.c:1019
+msgid "Folder to archive"
+msgstr "Zložka na archiváciu"
+
+#: src/plugins/archive/archiver_gtk.c:1026
+msgid "Folder which is the root of the archive"
+msgstr "Zložka, ktorá je koreňom archívu"
+
+#: src/plugins/archive/archiver_gtk.c:1031
+msgid "Click this button to select a folder which is to be root of the archive"
+msgstr "Týmto tlačidlom vyberiete zložku, ktorá je koreňom archívu"
+
+#: src/plugins/archive/archiver_gtk.c:1037
+msgid "Name for archive"
+msgstr "Meno archívu"
+
+#: src/plugins/archive/archiver_gtk.c:1043
+msgid "Archive location and name"
+msgstr "Umiestnenie a meno archívu"
+
+#: src/plugins/archive/archiver_gtk.c:1045
+#: src/plugins/archive/archiver_prefs.c:198
+#: src/plugins/pgpcore/select-keys.c:424
+msgid "_Select"
+msgstr "_Zvoliť"
+
+#: src/plugins/archive/archiver_gtk.c:1048
+msgid "Click this button to select a name and location for the archive"
+msgstr "Týmto tlačidlom vyberiete zložku meno a umiestnenie archívu"
+
+#: src/plugins/archive/archiver_gtk.c:1050
+msgid "Choose compression"
+msgstr "Zvoľte kompresiu"
+
+#: src/plugins/archive/archiver_gtk.c:1063
+msgid "Choose this option to use ZIP compression for the archive"
+msgstr "Zvoľte túto možnosť na komprimáciu archívu vo formáte ZIP"
+
+#: src/plugins/archive/archiver_gtk.c:1070
+msgid "Choose this option to use BZIP2 compression for the archive"
+msgstr "Zvoľte túto možnosť na komprimáciu archívu vo formáte BZIP2"
+
+#: src/plugins/archive/archiver_gtk.c:1078
+msgid "Choose this to use Compress compression for your archive"
+msgstr "Zvoľte túto možnosť na komprimáciu archívu vo formáte Compress"
+
+#: src/plugins/archive/archiver_gtk.c:1086
+msgid "Choose this option to disable compression for the archive"
+msgstr "Zvoľte túto možnosť na vypnutie komprimácie archívu"
+
+#: src/plugins/archive/archiver_gtk.c:1108
+msgid "Choose format"
+msgstr "Zvoľte formát"
+
+#: src/plugins/archive/archiver_gtk.c:1121
+msgid "Choose this option to use TAR as format for the archive"
+msgstr "Zvoľte túto možnosť na použitie formátu archívu TAR"
+
+#: src/plugins/archive/archiver_gtk.c:1128
+msgid "Choose this to use SHAR as format for the archive"
+msgstr "Zvoľte túto možnosť na použitie formátu archívu SHAR"
+
+#: src/plugins/archive/archiver_gtk.c:1135
+msgid "Choose this option to use CPIO as format for the archive"
+msgstr "Zvoľte túto možnosť na použitie formátu archívu CPIO"
+
+#: src/plugins/archive/archiver_gtk.c:1142
+msgid "Choose this option to use PAX as format for the archive"
+msgstr "Zvoľte túto možnosť na použitie formátu archívu PAX"
+
+#: src/plugins/archive/archiver_gtk.c:1162
+msgid "Miscellaneous options"
+msgstr "Rôzne voľby"
+
+#: src/plugins/archive/archiver_gtk.c:1171
+msgid "_Recursive"
+msgstr "_Rekurzívne"
+
+#: src/plugins/archive/archiver_gtk.c:1175
+msgid "Choose this option to include subfolders in the archive"
+msgstr "Zvoľte túto možnosť na zahrnutie podzložiek do archívu"
+
+#: src/plugins/archive/archiver_gtk.c:1177
+msgid "_MD5sum"
+msgstr "_MD5sum"
+
+#: src/plugins/archive/archiver_gtk.c:1181
+msgid ""
+"Choose this option to add MD5 checksums for each file in the archive.\n"
+"Be aware though, that this dramatically increases the time it\n"
+"will take to create the archive"
+msgstr ""
+"Zvoľte túto možnosť na pridanie kontrolného súčtu MD5 každého súboru v "
+"archíve.\n"
+"Používajte s rozvahou, pretože dramaticky zvyšuje čas potrebný \n"
+"na vytvorenie archívu"
+
+#: src/plugins/archive/archiver_gtk.c:1185
+msgid "R_ename"
+msgstr "Pr_emenovať"
+
+#: src/plugins/archive/archiver_gtk.c:1189
+#: src/plugins/archive/archiver_prefs.c:333
+msgid ""
+"Choose this option to use descriptive names for each file in the archive.\n"
+"The naming scheme: date_from@to@subject.\n"
+"Names will be truncated to max 96 characters"
+msgstr ""
+"Zvoľte túto možnosť na použitie popisných mien každého súboru v archíve.\n"
+"Súbory budú pomenované v tvare: dátum_od@komu@predmet.\n"
+"Mená budú skrátené na maximálne 96 znakov"
+
+#: src/plugins/archive/archiver_gtk.c:1197
+msgid ""
+"Choose this option to delete mails after archiving\n"
+"At this point only handles IMAP4, Local mbox and POP3"
+msgstr ""
+"Zvoľte túto možnosť na zmazanie správ po ich archivácii\n"
+"Momentálne pracuje len s IMAP4, lokálnym mbox a POP3"
+
+#: src/plugins/archive/archiver_gtk.c:1201
+msgid "Selection options"
+msgstr "Voľby výberu"
+
+#: src/plugins/archive/archiver_gtk.c:1217
+msgid ""
+"Select emails before a certain date\n"
+"Date must comply to ISO-8601 [YYYY-MM-DD]"
+msgstr ""
+"Vybrať emaily pred daným dátumom\n"
+"Dátum musí vyhovovať ISO-8601 [RRRR-MM-DD]"
+
+#: src/plugins/archive/archiver_prefs.c:190
+msgid "Default save folder"
+msgstr "Predvolený adresár uloženia"
+
+#: src/plugins/archive/archiver_prefs.c:202
+msgid "Click this button to select the default location for saving archives"
+msgstr "Týmto tlačidlom vyberiete predvolené umiestnenie na ukladanie archívov"
+
+#: src/plugins/archive/archiver_prefs.c:211
+msgid "Default compression"
+msgstr "Predvolená kompresia"
+
+#: src/plugins/archive/archiver_prefs.c:223
+msgid "Choose this option to use ZIP compression by default"
+msgstr "Zvoľte túto možnosť na predvolené použitie komprimácie ZIP"
+
+#: src/plugins/archive/archiver_prefs.c:230
+msgid "Choose this option to use BZIP2 compression by default"
+msgstr "Zvoľte túto možnosť na predvolené použitie komprimácie BZIP2"
+
+#: src/plugins/archive/archiver_prefs.c:238
+msgid "Choose this option to use COMPRESS compression by default"
+msgstr "Zvoľte túto možnosť na predvolené použitie komprimácie COMPRESS"
+
+#: src/plugins/archive/archiver_prefs.c:246
+msgid "Choose this option to disable compression by default"
+msgstr "Zvoľte túto možnosť na predvolené zakázanie komprimácie."
+
+#: src/plugins/archive/archiver_prefs.c:265
+msgid "Default format"
+msgstr "Predvolený formát"
+
+#: src/plugins/archive/archiver_prefs.c:277
+msgid "Choose this option to use the TAR format by default"
+msgstr "Zvoľte túto možnosť na predvolené použitie formátu TAR"
+
+#: src/plugins/archive/archiver_prefs.c:284
+msgid "Choose this option to use the SHAR format by default"
+msgstr "Zvoľte túto možnosť na predvolené použitie formátu SHAR"
+
+#: src/plugins/archive/archiver_prefs.c:291
+msgid "Choose this option to use the CPIO format by default"
+msgstr "Zvoľte túto možnosť na predvolené použitie formátu CPIO"
+
+#: src/plugins/archive/archiver_prefs.c:298
+msgid "Choose this option to use the PAX format by default"
+msgstr "Zvoľte túto možnosť na predvolené použitie formátu PAX"
+
+#: src/plugins/archive/archiver_prefs.c:315
+msgid "Default miscellaneous options"
+msgstr "Rôzne predvolené možnosti"
+
+#: src/plugins/archive/archiver_prefs.c:324
+msgid "Choose this option to include subfolders in the archives by default"
+msgstr "Zvoľte túto možnosť na predvolené zahrnutie podzložiek do archívu"
+
+#: src/plugins/archive/archiver_prefs.c:325
+msgid "MD5sum"
+msgstr "MD5sum"
+
+#: src/plugins/archive/archiver_prefs.c:327
+msgid ""
+"Choose this option to add MD5 checksums for each file in the archives by "
+"default.\n"
+"Be aware though, that this dramatically increases the time it\n"
+"will take to create the archives"
+msgstr ""
+"Zvoľte túto možnosť na pridanie kontrolného súčtu MD5 každého súboru v "
+"archíve.\n"
+"Používajte s rozvahou, pretože dramaticky zvyšuje čas potrebný \n"
+"na vytvorenie archívov"
+
+#: src/plugins/archive/archiver_prefs.c:331
+msgid "Rename"
+msgstr "Premenovať"
+
+#: src/plugins/archive/archiver_prefs.c:339
+msgid "Choose this option to delete mails after archiving"
+msgstr "Zvoľte túto možnosť na zmazanie správ po archivácii"
+
+#: src/plugins/att_remover/att_remover.c:299
+#, fuzzy
+msgid "<b>Type: </b>"
+msgstr "<b> dňa:</b>"
+
+#: src/plugins/att_remover/att_remover.c:300
+#, fuzzy
+msgid "<b>Size: </b>"
+msgstr "<b> dňa:</b>"
+
+#: src/plugins/att_remover/att_remover.c:301
+#, fuzzy
+msgid "<b>Filename: </b>"
+msgstr "Názov súboru:"
+
+#: src/plugins/att_remover/att_remover.c:332
+#, fuzzy
+msgid "Remove attachments"
+msgstr "Ignorovať prílohu"
+
+#: src/plugins/att_remover/att_remover.c:357
+#: src/plugins/vcalendar/vcal_meeting_gtk.c:330 src/prefs_themes.c:973
+msgid "Remove"
+msgstr "Odstrániť"
+
+#: src/plugins/att_remover/att_remover.c:365 src/prefs_summary_column.c:80
+#: src/summaryview.c:2770
+msgid "Attachment"
+msgstr "Príloha"
+
+#: src/plugins/att_remover/att_remover.c:417
+#, fuzzy
+msgid "Destroy attachments"
+msgstr "Má prílohu"
+
+#: src/plugins/att_remover/att_remover.c:418
+msgid ""
+"Do you really want to remove all attachments from the selected messages ?\n"
+"\n"
+"The deleted data will be unrecoverable."
+msgstr ""
+
+#: src/plugins/att_remover/att_remover.c:479
+#, fuzzy
+msgid "This message doesn't have any attachments."
+msgstr "správy s prílohami"
+
+#: src/plugins/att_remover/att_remover.c:494
+#, fuzzy
+msgid "Remove attachments..."
+msgstr "Ignorovať prílohu"
+
+#: src/plugins/att_remover/att_remover.c:507
+#: src/plugins/att_remover/att_remover.c:574
+#, fuzzy
+msgid "AttRemover"
+msgstr "Odstrániť"
+
+#: src/plugins/att_remover/att_remover.c:579
+msgid ""
+"This plugin removes attachments from mails.\n"
+"\n"
+"Warning: this operation will be completely un-cancellable and the deleted "
+"attachments will be lost forever, and ever, and ever."
+msgstr ""
+
+#: src/plugins/att_remover/att_remover.c:603
+#, fuzzy
+msgid "Attachment handling"
+msgstr "Upozornenie na prílohu"
+
 #: src/plugins/attachwarner/attachwarner.c:309
 #, c-format
 msgid ""
@@ -8430,7 +8952,7 @@ msgid "Bogofilter: learning from message..."
 msgstr "Bogofilter: analyzujem správu…"
 
 #: src/plugins/bogofilter/bogofilter.c:768
-#: src/plugins/bogofilter/bogofilter.c:817
+#: src/plugins/bogofilter/bogofilter.c:817 src/plugins/bsfilter/bsfilter.c:511
 #, c-format
 msgid "Learning failed; `%s` returned with status %d."
 msgstr "Analýza zlyhala; `%s` vrátilo hodnotu %d."
@@ -8478,41 +9000,49 @@ msgstr ""
 "Nastavenia nájdete v menu Nastavenie/Nastavenia/Zásuvné moduly/Bogofilter"
 
 #: src/plugins/bogofilter/bogofilter.c:1035
+#: src/plugins/bsfilter/bsfilter.c:670
 #: src/plugins/spamassassin/spamassassin.c:651
 msgid "Spam detection"
 msgstr "Detekcia spamu"
 
 #: src/plugins/bogofilter/bogofilter.c:1036
+#: src/plugins/bsfilter/bsfilter.c:671
 #: src/plugins/spamassassin/spamassassin.c:652
 msgid "Spam learning"
 msgstr "Učenie SPAM"
 
 #: src/plugins/bogofilter/bogofilter_gtk.c:150
+#: src/plugins/bsfilter/bsfilter_gtk.c:143
 #: src/plugins/spamassassin/spamassassin_gtk.c:400
 msgid "Process messages on receiving"
 msgstr "Spracúvať správy pri prijatí"
 
 #: src/plugins/bogofilter/bogofilter_gtk.c:158
+#: src/plugins/bsfilter/bsfilter_gtk.c:151
 #: src/plugins/spamassassin/spamassassin_gtk.c:358
 msgid "Maximum size"
 msgstr "Maximálna veľkosť"
 
 #: src/plugins/bogofilter/bogofilter_gtk.c:167
+#: src/plugins/bsfilter/bsfilter_gtk.c:160
 #: src/plugins/spamassassin/spamassassin_gtk.c:367
 msgid "Messages larger than this will not be checked"
 msgstr "Správy väčšie ako táto hodnota nebudú kontrolované"
 
 #: src/plugins/bogofilter/bogofilter_gtk.c:170
+#: src/plugins/bsfilter/bsfilter_gtk.c:163
 #: src/plugins/spamassassin/spamassassin_gtk.c:370 src/prefs_account.c:1479
 msgid "KB"
 msgstr "KB"
 
 #: src/plugins/bogofilter/bogofilter_gtk.c:178
+#: src/plugins/bsfilter/bsfilter_gtk.c:171
 #: src/plugins/spamassassin/spamassassin_gtk.c:408
 msgid "Save spam in"
 msgstr "Uložiť spam v"
 
 #: src/plugins/bogofilter/bogofilter_gtk.c:186
+#: src/plugins/bsfilter/bsfilter_gtk.c:179
 #: src/plugins/spamassassin/spamassassin_gtk.c:416
 msgid ""
 "Folder for storing identified spam. Leave empty to use the trash folder."
@@ -8521,6 +9051,7 @@ msgstr ""
 "zložku koša."
 
 #: src/plugins/bogofilter/bogofilter_gtk.c:192
+#: src/plugins/bsfilter/bsfilter_gtk.c:185
 #: src/plugins/spamassassin/spamassassin_gtk.c:422
 msgid "Click this button to select a folder for storing spam"
 msgstr "Pomocou tohoto tlačidla vyberte zložku na ukladanie spamu"
@@ -8550,12 +9081,14 @@ msgid "Only done for messages in MH folders"
 msgstr "Toto je možné len so správami v zložkách MH"
 
 #: src/plugins/bogofilter/bogofilter_gtk.c:224
+#: src/plugins/bsfilter/bsfilter_gtk.c:191
 #: src/plugins/spamassassin/spamassassin_gtk.c:437
 msgid "Whitelist senders found in address book/folder"
 msgstr ""
 "Správy pochádzajúce od odosielateľov v adresári/zložke nepovažovať za spam"
 
 #: src/plugins/bogofilter/bogofilter_gtk.c:228
+#: src/plugins/bsfilter/bsfilter_gtk.c:195
 #: src/plugins/spamassassin/spamassassin_gtk.c:441
 msgid ""
 "Messages coming from your address book contacts will be received in the "
@@ -8565,6 +9098,7 @@ msgstr ""
 "bežných zložiek aj v prípade, že budú identifikované ako spam"
 
 #: src/plugins/bogofilter/bogofilter_gtk.c:234
+#: src/plugins/bsfilter/bsfilter_gtk.c:201
 #: src/plugins/dillo_viewer/dillo_prefs.c:204
 #: src/plugins/spamassassin/spamassassin_gtk.c:447
 #: src/prefs_filtering_action.c:573 src/prefs_filtering_action.c:580
@@ -8573,11 +9107,13 @@ msgid "Select ..."
 msgstr "Zvoľte…"
 
 #: src/plugins/bogofilter/bogofilter_gtk.c:238
+#: src/plugins/bsfilter/bsfilter_gtk.c:205
 #: src/plugins/spamassassin/spamassassin_gtk.c:451
 msgid "Click this button to select a book or folder in the address book"
 msgstr "Toto tlačidlo vám umožní zvoliť adresár, alebo zložku adresára"
 
 #: src/plugins/bogofilter/bogofilter_gtk.c:240
+#: src/plugins/bsfilter/bsfilter_gtk.c:207
 msgid "Learn whitelisted emails as ham"
 msgstr "Naučiť sa dôveryhodné emaily ako HAM"
 
@@ -8598,9 +9134,90 @@ msgid "Path to bogofilter executable"
 msgstr "Cesta k programu bogofilter"
 
 #: src/plugins/bogofilter/bogofilter_gtk.c:265
+#: src/plugins/bsfilter/bsfilter_gtk.c:232
 #: src/plugins/spamassassin/spamassassin_gtk.c:429
 msgid "Mark spam as read"
 msgstr "Označiť všetok spam ako prečítaný"
+
+#: src/bsfilter_gtk.c:206
+msgid ""
+"If Bsfilter thought an email was spam or unsure, but it was whitelisted, "
+"learn it as ham."
+msgstr ""
+"Ak si Bsfilter myslí o správe, že je to SPAM alebo si nie je istý, ale je v "
+"zozname povolených (whitelist), označí ju ako nie SPAM."
+
+#: src/bsfilter_gtk.c:215
+msgid "Bsfilter call"
+msgstr "Volanie Bsfilter"
+
+#: src/bsfilter_gtk.c:223
+msgid "Path to bsfilter executable"
+msgstr "Cesta k bsfilter"
+
+#: src/bsfilter.c:78 src/bsfilter_gtk.c:398
+msgid "Bsfilter"
+msgstr "Bsfilter"
+
+#: src/bsfilter.c:295
+msgid "Bsfilter: fetching body..."
+msgstr "Bsfilter: vyberanie tela..."
+
+#: src/bsfilter.c:304
+msgid "Bsfilter: filtering message..."
+msgstr "Bsfilter: filtrovanie správy..."
+
+#: src/bsfilter.c:389
+msgid ""
+"The Bsfilter plugin couldn't filter a message. The probable cause of the "
+"error is that it didn't learn from any mail.\n"
+"Use \"/Mark/Mark as spam\" and \"/Mark/Mark as ham\" to train Bsfilter with "
+"a few hundred spam and ham messages."
+msgstr ""
+"Zásuvný modul Bsfilter nemôže filtrovať správu. Pravdepodobnou príčinou "
+"chyby je, že sa neučil zo žiadnej správy.\n"
+"Použite „/Označiť/Označiť ako spam” a „/Označiť/Označiť ako nie spam” na "
+"naplnenie Bsfilter niekoľko sto správami SPAM a nie SPAM."
+
+#: src/bsfilter.c:396
+#, c-format
+msgid ""
+"The Bsfilter plugin couldn't filter a message. The command `%s` couldn't be "
+"run."
+msgstr ""
+"Zásuvný modul Bsfilter nemôže filtrovať správu. Nemožno spustiť príkaz `%s`."
+
+#: src/bsfilter.c:497
+msgid "Bsfilter: learning from message..."
+msgstr "Bsfilter: učenie zo správy..."
+
+#: src/bsfilter.c:641
+msgid ""
+"This plugin can check all messages that are received from an IMAP, LOCAL or "
+"POP account for spam using Bsfilter. You will need Bsfilter installed "
+"locally.\n"
+"\n"
+"Before Bsfilter can recognize spam messages, you have to train it by marking "
+"a few hundred spam and ham messages with the use of \"/Mark/Mark as spam\" "
+"and \"/Mark/Mark as ham\".\n"
+"\n"
+"When a message is identified as spam it can be deleted or saved in a "
+"specially designated folder.\n"
+"\n"
+"Options can be found in /Configuration/Preferences/Plugins/Bsfilter"
+msgstr ""
+"Tento zásuvný modul môže kontrolovať všetky správy, ktoré sú prijaté z účtov "
+"IMAP, lokálny alebo POP, na SPAM pomocou Bsfilter. Budete potrebovať lokálne "
+"nainštalovaný Bsfilter.\n"
+"\n"
+"Aby Bsfilter dokázal rozpoznávať SPAM, je potrebné ho to naučiť označením "
+"niekoľko sto správ SPAM a nie SPAM pomocou „/Označiť/Označiť ako spam” a „/"
+"Označiť/Označiť ako nie spam”.\n"
+"\n"
+"Keď je správa identifikovaná ako SPAM, môže byť zmazaná alebo uložená do "
+"určeného priečinka.\n"
+"\n"
+"Voľby môžete nájsť v /Nastavenie/Nastavenia/Zásuvné moduly/Bsfilter"
 
 #: src/plugins/demo/demo.c:31 src/plugins/demo/demo.c:100
 msgid "Demo"
@@ -9088,10 +9705,6 @@ msgstr "ID kľúča"
 #: src/plugins/pgpcore/select-keys.c:400
 msgid "Trust"
 msgstr "Dôveryhodný"
-
-#: src/plugins/pgpcore/select-keys.c:424
-msgid "_Select"
-msgstr "_Zvoliť"
 
 #: src/plugins/pgpcore/select-keys.c:425
 msgid "_Other"
@@ -10656,10 +11269,6 @@ msgstr "Miestnosť"
 #: src/plugins/vcalendar/vcal_meeting_gtk.c:329
 msgid "Add..."
 msgstr "Pridať..."
-
-#: src/plugins/vcalendar/vcal_meeting_gtk.c:330 src/prefs_themes.c:973
-msgid "Remove"
-msgstr "Odstrániť"
 
 #: src/plugins/vcalendar/vcal_meeting_gtk.c:788
 msgid ""
@@ -12643,14 +13252,6 @@ msgstr ""
 msgid "Select the HTML part of multipart messages"
 msgstr "Zvoliť HTML časť zložených správ"
 
-#: src/prefs_folder_item.c:515 src/prefs_summaries.c:369
-msgid "No"
-msgstr "Nie"
-
-#: src/prefs_folder_item.c:516
-msgid "Yes"
-msgstr "Áno"
-
 #: src/prefs_folder_item.c:521
 msgid ""
 "\"Default\" will follow global preference (found in /Preferences/Message "
@@ -14170,10 +14771,6 @@ msgstr ""
 #: src/prefs_summaries.c:682
 msgid "Summaries"
 msgstr "Súhrny"
-
-#: src/prefs_summary_column.c:80 src/summaryview.c:2770
-msgid "Attachment"
-msgstr "Príloha"
 
 #: src/prefs_summary_column.c:86
 msgid "Number"

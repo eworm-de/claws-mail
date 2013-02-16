@@ -10,7 +10,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: sylpheed-claw\n"
 "Report-Msgid-Bugs-To: paul@claws-mail.org\n"
-"POT-Creation-Date: 2013-02-16 13:46+0100\n"
+"POT-Creation-Date: 2013-02-16 14:36+0100\n"
 "PO-Revision-Date: 2012-06-26 02:02+0800\n"
 "Last-Translator: Rob <rbnwmk@gmail.com>\n"
 "Language-Team: Sylpheed-Claws <sylpheed-claws-translators@lists.sourceforge."
@@ -278,7 +278,8 @@ msgstr ""
 "确认吗？"
 
 #: src/addrcustomattr.c:212 src/addressbook.c:435 src/addressbook.c:463
-#: src/addressbook.c:480 src/edittags.c:271 src/prefs_actions.c:1086
+#: src/addressbook.c:480 src/edittags.c:271
+#: src/plugins/archive/archiver_gtk.c:1193 src/prefs_actions.c:1086
 #: src/prefs_filtering.c:1692 src/prefs_template.c:1095
 msgid "_Delete"
 msgstr "删除(_D)"
@@ -635,7 +636,8 @@ msgid "Do you want to delete the query results and addresses in '%s' ?"
 msgstr "你想要删除'%s'里面的查询结果和地址信息吗?"
 
 #: src/addressbook.c:2920 src/addressbook.c:2946 src/addressbook.c:2953
-#: src/prefs_filtering_action.c:177 src/toolbar.c:413
+#: src/plugins/archive/archiver_prefs.c:337 src/prefs_filtering_action.c:177
+#: src/toolbar.c:413
 msgid "Delete"
 msgstr "删除"
 
@@ -788,6 +790,9 @@ msgstr "LDAP 查询"
 #: src/plugins/bogofilter/bogofilter_gtk.c:230
 #: src/plugins/bogofilter/bogofilter_gtk.c:306
 #: src/plugins/bogofilter/bogofilter_gtk.c:383
+#: src/plugins/bsfilter/bsfilter_gtk.c:197
+#: src/plugins/bsfilter/bsfilter_gtk.c:266
+#: src/plugins/bsfilter/bsfilter_gtk.c:326 src/plugins/bsfilter/bsfilter.c:107
 #: src/plugins/dillo_viewer/dillo_prefs.c:67
 #: src/plugins/dillo_viewer/dillo_prefs.c:200
 #: src/plugins/dillo_viewer/dillo_prefs.c:213
@@ -2134,8 +2139,10 @@ msgstr "将邮件保存至"
 
 #: src/compose.c:7081 src/editjpilot.c:276 src/editldap.c:520
 #: src/editvcard.c:192 src/export.c:164 src/import.c:163 src/importmutt.c:239
-#: src/importpine.c:238 src/plugins/bogofilter/bogofilter_gtk.c:188
+#: src/importpine.c:238 src/plugins/archive/archiver_gtk.c:1028
+#: src/plugins/bogofilter/bogofilter_gtk.c:188
 #: src/plugins/bogofilter/bogofilter_gtk.c:208
+#: src/plugins/bsfilter/bsfilter_gtk.c:181
 #: src/plugins/spamassassin/spamassassin_gtk.c:418
 msgid "_Browse"
 msgstr "浏览(_B)"
@@ -2185,7 +2192,7 @@ msgid ""
 "encrypt this message."
 msgstr "无法加载隐私系统`%s'，不能在此邮件上使用签名或加密功能。"
 
-#: src/compose.c:8243
+#: src/compose.c:8243 src/plugins/archive/archiver_gtk.c:1082
 msgid "_None"
 msgstr "无(_N)"
 
@@ -3030,8 +3037,8 @@ msgstr "样式表"
 
 #: src/exphtmldlg.c:453 src/gtk/colorlabel.c:406 src/gtk/gtkaspell.c:1571
 #: src/gtk/gtkaspell.c:2231 src/gtk/menu.c:133 src/mainwindow.c:1174
-#: src/prefs_account.c:938 src/prefs_toolbar.c:775 src/prefs_toolbar.c:1456
-#: src/summaryview.c:6009
+#: src/plugins/archive/archiver_prefs.c:241 src/prefs_account.c:938
+#: src/prefs_toolbar.c:775 src/prefs_toolbar.c:1456 src/summaryview.c:6009
 msgid "None"
 msgstr "无"
 
@@ -3293,6 +3300,7 @@ msgid "Full Name"
 msgstr "全名"
 
 #: src/exporthtml.c:771 src/importldif.c:1021
+#: src/plugins/archive/archiver_gtk.c:736
 msgid "Attributes"
 msgstr "属性"
 
@@ -3645,7 +3653,8 @@ msgstr "有管理的"
 msgid "readonly"
 msgstr "只读"
 
-#: src/grouplistdialog.c:351 src/plugins/vcalendar/vcal_manager.c:113
+#: src/grouplistdialog.c:351 src/plugins/att_remover/att_remover.c:297
+#: src/plugins/vcalendar/vcal_manager.c:113
 #: src/plugins/vcalendar/vcal_manager.c:146
 msgid "unknown"
 msgstr "未知"
@@ -4690,9 +4699,12 @@ msgstr ""
 "%s\n"
 
 #: src/gtk/pluginwindow.c:304 src/plugins/acpi_notifier/acpi_notifier.c:790
+#: src/plugins/archive/archiver_prefs.c:92
+#: src/plugins/att_remover/att_remover.c:519
 #: src/plugins/attachwarner/attachwarner_prefs.c:201
 #: src/plugins/address_keeper/address_keeper_prefs.c:208
 #: src/plugins/bogofilter/bogofilter_gtk.c:457
+#: src/plugins/bsfilter/bsfilter_gtk.c:400
 #: src/plugins/dillo_viewer/dillo_prefs.c:129
 #: src/plugins/fancy/fancy_prefs.c:110 src/plugins/pgpcore/prefs_gpg.c:557
 #: src/plugins/rssyl/rssyl_prefs.c:63
@@ -4970,7 +4982,7 @@ msgstr ""
 msgid "From/To/Subject/Tag"
 msgstr "发件人/收件人/主题/标签"
 
-#: src/gtk/quicksearch.c:668
+#: src/gtk/quicksearch.c:668 src/plugins/archive/archiver_prefs.c:322
 msgid "Recursive"
 msgstr "搜索子目录"
 
@@ -7818,11 +7830,11 @@ msgstr "无法保存复合邮件的这一部分: %s"
 msgid "Overwrite existing file '%s'?"
 msgstr "覆盖已有文件 '%s' 吗？"
 
-#: src/mimeview.c:1866
+#: src/mimeview.c:1866 src/plugins/archive/archiver_prefs.c:128
 msgid "Select destination folder"
 msgstr "选择目的目录"
 
-#: src/mimeview.c:1873
+#: src/mimeview.c:1873 src/plugins/archive/archiver_prefs.c:134
 #, c-format
 msgid "'%s' is not a directory."
 msgstr "`%s'不是一个目录。"
@@ -8093,6 +8105,495 @@ msgstr "本插件利用ACPI来控制LED邮件通知。"
 msgid "Laptop LED"
 msgstr ""
 
+#: src/plugins/archive/archiver.c:43 src/plugins/archive/archiver_prefs.c:93
+#, fuzzy
+msgid "Mail Archiver"
+msgstr "查看历史邮件"
+
+#: src/plugins/archive/archiver.c:54
+msgid "Create Archive..."
+msgstr ""
+
+#: src/plugins/archive/archiver.c:113
+msgid ""
+"This plugin adds archiving features to Claws Mail.\n"
+"\n"
+"It enables you to select a mail folder that you want to be archived, and "
+"then choose a name, format and location for the archive. Subfolders can be "
+"included and MD5 checksums can be added for each file in the archive. "
+"Several archiving options are also available.\n"
+"\n"
+"The archive can be stored as:\n"
+"\tTAR\n"
+"\tPAX\n"
+"\tSHAR\n"
+"\tCPIO\n"
+"\n"
+"The archive can be compressed using:\n"
+"\tGZIP/ZIP\n"
+"\tBZIP2\n"
+"\tCOMPRESS\n"
+"\n"
+"The archives can be restored with any standard tool that supports the chosen "
+"format and compression.\n"
+"\n"
+"The supported folder types are MH, IMAP, RSSyl and vCalendar.\n"
+"\n"
+"To activate the archiving feature go to /Tools/Create Archive\n"
+"\n"
+"Default options can be set in /Configuration/Preferences/Plugins/Mail "
+"Archiver"
+msgstr ""
+
+#: src/plugins/archive/archiver.c:145
+#, fuzzy
+msgid "Archiver"
+msgstr "查看历史邮件"
+
+#: src/plugins/archive/archiver_gtk.c:104
+#, fuzzy
+msgid "Archiving"
+msgstr "邮件收取"
+
+#: src/plugins/archive/archiver_gtk.c:122
+msgid "Press Cancel button to stop archiving"
+msgstr ""
+
+#: src/plugins/archive/archiver_gtk.c:138
+#, fuzzy
+msgid "Archiving:"
+msgstr "邮件收取"
+
+#: src/plugins/archive/archiver_gtk.c:506
+#, fuzzy
+msgid "Folder and archive must be selected"
+msgstr "粗体字区必须填写"
+
+#: src/plugins/archive/archiver_gtk.c:515
+#, c-format
+msgid "%s: Exists. Continue anyway?"
+msgstr ""
+
+#: src/plugins/archive/archiver_gtk.c:518
+#, c-format
+msgid "%s: Is a link. Cannot continue"
+msgstr ""
+
+#: src/plugins/archive/archiver_gtk.c:521
+#, c-format
+msgid "%s: Is a directory. Cannot continue"
+msgstr ""
+
+#: src/plugins/archive/archiver_gtk.c:524
+#, c-format
+msgid "%s: Missing permissions. Cannot continue"
+msgstr ""
+
+#: src/plugins/archive/archiver_gtk.c:527
+#, c-format
+msgid "%s: Unknown error. Cannot continue"
+msgstr ""
+
+#: src/plugins/archive/archiver_gtk.c:564
+#, c-format
+msgid ""
+"Not a valid file name:\n"
+"%s."
+msgstr ""
+
+#: src/plugins/archive/archiver_gtk.c:577
+#, c-format
+msgid ""
+"Not a valid Claws Mail folder:\n"
+"%s."
+msgstr ""
+
+#: src/plugins/archive/archiver_gtk.c:606
+#, c-format
+msgid ""
+"Adding files in folder failed\n"
+"Files in folder: %d\n"
+"Files in list:   %d\n"
+"\n"
+"Continue anyway?"
+msgstr ""
+
+#: src/plugins/archive/archiver_gtk.c:710
+msgid "Archive result"
+msgstr ""
+
+#: src/plugins/archive/archiver_gtk.c:740
+#, fuzzy
+msgid "Values"
+msgstr "值"
+
+#: src/plugins/archive/archiver_gtk.c:749
+#, fuzzy
+msgid "Archive"
+msgstr "查看历史邮件"
+
+#: src/plugins/archive/archiver_gtk.c:755
+#, fuzzy
+msgid "Archive format"
+msgstr "日期格式"
+
+#: src/plugins/archive/archiver_gtk.c:762
+msgid "Compression method"
+msgstr ""
+
+#: src/plugins/archive/archiver_gtk.c:770
+msgid "Number of files"
+msgstr ""
+
+#: src/plugins/archive/archiver_gtk.c:778
+msgid "Archive Size"
+msgstr ""
+
+#: src/plugins/archive/archiver_gtk.c:786
+#, fuzzy
+msgid "Folder Size"
+msgstr "目录类型"
+
+#: src/plugins/archive/archiver_gtk.c:795
+msgid "Compression level"
+msgstr ""
+
+#: src/plugins/archive/archiver_gtk.c:800
+#: src/plugins/archive/archiver_gtk.c:808
+#: src/plugins/archive/archiver_gtk.c:816 src/prefs_folder_item.c:516
+#, fuzzy
+msgid "Yes"
+msgstr "是"
+
+#: src/plugins/archive/archiver_gtk.c:800
+#: src/plugins/archive/archiver_gtk.c:808
+#: src/plugins/archive/archiver_gtk.c:816 src/prefs_folder_item.c:515
+#: src/prefs_summaries.c:369
+msgid "No"
+msgstr "无"
+
+#: src/plugins/archive/archiver_gtk.c:803
+msgid "MD5 checksum"
+msgstr ""
+
+#: src/plugins/archive/archiver_gtk.c:811
+#, fuzzy
+msgid "Descriptive names"
+msgstr "描述"
+
+#: src/plugins/archive/archiver_gtk.c:819
+#, fuzzy
+msgid "Delete selected files"
+msgstr "请选择一个文件。"
+
+#: src/plugins/archive/archiver_gtk.c:828
+#: src/plugins/archive/archiver_gtk.c:1210
+#, fuzzy
+msgid "Select mails before"
+msgstr "选择文件"
+
+#: src/plugins/archive/archiver_gtk.c:904
+msgid "Select file name for archive [suffix should reflect archive like .tgz]"
+msgstr ""
+
+#: src/plugins/archive/archiver_gtk.c:952
+#, c-format
+msgid "%ld of %ld"
+msgstr ""
+
+#: src/plugins/archive/archiver_gtk.c:991
+#, fuzzy
+msgid "Create Archive"
+msgstr "查看历史邮件"
+
+#: src/plugins/archive/archiver_gtk.c:1006
+#, fuzzy
+msgid "Enter Archiver arguments"
+msgstr "运作中的使用者参数"
+
+#: src/plugins/archive/archiver_gtk.c:1019
+#, fuzzy
+msgid "Folder to archive"
+msgstr "目录类型"
+
+#: src/plugins/archive/archiver_gtk.c:1026
+msgid "Folder which is the root of the archive"
+msgstr ""
+
+#: src/plugins/archive/archiver_gtk.c:1031
+#, fuzzy
+msgid "Click this button to select a folder which is to be root of the archive"
+msgstr "点击此按钮选择用于存放垃圾邮件的目录"
+
+#: src/plugins/archive/archiver_gtk.c:1037
+#, fuzzy
+msgid "Name for archive"
+msgstr "查看历史邮件"
+
+#: src/plugins/archive/archiver_gtk.c:1043
+msgid "Archive location and name"
+msgstr ""
+
+#: src/plugins/archive/archiver_gtk.c:1045
+#: src/plugins/archive/archiver_prefs.c:198
+#: src/plugins/pgpcore/select-keys.c:424
+msgid "_Select"
+msgstr "选择(_S)"
+
+#: src/plugins/archive/archiver_gtk.c:1048
+#, fuzzy
+msgid "Click this button to select a name and location for the archive"
+msgstr "点击此按钮选择地址簿的目录"
+
+#: src/plugins/archive/archiver_gtk.c:1050
+#, fuzzy
+msgid "Choose compression"
+msgstr "撰写新邮件"
+
+#: src/plugins/archive/archiver_gtk.c:1063
+msgid "Choose this option to use ZIP compression for the archive"
+msgstr ""
+
+#: src/plugins/archive/archiver_gtk.c:1070
+msgid "Choose this option to use BZIP2 compression for the archive"
+msgstr ""
+
+#: src/plugins/archive/archiver_gtk.c:1078
+msgid "Choose this to use Compress compression for your archive"
+msgstr ""
+
+#: src/plugins/archive/archiver_gtk.c:1086
+msgid "Choose this option to disable compression for the archive"
+msgstr ""
+
+#: src/plugins/archive/archiver_gtk.c:1108
+#, fuzzy
+msgid "Choose format"
+msgstr "日期格式"
+
+#: src/plugins/archive/archiver_gtk.c:1121
+msgid "Choose this option to use TAR as format for the archive"
+msgstr ""
+
+#: src/plugins/archive/archiver_gtk.c:1128
+msgid "Choose this to use SHAR as format for the archive"
+msgstr ""
+
+#: src/plugins/archive/archiver_gtk.c:1135
+msgid "Choose this option to use CPIO as format for the archive"
+msgstr ""
+
+#: src/plugins/archive/archiver_gtk.c:1142
+msgid "Choose this option to use PAX as format for the archive"
+msgstr ""
+
+#: src/plugins/archive/archiver_gtk.c:1162
+#, fuzzy
+msgid "Miscellaneous options"
+msgstr "杂项"
+
+#: src/plugins/archive/archiver_gtk.c:1171
+#, fuzzy
+msgid "_Recursive"
+msgstr "搜索子目录"
+
+#: src/plugins/archive/archiver_gtk.c:1175
+msgid "Choose this option to include subfolders in the archive"
+msgstr ""
+
+#: src/plugins/archive/archiver_gtk.c:1177
+msgid "_MD5sum"
+msgstr ""
+
+#: src/plugins/archive/archiver_gtk.c:1181
+msgid ""
+"Choose this option to add MD5 checksums for each file in the archive.\n"
+"Be aware though, that this dramatically increases the time it\n"
+"will take to create the archive"
+msgstr ""
+
+#: src/plugins/archive/archiver_gtk.c:1185
+#, fuzzy
+msgid "R_ename"
+msgstr "重命名(_R)..."
+
+#: src/plugins/archive/archiver_gtk.c:1189
+#: src/plugins/archive/archiver_prefs.c:333
+msgid ""
+"Choose this option to use descriptive names for each file in the archive.\n"
+"The naming scheme: date_from@to@subject.\n"
+"Names will be truncated to max 96 characters"
+msgstr ""
+
+#: src/plugins/archive/archiver_gtk.c:1197
+msgid ""
+"Choose this option to delete mails after archiving\n"
+"At this point only handles IMAP4, Local mbox and POP3"
+msgstr ""
+
+#: src/plugins/archive/archiver_gtk.c:1201
+#, fuzzy
+msgid "Selection options"
+msgstr "回复给发信人选项"
+
+#: src/plugins/archive/archiver_gtk.c:1217
+msgid ""
+"Select emails before a certain date\n"
+"Date must comply to ISO-8601 [YYYY-MM-DD]"
+msgstr ""
+
+#: src/plugins/archive/archiver_prefs.c:190
+#, fuzzy
+msgid "Default save folder"
+msgstr "删除目录"
+
+#: src/plugins/archive/archiver_prefs.c:202
+#, fuzzy
+msgid "Click this button to select the default location for saving archives"
+msgstr "点击此按钮选择用于存放垃圾邮件的目录"
+
+#: src/plugins/archive/archiver_prefs.c:211
+#, fuzzy
+msgid "Default compression"
+msgstr "默认字典"
+
+#: src/plugins/archive/archiver_prefs.c:223
+msgid "Choose this option to use ZIP compression by default"
+msgstr ""
+
+#: src/plugins/archive/archiver_prefs.c:230
+msgid "Choose this option to use BZIP2 compression by default"
+msgstr ""
+
+#: src/plugins/archive/archiver_prefs.c:238
+msgid "Choose this option to use COMPRESS compression by default"
+msgstr ""
+
+#: src/plugins/archive/archiver_prefs.c:246
+msgid "Choose this option to disable compression by default"
+msgstr ""
+
+#: src/plugins/archive/archiver_prefs.c:265
+#, fuzzy
+msgid "Default format"
+msgstr "日期格式"
+
+#: src/plugins/archive/archiver_prefs.c:277
+msgid "Choose this option to use the TAR format by default"
+msgstr ""
+
+#: src/plugins/archive/archiver_prefs.c:284
+msgid "Choose this option to use the SHAR format by default"
+msgstr ""
+
+#: src/plugins/archive/archiver_prefs.c:291
+msgid "Choose this option to use the CPIO format by default"
+msgstr ""
+
+#: src/plugins/archive/archiver_prefs.c:298
+msgid "Choose this option to use the PAX format by default"
+msgstr ""
+
+#: src/plugins/archive/archiver_prefs.c:315
+msgid "Default miscellaneous options"
+msgstr ""
+
+#: src/plugins/archive/archiver_prefs.c:324
+msgid "Choose this option to include subfolders in the archives by default"
+msgstr ""
+
+#: src/plugins/archive/archiver_prefs.c:325
+msgid "MD5sum"
+msgstr ""
+
+#: src/plugins/archive/archiver_prefs.c:327
+msgid ""
+"Choose this option to add MD5 checksums for each file in the archives by "
+"default.\n"
+"Be aware though, that this dramatically increases the time it\n"
+"will take to create the archives"
+msgstr ""
+
+#: src/plugins/archive/archiver_prefs.c:331
+#, fuzzy
+msgid "Rename"
+msgstr "重命名(_R)..."
+
+#: src/plugins/archive/archiver_prefs.c:339
+msgid "Choose this option to delete mails after archiving"
+msgstr ""
+
+#: src/plugins/att_remover/att_remover.c:299
+#, fuzzy
+msgid "<b>Type: </b>"
+msgstr "<b> 在:<b>"
+
+#: src/plugins/att_remover/att_remover.c:300
+#, fuzzy
+msgid "<b>Size: </b>"
+msgstr "<b> 在:<b>"
+
+#: src/plugins/att_remover/att_remover.c:301
+#, fuzzy
+msgid "<b>Filename: </b>"
+msgstr "文件名"
+
+#: src/plugins/att_remover/att_remover.c:332
+#, fuzzy
+msgid "Remove attachments"
+msgstr "忽略附件"
+
+#: src/plugins/att_remover/att_remover.c:357
+#: src/plugins/vcalendar/vcal_meeting_gtk.c:330 src/prefs_themes.c:973
+msgid "Remove"
+msgstr "删除"
+
+#: src/plugins/att_remover/att_remover.c:365 src/prefs_summary_column.c:80
+#: src/summaryview.c:2770
+msgid "Attachment"
+msgstr "附件"
+
+#: src/plugins/att_remover/att_remover.c:417
+#, fuzzy
+msgid "Destroy attachments"
+msgstr "有附件"
+
+#: src/plugins/att_remover/att_remover.c:418
+msgid ""
+"Do you really want to remove all attachments from the selected messages ?\n"
+"\n"
+"The deleted data will be unrecoverable."
+msgstr ""
+
+#: src/plugins/att_remover/att_remover.c:479
+#, fuzzy
+msgid "This message doesn't have any attachments."
+msgstr "带附件的邮件"
+
+#: src/plugins/att_remover/att_remover.c:494
+#, fuzzy
+msgid "Remove attachments..."
+msgstr "忽略附件"
+
+#: src/plugins/att_remover/att_remover.c:507
+#: src/plugins/att_remover/att_remover.c:574
+#, fuzzy
+msgid "AttRemover"
+msgstr "删除"
+
+#: src/plugins/att_remover/att_remover.c:579
+msgid ""
+"This plugin removes attachments from mails.\n"
+"\n"
+"Warning: this operation will be completely un-cancellable and the deleted "
+"attachments will be lost forever, and ever, and ever."
+msgstr ""
+
+#: src/plugins/att_remover/att_remover.c:603
+#, fuzzy
+msgid "Attachment handling"
+msgstr "附件"
+
 #: src/plugins/attachwarner/attachwarner.c:309
 #, c-format
 msgid ""
@@ -8264,7 +8765,7 @@ msgid "Bogofilter: learning from message..."
 msgstr "Bogofilter: 正在从邮件接受培训..."
 
 #: src/plugins/bogofilter/bogofilter.c:768
-#: src/plugins/bogofilter/bogofilter.c:817
+#: src/plugins/bogofilter/bogofilter.c:817 src/plugins/bsfilter/bsfilter.c:511
 #, c-format
 msgid "Learning failed; `%s` returned with status %d."
 msgstr "培训失败: `%s`返回状态%d。"
@@ -8309,47 +8810,56 @@ msgstr ""
 "相关选项可以在'/配置/偏好/插件/Bogofilter'中设置"
 
 #: src/plugins/bogofilter/bogofilter.c:1035
+#: src/plugins/bsfilter/bsfilter.c:670
 #: src/plugins/spamassassin/spamassassin.c:651
 msgid "Spam detection"
 msgstr "垃圾邮件检测"
 
 #: src/plugins/bogofilter/bogofilter.c:1036
+#: src/plugins/bsfilter/bsfilter.c:671
 #: src/plugins/spamassassin/spamassassin.c:652
 msgid "Spam learning"
 msgstr "学习识别能力"
 
 #: src/plugins/bogofilter/bogofilter_gtk.c:150
+#: src/plugins/bsfilter/bsfilter_gtk.c:143
 #: src/plugins/spamassassin/spamassassin_gtk.c:400
 msgid "Process messages on receiving"
 msgstr "接收邮件时进行过滤"
 
 #: src/plugins/bogofilter/bogofilter_gtk.c:158
+#: src/plugins/bsfilter/bsfilter_gtk.c:151
 #: src/plugins/spamassassin/spamassassin_gtk.c:358
 msgid "Maximum size"
 msgstr "最大尺寸"
 
 #: src/plugins/bogofilter/bogofilter_gtk.c:167
+#: src/plugins/bsfilter/bsfilter_gtk.c:160
 #: src/plugins/spamassassin/spamassassin_gtk.c:367
 msgid "Messages larger than this will not be checked"
 msgstr "大于此值的邮件将不会被检查"
 
 #: src/plugins/bogofilter/bogofilter_gtk.c:170
+#: src/plugins/bsfilter/bsfilter_gtk.c:163
 #: src/plugins/spamassassin/spamassassin_gtk.c:370 src/prefs_account.c:1479
 msgid "KB"
 msgstr "KB"
 
 #: src/plugins/bogofilter/bogofilter_gtk.c:178
+#: src/plugins/bsfilter/bsfilter_gtk.c:171
 #: src/plugins/spamassassin/spamassassin_gtk.c:408
 msgid "Save spam in"
 msgstr "保存垃圾邮件到"
 
 #: src/plugins/bogofilter/bogofilter_gtk.c:186
+#: src/plugins/bsfilter/bsfilter_gtk.c:179
 #: src/plugins/spamassassin/spamassassin_gtk.c:416
 msgid ""
 "Folder for storing identified spam. Leave empty to use the trash folder."
 msgstr "用于保存垃圾邮件的目录，不设置时将默认使用废件夹"
 
 #: src/plugins/bogofilter/bogofilter_gtk.c:192
+#: src/plugins/bsfilter/bsfilter_gtk.c:185
 #: src/plugins/spamassassin/spamassassin_gtk.c:422
 msgid "Click this button to select a folder for storing spam"
 msgstr "点击此按钮选择用于存放垃圾邮件的目录"
@@ -8378,11 +8888,13 @@ msgid "Only done for messages in MH folders"
 msgstr "只检查MH格式的邮箱"
 
 #: src/plugins/bogofilter/bogofilter_gtk.c:224
+#: src/plugins/bsfilter/bsfilter_gtk.c:191
 #: src/plugins/spamassassin/spamassassin_gtk.c:437
 msgid "Whitelist senders found in address book/folder"
 msgstr "将地址簿中的地址作为白名单"
 
 #: src/plugins/bogofilter/bogofilter_gtk.c:228
+#: src/plugins/bsfilter/bsfilter_gtk.c:195
 #: src/plugins/spamassassin/spamassassin_gtk.c:441
 msgid ""
 "Messages coming from your address book contacts will be received in the "
@@ -8392,6 +8904,7 @@ msgstr ""
 "会保存在普通邮件夹中"
 
 #: src/plugins/bogofilter/bogofilter_gtk.c:234
+#: src/plugins/bsfilter/bsfilter_gtk.c:201
 #: src/plugins/dillo_viewer/dillo_prefs.c:204
 #: src/plugins/spamassassin/spamassassin_gtk.c:447
 #: src/prefs_filtering_action.c:573 src/prefs_filtering_action.c:580
@@ -8400,11 +8913,13 @@ msgid "Select ..."
 msgstr "选择..."
 
 #: src/plugins/bogofilter/bogofilter_gtk.c:238
+#: src/plugins/bsfilter/bsfilter_gtk.c:205
 #: src/plugins/spamassassin/spamassassin_gtk.c:451
 msgid "Click this button to select a book or folder in the address book"
 msgstr "点击此按钮选择地址簿的目录"
 
 #: src/plugins/bogofilter/bogofilter_gtk.c:240
+#: src/plugins/bsfilter/bsfilter_gtk.c:207
 msgid "Learn whitelisted emails as ham"
 msgstr ""
 
@@ -8423,9 +8938,91 @@ msgid "Path to bogofilter executable"
 msgstr "bogofilter程序目录"
 
 #: src/plugins/bogofilter/bogofilter_gtk.c:265
+#: src/plugins/bsfilter/bsfilter_gtk.c:232
 #: src/plugins/spamassassin/spamassassin_gtk.c:429
 msgid "Mark spam as read"
 msgstr "将垃圾邮件设置为已读"
+
+#: src/plugins/bsfilter/bsfilter_gtk.c:209
+msgid ""
+"If Bsfilter thought an email was spam or unsure, but it was whitelisted, "
+"learn it as ham."
+msgstr ""
+
+#: src/plugins/bsfilter/bsfilter_gtk.c:218
+msgid "Bsfilter call"
+msgstr ""
+
+#: src/plugins/bsfilter/bsfilter_gtk.c:226
+#, fuzzy
+msgid "Path to bsfilter executable"
+msgstr "bogofilter程序目录"
+
+#: src/plugins/bsfilter/bsfilter_gtk.c:401 src/plugins/bsfilter/bsfilter.c:82
+#, fuzzy
+msgid "Bsfilter"
+msgstr "过滤中"
+
+#: src/plugins/bsfilter/bsfilter.c:299
+#, fuzzy
+msgid "Bsfilter: fetching body..."
+msgstr "Bogofilter: 正在提取邮件内容..."
+
+#: src/plugins/bsfilter/bsfilter.c:308
+#, fuzzy
+msgid "Bsfilter: filtering message..."
+msgstr "Bogofilter: 正在过滤邮件..."
+
+#: src/plugins/bsfilter/bsfilter.c:393
+#, fuzzy
+msgid ""
+"The Bsfilter plugin couldn't filter a message. The probable cause of the "
+"error is that it didn't learn from any mail.\n"
+"Use \"/Mark/Mark as spam\" and \"/Mark/Mark as ham\" to train Bsfilter with "
+"a few hundred spam and ham messages."
+msgstr ""
+"Bogofilter无法过滤邮件。很可能是因为它还没有接受过培训。\n"
+"请使用\"标记/标记为垃圾邮件\"和\"标记/标记为非垃圾邮件\"来培训Bogofilter，一"
+"般得培训几百封邮件后才能有较高的识别率。"
+
+#: src/plugins/bsfilter/bsfilter.c:400
+#, fuzzy, c-format
+msgid ""
+"The Bsfilter plugin couldn't filter a message. The command `%s` couldn't be "
+"run."
+msgstr "Bogofilter插件无法过滤邮件: 无法运行命令 `%s %s %s`。"
+
+#: src/plugins/bsfilter/bsfilter.c:501
+#, fuzzy
+msgid "Bsfilter: learning from message..."
+msgstr "Bogofilter: 正在从邮件接受培训..."
+
+#: src/plugins/bsfilter/bsfilter.c:637
+#, fuzzy
+msgid ""
+"This plugin can check all messages that are received from an IMAP, LOCAL or "
+"POP account for spam using Bsfilter. You will need Bsfilter installed "
+"locally.\n"
+"\n"
+"Before Bsfilter can recognize spam messages, you have to train it by marking "
+"a few hundred spam and ham messages with the use of \"/Mark/Mark as spam\" "
+"and \"/Mark/Mark as ham\".\n"
+"\n"
+"When a message is identified as spam it can be deleted or saved in a "
+"specially designated folder.\n"
+"\n"
+"Options can be found in /Configuration/Preferences/Plugins/Bsfilter"
+msgstr ""
+"本插件用Botofilter程序检查所有从IMAP, LOCAL或者POP帐号收到的邮件, 以判断来信"
+"是否是垃圾邮件。你需要先在本机安装Bogofilter。\n"
+"\n"
+"在Bogofilter能够正确识别垃圾邮件之前，你得先对它进行一下培训。培训方法就是先"
+"告诉它哪些是垃圾邮件(\"标记/标记为垃圾邮件\")，哪些不是(\"标记/标记为非垃圾邮"
+"件\")。\n"
+"\n"
+"如果一个邮件被判断为垃圾邮件，它将会被删除或者保存到一个特殊目录。\n"
+"\n"
+"相关选项可以在'/配置/偏好/插件/Bogofilter'中设置"
 
 #: src/plugins/demo/demo.c:31 src/plugins/demo/demo.c:100
 msgid "Demo"
@@ -8918,10 +9515,6 @@ msgstr "密钥ID"
 #: src/plugins/pgpcore/select-keys.c:400
 msgid "Trust"
 msgstr "信任密钥"
-
-#: src/plugins/pgpcore/select-keys.c:424
-msgid "_Select"
-msgstr "选择(_S)"
 
 #: src/plugins/pgpcore/select-keys.c:425
 msgid "_Other"
@@ -10453,10 +11046,6 @@ msgstr "房间"
 #: src/plugins/vcalendar/vcal_meeting_gtk.c:329
 msgid "Add..."
 msgstr "添加..."
-
-#: src/plugins/vcalendar/vcal_meeting_gtk.c:330 src/prefs_themes.c:973
-msgid "Remove"
-msgstr "删除"
 
 #: src/plugins/vcalendar/vcal_meeting_gtk.c:788
 msgid ""
@@ -12413,15 +13002,6 @@ msgstr ""
 msgid "Select the HTML part of multipart messages"
 msgstr "选择复合邮件中的HTML部分"
 
-#: src/prefs_folder_item.c:515 src/prefs_summaries.c:369
-msgid "No"
-msgstr "无"
-
-#: src/prefs_folder_item.c:516
-#, fuzzy
-msgid "Yes"
-msgstr "是"
-
 #: src/prefs_folder_item.c:521
 msgid ""
 "\"Default\" will follow global preference (found in /Preferences/Message "
@@ -13927,10 +14507,6 @@ msgstr ""
 #: src/prefs_summaries.c:682
 msgid "Summaries"
 msgstr "邮件摘要列表"
-
-#: src/prefs_summary_column.c:80 src/summaryview.c:2770
-msgid "Attachment"
-msgstr "附件"
 
 #: src/prefs_summary_column.c:86
 msgid "Number"

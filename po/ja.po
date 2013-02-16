@@ -4,7 +4,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: claws mail\n"
 "Report-Msgid-Bugs-To: paul@claws-mail.org\n"
-"POT-Creation-Date: 2013-02-16 13:46+0100\n"
+"POT-Creation-Date: 2013-02-16 14:36+0100\n"
 "PO-Revision-Date: 2010-01-02 20:03+0900\n"
 "Last-Translator: kentaro kazuhama <kazken3@gmail.com>\n"
 "Language-Team: kentaro kazuhama <kazken3@gmail.com>\n"
@@ -272,7 +272,8 @@ msgstr ""
 "置き換えてよいですか?"
 
 #: src/addrcustomattr.c:212 src/addressbook.c:435 src/addressbook.c:463
-#: src/addressbook.c:480 src/edittags.c:271 src/prefs_actions.c:1086
+#: src/addressbook.c:480 src/edittags.c:271
+#: src/plugins/archive/archiver_gtk.c:1193 src/prefs_actions.c:1086
 #: src/prefs_filtering.c:1692 src/prefs_template.c:1095
 msgid "_Delete"
 msgstr "削除(_D)"
@@ -629,7 +630,8 @@ msgid "Do you want to delete the query results and addresses in '%s' ?"
 msgstr "検索結果と'%s'のアドレスを削除しますか ?"
 
 #: src/addressbook.c:2920 src/addressbook.c:2946 src/addressbook.c:2953
-#: src/prefs_filtering_action.c:177 src/toolbar.c:413
+#: src/plugins/archive/archiver_prefs.c:337 src/prefs_filtering_action.c:177
+#: src/toolbar.c:413
 msgid "Delete"
 msgstr "削除"
 
@@ -781,6 +783,9 @@ msgstr "LDAPクエリ"
 #: src/plugins/bogofilter/bogofilter_gtk.c:230
 #: src/plugins/bogofilter/bogofilter_gtk.c:306
 #: src/plugins/bogofilter/bogofilter_gtk.c:383
+#: src/plugins/bsfilter/bsfilter_gtk.c:197
+#: src/plugins/bsfilter/bsfilter_gtk.c:266
+#: src/plugins/bsfilter/bsfilter_gtk.c:326 src/plugins/bsfilter/bsfilter.c:107
 #: src/plugins/dillo_viewer/dillo_prefs.c:67
 #: src/plugins/dillo_viewer/dillo_prefs.c:200
 #: src/plugins/dillo_viewer/dillo_prefs.c:213
@@ -2152,8 +2157,10 @@ msgstr "メッセージ保存先 "
 
 #: src/compose.c:7081 src/editjpilot.c:276 src/editldap.c:520
 #: src/editvcard.c:192 src/export.c:164 src/import.c:163 src/importmutt.c:239
-#: src/importpine.c:238 src/plugins/bogofilter/bogofilter_gtk.c:188
+#: src/importpine.c:238 src/plugins/archive/archiver_gtk.c:1028
+#: src/plugins/bogofilter/bogofilter_gtk.c:188
 #: src/plugins/bogofilter/bogofilter_gtk.c:208
+#: src/plugins/bsfilter/bsfilter_gtk.c:181
 #: src/plugins/spamassassin/spamassassin_gtk.c:418
 msgid "_Browse"
 msgstr "開く(_B)"
@@ -2205,7 +2212,7 @@ msgstr ""
 "プライバシーシステム '%s' がロードできません。 このメッセージを署名または暗号"
 "化することができません。"
 
-#: src/compose.c:8243
+#: src/compose.c:8243 src/plugins/archive/archiver_gtk.c:1082
 msgid "_None"
 msgstr "なし(_N)"
 
@@ -3069,8 +3076,8 @@ msgstr "スタイルシート"
 
 #: src/exphtmldlg.c:453 src/gtk/colorlabel.c:406 src/gtk/gtkaspell.c:1571
 #: src/gtk/gtkaspell.c:2231 src/gtk/menu.c:133 src/mainwindow.c:1174
-#: src/prefs_account.c:938 src/prefs_toolbar.c:775 src/prefs_toolbar.c:1456
-#: src/summaryview.c:6009
+#: src/plugins/archive/archiver_prefs.c:241 src/prefs_account.c:938
+#: src/prefs_toolbar.c:775 src/prefs_toolbar.c:1456 src/summaryview.c:6009
 msgid "None"
 msgstr "なし"
 
@@ -3339,6 +3346,7 @@ msgid "Full Name"
 msgstr "フルネーム"
 
 #: src/exporthtml.c:771 src/importldif.c:1021
+#: src/plugins/archive/archiver_gtk.c:736
 msgid "Attributes"
 msgstr "属性"
 
@@ -3691,7 +3699,8 @@ msgstr "管理付き"
 msgid "readonly"
 msgstr "読込み専用"
 
-#: src/grouplistdialog.c:351 src/plugins/vcalendar/vcal_manager.c:113
+#: src/grouplistdialog.c:351 src/plugins/att_remover/att_remover.c:297
+#: src/plugins/vcalendar/vcal_manager.c:113
 #: src/plugins/vcalendar/vcal_manager.c:146
 msgid "unknown"
 msgstr "不明"
@@ -4742,9 +4751,12 @@ msgstr ""
 "%s\n"
 
 #: src/gtk/pluginwindow.c:304 src/plugins/acpi_notifier/acpi_notifier.c:790
+#: src/plugins/archive/archiver_prefs.c:92
+#: src/plugins/att_remover/att_remover.c:519
 #: src/plugins/attachwarner/attachwarner_prefs.c:201
 #: src/plugins/address_keeper/address_keeper_prefs.c:208
 #: src/plugins/bogofilter/bogofilter_gtk.c:457
+#: src/plugins/bsfilter/bsfilter_gtk.c:400
 #: src/plugins/dillo_viewer/dillo_prefs.c:129
 #: src/plugins/fancy/fancy_prefs.c:110 src/plugins/pgpcore/prefs_gpg.c:557
 #: src/plugins/rssyl/rssyl_prefs.c:63
@@ -5024,7 +5036,7 @@ msgstr ""
 msgid "From/To/Subject/Tag"
 msgstr "From/To/Subject/タグ"
 
-#: src/gtk/quicksearch.c:668
+#: src/gtk/quicksearch.c:668 src/plugins/archive/archiver_prefs.c:322
 msgid "Recursive"
 msgstr "繰り返し"
 
@@ -7929,11 +7941,11 @@ msgstr "マルチパートメッセージの一部を保存できません: %s"
 msgid "Overwrite existing file '%s'?"
 msgstr "既存のファイル '%s' を上書きしますか?"
 
-#: src/mimeview.c:1866
+#: src/mimeview.c:1866 src/plugins/archive/archiver_prefs.c:128
 msgid "Select destination folder"
 msgstr "出力フォルダの選択"
 
-#: src/mimeview.c:1873
+#: src/mimeview.c:1873 src/plugins/archive/archiver_prefs.c:134
 #, c-format
 msgid "'%s' is not a directory."
 msgstr "'%s'はディレクトリではありません。"
@@ -8212,6 +8224,512 @@ msgstr "このプラグインは様々なACPIメールLEDを取り扱います�
 msgid "Laptop LED"
 msgstr "ラップトップLED"
 
+#: src/plugins/archive/archiver.c:43 src/plugins/archive/archiver_prefs.c:93
+msgid "Mail Archiver"
+msgstr "メール書庫"
+
+#: src/plugins/archive/archiver.c:54
+msgid "Create Archive..."
+msgstr "書庫を作成..."
+
+#: src/plugins/archive/archiver.c:113
+msgid ""
+"This plugin adds archiving features to Claws Mail.\n"
+"\n"
+"It enables you to select a mail folder that you want to be archived, and "
+"then choose a name, format and location for the archive. Subfolders can be "
+"included and MD5 checksums can be added for each file in the archive. "
+"Several archiving options are also available.\n"
+"\n"
+"The archive can be stored as:\n"
+"\tTAR\n"
+"\tPAX\n"
+"\tSHAR\n"
+"\tCPIO\n"
+"\n"
+"The archive can be compressed using:\n"
+"\tGZIP/ZIP\n"
+"\tBZIP2\n"
+"\tCOMPRESS\n"
+"\n"
+"The archives can be restored with any standard tool that supports the chosen "
+"format and compression.\n"
+"\n"
+"The supported folder types are MH, IMAP, RSSyl and vCalendar.\n"
+"\n"
+"To activate the archiving feature go to /Tools/Create Archive\n"
+"\n"
+"Default options can be set in /Configuration/Preferences/Plugins/Mail "
+"Archiver"
+msgstr ""
+"このプラグインはClaws Mailに書庫機能を追加します。\n"
+"\n"
+"書庫機能は、書庫にしたいメールフォルダを選択する事ででき、次に名前やフォー"
+"マット、書庫の保存場所を選択します。サブフォルダも含まれ、MD5チェックサムは書"
+"庫上の各ファイルに付けられます。複数の書庫オプションも利用可能です。\n"
+"\n"
+"保存可能な書庫は以下になります:\n"
+"\tTAR\n"
+"\tPAX\n"
+"\tSHAR\n"
+"\tCPIO\n"
+"\n"
+"圧縮が利用可能な書庫は以下になります:\n"
+"\tGZIP/ZIP\n"
+"\tBZIP2\n"
+"\n"
+"書庫はフォーマットや圧縮をサポートする一般的なツールでリストアすることができ"
+"ます。\n"
+"\n"
+"サポートされるフォルダは、MH、IMAP、RSSyl、vCalendarです。\n"
+"\n"
+"書庫機能を有効にするには/ツール/書庫の作成を選択します\n"
+"\n"
+"既定のオプションは/設定/全般の設定/Plugins/メール書庫 にあります"
+
+#: src/plugins/archive/archiver.c:145
+msgid "Archiver"
+msgstr "書庫"
+
+#: src/plugins/archive/archiver_gtk.c:104
+msgid "Archiving"
+msgstr "書庫作成中"
+
+#: src/plugins/archive/archiver_gtk.c:122
+msgid "Press Cancel button to stop archiving"
+msgstr "書庫の作成を中止するにはキャンセルボタンを押してください"
+
+#: src/plugins/archive/archiver_gtk.c:138
+msgid "Archiving:"
+msgstr "書庫作成中:"
+
+#: src/plugins/archive/archiver_gtk.c:506
+msgid "Folder and archive must be selected"
+msgstr "フォルダと書庫を選択する必要があります"
+
+#: src/plugins/archive/archiver_gtk.c:515
+#, c-format
+msgid "%s: Exists. Continue anyway?"
+msgstr "%s: 存在します。続けますか?"
+
+#: src/plugins/archive/archiver_gtk.c:518
+#, c-format
+msgid "%s: Is a link. Cannot continue"
+msgstr "%s: はリンクです。続けることができません"
+
+#: src/plugins/archive/archiver_gtk.c:521
+#, c-format
+msgid "%s: Is a directory. Cannot continue"
+msgstr "%s: はディレクトリです。続けることができません"
+
+#: src/plugins/archive/archiver_gtk.c:524
+#, c-format
+msgid "%s: Missing permissions. Cannot continue"
+msgstr "%s: 権限が失われています。続けることができません"
+
+#: src/plugins/archive/archiver_gtk.c:527
+#, c-format
+msgid "%s: Unknown error. Cannot continue"
+msgstr "%s: 不明なエラーです。続けることができません"
+
+#: src/plugins/archive/archiver_gtk.c:564
+#, c-format
+msgid ""
+"Not a valid file name:\n"
+"%s."
+msgstr ""
+"有効なファイル名ではありません:\n"
+"%s."
+
+#: src/plugins/archive/archiver_gtk.c:577
+#, c-format
+msgid ""
+"Not a valid Claws Mail folder:\n"
+"%s."
+msgstr ""
+"有効なClaws Mailフォルダではありません:\n"
+"%s."
+
+#: src/plugins/archive/archiver_gtk.c:606
+#, c-format
+msgid ""
+"Adding files in folder failed\n"
+"Files in folder: %d\n"
+"Files in list:   %d\n"
+"\n"
+"Continue anyway?"
+msgstr ""
+"フォルダ内のファイル追加に失敗しました\n"
+"フォルダ内のファイル: %d\n"
+"リスト内のファイル:   %d\n"
+"\n"
+"続けますか?"
+
+#: src/plugins/archive/archiver_gtk.c:710
+msgid "Archive result"
+msgstr "書庫作成結果"
+
+#: src/plugins/archive/archiver_gtk.c:740
+msgid "Values"
+msgstr "値"
+
+#: src/plugins/archive/archiver_gtk.c:749
+msgid "Archive"
+msgstr "書庫"
+
+#: src/plugins/archive/archiver_gtk.c:755
+msgid "Archive format"
+msgstr "書庫フォーマット"
+
+#: src/plugins/archive/archiver_gtk.c:762
+msgid "Compression method"
+msgstr "圧縮方法"
+
+#: src/plugins/archive/archiver_gtk.c:770
+msgid "Number of files"
+msgstr "行番号"
+
+#: src/plugins/archive/archiver_gtk.c:778
+msgid "Archive Size"
+msgstr "書庫サイズ"
+
+#: src/plugins/archive/archiver_gtk.c:786
+msgid "Folder Size"
+msgstr "フォルダサイズ"
+
+#: src/plugins/archive/archiver_gtk.c:795
+msgid "Compression level"
+msgstr "圧縮レベル"
+
+#: src/plugins/archive/archiver_gtk.c:800
+#: src/plugins/archive/archiver_gtk.c:808
+#: src/plugins/archive/archiver_gtk.c:816 src/prefs_folder_item.c:516
+msgid "Yes"
+msgstr "はい"
+
+#: src/plugins/archive/archiver_gtk.c:800
+#: src/plugins/archive/archiver_gtk.c:808
+#: src/plugins/archive/archiver_gtk.c:816 src/prefs_folder_item.c:515
+#: src/prefs_summaries.c:369
+msgid "No"
+msgstr "いいえ"
+
+#: src/plugins/archive/archiver_gtk.c:803
+msgid "MD5 checksum"
+msgstr "MD5チェックサム"
+
+#: src/plugins/archive/archiver_gtk.c:811
+msgid "Descriptive names"
+msgstr "記述名"
+
+#: src/plugins/archive/archiver_gtk.c:819
+msgid "Delete selected files"
+msgstr "選択したファイルを削除"
+
+#: src/plugins/archive/archiver_gtk.c:828
+#: src/plugins/archive/archiver_gtk.c:1210
+msgid "Select mails before"
+msgstr "メールを選択"
+
+#: src/plugins/archive/archiver_gtk.c:904
+msgid "Select file name for archive [suffix should reflect archive like .tgz]"
+msgstr "書庫にするファイル名を選択する [拡張子は.tgz野用に書庫に反映されます]"
+
+#: src/plugins/archive/archiver_gtk.c:952
+#, c-format
+msgid "%ld of %ld"
+msgstr "%ld of %ld"
+
+#: src/plugins/archive/archiver_gtk.c:991
+msgid "Create Archive"
+msgstr "書庫を作成"
+
+#: src/plugins/archive/archiver_gtk.c:1006
+msgid "Enter Archiver arguments"
+msgstr "書庫の引数を入力"
+
+#: src/plugins/archive/archiver_gtk.c:1019
+msgid "Folder to archive"
+msgstr "書庫にするフォルダ"
+
+#: src/plugins/archive/archiver_gtk.c:1026
+msgid "Folder which is the root of the archive"
+msgstr "書庫のルートであるフォルダ"
+
+#: src/plugins/archive/archiver_gtk.c:1031
+msgid "Click this button to select a folder which is to be root of the archive"
+msgstr "書庫のルートであるフォルダを選択するにはこのボタンをクリック"
+
+#: src/plugins/archive/archiver_gtk.c:1037
+msgid "Name for archive"
+msgstr "書庫名"
+
+#: src/plugins/archive/archiver_gtk.c:1043
+msgid "Archive location and name"
+msgstr "書庫の場所と名前"
+
+#: src/plugins/archive/archiver_gtk.c:1045
+#: src/plugins/archive/archiver_prefs.c:198
+#: src/plugins/pgpcore/select-keys.c:424
+msgid "_Select"
+msgstr "選択(_S)"
+
+#: src/plugins/archive/archiver_gtk.c:1048
+msgid "Click this button to select a name and location for the archive"
+msgstr "書庫の場所と名前を選択するにはこのボタンをクリック"
+
+#: src/plugins/archive/archiver_gtk.c:1050
+msgid "Choose compression"
+msgstr "圧縮を選択"
+
+#: src/plugins/archive/archiver_gtk.c:1063
+msgid "Choose this option to use ZIP compression for the archive"
+msgstr "書庫のZIP圧縮を利用するにはこのオプションを選択"
+
+#: src/plugins/archive/archiver_gtk.c:1070
+msgid "Choose this option to use BZIP2 compression for the archive"
+msgstr "書庫のBZIP2圧縮を利用するにはこのオプションを選択"
+
+#: src/plugins/archive/archiver_gtk.c:1078
+msgid "Choose this to use Compress compression for your archive"
+msgstr "書庫のCompress圧縮を利用するにはこのオプションを選択"
+
+#: src/plugins/archive/archiver_gtk.c:1086
+msgid "Choose this option to disable compression for the archive"
+msgstr "書庫の圧縮を無効にするにはこのオプションを選択"
+
+#: src/plugins/archive/archiver_gtk.c:1108
+msgid "Choose format"
+msgstr "フォーマットを選択"
+
+#: src/plugins/archive/archiver_gtk.c:1121
+msgid "Choose this option to use TAR as format for the archive"
+msgstr "書庫のフォーマットとしてTARを利用するにはこのオプションを選択"
+
+#: src/plugins/archive/archiver_gtk.c:1128
+msgid "Choose this to use SHAR as format for the archive"
+msgstr "書庫のフォーマットとしてSHARを利用するにはこのオプションを選択"
+
+#: src/plugins/archive/archiver_gtk.c:1135
+msgid "Choose this option to use CPIO as format for the archive"
+msgstr "書庫のフォーマットとしてCPIOを利用するにはこのオプションを選択"
+
+#: src/plugins/archive/archiver_gtk.c:1142
+msgid "Choose this option to use PAX as format for the archive"
+msgstr "書庫のフォーマットとしてPAXを利用するにはこのオプションを選択"
+
+#: src/plugins/archive/archiver_gtk.c:1162
+msgid "Miscellaneous options"
+msgstr "雑多なオプション"
+
+#: src/plugins/archive/archiver_gtk.c:1171
+msgid "_Recursive"
+msgstr "再帰(_R)"
+
+#: src/plugins/archive/archiver_gtk.c:1175
+msgid "Choose this option to include subfolders in the archive"
+msgstr "書庫内のサブフォルダを含むにはこのオプションを選択"
+
+#: src/plugins/archive/archiver_gtk.c:1177
+msgid "_MD5sum"
+msgstr "_MD5sum"
+
+#: src/plugins/archive/archiver_gtk.c:1181
+msgid ""
+"Choose this option to add MD5 checksums for each file in the archive.\n"
+"Be aware though, that this dramatically increases the time it\n"
+"will take to create the archive"
+msgstr ""
+"書庫にそれぞれのファイルのMD5チェックサムを追加するにはこのオプションを選択\n"
+"ただし、書庫の作成に劇的に時間がかかることに十分に注意してください\n"
+"　　"
+
+#: src/plugins/archive/archiver_gtk.c:1185
+msgid "R_ename"
+msgstr "リネーム(_E)"
+
+#: src/plugins/archive/archiver_gtk.c:1189
+#: src/plugins/archive/archiver_prefs.c:333
+msgid ""
+"Choose this option to use descriptive names for each file in the archive.\n"
+"The naming scheme: date_from@to@subject.\n"
+"Names will be truncated to max 96 characters"
+msgstr ""
+"書庫内の互いのファイル記述名を使うにはこのオプションを選択\n"
+"スキーム名は: date_from@to@subject.\n"
+"名前は最大96文字に省略されます"
+
+#: src/plugins/archive/archiver_gtk.c:1197
+msgid ""
+"Choose this option to delete mails after archiving\n"
+"At this point only handles IMAP4, Local mbox and POP3"
+msgstr ""
+"書庫化の後にメールを削除するにはこのオプションを選択\n"
+"ここではIMAP4やローカルmbox、POP3をそのように取り扱います"
+
+#: src/plugins/archive/archiver_gtk.c:1201
+msgid "Selection options"
+msgstr "選択オプション"
+
+#: src/plugins/archive/archiver_gtk.c:1217
+msgid ""
+"Select emails before a certain date\n"
+"Date must comply to ISO-8601 [YYYY-MM-DD]"
+msgstr ""
+"既定日より前のメールを選択\n"
+"日付はISO-8601に従う必要があります [YYYY-MM-DD]"
+
+#: src/plugins/archive/archiver_prefs.c:190
+msgid "Default save folder"
+msgstr "既定の保存フォルダ"
+
+#: src/plugins/archive/archiver_prefs.c:202
+msgid "Click this button to select the default location for saving archives"
+msgstr "書庫の保存する既定の場所を選択するにはこのボタンをクリック"
+
+#: src/plugins/archive/archiver_prefs.c:211
+msgid "Default compression"
+msgstr "既定の圧縮"
+
+#: src/plugins/archive/archiver_prefs.c:223
+msgid "Choose this option to use ZIP compression by default"
+msgstr "既定の圧縮としてZIPを使用するにはこのオプションを選択"
+
+#: src/plugins/archive/archiver_prefs.c:230
+msgid "Choose this option to use BZIP2 compression by default"
+msgstr "既定の圧縮としてBZIP2を使用するにはこのオプションを選択"
+
+#: src/plugins/archive/archiver_prefs.c:238
+msgid "Choose this option to use COMPRESS compression by default"
+msgstr "既定のCOMPRESS圧縮を使用するにはこのオプションを選択"
+
+#: src/plugins/archive/archiver_prefs.c:246
+msgid "Choose this option to disable compression by default"
+msgstr "既定の圧縮を無効にするにはこのオプションを選択"
+
+#: src/plugins/archive/archiver_prefs.c:265
+msgid "Default format"
+msgstr "既定のフォーマット"
+
+#: src/plugins/archive/archiver_prefs.c:277
+msgid "Choose this option to use the TAR format by default"
+msgstr "既定のフォーマットでTARを使うにはこのオプションを選択"
+
+#: src/plugins/archive/archiver_prefs.c:284
+msgid "Choose this option to use the SHAR format by default"
+msgstr "既定のフォーマットでSHARを使うにはこのオプションを選択"
+
+#: src/plugins/archive/archiver_prefs.c:291
+msgid "Choose this option to use the CPIO format by default"
+msgstr "既定のフォーマットでCPIOを使うにはこのオプションを選択"
+
+#: src/plugins/archive/archiver_prefs.c:298
+msgid "Choose this option to use the PAX format by default"
+msgstr "既定のフォーマットでPAXを使うにはこのオプションを選択"
+
+#: src/plugins/archive/archiver_prefs.c:315
+msgid "Default miscellaneous options"
+msgstr "既定の雑多なオプション"
+
+#: src/plugins/archive/archiver_prefs.c:324
+msgid "Choose this option to include subfolders in the archives by default"
+msgstr "既定の書庫内のサブフォルダを含むにはこのオプションを選択"
+
+#: src/plugins/archive/archiver_prefs.c:325
+msgid "MD5sum"
+msgstr "MD5sum"
+
+#: src/plugins/archive/archiver_prefs.c:327
+msgid ""
+"Choose this option to add MD5 checksums for each file in the archives by "
+"default.\n"
+"Be aware though, that this dramatically increases the time it\n"
+"will take to create the archives"
+msgstr ""
+"既定の書庫にそれぞれのファイルのMD5チェックサムを追加するにはこのオプションを"
+"選択\n"
+"ただし、書庫の作成に劇的に時間がかかることに十分に注意してください\n"
+"　　"
+
+#: src/plugins/archive/archiver_prefs.c:331
+msgid "Rename"
+msgstr "リネーム"
+
+#: src/plugins/archive/archiver_prefs.c:339
+msgid "Choose this option to delete mails after archiving"
+msgstr "書庫化の後にメールを削除するにはこのオプションを選択"
+
+#: src/plugins/att_remover/att_remover.c:299
+#, fuzzy
+msgid "<b>Type: </b>"
+msgstr "<b> on:</b>"
+
+#: src/plugins/att_remover/att_remover.c:300
+#, fuzzy
+msgid "<b>Size: </b>"
+msgstr "<b> on:</b>"
+
+#: src/plugins/att_remover/att_remover.c:301
+#, fuzzy
+msgid "<b>Filename: </b>"
+msgstr "ファイル名:"
+
+#: src/plugins/att_remover/att_remover.c:332
+#, fuzzy
+msgid "Remove attachments"
+msgstr "添付を無視する"
+
+#: src/plugins/att_remover/att_remover.c:357
+#: src/plugins/vcalendar/vcal_meeting_gtk.c:330 src/prefs_themes.c:973
+msgid "Remove"
+msgstr "削除"
+
+#: src/plugins/att_remover/att_remover.c:365 src/prefs_summary_column.c:80
+#: src/summaryview.c:2770
+msgid "Attachment"
+msgstr "添付"
+
+#: src/plugins/att_remover/att_remover.c:417
+#, fuzzy
+msgid "Destroy attachments"
+msgstr "添付されています"
+
+#: src/plugins/att_remover/att_remover.c:418
+msgid ""
+"Do you really want to remove all attachments from the selected messages ?\n"
+"\n"
+"The deleted data will be unrecoverable."
+msgstr ""
+
+#: src/plugins/att_remover/att_remover.c:479
+#, fuzzy
+msgid "This message doesn't have any attachments."
+msgstr "タグを持つメッセージ"
+
+#: src/plugins/att_remover/att_remover.c:494
+#, fuzzy
+msgid "Remove attachments..."
+msgstr "添付を無視する"
+
+#: src/plugins/att_remover/att_remover.c:507
+#: src/plugins/att_remover/att_remover.c:574
+#, fuzzy
+msgid "AttRemover"
+msgstr "削除"
+
+#: src/plugins/att_remover/att_remover.c:579
+msgid ""
+"This plugin removes attachments from mails.\n"
+"\n"
+"Warning: this operation will be completely un-cancellable and the deleted "
+"attachments will be lost forever, and ever, and ever."
+msgstr ""
+
+#: src/plugins/att_remover/att_remover.c:603
+#, fuzzy
+msgid "Attachment handling"
+msgstr "添付の警告"
+
 #: src/plugins/attachwarner/attachwarner.c:309
 #, c-format
 msgid ""
@@ -8384,7 +8902,7 @@ msgid "Bogofilter: learning from message..."
 msgstr "Bogofilter: メッセージを学習中..."
 
 #: src/plugins/bogofilter/bogofilter.c:768
-#: src/plugins/bogofilter/bogofilter.c:817
+#: src/plugins/bogofilter/bogofilter.c:817 src/plugins/bsfilter/bsfilter.c:511
 #, c-format
 msgid "Learning failed; `%s` returned with status %d."
 msgstr "学習に失敗しました; `%s` はステータス %d を返しました。"
@@ -8430,41 +8948,49 @@ msgstr ""
 "オプションは/設定/全般の設定/プラグイン/Bogofilterで見つけることができます。"
 
 #: src/plugins/bogofilter/bogofilter.c:1035
+#: src/plugins/bsfilter/bsfilter.c:670
 #: src/plugins/spamassassin/spamassassin.c:651
 msgid "Spam detection"
 msgstr "Spam検出"
 
 #: src/plugins/bogofilter/bogofilter.c:1036
+#: src/plugins/bsfilter/bsfilter.c:671
 #: src/plugins/spamassassin/spamassassin.c:652
 msgid "Spam learning"
 msgstr "Spamの学習"
 
 #: src/plugins/bogofilter/bogofilter_gtk.c:150
+#: src/plugins/bsfilter/bsfilter_gtk.c:143
 #: src/plugins/spamassassin/spamassassin_gtk.c:400
 msgid "Process messages on receiving"
 msgstr "受信時にメッセージ処理する"
 
 #: src/plugins/bogofilter/bogofilter_gtk.c:158
+#: src/plugins/bsfilter/bsfilter_gtk.c:151
 #: src/plugins/spamassassin/spamassassin_gtk.c:358
 msgid "Maximum size"
 msgstr "最大サイズ"
 
 #: src/plugins/bogofilter/bogofilter_gtk.c:167
+#: src/plugins/bsfilter/bsfilter_gtk.c:160
 #: src/plugins/spamassassin/spamassassin_gtk.c:367
 msgid "Messages larger than this will not be checked"
 msgstr "これより大きいメッセージはチェックされませんでした。"
 
 #: src/plugins/bogofilter/bogofilter_gtk.c:170
+#: src/plugins/bsfilter/bsfilter_gtk.c:163
 #: src/plugins/spamassassin/spamassassin_gtk.c:370 src/prefs_account.c:1479
 msgid "KB"
 msgstr "KB"
 
 #: src/plugins/bogofilter/bogofilter_gtk.c:178
+#: src/plugins/bsfilter/bsfilter_gtk.c:171
 #: src/plugins/spamassassin/spamassassin_gtk.c:408
 msgid "Save spam in"
 msgstr "スパムとして保存"
 
 #: src/plugins/bogofilter/bogofilter_gtk.c:186
+#: src/plugins/bsfilter/bsfilter_gtk.c:179
 #: src/plugins/spamassassin/spamassassin_gtk.c:416
 msgid ""
 "Folder for storing identified spam. Leave empty to use the trash folder."
@@ -8473,6 +8999,7 @@ msgstr ""
 "い。"
 
 #: src/plugins/bogofilter/bogofilter_gtk.c:192
+#: src/plugins/bsfilter/bsfilter_gtk.c:185
 #: src/plugins/spamassassin/spamassassin_gtk.c:422
 msgid "Click this button to select a folder for storing spam"
 msgstr ""
@@ -8506,11 +9033,13 @@ msgid "Only done for messages in MH folders"
 msgstr "MHフォルダのメッセージ用のみで実施しました"
 
 #: src/plugins/bogofilter/bogofilter_gtk.c:224
+#: src/plugins/bsfilter/bsfilter_gtk.c:191
 #: src/plugins/spamassassin/spamassassin_gtk.c:437
 msgid "Whitelist senders found in address book/folder"
 msgstr "送信者のホワイトリストがアドレス帳/フォルダで見つかりました"
 
 #: src/plugins/bogofilter/bogofilter_gtk.c:228
+#: src/plugins/bsfilter/bsfilter_gtk.c:195
 #: src/plugins/spamassassin/spamassassin_gtk.c:441
 msgid ""
 "Messages coming from your address book contacts will be received in the "
@@ -8520,6 +9049,7 @@ msgstr ""
 "信します"
 
 #: src/plugins/bogofilter/bogofilter_gtk.c:234
+#: src/plugins/bsfilter/bsfilter_gtk.c:201
 #: src/plugins/dillo_viewer/dillo_prefs.c:204
 #: src/plugins/spamassassin/spamassassin_gtk.c:447
 #: src/prefs_filtering_action.c:573 src/prefs_filtering_action.c:580
@@ -8528,6 +9058,7 @@ msgid "Select ..."
 msgstr "選択 ..."
 
 #: src/plugins/bogofilter/bogofilter_gtk.c:238
+#: src/plugins/bsfilter/bsfilter_gtk.c:205
 #: src/plugins/spamassassin/spamassassin_gtk.c:451
 msgid "Click this button to select a book or folder in the address book"
 msgstr ""
@@ -8535,6 +9066,7 @@ msgstr ""
 "さい"
 
 #: src/plugins/bogofilter/bogofilter_gtk.c:240
+#: src/plugins/bsfilter/bsfilter_gtk.c:207
 msgid "Learn whitelisted emails as ham"
 msgstr "ホワイトリスト化したメールを非Spamとして学習"
 
@@ -8555,9 +9087,91 @@ msgid "Path to bogofilter executable"
 msgstr "Bogofilter実行パス"
 
 #: src/plugins/bogofilter/bogofilter_gtk.c:265
+#: src/plugins/bsfilter/bsfilter_gtk.c:232
 #: src/plugins/spamassassin/spamassassin_gtk.c:429
 msgid "Mark spam as read"
 msgstr "既読としてSpamでマーク"
+
+#: src/bsfilter_gtk.c:205
+msgid ""
+"If Bsfilter thought an email was spam or unsure, but it was whitelisted, "
+"learn it as ham."
+msgstr ""
+"Bsfilterはメールをspamが信頼できないものと考えていますが、ホワイトリスト済み"
+"で非Spamと学習しています。"
+
+#: src/bsfilter_gtk.c:214
+msgid "Bsfilter call"
+msgstr "Bsfilterの呼び出し"
+
+#: src/bsfilter_gtk.c:222
+msgid "Path to bsfilter executable"
+msgstr "bsfilter実行ファイルへのパス"
+
+#: src/bsfilter.c:78 src/bsfilter_gtk.c:393
+msgid "Bsfilter"
+msgstr "Bsfilter"
+
+#: src/bsfilter.c:295
+msgid "Bsfilter: fetching body..."
+msgstr "Bsfilter: bodyを取得しています..."
+
+#: src/bsfilter.c:304
+msgid "Bsfilter: filtering message..."
+msgstr "Bsfilter: メッセージを振り分けています..."
+
+#: src/bsfilter.c:389
+msgid ""
+"The Bsfilter plugin couldn't filter a message. The probable cause of the "
+"error is that it didn't learn from any mail.\n"
+"Use \"/Mark/Mark as spam\" and \"/Mark/Mark as ham\" to train Bsfilter with "
+"a few hundred spam and ham messages."
+msgstr ""
+"Bsfilterプラグインはメッセージを振り分けることが出来ません。どのメールからも"
+"学習していないためのエラーと思われます。\n"
+"\"/マーク/spamとしてマーク\" や \"/マーク/非Spamとしてマーク\"を使って、数百"
+"のSpamや非SpamメッセージでBsfilterをトレーニングしてください。"
+
+#: src/bsfilter.c:396
+#, c-format
+msgid ""
+"The Bsfilter plugin couldn't filter a message. The command `%s` couldn't be "
+"run."
+msgstr ""
+"Bsfilterプラグインは、メッセージを振り分けることができません。コマンド `%s` "
+"が実行できません。"
+
+#: src/bsfilter.c:497
+msgid "Bsfilter: learning from message..."
+msgstr "Bsfilter: メッセージから学習中です..."
+
+#: src/bsfilter.c:641
+msgid ""
+"This plugin can check all messages that are received from an IMAP, LOCAL or "
+"POP account for spam using Bsfilter. You will need Bsfilter installed "
+"locally.\n"
+"\n"
+"Before Bsfilter can recognize spam messages, you have to train it by marking "
+"a few hundred spam and ham messages with the use of \"/Mark/Mark as spam\" "
+"and \"/Mark/Mark as ham\".\n"
+"\n"
+"When a message is identified as spam it can be deleted or saved in a "
+"specially designated folder.\n"
+"\n"
+"Options can be found in /Configuration/Preferences/Plugins/Bsfilter"
+msgstr ""
+"このプラグインはspam検出のためIMAPやローカル、またはPOPアカウントから受信した"
+"全てのメッセージをBsfilterを使ってチェックすることができます。ローカルに"
+"Bsfilterをインストールしなければいけません。\n"
+"\n"
+"BefilterがSpamメッセージを認識する前に、\"/マーク/spamとしてマーク\" や \"/"
+"マーク/非Spamとしてマーク\"を使い、数百のSpamと非Spamメッセージをマークするこ"
+"とでトレーニングする必要があります。\n"
+"\n"
+"メッセージがSpamとして認識されたとき、Bsfilterは削除したり、特別に指定した"
+"フォルダへ保存します。\n"
+"\n"
+"オプションは/設定/全般の設定/プラグイン/Bsfilter にあります"
 
 #: src/plugins/demo/demo.c:31 src/plugins/demo/demo.c:100
 msgid "Demo"
@@ -9042,10 +9656,6 @@ msgstr "鍵ID"
 #: src/plugins/pgpcore/select-keys.c:400
 msgid "Trust"
 msgstr "信用"
-
-#: src/plugins/pgpcore/select-keys.c:424
-msgid "_Select"
-msgstr "選択(_S)"
 
 #: src/plugins/pgpcore/select-keys.c:425
 msgid "_Other"
@@ -10615,10 +11225,6 @@ msgstr "部屋"
 #: src/plugins/vcalendar/vcal_meeting_gtk.c:329
 msgid "Add..."
 msgstr "追加..."
-
-#: src/plugins/vcalendar/vcal_meeting_gtk.c:330 src/prefs_themes.c:973
-msgid "Remove"
-msgstr "削除"
 
 #: src/plugins/vcalendar/vcal_meeting_gtk.c:788
 msgid ""
@@ -12596,15 +13202,6 @@ msgstr ""
 msgid "Select the HTML part of multipart messages"
 msgstr "multipart/alternativeメッセージの一部にHTMLを選択する"
 
-#: src/prefs_folder_item.c:515 src/prefs_summaries.c:369
-msgid "No"
-msgstr "いいえ"
-
-#: src/prefs_folder_item.c:516
-#, fuzzy
-msgid "Yes"
-msgstr "はい"
-
 #: src/prefs_folder_item.c:521
 msgid ""
 "\"Default\" will follow global preference (found in /Preferences/Message "
@@ -14127,10 +14724,6 @@ msgstr ""
 #: src/prefs_summaries.c:682
 msgid "Summaries"
 msgstr "サマリー"
-
-#: src/prefs_summary_column.c:80 src/summaryview.c:2770
-msgid "Attachment"
-msgstr "添付"
 
 #: src/prefs_summary_column.c:86
 msgid "Number"

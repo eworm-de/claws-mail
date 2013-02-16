@@ -10,7 +10,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ru\n"
 "Report-Msgid-Bugs-To: paul@claws-mail.org\n"
-"POT-Creation-Date: 2013-02-16 13:46+0100\n"
+"POT-Creation-Date: 2013-02-16 14:36+0100\n"
 "PO-Revision-Date: 2011-12-16 09:38+0300\n"
 "Last-Translator: Aleksei Miheev <aleksei@miheev.info>\n"
 "Language-Team: Russian <ru@li.org>\n"
@@ -279,7 +279,8 @@ msgid ""
 msgstr "Вы действительно хотите заменить все свойства стандартным набором?"
 
 #: src/addrcustomattr.c:212 src/addressbook.c:435 src/addressbook.c:463
-#: src/addressbook.c:480 src/edittags.c:271 src/prefs_actions.c:1086
+#: src/addressbook.c:480 src/edittags.c:271
+#: src/plugins/archive/archiver_gtk.c:1193 src/prefs_actions.c:1086
 #: src/prefs_filtering.c:1692 src/prefs_template.c:1095
 msgid "_Delete"
 msgstr "_Удалить"
@@ -637,7 +638,8 @@ msgid "Do you want to delete the query results and addresses in '%s' ?"
 msgstr "Действительно удалить результаты запроса и адреса в '%s' ?"
 
 #: src/addressbook.c:2920 src/addressbook.c:2946 src/addressbook.c:2953
-#: src/prefs_filtering_action.c:177 src/toolbar.c:413
+#: src/plugins/archive/archiver_prefs.c:337 src/prefs_filtering_action.c:177
+#: src/toolbar.c:413
 msgid "Delete"
 msgstr "Удалить"
 
@@ -789,6 +791,9 @@ msgstr "LDAP запрос"
 #: src/plugins/bogofilter/bogofilter_gtk.c:230
 #: src/plugins/bogofilter/bogofilter_gtk.c:306
 #: src/plugins/bogofilter/bogofilter_gtk.c:383
+#: src/plugins/bsfilter/bsfilter_gtk.c:197
+#: src/plugins/bsfilter/bsfilter_gtk.c:266
+#: src/plugins/bsfilter/bsfilter_gtk.c:326 src/plugins/bsfilter/bsfilter.c:107
 #: src/plugins/dillo_viewer/dillo_prefs.c:67
 #: src/plugins/dillo_viewer/dillo_prefs.c:200
 #: src/plugins/dillo_viewer/dillo_prefs.c:213
@@ -2150,8 +2155,10 @@ msgstr "Сохранить сообщение в "
 
 #: src/compose.c:7081 src/editjpilot.c:276 src/editldap.c:520
 #: src/editvcard.c:192 src/export.c:164 src/import.c:163 src/importmutt.c:239
-#: src/importpine.c:238 src/plugins/bogofilter/bogofilter_gtk.c:188
+#: src/importpine.c:238 src/plugins/archive/archiver_gtk.c:1028
+#: src/plugins/bogofilter/bogofilter_gtk.c:188
 #: src/plugins/bogofilter/bogofilter_gtk.c:208
+#: src/plugins/bsfilter/bsfilter_gtk.c:181
 #: src/plugins/spamassassin/spamassassin_gtk.c:418
 msgid "_Browse"
 msgstr "_Выбрать"
@@ -2203,7 +2210,7 @@ msgstr ""
 "Невозможно использовать систему безопасности '%s'. Вы не сможете подписать "
 "или зашифровать сообщение."
 
-#: src/compose.c:8243
+#: src/compose.c:8243 src/plugins/archive/archiver_gtk.c:1082
 msgid "_None"
 msgstr "Никакой"
 
@@ -3077,8 +3084,8 @@ msgstr "Таблица стилей"
 
 #: src/exphtmldlg.c:453 src/gtk/colorlabel.c:406 src/gtk/gtkaspell.c:1571
 #: src/gtk/gtkaspell.c:2231 src/gtk/menu.c:133 src/mainwindow.c:1174
-#: src/prefs_account.c:938 src/prefs_toolbar.c:775 src/prefs_toolbar.c:1456
-#: src/summaryview.c:6009
+#: src/plugins/archive/archiver_prefs.c:241 src/prefs_account.c:938
+#: src/prefs_toolbar.c:775 src/prefs_toolbar.c:1456 src/summaryview.c:6009
 msgid "None"
 msgstr "Никакой"
 
@@ -3349,6 +3356,7 @@ msgid "Full Name"
 msgstr "Полное имя"
 
 #: src/exporthtml.c:771 src/importldif.c:1021
+#: src/plugins/archive/archiver_gtk.c:736
 msgid "Attributes"
 msgstr "Атрибуты"
 
@@ -3701,7 +3709,8 @@ msgstr "модерируется"
 msgid "readonly"
 msgstr "только для чтения"
 
-#: src/grouplistdialog.c:351 src/plugins/vcalendar/vcal_manager.c:113
+#: src/grouplistdialog.c:351 src/plugins/att_remover/att_remover.c:297
+#: src/plugins/vcalendar/vcal_manager.c:113
 #: src/plugins/vcalendar/vcal_manager.c:146
 msgid "unknown"
 msgstr "неизвестно"
@@ -4757,9 +4766,12 @@ msgstr ""
 "%s\n"
 
 #: src/gtk/pluginwindow.c:304 src/plugins/acpi_notifier/acpi_notifier.c:790
+#: src/plugins/archive/archiver_prefs.c:92
+#: src/plugins/att_remover/att_remover.c:519
 #: src/plugins/attachwarner/attachwarner_prefs.c:201
 #: src/plugins/address_keeper/address_keeper_prefs.c:208
 #: src/plugins/bogofilter/bogofilter_gtk.c:457
+#: src/plugins/bsfilter/bsfilter_gtk.c:400
 #: src/plugins/dillo_viewer/dillo_prefs.c:129
 #: src/plugins/fancy/fancy_prefs.c:110 src/plugins/pgpcore/prefs_gpg.c:557
 #: src/plugins/rssyl/rssyl_prefs.c:63
@@ -5039,7 +5051,7 @@ msgstr ""
 msgid "From/To/Subject/Tag"
 msgstr "От/Кому/Тема/Тег"
 
-#: src/gtk/quicksearch.c:668
+#: src/gtk/quicksearch.c:668 src/plugins/archive/archiver_prefs.c:322
 msgid "Recursive"
 msgstr "Рекурсивно"
 
@@ -7973,11 +7985,11 @@ msgstr "Невозможно сохранить часть множествен�
 msgid "Overwrite existing file '%s'?"
 msgstr "Перезаписать существующий файл '%s'?"
 
-#: src/mimeview.c:1866
+#: src/mimeview.c:1866 src/plugins/archive/archiver_prefs.c:128
 msgid "Select destination folder"
 msgstr "Выберите папку назначения"
 
-#: src/mimeview.c:1873
+#: src/mimeview.c:1873 src/plugins/archive/archiver_prefs.c:134
 #, c-format
 msgid "'%s' is not a directory."
 msgstr "'%s' не является каталогом."
@@ -8254,6 +8266,501 @@ msgstr ""
 msgid "Laptop LED"
 msgstr "Светодиоды ноутбуков"
 
+#: src/plugins/archive/archiver.c:43 src/plugins/archive/archiver_prefs.c:93
+msgid "Mail Archiver"
+msgstr "Архивирование почты"
+
+#: src/plugins/archive/archiver.c:54
+msgid "Create Archive..."
+msgstr "Создать архив"
+
+#: src/plugins/archive/archiver.c:113
+msgid ""
+"This plugin adds archiving features to Claws Mail.\n"
+"\n"
+"It enables you to select a mail folder that you want to be archived, and "
+"then choose a name, format and location for the archive. Subfolders can be "
+"included and MD5 checksums can be added for each file in the archive. "
+"Several archiving options are also available.\n"
+"\n"
+"The archive can be stored as:\n"
+"\tTAR\n"
+"\tPAX\n"
+"\tSHAR\n"
+"\tCPIO\n"
+"\n"
+"The archive can be compressed using:\n"
+"\tGZIP/ZIP\n"
+"\tBZIP2\n"
+"\tCOMPRESS\n"
+"\n"
+"The archives can be restored with any standard tool that supports the chosen "
+"format and compression.\n"
+"\n"
+"The supported folder types are MH, IMAP, RSSyl and vCalendar.\n"
+"\n"
+"To activate the archiving feature go to /Tools/Create Archive\n"
+"\n"
+"Default options can be set in /Configuration/Preferences/Plugins/Mail "
+"Archiver"
+msgstr ""
+"Этот модуль добавляет в Claws Mail возможность создавать архивы переписки.\n"
+"\n"
+"Он позволяет Вам выбрать папку, которую Вы хотите архивировать, имя, формат "
+"и каталог для архива. В архив можно включать вложенные папки и добавлять "
+"контрольные суммы MD5 к каждому файлу.\n"
+"\n"
+"Можно создавать архивы формата TAR, PAX, SHAR или CPIO.\n"
+"\n"
+"Доступно сжатие архивов в формате GZIP/ZIP, BZIP2 или COMPRESS.\n"
+"\n"
+"В последствии восстановить файлы из архивов любыми стандартными средствами "
+"поддерживающими выбранный формат.\n"
+"\n"
+"Поддерживаются папки MH, IMAP, RSSyl и vCalendar."
+
+#: src/plugins/archive/archiver.c:145
+msgid "Archiver"
+msgstr "Архиватор"
+
+#: src/plugins/archive/archiver_gtk.c:104
+msgid "Archiving"
+msgstr "Архивирование"
+
+#: src/plugins/archive/archiver_gtk.c:122
+msgid "Press Cancel button to stop archiving"
+msgstr "Нажите 'Отменить', чтобы остановить процесс архивирования"
+
+#: src/plugins/archive/archiver_gtk.c:138
+msgid "Archiving:"
+msgstr "Архивирование:"
+
+#: src/plugins/archive/archiver_gtk.c:506
+msgid "Folder and archive must be selected"
+msgstr "Должны быть выбраны папка и архив"
+
+#: src/plugins/archive/archiver_gtk.c:515
+#, c-format
+msgid "%s: Exists. Continue anyway?"
+msgstr "%s уже существует. Всё равно продолжить?"
+
+#: src/plugins/archive/archiver_gtk.c:518
+#, c-format
+msgid "%s: Is a link. Cannot continue"
+msgstr "%s является ссылкой. Операция прервана."
+
+#: src/plugins/archive/archiver_gtk.c:521
+#, c-format
+msgid "%s: Is a directory. Cannot continue"
+msgstr "%s является каталогом. Операция прервана."
+
+#: src/plugins/archive/archiver_gtk.c:524
+#, c-format
+msgid "%s: Missing permissions. Cannot continue"
+msgstr "%s: недостаточно прав. Операция прерва . Операция прервана."
+
+#: src/plugins/archive/archiver_gtk.c:527
+#, c-format
+msgid "%s: Unknown error. Cannot continue"
+msgstr "%s: неизвестная ошибка. Операция прервана."
+
+#: src/plugins/archive/archiver_gtk.c:564
+#, c-format
+msgid ""
+"Not a valid file name:\n"
+"%s."
+msgstr ""
+"Некорректное имя файла:\n"
+"%s."
+
+#: src/plugins/archive/archiver_gtk.c:577
+#, c-format
+msgid ""
+"Not a valid Claws Mail folder:\n"
+"%s."
+msgstr ""
+"Неподдерживаемая папка Claws Mail:\n"
+"%s."
+
+#: src/plugins/archive/archiver_gtk.c:606
+#, c-format
+msgid ""
+"Adding files in folder failed\n"
+"Files in folder: %d\n"
+"Files in list:   %d\n"
+"\n"
+"Continue anyway?"
+msgstr ""
+"Не удалось добавить файлы все в папку\n"
+"Файлов добавлено: %d\n"
+"Файлов всего:   %d\n"
+"\n"
+"Всё равно продолжить?"
+
+#: src/plugins/archive/archiver_gtk.c:710
+msgid "Archive result"
+msgstr "Результат"
+
+#: src/plugins/archive/archiver_gtk.c:740
+msgid "Values"
+msgstr "Значения"
+
+#: src/plugins/archive/archiver_gtk.c:749
+msgid "Archive"
+msgstr "Архив"
+
+#: src/plugins/archive/archiver_gtk.c:755
+msgid "Archive format"
+msgstr "Формат архива"
+
+#: src/plugins/archive/archiver_gtk.c:762
+msgid "Compression method"
+msgstr "Метод сжатия"
+
+#: src/plugins/archive/archiver_gtk.c:770
+msgid "Number of files"
+msgstr "Количество файлов"
+
+#: src/plugins/archive/archiver_gtk.c:778
+msgid "Archive Size"
+msgstr "Размер архива"
+
+#: src/plugins/archive/archiver_gtk.c:786
+msgid "Folder Size"
+msgstr "Размер папки"
+
+#: src/plugins/archive/archiver_gtk.c:795
+msgid "Compression level"
+msgstr "Степень сжатия"
+
+#: src/plugins/archive/archiver_gtk.c:800
+#: src/plugins/archive/archiver_gtk.c:808
+#: src/plugins/archive/archiver_gtk.c:816 src/prefs_folder_item.c:516
+msgid "Yes"
+msgstr "Да"
+
+#: src/plugins/archive/archiver_gtk.c:800
+#: src/plugins/archive/archiver_gtk.c:808
+#: src/plugins/archive/archiver_gtk.c:816 src/prefs_folder_item.c:515
+#: src/prefs_summaries.c:369
+msgid "No"
+msgstr "Нет"
+
+#: src/plugins/archive/archiver_gtk.c:803
+msgid "MD5 checksum"
+msgstr "Контрольная сумма MD5"
+
+#: src/plugins/archive/archiver_gtk.c:811
+msgid "Descriptive names"
+msgstr "Понятные имена"
+
+#: src/plugins/archive/archiver_gtk.c:819
+msgid "Delete selected files"
+msgstr "Удалить выбранные файлы"
+
+#: src/plugins/archive/archiver_gtk.c:828
+#: src/plugins/archive/archiver_gtk.c:1210
+msgid "Select mails before"
+msgstr "Выбирать сообщения старше"
+
+#: src/plugins/archive/archiver_gtk.c:904
+msgid "Select file name for archive [suffix should reflect archive like .tgz]"
+msgstr "Выберите имя файла архива"
+
+#: src/plugins/archive/archiver_gtk.c:952
+#, c-format
+msgid "%ld of %ld"
+msgstr "%ld из %ld"
+
+#: src/plugins/archive/archiver_gtk.c:991
+msgid "Create Archive"
+msgstr "Создать архив"
+
+#: src/plugins/archive/archiver_gtk.c:1006
+msgid "Enter Archiver arguments"
+msgstr "Параметры архиватора"
+
+#: src/plugins/archive/archiver_gtk.c:1019
+msgid "Folder to archive"
+msgstr "Папка для архивации"
+
+#: src/plugins/archive/archiver_gtk.c:1026
+msgid "Folder which is the root of the archive"
+msgstr "Корень архива"
+
+#: src/plugins/archive/archiver_gtk.c:1031
+msgid "Click this button to select a folder which is to be root of the archive"
+msgstr "Выбрать папку, которая будет \"корнем\" архива"
+
+#: src/plugins/archive/archiver_gtk.c:1037
+msgid "Name for archive"
+msgstr "Имя архива"
+
+#: src/plugins/archive/archiver_gtk.c:1043
+msgid "Archive location and name"
+msgstr "Путь к архиву"
+
+#: src/plugins/archive/archiver_gtk.c:1045
+#: src/plugins/archive/archiver_prefs.c:198
+#: src/plugins/pgpcore/select-keys.c:424
+msgid "_Select"
+msgstr "В_ыбрать"
+
+#: src/plugins/archive/archiver_gtk.c:1048
+msgid "Click this button to select a name and location for the archive"
+msgstr "Выбрать каталог и имя файла архива"
+
+#: src/plugins/archive/archiver_gtk.c:1050
+msgid "Choose compression"
+msgstr "Формат сжатия"
+
+#: src/plugins/archive/archiver_gtk.c:1063
+msgid "Choose this option to use ZIP compression for the archive"
+msgstr "Сжимать архив, используя ZIP"
+
+#: src/plugins/archive/archiver_gtk.c:1070
+msgid "Choose this option to use BZIP2 compression for the archive"
+msgstr "Сжимать архив, используя BZIP2"
+
+#: src/plugins/archive/archiver_gtk.c:1078
+msgid "Choose this to use Compress compression for your archive"
+msgstr "Сжимать архив, используя COMPRESS"
+
+#: src/plugins/archive/archiver_gtk.c:1086
+msgid "Choose this option to disable compression for the archive"
+msgstr "Не сжимать архивы"
+
+#: src/plugins/archive/archiver_gtk.c:1108
+msgid "Choose format"
+msgstr "Формат архива"
+
+#: src/plugins/archive/archiver_gtk.c:1121
+msgid "Choose this option to use TAR as format for the archive"
+msgstr "Архивировать в TAR"
+
+#: src/plugins/archive/archiver_gtk.c:1128
+msgid "Choose this to use SHAR as format for the archive"
+msgstr "Архивировать в SHAR"
+
+#: src/plugins/archive/archiver_gtk.c:1135
+msgid "Choose this option to use CPIO as format for the archive"
+msgstr "Архивировать в CPIO"
+
+#: src/plugins/archive/archiver_gtk.c:1142
+msgid "Choose this option to use PAX as format for the archive"
+msgstr "Архивировать в PAX"
+
+#: src/plugins/archive/archiver_gtk.c:1162
+msgid "Miscellaneous options"
+msgstr "Настройки"
+
+#: src/plugins/archive/archiver_gtk.c:1171
+msgid "_Recursive"
+msgstr "Рекурсивно"
+
+#: src/plugins/archive/archiver_gtk.c:1175
+msgid "Choose this option to include subfolders in the archive"
+msgstr "Включать в архив вложенные папки"
+
+#: src/plugins/archive/archiver_gtk.c:1177
+msgid "_MD5sum"
+msgstr "_MD5sum"
+
+#: src/plugins/archive/archiver_gtk.c:1181
+msgid ""
+"Choose this option to add MD5 checksums for each file in the archive.\n"
+"Be aware though, that this dramatically increases the time it\n"
+"will take to create the archive"
+msgstr ""
+"Добавлять в архивы контрольную сумму MD5 для каждого файла.\n"
+"Это позволит проверить целостность архива в дальнейшем, но может значительно "
+"замедлить его создание."
+
+#: src/plugins/archive/archiver_gtk.c:1185
+msgid "R_ename"
+msgstr "Переименовать"
+
+#: src/plugins/archive/archiver_gtk.c:1189
+#: src/plugins/archive/archiver_prefs.c:333
+msgid ""
+"Choose this option to use descriptive names for each file in the archive.\n"
+"The naming scheme: date_from@to@subject.\n"
+"Names will be truncated to max 96 characters"
+msgstr ""
+"Использовать \"понятные\" именя файлов в архивах.\n"
+"Имена файлов будут иметь формат дата_отправитель@адресат@тема.\n"
+"Имена будут обрезаны до 96 символов."
+
+#: src/plugins/archive/archiver_gtk.c:1197
+msgid ""
+"Choose this option to delete mails after archiving\n"
+"At this point only handles IMAP4, Local mbox and POP3"
+msgstr ""
+"Удалить сообщения после архивации\n"
+"Поддерживаются ящики IMAP4, mbox и POP3"
+
+#: src/plugins/archive/archiver_gtk.c:1201
+msgid "Selection options"
+msgstr "Выбор сообщений"
+
+#: src/plugins/archive/archiver_gtk.c:1217
+msgid ""
+"Select emails before a certain date\n"
+"Date must comply to ISO-8601 [YYYY-MM-DD]"
+msgstr ""
+"Выбрать сообщения с датой до...\n"
+"Дата должна быть в формате ISO-8601 [ГГГГ-ММ-ДД]"
+
+#: src/plugins/archive/archiver_prefs.c:190
+msgid "Default save folder"
+msgstr "Каталог по умолчанию"
+
+#: src/plugins/archive/archiver_prefs.c:202
+msgid "Click this button to select the default location for saving archives"
+msgstr "Выбрать, куда по умолчанию будут сохраняться архивы"
+
+#: src/plugins/archive/archiver_prefs.c:211
+msgid "Default compression"
+msgstr "Формат сжатия по умолчанию"
+
+#: src/plugins/archive/archiver_prefs.c:223
+msgid "Choose this option to use ZIP compression by default"
+msgstr "Сжимать архив, используя ZIP"
+
+#: src/plugins/archive/archiver_prefs.c:230
+msgid "Choose this option to use BZIP2 compression by default"
+msgstr "Сжимать архив, используя BZIP2"
+
+#: src/plugins/archive/archiver_prefs.c:238
+msgid "Choose this option to use COMPRESS compression by default"
+msgstr "Сжимать архив, используя COMPRESS"
+
+#: src/plugins/archive/archiver_prefs.c:246
+msgid "Choose this option to disable compression by default"
+msgstr "Не сжимать архивы"
+
+#: src/plugins/archive/archiver_prefs.c:265
+msgid "Default format"
+msgstr "Формат архива по умолчанию"
+
+#: src/plugins/archive/archiver_prefs.c:277
+msgid "Choose this option to use the TAR format by default"
+msgstr "Архивировать в TAR"
+
+#: src/plugins/archive/archiver_prefs.c:284
+msgid "Choose this option to use the SHAR format by default"
+msgstr "Архивировать в SHAR"
+
+#: src/plugins/archive/archiver_prefs.c:291
+msgid "Choose this option to use the CPIO format by default"
+msgstr "Архивировать в CPIO"
+
+#: src/plugins/archive/archiver_prefs.c:298
+msgid "Choose this option to use the PAX format by default"
+msgstr "Архивировать в PAX"
+
+#: src/plugins/archive/archiver_prefs.c:315
+msgid "Default miscellaneous options"
+msgstr "Настройки по умолчанию"
+
+#: src/plugins/archive/archiver_prefs.c:324
+msgid "Choose this option to include subfolders in the archives by default"
+msgstr "Включать в архив вложенные папки"
+
+#: src/plugins/archive/archiver_prefs.c:325
+msgid "MD5sum"
+msgstr "MD5sum"
+
+#: src/plugins/archive/archiver_prefs.c:327
+msgid ""
+"Choose this option to add MD5 checksums for each file in the archives by "
+"default.\n"
+"Be aware though, that this dramatically increases the time it\n"
+"will take to create the archives"
+msgstr ""
+"Добавлять в архивы контрольную сумму MD5 для каждого файла.\n"
+"Это позволит проверить целостность архива в дальнейшем, но может значительно "
+"замедлить его создание."
+
+#: src/plugins/archive/archiver_prefs.c:331
+msgid "Rename"
+msgstr "Переименовать"
+
+#: src/plugins/archive/archiver_prefs.c:339
+msgid "Choose this option to delete mails after archiving"
+msgstr "Удалить сообщения после архивирования"
+
+#: src/plugins/att_remover/att_remover.c:299
+#, fuzzy
+msgid "<b>Type: </b>"
+msgstr "<b> в</b>"
+
+#: src/plugins/att_remover/att_remover.c:300
+#, fuzzy
+msgid "<b>Size: </b>"
+msgstr "<b> в</b>"
+
+#: src/plugins/att_remover/att_remover.c:301
+#, fuzzy
+msgid "<b>Filename: </b>"
+msgstr "Имя файла:"
+
+#: src/plugins/att_remover/att_remover.c:332
+#, fuzzy
+msgid "Remove attachments"
+msgstr "Игнорировать вложение"
+
+#: src/plugins/att_remover/att_remover.c:357
+#: src/plugins/vcalendar/vcal_meeting_gtk.c:330 src/prefs_themes.c:973
+msgid "Remove"
+msgstr "Удалить"
+
+#: src/plugins/att_remover/att_remover.c:365 src/prefs_summary_column.c:80
+#: src/summaryview.c:2770
+msgid "Attachment"
+msgstr "Вложенный файл"
+
+#: src/plugins/att_remover/att_remover.c:417
+#, fuzzy
+msgid "Destroy attachments"
+msgstr "Сообщение с вложениями"
+
+#: src/plugins/att_remover/att_remover.c:418
+msgid ""
+"Do you really want to remove all attachments from the selected messages ?\n"
+"\n"
+"The deleted data will be unrecoverable."
+msgstr ""
+
+#: src/plugins/att_remover/att_remover.c:479
+#, fuzzy
+msgid "This message doesn't have any attachments."
+msgstr "сообщения содержащие тег(и)"
+
+#: src/plugins/att_remover/att_remover.c:494
+#, fuzzy
+msgid "Remove attachments..."
+msgstr "Игнорировать вложение"
+
+#: src/plugins/att_remover/att_remover.c:507
+#: src/plugins/att_remover/att_remover.c:574
+#, fuzzy
+msgid "AttRemover"
+msgstr "Удалить"
+
+#: src/plugins/att_remover/att_remover.c:579
+msgid ""
+"This plugin removes attachments from mails.\n"
+"\n"
+"Warning: this operation will be completely un-cancellable and the deleted "
+"attachments will be lost forever, and ever, and ever."
+msgstr ""
+
+#: src/plugins/att_remover/att_remover.c:603
+#, fuzzy
+msgid "Attachment handling"
+msgstr "Внимание!"
+
 #: src/plugins/attachwarner/attachwarner.c:309
 #, c-format
 msgid ""
@@ -8420,7 +8927,7 @@ msgid "Bogofilter: learning from message..."
 msgstr "Bogofilter: идёт обучение..."
 
 #: src/plugins/bogofilter/bogofilter.c:768
-#: src/plugins/bogofilter/bogofilter.c:817
+#: src/plugins/bogofilter/bogofilter.c:817 src/plugins/bsfilter/bsfilter.c:511
 #, c-format
 msgid "Learning failed; `%s` returned with status %d."
 msgstr ""
@@ -8466,47 +8973,56 @@ msgstr ""
 "Настройки находятся в /Настройки/Параметры.../Модули/Bogofilter"
 
 #: src/plugins/bogofilter/bogofilter.c:1035
+#: src/plugins/bsfilter/bsfilter.c:670
 #: src/plugins/spamassassin/spamassassin.c:651
 msgid "Spam detection"
 msgstr "Обнаружение спама"
 
 #: src/plugins/bogofilter/bogofilter.c:1036
+#: src/plugins/bsfilter/bsfilter.c:671
 #: src/plugins/spamassassin/spamassassin.c:652
 msgid "Spam learning"
 msgstr "Обучить что это спам"
 
 #: src/plugins/bogofilter/bogofilter_gtk.c:150
+#: src/plugins/bsfilter/bsfilter_gtk.c:143
 #: src/plugins/spamassassin/spamassassin_gtk.c:400
 msgid "Process messages on receiving"
 msgstr "Обрабатывать сообщения при получении"
 
 #: src/plugins/bogofilter/bogofilter_gtk.c:158
+#: src/plugins/bsfilter/bsfilter_gtk.c:151
 #: src/plugins/spamassassin/spamassassin_gtk.c:358
 msgid "Maximum size"
 msgstr "Максимальный размер"
 
 #: src/plugins/bogofilter/bogofilter_gtk.c:167
+#: src/plugins/bsfilter/bsfilter_gtk.c:160
 #: src/plugins/spamassassin/spamassassin_gtk.c:367
 msgid "Messages larger than this will not be checked"
 msgstr "Сообщения превышающий указанный размер не будут проверены"
 
 #: src/plugins/bogofilter/bogofilter_gtk.c:170
+#: src/plugins/bsfilter/bsfilter_gtk.c:163
 #: src/plugins/spamassassin/spamassassin_gtk.c:370 src/prefs_account.c:1479
 msgid "KB"
 msgstr "Кб"
 
 #: src/plugins/bogofilter/bogofilter_gtk.c:178
+#: src/plugins/bsfilter/bsfilter_gtk.c:171
 #: src/plugins/spamassassin/spamassassin_gtk.c:408
 msgid "Save spam in"
 msgstr "Сохранять спам в"
 
 #: src/plugins/bogofilter/bogofilter_gtk.c:186
+#: src/plugins/bsfilter/bsfilter_gtk.c:179
 #: src/plugins/spamassassin/spamassassin_gtk.c:416
 msgid ""
 "Folder for storing identified spam. Leave empty to use the trash folder."
 msgstr "Папка для сообщений, опознанных как спам. По умолчанию - корзина"
 
 #: src/plugins/bogofilter/bogofilter_gtk.c:192
+#: src/plugins/bsfilter/bsfilter_gtk.c:185
 #: src/plugins/spamassassin/spamassassin_gtk.c:422
 msgid "Click this button to select a folder for storing spam"
 msgstr "Щелкните для выбора папки для сохранения спама"
@@ -8538,12 +9054,14 @@ msgid "Only done for messages in MH folders"
 msgstr "Только для почтовых ящиков в формате MH"
 
 #: src/plugins/bogofilter/bogofilter_gtk.c:224
+#: src/plugins/bsfilter/bsfilter_gtk.c:191
 #: src/plugins/spamassassin/spamassassin_gtk.c:437
 msgid "Whitelist senders found in address book/folder"
 msgstr ""
 "Всегда считать, что сообщения от отправителей из адресной книги, - не спам"
 
 #: src/plugins/bogofilter/bogofilter_gtk.c:228
+#: src/plugins/bsfilter/bsfilter_gtk.c:195
 #: src/plugins/spamassassin/spamassassin_gtk.c:441
 msgid ""
 "Messages coming from your address book contacts will be received in the "
@@ -8553,6 +9071,7 @@ msgstr ""
 "обрабатываться как \"полезные\", даже если фильтр посчитал их спамом."
 
 #: src/plugins/bogofilter/bogofilter_gtk.c:234
+#: src/plugins/bsfilter/bsfilter_gtk.c:201
 #: src/plugins/dillo_viewer/dillo_prefs.c:204
 #: src/plugins/spamassassin/spamassassin_gtk.c:447
 #: src/prefs_filtering_action.c:573 src/prefs_filtering_action.c:580
@@ -8561,11 +9080,13 @@ msgid "Select ..."
 msgstr "Выбрать ..."
 
 #: src/plugins/bogofilter/bogofilter_gtk.c:238
+#: src/plugins/bsfilter/bsfilter_gtk.c:205
 #: src/plugins/spamassassin/spamassassin_gtk.c:451
 msgid "Click this button to select a book or folder in the address book"
 msgstr "Щелкните для выбора книги или папки в адресной книге."
 
 #: src/plugins/bogofilter/bogofilter_gtk.c:240
+#: src/plugins/bsfilter/bsfilter_gtk.c:207
 msgid "Learn whitelisted emails as ham"
 msgstr "Обучать фильтр по белым спискам"
 
@@ -8588,9 +9109,86 @@ msgid "Path to bogofilter executable"
 msgstr "Путь к исполняемому bogofilter"
 
 #: src/plugins/bogofilter/bogofilter_gtk.c:265
+#: src/plugins/bsfilter/bsfilter_gtk.c:232
 #: src/plugins/spamassassin/spamassassin_gtk.c:429
 msgid "Mark spam as read"
 msgstr "Пометить спам как прочтённый"
+
+#: src/bsfilter_gtk.c:204
+msgid ""
+"If Bsfilter thought an email was spam or unsure, but it was whitelisted, "
+"learn it as ham."
+msgstr ""
+"Если фильтр \"решил\", что сообщение - спам, но отправитель в белом списке, "
+"обучать фильтр."
+
+#: src/bsfilter_gtk.c:213
+msgid "Bsfilter call"
+msgstr "Путь к bsfliter"
+
+#: src/bsfilter_gtk.c:221
+msgid "Path to bsfilter executable"
+msgstr "Путь к bsfliter"
+
+#: src/bsfilter.c:78 src/bsfilter_gtk.c:392
+msgid "Bsfilter"
+msgstr "Bsfilter (антиспам)"
+
+#: src/bsfilter.c:295
+msgid "Bsfilter: fetching body..."
+msgstr "Bsfilter: получение тела сообщения..."
+
+#: src/bsfilter.c:304
+msgid "Bsfilter: filtering message..."
+msgstr "Bsfilter: обработка сообщения..."
+
+#: src/bsfilter.c:389
+msgid ""
+"The Bsfilter plugin couldn't filter a message. The probable cause of the "
+"error is that it didn't learn from any mail.\n"
+"Use \"/Mark/Mark as spam\" and \"/Mark/Mark as ham\" to train Bsfilter with "
+"a few hundred spam and ham messages."
+msgstr ""
+"Не удалось отфильтровать сообщение. Возможно это произошло потому, что вы "
+"ещё не проводили обучение фильтра.\n"
+"Используйте для команды \"Пометить как спам\" и \"Пометить как не спам\"."
+
+#: src/bsfilter.c:396
+#, c-format
+msgid ""
+"The Bsfilter plugin couldn't filter a message. The command `%s` couldn't be "
+"run."
+msgstr "Сообщение не было проверено. Не удалось запустить команду `%s`."
+
+#: src/bsfilter.c:497
+msgid "Bsfilter: learning from message..."
+msgstr "Bsfilter: обучение..."
+
+#: src/bsfilter.c:641
+msgid ""
+"This plugin can check all messages that are received from an IMAP, LOCAL or "
+"POP account for spam using Bsfilter. You will need Bsfilter installed "
+"locally.\n"
+"\n"
+"Before Bsfilter can recognize spam messages, you have to train it by marking "
+"a few hundred spam and ham messages with the use of \"/Mark/Mark as spam\" "
+"and \"/Mark/Mark as ham\".\n"
+"\n"
+"When a message is identified as spam it can be deleted or saved in a "
+"specially designated folder.\n"
+"\n"
+"Options can be found in /Configuration/Preferences/Plugins/Bsfilter"
+msgstr ""
+"Этот модуль может проверять все сообщения в учётных записях типов POP, IMAP "
+"или LOCAL на спам с использованием bsfilter. Для его работы требуется "
+"установленный на вашей машине bsfilter.\n"
+"\n"
+"Чтобы фильтр работал корректно, вам следует сначала обучить его на "
+"нескольких сотнях сообщений с помощью команд \"Пометить как спам\" и "
+"\"Пометить как не сам\".\n"
+"\n"
+"Если сообщение опознаётся фильтром как спам, оно может быть удалено или "
+"сохранено в выбранную папку."
 
 #: src/plugins/demo/demo.c:31 src/plugins/demo/demo.c:100
 msgid "Demo"
@@ -9068,10 +9666,6 @@ msgstr "ID ключа"
 #: src/plugins/pgpcore/select-keys.c:400
 msgid "Trust"
 msgstr "Доверенный ключ"
-
-#: src/plugins/pgpcore/select-keys.c:424
-msgid "_Select"
-msgstr "В_ыбрать"
 
 #: src/plugins/pgpcore/select-keys.c:425
 msgid "_Other"
@@ -10635,10 +11229,6 @@ msgstr "Комната"
 #: src/plugins/vcalendar/vcal_meeting_gtk.c:329
 msgid "Add..."
 msgstr "Добавить..."
-
-#: src/plugins/vcalendar/vcal_meeting_gtk.c:330 src/prefs_themes.c:973
-msgid "Remove"
-msgstr "Удалить"
 
 #: src/plugins/vcalendar/vcal_meeting_gtk.c:788
 msgid ""
@@ -12627,15 +13217,6 @@ msgstr ""
 msgid "Select the HTML part of multipart messages"
 msgstr "Выбирать HTML-часть из multipart/alternative-сообщений"
 
-#: src/prefs_folder_item.c:515 src/prefs_summaries.c:369
-msgid "No"
-msgstr "Нет"
-
-#: src/prefs_folder_item.c:516
-#, fuzzy
-msgid "Yes"
-msgstr "да"
-
 #: src/prefs_folder_item.c:521
 msgid ""
 "\"Default\" will follow global preference (found in /Preferences/Message "
@@ -14160,10 +14741,6 @@ msgstr ""
 #: src/prefs_summaries.c:682
 msgid "Summaries"
 msgstr "Общее"
-
-#: src/prefs_summary_column.c:80 src/summaryview.c:2770
-msgid "Attachment"
-msgstr "Вложенный файл"
 
 #: src/prefs_summary_column.c:86
 msgid "Number"
