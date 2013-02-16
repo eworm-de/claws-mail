@@ -1355,6 +1355,15 @@ int main(int argc, char *argv[])
 	prefs_spelling_init();
 #endif
 
+#ifdef G_OS_WIN32
+	if(strcmp(prefs_common.gtk_theme, DEFAULT_W32_GTK_THEME))
+		gtk_settings_set_string_property(gtk_settings_get_default(),
+			"gtk-theme-name",
+			prefs_common.gtk_theme,
+			"XProperty");
+#endif
+
+
 	sock_set_io_timeout(prefs_common.io_timeout_secs);
 	prefs_actions_read_config();
 	prefs_display_header_read_config();

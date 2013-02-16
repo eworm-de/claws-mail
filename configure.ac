@@ -12,7 +12,7 @@ MINOR_VERSION=9
 MICRO_VERSION=0
 INTERFACE_AGE=0
 BINARY_AGE=0
-EXTRA_VERSION=69
+EXTRA_VERSION=70
 EXTRA_RELEASE=
 EXTRA_GTK2_VERSION=
 
@@ -1028,7 +1028,7 @@ if test x"$ac_cv_enable_fancy_plugin" = xyes; then
 fi
 AM_CONDITIONAL(BUILD_FANCY_PLUGIN, test x"$ac_cv_enable_fancy_plugin" = xyes)
 
-dnl --- Fancy ---
+dnl --- vCalendar ---
 AC_MSG_CHECKING([whether to build vCalendar plugin])
 AC_ARG_ENABLE(vcalendar-plugin,
 	[  --disable-vcalendar-plugin     do not build vcalendar plugin for ical rendering],
@@ -1044,6 +1044,21 @@ if test x"$ac_cv_enable_vcalendar_plugin" = xyes; then
 	fi
 fi
 AM_CONDITIONAL(BUILD_VCALENDAR_PLUGIN, test x"$ac_cv_enable_vcalendar_plugin" = xyes)
+
+dnl --- RSSyl ---
+AC_MSG_CHECKING([whether to build RSSyl plugin])
+AC_ARG_ENABLE(rssyl-plugin,
+	[  --disable-rssyl-plugin     do not build rssyl plugin for RSS and Atom feeds],
+	[ac_cv_enable_rssyl_plugin=$enableval], [ac_cv_enable_rssyl_plugin=yes])
+if test x"$ac_cv_enable_rssyl_plugin" = xyes; then
+	AC_MSG_RESULT(yes)
+	PKG_CHECK_MODULES(LIBXML, "libxml-2.0",,
+		[AC_MSG_ERROR(libxml library is missing)])
+	PLUGINS="rssyl $PLUGINS"
+	AC_SUBST(LIBXML_CFLAGS)
+	AC_SUBST(LIBXML_LIBS)
+fi
+AM_CONDITIONAL(BUILD_RSSYL_PLUGIN, test x"$ac_cv_enable_rssyl_plugin" = xyes)
 
 dnl --- Demo ---
 AC_ARG_ENABLE(demo-plugin,
@@ -1141,6 +1156,7 @@ src/plugins/trayicon/Makefile
 src/plugins/pgpcore/Makefile
 src/plugins/pgpmime/Makefile
 src/plugins/pgpinline/Makefile
+src/plugins/rssyl/Makefile
 src/plugins/smime/Makefile
 src/plugins/vcalendar/Makefile
 src/plugins/vcalendar/libical/Makefile

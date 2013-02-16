@@ -22,6 +22,10 @@ if BUILD_VCALENDAR_PLUGIN
 vcalendar_dir = vcalendar
 endif
 
+if BUILD_RSSYL_PLUGIN
+rssyl_dir = rssyl
+endif
+
 if BUILD_TRAYICON_PLUGIN
 trayicon_dir = trayicon
 endif
@@ -48,5 +52,6 @@ SUBDIRS = $(demo_dir) \
 	$(pgpcore_dir) \
 	$(pgpmime_dir) \
 	$(pgpinline_dir) \
+	$(rssyl_dir) \
 	$(smime_dir) \
 	$(vcalendar_dir)

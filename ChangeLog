@@ -1,3 +1,47 @@
+2013-02-16 [colin]	3.9.0cvs70
+
+	* src/main.c
+	* src/prefs_common.c
+	* src/prefs_common.h
+	* src/common/defs.h
+	* src/common/w32_account.c
+		Add an hidden preference to set the Windows theme
+	* src/plugins/Makefile.am
+	* src/plugins/rssyl/Makefile.am
+	* src/plugins/rssyl/claws.def
+	* src/plugins/rssyl/date.c
+	* src/plugins/rssyl/date.h
+	* src/plugins/rssyl/feed.c
+	* src/plugins/rssyl/feed.h
+	* src/plugins/rssyl/feedprops.c
+	* src/plugins/rssyl/feedprops.h
+	* src/plugins/rssyl/opml.c
+	* src/plugins/rssyl/opml.h
+	* src/plugins/rssyl/parsers.c
+	* src/plugins/rssyl/parsers.h
+	* src/plugins/rssyl/placeholder.txt
+	* src/plugins/rssyl/plugin.c
+	* src/plugins/rssyl/plugin.def
+	* src/plugins/rssyl/rssyl.c
+	* src/plugins/rssyl/rssyl.h
+	* src/plugins/rssyl/rssyl_cb_gtk.c
+	* src/plugins/rssyl/rssyl_cb_gtk.h
+	* src/plugins/rssyl/rssyl_cb_menu.c
+	* src/plugins/rssyl/rssyl_cb_menu.h
+	* src/plugins/rssyl/rssyl_gtk.c
+	* src/plugins/rssyl/rssyl_gtk.h
+	* src/plugins/rssyl/rssyl_prefs.c
+	* src/plugins/rssyl/rssyl_prefs.h
+	* src/plugins/rssyl/strreplace.c
+	* src/plugins/rssyl/strreplace.h
+	* src/plugins/rssyl/version.rc
+		Add RSSyl
+	* src/plugins/vcalendar/Makefile.am
+	* src/plugins/vcalendar/Makefile.in
+	* src/plugins/vcalendar/plugin.c
+	* src/plugins/vcalendar/libical/libical/icalversion.h
+		Fix Curl flags :)
+
 2013-02-14 [paul]	3.9.0cvs69
 
 	* po/id_ID.po

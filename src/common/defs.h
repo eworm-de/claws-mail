@@ -112,6 +112,7 @@
 #  define ACTIONS_RC		"actionswinrc"
 #  define COMMAND_HISTORY	"command_history_win"
 #  define DEFAULT_SIGNATURE	"signature.txt"
+#  define DEFAULT_W32_GTK_THEME "MS-Windows"
 #else
 #  define ACTIONS_RC		"actionsrc"
 #  define COMMAND_HISTORY	"command_history"

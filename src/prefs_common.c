@@ -839,6 +839,9 @@ static PrefParam param[] = {
 #ifndef G_OS_WIN32
 	{"uri_open_command", DEFAULT_BROWSER_CMD,
 	 &SPECIFIC_PREFS.uri_cmd, P_STRING, NULL, NULL, NULL},
+#else
+	{"gtk_theme", DEFAULT_W32_GTK_THEME,
+	 &SPECIFIC_PREFS.gtk_theme, P_STRING, NULL, NULL, NULL},
 #endif
 	{"ext_editor_command", DEFAULT_EDITOR_CMD,
 	 &SPECIFIC_PREFS.ext_editor_cmd, P_STRING, NULL, NULL, NULL},
