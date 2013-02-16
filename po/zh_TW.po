@@ -10,7 +10,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: claws-mail 3.8.1\n"
 "Report-Msgid-Bugs-To: paul@claws-mail.org\n"
-"POT-Creation-Date: 2013-02-14 11:15+0100\n"
+"POT-Creation-Date: 2013-02-16 13:01+0100\n"
 "PO-Revision-Date: 2012-07-29 22:57+0800\n"
 "Last-Translator: Wei-Lun Chao <bluebat@member.fsf.org>\n"
 "Language-Team: Chinese (traditional) <zh-l10n@linux.org.tw>\n"
@@ -147,6 +147,7 @@ msgstr ""
 "%s"
 
 #: src/action.c:980 src/plugins/bogofilter/bogofilter.c:875
+#: src/plugins/rssyl/feed.c:1734 src/plugins/rssyl/feed.c:1738
 #: src/plugins/vcalendar/vcal_folder.c:1800
 #: src/plugins/vcalendar/vcal_folder.c:1804
 #: src/plugins/vcalendar/vcal_folder.c:1815
@@ -644,6 +645,7 @@ msgstr ""
 "如果只刪除資料夾，通訊錄會被移到上一層的資料夾中。"
 
 #: src/addressbook.c:2932 src/imap_gtk.c:363 src/mh_gtk.c:202
+#: src/plugins/rssyl/rssyl_cb_menu.c:237
 #: src/plugins/vcalendar/vcal_folder.c:1953
 msgid "Delete folder"
 msgstr "刪除資料夾"
@@ -1462,7 +1464,7 @@ msgstr "%p %I:%M:%S"
 msgid "_Add..."
 msgstr "新增(_A)…"
 
-#: src/compose.c:566 src/mh_gtk.c:361
+#: src/compose.c:566 src/mh_gtk.c:361 src/plugins/rssyl/rssyl_cb_menu.c:140
 msgid "_Remove"
 msgstr "刪除(_R)"
 
@@ -2628,10 +2630,12 @@ msgid "Input the new name of folder:"
 msgstr "請輸入新的資料夾名稱："
 
 #: src/editgroup.c:556 src/foldersel.c:552 src/imap_gtk.c:195 src/mh_gtk.c:145
+#: src/plugins/rssyl/rssyl_cb_menu.c:89
 msgid "New folder"
 msgstr "新資料夾"
 
 #: src/editgroup.c:557 src/foldersel.c:553 src/mh_gtk.c:146
+#: src/plugins/rssyl/rssyl_cb_menu.c:90
 msgid "Input the name of new folder:"
 msgstr "請輸入新資料夾的名稱："
 
@@ -3361,24 +3365,28 @@ msgid "Select folder"
 msgstr "選擇資料夾"
 
 #: src/foldersel.c:554 src/imap_gtk.c:199 src/mh_gtk.c:147
+#: src/plugins/rssyl/rssyl_cb_menu.c:91
 msgid "NewFolder"
 msgstr "新資料夾"
 
 #: src/foldersel.c:562 src/imap_gtk.c:210 src/imap_gtk.c:216
 #: src/imap_gtk.c:272 src/mh_gtk.c:155 src/mh_gtk.c:259 src/news_gtk.c:314
+#: src/plugins/rssyl/rssyl_cb_menu.c:97 src/plugins/rssyl/rssyl_cb_menu.c:341
 #: src/plugins/vcalendar/vcal_folder.c:2025
 #, c-format
 msgid "'%c' can't be included in folder name."
 msgstr "資料夾名稱不能包含 '%c'。"
 
 #: src/foldersel.c:572 src/imap_gtk.c:226 src/imap_gtk.c:284 src/mh_gtk.c:165
-#: src/mh_gtk.c:266 src/news_gtk.c:321
+#: src/mh_gtk.c:266 src/news_gtk.c:321 src/plugins/rssyl/rssyl_cb_menu.c:107
+#: src/plugins/rssyl/rssyl_cb_menu.c:348
 #: src/plugins/vcalendar/vcal_folder.c:2032
 #, c-format
 msgid "The folder '%s' already exists."
 msgstr "資料夾 '%s' 已存在。"
 
 #: src/foldersel.c:579 src/imap_gtk.c:232 src/mh_gtk.c:171
+#: src/plugins/rssyl/rssyl_cb_menu.c:113
 #, c-format
 msgid "Can't create the folder '%s'."
 msgstr "無法建立資料夾 '%s'。"
@@ -3525,7 +3533,7 @@ msgstr "發送(_S)"
 msgid "Some errors occurred while sending queued messages."
 msgstr "送信時發生錯誤。"
 
-#: src/folderview.c:2408 src/main.c:2844 src/toolbar.c:2732
+#: src/folderview.c:2408 src/main.c:2853 src/toolbar.c:2732
 #, c-format
 msgid ""
 "Some errors occurred while sending queued messages:\n"
@@ -3857,44 +3865,44 @@ msgstr ""
 ">。\n"
 "\n"
 
-#: src/gtk/about.c:699 src/main.c:2671
+#: src/gtk/about.c:699 src/main.c:2680
 msgid "Session statistics\n"
 msgstr "作業階段統計\n"
 
-#: src/gtk/about.c:709 src/gtk/about.c:712 src/main.c:2681 src/main.c:2684
+#: src/gtk/about.c:709 src/gtk/about.c:712 src/main.c:2690 src/main.c:2693
 #, c-format
 msgid "Started: %s\n"
 msgstr "已啟始：%s\n"
 
-#: src/gtk/about.c:719 src/main.c:2690
+#: src/gtk/about.c:719 src/main.c:2699
 msgid "Incoming traffic\n"
 msgstr "內送流量\n"
 
-#: src/gtk/about.c:722 src/main.c:2693
+#: src/gtk/about.c:722 src/main.c:2702
 #, c-format
 msgid "Received messages: %d\n"
 msgstr "已接收的郵件：%d\n"
 
-#: src/gtk/about.c:729 src/main.c:2699
+#: src/gtk/about.c:729 src/main.c:2708
 msgid "Outgoing traffic\n"
 msgstr "外送流量\n"
 
-#: src/gtk/about.c:732 src/main.c:2702
+#: src/gtk/about.c:732 src/main.c:2711
 #, c-format
 msgid "New/redirected messages: %d\n"
 msgstr "新/轉送的郵件：%d\n"
 
-#: src/gtk/about.c:737 src/main.c:2706
+#: src/gtk/about.c:737 src/main.c:2715
 #, c-format
 msgid "Replied messages: %d\n"
 msgstr "已回覆的郵件：%d\n"
 
-#: src/gtk/about.c:742 src/main.c:2710
+#: src/gtk/about.c:742 src/main.c:2719
 #, c-format
 msgid "Forwarded messages: %d\n"
 msgstr "轉寄的郵件：%d\n"
 
-#: src/gtk/about.c:747 src/main.c:2714
+#: src/gtk/about.c:747 src/main.c:2723
 #, c-format
 msgid "Total outgoing messages: %d\n"
 msgstr "外送郵件總計：%d\n"
@@ -4679,6 +4687,7 @@ msgstr ""
 #: src/gtk/pluginwindow.c:304 src/plugins/bogofilter/bogofilter_gtk.c:457
 #: src/plugins/dillo_viewer/dillo_prefs.c:129
 #: src/plugins/fancy/fancy_prefs.c:110 src/plugins/pgpcore/prefs_gpg.c:557
+#: src/plugins/rssyl/rssyl_prefs.c:63
 #: src/plugins/spamassassin/spamassassin_gtk.c:648
 #: src/plugins/trayicon/trayicon_prefs.c:69
 #: src/plugins/vcalendar/vcal_prefs.c:645 src/prefs_toolbar.c:939
@@ -5594,7 +5603,7 @@ msgstr "移動資料夾(_O)…"
 msgid "Cop_y folder..."
 msgstr "複製資料夾(_Y)…"
 
-#: src/imap_gtk.c:69 src/mh_gtk.c:59
+#: src/imap_gtk.c:69 src/mh_gtk.c:59 src/plugins/rssyl/rssyl_gtk.c:61
 msgid "_Delete folder..."
 msgstr "刪除資料夾(_D)…"
 
@@ -5649,12 +5658,13 @@ msgid "Inherit properties from parent folder"
 msgstr "從上層資料夾繼承屬性"
 
 #: src/imap_gtk.c:261 src/mh_gtk.c:249 src/news_gtk.c:305
+#: src/plugins/rssyl/rssyl_cb_menu.c:333
 #: src/plugins/vcalendar/vcal_folder.c:2017
 #, c-format
 msgid "Input new name for '%s':"
 msgstr "輸入『%s』的新名稱: "
 
-#: src/imap_gtk.c:263 src/mh_gtk.c:251
+#: src/imap_gtk.c:263 src/mh_gtk.c:251 src/plugins/rssyl/rssyl_cb_menu.c:334
 #: src/plugins/vcalendar/vcal_folder.c:2018
 msgid "Rename folder"
 msgstr "重新命名資料夾"
@@ -5665,6 +5675,7 @@ msgid "`%c' can't be included in folder name."
 msgstr "資料夾名稱中不應含有『%c』這個字元。"
 
 #: src/imap_gtk.c:292 src/mh_gtk.c:274 src/news_gtk.c:327
+#: src/plugins/rssyl/rssyl_cb_menu.c:354
 #: src/plugins/vcalendar/vcal_folder.c:2038
 msgid ""
 "The folder could not be renamed.\n"
@@ -5673,7 +5684,7 @@ msgstr ""
 "不能重新命名該資料夾。\n"
 "新指定的資料夾名不合法。"
 
-#: src/imap_gtk.c:360 src/mh_gtk.c:199
+#: src/imap_gtk.c:360 src/mh_gtk.c:199 src/plugins/rssyl/rssyl_cb_menu.c:234
 #, c-format
 msgid ""
 "All folders and messages under '%s' will be permanently deleted. Recovery "
@@ -5686,6 +5697,7 @@ msgstr ""
 "確定要刪除嗎？"
 
 #: src/imap_gtk.c:381 src/mh_gtk.c:220 src/news_gtk.c:280
+#: src/plugins/rssyl/rssyl_cb_menu.c:256
 #: src/plugins/vcalendar/vcal_folder.c:1974
 #, c-format
 msgid "Can't remove the folder '%s'."
@@ -6257,7 +6269,7 @@ msgstr "Sylpheed-Claws 1.9.15 或是更舊"
 msgid "Sylpheed-Claws 1.0.5 (or older)"
 msgstr "Sylpheed-Claws 1.0.5 或是更舊"
 
-#: src/main.c:1563
+#: src/main.c:1572
 #, c-format
 msgid ""
 "The following plugin failed to load. Check the Plugins configuration for "
@@ -6271,7 +6283,7 @@ msgstr[0] ""
 "以下外掛程式無法成功載入，請檢查外掛程式配置以獲取詳細資訊。\n"
 "%s"
 
-#: src/main.c:1591
+#: src/main.c:1600
 msgid ""
 "Claws Mail has detected a configured mailbox, but it is incomplete. It is "
 "possibly due to a failing IMAP account. Use \"Rebuild folder tree\" on the "
@@ -6280,7 +6292,7 @@ msgstr ""
 "Claws Mail 偵測到一個尚未配置完全的信箱。它很可能是由於IMAP帳號失敗造成的。請"
 "選擇信箱，用右鍵選單中的\"重建郵件夾樹\"來嘗試修復它。"
 
-#: src/main.c:1597
+#: src/main.c:1606
 msgid ""
 "Claws Mail has detected a configured mailbox, but could not load it. It is "
 "probably provided by an out-of-date external plugin. Please reinstall the "
@@ -6289,41 +6301,41 @@ msgstr ""
 "Claws Mail 偵測到一個已經配置的信箱，但無法載入。它可能是由一個已經過時的第三"
 "方外掛程式建立的。請重新安裝該外掛程式後再嘗試。"
 
-#: src/main.c:1626
+#: src/main.c:1635
 #, c-format
 msgid "Claws Mail can not start without its data volume (%s)."
 msgstr "Claws Mail找不到其資料捲(%s)，無法啟動。"
 
-#: src/main.c:1873
+#: src/main.c:1882
 msgid "Missing filename\n"
 msgstr "缺少檔名\n"
 
-#: src/main.c:1880
+#: src/main.c:1889
 msgid "Cannot open filename for reading\n"
 msgstr "無法開啟檔名以供讀取\n"
 
-#: src/main.c:1891
+#: src/main.c:1900
 msgid "Malformed header\n"
 msgstr "異常的信頭\n"
 
-#: src/main.c:1898
+#: src/main.c:1907
 msgid "Duplicated 'To:' header\n"
 msgstr "重複的『收件者：』信頭\n"
 
-#: src/main.c:1913
+#: src/main.c:1922
 msgid "Missing required 'To:' header\n"
 msgstr "缺少必要的『收件者：』信頭\n"
 
-#: src/main.c:2058
+#: src/main.c:2067
 #, c-format
 msgid "Usage: %s [OPTION]...\n"
 msgstr "用法：%s [選項]…\n"
 
-#: src/main.c:2060
+#: src/main.c:2069
 msgid "  --compose [address]    open composition window"
 msgstr "  --compose [郵件地址]   直接開啟撰寫郵件視窗"
 
-#: src/main.c:2061
+#: src/main.c:2070
 msgid ""
 "  --compose-from-file file\n"
 "                         open composition window with data from given file;\n"
@@ -6339,11 +6351,11 @@ msgstr ""
 "                        內容格式：信頭在先 (收件者：必要項) 直到\n"
 "                        空列，然後郵件主體直到檔案結尾。"
 
-#: src/main.c:2066
+#: src/main.c:2075
 msgid "  --subscribe [uri]      subscribe to the given URI if possible"
 msgstr "  --subscribe [uri]      訂閱指定的 URI"
 
-#: src/main.c:2067
+#: src/main.c:2076
 msgid ""
 "  --attach file1 [file2]...\n"
 "                         open composition window with specified files\n"
@@ -6352,25 +6364,25 @@ msgstr ""
 "  --attach 檔案1 [檔案2]...\n"
 "                         開啟撰寫郵件視窗，並將指定的檔案附加上去"
 
-#: src/main.c:2070
+#: src/main.c:2079
 msgid "  --receive              receive new messages"
 msgstr "  --receive              直接接收新郵件"
 
-#: src/main.c:2071
+#: src/main.c:2080
 msgid "  --receive-all          receive new messages of all accounts"
 msgstr "  --receive-all          直接接收所有帳號的新郵件"
 
-#: src/main.c:2072
+#: src/main.c:2081
 #, fuzzy
 msgid "  --cancel-receiving     cancel receiving of messages"
 msgstr "  --receive              直接接收新郵件"
 
-#: src/main.c:2073
+#: src/main.c:2082
 #, fuzzy
 msgid "  --cancel-sending       cancel sending of messages"
 msgstr "  --receive              直接接收新郵件"
 
-#: src/main.c:2074
+#: src/main.c:2083
 msgid ""
 "  --search folder type request [recursive]\n"
 "                         searches mail\n"
@@ -6388,29 +6400,29 @@ msgstr ""
 "                        要求：搜尋字串\n"
 "                        遞迴：如果引數以 0, n, N, f 或 F 開頭則為 false"
 
-#: src/main.c:2081
+#: src/main.c:2090
 msgid "  --send                 send all queued messages"
 msgstr "  --send                 送出所有佇列匣中的郵件"
 
-#: src/main.c:2082
+#: src/main.c:2091
 msgid "  --status [folder]...   show the total number of messages"
 msgstr "  --status [資料夾]…   顯示資料夾內總共有多少郵件"
 
-#: src/main.c:2083
+#: src/main.c:2092
 msgid ""
 "  --status-full [folder]...\n"
 "                         show the status of each folder"
 msgstr "  --status-full [資料夾]…     顯示每個資料夾中有多少郵件"
 
-#: src/main.c:2085
+#: src/main.c:2094
 msgid "  --statistics           show session statistics"
 msgstr "  --statistics           顯示執行階段統計"
 
-#: src/main.c:2086
+#: src/main.c:2095
 msgid "  --reset-statistics     reset session statistics"
 msgstr "  --reset-statistics     重置執行階段統計"
 
-#: src/main.c:2087
+#: src/main.c:2096
 msgid ""
 "  --select folder[/msg]  jumps to the specified folder/message\n"
 "                         folder is a folder id like 'folder/sub_folder'"
@@ -6418,41 +6430,41 @@ msgstr ""
 "  --select folder[/msg]  前往指定的資料夾/郵件\n"
 "                         可套用如下方式指定資料夾: 'folder/sub_folder'"
 
-#: src/main.c:2089
+#: src/main.c:2098
 msgid "  --online               switch to online mode"
 msgstr " --online               切換置上線狀態"
 
-#: src/main.c:2090
+#: src/main.c:2099
 msgid "  --offline              switch to offline mode"
 msgstr " --offline               切換置下線狀態"
 
-#: src/main.c:2091
+#: src/main.c:2100
 msgid "  --exit --quit -q       exit Claws Mail"
 msgstr "  --exit --quit -q       離開Claws Mail"
 
-#: src/main.c:2092
+#: src/main.c:2101
 msgid "  --debug                debug mode"
 msgstr "  --debug                除錯模式"
 
-#: src/main.c:2093
+#: src/main.c:2102
 msgid "  --help -h              display this help and exit"
 msgstr "  --help -               顯示本說明並結束程式"
 
-#: src/main.c:2094
+#: src/main.c:2103
 msgid "  --version -v           output version information and exit"
 msgstr "  --version -v           顯示版本資訊並結束程式"
 
-#: src/main.c:2095
+#: src/main.c:2104
 msgid ""
 "  --version-full -V      output version and built-in features information "
 "and exit"
 msgstr "  --version-full -V           顯示詳細版本資訊並結束程式"
 
-#: src/main.c:2096
+#: src/main.c:2105
 msgid "  --config-dir           output configuration directory"
 msgstr "  --config-dir           顯示配置資料目錄"
 
-#: src/main.c:2097
+#: src/main.c:2106
 msgid ""
 "  --alternate-config-dir [dir]\n"
 "                         use specified configuration directory"
@@ -6460,32 +6472,32 @@ msgstr ""
 "  --alternate-config-dir [dir]\n"
 "                         使用指定的目錄做為存放配置檔案的目錄"
 
-#: src/main.c:2147
+#: src/main.c:2156
 msgid "Unknown option\n"
 msgstr "不明選項\n"
 
-#: src/main.c:2165
+#: src/main.c:2174
 #, c-format
 msgid "Processing (%s)..."
 msgstr "處理中(%s)…"
 
-#: src/main.c:2168
+#: src/main.c:2177
 msgid "top level folder"
 msgstr "最上一層資料夾"
 
-#: src/main.c:2251
+#: src/main.c:2260
 msgid "Queued messages"
 msgstr "有未送出郵件"
 
-#: src/main.c:2252
+#: src/main.c:2261
 msgid "Some unsent messages are queued. Exit now?"
 msgstr "有些郵件正在佇列匣中尚未送出。確定要離開嗎？"
 
-#: src/main.c:2981
+#: src/main.c:2990
 msgid "NetworkManager: network is online.\n"
 msgstr "網路管理器: 網路已經連上。\n"
 
-#: src/main.c:2987
+#: src/main.c:2996
 msgid "NetworkManager: network is offline.\n"
 msgstr "網路管理器: 網路已經離線。\n"
 
@@ -7298,7 +7310,7 @@ msgstr ""
 "如果指定已存在的信箱，它將會自動被掃描。\n"
 " "
 
-#: src/mainwindow.c:3108
+#: src/mainwindow.c:3108 src/plugins/rssyl/rssyl_gtk.c:158
 #, c-format
 msgid "The mailbox '%s' already exists."
 msgstr "信箱『%s』已經存在。"
@@ -7668,7 +7680,7 @@ msgstr ""
 "該郵件傳送到了您的多個帳號中。\n"
 "請選擇用以傳送回執的帳號："
 
-#: src/messageview.c:2121
+#: src/messageview.c:2121 src/plugins/rssyl/rssyl_gtk.c:480
 msgid "_Cancel"
 msgstr "取消(_C)"
 
@@ -7967,7 +7979,7 @@ msgstr "確定要退訂新聞群組『%s』？"
 msgid "Unsubscribe newsgroup"
 msgstr "退訂新聞群組"
 
-#: src/news_gtk.c:267
+#: src/news_gtk.c:267 src/plugins/rssyl/rssyl_gtk.c:678
 msgid "_Unsubscribe"
 msgstr "退訂新聞討論區(_U)"
 
@@ -9123,6 +9135,373 @@ msgstr ""
 "<dd9jn@gnu.org>所有(2001)\n"
 " "
 
+#: src/plugins/rssyl/rssyl_prefs.c:103
+#, fuzzy
+msgid "Default refresh interval in minutes"
+msgstr "預設內建布景"
+
+#: src/plugins/rssyl/rssyl_prefs.c:114
+msgid "Set to 0 to disable automatic refreshing"
+msgstr ""
+
+#: src/plugins/rssyl/rssyl_prefs.c:116
+msgid "Default number of expired items to keep"
+msgstr ""
+
+#: src/plugins/rssyl/rssyl_prefs.c:127
+msgid "Set to -1 to keep expired items"
+msgstr ""
+
+#: src/plugins/rssyl/rssyl_prefs.c:130
+msgid "Refresh all feeds on application start"
+msgstr ""
+
+#: src/plugins/rssyl/rssyl_prefs.c:136
+#, fuzzy
+msgid "Path to cookies file"
+msgstr "bogofilter 程式路徑"
+
+#: src/plugins/rssyl/rssyl_prefs.c:146
+msgid "Path to Netscape-style cookies.txt file containing your cookies"
+msgstr ""
+
+#: src/plugins/rssyl/rssyl.h:8
+msgid "RSSyl"
+msgstr ""
+
+#: src/plugins/rssyl/rssyl.h:14
+msgid "My Feeds"
+msgstr ""
+
+#: src/plugins/rssyl/rssyl_gtk.c:53
+msgid "_Refresh feed"
+msgstr ""
+
+#: src/plugins/rssyl/rssyl_gtk.c:54
+msgid "Refresh _all feeds"
+msgstr ""
+
+#: src/plugins/rssyl/rssyl_gtk.c:55
+#, fuzzy
+msgid "Subscribe _new feed..."
+msgstr "訂閱(_S)…"
+
+#: src/plugins/rssyl/rssyl_gtk.c:56
+#, fuzzy
+msgid "_Unsubscribe feed..."
+msgstr "退訂(_U)…"
+
+#: src/plugins/rssyl/rssyl_gtk.c:57
+#, fuzzy
+msgid "Feed pr_operties..."
+msgstr "屬性(_P)…"
+
+#: src/plugins/rssyl/rssyl_gtk.c:58
+#, fuzzy
+msgid "Import feed list..."
+msgstr "匯入 mbox 格式的郵件封包"
+
+#: src/plugins/rssyl/rssyl_gtk.c:59
+#, fuzzy
+msgid "Rena_me..."
+msgstr "重新命名資料夾(_R)…"
+
+#: src/plugins/rssyl/rssyl_gtk.c:60
+#, fuzzy
+msgid "_Create new folder..."
+msgstr "建立新資料夾(_N)…"
+
+#: src/plugins/rssyl/rssyl_gtk.c:62
+#, fuzzy
+msgid "Remove folder _tree..."
+msgstr "重建資料夾結構中…"
+
+#: src/plugins/rssyl/rssyl_gtk.c:152
+#, fuzzy
+msgid "Add RSS folder tree"
+msgstr "重建資料夾結構"
+
+#: src/plugins/rssyl/rssyl_gtk.c:153
+#, fuzzy
+msgid "Enter name for a new RSS folder tree."
+msgstr "請輸入新資料夾的名稱："
+
+#: src/plugins/rssyl/rssyl_gtk.c:169
+#, fuzzy
+msgid ""
+"Creation of folder tree failed.\n"
+"Maybe some files already exist, or you don't have the permission to write "
+"there?"
+msgstr ""
+"無法產生信箱資料夾。\n"
+"可能是因為同樣名稱的檔案已經存在，或者是你沒有權限可以開新資料夾。"
+
+#: src/plugins/rssyl/rssyl_gtk.c:184
+msgid "RSSyl..."
+msgstr ""
+
+#: src/plugins/rssyl/rssyl_gtk.c:256
+msgid "Use default refresh interval"
+msgstr ""
+
+#: src/plugins/rssyl/rssyl_gtk.c:268
+msgid "Keep default number of expired entries"
+msgstr ""
+
+#: src/plugins/rssyl/rssyl_gtk.c:274
+msgid "Fetch comments if possible"
+msgstr ""
+
+#: src/plugins/rssyl/rssyl_gtk.c:312
+msgid "<b>Source URL:</b>"
+msgstr ""
+
+#: src/plugins/rssyl/rssyl_gtk.c:340
+msgid ""
+"<b>Fetch comments on posts aged less than:</b>\n"
+"<small>(In days; set to -1 to fetch all comments)</small>"
+msgstr ""
+
+#: src/plugins/rssyl/rssyl_gtk.c:374
+msgid ""
+"<b>Refresh interval in minutes:</b>\n"
+"<small>(Set to 0 to disable automatic refreshing for this feed)</small>"
+msgstr ""
+
+#: src/plugins/rssyl/rssyl_gtk.c:407
+msgid ""
+"<b>Number of expired entries to keep:</b>\n"
+"<small>(Set to -1 if you want to keep expired entries)</small>"
+msgstr ""
+
+#: src/plugins/rssyl/rssyl_gtk.c:433
+msgid "<b>If an item changes, do not mark it as unread:</b>"
+msgstr ""
+
+#: src/plugins/rssyl/rssyl_gtk.c:443
+#, fuzzy
+msgid "Always mark as unread"
+msgstr "設為未讀"
+
+#: src/plugins/rssyl/rssyl_gtk.c:445
+msgid "If only its text changed"
+msgstr ""
+
+#: src/plugins/rssyl/rssyl_gtk.c:447
+#, fuzzy
+msgid "Never mark as unread"
+msgstr "設為未讀"
+
+#: src/plugins/rssyl/rssyl_gtk.c:501
+msgid "_OK"
+msgstr ""
+
+#: src/plugins/rssyl/rssyl_gtk.c:509
+#, fuzzy
+msgid "Set feed properties"
+msgstr "內容"
+
+#: src/plugins/rssyl/rssyl_gtk.c:634 src/plugins/rssyl/rssyl_gtk.c:658
+#, fuzzy
+msgid "Unsubscribe feed"
+msgstr "退訂"
+
+#: src/plugins/rssyl/rssyl_gtk.c:659
+#, fuzzy
+msgid "Do you really want to remove feed"
+msgstr "您確定要刪除這項規則嗎？"
+
+#: src/plugins/rssyl/rssyl_gtk.c:665
+#, fuzzy
+msgid "Remove cached entries"
+msgstr "刪除參照(_V)"
+
+#: src/plugins/rssyl/plugin.c:63
+msgid ""
+"This plugin allows you to create a mailbox tree where you can add newsfeeds "
+"in RSS 1.0, RSS 2.0 or Atom format.\n"
+"\n"
+"Each newsfeed will create a folder with appropriate entries, fetched from "
+"the web. You can read them, and delete or keep old entries."
+msgstr ""
+
+#: src/plugins/rssyl/plugin.c:87
+msgid "RSS feed"
+msgstr ""
+
+#: src/plugins/rssyl/feed.h:20
+#, fuzzy, c-format
+msgid "Time out connecting to URL %s\n"
+msgstr "LDAP 伺服器連接錯誤"
+
+#: src/plugins/rssyl/feed.h:21
+#, fuzzy, c-format
+msgid "Couldn't fetch URL %s\n"
+msgstr "無法解密：%s"
+
+#: src/plugins/rssyl/feed.h:22
+#, c-format
+msgid "Error parsing feed from URL %s\n"
+msgstr ""
+
+#: src/plugins/rssyl/feed.h:23
+#, c-format
+msgid "Unsupported feed type at URL %s\n"
+msgstr ""
+
+#: src/plugins/rssyl/feed.h:25
+#, c-format
+msgid "RSSyl: Updating feed %s\n"
+msgstr ""
+
+#: src/plugins/rssyl/feed.h:26
+#, c-format
+msgid "RSSyl: Feed update finished: %s\n"
+msgstr ""
+
+#: src/plugins/rssyl/feed.h:27
+msgid "RSSyl: Feed update aborted, application is exiting.\n"
+msgstr ""
+
+#: src/plugins/rssyl/rssyl_cb_menu.c:62
+#, fuzzy
+msgid "Subscribe feed"
+msgstr "訂閱"
+
+#: src/plugins/rssyl/rssyl_cb_menu.c:63
+msgid "Input the URL of the news feed you wish to subscribe:"
+msgstr ""
+
+#: src/plugins/rssyl/rssyl_cb_menu.c:138
+#, fuzzy, c-format
+msgid "Really remove the folder tree '%s' ?\n"
+msgstr "無法移除資料夾『%s』。"
+
+#: src/plugins/rssyl/rssyl_cb_menu.c:139
+#, fuzzy
+msgid "Remove folder tree"
+msgstr "重建資料夾結構"
+
+#: src/plugins/rssyl/rssyl_cb_menu.c:204
+#, fuzzy, c-format
+msgid "Can't remove feed '%s'."
+msgstr "無法移除資料夾『%s』。"
+
+#: src/plugins/rssyl/rssyl_cb_menu.c:283 src/plugins/rssyl/feed.c:1856
+#, fuzzy
+msgid "Claws Mail needs network access in order to update the feed."
+msgid_plural "Claws Mail needs network access in order to update the feeds."
+msgstr[0] "Claws Mail 需要存取網路才能連結 News 伺服器。"
+
+#: src/plugins/rssyl/rssyl_cb_menu.c:376
+#, fuzzy
+msgid "Select a .opml file"
+msgstr "選擇檔案"
+
+#: src/plugins/rssyl/rssyl.c:133 src/plugins/rssyl/rssyl.c:145
+msgid "Refresh all feeds"
+msgstr ""
+
+#: src/plugins/rssyl/feed.c:125
+#, fuzzy
+msgid "Cannot open temporary file"
+msgstr "無法開啟暫時檔案。"
+
+#: src/plugins/rssyl/feed.c:136
+msgid "Cannot init libCURL"
+msgstr ""
+
+#: src/plugins/rssyl/feed.c:231 src/plugins/vcalendar/vcal_folder.c:1593
+#, fuzzy
+msgid "401 (Authorisation required)"
+msgstr "需要更強的認證"
+
+#: src/plugins/rssyl/feed.c:234 src/plugins/vcalendar/vcal_folder.c:1596
+msgid "403 (Unauthorised)"
+msgstr ""
+
+#: src/plugins/rssyl/feed.c:237 src/plugins/vcalendar/vcal_folder.c:1599
+#, fuzzy
+msgid "404 (Not found)"
+msgstr "找不到"
+
+#: src/plugins/rssyl/feed.c:240 src/plugins/vcalendar/vcal_folder.c:1602
+#, fuzzy, c-format
+msgid "Error %ld"
+msgstr "錯誤："
+
+#: src/plugins/rssyl/feed.c:324
+#, fuzzy, c-format
+msgid "Fetching '%s'..."
+msgstr "擷取郵件中…"
+
+#: src/plugins/rssyl/feed.c:383
+#, fuzzy
+msgid "Malformed feed"
+msgstr "異常的信頭\n"
+
+#: src/plugins/rssyl/feed.c:1199
+#, fuzzy, c-format
+msgid "Refreshing feed '%s'..."
+msgstr "正在關閉資料夾 %s…"
+
+#: src/plugins/rssyl/feed.c:1214
+#, c-format
+msgid ""
+"RSSyl: Fetching comments is not supported for RDF feeds. Cannot fetch "
+"comments of '%s'"
+msgstr ""
+
+#: src/plugins/rssyl/feed.c:1223
+#, fuzzy
+msgid "This feed format is not supported yet."
+msgstr "glib 不支援 g_thread。\n"
+
+#: src/plugins/rssyl/feed.c:1254
+msgid "N/A"
+msgstr ""
+
+#: src/plugins/rssyl/feed.c:1374
+#, fuzzy, c-format
+msgid "%ld byte"
+msgid_plural "%ld bytes"
+msgstr[0] "位元組數"
+
+#: src/plugins/rssyl/feed.c:1377
+#, fuzzy
+msgid "size unknown"
+msgstr "未知的"
+
+#: src/plugins/rssyl/feed.c:1550
+#, fuzzy, c-format
+msgid ""
+"RSSyl: Cannot update feed %s:\n"
+"%s\n"
+msgstr "無法開啟憑證檔案 %s\n"
+
+#: src/plugins/rssyl/feed.c:1722
+msgid "You are already subscribed to this feed."
+msgstr ""
+
+#: src/plugins/rssyl/feed.c:1733
+#, fuzzy, c-format
+msgid ""
+"Couldn't fetch URL '%s':\n"
+"%s"
+msgstr "無法儲存檔案『%s』。"
+
+#: src/plugins/rssyl/feed.c:1738
+#, fuzzy, c-format
+msgid ""
+"Couldn't fetch URL '%s':\n"
+"%s\n"
+msgstr "無法儲存檔案『%s』。"
+
+#: src/plugins/rssyl/feed.c:1754
+#, fuzzy, c-format
+msgid "Can't subscribe feed '%s'."
+msgstr "無法建立資料夾 '%s'。"
+
 #: src/plugins/smime/plugin.c:38 src/plugins/smime/plugin.c:54
 #: src/plugins/smime/smime.c:924
 msgid "S/MIME"
@@ -9692,8 +10071,8 @@ msgid ""
 "left part of the email address, %d for the domain"
 msgstr ""
 
-#: src/plugins/vcalendar/vcal_prefs.c:646 src/plugins/vcalendar/plugin.c:44
-#: src/plugins/vcalendar/plugin.c:65
+#: src/plugins/vcalendar/vcal_prefs.c:646 src/plugins/vcalendar/plugin.c:43
+#: src/plugins/vcalendar/plugin.c:64
 msgid "vCalendar"
 msgstr ""
 
@@ -9767,25 +10146,6 @@ msgstr ""
 #, c-format
 msgid "Timeout (%d seconds) connecting to %s\n"
 msgstr ""
-
-#: src/plugins/vcalendar/vcal_folder.c:1593
-#, fuzzy
-msgid "401 (Authorisation required)"
-msgstr "需要更強的認證"
-
-#: src/plugins/vcalendar/vcal_folder.c:1596
-msgid "403 (Unauthorised)"
-msgstr ""
-
-#: src/plugins/vcalendar/vcal_folder.c:1599
-#, fuzzy
-msgid "404 (Not found)"
-msgstr "找不到"
-
-#: src/plugins/vcalendar/vcal_folder.c:1602
-#, fuzzy, c-format
-msgid "Error %ld"
-msgstr "錯誤："
 
 #: src/plugins/vcalendar/vcal_folder.c:1799
 #, fuzzy, c-format
@@ -10243,7 +10603,7 @@ msgstr ""
 msgid "days"
 msgstr "天"
 
-#: src/plugins/vcalendar/plugin.c:70
+#: src/plugins/vcalendar/plugin.c:69
 msgid ""
 "This plugin enables vCalendar message handling like that produced by "
 "Evolution or Outlook.\n"
@@ -10260,7 +10620,7 @@ msgid ""
 "information from others."
 msgstr ""
 
-#: src/plugins/vcalendar/plugin.c:103
+#: src/plugins/vcalendar/plugin.c:102
 msgid "Calendar"
 msgstr ""
 

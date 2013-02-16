@@ -31,7 +31,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: sylpheed-claws\n"
 "Report-Msgid-Bugs-To: paul@claws-mail.org\n"
-"POT-Creation-Date: 2013-02-14 11:15+0100\n"
+"POT-Creation-Date: 2013-02-16 13:01+0100\n"
 "PO-Revision-Date: 2012-11-14 23:10+0200\n"
 "Last-Translator: Flammie Pirinen <flammie@iki.fi>\n"
 "Language-Team: Finnish <laatu@lokalisointi.org>\n"
@@ -167,6 +167,7 @@ msgstr ""
 "%s"
 
 #: src/action.c:980 src/plugins/bogofilter/bogofilter.c:875
+#: src/plugins/rssyl/feed.c:1734 src/plugins/rssyl/feed.c:1738
 #: src/plugins/vcalendar/vcal_folder.c:1800
 #: src/plugins/vcalendar/vcal_folder.c:1804
 #: src/plugins/vcalendar/vcal_folder.c:1815
@@ -666,6 +667,7 @@ msgstr ""
 "kansioon."
 
 #: src/addressbook.c:2932 src/imap_gtk.c:363 src/mh_gtk.c:202
+#: src/plugins/rssyl/rssyl_cb_menu.c:237
 #: src/plugins/vcalendar/vcal_folder.c:1953
 msgid "Delete folder"
 msgstr "Poista kansio"
@@ -1480,7 +1482,7 @@ msgstr "%H.%M.%S"
 msgid "_Add..."
 msgstr "_Lisää…"
 
-#: src/compose.c:566 src/mh_gtk.c:361
+#: src/compose.c:566 src/mh_gtk.c:361 src/plugins/rssyl/rssyl_cb_menu.c:140
 msgid "_Remove"
 msgstr "_Poista"
 
@@ -2660,10 +2662,12 @@ msgid "Input the new name of folder:"
 msgstr "Anna hakemistolle uusi nimi:"
 
 #: src/editgroup.c:556 src/foldersel.c:552 src/imap_gtk.c:195 src/mh_gtk.c:145
+#: src/plugins/rssyl/rssyl_cb_menu.c:89
 msgid "New folder"
 msgstr "Uusi hakemisto"
 
 #: src/editgroup.c:557 src/foldersel.c:553 src/mh_gtk.c:146
+#: src/plugins/rssyl/rssyl_cb_menu.c:90
 msgid "Input the name of new folder:"
 msgstr "Anna uudelle hakemistolle nimi:"
 
@@ -3414,24 +3418,28 @@ msgid "Select folder"
 msgstr "Valitse hakemisto"
 
 #: src/foldersel.c:554 src/imap_gtk.c:199 src/mh_gtk.c:147
+#: src/plugins/rssyl/rssyl_cb_menu.c:91
 msgid "NewFolder"
 msgstr "UusiKansio"
 
 #: src/foldersel.c:562 src/imap_gtk.c:210 src/imap_gtk.c:216
 #: src/imap_gtk.c:272 src/mh_gtk.c:155 src/mh_gtk.c:259 src/news_gtk.c:314
+#: src/plugins/rssyl/rssyl_cb_menu.c:97 src/plugins/rssyl/rssyl_cb_menu.c:341
 #: src/plugins/vcalendar/vcal_folder.c:2025
 #, c-format
 msgid "'%c' can't be included in folder name."
 msgstr "merkkiä ’%c’ ei voi sisällyttää kansion nimeen."
 
 #: src/foldersel.c:572 src/imap_gtk.c:226 src/imap_gtk.c:284 src/mh_gtk.c:165
-#: src/mh_gtk.c:266 src/news_gtk.c:321
+#: src/mh_gtk.c:266 src/news_gtk.c:321 src/plugins/rssyl/rssyl_cb_menu.c:107
+#: src/plugins/rssyl/rssyl_cb_menu.c:348
 #: src/plugins/vcalendar/vcal_folder.c:2032
 #, c-format
 msgid "The folder '%s' already exists."
 msgstr "Kansio ”%s” on jo olemassa."
 
 #: src/foldersel.c:579 src/imap_gtk.c:232 src/mh_gtk.c:171
+#: src/plugins/rssyl/rssyl_cb_menu.c:113
 #, c-format
 msgid "Can't create the folder '%s'."
 msgstr "Kansiota ”%s” ei voi luoda."
@@ -3578,7 +3586,7 @@ msgstr "_Lähetä"
 msgid "Some errors occurred while sending queued messages."
 msgstr "Jonottavien viestien lähetyksessä tapahtui virheitä."
 
-#: src/folderview.c:2408 src/main.c:2844 src/toolbar.c:2732
+#: src/folderview.c:2408 src/main.c:2853 src/toolbar.c:2732
 #, c-format
 msgid ""
 "Some errors occurred while sending queued messages:\n"
@@ -3915,44 +3923,44 @@ msgstr ""
 ">. \n"
 "\n"
 
-#: src/gtk/about.c:699 src/main.c:2671
+#: src/gtk/about.c:699 src/main.c:2680
 msgid "Session statistics\n"
 msgstr "Istunnon tilastoja\n"
 
-#: src/gtk/about.c:709 src/gtk/about.c:712 src/main.c:2681 src/main.c:2684
+#: src/gtk/about.c:709 src/gtk/about.c:712 src/main.c:2690 src/main.c:2693
 #, c-format
 msgid "Started: %s\n"
 msgstr "Aloitettu: %s\n"
 
-#: src/gtk/about.c:719 src/main.c:2690
+#: src/gtk/about.c:719 src/main.c:2699
 msgid "Incoming traffic\n"
 msgstr "Tuleva liikenne\n"
 
-#: src/gtk/about.c:722 src/main.c:2693
+#: src/gtk/about.c:722 src/main.c:2702
 #, c-format
 msgid "Received messages: %d\n"
 msgstr "Saadut viestit: %d\n"
 
-#: src/gtk/about.c:729 src/main.c:2699
+#: src/gtk/about.c:729 src/main.c:2708
 msgid "Outgoing traffic\n"
 msgstr "Menevä liikenne\n"
 
-#: src/gtk/about.c:732 src/main.c:2702
+#: src/gtk/about.c:732 src/main.c:2711
 #, c-format
 msgid "New/redirected messages: %d\n"
 msgstr "Uudet ja uudelleenohjatut viestit: %d\n"
 
-#: src/gtk/about.c:737 src/main.c:2706
+#: src/gtk/about.c:737 src/main.c:2715
 #, c-format
 msgid "Replied messages: %d\n"
 msgstr "Vastatut viestit: %d\n"
 
-#: src/gtk/about.c:742 src/main.c:2710
+#: src/gtk/about.c:742 src/main.c:2719
 #, c-format
 msgid "Forwarded messages: %d\n"
 msgstr "Edelleenlähetetyt viestit: %d\n"
 
-#: src/gtk/about.c:747 src/main.c:2714
+#: src/gtk/about.c:747 src/main.c:2723
 #, c-format
 msgid "Total outgoing messages: %d\n"
 msgstr "Yhteensä meneviä viestejä: %d\n"
@@ -4742,6 +4750,7 @@ msgstr ""
 #: src/gtk/pluginwindow.c:304 src/plugins/bogofilter/bogofilter_gtk.c:457
 #: src/plugins/dillo_viewer/dillo_prefs.c:129
 #: src/plugins/fancy/fancy_prefs.c:110 src/plugins/pgpcore/prefs_gpg.c:557
+#: src/plugins/rssyl/rssyl_prefs.c:63
 #: src/plugins/spamassassin/spamassassin_gtk.c:648
 #: src/plugins/trayicon/trayicon_prefs.c:69
 #: src/plugins/vcalendar/vcal_prefs.c:645 src/prefs_toolbar.c:939
@@ -5655,7 +5664,7 @@ msgstr "_Siirrä kansio…"
 msgid "Cop_y folder..."
 msgstr "_Kopioi kansio…"
 
-#: src/imap_gtk.c:69 src/mh_gtk.c:59
+#: src/imap_gtk.c:69 src/mh_gtk.c:59 src/plugins/rssyl/rssyl_gtk.c:61
 msgid "_Delete folder..."
 msgstr "_Poista kansio…"
 
@@ -5710,12 +5719,13 @@ msgid "Inherit properties from parent folder"
 msgstr "Peri ylemmän kansion asetukset"
 
 #: src/imap_gtk.c:261 src/mh_gtk.c:249 src/news_gtk.c:305
+#: src/plugins/rssyl/rssyl_cb_menu.c:333
 #: src/plugins/vcalendar/vcal_folder.c:2017
 #, c-format
 msgid "Input new name for '%s':"
 msgstr "Anna uusi nimi kansiolle ”%s”:"
 
-#: src/imap_gtk.c:263 src/mh_gtk.c:251
+#: src/imap_gtk.c:263 src/mh_gtk.c:251 src/plugins/rssyl/rssyl_cb_menu.c:334
 #: src/plugins/vcalendar/vcal_folder.c:2018
 msgid "Rename folder"
 msgstr "Uudelleennimeä kansio"
@@ -5726,6 +5736,7 @@ msgid "`%c' can't be included in folder name."
 msgstr "merkkiä ’%c’ ei voi sisällyttää kansion nimeen."
 
 #: src/imap_gtk.c:292 src/mh_gtk.c:274 src/news_gtk.c:327
+#: src/plugins/rssyl/rssyl_cb_menu.c:354
 #: src/plugins/vcalendar/vcal_folder.c:2038
 msgid ""
 "The folder could not be renamed.\n"
@@ -5734,7 +5745,7 @@ msgstr ""
 "Kansiota ei voinut uudelleennimetä.\n"
 "Uuden kansion nimi ei ole sallittu."
 
-#: src/imap_gtk.c:360 src/mh_gtk.c:199
+#: src/imap_gtk.c:360 src/mh_gtk.c:199 src/plugins/rssyl/rssyl_cb_menu.c:234
 #, c-format
 msgid ""
 "All folders and messages under '%s' will be permanently deleted. Recovery "
@@ -5748,6 +5759,7 @@ msgstr ""
 "Poistetaanko varmasti?"
 
 #: src/imap_gtk.c:381 src/mh_gtk.c:220 src/news_gtk.c:280
+#: src/plugins/rssyl/rssyl_cb_menu.c:256
 #: src/plugins/vcalendar/vcal_folder.c:1974
 #, c-format
 msgid "Can't remove the folder '%s'."
@@ -6330,7 +6342,7 @@ msgstr "Sylpheed-Claws 1.9.15 (tai vanhempi)"
 msgid "Sylpheed-Claws 1.0.5 (or older)"
 msgstr "Sylpheed-Claws 1.0.5 (tai vanhempi)"
 
-#: src/main.c:1563
+#: src/main.c:1572
 #, c-format
 msgid ""
 "The following plugin failed to load. Check the Plugins configuration for "
@@ -6347,7 +6359,7 @@ msgstr[1] ""
 "Osa liitännäisistä ei latautunut. Tarkista asetuksista lisätietoja:\n"
 "%s"
 
-#: src/main.c:1591
+#: src/main.c:1600
 msgid ""
 "Claws Mail has detected a configured mailbox, but it is incomplete. It is "
 "possibly due to a failing IMAP account. Use \"Rebuild folder tree\" on the "
@@ -6357,7 +6369,7 @@ msgstr ""
 "johtua vaikkapa viallisesta IMAP-tilistä. Koeta korjata asia komennolla "
 "Uudelleenkasaa kansiopuu viallisessa kansiossa."
 
-#: src/main.c:1597
+#: src/main.c:1606
 msgid ""
 "Claws Mail has detected a configured mailbox, but could not load it. It is "
 "probably provided by an out-of-date external plugin. Please reinstall the "
@@ -6367,41 +6379,41 @@ msgstr ""
 "Luultavasti käytössä on vanhentunut liitännäinen. Asenna liitännäiset "
 "uudelleen ja yritä uudestaan."
 
-#: src/main.c:1626
+#: src/main.c:1635
 #, c-format
 msgid "Claws Mail can not start without its data volume (%s)."
 msgstr "Claws Mail ei voi käynnistyä ilman dataosiotaan (%s)."
 
-#: src/main.c:1873
+#: src/main.c:1882
 msgid "Missing filename\n"
 msgstr "Puuttuva tiedostonimi\n"
 
-#: src/main.c:1880
+#: src/main.c:1889
 msgid "Cannot open filename for reading\n"
 msgstr "Tiedoston nimeä ei voi avata lukemista varten\n"
 
-#: src/main.c:1891
+#: src/main.c:1900
 msgid "Malformed header\n"
 msgstr "Viallinen otsake\n"
 
-#: src/main.c:1898
+#: src/main.c:1907
 msgid "Duplicated 'To:' header\n"
 msgstr "Kaksoiskappale 'To:'-otsakkeesta\n"
 
-#: src/main.c:1913
+#: src/main.c:1922
 msgid "Missing required 'To:' header\n"
 msgstr "Tarpeellinen To:-otsake puuttuu\n"
 
-#: src/main.c:2058
+#: src/main.c:2067
 #, c-format
 msgid "Usage: %s [OPTION]...\n"
 msgstr "Käyttö: %s [ASETUKSET]…\n"
 
-#: src/main.c:2060
+#: src/main.c:2069
 msgid "  --compose [address]    open composition window"
 msgstr "  --compose [osoite]     avaa viestinkirjoitusikkuna"
 
-#: src/main.c:2061
+#: src/main.c:2070
 msgid ""
 "  --compose-from-file file\n"
 "                         open composition window with data from given file;\n"
@@ -6418,11 +6430,11 @@ msgstr ""
 "                         pakollinen) ja tyhjä rivi erottaa viestin\n"
 "                         sisältöä. Sisältö jatkuu loppuun."
 
-#: src/main.c:2066
+#: src/main.c:2075
 msgid "  --subscribe [uri]      subscribe to the given URI if possible"
 msgstr "  --subscribe [uri]      tilaa annetu URI jos mahdollista"
 
-#: src/main.c:2067
+#: src/main.c:2076
 msgid ""
 "  --attach file1 [file2]...\n"
 "                         open composition window with specified files\n"
@@ -6432,25 +6444,25 @@ msgstr ""
 "                         Avaa viestinkirjoitusikkuna annetut tiedostot\n"
 "                         valmiiksi viestiin liitettyinä"
 
-#: src/main.c:2070
+#: src/main.c:2079
 msgid "  --receive              receive new messages"
 msgstr "  --receive              hae uudet viestit"
 
-#: src/main.c:2071
+#: src/main.c:2080
 msgid "  --receive-all          receive new messages of all accounts"
 msgstr "  --receive-all          hae uudet viestit kaikille tileille"
 
-#: src/main.c:2072
+#: src/main.c:2081
 #, fuzzy
 msgid "  --cancel-receiving     cancel receiving of messages"
 msgstr "  --receive              hae uudet viestit"
 
-#: src/main.c:2073
+#: src/main.c:2082
 #, fuzzy
 msgid "  --cancel-sending       cancel sending of messages"
 msgstr "  --receive              hae uudet viestit"
 
-#: src/main.c:2074
+#: src/main.c:2083
 msgid ""
 "  --search folder type request [recursive]\n"
 "                         searches mail\n"
@@ -6470,15 +6482,15 @@ msgstr ""
 "                         rekursio: poistetaan käytöstä, jos parametri\n"
 "                                   alkaa 0, n, N, f tai F"
 
-#: src/main.c:2081
+#: src/main.c:2090
 msgid "  --send                 send all queued messages"
 msgstr "  --send                 lähetä kaikki jonottavat viestit"
 
-#: src/main.c:2082
+#: src/main.c:2091
 msgid "  --status [folder]...   show the total number of messages"
 msgstr "  --status [kansio]…     näytä viestien määrän"
 
-#: src/main.c:2083
+#: src/main.c:2092
 msgid ""
 "  --status-full [folder]...\n"
 "                         show the status of each folder"
@@ -6486,15 +6498,15 @@ msgstr ""
 "  --status-full [kansio]…\n"
 "                         näytä kansioiden tilat"
 
-#: src/main.c:2085
+#: src/main.c:2094
 msgid "  --statistics           show session statistics"
 msgstr "  --statistics           näytä istunnon tilastoja"
 
-#: src/main.c:2086
+#: src/main.c:2095
 msgid "  --reset-statistics     reset session statistics"
 msgstr "  --reset-statistics     nollaa istunnon tilastoja"
 
-#: src/main.c:2087
+#: src/main.c:2096
 msgid ""
 "  --select folder[/msg]  jumps to the specified folder/message\n"
 "                         folder is a folder id like 'folder/sub_folder'"
@@ -6503,41 +6515,41 @@ msgstr ""
 "                         siirryy valittuun kansioon tai viestiin\n"
 "                         kansion tunnus on tyyppiä ”kansio/alikansio”"
 
-#: src/main.c:2089
+#: src/main.c:2098
 msgid "  --online               switch to online mode"
 msgstr "  --online               siirry yhdistettyyn tilaan"
 
-#: src/main.c:2090
+#: src/main.c:2099
 msgid "  --offline              switch to offline mode"
 msgstr "  --offline              siirry yhdistämättömään tilaan"
 
-#: src/main.c:2091
+#: src/main.c:2100
 msgid "  --exit --quit -q       exit Claws Mail"
 msgstr "  --exit --quit -q       poistu Claws Mailista"
 
-#: src/main.c:2092
+#: src/main.c:2101
 msgid "  --debug                debug mode"
 msgstr "  --debug                vianetsintätila"
 
-#: src/main.c:2093
+#: src/main.c:2102
 msgid "  --help -h              display this help and exit"
 msgstr "  --help -h              näytä tämä ohje ja lopeta"
 
-#: src/main.c:2094
+#: src/main.c:2103
 msgid "  --version -v           output version information and exit"
 msgstr "  --version -v           näytä versiotiedot ja lopeta"
 
-#: src/main.c:2095
+#: src/main.c:2104
 msgid ""
 "  --version-full -V      output version and built-in features information "
 "and exit"
 msgstr "  --version-full -V      näytä versiotiedot, ominaisuudet ja lopeta"
 
-#: src/main.c:2096
+#: src/main.c:2105
 msgid "  --config-dir           output configuration directory"
 msgstr "  --config-dir           näytä asetushakemisto"
 
-#: src/main.c:2097
+#: src/main.c:2106
 msgid ""
 "  --alternate-config-dir [dir]\n"
 "                         use specified configuration directory"
@@ -6545,32 +6557,32 @@ msgstr ""
 "--alternate-config-dir [hakemisto]\n"
 "                         käytä määriteltyä asetushakemisto"
 
-#: src/main.c:2147
+#: src/main.c:2156
 msgid "Unknown option\n"
 msgstr "Tuntematon valitsin\n"
 
-#: src/main.c:2165
+#: src/main.c:2174
 #, c-format
 msgid "Processing (%s)..."
 msgstr "Käsitellään (%s)…"
 
-#: src/main.c:2168
+#: src/main.c:2177
 msgid "top level folder"
 msgstr "ylimmän tason kansio"
 
-#: src/main.c:2251
+#: src/main.c:2260
 msgid "Queued messages"
 msgstr "Jonottavat viestit"
 
-#: src/main.c:2252
+#: src/main.c:2261
 msgid "Some unsent messages are queued. Exit now?"
 msgstr "Lähettämättömiä viestejä on jonossa, lopetetaanko?"
 
-#: src/main.c:2981
+#: src/main.c:2990
 msgid "NetworkManager: network is online.\n"
 msgstr "NetworkManager: verkko on yhdistetty.\n"
 
-#: src/main.c:2987
+#: src/main.c:2996
 msgid "NetworkManager: network is offline.\n"
 msgstr "NetworkManager: verkko on yhdistämättä.\n"
 
@@ -7376,7 +7388,7 @@ msgstr ""
 "Jos se on olemassaoleva postilaatikko,\n"
 "se skannataan automaattisesti."
 
-#: src/mainwindow.c:3108
+#: src/mainwindow.c:3108 src/plugins/rssyl/rssyl_gtk.c:158
 #, c-format
 msgid "The mailbox '%s' already exists."
 msgstr "Postilaatikko ”%s” on jo olemassa."
@@ -7753,7 +7765,7 @@ msgstr ""
 "Viesti on lähetetty useisille tileistäsi.\n"
 "Valitse mitä niistä käytät saapumisilmoituksen lähettämiseen:"
 
-#: src/messageview.c:2121
+#: src/messageview.c:2121 src/plugins/rssyl/rssyl_gtk.c:480
 msgid "_Cancel"
 msgstr "_Peru"
 
@@ -8051,7 +8063,7 @@ msgstr "Poistetaanko ryhmän ”%s” tilaus?"
 msgid "Unsubscribe newsgroup"
 msgstr "Poista ryhmätilauksia"
 
-#: src/news_gtk.c:267
+#: src/news_gtk.c:267 src/plugins/rssyl/rssyl_gtk.c:678
 msgid "_Unsubscribe"
 msgstr "_Poista ryhmän tilaus"
 
@@ -9215,6 +9227,367 @@ msgstr ""
 "\n"
 "GPGME © 2001 Werner Koch <dd9jn@gnu.org>"
 
+#: src/plugins/rssyl/rssyl_prefs.c:103
+msgid "Default refresh interval in minutes"
+msgstr "Oletuspäivitysväli minuuteissa"
+
+#: src/plugins/rssyl/rssyl_prefs.c:114
+msgid "Set to 0 to disable automatic refreshing"
+msgstr "Aseta 0:ksi estääksesi automaattisen päivityksen"
+
+#: src/plugins/rssyl/rssyl_prefs.c:116
+msgid "Default number of expired items to keep"
+msgstr "Oletusmäärä vanhentuneita juttuja säilytettäväksi"
+
+#: src/plugins/rssyl/rssyl_prefs.c:127
+msgid "Set to -1 to keep expired items"
+msgstr "Aseta -1:ksi säilyttääksesi vanhentuneet jutut"
+
+#: src/plugins/rssyl/rssyl_prefs.c:130
+msgid "Refresh all feeds on application start"
+msgstr "Päivitä kaikki syötteet sovelluksen käynnistyessä"
+
+#: src/plugins/rssyl/rssyl_prefs.c:136
+msgid "Path to cookies file"
+msgstr "Polku keksitiedostoon"
+
+#: src/plugins/rssyl/rssyl_prefs.c:146
+msgid "Path to Netscape-style cookies.txt file containing your cookies"
+msgstr "Polku Netscapen cookies.txt‐keksitiedostoon"
+
+#: src/plugins/rssyl/rssyl.h:8
+msgid "RSSyl"
+msgstr "RSSyl"
+
+#: src/plugins/rssyl/rssyl.h:14
+msgid "My Feeds"
+msgstr "Syötteet"
+
+#: src/plugins/rssyl/rssyl_gtk.c:53
+msgid "_Refresh feed"
+msgstr "_Päivitä syöte"
+
+#: src/plugins/rssyl/rssyl_gtk.c:54
+msgid "Refresh _all feeds"
+msgstr "Päivitä _kaikki syötteet"
+
+#: src/plugins/rssyl/rssyl_gtk.c:55
+msgid "Subscribe _new feed..."
+msgstr "Tilaa _uusi syöte…"
+
+#: src/plugins/rssyl/rssyl_gtk.c:56
+msgid "_Unsubscribe feed..."
+msgstr "_Lakkaa tilaamasta syötettä…"
+
+#: src/plugins/rssyl/rssyl_gtk.c:57
+msgid "Feed pr_operties..."
+msgstr "Syötteen _ominaisuudet…"
+
+#: src/plugins/rssyl/rssyl_gtk.c:58
+msgid "Import feed list..."
+msgstr "Hae syötelista…"
+
+#: src/plugins/rssyl/rssyl_gtk.c:59
+msgid "Rena_me..."
+msgstr "Nimeä _uudelleen…"
+
+#: src/plugins/rssyl/rssyl_gtk.c:60
+msgid "_Create new folder..."
+msgstr "_Luo uusi kansio…"
+
+#: src/plugins/rssyl/rssyl_gtk.c:62
+msgid "Remove folder _tree..."
+msgstr "Poista kansiop_uu…"
+
+#: src/plugins/rssyl/rssyl_gtk.c:152
+msgid "Add RSS folder tree"
+msgstr "Lisää RSS‐syötekansiopuu"
+
+#: src/plugins/rssyl/rssyl_gtk.c:153
+msgid "Enter name for a new RSS folder tree."
+msgstr "Anna nimi uudelle RSS‐syötekansiopuulle."
+
+#: src/plugins/rssyl/rssyl_gtk.c:169
+msgid ""
+"Creation of folder tree failed.\n"
+"Maybe some files already exist, or you don't have the permission to write "
+"there?"
+msgstr ""
+"Kansiopuun luonti epäonnistui.\n"
+"Ehkä sen tiedostot ovat jo olemassa, tai kansioon ei ole oikeutta kirjoittaa."
+
+#: src/plugins/rssyl/rssyl_gtk.c:184
+msgid "RSSyl..."
+msgstr "RSSyl..."
+
+#: src/plugins/rssyl/rssyl_gtk.c:256
+msgid "Use default refresh interval"
+msgstr "Käytä oletuspäivitysväliä"
+
+#: src/plugins/rssyl/rssyl_gtk.c:268
+msgid "Keep default number of expired entries"
+msgstr "Säilytä oletusmäärä vanhentuneita juttuja"
+
+#: src/plugins/rssyl/rssyl_gtk.c:274
+msgid "Fetch comments if possible"
+msgstr "Hae kommentit, jos mahdollista"
+
+#: src/plugins/rssyl/rssyl_gtk.c:312
+msgid "<b>Source URL:</b>"
+msgstr "<b>Lähteen URL:</b>"
+
+#: src/plugins/rssyl/rssyl_gtk.c:340
+msgid ""
+"<b>Fetch comments on posts aged less than:</b>\n"
+"<small>(In days; set to -1 to fetch all comments)</small>"
+msgstr ""
+"<b>Hae kommentit jotka ovat vanhempia kuin:</b>\n"
+"<small>(Päivissä: -1 hakee kaikki kommentit)</small>"
+
+#: src/plugins/rssyl/rssyl_gtk.c:374
+msgid ""
+"<b>Refresh interval in minutes:</b>\n"
+"<small>(Set to 0 to disable automatic refreshing for this feed)</small>"
+msgstr ""
+"<b>Päivitysten väli minuuteissa</b>\n"
+"<small>(Aseta nollaksi poistaaksesi tämän syötteen automaattisen päivityksen)"
+"</small>"
+
+#: src/plugins/rssyl/rssyl_gtk.c:407
+msgid ""
+"<b>Number of expired entries to keep:</b>\n"
+"<small>(Set to -1 if you want to keep expired entries)</small>"
+msgstr ""
+"<b>Säilytettävien vanhentuneiden juttujen lukumäärä:</b>\n"
+"<small>(Aseta −1:ksi, jos haluat säilyttää kaikki vanhentuneet jutut)</small>"
+
+#: src/plugins/rssyl/rssyl_gtk.c:433
+msgid "<b>If an item changes, do not mark it as unread:</b>"
+msgstr "<b>Jos kohde muuttuu, älä merkitse lukemattomaksi</b>"
+
+#: src/plugins/rssyl/rssyl_gtk.c:443
+msgid "Always mark as unread"
+msgstr "Merkitse aina lukemattomaksi"
+
+#: src/plugins/rssyl/rssyl_gtk.c:445
+msgid "If only its text changed"
+msgstr "Vain jos sisältöteksti muuttuu"
+
+#: src/plugins/rssyl/rssyl_gtk.c:447
+msgid "Never mark as unread"
+msgstr "Älä koskaan merkitse lukemattomaksi"
+
+#: src/plugins/rssyl/rssyl_gtk.c:501
+msgid "_OK"
+msgstr "_OK"
+
+#: src/plugins/rssyl/rssyl_gtk.c:509
+msgid "Set feed properties"
+msgstr "Aseta syötteen ominaisuudet"
+
+#: src/plugins/rssyl/rssyl_gtk.c:634 src/plugins/rssyl/rssyl_gtk.c:658
+msgid "Unsubscribe feed"
+msgstr "Lakkaa tilaamasta syötettä"
+
+#: src/plugins/rssyl/rssyl_gtk.c:659
+msgid "Do you really want to remove feed"
+msgstr "Poistetaanko syöte"
+
+#: src/plugins/rssyl/rssyl_gtk.c:665
+msgid "Remove cached entries"
+msgstr "Poista jutut välimuistista"
+
+#: src/plugins/rssyl/plugin.c:63
+msgid ""
+"This plugin allows you to create a mailbox tree where you can add newsfeeds "
+"in RSS 1.0, RSS 2.0 or Atom format.\n"
+"\n"
+"Each newsfeed will create a folder with appropriate entries, fetched from "
+"the web. You can read them, and delete or keep old entries."
+msgstr ""
+"Tällä liitännäisellä tehdään postilaatikkokansiopuu, johon voi lisätä "
+"syötteitä RSS 1.0‐, RSS 2.0‐ ja Atom‐muotoisina.\n"
+"\n"
+"Jokainen syöte tekee uuden kansion, joka sisältää omat verkosta haetut "
+"juttunsa. Ne voi lukea, poistaa tai säilyttää."
+
+#: src/plugins/rssyl/plugin.c:87
+msgid "RSS feed"
+msgstr "RSS‐syöte"
+
+#: src/plugins/rssyl/feed.h:20
+#, c-format
+msgid "Time out connecting to URL %s\n"
+msgstr "Aikakatkaistu yhdistettäessä kohteeseen %s\n"
+
+#: src/plugins/rssyl/feed.h:21
+#, c-format
+msgid "Couldn't fetch URL %s\n"
+msgstr "URLia %s ei voitu hakea.\n"
+
+#: src/plugins/rssyl/feed.h:22
+#, c-format
+msgid "Error parsing feed from URL %s\n"
+msgstr "Virhe jäsennettäessä syötettä osoitteessa %s\n"
+
+#: src/plugins/rssyl/feed.h:23
+#, c-format
+msgid "Unsupported feed type at URL %s\n"
+msgstr "Tukematon syötteen tyyppi osoitteessa %s\n"
+
+#: src/plugins/rssyl/feed.h:25
+#, c-format
+msgid "RSSyl: Updating feed %s\n"
+msgstr "RSSyl: Päivitetään syötettä %s\n"
+
+#: src/plugins/rssyl/feed.h:26
+#, c-format
+msgid "RSSyl: Feed update finished: %s\n"
+msgstr "RSSyl: Syötteen päivitys valmis: %s\n"
+
+#: src/plugins/rssyl/feed.h:27
+msgid "RSSyl: Feed update aborted, application is exiting.\n"
+msgstr "RSSyl: Syötteen päivitys peruttu, ohjelma sulkeutuu.\n"
+
+#: src/plugins/rssyl/rssyl_cb_menu.c:62
+msgid "Subscribe feed"
+msgstr "Tilaa syöte"
+
+#: src/plugins/rssyl/rssyl_cb_menu.c:63
+msgid "Input the URL of the news feed you wish to subscribe:"
+msgstr "Anna tilattavan syötteen URL, jonka haluat tilata:"
+
+#: src/plugins/rssyl/rssyl_cb_menu.c:138
+#, c-format
+msgid "Really remove the folder tree '%s' ?\n"
+msgstr "Poistetaanko syötekansiopuu %s?\n"
+
+#: src/plugins/rssyl/rssyl_cb_menu.c:139
+msgid "Remove folder tree"
+msgstr "Poista kansiopuu"
+
+#: src/plugins/rssyl/rssyl_cb_menu.c:204
+#, c-format
+msgid "Can't remove feed '%s'."
+msgstr "Syötettä %s ei voida poistaa"
+
+#: src/plugins/rssyl/rssyl_cb_menu.c:283 src/plugins/rssyl/feed.c:1856
+msgid "Claws Mail needs network access in order to update the feed."
+msgid_plural "Claws Mail needs network access in order to update the feeds."
+msgstr[0] "Syötteen päivittämiseksi tarvitaan verkkoyhteyttä."
+msgstr[1] "Syötteiden päivittämiseksi tarvitaan verkkoyhteyttä."
+
+#: src/plugins/rssyl/rssyl_cb_menu.c:376
+msgid "Select a .opml file"
+msgstr "Valitse .opml-tiedosto"
+
+#: src/plugins/rssyl/rssyl.c:133 src/plugins/rssyl/rssyl.c:145
+msgid "Refresh all feeds"
+msgstr "Päivitä kaikki syötteet"
+
+#: src/plugins/rssyl/feed.c:125
+msgid "Cannot open temporary file"
+msgstr "Väliaikaistiedoston avaus ei onnistu"
+
+#: src/plugins/rssyl/feed.c:136
+msgid "Cannot init libCURL"
+msgstr "libCurlin alustus ei onnistu"
+
+#: src/plugins/rssyl/feed.c:231 src/plugins/vcalendar/vcal_folder.c:1593
+msgid "401 (Authorisation required)"
+msgstr "401 (Tunnistautuminen vaaditaan)"
+
+#: src/plugins/rssyl/feed.c:234 src/plugins/vcalendar/vcal_folder.c:1596
+msgid "403 (Unauthorised)"
+msgstr "403 (Ei käyttöoikeutta)"
+
+#: src/plugins/rssyl/feed.c:237 src/plugins/vcalendar/vcal_folder.c:1599
+msgid "404 (Not found)"
+msgstr "404 (Ei löydy)"
+
+#: src/plugins/rssyl/feed.c:240 src/plugins/vcalendar/vcal_folder.c:1602
+#, c-format
+msgid "Error %ld"
+msgstr "Virhe %ld"
+
+#: src/plugins/rssyl/feed.c:324
+#, c-format
+msgid "Fetching '%s'..."
+msgstr "Haetaan syötettä %s…"
+
+#: src/plugins/rssyl/feed.c:383
+msgid "Malformed feed"
+msgstr "Viallinen syöte"
+
+#: src/plugins/rssyl/feed.c:1199
+#, c-format
+msgid "Refreshing feed '%s'..."
+msgstr "Päivitetään syötettä %s…"
+
+#: src/plugins/rssyl/feed.c:1214
+#, c-format
+msgid ""
+"RSSyl: Fetching comments is not supported for RDF feeds. Cannot fetch "
+"comments of '%s'"
+msgstr ""
+"RSSyl: Kommentien haku ei toimi RDF-syötteillä. Syötteen %s kommentteja ei "
+"haeta."
+
+#: src/plugins/rssyl/feed.c:1223
+msgid "This feed format is not supported yet."
+msgstr "Tätä syötemuotoa ei tueta vielä."
+
+#: src/plugins/rssyl/feed.c:1254
+msgid "N/A"
+msgstr "—"
+
+#: src/plugins/rssyl/feed.c:1374
+#, c-format
+msgid "%ld byte"
+msgid_plural "%ld bytes"
+msgstr[0] "%ld tavu"
+msgstr[1] "%ld tavua"
+
+#: src/plugins/rssyl/feed.c:1377
+msgid "size unknown"
+msgstr "tuntematon koko"
+
+#: src/plugins/rssyl/feed.c:1550
+#, c-format
+msgid ""
+"RSSyl: Cannot update feed %s:\n"
+"%s\n"
+msgstr ""
+"RSSyl: Syötettä %s ei voi päivittää:\n"
+"%s\n"
+
+#: src/plugins/rssyl/feed.c:1722
+msgid "You are already subscribed to this feed."
+msgstr "Olet jo tilannut tämän syötteen."
+
+#: src/plugins/rssyl/feed.c:1733
+#, c-format
+msgid ""
+"Couldn't fetch URL '%s':\n"
+"%s"
+msgstr ""
+"URLia %s ei voitu hakea:\n"
+"%s"
+
+#: src/plugins/rssyl/feed.c:1738
+#, c-format
+msgid ""
+"Couldn't fetch URL '%s':\n"
+"%s\n"
+msgstr ""
+"URLia %s ei voitu hakea.:\n"
+"%s\n"
+
+#: src/plugins/rssyl/feed.c:1754
+#, c-format
+msgid "Can't subscribe feed '%s'."
+msgstr "Syötettä %s ei voida tilata."
+
 #: src/plugins/smime/plugin.c:38 src/plugins/smime/plugin.c:54
 #: src/plugins/smime/smime.c:924
 msgid "S/MIME"
@@ -9509,77 +9882,78 @@ msgstr "Sulje järjestelmäalueelle"
 msgid "Hide Claws Mail using the tray icon instead of minimizing it"
 msgstr "Piilota pienennyksen sijaan järjestelmäaluekuvake on käytössä"
 
-#: src/vcalendar.c:96
+#: src/plugins/vcalendar/vcalendar.c:100
 msgid "Create meeting from message..."
 msgstr "Luo tapaaminen viestistä…"
 
-#: src/vcalendar.c:116
+#: src/plugins/vcalendar/vcalendar.c:120
 #, c-format
 msgid ""
 "You are about to create %d meetings, one by one. Do you want to continue?"
 msgstr "Luodaan %d tapaamista yksitellen, jatketaanko?"
 
-#: src/vcalendar.c:135
+#: src/plugins/vcalendar/vcalendar.c:139
 msgid "Creating meeting..."
 msgstr "Luodaan tapaamista…"
 
-#: src/vcalendar.c:154
+#: src/plugins/vcalendar/vcalendar.c:158
 msgid "no subject"
 msgstr "ei aihetta"
 
-#: src/vcalendar.c:389
+#: src/plugins/vcalendar/vcalendar.c:393
 msgid "Accept"
 msgstr "Hyväksy"
 
-#: src/vcalendar.c:390
+#: src/plugins/vcalendar/vcalendar.c:394
 msgid "Tentatively accept"
 msgstr "Hyväksy alustavasti"
 
-#: src/vcalendar.c:391
+#: src/plugins/vcalendar/vcalendar.c:395
 msgid "Decline"
 msgstr "Kieltäydy"
 
-#: src/vcalendar.c:478
+#: src/plugins/vcalendar/vcalendar.c:482
 msgid "You have a Todo item."
 msgstr "Sinulle on tehtävää."
 
-#: src/vcalendar.c:479 src/vcalendar.c:486 src/vcalendar.c:491
-#: src/vcalendar.c:499 src/vcalendar.c:508 src/vcalendar.c:746
+#: src/plugins/vcalendar/vcalendar.c:483 src/plugins/vcalendar/vcalendar.c:490
+#: src/plugins/vcalendar/vcalendar.c:495 src/plugins/vcalendar/vcalendar.c:503
+#: src/plugins/vcalendar/vcalendar.c:512 src/plugins/vcalendar/vcalendar.c:750
 msgid "Details follow:"
 msgstr "Yksityiskohdat:"
 
-#: src/vcalendar.c:485
+#: src/plugins/vcalendar/vcalendar.c:489
 msgid "You have created a meeting."
 msgstr "Uusi tapaaminen on tehty."
 
-#: src/vcalendar.c:490
+#: src/plugins/vcalendar/vcalendar.c:494
 msgid "You have been invited to a meeting."
 msgstr "Sinut on kutsuttu tapaamiseen."
 
-#: src/vcalendar.c:498
+#: src/plugins/vcalendar/vcalendar.c:502
 msgid "A meeting to which you had been invited has been cancelled."
 msgstr "Sopimasi tapaaminen, on peruttu."
 
-#: src/vcalendar.c:507
+#: src/plugins/vcalendar/vcalendar.c:511
 msgid "You have been forwarded an appointment."
 msgstr "Sinulle on välitetty tapaaminen."
 
-#: src/vcalendar.c:560
+#: src/plugins/vcalendar/vcalendar.c:564
 #, c-format
 msgid "%s <span weight=\"bold\">(this event recurs)</span>"
 msgstr "%s <span weight=\"bold\">(tämä tapahtuma toistuu)</span>"
 
-#: src/vcalendar.c:566
+#: src/plugins/vcalendar/vcalendar.c:570
 #, c-format
 msgid ""
 "%s <span weight=\"bold\">(this event is part of a recurring event)</span>"
 msgstr "%s <span weight=\"bold\">(tämä kuuluu toistuvaan tapahtumaan)</span>"
 
-#: src/vcalendar.c:745
+#: src/plugins/vcalendar/vcalendar.c:749
 msgid "You have received an answer to an unknown meeting proposal."
 msgstr "Olet saanut vastauksen tuntemattomaan tapaamispyyntöön."
 
-#: src/vcalendar.c:749
+#: src/plugins/vcalendar/vcalendar.c:753
 #, c-format
 msgid ""
 "You have received an answer to a meeting proposal.\n"
@@ -9588,35 +9962,35 @@ msgstr ""
 "Olet saanut vastauksen tapaamispyyntöön.\n"
 "Henkilö %s on %s. Yksityiskohdat:"
 
-#: src/vcalendar.c:828
+#: src/plugins/vcalendar/vcalendar.c:832
 msgid "Error - could not get the calendar MIME part."
 msgstr "Virhe – kalenterin MIME-osaa ei saatu."
 
-#: src/vcalendar.c:835
+#: src/plugins/vcalendar/vcalendar.c:839
 msgid "Error - no calendar part found."
 msgstr "Virhe – kalenteriosaa ei löytynyt."
 
-#: src/vcalendar.c:849
+#: src/plugins/vcalendar/vcalendar.c:853
 msgid "Error - Unknown calendar component type."
 msgstr "Virhe – Tuntematon kalenterikomponenttityyppi."
 
-#: src/vcalendar.c:978
+#: src/plugins/vcalendar/vcalendar.c:982
 msgid "Send a notification to the attendees"
 msgstr "Lähetä huomautus osanottajille"
 
-#: src/vcalendar.c:987
+#: src/plugins/vcalendar/vcalendar.c:991
 msgid "Cancel meeting"
 msgstr "Peru tapaaminen"
 
-#: src/vcalendar.c:988
+#: src/plugins/vcalendar/vcalendar.c:992
 msgid "Are you sure you want to cancel this meeting?"
 msgstr "Perutaanko tämä tapaaminen?"
 
-#: src/vcalendar.c:1083
+#: src/plugins/vcalendar/vcalendar.c:1087
 msgid "No account found"
 msgstr "Tiliä ei löytynyt"
 
-#: src/vcalendar.c:1084
+#: src/plugins/vcalendar/vcalendar.c:1088
 msgid ""
 "You have no account matching any attendee.\n"
 "Do you want to reply anyway ?"
@@ -9624,91 +9998,97 @@ msgstr ""
 "Sinulla ei ole käytössäsi tiliä, joka täsmäisi osallistujiin.\n"
 "Vastataanko silti?"
 
-#: src/vcalendar.c:1086
+#: src/plugins/vcalendar/vcalendar.c:1090
 msgid "+Reply anyway"
 msgstr "Vastaa joka tapauksessa"
 
-#: src/vcalendar.c:1215
+#: src/plugins/vcalendar/vcalendar.c:1219
 msgid "Answer"
 msgstr "Vastaa"
 
-#: src/vcalendar.c:1216
+#: src/plugins/vcalendar/vcalendar.c:1220
 msgid "Edit meeting..."
 msgstr "Muokkaa tapaamista…"
 
-#: src/vcalendar.c:1217
+#: src/plugins/vcalendar/vcalendar.c:1221
 msgid "Cancel meeting..."
 msgstr "Peru tapaaminen…"
 
-#: src/vcalendar.c:1218
+#: src/plugins/vcalendar/vcalendar.c:1222
 msgid "Launch website"
 msgstr "Avaa veppisivusto"
 
-#: src/vcalendar.c:1222
+#: src/plugins/vcalendar/vcalendar.c:1226
 msgid "You are already busy at this time."
 msgstr "Tämä aika on jo varattu."
 
-#: src/vcalendar.c:1261 src/vcal_meeting_gtk.c:1734
+#: src/plugins/vcalendar/vcalendar.c:1265
+#: src/plugins/vcalendar/vcal_meeting_gtk.c:1738
 msgid "Event:"
 msgstr "Tapahtuma:"
 
-#: src/vcalendar.c:1262 src/vcal_meeting_gtk.c:1712
-#: src/vcal_meeting_gtk.c:1723
+#: src/plugins/vcalendar/vcalendar.c:1266
+#: src/plugins/vcalendar/vcal_meeting_gtk.c:1716
+#: src/plugins/vcalendar/vcal_meeting_gtk.c:1727
 msgid "Organizer:"
 msgstr "Järjestäjä:"
 
-#: src/vcalendar.c:1263 src/vcal_meeting_gtk.c:1715
-#: src/vcal_meeting_gtk.c:1725
+#: src/plugins/vcalendar/vcalendar.c:1267
+#: src/plugins/vcalendar/vcal_meeting_gtk.c:1719
+#: src/plugins/vcalendar/vcal_meeting_gtk.c:1729
 msgid "Location:"
 msgstr "Sijainti:"
 
-#: src/vcalendar.c:1264 src/vcal_meeting_gtk.c:1713
-#: src/vcal_meeting_gtk.c:1724
+#: src/plugins/vcalendar/vcalendar.c:1268
+#: src/plugins/vcalendar/vcal_meeting_gtk.c:1717
+#: src/plugins/vcalendar/vcal_meeting_gtk.c:1728
 msgid "Summary:"
 msgstr "Yhteenveto:"
 
-#: src/vcalendar.c:1265
+#: src/plugins/vcalendar/vcalendar.c:1269
 msgid "Starting:"
 msgstr "Alkaa:"
 
-#: src/vcalendar.c:1266
+#: src/plugins/vcalendar/vcalendar.c:1270
 msgid "Ending:"
 msgstr "Loppuu:"
 
-#: src/vcalendar.c:1268 src/vcal_meeting_gtk.c:1717
-#: src/vcal_meeting_gtk.c:1727
+#: src/plugins/vcalendar/vcalendar.c:1272
+#: src/plugins/vcalendar/vcal_meeting_gtk.c:1721
+#: src/plugins/vcalendar/vcal_meeting_gtk.c:1731
 msgid "Attendees:"
 msgstr "Osanottajat:"
 
-#: src/vcalendar.c:1270
+#: src/plugins/vcalendar/vcalendar.c:1274
 msgid "Action:"
 msgstr "Toiminto:"
 
-#: src/vcal_prefs.c:254
+#: src/plugins/vcalendar/vcal_prefs.c:256
 msgid "Reminders"
 msgstr "Muistutukset"
 
-#: src/vcal_prefs.c:263
+#: src/plugins/vcalendar/vcal_prefs.c:265
 msgid "Alert me"
 msgstr "Ilmoita minulle"
 
-#: src/vcal_prefs.c:275
+#: src/plugins/vcalendar/vcal_prefs.c:277
 msgid "minutes before an event"
 msgstr " minuuttia ennen tapahtuman alkua"
 
-#: src/vcal_prefs.c:287
+#: src/plugins/vcalendar/vcal_prefs.c:289
 msgid "Calendar export"
 msgstr "Kalenterin vienti"
 
-#: src/vcal_prefs.c:298
+#: src/plugins/vcalendar/vcal_prefs.c:300
 msgid "Automatically export calendar to"
 msgstr "Automaattisesti vie kalenteri"
 
-#: src/vcal_prefs.c:307 src/vcal_prefs.c:413
+#: src/plugins/vcalendar/vcal_prefs.c:309
+#: src/plugins/vcalendar/vcal_prefs.c:415
 msgid "You can export to a local file or URL"
 msgstr "Voit viedä tiedoston tai URL‐osoitteen"
 
-#: src/vcal_prefs.c:309
+#: src/plugins/vcalendar/vcal_prefs.c:311
 msgid "Specify a local file or URL (http://server/path/file.ics)"
 msgstr "Anna tiedostonimi tai URL (kuten http://palvelin/polku/tiedosto.ics)"
 
@@ -9725,43 +10105,43 @@ msgstr "Käyttäjätunnus"
 msgid "Password"
 msgstr "Salasana"
 
-#: src/vcal_prefs.c:339
+#: src/plugins/vcalendar/vcal_prefs.c:341
 msgid "Include webcal subscriptions in export"
 msgstr "Sisällyt webcal‐ajat vientiin"
 
-#: src/vcal_prefs.c:349
+#: src/plugins/vcalendar/vcal_prefs.c:351
 msgid "Command to run after calendar export"
 msgstr "Kalenterin viennin jälkeen ajettava komento"
 
-#: src/vcal_prefs.c:378
+#: src/plugins/vcalendar/vcal_prefs.c:380
 msgid "Register Claws' calendar in XFCE's Orage clock"
 msgstr "Tallena Clawsin kalenteritiedot XFCE:n Oragen kelloon"
 
-#: src/vcal_prefs.c:380
+#: src/plugins/vcalendar/vcal_prefs.c:382
 msgid "Allows Orage (version greater than 4.4) to see Claws Mail's calendar"
 msgstr "Salli Oragen (4.4 tai uudempi) lukea Clawsin kalenteria"
 
-#: src/vcal_prefs.c:392
+#: src/plugins/vcalendar/vcal_prefs.c:394
 msgid "Free/Busy information"
 msgstr "Vapaanaolotiedot"
 
-#: src/vcal_prefs.c:404
+#: src/plugins/vcalendar/vcal_prefs.c:406
 msgid "Automatically export free/busy status to"
 msgstr "Automaattisesti vie vapaanaolotiedot kohteeseen"
 
-#: src/vcal_prefs.c:415
+#: src/plugins/vcalendar/vcal_prefs.c:417
 msgid "Specify a local file or URL (http://server/path/file.ifb)"
 msgstr "Anna tiedostonimi tai URL (kuten http://palvelin/polku/tiedosto.ifb)"
 
-#: src/vcal_prefs.c:445
+#: src/plugins/vcalendar/vcal_prefs.c:447
 msgid "Command to run after free/busy status export"
 msgstr "Vapaanaolotiedon viennin jälkeen ajettava komento"
 
-#: src/vcal_prefs.c:472
+#: src/plugins/vcalendar/vcal_prefs.c:474
 msgid "Get free/busy status of others from"
 msgstr "Hae muiden vapaanaolotiedot"
 
-#: src/vcal_prefs.c:480
+#: src/plugins/vcalendar/vcal_prefs.c:482
 #, c-format
 msgid ""
 "Specify a local file or URL (http://server/path/file.ifb). Use %u for the "
@@ -9770,63 +10150,64 @@ msgstr ""
 "Anna tiedostonimi tai URL (kuten http://palvelin/polku/tiedosto.ifb). Käytä "
 "lukua %u sähköpostiosoitteen vasempana osana ja lukua %d verkkotunnuksena"
 
-#: src/plugin.c:47 src/plugin.c:68 src/vcal_prefs.c:644
+#: src/plugins/vcalendar/vcal_prefs.c:646 src/plugins/vcalendar/plugin.c:43
+#: src/plugins/vcalendar/plugin.c:64
 msgid "vCalendar"
 msgstr "vKalenteri"
 
-#: src/vcal_folder.c:160
+#: src/plugins/vcalendar/vcal_folder.c:164
 msgid "_New meeting..."
 msgstr "_Uusi tapaaminen…"
 
-#: src/vcal_folder.c:161
+#: src/plugins/vcalendar/vcal_folder.c:165
 msgid "_Export calendar..."
 msgstr "Tuo kal_enteri…"
 
-#: src/vcal_folder.c:162
+#: src/plugins/vcalendar/vcal_folder.c:166
 msgid "_Subscribe to webCal..."
 msgstr "_Tilaa webCal…"
 
-#: src/vcal_folder.c:164
+#: src/plugins/vcalendar/vcal_folder.c:168
 msgid "_Rename..."
 msgstr "_Nimeä uudelleen…"
 
-#: src/vcal_folder.c:165
+#: src/plugins/vcalendar/vcal_folder.c:169
 msgid "U_pdate subscriptions"
 msgstr "P_äivitä tilaukset"
 
-#: src/vcal_folder.c:166
+#: src/plugins/vcalendar/vcal_folder.c:170
 msgid "_List view"
 msgstr "_Luettelonäkymä"
 
-#: src/vcal_folder.c:167
+#: src/plugins/vcalendar/vcal_folder.c:171
 msgid "_Week view"
 msgstr "_Viikkonäkymä"
 
-#: src/vcal_folder.c:168
+#: src/plugins/vcalendar/vcal_folder.c:172
 msgid "_Month view"
 msgstr "Kuukausinäky_mä"
 
-#: src/vcal_folder.c:1471
+#: src/plugins/vcalendar/vcal_folder.c:1475
 msgid "in the past"
 msgstr "menneisyydessä"
 
-#: src/vcal_folder.c:1474
+#: src/plugins/vcalendar/vcal_folder.c:1478
 msgid "today"
 msgstr "tänään"
 
-#: src/vcal_folder.c:1477
+#: src/plugins/vcalendar/vcal_folder.c:1481
 msgid "tomorrow"
 msgstr "huomenna"
 
-#: src/vcal_folder.c:1480
+#: src/plugins/vcalendar/vcal_folder.c:1484
 msgid "this week"
 msgstr "tällä viikolla"
 
-#: src/vcal_folder.c:1483
+#: src/plugins/vcalendar/vcal_folder.c:1487
 msgid "later"
 msgstr "myöhemmin"
 
-#: src/vcal_folder.c:1487
+#: src/plugins/vcalendar/vcal_folder.c:1491
 #, c-format
 msgid ""
 "\n"
@@ -9835,29 +10216,12 @@ msgstr ""
 "\n"
 "Nämä tapahtumat ovat aikataulussa %s:\n"
 
-#: src/vcal_folder.c:1580
+#: src/plugins/vcalendar/vcal_folder.c:1584
 #, c-format
 msgid "Timeout (%d seconds) connecting to %s\n"
 msgstr "Aikakatkaistu (%d sekuntia) yhdistettäessä osoitteeseen %s\n"
 
-#: src/vcal_folder.c:1589
-msgid "401 (Authorisation required)"
-msgstr "401 (Tunnistautuminen vaaditaan)"
-
-#: src/vcal_folder.c:1592
-msgid "403 (Unauthorised)"
-msgstr "403 (Ei käyttöoikeutta)"
-
-#: src/vcal_folder.c:1595
-msgid "404 (Not found)"
-msgstr "404 (Ei löydy)"
-
-#: src/vcal_folder.c:1598
-#, c-format
-msgid "Error %ld"
-msgstr "Virhe %ld"
-
-#: src/vcal_folder.c:1795
+#: src/plugins/vcalendar/vcal_folder.c:1799
 #, c-format
 msgid ""
 "Could not retrieve the Webcal URL:\n"
@@ -9870,7 +10234,7 @@ msgstr ""
 "\n"
 "%s"
 
-#: src/vcal_folder.c:1799
+#: src/plugins/vcalendar/vcal_folder.c:1803
 #, c-format
 msgid ""
 "Could not retrieve the Webcal URL:\n"
@@ -9883,7 +10247,7 @@ msgstr ""
 "\n"
 "%s\n"
 
-#: src/vcal_folder.c:1810
+#: src/plugins/vcalendar/vcal_folder.c:1814
 #, c-format
 msgid ""
 "This URL does not look like a WebCal URL:\n"
@@ -9894,7 +10258,7 @@ msgstr ""
 "%s\n"
 "%s"
 
-#: src/vcal_folder.c:1813
+#: src/plugins/vcalendar/vcal_folder.c:1817
 #, c-format
 msgid ""
 "This URL does not look like a WebCal URL:\n"
@@ -9904,6 +10268,10 @@ msgstr ""
 "Tämä URL ei näytä WebCal‐URLilta:\n"
 "%s\n"
 "%s\n"
+
+#: src/plugins/vcalendar/vcal_folder.c:1874
+msgid "Claws Mail needs network access in order to update the Webcal feed."
+msgstr "Verkkoyhteys tarvitaan Webcal‐syötteen päivittämiseen."
 
 #: src/plugins/vcalendar/vcal_folder.c:1885
 #, fuzzy, c-format
@@ -9915,35 +10283,39 @@ msgstr "Päivitetään välimuistia kohteelle %s…"
 msgid "new subscription"
 msgstr "Keskusteluryhmien tilaus"
 
-#: src/vcal_folder.c:1905
+#: src/plugins/vcalendar/vcal_folder.c:1897
+msgid "Claws Mail needs network access in order to update the subscription."
+msgstr "Verkkoyhteys tarvitaan tilausten päivittämiseen."
+
+#: src/plugins/vcalendar/vcal_folder.c:1909
 msgid "Subscribe to WebCal"
 msgstr "Tilaa WebCal"
 
-#: src/vcal_folder.c:1905
+#: src/plugins/vcalendar/vcal_folder.c:1909
 msgid "Enter the WebCal URL:"
 msgstr "Anna WebCal‐URL:"
 
-#: src/vcal_folder.c:1919
+#: src/plugins/vcalendar/vcal_folder.c:1923
 msgid "Could not parse the URL."
 msgstr "Ei voitu jäsentää URLia."
 
-#: src/vcal_folder.c:1948
+#: src/plugins/vcalendar/vcal_folder.c:1952
 msgid "Do you really want to unsubscribe?"
 msgstr "Perutaanko tilaus?"
 
-#: src/vcal_meeting_gtk.c:309
+#: src/plugins/vcalendar/vcal_meeting_gtk.c:313
 msgid "Individual"
 msgstr "Yksittäinen"
 
-#: src/vcal_meeting_gtk.c:311
+#: src/plugins/vcalendar/vcal_meeting_gtk.c:315
 msgid "Resource"
 msgstr "Resurssi"
 
-#: src/vcal_meeting_gtk.c:312
+#: src/plugins/vcalendar/vcal_meeting_gtk.c:316
 msgid "Room"
 msgstr "Huone"
 
-#: src/vcal_meeting_gtk.c:325
+#: src/plugins/vcalendar/vcal_meeting_gtk.c:329
 msgid "Add..."
 msgstr "Lisää…"
 
@@ -9951,7 +10323,7 @@ msgstr "Lisää…"
 msgid "Remove"
 msgstr "Poista"
 
-#: src/vcal_meeting_gtk.c:784
+#: src/plugins/vcalendar/vcal_meeting_gtk.c:788
 msgid ""
 "The following person(s) are busy at the time of your planned meeting:\n"
 "- "
@@ -9959,61 +10331,62 @@ msgstr ""
 "Seuraavat henkilöt ovat kiireisiä suunnitellun tapaamisen aikana:\n"
 "— "
 
-#: src/vcal_meeting_gtk.c:785 src/vcal_meeting_gtk.c:877
-#: src/vcal_meeting_gtk.c:963
+#: src/plugins/vcalendar/vcal_meeting_gtk.c:789
+#: src/plugins/vcalendar/vcal_meeting_gtk.c:881
+#: src/plugins/vcalendar/vcal_meeting_gtk.c:967
 msgid "You"
 msgstr "Sinä"
 
-#: src/vcal_meeting_gtk.c:786
+#: src/plugins/vcalendar/vcal_meeting_gtk.c:790
 msgid "You are busy at the time of your planned meeting"
 msgstr "Olet kiireinen sovitun tapaamisen aikaan"
 
-#: src/vcal_meeting_gtk.c:788
+#: src/plugins/vcalendar/vcal_meeting_gtk.c:792
 #, c-format
 msgid "%s is busy at the time of your planned meeting"
 msgstr "%s on kiireinen sovitun tapaamisen aikaan"
 
-#: src/vcal_meeting_gtk.c:790
+#: src/plugins/vcalendar/vcal_meeting_gtk.c:794
 #, c-format
 msgid "%d hour sooner"
 msgstr "%d tunti aiemmin"
 
-#: src/vcal_meeting_gtk.c:792
+#: src/plugins/vcalendar/vcal_meeting_gtk.c:796
 #, c-format
 msgid "%d hours sooner"
 msgstr "%d tuntia aiemmin"
 
-#: src/vcal_meeting_gtk.c:794
+#: src/plugins/vcalendar/vcal_meeting_gtk.c:798
 #, c-format
 msgid "%d hours and %d minutes sooner"
 msgstr "%d tuntia %d minuuttia aiemmin"
 
-#: src/vcal_meeting_gtk.c:796
+#: src/plugins/vcalendar/vcal_meeting_gtk.c:800
 #, c-format
 msgid "%d minutes sooner"
 msgstr "%d minuuttia aiemmin"
 
-#: src/vcal_meeting_gtk.c:801
+#: src/plugins/vcalendar/vcal_meeting_gtk.c:805
 #, c-format
 msgid "%d hour later"
 msgstr "%d tunti myöhemmin"
 
-#: src/vcal_meeting_gtk.c:803
+#: src/plugins/vcalendar/vcal_meeting_gtk.c:807
 #, c-format
 msgid "%d hours later"
 msgstr "%d tuntia myöhemmin"
 
-#: src/vcal_meeting_gtk.c:805
+#: src/plugins/vcalendar/vcal_meeting_gtk.c:809
 #, c-format
 msgid "%d hours and %d minutes later"
 msgstr "%d tuntia %d minuuttia myöhemmin"
 
-#: src/vcal_meeting_gtk.c:807
+#: src/plugins/vcalendar/vcal_meeting_gtk.c:811
 #, c-format
 msgid "%d minutes later"
 msgstr "%d minuuttia myöhemmin"
 
-#: src/vcal_meeting_gtk.c:813
+#: src/plugins/vcalendar/vcal_meeting_gtk.c:817
 #, c-format
 msgid ""
 "\n"
@@ -10024,7 +10397,7 @@ msgstr ""
 "\n"
 "Kaikki ovat vapaita %s tai %s."
 
-#: src/vcal_meeting_gtk.c:815
+#: src/plugins/vcalendar/vcal_meeting_gtk.c:819
 #, c-format
 msgid ""
 "\n"
@@ -10035,7 +10408,7 @@ msgstr ""
 "\n"
 "Kaikki ovat vapaita %s."
 
-#: src/vcal_meeting_gtk.c:817
+#: src/plugins/vcalendar/vcal_meeting_gtk.c:821
 msgid ""
 "\n"
 "\n"
@@ -10047,52 +10420,54 @@ msgstr ""
 "Ei ole mahdollista järjestää tätä tapaamista kaikkien kesken 6 tunnin sisään "
 "määräajasta."
 
-#: src/vcal_meeting_gtk.c:822
+#: src/plugins/vcalendar/vcal_meeting_gtk.c:826
 #, c-format
 msgid "would be available %s or %s"
 msgstr "olisi vapaa %s tai %s"
 
-#: src/vcal_meeting_gtk.c:824
+#: src/plugins/vcalendar/vcal_meeting_gtk.c:828
 #, c-format
 msgid "would be available %s"
 msgstr "olisi vapaa %s"
 
-#: src/vcal_meeting_gtk.c:826 src/vcal_meeting_gtk.c:890
-#: src/vcal_meeting_gtk.c:960
+#: src/plugins/vcalendar/vcal_meeting_gtk.c:830
+#: src/plugins/vcalendar/vcal_meeting_gtk.c:894
+#: src/plugins/vcalendar/vcal_meeting_gtk.c:964
 msgid "not available"
 msgstr "ei vapaa"
 
-#: src/vcal_meeting_gtk.c:829
+#: src/plugins/vcalendar/vcal_meeting_gtk.c:833
 #, c-format
 msgid ", but would be available %s or %s."
 msgstr ", mutta olisi vapaa %s tai %s."
 
-#: src/vcal_meeting_gtk.c:831
+#: src/plugins/vcalendar/vcal_meeting_gtk.c:835
 #, c-format
 msgid ", but would be available %s."
 msgstr ", mutta olisi vapaa %s"
 
-#: src/vcal_meeting_gtk.c:833
+#: src/plugins/vcalendar/vcal_meeting_gtk.c:837
 msgid ", and isn't available in the previous or next 6 hours."
 msgstr "eikä ole vapaa 6 tunnin sisään määrajasta."
 
-#: src/vcal_meeting_gtk.c:893
+#: src/plugins/vcalendar/vcal_meeting_gtk.c:897
 msgid "available"
 msgstr "vapaa"
 
-#: src/vcal_meeting_gtk.c:895 src/vcal_meeting_gtk.c:1146
+#: src/plugins/vcalendar/vcal_meeting_gtk.c:899
+#: src/plugins/vcalendar/vcal_meeting_gtk.c:1150
 msgid "Free/busy retrieval failed"
 msgstr "vapaustietohaku epäonnistui"
 
-#: src/vcal_meeting_gtk.c:977
+#: src/plugins/vcalendar/vcal_meeting_gtk.c:981
 msgid "Not everyone is available"
 msgstr "Kaikki eivät ole vapaana"
 
-#: src/vcal_meeting_gtk.c:978
+#: src/plugins/vcalendar/vcal_meeting_gtk.c:982
 msgid "Send anyway"
 msgstr "Lähetä joka tapauksessa"
 
-#: src/vcal_meeting_gtk.c:989
+#: src/plugins/vcalendar/vcal_meeting_gtk.c:993
 msgid "Not everyone is available. See tooltips for more info..."
 msgstr "Kaikki eivät ole vapaita. Katso työkaluvihjeistä lisätietoja"
 
@@ -10101,22 +10476,23 @@ msgstr "Kaikki eivät ole vapaita. Katso työkaluvihjeistä lisätietoja"
 msgid "Fetching planning for %s..."
 msgstr "Luetaan hakemistoa %s…"
 
-#: src/vcal_meeting_gtk.c:1155
+#: src/plugins/vcalendar/vcal_meeting_gtk.c:1159
 msgid "Available"
 msgstr "Vapaa"
 
-#: src/vcal_meeting_gtk.c:1168 src/vcal_meeting_gtk.c:1175
-#: src/vcal_meeting_gtk.c:1183
+#: src/plugins/vcalendar/vcal_meeting_gtk.c:1172
+#: src/plugins/vcalendar/vcal_meeting_gtk.c:1179
+#: src/plugins/vcalendar/vcal_meeting_gtk.c:1187
 msgid "Everyone is available."
 msgstr "Kaikki ovat vapaita."
 
-#: src/vcal_meeting_gtk.c:1184
+#: src/plugins/vcalendar/vcal_meeting_gtk.c:1188
 msgid ""
 "Everyone seems available, but some free/busy information failed to be "
 "retrieved."
 msgstr "Kaikki vaikuttavat vapailta, mutta joidenkin tietoja ei saatu haettua."
 
-#: src/vcal_meeting_gtk.c:1356
+#: src/plugins/vcalendar/vcal_meeting_gtk.c:1360
 msgid ""
 "Could not send the meeting invitation.\n"
 "Check the recipients."
@@ -10124,59 +10500,61 @@ msgstr ""
 "Ei voitu lähettää tapaamispyyntöä.\n"
 "Tarkista osanottajat."
 
-#: src/vcal_meeting_gtk.c:1472
+#: src/plugins/vcalendar/vcal_meeting_gtk.c:1476
 msgid "Save & Send"
 msgstr "Tallenna ja lähetä"
 
-#: src/vcal_meeting_gtk.c:1473
+#: src/plugins/vcalendar/vcal_meeting_gtk.c:1477
 msgid "Check availability"
 msgstr "Tarkista tavoitettavuus"
 
-#: src/vcal_meeting_gtk.c:1596
+#: src/plugins/vcalendar/vcal_meeting_gtk.c:1600
 msgid "<b>Starts at:</b> "
 msgstr "<b>Alkaa:</b>"
 
-#: src/vcal_meeting_gtk.c:1601 src/vcal_meeting_gtk.c:1623
+#: src/plugins/vcalendar/vcal_meeting_gtk.c:1605
+#: src/plugins/vcalendar/vcal_meeting_gtk.c:1627
 msgid "<b> on:</b>"
 msgstr "<b> paikassa:</b>"
 
-#: src/vcal_meeting_gtk.c:1618
+#: src/plugins/vcalendar/vcal_meeting_gtk.c:1622
 msgid "<b>Ends at:</b> "
 msgstr "<b>Loppuu:</b>"
 
-#: src/vcal_meeting_gtk.c:1657
+#: src/plugins/vcalendar/vcal_meeting_gtk.c:1661
 msgid "New meeting"
 msgstr "Uusi tapaaminen"
 
-#: src/vcal_meeting_gtk.c:1659
+#: src/plugins/vcalendar/vcal_meeting_gtk.c:1663
 #, c-format
 msgid "%s - Edit meeting"
 msgstr "%s — Muokkaa tapaamista…"
 
-#: src/vcal_meeting_gtk.c:1714 src/vcal_meeting_gtk.c:1738
+#: src/plugins/vcalendar/vcal_meeting_gtk.c:1718
+#: src/plugins/vcalendar/vcal_meeting_gtk.c:1742
 msgid "Time:"
 msgstr "Aika:"
 
-#: src/vcal_meeting_gtk.c:1874
+#: src/plugins/vcalendar/vcal_meeting_gtk.c:1878
 #, c-format
 msgid "%d hour"
 msgid_plural "%d hours"
 msgstr[0] "%d tunti"
 msgstr[1] "%d tuntia"
 
-#: src/vcal_meeting_gtk.c:1877
+#: src/plugins/vcalendar/vcal_meeting_gtk.c:1881
 #, c-format
 msgid "%d minute"
 msgid_plural "%d minutes"
 msgstr[0] "%d minuutti"
 msgstr[1] "%d minuuttia"
 
-#: src/vcal_meeting_gtk.c:1888
+#: src/plugins/vcalendar/vcal_meeting_gtk.c:1892
 #, c-format
 msgid "Upcoming event: %s"
 msgstr "Tuleva tapahtuma: %s"
 
-#: src/vcal_meeting_gtk.c:1889
+#: src/plugins/vcalendar/vcal_meeting_gtk.c:1893
 #, c-format
 msgid ""
 "You have a meeting or event soon.\n"
@@ -10193,112 +10571,112 @@ msgstr ""
 "\n"
 "%s"
 
-#: src/vcal_meeting_gtk.c:1906
+#: src/plugins/vcalendar/vcal_meeting_gtk.c:1910
 #, c-format
 msgid "Remind me in %d minute"
 msgid_plural "Remind me in %d minutes"
 msgstr[0] "Muistuta %d minuutissa"
 msgstr[1] "Muistuta %d minuutissa"
 
-#: src/vcal_meeting_gtk.c:2032
+#: src/plugins/vcalendar/vcal_meeting_gtk.c:2036
 msgid "Empty calendar"
 msgstr "Tyhjä kalenteri"
 
-#: src/vcal_meeting_gtk.c:2033
+#: src/plugins/vcalendar/vcal_meeting_gtk.c:2037
 msgid "There is nothing to export."
 msgstr "Ei mitään vietävää"
 
-#: src/vcal_meeting_gtk.c:2073
+#: src/plugins/vcalendar/vcal_meeting_gtk.c:2077
 msgid "Could not export the calendar."
 msgstr "Ei voitu viedä kalenteria."
 
-#: src/vcal_meeting_gtk.c:2090
+#: src/plugins/vcalendar/vcal_meeting_gtk.c:2094
 msgid "Export calendar to ICS"
 msgstr "Vie kalenteri ICS:ään"
 
-#: src/vcal_meeting_gtk.c:2112
+#: src/plugins/vcalendar/vcal_meeting_gtk.c:2116
 #, c-format
 msgid "Couldn't export calendar to '%s'\n"
 msgstr "Ei voitu viedä kalenteria kohteeseen %s\n"
 
-#: src/vcal_meeting_gtk.c:2228
+#: src/plugins/vcalendar/vcal_meeting_gtk.c:2232
 msgid "Could not export the freebusy info."
 msgstr "Ei voitu viedä vapaanaolotietoja."
 
-#: src/vcal_meeting_gtk.c:2259
+#: src/plugins/vcalendar/vcal_meeting_gtk.c:2263
 #, c-format
 msgid "Couldn't export free/busy to '%s'\n"
 msgstr "Ei voitu viedä vapaanaolotietoja kohteeseen %s\n"
 
-#: src/vcal_manager.c:105
+#: src/plugins/vcalendar/vcal_manager.c:109
 msgid "accepted"
 msgstr "hyväksynyt kutsun"
 
-#: src/vcal_manager.c:106
+#: src/plugins/vcalendar/vcal_manager.c:110
 msgid "tentatively accepted"
 msgstr "alustavasti hyväksynyt kutsun"
 
-#: src/vcal_manager.c:107
+#: src/plugins/vcalendar/vcal_manager.c:111
 msgid "declined"
 msgstr "kieltäytynyt kutsusta"
 
-#: src/vcal_manager.c:108
+#: src/plugins/vcalendar/vcal_manager.c:112
 msgid "did not answer"
 msgstr "vastaamatta kutsuun"
 
-#: src/vcal_manager.c:138
+#: src/plugins/vcalendar/vcal_manager.c:142
 msgid "individual"
 msgstr "yksittäinen"
 
-#: src/vcal_manager.c:139
+#: src/plugins/vcalendar/vcal_manager.c:143
 msgid "group"
 msgstr "ryhmä"
 
-#: src/vcal_manager.c:140
+#: src/plugins/vcalendar/vcal_manager.c:144
 msgid "resource"
 msgstr "resurssi"
 
-#: src/vcal_manager.c:141
+#: src/plugins/vcalendar/vcal_manager.c:145
 msgid "room"
 msgstr "huone"
 
-#: src/vcal_manager.c:552
+#: src/plugins/vcalendar/vcal_manager.c:556
 msgid "Past"
 msgstr "Menneisyys"
 
-#: src/vcal_manager.c:555
+#: src/plugins/vcalendar/vcal_manager.c:559
 msgid "Today"
 msgstr "Tämä päivä"
 
-#: src/vcal_manager.c:558
+#: src/plugins/vcalendar/vcal_manager.c:562
 msgid "Tomorrow"
 msgstr "Huominen"
 
-#: src/vcal_manager.c:561
+#: src/plugins/vcalendar/vcal_manager.c:565
 msgid "This week"
 msgstr "Tämä viikko"
 
-#: src/vcal_manager.c:564
+#: src/plugins/vcalendar/vcal_manager.c:568
 msgid "Later"
 msgstr "Myöhempi"
 
-#: src/vcal_manager.c:1230
+#: src/plugins/vcalendar/vcal_manager.c:1234
 msgid "Accepted: "
 msgstr "Hyväksynyt: "
 
-#: src/vcal_manager.c:1232
+#: src/plugins/vcalendar/vcal_manager.c:1236
 msgid "Declined: "
 msgstr "Kieltäytynyt: "
 
-#: src/vcal_manager.c:1234
+#: src/plugins/vcalendar/vcal_manager.c:1238
 msgid "Tentatively Accepted: "
 msgstr "Alustavasti hyväksynyt kutsun:"
 
-#: src/day-view.c:597 src/month-view.c:697
+#: src/plugins/vcalendar/day-view.c:601 src/plugins/vcalendar/month-view.c:701
 msgid "Start"
 msgstr "Alku"
 
-#: src/day-view.c:610 src/month-view.c:710
+#: src/plugins/vcalendar/day-view.c:614 src/plugins/vcalendar/month-view.c:714
 msgid "Show"
 msgstr "Näytä"
 
@@ -10308,7 +10686,7 @@ msgstr "Näytä"
 msgid "days"
 msgstr "päivän jälkeen"
 
-#: src/plugin.c:73
+#: src/plugins/vcalendar/plugin.c:69
 msgid ""
 "This plugin enables vCalendar message handling like that produced by "
 "Evolution or Outlook.\n"
@@ -10338,95 +10716,95 @@ msgstr ""
 "Myös webCal‐syötteisiin voi kirjautua ja hakea sieltä tapaamiset tai "
 "kalenterit, julkaista vapaanaolotiedot ja hakea muiden tietoja."
 
-#: src/plugin.c:106
+#: src/plugins/vcalendar/plugin.c:102
 msgid "Calendar"
 msgstr "Kalenteri"
 
-#: src/month-view.c:107
+#: src/plugins/vcalendar/month-view.c:111
 msgid "Monday"
 msgstr "Maanantai"
 
-#: src/month-view.c:108
+#: src/plugins/vcalendar/month-view.c:112
 msgid "Tuesday"
 msgstr "Tiistai"
 
-#: src/month-view.c:109
+#: src/plugins/vcalendar/month-view.c:113
 msgid "Wednesday"
 msgstr "Keskiviikko"
 
-#: src/month-view.c:110
+#: src/plugins/vcalendar/month-view.c:114
 msgid "Thursday"
 msgstr "Torstai"
 
-#: src/month-view.c:111
+#: src/plugins/vcalendar/month-view.c:115
 msgid "Friday"
 msgstr "Perjantai"
 
-#: src/month-view.c:112
+#: src/plugins/vcalendar/month-view.c:116
 msgid "Saturday"
 msgstr "Lauantai"
 
-#: src/month-view.c:113
+#: src/plugins/vcalendar/month-view.c:117
 msgid "Sunday"
 msgstr "Sunnuntai"
 
-#: src/month-view.c:116
+#: src/plugins/vcalendar/month-view.c:120
 msgid "January"
 msgstr "Tammikuu"
 
-#: src/month-view.c:117
+#: src/plugins/vcalendar/month-view.c:121
 msgid "February"
 msgstr "Helmikuu"
 
-#: src/month-view.c:118
+#: src/plugins/vcalendar/month-view.c:122
 msgid "March"
 msgstr "Maaliskuu"
 
-#: src/month-view.c:119
+#: src/plugins/vcalendar/month-view.c:123
 msgid "April"
 msgstr "Huhtikuu"
 
-#: src/month-view.c:120
+#: src/plugins/vcalendar/month-view.c:124
 msgid "May"
 msgstr "Toukokuu"
 
-#: src/month-view.c:121
+#: src/plugins/vcalendar/month-view.c:125
 msgid "June"
 msgstr "Kesäkuu"
 
-#: src/month-view.c:122
+#: src/plugins/vcalendar/month-view.c:126
 msgid "July"
 msgstr "Heinäkuu"
 
-#: src/month-view.c:123
+#: src/plugins/vcalendar/month-view.c:127
 msgid "August"
 msgstr "Elokuu"
 
-#: src/month-view.c:124
+#: src/plugins/vcalendar/month-view.c:128
 msgid "September"
 msgstr "Syyskuu"
 
-#: src/month-view.c:125
+#: src/plugins/vcalendar/month-view.c:129
 msgid "October"
 msgstr "Lokakuu"
 
-#: src/month-view.c:126
+#: src/plugins/vcalendar/month-view.c:130
 msgid "November"
 msgstr "Marraskuu"
 
-#: src/month-view.c:127
+#: src/plugins/vcalendar/month-view.c:131
 msgid "December"
 msgstr "Joulukuu"
 
-#: src/month-view.c:805
+#: src/plugins/vcalendar/month-view.c:809
 msgid "Week number"
 msgstr "Viikkonumero"
 
-#: src/month-view.c:903
+#: src/plugins/vcalendar/month-view.c:907
 msgid "Previous month"
 msgstr "Edellinen kuukausi"
 
-#: src/month-view.c:926
+#: src/plugins/vcalendar/month-view.c:930
 msgid "Next month"
 msgstr "Seuraava kuukausi"
 
@@ -15528,12 +15906,6 @@ msgstr ""
 "Claws Mail on valmis\n"
 "Tallenna‐painikkeella aloitetaan."
 
-#~ msgid "Claws Mail needs network access in order to update the Webcal feed."
-#~ msgstr "Verkkoyhteys tarvitaan Webcal‐syötteen päivittämiseen."
-
-#~ msgid "Claws Mail needs network access in order to update the subscription."
-#~ msgstr "Verkkoyhteys tarvitaan tilausten päivittämiseen."
-
 #~ msgid ""
 #~ "Command could not be started. Pipe creation failed.\n"
 #~ "%s"
@@ -15956,3 +16328,51 @@ msgstr ""
 
 #~ msgid "/Processing..."
 #~ msgstr "Käsittely…"
+
+#~ msgid ""
+#~ "RSSyl: Fetching comments is not supported for Atom feeds. Cannot fetch "
+#~ "comments of '%s'"
+#~ msgstr ""
+#~ "RSSyl: Kommenttien haku ei toimi Atom-syötteillä. Syötteen %s kommentteja "
+#~ "ei haeta."
+
+#~ msgid "/Refresh feed"
+#~ msgstr "Päivitä syöte"
+
+#~ msgid "/Refresh all feeds"
+#~ msgstr "Päivitä kaikki syötteet"
+
+#~ msgid "/Subscribe new feed..."
+#~ msgstr "Tilaa uusi syöte…"
+
+#~ msgid "/Unsubscribe feed..."
+#~ msgstr "Lakkaa tilaamasta syötettä…"
+
+#~ msgid "/Feed properties..."
+#~ msgstr "Syötteen ominaisuudet…"
+
+#~ msgid "/Create new folder..."
+#~ msgstr "Luo uusi kansio…"
+
+#~ msgid "/Delete folder..."
+#~ msgstr "Poista kansio…"
+
+#~ msgid "/Remove folder tree..."
+#~ msgstr "Poista syötepuu…"
+
+#~ msgid "/File/Add mailbox/RSSyl..."
+#~ msgstr "RSSyl…"
+
+#~ msgid "Timeout for downloading feeds in seconds"
+#~ msgstr "Aikakatkaisu syötteitä ladattaessa sekunneissa"
+
+#~ msgid ""
+#~ "Your version of Sylpheed-Claws is newer than the version RSSyl was built "
+#~ "with."
+#~ msgstr "Sylpheed-Claws on uudempi kuin mitä varten RSSyl on käännetty."
+
+#~ msgid "Your version of Sylpheed-Claws is too old for RSSyl."
+#~ msgstr "Sylpheed-Claws on liian vanha RSSylille."
+
+#~ msgid "Sylpheed-Claws needs network access in order to update the feeds."
+#~ msgstr "Syötteiden päivittämiseksi tarvitaan verkkoyhteyttä."

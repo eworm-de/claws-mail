@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: claws-mail\n"
 "Report-Msgid-Bugs-To: paul@claws-mail.org\n"
-"POT-Creation-Date: 2013-02-14 11:15+0100\n"
+"POT-Creation-Date: 2013-02-16 13:01+0100\n"
 "PO-Revision-Date: 2012-11-08 21:13+0100\n"
 "Last-Translator: Slavko <linux@slavino.sk>\n"
 "Language-Team: slovenčina <debian-l10n-slovak@lists.debian.org>\n"
@@ -206,6 +206,7 @@ msgstr ""
 "%s"
 
 #: src/action.c:980 src/plugins/bogofilter/bogofilter.c:875
+#: src/plugins/rssyl/feed.c:1734 src/plugins/rssyl/feed.c:1738
 #: src/plugins/vcalendar/vcal_folder.c:1800
 #: src/plugins/vcalendar/vcal_folder.c:1804
 #: src/plugins/vcalendar/vcal_folder.c:1815
@@ -707,6 +708,7 @@ msgstr ""
 "budú presunuté do nadradenej zložky."
 
 #: src/addressbook.c:2932 src/imap_gtk.c:363 src/mh_gtk.c:202
+#: src/plugins/rssyl/rssyl_cb_menu.c:237
 #: src/plugins/vcalendar/vcal_folder.c:1953
 msgid "Delete folder"
 msgstr "Odstrániť zložku"
@@ -1529,7 +1531,7 @@ msgstr "%I:%M:%S %p"
 msgid "_Add..."
 msgstr "_Pridať…"
 
-#: src/compose.c:566 src/mh_gtk.c:361
+#: src/compose.c:566 src/mh_gtk.c:361 src/plugins/rssyl/rssyl_cb_menu.c:140
 msgid "_Remove"
 msgstr "_Odstrániť"
 
@@ -2712,10 +2714,12 @@ msgid "Input the new name of folder:"
 msgstr "Zadajte nový názov zložky:"
 
 #: src/editgroup.c:556 src/foldersel.c:552 src/imap_gtk.c:195 src/mh_gtk.c:145
+#: src/plugins/rssyl/rssyl_cb_menu.c:89
 msgid "New folder"
 msgstr "Nová zložka"
 
 #: src/editgroup.c:557 src/foldersel.c:553 src/mh_gtk.c:146
+#: src/plugins/rssyl/rssyl_cb_menu.c:90
 msgid "Input the name of new folder:"
 msgstr "Zadajte názov novej zložky:"
 
@@ -3470,24 +3474,28 @@ msgid "Select folder"
 msgstr "Zvoľte zložku"
 
 #: src/foldersel.c:554 src/imap_gtk.c:199 src/mh_gtk.c:147
+#: src/plugins/rssyl/rssyl_cb_menu.c:91
 msgid "NewFolder"
 msgstr "Nová zložka"
 
 #: src/foldersel.c:562 src/imap_gtk.c:210 src/imap_gtk.c:216
 #: src/imap_gtk.c:272 src/mh_gtk.c:155 src/mh_gtk.c:259 src/news_gtk.c:314
+#: src/plugins/rssyl/rssyl_cb_menu.c:97 src/plugins/rssyl/rssyl_cb_menu.c:341
 #: src/plugins/vcalendar/vcal_folder.c:2025
 #, c-format
 msgid "'%c' can't be included in folder name."
 msgstr "Názov zložky nemôže obsahovať „%c”."
 
 #: src/foldersel.c:572 src/imap_gtk.c:226 src/imap_gtk.c:284 src/mh_gtk.c:165
-#: src/mh_gtk.c:266 src/news_gtk.c:321
+#: src/mh_gtk.c:266 src/news_gtk.c:321 src/plugins/rssyl/rssyl_cb_menu.c:107
+#: src/plugins/rssyl/rssyl_cb_menu.c:348
 #: src/plugins/vcalendar/vcal_folder.c:2032
 #, c-format
 msgid "The folder '%s' already exists."
 msgstr "Zložka „%s” už existuje."
 
 #: src/foldersel.c:579 src/imap_gtk.c:232 src/mh_gtk.c:171
+#: src/plugins/rssyl/rssyl_cb_menu.c:113
 #, c-format
 msgid "Can't create the folder '%s'."
 msgstr "Nemožno vytvoriť zložku „%s”."
@@ -3636,7 +3644,7 @@ msgstr "_Odoslať"
 msgid "Some errors occurred while sending queued messages."
 msgstr "Pri odosielaní správ vo fronte nastali chyby."
 
-#: src/folderview.c:2408 src/main.c:2844 src/toolbar.c:2732
+#: src/folderview.c:2408 src/main.c:2853 src/toolbar.c:2732
 #, c-format
 msgid ""
 "Some errors occurred while sending queued messages:\n"
@@ -3971,44 +3979,44 @@ msgstr ""
 ">. \n"
 "\n"
 
-#: src/gtk/about.c:699 src/main.c:2671
+#: src/gtk/about.c:699 src/main.c:2680
 msgid "Session statistics\n"
 msgstr "Štatistiky relácie\n"
 
-#: src/gtk/about.c:709 src/gtk/about.c:712 src/main.c:2681 src/main.c:2684
+#: src/gtk/about.c:709 src/gtk/about.c:712 src/main.c:2690 src/main.c:2693
 #, c-format
 msgid "Started: %s\n"
 msgstr "Začatá: %s\n"
 
-#: src/gtk/about.c:719 src/main.c:2690
+#: src/gtk/about.c:719 src/main.c:2699
 msgid "Incoming traffic\n"
 msgstr "Došlá komunikácia\n"
 
-#: src/gtk/about.c:722 src/main.c:2693
+#: src/gtk/about.c:722 src/main.c:2702
 #, c-format
 msgid "Received messages: %d\n"
 msgstr "Prijaté správy: %d\n"
 
-#: src/gtk/about.c:729 src/main.c:2699
+#: src/gtk/about.c:729 src/main.c:2708
 msgid "Outgoing traffic\n"
 msgstr "Odoslaná komunikácia\n"
 
-#: src/gtk/about.c:732 src/main.c:2702
+#: src/gtk/about.c:732 src/main.c:2711
 #, c-format
 msgid "New/redirected messages: %d\n"
 msgstr "Nové/presmerované správy: %d\n"
 
-#: src/gtk/about.c:737 src/main.c:2706
+#: src/gtk/about.c:737 src/main.c:2715
 #, c-format
 msgid "Replied messages: %d\n"
 msgstr "Odpovede na správy: %d\n"
 
-#: src/gtk/about.c:742 src/main.c:2710
+#: src/gtk/about.c:742 src/main.c:2719
 #, c-format
 msgid "Forwarded messages: %d\n"
 msgstr "Presmerované správy: %d\n"
 
-#: src/gtk/about.c:747 src/main.c:2714
+#: src/gtk/about.c:747 src/main.c:2723
 #, c-format
 msgid "Total outgoing messages: %d\n"
 msgstr "Odoslané správy celkom: %d\n"
@@ -4797,6 +4805,7 @@ msgstr ""
 #: src/gtk/pluginwindow.c:304 src/plugins/bogofilter/bogofilter_gtk.c:457
 #: src/plugins/dillo_viewer/dillo_prefs.c:129
 #: src/plugins/fancy/fancy_prefs.c:110 src/plugins/pgpcore/prefs_gpg.c:557
+#: src/plugins/rssyl/rssyl_prefs.c:63
 #: src/plugins/spamassassin/spamassassin_gtk.c:648
 #: src/plugins/trayicon/trayicon_prefs.c:69
 #: src/plugins/vcalendar/vcal_prefs.c:645 src/prefs_toolbar.c:939
@@ -5713,7 +5722,7 @@ msgstr "_Presunúť zložku…"
 msgid "Cop_y folder..."
 msgstr "_Kopírovať zložku…"
 
-#: src/imap_gtk.c:69 src/mh_gtk.c:59
+#: src/imap_gtk.c:69 src/mh_gtk.c:59 src/plugins/rssyl/rssyl_gtk.c:61
 msgid "_Delete folder..."
 msgstr "_Odstrániť zložku…"
 
@@ -5768,12 +5777,13 @@ msgid "Inherit properties from parent folder"
 msgstr "Zdediť vlastnosti z rodičovskej zložky"
 
 #: src/imap_gtk.c:261 src/mh_gtk.c:249 src/news_gtk.c:305
+#: src/plugins/rssyl/rssyl_cb_menu.c:333
 #: src/plugins/vcalendar/vcal_folder.c:2017
 #, c-format
 msgid "Input new name for '%s':"
 msgstr "Zadajte nový názov pre „%s”:"
 
-#: src/imap_gtk.c:263 src/mh_gtk.c:251
+#: src/imap_gtk.c:263 src/mh_gtk.c:251 src/plugins/rssyl/rssyl_cb_menu.c:334
 #: src/plugins/vcalendar/vcal_folder.c:2018
 msgid "Rename folder"
 msgstr "Premenovať zložku"
@@ -5784,6 +5794,7 @@ msgid "`%c' can't be included in folder name."
 msgstr "Názov zložky nemôže obsahovať „%c”."
 
 #: src/imap_gtk.c:292 src/mh_gtk.c:274 src/news_gtk.c:327
+#: src/plugins/rssyl/rssyl_cb_menu.c:354
 #: src/plugins/vcalendar/vcal_folder.c:2038
 msgid ""
 "The folder could not be renamed.\n"
@@ -5792,7 +5803,7 @@ msgstr ""
 "Nemožno premenovať zložku.\n"
 "Nový názov je neprípustný."
 
-#: src/imap_gtk.c:360 src/mh_gtk.c:199
+#: src/imap_gtk.c:360 src/mh_gtk.c:199 src/plugins/rssyl/rssyl_cb_menu.c:234
 #, c-format
 msgid ""
 "All folders and messages under '%s' will be permanently deleted. Recovery "
@@ -5806,6 +5817,7 @@ msgstr ""
 "Naozaj pokračovať?"
 
 #: src/imap_gtk.c:381 src/mh_gtk.c:220 src/news_gtk.c:280
+#: src/plugins/rssyl/rssyl_cb_menu.c:256
 #: src/plugins/vcalendar/vcal_folder.c:1974
 #, c-format
 msgid "Can't remove the folder '%s'."
@@ -6394,7 +6406,7 @@ msgstr "Sylpheed-Claws 1.9.15 (alebo starší)"
 msgid "Sylpheed-Claws 1.0.5 (or older)"
 msgstr "Sylpheed-Claws 1.0.5 (alebo starší)"
 
-#: src/main.c:1563
+#: src/main.c:1572
 #, c-format
 msgid ""
 "The following plugin failed to load. Check the Plugins configuration for "
@@ -6417,7 +6429,7 @@ msgstr[2] ""
 "nastavení zásuvných modulov.\n"
 "%s"
 
-#: src/main.c:1591
+#: src/main.c:1600
 msgid ""
 "Claws Mail has detected a configured mailbox, but it is incomplete. It is "
 "possibly due to a failing IMAP account. Use \"Rebuild folder tree\" on the "
@@ -6427,7 +6439,7 @@ msgstr ""
 "pravdepodobne spôsobené zlyhávajúcim účtom IMAP. Na pokus o jej opravu "
 "použite voľbu „Obnoviť strom zložiek” z kontextového menu koreňovej zložky."
 
-#: src/main.c:1597
+#: src/main.c:1606
 msgid ""
 "Claws Mail has detected a configured mailbox, but could not load it. It is "
 "probably provided by an out-of-date external plugin. Please reinstall the "
@@ -6437,42 +6449,42 @@ msgstr ""
 "Pravdepodobne je vytvorená zastaralým zásuvným modulom. Prosím, znova "
 "nainštalujte zásuvný modul a skúste znova."
 
-#: src/main.c:1626
+#: src/main.c:1635
 #, c-format
 msgid "Claws Mail can not start without its data volume (%s)."
 msgstr ""
 "Claws Mail nemôže pracovať bez diskovej partície so svojimi dátami (%s)."
 
-#: src/main.c:1873
+#: src/main.c:1882
 msgid "Missing filename\n"
 msgstr "Chýba meno súboru\n"
 
-#: src/main.c:1880
+#: src/main.c:1889
 msgid "Cannot open filename for reading\n"
 msgstr "Súbor nemožno otvoriť na čítanie\n"
 
-#: src/main.c:1891
+#: src/main.c:1900
 msgid "Malformed header\n"
 msgstr "Nesprávny formát hlavičky\n"
 
-#: src/main.c:1898
+#: src/main.c:1907
 msgid "Duplicated 'To:' header\n"
 msgstr "Duplikovaná hlavička „To:”\n"
 
-#: src/main.c:1913
+#: src/main.c:1922
 msgid "Missing required 'To:' header\n"
 msgstr "Chýba vyžadovaná hlavička „To:”\n"
 
-#: src/main.c:2058
+#: src/main.c:2067
 #, c-format
 msgid "Usage: %s [OPTION]...\n"
 msgstr "Použitie: %s [VOĽBY]…\n"
 
-#: src/main.c:2060
+#: src/main.c:2069
 msgid "  --compose [address]    open composition window"
 msgstr "  --compose [adresa]     otvorí okno na písanie novej správy"
 
-#: src/main.c:2061
+#: src/main.c:2070
 msgid ""
 "  --compose-from-file file\n"
 "                         open composition window with data from given file;\n"
@@ -6491,11 +6503,11 @@ msgstr ""
 "po prázdny\n"
 "                         riadok, potom telo správy – až do konca súboru."
 
-#: src/main.c:2066
+#: src/main.c:2075
 msgid "  --subscribe [uri]      subscribe to the given URI if possible"
 msgstr "  --subscribe [uri]      prihlási k odberu zadanej URI, ak je to možné"
 
-#: src/main.c:2067
+#: src/main.c:2076
 msgid ""
 "  --attach file1 [file2]...\n"
 "                         open composition window with specified files\n"
@@ -6505,25 +6517,25 @@ msgstr ""
 "                         otvorí okno na písanie novej správy s pripojenými\n"
 "                         zadanými súbormi"
 
-#: src/main.c:2070
+#: src/main.c:2079
 msgid "  --receive              receive new messages"
 msgstr "  --receive              prijme nové správy"
 
-#: src/main.c:2071
+#: src/main.c:2080
 msgid "  --receive-all          receive new messages of all accounts"
 msgstr "  --receive-all          prijme nové správy zo všetkých účtov"
 
-#: src/main.c:2072
+#: src/main.c:2081
 #, fuzzy
 msgid "  --cancel-receiving     cancel receiving of messages"
 msgstr "  --receive              prijme nové správy"
 
-#: src/main.c:2073
+#: src/main.c:2082
 #, fuzzy
 msgid "  --cancel-sending       cancel sending of messages"
 msgstr "  --receive              prijme nové správy"
 
-#: src/main.c:2074
+#: src/main.c:2083
 msgid ""
 "  --search folder type request [recursive]\n"
 "                         searches mail\n"
@@ -6542,15 +6554,15 @@ msgstr ""
 "                         rekurzívne: nepravda, ak arg. začína 0, n, N, f "
 "alebo F"
 
-#: src/main.c:2081
+#: src/main.c:2090
 msgid "  --send                 send all queued messages"
 msgstr "  --send                 pošle všetky správy vo výstupnej fronte"
 
-#: src/main.c:2082
+#: src/main.c:2091
 msgid "  --status [folder]...   show the total number of messages"
 msgstr "  --status [zložka]…   zobrazí celkový počet správ"
 
-#: src/main.c:2083
+#: src/main.c:2092
 msgid ""
 "  --status-full [folder]...\n"
 "                         show the status of each folder"
@@ -6558,15 +6570,15 @@ msgstr ""
 "  --status-full [zložka]…\n"
 "                         zobrazí stav každej zložky"
 
-#: src/main.c:2085
+#: src/main.c:2094
 msgid "  --statistics           show session statistics"
 msgstr "  --statistics           zobrazí štatistiky relácie"
 
-#: src/main.c:2086
+#: src/main.c:2095
 msgid "  --reset-statistics     reset session statistics"
 msgstr "  --reset-statistics     vymaže štatistiky relácie"
 
-#: src/main.c:2087
+#: src/main.c:2096
 msgid ""
 "  --select folder[/msg]  jumps to the specified folder/message\n"
 "                         folder is a folder id like 'folder/sub_folder'"
@@ -6576,31 +6588,31 @@ msgstr ""
 "                         zložka je identifikátor zložky, napr. „zložka/"
 "podzložka”"
 
-#: src/main.c:2089
+#: src/main.c:2098
 msgid "  --online               switch to online mode"
 msgstr "  --online               prepne do online režimu"
 
-#: src/main.c:2090
+#: src/main.c:2099
 msgid "  --offline              switch to offline mode"
 msgstr "  --offline              prepne do odpojeného režimu"
 
-#: src/main.c:2091
+#: src/main.c:2100
 msgid "  --exit --quit -q       exit Claws Mail"
 msgstr "  --exit --quit -q       ukončí Claws Mail"
 
-#: src/main.c:2092
+#: src/main.c:2101
 msgid "  --debug                debug mode"
 msgstr "  --debug                ladiaci mód"
 
-#: src/main.c:2093
+#: src/main.c:2102
 msgid "  --help -h              display this help and exit"
 msgstr "  --help -h              zobrazí tohoto pomocníka a ukončí program"
 
-#: src/main.c:2094
+#: src/main.c:2103
 msgid "  --version -v           output version information and exit"
 msgstr "  --version -v           zobrazí informácie o verzii a ukončí program"
 
-#: src/main.c:2095
+#: src/main.c:2104
 msgid ""
 "  --version-full -V      output version and built-in features information "
 "and exit"
@@ -6608,11 +6620,11 @@ msgstr ""
 "  --version-full -V      zobrazí informácie o verzii, zabudovaných "
 "vlastnostiach a ukončí program"
 
-#: src/main.c:2096
+#: src/main.c:2105
 msgid "  --config-dir           output configuration directory"
 msgstr "  --config-dir           výstupný konfiguračný adresár"
 
-#: src/main.c:2097
+#: src/main.c:2106
 msgid ""
 "  --alternate-config-dir [dir]\n"
 "                         use specified configuration directory"
@@ -6620,32 +6632,32 @@ msgstr ""
 "  --alternate-config-dir [adresár]\n"
 "                         použiť iný konfiguračný adresár"
 
-#: src/main.c:2147
+#: src/main.c:2156
 msgid "Unknown option\n"
 msgstr "Neznáma voľba\n"
 
-#: src/main.c:2165
+#: src/main.c:2174
 #, c-format
 msgid "Processing (%s)..."
 msgstr "Spracovanie (%s)…"
 
-#: src/main.c:2168
+#: src/main.c:2177
 msgid "top level folder"
 msgstr "zložka najvyššej úrovne"
 
-#: src/main.c:2251
+#: src/main.c:2260
 msgid "Queued messages"
 msgstr "Správy vo fronte"
 
-#: src/main.c:2252
+#: src/main.c:2261
 msgid "Some unsent messages are queued. Exit now?"
 msgstr "Vo fronte sú neodoslané správy. Ukončiť program?"
 
-#: src/main.c:2981
+#: src/main.c:2990
 msgid "NetworkManager: network is online.\n"
 msgstr "NetworkManager: sieť je pripojená.\n"
 
-#: src/main.c:2987
+#: src/main.c:2996
 msgid "NetworkManager: network is offline.\n"
 msgstr "NetworkManager: sieť nie je pripojená.\n"
 
@@ -7451,7 +7463,7 @@ msgstr ""
 "Ak zadáte názov existujúcej schránky, bude\n"
 "táto automaticky prehľadaná."
 
-#: src/mainwindow.c:3108
+#: src/mainwindow.c:3108 src/plugins/rssyl/rssyl_gtk.c:158
 #, c-format
 msgid "The mailbox '%s' already exists."
 msgstr "Schránka „%s” už existuje."
@@ -7829,7 +7841,7 @@ msgstr ""
 "Správa bola odoslaná na viacero vašich účtov.\n"
 "Prosím vyberte účet, ktorý chcete použiť na odoslanie potvrdenia o príjme:"
 
-#: src/messageview.c:2121
+#: src/messageview.c:2121 src/plugins/rssyl/rssyl_gtk.c:480
 msgid "_Cancel"
 msgstr "_Zrušiť"
 
@@ -8129,7 +8141,7 @@ msgstr "Naozaj sa chcete odhlásiť z diskusnej skupiny „%s”?"
 msgid "Unsubscribe newsgroup"
 msgstr "Odhlásiť sa z diskusnej skupiny"
 
-#: src/news_gtk.c:267
+#: src/news_gtk.c:267 src/plugins/rssyl/rssyl_gtk.c:678
 msgid "_Unsubscribe"
 msgstr "_Odhlásiť sa"
 
@@ -9304,6 +9316,370 @@ msgstr ""
 "\n"
 "Na GPGME sa vzťahuje copyright 2001 by Werner Koch <dd9jn@gnu.org>"
 
+#: src/plugins/rssyl/rssyl_prefs.c:103
+msgid "Default refresh interval in minutes"
+msgstr "Predvolený interval obnovenia v minútach"
+
+#: src/plugins/rssyl/rssyl_prefs.c:114
+msgid "Set to 0 to disable automatic refreshing"
+msgstr "Nastavte na 0 na vypnutie automatického obnovenia"
+
+#: src/plugins/rssyl/rssyl_prefs.c:116
+msgid "Default number of expired items to keep"
+msgstr "Predvolený počet uchovávaných starých položiek"
+
+#: src/plugins/rssyl/rssyl_prefs.c:127
+msgid "Set to -1 to keep expired items"
+msgstr "Nastavte na -1, na uchovávanie starých položiek"
+
+#: src/plugins/rssyl/rssyl_prefs.c:130
+msgid "Refresh all feeds on application start"
+msgstr "Obnoviť všetky kanály pri spustení aplikácie"
+
+#: src/plugins/rssyl/rssyl_prefs.c:136
+msgid "Path to cookies file"
+msgstr "Cesta k súboru cookies"
+
+#: src/plugins/rssyl/rssyl_prefs.c:146
+msgid "Path to Netscape-style cookies.txt file containing your cookies"
+msgstr "Cesta k súboru cookies.txt obsahujúcemu vaše cookies v štýle Netscape"
+
+#: src/plugins/rssyl/rssyl.h:8
+msgid "RSSyl"
+msgstr "RSSyl"
+
+#: src/plugins/rssyl/rssyl.h:14
+msgid "My Feeds"
+msgstr "Moje kanály"
+
+#: src/plugins/rssyl/rssyl_gtk.c:53
+msgid "_Refresh feed"
+msgstr "_Obnoviť kanál"
+
+#: src/plugins/rssyl/rssyl_gtk.c:54
+msgid "Refresh _all feeds"
+msgstr "Obnoviť _všetky kanály"
+
+#: src/plugins/rssyl/rssyl_gtk.c:55
+msgid "Subscribe _new feed..."
+msgstr "Prihlásiť _nový kanál..."
+
+#: src/plugins/rssyl/rssyl_gtk.c:56
+msgid "_Unsubscribe feed..."
+msgstr "O_dhlásiť kanál..."
+
+#: src/plugins/rssyl/rssyl_gtk.c:57
+msgid "Feed pr_operties..."
+msgstr "V_lastnosti kanála..."
+
+#: src/plugins/rssyl/rssyl_gtk.c:58
+msgid "Import feed list..."
+msgstr "Importovať zoznam kanálov..."
+
+#: src/plugins/rssyl/rssyl_gtk.c:59
+msgid "Rena_me..."
+msgstr "Pre_menovať..."
+
+#: src/plugins/rssyl/rssyl_gtk.c:60
+msgid "_Create new folder..."
+msgstr "V_ytvoriť novú zložku..."
+
+#: src/plugins/rssyl/rssyl_gtk.c:62
+msgid "Remove folder _tree..."
+msgstr "Odstrániť s_trom zložiek..."
+
+#: src/plugins/rssyl/rssyl_gtk.c:152
+msgid "Add RSS folder tree"
+msgstr "Pridať strom RSS zložiek"
+
+#: src/plugins/rssyl/rssyl_gtk.c:153
+msgid "Enter name for a new RSS folder tree."
+msgstr "Zadajte meno nového stromu RSS zložiek."
+
+#: src/plugins/rssyl/rssyl_gtk.c:169
+msgid ""
+"Creation of folder tree failed.\n"
+"Maybe some files already exist, or you don't have the permission to write "
+"there?"
+msgstr ""
+"Vytvorenie stromu zložiek zlyhalo.\n"
+"Niektoré súbory už možno existujú, alebo nemáte práva na zápis do nich?"
+
+#: src/plugins/rssyl/rssyl_gtk.c:184
+msgid "RSSyl..."
+msgstr "RSSyl..."
+
+#: src/plugins/rssyl/rssyl_gtk.c:256
+msgid "Use default refresh interval"
+msgstr "Použiť predvolený interval aktualizácie"
+
+#: src/plugins/rssyl/rssyl_gtk.c:268
+msgid "Keep default number of expired entries"
+msgstr "Uchovávať predvolený počet starých položiek"
+
+#: src/plugins/rssyl/rssyl_gtk.c:274
+msgid "Fetch comments if possible"
+msgstr "Sťahovať komentáre, ak je to možné"
+
+#: src/plugins/rssyl/rssyl_gtk.c:312
+msgid "<b>Source URL:</b>"
+msgstr "<b>Zdrojová URL:</b>"
+
+#: src/plugins/rssyl/rssyl_gtk.c:340
+msgid ""
+"<b>Fetch comments on posts aged less than:</b>\n"
+"<small>(In days; set to -1 to fetch all comments)</small>"
+msgstr ""
+"<b>Sťahovať komentáre príspevkov novších ako:</b>\n"
+"<small>(V dňoch; nastavte -1 na prijímanie všetkých)</small>"
+
+#: src/plugins/rssyl/rssyl_gtk.c:374
+msgid ""
+"<b>Refresh interval in minutes:</b>\n"
+"<small>(Set to 0 to disable automatic refreshing for this feed)</small>"
+msgstr ""
+"<b>Interval obnovovania v minútach:</b>\n"
+"<small>(Nastavte na 0 na vypnutie automatického obnovovania tohoto kanála)</"
+"small>"
+
+#: src/plugins/rssyl/rssyl_gtk.c:407
+msgid ""
+"<b>Number of expired entries to keep:</b>\n"
+"<small>(Set to -1 if you want to keep expired entries)</small>"
+msgstr ""
+"<b>Počet starých položiek, ktoré sa majú uchovávať:</b>\n"
+"<small>(Nastavte na -1, ak chcete uchovávať všetky staré položky)</small>"
+
+#: src/plugins/rssyl/rssyl_gtk.c:433
+msgid "<b>If an item changes, do not mark it as unread:</b>"
+msgstr "<b>Pri zmene položky neoznačovať položku ako neprečítanú:</b>"
+
+#: src/plugins/rssyl/rssyl_gtk.c:443
+msgid "Always mark as unread"
+msgstr "Vždy označiť ako neprečítanú"
+
+#: src/plugins/rssyl/rssyl_gtk.c:445
+msgid "If only its text changed"
+msgstr "Len ak sa zmení jej text"
+
+#: src/plugins/rssyl/rssyl_gtk.c:447
+msgid "Never mark as unread"
+msgstr "Nikdy neoznačovať ako neprečítanú"
+
+#: src/plugins/rssyl/rssyl_gtk.c:501
+msgid "_OK"
+msgstr "_OK"
+
+#: src/plugins/rssyl/rssyl_gtk.c:509
+msgid "Set feed properties"
+msgstr "Nastaviť vlastnosti kanála"
+
+#: src/plugins/rssyl/rssyl_gtk.c:634 src/plugins/rssyl/rssyl_gtk.c:658
+msgid "Unsubscribe feed"
+msgstr "Odhlásiť kanál"
+
+#: src/plugins/rssyl/rssyl_gtk.c:659
+msgid "Do you really want to remove feed"
+msgstr "Naozaj chcete odstrániť kanál"
+
+#: src/plugins/rssyl/rssyl_gtk.c:665
+msgid "Remove cached entries"
+msgstr "Odstrániť položky z vyrovnávacej pamäte"
+
+#: src/plugins/rssyl/plugin.c:63
+msgid ""
+"This plugin allows you to create a mailbox tree where you can add newsfeeds "
+"in RSS 1.0, RSS 2.0 or Atom format.\n"
+"\n"
+"Each newsfeed will create a folder with appropriate entries, fetched from "
+"the web. You can read them, and delete or keep old entries."
+msgstr ""
+"Tento zásuvný modul vám umožňuje vytvoriť strom správ, do ktorého je možno "
+"pridávať kanály noviniek vo formáte RSS 1.0, RSS 2.0 alebo Atom.\n"
+"\n"
+"Pre každý kanál noviniek bude vytvorená zložka s príslušnými položkami, "
+"prijatými z webu. Môžete ich čítať a mazať, alebo aj ponechávať staré "
+"položky."
+
+#: src/plugins/rssyl/plugin.c:87
+msgid "RSS feed"
+msgstr "RSS kanál"
+
+#: src/plugins/rssyl/feed.h:20
+#, c-format
+msgid "Time out connecting to URL %s\n"
+msgstr "Vypršal časový limit pripojenia k URL %s\n"
+
+#: src/plugins/rssyl/feed.h:21
+#, c-format
+msgid "Couldn't fetch URL %s\n"
+msgstr "Nemožno dosiahnuť URL %s\n"
+
+#: src/plugins/rssyl/feed.h:22
+#, c-format
+msgid "Error parsing feed from URL %s\n"
+msgstr "Chyba spracovanie kanála z URL %s\n"
+
+#: src/plugins/rssyl/feed.h:23
+#, c-format
+msgid "Unsupported feed type at URL %s\n"
+msgstr "Nepodporovaný typ kanála na URL %s\n"
+
+#: src/plugins/rssyl/feed.h:25
+#, c-format
+msgid "RSSyl: Updating feed %s\n"
+msgstr "RSSyl: Aktualizácia kanála %s\n"
+
+#: src/plugins/rssyl/feed.h:26
+#, c-format
+msgid "RSSyl: Feed update finished: %s\n"
+msgstr "RSSyl: Aktualizácia kanála dokončená: %s\n"
+
+#: src/plugins/rssyl/feed.h:27
+msgid "RSSyl: Feed update aborted, application is exiting.\n"
+msgstr "RSSyl: Aktualizácia kanála zrušená, aplikácia končí.\n"
+
+#: src/plugins/rssyl/rssyl_cb_menu.c:62
+msgid "Subscribe feed"
+msgstr "Odoberať kanál"
+
+#: src/plugins/rssyl/rssyl_cb_menu.c:63
+msgid "Input the URL of the news feed you wish to subscribe:"
+msgstr "Zadajte URL kanála noviniek, ktoré chcete odoberať:"
+
+#: src/plugins/rssyl/rssyl_cb_menu.c:138
+#, c-format
+msgid "Really remove the folder tree '%s' ?\n"
+msgstr "Naozaj odstrániť strom zložiek „%s” ?\n"
+
+#: src/plugins/rssyl/rssyl_cb_menu.c:139
+msgid "Remove folder tree"
+msgstr "Odstrániť strom zložiek"
+
+#: src/plugins/rssyl/rssyl_cb_menu.c:204
+#, c-format
+msgid "Can't remove feed '%s'."
+msgstr "Nemožno odstrániť kanál „%s”."
+
+#: src/plugins/rssyl/rssyl_cb_menu.c:283 src/plugins/rssyl/feed.c:1856
+msgid "Claws Mail needs network access in order to update the feed."
+msgid_plural "Claws Mail needs network access in order to update the feeds."
+msgstr[0] "Claws Mail potrebuje na aktualizáciu kanála sieťový prístup."
+msgstr[1] "Claws Mail potrebuje na aktualizáciu kanálov sieťový prístup."
+msgstr[2] "Claws Mail potrebuje na aktualizáciu kanálov sieťový prístup."
+
+#: src/plugins/rssyl/rssyl_cb_menu.c:376
+msgid "Select a .opml file"
+msgstr "Vybrať súbor .opml"
+
+#: src/plugins/rssyl/rssyl.c:133 src/plugins/rssyl/rssyl.c:145
+msgid "Refresh all feeds"
+msgstr "Obnoviť všetky kanály"
+
+#: src/plugins/rssyl/feed.c:125
+msgid "Cannot open temporary file"
+msgstr "Nemožno otvoriť dočasný súbor"
+
+#: src/plugins/rssyl/feed.c:136
+msgid "Cannot init libCURL"
+msgstr "Nemožno inicializovať libCURL"
+
+#: src/plugins/rssyl/feed.c:231 src/plugins/vcalendar/vcal_folder.c:1593
+msgid "401 (Authorisation required)"
+msgstr "401 (Vyžadovaná autorizácia)"
+
+#: src/plugins/rssyl/feed.c:234 src/plugins/vcalendar/vcal_folder.c:1596
+msgid "403 (Unauthorised)"
+msgstr "403 (Neautorizované)"
+
+#: src/plugins/rssyl/feed.c:237 src/plugins/vcalendar/vcal_folder.c:1599
+msgid "404 (Not found)"
+msgstr "404 (Nenájdené)"
+
+#: src/plugins/rssyl/feed.c:240 src/plugins/vcalendar/vcal_folder.c:1602
+#, c-format
+msgid "Error %ld"
+msgstr "Chyba %ld"
+
+#: src/plugins/rssyl/feed.c:324
+#, c-format
+msgid "Fetching '%s'..."
+msgstr "Prijímanie „%s”..."
+
+#: src/plugins/rssyl/feed.c:383
+msgid "Malformed feed"
+msgstr "Chybný formát kanála"
+
+#: src/plugins/rssyl/feed.c:1199
+#, c-format
+msgid "Refreshing feed '%s'..."
+msgstr "Obnovovanie kanála „%s”..."
+
+#: src/plugins/rssyl/feed.c:1214
+#, c-format
+msgid ""
+"RSSyl: Fetching comments is not supported for RDF feeds. Cannot fetch "
+"comments of '%s'"
+msgstr ""
+"RSSyl: Získavanie komentárov nie je podporované pre kanály RDF. Nemožno "
+"získať komentáre „%s”"
+
+#: src/plugins/rssyl/feed.c:1223
+msgid "This feed format is not supported yet."
+msgstr "Tento formát kanála zatiaľ nie je podporovaný."
+
+#: src/plugins/rssyl/feed.c:1254
+msgid "N/A"
+msgstr "N/A"
+
+#: src/plugins/rssyl/feed.c:1374
+#, c-format
+msgid "%ld byte"
+msgid_plural "%ld bytes"
+msgstr[0] "%ld bajt"
+msgstr[1] "%ld bajty"
+msgstr[2] "%ld bajtov"
+
+#: src/plugins/rssyl/feed.c:1377
+msgid "size unknown"
+msgstr "neznáma veľkosť"
+
+#: src/plugins/rssyl/feed.c:1550
+#, c-format
+msgid ""
+"RSSyl: Cannot update feed %s:\n"
+"%s\n"
+msgstr ""
+"RSSyl: Nemožno aktualizovať kanál %s:\n"
+"%s\n"
+
+#: src/plugins/rssyl/feed.c:1722
+msgid "You are already subscribed to this feed."
+msgstr "Tento kanál už odoberáte."
+
+#: src/plugins/rssyl/feed.c:1733
+#, c-format
+msgid ""
+"Couldn't fetch URL '%s':\n"
+"%s"
+msgstr ""
+"Nemožno pristupovať k URL „%s”:\n"
+"%s"
+
+#: src/plugins/rssyl/feed.c:1738
+#, c-format
+msgid ""
+"Couldn't fetch URL '%s':\n"
+"%s\n"
+msgstr ""
+"Nemožno pristupovať k URL „%s”:\n"
+"%s\n"
+
+#: src/plugins/rssyl/feed.c:1754
+#, c-format
+msgid "Can't subscribe feed '%s'."
+msgstr "Nemožno sa prihlásiť k odberu kanála „%s”."
+
 #: src/plugins/smime/plugin.c:38 src/plugins/smime/plugin.c:54
 #: src/plugins/smime/smime.c:924
 msgid "S/MIME"
@@ -9601,78 +9977,79 @@ msgstr "Minimalizovať do systémovej lišty"
 msgid "Hide Claws Mail using the tray icon instead of minimizing it"
 msgstr "Pri zavretí okna aplikáciu minimalizovať do systémovej lišty"
 
-#: src/vcalendar.c:96
+#: src/plugins/vcalendar/vcalendar.c:100
 msgid "Create meeting from message..."
 msgstr "Vytvoriť zo správy stretnutie..."
 
-#: src/vcalendar.c:116
+#: src/plugins/vcalendar/vcalendar.c:120
 #, c-format
 msgid ""
 "You are about to create %d meetings, one by one. Do you want to continue?"
 msgstr "Vytvárate %d stretnutia, jedno po druhom. Chcete pokračovať?"
 
-#: src/vcalendar.c:135
+#: src/plugins/vcalendar/vcalendar.c:139
 msgid "Creating meeting..."
 msgstr "Vytváranie stretnutia..."
 
-#: src/vcalendar.c:154
+#: src/plugins/vcalendar/vcalendar.c:158
 msgid "no subject"
 msgstr "bez predmetu"
 
-#: src/vcalendar.c:389
+#: src/plugins/vcalendar/vcalendar.c:393
 msgid "Accept"
 msgstr "Prijať"
 
-#: src/vcalendar.c:390
+#: src/plugins/vcalendar/vcalendar.c:394
 msgid "Tentatively accept"
 msgstr "Nezáväzne prijať"
 
-#: src/vcalendar.c:391
+#: src/plugins/vcalendar/vcalendar.c:395
 msgid "Decline"
 msgstr "Odmietnuť"
 
-#: src/vcalendar.c:478
+#: src/plugins/vcalendar/vcalendar.c:482
 msgid "You have a Todo item."
 msgstr "Máte položku ToDo."
 
-#: src/vcalendar.c:479 src/vcalendar.c:486 src/vcalendar.c:491
-#: src/vcalendar.c:499 src/vcalendar.c:508 src/vcalendar.c:746
+#: src/plugins/vcalendar/vcalendar.c:483 src/plugins/vcalendar/vcalendar.c:490
+#: src/plugins/vcalendar/vcalendar.c:495 src/plugins/vcalendar/vcalendar.c:503
+#: src/plugins/vcalendar/vcalendar.c:512 src/plugins/vcalendar/vcalendar.c:750
 msgid "Details follow:"
 msgstr "Detaily:"
 
-#: src/vcalendar.c:485
+#: src/plugins/vcalendar/vcalendar.c:489
 msgid "You have created a meeting."
 msgstr "Vytvorili ste stretnutie."
 
-#: src/vcalendar.c:490
+#: src/plugins/vcalendar/vcalendar.c:494
 msgid "You have been invited to a meeting."
 msgstr "Boli ste pozvaný na stretnutie."
 
-#: src/vcalendar.c:498
+#: src/plugins/vcalendar/vcalendar.c:502
 msgid "A meeting to which you had been invited has been cancelled."
 msgstr "Stretnutie, na ktoré ste boli pozvaný, bolo zrušené."
 
-#: src/vcalendar.c:507
+#: src/plugins/vcalendar/vcalendar.c:511
 msgid "You have been forwarded an appointment."
 msgstr "Boli ste poslaný na stretnutie."
 
-#: src/vcalendar.c:560
+#: src/plugins/vcalendar/vcalendar.c:564
 #, c-format
 msgid "%s <span weight=\"bold\">(this event recurs)</span>"
 msgstr "%s <span weight=\"bold\">(udalosť sa opakuje)</span>"
 
-#: src/vcalendar.c:566
+#: src/plugins/vcalendar/vcalendar.c:570
 #, c-format
 msgid ""
 "%s <span weight=\"bold\">(this event is part of a recurring event)</span>"
 msgstr ""
 "%s <span weight=\"bold\">(táto udalosť je časťou opakovanej udalosti)</span>"
 
-#: src/vcalendar.c:745
+#: src/plugins/vcalendar/vcalendar.c:749
 msgid "You have received an answer to an unknown meeting proposal."
 msgstr "Prijali ste odpoveď na neznámu ponuku na stretnutie."
 
-#: src/vcalendar.c:749
+#: src/plugins/vcalendar/vcalendar.c:753
 #, c-format
 msgid ""
 "You have received an answer to a meeting proposal.\n"
@@ -9681,35 +10058,35 @@ msgstr ""
 "Prijali ste odpoveď na ponuku na stretnutie.\n"
 "%s je %s pozvaný s týmito podrobnosťami:"
 
-#: src/vcalendar.c:828
+#: src/plugins/vcalendar/vcalendar.c:832
 msgid "Error - could not get the calendar MIME part."
 msgstr "Chyba: Nemožno získať MIME časť kalendára."
 
-#: src/vcalendar.c:835
+#: src/plugins/vcalendar/vcalendar.c:839
 msgid "Error - no calendar part found."
 msgstr "Chyba: Nenájdená kalendárová časť."
 
-#: src/vcalendar.c:849
+#: src/plugins/vcalendar/vcalendar.c:853
 msgid "Error - Unknown calendar component type."
 msgstr "Chyba: Neznámy typ kalendárového komponentu."
 
-#: src/vcalendar.c:978
+#: src/plugins/vcalendar/vcalendar.c:982
 msgid "Send a notification to the attendees"
 msgstr "Poslať upozornenie účastníkom"
 
-#: src/vcalendar.c:987
+#: src/plugins/vcalendar/vcalendar.c:991
 msgid "Cancel meeting"
 msgstr "Zrušiť stretnutie"
 
-#: src/vcalendar.c:988
+#: src/plugins/vcalendar/vcalendar.c:992
 msgid "Are you sure you want to cancel this meeting?"
 msgstr "Naozaj chcete zrušiť toto stretnutie?"
 
-#: src/vcalendar.c:1083
+#: src/plugins/vcalendar/vcalendar.c:1087
 msgid "No account found"
 msgstr "Účet nenájdený"
 
-#: src/vcalendar.c:1084
+#: src/plugins/vcalendar/vcalendar.c:1088
 msgid ""
 "You have no account matching any attendee.\n"
 "Do you want to reply anyway ?"
@@ -9717,91 +10094,97 @@ msgstr ""
 "Nemáte účet zodpovedajúci tomuto účastníkovi.\n"
 "Chcete napriek tomu odpovedať?"
 
-#: src/vcalendar.c:1086
+#: src/plugins/vcalendar/vcalendar.c:1090
 msgid "+Reply anyway"
 msgstr "+Odpovedať i tak"
 
-#: src/vcalendar.c:1215
+#: src/plugins/vcalendar/vcalendar.c:1219
 msgid "Answer"
 msgstr "Odpovedať"
 
-#: src/vcalendar.c:1216
+#: src/plugins/vcalendar/vcalendar.c:1220
 msgid "Edit meeting..."
 msgstr "Upraviť stretnutie..."
 
-#: src/vcalendar.c:1217
+#: src/plugins/vcalendar/vcalendar.c:1221
 msgid "Cancel meeting..."
 msgstr "Zrušiť stretnutie..."
 
-#: src/vcalendar.c:1218
+#: src/plugins/vcalendar/vcalendar.c:1222
 msgid "Launch website"
 msgstr "Pozrieť webovú stránku"
 
-#: src/vcalendar.c:1222
+#: src/plugins/vcalendar/vcalendar.c:1226
 msgid "You are already busy at this time."
 msgstr "V tej dobe ste obsadený."
 
-#: src/vcalendar.c:1261 src/vcal_meeting_gtk.c:1734
+#: src/plugins/vcalendar/vcalendar.c:1265
+#: src/plugins/vcalendar/vcal_meeting_gtk.c:1738
 msgid "Event:"
 msgstr "Udalosť:"
 
-#: src/vcalendar.c:1262 src/vcal_meeting_gtk.c:1712
-#: src/vcal_meeting_gtk.c:1723
+#: src/plugins/vcalendar/vcalendar.c:1266
+#: src/plugins/vcalendar/vcal_meeting_gtk.c:1716
+#: src/plugins/vcalendar/vcal_meeting_gtk.c:1727
 msgid "Organizer:"
 msgstr "Organizátor:"
 
-#: src/vcalendar.c:1263 src/vcal_meeting_gtk.c:1715
-#: src/vcal_meeting_gtk.c:1725
+#: src/plugins/vcalendar/vcalendar.c:1267
+#: src/plugins/vcalendar/vcal_meeting_gtk.c:1719
+#: src/plugins/vcalendar/vcal_meeting_gtk.c:1729
 msgid "Location:"
 msgstr "Miesto:"
 
-#: src/vcalendar.c:1264 src/vcal_meeting_gtk.c:1713
-#: src/vcal_meeting_gtk.c:1724
+#: src/plugins/vcalendar/vcalendar.c:1268
+#: src/plugins/vcalendar/vcal_meeting_gtk.c:1717
+#: src/plugins/vcalendar/vcal_meeting_gtk.c:1728
 msgid "Summary:"
 msgstr "Zhrnutie:"
 
-#: src/vcalendar.c:1265
+#: src/plugins/vcalendar/vcalendar.c:1269
 msgid "Starting:"
 msgstr "Začiatok:"
 
-#: src/vcalendar.c:1266
+#: src/plugins/vcalendar/vcalendar.c:1270
 msgid "Ending:"
 msgstr "Koniec:"
 
-#: src/vcalendar.c:1268 src/vcal_meeting_gtk.c:1717
-#: src/vcal_meeting_gtk.c:1727
+#: src/plugins/vcalendar/vcalendar.c:1272
+#: src/plugins/vcalendar/vcal_meeting_gtk.c:1721
+#: src/plugins/vcalendar/vcal_meeting_gtk.c:1731
 msgid "Attendees:"
 msgstr "Účastníci:"
 
-#: src/vcalendar.c:1270
+#: src/plugins/vcalendar/vcalendar.c:1274
 msgid "Action:"
 msgstr "Akcia:"
 
-#: src/vcal_prefs.c:254
+#: src/plugins/vcalendar/vcal_prefs.c:256
 msgid "Reminders"
 msgstr "Pripomienky"
 
-#: src/vcal_prefs.c:263
+#: src/plugins/vcalendar/vcal_prefs.c:265
 msgid "Alert me"
 msgstr "Upozorni ma"
 
-#: src/vcal_prefs.c:275
+#: src/plugins/vcalendar/vcal_prefs.c:277
 msgid "minutes before an event"
 msgstr "minút pred udalosťou"
 
-#: src/vcal_prefs.c:287
+#: src/plugins/vcalendar/vcal_prefs.c:289
 msgid "Calendar export"
 msgstr "Export kalendára"
 
-#: src/vcal_prefs.c:298
+#: src/plugins/vcalendar/vcal_prefs.c:300
 msgid "Automatically export calendar to"
 msgstr "Automaticky exportovať kalendár do"
 
-#: src/vcal_prefs.c:307 src/vcal_prefs.c:413
+#: src/plugins/vcalendar/vcal_prefs.c:309
+#: src/plugins/vcalendar/vcal_prefs.c:415
 msgid "You can export to a local file or URL"
 msgstr "Kalendár môžete exportovať do lokálneho súboru alebo URL"
 
-#: src/vcal_prefs.c:309
+#: src/plugins/vcalendar/vcal_prefs.c:311
 msgid "Specify a local file or URL (http://server/path/file.ics)"
 msgstr "Zadajte umiestnenie súboru alebo URL (http://server/cesta/súbor.ics)"
 
@@ -9818,43 +10201,43 @@ msgstr "Prihlasovacie meno"
 msgid "Password"
 msgstr "Heslo"
 
-#: src/vcal_prefs.c:339
+#: src/plugins/vcalendar/vcal_prefs.c:341
 msgid "Include webcal subscriptions in export"
 msgstr "V exporte zahrnúť webcal prihlásenia"
 
-#: src/vcal_prefs.c:349
+#: src/plugins/vcalendar/vcal_prefs.c:351
 msgid "Command to run after calendar export"
 msgstr "Príkaz na spustenie po exporte kalendára"
 
-#: src/vcal_prefs.c:378
+#: src/plugins/vcalendar/vcal_prefs.c:380
 msgid "Register Claws' calendar in XFCE's Orage clock"
 msgstr "Zaregistrovať Claws kalendár v Orage prostredia XFCE"
 
-#: src/vcal_prefs.c:380
+#: src/plugins/vcalendar/vcal_prefs.c:382
 msgid "Allows Orage (version greater than 4.4) to see Claws Mail's calendar"
 msgstr "Umožniť Orage (verzia vyššia ako 4.4) prístup ku kalendáru Claws Mail"
 
-#: src/vcal_prefs.c:392
+#: src/plugins/vcalendar/vcal_prefs.c:394
 msgid "Free/Busy information"
 msgstr "Informácie voľný/obsadený"
 
-#: src/vcal_prefs.c:404
+#: src/plugins/vcalendar/vcal_prefs.c:406
 msgid "Automatically export free/busy status to"
 msgstr "Automaticky exportovať stav voľný/obsadený do"
 
-#: src/vcal_prefs.c:415
+#: src/plugins/vcalendar/vcal_prefs.c:417
 msgid "Specify a local file or URL (http://server/path/file.ifb)"
 msgstr "Zadajte lokálny súbor alebo URL (http://server/cesta/súbor.ifb)"
 
-#: src/vcal_prefs.c:445
+#: src/plugins/vcalendar/vcal_prefs.c:447
 msgid "Command to run after free/busy status export"
 msgstr "Príkaz, spustený po exporte voľný/obsadený"
 
-#: src/vcal_prefs.c:472
+#: src/plugins/vcalendar/vcal_prefs.c:474
 msgid "Get free/busy status of others from"
 msgstr "Získať stav voľný/obsadený ostatných z "
 
-#: src/vcal_prefs.c:480
+#: src/plugins/vcalendar/vcal_prefs.c:482
 #, c-format
 msgid ""
 "Specify a local file or URL (http://server/path/file.ifb). Use %u for the "
@@ -9863,63 +10246,64 @@ msgstr ""
 "Zadajte lokálny súbor alebo URL (http://server/cesta/súbor.ifb). Použite %u "
 "pre ľavú časť emailovej adresy, %d pre doménu"
 
-#: src/plugin.c:47 src/plugin.c:68 src/vcal_prefs.c:644
+#: src/plugins/vcalendar/vcal_prefs.c:646 src/plugins/vcalendar/plugin.c:43
+#: src/plugins/vcalendar/plugin.c:64
 msgid "vCalendar"
 msgstr "vCalendar"
 
-#: src/vcal_folder.c:160
+#: src/plugins/vcalendar/vcal_folder.c:164
 msgid "_New meeting..."
 msgstr "_Nové stretnutie..."
 
-#: src/vcal_folder.c:161
+#: src/plugins/vcalendar/vcal_folder.c:165
 msgid "_Export calendar..."
 msgstr "_Exportovať kalendár..."
 
-#: src/vcal_folder.c:162
+#: src/plugins/vcalendar/vcal_folder.c:166
 msgid "_Subscribe to webCal..."
 msgstr "Prihlá_siť sa do webCal..."
 
-#: src/vcal_folder.c:164
+#: src/plugins/vcalendar/vcal_folder.c:168
 msgid "_Rename..."
 msgstr "P_remenovať..."
 
-#: src/vcal_folder.c:165
+#: src/plugins/vcalendar/vcal_folder.c:169
 msgid "U_pdate subscriptions"
 msgstr "Aktualizovať _prihlásenia"
 
-#: src/vcal_folder.c:166
+#: src/plugins/vcalendar/vcal_folder.c:170
 msgid "_List view"
 msgstr "Zobrazenie _zoznamu"
 
-#: src/vcal_folder.c:167
+#: src/plugins/vcalendar/vcal_folder.c:171
 msgid "_Week view"
 msgstr "_Týždenný pohľad"
 
-#: src/vcal_folder.c:168
+#: src/plugins/vcalendar/vcal_folder.c:172
 msgid "_Month view"
 msgstr "_Mesačný pohľad"
 
-#: src/vcal_folder.c:1471
+#: src/plugins/vcalendar/vcal_folder.c:1475
 msgid "in the past"
 msgstr "v minulosti"
 
-#: src/vcal_folder.c:1474
+#: src/plugins/vcalendar/vcal_folder.c:1478
 msgid "today"
 msgstr "dnes"
 
-#: src/vcal_folder.c:1477
+#: src/plugins/vcalendar/vcal_folder.c:1481
 msgid "tomorrow"
 msgstr "zajtra"
 
-#: src/vcal_folder.c:1480
+#: src/plugins/vcalendar/vcal_folder.c:1484
 msgid "this week"
 msgstr "tento týždeň"
 
-#: src/vcal_folder.c:1483
+#: src/plugins/vcalendar/vcal_folder.c:1487
 msgid "later"
 msgstr "neskôr"
 
-#: src/vcal_folder.c:1487
+#: src/plugins/vcalendar/vcal_folder.c:1491
 #, c-format
 msgid ""
 "\n"
@@ -9928,29 +10312,12 @@ msgstr ""
 "\n"
 "Toto sú plánované udalosti %s:\n"
 
-#: src/vcal_folder.c:1580
+#: src/plugins/vcalendar/vcal_folder.c:1584
 #, c-format
 msgid "Timeout (%d seconds) connecting to %s\n"
 msgstr "Časový limit (%d sekúnd) pripojenia k %s\n"
 
-#: src/vcal_folder.c:1589
-msgid "401 (Authorisation required)"
-msgstr "401 (Vyžadovaná autorizácia)"
-
-#: src/vcal_folder.c:1592
-msgid "403 (Unauthorised)"
-msgstr "403 (Neautorizované)"
-
-#: src/vcal_folder.c:1595
-msgid "404 (Not found)"
-msgstr "404 (Nenájdené)"
-
-#: src/vcal_folder.c:1598
-#, c-format
-msgid "Error %ld"
-msgstr "Chyba %ld"
-
-#: src/vcal_folder.c:1795
+#: src/plugins/vcalendar/vcal_folder.c:1799
 #, c-format
 msgid ""
 "Could not retrieve the Webcal URL:\n"
@@ -9963,7 +10330,7 @@ msgstr ""
 "\n"
 "%s"
 
-#: src/vcal_folder.c:1799
+#: src/plugins/vcalendar/vcal_folder.c:1803
 #, c-format
 msgid ""
 "Could not retrieve the Webcal URL:\n"
@@ -9976,7 +10343,7 @@ msgstr ""
 "\n"
 "%s\n"
 
-#: src/vcal_folder.c:1810
+#: src/plugins/vcalendar/vcal_folder.c:1814
 #, c-format
 msgid ""
 "This URL does not look like a WebCal URL:\n"
@@ -9987,7 +10354,7 @@ msgstr ""
 "%s\n"
 "%s"
 
-#: src/vcal_folder.c:1813
+#: src/plugins/vcalendar/vcal_folder.c:1817
 #, c-format
 msgid ""
 "This URL does not look like a WebCal URL:\n"
@@ -9997,6 +10364,10 @@ msgstr ""
 "Táto URL nevyzerá ako URL WebCal:\n"
 "%s\n"
 "%s\n"
+
+#: src/plugins/vcalendar/vcal_folder.c:1874
+msgid "Claws Mail needs network access in order to update the Webcal feed."
+msgstr "Claws Mail potrebuje na aktualizáciu kanála Webcal prístup k sieti."
 
 #: src/plugins/vcalendar/vcal_folder.c:1885
 #, fuzzy, c-format
@@ -10008,35 +10379,39 @@ msgstr "Aktualizujem vyrovnávaciu pamäť zložky %s…"
 msgid "new subscription"
 msgstr "Prihlásenie do diskusnej skupiny"
 
-#: src/vcal_folder.c:1905
+#: src/plugins/vcalendar/vcal_folder.c:1897
+msgid "Claws Mail needs network access in order to update the subscription."
+msgstr "Claws Mail potrebuje sieťový prístup na aktualizáciu prihlásenia."
+
+#: src/plugins/vcalendar/vcal_folder.c:1909
 msgid "Subscribe to WebCal"
 msgstr "Prihlásiť sa do WebCal"
 
-#: src/vcal_folder.c:1905
+#: src/plugins/vcalendar/vcal_folder.c:1909
 msgid "Enter the WebCal URL:"
 msgstr "Zadajte WebCal URL:"
 
-#: src/vcal_folder.c:1919
+#: src/plugins/vcalendar/vcal_folder.c:1923
 msgid "Could not parse the URL."
 msgstr "Nemožno spracovať URL."
 
-#: src/vcal_folder.c:1948
+#: src/plugins/vcalendar/vcal_folder.c:1952
 msgid "Do you really want to unsubscribe?"
 msgstr "Naozaj sa chcete odhlásiť?"
 
-#: src/vcal_meeting_gtk.c:309
+#: src/plugins/vcalendar/vcal_meeting_gtk.c:313
 msgid "Individual"
 msgstr "Individuálne"
 
-#: src/vcal_meeting_gtk.c:311
+#: src/plugins/vcalendar/vcal_meeting_gtk.c:315
 msgid "Resource"
 msgstr "Zdroj"
 
-#: src/vcal_meeting_gtk.c:312
+#: src/plugins/vcalendar/vcal_meeting_gtk.c:316
 msgid "Room"
 msgstr "Miestnosť"
 
-#: src/vcal_meeting_gtk.c:325
+#: src/plugins/vcalendar/vcal_meeting_gtk.c:329
 msgid "Add..."
 msgstr "Pridať..."
 
@@ -10044,7 +10419,7 @@ msgstr "Pridať..."
 msgid "Remove"
 msgstr "Odstrániť"
 
-#: src/vcal_meeting_gtk.c:784
+#: src/plugins/vcalendar/vcal_meeting_gtk.c:788
 msgid ""
 "The following person(s) are busy at the time of your planned meeting:\n"
 "- "
@@ -10052,61 +10427,62 @@ msgstr ""
 "Nasledujúca osoba(y) je v čase vami plánovaného stretnutia obsadená:\n"
 "- "
 
-#: src/vcal_meeting_gtk.c:785 src/vcal_meeting_gtk.c:877
-#: src/vcal_meeting_gtk.c:963
+#: src/plugins/vcalendar/vcal_meeting_gtk.c:789
+#: src/plugins/vcalendar/vcal_meeting_gtk.c:881
+#: src/plugins/vcalendar/vcal_meeting_gtk.c:967
 msgid "You"
 msgstr "Vy"
 
-#: src/vcal_meeting_gtk.c:786
+#: src/plugins/vcalendar/vcal_meeting_gtk.c:790
 msgid "You are busy at the time of your planned meeting"
 msgstr "V čase plánovaného stretnutia ste zaneprázdnený"
 
-#: src/vcal_meeting_gtk.c:788
+#: src/plugins/vcalendar/vcal_meeting_gtk.c:792
 #, c-format
 msgid "%s is busy at the time of your planned meeting"
 msgstr "%s je v čase plánovaného stretnutia ste zaneprázdnený"
 
-#: src/vcal_meeting_gtk.c:790
+#: src/plugins/vcalendar/vcal_meeting_gtk.c:794
 #, c-format
 msgid "%d hour sooner"
 msgstr "%d hodinu skôr"
 
-#: src/vcal_meeting_gtk.c:792
+#: src/plugins/vcalendar/vcal_meeting_gtk.c:796
 #, c-format
 msgid "%d hours sooner"
 msgstr "%d hodín skôr"
 
-#: src/vcal_meeting_gtk.c:794
+#: src/plugins/vcalendar/vcal_meeting_gtk.c:798
 #, c-format
 msgid "%d hours and %d minutes sooner"
 msgstr "%d hodín a %d minúť skôr"
 
-#: src/vcal_meeting_gtk.c:796
+#: src/plugins/vcalendar/vcal_meeting_gtk.c:800
 #, c-format
 msgid "%d minutes sooner"
 msgstr "%d minút skôr"
 
-#: src/vcal_meeting_gtk.c:801
+#: src/plugins/vcalendar/vcal_meeting_gtk.c:805
 #, c-format
 msgid "%d hour later"
 msgstr "%d hodinu neskôr"
 
-#: src/vcal_meeting_gtk.c:803
+#: src/plugins/vcalendar/vcal_meeting_gtk.c:807
 #, c-format
 msgid "%d hours later"
 msgstr "%d hodím neskôr"
 
-#: src/vcal_meeting_gtk.c:805
+#: src/plugins/vcalendar/vcal_meeting_gtk.c:809
 #, c-format
 msgid "%d hours and %d minutes later"
 msgstr "%d hodín a %d minút neskôr"
 
-#: src/vcal_meeting_gtk.c:807
+#: src/plugins/vcalendar/vcal_meeting_gtk.c:811
 #, c-format
 msgid "%d minutes later"
 msgstr "%d minúť neskôr"
 
-#: src/vcal_meeting_gtk.c:813
+#: src/plugins/vcalendar/vcal_meeting_gtk.c:817
 #, c-format
 msgid ""
 "\n"
@@ -10117,7 +10493,7 @@ msgstr ""
 "\n"
 "Všetci budú dostupní %s alebo %s."
 
-#: src/vcal_meeting_gtk.c:815
+#: src/plugins/vcalendar/vcal_meeting_gtk.c:819
 #, c-format
 msgid ""
 "\n"
@@ -10128,7 +10504,7 @@ msgstr ""
 "\n"
 "Všetci budú dostupní %s."
 
-#: src/vcal_meeting_gtk.c:817
+#: src/plugins/vcalendar/vcal_meeting_gtk.c:821
 msgid ""
 "\n"
 "\n"
@@ -10140,52 +10516,54 @@ msgstr ""
 "Nie je možné stretnúť sa so všetkými v predchádzajúcich alebo nasledujúcich "
 "6 hodinách."
 
-#: src/vcal_meeting_gtk.c:822
+#: src/plugins/vcalendar/vcal_meeting_gtk.c:826
 #, c-format
 msgid "would be available %s or %s"
 msgstr "bude dostupný %s alebo %s"
 
-#: src/vcal_meeting_gtk.c:824
+#: src/plugins/vcalendar/vcal_meeting_gtk.c:828
 #, c-format
 msgid "would be available %s"
 msgstr "bude dostupný %s"
 
-#: src/vcal_meeting_gtk.c:826 src/vcal_meeting_gtk.c:890
-#: src/vcal_meeting_gtk.c:960
+#: src/plugins/vcalendar/vcal_meeting_gtk.c:830
+#: src/plugins/vcalendar/vcal_meeting_gtk.c:894
+#: src/plugins/vcalendar/vcal_meeting_gtk.c:964
 msgid "not available"
 msgstr "nedostupný"
 
-#: src/vcal_meeting_gtk.c:829
+#: src/plugins/vcalendar/vcal_meeting_gtk.c:833
 #, c-format
 msgid ", but would be available %s or %s."
 msgstr ", ale bude dostupný %s alebo %s."
 
-#: src/vcal_meeting_gtk.c:831
+#: src/plugins/vcalendar/vcal_meeting_gtk.c:835
 #, c-format
 msgid ", but would be available %s."
 msgstr ", ale bude dostupný %s."
 
-#: src/vcal_meeting_gtk.c:833
+#: src/plugins/vcalendar/vcal_meeting_gtk.c:837
 msgid ", and isn't available in the previous or next 6 hours."
 msgstr ", a nebude dostupný ani predchádzajúcich, ani nasledujúcich 6 hodín."
 
-#: src/vcal_meeting_gtk.c:893
+#: src/plugins/vcalendar/vcal_meeting_gtk.c:897
 msgid "available"
 msgstr "dostupný"
 
-#: src/vcal_meeting_gtk.c:895 src/vcal_meeting_gtk.c:1146
+#: src/plugins/vcalendar/vcal_meeting_gtk.c:899
+#: src/plugins/vcalendar/vcal_meeting_gtk.c:1150
 msgid "Free/busy retrieval failed"
 msgstr "Zlyhalo získanie voľný/obsadený"
 
-#: src/vcal_meeting_gtk.c:977
+#: src/plugins/vcalendar/vcal_meeting_gtk.c:981
 msgid "Not everyone is available"
 msgstr "Nikto nie je dostupný"
 
-#: src/vcal_meeting_gtk.c:978
+#: src/plugins/vcalendar/vcal_meeting_gtk.c:982
 msgid "Send anyway"
 msgstr "Poslať i tak"
 
-#: src/vcal_meeting_gtk.c:989
+#: src/plugins/vcalendar/vcal_meeting_gtk.c:993
 msgid "Not everyone is available. See tooltips for more info..."
 msgstr ""
 "Nikto nie je dostupný. Pozrite si nástrojové tipy s ďalšími informáciami..."
@@ -10195,16 +10573,17 @@ msgstr ""
 msgid "Fetching planning for %s..."
 msgstr "Prehľadávam zložku %s…"
 
-#: src/vcal_meeting_gtk.c:1155
+#: src/plugins/vcalendar/vcal_meeting_gtk.c:1159
 msgid "Available"
 msgstr "Dostupný"
 
-#: src/vcal_meeting_gtk.c:1168 src/vcal_meeting_gtk.c:1175
-#: src/vcal_meeting_gtk.c:1183
+#: src/plugins/vcalendar/vcal_meeting_gtk.c:1172
+#: src/plugins/vcalendar/vcal_meeting_gtk.c:1179
+#: src/plugins/vcalendar/vcal_meeting_gtk.c:1187
 msgid "Everyone is available."
 msgstr "Všetci sú dostupní."
 
-#: src/vcal_meeting_gtk.c:1184
+#: src/plugins/vcalendar/vcal_meeting_gtk.c:1188
 msgid ""
 "Everyone seems available, but some free/busy information failed to be "
 "retrieved."
@@ -10212,7 +10591,7 @@ msgstr ""
 "Všetci vyzerajú byť dostupní, ale niektoré informácie o dostupnosti sa "
 "nepodarilo získať."
 
-#: src/vcal_meeting_gtk.c:1356
+#: src/plugins/vcalendar/vcal_meeting_gtk.c:1360
 msgid ""
 "Could not send the meeting invitation.\n"
 "Check the recipients."
@@ -10220,40 +10599,42 @@ msgstr ""
 "Nemožno poslať pozvánku na stretnutie.\n"
 "Skontrolujte adresárov."
 
-#: src/vcal_meeting_gtk.c:1472
+#: src/plugins/vcalendar/vcal_meeting_gtk.c:1476
 msgid "Save & Send"
 msgstr "Uložiť a Poslať"
 
-#: src/vcal_meeting_gtk.c:1473
+#: src/plugins/vcalendar/vcal_meeting_gtk.c:1477
 msgid "Check availability"
 msgstr "Overiť dostupnosť"
 
-#: src/vcal_meeting_gtk.c:1596
+#: src/plugins/vcalendar/vcal_meeting_gtk.c:1600
 msgid "<b>Starts at:</b> "
 msgstr "<b>Začína o:</b> "
 
-#: src/vcal_meeting_gtk.c:1601 src/vcal_meeting_gtk.c:1623
+#: src/plugins/vcalendar/vcal_meeting_gtk.c:1605
+#: src/plugins/vcalendar/vcal_meeting_gtk.c:1627
 msgid "<b> on:</b>"
 msgstr "<b> dňa:</b>"
 
-#: src/vcal_meeting_gtk.c:1618
+#: src/plugins/vcalendar/vcal_meeting_gtk.c:1622
 msgid "<b>Ends at:</b> "
 msgstr "<b>Končí o:</b> "
 
-#: src/vcal_meeting_gtk.c:1657
+#: src/plugins/vcalendar/vcal_meeting_gtk.c:1661
 msgid "New meeting"
 msgstr "Nové stretnutie"
 
-#: src/vcal_meeting_gtk.c:1659
+#: src/plugins/vcalendar/vcal_meeting_gtk.c:1663
 #, c-format
 msgid "%s - Edit meeting"
 msgstr "%s - Upravuje stretnutie"
 
-#: src/vcal_meeting_gtk.c:1714 src/vcal_meeting_gtk.c:1738
+#: src/plugins/vcalendar/vcal_meeting_gtk.c:1718
+#: src/plugins/vcalendar/vcal_meeting_gtk.c:1742
 msgid "Time:"
 msgstr "Čas:"
 
-#: src/vcal_meeting_gtk.c:1874
+#: src/plugins/vcalendar/vcal_meeting_gtk.c:1878
 #, c-format
 msgid "%d hour"
 msgid_plural "%d hours"
@@ -10261,7 +10642,7 @@ msgstr[0] "%d hodina"
 msgstr[1] "%d hodiny"
 msgstr[2] "%d hodín"
 
-#: src/vcal_meeting_gtk.c:1877
+#: src/plugins/vcalendar/vcal_meeting_gtk.c:1881
 #, c-format
 msgid "%d minute"
 msgid_plural "%d minutes"
@@ -10269,12 +10650,12 @@ msgstr[0] "%d minúta"
 msgstr[1] "%d minúty"
 msgstr[2] "%d minút"
 
-#: src/vcal_meeting_gtk.c:1888
+#: src/plugins/vcalendar/vcal_meeting_gtk.c:1892
 #, c-format
 msgid "Upcoming event: %s"
 msgstr "Nadchádzajúca udalosť: %s"
 
-#: src/vcal_meeting_gtk.c:1889
+#: src/plugins/vcalendar/vcal_meeting_gtk.c:1893
 #, c-format
 msgid ""
 "You have a meeting or event soon.\n"
@@ -10291,7 +10672,7 @@ msgstr ""
 "\n"
 "%s"
 
-#: src/vcal_meeting_gtk.c:1906
+#: src/plugins/vcalendar/vcal_meeting_gtk.c:1910
 #, c-format
 msgid "Remind me in %d minute"
 msgid_plural "Remind me in %d minutes"
@@ -10299,105 +10680,105 @@ msgstr[0] "Pripomeň mi za %d minútu"
 msgstr[1] "Pripomeň mi za %d minúty"
 msgstr[2] "Pripomeň mi za %d minút"
 
-#: src/vcal_meeting_gtk.c:2032
+#: src/plugins/vcalendar/vcal_meeting_gtk.c:2036
 msgid "Empty calendar"
 msgstr "Prázdny kalendár"
 
-#: src/vcal_meeting_gtk.c:2033
+#: src/plugins/vcalendar/vcal_meeting_gtk.c:2037
 msgid "There is nothing to export."
 msgstr "Nie je čo exportovať."
 
-#: src/vcal_meeting_gtk.c:2073
+#: src/plugins/vcalendar/vcal_meeting_gtk.c:2077
 msgid "Could not export the calendar."
 msgstr "Nemožno exportovať kalendár."
 
-#: src/vcal_meeting_gtk.c:2090
+#: src/plugins/vcalendar/vcal_meeting_gtk.c:2094
 msgid "Export calendar to ICS"
 msgstr "Export kalendára do ICS"
 
-#: src/vcal_meeting_gtk.c:2112
+#: src/plugins/vcalendar/vcal_meeting_gtk.c:2116
 #, c-format
 msgid "Couldn't export calendar to '%s'\n"
 msgstr "Nemožno exportovať kalendár do „%s”\n"
 
-#: src/vcal_meeting_gtk.c:2228
+#: src/plugins/vcalendar/vcal_meeting_gtk.c:2232
 msgid "Could not export the freebusy info."
 msgstr "Nemožno exportovať informácie o voľný/obsadený."
 
-#: src/vcal_meeting_gtk.c:2259
+#: src/plugins/vcalendar/vcal_meeting_gtk.c:2263
 #, c-format
 msgid "Couldn't export free/busy to '%s'\n"
 msgstr "Nemožno exportovať voľný/obsadený do „%s”\n"
 
-#: src/vcal_manager.c:105
+#: src/plugins/vcalendar/vcal_manager.c:109
 msgid "accepted"
 msgstr "prijaté"
 
-#: src/vcal_manager.c:106
+#: src/plugins/vcalendar/vcal_manager.c:110
 msgid "tentatively accepted"
 msgstr "nezáväzne prijaté"
 
-#: src/vcal_manager.c:107
+#: src/plugins/vcalendar/vcal_manager.c:111
 msgid "declined"
 msgstr "odmietnuté"
 
-#: src/vcal_manager.c:108
+#: src/plugins/vcalendar/vcal_manager.c:112
 msgid "did not answer"
 msgstr "neodpovedal"
 
-#: src/vcal_manager.c:138
+#: src/plugins/vcalendar/vcal_manager.c:142
 msgid "individual"
 msgstr "individuálne"
 
-#: src/vcal_manager.c:139
+#: src/plugins/vcalendar/vcal_manager.c:143
 msgid "group"
 msgstr "skupina"
 
-#: src/vcal_manager.c:140
+#: src/plugins/vcalendar/vcal_manager.c:144
 msgid "resource"
 msgstr "zdroj"
 
-#: src/vcal_manager.c:141
+#: src/plugins/vcalendar/vcal_manager.c:145
 msgid "room"
 msgstr "miestnosť"
 
-#: src/vcal_manager.c:552
+#: src/plugins/vcalendar/vcal_manager.c:556
 msgid "Past"
 msgstr "V minulosti"
 
-#: src/vcal_manager.c:555
+#: src/plugins/vcalendar/vcal_manager.c:559
 msgid "Today"
 msgstr "Dnes"
 
-#: src/vcal_manager.c:558
+#: src/plugins/vcalendar/vcal_manager.c:562
 msgid "Tomorrow"
 msgstr "Zajtra"
 
-#: src/vcal_manager.c:561
+#: src/plugins/vcalendar/vcal_manager.c:565
 msgid "This week"
 msgstr "Tento týždeň"
 
-#: src/vcal_manager.c:564
+#: src/plugins/vcalendar/vcal_manager.c:568
 msgid "Later"
 msgstr "Neskôr"
 
-#: src/vcal_manager.c:1230
+#: src/plugins/vcalendar/vcal_manager.c:1234
 msgid "Accepted: "
 msgstr "Prijaté:"
 
-#: src/vcal_manager.c:1232
+#: src/plugins/vcalendar/vcal_manager.c:1236
 msgid "Declined: "
 msgstr "Odmietnuté:"
 
-#: src/vcal_manager.c:1234
+#: src/plugins/vcalendar/vcal_manager.c:1238
 msgid "Tentatively Accepted: "
 msgstr "Nezáväzne prijaté:"
 
-#: src/day-view.c:597 src/month-view.c:697
+#: src/plugins/vcalendar/day-view.c:601 src/plugins/vcalendar/month-view.c:701
 msgid "Start"
 msgstr "Začiatok"
 
-#: src/day-view.c:610 src/month-view.c:710
+#: src/plugins/vcalendar/day-view.c:614 src/plugins/vcalendar/month-view.c:714
 msgid "Show"
 msgstr "Zobraziť"
 
@@ -10407,7 +10788,7 @@ msgstr "Zobraziť"
 msgid "days"
 msgstr "dňoch"
 
-#: src/plugin.c:73
+#: src/plugins/vcalendar/plugin.c:69
 msgid ""
 "This plugin enables vCalendar message handling like that produced by "
 "Evolution or Outlook.\n"
@@ -10437,95 +10818,95 @@ msgstr ""
 "stretnutia a kalendáre, zverejňovať informácie o svojom čase a prijímať "
 "informácie od iných."
 
-#: src/plugin.c:106
+#: src/plugins/vcalendar/plugin.c:102
 msgid "Calendar"
 msgstr "Kalendár"
 
-#: src/month-view.c:107
+#: src/plugins/vcalendar/month-view.c:111
 msgid "Monday"
 msgstr "Pondelok"
 
-#: src/month-view.c:108
+#: src/plugins/vcalendar/month-view.c:112
 msgid "Tuesday"
 msgstr "Utorok"
 
-#: src/month-view.c:109
+#: src/plugins/vcalendar/month-view.c:113
 msgid "Wednesday"
 msgstr "Streda"
 
-#: src/month-view.c:110
+#: src/plugins/vcalendar/month-view.c:114
 msgid "Thursday"
 msgstr "Štvrtok"
 
-#: src/month-view.c:111
+#: src/plugins/vcalendar/month-view.c:115
 msgid "Friday"
 msgstr "Piatok"
 
-#: src/month-view.c:112
+#: src/plugins/vcalendar/month-view.c:116
 msgid "Saturday"
 msgstr "Sobota"
 
-#: src/month-view.c:113
+#: src/plugins/vcalendar/month-view.c:117
 msgid "Sunday"
 msgstr "Nedeľa"
 
-#: src/month-view.c:116
+#: src/plugins/vcalendar/month-view.c:120
 msgid "January"
 msgstr "Január"
 
-#: src/month-view.c:117
+#: src/plugins/vcalendar/month-view.c:121
 msgid "February"
 msgstr "Február"
 
-#: src/month-view.c:118
+#: src/plugins/vcalendar/month-view.c:122
 msgid "March"
 msgstr "Marec"
 
-#: src/month-view.c:119
+#: src/plugins/vcalendar/month-view.c:123
 msgid "April"
 msgstr "Apríl"
 
-#: src/month-view.c:120
+#: src/plugins/vcalendar/month-view.c:124
 msgid "May"
 msgstr "Máj"
 
-#: src/month-view.c:121
+#: src/plugins/vcalendar/month-view.c:125
 msgid "June"
 msgstr "Jún"
 
-#: src/month-view.c:122
+#: src/plugins/vcalendar/month-view.c:126
 msgid "July"
 msgstr "Júl"
 
-#: src/month-view.c:123
+#: src/plugins/vcalendar/month-view.c:127
 msgid "August"
 msgstr "August"
 
-#: src/month-view.c:124
+#: src/plugins/vcalendar/month-view.c:128
 msgid "September"
 msgstr "September"
 
-#: src/month-view.c:125
+#: src/plugins/vcalendar/month-view.c:129
 msgid "October"
 msgstr "Október"
 
-#: src/month-view.c:126
+#: src/plugins/vcalendar/month-view.c:130
 msgid "November"
 msgstr "November"
 
-#: src/month-view.c:127
+#: src/plugins/vcalendar/month-view.c:131
 msgid "December"
 msgstr "December"
 
-#: src/month-view.c:805
+#: src/plugins/vcalendar/month-view.c:809
 msgid "Week number"
 msgstr "Číslo týždňa"
 
-#: src/month-view.c:903
+#: src/plugins/vcalendar/month-view.c:907
 msgid "Previous month"
 msgstr "Minulý mesiac"
 
-#: src/month-view.c:926
+#: src/plugins/vcalendar/month-view.c:930
 msgid "Next month"
 msgstr "Ďalší mesiac"
 
@@ -15617,12 +15998,6 @@ msgid ""
 msgstr ""
 "Program Claws Mail je pripravený.\n"
 "Kliknite na Uložiť."
-
-#~ msgid "Claws Mail needs network access in order to update the Webcal feed."
-#~ msgstr "Claws Mail potrebuje na aktualizáciu kanála Webcal prístup k sieti."
-
-#~ msgid "Claws Mail needs network access in order to update the subscription."
-#~ msgstr "Claws Mail potrebuje sieťový prístup na aktualizáciu prihlásenia."
 
 #~ msgid ""
 #~ "Command could not be started. Pipe creation failed.\n"

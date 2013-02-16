@@ -92,6 +92,14 @@ src/plugins/pgpinline/pgpinline.c
 src/plugins/pgpinline/plugin.c
 src/plugins/pgpmime/pgpmime.c
 src/plugins/pgpmime/plugin.c
+src/plugins/rssyl/rssyl_prefs.c
+src/plugins/rssyl/rssyl.h
+src/plugins/rssyl/rssyl_gtk.c
+src/plugins/rssyl/plugin.c
+src/plugins/rssyl/feed.h
+src/plugins/rssyl/rssyl_cb_menu.c
+src/plugins/rssyl/rssyl.c
+src/plugins/rssyl/feed.c
 src/plugins/smime/plugin.c
 src/plugins/smime/smime.c
 src/plugins/spamassassin/spamassassin.c

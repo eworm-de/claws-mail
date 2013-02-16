@@ -4,7 +4,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Claws Mail\n"
 "Report-Msgid-Bugs-To: paul@claws-mail.org\n"
-"POT-Creation-Date: 2013-02-14 11:15+0100\n"
+"POT-Creation-Date: 2013-02-16 13:01+0100\n"
 "PO-Revision-Date: 2010-04-25 00:52+0100\n"
 "Last-Translator: Tiago Faria <tiago@xroot.org>\n"
 "Language-Team: Portuguese\n"
@@ -142,6 +142,7 @@ msgstr ""
 "%s"
 
 #: src/action.c:980 src/plugins/bogofilter/bogofilter.c:875
+#: src/plugins/rssyl/feed.c:1734 src/plugins/rssyl/feed.c:1738
 #: src/plugins/vcalendar/vcal_folder.c:1800
 #: src/plugins/vcalendar/vcal_folder.c:1804
 #: src/plugins/vcalendar/vcal_folder.c:1815
@@ -647,6 +648,7 @@ msgstr ""
 "contidos serão movidos para a pasta superior."
 
 #: src/addressbook.c:2932 src/imap_gtk.c:363 src/mh_gtk.c:202
+#: src/plugins/rssyl/rssyl_cb_menu.c:237
 #: src/plugins/vcalendar/vcal_folder.c:1953
 msgid "Delete folder"
 msgstr "Excluir a pasta"
@@ -1479,7 +1481,7 @@ msgstr "%I:%M:%S %p"
 msgid "_Add..."
 msgstr "_Adicionar..."
 
-#: src/compose.c:566 src/mh_gtk.c:361
+#: src/compose.c:566 src/mh_gtk.c:361 src/plugins/rssyl/rssyl_cb_menu.c:140
 msgid "_Remove"
 msgstr "_Remover"
 
@@ -2675,10 +2677,12 @@ msgid "Input the new name of folder:"
 msgstr "Introduza o nome para a nova pasta:"
 
 #: src/editgroup.c:556 src/foldersel.c:552 src/imap_gtk.c:195 src/mh_gtk.c:145
+#: src/plugins/rssyl/rssyl_cb_menu.c:89
 msgid "New folder"
 msgstr "Nova pasta"
 
 #: src/editgroup.c:557 src/foldersel.c:553 src/mh_gtk.c:146
+#: src/plugins/rssyl/rssyl_cb_menu.c:90
 msgid "Input the name of new folder:"
 msgstr "Escreva o nome da nova pasta:"
 
@@ -3458,24 +3462,28 @@ msgid "Select folder"
 msgstr "Seleccione a pasta"
 
 #: src/foldersel.c:554 src/imap_gtk.c:199 src/mh_gtk.c:147
+#: src/plugins/rssyl/rssyl_cb_menu.c:91
 msgid "NewFolder"
 msgstr "NovaPasta"
 
 #: src/foldersel.c:562 src/imap_gtk.c:210 src/imap_gtk.c:216
 #: src/imap_gtk.c:272 src/mh_gtk.c:155 src/mh_gtk.c:259 src/news_gtk.c:314
+#: src/plugins/rssyl/rssyl_cb_menu.c:97 src/plugins/rssyl/rssyl_cb_menu.c:341
 #: src/plugins/vcalendar/vcal_folder.c:2025
 #, c-format
 msgid "'%c' can't be included in folder name."
 msgstr "'%c' não pode ser incluído no nome da pasta."
 
 #: src/foldersel.c:572 src/imap_gtk.c:226 src/imap_gtk.c:284 src/mh_gtk.c:165
-#: src/mh_gtk.c:266 src/news_gtk.c:321
+#: src/mh_gtk.c:266 src/news_gtk.c:321 src/plugins/rssyl/rssyl_cb_menu.c:107
+#: src/plugins/rssyl/rssyl_cb_menu.c:348
 #: src/plugins/vcalendar/vcal_folder.c:2032
 #, c-format
 msgid "The folder '%s' already exists."
 msgstr "A pasta '%s' já existe."
 
 #: src/foldersel.c:579 src/imap_gtk.c:232 src/mh_gtk.c:171
+#: src/plugins/rssyl/rssyl_cb_menu.c:113
 #, c-format
 msgid "Can't create the folder '%s'."
 msgstr "Não foi possível criar a pasta '%s'."
@@ -3624,7 +3632,7 @@ msgstr "_Enviar"
 msgid "Some errors occurred while sending queued messages."
 msgstr "Ocorreram erros durante o envio das mensagens da Fila de Saída."
 
-#: src/folderview.c:2408 src/main.c:2844 src/toolbar.c:2732
+#: src/folderview.c:2408 src/main.c:2853 src/toolbar.c:2732
 #, c-format
 msgid ""
 "Some errors occurred while sending queued messages:\n"
@@ -3958,45 +3966,45 @@ msgstr ""
 ">. \n"
 "\n"
 
-#: src/gtk/about.c:699 src/main.c:2671
+#: src/gtk/about.c:699 src/main.c:2680
 #, fuzzy
 msgid "Session statistics\n"
 msgstr "Tempo da sessão esgotado\n"
 
-#: src/gtk/about.c:709 src/gtk/about.c:712 src/main.c:2681 src/main.c:2684
+#: src/gtk/about.c:709 src/gtk/about.c:712 src/main.c:2690 src/main.c:2693
 #, fuzzy, c-format
 msgid "Started: %s\n"
 msgstr "escrever em fd%d: %s\n"
 
-#: src/gtk/about.c:719 src/main.c:2690
+#: src/gtk/about.c:719 src/main.c:2699
 msgid "Incoming traffic\n"
 msgstr ""
 
-#: src/gtk/about.c:722 src/main.c:2693
+#: src/gtk/about.c:722 src/main.c:2702
 #, fuzzy, c-format
 msgid "Received messages: %d\n"
 msgstr "mensagens apagadas"
 
-#: src/gtk/about.c:729 src/main.c:2699
+#: src/gtk/about.c:729 src/main.c:2708
 msgid "Outgoing traffic\n"
 msgstr ""
 
-#: src/gtk/about.c:732 src/main.c:2702
+#: src/gtk/about.c:732 src/main.c:2711
 #, fuzzy, c-format
 msgid "New/redirected messages: %d\n"
 msgstr "Filtrar as mensagens _seleccionadas"
 
-#: src/gtk/about.c:737 src/main.c:2706
+#: src/gtk/about.c:737 src/main.c:2715
 #, fuzzy, c-format
 msgid "Replied messages: %d\n"
 msgstr "mensagens apagadas"
 
-#: src/gtk/about.c:742 src/main.c:2710
+#: src/gtk/about.c:742 src/main.c:2719
 #, fuzzy, c-format
 msgid "Forwarded messages: %d\n"
 msgstr "mensagens encaminhadas"
 
-#: src/gtk/about.c:747 src/main.c:2714
+#: src/gtk/about.c:747 src/main.c:2723
 #, fuzzy, c-format
 msgid "Total outgoing messages: %d\n"
 msgstr "A filtrar as mensagens...\n"
@@ -4785,6 +4793,7 @@ msgstr ""
 #: src/gtk/pluginwindow.c:304 src/plugins/bogofilter/bogofilter_gtk.c:457
 #: src/plugins/dillo_viewer/dillo_prefs.c:129
 #: src/plugins/fancy/fancy_prefs.c:110 src/plugins/pgpcore/prefs_gpg.c:557
+#: src/plugins/rssyl/rssyl_prefs.c:63
 #: src/plugins/spamassassin/spamassassin_gtk.c:648
 #: src/plugins/trayicon/trayicon_prefs.c:69
 #: src/plugins/vcalendar/vcal_prefs.c:645 src/prefs_toolbar.c:939
@@ -5715,7 +5724,7 @@ msgstr "_Mover directório..."
 msgid "Cop_y folder..."
 msgstr "_Copiar directório..."
 
-#: src/imap_gtk.c:69 src/mh_gtk.c:59
+#: src/imap_gtk.c:69 src/mh_gtk.c:59 src/plugins/rssyl/rssyl_gtk.c:61
 msgid "_Delete folder..."
 msgstr "E_xcluir directório..."
 
@@ -5770,12 +5779,13 @@ msgid "Inherit properties from parent folder"
 msgstr "Propriedades herdadas da pasta superior"
 
 #: src/imap_gtk.c:261 src/mh_gtk.c:249 src/news_gtk.c:305
+#: src/plugins/rssyl/rssyl_cb_menu.c:333
 #: src/plugins/vcalendar/vcal_folder.c:2017
 #, c-format
 msgid "Input new name for '%s':"
 msgstr "Entre com o novo nome para '%s':"
 
-#: src/imap_gtk.c:263 src/mh_gtk.c:251
+#: src/imap_gtk.c:263 src/mh_gtk.c:251 src/plugins/rssyl/rssyl_cb_menu.c:334
 #: src/plugins/vcalendar/vcal_folder.c:2018
 msgid "Rename folder"
 msgstr "Renomear o directório"
@@ -5786,6 +5796,7 @@ msgid "`%c' can't be included in folder name."
 msgstr "`%c' não pode ser incluído no nome do directório."
 
 #: src/imap_gtk.c:292 src/mh_gtk.c:274 src/news_gtk.c:327
+#: src/plugins/rssyl/rssyl_cb_menu.c:354
 #: src/plugins/vcalendar/vcal_folder.c:2038
 msgid ""
 "The folder could not be renamed.\n"
@@ -5794,7 +5805,7 @@ msgstr ""
 "Não foi possível renomear a pasta.\n"
 "O nome fornecido não é permitido."
 
-#: src/imap_gtk.c:360 src/mh_gtk.c:199
+#: src/imap_gtk.c:360 src/mh_gtk.c:199 src/plugins/rssyl/rssyl_cb_menu.c:234
 #, c-format
 msgid ""
 "All folders and messages under '%s' will be permanently deleted. Recovery "
@@ -5808,6 +5819,7 @@ msgstr ""
 "Confirma a exclusão?"
 
 #: src/imap_gtk.c:381 src/mh_gtk.c:220 src/news_gtk.c:280
+#: src/plugins/rssyl/rssyl_cb_menu.c:256
 #: src/plugins/vcalendar/vcal_folder.c:1974
 #, c-format
 msgid "Can't remove the folder '%s'."
@@ -6394,7 +6406,7 @@ msgstr "Sylpheed-Claws 1.9.15 (ou mais antigo)"
 msgid "Sylpheed-Claws 1.0.5 (or older)"
 msgstr "Sylpheed-Claws 1.0.5 (ou mais antigo)"
 
-#: src/main.c:1563
+#: src/main.c:1572
 #, c-format
 msgid ""
 "The following plugin failed to load. Check the Plugins configuration for "
@@ -6413,7 +6425,7 @@ msgstr[1] ""
 "plugins para maiores informacções:\n"
 "%s"
 
-#: src/main.c:1591
+#: src/main.c:1600
 msgid ""
 "Claws Mail has detected a configured mailbox, but it is incomplete. It is "
 "possibly due to a failing IMAP account. Use \"Rebuild folder tree\" on the "
@@ -6424,7 +6436,7 @@ msgstr ""
 "de pastas\" no menu de contexto da pasta raiz da pasta da caixa postal para "
 "tentar consertá-la."
 
-#: src/main.c:1597
+#: src/main.c:1606
 msgid ""
 "Claws Mail has detected a configured mailbox, but could not load it. It is "
 "probably provided by an out-of-date external plugin. Please reinstall the "
@@ -6434,43 +6446,43 @@ msgstr ""
 "carregá-la. Ela provavelmente foi fornecida por um plugin externo "
 "desactualizado. Por favor, reinstale o plugin e tente novamente."
 
-#: src/main.c:1626
+#: src/main.c:1635
 #, c-format
 msgid "Claws Mail can not start without its data volume (%s)."
 msgstr "O Claws Mail não pode iniciar sem o seu volume de dados (%s)."
 
-#: src/main.c:1873
+#: src/main.c:1882
 msgid "Missing filename\n"
 msgstr ""
 
-#: src/main.c:1880
+#: src/main.c:1889
 msgid "Cannot open filename for reading\n"
 msgstr ""
 
-#: src/main.c:1891
+#: src/main.c:1900
 #, fuzzy
 msgid "Malformed header\n"
 msgstr "Excluir cabeçalho"
 
-#: src/main.c:1898
+#: src/main.c:1907
 msgid "Duplicated 'To:' header\n"
 msgstr ""
 
-#: src/main.c:1913
+#: src/main.c:1922
 #, fuzzy
 msgid "Missing required 'To:' header\n"
 msgstr "Faltam informações necessárias"
 
-#: src/main.c:2058
+#: src/main.c:2067
 #, c-format
 msgid "Usage: %s [OPTION]...\n"
 msgstr "Utilização: %s [OPÇÕES]...\n"
 
-#: src/main.c:2060
+#: src/main.c:2069
 msgid "  --compose [address]    open composition window"
 msgstr "  --compose [endereço]   abre a janela de composição de mensagens"
 
-#: src/main.c:2061
+#: src/main.c:2070
 msgid ""
 "  --compose-from-file file\n"
 "                         open composition window with data from given file;\n"
@@ -6481,12 +6493,12 @@ msgid ""
 "                         empty line, then mail body until end of file."
 msgstr ""
 
-#: src/main.c:2066
+#: src/main.c:2075
 msgid "  --subscribe [uri]      subscribe to the given URI if possible"
 msgstr ""
 "  --subscribe [uri]      inscrever-se à URI fornecida, caso seja possível"
 
-#: src/main.c:2067
+#: src/main.c:2076
 msgid ""
 "  --attach file1 [file2]...\n"
 "                         open composition window with specified files\n"
@@ -6496,25 +6508,25 @@ msgstr ""
 "                         abre uma janela de composição com os ficheiros\n"
 "                         especificados anexados"
 
-#: src/main.c:2070
+#: src/main.c:2079
 msgid "  --receive              receive new messages"
 msgstr "  --receive              recebe novas mensagens"
 
-#: src/main.c:2071
+#: src/main.c:2080
 msgid "  --receive-all          receive new messages of all accounts"
 msgstr "  --receive-all          recebe novas mensagens de todas as contas"
 
-#: src/main.c:2072
+#: src/main.c:2081
 #, fuzzy
 msgid "  --cancel-receiving     cancel receiving of messages"
 msgstr "  --receive              recebe novas mensagens"
 
-#: src/main.c:2073
+#: src/main.c:2082
 #, fuzzy
 msgid "  --cancel-sending       cancel sending of messages"
 msgstr "  --receive              recebe novas mensagens"
 
-#: src/main.c:2074
+#: src/main.c:2083
 msgid ""
 "  --search folder type request [recursive]\n"
 "                         searches mail\n"
@@ -6525,15 +6537,15 @@ msgid ""
 "                         recursive: false if arg. starts with 0, n, N, f or F"
 msgstr ""
 
-#: src/main.c:2081
+#: src/main.c:2090
 msgid "  --send                 send all queued messages"
 msgstr "  --send                 envia todas as mensagens da Fila de Saída"
 
-#: src/main.c:2082
+#: src/main.c:2091
 msgid "  --status [folder]...   show the total number of messages"
 msgstr "  --status [pasta]...    mostra o número total de mensagens"
 
-#: src/main.c:2083
+#: src/main.c:2092
 msgid ""
 "  --status-full [folder]...\n"
 "                         show the status of each folder"
@@ -6541,15 +6553,15 @@ msgstr ""
 "  --status-full [pasta]...\n"
 "                         mostra o status de cada pasta"
 
-#: src/main.c:2085
+#: src/main.c:2094
 msgid "  --statistics           show session statistics"
 msgstr ""
 
-#: src/main.c:2086
+#: src/main.c:2095
 msgid "  --reset-statistics     reset session statistics"
 msgstr ""
 
-#: src/main.c:2087
+#: src/main.c:2096
 msgid ""
 "  --select folder[/msg]  jumps to the specified folder/message\n"
 "                         folder is a folder id like 'folder/sub_folder'"
@@ -6557,31 +6569,31 @@ msgstr ""
 "  --select pasta[/msg]  vai para a pasta/mensagem especificada\n"
 "                        pasta é uma id de pasta, como 'pasta/sub_pasta'"
 
-#: src/main.c:2089
+#: src/main.c:2098
 msgid "  --online               switch to online mode"
 msgstr "  --online               alterna para o modo conectado"
 
-#: src/main.c:2090
+#: src/main.c:2099
 msgid "  --offline              switch to offline mode"
 msgstr "  --offline              alterna para o modo desconectado"
 
-#: src/main.c:2091
+#: src/main.c:2100
 msgid "  --exit --quit -q       exit Claws Mail"
 msgstr "  --exit --quit -q       sai do Claws Mail"
 
-#: src/main.c:2092
+#: src/main.c:2101
 msgid "  --debug                debug mode"
 msgstr "  --debug                modo de debug"
 
-#: src/main.c:2093
+#: src/main.c:2102
 msgid "  --help -h              display this help and exit"
 msgstr "  --help -h              exibe esta informação de ajuda e finaliza"
 
-#: src/main.c:2094
+#: src/main.c:2103
 msgid "  --version -v           output version information and exit"
 msgstr "  --version -v           exibe a versão do programa e finaliza"
 
-#: src/main.c:2095
+#: src/main.c:2104
 msgid ""
 "  --version-full -V      output version and built-in features information "
 "and exit"
@@ -6589,11 +6601,11 @@ msgstr ""
 "  --version-full -V      exibe a versão do programa e informações sobre os "
 "recursos internos e finaliza"
 
-#: src/main.c:2096
+#: src/main.c:2105
 msgid "  --config-dir           output configuration directory"
 msgstr "  --config-dir           exibe o directório de configuração"
 
-#: src/main.c:2097
+#: src/main.c:2106
 msgid ""
 "  --alternate-config-dir [dir]\n"
 "                         use specified configuration directory"
@@ -6601,34 +6613,34 @@ msgstr ""
 "  --alternate-config-dir [dir]\n"
 "                         usa o directório de configuração especificado"
 
-#: src/main.c:2147
+#: src/main.c:2156
 msgid "Unknown option\n"
 msgstr "Opção desconhecida\n"
 
-#: src/main.c:2165
+#: src/main.c:2174
 #, c-format
 msgid "Processing (%s)..."
 msgstr "Processando (%s)..."
 
-#: src/main.c:2168
+#: src/main.c:2177
 msgid "top level folder"
 msgstr "pasta do nível mais acima"
 
-#: src/main.c:2251
+#: src/main.c:2260
 msgid "Queued messages"
 msgstr "Mensagens na Fila de Saída"
 
-#: src/main.c:2252
+#: src/main.c:2261
 msgid "Some unsent messages are queued. Exit now?"
 msgstr ""
 "Ainda existem mensagens da Fila de Saída que não foram enviadas. Finalizar "
 "agora?"
 
-#: src/main.c:2981
+#: src/main.c:2990
 msgid "NetworkManager: network is online.\n"
 msgstr "NetworkManager: a rede está conectada.\n"
 
-#: src/main.c:2987
+#: src/main.c:2996
 msgid "NetworkManager: network is offline.\n"
 msgstr "NetworkManager: a rede está desconectada.\n"
 
@@ -7470,7 +7482,7 @@ msgstr ""
 "Se for especificada uma já existente, ela será\n"
 "verificada automaticamente."
 
-#: src/mainwindow.c:3108
+#: src/mainwindow.c:3108 src/plugins/rssyl/rssyl_gtk.c:158
 #, c-format
 msgid "The mailbox '%s' already exists."
 msgstr "A caixa postal '%s' já existe."
@@ -7854,7 +7866,7 @@ msgstr ""
 "Por favor, seleccione qual a conta que você deseja utilizar para enviar a "
 "confirmação:"
 
-#: src/messageview.c:2121
+#: src/messageview.c:2121 src/plugins/rssyl/rssyl_gtk.c:480
 msgid "_Cancel"
 msgstr "_Cancelar"
 
@@ -8156,7 +8168,7 @@ msgstr "Deseja realmente cancelar a subscrição ao Newsgroup '%s'?"
 msgid "Unsubscribe newsgroup"
 msgstr "Cancelar a subscrição ao Newsgroup"
 
-#: src/news_gtk.c:267
+#: src/news_gtk.c:267 src/plugins/rssyl/rssyl_gtk.c:678
 msgid "_Unsubscribe"
 msgstr "_Cancelar subscrição"
 
@@ -9357,6 +9369,378 @@ msgstr ""
 "\n"
 "GPGME possui copyright 2001 por Werner Koch <dd9jn@gnu.org>"
 
+#: src/plugins/rssyl/rssyl_prefs.c:103
+#, fuzzy
+msgid "Default refresh interval in minutes"
+msgstr "Tema interno padrão"
+
+#: src/plugins/rssyl/rssyl_prefs.c:114
+msgid "Set to 0 to disable automatic refreshing"
+msgstr ""
+
+#: src/plugins/rssyl/rssyl_prefs.c:116
+msgid "Default number of expired items to keep"
+msgstr ""
+
+#: src/plugins/rssyl/rssyl_prefs.c:127
+msgid "Set to -1 to keep expired items"
+msgstr ""
+
+#: src/plugins/rssyl/rssyl_prefs.c:130
+msgid "Refresh all feeds on application start"
+msgstr ""
+
+#: src/plugins/rssyl/rssyl_prefs.c:136
+#, fuzzy
+msgid "Path to cookies file"
+msgstr "Caminho para o programa Bogofilter"
+
+#: src/plugins/rssyl/rssyl_prefs.c:146
+msgid "Path to Netscape-style cookies.txt file containing your cookies"
+msgstr ""
+
+#: src/plugins/rssyl/rssyl.h:8
+msgid "RSSyl"
+msgstr ""
+
+#: src/plugins/rssyl/rssyl.h:14
+msgid "My Feeds"
+msgstr ""
+
+#: src/plugins/rssyl/rssyl_gtk.c:53
+msgid "_Refresh feed"
+msgstr ""
+
+#: src/plugins/rssyl/rssyl_gtk.c:54
+msgid "Refresh _all feeds"
+msgstr ""
+
+#: src/plugins/rssyl/rssyl_gtk.c:55
+#, fuzzy
+msgid "Subscribe _new feed..."
+msgstr "_Inscrever..."
+
+#: src/plugins/rssyl/rssyl_gtk.c:56
+#, fuzzy
+msgid "_Unsubscribe feed..."
+msgstr "_Anular inscrição..."
+
+#: src/plugins/rssyl/rssyl_gtk.c:57
+#, fuzzy
+msgid "Feed pr_operties..."
+msgstr "_Propriedades..."
+
+#: src/plugins/rssyl/rssyl_gtk.c:58
+#, fuzzy
+msgid "Import feed list..."
+msgstr "Importar ficheiro mbox"
+
+#: src/plugins/rssyl/rssyl_gtk.c:59
+#, fuzzy
+msgid "Rena_me..."
+msgstr "_Renomear directório..."
+
+#: src/plugins/rssyl/rssyl_gtk.c:60
+#, fuzzy
+msgid "_Create new folder..."
+msgstr "Criar _novo directório..."
+
+#: src/plugins/rssyl/rssyl_gtk.c:62
+#, fuzzy
+msgid "Remove folder _tree..."
+msgstr "A reconstruir a árvore de pastas..."
+
+#: src/plugins/rssyl/rssyl_gtk.c:152
+#, fuzzy
+msgid "Add RSS folder tree"
+msgstr "Reconstruir a árvore de pastas"
+
+#: src/plugins/rssyl/rssyl_gtk.c:153
+#, fuzzy
+msgid "Enter name for a new RSS folder tree."
+msgstr "Escreva o nome da nova pasta:"
+
+#: src/plugins/rssyl/rssyl_gtk.c:169
+#, fuzzy
+msgid ""
+"Creation of folder tree failed.\n"
+"Maybe some files already exist, or you don't have the permission to write "
+"there?"
+msgstr ""
+"Não foi possível criar a caixa postal.\n"
+"Talvez já existam ficheiros, ou você não possui permissão para escrita nesta "
+"pasta."
+
+#: src/plugins/rssyl/rssyl_gtk.c:184
+msgid "RSSyl..."
+msgstr ""
+
+#: src/plugins/rssyl/rssyl_gtk.c:256
+msgid "Use default refresh interval"
+msgstr ""
+
+#: src/plugins/rssyl/rssyl_gtk.c:268
+msgid "Keep default number of expired entries"
+msgstr ""
+
+#: src/plugins/rssyl/rssyl_gtk.c:274
+msgid "Fetch comments if possible"
+msgstr ""
+
+#: src/plugins/rssyl/rssyl_gtk.c:312
+msgid "<b>Source URL:</b>"
+msgstr ""
+
+#: src/plugins/rssyl/rssyl_gtk.c:340
+msgid ""
+"<b>Fetch comments on posts aged less than:</b>\n"
+"<small>(In days; set to -1 to fetch all comments)</small>"
+msgstr ""
+
+#: src/plugins/rssyl/rssyl_gtk.c:374
+msgid ""
+"<b>Refresh interval in minutes:</b>\n"
+"<small>(Set to 0 to disable automatic refreshing for this feed)</small>"
+msgstr ""
+
+#: src/plugins/rssyl/rssyl_gtk.c:407
+msgid ""
+"<b>Number of expired entries to keep:</b>\n"
+"<small>(Set to -1 if you want to keep expired entries)</small>"
+msgstr ""
+
+#: src/plugins/rssyl/rssyl_gtk.c:433
+msgid "<b>If an item changes, do not mark it as unread:</b>"
+msgstr ""
+
+#: src/plugins/rssyl/rssyl_gtk.c:443
+#, fuzzy
+msgid "Always mark as unread"
+msgstr "Marcar como não lida"
+
+#: src/plugins/rssyl/rssyl_gtk.c:445
+msgid "If only its text changed"
+msgstr ""
+
+#: src/plugins/rssyl/rssyl_gtk.c:447
+#, fuzzy
+msgid "Never mark as unread"
+msgstr "Marcar como não lida"
+
+#: src/plugins/rssyl/rssyl_gtk.c:501
+msgid "_OK"
+msgstr ""
+
+#: src/plugins/rssyl/rssyl_gtk.c:509
+#, fuzzy
+msgid "Set feed properties"
+msgstr "Propriedades"
+
+#: src/plugins/rssyl/rssyl_gtk.c:634 src/plugins/rssyl/rssyl_gtk.c:658
+#, fuzzy
+msgid "Unsubscribe feed"
+msgstr "_Desinscrever"
+
+#: src/plugins/rssyl/rssyl_gtk.c:659
+#, fuzzy
+msgid "Do you really want to remove feed"
+msgstr "Deseja realmente excluir este cabeçalho?"
+
+#: src/plugins/rssyl/rssyl_gtk.c:665
+#, fuzzy
+msgid "Remove cached entries"
+msgstr "_Remover referências"
+
+#: src/plugins/rssyl/plugin.c:63
+msgid ""
+"This plugin allows you to create a mailbox tree where you can add newsfeeds "
+"in RSS 1.0, RSS 2.0 or Atom format.\n"
+"\n"
+"Each newsfeed will create a folder with appropriate entries, fetched from "
+"the web. You can read them, and delete or keep old entries."
+msgstr ""
+
+#: src/plugins/rssyl/plugin.c:87
+msgid "RSS feed"
+msgstr ""
+
+#: src/plugins/rssyl/feed.h:20
+#, fuzzy, c-format
+msgid "Time out connecting to URL %s\n"
+msgstr "Ocorreu um erro na ligação ao servidor LDAP"
+
+#: src/plugins/rssyl/feed.h:21
+#, fuzzy, c-format
+msgid "Couldn't fetch URL %s\n"
+msgstr "Não foi possível desencriptar: %s"
+
+#: src/plugins/rssyl/feed.h:22
+#, c-format
+msgid "Error parsing feed from URL %s\n"
+msgstr ""
+
+#: src/plugins/rssyl/feed.h:23
+#, c-format
+msgid "Unsupported feed type at URL %s\n"
+msgstr ""
+
+#: src/plugins/rssyl/feed.h:25
+#, c-format
+msgid "RSSyl: Updating feed %s\n"
+msgstr ""
+
+#: src/plugins/rssyl/feed.h:26
+#, c-format
+msgid "RSSyl: Feed update finished: %s\n"
+msgstr ""
+
+#: src/plugins/rssyl/feed.h:27
+msgid "RSSyl: Feed update aborted, application is exiting.\n"
+msgstr ""
+
+#: src/plugins/rssyl/rssyl_cb_menu.c:62
+#, fuzzy
+msgid "Subscribe feed"
+msgstr "Inscrever"
+
+#: src/plugins/rssyl/rssyl_cb_menu.c:63
+msgid "Input the URL of the news feed you wish to subscribe:"
+msgstr ""
+
+#: src/plugins/rssyl/rssyl_cb_menu.c:138
+#, fuzzy, c-format
+msgid "Really remove the folder tree '%s' ?\n"
+msgstr "Não foi possível remover a pasta '%s'."
+
+#: src/plugins/rssyl/rssyl_cb_menu.c:139
+#, fuzzy
+msgid "Remove folder tree"
+msgstr "Reconstruir a árvore de pastas"
+
+#: src/plugins/rssyl/rssyl_cb_menu.c:204
+#, fuzzy, c-format
+msgid "Can't remove feed '%s'."
+msgstr "Não foi possível remover a pasta '%s'."
+
+#: src/plugins/rssyl/rssyl_cb_menu.c:283 src/plugins/rssyl/feed.c:1856
+#, fuzzy
+msgid "Claws Mail needs network access in order to update the feed."
+msgid_plural "Claws Mail needs network access in order to update the feeds."
+msgstr[0] ""
+"O Claws Mail necessita de acesso à rede para se ligar ao servidor de News."
+msgstr[1] ""
+"O Claws Mail necessita de acesso à rede para se ligar ao servidor de News."
+
+#: src/plugins/rssyl/rssyl_cb_menu.c:376
+#, fuzzy
+msgid "Select a .opml file"
+msgstr "Seleccione o ficheiro"
+
+#: src/plugins/rssyl/rssyl.c:133 src/plugins/rssyl/rssyl.c:145
+msgid "Refresh all feeds"
+msgstr ""
+
+#: src/plugins/rssyl/feed.c:125
+#, fuzzy
+msgid "Cannot open temporary file"
+msgstr "Não foi possível abrir o ficheiro temporário."
+
+#: src/plugins/rssyl/feed.c:136
+msgid "Cannot init libCURL"
+msgstr ""
+
+#: src/plugins/rssyl/feed.c:231 src/plugins/vcalendar/vcal_folder.c:1593
+#, fuzzy
+msgid "401 (Authorisation required)"
+msgstr "Foi requerida uma autenticação (mais) forte"
+
+#: src/plugins/rssyl/feed.c:234 src/plugins/vcalendar/vcal_folder.c:1596
+msgid "403 (Unauthorised)"
+msgstr ""
+
+#: src/plugins/rssyl/feed.c:237 src/plugins/vcalendar/vcal_folder.c:1599
+#, fuzzy
+msgid "404 (Not found)"
+msgstr "não encontrada"
+
+#: src/plugins/rssyl/feed.c:240 src/plugins/vcalendar/vcal_folder.c:1602
+#, fuzzy, c-format
+msgid "Error %ld"
+msgstr "Erro: "
+
+#: src/plugins/rssyl/feed.c:324
+#, fuzzy, c-format
+msgid "Fetching '%s'..."
+msgstr "A obter a mensagem..."
+
+#: src/plugins/rssyl/feed.c:383
+#, fuzzy
+msgid "Malformed feed"
+msgstr "Excluir cabeçalho"
+
+#: src/plugins/rssyl/feed.c:1199
+#, fuzzy, c-format
+msgid "Refreshing feed '%s'..."
+msgstr "A fechar o directório %s..."
+
+#: src/plugins/rssyl/feed.c:1214
+#, c-format
+msgid ""
+"RSSyl: Fetching comments is not supported for RDF feeds. Cannot fetch "
+"comments of '%s'"
+msgstr ""
+
+#: src/plugins/rssyl/feed.c:1223
+#, fuzzy
+msgid "This feed format is not supported yet."
+msgstr "g_thread não é suportado pela glib.\n"
+
+#: src/plugins/rssyl/feed.c:1254
+msgid "N/A"
+msgstr ""
+
+#: src/plugins/rssyl/feed.c:1374
+#, fuzzy, c-format
+msgid "%ld byte"
+msgid_plural "%ld bytes"
+msgstr[0] "bytes"
+msgstr[1] "bytes"
+
+#: src/plugins/rssyl/feed.c:1377
+#, fuzzy
+msgid "size unknown"
+msgstr "desconhecido"
+
+#: src/plugins/rssyl/feed.c:1550
+#, fuzzy, c-format
+msgid ""
+"RSSyl: Cannot update feed %s:\n"
+"%s\n"
+msgstr "Não foi possível abrir o ficheiro desencriptado %s"
+
+#: src/plugins/rssyl/feed.c:1722
+msgid "You are already subscribed to this feed."
+msgstr ""
+
+#: src/plugins/rssyl/feed.c:1733
+#, fuzzy, c-format
+msgid ""
+"Couldn't fetch URL '%s':\n"
+"%s"
+msgstr "Não foi possível salvar o ficheiro '%s'."
+
+#: src/plugins/rssyl/feed.c:1738
+#, fuzzy, c-format
+msgid ""
+"Couldn't fetch URL '%s':\n"
+"%s\n"
+msgstr "Não foi possível salvar o ficheiro '%s'."
+
+#: src/plugins/rssyl/feed.c:1754
+#, fuzzy, c-format
+msgid "Can't subscribe feed '%s'."
+msgstr "Não foi possível criar a pasta '%s'."
+
 #: src/plugins/smime/plugin.c:38 src/plugins/smime/plugin.c:54
 #: src/plugins/smime/smime.c:924
 msgid "S/MIME"
@@ -9948,8 +10332,8 @@ msgid ""
 "left part of the email address, %d for the domain"
 msgstr ""
 
-#: src/plugins/vcalendar/vcal_prefs.c:646 src/plugins/vcalendar/plugin.c:44
-#: src/plugins/vcalendar/plugin.c:65
+#: src/plugins/vcalendar/vcal_prefs.c:646 src/plugins/vcalendar/plugin.c:43
+#: src/plugins/vcalendar/plugin.c:64
 msgid "vCalendar"
 msgstr ""
 
@@ -10023,25 +10407,6 @@ msgstr ""
 #, c-format
 msgid "Timeout (%d seconds) connecting to %s\n"
 msgstr ""
-
-#: src/plugins/vcalendar/vcal_folder.c:1593
-#, fuzzy
-msgid "401 (Authorisation required)"
-msgstr "Foi requerida uma autenticação (mais) forte"
-
-#: src/plugins/vcalendar/vcal_folder.c:1596
-msgid "403 (Unauthorised)"
-msgstr ""
-
-#: src/plugins/vcalendar/vcal_folder.c:1599
-#, fuzzy
-msgid "404 (Not found)"
-msgstr "não encontrada"
-
-#: src/plugins/vcalendar/vcal_folder.c:1602
-#, fuzzy, c-format
-msgid "Error %ld"
-msgstr "Erro: "
 
 #: src/plugins/vcalendar/vcal_folder.c:1799
 #, fuzzy, c-format
@@ -10504,7 +10869,7 @@ msgstr ""
 msgid "days"
 msgstr "dias"
 
-#: src/plugins/vcalendar/plugin.c:70
+#: src/plugins/vcalendar/plugin.c:69
 msgid ""
 "This plugin enables vCalendar message handling like that produced by "
 "Evolution or Outlook.\n"
@@ -10521,7 +10886,7 @@ msgid ""
 "information from others."
 msgstr ""
 
-#: src/plugins/vcalendar/plugin.c:103
+#: src/plugins/vcalendar/plugin.c:102
 msgid "Calendar"
 msgstr ""
 

@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Claws Mail 3.8.0cvs8\n"
 "Report-Msgid-Bugs-To: paul@claws-mail.org\n"
-"POT-Creation-Date: 2013-02-14 11:15+0100\n"
+"POT-Creation-Date: 2013-02-16 13:01+0100\n"
 "PO-Revision-Date: 2012-11-06 23:50+0100\n"
 "Last-Translator: Andreas Rönnquist <gusnan@gusnan.se>\n"
 "Language-Team: Swedish\n"
@@ -147,6 +147,7 @@ msgstr ""
 "%s"
 
 #: src/action.c:980 src/plugins/bogofilter/bogofilter.c:875
+#: src/plugins/rssyl/feed.c:1734 src/plugins/rssyl/feed.c:1738
 #: src/plugins/vcalendar/vcal_folder.c:1800
 #: src/plugins/vcalendar/vcal_folder.c:1804
 #: src/plugins/vcalendar/vcal_folder.c:1815
@@ -648,6 +649,7 @@ msgstr ""
 "till överliggande mapp."
 
 #: src/addressbook.c:2932 src/imap_gtk.c:363 src/mh_gtk.c:202
+#: src/plugins/rssyl/rssyl_cb_menu.c:237
 #: src/plugins/vcalendar/vcal_folder.c:1953
 msgid "Delete folder"
 msgstr "Ta bort mapp"
@@ -1470,7 +1472,7 @@ msgstr "%I:%M:%S"
 msgid "_Add..."
 msgstr "_Lägg till..."
 
-#: src/compose.c:566 src/mh_gtk.c:361
+#: src/compose.c:566 src/mh_gtk.c:361 src/plugins/rssyl/rssyl_cb_menu.c:140
 msgid "_Remove"
 msgstr "_Ta bort"
 
@@ -2654,10 +2656,12 @@ msgid "Input the new name of folder:"
 msgstr "Skriv in namnet på den nya mappen:"
 
 #: src/editgroup.c:556 src/foldersel.c:552 src/imap_gtk.c:195 src/mh_gtk.c:145
+#: src/plugins/rssyl/rssyl_cb_menu.c:89
 msgid "New folder"
 msgstr "Ny mapp"
 
 #: src/editgroup.c:557 src/foldersel.c:553 src/mh_gtk.c:146
+#: src/plugins/rssyl/rssyl_cb_menu.c:90
 msgid "Input the name of new folder:"
 msgstr "Skriv in namnet på den nya mappen:"
 
@@ -3409,24 +3413,28 @@ msgid "Select folder"
 msgstr "Välj mapp"
 
 #: src/foldersel.c:554 src/imap_gtk.c:199 src/mh_gtk.c:147
+#: src/plugins/rssyl/rssyl_cb_menu.c:91
 msgid "NewFolder"
 msgstr "Nymapp"
 
 #: src/foldersel.c:562 src/imap_gtk.c:210 src/imap_gtk.c:216
 #: src/imap_gtk.c:272 src/mh_gtk.c:155 src/mh_gtk.c:259 src/news_gtk.c:314
+#: src/plugins/rssyl/rssyl_cb_menu.c:97 src/plugins/rssyl/rssyl_cb_menu.c:341
 #: src/plugins/vcalendar/vcal_folder.c:2025
 #, c-format
 msgid "'%c' can't be included in folder name."
 msgstr "Ett mappnamn kan inte innehålla '%c'."
 
 #: src/foldersel.c:572 src/imap_gtk.c:226 src/imap_gtk.c:284 src/mh_gtk.c:165
-#: src/mh_gtk.c:266 src/news_gtk.c:321
+#: src/mh_gtk.c:266 src/news_gtk.c:321 src/plugins/rssyl/rssyl_cb_menu.c:107
+#: src/plugins/rssyl/rssyl_cb_menu.c:348
 #: src/plugins/vcalendar/vcal_folder.c:2032
 #, c-format
 msgid "The folder '%s' already exists."
 msgstr "Mappen '%s' finns redan."
 
 #: src/foldersel.c:579 src/imap_gtk.c:232 src/mh_gtk.c:171
+#: src/plugins/rssyl/rssyl_cb_menu.c:113
 #, c-format
 msgid "Can't create the folder '%s'."
 msgstr "Kan inte skapa mappen '%s'."
@@ -3575,7 +3583,7 @@ msgstr "_Skicka"
 msgid "Some errors occurred while sending queued messages."
 msgstr "Några fel uppstod vid avsändande av meddelanden i kö."
 
-#: src/folderview.c:2408 src/main.c:2844 src/toolbar.c:2732
+#: src/folderview.c:2408 src/main.c:2853 src/toolbar.c:2732
 #, c-format
 msgid ""
 "Some errors occurred while sending queued messages:\n"
@@ -3915,44 +3923,44 @@ msgstr ""
 ">. \n"
 "\n"
 
-#: src/gtk/about.c:699 src/main.c:2671
+#: src/gtk/about.c:699 src/main.c:2680
 msgid "Session statistics\n"
 msgstr "Sessionsstatistik\n"
 
-#: src/gtk/about.c:709 src/gtk/about.c:712 src/main.c:2681 src/main.c:2684
+#: src/gtk/about.c:709 src/gtk/about.c:712 src/main.c:2690 src/main.c:2693
 #, c-format
 msgid "Started: %s\n"
 msgstr "Startat: %s\n"
 
-#: src/gtk/about.c:719 src/main.c:2690
+#: src/gtk/about.c:719 src/main.c:2699
 msgid "Incoming traffic\n"
 msgstr "Inkommande trafik\n"
 
-#: src/gtk/about.c:722 src/main.c:2693
+#: src/gtk/about.c:722 src/main.c:2702
 #, c-format
 msgid "Received messages: %d\n"
 msgstr "Mottagna meddelanden: %d\n"
 
-#: src/gtk/about.c:729 src/main.c:2699
+#: src/gtk/about.c:729 src/main.c:2708
 msgid "Outgoing traffic\n"
 msgstr "Utgående trafik\n"
 
-#: src/gtk/about.c:732 src/main.c:2702
+#: src/gtk/about.c:732 src/main.c:2711
 #, c-format
 msgid "New/redirected messages: %d\n"
 msgstr "Nya/Omdirigerade meddelanden: %d\n"
 
-#: src/gtk/about.c:737 src/main.c:2706
+#: src/gtk/about.c:737 src/main.c:2715
 #, c-format
 msgid "Replied messages: %d\n"
 msgstr "Besvarade meddelanden: %d\n"
 
-#: src/gtk/about.c:742 src/main.c:2710
+#: src/gtk/about.c:742 src/main.c:2719
 #, c-format
 msgid "Forwarded messages: %d\n"
 msgstr "Vidarebefordrade meddelanden: %d\n"
 
-#: src/gtk/about.c:747 src/main.c:2714
+#: src/gtk/about.c:747 src/main.c:2723
 #, c-format
 msgid "Total outgoing messages: %d\n"
 msgstr "Totalt utgående meddelanden: %d\n"
@@ -4742,6 +4750,7 @@ msgstr ""
 #: src/gtk/pluginwindow.c:304 src/plugins/bogofilter/bogofilter_gtk.c:457
 #: src/plugins/dillo_viewer/dillo_prefs.c:129
 #: src/plugins/fancy/fancy_prefs.c:110 src/plugins/pgpcore/prefs_gpg.c:557
+#: src/plugins/rssyl/rssyl_prefs.c:63
 #: src/plugins/spamassassin/spamassassin_gtk.c:648
 #: src/plugins/trayicon/trayicon_prefs.c:69
 #: src/plugins/vcalendar/vcal_prefs.c:645 src/prefs_toolbar.c:939
@@ -5661,7 +5670,7 @@ msgstr "_Flytta mapp..."
 msgid "Cop_y folder..."
 msgstr "_Kopiera mapp..."
 
-#: src/imap_gtk.c:69 src/mh_gtk.c:59
+#: src/imap_gtk.c:69 src/mh_gtk.c:59 src/plugins/rssyl/rssyl_gtk.c:61
 msgid "_Delete folder..."
 msgstr "_Ta bort mapp..."
 
@@ -5716,12 +5725,13 @@ msgid "Inherit properties from parent folder"
 msgstr "Ärv egenskaper från överliggande mapp"
 
 #: src/imap_gtk.c:261 src/mh_gtk.c:249 src/news_gtk.c:305
+#: src/plugins/rssyl/rssyl_cb_menu.c:333
 #: src/plugins/vcalendar/vcal_folder.c:2017
 #, c-format
 msgid "Input new name for '%s':"
 msgstr "Ange nytt namn för '%s':"
 
-#: src/imap_gtk.c:263 src/mh_gtk.c:251
+#: src/imap_gtk.c:263 src/mh_gtk.c:251 src/plugins/rssyl/rssyl_cb_menu.c:334
 #: src/plugins/vcalendar/vcal_folder.c:2018
 msgid "Rename folder"
 msgstr "Byt namn på mapp"
@@ -5732,6 +5742,7 @@ msgid "`%c' can't be included in folder name."
 msgstr "Ett mappnamn kan inte innehålla '%c'."
 
 #: src/imap_gtk.c:292 src/mh_gtk.c:274 src/news_gtk.c:327
+#: src/plugins/rssyl/rssyl_cb_menu.c:354
 #: src/plugins/vcalendar/vcal_folder.c:2038
 msgid ""
 "The folder could not be renamed.\n"
@@ -5740,7 +5751,7 @@ msgstr ""
 "Mappen kunde inte döpas om.\n"
 "Det nya mappnamnet är inte tillåtet."
 
-#: src/imap_gtk.c:360 src/mh_gtk.c:199
+#: src/imap_gtk.c:360 src/mh_gtk.c:199 src/plugins/rssyl/rssyl_cb_menu.c:234
 #, c-format
 msgid ""
 "All folders and messages under '%s' will be permanently deleted. Recovery "
@@ -5754,6 +5765,7 @@ msgstr ""
 "Vill du verkligen ta bort?"
 
 #: src/imap_gtk.c:381 src/mh_gtk.c:220 src/news_gtk.c:280
+#: src/plugins/rssyl/rssyl_cb_menu.c:256
 #: src/plugins/vcalendar/vcal_folder.c:1974
 #, c-format
 msgid "Can't remove the folder '%s'."
@@ -6339,7 +6351,7 @@ msgstr "Sylpheed-Claws 1.9.15 (eller äldre)"
 msgid "Sylpheed-Claws 1.0.5 (or older)"
 msgstr "Sylpheed-Claws 1.0.5 (eller äldre)"
 
-#: src/main.c:1563
+#: src/main.c:1572
 #, c-format
 msgid ""
 "The following plugin failed to load. Check the Plugins configuration for "
@@ -6358,7 +6370,7 @@ msgstr[1] ""
 "konfiguration för mer information:\n"
 "%s"
 
-#: src/main.c:1591
+#: src/main.c:1600
 msgid ""
 "Claws Mail has detected a configured mailbox, but it is incomplete. It is "
 "possibly due to a failing IMAP account. Use \"Rebuild folder tree\" on the "
@@ -6368,7 +6380,7 @@ msgstr ""
 "Det kan bero på ett misslyckat IMAP-konto. Använd \"Uppdatera mapplista\" i "
 "snabbmenyn till brevlådans föräldramapp för att försöka fixa det."
 
-#: src/main.c:1597
+#: src/main.c:1606
 msgid ""
 "Claws Mail has detected a configured mailbox, but could not load it. It is "
 "probably provided by an out-of-date external plugin. Please reinstall the "
@@ -6378,41 +6390,41 @@ msgstr ""
 "den. Den är troligtvis tillhandahållen av en utdaterad extern insticksmodul. "
 "Vänligen installera insticksmodulen och försök igen."
 
-#: src/main.c:1626
+#: src/main.c:1635
 #, c-format
 msgid "Claws Mail can not start without its data volume (%s)."
 msgstr "Claws-Mail kan inte starta utan sin data volym (%s)."
 
-#: src/main.c:1873
+#: src/main.c:1882
 msgid "Missing filename\n"
 msgstr "Saknar filnamn\n"
 
-#: src/main.c:1880
+#: src/main.c:1889
 msgid "Cannot open filename for reading\n"
 msgstr "Kan inte öppna filnamn för läsning\n"
 
-#: src/main.c:1891
+#: src/main.c:1900
 msgid "Malformed header\n"
 msgstr "Felaktigt brevhuvud\n"
 
-#: src/main.c:1898
+#: src/main.c:1907
 msgid "Duplicated 'To:' header\n"
 msgstr "Duplicerat brevhuvud 'To:'\n"
 
-#: src/main.c:1913
+#: src/main.c:1922
 msgid "Missing required 'To:' header\n"
 msgstr "Nödvändigt brevhuvud 'To:' saknas\n"
 
-#: src/main.c:2058
+#: src/main.c:2067
 #, c-format
 msgid "Usage: %s [OPTION]...\n"
 msgstr "Användning: %s [VAL]...\n"
 
-#: src/main.c:2060
+#: src/main.c:2069
 msgid "  --compose [address]    open composition window"
 msgstr "  --compose [adress]               öppna nytt meddelandefönster"
 
-#: src/main.c:2061
+#: src/main.c:2070
 msgid ""
 "  --compose-from-file file\n"
 "                         open composition window with data from given file;\n"
@@ -6430,13 +6442,13 @@ msgstr ""
 "krävs) tills tom rad,\n"
 "                                   sedan meddelandetexten tills filslut."
 
-#: src/main.c:2066
+#: src/main.c:2075
 msgid "  --subscribe [uri]      subscribe to the given URI if possible"
 msgstr ""
 "  --subscribe [uri]                prenumerera på den angivna URI'n, om "
 "möjligt"
 
-#: src/main.c:2067
+#: src/main.c:2076
 msgid ""
 "  --attach file1 [file2]...\n"
 "                         open composition window with specified files\n"
@@ -6445,26 +6457,26 @@ msgstr ""
 "  --attach fil1 [fil2]...          öppna nytt meddelandefönster med valda "
 "filer bifogade"
 
-#: src/main.c:2070
+#: src/main.c:2079
 msgid "  --receive              receive new messages"
 msgstr "  --receive                        ta emot nya meddelanden"
 
-#: src/main.c:2071
+#: src/main.c:2080
 msgid "  --receive-all          receive new messages of all accounts"
 msgstr ""
 "  --receive-all                    ta emot nya meddelanden från alla konton"
 
-#: src/main.c:2072
+#: src/main.c:2081
 #, fuzzy
 msgid "  --cancel-receiving     cancel receiving of messages"
 msgstr "  --receive                        ta emot nya meddelanden"
 
-#: src/main.c:2073
+#: src/main.c:2082
 #, fuzzy
 msgid "  --cancel-sending       cancel sending of messages"
 msgstr "  --receive                        ta emot nya meddelanden"
 
-#: src/main.c:2074
+#: src/main.c:2083
 msgid ""
 "  --search folder type request [recursive]\n"
 "                         searches mail\n"
@@ -6484,29 +6496,29 @@ msgstr ""
 "                                   rekursivt: falskt om arg. börjar på 0, n, "
 "N, f or F"
 
-#: src/main.c:2081
+#: src/main.c:2090
 msgid "  --send                 send all queued messages"
 msgstr "  --send                           skicka alla köade meddelanden"
 
-#: src/main.c:2082
+#: src/main.c:2091
 msgid "  --status [folder]...   show the total number of messages"
 msgstr "  --status [mapp]...               visa totalt antal meddelanden"
 
-#: src/main.c:2083
+#: src/main.c:2092
 msgid ""
 "  --status-full [folder]...\n"
 "                         show the status of each folder"
 msgstr "  --status-full [mapp]...          visa status för varje mapp"
 
-#: src/main.c:2085
+#: src/main.c:2094
 msgid "  --statistics           show session statistics"
 msgstr "  --statistics                     visa sessionsstatistik"
 
-#: src/main.c:2086
+#: src/main.c:2095
 msgid "  --reset-statistics     reset session statistics"
 msgstr "  --reset-statistics               återställ sessionsstatistik"
 
-#: src/main.c:2087
+#: src/main.c:2096
 msgid ""
 "  --select folder[/msg]  jumps to the specified folder/message\n"
 "                         folder is a folder id like 'folder/sub_folder'"
@@ -6515,32 +6527,32 @@ msgstr ""
 "                                   mapp är ett mapp-id som 'mapp/"
 "underkatalog'"
 
-#: src/main.c:2089
+#: src/main.c:2098
 msgid "  --online               switch to online mode"
 msgstr "  --online                         byt till anslutet läge"
 
-#: src/main.c:2090
+#: src/main.c:2099
 msgid "  --offline              switch to offline mode"
 msgstr "  --offline                        byt till frånkopplat läge"
 
-#: src/main.c:2091
+#: src/main.c:2100
 msgid "  --exit --quit -q       exit Claws Mail"
 msgstr "  --exit --quit -q                 avsluta Claws Mail"
 
-#: src/main.c:2092
+#: src/main.c:2101
 msgid "  --debug                debug mode"
 msgstr "  --debug                          avlusningsläge"
 
-#: src/main.c:2093
+#: src/main.c:2102
 msgid "  --help -h              display this help and exit"
 msgstr "  --help -h                        visa denna hjälp och avsluta"
 
-#: src/main.c:2094
+#: src/main.c:2103
 msgid "  --version -v           output version information and exit"
 msgstr ""
 "  --version -v                     skriv ut versionsinformation och avsluta"
 
-#: src/main.c:2095
+#: src/main.c:2104
 msgid ""
 "  --version-full -V      output version and built-in features information "
 "and exit"
@@ -6548,42 +6560,42 @@ msgstr ""
 "  --version-full -V                skriv ut versionsinformation och inbyggd "
 "funktionsinformation och avsluta"
 
-#: src/main.c:2096
+#: src/main.c:2105
 msgid "  --config-dir           output configuration directory"
 msgstr "  --config-dir                     skriv ut konfigurationsmapp"
 
-#: src/main.c:2097
+#: src/main.c:2106
 msgid ""
 "  --alternate-config-dir [dir]\n"
 "                         use specified configuration directory"
 msgstr "  --alternate-config-dir [mapp]    använd angiven konfigurationsmapp"
 
-#: src/main.c:2147
+#: src/main.c:2156
 msgid "Unknown option\n"
 msgstr "Okänt alternativ\n"
 
-#: src/main.c:2165
+#: src/main.c:2174
 #, c-format
 msgid "Processing (%s)..."
 msgstr "Behandlar (%s)..."
 
-#: src/main.c:2168
+#: src/main.c:2177
 msgid "top level folder"
 msgstr "toppnivåmapp"
 
-#: src/main.c:2251
+#: src/main.c:2260
 msgid "Queued messages"
 msgstr "Meddelanden i kö"
 
-#: src/main.c:2252
+#: src/main.c:2261
 msgid "Some unsent messages are queued. Exit now?"
 msgstr "Några osända meddelanden ligger i kö. Avsluta nu?"
 
-#: src/main.c:2981
+#: src/main.c:2990
 msgid "NetworkManager: network is online.\n"
 msgstr "Nätverkshanteraren: nätverket är online.\n"
 
-#: src/main.c:2987
+#: src/main.c:2996
 msgid "NetworkManager: network is offline.\n"
 msgstr "Nätverkshanteraren: nätverket är frånkopplat.\n"
 
@@ -7389,7 +7401,7 @@ msgstr ""
 "Om en existerande brevlåda specificeras, kommer den\n"
 "att genomsökas automatiskt."
 
-#: src/mainwindow.c:3108
+#: src/mainwindow.c:3108 src/plugins/rssyl/rssyl_gtk.c:158
 #, c-format
 msgid "The mailbox '%s' already exists."
 msgstr "Brevlådan '%s' finns redan."
@@ -7767,7 +7779,7 @@ msgstr ""
 "Detta meddelande var skickat till flera av dina konton.\n"
 "Välj vilket konto du vill använda för att skicka läskvittounderrättelse:"
 
-#: src/messageview.c:2121
+#: src/messageview.c:2121 src/plugins/rssyl/rssyl_gtk.c:480
 msgid "_Cancel"
 msgstr "_Avbryt"
 
@@ -8069,7 +8081,7 @@ msgstr "Verkligen avsluta prenumeration på diskussionsgrupp '%s'?"
 msgid "Unsubscribe newsgroup"
 msgstr "Avsluta prenumeration på diskussionsgrupp"
 
-#: src/news_gtk.c:267
+#: src/news_gtk.c:267 src/plugins/rssyl/rssyl_gtk.c:678
 msgid "_Unsubscribe"
 msgstr "S_äg upp prenumeration"
 
@@ -9240,6 +9252,370 @@ msgstr ""
 "\n"
 "GPGME har copyright 2001 by Werner Koch <dd9jn@gnu.org>"
 
+#: src/plugins/rssyl/rssyl_prefs.c:103
+msgid "Default refresh interval in minutes"
+msgstr "Standard uppdateringsintervall i minuter"
+
+#: src/plugins/rssyl/rssyl_prefs.c:114
+msgid "Set to 0 to disable automatic refreshing"
+msgstr "Sätt till 0 för att stänga av automatisk uppdatering"
+
+#: src/plugins/rssyl/rssyl_prefs.c:116
+msgid "Default number of expired items to keep"
+msgstr "Standardantal för antal utgångna enheter att behålla"
+
+#: src/plugins/rssyl/rssyl_prefs.c:127
+msgid "Set to -1 to keep expired items"
+msgstr "Sätt till -1 för att behålla utgångna enheter"
+
+#: src/plugins/rssyl/rssyl_prefs.c:130
+msgid "Refresh all feeds on application start"
+msgstr "Uppdatera alla flöden vid applikationsstart"
+
+#: src/plugins/rssyl/rssyl_prefs.c:136
+msgid "Path to cookies file"
+msgstr "Sökväg till kakfil"
+
+#: src/plugins/rssyl/rssyl_prefs.c:146
+msgid "Path to Netscape-style cookies.txt file containing your cookies"
+msgstr "Sökväg till Netscape-formatterad cookies.txt som innehåller dina kakor"
+
+#: src/plugins/rssyl/rssyl.h:8
+msgid "RSSyl"
+msgstr "RSSyl"
+
+#: src/plugins/rssyl/rssyl.h:14
+msgid "My Feeds"
+msgstr "Mina flöden"
+
+#: src/plugins/rssyl/rssyl_gtk.c:53
+msgid "_Refresh feed"
+msgstr "_Uppdatera flöde"
+
+#: src/plugins/rssyl/rssyl_gtk.c:54
+msgid "Refresh _all feeds"
+msgstr "Uppdatera _alla flöden"
+
+#: src/plugins/rssyl/rssyl_gtk.c:55
+msgid "Subscribe _new feed..."
+msgstr "_Prenumerera på nytt flöde..."
+
+#: src/plugins/rssyl/rssyl_gtk.c:56
+msgid "_Unsubscribe feed..."
+msgstr "A_vsluta preumeration..."
+
+#: src/plugins/rssyl/rssyl_gtk.c:57
+msgid "Feed pr_operties..."
+msgstr "Egenskaper f_ör flöde..."
+
+#: src/plugins/rssyl/rssyl_gtk.c:58
+msgid "Import feed list..."
+msgstr "Importera flödeslista..."
+
+#: src/plugins/rssyl/rssyl_gtk.c:59
+msgid "Rena_me..."
+msgstr "Byt na_mn"
+
+#: src/plugins/rssyl/rssyl_gtk.c:60
+msgid "_Create new folder..."
+msgstr "Skapa ny folder"
+
+#: src/plugins/rssyl/rssyl_gtk.c:62
+msgid "Remove folder _tree..."
+msgstr "Ta bort _mapp..."
+
+#: src/plugins/rssyl/rssyl_gtk.c:152
+msgid "Add RSS folder tree"
+msgstr "Lägg till RSS mapp"
+
+#: src/plugins/rssyl/rssyl_gtk.c:153
+msgid "Enter name for a new RSS folder tree."
+msgstr "Ange namnet på den nya RSS mappen."
+
+#: src/plugins/rssyl/rssyl_gtk.c:169
+msgid ""
+"Creation of folder tree failed.\n"
+"Maybe some files already exist, or you don't have the permission to write "
+"there?"
+msgstr ""
+"Fel vid skapandet av mapp.\n"
+"Det finns kanske redan filer, eller så har du inte rättigheter att skriva "
+"där?"
+
+#: src/plugins/rssyl/rssyl_gtk.c:184
+msgid "RSSyl..."
+msgstr "RSSyl..."
+
+#: src/plugins/rssyl/rssyl_gtk.c:256
+msgid "Use default refresh interval"
+msgstr "Använd standard uppdateringsintervall"
+
+#: src/plugins/rssyl/rssyl_gtk.c:268
+msgid "Keep default number of expired entries"
+msgstr "Behåll standard antal av utgångna nyheter"
+
+#: src/plugins/rssyl/rssyl_gtk.c:274
+msgid "Fetch comments if possible"
+msgstr "Hämta kommentarer om möjligt"
+
+#: src/plugins/rssyl/rssyl_gtk.c:312
+msgid "<b>Source URL:</b>"
+msgstr "<b>URL källa:</b>"
+
+#: src/plugins/rssyl/rssyl_gtk.c:340
+msgid ""
+"<b>Fetch comments on posts aged less than:</b>\n"
+"<small>(In days; set to -1 to fetch all comments)</small>"
+msgstr ""
+"<b>Hämta kommentarer på poster yngre än:</b>\n"
+"<small>(I dagar; sätt till -1 för att hämta alla kommentarer)</small>"
+
+#: src/plugins/rssyl/rssyl_gtk.c:374
+msgid ""
+"<b>Refresh interval in minutes:</b>\n"
+"<small>(Set to 0 to disable automatic refreshing for this feed)</small>"
+msgstr ""
+"<b>Uppdateringsintervall i minuter:</b>\n"
+"<small>(Sätt 0 för att avaktivera automatisk uppdatering av detta flöde)</"
+"small>"
+
+#: src/plugins/rssyl/rssyl_gtk.c:407
+msgid ""
+"<b>Number of expired entries to keep:</b>\n"
+"<small>(Set to -1 if you want to keep expired entries)</small>"
+msgstr ""
+"<b>Antal utgångna nyheter att behålla:</b>\n"
+"<small>(Sätt -1 om du vill behålla alla)</small>"
+
+#: src/plugins/rssyl/rssyl_gtk.c:433
+msgid "<b>If an item changes, do not mark it as unread:</b>"
+msgstr "<b>Om en enhet ändras, markera det inte som oläst:</b>"
+
+#: src/plugins/rssyl/rssyl_gtk.c:443
+msgid "Always mark as unread"
+msgstr "Markera alltid som oläst"
+
+#: src/plugins/rssyl/rssyl_gtk.c:445
+msgid "If only its text changed"
+msgstr "om bara text har ändrats"
+
+#: src/plugins/rssyl/rssyl_gtk.c:447
+msgid "Never mark as unread"
+msgstr "Markera aldrig som oläst"
+
+#: src/plugins/rssyl/rssyl_gtk.c:501
+msgid "_OK"
+msgstr "_OK"
+
+#: src/plugins/rssyl/rssyl_gtk.c:509
+msgid "Set feed properties"
+msgstr "Ställ egenskaper för flöde"
+
+#: src/plugins/rssyl/rssyl_gtk.c:634 src/plugins/rssyl/rssyl_gtk.c:658
+msgid "Unsubscribe feed"
+msgstr "Avbryt prenumeration på flöde"
+
+#: src/plugins/rssyl/rssyl_gtk.c:659
+msgid "Do you really want to remove feed"
+msgstr "Vill du verkligen ta bort flöde"
+
+#: src/plugins/rssyl/rssyl_gtk.c:665
+msgid "Remove cached entries"
+msgstr "Ta bort buffrade nyheter"
+
+#: src/plugins/rssyl/plugin.c:63
+msgid ""
+"This plugin allows you to create a mailbox tree where you can add newsfeeds "
+"in RSS 1.0, RSS 2.0 or Atom format.\n"
+"\n"
+"Each newsfeed will create a folder with appropriate entries, fetched from "
+"the web. You can read them, and delete or keep old entries."
+msgstr ""
+"Denna insticksmodul gör så att du kan skapa en postlåda med nyhetsflöden i "
+"RSS 1.0, RSS 2.0 eller Atom format.\n"
+"\n"
+"Varje nyhetsmating kommer att hamna i en egen mapp, hämtad från webben. Du "
+"kan läsa dem och ta bort eller spara gamla nyheter."
+
+#: src/plugins/rssyl/plugin.c:87
+msgid "RSS feed"
+msgstr "RSS-flöde"
+
+#: src/plugins/rssyl/feed.h:20
+#, c-format
+msgid "Time out connecting to URL %s\n"
+msgstr "Överskred tidsgränsen vid anslutning till URL %s\n"
+
+#: src/plugins/rssyl/feed.h:21
+#, c-format
+msgid "Couldn't fetch URL %s\n"
+msgstr "Kunde inte hämta URL %s\n"
+
+#: src/plugins/rssyl/feed.h:22
+#, c-format
+msgid "Error parsing feed from URL %s\n"
+msgstr "Fel vid tolkning av flöde från URL %s\n"
+
+#: src/plugins/rssyl/feed.h:23
+#, c-format
+msgid "Unsupported feed type at URL %s\n"
+msgstr "Flödestypen vid URL %s stöds inte\n"
+
+#: src/plugins/rssyl/feed.h:25
+#, c-format
+msgid "RSSyl: Updating feed %s\n"
+msgstr "RSSyl: Uppdaterar flöde %s\n"
+
+#: src/plugins/rssyl/feed.h:26
+#, c-format
+msgid "RSSyl: Feed update finished: %s\n"
+msgstr "RSSyl: Flödesuppdatering klart: %s\n"
+
+#: src/plugins/rssyl/feed.h:27
+msgid "RSSyl: Feed update aborted, application is exiting.\n"
+msgstr "RSSyl: Flödesuppdatering avbröts, applikationen avslutas.\n"
+
+#: src/plugins/rssyl/rssyl_cb_menu.c:62
+msgid "Subscribe feed"
+msgstr "Prenumerara på flöde"
+
+#: src/plugins/rssyl/rssyl_cb_menu.c:63
+msgid "Input the URL of the news feed you wish to subscribe:"
+msgstr "Ange URL för nyhetsflödet du vill preumerera på:"
+
+#: src/plugins/rssyl/rssyl_cb_menu.c:138
+#, c-format
+msgid "Really remove the folder tree '%s' ?\n"
+msgstr "Vill du verkligen ta bort mappen '%s' ?\n"
+
+#: src/plugins/rssyl/rssyl_cb_menu.c:139
+msgid "Remove folder tree"
+msgstr "Ta bort mapp"
+
+#: src/plugins/rssyl/rssyl_cb_menu.c:204
+#, c-format
+msgid "Can't remove feed '%s'."
+msgstr "Kan inte ta bort flöde '%s'."
+
+#: src/plugins/rssyl/rssyl_cb_menu.c:283 src/plugins/rssyl/feed.c:1856
+msgid "Claws Mail needs network access in order to update the feed."
+msgid_plural "Claws Mail needs network access in order to update the feeds."
+msgstr[0] ""
+"Claws Mail behöver ett nätverk tillgängligt för att uppdatera flödet."
+msgstr[1] ""
+"Claws Mail behöver ett nätverk tillgängligt för att uppdatera flödena"
+
+#: src/plugins/rssyl/rssyl_cb_menu.c:376
+msgid "Select a .opml file"
+msgstr "Välj en .opml-fil"
+
+#: src/plugins/rssyl/rssyl.c:133 src/plugins/rssyl/rssyl.c:145
+msgid "Refresh all feeds"
+msgstr "Uppdatera alla flöden"
+
+#: src/plugins/rssyl/feed.c:125
+msgid "Cannot open temporary file"
+msgstr "Kan inte öppna temporär fil"
+
+#: src/plugins/rssyl/feed.c:136
+msgid "Cannot init libCURL"
+msgstr "Kan inte initiera libCURL"
+
+#: src/plugins/rssyl/feed.c:231 src/plugins/vcalendar/vcal_folder.c:1593
+msgid "401 (Authorisation required)"
+msgstr "401 (Behörighet krävs)"
+
+#: src/plugins/rssyl/feed.c:234 src/plugins/vcalendar/vcal_folder.c:1596
+msgid "403 (Unauthorised)"
+msgstr "403 (Obehörig)"
+
+#: src/plugins/rssyl/feed.c:237 src/plugins/vcalendar/vcal_folder.c:1599
+msgid "404 (Not found)"
+msgstr "404 (Hittades inte)"
+
+#: src/plugins/rssyl/feed.c:240 src/plugins/vcalendar/vcal_folder.c:1602
+#, c-format
+msgid "Error %ld"
+msgstr "Fel: %ld"
+
+#: src/plugins/rssyl/feed.c:324
+#, c-format
+msgid "Fetching '%s'..."
+msgstr "Hämtar '%s'..."
+
+#: src/plugins/rssyl/feed.c:383
+msgid "Malformed feed"
+msgstr "Missformat flöde"
+
+#: src/plugins/rssyl/feed.c:1199
+#, c-format
+msgid "Refreshing feed '%s'..."
+msgstr "Updaterar flöde '%s'..."
+
+#: src/plugins/rssyl/feed.c:1214
+#, c-format
+msgid ""
+"RSSyl: Fetching comments is not supported for RDF feeds. Cannot fetch "
+"comments of '%s'"
+msgstr ""
+"RSSyl: Hämtning av kommentarer stöds inte för RDF-flöden. Kan inte hämta "
+"kommentarer för '%s'"
+
+#: src/plugins/rssyl/feed.c:1223
+msgid "This feed format is not supported yet."
+msgstr "Detta flödesformat stöds inte ännu."
+
+#: src/plugins/rssyl/feed.c:1254
+msgid "N/A"
+msgstr "N/A"
+
+#: src/plugins/rssyl/feed.c:1374
+#, c-format
+msgid "%ld byte"
+msgid_plural "%ld bytes"
+msgstr[0] "%ld byte"
+msgstr[1] "%ld bytes"
+
+#: src/plugins/rssyl/feed.c:1377
+msgid "size unknown"
+msgstr "storlek okänd"
+
+#: src/plugins/rssyl/feed.c:1550
+#, c-format
+msgid ""
+"RSSyl: Cannot update feed %s:\n"
+"%s\n"
+msgstr ""
+"RSSyl: Kunde inte uppdatera flöde %s:\n"
+"%s\n"
+
+#: src/plugins/rssyl/feed.c:1722
+msgid "You are already subscribed to this feed."
+msgstr "Du prenumererar redan på detta flöde."
+
+#: src/plugins/rssyl/feed.c:1733
+#, c-format
+msgid ""
+"Couldn't fetch URL '%s':\n"
+"%s"
+msgstr ""
+"Kunde inte hämta URL '%s':\n"
+"%s"
+
+#: src/plugins/rssyl/feed.c:1738
+#, c-format
+msgid ""
+"Couldn't fetch URL '%s':\n"
+"%s\n"
+msgstr ""
+"Kunde inte hämta URL '%s':\n"
+"%s\n"
+
+#: src/plugins/rssyl/feed.c:1754
+#, c-format
+msgid "Can't subscribe feed '%s'."
+msgstr "Kan inte prenumera på '%s'."
+
 #: src/plugins/smime/plugin.c:38 src/plugins/smime/plugin.c:54
 #: src/plugins/smime/smime.c:924
 msgid "S/MIME"
@@ -9832,8 +10208,8 @@ msgid ""
 "left part of the email address, %d for the domain"
 msgstr ""
 
-#: src/plugins/vcalendar/vcal_prefs.c:646 src/plugins/vcalendar/plugin.c:44
-#: src/plugins/vcalendar/plugin.c:65
+#: src/plugins/vcalendar/vcal_prefs.c:646 src/plugins/vcalendar/plugin.c:43
+#: src/plugins/vcalendar/plugin.c:64
 msgid "vCalendar"
 msgstr ""
 
@@ -9907,25 +10283,6 @@ msgstr ""
 #, c-format
 msgid "Timeout (%d seconds) connecting to %s\n"
 msgstr ""
-
-#: src/plugins/vcalendar/vcal_folder.c:1593
-#, fuzzy
-msgid "401 (Authorisation required)"
-msgstr "Stark(are) autentisering krävs"
-
-#: src/plugins/vcalendar/vcal_folder.c:1596
-msgid "403 (Unauthorised)"
-msgstr ""
-
-#: src/plugins/vcalendar/vcal_folder.c:1599
-#, fuzzy
-msgid "404 (Not found)"
-msgstr "inte hittat"
-
-#: src/plugins/vcalendar/vcal_folder.c:1602
-#, fuzzy, c-format
-msgid "Error %ld"
-msgstr "Fel:"
 
 #: src/plugins/vcalendar/vcal_folder.c:1799
 #, fuzzy, c-format
@@ -10390,7 +10747,7 @@ msgstr ""
 msgid "days"
 msgstr "dagar"
 
-#: src/plugins/vcalendar/plugin.c:70
+#: src/plugins/vcalendar/plugin.c:69
 msgid ""
 "This plugin enables vCalendar message handling like that produced by "
 "Evolution or Outlook.\n"
@@ -10407,7 +10764,7 @@ msgid ""
 "information from others."
 msgstr ""
 
-#: src/plugins/vcalendar/plugin.c:103
+#: src/plugins/vcalendar/plugin.c:102
 msgid "Calendar"
 msgstr ""
 

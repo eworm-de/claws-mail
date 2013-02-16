@@ -10,7 +10,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: sylpheed-claw\n"
 "Report-Msgid-Bugs-To: paul@claws-mail.org\n"
-"POT-Creation-Date: 2013-02-14 11:15+0100\n"
+"POT-Creation-Date: 2013-02-16 13:01+0100\n"
 "PO-Revision-Date: 2012-06-26 02:02+0800\n"
 "Last-Translator: Rob <rbnwmk@gmail.com>\n"
 "Language-Team: Sylpheed-Claws <sylpheed-claws-translators@lists.sourceforge."
@@ -148,6 +148,7 @@ msgstr ""
 "%s"
 
 #: src/action.c:980 src/plugins/bogofilter/bogofilter.c:875
+#: src/plugins/rssyl/feed.c:1734 src/plugins/rssyl/feed.c:1738
 #: src/plugins/vcalendar/vcal_folder.c:1800
 #: src/plugins/vcalendar/vcal_folder.c:1804
 #: src/plugins/vcalendar/vcal_folder.c:1815
@@ -648,6 +649,7 @@ msgstr ""
 "如果只删除目录，地址簿会被移到上一层的目录中。"
 
 #: src/addressbook.c:2932 src/imap_gtk.c:363 src/mh_gtk.c:202
+#: src/plugins/rssyl/rssyl_cb_menu.c:237
 #: src/plugins/vcalendar/vcal_folder.c:1953
 msgid "Delete folder"
 msgstr "删除目录"
@@ -1465,7 +1467,7 @@ msgstr "%I:%M:%S %p"
 msgid "_Add..."
 msgstr "新增(_A)..."
 
-#: src/compose.c:566 src/mh_gtk.c:361
+#: src/compose.c:566 src/mh_gtk.c:361 src/plugins/rssyl/rssyl_cb_menu.c:140
 msgid "_Remove"
 msgstr "删除(_R)"
 
@@ -2631,10 +2633,12 @@ msgid "Input the new name of folder:"
 msgstr "请输入新目录的名称:"
 
 #: src/editgroup.c:556 src/foldersel.c:552 src/imap_gtk.c:195 src/mh_gtk.c:145
+#: src/plugins/rssyl/rssyl_cb_menu.c:89
 msgid "New folder"
 msgstr "新文件夹"
 
 #: src/editgroup.c:557 src/foldersel.c:553 src/mh_gtk.c:146
+#: src/plugins/rssyl/rssyl_cb_menu.c:90
 msgid "Input the name of new folder:"
 msgstr "请输入新文件夹的名称:"
 
@@ -3364,24 +3368,28 @@ msgid "Select folder"
 msgstr "选择目录"
 
 #: src/foldersel.c:554 src/imap_gtk.c:199 src/mh_gtk.c:147
+#: src/plugins/rssyl/rssyl_cb_menu.c:91
 msgid "NewFolder"
 msgstr "新目录"
 
 #: src/foldersel.c:562 src/imap_gtk.c:210 src/imap_gtk.c:216
 #: src/imap_gtk.c:272 src/mh_gtk.c:155 src/mh_gtk.c:259 src/news_gtk.c:314
+#: src/plugins/rssyl/rssyl_cb_menu.c:97 src/plugins/rssyl/rssyl_cb_menu.c:341
 #: src/plugins/vcalendar/vcal_folder.c:2025
 #, c-format
 msgid "'%c' can't be included in folder name."
 msgstr "目录名称不能包含`%c'。"
 
 #: src/foldersel.c:572 src/imap_gtk.c:226 src/imap_gtk.c:284 src/mh_gtk.c:165
-#: src/mh_gtk.c:266 src/news_gtk.c:321
+#: src/mh_gtk.c:266 src/news_gtk.c:321 src/plugins/rssyl/rssyl_cb_menu.c:107
+#: src/plugins/rssyl/rssyl_cb_menu.c:348
 #: src/plugins/vcalendar/vcal_folder.c:2032
 #, c-format
 msgid "The folder '%s' already exists."
 msgstr "目录'%s'已存在。"
 
 #: src/foldersel.c:579 src/imap_gtk.c:232 src/mh_gtk.c:171
+#: src/plugins/rssyl/rssyl_cb_menu.c:113
 #, c-format
 msgid "Can't create the folder '%s'."
 msgstr "无法创建目录'%s'。"
@@ -3528,7 +3536,7 @@ msgstr "发送(_S)"
 msgid "Some errors occurred while sending queued messages."
 msgstr "发送邮件时发生错误。"
 
-#: src/folderview.c:2408 src/main.c:2844 src/toolbar.c:2732
+#: src/folderview.c:2408 src/main.c:2853 src/toolbar.c:2732
 #, c-format
 msgid ""
 "Some errors occurred while sending queued messages:\n"
@@ -3859,44 +3867,44 @@ msgstr ""
 ">. \n"
 "\n"
 
-#: src/gtk/about.c:699 src/main.c:2671
+#: src/gtk/about.c:699 src/main.c:2680
 msgid "Session statistics\n"
 msgstr "会话统计\n"
 
-#: src/gtk/about.c:709 src/gtk/about.c:712 src/main.c:2681 src/main.c:2684
+#: src/gtk/about.c:709 src/gtk/about.c:712 src/main.c:2690 src/main.c:2693
 #, c-format
 msgid "Started: %s\n"
 msgstr "已开始: %s\n"
 
-#: src/gtk/about.c:719 src/main.c:2690
+#: src/gtk/about.c:719 src/main.c:2699
 msgid "Incoming traffic\n"
 msgstr "通信传入\n"
 
-#: src/gtk/about.c:722 src/main.c:2693
+#: src/gtk/about.c:722 src/main.c:2702
 #, c-format
 msgid "Received messages: %d\n"
 msgstr "已收取的邮件: %d\n"
 
-#: src/gtk/about.c:729 src/main.c:2699
+#: src/gtk/about.c:729 src/main.c:2708
 msgid "Outgoing traffic\n"
 msgstr "通信传出\n"
 
-#: src/gtk/about.c:732 src/main.c:2702
+#: src/gtk/about.c:732 src/main.c:2711
 #, c-format
 msgid "New/redirected messages: %d\n"
 msgstr "新或改发的信息:%d\n"
 
-#: src/gtk/about.c:737 src/main.c:2706
+#: src/gtk/about.c:737 src/main.c:2715
 #, c-format
 msgid "Replied messages: %d\n"
 msgstr "已回复的邮件:%d\n"
 
-#: src/gtk/about.c:742 src/main.c:2710
+#: src/gtk/about.c:742 src/main.c:2719
 #, c-format
 msgid "Forwarded messages: %d\n"
 msgstr "已转发的邮件: %d\n"
 
-#: src/gtk/about.c:747 src/main.c:2714
+#: src/gtk/about.c:747 src/main.c:2723
 #, c-format
 msgid "Total outgoing messages: %d\n"
 msgstr "待发邮件总数: %d\n"
@@ -4681,6 +4689,7 @@ msgstr ""
 #: src/gtk/pluginwindow.c:304 src/plugins/bogofilter/bogofilter_gtk.c:457
 #: src/plugins/dillo_viewer/dillo_prefs.c:129
 #: src/plugins/fancy/fancy_prefs.c:110 src/plugins/pgpcore/prefs_gpg.c:557
+#: src/plugins/rssyl/rssyl_prefs.c:63
 #: src/plugins/spamassassin/spamassassin_gtk.c:648
 #: src/plugins/trayicon/trayicon_prefs.c:69
 #: src/plugins/vcalendar/vcal_prefs.c:645 src/prefs_toolbar.c:939
@@ -5595,7 +5604,7 @@ msgstr "移动目录...(_o)"
 msgid "Cop_y folder..."
 msgstr "复制目录...(_y)"
 
-#: src/imap_gtk.c:69 src/mh_gtk.c:59
+#: src/imap_gtk.c:69 src/mh_gtk.c:59 src/plugins/rssyl/rssyl_gtk.c:61
 msgid "_Delete folder..."
 msgstr "删除目录...(_D)"
 
@@ -5650,12 +5659,13 @@ msgid "Inherit properties from parent folder"
 msgstr "从父目录继承属性"
 
 #: src/imap_gtk.c:261 src/mh_gtk.c:249 src/news_gtk.c:305
+#: src/plugins/rssyl/rssyl_cb_menu.c:333
 #: src/plugins/vcalendar/vcal_folder.c:2017
 #, c-format
 msgid "Input new name for '%s':"
 msgstr "请输入'%s'的新名字:"
 
-#: src/imap_gtk.c:263 src/mh_gtk.c:251
+#: src/imap_gtk.c:263 src/mh_gtk.c:251 src/plugins/rssyl/rssyl_cb_menu.c:334
 #: src/plugins/vcalendar/vcal_folder.c:2018
 msgid "Rename folder"
 msgstr "重新命名目录"
@@ -5666,6 +5676,7 @@ msgid "`%c' can't be included in folder name."
 msgstr "目录名称不能包含`%c'。"
 
 #: src/imap_gtk.c:292 src/mh_gtk.c:274 src/news_gtk.c:327
+#: src/plugins/rssyl/rssyl_cb_menu.c:354
 #: src/plugins/vcalendar/vcal_folder.c:2038
 msgid ""
 "The folder could not be renamed.\n"
@@ -5674,7 +5685,7 @@ msgstr ""
 "不能重命名该目录。\n"
 "新指定的目录名不合法。"
 
-#: src/imap_gtk.c:360 src/mh_gtk.c:199
+#: src/imap_gtk.c:360 src/mh_gtk.c:199 src/plugins/rssyl/rssyl_cb_menu.c:234
 #, c-format
 msgid ""
 "All folders and messages under '%s' will be permanently deleted. Recovery "
@@ -5687,6 +5698,7 @@ msgstr ""
 "确实要删除吗？"
 
 #: src/imap_gtk.c:381 src/mh_gtk.c:220 src/news_gtk.c:280
+#: src/plugins/rssyl/rssyl_cb_menu.c:256
 #: src/plugins/vcalendar/vcal_folder.c:1974
 #, c-format
 msgid "Can't remove the folder '%s'."
@@ -6260,7 +6272,7 @@ msgstr "Sylpheed-Claws 1.9.15 或者更老版本"
 msgid "Sylpheed-Claws 1.0.5 (or older)"
 msgstr "Sylpheed-Claws 1.0.5 或者更老版本"
 
-#: src/main.c:1563
+#: src/main.c:1572
 #, c-format
 msgid ""
 "The following plugin failed to load. Check the Plugins configuration for "
@@ -6274,7 +6286,7 @@ msgstr[0] ""
 "以下插件无法成功加载，请检查插件配置以获取详细信息。\n"
 "%s"
 
-#: src/main.c:1591
+#: src/main.c:1600
 msgid ""
 "Claws Mail has detected a configured mailbox, but it is incomplete. It is "
 "possibly due to a failing IMAP account. Use \"Rebuild folder tree\" on the "
@@ -6283,7 +6295,7 @@ msgstr ""
 "Claws Mail检测到一个尚未配置完全的邮箱。它很可能是由于IMAP帐号失败造成的。请"
 "选择邮箱，用右键菜单中的\"重建邮件夹树\"来尝试修复它。"
 
-#: src/main.c:1597
+#: src/main.c:1606
 msgid ""
 "Claws Mail has detected a configured mailbox, but could not load it. It is "
 "probably provided by an out-of-date external plugin. Please reinstall the "
@@ -6292,41 +6304,41 @@ msgstr ""
 "Claws Mail检测到一个已经配置的邮箱，但无法加载。它可能是由一个已经过时的第三"
 "方插件建立的。请重新安装该插件后再尝试。"
 
-#: src/main.c:1626
+#: src/main.c:1635
 #, c-format
 msgid "Claws Mail can not start without its data volume (%s)."
 msgstr "Claws Mail没有找到其数据卷(%s)，无法启动。"
 
-#: src/main.c:1873
+#: src/main.c:1882
 msgid "Missing filename\n"
 msgstr ""
 
-#: src/main.c:1880
+#: src/main.c:1889
 msgid "Cannot open filename for reading\n"
 msgstr ""
 
-#: src/main.c:1891
+#: src/main.c:1900
 msgid "Malformed header\n"
 msgstr "信头格式错误\n"
 
-#: src/main.c:1898
+#: src/main.c:1907
 msgid "Duplicated 'To:' header\n"
 msgstr ""
 
-#: src/main.c:1913
+#: src/main.c:1922
 msgid "Missing required 'To:' header\n"
 msgstr "缺少'To:'信息\n"
 
-#: src/main.c:2058
+#: src/main.c:2067
 #, c-format
 msgid "Usage: %s [OPTION]...\n"
 msgstr "用法: %s [选项]...\n"
 
-#: src/main.c:2060
+#: src/main.c:2069
 msgid "  --compose [address]    open composition window"
 msgstr "  --compose [地址]       打开写信窗口"
 
-#: src/main.c:2061
+#: src/main.c:2070
 msgid ""
 "  --compose-from-file file\n"
 "                         open composition window with data from given file;\n"
@@ -6337,11 +6349,11 @@ msgid ""
 "                         empty line, then mail body until end of file."
 msgstr ""
 
-#: src/main.c:2066
+#: src/main.c:2075
 msgid "  --subscribe [uri]      subscribe to the given URI if possible"
 msgstr "  --subscribe [uri]      订阅指定的URI"
 
-#: src/main.c:2067
+#: src/main.c:2076
 msgid ""
 "  --attach file1 [file2]...\n"
 "                         open composition window with specified files\n"
@@ -6350,25 +6362,25 @@ msgstr ""
 "  --attach 文件1 [文件2]...\n"
 "                         打开写新邮件窗口，并附上所指定的文件"
 
-#: src/main.c:2070
+#: src/main.c:2079
 msgid "  --receive              receive new messages"
 msgstr "  --receive              接收新邮件"
 
-#: src/main.c:2071
+#: src/main.c:2080
 msgid "  --receive-all          receive new messages of all accounts"
 msgstr "  --receive-all          接收所有帐号的新邮件"
 
-#: src/main.c:2072
+#: src/main.c:2081
 #, fuzzy
 msgid "  --cancel-receiving     cancel receiving of messages"
 msgstr "  --receive              接收新邮件"
 
-#: src/main.c:2073
+#: src/main.c:2082
 #, fuzzy
 msgid "  --cancel-sending       cancel sending of messages"
 msgstr "  --receive              接收新邮件"
 
-#: src/main.c:2074
+#: src/main.c:2083
 msgid ""
 "  --search folder type request [recursive]\n"
 "                         searches mail\n"
@@ -6379,15 +6391,15 @@ msgid ""
 "                         recursive: false if arg. starts with 0, n, N, f or F"
 msgstr ""
 
-#: src/main.c:2081
+#: src/main.c:2090
 msgid "  --send                 send all queued messages"
 msgstr "  --send                 发送所有待发送邮件"
 
-#: src/main.c:2082
+#: src/main.c:2091
 msgid "  --status [folder]...   show the total number of messages"
 msgstr "  --status               显示所有邮件的数目"
 
-#: src/main.c:2083
+#: src/main.c:2092
 msgid ""
 "  --status-full [folder]...\n"
 "                         show the status of each folder"
@@ -6395,15 +6407,15 @@ msgstr ""
 "  --status-full [目录]...\n"
 "                         显示每个目录的状态"
 
-#: src/main.c:2085
+#: src/main.c:2094
 msgid "  --statistics           show session statistics"
 msgstr ""
 
-#: src/main.c:2086
+#: src/main.c:2095
 msgid "  --reset-statistics     reset session statistics"
 msgstr ""
 
-#: src/main.c:2087
+#: src/main.c:2096
 msgid ""
 "  --select folder[/msg]  jumps to the specified folder/message\n"
 "                         folder is a folder id like 'folder/sub_folder'"
@@ -6411,41 +6423,41 @@ msgstr ""
 "  --select folder[/msg]  跳转到指定的目录/邮件\n"
 "                         可采用如下方式指定目录: 'folder/sub_folder'"
 
-#: src/main.c:2089
+#: src/main.c:2098
 msgid "  --online               switch to online mode"
 msgstr "  --online               切换到联机模式"
 
-#: src/main.c:2090
+#: src/main.c:2099
 msgid "  --offline              switch to offline mode"
 msgstr "  --offline              切换到脱机模式"
 
-#: src/main.c:2091
+#: src/main.c:2100
 msgid "  --exit --quit -q       exit Claws Mail"
 msgstr "  --exit --quit -q       退出Claws Mail"
 
-#: src/main.c:2092
+#: src/main.c:2101
 msgid "  --debug                debug mode"
 msgstr "  --debug                调试模式"
 
-#: src/main.c:2093
+#: src/main.c:2102
 msgid "  --help -h              display this help and exit"
 msgstr "  --help -               显示本说明并结束程序"
 
-#: src/main.c:2094
+#: src/main.c:2103
 msgid "  --version -v           output version information and exit"
 msgstr "  --version -v           显示版本信息并结束程序"
 
-#: src/main.c:2095
+#: src/main.c:2104
 msgid ""
 "  --version-full -V      output version and built-in features information "
 "and exit"
 msgstr "  --version-full -V           显示详细版本信息并结束程序"
 
-#: src/main.c:2096
+#: src/main.c:2105
 msgid "  --config-dir           output configuration directory"
 msgstr "  --config-dir           显示配置数据目录"
 
-#: src/main.c:2097
+#: src/main.c:2106
 msgid ""
 "  --alternate-config-dir [dir]\n"
 "                         use specified configuration directory"
@@ -6453,32 +6465,32 @@ msgstr ""
 "  --alternate-config-dir [dir]\n"
 "                         使用指定的目录作为存放配置文件的目录"
 
-#: src/main.c:2147
+#: src/main.c:2156
 msgid "Unknown option\n"
 msgstr "未知选项\n"
 
-#: src/main.c:2165
+#: src/main.c:2174
 #, c-format
 msgid "Processing (%s)..."
 msgstr "正在处理(%s)..."
 
-#: src/main.c:2168
+#: src/main.c:2177
 msgid "top level folder"
 msgstr "最上一层目录"
 
-#: src/main.c:2251
+#: src/main.c:2260
 msgid "Queued messages"
 msgstr "待发送的邮件"
 
-#: src/main.c:2252
+#: src/main.c:2261
 msgid "Some unsent messages are queued. Exit now?"
 msgstr "待发送目录内尚有邮件。要退出吗？"
 
-#: src/main.c:2981
+#: src/main.c:2990
 msgid "NetworkManager: network is online.\n"
 msgstr "网络管理器: 网络已经连上。\n"
 
-#: src/main.c:2987
+#: src/main.c:2996
 msgid "NetworkManager: network is offline.\n"
 msgstr "网络管理器: 网络已经离线。\n"
 
@@ -7291,7 +7303,7 @@ msgstr ""
 "如果指定已存在的邮箱，它将会自动被扫描。\n"
 " "
 
-#: src/mainwindow.c:3108
+#: src/mainwindow.c:3108 src/plugins/rssyl/rssyl_gtk.c:158
 #, c-format
 msgid "The mailbox '%s' already exists."
 msgstr "邮箱 `%s' 已经存在。"
@@ -7661,7 +7673,7 @@ msgstr ""
 "该邮件发送到了你的多个帐号中。\n"
 "请选择用以发送回执的帐号: "
 
-#: src/messageview.c:2121
+#: src/messageview.c:2121 src/plugins/rssyl/rssyl_gtk.c:480
 msgid "_Cancel"
 msgstr "取消(_C)"
 
@@ -7961,7 +7973,7 @@ msgstr "确定要退订新闻组'%s'？"
 msgid "Unsubscribe newsgroup"
 msgstr "退订新闻组"
 
-#: src/news_gtk.c:267
+#: src/news_gtk.c:267 src/plugins/rssyl/rssyl_gtk.c:678
 msgid "_Unsubscribe"
 msgstr "/退订新闻组(_S)"
 
@@ -9111,6 +9123,368 @@ msgstr ""
 "有(2001)\n"
 " "
 
+#: src/plugins/rssyl/rssyl_prefs.c:103
+msgid "Default refresh interval in minutes"
+msgstr "定时刷新(180分钟刷新一次)"
+
+#: src/plugins/rssyl/rssyl_prefs.c:114
+msgid "Set to 0 to disable automatic refreshing"
+msgstr "设置为0表示禁止自动刷新"
+
+#: src/plugins/rssyl/rssyl_prefs.c:116
+msgid "Default number of expired items to keep"
+msgstr "要保存的过期条目的缺省数量"
+
+#: src/plugins/rssyl/rssyl_prefs.c:127
+msgid "Set to -1 to keep expired items"
+msgstr "设置为-1表示保存全部过期条目"
+
+#: src/plugins/rssyl/rssyl_prefs.c:130
+msgid "Refresh all feeds on application start"
+msgstr "程序启动时刷新全部供稿源"
+
+#: src/plugins/rssyl/rssyl_prefs.c:136
+msgid "Path to cookies file"
+msgstr "cookies文件位置"
+
+#: src/plugins/rssyl/rssyl_prefs.c:146
+msgid "Path to Netscape-style cookies.txt file containing your cookies"
+msgstr "Netscape风格的cookies.txt，该文件保存着您的cookies"
+
+#: src/plugins/rssyl/rssyl.h:8
+msgid "RSSyl"
+msgstr ""
+
+#: src/plugins/rssyl/rssyl.h:14
+msgid "My Feeds"
+msgstr "我的源"
+
+#: src/plugins/rssyl/rssyl_gtk.c:53
+msgid "_Refresh feed"
+msgstr ""
+
+#: src/plugins/rssyl/rssyl_gtk.c:54
+msgid "Refresh _all feeds"
+msgstr ""
+
+#: src/plugins/rssyl/rssyl_gtk.c:55
+#, fuzzy
+msgid "Subscribe _new feed..."
+msgstr "订阅...(_S)"
+
+#: src/plugins/rssyl/rssyl_gtk.c:56
+#, fuzzy
+msgid "_Unsubscribe feed..."
+msgstr "退订...(_U)"
+
+#: src/plugins/rssyl/rssyl_gtk.c:57
+#, fuzzy
+msgid "Feed pr_operties..."
+msgstr "属性(_P)..."
+
+#: src/plugins/rssyl/rssyl_gtk.c:58
+#, fuzzy
+msgid "Import feed list..."
+msgstr "导入mbox格式的邮件包"
+
+#: src/plugins/rssyl/rssyl_gtk.c:59
+#, fuzzy
+msgid "Rena_me..."
+msgstr "重命名(_R)..."
+
+#: src/plugins/rssyl/rssyl_gtk.c:60
+#, fuzzy
+msgid "_Create new folder..."
+msgstr "创建新目录(_n)..."
+
+#: src/plugins/rssyl/rssyl_gtk.c:62
+#, fuzzy
+msgid "Remove folder _tree..."
+msgstr " 重新建立目录树 ..."
+
+#: src/plugins/rssyl/rssyl_gtk.c:152
+msgid "Add RSS folder tree"
+msgstr "添加RSS目录树"
+
+#: src/plugins/rssyl/rssyl_gtk.c:153
+msgid "Enter name for a new RSS folder tree."
+msgstr "请输入要新建的RSS目录树的名称"
+
+#: src/plugins/rssyl/rssyl_gtk.c:169
+msgid ""
+"Creation of folder tree failed.\n"
+"Maybe some files already exist, or you don't have the permission to write "
+"there?"
+msgstr ""
+"创建目录树失败。\n"
+"可能有些文件已经存在了，或者您没有该处的写权限？"
+
+#: src/plugins/rssyl/rssyl_gtk.c:184
+msgid "RSSyl..."
+msgstr ""
+
+#: src/plugins/rssyl/rssyl_gtk.c:256
+msgid "Use default refresh interval"
+msgstr "采用缺省定时刷新设置"
+
+#: src/plugins/rssyl/rssyl_gtk.c:268
+msgid "Keep default number of expired entries"
+msgstr "需保存的过期条目数: 采用缺省值"
+
+#: src/plugins/rssyl/rssyl_gtk.c:274
+msgid "Fetch comments if possible"
+msgstr "无法提取评论"
+
+#: src/plugins/rssyl/rssyl_gtk.c:312
+msgid "<b>Source URL:</b>"
+msgstr "<b>来源网址：</b>"
+
+#: src/plugins/rssyl/rssyl_gtk.c:340
+msgid ""
+"<b>Fetch comments on posts aged less than:</b>\n"
+"<small>(In days; set to -1 to fetch all comments)</small>"
+msgstr ""
+
+#: src/plugins/rssyl/rssyl_gtk.c:374
+msgid ""
+"<b>Refresh interval in minutes:</b>\n"
+"<small>(Set to 0 to disable automatic refreshing for this feed)</small>"
+msgstr ""
+"<b>定时刷新时间间隔：</b>\n"
+"<small>(设置为0表示禁止自动刷新该项)</small>"
+
+#: src/plugins/rssyl/rssyl_gtk.c:407
+msgid ""
+"<b>Number of expired entries to keep:</b>\n"
+"<small>(Set to -1 if you want to keep expired entries)</small>"
+msgstr ""
+"<b>要保留的过期条目数：</b>\n"
+"<small>(设置为-1表示保留所有过期条目)</small>"
+
+#: src/plugins/rssyl/rssyl_gtk.c:433
+msgid "<b>If an item changes, do not mark it as unread:</b>"
+msgstr ""
+
+#: src/plugins/rssyl/rssyl_gtk.c:443
+#, fuzzy
+msgid "Always mark as unread"
+msgstr "设为未读"
+
+#: src/plugins/rssyl/rssyl_gtk.c:445
+msgid "If only its text changed"
+msgstr ""
+
+#: src/plugins/rssyl/rssyl_gtk.c:447
+#, fuzzy
+msgid "Never mark as unread"
+msgstr "设为未读"
+
+#: src/plugins/rssyl/rssyl_gtk.c:501
+msgid "_OK"
+msgstr "确定(_O)"
+
+#: src/plugins/rssyl/rssyl_gtk.c:509
+msgid "Set feed properties"
+msgstr "设置供稿源属性"
+
+#: src/plugins/rssyl/rssyl_gtk.c:634 src/plugins/rssyl/rssyl_gtk.c:658
+msgid "Unsubscribe feed"
+msgstr "取消订阅"
+
+#: src/plugins/rssyl/rssyl_gtk.c:659
+msgid "Do you really want to remove feed"
+msgstr "您确实要删除该供稿源"
+
+#: src/plugins/rssyl/rssyl_gtk.c:665
+msgid "Remove cached entries"
+msgstr "删除已有的条目"
+
+#: src/plugins/rssyl/plugin.c:63
+msgid ""
+"This plugin allows you to create a mailbox tree where you can add newsfeeds "
+"in RSS 1.0, RSS 2.0 or Atom format.\n"
+"\n"
+"Each newsfeed will create a folder with appropriate entries, fetched from "
+"the web. You can read them, and delete or keep old entries."
+msgstr ""
+"本插件使得您可以创建一个邮箱来阅读 RSS 1.0, RSS 2.0或者Atom格式的新闻源。\n"
+"\n"
+"每项新闻源将创建一个邮件夹，从网络提取内容。您可以阅读，删除或者保留里面的条"
+"目。"
+
+#: src/plugins/rssyl/plugin.c:87
+msgid "RSS feed"
+msgstr "RSS供稿源"
+
+#: src/plugins/rssyl/feed.h:20
+#, c-format
+msgid "Time out connecting to URL %s\n"
+msgstr "连接网址%s超时\n"
+
+#: src/plugins/rssyl/feed.h:21
+#, c-format
+msgid "Couldn't fetch URL %s\n"
+msgstr "无法提取到网址'%s'的内容\n"
+
+#: src/plugins/rssyl/feed.h:22
+#, c-format
+msgid "Error parsing feed from URL %s\n"
+msgstr "从网址%s提取供稿数据时出错\n"
+
+#: src/plugins/rssyl/feed.h:23
+#, c-format
+msgid "Unsupported feed type at URL %s\n"
+msgstr "不被识别的供稿源类型: %s\n"
+
+#: src/plugins/rssyl/feed.h:25
+#, c-format
+msgid "RSSyl: Updating feed %s\n"
+msgstr "RSSyl: 正在更新供稿源%s\n"
+
+#: src/plugins/rssyl/feed.h:26
+#, c-format
+msgid "RSSyl: Feed update finished: %s\n"
+msgstr "RSSyl: 供稿源完成更新: %s\n"
+
+#: src/plugins/rssyl/feed.h:27
+msgid "RSSyl: Feed update aborted, application is exiting.\n"
+msgstr ""
+
+#: src/plugins/rssyl/rssyl_cb_menu.c:62
+msgid "Subscribe feed"
+msgstr "订阅供稿源"
+
+#: src/plugins/rssyl/rssyl_cb_menu.c:63
+msgid "Input the URL of the news feed you wish to subscribe:"
+msgstr "请输入您想订阅的供稿源的网址："
+
+#: src/plugins/rssyl/rssyl_cb_menu.c:138
+#, c-format
+msgid "Really remove the folder tree '%s' ?\n"
+msgstr "真的要删除目录树 '%s'?\n"
+
+#: src/plugins/rssyl/rssyl_cb_menu.c:139
+msgid "Remove folder tree"
+msgstr "删除目录树"
+
+#: src/plugins/rssyl/rssyl_cb_menu.c:204
+#, c-format
+msgid "Can't remove feed '%s'."
+msgstr "无法删除供稿源 '%s'。"
+
+#: src/plugins/rssyl/rssyl_cb_menu.c:283 src/plugins/rssyl/feed.c:1856
+msgid "Claws Mail needs network access in order to update the feed."
+msgid_plural "Claws Mail needs network access in order to update the feeds."
+msgstr[0] "Claws Mail需要访问网络方可更新供稿源。"
+
+#: src/plugins/rssyl/rssyl_cb_menu.c:376
+msgid "Select a .opml file"
+msgstr "选中一个.opml文件"
+
+#: src/plugins/rssyl/rssyl.c:133 src/plugins/rssyl/rssyl.c:145
+msgid "Refresh all feeds"
+msgstr ""
+
+#: src/plugins/rssyl/feed.c:125
+msgid "Cannot open temporary file"
+msgstr "无法打开临时文件"
+
+#: src/plugins/rssyl/feed.c:136
+msgid "Cannot init libCURL"
+msgstr "无法初始化libCURL"
+
+#: src/plugins/rssyl/feed.c:231 src/plugins/vcalendar/vcal_folder.c:1593
+msgid "401 (Authorisation required)"
+msgstr "401 (需要权限)"
+
+#: src/plugins/rssyl/feed.c:234 src/plugins/vcalendar/vcal_folder.c:1596
+msgid "403 (Unauthorised)"
+msgstr "403 (未被授权)"
+
+#: src/plugins/rssyl/feed.c:237 src/plugins/vcalendar/vcal_folder.c:1599
+msgid "404 (Not found)"
+msgstr "404 (未找到)"
+
+#: src/plugins/rssyl/feed.c:240 src/plugins/vcalendar/vcal_folder.c:1602
+#, fuzzy, c-format
+msgid "Error %ld"
+msgstr "错误: "
+
+#: src/plugins/rssyl/feed.c:324
+#, c-format
+msgid "Fetching '%s'..."
+msgstr "正在提取 '%s'..."
+
+#: src/plugins/rssyl/feed.c:383
+msgid "Malformed feed"
+msgstr "输入源存在格式错误"
+
+#: src/plugins/rssyl/feed.c:1199
+#, c-format
+msgid "Refreshing feed '%s'..."
+msgstr "正在刷新供稿源'%s'..."
+
+#: src/plugins/rssyl/feed.c:1214
+#, c-format
+msgid ""
+"RSSyl: Fetching comments is not supported for RDF feeds. Cannot fetch "
+"comments of '%s'"
+msgstr "RSSyl: 不支持从RDF供稿源提取评论。无法获得'%s'的评论"
+
+#: src/plugins/rssyl/feed.c:1223
+msgid "This feed format is not supported yet."
+msgstr "不支持该供稿源的格式。"
+
+#: src/plugins/rssyl/feed.c:1254
+msgid "N/A"
+msgstr "未知"
+
+#: src/plugins/rssyl/feed.c:1374
+#, fuzzy, c-format
+msgid "%ld byte"
+msgid_plural "%ld bytes"
+msgstr[0] "字节数"
+
+#: src/plugins/rssyl/feed.c:1377
+msgid "size unknown"
+msgstr "大小未知"
+
+#: src/plugins/rssyl/feed.c:1550
+#, c-format
+msgid ""
+"RSSyl: Cannot update feed %s:\n"
+"%s\n"
+msgstr ""
+"RSSyl: 无法更新供稿源%s:\n"
+"%s\n"
+
+#: src/plugins/rssyl/feed.c:1722
+msgid "You are already subscribed to this feed."
+msgstr "您已经订阅了该供稿源。"
+
+#: src/plugins/rssyl/feed.c:1733
+#, c-format
+msgid ""
+"Couldn't fetch URL '%s':\n"
+"%s"
+msgstr ""
+"无法提取到网址'%s'的内容:\n"
+"%s"
+
+#: src/plugins/rssyl/feed.c:1738
+#, c-format
+msgid ""
+"Couldn't fetch URL '%s':\n"
+"%s\n"
+msgstr ""
+"无法提取到网址'%s'的内容:\n"
+"%s\n"
+
+#: src/plugins/rssyl/feed.c:1754
+#, c-format
+msgid "Can't subscribe feed '%s'."
+msgstr "无法订阅供稿源'%s'。"
+
 #: src/plugins/smime/plugin.c:38 src/plugins/smime/plugin.c:54
 #: src/plugins/smime/smime.c:924
 msgid "S/MIME"
@@ -9393,77 +9767,78 @@ msgstr "最小化到通知栏"
 msgid "Hide Claws Mail using the tray icon instead of minimizing it"
 msgstr "利用通知栏图标隐藏Claws Mail(而不是最小化程序)"
 
-#: src/vcalendar.c:96
+#: src/plugins/vcalendar/vcalendar.c:100
 msgid "Create meeting from message..."
 msgstr "根据邮件创建会议日程..."
 
-#: src/vcalendar.c:116
+#: src/plugins/vcalendar/vcalendar.c:120
 #, c-format
 msgid ""
 "You are about to create %d meetings, one by one. Do you want to continue?"
 msgstr "您将要创建%d个会议（创建将逐一进行），是否继续？"
 
-#: src/vcalendar.c:135
+#: src/plugins/vcalendar/vcalendar.c:139
 msgid "Creating meeting..."
 msgstr "创建会议..."
 
-#: src/vcalendar.c:154
+#: src/plugins/vcalendar/vcalendar.c:158
 msgid "no subject"
 msgstr "无主题"
 
-#: src/vcalendar.c:389
+#: src/plugins/vcalendar/vcalendar.c:393
 msgid "Accept"
 msgstr "接受"
 
-#: src/vcalendar.c:390
+#: src/plugins/vcalendar/vcalendar.c:394
 msgid "Tentatively accept"
 msgstr "暂且接受"
 
-#: src/vcalendar.c:391
+#: src/plugins/vcalendar/vcalendar.c:395
 msgid "Decline"
 msgstr "拒绝"
 
-#: src/vcalendar.c:478
+#: src/plugins/vcalendar/vcalendar.c:482
 msgid "You have a Todo item."
 msgstr "您有一个待办事宜。"
 
-#: src/vcalendar.c:479 src/vcalendar.c:486 src/vcalendar.c:491
-#: src/vcalendar.c:499 src/vcalendar.c:508 src/vcalendar.c:746
+#: src/plugins/vcalendar/vcalendar.c:483 src/plugins/vcalendar/vcalendar.c:490
+#: src/plugins/vcalendar/vcalendar.c:495 src/plugins/vcalendar/vcalendar.c:503
+#: src/plugins/vcalendar/vcalendar.c:512 src/plugins/vcalendar/vcalendar.c:750
 msgid "Details follow:"
 msgstr "详细内容如下:"
 
-#: src/vcalendar.c:485
+#: src/plugins/vcalendar/vcalendar.c:489
 msgid "You have created a meeting."
 msgstr "您已经创建了一个会议。"
 
-#: src/vcalendar.c:490
+#: src/plugins/vcalendar/vcalendar.c:494
 msgid "You have been invited to a meeting."
 msgstr "您已经被邀请参加一个会议。"
 
-#: src/vcalendar.c:498
+#: src/plugins/vcalendar/vcalendar.c:502
 msgid "A meeting to which you had been invited has been cancelled."
 msgstr "邀请您参加的一项会议已经被取消。"
 
-#: src/vcalendar.c:507
+#: src/plugins/vcalendar/vcalendar.c:511
 msgid "You have been forwarded an appointment."
 msgstr "您收到一份转发的约会"
 
-#: src/vcalendar.c:560
+#: src/plugins/vcalendar/vcalendar.c:564
 #, c-format
 msgid "%s <span weight=\"bold\">(this event recurs)</span>"
 msgstr "%s <span weight=\"bold\">(此事务为长期事务)</span>"
 
-#: src/vcalendar.c:566
+#: src/plugins/vcalendar/vcalendar.c:570
 #, c-format
 msgid ""
 "%s <span weight=\"bold\">(this event is part of a recurring event)</span>"
 msgstr "%s <span weight=\"bold\">(此事务为一长期事务的一部分)</span>"
 
-#: src/vcalendar.c:745
+#: src/plugins/vcalendar/vcalendar.c:749
 msgid "You have received an answer to an unknown meeting proposal."
 msgstr "您已经接收到一项未知会议提议的回复。"
 
-#: src/vcalendar.c:749
+#: src/plugins/vcalendar/vcalendar.c:753
 #, c-format
 msgid ""
 "You have received an answer to a meeting proposal.\n"
@@ -9485,23 +9860,23 @@ msgstr ""
 msgid "Error - Unknown calendar component type."
 msgstr ""
 
-#: src/vcalendar.c:978
+#: src/plugins/vcalendar/vcalendar.c:982
 msgid "Send a notification to the attendees"
 msgstr "给与会者发送通知"
 
-#: src/vcalendar.c:987
+#: src/plugins/vcalendar/vcalendar.c:991
 msgid "Cancel meeting"
 msgstr "取消会议"
 
-#: src/vcalendar.c:988
+#: src/plugins/vcalendar/vcalendar.c:992
 msgid "Are you sure you want to cancel this meeting?"
 msgstr "您确定要取消该会议么？"
 
-#: src/vcalendar.c:1083
+#: src/plugins/vcalendar/vcalendar.c:1087
 msgid "No account found"
 msgstr "没有找到账户"
 
-#: src/vcalendar.c:1084
+#: src/plugins/vcalendar/vcalendar.c:1088
 msgid ""
 "You have no account matching any attendee.\n"
 "Do you want to reply anyway ?"
@@ -9509,36 +9884,38 @@ msgstr ""
 "在会议名单中找不到您的名字。\n"
 "是否确实要回复？"
 
-#: src/vcalendar.c:1086
+#: src/plugins/vcalendar/vcalendar.c:1090
 msgid "+Reply anyway"
 msgstr "+仍旧回复"
 
-#: src/vcalendar.c:1215
+#: src/plugins/vcalendar/vcalendar.c:1219
 msgid "Answer"
 msgstr "答复"
 
-#: src/vcalendar.c:1216
+#: src/plugins/vcalendar/vcalendar.c:1220
 msgid "Edit meeting..."
 msgstr "编辑会议..."
 
-#: src/vcalendar.c:1217
+#: src/plugins/vcalendar/vcalendar.c:1221
 msgid "Cancel meeting..."
 msgstr "取消会议..."
 
-#: src/vcalendar.c:1218
+#: src/plugins/vcalendar/vcalendar.c:1222
 msgid "Launch website"
 msgstr "打开网站"
 
-#: src/vcalendar.c:1222
+#: src/plugins/vcalendar/vcalendar.c:1226
 msgid "You are already busy at this time."
 msgstr "您那时正忙。"
 
-#: src/vcalendar.c:1261 src/vcal_meeting_gtk.c:1734
+#: src/plugins/vcalendar/vcalendar.c:1265
+#: src/plugins/vcalendar/vcal_meeting_gtk.c:1738
 msgid "Event:"
 msgstr "时间："
 
-#: src/vcalendar.c:1262 src/vcal_meeting_gtk.c:1712
-#: src/vcal_meeting_gtk.c:1723
+#: src/plugins/vcalendar/vcalendar.c:1266
+#: src/plugins/vcalendar/vcal_meeting_gtk.c:1716
+#: src/plugins/vcalendar/vcal_meeting_gtk.c:1727
 msgid "Organizer:"
 msgstr "组织："
 
@@ -9549,53 +9926,56 @@ msgstr "组织："
 msgid "Location:"
 msgstr "位置: "
 
-#: src/vcalendar.c:1264 src/vcal_meeting_gtk.c:1713
-#: src/vcal_meeting_gtk.c:1724
+#: src/plugins/vcalendar/vcalendar.c:1268
+#: src/plugins/vcalendar/vcal_meeting_gtk.c:1717
+#: src/plugins/vcalendar/vcal_meeting_gtk.c:1728
 msgid "Summary:"
 msgstr "摘要："
 
-#: src/vcalendar.c:1265
+#: src/plugins/vcalendar/vcalendar.c:1269
 msgid "Starting:"
 msgstr "开始时间："
 
-#: src/vcalendar.c:1266
+#: src/plugins/vcalendar/vcalendar.c:1270
 msgid "Ending:"
 msgstr "结束时间："
 
-#: src/vcalendar.c:1268 src/vcal_meeting_gtk.c:1717
-#: src/vcal_meeting_gtk.c:1727
+#: src/plugins/vcalendar/vcalendar.c:1272
+#: src/plugins/vcalendar/vcal_meeting_gtk.c:1721
+#: src/plugins/vcalendar/vcal_meeting_gtk.c:1731
 msgid "Attendees:"
 msgstr "参加人员："
 
-#: src/vcalendar.c:1270
+#: src/plugins/vcalendar/vcalendar.c:1274
 msgid "Action:"
 msgstr "动作："
 
-#: src/vcal_prefs.c:254
+#: src/plugins/vcalendar/vcal_prefs.c:256
 msgid "Reminders"
 msgstr "提醒"
 
-#: src/vcal_prefs.c:263
+#: src/plugins/vcalendar/vcal_prefs.c:265
 msgid "Alert me"
 msgstr "通知我"
 
-#: src/vcal_prefs.c:275
+#: src/plugins/vcalendar/vcal_prefs.c:277
 msgid "minutes before an event"
 msgstr "分钟前"
 
-#: src/vcal_prefs.c:287
+#: src/plugins/vcalendar/vcal_prefs.c:289
 msgid "Calendar export"
 msgstr "导出日历"
 
-#: src/vcal_prefs.c:298
+#: src/plugins/vcalendar/vcal_prefs.c:300
 msgid "Automatically export calendar to"
 msgstr "自动导出日历到"
 
-#: src/vcal_prefs.c:307 src/vcal_prefs.c:413
+#: src/plugins/vcalendar/vcal_prefs.c:309
+#: src/plugins/vcalendar/vcal_prefs.c:415
 msgid "You can export to a local file or URL"
 msgstr "您可以导出到一个本地文件或者一个网络地址"
 
-#: src/vcal_prefs.c:309
+#: src/plugins/vcalendar/vcal_prefs.c:311
 msgid "Specify a local file or URL (http://server/path/file.ics)"
 msgstr "请指定一个本地文件或者URL(格式如http://server/path/file.ics)"
 
@@ -9612,43 +9992,43 @@ msgstr "用户ID"
 msgid "Password"
 msgstr "密码"
 
-#: src/vcal_prefs.c:339
+#: src/plugins/vcalendar/vcal_prefs.c:341
 msgid "Include webcal subscriptions in export"
 msgstr "导出时包含webcal中的内容"
 
-#: src/vcal_prefs.c:349
+#: src/plugins/vcalendar/vcal_prefs.c:351
 msgid "Command to run after calendar export"
 msgstr "导出日历后运行命令"
 
-#: src/vcal_prefs.c:378
+#: src/plugins/vcalendar/vcal_prefs.c:380
 msgid "Register Claws' calendar in XFCE's Orage clock"
 msgstr "在XFCE的Orage时钟里注册Claws的日程"
 
-#: src/vcal_prefs.c:380
+#: src/plugins/vcalendar/vcal_prefs.c:382
 msgid "Allows Orage (version greater than 4.4) to see Claws Mail's calendar"
 msgstr "允许在XFCE 4.4的日历工具Orage中查看到Claws Mail写入的日程"
 
-#: src/vcal_prefs.c:392
+#: src/plugins/vcalendar/vcal_prefs.c:394
 msgid "Free/Busy information"
 msgstr "忙/闲信息"
 
-#: src/vcal_prefs.c:404
+#: src/plugins/vcalendar/vcal_prefs.c:406
 msgid "Automatically export free/busy status to"
 msgstr "自动导出忙/闲状态到"
 
-#: src/vcal_prefs.c:415
+#: src/plugins/vcalendar/vcal_prefs.c:417
 msgid "Specify a local file or URL (http://server/path/file.ifb)"
 msgstr "请指定一个本地文件或者一个URL(格式如http://server/path/file.ifb)"
 
-#: src/vcal_prefs.c:445
+#: src/plugins/vcalendar/vcal_prefs.c:447
 msgid "Command to run after free/busy status export"
 msgstr "导出忙闲信息后运行命令"
 
-#: src/vcal_prefs.c:472
+#: src/plugins/vcalendar/vcal_prefs.c:474
 msgid "Get free/busy status of others from"
 msgstr "从这里获取其它人的忙闲信息"
 
-#: src/vcal_prefs.c:480
+#: src/plugins/vcalendar/vcal_prefs.c:482
 #, c-format
 msgid ""
 "Specify a local file or URL (http://server/path/file.ifb). Use %u for the "
@@ -9657,28 +10037,28 @@ msgstr ""
 "请指定一个本地本件或者URL(http://server/path/file.ifb), 用%u表示email地址的左"
 "边部分，%d表示域名部分"
 
-#: src/plugins/vcalendar/vcal_prefs.c:646 src/plugins/vcalendar/plugin.c:44
-#: src/plugins/vcalendar/plugin.c:65
+#: src/plugins/vcalendar/vcal_prefs.c:646 src/plugins/vcalendar/plugin.c:43
+#: src/plugins/vcalendar/plugin.c:64
 msgid "vCalendar"
 msgstr ""
 
-#: src/vcal_folder.c:160
+#: src/plugins/vcalendar/vcal_folder.c:164
 msgid "_New meeting..."
 msgstr "新建会议(_N)..."
 
-#: src/vcal_folder.c:161
+#: src/plugins/vcalendar/vcal_folder.c:165
 msgid "_Export calendar..."
 msgstr "导出日历(_E)..."
 
-#: src/vcal_folder.c:162
+#: src/plugins/vcalendar/vcal_folder.c:166
 msgid "_Subscribe to webCal..."
 msgstr "订阅WebCal(_S)..."
 
-#: src/vcal_folder.c:164
+#: src/plugins/vcalendar/vcal_folder.c:168
 msgid "_Rename..."
 msgstr "重命名(_R)..."
 
-#: src/vcal_folder.c:165
+#: src/plugins/vcalendar/vcal_folder.c:169
 msgid "U_pdate subscriptions"
 msgstr "更新(_p)"
 
@@ -9687,35 +10067,35 @@ msgstr "更新(_p)"
 msgid "_List view"
 msgstr "邮件显示(_M)"
 
-#: src/vcal_folder.c:167
+#: src/plugins/vcalendar/vcal_folder.c:171
 msgid "_Week view"
 msgstr "查看一周(_W)"
 
-#: src/vcal_folder.c:168
+#: src/plugins/vcalendar/vcal_folder.c:172
 msgid "_Month view"
 msgstr "查看一月(_M)"
 
-#: src/vcal_folder.c:1471
+#: src/plugins/vcalendar/vcal_folder.c:1475
 msgid "in the past"
 msgstr "过去"
 
-#: src/vcal_folder.c:1474
+#: src/plugins/vcalendar/vcal_folder.c:1478
 msgid "today"
 msgstr "今天"
 
-#: src/vcal_folder.c:1477
+#: src/plugins/vcalendar/vcal_folder.c:1481
 msgid "tomorrow"
 msgstr "明天"
 
-#: src/vcal_folder.c:1480
+#: src/plugins/vcalendar/vcal_folder.c:1484
 msgid "this week"
 msgstr "本周"
 
-#: src/vcal_folder.c:1483
+#: src/plugins/vcalendar/vcal_folder.c:1487
 msgid "later"
 msgstr "以后"
 
-#: src/vcal_folder.c:1487
+#: src/plugins/vcalendar/vcal_folder.c:1491
 #, c-format
 msgid ""
 "\n"
@@ -9724,29 +10104,12 @@ msgstr ""
 "\n"
 "以下是计划%s:\n"
 
-#: src/vcal_folder.c:1580
+#: src/plugins/vcalendar/vcal_folder.c:1584
 #, c-format
 msgid "Timeout (%d seconds) connecting to %s\n"
 msgstr "超时(%d秒)，连接%s失败\n"
 
-#: src/vcal_folder.c:1589
-msgid "401 (Authorisation required)"
-msgstr "401 (需要权限)"
-
-#: src/vcal_folder.c:1592
-msgid "403 (Unauthorised)"
-msgstr "403 (未被授权)"
-
-#: src/vcal_folder.c:1595
-msgid "404 (Not found)"
-msgstr "404 (未找到)"
-
-#: src/plugins/vcalendar/vcal_folder.c:1602
-#, fuzzy, c-format
-msgid "Error %ld"
-msgstr "错误: "
-
-#: src/vcal_folder.c:1795
+#: src/plugins/vcalendar/vcal_folder.c:1799
 #, c-format
 msgid ""
 "Could not retrieve the Webcal URL:\n"
@@ -9759,7 +10122,7 @@ msgstr ""
 "\n"
 "%s"
 
-#: src/vcal_folder.c:1799
+#: src/plugins/vcalendar/vcal_folder.c:1803
 #, c-format
 msgid ""
 "Could not retrieve the Webcal URL:\n"
@@ -9772,7 +10135,7 @@ msgstr ""
 "\n"
 "%s\n"
 
-#: src/vcal_folder.c:1810
+#: src/plugins/vcalendar/vcal_folder.c:1814
 #, c-format
 msgid ""
 "This URL does not look like a WebCal URL:\n"
@@ -9783,7 +10146,7 @@ msgstr ""
 "%s\n"
 "%s"
 
-#: src/vcal_folder.c:1813
+#: src/plugins/vcalendar/vcal_folder.c:1817
 #, c-format
 msgid ""
 "This URL does not look like a WebCal URL:\n"
@@ -9793,6 +10156,10 @@ msgstr ""
 "该网址看起来并不像一个WebCal网址：\n"
 "%s\n"
 "%s\n"
+
+#: src/plugins/vcalendar/vcal_folder.c:1874
+msgid "Claws Mail needs network access in order to update the Webcal feed."
+msgstr "Claws Mail需要连接网络才能更新WebCal数据。"
 
 #: src/plugins/vcalendar/vcal_folder.c:1885
 #, fuzzy, c-format
@@ -9804,35 +10171,39 @@ msgstr "正在更新目录 %s 的缓存..."
 msgid "new subscription"
 msgstr "订阅新闻组"
 
-#: src/vcal_folder.c:1905
+#: src/plugins/vcalendar/vcal_folder.c:1897
+msgid "Claws Mail needs network access in order to update the subscription."
+msgstr "Claws Mail需要连接网络才能更新所订阅的数据。"
+
+#: src/plugins/vcalendar/vcal_folder.c:1909
 msgid "Subscribe to WebCal"
 msgstr "订阅WebCal"
 
-#: src/vcal_folder.c:1905
+#: src/plugins/vcalendar/vcal_folder.c:1909
 msgid "Enter the WebCal URL:"
 msgstr "请输入WebCal网址"
 
-#: src/vcal_folder.c:1919
+#: src/plugins/vcalendar/vcal_folder.c:1923
 msgid "Could not parse the URL."
 msgstr "无法解析该网址"
 
-#: src/vcal_folder.c:1948
+#: src/plugins/vcalendar/vcal_folder.c:1952
 msgid "Do you really want to unsubscribe?"
 msgstr "您确定要取消订阅吗？"
 
-#: src/vcal_meeting_gtk.c:309
+#: src/plugins/vcalendar/vcal_meeting_gtk.c:313
 msgid "Individual"
 msgstr "个人"
 
-#: src/vcal_meeting_gtk.c:311
+#: src/plugins/vcalendar/vcal_meeting_gtk.c:315
 msgid "Resource"
 msgstr "资源"
 
-#: src/vcal_meeting_gtk.c:312
+#: src/plugins/vcalendar/vcal_meeting_gtk.c:316
 msgid "Room"
 msgstr "房间"
 
-#: src/vcal_meeting_gtk.c:325
+#: src/plugins/vcalendar/vcal_meeting_gtk.c:329
 msgid "Add..."
 msgstr "添加..."
 
@@ -9840,7 +10211,7 @@ msgstr "添加..."
 msgid "Remove"
 msgstr "删除"
 
-#: src/vcal_meeting_gtk.c:784
+#: src/plugins/vcalendar/vcal_meeting_gtk.c:788
 msgid ""
 "The following person(s) are busy at the time of your planned meeting:\n"
 "- "
@@ -9848,61 +10219,62 @@ msgstr ""
 "以下人员在您所计划的时间内将不会有空:\n"
 "- "
 
-#: src/vcal_meeting_gtk.c:785 src/vcal_meeting_gtk.c:877
-#: src/vcal_meeting_gtk.c:963
+#: src/plugins/vcalendar/vcal_meeting_gtk.c:789
+#: src/plugins/vcalendar/vcal_meeting_gtk.c:881
+#: src/plugins/vcalendar/vcal_meeting_gtk.c:967
 msgid "You"
 msgstr "您"
 
-#: src/vcal_meeting_gtk.c:786
+#: src/plugins/vcalendar/vcal_meeting_gtk.c:790
 msgid "You are busy at the time of your planned meeting"
 msgstr "您自己在计划的会议时间内无空"
 
-#: src/vcal_meeting_gtk.c:788
+#: src/plugins/vcalendar/vcal_meeting_gtk.c:792
 #, c-format
 msgid "%s is busy at the time of your planned meeting"
 msgstr "%s 在您计划的会议时间内无空"
 
-#: src/vcal_meeting_gtk.c:790
+#: src/plugins/vcalendar/vcal_meeting_gtk.c:794
 #, c-format
 msgid "%d hour sooner"
 msgstr "之前%d小时"
 
-#: src/vcal_meeting_gtk.c:792
+#: src/plugins/vcalendar/vcal_meeting_gtk.c:796
 #, c-format
 msgid "%d hours sooner"
 msgstr "之后%d小时"
 
-#: src/vcal_meeting_gtk.c:794
+#: src/plugins/vcalendar/vcal_meeting_gtk.c:798
 #, c-format
 msgid "%d hours and %d minutes sooner"
 msgstr "之前%d小时%d分钟"
 
-#: src/vcal_meeting_gtk.c:796
+#: src/plugins/vcalendar/vcal_meeting_gtk.c:800
 #, c-format
 msgid "%d minutes sooner"
 msgstr "之前%d分钟"
 
-#: src/vcal_meeting_gtk.c:801
+#: src/plugins/vcalendar/vcal_meeting_gtk.c:805
 #, c-format
 msgid "%d hour later"
 msgstr "之后%d小时"
 
-#: src/vcal_meeting_gtk.c:803
+#: src/plugins/vcalendar/vcal_meeting_gtk.c:807
 #, c-format
 msgid "%d hours later"
 msgstr "之后%d小时"
 
-#: src/vcal_meeting_gtk.c:805
+#: src/plugins/vcalendar/vcal_meeting_gtk.c:809
 #, c-format
 msgid "%d hours and %d minutes later"
 msgstr "之后%d小时%d分钟"
 
-#: src/vcal_meeting_gtk.c:807
+#: src/plugins/vcalendar/vcal_meeting_gtk.c:811
 #, c-format
 msgid "%d minutes later"
 msgstr "之后%d分"
 
-#: src/vcal_meeting_gtk.c:813
+#: src/plugins/vcalendar/vcal_meeting_gtk.c:817
 #, c-format
 msgid ""
 "\n"
@@ -9913,7 +10285,7 @@ msgstr ""
 "\n"
 "所有人在%s或%s均有空."
 
-#: src/vcal_meeting_gtk.c:815
+#: src/plugins/vcalendar/vcal_meeting_gtk.c:819
 #, c-format
 msgid ""
 "\n"
@@ -9924,7 +10296,7 @@ msgstr ""
 "\n"
 "所有人均有空 %s."
 
-#: src/vcal_meeting_gtk.c:817
+#: src/plugins/vcalendar/vcal_meeting_gtk.c:821
 msgid ""
 "\n"
 "\n"
@@ -9935,52 +10307,54 @@ msgstr ""
 "\n"
 "在此前和此后6个小时内不可能让所有人参加这个会议。"
 
-#: src/vcal_meeting_gtk.c:822
+#: src/plugins/vcalendar/vcal_meeting_gtk.c:826
 #, c-format
 msgid "would be available %s or %s"
 msgstr "将会在%s或者%s有空"
 
-#: src/vcal_meeting_gtk.c:824
+#: src/plugins/vcalendar/vcal_meeting_gtk.c:828
 #, c-format
 msgid "would be available %s"
 msgstr "将会在%s有空"
 
-#: src/vcal_meeting_gtk.c:826 src/vcal_meeting_gtk.c:890
-#: src/vcal_meeting_gtk.c:960
+#: src/plugins/vcalendar/vcal_meeting_gtk.c:830
+#: src/plugins/vcalendar/vcal_meeting_gtk.c:894
+#: src/plugins/vcalendar/vcal_meeting_gtk.c:964
 msgid "not available"
 msgstr "无空"
 
-#: src/vcal_meeting_gtk.c:829
+#: src/plugins/vcalendar/vcal_meeting_gtk.c:833
 #, c-format
 msgid ", but would be available %s or %s."
 msgstr ", 但在%s或者%s有空。"
 
-#: src/vcal_meeting_gtk.c:831
+#: src/plugins/vcalendar/vcal_meeting_gtk.c:835
 #, c-format
 msgid ", but would be available %s."
 msgstr ", 但在%s有空。"
 
-#: src/vcal_meeting_gtk.c:833
+#: src/plugins/vcalendar/vcal_meeting_gtk.c:837
 msgid ", and isn't available in the previous or next 6 hours."
 msgstr ", 而且在此前和此后6小时内均无空。"
 
-#: src/vcal_meeting_gtk.c:893
+#: src/plugins/vcalendar/vcal_meeting_gtk.c:897
 msgid "available"
 msgstr "有空"
 
-#: src/vcal_meeting_gtk.c:895 src/vcal_meeting_gtk.c:1146
+#: src/plugins/vcalendar/vcal_meeting_gtk.c:899
+#: src/plugins/vcalendar/vcal_meeting_gtk.c:1150
 msgid "Free/busy retrieval failed"
 msgstr "获取忙/闲信息失败"
 
-#: src/vcal_meeting_gtk.c:977
+#: src/plugins/vcalendar/vcal_meeting_gtk.c:981
 msgid "Not everyone is available"
 msgstr "并非所有人都有空"
 
-#: src/vcal_meeting_gtk.c:978
+#: src/plugins/vcalendar/vcal_meeting_gtk.c:982
 msgid "Send anyway"
 msgstr "坚持发送"
 
-#: src/vcal_meeting_gtk.c:989
+#: src/plugins/vcalendar/vcal_meeting_gtk.c:993
 msgid "Not everyone is available. See tooltips for more info..."
 msgstr "并非所有人都有空。查看提示以获取更多信息..."
 
@@ -9989,22 +10363,23 @@ msgstr "并非所有人都有空。查看提示以获取更多信息..."
 msgid "Fetching planning for %s..."
 msgstr " 扫描目录 %s ..."
 
-#: src/vcal_meeting_gtk.c:1155
+#: src/plugins/vcalendar/vcal_meeting_gtk.c:1159
 msgid "Available"
 msgstr "有空"
 
-#: src/vcal_meeting_gtk.c:1168 src/vcal_meeting_gtk.c:1175
-#: src/vcal_meeting_gtk.c:1183
+#: src/plugins/vcalendar/vcal_meeting_gtk.c:1172
+#: src/plugins/vcalendar/vcal_meeting_gtk.c:1179
+#: src/plugins/vcalendar/vcal_meeting_gtk.c:1187
 msgid "Everyone is available."
 msgstr "所有人均有空。"
 
-#: src/vcal_meeting_gtk.c:1184
+#: src/plugins/vcalendar/vcal_meeting_gtk.c:1188
 msgid ""
 "Everyone seems available, but some free/busy information failed to be "
 "retrieved."
 msgstr "似乎所有人都有空，但目前获得的忙/闲信息不完整。"
 
-#: src/vcal_meeting_gtk.c:1356
+#: src/plugins/vcalendar/vcal_meeting_gtk.c:1360
 msgid ""
 "Could not send the meeting invitation.\n"
 "Check the recipients."
@@ -10012,52 +10387,54 @@ msgstr ""
 "无法发送会议邀请。\n"
 "请检查接收名单。"
 
-#: src/vcal_meeting_gtk.c:1472
+#: src/plugins/vcalendar/vcal_meeting_gtk.c:1476
 msgid "Save & Send"
 msgstr "保存并发送邀请"
 
-#: src/vcal_meeting_gtk.c:1473
+#: src/plugins/vcalendar/vcal_meeting_gtk.c:1477
 msgid "Check availability"
 msgstr "坚持各人是否有空"
 
-#: src/vcal_meeting_gtk.c:1596
+#: src/plugins/vcalendar/vcal_meeting_gtk.c:1600
 msgid "<b>Starts at:</b> "
 msgstr "<b>开始于:</b>"
 
-#: src/vcal_meeting_gtk.c:1601 src/vcal_meeting_gtk.c:1623
+#: src/plugins/vcalendar/vcal_meeting_gtk.c:1605
+#: src/plugins/vcalendar/vcal_meeting_gtk.c:1627
 msgid "<b> on:</b>"
 msgstr "<b> 在:<b>"
 
-#: src/vcal_meeting_gtk.c:1618
+#: src/plugins/vcalendar/vcal_meeting_gtk.c:1622
 msgid "<b>Ends at:</b> "
 msgstr "<b>结束于:<b>"
 
-#: src/vcal_meeting_gtk.c:1657
+#: src/plugins/vcalendar/vcal_meeting_gtk.c:1661
 msgid "New meeting"
 msgstr "新建会议"
 
-#: src/vcal_meeting_gtk.c:1659
+#: src/plugins/vcalendar/vcal_meeting_gtk.c:1663
 #, c-format
 msgid "%s - Edit meeting"
 msgstr "%s - 编辑会议"
 
-#: src/vcal_meeting_gtk.c:1714 src/vcal_meeting_gtk.c:1738
+#: src/plugins/vcalendar/vcal_meeting_gtk.c:1718
+#: src/plugins/vcalendar/vcal_meeting_gtk.c:1742
 msgid "Time:"
 msgstr "时间:"
 
-#: src/vcal_meeting_gtk.c:1874
+#: src/plugins/vcalendar/vcal_meeting_gtk.c:1878
 #, c-format
 msgid "%d hour"
 msgid_plural "%d hours"
 msgstr[0] "%d小时"
 
-#: src/vcal_meeting_gtk.c:1877
+#: src/plugins/vcalendar/vcal_meeting_gtk.c:1881
 #, c-format
 msgid "%d minute"
 msgid_plural "%d minutes"
 msgstr[0] "%d分"
 
-#: src/vcal_meeting_gtk.c:1888
+#: src/plugins/vcalendar/vcal_meeting_gtk.c:1892
 #, c-format
 msgid "Upcoming event: %s"
 msgstr "待办事宜: %s"
@@ -10079,97 +10456,97 @@ msgid "Remind me in %d minute"
 msgid_plural "Remind me in %d minutes"
 msgstr[0] ""
 
-#: src/vcal_meeting_gtk.c:2032
+#: src/plugins/vcalendar/vcal_meeting_gtk.c:2036
 msgid "Empty calendar"
 msgstr "清空日历"
 
-#: src/vcal_meeting_gtk.c:2033
+#: src/plugins/vcalendar/vcal_meeting_gtk.c:2037
 msgid "There is nothing to export."
 msgstr "没有可以导出的内容。"
 
-#: src/vcal_meeting_gtk.c:2073
+#: src/plugins/vcalendar/vcal_meeting_gtk.c:2077
 msgid "Could not export the calendar."
 msgstr "无法导出此日历项"
 
-#: src/vcal_meeting_gtk.c:2090
+#: src/plugins/vcalendar/vcal_meeting_gtk.c:2094
 msgid "Export calendar to ICS"
 msgstr "导出日历到ICS"
 
-#: src/vcal_meeting_gtk.c:2112
+#: src/plugins/vcalendar/vcal_meeting_gtk.c:2116
 #, c-format
 msgid "Couldn't export calendar to '%s'\n"
 msgstr "无法导出日历到'%s'\n"
 
-#: src/vcal_meeting_gtk.c:2228
+#: src/plugins/vcalendar/vcal_meeting_gtk.c:2232
 msgid "Could not export the freebusy info."
 msgstr "无法导出忙闲信息。"
 
-#: src/vcal_meeting_gtk.c:2259
+#: src/plugins/vcalendar/vcal_meeting_gtk.c:2263
 #, c-format
 msgid "Couldn't export free/busy to '%s'\n"
 msgstr "无法导出忙闲信息到'%s'\n"
 
-#: src/vcal_manager.c:105
+#: src/plugins/vcalendar/vcal_manager.c:109
 msgid "accepted"
 msgstr "已接受"
 
-#: src/vcal_manager.c:106
+#: src/plugins/vcalendar/vcal_manager.c:110
 msgid "tentatively accepted"
 msgstr "暂且接受"
 
-#: src/vcal_manager.c:107
+#: src/plugins/vcalendar/vcal_manager.c:111
 msgid "declined"
 msgstr "已拒绝"
 
-#: src/vcal_manager.c:108
+#: src/plugins/vcalendar/vcal_manager.c:112
 msgid "did not answer"
 msgstr "未答复"
 
-#: src/vcal_manager.c:138
+#: src/plugins/vcalendar/vcal_manager.c:142
 msgid "individual"
 msgstr "个人"
 
-#: src/vcal_manager.c:139
+#: src/plugins/vcalendar/vcal_manager.c:143
 msgid "group"
 msgstr "群组"
 
-#: src/vcal_manager.c:140
+#: src/plugins/vcalendar/vcal_manager.c:144
 msgid "resource"
 msgstr "资源"
 
-#: src/vcal_manager.c:141
+#: src/plugins/vcalendar/vcal_manager.c:145
 msgid "room"
 msgstr "房间"
 
-#: src/vcal_manager.c:552
+#: src/plugins/vcalendar/vcal_manager.c:556
 msgid "Past"
 msgstr "过去"
 
-#: src/vcal_manager.c:555
+#: src/plugins/vcalendar/vcal_manager.c:559
 msgid "Today"
 msgstr "今天"
 
-#: src/vcal_manager.c:558
+#: src/plugins/vcalendar/vcal_manager.c:562
 msgid "Tomorrow"
 msgstr "明天"
 
-#: src/vcal_manager.c:561
+#: src/plugins/vcalendar/vcal_manager.c:565
 msgid "This week"
 msgstr "本周"
 
-#: src/vcal_manager.c:564
+#: src/plugins/vcalendar/vcal_manager.c:568
 msgid "Later"
 msgstr "以后"
 
-#: src/vcal_manager.c:1230
+#: src/plugins/vcalendar/vcal_manager.c:1234
 msgid "Accepted: "
 msgstr "已接受的: "
 
-#: src/vcal_manager.c:1232
+#: src/plugins/vcalendar/vcal_manager.c:1236
 msgid "Declined: "
 msgstr "已拒绝的: "
 
-#: src/vcal_manager.c:1234
+#: src/plugins/vcalendar/vcal_manager.c:1238
 msgid "Tentatively Accepted: "
 msgstr "暂且接受的: "
 
@@ -10177,7 +10554,7 @@ msgstr "暂且接受的: "
 msgid "Start"
 msgstr ""
 
-#: src/day-view.c:610 src/month-view.c:710
+#: src/plugins/vcalendar/day-view.c:614 src/plugins/vcalendar/month-view.c:714
 msgid "Show"
 msgstr "显示"
 
@@ -10187,7 +10564,7 @@ msgstr "显示"
 msgid "days"
 msgstr "天"
 
-#: src/plugin.c:73
+#: src/plugins/vcalendar/plugin.c:69
 msgid ""
 "This plugin enables vCalendar message handling like that produced by "
 "Evolution or Outlook.\n"
@@ -10215,83 +10592,83 @@ msgstr ""
 "你也可以订阅远程的webcal数据，导出会议和日历安排，发布您的空余时间信息或者获"
 "取其它人的信息。"
 
-#: src/plugin.c:106
+#: src/plugins/vcalendar/plugin.c:102
 msgid "Calendar"
 msgstr "日历"
 
-#: src/month-view.c:107
+#: src/plugins/vcalendar/month-view.c:111
 msgid "Monday"
 msgstr "星期一"
 
-#: src/month-view.c:108
+#: src/plugins/vcalendar/month-view.c:112
 msgid "Tuesday"
 msgstr "星期二"
 
-#: src/month-view.c:109
+#: src/plugins/vcalendar/month-view.c:113
 msgid "Wednesday"
 msgstr "星期三"
 
-#: src/month-view.c:110
+#: src/plugins/vcalendar/month-view.c:114
 msgid "Thursday"
 msgstr "星期四"
 
-#: src/month-view.c:111
+#: src/plugins/vcalendar/month-view.c:115
 msgid "Friday"
 msgstr "星期五"
 
-#: src/month-view.c:112
+#: src/plugins/vcalendar/month-view.c:116
 msgid "Saturday"
 msgstr "星期六"
 
-#: src/month-view.c:113
+#: src/plugins/vcalendar/month-view.c:117
 msgid "Sunday"
 msgstr "星期天"
 
-#: src/month-view.c:116
+#: src/plugins/vcalendar/month-view.c:120
 msgid "January"
 msgstr "一月"
 
-#: src/month-view.c:117
+#: src/plugins/vcalendar/month-view.c:121
 msgid "February"
 msgstr "二月"
 
-#: src/month-view.c:118
+#: src/plugins/vcalendar/month-view.c:122
 msgid "March"
 msgstr "三月"
 
-#: src/month-view.c:119
+#: src/plugins/vcalendar/month-view.c:123
 msgid "April"
 msgstr "四月"
 
-#: src/month-view.c:120
+#: src/plugins/vcalendar/month-view.c:124
 msgid "May"
 msgstr "五月"
 
-#: src/month-view.c:121
+#: src/plugins/vcalendar/month-view.c:125
 msgid "June"
 msgstr "六月"
 
-#: src/month-view.c:122
+#: src/plugins/vcalendar/month-view.c:126
 msgid "July"
 msgstr "七月"
 
-#: src/month-view.c:123
+#: src/plugins/vcalendar/month-view.c:127
 msgid "August"
 msgstr "八月"
 
-#: src/month-view.c:124
+#: src/plugins/vcalendar/month-view.c:128
 msgid "September"
 msgstr "九月"
 
-#: src/month-view.c:125
+#: src/plugins/vcalendar/month-view.c:129
 msgid "October"
 msgstr "十月"
 
-#: src/month-view.c:126
+#: src/plugins/vcalendar/month-view.c:130
 msgid "November"
 msgstr "十一月"
 
-#: src/month-view.c:127
+#: src/plugins/vcalendar/month-view.c:131
 msgid "December"
 msgstr "十二月"
 
@@ -10300,11 +10677,11 @@ msgstr "十二月"
 msgid "Week number"
 msgstr "按号码(_n)"
 
-#: src/month-view.c:903
+#: src/plugins/vcalendar/month-view.c:907
 msgid "Previous month"
 msgstr "上月"
 
-#: src/month-view.c:926
+#: src/plugins/vcalendar/month-view.c:930
 msgid "Next month"
 msgstr "下月"
 
@@ -15353,11 +15730,73 @@ msgstr ""
 "Claws Mail配置完成。\n"
 "点击[保存]开始使用。"
 
-#~ msgid "Claws Mail needs network access in order to update the Webcal feed."
-#~ msgstr "Claws Mail需要连接网络才能更新WebCal数据。"
+#~ msgid "Error %d"
+#~ msgstr "错误号 %d"
 
-#~ msgid "Claws Mail needs network access in order to update the subscription."
-#~ msgstr "Claws Mail需要连接网络才能更新所订阅的数据。"
+#~ msgid ""
+#~ "RSSyl: Fetching comments is not supported for Atom feeds. Cannot fetch "
+#~ "comments of '%s'"
+#~ msgstr "RSSyl: Atom供稿源不支持提取评论。无法获取'%s'的评论。"
+
+#~ msgid "/_Refresh feed"
+#~ msgstr "/刷新(_R)"
+
+#~ msgid "/Refresh _all feeds"
+#~ msgstr "/全部刷新(_a)"
+
+#~ msgid "/Subscribe _new feed..."
+#~ msgstr "/订阅新供稿源(_n)..."
+
+#~ msgid "/_Unsubscribe feed..."
+#~ msgstr "/取消订阅(_U)..."
+
+#~ msgid "/Feed pr_operties..."
+#~ msgstr "/属性(_o)..."
+
+#~ msgid "/Import feed list..."
+#~ msgstr "/导入供稿源列表..."
+
+#~ msgid "/Rena_me..."
+#~ msgstr "/重命名(_m)..."
+
+#~ msgid "/_Create new folder..."
+#~ msgstr "/创建新文件夹(_C)..."
+
+#~ msgid "/_Delete folder..."
+#~ msgstr "/删除文件夹(_D)..."
+
+#~ msgid "/Remove folder _tree..."
+#~ msgstr "/删除目录树(_t)..."
+
+#~ msgid "/Refresh feed"
+#~ msgstr "/刷新"
+
+#~ msgid "/Refresh all feeds"
+#~ msgstr "/全部刷新"
+
+#~ msgid "/Subscribe new feed..."
+#~ msgstr "订阅新的feed..."
+
+#~ msgid "/Unsubscribe feed..."
+#~ msgstr "/取消订阅..."
+
+#~ msgid "/Feed properties..."
+#~ msgstr "/属性..."
+
+#~ msgid "/Rename..."
+#~ msgstr "/重命名..."
+
+#~ msgid "/Create new folder..."
+#~ msgstr "/创建新文件夹..."
+
+#~ msgid "/Delete folder..."
+#~ msgstr "/删除文件夹..."
+
+#~ msgid "/Remove folder tree..."
+#~ msgstr "/删除文件夹树..."
+
+#~ msgid "/File/Add mailbox/RSSyl..."
+#~ msgstr "/文件/添加邮箱/RSSyl..."
 
 #~ msgid ""
 #~ "Command could not be started. Pipe creation failed.\n"

@@ -14399,6 +14399,338 @@ msgstr ""
 msgid "Next month"
 msgstr ""
 
+#: src/feed.c:103
+msgid "Cannot open temporary file"
+msgstr "Није могуће отворити привремену датотеку"
+
+#: src/feed.c:114
+msgid "Cannot init libCURL"
+msgstr "Није могуће иницијализовати libCURL"
+
+#: src/feed.c:208
+#, c-format
+msgid "Error %d"
+msgstr "Грешка %d"
+
+#: src/feed.c:271
+#, c-format
+msgid "Fetching '%s'..."
+msgstr "У току је прикупљање са извора „%s“..."
+
+#: src/feed.c:322
+msgid "Malformed feed"
+msgstr "Неисправан извор"
+
+#: src/feed.c:980
+#, c-format
+msgid "Refreshing feed '%s'..."
+msgstr "У току је освежавање извора „%s“..."
+
+#: src/feed.c:995
+#, c-format
+msgid ""
+"RSSyl: Fetching comments is not supported for RDF feeds. Cannot fetch "
+"comments of '%s'"
+msgstr ""
+"RSSyl: Добављање коментара није подржано за RDF изворе. Није могуће "
+"прибавити комендаре за „%s“"
+
+#: src/feed.c:1003
+#, c-format
+msgid ""
+"RSSyl: Fetching comments is not supported for Atom feeds. Cannot fetch "
+"comments of '%s'"
+msgstr ""
+"RSSyl: Добављање коментара није подржано за Atom изворе. Није могуће "
+"прибавити комендаре за „%s“"
+
+#: src/feed.c:1009
+msgid "This feed format is not supported yet."
+msgstr "Овај формат извора за сада није подржан."
+
+#: src/feed.c:1038
+msgid "N/A"
+msgstr "RSS извор"
+
+#: src/feed.c:1277
+#, c-format
+msgid ""
+"RSSyl: Cannot update feed %s:\n"
+"%s\n"
+msgstr ""
+"RSSyl: Није могуће освежити извор %s:\n"
+"%s\n"
+
+#: src/feed.c:1429
+msgid "You are already subscribed to this feed."
+msgstr "Већ сте пријављени на овај извор."
+
+#: src/feed.c:1437
+#, c-format
+msgid ""
+"Couldn't fetch URL '%s':\n"
+"%s"
+msgstr ""
+"Није могуће добавити адресу „%s“:\n"
+"%s"
+
+#: src/feed.c:1439
+#, c-format
+msgid ""
+"Couldn't fetch URL '%s':\n"
+"%s\n"
+msgstr ""
+"Није могуће добавити адресу „%s“:\n"
+"%s\n"
+
+#: src/feed.c:1449
+#, c-format
+msgid "Can't subscribe feed '%s'."
+msgstr "Није могуће додавање извора „%s“."
+
+#: src/feed.c:1549 src/rssyl_cb_menu.c:275
+msgid "Claws Mail needs network access in order to update the feed."
+msgid_plural "Claws Mail needs network access in order to update the feeds."
+msgstr[0] "Claws Mail захтева везу са мрежом да би освежио извор."
+msgstr[1] "Claws Mail захтева везу са мрежом да би освежио изворе."
+msgstr[2] "Claws Mail захтева везу са мрежом да би освежио изворе."
+
+#: src/feed.h:20
+#, c-format
+msgid "Time out connecting to URL %s\n"
+msgstr "Истекло је време за повезивање на адресу %s\n"
+
+#: src/feed.h:21
+#, c-format
+msgid "Couldn't fetch URL %s\n"
+msgstr "Није могуће добавити адресу „%s“\n"
+
+#: src/feed.h:22
+#, c-format
+msgid "Error parsing feed from URL %s\n"
+msgstr "Грешка при расчлањивању извора са адресе %s\n"
+
+#: src/feed.h:23
+#, c-format
+msgid "Unsupported feed type at URL %s\n"
+msgstr "Врста извора са адресе %s није подржана\n"
+
+#: src/feed.h:25
+#, c-format
+msgid "RSSyl: Updating feed %s\n"
+msgstr "RSSyl: Освежава се извор %s\n"
+
+#: src/feed.h:26
+#, c-format
+msgid "RSSyl: Feed update finished: %s\n"
+msgstr "RSSyl: Завршено освежавање извора: %s\n"
+
+#: src/plugin.c:63
+msgid ""
+"This plugin allows you to create a mailbox tree where you can add newsfeeds "
+"in RSS 1.0, RSS 2.0 or Atom format.\n"
+"\n"
+"Each newsfeed will create a folder with appropriate entries, fetched from "
+"the web. You can read them, and delete or keep old entries."
+msgstr ""
+"Овај додатак омогућава прављење RSS каталога у који се могу додавати извори "
+"вести у форматима RSS 1.0, RSS 2.0 и Atom.\n"
+"\n"
+"Сваки извор вести ће направити директоријум са садржајем добављеним са веба. "
+"Добављене чланке можете читати и уклонити или задржати старе чланке."
+
+#: src/plugin.c:87
+msgid "RSS feed"
+msgstr "RSS извор"
+
+#: src/rssyl_cb_menu.c:57
+msgid "Subscribe feed"
+msgstr "Пријава на извор"
+
+#: src/rssyl_cb_menu.c:58
+msgid "Input the URL of the news feed you wish to subscribe:"
+msgstr "Унесите УРЛ извора вести на који желите да се пријавите:"
+
+#: src/rssyl_cb_menu.c:133
+#, c-format
+msgid "Really remove the folder tree '%s' ?\n"
+msgstr "Да ли заиста желите да уклоните RSS каталог „%s“?\n"
+
+#: src/rssyl_cb_menu.c:134
+msgid "Remove folder tree"
+msgstr "Уклањање RSS каталога"
+
+#: src/rssyl_cb_menu.c:198
+#, c-format
+msgid "Can't remove feed '%s'."
+msgstr "Није могуће уклонити извор „%s“."
+
+#: src/rssyl_gtk.c:49
+msgid "/_Refresh feed"
+msgstr "/_Освежи извор"
+
+#: src/rssyl_gtk.c:50
+msgid "/Refresh _all feeds"
+msgstr "/Освежи _све изворе"
+
+#: src/rssyl_gtk.c:52
+msgid "/Subscribe _new feed..."
+msgstr "/Додај _нови извор..."
+
+#: src/rssyl_gtk.c:53
+msgid "/_Unsubscribe feed..."
+msgstr "/_Одјава са извора..."
+
+#: src/rssyl_gtk.c:54
+msgid "/Feed pr_operties..."
+msgstr "/По_ставке извора..."
+
+#: src/rssyl_gtk.c:56
+msgid "/Rena_me..."
+msgstr "/Пре_именуј..."
+
+#: src/rssyl_gtk.c:58
+msgid "/_Create new folder..."
+msgstr "/_Направи нови директоријум..."
+
+#: src/rssyl_gtk.c:61
+msgid "/Remove folder _tree..."
+msgstr "/Уклони RSS _каталог..."
+
+#: src/rssyl_gtk.c:71
+msgid "/Refresh feed"
+msgstr "/Освежи извор"
+
+#: src/rssyl_gtk.c:72
+msgid "/Refresh all feeds"
+msgstr "/Освежи све изворе"
+
+#: src/rssyl_gtk.c:73
+msgid "/Subscribe new feed..."
+msgstr "/Пријава на нови извор..."
+
+#: src/rssyl_gtk.c:74
+msgid "/Unsubscribe feed..."
+msgstr "/Одјава са извора..."
+
+#: src/rssyl_gtk.c:75
+msgid "/Feed properties..."
+msgstr "/Поставке извора..."
+
+#: src/rssyl_gtk.c:77
+msgid "/Create new folder..."
+msgstr "/Направи нови директоријум..."
+
+#: src/rssyl_gtk.c:78
+msgid "/Delete folder..."
+msgstr "/Уклони директоријум..."
+
+#: src/rssyl_gtk.c:79
+msgid "/Remove folder tree..."
+msgstr "/Уклони RSS каталог..."
+
+#: src/rssyl_gtk.c:126
+msgid "Add RSS folder tree"
+msgstr "Додај RSS каталог"
+
+#: src/rssyl_gtk.c:127
+msgid "Enter name for a new RSS folder tree."
+msgstr "Унесите назив за нови RSS каталог."
+
+#: src/rssyl_gtk.c:141
+msgid ""
+"Creation of folder tree failed.\n"
+"Maybe some files already exist, or you don't have the permission to write "
+"there?"
+msgstr ""
+"Прављење RSS каталога није успело.\n"
+"Вероватно неке датотеке већ постоје, или немате дозволу за писање."
+
+#: src/rssyl_gtk.c:155
+msgid "/File/Add mailbox/RSSyl..."
+msgstr "/Датотека/Ново сандуче/RSSyl..."
+
+#: src/rssyl_gtk.c:239
+msgid "Use default refresh interval"
+msgstr "Користи подразумевани интервал освежавања"
+
+#: src/rssyl_gtk.c:251
+msgid "Keep default number of expired entries"
+msgstr "Задржи подразумевани број истеклих записа"
+
+#: src/rssyl_gtk.c:257
+msgid "Fetch comments if possible"
+msgstr "Прибављање и коментара, ако је могуће"
+
+#: src/rssyl_gtk.c:289
+msgid "<b>Source URL:</b>"
+msgstr "<b>Адреса извора:</b>"
+
+#: src/rssyl_gtk.c:329
+msgid ""
+"<b>Refresh interval in minutes:</b>\n"
+"<small>(Set to 0 to disable automatic refreshing for this feed)</small>"
+msgstr ""
+"<b>Интервал освежавања у минутима:</b>\n"
+"<small>(Поставите на 0 за искључивање аутоматског освежавања овог извода)</"
+"small>"
+
+#: src/rssyl_gtk.c:362
+msgid ""
+"<b>Number of expired entries to keep:</b>\n"
+"<small>(Set to -1 if you want to keep expired entries)</small>"
+msgstr ""
+"<b>Број застарелих уноса који ће бити задржани:</b>\n"
+"<small>(Поставите на -1 ако желите да задржите застареле уносе)</small>"
+
+#: src/rssyl_gtk.c:425
+msgid "_OK"
+msgstr "_У реду"
+
+#: src/rssyl_gtk.c:433
+msgid "Set feed properties"
+msgstr "Постави поставке извора"
+
+#: src/rssyl_gtk.c:546 src/rssyl_gtk.c:571
+msgid "Unsubscribe feed"
+msgstr "Одјава са извора"
+
+#: src/rssyl_gtk.c:572
+msgid "Do you really want to remove feed"
+msgstr "Да ли заиста желите да уколинте извор"
+
+#: src/rssyl_gtk.c:578
+msgid "Remove cached entries"
+msgstr "Уклни кеширане уносе"
+
+#: src/rssyl_prefs.c:101
+msgid "Default refresh interval in minutes"
+msgstr "Подразумевани интервал освежавања у минутима"
+
+#: src/rssyl_prefs.c:112
+msgid "Set to 0 to disable automatic refreshing"
+msgstr "Поставите на 0 за искључивање аутоматског освежавања"
+
+#: src/rssyl_prefs.c:114
+msgid "Default number of expired items to keep"
+msgstr "Подразумевани број истеклих чланака за задржавање"
+
+#: src/rssyl_prefs.c:125
+msgid "Set to -1 to keep expired items"
+msgstr "Поставите на -1 за задржавање истеклих чланака"
+
+#: src/rssyl_prefs.c:128
+msgid "Refresh all feeds on application start"
+msgstr "Освежи све изворе при покретању програма"
+
+#: src/rssyl.h:8
+msgid "RSSyl"
+msgstr "RSSyl"
+
+#: src/rssyl.h:14
+msgid "My Feeds"
+msgstr "Моји извори"
+
 #~ msgid "/New meeting..."
 #~ msgstr "/Нови састанак..."
 

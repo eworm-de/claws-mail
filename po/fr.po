@@ -641,7 +641,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Claws Mail\n"
 "Report-Msgid-Bugs-To: paul@claws-mail.org\n"
-"POT-Creation-Date: 2013-02-14 11:15+0100\n"
+"POT-Creation-Date: 2013-02-16 13:01+0100\n"
 "PO-Revision-Date: 2012-11-13 10:26+0100\n"
 "Last-Translator: Tristan Chabredier (wwp) <subscript@free.fr>\n"
 "Language-Team: Claws Mail translators <translators@lists.claws-mail.org>\n"
@@ -783,6 +783,7 @@ msgstr ""
 "%s"
 
 #: src/action.c:980 src/plugins/bogofilter/bogofilter.c:875
+#: src/plugins/rssyl/feed.c:1734 src/plugins/rssyl/feed.c:1738
 #: src/plugins/vcalendar/vcal_folder.c:1800
 #: src/plugins/vcalendar/vcal_folder.c:1804
 #: src/plugins/vcalendar/vcal_folder.c:1815
@@ -1293,6 +1294,7 @@ msgstr ""
 "dossier parent."
 
 #: src/addressbook.c:2932 src/imap_gtk.c:363 src/mh_gtk.c:202
+#: src/plugins/rssyl/rssyl_cb_menu.c:237
 #: src/plugins/vcalendar/vcal_folder.c:1953
 msgid "Delete folder"
 msgstr "Suppression de dossier"
@@ -2123,7 +2125,7 @@ msgstr "%I:%M:%S %p"
 msgid "_Add..."
 msgstr "_Ajouter.."
 
-#: src/compose.c:566 src/mh_gtk.c:361
+#: src/compose.c:566 src/mh_gtk.c:361 src/plugins/rssyl/rssyl_cb_menu.c:140
 msgid "_Remove"
 msgstr "Enleve_r"
 
@@ -3323,10 +3325,12 @@ msgid "Input the new name of folder:"
 msgstr "Veuillez saisir le nouveau nom du dossier :"
 
 #: src/editgroup.c:556 src/foldersel.c:552 src/imap_gtk.c:195 src/mh_gtk.c:145
+#: src/plugins/rssyl/rssyl_cb_menu.c:89
 msgid "New folder"
 msgstr "Nouveau dossier"
 
 #: src/editgroup.c:557 src/foldersel.c:553 src/mh_gtk.c:146
+#: src/plugins/rssyl/rssyl_cb_menu.c:90
 msgid "Input the name of new folder:"
 msgstr "Veuillez saisir le nom du nouveau dossier :"
 
@@ -4090,24 +4094,28 @@ msgid "Select folder"
 msgstr "Sélection d'un dossier"
 
 #: src/foldersel.c:554 src/imap_gtk.c:199 src/mh_gtk.c:147
+#: src/plugins/rssyl/rssyl_cb_menu.c:91
 msgid "NewFolder"
 msgstr "NouveauDossier"
 
 #: src/foldersel.c:562 src/imap_gtk.c:210 src/imap_gtk.c:216
 #: src/imap_gtk.c:272 src/mh_gtk.c:155 src/mh_gtk.c:259 src/news_gtk.c:314
+#: src/plugins/rssyl/rssyl_cb_menu.c:97 src/plugins/rssyl/rssyl_cb_menu.c:341
 #: src/plugins/vcalendar/vcal_folder.c:2025
 #, c-format
 msgid "'%c' can't be included in folder name."
 msgstr "'%c' n'est pas un caractère valide dans le nom d'un dossier."
 
 #: src/foldersel.c:572 src/imap_gtk.c:226 src/imap_gtk.c:284 src/mh_gtk.c:165
-#: src/mh_gtk.c:266 src/news_gtk.c:321
+#: src/mh_gtk.c:266 src/news_gtk.c:321 src/plugins/rssyl/rssyl_cb_menu.c:107
+#: src/plugins/rssyl/rssyl_cb_menu.c:348
 #: src/plugins/vcalendar/vcal_folder.c:2032
 #, c-format
 msgid "The folder '%s' already exists."
 msgstr "Le dossier '%s' existe déjà."
 
 #: src/foldersel.c:579 src/imap_gtk.c:232 src/mh_gtk.c:171
+#: src/plugins/rssyl/rssyl_cb_menu.c:113
 #, c-format
 msgid "Can't create the folder '%s'."
 msgstr "Impossible de créer le dossier '%s'."
@@ -4259,7 +4267,7 @@ msgstr "_Envoyer"
 msgid "Some errors occurred while sending queued messages."
 msgstr "Une erreur est survenue pendant l'envoi de messages en attente."
 
-#: src/folderview.c:2408 src/main.c:2844 src/toolbar.c:2732
+#: src/folderview.c:2408 src/main.c:2853 src/toolbar.c:2732
 #, c-format
 msgid ""
 "Some errors occurred while sending queued messages:\n"
@@ -4610,44 +4618,44 @@ msgstr ""
 ">.\n"
 "\n"
 
-#: src/gtk/about.c:699 src/main.c:2671
+#: src/gtk/about.c:699 src/main.c:2680
 msgid "Session statistics\n"
 msgstr "Statistiques de la session\n"
 
-#: src/gtk/about.c:709 src/gtk/about.c:712 src/main.c:2681 src/main.c:2684
+#: src/gtk/about.c:709 src/gtk/about.c:712 src/main.c:2690 src/main.c:2693
 #, c-format
 msgid "Started: %s\n"
 msgstr "Démarrée le : %s\n"
 
-#: src/gtk/about.c:719 src/main.c:2690
+#: src/gtk/about.c:719 src/main.c:2699
 msgid "Incoming traffic\n"
 msgstr "Trafic entrant\n"
 
-#: src/gtk/about.c:722 src/main.c:2693
+#: src/gtk/about.c:722 src/main.c:2702
 #, c-format
 msgid "Received messages: %d\n"
 msgstr "Messages reçus: %d\n"
 
-#: src/gtk/about.c:729 src/main.c:2699
+#: src/gtk/about.c:729 src/main.c:2708
 msgid "Outgoing traffic\n"
 msgstr "Trafic sortant\n"
 
-#: src/gtk/about.c:732 src/main.c:2702
+#: src/gtk/about.c:732 src/main.c:2711
 #, c-format
 msgid "New/redirected messages: %d\n"
 msgstr "Nouveaux messages et redirections: %d\n"
 
-#: src/gtk/about.c:737 src/main.c:2706
+#: src/gtk/about.c:737 src/main.c:2715
 #, c-format
 msgid "Replied messages: %d\n"
 msgstr "Réponses: %d\n"
 
-#: src/gtk/about.c:742 src/main.c:2710
+#: src/gtk/about.c:742 src/main.c:2719
 #, c-format
 msgid "Forwarded messages: %d\n"
 msgstr "Messages transférés: %d\n"
 
-#: src/gtk/about.c:747 src/main.c:2714
+#: src/gtk/about.c:747 src/main.c:2723
 #, c-format
 msgid "Total outgoing messages: %d\n"
 msgstr "Total des messages sortants: %d\n"
@@ -5439,6 +5447,7 @@ msgstr ""
 #: src/gtk/pluginwindow.c:304 src/plugins/bogofilter/bogofilter_gtk.c:457
 #: src/plugins/dillo_viewer/dillo_prefs.c:129
 #: src/plugins/fancy/fancy_prefs.c:110 src/plugins/pgpcore/prefs_gpg.c:557
+#: src/plugins/rssyl/rssyl_prefs.c:63
 #: src/plugins/spamassassin/spamassassin_gtk.c:648
 #: src/plugins/trayicon/trayicon_prefs.c:69
 #: src/plugins/vcalendar/vcal_prefs.c:645 src/prefs_toolbar.c:939
@@ -6366,7 +6375,7 @@ msgstr "_Déplacer le dossier.."
 msgid "Cop_y folder..."
 msgstr "C_opier le dossier.."
 
-#: src/imap_gtk.c:69 src/mh_gtk.c:59
+#: src/imap_gtk.c:69 src/mh_gtk.c:59 src/plugins/rssyl/rssyl_gtk.c:61
 msgid "_Delete folder..."
 msgstr "_Supprimer le dossier.."
 
@@ -6421,12 +6430,13 @@ msgid "Inherit properties from parent folder"
 msgstr "Hériter des options du dossier parent"
 
 #: src/imap_gtk.c:261 src/mh_gtk.c:249 src/news_gtk.c:305
+#: src/plugins/rssyl/rssyl_cb_menu.c:333
 #: src/plugins/vcalendar/vcal_folder.c:2017
 #, c-format
 msgid "Input new name for '%s':"
 msgstr "Veuillez saisir le nouveau nom pour '%s' :"
 
-#: src/imap_gtk.c:263 src/mh_gtk.c:251
+#: src/imap_gtk.c:263 src/mh_gtk.c:251 src/plugins/rssyl/rssyl_cb_menu.c:334
 #: src/plugins/vcalendar/vcal_folder.c:2018
 msgid "Rename folder"
 msgstr "Changement de nom de dossier"
@@ -6437,6 +6447,7 @@ msgid "`%c' can't be included in folder name."
 msgstr "'%c' n'est pas un caractère valide dans le nom d'un dossier."
 
 #: src/imap_gtk.c:292 src/mh_gtk.c:274 src/news_gtk.c:327
+#: src/plugins/rssyl/rssyl_cb_menu.c:354
 #: src/plugins/vcalendar/vcal_folder.c:2038
 msgid ""
 "The folder could not be renamed.\n"
@@ -6445,7 +6456,7 @@ msgstr ""
 "Le dossier ne peut pas être renommé car\n"
 "le nouveau nom proposé n'est pas autorisé."
 
-#: src/imap_gtk.c:360 src/mh_gtk.c:199
+#: src/imap_gtk.c:360 src/mh_gtk.c:199 src/plugins/rssyl/rssyl_cb_menu.c:234
 #, c-format
 msgid ""
 "All folders and messages under '%s' will be permanently deleted. Recovery "
@@ -6459,6 +6470,7 @@ msgstr ""
 "Voulez-vous vraiment les supprimer ?"
 
 #: src/imap_gtk.c:381 src/mh_gtk.c:220 src/news_gtk.c:280
+#: src/plugins/rssyl/rssyl_cb_menu.c:256
 #: src/plugins/vcalendar/vcal_folder.c:1974
 #, c-format
 msgid "Can't remove the folder '%s'."
@@ -7059,7 +7071,7 @@ msgstr "Sylpheed-Claws 1.9.15 (ou antérieur)"
 msgid "Sylpheed-Claws 1.0.5 (or older)"
 msgstr "Sylpheed-Claws 1.0.5 (ou antérieur)"
 
-#: src/main.c:1563
+#: src/main.c:1572
 #, c-format
 msgid ""
 "The following plugin failed to load. Check the Plugins configuration for "
@@ -7078,7 +7090,7 @@ msgstr[1] ""
 "configuration des modules pour de plus amples informations :\n"
 "%s"
 
-#: src/main.c:1591
+#: src/main.c:1600
 msgid ""
 "Claws Mail has detected a configured mailbox, but it is incomplete. It is "
 "possibly due to a failing IMAP account. Use \"Rebuild folder tree\" on the "
@@ -7090,7 +7102,7 @@ msgstr ""
 "contextuel du dossier principal de la boîte aux lettres pour tenter de le "
 "résoudre."
 
-#: src/main.c:1597
+#: src/main.c:1606
 msgid ""
 "Claws Mail has detected a configured mailbox, but could not load it. It is "
 "probably provided by an out-of-date external plugin. Please reinstall the "
@@ -7100,41 +7112,41 @@ msgstr ""
 "est probablement dû à la caducité d'un module externe. Veuillez ré-installer "
 "le module et essayer à nouveau."
 
-#: src/main.c:1626
+#: src/main.c:1635
 #, c-format
 msgid "Claws Mail can not start without its data volume (%s)."
 msgstr "Claws Mail ne peut démarrer sans son volume de données (%s)."
 
-#: src/main.c:1873
+#: src/main.c:1882
 msgid "Missing filename\n"
 msgstr "Nom de fichier manquant\n"
 
-#: src/main.c:1880
+#: src/main.c:1889
 msgid "Cannot open filename for reading\n"
 msgstr "Impossible d'ouvrir le fichier en lecture\n"
 
-#: src/main.c:1891
+#: src/main.c:1900
 msgid "Malformed header\n"
 msgstr "En-tête non conforme\n"
 
-#: src/main.c:1898
+#: src/main.c:1907
 msgid "Duplicated 'To:' header\n"
 msgstr "En-tête 'À:' en plusieurs exemplaires\n"
 
-#: src/main.c:1913
+#: src/main.c:1922
 msgid "Missing required 'To:' header\n"
 msgstr "L'en-tête 'To:' est manquant\n"
 
-#: src/main.c:2058
+#: src/main.c:2067
 #, c-format
 msgid "Usage: %s [OPTION]...\n"
 msgstr "Utilisation : %s [OPTION]..\n"
 
-#: src/main.c:2060
+#: src/main.c:2069
 msgid "  --compose [address]    open composition window"
 msgstr "  --compose [adresse]    ouvrir une fenêtre de composition de message"
 
-#: src/main.c:2061
+#: src/main.c:2070
 msgid ""
 "  --compose-from-file file\n"
 "                         open composition window with data from given file;\n"
@@ -7154,7 +7166,7 @@ msgstr ""
 "                         ligne vide, puis le corps de message jusqu'à la fin "
 "de fichier."
 
-#: src/main.c:2066
+#: src/main.c:2075
 msgid "  --subscribe [uri]      subscribe to the given URI if possible"
 msgstr ""
 "  --subscribe [uri]      s'abonner au flux RSS ou WebCal donné (requiert\n"
@@ -7162,7 +7174,7 @@ msgstr ""
 "                         de nouvelles, ou « vCalendar » , gestionnaire de\n"
 "                         rendez-vous et calendriers en ligne)"
 
-#: src/main.c:2067
+#: src/main.c:2076
 msgid ""
 "  --attach file1 [file2]...\n"
 "                         open composition window with specified files\n"
@@ -7172,29 +7184,29 @@ msgstr ""
 "                         ouvrir une fenêtre de composition avec les\n"
 "                         fichiers spécifiés attachés"
 
-#: src/main.c:2070
+#: src/main.c:2079
 msgid "  --receive              receive new messages"
 msgstr ""
 "  --receive              récupérer les nouveaux messages (du compte courant)"
 
-#: src/main.c:2071
+#: src/main.c:2080
 msgid "  --receive-all          receive new messages of all accounts"
 msgstr ""
 "  --receive-all          récupérer les nouveaux messages de tous les comptes"
 
-#: src/main.c:2072
+#: src/main.c:2081
 #, fuzzy
 msgid "  --cancel-receiving     cancel receiving of messages"
 msgstr ""
 "  --receive              récupérer les nouveaux messages (du compte courant)"
 
-#: src/main.c:2073
+#: src/main.c:2082
 #, fuzzy
 msgid "  --cancel-sending       cancel sending of messages"
 msgstr ""
 "  --receive              récupérer les nouveaux messages (du compte courant)"
 
-#: src/main.c:2074
+#: src/main.c:2083
 msgid ""
 "  --search folder type request [recursive]\n"
 "                         searches mail\n"
@@ -7214,17 +7226,17 @@ msgstr ""
 "                         récursif: aucune si l'argument commence par 0, n, "
 "N, f ou F"
 
-#: src/main.c:2081
+#: src/main.c:2090
 msgid "  --send                 send all queued messages"
 msgstr "  --send                 envoyer les messages en attente"
 
-#: src/main.c:2082
+#: src/main.c:2091
 msgid "  --status [folder]...   show the total number of messages"
 msgstr ""
 "  --status [dossier]...  afficher le nombre de messages\n"
 "                         (nouveaux, non lus, total)"
 
-#: src/main.c:2083
+#: src/main.c:2092
 msgid ""
 "  --status-full [folder]...\n"
 "                         show the status of each folder"
@@ -7232,15 +7244,15 @@ msgstr ""
 "  --status-full [dossier]...\n"
 "                         afficher le nombre de messages de chaque dossier"
 
-#: src/main.c:2085
+#: src/main.c:2094
 msgid "  --statistics           show session statistics"
 msgstr "  --statistics           affiche les statistiques de la session"
 
-#: src/main.c:2086
+#: src/main.c:2095
 msgid "  --reset-statistics     reset session statistics"
 msgstr "  --reset-statistics     réinitialise les statistiques de la session"
 
-#: src/main.c:2087
+#: src/main.c:2096
 msgid ""
 "  --select folder[/msg]  jumps to the specified folder/message\n"
 "                         folder is a folder id like 'folder/sub_folder'"
@@ -7251,31 +7263,31 @@ msgstr ""
 "voici\n"
 "                         un exemple de syntaxe : 'dossier/sous_dossier'."
 
-#: src/main.c:2089
+#: src/main.c:2098
 msgid "  --online               switch to online mode"
 msgstr "  --online               travailler en ligne"
 
-#: src/main.c:2090
+#: src/main.c:2099
 msgid "  --offline              switch to offline mode"
 msgstr "  --offline              travailler hors-ligne"
 
-#: src/main.c:2091
+#: src/main.c:2100
 msgid "  --exit --quit -q       exit Claws Mail"
 msgstr "  --exit --quit -q       quitter Claws Mail"
 
-#: src/main.c:2092
+#: src/main.c:2101
 msgid "  --debug                debug mode"
 msgstr "  --debug                lancer Claws Mail en mode de déboguage"
 
-#: src/main.c:2093
+#: src/main.c:2102
 msgid "  --help -h              display this help and exit"
 msgstr "  --help -h              afficher cette aide et terminer"
 
-#: src/main.c:2094
+#: src/main.c:2103
 msgid "  --version -v           output version information and exit"
 msgstr "  --version -v           afficher la version et terminer"
 
-#: src/main.c:2095
+#: src/main.c:2104
 msgid ""
 "  --version-full -V      output version and built-in features information "
 "and exit"
@@ -7283,12 +7295,12 @@ msgstr ""
 "  --version-full -V      afficher la version et les informations concernant\n"
 "                         les options intégrées et terminer"
 
-#: src/main.c:2096
+#: src/main.c:2105
 msgid "  --config-dir           output configuration directory"
 msgstr ""
 "  --config-dir           afficher le dossier contenant la configuration"
 
-#: src/main.c:2097
+#: src/main.c:2106
 msgid ""
 "  --alternate-config-dir [dir]\n"
 "                         use specified configuration directory"
@@ -7296,36 +7308,36 @@ msgstr ""
 "  --alternate-config-dir [dir]\n"
 "                         utiliser le dossier de configuration spécifié"
 
-#: src/main.c:2147
+#: src/main.c:2156
 msgid "Unknown option\n"
 msgstr ""
 "claws-mail: option non reconnue.\n"
 "Pour en savoir davantage, faites: « claws-mail --help ».\n"
 
-#: src/main.c:2165
+#: src/main.c:2174
 #, c-format
 msgid "Processing (%s)..."
 msgstr "Traitement (%s).."
 
-#: src/main.c:2168
+#: src/main.c:2177
 msgid "top level folder"
 msgstr "dossier racine"
 
-#: src/main.c:2251
+#: src/main.c:2260
 msgid "Queued messages"
 msgstr "Messages en file d'attente"
 
-#: src/main.c:2252
+#: src/main.c:2261
 msgid "Some unsent messages are queued. Exit now?"
 msgstr ""
 "Quelques messages non envoyés sont dans la file d'attente. Voulez-vous "
 "quitter maintenant ?"
 
-#: src/main.c:2981
+#: src/main.c:2990
 msgid "NetworkManager: network is online.\n"
 msgstr "Gestionnaire réseau : le réseau est activé.\n"
 
-#: src/main.c:2987
+#: src/main.c:2996
 msgid "NetworkManager: network is offline.\n"
 msgstr "Gestionnaire réseau : le réseau est désactivé.\n"
 
@@ -8134,7 +8146,7 @@ msgstr ""
 "Veuillez saisir le chemin vers la boîte aux lettres :\n"
 "(Si elle existe déjà, elle sera automatiquement analysée.)"
 
-#: src/mainwindow.c:3108
+#: src/mainwindow.c:3108 src/plugins/rssyl/rssyl_gtk.c:158
 #, c-format
 msgid "The mailbox '%s' already exists."
 msgstr "La boîte aux lettres '%s' existe déjà."
@@ -8517,7 +8529,7 @@ msgstr ""
 "Veuillez choisir le compte que vous voulez utiliser pour l'envoi de l'accusé "
 "de réception :"
 
-#: src/messageview.c:2121
+#: src/messageview.c:2121 src/plugins/rssyl/rssyl_gtk.c:480
 msgid "_Cancel"
 msgstr "A_nnuler"
 
@@ -8826,7 +8838,7 @@ msgstr "Confirmer la suppression du groupe de discussion '%s' ?"
 msgid "Unsubscribe newsgroup"
 msgstr "Suppression du groupe de discussion"
 
-#: src/news_gtk.c:267
+#: src/news_gtk.c:267 src/plugins/rssyl/rssyl_gtk.c:678
 msgid "_Unsubscribe"
 msgstr "Supp_rimer le groupe"
 
@@ -10040,6 +10052,372 @@ msgstr ""
 "\n"
 "GPGME est copyright 2001 par Werner Koch <dd9jn@gnu.org>."
 
+#: src/plugins/rssyl/rssyl_prefs.c:103
+msgid "Default refresh interval in minutes"
+msgstr "Intervalle de mise à jour par défaut en minutes"
+
+#: src/plugins/rssyl/rssyl_prefs.c:114
+msgid "Set to 0 to disable automatic refreshing"
+msgstr "Veuillez saisir 0 pour désactiver la mise à jour automatique"
+
+#: src/plugins/rssyl/rssyl_prefs.c:116
+msgid "Default number of expired items to keep"
+msgstr "Nombre par défaut d'articles expirés à conserver"
+
+#: src/plugins/rssyl/rssyl_prefs.c:127
+msgid "Set to -1 to keep expired items"
+msgstr "Veuillez saisir -1 pour conserver les articles expirés"
+
+#: src/plugins/rssyl/rssyl_prefs.c:130
+msgid "Refresh all feeds on application start"
+msgstr "Mettre à jour tous les flux au démarrage"
+
+#: src/plugins/rssyl/rssyl_prefs.c:136
+msgid "Path to cookies file"
+msgstr "Chemin vers le fichier de cookies"
+
+#: src/plugins/rssyl/rssyl_prefs.c:146
+msgid "Path to Netscape-style cookies.txt file containing your cookies"
+msgstr ""
+"Chemin vers un fichier cookies.txt au format Netscape, qui contient vos "
+"cookies"
+
+#: src/plugins/rssyl/rssyl.h:8
+msgid "RSSyl"
+msgstr "RSSyl"
+
+#: src/plugins/rssyl/rssyl.h:14
+msgid "My Feeds"
+msgstr "Mes flux"
+
+#: src/plugins/rssyl/rssyl_gtk.c:53
+msgid "_Refresh feed"
+msgstr "Mett_re à jour le flux"
+
+#: src/plugins/rssyl/rssyl_gtk.c:54
+msgid "Refresh _all feeds"
+msgstr "Mettre _a jour tous les flux"
+
+#: src/plugins/rssyl/rssyl_gtk.c:55
+msgid "Subscribe _new feed..."
+msgstr "S'abonner à un _nouveau flux.."
+
+#: src/plugins/rssyl/rssyl_gtk.c:56
+msgid "_Unsubscribe feed..."
+msgstr "Se désabonner du fl_ux.."
+
+#: src/plugins/rssyl/rssyl_gtk.c:57
+msgid "Feed pr_operties..."
+msgstr "Pr_opriétés du flux.."
+
+#: src/plugins/rssyl/rssyl_gtk.c:58
+msgid "Import feed list..."
+msgstr "Importer une liste de flux.."
+
+#: src/plugins/rssyl/rssyl_gtk.c:59
+msgid "Rena_me..."
+msgstr "Reno_mmer.."
+
+#: src/plugins/rssyl/rssyl_gtk.c:60
+msgid "_Create new folder..."
+msgstr "Créer un nouveau _dossier.."
+
+#: src/plugins/rssyl/rssyl_gtk.c:62
+msgid "Remove folder _tree..."
+msgstr "Supprimer toute l'ar_borescence.."
+
+#: src/plugins/rssyl/rssyl_gtk.c:152
+msgid "Add RSS folder tree"
+msgstr "Ajouter une arborescence RSS"
+
+#: src/plugins/rssyl/rssyl_gtk.c:153
+msgid "Enter name for a new RSS folder tree."
+msgstr "Veuillez saisir le nom de la nouvelle arborescence RSS."
+
+#: src/plugins/rssyl/rssyl_gtk.c:169
+msgid ""
+"Creation of folder tree failed.\n"
+"Maybe some files already exist, or you don't have the permission to write "
+"there?"
+msgstr ""
+"La création de l'arborescence a échoué.\n"
+"Peut-être les fichiers existent-ils déjà, ou vous n'avez pas la permission "
+"d'écrire à cet endroit ?"
+
+#: src/plugins/rssyl/rssyl_gtk.c:184
+msgid "RSSyl..."
+msgstr "RSSyl.."
+
+#: src/plugins/rssyl/rssyl_gtk.c:256
+msgid "Use default refresh interval"
+msgstr "Utiliser l'intervalle de mise à jour par défaut"
+
+#: src/plugins/rssyl/rssyl_gtk.c:268
+msgid "Keep default number of expired entries"
+msgstr "Conserver le nombre par défaut d'articles expirés"
+
+#: src/plugins/rssyl/rssyl_gtk.c:274
+msgid "Fetch comments if possible"
+msgstr "Récupérer les commentaires si possible"
+
+#: src/plugins/rssyl/rssyl_gtk.c:312
+msgid "<b>Source URL:</b>"
+msgstr "<b>URL source :</b>"
+
+#: src/plugins/rssyl/rssyl_gtk.c:340
+msgid ""
+"<b>Fetch comments on posts aged less than:</b>\n"
+"<small>(In days; set to -1 to fetch all comments)</small>"
+msgstr ""
+"<b>Récupérer les commentaires sur les articles de moins de :</b>\n"
+"<small>(En jours ; -1 pour récupérer tous les commentaires)</small>"
+
+#: src/plugins/rssyl/rssyl_gtk.c:374
+msgid ""
+"<b>Refresh interval in minutes:</b>\n"
+"<small>(Set to 0 to disable automatic refreshing for this feed)</small>"
+msgstr ""
+"<b>Intervalle de mise à jour, en minutes :</b>\n"
+"<small>(Saisissez 0 pour désactiver la mise à jour automatique de ce flux)</"
+"small>"
+
+#: src/plugins/rssyl/rssyl_gtk.c:407
+msgid ""
+"<b>Number of expired entries to keep:</b>\n"
+"<small>(Set to -1 if you want to keep expired entries)</small>"
+msgstr ""
+"<b>Nombre d'articles expirés à conserver :</b>\n"
+"<small>(Saisissez -1 pour tout conserver)</small>"
+
+#: src/plugins/rssyl/rssyl_gtk.c:433
+msgid "<b>If an item changes, do not mark it as unread:</b>"
+msgstr "<b>Si un article change, le marquer comme lu :</b>"
+
+#: src/plugins/rssyl/rssyl_gtk.c:443
+msgid "Always mark as unread"
+msgstr "Toujours marquer comme lu"
+
+#: src/plugins/rssyl/rssyl_gtk.c:445
+msgid "If only its text changed"
+msgstr "Seulement si le texte a changé"
+
+#: src/plugins/rssyl/rssyl_gtk.c:447
+msgid "Never mark as unread"
+msgstr "Ne jamais marquer comme lu"
+
+#: src/plugins/rssyl/rssyl_gtk.c:501
+msgid "_OK"
+msgstr "_Valider"
+
+#: src/plugins/rssyl/rssyl_gtk.c:509
+msgid "Set feed properties"
+msgstr "Propriétés du flux"
+
+#: src/plugins/rssyl/rssyl_gtk.c:634 src/plugins/rssyl/rssyl_gtk.c:658
+msgid "Unsubscribe feed"
+msgstr "Se désabonner du flux"
+
+#: src/plugins/rssyl/rssyl_gtk.c:659
+msgid "Do you really want to remove feed"
+msgstr "Voulez-vous vraiment vous désabonner du flux"
+
+#: src/plugins/rssyl/rssyl_gtk.c:665
+msgid "Remove cached entries"
+msgstr "Supprimer les articles en cache"
+
+#: src/plugins/rssyl/plugin.c:63
+msgid ""
+"This plugin allows you to create a mailbox tree where you can add newsfeeds "
+"in RSS 1.0, RSS 2.0 or Atom format.\n"
+"\n"
+"Each newsfeed will create a folder with appropriate entries, fetched from "
+"the web. You can read them, and delete or keep old entries."
+msgstr ""
+"Ce module vous permet de créer une arborescence dans laquelle vous pourrez "
+"ajouter des flux RSS 1.0, RSS 2.0 ou Atom.\n"
+"\n"
+"Chaque flux sera enregistré dans un dossier contenant ses articles, "
+"récupérés sur Internet. Vous pourrez les lire, puis effacer ou conserver les "
+"anciens articles."
+
+#: src/plugins/rssyl/plugin.c:87
+msgid "RSS feed"
+msgstr "flux RSS"
+
+#: src/plugins/rssyl/feed.h:20
+#, c-format
+msgid "Time out connecting to URL %s\n"
+msgstr "Délai d'attente dépassé lors de la connexion à '%s'\n"
+
+#: src/plugins/rssyl/feed.h:21
+#, c-format
+msgid "Couldn't fetch URL %s\n"
+msgstr "Impossible d'atteindre l'URL '%s'\n"
+
+#: src/plugins/rssyl/feed.h:22
+#, c-format
+msgid "Error parsing feed from URL %s\n"
+msgstr "Erreur lors de l'analyse du flux à l'URL '%s'\n"
+
+#: src/plugins/rssyl/feed.h:23
+#, c-format
+msgid "Unsupported feed type at URL %s\n"
+msgstr "Type de flux non encore supporté à l'URL '%s'\n"
+
+#: src/plugins/rssyl/feed.h:25
+#, c-format
+msgid "RSSyl: Updating feed %s\n"
+msgstr "RSSyl : mise à jour du flux '%s'\n"
+
+#: src/plugins/rssyl/feed.h:26
+#, c-format
+msgid "RSSyl: Feed update finished: %s\n"
+msgstr "RSSyl : mise à jour du flux terminée : '%s'\n"
+
+#: src/plugins/rssyl/feed.h:27
+msgid "RSSyl: Feed update aborted, application is exiting.\n"
+msgstr "RSSyl : mise à jour du flux annulée : l'application quitte.\n"
+
+#: src/plugins/rssyl/rssyl_cb_menu.c:62
+msgid "Subscribe feed"
+msgstr "S'abonner à un flux"
+
+#: src/plugins/rssyl/rssyl_cb_menu.c:63
+msgid "Input the URL of the news feed you wish to subscribe:"
+msgstr "Veuillez saisir l'adresse du flux auquel vous voulez vous abonner :"
+
+#: src/plugins/rssyl/rssyl_cb_menu.c:138
+#, c-format
+msgid "Really remove the folder tree '%s' ?\n"
+msgstr ""
+"Voulez-vous vraiment supprimer le dossier '%s' et ses sous-dossiers ?\n"
+
+#: src/plugins/rssyl/rssyl_cb_menu.c:139
+msgid "Remove folder tree"
+msgstr "Supprimer l'arborescence"
+
+#: src/plugins/rssyl/rssyl_cb_menu.c:204
+#, c-format
+msgid "Can't remove feed '%s'."
+msgstr "Impossible de supprimer la flux '%s'."
+
+#: src/plugins/rssyl/rssyl_cb_menu.c:283 src/plugins/rssyl/feed.c:1856
+msgid "Claws Mail needs network access in order to update the feed."
+msgid_plural "Claws Mail needs network access in order to update the feeds."
+msgstr[0] "Claws Mail nécessite un accès réseau pour mettre à jour le flux."
+msgstr[1] "Claws Mail nécessite un accès réseau pour mettre à jour les flux."
+
+#: src/plugins/rssyl/rssyl_cb_menu.c:376
+msgid "Select a .opml file"
+msgstr "Sélectionnez un fichier .opml"
+
+#: src/plugins/rssyl/rssyl.c:133 src/plugins/rssyl/rssyl.c:145
+msgid "Refresh all feeds"
+msgstr "Mettre à jour tous les flux"
+
+#: src/plugins/rssyl/feed.c:125
+msgid "Cannot open temporary file"
+msgstr "Impossible d'ouvrir un fichier temporaire"
+
+#: src/plugins/rssyl/feed.c:136
+msgid "Cannot init libCURL"
+msgstr "Impossible d'initialiser libCURL"
+
+#: src/plugins/rssyl/feed.c:231 src/plugins/vcalendar/vcal_folder.c:1593
+msgid "401 (Authorisation required)"
+msgstr "401 (Autorisation requise)"
+
+#: src/plugins/rssyl/feed.c:234 src/plugins/vcalendar/vcal_folder.c:1596
+msgid "403 (Unauthorised)"
+msgstr "403 (Non autorisé)"
+
+#: src/plugins/rssyl/feed.c:237 src/plugins/vcalendar/vcal_folder.c:1599
+msgid "404 (Not found)"
+msgstr "404 (Non trouvé)"
+
+#: src/plugins/rssyl/feed.c:240 src/plugins/vcalendar/vcal_folder.c:1602
+#, c-format
+msgid "Error %ld"
+msgstr "Erreur %ld"
+
+#: src/plugins/rssyl/feed.c:324
+#, c-format
+msgid "Fetching '%s'..."
+msgstr "Récupération de '%s'.."
+
+#: src/plugins/rssyl/feed.c:383
+msgid "Malformed feed"
+msgstr "Flux mal formé"
+
+#: src/plugins/rssyl/feed.c:1199
+#, c-format
+msgid "Refreshing feed '%s'..."
+msgstr "Mise à jour du flux '%s'.."
+
+#: src/plugins/rssyl/feed.c:1214
+#, c-format
+msgid ""
+"RSSyl: Fetching comments is not supported for RDF feeds. Cannot fetch "
+"comments of '%s'"
+msgstr ""
+"RSSyl : La récupération des commentaires n'est pas possible pour les flux "
+"RDF. Impossible de récupérer les commentaires de '%s'."
+
+#: src/plugins/rssyl/feed.c:1223
+msgid "This feed format is not supported yet."
+msgstr "Le format de ce flux n'est pas encore supporté."
+
+#: src/plugins/rssyl/feed.c:1254
+msgid "N/A"
+msgstr "N/A"
+
+#: src/plugins/rssyl/feed.c:1374
+#, c-format
+msgid "%ld byte"
+msgid_plural "%ld bytes"
+msgstr[0] "%ld octet"
+msgstr[1] "%ld octets"
+
+#: src/plugins/rssyl/feed.c:1377
+msgid "size unknown"
+msgstr "taille inconnue"
+
+#: src/plugins/rssyl/feed.c:1550
+#, c-format
+msgid ""
+"RSSyl: Cannot update feed %s:\n"
+"%s\n"
+msgstr ""
+"RSSyl: Impossible de mettre à jour le flux %s :\n"
+"%s\n"
+
+#: src/plugins/rssyl/feed.c:1722
+msgid "You are already subscribed to this feed."
+msgstr "Vous êtes déjà abonné à ce flux."
+
+#: src/plugins/rssyl/feed.c:1733
+#, c-format
+msgid ""
+"Couldn't fetch URL '%s':\n"
+"%s"
+msgstr ""
+"Impossible d'atteindre l'URL '%s' :\n"
+"%s"
+
+#: src/plugins/rssyl/feed.c:1738
+#, c-format
+msgid ""
+"Couldn't fetch URL '%s':\n"
+"%s\n"
+msgstr ""
+"Impossible d'atteindre l'URL '%s' :\n"
+"%s\n"
+
+#: src/plugins/rssyl/feed.c:1754
+#, c-format
+msgid "Can't subscribe feed '%s'."
+msgstr "Impossible de s'abonner au flux '%s'."
+
 #: src/plugins/smime/plugin.c:38 src/plugins/smime/plugin.c:54
 #: src/plugins/smime/smime.c:924
 msgid "S/MIME"
@@ -10354,11 +10732,11 @@ msgstr ""
 "Réduire Claws Mail dans la barre système au lieu de réduire réellement dans "
 "la barre d'applications."
 
-#: src/vcalendar.c:96
+#: src/plugins/vcalendar/vcalendar.c:100
 msgid "Create meeting from message..."
 msgstr "Créer un rendez-vous depuis le message.."
 
-#: src/vcalendar.c:116
+#: src/plugins/vcalendar/vcalendar.c:120
 #, c-format
 msgid ""
 "You are about to create %d meetings, one by one. Do you want to continue?"
@@ -10366,57 +10744,58 @@ msgstr ""
 "Vous êtes sur le point de créer %d rendez-vous, un par un. Voulez-vous "
 "continuer ?"
 
-#: src/vcalendar.c:135
+#: src/plugins/vcalendar/vcalendar.c:139
 msgid "Creating meeting..."
 msgstr "Création du rendez-vous.."
 
-#: src/vcalendar.c:154
+#: src/plugins/vcalendar/vcalendar.c:158
 msgid "no subject"
 msgstr "pas de sujet"
 
-#: src/vcalendar.c:389
+#: src/plugins/vcalendar/vcalendar.c:393
 msgid "Accept"
 msgstr "Accepter"
 
-#: src/vcalendar.c:390
+#: src/plugins/vcalendar/vcalendar.c:394
 msgid "Tentatively accept"
 msgstr "Accepter sous réserves"
 
-#: src/vcalendar.c:391
+#: src/plugins/vcalendar/vcalendar.c:395
 msgid "Decline"
 msgstr "Refuser"
 
-#: src/vcalendar.c:478
+#: src/plugins/vcalendar/vcalendar.c:482
 msgid "You have a Todo item."
 msgstr "Vous avez une tâche à effectuer."
 
-#: src/vcalendar.c:479 src/vcalendar.c:486 src/vcalendar.c:491
-#: src/vcalendar.c:499 src/vcalendar.c:508 src/vcalendar.c:746
+#: src/plugins/vcalendar/vcalendar.c:483 src/plugins/vcalendar/vcalendar.c:490
+#: src/plugins/vcalendar/vcalendar.c:495 src/plugins/vcalendar/vcalendar.c:503
+#: src/plugins/vcalendar/vcalendar.c:512 src/plugins/vcalendar/vcalendar.c:750
 msgid "Details follow:"
 msgstr "En voici les détails :"
 
-#: src/vcalendar.c:485
+#: src/plugins/vcalendar/vcalendar.c:489
 msgid "You have created a meeting."
 msgstr "Vous avez créé un rendez-vous. "
 
-#: src/vcalendar.c:490
+#: src/plugins/vcalendar/vcalendar.c:494
 msgid "You have been invited to a meeting."
 msgstr "Vous avez été convié à un rendez-vous. "
 
-#: src/vcalendar.c:498
+#: src/plugins/vcalendar/vcalendar.c:502
 msgid "A meeting to which you had been invited has been cancelled."
 msgstr "Un rendez-vous auquel vous étiez convié a été annulé. "
 
-#: src/vcalendar.c:507
+#: src/plugins/vcalendar/vcalendar.c:511
 msgid "You have been forwarded an appointment."
 msgstr "On vous transmis un rendez-vous. "
 
-#: src/vcalendar.c:560
+#: src/plugins/vcalendar/vcalendar.c:564
 #, c-format
 msgid "%s <span weight=\"bold\">(this event recurs)</span>"
 msgstr "%s <span weight=\"bold\">(cet évènement est récurrent)</span>"
 
-#: src/vcalendar.c:566
+#: src/plugins/vcalendar/vcalendar.c:570
 #, c-format
 msgid ""
 "%s <span weight=\"bold\">(this event is part of a recurring event)</span>"
@@ -10424,11 +10803,11 @@ msgstr ""
 "%s <span weight=\"bold\">(cet évènement fait partie d'un évènement récurrent)"
 "</span>"
 
-#: src/vcalendar.c:745
+#: src/plugins/vcalendar/vcalendar.c:749
 msgid "You have received an answer to an unknown meeting proposal."
 msgstr "Vous avez reçu une réponse à un rendez-vous inconnu. "
 
-#: src/vcalendar.c:749
+#: src/plugins/vcalendar/vcalendar.c:753
 #, c-format
 msgid ""
 "You have received an answer to a meeting proposal.\n"
@@ -10437,35 +10816,35 @@ msgstr ""
 "Vous avez reçu une réponse à un rendez-vous.\n"
 "%s a %s l'invitation dont les détails suivent :"
 
-#: src/vcalendar.c:828
+#: src/plugins/vcalendar/vcalendar.c:832
 msgid "Error - could not get the calendar MIME part."
 msgstr "Erreur - impossible de trouver la partie MIME calendrier"
 
-#: src/vcalendar.c:835
+#: src/plugins/vcalendar/vcalendar.c:839
 msgid "Error - no calendar part found."
 msgstr "Erreur - aucune partie calendrier trouvée."
 
-#: src/vcalendar.c:849
+#: src/plugins/vcalendar/vcalendar.c:853
 msgid "Error - Unknown calendar component type."
 msgstr "Error - Le composant calendrier n'est pas d'un type connu."
 
-#: src/vcalendar.c:978
+#: src/plugins/vcalendar/vcalendar.c:982
 msgid "Send a notification to the attendees"
 msgstr "Envoyer une notification aux invités"
 
-#: src/vcalendar.c:987
+#: src/plugins/vcalendar/vcalendar.c:991
 msgid "Cancel meeting"
 msgstr "Annuler le rendez-vous"
 
-#: src/vcalendar.c:988
+#: src/plugins/vcalendar/vcalendar.c:992
 msgid "Are you sure you want to cancel this meeting?"
 msgstr "Voulez-vous réellement annuler ce rendez-vous ?"
 
-#: src/vcalendar.c:1083
+#: src/plugins/vcalendar/vcalendar.c:1087
 msgid "No account found"
 msgstr "Pas de compte trouvé"
 
-#: src/vcalendar.c:1084
+#: src/plugins/vcalendar/vcalendar.c:1088
 msgid ""
 "You have no account matching any attendee.\n"
 "Do you want to reply anyway ?"
@@ -10473,91 +10852,97 @@ msgstr ""
 "Vous n'avez pas de compte correspondant à un invité. Avez-vous vraiment été "
 "invité ?"
 
-#: src/vcalendar.c:1086
+#: src/plugins/vcalendar/vcalendar.c:1090
 msgid "+Reply anyway"
 msgstr "+Répondre tout de même"
 
-#: src/vcalendar.c:1215
+#: src/plugins/vcalendar/vcalendar.c:1219
 msgid "Answer"
 msgstr "Réponse"
 
-#: src/vcalendar.c:1216
+#: src/plugins/vcalendar/vcalendar.c:1220
 msgid "Edit meeting..."
 msgstr "Modifier le rendez-vous.."
 
-#: src/vcalendar.c:1217
+#: src/plugins/vcalendar/vcalendar.c:1221
 msgid "Cancel meeting..."
 msgstr "Annuler le rendez-vous.."
 
-#: src/vcalendar.c:1218
+#: src/plugins/vcalendar/vcalendar.c:1222
 msgid "Launch website"
 msgstr "Ouvrir le site web"
 
-#: src/vcalendar.c:1222
+#: src/plugins/vcalendar/vcalendar.c:1226
 msgid "You are already busy at this time."
 msgstr "Vous n'êtes pas disponible actuellement."
 
-#: src/vcalendar.c:1261 src/vcal_meeting_gtk.c:1734
+#: src/plugins/vcalendar/vcalendar.c:1265
+#: src/plugins/vcalendar/vcal_meeting_gtk.c:1738
 msgid "Event:"
 msgstr "Évènement :"
 
-#: src/vcalendar.c:1262 src/vcal_meeting_gtk.c:1712
-#: src/vcal_meeting_gtk.c:1723
+#: src/plugins/vcalendar/vcalendar.c:1266
+#: src/plugins/vcalendar/vcal_meeting_gtk.c:1716
+#: src/plugins/vcalendar/vcal_meeting_gtk.c:1727
 msgid "Organizer:"
 msgstr "Organisateur :"
 
-#: src/vcalendar.c:1263 src/vcal_meeting_gtk.c:1715
-#: src/vcal_meeting_gtk.c:1725
+#: src/plugins/vcalendar/vcalendar.c:1267
+#: src/plugins/vcalendar/vcal_meeting_gtk.c:1719
+#: src/plugins/vcalendar/vcal_meeting_gtk.c:1729
 msgid "Location:"
 msgstr "Endroit :"
 
-#: src/vcalendar.c:1264 src/vcal_meeting_gtk.c:1713
-#: src/vcal_meeting_gtk.c:1724
+#: src/plugins/vcalendar/vcalendar.c:1268
+#: src/plugins/vcalendar/vcal_meeting_gtk.c:1717
+#: src/plugins/vcalendar/vcal_meeting_gtk.c:1728
 msgid "Summary:"
 msgstr "Résumé :"
 
-#: src/vcalendar.c:1265
+#: src/plugins/vcalendar/vcalendar.c:1269
 msgid "Starting:"
 msgstr "Début :"
 
-#: src/vcalendar.c:1266
+#: src/plugins/vcalendar/vcalendar.c:1270
 msgid "Ending:"
 msgstr "Fin :"
 
-#: src/vcalendar.c:1268 src/vcal_meeting_gtk.c:1717
-#: src/vcal_meeting_gtk.c:1727
+#: src/plugins/vcalendar/vcalendar.c:1272
+#: src/plugins/vcalendar/vcal_meeting_gtk.c:1721
+#: src/plugins/vcalendar/vcal_meeting_gtk.c:1731
 msgid "Attendees:"
 msgstr "Invités :"
 
-#: src/vcalendar.c:1270
+#: src/plugins/vcalendar/vcalendar.c:1274
 msgid "Action:"
 msgstr "Action :"
 
-#: src/vcal_prefs.c:254
+#: src/plugins/vcalendar/vcal_prefs.c:256
 msgid "Reminders"
 msgstr "Rappels"
 
-#: src/vcal_prefs.c:263
+#: src/plugins/vcalendar/vcal_prefs.c:265
 msgid "Alert me"
 msgstr "M'alerter"
 
-#: src/vcal_prefs.c:275
+#: src/plugins/vcalendar/vcal_prefs.c:277
 msgid "minutes before an event"
 msgstr "minutes avant un rendez-vous"
 
-#: src/vcal_prefs.c:287
+#: src/plugins/vcalendar/vcal_prefs.c:289
 msgid "Calendar export"
 msgstr "Export de calendrier"
 
-#: src/vcal_prefs.c:298
+#: src/plugins/vcalendar/vcal_prefs.c:300
 msgid "Automatically export calendar to"
 msgstr "Exporter le calendrier automatiquement vers"
 
-#: src/vcal_prefs.c:307 src/vcal_prefs.c:413
+#: src/plugins/vcalendar/vcal_prefs.c:309
+#: src/plugins/vcalendar/vcal_prefs.c:415
 msgid "You can export to a local file or URL"
 msgstr "Vous pouvez exporter vers un fichier ou un URL"
 
-#: src/vcal_prefs.c:309
+#: src/plugins/vcalendar/vcal_prefs.c:311
 msgid "Specify a local file or URL (http://server/path/file.ics)"
 msgstr ""
 "Veuillez saisir le chemin d'un fichier ou d'une URL (http://server/path/file."
@@ -10576,47 +10961,47 @@ msgstr "Nom d'utilisateur"
 msgid "Password"
 msgstr "Mot de passe"
 
-#: src/vcal_prefs.c:339
+#: src/plugins/vcalendar/vcal_prefs.c:341
 msgid "Include webcal subscriptions in export"
 msgstr ""
 "Inclure les inscriptions au(x) calendrier(s) en ligne (WebCal) dans l'export"
 
-#: src/vcal_prefs.c:349
+#: src/plugins/vcalendar/vcal_prefs.c:351
 msgid "Command to run after calendar export"
 msgstr "Commande à exécuter après l'export"
 
-#: src/vcal_prefs.c:378
+#: src/plugins/vcalendar/vcal_prefs.c:380
 msgid "Register Claws' calendar in XFCE's Orage clock"
 msgstr "Enregistrer le calendrier de Claws dans l'horloge Orage d'XFCE"
 
-#: src/vcal_prefs.c:380
+#: src/plugins/vcalendar/vcal_prefs.c:382
 msgid "Allows Orage (version greater than 4.4) to see Claws Mail's calendar"
 msgstr ""
 "Permet à Orage (version supérieure à 4.4) de voir le calendrier de Claws Mail"
 
-#: src/vcal_prefs.c:392
+#: src/plugins/vcalendar/vcal_prefs.c:394
 msgid "Free/Busy information"
 msgstr "Informations de disponibilité"
 
-#: src/vcal_prefs.c:404
+#: src/plugins/vcalendar/vcal_prefs.c:406
 msgid "Automatically export free/busy status to"
 msgstr "Exporter automatiquement l'état de disponibilité vers"
 
-#: src/vcal_prefs.c:415
+#: src/plugins/vcalendar/vcal_prefs.c:417
 msgid "Specify a local file or URL (http://server/path/file.ifb)"
 msgstr ""
 "Veuillez saisir le chemin d'un fichier ou d'une URL (http://server/path/file."
 "ifb)"
 
-#: src/vcal_prefs.c:445
+#: src/plugins/vcalendar/vcal_prefs.c:447
 msgid "Command to run after free/busy status export"
 msgstr "Commande à exécuter après l'export de l'état de disponibilité"
 
-#: src/vcal_prefs.c:472
+#: src/plugins/vcalendar/vcal_prefs.c:474
 msgid "Get free/busy status of others from"
 msgstr "Récupérer les informations de disponibilité des autres sur"
 
-#: src/vcal_prefs.c:480
+#: src/plugins/vcalendar/vcal_prefs.c:482
 #, c-format
 msgid ""
 "Specify a local file or URL (http://server/path/file.ifb). Use %u for the "
@@ -10626,63 +11011,64 @@ msgstr ""
 "ifb). Utilisez %u pour la partie gauche de l'adresse email, %d pour le "
 "domaine"
 
-#: src/plugin.c:47 src/plugin.c:68 src/vcal_prefs.c:644
+#: src/plugins/vcalendar/vcal_prefs.c:646 src/plugins/vcalendar/plugin.c:43
+#: src/plugins/vcalendar/plugin.c:64
 msgid "vCalendar"
 msgstr "Calendrier"
 
-#: src/vcal_folder.c:160
+#: src/plugins/vcalendar/vcal_folder.c:164
 msgid "_New meeting..."
 msgstr "_Nouveau rendez-vous.."
 
-#: src/vcal_folder.c:161
+#: src/plugins/vcalendar/vcal_folder.c:165
 msgid "_Export calendar..."
 msgstr "_Exporter le calendrier.."
 
-#: src/vcal_folder.c:162
+#: src/plugins/vcalendar/vcal_folder.c:166
 msgid "_Subscribe to webCal..."
 msgstr "_S'inscrire à un calendrier en ligne.."
 
-#: src/vcal_folder.c:164
+#: src/plugins/vcalendar/vcal_folder.c:168
 msgid "_Rename..."
 msgstr "_Renommer.."
 
-#: src/vcal_folder.c:165
+#: src/plugins/vcalendar/vcal_folder.c:169
 msgid "U_pdate subscriptions"
 msgstr "Me_ttre à jour les calendriers"
 
-#: src/vcal_folder.c:166
+#: src/plugins/vcalendar/vcal_folder.c:170
 msgid "_List view"
 msgstr "Vue en _liste"
 
-#: src/vcal_folder.c:167
+#: src/plugins/vcalendar/vcal_folder.c:171
 msgid "_Week view"
 msgstr "Vue _hebdomadaire"
 
-#: src/vcal_folder.c:168
+#: src/plugins/vcalendar/vcal_folder.c:172
 msgid "_Month view"
 msgstr "Vue _mensuelle"
 
-#: src/vcal_folder.c:1471
+#: src/plugins/vcalendar/vcal_folder.c:1475
 msgid "in the past"
 msgstr "dans le passé"
 
-#: src/vcal_folder.c:1474
+#: src/plugins/vcalendar/vcal_folder.c:1478
 msgid "today"
 msgstr "aujourd'hui"
 
-#: src/vcal_folder.c:1477
+#: src/plugins/vcalendar/vcal_folder.c:1481
 msgid "tomorrow"
 msgstr "demain"
 
-#: src/vcal_folder.c:1480
+#: src/plugins/vcalendar/vcal_folder.c:1484
 msgid "this week"
 msgstr "cette semaine"
 
-#: src/vcal_folder.c:1483
+#: src/plugins/vcalendar/vcal_folder.c:1487
 msgid "later"
 msgstr "plus tard"
 
-#: src/vcal_folder.c:1487
+#: src/plugins/vcalendar/vcal_folder.c:1491
 #, c-format
 msgid ""
 "\n"
@@ -10691,29 +11077,12 @@ msgstr ""
 "\n"
 "Voici les évènements planifiés %s :\n"
 
-#: src/vcal_folder.c:1580
+#: src/plugins/vcalendar/vcal_folder.c:1584
 #, c-format
 msgid "Timeout (%d seconds) connecting to %s\n"
 msgstr "Délai d'attente dépassé (%d secondes) lors de la connexion à %s\n"
 
-#: src/vcal_folder.c:1589
-msgid "401 (Authorisation required)"
-msgstr "401 (Autorisation requise)"
-
-#: src/vcal_folder.c:1592
-msgid "403 (Unauthorised)"
-msgstr "403 (Non autorisé)"
-
-#: src/vcal_folder.c:1595
-msgid "404 (Not found)"
-msgstr "404 (Non trouvé)"
-
-#: src/vcal_folder.c:1598
-#, c-format
-msgid "Error %ld"
-msgstr "Erreur %ld"
-
-#: src/vcal_folder.c:1795
+#: src/plugins/vcalendar/vcal_folder.c:1799
 #, c-format
 msgid ""
 "Could not retrieve the Webcal URL:\n"
@@ -10726,7 +11095,7 @@ msgstr ""
 "\n"
 "%s"
 
-#: src/vcal_folder.c:1799
+#: src/plugins/vcalendar/vcal_folder.c:1803
 #, c-format
 msgid ""
 "Could not retrieve the Webcal URL:\n"
@@ -10739,7 +11108,7 @@ msgstr ""
 "\n"
 "%s\n"
 
-#: src/vcal_folder.c:1810
+#: src/plugins/vcalendar/vcal_folder.c:1814
 #, c-format
 msgid ""
 "This URL does not look like a WebCal URL:\n"
@@ -10750,7 +11119,7 @@ msgstr ""
 "%s\n"
 "%s"
 
-#: src/vcal_folder.c:1813
+#: src/plugins/vcalendar/vcal_folder.c:1817
 #, c-format
 msgid ""
 "This URL does not look like a WebCal URL:\n"
@@ -10785,35 +11154,35 @@ msgstr ""
 "Claws Mail nécessite un accès réseau pour accéder au serveur de groupes de "
 "discussion."
 
-#: src/vcal_folder.c:1905
+#: src/plugins/vcalendar/vcal_folder.c:1909
 msgid "Subscribe to WebCal"
 msgstr "S'inscrire à un calendrier en ligne (WebCal)"
 
-#: src/vcal_folder.c:1905
+#: src/plugins/vcalendar/vcal_folder.c:1909
 msgid "Enter the WebCal URL:"
 msgstr "Veuillez saisir l'URL du calendrier en ligne (WebCal) :"
 
-#: src/vcal_folder.c:1919
+#: src/plugins/vcalendar/vcal_folder.c:1923
 msgid "Could not parse the URL."
 msgstr "Impossible de comprendre l'URL."
 
-#: src/vcal_folder.c:1948
+#: src/plugins/vcalendar/vcal_folder.c:1952
 msgid "Do you really want to unsubscribe?"
 msgstr "Voulez-vous vraiment vous désinscrire ?"
 
-#: src/vcal_meeting_gtk.c:309
+#: src/plugins/vcalendar/vcal_meeting_gtk.c:313
 msgid "Individual"
 msgstr "Personne"
 
-#: src/vcal_meeting_gtk.c:311
+#: src/plugins/vcalendar/vcal_meeting_gtk.c:315
 msgid "Resource"
 msgstr "Ressource"
 
-#: src/vcal_meeting_gtk.c:312
+#: src/plugins/vcalendar/vcal_meeting_gtk.c:316
 msgid "Room"
 msgstr "Pièce"
 
-#: src/vcal_meeting_gtk.c:325
+#: src/plugins/vcalendar/vcal_meeting_gtk.c:329
 msgid "Add..."
 msgstr "Ajouter.."
 
@@ -10821,7 +11190,7 @@ msgstr "Ajouter.."
 msgid "Remove"
 msgstr "Supprimer"
 
-#: src/vcal_meeting_gtk.c:784
+#: src/plugins/vcalendar/vcal_meeting_gtk.c:788
 msgid ""
 "The following person(s) are busy at the time of your planned meeting:\n"
 "- "
@@ -10830,61 +11199,62 @@ msgstr ""
 "rendez-vous :\n"
 "- "
 
-#: src/vcal_meeting_gtk.c:785 src/vcal_meeting_gtk.c:877
-#: src/vcal_meeting_gtk.c:963
+#: src/plugins/vcalendar/vcal_meeting_gtk.c:789
+#: src/plugins/vcalendar/vcal_meeting_gtk.c:881
+#: src/plugins/vcalendar/vcal_meeting_gtk.c:967
 msgid "You"
 msgstr "Vous"
 
-#: src/vcal_meeting_gtk.c:786
+#: src/plugins/vcalendar/vcal_meeting_gtk.c:790
 msgid "You are busy at the time of your planned meeting"
 msgstr "Vous n'êtes pas disponible à l'heure prévue de votre rendez-vous."
 
-#: src/vcal_meeting_gtk.c:788
+#: src/plugins/vcalendar/vcal_meeting_gtk.c:792
 #, c-format
 msgid "%s is busy at the time of your planned meeting"
 msgstr "%s n'est pas disponible à l'heure prévue de votre rendez-vous."
 
-#: src/vcal_meeting_gtk.c:790
+#: src/plugins/vcalendar/vcal_meeting_gtk.c:794
 #, c-format
 msgid "%d hour sooner"
 msgstr "%d heure plus tôt"
 
-#: src/vcal_meeting_gtk.c:792
+#: src/plugins/vcalendar/vcal_meeting_gtk.c:796
 #, c-format
 msgid "%d hours sooner"
 msgstr "%d heures plus tôt"
 
-#: src/vcal_meeting_gtk.c:794
+#: src/plugins/vcalendar/vcal_meeting_gtk.c:798
 #, c-format
 msgid "%d hours and %d minutes sooner"
 msgstr "%d heures et %d minutes plus tôt"
 
-#: src/vcal_meeting_gtk.c:796
+#: src/plugins/vcalendar/vcal_meeting_gtk.c:800
 #, c-format
 msgid "%d minutes sooner"
 msgstr "%d minutes plus tôt"
 
-#: src/vcal_meeting_gtk.c:801
+#: src/plugins/vcalendar/vcal_meeting_gtk.c:805
 #, c-format
 msgid "%d hour later"
 msgstr "%d heure après"
 
-#: src/vcal_meeting_gtk.c:803
+#: src/plugins/vcalendar/vcal_meeting_gtk.c:807
 #, c-format
 msgid "%d hours later"
 msgstr "%d heures après"
 
-#: src/vcal_meeting_gtk.c:805
+#: src/plugins/vcalendar/vcal_meeting_gtk.c:809
 #, c-format
 msgid "%d hours and %d minutes later"
 msgstr "%d heures et %d minutes après"
 
-#: src/vcal_meeting_gtk.c:807
+#: src/plugins/vcalendar/vcal_meeting_gtk.c:811
 #, c-format
 msgid "%d minutes later"
 msgstr "%d minutes après"
 
-#: src/vcal_meeting_gtk.c:813
+#: src/plugins/vcalendar/vcal_meeting_gtk.c:817
 #, c-format
 msgid ""
 "\n"
@@ -10895,7 +11265,7 @@ msgstr ""
 "\n"
 "Tout le monde sera disponible soit %s, soit %s."
 
-#: src/vcal_meeting_gtk.c:815
+#: src/plugins/vcalendar/vcal_meeting_gtk.c:819
 #, c-format
 msgid ""
 "\n"
@@ -10906,7 +11276,7 @@ msgstr ""
 "\n"
 " Tout le monde sera disponible %s."
 
-#: src/vcal_meeting_gtk.c:817
+#: src/plugins/vcalendar/vcal_meeting_gtk.c:821
 msgid ""
 "\n"
 "\n"
@@ -10918,52 +11288,54 @@ msgstr ""
 "Il ne sera pas possible d'avoir ce rendez-vous avec tout le monde dans les 6 "
 "heures précédentes ou suivantes."
 
-#: src/vcal_meeting_gtk.c:822
+#: src/plugins/vcalendar/vcal_meeting_gtk.c:826
 #, c-format
 msgid "would be available %s or %s"
 msgstr "sera disponible soit %s, soit %s."
 
-#: src/vcal_meeting_gtk.c:824
+#: src/plugins/vcalendar/vcal_meeting_gtk.c:828
 #, c-format
 msgid "would be available %s"
 msgstr "sera disponible %s"
 
-#: src/vcal_meeting_gtk.c:826 src/vcal_meeting_gtk.c:890
-#: src/vcal_meeting_gtk.c:960
+#: src/plugins/vcalendar/vcal_meeting_gtk.c:830
+#: src/plugins/vcalendar/vcal_meeting_gtk.c:894
+#: src/plugins/vcalendar/vcal_meeting_gtk.c:964
 msgid "not available"
 msgstr "non disponible"
 
-#: src/vcal_meeting_gtk.c:829
+#: src/plugins/vcalendar/vcal_meeting_gtk.c:833
 #, c-format
 msgid ", but would be available %s or %s."
 msgstr ", mais serait disponible soit %s, soit %s."
 
-#: src/vcal_meeting_gtk.c:831
+#: src/plugins/vcalendar/vcal_meeting_gtk.c:835
 #, c-format
 msgid ", but would be available %s."
 msgstr ", mais serait disponible %s."
 
-#: src/vcal_meeting_gtk.c:833
+#: src/plugins/vcalendar/vcal_meeting_gtk.c:837
 msgid ", and isn't available in the previous or next 6 hours."
 msgstr ", et n'est pas disponible dans les 6 heures précédentes ou suivantes."
 
-#: src/vcal_meeting_gtk.c:893
+#: src/plugins/vcalendar/vcal_meeting_gtk.c:897
 msgid "available"
 msgstr "disponible"
 
-#: src/vcal_meeting_gtk.c:895 src/vcal_meeting_gtk.c:1146
+#: src/plugins/vcalendar/vcal_meeting_gtk.c:899
+#: src/plugins/vcalendar/vcal_meeting_gtk.c:1150
 msgid "Free/busy retrieval failed"
 msgstr "Echec de la vérification de disponibilité"
 
-#: src/vcal_meeting_gtk.c:977
+#: src/plugins/vcalendar/vcal_meeting_gtk.c:981
 msgid "Not everyone is available"
 msgstr "Tout le monde n'est pas disponible"
 
-#: src/vcal_meeting_gtk.c:978
+#: src/plugins/vcalendar/vcal_meeting_gtk.c:982
 msgid "Send anyway"
 msgstr "Envoyer tout de même"
 
-#: src/vcal_meeting_gtk.c:989
+#: src/plugins/vcalendar/vcal_meeting_gtk.c:993
 msgid "Not everyone is available. See tooltips for more info..."
 msgstr ""
 "Pas tout le monde n'est disponible. Voir les bulles d'aide pour plus "
@@ -10974,16 +11346,17 @@ msgstr ""
 msgid "Fetching planning for %s..."
 msgstr "Analyse du dossier %s.."
 
-#: src/vcal_meeting_gtk.c:1155
+#: src/plugins/vcalendar/vcal_meeting_gtk.c:1159
 msgid "Available"
 msgstr "Disponible"
 
-#: src/vcal_meeting_gtk.c:1168 src/vcal_meeting_gtk.c:1175
-#: src/vcal_meeting_gtk.c:1183
+#: src/plugins/vcalendar/vcal_meeting_gtk.c:1172
+#: src/plugins/vcalendar/vcal_meeting_gtk.c:1179
+#: src/plugins/vcalendar/vcal_meeting_gtk.c:1187
 msgid "Everyone is available."
 msgstr "Tout le monde est disponible."
 
-#: src/vcal_meeting_gtk.c:1184
+#: src/plugins/vcalendar/vcal_meeting_gtk.c:1188
 msgid ""
 "Everyone seems available, but some free/busy information failed to be "
 "retrieved."
@@ -10991,7 +11364,7 @@ msgstr ""
 "Tout le monde semble disponible, mais un ou des statuts de disponibilité "
 "n'ontpu être récupérés."
 
-#: src/vcal_meeting_gtk.c:1356
+#: src/plugins/vcalendar/vcal_meeting_gtk.c:1360
 msgid ""
 "Could not send the meeting invitation.\n"
 "Check the recipients."
@@ -10999,59 +11372,61 @@ msgstr ""
 "Impossible d'envoyer l'invitation.\n"
 "Veuillez vérifier les destinataires."
 
-#: src/vcal_meeting_gtk.c:1472
+#: src/plugins/vcalendar/vcal_meeting_gtk.c:1476
 msgid "Save & Send"
 msgstr "Enregistrer & envoyer"
 
-#: src/vcal_meeting_gtk.c:1473
+#: src/plugins/vcalendar/vcal_meeting_gtk.c:1477
 msgid "Check availability"
 msgstr "Vérifier la disponibilité"
 
-#: src/vcal_meeting_gtk.c:1596
+#: src/plugins/vcalendar/vcal_meeting_gtk.c:1600
 msgid "<b>Starts at:</b> "
 msgstr "<b>Débute à :</b>"
 
-#: src/vcal_meeting_gtk.c:1601 src/vcal_meeting_gtk.c:1623
+#: src/plugins/vcalendar/vcal_meeting_gtk.c:1605
+#: src/plugins/vcalendar/vcal_meeting_gtk.c:1627
 msgid "<b> on:</b>"
 msgstr "<b> le :</b>"
 
-#: src/vcal_meeting_gtk.c:1618
+#: src/plugins/vcalendar/vcal_meeting_gtk.c:1622
 msgid "<b>Ends at:</b> "
 msgstr "<b>Se termine à :</b>"
 
-#: src/vcal_meeting_gtk.c:1657
+#: src/plugins/vcalendar/vcal_meeting_gtk.c:1661
 msgid "New meeting"
 msgstr "Nouveau rendez-vous"
 
-#: src/vcal_meeting_gtk.c:1659
+#: src/plugins/vcalendar/vcal_meeting_gtk.c:1663
 #, c-format
 msgid "%s - Edit meeting"
 msgstr "%s - Modifier le rendez-vous"
 
-#: src/vcal_meeting_gtk.c:1714 src/vcal_meeting_gtk.c:1738
+#: src/plugins/vcalendar/vcal_meeting_gtk.c:1718
+#: src/plugins/vcalendar/vcal_meeting_gtk.c:1742
 msgid "Time:"
 msgstr "Période :"
 
-#: src/vcal_meeting_gtk.c:1874
+#: src/plugins/vcalendar/vcal_meeting_gtk.c:1878
 #, c-format
 msgid "%d hour"
 msgid_plural "%d hours"
 msgstr[0] "%d heure"
 msgstr[1] "%d heures"
 
-#: src/vcal_meeting_gtk.c:1877
+#: src/plugins/vcalendar/vcal_meeting_gtk.c:1881
 #, c-format
 msgid "%d minute"
 msgid_plural "%d minutes"
 msgstr[0] "%d minute"
 msgstr[1] "%d minutes"
 
-#: src/vcal_meeting_gtk.c:1888
+#: src/plugins/vcalendar/vcal_meeting_gtk.c:1892
 #, c-format
 msgid "Upcoming event: %s"
 msgstr "Évènement en instance : %s"
 
-#: src/vcal_meeting_gtk.c:1889
+#: src/plugins/vcalendar/vcal_meeting_gtk.c:1893
 #, c-format
 msgid ""
 "You have a meeting or event soon.\n"
@@ -11068,112 +11443,112 @@ msgstr ""
 "\n"
 "%s"
 
-#: src/vcal_meeting_gtk.c:1906
+#: src/plugins/vcalendar/vcal_meeting_gtk.c:1910
 #, c-format
 msgid "Remind me in %d minute"
 msgid_plural "Remind me in %d minutes"
 msgstr[0] "M'avertir à nouveau dans %d minute"
 msgstr[1] "M'avertir à nouveau dans %d minutes"
 
-#: src/vcal_meeting_gtk.c:2032
+#: src/plugins/vcalendar/vcal_meeting_gtk.c:2036
 msgid "Empty calendar"
 msgstr "Calendrier vide"
 
-#: src/vcal_meeting_gtk.c:2033
+#: src/plugins/vcalendar/vcal_meeting_gtk.c:2037
 msgid "There is nothing to export."
 msgstr "Il n'y a rien à exporter."
 
-#: src/vcal_meeting_gtk.c:2073
+#: src/plugins/vcalendar/vcal_meeting_gtk.c:2077
 msgid "Could not export the calendar."
 msgstr "Impossible d'exporter le calendrier."
 
-#: src/vcal_meeting_gtk.c:2090
+#: src/plugins/vcalendar/vcal_meeting_gtk.c:2094
 msgid "Export calendar to ICS"
 msgstr "Exporter le calendrier au format ICS"
 
-#: src/vcal_meeting_gtk.c:2112
+#: src/plugins/vcalendar/vcal_meeting_gtk.c:2116
 #, c-format
 msgid "Couldn't export calendar to '%s'\n"
 msgstr "Impossible d'exporter le calendrier vers '%s'.\n"
 
-#: src/vcal_meeting_gtk.c:2228
+#: src/plugins/vcalendar/vcal_meeting_gtk.c:2232
 msgid "Could not export the freebusy info."
 msgstr "Impossible d'exporter les informations de disponibilité."
 
-#: src/vcal_meeting_gtk.c:2259
+#: src/plugins/vcalendar/vcal_meeting_gtk.c:2263
 #, c-format
 msgid "Couldn't export free/busy to '%s'\n"
 msgstr "Impossible d'exporter les informations de disponibilité vers '%s'\n"
 
-#: src/vcal_manager.c:105
+#: src/plugins/vcalendar/vcal_manager.c:109
 msgid "accepted"
 msgstr "accepté"
 
-#: src/vcal_manager.c:106
+#: src/plugins/vcalendar/vcal_manager.c:110
 msgid "tentatively accepted"
 msgstr "accepté sous réserves"
 
-#: src/vcal_manager.c:107
+#: src/plugins/vcalendar/vcal_manager.c:111
 msgid "declined"
 msgstr "refusé"
 
-#: src/vcal_manager.c:108
+#: src/plugins/vcalendar/vcal_manager.c:112
 msgid "did not answer"
 msgstr "n'a pas répondu"
 
-#: src/vcal_manager.c:138
+#: src/plugins/vcalendar/vcal_manager.c:142
 msgid "individual"
 msgstr "personne"
 
-#: src/vcal_manager.c:139
+#: src/plugins/vcalendar/vcal_manager.c:143
 msgid "group"
 msgstr "groupe"
 
-#: src/vcal_manager.c:140
+#: src/plugins/vcalendar/vcal_manager.c:144
 msgid "resource"
 msgstr "ressource"
 
-#: src/vcal_manager.c:141
+#: src/plugins/vcalendar/vcal_manager.c:145
 msgid "room"
 msgstr "pièce"
 
-#: src/vcal_manager.c:552
+#: src/plugins/vcalendar/vcal_manager.c:556
 msgid "Past"
 msgstr "Dans le passé"
 
-#: src/vcal_manager.c:555
+#: src/plugins/vcalendar/vcal_manager.c:559
 msgid "Today"
 msgstr "Aujourd'hui"
 
-#: src/vcal_manager.c:558
+#: src/plugins/vcalendar/vcal_manager.c:562
 msgid "Tomorrow"
 msgstr "Demain"
 
-#: src/vcal_manager.c:561
+#: src/plugins/vcalendar/vcal_manager.c:565
 msgid "This week"
 msgstr "Cette semaine"
 
-#: src/vcal_manager.c:564
+#: src/plugins/vcalendar/vcal_manager.c:568
 msgid "Later"
 msgstr "Plus tard"
 
-#: src/vcal_manager.c:1230
+#: src/plugins/vcalendar/vcal_manager.c:1234
 msgid "Accepted: "
 msgstr "Accepté : "
 
-#: src/vcal_manager.c:1232
+#: src/plugins/vcalendar/vcal_manager.c:1236
 msgid "Declined: "
 msgstr "Refusé : "
 
-#: src/vcal_manager.c:1234
+#: src/plugins/vcalendar/vcal_manager.c:1238
 msgid "Tentatively Accepted: "
 msgstr "Accepté sous réserves : "
 
-#: src/day-view.c:597 src/month-view.c:697
+#: src/plugins/vcalendar/day-view.c:601 src/plugins/vcalendar/month-view.c:701
 msgid "Start"
 msgstr "Début"
 
-#: src/day-view.c:610 src/month-view.c:710
+#: src/plugins/vcalendar/day-view.c:614 src/plugins/vcalendar/month-view.c:714
 msgid "Show"
 msgstr "Montrer"
 
@@ -11183,7 +11558,7 @@ msgstr "Montrer"
 msgid "days"
 msgstr "jour(s)"
 
-#: src/plugin.c:73
+#: src/plugins/vcalendar/plugin.c:69
 msgid ""
 "This plugin enables vCalendar message handling like that produced by "
 "Evolution or Outlook.\n"
@@ -11215,95 +11590,95 @@ msgstr ""
 "d'exporter vos rendez-vous et vos calendrier(s), de partager votre statut de "
 "disponibilité et de récupérer celui d'autres personnes."
 
-#: src/plugin.c:106
+#: src/plugins/vcalendar/plugin.c:102
 msgid "Calendar"
 msgstr "Calendrier"
 
-#: src/month-view.c:107
+#: src/plugins/vcalendar/month-view.c:111
 msgid "Monday"
 msgstr "Lundi"
 
-#: src/month-view.c:108
+#: src/plugins/vcalendar/month-view.c:112
 msgid "Tuesday"
 msgstr "Mardi"
 
-#: src/month-view.c:109
+#: src/plugins/vcalendar/month-view.c:113
 msgid "Wednesday"
 msgstr "Mercredi"
 
-#: src/month-view.c:110
+#: src/plugins/vcalendar/month-view.c:114
 msgid "Thursday"
 msgstr "Jeudi"
 
-#: src/month-view.c:111
+#: src/plugins/vcalendar/month-view.c:115
 msgid "Friday"
 msgstr "Vendredi"
 
-#: src/month-view.c:112
+#: src/plugins/vcalendar/month-view.c:116
 msgid "Saturday"
 msgstr "Samedi"
 
-#: src/month-view.c:113
+#: src/plugins/vcalendar/month-view.c:117
 msgid "Sunday"
 msgstr "Dimanche"
 
-#: src/month-view.c:116
+#: src/plugins/vcalendar/month-view.c:120
 msgid "January"
 msgstr "Janvier"
 
-#: src/month-view.c:117
+#: src/plugins/vcalendar/month-view.c:121
 msgid "February"
 msgstr "Février"
 
-#: src/month-view.c:118
+#: src/plugins/vcalendar/month-view.c:122
 msgid "March"
 msgstr "Mars"
 
-#: src/month-view.c:119
+#: src/plugins/vcalendar/month-view.c:123
 msgid "April"
 msgstr "Avril"
 
-#: src/month-view.c:120
+#: src/plugins/vcalendar/month-view.c:124
 msgid "May"
 msgstr "Mai"
 
-#: src/month-view.c:121
+#: src/plugins/vcalendar/month-view.c:125
 msgid "June"
 msgstr "Juin"
 
-#: src/month-view.c:122
+#: src/plugins/vcalendar/month-view.c:126
 msgid "July"
 msgstr "Juillet"
 
-#: src/month-view.c:123
+#: src/plugins/vcalendar/month-view.c:127
 msgid "August"
 msgstr "Août"
 
-#: src/month-view.c:124
+#: src/plugins/vcalendar/month-view.c:128
 msgid "September"
 msgstr "Septembre"
 
-#: src/month-view.c:125
+#: src/plugins/vcalendar/month-view.c:129
 msgid "October"
 msgstr "Octobre"
 
-#: src/month-view.c:126
+#: src/plugins/vcalendar/month-view.c:130
 msgid "November"
 msgstr "Novembre"
 
-#: src/month-view.c:127
+#: src/plugins/vcalendar/month-view.c:131
 msgid "December"
 msgstr "Décembre"
 
-#: src/month-view.c:805
+#: src/plugins/vcalendar/month-view.c:809
 msgid "Week number"
 msgstr "Numéro de semaine"
 
-#: src/month-view.c:903
+#: src/plugins/vcalendar/month-view.c:907
 msgid "Previous month"
 msgstr "Mois précédent"
 
-#: src/month-view.c:926
+#: src/plugins/vcalendar/month-view.c:930
 msgid "Next month"
 msgstr "Mois suivant"
 
