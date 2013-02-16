@@ -1204,13 +1204,13 @@ static void mainwindow_colorlabel_menu_create(MainWindow *mainwin, gboolean refr
 		gtk_widget_show(item);
 		accel_path = g_strdup_printf("<ClawsColorLabels>/%d", i+1);
 		gtk_menu_item_set_accel_path(GTK_MENU_ITEM(item), accel_path);
-		g_free(accel_path);
 		if (i < 9)
 #if !GTK_CHECK_VERSION(2, 24, 0)
 			gtk_accel_map_add_entry(accel_path, GDK_1+i, GDK_CONTROL_MASK);
 #else
 			gtk_accel_map_add_entry(accel_path, GDK_KEY_1+i, GDK_CONTROL_MASK);
 #endif
+		g_free(accel_path);
 		g_signal_connect (gtk_ui_manager_get_accel_group(mainwin->ui_manager), 
 			"accel-changed", G_CALLBACK (mainwin_accel_changed_cb), item);
 

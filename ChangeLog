@@ -1,3 +1,8 @@
+2013-02-16 [colin]	3.9.0cvs71
+
+	* src/mainwindow.c
+		Fix use-after-free (introduced in cvs61)
+
 2013-02-16 [colin]	3.9.0cvs70
 
 	* src/main.c
