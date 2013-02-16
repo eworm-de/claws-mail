@@ -1,3 +1,55 @@
+2013-02-16 [colin]	3.9.0cvs73
+
+	* src/plugins/Makefile.am
+	* src/plugins/acpi_notifier/Makefile.am
+	* src/plugins/acpi_notifier/acpi_notifier.c
+	* src/plugins/acpi_notifier/placeholder.txt
+	* src/plugins/address_keeper/Makefile.am
+	* src/plugins/address_keeper/address_keeper.c
+	* src/plugins/address_keeper/address_keeper.h
+	* src/plugins/address_keeper/address_keeper_prefs.c
+	* src/plugins/address_keeper/address_keeper_prefs.h
+	* src/plugins/address_keeper/claws.def
+	* src/plugins/address_keeper/placeholder.txt
+	* src/plugins/address_keeper/plugin.def
+	* src/plugins/address_keeper/version.rc
+	* src/plugins/attachwarner/Makefile.am
+	* src/plugins/attachwarner/attachwarner.c
+	* src/plugins/attachwarner/attachwarner.h
+	* src/plugins/attachwarner/attachwarner_prefs.c
+	* src/plugins/attachwarner/attachwarner_prefs.h
+	* src/plugins/attachwarner/claws.def
+	* src/plugins/attachwarner/placeholder.txt
+	* src/plugins/attachwarner/plugin.def
+	* src/plugins/attachwarner/version.rc
+	* src/plugins/vcalendar/libical/libical/icalversion.h
+	* po/POTFILES.in
+	* po/bg.po
+	* po/ca.po
+	* po/cs.po
+	* po/de.po
+	* po/en_GB.po
+	* po/es.po
+	* po/fi.po
+	* po/fr.po
+	* po/hu.po
+	* po/id_ID.po
+	* po/it.po
+	* po/ja.po
+	* po/lt.po
+	* po/nl.po
+	* po/pl.po
+	* po/pt_BR.po
+	* po/pt_PT.po
+	* po/ru.po
+	* po/sk.po
+	* po/sr.po
+	* po/sv.po
+	* po/uk.po
+	* po/zh_CN.po
+	* po/zh_TW.po
+		Now do acpi_notifier, attachwarner, address_keeper
+
 2013-02-16 [colin]	3.9.0cvs72
 
 	* po/POTFILES.in

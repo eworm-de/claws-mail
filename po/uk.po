@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: claws-svn\n"
 "Report-Msgid-Bugs-To: paul@claws-mail.org\n"
-"POT-Creation-Date: 2013-02-16 13:01+0100\n"
+"POT-Creation-Date: 2013-02-16 13:46+0100\n"
 "PO-Revision-Date: 2012-11-08 21:15+0100\n"
 "Last-Translator: \n"
 "Language-Team: Ukrainian <translation@linux.org.ua>\n"
@@ -1950,7 +1950,8 @@ msgstr ""
 "Виберіть його перед висиланням."
 
 #: src/compose.c:4914 src/compose.c:4946 src/compose.c:4988
-#: src/prefs_account.c:3237 src/toolbar.c:404 src/toolbar.c:422
+#: src/plugins/attachwarner/attachwarner.c:312 src/prefs_account.c:3237
+#: src/toolbar.c:404 src/toolbar.c:422
 msgid "Send"
 msgstr "Вислати"
 
@@ -1959,6 +1960,7 @@ msgid "The only recipient is the default CC address. Send anyway?"
 msgstr "Єдиною адресою є адреса CC. Вислати все одно?"
 
 #: src/compose.c:4916 src/compose.c:4948 src/compose.c:4981 src/compose.c:5497
+#: src/plugins/attachwarner/attachwarner.c:304
 msgid "+_Send"
 msgstr "+_Вислати"
 
@@ -1970,7 +1972,7 @@ msgstr "Єдиною адресою є адреса BCC. Вислати все �
 msgid "Recipient is not specified."
 msgstr "Адресат не вказаний."
 
-#: src/compose.c:4983
+#: src/compose.c:4983 src/plugins/attachwarner/attachwarner.c:306
 msgid "+_Queue"
 msgstr "+_В черзі"
 
@@ -3370,7 +3372,8 @@ msgstr "Отримані"
 msgid "Sent"
 msgstr "Вислані"
 
-#: src/folder.c:1579 src/foldersel.c:382 src/prefs_folder_item.c:311
+#: src/folder.c:1579 src/foldersel.c:382
+#: src/plugins/attachwarner/attachwarner.c:312 src/prefs_folder_item.c:311
 msgid "Queue"
 msgstr "В черзі"
 
@@ -4746,7 +4749,10 @@ msgstr ""
 "\n"
 "%s\n"
 
-#: src/gtk/pluginwindow.c:304 src/plugins/bogofilter/bogofilter_gtk.c:457
+#: src/gtk/pluginwindow.c:304 src/plugins/acpi_notifier/acpi_notifier.c:790
+#: src/plugins/attachwarner/attachwarner_prefs.c:201
+#: src/plugins/address_keeper/address_keeper_prefs.c:208
+#: src/plugins/bogofilter/bogofilter_gtk.c:457
 #: src/plugins/dillo_viewer/dillo_prefs.c:129
 #: src/plugins/fancy/fancy_prefs.c:110 src/plugins/pgpcore/prefs_gpg.c:557
 #: src/plugins/rssyl/rssyl_prefs.c:63
@@ -8096,6 +8102,240 @@ msgstr "Ві_дписатися"
 #: src/news_gtk.c:306
 msgid "Rename newsgroup folder"
 msgstr "Перейменувати теку новинних груп"
+
+#: src/plugins/acpi_notifier/acpi_notifier.c:51
+msgid "Acpi Notifier"
+msgstr "Повідомлення Acpi"
+
+#: src/plugins/acpi_notifier/acpi_notifier.c:67
+msgid ""
+"Make sure that the kernel module 'acerhk' is loaded.\n"
+"You can get it from http://www.cakey.de/acerhk/"
+msgstr ""
+
+#: src/plugins/acpi_notifier/acpi_notifier.c:69
+msgid ""
+"Make sure that the kernel module 'acer_acpi' is loaded.\n"
+"You can get it from http://code.google.com/p/aceracpi/"
+msgstr ""
+"Переконайтеся, що завантажений модуль ядра 'acer_acpi'.\n"
+"Ви можете отримати його з http://code.google.com/p/aceracpi/"
+
+#: src/plugins/acpi_notifier/acpi_notifier.c:71
+msgid "Make sure that the kernel module 'asus_laptop' is loaded."
+msgstr "Переконайтеся, що завантажений модуль ядра 'asus_laptop'."
+
+#: src/plugins/acpi_notifier/acpi_notifier.c:72
+msgid "Make sure that the kernel module 'asus_acpi' is loaded."
+msgstr "Переконайтеся, що завантажений модуль ядра 'asus_acpi'."
+
+#: src/plugins/acpi_notifier/acpi_notifier.c:73
+msgid "Make sure that the kernel module 'ibm_acpi' is loaded."
+msgstr "Переконайтеся, що завантажений модуль ядра 'ibm_acpi'."
+
+#: src/plugins/acpi_notifier/acpi_notifier.c:74
+msgid ""
+"Make sure that you have apanelc installed.\n"
+"You can get it from http://apanel.sourceforge.net/"
+msgstr ""
+"Переконайтесь, що встановлено apanelc.\n"
+"Ви можете отримати його з http://apanel.sourceforge.net/"
+
+#: src/plugins/acpi_notifier/acpi_notifier.c:207
+#: src/plugins/acpi_notifier/acpi_notifier.c:213
+#: src/plugins/acpi_notifier/acpi_notifier.c:425
+msgid "Control file doesn't exist."
+msgstr "Контрольний файл не існує."
+
+#: src/plugins/acpi_notifier/acpi_notifier.c:305
+msgid " : no new or unread mail"
+msgstr " : немає нових або непрочитаних листів"
+
+#: src/plugins/acpi_notifier/acpi_notifier.c:306
+msgid " : unread mail"
+msgstr " : непрочитаний лист"
+
+#: src/plugins/acpi_notifier/acpi_notifier.c:307
+msgid " : new mail"
+msgstr " : новий лист"
+
+#: src/plugins/acpi_notifier/acpi_notifier.c:309
+#: src/plugins/acpi_notifier/acpi_notifier.c:315
+#: src/plugins/acpi_notifier/acpi_notifier.c:321
+msgid "off"
+msgstr "виключено"
+
+#: src/plugins/acpi_notifier/acpi_notifier.c:311
+#: src/plugins/acpi_notifier/acpi_notifier.c:317
+#: src/plugins/acpi_notifier/acpi_notifier.c:323
+msgid "blinking"
+msgstr "блимання"
+
+#: src/plugins/acpi_notifier/acpi_notifier.c:313
+#: src/plugins/acpi_notifier/acpi_notifier.c:319
+#: src/plugins/acpi_notifier/acpi_notifier.c:325
+msgid "on"
+msgstr "включено"
+
+#: src/plugins/acpi_notifier/acpi_notifier.c:347
+#: src/plugins/acpi_notifier/acpi_notifier.c:356
+#: src/plugins/acpi_notifier/acpi_notifier.c:371
+msgid "LED "
+msgstr "LED"
+
+#: src/plugins/acpi_notifier/acpi_notifier.c:386
+msgid "ACPI type: "
+msgstr "Тип ACPI: "
+
+#: src/plugins/acpi_notifier/acpi_notifier.c:395
+msgid "ACPI file: "
+msgstr "Файл ACPI: "
+
+#: src/plugins/acpi_notifier/acpi_notifier.c:406
+msgid "values - On: "
+msgstr "значення - Вкл: "
+
+#: src/plugins/acpi_notifier/acpi_notifier.c:411
+msgid " - Off: "
+msgstr " - Викл: "
+
+#: src/plugins/acpi_notifier/acpi_notifier.c:433
+msgid "Blink when user interaction is required"
+msgstr "Блимати, коли потрібно втручання користувача?"
+
+#: src/plugins/acpi_notifier/acpi_notifier.c:866
+msgid "This plugin handles various ACPI mail LEDs."
+msgstr "Цей додаток повідомляє про стан пошти через LED (світлодіоди)"
+
+#: src/plugins/acpi_notifier/acpi_notifier.c:887
+msgid "Laptop LED"
+msgstr "Світлодіоди (LED) нотбуку"
+
+#: src/plugins/attachwarner/attachwarner.c:309
+#, c-format
+msgid ""
+"An attachment is mentioned in the mail you're sending, but no file was "
+"attached. Mention appears on line %d, which begins with text: <span weight="
+"\"bold\">%.20s</span>...\n"
+"\n"
+"%s it anyway?"
+msgstr ""
+
+#: src/plugins/attachwarner/attachwarner.c:313
+msgid "Attachment warning"
+msgstr "Увага!"
+
+#: src/plugins/attachwarner/attachwarner.c:338
+#: src/plugins/attachwarner/attachwarner.c:375
+#: src/plugins/attachwarner/attachwarner.c:427
+msgid "Attach warner"
+msgstr "Нагадування про долучення"
+
+#: src/plugins/attachwarner/attachwarner.c:345
+#: src/plugins/address_keeper/address_keeper.c:221
+msgid "Failed to register check before send hook"
+msgstr "Не вдалося зареєструвати hook на 'check before send'"
+
+#: src/plugins/attachwarner/attachwarner.c:385
+msgid ""
+"Warns user if some reference to attachments is found in the message text and "
+"no file is attached."
+msgstr ""
+"Повідомляти користувача, якщо в тексті листа знайдено згадку про вкладення, "
+"але жодного файлу не долучено."
+
+#: src/plugins/attachwarner/attachwarner_prefs.c:53
+msgid "attach"
+msgstr "долучено"
+
+#: src/plugins/attachwarner/attachwarner_prefs.c:80
+msgid ""
+"Warn when matching the following regular expressions:\n"
+"(one per line)"
+msgstr ""
+"Попереджати, якщо повідомлення співпадає з одним з регулярних виразів:\n"
+"(по одному на стрічку)"
+
+#: src/plugins/attachwarner/attachwarner_prefs.c:99
+msgid "Skip quoted lines"
+msgstr "Не перевіряти цитати"
+
+#: src/plugins/attachwarner/attachwarner_prefs.c:106
+msgid "Exclude quoted lines from checking for the regular expressions above"
+msgstr ""
+"Не перевіряти цитований текст на відповідність до заданих регулярних виразів."
+
+#: src/plugins/attachwarner/attachwarner_prefs.c:109
+msgid "Skip forwards and redirections"
+msgstr "Не перевіряти при пересиланні або переадресації"
+
+#: src/plugins/attachwarner/attachwarner_prefs.c:116
+msgid ""
+"Don't check for missing attachments when forwarding or redirecting messages"
+msgstr ""
+"Не перевіряти на пропущені вкладення при пересиланні або переадресації "
+"повідомлень"
+
+#: src/plugins/attachwarner/attachwarner_prefs.c:119
+#, fuzzy
+msgid "Skip signature"
+msgstr "Підпис"
+
+#: src/plugins/attachwarner/attachwarner_prefs.c:126
+msgid ""
+"Exclude lines from the first signature-separator onwards from checking for "
+"the regular expressions above"
+msgstr ""
+
+#: src/plugins/attachwarner/attachwarner_prefs.c:202
+msgid "Attach Warner"
+msgstr "Нагадування про вкладення"
+
+#: src/plugins/address_keeper/address_keeper.c:261
+msgid "Keeps all recipient addresses in an addressbook folder."
+msgstr "Зберігає всі адреси в теці адресної книжки."
+
+#: src/plugins/address_keeper/address_keeper.c:302
+#: src/plugins/address_keeper/address_keeper.h:34
+#: src/plugins/address_keeper/address_keeper_prefs.c:209
+msgid "Address Keeper"
+msgstr "Зберігач адрес"
+
+#: src/plugins/address_keeper/address_keeper_prefs.c:97
+msgid "Keep to folder"
+msgstr "Зберегти до теки"
+
+#: src/plugins/address_keeper/address_keeper_prefs.c:105
+msgid "Address book path where addresses are kept"
+msgstr "Адресна книжка, де зберігаються адреси"
+
+#: src/plugins/address_keeper/address_keeper_prefs.c:107
+msgid "Select..."
+msgstr "Вибір..."
+
+#: src/plugins/address_keeper/address_keeper_prefs.c:123
+msgid "Keep 'To' addresses"
+msgstr "Зберігати адреси 'До'"
+
+#: src/plugins/address_keeper/address_keeper_prefs.c:128
+msgid "Keep addresses which appear in 'To' headers"
+msgstr "Зберігати адреси, які появляються в заголовку 'До'"
+
+#: src/plugins/address_keeper/address_keeper_prefs.c:133
+msgid "Keep 'Cc' addresses"
+msgstr "Зберігати адреси 'Копія'"
+
+#: src/plugins/address_keeper/address_keeper_prefs.c:138
+msgid "Keep addresses which appear in 'Cc' headers"
+msgstr "Зберігати адреси, що появляються в заголовку 'Копія'"
+
+#: src/plugins/address_keeper/address_keeper_prefs.c:143
+msgid "Keep 'Bcc' addresses"
+msgstr "Зберігати адреси 'Прихована копія'"
+
+#: src/plugins/address_keeper/address_keeper_prefs.c:148
+msgid "Keep addresses which appear in 'Bcc' headers"
+msgstr "Зберігати адреси, що появляються в заголовку 'Прихована копія'"
 
 #: src/plugins/bogofilter/bogofilter.c:81
 #: src/plugins/bogofilter/bogofilter_gtk.c:458
@@ -16021,6 +16261,13 @@ msgid ""
 msgstr ""
 "Claws Mail готовий до роботи.\n"
 "Клацніть 'Зберегти', щоб розпочати роботу."
+
+#~ msgid ""
+#~ "An attachment is mentioned in the mail you're sending, but no file was "
+#~ "attached. %s it anyway?"
+#~ msgstr ""
+#~ "Ви вказали долучення до вашого листа, але не долучили жодного файлу. %s "
+#~ "все одно?"
 
 #~ msgid ""
 #~ "Command could not be started. Pipe creation failed.\n"

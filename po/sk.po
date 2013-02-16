@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: claws-mail\n"
 "Report-Msgid-Bugs-To: paul@claws-mail.org\n"
-"POT-Creation-Date: 2013-02-16 13:01+0100\n"
+"POT-Creation-Date: 2013-02-16 13:46+0100\n"
 "PO-Revision-Date: 2012-11-08 21:13+0100\n"
 "Last-Translator: Slavko <linux@slavino.sk>\n"
 "Language-Team: slovenčina <debian-l10n-slovak@lists.debian.org>\n"
@@ -2013,7 +2013,8 @@ msgstr ""
 "Pred odosielaním prosím zvoľte poštový účet."
 
 #: src/compose.c:4914 src/compose.c:4946 src/compose.c:4988
-#: src/prefs_account.c:3237 src/toolbar.c:404 src/toolbar.c:422
+#: src/plugins/attachwarner/attachwarner.c:312 src/prefs_account.c:3237
+#: src/toolbar.c:404 src/toolbar.c:422
 msgid "Send"
 msgstr "Odoslať"
 
@@ -2022,6 +2023,7 @@ msgid "The only recipient is the default CC address. Send anyway?"
 msgstr "Jediný príjemca je prednastavená adresa Kópie. Odoslať i tak?"
 
 #: src/compose.c:4916 src/compose.c:4948 src/compose.c:4981 src/compose.c:5497
+#: src/plugins/attachwarner/attachwarner.c:304
 msgid "+_Send"
 msgstr "+_Odoslať"
 
@@ -2033,7 +2035,7 @@ msgstr "Jediný príjemca je prednastavená adresa Skrytej kópie. Odoslať i ta
 msgid "Recipient is not specified."
 msgstr "Nie je zadaný príjemca."
 
-#: src/compose.c:4983
+#: src/compose.c:4983 src/plugins/attachwarner/attachwarner.c:306
 msgid "+_Queue"
 msgstr "+Do _fronty"
 
@@ -3428,7 +3430,8 @@ msgstr "Prijaté"
 msgid "Sent"
 msgstr "Odoslané"
 
-#: src/folder.c:1579 src/foldersel.c:382 src/prefs_folder_item.c:311
+#: src/folder.c:1579 src/foldersel.c:382
+#: src/plugins/attachwarner/attachwarner.c:312 src/prefs_folder_item.c:311
 msgid "Queue"
 msgstr "Front"
 
@@ -4802,7 +4805,10 @@ msgstr ""
 "\n"
 "%s\n"
 
-#: src/gtk/pluginwindow.c:304 src/plugins/bogofilter/bogofilter_gtk.c:457
+#: src/gtk/pluginwindow.c:304 src/plugins/acpi_notifier/acpi_notifier.c:790
+#: src/plugins/attachwarner/attachwarner_prefs.c:201
+#: src/plugins/address_keeper/address_keeper_prefs.c:208
+#: src/plugins/bogofilter/bogofilter_gtk.c:457
 #: src/plugins/dillo_viewer/dillo_prefs.c:129
 #: src/plugins/fancy/fancy_prefs.c:110 src/plugins/pgpcore/prefs_gpg.c:557
 #: src/plugins/rssyl/rssyl_prefs.c:63
@@ -8148,6 +8154,242 @@ msgstr "_Odhlásiť sa"
 #: src/news_gtk.c:306
 msgid "Rename newsgroup folder"
 msgstr "Premenovať diskusnú zložku"
+
+#: src/plugins/acpi_notifier/acpi_notifier.c:51
+msgid "Acpi Notifier"
+msgstr "Upozornenia ACPI"
+
+#: src/plugins/acpi_notifier/acpi_notifier.c:67
+msgid ""
+"Make sure that the kernel module 'acerhk' is loaded.\n"
+"You can get it from http://www.cakey.de/acerhk/"
+msgstr ""
+"Overte si, že je načítaný modulu jadra „acerhk”.\n"
+"Môžete ho získať z http://www.cakey.de/acerhk/"
+
+#: src/plugins/acpi_notifier/acpi_notifier.c:69
+msgid ""
+"Make sure that the kernel module 'acer_acpi' is loaded.\n"
+"You can get it from http://code.google.com/p/aceracpi/"
+msgstr ""
+"Overte si, že je načítaný modulu jadra „acer_acpi”.\n"
+"Môžete ho získať z http://code.google.com/p/aceracpi/"
+
+#: src/plugins/acpi_notifier/acpi_notifier.c:71
+msgid "Make sure that the kernel module 'asus_laptop' is loaded."
+msgstr "Overte si, že je načítaný modul jadra „asus_laptop”."
+
+#: src/plugins/acpi_notifier/acpi_notifier.c:72
+msgid "Make sure that the kernel module 'asus_acpi' is loaded."
+msgstr "Overte si, že je načítaný modul jadra „asus_acpi”."
+
+#: src/plugins/acpi_notifier/acpi_notifier.c:73
+msgid "Make sure that the kernel module 'ibm_acpi' is loaded."
+msgstr "Overte si, že je načítaný modul jadra „ibm_acpi”."
+
+#: src/plugins/acpi_notifier/acpi_notifier.c:74
+msgid ""
+"Make sure that you have apanelc installed.\n"
+"You can get it from http://apanel.sourceforge.net/"
+msgstr ""
+"Overte si, že je nainštalovaný apanelc.\n"
+"Môžete ho získať z http://apanel.sourceforge.net/"
+
+#: src/plugins/acpi_notifier/acpi_notifier.c:207
+#: src/plugins/acpi_notifier/acpi_notifier.c:213
+#: src/plugins/acpi_notifier/acpi_notifier.c:425
+msgid "Control file doesn't exist."
+msgstr "Riadiaci súbor neexistuje."
+
+#: src/plugins/acpi_notifier/acpi_notifier.c:305
+msgid " : no new or unread mail"
+msgstr " : žiadna nová alebo neprečítaná pošta"
+
+#: src/plugins/acpi_notifier/acpi_notifier.c:306
+msgid " : unread mail"
+msgstr " : neprečítaná pošta"
+
+#: src/plugins/acpi_notifier/acpi_notifier.c:307
+msgid " : new mail"
+msgstr " : nová pošta"
+
+#: src/plugins/acpi_notifier/acpi_notifier.c:309
+#: src/plugins/acpi_notifier/acpi_notifier.c:315
+#: src/plugins/acpi_notifier/acpi_notifier.c:321
+msgid "off"
+msgstr "vypnuté"
+
+#: src/plugins/acpi_notifier/acpi_notifier.c:311
+#: src/plugins/acpi_notifier/acpi_notifier.c:317
+#: src/plugins/acpi_notifier/acpi_notifier.c:323
+msgid "blinking"
+msgstr "bliká"
+
+#: src/plugins/acpi_notifier/acpi_notifier.c:313
+#: src/plugins/acpi_notifier/acpi_notifier.c:319
+#: src/plugins/acpi_notifier/acpi_notifier.c:325
+msgid "on"
+msgstr "svieti"
+
+#: src/plugins/acpi_notifier/acpi_notifier.c:347
+#: src/plugins/acpi_notifier/acpi_notifier.c:356
+#: src/plugins/acpi_notifier/acpi_notifier.c:371
+msgid "LED "
+msgstr "LED "
+
+#: src/plugins/acpi_notifier/acpi_notifier.c:386
+msgid "ACPI type: "
+msgstr "Typ ACPI: "
+
+#: src/plugins/acpi_notifier/acpi_notifier.c:395
+msgid "ACPI file: "
+msgstr "Súbor ACPI:"
+
+#: src/plugins/acpi_notifier/acpi_notifier.c:406
+msgid "values - On: "
+msgstr "hodnoty - On: "
+
+#: src/plugins/acpi_notifier/acpi_notifier.c:411
+msgid " - Off: "
+msgstr " - Vypnuté: "
+
+#: src/plugins/acpi_notifier/acpi_notifier.c:433
+msgid "Blink when user interaction is required"
+msgstr "Blikať, keď je vyžadovaný zásah používateľa"
+
+#: src/plugins/acpi_notifier/acpi_notifier.c:866
+msgid "This plugin handles various ACPI mail LEDs."
+msgstr "Tento zásuvný modul ovláda rôzne ACPI LED pošty."
+
+#: src/plugins/acpi_notifier/acpi_notifier.c:887
+msgid "Laptop LED"
+msgstr "LED notebooka"
+
+#: src/plugins/attachwarner/attachwarner.c:309
+#, c-format
+msgid ""
+"An attachment is mentioned in the mail you're sending, but no file was "
+"attached. Mention appears on line %d, which begins with text: <span weight="
+"\"bold\">%.20s</span>...\n"
+"\n"
+"%s it anyway?"
+msgstr ""
+
+#: src/plugins/attachwarner/attachwarner.c:313
+msgid "Attachment warning"
+msgstr "Upozornenie na prílohu"
+
+#: src/plugins/attachwarner/attachwarner.c:338
+#: src/plugins/attachwarner/attachwarner.c:375
+#: src/plugins/attachwarner/attachwarner.c:427
+msgid "Attach warner"
+msgstr "Upozornenie na prílohu"
+
+#: src/plugins/attachwarner/attachwarner.c:345
+#: src/plugins/address_keeper/address_keeper.c:221
+msgid "Failed to register check before send hook"
+msgstr "Zlyhala registrácia funkcia na obsluhu udalosti „check before send”"
+
+#: src/plugins/attachwarner/attachwarner.c:385
+msgid ""
+"Warns user if some reference to attachments is found in the message text and "
+"no file is attached."
+msgstr ""
+"Upozorňuje používateľa, ak bola v tele správy spomenutá príloha a nebol "
+"pripojený žiadny súbor."
+
+#: src/plugins/attachwarner/attachwarner_prefs.c:53
+msgid "attach"
+msgstr "pripojiť"
+
+#: src/plugins/attachwarner/attachwarner_prefs.c:80
+msgid ""
+"Warn when matching the following regular expressions:\n"
+"(one per line)"
+msgstr ""
+"Upozorniť pri nájdení týchto regulárnych výrazov:\n"
+"(jeden v riadku)"
+
+#: src/plugins/attachwarner/attachwarner_prefs.c:99
+msgid "Skip quoted lines"
+msgstr "Preskočiť citácie"
+
+#: src/plugins/attachwarner/attachwarner_prefs.c:106
+msgid "Exclude quoted lines from checking for the regular expressions above"
+msgstr "Z hľadania regulárnych výrazov vynechá citácie"
+
+#: src/plugins/attachwarner/attachwarner_prefs.c:109
+msgid "Skip forwards and redirections"
+msgstr "Preskočiť Posielanie ďalej a Predávanie"
+
+#: src/plugins/attachwarner/attachwarner_prefs.c:116
+msgid ""
+"Don't check for missing attachments when forwarding or redirecting messages"
+msgstr ""
+"Nekontroluje chýbajúce prílohy pri správach Posielaných ďalej a "
+"Presmerovaných správach"
+
+#: src/plugins/attachwarner/attachwarner_prefs.c:119
+msgid "Skip signature"
+msgstr "Preskočiť podpis"
+
+#: src/plugins/attachwarner/attachwarner_prefs.c:126
+msgid ""
+"Exclude lines from the first signature-separator onwards from checking for "
+"the regular expressions above"
+msgstr ""
+"Vynechať riadky od riadku prvého oddeľovača podpisu dopredu, pri hľadaní "
+"vyššie zadaného regulárneho výrazu"
+
+#: src/plugins/attachwarner/attachwarner_prefs.c:202
+msgid "Attach Warner"
+msgstr "Upozornenie na prílohu"
+
+#: src/plugins/address_keeper/address_keeper.c:261
+msgid "Keeps all recipient addresses in an addressbook folder."
+msgstr "Uchováva adresy všetkých adresátov v zložke adresára."
+
+#: src/plugins/address_keeper/address_keeper.c:302
+#: src/plugins/address_keeper/address_keeper.h:34
+#: src/plugins/address_keeper/address_keeper_prefs.c:209
+msgid "Address Keeper"
+msgstr "Uchovávanie adries"
+
+#: src/plugins/address_keeper/address_keeper_prefs.c:97
+msgid "Keep to folder"
+msgstr "Uchovať v zložke"
+
+#: src/plugins/address_keeper/address_keeper_prefs.c:105
+msgid "Address book path where addresses are kept"
+msgstr "Cesta k Adresáru, kde majú byť uchované adresy"
+
+#: src/plugins/address_keeper/address_keeper_prefs.c:107
+msgid "Select..."
+msgstr "Vybrať..."
+
+#: src/plugins/address_keeper/address_keeper_prefs.c:123
+msgid "Keep 'To' addresses"
+msgstr "Uchovať adresy z „Komu”"
+
+#: src/plugins/address_keeper/address_keeper_prefs.c:128
+msgid "Keep addresses which appear in 'To' headers"
+msgstr "Uchovávať adresy, ktoré sa objavia v hlavičkách „Komu”"
+
+#: src/plugins/address_keeper/address_keeper_prefs.c:133
+msgid "Keep 'Cc' addresses"
+msgstr "Uchovať adresy z „Kópia”"
+
+#: src/plugins/address_keeper/address_keeper_prefs.c:138
+msgid "Keep addresses which appear in 'Cc' headers"
+msgstr "Uchovávať adresy, ktoré sa objavia v hlavičkách „Kópia”"
+
+#: src/plugins/address_keeper/address_keeper_prefs.c:143
+msgid "Keep 'Bcc' addresses"
+msgstr "Uchovať adresy zo „Slepá kópia”"
+
+#: src/plugins/address_keeper/address_keeper_prefs.c:148
+msgid "Keep addresses which appear in 'Bcc' headers"
+msgstr "Uchovávať adresy, ktoré sa objavia v hlavičkách „Slepá kópia”"
 
 #: src/plugins/bogofilter/bogofilter.c:81
 #: src/plugins/bogofilter/bogofilter_gtk.c:458
@@ -15998,6 +16240,19 @@ msgid ""
 msgstr ""
 "Program Claws Mail je pripravený.\n"
 "Kliknite na Uložiť."
+
+#~ msgid ""
+#~ "An attachment is mentioned in the mail you're sending, but no file was "
+#~ "attached. Mention appears on line %d, which begins with text: <span "
+#~ "weight=\"bold\">%.20s</span>…\n"
+#~ "\n"
+#~ "%s it anyway?"
+#~ msgstr ""
+#~ "V správe, ktorú posielate je spomenutá príloha, ale nebol pripojený "
+#~ "žiadny súbor. Príloha je spomenutá v riadku %d, ktorý začína textom: "
+#~ "<span weight=\"bold\">%.20s</span>…\n"
+#~ "\n"
+#~ "%s i tak?"
 
 #~ msgid ""
 #~ "Command could not be started. Pipe creation failed.\n"

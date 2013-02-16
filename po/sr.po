@@ -14731,6 +14731,166 @@ msgstr "RSSyl"
 msgid "My Feeds"
 msgstr "Моји извори"
 
+#: src/attachwarner.c:252
+msgid "Attachment warning"
+msgstr "Упозорење о прилозима"
+
+#: src/attachwarner.c:253
+msgid ""
+"An attachment is mentioned in the mail you're sending, but no file was "
+"attached. Send it anyway?"
+msgstr ""
+"Наговештено је додавање прилога у поруку коју шаљете, али нисте приложили ни "
+"једну датотеку. Да ли желите да је ипак пошаљете?"
+
+#: src/attachwarner.c:275 src/attachwarner.c:311 src/attachwarner.c:363
+msgid "Attach warner"
+msgstr "Упозорење о прилозима"
+
+#: src/attachwarner.c:282
+msgid "Failed to register check before send hook"
+msgstr "Неуспело регистровање провере пре акције слања"
+
+#: src/attachwarner.c:321
+msgid ""
+"Warns user if some reference to attachments is found in the message text and "
+"no file is attached."
+msgstr ""
+"Упозорава корисника ако се пронађе референца на прилог у тексту поруке а ни "
+"једна датотека није приложена."
+
+#: src/attachwarner_prefs.c:44
+msgid "attach"
+msgstr "приложи"
+
+#: src/attachwarner_prefs.c:70
+msgid ""
+"Warn when matching the following regular expressions:\n"
+"(one per line)"
+msgstr ""
+"Упозори при поклапању следећег регуларног израза:\n"
+"(по једно у реду)"
+
+#: src/attachwarner_prefs.c:89
+msgid "Skip quoted lines"
+msgstr "Прескочи цитирани текст"
+
+#: src/attachwarner_prefs.c:96
+msgid "Exclude quoted lines from checking for the regular expressions above"
+msgstr "Изузима цитирани текст при провери горњег регуларног израза"
+
+#: src/attachwarner_prefs.c:99
+msgid "Skip forwards and redirections"
+msgstr "Прескочи при прослеђивању и преусмеравању"
+
+#: src/attachwarner_prefs.c:106
+msgid ""
+"Don't check for missing attachments when forwarding or redirecting messages"
+msgstr ""
+"Немој проверавати недостајуће прилоге при прослеђивању или преусмеравању "
+"поруке"
+
+#: src/attachwarner_prefs.c:178
+msgid "Attach Warner"
+msgstr "Упозорење о прилозима"
+
+#: src/acpi_notifier.c:45
+msgid "Acpi Notifier"
+msgstr "ACPI нотификатор"
+
+#: src/acpi_notifier.c:63
+msgid ""
+"Make sure that the kernel module 'acerhk' is loaded.\n"
+"You can get it from http://www.informatik.hu-berlin.de/~tauber/acerhk/"
+msgstr ""
+"Проверите да ли је модул кернела „acerhk“ учитан.\n"
+"Можете га преузети са http://www.informatik.hu-berlin.de/~tauber/acerhk/"
+
+#: src/acpi_notifier.c:65
+msgid ""
+"Make sure that the kernel module 'acer_acpi' is loaded.\n"
+"You can get it from http://www.archernar.co.uk/acer_acpi/acer_acpi_main.html"
+msgstr ""
+"Проверите да ли је модул кернела „acer_acpi“ учитан.\n"
+"Можете га преузети са http://www.archernar.co.uk/acer_acpi/acer_acpi_main."
+"html"
+
+#: src/acpi_notifier.c:67
+msgid "Make sure that the kernel module 'asus_acpi' is loaded."
+msgstr "Проверите да ли је модул кернела „asus_acpi“ учитан."
+
+#: src/acpi_notifier.c:68
+msgid "Make sure that the kernel module 'ibm_acpi' is loaded."
+msgstr "Проверите да ли је модул кернела „ibm_acpi“ учитан."
+
+#: src/acpi_notifier.c:69
+msgid ""
+"Make sure that you have apanelc installed.\n"
+"You can get it from http://apanel.sourceforge.net/"
+msgstr ""
+"Проверите да ли имате инсталиран „apanelc“.\n"
+"Можете га преузети са http://apanel.sourceforge.net/"
+
+#: src/acpi_notifier.c:197 src/acpi_notifier.c:203 src/acpi_notifier.c:415
+msgid "Control file doesn't exist."
+msgstr "Контролна датотека не постоји."
+
+#: src/acpi_notifier.c:295
+msgid " : no new or unread mail"
+msgstr " : нема нових или непрочитаних порука"
+
+#: src/acpi_notifier.c:296
+msgid " : unread mail"
+msgstr " : непрочитаних порука"
+
+#: src/acpi_notifier.c:297
+msgid " : new mail"
+msgstr " : нових порука"
+
+#: src/acpi_notifier.c:299 src/acpi_notifier.c:305 src/acpi_notifier.c:311
+msgid "off"
+msgstr "искључено"
+
+#: src/acpi_notifier.c:301 src/acpi_notifier.c:307 src/acpi_notifier.c:313
+msgid "blinking"
+msgstr "трепери"
+
+#: src/acpi_notifier.c:303 src/acpi_notifier.c:309 src/acpi_notifier.c:315
+msgid "on"
+msgstr "укључено"
+
+#: src/acpi_notifier.c:337 src/acpi_notifier.c:346 src/acpi_notifier.c:361
+msgid "LED "
+msgstr "ЛЕД "
+
+#: src/acpi_notifier.c:376
+msgid "ACPI type: "
+msgstr "Втста ACPI: "
+
+#: src/acpi_notifier.c:385
+msgid "ACPI file: "
+msgstr "ACPI датотека: "
+
+#: src/acpi_notifier.c:396
+msgid "values - On: "
+msgstr "вредности - Укључено: "
+
+#: src/acpi_notifier.c:401
+msgid " - Off: "
+msgstr " - Искључено : "
+
+#: src/acpi_notifier.c:423
+msgid "Blink when user interaction is required"
+msgstr "Трепери када је потребна интервенција корисника"
+
+#: src/acpi_notifier.c:811
+msgid "This plugin handles various ACPI mail LEDs."
+msgstr "Овај додатак управља разним ACPI LED за поруке."
+
+#: src/acpi_notifier.c:832
+msgid "Laptop LED"
+msgstr "Лаптоп ЛЕД"
+
 #~ msgid "/New meeting..."
 #~ msgstr "/Нови састанак..."
 

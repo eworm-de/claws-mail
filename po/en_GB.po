@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: claws-mail\n"
 "Report-Msgid-Bugs-To: paul@claws-mail.org\n"
-"POT-Creation-Date: 2013-02-16 13:01+0100\n"
+"POT-Creation-Date: 2013-02-16 13:46+0100\n"
 "PO-Revision-Date: 2008-09-28 08:00+0000\n"
 "Last-Translator: Paul Mangan <paul@claws-mail.org>\n"
 "Language-Team: Paul Mangan <paul@claws-mail.org>\n"
@@ -1891,7 +1891,8 @@ msgid ""
 msgstr ""
 
 #: src/compose.c:4914 src/compose.c:4946 src/compose.c:4988
-#: src/prefs_account.c:3237 src/toolbar.c:404 src/toolbar.c:422
+#: src/plugins/attachwarner/attachwarner.c:312 src/prefs_account.c:3237
+#: src/toolbar.c:404 src/toolbar.c:422
 msgid "Send"
 msgstr ""
 
@@ -1900,6 +1901,7 @@ msgid "The only recipient is the default CC address. Send anyway?"
 msgstr ""
 
 #: src/compose.c:4916 src/compose.c:4948 src/compose.c:4981 src/compose.c:5497
+#: src/plugins/attachwarner/attachwarner.c:304
 msgid "+_Send"
 msgstr ""
 
@@ -1911,7 +1913,7 @@ msgstr ""
 msgid "Recipient is not specified."
 msgstr ""
 
-#: src/compose.c:4983
+#: src/compose.c:4983 src/plugins/attachwarner/attachwarner.c:306
 msgid "+_Queue"
 msgstr ""
 
@@ -3187,7 +3189,8 @@ msgstr ""
 msgid "Sent"
 msgstr ""
 
-#: src/folder.c:1579 src/foldersel.c:382 src/prefs_folder_item.c:311
+#: src/folder.c:1579 src/foldersel.c:382
+#: src/plugins/attachwarner/attachwarner.c:312 src/prefs_folder_item.c:311
 msgid "Queue"
 msgstr ""
 
@@ -4499,7 +4502,10 @@ msgid ""
 "%s\n"
 msgstr ""
 
-#: src/gtk/pluginwindow.c:304 src/plugins/bogofilter/bogofilter_gtk.c:457
+#: src/gtk/pluginwindow.c:304 src/plugins/acpi_notifier/acpi_notifier.c:790
+#: src/plugins/attachwarner/attachwarner_prefs.c:201
+#: src/plugins/address_keeper/address_keeper_prefs.c:208
+#: src/plugins/bogofilter/bogofilter_gtk.c:457
 #: src/plugins/dillo_viewer/dillo_prefs.c:129
 #: src/plugins/fancy/fancy_prefs.c:110 src/plugins/pgpcore/prefs_gpg.c:557
 #: src/plugins/rssyl/rssyl_prefs.c:63
@@ -7662,6 +7668,228 @@ msgstr ""
 
 #: src/news_gtk.c:306
 msgid "Rename newsgroup folder"
+msgstr ""
+
+#: src/plugins/acpi_notifier/acpi_notifier.c:51
+msgid "Acpi Notifier"
+msgstr ""
+
+#: src/plugins/acpi_notifier/acpi_notifier.c:67
+msgid ""
+"Make sure that the kernel module 'acerhk' is loaded.\n"
+"You can get it from http://www.cakey.de/acerhk/"
+msgstr ""
+
+#: src/plugins/acpi_notifier/acpi_notifier.c:69
+msgid ""
+"Make sure that the kernel module 'acer_acpi' is loaded.\n"
+"You can get it from http://code.google.com/p/aceracpi/"
+msgstr ""
+
+#: src/plugins/acpi_notifier/acpi_notifier.c:71
+msgid "Make sure that the kernel module 'asus_laptop' is loaded."
+msgstr ""
+
+#: src/plugins/acpi_notifier/acpi_notifier.c:72
+msgid "Make sure that the kernel module 'asus_acpi' is loaded."
+msgstr ""
+
+#: src/plugins/acpi_notifier/acpi_notifier.c:73
+msgid "Make sure that the kernel module 'ibm_acpi' is loaded."
+msgstr ""
+
+#: src/plugins/acpi_notifier/acpi_notifier.c:74
+msgid ""
+"Make sure that you have apanelc installed.\n"
+"You can get it from http://apanel.sourceforge.net/"
+msgstr ""
+
+#: src/plugins/acpi_notifier/acpi_notifier.c:207
+#: src/plugins/acpi_notifier/acpi_notifier.c:213
+#: src/plugins/acpi_notifier/acpi_notifier.c:425
+msgid "Control file doesn't exist."
+msgstr ""
+
+#: src/plugins/acpi_notifier/acpi_notifier.c:305
+msgid " : no new or unread mail"
+msgstr ""
+
+#: src/plugins/acpi_notifier/acpi_notifier.c:306
+msgid " : unread mail"
+msgstr ""
+
+#: src/plugins/acpi_notifier/acpi_notifier.c:307
+msgid " : new mail"
+msgstr ""
+
+#: src/plugins/acpi_notifier/acpi_notifier.c:309
+#: src/plugins/acpi_notifier/acpi_notifier.c:315
+#: src/plugins/acpi_notifier/acpi_notifier.c:321
+msgid "off"
+msgstr ""
+
+#: src/plugins/acpi_notifier/acpi_notifier.c:311
+#: src/plugins/acpi_notifier/acpi_notifier.c:317
+#: src/plugins/acpi_notifier/acpi_notifier.c:323
+msgid "blinking"
+msgstr ""
+
+#: src/plugins/acpi_notifier/acpi_notifier.c:313
+#: src/plugins/acpi_notifier/acpi_notifier.c:319
+#: src/plugins/acpi_notifier/acpi_notifier.c:325
+msgid "on"
+msgstr ""
+
+#: src/plugins/acpi_notifier/acpi_notifier.c:347
+#: src/plugins/acpi_notifier/acpi_notifier.c:356
+#: src/plugins/acpi_notifier/acpi_notifier.c:371
+msgid "LED "
+msgstr ""
+
+#: src/plugins/acpi_notifier/acpi_notifier.c:386
+msgid "ACPI type: "
+msgstr ""
+
+#: src/plugins/acpi_notifier/acpi_notifier.c:395
+msgid "ACPI file: "
+msgstr ""
+
+#: src/plugins/acpi_notifier/acpi_notifier.c:406
+msgid "values - On: "
+msgstr ""
+
+#: src/plugins/acpi_notifier/acpi_notifier.c:411
+msgid " - Off: "
+msgstr ""
+
+#: src/plugins/acpi_notifier/acpi_notifier.c:433
+msgid "Blink when user interaction is required"
+msgstr ""
+
+#: src/plugins/acpi_notifier/acpi_notifier.c:866
+msgid "This plugin handles various ACPI mail LEDs."
+msgstr ""
+
+#: src/plugins/acpi_notifier/acpi_notifier.c:887
+msgid "Laptop LED"
+msgstr ""
+
+#: src/plugins/attachwarner/attachwarner.c:309
+#, c-format
+msgid ""
+"An attachment is mentioned in the mail you're sending, but no file was "
+"attached. Mention appears on line %d, which begins with text: <span weight="
+"\"bold\">%.20s</span>...\n"
+"\n"
+"%s it anyway?"
+msgstr ""
+
+#: src/plugins/attachwarner/attachwarner.c:313
+msgid "Attachment warning"
+msgstr ""
+
+#: src/plugins/attachwarner/attachwarner.c:338
+#: src/plugins/attachwarner/attachwarner.c:375
+#: src/plugins/attachwarner/attachwarner.c:427
+msgid "Attach warner"
+msgstr ""
+
+#: src/plugins/attachwarner/attachwarner.c:345
+#: src/plugins/address_keeper/address_keeper.c:221
+msgid "Failed to register check before send hook"
+msgstr ""
+
+#: src/plugins/attachwarner/attachwarner.c:385
+msgid ""
+"Warns user if some reference to attachments is found in the message text and "
+"no file is attached."
+msgstr ""
+
+#: src/plugins/attachwarner/attachwarner_prefs.c:53
+msgid "attach"
+msgstr ""
+
+#: src/plugins/attachwarner/attachwarner_prefs.c:80
+msgid ""
+"Warn when matching the following regular expressions:\n"
+"(one per line)"
+msgstr ""
+
+#: src/plugins/attachwarner/attachwarner_prefs.c:99
+msgid "Skip quoted lines"
+msgstr ""
+
+#: src/plugins/attachwarner/attachwarner_prefs.c:106
+msgid "Exclude quoted lines from checking for the regular expressions above"
+msgstr ""
+
+#: src/plugins/attachwarner/attachwarner_prefs.c:109
+msgid "Skip forwards and redirections"
+msgstr ""
+
+#: src/plugins/attachwarner/attachwarner_prefs.c:116
+msgid ""
+"Don't check for missing attachments when forwarding or redirecting messages"
+msgstr ""
+
+#: src/plugins/attachwarner/attachwarner_prefs.c:119
+msgid "Skip signature"
+msgstr ""
+
+#: src/plugins/attachwarner/attachwarner_prefs.c:126
+msgid ""
+"Exclude lines from the first signature-separator onwards from checking for "
+"the regular expressions above"
+msgstr ""
+
+#: src/plugins/attachwarner/attachwarner_prefs.c:202
+msgid "Attach Warner"
+msgstr ""
+
+#: src/plugins/address_keeper/address_keeper.c:261
+msgid "Keeps all recipient addresses in an addressbook folder."
+msgstr ""
+
+#: src/plugins/address_keeper/address_keeper.c:302
+#: src/plugins/address_keeper/address_keeper.h:34
+#: src/plugins/address_keeper/address_keeper_prefs.c:209
+msgid "Address Keeper"
+msgstr ""
+
+#: src/plugins/address_keeper/address_keeper_prefs.c:97
+msgid "Keep to folder"
+msgstr ""
+
+#: src/plugins/address_keeper/address_keeper_prefs.c:105
+msgid "Address book path where addresses are kept"
+msgstr ""
+
+#: src/plugins/address_keeper/address_keeper_prefs.c:107
+msgid "Select..."
+msgstr ""
+
+#: src/plugins/address_keeper/address_keeper_prefs.c:123
+msgid "Keep 'To' addresses"
+msgstr ""
+
+#: src/plugins/address_keeper/address_keeper_prefs.c:128
+msgid "Keep addresses which appear in 'To' headers"
+msgstr ""
+
+#: src/plugins/address_keeper/address_keeper_prefs.c:133
+msgid "Keep 'Cc' addresses"
+msgstr ""
+
+#: src/plugins/address_keeper/address_keeper_prefs.c:138
+msgid "Keep addresses which appear in 'Cc' headers"
+msgstr ""
+
+#: src/plugins/address_keeper/address_keeper_prefs.c:143
+msgid "Keep 'Bcc' addresses"
+msgstr ""
+
+#: src/plugins/address_keeper/address_keeper_prefs.c:148
+msgid "Keep addresses which appear in 'Bcc' headers"
 msgstr ""
 
 #: src/plugins/bogofilter/bogofilter.c:81

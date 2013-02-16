@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Claws Mail\n"
 "Report-Msgid-Bugs-To: paul@claws-mail.org\n"
-"POT-Creation-Date: 2013-02-16 13:01+0100\n"
+"POT-Creation-Date: 2013-02-16 13:46+0100\n"
 "PO-Revision-Date: 2012-06-25 16:35+0700\n"
 "Last-Translator: MSulchan Darmawan <bleketux@gmail.com>\n"
 "Language-Team: MSulchan Darmawan <bleketux@gmail.com>\n"
@@ -1950,7 +1950,8 @@ msgstr ""
 "Silahkan pilih akun surat sebelum mengirim."
 
 #: src/compose.c:4914 src/compose.c:4946 src/compose.c:4988
-#: src/prefs_account.c:3237 src/toolbar.c:404 src/toolbar.c:422
+#: src/plugins/attachwarner/attachwarner.c:312 src/prefs_account.c:3237
+#: src/toolbar.c:404 src/toolbar.c:422
 msgid "Send"
 msgstr "Kirim"
 
@@ -1959,6 +1960,7 @@ msgid "The only recipient is the default CC address. Send anyway?"
 msgstr "Penerima satu-satunya adalah alamat CC standar. Lanjut pengiriman?"
 
 #: src/compose.c:4916 src/compose.c:4948 src/compose.c:4981 src/compose.c:5497
+#: src/plugins/attachwarner/attachwarner.c:304
 msgid "+_Send"
 msgstr "+_Kirim"
 
@@ -1970,7 +1972,7 @@ msgstr "Penerima satu-satunya adalah alamat BCC standar. Lanjut pengiriman?"
 msgid "Recipient is not specified."
 msgstr "Penerima belum ditentukan."
 
-#: src/compose.c:4983
+#: src/compose.c:4983 src/plugins/attachwarner/attachwarner.c:306
 msgid "+_Queue"
 msgstr "+_Antri"
 
@@ -3372,7 +3374,8 @@ msgstr "Kotakmasuk"
 msgid "Sent"
 msgstr "Terkirim"
 
-#: src/folder.c:1579 src/foldersel.c:382 src/prefs_folder_item.c:311
+#: src/folder.c:1579 src/foldersel.c:382
+#: src/plugins/attachwarner/attachwarner.c:312 src/prefs_folder_item.c:311
 msgid "Queue"
 msgstr "Antri"
 
@@ -4751,7 +4754,10 @@ msgstr ""
 "\n"
 "%s\n"
 
-#: src/gtk/pluginwindow.c:304 src/plugins/bogofilter/bogofilter_gtk.c:457
+#: src/gtk/pluginwindow.c:304 src/plugins/acpi_notifier/acpi_notifier.c:790
+#: src/plugins/attachwarner/attachwarner_prefs.c:201
+#: src/plugins/address_keeper/address_keeper_prefs.c:208
+#: src/plugins/bogofilter/bogofilter_gtk.c:457
 #: src/plugins/dillo_viewer/dillo_prefs.c:129
 #: src/plugins/fancy/fancy_prefs.c:110 src/plugins/pgpcore/prefs_gpg.c:557
 #: src/plugins/rssyl/rssyl_prefs.c:63
@@ -8108,6 +8114,242 @@ msgstr "_Berhenti langganan"
 #: src/news_gtk.c:306
 msgid "Rename newsgroup folder"
 msgstr "Ganti nama direktori newsgroup"
+
+#: src/plugins/acpi_notifier/acpi_notifier.c:51
+msgid "Acpi Notifier"
+msgstr "Pemberitahu Acpi"
+
+#: src/plugins/acpi_notifier/acpi_notifier.c:67
+msgid ""
+"Make sure that the kernel module 'acerhk' is loaded.\n"
+"You can get it from http://www.cakey.de/acerhk/"
+msgstr ""
+"Pastikan modul kernel 'acerhk' telah dimuat.\n"
+"Anda bisa memperolehnya di http://www.cakey.de/acerhk/"
+
+#: src/plugins/acpi_notifier/acpi_notifier.c:69
+msgid ""
+"Make sure that the kernel module 'acer_acpi' is loaded.\n"
+"You can get it from http://code.google.com/p/aceracpi/"
+msgstr ""
+"Pastikan modul kernel 'acer_acpi' telah dimuat.\n"
+"Anda bisa memperolehnya di http://code.google.com/aceracpi/"
+
+#: src/plugins/acpi_notifier/acpi_notifier.c:71
+msgid "Make sure that the kernel module 'asus_laptop' is loaded."
+msgstr "Pastikan modul kernel 'asus_laptop telah dimuat."
+
+#: src/plugins/acpi_notifier/acpi_notifier.c:72
+msgid "Make sure that the kernel module 'asus_acpi' is loaded."
+msgstr "Pastikan modul kernel 'asus_acpi' telah dimuat."
+
+#: src/plugins/acpi_notifier/acpi_notifier.c:73
+msgid "Make sure that the kernel module 'ibm_acpi' is loaded."
+msgstr "Pastikan modul kernel 'asus_acpi' telah dimuat."
+
+#: src/plugins/acpi_notifier/acpi_notifier.c:74
+msgid ""
+"Make sure that you have apanelc installed.\n"
+"You can get it from http://apanel.sourceforge.net/"
+msgstr ""
+"Pastikan bahwa anda memiliki apanelc terpasang.\n"
+"Anda bisa memperolehnya di http://apanel.sourceforge.net/"
+
+#: src/plugins/acpi_notifier/acpi_notifier.c:207
+#: src/plugins/acpi_notifier/acpi_notifier.c:213
+#: src/plugins/acpi_notifier/acpi_notifier.c:425
+msgid "Control file doesn't exist."
+msgstr "Berkas kontrol tidak ada."
+
+#: src/plugins/acpi_notifier/acpi_notifier.c:305
+msgid " : no new or unread mail"
+msgstr " : tidak ada surat baru atau belum dibaca"
+
+#: src/plugins/acpi_notifier/acpi_notifier.c:306
+msgid " : unread mail"
+msgstr " : surat belum dibaca"
+
+#: src/plugins/acpi_notifier/acpi_notifier.c:307
+msgid " : new mail"
+msgstr " : surat baru"
+
+#: src/plugins/acpi_notifier/acpi_notifier.c:309
+#: src/plugins/acpi_notifier/acpi_notifier.c:315
+#: src/plugins/acpi_notifier/acpi_notifier.c:321
+msgid "off"
+msgstr "mati"
+
+#: src/plugins/acpi_notifier/acpi_notifier.c:311
+#: src/plugins/acpi_notifier/acpi_notifier.c:317
+#: src/plugins/acpi_notifier/acpi_notifier.c:323
+msgid "blinking"
+msgstr "berkedip"
+
+#: src/plugins/acpi_notifier/acpi_notifier.c:313
+#: src/plugins/acpi_notifier/acpi_notifier.c:319
+#: src/plugins/acpi_notifier/acpi_notifier.c:325
+msgid "on"
+msgstr "hidup"
+
+#: src/plugins/acpi_notifier/acpi_notifier.c:347
+#: src/plugins/acpi_notifier/acpi_notifier.c:356
+#: src/plugins/acpi_notifier/acpi_notifier.c:371
+msgid "LED "
+msgstr "LED "
+
+#: src/plugins/acpi_notifier/acpi_notifier.c:386
+msgid "ACPI type: "
+msgstr "Tipe ACPI: "
+
+#: src/plugins/acpi_notifier/acpi_notifier.c:395
+msgid "ACPI file: "
+msgstr "Berkas ACPI: "
+
+#: src/plugins/acpi_notifier/acpi_notifier.c:406
+msgid "values - On: "
+msgstr "nilai - Hidup: "
+
+#: src/plugins/acpi_notifier/acpi_notifier.c:411
+msgid " - Off: "
+msgstr " - Mati: "
+
+#: src/plugins/acpi_notifier/acpi_notifier.c:433
+msgid "Blink when user interaction is required"
+msgstr "Berkedip ketika interaksi pengguna dibutuhkan"
+
+#: src/plugins/acpi_notifier/acpi_notifier.c:866
+msgid "This plugin handles various ACPI mail LEDs."
+msgstr "Pengaya ini menangani berbagai LED surat ACPI."
+
+#: src/plugins/acpi_notifier/acpi_notifier.c:887
+msgid "Laptop LED"
+msgstr "LED Laptop"
+
+#: src/plugins/attachwarner/attachwarner.c:309
+#, c-format
+msgid ""
+"An attachment is mentioned in the mail you're sending, but no file was "
+"attached. Mention appears on line %d, which begins with text: <span weight="
+"\"bold\">%.20s</span>...\n"
+"\n"
+"%s it anyway?"
+msgstr ""
+
+#: src/plugins/attachwarner/attachwarner.c:313
+msgid "Attachment warning"
+msgstr "Peringatan lampiran"
+
+#: src/plugins/attachwarner/attachwarner.c:338
+#: src/plugins/attachwarner/attachwarner.c:375
+#: src/plugins/attachwarner/attachwarner.c:427
+msgid "Attach warner"
+msgstr "Pengingat lampiran"
+
+#: src/plugins/attachwarner/attachwarner.c:345
+#: src/plugins/address_keeper/address_keeper.c:221
+msgid "Failed to register check before send hook"
+msgstr "Gagal untuk registrasi pemeriksaan sebelum mengirim kaitan"
+
+#: src/plugins/attachwarner/attachwarner.c:385
+msgid ""
+"Warns user if some reference to attachments is found in the message text and "
+"no file is attached."
+msgstr ""
+"Peringatkan pengguna jika ditemukan referensi lampiran pada teks pesan namun "
+"tidak ada berkas yang dilampirkan."
+
+#: src/plugins/attachwarner/attachwarner_prefs.c:53
+msgid "attach"
+msgstr "lampirkan"
+
+#: src/plugins/attachwarner/attachwarner_prefs.c:80
+msgid ""
+"Warn when matching the following regular expressions:\n"
+"(one per line)"
+msgstr ""
+"Peringatkan ketika cocok dengan ekspresi regular berikut ini:\n"
+"(satu per baris)"
+
+#: src/plugins/attachwarner/attachwarner_prefs.c:99
+msgid "Skip quoted lines"
+msgstr "Abaikan baris yang dikutip"
+
+#: src/plugins/attachwarner/attachwarner_prefs.c:106
+msgid "Exclude quoted lines from checking for the regular expressions above"
+msgstr ""
+"Keluarkan baris yang di kutip dari pemeriksaan ekspresi reguler di atas"
+
+#: src/plugins/attachwarner/attachwarner_prefs.c:109
+msgid "Skip forwards and redirections"
+msgstr "Abaikan teruskan dan redireksi"
+
+#: src/plugins/attachwarner/attachwarner_prefs.c:116
+msgid ""
+"Don't check for missing attachments when forwarding or redirecting messages"
+msgstr ""
+"Jangan periksa lampiran yang tidak ditemukan ketika meneruskan atau "
+"meredirek pesan"
+
+#: src/plugins/attachwarner/attachwarner_prefs.c:119
+#, fuzzy
+msgid "Skip signature"
+msgstr "Tandatangan"
+
+#: src/plugins/attachwarner/attachwarner_prefs.c:126
+msgid ""
+"Exclude lines from the first signature-separator onwards from checking for "
+"the regular expressions above"
+msgstr ""
+
+#: src/plugins/attachwarner/attachwarner_prefs.c:202
+msgid "Attach Warner"
+msgstr "Pengingat Lampiran"
+
+#: src/plugins/address_keeper/address_keeper.c:261
+msgid "Keeps all recipient addresses in an addressbook folder."
+msgstr "Pertahankan seluruh alamat penerima di dalam direktori bukualamat."
+
+#: src/plugins/address_keeper/address_keeper.c:302
+#: src/plugins/address_keeper/address_keeper.h:34
+#: src/plugins/address_keeper/address_keeper_prefs.c:209
+msgid "Address Keeper"
+msgstr "Pemelihara alamat"
+
+#: src/plugins/address_keeper/address_keeper_prefs.c:97
+msgid "Keep to folder"
+msgstr "Tahan pada direktori"
+
+#: src/plugins/address_keeper/address_keeper_prefs.c:105
+msgid "Address book path where addresses are kept"
+msgstr "Jalur buku alamat dimana alamat dipelihara"
+
+#: src/plugins/address_keeper/address_keeper_prefs.c:107
+msgid "Select..."
+msgstr "Pilih..."
+
+#: src/plugins/address_keeper/address_keeper_prefs.c:123
+msgid "Keep 'To' addresses"
+msgstr "Pertahankan alamat 'Kepada'"
+
+#: src/plugins/address_keeper/address_keeper_prefs.c:128
+msgid "Keep addresses which appear in 'To' headers"
+msgstr "Pertahankan alamat yang ada di header 'Kepada'"
+
+#: src/plugins/address_keeper/address_keeper_prefs.c:133
+msgid "Keep 'Cc' addresses"
+msgstr "Pertahankan alamat 'Cc'"
+
+#: src/plugins/address_keeper/address_keeper_prefs.c:138
+msgid "Keep addresses which appear in 'Cc' headers"
+msgstr "Pertahankan alamat yang ada di header 'Cc'"
+
+#: src/plugins/address_keeper/address_keeper_prefs.c:143
+msgid "Keep 'Bcc' addresses"
+msgstr "Pertahankan alamat 'Bcc'"
+
+#: src/plugins/address_keeper/address_keeper_prefs.c:148
+msgid "Keep addresses which appear in 'Bcc' headers"
+msgstr "Pertahankan alamat yang ada di header 'Bcc'"
 
 #: src/plugins/bogofilter/bogofilter.c:81
 #: src/plugins/bogofilter/bogofilter_gtk.c:458
@@ -15986,3 +16228,16 @@ msgid ""
 msgstr ""
 "Claws Mail telah siap.\n"
 "Klik Simpan untuk memulai."
+
+#~ msgid ""
+#~ "An attachment is mentioned in the mail you're sending, but no file was "
+#~ "attached. Mention appears on line %d, which begins with text: <span "
+#~ "weight=\"bold\">%.20s</span>…\n"
+#~ "\n"
+#~ "%s it anyway?"
+#~ msgstr ""
+#~ "Sebuah lampiran disebutkan dalam surat yang anda kirim, tapi tidak ada "
+#~ "berkas yang dilampirkan. Disebutkan pada baris %d, yang dimulai dengan "
+#~ "tulisan: <span weight=\"bold\">%.20s</span>…\n"
+#~ "\n"
+#~ "%s saja?"

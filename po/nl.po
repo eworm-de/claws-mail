@@ -13,7 +13,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Sylpheed-Claws 2.0\n"
 "Report-Msgid-Bugs-To: paul@claws-mail.org\n"
-"POT-Creation-Date: 2013-02-16 13:01+0100\n"
+"POT-Creation-Date: 2013-02-16 13:46+0100\n"
 "PO-Revision-Date: 2010-04-24 14:38+0100\n"
 "Last-Translator: Marcel Pol <mpol@gmx.net>\n"
 "Language-Team: Nederlands <nl@li.org>\n"
@@ -1967,7 +1967,8 @@ msgstr ""
 "Selecteer eerst een account."
 
 #: src/compose.c:4914 src/compose.c:4946 src/compose.c:4988
-#: src/prefs_account.c:3237 src/toolbar.c:404 src/toolbar.c:422
+#: src/plugins/attachwarner/attachwarner.c:312 src/prefs_account.c:3237
+#: src/toolbar.c:404 src/toolbar.c:422
 msgid "Send"
 msgstr "Verzenden"
 
@@ -1976,6 +1977,7 @@ msgid "The only recipient is the default CC address. Send anyway?"
 msgstr "De enige ontvanger is het standaard CC-adres. Toch verzenden?"
 
 #: src/compose.c:4916 src/compose.c:4948 src/compose.c:4981 src/compose.c:5497
+#: src/plugins/attachwarner/attachwarner.c:304
 msgid "+_Send"
 msgstr "+_Verzenden"
 
@@ -1987,7 +1989,7 @@ msgstr "De enige ontvanger is het standaard BCC-adres. Toch verzenden?"
 msgid "Recipient is not specified."
 msgstr "Geen ontvanger opgegeven."
 
-#: src/compose.c:4983
+#: src/compose.c:4983 src/plugins/attachwarner/attachwarner.c:306
 msgid "+_Queue"
 msgstr "+_Wachtrij"
 
@@ -3400,7 +3402,8 @@ msgstr "Inbox"
 msgid "Sent"
 msgstr "Verzonden"
 
-#: src/folder.c:1579 src/foldersel.c:382 src/prefs_folder_item.c:311
+#: src/folder.c:1579 src/foldersel.c:382
+#: src/plugins/attachwarner/attachwarner.c:312 src/prefs_folder_item.c:311
 msgid "Queue"
 msgstr "Wachtrij"
 
@@ -4772,7 +4775,10 @@ msgstr ""
 "\n"
 "%s\n"
 
-#: src/gtk/pluginwindow.c:304 src/plugins/bogofilter/bogofilter_gtk.c:457
+#: src/gtk/pluginwindow.c:304 src/plugins/acpi_notifier/acpi_notifier.c:790
+#: src/plugins/attachwarner/attachwarner_prefs.c:201
+#: src/plugins/address_keeper/address_keeper_prefs.c:208
+#: src/plugins/bogofilter/bogofilter_gtk.c:457
 #: src/plugins/dillo_viewer/dillo_prefs.c:129
 #: src/plugins/fancy/fancy_prefs.c:110 src/plugins/pgpcore/prefs_gpg.c:557
 #: src/plugins/rssyl/rssyl_prefs.c:63
@@ -8154,6 +8160,251 @@ msgstr "_Afmelden"
 #: src/news_gtk.c:306
 msgid "Rename newsgroup folder"
 msgstr "Hernoem nieuwsgroep map"
+
+#: src/plugins/acpi_notifier/acpi_notifier.c:51
+msgid "Acpi Notifier"
+msgstr "Acpi Verwittiger"
+
+#: src/plugins/acpi_notifier/acpi_notifier.c:67
+msgid ""
+"Make sure that the kernel module 'acerhk' is loaded.\n"
+"You can get it from http://www.cakey.de/acerhk/"
+msgstr ""
+"Controleer dat de kernel module 'acerhk' geladen is.\n"
+"Je kunt het krijgen op http://www.cakey.de/acerhk/"
+
+#: src/plugins/acpi_notifier/acpi_notifier.c:69
+msgid ""
+"Make sure that the kernel module 'acer_acpi' is loaded.\n"
+"You can get it from http://code.google.com/p/aceracpi/"
+msgstr ""
+"Controleer dat de kernel module 'acer_acpi' geladen is.\n"
+"Je kunt het krijgen op http://code.google.com/p/aceracpi/"
+
+#: src/plugins/acpi_notifier/acpi_notifier.c:71
+msgid "Make sure that the kernel module 'asus_laptop' is loaded."
+msgstr "Controleer dat de kernel module 'asus_laptop'geladen is."
+
+#: src/plugins/acpi_notifier/acpi_notifier.c:72
+msgid "Make sure that the kernel module 'asus_acpi' is loaded."
+msgstr "Controleer dat de kernel module 'asus_acpi' geladen is."
+
+#: src/plugins/acpi_notifier/acpi_notifier.c:73
+msgid "Make sure that the kernel module 'ibm_acpi' is loaded."
+msgstr "Controleer dat de kernel module 'ibm_acpi' geladen is."
+
+#: src/plugins/acpi_notifier/acpi_notifier.c:74
+msgid ""
+"Make sure that you have apanelc installed.\n"
+"You can get it from http://apanel.sourceforge.net/"
+msgstr ""
+"Controleer dat apanelc geinstalleerd is.\n"
+"Je kunt het krijgen op http://apanel.sourceforge.net/"
+
+#: src/plugins/acpi_notifier/acpi_notifier.c:207
+#: src/plugins/acpi_notifier/acpi_notifier.c:213
+#: src/plugins/acpi_notifier/acpi_notifier.c:425
+msgid "Control file doesn't exist."
+msgstr "Beheer bestand bestaat niet."
+
+#: src/plugins/acpi_notifier/acpi_notifier.c:305
+msgid " : no new or unread mail"
+msgstr " : geen nieuwe of ongelezen mail"
+
+#: src/plugins/acpi_notifier/acpi_notifier.c:306
+msgid " : unread mail"
+msgstr " : ongelezen mail"
+
+#: src/plugins/acpi_notifier/acpi_notifier.c:307
+msgid " : new mail"
+msgstr " : nieuwe mail"
+
+#: src/plugins/acpi_notifier/acpi_notifier.c:309
+#: src/plugins/acpi_notifier/acpi_notifier.c:315
+#: src/plugins/acpi_notifier/acpi_notifier.c:321
+msgid "off"
+msgstr "uit"
+
+#: src/plugins/acpi_notifier/acpi_notifier.c:311
+#: src/plugins/acpi_notifier/acpi_notifier.c:317
+#: src/plugins/acpi_notifier/acpi_notifier.c:323
+msgid "blinking"
+msgstr "knipperend"
+
+#: src/plugins/acpi_notifier/acpi_notifier.c:313
+#: src/plugins/acpi_notifier/acpi_notifier.c:319
+#: src/plugins/acpi_notifier/acpi_notifier.c:325
+msgid "on"
+msgstr "aan"
+
+#: src/plugins/acpi_notifier/acpi_notifier.c:347
+#: src/plugins/acpi_notifier/acpi_notifier.c:356
+#: src/plugins/acpi_notifier/acpi_notifier.c:371
+msgid "LED "
+msgstr "LED "
+
+#: src/plugins/acpi_notifier/acpi_notifier.c:386
+msgid "ACPI type: "
+msgstr "ACPI type: "
+
+#: src/plugins/acpi_notifier/acpi_notifier.c:395
+msgid "ACPI file: "
+msgstr "ACPI bestand: "
+
+#: src/plugins/acpi_notifier/acpi_notifier.c:406
+msgid "values - On: "
+msgstr "waardes - Aan: "
+
+#: src/plugins/acpi_notifier/acpi_notifier.c:411
+msgid " - Off: "
+msgstr " - Uit: "
+
+#: src/plugins/acpi_notifier/acpi_notifier.c:433
+msgid "Blink when user interaction is required"
+msgstr "Knipper wanneer interactie gevraagd wordt"
+
+#: src/plugins/acpi_notifier/acpi_notifier.c:866
+msgid "This plugin handles various ACPI mail LEDs."
+msgstr "Deze plugin regelt verschillende ACPI mail LEDs."
+
+#: src/plugins/acpi_notifier/acpi_notifier.c:887
+msgid "Laptop LED"
+msgstr "Laptop LED"
+
+#: src/plugins/attachwarner/attachwarner.c:309
+#, c-format
+msgid ""
+"An attachment is mentioned in the mail you're sending, but no file was "
+"attached. Mention appears on line %d, which begins with text: <span weight="
+"\"bold\">%.20s</span>...\n"
+"\n"
+"%s it anyway?"
+msgstr ""
+
+#: src/plugins/attachwarner/attachwarner.c:313
+msgid "Attachment warning"
+msgstr "Bijvoegsel waarschuwing"
+
+#: src/plugins/attachwarner/attachwarner.c:338
+#: src/plugins/attachwarner/attachwarner.c:375
+#: src/plugins/attachwarner/attachwarner.c:427
+msgid "Attach warner"
+msgstr "Voeg waarschuwing bij"
+
+#: src/plugins/attachwarner/attachwarner.c:345
+#: src/plugins/address_keeper/address_keeper.c:221
+msgid "Failed to register check before send hook"
+msgstr "Niet gelukt om de controleer voor verzenden haak te registreren"
+
+#: src/plugins/attachwarner/attachwarner.c:385
+msgid ""
+"Warns user if some reference to attachments is found in the message text and "
+"no file is attached."
+msgstr ""
+"Waarschuw gebruiker als er een referentie naar bijvoegsels is gevonden in de "
+"berichttekst en er is geen bestand bijgevoegd"
+
+#: src/plugins/attachwarner/attachwarner_prefs.c:53
+msgid "attach"
+msgstr "voeg bij"
+
+#: src/plugins/attachwarner/attachwarner_prefs.c:80
+msgid ""
+"Warn when matching the following regular expressions:\n"
+"(one per line)"
+msgstr ""
+"Waarschuw bij het voorkomen van de volgende reguliere expressies:\n"
+"een per regel"
+
+#: src/plugins/attachwarner/attachwarner_prefs.c:99
+msgid "Skip quoted lines"
+msgstr "Sla geciteerde regels over"
+
+#: src/plugins/attachwarner/attachwarner_prefs.c:106
+msgid "Exclude quoted lines from checking for the regular expressions above"
+msgstr "Negeer geciteerde regels bij het controleren van reguliere expressies"
+
+#: src/plugins/attachwarner/attachwarner_prefs.c:109
+msgid "Skip forwards and redirections"
+msgstr "Sla doorsturingen en herverwijzingen over"
+
+#: src/plugins/attachwarner/attachwarner_prefs.c:116
+msgid ""
+"Don't check for missing attachments when forwarding or redirecting messages"
+msgstr ""
+"Controleer niet op missende bijvoegsels bij doorgestuurde of herverwezen "
+"berichten"
+
+#: src/plugins/attachwarner/attachwarner_prefs.c:119
+#, fuzzy
+msgid "Skip signature"
+msgstr "Handtekening"
+
+#: src/plugins/attachwarner/attachwarner_prefs.c:126
+msgid ""
+"Exclude lines from the first signature-separator onwards from checking for "
+"the regular expressions above"
+msgstr ""
+
+#: src/plugins/attachwarner/attachwarner_prefs.c:202
+msgid "Attach Warner"
+msgstr "Attach Warner"
+
+#: src/plugins/address_keeper/address_keeper.c:261
+#, fuzzy
+msgid "Keeps all recipient addresses in an addressbook folder."
+msgstr "Alleen voor afzenders uit het adresboek/map"
+
+#: src/plugins/address_keeper/address_keeper.c:302
+#: src/plugins/address_keeper/address_keeper.h:34
+#: src/plugins/address_keeper/address_keeper_prefs.c:209
+#, fuzzy
+msgid "Address Keeper"
+msgstr "Adres"
+
+#: src/plugins/address_keeper/address_keeper_prefs.c:97
+#, fuzzy
+msgid "Keep to folder"
+msgstr "Verwijder map"
+
+#: src/plugins/address_keeper/address_keeper_prefs.c:105
+msgid "Address book path where addresses are kept"
+msgstr ""
+
+#: src/plugins/address_keeper/address_keeper_prefs.c:107
+#, fuzzy
+msgid "Select..."
+msgstr "Selecteer..."
+
+#: src/plugins/address_keeper/address_keeper_prefs.c:123
+#, fuzzy
+msgid "Keep 'To' addresses"
+msgstr "Persoonlijke adressen"
+
+#: src/plugins/address_keeper/address_keeper_prefs.c:128
+#, fuzzy
+msgid "Keep addresses which appear in 'To' headers"
+msgstr "alle adressen in alle headers"
+
+#: src/plugins/address_keeper/address_keeper_prefs.c:133
+#, fuzzy
+msgid "Keep 'Cc' addresses"
+msgstr "_Verzamel adressen"
+
+#: src/plugins/address_keeper/address_keeper_prefs.c:138
+#, fuzzy
+msgid "Keep addresses which appear in 'Cc' headers"
+msgstr "alle adressen in alle headers"
+
+#: src/plugins/address_keeper/address_keeper_prefs.c:143
+#, fuzzy
+msgid "Keep 'Bcc' addresses"
+msgstr "_Verzamel adressen"
+
+#: src/plugins/address_keeper/address_keeper_prefs.c:148
+#, fuzzy
+msgid "Keep addresses which appear in 'Bcc' headers"
+msgstr "alle adressen in alle headers"
 
 #: src/plugins/bogofilter/bogofilter.c:81
 #: src/plugins/bogofilter/bogofilter_gtk.c:458
@@ -16073,6 +16324,13 @@ msgid ""
 msgstr ""
 "Claws Mail is nu klaar.\n"
 "Klik op 'Opslaan' om te starten."
+
+#~ msgid ""
+#~ "An attachment is mentioned in the mail you're sending, but no file was "
+#~ "attached. %s it anyway?"
+#~ msgstr ""
+#~ "Een bijvoegsel wordt genoemd in de e-mail die u zend, maar geen bestand "
+#~ "was bijgevoegd. Toch %s?"
 
 #~ msgid ""
 #~ "Command could not be started. Pipe creation failed.\n"

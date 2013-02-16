@@ -12,7 +12,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: claws-mail\n"
 "Report-Msgid-Bugs-To: paul@claws-mail.org\n"
-"POT-Creation-Date: 2013-02-16 13:01+0100\n"
+"POT-Creation-Date: 2013-02-16 13:46+0100\n"
 "PO-Revision-Date: 2012-11-10 12:54+0100\n"
 "Last-Translator: malenki <translate@malenki.ch>\n"
 "Language-Team:  <translators@lists.claws-mail.org>\n"
@@ -1965,7 +1965,8 @@ msgstr ""
 "Bitte wählen Sie einen E-Mail-Konto vor dem Senden."
 
 #: src/compose.c:4914 src/compose.c:4946 src/compose.c:4988
-#: src/prefs_account.c:3237 src/toolbar.c:404 src/toolbar.c:422
+#: src/plugins/attachwarner/attachwarner.c:312 src/prefs_account.c:3237
+#: src/toolbar.c:404 src/toolbar.c:422
 msgid "Send"
 msgstr "Senden"
 
@@ -1974,6 +1975,7 @@ msgid "The only recipient is the default CC address. Send anyway?"
 msgstr "Der einzige Empfänger ist die Standard-Cc-Adresse. Trotzdem senden?"
 
 #: src/compose.c:4916 src/compose.c:4948 src/compose.c:4981 src/compose.c:5497
+#: src/plugins/attachwarner/attachwarner.c:304
 msgid "+_Send"
 msgstr "+_Senden"
 
@@ -1985,7 +1987,7 @@ msgstr "Der einzige Empfänger ist die Standard-Bcc-Adresse. Trotzdem senden?"
 msgid "Recipient is not specified."
 msgstr "Kein Empfänger angegeben."
 
-#: src/compose.c:4983
+#: src/compose.c:4983 src/plugins/attachwarner/attachwarner.c:306
 msgid "+_Queue"
 msgstr "+_Postausgang"
 
@@ -3396,7 +3398,8 @@ msgstr "Posteingang"
 msgid "Sent"
 msgstr "Gesendet"
 
-#: src/folder.c:1579 src/foldersel.c:382 src/prefs_folder_item.c:311
+#: src/folder.c:1579 src/foldersel.c:382
+#: src/plugins/attachwarner/attachwarner.c:312 src/prefs_folder_item.c:311
 msgid "Queue"
 msgstr "Postausgang"
 
@@ -4786,7 +4789,10 @@ msgstr ""
 "\n"
 "%s\n"
 
-#: src/gtk/pluginwindow.c:304 src/plugins/bogofilter/bogofilter_gtk.c:457
+#: src/gtk/pluginwindow.c:304 src/plugins/acpi_notifier/acpi_notifier.c:790
+#: src/plugins/attachwarner/attachwarner_prefs.c:201
+#: src/plugins/address_keeper/address_keeper_prefs.c:208
+#: src/plugins/bogofilter/bogofilter_gtk.c:457
 #: src/plugins/dillo_viewer/dillo_prefs.c:129
 #: src/plugins/fancy/fancy_prefs.c:110 src/plugins/pgpcore/prefs_gpg.c:557
 #: src/plugins/rssyl/rssyl_prefs.c:63
@@ -8147,6 +8153,245 @@ msgstr "_Abmelden"
 #: src/news_gtk.c:306
 msgid "Rename newsgroup folder"
 msgstr "Newsgruppen-Ordner umbenennen"
+
+#: src/plugins/acpi_notifier/acpi_notifier.c:51
+msgid "Acpi Notifier"
+msgstr "ACPI-Melder"
+
+#: src/plugins/acpi_notifier/acpi_notifier.c:67
+msgid ""
+"Make sure that the kernel module 'acerhk' is loaded.\n"
+"You can get it from http://www.cakey.de/acerhk/"
+msgstr ""
+"Stellen Sie sicher, dass das Kernel-Modul 'acerhk' geladen ist.\n"
+"Das Kernel-Modul erhalten Sie unter http://www.informatik.hu-berlin.de/"
+"~tauber/acerhk/"
+
+#: src/plugins/acpi_notifier/acpi_notifier.c:69
+msgid ""
+"Make sure that the kernel module 'acer_acpi' is loaded.\n"
+"You can get it from http://code.google.com/p/aceracpi/"
+msgstr ""
+"Stellen Sie sicher, dass das Kernel-Modul 'acer_acpi' geladen ist.\n"
+"Das Kernel-Modul erhalten Sie unter http://www.archernar.co.uk/acer_acpi/"
+"acer_acpi_main.html"
+
+#: src/plugins/acpi_notifier/acpi_notifier.c:71
+msgid "Make sure that the kernel module 'asus_laptop' is loaded."
+msgstr "Stellen Sie sicher, dass das Kernel-Modul 'asus_laptop' geladen ist."
+
+#: src/plugins/acpi_notifier/acpi_notifier.c:72
+msgid "Make sure that the kernel module 'asus_acpi' is loaded."
+msgstr "Stellen Sie sicher, dass das Kernel-Modul 'asus_acpi' geladen ist."
+
+#: src/plugins/acpi_notifier/acpi_notifier.c:73
+msgid "Make sure that the kernel module 'ibm_acpi' is loaded."
+msgstr "Stellen Sie sicher, dass das Kernel-Modul 'ibm_acpi' geladen ist."
+
+#: src/plugins/acpi_notifier/acpi_notifier.c:74
+msgid ""
+"Make sure that you have apanelc installed.\n"
+"You can get it from http://apanel.sourceforge.net/"
+msgstr ""
+"Stellen Sie sicher, dass apanelc installiert ist.\n"
+"Sie erhalten es unter http://apanel.sourceforge.net/"
+
+#: src/plugins/acpi_notifier/acpi_notifier.c:207
+#: src/plugins/acpi_notifier/acpi_notifier.c:213
+#: src/plugins/acpi_notifier/acpi_notifier.c:425
+msgid "Control file doesn't exist."
+msgstr "Die Steuerdatei existiert nicht."
+
+#: src/plugins/acpi_notifier/acpi_notifier.c:305
+msgid " : no new or unread mail"
+msgstr " : keine neuen oder ungelesenen Nachrichten"
+
+#: src/plugins/acpi_notifier/acpi_notifier.c:306
+msgid " : unread mail"
+msgstr " : ungelesene Nachrichten"
+
+#: src/plugins/acpi_notifier/acpi_notifier.c:307
+msgid " : new mail"
+msgstr " : neue Nachrichten"
+
+#: src/plugins/acpi_notifier/acpi_notifier.c:309
+#: src/plugins/acpi_notifier/acpi_notifier.c:315
+#: src/plugins/acpi_notifier/acpi_notifier.c:321
+msgid "off"
+msgstr "aus"
+
+#: src/plugins/acpi_notifier/acpi_notifier.c:311
+#: src/plugins/acpi_notifier/acpi_notifier.c:317
+#: src/plugins/acpi_notifier/acpi_notifier.c:323
+msgid "blinking"
+msgstr "blinken"
+
+#: src/plugins/acpi_notifier/acpi_notifier.c:313
+#: src/plugins/acpi_notifier/acpi_notifier.c:319
+#: src/plugins/acpi_notifier/acpi_notifier.c:325
+msgid "on"
+msgstr "an"
+
+#: src/plugins/acpi_notifier/acpi_notifier.c:347
+#: src/plugins/acpi_notifier/acpi_notifier.c:356
+#: src/plugins/acpi_notifier/acpi_notifier.c:371
+msgid "LED "
+msgstr "LED "
+
+#: src/plugins/acpi_notifier/acpi_notifier.c:386
+msgid "ACPI type: "
+msgstr "ACPI-Typ: "
+
+#: src/plugins/acpi_notifier/acpi_notifier.c:395
+msgid "ACPI file: "
+msgstr "ACPI-Datei: "
+
+#: src/plugins/acpi_notifier/acpi_notifier.c:406
+msgid "values - On: "
+msgstr "Werte - Ein: "
+
+#: src/plugins/acpi_notifier/acpi_notifier.c:411
+msgid " - Off: "
+msgstr " - Aus: "
+
+#: src/plugins/acpi_notifier/acpi_notifier.c:433
+msgid "Blink when user interaction is required"
+msgstr "Blinken, wenn ein Nutzereingriff nötig ist"
+
+#: src/plugins/acpi_notifier/acpi_notifier.c:866
+msgid "This plugin handles various ACPI mail LEDs."
+msgstr "Dieses Plugin verwaltet verschiedene ACPI-Mail-LEDs."
+
+#: src/plugins/acpi_notifier/acpi_notifier.c:887
+msgid "Laptop LED"
+msgstr "Laptop-LED"
+
+#: src/plugins/attachwarner/attachwarner.c:309
+#, c-format
+msgid ""
+"An attachment is mentioned in the mail you're sending, but no file was "
+"attached. Mention appears on line %d, which begins with text: <span weight="
+"\"bold\">%.20s</span>...\n"
+"\n"
+"%s it anyway?"
+msgstr ""
+
+#: src/plugins/attachwarner/attachwarner.c:313
+msgid "Attachment warning"
+msgstr "Warnung: fehlender Anhang?"
+
+#: src/plugins/attachwarner/attachwarner.c:338
+#: src/plugins/attachwarner/attachwarner.c:375
+#: src/plugins/attachwarner/attachwarner.c:427
+msgid "Attach warner"
+msgstr "Anhangswarner"
+
+#: src/plugins/attachwarner/attachwarner.c:345
+#: src/plugins/address_keeper/address_keeper.c:221
+msgid "Failed to register check before send hook"
+msgstr "Registrieren des 'check-before-send'-Hooks schlug fehl"
+
+#: src/plugins/attachwarner/attachwarner.c:385
+msgid ""
+"Warns user if some reference to attachments is found in the message text and "
+"no file is attached."
+msgstr ""
+"Warnt den Benutzer, wenn ein Anhang in der Mail erwähnt wurde, aber kein "
+"Datei angehängt ist."
+
+#: src/plugins/attachwarner/attachwarner_prefs.c:53
+msgid "attach"
+msgstr "anhängen"
+
+#: src/plugins/attachwarner/attachwarner_prefs.c:80
+msgid ""
+"Warn when matching the following regular expressions:\n"
+"(one per line)"
+msgstr ""
+"Warne, wenn die folgenden Regulären Ausdrücke zutreffen:\n"
+"(einer pro Zeile)"
+
+#: src/plugins/attachwarner/attachwarner_prefs.c:99
+msgid "Skip quoted lines"
+msgstr "Zitierte Zeilen auslassen"
+
+#: src/plugins/attachwarner/attachwarner_prefs.c:106
+msgid "Exclude quoted lines from checking for the regular expressions above"
+msgstr ""
+"Schließt zitierte Zeilen von der Prüfung gegen obige Reguläre Ausdrücke aus"
+
+#: src/plugins/attachwarner/attachwarner_prefs.c:109
+msgid "Skip forwards and redirections"
+msgstr "Weiterleitungen und Umleitungen überspringen"
+
+#: src/plugins/attachwarner/attachwarner_prefs.c:116
+msgid ""
+"Don't check for missing attachments when forwarding or redirecting messages"
+msgstr ""
+"Nicht auf fehlende Anhänge prüfen, wenn die Nachricht weiter- oder "
+"umgeleitet wird"
+
+#: src/plugins/attachwarner/attachwarner_prefs.c:119
+msgid "Skip signature"
+msgstr "Signatur auslassen"
+
+#: src/plugins/attachwarner/attachwarner_prefs.c:126
+msgid ""
+"Exclude lines from the first signature-separator onwards from checking for "
+"the regular expressions above"
+msgstr ""
+"Zeilen nach dem ersten Signatur-Separator nicht auf obige Reguläre Ausdrücke "
+"prüfen"
+
+#: src/plugins/attachwarner/attachwarner_prefs.c:202
+msgid "Attach Warner"
+msgstr "Anhangswarner"
+
+#: src/plugins/address_keeper/address_keeper.c:261
+msgid "Keeps all recipient addresses in an addressbook folder."
+msgstr "Fügt alle Empfängeradressen in einen Adressbuch-Ordner ein."
+
+#: src/plugins/address_keeper/address_keeper.c:302
+#: src/plugins/address_keeper/address_keeper.h:34
+#: src/plugins/address_keeper/address_keeper_prefs.c:209
+msgid "Address Keeper"
+msgstr "Adress-Bewahrer"
+
+#: src/plugins/address_keeper/address_keeper_prefs.c:97
+msgid "Keep to folder"
+msgstr "In Ordner speichern"
+
+#: src/plugins/address_keeper/address_keeper_prefs.c:105
+msgid "Address book path where addresses are kept"
+msgstr "Pfad zum Adressbuch, in dem die Adressen gespeichert werden"
+
+#: src/plugins/address_keeper/address_keeper_prefs.c:107
+msgid "Select..."
+msgstr "Auswählen..."
+
+#: src/plugins/address_keeper/address_keeper_prefs.c:123
+msgid "Keep 'To' addresses"
+msgstr "Adressen aus 'An'-Feld speichern"
+
+#: src/plugins/address_keeper/address_keeper_prefs.c:128
+msgid "Keep addresses which appear in 'To' headers"
+msgstr "Adressen aus 'An'-Kopfzeile speichern"
+
+#: src/plugins/address_keeper/address_keeper_prefs.c:133
+msgid "Keep 'Cc' addresses"
+msgstr "Adressen aus 'Cc'-Feld speichern"
+
+#: src/plugins/address_keeper/address_keeper_prefs.c:138
+msgid "Keep addresses which appear in 'Cc' headers"
+msgstr "Adressen aus 'Cc'-Kopfzeile speichern"
+
+#: src/plugins/address_keeper/address_keeper_prefs.c:143
+msgid "Keep 'Bcc' addresses"
+msgstr "Adressen aus 'Bcc'-Feld speichern"
+
+#: src/plugins/address_keeper/address_keeper_prefs.c:148
+msgid "Keep addresses which appear in 'Bcc' headers"
+msgstr "Adressen aus 'Bcc'-Kopfzeile speichern"
 
 #: src/plugins/bogofilter/bogofilter.c:81
 #: src/plugins/bogofilter/bogofilter_gtk.c:458
@@ -16092,8 +16337,34 @@ msgstr ""
 "Zum Starten 'Speichern' klicken."
 
 #~ msgid ""
+#~ "An attachment is mentioned in the mail you're sending, but no file was "
+#~ "attached. Mention appears on line %d, which begins with text: <span "
+#~ "weight=\"bold\">%.20s</span>…\n"
+#~ "\n"
+#~ "%s it anyway?"
+#~ msgstr ""
+#~ "In der Nachricht wird ein Anhang erwähnt, aber es ist keine Datei "
+#~ "angehängt. Die Nennung erfolgt in Zeile %d, die wie folgt beginnt: <span "
+#~ "weight=\"bold\">%.20s</span>…\n"
+#~ "\n"
+#~ "Trotzdem %s?"
+
+#~ msgid ""
 #~ "Command could not be started. Pipe creation failed.\n"
 #~ "%s"
 #~ msgstr ""
 #~ "Befehl konnte nicht ausgeführt werden. Ausgabe-Umleitung schlug fehl.\n"
 #~ "%s"
+
+#~ msgid "Acpi notifier"
+#~ msgstr "ACPI-Benachrichtiger"
+
+#~ msgid ""
+#~ "Your Sylpheed-Claws version is newer than the version AcpiNotifier was "
+#~ "built with"
+#~ msgstr ""
+#~ "Ihre Sylpheed-Claws Version ist neuer als die Version, mit der ACPI-"
+#~ "Benachrichtiger kompiliert wurde"
+
+#~ msgid "Your Sylpheed-Claws version is too old for AcpiNotifier"
+#~ msgstr "Ihre Sylpheed-Claws Version ist zu alt für ACPI-Benachrichtiger"

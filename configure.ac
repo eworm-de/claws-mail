@@ -12,7 +12,7 @@ MINOR_VERSION=9
 MICRO_VERSION=0
 INTERFACE_AGE=0
 BINARY_AGE=0
-EXTRA_VERSION=72
+EXTRA_VERSION=73
 EXTRA_RELEASE=
 EXTRA_GTK2_VERSION=
 
@@ -852,33 +852,37 @@ dnl *************************
 
 PLUGINS=""
 
-dnl --- Trayicon ---
-AC_MSG_CHECKING([whether to build Trayicon plugin])
-AC_ARG_ENABLE(trayicon-plugin,
-	[  --disable-trayicon-plugin         do not build System Tray Icon plugin],
-	[ac_cv_enable_trayicon_plugin=$enableval], [ac_cv_enable_trayicon_plugin=yes])
-if test x"$ac_cv_enable_trayicon_plugin" = xyes; then
-	AC_MSG_RESULT(yes)
-	PLUGINS="trayicon $PLUGINS"
-else
-	AC_MSG_RESULT(no)
-fi
-AM_CONDITIONAL(BUILD_TRAYICON_PLUGIN, test x"$ac_cv_enable_trayicon_plugin" = xyes)
+dnl Find curl-config, used by fancy, vcalendar
+PKG_CHECK_MODULES(CURL, libcurl)
+AC_SUBST(CURL_LIBS)
+AC_SUBST(CURL_CFLAGS)
 
-dnl --- SpamAssassin ---
-AC_MSG_CHECKING([whether to build SpamAssassin plugin])
-AC_ARG_ENABLE(spamassassin-plugin,
-	[  --disable-spamassassin-plugin      do not build SpamAssassin plugin],
-	[ac_cv_enable_spamassassin_plugin=$enableval], [ac_cv_enable_spamassassin_plugin=yes])
-if test x"$ac_cv_enable_spamassassin_plugin" = xyes; then
-	AC_MSG_RESULT(yes)
-	AC_SPAMASSASSIN
-	PLUGINS="spamassassin $PLUGINS"
-	AC_DEFINE(USE_SPAMASSASSIN_PLUGIN, 1, Define if spamassassin plugin is being built.)
-else
-	AC_MSG_RESULT(no)
+dnl --- acpi_notifier ---
+AC_ARG_ENABLE(acpi_notifier-plugin,
+	[  --enable-acpi_notifier-plugin              build acpi_notifier plugin],
+	[ac_cv_enable_acpi_notifier_plugin=$enableval], [ac_cv_enable_acpi_notifier_plugin=yes])
+if test x"$ac_cv_enable_acpi_notifier_plugin" = xyes; then
+	PLUGINS="acpi_notifier $PLUGINS"
 fi
-AM_CONDITIONAL(BUILD_SPAMASSASSIN_PLUGIN, test x"$ac_cv_enable_spamassassin_plugin" = xyes)
+AM_CONDITIONAL(BUILD_ACPI_NOTIFIER_PLUGIN, test x"$ac_cv_enable_acpi_notifier_plugin" = xyes)
+	
+dnl --- address_keeper ---
+AC_ARG_ENABLE(address_keeper-plugin,
+	[  --enable-address_keeper-plugin              build address_keeper plugin],
+	[ac_cv_enable_address_keeper_plugin=$enableval], [ac_cv_enable_address_keeper_plugin=yes])
+if test x"$ac_cv_enable_address_keeper_plugin" = xyes; then
+	PLUGINS="address_keeper $PLUGINS"
+fi
+AM_CONDITIONAL(BUILD_ADDRESS_KEEPER_PLUGIN, test x"$ac_cv_enable_address_keeper_plugin" = xyes)
+	
+dnl --- attachwarner ---
+AC_ARG_ENABLE(attachwarner-plugin,
+	[  --enable-attachwarner-plugin              build attachwarner plugin],
+	[ac_cv_enable_attachwarner_plugin=$enableval], [ac_cv_enable_attachwarner_plugin=yes])
+if test x"$ac_cv_enable_attachwarner_plugin" = xyes; then
+	PLUGINS="attachwarner $PLUGINS"
+fi
+AM_CONDITIONAL(BUILD_ATTACHWARNER_PLUGIN, test x"$ac_cv_enable_attachwarner_plugin" = xyes)
 
 dnl --- Bogofilter ---
 AC_MSG_CHECKING([whether to build Bogofilter plugin])
@@ -893,6 +897,67 @@ else
 	AC_MSG_RESULT(no)
 fi
 AM_CONDITIONAL(BUILD_BOGOFILTER_PLUGIN, test x"$ac_cv_enable_bogofilter_plugin" = xyes)
+
+dnl --- Demo ---
+AC_ARG_ENABLE(demo-plugin,
+	[  --enable-demo-plugin              build demo plugin],
+	[ac_cv_enable_demo_plugin=$enableval], [ac_cv_enable_demo_plugin=no])
+if test x"$ac_cv_enable_demo_plugin" = xyes; then
+	PLUGINS="demo $PLUGINS"
+fi
+AM_CONDITIONAL(BUILD_DEMO_PLUGIN, test x"$ac_cv_enable_demo_plugin" = xyes)
+
+dnl --- Dillo Viewer ---
+AC_MSG_CHECKING([whether to build Dillo plugin])
+AC_ARG_ENABLE(dillo-viewer-plugin,
+	[  --disable-dillo-viewer-plugin     do not build Dillo plugin for html mail rendering],
+	[ac_cv_enable_dillo_viewer_plugin=$enableval], [ac_cv_enable_dillo_viewer_plugin=yes])
+if test x"$ac_cv_enable_dillo_viewer_plugin" = xyes; then
+	AC_MSG_RESULT(yes)
+	PLUGINS="dillo-viewer $PLUGINS"
+else
+	AC_MSG_RESULT(no)
+fi
+AM_CONDITIONAL(BUILD_DILLO_VIEWER_PLUGIN, test x"$ac_cv_enable_dillo_viewer_plugin" = xyes)
+
+dnl --- Fancy ---
+AC_MSG_CHECKING([whether to build Fancy plugin])
+AC_ARG_ENABLE(fancy-plugin,
+	[  --disable-fancy-plugin     do not build Fancy plugin for html mail rendering],
+	[ac_cv_enable_fancy_plugin=$enableval], [ac_cv_enable_fancy_plugin=yes])
+if test x"$ac_cv_enable_fancy_plugin" = xyes; then
+	AC_MSG_RESULT(yes)
+	dnl Check for WebKit
+	PKG_CHECK_MODULES(WEBKIT, webkit-1.0,
+		[ 
+			PLUGINS="fancy $PLUGINS"
+		],
+		[
+			echo "webkit-1.0 not found."
+			ac_cv_enable_fancy_plugin=no
+		])
+		AC_SUBST(WEBKIT_LIBS)
+		AC_SUBST(WEBKIT_CFLAGS)
+fi
+if test x"$ac_cv_enable_fancy_plugin" = xyes; then
+	dnl Check for libsoup-gnome
+	PKG_CHECK_MODULES(LIBSOUP_GNOME, libsoup-gnome-2.4 >= 2.26, ac_cv_enable_soup_gnome=yes, ac_cv_enable_soup_gnome=no)        
+	if test x$ac_cv_enable_soup_gnome = xyes; then
+			AC_DEFINE(HAVE_LIBSOUP_GNOME, 1, Define if you want soup gnome proxy support)
+	fi
+	AC_SUBST(LIBSOUP_GNOME_CFLAGS)
+	AC_SUBST(LIBSOUP_GNOME_LIBS)
+	
+	PKG_CHECK_MODULES(GTKPRINTUNIX, gtk+-unix-print-2.0, ac_cv_enable_gtkprint=yes, ac_cv_enable_gtkprint=no)        
+	if test x$ac_cv_enable_gtkprint = xyes; then
+		AC_DEFINE(USE_PRINTUNIX, 1, Define if you want gtk+-unix-print support)
+	else
+		AC_MSG_RESULT(not found)
+	fi
+	AC_SUBST(GTKPRINTUNIX_CFLAGS)
+	AC_SUBST(GTKPRINTUNIX_LIBS)
+fi
+AM_CONDITIONAL(BUILD_FANCY_PLUGIN, test x"$ac_cv_enable_fancy_plugin" = xyes)
 
 dnl --- PGP/CORE ---
 AC_MSG_CHECKING([whether to build PGP/CORE plugin])
@@ -953,6 +1018,21 @@ else
 fi
 AM_CONDITIONAL(BUILD_PGPINLINE_PLUGIN, test x"$ac_cv_enable_pgpinline_plugin" = xyes)
 
+dnl --- RSSyl ---
+AC_MSG_CHECKING([whether to build RSSyl plugin])
+AC_ARG_ENABLE(rssyl-plugin,
+	[  --disable-rssyl-plugin     do not build rssyl plugin for RSS and Atom feeds],
+	[ac_cv_enable_rssyl_plugin=$enableval], [ac_cv_enable_rssyl_plugin=yes])
+if test x"$ac_cv_enable_rssyl_plugin" = xyes; then
+	AC_MSG_RESULT(yes)
+	PKG_CHECK_MODULES(LIBXML, "libxml-2.0",,
+		[AC_MSG_ERROR(libxml library is missing)])
+	PLUGINS="rssyl $PLUGINS"
+	AC_SUBST(LIBXML_CFLAGS)
+	AC_SUBST(LIBXML_LIBS)
+fi
+AM_CONDITIONAL(BUILD_RSSYL_PLUGIN, test x"$ac_cv_enable_rssyl_plugin" = xyes)
+
 AC_MSG_CHECKING([whether to build S/Mime plugin])
 AC_ARG_ENABLE(smime-plugin,
 	[  --disable-smime-plugin           do not build S/Mime plugin],
@@ -969,64 +1049,33 @@ else
 	AC_MSG_RESULT(no)
 fi
 AM_CONDITIONAL(BUILD_SMIME_PLUGIN, test x"$ac_cv_enable_smime_plugin" = xyes)
-
-dnl --- Dillo Viewer ---
-AC_MSG_CHECKING([whether to build Dillo plugin])
-AC_ARG_ENABLE(dillo-viewer-plugin,
-	[  --disable-dillo-viewer-plugin     do not build Dillo plugin for html mail rendering],
-	[ac_cv_enable_dillo_viewer_plugin=$enableval], [ac_cv_enable_dillo_viewer_plugin=yes])
-if test x"$ac_cv_enable_dillo_viewer_plugin" = xyes; then
+dnl --- SpamAssassin ---
+AC_MSG_CHECKING([whether to build SpamAssassin plugin])
+AC_ARG_ENABLE(spamassassin-plugin,
+	[  --disable-spamassassin-plugin      do not build SpamAssassin plugin],
+	[ac_cv_enable_spamassassin_plugin=$enableval], [ac_cv_enable_spamassassin_plugin=yes])
+if test x"$ac_cv_enable_spamassassin_plugin" = xyes; then
 	AC_MSG_RESULT(yes)
-	PLUGINS="dillo-viewer $PLUGINS"
+	AC_SPAMASSASSIN
+	PLUGINS="spamassassin $PLUGINS"
+	AC_DEFINE(USE_SPAMASSASSIN_PLUGIN, 1, Define if spamassassin plugin is being built.)
 else
 	AC_MSG_RESULT(no)
 fi
-AM_CONDITIONAL(BUILD_DILLO_VIEWER_PLUGIN, test x"$ac_cv_enable_dillo_viewer_plugin" = xyes)
+AM_CONDITIONAL(BUILD_SPAMASSASSIN_PLUGIN, test x"$ac_cv_enable_spamassassin_plugin" = xyes)
 
-dnl Find curl-config, used by fancy, vcalendar
-PKG_CHECK_MODULES(CURL, libcurl)
-AC_SUBST(CURL_LIBS)
-AC_SUBST(CURL_CFLAGS)
-
-
-dnl --- Fancy ---
-AC_MSG_CHECKING([whether to build Fancy plugin])
-AC_ARG_ENABLE(fancy-plugin,
-	[  --disable-fancy-plugin     do not build Fancy plugin for html mail rendering],
-	[ac_cv_enable_fancy_plugin=$enableval], [ac_cv_enable_fancy_plugin=yes])
-if test x"$ac_cv_enable_fancy_plugin" = xyes; then
+dnl --- Trayicon ---
+AC_MSG_CHECKING([whether to build Trayicon plugin])
+AC_ARG_ENABLE(trayicon-plugin,
+	[  --disable-trayicon-plugin         do not build System Tray Icon plugin],
+	[ac_cv_enable_trayicon_plugin=$enableval], [ac_cv_enable_trayicon_plugin=yes])
+if test x"$ac_cv_enable_trayicon_plugin" = xyes; then
 	AC_MSG_RESULT(yes)
-	dnl Check for WebKit
-	PKG_CHECK_MODULES(WEBKIT, webkit-1.0,
-		[ 
-			PLUGINS="fancy $PLUGINS"
-		],
-		[
-			echo "webkit-1.0 not found."
-			ac_cv_enable_fancy_plugin=no
-		])
-		AC_SUBST(WEBKIT_LIBS)
-		AC_SUBST(WEBKIT_CFLAGS)
+	PLUGINS="trayicon $PLUGINS"
+else
+	AC_MSG_RESULT(no)
 fi
-if test x"$ac_cv_enable_fancy_plugin" = xyes; then
-	dnl Check for libsoup-gnome
-	PKG_CHECK_MODULES(LIBSOUP_GNOME, libsoup-gnome-2.4 >= 2.26, ac_cv_enable_soup_gnome=yes, ac_cv_enable_soup_gnome=no)        
-	if test x$ac_cv_enable_soup_gnome = xyes; then
-			AC_DEFINE(HAVE_LIBSOUP_GNOME, 1, Define if you want soup gnome proxy support)
-	fi
-	AC_SUBST(LIBSOUP_GNOME_CFLAGS)
-	AC_SUBST(LIBSOUP_GNOME_LIBS)
-	
-	PKG_CHECK_MODULES(GTKPRINTUNIX, gtk+-unix-print-2.0, ac_cv_enable_gtkprint=yes, ac_cv_enable_gtkprint=no)        
-	if test x$ac_cv_enable_gtkprint = xyes; then
-		AC_DEFINE(USE_PRINTUNIX, 1, Define if you want gtk+-unix-print support)
-	else
-		AC_MSG_RESULT(not found)
-	fi
-	AC_SUBST(GTKPRINTUNIX_CFLAGS)
-	AC_SUBST(GTKPRINTUNIX_LIBS)
-fi
-AM_CONDITIONAL(BUILD_FANCY_PLUGIN, test x"$ac_cv_enable_fancy_plugin" = xyes)
+AM_CONDITIONAL(BUILD_TRAYICON_PLUGIN, test x"$ac_cv_enable_trayicon_plugin" = xyes)
 
 dnl --- vCalendar ---
 AC_MSG_CHECKING([whether to build vCalendar plugin])
@@ -1045,30 +1094,7 @@ if test x"$ac_cv_enable_vcalendar_plugin" = xyes; then
 fi
 AM_CONDITIONAL(BUILD_VCALENDAR_PLUGIN, test x"$ac_cv_enable_vcalendar_plugin" = xyes)
 
-dnl --- RSSyl ---
-AC_MSG_CHECKING([whether to build RSSyl plugin])
-AC_ARG_ENABLE(rssyl-plugin,
-	[  --disable-rssyl-plugin     do not build rssyl plugin for RSS and Atom feeds],
-	[ac_cv_enable_rssyl_plugin=$enableval], [ac_cv_enable_rssyl_plugin=yes])
-if test x"$ac_cv_enable_rssyl_plugin" = xyes; then
-	AC_MSG_RESULT(yes)
-	PKG_CHECK_MODULES(LIBXML, "libxml-2.0",,
-		[AC_MSG_ERROR(libxml library is missing)])
-	PLUGINS="rssyl $PLUGINS"
-	AC_SUBST(LIBXML_CFLAGS)
-	AC_SUBST(LIBXML_LIBS)
-fi
-AM_CONDITIONAL(BUILD_RSSYL_PLUGIN, test x"$ac_cv_enable_rssyl_plugin" = xyes)
 
-dnl --- Demo ---
-AC_ARG_ENABLE(demo-plugin,
-	[  --enable-demo-plugin              build demo plugin],
-	[ac_cv_enable_demo_plugin=$enableval], [ac_cv_enable_demo_plugin=no])
-if test x"$ac_cv_enable_demo_plugin" = xyes; then
-	PLUGINS="demo $PLUGINS"
-fi
-AM_CONDITIONAL(BUILD_DEMO_PLUGIN, test x"$ac_cv_enable_demo_plugin" = xyes)
-	
 dnl Libetpan
 AC_MSG_CHECKING([whether to use libetpan])
 AC_ARG_ENABLE(libetpan,
@@ -1147,17 +1173,20 @@ src/common/passcrypt.h
 src/gtk/Makefile
 src/etpan/Makefile
 src/plugins/Makefile
-src/plugins/demo/Makefile
+src/plugins/acpi_notifier/Makefile
+src/plugins/address_keeper/Makefile
+src/plugins/attachwarner/Makefile
 src/plugins/bogofilter/Makefile
-src/plugins/spamassassin/Makefile
+src/plugins/demo/Makefile
 src/plugins/dillo_viewer/Makefile
 src/plugins/fancy/Makefile
-src/plugins/trayicon/Makefile
 src/plugins/pgpcore/Makefile
 src/plugins/pgpmime/Makefile
 src/plugins/pgpinline/Makefile
 src/plugins/rssyl/Makefile
 src/plugins/smime/Makefile
+src/plugins/spamassassin/Makefile
+src/plugins/trayicon/Makefile
 src/plugins/vcalendar/Makefile
 src/plugins/vcalendar/libical/Makefile
 src/plugins/vcalendar/libical/libical/icalversion.h
