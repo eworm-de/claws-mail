@@ -12,7 +12,7 @@ MINOR_VERSION=9
 MICRO_VERSION=0
 INTERFACE_AGE=0
 BINARY_AGE=0
-EXTRA_VERSION=74
+EXTRA_VERSION=75
 EXTRA_RELEASE=
 EXTRA_GTK2_VERSION=
 
@@ -863,6 +863,9 @@ AC_ARG_ENABLE(acpi_notifier-plugin,
 	[ac_cv_enable_acpi_notifier_plugin=$enableval], [ac_cv_enable_acpi_notifier_plugin=yes])
 if test x"$ac_cv_enable_acpi_notifier_plugin" = xyes; then
 	PLUGINS="acpi_notifier $PLUGINS"
+	AC_MSG_RESULT(yes)
+else
+	AC_MSG_RESULT(no)
 fi
 AM_CONDITIONAL(BUILD_ACPI_NOTIFIER_PLUGIN, test x"$ac_cv_enable_acpi_notifier_plugin" = xyes)
 	
@@ -872,6 +875,9 @@ AC_ARG_ENABLE(address_keeper-plugin,
 	[ac_cv_enable_address_keeper_plugin=$enableval], [ac_cv_enable_address_keeper_plugin=yes])
 if test x"$ac_cv_enable_address_keeper_plugin" = xyes; then
 	PLUGINS="address_keeper $PLUGINS"
+	AC_MSG_RESULT(yes)
+else
+	AC_MSG_RESULT(no)
 fi
 AM_CONDITIONAL(BUILD_ADDRESS_KEEPER_PLUGIN, test x"$ac_cv_enable_address_keeper_plugin" = xyes)
 	
@@ -887,6 +893,9 @@ if test x"$ac_cv_enable_archive_plugin" = xyes; then
 		       exit 1
 		       )
 	PLUGINS="archive $PLUGINS"
+	AC_MSG_RESULT(yes)
+else
+	AC_MSG_RESULT(no)
 fi
 AM_CONDITIONAL(BUILD_ARCHIVE_PLUGIN, test x"$ac_cv_enable_archive_plugin" = xyes)
 
@@ -896,6 +905,9 @@ AC_ARG_ENABLE(att_remover-plugin,
 	[ac_cv_enable_att_remover_plugin=$enableval], [ac_cv_enable_att_remover_plugin=yes])
 if test x"$ac_cv_enable_att_remover_plugin" = xyes; then
 	PLUGINS="att_remover $PLUGINS"
+	AC_MSG_RESULT(yes)
+else
+	AC_MSG_RESULT(no)
 fi
 AM_CONDITIONAL(BUILD_ATT_REMOVER_PLUGIN, test x"$ac_cv_enable_att_remover_plugin" = xyes)
 
@@ -905,6 +917,9 @@ AC_ARG_ENABLE(attachwarner-plugin,
 	[ac_cv_enable_attachwarner_plugin=$enableval], [ac_cv_enable_attachwarner_plugin=yes])
 if test x"$ac_cv_enable_attachwarner_plugin" = xyes; then
 	PLUGINS="attachwarner $PLUGINS"
+	AC_MSG_RESULT(yes)
+else
+	AC_MSG_RESULT(no)
 fi
 AM_CONDITIONAL(BUILD_ATTACHWARNER_PLUGIN, test x"$ac_cv_enable_attachwarner_plugin" = xyes)
 
@@ -929,8 +944,24 @@ AC_ARG_ENABLE(bsfilter-plugin,
 	[ac_cv_enable_bsfilter_plugin=$enableval], [ac_cv_enable_bsfilter_plugin=yes])
 if test x"$ac_cv_enable_bsfilter_plugin" = xyes; then
 	PLUGINS="bsfilter $PLUGINS"
+	AC_MSG_RESULT(yes)
+else
+	AC_MSG_RESULT(no)
 fi
 AM_CONDITIONAL(BUILD_BSFILTER_PLUGIN, test x"$ac_cv_enable_bsfilter_plugin" = xyes)
+
+dnl --- clamd ---
+AC_MSG_CHECKING([whether to build clamd plugin])
+AC_ARG_ENABLE(clamd-plugin,
+	[  --disable-clamd-plugin      do not build clamd plugin],
+	[ac_cv_enable_clamd_plugin=$enableval], [ac_cv_enable_clamd_plugin=yes])
+if test x"$ac_cv_enable_clamd_plugin" = xyes; then
+	PLUGINS="clamd $PLUGINS"
+	AC_MSG_RESULT(yes)
+else
+	AC_MSG_RESULT(no)
+fi
+AM_CONDITIONAL(BUILD_CLAMD_PLUGIN, test x"$ac_cv_enable_clamd_plugin" = xyes)
 
 dnl --- Demo ---
 AC_ARG_ENABLE(demo-plugin,
@@ -938,6 +969,9 @@ AC_ARG_ENABLE(demo-plugin,
 	[ac_cv_enable_demo_plugin=$enableval], [ac_cv_enable_demo_plugin=no])
 if test x"$ac_cv_enable_demo_plugin" = xyes; then
 	PLUGINS="demo $PLUGINS"
+	AC_MSG_RESULT(yes)
+else
+	AC_MSG_RESULT(no)
 fi
 AM_CONDITIONAL(BUILD_DEMO_PLUGIN, test x"$ac_cv_enable_demo_plugin" = xyes)
 
@@ -992,6 +1026,209 @@ if test x"$ac_cv_enable_fancy_plugin" = xyes; then
 	AC_SUBST(GTKPRINTUNIX_LIBS)
 fi
 AM_CONDITIONAL(BUILD_FANCY_PLUGIN, test x"$ac_cv_enable_fancy_plugin" = xyes)
+
+dnl --- fetchinfo ---
+AC_MSG_CHECKING([whether to build fetchinfo plugin])
+AC_ARG_ENABLE(fetchinfo-plugin,
+	[  --disable-fetchinfo-plugin      do not build fetchinfo plugin],
+	[ac_cv_enable_fetchinfo_plugin=$enableval], [ac_cv_enable_fetchinfo_plugin=yes])
+if test x"$ac_cv_enable_fetchinfo_plugin" = xyes; then
+	PLUGINS="fetchinfo $PLUGINS"
+	AC_MSG_RESULT(yes)
+else
+	AC_MSG_RESULT(no)
+fi
+AM_CONDITIONAL(BUILD_FETCHINFO_PLUGIN, test x"$ac_cv_enable_fetchinfo_plugin" = xyes)
+
+dnl --- gdata ---
+AC_MSG_CHECKING([whether to build gdata plugin])
+AC_ARG_ENABLE(gdata-plugin,
+	[  --disable-gdata-plugin      do not build gdata plugin],
+	[ac_cv_enable_gdata_plugin=$enableval], [ac_cv_enable_gdata_plugin=yes])
+if test x"$ac_cv_enable_gdata_plugin" = xyes; then
+	PKG_CHECK_MODULES(GDATA, libgdata >= 0.9.1, [ac_cv_enable_gdata_plugin=yes], [ac_cv_enable_gdata_plugin=no])
+	if test x"$ac_cv_enable_gdata_plugin" = xyes; then
+		AC_DEFINE(HAVE_GDATA_VERSION_0_9_1, 1, [at least version 0.9.1 of libgdata is available])
+		AC_DEFINE(HAVE_GDATA_VERSION_0_9, 1, [at least version 0.9.0 of libgdata is available])
+	else
+		PKG_CHECK_MODULES(GDATA, libgdata >= 0.6.4, [ac_cv_enable_gdata_plugin=yes], [ac_cv_enable_gdata_plugin=no])
+	fi
+	if test x"$ac_cv_enable_gdata_plugin" = xyes; then
+		AC_SUBST(GDATA_CFLAGS)
+		AC_SUBST(GDATA_LIBS)
+		AC_DEFINE(CM_GDATA_CLIENT_ID, ["Claws Mail GData plugin"], [client id])
+
+		PLUGINS="gdata $PLUGINS"
+		AC_MSG_RESULT(yes)
+	else
+		AC_MSG_ERROR(libgdata is not available)
+	fi
+else
+	AC_MSG_RESULT(no)
+fi
+AM_CONDITIONAL(BUILD_GDATA_PLUGIN, test x"$ac_cv_enable_gdata_plugin" = xyes)
+
+dnl --- mailmbox ---
+AC_MSG_CHECKING([whether to build mailmbox plugin])
+AC_ARG_ENABLE(mailmbox-plugin,
+	[  --disable-mailmbox-plugin      do not build mailmbox plugin],
+	[ac_cv_enable_mailmbox_plugin=$enableval], [ac_cv_enable_mailmbox_plugin=yes])
+if test x"$ac_cv_enable_mailmbox_plugin" = xyes; then
+	PLUGINS="mailmbox $PLUGINS"
+	AC_MSG_RESULT(yes)
+else
+	AC_MSG_RESULT(no)
+fi
+AM_CONDITIONAL(BUILD_MAILMBOX_PLUGIN, test x"$ac_cv_enable_mailmbox_plugin" = xyes)
+
+dnl --- newmail ---
+AC_MSG_CHECKING([whether to build newmail plugin])
+AC_ARG_ENABLE(newmail-plugin,
+	[  --disable-newmail-plugin      do not build newmail plugin],
+	[ac_cv_enable_newmail_plugin=$enableval], [ac_cv_enable_newmail_plugin=yes])
+if test x"$ac_cv_enable_newmail_plugin" = xyes; then
+	PLUGINS="newmail $PLUGINS"
+	AC_MSG_RESULT(yes)
+else
+	AC_MSG_RESULT(no)
+fi
+AM_CONDITIONAL(BUILD_NEWMAIL_PLUGIN, test x"$ac_cv_enable_newmail_plugin" = xyes)
+
+dnl --- notification - disabled - too many autofoo annoyances for today ---
+AC_MSG_CHECKING([whether to build notification plugin])
+AC_ARG_ENABLE(notification-plugin,
+	[  --disable-notification-plugin      do not build notification plugin],
+	[ac_cv_enable_notification_plugin=$enableval], [ac_cv_enable_notification_plugin=no])
+if test x"$ac_cv_enable_notification_plugin" = xyes; then
+	PLUGINS="notification $PLUGINS"
+	AC_MSG_RESULT(yes)
+else
+	AC_MSG_RESULT(no)
+fi
+AM_CONDITIONAL(BUILD_NOTIFICATION_PLUGIN, test x"$ac_cv_enable_notification_plugin" = xyes)
+
+dnl --- pdf_viewer ---
+AC_MSG_CHECKING([whether to build pdf_viewer plugin])
+AC_ARG_ENABLE(pdf_viewer-plugin,
+	[  --disable-pdf_viewer-plugin      do not build pdf_viewer plugin],
+	[ac_cv_enable_pdf_viewer_plugin=$enableval], [ac_cv_enable_pdf_viewer_plugin=yes])
+if test x"$ac_cv_enable_pdf_viewer_plugin" = xyes; then
+	PKG_CHECK_MODULES(POPPLER, poppler-glib >= 0.4.2, ,
+					  AC_MSG_ERROR([Can't find Poppler >= 0.4.2 Glib wrapper]))
+	AC_SUBST(POPPLER_LIBS)
+	AC_SUBST(POPPLER_CFLAGS)
+
+	OLD_CFLAGS=$CFLAGS
+	CFLAGS="$POPPLER_CFLAGS $GTK_CFLAGS $GLIB_CFLAGS"
+	AC_CHECK_DECL(POPPLER_DEST_NAMED,
+		[AC_DEFINE([HAVE_POPPLER_DEST_NAMED], [], [Description])],
+		,[#include <poppler-action.h>])
+	AC_CHECK_DECL(POPPLER_DEST_XYZ,
+		[AC_DEFINE([HAVE_POPPLER_DEST_XYZ], [], [Description])],
+		,[#include <poppler-action.h>])
+	CFLAGS=$OLD_CFLAGS
+	PLUGINS="pdf_viewer $PLUGINS"
+	AC_MSG_RESULT(yes)
+else
+	AC_MSG_RESULT(no)
+fi
+AM_CONDITIONAL(BUILD_PDF_VIEWER_PLUGIN, test x"$ac_cv_enable_pdf_viewer_plugin" = xyes)
+
+dnl --- perl ---
+AC_MSG_CHECKING([whether to build perl plugin])
+AC_ARG_ENABLE(perl-plugin,
+	[  --disable-perl-plugin      do not build perl plugin],
+	[ac_cv_enable_perl_plugin=$enableval], [ac_cv_enable_perl_plugin=yes])
+if test x"$ac_cv_enable_perl_plugin" = xyes; then
+	AC_PATH_PROG(sedpath, sed, no)
+	if test x$sedpath = xno ; then
+	  AC_MSG_ERROR(Test for sed failed.)
+	fi
+
+	dnl Perl
+	AC_PATH_PROG(PERL_PATH, perl, no)
+	if test x$PERL_PATH = xno ; then
+	  AC_MSG_ERROR(Test for Perl failed)
+	fi
+	AC_MSG_CHECKING(for perl >= 5.8.0)
+	PERL_VER=`$PERL_PATH -e 'print $] > 5.0079999?"yes":"no"'`
+	if test "$PERL_VER" = "yes"; then
+	  AC_MSG_RESULT(yes)
+	else
+	  AC_MSG_RESULT(no)
+	  AC_MSG_ERROR(Your Perl version is too old.)
+	fi
+	AC_MSG_CHECKING(for Perl compile flags)
+	PERL_CFLAGS=`$PERL_PATH -MExtUtils::Embed -e ccopts`
+	PERL_CFLAGS=`echo $PERL_CFLAGS | $sedpath 's/-D_FILE_OFFSET_BITS=[[0-9]]*//'`
+	PERL_LDFLAGS=`$PERL_PATH -MExtUtils::Embed -e ldopts |$sedpath 's/-lgdbm//'`
+	PERL_LDFLAGS=`echo $PERL_LDFLAGS |$sedpath 's/-ldb//'`
+	PERL_LDFLAGS=`echo $PERL_LDFLAGS |$sedpath 's/-lndbm//'`
+	PERL_LDFLAGS=`echo $PERL_LDFLAGS |$sedpath 's/-lc//'`
+	AC_MSG_RESULT(ok)
+	AC_SUBST(PERL_CFLAGS)
+	AC_SUBST(PERL_LDFLAGS)
+	PLUGINS="perl $PLUGINS"
+	AC_MSG_RESULT(yes)
+else
+	AC_MSG_RESULT(no)
+fi
+AM_CONDITIONAL(BUILD_PERL_PLUGIN, test x"$ac_cv_enable_perl_plugin" = xyes)
+
+dnl --- python ---
+AC_MSG_CHECKING([whether to build python plugin])
+AC_ARG_ENABLE(python-plugin,
+	[  --disable-python-plugin      do not build python plugin],
+	[ac_cv_enable_python_plugin=$enableval], [ac_cv_enable_python_plugin=yes])
+if test x"$ac_cv_enable_python_plugin" = xyes; then
+	AM_PATH_PYTHON([2.5], [
+	    AC_PATH_PROG(PYTHON_CONFIG, python$PYTHON_VERSION-config)
+	    if test x"$PYTHON_CONFIG" = x"" ; then
+		AC_PATH_PROG(PYTHON_CONFIG, python-config)
+	    fi
+	    if test x"$PYTHON_CONFIG" != x""; then
+		PYTHON_CFLAGS=`$PYTHON_CONFIG --includes`
+		PYTHON_LIBS=`$PYTHON_CONFIG --libs`
+		PYTHON_PREFIX=`$PYTHON_CONFIG --prefix`
+	    else
+		   AC_MSG_ERROR(python-config not found. Maybe you need to install development packages for Python.)
+	    fi
+
+	    # libpython.so
+	    PYTHON_SO_FILE="libpython${PYTHON_VERSION}.so"
+		found_libpython_so="no"
+		if test -f "$PYTHON_PREFIX/lib/$PYTHON_SO_FILE"; then
+			found_libpython_so="yes"
+			PYTHON_SHARED_LIB=`python -c "import os,sys; print os.path.basename(os.path.realpath(\"$PYTHON_PREFIX/lib/$PYTHON_SO_FILE\"))"`
+		fi
+		if test -f "$PYTHON_PREFIX/lib64/$PYTHON_SO_FILE"; then
+			found_libpython_so="yes"
+			PYTHON_SHARED_LIB=`python -c "import os,sys; print os.path.basename(os.path.realpath(\"$PYTHON_PREFIX/lib64/$PYTHON_SO_FILE\"))"`
+		fi
+		if test x"$found_libpython_so" != x"yes"; then
+		   AC_MSG_ERROR(Could not find Python shared libary: $PYTHON_SO_FILE does not exist. Maybe you need to install development packages for Python.)
+		fi
+
+		# PyGTK
+	    PKG_CHECK_MODULES(PYGTK,
+			      [pygtk-2.0 >= 2.10.3],
+			      [
+				AC_DEFINE(ENABLE_PYTHON, [1], [Enable Python support])
+			      ])
+	])
+
+	AC_SUBST(PYTHON_SHARED_LIB)
+	AC_SUBST(PYTHON_CFLAGS)
+	AC_SUBST(PYTHON_LIBS)
+	AC_SUBST(PYGTK_CFLAGS)
+	AC_SUBST(PYGTK_LIBS)
+
+	PLUGINS="python $PLUGINS"
+	AC_MSG_RESULT(yes)
+else
+	AC_MSG_RESULT(no)
+fi
+AM_CONDITIONAL(BUILD_PYTHON_PLUGIN, test x"$ac_cv_enable_python_plugin" = xyes)
 
 dnl --- PGP/CORE ---
 AC_MSG_CHECKING([whether to build PGP/CORE plugin])
@@ -1214,9 +1451,18 @@ src/plugins/att_remover/Makefile
 src/plugins/attachwarner/Makefile
 src/plugins/bogofilter/Makefile
 src/plugins/bsfilter/Makefile
+src/plugins/clamd/Makefile
+src/plugins/clamd/libclamd/Makefile
 src/plugins/demo/Makefile
 src/plugins/dillo_viewer/Makefile
 src/plugins/fancy/Makefile
+src/plugins/fetchinfo/Makefile
+src/plugins/gdata/Makefile
+src/plugins/mailmbox/Makefile
+src/plugins/newmail/Makefile
+src/plugins/pdf_viewer/Makefile
+src/plugins/perl/Makefile
+src/plugins/python/Makefile
 src/plugins/pgpcore/Makefile
 src/plugins/pgpmime/Makefile
 src/plugins/pgpinline/Makefile

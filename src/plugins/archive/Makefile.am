@@ -1,8 +1,5 @@
 plugindir = $(pkglibdir)/plugins
 
-INCLUDES = @GLIB_CFLAGS@ \
-		   -I$(top_srcdir) -I$(top_builddir)
-
 plugin_LTLIBRARIES = archive.la
 
 archive_la_SOURCES = \

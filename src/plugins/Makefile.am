@@ -26,6 +26,10 @@ if BUILD_BSFILTER_PLUGIN
 bsfilter_dir = bsfilter
 endif
 
+if BUILD_CLAMD_PLUGIN
+clamd_dir = clamd
+endif
+
 if BUILD_DEMO_PLUGIN
 demo_dir = demo
 endif
@@ -36,6 +40,38 @@ endif
 
 if BUILD_FANCY_PLUGIN
 fancy_dir = fancy
+endif
+
+if BUILD_FETCHINFO_PLUGIN
+fetchinfo_dir = fetchinfo
+endif
+
+if BUILD_GDATA_PLUGIN
+gdata_dir = gdata
+endif
+
+if BUILD_MAILMBOX_PLUGIN
+mailmbox_dir = mailmbox
+endif
+
+if BUILD_NEWMAIL_PLUGIN
+newmail_dir = newmail
+endif
+
+if BUILD_NOTIFICATION_PLUGIN
+notification_dir = notification
+endif
+
+if BUILD_PDF_VIEWER_PLUGIN
+pdf_viewer_dir = pdf_viewer
+endif
+
+if BUILD_PERL_PLUGIN
+perl_dir = perl
+endif
+
+if BUILD_PYTHON_PLUGIN
+python_dir = python
 endif
 
 if BUILD_PGPCORE_PLUGIN
@@ -75,9 +111,18 @@ SUBDIRS = \
 	$(attachwarner_dir) \
 	$(bogofilter_dir) \
 	$(bsfilter_dir) \
+	$(clamd_dir) \
 	$(demo_dir) \
 	$(dillo_viewer_dir) \
 	$(fancy_dir) \
+	$(fetchinfo_dir) \
+	$(gdata_dir) \
+	$(mailmbox_dir) \
+	$(newmail_dir) \
+	$(notification_dir) \
+	$(pdf_viewer_dir) \
+	$(perl_dir) \
+	$(python_dir) \
 	$(pgpcore_dir) \
 	$(pgpmime_dir) \
 	$(pgpinline_dir) \
