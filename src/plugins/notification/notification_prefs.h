@@ -18,7 +18,10 @@
 #ifndef NOTIFICATION_PREFS_H
 #define NOTIFICATION_PREFS_H NOTIFICATION_PREFS_H
 
-#include "pluginconfig.h"
+#ifdef HAVE_CONFIG_H
+#  include "config.h"
+#  include "claws-features.h"
+#endif
 
 #include <glib.h>
 

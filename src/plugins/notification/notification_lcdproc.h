@@ -18,7 +18,10 @@
 #ifndef NOTIFICATION_LCDPROC_H
 #define NOTIFICATION_LCDPROC_H NOTIFICATION_LCDPROC_H
 
-#include "pluginconfig.h"
+#ifdef HAVE_CONFIG_H
+#  include "config.h"
+#  include "claws-features.h"
+#endif
 
 #ifdef NOTIFICATION_LCDPROC
 

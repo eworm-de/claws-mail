@@ -18,7 +18,10 @@
 #ifndef NOTIFICATION_POPUP_H
 #define NOTIFICATION_POPUP_H NOTIFICATION_POPUP_H
 
-#include "pluginconfig.h"
+#ifdef HAVE_CONFIG_H
+#  include "config.h"
+#  include "claws-features.h"
+#endif
 
 #ifdef NOTIFICATION_POPUP
 

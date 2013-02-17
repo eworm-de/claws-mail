@@ -12,7 +12,7 @@ MINOR_VERSION=9
 MICRO_VERSION=0
 INTERFACE_AGE=0
 BINARY_AGE=0
-EXTRA_VERSION=75
+EXTRA_VERSION=76
 EXTRA_RELEASE=
 EXTRA_GTK2_VERSION=
 
@@ -1098,8 +1098,22 @@ dnl --- notification - disabled - too many autofoo annoyances for today ---
 AC_MSG_CHECKING([whether to build notification plugin])
 AC_ARG_ENABLE(notification-plugin,
 	[  --disable-notification-plugin      do not build notification plugin],
-	[ac_cv_enable_notification_plugin=$enableval], [ac_cv_enable_notification_plugin=no])
+	[ac_cv_enable_notification_plugin=$enableval], [ac_cv_enable_notification_plugin=yes])
 if test x"$ac_cv_enable_notification_plugin" = xyes; then
+	LIBNOTIFY_REQUIRED=0.4.3
+	PKG_CHECK_MODULES(libnotify, libnotify >= $LIBNOTIFY_REQUIRED,
+		[AC_DEFINE(HAVE_LIBNOTIFY, 1, [Define if libnotify support is enabled])],
+		[AC_MSG_ERROR([libnotify not found])])
+	AC_SUBST(libnotify_CFLAGS)
+	AC_SUBST(libnotify_LIBS)
+
+	AC_DEFINE(NOTIFICATION_POPUP, 1, Activate notification popup)
+	AC_DEFINE(NOTIFICATION_BANNER, 1, Activate notification banner)
+	AC_DEFINE(NOTIFICATION_COMMAND, 1, Activate notification shell command)
+	AC_DEFINE(NOTIFICATION_TRAYICON, 1, Activate notification trayicon)
+	AC_DEFINE(NOTIFICATION_LCDPROC, 1, Activate lcdproc support)
+	#AC_DEFINE(NOTIFICATION_INDICATOR, 1, [Activate support for indicators])
+	
 	PLUGINS="notification $PLUGINS"
 	AC_MSG_RESULT(yes)
 else
@@ -1460,6 +1474,7 @@ src/plugins/fetchinfo/Makefile
 src/plugins/gdata/Makefile
 src/plugins/mailmbox/Makefile
 src/plugins/newmail/Makefile
+src/plugins/notification/Makefile
 src/plugins/pdf_viewer/Makefile
 src/plugins/perl/Makefile
 src/plugins/python/Makefile

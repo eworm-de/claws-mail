@@ -1,3 +1,29 @@
+2013-02-17 [colin]	3.9.0cvs76
+
+	* src/plugins/notification/Makefile.am
+	* src/plugins/notification/notification_banner.c
+	* src/plugins/notification/notification_banner.h
+	* src/plugins/notification/notification_command.c
+	* src/plugins/notification/notification_command.h
+	* src/plugins/notification/notification_core.c
+	* src/plugins/notification/notification_foldercheck.c
+	* src/plugins/notification/notification_foldercheck.h
+	* src/plugins/notification/notification_hotkeys.c
+	* src/plugins/notification/notification_hotkeys.h
+	* src/plugins/notification/notification_indicator.c
+	* src/plugins/notification/notification_indicator.h
+	* src/plugins/notification/notification_lcdproc.c
+	* src/plugins/notification/notification_lcdproc.h
+	* src/plugins/notification/notification_plugin.c
+	* src/plugins/notification/notification_plugin.h
+	* src/plugins/notification/notification_popup.c
+	* src/plugins/notification/notification_popup.h
+	* src/plugins/notification/notification_prefs.c
+	* src/plugins/notification/notification_prefs.h
+	* src/plugins/notification/notification_trayicon.c
+	* src/plugins/notification/notification_trayicon.h
+		Activate and fix notification (without libindicate)
+
 2013-02-17 [colin]	3.9.0cvs75
 
 	* src/plugins/Makefile.am

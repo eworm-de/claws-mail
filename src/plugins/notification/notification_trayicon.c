@@ -18,7 +18,13 @@
 /* This module is of course inspired by the trayicon plugin which is
  * shipped with Claws-Mail, copyrighted by the Claws-Mail Team. */
 
-#include "pluginconfig.h"
+#ifdef HAVE_CONFIG_H
+#  include "config.h"
+#  include "claws-features.h"
+#endif
+
+#include <glib.h>
+#include <glib/gi18n.h>
 
 #ifdef NOTIFICATION_TRAYICON
 

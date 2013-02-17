@@ -1,10 +1,10 @@
-if BUILD_HOTKEYS
-hotkey_lib = libcmnpgtkhotkey.la
-hotkey_lib_path = $(top_builddir)/src/plugins/notification/gtkhotkey/libcmnpgtkhotkey.la
-else
+#if BUILD_HOTKEYS
+#hotkey_lib = libcmnpgtkhotkey.la
+#hotkey_lib_path = $(top_builddir)/src/plugins/notification/gtkhotkey/libcmnpgtkhotkey.la
+#else
 hotkey_lib =
 hotkey_lib_path =
-endif
+#endif
 
 
 EXTRA_DIST = claws.def plugin.def version.rc

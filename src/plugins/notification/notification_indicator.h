@@ -18,7 +18,10 @@
 #ifndef NOTIFICATION_INDICATOR_H
 #define NOTIFICATION_INDICATOR_H NOTIFICATION_INDICATOR_H
 
-#include "pluginconfig.h"
+#ifdef HAVE_CONFIG_H
+#  include "config.h"
+#  include "claws-features.h"
+#endif
 
 #ifdef NOTIFICATION_INDICATOR
 

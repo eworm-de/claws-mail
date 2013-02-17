@@ -18,7 +18,13 @@
 /* This code is based on foldersel.c in Claws Mail.
  * Some functions are only slightly modified, almost 1:1 copies from there. */
 
-#include "pluginconfig.h"
+#ifdef HAVE_CONFIG_H
+#  include "config.h"
+#  include "claws-features.h"
+#endif
+
+#include <glib.h>
+#include <glib/gi18n.h>
 
 /* Basic definitions first */
 #include "common/defs.h"

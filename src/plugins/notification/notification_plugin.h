@@ -18,7 +18,10 @@
 #ifndef NOTIFICATION_PLUGIN_H
 #define NOTIFICATION_PLUGIN_H NOTIFICATION_PLUGIN_H
 
-#include "pluginconfig.h"
+#ifdef HAVE_CONFIG_H
+#  include "config.h"
+#  include "claws-features.h"
+#endif
 
 #ifdef NOTIFICATION_BANNER
 void notification_update_banner(void);

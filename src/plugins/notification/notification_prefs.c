@@ -15,7 +15,13 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include "pluginconfig.h"
+#ifdef HAVE_CONFIG_H
+#  include "config.h"
+#  include "claws-features.h"
+#endif
+
+#include <glib.h>
+#include <glib/gi18n.h>
 
 #include <math.h>
 
@@ -387,7 +393,7 @@ void notify_gtk_init(void)
 {
 	static gchar *path[3];
 
-	path[0] = D_("claws-mail", "Plugins");
+	path[0] = _("Plugins");
 	path[1] = _("Notification");
 	path[2] = NULL;
 
@@ -401,7 +407,7 @@ void notify_gtk_init(void)
     {
         static gchar *hotkeys_path[4];
 
-        hotkeys_path[0] = D_("claws-mail", "Plugins");
+        hotkeys_path[0] = _("Plugins");
         hotkeys_path[1] = _("Notification");
         hotkeys_path[2] = _("Hotkeys");
         hotkeys_path[3] = NULL;
@@ -419,7 +425,7 @@ void notify_gtk_init(void)
 	{
 		static gchar *banner_path[4];
 
-		banner_path[0] = D_("claws-mail", "Plugins");
+		banner_path[0] = _("Plugins");
 		banner_path[1] = _("Notification");
 		banner_path[2] = _("Banner");
 		banner_path[3] = NULL;
@@ -436,7 +442,7 @@ void notify_gtk_init(void)
 	{
 		static gchar *popup_path[4];
 
-		popup_path[0] = D_("claws-mail", "Plugins");
+		popup_path[0] = _("Plugins");
 		popup_path[1] = _("Notification");
 		popup_path[2] = _("Popup");
 		popup_path[3] = NULL;
@@ -453,7 +459,7 @@ void notify_gtk_init(void)
 	{
 		static gchar *command_path[4];
 
-		command_path[0] = D_("claws-mail", "Plugins");
+		command_path[0] = _("Plugins");
 		command_path[1] = _("Notification");
 		command_path[2] = _("Command");
 		command_path[3] = NULL;
@@ -470,7 +476,7 @@ void notify_gtk_init(void)
 	{
 		static gchar *lcdproc_path[4];
 
-		lcdproc_path[0] = D_("claws-mail", "Plugins");
+		lcdproc_path[0] = _("Plugins");
 		lcdproc_path[1] = _("Notification");
 		lcdproc_path[2] = _("LCD");
 		lcdproc_path[3] = NULL;
@@ -487,7 +493,7 @@ void notify_gtk_init(void)
 	{
 		static gchar *trayicon_path[4];
 
-		trayicon_path[0] = D_("claws-mail", "Plugins");
+		trayicon_path[0] = _("Plugins");
 		trayicon_path[1] = _("Notification");
 		trayicon_path[2] = _("SysTrayicon");
 		trayicon_path[3] = NULL;
@@ -504,7 +510,7 @@ void notify_gtk_init(void)
 	{
 		static gchar *indicator_path[4];
 
-		indicator_path[0] = D_("claws-mail", "Plugins");
+		indicator_path[0] = _("Plugins");
 		indicator_path[1] = _("Notification");
 		indicator_path[2] = _("Indicator");
 		indicator_path[3] = NULL;

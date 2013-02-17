@@ -20,7 +20,10 @@
 
 #include <gtk/gtk.h>
 
-#include "pluginconfig.h"
+#ifdef HAVE_CONFIG_H
+#  include "config.h"
+#  include "claws-features.h"
+#endif
 
 void     notification_foldercheck_sel_folders_cb(GtkButton*, gpointer);
 guint    notification_register_folder_specific_list(gchar*);
