@@ -31,7 +31,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: sylpheed-claws\n"
 "Report-Msgid-Bugs-To: paul@claws-mail.org\n"
-"POT-Creation-Date: 2013-02-16 14:36+0100\n"
+"POT-Creation-Date: 2013-02-17 22:25+0100\n"
 "PO-Revision-Date: 2012-11-14 23:10+0200\n"
 "Last-Translator: Flammie Pirinen <flammie@iki.fi>\n"
 "Language-Team: Finnish <laatu@lokalisointi.org>\n"
@@ -106,9 +106,9 @@ msgstr "Hae viestit hakee viestit merkityiltä tileiltä"
 #: src/editaddress.c:1327 src/editaddress.c:1347 src/editbook.c:170
 #: src/editgroup.c:288 src/editjpilot.c:257 src/editldap.c:428
 #: src/editvcard.c:173 src/importmutt.c:223 src/importpine.c:222
-#: src/mimeview.c:284 src/plugins/pgpcore/select-keys.c:398
-#: src/prefs_filtering.c:384 src/prefs_filtering.c:1872
-#: src/prefs_template.c:78
+#: src/mimeview.c:284 src/plugins/pdf_viewer/poppler_viewer.c:1789
+#: src/plugins/pgpcore/select-keys.c:398 src/prefs_filtering.c:384
+#: src/prefs_filtering.c:1872 src/prefs_template.c:78
 msgid "Name"
 msgstr "Nimi"
 
@@ -669,7 +669,7 @@ msgstr ""
 "kansioon."
 
 #: src/addressbook.c:2932 src/imap_gtk.c:363 src/mh_gtk.c:202
-#: src/plugins/rssyl/rssyl_cb_menu.c:237
+#: src/plugins/mailmbox/plugin_gtk.c:325 src/plugins/rssyl/rssyl_cb_menu.c:237
 #: src/plugins/vcalendar/vcal_folder.c:1953
 msgid "Delete folder"
 msgstr "Poista kansio"
@@ -1487,7 +1487,8 @@ msgstr "%H.%M.%S"
 msgid "_Add..."
 msgstr "_Lisää…"
 
-#: src/compose.c:566 src/mh_gtk.c:361 src/plugins/rssyl/rssyl_cb_menu.c:140
+#: src/compose.c:566 src/mh_gtk.c:361 src/plugins/mailmbox/plugin_gtk.c:293
+#: src/plugins/rssyl/rssyl_cb_menu.c:140
 msgid "_Remove"
 msgstr "_Poista"
 
@@ -1940,22 +1941,22 @@ msgstr "Tiedostoa %s ei voitu lukea."
 msgid "Message: %s"
 msgstr "Viesti: %s"
 
-#: src/compose.c:4658
+#: src/compose.c:4658 src/plugins/python/composewindowtype.c:428
 msgid " [Edited]"
 msgstr " [Muokattu]"
 
 # "sylpheed-claws - Muokataan viestiä (MUOKATTU)"
-#: src/compose.c:4665
+#: src/compose.c:4665 src/plugins/python/composewindowtype.c:431
 #, c-format
 msgid "%s - Compose message%s"
 msgstr "%s — Muokataan viestiä%s"
 
-#: src/compose.c:4668
+#: src/compose.c:4668 src/plugins/python/composewindowtype.c:434
 #, c-format
 msgid "[no subject] - Compose message%s"
 msgstr "[ei aihetta] — Muokataan viestiä%s"
 
-#: src/compose.c:4670
+#: src/compose.c:4670 src/plugins/python/composewindowtype.c:422
 msgid "Compose message"
 msgstr "Muokkaa viestiä"
 
@@ -2165,6 +2166,7 @@ msgstr "Tallenna viesti kohteeseen "
 #: src/plugins/bogofilter/bogofilter_gtk.c:188
 #: src/plugins/bogofilter/bogofilter_gtk.c:208
 #: src/plugins/bsfilter/bsfilter_gtk.c:181
+#: src/plugins/clamd/clamav_plugin_gtk.c:296
 #: src/plugins/spamassassin/spamassassin_gtk.c:418
 msgid "_Browse"
 msgstr "_Selaa"
@@ -2181,7 +2183,8 @@ msgstr "_Liitteet"
 msgid "Othe_rs"
 msgstr "_Muut"
 
-#: src/compose.c:7603 src/gtk/headers.h:18 src/summary_search.c:426
+#: src/compose.c:7603 src/gtk/headers.h:18
+#: src/plugins/pdf_viewer/poppler_viewer.c:704 src/summary_search.c:426
 msgid "Subject:"
 msgstr "Aihe:"
 
@@ -2671,12 +2674,12 @@ msgid "Input the new name of folder:"
 msgstr "Anna hakemistolle uusi nimi:"
 
 #: src/editgroup.c:556 src/foldersel.c:552 src/imap_gtk.c:195 src/mh_gtk.c:145
-#: src/plugins/rssyl/rssyl_cb_menu.c:89
+#: src/plugins/mailmbox/plugin_gtk.c:239 src/plugins/rssyl/rssyl_cb_menu.c:89
 msgid "New folder"
 msgstr "Uusi hakemisto"
 
 #: src/editgroup.c:557 src/foldersel.c:553 src/mh_gtk.c:146
-#: src/plugins/rssyl/rssyl_cb_menu.c:90
+#: src/plugins/mailmbox/plugin_gtk.c:240 src/plugins/rssyl/rssyl_cb_menu.c:90
 msgid "Input the name of new folder:"
 msgstr "Anna uudelle hakemistolle nimi:"
 
@@ -2708,7 +2711,8 @@ msgstr "Muokkaa LDAP:ia — valitse haun juuri"
 msgid "Hostname"
 msgstr "Verkkonimi"
 
-#: src/editldap_basedn.c:167 src/editldap.c:458 src/ssl_manager.c:110
+#: src/editldap_basedn.c:167 src/editldap.c:458
+#: src/plugins/clamd/clamav_plugin_gtk.c:386 src/ssl_manager.c:110
 msgid "Port"
 msgstr "Portti"
 
@@ -3429,7 +3433,7 @@ msgid "Select folder"
 msgstr "Valitse hakemisto"
 
 #: src/foldersel.c:554 src/imap_gtk.c:199 src/mh_gtk.c:147
-#: src/plugins/rssyl/rssyl_cb_menu.c:91
+#: src/plugins/mailmbox/plugin_gtk.c:241 src/plugins/rssyl/rssyl_cb_menu.c:91
 msgid "NewFolder"
 msgstr "UusiKansio"
 
@@ -3479,17 +3483,20 @@ msgstr "_Tyhjennä roskakori…"
 msgid "Send _queue..."
 msgstr "Lähetä _jonottavat…"
 
-#: src/folderview.c:380 src/folderview.c:427 src/prefs_folder_column.c:79
-#: src/prefs_matcher.c:388 src/summaryview.c:6293
+#: src/folderview.c:380 src/folderview.c:427
+#: src/plugins/notification/notification_lcdproc.c:135
+#: src/prefs_folder_column.c:79 src/prefs_matcher.c:388 src/summaryview.c:6293
 msgid "New"
 msgstr "Uusi"
 
-#: src/folderview.c:381 src/folderview.c:428 src/prefs_folder_column.c:80
-#: src/prefs_matcher.c:387 src/summaryview.c:6295
+#: src/folderview.c:381 src/folderview.c:428
+#: src/plugins/notification/notification_lcdproc.c:139
+#: src/prefs_folder_column.c:80 src/prefs_matcher.c:387 src/summaryview.c:6295
 msgid "Unread"
 msgstr "Lukematta"
 
-#: src/folderview.c:382 src/prefs_folder_column.c:81
+#: src/folderview.c:382 src/plugins/notification/notification_lcdproc.c:143
+#: src/prefs_folder_column.c:81
 msgid "Total"
 msgstr "Yhteensä"
 
@@ -4285,7 +4292,7 @@ msgstr "Kommentit:"
 msgid "Keywords"
 msgstr "Avainsanat"
 
-#: src/gtk/headers.h:20
+#: src/gtk/headers.h:20 src/plugins/pdf_viewer/poppler_viewer.c:706
 msgid "Keywords:"
 msgstr "Avainsanat:"
 
@@ -4766,8 +4773,11 @@ msgstr ""
 #: src/plugins/address_keeper/address_keeper_prefs.c:208
 #: src/plugins/bogofilter/bogofilter_gtk.c:457
 #: src/plugins/bsfilter/bsfilter_gtk.c:400
+#: src/plugins/clamd/clamav_plugin_gtk.c:549
 #: src/plugins/dillo_viewer/dillo_prefs.c:129
-#: src/plugins/fancy/fancy_prefs.c:110 src/plugins/pgpcore/prefs_gpg.c:557
+#: src/plugins/fancy/fancy_prefs.c:110
+#: src/plugins/fetchinfo/fetchinfo_plugin_gtk.c:178
+#: src/plugins/gdata/cm_gdata_prefs.c:145 src/plugins/pgpcore/prefs_gpg.c:557
 #: src/plugins/rssyl/rssyl_prefs.c:63
 #: src/plugins/spamassassin/spamassassin_gtk.c:648
 #: src/plugins/trayicon/trayicon_prefs.c:69
@@ -5217,12 +5227,17 @@ msgstr "SSL-varmenne muuttunut"
 msgid "Tags:"
 msgstr "Tägit:"
 
-#: src/headerview.c:216 src/summaryview.c:3342 src/summaryview.c:3359
-#: src/summaryview.c:3380
+#: src/headerview.c:216 src/plugins/notification/notification_popup.c:310
+#: src/plugins/notification/notification_popup.c:615
+#: src/plugins/notification/notification_trayicon.c:848 src/summaryview.c:3342
+#: src/summaryview.c:3359 src/summaryview.c:3380
 msgid "(No From)"
 msgstr "(Ei lähettäjää)"
 
-#: src/headerview.c:231 src/summaryview.c:3393 src/summaryview.c:3397
+#: src/headerview.c:231 src/plugins/notification/notification_popup.c:312
+#: src/plugins/notification/notification_popup.c:619
+#: src/plugins/notification/notification_trayicon.c:851 src/summaryview.c:3393
+#: src/summaryview.c:3397
 msgid "(No Subject)"
 msgstr "(Ei aihetta)"
 
@@ -5231,6 +5246,7 @@ msgid "Error:"
 msgstr "Virhe:"
 
 #: src/image_viewer.c:299 src/mimeview.c:2555
+#: src/plugins/pdf_viewer/poppler_viewer.c:700
 msgid "Filename:"
 msgstr "Tiedostonimi:"
 
@@ -5666,23 +5682,25 @@ msgstr ""
 "\n"
 "Tilien toimimiseksi pitäisi asentaa libetpan ja Claws Mail uudelleen."
 
-#: src/imap_gtk.c:63 src/mh_gtk.c:55
+#: src/imap_gtk.c:63 src/mh_gtk.c:55 src/plugins/mailmbox/plugin_gtk.c:59
 msgid "Create _new folder..."
 msgstr "Luo _uusi kansio…"
 
 #: src/imap_gtk.c:65 src/mh_gtk.c:56 src/news_gtk.c:61
+#: src/plugins/mailmbox/plugin_gtk.c:60
 msgid "_Rename folder..."
 msgstr "Nimeä kansio uu_delleen…"
 
-#: src/imap_gtk.c:66 src/mh_gtk.c:57
+#: src/imap_gtk.c:66 src/mh_gtk.c:57 src/plugins/mailmbox/plugin_gtk.c:61
 msgid "M_ove folder..."
 msgstr "_Siirrä kansio…"
 
-#: src/imap_gtk.c:67 src/mh_gtk.c:58
+#: src/imap_gtk.c:67 src/mh_gtk.c:58 src/plugins/mailmbox/plugin_gtk.c:62
 msgid "Cop_y folder..."
 msgstr "_Kopioi kansio…"
 
-#: src/imap_gtk.c:69 src/mh_gtk.c:59 src/plugins/rssyl/rssyl_gtk.c:61
+#: src/imap_gtk.c:69 src/mh_gtk.c:59 src/plugins/mailmbox/plugin_gtk.c:63
+#: src/plugins/rssyl/rssyl_gtk.c:61
 msgid "_Delete folder..."
 msgstr "_Poista kansio…"
 
@@ -5707,14 +5725,15 @@ msgid "_Unsubscribe..."
 msgstr "_Poista ryhmän tilaus..."
 
 #: src/imap_gtk.c:80 src/mh_gtk.c:60 src/news_gtk.c:63
+#: src/plugins/mailmbox/plugin_gtk.c:64
 msgid "_Check for new messages"
 msgstr "_Tarkasta onko uusia viestejä"
 
-#: src/imap_gtk.c:81 src/mh_gtk.c:61
+#: src/imap_gtk.c:81 src/mh_gtk.c:61 src/plugins/mailmbox/plugin_gtk.c:65
 msgid "C_heck for new folders"
 msgstr "_Tarkasta onko uusia kansioita"
 
-#: src/imap_gtk.c:82 src/mh_gtk.c:62
+#: src/imap_gtk.c:82 src/mh_gtk.c:62 src/plugins/mailmbox/plugin_gtk.c:66
 msgid "R_ebuild folder tree"
 msgstr "Uudelleenkasaa hakemisto_puu"
 
@@ -5743,18 +5762,20 @@ msgstr "Peri ylemmän kansion asetukset"
 msgid "Input new name for '%s':"
 msgstr "Anna uusi nimi kansiolle ”%s”:"
 
-#: src/imap_gtk.c:263 src/mh_gtk.c:251 src/plugins/rssyl/rssyl_cb_menu.c:334
+#: src/imap_gtk.c:263 src/mh_gtk.c:251 src/plugins/mailmbox/plugin_gtk.c:409
+#: src/plugins/rssyl/rssyl_cb_menu.c:334
 #: src/plugins/vcalendar/vcal_folder.c:2018
 msgid "Rename folder"
 msgstr "Uudelleennimeä kansio"
 
-#: src/imap_gtk.c:277
+#: src/imap_gtk.c:277 src/plugins/mailmbox/plugin_gtk.c:249
+#: src/plugins/mailmbox/plugin_gtk.c:419
 #, c-format
 msgid "`%c' can't be included in folder name."
 msgstr "merkkiä ’%c’ ei voi sisällyttää kansion nimeen."
 
 #: src/imap_gtk.c:292 src/mh_gtk.c:274 src/news_gtk.c:327
-#: src/plugins/rssyl/rssyl_cb_menu.c:354
+#: src/plugins/mailmbox/plugin_gtk.c:438 src/plugins/rssyl/rssyl_cb_menu.c:354
 #: src/plugins/vcalendar/vcal_folder.c:2038
 msgid ""
 "The folder could not be renamed.\n"
@@ -6881,6 +6902,7 @@ msgid "Compose a news message"
 msgstr "_Kirjoita keskusteluryhmäviesti"
 
 #: src/mainwindow.c:654 src/messageview.c:302
+#: src/plugins/notification/notification_banner.c:89
 msgid "_Reply"
 msgstr "_Vastaa"
 
@@ -7376,6 +7398,7 @@ msgstr "suodatusloki pois päältä.\n"
 
 #: src/mainwindow.c:2653 src/mainwindow.c:2660 src/mainwindow.c:2703
 #: src/mainwindow.c:2736 src/mainwindow.c:2768 src/mainwindow.c:2813
+#: src/plugins/notification/notification_trayicon.c:357
 #: src/plugins/trayicon/trayicon.c:129 src/prefs_folder_item.c:1067
 msgid "Untitled"
 msgstr "Nimetön"
@@ -7392,7 +7415,7 @@ msgstr "Poistetaanko kaikki viestit roskiksesta?"
 msgid "Don't quit"
 msgstr "Älä lopeta"
 
-#: src/mainwindow.c:3101
+#: src/mainwindow.c:3101 src/plugins/mailmbox/plugin_gtk.c:189
 msgid "Add mailbox"
 msgstr "Lisää postilaatikko"
 
@@ -7411,11 +7434,12 @@ msgstr ""
 msgid "The mailbox '%s' already exists."
 msgstr "Postilaatikko ”%s” on jo olemassa."
 
-#: src/mainwindow.c:3113 src/setup.c:52 src/wizard.c:774
+#: src/mainwindow.c:3113 src/plugins/mailmbox/plugin_gtk.c:202 src/setup.c:52
+#: src/wizard.c:774
 msgid "Mailbox"
 msgstr "Postilaatikko"
 
-#: src/mainwindow.c:3118 src/setup.c:55
+#: src/mainwindow.c:3118 src/plugins/mailmbox/plugin_gtk.c:209 src/setup.c:55
 msgid ""
 "Creation of the mailbox failed.\n"
 "Maybe some files already exist, or you don't have the permission to write "
@@ -7437,11 +7461,13 @@ msgstr "Virhe tuotaessa mbox-tiedostoa."
 msgid "Export to mbox has failed."
 msgstr "Mbox-vienti epäonnistui"
 
-#: src/mainwindow.c:4200 src/plugins/trayicon/trayicon.c:568
+#: src/mainwindow.c:4200 src/plugins/notification/notification_trayicon.c:512
+#: src/plugins/trayicon/trayicon.c:568
 msgid "Exit"
 msgstr "Poistu"
 
-#: src/mainwindow.c:4200 src/plugins/trayicon/trayicon.c:568
+#: src/mainwindow.c:4200 src/plugins/notification/notification_trayicon.c:512
+#: src/plugins/trayicon/trayicon.c:568
 msgid "Exit Claws Mail?"
 msgstr "Poistutaanko Claws Mailista?"
 
@@ -7833,11 +7859,11 @@ msgstr "ei voida kopioida viestiä %s kohteeseen %s\n"
 msgid "Moving messages..."
 msgstr "Siirretään viestejä…"
 
-#: src/mh.c:662
+#: src/mh.c:662 src/plugins/mailmbox/mailmbox_folder.c:839
 msgid "Deleting messages..."
 msgstr "Poistetaan viestiä…"
 
-#: src/mh_gtk.c:63
+#: src/mh_gtk.c:63 src/plugins/mailmbox/plugin_gtk.c:67
 msgid "Remove _mailbox..."
 msgstr "Poista _postilaatikko…"
 
@@ -7850,7 +7876,7 @@ msgstr ""
 "Poistetaanko postilaatikko ”%s”?\n"
 "(Viestejä ei poisteta levyltä)"
 
-#: src/mh_gtk.c:360
+#: src/mh_gtk.c:360 src/plugins/mailmbox/plugin_gtk.c:292
 msgid "Remove mailbox"
 msgstr "Poista postilaatikko"
 
@@ -7971,7 +7997,7 @@ msgstr "Suorita tiedosto"
 msgid "Type:"
 msgstr "Tyyppi:"
 
-#: src/mimeview.c:2543
+#: src/mimeview.c:2543 src/plugins/pdf_viewer/poppler_viewer.c:701
 msgid "Size:"
 msgstr "Koko:"
 
@@ -8379,13 +8405,15 @@ msgstr "Pakkausaste"
 
 #: src/plugins/archive/archiver_gtk.c:800
 #: src/plugins/archive/archiver_gtk.c:808
-#: src/plugins/archive/archiver_gtk.c:816 src/prefs_folder_item.c:516
+#: src/plugins/archive/archiver_gtk.c:816
+#: src/plugins/pdf_viewer/poppler_viewer.c:720 src/prefs_folder_item.c:516
 msgid "Yes"
 msgstr "Kyllä"
 
 #: src/plugins/archive/archiver_gtk.c:800
 #: src/plugins/archive/archiver_gtk.c:808
-#: src/plugins/archive/archiver_gtk.c:816 src/prefs_folder_item.c:515
+#: src/plugins/archive/archiver_gtk.c:816
+#: src/plugins/pdf_viewer/poppler_viewer.c:723 src/prefs_folder_item.c:515
 #: src/prefs_summaries.c:369
 msgid "No"
 msgstr "Ei"
@@ -9056,7 +9084,7 @@ msgstr "Bogofiltterin hakemisto"
 msgid "Mark spam as read"
 msgstr "Merkitse roskaposti luetuksi"
 
-#: src/bsfilter_gtk.c:206
+#: src/plugins/bsfilter/bsfilter_gtk.c:209
 msgid ""
 "If Bsfilter thought an email was spam or unsure, but it was whitelisted, "
 "learn it as ham."
@@ -9064,27 +9092,27 @@ msgstr ""
 "Jos Bsfilter tunnistaa whitelistiltä tulevan viedtin roskapostiksi tai ei "
 "tunnista sitä, opi se ei-roskapostina"
 
-#: src/bsfilter_gtk.c:215
+#: src/plugins/bsfilter/bsfilter_gtk.c:218
 msgid "Bsfilter call"
 msgstr "Bsfilterin komento"
 
-#: src/bsfilter_gtk.c:223
+#: src/plugins/bsfilter/bsfilter_gtk.c:226
 msgid "Path to bsfilter executable"
 msgstr "Polku bsfilter-ohjelmaan"
 
-#: src/bsfilter.c:78 src/bsfilter_gtk.c:398
+#: src/plugins/bsfilter/bsfilter_gtk.c:401 src/plugins/bsfilter/bsfilter.c:82
 msgid "Bsfilter"
 msgstr "Bsfilter"
 
-#: src/bsfilter.c:295
+#: src/plugins/bsfilter/bsfilter.c:299
 msgid "Bsfilter: fetching body..."
 msgstr "Bsfilter: haetaan sisältöosiota..."
 
-#: src/bsfilter.c:304
+#: src/plugins/bsfilter/bsfilter.c:308
 msgid "Bsfilter: filtering message..."
 msgstr "Bsfilter: suodatetaan viestiä..."
 
-#: src/bsfilter.c:389
+#: src/plugins/bsfilter/bsfilter.c:393
 msgid ""
 "The Bsfilter plugin couldn't filter a message. The probable cause of the "
 "error is that it didn't learn from any mail.\n"
@@ -9097,18 +9125,18 @@ msgstr ""
 "roskapostiksi muutamalle sadalle roskapostille ja oikealle viestille "
 "Treenataksesi Bsfilteriä."
 
-#: src/bsfilter.c:396
+#: src/plugins/bsfilter/bsfilter.c:400
 #, c-format
 msgid ""
 "The Bsfilter plugin couldn't filter a message. The command `%s` couldn't be "
 "run."
 msgstr "Bsfilter ei voinut suodattaa viestiä. Komentoa %s ei voitu suorittaa."
 
-#: src/bsfilter.c:497
+#: src/plugins/bsfilter/bsfilter.c:501
 msgid "Bsfilter: learning from message..."
 msgstr "Bsfilter: opitaan viestistä..."
 
-#: src/bsfilter.c:641
+#: src/plugins/bsfilter/bsfilter.c:637
 msgid ""
 "This plugin can check all messages that are received from an IMAP, LOCAL or "
 "POP account for spam using Bsfilter. You will need Bsfilter installed "
@@ -9134,6 +9162,266 @@ msgstr ""
 "Kun viesti tunnistetaan roskapostiksi se tallennetaan erilliseen kansioon\n"
 "\n"
 "Asetukset löytyvät valikosta Asetukset→Asetukset→Liitännäiset→Bsfilter"
+
+#: src/plugins/clamd/clamav_plugin.c:45
+#: src/plugins/clamd/clamav_plugin_gtk.c:550
+msgid "Clam AntiVirus"
+msgstr "Clam Antivirus"
+
+#: src/plugins/clamd/clamav_plugin.c:103
+msgid ""
+"Scanning\n"
+"No socket information.\n"
+"Antivirus disabled."
+msgstr ""
+"Skannataan\n"
+"Ei pistoketietoja\n"
+"Antivirus poistettu käytöstä."
+
+#: src/plugins/clamd/clamav_plugin.c:107
+msgid ""
+"Scanning\n"
+"Clamd does not respond to ping.\n"
+"Is clamd running?"
+msgstr ""
+"Skannataan\n"
+"Clamd ei vastaa pingiin.\n"
+"Onko clamd käynnissä?"
+
+#: src/plugins/clamd/clamav_plugin.c:111
+#, c-format
+msgid "Detected %s virus."
+msgstr "Virus %s tunnistettu."
+
+#: src/plugins/clamd/clamav_plugin.c:115
+#, c-format
+msgid ""
+"Scanning error:\n"
+"%s"
+msgstr ""
+"Skannausvirhe:\n"
+"%s"
+
+#: src/plugins/clamd/clamav_plugin.c:149
+msgid "ClamAV: scanning message..."
+msgstr "ClamAV: skannaa viestiä…"
+
+#: src/plugins/clamd/clamav_plugin.c:250
+msgid "Failed to register mail filtering hook"
+msgstr "Postifiltterikoukun rekisteröinti epäonnistui"
+
+#: src/plugins/clamd/clamav_plugin.c:267
+msgid ""
+"Init\n"
+"No socket information.\n"
+"Antivirus disabled."
+msgstr ""
+"Aloitus\n"
+"Ei pistoketietoja.\n"
+"Antivirus poistettu käytöstä."
+
+#: src/plugins/clamd/clamav_plugin.c:271
+msgid ""
+"Init\n"
+"Clamd does not respond to ping.\n"
+"Is clamd running?"
+msgstr ""
+"Aloitus\n"
+"Clamd ei vastaa pingiin.\n"
+"Onko clamd käynnissä?"
+
+#: src/plugins/clamd/clamav_plugin.c:302
+msgid ""
+"This plugin uses Clam AntiVirus to scan all messages that are received from "
+"an IMAP, LOCAL or POP account.\n"
+"\n"
+"When a message attachment is found to contain a virus it can be deleted or "
+"saved in a specially designated folder.\n"
+"\n"
+"Because this plugin communicates with clamd via a\n"
+"socket then there are some minimum requirements to\n"
+"the permissions for your home folder and the\n"
+".claws-mail folder provided the clamav-daemon is\n"
+"configured to communicate via a unix socket. All\n"
+"users at least need to be given execute permissions\n"
+"on these folders.\n"
+"\n"
+"To avoid changing permissions you could configure\n"
+"the clamav-daemon to communicate via a TCP socket\n"
+"and choose manual configuration for clamd.\n"
+"\n"
+"Options can be found in /Configuration/Preferences/Plugins/Clam AntiVirus"
+msgstr ""
+"Tämä liitännäinen skannaa Clam Antiviruksella kaikki viestit, jotka tulevat "
+"IMAP-, POP- tai paikalliselta tililtä.\n"
+"\n"
+"Jos viestin liitteenä on virus, se voidaan poistaa tai tallentaa erilliseen "
+"hakemistoon.\n"
+"\n"
+"Koska liitännäinen käyttää pistoketta clamd-yhteyteen\n"
+"se vaatii tiettyjä oikeuksia kotihakemistolta ja\n"
+".claws-mail-hakemistolta, silloin kun clamav-daemon\n"
+"on asetettu käyttämään unix-pistokkeita. Ainakin\n"
+"suoritusoikeudet pitää olla kaikille molemmissa\n"
+"hakemistoissa.\n"
+"\n"
+"Tämän voi välttää asettamalla clamav-daemonin\n"
+"käyttämään TCP-pistokkeita ja valitsemalla\n"
+"clamd-asetukset käsin.\n"
+"\n"
+"Asetukset löytyvät valikosta Asetukset→Asetukset→Liitännäiset→Clam Antivirus"
+
+#: src/plugins/clamd/clamav_plugin.c:341
+msgid "Virus detection"
+msgstr "Viruksentunnistus"
+
+#: src/plugins/clamd/clamav_plugin_gtk.c:246
+msgid "Enable virus scanning"
+msgstr "Avaa viruksentunnistus"
+
+#: src/plugins/clamd/clamav_plugin_gtk.c:256
+msgid "Maximum attachment size"
+msgstr "Liitetiedoston enimmäiskoko"
+
+#: src/plugins/clamd/clamav_plugin_gtk.c:267
+msgid "Message attachments larger than this will not be scanned"
+msgstr "Suurempia liitteitä ei tarkasteta"
+
+#: src/plugins/clamd/clamav_plugin_gtk.c:271
+msgid "MB"
+msgstr "Mt"
+
+#: src/plugins/clamd/clamav_plugin_gtk.c:280
+msgid "Save infected mail in"
+msgstr "Tallenna saastunut viesti hakemistoon"
+
+#: src/plugins/clamd/clamav_plugin_gtk.c:284
+msgid "Save mail that contains viruses"
+msgstr "Tallenna viruksia sisältävä viesti"
+
+#: src/plugins/clamd/clamav_plugin_gtk.c:292
+msgid ""
+"Folder for storing infected mail. Leave empty to use the default trash folder"
+msgstr ""
+"Hakemisto, jossa säilytetään saastuneet viestit. Jätä tyhjäksi käyttääksesi "
+"oletusarvoa"
+
+#: src/plugins/clamd/clamav_plugin_gtk.c:300
+msgid "Click this button to select a folder for storing infected mail"
+msgstr "Valitse tällä napilla kansio saastuneille viesteille"
+
+#: src/plugins/clamd/clamav_plugin_gtk.c:308
+msgid "Automatic configuration"
+msgstr "Automaattiset asetukset"
+
+#: src/plugins/clamd/clamav_plugin_gtk.c:313
+msgid "Should configuration be done automatic or manual"
+msgstr "Tehdäänkö asetukset automaattisest vai käsin"
+
+#: src/plugins/clamd/clamav_plugin_gtk.c:321
+msgid "Where is clamd.conf"
+msgstr "Missä clamd.conf on"
+
+#: src/plugins/clamd/clamav_plugin_gtk.c:329
+msgid ""
+"Full path to clamd.conf. If this field is not empty then the plugin has been "
+"able to locate the file automatically"
+msgstr ""
+"Hakupolku clamd.confiin. Jollei tämä kenttä ole tyhjä, liitännäinen "
+"onlöytänyt tiedoston automaattisesti"
+
+#: src/plugins/clamd/clamav_plugin_gtk.c:333
+msgid "Br_owse"
+msgstr "_Selaa"
+
+#: src/plugins/clamd/clamav_plugin_gtk.c:337
+msgid "Click this button to select full path to clamd.conf"
+msgstr "Valitse tällä napilla hakemisto clamd.confiin"
+
+#: src/plugins/clamd/clamav_plugin_gtk.c:345
+msgid "Check permission for folders and adjust if necessary"
+msgstr "Tarkista hakemistojen oikeudet"
+
+#: src/plugins/clamd/clamav_plugin_gtk.c:358
+msgid "Click this button to check and adjust folder permissions"
+msgstr "Korjaa tällä napilla hakemistojen oikeudet"
+
+#: src/plugins/clamd/clamav_plugin_gtk.c:366
+msgid "Remote Host"
+msgstr "Etäpalvelin"
+
+#: src/plugins/clamd/clamav_plugin_gtk.c:374
+msgid "Hostname or IP for remote host running clamav daemon"
+msgstr "Clamavia suorittavan palvelimen nimi tai IP-osoite"
+
+#: src/plugins/clamd/clamav_plugin_gtk.c:396
+msgid "Port number where clamav daemon is listening"
+msgstr "Porttinumero jota clamav kuuntelee"
+
+#: src/plugins/clamd/clamav_plugin_gtk.c:525
+msgid ""
+"New config\n"
+"No socket information.\n"
+"Antivirus disabled."
+msgstr ""
+"Uusi asetusto\n"
+"Ei pistoketietoja\n"
+"Antivirus poistettu käytöstä."
+
+#: src/plugins/clamd/clamav_plugin_gtk.c:529
+msgid ""
+"New config\n"
+"Clamd does not respond to ping.\n"
+"Is clamd running?"
+msgstr ""
+"Uusi asetusto\n"
+"Clamd ei vastaa pingiin.\n"
+"Onko clamd käynnissä?"
+
+#: src/plugins/clamd/libclamd/clamd-plugin.c:117
+#, c-format
+msgid ""
+"%s: Unable to open\n"
+"clamd will be disabled"
+msgstr ""
+"%s: ei voitu avata\n"
+"clamd poistetaan käytöstä"
+
+#: src/plugins/clamd/libclamd/clamd-plugin.c:215
+#, c-format
+msgid ""
+"%s: Not able to find required information\n"
+"clamd will be disabled"
+msgstr ""
+"%s: Ei voitu löytää tarvittavaa tietoa\n"
+"clamd on poistettu käytöstä"
+
+#: src/plugins/clamd/libclamd/clamd-plugin.c:249
+msgid "Could not create socket"
+msgstr "Ei voitu avata pistoketta"
+
+#: src/plugins/clamd/libclamd/clamd-plugin.c:420
+msgid ": File does not exist"
+msgstr ": Tiedostoa ei ole"
+
+#: src/plugins/clamd/libclamd/clamd-plugin.c:433
+msgid ": Unable to open"
+msgstr ": Ei voitu avata"
+
+#: src/plugins/clamd/libclamd/clamd-plugin.c:446
+#, c-format
+msgid "%s: Error reading"
+msgstr "%s: Virhe luettaessa"
+
+#: src/plugins/clamd/libclamd/clamd-plugin.c:457
+#: src/plugins/clamd/libclamd/clamd-plugin.c:462
+#: src/plugins/clamd/libclamd/clamd-plugin.c:471
+msgid "Socket write error"
+msgstr "Pistokkeeseenkirjoittamisvirhe"
+
+#: src/plugins/clamd/libclamd/clamd-plugin.c:478
+msgid "Socket read error"
+msgstr "Pistokkeestalukuvirhe"
 
 #: src/plugins/demo/demo.c:31 src/plugins/demo/demo.c:100
 msgid "Demo"
@@ -9346,6 +9634,1037 @@ msgstr "Lataa kuvat automaattisesti"
 #: src/plugins/fancy/fancy_prefs.c:188
 msgid "Block external content"
 msgstr "Poista estot ulos johtavalta sisällöltä"
+
+#: src/plugins/fetchinfo/fetchinfo_plugin.c:151
+msgid "failed to write Fetchinfo configuration to file\n"
+msgstr "Fetchinfon asetustiedoston kirjoitus ei onnistunut\n"
+
+#: src/plugins/fetchinfo/fetchinfo_plugin.c:167
+#: src/plugins/fetchinfo/fetchinfo_plugin.c:200
+#: src/plugins/fetchinfo/fetchinfo_plugin_gtk.c:179
+msgid "Fetchinfo"
+msgstr "Fetchinfo"
+
+#: src/plugins/fetchinfo/fetchinfo_plugin.c:173
+msgid "Failed to register mail receive hook"
+msgstr ""
+"Viestin saannin yhteydessä suoritettavan koukun rekisteröinti epäonnistui"
+
+#: src/plugins/fetchinfo/fetchinfo_plugin.c:209
+msgid ""
+"This plugin modifies the downloaded messages. It inserts headers containing "
+"some download information: UIDL, Claws Mail account name, POP server, user "
+"ID and retrieval time.\n"
+"\n"
+"Options can be found in /Configuration/Preferences/Plugins/Fetchinfo"
+msgstr ""
+"Tämä liitännäinen muokkaa ladattuja viestejä. Se lisää otsakkeita, kuten:"
+"UIDL, tilin nimi, POP-palvelin, käyttäjätunnus ja hakuaika.\n"
+"\n"
+"Asetuksia voi muuttaa valikosta Asetukset→Asetukset→Liitännäiset→Fetchinfo"
+
+#: src/plugins/fetchinfo/fetchinfo_plugin.c:236
+msgid "Mail marking"
+msgstr "Viestin merkintä"
+
+#: src/plugins/fetchinfo/fetchinfo_plugin_gtk.c:94
+msgid "Add fetchinfo headers"
+msgstr "Lisää fetchinfo-otsakkeet"
+
+#: src/plugins/fetchinfo/fetchinfo_plugin_gtk.c:101
+msgid "UIDL"
+msgstr "UIDL"
+
+#: src/plugins/fetchinfo/fetchinfo_plugin_gtk.c:103
+msgid "Account name"
+msgstr "Tilin nimi"
+
+#: src/plugins/fetchinfo/fetchinfo_plugin_gtk.c:105
+msgid "Receive server"
+msgstr "Hakupalvelin"
+
+#: src/plugins/fetchinfo/fetchinfo_plugin_gtk.c:107
+msgid "UserID"
+msgstr "Käyttäjätunnus"
+
+#: src/plugins/fetchinfo/fetchinfo_plugin_gtk.c:109
+msgid "Fetch time"
+msgstr "Hakuaika"
+
+#: src/plugins/gdata/cm_gdata_contacts.c:188
+#, c-format
+msgid "GData plugin: Error querying for contacts: %s\n"
+msgstr "Gdata-liitännäinen: Virhe yhteystietohaussa: %s\n"
+
+#: src/plugins/gdata/cm_gdata_contacts.c:204
+#, c-format
+msgid "Added %d of"
+msgid_plural "Added %d of"
+msgstr[0] "Lisätty %d/"
+msgstr[1] "Lisätty %d/"
+
+#: src/plugins/gdata/cm_gdata_contacts.c:206
+#, c-format
+msgid "1 contact to the cache"
+msgid_plural "%d contacts to the cache"
+msgstr[0] "%d yhteystiedosta välimuistiin"
+msgstr[1] "%d yhteystiedosta välimuistiin"
+
+#: src/plugins/gdata/cm_gdata_contacts.c:216
+msgid "GData plugin: Starting async contacts query\n"
+msgstr "Gdata-liitännäinen: Aloitetaan epäsynkroninen yhteystietohaku\n"
+
+#: src/plugins/gdata/cm_gdata_contacts.c:241
+#, c-format
+msgid "GData plugin: Error querying for groups: %s\n"
+msgstr "Gdata-liitännäinen: Virhe ryhmien haussa: %s\n"
+
+#: src/plugins/gdata/cm_gdata_contacts.c:278
+msgid "GData plugin: Groups received\n"
+msgstr "Gdata-liitännäinen: Ryhmät haettu\n"
+
+#: src/plugins/gdata/cm_gdata_contacts.c:290
+msgid "GData plugin: Starting async groups query\n"
+msgstr "Gdata-liitännäinen: Aloitetaan epäsynkroninen ryhmähaku\n"
+
+#: src/plugins/gdata/cm_gdata_contacts.c:308
+#: src/plugins/gdata/cm_gdata_contacts.c:334
+#, c-format
+msgid "GData plugin: Authentication error: %s\n"
+msgstr "Gdata-liitännäinen: Varmennusvirhe: %s\n"
+
+#: src/plugins/gdata/cm_gdata_contacts.c:314
+#: src/plugins/gdata/cm_gdata_contacts.c:340
+msgid "GData plugin: Authenticated\n"
+msgstr "Gdata-liitännäinen: Varmennettu\n"
+
+#: src/plugins/gdata/cm_gdata_contacts.c:360
+msgid "GData plugin: Starting async authentication\n"
+msgstr "Gdata-liitännäinen: Aloitetaan epäsynkroninen varmennus\n"
+
+#: src/plugins/gdata/cm_gdata_prefs.c:78 src/prefs_account.c:1716
+msgid "Authentication"
+msgstr "Todennus"
+
+#: src/plugins/gdata/cm_gdata_prefs.c:84
+msgid "Username:"
+msgstr "Käyttäjätunnus:"
+
+#: src/plugins/gdata/cm_gdata_prefs.c:91 src/wizard.c:1601
+msgid "Password:"
+msgstr "Salasana:"
+
+#: src/plugins/gdata/cm_gdata_prefs.c:103
+msgid "Polling interval (seconds):"
+msgstr "Hakutiheys (sekuntia):"
+
+#: src/plugins/gdata/cm_gdata_prefs.c:110
+msgid "Maximum number of results:"
+msgstr "Tulosten enimmäismäärä:"
+
+#: src/plugins/gdata/cm_gdata_prefs.c:146 src/plugins/gdata/gdata_plugin.c:101
+#: src/plugins/gdata/gdata_plugin.c:156
+msgid "GData"
+msgstr "Gdata"
+
+#: src/plugins/gdata/gdata_plugin.c:75
+msgid ""
+"\n"
+"GData Plugin: Failed to write plugin configuration to file\n"
+msgstr ""
+"\n"
+"Gdata-liitännäinen: Ei voitu kirjoittaa liittännäisen asetustietoja\n"
+
+#: src/plugins/gdata/gdata_plugin.c:107
+msgid "Failed to register address completion hook in the GData plugin"
+msgstr "Gdatan osoitteentäydennyskoukunrekisteröinti epäonnistui"
+
+#: src/plugins/gdata/gdata_plugin.c:114
+msgid "Failed to register offline switch hook in the GData plugin"
+msgstr "Gdatan yhteystilakoukunrekisteröinti epäonnistui"
+
+#: src/plugins/gdata/gdata_plugin.c:161
+msgid ""
+"This plugin provides access to the GData protocol for Claws Mail.\n"
+"\n"
+"The GData protocol is an interface to Google services.\n"
+"Currently, the only implemented functionality is to include Google Contacts "
+"into the Tab-address completion.\n"
+"\n"
+"Feedback to <berndth@gmx.de> is welcome."
+msgstr ""
+"Tämä liitännäinen toteuttaa Gdata-protokollan Claws Mailille.\n"
+"\n"
+"Gdata on Googlen rajapinta.\n"
+"Tällä hetkellä ainoa toiminto on Google Contacts -tuki osoitteen "
+"Tabitäydennykselle.\n"
+"\n"
+"Palautteet englanniksi osoitteeseen <berndth@gmx.de>."
+
+#: src/plugins/gdata/gdata_plugin.c:187
+msgid "GData integration"
+msgstr "Gdata-yhteys"
+
+#: src/plugins/mailmbox/plugin.c:58
+msgid "mailmbox folder (etPan!)"
+msgstr ""
+
+#: src/plugins/mailmbox/plugin.c:63
+msgid "This is a plugin to handle mailboxes in mbox format."
+msgstr ""
+
+#: src/plugins/mailmbox/plugin.c:84
+msgid "MBOX"
+msgstr ""
+
+#: src/plugins/mailmbox/plugin_gtk.c:86
+msgid "mbox (etPan!)..."
+msgstr ""
+
+#: src/plugins/mailmbox/plugin_gtk.c:190
+#, fuzzy
+msgid ""
+"Input the location of mailbox.\n"
+"If the existing mailbox is specified, it will be\n"
+"scanned automatically."
+msgstr ""
+"Anna postilaatikon sijainti.\n"
+"Jos se on olemassaoleva postilaatikko,\n"
+"se skannataan automaattisesti."
+
+#: src/plugins/mailmbox/plugin_gtk.c:196
+#, fuzzy, c-format
+msgid "The mailbox `%s' already exists."
+msgstr "Postilaatikko ”%s” on jo olemassa."
+
+#: src/plugins/mailmbox/plugin_gtk.c:261 src/plugins/mailmbox/plugin_gtk.c:428
+#, fuzzy, c-format
+msgid "The folder `%s' already exists."
+msgstr "Kansio ”%s” on jo olemassa."
+
+#: src/plugins/mailmbox/plugin_gtk.c:268
+#, fuzzy, c-format
+msgid "Can't create the folder `%s'."
+msgstr "Kansiota ”%s” ei voi luoda."
+
+#: src/plugins/mailmbox/plugin_gtk.c:290
+#, fuzzy, c-format
+msgid ""
+"Really remove the mailbox `%s' ?\n"
+"(The messages are NOT deleted from the disk)"
+msgstr ""
+"Poistetaanko postilaatikko ”%s”?\n"
+"(Viestejä ei poisteta levyltä)"
+
+#: src/plugins/mailmbox/plugin_gtk.c:323
+#, fuzzy, c-format
+msgid ""
+"All folder(s) and message(s) under `%s' will be deleted.\n"
+"Do you really want to delete?"
+msgstr ""
+"Kaikki kansiot ja viestit tilillä ”%s” poistetaan, palauttaminen ei sen "
+"jälkeen ole mahdollista\n"
+"\n"
+"Poistetaanko varmasti?"
+
+#: src/plugins/mailmbox/plugin_gtk.c:343
+#, fuzzy, c-format
+msgid "Can't remove the folder `%s'."
+msgstr "Ei voi poistaa kansiota ”%s”."
+
+#: src/plugins/mailmbox/plugin_gtk.c:408
+#, fuzzy, c-format
+msgid "Input new name for `%s':"
+msgstr "Anna uusi nimi kansiolle ”%s”:"
+
+#: src/plugins/newmail/newmail.c:91
+#, fuzzy, c-format
+msgid "Newmail plugin unloaded\n"
+msgstr "%s (liitännäistä lataamatta)"
+
+#: src/plugins/newmail/newmail.c:98 src/plugins/newmail/newmail.c:137
+#, fuzzy
+msgid "NewMail"
+msgstr "Hae kaikki"
+
+#: src/plugins/newmail/newmail.c:103
+#, fuzzy
+msgid "Failed to register newmail hook"
+msgstr "Sulkemiskoukun rekisteröinti epäonnistui"
+
+#: src/plugins/newmail/newmail.c:115
+msgid ""
+"Cannot load plugin NewMail\n"
+"$HOME is too long\n"
+msgstr ""
+
+#: src/plugins/newmail/newmail.c:130
+#, c-format
+msgid ""
+"Newmail plugin loaded\n"
+"Message header summaries written to %s\n"
+msgstr ""
+
+#: src/plugins/newmail/newmail.c:142
+msgid ""
+"This Plugin writes a header summary to a log file for each mail received "
+"after sorting.\n"
+"\n"
+"Default is ~/Mail/NewLog"
+msgstr ""
+
+#: src/plugins/newmail/newmail.c:165
+#, fuzzy
+msgid "Log file"
+msgstr "Lokitaso"
+
+#: src/plugins/notification/notification_banner.c:350
+msgid "Folder:"
+msgstr "Kansio:"
+
+#: src/plugins/notification/notification_foldercheck.c:471
+msgid "Select folder(s)"
+msgstr "Valitse kansioita"
+
+#: src/plugins/notification/notification_foldercheck.c:572
+msgid "select recursively"
+msgstr "valitse rekursiivisesti"
+
+#: src/plugins/notification/notification_lcdproc.c:149
+msgid "No new messages"
+msgstr "Ei uusia viesti"
+
+#: src/plugins/notification/notification_plugin.c:207
+#: src/plugins/notification/notification_plugin.c:408
+#: src/plugins/notification/notification_prefs.c:391
+#: src/plugins/notification/notification_prefs.c:405
+#: src/plugins/notification/notification_prefs.c:423
+#: src/plugins/notification/notification_prefs.c:440
+#: src/plugins/notification/notification_prefs.c:457
+#: src/plugins/notification/notification_prefs.c:474
+#: src/plugins/notification/notification_prefs.c:491
+#: src/plugins/notification/notification_prefs.c:508
+msgid "Notification"
+msgstr "Ilmoitus"
+
+#: src/plugins/notification/notification_plugin.c:212
+msgid "The Notification plugin needs threading support."
+msgstr "Ilmoitusliitännäinen vaatii säietuen."
+
+#: src/plugins/notification/notification_plugin.c:219
+msgid "Failed to register folder item update hook in the Notification plugin"
+msgstr "Päivityskoukun rekisteröinti ilmoitusliitännäiselle epäonnistui"
+
+#: src/plugins/notification/notification_plugin.c:227
+msgid "Failed to register folder update hook in the Notification plugin"
+msgstr "Kansiopäivityskoukun rekisteröinti ilmoitusliitännäiselle epäonnistui"
+
+#: src/plugins/notification/notification_plugin.c:237
+msgid "Failed to register msginfo update hook in the Notification plugin"
+msgstr "Viesti-info-koukun rekisteröinti ilmoitusliitännäiselle epäonnistui"
+
+#: src/plugins/notification/notification_plugin.c:247
+msgid "Failed to register offline switch hook in the Notification plugin"
+msgstr "Yhteydettömyyskoukun rekisteröinti ilmoitusliitännäiselle epäonnistui"
+
+#: src/plugins/notification/notification_plugin.c:258
+msgid "Failed to register main window close hook in the Notification plugin"
+msgstr ""
+"Ikkunan sulkemsiskoukun rekisteröinti ilmoitusliitännäiselle epäonnistui"
+
+#: src/plugins/notification/notification_plugin.c:271
+msgid "Failed to register got iconified hook in the Notification plugin"
+msgstr "Pienentymiskoukun rekisteröinti ilmoitusliitännäiselle epäonnistui"
+
+#: src/plugins/notification/notification_plugin.c:284
+msgid "Failed to register account list changed hook in the Notification plugin"
+msgstr ""
+"Tililistapäivityskoukun rekisteröinti ilmoitusliitännäiselle epäonnistui"
+
+#: src/plugins/notification/notification_plugin.c:297
+msgid "Failed to register theme change hook int the Notification plugin"
+msgstr "Teemakoukun rekisteröinti ilmoitusliitännäiselle epäonnistui"
+
+#: src/plugins/notification/notification_plugin.c:413
+msgid ""
+"This plugin provides various ways to notify the user of new and unread "
+"email.\n"
+"The plugin is extensively configurable in the plugins section of the "
+"preferences dialog.\n"
+"\n"
+"Feedback to <berndth@gmx.de> is welcome."
+msgstr ""
+"Liitännäisellä voi ilmoittaa käyttäjälle saapuvasta ja lukemattomasta "
+"postista.\n"
+"\n"
+"Palaute osoitteeseen <berndth@gmx.de>, suomennoksesta <flammie@iki.fi>"
+
+#: src/plugins/notification/notification_plugin.c:438
+msgid "Various tools"
+msgstr "Työkaluja"
+
+#: src/plugins/notification/notification_popup.c:308
+msgid "New Mail message"
+msgstr "Uusi viesti"
+
+#: src/plugins/notification/notification_popup.c:329
+msgid "New News post"
+msgstr "Uusi nyyssiviesti"
+
+#: src/plugins/notification/notification_popup.c:330
+msgid "A new message arrived"
+msgstr "Uusi viesti saapuu"
+
+#: src/plugins/notification/notification_popup.c:333
+msgid "New Calendar message"
+msgstr "Uusi kalenteriviesti"
+
+#: src/plugins/notification/notification_popup.c:334
+#: src/plugins/notification/notification_trayicon.c:869
+msgid "A new calendar message arrived"
+msgstr "Uusi kalenteriviesti saapui"
+
+#: src/plugins/notification/notification_popup.c:337
+msgid "New RSS feed article"
+msgstr "Uusi RSS‐syöte"
+
+#: src/plugins/notification/notification_popup.c:338
+#: src/plugins/notification/notification_trayicon.c:872
+msgid "A new article in a RSS feed arrived"
+msgstr "Uusi RSS‐syöte saapui"
+
+#: src/plugins/notification/notification_popup.c:341
+msgid "New unknown message"
+msgstr "Uusi tunnistamaton viesti"
+
+#: src/plugins/notification/notification_popup.c:342
+msgid "Unknown message type arrived"
+msgstr "Uusi tunnistamaton viesti saapui"
+
+#: src/plugins/notification/notification_popup.c:485
+msgid "Mail message"
+msgstr "Sähköpostiviesti"
+
+#: src/plugins/notification/notification_popup.c:486
+#: src/plugins/notification/notification_popup.c:492
+#, c-format
+msgid "%d new message arrived"
+msgid_plural "%d new messages arrived"
+msgstr[0] "%d uusi viesti saapunut"
+msgstr[1] "%d uutta viestiä saapunut"
+
+#: src/plugins/notification/notification_popup.c:491
+msgid "News message"
+msgstr "Nyyssiviesti"
+
+#: src/plugins/notification/notification_popup.c:497
+msgid "Calendar message"
+msgstr "Kalenteriviesti"
+
+#: src/plugins/notification/notification_popup.c:498
+#: src/plugins/notification/notification_trayicon.c:906
+#, c-format
+msgid "%d new calendar message arrived"
+msgid_plural "%d new calendar messages arrived"
+msgstr[0] "%d uusi kalenteriviesti saapunut"
+msgstr[1] "%d uutta kalenteriviestiä saapunut"
+
+#: src/plugins/notification/notification_popup.c:503
+msgid "RSS news feed"
+msgstr "RSS‐syöte"
+
+#: src/plugins/notification/notification_popup.c:504
+#, c-format
+msgid "%d new article in a RSS feed arrived"
+msgid_plural "%d new articles in a RSS feed arrived"
+msgstr[0] "%d uusi viesti RSS‐syötteessä saapunut"
+msgstr[1] "%d uutta viestiä RSS‐syötteessä saapunut"
+
+#: src/plugins/notification/notification_popup.c:566
+#, c-format
+msgid "%d new message"
+msgid_plural "%d new messages"
+msgstr[0] "%d uusi viesti"
+msgstr[1] "%d uutta viestiä"
+
+#: src/plugins/notification/notification_prefs.c:406
+msgid "Hotkeys"
+msgstr "Erikoisnäppäimet"
+
+#: src/plugins/notification/notification_prefs.c:424
+msgid "Banner"
+msgstr "Banneri"
+
+#: src/plugins/notification/notification_prefs.c:441
+msgid "Popup"
+msgstr "Ponnahdus"
+
+#: src/plugins/notification/notification_prefs.c:458 src/prefs_actions.c:263
+#: src/prefs_receive.c:147
+msgid "Command"
+msgstr "Komento"
+
+#: src/plugins/notification/notification_prefs.c:475
+msgid "LCD"
+msgstr "LCD"
+
+#: src/plugins/notification/notification_prefs.c:492
+msgid "SysTrayicon"
+msgstr "Ilmoitusaluekuvake"
+
+#: src/plugins/notification/notification_prefs.c:509
+msgid "Indicator"
+msgstr "Merkki"
+
+#: src/plugins/notification/notification_prefs.c:564
+msgid ""
+"\n"
+"Notification Plugin: Failed to write plugin configuration to file\n"
+msgstr ""
+"\n"
+"Ilmoitusliitännäinen: liitännäisasetusten kirjoitus tiedostoon epäonnistui\n"
+
+#: src/plugins/notification/notification_prefs.c:591
+msgid "Include folder types"
+msgstr "Sisällytä kansiotyypit"
+
+#: src/plugins/notification/notification_prefs.c:601
+msgid "Mail folders"
+msgstr "Sähköpostikansiot"
+
+#: src/plugins/notification/notification_prefs.c:609
+msgid "News folders"
+msgstr "Nyyssikansiot"
+
+#: src/plugins/notification/notification_prefs.c:617
+msgid "RSS folders"
+msgstr "RSS‐kansiot"
+
+#: src/plugins/notification/notification_prefs.c:625
+msgid "Calendar folders"
+msgstr "Kalenterikansiot"
+
+#: src/plugins/notification/notification_prefs.c:633
+msgid "These settings overwrite folder-specific selections."
+msgstr "Asetukset korvaavat kansioittaiset valinnat."
+
+#: src/plugins/notification/notification_prefs.c:644
+msgid "Global notification settings"
+msgstr "Yleiset huomautusasetukset"
+
+#: src/plugins/notification/notification_prefs.c:654
+msgid "Set window manager urgency hint when new messages exist"
+msgstr "Aset ikkunointiohjelman kiirrellisyysvihje kun uusia viestejä on"
+
+#: src/plugins/notification/notification_prefs.c:663
+msgid "Set window manager urgency hint when unread messages exist"
+msgstr ""
+"Aset ikkunointiohjelman kiireellisyysvihje kun lukemattomia viestejä on"
+
+#: src/plugins/notification/notification_prefs.c:673
+msgid "Use sound theme"
+msgstr "Käytä ääniteemaa"
+
+#: src/plugins/notification/notification_prefs.c:735
+msgid "Show banner"
+msgstr "Näytä banneri"
+
+#: src/plugins/notification/notification_prefs.c:740
+#: src/plugins/pgpcore/select-keys.c:242 src/plugins/pgpcore/sgpgme.c:144
+#: src/prefs_receive.c:197 src/prefs_summaries.c:462
+msgid "Never"
+msgstr "Ei koskaan"
+
+#: src/plugins/notification/notification_prefs.c:742 src/prefs_receive.c:195
+#: src/prefs_summaries.c:444 src/prefs_summaries.c:463
+msgid "Always"
+msgstr "Aina"
+
+#: src/plugins/notification/notification_prefs.c:744
+msgid "Only when not empty"
+msgstr "Vain jollei tyhjä"
+
+#: src/plugins/notification/notification_prefs.c:762
+msgid "slow"
+msgstr "hidas"
+
+#: src/plugins/notification/notification_prefs.c:766
+msgid "fast"
+msgstr "nopea"
+
+#: src/plugins/notification/notification_prefs.c:770
+msgid "Banner speed"
+msgstr "Bannerin vauhti"
+
+#: src/plugins/notification/notification_prefs.c:788
+msgid "Maximum number of messages (0 means unlimited)"
+msgstr "Enimmäismäärä viestejä (0 rajoittamattomalle)"
+
+#: src/plugins/notification/notification_prefs.c:802
+msgid "Banner width in pixels (0 means screen size)"
+msgstr "Bannerin leveys pikseleinä (0 ruudun ko’olle)"
+
+#: src/plugins/notification/notification_prefs.c:815
+msgid "Include unread mails in banner"
+msgstr "Sisällytä lukemattomat viestit banneriin"
+
+#: src/plugins/notification/notification_prefs.c:823
+msgid "Make banner sticky"
+msgstr "Tee bannerista tarttuva"
+
+#: src/plugins/notification/notification_prefs.c:833
+#: src/plugins/notification/notification_prefs.c:1031
+#: src/plugins/notification/notification_prefs.c:1303
+#: src/plugins/notification/notification_prefs.c:1538
+msgid "Only include selected folders"
+msgstr "Sisällytä vain valitut kansiot"
+
+#: src/plugins/notification/notification_prefs.c:842
+#: src/plugins/notification/notification_prefs.c:1040
+#: src/plugins/notification/notification_prefs.c:1312
+#: src/plugins/notification/notification_prefs.c:1547
+msgid "Select folders..."
+msgstr "Valitse kansioita…"
+
+#: src/plugins/notification/notification_prefs.c:852
+#: src/plugins/notification/notification_prefs.c:1072
+msgid "Use custom colors"
+msgstr "Käytä omia värejä"
+
+#: src/plugins/notification/notification_prefs.c:865
+#: src/plugins/notification/notification_prefs.c:1085
+msgid "Foreground"
+msgstr "Edusta"
+
+#: src/plugins/notification/notification_prefs.c:871
+#: src/plugins/notification/notification_prefs.c:1091
+msgid "Foreground color"
+msgstr "Edustaväri"
+
+#: src/plugins/notification/notification_prefs.c:876
+#: src/plugins/notification/notification_prefs.c:1096
+#: src/prefs_msg_colors.c:281 src/prefs_msg_colors.c:302
+#: src/prefs_msg_colors.c:323
+msgid "Background"
+msgstr "Tausta"
+
+#: src/plugins/notification/notification_prefs.c:882
+#: src/plugins/notification/notification_prefs.c:1102
+msgid "Background color"
+msgstr "Taustaväri"
+
+#: src/plugins/notification/notification_prefs.c:995
+msgid "Enable popup"
+msgstr "Salli ponnahdus"
+
+#: src/plugins/notification/notification_prefs.c:1012
+#: src/plugins/notification/notification_prefs.c:1593
+msgid "Popup timeout:"
+msgstr "Ponnahdusaika:"
+
+#: src/plugins/notification/notification_prefs.c:1022
+#: src/plugins/notification/notification_prefs.c:1294
+#: src/plugins/notification/notification_prefs.c:1602
+#: src/plugins/spamassassin/spamassassin_gtk.c:391 src/prefs_other.c:558
+#: src/prefs_summaries.c:496
+msgid "seconds"
+msgstr "sekuntia"
+
+#: src/plugins/notification/notification_prefs.c:1051
+msgid "Make popup sticky"
+msgstr "Tee ponnahduksesta tarttuva"
+
+#: src/plugins/notification/notification_prefs.c:1061
+msgid "Set popup window width and position"
+msgstr "Aseta ponnahdusikkunan leveys ja sijainti"
+
+#: src/plugins/notification/notification_prefs.c:1066
+msgid "(the window manager is free to ignore this)"
+msgstr "(ikkunointiohjelma voi sivuuttaa asetukset)"
+
+#: src/plugins/notification/notification_prefs.c:1114
+#: src/plugins/notification/notification_prefs.c:1605
+msgid "Display folder name"
+msgstr "Näytä kansion nimi"
+
+#: src/plugins/notification/notification_prefs.c:1179
+msgid "Sample popup window"
+msgstr "Esimerkkiponnahdus"
+
+#: src/plugins/notification/notification_prefs.c:1185
+msgid "Done"
+msgstr "Valmis"
+
+#: src/plugins/notification/notification_prefs.c:1254
+msgid "Enable command"
+msgstr "Käytä komentoa"
+
+#: src/plugins/notification/notification_prefs.c:1271
+msgid "Command to execute:"
+msgstr "Ajettava komento:"
+
+#: src/plugins/notification/notification_prefs.c:1284
+msgid "Block command after execution for"
+msgstr "Estä komento ajaksi"
+
+#: src/plugins/notification/notification_prefs.c:1391
+msgid "Enable LCD"
+msgstr "Salli LCD"
+
+#: src/plugins/notification/notification_prefs.c:1410
+msgid "Hostname:Port of LCDd server:"
+msgstr "Konenimi:portti LCDd‐palvelimeen:"
+
+#: src/plugins/notification/notification_prefs.c:1495
+msgid "Enable Trayicon"
+msgstr "Käytä ilmoitusaluekuvaketta"
+
+#: src/plugins/notification/notification_prefs.c:1511
+#: src/plugins/trayicon/trayicon_prefs.c:107
+msgid "Hide at start-up"
+msgstr "Piilota aloitettaessa"
+
+#: src/plugins/notification/notification_prefs.c:1519
+#: src/plugins/trayicon/trayicon_prefs.c:116
+msgid "Close to tray"
+msgstr "Sulje järjestelmäalueelle"
+
+#: src/plugins/notification/notification_prefs.c:1527
+msgid "Hide when iconified"
+msgstr "Piilota pienennettynä"
+
+#. TRANSLATORS: "Toaster" does not refer to the kitchen appliance.
+#. A toast is a small passive (non-focus-stealing)
+#. notification bubble. If your language does not have a word
+#. for that, go for something along the lines of "passive popup"
+#. instead.See also
+#. http://en.wikipedia.org/wiki/Toast_(computing)
+#: src/plugins/notification/notification_prefs.c:1564
+msgid "Passive toaster popup"
+msgstr "Passiivinen leivänpaahdinponnahdus"
+
+#: src/plugins/notification/notification_prefs.c:1575
+msgid "Enable Popup"
+msgstr "Salli ponnahdus"
+
+#: src/plugins/notification/notification_prefs.c:1793
+msgid "Add to Indicator Applet"
+msgstr "Lisää merkkivalosovelmaan"
+
+#: src/plugins/notification/notification_prefs.c:1807
+msgid "Hide mainwindow when minimized"
+msgstr "Piilota pienennettynä"
+
+#: src/plugins/notification/notification_prefs.c:1813
+msgid "Register Claws Mail"
+msgstr "Rekisteröi Claws Mailiin"
+
+#: src/plugins/notification/notification_prefs.c:1874
+msgid "Enable global hotkeys"
+msgstr "Salli yleiset pikanäppäimet"
+
+#: src/plugins/notification/notification_prefs.c:1888
+#, c-format
+msgid "Examples for hotkeys include <b>%s</b> and <b>%s</b>"
+msgstr "Esimerkkejä pikanäppäimistä: <b>%s</b> ja <b>%s</b>"
+
+#: src/plugins/notification/notification_prefs.c:1888
+msgid "<control><shift>F11"
+msgstr "<Ctrl><Shift>F11"
+
+#: src/plugins/notification/notification_prefs.c:1888
+msgid "<alt>N"
+msgstr "<Alt>N"
+
+#: src/plugins/notification/notification_prefs.c:1899
+msgid "Toggle minimize:"
+msgstr "Muuta pienennystä:"
+
+#: src/plugins/notification/notification_trayicon.c:108
+#: src/plugins/trayicon/trayicon.c:97
+msgid "_Get Mail"
+msgstr "_Hae viestit"
+
+#: src/plugins/notification/notification_trayicon.c:110
+#: src/plugins/trayicon/trayicon.c:99
+msgid "_Email"
+msgstr "S_ähköposti"
+
+#: src/plugins/notification/notification_trayicon.c:111
+#: src/plugins/trayicon/trayicon.c:100
+msgid "E_mail from account"
+msgstr "Tilin sä_hköposti"
+
+#: src/plugins/notification/notification_trayicon.c:112
+#: src/plugins/trayicon/trayicon.c:101
+msgid "Open A_ddressbook"
+msgstr "Avaa _osoitekirja"
+
+#: src/plugins/notification/notification_trayicon.c:113
+#: src/plugins/trayicon/trayicon.c:102
+msgid "E_xit Claws Mail"
+msgstr "P_oistu Claws Mailista"
+
+#: src/plugins/notification/notification_trayicon.c:118
+#: src/plugins/trayicon/trayicon.c:107
+msgid "_Work Offline"
+msgstr "_Yhteydetön tila"
+
+#: src/plugins/notification/notification_trayicon.c:120
+msgid "Show Trayicon Notifications"
+msgstr "Näytä järjestelmäkuvakkeen ilmoitukset"
+
+#: src/plugins/notification/notification_trayicon.c:263
+#: src/plugins/trayicon/trayicon.c:189
+#, c-format
+msgid "New %d, Unread: %d, Total: %d"
+msgstr "Uusia %d, lukematta %d, Yhteensä %d"
+
+#: src/plugins/notification/notification_trayicon.c:819
+msgid "New mail message"
+msgstr "Uusi sähköpostiviesti"
+
+#: src/plugins/notification/notification_trayicon.c:821
+msgid "New news post"
+msgstr "Uusi nyyssiviesti"
+
+#: src/plugins/notification/notification_trayicon.c:823
+msgid "New calendar message"
+msgstr "Uusi kalenteriviesti"
+
+#: src/plugins/notification/notification_trayicon.c:825
+msgid "New article in RSS feed"
+msgstr "Uusi RSS‐syötteen viesti"
+
+#: src/plugins/notification/notification_trayicon.c:828
+msgid "New messages arrived"
+msgstr "Uusia viestejä saapui"
+
+#: src/plugins/notification/notification_trayicon.c:884
+#, c-format
+msgid "%d new mail message arrived"
+msgid_plural "%d new mail messages arrived"
+msgstr[0] "%d uusi sähköpostiviesti saapunut"
+msgstr[1] "%d uutta sähköpostiviestiä saapunut"
+
+#: src/plugins/notification/notification_trayicon.c:895
+#, c-format
+msgid "%d new news post arrived"
+msgid_plural "%d new news posts arrived"
+msgstr[0] "%d uusi nyyssiviesti saapunut"
+msgstr[1] "%d uutta nyyssiviestiä saapunut"
+
+#: src/plugins/notification/notification_trayicon.c:917
+#, c-format
+msgid "%d new article in RSS feeds arrived"
+msgid_plural "%d new articles in RSS feeds arrived"
+msgstr[0] "%d uusi viesti RSS‐syötteessä saapunut"
+msgstr[1] "%d uutta viestiä RSS‐syötteessä saapunut"
+
+#: src/plugins/pdf_viewer/poppler_viewer.c:703
+msgid "Title:"
+msgstr "Otsikko:"
+
+#: src/plugins/pdf_viewer/poppler_viewer.c:705
+msgid "Author:"
+msgstr "Tekijä:"
+
+#: src/plugins/pdf_viewer/poppler_viewer.c:707
+msgid "Creator:"
+msgstr "Luoja:"
+
+#: src/plugins/pdf_viewer/poppler_viewer.c:708
+msgid "Producer:"
+msgstr "Tuottaja:"
+
+#: src/plugins/pdf_viewer/poppler_viewer.c:711
+msgid "Created:"
+msgstr "Tehty:"
+
+#: src/plugins/pdf_viewer/poppler_viewer.c:715
+msgid "Modified:"
+msgstr "Muokattu:"
+
+#: src/plugins/pdf_viewer/poppler_viewer.c:718
+msgid "Format:"
+msgstr "Muoto:"
+
+#: src/plugins/pdf_viewer/poppler_viewer.c:720
+#: src/plugins/pdf_viewer/poppler_viewer.c:723
+msgid "Optimized:"
+msgstr "Optimointi:"
+
+#: src/plugins/pdf_viewer/poppler_viewer.c:1166
+msgid "PDF Viewer Plugin"
+msgstr "PDF‐näytinliitännäinen"
+
+#: src/plugins/pdf_viewer/poppler_viewer.c:1268
+msgid "Loading..."
+msgstr "Ladataan…"
+
+#: src/plugins/pdf_viewer/poppler_viewer.c:1327
+#, c-format
+msgid "%s Document"
+msgstr "%s‐asiakirja"
+
+#: src/plugins/pdf_viewer/poppler_viewer.c:1333
+#, c-format
+msgid "of %d"
+msgstr "/%d"
+
+#: src/plugins/pdf_viewer/poppler_viewer.c:1710
+#: src/plugins/pdf_viewer/poppler_viewer.c:1932
+msgid "Document Index"
+msgstr "Asiakirjahakemisto"
+
+#: src/plugins/pdf_viewer/poppler_viewer.c:1900
+msgid "First Page"
+msgstr "Ensimmäinen sivu"
+
+#: src/plugins/pdf_viewer/poppler_viewer.c:1903
+msgid "Previous Page"
+msgstr "Edellinen sivu"
+
+#: src/plugins/pdf_viewer/poppler_viewer.c:1906
+msgid "Next Page"
+msgstr "Seuraava sivu"
+
+#: src/plugins/pdf_viewer/poppler_viewer.c:1909
+msgid "Last Page"
+msgstr "Viimeinen sivu"
+
+#: src/plugins/pdf_viewer/poppler_viewer.c:1912
+msgid "Zoom In"
+msgstr "Zoomaa sisään"
+
+#: src/plugins/pdf_viewer/poppler_viewer.c:1914
+msgid "Zoom Out"
+msgstr "Zoomaa ulos"
+
+#: src/plugins/pdf_viewer/poppler_viewer.c:1917
+msgid "Fit Page"
+msgstr "Sivun kokoiseksi"
+
+#: src/plugins/pdf_viewer/poppler_viewer.c:1920
+msgid "Fit Page Width"
+msgstr "Sivun levyiseksi"
+
+#: src/plugins/pdf_viewer/poppler_viewer.c:1923
+msgid "Rotate Left"
+msgstr "Kierrä vasemmalle"
+
+#: src/plugins/pdf_viewer/poppler_viewer.c:1926
+msgid "Rotate Right"
+msgstr "Kierrä oikealle"
+
+#: src/plugins/pdf_viewer/poppler_viewer.c:1929
+msgid "Document Info"
+msgstr "Asiakirjan tiedot"
+
+#: src/plugins/pdf_viewer/poppler_viewer.c:1934
+msgid "Page Number"
+msgstr "Sivunumero"
+
+#: src/plugins/pdf_viewer/poppler_viewer.c:1936
+msgid "Zoom Factor"
+msgstr "Zoom‐kerroin"
+
+#: src/plugins/pdf_viewer/poppler_viewer.c:2041
+#, c-format
+msgid ""
+"This plugin enables the viewing of PDF and PostScript attachments using the "
+"Poppler %s Lib and the gs tool.\n"
+"\n"
+"Any feedback is welcome: iwkse@claws-mail.org"
+msgstr ""
+"Tällä liitännäisellä voi katsella PDF:iä ja PostScriptejä Poppler‐kirjaston "
+"%s ja gs‐työkalun avulla.\n"
+"\n"
+"Palaute on tervetullutta iwkse@claws-mail.org"
+
+#: src/plugins/pdf_viewer/poppler_viewer.c:2047
+#: src/plugins/pdf_viewer/poppler_viewer.c:2055
+#: src/plugins/pdf_viewer/poppler_viewer.c:2075
+msgid "PDF Viewer"
+msgstr "PDF‐näytin"
+
+#: src/plugins/pdf_viewer/poppler_viewer.c:2051
+#, c-format
+msgid ""
+"Warning: could not find ghostscript binary (gs) required for %s plugin to "
+"process PostScript attachments, only PDF attachments will be displayed. To "
+"enable PostScript support please install gs program.\n"
+"\n"
+"%s"
+msgstr ""
+"Varoitus: Ei löydetty ghostscriptiä (sovellusta gs), joka tarvitaan "
+"liitännäiselle %s, että voidaan käyttää PostScript-liitteitä. Näytetään vain "
+"PDF-liitteet. PostScriptin saa päälle asentamalla gs:n.\n"
+"\n"
+"%s"
+
+#: src/plugins/python/python_plugin.c:338
+#: src/plugins/python/python_plugin.c:482
+msgid "Python scripts"
+msgstr "Python-skriptit"
+
+#: src/plugins/python/python_plugin.c:477
+msgid "Show Python console..."
+msgstr "Näytä Pythonin konsoli..."
+
+#: src/plugins/python/python_plugin.c:483
+msgid "Refresh"
+msgstr "Päivitä"
+
+#: src/plugins/python/python_plugin.c:485 src/prefs_account.c:2480
+#: src/prefs_account.c:2502 src/prefs_account.c:2761 src/wizard.c:1379
+#: src/wizard.c:1658
+msgid "Browse"
+msgstr "Selaa"
+
+#: src/plugins/python/python_plugin.c:548
+#: src/plugins/python/python_plugin.c:602
+msgid "Python"
+msgstr "Python"
+
+#: src/plugins/python/python_plugin.c:554
+msgid "Failed to register \"compose create hook\" in the Python plugin"
+msgstr "Python-liitännäisen viestinkirjoituskoukun rekisteröinti epäonnistui"
+
+#: src/plugins/python/python_plugin.c:607
+msgid ""
+"This plugin provides Python integration features.\n"
+"\n"
+"For the most up-to-date API documentation, type\n"
+"\n"
+" help(clawsmail)\n"
+"\n"
+"in the interactive Python console under Tools -> Show Python console.\n"
+"\n"
+"The source distribution of this plugin comes with various example scripts in "
+"the \"examples\" subdirectory. If you wrote a script that you would be "
+"interested in sharing, feel free to send it to me to have it considered for "
+"inclusion in the examples.\n"
+"\n"
+"Feedback to <berndth@gmx.de> is welcome."
+msgstr ""
+"Tämä liitännäinen lisää Python-liitokset.\n"
+"\n"
+"Tuoreimman APIn saa selville kirjoittamalla\n"
+"\n"
+" help(clawsmail)\n"
+"\n"
+"Pythonin konsoliin, jonka saa esiin valikosta Työkalut→Näytä Python-"
+"konsoli.\n"
+"\n"
+"Lähdekoodit liitännäiseen sisältävät esimerkkejä hakemistossa ”examples”.Jos "
+"sinulla on hyödyllisiä skriptejä, lähetä niitä esimerkkeihin.\n"
+"\n"
+"Palaute englanniksi osoitteeseen <berndth@gmx.de>."
+
+#: src/plugins/python/python_plugin.c:636
+msgid "Python integration"
+msgstr "Python-liitokset"
 
 #: src/plugins/pgpcore/passphrase.c:86 src/plugins/pgpcore/prefs_gpg.c:108
 msgid "Passphrase"
@@ -9590,11 +10909,6 @@ msgstr "Haetaan tietoja kohteelle ”%s” … %c"
 #: src/plugins/pgpcore/select-keys.c:239 src/plugins/pgpcore/sgpgme.c:142
 msgid "Undefined"
 msgstr "Määrittelemättä"
-
-#: src/plugins/pgpcore/select-keys.c:242 src/plugins/pgpcore/sgpgme.c:144
-#: src/prefs_receive.c:197 src/prefs_summaries.c:462
-msgid "Never"
-msgstr "Ei koskaan"
 
 #: src/plugins/pgpcore/select-keys.c:245 src/plugins/pgpcore/sgpgme.c:146
 msgid "Marginal"
@@ -10626,44 +11940,10 @@ msgstr ""
 "Aika, jonka tarkistukseen voi käyttää. Jos siinä kestää pidempään, tarkistus "
 "keskeytetään."
 
-#: src/plugins/spamassassin/spamassassin_gtk.c:391 src/prefs_other.c:558
-#: src/prefs_summaries.c:496
-msgid "seconds"
-msgstr "sekuntia"
-
 #: src/plugins/trayicon/trayicon.c:56 src/plugins/trayicon/trayicon.c:591
 #: src/plugins/trayicon/trayicon_prefs.c:70
 msgid "Trayicon"
 msgstr "Ilmoitusaluekuvake"
-
-#: src/plugins/trayicon/trayicon.c:97
-msgid "_Get Mail"
-msgstr "_Hae viestit"
-
-#: src/plugins/trayicon/trayicon.c:99
-msgid "_Email"
-msgstr "S_ähköposti"
-
-#: src/plugins/trayicon/trayicon.c:100
-msgid "E_mail from account"
-msgstr "Tilin sä_hköposti"
-
-#: src/plugins/trayicon/trayicon.c:101
-msgid "Open A_ddressbook"
-msgstr "Avaa _osoitekirja"
-
-#: src/plugins/trayicon/trayicon.c:102
-msgid "E_xit Claws Mail"
-msgstr "P_oistu Claws Mailista"
-
-#: src/plugins/trayicon/trayicon.c:107
-msgid "_Work Offline"
-msgstr "_Yhteydetön tila"
-
-#: src/plugins/trayicon/trayicon.c:189
-#, c-format
-msgid "New %d, Unread: %d, Total: %d"
-msgstr "Uusia %d, lukematta %d, Yhteensä %d"
 
 #: src/plugins/trayicon/trayicon.c:357
 msgid "Claws Mail"
@@ -10704,17 +11984,9 @@ msgstr ""
 "siinä on kirjeitä. Ponnahdusvihjeessä kerrotaan uusien, lukemattomien ja "
 "kaikkien viestien määrät."
 
-#: src/plugins/trayicon/trayicon_prefs.c:107
-msgid "Hide at start-up"
-msgstr "Piilota aloitettaessa"
-
 #: src/plugins/trayicon/trayicon_prefs.c:113
 msgid "Hide Claws Mail at start-up"
 msgstr "Piilota Claws Mail aloitettaessa"
-
-#: src/plugins/trayicon/trayicon_prefs.c:116
-msgid "Close to tray"
-msgstr "Sulje järjestelmäalueelle"
 
 #: src/plugins/trayicon/trayicon_prefs.c:122
 msgid ""
@@ -11920,10 +13192,6 @@ msgstr "Luo X-Mailer-otsake"
 msgid "Add user-defined header"
 msgstr "Lisää mukautettu otsakekenttä"
 
-#: src/prefs_account.c:1716
-msgid "Authentication"
-msgstr "Todennus"
-
 #: src/prefs_account.c:1719
 msgid "SMTP Authentication (SMTP AUTH)"
 msgstr "SMTP-todennus (SMTP AUTH)"
@@ -12068,11 +13336,6 @@ msgstr "Asiakasvarmenteet"
 #: src/prefs_account.c:2477
 msgid "Certificate for receiving"
 msgstr "Vastaanottovarmenne"
-
-#: src/prefs_account.c:2480 src/prefs_account.c:2502 src/prefs_account.c:2761
-#: src/wizard.c:1379 src/wizard.c:1658
-msgid "Browse"
-msgstr "Selaa"
 
 #: src/prefs_account.c:2482 src/prefs_account.c:2484 src/prefs_account.c:2504
 #: src/prefs_account.c:2506
@@ -12244,10 +13507,6 @@ msgstr "Toimintoasetukset"
 #: src/prefs_actions.c:250
 msgid "Menu name"
 msgstr "Valikon nimi"
-
-#: src/prefs_actions.c:263 src/prefs_receive.c:147
-msgid "Command"
-msgstr "Komento"
 
 #: src/prefs_actions.c:283
 msgid "Shell command"
@@ -13901,11 +15160,6 @@ msgctxt "Tooltip"
 msgid "Pick color for 1st level text background"
 msgstr "Väri ensimmäisen tason taustalle"
 
-#: src/prefs_msg_colors.c:281 src/prefs_msg_colors.c:302
-#: src/prefs_msg_colors.c:323
-msgid "Background"
-msgstr "Tausta"
-
 #: src/prefs_msg_colors.c:300
 msgctxt "Tooltip"
 msgid "Pick color for 2nd level text background"
@@ -14186,10 +15440,6 @@ msgstr "Ikkunat"
 #: src/prefs_receive.c:186
 msgid "Show receive dialog"
 msgstr "Näytä hakuikkuna"
-
-#: src/prefs_receive.c:195 src/prefs_summaries.c:444 src/prefs_summaries.c:463
-msgid "Always"
-msgstr "Aina"
 
 #: src/prefs_receive.c:196
 msgid "Only on manual receiving"
@@ -16663,10 +17913,6 @@ msgstr "Portin numeron voi lisätä loppuun: mail.example.com:110"
 msgid "<span weight=\"bold\">Username:</span>"
 msgstr "<span weight=\"bold\">Käyttäjänimi:</span>"
 
-#: src/wizard.c:1601
-msgid "Password:"
-msgstr "Salasana:"
-
 #: src/wizard.c:1619
 msgid "Use SSL to connect to receiving server"
 msgstr "Käytä SSL:ää vastaanottoyhteyden ottamiseen"
@@ -16928,9 +18174,6 @@ msgstr ""
 #~ "Hiroyuki Yamamoto <hiro-y@kcn.ne.jp>\n"
 #~ "ja Claws Mail -tiimi"
 
-#~ msgid "Configuration"
-#~ msgstr "Asetukset"
-
 #~ msgid "Configuration options for the print job"
 #~ msgstr "Tulostuksen asetukset"
 
@@ -16963,9 +18206,6 @@ msgstr ""
 
 #~ msgid "GnomeFont name to use for the document text (deprecated)"
 #~ msgstr "GnomeFont, jota käytetään dokumentin tekstissä (vanhentunut)"
-
-#~ msgid "Font Description"
-#~ msgstr "Fontin kuvaus"
 
 #~ msgid "Font to use for the document text (e.g. \"Monospace 10\")"
 #~ msgstr "Fontti, jota käytetään tekstissä (kuten Monospace 10)"
@@ -17246,3 +18486,23 @@ msgstr ""
 
 #~ msgid "Your Sylpheed-Claws version is too old for AcpiNotifier"
 #~ msgstr "Sylpheed-Clawsisi on ACPINotifierille liian vanha"
+
+#~ msgid "Scan archive contents"
+#~ msgstr "Skannaa paketit"
+
+#~ msgid "%d page"
+#~ msgid_plural "%d pages"
+#~ msgstr[0] "%d sivu"
+#~ msgstr[1] "%d sivua"
+
+#~ msgid "%s document, page %d/%d"
+#~ msgstr "%s‐teksti, sivu %d∕%d"
+
+#~ msgid ""
+#~ "This plugin provides Python integration features.\n"
+#~ "\n"
+#~ "Feedback to <berndth@gmx.de> is welcome."
+#~ msgstr ""
+#~ "Tämä liitännäinen sisältää Python-tulkin.\n"
+#~ "\n"
+#~ "Lähetä palaute osoitteeseen <berndth@gmx.de>."

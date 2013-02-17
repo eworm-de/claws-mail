@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Claws Mail\n"
 "Report-Msgid-Bugs-To: paul@claws-mail.org\n"
-"POT-Creation-Date: 2013-02-16 14:36+0100\n"
+"POT-Creation-Date: 2013-02-17 22:25+0100\n"
 "PO-Revision-Date: 2012-11-12 22:42-0200\n"
 "Last-Translator: \n"
 "Language-Team: Brazilian Portuguese <kde-i18n-pt_BR@kde.org>\n"
@@ -82,9 +82,9 @@ msgstr "'Receber mensagem' busca os e-mails das contas marcadas"
 #: src/editaddress.c:1327 src/editaddress.c:1347 src/editbook.c:170
 #: src/editgroup.c:288 src/editjpilot.c:257 src/editldap.c:428
 #: src/editvcard.c:173 src/importmutt.c:223 src/importpine.c:222
-#: src/mimeview.c:284 src/plugins/pgpcore/select-keys.c:398
-#: src/prefs_filtering.c:384 src/prefs_filtering.c:1872
-#: src/prefs_template.c:78
+#: src/mimeview.c:284 src/plugins/pdf_viewer/poppler_viewer.c:1789
+#: src/plugins/pgpcore/select-keys.c:398 src/prefs_filtering.c:384
+#: src/prefs_filtering.c:1872 src/prefs_template.c:78
 msgid "Name"
 msgstr "Nome"
 
@@ -652,7 +652,7 @@ msgstr ""
 "contidos serão movidos para a pasta superior."
 
 #: src/addressbook.c:2932 src/imap_gtk.c:363 src/mh_gtk.c:202
-#: src/plugins/rssyl/rssyl_cb_menu.c:237
+#: src/plugins/mailmbox/plugin_gtk.c:325 src/plugins/rssyl/rssyl_cb_menu.c:237
 #: src/plugins/vcalendar/vcal_folder.c:1953
 msgid "Delete folder"
 msgstr "Excluir a pasta"
@@ -1483,7 +1483,8 @@ msgstr "%I:%M:%S %p"
 msgid "_Add..."
 msgstr "_Adicionar..."
 
-#: src/compose.c:566 src/mh_gtk.c:361 src/plugins/rssyl/rssyl_cb_menu.c:140
+#: src/compose.c:566 src/mh_gtk.c:361 src/plugins/mailmbox/plugin_gtk.c:293
+#: src/plugins/rssyl/rssyl_cb_menu.c:140
 msgid "_Remove"
 msgstr "_Remover"
 
@@ -1943,21 +1944,21 @@ msgstr "Não foi possível ler %s."
 msgid "Message: %s"
 msgstr "Mensagem: %s"
 
-#: src/compose.c:4658
+#: src/compose.c:4658 src/plugins/python/composewindowtype.c:428
 msgid " [Edited]"
 msgstr " [Editada]"
 
-#: src/compose.c:4665
+#: src/compose.c:4665 src/plugins/python/composewindowtype.c:431
 #, c-format
 msgid "%s - Compose message%s"
 msgstr "%s - Escrever mensagem%s"
 
-#: src/compose.c:4668
+#: src/compose.c:4668 src/plugins/python/composewindowtype.c:434
 #, c-format
 msgid "[no subject] - Compose message%s"
 msgstr "[sem assunto] - Escrever mensagem%s"
 
-#: src/compose.c:4670
+#: src/compose.c:4670 src/plugins/python/composewindowtype.c:422
 msgid "Compose message"
 msgstr "Escrever mensagem"
 
@@ -2169,6 +2170,7 @@ msgstr "Salvar mensagem em "
 #: src/plugins/bogofilter/bogofilter_gtk.c:188
 #: src/plugins/bogofilter/bogofilter_gtk.c:208
 #: src/plugins/bsfilter/bsfilter_gtk.c:181
+#: src/plugins/clamd/clamav_plugin_gtk.c:296
 #: src/plugins/spamassassin/spamassassin_gtk.c:418
 msgid "_Browse"
 msgstr "Nav_egar"
@@ -2185,7 +2187,8 @@ msgstr "_Anexos"
 msgid "Othe_rs"
 msgstr "_Outros"
 
-#: src/compose.c:7603 src/gtk/headers.h:18 src/summary_search.c:426
+#: src/compose.c:7603 src/gtk/headers.h:18
+#: src/plugins/pdf_viewer/poppler_viewer.c:704 src/summary_search.c:426
 msgid "Subject:"
 msgstr "Assunto:"
 
@@ -2676,12 +2679,12 @@ msgid "Input the new name of folder:"
 msgstr "Digite o novo nome da pasta:"
 
 #: src/editgroup.c:556 src/foldersel.c:552 src/imap_gtk.c:195 src/mh_gtk.c:145
-#: src/plugins/rssyl/rssyl_cb_menu.c:89
+#: src/plugins/mailmbox/plugin_gtk.c:239 src/plugins/rssyl/rssyl_cb_menu.c:89
 msgid "New folder"
 msgstr "Nova pasta"
 
 #: src/editgroup.c:557 src/foldersel.c:553 src/mh_gtk.c:146
-#: src/plugins/rssyl/rssyl_cb_menu.c:90
+#: src/plugins/mailmbox/plugin_gtk.c:240 src/plugins/rssyl/rssyl_cb_menu.c:90
 msgid "Input the name of new folder:"
 msgstr "Digite o nome da nova pasta:"
 
@@ -2713,7 +2716,8 @@ msgstr "Editar LDAP - Selecionar a base de pesquisa"
 msgid "Hostname"
 msgstr "Endereço do servidor"
 
-#: src/editldap_basedn.c:167 src/editldap.c:458 src/ssl_manager.c:110
+#: src/editldap_basedn.c:167 src/editldap.c:458
+#: src/plugins/clamd/clamav_plugin_gtk.c:386 src/ssl_manager.c:110
 msgid "Port"
 msgstr "Porta"
 
@@ -3462,7 +3466,7 @@ msgid "Select folder"
 msgstr "Selecione a pasta"
 
 #: src/foldersel.c:554 src/imap_gtk.c:199 src/mh_gtk.c:147
-#: src/plugins/rssyl/rssyl_cb_menu.c:91
+#: src/plugins/mailmbox/plugin_gtk.c:241 src/plugins/rssyl/rssyl_cb_menu.c:91
 msgid "NewFolder"
 msgstr "NovaPasta"
 
@@ -3512,17 +3516,20 @@ msgstr "Esvaziar _Lixeira..."
 msgid "Send _queue..."
 msgstr "Enviar mensagens da _fila..."
 
-#: src/folderview.c:380 src/folderview.c:427 src/prefs_folder_column.c:79
-#: src/prefs_matcher.c:388 src/summaryview.c:6293
+#: src/folderview.c:380 src/folderview.c:427
+#: src/plugins/notification/notification_lcdproc.c:135
+#: src/prefs_folder_column.c:79 src/prefs_matcher.c:388 src/summaryview.c:6293
 msgid "New"
 msgstr "Nova"
 
-#: src/folderview.c:381 src/folderview.c:428 src/prefs_folder_column.c:80
-#: src/prefs_matcher.c:387 src/summaryview.c:6295
+#: src/folderview.c:381 src/folderview.c:428
+#: src/plugins/notification/notification_lcdproc.c:139
+#: src/prefs_folder_column.c:80 src/prefs_matcher.c:387 src/summaryview.c:6295
 msgid "Unread"
 msgstr "Não lida"
 
-#: src/folderview.c:382 src/prefs_folder_column.c:81
+#: src/folderview.c:382 src/plugins/notification/notification_lcdproc.c:143
+#: src/prefs_folder_column.c:81
 msgid "Total"
 msgstr "Total"
 
@@ -4323,7 +4330,7 @@ msgstr "Comentários:"
 msgid "Keywords"
 msgstr "Palavras-chave"
 
-#: src/gtk/headers.h:20
+#: src/gtk/headers.h:20 src/plugins/pdf_viewer/poppler_viewer.c:706
 msgid "Keywords:"
 msgstr "Palavras-chave:"
 
@@ -4804,8 +4811,11 @@ msgstr ""
 #: src/plugins/address_keeper/address_keeper_prefs.c:208
 #: src/plugins/bogofilter/bogofilter_gtk.c:457
 #: src/plugins/bsfilter/bsfilter_gtk.c:400
+#: src/plugins/clamd/clamav_plugin_gtk.c:549
 #: src/plugins/dillo_viewer/dillo_prefs.c:129
-#: src/plugins/fancy/fancy_prefs.c:110 src/plugins/pgpcore/prefs_gpg.c:557
+#: src/plugins/fancy/fancy_prefs.c:110
+#: src/plugins/fetchinfo/fetchinfo_plugin_gtk.c:178
+#: src/plugins/gdata/cm_gdata_prefs.c:145 src/plugins/pgpcore/prefs_gpg.c:557
 #: src/plugins/rssyl/rssyl_prefs.c:63
 #: src/plugins/spamassassin/spamassassin_gtk.c:648
 #: src/plugins/trayicon/trayicon_prefs.c:69
@@ -5261,12 +5271,17 @@ msgstr "O certificado SSL mudou"
 msgid "Tags:"
 msgstr "Etiquetas:"
 
-#: src/headerview.c:216 src/summaryview.c:3342 src/summaryview.c:3359
-#: src/summaryview.c:3380
+#: src/headerview.c:216 src/plugins/notification/notification_popup.c:310
+#: src/plugins/notification/notification_popup.c:615
+#: src/plugins/notification/notification_trayicon.c:848 src/summaryview.c:3342
+#: src/summaryview.c:3359 src/summaryview.c:3380
 msgid "(No From)"
 msgstr "(Sem remetente)"
 
-#: src/headerview.c:231 src/summaryview.c:3393 src/summaryview.c:3397
+#: src/headerview.c:231 src/plugins/notification/notification_popup.c:312
+#: src/plugins/notification/notification_popup.c:619
+#: src/plugins/notification/notification_trayicon.c:851 src/summaryview.c:3393
+#: src/summaryview.c:3397
 msgid "(No Subject)"
 msgstr "(Sem assunto)"
 
@@ -5275,6 +5290,7 @@ msgid "Error:"
 msgstr "Erro:"
 
 #: src/image_viewer.c:299 src/mimeview.c:2555
+#: src/plugins/pdf_viewer/poppler_viewer.c:700
 msgid "Filename:"
 msgstr "Nome do arquivo:"
 
@@ -5712,23 +5728,25 @@ msgstr ""
 "\n"
 "Você provavelmente precisa instalar o libetpan e recompilar o Claws Mail."
 
-#: src/imap_gtk.c:63 src/mh_gtk.c:55
+#: src/imap_gtk.c:63 src/mh_gtk.c:55 src/plugins/mailmbox/plugin_gtk.c:59
 msgid "Create _new folder..."
 msgstr "Criar _nova pasta..."
 
 #: src/imap_gtk.c:65 src/mh_gtk.c:56 src/news_gtk.c:61
+#: src/plugins/mailmbox/plugin_gtk.c:60
 msgid "_Rename folder..."
 msgstr "_Renomear pasta..."
 
-#: src/imap_gtk.c:66 src/mh_gtk.c:57
+#: src/imap_gtk.c:66 src/mh_gtk.c:57 src/plugins/mailmbox/plugin_gtk.c:61
 msgid "M_ove folder..."
 msgstr "_Mover pasta..."
 
-#: src/imap_gtk.c:67 src/mh_gtk.c:58
+#: src/imap_gtk.c:67 src/mh_gtk.c:58 src/plugins/mailmbox/plugin_gtk.c:62
 msgid "Cop_y folder..."
 msgstr "_Copiar pasta..."
 
-#: src/imap_gtk.c:69 src/mh_gtk.c:59 src/plugins/rssyl/rssyl_gtk.c:61
+#: src/imap_gtk.c:69 src/mh_gtk.c:59 src/plugins/mailmbox/plugin_gtk.c:63
+#: src/plugins/rssyl/rssyl_gtk.c:61
 msgid "_Delete folder..."
 msgstr "E_xcluir pasta..."
 
@@ -5753,14 +5771,15 @@ msgid "_Unsubscribe..."
 msgstr "Cance_lar assinatura..."
 
 #: src/imap_gtk.c:80 src/mh_gtk.c:60 src/news_gtk.c:63
+#: src/plugins/mailmbox/plugin_gtk.c:64
 msgid "_Check for new messages"
 msgstr "_Verificar novas mensagens"
 
-#: src/imap_gtk.c:81 src/mh_gtk.c:61
+#: src/imap_gtk.c:81 src/mh_gtk.c:61 src/plugins/mailmbox/plugin_gtk.c:65
 msgid "C_heck for new folders"
 msgstr "Verificar novas _pastas"
 
-#: src/imap_gtk.c:82 src/mh_gtk.c:62
+#: src/imap_gtk.c:82 src/mh_gtk.c:62 src/plugins/mailmbox/plugin_gtk.c:66
 msgid "R_ebuild folder tree"
 msgstr "Recons_truir a árvore de pastas"
 
@@ -5789,18 +5808,20 @@ msgstr "Propriedades herdadas da pasta superior"
 msgid "Input new name for '%s':"
 msgstr "Entre com o novo nome para '%s':"
 
-#: src/imap_gtk.c:263 src/mh_gtk.c:251 src/plugins/rssyl/rssyl_cb_menu.c:334
+#: src/imap_gtk.c:263 src/mh_gtk.c:251 src/plugins/mailmbox/plugin_gtk.c:409
+#: src/plugins/rssyl/rssyl_cb_menu.c:334
 #: src/plugins/vcalendar/vcal_folder.c:2018
 msgid "Rename folder"
 msgstr "Renomear a pasta"
 
-#: src/imap_gtk.c:277
+#: src/imap_gtk.c:277 src/plugins/mailmbox/plugin_gtk.c:249
+#: src/plugins/mailmbox/plugin_gtk.c:419
 #, c-format
 msgid "`%c' can't be included in folder name."
 msgstr "`%c' não pode ser incluído no nome da pasta."
 
 #: src/imap_gtk.c:292 src/mh_gtk.c:274 src/news_gtk.c:327
-#: src/plugins/rssyl/rssyl_cb_menu.c:354
+#: src/plugins/mailmbox/plugin_gtk.c:438 src/plugins/rssyl/rssyl_cb_menu.c:354
 #: src/plugins/vcalendar/vcal_folder.c:2038
 msgid ""
 "The folder could not be renamed.\n"
@@ -6943,6 +6964,7 @@ msgid "Compose a news message"
 msgstr "Escrever artigo de _Newsgroup"
 
 #: src/mainwindow.c:654 src/messageview.c:302
+#: src/plugins/notification/notification_banner.c:89
 msgid "_Reply"
 msgstr "_Responder"
 
@@ -7438,6 +7460,7 @@ msgstr "relatório de filtragem desabilitado\n"
 
 #: src/mainwindow.c:2653 src/mainwindow.c:2660 src/mainwindow.c:2703
 #: src/mainwindow.c:2736 src/mainwindow.c:2768 src/mainwindow.c:2813
+#: src/plugins/notification/notification_trayicon.c:357
 #: src/plugins/trayicon/trayicon.c:129 src/prefs_folder_item.c:1067
 msgid "Untitled"
 msgstr "Sem título"
@@ -7454,7 +7477,7 @@ msgstr "Apagar todas as mensagens da Lixeira?"
 msgid "Don't quit"
 msgstr "Não sair"
 
-#: src/mainwindow.c:3101
+#: src/mainwindow.c:3101 src/plugins/mailmbox/plugin_gtk.c:189
 msgid "Add mailbox"
 msgstr "Adicionar caixa postal"
 
@@ -7473,11 +7496,12 @@ msgstr ""
 msgid "The mailbox '%s' already exists."
 msgstr "A caixa postal '%s' já existe."
 
-#: src/mainwindow.c:3113 src/setup.c:52 src/wizard.c:774
+#: src/mainwindow.c:3113 src/plugins/mailmbox/plugin_gtk.c:202 src/setup.c:52
+#: src/wizard.c:774
 msgid "Mailbox"
 msgstr "Caixa postal"
 
-#: src/mainwindow.c:3118 src/setup.c:55
+#: src/mainwindow.c:3118 src/plugins/mailmbox/plugin_gtk.c:209 src/setup.c:55
 msgid ""
 "Creation of the mailbox failed.\n"
 "Maybe some files already exist, or you don't have the permission to write "
@@ -7499,11 +7523,13 @@ msgstr "Não foi possível importar o mbox."
 msgid "Export to mbox has failed."
 msgstr "Não foi possível exportar para o mbox."
 
-#: src/mainwindow.c:4200 src/plugins/trayicon/trayicon.c:568
+#: src/mainwindow.c:4200 src/plugins/notification/notification_trayicon.c:512
+#: src/plugins/trayicon/trayicon.c:568
 msgid "Exit"
 msgstr "Sair"
 
-#: src/mainwindow.c:4200 src/plugins/trayicon/trayicon.c:568
+#: src/mainwindow.c:4200 src/plugins/notification/notification_trayicon.c:512
+#: src/plugins/trayicon/trayicon.c:568
 msgid "Exit Claws Mail?"
 msgstr "Sair do Claws Mail?"
 
@@ -7901,11 +7927,11 @@ msgstr "não foi possível copiar a mensagem %s para %s\n"
 msgid "Moving messages..."
 msgstr "Movendo as mensagens..."
 
-#: src/mh.c:662
+#: src/mh.c:662 src/plugins/mailmbox/mailmbox_folder.c:839
 msgid "Deleting messages..."
 msgstr "Excluindo mensagens..."
 
-#: src/mh_gtk.c:63
+#: src/mh_gtk.c:63 src/plugins/mailmbox/plugin_gtk.c:67
 msgid "Remove _mailbox..."
 msgstr "Remover _caixa postal..."
 
@@ -7918,7 +7944,7 @@ msgstr ""
 "Deseja realmente excluir a caixa postal '%s'?\n"
 "(As mensagens NÃO SERÃO apagadas do disco)"
 
-#: src/mh_gtk.c:360
+#: src/mh_gtk.c:360 src/plugins/mailmbox/plugin_gtk.c:292
 msgid "Remove mailbox"
 msgstr "Remover a caixa postal"
 
@@ -8040,7 +8066,7 @@ msgstr "Executar o binário"
 msgid "Type:"
 msgstr "Tipo:"
 
-#: src/mimeview.c:2543
+#: src/mimeview.c:2543 src/plugins/pdf_viewer/poppler_viewer.c:701
 msgid "Size:"
 msgstr "Tamanho:"
 
@@ -8454,13 +8480,15 @@ msgstr "Nível de compressão"
 
 #: src/plugins/archive/archiver_gtk.c:800
 #: src/plugins/archive/archiver_gtk.c:808
-#: src/plugins/archive/archiver_gtk.c:816 src/prefs_folder_item.c:516
+#: src/plugins/archive/archiver_gtk.c:816
+#: src/plugins/pdf_viewer/poppler_viewer.c:720 src/prefs_folder_item.c:516
 msgid "Yes"
 msgstr "Sim"
 
 #: src/plugins/archive/archiver_gtk.c:800
 #: src/plugins/archive/archiver_gtk.c:808
-#: src/plugins/archive/archiver_gtk.c:816 src/prefs_folder_item.c:515
+#: src/plugins/archive/archiver_gtk.c:816
+#: src/plugins/pdf_viewer/poppler_viewer.c:723 src/prefs_folder_item.c:515
 #: src/prefs_summaries.c:369
 msgid "No"
 msgstr "Não"
@@ -9141,7 +9169,7 @@ msgstr "Caminho para o programa Bogofilter"
 msgid "Mark spam as read"
 msgstr "Marcar spam como lido"
 
-#: src/bsfilter_gtk.c:205
+#: src/plugins/bsfilter/bsfilter_gtk.c:209
 msgid ""
 "If Bsfilter thought an email was spam or unsure, but it was whitelisted, "
 "learn it as ham."
@@ -9149,27 +9177,27 @@ msgstr ""
 "Se o Bsfilter identificar um e-mail como spam ou incerto, mas ele estiver na "
 "lista branca, será interpretado como não-spam."
 
-#: src/bsfilter_gtk.c:214
+#: src/plugins/bsfilter/bsfilter_gtk.c:218
 msgid "Bsfilter call"
 msgstr "Comando do Bsfilter"
 
-#: src/bsfilter_gtk.c:222
+#: src/plugins/bsfilter/bsfilter_gtk.c:226
 msgid "Path to bsfilter executable"
 msgstr "Caminho parra o executável do Bsfilter"
 
-#: src/bsfilter.c:78 src/bsfilter_gtk.c:393
+#: src/plugins/bsfilter/bsfilter_gtk.c:401 src/plugins/bsfilter/bsfilter.c:82
 msgid "Bsfilter"
 msgstr "Bsfilter"
 
-#: src/bsfilter.c:295
+#: src/plugins/bsfilter/bsfilter.c:299
 msgid "Bsfilter: fetching body..."
 msgstr "Bsfilter: obtendo o corpo..."
 
-#: src/bsfilter.c:304
+#: src/plugins/bsfilter/bsfilter.c:308
 msgid "Bsfilter: filtering message..."
 msgstr "Bsfilter: filtrando a mensagem..."
 
-#: src/bsfilter.c:389
+#: src/plugins/bsfilter/bsfilter.c:393
 msgid ""
 "The Bsfilter plugin couldn't filter a message. The probable cause of the "
 "error is that it didn't learn from any mail.\n"
@@ -9181,7 +9209,7 @@ msgstr ""
 "Use \"/Marcar/Marcar como spam\" e \"/Marcar/Marcar como não-spam\" para "
 "treinar o Bsfilter com algumas centenas de spams e não-spams."
 
-#: src/bsfilter.c:396
+#: src/plugins/bsfilter/bsfilter.c:400
 #, c-format
 msgid ""
 "The Bsfilter plugin couldn't filter a message. The command `%s` couldn't be "
@@ -9190,11 +9218,11 @@ msgstr ""
 "O plugin do Bsfilter não conseguiu filtrar a mensagem. Não foi possível "
 "executar o comando `%s`."
 
-#: src/bsfilter.c:497
+#: src/plugins/bsfilter/bsfilter.c:501
 msgid "Bsfilter: learning from message..."
 msgstr "Bsfilter: aprendendo com a mensagem..."
 
-#: src/bsfilter.c:641
+#: src/plugins/bsfilter/bsfilter.c:637
 msgid ""
 "This plugin can check all messages that are received from an IMAP, LOCAL or "
 "POP account for spam using Bsfilter. You will need Bsfilter installed "
@@ -9222,6 +9250,268 @@ msgstr ""
 "\n"
 "As opções podem ser encontradas em /Configuração/Preferências/Plugins/"
 "Bsfilter."
+
+#: src/plugins/clamd/clamav_plugin.c:45
+#: src/plugins/clamd/clamav_plugin_gtk.c:550
+msgid "Clam AntiVirus"
+msgstr "Clam AntiVirus"
+
+#: src/plugins/clamd/clamav_plugin.c:103
+msgid ""
+"Scanning\n"
+"No socket information.\n"
+"Antivirus disabled."
+msgstr ""
+"Verificando\n"
+"Sem informação de soquete.\n"
+"Antivírus desabilitado."
+
+#: src/plugins/clamd/clamav_plugin.c:107
+msgid ""
+"Scanning\n"
+"Clamd does not respond to ping.\n"
+"Is clamd running?"
+msgstr ""
+"Verificando\n"
+"O Clamd não está respondendo ao ping.\n"
+"O Clamd está em execução?"
+
+#: src/plugins/clamd/clamav_plugin.c:111
+#, c-format
+msgid "Detected %s virus."
+msgstr "Vírus %s detectado."
+
+#: src/plugins/clamd/clamav_plugin.c:115
+#, c-format
+msgid ""
+"Scanning error:\n"
+"%s"
+msgstr ""
+"Erro na verificação:\n"
+"%s"
+
+#: src/plugins/clamd/clamav_plugin.c:149
+msgid "ClamAV: scanning message..."
+msgstr "ClamAV: verificando a mensagem..."
+
+#: src/plugins/clamd/clamav_plugin.c:250
+msgid "Failed to register mail filtering hook"
+msgstr "Não foi possível registrar o gancho de filtragem de mensagens"
+
+#: src/plugins/clamd/clamav_plugin.c:267
+msgid ""
+"Init\n"
+"No socket information.\n"
+"Antivirus disabled."
+msgstr ""
+"Init\n"
+"Sem informação de soquete.\n"
+"Antivírus desabilitado."
+
+#: src/plugins/clamd/clamav_plugin.c:271
+msgid ""
+"Init\n"
+"Clamd does not respond to ping.\n"
+"Is clamd running?"
+msgstr ""
+"Init\n"
+"O Clamd não está respondendo ao ping.\n"
+"O Clamd está em execução?"
+
+#: src/plugins/clamd/clamav_plugin.c:302
+msgid ""
+"This plugin uses Clam AntiVirus to scan all messages that are received from "
+"an IMAP, LOCAL or POP account.\n"
+"\n"
+"When a message attachment is found to contain a virus it can be deleted or "
+"saved in a specially designated folder.\n"
+"\n"
+"Because this plugin communicates with clamd via a\n"
+"socket then there are some minimum requirements to\n"
+"the permissions for your home folder and the\n"
+".claws-mail folder provided the clamav-daemon is\n"
+"configured to communicate via a unix socket. All\n"
+"users at least need to be given execute permissions\n"
+"on these folders.\n"
+"\n"
+"To avoid changing permissions you could configure\n"
+"the clamav-daemon to communicate via a TCP socket\n"
+"and choose manual configuration for clamd.\n"
+"\n"
+"Options can be found in /Configuration/Preferences/Plugins/Clam AntiVirus"
+msgstr ""
+"Esse plugin utiliza o Clam AntiVirus para verificar todas as mensagens "
+"recebidas de uma conta IMAP, LOCAL ou POP.\n"
+"\n"
+"Quando um vírus é encontrado no anexo de alguma mensagem, ele pode ser "
+"excluído ou salvo em uma pasta específica\n"
+"\n"
+"Uma vez que esse plugin comunica-se com o Clamd através\n"
+"de um soquete Unix, existem alguns requisitos mínimos para\n"
+"as permissões das suas pastas home e .claws-mail. Todos\n"
+"os usuários devem ter, no mínimo, permissão de execução\n"
+"nessas pastas.\n"
+"\n"
+"Para evitar alterações nas permissões, você pode configurar\n"
+"o clamav-daemon para se comunicar através de um soquete\n"
+"TCP e selecionar as configurações manuais para o clamd.\n"
+"\n"
+"As opções podem ser encontradas em /Configuração/Preferências/Plugins/Clam "
+"AntiVirus"
+
+#: src/plugins/clamd/clamav_plugin.c:341
+msgid "Virus detection"
+msgstr "Detecção de vírus"
+
+#: src/plugins/clamd/clamav_plugin_gtk.c:246
+msgid "Enable virus scanning"
+msgstr "Habilitar a verificação de vírus"
+
+#: src/plugins/clamd/clamav_plugin_gtk.c:256
+msgid "Maximum attachment size"
+msgstr "Tamanho máximo do anexo"
+
+#: src/plugins/clamd/clamav_plugin_gtk.c:267
+msgid "Message attachments larger than this will not be scanned"
+msgstr "Anexos de tamanho maior do que esse não serão verificados"
+
+#: src/plugins/clamd/clamav_plugin_gtk.c:271
+msgid "MB"
+msgstr "MB"
+
+#: src/plugins/clamd/clamav_plugin_gtk.c:280
+msgid "Save infected mail in"
+msgstr "Salvar arquivos infectados em"
+
+#: src/plugins/clamd/clamav_plugin_gtk.c:284
+msgid "Save mail that contains viruses"
+msgstr "Salva as mensagens que contenham vírus"
+
+#: src/plugins/clamd/clamav_plugin_gtk.c:292
+msgid ""
+"Folder for storing infected mail. Leave empty to use the default trash folder"
+msgstr ""
+"Pasta onde serão armazenadas as mensagens infectadas. Deixe em branco para "
+"usar a pasta padrão da lixeira."
+
+#: src/plugins/clamd/clamav_plugin_gtk.c:300
+msgid "Click this button to select a folder for storing infected mail"
+msgstr ""
+"Clique neste botão para selecionar uma pasta para armazenar a mensagem "
+"infectada"
+
+#: src/plugins/clamd/clamav_plugin_gtk.c:308
+msgid "Automatic configuration"
+msgstr "Configuração automática"
+
+#: src/plugins/clamd/clamav_plugin_gtk.c:313
+msgid "Should configuration be done automatic or manual"
+msgstr "Define se a configuração deve ser automática ou manual"
+
+#: src/plugins/clamd/clamav_plugin_gtk.c:321
+msgid "Where is clamd.conf"
+msgstr "Onde está o clamd.conf"
+
+#: src/plugins/clamd/clamav_plugin_gtk.c:329
+msgid ""
+"Full path to clamd.conf. If this field is not empty then the plugin has been "
+"able to locate the file automatically"
+msgstr ""
+"Caminho completo do clamd.conf. Se este campo não estiver em branco, então o "
+"plugin foi capaz de localizar o arquivo automaticamente."
+
+#: src/plugins/clamd/clamav_plugin_gtk.c:333
+msgid "Br_owse"
+msgstr "Na_vegar"
+
+#: src/plugins/clamd/clamav_plugin_gtk.c:337
+msgid "Click this button to select full path to clamd.conf"
+msgstr "Clique neste botão para selecionar o caminho completo do clamd.conf"
+
+#: src/plugins/clamd/clamav_plugin_gtk.c:345
+msgid "Check permission for folders and adjust if necessary"
+msgstr "Verifique as permissões para as pastas e ajuste-as se necessário"
+
+#: src/plugins/clamd/clamav_plugin_gtk.c:358
+msgid "Click this button to check and adjust folder permissions"
+msgstr "Clique neste botão para verificar e ajustar as permissões da pasta"
+
+#: src/plugins/clamd/clamav_plugin_gtk.c:366
+msgid "Remote Host"
+msgstr "Endereço do servidor"
+
+#: src/plugins/clamd/clamav_plugin_gtk.c:374
+msgid "Hostname or IP for remote host running clamav daemon"
+msgstr "Endereço ou IP da máquina remota executando o serviço clamav"
+
+#: src/plugins/clamd/clamav_plugin_gtk.c:396
+msgid "Port number where clamav daemon is listening"
+msgstr "Número da porta que o serviço clamav está utilizando"
+
+#: src/plugins/clamd/clamav_plugin_gtk.c:525
+msgid ""
+"New config\n"
+"No socket information.\n"
+"Antivirus disabled."
+msgstr ""
+"Nova configuração\n"
+"Sem informação de soquete.\n"
+"Antivírus desabilitado."
+
+#: src/plugins/clamd/clamav_plugin_gtk.c:529
+msgid ""
+"New config\n"
+"Clamd does not respond to ping.\n"
+"Is clamd running?"
+msgstr ""
+"Nova configuração\n"
+"O Clamd não está respondendo ao ping.\n"
+"O Clamd está em execução?"
+
+#: src/plugins/clamd/libclamd/clamd-plugin.c:117
+#, c-format
+msgid ""
+"%s: Unable to open\n"
+"clamd will be disabled"
+msgstr ""
+"%s: Não foi possível abrir\n"
+"Clamd será desabilitado"
+
+#: src/plugins/clamd/libclamd/clamd-plugin.c:215
+#, c-format
+msgid ""
+"%s: Not able to find required information\n"
+"clamd will be disabled"
+msgstr ""
+"%s: Não foi possível encontrar a informação solicitada\n"
+"Clamd será desabilitado"
+
+#: src/plugins/clamd/libclamd/clamd-plugin.c:249
+msgid "Could not create socket"
+msgstr "Não foi possível criar o soquete"
+
+#: src/plugins/clamd/libclamd/clamd-plugin.c:420
+msgid ": File does not exist"
+msgstr ": O arquivo não existe"
+
+#: src/plugins/clamd/libclamd/clamd-plugin.c:433
+msgid ": Unable to open"
+msgstr ": Não foi possível abrir"
+
+#: src/plugins/clamd/libclamd/clamd-plugin.c:446
+#, c-format
+msgid "%s: Error reading"
+msgstr "%s: Erro na leitura"
+
+#: src/plugins/clamd/libclamd/clamd-plugin.c:457
+#: src/plugins/clamd/libclamd/clamd-plugin.c:462
+#: src/plugins/clamd/libclamd/clamd-plugin.c:471
+msgid "Socket write error"
+msgstr "Erro na escrita do socket"
+
+#: src/plugins/clamd/libclamd/clamd-plugin.c:478
+msgid "Socket read error"
+msgstr "Erro na leitura do socket"
 
 #: src/plugins/demo/demo.c:31 src/plugins/demo/demo.c:100
 msgid "Demo"
@@ -9438,6 +9728,1063 @@ msgstr "Carregar as imagens automaticamente"
 #: src/plugins/fancy/fancy_prefs.c:188
 msgid "Block external content"
 msgstr "Bloquear conteúdo externo"
+
+#: src/plugins/fetchinfo/fetchinfo_plugin.c:151
+msgid "failed to write Fetchinfo configuration to file\n"
+msgstr "não foi possível escrever as configurações do Fetchinfo no arquivo\n"
+
+#: src/plugins/fetchinfo/fetchinfo_plugin.c:167
+#: src/plugins/fetchinfo/fetchinfo_plugin.c:200
+#: src/plugins/fetchinfo/fetchinfo_plugin_gtk.c:179
+msgid "Fetchinfo"
+msgstr "Fetchinfo"
+
+#: src/plugins/fetchinfo/fetchinfo_plugin.c:173
+msgid "Failed to register mail receive hook"
+msgstr "Não foi possível registrar o gancho de recebimento de mensagens"
+
+#: src/plugins/fetchinfo/fetchinfo_plugin.c:209
+msgid ""
+"This plugin modifies the downloaded messages. It inserts headers containing "
+"some download information: UIDL, Claws Mail account name, POP server, user "
+"ID and retrieval time.\n"
+"\n"
+"Options can be found in /Configuration/Preferences/Plugins/Fetchinfo"
+msgstr ""
+"Este plugin modifica as mensagens baixadas. Ele insere cabeçalhos contendo "
+"algumas informações da transferência: UIDL, nome da conta no Claws Mail, "
+"servidor POP, ID do usuário e hora da transferência.\n"
+"\n"
+"As opções podem ser encontradas em /Configurações/Preferências/Plugins/"
+"Fetchinfo."
+
+#: src/plugins/fetchinfo/fetchinfo_plugin.c:236
+msgid "Mail marking"
+msgstr "Marcação da mensagem"
+
+#: src/plugins/fetchinfo/fetchinfo_plugin_gtk.c:94
+msgid "Add fetchinfo headers"
+msgstr "Adicionar cabeçalhos fetchinfo"
+
+#: src/plugins/fetchinfo/fetchinfo_plugin_gtk.c:101
+msgid "UIDL"
+msgstr "UIDL"
+
+#: src/plugins/fetchinfo/fetchinfo_plugin_gtk.c:103
+msgid "Account name"
+msgstr "Nome da conta"
+
+#: src/plugins/fetchinfo/fetchinfo_plugin_gtk.c:105
+msgid "Receive server"
+msgstr "Servidor de recebimento"
+
+#: src/plugins/fetchinfo/fetchinfo_plugin_gtk.c:107
+msgid "UserID"
+msgstr "ID do usuário"
+
+#: src/plugins/fetchinfo/fetchinfo_plugin_gtk.c:109
+msgid "Fetch time"
+msgstr "Horário da transferência"
+
+#: src/plugins/gdata/cm_gdata_contacts.c:188
+#, c-format
+msgid "GData plugin: Error querying for contacts: %s\n"
+msgstr "Plugin GData: Erro na solicitação de contatos: %s\n"
+
+#: src/plugins/gdata/cm_gdata_contacts.c:204
+#, c-format
+msgid "Added %d of"
+msgid_plural "Added %d of"
+msgstr[0] "Adicionado %d de"
+msgstr[1] "Adicionados %d de"
+
+#: src/plugins/gdata/cm_gdata_contacts.c:206
+#, c-format
+msgid "1 contact to the cache"
+msgid_plural "%d contacts to the cache"
+msgstr[0] "1 contato para o cache"
+msgstr[1] "%d contatos para o cache"
+
+#: src/plugins/gdata/cm_gdata_contacts.c:216
+msgid "GData plugin: Starting async contacts query\n"
+msgstr "Plugin GData: Iniciando solicitação assíncrona de contatos\n"
+
+#: src/plugins/gdata/cm_gdata_contacts.c:241
+#, c-format
+msgid "GData plugin: Error querying for groups: %s\n"
+msgstr "Plugin GData: Erro na solicitação de grupos: %s\n"
+
+#: src/plugins/gdata/cm_gdata_contacts.c:278
+msgid "GData plugin: Groups received\n"
+msgstr "Plugin GData: Os grupos foram recebidos\n"
+
+#: src/plugins/gdata/cm_gdata_contacts.c:290
+msgid "GData plugin: Starting async groups query\n"
+msgstr "Plugin GData: Iniciando solicitação assíncrona de grupos\n"
+
+#: src/plugins/gdata/cm_gdata_contacts.c:308
+#: src/plugins/gdata/cm_gdata_contacts.c:334
+#, c-format
+msgid "GData plugin: Authentication error: %s\n"
+msgstr "Plugin GData: Erro na autenticação: %s\n"
+
+#: src/plugins/gdata/cm_gdata_contacts.c:314
+#: src/plugins/gdata/cm_gdata_contacts.c:340
+msgid "GData plugin: Authenticated\n"
+msgstr "Plugin GData: Autenticado\n"
+
+#: src/plugins/gdata/cm_gdata_contacts.c:360
+msgid "GData plugin: Starting async authentication\n"
+msgstr "Plugin GData: Iniciando autenticação assíncrona\n"
+
+#: src/plugins/gdata/cm_gdata_prefs.c:78 src/prefs_account.c:1716
+msgid "Authentication"
+msgstr "Autenticação"
+
+#: src/plugins/gdata/cm_gdata_prefs.c:84
+msgid "Username:"
+msgstr "Nome de usuário:"
+
+#: src/plugins/gdata/cm_gdata_prefs.c:91 src/wizard.c:1601
+msgid "Password:"
+msgstr "Senha:"
+
+#: src/plugins/gdata/cm_gdata_prefs.c:103
+msgid "Polling interval (seconds):"
+msgstr "Intervalo entre consultas (segundos):"
+
+#: src/plugins/gdata/cm_gdata_prefs.c:110
+msgid "Maximum number of results:"
+msgstr "Número máximo de resultados:"
+
+#: src/plugins/gdata/cm_gdata_prefs.c:146 src/plugins/gdata/gdata_plugin.c:101
+#: src/plugins/gdata/gdata_plugin.c:156
+msgid "GData"
+msgstr "GData"
+
+#: src/plugins/gdata/gdata_plugin.c:75
+msgid ""
+"\n"
+"GData Plugin: Failed to write plugin configuration to file\n"
+msgstr ""
+"\n"
+"Plugin GData: Não foi possível escrever a configuração do plugin no arquivo\n"
+
+#: src/plugins/gdata/gdata_plugin.c:107
+msgid "Failed to register address completion hook in the GData plugin"
+msgstr ""
+"Não foi possível registrar o gancho de complementação de endereço no plugin "
+"GData"
+
+#: src/plugins/gdata/gdata_plugin.c:114
+msgid "Failed to register offline switch hook in the GData plugin"
+msgstr ""
+"Não foi possível registrar o gancho de mudança para offline no plugin GData"
+
+#: src/plugins/gdata/gdata_plugin.c:161
+msgid ""
+"This plugin provides access to the GData protocol for Claws Mail.\n"
+"\n"
+"The GData protocol is an interface to Google services.\n"
+"Currently, the only implemented functionality is to include Google Contacts "
+"into the Tab-address completion.\n"
+"\n"
+"Feedback to <berndth@gmx.de> is welcome."
+msgstr ""
+"Este plugin fornece acesso ao protocolo GData para o Claws Mail.\n"
+"\n"
+"O protocolo GData é uma interface para os serviços da Google.\n"
+"Atualmente, a única funcionalidade implementada é a de incluir os Contatos "
+"Google na complementação de endereços via tecla Tab.\n"
+"\n"
+"Qualquer retorno para <berndth@gmx.de> é bem-vindo."
+
+#: src/plugins/gdata/gdata_plugin.c:187
+msgid "GData integration"
+msgstr "Integração com GData"
+
+#: src/plugins/mailmbox/plugin.c:58
+msgid "mailmbox folder (etPan!)"
+msgstr ""
+
+#: src/plugins/mailmbox/plugin.c:63
+msgid "This is a plugin to handle mailboxes in mbox format."
+msgstr ""
+
+#: src/plugins/mailmbox/plugin.c:84
+msgid "MBOX"
+msgstr ""
+
+#: src/plugins/mailmbox/plugin_gtk.c:86
+msgid "mbox (etPan!)..."
+msgstr ""
+
+#: src/plugins/mailmbox/plugin_gtk.c:190
+#, fuzzy
+msgid ""
+"Input the location of mailbox.\n"
+"If the existing mailbox is specified, it will be\n"
+"scanned automatically."
+msgstr ""
+"Informe a localização da caixa postal.\n"
+"Se for especificada uma já existente, ela será\n"
+"verificada automaticamente."
+
+#: src/plugins/mailmbox/plugin_gtk.c:196
+#, fuzzy, c-format
+msgid "The mailbox `%s' already exists."
+msgstr "A caixa postal '%s' já existe."
+
+#: src/plugins/mailmbox/plugin_gtk.c:261 src/plugins/mailmbox/plugin_gtk.c:428
+#, fuzzy, c-format
+msgid "The folder `%s' already exists."
+msgstr "A pasta '%s' já existe."
+
+#: src/plugins/mailmbox/plugin_gtk.c:268
+#, fuzzy, c-format
+msgid "Can't create the folder `%s'."
+msgstr "Não foi possível criar a pasta '%s'."
+
+#: src/plugins/mailmbox/plugin_gtk.c:290
+#, fuzzy, c-format
+msgid ""
+"Really remove the mailbox `%s' ?\n"
+"(The messages are NOT deleted from the disk)"
+msgstr ""
+"Deseja realmente excluir a caixa postal '%s'?\n"
+"(As mensagens NÃO SERÃO apagadas do disco)"
+
+#: src/plugins/mailmbox/plugin_gtk.c:323
+#, fuzzy, c-format
+msgid ""
+"All folder(s) and message(s) under `%s' will be deleted.\n"
+"Do you really want to delete?"
+msgstr ""
+"Todas as pastas e mensagens dentro de '%s' serão apagadas. Não será possível "
+"recuperá-las.\n"
+"\n"
+"Confirma a exclusão?"
+
+#: src/plugins/mailmbox/plugin_gtk.c:343
+#, fuzzy, c-format
+msgid "Can't remove the folder `%s'."
+msgstr "Não foi possível remover a pasta '%s'."
+
+#: src/plugins/mailmbox/plugin_gtk.c:408
+#, fuzzy, c-format
+msgid "Input new name for `%s':"
+msgstr "Entre com o novo nome para '%s':"
+
+#: src/plugins/newmail/newmail.c:91
+#, fuzzy, c-format
+msgid "Newmail plugin unloaded\n"
+msgstr "%s (plugin não carregado)"
+
+#: src/plugins/newmail/newmail.c:98 src/plugins/newmail/newmail.c:137
+#, fuzzy
+msgid "NewMail"
+msgstr "Receber mensagens"
+
+#: src/plugins/newmail/newmail.c:103
+#, fuzzy
+msgid "Failed to register newmail hook"
+msgstr "Não foi possível registrar o gancho de encerramento"
+
+#: src/plugins/newmail/newmail.c:115
+msgid ""
+"Cannot load plugin NewMail\n"
+"$HOME is too long\n"
+msgstr ""
+
+#: src/plugins/newmail/newmail.c:130
+#, c-format
+msgid ""
+"Newmail plugin loaded\n"
+"Message header summaries written to %s\n"
+msgstr ""
+
+#: src/plugins/newmail/newmail.c:142
+msgid ""
+"This Plugin writes a header summary to a log file for each mail received "
+"after sorting.\n"
+"\n"
+"Default is ~/Mail/NewLog"
+msgstr ""
+
+#: src/plugins/newmail/newmail.c:165
+#, fuzzy
+msgid "Log file"
+msgstr "Detalhamento do relatório"
+
+#: src/plugins/notification/notification_banner.c:350
+msgid "Folder:"
+msgstr "Pasta:"
+
+#: src/plugins/notification/notification_foldercheck.c:471
+msgid "Select folder(s)"
+msgstr "Selecione a(s) pasta(s)"
+
+#: src/plugins/notification/notification_foldercheck.c:572
+msgid "select recursively"
+msgstr "seleção recursiva"
+
+#: src/plugins/notification/notification_lcdproc.c:149
+msgid "No new messages"
+msgstr "Nenhuma mensagem nova"
+
+#: src/plugins/notification/notification_plugin.c:207
+#: src/plugins/notification/notification_plugin.c:408
+#: src/plugins/notification/notification_prefs.c:391
+#: src/plugins/notification/notification_prefs.c:405
+#: src/plugins/notification/notification_prefs.c:423
+#: src/plugins/notification/notification_prefs.c:440
+#: src/plugins/notification/notification_prefs.c:457
+#: src/plugins/notification/notification_prefs.c:474
+#: src/plugins/notification/notification_prefs.c:491
+#: src/plugins/notification/notification_prefs.c:508
+msgid "Notification"
+msgstr "Notificação"
+
+#: src/plugins/notification/notification_plugin.c:212
+msgid "The Notification plugin needs threading support."
+msgstr "O plugin Notificação precisa suporte a agrupamento."
+
+#: src/plugins/notification/notification_plugin.c:219
+msgid "Failed to register folder item update hook in the Notification plugin"
+msgstr ""
+"Não foi possível registrar o gancho de atualização de item da pasta no "
+"plugin Notificação"
+
+#: src/plugins/notification/notification_plugin.c:227
+msgid "Failed to register folder update hook in the Notification plugin"
+msgstr ""
+"Não foi possível registrar o gancho de atualização da pasta no plugin "
+"Notificação"
+
+#: src/plugins/notification/notification_plugin.c:237
+msgid "Failed to register msginfo update hook in the Notification plugin"
+msgstr ""
+"Não foi possível registrar o gancho de atualização msginfo no plugin "
+"Notificação"
+
+#: src/plugins/notification/notification_plugin.c:247
+msgid "Failed to register offline switch hook in the Notification plugin"
+msgstr ""
+"Não foi possível registrar o gancho de desconexão no plugin Notificação"
+
+#: src/plugins/notification/notification_plugin.c:258
+msgid "Failed to register main window close hook in the Notification plugin"
+msgstr ""
+"Não foi possível registrar o gancho de encerramento da janela principal no "
+"plugin Notificação"
+
+#: src/plugins/notification/notification_plugin.c:271
+msgid "Failed to register got iconified hook in the Notification plugin"
+msgstr ""
+"Não foi possível registrar o gancho de minimização no plugin Notificação"
+
+#: src/plugins/notification/notification_plugin.c:284
+msgid "Failed to register account list changed hook in the Notification plugin"
+msgstr ""
+"Não foi possível registrar o gancho de mudança na lista de contas no plugin "
+"Notificação"
+
+#: src/plugins/notification/notification_plugin.c:297
+msgid "Failed to register theme change hook int the Notification plugin"
+msgstr ""
+"Não foi possível registrar o gancho de alteração do tema no plugin "
+"Notificação"
+
+#: src/plugins/notification/notification_plugin.c:413
+msgid ""
+"This plugin provides various ways to notify the user of new and unread "
+"email.\n"
+"The plugin is extensively configurable in the plugins section of the "
+"preferences dialog.\n"
+"\n"
+"Feedback to <berndth@gmx.de> is welcome."
+msgstr ""
+"Este plugin fornece várias formas de notificar o usuário sobre mensagens "
+"novas e não lidas.\n"
+"Este plugin é amplamente configurável na seção de plugins da janela de "
+"preferências.\n"
+"\n"
+"Qualquer retorno para <berndth@gmx.de> é muito bem-vindo."
+
+#: src/plugins/notification/notification_plugin.c:438
+msgid "Various tools"
+msgstr "Várias ferramentas"
+
+#: src/plugins/notification/notification_popup.c:308
+msgid "New Mail message"
+msgstr "Nova mensagem de e-mail"
+
+#: src/plugins/notification/notification_popup.c:329
+msgid "New News post"
+msgstr "Novo artigo de Newsgroup"
+
+#: src/plugins/notification/notification_popup.c:330
+msgid "A new message arrived"
+msgstr "Chegou uma nova mensagem"
+
+#: src/plugins/notification/notification_popup.c:333
+msgid "New Calendar message"
+msgstr "Nova mensagem de Agenda"
+
+#: src/plugins/notification/notification_popup.c:334
+#: src/plugins/notification/notification_trayicon.c:869
+msgid "A new calendar message arrived"
+msgstr "Chegou uma nova mensagem de Agenda"
+
+#: src/plugins/notification/notification_popup.c:337
+msgid "New RSS feed article"
+msgstr "Novo artigo RSS"
+
+#: src/plugins/notification/notification_popup.c:338
+#: src/plugins/notification/notification_trayicon.c:872
+msgid "A new article in a RSS feed arrived"
+msgstr "Chegou um novo artigo de um alimentador RSS"
+
+#: src/plugins/notification/notification_popup.c:341
+msgid "New unknown message"
+msgstr "Nova mensagem desconhecida"
+
+#: src/plugins/notification/notification_popup.c:342
+msgid "Unknown message type arrived"
+msgstr "Chegou uma mensagem de tipo desconhecido"
+
+#: src/plugins/notification/notification_popup.c:485
+msgid "Mail message"
+msgstr "Mensagem de e-mail"
+
+#: src/plugins/notification/notification_popup.c:486
+#: src/plugins/notification/notification_popup.c:492
+#, c-format
+msgid "%d new message arrived"
+msgid_plural "%d new messages arrived"
+msgstr[0] "Chegou %d nova mensagem"
+msgstr[1] "Chegaram %d novas mensagens"
+
+#: src/plugins/notification/notification_popup.c:491
+msgid "News message"
+msgstr "Mensagem de Newsgroup"
+
+#: src/plugins/notification/notification_popup.c:497
+msgid "Calendar message"
+msgstr "Mensagem de Agenda"
+
+#: src/plugins/notification/notification_popup.c:498
+#: src/plugins/notification/notification_trayicon.c:906
+#, c-format
+msgid "%d new calendar message arrived"
+msgid_plural "%d new calendar messages arrived"
+msgstr[0] "Chegou %d nova mensagem de Agenda"
+msgstr[1] "Chegaram %d novas mensagens de Agenda"
+
+#: src/plugins/notification/notification_popup.c:503
+msgid "RSS news feed"
+msgstr "Alimentador de notícias RSS"
+
+#: src/plugins/notification/notification_popup.c:504
+#, c-format
+msgid "%d new article in a RSS feed arrived"
+msgid_plural "%d new articles in a RSS feed arrived"
+msgstr[0] "Chegou %d novo artigo de um alimentador RSS"
+msgstr[1] "Chegaram %d novos artigos de um alimentador RSS"
+
+#: src/plugins/notification/notification_popup.c:566
+#, c-format
+msgid "%d new message"
+msgid_plural "%d new messages"
+msgstr[0] "%d nova messagem"
+msgstr[1] "%d novas messagens"
+
+#: src/plugins/notification/notification_prefs.c:406
+msgid "Hotkeys"
+msgstr "Teclas de atalho"
+
+#: src/plugins/notification/notification_prefs.c:424
+msgid "Banner"
+msgstr "Letreiro"
+
+#: src/plugins/notification/notification_prefs.c:441
+msgid "Popup"
+msgstr "Janela de notificação"
+
+#: src/plugins/notification/notification_prefs.c:458 src/prefs_actions.c:263
+#: src/prefs_receive.c:147
+msgid "Command"
+msgstr "Comando"
+
+#: src/plugins/notification/notification_prefs.c:475
+msgid "LCD"
+msgstr "LCD"
+
+#: src/plugins/notification/notification_prefs.c:492
+msgid "SysTrayicon"
+msgstr "SysTrayicon"
+
+#: src/plugins/notification/notification_prefs.c:509
+msgid "Indicator"
+msgstr "Indicador"
+
+#: src/plugins/notification/notification_prefs.c:564
+msgid ""
+"\n"
+"Notification Plugin: Failed to write plugin configuration to file\n"
+msgstr ""
+"\n"
+"Plugin Notificação: Não foi possível salvar a configuração do plugin no "
+"arquivo\n"
+
+#: src/plugins/notification/notification_prefs.c:591
+msgid "Include folder types"
+msgstr "Incluir os tipos de pasta"
+
+#: src/plugins/notification/notification_prefs.c:601
+msgid "Mail folders"
+msgstr "Pastas de e-mail"
+
+#: src/plugins/notification/notification_prefs.c:609
+msgid "News folders"
+msgstr "Pastas de Newsgroups"
+
+#: src/plugins/notification/notification_prefs.c:617
+msgid "RSS folders"
+msgstr "Pastas RSS"
+
+#: src/plugins/notification/notification_prefs.c:625
+msgid "Calendar folders"
+msgstr "Pastas de Agenda"
+
+#: src/plugins/notification/notification_prefs.c:633
+msgid "These settings overwrite folder-specific selections."
+msgstr ""
+"Essas configurações têm prioridade sobre as seleções especificas das pastas."
+
+#: src/plugins/notification/notification_prefs.c:644
+msgid "Global notification settings"
+msgstr "Configurações globais de notificação"
+
+#: src/plugins/notification/notification_prefs.c:654
+msgid "Set window manager urgency hint when new messages exist"
+msgstr ""
+"Definir a dica de urgência do gerenciador de janelas quando houverem novas "
+"mensagens"
+
+#: src/plugins/notification/notification_prefs.c:663
+msgid "Set window manager urgency hint when unread messages exist"
+msgstr ""
+"Definir a dica de urgência do gerenciador de janelas quando houverem "
+"mensagens não lidas"
+
+#: src/plugins/notification/notification_prefs.c:673
+msgid "Use sound theme"
+msgstr "Usar um tema de som"
+
+#: src/plugins/notification/notification_prefs.c:735
+msgid "Show banner"
+msgstr "Mostrar letreiro"
+
+#: src/plugins/notification/notification_prefs.c:740
+#: src/plugins/pgpcore/select-keys.c:242 src/plugins/pgpcore/sgpgme.c:144
+#: src/prefs_receive.c:197 src/prefs_summaries.c:462
+msgid "Never"
+msgstr "Nunca"
+
+#: src/plugins/notification/notification_prefs.c:742 src/prefs_receive.c:195
+#: src/prefs_summaries.c:444 src/prefs_summaries.c:463
+msgid "Always"
+msgstr "Sempre"
+
+#: src/plugins/notification/notification_prefs.c:744
+msgid "Only when not empty"
+msgstr "Apenas quando não estiver vazio"
+
+#: src/plugins/notification/notification_prefs.c:762
+msgid "slow"
+msgstr "lento"
+
+#: src/plugins/notification/notification_prefs.c:766
+msgid "fast"
+msgstr "rápido"
+
+#: src/plugins/notification/notification_prefs.c:770
+msgid "Banner speed"
+msgstr "Velocidade do letreiro"
+
+#: src/plugins/notification/notification_prefs.c:788
+msgid "Maximum number of messages (0 means unlimited)"
+msgstr "Número máximo de mensagens (0 significa ilimitado)"
+
+#: src/plugins/notification/notification_prefs.c:802
+msgid "Banner width in pixels (0 means screen size)"
+msgstr "Largura do letreiro em pixels (0 significa da largura da tela)"
+
+#: src/plugins/notification/notification_prefs.c:815
+msgid "Include unread mails in banner"
+msgstr "Incluir mensagens não lidas no letreiro"
+
+#: src/plugins/notification/notification_prefs.c:823
+msgid "Make banner sticky"
+msgstr "Tornar o letreiro aderente"
+
+#: src/plugins/notification/notification_prefs.c:833
+#: src/plugins/notification/notification_prefs.c:1031
+#: src/plugins/notification/notification_prefs.c:1303
+#: src/plugins/notification/notification_prefs.c:1538
+msgid "Only include selected folders"
+msgstr "Incluir apenas as pastas selecionadas"
+
+#: src/plugins/notification/notification_prefs.c:842
+#: src/plugins/notification/notification_prefs.c:1040
+#: src/plugins/notification/notification_prefs.c:1312
+#: src/plugins/notification/notification_prefs.c:1547
+msgid "Select folders..."
+msgstr "Selecione as pastas..."
+
+#: src/plugins/notification/notification_prefs.c:852
+#: src/plugins/notification/notification_prefs.c:1072
+msgid "Use custom colors"
+msgstr "Usar cores personalizadas"
+
+#: src/plugins/notification/notification_prefs.c:865
+#: src/plugins/notification/notification_prefs.c:1085
+msgid "Foreground"
+msgstr "Frente"
+
+#: src/plugins/notification/notification_prefs.c:871
+#: src/plugins/notification/notification_prefs.c:1091
+msgid "Foreground color"
+msgstr "Cor da frente"
+
+#: src/plugins/notification/notification_prefs.c:876
+#: src/plugins/notification/notification_prefs.c:1096
+#: src/prefs_msg_colors.c:281 src/prefs_msg_colors.c:302
+#: src/prefs_msg_colors.c:323
+msgid "Background"
+msgstr "Fundo"
+
+#: src/plugins/notification/notification_prefs.c:882
+#: src/plugins/notification/notification_prefs.c:1102
+msgid "Background color"
+msgstr "Cor do fundo"
+
+#: src/plugins/notification/notification_prefs.c:995
+msgid "Enable popup"
+msgstr "Habilitar janela de notificação"
+
+#: src/plugins/notification/notification_prefs.c:1012
+#: src/plugins/notification/notification_prefs.c:1593
+msgid "Popup timeout:"
+msgstr "Limite de tempo da janela de notificação:"
+
+#: src/plugins/notification/notification_prefs.c:1022
+#: src/plugins/notification/notification_prefs.c:1294
+#: src/plugins/notification/notification_prefs.c:1602
+#: src/plugins/spamassassin/spamassassin_gtk.c:391 src/prefs_other.c:558
+#: src/prefs_summaries.c:496
+msgid "seconds"
+msgstr "segundos"
+
+#: src/plugins/notification/notification_prefs.c:1051
+msgid "Make popup sticky"
+msgstr "Tornar a janela de notificação aderente"
+
+#: src/plugins/notification/notification_prefs.c:1061
+msgid "Set popup window width and position"
+msgstr "Configure a largura e posição da janela de notificação"
+
+#: src/plugins/notification/notification_prefs.c:1066
+msgid "(the window manager is free to ignore this)"
+msgstr "(o gerenciador de janelas tem liberdade para ignorar isso)"
+
+#: src/plugins/notification/notification_prefs.c:1114
+#: src/plugins/notification/notification_prefs.c:1605
+msgid "Display folder name"
+msgstr "Exibir o nome da pasta"
+
+#: src/plugins/notification/notification_prefs.c:1179
+msgid "Sample popup window"
+msgstr "Janela de notificação de exemplo"
+
+#: src/plugins/notification/notification_prefs.c:1185
+msgid "Done"
+msgstr "Feito"
+
+#: src/plugins/notification/notification_prefs.c:1254
+msgid "Enable command"
+msgstr "Habilitar comando"
+
+#: src/plugins/notification/notification_prefs.c:1271
+msgid "Command to execute:"
+msgstr "Comando a ser executado:"
+
+#: src/plugins/notification/notification_prefs.c:1284
+msgid "Block command after execution for"
+msgstr "Bloquear o comando após ser executado para"
+
+#: src/plugins/notification/notification_prefs.c:1391
+msgid "Enable LCD"
+msgstr "Habilitar LCD"
+
+#: src/plugins/notification/notification_prefs.c:1410
+msgid "Hostname:Port of LCDd server:"
+msgstr "Nome do host:Porta do servidor em LCD:"
+
+#: src/plugins/notification/notification_prefs.c:1495
+msgid "Enable Trayicon"
+msgstr "Habilitar ícone na área de notificação"
+
+#: src/plugins/notification/notification_prefs.c:1511
+#: src/plugins/trayicon/trayicon_prefs.c:107
+msgid "Hide at start-up"
+msgstr "Esconder ao iniciar"
+
+#: src/plugins/notification/notification_prefs.c:1519
+#: src/plugins/trayicon/trayicon_prefs.c:116
+msgid "Close to tray"
+msgstr "Fechar para a barra de ícones"
+
+#: src/plugins/notification/notification_prefs.c:1527
+msgid "Hide when iconified"
+msgstr "Esconder quando iconificado"
+
+#. TRANSLATORS: "Toaster" does not refer to the kitchen appliance.
+#. A toast is a small passive (non-focus-stealing)
+#. notification bubble. If your language does not have a word
+#. for that, go for something along the lines of "passive popup"
+#. instead.See also
+#. http://en.wikipedia.org/wiki/Toast_(computing)
+#: src/plugins/notification/notification_prefs.c:1564
+msgid "Passive toaster popup"
+msgstr "Janela de notificação passiva"
+
+#: src/plugins/notification/notification_prefs.c:1575
+msgid "Enable Popup"
+msgstr "Habilitar janela de notificação"
+
+#: src/plugins/notification/notification_prefs.c:1793
+msgid "Add to Indicator Applet"
+msgstr "Adicionar ao miniaplicativo indicador"
+
+#: src/plugins/notification/notification_prefs.c:1807
+msgid "Hide mainwindow when minimized"
+msgstr "Esconder a janela principal quando minimizar"
+
+#: src/plugins/notification/notification_prefs.c:1813
+msgid "Register Claws Mail"
+msgstr "Registrar o Claws Mail"
+
+#: src/plugins/notification/notification_prefs.c:1874
+msgid "Enable global hotkeys"
+msgstr "Habilitar teclas de atalho globais"
+
+#: src/plugins/notification/notification_prefs.c:1888
+#, c-format
+msgid "Examples for hotkeys include <b>%s</b> and <b>%s</b>"
+msgstr "Exemplos de teclas de atalho incluem <b>%s</b> e <b>%s</b>"
+
+#: src/plugins/notification/notification_prefs.c:1888
+msgid "<control><shift>F11"
+msgstr "<control><shift>F11"
+
+#: src/plugins/notification/notification_prefs.c:1888
+msgid "<alt>N"
+msgstr "<alt>N"
+
+#: src/plugins/notification/notification_prefs.c:1899
+msgid "Toggle minimize:"
+msgstr "Alternar minimizar:"
+
+#: src/plugins/notification/notification_trayicon.c:108
+#: src/plugins/trayicon/trayicon.c:97
+msgid "_Get Mail"
+msgstr "_Receber mensagens"
+
+#: src/plugins/notification/notification_trayicon.c:110
+#: src/plugins/trayicon/trayicon.c:99
+msgid "_Email"
+msgstr "_E-mail"
+
+#: src/plugins/notification/notification_trayicon.c:111
+#: src/plugins/trayicon/trayicon.c:100
+msgid "E_mail from account"
+msgstr "E-mail da _conta"
+
+#: src/plugins/notification/notification_trayicon.c:112
+#: src/plugins/trayicon/trayicon.c:101
+msgid "Open A_ddressbook"
+msgstr "Abrir o _Livro de Endereços"
+
+#: src/plugins/notification/notification_trayicon.c:113
+#: src/plugins/trayicon/trayicon.c:102
+msgid "E_xit Claws Mail"
+msgstr "_Sair do Claws Mail"
+
+#: src/plugins/notification/notification_trayicon.c:118
+#: src/plugins/trayicon/trayicon.c:107
+msgid "_Work Offline"
+msgstr "Trabalhar _desconectado"
+
+#: src/plugins/notification/notification_trayicon.c:120
+msgid "Show Trayicon Notifications"
+msgstr "Exibir aviso na área de notificações"
+
+#: src/plugins/notification/notification_trayicon.c:263
+#: src/plugins/trayicon/trayicon.c:189
+#, c-format
+msgid "New %d, Unread: %d, Total: %d"
+msgstr "%d nova(s), %d não lida(s), %d no total"
+
+#: src/plugins/notification/notification_trayicon.c:819
+msgid "New mail message"
+msgstr "Nova mensagem de e-mail"
+
+#: src/plugins/notification/notification_trayicon.c:821
+msgid "New news post"
+msgstr "Nova publicação de Newsgroup"
+
+#: src/plugins/notification/notification_trayicon.c:823
+msgid "New calendar message"
+msgstr "Nova mensagem de Agenda"
+
+#: src/plugins/notification/notification_trayicon.c:825
+msgid "New article in RSS feed"
+msgstr "Novo artigo de um alimentador RSS"
+
+#: src/plugins/notification/notification_trayicon.c:828
+msgid "New messages arrived"
+msgstr "Chegou uma nova mensagem"
+
+#: src/plugins/notification/notification_trayicon.c:884
+#, c-format
+msgid "%d new mail message arrived"
+msgid_plural "%d new mail messages arrived"
+msgstr[0] "Chegou %d nova mensagem"
+msgstr[1] "Chegaram %d novas mensagens"
+
+#: src/plugins/notification/notification_trayicon.c:895
+#, c-format
+msgid "%d new news post arrived"
+msgid_plural "%d new news posts arrived"
+msgstr[0] "Chegou %d nova publicação de Newsgroup"
+msgstr[1] "Chegou %d novas publicações de Newsgroup"
+
+#: src/plugins/notification/notification_trayicon.c:917
+#, c-format
+msgid "%d new article in RSS feeds arrived"
+msgid_plural "%d new articles in RSS feeds arrived"
+msgstr[0] "Chegou %d novo artigo de um alimentador RSS"
+msgstr[1] "Chegaram %d novos artigos de um alimentador RSS"
+
+#: src/plugins/pdf_viewer/poppler_viewer.c:703
+msgid "Title:"
+msgstr "Título:"
+
+#: src/plugins/pdf_viewer/poppler_viewer.c:705
+msgid "Author:"
+msgstr "Autor:"
+
+#: src/plugins/pdf_viewer/poppler_viewer.c:707
+msgid "Creator:"
+msgstr "Criador:"
+
+#: src/plugins/pdf_viewer/poppler_viewer.c:708
+msgid "Producer:"
+msgstr "Produtor:"
+
+#: src/plugins/pdf_viewer/poppler_viewer.c:711
+msgid "Created:"
+msgstr "Criado:"
+
+#: src/plugins/pdf_viewer/poppler_viewer.c:715
+msgid "Modified:"
+msgstr "Modificado:"
+
+#: src/plugins/pdf_viewer/poppler_viewer.c:718
+msgid "Format:"
+msgstr "Formato:"
+
+#: src/plugins/pdf_viewer/poppler_viewer.c:720
+#: src/plugins/pdf_viewer/poppler_viewer.c:723
+msgid "Optimized:"
+msgstr "Otimizado:"
+
+#: src/plugins/pdf_viewer/poppler_viewer.c:1166
+msgid "PDF Viewer Plugin"
+msgstr "Plugin Visualizador de PDF"
+
+#: src/plugins/pdf_viewer/poppler_viewer.c:1268
+msgid "Loading..."
+msgstr "Abrindo..."
+
+#: src/plugins/pdf_viewer/poppler_viewer.c:1327
+#, c-format
+msgid "%s Document"
+msgstr "Documento %s"
+
+#: src/plugins/pdf_viewer/poppler_viewer.c:1333
+#, c-format
+msgid "of %d"
+msgstr "de %d"
+
+#: src/plugins/pdf_viewer/poppler_viewer.c:1710
+#: src/plugins/pdf_viewer/poppler_viewer.c:1932
+msgid "Document Index"
+msgstr "Índice do documento"
+
+#: src/plugins/pdf_viewer/poppler_viewer.c:1900
+msgid "First Page"
+msgstr "Primeira página"
+
+#: src/plugins/pdf_viewer/poppler_viewer.c:1903
+msgid "Previous Page"
+msgstr "Página anterior"
+
+#: src/plugins/pdf_viewer/poppler_viewer.c:1906
+msgid "Next Page"
+msgstr "Próxima página"
+
+#: src/plugins/pdf_viewer/poppler_viewer.c:1909
+msgid "Last Page"
+msgstr "Última página"
+
+#: src/plugins/pdf_viewer/poppler_viewer.c:1912
+msgid "Zoom In"
+msgstr "Aumentar zoom"
+
+#: src/plugins/pdf_viewer/poppler_viewer.c:1914
+msgid "Zoom Out"
+msgstr "Diminuir zoom"
+
+#: src/plugins/pdf_viewer/poppler_viewer.c:1917
+msgid "Fit Page"
+msgstr "Ajustar a página"
+
+#: src/plugins/pdf_viewer/poppler_viewer.c:1920
+msgid "Fit Page Width"
+msgstr "Ajustar a largura da página"
+
+#: src/plugins/pdf_viewer/poppler_viewer.c:1923
+msgid "Rotate Left"
+msgstr "Girar para a esquerda"
+
+#: src/plugins/pdf_viewer/poppler_viewer.c:1926
+msgid "Rotate Right"
+msgstr "Girar para a direita"
+
+#: src/plugins/pdf_viewer/poppler_viewer.c:1929
+msgid "Document Info"
+msgstr "Informações do documento"
+
+#: src/plugins/pdf_viewer/poppler_viewer.c:1934
+msgid "Page Number"
+msgstr "Número da página"
+
+#: src/plugins/pdf_viewer/poppler_viewer.c:1936
+msgid "Zoom Factor"
+msgstr "Fator de zoom"
+
+#: src/plugins/pdf_viewer/poppler_viewer.c:2041
+#, c-format
+msgid ""
+"This plugin enables the viewing of PDF and PostScript attachments using the "
+"Poppler %s Lib and the gs tool.\n"
+"\n"
+"Any feedback is welcome: iwkse@claws-mail.org"
+msgstr ""
+"Esse plugin habilita a visualização de anexos em PDF e PostScript usando a "
+"biblioteca Poppler %s e a ferramenta gs.\n"
+"\n"
+"Qualquer retorno é bem-vindo: iwkse@claws-mail.org"
+
+#: src/plugins/pdf_viewer/poppler_viewer.c:2047
+#: src/plugins/pdf_viewer/poppler_viewer.c:2055
+#: src/plugins/pdf_viewer/poppler_viewer.c:2075
+msgid "PDF Viewer"
+msgstr "Visualizador PDF"
+
+#: src/plugins/pdf_viewer/poppler_viewer.c:2051
+#, c-format
+msgid ""
+"Warning: could not find ghostscript binary (gs) required for %s plugin to "
+"process PostScript attachments, only PDF attachments will be displayed. To "
+"enable PostScript support please install gs program.\n"
+"\n"
+"%s"
+msgstr ""
+"Atenção; não foi possível encontrar o binário do ghostscript (gs) necessário "
+"para o plugin %s processar anexos PostScript. Assim, somente anexos PDf "
+"serão exibidos. Para habilitar o suporte ao PostScript, por favor instale o "
+"programa gs.\n"
+"\n"
+"%s"
+
+#: src/plugins/python/python_plugin.c:338
+#: src/plugins/python/python_plugin.c:482
+msgid "Python scripts"
+msgstr "Scripts Python"
+
+#: src/plugins/python/python_plugin.c:477
+msgid "Show Python console..."
+msgstr "Exibir o console Python..."
+
+#: src/plugins/python/python_plugin.c:483
+msgid "Refresh"
+msgstr "Atualizar"
+
+#: src/plugins/python/python_plugin.c:485 src/prefs_account.c:2480
+#: src/prefs_account.c:2502 src/prefs_account.c:2761 src/wizard.c:1379
+#: src/wizard.c:1658
+msgid "Browse"
+msgstr "Navegar"
+
+#: src/plugins/python/python_plugin.c:548
+#: src/plugins/python/python_plugin.c:602
+msgid "Python"
+msgstr "Python"
+
+#: src/plugins/python/python_plugin.c:554
+msgid "Failed to register \"compose create hook\" in the Python plugin"
+msgstr "Não foi possível registrar \"compose create hook\" no plugin Python"
+
+#: src/plugins/python/python_plugin.c:607
+msgid ""
+"This plugin provides Python integration features.\n"
+"\n"
+"For the most up-to-date API documentation, type\n"
+"\n"
+" help(clawsmail)\n"
+"\n"
+"in the interactive Python console under Tools -> Show Python console.\n"
+"\n"
+"The source distribution of this plugin comes with various example scripts in "
+"the \"examples\" subdirectory. If you wrote a script that you would be "
+"interested in sharing, feel free to send it to me to have it considered for "
+"inclusion in the examples.\n"
+"\n"
+"Feedback to <berndth@gmx.de> is welcome."
+msgstr ""
+"Este plugin fornece recursos de integração com o Python\n"
+"\n"
+"Para a documentação mais atualizada sobre a API, digite:\n"
+"\n"
+" help(clawsmail)\n"
+"\n"
+"no console interativo do Python, acessível em Ferramentas -> Exibir console "
+"Python.\n"
+"\n"
+"As fontes desse plugin vêm com vários scripts de exemplo, no subdiretório "
+"\"examples\". Se você escrever algum script que achar interessante "
+"compartilhar, sinta-se à vontade para enviá-lo para mim, pra que possa "
+"considerá-lo para inclusão nos exempos.\n"
+"\n"
+"Qualquer retorno para <berndth@gmx.de> é bem-vindo."
+
+#: src/plugins/python/python_plugin.c:636
+msgid "Python integration"
+msgstr "Integração com o Python"
 
 #: src/plugins/pgpcore/passphrase.c:86 src/plugins/pgpcore/prefs_gpg.c:108
 msgid "Passphrase"
@@ -9688,11 +11035,6 @@ msgstr "Coletando informações para '%s' ... %c"
 #: src/plugins/pgpcore/select-keys.c:239 src/plugins/pgpcore/sgpgme.c:142
 msgid "Undefined"
 msgstr "Indefinido"
-
-#: src/plugins/pgpcore/select-keys.c:242 src/plugins/pgpcore/sgpgme.c:144
-#: src/prefs_receive.c:197 src/prefs_summaries.c:462
-msgid "Never"
-msgstr "Nunca"
 
 #: src/plugins/pgpcore/select-keys.c:245 src/plugins/pgpcore/sgpgme.c:146
 msgid "Marginal"
@@ -10745,44 +12087,10 @@ msgid ""
 msgstr ""
 "Duração máxima da checagem. Se ela durar mais que isso, será cancelada."
 
-#: src/plugins/spamassassin/spamassassin_gtk.c:391 src/prefs_other.c:558
-#: src/prefs_summaries.c:496
-msgid "seconds"
-msgstr "segundos"
-
 #: src/plugins/trayicon/trayicon.c:56 src/plugins/trayicon/trayicon.c:591
 #: src/plugins/trayicon/trayicon_prefs.c:70
 msgid "Trayicon"
 msgstr "Trayicon"
-
-#: src/plugins/trayicon/trayicon.c:97
-msgid "_Get Mail"
-msgstr "_Receber mensagens"
-
-#: src/plugins/trayicon/trayicon.c:99
-msgid "_Email"
-msgstr "_E-mail"
-
-#: src/plugins/trayicon/trayicon.c:100
-msgid "E_mail from account"
-msgstr "E-mail da _conta"
-
-#: src/plugins/trayicon/trayicon.c:101
-msgid "Open A_ddressbook"
-msgstr "Abrir o _Livro de Endereços"
-
-#: src/plugins/trayicon/trayicon.c:102
-msgid "E_xit Claws Mail"
-msgstr "_Sair do Claws Mail"
-
-#: src/plugins/trayicon/trayicon.c:107
-msgid "_Work Offline"
-msgstr "Trabalhar _desconectado"
-
-#: src/plugins/trayicon/trayicon.c:189
-#, c-format
-msgid "New %d, Unread: %d, Total: %d"
-msgstr "%d nova(s), %d não lida(s), %d no total"
 
 #: src/plugins/trayicon/trayicon.c:357
 msgid "Claws Mail"
@@ -10823,17 +12131,9 @@ msgstr ""
 "ela contém uma carta. Ao passar o mouse sobre o ícone aparece uma indicação "
 "do número de mensagens lidas, não lidas e do total."
 
-#: src/plugins/trayicon/trayicon_prefs.c:107
-msgid "Hide at start-up"
-msgstr "Esconder ao iniciar"
-
 #: src/plugins/trayicon/trayicon_prefs.c:113
 msgid "Hide Claws Mail at start-up"
 msgstr "Esconder o Claws Mail ao iniciar"
-
-#: src/plugins/trayicon/trayicon_prefs.c:116
-msgid "Close to tray"
-msgstr "Fechar para a barra de ícones"
 
 #: src/plugins/trayicon/trayicon_prefs.c:122
 msgid ""
@@ -12050,10 +13350,6 @@ msgstr "Gerar cabeçalho X-Mailer"
 msgid "Add user-defined header"
 msgstr "Adicionar cabeçalho definido pelo usuário"
 
-#: src/prefs_account.c:1716
-msgid "Authentication"
-msgstr "Autenticação"
-
 #: src/prefs_account.c:1719
 msgid "SMTP Authentication (SMTP AUTH)"
 msgstr "Autenticação SMTP (SMTP AUTH)"
@@ -12199,11 +13495,6 @@ msgstr "Certificados do cliente"
 #: src/prefs_account.c:2477
 msgid "Certificate for receiving"
 msgstr "Certificado para recebimento"
-
-#: src/prefs_account.c:2480 src/prefs_account.c:2502 src/prefs_account.c:2761
-#: src/wizard.c:1379 src/wizard.c:1658
-msgid "Browse"
-msgstr "Navegar"
 
 #: src/prefs_account.c:2482 src/prefs_account.c:2484 src/prefs_account.c:2504
 #: src/prefs_account.c:2506
@@ -12376,10 +13667,6 @@ msgstr "Configuração de ações"
 #: src/prefs_actions.c:250
 msgid "Menu name"
 msgstr "Nome do menu"
-
-#: src/prefs_actions.c:263 src/prefs_receive.c:147
-msgid "Command"
-msgstr "Comando"
 
 #: src/prefs_actions.c:283
 msgid "Shell command"
@@ -14039,11 +15326,6 @@ msgctxt "Tooltip"
 msgid "Pick color for 1st level text background"
 msgstr "Selecione a cor para o fundo do texto do 1º nível"
 
-#: src/prefs_msg_colors.c:281 src/prefs_msg_colors.c:302
-#: src/prefs_msg_colors.c:323
-msgid "Background"
-msgstr "Fundo"
-
 #: src/prefs_msg_colors.c:300
 msgctxt "Tooltip"
 msgid "Pick color for 2nd level text background"
@@ -14327,10 +15609,6 @@ msgstr "Janela de mensagens"
 #: src/prefs_receive.c:186
 msgid "Show receive dialog"
 msgstr "Exibir janela de mensagens do recebimento"
-
-#: src/prefs_receive.c:195 src/prefs_summaries.c:444 src/prefs_summaries.c:463
-msgid "Always"
-msgstr "Sempre"
 
 #: src/prefs_receive.c:196
 msgid "Only on manual receiving"
@@ -16816,10 +18094,6 @@ msgstr ""
 msgid "<span weight=\"bold\">Username:</span>"
 msgstr "<span weight=\"bold\">Nome de usuário:</span>"
 
-#: src/wizard.c:1601
-msgid "Password:"
-msgstr "Senha:"
-
 #: src/wizard.c:1619
 msgid "Use SSL to connect to receiving server"
 msgstr "Usar SSL para conectar-se ao servidor de recebimento"
@@ -16996,3 +18270,8 @@ msgstr ""
 #~ msgstr ""
 #~ "RSSyl: A obtenção de comentários não é suportada para fontes Atom. Não "
 #~ "foi possível obter os comentários de '%s'"
+
+#~ msgid "%d page"
+#~ msgid_plural "%d pages"
+#~ msgstr[0] "%d página"
+#~ msgstr[1] "%d páginas"

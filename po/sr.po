@@ -14891,6 +14891,130 @@ msgstr "Овај додатак управља разним ACPI LED за пор
 msgid "Laptop LED"
 msgstr "Лаптоп ЛЕД"
 
+#: src/poppler_viewer.c:555
+msgid "Size:"
+msgstr "Величина:"
+
+#: src/poppler_viewer.c:557
+msgid "Title:"
+msgstr "Наслов:"
+
+#: src/poppler_viewer.c:559
+msgid "Author:"
+msgstr "Аутор:"
+
+#: src/poppler_viewer.c:561
+msgid "Creator:"
+msgstr "Направио:"
+
+#: src/poppler_viewer.c:562
+msgid "Producer:"
+msgstr "Продуцент:"
+
+#: src/poppler_viewer.c:565
+msgid "Created:"
+msgstr "Направљено:"
+
+#: src/poppler_viewer.c:569
+msgid "Modified:"
+msgstr "Модификовано:"
+
+#: src/poppler_viewer.c:572
+msgid "Format:"
+msgstr "Формат:"
+
+#: src/poppler_viewer.c:573
+msgid "Optimized:"
+msgstr "Оптимизовано:"
+
+#: src/poppler_viewer.c:742
+msgid "PDF Viewer Plugin"
+msgstr "Додатак за преглед PDF-ова"
+
+#: src/poppler_viewer.c:846
+msgid "Loading..."
+msgstr "Учитава се..."
+
+#: src/poppler_viewer.c:896
+#, c-format
+msgid "%s Document(%d page%s)"
+msgstr "%s Документ(%d страна%s)"
+
+#: src/poppler_viewer.c:1179 src/poppler_viewer.c:1419
+msgid "Document Index"
+msgstr "Садржај документа"
+
+#: src/poppler_viewer.c:1365
+msgid "First Page"
+msgstr "Прва страна"
+
+#: src/poppler_viewer.c:1370
+msgid "Previous Page"
+msgstr "Претходна страна"
+
+#: src/poppler_viewer.c:1375
+msgid "Next Page"
+msgstr "Следећа страна"
+
+#: src/poppler_viewer.c:1380
+msgid "Last Page"
+msgstr "Последња страна"
+
+#: src/poppler_viewer.c:1385
+msgid "Zoom In"
+msgstr "Увеличај"
+
+#: src/poppler_viewer.c:1389
+msgid "Zoom Out"
+msgstr "Умањи"
+
+#: src/poppler_viewer.c:1394
+msgid "Fit Page"
+msgstr "Прилагоди страну"
+
+#: src/poppler_viewer.c:1399
+msgid "Fit Page Width"
+msgstr "Прилагоди ширину стране"
+
+#: src/poppler_viewer.c:1404
+msgid "Rotate Left"
+msgstr "Ротирај у лево"
+
+#: src/poppler_viewer.c:1409
+msgid "Rotate Right"
+msgstr "Ротирај у десно"
+
+#: src/poppler_viewer.c:1414
+msgid "Document Info"
+msgstr "Информације о документу"
+
+#: src/poppler_viewer.c:1423
+msgid "Page Number"
+msgstr "Број страна"
+
+#: src/poppler_viewer.c:1427
+msgid "Zoom Factor"
+msgstr "Фактор зума"
+
+#: src/poppler_viewer.c:1535
+#, c-format
+msgid ""
+"This plugin enables the viewing of PDF and PostScript attachments using the "
+"Poppler %s Lib.\n"
+"\n"
+"PDF Viewer is Copyright(C) 2007\n"
+"by Salvatore De Paolis <iwkse@claws-mail.org>"
+msgstr ""
+"Овај додатак омогућава преглед PDF и PostScript прилога употребом Poppler %s "
+"Lib.\n"
+"\n"
+"PDF Прегледник Copyright(C) 2007\n"
+"by Salvatore De Paolis <iwkse@claws-mail.org>"
+
+#: src/poppler_viewer.c:1545 src/poppler_viewer.c:1559
+msgid "PDF Viewer"
+msgstr "PDF Прегледник"
+
 #~ msgid "/New meeting..."
 #~ msgstr "/Нови састанак..."
 
