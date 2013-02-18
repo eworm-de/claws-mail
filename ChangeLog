@@ -1,3 +1,17 @@
+2013-02-18 [wwp]	3.9.0cvs77
+
+	* src/plugins/clamd/.cvsignore
+	* src/plugins/clamd/libclamd/.cvsignore
+	* src/plugins/fetchinfo/.cvsignore
+	* src/plugins/gdata/.cvsignore
+	* src/plugins/mailmbox/.cvsignore
+	* src/plugins/newmail/.cvsignore
+	* src/plugins/notification/.cvsignore
+	* src/plugins/pdf_viewer/.cvsignore
+	* src/plugins/perl/.cvsignore
+	* src/plugins/python/.cvsignore
+	Silent up stuff a bit.
+
 2013-02-17 [colin]	3.9.0cvs76
 
 	* src/plugins/notification/Makefile.am
