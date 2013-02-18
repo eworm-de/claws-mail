@@ -1,3 +1,8 @@
+2013-02-18 [wwp]	3.9.0cvs79
+
+	* src/plugins/clamd/libclamd/.cvsignore
+	Add one more .cvsignore file.
+
 2013-02-18 [wwp]	3.9.0cvs78
 
 	* src/plugins/clamd/libclamd/.cvsignore
