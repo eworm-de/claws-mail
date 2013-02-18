@@ -1,3 +1,10 @@
+2013-02-18 [mones]	3.9.0cvs80
+
+	* src/plugins/notification/Makefile.am
+	* src/plugins/pdf_viewer/Makefile.am
+	* src/plugins/python/Makefile.am
+		Allow 'make dist' to generate a nice tarball
+
 2013-02-18 [wwp]	3.9.0cvs79
 
 	* src/plugins/clamd/libclamd/.cvsignore

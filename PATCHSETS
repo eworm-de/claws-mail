@@ -4577,3 +4577,4 @@
 ( diff -u /dev/null src/plugins/clamd/.cvsignore;  diff -u /dev/null src/plugins/clamd/libclamd/.cvsignore;  diff -u /dev/null src/plugins/fetchinfo/.cvsignore;  diff -u /dev/null src/plugins/gdata/.cvsignore;  diff -u /dev/null src/plugins/mailmbox/.cvsignore;  diff -u /dev/null src/plugins/newmail/.cvsignore;  diff -u /dev/null src/plugins/notification/.cvsignore;  diff -u /dev/null src/plugins/pdf_viewer/.cvsignore;  diff -u /dev/null src/plugins/perl/.cvsignore;  diff -u /dev/null src/plugins/python/.cvsignore;  ) > 3.9.0cvs77.patchset
 ( diff -u /dev/null src/plugins/clamd/libclamd/.cvsignore;  ) > 3.9.0cvs78.patchset
 ( diff -u /dev/null src/plugins/clamd/libclamd/.cvsignore;  ) > 3.9.0cvs79.patchset
+( cvs diff -u -r 1.1.2.2 -r 1.1.2.3 src/plugins/notification/Makefile.am;  cvs diff -u -r 1.1.2.1 -r 1.1.2.2 src/plugins/pdf_viewer/Makefile.am;  cvs diff -u -r 1.1.2.1 -r 1.1.2.2 src/plugins/python/Makefile.am;  ) > 3.9.0cvs80.patchset

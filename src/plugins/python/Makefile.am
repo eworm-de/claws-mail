@@ -17,8 +17,7 @@ python_plugin_la_SOURCES = \
 	python-hooks.c \
 	python-hooks.h \
 	python-shell.c \
-	python-shell.h \
-	gettext.h
+	python-shell.h
 
 python_plugin_la_LDFLAGS = \
 	-avoid-version -module \
