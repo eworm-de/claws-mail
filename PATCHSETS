@@ -4578,3 +4578,4 @@
 ( diff -u /dev/null src/plugins/clamd/libclamd/.cvsignore;  ) > 3.9.0cvs78.patchset
 ( diff -u /dev/null src/plugins/clamd/libclamd/.cvsignore;  ) > 3.9.0cvs79.patchset
 ( cvs diff -u -r 1.1.2.2 -r 1.1.2.3 src/plugins/notification/Makefile.am;  cvs diff -u -r 1.1.2.1 -r 1.1.2.2 src/plugins/pdf_viewer/Makefile.am;  cvs diff -u -r 1.1.2.1 -r 1.1.2.2 src/plugins/python/Makefile.am;  ) > 3.9.0cvs80.patchset
+( cvs diff -u -r 1.654.2.4657 -r 1.654.2.4658 configure.ac;  ) > 3.9.0cvs81.patchset

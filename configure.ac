@@ -12,7 +12,7 @@ MINOR_VERSION=9
 MICRO_VERSION=0
 INTERFACE_AGE=0
 BINARY_AGE=0
-EXTRA_VERSION=80
+EXTRA_VERSION=81
 EXTRA_RELEASE=
 EXTRA_GTK2_VERSION=
 
@@ -859,7 +859,7 @@ AC_SUBST(CURL_CFLAGS)
 
 dnl --- acpi_notifier ---
 AC_ARG_ENABLE(acpi_notifier-plugin,
-	[  --enable-acpi_notifier-plugin              build acpi_notifier plugin],
+	[  --disable-acpi_notifier-plugin              do not build acpi_notifier plugin],
 	[ac_cv_enable_acpi_notifier_plugin=$enableval], [ac_cv_enable_acpi_notifier_plugin=yes])
 if test x"$ac_cv_enable_acpi_notifier_plugin" = xyes; then
 	PLUGINS="acpi_notifier $PLUGINS"
@@ -871,7 +871,7 @@ AM_CONDITIONAL(BUILD_ACPI_NOTIFIER_PLUGIN, test x"$ac_cv_enable_acpi_notifier_pl
 	
 dnl --- address_keeper ---
 AC_ARG_ENABLE(address_keeper-plugin,
-	[  --enable-address_keeper-plugin              build address_keeper plugin],
+	[  --disable-address_keeper-plugin              do not build address_keeper plugin],
 	[ac_cv_enable_address_keeper_plugin=$enableval], [ac_cv_enable_address_keeper_plugin=yes])
 if test x"$ac_cv_enable_address_keeper_plugin" = xyes; then
 	PLUGINS="address_keeper $PLUGINS"
@@ -883,7 +883,7 @@ AM_CONDITIONAL(BUILD_ADDRESS_KEEPER_PLUGIN, test x"$ac_cv_enable_address_keeper_
 	
 dnl --- archive ---
 AC_ARG_ENABLE(archive-plugin,
-	[  --enable-archive-plugin              build archive plugin],
+	[  --disable-archive-plugin              do not build archive plugin],
 	[ac_cv_enable_archive_plugin=$enableval], [ac_cv_enable_archive_plugin=yes])
 if test x"$ac_cv_enable_archive_plugin" = xyes; then
 	AC_SEARCH_LIBS([archive_read_new], [archive],
@@ -901,7 +901,7 @@ AM_CONDITIONAL(BUILD_ARCHIVE_PLUGIN, test x"$ac_cv_enable_archive_plugin" = xyes
 
 dnl --- att_remover ---
 AC_ARG_ENABLE(att_remover-plugin,
-	[  --enable-att_remover-plugin              build att_remover plugin],
+	[  --disable-att_remover-plugin              do not build att_remover plugin],
 	[ac_cv_enable_att_remover_plugin=$enableval], [ac_cv_enable_att_remover_plugin=yes])
 if test x"$ac_cv_enable_att_remover_plugin" = xyes; then
 	PLUGINS="att_remover $PLUGINS"
@@ -913,7 +913,7 @@ AM_CONDITIONAL(BUILD_ATT_REMOVER_PLUGIN, test x"$ac_cv_enable_att_remover_plugin
 
 dnl --- attachwarner ---
 AC_ARG_ENABLE(attachwarner-plugin,
-	[  --enable-attachwarner-plugin              build attachwarner plugin],
+	[  --disable-attachwarner-plugin              do not build attachwarner plugin],
 	[ac_cv_enable_attachwarner_plugin=$enableval], [ac_cv_enable_attachwarner_plugin=yes])
 if test x"$ac_cv_enable_attachwarner_plugin" = xyes; then
 	PLUGINS="attachwarner $PLUGINS"
