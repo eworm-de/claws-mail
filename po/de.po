@@ -12,7 +12,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: claws-mail\n"
 "Report-Msgid-Bugs-To: paul@claws-mail.org\n"
-"POT-Creation-Date: 2013-02-17 22:25+0100\n"
+"POT-Creation-Date: 2013-02-20 09:51+0100\n"
 "PO-Revision-Date: 2012-11-10 12:54+0100\n"
 "Last-Translator: malenki <translate@malenki.ch>\n"
 "Language-Team:  <translators@lists.claws-mail.org>\n"
@@ -154,6 +154,7 @@ msgstr ""
 
 #: src/action.c:980 src/plugins/bogofilter/bogofilter.c:875
 #: src/plugins/rssyl/feed.c:1734 src/plugins/rssyl/feed.c:1738
+#: src/plugins/tnef_parse/tnef_parse.c:67
 #: src/plugins/vcalendar/vcal_folder.c:1800
 #: src/plugins/vcalendar/vcal_folder.c:1804
 #: src/plugins/vcalendar/vcal_folder.c:1815
@@ -3508,18 +3509,18 @@ msgid "Send _queue..."
 msgstr "_Postausgang senden..."
 
 #: src/folderview.c:380 src/folderview.c:427
-#: src/plugins/notification/notification_lcdproc.c:135
+#: src/plugins/notification/notification_lcdproc.c:141
 #: src/prefs_folder_column.c:79 src/prefs_matcher.c:388 src/summaryview.c:6293
 msgid "New"
 msgstr "Neu"
 
 #: src/folderview.c:381 src/folderview.c:428
-#: src/plugins/notification/notification_lcdproc.c:139
+#: src/plugins/notification/notification_lcdproc.c:145
 #: src/prefs_folder_column.c:80 src/prefs_matcher.c:387 src/summaryview.c:6295
 msgid "Unread"
 msgstr "Ungelesen"
 
-#: src/folderview.c:382 src/plugins/notification/notification_lcdproc.c:143
+#: src/folderview.c:382 src/plugins/notification/notification_lcdproc.c:149
 #: src/prefs_folder_column.c:81
 msgid "Total"
 msgstr "Gesamt"
@@ -4816,8 +4817,17 @@ msgstr ""
 #: src/plugins/dillo_viewer/dillo_prefs.c:129
 #: src/plugins/fancy/fancy_prefs.c:110
 #: src/plugins/fetchinfo/fetchinfo_plugin_gtk.c:178
-#: src/plugins/gdata/cm_gdata_prefs.c:145 src/plugins/pgpcore/prefs_gpg.c:557
-#: src/plugins/rssyl/rssyl_prefs.c:63
+#: src/plugins/gdata/cm_gdata_prefs.c:145
+#: src/plugins/notification/notification_prefs.c:396
+#: src/plugins/notification/notification_prefs.c:410
+#: src/plugins/notification/notification_prefs.c:428
+#: src/plugins/notification/notification_prefs.c:445
+#: src/plugins/notification/notification_prefs.c:462
+#: src/plugins/notification/notification_prefs.c:479
+#: src/plugins/notification/notification_prefs.c:496
+#: src/plugins/notification/notification_prefs.c:513
+#: src/plugins/pgpcore/prefs_gpg.c:557 src/plugins/rssyl/rssyl_prefs.c:63
+#: src/plugins/spam_report/spam_report_prefs.c:79
 #: src/plugins/spamassassin/spamassassin_gtk.c:648
 #: src/plugins/trayicon/trayicon_prefs.c:69
 #: src/plugins/vcalendar/vcal_prefs.c:645 src/prefs_toolbar.c:939
@@ -5269,16 +5279,16 @@ msgstr "SSL-Zertifikat hat sich geändert"
 msgid "Tags:"
 msgstr "Marken:"
 
-#: src/headerview.c:216 src/plugins/notification/notification_popup.c:310
-#: src/plugins/notification/notification_popup.c:615
-#: src/plugins/notification/notification_trayicon.c:848 src/summaryview.c:3342
+#: src/headerview.c:216 src/plugins/notification/notification_popup.c:316
+#: src/plugins/notification/notification_popup.c:621
+#: src/plugins/notification/notification_trayicon.c:854 src/summaryview.c:3342
 #: src/summaryview.c:3359 src/summaryview.c:3380
 msgid "(No From)"
 msgstr "(Kein Von)"
 
-#: src/headerview.c:231 src/plugins/notification/notification_popup.c:312
-#: src/plugins/notification/notification_popup.c:619
-#: src/plugins/notification/notification_trayicon.c:851 src/summaryview.c:3393
+#: src/headerview.c:231 src/plugins/notification/notification_popup.c:318
+#: src/plugins/notification/notification_popup.c:625
+#: src/plugins/notification/notification_trayicon.c:857 src/summaryview.c:3393
 #: src/summaryview.c:3397
 msgid "(No Subject)"
 msgstr "(Kein Betreff)"
@@ -6964,7 +6974,7 @@ msgid "Compose a news message"
 msgstr "Neue _News-Nachricht verfassen"
 
 #: src/mainwindow.c:654 src/messageview.c:302
-#: src/plugins/notification/notification_banner.c:89
+#: src/plugins/notification/notification_banner.c:95
 msgid "_Reply"
 msgstr "_Antworten"
 
@@ -7464,7 +7474,7 @@ msgstr "Filterprotokoll deaktiviert.\n"
 
 #: src/mainwindow.c:2653 src/mainwindow.c:2660 src/mainwindow.c:2703
 #: src/mainwindow.c:2736 src/mainwindow.c:2768 src/mainwindow.c:2813
-#: src/plugins/notification/notification_trayicon.c:357
+#: src/plugins/notification/notification_trayicon.c:363
 #: src/plugins/trayicon/trayicon.c:129 src/prefs_folder_item.c:1067
 msgid "Untitled"
 msgstr "Unbenannt"
@@ -7527,12 +7537,12 @@ msgstr "Mbox-Import schlug fehl."
 msgid "Export to mbox has failed."
 msgstr "Export in Mbox schlug fehl."
 
-#: src/mainwindow.c:4200 src/plugins/notification/notification_trayicon.c:512
+#: src/mainwindow.c:4200 src/plugins/notification/notification_trayicon.c:518
 #: src/plugins/trayicon/trayicon.c:568
 msgid "Exit"
 msgstr "Beenden"
 
-#: src/mainwindow.c:4200 src/plugins/notification/notification_trayicon.c:512
+#: src/mainwindow.c:4200 src/plugins/notification/notification_trayicon.c:518
 #: src/plugins/trayicon/trayicon.c:568
 msgid "Exit Claws Mail?"
 msgstr "Claws Mail beenden?"
@@ -9832,11 +9842,13 @@ msgid "Authentication"
 msgstr "Authentifizierung"
 
 #: src/plugins/gdata/cm_gdata_prefs.c:84
+#: src/plugins/spam_report/spam_report_prefs.c:152
 #, fuzzy
 msgid "Username:"
 msgstr "SMTP-Benutzername:"
 
-#: src/plugins/gdata/cm_gdata_prefs.c:91 src/wizard.c:1601
+#: src/plugins/gdata/cm_gdata_prefs.c:91
+#: src/plugins/spam_report/spam_report_prefs.c:165 src/wizard.c:1601
 msgid "Password:"
 msgstr "Kennwort:"
 
@@ -9998,84 +10010,84 @@ msgstr ""
 msgid "Log file"
 msgstr "Protokoll-Stufe"
 
-#: src/plugins/notification/notification_banner.c:350
+#: src/plugins/notification/notification_banner.c:356
 #, fuzzy
 msgid "Folder:"
 msgstr "Ordner"
 
-#: src/plugins/notification/notification_foldercheck.c:471
+#: src/plugins/notification/notification_foldercheck.c:477
 #, fuzzy
 msgid "Select folder(s)"
 msgstr "Ordner wählen"
 
-#: src/plugins/notification/notification_foldercheck.c:572
+#: src/plugins/notification/notification_foldercheck.c:578
 #, fuzzy
 msgid "select recursively"
 msgstr "rekursive Suche"
 
-#: src/plugins/notification/notification_lcdproc.c:149
+#: src/plugins/notification/notification_lcdproc.c:155
 #, fuzzy
 msgid "No new messages"
 msgstr "Keine neuen Nachrichten."
 
-#: src/plugins/notification/notification_plugin.c:207
-#: src/plugins/notification/notification_plugin.c:408
-#: src/plugins/notification/notification_prefs.c:391
-#: src/plugins/notification/notification_prefs.c:405
-#: src/plugins/notification/notification_prefs.c:423
-#: src/plugins/notification/notification_prefs.c:440
-#: src/plugins/notification/notification_prefs.c:457
-#: src/plugins/notification/notification_prefs.c:474
-#: src/plugins/notification/notification_prefs.c:491
-#: src/plugins/notification/notification_prefs.c:508
+#: src/plugins/notification/notification_plugin.c:213
+#: src/plugins/notification/notification_plugin.c:414
+#: src/plugins/notification/notification_prefs.c:397
+#: src/plugins/notification/notification_prefs.c:411
+#: src/plugins/notification/notification_prefs.c:429
+#: src/plugins/notification/notification_prefs.c:446
+#: src/plugins/notification/notification_prefs.c:463
+#: src/plugins/notification/notification_prefs.c:480
+#: src/plugins/notification/notification_prefs.c:497
+#: src/plugins/notification/notification_prefs.c:514
 #, fuzzy
 msgid "Notification"
 msgstr "Benachrichtigung _senden"
 
-#: src/plugins/notification/notification_plugin.c:212
+#: src/plugins/notification/notification_plugin.c:218
 msgid "The Notification plugin needs threading support."
 msgstr ""
 
-#: src/plugins/notification/notification_plugin.c:219
+#: src/plugins/notification/notification_plugin.c:225
 #, fuzzy
 msgid "Failed to register folder item update hook in the Notification plugin"
 msgstr "'folder item update hook' konnte nicht registriert werden"
 
-#: src/plugins/notification/notification_plugin.c:227
+#: src/plugins/notification/notification_plugin.c:233
 #, fuzzy
 msgid "Failed to register folder update hook in the Notification plugin"
 msgstr "'folder update hook' konnte nicht registriert werden"
 
-#: src/plugins/notification/notification_plugin.c:237
+#: src/plugins/notification/notification_plugin.c:243
 #, fuzzy
 msgid "Failed to register msginfo update hook in the Notification plugin"
 msgstr "'folder update hook' konnte nicht registriert werden"
 
-#: src/plugins/notification/notification_plugin.c:247
+#: src/plugins/notification/notification_plugin.c:253
 #, fuzzy
 msgid "Failed to register offline switch hook in the Notification plugin"
 msgstr "'offline switch hook' konnte nicht registriert werden"
 
-#: src/plugins/notification/notification_plugin.c:258
+#: src/plugins/notification/notification_plugin.c:264
 msgid "Failed to register main window close hook in the Notification plugin"
 msgstr ""
 
-#: src/plugins/notification/notification_plugin.c:271
+#: src/plugins/notification/notification_plugin.c:277
 #, fuzzy
 msgid "Failed to register got iconified hook in the Notification plugin"
 msgstr "'got iconified hook' konnte nicht registriert werden"
 
-#: src/plugins/notification/notification_plugin.c:284
+#: src/plugins/notification/notification_plugin.c:290
 #, fuzzy
 msgid "Failed to register account list changed hook in the Notification plugin"
 msgstr "'account list changed hook' konnte nicht registriert werden"
 
-#: src/plugins/notification/notification_plugin.c:297
+#: src/plugins/notification/notification_plugin.c:303
 #, fuzzy
 msgid "Failed to register theme change hook int the Notification plugin"
 msgstr "'theme change hook' konnte nicht registriert werden"
 
-#: src/plugins/notification/notification_plugin.c:413
+#: src/plugins/notification/notification_plugin.c:419
 msgid ""
 "This plugin provides various ways to notify the user of new and unread "
 "email.\n"
@@ -10085,367 +10097,367 @@ msgid ""
 "Feedback to <berndth@gmx.de> is welcome."
 msgstr ""
 
-#: src/plugins/notification/notification_plugin.c:438
+#: src/plugins/notification/notification_plugin.c:444
 msgid "Various tools"
 msgstr ""
 
-#: src/plugins/notification/notification_popup.c:308
+#: src/plugins/notification/notification_popup.c:314
 #, fuzzy
 msgid "New Mail message"
 msgstr "neue Nachricht"
 
-#: src/plugins/notification/notification_popup.c:329
+#: src/plugins/notification/notification_popup.c:335
 msgid "New News post"
 msgstr ""
 
-#: src/plugins/notification/notification_popup.c:330
+#: src/plugins/notification/notification_popup.c:336
 #, fuzzy
 msgid "A new message arrived"
 msgstr "Neue Nachrichten"
 
-#: src/plugins/notification/notification_popup.c:333
+#: src/plugins/notification/notification_popup.c:339
 #, fuzzy
 msgid "New Calendar message"
 msgstr "nächster eingefärbter Nach_richt"
 
-#: src/plugins/notification/notification_popup.c:334
-#: src/plugins/notification/notification_trayicon.c:869
+#: src/plugins/notification/notification_popup.c:340
+#: src/plugins/notification/notification_trayicon.c:875
 #, fuzzy
 msgid "A new calendar message arrived"
 msgstr "Nachricht als gelesen markieren"
 
-#: src/plugins/notification/notification_popup.c:337
+#: src/plugins/notification/notification_popup.c:343
 msgid "New RSS feed article"
 msgstr ""
 
-#: src/plugins/notification/notification_popup.c:338
-#: src/plugins/notification/notification_trayicon.c:872
+#: src/plugins/notification/notification_popup.c:344
+#: src/plugins/notification/notification_trayicon.c:878
 msgid "A new article in a RSS feed arrived"
 msgstr ""
 
-#: src/plugins/notification/notification_popup.c:341
+#: src/plugins/notification/notification_popup.c:347
 #, fuzzy
 msgid "New unknown message"
 msgstr "neue Nachricht"
 
-#: src/plugins/notification/notification_popup.c:342
+#: src/plugins/notification/notification_popup.c:348
 msgid "Unknown message type arrived"
 msgstr ""
 
-#: src/plugins/notification/notification_popup.c:485
+#: src/plugins/notification/notification_popup.c:491
 #, fuzzy
 msgid "Mail message"
 msgstr "Alle Nachrichten"
 
-#: src/plugins/notification/notification_popup.c:486
 #: src/plugins/notification/notification_popup.c:492
+#: src/plugins/notification/notification_popup.c:498
 #, fuzzy, c-format
 msgid "%d new message arrived"
 msgid_plural "%d new messages arrived"
 msgstr[0] "Neue Nachrichten"
 msgstr[1] "Neue Nachrichten"
 
-#: src/plugins/notification/notification_popup.c:491
+#: src/plugins/notification/notification_popup.c:497
 #, fuzzy
 msgid "News message"
 msgstr "neue Nachricht"
 
-#: src/plugins/notification/notification_popup.c:497
+#: src/plugins/notification/notification_popup.c:503
 #, fuzzy
 msgid "Calendar message"
 msgstr "Nachricht ist markiert"
 
-#: src/plugins/notification/notification_popup.c:498
-#: src/plugins/notification/notification_trayicon.c:906
+#: src/plugins/notification/notification_popup.c:504
+#: src/plugins/notification/notification_trayicon.c:912
 #, c-format
 msgid "%d new calendar message arrived"
 msgid_plural "%d new calendar messages arrived"
 msgstr[0] ""
 msgstr[1] ""
 
-#: src/plugins/notification/notification_popup.c:503
+#: src/plugins/notification/notification_popup.c:509
 #, fuzzy
 msgid "RSS news feed"
 msgstr "RSS Feed"
 
-#: src/plugins/notification/notification_popup.c:504
+#: src/plugins/notification/notification_popup.c:510
 #, c-format
 msgid "%d new article in a RSS feed arrived"
 msgid_plural "%d new articles in a RSS feed arrived"
 msgstr[0] ""
 msgstr[1] ""
 
-#: src/plugins/notification/notification_popup.c:566
+#: src/plugins/notification/notification_popup.c:572
 #, fuzzy, c-format
 msgid "%d new message"
 msgid_plural "%d new messages"
 msgstr[0] "Neue Nachrichten"
 msgstr[1] "Neue Nachrichten"
 
-#: src/plugins/notification/notification_prefs.c:406
+#: src/plugins/notification/notification_prefs.c:412
 msgid "Hotkeys"
 msgstr ""
 
-#: src/plugins/notification/notification_prefs.c:424
+#: src/plugins/notification/notification_prefs.c:430
 msgid "Banner"
 msgstr ""
 
-#: src/plugins/notification/notification_prefs.c:441
+#: src/plugins/notification/notification_prefs.c:447
 msgid "Popup"
 msgstr ""
 
-#: src/plugins/notification/notification_prefs.c:458 src/prefs_actions.c:263
+#: src/plugins/notification/notification_prefs.c:464 src/prefs_actions.c:263
 #: src/prefs_receive.c:147
 msgid "Command"
 msgstr "Befehl"
 
-#: src/plugins/notification/notification_prefs.c:475
+#: src/plugins/notification/notification_prefs.c:481
 msgid "LCD"
 msgstr ""
 
-#: src/plugins/notification/notification_prefs.c:492
+#: src/plugins/notification/notification_prefs.c:498
 #, fuzzy
 msgid "SysTrayicon"
 msgstr "Trayicon"
 
-#: src/plugins/notification/notification_prefs.c:509
+#: src/plugins/notification/notification_prefs.c:515
 msgid "Indicator"
 msgstr ""
 
-#: src/plugins/notification/notification_prefs.c:564
+#: src/plugins/notification/notification_prefs.c:570
 msgid ""
 "\n"
 "Notification Plugin: Failed to write plugin configuration to file\n"
 msgstr ""
 
-#: src/plugins/notification/notification_prefs.c:591
+#: src/plugins/notification/notification_prefs.c:597
 #, fuzzy
 msgid "Include folder types"
 msgstr "Unterordner einbeziehen"
 
-#: src/plugins/notification/notification_prefs.c:601
+#: src/plugins/notification/notification_prefs.c:607
 #, fuzzy
 msgid "Mail folders"
 msgstr "In allen Ordnern"
 
-#: src/plugins/notification/notification_prefs.c:609
+#: src/plugins/notification/notification_prefs.c:615
 #, fuzzy
 msgid "News folders"
 msgstr "Neuer Ordner"
 
-#: src/plugins/notification/notification_prefs.c:617
+#: src/plugins/notification/notification_prefs.c:623
 #, fuzzy
 msgid "RSS folders"
 msgstr "Ordner"
 
-#: src/plugins/notification/notification_prefs.c:625
+#: src/plugins/notification/notification_prefs.c:631
 #, fuzzy
 msgid "Calendar folders"
 msgstr "Kalender-Export"
 
-#: src/plugins/notification/notification_prefs.c:633
+#: src/plugins/notification/notification_prefs.c:639
 msgid "These settings overwrite folder-specific selections."
 msgstr ""
 
-#: src/plugins/notification/notification_prefs.c:644
+#: src/plugins/notification/notification_prefs.c:650
 #, fuzzy
 msgid "Global notification settings"
 msgstr "Sende eine Nachricht an die Teilnehmer"
 
-#: src/plugins/notification/notification_prefs.c:654
+#: src/plugins/notification/notification_prefs.c:660
 msgid "Set window manager urgency hint when new messages exist"
 msgstr ""
 
-#: src/plugins/notification/notification_prefs.c:663
+#: src/plugins/notification/notification_prefs.c:669
 msgid "Set window manager urgency hint when unread messages exist"
 msgstr ""
 
-#: src/plugins/notification/notification_prefs.c:673
+#: src/plugins/notification/notification_prefs.c:679
 msgid "Use sound theme"
 msgstr ""
 
-#: src/plugins/notification/notification_prefs.c:735
+#: src/plugins/notification/notification_prefs.c:741
 #, fuzzy
 msgid "Show banner"
 msgstr "Info-Banner anzeigen"
 
-#: src/plugins/notification/notification_prefs.c:740
+#: src/plugins/notification/notification_prefs.c:746
 #: src/plugins/pgpcore/select-keys.c:242 src/plugins/pgpcore/sgpgme.c:144
 #: src/prefs_receive.c:197 src/prefs_summaries.c:462
 msgid "Never"
 msgstr "Nie"
 
-#: src/plugins/notification/notification_prefs.c:742 src/prefs_receive.c:195
+#: src/plugins/notification/notification_prefs.c:748 src/prefs_receive.c:195
 #: src/prefs_summaries.c:444 src/prefs_summaries.c:463
 msgid "Always"
 msgstr "Immer"
 
-#: src/plugins/notification/notification_prefs.c:744
+#: src/plugins/notification/notification_prefs.c:750
 msgid "Only when not empty"
 msgstr ""
 
-#: src/plugins/notification/notification_prefs.c:762
+#: src/plugins/notification/notification_prefs.c:768
 msgid "slow"
 msgstr ""
 
-#: src/plugins/notification/notification_prefs.c:766
+#: src/plugins/notification/notification_prefs.c:772
 msgid "fast"
 msgstr ""
 
-#: src/plugins/notification/notification_prefs.c:770
+#: src/plugins/notification/notification_prefs.c:776
 msgid "Banner speed"
 msgstr ""
 
-#: src/plugins/notification/notification_prefs.c:788
+#: src/plugins/notification/notification_prefs.c:794
 #, fuzzy
 msgid "Maximum number of messages (0 means unlimited)"
 msgstr "Höchstzahl herunterzuladender Artikel"
 
-#: src/plugins/notification/notification_prefs.c:802
+#: src/plugins/notification/notification_prefs.c:808
 msgid "Banner width in pixels (0 means screen size)"
 msgstr ""
 
-#: src/plugins/notification/notification_prefs.c:815
+#: src/plugins/notification/notification_prefs.c:821
 msgid "Include unread mails in banner"
 msgstr ""
 
-#: src/plugins/notification/notification_prefs.c:823
+#: src/plugins/notification/notification_prefs.c:829
 msgid "Make banner sticky"
 msgstr ""
 
-#: src/plugins/notification/notification_prefs.c:833
-#: src/plugins/notification/notification_prefs.c:1031
-#: src/plugins/notification/notification_prefs.c:1303
-#: src/plugins/notification/notification_prefs.c:1538
+#: src/plugins/notification/notification_prefs.c:839
+#: src/plugins/notification/notification_prefs.c:1037
+#: src/plugins/notification/notification_prefs.c:1309
+#: src/plugins/notification/notification_prefs.c:1544
 #, fuzzy
 msgid "Only include selected folders"
 msgstr "In gewähltem Ordner"
 
-#: src/plugins/notification/notification_prefs.c:842
-#: src/plugins/notification/notification_prefs.c:1040
-#: src/plugins/notification/notification_prefs.c:1312
-#: src/plugins/notification/notification_prefs.c:1547
+#: src/plugins/notification/notification_prefs.c:848
+#: src/plugins/notification/notification_prefs.c:1046
+#: src/plugins/notification/notification_prefs.c:1318
+#: src/plugins/notification/notification_prefs.c:1553
 #, fuzzy
 msgid "Select folders..."
 msgstr "Ordner wählen"
 
-#: src/plugins/notification/notification_prefs.c:852
-#: src/plugins/notification/notification_prefs.c:1072
+#: src/plugins/notification/notification_prefs.c:858
+#: src/plugins/notification/notification_prefs.c:1078
 #, fuzzy
 msgid "Use custom colors"
 msgstr "Zitatfarben wechseln"
 
-#: src/plugins/notification/notification_prefs.c:865
-#: src/plugins/notification/notification_prefs.c:1085
+#: src/plugins/notification/notification_prefs.c:871
+#: src/plugins/notification/notification_prefs.c:1091
 #, fuzzy
 msgid "Foreground"
 msgstr "Hintergrund"
 
-#: src/plugins/notification/notification_prefs.c:871
-#: src/plugins/notification/notification_prefs.c:1091
+#: src/plugins/notification/notification_prefs.c:877
+#: src/plugins/notification/notification_prefs.c:1097
 #, fuzzy
 msgid "Foreground color"
 msgstr "Ordnerfarbe"
 
-#: src/plugins/notification/notification_prefs.c:876
-#: src/plugins/notification/notification_prefs.c:1096
+#: src/plugins/notification/notification_prefs.c:882
+#: src/plugins/notification/notification_prefs.c:1102
 #: src/prefs_msg_colors.c:281 src/prefs_msg_colors.c:302
 #: src/prefs_msg_colors.c:323
 msgid "Background"
 msgstr "Hintergrund"
 
-#: src/plugins/notification/notification_prefs.c:882
-#: src/plugins/notification/notification_prefs.c:1102
+#: src/plugins/notification/notification_prefs.c:888
+#: src/plugins/notification/notification_prefs.c:1108
 #, fuzzy
 msgid "Background color"
 msgstr "Hintergrund"
 
-#: src/plugins/notification/notification_prefs.c:995
+#: src/plugins/notification/notification_prefs.c:1001
 #, fuzzy
 msgid "Enable popup"
 msgstr "Aktivieren"
 
-#: src/plugins/notification/notification_prefs.c:1012
-#: src/plugins/notification/notification_prefs.c:1593
+#: src/plugins/notification/notification_prefs.c:1018
+#: src/plugins/notification/notification_prefs.c:1599
 #, fuzzy
 msgid "Popup timeout:"
 msgstr "Zeitüberschreitung der Sitzung\n"
 
-#: src/plugins/notification/notification_prefs.c:1022
-#: src/plugins/notification/notification_prefs.c:1294
-#: src/plugins/notification/notification_prefs.c:1602
+#: src/plugins/notification/notification_prefs.c:1028
+#: src/plugins/notification/notification_prefs.c:1300
+#: src/plugins/notification/notification_prefs.c:1608
 #: src/plugins/spamassassin/spamassassin_gtk.c:391 src/prefs_other.c:558
 #: src/prefs_summaries.c:496
 msgid "seconds"
 msgstr "Sekunden"
 
-#: src/plugins/notification/notification_prefs.c:1051
+#: src/plugins/notification/notification_prefs.c:1057
 msgid "Make popup sticky"
 msgstr ""
 
-#: src/plugins/notification/notification_prefs.c:1061
+#: src/plugins/notification/notification_prefs.c:1067
 msgid "Set popup window width and position"
 msgstr ""
 
-#: src/plugins/notification/notification_prefs.c:1066
+#: src/plugins/notification/notification_prefs.c:1072
 msgid "(the window manager is free to ignore this)"
 msgstr ""
 
-#: src/plugins/notification/notification_prefs.c:1114
-#: src/plugins/notification/notification_prefs.c:1605
+#: src/plugins/notification/notification_prefs.c:1120
+#: src/plugins/notification/notification_prefs.c:1611
 #, fuzzy
 msgid "Display folder name"
 msgstr "Pufferspeicher für Ordner verwerfen"
 
-#: src/plugins/notification/notification_prefs.c:1179
+#: src/plugins/notification/notification_prefs.c:1185
 msgid "Sample popup window"
 msgstr ""
 
-#: src/plugins/notification/notification_prefs.c:1185
+#: src/plugins/notification/notification_prefs.c:1191
 #, fuzzy
 msgid "Done"
 msgstr "Fertig."
 
-#: src/plugins/notification/notification_prefs.c:1254
+#: src/plugins/notification/notification_prefs.c:1260
 #, fuzzy
 msgid "Enable command"
 msgstr "Befehl ausführen"
 
-#: src/plugins/notification/notification_prefs.c:1271
+#: src/plugins/notification/notification_prefs.c:1277
 #, fuzzy
 msgid "Command to execute:"
 msgstr "Befehlsausgabe"
 
-#: src/plugins/notification/notification_prefs.c:1284
+#: src/plugins/notification/notification_prefs.c:1290
 msgid "Block command after execution for"
 msgstr ""
 
-#: src/plugins/notification/notification_prefs.c:1391
+#: src/plugins/notification/notification_prefs.c:1397
 #, fuzzy
 msgid "Enable LCD"
 msgstr "Aktivieren"
 
-#: src/plugins/notification/notification_prefs.c:1410
+#: src/plugins/notification/notification_prefs.c:1416
 #, fuzzy
 msgid "Hostname:Port of LCDd server:"
 msgstr "Hostname oder IP-Adresse des spamd-Servers"
 
-#: src/plugins/notification/notification_prefs.c:1495
+#: src/plugins/notification/notification_prefs.c:1501
 #, fuzzy
 msgid "Enable Trayicon"
 msgstr "Trayicon"
 
-#: src/plugins/notification/notification_prefs.c:1511
+#: src/plugins/notification/notification_prefs.c:1517
 #: src/plugins/trayicon/trayicon_prefs.c:107
 msgid "Hide at start-up"
 msgstr "Beim Start minimieren"
 
-#: src/plugins/notification/notification_prefs.c:1519
+#: src/plugins/notification/notification_prefs.c:1525
 #: src/plugins/trayicon/trayicon_prefs.c:116
 msgid "Close to tray"
 msgstr "Zum Tray minimieren"
 
-#: src/plugins/notification/notification_prefs.c:1527
+#: src/plugins/notification/notification_prefs.c:1533
 msgid "Hide when iconified"
 msgstr ""
 
@@ -10455,129 +10467,129 @@ msgstr ""
 #. for that, go for something along the lines of "passive popup"
 #. instead.See also
 #. http://en.wikipedia.org/wiki/Toast_(computing)
-#: src/plugins/notification/notification_prefs.c:1564
+#: src/plugins/notification/notification_prefs.c:1570
 msgid "Passive toaster popup"
 msgstr ""
 
-#: src/plugins/notification/notification_prefs.c:1575
+#: src/plugins/notification/notification_prefs.c:1581
 #, fuzzy
 msgid "Enable Popup"
 msgstr "Plugins"
 
-#: src/plugins/notification/notification_prefs.c:1793
+#: src/plugins/notification/notification_prefs.c:1799
 msgid "Add to Indicator Applet"
 msgstr ""
 
-#: src/plugins/notification/notification_prefs.c:1807
+#: src/plugins/notification/notification_prefs.c:1813
 msgid "Hide mainwindow when minimized"
 msgstr ""
 
-#: src/plugins/notification/notification_prefs.c:1813
+#: src/plugins/notification/notification_prefs.c:1819
 #, fuzzy
 msgid "Register Claws Mail"
 msgstr "Claws Mail beenden?"
 
-#: src/plugins/notification/notification_prefs.c:1874
+#: src/plugins/notification/notification_prefs.c:1880
 #, fuzzy
 msgid "Enable global hotkeys"
 msgstr "Rechtschreibprüfung aktivieren"
 
-#: src/plugins/notification/notification_prefs.c:1888
+#: src/plugins/notification/notification_prefs.c:1894
 #, c-format
 msgid "Examples for hotkeys include <b>%s</b> and <b>%s</b>"
 msgstr ""
 
-#: src/plugins/notification/notification_prefs.c:1888
+#: src/plugins/notification/notification_prefs.c:1894
 msgid "<control><shift>F11"
 msgstr ""
 
-#: src/plugins/notification/notification_prefs.c:1888
+#: src/plugins/notification/notification_prefs.c:1894
 msgid "<alt>N"
 msgstr ""
 
-#: src/plugins/notification/notification_prefs.c:1899
+#: src/plugins/notification/notification_prefs.c:1905
 msgid "Toggle minimize:"
 msgstr ""
 
-#: src/plugins/notification/notification_trayicon.c:108
+#: src/plugins/notification/notification_trayicon.c:114
 #: src/plugins/trayicon/trayicon.c:97
 msgid "_Get Mail"
 msgstr "_Abrufen"
 
-#: src/plugins/notification/notification_trayicon.c:110
+#: src/plugins/notification/notification_trayicon.c:116
 #: src/plugins/trayicon/trayicon.c:99
 msgid "_Email"
 msgstr "_E-Mail"
 
-#: src/plugins/notification/notification_trayicon.c:111
+#: src/plugins/notification/notification_trayicon.c:117
 #: src/plugins/trayicon/trayicon.c:100
 msgid "E_mail from account"
 msgstr "_Email vom Konto"
 
-#: src/plugins/notification/notification_trayicon.c:112
+#: src/plugins/notification/notification_trayicon.c:118
 #: src/plugins/trayicon/trayicon.c:101
 msgid "Open A_ddressbook"
 msgstr "A_dressbuch öffnen"
 
-#: src/plugins/notification/notification_trayicon.c:113
+#: src/plugins/notification/notification_trayicon.c:119
 #: src/plugins/trayicon/trayicon.c:102
 msgid "E_xit Claws Mail"
 msgstr "Claws Mail _beenden"
 
-#: src/plugins/notification/notification_trayicon.c:118
+#: src/plugins/notification/notification_trayicon.c:124
 #: src/plugins/trayicon/trayicon.c:107
 msgid "_Work Offline"
 msgstr "_Offline arbeiten"
 
-#: src/plugins/notification/notification_trayicon.c:120
+#: src/plugins/notification/notification_trayicon.c:126
 #, fuzzy
 msgid "Show Trayicon Notifications"
 msgstr "Benachrichtigung _senden"
 
-#: src/plugins/notification/notification_trayicon.c:263
+#: src/plugins/notification/notification_trayicon.c:269
 #: src/plugins/trayicon/trayicon.c:189
 #, c-format
 msgid "New %d, Unread: %d, Total: %d"
 msgstr "Neu: %d, ungelesen: %d, gesamt: %d"
 
-#: src/plugins/notification/notification_trayicon.c:819
+#: src/plugins/notification/notification_trayicon.c:825
 #, fuzzy
 msgid "New mail message"
 msgstr "neue Nachricht"
 
-#: src/plugins/notification/notification_trayicon.c:821
+#: src/plugins/notification/notification_trayicon.c:827
 msgid "New news post"
 msgstr ""
 
-#: src/plugins/notification/notification_trayicon.c:823
+#: src/plugins/notification/notification_trayicon.c:829
 #, fuzzy
 msgid "New calendar message"
 msgstr "nächster eingefärbter Nach_richt"
 
-#: src/plugins/notification/notification_trayicon.c:825
+#: src/plugins/notification/notification_trayicon.c:831
 msgid "New article in RSS feed"
 msgstr ""
 
-#: src/plugins/notification/notification_trayicon.c:828
+#: src/plugins/notification/notification_trayicon.c:834
 #, fuzzy
 msgid "New messages arrived"
 msgstr "neue Nachricht"
 
-#: src/plugins/notification/notification_trayicon.c:884
+#: src/plugins/notification/notification_trayicon.c:890
 #, c-format
 msgid "%d new mail message arrived"
 msgid_plural "%d new mail messages arrived"
 msgstr[0] ""
 msgstr[1] ""
 
-#: src/plugins/notification/notification_trayicon.c:895
+#: src/plugins/notification/notification_trayicon.c:901
 #, c-format
 msgid "%d new news post arrived"
 msgid_plural "%d new news posts arrived"
 msgstr[0] ""
 msgstr[1] ""
 
-#: src/plugins/notification/notification_trayicon.c:917
+#: src/plugins/notification/notification_trayicon.c:923
 #, c-format
 msgid "%d new article in RSS feeds arrived"
 msgid_plural "%d new articles in RSS feeds arrived"
@@ -11949,6 +11961,46 @@ msgstr ""
 "Bitte beachten, dass Kopfzeilen (wie Betreff) vom S/Mime-System nicht "
 "verschlüsselt werden."
 
+#: src/plugins/spam_report/spam_report_prefs.c:80
+#: src/plugins/spam_report/spam_report.c:341
+#: src/plugins/spam_report/spam_report.c:382
+msgid "SpamReport"
+msgstr ""
+
+#: src/plugins/spam_report/spam_report_prefs.c:122
+#, fuzzy
+msgid "Enabled"
+msgstr "Aktivieren"
+
+#: src/plugins/spam_report/spam_report_prefs.c:149
+#, fuzzy
+msgid "Forward to:"
+msgstr "Weiterleiten"
+
+#: src/plugins/spam_report/spam_report.c:295
+#, fuzzy
+msgid "Reporting spam..."
+msgstr "Ordneransicht wird sortiert..."
+
+#: src/plugins/spam_report/spam_report.c:330
+msgid "Report spam online..."
+msgstr ""
+
+#: src/plugins/spam_report/spam_report.c:387
+msgid ""
+"This plugin reports spam to various places.\n"
+"Currently the following sites or methods are supported:\n"
+"\n"
+" * spam-signal.fr\n"
+" * spamcop.net\n"
+" * lists.debian.org nomination system"
+msgstr ""
+
+#: src/plugins/spam_report/spam_report.c:412
+#, fuzzy
+msgid "Spam reporting"
+msgstr "Lernen von Spam"
+
 #: src/plugins/spamassassin/spamassassin.c:77
 #: src/plugins/spamassassin/spamassassin_gtk.c:649
 msgid "SpamAssassin"
@@ -12079,6 +12131,47 @@ msgid ""
 msgstr ""
 "Zeitlimit für die Überprüfung. Nach Ablauf dieser Zeit wird die Überprüfung "
 "abgebrochen."
+
+#: src/plugins/tnef_parse/tnef_parse.c:65
+#, c-format
+msgid ""
+"\n"
+"Claws Mail TNEF parser:\n"
+"\n"
+"%s\n"
+msgstr ""
+
+#: src/plugins/tnef_parse/tnef_parse.c:116
+#, fuzzy
+msgid "Failed to write the part data."
+msgstr "'theme change hook' konnte nicht registriert werden"
+
+#: src/plugins/tnef_parse/tnef_parse.c:158
+#, fuzzy
+msgid "Failed to parse VCalendar data."
+msgstr "'folder update hook' konnte nicht registriert werden"
+
+#: src/plugins/tnef_parse/tnef_parse.c:194
+msgid "Failed to parse VTask data."
+msgstr ""
+
+#: src/plugins/tnef_parse/tnef_parse.c:244
+#, fuzzy
+msgid "Failed to parse VCard data."
+msgstr "Datei scheint nicht im vCard-Format zu sein."
+
+#: src/plugins/tnef_parse/tnef_parse.c:380
+#: src/plugins/tnef_parse/tnef_parse.c:404
+msgid "TNEF Parser"
+msgstr ""
+
+#: src/plugins/tnef_parse/tnef_parse.c:409
+msgid ""
+"This Claws Mail plugin allows you to read application/ms-tnef attachments.\n"
+"\n"
+"The plugin uses the Ytnef library, which is copyright 2002-2007 by Randall "
+"Hand <yerase@yerot.com>"
+msgstr ""
 
 #: src/plugins/trayicon/trayicon.c:56 src/plugins/trayicon/trayicon.c:591
 #: src/plugins/trayicon/trayicon_prefs.c:70
