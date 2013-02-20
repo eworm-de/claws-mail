@@ -1,3 +1,10 @@
+2013-02-20 [colin]	3.9.0cvs88
+
+	* configure.ac
+	* Makefile.am
+		Don't check for GNOME2 when we want to check for
+		gtk-update-icon-cache; Typo fix
+
 2013-02-20 [colin]	3.9.0cvs87
 
 	* src/plugins/Makefile.am

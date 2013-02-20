@@ -12,7 +12,7 @@ MINOR_VERSION=9
 MICRO_VERSION=0
 INTERFACE_AGE=0
 BINARY_AGE=0
-EXTRA_VERSION=87
+EXTRA_VERSION=88
 EXTRA_RELEASE=
 EXTRA_GTK2_VERSION=
 
@@ -36,19 +36,8 @@ AC_SUBST(MINOR_VERSION)
 AC_SUBST(MICRO_VERSION)
 AC_SUBST(EXTRA_VERSION)
 
-dnl GNOME installed?
-AC_PATH_PROG(GNOME_CONFIG, gnome-config, no)
-if test "$GNOME_CONFIG" != no; then
-	gnomedatadir="`gnome-config --datadir`"
-	gnomeprefix="`gnome-config --prefix`"
-	if test "${prefix}" = "NONE"; then
-		gnomedatadir="${ac_default_prefix}/${gnomedatadir#${gnomeprefix}}"
-	else
-		gnomedatadir="${prefix}/${gnomedatadir#${gnomeprefix}}"
-	fi
-	AC_SUBST(gnomedatadir)
-fi
-AM_CONDITIONAL(CLAWS_GNOME, test -n "$gnomedatadir")
+AC_CHECK_PROG(HAVE_GTK_ICON_CACHE, gtk-update-icon-cache, yes, no)
+AM_CONDITIONAL(UPDATE_GTK_ICON_CACHE, test x"$HAVE_GTK_ICON_CACHE" = xyes)
 
 AC_PATH_PROG(PKG_CONFIG, pkg-config, no)
 if test x$PKG_CONFIG = xno ; then
@@ -1034,7 +1023,7 @@ AC_ARG_ENABLE(demo-plugin,
 
 
 dnl Then we check (unconditionnaly) for plugins dependencies
-dnl Some dependancies are optional, some mandatories. This is taken care of
+dnl Some dependencies are optional, some mandatories. This is taken care of
 dnl later.
 dnl
 dnl During this dependancy check we do the checks themselves, define HAVE_X to
@@ -1255,8 +1244,8 @@ AC_SUBST(CM_NP_HOTKEY_CFLAGS)
 AC_SUBST(CM_NP_HOTKEY_LIBS)
 
 
-dnl Third, we now cross the requested plugins and the available dependancies
-dnl If some dependancies are missing and the plugin was explicitely enabled,
+dnl Third, we now cross the requested plugins and the available dependencies
+dnl If some dependencies are missing and the plugin was explicitely enabled,
 dnl we error out, else we only inform.
 
 AC_MSG_CHECKING([whether to build acpi_notifier plugin])
@@ -1279,23 +1268,23 @@ fi
 
 AC_MSG_CHECKING([whether to build archive plugin])
 if test x"$enable_archive_plugin" != xno; then
-	dependancies_missing=""
+	dependencies_missing=""
 
 	if test x"$HAVE_ARCHIVE" = xno; then
-		dependancies_missing="libarchive $dependancies_missing"
+		dependencies_missing="libarchive $dependencies_missing"
 	fi
 
-	if test x"$dependancies_missing" = x; then
+	if test x"$dependencies_missing" = x; then
 		PLUGINS="$PLUGINS archive"
 		AC_MSG_RESULT(yes)
 	elif test x"$enable_archive_plugin" = xauto; then
 		AC_MSG_RESULT(no)
-		AC_MSG_WARN("Plugin archive will not be built; missing $dependancies_missing")
+		AC_MSG_WARN("Plugin archive will not be built; missing $dependencies_missing")
 		enable_archive_plugin=no
 		MISSING_DEPS_PLUGINS="$MISSING_DEPS_PLUGINS archive"
 	else
 		AC_MSG_RESULT(no)
-		AC_MSG_ERROR("Plugin archive can not be built; missing $dependancies_missing")
+		AC_MSG_ERROR("Plugin archive can not be built; missing $dependencies_missing")
 	fi
 else
 	DISABLED_PLUGINS="$DISABLED_PLUGINS archive"
@@ -1358,26 +1347,26 @@ fi
 
 AC_MSG_CHECKING([whether to build fancy plugin])
 if test x"$enable_fancy_plugin" != xno; then
-	dependancies_missing=""
+	dependencies_missing=""
 
 	if test x"$HAVE_WEBKIT" = xno; then
-		dependancies_missing="libwebkit-1.0 $dependancies_missing"
+		dependencies_missing="libwebkit-1.0 $dependencies_missing"
 	fi
 	if test x"$HAVE_CURL" = xno; then
-		dependancies_missing="libcurl $dependancies_missing"
+		dependencies_missing="libcurl $dependencies_missing"
 	fi
 
-	if test x"$dependancies_missing" = x; then
+	if test x"$dependencies_missing" = x; then
 		PLUGINS="$PLUGINS fancy"
 		AC_MSG_RESULT(yes)
 	elif test x"$enable_fancy_plugin" = xauto; then
 		AC_MSG_RESULT(no)
-		AC_MSG_WARN("Plugin fancy will not be built; missing $dependancies_missing")
+		AC_MSG_WARN("Plugin fancy will not be built; missing $dependencies_missing")
 		enable_fancy_plugin=no
 		MISSING_DEPS_PLUGINS="$MISSING_DEPS_PLUGINS fancy"
 	else
 		AC_MSG_RESULT(no)
-		AC_MSG_ERROR("Plugin fancy can not be built; missing $dependancies_missing")
+		AC_MSG_ERROR("Plugin fancy can not be built; missing $dependencies_missing")
 	fi
 else
 	DISABLED_PLUGINS="$DISABLED_PLUGINS fancy"
@@ -1395,23 +1384,23 @@ fi
 
 AC_MSG_CHECKING([whether to build gdata plugin])
 if test x"$enable_gdata_plugin" != xno; then
-	dependancies_missing=""
+	dependencies_missing=""
 
 	if test x"$HAVE_GDATA" = xno; then
-		dependancies_missing="libgdata $dependancies_missing"
+		dependencies_missing="libgdata $dependencies_missing"
 	fi
 
-	if test x"$dependancies_missing" = x; then
+	if test x"$dependencies_missing" = x; then
 		PLUGINS="$PLUGINS gdata"
 		AC_MSG_RESULT(yes)
 	elif test x"$enable_gdata_plugin" = xauto; then
 		AC_MSG_RESULT(no)
-		AC_MSG_WARN("Plugin gdata will not be built; missing $dependancies_missing")
+		AC_MSG_WARN("Plugin gdata will not be built; missing $dependencies_missing")
 		enable_gdata_plugin=no
 		MISSING_DEPS_PLUGINS="$MISSING_DEPS_PLUGINS gdata"
 	else
 		AC_MSG_RESULT(no)
-		AC_MSG_ERROR("Plugin gdata can not be built; missing $dependancies_missing")
+		AC_MSG_ERROR("Plugin gdata can not be built; missing $dependencies_missing")
 	fi
 else
 	DISABLED_PLUGINS="$DISABLED_PLUGINS gdata"
@@ -1459,23 +1448,23 @@ fi
 
 AC_MSG_CHECKING([whether to build pdf_viewer plugin])
 if test x"$enable_pdf_viewer_plugin" != xno; then
-	dependancies_missing=""
+	dependencies_missing=""
 
 	if test x"$HAVE_POPPLER" = xno; then
-		dependancies_missing="libpoppler-glib $dependancies_missing"
+		dependencies_missing="libpoppler-glib $dependencies_missing"
 	fi
 
-	if test x"$dependancies_missing" = x; then
+	if test x"$dependencies_missing" = x; then
 		PLUGINS="$PLUGINS pdf_viewer"
 		AC_MSG_RESULT(yes)
 	elif test x"$enable_pdf_viewer_plugin" = xauto; then
 		AC_MSG_RESULT(no)
-		AC_MSG_WARN("Plugin pdf_viewer will not be built; missing $dependancies_missing")
+		AC_MSG_WARN("Plugin pdf_viewer will not be built; missing $dependencies_missing")
 		enable_pdf_viewer_plugin=no
 		MISSING_DEPS_PLUGINS="$MISSING_DEPS_PLUGINS pdf_viewer"
 	else
 		AC_MSG_RESULT(no)
-		AC_MSG_ERROR("Plugin pdf_viewer can not be built; missing $dependancies_missing")
+		AC_MSG_ERROR("Plugin pdf_viewer can not be built; missing $dependencies_missing")
 	fi
 else
 	DISABLED_PLUGINS="$DISABLED_PLUGINS pdf_viewer"
@@ -1484,23 +1473,23 @@ fi
 
 AC_MSG_CHECKING([whether to build perl plugin])
 if test x"$enable_perl_plugin" != xno; then
-	dependancies_missing=""
+	dependencies_missing=""
 
 	if test x"$HAVE_PERL" = xno; then
-		dependancies_missing="perl $dependancies_missing"
+		dependencies_missing="perl $dependencies_missing"
 	fi
 
-	if test x"$dependancies_missing" = x; then
+	if test x"$dependencies_missing" = x; then
 		PLUGINS="$PLUGINS perl"
 		AC_MSG_RESULT(yes)
 	elif test x"$enable_perl_plugin" = xauto; then
 		AC_MSG_RESULT(no)
-		AC_MSG_WARN("Plugin perl will not be built; missing $dependancies_missing")
+		AC_MSG_WARN("Plugin perl will not be built; missing $dependencies_missing")
 		enable_perl_plugin=no
 		MISSING_DEPS_PLUGINS="$MISSING_DEPS_PLUGINS perl"
 	else
 		AC_MSG_RESULT(no)
-		AC_MSG_ERROR("Plugin perl can not be built; missing $dependancies_missing")
+		AC_MSG_ERROR("Plugin perl can not be built; missing $dependencies_missing")
 	fi
 else
 	DISABLED_PLUGINS="$DISABLED_PLUGINS perl"
@@ -1509,23 +1498,23 @@ fi
 
 AC_MSG_CHECKING([whether to build python plugin])
 if test x"$enable_python_plugin" != xno; then
-	dependancies_missing=""
+	dependencies_missing=""
 
 	if test x"$HAVE_PYTHON" = xno; then
-		dependancies_missing="python $dependancies_missing"
+		dependencies_missing="python $dependencies_missing"
 	fi
 
-	if test x"$dependancies_missing" = x; then
+	if test x"$dependencies_missing" = x; then
 		PLUGINS="$PLUGINS python"
 		AC_MSG_RESULT(yes)
 	elif test x"$enable_python_plugin" = xauto; then
 		AC_MSG_RESULT(no)
-		AC_MSG_WARN("Plugin python will not be built; missing $dependancies_missing")
+		AC_MSG_WARN("Plugin python will not be built; missing $dependencies_missing")
 		enable_python_plugin=no
 		MISSING_DEPS_PLUGINS="$MISSING_DEPS_PLUGINS python"
 	else
 		AC_MSG_RESULT(no)
-		AC_MSG_ERROR("Plugin python can not be built; missing $dependancies_missing")
+		AC_MSG_ERROR("Plugin python can not be built; missing $dependencies_missing")
 	fi
 else
 	DISABLED_PLUGINS="$DISABLED_PLUGINS python"
@@ -1534,23 +1523,23 @@ fi
 
 AC_MSG_CHECKING([whether to build pgpcore plugin])
 if test x"$enable_pgpcore_plugin" != xno; then
-	dependancies_missing=""
+	dependencies_missing=""
 
 	if test x"$HAVE_GPGME" = xno; then
-		dependancies_missing="libgpgme $dependancies_missing"
+		dependencies_missing="libgpgme $dependencies_missing"
 	fi
 
-	if test x"$dependancies_missing" = x; then
+	if test x"$dependencies_missing" = x; then
 		PLUGINS="$PLUGINS pgpcore"
 		AC_MSG_RESULT(yes)
 	elif test x"$enable_pgpcore_plugin" = xauto; then
 		AC_MSG_RESULT(no)
-		AC_MSG_WARN("Plugin pgpcore will not be built; missing $dependancies_missing")
+		AC_MSG_WARN("Plugin pgpcore will not be built; missing $dependencies_missing")
 		enable_pgpcore_plugin=no
 		MISSING_DEPS_PLUGINS="$MISSING_DEPS_PLUGINS pgpcore"
 	else
 		AC_MSG_RESULT(no)
-		AC_MSG_ERROR("Plugin pgpcore can not be built; missing $dependancies_missing")
+		AC_MSG_ERROR("Plugin pgpcore can not be built; missing $dependencies_missing")
 	fi
 else
 	DISABLED_PLUGINS="$DISABLED_PLUGINS pgpcore"
@@ -1559,26 +1548,26 @@ fi
 
 AC_MSG_CHECKING([whether to build pgpmime plugin])
 if test x"$enable_pgpmime_plugin" != xno; then
-	dependancies_missing=""
+	dependencies_missing=""
 
 	if test x"$HAVE_GPGME" = xno; then
-		dependancies_missing="libgpgme $dependancies_missing"
+		dependencies_missing="libgpgme $dependencies_missing"
 	fi
 	if test x"$enable_pgpcore_plugin" = xno; then
-		dependancies_missing="pgpcore plugin $dependancies_missing"
+		dependencies_missing="pgpcore plugin $dependencies_missing"
 	fi
 
-	if test x"$dependancies_missing" = x; then
+	if test x"$dependencies_missing" = x; then
 		PLUGINS="$PLUGINS pgpmime"
 		AC_MSG_RESULT(yes)
 	elif test x"$enable_pgpmime_plugin" = xauto; then
 		AC_MSG_RESULT(no)
-		AC_MSG_WARN("Plugin pgpmime will not be built; missing $dependancies_missing")
+		AC_MSG_WARN("Plugin pgpmime will not be built; missing $dependencies_missing")
 		enable_pgpmime_plugin=no
 		MISSING_DEPS_PLUGINS="$MISSING_DEPS_PLUGINS pgpmime"
 	else
 		AC_MSG_RESULT(no)
-		AC_MSG_ERROR("Plugin pgpmime can not be built; missing $dependancies_missing")
+		AC_MSG_ERROR("Plugin pgpmime can not be built; missing $dependencies_missing")
 	fi
 else
 	DISABLED_PLUGINS="$DISABLED_PLUGINS pgpmime"
@@ -1587,26 +1576,26 @@ fi
 
 AC_MSG_CHECKING([whether to build pgpinline plugin])
 if test x"$enable_pgpinline_plugin" != xno; then
-	dependancies_missing=""
+	dependencies_missing=""
 
 	if test x"$HAVE_GPGME" = xno; then
-		dependancies_missing="libgpgme $dependancies_missing"
+		dependencies_missing="libgpgme $dependencies_missing"
 	fi
 	if test x"$enable_pgpcore_plugin" = xno; then
-		dependancies_missing="pgpcore plugin $dependancies_missing"
+		dependencies_missing="pgpcore plugin $dependencies_missing"
 	fi
 
-	if test x"$dependancies_missing" = x; then
+	if test x"$dependencies_missing" = x; then
 		PLUGINS="$PLUGINS pgpinline"
 		AC_MSG_RESULT(yes)
 	elif test x"$enable_pgpinline_plugin" = xauto; then
 		AC_MSG_RESULT(no)
-		AC_MSG_WARN("Plugin pgpinline will not be built; missing $dependancies_missing")
+		AC_MSG_WARN("Plugin pgpinline will not be built; missing $dependencies_missing")
 		enable_pgpinline_plugin=no
 		MISSING_DEPS_PLUGINS="$MISSING_DEPS_PLUGINS pgpinline"
 	else
 		AC_MSG_RESULT(no)
-		AC_MSG_ERROR("Plugin pgpinline can not be built; missing $dependancies_missing")
+		AC_MSG_ERROR("Plugin pgpinline can not be built; missing $dependencies_missing")
 	fi
 else
 	DISABLED_PLUGINS="$DISABLED_PLUGINS pgpinline"
@@ -1615,26 +1604,26 @@ fi
 
 AC_MSG_CHECKING([whether to build rssyl plugin])
 if test x"$enable_rssyl_plugin" != xno; then
-	dependancies_missing=""
+	dependencies_missing=""
 
 	if test x"$HAVE_LIBXML" = xno; then
-		dependancies_missing="libxml2 $dependancies_missing"
+		dependencies_missing="libxml2 $dependencies_missing"
 	fi
 	if test x"$HAVE_CURL" = xno; then
-		dependancies_missing="libcurl $dependancies_missing"
+		dependencies_missing="libcurl $dependencies_missing"
 	fi
 
-	if test x"$dependancies_missing" = x; then
+	if test x"$dependencies_missing" = x; then
 		PLUGINS="$PLUGINS rssyl"
 		AC_MSG_RESULT(yes)
 	elif test x"$enable_rssyl_plugin" = xauto; then
 		AC_MSG_RESULT(no)
-		AC_MSG_WARN("Plugin rssyl will not be built; missing $dependancies_missing")
+		AC_MSG_WARN("Plugin rssyl will not be built; missing $dependencies_missing")
 		enable_rssyl_plugin=no
 		MISSING_DEPS_PLUGINS="$MISSING_DEPS_PLUGINS rssyl"
 	else
 		AC_MSG_RESULT(no)
-		AC_MSG_ERROR("Plugin rssyl can not be built; missing $dependancies_missing")
+		AC_MSG_ERROR("Plugin rssyl can not be built; missing $dependencies_missing")
 	fi
 else
 	DISABLED_PLUGINS="$DISABLED_PLUGINS rssyl"
@@ -1653,26 +1642,26 @@ fi
 
 AC_MSG_CHECKING([whether to build smime plugin])
 if test x"$enable_smime_plugin" != xno; then
-	dependancies_missing=""
+	dependencies_missing=""
 
 	if test x"$HAVE_GPGME" = xno; then
-		dependancies_missing="libgpgme $dependancies_missing"
+		dependencies_missing="libgpgme $dependencies_missing"
 	fi
 	if test x"$enable_pgpcore_plugin" = xno; then
-		dependancies_missing="pgpcore plugin $dependancies_missing"
+		dependencies_missing="pgpcore plugin $dependencies_missing"
 	fi
 
-	if test x"$dependancies_missing" = x; then
+	if test x"$dependencies_missing" = x; then
 		PLUGINS="$PLUGINS smime"
 		AC_MSG_RESULT(yes)
 	elif test x"$enable_smime_plugin" = xauto; then
 		AC_MSG_RESULT(no)
-		AC_MSG_WARN("Plugin smime will not be built; missing $dependancies_missing")
+		AC_MSG_WARN("Plugin smime will not be built; missing $dependencies_missing")
 		enable_smime_plugin=no
 		MISSING_DEPS_PLUGINS="$MISSING_DEPS_PLUGINS smime"
 	else
 		AC_MSG_RESULT(no)
-		AC_MSG_ERROR("Plugin smime can not be built; missing $dependancies_missing")
+		AC_MSG_ERROR("Plugin smime can not be built; missing $dependencies_missing")
 	fi
 else
 	DISABLED_PLUGINS="$DISABLED_PLUGINS smime"
@@ -1681,23 +1670,23 @@ fi
 
 AC_MSG_CHECKING([whether to build spam_report plugin])
 if test x"$enable_spam_report_plugin" != xno; then
-	dependancies_missing=""
+	dependencies_missing=""
 
 	if test x"$HAVE_CURL" = xno; then
-		dependancies_missing="libcurl $dependancies_missing"
+		dependencies_missing="libcurl $dependencies_missing"
 	fi
 
-	if test x"$dependancies_missing" = x; then
+	if test x"$dependencies_missing" = x; then
 		PLUGINS="$PLUGINS spam_report"
 		AC_MSG_RESULT(yes)
 	elif test x"$enable_spam_report_plugin" = xauto; then
 		AC_MSG_RESULT(no)
-		AC_MSG_WARN("Plugin spam_report will not be built; missing $dependancies_missing")
+		AC_MSG_WARN("Plugin spam_report will not be built; missing $dependencies_missing")
 		enable_spam_report_plugin=no
 		MISSING_DEPS_PLUGINS="$MISSING_DEPS_PLUGINS spam_report"
 	else
 		AC_MSG_RESULT(no)
-		AC_MSG_ERROR("Plugin spam_report can not be built; missing $dependancies_missing")
+		AC_MSG_ERROR("Plugin spam_report can not be built; missing $dependencies_missing")
 	fi
 else
 	DISABLED_PLUGINS="$DISABLED_PLUGINS spam_report"
@@ -1715,27 +1704,27 @@ fi
 
 AC_MSG_CHECKING([whether to build vcalendar plugin])
 if test x"$enable_vcalendar_plugin" != xno; then
-	dependancies_missing=""
+	dependencies_missing=""
 
 	if test x"$HAVE_CURL" = xno; then
-		dependancies_missing="libcurl $dependancies_missing"
+		dependencies_missing="libcurl $dependencies_missing"
 	fi
 
 	if test x"$HAVE_PERL" = xno; then
-		dependancies_missing="perl $dependancies_missing"
+		dependencies_missing="perl $dependencies_missing"
 	fi
 
-	if test x"$dependancies_missing" = x; then
+	if test x"$dependencies_missing" = x; then
 		PLUGINS="$PLUGINS vcalendar"
 		AC_MSG_RESULT(yes)
 	elif test x"$enable_vcalendar_plugin" = xauto; then
 		AC_MSG_RESULT(no)
-		AC_MSG_WARN("Plugin vcalendar will not be built; missing $dependancies_missing")
+		AC_MSG_WARN("Plugin vcalendar will not be built; missing $dependencies_missing")
 		enable_vcalendar_plugin=no
 		MISSING_DEPS_PLUGINS="$MISSING_DEPS_PLUGINS vcalendar"
 	else
 		AC_MSG_RESULT(no)
-		AC_MSG_ERROR("Plugin vcalendar can not be built; missing $dependancies_missing")
+		AC_MSG_ERROR("Plugin vcalendar can not be built; missing $dependencies_missing")
 	fi
 else
 	DISABLED_PLUGINS="$DISABLED_PLUGINS vcalendar"

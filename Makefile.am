@@ -42,7 +42,7 @@ remove-icons:
 	rm -f $(DESTDIR)$(datadir)/icons/hicolor/64x64/apps/claws-mail.png
 	rm -f $(DESTDIR)$(datadir)/icons/hicolor/128x128/apps/claws-mail.png
 
-if CLAWS_GNOME2
+if UPDATE_GTK_ICON_CACHE
 gtk_update_icon_cache = gtk-update-icon-cache -f -t $(datadir)/icons/hicolor
 
 install-data-hook: rename-icons update-icon-cache
