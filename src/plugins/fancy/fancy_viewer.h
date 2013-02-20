@@ -101,10 +101,9 @@ struct _FancyViewer
 	gboolean          override_prefs_external;
 	gboolean		  override_prefs_java;
 
-#ifdef HAVE_LIBCURL
 	const gchar       *curlfile;
 	FILE              *stream;
-#endif
+
 	gchar             *cur_link;
 	gchar             *filename;
 	MimeInfo          *to_load;

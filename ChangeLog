@@ -1,3 +1,9 @@
+2013-02-20 [colin]	3.9.0cvs86
+
+	* configure.ac
+	* src/plugins/fancy/fancy_viewer.h
+		Fix build for Fancy and vCalendar
+
 2013-02-20 [colin]	3.9.0cvs85
 
 	* configure.ac
