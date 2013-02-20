@@ -1,3 +1,29 @@
+2013-02-20 [colin]	3.9.0cvs95
+
+	* src/prefs_common.h
+	* src/plugins/address_keeper/claws.def
+	* src/plugins/att_remover/Makefile.am
+	* src/plugins/att_remover/claws.def
+	* src/plugins/att_remover/plugin.def
+	* src/plugins/att_remover/version.rc
+	* src/plugins/clamd/libclamd/Makefile.am
+	* src/plugins/fetchinfo/Makefile.am
+	* src/plugins/fetchinfo/claws.def
+	* src/plugins/fetchinfo/plugin.def
+	* src/plugins/fetchinfo/version.rc
+	* src/plugins/mailmbox/Makefile.am
+	* src/plugins/mailmbox/claws.def
+	* src/plugins/mailmbox/plugin.def
+	* src/plugins/mailmbox/version.rc
+	* src/plugins/notification/gtkhotkey/Makefile.am
+	* src/plugins/spam_report/Makefile.am
+	* src/plugins/spam_report/claws.def
+	* src/plugins/spam_report/plugin.def
+	* src/plugins/spam_report/spam_report.c
+	* src/plugins/spam_report/version.rc
+		Win32 build fixes (and add of address_keeper, att_remover,
+		fetchinfo and spam_report)
+
 2013-02-20 [paul]	3.9.0cvs94
 
 	* configure.ac

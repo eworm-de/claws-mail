@@ -28,12 +28,3 @@ prefs_set_default
 prefs_write_open
 prefs_write_param
 prefs_common_get_prefs
-extract_address
-start_address_completion
-complete_matches_found
-addrbook_add_contact
-addressbook_refresh
-end_address_completion
-addressbook_peek_folder_exists
-prefs_common_translated_header_name
-addressbook_folder_selection

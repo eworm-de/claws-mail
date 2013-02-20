@@ -12,7 +12,7 @@ MINOR_VERSION=9
 MICRO_VERSION=0
 INTERFACE_AGE=0
 BINARY_AGE=0
-EXTRA_VERSION=94
+EXTRA_VERSION=95
 EXTRA_RELEASE=
 EXTRA_GTK2_VERSION=
 
@@ -1456,7 +1456,9 @@ if test x"$enable_notification_plugin" != xno; then
 	AC_DEFINE(NOTIFICATION_BANNER, 1, Activate notification banner)
 	AC_DEFINE(NOTIFICATION_COMMAND, 1, Activate notification shell command)
 	AC_DEFINE(NOTIFICATION_TRAYICON, 1, Activate notification trayicon)
-	AC_DEFINE(NOTIFICATION_LCDPROC, 1, Activate lcdproc support)
+	if test x"$platform_win32" = xno; then
+		AC_DEFINE(NOTIFICATION_LCDPROC, 1, Activate lcdproc support)
+	fi
 
 	notification_features="banner command"
 	notification_missing_dependencies=""

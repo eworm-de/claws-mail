@@ -7,7 +7,9 @@ INCLUDES = @GLIB_CFLAGS@ \
         	-I$(top_srcdir)/src/common \
         	-I$(top_srcdir)/src/gtk
 
+if BUILD_CLAMD_PLUGIN
 noinst_LTLIBRARIES = libclamd-plugin.la
+endif
 
 libclamd_plugin_la_SOURCES = \
 		      clamd-plugin.h \

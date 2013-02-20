@@ -378,6 +378,7 @@ struct _PrefsCommon
 	/* Other */
 #ifndef G_OS_WIN32
 	gchar *uri_cmd;
+#else
 	gchar *gtk_theme;
 #endif
 	gchar *ext_editor_cmd;

@@ -1,4 +1,6 @@
+if BUILD_HOTKEYS
 noinst_LTLIBRARIES = libcmnpgtkhotkey.la
+endif
 
 libcmnpgtkhotkey_la_SOURCES = \
 	gtk-hotkey-info.c \
