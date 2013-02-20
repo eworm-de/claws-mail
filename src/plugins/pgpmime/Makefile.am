@@ -48,8 +48,9 @@ endif
 plugindir = $(pkglibdir)/plugins
 plugin_DATA=pgpmime.deps
 
+if BUILD_PGPMIME_PLUGIN
 plugin_LTLIBRARIES = pgpmime.la
-
+endif
 
 pgpmime_la_SOURCES = \
 	plugin.c \

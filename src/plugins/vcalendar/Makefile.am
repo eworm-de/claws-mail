@@ -44,7 +44,9 @@ endif
 
 plugindir = $(pkglibdir)/plugins
 
+if BUILD_VCALENDAR_PLUGIN
 plugin_LTLIBRARIES = vcalendar.la
+endif
 
 INCLUDES= \
 	-I$(top_srcdir)/src \

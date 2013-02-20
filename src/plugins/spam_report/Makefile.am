@@ -1,6 +1,8 @@
 plugindir = $(pkglibdir)/plugins
 
+if BUILD_SPAM_REPORT_PLUGIN
 plugin_LTLIBRARIES = spamreport.la
+endif
 
 spamreport_la_SOURCES = \
          spam_report.c \

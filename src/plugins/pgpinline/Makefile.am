@@ -50,7 +50,9 @@ endif
 plugindir = $(pkglibdir)/plugins
 plugin_DATA=pgpinline.deps
 
+if BUILD_PGPINLINE_PLUGIN
 plugin_LTLIBRARIES = pgpinline.la
+endif
 
 pgpinline_la_SOURCES = \
 	plugin.c \

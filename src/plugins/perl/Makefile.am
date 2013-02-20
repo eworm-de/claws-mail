@@ -1,6 +1,8 @@
 plugindir = $(pkglibdir)/plugins
 
+if BUILD_PERL_PLUGIN
 plugin_LTLIBRARIES = perl_plugin.la
+endif
 
 perl_plugin_la_SOURCES = \
 	perl_plugin.c perl_plugin.h \

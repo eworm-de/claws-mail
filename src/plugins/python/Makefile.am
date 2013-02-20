@@ -1,6 +1,8 @@
 plugindir = $(pkglibdir)/plugins
 
+if BUILD_PYTHON_PLUGIN
 plugin_LTLIBRARIES = python_plugin.la
+endif
 
 python_plugin_la_SOURCES = \
 	clawsmailmodule.c \

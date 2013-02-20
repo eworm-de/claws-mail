@@ -43,7 +43,9 @@ endif
 
 plugindir = $(pkglibdir)/plugins
 
+if BUILD_RSSYL_PLUGIN
 plugin_LTLIBRARIES = rssyl.la
+endif
 
 INCLUDES= \
 	-I$(top_srcdir)/src \

@@ -1,6 +1,8 @@
 plugindir = $(pkglibdir)/plugins
 
+if BUILD_NEWMAIL_PLUGIN
 plugin_LTLIBRARIES = newmail.la
+endif
 
 newmail_la_SOURCES = \
 	newmail.c

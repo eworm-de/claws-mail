@@ -1,6 +1,8 @@
 plugindir = $(pkglibdir)/plugins
 
+if BUILD_PDF_VIEWER_PLUGIN
 plugin_LTLIBRARIES = pdf_viewer.la
+endif
 
 pdf_viewer_la_SOURCES = \
          poppler_viewer.c \

@@ -43,7 +43,9 @@ endif
 
 plugindir = $(pkglibdir)/plugins
 
+if BUILD_PGPCORE_PLUGIN
 plugin_LTLIBRARIES = pgpcore.la
+endif
 
 pgpcore_la_SOURCES = \
 	passphrase.c \

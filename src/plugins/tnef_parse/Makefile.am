@@ -43,7 +43,9 @@ endif
 
 plugindir = $(pkglibdir)/plugins
 
+if BUILD_TNEF_PARSE_PLUGIN
 plugin_LTLIBRARIES = tnef_parse.la
+endif
 
 tnef_parse_la_SOURCES = \
          tnef_parse.c \

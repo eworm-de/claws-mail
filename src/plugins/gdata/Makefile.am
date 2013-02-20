@@ -1,6 +1,8 @@
 plugindir = $(pkglibdir)/plugins
 
+if BUILD_GDATA_PLUGIN
 plugin_LTLIBRARIES = gdata_plugin.la
+endif
 
 gdata_plugin_la_SOURCES = \
 	gdata_plugin.c \

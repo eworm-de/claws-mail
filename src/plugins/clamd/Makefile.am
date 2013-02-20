@@ -1,7 +1,9 @@
 SUBDIRS = libclamd
 plugindir = $(pkglibdir)/plugins
 
+if BUILD_CLAMD_PLUGIN
 plugin_LTLIBRARIES = clamd.la
+endif
 
 clamd_la_SOURCES = \
 	clamav_plugin.c \

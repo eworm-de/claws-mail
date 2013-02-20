@@ -43,7 +43,9 @@ endif
 
 plugindir = $(pkglibdir)/plugins
 
+if BUILD_ATTACHWARNER_PLUGIN
 plugin_LTLIBRARIES = attachwarner.la
+endif
 
 attachwarner_la_LDFLAGS = \
 	$(plugin_res_ldflag) $(no_undefined) $(export_symbols) \

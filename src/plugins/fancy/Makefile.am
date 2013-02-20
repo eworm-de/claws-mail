@@ -1,6 +1,8 @@
 plugindir = $(pkglibdir)/plugins
 
+if BUILD_FANCY_PLUGIN
 plugin_LTLIBRARIES = fancy.la
+endif
 
 fancy_la_SOURCES = \
         fancy_viewer.c \

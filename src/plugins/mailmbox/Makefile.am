@@ -1,5 +1,8 @@
 plugindir = $(pkglibdir)/plugins
+
+if BUILD_MAILMBOX_PLUGIN
 plugin_LTLIBRARIES = mailmbox.la
+endif
 
 ## Mailmbox folder plugin
 

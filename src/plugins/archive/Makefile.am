@@ -1,6 +1,8 @@
 plugindir = $(pkglibdir)/plugins
 
+if BUILD_ARCHIVE_PLUGIN
 plugin_LTLIBRARIES = archive.la
+endif
 
 archive_la_SOURCES = \
 	      libarchive_archive.c \

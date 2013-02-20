@@ -1,6 +1,8 @@
 plugindir = $(pkglibdir)/plugins
 
+if BUILD_BOGOFILTER_PLUGIN
 plugin_LTLIBRARIES = bogofilter.la
+endif
 
 bogofilter_la_SOURCES = \
 	bogofilter.c bogofilter.h \

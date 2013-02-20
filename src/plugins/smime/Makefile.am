@@ -50,7 +50,9 @@ endif
 plugindir = $(pkglibdir)/plugins
 plugin_DATA=smime.deps
 
+if BUILD_SMIME_PLUGIN
 plugin_LTLIBRARIES = smime.la
+endif
 
 smime_la_SOURCES = \
 	plugin.c \

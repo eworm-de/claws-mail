@@ -1,3 +1,37 @@
+2013-02-20 [colin]	3.9.0cvs87
+
+	* src/plugins/Makefile.am
+	* src/plugins/acpi_notifier/Makefile.am
+	* src/plugins/address_keeper/Makefile.am
+	* src/plugins/archive/Makefile.am
+	* src/plugins/att_remover/Makefile.am
+	* src/plugins/attachwarner/Makefile.am
+	* src/plugins/bogofilter/Makefile.am
+	* src/plugins/bsfilter/Makefile.am
+	* src/plugins/clamd/Makefile.am
+	* src/plugins/demo/Makefile.am
+	* src/plugins/fancy/Makefile.am
+	* src/plugins/fetchinfo/Makefile.am
+	* src/plugins/gdata/Makefile.am
+	* src/plugins/mailmbox/Makefile.am
+	* src/plugins/newmail/Makefile.am
+	* src/plugins/notification/Makefile.am
+	* src/plugins/pdf_viewer/Makefile.am
+	* src/plugins/perl/Makefile.am
+	* src/plugins/pgpcore/Makefile.am
+	* src/plugins/pgpinline/Makefile.am
+	* src/plugins/pgpmime/Makefile.am
+	* src/plugins/python/Makefile.am
+	* src/plugins/rssyl/Makefile.am
+	* src/plugins/smime/Makefile.am
+	* src/plugins/spam_report/Makefile.am
+	* src/plugins/spamassassin/Makefile.am
+	* src/plugins/tnef_parse/Makefile.am
+	* src/plugins/vcalendar/Makefile.am
+		Change automake conditionals so that all plugins subdirectories
+		are included, but nothing built in disabled plugins. Fixes make
+		dist with some plugins --disabled.
+
 2013-02-20 [colin]	3.9.0cvs86
 
 	* configure.ac

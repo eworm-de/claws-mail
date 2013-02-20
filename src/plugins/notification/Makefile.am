@@ -53,7 +53,9 @@ endif
 
 plugindir = $(pkglibdir)/plugins
 
+if BUILD_NOTIFICATION_PLUGIN
 plugin_LTLIBRARIES = notification_plugin.la
+endif
 
 notification_plugin_la_SOURCES = \
 	notification_plugin.c notification_plugin.h \

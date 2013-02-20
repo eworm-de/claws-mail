@@ -43,7 +43,9 @@ endif
 
 plugindir = $(pkglibdir)/plugins
 
+if BUILD_ADDRESS_KEEPER_PLUGIN
 plugin_LTLIBRARIES = address_keeper.la
+endif
 
 address_keeper_la_LDFLAGS = \
 	$(plugin_res_ldflag) $(no_undefined) $(export_symbols) \

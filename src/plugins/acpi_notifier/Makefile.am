@@ -1,6 +1,8 @@
 plugindir = $(pkglibdir)/plugins
 
+if BUILD_ACPI_NOTIFIER_PLUGIN
 plugin_LTLIBRARIES = acpi_notifier.la
+endif
 
 acpi_notifier_la_SOURCES = \
 	acpi_notifier.c

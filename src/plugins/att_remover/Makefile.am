@@ -1,6 +1,8 @@
 plugindir = $(pkglibdir)/plugins
 
+if BUILD_ATT_REMOVER_PLUGIN
 plugin_LTLIBRARIES = att_remover.la
+endif
 
 att_remover_la_SOURCES = \
 	att_remover.c

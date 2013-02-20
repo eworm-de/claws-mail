@@ -1,6 +1,8 @@
 plugindir = $(pkglibdir)/plugins
 
+if BUILD_FETCHINFO_PLUGIN
 plugin_LTLIBRARIES = fetchinfo_plugin.la
+endif
 
 fetchinfo_plugin_la_SOURCES = \
 	fetchinfo_plugin.c fetchinfo_plugin.h \

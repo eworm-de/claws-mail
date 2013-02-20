@@ -1,6 +1,8 @@
 plugindir = $(pkglibdir)/plugins
 
+if BUILD_SPAMASSASSIN_PLUGIN
 plugin_LTLIBRARIES = spamassassin.la
+endif
 
 spamassassin_la_SOURCES = \
 	spamassassin.c spamassassin.h \

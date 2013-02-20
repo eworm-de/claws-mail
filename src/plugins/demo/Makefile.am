@@ -1,6 +1,8 @@
 plugindir = $(pkglibdir)/plugins
 
+if BUILD_DEMO_PLUGIN
 plugin_LTLIBRARIES = demo.la
+endif
 
 demo_la_SOURCES = \
 	demo.c

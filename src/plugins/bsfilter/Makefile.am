@@ -43,7 +43,9 @@ endif
 
 plugindir = $(pkglibdir)/plugins
 
+if BUILD_BSFILTER_PLUGIN
 plugin_LTLIBRARIES = bsfilter.la
+endif
 
 bsfilter_la_LDFLAGS = \
 	$(plugin_res_ldflag) $(no_undefined) $(export_symbols) \
