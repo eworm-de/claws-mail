@@ -1,3 +1,23 @@
+2013-02-20 [colin]	3.9.0cvs82
+
+	* src/plugins/bogofilter/Makefile.am
+	* src/plugins/clamd/Makefile.am
+	* src/plugins/demo/Makefile.am
+	* src/plugins/dillo_viewer/Makefile.am
+	* src/plugins/fancy/Makefile.am
+	* src/plugins/fetchinfo/Makefile.am
+	* src/plugins/gdata/Makefile.am
+	* src/plugins/mailmbox/Makefile.am
+	* src/plugins/newmail/Makefile.am
+	* src/plugins/notification/Makefile.am
+	* src/plugins/pdf_viewer/Makefile.am
+	* src/plugins/perl/Makefile.am
+	* src/plugins/python/Makefile.am
+	* src/plugins/spamassassin/Makefile.am
+	* src/plugins/trayicon/Makefile.am
+	* src/plugins/vcalendar/libical/libical/Makefile.am
+		Fix out-of-tree build
+
 2013-02-19 [colin]	3.9.0cvs81
 
 	* configure.ac

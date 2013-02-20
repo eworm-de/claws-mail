@@ -23,6 +23,7 @@ spamassassin_la_LIBADD = $(cygwin_export_lib) \
 INCLUDES = \
 	-I$(top_srcdir)/src \
 	-I$(top_srcdir)/src/common \
+	-I$(top_builddir)/src/common \
 	-I$(top_srcdir)/src/gtk
 
 AM_CPPFLAGS = \

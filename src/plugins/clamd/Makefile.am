@@ -20,6 +20,7 @@ INCLUDES = \
 	-I$(top_srcdir)/src/plugins/clamd/libclamd \
 	-I$(top_srcdir)/src \
 	-I$(top_srcdir)/src/common \
+	-I$(top_builddir)/src/common \
 	-I$(top_srcdir)/src/gtk
 
 AM_CPPFLAGS = \

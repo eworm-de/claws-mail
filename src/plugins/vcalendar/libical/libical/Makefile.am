@@ -34,7 +34,7 @@ LEX_OUTPUT_ROOT = lex.ical_yy
 
 INCLUDES =			\
 	-I$(top_builddir)	\
-	-I$(top_srcdir)	\
+	-I$(top_srcdir)		\
 	-I$(top_builddir)	\
 	-I$(srcdir)		\
 	-I$(top_srcdir)/src/plugins/vcalendar/libical \

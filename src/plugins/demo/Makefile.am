@@ -18,6 +18,7 @@ demo_la_LIBADD = $(cygwin_export_lib) \
 	$(GTK_LIBS) 
 INCLUDES = \
 	-I$(top_srcdir)/src \
+	-I$(top_builddir)/src/common \
 	-I$(top_srcdir)/src/common 
 
 AM_CPPFLAGS = \
