@@ -562,6 +562,28 @@ void plugin_unload(Plugin *plugin)
 
 }
 
+static void replace_old_plugin_name(gchar *plugin_name)
+{
+	gchar *old_name_end = g_strconcat("_plugin.", G_MODULE_SUFFIX, NULL);
+	gchar *matches = strstr(plugin_name, old_name_end);
+
+	if (!matches) {
+		g_free(old_name_end);
+		return;
+	} else if (plugin_name + strlen(plugin_name) != matches + strlen(matches)) {
+		g_free(old_name_end);
+		return;
+	} else {
+		gchar *new_name_end = g_strconcat(".", G_MODULE_SUFFIX, NULL);
+		int offset = strlen(plugin_name) - strlen(old_name_end);
+
+		debug_print("Replacing old plugin name %s\n", plugin_name);
+		
+		strncpy(plugin_name + offset, new_name_end, strlen(old_name_end) - 1);
+		debug_print(" to %s\n", plugin_name);
+	}
+}
+
 void plugin_load_all(const gchar *type)
 {
 	gchar *rcpath;
@@ -591,6 +613,8 @@ void plugin_load_all(const gchar *type)
 			break;
 
 		g_strstrip(buf);
+		replace_old_plugin_name(buf);
+
 		if ((buf[0] != '\0') && (plugin_load(buf, &error) == NULL)) {
 			g_warning("plugin loading error: %s\n", error);
 			g_free(error);
