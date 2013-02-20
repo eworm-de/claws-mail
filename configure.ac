@@ -12,7 +12,7 @@ MINOR_VERSION=9
 MICRO_VERSION=0
 INTERFACE_AGE=0
 BINARY_AGE=0
-EXTRA_VERSION=83
+EXTRA_VERSION=84
 EXTRA_RELEASE=
 EXTRA_GTK2_VERSION=
 
@@ -975,19 +975,6 @@ else
 fi
 AM_CONDITIONAL(BUILD_DEMO_PLUGIN, test x"$ac_cv_enable_demo_plugin" = xyes)
 
-dnl --- Dillo Viewer ---
-AC_MSG_CHECKING([whether to build Dillo plugin])
-AC_ARG_ENABLE(dillo-viewer-plugin,
-	[  --disable-dillo-viewer-plugin     do not build Dillo plugin for html mail rendering],
-	[ac_cv_enable_dillo_viewer_plugin=$enableval], [ac_cv_enable_dillo_viewer_plugin=yes])
-if test x"$ac_cv_enable_dillo_viewer_plugin" = xyes; then
-	AC_MSG_RESULT(yes)
-	PLUGINS="dillo-viewer $PLUGINS"
-else
-	AC_MSG_RESULT(no)
-fi
-AM_CONDITIONAL(BUILD_DILLO_VIEWER_PLUGIN, test x"$ac_cv_enable_dillo_viewer_plugin" = xyes)
-
 dnl --- Fancy ---
 AC_MSG_CHECKING([whether to build Fancy plugin])
 AC_ARG_ENABLE(fancy-plugin,
@@ -1380,19 +1367,6 @@ else
 fi
 AM_CONDITIONAL(BUILD_TNEF_PARSE_PLUGIN, test x"$ac_cv_enable_tnef_parse_plugin" = xyes)
 
-dnl --- Trayicon ---
-AC_MSG_CHECKING([whether to build Trayicon plugin])
-AC_ARG_ENABLE(trayicon-plugin,
-	[  --disable-trayicon-plugin         do not build System Tray Icon plugin],
-	[ac_cv_enable_trayicon_plugin=$enableval], [ac_cv_enable_trayicon_plugin=yes])
-if test x"$ac_cv_enable_trayicon_plugin" = xyes; then
-	AC_MSG_RESULT(yes)
-	PLUGINS="trayicon $PLUGINS"
-else
-	AC_MSG_RESULT(no)
-fi
-AM_CONDITIONAL(BUILD_TRAYICON_PLUGIN, test x"$ac_cv_enable_trayicon_plugin" = xyes)
-
 dnl --- vCalendar ---
 AC_MSG_CHECKING([whether to build vCalendar plugin])
 AC_ARG_ENABLE(vcalendar-plugin,
@@ -1499,7 +1473,6 @@ src/plugins/bsfilter/Makefile
 src/plugins/clamd/Makefile
 src/plugins/clamd/libclamd/Makefile
 src/plugins/demo/Makefile
-src/plugins/dillo_viewer/Makefile
 src/plugins/fancy/Makefile
 src/plugins/fetchinfo/Makefile
 src/plugins/gdata/Makefile
@@ -1517,7 +1490,6 @@ src/plugins/smime/Makefile
 src/plugins/spamassassin/Makefile
 src/plugins/spam_report/Makefile
 src/plugins/tnef_parse/Makefile
-src/plugins/trayicon/Makefile
 src/plugins/vcalendar/Makefile
 src/plugins/vcalendar/libical/Makefile
 src/plugins/vcalendar/libical/libical/icalversion.h

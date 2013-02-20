@@ -1,3 +1,23 @@
+2013-02-20 [colin]	3.9.0cvs84
+
+	* configure.ac
+	* po/POTFILES.in
+	* src/plugins/Makefile.am
+	* src/plugins/dillo_viewer/.cvsignore
+	* src/plugins/dillo_viewer/Makefile.am
+	* src/plugins/dillo_viewer/README
+	* src/plugins/dillo_viewer/dillo_prefs.c
+	* src/plugins/dillo_viewer/dillo_prefs.h
+	* src/plugins/dillo_viewer/dillo_viewer.c
+	* src/plugins/trayicon/.cvsignore
+	* src/plugins/trayicon/Makefile.am
+	* src/plugins/trayicon/README
+	* src/plugins/trayicon/trayicon.c
+	* src/plugins/trayicon/trayicon_prefs.c
+	* src/plugins/trayicon/trayicon_prefs.h
+	* src/plugins/trayicon/libeggtrayicon/.cvsignore
+		Drop trayicon and dillo_viewer
+
 2013-02-20 [colin]	3.9.0cvs83
 
 	* configure.ac

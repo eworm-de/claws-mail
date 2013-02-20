@@ -34,10 +34,6 @@ if BUILD_DEMO_PLUGIN
 demo_dir = demo
 endif
 
-if BUILD_DILLO_VIEWER_PLUGIN
-dillo_viewer_dir = dillo_viewer
-endif
-
 if BUILD_FANCY_PLUGIN
 fancy_dir = fancy
 endif
@@ -103,10 +99,6 @@ if BUILD_TNEF_PARSE_PLUGIN
 tnef_parse_dir = tnef_parse
 endif
 
-if BUILD_TRAYICON_PLUGIN
-trayicon_dir = trayicon
-endif
-
 if BUILD_VCALENDAR_PLUGIN
 vcalendar_dir = vcalendar
 endif
@@ -121,7 +113,6 @@ SUBDIRS = \
 	$(bsfilter_dir) \
 	$(clamd_dir) \
 	$(demo_dir) \
-	$(dillo_viewer_dir) \
 	$(fancy_dir) \
 	$(fetchinfo_dir) \
 	$(gdata_dir) \
@@ -139,5 +130,4 @@ SUBDIRS = \
 	$(spamassassin_dir) \
 	$(spam_report_dir) \
 	$(tnef_parse_dir) \
-	$(trayicon_dir) \
 	$(vcalendar_dir)
