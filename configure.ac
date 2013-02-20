@@ -12,7 +12,7 @@ MINOR_VERSION=9
 MICRO_VERSION=0
 INTERFACE_AGE=0
 BINARY_AGE=0
-EXTRA_VERSION=88
+EXTRA_VERSION=89
 EXTRA_RELEASE=
 EXTRA_GTK2_VERSION=
 
@@ -1284,7 +1284,7 @@ if test x"$enable_archive_plugin" != xno; then
 		MISSING_DEPS_PLUGINS="$MISSING_DEPS_PLUGINS archive"
 	else
 		AC_MSG_RESULT(no)
-		AC_MSG_ERROR("Plugin archive can not be built; missing $dependencies_missing")
+		AC_MSG_ERROR("Plugin archive cannot be built; missing $dependencies_missing")
 	fi
 else
 	DISABLED_PLUGINS="$DISABLED_PLUGINS archive"
@@ -1366,7 +1366,7 @@ if test x"$enable_fancy_plugin" != xno; then
 		MISSING_DEPS_PLUGINS="$MISSING_DEPS_PLUGINS fancy"
 	else
 		AC_MSG_RESULT(no)
-		AC_MSG_ERROR("Plugin fancy can not be built; missing $dependencies_missing")
+		AC_MSG_ERROR("Plugin fancy cannot be built; missing $dependencies_missing")
 	fi
 else
 	DISABLED_PLUGINS="$DISABLED_PLUGINS fancy"
@@ -1400,7 +1400,7 @@ if test x"$enable_gdata_plugin" != xno; then
 		MISSING_DEPS_PLUGINS="$MISSING_DEPS_PLUGINS gdata"
 	else
 		AC_MSG_RESULT(no)
-		AC_MSG_ERROR("Plugin gdata can not be built; missing $dependencies_missing")
+		AC_MSG_ERROR("Plugin gdata cannot be built; missing $dependencies_missing")
 	fi
 else
 	DISABLED_PLUGINS="$DISABLED_PLUGINS gdata"
@@ -1464,7 +1464,7 @@ if test x"$enable_pdf_viewer_plugin" != xno; then
 		MISSING_DEPS_PLUGINS="$MISSING_DEPS_PLUGINS pdf_viewer"
 	else
 		AC_MSG_RESULT(no)
-		AC_MSG_ERROR("Plugin pdf_viewer can not be built; missing $dependencies_missing")
+		AC_MSG_ERROR("Plugin pdf_viewer cannot be built; missing $dependencies_missing")
 	fi
 else
 	DISABLED_PLUGINS="$DISABLED_PLUGINS pdf_viewer"
@@ -1489,7 +1489,7 @@ if test x"$enable_perl_plugin" != xno; then
 		MISSING_DEPS_PLUGINS="$MISSING_DEPS_PLUGINS perl"
 	else
 		AC_MSG_RESULT(no)
-		AC_MSG_ERROR("Plugin perl can not be built; missing $dependencies_missing")
+		AC_MSG_ERROR("Plugin perl cannot be built; missing $dependencies_missing")
 	fi
 else
 	DISABLED_PLUGINS="$DISABLED_PLUGINS perl"
@@ -1514,7 +1514,7 @@ if test x"$enable_python_plugin" != xno; then
 		MISSING_DEPS_PLUGINS="$MISSING_DEPS_PLUGINS python"
 	else
 		AC_MSG_RESULT(no)
-		AC_MSG_ERROR("Plugin python can not be built; missing $dependencies_missing")
+		AC_MSG_ERROR("Plugin python cannot be built; missing $dependencies_missing")
 	fi
 else
 	DISABLED_PLUGINS="$DISABLED_PLUGINS python"
@@ -1539,7 +1539,7 @@ if test x"$enable_pgpcore_plugin" != xno; then
 		MISSING_DEPS_PLUGINS="$MISSING_DEPS_PLUGINS pgpcore"
 	else
 		AC_MSG_RESULT(no)
-		AC_MSG_ERROR("Plugin pgpcore can not be built; missing $dependencies_missing")
+		AC_MSG_ERROR("Plugin pgpcore cannot be built; missing $dependencies_missing")
 	fi
 else
 	DISABLED_PLUGINS="$DISABLED_PLUGINS pgpcore"
@@ -1567,7 +1567,7 @@ if test x"$enable_pgpmime_plugin" != xno; then
 		MISSING_DEPS_PLUGINS="$MISSING_DEPS_PLUGINS pgpmime"
 	else
 		AC_MSG_RESULT(no)
-		AC_MSG_ERROR("Plugin pgpmime can not be built; missing $dependencies_missing")
+		AC_MSG_ERROR("Plugin pgpmime cannot be built; missing $dependencies_missing")
 	fi
 else
 	DISABLED_PLUGINS="$DISABLED_PLUGINS pgpmime"
@@ -1595,7 +1595,7 @@ if test x"$enable_pgpinline_plugin" != xno; then
 		MISSING_DEPS_PLUGINS="$MISSING_DEPS_PLUGINS pgpinline"
 	else
 		AC_MSG_RESULT(no)
-		AC_MSG_ERROR("Plugin pgpinline can not be built; missing $dependencies_missing")
+		AC_MSG_ERROR("Plugin pgpinline cannot be built; missing $dependencies_missing")
 	fi
 else
 	DISABLED_PLUGINS="$DISABLED_PLUGINS pgpinline"
@@ -1623,7 +1623,7 @@ if test x"$enable_rssyl_plugin" != xno; then
 		MISSING_DEPS_PLUGINS="$MISSING_DEPS_PLUGINS rssyl"
 	else
 		AC_MSG_RESULT(no)
-		AC_MSG_ERROR("Plugin rssyl can not be built; missing $dependencies_missing")
+		AC_MSG_ERROR("Plugin rssyl cannot be built; missing $dependencies_missing")
 	fi
 else
 	DISABLED_PLUGINS="$DISABLED_PLUGINS rssyl"
@@ -1661,7 +1661,7 @@ if test x"$enable_smime_plugin" != xno; then
 		MISSING_DEPS_PLUGINS="$MISSING_DEPS_PLUGINS smime"
 	else
 		AC_MSG_RESULT(no)
-		AC_MSG_ERROR("Plugin smime can not be built; missing $dependencies_missing")
+		AC_MSG_ERROR("Plugin smime cannot be built; missing $dependencies_missing")
 	fi
 else
 	DISABLED_PLUGINS="$DISABLED_PLUGINS smime"
@@ -1686,7 +1686,7 @@ if test x"$enable_spam_report_plugin" != xno; then
 		MISSING_DEPS_PLUGINS="$MISSING_DEPS_PLUGINS spam_report"
 	else
 		AC_MSG_RESULT(no)
-		AC_MSG_ERROR("Plugin spam_report can not be built; missing $dependencies_missing")
+		AC_MSG_ERROR("Plugin spam_report cannot be built; missing $dependencies_missing")
 	fi
 else
 	DISABLED_PLUGINS="$DISABLED_PLUGINS spam_report"
@@ -1724,7 +1724,7 @@ if test x"$enable_vcalendar_plugin" != xno; then
 		MISSING_DEPS_PLUGINS="$MISSING_DEPS_PLUGINS vcalendar"
 	else
 		AC_MSG_RESULT(no)
-		AC_MSG_ERROR("Plugin vcalendar can not be built; missing $dependencies_missing")
+		AC_MSG_ERROR("Plugin vcalendar cannot be built; missing $dependencies_missing")
 	fi
 else
 	DISABLED_PLUGINS="$DISABLED_PLUGINS vcalendar"
