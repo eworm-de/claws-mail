@@ -158,7 +158,7 @@ static gboolean my_folder_item_update_hook(gpointer source, gpointer data)
 #if defined(NOTIFICATION_LCDPROC) || defined(NOTIFICATION_TRAYICON) || defined(NOTIFICATION_INDICATOR)
     notification_update_msg_counts(NULL);
 #else
-    if(notify_config.urgency_hint)
+    if(notify_config.urgency_hint_new || notify_config.urgency_hint_unread)
     	notification_update_msg_counts(NULL);
 #endif
 

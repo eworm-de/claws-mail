@@ -1,3 +1,42 @@
+2013-02-20 [colin]	3.9.0cvs85
+
+	* configure.ac
+		Rework plugin enabling logic. More clean!
+	* src/plugins/fancy/fancy_viewer.c
+	* src/plugins/fancy/fancy_viewer.h
+	* src/plugins/spam_report/spam_report.c
+		Make curl dependancy mandatory
+	* src/plugins/notification/notification_plugin.c
+		Fix build with every possible thing disabled
+	* src/plugins/notification/Makefile.am
+	* src/plugins/notification/gtkhotkey/.cvsignore
+	* src/plugins/notification/gtkhotkey/Makefile.am
+	* src/plugins/notification/gtkhotkey/gtk-hotkey-error.c
+	* src/plugins/notification/gtkhotkey/gtk-hotkey-error.h
+	* src/plugins/notification/gtkhotkey/gtk-hotkey-info.c
+	* src/plugins/notification/gtkhotkey/gtk-hotkey-info.h
+	* src/plugins/notification/gtkhotkey/gtk-hotkey-key-file-registry.c
+	* src/plugins/notification/gtkhotkey/gtk-hotkey-key-file-registry.h
+	* src/plugins/notification/gtkhotkey/gtk-hotkey-listener.c
+	* src/plugins/notification/gtkhotkey/gtk-hotkey-listener.h
+	* src/plugins/notification/gtkhotkey/gtk-hotkey-marshal.c
+	* src/plugins/notification/gtkhotkey/gtk-hotkey-marshal.h
+	* src/plugins/notification/gtkhotkey/gtk-hotkey-registry.c
+	* src/plugins/notification/gtkhotkey/gtk-hotkey-registry.h
+	* src/plugins/notification/gtkhotkey/gtk-hotkey-utils.c
+	* src/plugins/notification/gtkhotkey/gtk-hotkey-utils.h
+	* src/plugins/notification/gtkhotkey/gtk-hotkey-x11-listener.c
+	* src/plugins/notification/gtkhotkey/gtk-hotkey-x11-listener.h
+	* src/plugins/notification/gtkhotkey/gtkhotkey.h
+	* src/plugins/notification/gtkhotkey/x11/eggaccelerators.c
+	* src/plugins/notification/gtkhotkey/x11/eggaccelerators.h
+	* src/plugins/notification/gtkhotkey/x11/tomboykeybinder.c
+	* src/plugins/notification/gtkhotkey/x11/tomboykeybinder.h
+		Re-add hotkey support
+	* src/plugins/spam_report/Makefile.am
+	* src/plugins/tnef_parse/Makefile.am
+		Remove gettext.h
+
 2013-02-20 [colin]	3.9.0cvs84
 
 	* configure.ac

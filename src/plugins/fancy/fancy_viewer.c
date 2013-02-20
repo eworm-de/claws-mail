@@ -27,7 +27,7 @@
 #include <fancy_prefs.h>
 #include <alertpanel.h>
 
-#if USE_PRINTUNIX
+#if HAVE_GTKPRINTUNIX
 #include <printing.h>
 #if GTK_CHECK_VERSION(2,13,1)
 #include <gtk/gtkunixprint.h>
@@ -78,12 +78,10 @@ static void open_in_browser_cb(GtkWidget *widget, FancyViewer *viewer);
 static WebKitNavigationResponse fancy_open_uri (FancyViewer *viewer, gboolean external);
 static void fancy_create_popup_prefs_menu(FancyViewer *viewer);
 static void fancy_show_notice(FancyViewer *viewer, const gchar *message);
-#ifdef HAVE_LIBCURL
 static size_t download_file_curl_write_cb(void *buffer, size_t size, 
 										  size_t nmemb, void *data);
 static void *download_file_curl (void *data);
 static void download_file_cb(GtkWidget *widget, FancyViewer *viewer);
-#endif
 
 #if !WEBKIT_CHECK_VERSION (1,5,1)
 gchar* webkit_web_view_get_selected_text(WebKitWebView* web_view);
@@ -181,7 +179,7 @@ static void fancy_show_mimepart(MimeViewer *_viewer, const gchar *infile,
 	viewer->loading = TRUE;
 	g_timeout_add(5, (GtkFunction)fancy_show_mimepart_prepare, viewer);
 }
-#if GTK_CHECK_VERSION(2,10,0) && USE_PRINTUNIX
+#if GTK_CHECK_VERSION(2,10,0) && HAVE_GTKPRINTUNIX
 
 static void
 job_complete_cb (GtkPrintJob *print_job, FancyViewer *viewer, GError *error)
@@ -737,7 +735,7 @@ static void open_in_browser_cb(GtkWidget *widget, FancyViewer *viewer)
 	debug_print("link: %s\n", viewer->cur_link);
 	open_uri(viewer->cur_link, prefs_common_get_uri_cmd());
 }
-#ifdef HAVE_LIBCURL
+
 static size_t download_file_curl_write_cb(void *buffer, size_t size, 
 										  size_t nmemb, void *data)
 {
@@ -805,7 +803,7 @@ static void download_file_cb(GtkWidget *widget, FancyViewer *viewer)
 	download_file_curl((void *)viewer);
 #endif
 }
-#endif
+
 static void open_image_cb(GtkWidget *widget, FancyViewer *viewer)
 {
 	debug_print("Not Yet Implemented\n");
@@ -871,7 +869,7 @@ static void viewer_menu_handler(GtkWidget *menuitem, FancyViewer *viewer)
 								"Download Linked File" )) {
                 
 			gtk_label_set_text(GTK_LABEL(menul), _("Download Link"));
-#ifdef HAVE_LIBCURL
+
 			GtkImageMenuItem *m_dlink = GTK_IMAGE_MENU_ITEM(menuitem);
 			if (!fancy_prefs.block_extern_content) {
 				gtk_widget_set_sensitive(GTK_WIDGET(menul), TRUE);
@@ -887,17 +885,13 @@ static void viewer_menu_handler(GtkWidget *menuitem, FancyViewer *viewer)
 			g_signal_connect(G_OBJECT(m_dlink), "activate",
 							 G_CALLBACK(download_file_cb),
 							 (gpointer *) viewer);
-#else
-			gtk_widget_set_sensitive(GTK_WIDGET(menul), FALSE);
-#endif
 		}
 
 		if (!g_ascii_strcasecmp(gtk_label_get_text(GTK_LABEL(menul)), 
 								"Save Image As" )) {
 
 			gtk_label_set_text(GTK_LABEL(menul), _("Save Image As"));
-                
-#ifdef HAVE_LIBCURL
+
 			GtkImageMenuItem *m_simage = GTK_IMAGE_MENU_ITEM(menuitem);
 			if (!fancy_prefs.block_extern_content) {
 				gtk_widget_set_sensitive(GTK_WIDGET(menul), TRUE);
@@ -912,9 +906,6 @@ static void viewer_menu_handler(GtkWidget *menuitem, FancyViewer *viewer)
 			}
 			g_signal_connect(G_OBJECT(m_simage), "activate", 
 							 G_CALLBACK(download_file_cb), (gpointer *) viewer);
-#else
-			gtk_widget_set_sensitive(GTK_WIDGET(menul), FALSE);
-#endif
 		}
 
 		if (!g_ascii_strcasecmp(gtk_label_get_text(GTK_LABEL(menul)), 
@@ -1013,7 +1004,7 @@ static MimeViewer *fancy_viewer_create(void)
 	viewer->mimeviewer.get_widget = fancy_get_widget;
 	viewer->mimeviewer.get_selection = fancy_get_selection;
 	viewer->mimeviewer.show_mimepart = fancy_show_mimepart;
-#if GTK_CHECK_VERSION(2,10,0) && USE_PRINTUNIX
+#if GTK_CHECK_VERSION(2,10,0) && HAVE_GTKPRINTUNIX
 	viewer->mimeviewer.print = fancy_print;
 #endif
 	viewer->mimeviewer.clear_viewer = fancy_clear_viewer;

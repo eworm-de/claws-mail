@@ -49,8 +49,7 @@ tnef_parse_la_SOURCES = \
          tnef_parse.c \
          tnef_dump.c \
          tnef_dump.h \
-	 ytnef.c \
-	 gettext.h
+	 ytnef.c
 
 tnef_parse_la_LDFLAGS = \
 	$(plugin_res_ldflag) $(no_undefined) $(export_symbols) \

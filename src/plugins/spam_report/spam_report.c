@@ -342,9 +342,8 @@ gint plugin_init(gchar **error)
 		return -1;
 
 	spamreport_prefs_init();
-#ifdef HAVE_LIBCURL
+
 	curl_global_init(CURL_GLOBAL_DEFAULT);
-#endif
 
 	gtk_action_group_add_actions(mainwin->action_group, spamreport_main_menu,
 			1, (gpointer)mainwin);
@@ -371,9 +370,9 @@ gboolean plugin_done(void)
 
 	MENUITEM_REMUI_MANAGER(mainwin->ui_manager,mainwin->action_group, "Message/ReportSpam", context_menu_id);
 	context_menu_id = 0;
-#ifdef HAVE_LIBCURL
+
 	spamreport_prefs_done();
-#endif
+
 	return TRUE;
 }
 

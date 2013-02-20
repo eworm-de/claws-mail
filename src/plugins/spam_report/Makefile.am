@@ -5,8 +5,7 @@ plugin_LTLIBRARIES = spamreport.la
 spamreport_la_SOURCES = \
          spam_report.c \
 	 spam_report_prefs.c \
-	 spam_report_prefs.h \
-	 gettext.h
+	 spam_report_prefs.h
 
 spamreport_la_LDFLAGS = \
 	-avoid-version -module \

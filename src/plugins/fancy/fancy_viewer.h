@@ -53,11 +53,9 @@
 #include <pthread.h>
 #endif
 
-#ifdef HAVE_LIBCURL
 #include <curl/curl.h>
 #include <curl/curlver.h>
 #include "filesel.h"
-#endif
 
 #ifdef HAVE_LIBSOUP_GNOME
 #include <libsoup/soup-gnome.h>
