@@ -53,12 +53,15 @@ spamreport_la_SOURCES = \
 	 spam_report_prefs.h
 
 spamreport_la_LDFLAGS = \
+	$(plugin_res_ldflag) $(no_undefined) $(export_symbols) \
 	-avoid-version -module \
 	$(GTK_LIBS)
 
-spamreport_la_LIBADD = \
+spamreport_la_LIBADD = $(plugin_ldadd) $(cygwin_export_lib) \
 	$(CURL_LIBS) \
 	$(GTK_LIBS)
+
+spamreport_la_DEPENDENCIES = $(plugin_deps)
 
 INCLUDES = \
 	-I$(top_srcdir)/src \

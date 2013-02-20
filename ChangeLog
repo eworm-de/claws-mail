@@ -1,3 +1,10 @@
+2013-02-20 [colin]	3.9.0cvs96
+
+	* src/plugins/att_remover/Makefile.am
+	* src/plugins/fetchinfo/Makefile.am
+	* src/plugins/spam_report/Makefile.am
+		Fix missed parts for w32
+
 2013-02-20 [colin]	3.9.0cvs95
 
 	* src/prefs_common.h

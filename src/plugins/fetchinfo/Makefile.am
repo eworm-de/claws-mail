@@ -50,8 +50,14 @@ fetchinfo_la_SOURCES = \
 	fetchinfo_plugin_gtk.c
 
 fetchinfo_la_LDFLAGS = \
+	$(plugin_res_ldflag) $(no_undefined) $(export_symbols) \
 	-avoid-version -module \
 	$(GTK_LIBS)
+
+fetchinfo_la_LIBADD = $(plugin_ldadd) $(cygwin_export_lib) \
+	$(GTK_LIBS)
+
+fetchinfo_la_DEPENDENCIES = $(plugin_deps)
 
 AM_CPPFLAGS = \
 	$(CLAWS_MAIL_CFLAGS) \

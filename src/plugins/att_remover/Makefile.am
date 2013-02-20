@@ -51,10 +51,14 @@ att_remover_la_SOURCES = \
 	att_remover.c
 
 att_remover_la_LDFLAGS = \
-	-avoid-version -module
-
-att_remover_la_LIBADD = \
+	$(plugin_res_ldflag) $(no_undefined) $(export_symbols) \
+	-avoid-version -module \
 	$(GTK_LIBS)
+
+att_remover_la_LIBADD = $(plugin_ldadd) $(cygwin_export_lib) \
+	$(GTK_LIBS)
+
+att_remover_la_DEPENDENCIES = $(plugin_deps)
 
 AM_CPPFLAGS = \
 	$(CLAWS_MAIL_CFLAGS) \
