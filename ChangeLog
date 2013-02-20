@@ -1,3 +1,8 @@
+2013-02-20 [paul]	3.9.0cvs94
+
+	* configure.ac
+		a little more report layout tweaking
+
 2013-02-20 [colin]	3.9.0cvs93
 
 	* src/common/plugin.c

@@ -12,7 +12,7 @@ MINOR_VERSION=9
 MICRO_VERSION=0
 INTERFACE_AGE=0
 BINARY_AGE=0
-EXTRA_VERSION=93
+EXTRA_VERSION=94
 EXTRA_RELEASE=
 EXTRA_GTK2_VERSION=
 
@@ -1458,11 +1458,30 @@ if test x"$enable_notification_plugin" != xno; then
 	AC_DEFINE(NOTIFICATION_TRAYICON, 1, Activate notification trayicon)
 	AC_DEFINE(NOTIFICATION_LCDPROC, 1, Activate lcdproc support)
 
-	notification_features="(popup:yes banner:yes command:yes trayicon:yes lcdproc:yes"
-	notification_features="$notification_features libnotify:$HAVE_LIBNOTIFY"
-	notification_features="$notification_features libindicate:$HAVE_LIBINDICATE"
-	notification_features="$notification_features libcanberra-gtk:$HAVE_LIBCANBERRA_GTK"
-	notification_features="$notification_features hotkeys:$HAVE_HOTKEYS)"
+	notification_features="banner command"
+	notification_missing_dependencies=""
+	if test x"$HAVE_HOTKEYS" = xyes; then
+		notification_features="$notification_features hotkeys"
+	else
+		notification_missing_dependencies="$notification_missing_dependencies hotkeys"
+	fi
+	notification_features="$notification_features lcdproc"
+	if test x"$HAVE_LIBINDICATE" = xyes; then
+		notification_features="$notification_features libindicate"
+	else
+		notification_missing_dependencies="$notification_missing_dependencies libindicate"
+	fi
+	if test x"$HAVE_LIBNOTIFY" = xyes; then
+		notification_features="$notification_features libnotify"
+	else
+		notification_missing_dependencies="$notification_missing_dependencies libnotify"
+	fi
+	if test x"$HAVE_LIBCANBERRA_GTK" = xyes; then
+		notification_features="$notification_features libcanberra-gtk"
+	else
+		notification_missing_dependencies="$notification_missing_dependencies libcanberra-gtk"
+	fi
+	notification_features="$notification_features popup trayicon"
 else
 	DISABLED_PLUGINS="$DISABLED_PLUGINS notification"
 	AC_MSG_RESULT(no)
@@ -1899,25 +1918,34 @@ echo "Generic UMPC code  : $enable_generic_umpc"
 echo "Maemo build        : $enable_maemo"
 echo "Config dir         : $with_config_dir"
 
-echo "Plugins            : Built:"
+echo "Plugins"
+echo "   Built:"
 for plugin in $PLUGINS; do
-features=""
+echo "            - $plugin"
 if test x"$plugin" = xnotification; then
-	features="$notification_features"
+	echo "                Features:"
+	for notif_feature in $notification_features; do
+		echo "                    $notif_feature"
+	done;
+	if test "x$notification_missing_dependencies" != x; then
+		echo "                Disabled due to missing dependencies:"
+		for notif_miss_dep in $notification_missing_dependencies; do
+			echo "                    $notif_miss_dep"
+		done;
+	fi
 fi
-echo "                      - $plugin $features"
 done;
 if test "x$DISABLED_PLUGINS" != x; then
-echo "                     Disabled:"
+echo "   Disabled:"
 for plugin in $DISABLED_PLUGINS; do
-echo "                      - $plugin"
+echo "            - $plugin"
 done;
 fi
 
 if test "x$MISSING_DEPS_PLUGINS" != x; then
-echo "                     Disabled due to missing dependencies:"
+echo "   Disabled due to missing dependencies:"
 for plugin in $MISSING_DEPS_PLUGINS; do
-echo "                      - $plugin"
+echo "            - $plugin"
 done;
 fi
 echo ""
