@@ -1,10 +1,10 @@
 plugindir = $(pkglibdir)/plugins
 
 if BUILD_PYTHON_PLUGIN
-plugin_LTLIBRARIES = python_plugin.la
+plugin_LTLIBRARIES = python.la
 endif
 
-python_plugin_la_SOURCES = \
+python_la_SOURCES = \
 	clawsmailmodule.c \
 	clawsmailmodule.h \
 	composewindowtype.c \
@@ -21,7 +21,7 @@ python_plugin_la_SOURCES = \
 	python-shell.c \
 	python-shell.h
 
-python_plugin_la_LDFLAGS = \
+python_la_LDFLAGS = \
 	-avoid-version -module \
 	$(GLIB_LIBS) \
 	$(GTK_LIBS) \

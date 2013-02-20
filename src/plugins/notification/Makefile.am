@@ -54,10 +54,10 @@ endif
 plugindir = $(pkglibdir)/plugins
 
 if BUILD_NOTIFICATION_PLUGIN
-plugin_LTLIBRARIES = notification_plugin.la
+plugin_LTLIBRARIES = notification.la
 endif
 
-notification_plugin_la_SOURCES = \
+notification_la_SOURCES = \
 	notification_plugin.c notification_plugin.h \
 	notification_core.c notification_core.h \
 	notification_popup.c notification_popup.h \
@@ -72,11 +72,11 @@ notification_plugin_la_SOURCES = \
 	notification_pixbuf.c notification_pixbuf.h \
 	raw_claws_mail_logo_64x64.h
 
-notification_plugin_la_LDFLAGS = \
+notification_la_LDFLAGS = \
 	$(plugin_res_ldflag) $(no_undefined) $(export_symbols) \
 	-avoid-version -module
 
-notification_plugin_la_DEPENDENCIES = $(plugin_deps) \
+notification_la_DEPENDENCIES = $(plugin_deps) \
 	$(hotkey_lib_path)
 
 INCLUDES = \
@@ -87,14 +87,14 @@ INCLUDES = \
 	-I$(top_srcdir)/src/gtk
 
 
-notification_plugin_la_LIBADD = $(plugin_ldadd) $(cygwin_export_lib) \
+notification_la_LIBADD = $(plugin_ldadd) $(cygwin_export_lib) \
         $(GTK_LIBS)  \
 	$(libnotify_LIBS) \
 	$(libindicate_LIBS) \
 	$(libcanberra_gtk_LIBS) \
 	$(hotkey_lib_path)
 
-notification_plugin_la_CPPFLAGS = \
+notification_la_CPPFLAGS = \
 	$(NOTIFY_CFLAGS) \
 	$(CLAWS_MAIL_CFLAGS) \
 	$(GLIB_CFLAGS) \

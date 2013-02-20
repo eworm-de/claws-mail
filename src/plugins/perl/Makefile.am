@@ -1,17 +1,17 @@
 plugindir = $(pkglibdir)/plugins
 
 if BUILD_PERL_PLUGIN
-plugin_LTLIBRARIES = perl_plugin.la
+plugin_LTLIBRARIES = perl.la
 endif
 
-perl_plugin_la_SOURCES = \
+perl_la_SOURCES = \
 	perl_plugin.c perl_plugin.h \
 	perl_gtk.c perl_gtk.h
 
-perl_plugin_la_LDFLAGS = \
+perl_la_LDFLAGS = \
 	-avoid-version -module
 
-perl_plugin_la_LIBADD = \
+perl_la_LIBADD = \
 	$(PERL_LDFLAGS) \
 	$(GTK_LIBS)
 

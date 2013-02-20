@@ -1,14 +1,14 @@
 plugindir = $(pkglibdir)/plugins
 
 if BUILD_FETCHINFO_PLUGIN
-plugin_LTLIBRARIES = fetchinfo_plugin.la
+plugin_LTLIBRARIES = fetchinfo.la
 endif
 
-fetchinfo_plugin_la_SOURCES = \
+fetchinfo_la_SOURCES = \
 	fetchinfo_plugin.c fetchinfo_plugin.h \
 	fetchinfo_plugin_gtk.c
 
-fetchinfo_plugin_la_LDFLAGS = \
+fetchinfo_la_LDFLAGS = \
 	-avoid-version -module \
 	$(GTK_LIBS)
 
