@@ -12,7 +12,7 @@ MINOR_VERSION=9
 MICRO_VERSION=0
 INTERFACE_AGE=0
 BINARY_AGE=0
-EXTRA_VERSION=89
+EXTRA_VERSION=90
 EXTRA_RELEASE=
 EXTRA_GTK2_VERSION=
 
@@ -193,15 +193,91 @@ AC_DEFINE_UNQUOTED(GETTEXT_PACKAGE,"$GETTEXT_PACKAGE", [Define text domain.])
 AM_GNU_GETTEXT_VERSION([0.15])
 AM_GNU_GETTEXT([external])
 
+AC_ARG_ENABLE(manual,
+		[  --disable-manual                Do not build user manual],
+		[enable_manual=$enableval], [enable_manual=yes])
+
+AC_ARG_ENABLE(libsm,
+		[  --disable-libsm                 Do not build libSM support for session management],
+		[enable_libsm=$enableval], [enable_libsm=yes])
+
+AC_ARG_ENABLE(ipv6,
+		[  --disable-ipv6                  Do not build IPv6 support],
+		[enable_ipv6=$enableval], [enable_ipv6=yes])
+
+AC_ARG_ENABLE(gnutls,
+		[  --disable-gnutls                Do not build GnuTLS support for SSL/TLS],
+		    [enable_gnutls=$enableval], [enable_gnutls=yes])
+
+AC_ARG_ENABLE(enchant,
+		[  --disable-enchant               Do not build Enchant support for spell-checking],
+		[enable_enchant=$enableval], [enable_enchant=yes])
+
+AC_ARG_ENABLE(crash-dialog,
+		[  --enable-crash-dialog           Build crash dialog],
+		[enable_crash_dialog=$enableval], [enable_crash_dialog=no])
+
+AC_ARG_ENABLE(generic-umpc,
+		[  --enable-generic-umpc           Build generic UMPC code],
+		[enable_generic_umpc=$enableval], [enable_generic_umpc=no])
+
+AC_ARG_ENABLE(maemo,
+		[  --enable-maemo                  Build for the Maemo platform],
+		[enable_maemo=$enableval], [enable_maemo=no])
+
+AC_ARG_ENABLE(compface,
+		[  --disable-compface              Do not build compface support for X-Face],
+		[enable_compface=$enableval], [enable_compface=yes])
+
+AC_ARG_ENABLE(pthread,
+		[  --disable-pthread               Do not build pthread support],
+		[enable_pthread=$enableval], [enable_pthread=yes])
+
+AC_ARG_ENABLE(startup-notification,
+		[  --disable-startup-notification  Do not startup notification support],
+		[enable_startup_notification=$enableval], [enable_startup_notification=yes])
+
+AC_ARG_ENABLE(dbus,
+		[  --disable-dbus                  Do not build DBUS support],
+		[enable_dbus=$enableval], [enable_dbus=yes])
+
+AC_ARG_ENABLE(ldap,
+		[  --disable-ldap                  Do not build LDAP support],
+		[enable_ldap=$enableval], [enable_ldap=yes])
+
+AC_ARG_ENABLE(jpilot,
+		[  --disable-jpilot                Do not build JPilot support],
+		[enable_jpilot=$enableval], [enable_jpilot=yes])
+
+AC_ARG_ENABLE(networkmanager,
+		[  --disable-networkmanager        Do not build NetworkManager support],
+		[enable_networkmanager=$enableval], [enable_networkmanager=yes])
+
+AC_ARG_ENABLE(libetpan,
+		[  --disable-libetpan              Do not build libetpan support for IMAP4/NNTP],
+		[enable_libetpan=$enableval], [enable_libetpan=yes])
+
+AC_ARG_ENABLE(valgrind,
+		[  --disable-valgrind              Do not build valgrind support for debugging],
+		[enable_valgrind=$enableval], [enable_valgrind=yes])
+
+AC_ARG_ENABLE(new-addrbook,
+		[  --enable-new-addrbook           Build new external address book support],
+		[enable_new_addrbook=$enableval], [enable_new_addrbook=no])
+
+AC_ARG_ENABLE(gtk3,
+		[  --enable-gtk3                   Build GTK3 support],
+		[enable_gtk3=$enableval], [enable_gtk3=no])
+
+AC_ARG_ENABLE(deprecated,
+		[  --disable-deprecated            Disable deprecated GTK functions],
+		[GTK_CFLAGS="$GTK_CFLAGS -DG_DISABLE_DEPRECATED -DGTK_DISABLE_DEPRECATED"], [])
+
 manualdir='${docdir}/manual'
 AC_ARG_WITH(manualdir,
 	[  --with-manualdir=DIR    Manual directory],
 	[manualdir="$withval"])
 AC_SUBST(manualdir)
-
-AC_ARG_ENABLE(manual,
-	[  --disable-manual           do not build manual],
-	[ac_cv_enable_manual=$enableval], [ac_cv_enable_manual=yes])
 
 dnl ******************************
 dnl ** Check for required tools **
@@ -218,16 +294,16 @@ AM_CONDITIONAL(MANUAL_TXT, test -n "$DOCBOOK2TXT")
 AM_CONDITIONAL(MANUAL_PDF, test -n "$DOCBOOK2PDF")
 AM_CONDITIONAL(MANUAL_PS, test -n "$DOCBOOK2PS")
 
-if test x"$ac_cv_enable_manual" = x"yes"; then
+if test x"$enable_manual" = x"yes"; then
     if test -n "$DOCBOOK2TXT" -o -n "$DOCBOOK2HTML" \
 	-o -n "$DOCBOOK2PS" -o -n "$DOCBOOK2PDF"; then
-	    ac_cv_enable_manual=yes
+	    enable_manual=yes
 	else
-	    ac_cv_enable_manual=no
+	    enable_manual=no
     fi
 fi
 
-AM_CONDITIONAL(BUILD_MANUAL, test x"$ac_cv_enable_manual" = xyes)
+AM_CONDITIONAL(BUILD_MANUAL, test x"$enable_manual" = xyes)
 
 dnl Set PACKAGE_DATA_DIR in config.h.
 if test "x${datarootdir}" = 'x${prefix}/share'; then
@@ -244,17 +320,14 @@ AC_CHECK_LIB(xpg4, setlocale)
 
 SM_LIBS=""
 dnl Check for LibSM
-AC_ARG_ENABLE(libsm,
-	[  --disable-libsm    disable libSM support for session management.],
-	[ac_cv_enable_libsm=$enableval], [ac_cv_enable_libsm=yes])
 AC_MSG_CHECKING([whether to use LibSM])
-if test x"$ac_cv_enable_libsm" = xyes; then
+if test x"$enable_libsm" = xyes; then
 	AC_MSG_RESULT(yes)
 	AC_CHECK_LIB(SM, SmcSaveYourselfDone,
-		[SM_LIBS="$X_LIBS -lSM -lICE"],ac_cv_enable_libsm=no,
+		[SM_LIBS="$X_LIBS -lSM -lICE"],enable_libsm=no,
 		$X_LIBS -lICE)
-	AC_CHECK_HEADERS(X11/SM/SMlib.h,,ac_cv_enable_libsm=no)
-	if test x"$ac_cv_enable_libsm" = xyes; then
+	AC_CHECK_HEADERS(X11/SM/SMlib.h,,enable_libsm=no)
+	if test x"$enable_libsm" = xyes; then
 		AC_DEFINE(HAVE_LIBSM, 1, [Define to 1 if you have libSM installed])
 	else
 		AC_MSG_RESULT(not found)
@@ -353,13 +426,9 @@ AC_CHECK_FUNCS(bind_textdomain_codeset)
 LIBS=$syl_save_LIBS
 
 dnl check for IPv6 option
-AC_ARG_ENABLE(ipv6,
-	[  --disable-ipv6           disable build IPv6 support],
-	[ac_cv_enable_ipv6=$enableval], [ac_cv_enable_ipv6=yes])
-
 dnl automated checks for IPv6 support.
 AC_MSG_CHECKING([whether to use IPv6])
-if test x"$ac_cv_enable_ipv6" = xyes; then
+if test x"$enable_ipv6" = xyes; then
 	AC_MSG_RESULT(yes)
 	AC_MSG_CHECKING([for IPv6 support])
 	AC_CACHE_VAL(ac_cv_ipv6,[
@@ -374,7 +443,7 @@ if test x"$ac_cv_enable_ipv6" = xyes; then
 		AC_DEFINE(INET6, 1, Define if you want IPv6 support.)
 	else
 		AC_MSG_WARN(*** IPv6 will not be supported ***)
-		ac_cv_enable_ipv6=no
+		enable_ipv6=no
 	fi
 else
 	AC_MSG_RESULT(no)
@@ -382,11 +451,8 @@ fi
 
 dnl GNUTLS
 AC_MSG_CHECKING([whether to use GnuTLS])
-AC_ARG_ENABLE(gnutls,    [  --enable-gnutls      enable GnuTLS support],
-            [ac_cv_enable_gnutls=$enableval], [ac_cv_enable_gnutls=yes])
-
-AC_MSG_RESULT($ac_cv_enable_gnutls)
-if test "x$ac_cv_enable_gnutls" != "xno"; then
+AC_MSG_RESULT($enable_gnutls)
+if test "x$enable_gnutls" != "xno"; then
         PKG_CHECK_MODULES(GNUTLS, gnutls >= 2.2,
         [
                 AC_DEFINE(USE_GNUTLS, 1, gnutls)
@@ -439,120 +505,97 @@ dnl ** GTK user interface **
 dnl ************************
 
 dnl Checks for GTK
-AC_ARG_ENABLE(gtk3,
-	AS_HELP_STRING([--enable-gtk3],
-		[Determines whether to use Gtk+ 3.0.]),
-		[ac_cv_enable_gtk3=$enableval],[ac_cv_enable_gtk3=no])
 AM_CONDITIONAL(GTK3, false)
 AM_CONDITIONAL(GTK2, true)
-if test x"$ac_cv_enable_gtk3" = x"yes"; then
+if test x"$enable_gtk3" = x"yes"; then
 	PKG_CHECK_MODULES(GTK, gtk+-3.0 >= 3.0 cairo)
 	AM_CONDITIONAL(GTK3, true)
 	AM_CONDITIONAL(GTK2, false)
 else
 	PKG_CHECK_MODULES(GTK, gtk+-2.0 >= 2.16)
-
-	dnl --disable-deprecated switch for GTK2 purification
-	AC_ARG_ENABLE(deprecated, [  --disable-deprecated  disable deprecated GTK functions. ],
-			  [GTK_CFLAGS="$GTK_CFLAGS -DG_DISABLE_DEPRECATED -DGTK_DISABLE_DEPRECATED"], [])
 fi
 AC_SUBST(GTK_CFLAGS)
 AC_SUBST(GTK_LIBS)
 
 dnl enchant is used for spell checking
 AC_MSG_CHECKING([whether to use enchant])
-AC_ARG_ENABLE(enchant,
-	[  --disable-enchant         disable enchant support],
-	[ac_cv_enable_enchant=$enableval], [ac_cv_enable_enchant=yes])
-AC_MSG_RESULT($ac_cv_enable_enchant)
-if test $ac_cv_enable_enchant = yes; then
+AC_MSG_RESULT($enable_enchant)
+if test $enable_enchant = yes; then
 	PKG_CHECK_MODULES(ENCHANT, enchant >= 1.0.0,
 	[
 		AC_DEFINE(USE_ENCHANT, 1, enchant)
 		echo "Building with enchant"
-		ac_cv_enable_enchant=yes
+		enable_enchant=yes
 		CFLAGS="$CFLAGS `$PKG_CONFIG --cflags enchant`"
 	],
 	[
 		echo "Building without enchant-notification"
-		ac_cv_enable_enchant=no
+		enable_enchant=no
 	])
 	AC_SUBST(ENCHANT_CFLAGS)
 	AC_SUBST(ENCHANT_LIBS)
 fi
 
 dnl want crash dialog
-AC_ARG_ENABLE(crash-dialog,
-	[  --enable-crash-dialog   Enable crash dialog [default=no]],
-	[ac_cv_enable_crash_dialog=$enableval], [ac_cv_enable_crash_dialog=no])
-if test $ac_cv_enable_crash_dialog = yes; then
+if test $enable_crash_dialog = yes; then
 dnl check if GDB is somewhere
-	AC_CHECK_PROG(ac_cv_enable_crash_dialog, gdb, yes, no)
+	AC_CHECK_PROG(enable_crash_dialog, gdb, yes, no)
 	AC_MSG_CHECKING([whether to use crash dialog])
-	if test $ac_cv_enable_crash_dialog = yes; then
+	if test $enable_crash_dialog = yes; then
 		AC_DEFINE(CRASH_DIALOG, 1, Pop up crash dialog)
 	fi
-	AC_MSG_RESULT($ac_cv_enable_crash_dialog)
+	AC_MSG_RESULT($enable_crash_dialog)
 fi
 
 dnl generic umpc
-AC_ARG_ENABLE(generic-umpc,
-	[  --enable-generic-umpc   Enable generic UMPC code [default=no]],
-	[ac_cv_enable_generic_umpc=$enableval], [ac_cv_enable_generic_umpc=no])
-if test $ac_cv_enable_generic_umpc = yes; then
+if test $enable_generic_umpc = yes; then
 	AC_DEFINE(GENERIC_UMPC, 1, Generic UMPC code)
-	AC_MSG_RESULT($ac_cv_enable_generic_umpc)
+	AC_MSG_RESULT($enable_generic_umpc)
 fi
 
 dnl Maemo platform
-AC_ARG_ENABLE(maemo,
-	[  --enable-maemo   build for the Maemo platform [default=no]],
-	[ac_cv_enable_maemo=$enableval], [ac_cv_enable_maemo=no])
-if test $ac_cv_enable_maemo = yes; then
-	PKG_CHECK_MODULES(MAEMO, libosso hildon-libs hildon-fm gnome-vfs-2.0, ac_cv_enable_maemo=yes,
-		  ac_cv_enable_maemo=no)
+if test $enable_maemo = yes; then
+	PKG_CHECK_MODULES(MAEMO, libosso hildon-libs hildon-fm gnome-vfs-2.0, enable_maemo=yes,
+		  enable_maemo=no)
 	AC_SUBST(MAEMO_CFLAGS)
 	AC_SUBST(MAEMO_LIBS)
-	if test $ac_cv_enable_maemo = no; then
+	if test $enable_maemo = no; then
 		#test for chinook
-		PKG_CHECK_MODULES(MAEMO, libosso hildon-1 hildon-fm-2 gnome-vfs-2.0 hal, ac_cv_enable_maemo=yes,
-			  ac_cv_enable_maemo=no)
+		PKG_CHECK_MODULES(MAEMO, libosso hildon-1 hildon-fm-2 gnome-vfs-2.0 hal, enable_maemo=yes,
+			  enable_maemo=no)
 		AC_SUBST(MAEMO_CFLAGS)
 		AC_SUBST(MAEMO_LIBS)
-		if test $ac_cv_enable_maemo = no; then
+		if test $enable_maemo = no; then
 			AC_MSG_ERROR(one of libosso hildon-libs hildon-fm hildon-1 hildon-fm-2 not found)
 		else
 			AC_DEFINE(MAEMO, 1, Build for maemo)
 			AC_DEFINE(CHINOOK, 1, Maemo chinook)
 			AC_DEFINE(GENERIC_UMPC, 1, Generic UMPC code)
-			ac_cv_enable_generic_umpc=yes
+			enable_generic_umpc=yes
 		fi
 	else
 		AC_DEFINE(MAEMO, 1, Build for maemo)
 		AC_DEFINE(GENERIC_UMPC, 1, Generic UMPC code)
-		ac_cv_enable_generic_umpc=yes
+		enable_generic_umpc=yes
 	fi
 fi
 
-PKG_CHECK_MODULES(CONIC, conic, ac_cv_enable_conic=yes,
-	  ac_cv_enable_conic=no)
+PKG_CHECK_MODULES(CONIC, conic, enable_conic=yes,
+	  enable_conic=no)
 AC_SUBST(CONIC_CFLAGS)
 AC_SUBST(CONIC_LIBS)
-if test $ac_cv_enable_conic = yes; then
+if test $enable_conic = yes; then
 	AC_DEFINE(CONIC, 1, Have conic lib)
 fi
 
 dnl Check for X-Face support
-AC_ARG_ENABLE(compface,
-	[  --disable-compface      disable compface (X-Face) support],
-	[ac_cv_enable_compface=$enableval], [ac_cv_enable_compface=yes])
 AC_MSG_CHECKING([whether to use compface])
-if test x"$ac_cv_enable_compface" = xyes; then
+if test x"$enable_compface" = xyes; then
 	AC_MSG_RESULT(yes)
 	AC_CHECK_LIB(compface, uncompface, 
 		[AC_DEFINE(HAVE_LIBCOMPFACE, 1, Define if you want compface support.)],
-		[ac_cv_enable_compface=no])
-	if test x"$ac_cv_enable_compface" = xyes; then
+		[enable_compface=no])
+	if test x"$enable_compface" = xyes; then
 		COMPFACE_LIBS="-lcompface"
 	else
 		COMPFACE_LIBS=""
@@ -563,11 +606,8 @@ else
 fi
 
 dnl check for pthread support
-AC_ARG_ENABLE(pthread,
-	[  --disable-pthread           disable pthread support],
-	[ac_cv_enable_pthread=$enableval], [ac_cv_enable_pthread=yes])
 AC_MSG_CHECKING([whether to use pthread])
-if test x$ac_cv_enable_pthread = xno; then
+if test x$enable_pthread = xno; then
 	AC_MSG_RESULT(no)
 else
 	AC_MSG_RESULT(yes)
@@ -577,13 +617,13 @@ else
         # library installed under a different name.  Checking for the
         # header is okay.
         if test -n "${pthread_name}" ; then
-           ac_cv_enable_pthread=yes
+           enable_pthread=yes
         else
-	AC_CHECK_LIB(pthread, pthread_create, :, ac_cv_enable_pthread=no)
+	AC_CHECK_LIB(pthread, pthread_create, :, enable_pthread=no)
         fi
-	AC_CHECK_HEADERS(pthread.h, :, ac_cv_enable_pthread=no)
+	AC_CHECK_HEADERS(pthread.h, :, enable_pthread=no)
 
-	if test x$ac_cv_enable_pthread = xyes; then
+	if test x$enable_pthread = xyes; then
 		AC_DEFINE(USE_PTHREAD, 1, Define if you have pthread)
                 if test -z "${pthread_name}" ; then
 		PTHREAD_LIBS="-lpthread"
@@ -625,8 +665,6 @@ LIBS="$LIBS $LIBRESOLV"
 dnl #######################################################################
 dnl # Check for startup notification
 dnl #######################################################################
-AC_ARG_ENABLE(startup-notification, [  --disable-startup-notification    disable startup notification support],,enable_startup_notification=yes)
-
 if test "x$enable_startup_notification" = "xyes"; then
 	PKG_CHECK_MODULES(STARTUP_NOTIFICATION, libstartup-notification-1.0 >= 0.5,
 	[
@@ -646,8 +684,6 @@ fi
 dnl #######################################################################
 dnl # Check for D-Bus support
 dnl #######################################################################
-AC_ARG_ENABLE(dbus, [  --disable-dbus    disable dbus support],,enable_dbus=yes)
-
 if test "x$enable_dbus" = "xyes"; then
 	PKG_CHECK_MODULES(DBUS, [dbus-1 >= 0.60, dbus-glib-1 >= 0.60],
 	[
@@ -673,7 +709,6 @@ AC_MSG_CHECKING([whether DBUS support for new address book is present])
 if test x"$enable_dbus_glib" = xyes; then
 	AC_MSG_RESULT([yes])
 	AC_MSG_CHECKING([whether to enable new address book])
-	AC_ARG_ENABLE(new-addrbook, [  --enable-new-addrbook     enable new address book],,enable_new_addrbook=no)
 	if test x"$enable_new_addrbook" = xyes; then
 		AC_MSG_RESULT([yes])
 		PKG_CHECK_MODULES(CONTACTS, [claws-contacts],
@@ -701,16 +736,13 @@ dnl #######################################################################
 if test x"$enable_new_addrbook" = xno; then
 	dnl for LDAP support in addressbook
 	dnl no check for libraries; dynamically loaded
-	AC_ARG_ENABLE(ldap,
-		[  --disable-ldap         disable LDAP support],
-		[ac_cv_enable_ldap=$enableval], [ac_cv_enable_ldap=yes])
 	AC_MSG_CHECKING([whether to use LDAP])
-	if test x"$ac_cv_enable_ldap" = xno; then
+	if test x"$enable_ldap" = xno; then
 		AC_MSG_RESULT(no)
-	elif test x"$ac_cv_enable_ldap" = xyes -a x"$ac_cv_enable_pthread" = xno; then
+	elif test x"$enable_ldap" = xyes -a x"$enable_pthread" = xno; then
 		AC_MSG_RESULT(no - LDAP support needs pthread support)
 
-		ac_cv_enable_ldap=no
+		enable_ldap=no
 	elif test x"$platform_win32" = xyes; then
 		AC_MSG_RESULT(yes)
 		AC_DEFINE(USE_LDAP, 1, Define if you want LDAP support in addressbook.)
@@ -727,13 +759,13 @@ if test x"$enable_new_addrbook" = xno; then
 				 $LDAP_LIBS)
 
 		AC_CHECK_HEADERS(ldap.h lber.h,
-				 [ ac_cv_enable_ldap=yes ],
-				 [ ac_cv_enable_ldap=no ])
+				 [ enable_ldap=yes ],
+				 [ enable_ldap=no ])
 
-		if test "$ac_cv_enable_ldap" = yes; then
+		if test "$enable_ldap" = yes; then
 			AC_CHECK_LIB(ldap, ldap_open,
-					 [ ac_cv_enable_ldap=yes ],
-					 [ ac_cv_enable_ldap=no ],
+					 [ enable_ldap=yes ],
+					 [ enable_ldap=no ],
 					 $LDAP_LIBS)
 
 			AC_CHECK_LIB(ldap, ldap_start_tls_s,
@@ -743,12 +775,12 @@ if test x"$enable_new_addrbook" = xno; then
 		fi
 
 		AC_MSG_CHECKING([whether ldap library is available])
-		AC_MSG_RESULT($ac_cv_enable_ldap)
+		AC_MSG_RESULT($enable_ldap)
 
 		AC_MSG_CHECKING([whether TLS library is available])
 		AC_MSG_RESULT($ac_cv_have_tls)
 
-		if test "$ac_cv_enable_ldap" = yes; then
+		if test "$enable_ldap" = yes; then
 			AC_DEFINE(USE_LDAP, 1, Define if you want LDAP support in addressbook.)
 			LDAP_LIBS="$LDAP_LIBS -lldap"
 			AC_SUBST(LDAP_LIBS)
@@ -783,23 +815,20 @@ if test x"$enable_new_addrbook" = xno; then
 
 	dnl for JPilot support in addressbook
 	dnl no check for libraries; these are dynamically loaded
-	AC_ARG_ENABLE(jpilot,
-		[  --disable-jpilot         disable JPilot support],
-		[ac_cv_enable_jpilot=$enableval], [ac_cv_enable_jpilot=yes])
 	AC_MSG_CHECKING([whether to use JPilot])
-	if test "$ac_cv_enable_jpilot" = yes; then
+	if test "$enable_jpilot" = yes; then
 		AC_MSG_RESULT(yes)
 		AC_CHECK_HEADERS(pi-args.h pi-appinfo.h pi-address.h pi-version.h,
 				 [ AC_DEFINE(USE_JPILOT, 1, Define if you want JPilot support in addressbook.) ],
-				 [ ac_cv_enable_jpilot=no ])
-		if test "$ac_cv_enable_jpilot" = no; then
+				 [ enable_jpilot=no ])
+		if test "$enable_jpilot" = no; then
 			AC_CHECK_HEADERS(libpisock/pi-args.h libpisock/pi-appinfo.h libpisock/pi-address.h libpisock/pi-version.h,
-					 [ ac_cv_enable_jpilot=yes
+					 [ enable_jpilot=yes
 					   AC_DEFINE(USE_JPILOT, 1, Define if you want JPilot support in addressbook.) ])
 		fi
 
-		AC_CHECK_LIB(pisock, unpack_Address, [JPILOT_LIBS="-lpisock"], [JPILOT_LIBS="" ac_cv_enable_jpilot="no"])
-		if test x"$ac_cv_enable_jpilot" = xyes; then
+		AC_CHECK_LIB(pisock, unpack_Address, [JPILOT_LIBS="-lpisock"], [JPILOT_LIBS="" enable_jpilot="no"])
+		if test x"$enable_jpilot" = xyes; then
 			AC_DEFINE(USE_JPILOT, 1, Define if you want JPilot support in addressbook.)
 		else
 			AC_MSG_NOTICE([JPilot support not available])
@@ -816,31 +845,27 @@ dnl #######################################################################
 dnl # Check for NetworkManager support
 dnl #######################################################################
 if test x"$enable_dbus_glib" = xyes; then
-	AC_ARG_ENABLE(networkmanager-support, [  --disable-networkmanager-support  disable NetworkManager support],,enable_networkmanager_support=yes)
-	if test x"$enable_networkmanager_support" = xyes; then
+	if test x"$enable_networkmanager" = xyes; then
 		PKG_CHECK_MODULES(NETWORKMANAGER_SUPPORT, NetworkManager >= 0.6.2,
 		[
 			AC_DEFINE(HAVE_NETWORKMANAGER_SUPPORT, 1, [Define if NetworkManager support is to be included.])
 			echo "Building with NetworkManager support"
-			enable_networkmanager_support=yes
+			enable_networkmanager=yes
 		],
 		[
 			echo "NetworkManager not found."
-			enable_networkmanager_support=no
+			enable_networkmanager=no
 		])
 		AC_SUBST(NETWORKMANAGER_SUPPORT_CFLAGS)
 	fi
 else
 	echo "NetworkManager support deactivated as D-Bus requirements were not met."
-	enable_networkmanager_support=no
+	enable_networkmanager=no
 fi
 
 dnl Libetpan
 AC_MSG_CHECKING([whether to use libetpan])
-AC_ARG_ENABLE(libetpan,
-	[  --disable-libetpan		disable IMAP4/NNTP (libetpan) support],
-	[ac_cv_enable_libetpan=$enableval], [ac_cv_enable_libetpan=yes])
-if test x"$ac_cv_enable_libetpan" = xyes; then
+if test x"$enable_libetpan" = xyes; then
 	AC_MSG_RESULT(yes)
 	libetpan_result=no
 	AC_PATH_PROG(libetpanconfig, [libetpan-config])
@@ -881,14 +906,11 @@ fi
 AM_CONDITIONAL(CLAWS_LIBETPAN, test "x$libetpan_result" = "xyes")
 
 AC_MSG_CHECKING([whether to use valgrind])
-AC_ARG_ENABLE(valgrind,
-	[  --disable-valgrind		disable valgrind support for debugging],
-	[ac_cv_enable_valgrind=$enableval], [ac_cv_enable_valgrind=yes])
-if test x$ac_cv_enable_valgrind = xyes; then
+if test x$enable_valgrind = xyes; then
 	AC_MSG_RESULT(yes)
 	PKG_CHECK_MODULES(VALGRIND, valgrind >= 2.4.0,
-			  ac_cv_enable_valgrind=yes, ac_cv_enable_valgrind=no)
-	if test x"$ac_cv_enable_valgrind" = xyes; then
+			  enable_valgrind=yes, enable_valgrind=no)
+	if test x"$enable_valgrind" = xyes; then
 		AC_DEFINE(HAVE_VALGRIND, 1, Define if you want valgrind support)
 	else
 		AC_MSG_RESULT(not found)
@@ -896,7 +918,7 @@ if test x$ac_cv_enable_valgrind = xyes; then
 else
 	AC_MSG_RESULT(no)
 fi
-AM_CONDITIONAL(CLAWS_VALGRIND, test x"$ac_cv_enable_valgrind" = x"yes")
+AM_CONDITIONAL(CLAWS_VALGRIND, test x"$enable_valgrind" = x"yes")
 
 dnl *************************
 dnl ** section for plugins **
@@ -913,107 +935,107 @@ dnl All plugins are auto-enabled except for Demo which is just there to help
 dnl potential plugins writers.
 
 AC_ARG_ENABLE(acpi_notifier-plugin,
-		[  --disable-acpi_notifier-plugin		Do not build acpi_notifier plugin],
+		[  --disable-acpi_notifier-plugin  Do not build acpi_notifier plugin],
 		[enable_acpi_notifier_plugin=$enableval], [enable_acpi_notifier_plugin=auto])
 
 AC_ARG_ENABLE(address_keeper-plugin,
-		[  --disable-address_keeper-plugin		Do not build address_keeper plugin],
+		[  --disable-address_keeper-plugin Do not build address_keeper plugin],
 		[enable_address_keeper_plugin=$enableval], [enable_address_keeper_plugin=auto])
 
 AC_ARG_ENABLE(archive-plugin,
-		[  --disable-archive-plugin		Do not build archive plugin],
+		[  --disable-archive-plugin        Do not build archive plugin],
 		[enable_archive_plugin=$enableval], [enable_archive_plugin=auto])
 
 AC_ARG_ENABLE(att_remover-plugin,
-		[  --disable-att_remover-plugin		Do not build att_remover plugin],
+		[  --disable-att_remover-plugin    Do not build att_remover plugin],
 		[enable_att_remover_plugin=$enableval], [enable_att_remover_plugin=auto])
 
 AC_ARG_ENABLE(attachwarner-plugin,
-		[  --disable-attachwarner-plugin		Do not build attachwarner plugin],
+		[  --disable-attachwarner-plugin   Do not build attachwarner plugin],
 		[enable_attachwarner_plugin=$enableval], [enable_attachwarner_plugin=auto])
 
 AC_ARG_ENABLE(bogofilter-plugin,
-		[  --disable-bogofilter-plugin		Do not build bogofilter plugin],
+		[  --disable-bogofilter-plugin     Do not build bogofilter plugin],
 		[enable_bogofilter_plugin=$enableval], [enable_bogofilter_plugin=auto])
 
 AC_ARG_ENABLE(bsfilter-plugin,
-		[  --disable-bsfilter-plugin		Do not build bsfilter plugin],
+		[  --disable-bsfilter-plugin       Do not build bsfilter plugin],
 		[enable_bsfilter_plugin=$enableval], [enable_bsfilter_plugin=auto])
 
 AC_ARG_ENABLE(clamd-plugin,
-		[  --disable-clamd-plugin		Do not build clamd plugin],
+		[  --disable-clamd-plugin          Do not build clamd plugin],
 		[enable_clamd_plugin=$enableval], [enable_clamd_plugin=auto])
 
 AC_ARG_ENABLE(fancy-plugin,
-		[  --disable-fancy-plugin		Do not build fancy plugin],
+		[  --disable-fancy-plugin          Do not build fancy plugin],
 		[enable_fancy_plugin=$enableval], [enable_fancy_plugin=auto])
 
 AC_ARG_ENABLE(fetchinfo-plugin,
-		[  --disable-fetchinfo-plugin		Do not build fetchinfo plugin],
+		[  --disable-fetchinfo-plugin      Do not build fetchinfo plugin],
 		[enable_fetchinfo_plugin=$enableval], [enable_fetchinfo_plugin=auto])
 
 AC_ARG_ENABLE(gdata-plugin,
-		[  --disable-gdata-plugin		Do not build gdata plugin],
+		[  --disable-gdata-plugin          Do not build gdata plugin],
 		[enable_gdata_plugin=$enableval], [enable_gdata_plugin=auto])
 
 AC_ARG_ENABLE(mailmbox-plugin,
-		[  --disable-mailmbox-plugin		Do not build mailmbox plugin],
+		[  --disable-mailmbox-plugin       Do not build mailmbox plugin],
 		[enable_mailmbox_plugin=$enableval], [enable_mailmbox_plugin=auto])
 
 AC_ARG_ENABLE(newmail-plugin,
-		[  --disable-newmail-plugin		Do not build newmail plugin],
+		[  --disable-newmail-plugin        Do not build newmail plugin],
 		[enable_newmail_plugin=$enableval], [enable_newmail_plugin=auto])
 
 AC_ARG_ENABLE(notification-plugin,
-		[  --disable-notification-plugin		Do not build notification plugin],
+		[  --disable-notification-plugin   Do not build notification plugin],
 		[enable_notification_plugin=$enableval], [enable_notification_plugin=auto])
 
 AC_ARG_ENABLE(pdf_viewer-plugin,
-		[  --disable-pdf_viewer-plugin		Do not build pdf_viewer plugin],
+		[  --disable-pdf_viewer-plugin     Do not build pdf_viewer plugin],
 		[enable_pdf_viewer_plugin=$enableval], [enable_pdf_viewer_plugin=auto])
 
 AC_ARG_ENABLE(perl-plugin,
-		[  --disable-perl-plugin		Do not build perl plugin],
+		[  --disable-perl-plugin           Do not build perl plugin],
 		[enable_perl_plugin=$enableval], [enable_perl_plugin=auto])
 
 AC_ARG_ENABLE(python-plugin,
-		[  --disable-python-plugin		Do not build python plugin],
+		[  --disable-python-plugin         Do not build python plugin],
 		[enable_python_plugin=$enableval], [enable_python_plugin=auto])
 
 AC_ARG_ENABLE(pgpcore-plugin,
-		[  --disable-pgpcore-plugin		Do not build pgpcore plugin],
+		[  --disable-pgpcore-plugin        Do not build pgpcore plugin],
 		[enable_pgpcore_plugin=$enableval], [enable_pgpcore_plugin=auto])
 
 AC_ARG_ENABLE(pgpmime-plugin,
-		[  --disable-pgpmime-plugin		Do not build pgpmime plugin],
+		[  --disable-pgpmime-plugin        Do not build pgpmime plugin],
 		[enable_pgpmime_plugin=$enableval], [enable_pgpmime_plugin=auto])
 
 AC_ARG_ENABLE(pgpinline-plugin,
-		[  --disable-pgpinline-plugin		Do not build pgpinline plugin],
+		[  --disable-pgpinline-plugin      Do not build pgpinline plugin],
 		[enable_pgpinline_plugin=$enableval], [enable_pgpinline_plugin=auto])
 
 AC_ARG_ENABLE(rssyl-plugin,
-		[  --disable-rssyl-plugin		Do not build rssyl plugin],
+		[  --disable-rssyl-plugin          Do not build rssyl plugin],
 		[enable_rssyl_plugin=$enableval], [enable_rssyl_plugin=auto])
 
 AC_ARG_ENABLE(smime-plugin,
-		[  --disable-smime-plugin		Do not build smime plugin],
+		[  --disable-smime-plugin          Do not build smime plugin],
 		[enable_smime_plugin=$enableval], [enable_smime_plugin=auto])
 
 AC_ARG_ENABLE(spamassassin-plugin,
-		[  --disable-spamassassin-plugin		Do not build spamassassin plugin],
+		[  --disable-spamassassin-plugin   Do not build spamassassin plugin],
 		[enable_spamassassin_plugin=$enableval], [enable_spamassassin_plugin=auto])
 
 AC_ARG_ENABLE(spam_report-plugin,
-		[  --disable-spam_report-plugin		Do not build spam_report plugin],
+		[  --disable-spam_report-plugin    Do not build spam_report plugin],
 		[enable_spam_report_plugin=$enableval], [enable_spam_report_plugin=auto])
 
 AC_ARG_ENABLE(tnef_parse-plugin,
-		[  --disable-tnef_parse-plugin		Do not build tnef_parse plugin],
+		[  --disable-tnef_parse-plugin     Do not build tnef_parse plugin],
 		[enable_tnef_parse_plugin=$enableval], [enable_tnef_parse_plugin=auto])
 
 AC_ARG_ENABLE(vcalendar-plugin,
-		[  --disable-vcalendar-plugin		Do not build vcalendar plugin],
+		[  --disable-vcalendar-plugin      Do not build vcalendar plugin],
 		[enable_vcalendar_plugin=$enableval], [enable_vcalendar_plugin=auto])
 
 dnl disabled by default
@@ -1858,24 +1880,24 @@ if test x"$enable_new_addrbook" = xyes; then
 	echo "Using Address Book : New experimental interface"
 else
 	echo "Using Address Book : Old stable interface"
-	echo "JPilot             : $ac_cv_enable_jpilot"
-	echo "LDAP               : $ac_cv_enable_ldap"
+	echo "JPilot             : $enable_jpilot"
+	echo "LDAP               : $enable_ldap"
 fi
-echo "gnuTLS             : $ac_cv_enable_gnutls"
+echo "gnuTLS             : $enable_gnutls"
 echo "iconv              : $am_cv_func_iconv"
-echo "compface           : $ac_cv_enable_compface"
-echo "IPv6               : $ac_cv_enable_ipv6"
-echo "enchant            : $ac_cv_enable_enchant"
-echo "IMAP4              : $ac_cv_enable_libetpan"
-echo "NNTP               : $ac_cv_enable_libetpan"
-echo "Crash dialog       : $ac_cv_enable_crash_dialog"
-echo "LibSM              : $ac_cv_enable_libsm"
+echo "compface           : $enable_compface"
+echo "IPv6               : $enable_ipv6"
+echo "enchant            : $enable_enchant"
+echo "IMAP4              : $enable_libetpan"
+echo "NNTP               : $enable_libetpan"
+echo "Crash dialog       : $enable_crash_dialog"
+echo "LibSM              : $enable_libsm"
 echo "DBUS               : $enable_dbus"
-echo "NetworkManager     : $enable_networkmanager_support"
-echo "Manual             : $ac_cv_enable_manual"
-echo "Generic UMPC code  : $ac_cv_enable_generic_umpc"
-echo "Maemo build        : $ac_cv_enable_maemo"
-echo "Config dir         : $ac_cv_with_config_dir"
+echo "NetworkManager     : $enable_networkmanager"
+echo "Manual             : $enable_manual"
+echo "Generic UMPC code  : $enable_generic_umpc"
+echo "Maemo build        : $enable_maemo"
+echo "Config dir         : $with_config_dir"
 
 echo "Plugins            : Built:"
 for plugin in $PLUGINS; do
