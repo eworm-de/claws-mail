@@ -1,0 +1,17 @@
+LIBRARY CLAWS-MAIL.EXE
+EXPORTS
+get_locale_dir
+check_plugin_version
+claws_unlink
+debug_get_mode
+debug_print_real
+debug_srcname
+get_mime_tmp_dir
+get_tmpfile_in_dir
+procmime_decode_content
+procmime_get_media_type
+procmime_get_mime_type
+procmime_mimeinfo_free_all
+procmime_mimeinfo_new
+procmime_mimeparser_register
+procmime_mimeparser_unregister

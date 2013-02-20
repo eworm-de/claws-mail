@@ -12,7 +12,7 @@ MINOR_VERSION=9
 MICRO_VERSION=0
 INTERFACE_AGE=0
 BINARY_AGE=0
-EXTRA_VERSION=82
+EXTRA_VERSION=83
 EXTRA_RELEASE=
 EXTRA_GTK2_VERSION=
 
@@ -853,7 +853,7 @@ dnl *************************
 PLUGINS=""
 
 dnl Find curl-config, used by fancy, vcalendar
-PKG_CHECK_MODULES(CURL, libcurl)
+PKG_CHECK_MODULES(CURL, libcurl, [have_curl=yes], [have_curl=no])
 AC_SUBST(CURL_LIBS)
 AC_SUBST(CURL_CFLAGS)
 
@@ -1334,6 +1334,7 @@ else
 	AC_MSG_RESULT(no)
 fi
 AM_CONDITIONAL(BUILD_SMIME_PLUGIN, test x"$ac_cv_enable_smime_plugin" = xyes)
+
 dnl --- SpamAssassin ---
 AC_MSG_CHECKING([whether to build SpamAssassin plugin])
 AC_ARG_ENABLE(spamassassin-plugin,
@@ -1348,6 +1349,36 @@ else
 	AC_MSG_RESULT(no)
 fi
 AM_CONDITIONAL(BUILD_SPAMASSASSIN_PLUGIN, test x"$ac_cv_enable_spamassassin_plugin" = xyes)
+
+dnl --- spam_report ---
+AC_MSG_CHECKING([whether to build spam_report plugin])
+AC_ARG_ENABLE(spam_report-plugin,
+	[  --disable-spam_report-plugin      do not build spam_report plugin],
+	[ac_cv_enable_spam_report_plugin=$enableval], [ac_cv_enable_spam_report_plugin=yes])
+if test x"$ac_cv_enable_spam_report_plugin" = xyes; then
+	if test x"$have_curl" = xyes; then
+		AC_MSG_RESULT(yes)
+		PLUGINS="spam_report $PLUGINS"
+	else
+		AC_MSG_ERROR(spam_report needs libcurl)
+	fi
+else
+	AC_MSG_RESULT(no)
+fi
+AM_CONDITIONAL(BUILD_SPAM_REPORT_PLUGIN, test x"$ac_cv_enable_spam_report_plugin" = xyes)
+
+dnl --- tnef_parse ---
+AC_MSG_CHECKING([whether to build tnef_parse plugin])
+AC_ARG_ENABLE(tnef_parse-plugin,
+	[  --disable-tnef_parse-plugin      do not build tnef_parse plugin],
+	[ac_cv_enable_tnef_parse_plugin=$enableval], [ac_cv_enable_tnef_parse_plugin=yes])
+if test x"$ac_cv_enable_tnef_parse_plugin" = xyes; then
+	AC_MSG_RESULT(yes)
+	PLUGINS="tnef_parse $PLUGINS"
+else
+	AC_MSG_RESULT(no)
+fi
+AM_CONDITIONAL(BUILD_TNEF_PARSE_PLUGIN, test x"$ac_cv_enable_tnef_parse_plugin" = xyes)
 
 dnl --- Trayicon ---
 AC_MSG_CHECKING([whether to build Trayicon plugin])
@@ -1484,6 +1515,8 @@ src/plugins/pgpinline/Makefile
 src/plugins/rssyl/Makefile
 src/plugins/smime/Makefile
 src/plugins/spamassassin/Makefile
+src/plugins/spam_report/Makefile
+src/plugins/tnef_parse/Makefile
 src/plugins/trayicon/Makefile
 src/plugins/vcalendar/Makefile
 src/plugins/vcalendar/libical/Makefile

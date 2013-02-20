@@ -1,3 +1,31 @@
+2013-02-20 [colin]	3.9.0cvs83
+
+	* configure.ac
+	* src/plugins/Makefile.am
+	* src/plugins/spam_report/.cvsignore
+	* src/plugins/spam_report/Makefile.am
+	* src/plugins/spam_report/placeholder.txt
+	* src/plugins/spam_report/spam_report.c
+	* src/plugins/spam_report/spam_report_prefs.c
+	* src/plugins/spam_report/spam_report_prefs.h
+	* src/plugins/tnef_parse/.cvsignore
+	* src/plugins/tnef_parse/Makefile.am
+	* src/plugins/tnef_parse/claws.def
+	* src/plugins/tnef_parse/mapi.h
+	* src/plugins/tnef_parse/mapidefs.h
+	* src/plugins/tnef_parse/mapitags.h
+	* src/plugins/tnef_parse/placeholder.txt
+	* src/plugins/tnef_parse/plugin.def
+	* src/plugins/tnef_parse/tnef-errors.h
+	* src/plugins/tnef_parse/tnef-types.h
+	* src/plugins/tnef_parse/tnef_dump.c
+	* src/plugins/tnef_parse/tnef_dump.h
+	* src/plugins/tnef_parse/tnef_parse.c
+	* src/plugins/tnef_parse/version.rc
+	* src/plugins/tnef_parse/ytnef.c
+	* src/plugins/tnef_parse/ytnef.h
+		Add tnef_parse and spam_report
+
 2013-02-20 [colin]	3.9.0cvs82
 
 	* src/plugins/bogofilter/Makefile.am

@@ -92,7 +92,15 @@ rssyl_dir = rssyl
 endif
 
 if BUILD_SPAMASSASSIN_PLUGIN
-spamassasssin_dir = spamassassin
+spamassassin_dir = spamassassin
+endif
+
+if BUILD_SPAM_REPORT_PLUGIN
+spam_report_dir = spam_report
+endif
+
+if BUILD_TNEF_PARSE_PLUGIN
+tnef_parse_dir = tnef_parse
 endif
 
 if BUILD_TRAYICON_PLUGIN
@@ -127,7 +135,9 @@ SUBDIRS = \
 	$(pgpmime_dir) \
 	$(pgpinline_dir) \
 	$(rssyl_dir) \
-	$(spamassasssin_dir) \
 	$(smime_dir) \
+	$(spamassassin_dir) \
+	$(spam_report_dir) \
+	$(tnef_parse_dir) \
 	$(trayicon_dir) \
 	$(vcalendar_dir)
