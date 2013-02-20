@@ -1,10 +1,10 @@
 plugindir = $(pkglibdir)/plugins
 
 if BUILD_GDATA_PLUGIN
-plugin_LTLIBRARIES = gdata_plugin.la
+plugin_LTLIBRARIES = gdata.la
 endif
 
-gdata_plugin_la_SOURCES = \
+gdata_la_SOURCES = \
 	gdata_plugin.c \
 	gdata_plugin.h \
 	cm_gdata_contacts.c \
@@ -12,7 +12,7 @@ gdata_plugin_la_SOURCES = \
 	cm_gdata_prefs.c \
 	cm_gdata_prefs.h
 
-gdata_plugin_la_LDFLAGS = \
+gdata_la_LDFLAGS = \
 	-avoid-version -module \
 	$(GTK_LIBS) \
 	$(GDATA_LIBS)

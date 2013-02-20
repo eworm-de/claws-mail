@@ -4589,3 +4589,4 @@
 ( cvs diff -u -r 1.654.2.4665 -r 1.654.2.4666 configure.ac;  ) > 3.9.0cvs89.patchset
 ( cvs diff -u -r 1.654.2.4666 -r 1.654.2.4667 configure.ac;  ) > 3.9.0cvs90.patchset
 ( cvs diff -u -r 1.1.2.3 -r 1.1.2.4 src/plugins/fetchinfo/Makefile.am;  cvs diff -u -r 1.1.2.6 -r 1.1.2.7 src/plugins/notification/Makefile.am;  cvs diff -u -r 1.1.2.3 -r 1.1.2.4 src/plugins/perl/Makefile.am;  cvs diff -u -r 1.1.2.4 -r 1.1.2.5 src/plugins/python/Makefile.am;  ) > 3.9.0cvs91.patchset
+( cvs diff -u -r 1.1.2.3 -r 1.1.2.4 src/plugins/gdata/Makefile.am;  ) > 3.9.0cvs92.patchset
